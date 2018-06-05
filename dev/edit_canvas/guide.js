@@ -27,8 +27,8 @@
         if(!this.visible) return;
 
         delta = delta*1;
-        var ctx = _UI.glypheditctx;
-        var cansize = _UI.glypheditcanvassize;
+        var ctx = _UI.glyphEditCTX;
+        var cansize = _UI.glyphEditCanvasSize;
         var psc = _GP.projectsettings.colors;
         var v = getView('guide');
         var start = {x:0, y:0};
@@ -77,10 +77,10 @@
             ctx.closePath();
     
             // Draw Label
-            if(this.showname && _UI.showguidelabels && !delta){
-                _UI.glypheditctx.fillStyle = color;
-                _UI.glypheditctx.font = '10px tahoma, verdana, sans-serif';
-                _UI.glypheditctx.fillText(this.name, label.x, label.y);
+            if(this.showname && _UI.showGuidesLabels && !delta){
+                _UI.glyphEditCTX.fillStyle = color;
+                _UI.glyphEditCTX.font = '10px tahoma, verdana, sans-serif';
+                _UI.glyphEditCTX.fillText(this.name, label.x, label.y);
             }
         }
 

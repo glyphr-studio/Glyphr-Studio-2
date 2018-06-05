@@ -47,7 +47,7 @@
         re += '<td class="selkern" '+selstyle+'onclick="selectKern(\''+id+'\');"></td>';
         re += '<td><input class="rowleftgroup" type="text" onchange="updateKernGroup(\''+id+'\', \'left\', this.value);" value="' + hexToChars(k.leftgroup.join('')) + '"></td>';
         re += '<td><input class="rowrightgroup" type="text" onchange="updateKernGroup(\''+id+'\', \'right\', this.value);" value="' + hexToChars(k.rightgroup.join('')) + '"></td>';
-        re += '<td><input class="kernvalue" type="number" id="'+id+'" value="' + k.value + '" onchange="_UI.focuselement=this.id; updateKernValue(\''+id+'\', this.value);"></td>';
+        re += '<td><input class="kernvalue" type="number" id="'+id+'" value="' + k.value + '" onchange="_UI.focusElement=this.id; updateKernValue(\''+id+'\', this.value);"></td>';
         re += '<td><button class="guideremove" onclick="deleteKernPair(\''+id+'\');">&times</button></td>';
 
         re += '</tr></table>';
@@ -63,8 +63,8 @@
             _GP.kerning[nid] = new HKern({'leftgroup':parseKernGroupInput(add[k]), 'rightgroup':parseKernGroupInput(add[k+1])});
         }
 
-        _UI.selectedkern = getFirstID(_GP.kerning);
-        redraw({calledby:'addCommonKernPairs'});
+        _UI.selectedKern = getFirstID(_GP.kerning);
+        redraw({calledBy:'addCommonKernPairs'});
     }
 
     function updateKernValue(id, val) {
@@ -84,8 +84,8 @@
     }
 
     function selectKern(id) {
-        _UI.selectedkern = id;
-        redraw({calledby:'selectKern'});
+        _UI.selectedKern = id;
+        redraw({calledBy:'selectKern'});
     }
 
     function showNewKernPairDialog() {
@@ -119,8 +119,8 @@
             _GP.kerning[id] = new HKern({'leftgroup':l, 'rightgroup':r});
 
             closeDialog();
-            _UI.selectedkern = id;
-            redraw({calledby:'createNewKernPair'});
+            _UI.selectedKern = id;
+            redraw({calledBy:'createNewKernPair'});
         }
     }
 
@@ -137,8 +137,8 @@
         showToast('Deleted ' + k.getName());
         
         delete _GP.kerning[id]; 
-        _UI.selectedkern = getFirstID(_GP.kerning); 
-        redraw({calledby:'deleteKernPair'});
+        _UI.selectedKern = getFirstID(_GP.kerning); 
+        redraw({calledBy:'deleteKernPair'});
     }
 
 // end of file

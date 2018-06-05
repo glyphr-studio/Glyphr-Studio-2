@@ -28,18 +28,18 @@ _FN.glyphrStudioOnLoad = function() {
         // debug('\t >>> DEV NAV - to ' + _UI.dev_currentPage);
         document.title = '░▒▓█ GSDEVMODE █▓▒░';
 
-        if (_UI.dev_sample_project) {
+        if (_UI.dev_sampleProject) {
             // debug('\t >>> Using sample project');
-            _UI.droppedFileContent = JSON.stringify(_UI.sampleproject[_UI.dev_sample_project]);
+            _UI.droppedFileContent = JSON.stringify(_UI.sampleproject[_UI.dev_sampleProject]);
             importGlyphrProjectFromText();
-            _UI.dev_sample_project = false;
+            _UI.dev_sampleProject = false;
         } else {
             newGlyphrProject();
         }
 
         if (_UI.dev_currentPage === 'import svg') {
-            _UI.importsvg.scale = false;
-            _UI.importsvg.move = false;
+            _UI.importSVG.scale = false;
+            _UI.importSVG.move = false;
         }
 
         navigate({page: (_UI.dev_currentPage || 'openproject'), panel: _UI.dev_currentPanel});
@@ -83,7 +83,7 @@ _FN.glyphrStudioOnLoad = function() {
 _FN.insertGlobalDOMElements = function() {
     document.body.innerHTML = `<div id="primaryScreenLayout"></div>
        
-        <canvas id="ishereghostcanvas" height=10 width=10 ></canvas>
+        <canvas id="isHereGhostCanvas" height=10 width=10 ></canvas>
         
         <div id="npSave"></div>
         

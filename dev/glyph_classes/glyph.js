@@ -31,7 +31,7 @@
         this.maxes = oa.maxes || clone(_UI.mins);
         this.shapes = oa.shapes || [];
         this.usedin = oa.usedin || [];
-        this.contextglyphs = '';
+        this.contextGlyphs = '';
 
         // debug('\t name: ' + this.name);
 
@@ -570,8 +570,8 @@
     Glyph.prototype.makeSVG = function(size, gutter) {
         // debug('\n Glyph.makeSVG - START');
         var ps = _GP.projectsettings;
-        size = size || _UI.thumbsize;
-        gutter = gutter || _UI.thumbgutter;
+        size = size || _UI.thumbSize;
+        gutter = gutter || _UI.thumbGutter;
         var emsquare = Math.max(ps.upm, (ps.ascent - ps.descent));
         var desc = Math.abs(ps.descent);
         var charscale = (size-(gutter*2)) / size;

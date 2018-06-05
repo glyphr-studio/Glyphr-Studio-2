@@ -14,19 +14,19 @@
 
         initEventHandlers();
 
-        _UI.selectedtool = 'kern';
+        _UI.selectedTool = 'kern';
 
-        redraw({calledby:'loadPage_kerning'});
+        redraw({calledBy:'loadPage_kerning'});
     }
 
     function setupKerningEditCanvas(){
-        _UI.glypheditcanvas = getEditDocument().getElementById('glypheditcanvas');
-        _UI.glypheditcanvas.height = _UI.glypheditcanvassize;
-        _UI.glypheditcanvas.width = _UI.glypheditcanvassize;
-        _UI.glypheditctx = _UI.glypheditcanvas.getContext('2d');
-        _UI.glypheditcanvas.onselectstart = function () { return false; };        //for Chrome, disable text select while dragging
-        _UI.glypheditcanvas.onmouseout = mouseoutcec;
-        _UI.glypheditcanvas.customguidetransparency = mouseovercec;
+        _UI.glyphEditCanvas = getEditDocument().getElementById('glyphEditCanvas');
+        _UI.glyphEditCanvas.height = _UI.glyphEditCanvasSize;
+        _UI.glyphEditCanvas.width = _UI.glyphEditCanvasSize;
+        _UI.glyphEditCTX = _UI.glyphEditCanvas.getContext('2d');
+        _UI.glyphEditCanvas.onselectstart = function () { return false; };        //for Chrome, disable text select while dragging
+        _UI.glyphEditCanvas.onmouseout = mouseoutcec;
+        _UI.glyphEditCanvas.customguidetransparency = mouseovercec;
     }
 
 
@@ -46,7 +46,7 @@
         if(selkern){
             drawGuides();
             var ch;
-            var ctx = _UI.glypheditctx;
+            var ctx = _UI.glyphEditCTX;
             var v = getView('redraw_Kerning');
             // debug('\t Kern Pair ' + selkern.leftgroup[0] + ' | ' + selkern.rightgroup[0]);
             

@@ -50,8 +50,8 @@
 
         if(this.visible){
             if((this.path.maxes.xmax === -1) &&
-                    (lctx === _UI.glypheditctx) &&
-                    (_UI.selectedtool !== 'newpath')) {
+                    (lctx === _UI.glyphEditCTX) &&
+                    (_UI.selectedTool !== 'newpath')) {
                 this.calcMaxes();
             }
             this.path.drawPath(lctx, view);
@@ -91,8 +91,8 @@
 // TRANSLATE TO DIFFERENT LANGUAGES
 //-------------------------------------------------------
     Shape.prototype.makeSVG = function(size, gutter) {
-        size = size || _UI.thumbsize;
-        gutter = gutter || _UI.thumbgutter;
+        size = size || _UI.thumbSize;
+        gutter = gutter || _UI.thumbGutter;
         var upm = _GP.projectsettings.upm;
         var desc = upm - _GP.projectsettings.ascent;
         var charscale = (size-(gutter*2)) / size;
@@ -275,9 +275,9 @@
         if(newshape){
             if(newshape.objtype === 'componentinstance'){
                 // debug('\t is a Component instance');
-                _UI.selectedtool = 'shaperesize';
-            } else if(newshape.path && (_UI.selectedtool === 'shaperesize')) {
-                // debug('\t triggered as true: newshape.path && _UI.selectedtool == shaperesize \n\t NOT calling calcmaxes, okay?');
+                _UI.selectedTool = 'shaperesize';
+            } else if(newshape.path && (_UI.selectedTool === 'shaperesize')) {
+                // debug('\t triggered as true: newshape.path && _UI.selectedTool == shaperesize \n\t NOT calling calcmaxes, okay?');
                 //newshape.calcMaxes();
             }
         } else {
@@ -289,7 +289,7 @@
         var sg = getSelectedWorkItem();
 
         sg.shapes.push(newshape);
-        _UI.ms.shapes.select(newshape);
+        _UI.multiSelect.shapes.select(newshape);
         sg.changed();
 
         _UI.currentPanel = 'npAttributes';
@@ -328,20 +328,20 @@
         newshape.name = (shapetype + getSelectedWorkItemShapes().length+1);
 
         getSelectedWorkItemShapes().push(newshape);
-        _UI.ms.shapes.select(newshape);
+        _UI.multiSelect.shapes.select(newshape);
         updateCurrentGlyphWidth();
     }
 
     function turnSelectedShapeIntoAComponent(){
-        var s = clone(_UI.ms.shapes.getMembers());
+        var s = clone(_UI.multiSelect.shapes.getMembers());
         var n = s.length === 1? ('Component ' + s[0].name) : ('Component ' + (getLength(_GP.components)+1));
 
-        _UI.ms.shapes.deleteShapes();
+        _UI.multiSelect.shapes.deleteShapes();
         var newid = createNewComponent(new Glyph({'shapes':s, 'name':n}));
         insertComponentInstance(newid);
-        _UI.selectedtool = 'shaperesize';
+        _UI.selectedTool = 'shaperesize';
         selectShape(getSelectedWorkItemShapes().length-1);
-        redraw({calledby:'turnSelectedShapeIntoAComponent'});
+        redraw({calledBy:'turnSelectedShapeIntoAComponent'});
     }
 
     function getClickedShape(x,y){
@@ -669,7 +669,7 @@
             showToast('Invalid shape name - shape names must only contain alphanumeric characters or spaces.');
         }
 
-        redraw({calledby:'Shape Name', redrawcanvas:false});
+        redraw({calledBy:'Shape Name', redrawCanvas:false});
 
         // debug(' Shape.changeShapeName - END\n');
     };

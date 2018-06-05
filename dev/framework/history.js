@@ -62,19 +62,19 @@
             update_NavPanels();
 
         } else if (_UI.currentPage === 'components'){
-            if(!_GP.components[_UI.selectedcomponent]){
-                _UI.selectedcomponent = getFirstID(_GP.components);
+            if(!_GP.components[_UI.selectedComponent]){
+                _UI.selectedComponent = getFirstID(_GP.components);
             }
         } else if (_UI.currentPage === 'ligatures'){
-            if(!_GP.ligatures[_UI.selectedligature]){
-                _UI.selectedligature = getFirstID(_GP.ligatures);
+            if(!_GP.ligatures[_UI.selectedLigature]){
+                _UI.selectedLigature = getFirstID(_GP.ligatures);
             }
         }
 
-        _UI.ms.shapes.clear();
-        _UI.ms.points.clear();
+        _UI.multiSelect.shapes.clear();
+        _UI.multiSelect.points.clear();
         // update_NavPanels();
-        redraw({calledby:'history_pull', redrawpanels: true});
+        redraw({calledBy:'history_pull', redrawPanels: true});
 
 
         // debug('\t after redraw');

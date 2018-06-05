@@ -27,5 +27,18 @@
         "typescript",
         "typescriptreact",
         "yml"
-    ]
+    ],
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/.vscode": true,
+        "**/.git": true,
+        "dev/lib/": true,
+        "package.json": true,
+        "package-lock.json": true,
+        "README.md": true,
+        ".eslintrc.json": true,
+        ".gitattributes": true,
+        ".gitignore": true
+    }
 }

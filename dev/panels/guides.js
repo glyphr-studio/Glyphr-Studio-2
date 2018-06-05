@@ -31,14 +31,14 @@
 
         content += '<h3 style="margin-top:0px; margin-bottom:10px;">options</h3>';
         content += '<table style="width:100%;">'+
-            '<tr><td style="width:20px">' + checkUI('_UI.showgrid', _UI.showgrid, true) + '</td>' +
-            '<td><label style="margin-left:10px;" for="showgrid">show grid</label></td></tr>' +
-            '<tr><td style="width:20px">' + checkUI('_UI.showguides', _UI.showguides, true) + '</td>' +
-            '<td><label style="margin-left:10px;" for="showguides">show guides</label></td></tr>' +
-            '<tr><td style="width:20px">' + checkUI('_UI.showguidelabels', _UI.showguidelabels, true) + '</td>' +
-            '<td><label style="margin-left:10px;" for="showguidelabels">show guide labels</label></td></tr>' +
-            '<tr><td style="width:20px">' + checkUI('_UI.showovershoots', _UI.showovershoots, true) + '</td>' +
-            '<td><label style="margin-left:10px;" for="showovershoots">show overshoots ('+ps.overshoot+' em units)</label></td></tr>' +
+            '<tr><td style="width:20px">' + checkUI('_UI.showGrid', _UI.showGrid, true) + '</td>' +
+            '<td><label style="margin-left:10px;" for="showGrid">show grid</label></td></tr>' +
+            '<tr><td style="width:20px">' + checkUI('_UI.showGuides', _UI.showGuides, true) + '</td>' +
+            '<td><label style="margin-left:10px;" for="showGuides">show guides</label></td></tr>' +
+            '<tr><td style="width:20px">' + checkUI('_UI.showGuidesLabels', _UI.showGuidesLabels, true) + '</td>' +
+            '<td><label style="margin-left:10px;" for="showGuidesLabels">show guide labels</label></td></tr>' +
+            '<tr><td style="width:20px">' + checkUI('_UI.showOvershoots', _UI.showOvershoots, true) + '</td>' +
+            '<td><label style="margin-left:10px;" for="showOvershoots">show overshoots ('+ps.overshoot+' em units)</label></td></tr>' +
             // '<td colspan="2">grid transparency:<input type="range" min="0" max="100" value="'+ps.colors.gridtransparency+'" step="1" oninput="updateTransparency(\'gridtransparency\', this.value);"/><span id="gridtransparency">'+ps.colors.gridtransparency+'</span>%</td>'+sliderUI('gridtransparency')+'</tr>'+
             '<td colspan="2">grid '+sliderUI('gridtransparency', 'gridtransparency_panel', false, true)+'</td></tr>'+
             '</table>';
@@ -90,7 +90,7 @@
         re += '</td>';
 
         re += '<td>';
-        re += '<input '+(sys? 'disabled':'')+' type="number" id="'+id+'" class="guidelocation" value="' + round(guide.location, 3) + '" onchange="_UI.focuselement=this.id; updateGuide(\''+id+'\', \'location\', (1*this.value));"/>';
+        re += '<input '+(sys? 'disabled':'')+' type="number" id="'+id+'" class="guidelocation" value="' + round(guide.location, 3) + '" onchange="_UI.focusElement=this.id; updateGuide(\''+id+'\', \'location\', (1*this.value));"/>';
         re += '</td>';
 
         if(!sys){
@@ -110,7 +110,7 @@
             if(g.name === 'horizontal guide') g.name = 'vertical guide';
             else if(g.name === 'vertical guide') g.name = 'horizontal guide';
         }
-        redraw({calledby:'updateGuide'});
+        redraw({calledBy:'updateGuide'});
     }
 
     function deleteGuide(id) {
@@ -118,13 +118,13 @@
         showToast('Deleted ' + g.name);
 
         delete _GP.projectsettings.guides[id];
-        redraw({calledby:'deleteGuide'});
+        redraw({calledBy:'deleteGuide'});
     }
 
     function showGuideSatChooser(ctx, id) {
         var sc = new SatChooser({clickCallback:function(args){
             _GP.projectsettings.guides[id].color = args.colorstring;
-            redraw({calledby:'SatChooser.callback'});
+            redraw({calledBy:'SatChooser.callback'});
         }});
         sc.show({elem:ctx});
     }
@@ -143,7 +143,7 @@
 
         g[id] = new Guide({});
 
-        redraw({calledby:'newGuide'});
+        redraw({calledBy:'newGuide'});
     }
 
 // end of file

@@ -86,7 +86,7 @@ const manifest = [
             'fontsettings.js',
             'projectsettings.js',
             'openproject.js',
-            'importsvg.js',
+            'importSVG.js',
             'exportfont.js',
             'about.js',
         ],

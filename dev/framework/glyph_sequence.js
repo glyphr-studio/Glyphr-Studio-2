@@ -13,7 +13,7 @@
         this.scale = oa.scale || 1;
         this.glyphstring = oa.glyphstring || '';
         this.textblocks = this.glyphstring.split('\n');
-        this.linegap = oa.linegap || Math.round(_GP.projectsettings.upm / 4);
+        this.lineGap = oa.lineGap || Math.round(_GP.projectsettings.upm / 4);
 
         this.drawPageExtras = oa.drawPageExtras || false;
         this.drawLineExtras = oa.drawLineExtras || false;
@@ -63,7 +63,7 @@
     };
 
     GlyphSequence.prototype.setLineGap = function(ns) {
-        this.linegap = ns;
+        this.lineGap = ns;
         this.generateData();
     };
 
@@ -167,7 +167,7 @@
                         if(currx - area.x + wordagg > area.width){
                             currline++;
 
-                            if(!canNextLineFit(curry, area, this.linegap)){
+                            if(!canNextLineFit(curry, area, this.lineGap)){
                                 // text takes up too much vertical space
                                 // returning early will leave unconputed chars.isvisible = false
                                 // debug(' GlyphSequence.generateData - Vertical Max Reached - END\n');
@@ -175,7 +175,7 @@
 
                             } else {
                                 currx = area.x;
-                                curry = calcNewLineY(area.y, currline, this.linegap);
+                                curry = calcNewLineY(area.y, currline, this.lineGap);
                             }
                         }
 
@@ -202,7 +202,7 @@
             // End of one block
             currline++;
 
-            if(!canNextLineFit(curry, area, this.linegap)){
+            if(!canNextLineFit(curry, area, this.lineGap)){
                 // text takes up too much vertical space
                 // returning early will leave unconputed chars.isvisible = false
                 // debug(' GlyphSequence.generateData - Vertical Max Reached - END\n');
@@ -211,7 +211,7 @@
             }
 
             currx = area.x;
-            curry = calcNewLineY(area.y, currline, this.linegap);
+            curry = calcNewLineY(area.y, currline, this.lineGap);
         }
 
         // debug('\t after view calc this.data');
@@ -271,14 +271,14 @@
         // debug(' GlyphSequence.draw - END\n');
     }
 
-    function calcNewLineY(starty, linenum, linegap) {
+    function calcNewLineY(starty, linenum, lineGap) {
         var ps = _GP.projectsettings;
-        return starty + (linenum*((linegap + ps.upm)));
+        return starty + (linenum*((lineGap + ps.upm)));
     }
 
-    function canNextLineFit(curry, area, linegap){
+    function canNextLineFit(curry, area, lineGap){
         var bottom = area.y + area.height;
-        var nextliney = curry + linegap + _GP.projectsettings.upm;
+        var nextliney = curry + lineGap + _GP.projectsettings.upm;
 
         // debug(`\t canNextLineFit - ${bottom} > ${nextliney}`);
         return bottom > nextliney;
@@ -301,7 +301,7 @@
     }
 
     function debugWidths() {
-        var seq = _UI.testdrive.glyphseq;
+        var seq = _UI.testDrive.glyphSequence;
         var re = '';
 
         re += seq.iterator(function(char, gs){

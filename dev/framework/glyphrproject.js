@@ -24,7 +24,7 @@
             descent: -300,            // descender
             capheight: 675,            // capital letter height
             xheight: 400,            // lowercase letter height
-            linegap: 250,            // distance between lines
+            lineGap: 250,            // distance between lines
             italicangle: 0,            // slant of glyphs, degrees from vertical counterclockwise, or negative for clockwise (ex: -15)
             griddivisions: 10,        // how many squares of grid per emsize
             overshoot: 10,            // overshoot for round glyphs
@@ -242,13 +242,13 @@
     }
 
     function calcFontMaxes(){
-        var fm = _UI.fontmetrics;
-        fm.numglyphs = 0;
-        fm.maxglyph = 0x20;
+        var fm = _UI.fontMetrics;
+        fm.numberOfGlyphs = 0;
+        fm.maxGlyph = 0x20;
 
         glyphRangeIterator(function(hex){
-            fm.numglyphs++;
-            fm.maxglyph = Math.max(fm.maxglyph, hex);
+            fm.numberOfGlyphs++;
+            fm.maxGlyph = Math.max(fm.maxGlyph, hex);
             var cm = _GP.glyphs[hex];
             if(cm){
                 cm = cm.maxes;
@@ -260,11 +260,11 @@
         });
 
         // var proportion = (fm.ymax / (fm.ymax-fm.ymin));
-        // var total = fm.ymax + Math.abs(fm.ymin) + _GP.projectsettings.linegap;
+        // var total = fm.ymax + Math.abs(fm.ymin) + _GP.projectsettings.lineGap;
         // fm.hhea_ascent = round(total*proportion);
         // fm.hhea_descent = (fm.hhea_ascent - total);
 
-        // debug('CALCFONTMAXES - numglyphs ' + _UI.fontmetrics.numglyphs);
+        // debug('CALCFONTMAXES - numberOfGlyphs ' + _UI.fontMetrics.numberOfGlyphs);
     }
 
 // end of file

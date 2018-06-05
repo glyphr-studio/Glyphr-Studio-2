@@ -23,16 +23,16 @@
         if(isCtrlDown){
             updateCursor();
             eh.multi = false;
-            redraw({calledby:'Event Handler - Keyup Ctrl for multi select', redrawpanels: false});
+            redraw({calledBy:'Event Handler - Keyup Ctrl for multi select', redrawPanels: false});
         }
 
 
         // Space
         if(kc === 'space' && eh.ismouseovercec){
-            _UI.selectedtool = eh.lastTool;
+            _UI.selectedTool = eh.lastTool;
             eh.isSpaceDown = false;
             updateCursor();
-            redraw({calledby:'Event Handler - Keyup Spacebar for pan toggle', redrawcanvas:false});
+            redraw({calledBy:'Event Handler - Keyup Spacebar for pan toggle', redrawCanvas:false});
         }
     }
 
@@ -106,7 +106,7 @@
         // Ctrl
         if((isCtrlDown || kc==='ctrl') && !eh.multi){
             // debug('\t event.ctrlKey = true');
-            // debug('\t selectedtool = ' + _UI.selectedtool);
+            // debug('\t selectedTool = ' + _UI.selectedTool);
             event.preventDefault();
             eh.multi = true;
 
@@ -116,7 +116,7 @@
             }
 
             // debug('\t eh.lastTool = ' + eh.lastTool);
-            redraw({calledby:'Event Handler - Keydown Ctrl for multi select', redrawpanels:false});
+            redraw({calledBy:'Event Handler - Keydown Ctrl for multi select', redrawPanels:false});
             return;
         }
 
@@ -125,12 +125,12 @@
                 if(!_GP.glyphs[i].getShapes) return;
 
                 _GP.glyphs[i].getShapes().forEach(function(shape, i) {
-                    _UI.ms.shapes.members.push(shape);
-                    console.log(_UI.ms.shapes.members);
+                    _UI.multiSelect.shapes.members.push(shape);
+                    console.log(_UI.multiSelect.shapes.members);
                 });
             }
-            _UI.ms.points.selectShapesThatHaveSelectedPoints();
-            redraw({calledby:'Event Handler - Select all path points', redrawpanels:false});
+            _UI.multiSelect.points.selectShapesThatHaveSelectedPoints();
+            redraw({calledBy:'Event Handler - Select all path points', redrawPanels:false});
             return;
         }
 
@@ -138,8 +138,8 @@
         if(kc === 'space' && overcanvas){
             event.preventDefault();
             if(!eh.isSpaceDown){
-                eh.lastTool = _UI.selectedtool;
-                _UI.selectedtool = 'pan';
+                eh.lastTool = _UI.selectedTool;
+                _UI.selectedTool = 'pan';
                 eh.isSpaceDown = true;
                 setCursor('move');
             }
@@ -165,21 +165,21 @@
         if((eh.multi || event.metaKey) && kc==='plus'){
             event.preventDefault();
             viewZoom(1.1);
-            redraw({calledby:'Zoom Keyboard Shortcut', redrawcanvas:false});
+            redraw({calledBy:'Zoom Keyboard Shortcut', redrawCanvas:false});
         }
 
         // minus
         if((eh.multi || event.metaKey) && kc==='minus'){
             event.preventDefault();
             viewZoom(0.9);
-            redraw({calledby:'Zoom Keyboard Shortcut', redrawcanvas:false});
+            redraw({calledBy:'Zoom Keyboard Shortcut', redrawCanvas:false});
         }
 
         // 0
         if((eh.multi || event.metaKey) && kc==='0'){
             event.preventDefault();
-            setView(clone(_UI.defaultview));
-            redraw({calledby:'Zoom Keyboard Shortcut', redrawcanvas:false});
+            setView(clone(_UI.defaultView));
+            redraw({calledBy:'Zoom Keyboard Shortcut', redrawCanvas:false});
         }
 
         // left
@@ -219,13 +219,13 @@
                 var em = getEditMode();
 
                 if(em === 'pen'){
-                    _UI.ms.points.deletePathPoints();
+                    _UI.multiSelect.points.deletePathPoints();
                     history_put('Delete Path Point');
-                    redraw({calledby:'Keypress DEL or BACKSPACE'});
+                    redraw({calledBy:'Keypress DEL or BACKSPACE'});
                 } else if (em === 'arrow'){
-                    _UI.ms.shapes.deleteShapes();
+                    _UI.multiSelect.shapes.deleteShapes();
                     history_put('Delete Shape');
-                    redraw({calledby:'Keypress DEL or BACKSPACE'});
+                    redraw({calledBy:'Keypress DEL or BACKSPACE'});
                 }
             }
 
@@ -240,7 +240,7 @@
                 event.preventDefault();
                 pasteShape();
                 history_put('Paste Shape');
-                redraw({calledby:'Paste Shape'});
+                redraw({calledBy:'Paste Shape'});
             }
 
 
@@ -274,17 +274,17 @@
         if(em === 'kern'){
             var nv = getSelectedKern().value + (mx || my);
             updateKernValue(getSelectedKernID(), nv);
-            redraw({calledby:'Nudge kern value', redrawpanels: false})
+            redraw({calledBy:'Nudge kern value', redrawPanels: false})
 
         } else if(em === 'arrow'){
-            _UI.ms.shapes.updateShapePosition(mx, my);
-            redraw({calledby:'Nudge shape'});
+            _UI.multiSelect.shapes.updateShapePosition(mx, my);
+            redraw({calledBy:'Nudge shape'});
 
         } else if(em === 'pen'){
-            _UI.ms.points.getMembers().forEach(function(o, i) {
+            _UI.multiSelect.points.getMembers().forEach(function(o, i) {
                 o.updatePathPointPosition('P', mx, my);
             });
-            redraw({calledby:'Nudge path point'});
+            redraw({calledBy:'Nudge path point'});
         }
     }
 

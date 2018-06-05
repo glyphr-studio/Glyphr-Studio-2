@@ -23,13 +23,13 @@
     };
 
     function getSelectedKern() {
-        var re = _GP.kerning[_UI.selectedkern];
+        var re = _GP.kerning[_UI.selectedKern];
         return re || _GP.kerning[getFirstID(_GP.kerning)] || false;
     }
 
     function getSelectedKernID() {
-        _UI.selectedkern = _UI.selectedkern || getFirstID(_GP.kerning);
-        return _UI.selectedkern;
+        _UI.selectedKern = _UI.selectedKern || getFirstID(_GP.kerning);
+        return _UI.selectedKern;
     }
 
 // end of file

@@ -1,15 +1,8 @@
 /**
-    Settings
-    These are the two global variables, _UI for,
-    well, UI stuff, and anything that is not going
-    to be saved or personalized.  _GP is all
-    Glyphr Project settings, including font stuff
-    and personalized stuff.  There are additional
-    _UI properties declared in the event handler
-    file.
-**/
-
-// These are NOT SAVED with the project
+ * UI Settings
+ * This is the global variable that stores all the stuff
+ * the UI needs to operate.
+ */
 let _UI = {
 
     // Version
@@ -19,7 +12,7 @@ let _UI = {
 
     // Internal Dev Stuff
     devMode: false, // global switch for all the stuff below
-    dev_sample_project: false, // if sampleproject is present, load it and skip open project experience
+    dev_sampleProject: false, // if sampleproject is present, load it and skip open project experience
     dev_currentPage: false, // navigate straight to a page
     dev_currentPanel: false, // navigate straight to a panel
     dev_selectedShape: false, // automatically select a shape
@@ -98,12 +91,12 @@ let _UI = {
     },
 
     // Shared edit pages
-    popout: false,
-    ms: {
+    popOut: false,
+    multiSelect: {
         shapes: false, // Selected Shapes
         points: false, // Selected Points
     },
-    glyphchooser: {
+    glyphChooser: {
         dropdown: false,
         panel: {
             fname: 'selectGlyph',
@@ -115,7 +108,7 @@ let _UI = {
             selected: 'basiclatin',
             choices: 'glyphs',
         },
-        getshapesoptions: {
+        getShapeOptions: {
             srcAutoWidth: false,
             srcWidth: false,
             srcLSB: false,
@@ -123,38 +116,38 @@ let _UI = {
         },
         cache: false,
     },
-    canvashotspots: [],
-    canvashotspothovering: false,
-    multiselectthickness: 2,
-    rotatehandleheight: 40,
-    selectedtool: 'pathedit', // pathedit, pathaddpoint, slice, shaperesize, pan, newrect, newoval, newpath
-    focuselement: false,
+    canvasHotSpots: [],
+    canvasHotSpotHovering: false,
+    multiSelectThickness: 2,
+    rotateHandleHeight: 40,
+    selectedTool: 'pathedit', // pathedit, pathaddpoint, slice, shaperesize, pan, newrect, newoval, newpath
+    focusElement: false,
     redrawing: false,
     redraw: {
-        redrawcanvas: true,
-        redrawtools: true,
-        redrawpanels: true,
-        calledby: '',
+        redrawCanvas: true,
+        redrawTools: true,
+        redrawPanels: true,
+        calledBy: '',
     },
-    thumbsize: 50,
-    thumbgutter: 5,
-    showgrid: true, // display the grid
-    showguides: true, // display guides
-    showguidelabels: true, // display guide labels
-    showovershoots: true, // display overshoot guides
-    clipboardshape: false,
-    glypheditcanvas: false,
-    glypheditcanvassize: 2000, // How big the viewport canvas is
-    glypheditctx: false,
-    ishereghostcanvas: false,
-    ishereghostctx: false,
-    defaultview: {
+    thumbSize: 50,
+    thumbGutter: 5,
+    showGrid: true, // display the grid
+    showGuides: true, // display guides
+    showGuidesLabels: true, // display guide labels
+    showOvershoots: true, // display overshoot guides
+    clipboardShape: false,
+    glyphEditCanvas: false,
+    glyphEditCanvasSize: 2000, // How big the viewport canvas is
+    glyphEditCTX: false,
+    isHereGhostCanvas: false,
+    isHereGhostCTX: false,
+    defaultView: {
         dx: 200, // X offset for the canvas origin
         dy: 500, // Y offset for the canvas origin
         dz: 0.5, // Zoom or scale of the canvas
     },
     views: {}, // Holds the unique views per char & component
-    thumbview: {},
+    thumbView: {},
     mins: {
         xmax: -999999,
         xmin: 999999,
@@ -167,81 +160,80 @@ let _UI = {
         ymax: 999999,
         ymin: -999999,
     },
-    contextglyphs: {
+    contextGlyphs: {
         string: '',
         advancewidth: false,
         leftseq: false,
         rightseq: false,
     },
     timeout: false,
-    toasttimeout: false,
+    toastTimeout: false,
     history: {},
-    combineprecision: 0.01,
 
     // page: glyphedit
-    selectedglyph: false, // f is 0x0066
+    selectedGlyph: false, // f is 0x0066
 
     // page: ligatures
-    selectedligature: false,
+    selectedLigature: false,
 
     // page: components
-    selectedcomponent: false,
+    selectedComponent: false,
 
     // page: kerning
-    selectedkern: false,
-    defaultkernview: {
+    selectedKern: false,
+    defaultKernView: {
         dx: 500, // X offset for the canvas origin
         dy: 500, // Y offset for the canvas origin
         dz: 0.5, // Zoom or scale of the canvas
     },
     guides: {
-        leftgroup_xmax: {type: 'vertical', location: 0, name: 'left group', color: 'rgb(255,0,255)'},
-        rightgroup_xmin: {type: 'vertical', location: 0, name: 'right group', color: 'rgb(255,0,255)'},
+        leftGroupXMax: {type: 'vertical', location: 0, name: 'left group', color: 'rgb(255,0,255)'},
+        rightGroupXMin: {type: 'vertical', location: 0, name: 'right group', color: 'rgb(255,0,255)'},
     },
 
     // page: test drive
-    testdrive: {
-        glyphseq: {},
+    testDrive: {
+        glyphSequence: {},
         ctx: false,
         canvas: false,
-        sampletext: '',
-        fontscale: 100,
-        fontsize: 48,
-        linegap: false,
-        padsize: 0,
-        showglyphextras: false,
-        showlineextras: false,
-        showpageextras: false,
-        flattenglyphs: false,
+        sampleText: '',
+        fontScale: 100,
+        fontSize: 48,
+        lineGap: false,
+        padSize: 0,
+        showGlyphExtras: false,
+        showLineExtras: false,
+        showPageExtras: false,
+        flattenGlyphs: false,
         cache: {},
     },
 
     // page: import svg
-    selectedsvgimporttarget: false,
-    importsvg: {
+    selectedSVGImportTarget: false,
+    importSVG: {
         scale: true,
         move: true,
         ascender: false,
         capheight: false,
         descender: false,
-        overshoot_top: false,
-        overshoot_bottom: false,
-        svgcode: false,
+        overshootTop: false,
+        overshootBottom: false,
+        svgCode: false,
     },
 
     // page: openproject
     droppedFileContent: false,
-    overflowcount: 326,
+    overflowCount: 326,
     spinning: true,
-    importrange: {
+    importRange: {
         begin: 0x0020,
         end: 0x024F,
     },
 
     // page: export font
-    fontmetrics: {
-        numglyphs: 0,
-        maxglyph: 0x20,
+    fontMetrics: {
+        numberOfGlyphs: 0,
+        maxGlyph: 0x20,
         maxes: {
             xmax: -999999,
             xmin: 999999,
@@ -249,10 +241,10 @@ let _UI = {
             ymin: 999999,
         },
     },
-    notdefglyphshapes: '[{"objtype":"shape","name":"Outer Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":-4,"maxes":{"xmax":432,"xmin":0,"ymax":700,"ymin":0}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false},{"objtype":"shape","name":"Inner Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":4,"maxes":{"xmax":382,"xmin":50,"ymax":650,"ymin":50}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false}]',
+    notDefGlyphShapes: '[{"objtype":"shape","name":"Outer Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":-4,"maxes":{"xmax":432,"xmin":0,"ymax":700,"ymin":0}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false},{"objtype":"shape","name":"Inner Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":4,"maxes":{"xmax":382,"xmin":50,"ymax":650,"ymin":50}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false}]',
 
     // page: font settings
-    metadatahelp: {
+    metadataHelp: {
         font_family: '',
         font_style: 'regular, italic, oblique',
         font_variant: 'normal, small-caps',

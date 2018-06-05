@@ -413,8 +413,8 @@
         _UI.history.ligatures = new History('ligatures');
         _UI.history.kerning = new History('kerning');
 
-        _UI.guides.leftgroup_xmax = new Guide(_UI.guides.leftgroup_xmax);
-        _UI.guides.rightgroup_xmin = new Guide(_UI.guides.rightgroup_xmin);
+        _UI.guides.leftGroupXMax = new Guide(_UI.guides.leftGroupXMax);
+        _UI.guides.rightGroupXMin = new Guide(_UI.guides.rightGroupXMin);
 
         var ps = _GP.projectsettings;
 
@@ -429,10 +429,10 @@
         ps.guides.min = ps.guides.min ||  new Guide({name:'min', type:'vertical', showname:false, location: ps.upm, editable:false, color: ps.colors.guide_light});
         ps.guides.max = ps.guides.max ||  new Guide({name:'max', type:'vertical', showname:false, location: ps.upm, editable:false, color: ps.colors.guide_light});
 
-        _UI.selectedglyph = _UI.selectedglyph || getFirstGlyphID();
-        _UI.selectedligature = _UI.selectedligature || getFirstID(_GP.ligatures);
-        _UI.selectedcomponent = _UI.selectedcomponent || getFirstID(_GP.components);
-        _UI.selectedkern = _UI.selectedkern || getFirstID(_GP.kerning);
+        _UI.selectedGlyph = _UI.selectedGlyph || getFirstGlyphID();
+        _UI.selectedLigature = _UI.selectedLigature || getFirstID(_GP.ligatures);
+        _UI.selectedComponent = _UI.selectedComponent || getFirstID(_GP.components);
+        _UI.selectedKern = _UI.selectedKern || getFirstID(_GP.kerning);
 
         var sp = getGlyph('0x0020', true);
         if(!sp.isautowide && sp.glyphwidth === 0) sp.glyphwidth = Math.round(_GP.projectsettings.upm/3);

@@ -15,11 +15,11 @@
             "<h3>scaling and moving</h3>"+
 
             "<table><tr><td>"+
-                checkUI("_UI.importsvg.scale", _UI.importsvg.scale) +
+                checkUI("_UI.importSVG.scale", _UI.importSVG.scale) +
             "</td><td style='padding:0px 0px 8px 5px;'>"+
                 "<label for='scale'>Scale the imported SVG outlines</label>"+
             "</td></tr><tr><td>"+
-                checkUI("_UI.importsvg.move", _UI.importsvg.move) +
+                checkUI("_UI.importSVG.move", _UI.importSVG.move) +
             "</td><td style='padding:0px 0px 8px 5px;'>"+
                 "<label for='move'>Move the imported SVG outlines</label>"+
             "</td></tr></table>"+
@@ -28,9 +28,9 @@
 
             "<table style='margin-top:10px;'><tr>"+
             "<td style='width:20px; padding-top:10px;'>"+
-                checkUI("_UI.importsvg.ascender", _UI.importsvg.ascender)+
+                checkUI("_UI.importSVG.ascender", _UI.importSVG.ascender)+
                 "<br>"+
-                checkUI("_UI.importsvg.capheight", _UI.importsvg.capheight)+
+                checkUI("_UI.importSVG.capheight", _UI.importSVG.capheight)+
             "</td><td class='svgscaleoption'>"+
                 "<label for='ascender'>Ascender</label><br>"+
                 "<label for='capheight'>Cap Height</label>"+
@@ -39,13 +39,13 @@
                 "<table><tr><td colspan='2' style='padding-bottom:8px;'>"+
                     "For rounded glyphs:"+
                 "</td></tr><tr><td>"+
-                    checkUI("_UI.importsvg.overshoot_top", _UI.importsvg.overshoot_top)+
+                    checkUI("_UI.importSVG.overshootTop", _UI.importSVG.overshootTop)+
                 "</td><td style='padding:0px 0px 8px 8px;'>"+
-                    "<label for='overshoot_top'>top overshoot</label>"+
+                    "<label for='overshootTop'>top overshoot</label>"+
                 "</td></tr><tr><td>"+
-                    checkUI("_UI.importsvg.overshoot_bottom", _UI.importsvg.overshoot_bottom)+
+                    checkUI("_UI.importSVG.overshootBottom", _UI.importSVG.overshootBottom)+
                 "</td><td style='padding:0px 0px 8px 8px;'>"+
-                    "<label for='overshoot_bottom'>bottom overshoot</label>"+
+                    "<label for='overshootBottom'>bottom overshoot</label>"+
                 "</td></tr></table>"+
 
 
@@ -54,7 +54,7 @@
             "</td><td class='svgscaleoption'>"+
                 "<span style='color:"+_UI.colors.gray.l40+";'>X Height</span>"+
             "</td></tr><tr><td style='padding-top:10px;'>"+
-                checkUI("_UI.importsvg.descender", _UI.importsvg.descender)+
+                checkUI("_UI.importSVG.descender", _UI.importSVG.descender)+
             "</td><td class='svgscaleoption'>"+
                 "<label for='descender'>Descender</label><br>"+
             "</td></tr></table>"+
@@ -63,9 +63,9 @@
 
         "<h2 style='margin-bottom:10px;'>SVG Code</h2>"+
         "<div id='droptarget' style='width:100%; height:auto; margin-bottom:0px; padding:8px;'>drop a .svg file here, or paste code below</div>"+
-        "<textarea id='svgcode' onchange='importSVG_codeAreaChange();'>"+
+        "<textarea id='svgCode' onchange='importSVG_codeAreaChange();'>"+
 
-        (_UI.importsvg.svgcode ? _UI.importsvg.svgcode : "") +
+        (_UI.importSVG.svgCode ? _UI.importSVG.svgCode : "") +
 
         "</textarea><br><br>"+
 
@@ -86,7 +86,7 @@
     }
 
     function importSVG_goToSelectedGlyph() {
-        var sg = _UI.selectedsvgimporttarget;
+        var sg = _UI.selectedSVGImportTarget;
 
         if(sg.indexOf('0x', 2) > 0){
             // Ligature
@@ -107,8 +107,8 @@
 
     function importSVG_codeAreaChange() {
         document.getElementById("droptarget").innerHTML = "Drop a .svg file here, or paste code below";
-        _UI.importsvg.svgcode = document.getElementById('svgcode').value;
-        //debug("IMPORTSVG_CODEAREACHANGE - code: " + _UI.importsvg.svgcode);
+        _UI.importSVG.svgCode = document.getElementById('svgCode').value;
+        //debug("IMPORTSVG_CODEAREACHANGE - code: " + _UI.importSVG.svgCode);
     }
 
     function importSVG_handleDragOver(evt) {
@@ -141,8 +141,8 @@
         reader.onload = (function(theFile) {
             return function(e) {
                 //console.log(reader.result);
-                document.getElementById('svgcode').value = reader.result;
-                _UI.importsvg.svgcode = reader.result;
+                document.getElementById('svgCode').value = reader.result;
+                _UI.importSVG.svgCode = reader.result;
                 dt.innerHTML = "Loaded " + theFile.name;
                 closeErrorMessageBox();
             };
@@ -153,9 +153,9 @@
 
     function importSVG_clearCode() {
         document.getElementById('droptarget').innerHTML = 'Drop a .svg file here, or paste code below';
-        document.getElementById('svgcode').value = '';
-        document.getElementById('svgcode').focus();
-        _UI.importsvg.svgcode = false;
+        document.getElementById('svgCode').value = '';
+        document.getElementById('svgCode').focus();
+        _UI.importSVG.svgCode = false;
         closeErrorMessageBox();
     }
 
@@ -168,7 +168,7 @@
 
     function importSVG_importCode() {
         // debug('\n importSVG_importCode - START');
-        var svgin = document.getElementById('svgcode').value;
+        var svgin = document.getElementById('svgCode').value;
         //debug("IMPORTSVG_IMPORTCODE - svgin is " + JSON.stringify(svgin));
         closeErrorMessageBox();
 
@@ -185,7 +185,7 @@
         // debug(tempchar);
 
         //debug("IMPORTSVG_IMPORTCODE - scale / move " + so.scale + " / " + so.move);
-        var so = _UI.importsvg;
+        var so = _UI.importSVG;
         var gp = _GP.projectsettings;
 
         if(so.scale || so.move){
@@ -197,8 +197,8 @@
             var ovs = gp.overshoot*1;
 
             if(so.descender) totalheight += (gp.upm - gp.ascent)*1;
-            if(so.overshoot_bottom) totalheight += ovs;
-            if(so.overshoot_top){
+            if(so.overshootBottom) totalheight += ovs;
+            if(so.overshootTop){
                 totalheight += ovs;
                 chartop += ovs;
             }

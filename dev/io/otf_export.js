@@ -39,7 +39,7 @@
             // debug('\t options.version ' + options.version);
 
             // Add Notdef
-            var notdef = new Glyph({'name': 'notdef', 'shapes':JSON.parse(_UI.notdefglyphshapes)});
+            var notdef = new Glyph({'name': 'notdef', 'shapes':JSON.parse(_UI.notDefGlyphShapes)});
             if(_GP.upm !== 1000){
                 var delta = _GP.upm / 1000;
                 notdef.updateGlyphSize(delta, delta, true);

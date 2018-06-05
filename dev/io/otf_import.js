@@ -45,7 +45,7 @@
             
             if(font && font.glyphs && font.glyphs.length){
                 // test for range
-                if((font.glyphs.length < _UI.overflowcount) || filter){
+                if((font.glyphs.length < _UI.overflowCount) || filter){
                     importStatus('Importing Glyph 1 of ' + font.glyphs.length);
                     setTimeout(startFontImport, 1);
                 } else {
@@ -80,7 +80,7 @@
         *
         */
         var tglyph, data, uni, np, cname, chtml, adv, isautowide;
-        var maxglyph = 0;
+        var maxGlyph = 0;
         var minchar = 0xffff;
         var customglyphrange = [];
         var shapecounter = 0;
@@ -168,7 +168,7 @@
                 // Get some range data
                 // uni = uni[0];
                 minchar = Math.min(minchar, uni);
-                maxglyph = Math.max(maxglyph, uni);
+                maxGlyph = Math.max(maxGlyph, uni);
                 if(1*uni > _UI.glyphrange.latinextendedb.end) customglyphrange.push(uni);
 
                 fc[uni] = new Glyph({'shapes':newshapes, 'glyphhex':uni, 'glyphwidth':adv, 'isautowide':isautowide});

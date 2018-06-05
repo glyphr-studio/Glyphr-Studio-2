@@ -204,9 +204,9 @@
     };
 
     Path.prototype.isHere = function(px, py) {
-        var gctx = _UI.ishereghostctx;
+        var gctx = _UI.isHereGhostCTX;
 
-        gctx.clearRect(0,0,_UI.glypheditcanvassize,_UI.glypheditcanvassize);
+        gctx.clearRect(0,0,_UI.glyphEditCanvasSize,_UI.glyphEditCanvasSize);
         gctx.fillStyle = 'rgba(0,0,255,0.2)';
         gctx.beginPath();
         this.drawPath(gctx);
@@ -915,7 +915,7 @@
 
             index = index % this.pathpoints.length;
 
-            _UI.ms.points.select(this.pathpoints[index]);
+            _UI.multiSelect.points.select(this.pathpoints[index]);
 
             return this.pathpoints[index];
         }
@@ -968,32 +968,32 @@
 //  HELPER FUNCTIONS
 //  -----------------------------------
 
-    Path.prototype.validate = function(calledby){
+    Path.prototype.validate = function(calledBy){
         var tp;
         for(var pp=0; pp<this.pathpoints.length; pp++){
             tp = this.pathpoints[pp];
             if(!tp.P.x && tp.P.x !== 0){
-                //debug('VALIDATE PATH: '+calledby+' - resetting point '+pp+' P.x from ' + tp.P.x);
+                //debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' P.x from ' + tp.P.x);
                 tp.P.x = 0;
             }
             if(!tp.P.y && tp.P.y !== 0){
-                //debug('VALIDATE PATH: '+calledby+' - resetting point '+pp+' P.y from ' + tp.P.y);
+                //debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' P.y from ' + tp.P.y);
                 tp.P.y = 0;
             }
             if(!tp.H1.x && tp.H1.x !== 0){
-                //debug('VALIDATE PATH: '+calledby+' - resetting point '+pp+' H1.x from ' + tp.H1.x);
+                //debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H1.x from ' + tp.H1.x);
                 tp.H1.x = 0;
             }
             if(!tp.H1.y && tp.H1.y !== 0){
-                //debug('VALIDATE PATH: '+calledby+' - resetting point '+pp+' H1.y from ' + tp.H1.y);
+                //debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H1.y from ' + tp.H1.y);
                 tp.H1.y = 0;
             }
             if(!tp.H2.x && tp.H2.x !== 0){
-                //debug('VALIDATE PATH: '+calledby+' - resetting point '+pp+' H2.x from ' + tp.H2.x);
+                //debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H2.x from ' + tp.H2.x);
                 tp.H2.x = 0;
             }
             if(!tp.H2.y && tp.H2.y !== 0){
-                //debug('VALIDATE PATH: '+calledby+' - resetting point '+pp+' H2.y from ' + tp.H2.y);
+                //debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H2.y from ' + tp.H2.y);
                 tp.H2.y = 0;
             }
 

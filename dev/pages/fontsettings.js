@@ -38,7 +38,7 @@
         content += "<h3>Line Gap</h3>" +
                     "This is the amount of vertical space between glyphs on separate lines. This is recomended to be 20% to 25% of the total Units per Em."+
                     "<table class='settingstable'>"+
-                    "<tr><td>Line Gap: </td><td><input type='number' value='"+ps.linegap+"' onchange='_GP.projectsettings.linegap = this.value;'></td><td><span class='unit'>(em units)</span></td></tr>"+
+                    "<tr><td>Line Gap: </td><td><input type='number' value='"+ps.lineGap+"' onchange='_GP.projectsettings.lineGap = this.value;'></td><td><span class='unit'>(em units)</span></td></tr>"+
                     "</table>";
 */
         content += "<h3>Default Side Bearings</h3>" +
@@ -126,7 +126,7 @@
                 content += '<tr>';
                 content += '<td class="propname" style="padding-top:8px;">' + m.replace(/_/g, '-') + '</td>';
                 content += '<td><input type="text" value="'+escapeTableValue(meta[m])+'" onchange="_GP.metadata.'+m+' = removeEmptyStringInputs(this.value);"/></td>';
-                content += '<td class="prophelp" style="padding-top:8px;">'+_UI.metadatahelp[m]+'</td>';
+                content += '<td class="prophelp" style="padding-top:8px;">'+_UI.metadataHelp[m]+'</td>';
                 content += '</tr>';
             }
         }}

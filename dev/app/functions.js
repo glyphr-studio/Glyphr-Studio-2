@@ -14,7 +14,7 @@ files.
 function makePanelSuperTitle() {
     // debug('\n makePanelSuperTitle - START');
     var content = '';
-    if(!_UI.popout) {
+    if(!_UI.popOut) {
         var selwi = getSelectedWorkItem();
         var name;
         // debug('\t selwi = ' + selwi.objtype);
@@ -101,7 +101,7 @@ function json(obj, raw) {
 // Dialog Box, Error Box, Notation
 //--------------------------------------
 function closeDialog(){
-    if(!_UI.popout && document.getElementById('npSave')) document.getElementById('npSave').style.backgroundColor = 'transparent';
+    if(!_UI.popOut && document.getElementById('npSave')) document.getElementById('npSave').style.backgroundColor = 'transparent';
     document.getElementById('dialog_bg').style.display='none';
     document.getElementById('big_dialog_box').style.display='none';
     document.getElementById('dialog_box').style.display='none';
@@ -130,7 +130,7 @@ function openBigDialog(content){
     closeDialog();
     document.body.focus();
     document.getElementById('bigDialogLeftContent').innerHTML = content;
-    document.getElementById('bigDialogScrollContent').innerHTML = make_GlyphChooser(_UI.glyphchooser.dialog);
+    document.getElementById('bigDialogScrollContent').innerHTML = make_GlyphChooser(_UI.glyphChooser.dialog);
 
     document.getElementById('big_dialog_box').style.display='block';
     document.getElementById('dialog_bg').style.display='block';
@@ -209,7 +209,7 @@ function showToast(msg, dur, fn) {
         setTimeout(fn, 100);
     }
 
-    if(_UI.toasttimeout){
+    if(_UI.toastTimeout){
         msgdiv.innerHTML = msg;
         appearFinish();
         return;
@@ -268,9 +268,9 @@ function showToast(msg, dur, fn) {
             msgdiv.style.marginTop = '-50px;';
             msgdiv.style.opacity = '0.0';
             msgdiv.innerHTML = '0_o';
-            if(_UI.toasttimeout) {
-                clearTimeout(_UI.toasttimeout);
-                _UI.toasttimeout = false;
+            if(_UI.toastTimeout) {
+                clearTimeout(_UI.toastTimeout);
+                _UI.toastTimeout = false;
             }
 
         } else {
@@ -290,8 +290,8 @@ function showToast(msg, dur, fn) {
 }
 
 function setToastTimeout(fn, dur) {
-    if(_UI.toasttimeout) clearTimeout(_UI.toasttimeout);
-    _UI.toasttimeout = setTimeout(fn, dur);
+    if(_UI.toastTimeout) clearTimeout(_UI.toastTimeout);
+    _UI.toastTimeout = setTimeout(fn, dur);
 }
 
 
@@ -303,9 +303,9 @@ function setProjectAsSaved(){
 
     if(_UI.devMode){
         document.title = '░▒▓█ GSDEVMODE █▓▒░';
-    } else if(_UI.popout) {
+    } else if(_UI.popOut) {
         document.title = 'Glyphr Studio - Tools';
-        _UI.popout.document.title = 'Glyphr Studio - Canvas';
+        _UI.popOut.document.title = 'Glyphr Studio - Canvas';
     } else {
         document.title = 'Glyphr Studio';
     }
@@ -318,9 +318,9 @@ function setProjectAsUnsaved(){
 
     if(_UI.devMode){
         document.title = '░▒▓█ GSDEVM❖DE █▓▒░';
-    } else if(_UI.popout) {
+    } else if(_UI.popOut) {
         document.title = ' ❖ Glyphr Studio - Tools';
-        _UI.popout.document.title = ' ❖ Glyphr Studio - Canvas';
+        _UI.popOut.document.title = ' ❖ Glyphr Studio - Canvas';
     } else {
         document.title = ' ❖ Glyphr Studio';
     }
@@ -474,8 +474,8 @@ function getOverallMaxes(maxarr) {
 }
 
 function reqAniFrame(fun) {
-    if(_UI.popout){
-        if(_UI.popout.requestAnimationFrame) _UI.popout.requestAnimationFrame(fun);
+    if(_UI.popOut){
+        if(_UI.popOut.requestAnimationFrame) _UI.popOut.requestAnimationFrame(fun);
         else {
             console.warn('no requestAnimationFrame');
             fun();

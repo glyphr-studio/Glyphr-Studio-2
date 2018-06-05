@@ -259,8 +259,8 @@ class PathPoint {
 
         if (dx !== false) dx = parseFloat(dx);
         if (dy !== false) dy = parseFloat(dy);
-        let lockx = (_UI.selectedtool==='pathedit'? this.P.xlock : false);
-        let locky = (_UI.selectedtool==='pathedit'? this.P.ylock : false);
+        let lockx = (_UI.selectedTool==='pathedit'? this.P.xlock : false);
+        let locky = (_UI.selectedTool==='pathedit'? this.P.ylock : false);
 
         if (isval(force)) {
             if (force) {
@@ -349,8 +349,8 @@ class PathPoint {
             this.useh2 = !this.useh2;
             history_put('Use Handle 2 : ' + this.useh2);
         }
-        _UI.ms.shapes.calcMaxes();
-        redraw({calledby: 'pointDetails'});
+        _UI.multiSelect.shapes.calcMaxes();
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -623,7 +623,7 @@ class PathPoint {
      */
     alignY(pathPoint) {
         this.P.y = pathPoint.P.y;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -632,7 +632,7 @@ class PathPoint {
      */
     alignX(pathPoint) {
         this.P.x = pathPoint.P.x;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -642,7 +642,7 @@ class PathPoint {
     alignHV() {
         this.H1.x = this.P.x;
         this.H2.x = this.P.x;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -652,7 +652,7 @@ class PathPoint {
     alignHH() {
         this.H1.y = this.P.y;
         this.H2.y = this.P.y;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -661,7 +661,7 @@ class PathPoint {
      */
     alignH1X(pathPoint) {
         this.H1.x = pathPoint.H1.x;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -670,7 +670,7 @@ class PathPoint {
      */
     alignH1XCross(pathPoint) {
         this.H1.x = pathPoint.H2.x;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -679,7 +679,7 @@ class PathPoint {
      */
     alignH1Y(pathPoint) {
         this.H1.y = pathPoint.H1.y;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -688,7 +688,7 @@ class PathPoint {
      */
     alignH1YCross(pathPoint) {
         this.H1.y = pathPoint.H2.y;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -697,7 +697,7 @@ class PathPoint {
      */
     alignH2X(pathPoint) {
         this.H2.x = pathPoint.H2.x;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -706,7 +706,7 @@ class PathPoint {
      */
     alignH2XCross(pathPoint) {
         this.H2.x = pathPoint.H1.x;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -715,7 +715,7 @@ class PathPoint {
      */
     alignH2Y(pathPoint) {
         this.H2.y = pathPoint.H2.y;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -724,7 +724,7 @@ class PathPoint {
      */
     alignH2YCross(pathPoint) {
         this.H2.y = pathPoint.H1.y;
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -808,7 +808,7 @@ class PathPoint {
         this.alignMutualOffsetY(p1, p2, p3);
         this.alignMutualOffsetX(p1, p2, p3);
 
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -827,7 +827,7 @@ class PathPoint {
         else if ((this.P.x > p2.P.x) || (this.P.x == p2.P.x)) this.P.x += delta;
         else if (this.P.x < p2.P.x) this.P.x -= delta;
 
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
     /**
@@ -846,7 +846,7 @@ class PathPoint {
         else if ((this.P.y > p2.P.y) || (this.P.y == p2.P.y)) this.P.y += delta;
         else if (this.P.y < p2.P.y) this.P.y -= delta;
 
-        redraw({calledby: 'pointDetails'});
+        redraw({calledBy: 'pointDetails'});
     }
 
 
@@ -860,21 +860,21 @@ class PathPoint {
      */
     drawPoint(accent) {
         // debug('\n PathPoint.drawPoint - START');
-        // debug('\t sel = ' + _UI.ms.points.isSelected(this));
+        // debug('\t sel = ' + _UI.multiSelect.points.isSelected(this));
 
         accent = accent || _UI.colors.blue;
         let ps = _GP.projectsettings.pointsize;
         let hp = ps/2;
-        // _UI.glypheditctx.fillStyle = sel? 'white' : accent.l65;
-        _UI.glypheditctx.fillStyle = _UI.ms.points.isSelected(this)? 'white' : accent.l65;
-        _UI.glypheditctx.strokeStyle = accent.l65;
-        _UI.glypheditctx.font = '10px Consolas';
+        // _UI.glyphEditCTX.fillStyle = sel? 'white' : accent.l65;
+        _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
+        _UI.glyphEditCTX.strokeStyle = accent.l65;
+        _UI.glyphEditCTX.font = '10px Consolas';
 
-        _UI.glypheditctx.fillRect((sx_cx(this.P.x)-hp), (sy_cy(this.P.y)-hp), ps, ps);
-        _UI.glypheditctx.strokeRect((sx_cx(this.P.x)-hp), (sy_cy(this.P.y)-hp), ps, ps);
+        _UI.glyphEditCTX.fillRect((sx_cx(this.P.x)-hp), (sy_cy(this.P.y)-hp), ps, ps);
+        _UI.glyphEditCTX.strokeRect((sx_cx(this.P.x)-hp), (sy_cy(this.P.y)-hp), ps, ps);
 
-        _UI.glypheditctx.fillStyle = accent.l65;
-        _UI.glypheditctx.fillText(this.getPointNum(), sx_cx(this.P.x + 12), sy_cy(this.P.y));
+        _UI.glyphEditCTX.fillStyle = accent.l65;
+        _UI.glyphEditCTX.fillText(this.getPointNum(), sx_cx(this.P.x + 12), sy_cy(this.P.y));
         // debug(' PathPoint.drawPoint - END\n');
     }
 
@@ -885,10 +885,10 @@ class PathPoint {
      */
     drawDirectionalityPoint(accent, next) {
         accent = accent || _UI.colors.blue;
-        // _UI.glypheditctx.fillStyle = sel? 'white' : accent.l65;
-        _UI.glypheditctx.fillStyle = _UI.ms.points.isSelected(this)? 'white' : accent.l65;
-        _UI.glypheditctx.strokeStyle = accent.l65;
-        _UI.glypheditctx.lineWidth = 1;
+        // _UI.glyphEditCTX.fillStyle = sel? 'white' : accent.l65;
+        _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
+        _UI.glyphEditCTX.strokeStyle = accent.l65;
+        _UI.glyphEditCTX.lineWidth = 1;
         let begin = {'x': this.P.x, 'y': this.P.y};
         let end = {'x': this.H2.x, 'y': this.H2.y};
 
@@ -923,22 +923,22 @@ class PathPoint {
 
         // debug('DRAWPOINT arrow = ' + JSON.stringify(arrow) + '  - rotatedarrow = ' + JSON.stringify(rotatedarrow));
 
-        _UI.glypheditctx.beginPath();
-        _UI.glypheditctx.moveTo((rotatedarrow[0][0] + sx_cx(this.P.x)), (rotatedarrow[0][1] + sy_cy(this.P.y)));
+        _UI.glyphEditCTX.beginPath();
+        _UI.glyphEditCTX.moveTo((rotatedarrow[0][0] + sx_cx(this.P.x)), (rotatedarrow[0][1] + sy_cy(this.P.y)));
 
         for (let p in rotatedarrow) {
             if (p > 0) {
-                _UI.glypheditctx.lineTo((rotatedarrow[p][0] + sx_cx(this.P.x)), (rotatedarrow[p][1] + sy_cy(this.P.y)));
+                _UI.glyphEditCTX.lineTo((rotatedarrow[p][0] + sx_cx(this.P.x)), (rotatedarrow[p][1] + sy_cy(this.P.y)));
             }
         }
 
-        _UI.glypheditctx.lineTo((rotatedarrow[0][0] + sx_cx(this.P.x)), (rotatedarrow[0][1] + sy_cy(this.P.y)));
-        _UI.glypheditctx.fill();
-        _UI.glypheditctx.stroke();
+        _UI.glyphEditCTX.lineTo((rotatedarrow[0][0] + sx_cx(this.P.x)), (rotatedarrow[0][1] + sy_cy(this.P.y)));
+        _UI.glyphEditCTX.fill();
+        _UI.glyphEditCTX.stroke();
 
         // Exact Middle Point
-        _UI.glypheditctx.fillStyle = accent.l65;
-        _UI.glypheditctx.fillRect((sx_cx(this.P.x).makeCrisp()), (sy_cy(this.P.y).makeCrisp()), 1, 1);
+        _UI.glyphEditCTX.fillStyle = accent.l65;
+        _UI.glyphEditCTX.fillRect((sx_cx(this.P.x).makeCrisp()), (sy_cy(this.P.y).makeCrisp()), 1, 1);
     }
 
     /**
@@ -949,40 +949,40 @@ class PathPoint {
      */
     drawHandles(drawH1, drawH2, accent) {
         accent = accent || _UI.colors.blue;
-        _UI.glypheditctx.fillStyle = accent.l65;
-        _UI.glypheditctx.strokeStyle = accent.l65;
-        _UI.glypheditctx.lineWidth = 1;
-        _UI.glypheditctx.font = '10px Consolas';
+        _UI.glyphEditCTX.fillStyle = accent.l65;
+        _UI.glyphEditCTX.strokeStyle = accent.l65;
+        _UI.glyphEditCTX.lineWidth = 1;
+        _UI.glyphEditCTX.font = '10px Consolas';
 
 
         let hp = _GP.projectsettings.pointsize/2;
 
         if (drawH1 && this.useh1) {
-            _UI.glypheditctx.beginPath();
-            _UI.glypheditctx.arc(sx_cx(this.H1.x), sy_cy(this.H1.y), hp, 0, Math.PI*2, true);
-            _UI.glypheditctx.closePath();
-            _UI.glypheditctx.fill();
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.arc(sx_cx(this.H1.x), sy_cy(this.H1.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.fill();
 
-            _UI.glypheditctx.beginPath();
-            _UI.glypheditctx.moveTo(sx_cx(this.P.x), sy_cy(this.P.y));
-            _UI.glypheditctx.lineTo(sx_cx(this.H1.x), sy_cy(this.H1.y));
-            _UI.glypheditctx.closePath();
-            _UI.glypheditctx.stroke();
-            _UI.glypheditctx.fillText('1', sx_cx(this.H1.x + 12), sy_cy(this.H1.y));
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.moveTo(sx_cx(this.P.x), sy_cy(this.P.y));
+            _UI.glyphEditCTX.lineTo(sx_cx(this.H1.x), sy_cy(this.H1.y));
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.stroke();
+            _UI.glyphEditCTX.fillText('1', sx_cx(this.H1.x + 12), sy_cy(this.H1.y));
         }
 
         if (drawH2 && this.useh2) {
-            _UI.glypheditctx.beginPath();
-            _UI.glypheditctx.arc(sx_cx(this.H2.x), sy_cy(this.H2.y), hp, 0, Math.PI*2, true);
-            _UI.glypheditctx.closePath();
-            _UI.glypheditctx.fill();
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.arc(sx_cx(this.H2.x), sy_cy(this.H2.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.fill();
 
-            _UI.glypheditctx.beginPath();
-            _UI.glypheditctx.moveTo(sx_cx(this.P.x), sy_cy(this.P.y));
-            _UI.glypheditctx.lineTo(sx_cx(this.H2.x), sy_cy(this.H2.y));
-            _UI.glypheditctx.closePath();
-            _UI.glypheditctx.stroke();
-            _UI.glypheditctx.fillText('2', sx_cx(this.H2.x + 12), sy_cy(this.H2.y));
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.moveTo(sx_cx(this.P.x), sy_cy(this.P.y));
+            _UI.glyphEditCTX.lineTo(sx_cx(this.H2.x), sy_cy(this.H2.y));
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.stroke();
+            _UI.glyphEditCTX.fillText('2', sx_cx(this.H2.x + 12), sy_cy(this.H2.y));
         }
     }
 
@@ -992,29 +992,29 @@ class PathPoint {
      */
     drawQuadraticHandle(prevP) {
         // Draw Quadratic handle point from imported SVG
-        _UI.glypheditctx.fillStyle = _UI.colors.error.medium;
-        _UI.glypheditctx.strokeStyle = _UI.colors.error.medium;
-        _UI.glypheditctx.lineWidth = 1;
+        _UI.glyphEditCTX.fillStyle = _UI.colors.error.medium;
+        _UI.glyphEditCTX.strokeStyle = _UI.colors.error.medium;
+        _UI.glyphEditCTX.lineWidth = 1;
         let hp = _GP.projectsettings.pointsize/2;
 
         if (this.Q) {
-            _UI.glypheditctx.beginPath();
-            _UI.glypheditctx.arc(sx_cx(this.Q.x), sy_cy(this.Q.y), hp, 0, Math.PI*2, true);
-            _UI.glypheditctx.closePath();
-            _UI.glypheditctx.fill();
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.arc(sx_cx(this.Q.x), sy_cy(this.Q.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.fill();
 
-            _UI.glypheditctx.beginPath();
-            _UI.glypheditctx.moveTo(sx_cx(this.P.x), sy_cy(this.P.y));
-            _UI.glypheditctx.lineTo(sx_cx(this.Q.x), sy_cy(this.Q.y));
-            _UI.glypheditctx.closePath();
-            _UI.glypheditctx.stroke();
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.moveTo(sx_cx(this.P.x), sy_cy(this.P.y));
+            _UI.glyphEditCTX.lineTo(sx_cx(this.Q.x), sy_cy(this.Q.y));
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.stroke();
 
             if (prevP) {
-                _UI.glypheditctx.beginPath();
-                _UI.glypheditctx.moveTo(sx_cx(prevP.x), sy_cy(prevP.y));
-                _UI.glypheditctx.lineTo(sx_cx(this.Q.x), sy_cy(this.Q.y));
-                _UI.glypheditctx.closePath();
-                _UI.glypheditctx.stroke();
+                _UI.glyphEditCTX.beginPath();
+                _UI.glyphEditCTX.moveTo(sx_cx(prevP.x), sy_cy(prevP.y));
+                _UI.glyphEditCTX.lineTo(sx_cx(this.Q.x), sy_cy(this.Q.y));
+                _UI.glyphEditCTX.closePath();
+                _UI.glyphEditCTX.stroke();
             }
         }
     }

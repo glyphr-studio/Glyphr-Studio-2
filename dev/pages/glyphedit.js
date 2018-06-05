@@ -18,13 +18,13 @@
             _UI.dev_selectedShape = false;
         }
 
-        _UI.selectedglyph = _UI.selectedglyph || getFirstGlyphID();
+        _UI.selectedGlyph = _UI.selectedGlyph || getFirstGlyphID();
         
         if(getSelectedWorkItemShapes().length > 0){
-            if(_UI.selectedtool !== 'shaperesize') _UI.selectedtool = 'pathedit';
-        } else _UI.selectedtool = 'pathaddpoint';
+            if(_UI.selectedTool !== 'shaperesize') _UI.selectedTool = 'pathedit';
+        } else _UI.selectedTool = 'pathaddpoint';
 
-        redraw({calledby:'loadPage_glyphedit'});
+        redraw({calledBy:'loadPage_glyphedit'});
 
         // debug(' loadPage_glyphedit - END\n');
     }
@@ -50,39 +50,39 @@
         // load glyph info
         if(sg && sg.shapes.length) {
             var v = getView('Redraw');
-            if(sg.contextglyphs) drawContextGlyphs();
-            sg.drawGlyph(_UI.glypheditctx, v);
+            if(sg.contextGlyphs) drawContextGlyphs();
+            sg.drawGlyph(_UI.glyphEditCTX, v);
 
         } else {
             _UI.redrawing = false;
             return;
         }
         
-        _UI.ms.shapes.draw_PathOutline();
+        _UI.multiSelect.shapes.draw_PathOutline();
         
         if(editmode === 'arrow'){
-            _UI.ms.shapes.draw_BoundingBox();
-            _UI.ms.shapes.draw_BoundingBoxHandles();
+            _UI.multiSelect.shapes.draw_BoundingBox();
+            _UI.multiSelect.shapes.draw_BoundingBoxHandles();
 
         } else if (editmode === 'rotate'){
-            _UI.ms.shapes.draw_RotationAffordance();
+            _UI.multiSelect.shapes.draw_RotationAffordance();
 
         } else if (editmode === 'pen'){
             if(_UI.eventhandlers.multi) sg.draw_MultiSelectAffordances();
-            _UI.ms.points.draw_PathPointHandles();
-            _UI.ms.shapes.draw_PathPoints();
-            // _UI.ms.points.draw_PathPoints();
+            _UI.multiSelect.points.draw_PathPointHandles();
+            _UI.multiSelect.shapes.draw_PathPoints();
+            // _UI.multiSelect.points.draw_PathPoints();
 
             if(_UI.eventhandlers.hoverpoint){
                 var hp = _UI.eventhandlers.hoverpoint;
-                _UI.glypheditctx.fillStyle = hp.fill;
-                _UI.glypheditctx.fillRect(hp.x, hp.y, hp.size, hp.size);
+                _UI.glyphEditCTX.fillStyle = hp.fill;
+                _UI.glyphEditCTX.fillRect(hp.x, hp.y, hp.size, hp.size);
             }
 
         } else if (editmode === 'newpath'){
-            _UI.ms.points.draw_PathPointHandles();
-            _UI.ms.shapes.draw_PathPoints();
-            // _UI.ms.points.draw_PathPoints();
+            _UI.multiSelect.points.draw_PathPointHandles();
+            _UI.multiSelect.shapes.draw_PathPoints();
+            // _UI.multiSelect.points.draw_PathPoints();
         }
         
         _UI.redrawing = false;

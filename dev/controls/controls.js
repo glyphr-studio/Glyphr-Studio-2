@@ -876,7 +876,7 @@
         var re = "";
 
         re += '<button class="pointtypebutton" style="background-color:'+bgcolor+';" ';
-        re += 'onclick="_UI.ms.points.setPointType(\''+type+'\'); history_put(\'Point Type: '+type+'\'); redraw({calledby:\'pointDetails\'});" ';
+        re += 'onclick="_UI.multiSelect.points.setPointType(\''+type+'\'); history_put(\'Point Type: '+type+'\'); redraw({calledBy:\'pointDetails\'});" ';
         re += 'title="point type: '+type+'" ';
         re += '>';
         re += '<svg version="1.1" ';
@@ -943,7 +943,7 @@
                 // 'debug(\'Clicked on checkbox '+varname+'\'); ' +
                 varname + ' = !' + varname + '; ' +
                 //'history_put(\'Toggled '+idname+': '+!currbool+'\'); '+
-                'redraw({calledby:\'checkbox '+idname+'\'}); ' +
+                'redraw({calledBy:\'checkbox '+idname+'\'}); ' +
             '">';
         re += '<path fill="'+(currbool? selcolor : restcolor)+'" d="M17,12V8h-1V7h-1V6h-4v1h-1v1H9v4H8v8h10v-8H17z M15,12h-4V9h1V8h2v1h1V12z"/>';
         re += '</svg>';
@@ -963,7 +963,7 @@
 
         if(doredraw){
             re += ' history_put(\'Toggled '+idname+': '+!currbool+'\');';
-            re += ' redraw({calledby:\'checkbox '+idname+'\', redrawtools:false});';
+            re += ' redraw({calledBy:\'checkbox '+idname+'\', redrawTools:false});';
         }
 
         re += '"/>';
@@ -990,7 +990,7 @@
 
         _GP.projectsettings.colors[varname] = value;
         document.getElementById(id).innerHTML = value;
-        redraw({calledby:'updateTransparency', redrawpanels: rdpanels, redrawtools: rdtools});
+        redraw({calledBy:'updateTransparency', redrawPanels: rdpanels, redrawTools: rdtools});
     }
 
     function helpUI(message){

@@ -18,12 +18,12 @@
             _UI.dev_selectedShape = false;
         }
 
-        _UI.selectedligature = _UI.selectedligature || getFirstID(_GP.ligatures);
+        _UI.selectedLigature = _UI.selectedLigature || getFirstID(_GP.ligatures);
         
-        if(getSelectedWorkItemShapes().length > 0)    _UI.selectedtool = 'pathedit';
-        else _UI.selectedtool = 'pathaddpoint';
+        if(getSelectedWorkItemShapes().length > 0)    _UI.selectedTool = 'pathedit';
+        else _UI.selectedTool = 'pathaddpoint';
 
-        redraw({calledby:'loadPage_ligatures'});
+        redraw({calledBy:'loadPage_ligatures'});
     }
 
     function showNewLigatureDialog() {
@@ -66,7 +66,7 @@
         } else {
             lig[lid] = new Glyph({'glyphhex':lid, 'name':('Ligature ' + inlig)});
             sortLigatures();
-            _UI.selectedligature = lid;
+            _UI.selectedLigature = lid;
             history_put('Created ' + getSelectedWorkItemName());
             navigate();
             closeDialog();
@@ -88,8 +88,8 @@
         if(!_GP.ligatures[ffi]) _GP.ligatures[ffi] = new Glyph({'glyphhex':ffi});
         if(!_GP.ligatures[ffl]) _GP.ligatures[ffl] = new Glyph({'glyphhex':ffl});
 
-        _UI.selectedglyph = getFirstID(_GP.ligatures);
-        redraw({calledby:'addCommonLigatures'});
+        _UI.selectedGlyph = getFirstID(_GP.ligatures);
+        redraw({calledBy:'addCommonLigatures'});
     }
 
     function deleteLigatureConfirm(){
@@ -115,22 +115,22 @@
 
     function deleteLigature(){
         // debug('\n deleteLigature - START');
-        // debug('\t deleting ' + _UI.selectedligature);
+        // debug('\t deleting ' + _UI.selectedLigature);
 
         closeDialog();
 
         // Delete upstream Component Instances
-        getSelectedWorkItem().deleteLinks(_UI.selectedligature);
+        getSelectedWorkItem().deleteLinks(_UI.selectedLigature);
         
         // Delete it
         var oldname = getSelectedWorkItemName();
-        delete _GP.ligatures[_UI.selectedligature];
-        _UI.selectedligature = getFirstID(_GP.ligatures);
+        delete _GP.ligatures[_UI.selectedLigature];
+        _UI.selectedLigature = getFirstID(_GP.ligatures);
 
         // history_put('Deleted ' + oldname);
 
         // debug('\t after delete ' + _GP.ligatures);
-        redraw({calledby:'deleteLigature'});
+        redraw({calledBy:'deleteLigature'});
 
         // debug('deleteLigature - END\n');
     }

@@ -38,7 +38,7 @@
 
         if(_UI.currentPage === 'openproject'){
             makeLayout_OpenProject();
-        } else if (_UI.popout){
+        } else if (_UI.popOut){
             if(onCanvasEditPage()){
                 makeLayout_PopOut();
             } else {
@@ -58,7 +58,7 @@
 
     function update_NavPanels() {
         // debug('\n update_NavPanels - START');
-        if (_UI.popout){ make_NavPanels_PopOut(); }
+        if (_UI.popOut){ make_NavPanels_PopOut(); }
         else { make_NavPanels_PopIn(); }
         // debug(' update_NavPanels - END\n');
     }
@@ -77,12 +77,12 @@
 
     function popOut(){
         // debug('\n popOut - START');
-        _UI.popout = window.open('', 'glyphr_popout');
-        // debug('POPOUT - opened window, _UI.popout is ' + _UI.popout);
+        _UI.popOut = window.open('', 'glyphr_popOut');
+        // debug('POPOUT - opened window, _UI.popOut is ' + _UI.popOut);
         // debug('POPOUT - getting css:\n' + document.styleSheets[0]);
 
         // Init window properties
-        _UI.popout.document.write('<!doctype html>'+
+        _UI.popOut.document.write('<!doctype html>'+
             '<html>'+
             '<head>'+
                 '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />'+
@@ -99,13 +99,13 @@
         document.body.classList.add('poppedOut');
 
         // Second Screen
-        _UI.popout.document.head.appendChild(document.styleSheets[0].ownerNode.cloneNode(true));
-        _UI.popout.onBeforeUnload = popIn;
-        _UI.popout.document.getElementById('mainwrapper').style.overflowY = 'hidden';
+        _UI.popOut.document.head.appendChild(document.styleSheets[0].ownerNode.cloneNode(true));
+        _UI.popOut.onBeforeUnload = popIn;
+        _UI.popOut.document.getElementById('mainwrapper').style.overflowY = 'hidden';
 
         // Parity Functions
-        for(var f in window){ if(window.hasOwnProperty(f) && !_UI.popout[f]){
-            _UI.popout[f] = window[f];
+        for(var f in window){ if(window.hasOwnProperty(f) && !_UI.popOut[f]){
+            _UI.popOut[f] = window[f];
             // debug('\t added ' + json(f));
         }}
 
@@ -123,14 +123,14 @@
         // debug('\n makeLayout_PopOut - START');
         var onkern = _UI.currentPage === 'kerning';
 
-        var pol = '<table class="popout_table"><tr>';
-        pol += '<td id="popout_pagenav"></td>';
-        if(!onkern) pol += '<td id="popout_glyphchooser"></td>';
-        pol += '<td id="popout_guides"></td>';
-        pol += '<td id="popout_history"></td>';
-        if(!onkern) pol += '<td id="popout_layerchooser"></td>';
-        if(!onkern) pol += '<td id="popout_actions"></td>';
-        pol += '<td id="popout_attributes"></td>';
+        var pol = '<table class="popOut_table"><tr>';
+        pol += '<td id="popOut_pagenav"></td>';
+        if(!onkern) pol += '<td id="popOut_glyphchooser"></td>';
+        pol += '<td id="popOut_guides"></td>';
+        pol += '<td id="popOut_history"></td>';
+        if(!onkern) pol += '<td id="popOut_layerchooser"></td>';
+        if(!onkern) pol += '<td id="popOut_actions"></td>';
+        pol += '<td id="popOut_attributes"></td>';
         pol += '</tr></table>';
 
         document.getElementById('primaryScreenLayout').innerHTML = pol;
@@ -150,21 +150,21 @@
         var onkern = _UI.currentPage === 'kerning';
         var evmove = _UI.eventhandlers.currtool.dragging || _UI.eventhandlers.currtool.resizing;
 
-        document.getElementById('popout_pagenav').innerHTML = makePanel_PageNav();
+        document.getElementById('popOut_pagenav').innerHTML = makePanel_PageNav();
 
-        if((onge || onlig || oncom) && !evmove) document.getElementById('popout_glyphchooser').innerHTML = makePanel_GlyphChooser();
+        if((onge || onlig || oncom) && !evmove) document.getElementById('popOut_glyphchooser').innerHTML = makePanel_GlyphChooser();
 
-        document.getElementById('popout_history').innerHTML = makePanel_History();
+        document.getElementById('popOut_history').innerHTML = makePanel_History();
 
-        if(!onkern) document.getElementById('popout_layerchooser').innerHTML = makePanel_LayerChooser();
+        if(!onkern) document.getElementById('popOut_layerchooser').innerHTML = makePanel_LayerChooser();
 
-        if(!onkern)document.getElementById('popout_actions').innerHTML = makePanel_Actions();
+        if(!onkern)document.getElementById('popOut_actions').innerHTML = makePanel_Actions();
 
-        document.getElementById('popout_guides').innerHTML = makePanel_Guides();
+        document.getElementById('popOut_guides').innerHTML = makePanel_Guides();
 
-        if(ontd) document.getElementById('popout_attributes').innerHTML = makePanel_TestDriveAttributes();
-        else if (onkern) document.getElementById('popout_attributes').innerHTML = makePanel_KerningAttributes();
-        else document.getElementById('popout_attributes').innerHTML = makePanel_GlyphAttributes();
+        if(ontd) document.getElementById('popOut_attributes').innerHTML = makePanel_TestDriveAttributes();
+        else if (onkern) document.getElementById('popOut_attributes').innerHTML = makePanel_KerningAttributes();
+        else document.getElementById('popOut_attributes').innerHTML = makePanel_GlyphAttributes();
 
         updateSaveIcon();
         // debug('make_NavPanels_PopOut - END\n');
@@ -177,9 +177,9 @@
 //-------------------
 
     function popIn(){
-        try { _UI.popout.close(); } catch (e) {}
+        try { _UI.popOut.close(); } catch (e) {}
         document.body.classList.remove('poppedOut');
-        _UI.popout = false;
+        _UI.popOut = false;
         navigate();
     }
 
@@ -243,22 +243,22 @@
         switch(nh){
             case 'glyph edit':
                 // debug('\t case glyph edit');
-                if(_UI.glyphchooser.panel.fname !== 'selectGlyph'){
-                    _UI.glyphchooser.panel = {fname:'selectGlyph', selected:'glyphs', choices:'glyphs'};
+                if(_UI.glyphChooser.panel.fname !== 'selectGlyph'){
+                    _UI.glyphChooser.panel = {fname:'selectGlyph', selected:'glyphs', choices:'glyphs'};
                 }
                 break;
             case 'components':
                 // debug('\t case components');
-                _UI.glyphchooser.panel = {fname:'selectComponent', selected:'components', choices:'components'};
+                _UI.glyphChooser.panel = {fname:'selectComponent', selected:'components', choices:'components'};
                 break;
             case 'ligatures':
                 // debug('\t case ligatures');
-                _UI.glyphchooser.panel = {fname:'selectLigature', selected:'ligatures', choices:'ligatures'};
+                _UI.glyphChooser.panel = {fname:'selectLigature', selected:'ligatures', choices:'ligatures'};
                 break;
             case 'import svg':
                 // debug('\t case import svg');
-                if(_UI.glyphchooser.panel.fname !== 'importSVG_selectGlyph'){
-                     _UI.glyphchooser.panel = {fname:'importSVG_selectGlyph', selected:'glyphs', choices:'all'};
+                if(_UI.glyphChooser.panel.fname !== 'importSVG_selectGlyph'){
+                     _UI.glyphChooser.panel = {fname:'importSVG_selectGlyph', selected:'glyphs', choices:'all'};
                  }
                 break;
         }
@@ -353,8 +353,8 @@
 //-------------------
 
     function getEditDocument(){
-        if(_UI.popout){
-            return _UI.popout.document;
+        if(_UI.popOut){
+            return _UI.popOut.document;
         } else {
             return document;
         }
@@ -502,16 +502,16 @@
         navarr.push('project settings');
         navarr.push('_');
         navarr.push('import svg');
-        if(_UI.popout){
+        if(_UI.popOut){
             navarr.push('_');
             navarr.push('popin');
         } else {
             navarr.push('export font');
         }
-        if(!_UI.popout) navarr.push('_');
+        if(!_UI.popOut) navarr.push('_');
         navarr.push('help');
         navarr.push('about');
-        if(!_UI.popout){
+        if(!_UI.popOut){
             navarr.push('_');
             navarr.push('newproject');
             navarr.push('feature');

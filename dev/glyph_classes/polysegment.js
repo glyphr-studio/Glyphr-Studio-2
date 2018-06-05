@@ -166,7 +166,7 @@
         // debug('\n PolySegment.drawIntersections - START');
         var ix = this.findIntersections();
         var co;
-        var ctx = _UI.glypheditctx;
+        var ctx = _UI.glyphEditCTX;
 
         ctx.fillStyle = "rgb(200,50,60)";
 

@@ -61,8 +61,8 @@
 //    -----------------------------------
 
     Segment.prototype.drawSegmentOutline = function(color, dx, dy) {
-        if(!_UI.glypheditctx) setupEditCanvas();
-        var ctx = _UI.glypheditctx;
+        if(!_UI.glyphEditCTX) setupEditCanvas();
+        var ctx = _UI.glyphEditCTX;
         
         ctx.strokeStyle = RGBAtoRGB((color || _UI.colors.green.l65), 0.9);
         dx = dx || 0;
@@ -85,8 +85,8 @@
     };
 
     Segment.prototype.drawSegmentPoints = function(color, txt) {
-        if(!_UI.glypheditctx) setupEditCanvas();        
-        var ctx = _UI.glypheditctx;
+        if(!_UI.glyphEditCTX) setupEditCanvas();        
+        var ctx = _UI.glyphEditCTX;
         
         txt = isval(txt)? txt : '•';
         var p1x = sx_cx(this.p1x);

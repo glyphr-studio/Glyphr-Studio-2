@@ -18,12 +18,12 @@
             _UI.dev_selectedShape = false;
         }
 
-        _UI.selectedcomponent = _UI.selectedcomponent || getFirstID(_GP.components);
+        _UI.selectedComponent = _UI.selectedComponent || getFirstID(_GP.components);
 
-        if(getSelectedWorkItemShapes().length > 0)    _UI.selectedtool = 'pathedit';
-        else _UI.selectedtool = 'pathaddpoint';
+        if(getSelectedWorkItemShapes().length > 0)    _UI.selectedTool = 'pathedit';
+        else _UI.selectedTool = 'pathaddpoint';
 
-        redraw({calledby:'loadPage_components'});
+        redraw({calledBy:'loadPage_components'});
     }
 
 
@@ -32,7 +32,7 @@
 
         pglyph = pglyph || new Glyph({'name':'Component ' + (getLength(_GP.components)+1)});
         var newid = generateNewID(_GP.components, 'com');
-        _UI.selectedcomponent = newid;
+        _UI.selectedComponent = newid;
 
         _GP.components[newid] = pglyph;
 
@@ -64,22 +64,22 @@
 
     function deleteComponent(){
         // debug('\n deleteComponent - START');
-        // debug('\t deleting ' + _UI.selectedcomponent);
+        // debug('\t deleting ' + _UI.selectedComponent);
 
         closeDialog();
 
         // Delete upstream Component Instances
-        getSelectedWorkItem().deleteLinks(_UI.selectedcomponent);
+        getSelectedWorkItem().deleteLinks(_UI.selectedComponent);
 
         // Delete it
         var oldname = getSelectedWorkItemName();
-        delete _GP.components[_UI.selectedcomponent];
-        _UI.selectedcomponent = getFirstID(_GP.components);
+        delete _GP.components[_UI.selectedComponent];
+        _UI.selectedComponent = getFirstID(_GP.components);
 
         // history_put('Deleted ' + oldname);
 
         // debug('\t after delete ' + _GP.components);
-        redraw({calledby:'deleteComponent'});
+        redraw({calledBy:'deleteComponent'});
 
         // debug('deleteComponent - END\n');
     }

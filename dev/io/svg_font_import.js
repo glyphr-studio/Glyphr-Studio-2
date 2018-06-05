@@ -65,7 +65,7 @@
             chars = ioSVG_getTags(font, 'glyph');
 
             // test for range
-            if(chars.length < _UI.overflowcount || filter){
+            if(chars.length < _UI.overflowCount || filter){
                 setTimeout(startFontImport, 1);
                 // Dump JSON
                 // saveFile('Parsed JSON', json(jsondata));
@@ -90,7 +90,7 @@
         *
         */
         var tca, data, uni, np, cname, chtml, adv, isautowide;
-        var maxglyph = 0;
+        var maxGlyph = 0;
         var minchar = 0xffff;
         var customglyphrange = [];
         var shapecounter = 0;
@@ -178,7 +178,7 @@
                     // Get some range data
                     uni = uni[0];
                     minchar = Math.min(minchar, uni);
-                    maxglyph = Math.max(maxglyph, uni);
+                    maxGlyph = Math.max(maxGlyph, uni);
                     if(1*uni > _UI.glyphrange.latinextendedb.end) customglyphrange.push(uni);
 
                     fc[uni] = new Glyph({'shapes':newshapes, 'glyphhex':uni, 'glyphwidth':adv, 'isautowide':isautowide});
@@ -365,8 +365,8 @@
         re += '<h3>Import a custom range of glyphs</h3>'+
             'A nice overview of glyph ranges can be found at<br><a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia\'s Unicode Block page</a>.<br>' +
             '<table class="settingstable"><tr>'+
-            '<td>begin:<br><input type="text" onchange="checkFilter(\'custom\');document.getElementById(\'importfontbutton\').disabled = \'disabled\';" value="'+decToHex(_UI.importrange.begin)+'" id="customrangebegin"></td>'+
-            '<td>end:<br><input type="text" onchange="checkFilter(\'custom\');document.getElementById(\'importfontbutton\').disabled = \'disabled\';" value="'+decToHex(_UI.importrange.end)+'" id="customrangeend"></td>'+
+            '<td>begin:<br><input type="text" onchange="checkFilter(\'custom\');document.getElementById(\'importfontbutton\').disabled = \'disabled\';" value="'+decToHex(_UI.importRange.begin)+'" id="customrangebegin"></td>'+
+            '<td>end:<br><input type="text" onchange="checkFilter(\'custom\');document.getElementById(\'importfontbutton\').disabled = \'disabled\';" value="'+decToHex(_UI.importRange.end)+'" id="customrangeend"></td>'+
             '<td><br><button onclick="checkFilter(\'custom\');">Set Range</button></td>'+
             '<td style="padding-top:20px;">'+helpUI(unicodeInputHelp())+'</td>'+
             '<td><br><div id="customrangeerror">bad range input</div></td>'+
@@ -388,7 +388,7 @@
     function setFontImportRange() {
         var range = getCustomRange(false);
         if(range){
-            _UI.importrange = range;
+            _UI.importRange = range;
             document.getElementById('customrangebegin').value = range.begin;
             document.getElementById('customrangeend').value = range.end;
         }
@@ -398,7 +398,7 @@
         if(!uni.length) return true;
 
         for(var u=0; u<uni.length; u++){
-            if((parseInt(uni[u]) > _UI.importrange.end) || (parseInt(uni[u]) < _UI.importrange.begin)) return true;
+            if((parseInt(uni[u]) > _UI.importRange.end) || (parseInt(uni[u]) < _UI.importRange.begin)) return true;
         }
 
         return false;
@@ -409,8 +409,8 @@
             document.getElementById('basic').checked = true;
             document.getElementById('custom').checked = false;
             document.getElementById('everything').checked = false;
-            _UI.importrange.begin = 0x0020;
-            _UI.importrange.end = 0x024F;
+            _UI.importRange.begin = 0x0020;
+            _UI.importRange.end = 0x024F;
         } else if (id === 'custom'){
             document.getElementById('basic').checked = false;
             document.getElementById('custom').checked = true;
@@ -420,8 +420,8 @@
             document.getElementById('basic').checked = false;
             document.getElementById('custom').checked = false;
             document.getElementById('everything').checked = true;
-            _UI.importrange.begin = 0x0000;
-            _UI.importrange.end = 0xFFFF;
+            _UI.importRange.begin = 0x0000;
+            _UI.importRange.end = 0xFFFF;
         }
 
         document.getElementById('importfontbutton').disabled = false;

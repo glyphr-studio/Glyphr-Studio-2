@@ -76,7 +76,7 @@
         var t = '\t\t\t\t';
         var md = _GP.metadata;
         var ps = _GP.projectsettings;
-        var fm = _UI.fontmetrics;
+        var fm = _UI.fontMetrics;
         var con = '';
 
         // Project properties
@@ -86,7 +86,7 @@
         con += t+'ascent="'+ps.ascent+'"\n';
         con += t+'descent="'+ps.descent+'"\n';
         con += t+'bbox="'+fm.maxes.xmin+', '+fm.maxes.ymin+', '+fm.maxes.xmax+', '+fm.maxes.ymax+'"\n';
-        con += t+'unicode-range="U+20-'+fm.maxglyph+'"\n';
+        con += t+'unicode-range="U+20-'+fm.maxGlyph+'"\n';
 
         // Metadata properties
         for(var d in md){if(md.hasOwnProperty(d)){

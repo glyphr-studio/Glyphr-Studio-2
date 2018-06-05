@@ -21,7 +21,7 @@
         // debug(scs);
 
         // debug(`\t selectedShapes`);
-        // debug(_UI.ms.shapes.getMembers());
+        // debug(_UI.multiSelect.shapes.getMembers());
         
         var ts;
 
@@ -30,7 +30,7 @@
             for(var i=(scs.length-1); i>=0; i--){
                 ts = scs[i];
 
-                if(_UI.ms.shapes.isSelected(ts)) {
+                if(_UI.multiSelect.shapes.isSelected(ts)) {
                     // debug(`\t i: ${i} is selected`);    
                     if(ts.objtype === 'componentinstance')    content += '<tr class="componentlayersel"';
                     else content += '<tr class="layersel"';
@@ -43,7 +43,7 @@
 
                 content += ' onclick="selectShape(' + i + '); ';
                 if(ts.objtype === 'componentinstance') content += 'clickTool(\'shaperesize\'); ';
-                content += ' redraw({calledby:\'updatelayers\'});';
+                content += ' redraw({calledBy:\'updatelayers\'});';
                 content += '">';
 
                 if(ts.objtype === 'componentinstance') {
@@ -77,26 +77,26 @@
         // debug('\t wishapes ' + wishapes);
 
         if(wishapes && wishapes[num]){
-             if(_UI.eventhandlers.multi) _UI.ms.shapes.toggle(wishapes[num]);
+             if(_UI.eventhandlers.multi) _UI.multiSelect.shapes.toggle(wishapes[num]);
              else {
-                 _UI.ms.points.clear();
-                 _UI.ms.shapes.select(wishapes[num]);
+                 _UI.multiSelect.points.clear();
+                 _UI.multiSelect.shapes.select(wishapes[num]);
              }
         } else {
-            _UI.ms.shapes.clear();
+            _UI.multiSelect.shapes.clear();
         }
         // debug(' selectShape - END\n');
     }
 
     function updateLayerActions(){
-        var selshapes = _UI.ms.shapes.getMembers().length;
+        var selshapes = _UI.multiSelect.shapes.getMembers().length;
         var numshapes = getSelectedWorkItemShapes().length;
 
         var shapeactions = '';
-        shapeactions += '<button title="Add Shape\nCreates a new default shape and adds it to this glyph" onclick="addShape(); history_put(\'Add Shape\'); redraw({calledby:\'updateactions\'});">' + makeActionButton_AddShape(false) + '</button>';
+        shapeactions += '<button title="Add Shape\nCreates a new default shape and adds it to this glyph" onclick="addShape(); history_put(\'Add Shape\'); redraw({calledBy:\'updateactions\'});">' + makeActionButton_AddShape(false) + '</button>';
         shapeactions += '<button title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph" onclick="showDialog_AddComponent();">'+ makeActionButton_AddShape(true) + '</button>';
         shapeactions += '<button title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one" onclick="showDialog_GetShapes();">' + makeActionButton_PasteShapesFromAnotherGlyph() + '</button>';
-        if(selshapes > 0) shapeactions += '<button title="Delete\nRemoves the currently selected shape or shapes from this glyph" onclick="_UI.ms.shapes.deleteShapes(); history_put(\'Delete Shape\'); redraw({calledby:\'updateactions\'});">' + makeActionButton_DeleteShape() + '</button>';
+        if(selshapes > 0) shapeactions += '<button title="Delete\nRemoves the currently selected shape or shapes from this glyph" onclick="_UI.multiSelect.shapes.deleteShapes(); history_put(\'Delete Shape\'); redraw({calledBy:\'updateactions\'});">' + makeActionButton_DeleteShape() + '</button>';
 
         var layeractions = '';
         layeractions += '<button title="Move Shape Up\nMoves the shape up in the shape layer order" onclick="moveShapeUp(); history_put(\'Move Shape Layer Up\');">' + makeActionButton_MoveLayerUp() + '</button>';
@@ -104,7 +104,7 @@
 
 
         var content = '';
-        if(_UI.popout){
+        if(_UI.popOut){
             content += '<div class="actionsarea">';
             content += '<h3>Actions</h3>';
         } else {
@@ -127,23 +127,23 @@
 //-------------------
     function moveShapeUp(){
         var wishapes = getSelectedWorkItemShapes();
-        var si = wishapes.indexOf(_UI.ms.shapes.getSingleton());
+        var si = wishapes.indexOf(_UI.multiSelect.shapes.getSingleton());
         if(si > -1 && si < wishapes.length-1){
             var tempshape = wishapes[si+1];
             wishapes[si+1] = wishapes[si];
             wishapes[si] = tempshape;
-            redraw({calledby:"moveShapeUp"});
+            redraw({calledBy:"moveShapeUp"});
         }
     }
 
     function moveShapeDown(){
         var wishapes = getSelectedWorkItemShapes();
-        var si = wishapes.indexOf(_UI.ms.shapes.getSingleton());
+        var si = wishapes.indexOf(_UI.multiSelect.shapes.getSingleton());
         if(si > 0 && si < wishapes.length){
             var tempshape = wishapes[si-1];
             wishapes[si-1] = wishapes[si];
             wishapes[si] = tempshape;
-            redraw({calledby:"moveShapeDown"});
+            redraw({calledBy:"moveShapeDown"});
         }
     }
 

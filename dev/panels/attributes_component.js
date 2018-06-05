@@ -35,15 +35,15 @@
 
         if (chid.indexOf('0x', 2) > -1){
             // Ligature
-            _UI.selectedligature = chid;
+            _UI.selectedLigature = chid;
             p = 'ligatures';
         } else if(chid.indexOf('0x') > -1){
             // Glyph
-            _UI.selectedglyph = chid;
+            _UI.selectedGlyph = chid;
             p = 'glyph edit';
         } else {
             // Component
-            _UI.selectedcomponent = chid;
+            _UI.selectedComponent = chid;
             p = 'components';
         }
 
@@ -69,7 +69,7 @@
         content += '<tr><td class="leftcol"> instance name </td>'+
             '<td style="margin-top:0px; padding-top:0px;">'+
                 '<input class="namewidth" id="comname" type="text" value="' + s.name + '" '+
-                    'onchange="_UI.ms.shapes.changeShapeName(this.value);">' +
+                    'onchange="_UI.multiSelect.shapes.changeShapeName(this.value);">' +
             '</td>'+
         '</tr>';
 
@@ -77,13 +77,13 @@
             '<td>&#916; x'+ dimSplit() + '&#916; y</td>'+
             '<td>'+
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.ms.shapes.getSingleton().xlock', s.xlock, 'xlock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().xlock', s.xlock, 'xlock')+
                     '<input type="number" id="comx" step="'+svc+'" value="' + round(s.translatex, 3) + '" '+
                         (s.xlock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translatex\', this.value, this.id);">')+
                 '</div>'+
                 dimSplit() +
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.ms.shapes.getSingleton().ylock', s.ylock, 'ylock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().ylock', s.ylock, 'ylock')+
                     '<input type="number" id="comy" step="'+svc+'" value="' + round(s.translatey, 3) + '" '+
                         (s.ylock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translatey\', this.value, this.id);">')+
                 '</div>'+
@@ -94,23 +94,23 @@
             '<td>&#916; width' + dimSplit() + '&#916; height</td>'+
             '<td>'+
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.ms.shapes.getSingleton().wlock', s.wlock, 'wlock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().wlock', s.wlock, 'wlock')+
                     '<input type="number" id="comw" step="'+svc+'" value="' + round(s.scalew, 3) + '" '+
                         (s.wlock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scalew\', this.value, this.id);">')+
                 '</div>'+
                 dimSplit()+
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.ms.shapes.getSingleton().hlock', s.hlock, 'hlock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().hlock', s.hlock, 'hlock')+
                     '<input type="number" id="comh" step="'+svc+'" value="' + round(s.scaleh, 3) + '" '+
                         (s.hlock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scaleh\', this.value, this.id);">')+
                 '</div>'+
             '</td>'+
         '</tr>';
 
-        if(_UI.selectedtool !== 'pathedit') {
+        if(_UI.selectedTool !== 'pathedit') {
             content += '<tr>'+
                 '<td> lock aspect ratio </td>'+
-                '<td>' + checkUI('_UI.ms.shapes.getSingleton().ratiolock', s.ratiolock, true) + '</td>'+
+                '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().ratiolock', s.ratiolock, true) + '</td>'+
             '</tr>';
         }
 
@@ -118,17 +118,17 @@
         // CHECKBOXES
         content += '<tr>'+
             '<td> flip horizontal </td>'+
-            '<td>' + checkUI('_UI.ms.shapes.getSingleton().flipew', s.flipew, true) + '</td>'+
+            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().flipew', s.flipew, true) + '</td>'+
         '</tr>';
 
         content += '<tr>'+
             '<td> flip vertical </td>'+
-            '<td>' + checkUI('_UI.ms.shapes.getSingleton().flipns', s.flipns, true) + '</td>'+
+            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().flipns', s.flipns, true) + '</td>'+
         '</tr>';
 
         content += '<tr>'+
             '<td> reverse winding </td>'+
-            '<td>' + checkUI('_UI.ms.shapes.getSingleton().reversewinding', s.reversewinding, true) + '</td>'+
+            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().reversewinding', s.reversewinding, true) + '</td>'+
         '</tr>';
 
         // ROTATE
@@ -148,7 +148,7 @@
 
         content += '<tr>'+
             '<td> rotate first </td>'+
-            '<td>' + checkUI('_UI.ms.shapes.getSingleton().rotatefirst', s.rotatefirst, true) + '&ensp;'+helpUI(rotationhelp)+ '</td>'+
+            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().rotatefirst', s.rotatefirst, true) + '&ensp;'+helpUI(rotationhelp)+ '</td>'+
         '</tr>';
 
         // ROOT
@@ -173,7 +173,7 @@
     }
 
     function updateComponentInstanceDetail(key, value, id) {
-        var selci = _UI.ms.shapes.getSingleton();
+        var selci = _UI.multiSelect.shapes.getSingleton();
         var oldval = selci[key];
 
         value = isval(value)? value : 0;
@@ -194,8 +194,8 @@
         }
 
         history_put('component '+key);
-        _UI.focuselement = id;
-        redraw({calledby:'componentInstanceDetails'});
+        _UI.focusElement = id;
+        redraw({calledBy:'componentInstanceDetails'});
     }
 
 // end of file

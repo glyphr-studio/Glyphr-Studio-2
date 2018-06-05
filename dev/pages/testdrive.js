@@ -16,10 +16,10 @@
         update_NavPanels();
 
         var content = '<h1 class="pagetitle">Test Drive</h1><div class="pagecontent">' +
-            '<textarea id="tdtextarea" onkeyup="_UI.testdrive.sampletext=this.value; redraw_TestDrive()">'+_UI.testdrive.sampletext+'</textarea><br>' +
+            '<textarea id="tdtextarea" onkeyup="_UI.testdrive.sampleText=this.value; redraw_TestDrive()">'+_UI.testdrive.sampleText+'</textarea><br>' +
             '<canvas id="tdcanvas"></canvas><br>' +
             '<div id="genimg" style="display:none;"></div>'+
-            '<canvas id="glypheditcanvas" style="display:none;"></canvas>'+
+            '<canvas id="glyphEditCanvas" style="display:none;"></canvas>'+
             '</div>';
 
         getEditDocument().getElementById("mainwrapper").innerHTML = content;
@@ -31,16 +31,16 @@
         td.canvas.height = 700;
         td.ctx = td.canvas.getContext('2d');
 
-        td.glyphseq = new GlyphSequence({
-            glyphstring: td.sampletext,
-            linegap: td.linegap,
+        td.glyphSequence = new GlyphSequence({
+            glyphstring: td.sampleText,
+            lineGap: td.lineGap,
             maxes: {
                 xmin: 10,
                 xmax: 790,
-                ymin: 10 + (_GP.projectsettings.ascent * td.fontscale),
+                ymin: 10 + (_GP.projectsettings.ascent * td.fontScale),
                 ymax: false
             },
-            scale: td.fontscale,
+            scale: td.fontScale,
             drawPageExtras: drawTestDrivePageExtras,
             drawLineExtras: drawTestDriveLineExtras,
             drawGlyphExtras: drawTestDriveGlyphExtras,
@@ -86,15 +86,15 @@
         var td = _UI.testdrive;
         var ps = _GP.projectsettings;
 
-        if(_UI.currentPanel === 'npAttributes') changefontscale(td.fontsize);
-        document.getElementById('tdtextarea').value = td.sampletext;
+        if(_UI.currentPanel === 'npAttributes') changefontscale(td.fontSize);
+        document.getElementById('tdtextarea').value = td.sampleText;
 
-        td.glyphseq.setString(td.sampletext);
-        var scale = td.fontscale;
+        td.glyphSequence.setString(td.sampleText);
+        var scale = td.fontScale;
         var pagepadding = 20 / scale;
 
         td.ctx.clearRect(0,0,5000,5000);
-        td.glyphseq.draw();
+        td.glyphSequence.draw();
 
         _UI.redrawing = false;
     }
@@ -114,7 +114,7 @@
 
         // debug(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
 
-        if(_UI.testdrive.showpageextras){
+        if(_UI.testdrive.showPageExtras){
             ctx.fillStyle = 'transparent';
             ctx.strokeStyle = _UI.colors.green.l85;
             ctx.lineWidth = 1;
@@ -133,7 +133,7 @@
     function drawTestDriveLineExtras(chardata) {
         // debug('\n drawTestDriveLineExtras - START');
         // debug('\t at ' + (chardata.view.dy * chardata.view.dz));
-        if(_UI.testdrive.showlineextras){
+        if(_UI.testdrive.showLineExtras){
             drawHorizontalLine(chardata.view.dy*chardata.view.dz, _UI.testdrive.ctx, _UI.colors.green.l85);
         }
         // debug(' drawTestDriveLineExtras - END\n');
@@ -141,7 +141,7 @@
 
     function drawTestDriveGlyphExtras(chardata) {
         // debug('\n drawTestDriveGlyphExtras - START');
-        if(_UI.testdrive.showglyphextras){
+        if(_UI.testdrive.showGlyphExtras){
             var ctx = _UI.testdrive.ctx;
             var drawwidth = chardata.width * chardata.view.dz;
             var drawheight = _GP.projectsettings.upm * chardata.view.dz;
@@ -185,8 +185,8 @@
 
         var td = _UI.testdrive;
         var glyph = chardata.glyph;
-        var showlineextras = td.showlineextras || false;
-        var flattenglyphs = td.flattenglyphs || false;
+        var showLineExtras = td.showLineExtras || false;
+        var flattenGlyphs = td.flattenGlyphs || false;
         var ctx = _UI.testdrive.ctx;
         var view = clone(chardata.view);
         view.dx *= view.dz;
@@ -197,7 +197,7 @@
 
         setTimeout(function(){
             if(glyph){
-                if(flattenglyphs){
+                if(flattenGlyphs){
                         if(!_UI.testdrive.cache.hasOwnProperty(chardata.char)){
                             _UI.testdrive.cache[chardata.char] = (new Glyph(clone(glyph))).combineAllShapes(true);
                         }
@@ -231,13 +231,13 @@
 
     function makeTDButton(text){
         var val = text.replace('<br>', ' ');
-        return '<button class="sampletext" onclick="_UI.testdrive.sampletext=\''+val+'\';redraw_TestDrive();">'+text+'</button><br>';
+        return '<button class="sampleText" onclick="_UI.testdrive.sampleText=\''+val+'\';redraw_TestDrive();">'+text+'</button><br>';
     }
 
     function makeTDSymbolButton(){
         var sym = ['&#x21;','&#x22;','&#x23;','&#x24;','&#x25;','&#x26;','&#x27;','&#x28;','&#x29;','&#x2A;','&#x2B;','&#x2C;','&#x2D;','&#x2E;','&#x2F;','&#x3A;','&#x3B;','&#x3C;','&#x3D;','&#x3E;','&#x3F;','&#x40;','&#x5B;','&#x5C;','&#x5D;','&#x5E;','&#x5F;','&#x60;','&#x7B;','&#x7C;','&#x7D;','&#x7E;'];
         
-        var re = '<button class="sampletext" onclick="clickTDSymbolButton();">';
+        var re = '<button class="sampleText" onclick="clickTDSymbolButton();">';
         re += sym.join('');
         re += '</button><br>';
 
@@ -250,14 +250,14 @@
         var con = '';
         for(var s=0; s<sym.length; s++) con += String.fromCharCode(sym[s]);
 
-        _UI.testdrive.sampletext = con;
+        _UI.testdrive.sampleText = con;
 
         redraw_TestDrive();
     }
 
     function drawTDOptions(){
-        if(!_UI.testdrive.linegap) _UI.testdrive.linegap = _GP.projectsettings.linegap;
-        if(!isval(_UI.testdrive.padsize)) _UI.testdrive.padsize = _GP.projectsettings.defaultlsb;
+        if(!_UI.testdrive.lineGap) _UI.testdrive.lineGap = _GP.projectsettings.lineGap;
+        if(!isval(_UI.testdrive.padSize)) _UI.testdrive.padSize = _GP.projectsettings.defaultlsb;
 
         var flattenmessage = "<h1>Combine Glyphs Shapes</h1>"+
             "In <a href=# onclick=navToProjectSettings()>Project Settings &rsaquo; Export Options</a> you have the option to combine all glyph shapes.<br>"+
@@ -270,15 +270,15 @@
             "it may take a few seconds to render.";
 
         var content = '<table class="detail">';
-        content += '<tr><td> font size <span class="unit">(px)</span> </td><td><input type="number" value="'+_UI.testdrive.fontsize+'" onchange="changefontscale(this.value); redraw_TestDrive();"></td></tr>';
+        content += '<tr><td> font size <span class="unit">(px)</span> </td><td><input type="number" value="'+_UI.testdrive.fontSize+'" onchange="changefontscale(this.value); redraw_TestDrive();"></td></tr>';
         content += '<tr><td> 96dpi font size <span class="unit">(pt)</span> </td><td><input type="number" disabled="disabled" id="roughptsize" valu="75"/></td></tr>';
-        content += '<tr><td> line gap <span class="unit">(em units)</span> </td><td><input type="number" value="'+_UI.testdrive.linegap+'" onchange="changelinegap(this.value); redraw_TestDrive();"></td></tr>';
-        // content += '<tr><td> glyph spacing <span class="unit">(em units)</span> </td><td><input type="number" value="'+_UI.testdrive.padsize+'" onchange="_UI.testdrive.padsize=this.value*1; redraw_TestDrive();"></td></tr>';
-        content += '<tr><td> <label for="showglyphextras">show glyph boxes</label> </td><td>' + checkUI("_UI.testdrive.showglyphextras", _UI.testdrive.showglyphextras, true) + "</td></tr>";
-        content += '<tr><td> <label for="showlineextras">show baseline</label> </td><td>' + checkUI("_UI.testdrive.showlineextras", _UI.testdrive.showlineextras, true) + "</td></tr>";
-        content += '<tr><td> <label for="showpageextras">show page borders</label> </td><td>' + checkUI("_UI.testdrive.showpageextras", _UI.testdrive.showpageextras, true) + "</td></tr>";
+        content += '<tr><td> line gap <span class="unit">(em units)</span> </td><td><input type="number" value="'+_UI.testdrive.lineGap+'" onchange="changelinegap(this.value); redraw_TestDrive();"></td></tr>';
+        // content += '<tr><td> glyph spacing <span class="unit">(em units)</span> </td><td><input type="number" value="'+_UI.testdrive.padSize+'" onchange="_UI.testdrive.padSize=this.value*1; redraw_TestDrive();"></td></tr>';
+        content += '<tr><td> <label for="showGlyphExtras">show glyph boxes</label> </td><td>' + checkUI("_UI.testdrive.showGlyphExtras", _UI.testdrive.showGlyphExtras, true) + "</td></tr>";
+        content += '<tr><td> <label for="showLineExtras">show baseline</label> </td><td>' + checkUI("_UI.testdrive.showLineExtras", _UI.testdrive.showLineExtras, true) + "</td></tr>";
+        content += '<tr><td> <label for="showPageExtras">show page borders</label> </td><td>' + checkUI("_UI.testdrive.showPageExtras", _UI.testdrive.showPageExtras, true) + "</td></tr>";
 
-        content += '<tr><td> <label for="flattenglyphs">preview combine glyph shapes</label>' + helpUI(flattenmessage) + ' </td><td>' + checkUI("_UI.testdrive.flattenglyphs", _UI.testdrive.flattenglyphs, false) + "</td></tr>";
+        content += '<tr><td> <label for="flattenGlyphs">preview combine glyph shapes</label>' + helpUI(flattenmessage) + ' </td><td>' + checkUI("_UI.testdrive.flattenGlyphs", _UI.testdrive.flattenGlyphs, false) + "</td></tr>";
 
         content += '<tr><td colspan=2><button onclick="createimg();">generate png file</button></td></tr>';
         content += '</table>';
@@ -293,13 +293,13 @@
     function changefontscale(newval){
         var td = _UI.testdrive;
 
-        td.fontsize = newval*1;
-        td.fontscale = (newval/_GP.projectsettings.upm);
-        td.glyphseq.setScale(td.fontscale);
-        td.glyphseq.setMaxes({
+        td.fontSize = newval*1;
+        td.fontScale = (newval/_GP.projectsettings.upm);
+        td.glyphSequence.setScale(td.fontScale);
+        td.glyphSequence.setMaxes({
             xmin: 10,
             xmax: 790,
-            ymin: 10 + (_GP.projectsettings.ascent * td.fontscale),
+            ymin: 10 + (_GP.projectsettings.ascent * td.fontScale),
             ymax: false
         });
         document.getElementById('roughptsize').value = (newval*0.75);
@@ -309,8 +309,8 @@
     function changelinegap(newval) {
         var td = _UI.testdrive;
 
-        td.linegap = newval * 1;
-        td.glyphseq.setLineGap(td.linegap);
+        td.lineGap = newval * 1;
+        td.glyphSequence.setLineGap(td.lineGap);
     }
 
     function createimg(){

@@ -138,7 +138,7 @@
             showToast('Invalid component instance name - component instance names must only contain alphanumeric characters or spaces.');
         }
 
-        redraw({calledby:'ComponentInstance Name', redrawcanvas:false});
+        redraw({calledBy:'ComponentInstance Name', redrawCanvas:false});
 
         // debug(' ComponentInstance.changeShapeName - END\n');
     };
@@ -376,7 +376,7 @@
 //    Insert Component
     function showDialog_AddComponent(){
         var show = getLength(_GP.components)? 'components' : 'glyphs';
-        _UI.glyphchooser.dialog = {
+        _UI.glyphChooser.dialog = {
             'fname':'addComponent',
             'choices':'all',
             'selected': show
@@ -391,7 +391,7 @@
     }
 
     function addComponent(sourceComponentID) {
-        insertComponentInstance(sourceComponentID, false, _UI.glyphchooser.getshapesoptions);
+        insertComponentInstance(sourceComponentID, false, _UI.glyphChooser.getShapeOptions);
     }
 
     function insertComponentInstance(sourceComponentID, destinationGlyphID, copyGlyphAttributes){
@@ -412,8 +412,8 @@
             destinationGlyph.shapes.push(nci);
             destinationGlyph.changed();
             if(select) {
-                _UI.ms.shapes.select(nci);
-                _UI.selectedtool = 'shaperesize';
+                _UI.multiSelect.shapes.select(nci);
+                _UI.selectedTool = 'shaperesize';
             }
 
             addToUsedIn(sourceComponentID, destinationGlyphID);
@@ -425,7 +425,7 @@
 
             closeDialog();
             history_put('insert component from glyphedit');
-            redraw({calledby:'insertComponent'});
+            redraw({calledBy:'insertComponent'});
             return true;
         } else {
             openDialog('<h1>Whoops</h1><div class="dialoglargetext">A circular link was found, components can\'t include links to themselves.<br>They can\'t handle the philosophical conundrum it poses.</div><br><br><button class="buttonsel" onclick="closeDialog();">Fine, I guess.</button>');
@@ -434,17 +434,17 @@
     }
 
     function turnComponentIntoShapes(){
-        var selshape = _UI.ms.shapes.getSingleton();
+        var selshape = _UI.multiSelect.shapes.getSingleton();
         var shapes = selshape.getTransformedGlyph().shapes;
 
-        _UI.ms.shapes.deleteShapes();
+        _UI.multiSelect.shapes.deleteShapes();
 
         for(var s=0; s<shapes.length; s++){
             addShape(shapes[s]);
         }
 
         //debug('turnComponentIntoShapes - newshape \n'+json(newshape));
-        redraw({calledby:'turnComponentIntoShapes'});
+        redraw({calledBy:'turnComponentIntoShapes'});
     }
 
 //    UsedIn Array Stuff
