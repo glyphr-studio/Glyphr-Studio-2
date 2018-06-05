@@ -1,0 +1,19 @@
+{
+    "extends": "google",
+    "env": {
+        "es6": true
+    },
+    "rules":{
+        "max-len": [2, {
+            "code": 120,
+            "tabWidth": 4,
+            "comments": 240,
+            "ignoreComments": true,
+            "ignoreTrailingComments": true,
+            "ignoreUrls": true,
+            "ignoreStrings": true,
+            "ignoreTemplateLiterals": true,
+            "ignoreRegExpLiterals": true
+        }]
+    }
+}

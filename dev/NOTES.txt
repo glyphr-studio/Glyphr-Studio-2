@@ -1,0 +1,20 @@
+
+
+Coord.xlock/ylock - Coord.xLock/yLock
+Coord.useh1/useh2 - Coord.useH1/useH2
+
+PathPoint.setPointType - PathPoint.type (setter)
+PathPoint.round vs PathPoint.roundAll
+PathPoint.getPx/Py/H1x/H1y/H2x/H2y - drop 'get' and use getter property
+PathPoint.getH1Angle/H2 - property h1Angle
+PathPoint.getH1NiceAngle/H2 - property h1NiceAngle
+PathPoint.getH1Length/H2 - property h1Length
+PathPoint.setH1/H2/AngleX/Y - setters << what is with these?
+
+
+
+
+
+UPGRADE STUFF
+Camel Case
+- stopPageNavigation
