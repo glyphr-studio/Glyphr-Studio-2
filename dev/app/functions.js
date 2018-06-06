@@ -1,22 +1,18 @@
-// start of file
-/**
-Functions
-This is an uber-bucket of high level and
-generic functions that don't fit well in other
-files.
-**/
+/* exported makePanelSuperTitle */
 
-
-
-//-------------------
+// -------------------
 // Common Panel Title
-//-------------------
+// -------------------
+/**
+ * Panel Title
+ * @return {string}
+ */
 function makePanelSuperTitle() {
     // debug('\n makePanelSuperTitle - START');
-    var content = '';
-    if(!_UI.popOut) {
-        var selwi = getSelectedWorkItem();
-        var name;
+    let content = '';
+    if (!_UI.popOut) {
+        let selwi = getSelectedWorkItem();
+        let name;
         // debug('\t selwi = ' + selwi.objtype);
 
         content += '<h1 class="panelsupertitle">'+_UI.currentPage.toUpperCase();
@@ -24,14 +20,14 @@ function makePanelSuperTitle() {
             _UI.currentPanel === 'npGuides' ||
             _UI.currentPanel === 'npHistory') return content + '</h1>';
 
-        if(selwi){
+        if (selwi) {
             name = (selwi.getName() || selwi.glyphhtml || selwi.shape.name || '[no shape outline yet]');
             // debug('\t selwi name is ' + name);
 
-            if(selwi.name) name = name.replace(/latin /i, '');
+            if (selwi.name) name = name.replace(/latin /i, '');
             content += makeSuperTitleSeperator();
             content += name;
-        } else if (_UI.currentPage === 'kerning'){
+        } else if (_UI.currentPage === 'kerning') {
             // debug('\t selwi = false, on kerning');
             name = getSelectedKern();
             content += name? makeSuperTitleSeperator() + name.getName() : '';
@@ -42,45 +38,48 @@ function makePanelSuperTitle() {
     return content;
 }
 
+/**
+ * Panel Title Seperator
+ * @return {string}
+ */
 function makeSuperTitleSeperator() {
-    var re = '<span class="supertitleseperator">';
-    re += makeIcon({name:'button_more', color:_UI.colors.blue.l75, hovercolor:_UI.colors.blue.l75, size:10});
-    re += makeIcon({name:'button_more', color:_UI.colors.blue.l75, hovercolor:_UI.colors.blue.l75, size:10});
+    let re = '<span class="supertitleseperator">';
+    re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
+    re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
     re += '</span>';
     return re;
 }
 
 
-//-------------------
+// -------------------
 // Debug
-//-------------------
+// -------------------
 
-function debug(message, force){
-    if(!_UI.devMode) return;
+function debug(message, force) {
+    if (!_UI.devMode) return;
 
-    if(_UI.debug || force){
-        if(typeof message === 'string'){
+    if (_UI.debug || force) {
+        if (typeof message === 'string') {
             message = message.replace(/&lt;/gi, '<');
             message = message.replace(/&gt;/gi, '>');
 
-            if(message === 'group') {
+            if (message === 'group') {
                 console.group();
                 return;
-            } else if(message === 'groupCollapsed'){
+            } else if (message === 'groupCollapsed') {
                 console.groupCollapsed();
                 return;
-            } else if(_UI.debugAutoGroup && message.indexOf('- START') > 0){
+            } else if (_UI.debugAutoGroup && message.indexOf('- START') > 0) {
                 console.group(message.substr(2).replace(' - START', ''));
                 return;
-            } else if(message === 'groupEnd'|| (_UI.debugAutoGroup && message.indexOf('- END') > 0)) {
+            } else if (message === 'groupEnd'|| (_UI.debugAutoGroup && message.indexOf('- END') > 0)) {
                 console.groupEnd(message);
                 return;
             } else {
                 console.log(message);
             }
-
-        } else if (typeof message === 'object'){
-            if(_UI.debugTableObjects) console.table(message);
+        } else if (typeof message === 'object') {
+            if (_UI.debugTableObjects) console.table(message);
             else console.log(message);
         }
     }
@@ -88,45 +87,45 @@ function debug(message, force){
 
 function json(obj, raw) {
     obj = clone(obj);
-    if(raw) return JSON.stringify(obj);
+    if (raw) return JSON.stringify(obj);
     else {
-        var j = JSON.stringify(obj, undefined, '\t');
-        if(j) return j.replace(/\n/g, '\r\n');
+        let j = JSON.stringify(obj, undefined, '\t');
+        if (j) return j.replace(/\n/g, '\r\n');
         else return '';
     }
 }
 
 
-//--------------------------------------
+// --------------------------------------
 // Dialog Box, Error Box, Notation
-//--------------------------------------
-function closeDialog(){
-    if(!_UI.popOut && document.getElementById('npSave')) document.getElementById('npSave').style.backgroundColor = 'transparent';
+// --------------------------------------
+function closeDialog() {
+    if (!_UI.popOut && document.getElementById('npSave')) document.getElementById('npSave').style.backgroundColor = 'transparent';
     document.getElementById('dialog_bg').style.display='none';
     document.getElementById('big_dialog_box').style.display='none';
     document.getElementById('dialog_box').style.display='none';
     document.getElementById('saveFormatFlyout').style.display='none';
 
-    document.getElementById('dialogRightContent').innerHTML = "<b>Error: unspecified dialog box content.</b>";
-    document.getElementById('bigDialogLeftContent').innerHTML = "<b>Error: unspecified dialog box content.</b>";
+    document.getElementById('dialogRightContent').innerHTML = '<b>Error: unspecified dialog box content.</b>';
+    document.getElementById('bigDialogLeftContent').innerHTML = '<b>Error: unspecified dialog box content.</b>';
 
     // document.body.focus();
 }
 
-function openDialog(content){
+function openDialog(content) {
     closeDialog();
     document.body.focus();
-    var dc = document.getElementById('dialogRightContent');
+    let dc = document.getElementById('dialogRightContent');
     dc.innerHTML = content;
 
-    if(dc.style.height > 800) dc.style.height = 800;
+    if (dc.style.height > 800) dc.style.height = 800;
     else dc.style.width = 'auto';
 
     document.getElementById('dialog_box').style.display='block';
     document.getElementById('dialog_bg').style.display='block';
 }
 
-function openBigDialog(content){
+function openBigDialog(content) {
     closeDialog();
     document.body.focus();
     document.getElementById('bigDialogLeftContent').innerHTML = content;
@@ -140,26 +139,26 @@ function isBigDialogOpen() {
     return document.getElementById('big_dialog_box').style.display === 'block';
 }
 
-function openNotation(content, x, y){
+function openNotation(content, x, y) {
     getEditDocument().body.focus();
-    var n = getEditDocument().getElementById('notation');
+    let n = getEditDocument().getElementById('notation');
     n.innerHTML = content;
     n.style.top = (round(y)+'px');
     n.style.left = (round(x+50)+'px');
     n.style.display='block';
 }
 
-function closeNotation(){
+function closeNotation() {
     getEditDocument().getElementById('notation').style.display='none';
-    getEditDocument().getElementById('notation').innerHTML = "&#x20E2;";
+    getEditDocument().getElementById('notation').innerHTML = '&#x20E2;';
     getEditDocument().body.focus();
 }
 
 function toggleDialog_ExportOptions() {
-    var sff = document.getElementById('saveFormatFlyout');
-    var nps = document.getElementById('npSave');
+    let sff = document.getElementById('saveFormatFlyout');
+    let nps = document.getElementById('npSave');
 
-    if(sff.style.display === 'block'){
+    if (sff.style.display === 'block') {
         closeDialog();
     } else {
         nps.style.backgroundColor = _UI.colors.blue.l45;
@@ -168,7 +167,7 @@ function toggleDialog_ExportOptions() {
 }
 
 function makeErrorMessageBox() {
-    var con ='<div id="errormessagebox" style="display:none;">' +
+    let con ='<div id="errormessagebox" style="display:none;">' +
     '<table cellpadding=0 cellspacing=0 border=0><tr>' +
     '<td class="errormessageleftbar">'+
     '<button class="errormessageclosebutton" onclick="closeErrorMessageBox();">&times;</button></td>' +
@@ -179,46 +178,46 @@ function makeErrorMessageBox() {
 }
 
 function showErrorMessageBox(msg) {
-    var msgcon = document.getElementById('errormessagecontent');
-    var msgbox = document.getElementById('errormessagebox');
+    let msgcon = document.getElementById('errormessagecontent');
+    let msgbox = document.getElementById('errormessagebox');
     msgcon.innerHTML = msg;
     msgbox.style.display = 'block';
     console.warn(msg);
 }
 
-function closeErrorMessageBox(){
-    document.getElementById('errormessagecontent').innerHTML = "";
+function closeErrorMessageBox() {
+    document.getElementById('errormessagecontent').innerHTML = '';
     document.getElementById('errormessagebox').style.display = 'none';
 }
 
 function showToast(msg, dur, fn) {
     // debug('\n showToast - START');
-    var step = -1;
-    var stepmax = 20;
-    var timestep = 10;
-    var divisor = 5;
-    var msgdiv = getEditDocument().getElementById('toast');
-    var durration = dur || 3000;
+    let step = -1;
+    let stepmax = 20;
+    let timestep = 10;
+    let divisor = 5;
+    let msgdiv = getEditDocument().getElementById('toast');
+    let durration = dur || 3000;
     msgdiv.innerHTML = msg || 'Howdy!';
 
     // debug('\t Typeof fn: ' + typeof fn);
     // console.log(fn);
 
-    if(fn && typeof fn === 'function') {
+    if (fn && typeof fn === 'function') {
         // debug('\t CALLING FUNCTION NOW');
         setTimeout(fn, 100);
     }
 
-    if(_UI.toastTimeout){
+    if (_UI.toastTimeout) {
         msgdiv.innerHTML = msg;
         appearFinish();
         return;
     }
 
-    var currtop = -50;
-    var finaltop = 15;
-    var curropacity = 0;
-    var finalopacity = 1;
+    let currtop = -50;
+    let finaltop = 15;
+    let curropacity = 0;
+    let finalopacity = 1;
 
     function appearFinish() {
         // debug('\t appearFinish');
@@ -230,13 +229,12 @@ function showToast(msg, dur, fn) {
         msgdiv.style.opacity = finalopacity;
 
         setToastTimeout(disappearStep, durration);
-
     }
 
     function appearStep() {
         // debug('\t appearStep ' + step);
 
-        if(step < 0){
+        if (step < 0) {
             msgdiv.style.display = 'block';
             msgdiv.style.marginTop = '-50px;';
             msgdiv.style.opacity = '0.0';
@@ -245,8 +243,7 @@ function showToast(msg, dur, fn) {
             step++;
 
             setToastTimeout(appearStep, timestep);
-
-        } else if (step < stepmax){
+        } else if (step < stepmax) {
             step++;
             currtop = currtop + ((finaltop - currtop) / divisor);
             curropacity = curropacity + ((finalopacity - curropacity) / divisor);
@@ -255,7 +252,6 @@ function showToast(msg, dur, fn) {
             msgdiv.style.opacity = curropacity;
 
             setToastTimeout(appearStep, timestep);
-
         } else {
             appearFinish();
         }
@@ -263,16 +259,15 @@ function showToast(msg, dur, fn) {
 
     function disappearStep() {
         // debug('\t appearStep ' + step);
-        if(step < 0){
+        if (step < 0) {
             msgdiv.style.display = 'none';
             msgdiv.style.marginTop = '-50px;';
             msgdiv.style.opacity = '0.0';
             msgdiv.innerHTML = '0_o';
-            if(_UI.toastTimeout) {
+            if (_UI.toastTimeout) {
                 clearTimeout(_UI.toastTimeout);
                 _UI.toastTimeout = false;
             }
-
         } else {
             step--;
             currtop = currtop - (currtop / divisor);
@@ -290,20 +285,20 @@ function showToast(msg, dur, fn) {
 }
 
 function setToastTimeout(fn, dur) {
-    if(_UI.toastTimeout) clearTimeout(_UI.toastTimeout);
+    if (_UI.toastTimeout) clearTimeout(_UI.toastTimeout);
     _UI.toastTimeout = setTimeout(fn, dur);
 }
 
 
-//-------------------
+// -------------------
 // Saved Sate
-//-------------------
-function setProjectAsSaved(){
+// -------------------
+function setProjectAsSaved() {
     _UI.projectSaved = true;
 
-    if(_UI.devMode){
+    if (_UI.devMode) {
         document.title = '░▒▓█ GSDEVMODE █▓▒░';
-    } else if(_UI.popOut) {
+    } else if (_UI.popOut) {
         document.title = 'Glyphr Studio - Tools';
         _UI.popOut.document.title = 'Glyphr Studio - Canvas';
     } else {
@@ -313,12 +308,12 @@ function setProjectAsSaved(){
     updateSaveIcon();
 }
 
-function setProjectAsUnsaved(){
+function setProjectAsUnsaved() {
     _UI.projectSaved = false;
 
-    if(_UI.devMode){
+    if (_UI.devMode) {
         document.title = '░▒▓█ GSDEVM❖DE █▓▒░';
-    } else if(_UI.popOut) {
+    } else if (_UI.popOut) {
         document.title = ' ❖ Glyphr Studio - Tools';
         _UI.popOut.document.title = ' ❖ Glyphr Studio - Canvas';
     } else {
@@ -328,31 +323,31 @@ function setProjectAsUnsaved(){
     updateSaveIcon();
 }
 
-function updateSaveIcon(){
-    if(_UI.currentPanel === 'npNav') return;
+function updateSaveIcon() {
+    if (_UI.currentPanel === 'npNav') return;
 
-    var savecolor = _UI.colors.gray.l90;
-    if(!_UI.projectSaved) savecolor = 'white';
+    let savecolor = _UI.colors.gray.l90;
+    if (!_UI.projectSaved) savecolor = 'white';
 
     document.getElementById('npSave').innerHTML = '<table class="saveButtonTable">' +
     '<tr><td style="border-right:1px solid rgb(204, 209, 214);">' +
         '<button class="primarynavbutton" style="height:32px; width:38px; padding:4px 0px 0px 7px;" title="Save Glyphr Project File" onclick="showToast(\'Saving Glyphr Studio Project file...\'); setTimeout(saveGlyphrProjectFile, 500);">' +
-            makeIcon({'name': 'button_npSave', 'size':24, 'color':savecolor, 'hovercolor':'white'}) +
+            makeIcon({'name': 'button_npSave', 'size': 24, 'color': savecolor, 'hovercolor': 'white'}) +
         '</button></td><td>' +
         '<button class="primarynavbutton" style="height:36px; width:21px; text-align:left; padding:0px 0px 0px 4px;" title="Save File Format Options" onclick="toggleDialog_ExportOptions();">' +
-            makeIcon({'name': 'button_more', 'height':10, 'width':10, 'size':10, 'color':savecolor, 'hovercolor':'white'}) +
+            makeIcon({'name': 'button_more', 'height': 10, 'width': 10, 'size': 10, 'color': savecolor, 'hovercolor': 'white'}) +
         '</button></td></tr>'+
     '</table>';
 }
 
 
-//-------------------
+// -------------------
 // File Savr
-//-------------------
+// -------------------
 
 function saveFile(fname, buffer, ftype) {
 ftype = ftype || 'text/plain;charset=utf-8';
-var fblob = new Blob([buffer], {'type':ftype, 'endings':'native'});
+let fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
 
 try {
     // IE
@@ -360,13 +355,13 @@ try {
     return;
 } catch (err) {
     // Others
-    var link = document.createElement('a');
+    let link = document.createElement('a');
     window.URL = window.URL || window.webkitURL;
     link.href = window.URL.createObjectURL(fblob);
-    //link.onclick = ("alert("+window.URL.createObjectURL(fblob)+");");
+    // link.onclick = ("alert("+window.URL.createObjectURL(fblob)+");");
     link.download = fname;
 
-    var event = document.createEvent('MouseEvents');
+    let event = document.createEvent('MouseEvents');
     event.initEvent('click', true, false);
     link.dispatchEvent(event);
     return;
@@ -374,15 +369,15 @@ try {
 }
 
 
-//-------------------
+// -------------------
 // Common Functions
-//-------------------
+// -------------------
 // returns a full new copy of any object
 // 'parentpath' is a PathPoint property that is a pointer to it's parent Path
 // causes infinite loops when cloning objects.  Kind of a hack.
-function clone(cobj){
-    var newObj = (cobj instanceof Array) ? [] : {};
-    for (var i in cobj) {
+function clone(cobj) {
+    let newObj = (cobj instanceof Array) ? [] : {};
+    for (let i in cobj) {
         if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parentpath' && i !== 'cache') {
             newObj[i] = clone(cobj[i]);
         } else newObj[i] = cobj[i];
@@ -392,14 +387,14 @@ function clone(cobj){
 
 // rounds a number to include a .5 so it draws nicely on canvas
 // true = +0.5, false = -0.5
-Number.prototype.makeCrisp = function(dir){
-    var mul = dir? 1 : -1;
+Number.prototype.makeCrisp = function(dir) {
+    let mul = dir? 1 : -1;
     return round(this) + (0.5 * mul);
 };
 
 // better rounding than Math.round
-function round(num, dec){
-    if(!num) return 0;
+function round(num, dec) {
+    if (!num) return 0;
     dec = dec || 0;
     return Number(Math.round(num+'e'+dec)+'e-'+dec) || 0;
 }
@@ -407,20 +402,20 @@ function round(num, dec){
 // floating point numbers make me mad
 function numSan(num) {
     num = parseFloat(num);
-    var strnum = ''+num;
+    let strnum = ''+num;
 
-    if(strnum.indexOf('0000') > -1 || strnum.indexOf('9999') > -1){
+    if (strnum.indexOf('0000') > -1 || strnum.indexOf('9999') > -1) {
         num = round(num, 6);
     }
 
-    if(num < 0.0000 && num > 0) num = 0;
+    if (num < 0.0000 && num > 0) num = 0;
 
     return num;
 }
 
 // removes illegal file name chars
-function strSan(val){
-    return val.replace(/[<>'"\\]/g,"");
+function strSan(val) {
+    return val.replace(/[<>'"\\]/g, '');
 }
 
 // removes begining and trailing whitespace, and any breaking or tab chars
@@ -428,14 +423,16 @@ function trim(text) {
     try {
         text = text.replace(/^\s+|\s+$/g, '');
         return text.replace(/(\r\n|\n|\r|\t)/gm, '');
-    } catch(e) { return ''; }
+    } catch (e) {
+return '';
+}
 }
 
 // returns true for 0 and false
-function isval(val){
-    if(val === 0) return true;
+function isval(val) {
+    if (val === 0) return true;
     else if (val === false) return true;
-    else if(val === null || val === undefined) return false;
+    else if (val === null || val === undefined) return false;
     else if ( typeof val === 'object' && Object.keys(val).length === 0 ) return false;
     else return !!val;
 }
@@ -445,19 +442,19 @@ function getOverallMaxes(maxarr) {
     // debug('\t start');
     // debug(maxarr);
 
-    var re = clone(_UI.mins);
-    var tm;
+    let re = clone(_UI.mins);
+    let tm;
 
-    for(var m=0; m<maxarr.length; m++){
+    for (let m=0; m<maxarr.length; m++) {
         // debug('\t pass ' + m);
         tm = maxarr[m];
         // debug([tm]);
 
         // sanitize
-        if(!isval(tm.xmax)) tm.xmax = clone(_UI.mins.xmax);
-        if(!isval(tm.xmin)) tm.xmin = clone(_UI.mins.xmin);
-        if(!isval(tm.ymax)) tm.ymax = clone(_UI.mins.ymax);
-        if(!isval(tm.ymin)) tm.ymin = clone(_UI.mins.ymin);
+        if (!isval(tm.xmax)) tm.xmax = clone(_UI.mins.xmax);
+        if (!isval(tm.xmin)) tm.xmin = clone(_UI.mins.xmin);
+        if (!isval(tm.ymax)) tm.ymax = clone(_UI.mins.ymax);
+        if (!isval(tm.ymin)) tm.ymin = clone(_UI.mins.ymin);
         // debug([tm]);
 
         // find
@@ -474,14 +471,14 @@ function getOverallMaxes(maxarr) {
 }
 
 function reqAniFrame(fun) {
-    if(_UI.popOut){
-        if(_UI.popOut.requestAnimationFrame) _UI.popOut.requestAnimationFrame(fun);
+    if (_UI.popOut) {
+        if (_UI.popOut.requestAnimationFrame) _UI.popOut.requestAnimationFrame(fun);
         else {
             console.warn('no requestAnimationFrame');
             fun();
         }
     } else {
-        if(window.requestAnimationFrame) window.requestAnimationFrame(fun);
+        if (window.requestAnimationFrame) window.requestAnimationFrame(fun);
         else {
             console.warn('no requestAnimationFrame');
             fun();
@@ -489,9 +486,9 @@ function reqAniFrame(fun) {
     }
 }
 
-//--------------------------
+// --------------------------
 // Angle and Rotation Stuff
-//--------------------------
+// --------------------------
 
 /**
     Use JavaScript angle system by default:
@@ -502,21 +499,21 @@ function reqAniFrame(fun) {
     360 Degrees, 12 o'clock is zero, clockwise = positve
 **/
 
-function calculateAngleX(angle, y){
+function calculateAngleX(angle, y) {
     x = Math.tan(angle*y);
     return x;
 }
 
-function calculateAngleY(angle, x){
+function calculateAngleY(angle, x) {
     y = Math.tan(angle*x);
     return y;
 }
 
-function calculateAngle(h, p){
-    p = p || {x:0, y:0};
-    var result = Math.atan2(h.y - p.y, h.x - p.x);
+function calculateAngle(h, p) {
+    p = p || {x: 0, y: 0};
+    let result = Math.atan2(h.y - p.y, h.x - p.x);
 
-    if(isNaN(result)){
+    if (isNaN(result)) {
         console.warn('calculateAngle returned NaN\n' + json(h) + '\n' + json(p));
         result = 0;
     }
@@ -524,10 +521,10 @@ function calculateAngle(h, p){
     return result;
 }
 
-function calculateLength(h, p){
-    var adj = p.x - h.x;
-    var opp = p.y - h.y;
-    var result = Math.sqrt( (adj*adj) + (opp*opp) );
+function calculateLength(h, p) {
+    let adj = p.x - h.x;
+    let opp = p.y - h.y;
+    let result = Math.sqrt( (adj*adj) + (opp*opp) );
     return result;
 }
 
@@ -537,14 +534,14 @@ function rotate(coord, angle, about) {
     // debug('\t Math angle:\t' + angle);
     // debug('\t about ' + json(about, true));
 
-    if(!angle || !coord) return;
-    about = about || {x:0, y:0};
+    if (!angle || !coord) return;
+    about = about || {x: 0, y: 0};
 
     coord.x -= about.x;
     coord.y -= about.y;
 
-    var newx = (coord.x * Math.cos(angle)) - (coord.y * Math.sin(angle));
-    var newy = (coord.x * Math.sin(angle)) + (coord.y * Math.cos(angle));
+    let newx = (coord.x * Math.cos(angle)) - (coord.y * Math.sin(angle));
+    let newy = (coord.x * Math.sin(angle)) + (coord.y * Math.cos(angle));
 
     coord.x = newx + about.x;
     coord.y = newy + about.y;
@@ -553,9 +550,13 @@ function rotate(coord, angle, about) {
     // debug(' rotate - END\n');
 }
 
-//convert between degrees and radians
-function rad(deg) {    return (deg * Math.PI / 180) % Math.PI; }
-function deg(rad) {    return (rad * 180 / Math.PI) % 360; }
+// convert between degrees and radians
+function rad(deg) {
+return (deg * Math.PI / 180) % Math.PI;
+}
+function deg(rad) {
+ return (rad * 180 / Math.PI) % 360;
+}
 
 // Shows the Glyphr Studio angle as opposed to the JavaScript angle
 function calculateNiceAngle(angle) {
@@ -563,7 +564,7 @@ function calculateNiceAngle(angle) {
     angle = 360 - angle;
     angle -= 270;
     angle = angle % 360;
-    if(angle < 0) angle += 360;
+    if (angle < 0) angle += 360;
 
     return angle;
 }
@@ -571,7 +572,7 @@ function calculateNiceAngle(angle) {
 function niceAngleToAngle(angle) {
     angle += 90;
     angle = angle % 360;
-    if(angle < 180) angle = 360 - angle;
+    if (angle < 180) angle = 360 - angle;
     else angle *=-1;
 
     angle = rad(angle);
@@ -587,13 +588,13 @@ function async(fn, callback) {
 }
 
 
-//-------------------
+// -------------------
 // Object ID Stuff
-//-------------------
+// -------------------
 // Returns the first ID from an object
 function getFirstID(obj) {
-    for(var key in obj){
-        if(obj.hasOwnProperty(key)){
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
             return key;
         }
     }
@@ -603,76 +604,84 @@ function getFirstID(obj) {
 
 // Generate a new ID for an object
 function generateNewID(obj, base) {
-    var number = 1;
+    let number = 1;
     base = base || 'id';
-    var id = ('' + base + number);
+    let id = ('' + base + number);
     while (obj.hasOwnProperty(id)) id = ('' + base + (++number));
 
     return id;
 }
 
 function getMyID(obj) {
-    for(var g in _GP.glyphs){if(_GP.glyphs.hasOwnProperty(g)){
-        if(obj === _GP.glyphs[g]) return g;
-    }}
+    for (let g in _GP.glyphs) {
+if (_GP.glyphs.hasOwnProperty(g)) {
+        if (obj === _GP.glyphs[g]) return g;
+    }
+}
 
-    for(var c in _GP.components){if(_GP.components.hasOwnProperty(c)){
-        if(obj === _GP.components[c]) return c;
-    }}
+    for (let c in _GP.components) {
+if (_GP.components.hasOwnProperty(c)) {
+        if (obj === _GP.components[c]) return c;
+    }
+}
 
-    for(var l in _GP.ligatures){if(_GP.ligatures.hasOwnProperty(l)){
-        if(obj === _GP.ligatures[l]) return l;
-    }}
+    for (let l in _GP.ligatures) {
+if (_GP.ligatures.hasOwnProperty(l)) {
+        if (obj === _GP.ligatures[l]) return l;
+    }
+}
 
     return false;
 }
 
 // returns the length of an associative array
-function getLength(obj){
-    var len = 0;
-    for(var key in obj){ if( obj.hasOwnProperty(key)) len++; }
+function getLength(obj) {
+    let len = 0;
+    for (let key in obj) {
+if ( obj.hasOwnProperty(key)) len++;
+}
     return len;
 }
 
 
-//-------------------
+// -------------------
 // BUG EMAIL
-//-------------------
+// -------------------
 
-function genEmailContent(){
-    var con = 'Have a feature idea or ran into an issue%3F We%27d be happy to help!';
+function genEmailContent() {
+    let con = 'Have a feature idea or ran into an issue%3F We%27d be happy to help!';
     con += '%0A%0A%0A%0A___________________________________________%0A';
     con += 'version %09Glyphr Studio ' + _UI.thisGlyphrStudioVersionNum + '%0A';
-    //con += 'appCodeName %09' + navigator.appCodeName + '%0A';
+    // con += 'appCodeName %09' + navigator.appCodeName + '%0A';
     con += 'app name %09' + navigator.appName + '%0A';
-    //con += 'appVersion %09' + navigator.appVersion + '%0A';
+    // con += 'appVersion %09' + navigator.appVersion + '%0A';
     con += 'language %09' + navigator.language + '%0A';
     con += 'platform %09' + navigator.platform + '%0A';
     // con += 'systemLanguage %09' + navigator.systemLanguage + '%0A';
     // con += 'userLanguage %09' + navigator.userLanguage + '%0A';
     con += 'user agent %09' + encodeURIComponent(navigator.userAgent) + '%0A';
 
-    //debug(con);
+    // debug(con);
 
     return con;
 }
 
 
-//-------------------
+// -------------------
 // COLORS
-//-------------------
+// -------------------
 
 function parseColorString(c) {
-    var val = {r:0, g:0, b:0, a:1};
+    let val = {r: 0, g: 0, b: 0, a: 1};
 
-    if(typeof c !== 'string') return val;
+    if (typeof c !== 'string') return val;
 
-    if(c.charAt(0)==="#"){
-        c = c.substring(1,7);
-        val.r = parseInt(c.substring(0,2),16);
-        val.g = parseInt(c.substring(2,4),16);
-        val.b = parseInt(c.substring(4,6),16);
-    } else if (c.substring(0,4) === 'rgb('){
+    if (c.charAt(0)==='#') {
+        c = c.substring(1, 7);
+        val.r = parseInt(c.substring(0, 2), 16);
+        val.g = parseInt(c.substring(2, 4), 16);
+        val.b = parseInt(c.substring(4, 6), 16);
+    } else if (c.substring(0, 4) === 'rgb(') {
         c = c.split('(')[1].split(')')[0].split(',');
         val.r = parseInt(c[0], 10);
         val.g = parseInt(c[1], 10);
@@ -683,15 +692,15 @@ function parseColorString(c) {
     return val;
 }
 
-function shiftColor(c, percent, lighter){
-    percent = Math.max(0,Math.min(percent,1));
-    var val = parseColorString(c);
+function shiftColor(c, percent, lighter) {
+    percent = Math.max(0, Math.min(percent, 1));
+    let val = parseColorString(c);
 
-    val.r = Math.max(0,Math.min(val.r,255));
-    val.g = Math.max(0,Math.min(val.g,255));
-    val.b = Math.max(0,Math.min(val.b,255));
+    val.r = Math.max(0, Math.min(val.r, 255));
+    val.g = Math.max(0, Math.min(val.g, 255));
+    val.b = Math.max(0, Math.min(val.b, 255));
 
-    if(lighter){
+    if (lighter) {
         val.r = round(((255-val.r)*percent)+val.r);
         val.g = round(((255-val.g)*percent)+val.g);
         val.b = round(((255-val.b)*percent)+val.b);
@@ -705,33 +714,33 @@ function shiftColor(c, percent, lighter){
 }
 
 function RGBAtoRGB(rgb, alpha) {
-    var val = parseColorString(rgb);
+    let val = parseColorString(rgb);
 
-    var dr = round((255-val.r) * (1-alpha));
-    var dg = round((255-val.g) * (1-alpha));
-    var db = round((255-val.b) * (1-alpha));
+    let dr = round((255-val.r) * (1-alpha));
+    let dg = round((255-val.g) * (1-alpha));
+    let db = round((255-val.b) * (1-alpha));
 
-    var r = val.r + dr;
-    var g = val.g + dg;
-    var b = val.b + db;
+    let r = val.r + dr;
+    let g = val.g + dg;
+    let b = val.b + db;
 
     return `rgb(${r},${g},${b})`;
 }
 
 function transparencyToAlpha(transparency) {
-    var t = parseInt(transparency);
-    if(!t || isNaN(t)) return 1;
+    let t = parseInt(transparency);
+    if (!t || isNaN(t)) return 1;
 
-    if(t > 100) return 0;
-    if(t < 0) return 1;
+    if (t > 100) return 0;
+    if (t < 0) return 1;
 
     return ((100 - transparency) / 100);
 }
 
 
-//-------------------
+// -------------------
 // COMBINATORICS
-//-------------------
+// -------------------
 
 /**
  * K-combinations
@@ -770,9 +779,17 @@ function transparencyToAlpha(transparency) {
  *
  *   k_combinations([], 0)
  *   -> []
+ *
+ * @param {number} set -
+ * @param {number} k -
+ * @return {array}
  */
 function k_combinations(set, k) {
-    var i, j, combs, head, tailcombs;
+    let i;
+    let j;
+    let combs;
+    let head;
+    let tailcombs;
 
     if (k > set.length || k <= 0) {
         return [];
@@ -805,22 +822,22 @@ function k_combinations(set, k) {
 
 k_permutations = function(set, maxLen, excludeTwins) {
     // Copy initial values as arrays
-    var perm = set.map(function(val) {
+    let perm = set.map(function(val) {
         return [val];
     });
 
     // Our permutation generator
-    var generate = function(perm, maxLen, currLen) {
+    let generate = function(perm, maxLen, currLen) {
         // Reached desired length
         if (currLen === maxLen) {
             return perm;
         }
         // For each existing permutation
-        for (var i = 0, len = perm.length; i < len; i++) {
-            var currPerm = perm.shift();
+        for (let i = 0, len = perm.length; i < len; i++) {
+            let currPerm = perm.shift();
             // Create new permutation
-            for (var k = 0; k < set.length; k++) {
-                if(!(excludeTwins && currPerm[0] === set[k])) perm.push(currPerm.concat(set[k]));
+            for (let k = 0; k < set.length; k++) {
+                if (!(excludeTwins && currPerm[0] === set[k])) perm.push(currPerm.concat(set[k]));
             }
         }
         // Recurse

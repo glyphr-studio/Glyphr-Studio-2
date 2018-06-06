@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Panel > Attributes > Component
     Panel > Attributes > Component Instance
@@ -197,5 +197,3 @@
         _UI.focusElement = id;
         redraw({calledBy:'componentInstanceDetails'});
     }
-
-// end of file

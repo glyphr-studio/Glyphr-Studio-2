@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Page > Global Actions
     This page has actions that can be taken
@@ -277,6 +277,3 @@
         showToast((title + '<br>Starting...'), 10000);
         setTimeout(makeGlyphList, 500);
     }
-
-
-// end of file

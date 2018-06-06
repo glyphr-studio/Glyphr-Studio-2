@@ -1,4 +1,4 @@
-// start of file
+
 /**
     IO > Import > Glyphr Studio Project
     Handling backwards compatibility for old Glyphr
@@ -444,5 +444,3 @@
 
         // debug("finalizeGlyphrProject \t END\n");
     }
-
-// end of file

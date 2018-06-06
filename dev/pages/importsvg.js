@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Page > Import SVG
     HTML and associated functions for this page.
@@ -223,5 +223,3 @@
 
         // debug(' importSVG_importCode - END\n');
     }
-
-// end of file

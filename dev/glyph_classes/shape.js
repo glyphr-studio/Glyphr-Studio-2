@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Object > Shape
     The Shape object is the high level object that
@@ -703,6 +703,3 @@
         var segs = this.path.getPolySegment();
         segs.slowlyDrawSegments();
     };
-
-
-// end of file

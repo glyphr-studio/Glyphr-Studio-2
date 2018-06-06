@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Object > Glyph
     A single collection of outlines that could
@@ -963,5 +963,3 @@
             if(lsarr) for(var c=0; c<lsarr.length; c++) getGlyph(lsarr[c]).changed();
         }
     }
-
-// end of file

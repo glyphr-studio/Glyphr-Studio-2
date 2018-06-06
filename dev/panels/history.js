@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Panel > History
     Shows a list of all the undo-able actions for
@@ -51,5 +51,3 @@
 
         return content;
     }
-
-// end of file

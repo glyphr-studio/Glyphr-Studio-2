@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Page > Kerning
     HTML and associated functions for this page.
@@ -76,5 +76,3 @@
         _UI.redrawing = false;
         // debug(' redraw_Kerning - END\n');
     }
-
-// end of file

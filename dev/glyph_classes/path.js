@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Object > Path
     A Path is a collection of Path Points, plus
@@ -1012,5 +1012,3 @@
         }
         return false;
     };
-
-// end of file

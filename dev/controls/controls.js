@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Framework > Controls
     Common / re-usable controls, buttons, and everything 
@@ -1008,5 +1008,3 @@
         //debug("HELPUI - output:\n"+re);
         return re;
     }
-
-// end of file

@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Page > Glyph Edit
     HTML and associated functions for this page.
@@ -88,5 +88,3 @@
         _UI.redrawing = false;
         // debug(' redraw_GlyphEdit - END\n');
     }
-
-// end of file

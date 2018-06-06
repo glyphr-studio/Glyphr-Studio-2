@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Panel > Layers
     Shows a list of all the shapes in a Glyph.
@@ -146,5 +146,3 @@
             redraw({calledBy:"moveShapeDown"});
         }
     }
-
-// end of file

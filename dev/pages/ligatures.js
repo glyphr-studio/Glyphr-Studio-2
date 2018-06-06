@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Page > Ligatures
     HTML and associated functions for this page.
@@ -164,5 +164,3 @@
 
         return sortarr;
     }
-
-// end of file

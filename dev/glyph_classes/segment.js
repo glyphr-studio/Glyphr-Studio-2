@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Object > Segment
     A Segment stores and acts on a piece of a Path
@@ -869,5 +869,3 @@
         this.p4x = round(this.p4x, precision);
         this.p4y = round(this.p4y, precision);
     };
-
-// end of file

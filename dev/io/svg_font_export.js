@@ -1,4 +1,4 @@
-// start of file
+
 /**
     IO > Export > SVG Font
     Converting a Glyphr Studio Project to XML in 
@@ -200,5 +200,3 @@
         // debug(' ioSVG_makeAllKernPairs - END\n');
         return con;
     }
-
-// end of file

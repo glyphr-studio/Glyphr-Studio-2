@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Horizontal Kern
     An object for storing two groups of glyphs, and 
@@ -31,5 +31,3 @@
         _UI.selectedKern = _UI.selectedKern || getFirstID(_GP.kerning);
         return _UI.selectedKern;
     }
-
-// end of file

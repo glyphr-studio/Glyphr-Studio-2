@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Page > Font Settings
     HTML and associated functions for this page.
@@ -166,5 +166,3 @@
         // debug('\t returning ' + JSON.stringify(val));
         return val;
     }
-
-// end of file

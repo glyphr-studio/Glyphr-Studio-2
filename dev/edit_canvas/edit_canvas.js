@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Framework > Edit Canvas
     The Glyph Edit, Components, Ligatures, and to
@@ -1770,5 +1770,3 @@
         _UI.glyphEditCanvas.onmouseout = mouseoutcec;
         _UI.glyphEditCanvas.customguidetransparency = mouseovercec;
     }
-
-// end of file

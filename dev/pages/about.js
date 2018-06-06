@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Page > About
     HTML and associated functions for this page.
@@ -65,5 +65,3 @@
 
         return content;
     }
-
-// end of file

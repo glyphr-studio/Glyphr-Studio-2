@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Framework > Unicode
     Anything having to do with / working with
@@ -289,5 +289,3 @@
         'ffi': '0xFB03',
         'ffl': '0xFB04'
     };
-
-// end of file

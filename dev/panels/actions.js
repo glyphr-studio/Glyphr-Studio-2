@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Panel > Actions
     Usually this is attached to the bottom of the
@@ -360,5 +360,3 @@
             showDialog_LinkComponentToGlyph('The Component "' + getSelectedWorkItem().name + '" was successfully linked to Glyph "' + getGlyphName(id) + '".<br><br>');
         }
     }
-
-// end of file

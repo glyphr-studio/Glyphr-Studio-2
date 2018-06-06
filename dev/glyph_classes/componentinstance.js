@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Object > Component Instance
     Component Instances are a link to any other
@@ -465,5 +465,3 @@
         }
 
     }
-
-// end of file

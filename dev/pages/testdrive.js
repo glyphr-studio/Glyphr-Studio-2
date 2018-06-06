@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Page > Test Drive
     HTML and associated functions for this page.
@@ -324,5 +324,3 @@
         '<img src="' + imgd + '" title="Glyphr Test Drive" style="border:1px solid #f6f6f6;">'+
         '</html>');
     }
-
-// end of file

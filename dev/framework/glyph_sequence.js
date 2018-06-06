@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Framework > Glyph Sequence
     Drawing multiple lines of text.

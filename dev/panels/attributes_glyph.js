@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Panel > Attributes > Glyph
     Builds a panel of attributes for a Glyph, 
@@ -446,5 +446,3 @@
     }
 
     function dimSplit() { return '<span style="color:'+_UI.colors.gray.l60+'; width:20px; height:24px; text-align:center; display:inline-block; font-size:1.4em; vertical-align:-2px;">&#x2044;</span>';    }
-
-// end of file

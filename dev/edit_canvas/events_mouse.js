@@ -1,4 +1,4 @@
-// start of file
+
 /**
  Framework > Event Handlers > Mouse
  All the canvas mouse interaction and tool
@@ -936,5 +936,3 @@ function mousewheel(event){
         }
     }
 }
-
-// end of file

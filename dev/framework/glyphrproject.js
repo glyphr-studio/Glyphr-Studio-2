@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Glyphr Studio Project
     A default project in Object form for easy new
@@ -266,5 +266,3 @@
 
         // debug('CALCFONTMAXES - numberOfGlyphs ' + _UI.fontMetrics.numberOfGlyphs);
     }
-
-// end of file

@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     IO > Import > OpenType
     Using OpenType.js to read in a font file
@@ -354,5 +354,3 @@
          return 0;
      }
  }
-
-// end of file

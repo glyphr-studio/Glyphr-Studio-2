@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Panel > Guides
     Shows a list of all the system and custom 
@@ -145,5 +145,3 @@
 
         redraw({calledBy:'newGuide'});
     }
-
-// end of file

@@ -1,4 +1,4 @@
-// start of file
+
 /**
     IO > Import > SVG Outlines
     Takes a set of XML and pulls out any path or 
@@ -840,5 +840,3 @@
 
         return re;
     }
-
-// end of file

@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Page > Project Settings
     Project Settings are any settings that are 
@@ -95,5 +95,3 @@
         ps.griddivisions = Math.min(ps.upm, Math.max(1, val));
         document.getElementById('metirc-ssize').value = round((ps.upm / ps.griddivisions), 3);
     }
-
-// end of file

@@ -1,4 +1,4 @@
-// start of file
+
 /**
     History
     An object that stores a Glyphr Studio Project
@@ -115,5 +115,3 @@
 
         return 0;
     }
-
-// end of file

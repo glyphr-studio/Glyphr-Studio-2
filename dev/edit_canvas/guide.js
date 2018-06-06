@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Guide
     An object used by the UI for drawing guide 
@@ -108,4 +108,3 @@
         }
         return 'rgb('+arr[0]+','+arr[1]+','+arr[2]+')';
     }
-// end of file

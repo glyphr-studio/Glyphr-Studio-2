@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     IO > Import > SVG Font
     Reading XML Text and parsing it into Glyphr 
@@ -478,5 +478,3 @@
 
         return arr;
     }
-
-// end of file

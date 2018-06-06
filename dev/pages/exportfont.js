@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Page > Export Font
     HTML and associated functions for this page.
@@ -51,5 +51,3 @@
 
         getEditDocument().getElementById("mainwrapper").innerHTML = content;
     }
-
-// end of file

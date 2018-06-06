@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Page > Components
     HTML and associated functions for this page.
@@ -83,5 +83,3 @@
 
         // debug('deleteComponent - END\n');
     }
-
-// end of file

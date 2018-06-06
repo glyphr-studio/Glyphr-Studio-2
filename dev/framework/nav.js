@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Framework > Navigation
     This is all the logic around navigating around
@@ -576,5 +576,3 @@
 
         return newsub;
     }
-
-// end of file

@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Framework > Event Handlers > Keyboard
     All keyboard handlers can be found here.
@@ -287,5 +287,3 @@
             redraw({calledBy:'Nudge path point'});
         }
     }
-
-// end of file

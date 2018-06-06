@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Object > Poly Segment
     A Poly Segment (aka poly bezier) stores a
@@ -498,4 +498,3 @@
 
         // debug(' PolySegment.combineInlineSegments - removed ' + (len-this.segments.length) + ' - END\n');
     };
-// end of file

@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Panel > Chooser
     Shows a list of all the Glyphs to choose from
@@ -364,5 +364,3 @@
         // debug(' make_GlyphChooser_Button - END\n');
         return rv;
     }
-
-// end of file

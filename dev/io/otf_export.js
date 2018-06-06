@@ -1,4 +1,4 @@
-// start of file
+
 /**
     IO > Export > OpenType
     Using OpenType.js to convert a Glyphr Studio 

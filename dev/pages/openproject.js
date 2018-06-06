@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Page > Open Project
     The first page you see when you open Glyphr Studio.
@@ -231,5 +231,3 @@
             navigate({page: 'glyph edit'});
         }, 5);
     }
-
-// end of file

@@ -1,4 +1,4 @@
- // start of file
+ 
 /**
     Panel > Kern
     Shows a list of all the kern pairs.
@@ -140,5 +140,3 @@
         _UI.selectedKern = getFirstID(_GP.kerning); 
         redraw({calledBy:'deleteKernPair'});
     }
-
-// end of file

@@ -1,4 +1,4 @@
-// start of file
+
 /**
     Multi-Select
     Wrapper object to be used by the UI to handle
@@ -471,5 +471,3 @@
             draw_BoundingBoxHandles(bmaxes, _UI.colors.gray, _UI.multiSelectThickness);
         }
     };
-
-// end of file
