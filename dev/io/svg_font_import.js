@@ -1,8 +1,8 @@
- 
+
 /**
     IO > Import > SVG Font
-    Reading XML Text and parsing it into Glyphr 
-    Studio Objects.  Relies heavily on 
+    Reading XML Text and parsing it into Glyphr
+    Studio Objects.  Relies heavily on
     IO > Import > SVG Outline
 **/
 
@@ -12,11 +12,11 @@
 
         // Spinner Animation
         document.getElementById('openprojecttableright').innerHTML = make_LoadingAnimation(false);
-        var fis = document.getElementById('fontimportstatus');
-        var sweep = document.getElementById('sweep');
-        var degrees = 0;
+        let fis = document.getElementById('fontimportstatus');
+        let sweep = document.getElementById('sweep');
+        let degrees = 0;
 
-        function importStatus(msg){
+        function importStatus(msg) {
             degrees = ((degrees + 2) % 360);
             sweep.style.transform = ('rotate('+degrees+'deg)');
             fis.innerHTML = msg;
@@ -24,26 +24,25 @@
 
 
         // Font Stuff
-        var font, chars, kerns;
+        let font, chars, kerns;
 
         setTimeout(setupFontImport, 10);
 
-        function setupFontImport(){
+        function setupFontImport() {
             // debug('\n setupFontImport - START');
             importStatus('Reading font data...');
             _GP = new GlyphrProject();
 
             try {
                 // Get Font
-                var svgdata = _UI.droppedFileContent;
+                let svgdata = _UI.droppedFileContent;
                 // Convert unicode glyphs to decimal values
                 // DOM Parser does not return unicode values as text strings
                 // Kern groups containing '&#x' will get fuck'd
                 svgdata = svgdata.replace(/&#x/g, '0x');
-                var jsondata = convertXMLtoJSON(svgdata);
+                let jsondata = convertXMLtoJSON(svgdata);
                 font = ioSVG_getFirstTagInstance(jsondata, 'font');
-            
-            } catch (e){
+            } catch (e) {
                 loadPage_openproject();
                 openproject_changeTab('load');
                 showErrorMessageBox('There was a problem reading the SVG file:<br>' + e.message);
@@ -51,7 +50,7 @@
             }
 
             // Check to see if it's actually a SVG Font
-            if(!font){
+            if (!font) {
                 loadPage_openproject();
                 openproject_changeTab('load');
                 showErrorMessageBox('The SVG file you tried to load was not a SVG Font file. See Glyphr Studio help for more information.');
@@ -65,14 +64,14 @@
             chars = ioSVG_getTags(font, 'glyph');
 
             // test for range
-            if(chars.length < _UI.overflowCount || filter){
+            if (chars.length < _UI.overflowCount || filter) {
                 setTimeout(startFontImport, 1);
                 // Dump JSON
                 // saveFile('Parsed JSON', json(jsondata));
             } else {
                 document.getElementById('openprojecttableright').innerHTML = make_ImportFilter(chars.length, kerns.length, 'ioSVG_importSVGfont');
             }
-            
+
             // debug(' setupFontImport - END\n');
         }
 
@@ -89,20 +88,20 @@
         *    GLYPH IMPORT
         *
         */
-        var tca, data, uni, np, cname, chtml, adv, isautowide;
-        var maxGlyph = 0;
-        var minchar = 0xffff;
-        var customglyphrange = [];
-        var shapecounter = 0;
-        var newshapes = [];
-        var fc = {};
-        var fl = {};
+        let tca, data, uni, np, cname, chtml, adv, isautowide;
+        let maxGlyph = 0;
+        let minchar = 0xffff;
+        let customglyphrange = [];
+        let shapecounter = 0;
+        let newshapes = [];
+        let fc = {};
+        let fl = {};
 
-        var c=0;
-        function importOneGlyph(){
+        let c=0;
+        function importOneGlyph() {
             importStatus('Importing Glyph ' + c + ' of ' + chars.length);
 
-            if(c >= chars.length) {
+            if (c >= chars.length) {
                 setTimeout(importOneKern, 1);
                 return;
             }
@@ -116,19 +115,16 @@
 
             uni = parseUnicodeInput(tca.unicode);
 
-            if(tca.unicode === ' ') uni = ['0x0020'];
+            if (tca.unicode === ' ') uni = ['0x0020'];
 
-            if(uni === false){
+            if (uni === false) {
                 // Check for .notdef
                 // debug('\t !!! Skipping '+tca['glyph-name']+' NO UNICODE !!!');
                 chars.splice(c, 1);
-
-            } else if (filter && isOutOfBounds(uni)){
+            } else if (filter && isOutOfBounds(uni)) {
                 // debug('\t !!! Skipping '+tca['glyph-name']+' OUT OF BOUNDS !!!');
                 chars.splice(c, 1);
-
             } else {
-
                 // debug('\t GLYPH ' + c + '/'+chars.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(tca));
                 /*
                 *
@@ -141,21 +137,21 @@
                 // Import Path Data
                 data = tca.d;
                 // debug('\t Glyph has path data ' + data);
-                if(data && data !== 'z'){
+                if (data && data !== 'z') {
                     data = cleanAndFormatPathPointData(data);
 
                     // debug('\t split z, data into ' + data.length + ' Glyphr Studio shapes.');
                     // debug(data);
-                    
-                    for(var d=0; d<data.length; d++){
-                        if(data[d].length){
+
+                    for (let d=0; d<data.length; d++) {
+                        if (data[d].length) {
                             // debug('\t starting convertPathTag');
                             np = ioSVG_convertPathTag(data[d]);
                             // debug('\t created shape from PathTag');
                             // debug(np);
-                            if(np.pathpoints.length){
+                            if (np.pathpoints.length) {
                                 shapecounter++;
-                                newshapes.push(new Shape({'path':np, 'name':('Shape ' + shapecounter)}));
+                                newshapes.push(new Shape({'path': np, 'name': ('Shape ' + shapecounter)}));
                             } else {
                                 // debug('\t !!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
                             }
@@ -166,28 +162,27 @@
                 // Get Advance Width
                 isautowide = true;
                 adv = parseInt(tca['horiz-adv-x']);
-                if(adv){
-                    if(!isNaN(adv) && adv > 0){
+                if (adv) {
+                    if (!isNaN(adv) && adv > 0) {
                         isautowide = false;
                     }
                 } else adv = false;
 
 
-                if(uni.length === 1){
+                if (uni.length === 1) {
                     // It's a GLYPH
                     // Get some range data
                     uni = uni[0];
                     minchar = Math.min(minchar, uni);
                     maxGlyph = Math.max(maxGlyph, uni);
-                    if(1*uni > _UI.glyphrange.latinextendedb.end) customglyphrange.push(uni);
+                    if (1*uni > _UI.glyphrange.latinextendedb.end) customglyphrange.push(uni);
 
-                    fc[uni] = new Glyph({'shapes':newshapes, 'glyphhex':uni, 'glyphwidth':adv, 'isautowide':isautowide});
-                    if(getUnicodeName(uni) === '[name not found]') _GP.projectsettings.glyphrange.filternoncharpoints = false;
-
+                    fc[uni] = new Glyph({'shapes': newshapes, 'glyphhex': uni, 'glyphwidth': adv, 'isautowide': isautowide});
+                    if (getUnicodeName(uni) === '[name not found]') _GP.projectsettings.glyphrange.filternoncharpoints = false;
                 } else {
                     // It's a LIGATURE
                     uni = uni.join('');
-                    fl[uni] = new Glyph({'shapes':newshapes, 'glyphhex':uni, 'glyphwidth':adv, 'isautowide':isautowide});
+                    fl[uni] = new Glyph({'shapes': newshapes, 'glyphhex': uni, 'glyphwidth': adv, 'isautowide': isautowide});
                 }
 
                 // Successfull loop, advance c
@@ -205,13 +200,12 @@
         *    KERN IMPORT
         *
         */
-        var tk, tempgroup, reg, leftgroup, rightgroup, newid;
-        var fk = {};
+        let tk, tempgroup, reg, leftgroup, rightgroup, newid;
+        let fk = {};
 
-        var k = 0;
-        function importOneKern(){
-
-            if(k >= kerns.length) {
+        let k = 0;
+        function importOneKern() {
+            if (k >= kerns.length) {
                 importStatus('Finalizing the imported font...');
                 setTimeout(startFinalizeFontImport, 1);
                 return;
@@ -237,11 +231,11 @@
 
             // debug('\t kern groups parsed as ' + json(leftgroup, true) + ' ' + json(rightgroup, true));
 
-            if(leftgroup.length && rightgroup.length){
+            if (leftgroup.length && rightgroup.length) {
                 newid = generateNewID(fk, 'kern');
                 kernval = tk.attributes.k || 0;
                 // debug('\t Making a kern pair with k = ' + kernval);
-                fk[newid] = new HKern({'leftgroup':leftgroup, 'rightgroup':rightgroup, 'value':kernval});
+                fk[newid] = new HKern({'leftgroup': leftgroup, 'rightgroup': rightgroup, 'value': kernval});
                 // debug('\t Made the new kern successfully.');
                 k++;
             } else {
@@ -264,18 +258,18 @@
             setTimeout(finalizeFontImport, 4);
         }
 
-        function finalizeFontImport(){
+        function finalizeFontImport() {
             _GP.glyphs = fc;
             _GP.ligatures = fl;
             _GP.kerning = fk;
 
-            var rstart, rend;
-            for(var r in _UI.glyphrange){
-                if(_UI.glyphrange.hasOwnProperty(r)){
+            let rstart, rend;
+            for (let r in _UI.glyphrange) {
+                if (_UI.glyphrange.hasOwnProperty(r)) {
                     rstart = 1*_UI.glyphrange[r].begin;
                     rend = 1*_UI.glyphrange[r].end+1;
-                    for(var t=rstart; t<rend; t++){
-                        if(getGlyph(t)){
+                    for (let t=rstart; t<rend; t++) {
+                        if (getGlyph(t)) {
                             _GP.projectsettings.glyphrange[r] = true;
                             break;
                         }
@@ -284,9 +278,9 @@
             }
 
             // Make a custom range for the rest
-            if(customglyphrange.length){
+            if (customglyphrange.length) {
                 customglyphrange = customglyphrange.sort();
-                _GP.projectsettings.glyphrange.custom.push({'begin':customglyphrange[0], 'end':customglyphrange[customglyphrange.length-1]});
+                _GP.projectsettings.glyphrange.custom.push({'begin': customglyphrange[0], 'end': customglyphrange[customglyphrange.length-1]});
             }
 
             // Import Font Settings
@@ -294,10 +288,10 @@
             // space has horiz-adv-x
 
             // Font Settings
-            var fatt = ioSVG_getFirstTagInstance(font, 'font-face').attributes;
-            var ps = _GP.projectsettings;
-            var md = _GP.metadata;
-            var fname = fatt['font-family'] || 'My Font';
+            let fatt = ioSVG_getFirstTagInstance(font, 'font-face').attributes;
+            let ps = _GP.projectsettings;
+            let md = _GP.metadata;
+            let fname = fatt['font-family'] || 'My Font';
 
             ps.upm = 1*fatt['units-per-em'] || 1000;
             ps.name = fname;
@@ -328,7 +322,7 @@
 
     function make_LoadingAnimation() {
         // debug('\n make_LoadingAnimation - START');
-        var re = '';
+        let re = '';
         re += '<div class="openproject_tile">';
         re += '<h2>Importing Font</h2>';
         re += '<div id="fontimportstatus">Reading font data...</div>';
@@ -346,10 +340,10 @@
     }
 
     function make_ImportFilter(chars, kerns, funname) {
-        var re = '<div class="openproject_tile" style="width:500px; height:auto;">'+
+        let re = '<div class="openproject_tile" style="width:500px; height:auto;">'+
             '<h2>Whoa, there...</h2><br>'+
             'The font you\'re trying to import has <b>'+chars+' glyphs</b>';
-            if(kerns) re += ' and <b>'+kerns+' kern pairs</b>.  ';
+            if (kerns) re += ' and <b>'+kerns+' kern pairs</b>.  ';
             else re += '.  ';
             re += 'Glyphr Studio has a hard time with super-large fonts like this.  '+
             'We recommend pairing it down a little:<br><br>';
@@ -386,8 +380,8 @@
     }
 
     function setFontImportRange() {
-        var range = getCustomRange(false);
-        if(range){
+        let range = getCustomRange(false);
+        if (range) {
             _UI.importRange = range;
             document.getElementById('customrangebegin').value = range.begin;
             document.getElementById('customrangeend').value = range.end;
@@ -395,28 +389,28 @@
     }
 
     function isOutOfBounds(uni) {
-        if(!uni.length) return true;
+        if (!uni.length) return true;
 
-        for(var u=0; u<uni.length; u++){
-            if((parseInt(uni[u]) > _UI.importRange.end) || (parseInt(uni[u]) < _UI.importRange.begin)) return true;
+        for (let u=0; u<uni.length; u++) {
+            if ((parseInt(uni[u]) > _UI.importRange.end) || (parseInt(uni[u]) < _UI.importRange.begin)) return true;
         }
 
         return false;
     }
 
     function checkFilter(id) {
-        if(id === 'basic'){
+        if (id === 'basic') {
             document.getElementById('basic').checked = true;
             document.getElementById('custom').checked = false;
             document.getElementById('everything').checked = false;
             _UI.importRange.begin = 0x0020;
             _UI.importRange.end = 0x024F;
-        } else if (id === 'custom'){
+        } else if (id === 'custom') {
             document.getElementById('basic').checked = false;
             document.getElementById('custom').checked = true;
             document.getElementById('everything').checked = false;
             setFontImportRange();
-        } else if (id === 'everything'){
+        } else if (id === 'everything') {
             document.getElementById('basic').checked = false;
             document.getElementById('custom').checked = false;
             document.getElementById('everything').checked = true;
@@ -429,21 +423,19 @@
 
     function getKernMembersByName(names, chars, arr, limit) {
         limit = limit || 0xFFFF;
-        var uni;
-        if(names){
+        let uni;
+        if (names) {
             names = names.split(',');
 
             // Check all the glyph names
-            for(var n=0; n<names.length; n++){
-
+            for (let n=0; n<names.length; n++) {
                 // Check all the chars
-                for(var c=0; c<chars.length; c++){
-                    if(chars[c].attributes.unicode){
-
+                for (let c=0; c<chars.length; c++) {
+                    if (chars[c].attributes.unicode) {
                         // Push the match
-                        if(names[n] === chars[c].attributes['glyph-name']){
+                        if (names[n] === chars[c].attributes['glyph-name']) {
                             uni = parseUnicodeInput(chars[c].attributes.unicode);
-                            if(1*uni < limit) arr = arr.concat(uni);
+                            if (1*uni < limit) arr = arr.concat(uni);
                         }
                     }
                 }
@@ -455,21 +447,19 @@
 
     function getKernMembersByUnicodeID(ids, chars, arr, limit) {
         limit = limit || 0xFFFF;
-        var uni;
-        if(ids){
+        let uni;
+        if (ids) {
             ids = ids.split(',');
 
             // Check all the IDs
-            for(var i=0; i<ids.length; i++){
-
+            for (let i=0; i<ids.length; i++) {
                 // Check all the chars
-                for(var c=0; c<chars.length; c++){
-                    if(chars[c].attributes.unicode){
-
+                for (let c=0; c<chars.length; c++) {
+                    if (chars[c].attributes.unicode) {
                         // Push the match
-                        if(ids[i] === chars[c].attributes.unicode){
+                        if (ids[i] === chars[c].attributes.unicode) {
                             uni = parseUnicodeInput(chars[c].attributes.unicode);
-                            if(1*uni < limit) arr = arr.concat(uni);
+                            if (1*uni < limit) arr = arr.concat(uni);
                         }
                     }
                 }

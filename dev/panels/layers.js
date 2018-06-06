@@ -5,10 +5,10 @@
 **/
 
 
-    function makePanel_LayerChooser(){
+    function makePanel_LayerChooser() {
         // debug(`\n makePanel_LayerChooser - START`);
-        
-        var content = '<div class="navarea_header">';
+
+        let content = '<div class="navarea_header">';
 
         content += makePanelSuperTitle();
 
@@ -16,43 +16,42 @@
 
         content += '</div><div class="panel_section">';
 
-        var scs = getSelectedWorkItemShapes();
+        let scs = getSelectedWorkItemShapes();
         // debug(`\t selectedWorkItemShapes`);
         // debug(scs);
 
         // debug(`\t selectedShapes`);
         // debug(_UI.multiSelect.shapes.getMembers());
-        
-        var ts;
 
-        if(scs.length > 0){
+        let ts;
+
+        if (scs.length > 0) {
             content += '<table class="layertable">';
-            for(var i=(scs.length-1); i>=0; i--){
+            for (let i=(scs.length-1); i>=0; i--) {
                 ts = scs[i];
 
-                if(_UI.multiSelect.shapes.isSelected(ts)) {
-                    // debug(`\t i: ${i} is selected`);    
-                    if(ts.objtype === 'componentinstance')    content += '<tr class="componentlayersel"';
+                if (_UI.multiSelect.shapes.isSelected(ts)) {
+                    // debug(`\t i: ${i} is selected`);
+                    if (ts.objtype === 'componentinstance') content += '<tr class="componentlayersel"';
                     else content += '<tr class="layersel"';
-                
                 } else {
                     // debug(`\t i: ${i} is NOT selected`);
-                    if(ts.objtype === 'componentinstance') content += '<tr class="componentlayer"';
+                    if (ts.objtype === 'componentinstance') content += '<tr class="componentlayer"';
                     else content += '<tr class="layer"';
                 }
 
                 content += ' onclick="selectShape(' + i + '); ';
-                if(ts.objtype === 'componentinstance') content += 'clickTool(\'shaperesize\'); ';
+                if (ts.objtype === 'componentinstance') content += 'clickTool(\'shaperesize\'); ';
                 content += ' redraw({calledBy:\'updatelayers\'});';
                 content += '">';
 
-                if(ts.objtype === 'componentinstance') {
+                if (ts.objtype === 'componentinstance') {
                     content += '<td class="layerthumb">'+ts.getTransformedGlyph().makeSVG()+'</td>';
                     content += '<td class="layername">' +ts.name;
                     content += '<span class="layernote">[linked to component: '+getGlyphName(ts.link)+']</span>';
                 } else {
                     content += '<td class="layerthumb">'+ts.makeSVG()+'</td>';
-                    content += '<td class="layername">' + ts.name ;
+                    content += '<td class="layername">' + ts.name;
                 }
 
                 content += '</td></tr>';
@@ -62,7 +61,7 @@
             content += '<div>No shapes exist yet.  You can create one with the New Shape tools on the canvas, or by pressing "add new shape" below.<br><br></div>';
         }
 
-        content +=  '<br><br>' + updateLayerActions();
+        content += '<br><br>' + updateLayerActions();
 
         content += '</div>';
 
@@ -73,11 +72,11 @@
     function selectShape(num) {
         // debug('\n selectShape - START');
         // debug('\t passed ' + num);
-        var wishapes = getSelectedWorkItemShapes();
+        let wishapes = getSelectedWorkItemShapes();
         // debug('\t wishapes ' + wishapes);
 
-        if(wishapes && wishapes[num]){
-             if(_UI.eventhandlers.multi) _UI.multiSelect.shapes.toggle(wishapes[num]);
+        if (wishapes && wishapes[num]) {
+             if (_UI.eventhandlers.multi) _UI.multiSelect.shapes.toggle(wishapes[num]);
              else {
                  _UI.multiSelect.points.clear();
                  _UI.multiSelect.shapes.select(wishapes[num]);
@@ -88,23 +87,23 @@
         // debug(' selectShape - END\n');
     }
 
-    function updateLayerActions(){
-        var selshapes = _UI.multiSelect.shapes.getMembers().length;
-        var numshapes = getSelectedWorkItemShapes().length;
+    function updateLayerActions() {
+        let selshapes = _UI.multiSelect.shapes.getMembers().length;
+        let numshapes = getSelectedWorkItemShapes().length;
 
-        var shapeactions = '';
+        let shapeactions = '';
         shapeactions += '<button title="Add Shape\nCreates a new default shape and adds it to this glyph" onclick="addShape(); history_put(\'Add Shape\'); redraw({calledBy:\'updateactions\'});">' + makeActionButton_AddShape(false) + '</button>';
         shapeactions += '<button title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph" onclick="showDialog_AddComponent();">'+ makeActionButton_AddShape(true) + '</button>';
         shapeactions += '<button title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one" onclick="showDialog_GetShapes();">' + makeActionButton_PasteShapesFromAnotherGlyph() + '</button>';
-        if(selshapes > 0) shapeactions += '<button title="Delete\nRemoves the currently selected shape or shapes from this glyph" onclick="_UI.multiSelect.shapes.deleteShapes(); history_put(\'Delete Shape\'); redraw({calledBy:\'updateactions\'});">' + makeActionButton_DeleteShape() + '</button>';
+        if (selshapes > 0) shapeactions += '<button title="Delete\nRemoves the currently selected shape or shapes from this glyph" onclick="_UI.multiSelect.shapes.deleteShapes(); history_put(\'Delete Shape\'); redraw({calledBy:\'updateactions\'});">' + makeActionButton_DeleteShape() + '</button>';
 
-        var layeractions = '';
+        let layeractions = '';
         layeractions += '<button title="Move Shape Up\nMoves the shape up in the shape layer order" onclick="moveShapeUp(); history_put(\'Move Shape Layer Up\');">' + makeActionButton_MoveLayerUp() + '</button>';
         layeractions += '<button title="Move Shape Down\nMoves the shape down in the shape layer order" onclick="moveShapeDown(); history_put(\'Move Shape Layer Down\');">' + makeActionButton_MoveLayerDown() + '</button>';
 
 
-        var content = '';
-        if(_UI.popOut){
+        let content = '';
+        if (_UI.popOut) {
             content += '<div class="actionsarea">';
             content += '<h3>Actions</h3>';
         } else {
@@ -113,7 +112,7 @@
         }
 
         content += shapeactions;
-        if(numshapes > 1 && selshapes === 1) content += layeractions;
+        if (numshapes > 1 && selshapes === 1) content += layeractions;
 
         content += '</div>';
 
@@ -122,27 +121,27 @@
     }
 
 
-//-------------------
+// -------------------
 // Move up / down
-//-------------------
-    function moveShapeUp(){
-        var wishapes = getSelectedWorkItemShapes();
-        var si = wishapes.indexOf(_UI.multiSelect.shapes.getSingleton());
-        if(si > -1 && si < wishapes.length-1){
-            var tempshape = wishapes[si+1];
+// -------------------
+    function moveShapeUp() {
+        let wishapes = getSelectedWorkItemShapes();
+        let si = wishapes.indexOf(_UI.multiSelect.shapes.getSingleton());
+        if (si > -1 && si < wishapes.length-1) {
+            let tempshape = wishapes[si+1];
             wishapes[si+1] = wishapes[si];
             wishapes[si] = tempshape;
-            redraw({calledBy:"moveShapeUp"});
+            redraw({calledBy: 'moveShapeUp'});
         }
     }
 
-    function moveShapeDown(){
-        var wishapes = getSelectedWorkItemShapes();
-        var si = wishapes.indexOf(_UI.multiSelect.shapes.getSingleton());
-        if(si > 0 && si < wishapes.length){
-            var tempshape = wishapes[si-1];
+    function moveShapeDown() {
+        let wishapes = getSelectedWorkItemShapes();
+        let si = wishapes.indexOf(_UI.multiSelect.shapes.getSingleton());
+        if (si > 0 && si < wishapes.length) {
+            let tempshape = wishapes[si-1];
             wishapes[si-1] = wishapes[si];
             wishapes[si] = tempshape;
-            redraw({calledBy:"moveShapeDown"});
+            redraw({calledBy: 'moveShapeDown'});
         }
     }

@@ -5,7 +5,7 @@
 **/
 
 
-    function loadPage_components(){
+    function loadPage_components() {
         // debug('\n loadPage_components - START');
 
         getEditDocument().getElementById('mainwrapper').innerHTML = editPage_Content();
@@ -13,44 +13,44 @@
         initEventHandlers();
         clickEmptySpace();
 
-        if(_UI.devMode && isval(_UI.dev_selectedShape)){
+        if (_UI.devMode && isval(_UI.dev_selectedShape)) {
             selectShape(_UI.dev_selectedShape);
             _UI.dev_selectedShape = false;
         }
 
         _UI.selectedComponent = _UI.selectedComponent || getFirstID(_GP.components);
 
-        if(getSelectedWorkItemShapes().length > 0)    _UI.selectedTool = 'pathedit';
+        if (getSelectedWorkItemShapes().length > 0) _UI.selectedTool = 'pathedit';
         else _UI.selectedTool = 'pathaddpoint';
 
-        redraw({calledBy:'loadPage_components'});
+        redraw({calledBy: 'loadPage_components'});
     }
 
 
-    function createNewComponent(pglyph){
+    function createNewComponent(pglyph) {
         // debug('\n createNewComponent - START');
 
-        pglyph = pglyph || new Glyph({'name':'Component ' + (getLength(_GP.components)+1)});
-        var newid = generateNewID(_GP.components, 'com');
+        pglyph = pglyph || new Glyph({'name': 'Component ' + (getLength(_GP.components)+1)});
+        let newid = generateNewID(_GP.components, 'com');
         _UI.selectedComponent = newid;
 
         _GP.components[newid] = pglyph;
 
-        //debug("Added New Component: " + newid + " JSON=" + json(_GP.components));
+        // debug("Added New Component: " + newid + " JSON=" + json(_GP.components));
 
         return newid;
     }
 
-    function deleteComponentConfirm(){
-        var content = '<h1>Delete Component</h1>';
+    function deleteComponentConfirm() {
+        let content = '<h1>Delete Component</h1>';
         content += '<b style="color:'+_UI.colors.error.medium+';">This action cannot be undone!</b> &nbsp; Are you sure you want to delete this Component?<br><br>';
 
-        var uia = getSelectedWorkItem().usedin;
-        if(uia.length > 0){
+        let uia = getSelectedWorkItem().usedin;
+        if (uia.length > 0) {
             content += 'This Component is linked to the following Glyphs as a Component Instance:<br><ul>';
 
-            for(var ssu=0; ssu<uia.length; ssu++){
-                content += ('<li>' + getGlyphName(uia[ssu]).replace(/LATIN /gi,'') + '</li>');
+            for (let ssu=0; ssu<uia.length; ssu++) {
+                content += ('<li>' + getGlyphName(uia[ssu]).replace(/LATIN /gi, '') + '</li>');
             }
 
             content += '</ul>';
@@ -62,7 +62,7 @@
         openDialog(content);
     }
 
-    function deleteComponent(){
+    function deleteComponent() {
         // debug('\n deleteComponent - START');
         // debug('\t deleting ' + _UI.selectedComponent);
 
@@ -72,14 +72,14 @@
         getSelectedWorkItem().deleteLinks(_UI.selectedComponent);
 
         // Delete it
-        var oldname = getSelectedWorkItemName();
+        let oldname = getSelectedWorkItemName();
         delete _GP.components[_UI.selectedComponent];
         _UI.selectedComponent = getFirstID(_GP.components);
 
         // history_put('Deleted ' + oldname);
 
         // debug('\t after delete ' + _GP.components);
-        redraw({calledBy:'deleteComponent'});
+        redraw({calledBy: 'deleteComponent'});
 
         // debug('deleteComponent - END\n');
     }

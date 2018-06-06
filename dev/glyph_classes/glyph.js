@@ -12,10 +12,10 @@
 **/
 
 
-//-------------------------------------------------------
+// -------------------------------------------------------
 // GLYPH OBJECT
-//-------------------------------------------------------
-    function Glyph(oa){
+// -------------------------------------------------------
+    function Glyph(oa) {
         // debug('\n Glyph - START');
         oa = oa || {};
         this.objtype = 'glyph';
@@ -35,11 +35,11 @@
 
         // debug('\t name: ' + this.name);
 
-        var lc = 0;
-        var cs = 0;
-        if(oa.shapes && oa.shapes.length){
-            for(var i=0; i<oa.shapes.length; i++) {
-                if(oa.shapes[i].objtype === 'componentinstance'){
+        let lc = 0;
+        let cs = 0;
+        if (oa.shapes && oa.shapes.length) {
+            for (let i=0; i<oa.shapes.length; i++) {
+                if (oa.shapes[i].objtype === 'componentinstance') {
                     // debug('\t hydrating ci ' + oa.shapes[i].name);
                     this.shapes[i] = new ComponentInstance(oa.shapes[i]);
                     lc++;
@@ -51,7 +51,7 @@
             }
         }
 
-        if(this.getGlyphMaxes) this.getGlyphMaxes();
+        if (this.getGlyphMaxes) this.getGlyphMaxes();
 
         // cache
         oa.cache = oa.cache || {};
@@ -62,31 +62,30 @@
     }
 
 
-
-//-------------------------------------------------------
+// -------------------------------------------------------
 // TRANSFORM & MOVE
-//-------------------------------------------------------
-    Glyph.prototype.setGlyphPosition = function(nx, ny, force){
+// -------------------------------------------------------
+    Glyph.prototype.setGlyphPosition = function(nx, ny, force) {
         // debug('Glyph.setGlyphPosition - START');
         // debug('\t nx/ny/force: ' + nx + ' ' + ny + ' ' + force);
-        var m = this.getMaxes();
-        if(nx !== false) nx = parseFloat(nx);
-        if(ny !== false) ny = parseFloat(ny);
-        var dx = (nx !== false)? (nx - m.xmin) : 0;
-        var dy = (ny !== false)? (ny - m.ymax) : 0;
+        let m = this.getMaxes();
+        if (nx !== false) nx = parseFloat(nx);
+        if (ny !== false) ny = parseFloat(ny);
+        let dx = (nx !== false)? (nx - m.xmin) : 0;
+        let dy = (ny !== false)? (ny - m.ymax) : 0;
         this.updateGlyphPosition(dx, dy, force);
         // debug(' Glyph.setGlyphPosition - END\n');
     };
 
-    Glyph.prototype.updateGlyphPosition = function(dx, dy, force){
+    Glyph.prototype.updateGlyphPosition = function(dx, dy, force) {
         // debug('\n Glyph.updateGlyphPosition - START ' + this.name);
         // debug('\t dx/dy/force: ' + dx + ' ' + dy + ' ' + force);
         // debug('\t number of shapes: ' + this.shapes.length);
 
         dx = parseFloat(dx) || 0;
         dy = parseFloat(dy) || 0;
-        var cs = this.shapes;
-        for(var i=0; i<cs.length; i++){
+        let cs = this.shapes;
+        for (let i=0; i<cs.length; i++) {
             cs[i].updateShapePosition(dx, dy, force);
         }
 
@@ -95,63 +94,63 @@
         // debug(' Glyph.updateGlyphPosition - END ' + this.name + '\n\n');
     };
 
-    Glyph.prototype.setGlyphSize = function(nw, nh, ratiolock){
+    Glyph.prototype.setGlyphSize = function(nw, nh, ratiolock) {
         // debug('SET GLYPHSIZE ---- nw/nh/ra:\t' + nw + '\t ' + nh + '\t ' + ratiolock);
         // debug('\t maxes: ' + json(this.maxes));
-        var m = this.getMaxes();
-        if(nw !== false) nw = parseFloat(nw);
-        if(nh !== false) nh = parseFloat(nh);
-        var ch = (m.ymax - m.ymin);
-        var cw = (m.xmax - m.xmin);
-        var dw = (nw !== false)? (nw - cw) : 0;
-        var dh = (nh !== false)? (nh - ch) : 0;
+        let m = this.getMaxes();
+        if (nw !== false) nw = parseFloat(nw);
+        if (nh !== false) nh = parseFloat(nh);
+        let ch = (m.ymax - m.ymin);
+        let cw = (m.xmax - m.xmin);
+        let dw = (nw !== false)? (nw - cw) : 0;
+        let dh = (nh !== false)? (nh - ch) : 0;
 
-        if(ratiolock){
-            if(Math.abs(nh) > Math.abs(nw)) dw = (cw*(nh/ch)) - cw;
+        if (ratiolock) {
+            if (Math.abs(nh) > Math.abs(nw)) dw = (cw*(nh/ch)) - cw;
             else dh = (ch*(nw/cw)) - ch;
         }
         this.updateGlyphSize(dw, dh, false);
     };
 
-    Glyph.prototype.updateGlyphSize = function(dw, dh, ratiolock){
+    Glyph.prototype.updateGlyphSize = function(dw, dh, ratiolock) {
         // debug('\n Glyph.updateGlyphSize - START ' + this.name);
         // debug('\t number of shapes: ' + this.shapes.length);
         // debug('\t dw dh rl:\t' + dw + '/' + dh + '/' + ratiolock);
 
-        var m = this.getMaxes();
-        if(dw !== false) dw = parseFloat(dw) || 0;
-        if(dh !== false) dh = parseFloat(dh) || 0;
+        let m = this.getMaxes();
+        if (dw !== false) dw = parseFloat(dw) || 0;
+        if (dh !== false) dh = parseFloat(dh) || 0;
         // debug('\t adjust dw/dh:\t' + dw + '/' + dh);
 
-        var oldw = m.xmax - m.xmin;
-        var oldh = m.ymax - m.ymin;
+        let oldw = m.xmax - m.xmin;
+        let oldh = m.ymax - m.ymin;
 
-        var neww = (oldw + dw);
-        var newh = (oldh + dh);
-        if(Math.abs(neww) < 1) neww = 1;
-        if(Math.abs(newh) < 1) newh = 1;
+        let neww = (oldw + dw);
+        let newh = (oldh + dh);
+        if (Math.abs(neww) < 1) neww = 1;
+        if (Math.abs(newh) < 1) newh = 1;
         // debug('\t new w/h:\t' + neww + '/' + newh);
 
-        var ratiodh = (newh/oldh);
-        var ratiodw = (neww/oldw);
+        let ratiodh = (newh/oldh);
+        let ratiodw = (neww/oldw);
         // debug('\t ratio dw/dh:\t' + ratiodw + '/' + ratiodh);
-        if(ratiolock){
+        if (ratiolock) {
             // Assuming only one will be nonzero
             // if(Math.abs(ratiodh) > Math.abs(ratiodw)) ratiodw = ratiodh;
             // else ratiodh = ratiodw;
-            if(dw !== 0 && dh === 0) ratiodh = ratiodw;
+            if (dw !== 0 && dh === 0) ratiodh = ratiodw;
             else ratiodw = ratiodh;
         }
         // debug('\t ratio dw/dh:\t' + ratiodw + '/' + ratiodh);
 
-        var cs = this.shapes;
-        var s, smaxes,
+        let cs = this.shapes;
+        let s, smaxes,
             oldsw, oldsh, oldsx, oldsy,
             newsw, newsh, newsx, newsy,
             sdw, sdh, sdx, sdy;
 
         // debug('\t Before Maxes ' + json(m, true));
-        for(var i=0; i<cs.length; i++){
+        for (let i=0; i<cs.length; i++) {
             s = cs[i];
             // debug('\t >>> Updating ' + s.objtype + ' ' + i + '/' + cs.length + ' : ' + s.name);
             smaxes = s.getMaxes();
@@ -159,12 +158,12 @@
             // scale
             oldsw = smaxes.xmax - smaxes.xmin;
             newsw = oldsw * ratiodw;
-            if(ratiodw === 0) sdw = false;
+            if (ratiodw === 0) sdw = false;
             else sdw = newsw - oldsw;
 
             oldsh = smaxes.ymax - smaxes.ymin;
             newsh = oldsh * ratiodh;
-            if(ratiodh === 0) sdh = false;
+            if (ratiodh === 0) sdh = false;
             else sdh = newsh - oldsh;
 
             // debug('\t Shape ' + i + ' dw dh ' + sdw + ' ' + sdh);
@@ -173,17 +172,16 @@
             // move
             oldsx = smaxes.xmin - m.xmin;
             newsx = oldsx * ratiodw;
-            if(ratiodw === 0) sdx = false;
+            if (ratiodw === 0) sdx = false;
             else sdx = newsx - oldsx;
 
             oldsy = smaxes.ymin - m.ymin;
             newsy = oldsy * ratiodh;
-            if(ratiodh === 0) sdy = false;
+            if (ratiodh === 0) sdy = false;
             else sdy = newsy - oldsy;
 
             // debug('\t Shape Pos ' + i + ' dx dy ' + sdx + ' ' + sdy);
             s.updateShapePosition(sdx, sdy, true);
-
         }
 
         this.changed();
@@ -191,15 +189,15 @@
         // debug(' Glyph.updateGlyphSize - END ' + this.name + '\n');
     };
 
-    Glyph.prototype.flipEW = function(mid){
+    Glyph.prototype.flipEW = function(mid) {
         // debug('\n Glyph.flipEW - START');
         // debug('\t ' + this.name);
         // debug('\t passed mid = ' + mid);
-        var m = this.getMaxes();
+        let m = this.getMaxes();
         mid = isval(mid)? mid : ((m.xmax - m.xmin) / 2) + m.xmin;
         // debug('\t mid = ' + mid);
         // debug('\t maxes = ' + json(m, true));
-        for(var s=0; s < this.shapes.length; s++){
+        for (let s=0; s < this.shapes.length; s++) {
             this.shapes[s].flipEW(mid);
         }
 
@@ -207,10 +205,10 @@
         // debug('\t maxes = ' + json(this.maxes, true));
     };
 
-    Glyph.prototype.flipNS = function(mid){
-        var m = this.getMaxes();
+    Glyph.prototype.flipNS = function(mid) {
+        let m = this.getMaxes();
         mid = isval(mid)? mid : ((m.ymax - m.ymin) / 2) + m.ymin;
-        for(var s=0; s < this.shapes.length; s++){
+        for (let s=0; s < this.shapes.length; s++) {
             this.shapes[s].flipNS(mid);
         }
 
@@ -220,7 +218,7 @@
     Glyph.prototype.rotate = function(angle, about) {
         about = about || this.getCenter();
 
-        for(var s=0; s < this.shapes.length; s++){
+        for (let s=0; s < this.shapes.length; s++) {
             this.shapes[s].rotate(angle, about);
         }
 
@@ -228,7 +226,7 @@
     };
 
     Glyph.prototype.reverseWinding = function() {
-        for(var s=0; s<this.shapes.length; s++){
+        for (let s=0; s<this.shapes.length; s++) {
             this.shapes[s].reverseWinding();
         }
 
@@ -238,9 +236,9 @@
     Glyph.prototype.alignShapes = function(edge) {
         // debug('\n Glyph.alignShapes - START');
         // debug('\t edge: ' + edge);
-        var target, offset;
+        let target, offset;
 
-        if(edge === 'top'){
+        if (edge === 'top') {
             target = -999999;
 
             this.shapes.forEach(function(v) {
@@ -248,13 +246,11 @@
             });
 
             // debug('\t found TOP: ' + target);
-            
+
             this.shapes.forEach(function(v) {
                 v.setShapePosition(false, target);
             });
-
-
-        } else if (edge === 'middle'){
+        } else if (edge === 'middle') {
             target = this.getCenter().y;
 
             // debug('\t found MIDDLE: ' + target);
@@ -263,9 +259,7 @@
                 offset = v.getCenter().y;
                 v.updateShapePosition(false, (target - offset));
             });
-
-
-        } else if (edge === 'bottom'){
+        } else if (edge === 'bottom') {
             target = 999999;
 
             this.shapes.forEach(function(v) {
@@ -278,11 +272,9 @@
                 offset = v.getMaxes().ymin;
                 v.updateShapePosition(false, (target - offset));
             });
-
-
-        } else if (edge === 'left'){
+        } else if (edge === 'left') {
             target = 999999;
-            
+
             this.shapes.forEach(function(v) {
                 target = Math.min(target, v.getMaxes().xmin);
             });
@@ -292,9 +284,7 @@
             this.shapes.forEach(function(v) {
                 v.setShapePosition(target, false);
             });
-
-
-        } else if (edge === 'center'){
+        } else if (edge === 'center') {
             target = this.getCenter().x;
 
             // debug('\t found CENTER: ' + target);
@@ -303,9 +293,7 @@
                 offset = v.getCenter().x;
                 v.updateShapePosition((target - offset), false);
             });
-
-
-        } else if (edge === 'right'){
+        } else if (edge === 'right') {
             target = -999999;
 
             this.shapes.forEach(function(v) {
@@ -325,28 +313,34 @@
     };
 
 
-//-------------------------------------------------------
+// -------------------------------------------------------
 // GETTERS
-//-------------------------------------------------------
-    Glyph.prototype.getName = function() { return this.name; };
-    
-    Glyph.prototype.getChar = function() { return getGlyphName(this.hex); };
+// -------------------------------------------------------
+    Glyph.prototype.getName = function() {
+ return this.name;
+};
 
-    Glyph.prototype.getHTML = function() { return this.glyphhtml || ''; };
+    Glyph.prototype.getChar = function() {
+ return getGlyphName(this.hex);
+};
+
+    Glyph.prototype.getHTML = function() {
+ return this.glyphhtml || '';
+};
 
     Glyph.prototype.getLSB = function() {
-        if(this.leftsidebearing === false) return _GP.projectsettings.defaultlsb;
+        if (this.leftsidebearing === false) return _GP.projectsettings.defaultlsb;
         else return this.leftsidebearing;
     };
 
     Glyph.prototype.getRSB = function() {
-        if(this.rightsidebearing === false) return _GP.projectsettings.defaultrsb;
+        if (this.rightsidebearing === false) return _GP.projectsettings.defaultrsb;
         else return this.rightsidebearing;
     };
 
     Glyph.prototype.getCenter = function() {
-        var m = this.getMaxes();
-        var re = {};
+        let m = this.getMaxes();
+        let re = {};
         re.x = ((m.xmax - m.xmin) / 2) + m.xmin;
         re.y = ((m.ymax - m.ymin) / 2) + m.ymin;
 
@@ -354,22 +348,21 @@
     };
 
 
-
-//-------------------------------------------------------
+// -------------------------------------------------------
 // CALCULATING SIZE
-//-------------------------------------------------------
-    Glyph.prototype.calcGlyphMaxes = function(){
+// -------------------------------------------------------
+    Glyph.prototype.calcGlyphMaxes = function() {
         // debug('\n Glyph.calcGlyphMaxes - START ' + this.name);
 
         this.maxes = clone(_UI.mins);
-        var tm;
+        let tm;
 
-        if(this.shapes.length > 0){
-            for(var jj=0; jj<this.shapes.length; jj++) {
+        if (this.shapes.length > 0) {
+            for (let jj=0; jj<this.shapes.length; jj++) {
                 // debug('\t ++++++ START shape ' + jj);
                 // debug(this.shapes[jj]);
 
-                if(this.shapes[jj].getMaxes){
+                if (this.shapes[jj].getMaxes) {
                     tm = this.shapes[jj].getMaxes();
                     // debug('\t before ' + json(tm, true));
                     this.maxes = getOverallMaxes([tm, this.maxes]);
@@ -378,7 +371,7 @@
                 }
             }
         } else {
-            this.maxes = { 'xmax': 0, 'xmin': 0, 'ymax': 0, 'ymin': 0 };
+            this.maxes = {'xmax': 0, 'xmin': 0, 'ymax': 0, 'ymin': 0};
         }
 
         this.calcGlyphWidth();
@@ -387,27 +380,27 @@
         return clone(this.maxes);
     };
 
-    Glyph.prototype.calcGlyphWidth = function(){
-        if(!this.isautowide) return;
+    Glyph.prototype.calcGlyphWidth = function() {
+        if (!this.isautowide) return;
         this.glyphwidth = Math.max(this.maxes.xmax, 0);
     };
 
     Glyph.prototype.getAdvanceWidth = function() {
         this.calcGlyphWidth();
-        if(!this.isautowide) return this.glyphwidth;
+        if (!this.isautowide) return this.glyphwidth;
         else return this.glyphwidth + this.getLSB() + this.getRSB();
     };
 
     Glyph.prototype.getMaxes = function() {
         // debug('\n Glyph.getMaxes - START ' + this.name);
-        if(hasNonValues(this.maxes)){
+        if (hasNonValues(this.maxes)) {
             // debug('\t ^^^^^^ maxes found NaN, calculating...');
             this.calcGlyphMaxes();
             // debug('\t ^^^^^^ maxes found NaN, DONE calculating...');
         }
 
-        if(this.shapes.length){
-            if( this.maxes.xmin === _UI.maxes.xmin ||
+        if (this.shapes.length) {
+            if ( this.maxes.xmin === _UI.maxes.xmin ||
                 this.maxes.xmin === _UI.mins.xmin ||
                 this.maxes.xmax === _UI.maxes.xmax ||
                 this.maxes.xmax === _UI.mins.xmax ||
@@ -415,68 +408,74 @@
                 this.maxes.ymin === _UI.mins.ymin ||
                 this.maxes.ymax === _UI.maxes.ymax ||
                 this.maxes.ymax === _UI.mins.ymax
-                ){
+                ) {
                 this.calcGlyphMaxes();
             }
         }
-        
+
         // debug('\t returning ' + json(this.maxes));
         // debug(' Glyph.getMaxes - END ' + this.name + '\n');
         return clone(this.maxes);
     };
 
     function hasNonValues(obj) {
-        if(!obj) return true;
+        if (!obj) return true;
 
-        for(var v in obj){ if(obj.hasOwnProperty(v)){
-            if(!isval(obj[v])) return true;
-        }}
+        for (let v in obj) {
+ if (obj.hasOwnProperty(v)) {
+            if (!isval(obj[v])) return true;
+        }
+}
 
         return false;
     }
 
 
-//-------------------------------------------------------
+// -------------------------------------------------------
 // COMPONENT STUFF
-//-------------------------------------------------------
-    Glyph.prototype.containsComponents = function(){
-        for(var s=0; s<this.shapes.length; s++){
-            if(this.shapes[s].objtype === 'componentinstance'){
+// -------------------------------------------------------
+    Glyph.prototype.containsComponents = function() {
+        for (let s=0; s<this.shapes.length; s++) {
+            if (this.shapes[s].objtype === 'componentinstance') {
                 return true;
             }
         }
-        return false;    
-    }
-    
+        return false;
+    };
+
     Glyph.prototype.canAddComponent = function(cid) {
         // debug('\n Glyph.canAddComponent - START');
-        var myid = ''+getMyID(this);
+        let myid = ''+getMyID(this);
         // debug('\t adding ' + cid + ' to (me) ' + myid);
 
-        if(myid === cid) return false;
-        if(this.usedin.length === 0) return true;
+        if (myid === cid) return false;
+        if (this.usedin.length === 0) return true;
 
-        var downlinks = this.collectAllDownstreamLinks([], true);
-        downlinks = downlinks.filter(function(elem, pos) { return downlinks.indexOf(elem) === pos;});
+        let downlinks = this.collectAllDownstreamLinks([], true);
+        downlinks = downlinks.filter(function(elem, pos) {
+ return downlinks.indexOf(elem) === pos;
+});
 
-        var uplinks = this.collectAllUpstreamLinks([]);
-        uplinks = uplinks.filter(function(elem, pos) { return uplinks.indexOf(elem) === pos;});
+        let uplinks = this.collectAllUpstreamLinks([]);
+        uplinks = uplinks.filter(function(elem, pos) {
+ return uplinks.indexOf(elem) === pos;
+});
 
         // debug('\t downlinks: ' + downlinks);
         // debug('\t uplinks: ' + uplinks);
 
-        if(downlinks.indexOf(cid) > -1) return false;
-        if(uplinks.indexOf(cid) > -1) return false;
+        if (downlinks.indexOf(cid) > -1) return false;
+        if (uplinks.indexOf(cid) > -1) return false;
 
         return true;
     };
 
     Glyph.prototype.collectAllDownstreamLinks = function(re, excludepeers) {
         re = re || [];
-        for(var s=0; s<this.shapes.length; s++){
-            if(this.shapes[s].objtype === 'componentinstance'){
+        for (let s=0; s<this.shapes.length; s++) {
+            if (this.shapes[s].objtype === 'componentinstance') {
                 re = re.concat(getGlyph(this.shapes[s].link).collectAllDownstreamLinks(re));
-                if(!excludepeers) re.push(this.shapes[s].link);
+                if (!excludepeers) re.push(this.shapes[s].link);
             }
         }
         return re;
@@ -484,7 +483,7 @@
 
     Glyph.prototype.collectAllUpstreamLinks = function(re) {
         re = re || [];
-        for(var g=0; g<this.usedin.length; g++){
+        for (let g=0; g<this.usedin.length; g++) {
             re = re.concat(getGlyph(this.usedin[g]).collectAllUpstreamLinks(re));
             re.push(this.usedin[g]);
         }
@@ -498,13 +497,13 @@
         // debug('\t passed this as id: ' + thisid);
 
         // Delete upstream Component Instances
-        var upstreamglyph;
-        for(var c=0; c<this.usedin.length; c++){
+        let upstreamglyph;
+        for (let c=0; c<this.usedin.length; c++) {
             upstreamglyph = getGlyph(this.usedin[c]);
             // debug('\t removing from ' + upstreamglyph.name);
             // debug(upstreamglyph.shapes);
-            for(var u=0; u<upstreamglyph.shapes.length; u++){
-                if(upstreamglyph.shapes[u].objtype === 'componentinstance' && upstreamglyph.shapes[u].link === thisid){
+            for (let u=0; u<upstreamglyph.shapes.length; u++) {
+                if (upstreamglyph.shapes[u].objtype === 'componentinstance' && upstreamglyph.shapes[u].link === thisid) {
                     upstreamglyph.shapes.splice(u, 1);
                     u--;
                 }
@@ -513,41 +512,41 @@
         }
 
         // Delete downstream usedin array values
-        for(var s=0; s<this.shapes.length; s++){
-            if(this.shapes[s].objtype === 'componentinstance'){
+        for (let s=0; s<this.shapes.length; s++) {
+            if (this.shapes[s].objtype === 'componentinstance') {
                 removeFromUsedIn(this.shapes[s].link, thisid);
             }
         }
     };
 
 
-//-------------------------------------------------------
+// -------------------------------------------------------
 // DRAWING AND EXPORTING
-//-------------------------------------------------------
-    Glyph.prototype.drawGlyph = function(lctx, view, alpha, addLSB){
+// -------------------------------------------------------
+    Glyph.prototype.drawGlyph = function(lctx, view, alpha, addLSB) {
         // debug('\n Glyph.drawGlyph - START ' + this.name);
         // debug('\t view ' + json(view, true));
 
-        var sl = this.shapes;
-        var shape, drewshape;
-        if(isNaN(alpha) || alpha > 1 || alpha < 0) alpha = 1;
+        let sl = this.shapes;
+        let shape, drewshape;
+        if (isNaN(alpha) || alpha > 1 || alpha < 0) alpha = 1;
 
-        if(addLSB && this.isautowide) view.dx += (this.getLSB() * view.dz);
+        if (addLSB && this.isautowide) view.dx += (this.getLSB() * view.dz);
 
         lctx.beginPath();
-        for(var j=0; j<sl.length; j++) {
+        for (let j=0; j<sl.length; j++) {
             shape = sl[j];
-            if(shape.visible) {
+            if (shape.visible) {
                 // debug('\t ' + this.name + ' drawing ' + shape.objtype + ' ' + j + ' ' + shape.name);
                 drewshape = shape.drawShape(lctx, view);
 
-                if(!drewshape){
+                if (!drewshape) {
                     console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + this.name);
-                    if(shape.objtype === 'componentinstance' && !getGlyph(shape.link)){
+                    if (shape.objtype === 'componentinstance' && !getGlyph(shape.link)) {
                         console.warn('>>> Component Instance has bad link: ' + shape.link);
 
-                        var i = this.shapes.indexOf(shape);
-                        if(i > -1){
+                        let i = this.shapes.indexOf(shape);
+                        if (i > -1) {
                             this.shapes.splice(i, 1);
                             console.warn('>>> Deleted the Instance');
                         }
@@ -569,18 +568,18 @@
 
     Glyph.prototype.makeSVG = function(size, gutter) {
         // debug('\n Glyph.makeSVG - START');
-        var ps = _GP.projectsettings;
+        let ps = _GP.projectsettings;
         size = size || _UI.thumbSize;
         gutter = gutter || _UI.thumbGutter;
-        var emsquare = Math.max(ps.upm, (ps.ascent - ps.descent));
-        var desc = Math.abs(ps.descent);
-        var charscale = (size-(gutter*2)) / size;
-        var gutterscale = (gutter / size) * emsquare;
-        var vbsize = emsquare - (gutter*2);
-        var pathdata = this.getSVGpathData();
+        let emsquare = Math.max(ps.upm, (ps.ascent - ps.descent));
+        let desc = Math.abs(ps.descent);
+        let charscale = (size-(gutter*2)) / size;
+        let gutterscale = (gutter / size) * emsquare;
+        let vbsize = emsquare - (gutter*2);
+        let pathdata = this.getSVGpathData();
 
         // Assemble SVG
-        var re = '<svg version="1.1" ';
+        let re = '<svg version="1.1" ';
         re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
         re += 'width="'+size+'" height="'+size+'" viewBox="0,0,'+vbsize+','+vbsize+'">';
         re += '<g transform="translate('+(gutterscale)+','+(emsquare-desc-(gutterscale/2))+') scale('+charscale+',-'+charscale+')">';
@@ -596,7 +595,7 @@
     };
 
     Glyph.prototype.getSVGpathData = function() {
-        if(this.cache.svgpathdata) return this.cache.svgpathdata;
+        if (this.cache.svgpathdata) return this.cache.svgpathdata;
 
         this.cache.svgpathdata = this.makeSVGpathData();
 
@@ -604,29 +603,29 @@
     };
 
     Glyph.prototype.makeSVGpathData = function() {
-        if(this.cache.svg) return this.cache.svg;
+        if (this.cache.svg) return this.cache.svg;
 
-        var sl = this.shapes;
-        var pathdata = '';
-        var lsb = this.getLSB();
-        var shape, path, tg;
+        let sl = this.shapes;
+        let pathdata = '';
+        let lsb = this.getLSB();
+        let shape, path, tg;
 
         // Make Pathdata
-        for(var j=0; j<sl.length; j++) {
+        for (let j=0; j<sl.length; j++) {
             shape = sl[j];
-            if(shape.visible) {
-                if(shape.objtype === 'componentinstance'){
+            if (shape.visible) {
+                if (shape.objtype === 'componentinstance') {
                     tg = shape.getTransformedGlyph();
-                    if(tg) pathdata += tg.getSVGpathData();
+                    if (tg) pathdata += tg.getSVGpathData();
                 } else {
                     path = shape.getPath();
                     path.updatePathPosition(lsb, 0, true);
                     pathdata += path.getSVGpathData('Glyph ' + this.name + ' Shape ' + shape.name);
-                    if(j < sl.length-1) pathdata += ' ';
+                    if (j < sl.length-1) pathdata += ' ';
                 }
             }
         }
-        if(trim(pathdata) === '') pathdata = 'M0,0Z';
+        if (trim(pathdata) === '') pathdata = 'M0,0Z';
 
         this.cache.svg = pathdata;
         return pathdata;
@@ -634,17 +633,17 @@
 
     Glyph.prototype.makeOpenTypeJSpath = function(otpath) {
         otpath = otpath || new opentype.Path();
-        for(var s=0; s < this.shapes.length; s++){
+        for (let s=0; s < this.shapes.length; s++) {
             otpath = this.shapes[s].makeOpenTypeJSpath(otpath);
         }
         return otpath;
     };
 
     Glyph.prototype.draw_MultiSelectAffordances = function() {
-        var allpoints = [];
+        let allpoints = [];
 
-        for(var s=0; s<this.shapes.length; s++){
-            if(this.shapes[s].objtype !== 'componentinstance'){
+        for (let s=0; s<this.shapes.length; s++) {
+            if (this.shapes[s].objtype !== 'componentinstance') {
                 allpoints = allpoints.concat(this.shapes[s].path.pathpoints);
                 this.shapes[s].draw_PathOutline(_UI.colors.blue, 1);
             }
@@ -654,11 +653,11 @@
     };
 
     Glyph.prototype.isOverControlPoint = function(x, y, nohandles) {
-        var re = false;
-        for(var s=0; s<this.shapes.length; s++){
-            if(this.shapes[s].objtype !== 'componentinstance'){
+        let re = false;
+        for (let s=0; s<this.shapes.length; s++) {
+            if (this.shapes[s].objtype !== 'componentinstance') {
                 re = this.shapes[s].path.isOverControlPoint(x, y, nohandles);
-                if(re) return re;
+                if (re) return re;
             }
         }
 
@@ -666,16 +665,15 @@
     };
 
     Glyph.prototype.flattenGlyph = function() {
-        var reshapes = [];
-        var ts, tg;
+        let reshapes = [];
+        let ts, tg;
 
-        for(var s=0; s<this.shapes.length; s++){
+        for (let s=0; s<this.shapes.length; s++) {
             ts = this.shapes[s];
 
-            if(ts.objtype === 'shape'){
+            if (ts.objtype === 'shape') {
                 reshapes.push(clone(ts));
-
-            } else if (ts.objtype === 'componentinstance'){
+            } else if (ts.objtype === 'componentinstance') {
                 tg = ts.getTransformedGlyph();
                 tg = tg.flattenGlyph();
                 reshapes = reshapes.concat(tg.shapes);
@@ -695,16 +693,15 @@
 
         this.flattenGlyph();
 
-        var cs = combineShapes(this.shapes, donttoast, dontresolveoverlaps);
+        let cs = combineShapes(this.shapes, donttoast, dontresolveoverlaps);
 
-        if(cs){
+        if (cs) {
             // debug('\t new shapes');
 
             this.shapes = cs;
             // debug(this.shapes);
 
             this.changed();
-
         }
         // debug(this.name + ' \t\t ' + this.shapes.length);
 
@@ -713,10 +710,9 @@
     };
 
     Glyph.prototype.resolveOverlapsForAllShapes = function() {
+        let newshapes = [];
 
-        var newshapes = [];
-
-        for(var ts=0; ts<this.shapes.length; ts++){
+        for (let ts=0; ts<this.shapes.length; ts++) {
             newshapes = newshapes.concat(this.shapes[ts].resolveSelfOverlaps());
         }
 
@@ -726,21 +722,21 @@
     };
 
 
-//-------------------------------------------------------
+// -------------------------------------------------------
 // METHODS
-//-------------------------------------------------------
+// -------------------------------------------------------
 
     Glyph.prototype.changed = function(descend, ascend) {
         this.cache = {};
 
-        if(ascend){
-            for(var g=0; g<this.usedin.length; g++){
+        if (ascend) {
+            for (let g=0; g<this.usedin.length; g++) {
                 getGlyph(this.usedin[g]).changed(descend, ascend);
             }
         }
 
-        if(descend){
-            for(var s=0; s<this.shapes.length; s++) this.shapes[s].changed(descend, ascend);
+        if (descend) {
+            for (let s=0; s<this.shapes.length; s++) this.shapes[s].changed(descend, ascend);
         }
 
         this.calcGlyphMaxes();
@@ -748,15 +744,14 @@
 
     Glyph.prototype.map = function(indents) {
         indents = indents || '   ';
-        var re = (indents + 'GLYPH ' + this.name + '\n');
-        var ts;
+        let re = (indents + 'GLYPH ' + this.name + '\n');
+        let ts;
 
-        for(var s=0; s < this.shapes.length; s++){
+        for (let s=0; s < this.shapes.length; s++) {
             ts = this.shapes[s];
-            if(ts.objtype === 'shape'){
+            if (ts.objtype === 'shape') {
                 re += (indents + '-' + s + '-' + ts.name + ' ' + json(ts.path.maxes, true) + '\n');
-
-            } else if(ts.objtype === 'componentinstance'){
+            } else if (ts.objtype === 'componentinstance') {
                 re += (indents+ '~' + s + '~' + ts.name + '\n');
                 re += getGlyph(ts.link).map(indents + '   ');
             }
@@ -768,26 +763,26 @@
     Glyph.prototype.copyShapesTo = function(destinationID, copyGlyphAttributes) {
         // debug('\n Glyph.copyShapesTo - START');
 
-        copyGlyphAttributes = copyGlyphAttributes || { srcAutoWidth: false, srcWidth: false, srcLSB: false, srcRSB: false};
-        var destinationGlyph = getGlyph(destinationID, true);
-        var tc;
+        copyGlyphAttributes = copyGlyphAttributes || {srcAutoWidth: false, srcWidth: false, srcLSB: false, srcRSB: false};
+        let destinationGlyph = getGlyph(destinationID, true);
+        let tc;
 
-        for(var c=0; c<this.shapes.length; c++){
+        for (let c=0; c<this.shapes.length; c++) {
             tc = this.shapes[c];
-            if(tc.objtype === 'componentinstance'){
+            if (tc.objtype === 'componentinstance') {
                 addToUsedIn(tc.link, destinationID);
                 tc = new ComponentInstance(clone(tc));
-            } else if(tc.objtype === 'shape'){
+            } else if (tc.objtype === 'shape') {
                 tc = new Shape(clone(tc));
             }
 
             destinationGlyph.shapes.push(tc);
         }
 
-        if(copyGlyphAttributes.srcAutoWidth) destinationGlyph.isautowide = this.isautowide;
-        if(copyGlyphAttributes.srcWidth) destinationGlyph.glyphwidth = this.glyphwidth;
-        if(copyGlyphAttributes.srcLSB) destinationGlyph.leftsidebearing = this.leftsidebearing;
-        if(copyGlyphAttributes.srcRSB) destinationGlyph.rightsidebearing = this.rightsidebearing;
+        if (copyGlyphAttributes.srcAutoWidth) destinationGlyph.isautowide = this.isautowide;
+        if (copyGlyphAttributes.srcWidth) destinationGlyph.glyphwidth = this.glyphwidth;
+        if (copyGlyphAttributes.srcLSB) destinationGlyph.leftsidebearing = this.leftsidebearing;
+        if (copyGlyphAttributes.srcRSB) destinationGlyph.rightsidebearing = this.rightsidebearing;
 
         showToast('Copied ' + this.shapes.length + ' shapes');
         destinationGlyph.changed();
@@ -798,20 +793,20 @@
     };
 
     Glyph.prototype.isHere = function(x, y) {
-        for(var s=0; s < this.shapes.length; s++){
-            if(this.shapes[s].isHere(x, y)) return true;
+        for (let s=0; s < this.shapes.length; s++) {
+            if (this.shapes[s].isHere(x, y)) return true;
         }
 
         return false;
     };
 
     Glyph.prototype.hasShapes = function() {
-        var tg;
-        for(var s=0; s<this.shapes.length; s++){
-            if(this.shapes[s].objtype !== 'componentinstance') return true;
+        let tg;
+        for (let s=0; s<this.shapes.length; s++) {
+            if (this.shapes[s].objtype !== 'componentinstance') return true;
             else {
                 tg = this.shapes[s].getTransformedGlyph();
-                if(tg.hasShapes()) return true;
+                if (tg.hasShapes()) return true;
             }
         }
 
@@ -819,8 +814,8 @@
     };
 
     Glyph.prototype.removeShapesWithZeroLengthPaths = function() {
-        for(var s=0; s<this.shapes.length; s++){
-            if(this.shapes[s].path && this.shapes[s].path.pathpoints.length === 0){
+        for (let s=0; s<this.shapes.length; s++) {
+            if (this.shapes[s].path && this.shapes[s].path.pathpoints.length === 0) {
                 this.shapes.splice(s, 1);
                 s--;
             }
@@ -828,7 +823,7 @@
     };
 
     Glyph.prototype.getPathPoints = function() {
-        var points = [];
+        let points = [];
         this.shapes.forEach(function(shape, i) {
             points = points.concat(shape.path.pathpoints);
         });
@@ -840,45 +835,45 @@
     };
 
 
-//-------------------------------------------------------
+// -------------------------------------------------------
 // GLYPH FUNCTIONS
-//-------------------------------------------------------
+// -------------------------------------------------------
     // GET
     function getGlyph(id, create) {
         // debug('\n getGlyph - START');
         // debug('\t passed: ' + id + ' create: ' + create);
 
-        if(!id){
+        if (!id) {
             // debug('\t Not passed an ID, returning false');
             return false;
         }
 
-        if(_GP === {}){
+        if (_GP === {}) {
             // debug('\t _GP is uninitialized, returning false');
             return false;
         }
 
         id = ''+id;
-        var rechar;
+        let rechar;
 
-        if (id.indexOf('0x', 2) > -1){
+        if (id.indexOf('0x', 2) > -1) {
             rechar = _GP.ligatures[id];
             // debug('\t retrieved ' + rechar + ' from ligatures.');
-            if(rechar){
+            if (rechar) {
                 return rechar;
-            } else if(create){
+            } else if (create) {
                 // debug('\t create was true, returning a new ligature.');
-                _GP.ligatures[id] = new Glyph({'glyphhex':id});
+                _GP.ligatures[id] = new Glyph({'glyphhex': id});
                 return _GP.ligatures[id];
             }
-        } else if(id.indexOf('0x') > -1){
+        } else if (id.indexOf('0x') > -1) {
             rechar = _GP.glyphs[id];
             // debug('\t retrieved ' + rechar + ' from glyphs.');
-            if(rechar){
+            if (rechar) {
                 return rechar;
-            } else if(create){
+            } else if (create) {
                 // debug('\t create was true, returning a new char.');
-                _GP.glyphs[id] = new Glyph({'glyphhex':id});
+                _GP.glyphs[id] = new Glyph({'glyphhex': id});
                 return _GP.glyphs[id];
             }
         } else {
@@ -893,7 +888,7 @@
 
     function getGlyphType(id) {
         if (id.indexOf('0x', 2) > -1) return 'ligature';
-        else if(id.indexOf('0x') > -1) return 'glyph';
+        else if (id.indexOf('0x') > -1) return 'glyph';
         else return 'component';
     }
 
@@ -903,20 +898,20 @@
         // debug('\t passed ' + ch);
 
         // not passed an id
-        if(!ch){
+        if (!ch) {
             // debug('\t not passed an ID, returning false');
             return false;
         }
 
         // known unicode names
-        var un = getUnicodeName(ch);
-        if(un && un !== '[name not found]'){
+        let un = getUnicodeName(ch);
+        if (un && un !== '[name not found]') {
             // debug('\t got unicode name: ' + un);
             return un;
         }
 
-        var cobj = getGlyph(ch);
-        if(ch.indexOf('0x',2) > -1){
+        let cobj = getGlyph(ch);
+        if (ch.indexOf('0x', 2) > -1) {
             // ligature
             // debug('\t ligature - returning ' + hexToHTML(ch));
             return cobj.name || hexToHTML(ch);
@@ -930,36 +925,36 @@
     }
 
     function getFirstGlyphID() {
-        if(_GP.glyphs['0x0041']) return '0x0041';
+        if (_GP.glyphs['0x0041']) return '0x0041';
         else return getFirstID(_GP.glyphs);
     }
 
     // GET SELECTED
-    function getSelectedGlyphLeftSideBearing(){
-        //debug('getSelectedGlyphLeftSideBearing');
-        var sc = getSelectedWorkItem();
-        if(!sc) return 0;
-        if(sc.objtype === 'component') return 0;
-        if(!sc.isautowide) return 0;
+    function getSelectedGlyphLeftSideBearing() {
+        // debug('getSelectedGlyphLeftSideBearing');
+        let sc = getSelectedWorkItem();
+        if (!sc) return 0;
+        if (sc.objtype === 'component') return 0;
+        if (!sc.isautowide) return 0;
         return sc.leftsidebearing || _GP.projectsettings.defaultlsb;
     }
 
-    function getSelectedGlyphRightSideBearing(){
-        //debug('getSelectedGlyphLeftSideBearing');
-        var sc = getSelectedWorkItem();
-        if(!sc) return 0;
-        if(sc.objtype === 'component') return 0;
-        if(!sc.isautowide) return 0;
+    function getSelectedGlyphRightSideBearing() {
+        // debug('getSelectedGlyphLeftSideBearing');
+        let sc = getSelectedWorkItem();
+        if (!sc) return 0;
+        if (sc.objtype === 'component') return 0;
+        if (!sc.isautowide) return 0;
         return sc.rightsidebearing || _GP.projectsettings.defaultrsb;
     }
 
     function updateCurrentGlyphWidth() {
-        var sc = getSelectedWorkItem();
-        if(!sc) return;
-        if(_UI.currentPage === 'glyph edit'){
+        let sc = getSelectedWorkItem();
+        if (!sc) return;
+        if (_UI.currentPage === 'glyph edit') {
             sc.changed();
         } else if (_UI.currentPage === 'components' && sc) {
-            var lsarr = sc.usedin;
-            if(lsarr) for(var c=0; c<lsarr.length; c++) getGlyph(lsarr[c]).changed();
+            let lsarr = sc.usedin;
+            if (lsarr) for (let c=0; c<lsarr.length; c++) getGlyph(lsarr[c]).changed();
         }
     }

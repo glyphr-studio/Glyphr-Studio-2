@@ -5,7 +5,7 @@
 **/
 
 
-    function loadPage_glyphedit(){
+    function loadPage_glyphedit() {
         // debug('\n loadPage_glyphedit - START');
 
         getEditDocument().getElementById('mainwrapper').innerHTML = editPage_Content();
@@ -13,34 +13,34 @@
         initEventHandlers();
         clickEmptySpace();
 
-        if(_UI.devMode && isval(_UI.dev_selectedShape)){
+        if (_UI.devMode && isval(_UI.dev_selectedShape)) {
             selectShape(_UI.dev_selectedShape);
             _UI.dev_selectedShape = false;
         }
 
         _UI.selectedGlyph = _UI.selectedGlyph || getFirstGlyphID();
-        
-        if(getSelectedWorkItemShapes().length > 0){
-            if(_UI.selectedTool !== 'shaperesize') _UI.selectedTool = 'pathedit';
+
+        if (getSelectedWorkItemShapes().length > 0) {
+            if (_UI.selectedTool !== 'shaperesize') _UI.selectedTool = 'pathedit';
         } else _UI.selectedTool = 'pathaddpoint';
 
-        redraw({calledBy:'loadPage_glyphedit'});
+        redraw({calledBy: 'loadPage_glyphedit'});
 
         // debug(' loadPage_glyphedit - END\n');
     }
 
 
-//-------------------
+// -------------------
 // Redraw
-//-------------------
-    function redraw_GlyphEdit(){
+// -------------------
+    function redraw_GlyphEdit() {
         // debug('\n redraw_GlyphEdit - START');
         _UI.redrawing = true;
-        
-        var sg = getSelectedWorkItem();
-        var editmode = getEditMode();
 
-        if(sg) sg.calcGlyphMaxes();
+        let sg = getSelectedWorkItem();
+        let editmode = getEditMode();
+
+        if (sg) sg.calcGlyphMaxes();
         // debug('\t Selected WI ' + sg.name);
 
         // draw grids
@@ -48,43 +48,39 @@
         drawGuides();
 
         // load glyph info
-        if(sg && sg.shapes.length) {
-            var v = getView('Redraw');
-            if(sg.contextGlyphs) drawContextGlyphs();
+        if (sg && sg.shapes.length) {
+            let v = getView('Redraw');
+            if (sg.contextGlyphs) drawContextGlyphs();
             sg.drawGlyph(_UI.glyphEditCTX, v);
-
         } else {
             _UI.redrawing = false;
             return;
         }
-        
+
         _UI.multiSelect.shapes.draw_PathOutline();
-        
-        if(editmode === 'arrow'){
+
+        if (editmode === 'arrow') {
             _UI.multiSelect.shapes.draw_BoundingBox();
             _UI.multiSelect.shapes.draw_BoundingBoxHandles();
-
-        } else if (editmode === 'rotate'){
+        } else if (editmode === 'rotate') {
             _UI.multiSelect.shapes.draw_RotationAffordance();
-
-        } else if (editmode === 'pen'){
-            if(_UI.eventhandlers.multi) sg.draw_MultiSelectAffordances();
+        } else if (editmode === 'pen') {
+            if (_UI.eventhandlers.multi) sg.draw_MultiSelectAffordances();
             _UI.multiSelect.points.draw_PathPointHandles();
             _UI.multiSelect.shapes.draw_PathPoints();
             // _UI.multiSelect.points.draw_PathPoints();
 
-            if(_UI.eventhandlers.hoverpoint){
-                var hp = _UI.eventhandlers.hoverpoint;
+            if (_UI.eventhandlers.hoverpoint) {
+                let hp = _UI.eventhandlers.hoverpoint;
                 _UI.glyphEditCTX.fillStyle = hp.fill;
                 _UI.glyphEditCTX.fillRect(hp.x, hp.y, hp.size, hp.size);
             }
-
-        } else if (editmode === 'newpath'){
+        } else if (editmode === 'newpath') {
             _UI.multiSelect.points.draw_PathPointHandles();
             _UI.multiSelect.shapes.draw_PathPoints();
             // _UI.multiSelect.points.draw_PathPoints();
         }
-        
+
         _UI.redrawing = false;
         // debug(' redraw_GlyphEdit - END\n');
     }

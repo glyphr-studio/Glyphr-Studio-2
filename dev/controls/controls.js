@@ -1,22 +1,22 @@
 
 /**
     Framework > Controls
-    Common / re-usable controls, buttons, and everything 
+    Common / re-usable controls, buttons, and everything
     having to do with storing and drawing icon SVG.
 **/
 
 
-//-------------------
+// -------------------
 // Logos
-//-------------------
+// -------------------
 
-        function makeGlyphrStudioLogo(oa){
+        function makeGlyphrStudioLogo(oa) {
             oa = oa || {};
-            var fill = oa.fill || _UI.colors.blue.l65;
-            var width = oa.width || 184;
-            var height = width * (55/184);    // dimensions of the native logo
+            let fill = oa.fill || _UI.colors.blue.l65;
+            let width = oa.width || 184;
+            let height = width * (55/184); // dimensions of the native logo
 
-            var re = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="'+width+'px" height="'+height+'px" viewBox="0 0 '+width+' '+height+'" enable-background="new 0 0 '+width+' '+height+'" xml:space="preserve">'+
+            let re = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="'+width+'px" height="'+height+'px" viewBox="0 0 '+width+' '+height+'" enable-background="new 0 0 '+width+' '+height+'" xml:space="preserve">'+
                 '<g id="LOGO" fill="' + fill + '" transform="scale('+ (width/184) +')" >'+
                 '<polygon points="42,0 36,0 36,40 40,40 40,4 42,4"/>'+
                 '<path d="M17,11C8.6,11,0,16.8,0,28c0,8.6,8.8,12.5,17,12.5c4.7,0,9.7-1.3,13-4.1V42c0,5.8-6.7,8.5-13,8.5c-5.5,0-11.4-2-12.7-6.5H6v-4H0v2c0,8.6,8.8,12.5,17,12.5S34,50.6,34,42V28C34,16.8,25.4,11,17,11z M17,36.5c-6.3,0-13-2.7-13-8.5c0-8.9,6.7-13,13-13s13,4.1,13,13C30,33.8,23.3,36.5,17,36.5z"/>'+
@@ -39,36 +39,32 @@
         }
 
 
-
-
-//-------------------
+// -------------------
 // Navigation Icons
-//-------------------
+// -------------------
     function makeIcon(oa) {
         // debug('\n makeIcon - START ' + oa.name);
         // debug('\t passed ' + json(oa, true));
 
-        var size = oa.size || 50;
-        var width = oa.width || size;
-        var height = oa.height || size;
-        var color = oa.color || 'rgb(76,81,86)';
-        var hovercolor = oa.hovercolor || 'rgb(0,170,225)';
-        if(oa.hovercolor === false) hovercolor = color;
+        let size = oa.size || 50;
+        let width = oa.width || size;
+        let height = oa.height || size;
+        let color = oa.color || 'rgb(76,81,86)';
+        let hovercolor = oa.hovercolor || 'rgb(0,170,225)';
+        if (oa.hovercolor === false) hovercolor = color;
 
-        var con;
-        if(oa.name === 'button_npNav'){
+        let con;
+        if (oa.name === 'button_npNav') {
             // con = _UI.icons.button_npNavFrames[_UI.icons.button_npNavFrames.length-1];
             con = _UI.icons.button_npNavFrames[_UI.hamburger.state];
             con += _UI.icons.button_npNavFramesBorder[_UI.hamburger.state];
-
-        } else if(_UI.icons[oa.name].outline){
+        } else if (_UI.icons[oa.name].outline) {
             con = _UI.icons[oa.name].outline;
-        
         } else {
             con = _UI.icons[oa.name];
         }
 
-        var re = '<svg version="1.1" ';
+        let re = '<svg version="1.1" ';
         re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
         re += 'x="0px" y="0px" width="'+width+'px" height="'+height+'px" viewBox="0 0 ' + size + ' ' + size + '"> ';
         re += '<defs></defs> ';
@@ -86,8 +82,8 @@
 
     function mouseOverIcon(hovercolor, elem) {
         // debug('\n mouseOverIcon - START');
-        var gs = elem.parentNode.getElementsByTagName('g');
-        for(var i=0; i<gs.length; i++){
+        let gs = elem.parentNode.getElementsByTagName('g');
+        for (let i=0; i<gs.length; i++) {
             gs[i].style.fill = ''+hovercolor;
         }
         // debug(' mouseOverIcon - END\n');
@@ -95,8 +91,8 @@
 
     function mouseOutIcon(color, elem) {
         // debug('\n mouseOutIcon - START');
-        var gs = elem.parentNode.getElementsByTagName('g');
-        for(var i=0; i<gs.length; i++){
+        let gs = elem.parentNode.getElementsByTagName('g');
+        for (let i=0; i<gs.length; i++) {
             gs[i].style.fill = ''+color;
         }
         // debug(' mouseOutIcon - END\n');
@@ -106,10 +102,10 @@
         // debug('\n goHamburger - START');
         // debug('\t passed ' + ham);
 
-        var h = _UI.hamburger;
-        var step = 4;
-        var bg = document.getElementById('npNavBackground');
-        var len = _UI.icons.button_npNavFrames.length;
+        let h = _UI.hamburger;
+        let step = 4;
+        let bg = document.getElementById('npNavBackground');
+        let len = _UI.icons.button_npNavFrames.length;
         h.direction = ham? 1 : -1;
 
         clearTimeout(h.timeout);
@@ -117,21 +113,21 @@
         h.timeout = setTimeout(hamburgerStep, step);
 
         function hamburgerStep() {
-            var con = document.getElementById('npNav');
+            let con = document.getElementById('npNav');
             h.state = Math.max(0, Math.min(len-1, (h.state + h.direction)));
             // debug('\t\t hamburgerStep ' + h.state);
 
-            if (con) con.innerHTML = makeIcon({'name':'button_npNav', 'color': _UI.colors.blue.l85, 'hovercolor':_UI.colors.blue.l85});
+            if (con) con.innerHTML = makeIcon({'name': 'button_npNav', 'color': _UI.colors.blue.l85, 'hovercolor': _UI.colors.blue.l85});
             // con.style.fill = _UI.icons.button_npNavColors[len - h.state];
             // bg.style.fill = _UI.icons.button_npNavColors[h.state];
-            
-            if(h.state !== 0 && h.state !== len-1){
+
+            if (h.state !== 0 && h.state !== len-1) {
                 h.timeout = setTimeout(hamburgerStep, step);
             }
         }
 
         // debug(' goHamburger - END\n');
-    }    
+    }
 
     _UI.icons.button_npNavFrames = [
         '<g><path d="M39.5,20.9c0-5.5-2.4-10-6.8-12.5C28,5.7,22,5.7,17.3,8.4c-4.4,2.5-6.8,7-6.8,12.5c0,3.3,1.7,6.2,4.8,8.1c2.6,1.6,6,2.5,9.7,2.5c4.2,0,8.7-1.2,11.5-3.8V33c0,5.2-6,7.6-11.5,7.6c-5,0-10.3-1.9-11.3-6.1h1.8v-3h-5V33c0,3.3,1.7,6.2,4.8,8.1c2.6,1.6,6,2.5,9.7,2.5c7,0,14.5-3.3,14.5-10.6L39.5,20.9L39.5,20.9z M25,28.5c-5.5,0-11.5-2.4-11.5-7.6c0-4.4,1.9-7.9,5.3-9.9c3.7-2.1,8.7-2.1,12.4,0c3.4,2,5.3,5.5,5.3,9.9h0C36.5,26.1,30.5,28.5,25,28.5z"/></g>',
@@ -145,7 +141,7 @@
         '<g><path d="M25,27.9c-5.1,0-10.2-0.9-13.7-2.7l1.4-2.7c6.1,3.1,18.5,3.1,24.6,0l1.4,2.7C35.2,27,30.1,27.9,25,27.9z"/><path d="M21.5,36.2c-1.3,0-2.6-0.1-3.6-0.3c-3.1-0.5-5.1-1.5-5.8-3.1l0.9-0.4v-1.7h1.5l0.4,0.9c0.1,0.2,0.9,1,3.5,1.4c4.3,0.7,9.9-0.2,11.3-1.7l0.2-0.2l7.6-3.4l1.2,2.7l-7,3.2C29.6,35.5,25.2,36.2,21.5,36.2z"/><path d="M37.1,20c-6-4.3-18.2-4.3-24.2,0l-1.8-2.4c7.1-5.2,20.6-5.2,27.8,0L37.1,20z"/></g>',
         '<g><path d="M25,27.4c-4.8,0-9.6-0.6-13.4-1.7l0.9-2.9c7,2.1,18.1,2.1,25.1,0l0.9,2.9C34.6,26.8,29.8,27.4,25,27.4z"/><path d="M21.2,35.3c-3.3,0-6.5-0.5-8.1-1.7h-0.4v-0.4c-0.1-0.1-0.1-0.2-0.2-0.2l0.2-0.1v-2.2h1.8l0.4,0.6c1.2,1.3,11.2,1.6,14.1-0.4l0.2-0.1l8.4-2.3l0.8,2.9l-8,2.1C28.5,34.7,24.8,35.3,21.2,35.3z"/><path d="M37.4,19.9c-7-3-17.9-3-24.8,0l-1.2-2.8c7.7-3.3,19.4-3.3,27.2,0L37.4,19.9z"/></g>',
         '<g><path d="M25,26.9c-4.5,0-9.1-0.3-13.2-0.8l0.4-3c8,1.1,17.6,1.1,25.6,0l0.4,3C34.1,26.7,29.5,26.9,25,26.9z"/><path d="M20.5,34.4c-2.9,0-5.6-0.2-7-0.8h-1.2v-3h1.9l0.4,0.2c1.3,0.7,10.3,0.9,13.9-0.2l0.3-0.1l9.1-1.1l0.4,3l-9,1.1C27.4,34.1,23.8,34.4,20.5,34.4z"/><path d="M37.7,19.7c-8-1.5-17.5-1.5-25.4,0l-0.6-2.9c8.3-1.6,18.2-1.6,26.6,0L37.7,19.7z"/></g>',
-        '<g><rect x="12" y="23.5" width="26" height="3"/><rect x="12" y="30.5" width="26" height="3"/><rect x="12" y="16.5" width="26" height="3"/></g>'
+        '<g><rect x="12" y="23.5" width="26" height="3"/><rect x="12" y="30.5" width="26" height="3"/><rect x="12" y="16.5" width="26" height="3"/></g>',
     ];
 
     _UI.icons.button_npNavFramesBorder = [
@@ -160,7 +156,7 @@
         '<g transform="translate(1,1)"><path d="M5.2,5.2c0.8-0.8,2.1-0.9,4.3-1L9.1,3.8c-2.2,0.1-3.5,0.2-4.3,1s-0.9,2.1-1,4.3l0.4,0.3C4.2,7.2,4.3,6,5.2,5.2z"/><path d="M44.8,44.8c-0.8,0.8-2.1,0.9-4.3,1l0.3,0.4c2.2-0.1,3.5-0.2,4.3-1c0.9-0.9,0.9-2.1,1-4.3l-0.4-0.3C45.8,42.8,45.7,44,44.8,44.8z"/><path d="M44.8,5.2c0.8,0.8,0.9,2.1,1,4.3l0.4-0.3c-0.1-2.2-0.2-3.5-1-4.3c-0.9-0.9-2.1-0.9-4.3-1l-0.3,0.4C42.8,4.2,44,4.3,44.8,5.2z"/><path d="M5.2,44.8c-0.8-0.8-0.9-2.1-1-4.3l-0.4,0.3c0.1,2.2,0.2,3.5,1,4.3c0.9,0.9,2.1,0.9,4.3,1l0.3-0.4C7.2,45.8,6,45.7,5.2,44.8z"/></g>',
         '<g transform="translate(1,1)"><path d="M5.2,5.4c0.5-0.5,1.2-0.6,2.3-0.7L7.2,4.3C6,4.4,5.3,4.5,4.8,5S4.2,6.2,4.1,7.4l0.4,0.3C4.6,6.5,4.7,5.8,5.2,5.4z"/><path d="M44.8,45c-0.5,0.5-1.2,0.6-2.3,0.7l0.3,0.4c1.2-0.1,1.9-0.2,2.4-0.7c0.5-0.5,0.6-1.2,0.7-2.4l-0.4-0.3C45.4,43.9,45.3,44.6,44.8,45z"/><path d="M44.8,5.4c0.5,0.5,0.6,1.2,0.7,2.3l0.4-0.3c-0.1-1.2-0.2-1.9-0.7-2.4c-0.5-0.5-1.2-0.6-2.4-0.7l-0.3,0.4C43.7,4.8,44.4,4.9,44.8,5.4z"/><path d="M5.2,45c-0.5-0.5-0.6-1.2-0.7-2.3L4.1,43c0.1,1.2,0.2,1.9,0.7,2.4C5.3,45.9,6,46,7.2,46.1l0.3-0.4C6.3,45.6,5.6,45.5,5.2,45z"/></g>',
         '<g transform="translate(1,1)"><path d="M5.2,5.2C5.3,5,5.4,4.9,5.5,4.8L5.2,4.5C5,4.6,4.9,4.7,4.8,4.8S4.6,5,4.5,5.2l0.4,0.4C4.9,5.4,5,5.3,5.2,5.2z"/><path d="M45.5,44.8l-0.4-0.4c-0.1,0.1-0.2,0.3-0.3,0.4s-0.2,0.2-0.4,0.3l0.4,0.4c0.1-0.1,0.3-0.2,0.4-0.3S45.4,45,45.5,44.8z"/><path d="M44.8,5.2c0.1,0.1,0.2,0.2,0.3,0.4l0.4-0.4c-0.1-0.1-0.2-0.3-0.3-0.4S45,4.6,44.8,4.5l-0.4,0.4C44.6,4.9,44.7,5,44.8,5.2z"/><path d="M5.2,44.8c-0.1-0.1-0.2-0.2-0.3-0.4l-0.4,0.4c0.1,0.1,0.2,0.3,0.3,0.4s0.2,0.2,0.4,0.3l0.4-0.4C5.4,45.1,5.3,45,5.2,44.8z"/></g>',
-        '<g transform="translate(1,1)"></g>'
+        '<g transform="translate(1,1)"></g>',
     ];
 
     _UI.icons.button_npNav = '<path d="M45.2,4.8C41.4,1,35.5,1,25,1S8.6,1,4.8,4.8S1,14.5,1,25s0,16.4,3.8,20.2S14.5,49,25,49s16.4,0,20.2-3.8S49,35.5,49,25S49,8.6,45.2,4.8z M39.7,33c0,7.4-7.6,10.8-14.7,10.8c-7.1,0-14.7-3.4-14.7-10.8v-1.8h5.2v3.5H14c1.2,3.8,6.2,5.6,11,5.6c5.4,0,11.2-2.3,11.2-7.3v-4.8c-2.9,2.4-7.1,3.5-11.2,3.5c-7.1,0-14.7-3.4-14.7-10.8c0-9.7,7.4-14.7,14.7-14.7c7.3,0,14.7,5.1,14.7,14.7V33z"/><path d="M25,9.7c-5.4,0-11.2,3.5-11.2,11.2c0,5,5.8,7.3,11.2,7.3c5.4,0,11.2-2.3,11.2-7.3C36.2,13.2,30.4,9.7,25,9.7z"/>';
@@ -204,7 +200,7 @@
         '<path d="M25,36.2c4.2,0,8.7-2,8.7-6.4v-7.2c0-5.7-4.4-8.8-8.7-8.8c-4.3,0-8.7,3-8.7,8.8c0,4.4,4.5,6.4,8.7,6.4c2.4,0,4.9-0.7,6.6-2.1v2.8c0,3-3.4,4.4-6.6,4.4c-2.8,0-5.8-1-6.5-3.3h0.9v-2.1h-3.1v1C16.3,34.2,20.8,36.2,25,36.2z M25,26.9c-3.2,0-6.6-1.4-6.6-4.4c0-4.6,3.4-6.7,6.6-6.7c3.2,0,6.6,2.1,6.6,6.7C31.6,25.6,28.2,26.9,25,26.9z"/>';
 
     _UI.icons.nav_fontsettings = '<path d="M50,26.1c0-0.3,0-0.6,0-1c0-2.5-0.4-4.9-1.1-7.2l-4.1-0.6c-0.6-1.5-1.3-2.9-2.1-4.2l1.6-4c-1.6-2-3.6-3.7-5.8-5.2l-3.5,2.2c-1.6-0.8-3.3-1.5-5-1.9l-1.3-4C27.5,0.1,26.3,0,25,0s-2.5,0.1-3.8,0.3l-1.3,4c-1.8,0.4-3.5,1.1-5,1.9L11.4,4C9.3,5.5,7.3,7.2,5.7,9.2l1.6,4c-0.9,1.3-1.6,2.7-2.1,4.2l-4.1,0.6C0.4,20.2,0,22.6,0,25.2c0,0.3,0,0.6,0,1l3.9,2.1c0.2,1.2,0.4,2.3,0.8,3.5l-2.8,3.1C3,37.5,4.6,40,6.6,42.1l4.3-0.9c0.6,0.6,1.3,1.1,2,1.6L12.7,47c2.6,1.5,5.5,2.5,8.5,3l2.7-3.4c0.4,0,0.7,0.1,1.1,0.1c0.4,0,0.7,0,1.1-0.1l2.7,3.4c3.1-0.5,6-1.5,8.5-3l-0.2-4.3c0.7-0.5,1.4-1,2-1.6l4.3,0.9c2-2.2,3.6-4.6,4.7-7.4l-2.8-3.1c0.4-1.1,0.6-2.3,0.8-3.5L50,26.1z M25,41.1c-8.8,0-16-7.2-16-16.1c0-8.9,7.1-16.1,16-16.1c8.8,0,16,7.2,16,16.1C41,33.9,33.8,41.1,25,41.1z"/>'+'<path d="M17.8,32.8l3.7-15.6h-2l0.6-2.4h14.5l-1.5,6.1h-2.4l0.9-3.8h-7.2L23,23.4h6.1l-0.6,2.4h-6.1l-1.7,7h2.2    l-0.6,2.4h-7l0.6-2.4H17.8z"/>';
-    
+
     _UI.icons.nav_globalactions = '<path d="M46.1,37.1l-7.5-7.5C41.3,26.8,43,23,43,18.8c0-3.6-1.3-7-3.4-9.6c0,1.2-0.3,2.4-0.7,3.8c-1.2,3.5-3.6,7.2-6.8,10.4c-4.6,4.6-10,7.5-14.2,7.6c2.6,2.1,6,3.4,9.6,3.4c4,0,7.6-1.5,10.4-4l3.3,3.3c-8,7.3-20.4,7.1-28.1-0.6c-7.7-7.7-7.9-20.1-0.6-28.1L16,8.4c-2.5,2.8-4,6.4-4,10.4c0,3.6,1.3,6.9,3.3,9.6c3.3,1.7,9.9-1,15.3-6.5c3-3,5.3-6.4,6.3-9.6c0.8-2.3,0.8-4.3,0.2-5.6c-2.6-2.1-6-3.4-9.6-3.4c-4.2,0-8,1.7-10.8,4.4L9.2,0.2C9-0.1,8.7-0.1,8.5,0.2s-0.2,0.5,0,0.7l1.8,1.8c-8.5,9.2-8.3,23.6,0.6,32.5c3.7,3.7,8.3,5.9,13.1,6.6V45c-5.1,0.1-9,0.7-9,1.5v2c0,0.8,4.7,1.5,10.5,1.5S36,49.3,36,48.5v-2c0-0.8-3.9-1.4-9-1.5v-3c0.1,0,0.3,0,0.4,0c5.7,0,11.4-2.1,15.9-6.3l2,2c0.1,0.1,0.2,0.2,0.4,0.2s0.3-0.1,0.4-0.2C46.3,37.6,46.3,37.3,46.1,37.1z"/>';
 
     _UI.icons.nav_testdrive = '<path d="M4,36v-3h3V17.5H3V22H0v-8h19v8h-3v-4.5h-4V33h3v3H4z"/>'+
@@ -248,7 +244,7 @@
 //    ---------------------
 
     function makeActionButtonWrapper() {
-        var re  = '';
+        let re = '';
         re += '<svg version="1.1" ';
         re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
         re += 'x="0px" y="0px" width="30px" height="30px" viewBox="0 0 30 30"> ';
@@ -265,19 +261,19 @@
         'greenoutline': _UI.colors.green.l75,
         'grayoutline': _UI.colors.gray.l50,
         'disoutline': _UI.colors.gray.l80,
-        'redx': _UI.colors.error.medium
+        'redx': _UI.colors.error.medium,
     };
 
 
-    function makeActionButton_LinkToGlyph(){
-        var re = makeActionButtonWrapper();
-        var green = _UI.iconcolors.greenoutline;
+    function makeActionButton_LinkToGlyph() {
+        let re = makeActionButtonWrapper();
+        let green = _UI.iconcolors.greenoutline;
 
         re += '<path fill="'+green+'" d="M18,8.8L8.8,18c-0.5,0.5-1.3,0.5-1.8,0s-0.5-1.3,0-1.8L16.2,7c0.5-0.5,1.3-0.5,1.8,0S18.5,8.3,18,8.8z"/>';
         re += '<path fill="'+green+'" d="M7.5,21.2c-1.1,1.1-2.8,1.8-4.1,0.5s-0.6-3,0.5-4.1l5.9-5.9c-1.8-0.5-3.8,0.1-5.5,1.8L2,15.7c-2.4,2.4-2.6,5.7-0.5,7.8s5.4,2,7.8-0.5l2.3-2.3c1.7-1.7,2.3-3.7,1.8-5.5L7.5,21.2z"/>';
         re += '<path fill="'+green+'" d="M21.2,7.5c1.1-1.1,1.8-2.8,0.5-4.1s-3-0.6-4.1,0.5l-5.9,5.9c-0.5-1.8,0.1-3.8,1.8-5.5L15.7,2c2.4-2.4,5.7-2.6,7.8-0.5s2,5.4-0.5,7.8l-2.3,2.3c-1.7,1.7-3.7,2.3-5.5,1.8L21.2,7.5z"/>';
 
-        //add
+        // add
         re += '<rect x="21" y="15" fill="'+green+'" width="3" height="15"/>';
         re += '<rect x="15" y="21" fill="'+green+'" width="15" height="3"/>';
 
@@ -286,10 +282,10 @@
         return re;
     }
 
-    function makeActionButton_ReverseWinding(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var gray = _UI.iconcolors.grayoutline;
+    function makeActionButton_ReverseWinding() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let gray = _UI.iconcolors.grayoutline;
 
         re += '<path fill="'+gray+'" d="M3.7,7.8V5L0,8.7l3.7,3.7V9.6c6.2,0,11.2,5,11.2,11.2h1.9C16.8,13.6,10.9,7.8,3.7,7.8z"/>';
         re += '<path fill="'+blue+'" d="M25.2,22.3C25.2,10,15.2,0,3,0v3.2c10.5,0,19.1,8.6,19.1,19.1h-4.8l6.4,6.4l6.4-6.4H25.2z"/>';
@@ -299,10 +295,10 @@
         return re;
     }
 
-    function makeActionButton_ResetPathPoint(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var gray = _UI.iconcolors.grayoutline;
+    function makeActionButton_ResetPathPoint() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let gray = _UI.iconcolors.grayoutline;
 
         // Other handles
         re += '<circle display="inline" fill="'+gray+'" cx="20" cy="27" r="3"/>';
@@ -370,12 +366,12 @@
     function makeActionButton_AlignHandlesH2X() {
         return makeActionButtonWrapper() + '<g transform="rotate(90, 15, 15)"> <line transform="rotate(112 23.985507965087894,18.362319946289062) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="18.98551" y1="23.36232" x2="28.98551" y2="13.36232" id="svg_5"/> <line transform="rotate(-73 6.9999999999999964,9.999999999999998) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="15" x2="11" y2="5" id="svg_2"/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="26" x2="12" y2="17" id="svg_33" transform="rotate(-9 6.999999999999964,21.999999999999993) "/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="17" y1="15" x2="27" y2="5" id="svg_35" transform="rotate(-48 22.000000000000007,9.100000381469728) "/> <rect stroke="null" id="svg_40" height="2" width="30" y="2" x="0" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="#002b41" cx="22" cy="3" r="3" id="svg_27"/> <circle fill="#002b41" cx="3" cy="3" r="3" id="svg_9"/> <circle fill="rgb(0,170,255)" cx="3" cy="27" r="3" id="svg_8"/> <circle fill="rgb(0,170,255)" cx="25.98551" cy="22.36232" r="3" id="svg_32"/> <g id="svg_46"> <rect fill="#FFFFFF" x="18.98551" y="9.36232" width="7" height="7" id="svg_44"/> <path fill="rgb(0,170,255)" d="m24.98551,9.36232l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_45"/> </g> <g id="svg_10"> <rect fill="#FFFFFF" x="8.9991" y="14" width="7" height="7" id="svg_6"/> <path fill="rgb(0,170,255)" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_7"/> </g></g></svg>';
     }
-    
+
     function makeActionButton_AlignHandlesH1X() {
         // H1 lightblue by convention
         return makeActionButtonWrapper() + '<g transform="rotate(90, 15, 15)"> <title>Layer 1</title> <line id="svg_5" y2="18" x2="30" y1="28" x1="20" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(112 25.000000000000004,23) "/> <line id="svg_2" y2="5" x2="11" y1="15" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(-73 6.9999999999999964,9.999999999999998) "/> <line transform="rotate(-9 6.999999999999964,21.999999999999993) " id="svg_33" y2="17" x2="12" y1="26" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <line transform="rotate(-48 22.109889984130866,12.836263656616214) " id="svg_35" y2="8.73626" x2="27.10989" y1="18.73626" x1="17.10989" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <circle id="svg_27" r="3" cy="6.73626" cx="22.10989" fill="#002b41"/> <circle id="svg_9" r="3" cy="3" cx="3" fill="#002b41"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0.14493" y="26" width="30" height="2" id="svg_42" stroke="null"/> <circle id="svg_8" r="3" cy="27" cx="3" fill="rgb(0,170,255)"/> <circle id="svg_32" r="3" cy="27" cx="27" fill="rgb(0,170,255)"/> <g id="svg_46"> <rect id="svg_44" height="7" width="7" y="14" x="20" fill="#FFFFFF"/> <path id="svg_45" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g id="svg_10"> <rect id="svg_6" height="7" width="7" y="14" x="8.9991" fill="#FFFFFF"/> <path id="svg_7" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g></g></svg>';
     }
-    
+
     function makeActionButton_AlignHandlesH1XCross() {
         // H1 lightblue by convention
         return makeActionButtonWrapper() + '<g transform="rotate(90, 15, 15)"> <line transform="rotate(112 25.000000000000004,23) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="20" y1="28" x2="30" y2="18" id="svg_5"/> <line transform="rotate(-73 6.9999999999999964,9.999999999999998) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="15" x2="11" y2="5" id="svg_2"/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="26" x2="12" y2="17" id="svg_33" transform="rotate(-9 6.999999999999964,21.999999999999993) "/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="17.10989" y1="18.73626" x2="27.10989" y2="8.73626" id="svg_35" transform="rotate(-48 22.109889984130866,12.836263656616214) "/> <circle fill="rgb(0,170,255)" cx="22.10989" cy="6.73626" r="3" id="svg_27"/> <circle fill="#002b41" cx="3" cy="3" r="3" id="svg_9"/> <rect stroke="null" id="svg_42" height="2" width="30" y="26" x="0.14493" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="rgb(0,170,255)" cx="3" cy="27" r="3" id="svg_8"/> <circle fill="#002b41" cx="27" cy="27" r="3" id="svg_32"/> <g id="svg_46"> <rect fill="#FFFFFF" x="20" y="14" width="7" height="7" id="svg_44"/> <path fill="rgb(0,170,255)" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_45"/> </g> <g id="svg_10"> <rect fill="#FFFFFF" x="8.9991" y="14" width="7" height="7" id="svg_6"/> <path fill="rgb(0,170,255)" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_7"/> </g></g></svg>';
@@ -385,11 +381,11 @@
         // H1 lightblue by convention
         return makeActionButtonWrapper() + '<line id="svg_5" y2="20" x2="12" y1="30" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(202 6.999999999999999,25) "/> <line id="svg_2" y2="1.93637" x2="23.86659" y1="11.93637" x1="14.86659" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(17 19.720403671264645,7.41451835632324) "/> <line transform="rotate(81 8.475528717041014,6.845491409301759) " id="svg_33" y2="2.33934" x2="13.55375" y1="11.33934" x1="3.55375" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <line transform="rotate(42 17.257812499999993,23.00495529174805) " id="svg_35" y2="18.30274" x2="21.58898" y1="28.30274" x1="11.58898" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <circle transform="rotate(90 23.26374053955078,22.109889984130863) " id="svg_27" r="3" cy="22.10989" cx="23.26374" fill="#002b41"/> <circle transform="rotate(90 27,3.000000000000002) " id="svg_9" r="3" cy="3" cx="27" fill="rgb(0,170,255)"/> <rect transform="rotate(90 2.9999999999999987,15.14492988586426) " fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="-12" y="14.14493" width="30" height="2" id="svg_42" stroke="null"/> <circle transform="rotate(90 3,3.0000000000000004) " id="svg_8" r="3" cy="3" cx="3" fill="#002b41"/> <circle transform="rotate(90 2.999999999999997,27.000000000000004) " id="svg_32" r="3" cy="27" cx="3" fill="rgb(0,170,255)"/> <g transform="rotate(90 12.999999999999998,23.000000000000004) " id="svg_46"> <rect id="svg_44" height="7" width="7" y="20" x="10" fill="#FFFFFF"/> <path id="svg_45" d="m16,20l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g transform="rotate(90 13,11.999099731445314) " id="svg_10"> <rect id="svg_6" height="7" width="7" y="8.9991" x="10" fill="#FFFFFF"/> <path id="svg_7" d="m16,8.9991l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> </svg>';
     }
-    
+
     function makeActionButton_AlignHandlesHX() {
         return makeActionButtonWrapper() + '<g transform="rotate(90, 15, 15)"> <line transform="rotate(112 25.000000000000004,23) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="20" y1="28" x2="30" y2="18" id="svg_5"/> <line transform="rotate(-73 6.9999999999999964,9.999999999999998) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="15" x2="11" y2="5" id="svg_2"/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="26" x2="12" y2="17" id="svg_33" transform="rotate(-9 6.999999999999964,21.999999999999993) "/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="17" y1="15" x2="27" y2="5" id="svg_35" transform="rotate(-48 22.000000000000007,9.100000381469728) "/> <rect stroke="null" id="svg_40" height="2" width="30" y="2" x="0" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="#002b41" cx="22" cy="3" r="3" id="svg_27"/> <circle fill="#002b41" cx="3" cy="3" r="3" id="svg_9"/> <rect stroke="null" id="svg_42" height="2" width="30" y="26" x="0.14493" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="rgb(0,170,255)" cx="3" cy="27" r="3" id="svg_8"/> <circle fill="rgb(0,170,255)" cx="27" cy="27" r="3" id="svg_32"/> <g id="svg_46"> <rect fill="#FFFFFF" x="20" y="14" width="7" height="7" id="svg_44"/> <path fill="rgb(0,170,255)" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_45"/> </g> <g id="svg_10"> <rect fill="#FFFFFF" x="8.9991" y="14" width="7" height="7" id="svg_6"/> <path fill="rgb(0,170,255)" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_7"/> </g></g></svg>';
     }
-    
+
     function makeActionButton_AlignHandlesXCross() {
         return makeActionButtonWrapper() + '<g transform="rotate(90, 15, 15)"> <line id="svg_5" y2="18" x2="30" y1="28" x1="20" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(112 25,23) "/> <line id="svg_2" y2="5" x2="11" y1="15" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(-73 7,10) "/> <line transform="rotate(-9 7,22) " id="svg_33" y2="17" x2="12" y1="26" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <line transform="rotate(-48 22,9.10) " id="svg_35" y2="5" x2="27" y1="15" x1="17" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0" y="2" width="30" height="2" id="svg_40" stroke="null"/> <circle id="svg_27" r="3" cy="3" cx="22" fill="rgb(0,170,255)"/> <circle id="svg_9" r="3" cy="3" cx="3" fill="#002b41"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0" y="26" width="30" height="2" id="svg_42" stroke="null"/> <circle id="svg_8" r="3" cy="27" cx="3" fill="rgb(0,170,255)"/> <circle id="svg_32" r="3" cy="27" cx="27" fill="#002b41"/> <g id="svg_46"> <rect id="svg_44" height="7" width="7" y="14" x="20" fill="#FFFFFF"/> <path id="svg_45" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g id="svg_4"> <rect id="svg_1" height="7" width="7" y="14" x="6" fill="#FFFFFF"/> <path id="svg_3" d="m12.38818,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g></g></svg>';
     }
@@ -407,10 +403,10 @@
     }
 
 
-    function makeActionButton_DeletePathPoint(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var red = _UI.iconcolors.redx;
+    function makeActionButton_DeletePathPoint() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let red = _UI.iconcolors.redx;
 
         // Handles
         re += '<line stroke="'+blue+'" fill="none" stroke-miterlimit="10" x1="4" y1="22" x2="22" y2="4"/>';
@@ -419,7 +415,7 @@
         re += '<circle fill="'+blue+'" cx="3" cy="23" r="3"/>';
         re += '<circle fill="'+blue+'" cx="23" cy="3" r="3"/>';
 
-        //delete
+        // delete
         re += '<path fill="'+red+'" d="M26.4,29c0.6,0.8,3.5-0.8,2.4-2.2c-2.4-3.1-8.6-9.6-11.5-11.9c-2.1-1.7-4.1-0.4-4.1-0.4S21,21.9,26.4,29z"/>';
         re += '<path fill="'+red+'" d="M17.2,28.8c-0.9,1.6-3.7-0.2-2.3-2c2.7-3.6,7.9-10.4,11.5-13c2.3-1.7,3.7-0.1,3.7-0.1S22.1,20.7,17.2,28.8z"/>';
 
@@ -428,9 +424,9 @@
         return re;
     }
 
-    function makeActionButton_InsertPathPoint(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
+    function makeActionButton_InsertPathPoint() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
 
         // Handles
         re += '<line stroke="'+blue+'" fill="none" stroke-miterlimit="10" x1="4" y1="22" x2="22" y2="4"/>';
@@ -439,7 +435,7 @@
         re += '<circle fill="'+blue+'" cx="3" cy="23" r="3"/>';
         re += '<circle fill="'+blue+'" cx="23" cy="3" r="3"/>';
 
-        //add
+        // add
         re += '<rect x="21" y="15" fill="'+blue+'" width="3" height="15"/>';
         re += '<rect x="15" y="21" fill="'+blue+'" width="15" height="3"/>';
 
@@ -448,11 +444,11 @@
         return re;
     }
 
-    function makeActionButton_SubtractUsingBottom(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var fill = _UI.iconcolors.darkfill;
-        var sub = _UI.iconcolors.lightfill;
+    function makeActionButton_SubtractUsingBottom() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let fill = _UI.iconcolors.darkfill;
+        let sub = _UI.iconcolors.lightfill;
 
         re += '<path fill="'+fill+'" d="M11,29v-6c6.6,0,12-5.4,12-12h6v18H11z"/>';
         re += '<path fill="'+blue+'" d="M28,12v16H12v-4c6.4-0.5,11.5-5.6,12-12H28 M30,10h-8.1c0,0.3,0.1,0.7,0.1,1c0,6.1-4.9,11-11,11c-0.3,0-0.7,0-1-0.1V30h20V10L30,10z"/>';
@@ -463,11 +459,11 @@
         return re;
     }
 
-    function makeActionButton_SubtractUsingTop(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var fill = _UI.iconcolors.darkfill;
-        var sub = _UI.iconcolors.lightfill;
+    function makeActionButton_SubtractUsingTop() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let fill = _UI.iconcolors.darkfill;
+        let sub = _UI.iconcolors.lightfill;
 
         re += '<rect fill="'+sub+'" x="11" y="11" width="19" height="19"/>';
         re += '<path fill="'+fill+'" d="M10,21c-5-0.5-9-4.8-9-10C1,5.5,5.5,1,11,1c5.2,0,9.4,4,10,9H10V21z"/>';
@@ -478,10 +474,10 @@
         return re;
     }
 
-    function makeActionButton_Combine(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_Combine() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let fill = _UI.iconcolors.darkfill;
 
         re += '<path fill="'+fill+'" d="M11,29v-8L10.1,21C4.9,20.5,1,16.2,1,11C1,5.5,5.5,1,11,1c5.2,0,9.5,3.9,10,9.1L21,11h8v18H11z"/>';
         re += '<path fill="'+blue+'" d="M11,2c4.7,0,8.5,3.5,9,8.2l0.2,1.8h1.8H28v16H12v-6.1v-1.8L10.2,20C5.5,19.5,2,15.7,2,11C2,6,6,2,11,2M11,0C4.9,0,0,4.9,0,11c0,5.7,4.4,10.4,10,10.9V30h20V10h-8.1C21.4,4.4,16.7,0,11,0L11,0z"/>';
@@ -491,11 +487,11 @@
         return re;
     }
 
-    function makeActionButton_SwitchShapeComponent(com){
-        var re = makeActionButtonWrapper();
-        var before = com? _UI.iconcolors.greenoutline : _UI.iconcolors.blueoutline;
-        var after = com? _UI.iconcolors.blueoutline : _UI.iconcolors.greenoutline;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_SwitchShapeComponent(com) {
+        let re = makeActionButtonWrapper();
+        let before = com? _UI.iconcolors.greenoutline : _UI.iconcolors.blueoutline;
+        let after = com? _UI.iconcolors.blueoutline : _UI.iconcolors.greenoutline;
+        let fill = _UI.iconcolors.darkfill;
 
         re += '<polygon fill="'+fill+'" points="5.1,21 1,17.2 1,1 3.4,1 10,11.3 10,21"/>';
         re += '<path fill="'+before+'" d="M2.9,2L9,11.6V20H5.5L2,16.7V2H2.9 M3.9,0H0v17.6L4.7,22H11V11L3.9,0L3.9,0z"/>';
@@ -507,10 +503,10 @@
         return re;
     }
 
-    function makeActionButton_MoveLayerDown(){
-        var re = makeActionButtonWrapper();
-        var accent = _UI.colors.blue.l65;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_MoveLayerDown() {
+        let re = makeActionButtonWrapper();
+        let accent = _UI.colors.blue.l65;
+        let fill = _UI.iconcolors.darkfill;
 
         re += '<rect fill="'+accent+'" x="23" y="21" width="2" height="7"/>';
         re += '<path fill="'+accent+'" d="M20,26h8l-4,4C24,30,19.9,25.9,20,26z"/>';
@@ -522,10 +518,10 @@
         return re;
     }
 
-    function makeActionButton_MoveLayerUp(){
-        var re = makeActionButtonWrapper();
-        var accent = _UI.colors.blue.l65;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_MoveLayerUp() {
+        let re = makeActionButtonWrapper();
+        let accent = _UI.colors.blue.l65;
+        let fill = _UI.iconcolors.darkfill;
 
         re += '<rect fill="'+accent+'" x="23" y="23" width="2" height="7"/>';
         re += '<path fill="'+accent+'" d="M20,25h8l-4-4C24,21,19.9,25.1,20,25z"/>';
@@ -537,17 +533,17 @@
         return re;
     }
 
-    function makeActionButton_DeleteShape(){
-        var re = makeActionButtonWrapper();
-        var red = _UI.colors.error.medium;
-        var accent = _UI.colors.blue.l65;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_DeleteShape() {
+        let re = makeActionButtonWrapper();
+        let red = _UI.colors.error.medium;
+        let accent = _UI.colors.blue.l65;
+        let fill = _UI.iconcolors.darkfill;
 
-        //shape
+        // shape
         re += '<rect fill="'+fill+'" x="1" y="1"  width="16" height="16"/>';
         re += '<path fill="'+accent+'" d="M16,2v14H2V2H16 M18,0H0v18h18V0L18,0z"/>';
 
-        //delete
+        // delete
         re += '<path fill="'+red+'" d="M26.4,29c0.6,0.8,3.5-0.8,2.4-2.2c-2.4-3.1-8.6-9.6-11.5-11.9c-2.1-1.7-4.1-0.4-4.1-0.4S21,21.9,26.4,29z"/>';
         re += '<path fill="'+red+'" d="M17.2,28.8c-0.9,1.6-3.7-0.2-2.3-2c2.7-3.6,7.9-10.4,11.5-13c2.3-1.7,3.7-0.1,3.7-0.1S22.1,20.7,17.2,28.8z"/>';
 
@@ -556,11 +552,11 @@
         return re;
     }
 
-    function makeActionButton_FlipVertical(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var gray = _UI.iconcolors.grayoutline;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_FlipVertical() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let gray = _UI.iconcolors.grayoutline;
+        let fill = _UI.iconcolors.darkfill;
 
         re += '<polygon fill="'+fill+'" points="6.4,13 1,7.6 1,1 14.7,1 29,9.6 29,13"/>';
         re += '<path fill="'+gray+'" d="M14.2,2L28,10.1V12H6.8L2,7.2V2h12 M15,0H0v8l6,6h24V9L15,0L15,0z"/>';
@@ -572,11 +568,11 @@
         return re;
     }
 
-    function makeActionButton_FlipHorizontal(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var gray = _UI.iconcolors.grayoutline;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_FlipHorizontal() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let gray = _UI.iconcolors.grayoutline;
+        let fill = _UI.iconcolors.darkfill;
 
         re += '<polygon fill="'+fill+'" points="1,29 1,15.3 9.6,1 13,1 13,23.6 7.6,29"/>';
         re += '<path fill="'+gray+'" d="M12,2v21.2L7.2,28H2V15.6L10.1,2H12 M14,0H9L0,15v15h8l6-6V0L14,0z"/>';
@@ -587,11 +583,11 @@
         return re;
     }
 
-    function makeActionButton_Copy(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var gray = _UI.iconcolors.grayoutline;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_Copy() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let gray = _UI.iconcolors.grayoutline;
+        let fill = _UI.iconcolors.darkfill;
 
         re += '<polygon fill="'+fill+'" points="1,22 1,10.4 10.4,1 18,1 18,22"/>';
         re += '<path fill="'+gray+'" d="M17,2v19H2V10.8L10.8,2H17 M19,0h-9L0,10v13h19V0L19,0z"/>';
@@ -603,10 +599,10 @@
         return re;
     }
 
-    function makeActionButton_PasteShapesFromAnotherGlyph(){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_PasteShapesFromAnotherGlyph() {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let fill = _UI.iconcolors.darkfill;
 
         re += '<rect fill="'+fill+'" x="5" y="7"  width="20" height="22"/>';
         re += '<path fill="'+blue+'" d="M24,8v20H6V8H24 M26,6H4v24h22V6L26,6z"/>';
@@ -619,16 +615,16 @@
         return re;
     }
 
-    function makeActionButton_AddShape(component){
-        var re = makeActionButtonWrapper();
-        var accent = component? _UI.iconcolors.greenoutline : _UI.iconcolors.blueoutline;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_AddShape(component) {
+        let re = makeActionButtonWrapper();
+        let accent = component? _UI.iconcolors.greenoutline : _UI.iconcolors.blueoutline;
+        let fill = _UI.iconcolors.darkfill;
 
-        //shape
+        // shape
         re += '<rect fill="'+fill+'" x="1" y="1"  width="16" height="16"/>';
         re += '<path fill="'+accent+'" d="M16,2v14H2V2H16 M18,0H0v18h18V0L18,0z"/>';
 
-        //add
+        // add
         re += '<rect x="21" y="15" fill="'+accent+'" width="3" height="15"/>';
         re += '<rect x="15" y="21" fill="'+accent+'" width="15" height="3"/>';
 
@@ -637,10 +633,10 @@
         return re;
     }
 
-    function makeActionButton_Undo(disabled){
-        var re = makeActionButtonWrapper();
-        var blue = disabled? _UI.iconcolors.disoutline : _UI.iconcolors.blueoutline;
-        var fill = disabled? _UI.iconcolors.disfill : _UI.iconcolors.darkfill;
+    function makeActionButton_Undo(disabled) {
+        let re = makeActionButtonWrapper();
+        let blue = disabled? _UI.iconcolors.disoutline : _UI.iconcolors.blueoutline;
+        let fill = disabled? _UI.iconcolors.disfill : _UI.iconcolors.darkfill;
 
         re += '<path fill="'+fill+'" d="M20.1,23c4.6-5,6.6-9.6,5.5-12.8C24.9,8.2,22.9,7,20,7c-5.9,0-8.8,5.3-8.9,5.5L10.9,13l2.4,4.1l-12,0.8l4-14.4l2.5,4.2l0.9-1.1c0,0,4-4.6,11.2-4.6c4.1,0,7.9,2.8,8.8,6.5C29.4,10.8,29.3,16.3,20.1,23z"/>';
         re += '<path fill="'+blue+'" d="M20,3c3.1,0,6.9,2,7.8,5.7c0.5,2.1-0.1,4.4-1.6,6.7c0.7-2,0.9-3.9,0.3-5.5C25.7,7.4,23.3,6,20,6c-6.5,0-9.6,5.8-9.8,6.1l-0.5,1l0.6,1l1.3,2.2l-8.9,0.6L5.7,6l0.6,1l1.4,2.4l1.8-2.2C9.6,7.2,13.2,3,20,3 M20,1C12.2,1,8,6,8,6L5,1L0,19l15-1l-3-5c0,0,2.6-5,8-5c7.7,0,7.2,9.2-8,21C39.8,15,29.5,1,20,1L20,1z"/>';
@@ -650,10 +646,10 @@
         return re;
     }
 
-    function makeActionButton_Paste(disabled){
-        var re = makeActionButtonWrapper();
-        var blue = disabled? _UI.iconcolors.disoutline : _UI.iconcolors.blueoutline;
-        var fill = disabled? _UI.iconcolors.disfill : _UI.iconcolors.darkfill;
+    function makeActionButton_Paste(disabled) {
+        let re = makeActionButtonWrapper();
+        let blue = disabled? _UI.iconcolors.disoutline : _UI.iconcolors.blueoutline;
+        let fill = disabled? _UI.iconcolors.disfill : _UI.iconcolors.darkfill;
 
         re += '<rect fill="'+fill+'" x="5" y="7"  width="20" height="22"/>';
         re += '<path fill="'+blue+'" d="M24,8v20H6V8H24 M26,6H4v24h22V6L26,6z"/>';
@@ -665,13 +661,13 @@
         return re;
     }
 
-    function makeActionButton_Align(edge){
-        var re = makeActionButtonWrapper();
-        var blue = _UI.iconcolors.blueoutline;
-        var fill = _UI.iconcolors.darkfill;
+    function makeActionButton_Align(edge) {
+        let re = makeActionButtonWrapper();
+        let blue = _UI.iconcolors.blueoutline;
+        let fill = _UI.iconcolors.darkfill;
 
-        switch(edge){
-            case 'bottom' :
+        switch (edge) {
+            case 'bottom':
                 re += '<rect fill="'+fill+'" x="1" y="21" width="6" height="8"/>';
                 re += '<path fill="'+blue+'" d="M6,22v6H2v-6H6 M8,20H0v10h8V20L8,20z"/>';
                 re += '<rect fill="'+fill+'" x="12" y="5" width="6" height="24"/>';
@@ -680,7 +676,7 @@
                 re += '<path fill="'+blue+'" d="M28,16v12h-4V16H28 M30,14h-8v16h8V14L30,14z"/>';
                 break;
 
-            case 'middle' :
+            case 'middle':
                 re += '<rect fill="'+fill+'" x="1" y="11" width="6" height="8"/>';
                 re += '<path fill="'+blue+'" d="M6,12v6H2v-6H6 M8,10H0v10h8V10L8,10z"/>';
                 re += '<rect fill="'+fill+'" x="12" y="3" width="6" height="24"/>';
@@ -689,7 +685,7 @@
                 re += '<path fill="'+blue+'" d="M28,9v12h-4V9H28 M30,7h-8v16h8V7L30,7z"/>';
                 break;
 
-            case 'top' :
+            case 'top':
                 re += '<rect fill="'+fill+'" x="1" y="1" width="6" height="8"/>';
                 re += '<path fill="'+blue+'" d="M6,2v6H2V2H6 M8,0H0v10h8V0L8,0z"/>';
                 re += '<rect fill="'+fill+'" x="12" y="1" width="6" height="24"/>';
@@ -698,7 +694,7 @@
                 re += '<path fill="'+blue+'" d="M28,2v12h-4V2H28 M30,0h-8v16h8V0L30,0z"/>';
                 break;
 
-            case 'left' :
+            case 'left':
                 re += '<rect fill="'+fill+'" x="1" y="1" width="8" height="6"/>';
                 re += '<path fill="'+blue+'" d="M8,2v4H2V2H8 M10,0H0v8h10V0L10,0z"/>';
                 re += '<rect fill="'+fill+'" x="1" y="12" width="24" height="6"/>';
@@ -707,7 +703,7 @@
                 re += '<path fill="'+blue+'" d="M14,24v4H2v-4H14 M16,22H0v8h16V22L16,22z"/>';
                 break;
 
-            case 'center' :
+            case 'center':
                 re += '<rect fill="'+fill+'" x="11" y="1" width="8" height="6"/>';
                 re += '<path fill="'+blue+'" d="M18,2v4h-6V2H18 M20,0H10v8h10V0L20,0z"/>';
                 re += '<rect fill="'+fill+'" x="3" y="12" width="24" height="6"/>';
@@ -716,7 +712,7 @@
                 re += '<path fill="'+blue+'" d="M21,24v4H9v-4H21 M23,22H7v8h16V22L23,22z"/>';
                 break;
 
-            case 'right' :
+            case 'right':
                 re += '<rect fill="'+fill+'" x="21" y="1" width="8" height="6"/>';
                 re += '<path fill="'+blue+'" d="M28,2v4h-6V2H28 M30,0H20v8h10V0L30,0z"/>';
                 re += '<rect fill="'+fill+'" x="5" y="12" width="24" height="6"/>';
@@ -758,25 +754,25 @@
 //    TOOLS
 //    ---------------------
     function makeToolButton(oa) {
-        //debug("MAKETOOLBUTTON - oa: " + json(oa));
+        // debug("MAKETOOLBUTTON - oa: " + json(oa));
 
-        var color_outline = _UI.colors.blue.l75;
-        var color_fill = _UI.colors.gray.l40;
+        let color_outline = _UI.colors.blue.l75;
+        let color_fill = _UI.colors.gray.l40;
 
-        if(oa.selected){
+        if (oa.selected) {
             color_outline = 'black';
             color_fill = 'white';
-        } else if (oa.disabled){
+        } else if (oa.disabled) {
             color_outline = _UI.colors.gray.l40;
             color_fill = _UI.colors.gray.l30;
         }
 
-        var re = '<svg version="1.1" ';
+        let re = '<svg version="1.1" ';
         re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
         re += 'x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"> ';
 
-        var ic = _UI.icons[oa.name];
-        if(ic.fill){
+        let ic = _UI.icons[oa.name];
+        if (ic.fill) {
             re += '<g pointer-events="none" fill="'+color_fill+'">';
             re += ic.fill;
             re += '</g>';
@@ -793,69 +789,69 @@
 
     _UI.icons.tool_arrow = {
         'fill': '<rect x="11" y="14" width="1" height="4"/><rect x="12" y="16" width="1" height="2"/><rect x="9" y="12" width="1" height="2"/><rect x="5" y="3" width="2" height="1"/><rect x="10" y="7" width="1" height="9"/><rect x="5" y="6" width="5" height="6"/><rect x="12" y="9" width="1" height="3"/><rect x="11" y="8" width="1" height="4"/><rect x="14" y="11" width="1" height="1"/><rect x="13" y="10" width="1" height="2"/><rect x="5" y="15" width="1" height="1"/><rect x="5" y="2" width="1" height="1"/><rect x="5" y="14" width="2" height="1"/><rect x="5" y="13" width="3" height="1"/><rect x="5" y="4" width="3" height="1"/><rect x="5" y="12" width="4" height="1"/><rect x="5" y="5" width="4" height="1"/>',
-        'outline': '<rect x="4" width="1" height="17"/><rect x="5" y="1" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="9" y="5" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="11" y="7" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="11" y="12" width="5" height="1"/><rect x="12" y="8" width="1" height="1"/><rect x="13" y="9" width="1" height="1"/><rect x="14" y="10" width="1" height="1"/><rect x="15" y="11" width="1" height="1"/><rect x="11" y="18" width="2" height="1"/><rect x="5" y="16" width="1" height="1"/><rect x="6" y="15" width="1" height="1"/><rect x="7" y="14" width="1" height="1"/><rect x="8" y="13" width="1" height="1"/><rect x="9" y="14" width="1" height="2"/><rect x="10" y="16" width="1" height="2"/><rect x="11" y="12" width="1" height="2"/><rect x="12" y="14" width="1" height="2"/><rect x="13" y="16" width="1" height="2"/>'
+        'outline': '<rect x="4" width="1" height="17"/><rect x="5" y="1" width="1" height="1"/><rect x="7" y="3" width="1" height="1"/><rect x="6" y="2" width="1" height="1"/><rect x="9" y="5" width="1" height="1"/><rect x="8" y="4" width="1" height="1"/><rect x="11" y="7" width="1" height="1"/><rect x="10" y="6" width="1" height="1"/><rect x="11" y="12" width="5" height="1"/><rect x="12" y="8" width="1" height="1"/><rect x="13" y="9" width="1" height="1"/><rect x="14" y="10" width="1" height="1"/><rect x="15" y="11" width="1" height="1"/><rect x="11" y="18" width="2" height="1"/><rect x="5" y="16" width="1" height="1"/><rect x="6" y="15" width="1" height="1"/><rect x="7" y="14" width="1" height="1"/><rect x="8" y="13" width="1" height="1"/><rect x="9" y="14" width="1" height="2"/><rect x="10" y="16" width="1" height="2"/><rect x="11" y="12" width="1" height="2"/><rect x="12" y="14" width="1" height="2"/><rect x="13" y="16" width="1" height="2"/>',
     };
 
     _UI.icons.tool_penPlus = {
         'fill': '<rect x="5" y="4" width="5" height="14"/><rect x="10" y="8" width="2" height="6"/><rect x="3" y="8" width="2" height="6"/>',
-        'outline': '<rect id="MINUS_SHAPE" x="14" y="16" width="5" height="1"/><rect id="PLUS_SHAPE" x="16" y="14" width="1" height="5"/><rect x="4" y="16" width="1" height="3"/><rect x="10" y="16" width="1" height="3"/><rect x="7" y="1" width="1" height="12"/><rect x="4" y="18" width="7" height="1"/><rect x="4" y="16" width="7" height="1"/><rect x="8" y="2" width="1" height="2"/><rect x="9" y="4" width="1" height="2"/><rect x="10" y="6" width="1" height="2"/><rect x="3" y="8" width="1" height="2"/><rect x="2" y="10" width="1" height="2"/><rect x="12" y="10" width="1" height="2"/><rect x="6" y="10" width="3" height="2"/><rect x="3" y="12" width="1" height="2"/><rect x="4" y="14" width="1" height="2"/><rect x="6" y="2" width="1" height="2"/><rect x="5" y="4" width="1" height="2"/><rect x="4" y="6" width="1" height="2"/><rect x="11" y="8" width="1" height="2"/><rect x="11" y="12" width="1" height="2"/><rect x="10" y="14" width="1" height="2"/>'
+        'outline': '<rect id="MINUS_SHAPE" x="14" y="16" width="5" height="1"/><rect id="PLUS_SHAPE" x="16" y="14" width="1" height="5"/><rect x="4" y="16" width="1" height="3"/><rect x="10" y="16" width="1" height="3"/><rect x="7" y="1" width="1" height="12"/><rect x="4" y="18" width="7" height="1"/><rect x="4" y="16" width="7" height="1"/><rect x="8" y="2" width="1" height="2"/><rect x="9" y="4" width="1" height="2"/><rect x="10" y="6" width="1" height="2"/><rect x="3" y="8" width="1" height="2"/><rect x="2" y="10" width="1" height="2"/><rect x="12" y="10" width="1" height="2"/><rect x="6" y="10" width="3" height="2"/><rect x="3" y="12" width="1" height="2"/><rect x="4" y="14" width="1" height="2"/><rect x="6" y="2" width="1" height="2"/><rect x="5" y="4" width="1" height="2"/><rect x="4" y="6" width="1" height="2"/><rect x="11" y="8" width="1" height="2"/><rect x="11" y="12" width="1" height="2"/><rect x="10" y="14" width="1" height="2"/>',
     };
 
     _UI.icons.tool_penMinus = {
         'fill': '<rect x="5" y="4" width="5" height="14"/><rect x="10" y="8" width="2" height="6"/><rect x="3" y="8" width="2" height="6"/>',
-        'outline': '<rect id="MINUS_SHAPE" x="14" y="16" width="5" height="1"/><rect x="4" y="16" width="1" height="3"/><rect x="10" y="16" width="1" height="3"/><rect x="7" y="1" width="1" height="12"/><rect x="4" y="18" width="7" height="1"/><rect x="4" y="16" width="7" height="1"/><rect x="8" y="2" width="1" height="2"/><rect x="9" y="4" width="1" height="2"/><rect x="10" y="6" width="1" height="2"/><rect x="3" y="8" width="1" height="2"/><rect x="2" y="10" width="1" height="2"/><rect x="12" y="10" width="1" height="2"/><rect x="6" y="10" width="3" height="2"/><rect x="3" y="12" width="1" height="2"/><rect x="4" y="14" width="1" height="2"/><rect x="6" y="2" width="1" height="2"/><rect x="5" y="4" width="1" height="2"/><rect x="4" y="6" width="1" height="2"/><rect x="11" y="8" width="1" height="2"/><rect x="11" y="12" width="1" height="2"/><rect x="10" y="14" width="1" height="2"/>'
+        'outline': '<rect id="MINUS_SHAPE" x="14" y="16" width="5" height="1"/><rect x="4" y="16" width="1" height="3"/><rect x="10" y="16" width="1" height="3"/><rect x="7" y="1" width="1" height="12"/><rect x="4" y="18" width="7" height="1"/><rect x="4" y="16" width="7" height="1"/><rect x="8" y="2" width="1" height="2"/><rect x="9" y="4" width="1" height="2"/><rect x="10" y="6" width="1" height="2"/><rect x="3" y="8" width="1" height="2"/><rect x="2" y="10" width="1" height="2"/><rect x="12" y="10" width="1" height="2"/><rect x="6" y="10" width="3" height="2"/><rect x="3" y="12" width="1" height="2"/><rect x="4" y="14" width="1" height="2"/><rect x="6" y="2" width="1" height="2"/><rect x="5" y="4" width="1" height="2"/><rect x="4" y="6" width="1" height="2"/><rect x="11" y="8" width="1" height="2"/><rect x="11" y="12" width="1" height="2"/><rect x="10" y="14" width="1" height="2"/>',
     };
 
     _UI.icons.tool_pen = {
         'fill': '<rect x="7" y="4" width="5" height="14"/><rect x="12" y="8" width="2" height="6"/><rect x="5" y="8" width="2" height="6"/>',
-        'outline': '<rect x="6" y="16" width="1" height="3"/><rect x="12" y="16" width="1" height="3"/><rect x="9" y="1" width="1" height="12"/><rect x="6" y="18" width="7" height="1"/><rect x="6" y="16" width="7" height="1"/><rect x="10" y="2" width="1" height="2"/><rect x="11" y="4" width="1" height="2"/><rect x="12" y="6" width="1" height="2"/><rect x="5" y="8" width="1" height="2"/><rect x="4" y="10" width="1" height="2"/><rect x="14" y="10" width="1" height="2"/><rect x="8" y="10" width="3" height="2"/><rect x="5" y="12" width="1" height="2"/><rect x="6" y="14" width="1" height="2"/><rect x="8" y="2" width="1" height="2"/><rect x="7" y="4" width="1" height="2"/><rect x="6" y="6" width="1" height="2"/><rect x="13" y="8" width="1" height="2"/><rect x="13" y="12" width="1" height="2"/><rect x="12" y="14" width="1" height="2"/>'
+        'outline': '<rect x="6" y="16" width="1" height="3"/><rect x="12" y="16" width="1" height="3"/><rect x="9" y="1" width="1" height="12"/><rect x="6" y="18" width="7" height="1"/><rect x="6" y="16" width="7" height="1"/><rect x="10" y="2" width="1" height="2"/><rect x="11" y="4" width="1" height="2"/><rect x="12" y="6" width="1" height="2"/><rect x="5" y="8" width="1" height="2"/><rect x="4" y="10" width="1" height="2"/><rect x="14" y="10" width="1" height="2"/><rect x="8" y="10" width="3" height="2"/><rect x="5" y="12" width="1" height="2"/><rect x="6" y="14" width="1" height="2"/><rect x="8" y="2" width="1" height="2"/><rect x="7" y="4" width="1" height="2"/><rect x="6" y="6" width="1" height="2"/><rect x="13" y="8" width="1" height="2"/><rect x="13" y="12" width="1" height="2"/><rect x="12" y="14" width="1" height="2"/>',
     };
 
     _UI.icons.tool_slice = {
-        'fill':'<polygon points="6,15 6,19 13,19 13,1 "/>',
-        'outline':'<rect x="13" width="1" height="16"/><rect x="6" y="19" width="7" height="1"/><rect x="6" y="17" width="1" height="3"/><rect x="12" y="16" width="1" height="4"/><rect x="6" y="17" width="7" height="1"/><rect x="11" y="3" width="1" height="2"/><rect x="12" y="1" width="1" height="2"/><rect x="10" y="5" width="1" height="2"/><rect x="9" y="7" width="1" height="2"/><rect x="8" y="9" width="1" height="2"/><rect x="7" y="11" width="1" height="2"/><rect x="6" y="13" width="1" height="2"/><rect x="5" y="15" width="1" height="2"/>'
+        'fill': '<polygon points="6,15 6,19 13,19 13,1 "/>',
+        'outline': '<rect x="13" width="1" height="16"/><rect x="6" y="19" width="7" height="1"/><rect x="6" y="17" width="1" height="3"/><rect x="12" y="16" width="1" height="4"/><rect x="6" y="17" width="7" height="1"/><rect x="11" y="3" width="1" height="2"/><rect x="12" y="1" width="1" height="2"/><rect x="10" y="5" width="1" height="2"/><rect x="9" y="7" width="1" height="2"/><rect x="8" y="9" width="1" height="2"/><rect x="7" y="11" width="1" height="2"/><rect x="6" y="13" width="1" height="2"/><rect x="5" y="15" width="1" height="2"/>',
     };
 
     _UI.icons.tool_shapeResize = {
         'fill': '<rect x="1" y="1" display="inline" fill="#FFFFFF" width="4" height="4"/><rect x="8" y="8" display="inline" fill="#FFFFFF" width="4" height="4"/><rect x="15" y="15" display="inline" fill="#FFFFFF" width="4" height="4"/><rect x="15" y="1" display="inline" fill="#FFFFFF" width="4" height="4"/><rect x="1" y="15" display="inline" fill="#FFFFFF" width="4" height="4"/>',
-        'outline': '<rect x="16" y="5" width="1" height="10"/><rect x="5" y="16" width="10" height="1"/><rect x="5" y="3" width="10" height="1"/><rect x="3" y="5" width="1" height="10"/><rect x="1" y="1" width="4" height="1"/><rect x="1" y="4" width="4" height="1"/><rect x="1" y="1" width="1" height="4"/><rect x="4" y="1" width="1" height="4"/><rect x="15" y="1" width="4" height="1"/><rect x="15" y="4" width="4" height="1"/><rect x="15" y="1" width="1" height="4"/><rect x="18" y="1" width="1" height="4"/><rect x="15" y="15" width="4" height="1"/><rect x="15" y="18" width="4" height="1"/><rect x="15" y="15" width="1" height="4"/><rect x="18" y="15" width="1" height="4"/><rect x="1" y="15" width="4" height="1"/><rect x="1" y="18" width="4" height="1"/><rect x="1" y="15" width="1" height="4"/><rect x="4" y="15" width="1" height="4"/><rect x="8" y="8" width="4" height="1"/><rect x="8" y="11" width="4" height="1"/><rect x="8" y="8" width="1" height="4"/><rect x="11" y="8" width="1" height="4"/>'
+        'outline': '<rect x="16" y="5" width="1" height="10"/><rect x="5" y="16" width="10" height="1"/><rect x="5" y="3" width="10" height="1"/><rect x="3" y="5" width="1" height="10"/><rect x="1" y="1" width="4" height="1"/><rect x="1" y="4" width="4" height="1"/><rect x="1" y="1" width="1" height="4"/><rect x="4" y="1" width="1" height="4"/><rect x="15" y="1" width="4" height="1"/><rect x="15" y="4" width="4" height="1"/><rect x="15" y="1" width="1" height="4"/><rect x="18" y="1" width="1" height="4"/><rect x="15" y="15" width="4" height="1"/><rect x="15" y="18" width="4" height="1"/><rect x="15" y="15" width="1" height="4"/><rect x="18" y="15" width="1" height="4"/><rect x="1" y="15" width="4" height="1"/><rect x="1" y="18" width="4" height="1"/><rect x="1" y="15" width="1" height="4"/><rect x="4" y="15" width="1" height="4"/><rect x="8" y="8" width="4" height="1"/><rect x="8" y="11" width="4" height="1"/><rect x="8" y="8" width="1" height="4"/><rect x="11" y="8" width="1" height="4"/>',
     };
 
     _UI.icons.tool_newRect = {
         'fill': '<rect x="2" y="2" width="12" height="12"/>',
-        'outline':'<rect x="1" y="1" width="13" height="1"/><rect x="1" y="13" width="13" height="1"/><rect x="14" y="16" width="5" height="1"/><rect x="1" y="2" width="1" height="12"/><rect x="13" y="2" width="1" height="12"/><rect x="16" y="14" width="1" height="5"/>'
+        'outline': '<rect x="1" y="1" width="13" height="1"/><rect x="1" y="13" width="13" height="1"/><rect x="14" y="16" width="5" height="1"/><rect x="1" y="2" width="1" height="12"/><rect x="13" y="2" width="1" height="12"/><rect x="16" y="14" width="1" height="5"/>',
     };
 
     _UI.icons.tool_newOval = {
         'fill': '<rect x="6" y="2" width="4" height="1"/><rect x="6" y="12" width="4" height="1"/><rect x="5" y="10.1" width="4" height="1"/><rect x="2" y="6" width="1" height="3"/><rect x="13" y="6" width="1" height="3"/><rect x="11" y="5.1" width="1" height="3"/><rect x="3" y="3" width="10" height="9"/>',
-        'outline': '<rect x="6" y="1" width="4" height="1"/><rect x="4" y="2" width="2" height="1"/><rect x="6" y="13" width="4" height="1"/><rect x="1" y="6" width="1" height="3"/><rect x="2" y="4" width="1" height="2"/><rect x="10" y="2" width="2" height="1"/><rect x="13" y="4" width="1" height="2"/><rect x="4" y="12" width="2" height="1"/><rect x="2" y="9" width="1" height="2"/><rect x="10" y="12" width="2" height="1"/><rect x="13" y="9" width="1" height="2"/><rect x="14" y="6" width="1" height="3"/><rect x="14" y="16" width="5" height="1"/><rect x="16" y="14" width="1" height="5"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="11" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/>'
+        'outline': '<rect x="6" y="1" width="4" height="1"/><rect x="4" y="2" width="2" height="1"/><rect x="6" y="13" width="4" height="1"/><rect x="1" y="6" width="1" height="3"/><rect x="2" y="4" width="1" height="2"/><rect x="10" y="2" width="2" height="1"/><rect x="13" y="4" width="1" height="2"/><rect x="4" y="12" width="2" height="1"/><rect x="2" y="9" width="1" height="2"/><rect x="10" y="12" width="2" height="1"/><rect x="13" y="9" width="1" height="2"/><rect x="14" y="6" width="1" height="3"/><rect x="14" y="16" width="5" height="1"/><rect x="16" y="14" width="1" height="5"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="11" width="1" height="1"/><rect x="3" y="11" width="1" height="1"/><rect x="3" y="3" width="1" height="1"/>',
     };
 
     _UI.icons.tool_newPath = {
         'fill': '<rect x="5" y="2" width="5" height="13"/><rect x="10" y="4" width="2" height="11"/><rect x="3" y="9" width="2" height="6"/><rect x="6" y="15" width="3" height="1"/><rect x="12" y="6" width="2" height="7"/><rect x="2" y="2" width="3" height="1"/><rect x="4" y="3" width="3" height="1"/>',
-        'outline': '<rect x="14" y="16" width="5" height="1"/><rect x="16" y="14" width="1" height="5"/><rect x="8" y="2" width="2" height="1"/><rect x="2" y="1" width="6" height="1"/><rect x="6" y="16" width="3" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/><rect x="1" y="1" width="1" height="2"/><rect x="2" y="3" width="2" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="2" y="10" width="1" height="4"/><rect x="3" y="9" width="1" height="1"/><rect x="3" y="14" width="1" height="1"/><rect x="5" y="5" width="1" height="3"/><rect x="4" y="8" width="1" height="1"/><rect x="12" y="13" width="1" height="1"/><rect x="11" y="14" width="1" height="1"/><rect x="9" y="15" width="2" height="1"/><rect x="4" y="15" width="2" height="1"/><rect x="13" y="11" width="1" height="2"/><rect x="13" y="6" width="1" height="2"/><rect x="14" y="8" width="1" height="3"/>'
+        'outline': '<rect x="14" y="16" width="5" height="1"/><rect x="16" y="14" width="1" height="5"/><rect x="8" y="2" width="2" height="1"/><rect x="2" y="1" width="6" height="1"/><rect x="6" y="16" width="3" height="1"/><rect x="10" y="3" width="1" height="1"/><rect x="11" y="4" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/><rect x="1" y="1" width="1" height="2"/><rect x="2" y="3" width="2" height="1"/><rect x="4" y="4" width="1" height="1"/><rect x="2" y="10" width="1" height="4"/><rect x="3" y="9" width="1" height="1"/><rect x="3" y="14" width="1" height="1"/><rect x="5" y="5" width="1" height="3"/><rect x="4" y="8" width="1" height="1"/><rect x="12" y="13" width="1" height="1"/><rect x="11" y="14" width="1" height="1"/><rect x="9" y="15" width="2" height="1"/><rect x="4" y="15" width="2" height="1"/><rect x="13" y="11" width="1" height="2"/><rect x="13" y="6" width="1" height="2"/><rect x="14" y="8" width="1" height="3"/>',
     };
 
-    _UI.icons.tool_popOut = {'outline':'<rect x="18" y="1" width="1" height="11"/><rect x="6" y="1" width="2" height="11"/><rect x="6" y="1" width="13" height="1"/><rect x="6" y="11" width="13" height="1"/><rect x="13" y="11" width="1" height="8"/><rect x="1" y="8" width="2" height="11"/><rect x="1" y="8" width="7" height="1"/><rect x="1" y="18" width="13" height="1"/>'};
+    _UI.icons.tool_popOut = {'outline': '<rect x="18" y="1" width="1" height="11"/><rect x="6" y="1" width="2" height="11"/><rect x="6" y="1" width="13" height="1"/><rect x="6" y="11" width="13" height="1"/><rect x="13" y="11" width="1" height="8"/><rect x="1" y="8" width="2" height="11"/><rect x="1" y="8" width="7" height="1"/><rect x="1" y="18" width="13" height="1"/>'};
 
-    _UI.icons.tool_popIn = {'outline':'<rect x="1" y="1" width="2" height="18"/><rect x="7" y="1" width="2" height="18"/><rect x="18" y="1" width="1" height="17"/><rect x="1" y="18" width="18" height="1"/><rect x="1" y="1" width="18" height="1"/>'};
+    _UI.icons.tool_popIn = {'outline': '<rect x="1" y="1" width="2" height="18"/><rect x="7" y="1" width="2" height="18"/><rect x="18" y="1" width="1" height="17"/><rect x="1" y="18" width="18" height="1"/><rect x="1" y="1" width="18" height="1"/>'};
 
-    _UI.icons.tool_zoomEm = {'outline':'<polygon points="15,3 11,3 11,5 13,5 13,6 12,6 12,7 11,7 11,8 10,8 9,8 9,7 8,7 8,6 7,6 7,5 9,5 9,3 5,3 3,3 3,5 3,9 5,9 5,7 6,7 6,8 7,8 7,9 8,9 8,10 8,11 7,11 7,12 6,12 6,13 5,13 5,11 3,11 3,15 3,17 5,17 9,17 9,15 7,15 7,14 8,14 8,13 9,13 9,12 10,12 11,12 11,13 12,13 12,14 13,14 13,15 11,15 11,17 15,17 17,17 17,15 17,11 15,11 15,13 14,13 14,12 13,12 13,11 12,11 12,10 12,9 13,9 13,8 14,8 14,7 15,7 15,9 17,9 17,5 17,3"/><rect x="18" y="1" width="1" height="18"/><rect x="1" y="18" width="18" height="1"/><rect x="1" y="1" width="18" height="1"/><rect x="1" y="1" width="1" height="18"/>'};
+    _UI.icons.tool_zoomEm = {'outline': '<polygon points="15,3 11,3 11,5 13,5 13,6 12,6 12,7 11,7 11,8 10,8 9,8 9,7 8,7 8,6 7,6 7,5 9,5 9,3 5,3 3,3 3,5 3,9 5,9 5,7 6,7 6,8 7,8 7,9 8,9 8,10 8,11 7,11 7,12 6,12 6,13 5,13 5,11 3,11 3,15 3,17 5,17 9,17 9,15 7,15 7,14 8,14 8,13 9,13 9,12 10,12 11,12 11,13 12,13 12,14 13,14 13,15 11,15 11,17 15,17 17,17 17,15 17,11 15,11 15,13 14,13 14,12 13,12 13,11 12,11 12,10 12,9 13,9 13,8 14,8 14,7 15,7 15,9 17,9 17,5 17,3"/><rect x="18" y="1" width="1" height="18"/><rect x="1" y="18" width="18" height="1"/><rect x="1" y="1" width="18" height="1"/><rect x="1" y="1" width="1" height="18"/>'};
 
-    _UI.icons.tool_zoom1to1 = {'outline':'<rect x="5" y="4" width="2" height="12"/><rect x="14" y="4" width="2" height="12"/><rect x="18" y="1" width="1" height="18"/><rect x="1" y="1" width="1" height="18"/><rect x="13" y="5" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="9" y="11" width="2" height="2"/><rect x="9" y="7" width="2" height="2"/><rect x="1" y="1" width="18" height="1"/><rect x="1" y="18" width="18" height="1"/>'};
+    _UI.icons.tool_zoom1to1 = {'outline': '<rect x="5" y="4" width="2" height="12"/><rect x="14" y="4" width="2" height="12"/><rect x="18" y="1" width="1" height="18"/><rect x="1" y="1" width="1" height="18"/><rect x="13" y="5" width="1" height="1"/><rect x="4" y="5" width="1" height="1"/><rect x="9" y="11" width="2" height="2"/><rect x="9" y="7" width="2" height="2"/><rect x="1" y="1" width="18" height="1"/><rect x="1" y="18" width="18" height="1"/>'};
 
-    _UI.icons.tool_zoomIn = {'outline':'<rect x="9" y="3" width="2" height="14"/><rect x="3" y="9" width="14" height="2"/>'};
+    _UI.icons.tool_zoomIn = {'outline': '<rect x="9" y="3" width="2" height="14"/><rect x="3" y="9" width="14" height="2"/>'};
 
-    _UI.icons.tool_zoomOut = {'outline':'<rect x="3" y="9" width="14" height="2"/>'};
+    _UI.icons.tool_zoomOut = {'outline': '<rect x="3" y="9" width="14" height="2"/>'};
 
     _UI.icons.tool_pan = {
-        'fill':'<rect x="9" y="1" width="2" height="18"/><rect x="1" y="9" width="18" height="2"/><rect x="2" y="7" width="2" height="6"/><rect x="7" y="16" width="6" height="2"/><rect x="16" y="7" width="2" height="6"/><rect x="7" y="2" width="6" height="2"/>',
-        'outline':'<rect x="8" y="4" width="1" height="5"/><rect x="8" y="11" width="1" height="5"/><rect x="11" y="4" width="1" height="5"/><rect x="11" y="11" width="1" height="5"/><rect x="4" y="8" width="4" height="1"/><rect x="11" y="8" width="5" height="1"/><rect x="4" y="11" width="4" height="1"/><rect x="4" y="12" width="1" height="2"/><rect x="4" y="6" width="1" height="2"/><rect x="2" y="12" width="1" height="1"/><rect x="1" y="11" width="1" height="1"/><rect x="0" y="9" width="1" height="2"/><rect x="1" y="8" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="3" y="13" width="1" height="1"/><rect x="11" y="11" width="5" height="1"/><rect x="12" y="15" width="2" height="1"/><rect x="6" y="15" width="2" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="9" y="19" width="2" height="1"/><rect x="8" y="18" width="1" height="1"/><rect x="7" y="17" width="1" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="15" y="6" width="1" height="2"/><rect x="15" y="12" width="1" height="2"/><rect x="17" y="7" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="19" y="9" width="1" height="2"/><rect x="18" y="11" width="1" height="1"/><rect x="17" y="12" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="6" y="4" width="2" height="1"/><rect x="12" y="4" width="2" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="6" y="3" width="1" height="1"/><rect x="8" y="1" width="1" height="1"/><rect x="9" y="0" width="2" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="13" y="3" width="1" height="1"/>'
+        'fill': '<rect x="9" y="1" width="2" height="18"/><rect x="1" y="9" width="18" height="2"/><rect x="2" y="7" width="2" height="6"/><rect x="7" y="16" width="6" height="2"/><rect x="16" y="7" width="2" height="6"/><rect x="7" y="2" width="6" height="2"/>',
+        'outline': '<rect x="8" y="4" width="1" height="5"/><rect x="8" y="11" width="1" height="5"/><rect x="11" y="4" width="1" height="5"/><rect x="11" y="11" width="1" height="5"/><rect x="4" y="8" width="4" height="1"/><rect x="11" y="8" width="5" height="1"/><rect x="4" y="11" width="4" height="1"/><rect x="4" y="12" width="1" height="2"/><rect x="4" y="6" width="1" height="2"/><rect x="2" y="12" width="1" height="1"/><rect x="1" y="11" width="1" height="1"/><rect x="0" y="9" width="1" height="2"/><rect x="1" y="8" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="3" y="13" width="1" height="1"/><rect x="11" y="11" width="5" height="1"/><rect x="12" y="15" width="2" height="1"/><rect x="6" y="15" width="2" height="1"/><rect x="12" y="17" width="1" height="1"/><rect x="13" y="16" width="1" height="1"/><rect x="11" y="18" width="1" height="1"/><rect x="9" y="19" width="2" height="1"/><rect x="8" y="18" width="1" height="1"/><rect x="7" y="17" width="1" height="1"/><rect x="6" y="16" width="1" height="1"/><rect x="15" y="6" width="1" height="2"/><rect x="15" y="12" width="1" height="2"/><rect x="17" y="7" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="19" y="9" width="1" height="2"/><rect x="18" y="11" width="1" height="1"/><rect x="17" y="12" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="6" y="4" width="2" height="1"/><rect x="12" y="4" width="2" height="1"/><rect x="7" y="2" width="1" height="1"/><rect x="6" y="3" width="1" height="1"/><rect x="8" y="1" width="1" height="1"/><rect x="9" y="0" width="2" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="13" y="3" width="1" height="1"/>',
     };
 
     _UI.icons.tool_kern = {
-        'fill':'<rect x="1" y="9" width="18" height="2"/><rect x="2" y="7" width="2" height="6"/><rect x="16" y="7" width="2" height="6"/>',
-        'outline':'<rect x="4" y="8" width="12" height="1"/><rect x="4" y="11" width="12" height="1"/><rect x="4" y="12" width="1" height="2"/><rect x="4" y="6" width="1" height="2"/><rect x="2" y="12" width="1" height="1"/><rect x="1" y="11" width="1" height="1"/><rect y="9" width="1" height="2"/><rect x="1" y="8" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="3" y="13" width="1" height="1"/><rect x="15" y="6" width="1" height="2"/><rect x="15" y="12" width="1" height="2"/><rect x="17" y="7" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="19" y="9" width="1" height="2"/><rect x="18" y="11" width="1" height="1"/><rect x="17" y="12" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="9" y="2" width="2" height="16"/>'
+        'fill': '<rect x="1" y="9" width="18" height="2"/><rect x="2" y="7" width="2" height="6"/><rect x="16" y="7" width="2" height="6"/>',
+        'outline': '<rect x="4" y="8" width="12" height="1"/><rect x="4" y="11" width="12" height="1"/><rect x="4" y="12" width="1" height="2"/><rect x="4" y="6" width="1" height="2"/><rect x="2" y="12" width="1" height="1"/><rect x="1" y="11" width="1" height="1"/><rect y="9" width="1" height="2"/><rect x="1" y="8" width="1" height="1"/><rect x="3" y="6" width="1" height="1"/><rect x="2" y="7" width="1" height="1"/><rect x="3" y="13" width="1" height="1"/><rect x="15" y="6" width="1" height="2"/><rect x="15" y="12" width="1" height="2"/><rect x="17" y="7" width="1" height="1"/><rect x="16" y="6" width="1" height="1"/><rect x="18" y="8" width="1" height="1"/><rect x="19" y="9" width="1" height="2"/><rect x="18" y="11" width="1" height="1"/><rect x="17" y="12" width="1" height="1"/><rect x="16" y="13" width="1" height="1"/><rect x="9" y="2" width="2" height="16"/>',
     };
 
 
@@ -864,16 +860,16 @@
 //    --------------------
 
     function makePointButton(type, selected) {
-        var color = _UI.colors.gray.l40;
-        var bgcolor = 'transparent';
+        let color = _UI.colors.gray.l40;
+        let bgcolor = 'transparent';
 
-        if(selected){
+        if (selected) {
             color = _UI.colors.blue.l65;
             bgcolor = _UI.colors.gray.offwhite;
         }
 
-        //debug("MAKEPOINTBUTTON - " + type + " selected: " + selected + " color: " + color);
-        var re = "";
+        // debug("MAKEPOINTBUTTON - " + type + " selected: " + selected + " color: " + color);
+        let re = '';
 
         re += '<button class="pointtypebutton" style="background-color:'+bgcolor+';" ';
         re += 'onclick="_UI.multiSelect.points.setPointType(\''+type+'\'); history_put(\'Point Type: '+type+'\'); redraw({calledBy:\'pointDetails\'});" ';
@@ -893,8 +889,8 @@
         re += '<rect x="7" y="7" width="1" height="1"/>';
         re += '<circle cx="3" cy="3" r="1.5"/>';
 
-        switch(type){
-            case "corner":
+        switch (type) {
+            case 'corner':
                 re += '<rect x="7" y="12" width="1" height="1"/>';
                 re += '<rect x="6" y="13" width="1" height="1"/>';
                 re += '<rect x="5" y="14" width="1" height="1"/>';
@@ -902,7 +898,7 @@
                 re += '<circle cx="3" cy="17" r="1.5"/>';
                 break;
 
-            case "symmetric":
+            case 'symmetric':
                 re += '<rect x="12" y="12" width="1" height="1"/>';
                 re += '<rect x="13" y="13" width="1" height="1"/>';
                 re += '<rect x="14" y="14" width="1" height="1"/>';
@@ -910,7 +906,7 @@
                 re += '<circle cx="17" cy="17" r="1.5"/>';
                 break;
 
-            case "flat":
+            case 'flat':
                 re += '<rect x="12" y="12" width="1" height="1"/>';
                 re += '<rect x="13" y="13" width="1" height="1"/>';
                 re += '<circle cx="15" cy="15" r="1.5"/>';
@@ -923,17 +919,16 @@
     }
 
 
-
 //    -------------------------------
 //    LOCK, CHECKBOX, SLIDERS, HELP
 //    -------------------------------
 
-    function lockUI(varname, currbool, idname){
-        //debug("CHECKUI -  varname:" + varname + " doredraw:" + doredraw);
-        var restcolor = _UI.colors.gray.l90;
-        var selcolor = _UI.colors.blue.l65;
+    function lockUI(varname, currbool, idname) {
+        // debug("CHECKUI -  varname:" + varname + " doredraw:" + doredraw);
+        let restcolor = _UI.colors.gray.l90;
+        let selcolor = _UI.colors.blue.l65;
 
-        var re = '<svg '+
+        let re = '<svg '+
             'version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" '+
             'x="0px" y="0px" width="26px" height="26px" viewBox="0 0 26 26" enable-background="new 0 0 26 26" '+
             'id='+idname+' '+
@@ -942,7 +937,7 @@
             'onclick="' +
                 // 'debug(\'Clicked on checkbox '+varname+'\'); ' +
                 varname + ' = !' + varname + '; ' +
-                //'history_put(\'Toggled '+idname+': '+!currbool+'\'); '+
+                // 'history_put(\'Toggled '+idname+': '+!currbool+'\'); '+
                 'redraw({calledBy:\'checkbox '+idname+'\'}); ' +
             '">';
         re += '<path fill="'+(currbool? selcolor : restcolor)+'" d="M17,12V8h-1V7h-1V6h-4v1h-1v1H9v4H8v8h10v-8H17z M15,12h-4V9h1V8h2v1h1V12z"/>';
@@ -950,18 +945,18 @@
         return re;
     }
 
-    function checkUI(varname, currbool, doredraw, invert){
-        //debug("CHECKUI -  varname:" + varname + " doredraw:" + doredraw);
-        var idname = varname.split('.');
+    function checkUI(varname, currbool, doredraw, invert) {
+        // debug("CHECKUI -  varname:" + varname + " doredraw:" + doredraw);
+        let idname = varname.split('.');
         idname = idname[idname.length-1];
-        if(invert) currbool = !currbool;
+        if (invert) currbool = !currbool;
 
-        var re = '<input type="checkbox"';
+        let re = '<input type="checkbox"';
         re += (currbool? ' checked ' : ' ');
         re += 'id="'+idname+'"';
         re += 'onclick="'+varname+' = !'+varname+';';
 
-        if(doredraw){
+        if (doredraw) {
             re += ' history_put(\'Toggled '+idname+': '+!currbool+'\');';
             re += ' redraw({calledBy:\'checkbox '+idname+'\', redrawTools:false});';
         }
@@ -975,11 +970,11 @@
         rdpanels = rdpanels || false;
         rdtools = rdtools || false;
 
-        var psct = _GP.projectsettings.colors[varname];
-        var re = 'transparency:<input type="range" min="0" max="100" value="'+psct+'" step="1" ';
+        let psct = _GP.projectsettings.colors[varname];
+        let re = 'transparency:<input type="range" min="0" max="100" value="'+psct+'" step="1" ';
         re += 'oninput="updateTransparency(\''+varname+'\', \''+id+'\', this.value, '+rdpanels+', '+rdtools+');"/>';
         re += '<span id="'+id+'">'+psct+'</span>%';
-        
+
         return re;
     }
 
@@ -990,11 +985,11 @@
 
         _GP.projectsettings.colors[varname] = value;
         document.getElementById(id).innerHTML = value;
-        redraw({calledBy:'updateTransparency', redrawPanels: rdpanels, redrawTools: rdtools});
+        redraw({calledBy: 'updateTransparency', redrawPanels: rdpanels, redrawTools: rdtools});
     }
 
-    function helpUI(message){
-        var re = '<button class="customui" style="margin-left:4px;" '+
+    function helpUI(message) {
+        let re = '<button class="customui" style="margin-left:4px;" '+
         'title="quick help tip" '+
         'onclick="openDialog(\''+message+'\');">'+
         '<svg version="1.1" '+
@@ -1005,6 +1000,6 @@
             '<ellipse fill="'+_UI.colors.gray.l90+'" cx="8.8" cy="14.5" rx="1.4" ry="1.2"/>'+
         '</svg></button>';
 
-        //debug("HELPUI - output:\n"+re);
+        // debug("HELPUI - output:\n"+re);
         return re;
     }

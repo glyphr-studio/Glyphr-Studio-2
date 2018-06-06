@@ -1,14 +1,14 @@
- 
+
 /**
     Page > About
     HTML and associated functions for this page.
 **/
 
 
-    function loadPage_about(){
+    function loadPage_about() {
         // debug('LOADING PAGE >> loadPage_about');
-        var content = '<div class="pagecontent textpage aboutpage" style="margin-top:18px;">' +
-        makeGlyphrStudioLogo({width:376, fill:_UI.colors.blue.l55}) +
+        let content = '<div class="pagecontent textpage aboutpage" style="margin-top:18px;">' +
+        makeGlyphrStudioLogo({width: 376, fill: _UI.colors.blue.l55}) +
         '<h2 style="margin-bottom:8px; margin-top:8px;">'+_UI.thisGlyphrStudioVersion+'</h2>' +
         '<div style="margin-bottom:18px;">'+_UI.thisGlyphrStudioVersionNum+'<br>'+
         'Last updated on ' + (new Date(_UI.thisGlyphrStudioVersionDate)).toDateString()+'. '+
@@ -26,7 +26,7 @@
         '<h1>This Glyphr Project</h1>'+
         '<p>'+
         'The currently opened project was initially created with: '+
-        '<span style="font-weight:bold; color:rgb(102, 107, 112);">Version ' + _GP.projectsettings.initialversionnum + " </span> "+
+        '<span style="font-weight:bold; color:rgb(102, 107, 112);">Version ' + _GP.projectsettings.initialversionnum + ' </span> '+
         '</p>'+
 
         '<br><br>'+
@@ -35,23 +35,23 @@
         '<br><br>'+
         '<h1>License</h1>'+
         '<p>'+
-        "Glyphr Studio is licensed under a <a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.<br>" +
-        "Which is a free / open source 'copyleft' license. You are free to use, distribute, and modify Glyphr Studio as long as " +
-        "this license and its freeness stays intact." +
+        'Glyphr Studio is licensed under a <a href=\'https://www.gnu.org/licenses/gpl.html\' target=\'_blank\'>GNU General Public License</a>.<br>' +
+        'Which is a free / open source \'copyleft\' license. You are free to use, distribute, and modify Glyphr Studio as long as ' +
+        'this license and its freeness stays intact.' +
         '</p>'+
         '<br><br>';
 
-        getEditDocument().getElementById("mainwrapper").innerHTML = content;
+        getEditDocument().getElementById('mainwrapper').innerHTML = content;
     }
 
     function make_ContributeHTML() {
-        var content = '<h1>Contribute!</h1>'+
+        let content = '<h1>Contribute!</h1>'+
         '<p>'+
-        "If you think Glyphr Studio is pretty cool, there are two huge ways you can make it better!<br>"+
+        'If you think Glyphr Studio is pretty cool, there are two huge ways you can make it better!<br>'+
 
         '<ul><li><span style="font-weight:bold; color:rgb(102, 107, 112);">Send Feedback</span> - '+
-        "Use new features and let us know if you run into issues.  Follow us on Twitter and read the Blog, and participate in discussions. "+
-        "Be vocal, and let us know what we should do next!</li>"+
+        'Use new features and let us know if you run into issues.  Follow us on Twitter and read the Blog, and participate in discussions. '+
+        'Be vocal, and let us know what we should do next!</li>'+
 
         '<li><span style="font-weight:bold; color:rgb(102, 107, 112);">Make a Monetary Contribution</span> - '+
         'Glyphr Studio will always be free, and we think that is very important.  But, it does take some money to keep it going. '+

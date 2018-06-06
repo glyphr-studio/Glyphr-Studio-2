@@ -1,18 +1,18 @@
- 
+
 /**
     Page > Project Settings
-    Project Settings are any settings that are 
-    specific to Glyphr Studio, and are not a part 
+    Project Settings are any settings that are
+    specific to Glyphr Studio, and are not a part
     of any font metadata.
     HTML and associated functions for this page.
 **/
 
 
-    function loadPage_projectsettings(){
+    function loadPage_projectsettings() {
         // debug("LOADING PAGE >> loadPage_projectsettings");
-        var ps = _GP.projectsettings;
+        let ps = _GP.projectsettings;
 
-        var content = '<h1 class="pagetitle">Project Settings</h1><div class="pagecontent textpage">';
+        let content = '<h1 class="pagetitle">Project Settings</h1><div class="pagecontent textpage">';
 
         content += '<h1>Project Name</h1>'+
                     'The Font Name and the Project name can be different, but they start out the same.  The Font Name can be changed on the Font Settings page.'+
@@ -20,23 +20,23 @@
                     '<tr><td>Project Name:</td><td><input type="text" style="width:100%" value="' + ps.name + '" onchange="_GP.projectsettings.name = this.value;" /></td></tr>'+
                     '</table>';
 
-        content += "<h1>Grids and Guides</h1>";
-        content += "<h2>Grid System</h2>";
-        content += "Defining a grid system to use while editing glyphs in this font makes stuff a whole " +
-                    "lot easier.  This number is the number of vertical and horizontal divisions to use, it should " +
-                    "divide evenly into the Units per Em.<br>" +
-                    "<table class='settingstable'>"+
-                    "<tr><td>Units per Em:</td><td><input type='number' disabled='disabled' value='" + ps.upm + "'/></td><td><span class='unit'>(total)</span></td></tr>"+
-                    "<tr><td>Grid Divisions</td><td><input type='number' value='"+ps.griddivisions+"' onchange='updateGridDivisions(this.value);'/></td><td><span class='unit'>(number)</span></td></tr>"+
-                    "<tr><td>Grid Square Size:</td><td><input type='number' id='metirc-ssize' disabled='disabled' value='" + (ps.upm/ps.griddivisions) + "'/></td><td><span class='unit'>(em units)</span></td></tr>" +
-                    "</table>";
+        content += '<h1>Grids and Guides</h1>';
+        content += '<h2>Grid System</h2>';
+        content += 'Defining a grid system to use while editing glyphs in this font makes stuff a whole ' +
+                    'lot easier.  This number is the number of vertical and horizontal divisions to use, it should ' +
+                    'divide evenly into the Units per Em.<br>' +
+                    '<table class=\'settingstable\'>'+
+                    '<tr><td>Units per Em:</td><td><input type=\'number\' disabled=\'disabled\' value=\'' + ps.upm + '\'/></td><td><span class=\'unit\'>(total)</span></td></tr>'+
+                    '<tr><td>Grid Divisions</td><td><input type=\'number\' value=\''+ps.griddivisions+'\' onchange=\'updateGridDivisions(this.value);\'/></td><td><span class=\'unit\'>(number)</span></td></tr>'+
+                    '<tr><td>Grid Square Size:</td><td><input type=\'number\' id=\'metirc-ssize\' disabled=\'disabled\' value=\'' + (ps.upm/ps.griddivisions) + '\'/></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
+                    '</table>';
 
-        content += "<h2>Overshoot</h2>"+
-                    "Round letters usually extend a little above the x height line and below the baseline. " +
-                    "A light guideline will show this overshoot distance.<br>" +
-                    "<table class='settingstable'>"+
-                    "<tr><td>Overshoot:</td><td><input type='number' value='"+ps.overshoot+"' onchange='_GP.projectsettings.overshoot = this.value;'></td><td><span class='unit'>(em units)</span></td></tr>"+
-                    "</table>";
+        content += '<h2>Overshoot</h2>'+
+                    'Round letters usually extend a little above the x height line and below the baseline. ' +
+                    'A light guideline will show this overshoot distance.<br>' +
+                    '<table class=\'settingstable\'>'+
+                    '<tr><td>Overshoot:</td><td><input type=\'number\' value=\''+ps.overshoot+'\' onchange=\'_GP.projectsettings.overshoot = this.value;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
+                    '</table>';
 
         content += '<h1>UI Behavior</h1>'+
                     '<table class="settingstable">'+
@@ -45,7 +45,7 @@
                     '<td class="longlabel"><label for="renderpointssnappedtogrid">Render shape outlines with their points snapped to a 1em grid.<br>(required for .otf export - Project Files will still store decimal values)</label></td></tr>'+
 
                     '<tr><td class="uicolumn">'+checkUI('_GP.projectsettings.showkeyboardtipsicon', ps.showkeyboardtipsicon)+'</td>'+
-                    '<td><label for="showkeyboardtipsicon" style="position:relative; top:-6px;">Show the &nbsp;<span style="position:relative; top:6px; height:22px;">'+makeIcon({'name':'keyboard', 'size':50, 'width':22, 'height':22, 'color':'rgb(76, 81, 86)', 'hovercolor':'rgb(76, 81, 86)'})+'</span>&nbsp; button on the edit canvas.</label></td></tr>'+
+                    '<td><label for="showkeyboardtipsicon" style="position:relative; top:-6px;">Show the &nbsp;<span style="position:relative; top:6px; height:22px;">'+makeIcon({'name': 'keyboard', 'size': 50, 'width': 22, 'height': 22, 'color': 'rgb(76, 81, 86)', 'hovercolor': 'rgb(76, 81, 86)'})+'</span>&nbsp; button on the edit canvas.</label></td></tr>'+
 
                     '<tr><td class="uicolumn">'+checkUI('_GP.projectsettings.stopPageNavigation', ps.stopPageNavigation)+'</td>'+
                     '<td><label for="stopPageNavigation">Show a confirmation message if you attempt to close an unsaved project.</label></td></tr>'+
@@ -64,7 +64,7 @@
 
                     '</table>';
 
-        
+
         content += '<h1>Export Options</h1>'+
                     '<table class="settingstable">'+
 
@@ -90,8 +90,8 @@
         _GP.projectsettings.colors.gridtransparency = l;
     }
 
-    function updateGridDivisions(val){
-        var ps = _GP.projectsettings;
+    function updateGridDivisions(val) {
+        let ps = _GP.projectsettings;
         ps.griddivisions = Math.min(ps.upm, Math.max(1, val));
         document.getElementById('metirc-ssize').value = round((ps.upm / ps.griddivisions), 3);
     }

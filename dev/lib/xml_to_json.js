@@ -4,8 +4,8 @@
 //    XML to JSON
 //    -------------------
 
-    function convertXMLtoJSON(inputXML){
-        var XMLdoc, XMLerror;
+    function convertXMLtoJSON(inputXML) {
+        let XMLdoc, XMLerror;
         // debug('convertXMLtoJSON \t PASSED\n' + inputXML);
 
         if (typeof window.DOMParser !== 'undefined') {
@@ -20,35 +20,35 @@
             throw XMLerror;
         }
 
-        var parsererror = XMLdoc.getElementsByTagName('parsererror');
+        let parsererror = XMLdoc.getElementsByTagName('parsererror');
         if (parsererror.length) {
-            var msgcon = XMLdoc.getElementsByTagName('div')[0].innerHTML;
+            let msgcon = XMLdoc.getElementsByTagName('div')[0].innerHTML;
             XMLerror = new SyntaxError(trim(msgcon));
             throw XMLerror;
         }
 
         return {
-            'name' : XMLdoc.documentElement.nodeName,
-            'attributes' : tag_getAttributes(XMLdoc.documentElement.attributes),
-            'content' : tag_getContent(XMLdoc.documentElement)
+            'name': XMLdoc.documentElement.nodeName,
+            'attributes': tag_getAttributes(XMLdoc.documentElement.attributes),
+            'content': tag_getContent(XMLdoc.documentElement),
         };
 
 
         function tag_getContent(parent) {
-            var kids = parent.childNodes;
+            let kids = parent.childNodes;
             // debug('\n tag_getContent - START');
             // debug('\nTAG: ' + parent.nodeName + '\t' + parent.childNodes.length);
 
-            if(kids.length === 0) return trim(parent.nodeValue);
+            if (kids.length === 0) return trim(parent.nodeValue);
 
-            var result = [];
-            var node, tagresult, tagcontent, tagattributes;
+            let result = [];
+            let node, tagresult, tagcontent, tagattributes;
 
-            for(var k=0; k<kids.length; k++){
+            for (let k=0; k<kids.length; k++) {
                 tagresult = {};
                 node = kids[k];
                 // debug('\n\t>>START kid ' + k + ' ' + node.nodeName);
-/*                
+/*
                 if(node.nodeName === '#comment') {
                     // debug('\t Found a #comment, breaking...');
                     break;
@@ -60,7 +60,7 @@
                 tagcontent = tag_getContent(node);
                 tagattributes = tag_getAttributes(node.attributes);
 
-                if(node.nodeName === '#text' && JSON.stringify(tagattributes) === '{}'){
+                if (node.nodeName === '#text' && JSON.stringify(tagattributes) === '{}') {
                     tagresult = trim(tagcontent);
                 } else {
                     tagresult.name = node.nodeName;
@@ -68,7 +68,7 @@
                     tagresult.content = tagcontent;
                 }
 
-                if(tagresult !== '') result.push(tagresult);
+                if (tagresult !== '') result.push(tagresult);
 
                 // debug('\t>>END kid ' + k);
             }
@@ -78,19 +78,19 @@
         }
 
         function tag_getAttributes(attributes) {
-            if(!attributes || !attributes.length) return {};
+            if (!attributes || !attributes.length) return {};
 
             // debug('\t\t tag_getAttributes:');
             // debug(attributes);
 
-            var result = {};
-            var attr;
+            let result = {};
+            let attr;
 
-            for(var a=0; a<attributes.length; a++){
+            for (let a=0; a<attributes.length; a++) {
                 attr = attributes[a];
                 // debug('\t\t'+attr.name+' : '+attr.value);
                 // result[attr.name] = trim(attr.value);
-                if(attr.name === 'd') result[attr.name] = trim(attr.value);
+                if (attr.name === 'd') result[attr.name] = trim(attr.value);
                 else result[attr.name] = attr.value;
             }
 

@@ -7,16 +7,16 @@
 **/
 
 
-//-------------------------------------------------------
+// -------------------------------------------------------
 // COMMON MULTI-SELECT OBJECT
-//-------------------------------------------------------
-    function MultiSelect(){
+// -------------------------------------------------------
+    function MultiSelect() {
         this.members = [];
         this.handlesingleton = false;
     }
 
     MultiSelect.prototype.isSelectable = function(obj) {
-        if(obj && (
+        if (obj && (
             obj.objtype === 'pathpoint' ||
             obj.objtype === 'shape' ||
             obj.objtype === 'componentinstance'
@@ -29,7 +29,7 @@
 
     MultiSelect.prototype.select = function(obj) {
         // debug('\n MultiSelect.select - START');
-        if(this.isSelectable(obj)){
+        if (this.isSelectable(obj)) {
             // debug('\t selecting object');
             this.members = [obj];
             this.selectShapesThatHaveSelectedPoints();
@@ -41,41 +41,41 @@
         // debug(' MultiSelect.select - END\n');
     };
 
-    MultiSelect.prototype.clear = function(){
+    MultiSelect.prototype.clear = function() {
         this.members = [];
-        if(this.glyph) this.glyph.ratiolock = false;
+        if (this.glyph) this.glyph.ratiolock = false;
         this.handlesingleton = false;
         this.selectShapesThatHaveSelectedPoints();
     };
 
-    MultiSelect.prototype.add = function(obj){
-        if(this.isSelectable(obj) && this.members.indexOf(obj) < 0) this.members.push(obj);
+    MultiSelect.prototype.add = function(obj) {
+        if (this.isSelectable(obj) && this.members.indexOf(obj) < 0) this.members.push(obj);
         this.selectShapesThatHaveSelectedPoints();
     };
 
     MultiSelect.prototype.remove = function(obj) {
-        this.members = this.members.filter(function (m) {
+        this.members = this.members.filter(function(m) {
             return m !== obj;
         });
         this.selectShapesThatHaveSelectedPoints();
     };
 
     MultiSelect.prototype.removeMissing = function() {
-        this.members = this.members.filter(function (m) {
+        this.members = this.members.filter(function(m) {
             return typeof m === 'object';
         });
         this.selectShapesThatHaveSelectedPoints();
     };
 
     MultiSelect.prototype.toggle = function(obj) {
-        if(this.isSelected(obj)) this.remove(obj);
+        if (this.isSelected(obj)) this.remove(obj);
         else this.add(obj);
         this.selectShapesThatHaveSelectedPoints();
     };
 
     MultiSelect.prototype.getType = function() {
-        if(this.members.length === 0) return false;
-        else if(this.members.length === 1) return this.members[0].objtype;
+        if (this.members.length === 0) return false;
+        else if (this.members.length === 1) return this.members[0].objtype;
         else return 'multi';
     };
 
@@ -88,7 +88,7 @@
     };
 
     MultiSelect.prototype.getSingleton = function() {
-        if(this.members.length === 1) return this.members[0];
+        if (this.members.length === 1) return this.members[0];
         else return false;
     };
 
@@ -97,10 +97,9 @@
     };
 
 
-
-//-------------------------------------------------------
+// -------------------------------------------------------
 // SELECTED POINTS
-//-------------------------------------------------------
+// -------------------------------------------------------
 
     // Initialize fake Shape of multiselected Points
     _UI.multiSelect.points = new MultiSelect();
@@ -112,41 +111,43 @@
         return this.shape;
     };
 
-    _UI.multiSelect.points.updateShapePosition = function(dx, dy, force){ this.getShape().updateShapePosition(dx, dy, force); };
+    _UI.multiSelect.points.updateShapePosition = function(dx, dy, force) {
+ this.getShape().updateShapePosition(dx, dy, force);
+};
 
     _UI.multiSelect.points.deletePathPoints = function() {
-        var point, path, pindex;
+        let point, path, pindex;
 
-        for(var m=0; m<this.members.length; m++){
+        for (let m=0; m<this.members.length; m++) {
             point = this.members[m];
             path = point.parentpath;
             pindex = point.getPointNum();
 
-            if(pindex > -1){
+            if (pindex > -1) {
                 path.pathpoints.splice(pindex, 1);
                 path.calcMaxes();
             }
         }
 
-        var wi = getSelectedWorkItem();
-        if(wi.objtype === 'glyph') wi.removeShapesWithZeroLengthPaths();
-        
+        let wi = getSelectedWorkItem();
+        if (wi.objtype === 'glyph') wi.removeShapesWithZeroLengthPaths();
+
         this.clear();
     };
 
     _UI.multiSelect.points.getSingletonPointNumber = function() {
-        if(!this.members[0]) return false;
+        if (!this.members[0]) return false;
         else return this.members[0].getPointNum();
     };
 
     _UI.multiSelect.points.draw_PathPointHandles = function() {
-        var sh = this.getShape();
+        let sh = this.getShape();
         draw_PathPointHandles(sh.path.pathpoints);
     };
 
     _UI.multiSelect.points.draw_PathPoints = function() {
         // debug('\n MS.points.draw_PathPoints - START');
-        var sh = this.getShape();
+        let sh = this.getShape();
         // ('\t shape is ' + json(sh));
 
         draw_PathPoints(sh.path.pathpoints);
@@ -155,16 +156,16 @@
     };
 
     _UI.multiSelect.points.setPointType = function(t) {
-        for(var m=0; m<this.members.length; m++){
+        for (let m=0; m<this.members.length; m++) {
             this.members[m].setPointType(t);
         }
     };
 
     _UI.multiSelect.points.insertPathPoint = function() {
-        var path, pp;
-        var newpoints = [];
+        let path, pp;
+        let newpoints = [];
 
-        for(var m=0; m<this.members.length; m++){
+        for (let m=0; m<this.members.length; m++) {
             path = this.members[m].parentpath;
             pp = this.members[m].getPointNum();
             newpoints.push(path.insertPathPoint(false, pp));
@@ -172,29 +173,29 @@
 
         this.clear();
 
-        for(var n=0; n<newpoints.length; n++) this.add(newpoints[n]);
+        for (let n=0; n<newpoints.length; n++) this.add(newpoints[n]);
     };
 
     _UI.multiSelect.points.resetHandles = function() {
-        for(var m=0; m<this.members.length; m++){
+        for (let m=0; m<this.members.length; m++) {
             // debug(this.members[m]);
             this.members[m].resetHandles();
         }
     };
 
     _UI.multiSelect.points.resolvePointType = function() {
-        for(var m=0; m<this.members.length; m++){
+        for (let m=0; m<this.members.length; m++) {
             // debug(this.members[m]);
             this.members[m].resolvePointType();
         }
     };
 
-    _UI.multiSelect.points.updatePathPointPosition = function(controlpoint, dx, dy){
-        if(controlpoint === 'P'){
-            for(var m=0; m<this.members.length; m++){
+    _UI.multiSelect.points.updatePathPointPosition = function(controlpoint, dx, dy) {
+        if (controlpoint === 'P') {
+            for (let m=0; m<this.members.length; m++) {
                 this.members[m].updatePathPointPosition(controlpoint, dx, dy);
             }
-        } else if(this.handlesingleton){
+        } else if (this.handlesingleton) {
             this.handlesingleton.updatePathPointPosition(controlpoint, dx, dy);
         }
     };
@@ -202,22 +203,22 @@
     _UI.multiSelect.points.selectShapesThatHaveSelectedPoints = function() {
         // debug('\n MS.points.selectShapesThatHaveSelectedPoints - START');
         _UI.multiSelect.shapes.clear();
-        var points = _UI.multiSelect.points.getMembers();
-        var shapes = getSelectedWorkItemShapes();
-        var path;
-        var count = 0;
+        let points = _UI.multiSelect.points.getMembers();
+        let shapes = getSelectedWorkItemShapes();
+        let path;
+        let count = 0;
 
-        if(points.length === 0) return;
+        if (points.length === 0) return;
 
         // debug('\t selected points ' + points);
         // debug('\t WI shapes ' + shapes);
 
-        for(var p=0; p<points.length; p++){
+        for (let p=0; p<points.length; p++) {
             path = points[p].parentpath;
 
-            for(var s=0; s<shapes.length; s++){
-                if(shapes[s].objtype !== 'componentinstance'){
-                    if(path === shapes[s].path) {
+            for (let s=0; s<shapes.length; s++) {
+                if (shapes[s].objtype !== 'componentinstance') {
+                    if (path === shapes[s].path) {
                         _UI.multiSelect.shapes.add(shapes[s]);
                         count++;
                     }
@@ -229,9 +230,9 @@
     };
 
 
-//-------------------------------------------------------
+// -------------------------------------------------------
 // SELECTED SHAPES
-//-------------------------------------------------------
+// -------------------------------------------------------
 
     // Initialize fake Glyph of multiselected shapes
     _UI.multiSelect.shapes = new MultiSelect();
@@ -244,11 +245,11 @@
     };
 
     _UI.multiSelect.shapes.contains = function(objtypename) {
-        if(this.members.length === 0) return false;
-        var re = false;
-        for(var m=0; m<this.members.length; m++){
+        if (this.members.length === 0) return false;
+        let re = false;
+        for (let m=0; m<this.members.length; m++) {
             re = this.members[m].objtype === objtypename;
-            if(re) return true;
+            if (re) return true;
         }
 
         return false;
@@ -258,18 +259,18 @@
 
     _UI.multiSelect.shapes.combine = function() {
         // debug('\n multiSelect.shapes.combine - START');
-        
-        var ns = new Glyph(clone(_UI.multiSelect.shapes.getGlyph()));
+
+        let ns = new Glyph(clone(_UI.multiSelect.shapes.getGlyph()));
 
         ns.flattenGlyph();
 
-        var cs = combineShapes(ns.shapes);
+        let cs = combineShapes(ns.shapes);
 
         // If everything worked, delete original shapes and add new ones
-        if(cs){
+        if (cs) {
             this.deleteShapes();
 
-            for(var n=0; n<cs.length; n++) addShape(cs[n]);
+            for (let n=0; n<cs.length; n++) addShape(cs[n]);
 
             history_put('Combined shapes');
         }
@@ -277,28 +278,28 @@
         // debug(' multiSelect.shapes.combine - END\n');
     };
 
-    _UI.multiSelect.shapes.deleteShapes = function(){
+    _UI.multiSelect.shapes.deleteShapes = function() {
         // debug('\n deleteShape - START');
-        var wishapes = getSelectedWorkItemShapes();
-        var sels = this.getMembers();
-        var curs, i;
+        let wishapes = getSelectedWorkItemShapes();
+        let sels = this.getMembers();
+        let curs, i;
 
-        if(sels.length === 0) _UI.multiSelect.shapes.clear();
+        if (sels.length === 0) _UI.multiSelect.shapes.clear();
         else {
-            for(var s=0; s<sels.length; s++){
+            for (let s=0; s<sels.length; s++) {
                 curs = sels[s];
 
-                if(curs.objtype === 'componentinstance'){
+                if (curs.objtype === 'componentinstance') {
                     removeFromUsedIn(curs.link, _UI.selectedGlyph);
                 }
 
                 i = wishapes.indexOf(curs);
-                if(i > -1) wishapes.splice(i, 1);
+                if (i > -1) wishapes.splice(i, 1);
             }
 
             _UI.multiSelect.shapes.select(wishapes[i] || wishapes[wishapes.length-1]);
-            var singleshape = _UI.multiSelect.shapes.getSingleton();
-            if(singleshape && singleshape.objtype === 'componentinstance') clickTool('shaperesize');
+            let singleshape = _UI.multiSelect.shapes.getSingleton();
+            if (singleshape && singleshape.objtype === 'componentinstance') clickTool('shaperesize');
         }
 
         updateCurrentGlyphWidth();
@@ -307,8 +308,8 @@
 
     _UI.multiSelect.shapes.align = function(edge) {
         // showToast('align ' + edge);
-        var g = this.getGlyph();
-        var gnum = g.shapes.length;
+        let g = this.getGlyph();
+        let gnum = g.shapes.length;
         g.alignShapes(edge);
 
         history_put('Aligned ' + gnum + ' shapes ' + edge);
@@ -316,48 +317,62 @@
 
     // Wrapper functions
 
-    _UI.multiSelect.shapes.changed = function(){
-        for(var m=0; m<this.members.length; m++){
+    _UI.multiSelect.shapes.changed = function() {
+        for (let m=0; m<this.members.length; m++) {
             this.members[m].changed();
         }
     };
 
-    _UI.multiSelect.shapes.changeShapeName = function(n) { this.getSingleton().changeShapeName(n); };
+    _UI.multiSelect.shapes.changeShapeName = function(n) {
+ this.getSingleton().changeShapeName(n);
+};
 
-    _UI.multiSelect.shapes.updateShapePosition = function(dx, dy, force){ this.getGlyph().updateGlyphPosition(dx, dy, force); };
+    _UI.multiSelect.shapes.updateShapePosition = function(dx, dy, force) {
+ this.getGlyph().updateGlyphPosition(dx, dy, force);
+};
 
-    _UI.multiSelect.shapes.setShapePosition = function(nx, ny, force) { this.getGlyph().setGlyphPosition(nx, ny, force); };
+    _UI.multiSelect.shapes.setShapePosition = function(nx, ny, force) {
+ this.getGlyph().setGlyphPosition(nx, ny, force);
+};
 
     _UI.multiSelect.shapes.updateShapeSize = function(dw, dh, ratiolock) {
-        if(this.members.length === 1) this.members[0].updateShapeSize(dw, dh, ratiolock);
+        if (this.members.length === 1) this.members[0].updateShapeSize(dw, dh, ratiolock);
         else if (this.members.length > 1) this.getGlyph().updateGlyphSize(dw, dh, ratiolock);
     };
 
-    _UI.multiSelect.shapes.setShapeSize = function(nw, nh, ratiolock) { this.getGlyph().setGlyphSize(nw, nh, ratiolock); };
+    _UI.multiSelect.shapes.setShapeSize = function(nw, nh, ratiolock) {
+ this.getGlyph().setGlyphSize(nw, nh, ratiolock);
+};
 
-    _UI.multiSelect.shapes.rotate = function(angle, about) { this.getGlyph().rotate(angle, about); };
+    _UI.multiSelect.shapes.rotate = function(angle, about) {
+ this.getGlyph().rotate(angle, about);
+};
 
     _UI.multiSelect.shapes.rotateable = function() {
-        if(this.members.length === 1) return true;
+        if (this.members.length === 1) return true;
         else return !this.contains(('componentinstance'));
     };
 
-    _UI.multiSelect.shapes.flipNS = function(mid) { this.getGlyph().flipNS(mid); };
+    _UI.multiSelect.shapes.flipNS = function(mid) {
+ this.getGlyph().flipNS(mid);
+};
 
-    _UI.multiSelect.shapes.flipEW = function(mid) { this.getGlyph().flipEW(mid); };
+    _UI.multiSelect.shapes.flipEW = function(mid) {
+ this.getGlyph().flipEW(mid);
+};
 
     _UI.multiSelect.shapes.getAttribute = function(attr) {
-        if(this.members.length === 1) return this.members[0][attr];
+        if (this.members.length === 1) return this.members[0][attr];
         else if (this.members.length > 1) return this.getGlyph()[attr] || false;
         else return false;
     };
 
-    _UI.multiSelect.shapes.isOverControlPoint = function(x, y, nohandles){
-        if(this.members.length === 0) return false;
-        var re = false;
-        for(var m=0; m<this.members.length; m++){
+    _UI.multiSelect.shapes.isOverControlPoint = function(x, y, nohandles) {
+        if (this.members.length === 0) return false;
+        let re = false;
+        for (let m=0; m<this.members.length; m++) {
             re = this.members[m].isOverControlPoint(x, y, nohandles);
-            if(re) return re;
+            if (re) return re;
         }
 
         return false;
@@ -367,35 +382,37 @@
         // debug('\n SelectedShapes.isOverBoundingBoxHandle - START');
         // debug('\t passed x/y: ' + px + '/' + py);
 
-        if(this.members.length === 0){
+        if (this.members.length === 0) {
             return false;
-        } else if(this.members.length === 1) {
+        } else if (this.members.length === 1) {
             // debug('\t calling singleton method');
             return this.members[0].isOverBoundingBoxHandle(px, py);
         }
 
-        var c = isOverBoundingBoxHandle(px, py, this.getGlyph().maxes, _UI.multiSelectThickness);
+        let c = isOverBoundingBoxHandle(px, py, this.getGlyph().maxes, _UI.multiSelectThickness);
         // debug('\t SelectedShapes.isOverBoundingBoxHandle returning ' + c);
         return c;
     };
 
-    _UI.multiSelect.shapes.getCenter = function(){ return this.getGlyph().getCenter(); };
+    _UI.multiSelect.shapes.getCenter = function() {
+ return this.getGlyph().getCenter();
+};
 
-    _UI.multiSelect.shapes.calcMaxes = function(){
-        for(var m=0; m<this.members.length; m++){
+    _UI.multiSelect.shapes.calcMaxes = function() {
+        for (let m=0; m<this.members.length; m++) {
             this.members[m].calcMaxes();
         }
     };
 
-    _UI.multiSelect.shapes.getMaxes = function(){
-        if(this.members.length === 1) return this.members[0].getMaxes();
+    _UI.multiSelect.shapes.getMaxes = function() {
+        if (this.members.length === 1) return this.members[0].getMaxes();
         else return this.getGlyph().maxes;
     };
 
-    _UI.multiSelect.shapes.drawShape = function(lctx, view){
-        var failed = false;
-        var drewshape = false;
-        for(var m=0; m<this.members.length; m++){
+    _UI.multiSelect.shapes.drawShape = function(lctx, view) {
+        let failed = false;
+        let drewshape = false;
+        for (let m=0; m<this.members.length; m++) {
             drewshape = this.members[m].drawShape(lctx, view);
             failed = failed || !drewshape;
         }
@@ -405,39 +422,39 @@
 
     _UI.multiSelect.shapes.draw_PathPoints = function() {
         // debug('\n MS.shapes.draw_PathPoints - START');
-        var s;
-        for(var m=0; m<this.members.length; m++){
+        let s;
+        for (let m=0; m<this.members.length; m++) {
             s = this.members[m];
             // debug('\t drawing points on shape ' + m + ' as ' + s.path.pathpoints);
-                if(s.objtype !== 'componentinstance') draw_PathPoints(this.members[m].path.pathpoints);
+                if (s.objtype !== 'componentinstance') draw_PathPoints(this.members[m].path.pathpoints);
         }
 
         // debug(' MS.shapes.draw_PathPoints - END\n');
     };
 
-    _UI.multiSelect.shapes.reverseWinding = function(){
-        for(var m=0; m<this.members.length; m++){
+    _UI.multiSelect.shapes.reverseWinding = function() {
+        for (let m=0; m<this.members.length; m++) {
             this.members[m].reverseWinding();
         }
     };
 
-    _UI.multiSelect.shapes.draw_PathOutline = function(){
-        if(this.members.length === 1){
+    _UI.multiSelect.shapes.draw_PathOutline = function() {
+        if (this.members.length === 1) {
             this.members[0].draw_PathOutline();
         } else {
-            for(var m=0; m<this.members.length; m++){
+            for (let m=0; m<this.members.length; m++) {
                 this.members[m].draw_PathOutline(false, _UI.multiSelectThickness);
             }
         }
     };
 
-    _UI.multiSelect.shapes.draw_BoundingBox = function(){
-        if(this.members.length === 1){
+    _UI.multiSelect.shapes.draw_BoundingBox = function() {
+        if (this.members.length === 1) {
             this.members[0].draw_BoundingBox();
-        } else if(this.members.length > 1){
-            var bmaxes = clone(_UI.mins);
+        } else if (this.members.length > 1) {
+            let bmaxes = clone(_UI.mins);
 
-            for(var m=0; m<this.members.length; m++){
+            for (let m=0; m<this.members.length; m++) {
                 bmaxes = getOverallMaxes([bmaxes, this.members[m].getMaxes()]);
             }
 
@@ -445,26 +462,25 @@
         }
     };
 
-    _UI.multiSelect.shapes.draw_RotationAffordance = function(){
-        var ss;
-        if(this.members.length === 1){
+    _UI.multiSelect.shapes.draw_RotationAffordance = function() {
+        let ss;
+        if (this.members.length === 1) {
             ss = this.members[0];
-            var accent = ss.objtype === 'componentinstance'? _UI.colors.green : _UI.colors.blue;
+            let accent = ss.objtype === 'componentinstance'? _UI.colors.green : _UI.colors.blue;
             draw_RotationAffordance(accent, false);
-
-        } else if(this.members.length > 1){
+        } else if (this.members.length > 1) {
             ss = this.getGlyph();
             draw_RotationAffordance(_UI.colors.gray, _UI.multiSelectThickness);
         }
     };
 
-    _UI.multiSelect.shapes.draw_BoundingBoxHandles = function(){
-        if(this.members.length === 1){
+    _UI.multiSelect.shapes.draw_BoundingBoxHandles = function() {
+        if (this.members.length === 1) {
             this.members[0].draw_BoundingBoxHandles();
-        } else if(this.members.length > 1){
-            var bmaxes = clone(_UI.mins);
+        } else if (this.members.length > 1) {
+            let bmaxes = clone(_UI.mins);
 
-            for(var m=0; m<this.members.length; m++){
+            for (let m=0; m<this.members.length; m++) {
                 bmaxes = getOverallMaxes([bmaxes, this.members[m].getMaxes()]);
             }
 

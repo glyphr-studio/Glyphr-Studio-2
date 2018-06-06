@@ -8,11 +8,11 @@
 **/
 
 
-//-------------------
+// -------------------
 // Navigation
-//-------------------
+// -------------------
 
-    function navigate(oa){
+    function navigate(oa) {
         // debug('>>> NAVIGATE STARTED');
         // debug([oa]);
 
@@ -21,7 +21,7 @@
         clickEmptySpace();
         clearCanvasHotspots();
 
-        if(oa.page && _UI.currentPage !== oa.page){
+        if (oa.page && _UI.currentPage !== oa.page) {
             _UI.currentPage = oa.page;
             _UI.currentPanel = false;
         } else {
@@ -29,17 +29,17 @@
             // _UI.lastPanel = oa.panel || _UI.lastPanel;
         }
 
-        if(!_UI.currentPanel) setDefaultPanel();
-        if(onChooserPanelPage()) setDefaultGlyphChooserPanel();
-        if(oa.forcepanel) _UI.currentPanel = oa.panel;
+        if (!_UI.currentPanel) setDefaultPanel();
+        if (onChooserPanelPage()) setDefaultGlyphChooserPanel();
+        if (oa.forcepanel) _UI.currentPanel = oa.panel;
 
         // debug('\t page  set to ' + _UI.currentPage);
         // debug('\t panel set to ' + _UI.currentPanel);
 
-        if(_UI.currentPage === 'openproject'){
+        if (_UI.currentPage === 'openproject') {
             makeLayout_OpenProject();
-        } else if (_UI.popOut){
-            if(onCanvasEditPage()){
+        } else if (_UI.popOut) {
+            if (onCanvasEditPage()) {
                 makeLayout_PopOut();
             } else {
                 popIn();
@@ -58,24 +58,27 @@
 
     function update_NavPanels() {
         // debug('\n update_NavPanels - START');
-        if (_UI.popOut){ make_NavPanels_PopOut(); }
-        else { make_NavPanels_PopIn(); }
+        if (_UI.popOut) {
+ make_NavPanels_PopOut();
+} else {
+ make_NavPanels_PopIn();
+}
         // debug(' update_NavPanels - END\n');
     }
 
-//-------------------
+// -------------------
 // Layout - First Run
-//-------------------
-    function makeLayout_OpenProject(){
+// -------------------
+    function makeLayout_OpenProject() {
         document.getElementById('primaryScreenLayout').innerHTML = '<div id="mainwrapper"></div>';
     }
 
 
-//-------------------
+// -------------------
 // Layout - pop OUT
-//-------------------
+// -------------------
 
-    function popOut(){
+    function popOut() {
         // debug('\n popOut - START');
         _UI.popOut = window.open('', 'glyphr_popOut');
         // debug('POPOUT - opened window, _UI.popOut is ' + _UI.popOut);
@@ -104,10 +107,12 @@
         _UI.popOut.document.getElementById('mainwrapper').style.overflowY = 'hidden';
 
         // Parity Functions
-        for(var f in window){ if(window.hasOwnProperty(f) && !_UI.popOut[f]){
+        for (let f in window) {
+ if (window.hasOwnProperty(f) && !_UI.popOut[f]) {
             _UI.popOut[f] = window[f];
             // debug('\t added ' + json(f));
-        }}
+        }
+}
 
         // Document Key Listeners
         getEditDocument().addEventListener('keypress', keypress, false);
@@ -119,50 +124,50 @@
         // debug(' popOut - END\n');
     }
 
-    function makeLayout_PopOut(){
+    function makeLayout_PopOut() {
         // debug('\n makeLayout_PopOut - START');
-        var onkern = _UI.currentPage === 'kerning';
+        let onkern = _UI.currentPage === 'kerning';
 
-        var pol = '<table class="popOut_table"><tr>';
+        let pol = '<table class="popOut_table"><tr>';
         pol += '<td id="popOut_pagenav"></td>';
-        if(!onkern) pol += '<td id="popOut_glyphchooser"></td>';
+        if (!onkern) pol += '<td id="popOut_glyphchooser"></td>';
         pol += '<td id="popOut_guides"></td>';
         pol += '<td id="popOut_history"></td>';
-        if(!onkern) pol += '<td id="popOut_layerchooser"></td>';
-        if(!onkern) pol += '<td id="popOut_actions"></td>';
+        if (!onkern) pol += '<td id="popOut_layerchooser"></td>';
+        if (!onkern) pol += '<td id="popOut_actions"></td>';
         pol += '<td id="popOut_attributes"></td>';
         pol += '</tr></table>';
 
         document.getElementById('primaryScreenLayout').innerHTML = pol;
-        //debug('MAKELAYOUT_POPOUT primaryscreenlayout.innerhtml:\n' + document.getElementById('primaryScreenLayout').innerHTML);
+        // debug('MAKELAYOUT_POPOUT primaryscreenlayout.innerhtml:\n' + document.getElementById('primaryScreenLayout').innerHTML);
         make_NavPanels_PopOut();
 
         // debug(' makeLayout_PopOut - END\n');
     }
 
-    function make_NavPanels_PopOut(){
+    function make_NavPanels_PopOut() {
         // debug('\n make_NavPanels_PopOut - START');
-        //debug('\t\t primaryscreenlayout.innerhtml:\n' + document.getElementById('primaryScreenLayout').innerHTML);
-        var onge = _UI.currentPage === 'glyph edit';
-        var oncom = _UI.currentPage === 'components';
-        var onlig = _UI.currentPage === 'ligatures';
-        var ontd = _UI.currentPage === 'test drive';
-        var onkern = _UI.currentPage === 'kerning';
-        var evmove = _UI.eventhandlers.currtool.dragging || _UI.eventhandlers.currtool.resizing;
+        // debug('\t\t primaryscreenlayout.innerhtml:\n' + document.getElementById('primaryScreenLayout').innerHTML);
+        let onge = _UI.currentPage === 'glyph edit';
+        let oncom = _UI.currentPage === 'components';
+        let onlig = _UI.currentPage === 'ligatures';
+        let ontd = _UI.currentPage === 'test drive';
+        let onkern = _UI.currentPage === 'kerning';
+        let evmove = _UI.eventhandlers.currtool.dragging || _UI.eventhandlers.currtool.resizing;
 
         document.getElementById('popOut_pagenav').innerHTML = makePanel_PageNav();
 
-        if((onge || onlig || oncom) && !evmove) document.getElementById('popOut_glyphchooser').innerHTML = makePanel_GlyphChooser();
+        if ((onge || onlig || oncom) && !evmove) document.getElementById('popOut_glyphchooser').innerHTML = makePanel_GlyphChooser();
 
         document.getElementById('popOut_history').innerHTML = makePanel_History();
 
-        if(!onkern) document.getElementById('popOut_layerchooser').innerHTML = makePanel_LayerChooser();
+        if (!onkern) document.getElementById('popOut_layerchooser').innerHTML = makePanel_LayerChooser();
 
-        if(!onkern)document.getElementById('popOut_actions').innerHTML = makePanel_Actions();
+        if (!onkern)document.getElementById('popOut_actions').innerHTML = makePanel_Actions();
 
         document.getElementById('popOut_guides').innerHTML = makePanel_Guides();
 
-        if(ontd) document.getElementById('popOut_attributes').innerHTML = makePanel_TestDriveAttributes();
+        if (ontd) document.getElementById('popOut_attributes').innerHTML = makePanel_TestDriveAttributes();
         else if (onkern) document.getElementById('popOut_attributes').innerHTML = makePanel_KerningAttributes();
         else document.getElementById('popOut_attributes').innerHTML = makePanel_GlyphAttributes();
 
@@ -171,23 +176,24 @@
     }
 
 
-
-//-------------------
+// -------------------
 // Layout - pop IN
-//-------------------
+// -------------------
 
-    function popIn(){
-        try { _UI.popOut.close(); } catch (e) {}
+    function popIn() {
+        try {
+ _UI.popOut.close();
+} catch (e) {}
         document.body.classList.remove('poppedOut');
         _UI.popOut = false;
         navigate();
     }
 
-    function makeLayout_PopIn(){
+    function makeLayout_PopIn() {
         // debug('\n makeLayout_PopIn - START');
         // debug('\t nap = ' + nap);
 
-        var pil = '<div id="mainwrapper"></div>';
+        let pil = '<div id="mainwrapper"></div>';
         pil += '<div id="navarea_tabs" onmouseover="mouseoutcec();"></div>';
         pil += '<div id="navarea_panel" onmouseover="mouseoutcec();"></div>';
         document.getElementById('primaryScreenLayout').innerHTML = pil;
@@ -195,7 +201,7 @@
         mouseoutcec();
 
         // pages with redraw call make_NavPanels_PopIn
-        if(onCanvasEditPage()){
+        if (onCanvasEditPage()) {
             document.getElementById('mainwrapper').style.overflowY = 'hidden';
         } else {
             make_NavPanels_PopIn();
@@ -215,21 +221,21 @@
         // debug('\t panel was ' + _UI.currentPanel);
         // debug('\t on page ' + _UI.currentPage);
 
-        var nh = _UI.currentPage;
+        let nh = _UI.currentPage;
 
-        switch(nh){
-            case 'glyph edit':         _UI.currentPanel = 'npChooser';    break;
-            case 'components':         _UI.currentPanel = 'npChooser';    break;
-            case 'ligatures':         _UI.currentPanel = 'npChooser';    break;
-            case 'import svg':         _UI.currentPanel = 'npChooser';    break;
-            case 'kerning':         _UI.currentPanel = 'npAttributes'; break;
-            case 'test drive':         _UI.currentPanel = 'npAttributes'; break;
-            case 'global actions':     _UI.currentPanel = 'npNav';         break;
-            case 'font settings':     _UI.currentPanel = 'npNav';         break;
-            case 'project settings':_UI.currentPanel = 'npNav';         break;
-            case 'export font':     _UI.currentPanel = 'npNav';         break;
-            case 'help':             _UI.currentPanel = 'npNav';         break;
-            case 'about':             _UI.currentPanel = 'npNav';         break;
+        switch (nh) {
+            case 'glyph edit': _UI.currentPanel = 'npChooser'; break;
+            case 'components': _UI.currentPanel = 'npChooser'; break;
+            case 'ligatures': _UI.currentPanel = 'npChooser'; break;
+            case 'import svg': _UI.currentPanel = 'npChooser'; break;
+            case 'kerning': _UI.currentPanel = 'npAttributes'; break;
+            case 'test drive': _UI.currentPanel = 'npAttributes'; break;
+            case 'global actions': _UI.currentPanel = 'npNav'; break;
+            case 'font settings': _UI.currentPanel = 'npNav'; break;
+            case 'project settings': _UI.currentPanel = 'npNav'; break;
+            case 'export font': _UI.currentPanel = 'npNav'; break;
+            case 'help': _UI.currentPanel = 'npNav'; break;
+            case 'about': _UI.currentPanel = 'npNav'; break;
         }
 
         // debug('\t panel is now ' + _UI.currentPanel);
@@ -238,27 +244,27 @@
 
     function setDefaultGlyphChooserPanel() {
         // debug('\n setDefaultGlyphChooserPanel - START');
-        var nh = _UI.currentPage;
+        let nh = _UI.currentPage;
 
-        switch(nh){
+        switch (nh) {
             case 'glyph edit':
                 // debug('\t case glyph edit');
-                if(_UI.glyphChooser.panel.fname !== 'selectGlyph'){
-                    _UI.glyphChooser.panel = {fname:'selectGlyph', selected:'glyphs', choices:'glyphs'};
+                if (_UI.glyphChooser.panel.fname !== 'selectGlyph') {
+                    _UI.glyphChooser.panel = {fname: 'selectGlyph', selected: 'glyphs', choices: 'glyphs'};
                 }
                 break;
             case 'components':
                 // debug('\t case components');
-                _UI.glyphChooser.panel = {fname:'selectComponent', selected:'components', choices:'components'};
+                _UI.glyphChooser.panel = {fname: 'selectComponent', selected: 'components', choices: 'components'};
                 break;
             case 'ligatures':
                 // debug('\t case ligatures');
-                _UI.glyphChooser.panel = {fname:'selectLigature', selected:'ligatures', choices:'ligatures'};
+                _UI.glyphChooser.panel = {fname: 'selectLigature', selected: 'ligatures', choices: 'ligatures'};
                 break;
             case 'import svg':
                 // debug('\t case import svg');
-                if(_UI.glyphChooser.panel.fname !== 'importSVG_selectGlyph'){
-                     _UI.glyphChooser.panel = {fname:'importSVG_selectGlyph', selected:'glyphs', choices:'all'};
+                if (_UI.glyphChooser.panel.fname !== 'importSVG_selectGlyph') {
+                     _UI.glyphChooser.panel = {fname: 'importSVG_selectGlyph', selected: 'glyphs', choices: 'all'};
                  }
                 break;
         }
@@ -267,7 +273,7 @@
     }
 
     function onChooserPanelPage() {
-        var nh = _UI.currentPage;
+        let nh = _UI.currentPage;
         return ( nh==='glyph edit' ||
                     nh==='components' ||
                     nh==='kerning' ||
@@ -276,7 +282,7 @@
     }
 
     function onCanvasEditPage() {
-        var nh = _UI.currentPage;
+        let nh = _UI.currentPage;
         return ( nh==='glyph edit' ||
                     nh==='components' ||
                     nh==='kerning' ||
@@ -284,7 +290,7 @@
     }
 
     function onNoNavPage() {
-        var nh = _UI.currentPage;
+        let nh = _UI.currentPage;
         return ( nh==='font settings' ||
                     nh==='project settings' ||
                     nh==='global actions' ||
@@ -293,21 +299,21 @@
                     nh==='about');
     }
 
-    function make_NavPanels_PopIn(){
+    function make_NavPanels_PopIn() {
         // debug('\n make_NavPanels_PopIn - START');
         // debug('\t currentPage: ' + _UI.currentPage + '\tnavprimaryhere: ' + _UI.currentPanel);
 
-        var np = document.getElementById('navarea_panel');
+        let np = document.getElementById('navarea_panel');
         document.getElementById('navarea_tabs').innerHTML = makePanel_NavTabs();
         np.innerHTML = '';
         closeDialog();
         updateSaveIcon();
 
 
-        if(!_UI.currentPanel) setDefaultPanel();
+        if (!_UI.currentPanel) setDefaultPanel();
         // if(_UI.currentPage === 'import svg') _UI.currentPanel = 'npChooser';
 
-        if(onNoNavPage() || _UI.currentPanel === 'npNav') {
+        if (onNoNavPage() || _UI.currentPanel === 'npNav') {
             _UI.currentPanel = 'npNav';
             np.innerHTML = makePanel_PageNav();
             document.getElementById('npSave').style.display = 'none';
@@ -316,7 +322,7 @@
             document.getElementById('npSave').style.display = 'block';
         }
 
-        switch(_UI.currentPanel){
+        switch (_UI.currentPanel) {
             case 'npChooser':
                 // debug('\t case npChooser');
                 np.innerHTML = makePanel_GlyphChooser();
@@ -324,7 +330,7 @@
 
             case 'npAttributes':
                 // debug('\t case npAttributes');
-                switch (_UI.currentPage){
+                switch (_UI.currentPage) {
                     case 'glyph edit':
                     case 'components':
                     case 'ligatures':
@@ -346,45 +352,43 @@
     }
 
 
-
-
-//-------------------
+// -------------------
 // Shared stuff
-//-------------------
+// -------------------
 
-    function getEditDocument(){
-        if(_UI.popOut){
+    function getEditDocument() {
+        if (_UI.popOut) {
             return _UI.popOut.document;
         } else {
             return document;
         }
     }
 
-    function loadPageContent(){
-        switch(_UI.currentPage){
-            case 'openproject':            loadPage_openproject();        break;
-            case 'global actions':        loadPage_globalactions();    break;
-            case 'font settings':        loadPage_fontsettings();    break;
-            case 'project settings':    loadPage_projectsettings();    break;
-            case 'export font':            loadPage_exportfont();        break;
-            case 'import svg':            loadPage_importsvg();        break;
-            case 'about':                loadPage_about();            break;
-            case 'test drive':            loadPage_testdrive();        break;
-            case 'components':            loadPage_components();        break;
-            case 'glyph edit':            loadPage_glyphedit();        break;
-            case 'kerning':                loadPage_kerning();            break;
-            case 'ligatures':            loadPage_ligatures();        break;
+    function loadPageContent() {
+        switch (_UI.currentPage) {
+            case 'openproject': loadPage_openproject(); break;
+            case 'global actions': loadPage_globalactions(); break;
+            case 'font settings': loadPage_fontsettings(); break;
+            case 'project settings': loadPage_projectsettings(); break;
+            case 'export font': loadPage_exportfont(); break;
+            case 'import svg': loadPage_importsvg(); break;
+            case 'about': loadPage_about(); break;
+            case 'test drive': loadPage_testdrive(); break;
+            case 'components': loadPage_components(); break;
+            case 'glyph edit': loadPage_glyphedit(); break;
+            case 'kerning': loadPage_kerning(); break;
+            case 'ligatures': loadPage_ligatures(); break;
         }
     }
 
-    function makePanel_NavTabs(){
+    function makePanel_NavTabs() {
         // debug('\n makePanel_NavTabs - START');
-        var navarr = [];
+        let navarr = [];
         navarr.push('npNav');
-        var wi = existingWorkItem();
+        let wi = existingWorkItem();
 
-        if(_UI.currentPanel !== 'npNav'){
-            switch(_UI.currentPage){
+        if (_UI.currentPanel !== 'npNav') {
+            switch (_UI.currentPage) {
                 case 'glyph edit':
                 navarr.push('npChooser');
                 navarr.push('npLayers');
@@ -396,16 +400,16 @@
                 case 'components':
                 case 'ligatures':
                 navarr.push('npChooser');
-                if(wi) navarr.push('npLayers');
-                if(wi) navarr.push('npAttributes');
-                if(wi) navarr.push('npHistory');
-                if(wi) navarr.push('npGuides');
+                if (wi) navarr.push('npLayers');
+                if (wi) navarr.push('npAttributes');
+                if (wi) navarr.push('npHistory');
+                if (wi) navarr.push('npGuides');
                 break;
 
                 case 'kerning':
                 navarr.push('npAttributes');
-                if(wi) navarr.push('npHistory');
-                if(wi) navarr.push('npGuides');
+                if (wi) navarr.push('npHistory');
+                if (wi) navarr.push('npGuides');
                 break;
 
                 case 'test drive':
@@ -418,13 +422,13 @@
             }
         }
 
-        var newsub = '';
+        let newsub = '';
 
         // defaults for logo
-        var nfill = _UI.colors.blue.l85;
-        var nhover = _UI.colors.gray.offwhite;
+        let nfill = _UI.colors.blue.l85;
+        let nhover = _UI.colors.gray.offwhite;
 
-        if(_UI.currentPanel === 'npNav'){
+        if (_UI.currentPanel === 'npNav') {
             nfill = _UI.colors.blue.l35;
             nhover = _UI.colors.blue.l35;
             document.getElementById('navarea_tabs').style.backgroundColor = _UI.colors.gray.l90;
@@ -433,23 +437,23 @@
         }
 
         // Start putting together the tabs
-        if(_UI.currentPanel === 'npNav'){
+        if (_UI.currentPanel === 'npNav') {
             newsub += '<div class="navarea_header">';
-            if(!onNoNavPage()){
+            if (!onNoNavPage()) {
                 newsub += '<button class="primarynavbutton" id="npNav" onclick="clickHamburger();">';
-                newsub += makeIcon({'name':'button_npBack', 'color':_UI.colors.blue.l65, 'hovercolor':_UI.colors.blue.l85});
+                newsub += makeIcon({'name': 'button_npBack', 'color': _UI.colors.blue.l65, 'hovercolor': _UI.colors.blue.l85});
                 newsub += '</button>';
             }
             newsub += '</div>';
         } else {
             newsub += '<div class="navarea_header" title="Navigate" style="background-color:'+_UI.colors.blue.l45+';">';
             newsub += '<button class="primarynavbutton" id="npNav" onclick="clickHamburger();">';
-            newsub += makeIcon({'name':'button_npNav', 'color':nfill, 'hovercolor':nhover});
+            newsub += makeIcon({'name': 'button_npNav', 'color': nfill, 'hovercolor': nhover});
             newsub += '</button></div>';
         }
 
-        for(var i=1; i<navarr.length; i++){
-            if(_UI.currentPanel === navarr[i]){
+        for (let i=1; i<navarr.length; i++) {
+            if (_UI.currentPanel === navarr[i]) {
                 nfill = _UI.colors.blue.l55;
                 nhover = _UI.colors.blue.l55;
             } else {
@@ -457,7 +461,7 @@
                 nhover = 'white';
             }
             newsub += '<div class="np_section" title="'+navarr[i].substr(2)+'"><button class="primarynavbutton" id="'+navarr[i]+'" onclick="navigate({panel:\''+navarr[i]+'\'});">';
-            newsub += makeIcon({'name': ('button_'+navarr[i]), 'color': nfill, 'hovercolor':nhover});
+            newsub += makeIcon({'name': ('button_'+navarr[i]), 'color': nfill, 'hovercolor': nhover});
             newsub += '</button></div>';
         }
 
@@ -477,11 +481,11 @@
         // debug('\t currentPanel: ' + _UI.currentPanel);
         // debug('\t lastPanel: ' + _UI.lastPanel);
 
-        if(_UI.currentPanel === 'npNav'){
-            navigate({panel:_UI.lastPanel});
+        if (_UI.currentPanel === 'npNav') {
+            navigate({panel: _UI.lastPanel});
         } else {
             _UI.lastPanel = _UI.currentPanel;
-            navigate({panel:'npNav'});
+            navigate({panel: 'npNav'});
         }
 
         // debug('\t currentPanel: ' + _UI.currentPanel);
@@ -489,8 +493,8 @@
         // debug(' clickHamburger - END\n');
     }
 
-    function makePanel_PageNav(){
-        var navarr = [];
+    function makePanel_PageNav() {
+        let navarr = [];
         navarr.push('glyph edit');
         navarr.push('components');
         navarr.push('ligatures');
@@ -502,16 +506,16 @@
         navarr.push('project settings');
         navarr.push('_');
         navarr.push('import svg');
-        if(_UI.popOut){
+        if (_UI.popOut) {
             navarr.push('_');
             navarr.push('popin');
         } else {
             navarr.push('export font');
         }
-        if(!_UI.popOut) navarr.push('_');
+        if (!_UI.popOut) navarr.push('_');
         navarr.push('help');
         navarr.push('about');
-        if(!_UI.popOut){
+        if (!_UI.popOut) {
             navarr.push('_');
             navarr.push('newproject');
             navarr.push('feature');
@@ -519,55 +523,47 @@
             navarr.push('issue');
         }
 
-        var newsub = '<div class="navarea_header" style="padding:12px 10px 8px 10px;">'+makeGlyphrStudioLogo({fill:'white', width:150})+'</div>';
+        let newsub = '<div class="navarea_header" style="padding:12px 10px 8px 10px;">'+makeGlyphrStudioLogo({fill: 'white', width: 150})+'</div>';
         newsub += '<div class="panel_section">';
 
-        var iconname, bc;
+        let iconname, bc;
 
-        for(var i=0; i<navarr.length; i++){
+        for (let i=0; i<navarr.length; i++) {
             bc = 'navtargetbutton';
             iconcolor = _UI.colors.blue.l25;
-            if(navarr[i] === _UI.currentPage) {
+            if (navarr[i] === _UI.currentPage) {
                 bc = 'navtargetbuttonsel';
                 iconcolor = _UI.colors.blue.l55;
             }
 
-            if(navarr[i]==='_'){
+            if (navarr[i]==='_') {
                 newsub += '<div style="height:12px;"></div>';
-            
-            } else if (navarr[i] === 'popin'){
+            } else if (navarr[i] === 'popin') {
                 newsub += '<div style="cursor:pointer; background-color:rgb(0,113,170); height:32px; position:relative; left:-10px; top:-4px; padding:50px 0px 0px 14px;" title="one screen mode" onclick="popIn();">'+
-                    makeIcon({'name':'tool_popIn', 'color':'white', 'hovercolor':'white', 'size':20, 'width':25, 'height':25})+
+                    makeIcon({'name': 'tool_popIn', 'color': 'white', 'hovercolor': 'white', 'size': 20, 'width': 25, 'height': 25})+
                     '<span style="position:relative; top:-5px; margin-left:10px; color:white;">Pop In</span>'+
                     '</div>';
-            
-            } else if (navarr[i] === 'help'){
+            } else if (navarr[i] === 'help') {
                 newsub += '<a href="http://help.glyphrstudio.com/" style="text-decoration:none; color:rgb(51, 56, 61);" target="_blank" class="navtargetbutton">'+
-                    '<div class="navtargeticon">'+makeIcon({'name':'nav_help', 'color':iconcolor, 'hovercolor':false, 'size':50, 'width':25, 'height':25})+'</div>'+
+                    '<div class="navtargeticon">'+makeIcon({'name': 'nav_help', 'color': iconcolor, 'hovercolor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
                     'help</a>';
-            
-            } else if (navarr[i] === 'email'){
+            } else if (navarr[i] === 'email') {
                 newsub += ('<a href="mailto:mail@glyphrstudio.com?subject=Hi%20Glyphr%20Studio&amp;body='+genEmailContent()+'" target="_blank" class="navpanellink">Email the glyphr studio team</a><br>');
-            
-            } else if (navarr[i] === 'newproject'){
+            } else if (navarr[i] === 'newproject') {
                 newsub += ('<a href="http://glyphrstudio.com/online" class="navpanellink" target="_blank">Open a new project (Ctrl + O)</a><br>');
-            
-            } else if (navarr[i] === 'feature'){
+            } else if (navarr[i] === 'feature') {
                 newsub += ('<a href="http://glyphrstudio.uservoice.com" class="navpanellink" target="_blank">Suggest a feature or improvement</a><br>');
-            
-            } else if (navarr[i] === 'issue'){
+            } else if (navarr[i] === 'issue') {
                 newsub += ('<a href="https://github.com/mattlag/Glyphr-Studio/issues/new" target="_blank" class="navpanellink">Create a new issue on github</a><br>');
-            
-            } else if (navarr[i] === _UI.currentPage){
-                iconname = 'nav_'+navarr[i].replace(' ','');
+            } else if (navarr[i] === _UI.currentPage) {
+                iconname = 'nav_'+navarr[i].replace(' ', '');
                 newsub += '<button class="'+bc+'" onclick="clickHamburger();">'+
-                    '<div class="navtargeticon">'+makeIcon({'name':iconname, 'color':iconcolor, 'hovercolor':false, 'size':50, 'width':25, 'height':25})+'</div>'+
+                    '<div class="navtargeticon">'+makeIcon({'name': iconname, 'color': iconcolor, 'hovercolor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
                     navarr[i]+'</button>';
-            
             } else {
-                iconname = 'nav_'+navarr[i].replace(' ','');
+                iconname = 'nav_'+navarr[i].replace(' ', '');
                 newsub += '<button class="'+bc+'" onclick="navigate({page:\''+navarr[i]+'\'});">'+
-                    '<div class="navtargeticon">'+makeIcon({'name':iconname, 'color':iconcolor, 'hovercolor':false, 'size':50, 'width':25, 'height':25})+'</div>'+
+                    '<div class="navtargeticon">'+makeIcon({'name': iconname, 'color': iconcolor, 'hovercolor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
                     navarr[i]+'</button>';
             }
         }

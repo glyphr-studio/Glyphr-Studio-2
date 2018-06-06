@@ -1,13 +1,13 @@
 
 /**
     Guide
-    An object used by the UI for drawing guide 
-    lines on the edit canvas, and for saving 
+    An object used by the UI for drawing guide
+    lines on the edit canvas, and for saving
     custom guides to a Glyphr Studio Project.
 **/
 
 
-    function Guide(oa){
+    function Guide(oa) {
         this.objtype = 'guide';
 
         this.type = oa.type || 'vertical';
@@ -24,34 +24,34 @@
         // debug('\nGuide.draw \t START');
         // debug('\t name: ' + this.name);
         // debug('\t delta: ' + delta);
-        if(!this.visible) return;
+        if (!this.visible) return;
 
         delta = delta*1;
-        var ctx = _UI.glyphEditCTX;
-        var cansize = _UI.glyphEditCanvasSize;
-        var psc = _GP.projectsettings.colors;
-        var v = getView('guide');
-        var start = {x:0, y:0};
-        var end = {x:0, y:0};
-        var label = {x:0, y:0};
-        var pad = 5;
-        var pos;
+        let ctx = _UI.glyphEditCTX;
+        let cansize = _UI.glyphEditCanvasSize;
+        let psc = _GP.projectsettings.colors;
+        let v = getView('guide');
+        let start = {x: 0, y: 0};
+        let end = {x: 0, y: 0};
+        let label = {x: 0, y: 0};
+        let pad = 5;
+        let pos;
 
         // debug('\t view: ' + JSON.stringify(v));
         // debug('\t location: ' + this.location);
 
-        if(this.type === 'horizontal'){
+        if (this.type === 'horizontal') {
             pos = (v.dy - (this.location*v.dz)).makeCrisp();
-            if(delta) pos += (delta*v.dz);
+            if (delta) pos += (delta*v.dz);
             start.x = 0;
             start.y = pos;
             end.x = cansize;
             end.y = pos;
             label.x = 25;
             label.y = pos - pad;
-        } else if (this.type === 'vertical'){
+        } else if (this.type === 'vertical') {
             pos = (v.dx - (this.location*v.dz*-1)).makeCrisp();
-            if(delta) pos += (delta*v.dz);
+            if (delta) pos += (delta*v.dz);
             start.x = pos;
             start.y = 0;
             end.x = pos;
@@ -60,24 +60,24 @@
             label.y = 11;
         }
 
-        var alpha = transparencyToAlpha(this.editable? psc.customguidetransparency : psc.systemguidetransparency);
-        var color = RGBAtoRGB(this.color, alpha);
-    
-        if(color !== 'rgb(255,255,255)'){
+        let alpha = transparencyToAlpha(this.editable? psc.customguidetransparency : psc.systemguidetransparency);
+        let color = RGBAtoRGB(this.color, alpha);
+
+        if (color !== 'rgb(255,255,255)') {
             // Draw Line
             // debug('\t start: ' + JSON.stringify(start) + ' / end: ' + JSON.stringify(end));
             ctx.strokeStyle = color;
             ctx.globalAlpha = 1;
             ctx.lineWidth = 1;
-            if(isval(delta)) ctx.strokeStyle = shiftColor(color, 0.6, true);
+            if (isval(delta)) ctx.strokeStyle = shiftColor(color, 0.6, true);
             ctx.beginPath();
             ctx.moveTo(start.x, start.y);
             ctx.lineTo(end.x, end.y);
             ctx.stroke();
             ctx.closePath();
-    
+
             // Draw Label
-            if(this.showname && _UI.showGuidesLabels && !delta){
+            if (this.showname && _UI.showGuidesLabels && !delta) {
                 _UI.glyphEditCTX.fillStyle = color;
                 _UI.glyphEditCTX.font = '10px tahoma, verdana, sans-serif';
                 _UI.glyphEditCTX.fillText(this.name, label.x, label.y);
@@ -87,12 +87,12 @@
         // debug('Guide.draw \t END\n');
     };
 
-    function makeRandomSaturatedColor(){
-        var sat = Math.floor(Math.random()*5)*51;
-        var arr = [];
-        var satloc = Math.floor(Math.random()*3);
+    function makeRandomSaturatedColor() {
+        let sat = Math.floor(Math.random()*5)*51;
+        let arr = [];
+        let satloc = Math.floor(Math.random()*3);
         arr[satloc] = sat;
-        switch(satloc){
+        switch (satloc) {
             case 0:
                 arr[1] = 0;
                 arr[2] = 255;

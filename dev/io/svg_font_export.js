@@ -1,24 +1,24 @@
 
 /**
     IO > Export > SVG Font
-    Converting a Glyphr Studio Project to XML in 
+    Converting a Glyphr Studio Project to XML in
     a SVG Font format.
 **/
 
 
     function ioSVG_exportSVGfont() {
         // debug('\n ioSVG_exportSVGfont - Start');
-        var ps = _GP.projectsettings;
-        var md = _GP.metadata;
-        var family = md.font_family;
-        var familyid = family.replace(/ /g, '_');
-        var timestamp = genDateStampSuffix();
-        var timeoutput = timestamp.split('-');
+        let ps = _GP.projectsettings;
+        let md = _GP.metadata;
+        let family = md.font_family;
+        let familyid = family.replace(/ /g, '_');
+        let timestamp = genDateStampSuffix();
+        let timeoutput = timestamp.split('-');
         timeoutput[0] = timeoutput[0].replace(/\./g, '-');
         timeoutput[1] = timeoutput[1].replace(/\./g, ':');
         timeoutput = timeoutput.join(' at ');
 
-        var con = '<?xml version="1.0"?>\n'+
+        let con = '<?xml version="1.0"?>\n'+
             // '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >\n'+
             '<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">\n'+
             '\t<metadata>\n\n'+
@@ -63,7 +63,7 @@
 
         con += '</svg>';
 
-        var filename = ps.name + ' - SVG Font - ' + timestamp + '.svg';
+        let filename = ps.name + ' - SVG Font - ' + timestamp + '.svg';
 
         saveFile(filename, con);
 
@@ -73,11 +73,11 @@
     function ioSVG_makeFontFace() {
         // debug('\n ioSVG_makeFontFace - START');
         calcFontMaxes();
-        var t = '\t\t\t\t';
-        var md = _GP.metadata;
-        var ps = _GP.projectsettings;
-        var fm = _UI.fontMetrics;
-        var con = '';
+        let t = '\t\t\t\t';
+        let md = _GP.metadata;
+        let ps = _GP.projectsettings;
+        let fm = _UI.fontMetrics;
+        let con = '';
 
         // Project properties
         con += t+'units-per-em="'+ps.upm+'"\n';
@@ -89,8 +89,9 @@
         con += t+'unicode-range="U+20-'+fm.maxGlyph+'"\n';
 
         // Metadata properties
-        for(var d in md){if(md.hasOwnProperty(d)){
-            if(md[d] !== '{{sectionbreak}}'){
+        for (let d in md) {
+if (md.hasOwnProperty(d)) {
+            if (md[d] !== '{{sectionbreak}}') {
                 con += t;
                 con += d.replace(/_/g, '-');
                 con += '=';
@@ -98,7 +99,8 @@
                 con += typeof md[d] === 'string'? JSON.stringify(removeEmptyStringInputs(md[d])) : ('"'+md[d]+'"');
                 con += '\n';
             }
-        }}
+        }
+}
         con = con.substring(0, con.length-1);
         con += '>';
 
@@ -108,10 +110,10 @@
 
     function ioSVG_makeMissingGlyph() {
         // debug('\n ioSVG_makeMissingGlyph - START');
-        var con = '         ';
-        var gh = _GP.projectsettings.ascent;
-        var gw = round(gh * 0.618);
-        var gt = round(gh/100);
+        let con = '         ';
+        let gh = _GP.projectsettings.ascent;
+        let gw = round(gh * 0.618);
+        let gt = round(gh/100);
 
         con += '\t<missing-glyph horiz-adv-x="'+gw+'" ';
         con += 'd="M0,0 v'+gh+' h'+gw+' v-'+gh+' h-'+gw+'z ';
@@ -125,55 +127,59 @@
     function ioSVG_makeAllGlyphsAndLigatures() {
         // debug('\n ioSVG_makeAllGlyphsAndLigatures - START');
 
-        //<glyph glyph-name="uniFEDF_uniFEE0_uniFBAB.liga" unicode="&#xfedf;&#xfee0;&#xfbab;" horiz-adv-x="1262" d="M1224 5
+        // <glyph glyph-name="uniFEDF_uniFEE0_uniFBAB.liga" unicode="&#xfedf;&#xfee0;&#xfbab;" horiz-adv-x="1262" d="M1224 5
 
-        var fc = _GP.glyphs;
-        var con = '';
+        let fc = _GP.glyphs;
+        let con = '';
 
         sortLigatures();
-        var li = _GP.ligatures;
+        let li = _GP.ligatures;
         con += '\t\t\t<!-- Ligatures -->\n';
-        for(var l in li){ if (li.hasOwnProperty(l)){
+        for (let l in li) {
+ if (li.hasOwnProperty(l)) {
             con += ioSVG_makeOneGlyphOrLigature(li[l], l);
-        }}
+        }
+}
 
         con += '\n';
 
         con += '\t\t\t<!-- Glyphs -->\n';
-        for(var c in fc){ if (fc.hasOwnProperty(c)){
+        for (let c in fc) {
+ if (fc.hasOwnProperty(c)) {
             con += ioSVG_makeOneGlyphOrLigature(fc[c], c);
-        }}
+        }
+}
 
         // debug(' ioSVG_makeAllGlyphsAndLigatures - END\n');
         return con;
     }
 
     function ioSVG_makeOneGlyphOrLigature(gl, uni) {
-        // if(!gl.shapes.length && !gl.getAdvanceWidth()) return '';    
+        // if(!gl.shapes.length && !gl.getAdvanceWidth()) return '';
         // Results in lots of special unicoded glyphs with no shapes
-        if(!gl.shapes.length && uni!=0x0020) {
+        if (!gl.shapes.length && uni!=0x0020) {
             console.warn('Glyph ' + uni + ' not exported: No shapes.');
-            return ''
+            return '';
         };
 
 
         uni = uni.split('0x');
-        uni.forEach(function(v, i, a){
+        uni.forEach(function(v, i, a) {
             // only export glyph if it has a valid hexadecimal unicode
-            if(!validateHex(v)) {
+            if (!validateHex(v)) {
                 console.warn('Glyph ' + uni.join('') + ' not exported: Bad hex value.');
                 return '';
             }
 
-            if(v) a[i] = '&#x'+v+';';
+            if (v) a[i] = '&#x'+v+';';
         });
         uni = uni.join('');
 
-        if(_GP.projectsettings.combineshapesonexport) gl = new Glyph(gl).flattenGlyph().combineAllShapes(true);
-        var pathdata = gl.getSVGpathData();
+        if (_GP.projectsettings.combineshapesonexport) gl = new Glyph(gl).flattenGlyph().combineAllShapes(true);
+        let pathdata = gl.getSVGpathData();
         pathdata = pathdata || 'M0,0Z';
 
-        var con = '\t\t\t';
+        let con = '\t\t\t';
         con += '<glyph glyph-name="'+gl.name.replace(/ /g, '_')+'" ';
         con += 'unicode="'+uni+'" ';
         con += 'horiz-adv-x="'+gl.getAdvanceWidth()+'" ';
@@ -183,19 +189,21 @@
 
     function ioSVG_makeAllKernPairs() {
         // debug('\n ioSVG_makeAllKernPairs - START');
-        var kp = _GP.kerning;
-        var con = '\t\t\t<!-- Kern Pairs -->\n';
+        let kp = _GP.kerning;
+        let con = '\t\t\t<!-- Kern Pairs -->\n';
 
-        for(var k in kp){ if (kp.hasOwnProperty(k)){
-            for(var lg=0; lg<kp[k].leftgroup.length; lg++){
-                for(var rg=0; rg<kp[k].rightgroup.length; rg++){
+        for (let k in kp) {
+ if (kp.hasOwnProperty(k)) {
+            for (let lg=0; lg<kp[k].leftgroup.length; lg++) {
+                for (let rg=0; rg<kp[k].rightgroup.length; rg++) {
                     con += '\t\t\t<hkern ';
                     con += 'u1="'+hexToUnicodeHex(kp[k].leftgroup[lg])+'" ';
                     con += 'u2="'+hexToUnicodeHex(kp[k].rightgroup[rg])+'" ';
                     con += 'k="'+kp[k].value+'" />\n';
                 }
             }
-        }}
+        }
+}
 
         // debug(' ioSVG_makeAllKernPairs - END\n');
         return con;

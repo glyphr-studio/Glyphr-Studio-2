@@ -1,4 +1,4 @@
- 
+
 /**
     Page > Global Actions
     This page has actions that can be taken
@@ -6,11 +6,11 @@
 **/
 
 
-    function loadPage_globalactions(){
+    function loadPage_globalactions() {
         // debug("LOADING PAGE >> loadPage_globalactions");
-        var ps = _GP.projectsettings;
+        let ps = _GP.projectsettings;
 
-        var con = '<h1 class="pagetitle">Global Actions</h1><div class="pagecontent textpage">';
+        let con = '<h1 class="pagetitle">Global Actions</h1><div class="pagecontent textpage">';
 
         con += 'This page contains actions that affect many glyphs at once.  Actions taken here '+
                 'will not carry forward to glyphs that haven\'t been created yet.';
@@ -56,129 +56,127 @@
     }
 
 
-
     //  ------------------
     //    Action Functions
     //    ------------------
 
     function convertProjectToMonospace() {
-        var gwidth = document.getElementById('monospacewidth').value;
+        let gwidth = document.getElementById('monospacewidth').value;
 
         glyphIterator({
             title: 'Converting to Monospace',
-            filter: function(glyphid){ 
-                var gtype = getGlyphType(glyphid);
+            filter: function(glyphid) {
+                let gtype = getGlyphType(glyphid);
                 return gtype === 'glyph' || gtype === 'ligature';
             },
-            action: function(glyph){
+            action: function(glyph) {
                 glyph.isautowide = false;
                 glyph.glyphwidth = gwidth;
-            }
+            },
         });
     }
 
     function convertProjectToAllCaps() {
-        var copyGlyphAttributes = { srcAutoWidth: true, srcWidth: true, srcLSB: true, srcRSB: true };
-        
+        let copyGlyphAttributes = {srcAutoWidth: true, srcWidth: true, srcLSB: true, srcRSB: true};
+
         glyphIterator({
             title: 'Converting to All Caps',
             filter: {begin: 0x0041, end: 0x005A},
-            action: function(glyph, glyphid){
-                var destinationGlyphID = ''+decToHex(parseInt(glyphid, 16) + 32);
+            action: function(glyph, glyphid) {
+                let destinationGlyphID = ''+decToHex(parseInt(glyphid, 16) + 32);
                 insertComponentInstance(glyphid, destinationGlyphID, copyGlyphAttributes);
-            } 
+            },
         });
     }
 
     function generateDiacriticals() {
-        
-        var latext = [
-            {dest:'0x00C0', src: ['0x0041', '0x0060']},
-            {dest:'0x00C1', src: ['0x0041', '0x00B4']},
-            {dest:'0x00C2', src: ['0x0041', '0x005E']},
-            {dest:'0x00C3', src: ['0x0041', '0x007E']},
-            {dest:'0x00C4', src: ['0x0041', '0x00A8']},
-            {dest:'0x00C5', src: ['0x0041', '0x00B0']},
-            {dest:'0x00C6', src: ['0x0041', '0x0045']},
-            {dest:'0x00C7', src: ['0x0043', '0x00B8']},
-            {dest:'0x00C8', src: ['0x0045', '0x0060']},
-            {dest:'0x00C9', src: ['0x0045', '0x00B4']},
-            {dest:'0x00CA', src: ['0x0045', '0x005E']},
-            {dest:'0x00CB', src: ['0x0045', '0x00A8']},
-            {dest:'0x00CC', src: ['0x0049', '0x0060']},
-            {dest:'0x00CD', src: ['0x0049', '0x00B4']},
-            {dest:'0x00CE', src: ['0x0049', '0x005E']},
-            {dest:'0x00CF', src: ['0x0049', '0x00A8']},
-            {dest:'0x00D0', src: ['0x0044', '0x002D']},
-            {dest:'0x00D1', src: ['0x004E', '0x007E']},
-            {dest:'0x00D2', src: ['0x004F', '0x0060']},
-            {dest:'0x00D3', src: ['0x004F', '0x00B4']},
-            {dest:'0x00D4', src: ['0x004F', '0x005E']},
-            {dest:'0x00D5', src: ['0x004F', '0x007E']},
-            {dest:'0x00D6', src: ['0x004F', '0x00A8']},
+        let latext = [
+            {dest: '0x00C0', src: ['0x0041', '0x0060']},
+            {dest: '0x00C1', src: ['0x0041', '0x00B4']},
+            {dest: '0x00C2', src: ['0x0041', '0x005E']},
+            {dest: '0x00C3', src: ['0x0041', '0x007E']},
+            {dest: '0x00C4', src: ['0x0041', '0x00A8']},
+            {dest: '0x00C5', src: ['0x0041', '0x00B0']},
+            {dest: '0x00C6', src: ['0x0041', '0x0045']},
+            {dest: '0x00C7', src: ['0x0043', '0x00B8']},
+            {dest: '0x00C8', src: ['0x0045', '0x0060']},
+            {dest: '0x00C9', src: ['0x0045', '0x00B4']},
+            {dest: '0x00CA', src: ['0x0045', '0x005E']},
+            {dest: '0x00CB', src: ['0x0045', '0x00A8']},
+            {dest: '0x00CC', src: ['0x0049', '0x0060']},
+            {dest: '0x00CD', src: ['0x0049', '0x00B4']},
+            {dest: '0x00CE', src: ['0x0049', '0x005E']},
+            {dest: '0x00CF', src: ['0x0049', '0x00A8']},
+            {dest: '0x00D0', src: ['0x0044', '0x002D']},
+            {dest: '0x00D1', src: ['0x004E', '0x007E']},
+            {dest: '0x00D2', src: ['0x004F', '0x0060']},
+            {dest: '0x00D3', src: ['0x004F', '0x00B4']},
+            {dest: '0x00D4', src: ['0x004F', '0x005E']},
+            {dest: '0x00D5', src: ['0x004F', '0x007E']},
+            {dest: '0x00D6', src: ['0x004F', '0x00A8']},
             // '0x00D7': 'Multiplication sign',
-            {dest:'0x00D8', src: ['0x004F', '0x002F']},
-            {dest:'0x00D9', src: ['0x0055', '0x0060']},
-            {dest:'0x00DA', src: ['0x0055', '0x00B4']},
-            {dest:'0x00DB', src: ['0x0055', '0x005E']},
-            {dest:'0x00DC', src: ['0x0055', '0x00A8']},
-            {dest:'0x00DD', src: ['0x0059', '0x00B4']},
+            {dest: '0x00D8', src: ['0x004F', '0x002F']},
+            {dest: '0x00D9', src: ['0x0055', '0x0060']},
+            {dest: '0x00DA', src: ['0x0055', '0x00B4']},
+            {dest: '0x00DB', src: ['0x0055', '0x005E']},
+            {dest: '0x00DC', src: ['0x0055', '0x00A8']},
+            {dest: '0x00DD', src: ['0x0059', '0x00B4']},
             // '0x00DE': 'Latin Capital Letter Thorn',
             // '0x00DF': 'Latin Small Letter sharp S',
-            {dest:'0x00E0', src: ['0x0061', '0x0060']},
-            {dest:'0x00E1', src: ['0x0061', '0x00B4']},
-            {dest:'0x00E2', src: ['0x0061', '0x005E']},
-            {dest:'0x00E3', src: ['0x0061', '0x007E']},
-            {dest:'0x00E4', src: ['0x0061', '0x00A8']},
-            {dest:'0x00E5', src: ['0x0061', '0x00B0']},
-            {dest:'0x00E6', src: ['0x0061', '0x0065']},
-            {dest:'0x00E7', src: ['0x0063', '0x00B8']},
-            {dest:'0x00E8', src: ['0x0065', '0x0060']},
-            {dest:'0x00E9', src: ['0x0065', '0x00B4']},
-            {dest:'0x00EA', src: ['0x0065', '0x005E']},
-            {dest:'0x00EB', src: ['0x0065', '0x00A8']},
-            {dest:'0x00EC', src: ['0x0069', '0x0060']},
-            {dest:'0x00ED', src: ['0x0069', '0x00B4']},
-            {dest:'0x00EE', src: ['0x0069', '0x005E']},
-            {dest:'0x00EF', src: ['0x0069', '0x00A8']},
-            {dest:'0x00F0', src: ['0x0064', '0x00B4']},
-            {dest:'0x00F1', src: ['0x006E', '0x007E']},
-            {dest:'0x00F2', src: ['0x006F', '0x0060']},
-            {dest:'0x00F3', src: ['0x006F', '0x00B4']},
-            {dest:'0x00F4', src: ['0x006F', '0x005E']},
-            {dest:'0x00F5', src: ['0x006F', '0x007E']},
-            {dest:'0x00F6', src: ['0x006F', '0x00A8']},
+            {dest: '0x00E0', src: ['0x0061', '0x0060']},
+            {dest: '0x00E1', src: ['0x0061', '0x00B4']},
+            {dest: '0x00E2', src: ['0x0061', '0x005E']},
+            {dest: '0x00E3', src: ['0x0061', '0x007E']},
+            {dest: '0x00E4', src: ['0x0061', '0x00A8']},
+            {dest: '0x00E5', src: ['0x0061', '0x00B0']},
+            {dest: '0x00E6', src: ['0x0061', '0x0065']},
+            {dest: '0x00E7', src: ['0x0063', '0x00B8']},
+            {dest: '0x00E8', src: ['0x0065', '0x0060']},
+            {dest: '0x00E9', src: ['0x0065', '0x00B4']},
+            {dest: '0x00EA', src: ['0x0065', '0x005E']},
+            {dest: '0x00EB', src: ['0x0065', '0x00A8']},
+            {dest: '0x00EC', src: ['0x0069', '0x0060']},
+            {dest: '0x00ED', src: ['0x0069', '0x00B4']},
+            {dest: '0x00EE', src: ['0x0069', '0x005E']},
+            {dest: '0x00EF', src: ['0x0069', '0x00A8']},
+            {dest: '0x00F0', src: ['0x0064', '0x00B4']},
+            {dest: '0x00F1', src: ['0x006E', '0x007E']},
+            {dest: '0x00F2', src: ['0x006F', '0x0060']},
+            {dest: '0x00F3', src: ['0x006F', '0x00B4']},
+            {dest: '0x00F4', src: ['0x006F', '0x005E']},
+            {dest: '0x00F5', src: ['0x006F', '0x007E']},
+            {dest: '0x00F6', src: ['0x006F', '0x00A8']},
             // '0x00F7': 'Division sign',
-            {dest:'0x00F8', src: ['0x006F', '0x002F']},
-            {dest:'0x00F9', src: ['0x0075', '0x0060']},
-            {dest:'0x00FA', src: ['0x0075', '0x00B4']},
-            {dest:'0x00FB', src: ['0x0075', '0x005E']},
-            {dest:'0x00FC', src: ['0x0075', '0x00A8']},
-            {dest:'0x00FD', src: ['0x0079', '0x00B4']},
+            {dest: '0x00F8', src: ['0x006F', '0x002F']},
+            {dest: '0x00F9', src: ['0x0075', '0x0060']},
+            {dest: '0x00FA', src: ['0x0075', '0x00B4']},
+            {dest: '0x00FB', src: ['0x0075', '0x005E']},
+            {dest: '0x00FC', src: ['0x0075', '0x00A8']},
+            {dest: '0x00FD', src: ['0x0079', '0x00B4']},
             // '0x00FE': 'Latin Small Letter Thorn',
-            {dest:'0x00FF', src: ['0x0079', '0x00A8']}
+            {dest: '0x00FF', src: ['0x0079', '0x00A8']},
         ];
 
-        var copyGlyphAttributes = { srcAutoWidth: true, srcWidth: true, srcLSB: true, srcRSB: true };
-        var currset;
-        var currglyphnum = 0;
+        let copyGlyphAttributes = {srcAutoWidth: true, srcWidth: true, srcLSB: true, srcRSB: true};
+        let currset;
+        let currglyphnum = 0;
 
         function doOneGlyph() {
             currset = latext[currglyphnum];
             showToast(('Adding diacritical <br>' + currset.dest), 10000);
-            
+
             insertComponentInstance(currset.src[0], currset.dest, copyGlyphAttributes);
             insertComponentInstance(currset.src[1], currset.dest, false);
 
-            if(currglyphnum < latext.length-1){
+            if (currglyphnum < latext.length-1) {
                 currglyphnum++;
                 setTimeout(doOneGlyph, 10);
             } else {
-                showToast('Done!', 1000)
+                showToast('Done!', 1000);
             }
         }
 
-        showToast('Starting to assemble Diacritical Glyphs', 10000)
+        showToast('Starting to assemble Diacritical Glyphs', 10000);
 
         _GP.projectsettings.glyphrange.latinsupplement = true;
 
@@ -194,29 +192,31 @@
         // debug('\n glyphIterator - START');
         // debug('\t passed:\n ' + json(oa));
 
-        var glyphlist = [];
-        var currglyphnum = 0;
-        var title = oa.title || 'Iterating on Glyph';
-        var filter = oa.filter || new function(){ return true; };
-        var currglyph, currglyphid;
+        let glyphlist = [];
+        let currglyphnum = 0;
+        let title = oa.title || 'Iterating on Glyph';
+        let filter = oa.filter || new function() {
+ return true;
+};
+        let currglyph, currglyphid;
 
 
         // Translate range notation to filter function
-        if(oa.filter.begin && oa.filter.end){
-            var begin = parseInt(oa.filter.begin);
-            var end = parseInt(oa.filter.end);
-            var gint;
+        if (oa.filter.begin && oa.filter.end) {
+            let begin = parseInt(oa.filter.begin);
+            let end = parseInt(oa.filter.end);
+            let gint;
 
-            function rangefilter(glyphid){
-                if(getGlyphType(glyphid) === 'glyph'){
+            function rangefilter(glyphid) {
+                if (getGlyphType(glyphid) === 'glyph') {
                     gint = parseInt(glyphid, 16);
                     return ((gint >= begin) && (gint <= end));
                 } else {
                     return false;
                 }
             }
-            
-            filter = rangefilter; 
+
+            filter = rangefilter;
         }
 
 
@@ -229,38 +229,38 @@
             currglyphid = glyphlist[currglyphnum];
             currglyph = getGlyph(currglyphid, true);
             // debug(`\t Got glyph: ${currglyph.name}`);
-            
+
             showToast((title + '<br>' + currglyph.getName()), 10000);
-            
+
             oa.action(currglyph, currglyphid);
 
-            if(currglyphnum < glyphlist.length-1){
+            if (currglyphnum < glyphlist.length-1) {
                 currglyphnum++;
                 setTimeout(doOneGlyph, 10);
             } else {
-                showToast((title + '<br>Done!'), 1000)
+                showToast((title + '<br>Done!'), 1000);
             }
         }
 
         function makeGlyphList() {
             // Components
-            for(var com in _GP.components){ 
-                if(_GP.components.hasOwnProperty(com)){
-                    if(filter(com)) glyphlist.push(com);
+            for (let com in _GP.components) {
+                if (_GP.components.hasOwnProperty(com)) {
+                    if (filter(com)) glyphlist.push(com);
                 }
             }
 
             // Ligatures
-            for(var lig in _GP.ligatures){ 
-                if(_GP.ligatures.hasOwnProperty(lig)){
-                    if(filter(lig)) glyphlist.push(lig);
+            for (let lig in _GP.ligatures) {
+                if (_GP.ligatures.hasOwnProperty(lig)) {
+                    if (filter(lig)) glyphlist.push(lig);
                 }
             }
 
             // Glyphs
-            for(var gly in _GP.glyphs){ 
-                if(_GP.glyphs.hasOwnProperty(gly)){
-                    if(filter(gly)) glyphlist.push(gly);
+            for (let gly in _GP.glyphs) {
+                if (_GP.glyphs.hasOwnProperty(gly)) {
+                    if (filter(gly)) glyphlist.push(gly);
                 }
             }
 

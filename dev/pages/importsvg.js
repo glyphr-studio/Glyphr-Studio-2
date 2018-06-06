@@ -5,110 +5,108 @@
 **/
 
 
-    function loadPage_importsvg(){
+    function loadPage_importsvg() {
         // debug("LOADING PAGE >> loadpage_importsvg");
-        var chname = getSelectedWorkItemName();
-        var content = "<h1 class='pagetitle'>Import SVG</h1><div class='pagecontent textpage'>" +
-        "<h2 id='importsvgselecttitle'>Target glyph: "+chname+"</h2>"+
+        let chname = getSelectedWorkItemName();
+        let content = '<h1 class=\'pagetitle\'>Import SVG</h1><div class=\'pagecontent textpage\'>' +
+        '<h2 id=\'importsvgselecttitle\'>Target glyph: '+chname+'</h2>'+
 
-        "<table style='margin-top:16px;'><tr><td style='width:50%;'>"+
-            "<h3>scaling and moving</h3>"+
+        '<table style=\'margin-top:16px;\'><tr><td style=\'width:50%;\'>'+
+            '<h3>scaling and moving</h3>'+
 
-            "<table><tr><td>"+
-                checkUI("_UI.importSVG.scale", _UI.importSVG.scale) +
-            "</td><td style='padding:0px 0px 8px 5px;'>"+
-                "<label for='scale'>Scale the imported SVG outlines</label>"+
-            "</td></tr><tr><td>"+
-                checkUI("_UI.importSVG.move", _UI.importSVG.move) +
-            "</td><td style='padding:0px 0px 8px 5px;'>"+
-                "<label for='move'>Move the imported SVG outlines</label>"+
-            "</td></tr></table>"+
-        "</td><td style='width:50%;'>"+
-            "<h3>height metrics</h3>"+
+            '<table><tr><td>'+
+                checkUI('_UI.importSVG.scale', _UI.importSVG.scale) +
+            '</td><td style=\'padding:0px 0px 8px 5px;\'>'+
+                '<label for=\'scale\'>Scale the imported SVG outlines</label>'+
+            '</td></tr><tr><td>'+
+                checkUI('_UI.importSVG.move', _UI.importSVG.move) +
+            '</td><td style=\'padding:0px 0px 8px 5px;\'>'+
+                '<label for=\'move\'>Move the imported SVG outlines</label>'+
+            '</td></tr></table>'+
+        '</td><td style=\'width:50%;\'>'+
+            '<h3>height metrics</h3>'+
 
-            "<table style='margin-top:10px;'><tr>"+
-            "<td style='width:20px; padding-top:10px;'>"+
-                checkUI("_UI.importSVG.ascender", _UI.importSVG.ascender)+
-                "<br>"+
-                checkUI("_UI.importSVG.capheight", _UI.importSVG.capheight)+
-            "</td><td class='svgscaleoption'>"+
-                "<label for='ascender'>Ascender</label><br>"+
-                "<label for='capheight'>Cap Height</label>"+
-            "</td><td style='padding-left:30px;' rowspan='3'>"+
+            '<table style=\'margin-top:10px;\'><tr>'+
+            '<td style=\'width:20px; padding-top:10px;\'>'+
+                checkUI('_UI.importSVG.ascender', _UI.importSVG.ascender)+
+                '<br>'+
+                checkUI('_UI.importSVG.capheight', _UI.importSVG.capheight)+
+            '</td><td class=\'svgscaleoption\'>'+
+                '<label for=\'ascender\'>Ascender</label><br>'+
+                '<label for=\'capheight\'>Cap Height</label>'+
+            '</td><td style=\'padding-left:30px;\' rowspan=\'3\'>'+
 
-                "<table><tr><td colspan='2' style='padding-bottom:8px;'>"+
-                    "For rounded glyphs:"+
-                "</td></tr><tr><td>"+
-                    checkUI("_UI.importSVG.overshootTop", _UI.importSVG.overshootTop)+
-                "</td><td style='padding:0px 0px 8px 8px;'>"+
-                    "<label for='overshootTop'>top overshoot</label>"+
-                "</td></tr><tr><td>"+
-                    checkUI("_UI.importSVG.overshootBottom", _UI.importSVG.overshootBottom)+
-                "</td><td style='padding:0px 0px 8px 8px;'>"+
-                    "<label for='overshootBottom'>bottom overshoot</label>"+
-                "</td></tr></table>"+
+                '<table><tr><td colspan=\'2\' style=\'padding-bottom:8px;\'>'+
+                    'For rounded glyphs:'+
+                '</td></tr><tr><td>'+
+                    checkUI('_UI.importSVG.overshootTop', _UI.importSVG.overshootTop)+
+                '</td><td style=\'padding:0px 0px 8px 8px;\'>'+
+                    '<label for=\'overshootTop\'>top overshoot</label>'+
+                '</td></tr><tr><td>'+
+                    checkUI('_UI.importSVG.overshootBottom', _UI.importSVG.overshootBottom)+
+                '</td><td style=\'padding:0px 0px 8px 8px;\'>'+
+                    '<label for=\'overshootBottom\'>bottom overshoot</label>'+
+                '</td></tr></table>'+
 
 
-            "</tr><tr><td style='padding-top:10px;'>"+
-                "<input type='checkbox' disabled checked/>"+
-            "</td><td class='svgscaleoption'>"+
-                "<span style='color:"+_UI.colors.gray.l40+";'>X Height</span>"+
-            "</td></tr><tr><td style='padding-top:10px;'>"+
-                checkUI("_UI.importSVG.descender", _UI.importSVG.descender)+
-            "</td><td class='svgscaleoption'>"+
-                "<label for='descender'>Descender</label><br>"+
-            "</td></tr></table>"+
+            '</tr><tr><td style=\'padding-top:10px;\'>'+
+                '<input type=\'checkbox\' disabled checked/>'+
+            '</td><td class=\'svgscaleoption\'>'+
+                '<span style=\'color:'+_UI.colors.gray.l40+';\'>X Height</span>'+
+            '</td></tr><tr><td style=\'padding-top:10px;\'>'+
+                checkUI('_UI.importSVG.descender', _UI.importSVG.descender)+
+            '</td><td class=\'svgscaleoption\'>'+
+                '<label for=\'descender\'>Descender</label><br>'+
+            '</td></tr></table>'+
 
-        "</td></tr></table>"+
+        '</td></tr></table>'+
 
-        "<h2 style='margin-bottom:10px;'>SVG Code</h2>"+
-        "<div id='droptarget' style='width:100%; height:auto; margin-bottom:0px; padding:8px;'>drop a .svg file here, or paste code below</div>"+
-        "<textarea id='svgCode' onchange='importSVG_codeAreaChange();'>"+
+        '<h2 style=\'margin-bottom:10px;\'>SVG Code</h2>'+
+        '<div id=\'droptarget\' style=\'width:100%; height:auto; margin-bottom:0px; padding:8px;\'>drop a .svg file here, or paste code below</div>'+
+        '<textarea id=\'svgCode\' onchange=\'importSVG_codeAreaChange();\'>'+
 
-        (_UI.importSVG.svgCode ? _UI.importSVG.svgCode : "") +
+        (_UI.importSVG.svgCode ? _UI.importSVG.svgCode : '') +
 
-        "</textarea><br><br>"+
+        '</textarea><br><br>'+
 
-        "<button class='buttonsel' style='display:inline; padding-left:60px; padding-right:60px;' onclick='importSVG_importCode();'>Import SVG</button>"+
-        "<button style='display:inline; margin-left:60px; padding-left:20px; padding-right:20px;' onclick='importSVG_goToSelectedGlyph();'>edit the selected glyph</button>"+
-        "<button style='display:inline; margin-left:10px; padding-left:20px; padding-right:20px;' onclick='history_pull();'>undo</button>"+
-        "<button style='display:inline; margin-left:10px; padding-left:20px; padding-right:20px;' onclick='importSVG_clearCode();'>clear code</button>"+
+        '<button class=\'buttonsel\' style=\'display:inline; padding-left:60px; padding-right:60px;\' onclick=\'importSVG_importCode();\'>Import SVG</button>'+
+        '<button style=\'display:inline; margin-left:60px; padding-left:20px; padding-right:20px;\' onclick=\'importSVG_goToSelectedGlyph();\'>edit the selected glyph</button>'+
+        '<button style=\'display:inline; margin-left:10px; padding-left:20px; padding-right:20px;\' onclick=\'history_pull();\'>undo</button>'+
+        '<button style=\'display:inline; margin-left:10px; padding-left:20px; padding-right:20px;\' onclick=\'importSVG_clearCode();\'>clear code</button>'+
 
         makeErrorMessageBox() +
-        "<br><br></div>";
+        '<br><br></div>';
 
-        getEditDocument().getElementById("mainwrapper").innerHTML = content;
-        //importSVG_selectGlyph("0x0061");
+        getEditDocument().getElementById('mainwrapper').innerHTML = content;
+        // importSVG_selectGlyph("0x0061");
 
-        getEditDocument().getElementById("droptarget").addEventListener('dragover', importSVG_handleDragOver, false);
-        getEditDocument().getElementById("droptarget").addEventListener('dragleave', importSVG_handleDragLeave, false);
-        getEditDocument().getElementById("droptarget").addEventListener('drop', importSVG_handleDrop, false);
+        getEditDocument().getElementById('droptarget').addEventListener('dragover', importSVG_handleDragOver, false);
+        getEditDocument().getElementById('droptarget').addEventListener('dragleave', importSVG_handleDragLeave, false);
+        getEditDocument().getElementById('droptarget').addEventListener('drop', importSVG_handleDrop, false);
     }
 
     function importSVG_goToSelectedGlyph() {
-        var sg = _UI.selectedSVGImportTarget;
+        let sg = _UI.selectedSVGImportTarget;
 
-        if(sg.indexOf('0x', 2) > 0){
+        if (sg.indexOf('0x', 2) > 0) {
             // Ligature
             selectLigature(sg, false);
-            navigate({page:'ligatures', panel:'npAttributes'});
-
-        } else if (sg.indexOf('0x') === 0){
+            navigate({page: 'ligatures', panel: 'npAttributes'});
+        } else if (sg.indexOf('0x') === 0) {
             // Glyph
             selectGlyph(sg, false);
-            navigate({page:'glyph edit', panel:'npAttributes'});
-
+            navigate({page: 'glyph edit', panel: 'npAttributes'});
         } else {
             // Component
             selectComponent(sg, false);
-            navigate({page:'components', panel:'npAttributes'});
+            navigate({page: 'components', panel: 'npAttributes'});
         }
     }
 
     function importSVG_codeAreaChange() {
-        document.getElementById("droptarget").innerHTML = "Drop a .svg file here, or paste code below";
+        document.getElementById('droptarget').innerHTML = 'Drop a .svg file here, or paste code below';
         _UI.importSVG.svgCode = document.getElementById('svgCode').value;
-        //debug("IMPORTSVG_CODEAREACHANGE - code: " + _UI.importSVG.svgCode);
+        // debug("IMPORTSVG_CODEAREACHANGE - code: " + _UI.importSVG.svgCode);
     }
 
     function importSVG_handleDragOver(evt) {
@@ -127,23 +125,23 @@
         importSVG_clearCode();
     }
 
-    function importSVG_handleDrop(evt){
+    function importSVG_handleDrop(evt) {
         evt.stopPropagation();
         evt.preventDefault();
 
-        var f = evt.dataTransfer.files[0]; // FileList object only first file
-        var reader = new FileReader();
-        var dt = document.getElementById("droptarget");
+        let f = evt.dataTransfer.files[0]; // FileList object only first file
+        let reader = new FileReader();
+        let dt = document.getElementById('droptarget');
 
-        dt.innerHTML = "Loading File...";
+        dt.innerHTML = 'Loading File...';
 
         // Closure to capture the file information.
         reader.onload = (function(theFile) {
             return function(e) {
-                //console.log(reader.result);
+                // console.log(reader.result);
                 document.getElementById('svgCode').value = reader.result;
                 _UI.importSVG.svgCode = reader.result;
-                dt.innerHTML = "Loaded " + theFile.name;
+                dt.innerHTML = 'Loaded ' + theFile.name;
                 closeErrorMessageBox();
             };
         })(f);
@@ -159,57 +157,57 @@
         closeErrorMessageBox();
     }
 
-    function importSVG_selectGlyph(cid){
-        //debug("IMPORTSVG_SELECTGLYPH - selecting " + cid);
+    function importSVG_selectGlyph(cid) {
+        // debug("IMPORTSVG_SELECTGLYPH - selecting " + cid);
         selectSVGImportTarget(cid, true);
-        document.getElementById('importsvgselecttitle').innerHTML = "Target glyph: "+getSelectedWorkItemName();
+        document.getElementById('importsvgselecttitle').innerHTML = 'Target glyph: '+getSelectedWorkItemName();
         update_NavPanels();
     }
 
     function importSVG_importCode() {
         // debug('\n importSVG_importCode - START');
-        var svgin = document.getElementById('svgCode').value;
-        //debug("IMPORTSVG_IMPORTCODE - svgin is " + JSON.stringify(svgin));
+        let svgin = document.getElementById('svgCode').value;
+        // debug("IMPORTSVG_IMPORTCODE - svgin is " + JSON.stringify(svgin));
         closeErrorMessageBox();
 
-        var tempchar = ioSVG_convertTagsToGlyph(svgin);
+        let tempchar = ioSVG_convertTagsToGlyph(svgin);
         // debug('\t Convert Tags To Glyph returned');
         // debug(tempchar);
-        if(!tempchar) return;
+        if (!tempchar) return;
 
         // Flip and Scale
-        var mid = _GP.projectsettings.ascent / 2;
+        let mid = _GP.projectsettings.ascent / 2;
         // debug('\t Flipping tempchar about ' + mid);
         tempchar.flipNS(mid);
         // debug('\t >><< AFTER FLIPNS');
         // debug(tempchar);
 
-        //debug("IMPORTSVG_IMPORTCODE - scale / move " + so.scale + " / " + so.move);
-        var so = _UI.importSVG;
-        var gp = _GP.projectsettings;
+        // debug("IMPORTSVG_IMPORTCODE - scale / move " + so.scale + " / " + so.move);
+        let so = _UI.importSVG;
+        let gp = _GP.projectsettings;
 
-        if(so.scale || so.move){
-            var chartop = gp.xheight*1;
-            if(so.capheight) chartop = gp.capheight*1;
-            if(so.ascender) chartop = gp.ascent*1;
+        if (so.scale || so.move) {
+            let chartop = gp.xheight*1;
+            if (so.capheight) chartop = gp.capheight*1;
+            if (so.ascender) chartop = gp.ascent*1;
 
-            var totalheight = chartop;
-            var ovs = gp.overshoot*1;
+            let totalheight = chartop;
+            let ovs = gp.overshoot*1;
 
-            if(so.descender) totalheight += (gp.upm - gp.ascent)*1;
-            if(so.overshootBottom) totalheight += ovs;
-            if(so.overshootTop){
+            if (so.descender) totalheight += (gp.upm - gp.ascent)*1;
+            if (so.overshootBottom) totalheight += ovs;
+            if (so.overshootTop) {
                 totalheight += ovs;
                 chartop += ovs;
             }
 
             // debug('\t\n Scale to totalheight = ' + totalheight);
-            if(so.scale) tempchar.setGlyphSize(false, totalheight, true);
+            if (so.scale) tempchar.setGlyphSize(false, totalheight, true);
             // debug('\t >><< AFTER SCALE');
             // debug(tempchar);
 
             // debug('\t\n move to chartop = ' + chartop);
-            if(so.move) tempchar.setGlyphPosition(0, chartop);
+            if (so.move) tempchar.setGlyphPosition(0, chartop);
             // debug('\t >><< AFTER MOVE');
             // debug(tempchar);
         }
@@ -217,7 +215,7 @@
         // Add new Glyph Shapes
         tempchar.copyShapesTo(getSelectedWorkItemID());
         markSelectedWorkItemAsChanged();
-        history_put("Imported Paths from SVG to glyph "+getSelectedWorkItemName());
+        history_put('Imported Paths from SVG to glyph '+getSelectedWorkItemName());
 
         update_NavPanels();
 

@@ -1,33 +1,34 @@
 
 /**
     Panel > Guides
-    Shows a list of all the system and custom 
+    Shows a list of all the system and custom
     guide lines.
 **/
 
 
-    function makePanel_Guides(){
-
-        var content = '<div class="navarea_header">';
+    function makePanel_Guides() {
+        let content = '<div class="navarea_header">';
         content += makePanelSuperTitle();
         content += '<h1 class="paneltitle">guides</h1>';
         content += '</div><div class="panel_section">';
 
-        var system = '';
-        var user = '';
-        var guides = _GP.projectsettings.guides;
-        var ps = _GP.projectsettings;
-        var tg;
+        let system = '';
+        let user = '';
+        let guides = _GP.projectsettings.guides;
+        let ps = _GP.projectsettings;
+        let tg;
 
-        for(var g in guides){ if(guides.hasOwnProperty(g)){
+        for (let g in guides) {
+ if (guides.hasOwnProperty(g)) {
             tg = guides[g];
 
-            if(tg.editable){
+            if (tg.editable) {
                 user += makeOneGuideRow(tg, ('_GP.projectsettings.guides.'+g), tg.visible, g);
             } else if (tg.showname) {
                 system += makeOneGuideRow(tg, ('_GP.projectsettings.guides.'+g), tg.visible, g);
             }
-        }}
+        }
+}
 
         content += '<h3 style="margin-top:0px; margin-bottom:10px;">options</h3>';
         content += '<table style="width:100%;">'+
@@ -43,7 +44,7 @@
             '<td colspan="2">grid '+sliderUI('gridtransparency', 'gridtransparency_panel', false, true)+'</td></tr>'+
             '</table>';
 
-        if(_UI.currentPage !== 'kerning'){
+        if (_UI.currentPage !== 'kerning') {
             content += '<br><h3 style=" margin-bottom:0px;">system guides</h3>';
             // content += 'transparency:<input type="range" min="0" max="100" value="'+ps.colors.systemguidetransparency+'" step="1" oninput="updateTransparency(\'systemguidetransparency\', this.value);"/><span id="systemguidetransparency">'+ps.colors.systemguidetransparency+'</span>%<br><br>';
             content += 'guide ' + sliderUI('systemguidetransparency', 'systemguidetransparency_panel', false, true) + '<br><br>';
@@ -61,11 +62,11 @@
     }
 
     function makeOneGuideRow(guide, path, currviz, id) {
-        var sys = !guide.editable;
-        var re = '<table class="guiderow"><tr>';
+        let sys = !guide.editable;
+        let re = '<table class="guiderow"><tr>';
 
         re += '<td class="guidecolor" style="background-color:'+ guide.color + ';"';
-        if(!sys){
+        if (!sys) {
             re += ' customguidetransparency="hideAllSatChoosers(); this.style.cursor=\'pointer\'; this.style.borderColor=\''+ guide.color + '\';"';
             re += ' onmouseout="this.style.borderColor=\'rgb(250,252,255)\';"';
             re += ' onclick="hideAllSatChoosers(); showGuideSatChooser(this, \''+id+'\');"';
@@ -78,7 +79,7 @@
         re += '</td>';
 
         re += '<td>';
-        if(guide.type === 'horizontal'){
+        if (guide.type === 'horizontal') {
             re += '<button '+(sys? 'disabled':'')+' class="guidetype" onclick="updateGuide(\''+id+'\', \'type\', \'vertical\');">&mdash;</button>';
         } else {
             re += '<button '+(sys? 'disabled':'')+' class="guidetype" onclick="updateGuide(\''+id+'\', \'type\', \'horizontal\');">|</button>';
@@ -93,7 +94,7 @@
         re += '<input '+(sys? 'disabled':'')+' type="number" id="'+id+'" class="guidelocation" value="' + round(guide.location, 3) + '" onchange="_UI.focusElement=this.id; updateGuide(\''+id+'\', \'location\', (1*this.value));"/>';
         re += '</td>';
 
-        if(!sys){
+        if (!sys) {
         re += '<td>';
         re += '<button class="guideremove" onclick="deleteGuide(\''+id+'\');">&times</button>';
         re += '</td>';
@@ -104,44 +105,44 @@
     }
 
     function updateGuide(id, key, value) {
-        var g = _GP.projectsettings.guides[id];
+        let g = _GP.projectsettings.guides[id];
         g[key] = value;
-        if(key === 'type'){
-            if(g.name === 'horizontal guide') g.name = 'vertical guide';
-            else if(g.name === 'vertical guide') g.name = 'horizontal guide';
+        if (key === 'type') {
+            if (g.name === 'horizontal guide') g.name = 'vertical guide';
+            else if (g.name === 'vertical guide') g.name = 'horizontal guide';
         }
-        redraw({calledBy:'updateGuide'});
+        redraw({calledBy: 'updateGuide'});
     }
 
     function deleteGuide(id) {
-        var g = _GP.projectsettings.guides[id];
+        let g = _GP.projectsettings.guides[id];
         showToast('Deleted ' + g.name);
 
         delete _GP.projectsettings.guides[id];
-        redraw({calledBy:'deleteGuide'});
+        redraw({calledBy: 'deleteGuide'});
     }
 
     function showGuideSatChooser(ctx, id) {
-        var sc = new SatChooser({clickCallback:function(args){
+        let sc = new SatChooser({clickCallback: function(args) {
             _GP.projectsettings.guides[id].color = args.colorstring;
-            redraw({calledBy:'SatChooser.callback'});
+            redraw({calledBy: 'SatChooser.callback'});
         }});
-        sc.show({elem:ctx});
+        sc.show({elem: ctx});
     }
 
     function hideAllSatChoosers() {
-        var scid = document.getElementById('satchooser');
-        while(scid) {
+        let scid = document.getElementById('satchooser');
+        while (scid) {
             scid.parentNode.removeChild(scid);
             scid = document.getElementById('satchooser');
         }
     }
 
     function newGuide() {
-        var g = _GP.projectsettings.guides;
-        var id = generateNewID(g, 'guide');
+        let g = _GP.projectsettings.guides;
+        let id = generateNewID(g, 'guide');
 
         g[id] = new Guide({});
 
-        redraw({calledBy:'newGuide'});
+        redraw({calledBy: 'newGuide'});
     }

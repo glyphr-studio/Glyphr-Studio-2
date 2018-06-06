@@ -13,20 +13,20 @@
 //    IMPORT FUNCTIONS
 //    -------------------------------
 
-    function importGlyphrProjectFromText(){
+    function importGlyphrProjectFromText() {
         // debug('\n importGlyphrProjectFromText - START');
 
-        var fcontent;
+        let fcontent;
         try {
             fcontent = JSON.parse(_UI.droppedFileContent);
-        } catch(e) {
+        } catch (e) {
             fcontent = {};
         }
 
-        var tempvn = false;
-        var v = false;
-        var ps = fcontent.projectsettings;
-        if(ps){
+        let tempvn = false;
+        let v = false;
+        let ps = fcontent.projectsettings;
+        if (ps) {
             tempvn = ps.versionnum;
             v = ps.version;
         }
@@ -34,38 +34,42 @@
 
 
         // Check for non Glyphr Project Files
-        if(!v) { error_NoVersionFound(); return; }
+        if (!v) {
+ error_NoVersionFound(); return;
+}
 
 
         // Give pre-Beta-3 accurate version
-        if(!tempvn) {
+        if (!tempvn) {
             tempvn = '0.3.0';
             ps.initialversionnum = '0.3.0';
         }
-        if(!ps.initialversionnum) ps.initialversionnum = tempvn;
+        if (!ps.initialversionnum) ps.initialversionnum = tempvn;
 
 
         // Start working with the project version number
         function parseVersionNum(vn) {
-            vn = vn.split(".");
+            vn = vn.split('.');
             return {
-                'major' : (vn[0]*1),
-                'minor' : (vn[1]*1),
-                'patch' : (vn[2]*1)
+                'major': (vn[0]*1),
+                'minor': (vn[1]*1),
+                'patch': (vn[2]*1),
             };
         }
 
-        var projvn = parseVersionNum(tempvn);
-        var currvn = parseVersionNum(_UI.thisGlyphrStudioVersionNum);
+        let projvn = parseVersionNum(tempvn);
+        let currvn = parseVersionNum(_UI.thisGlyphrStudioVersionNum);
         // debug("\t versionnum found " + tempvn);
 
 
         // Check for future versions
-        if(projvn.major > currvn.major){ error_TimeTraveller(); return; }
+        if (projvn.major > currvn.major) {
+ error_TimeTraveller(); return;
+}
 
 
         // Roll upgrades through Beta
-        if(projvn.major === 0) {
+        if (projvn.major === 0) {
             fcontent = migrate_betas_to_v1(fcontent, projvn.minor);
             projvn.major = 1;
             projvn.minor = 0;
@@ -74,13 +78,14 @@
 
 
         // Roll upgrades through v1
-        if(projvn.major === 1){
-
+        if (projvn.major === 1) {
             // Check for future versions
-            if(projvn.minor > currvn.minor){ error_TimeTraveller(); return; }
+            if (projvn.minor > currvn.minor) {
+ error_TimeTraveller(); return;
+}
 
             // Roll through minor versions
-            if(projvn.minor < 10){
+            if (projvn.minor < 10) {
                 fcontent.projectsettings.glyphrange.latinsupplement = fcontent.projectsettings.glyphrange.latinsuppliment;
                 delete fcontent.projectsettings.glyphrange.latinsuppliment;
             }
@@ -98,14 +103,14 @@
         // debug(' importGlyphrProjectFromText - END\n');
     }
 
-    function error_NoVersionFound(){
-        var msg = 'No version information was found.  Either the file is not a Glyphr Studio Project, or the file has non-valid JSON data.  Please try a different file...';
+    function error_NoVersionFound() {
+        let msg = 'No version information was found.  Either the file is not a Glyphr Studio Project, or the file has non-valid JSON data.  Please try a different file...';
         console.warn(msg);
         alert(msg);
     }
 
-    function error_TimeTraveller(){
-        var msg = 'Your Glyphr Project was created with a later version of Glyphr Studio.  This version of Glyphr Studio cannot open project files created in the future O_o (whoa).  Please go to glyphrstudio.com to get the latest release.';
+    function error_TimeTraveller() {
+        let msg = 'Your Glyphr Project was created with a later version of Glyphr Studio.  This version of Glyphr Studio cannot open project files created in the future O_o (whoa).  Please go to glyphrstudio.com to get the latest release.';
         console.warn(msg);
         alert(msg);
     }
@@ -114,12 +119,12 @@
 //    MIGRATE
 //    ------------------------
 
-    function migrate_betas_to_v1 (fcontent, minor) {
+    function migrate_betas_to_v1(fcontent, minor) {
         // debug('\n migrate_betas_to_v1 - START');
         // debug(fcontent);
         // Start rolling upgrades
 
-        switch (minor){
+        switch (minor) {
             case 3:
                 // debug("\t Minor Version === 3");
                 fcontent = migrate_0_3_to_0_4(fcontent);
@@ -141,7 +146,7 @@
         return fcontent;
     }
 
-    function migrate_0_5_to_1_0 (fc) {
+    function migrate_0_5_to_1_0(fc) {
         // debug('\n migrate_0_5_to_1_0 - START');
 
         // Update new top level objects
@@ -155,10 +160,11 @@
 
 
         // Upgrade Linked Shapes to full Glyphs
-        var com,sh,ui,gn;
-        for(var c in fc.components){ if(fc.components.hasOwnProperty(c)){
+        let com, sh, ui, gn;
+        for (let c in fc.components) {
+ if (fc.components.hasOwnProperty(c)) {
             com = fc.components[c];
-            if(com.shape){
+            if (com.shape) {
                 sh = [com.shape];
                 gn = com.shape.name || 'Shape';
             } else {
@@ -166,22 +172,26 @@
                 gn = 'Shape';
             }
             ui = com.usedin? com.usedin : [];
-            fc.components[c] = new Glyph({'shapes':sh, 'usedin':ui, 'name':gn, 'glyphhtml':''});
-        }}
+            fc.components[c] = new Glyph({'shapes': sh, 'usedin': ui, 'name': gn, 'glyphhtml': ''});
+        }
+}
         // debug('\t DONE ls > glyph');
 
 
         // Switch from Char to Glyph
         // Switch from Ligature to Glyph
         // Update Glyphs to use Components not Linked Shapes
-        for(var g in fc.glyphs){ if(fc.glyphs.hasOwnProperty(g)){
+        for (let g in fc.glyphs) {
+ if (fc.glyphs.hasOwnProperty(g)) {
             fc.glyphs[g] = charToGlyph(fc.glyphs[g]);
-        }}
+        }
+}
 
-        for(var l in fc.ligatures){ if(fc.ligatures.hasOwnProperty(l)){
+        for (let l in fc.ligatures) {
+ if (fc.ligatures.hasOwnProperty(l)) {
             fc.ligatures[l] = charToGlyph(fc.ligatures[l]);
-        }}
-
+        }
+}
 
 
         // debug(fc);
@@ -190,7 +200,7 @@
     }
 
     function charToGlyph(gl) {
-        var gshapes, dx, dy;
+        let gshapes, dx, dy;
         gl.shapes = gl.charshapes || [];
         gl.name = gl.charname || false;
         gl.glyphhtml = gl.charhtml || false;
@@ -202,16 +212,16 @@
 
         gshapes = gl.shapes;
         // debug('\t Glyph ' + gl.charname);
-        for(var s=0; s<gshapes.length; s++){
+        for (let s=0; s<gshapes.length; s++) {
             sh = gshapes[s];
-            if(sh.objtype === 'linkedshapeinstance'){
+            if (sh.objtype === 'linkedshapeinstance') {
                 dx = sh.uselinkedshapexy? 0 : sh.xpos;
                 dy = sh.uselinkedshapexy? 0 : sh.ypos;
-                gshapes[s] = new ComponentInstance({'name':sh.name, 'link':sh.link, 'translatex':dx, 'translatey':dy, 'xlock':sh.xlock, 'ylock':sh.ylock});
+                gshapes[s] = new ComponentInstance({'name': sh.name, 'link': sh.link, 'translatex': dx, 'translatey': dy, 'xlock': sh.xlock, 'ylock': sh.ylock});
             }
 
 
-            if(isval(gshapes[s].uselinkedshapexy)){
+            if (isval(gshapes[s].uselinkedshapexy)) {
                 // debug('\t\t shape ' + gshapes[s].name + ' uselsxy: ' + typeof gshapes[s].uselinkedshapexy + ' ' + gshapes[s].uselinkedshapexy);
                 gshapes[s].usecomponentxy = gshapes[s].uselinkedshapexy;
                 delete gshapes[s].uselinkedshapexy;
@@ -224,60 +234,61 @@
 
     function migrate_0_4_to_0_5(fc) {
         // debug('\n migrate_0_4_to_0_5 - START');
-        var tc;
+        let tc;
 
-        for(var i in fc.fontchars){ if(fc.fontchars.hasOwnProperty(i)){
+        for (let i in fc.fontchars) {
+ if (fc.fontchars.hasOwnProperty(i)) {
             tc = fc.fontchars[i];
             // debug("migrate_0_3_to_0_4 - fontchars " + i + " is " + tc);
             tc.charwidth = tc.advancewidth || fc.projectsettings.upm || 1000;
-        }}
+        }
+}
         // debug(fc);
         // debug(' migrate_0_4_to_0_5 - END\n');
         return fc;
     }
 
-    function migrate_0_3_to_0_4(fc){
+    function migrate_0_3_to_0_4(fc) {
         // debug('\n migrate_0_3_to_0_4 - START');
         newgp = new GlyphrProject();
 
-        var tls;
-        for(var l in fc.linkedshapes){
-            if(fc.linkedshapes.hasOwnProperty(l)){
+        let tls;
+        for (let l in fc.linkedshapes) {
+            if (fc.linkedshapes.hasOwnProperty(l)) {
                 tls = fc.linkedshapes[l];
-                //debug("migrate_0_3_to_0_4 - usedin before " + tls.usedin);
-                if(tls.usedin){
-                    for(var u=0; u<tls.usedin.length; u++){
+                // debug("migrate_0_3_to_0_4 - usedin before " + tls.usedin);
+                if (tls.usedin) {
+                    for (let u=0; u<tls.usedin.length; u++) {
                         tls.usedin[u] = decToHex(tls.usedin[u]);
                     }
-                    //debug("migrate_0_3_to_0_4 - usedin after " + tls.usedin);
+                    // debug("migrate_0_3_to_0_4 - usedin after " + tls.usedin);
                 }
             }
         }
 
-        var newps = newgp.projectsettings;
-        for(var e in fc.projectsettings){
-            if(newps.hasOwnProperty(e)){
+        let newps = newgp.projectsettings;
+        for (let e in fc.projectsettings) {
+            if (newps.hasOwnProperty(e)) {
                 newps[e] = fc.projectsettings[e];
             }
         }
         fc.projectsettings = newps;
 
-        var tc, hex;
-        for(var i=0; i<fc.fontchars.length; i++){
+        let tc, hex;
+        for (let i=0; i<fc.fontchars.length; i++) {
             tc = fc.fontchars[i];
-            //debug("migrate_0_3_to_0_4 - fontchars " + i + " is " + tc);
-            if(tc){
-                hex = "0x00"+tc.cmapcode.substr(2).toUpperCase();
+            // debug("migrate_0_3_to_0_4 - fontchars " + i + " is " + tc);
+            if (tc) {
+                hex = '0x00'+tc.cmapcode.substr(2).toUpperCase();
                 fc.fontchars[hex] = tc;
                 fc.fontchars[hex].charhtml = hexToHTML(hex);
-                //debug("migrate_0_3_to_0_4 - fc.fontchars[" + hex + "] is " + json(fc.fontchars[hex]));
+                // debug("migrate_0_3_to_0_4 - fc.fontchars[" + hex + "] is " + json(fc.fontchars[hex]));
             }
         }
         // debug(fc);
         // debug(' migrate_0_3_to_0_4 - END\n');
         return fc;
     }
-
 
 
 //    -------------------------------
@@ -296,9 +307,9 @@
         // Project Settings
         // merge settings to conform to current .projectsettings
         // but not guides, because they can be custom
-        var dataguides = clone(data.projectsettings.guides);
+        let dataguides = clone(data.projectsettings.guides);
 
-        if(data.projectsettings) {
+        if (data.projectsettings) {
             _GP.projectsettings = merge(_GP.projectsettings, data.projectsettings);
             _GP.projectsettings.glyphrange.custom = data.projectsettings.glyphrange.custom || [];
         }
@@ -314,7 +325,7 @@
 
 
         // Metadata
-        if(data.metadata) _GP.metadata = merge(_GP.metadata, data.metadata, true);
+        if (data.metadata) _GP.metadata = merge(_GP.metadata, data.metadata, true);
         // debug('\t finished merging metadata');
 
 
@@ -342,16 +353,16 @@
         // debug(_GP);
         // debug("hydrateGlyphrProject - END\n");
 
-        if(callback) callback();
-        if(!_UI.coremode) finalizeGlyphrProject();
-        //navigate();
+        if (callback) callback();
+        if (!_UI.coremode) finalizeGlyphrProject();
+        // navigate();
     }
 
 
     // Takes raw JSON objects, and initializes them as Glyphr Studio objects
     function hydrateGlyphrObjectList(glyphrobject, source, destination) {
-        for (var key in source) {
-            if(source.hasOwnProperty(key)){
+        for (let key in source) {
+            if (source.hasOwnProperty(key)) {
                 destination[key] = new glyphrobject(source[key]);
             }
         }
@@ -362,13 +373,13 @@
     // and an object to import, and overwites template values if
     // they exist in the imported object
     function merge(template, importing, trim) {
-        for(var a in template){
-            if(template.hasOwnProperty(a)){
-                if(typeof template[a] === 'object'){
-                    if(importing.hasOwnProperty(a)) template[a] = merge(template[a], importing[a]);
+        for (let a in template) {
+            if (template.hasOwnProperty(a)) {
+                if (typeof template[a] === 'object') {
+                    if (importing.hasOwnProperty(a)) template[a] = merge(template[a], importing[a]);
                 } else {
-                    if(importing.hasOwnProperty(a)){
-                        if(typeof importing[a] === 'string' && trim) template[a] = removeEmptyStringInputs(importing[a]);
+                    if (importing.hasOwnProperty(a)) {
+                        if (typeof importing[a] === 'string' && trim) template[a] = removeEmptyStringInputs(importing[a]);
                         else template[a] = importing[a];
                     }
                 }
@@ -379,9 +390,9 @@
     }
 
 
-    function newGlyphrProject(){
-        var fn;
-        if(document.getElementById('newprojectname') && document.getElementById('newprojectname').value){
+    function newGlyphrProject() {
+        let fn;
+        if (document.getElementById('newprojectname') && document.getElementById('newprojectname').value) {
             fn = document.getElementById('newprojectname').value;
         } else {
             fn = 'My Font';
@@ -392,8 +403,8 @@
         _GP.projectsettings.name = fn;
         _GP.metadata.font_family = fn.substr(0, 31);
 
-        _GP.projectsettings.version =  _UI.thisGlyphrStudioVersion;
-        _GP.projectsettings.versionnum =  _UI.thisGlyphrStudioVersionNum;
+        _GP.projectsettings.version = _UI.thisGlyphrStudioVersion;
+        _GP.projectsettings.versionnum = _UI.thisGlyphrStudioVersionNum;
         _GP.projectsettings.projectid = genProjectID();
 
         getGlyph('0x0020', true).isautowide = false;
@@ -401,10 +412,10 @@
         getGlyph('0x0041', true);
 
         finalizeGlyphrProject();
-        //navigate();
+        // navigate();
     }
 
-    function finalizeGlyphrProject(){
+    function finalizeGlyphrProject() {
         // debug("finalizeGlyphrProject \t START");
 
         // UI Defaults
@@ -416,31 +427,31 @@
         _UI.guides.leftGroupXMax = new Guide(_UI.guides.leftGroupXMax);
         _UI.guides.rightGroupXMin = new Guide(_UI.guides.rightGroupXMin);
 
-        var ps = _GP.projectsettings;
+        let ps = _GP.projectsettings;
 
-        ps.guides.ascent = ps.guides.ascent ||  new Guide({name:'ascent', type:'horizontal', location: ps.ascent, editable:false, color: ps.colors.guide_med});
-        ps.guides.capheight = ps.guides.capheight ||  new Guide({name:'capheight', type:'horizontal', location: ps.capheight, editable:false, color: ps.colors.guide_light});
-        ps.guides.xheight = ps.guides.xheight ||  new Guide({name:'xheight', type:'horizontal', location: ps.xheight, editable:false, color: ps.colors.guide_light});
-        ps.guides.baseline = ps.guides.baseline ||  new Guide({name:'baseline', type:'horizontal', location:0, editable:false, color: ps.colors.guide_dark});
-        ps.guides.descent = ps.guides.descent ||  new Guide({name:'descent', type:'horizontal', location:( ps.ascent- ps.upm), editable:false, color: ps.colors.guide_med});
-        ps.guides.leftside = ps.guides.leftside ||  new Guide({name:'leftside', type:'vertical', location: ps.defaultlsb*-1, editable:false, color: ps.colors.guide_dark});
-        ps.guides.rightside = ps.guides.rightside ||  new Guide({name:'rightside', type:'vertical', location: ps.upm, editable:false, color: ps.colors.guide_dark});
-        ps.guides.zero = ps.guides.zero ||  new Guide({name:'zero', type:'vertical', showname:false, location:0, editable:false, color: ps.colors.guide_med});
-        ps.guides.min = ps.guides.min ||  new Guide({name:'min', type:'vertical', showname:false, location: ps.upm, editable:false, color: ps.colors.guide_light});
-        ps.guides.max = ps.guides.max ||  new Guide({name:'max', type:'vertical', showname:false, location: ps.upm, editable:false, color: ps.colors.guide_light});
+        ps.guides.ascent = ps.guides.ascent || new Guide({name: 'ascent', type: 'horizontal', location: ps.ascent, editable: false, color: ps.colors.guide_med});
+        ps.guides.capheight = ps.guides.capheight || new Guide({name: 'capheight', type: 'horizontal', location: ps.capheight, editable: false, color: ps.colors.guide_light});
+        ps.guides.xheight = ps.guides.xheight || new Guide({name: 'xheight', type: 'horizontal', location: ps.xheight, editable: false, color: ps.colors.guide_light});
+        ps.guides.baseline = ps.guides.baseline || new Guide({name: 'baseline', type: 'horizontal', location: 0, editable: false, color: ps.colors.guide_dark});
+        ps.guides.descent = ps.guides.descent || new Guide({name: 'descent', type: 'horizontal', location: ( ps.ascent- ps.upm), editable: false, color: ps.colors.guide_med});
+        ps.guides.leftside = ps.guides.leftside || new Guide({name: 'leftside', type: 'vertical', location: ps.defaultlsb*-1, editable: false, color: ps.colors.guide_dark});
+        ps.guides.rightside = ps.guides.rightside || new Guide({name: 'rightside', type: 'vertical', location: ps.upm, editable: false, color: ps.colors.guide_dark});
+        ps.guides.zero = ps.guides.zero || new Guide({name: 'zero', type: 'vertical', showname: false, location: 0, editable: false, color: ps.colors.guide_med});
+        ps.guides.min = ps.guides.min || new Guide({name: 'min', type: 'vertical', showname: false, location: ps.upm, editable: false, color: ps.colors.guide_light});
+        ps.guides.max = ps.guides.max || new Guide({name: 'max', type: 'vertical', showname: false, location: ps.upm, editable: false, color: ps.colors.guide_light});
 
         _UI.selectedGlyph = _UI.selectedGlyph || getFirstGlyphID();
         _UI.selectedLigature = _UI.selectedLigature || getFirstID(_GP.ligatures);
         _UI.selectedComponent = _UI.selectedComponent || getFirstID(_GP.components);
         _UI.selectedKern = _UI.selectedKern || getFirstID(_GP.kerning);
 
-        var sp = getGlyph('0x0020', true);
-        if(!sp.isautowide && sp.glyphwidth === 0) sp.glyphwidth = Math.round(_GP.projectsettings.upm/3);
+        let sp = getGlyph('0x0020', true);
+        if (!sp.isautowide && sp.glyphwidth === 0) sp.glyphwidth = Math.round(_GP.projectsettings.upm/3);
 
         calculateDefaultView();
         resetThumbView();
 
-        _UI.currentPage = "glyph edit";
+        _UI.currentPage = 'glyph edit';
 
         // debug("finalizeGlyphrProject \t END\n");
     }

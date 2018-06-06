@@ -1,4 +1,4 @@
- 
+
 /**
     Panel > Chooser
     Shows a list of all the Glyphs to choose from
@@ -7,56 +7,53 @@
 **/
 
 
-    function makePanel_GlyphChooser(){
+    function makePanel_GlyphChooser() {
         // debug('\n makePanel_GlyphChooser - START');
 
-        var content = '<div class="navarea_header">';
+        let content = '<div class="navarea_header">';
         content += makePanelSuperTitle();
         content += '<h1 class="paneltitle">chooser</h1>';
         content += '</div>';
         content += '<div class="panel_section" id="glyphChooser">';
 
-        var gcp = _UI.glyphChooser.panel;
+        let gcp = _UI.glyphChooser.panel;
         // _UI.glyphChooser.cache = false;
 
-        if(_UI.currentPage === 'glyph edit'){
+        if (_UI.currentPage === 'glyph edit') {
             asyncLoadChooserPanel();
             // _UI.glyphChooser.cache = make_GlyphChooser(_UI.glyphChooser.panel);
-
-        } else if(_UI.currentPage === 'import svg'){
+        } else if (_UI.currentPage === 'import svg') {
             asyncLoadChooserPanel();
             // _UI.glyphChooser.cache = make_GlyphChooser(_UI.glyphChooser.panel);
-
-         } else if(_UI.currentPage === 'ligatures'){
-            var emptyligs = getLength(_GP.ligatures) === 0;
-            if(!emptyligs) {
+         } else if (_UI.currentPage === 'ligatures') {
+            let emptyligs = getLength(_GP.ligatures) === 0;
+            if (!emptyligs) {
                 content += make_GlyphChooser(gcp);
             }
             content += '<div class="panel_section" ';
             content += emptyligs? 'style="padding-top:-10px;">' : '>';
             content += '<button onclick="showNewLigatureDialog();">create new ligature</button><br>';
-            if(!emptyligs) content += '<button onclick="deleteLigatureConfirm();">delete selected ligature</button><br>';
+            if (!emptyligs) content += '<button onclick="deleteLigatureConfirm();">delete selected ligature</button><br>';
             else content += '<button onclick="addCommonLigatures();">add some common ligatures</button>';
             content += '</div>';
 
-            if(emptyligs){
+            if (emptyligs) {
                 content += '<div class="panel_section">';
                 content += '<h2>Please note!</h2><br>';
                 content += 'Ligatures will only be exported to SVG Fonts. This is a limitation of the library we use to write OTF files.<br><br>';
                 content += 'If you really need Ligatures in an OTF file, first export your project to an SVG Font, then use an online service to ';
-                content += 'convert your SVG Font to an OTF Font.'
+                content += 'convert your SVG Font to an OTF Font.';
                 content += '</div>';
             }
-
-        } else if(_UI.currentPage === 'components'){
-            var emptycoms = getLength(_GP.components) === 0;
-            if(!emptycoms) {
+        } else if (_UI.currentPage === 'components') {
+            let emptycoms = getLength(_GP.components) === 0;
+            if (!emptycoms) {
                 content += make_GlyphChooser(gcp);
             }
             content += '<div class="panel_section" ';
             content += emptycoms? 'style="padding-top:-10px;">' : '>';
             content += '<button onclick="createNewComponent();history_put(\'Create New Component\');navigate({panel:\'npAttributes\'});">create new component</button><br>';
-            if(!emptycoms) content += '<button onclick="deleteComponentConfirm();">delete selected component</button><br>';
+            if (!emptycoms) content += '<button onclick="deleteComponentConfirm();">delete selected component</button><br>';
             content += '</div>';
         }
 
@@ -69,11 +66,11 @@
     function asyncLoadChooserPanel() {
         // debug(' asyncLoadChooserPanel - START');
 
-        function tryLoadChooserPanel(){
-            var np = _UI.popOut? document.getElementById('popOut_glyphchooser') : document.getElementById('navarea_panel');
-            var gc = document.getElementById('glyphChooser');
+        function tryLoadChooserPanel() {
+            let np = _UI.popOut? document.getElementById('popOut_glyphchooser') : document.getElementById('navarea_panel');
+            let gc = document.getElementById('glyphChooser');
 
-            if(_UI.glyphChooser.cache && np && gc && gc.innerHTML === '') {
+            if (_UI.glyphChooser.cache && np && gc && gc.innerHTML === '') {
                 gc.innerHTML = _UI.glyphChooser.cache;
                 // debug(' tryLoadChooserPanel - SUCCESS\n');
             } else {
@@ -90,15 +87,15 @@
         // debug('\n make_GlyphChooser - START');
         // debug([gcdata]);
 
-        var con = '';
+        let con = '';
 
-        if( (gcdata.choices === 'all') ||
+        if ( (gcdata.choices === 'all') ||
             (_UI.currentPage === 'glyph edit' && pluralGlyphRange()) ||
             (_UI.currentPage === 'import svg' && (pluralGlyphRange() || getLength(_GP.components) || getLength(_GP.ligatures))) ) {
                 con += make_GlyphChooser_Header(gcdata.selected);
-        } 
+        }
 
-        if(_UI.glyphChooser.dropdown) con += make_GlyphChooser_DropDown(gcdata.choices);
+        if (_UI.glyphChooser.dropdown) con += make_GlyphChooser_DropDown(gcdata.choices);
         else con += make_GlyphChooser_Content(gcdata);
 
         // debug(' make_GlyphChooser - END\n');
@@ -108,10 +105,10 @@
     function toggle_GlyphChooser() {
         _UI.glyphChooser.dropdown = !_UI.glyphChooser.dropdown;
 
-        if(isBigDialogOpen()){
+        if (isBigDialogOpen()) {
             document.getElementById('bigDialogScrollContent').innerHTML = make_GlyphChooser(_UI.glyphChooser.dialog);
         } else {
-            redraw({calledBy:'toggle_GlyphChooser', redrawCanvas:false});
+            redraw({calledBy: 'toggle_GlyphChooser', redrawCanvas: false});
         }
     }
 
@@ -119,22 +116,19 @@
         // debug('\n update_GlyphChooser - START');
         // debug('\t passed ' + selrange);
 
-        if(isBigDialogOpen()){
-
+        if (isBigDialogOpen()) {
             _UI.glyphChooser.dialog.selected = selrange;
             toggle_GlyphChooser();
-
         } else {
-
             _UI.glyphChooser.panel.selected = selrange;
             _UI.glyphChooser.dropdown = !_UI.glyphChooser.dropdown;
 
-            if(selrange === 'glyphs') selrange = 'basiclatin';
+            if (selrange === 'glyphs') selrange = 'basiclatin';
 
-            if(!isNaN(parseInt(selrange))){
+            if (!isNaN(parseInt(selrange))) {
                 selectGlyph(_GP.projectsettings.glyphrange.custom[selrange].begin, true);
             } else {
-                switch(selrange){
+                switch (selrange) {
                     case 'basiclatin': selectGlyph('0x0041', true); break;
                     case 'latinsupplement': selectGlyph('0x00A0', true); break;
                     case 'latinextendeda': selectGlyph('0x0100', true); break;
@@ -155,9 +149,9 @@
         // debug('\n make_GlyphChooser_Header - START');
         // debug('\t passed selrange ' + selrange);
 
-        var content = '<div class="glyphChooser-header" onclick="toggle_GlyphChooser();">';
+        let content = '<div class="glyphChooser-header" onclick="toggle_GlyphChooser();">';
 
-        if(_UI.glyphChooser.dropdown){
+        if (_UI.glyphChooser.dropdown) {
             content += 'choose a glyph range';
             content += '<span>&#x2571;&#x2572;</span>';
             content += '</div>';
@@ -165,12 +159,12 @@
         }
 
 
-        if(selrange === 'glyphs') selrange = 'basiclatin';
+        if (selrange === 'glyphs') selrange = 'basiclatin';
 
-        if(!isNaN(parseInt(selrange))){
+        if (!isNaN(parseInt(selrange))) {
             content += 'Custom Range ' + (selrange+1);
-        } else if(selrange){
-            switch(selrange){
+        } else if (selrange) {
+            switch (selrange) {
                 case 'basiclatin': content += 'Basic Latin'; break;
                 case 'latinsupplement': content += 'Latin Supplement'; break;
                 case 'latinextendeda': content += 'Latin Extended-A'; break;
@@ -189,17 +183,17 @@
     }
 
     function make_GlyphChooser_DropDown(ch) {
-        var content = '<div class="glyphChooser-dropdown">';
-        var gr = _GP.projectsettings.glyphrange;
+        let content = '<div class="glyphChooser-dropdown">';
+        let gr = _GP.projectsettings.glyphrange;
 
-        if(ch === 'glyphs' || ch === 'all'){
-            if(gr.basiclatin) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'basiclatin\');">Basic Latin</button>';
-            if(gr.latinsupplement) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'latinsupplement\');">Latin Supplement</button>';
-            if(gr.latinextendeda) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'latinextendeda\');">Latin Extended-A</button>';
-            if(gr.latinextendedb) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'latinextendedb\');">Latin Extended-B</button>';
+        if (ch === 'glyphs' || ch === 'all') {
+            if (gr.basiclatin) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'basiclatin\');">Basic Latin</button>';
+            if (gr.latinsupplement) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'latinsupplement\');">Latin Supplement</button>';
+            if (gr.latinextendeda) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'latinextendeda\');">Latin Extended-A</button>';
+            if (gr.latinextendedb) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'latinextendedb\');">Latin Extended-B</button>';
 
-            if(gr.custom.length) content += '<div style="height:12px;"></div>';
-            for(var c=0; c<gr.custom.length; c++){
+            if (gr.custom.length) content += '<div style="height:12px;"></div>';
+            for (let c=0; c<gr.custom.length; c++) {
                 content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser('+c+');">';
                 content += 'Custom Range '+(c+1) + '&emsp;';
                 content += '<span class="units">' + gr.custom[c].begin + ' to ' + gr.custom[c].end + '</span>';
@@ -207,8 +201,8 @@
             }
         }
 
-        if(ch === 'components' || ch === 'all'){
-            if(getLength(_GP.components)){
+        if (ch === 'components' || ch === 'all') {
+            if (getLength(_GP.components)) {
                 content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'components\');">';
                 content += 'Components&emsp;';
                 content += '<span class="units">(' + getLength(_GP.components) + ')</span>';
@@ -216,8 +210,8 @@
             }
         }
 
-        if(ch === 'ligatures' || ch === 'all'){
-            if(getLength(_GP.ligatures)){
+        if (ch === 'ligatures' || ch === 'all') {
+            if (getLength(_GP.ligatures)) {
                 content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'ligatures\');">';
                 content += 'Ligatures&emsp;';
                 content += '<span class="units">(' + getLength(_GP.ligatures) + ')</span>';
@@ -230,13 +224,21 @@
 
     function pluralGlyphRange() {
         // debug('\n pluralGlyphRange - START');
-        var gr = _GP.projectsettings.glyphrange;
-        var count = gr.custom.length;
+        let gr = _GP.projectsettings.glyphrange;
+        let count = gr.custom.length;
 
-        if(gr.basiclatin) { count++; /*debug('\t triggered basiclatin');*/ }
-        if(gr.latinextendeda) { count++; /*debug('\t triggered latinextendeda');*/ }
-        if(gr.latinextendedb) { count++; /*debug('\t triggered latinextendedb');*/ }
-        if(gr.latinsupplement) { count++; /*debug('\t triggered latinsupplement');*/ }
+        if (gr.basiclatin) {
+ count++; /* debug('\t triggered basiclatin');*/
+}
+        if (gr.latinextendeda) {
+ count++; /* debug('\t triggered latinextendeda');*/
+}
+        if (gr.latinextendedb) {
+ count++; /* debug('\t triggered latinextendedb');*/
+}
+        if (gr.latinsupplement) {
+ count++; /* debug('\t triggered latinsupplement');*/
+}
 
         // debug(' pluralGlyphRange - END - returning ' + count + '\n');
         return count > 1;
@@ -246,53 +248,52 @@
         // debug('\n make_GlyphChooser_Content - START');
         // debug([gcdata]);
 
-        var fname = gcdata.fname || 'selectGlyph';
-        var sel = isval(gcdata.selected)? gcdata.selected : 'glyphs';
-        var selwi = getSelectedWorkItemID();
-        var re = '<div class="glyphChooser-content">';
+        let fname = gcdata.fname || 'selectGlyph';
+        let sel = isval(gcdata.selected)? gcdata.selected : 'glyphs';
+        let selwi = getSelectedWorkItemID();
+        let re = '<div class="glyphChooser-content">';
 
-        if(sel === 'basiclatin' || sel === 'glyphs'){
+        if (sel === 'basiclatin' || sel === 'glyphs') {
             // debug('\t triggered glyphs');
-            var bl = _UI.basiclatinorder;
-            for(var i=0; i<bl.length; i++){
+            let bl = _UI.basiclatinorder;
+            for (let i=0; i<bl.length; i++) {
                 re += make_GlyphChooser_Button(bl[i], fname, selwi);
             }
             return re + '</div>';
         }
 
-        if(sel === 'latinsupplement'){
+        if (sel === 'latinsupplement') {
             // debug('\t triggered latinsupplement');
-            for(var s=_UI.glyphrange.latinsupplement.begin; s<=_UI.glyphrange.latinsupplement.end; s++){
+            for (let s=_UI.glyphrange.latinsupplement.begin; s<=_UI.glyphrange.latinsupplement.end; s++) {
                 re += make_GlyphChooser_Button(decToHex(s), fname, selwi);
             }
             return re + '</div>';
         }
 
-        if(sel === 'latinextendeda'){
+        if (sel === 'latinextendeda') {
             // debug('\t triggered latinextendeda');
-            for(var a=_UI.glyphrange.latinextendeda.begin; a<=_UI.glyphrange.latinextendeda.end; a++){
+            for (let a=_UI.glyphrange.latinextendeda.begin; a<=_UI.glyphrange.latinextendeda.end; a++) {
                 re += make_GlyphChooser_Button(decToHex(a), fname, selwi);
             }
             return re + '</div>';
-
         }
 
-        if(sel === 'latinextendedb'){
+        if (sel === 'latinextendedb') {
             // debug('\t triggered latinextendedb');
-            for(var b=_UI.glyphrange.latinextendedb.begin; b<=_UI.glyphrange.latinextendedb.end; b++){
+            for (let b=_UI.glyphrange.latinextendedb.begin; b<=_UI.glyphrange.latinextendedb.end; b++) {
                 re += make_GlyphChooser_Button(decToHex(b), fname, selwi);
             }
             return re + '</div>';
         }
 
-        var cr = _GP.projectsettings.glyphrange;
-        var c = parseInt(sel);
-        if(!isNaN(c)){
+        let cr = _GP.projectsettings.glyphrange;
+        let c = parseInt(sel);
+        if (!isNaN(c)) {
             // debug('\t triggered custom range');
-            for(var range=cr.custom[c].begin; range<=cr.custom[c].end; range++){
+            for (let range=cr.custom[c].begin; range<=cr.custom[c].end; range++) {
                 cn = decToHex(range);
-                if(_GP.projectsettings.glyphrange.filternoncharpoints){
-                    if(getUnicodeName(cn) !== '[name not found]') re += make_GlyphChooser_Button(cn, fname, selwi);
+                if (_GP.projectsettings.glyphrange.filternoncharpoints) {
+                    if (getUnicodeName(cn) !== '[name not found]') re += make_GlyphChooser_Button(cn, fname, selwi);
                 } else {
                     re += make_GlyphChooser_Button(cn, fname, selwi);
                 }
@@ -300,20 +301,24 @@
             return re + '</div>';
         }
 
-        if(sel === 'ligatures' && getFirstID(_GP.ligatures)){
+        if (sel === 'ligatures' && getFirstID(_GP.ligatures)) {
             sortLigatures();
-            var lig = _GP.ligatures;
-            for(var l in lig){ if(lig.hasOwnProperty(l)){
-                re += make_GlyphChooser_Button(l, fname, selwi) ;
-            }}
+            let lig = _GP.ligatures;
+            for (let l in lig) {
+ if (lig.hasOwnProperty(l)) {
+                re += make_GlyphChooser_Button(l, fname, selwi);
+            }
+}
             return re + '</div>';
         }
 
-        if(sel === 'components' && getFirstID(_GP.components)){
-            var com = _GP.components;
-            for(var d in com){ if(com.hasOwnProperty(d)){
-                re += make_GlyphChooser_Button(d, fname, selwi) ;
-            }}
+        if (sel === 'components' && getFirstID(_GP.components)) {
+            let com = _GP.components;
+            for (let d in com) {
+ if (com.hasOwnProperty(d)) {
+                re += make_GlyphChooser_Button(d, fname, selwi);
+            }
+}
             return re + '</div>';
         }
 
@@ -321,34 +326,39 @@
         return '[error: make_GlyphChooser_HeaderContent]';
     }
 
-    function make_GlyphChooser_Button(index, fname, selid){
+    function make_GlyphChooser_Button(index, fname, selid) {
         // debug('\n make_GlyphChooser_Button - START ' + index);
-        var onc = (fname + '(\'' + index + '\');');
+        let onc = (fname + '(\'' + index + '\');');
         // debug('\t constructed function: ' + onc);
 
-        var wi = getGlyph(index);
+        let wi = getGlyph(index);
         // debug('\t getGlyph returned');
         // debug(wi);
-        
-        var gname = wi.name;
-        if(gname === '[name not found]' || !gname) gname = getGlyphName(index);
-        
-        var rv = '<div class="glyphselect" onclick="'+onc+'" title="'+gname+'&#13;'+index+'">';
 
-        var issel = (index === selid);
+        let gname = wi.name;
+        if (gname === '[name not found]' || !gname) gname = getGlyphName(index);
 
-        if(wi && wi.hasShapes()) {
-            var extra = '';
-            if(issel) {extra = ' glyphselectthumbsel';}
+        let rv = '<div class="glyphselect" onclick="'+onc+'" title="'+gname+'&#13;'+index+'">';
+
+        let issel = (index === selid);
+
+        if (wi && wi.hasShapes()) {
+            let extra = '';
+            if (issel) {
+extra = ' glyphselectthumbsel';
+}
             rv += '<div class="glyphselectthumb'+extra+'">'+wi.makeSVG()+'</div>';
         } else {
-            if(issel) {rv += '<div class="glyphselectbuttonsel"';}
-            else {rv += '<div class="glyphselectbutton"';}
+            if (issel) {
+rv += '<div class="glyphselectbuttonsel"';
+} else {
+rv += '<div class="glyphselectbutton"';
+}
 
-            if(index === '0x0020'){
-                rv += ' style="font-size:13px; line-height:3.8em;">space';    // SPACE needs to be smaller font size
-            } else if (index.indexOf('0x') === -1){
-                rv += ' style="font-size:8px;"><div style="height:10px;"></div>';    // Component names needs to be smaller font size
+            if (index === '0x0020') {
+                rv += ' style="font-size:13px; line-height:3.8em;">space'; // SPACE needs to be smaller font size
+            } else if (index.indexOf('0x') === -1) {
+                rv += ' style="font-size:8px;"><div style="height:10px;"></div>'; // Component names needs to be smaller font size
                 rv += gname;
             } else {
                 rv += '>';

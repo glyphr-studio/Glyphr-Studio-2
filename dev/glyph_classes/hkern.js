@@ -1,12 +1,12 @@
- 
+
 /**
     Horizontal Kern
-    An object for storing two groups of glyphs, and 
+    An object for storing two groups of glyphs, and
     the kern value that applies to them.
 **/
 
 
-    function HKern (oa) {
+    function HKern(oa) {
         this.objtype = 'hkern';
 
         this.leftgroup = oa.leftgroup || [];
@@ -17,13 +17,13 @@
     }
 
     HKern.prototype.getName = function() {
-        var left = hexToChars(this.leftgroup.join(''));
-        var right = hexToChars(this.rightgroup.join(''));
+        let left = hexToChars(this.leftgroup.join(''));
+        let right = hexToChars(this.rightgroup.join(''));
         return '' + left + ' | ' + right;
     };
 
     function getSelectedKern() {
-        var re = _GP.kerning[_UI.selectedKern];
+        let re = _GP.kerning[_UI.selectedKern];
         return re || _GP.kerning[getFirstID(_GP.kerning)] || false;
     }
 
