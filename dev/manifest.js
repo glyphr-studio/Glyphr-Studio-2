@@ -111,7 +111,7 @@ const manifest = [
         path: 'lib',
         files: [
             'satchooser.js',
-            'opentypejs_0-6-0.js',
+            'opentypejs_0-8-0.js',
             'samples.js',
             'unicode_names.js',
             'xml_to_json.js',
