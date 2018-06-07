@@ -1,5 +1,5 @@
 # set text files to use lf
-* text eol=LF
+* text=auto
 
 # Custom for Visual Studio
 *.cs    diff=csharp
