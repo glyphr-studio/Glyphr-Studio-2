@@ -1,5 +1,5 @@
-# Auto detect text files and perform LF normalization
-* text=auto
+# set text files to use lf
+* text eol=LF
 
 # Custom for Visual Studio
 *.cs    diff=csharp
@@ -19,4 +19,4 @@
 *.pdf  diff=astextplain
 *.PDF     diff=astextplain
 *.rtf     diff=astextplain
-*.RTF     diff=astextplain
+*.RTF diff=astextplain
