@@ -34,7 +34,7 @@ _FN.glyphrStudioOnLoad = function() {
             importGlyphrProjectFromText();
             _UI.dev_sampleProject = false;
         } else {
-            newGlyphrProject();
+            newGlyphrStudioProject();
         }
 
         if (_UI.dev_currentPage === 'import svg') {
@@ -138,27 +138,47 @@ _FN.insertGlobalDOMElements = function() {
 /**
  * Assemble adds .js and .css file references to the current HTML doc
  * @param {array} manifest - collection of paths and files to add
+ * @param {boolean} loadTests - optionally load test files
+ * @param {function} callback - function to run after assembly
  *  manifest.js is found in the root of the dev directory
  */
-_FN.assemble = function(manifest = []) {
+_FN.assemble = function(manifest = [], loadTests = false, callback = new function() {}) {
+    let tests = [];
+    let newElement;
+
     manifest.forEach((directory) => {
         directory.files.forEach((file) => {
             let suffix = file.split('.')[1];
-            let newElement;
 
-            if (suffix === 'js') {
+            // console.log(`loading file ${file} with suffix ${suffix}`);
+
+            if (suffix === 'js' || suffix === 'map') {
                 newElement = document.createElement('script');
-                newElement.setAttribute('src', '' + directory.path + '/' + file);
+                newElement.setAttribute('src', `${directory.path}/${file}`);
                 document.getElementsByTagName('head')[0].appendChild(newElement);
             } else if (suffix === 'css') {
                 newElement = document.createElement('link');
                 newElement.setAttribute('rel', 'stylesheet');
                 newElement.setAttribute('type', 'text/css');
-                newElement.setAttribute('href', '' + directory.path + '/' + file);
+                newElement.setAttribute('href', `${directory.path}/${file}`);
                 document.getElementsByTagName('head')[0].appendChild(newElement);
+            } else if (suffix === 'test') {
+                if (loadTests) {
+                    tests.push(`${directory.path}/${file}`);
+                }
             } else {
                 console.warn(`Assemble - unhandled file type ${suffix}`);
             }
         });
     });
+
+    if (loadTests) {
+        tests.forEach((element) => {
+            newElement = document.createElement('script');
+            newElement.setAttribute('src', element);
+            document.getElementsByTagName('head')[0].appendChild(newElement);
+        });
+    }
+
+    window.setTimeout(callback, 10);
 };

@@ -76,7 +76,7 @@
         con += '<div class="openproject_tile" id="new_content" style="display: none;">'+
                     '<h2>Start a new Glyphr Studio Project</h2>'+
                     'Project name: &nbsp; <input id="newprojectname" type="text" value="My Font" autofocus/><br>'+
-                    '<button onclick="newGlyphrProject(); navigate({page:\'glyph edit\'});" class="buttonsel">Start a new font from scratch</button>'+
+                    '<button onclick="newGlyphrStudioProject(); navigate({page:\'glyph edit\'});" class="buttonsel">Start a new font from scratch</button>'+
                 '</div>';
 
         // EXAMPLES
@@ -225,7 +225,7 @@
         document.getElementById('examples_content').innerHTML = '<h2>Load an Example project</h2>Loading example project...';
 
         setTimeout(function() {
-            hydrateGlyphrProject(_UI.sampleproject[name]);
+            loadGlyphrStudioProject(_UI.sampleproject[name]);
             navigate({page: 'glyph edit'});
         }, 5);
     }

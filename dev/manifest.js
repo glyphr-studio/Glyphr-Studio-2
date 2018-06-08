@@ -9,14 +9,6 @@
 
 const manifest = [
     {
-        path: 'app',
-        files: [
-            'settings.js',
-            'functions.js',
-        ],
-    },
-
-    {
         path: 'glyph_classes',
         files: [
             'pathpoint.js',
@@ -31,6 +23,30 @@ const manifest = [
     },
 
     {
+        path: 'app',
+        files: [
+            'global.css',
+            'colors.css',
+            'settings.js',
+            'functions.js',
+            'nav.js',
+            'history.js',
+            'unicode.js',
+            'test.test.js',
+        ],
+    },
+
+    {
+        path: 'project',
+        files: [
+            'glyphrstudioproject.js',
+            'glyphrstudioproject.test.js',
+            'project_functions.js',
+            'project_import.js',
+        ],
+    },
+
+    {
         path: 'edit_canvas',
         files: [
             'edit_canvas.js',
@@ -39,18 +55,7 @@ const manifest = [
             'events_keyboard.js',
             'guide.js',
             'multiselect.js',
-        ],
-    },
-
-    {
-        path: 'framework',
-        files: [
-            'nav.js',
-            'history.js',
             'glyph_sequence.js',
-            'unicode.js',
-            'glyphrproject.js',
-            'glyphr_studio_project_import.js',
         ],
     },
 
@@ -111,10 +116,10 @@ const manifest = [
         path: 'lib',
         files: [
             'satchooser.js',
-            'opentypejs_0-8-0.js',
             'samples.js',
             'unicode_names.js',
             'xml_to_json.js',
+            'opentypejs_0-8-0.js',
         ],
     },
 ];

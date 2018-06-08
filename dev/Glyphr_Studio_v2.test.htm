@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<!--
+    Copyright (C) 2010 - 2018 Matthew LaGrandeur
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<head>
+
+<title>~~Glyphr Studio V2 Test~~</title>
+
+<meta charset="utf-8">
+
+<link rel="icon" type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUhJREFUeNpiZACBVQ8NgGQ9EDsAsQADfvABiA8AcSNDmPwFRqjm/egaDQTYgJgVzL7w4TcQ/8JmkCML1GYBZI3zTYXANDIAGZB4+h2yQSA99SAXvIcZoMDNwnDeVQIsW3jhPcOGp9/B7ABpToZ+A0Ew23D3C4YHX//AXcGEbHu9Fj9c0YIHXxk+/P4HxiA2SAxZDcwVTMg8kE0gxUg2wAFIDCQHUoMMUAwQYGVi+Ai0ERcAyYHU4DQA5Fx9fjacBmCTQzFg4u3PYCeutxIF0yDbQBhZDB2wIHMarn4E0/mqvBiKQa4DRSF69KIY8D9UDkwzrn7E4CDKgaLwwOsfDA3a/PgNANkCiwGQBmxh8AEtkJmgSRIeBiAbQP5FdgGIDQsDkBpkO1mgGSOAmDBovPYRrgbmM5yZCWQrcmbC4iVwZmKkNDsDBBgAPeaW5sdU9+kAAAAASUVORK5CYII=" />
+
+<script src="manifest.js"></script>
+<script src="app/main.js"></script>
+<script>
+    let _TEST = {
+        testList: [],
+        globals: {},
+        categories: {},
+        succeeded: 0,
+        failed: 0,
+        didNotRun: 0,
+        autoRun: true
+    };
+
+    let resultIcons = {
+        pass: 2714,
+        fail: 2716,
+        didNotRun: 2718
+    };
+
+    function loadTests() {
+        _FN.assemble(manifest, true, afterLoadTests);
+    }
+
+    function afterLoadTests() {
+        let header = document.querySelector('#header');
+        let results = document.querySelector('#results');
+
+        _TEST.testList.forEach(element => {
+            if(_TEST.categories.hasOwnProperty(element.category)){
+                _TEST.categories[element.category]++;
+            } else {
+                _TEST.categories[element.category] = 1;
+                results.innerHTML += `<div class="resultSection" id="${getResultSectionID(element.category)}"><h2>${element.category}</h2></div>`;
+            }
+
+            _TEST.total++;
+        });
+
+        header.innerHTML = '';
+
+        for(let key in _TEST.categories){
+            if(_TEST.categories.hasOwnProperty(key)){
+                header.innerHTML += `<span class="category">${key} : ${_TEST.categories[key]}</span>`;
+            }
+        }
+
+        if(_TEST.autoRun) window.setTimeout(runTests, 100);
+        else header.innerHTML += `<br><br><button onclick="runTests();">Run Tests</button>`;
+    }
+
+    function getResultSectionID(category) {
+        return 'resultSection' + category.split(' ').join('_');
+    }
+
+    function runTests() {
+        let currTest = 0;
+
+        function runNextTest() {
+            if(currTest === _TEST.testList.length){
+                finishTests();
+                return;
+            }
+
+            let result;
+            let currResultSection = document.querySelector(`#${getResultSectionID(_TEST.testList[currTest].category)}`);
+
+            try {
+                result = _TEST.testList[currTest].assertion();
+                currResultSection.innerHTML += addTestResult(result, _TEST.testList[currTest].name);
+                if(result) _TEST.succeeded++;
+                else _TEST.failed++;
+
+            } catch (error) {
+                currResultSection.innerHTML += addTestResult(error, _TEST.testList[currTest].name);
+                _TEST.didNotRun++;
+            }
+
+            currTest++;
+
+            window.setTimeout(runNextTest, 100);
+        }
+
+        window.setTimeout(runNextTest, 100);
+    }
+
+    function addTestResult(result, title) {
+        let resultClass;
+
+        if(result === true) resultClass = 'pass';
+        else if(result === false) resultClass = 'fail';
+        else resultClass = 'didNotRun';
+
+        return `<span class="testResult ${resultClass}" title="${result.message || result}">
+            <span class="icon">&#x${resultIcons[resultClass]};</span>
+            ${title}
+        </span>`;
+    }
+
+    function finishTests() {
+        document.querySelector('#header').innerHTML = `
+            <div class="testSummary fail">
+                <span class="count">${_TEST.failed}</span>
+                <span class="title">Failed</span>
+            </div>
+            <div class="testSummary didNotRun">
+                <span class="count">${_TEST.didNotRun}</span>
+                <span class="title">Did not run</span>
+            </div>
+            <div class="testSummary pass">
+                <span class="count">${_TEST.succeeded}</span>
+                <span class="title">Passed</span>
+            </div>
+        `;
+    }
+</script>
+
+<style>
+    * {
+        margin:0px;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-weight: normal;
+    }
+
+    body {
+        margin: 20px;
+    }
+
+    #header,
+    .resultSection {
+        padding-bottom:20px;
+        border-bottom: 1px solid lightgray;
+    }
+
+    #header {
+        min-height: 100px;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        color:rgb(37, 48, 63);
+    }
+
+    h2 {
+        margin-top:10px;
+        margin-bottom:10px;
+        color:rgb(37, 48, 63);
+        opacity: 0.8;
+    }
+
+    button {
+        background-color: #00388d;
+        color:white;
+        font-size: 14px;
+        padding:2px 10px 4px 10px;
+        cursor: pointer;
+        border: 0px;
+        border-radius: 3px;
+        opacity: 0.8;
+    }
+
+    button:hover {
+        opacity: 1;
+    }
+
+    .category {
+        padding: 2px 16px 4px 16px;
+        background-color: #EEF9FF;
+        border-color: #D7E8F2;
+        color: #223E66;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 16px;
+        margin:0px 10px 4px 0px;
+        display: inline-block;
+    }
+
+    .testResult {
+        padding: 2px 16px 4px 6px;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 3px;
+        margin:0px 10px 10px 0px;
+        display: inline-block;
+        cursor: default;
+    }
+
+    .pass {
+        background-color: #FDFFFE;
+        border-color: #DCF4DE;
+        color: #83B583;
+    }
+
+    .fail {
+        background-color: #FFF7F3;
+        border-color: #FFA18F;
+        color: #EA1606;
+    }
+
+    .didNotRun {
+        background-color: #FFFCFA;
+        border-color: #F9A170;
+        color: #E06000;
+    }
+
+    .didNotRun .icon {
+        padding:0px 1px 2px 1px;
+        height:14px;
+        width:14px;
+    }
+
+    .testResult .icon {
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 100%;
+        height: 16px;
+        width: 16px;
+        text-align: center;
+        vertical-align: middle;
+        display: inline-block;
+        font-size: 12px;
+        position: relative;
+        top:-2px;
+        margin-right: 4px;
+    }
+
+    .testSummary {
+        display: inline-block;
+        margin:0px 10px 0px 0px;
+        padding:0px 10px 5px 10px;
+        border-radius: 4px;
+        border-style: solid;
+        border-width: 1px;
+    }
+
+    .testSummary .count {
+        font-size: 2em;
+        display: block;
+    }
+</style>
+</head>
+
+<body onload="loadTests();">
+
+    <h1>Glyphr Studio v2 Tests</h1>
+
+    <div id="header">
+        Loading tests...
+    </div>
+    <div id="results">
+
+    </div>
+
+</body>
+</html>

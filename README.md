@@ -1,17 +1,19 @@
 # Glyphr Studio v2!
  V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010, so it's time to do an all-up scrub.
- 
+
 ## What's changing
 * Convert our JavaScript to use ES6 stuff
   * Change prototypes to classes
   * Let / Const instead of Var
-  * Template strings instead of string concatenation 
+  * Template strings instead of string concatenation
   * Probably more...
 * Lint everything with ESLint, Google style
 * JSDoc *all the things*
 * CSS3, mostly for Variables and Layout
 * New test framework and tests for all our code
 * Dev and Prod environments that make it easy to keep code separate and testable, but also concatenate-able and minimize-able.
+* Minimize global variables
+* Investigation - HTML Templates for UI Controls
 
 ## What's not changing
 So, here at Glyphr Studio, we've always had a very strong DIY attitude - this means:
@@ -20,7 +22,7 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
   * This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js
 
 ## Timeline
-Let's call it v2-alpha while things are being refactored.  This will probably extend through the summer of 2018.  V2 will be released in beta side-by-side with V1.  And, despite the new major version number, V2 will accept project files created with V1 (backwards compatible). 
+Let's call it v2-alpha while things are being refactored.  This will probably extend through the summer of 2018.  V2 will be released in beta side-by-side with V1.  And, despite the new major version number, V2 will accept project files created with V1 (backwards compatible).
 
 
 ## License

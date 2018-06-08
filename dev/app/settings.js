@@ -3,7 +3,7 @@
  * This is the global variable that stores all the stuff
  * the UI needs to operate.
  */
-let _UI = {
+_UI = {
 
     // Version
     thisGlyphrStudioVersion: 'Version 2 alpha',

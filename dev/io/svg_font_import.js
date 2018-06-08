@@ -31,7 +31,7 @@
         function setupFontImport() {
             // debug('\n setupFontImport - START');
             importStatus('Reading font data...');
-            _GP = new GlyphrProject();
+            _GP = new GlyphrStudioProject();
 
             try {
                 // Get Font
@@ -311,7 +311,7 @@
             md.overline_thickness = 1*fatt['overline-thickness'] || 10;
 
             // Finish Up
-            finalizeGlyphrProject();
+            finalizeUI();
             closeDialog();
 
             // debug(' ioSVG_importSVGfont - END\n');

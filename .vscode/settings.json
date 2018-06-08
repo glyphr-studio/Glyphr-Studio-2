@@ -1,5 +1,4 @@
 {
-    "files.eol": "\n",
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
     "search.exclude": {
@@ -14,5 +13,6 @@
         ".eslintrc.json": true,
         ".gitattributes": true,
         ".gitignore": true
-    }
+    },
+    "cSpell.enabled": false
 }

@@ -30,7 +30,7 @@
 
         function setupFontImport() {
             importStatus('Reading font data...');
-            _GP = new GlyphrProject();
+            _GP = new GlyphrStudioProject();
 
             try {
                 // Get Font
@@ -328,8 +328,8 @@
             // md.overline_thickness = 1*font.overlinethickness || 10;
 
             // Finish Up
-            // debug('\t calling finalizeGlyphrProject');
-            finalizeGlyphrProject();
+            // debug('\t calling finalizeUI');
+            finalizeUI();
             closeDialog();
             // debug(' finalizeFontImport - END\n');
             navigate();
