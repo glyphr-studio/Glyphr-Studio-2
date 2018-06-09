@@ -51,10 +51,13 @@ function makeSuperTitleSeperator() {
 }
 
 
-// -------------------
-// Debug
-// -------------------
-
+/* exported debug */
+/**
+ * Wrapper for console.log that does some extra fancy stuff, and
+ * also adheres to a global switch in settings
+ * @param {string} message - message to show in the console
+ * @param {boolean} force - show message even if _UI.devmode = false
+ */
 function debug(message, force) {
     if (!_UI.devMode) return;
 
@@ -85,6 +88,14 @@ function debug(message, force) {
     }
 }
 
+
+/**
+ * Wrapper for JSON.stringify that does pretty
+ * formatting by default
+ * @param {object} obj - object to stringify
+ * @param {boolean} raw - true = don't format
+ * @return {string}
+ */
 function json(obj, raw) {
     obj = clone(obj);
     if (raw) return JSON.stringify(obj);
@@ -99,6 +110,13 @@ function json(obj, raw) {
 // --------------------------------------
 // Dialog Box, Error Box, Notation
 // --------------------------------------
+/* exported closeDialog, openDialog, openBigDialog, isBigDialogOpen,
+openNotation, closeNotation, makeErrorMessageBox, showErrorMessageBox,
+closeErrorMessageBox, toggleDialogExportOptions, showToast */
+
+/**
+ * Closes any type of dialog box that may be open
+ */
 function closeDialog() {
     if (!_UI.popOut && document.getElementById('npSave')) document.getElementById('npSave').style.backgroundColor = 'transparent';
     document.getElementById('dialog_bg').style.display='none';
@@ -112,6 +130,10 @@ function closeDialog() {
     // document.body.focus();
 }
 
+/**
+ * Creates and shows a standard dialog box
+ * @param {string} content - HTML content of the dialog box
+ */
 function openDialog(content) {
     closeDialog();
     document.body.focus();
@@ -125,6 +147,11 @@ function openDialog(content) {
     document.getElementById('dialog_bg').style.display='block';
 }
 
+/**
+ * Creates and shows a full height dialog box along the left
+ * side of the screen
+ * @param {string} content - HTML content of the dialog box
+ */
 function openBigDialog(content) {
     closeDialog();
     document.body.focus();
@@ -135,10 +162,21 @@ function openBigDialog(content) {
     document.getElementById('dialog_bg').style.display='block';
 }
 
+/**
+ * Returns true if the big dialog box is open
+ * @return {boolean}
+ */
 function isBigDialogOpen() {
     return document.getElementById('big_dialog_box').style.display === 'block';
 }
 
+/**
+ * Creates and shows a small dialog box at a certain
+ * screen x,y possiiton
+ * @param {string} content - HTML content of the dialog box
+ * @param {number} x - screen x location
+ * @param {number} y - screen y location
+ */
 function openNotation(content, x, y) {
     getEditDocument().body.focus();
     let n = getEditDocument().getElementById('notation');
@@ -148,13 +186,20 @@ function openNotation(content, x, y) {
     n.style.display='block';
 }
 
+/**
+ * Closes any notation dialog boxes
+ */
 function closeNotation() {
     getEditDocument().getElementById('notation').style.display='none';
     getEditDocument().getElementById('notation').innerHTML = '&#x20E2;';
     getEditDocument().body.focus();
 }
 
-function toggleDialog_ExportOptions() {
+/**
+ * Toggles open/closed the small flyout off the save button
+ * asking which format to export
+ */
+function toggleDialogExportOptions() {
     let sff = document.getElementById('saveFormatFlyout');
     let nps = document.getElementById('npSave');
 
@@ -166,6 +211,10 @@ function toggleDialog_ExportOptions() {
     }
 }
 
+/**
+ * Creates (but does not show) a small error message box
+ * @return {string} - HTML content
+ */
 function makeErrorMessageBox() {
     let con ='<div id="errormessagebox" style="display:none;">' +
     '<table cellpadding=0 cellspacing=0 border=0><tr>' +
@@ -177,6 +226,10 @@ function makeErrorMessageBox() {
     return con;
 }
 
+/**
+ * Shows the error message box
+ * @param {string} msg - HTML content of the dialog box
+ */
 function showErrorMessageBox(msg) {
     let msgcon = document.getElementById('errormessagecontent');
     let msgbox = document.getElementById('errormessagebox');
@@ -185,11 +238,21 @@ function showErrorMessageBox(msg) {
     console.warn(msg);
 }
 
+/**
+ * Closes the error message box
+ */
 function closeErrorMessageBox() {
     document.getElementById('errormessagecontent').innerHTML = '';
     document.getElementById('errormessagebox').style.display = 'none';
 }
 
+/**
+ * Creates and shows a little message at the top/center
+ * of the screen, which dissapears after a set time
+ * @param {string} msg - message to show
+ * @param {number} dur - how long to show the message (milliseconds)
+ * @param {function} fn - function to call after message is shown
+ */
 function showToast(msg, dur, fn) {
     // debug('\n showToast - START');
     let step = -1;
@@ -219,6 +282,7 @@ function showToast(msg, dur, fn) {
     let curropacity = 0;
     let finalopacity = 1;
 
+    /** start to dissapear */
     function appearFinish() {
         // debug('\t appearFinish');
         currtop = finaltop;
@@ -231,6 +295,7 @@ function showToast(msg, dur, fn) {
         setToastTimeout(disappearStep, durration);
     }
 
+    /** animate appearance */
     function appearStep() {
         // debug('\t appearStep ' + step);
 
@@ -257,6 +322,7 @@ function showToast(msg, dur, fn) {
         }
     }
 
+    /** animate dissapearance */
     function disappearStep() {
         // debug('\t appearStep ' + step);
         if (step < 0) {
@@ -280,13 +346,19 @@ function showToast(msg, dur, fn) {
         }
     }
 
+    /**
+     * Common function for appear and dissapear to
+     * call while looping through animations.
+     * @param {function} fn - function to call
+     * @param {number} dur - durration (milliseconds)
+     */
+    function setToastTimeout(fn, dur) {
+        if (_UI.toastTimeout) clearTimeout(_UI.toastTimeout);
+        _UI.toastTimeout = setTimeout(fn, dur);
+    }
+
     setToastTimeout(appearStep, 1);
     // debug(' showToast - END\n');
-}
-
-function setToastTimeout(fn, dur) {
-    if (_UI.toastTimeout) clearTimeout(_UI.toastTimeout);
-    _UI.toastTimeout = setTimeout(fn, dur);
 }
 
 
@@ -334,7 +406,7 @@ function updateSaveIcon() {
         '<button class="primarynavbutton" style="height:32px; width:38px; padding:4px 0px 0px 7px;" title="Save Glyphr Project File" onclick="showToast(\'Saving Glyphr Studio Project file...\'); setTimeout(saveGlyphrProjectFile, 500);">' +
             makeIcon({'name': 'button_npSave', 'size': 24, 'color': savecolor, 'hovercolor': 'white'}) +
         '</button></td><td>' +
-        '<button class="primarynavbutton" style="height:36px; width:21px; text-align:left; padding:0px 0px 0px 4px;" title="Save File Format Options" onclick="toggleDialog_ExportOptions();">' +
+        '<button class="primarynavbutton" style="height:36px; width:21px; text-align:left; padding:0px 0px 0px 4px;" title="Save File Format Options" onclick="toggleDialogExportOptions();">' +
             makeIcon({'name': 'button_more', 'height': 10, 'width': 10, 'size': 10, 'color': savecolor, 'hovercolor': 'white'}) +
         '</button></td></tr>'+
     '</table>';
