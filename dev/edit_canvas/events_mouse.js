@@ -634,8 +634,8 @@ function Tool_PathAddPoint() {
             if (pt && pt.distance < 20) {
                 this.addpoint = pt;
                 let ptsize = _GP.projectsettings.pointsize;
-                let ptx = (sx_cx(pt.x) - (ptsize/2)).makeCrisp();
-                let pty = (sy_cy(pt.y) - (ptsize/2)).makeCrisp();
+                let ptx = makeCrisp(sx_cx(pt.x) - (ptsize/2));
+                let pty = makeCrisp(sy_cy(pt.y) - (ptsize/2));
                 openNotation(('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3)), ptx, pty);
                 _UI.eventhandlers.hoverpoint = {'fill': _UI.colors.blue.l75, 'x': ptx, 'y': pty, 'size': ptsize};
             } else {

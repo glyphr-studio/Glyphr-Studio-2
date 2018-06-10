@@ -249,7 +249,7 @@
         // debug([gcdata]);
 
         let fname = gcdata.fname || 'selectGlyph';
-        let sel = isval(gcdata.selected)? gcdata.selected : 'glyphs';
+        let sel = isVal(gcdata.selected)? gcdata.selected : 'glyphs';
         let selwi = getSelectedWorkItemID();
         let re = '<div class="glyphChooser-content">';
 

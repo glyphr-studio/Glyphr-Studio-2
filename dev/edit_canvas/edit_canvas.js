@@ -35,9 +35,9 @@
         // debug('\n REDRAW - START');
         // debug('\t oa: ' + json(oa));
         oa = oa || {};
-        _UI.redraw.redrawCanvas = isval(oa.redrawCanvas) ? oa.redrawCanvas : true;
-        _UI.redraw.redrawTools = isval(oa.redrawTools) ? oa.redrawTools : true;
-        _UI.redraw.redrawPanels = isval(oa.redrawPanels) ? oa.redrawPanels : true;
+        _UI.redraw.redrawCanvas = isVal(oa.redrawCanvas) ? oa.redrawCanvas : true;
+        _UI.redraw.redrawTools = isVal(oa.redrawTools) ? oa.redrawTools : true;
+        _UI.redraw.redrawPanels = isVal(oa.redrawPanels) ? oa.redrawPanels : true;
         _UI.redraw.calledBy = oa.calledBy || '';
 
         if (!_UI.redraw.redrawPanels && document.getElementById('navarea_panel') && document.getElementById('navarea_panel').innerHTML === '') _UI.redraw.redrawPanels = true;
@@ -862,8 +862,8 @@
 
             ctx.strokeStyle = rgb;
             ctx.beginPath();
-            ctx.moveTo(hs.underline.xmin, hs.underline.y.makeCrisp());
-            ctx.lineTo(hs.underline.xmax, hs.underline.y.makeCrisp());
+            ctx.moveTo(hs.underline.xmin, makeCrisp(hs.underline.y));
+            ctx.lineTo(hs.underline.xmax, makeCrisp(hs.underline.y));
             ctx.stroke();
             setCursor('arrow');
         }
@@ -882,18 +882,18 @@
         let v = _UI.views;
 
         // Ensure there are at least defaults
-        if (!isval(v[sc])) {
+        if (!isVal(v[sc])) {
             v[sc] = getView('setView');
         }
 
         // Check for which to set
-        if (isval(oa.dx)) {
+        if (isVal(oa.dx)) {
  v[sc].dx = oa.dx;
 }
-        if (isval(oa.dy)) {
+        if (isVal(oa.dy)) {
  v[sc].dy = oa.dy;
 }
-        if (isval(oa.dz)) {
+        if (isVal(oa.dz)) {
  v[sc].dz = oa.dz;
 }
     }
@@ -907,7 +907,7 @@
         let v = _UI.views;
         let re;
 
-        if (isval(v[sc])) {
+        if (isVal(v[sc])) {
             re = clone(v[sc]);
         } else {
             re = onkern? clone(_UI.defaultKernView) : clone(_UI.defaultView);
@@ -1553,13 +1553,13 @@
         thickness = thickness || 1;
 
         // Translation Fidelity - converting passed canvas values to saved value system
-        dimensions.leftx = (sx_cx(maxes.xmin) - hp); // .makeCrisp(false);
+        dimensions.leftx = (sx_cx(maxes.xmin) - hp);
         dimensions.midx = Math.floor(sx_cx(maxes.xmin)+((sx_cx(maxes.xmax)-sx_cx(maxes.xmin))/2)-hp);
-        dimensions.rightx = (sx_cx(maxes.xmax) - hp); // .makeCrisp(true);
+        dimensions.rightx = (sx_cx(maxes.xmax) - hp);
 
-        dimensions.topy = (sy_cy(maxes.ymax) - hp); // .makeCrisp(true);
+        dimensions.topy = (sy_cy(maxes.ymax) - hp);
         dimensions.midy = Math.floor(sy_cy(maxes.ymax)+((sy_cy(maxes.ymin)-sy_cy(maxes.ymax))/2)-hp);
-        dimensions.bottomy = (sy_cy(maxes.ymin) - hp); // .makeCrisp(false);
+        dimensions.bottomy = (sy_cy(maxes.ymin) - hp);
 
 
         if (thickness > 1) {
@@ -1628,7 +1628,7 @@
 
         ctx.strokeStyle = color;
         ctx.lineWidth = 1;
-        y = y.makeCrisp();
+        y = makeCrisp(y);
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(_UI.glyphEditCanvasSize, y);
@@ -1642,7 +1642,7 @@
 
         ctx.strokeStyle = color;
         ctx.lineWidth = 1;
-        x = x.makeCrisp();
+        x = makeCrisp(x);
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, _UI.glyphEditCanvasSize+1);

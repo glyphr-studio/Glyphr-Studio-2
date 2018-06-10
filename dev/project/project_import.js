@@ -298,7 +298,7 @@ function importGlyphrProjectFromText() {
             }
 
 
-            if (isval(gshapes[s].uselinkedshapexy)) {
+            if (isVal(gshapes[s].uselinkedshapexy)) {
                 // debug('\t\t shape ' + gshapes[s].name + ' uselsxy: ' + typeof gshapes[s].uselinkedshapexy + ' ' + gshapes[s].uselinkedshapexy);
                 gshapes[s].usecomponentxy = gshapes[s].uselinkedshapexy;
                 delete gshapes[s].uselinkedshapexy;

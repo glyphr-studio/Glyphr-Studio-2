@@ -12,12 +12,12 @@
 
         this.type = oa.type || 'vertical';
         this.name = oa.name || (this.type + ' guide');
-        this.location = isval(oa.location)? oa.location : 200;
+        this.location = isVal(oa.location)? oa.location : 200;
         this.angle = oa.angle || false;
         this.color = oa.color || makeRandomSaturatedColor();
-        this.visible = isval(oa.visible)? oa.visible : true;
-        this.showname = isval(oa.showname)? oa.showname : true;
-        this.editable = isval(oa.editable)? oa.editable : true;
+        this.visible = isVal(oa.visible)? oa.visible : true;
+        this.showname = isVal(oa.showname)? oa.showname : true;
+        this.editable = isVal(oa.editable)? oa.editable : true;
     }
 
     Guide.prototype.draw = function(delta) {
@@ -41,7 +41,7 @@
         // debug('\t location: ' + this.location);
 
         if (this.type === 'horizontal') {
-            pos = (v.dy - (this.location*v.dz)).makeCrisp();
+            pos = makeCrisp(v.dy - (this.location*v.dz));
             if (delta) pos += (delta*v.dz);
             start.x = 0;
             start.y = pos;
@@ -50,7 +50,7 @@
             label.x = 25;
             label.y = pos - pad;
         } else if (this.type === 'vertical') {
-            pos = (v.dx - (this.location*v.dz*-1)).makeCrisp();
+            pos = makeCrisp(v.dx - (this.location*v.dz*-1));
             if (delta) pos += (delta*v.dz);
             start.x = pos;
             start.y = 0;
@@ -69,7 +69,7 @@
             ctx.strokeStyle = color;
             ctx.globalAlpha = 1;
             ctx.lineWidth = 1;
-            if (isval(delta)) ctx.strokeStyle = shiftColor(color, 0.6, true);
+            if (isVal(delta)) ctx.strokeStyle = shiftColor(color, 0.6, true);
             ctx.beginPath();
             ctx.moveTo(start.x, start.y);
             ctx.lineTo(end.x, end.y);

@@ -95,7 +95,7 @@
     };
 
     PolySegment.prototype.round = function(precision) {
-        precision = isval(precision)? precision : 3;
+        precision = isVal(precision)? precision : 3;
 
         for (let s=0; s<this.segments.length; s++) {
             this.segments[s].round(precision);

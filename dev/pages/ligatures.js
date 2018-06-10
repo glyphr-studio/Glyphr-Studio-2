@@ -13,7 +13,7 @@
         initEventHandlers();
         clickEmptySpace();
 
-        if (_UI.devMode && isval(_UI.dev_selectedShape)) {
+        if (_UI.devMode && isVal(_UI.dev_selectedShape)) {
             selectShape(_UI.dev_selectedShape);
             _UI.dev_selectedShape = false;
         }

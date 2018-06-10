@@ -23,11 +23,11 @@
         this.hex = oa.glyphhex || false;
         this.name = oa.name || getGlyphName(oa.glyphhex) || false;
         this.glyphhtml = oa.glyphhtml || hexToHTML(oa.glyphhex) || false;
-        this.isautowide = isval(oa.isautowide)? oa.isautowide : true;
-        this.glyphwidth = isval(oa.glyphwidth)? oa.glyphwidth : 0;
-        this.leftsidebearing = isval(oa.leftsidebearing)? oa.leftsidebearing : false;
-        this.rightsidebearing = isval(oa.rightsidebearing)? oa.rightsidebearing : false;
-        this.ratiolock = isval(oa.ratiolock)? oa.ratiolock : false;
+        this.isautowide = isVal(oa.isautowide)? oa.isautowide : true;
+        this.glyphwidth = isVal(oa.glyphwidth)? oa.glyphwidth : 0;
+        this.leftsidebearing = isVal(oa.leftsidebearing)? oa.leftsidebearing : false;
+        this.rightsidebearing = isVal(oa.rightsidebearing)? oa.rightsidebearing : false;
+        this.ratiolock = isVal(oa.ratiolock)? oa.ratiolock : false;
         this.maxes = oa.maxes || clone(_UI.mins);
         this.shapes = oa.shapes || [];
         this.usedin = oa.usedin || [];
@@ -194,7 +194,7 @@
         // debug('\t ' + this.name);
         // debug('\t passed mid = ' + mid);
         let m = this.getMaxes();
-        mid = isval(mid)? mid : ((m.xmax - m.xmin) / 2) + m.xmin;
+        mid = isVal(mid)? mid : ((m.xmax - m.xmin) / 2) + m.xmin;
         // debug('\t mid = ' + mid);
         // debug('\t maxes = ' + json(m, true));
         for (let s=0; s < this.shapes.length; s++) {
@@ -207,7 +207,7 @@
 
     Glyph.prototype.flipNS = function(mid) {
         let m = this.getMaxes();
-        mid = isval(mid)? mid : ((m.ymax - m.ymin) / 2) + m.ymin;
+        mid = isVal(mid)? mid : ((m.ymax - m.ymin) / 2) + m.ymin;
         for (let s=0; s < this.shapes.length; s++) {
             this.shapes[s].flipNS(mid);
         }
@@ -423,7 +423,7 @@
 
         for (let v in obj) {
  if (obj.hasOwnProperty(v)) {
-            if (!isval(obj[v])) return true;
+            if (!isVal(obj[v])) return true;
         }
 }
 

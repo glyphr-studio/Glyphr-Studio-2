@@ -87,7 +87,7 @@
         if (!_UI.glyphEditCTX) setupEditCanvas();
         let ctx = _UI.glyphEditCTX;
 
-        txt = isval(txt)? txt : '•';
+        txt = isVal(txt)? txt : '•';
         let p1x = sx_cx(this.p1x);
         let p1y = sy_cy(this.p1y);
         let p2x = sx_cx(this.p2x);
@@ -123,7 +123,7 @@
     Segment.prototype.split = function(sp) {
         sp = sp || 0.5;
 
-        if (typeof sp === 'object' && isval(sp.x) && isval(sp.y)) {
+        if (typeof sp === 'object' && isVal(sp.x) && isVal(sp.y)) {
             return this.splitAtCoord(sp);
         } else if (!isNaN(sp)) {
             return this.splitAtTime(sp);
@@ -780,7 +780,7 @@
 
         if (this.line) return this.containsPointOnLine(pt);
 
-        threshold = isval(threshold)? threshold : 0.1;
+        threshold = isVal(threshold)? threshold : 0.1;
         let t = this.getSplitFromCoord(pt, threshold);
 
         if (t && t.distance < threshold) return true;
@@ -817,7 +817,7 @@
     };
 
     function pointsAreCollinear(a, b, c, precision) {
-        precision = isval(precision)? precision : 3;
+        precision = isVal(precision)? precision : 3;
 
         let s1 = (b.x - a.x) * (c.y - a.y);
         let s2 = (c.x - a.x) * (b.y - a.y);
@@ -831,7 +831,7 @@
     };
 
     Segment.prototype.isLine = function(precision) {
-        precision = isval(precision)? precision : 1;
+        precision = isVal(precision)? precision : 1;
 
         let rex = ( round(this.p1x, precision) === round(this.p2x, precision) &&
                     round(this.p1x, precision) === round(this.p3x, precision) &&
@@ -853,7 +853,7 @@
     };
 
     Segment.prototype.toString = function(precision) {
-        precision = isval(precision)? precision : 1;
+        precision = isVal(precision)? precision : 1;
         re = '';
 
         re += round(this.p1x, precision) + '\t' + round(this.p1y, precision) + '\n';
@@ -865,7 +865,7 @@
     };
 
     Segment.prototype.round = function(precision) {
-        precision = isval(precision)? precision : 3;
+        precision = isVal(precision)? precision : 3;
 
         this.p1x = round(this.p1x, precision);
         this.p1y = round(this.p1y, precision);

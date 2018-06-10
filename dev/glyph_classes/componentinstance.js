@@ -32,7 +32,7 @@
         this.wlock = oa.wlock || false;
         this.hlock = oa.hlock || false;
         this.ratiolock = oa.ratiolock || false;
-        this.visible = isval(oa.visible)? oa.visible : true;
+        this.visible = isVal(oa.visible)? oa.visible : true;
 
         // cache
         oa.cache = oa.cache || {};

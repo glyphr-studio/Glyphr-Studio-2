@@ -178,7 +178,7 @@
         let selci = _UI.multiSelect.shapes.getSingleton();
         let oldval = selci[key];
 
-        value = isval(value)? value : 0;
+        value = isVal(value)? value : 0;
         if (key === 'rotation') value *= -1;
         selci[key] = value;
 

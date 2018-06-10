@@ -16,8 +16,8 @@
 
         // common settings
         this.name = oa.name || 'Shape';
-        this.path = isval(oa.path)? new Path(oa.path) : rectPathFromMaxes(false);
-        this.visible = isval(oa.visible)? oa.visible : true;
+        this.path = isVal(oa.path)? new Path(oa.path) : rectPathFromMaxes(false);
+        this.visible = isVal(oa.visible)? oa.visible : true;
         this.xlock = oa.xlock || false;
         this.ylock = oa.ylock || false;
         this.wlock = oa.wlock || false;
@@ -254,10 +254,10 @@
         maxes = maxes || {};
 
         // Default Circle size
-        lx = isval(maxes.xmin)? maxes.xmin : 0;
-        ty = isval(maxes.ymax)? maxes.ymax : _GP.projectsettings.xheight || 500;
-        rx = isval(maxes.xmax)? maxes.xmax : _GP.projectsettings.xheight || 500;
-        by = isval(maxes.ymin)? maxes.ymin : 0;
+        lx = isVal(maxes.xmin)? maxes.xmin : 0;
+        ty = isVal(maxes.ymax)? maxes.ymax : _GP.projectsettings.xheight || 500;
+        rx = isVal(maxes.xmax)? maxes.xmax : _GP.projectsettings.xheight || 500;
+        by = isVal(maxes.ymin)? maxes.ymin : 0;
 
 
         let hw = round((rx-lx)/2);

@@ -120,8 +120,8 @@
             ctx.lineWidth = 1;
 
             ctx.strokeRect(
-                left.makeCrisp(),
-                top.makeCrisp(),
+                makeCrisp(left),
+                makeCrisp(top),
                 round(width),
                 round(height)
             );
@@ -169,8 +169,8 @@
             ctx.lineWidth = 1;
 
             ctx.strokeRect(
-                drawx.makeCrisp(),
-                drawy.makeCrisp(),
+                makeCrisp(drawx),
+                makeCrisp(drawy),
                 round(drawwidth),
                 round(drawheight)
             );
@@ -255,7 +255,7 @@
 
     function drawTDOptions() {
         if (!_UI.testdrive.lineGap) _UI.testdrive.lineGap = _GP.projectsettings.lineGap;
-        if (!isval(_UI.testdrive.padSize)) _UI.testdrive.padSize = _GP.projectsettings.defaultlsb;
+        if (!isVal(_UI.testdrive.padSize)) _UI.testdrive.padSize = _GP.projectsettings.defaultlsb;
 
         let flattenmessage = '<h1>Combine Glyphs Shapes</h1>'+
             'In <a href=# onclick=navToProjectSettings()>Project Settings &rsaquo; Export Options</a> you have the option to combine all glyph shapes.<br>'+

@@ -262,7 +262,7 @@ class PathPoint {
         let lockx = (_UI.selectedTool==='pathedit'? this.P.xlock : false);
         let locky = (_UI.selectedTool==='pathedit'? this.P.ylock : false);
 
-        if (isval(force)) {
+        if (isVal(force)) {
             if (force) {
                 lockx = false;
                 locky = false;
@@ -938,7 +938,7 @@ class PathPoint {
 
         // Exact Middle Point
         _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.fillRect((sx_cx(this.P.x).makeCrisp()), (sy_cy(this.P.y).makeCrisp()), 1, 1);
+        _UI.glyphEditCTX.fillRect(makeCrisp(sx_cx(this.P.x)), makeCrisp(sy_cy(this.P.y)), 1, 1);
     }
 
     /**

@@ -14,8 +14,8 @@ class Coord {
     constructor({x = 0, y = 0, xLock = false, yLock = false} = {}) {
         this.x = parseFloat(x);
         this.y = parseFloat(y);
-        if (isval(xLock)) this.xLock = xLock;
-        if (isval(yLock)) this.yLock = yLock;
+        if (isVal(xLock)) this.xLock = xLock;
+        if (isVal(yLock)) this.yLock = yLock;
     }
 
     /* GETTERS */

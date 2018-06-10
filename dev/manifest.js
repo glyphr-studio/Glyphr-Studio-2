@@ -64,6 +64,7 @@ const manifest = [
         files: [
             'controls.js',
             'controls.css',
+            'dialogs.js',
         ],
     },
 

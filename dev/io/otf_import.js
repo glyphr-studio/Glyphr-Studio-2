@@ -191,14 +191,14 @@
 
                 re += tc.type;
 
-                if (isval(tc.x1) && isval(tc.y1)) {
+                if (isVal(tc.x1) && isVal(tc.y1)) {
  re += tc.x1 + ',' + tc.y1 + ',';
-                    if (isval(tc.x2) && isval(tc.y2)) {
+                    if (isVal(tc.x2) && isVal(tc.y2)) {
  re += tc.x2 + ',' + tc.y2 + ',';
                 }
 }
 
-                if (isval(tc.x) && isval(tc.y)) re += tc.x + ',' + tc.y + ',';
+                if (isVal(tc.x) && isVal(tc.y)) re += tc.x + ',' + tc.y + ',';
             }
 
             // debug(re);

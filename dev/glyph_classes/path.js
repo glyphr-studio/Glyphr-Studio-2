@@ -28,7 +28,7 @@
             }
         }
 
-        this.winding = isval(oa.winding)? oa.winding : this.findWinding();
+        this.winding = isVal(oa.winding)? oa.winding : this.findWinding();
 
         // internal
         this.maxes = oa.maxes || clone(_UI.mins);
@@ -143,7 +143,7 @@
 
     Path.prototype.updatePathPosition = function(dx, dy, force) {
         // debug('\n Path.updatePathPosition - START');
-        force = isval(force)? force : false;
+        force = isVal(force)? force : false;
         if (dx !== false) dx = parseFloat(dx) || 0;
         if (dy !== false) dy = parseFloat(dy) || 0;
         // debug('\t dx, dy, f\t'+dx+'\t'+dy+'\t'+force);
@@ -159,7 +159,7 @@
     };
 
     Path.prototype.getWinding = function() {
-        if (!isval(this.winding)) {
+        if (!isVal(this.winding)) {
             if (this.findWinding) this.findWinding();
             else this.winding = 0;
         }
@@ -721,7 +721,7 @@
             }
             this.pathpoints.reverse();
             this.winding *= -1;
-            if (this.winding === 0 || !isval(this.winding)) this.findWinding(true);
+            if (this.winding === 0 || !isVal(this.winding)) this.findWinding(true);
         }
         // debug(' Path.reverseWinding - END\n');
     };
@@ -729,7 +729,7 @@
     Path.prototype.flipNS = function(mid) {
         let ly = this.maxes.ymax;
 
-        mid = isval(mid)? mid : (this.getHeight()/2)+this.maxes.ymin;
+        mid = isVal(mid)? mid : (this.getHeight()/2)+this.maxes.ymin;
         // debug('FLIPNS - calculating mid: (b-t)/2 + t = mid: ' + this.maxes.ymin +','+ this.maxes.ymax + ','+ mid);
 
         for (let e=0; e<this.pathpoints.length; e++) {
@@ -746,7 +746,7 @@
     Path.prototype.flipEW = function(mid) {
         let lx = this.maxes.xmin;
 
-        mid = isval(mid)? mid : (this.getWidth()/2)+this.maxes.xmin;
+        mid = isVal(mid)? mid : (this.getWidth()/2)+this.maxes.xmin;
         // debug('flipEW - calculating mid: (b-t)/2 + t = mid: ' + this.maxes.xmax +','+ this.maxes.xmin +','+ mid);
 
         for (let e=0; e<this.pathpoints.length; e++) {
