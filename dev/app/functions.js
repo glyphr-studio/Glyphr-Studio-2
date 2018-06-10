@@ -365,6 +365,11 @@ function showToast(msg, dur, fn) {
 // -------------------
 // Saved Sate
 // -------------------
+/* exported setProjectAsSaved, setProjectAsUnsaved */
+
+/**
+ * Handles various UI pieces when a project is saved
+ */
 function setProjectAsSaved() {
     _UI.projectSaved = true;
 
@@ -380,6 +385,9 @@ function setProjectAsSaved() {
     updateSaveIcon();
 }
 
+/**
+ * Handles various UI pieces when a project is unsaved
+ */
 function setProjectAsUnsaved() {
     _UI.projectSaved = false;
 
@@ -395,6 +403,9 @@ function setProjectAsUnsaved() {
     updateSaveIcon();
 }
 
+/**
+ * Updates the Save icon
+ */
 function updateSaveIcon() {
     if (_UI.currentPanel === 'npNav') return;
 
@@ -416,37 +427,50 @@ function updateSaveIcon() {
 // -------------------
 // File Savr
 // -------------------
+/* exported saveFile */
 
+/**
+ * Saves a file
+ * @param {string} fname - name for the saved file
+ * @param {string} buffer - data for the file
+ * @param {string} ftype - file suffix
+ */
 function saveFile(fname, buffer, ftype) {
-ftype = ftype || 'text/plain;charset=utf-8';
-let fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
+    ftype = ftype || 'text/plain;charset=utf-8';
+    let fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
 
-try {
-    // IE
-    window.navigator.msSaveBlob(fblob, fname);
-    return;
-} catch (err) {
-    // Others
-    let link = document.createElement('a');
-    window.URL = window.URL || window.webkitURL;
-    link.href = window.URL.createObjectURL(fblob);
-    // link.onclick = ("alert("+window.URL.createObjectURL(fblob)+");");
-    link.download = fname;
+    try {
+        // IE
+        window.navigator.msSaveBlob(fblob, fname);
+        return;
+    } catch (err) {
+        // Others
+        let link = document.createElement('a');
+        window.URL = window.URL || window.webkitURL;
+        link.href = window.URL.createObjectURL(fblob);
+        // link.onclick = ("alert("+window.URL.createObjectURL(fblob)+");");
+        link.download = fname;
 
-    let event = document.createEvent('MouseEvents');
-    event.initEvent('click', true, false);
-    link.dispatchEvent(event);
-    return;
-}
+        let event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, false);
+        link.dispatchEvent(event);
+        return;
+    }
 }
 
 
 // -------------------
 // Common Functions
 // -------------------
-// returns a full new copy of any object
-// 'parentpath' is a PathPoint property that is a pointer to it's parent Path
-// causes infinite loops when cloning objects.  Kind of a hack.
+/* exported clone, round, numSan, strSan */
+
+/**
+ * Returns a full new copy of any object
+ * 'parentpath' is a PathPoint property that is a pointer to it's parent Path
+ * causes infinite loops when cloning objects.  Kind of a hack.
+ * @param {object} cobj - object to clone
+ * @return {object}
+ */
 function clone(cobj) {
     let newObj = (cobj instanceof Array) ? [] : {};
     for (let i in cobj) {
@@ -457,22 +481,37 @@ function clone(cobj) {
     return newObj;
 }
 
-// rounds a number to include a .5 so it draws nicely on canvas
-// true = +0.5, false = -0.5
-Number.prototype.makeCrisp = function(dir) {
+/**
+ * Rounds a number to include a .5 so it draws nicely on canvas
+ * true = +0.5, false = -0.5
+ * @param {boolean} dir - direction, plus or minus, to adjust number
+ * @return {number}
+ */
+ Number.prototype.makeCrisp = function(dir) {
     let mul = dir? 1 : -1;
     return round(this) + (0.5 * mul);
 };
 
-// better rounding than Math.round
+/**
+ * Better rounding than Math.round
+ * @param {number} num - number to round
+ * @param {number} dec - number of decimal places
+ * @return {number}
+ */
 function round(num, dec) {
     if (!num) return 0;
     dec = dec || 0;
     return Number(Math.round(num+'e'+dec)+'e-'+dec) || 0;
 }
 
-// floating point numbers make me mad
-function numSan(num) {
+
+/**
+ * Floating point numbers make me mad
+ * Looks for sequences of 0s or 9s
+ * @param {number} num - number to sanitize
+ * @return {number}
+ */
+ function numSan(num) {
     num = parseFloat(num);
     let strnum = ''+num;
 
@@ -485,8 +524,12 @@ function numSan(num) {
     return num;
 }
 
-// removes illegal file name chars
-function strSan(val) {
+/**
+ * Removes illegal file name chars
+ * @param {string} val - string to sanitize
+ * @return {string}
+ */
+ function strSan(val) {
     return val.replace(/[<>'"\\]/g, '');
 }
 
