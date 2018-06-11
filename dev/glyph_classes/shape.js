@@ -18,8 +18,8 @@
         this.name = oa.name || 'Shape';
         this.path = isVal(oa.path)? new Path(oa.path) : rectPathFromMaxes(false);
         this.visible = isVal(oa.visible)? oa.visible : true;
-        this.xlock = oa.xlock || false;
-        this.ylock = oa.ylock || false;
+        this.xLock = oa.xLock || false;
+        this.yLock = oa.yLock || false;
         this.wlock = oa.wlock || false;
         this.hlock = oa.hlock || false;
         this.ratiolock = oa.ratiolock || false;

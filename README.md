@@ -13,7 +13,8 @@
 * New test framework and tests for all our code
 * Dev and Prod environments that make it easy to keep code separate and testable, but also concatenate-able and minimize-able.
 * Minimize global variables
-* Investigation - HTML Templates for UI Controls
+* Investigation - HTML Templates or Web Components for UI Controls
+* Investigation - Language switching for localization
 
 ## What's not changing
 So, here at Glyphr Studio, we've always had a very strong DIY attitude - this means:

@@ -79,15 +79,15 @@
             '<td>&#916; x'+ dimSplit() + '&#916; y</td>'+
             '<td>'+
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.multiSelect.shapes.getSingleton().xlock', s.xlock, 'xlock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().xLock', s.xLock, 'xLock')+
                     '<input type="number" id="comx" step="'+svc+'" value="' + round(s.translatex, 3) + '" '+
-                        (s.xlock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translatex\', this.value, this.id);">')+
+                        (s.xLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translatex\', this.value, this.id);">')+
                 '</div>'+
                 dimSplit() +
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.multiSelect.shapes.getSingleton().ylock', s.ylock, 'ylock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().yLock', s.yLock, 'yLock')+
                     '<input type="number" id="comy" step="'+svc+'" value="' + round(s.translatey, 3) + '" '+
-                        (s.ylock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translatey\', this.value, this.id);">')+
+                        (s.yLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translatey\', this.value, this.id);">')+
                 '</div>'+
             '</td>'+
         '</tr>';

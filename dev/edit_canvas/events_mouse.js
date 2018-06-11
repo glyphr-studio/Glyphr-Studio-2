@@ -185,8 +185,8 @@ function Tool_ShapeEdit() {
             if (singleshape) {
                 cur = singleshape.isOverBoundingBoxHandle(eh.mousex, eh.mousey);
                 if (!cur) cur = isOverShape(eh.mousex, eh.mousey)? 'arrowSquare' : 'arrow';
-                dx = singleshape.xlock? 0 : dx;
-                dy = singleshape.ylock? 0 : dy;
+                dx = singleshape.xLock? 0 : dx;
+                dy = singleshape.yLock? 0 : dy;
             }
 
             _UI.multiSelect.shapes.updateShapePosition(dx, dy);
@@ -544,8 +544,8 @@ function Tool_PathEdit() {
                 // debug('\t this.controlpoint.point ' + this.controlpoint.point);
                 // debug('\t this.controlpoint.type ' + cpt);
                 let cpx = this.controlpoint.point[cpt];
-                if (cpx && cpx.xlock) dx = 0;
-                if (cpx && cpx.ylock) dy = 0;
+                if (cpx && cpx.xLock) dx = 0;
+                if (cpx && cpx.yLock) dy = 0;
             }
 
             sp.getMembers().forEach(function(point, i) {
@@ -867,8 +867,8 @@ function updateDragSelectArea(dx, dy, dw, dh) {
 
 function canResize(pc) {
     let rl = _UI.multiSelect.shapes.getAttribute('ratiolock');
-    let xl = _UI.multiSelect.shapes.getAttribute('xlock');
-    let yl = _UI.multiSelect.shapes.getAttribute('ylock');
+    let xl = _UI.multiSelect.shapes.getAttribute('xLock');
+    let yl = _UI.multiSelect.shapes.getAttribute('yLock');
     let wl = _UI.multiSelect.shapes.getAttribute('wlock');
     let hl = _UI.multiSelect.shapes.getAttribute('hlock');
     let re = true;

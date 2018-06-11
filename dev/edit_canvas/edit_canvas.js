@@ -1438,7 +1438,7 @@
         draw_CircleHandle(rotatehandle);
 
         // readout
-        let readout = round(calculateNiceAngle(angle), 1);
+        let readout = round(angleToNiceAngle(angle), 1);
         if (counterclockwise) readout -= 360;
         readout = round(readout, 1);
 

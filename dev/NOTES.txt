@@ -1,6 +1,5 @@
 
 
-Coord.xlock/ylock - Coord.xLock/yLock
 Coord.useh1/useh2 - Coord.useH1/useH2
 
 PathPoint.setPointType - PathPoint.type (setter)

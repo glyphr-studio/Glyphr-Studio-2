@@ -114,7 +114,7 @@ class PathPoint {
      * @return {number}
      */
     get h1NiceAngle() {
-        return calculateNiceAngle(this.h1Angle);
+        return angleToNiceAngle(this.h1Angle);
     }
 
     /**
@@ -122,7 +122,7 @@ class PathPoint {
      * @return {number}
      */
     get h2NiceAngle() {
-        return calculateNiceAngle(this.h2Angle);
+        return angleToNiceAngle(this.h2Angle);
     }
 
     /**
@@ -150,7 +150,7 @@ class PathPoint {
      * @param {number} angle - angle to set
      * */
     set h1AngleX(angle) {
-        this.H1.x = calculateAngleX(angle, this.H1.y);
+        this.H1.x = Math.tan(angle * this.H1.y);
     }
 
     /**
@@ -158,7 +158,7 @@ class PathPoint {
      * @param {number} angle - angle to set
      */
     set h1AngleY(angle) {
-        this.H1.y = calculateAngleY(angle, this.H1.x);
+        this.H1.y = Math.tan(angle * this.H1.x);
     }
 
     /**
@@ -166,7 +166,7 @@ class PathPoint {
      * @param {number} angle - angle to set
      * */
     set h2AngleX(angle) {
-        this.H2.x = calculateAngleX(angle, this.H2.y);
+        this.H2.x = Math.tan(angle * this.H2.y);
     }
 
     /**
@@ -174,7 +174,7 @@ class PathPoint {
      * @param {number} angle - angle to set
      */
     set h2AngleY(angle) {
-        this.H2.y = calculateAngleY(angle, this.H2.x);
+        this.H2.y = Math.tan(angle * this.H2.x);
     }
 
 
@@ -197,13 +197,13 @@ class PathPoint {
 
         switch (controlpoint) {
             case 'P':
-                if (!this.P.xlock && !isNaN(nx)) {
+                if (!this.P.xLock && !isNaN(nx)) {
                     dx = (this.P.x - nx);
                     this.P.x = nx;
                     this.H1.x -= dx;
                     this.H2.x -= dx;
                 }
-                if (!this.P.ylock && !isNaN(ny)) {
+                if (!this.P.yLock && !isNaN(ny)) {
                     dy = (this.P.y - ny);
                     this.P.y = ny;
                     this.H1.y -= dy;
@@ -212,22 +212,22 @@ class PathPoint {
                 break;
 
             case 'H1':
-                if (!this.H1.xlock && !isNaN(nx)) {
+                if (!this.H1.xLock && !isNaN(nx)) {
                     this.H1.x = nx;
                     changed = 'H1';
                 }
-                if (!this.H1.ylock && !isNaN(ny)) {
+                if (!this.H1.yLock && !isNaN(ny)) {
                     this.H1.y = ny;
                     changed = 'H1';
                 }
                 break;
 
             case 'H2':
-                if (!this.H2.xlock && !isNaN(nx)) {
+                if (!this.H2.xLock && !isNaN(nx)) {
                     this.H2.x = nx;
                     changed = 'H2';
                 }
-                if (!this.H2.ylock && !isNaN(ny)) {
+                if (!this.H2.yLock && !isNaN(ny)) {
                     this.H2.y = ny;
                     changed = 'H2';
                 }
@@ -259,8 +259,8 @@ class PathPoint {
 
         if (dx !== false) dx = parseFloat(dx);
         if (dy !== false) dy = parseFloat(dy);
-        let lockx = (_UI.selectedTool==='pathedit'? this.P.xlock : false);
-        let locky = (_UI.selectedTool==='pathedit'? this.P.ylock : false);
+        let lockx = (_UI.selectedTool==='pathedit'? this.P.xLock : false);
+        let locky = (_UI.selectedTool==='pathedit'? this.P.yLock : false);
 
         if (isVal(force)) {
             if (force) {

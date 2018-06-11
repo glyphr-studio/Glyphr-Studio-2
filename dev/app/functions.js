@@ -369,53 +369,58 @@ function reqAniFrame(fun) {
 // --------------------------
 // Angle and Rotation Stuff
 // --------------------------
+/* exported calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle */
+
+// Use JavaScript "Angle" system by default:
+// Radians, top is positive bottom is negative
+// 3 o'clock is zero, 9 o'clock is pi
+
+// Glyphr Studio "Nice Angle" used in the UI
+// 360 Degrees, 12 o'clock is zero, clockwise = positve
 
 /**
-    Use JavaScript angle system by default:
-    Radians, top is positive bottom is negative
-    3 o'clock is zero, 9 o'clock is pi
-
-    Glyphr Studio angle system:
-    360 Degrees, 12 o'clock is zero, clockwise = positve
-**/
-
-function calculateAngleX(angle, y) {
-    x = Math.tan(angle*y);
-    return x;
-}
-
-function calculateAngleY(angle, x) {
-    y = Math.tan(angle*x);
-    return y;
-}
-
-function calculateAngle(h, p) {
-    p = p || {x: 0, y: 0};
-    let result = Math.atan2(h.y - p.y, h.x - p.x);
+ * Calculates the angle of a handle given a point
+ * @param {object} handle - x/y coordinate of handle
+ * @param {object} point - x/y coordinate of point
+ * @return {number}
+ */
+function calculateAngle(handle, point = {x: 0, y: 0}) {
+    let result = Math.atan2(handle.y - point.y, handle.x - point.x);
 
     if (isNaN(result)) {
-        console.warn('calculateAngle returned NaN\n' + json(h) + '\n' + json(p));
+        console.warn('calculateAngle returned NaN\n' + json(handle) + '\n' + json(point));
         result = 0;
     }
 
     return result;
 }
 
-function calculateLength(h, p) {
-    let adj = p.x - h.x;
-    let opp = p.y - h.y;
+/**
+ * Calculates the length of a handle, given a point
+ * @param {object} handle - x/y coordinate of handle
+ * @param {object} point - x/y coordinate of point
+ * @return {number}
+ */
+function calculateLength(handle, point) {
+    let adj = point.x - handle.x;
+    let opp = point.y - handle.y;
     let result = Math.sqrt( (adj*adj) + (opp*opp) );
     return result;
 }
 
-function rotate(coord, angle, about) {
+/**
+ * Rotates a point a certain number of degrees around a given point
+ * @param {object} coord - x/y point to rotate
+ * @param {number} angle - how much to rotate
+ * @param {object} about - x/y point of rotation
+ */
+function rotate(coord, angle, about = {x: 0, y: 0}) {
     // debug('\n rotate - START');
     // debug('\t coord ' + json(coord, true));
     // debug('\t Math angle:\t' + angle);
     // debug('\t about ' + json(about, true));
 
     if (!angle || !coord) return;
-    about = about || {x: 0, y: 0};
 
     coord.x -= about.x;
     coord.y -= about.y;
@@ -430,16 +435,31 @@ function rotate(coord, angle, about) {
     // debug(' rotate - END\n');
 }
 
-// convert between degrees and radians
+/**
+ * Convert degrees to radians
+ * @param {number} deg - degrees
+ * @return {number}
+ */
 function rad(deg) {
-return (deg * Math.PI / 180) % Math.PI;
-}
-function deg(rad) {
- return (rad * 180 / Math.PI) % 360;
+    return (deg * Math.PI / 180) % Math.PI;
 }
 
-// Shows the Glyphr Studio angle as opposed to the JavaScript angle
-function calculateNiceAngle(angle) {
+/**
+ * Convert radians to degrees
+ * @param {number} rad - radians
+ * @return {number}
+ */
+function deg(rad) {
+    return (rad * 180 / Math.PI) % 360;
+}
+
+/**
+ * Given a standard JavaScript angle, convert it to the angle
+ * system we show the user (aka "Nice Angle")
+ * @param {number} angle - Angle from standard JavaScript
+ * @return {number}
+ */
+function angleToNiceAngle(angle) {
     angle = deg(angle);
     angle = 360 - angle;
     angle -= 270;
@@ -449,6 +469,12 @@ function calculateNiceAngle(angle) {
     return angle;
 }
 
+/**
+ * Given a "Nice Angle" from the UI, calculate the type of
+ * angle that JavaScript knows about
+ * @param {number} angle - Nice Angle
+ * @return {number}
+ */
 function niceAngleToAngle(angle) {
     angle += 90;
     angle = angle % 360;
@@ -460,18 +486,17 @@ function niceAngleToAngle(angle) {
     return angle;
 }
 
-function async(fn, callback) {
-    setTimeout(function() {
-        fn();
-        callback && callback(fn() || undefined);
-    }, 0);
-}
-
 
 // -------------------
 // Object ID Stuff
 // -------------------
-// Returns the first ID from an object
+/* exported getFirstID, generateNewID, getMyID, getLength */
+
+/**
+ * Gets the first key in an object
+ * @param {object} obj
+ * @return {string}
+ */
 function getFirstID(obj) {
     for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
@@ -482,7 +507,12 @@ function getFirstID(obj) {
     return false;
 }
 
-// Generate a new ID for an object
+/**
+ * Creates a unique key for an object given a prefix
+ * @param {object} obj
+ * @param {string} base - string prefix for the new ID
+ * @return {string}
+ */
 function generateNewID(obj, base) {
     let number = 1;
     base = base || 'id';
@@ -492,34 +522,43 @@ function generateNewID(obj, base) {
     return id;
 }
 
+/**
+ * Return the ID for a given Glyph object
+ * @param {object} obj - Glyph object to search for
+ * @return {string}
+ */
 function getMyID(obj) {
     for (let g in _GP.glyphs) {
-if (_GP.glyphs.hasOwnProperty(g)) {
-        if (obj === _GP.glyphs[g]) return g;
+       if (_GP.glyphs.hasOwnProperty(g)) {
+           if (obj === _GP.glyphs[g]) return g;
+        }
     }
-}
 
     for (let c in _GP.components) {
-if (_GP.components.hasOwnProperty(c)) {
-        if (obj === _GP.components[c]) return c;
+        if (_GP.components.hasOwnProperty(c)) {
+            if (obj === _GP.components[c]) return c;
+        }
     }
-}
 
     for (let l in _GP.ligatures) {
-if (_GP.ligatures.hasOwnProperty(l)) {
-        if (obj === _GP.ligatures[l]) return l;
+        if (_GP.ligatures.hasOwnProperty(l)) {
+            if (obj === _GP.ligatures[l]) return l;
+        }
     }
-}
 
     return false;
 }
 
-// returns the length of an associative array
+/**
+ * Returns how many objects are in an object
+ * @param {object} obj
+ * @return {number}
+ */
 function getLength(obj) {
     let len = 0;
     for (let key in obj) {
-if ( obj.hasOwnProperty(key)) len++;
-}
+        if ( obj.hasOwnProperty(key)) len++;
+    }
     return len;
 }
 
@@ -527,19 +566,20 @@ if ( obj.hasOwnProperty(key)) len++;
 // -------------------
 // BUG EMAIL
 // -------------------
+/* exported genEmailContent */
 
+/**
+ * Generates the content for the "email us" link
+ * @return {string}
+ */
 function genEmailContent() {
-    let con = 'Have a feature idea or ran into an issue%3F We%27d be happy to help!';
-    con += '%0A%0A%0A%0A___________________________________________%0A';
-    con += 'version %09Glyphr Studio ' + _UI.thisGlyphrStudioVersionNum + '%0A';
-    // con += 'appCodeName %09' + navigator.appCodeName + '%0A';
-    con += 'app name %09' + navigator.appName + '%0A';
-    // con += 'appVersion %09' + navigator.appVersion + '%0A';
-    con += 'language %09' + navigator.language + '%0A';
-    con += 'platform %09' + navigator.platform + '%0A';
-    // con += 'systemLanguage %09' + navigator.systemLanguage + '%0A';
-    // con += 'userLanguage %09' + navigator.userLanguage + '%0A';
-    con += 'user agent %09' + encodeURIComponent(navigator.userAgent) + '%0A';
+    let con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
+    %0A%0A%0A%0A___________________________________________%0A
+    version %09Glyphr Studio  ${_UI.thisGlyphrStudioVersionNum} %0A
+    app name %09 ${navigator.appName} %0A
+    language %09 ${navigator.language} %0A
+    platform %09 ${navigator.platform} %0A
+    user agent %09 ${encodeURIComponent(navigator.userAgent)} %0A`;
 
     // debug(con);
 
@@ -550,7 +590,13 @@ function genEmailContent() {
 // -------------------
 // COLORS
 // -------------------
+/* exported parseColorString, shiftColor, RGBAtoRGB, transparencyToAlpha */
 
+/**
+ * Convert a color string into an object
+ * @param {string} c - color string
+ * @return {object}
+ */
 function parseColorString(c) {
     let val = {r: 0, g: 0, b: 0, a: 1};
 
@@ -572,6 +618,14 @@ function parseColorString(c) {
     return val;
 }
 
+/**
+ * Takes a color string, then lightens or darkens that color
+ * by a certain percentage
+ * @param {string} c - color string
+ * @param {number} percent - ammount to shift color
+ * @param {boolean} lighter - true = lighten, false = darken
+ * @return {string}
+ */
 function shiftColor(c, percent, lighter) {
     percent = Math.max(0, Math.min(percent, 1));
     let val = parseColorString(c);
@@ -590,9 +644,15 @@ function shiftColor(c, percent, lighter) {
         val.b = round(val.b-(val.b*percent));
     }
 
-    return 'rgb('+val.r+','+val.g+','+val.b+')';
+    return `rgb(${val.r},${val.g},${val.b})`;
 }
 
+/**
+ * Converts an RGBA color to it's opaque RGB equivallent
+ * @param {object} rgb - color object in RGB
+ * @param {number} alpha - transparency
+ * @return {string}
+ */
 function RGBAtoRGB(rgb, alpha) {
     let val = parseColorString(rgb);
 
@@ -607,6 +667,11 @@ function RGBAtoRGB(rgb, alpha) {
     return `rgb(${r},${g},${b})`;
 }
 
+/**
+ * Converts Transparency to Alpha, invert and change scale
+ * @param {number} transparency - 0=opaque, 100=transparent
+ * @return {number}
+ */
 function transparencyToAlpha(transparency) {
     let t = parseInt(transparency);
     if (!t || isNaN(t)) return 1;
@@ -621,50 +686,41 @@ function transparencyToAlpha(transparency) {
 // -------------------
 // COMBINATORICS
 // -------------------
+/* exported kCombinations */
 
 /**
  * K-combinations
  *
  * Get k-sized combinations of elements in a set.
  *
- * Usage:
- *   k_combinations(set, k)
- *
- * Parameters:
- *   set: Array of objects of any type. They are treated as unique.
- *   k: size of combinations to search for.
- *
- * Return:
- *   Array of found combinations, size of a combination is k.
- *
  * Examples:
  *
- *   k_combinations([1, 2, 3], 1)
+ *   kCombinations([1, 2, 3], 1)
  *   -> [[1], [2], [3]]
  *
- *   k_combinations([1, 2, 3], 2)
+ *   kCombinations([1, 2, 3], 2)
  *   -> [[1,2], [1,3], [2, 3]
  *
- *   k_combinations([1, 2, 3], 3)
+ *   kCombinations([1, 2, 3], 3)
  *   -> [[1, 2, 3]]
  *
- *   k_combinations([1, 2, 3], 4)
+ *   kCombinations([1, 2, 3], 4)
  *   -> []
  *
- *   k_combinations([1, 2, 3], 0)
+ *   kCombinations([1, 2, 3], 0)
  *   -> []
  *
- *   k_combinations([1, 2, 3], -1)
+ *   kCombinations([1, 2, 3], -1)
  *   -> []
  *
- *   k_combinations([], 0)
+ *   kCombinations([], 0)
  *   -> []
  *
- * @param {number} set -
- * @param {number} k -
- * @return {array}
+ * @param {number} set - Array of objects of any type. They are treated as unique.
+ * @param {number} k - size of combinations to search for.
+ * @return {array} - Array of found combinations, size of a combination is k.
  */
-function k_combinations(set, k) {
+function kCombinations(set, k) {
     let i;
     let j;
     let combs;
@@ -692,37 +748,10 @@ function k_combinations(set, k) {
     combs = [];
     for (i = 0; i < set.length - k + 1; i++) {
         head = set.slice(i, i+1);
-        tailcombs = k_combinations(set.slice(i + 1), k - 1);
+        tailcombs = kCombinations(set.slice(i + 1), k - 1);
         for (j = 0; j < tailcombs.length; j++) {
             combs.push(head.concat(tailcombs[j]));
         }
     }
     return combs;
 }
-
-k_permutations = function(set, maxLen, excludeTwins) {
-    // Copy initial values as arrays
-    let perm = set.map(function(val) {
-        return [val];
-    });
-
-    // Our permutation generator
-    let generate = function(perm, maxLen, currLen) {
-        // Reached desired length
-        if (currLen === maxLen) {
-            return perm;
-        }
-        // For each existing permutation
-        for (let i = 0, len = perm.length; i < len; i++) {
-            let currPerm = perm.shift();
-            // Create new permutation
-            for (let k = 0; k < set.length; k++) {
-                if (!(excludeTwins && currPerm[0] === set[k])) perm.push(currPerm.concat(set[k]));
-            }
-        }
-        // Recurse
-        return generate(perm, maxLen, currLen + 1);
-    };
-    // Start with size 1 because of initial values
-    return generate(perm, maxLen, 1);
-};

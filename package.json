@@ -1,10 +1,10 @@
 {
-  "name": "Glyphr-Studio",
+  "name": "glyphr-studio-2",
   "license": "GPL-3.0-or-later",
   "main": "dev/Glyphr_Studio_v2.htm",
   "repository": {
     "type": "git",
-    "url": "https://github.com/glyphr-studio"
+    "url": "https://github.com/glyphr-studio/Glyphr-Studio-2"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
