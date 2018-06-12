@@ -25,10 +25,12 @@ const manifest = [
     {
         path: 'app',
         files: [
-            'global.css',
-            'colors.css',
             'settings.js',
             'functions.js',
+            'global.css',
+            'colors.css',
+            'colors.js',
+            'colors.test.js',
             'nav.js',
             'history.js',
             'unicode.js',

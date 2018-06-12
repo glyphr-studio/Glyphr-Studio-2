@@ -1,9 +1,9 @@
-/* _TEST.testList.push(
+_TEST.testList.push(
     {
         category: 'Meta Tests',
         name: 'Failure',
         assertion: function() {
-            return false;
+            return is('foo').equalTo('bar');
         },
     },
     {
@@ -17,8 +17,7 @@
         category: 'Meta Tests',
         name: 'Passed',
         assertion: function() {
-            return true;
+            return is(4).equalTo(4);
         },
     }
 );
-*/

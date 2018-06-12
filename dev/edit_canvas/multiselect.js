@@ -121,7 +121,7 @@
         for (let m=0; m<this.members.length; m++) {
             point = this.members[m];
             path = point.parentpath;
-            pindex = point.getPointNum();
+            pindex = point.pointNumber;
 
             if (pindex > -1) {
                 path.pathpoints.splice(pindex, 1);
@@ -137,7 +137,7 @@
 
     _UI.multiSelect.points.getSingletonPointNumber = function() {
         if (!this.members[0]) return false;
-        else return this.members[0].getPointNum();
+        else return this.members[0].pointNumber;
     };
 
     _UI.multiSelect.points.draw_PathPointHandles = function() {
@@ -167,7 +167,7 @@
 
         for (let m=0; m<this.members.length; m++) {
             path = this.members[m].parentpath;
-            pp = this.members[m].getPointNum();
+            pp = this.members[m].pointNumber;
             newpoints.push(path.insertPathPoint(false, pp));
         }
 

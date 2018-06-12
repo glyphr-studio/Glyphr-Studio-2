@@ -379,9 +379,9 @@
         let issymmetric = tp.type === 'symmetric';
 
         // HANDLE 1
-        content += '<tr><td colspan=2 class="detailtitle"><h3>'+(issymmetric? '<input type="checkbox" checked disabled>' : checkUI('_UI.multiSelect.points.getSingleton().useh1', tp.useh1, true))+' handle 1 <span class="unit">(before the point)</span></h3></td></tr>';
+        content += '<tr><td colspan=2 class="detailtitle"><h3>'+(issymmetric? '<input type="checkbox" checked disabled>' : checkUI('_UI.multiSelect.points.getSingleton().h1.use', tp.h1.use, true))+' handle 1 <span class="unit">(before the point)</span></h3></td></tr>';
 
-        if (tp.useh1) {
+        if (tp.h1.use) {
             content += '<tr>'+
                 '<td>x'+dimSplit()+'y</td>'+
                 '<td>'+
@@ -405,14 +405,14 @@
                 '<td> angle'+dimSplit()+'length </span></td>'+
                 '<td><input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.getH1NiceAngle(), 1) || 0)+'">'+
                 dimSplit()+
-                '<input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.getH1Length(), 3) || 0)+'"></td>'+
+                '<input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.h1.length, 3) || 0)+'"></td>'+
             '</tr>';
         }
 
         // HANDLE 2
-        content += '<tr><td colspan=2 class="detailtitle"><h3>'+(issymmetric? '<input type="checkbox" checked disabled>' : checkUI('_UI.multiSelect.points.getSingleton().useh2', tp.useh2, true))+' handle 2 <span class="unit">(after the point)</span></h3></td></tr>';
+        content += '<tr><td colspan=2 class="detailtitle"><h3>'+(issymmetric? '<input type="checkbox" checked disabled>' : checkUI('_UI.multiSelect.points.getSingleton().h2.use', tp.h2.use, true))+' handle 2 <span class="unit">(after the point)</span></h3></td></tr>';
 
-        if (tp.useh2) {
+        if (tp.h2.use) {
             content += '<tr>'+
                 '<td>x'+dimSplit()+'y</td>'+
                 '<td>'+
@@ -436,7 +436,7 @@
                 '<td> angle'+dimSplit()+'length </span></td>'+
                 '<td><input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.getH2NiceAngle(), 1) || 0)+'">'+
                 dimSplit()+
-                '<input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.getH2Length(), 3) || 0)+'"></td>'+
+                '<input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.h2.length, 3) || 0)+'"></td>'+
             '</tr>';
         }
 

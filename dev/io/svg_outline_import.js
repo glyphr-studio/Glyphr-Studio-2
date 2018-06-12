@@ -129,7 +129,7 @@
                         py = data[co+1] || 0;
 
                         tcoord = new Coord({'x': px, 'y': py});
-                        pparr.push(new PathPoint({'P': tcoord, 'H1': tcoord, 'H2': tcoord, 'useh1': false, 'useh2': false}));
+                        pparr.push(new PathPoint({'P': tcoord, 'H1': tcoord, 'H2': tcoord, 'useH1': false, 'useH2': false}));
                     }
 
                     pushShape(new Path({'pathpoints': pparr}), 'Polygon');
@@ -416,7 +416,7 @@
             // debug('\t fp/lp same:\nFirst Point: '+json(fp)+'\nLast Point:  '+json(lp));
             fp.H1.x = lp.H1.x;
             fp.H1.y = lp.H1.y;
-            fp.useh1 = lp.useh1;
+            fp.h1.use = lp.h1.use;
             patharr.pop();
             fp.resolvePointType();
             // debug('\t AFTER:\nFirst Point: '+json(fp));
@@ -532,8 +532,8 @@
                 p = new Coord({'x': nx, 'y': ny});
                 // debug('\t new point ' + p.x + '\t' + p.y);
 
-                lastpoint.useh2 = false;
-                patharr.push(new PathPoint({'P': p, 'H1': clone(p), 'H2': clone(p), 'type': 'corner', 'useh1': false, 'useh2': true}));
+                lastpoint.h2.use = false;
+                patharr.push(new PathPoint({'P': p, 'H1': clone(p), 'H2': clone(p), 'type': 'corner', 'useH1': false, 'useH2': true}));
                 lastpoint = patharr[patharr.length-1];
             }
 
@@ -573,10 +573,10 @@
                 // debug('\t new point ' + p.x + '\t' + p.y);
 
                 lastpoint.type = 'corner';
-                lastpoint.useh2 = true;
+                lastpoint.h2.use = true;
                 lastpoint.makePointedTo(p.x, p.y, false, 'H2', true);
 
-                let pp = new PathPoint({'P': p, 'H1': clone(p), 'H2': clone(p), 'type': 'corner', 'useh1': true, 'useh2': true});
+                let pp = new PathPoint({'P': p, 'H1': clone(p), 'H2': clone(p), 'type': 'corner', 'useH1': true, 'useH2': true});
                 pp.makePointedTo(prevx, prevy, false, 'H1', true);
                 patharr.push(pp);
 
@@ -616,7 +616,7 @@
                 // debug('\t command ' + cmd + ' after Q>C cnvrt ' + currdata);
 
                 lastpoint.H2 = new Coord({'x': currdata[0], 'y': currdata[1]});
-                lastpoint.useh2 = true;
+                lastpoint.h2.use = true;
                 lastpoint.resolvePointType();
 
                 h1 = new Coord({'x': currdata[2], 'y': currdata[3]});
@@ -625,7 +625,7 @@
 
                 // debug('\t bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
 
-                patharr.push(new PathPoint({'P': clone(p), 'H1': clone(h1), 'H2': clone(p), 'Q': clone(q), 'useh1': true, 'useh2': true, 'type': 'corner'}));
+                patharr.push(new PathPoint({'P': clone(p), 'H1': clone(h1), 'H2': clone(p), 'Q': clone(q), 'useH1': true, 'useH2': true, 'type': 'corner'}));
                 lastpoint = patharr[patharr.length-1];
             }
 
@@ -664,7 +664,7 @@
                 // debug('\t command ' + cmd + ' afters Q>C cnvrt ' + currdata);
 
                 lastpoint.H2 = new Coord({'x': currdata[0], 'y': currdata[1]});
-                lastpoint.useh2 = true;
+                lastpoint.h2.use = true;
                 lastpoint.resolvePointType();
 
                 h1 = new Coord({'x': currdata[2], 'y': currdata[3]});
@@ -672,7 +672,7 @@
 
                 // debug('\t bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
 
-                patharr.push(new PathPoint({'P': clone(p), 'H1': clone(h1), 'H2': clone(p), 'Q': clone(q), 'useh1': true, 'useh2': true, 'type': 'corner'}));
+                patharr.push(new PathPoint({'P': clone(p), 'H1': clone(h1), 'H2': clone(p), 'Q': clone(q), 'useH1': true, 'useH2': true, 'type': 'corner'}));
                 lastpoint = patharr[patharr.length-1];
             }
 
@@ -698,7 +698,7 @@
                 // debug('\n\n\t command ' + cmd + ' while loop data ' + currdata);
 
                 lastpoint.H2 = new Coord({'x': currdata[0], 'y': currdata[1]});
-                lastpoint.useh2 = true;
+                lastpoint.h2.use = true;
                 lastpoint.resolvePointType();
 
                 h1 = new Coord({'x': currdata[2], 'y': currdata[3]});
@@ -717,7 +717,7 @@
                 }
 
                 // debug('\t bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
-                patharr.push(new PathPoint({'P': clone(p), 'H1': clone(h1), 'H2': clone(p), 'useh1': true, 'useh2': true, 'type': 'corner'}));
+                patharr.push(new PathPoint({'P': clone(p), 'H1': clone(h1), 'H2': clone(p), 'useH1': true, 'useH2': true, 'type': 'corner'}));
                 lastpoint = patharr[patharr.length-1];
             }
 
@@ -741,7 +741,7 @@
                 // debug('\n\t command ' + cmd + ' while loop data ' + currdata);
 
                 lastpoint.makeSymmetric('H1');
-                lastpoint.useh2 = true;
+                lastpoint.h2.use = true;
 
                 h1 = new Coord({'x': currdata[0], 'y': currdata[1]});
                 p = new Coord({'x': currdata[2], 'y': currdata[3]});
@@ -762,7 +762,7 @@
                 // debug('\t H1 after: ' + json(h1, true));
 
 
-                patharr.push(new PathPoint({'P': clone(p), 'H1': clone(h1), 'H2': clone(p), 'type': 'symmetric', 'useh1': true, 'useh2': true}));
+                patharr.push(new PathPoint({'P': clone(p), 'H1': clone(h1), 'H2': clone(p), 'type': 'symmetric', 'useH1': true, 'useH2': true}));
                 lastpoint = patharr[patharr.length-1];
             }
 

@@ -369,8 +369,8 @@ function Tool_NewPath() {
             'H1': new Coord({'x': cx_sx(eh.mousex-100), 'y': cy_sy(eh.mousey)}),
             'H2': new Coord({'x': cx_sx(eh.mousex+100), 'y': cy_sy(eh.mousey)}),
             'type': 'flat',
-            'useh1': false,
-            'useh2': false,
+            'useH1': false,
+            'useH2': false,
         });
 
         if (this.firstpoint) {
@@ -418,8 +418,8 @@ function Tool_NewPath() {
             // avoid really small handles
             if ((Math.abs(this.currpt.P.x-cx_sx(eh.mousex)) > (_GP.projectsettings.pointsize*2)) ||
                 (Math.abs(this.currpt.P.y-cy_sy(eh.mousey)) > (_GP.projectsettings.pointsize*2)) ) {
-                this.currpt.useh1 = true;
-                this.currpt.useh2 = true;
+                this.currpt.h1.use = true;
+                this.currpt.h2.use = true;
                 this.currpt.H2.x = cx_sx(eh.mousex);
                 this.currpt.H2.y = cy_sy(eh.mousey);
                 this.currpt.makeSymmetric('H2');
@@ -516,7 +516,7 @@ function Tool_PathEdit() {
                 'point': sp.getSingleton(),
             };
 
-            this.controlpoint.point.useh2 = true;
+            this.controlpoint.point.h2.use = true;
             this.controlpoint.point.H2.x = cx_sx(eh.mousex);
             this.controlpoint.point.H2.y = cy_sy(eh.mousey);
             _UI.multiSelect.points.handlesingleton = this.controlpoint.point;

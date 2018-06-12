@@ -434,17 +434,17 @@
             // this.validate('DRAW PATH');
 
             if (snap) {
-                pph2x = sx_cx(round(pp.getH2x()));
-                pph2y = sy_cy(round(pp.getH2y()));
-                nxh1x = sx_cx(round(np.getH1x()));
-                nxh1y = sy_cy(round(np.getH1y()));
+                pph2x = sx_cx(round(pp.h2.x));
+                pph2y = sy_cy(round(pp.h2.y));
+                nxh1x = sx_cx(round(np.h1.x));
+                nxh1y = sy_cy(round(np.h1.y));
                 nxppx = sx_cx(round(np.P.x));
                 nxppy = sy_cy(round(np.P.y));
             } else {
-                pph2x = sx_cx(pp.getH2x());
-                pph2y = sy_cy(pp.getH2y());
-                nxh1x = sx_cx(np.getH1x());
-                nxh1y = sy_cy(np.getH1y());
+                pph2x = sx_cx(pp.h2.x);
+                pph2y = sy_cy(pp.h2.y);
+                nxh1x = sx_cx(np.h1.x);
+                nxh1y = sy_cy(np.h1.y);
                 nxppx = sx_cx(np.P.x);
                 nxppy = sy_cy(np.P.y);
             }
@@ -477,12 +477,12 @@
             // p2 = this.pathpoints[(cp+1) % this.pathpoints.length];
             p2 = this.pathpoints[this.getNextPointNum(cp)];
 
-            p1h2x = p1.getH2x() - p1.P.x;
-            p1h2y = p1.getH2y() - p1.P.y;
-            p2h1x = p2.getH1x() - p1.getH2x();
-            p2h1y = p2.getH1y() - p1.getH2y();
-            p2ppx = p2.P.x - p2.getH1x();
-            p2ppy = p2.P.y - p2.getH1y();
+            p1h2x = p1.h2.x - p1.P.x;
+            p1h2y = p1.h2.y - p1.P.y;
+            p2h1x = p2.h1.x - p1.h2.x;
+            p2h1y = p2.h1.y - p1.h2.y;
+            p2ppx = p2.P.x - p2.h1.x;
+            p2ppy = p2.P.y - p2.h1.y;
 
             trr = '\t\t\t\t' + p1h2x + ' ' + p1h2y + ' ' + p2h1x + ' ' + p2h1y + ' ' + p2ppx + ' ' + p2ppy + ' rrcurveto \n';
 
@@ -519,7 +519,7 @@
         let p1, p2;
         let trr = '';
 
-        re += 'M' + round(this.pathpoints[0].getPx(), roundvalue) + ',' + round(this.pathpoints[0].getPy(), roundvalue);
+        re += 'M' + round(this.pathpoints[0].p.x, roundvalue) + ',' + round(this.pathpoints[0].p.y, roundvalue);
         // debug('GENPATHPOSTSCRIPT:\n\t ' + re);
 
         if (re.indexOf('NaN') > -1) {
@@ -531,7 +531,7 @@
             p1 = this.pathpoints[cp];
             // p2 = this.pathpoints[(cp+1) % this.pathpoints.length];
             p2 = this.pathpoints[this.getNextPointNum(cp)];
-            trr = ' C' + round(p1.getH2x(), roundvalue) + ',' + round(p1.getH2y(), roundvalue) + ',' + round(p2.getH1x(), roundvalue) + ',' + round(p2.getH1y(), roundvalue) + ',' + round(p2.getPx(), roundvalue) + ',' + round(p2.getPy(), roundvalue);
+            trr = ' C' + round(p1.h2.x, roundvalue) + ',' + round(p1.h2.y, roundvalue) + ',' + round(p2.h1.x, roundvalue) + ',' + round(p2.h1.y, roundvalue) + ',' + round(p2.p.x, roundvalue) + ',' + round(p2.p.y, roundvalue);
             // debug('\t ' + trr);
 
             if (trr.indexOf('NaN') > -1) {
@@ -569,10 +569,10 @@
             // p2 = this.pathpoints[(cp+1) % this.pathpoints.length];
             p2 = this.pathpoints[this.getNextPointNum(cp)];
             otpath.curveTo(
-                round(p1.getH2x()),
-                round(p1.getH2y()),
-                round(p2.getH1x()),
-                round(p2.getH1y()),
+                round(p1.h2.x),
+                round(p1.h2.y),
+                round(p2.h1.x),
+                round(p2.h1.y),
                 round(p2.P.x),
                 round(p2.P.y)
             );
@@ -605,8 +605,8 @@
 
         let re = new Segment({
             'p1x': pp1.P.x, 'p1y': pp1.P.y,
-            'p2x': pp1.getH2x(), 'p2y': pp1.getH2y(),
-            'p3x': pp2.getH1x(), 'p3y': pp2.getH1y(),
+            'p2x': pp1.h2.x, 'p2y': pp1.h2.y,
+            'p3x': pp2.h1.x, 'p3y': pp2.h1.y,
             'p4x': pp2.P.x, 'p4y': pp2.P.y,
         });
 
@@ -714,9 +714,9 @@
                 HT = pp.H1;
                 pp.H1 = pp.H2;
                 pp.H2 = HT;
-                if (pp.useh1 !== pp.useh2) {
-                    pp.useh1 = !pp.useh1;
-                    pp.useh2 = !pp.useh2;
+                if (pp.h1.use !== pp.h2.use) {
+                    pp.h1.use = !pp.h1.use;
+                    pp.h2.use = !pp.h2.use;
                 }
             }
             this.pathpoints.reverse();
@@ -829,7 +829,7 @@
             nP = new Coord({'x': s1.p4x, 'y': s1.p4y});
             nH1 = new Coord({'x': s1.p3x, 'y': s1.p3y});
             nH2 = new Coord({'x': s2.p2x, 'y': s2.p2y});
-            ppn = new PathPoint({'P': nP, 'H1': nH1, 'H2': nH2, 'type': 'flat', 'useh1': true, 'useh2': true});
+            ppn = new PathPoint({'P': nP, 'H1': nH1, 'H2': nH2, 'type': 'flat', 'useH1': true, 'useH2': true});
             ppn.round();
 
             // Update P1
@@ -847,8 +847,8 @@
             // just make a random point
             let d = 100;
             nP = new Coord({'x': pp1.P.x+d, 'y': pp1.P.y+d});
-            nH1 = new Coord({'x': pp1.getH2x()+d, 'y': pp1.getH2y()+d});
-            nH2 = new Coord({'x': pp1.getH1x()+d, 'y': pp1.getH1y()+d});
+            nH1 = new Coord({'x': pp1.h2.x+d, 'y': pp1.h2.y+d});
+            nH2 = new Coord({'x': pp1.h1.x+d, 'y': pp1.h1.y+d});
             ppn = new PathPoint({'P': nP, 'H1': nH1, 'H2': nH2, 'type': pp1.type});
         }
 

@@ -9,34 +9,34 @@
 class PathPoint {
     /**
      * Create a PathPoint
-     * @param {Coord} P - Main control point
-     * @param {Coord} H1 - First handle
-     * @param {Coord} H2 - Second handle
-     * @param {Coord} Q - Storing the Quadratic handle point from Import SVG action
+     * @param {Coord} p - Main control point
+     * @param {Coord} h1 - First handle
+     * @param {Coord} h2 - Second handle
+     * @param {Coord} q - Storing the Quadratic handle point from Import SVG action
      * @param {string} type - corner, flat, or symmetric
-     * @param {boolean} useh1 - toggle for using Handle 1
-     * @param {boolean} useh2 - toggle for using Handle 2
+     * @param {boolean} useH1 - toggle for using Handle 1
+     * @param {boolean} useH2 - toggle for using Handle 2
      */
     constructor({
-        P = new Coord({x: 100, y: 100}),
-        H1 = new Coord({x: 0, y: 0}),
-        H2 = new Coord({x: 200, y: 200}),
-        Q = false,
+        p = new Coord({x: 100, y: 100}),
+        h1 = new Handle({x: 0, y: 0}),
+        h2 = new Handle({x: 200, y: 200}),
+        q = false,
         type = 'corner',
-        useh1 = true,
-        useh2 = true} = {}) {
-        this.P = P;
-        this.H1 = H1;
-        this.H2 = H2;
-        this.Q = Q;
+    } = {}) {
+        this.p = p;
+        this.h1 = h1;
+        this.h2 = h2;
+        this.q = q;
         this.type = type;
-        this.useh1 = useh1;
-        this.useh2 = useh2;
+
+        this.h1.rootPoint = this;
+        this.h2.rootPoint = this;
 
         if (this.type === 'symmetric') {
-            this.makeSymmetric('H1');
+            this.makeSymmetric('h1');
         } else if (this.type === 'flat') {
-            this.makeFlat('H1');
+            this.makeFlat('h1');
         }
     }
 
@@ -46,101 +46,22 @@ class PathPoint {
     // -------------------------------------------------------
 
     /**
-     * Point x value
+     * Figure out where this point is in the overall path
      * @return {number}
-     */
-    get px() {
-        return this.P.x;
-    }
+    */
+    get pointNumber() {
+        let parr = this.parentpath;
+        if (!parr) return false;
 
-    /**
-     * Point y value
-     * @return {number}
-     */
-    get py() {
-        return this.P.y;
-    }
+        parr = parr.pathpoints;
+        if (!parr) return false;
 
-    /**
-     * Handle1 x value
-     * @return {number}
-     */
-    get h1x() {
-        return this.useh1? this.H1.x : this.P.x;
-    }
+        for (let p=0; p<parr.length; p++) {
+            if (parr[p] === this) return p;
+        }
 
-    /**
-     * Handle1 y value
-     * @return {number}
-     */
-    get h1y() {
-        return this.useh1? this.H1.y : this.P.y;
+        return false;
     }
-
-    /**
-     * Handle2 x value
-     * @return {number}
-     */
-    get h2x() {
-        return this.useh2? this.H2.x : this.P.x;
-    }
-
-    /**
-     * Handle2 y value
-     * @return {number}
-     */
-    get h2y() {
-        return this.useh2? this.H2.y : this.P.y;
-    }
-
-    /**
-     * Handle 1 Angle
-     * @return {number}
-     */
-    get h1Angle() {
-        return calculateAngle(this.H1, this.P);
-    }
-
-    /**
-     * Handle 2 Angle
-     * @return {number}
-     */
-    get h2Angle() {
-        return calculateAngle(this.H2, this.P);
-    }
-
-    /**
-     * Handle 1 Nice Angle for UI
-     * @return {number}
-     */
-    get h1NiceAngle() {
-        return angleToNiceAngle(this.h1Angle);
-    }
-
-    /**
-     * Handle 2 Nice Angle for UI
-     * @return {number}
-     */
-    get h2NiceAngle() {
-        return angleToNiceAngle(this.h2Angle);
-    }
-
-    /**
-     * Handle 1 Length
-     * @return {number}
-     */
-    get h1Length() {
-        return calculateLength(this.H1, this.P);
-    }
-
-    /**
-     * Handle 2 Length
-     * @return {number}
-     */
-    get h2Length() {
-        return calculateLength(this.H2, this.P);
-    }
-
 
     // ---------------------------------------------------
     // SETTERS
@@ -150,7 +71,7 @@ class PathPoint {
      * @param {number} angle - angle to set
      * */
     set h1AngleX(angle) {
-        this.H1.x = Math.tan(angle * this.H1.y);
+        this.h1.x = Math.tan(angle * this.h1.y);
     }
 
     /**
@@ -158,7 +79,7 @@ class PathPoint {
      * @param {number} angle - angle to set
      */
     set h1AngleY(angle) {
-        this.H1.y = Math.tan(angle * this.H1.x);
+        this.h1.y = Math.tan(angle * this.h1.x);
     }
 
     /**
@@ -166,7 +87,7 @@ class PathPoint {
      * @param {number} angle - angle to set
      * */
     set h2AngleX(angle) {
-        this.H2.x = Math.tan(angle * this.H2.y);
+        this.h2.x = Math.tan(angle * this.h2.y);
     }
 
     /**
@@ -174,7 +95,7 @@ class PathPoint {
      * @param {number} angle - angle to set
      */
     set h2AngleY(angle) {
-        this.H2.y = Math.tan(angle * this.H2.x);
+        this.h2.y = Math.tan(angle * this.h2.x);
     }
 
 
@@ -184,7 +105,7 @@ class PathPoint {
 
     /**
      * Moves a point to a specific place
-     * @param {strung} controlpoint - P / H1 / H2
+     * @param {strung} controlpoint - p / h1 / h2
      * @param {number} nx - New x value
      * @param {number} ny - New y value
      */
@@ -196,40 +117,40 @@ class PathPoint {
         let changed = false;
 
         switch (controlpoint) {
-            case 'P':
-                if (!this.P.xLock && !isNaN(nx)) {
-                    dx = (this.P.x - nx);
-                    this.P.x = nx;
-                    this.H1.x -= dx;
-                    this.H2.x -= dx;
+            case 'p':
+                if (!this.p.xLock && !isNaN(nx)) {
+                    dx = (this.p.x - nx);
+                    this.p.x = nx;
+                    this.h1.x -= dx;
+                    this.h2.x -= dx;
                 }
-                if (!this.P.yLock && !isNaN(ny)) {
-                    dy = (this.P.y - ny);
-                    this.P.y = ny;
-                    this.H1.y -= dy;
-                    this.H2.y -= dy;
-                }
-                break;
-
-            case 'H1':
-                if (!this.H1.xLock && !isNaN(nx)) {
-                    this.H1.x = nx;
-                    changed = 'H1';
-                }
-                if (!this.H1.yLock && !isNaN(ny)) {
-                    this.H1.y = ny;
-                    changed = 'H1';
+                if (!this.p.yLock && !isNaN(ny)) {
+                    dy = (this.p.y - ny);
+                    this.p.y = ny;
+                    this.h1.y -= dy;
+                    this.h2.y -= dy;
                 }
                 break;
 
-            case 'H2':
-                if (!this.H2.xLock && !isNaN(nx)) {
-                    this.H2.x = nx;
-                    changed = 'H2';
+            case 'h1':
+                if (!this.h1.xLock && !isNaN(nx)) {
+                    this.h1.x = nx;
+                    changed = 'h1';
                 }
-                if (!this.H2.yLock && !isNaN(ny)) {
-                    this.H2.y = ny;
-                    changed = 'H2';
+                if (!this.h1.yLock && !isNaN(ny)) {
+                    this.h1.y = ny;
+                    changed = 'h1';
+                }
+                break;
+
+            case 'h2':
+                if (!this.h2.xLock && !isNaN(nx)) {
+                    this.h2.x = nx;
+                    changed = 'h2';
+                }
+                if (!this.h2.yLock && !isNaN(ny)) {
+                    this.h2.y = ny;
+                    changed = 'h2';
                 }
                 break;
             }
@@ -247,7 +168,7 @@ class PathPoint {
 
         /**
          * Update the possition of a point based on delta values
-         * @param {string} controlpoint - P / H1 / H2
+         * @param {string} controlpoint - p / h1 / h2
          * @param {number} dx - delta x
          * @param {number} dy - delta y
          * @param {boolean} force - move points even if they're locked
@@ -259,8 +180,8 @@ class PathPoint {
 
         if (dx !== false) dx = parseFloat(dx);
         if (dy !== false) dy = parseFloat(dy);
-        let lockx = (_UI.selectedTool==='pathedit'? this.P.xLock : false);
-        let locky = (_UI.selectedTool==='pathedit'? this.P.yLock : false);
+        let lockx = (_UI.selectedTool==='pathedit'? this.p.xLock : false);
+        let locky = (_UI.selectedTool==='pathedit'? this.p.yLock : false);
 
         if (isVal(force)) {
             if (force) {
@@ -270,33 +191,33 @@ class PathPoint {
         }
 
         switch (controlpoint) {
-            case 'P':
-                if (!lockx) this.P.x += dx;
-                if (!locky) this.P.y += dy;
-                if (!lockx) this.H1.x += dx;
-                if (!locky) this.H1.y += dy;
-                if (!lockx) this.H2.x += dx;
-                if (!locky) this.H2.y += dy;
+            case 'p':
+                if (!lockx) this.p.x += dx;
+                if (!locky) this.p.y += dy;
+                if (!lockx) this.h1.x += dx;
+                if (!locky) this.h1.y += dy;
+                if (!lockx) this.h2.x += dx;
+                if (!locky) this.h2.y += dy;
                 break;
 
-            case 'H1':
-                this.H1.x += dx;
-                this.H1.y += dy;
-                // debug('\t Hold H1, updated to: ' + this.H1.x + ' ' + this.H1.y);
+            case 'h1':
+                this.h1.x += dx;
+                this.h1.y += dy;
+                // debug('\t Hold h1, updated to: ' + this.h1.x + ' ' + this.h1.y);
                 if (this.type === 'symmetric') {
-                    this.makeSymmetric('H1');
+                    this.makeSymmetric('h1');
                 } else if (this.type === 'flat') {
-                    this.makeFlat('H1');
+                    this.makeFlat('h1');
                 }
                 break;
 
-            case 'H2':
-                this.H2.x += dx;
-                this.H2.y += dy;
+            case 'h2':
+                this.h2.x += dx;
+                this.h2.y += dy;
                 if (this.type === 'symmetric') {
-                    this.makeSymmetric('H2');
+                    this.makeSymmetric('h2');
                 } else if (this.type === 'flat') {
-                    this.makeFlat('H2');
+                    this.makeFlat('h2');
                 }
                 break;
         }
@@ -314,23 +235,23 @@ class PathPoint {
     isOverControlPoint(x, y, nohandles) {
         let hp = _GP.projectsettings.pointsize/getView('Path.isOverControlPoint').dz;
 
-        if ( ((this.P.x+hp) > x) && ((this.P.x-hp) < x) && ((this.P.y+hp) > y) && ((this.P.y-hp) < y) ) {
+        if ( ((this.p.x+hp) > x) && ((this.p.x-hp) < x) && ((this.p.y+hp) > y) && ((this.p.y-hp) < y) ) {
             // debug('PathPoint.isOverControlPoint - Returning P1');
 
-            return {point: this, type: 'P'};
+            return {point: this, type: 'p'};
         }
 
-        if (this.useh1 && !nohandles) {
-            if ( ((this.H1.x+hp) > x) && ((this.H1.x-hp) < x) && ((this.H1.y+hp) > y) && ((this.H1.y-hp) < y) ) {
-                // debug('PathPoint.isOverControlPoint - Returning H1');
-                return {point: this, type: 'H1'};
+        if (this.h1.use && !nohandles) {
+            if ( ((this.h1.x+hp) > x) && ((this.h1.x-hp) < x) && ((this.h1.y+hp) > y) && ((this.h1.y-hp) < y) ) {
+                // debug('PathPoint.isOverControlPoint - Returning h1');
+                return {point: this, type: 'h1'};
             }
         }
 
-        if (this.useh2 && !nohandles) {
-            if ( ((this.H2.x+hp) > x) && ((this.H2.x-hp) < x) && ((this.H2.y+hp) > y) && ((this.H2.y-hp) < y) ) {
-                // debug('PathPoint.isOverControlPoint - Returning H2');
-                return {point: this, type: 'H2'};
+        if (this.h2.use && !nohandles) {
+            if ( ((this.h2.x+hp) > x) && ((this.h2.x-hp) < x) && ((this.h2.y+hp) > y) && ((this.h2.y-hp) < y) ) {
+                // debug('PathPoint.isOverControlPoint - Returning h2');
+                return {point: this, type: 'h2'};
             }
         }
 
@@ -339,15 +260,15 @@ class PathPoint {
 
     /**
      * Toggles a handle on or off
-     * @param {boolean} toggleH1 - toggle H1 or H2
+     * @param {boolean} toggleH1 - toggle h1 or h2
      */
     toggleUseHandle(toggleH1) {
         if (toggleH1) {
-            this.useh1 = !this.useh1;
-            history_put('Use Handle 1 : ' + this.useh1);
+            this.h1.use = !this.h1.use;
+            history_put('Use Handle 1 : ' + this.h1.use);
         } else {
-            this.useh2 = !this.useh2;
-            history_put('Use Handle 2 : ' + this.useh2);
+            this.h2.use = !this.h2.use;
+            history_put('Use Handle 2 : ' + this.h2.use);
         }
         _UI.multiSelect.shapes.calcMaxes();
         redraw({calledBy: 'pointDetails'});
@@ -371,35 +292,35 @@ class PathPoint {
         // debug('MAKESYMETRIC - hold ' + hold + ' starts as ' + JSON.stringify(this));
 
         if (!hold) {
-            hold = this.useh1? 'H1' : 'H2';
-            if (!(this.useh1 || this.useh2)) {
-                if ( ((this.H2.x+this.P.x+this.H1.x)/3 === this.P.x) &&
-                    ((this.H2.y+this.P.y+this.H1.y)/3 === this.P.y) ) {
+            hold = this.h1.use? 'h1' : 'h2';
+            if (!(this.h1.use || this.h2.use)) {
+                if ( ((this.h2.x+this.p.x+this.h1.x)/3 === this.p.x) &&
+                    ((this.h2.y+this.p.y+this.h1.y)/3 === this.p.y) ) {
                     // Handles and points are all in the same place
-                    this.H2.x-=200;
-                    this.H1.x+=200;
+                    this.h2.x-=200;
+                    this.h1.x+=200;
                     this.type = 'symmetric';
-                    this.useh1 = true;
-                    this.useh2 = true;
+                    this.h1.use = true;
+                    this.h2.use = true;
                     return;
                 }
             }
         }
 
         switch (hold) {
-            case 'H1':
-                this.H2.x = ((this.P.x - this.H1.x) + this.P.x);
-                this.H2.y = ((this.P.y - this.H1.y) + this.P.y);
+            case 'h1':
+                this.h2.x = ((this.p.x - this.h1.x) + this.p.x);
+                this.h2.y = ((this.p.y - this.h1.y) + this.p.y);
                 break;
-            case 'H2':
-                this.H1.x = ((this.P.x - this.H2.x) + this.P.x);
-                this.H1.y = ((this.P.y - this.H2.y) + this.P.y);
+            case 'h2':
+                this.h1.x = ((this.p.x - this.h2.x) + this.p.x);
+                this.h1.y = ((this.p.y - this.h2.y) + this.p.y);
                 break;
         }
 
         this.type = 'symmetric';
-        this.useh1 = true;
-        this.useh2 = true;
+        this.h1.use = true;
+        this.h2.use = true;
 
         // this.roundAll();
         // debug('MAKESYMETRIC - returns ' + JSON.stringify(this));
@@ -419,26 +340,26 @@ class PathPoint {
         }
 
         if (!hold) {
-            hold = this.useh1? 'H1' : 'H2';
-            if (!(this.useh1 || this.useh2)) {
-                if ( ((this.H2.x+this.P.x+this.H1.x)/3 === this.P.x) &&
-                    ((this.H2.y+this.P.y+this.H1.y)/3 === this.P.y) ) {
+            hold = this.h1.use? 'h1' : 'h2';
+            if (!(this.h1.use || this.h2.use)) {
+                if ( ((this.h2.x+this.p.x+this.h1.x)/3 === this.p.x) &&
+                    ((this.h2.y+this.p.y+this.h1.y)/3 === this.p.y) ) {
                     // Handles and points are all in the same place
-                    this.H2.x-=300;
-                    this.H1.x+=100;
+                    this.h2.x-=300;
+                    this.h1.x+=100;
                     this.type = 'flat';
-                    this.useh1 = true;
-                    this.useh2 = true;
+                    this.h1.use = true;
+                    this.h2.use = true;
                     return;
                 }
             }
         }
 
 
-        let angle1 = this.getH1Angle();
-        let angle2 = this.getH2Angle();
-        let hyp1 = this.getH1Length();
-        let hyp2 = this.getH2Length();
+        let angle1 = this.h1.angle;
+        let angle2 = this.h2.angle;
+        let hyp1 = this.h1.length;
+        let hyp2 = this.h2.length;
 
         // new values
         let newHx;
@@ -446,31 +367,31 @@ class PathPoint {
         let newadj;
         let newopp;
 
-        if (hold === 'H1') {
-            // get new x and y for H2
+        if (hold === 'h1') {
+            // get new x and y for h2
             newadj = Math.cos(angle1) * hyp2;
             newopp = Math.tan(angle1) * newadj;
 
             // Set values
-            newHx = (this.P.x + (newadj*-1));
-            newHy = (this.P.y + (newopp*-1));
+            newHx = (this.p.x + (newadj*-1));
+            newHy = (this.p.y + (newopp*-1));
 
             if (!isNaN(newHx) && !isNaN(newHy)) {
-                this.H2.x = newHx;
-                this.H2.y = newHy;
+                this.h2.x = newHx;
+                this.h2.y = newHy;
             }
-        } else if (hold === 'H2') {
-            // get new x and y for H2
+        } else if (hold === 'h2') {
+            // get new x and y for h2
             newadj = Math.cos(angle2) * hyp1;
             newopp = Math.tan(angle2) * newadj;
 
             // Set values
-            newHx = (this.P.x + (newadj*-1));
-            newHy = (this.P.y + (newopp*-1));
+            newHx = (this.p.x + (newadj*-1));
+            newHy = (this.p.y + (newopp*-1));
 
             if (!isNaN(newHx) && !isNaN(newHy)) {
-                this.H1.x = newHx;
-                this.H1.y = newHy;
+                this.h1.x = newHx;
+                this.h1.y = newHy;
             }
         }
 
@@ -484,11 +405,11 @@ class PathPoint {
      * @return {boolean}
      * */
     isFlat() {
-        if (this.P.x === this.H1.x && this.P.x === this.H2.x) return true;
-        if (this.P.y === this.H1.y && this.P.y === this.H2.y) return true;
+        if (this.p.x === this.h1.x && this.p.x === this.h2.x) return true;
+        if (this.p.y === this.h1.y && this.p.y === this.h2.y) return true;
 
-        let a1 = this.getH1Angle();
-        let a2 = this.getH2Angle();
+        let a1 = this.h1.angle;
+        let a2 = this..h2.angle;
         // debug('\t comparing ' + a1 + ' / ' + a2);
 
         return (round((Math.abs(a1) + Math.abs(a2)), 2) === 3.14);
@@ -501,7 +422,7 @@ class PathPoint {
         // debug('\n PathPoint.resolvePointType - START');
 
         if (this.isFlat()) {
-            if (this.getH1Length() === this.getH2Length()) {
+            if (this.h1.length === this.h2.length) {
                 // debug('\t resolvePointType - setting to Symmetric');
                 this.type = 'symmetric';
             } else {
@@ -525,8 +446,8 @@ class PathPoint {
      */
     makePointedTo(px, py, length, handle, dontresolvetype) {
         // figure out angle
-        let adj1 = this.P.x-px;
-        let opp1 = this.P.y-py;
+        let adj1 = this.p.x-px;
+        let opp1 = this.p.y-py;
 
         let ymod = (opp1 >= 0)? -1 : 1;
         let xmod = -1;
@@ -535,17 +456,17 @@ class PathPoint {
         let angle1 = Math.acos(adj1 / hyp1);
 
         length = length || (hyp1/3);
-        handle = (handle==='H2')? 'H2' : 'H1';
+        handle = (handle==='h2')? 'h2' : 'h1';
 
-        // debug('MAKEPOINTEDTO - x/y/l ' + px + ' ' + py + ' ' + length + ' - Before H1x/y ' + this.H1.x + ' ' + this.H1.y);
-        this[handle].x = this.P.x + (Math.cos(angle1) * length * xmod);
-        this[handle].y = this.P.y + (Math.sin(angle1) * length * ymod);
-        // debug('MAKEPOINTEDTO - after H1x/y ' + this.H1.x + ' ' + this.H1.y);
+        // debug('MAKEPOINTEDTO - x/y/l ' + px + ' ' + py + ' ' + length + ' - Before H1x/y ' + this.h1.x + ' ' + this.h1.y);
+        this[handle].x = this.p.x + (Math.cos(angle1) * length * xmod);
+        this[handle].y = this.p.y + (Math.sin(angle1) * length * ymod);
+        // debug('MAKEPOINTEDTO - after H1x/y ' + this.h1.x + ' ' + this.h1.y);
 
         if (!dontresolvetype) {
             if (this.type === 'corner') this.makeFlat(handle);
             else this.makeSymmetric(handle);
-            // debug('MAKEPOINTEDTO - after makesymmetric H1x/y ' + this.H1.x + ' ' + this.H1.y);
+            // debug('MAKEPOINTEDTO - after makesymmetric H1x/y ' + this.h1.x + ' ' + this.h1.y);
         }
     }
 
@@ -564,40 +485,22 @@ class PathPoint {
      */
     rotate(angle, about) {
         // debug('\n PathPoint.rotate - START');
-        rotate(this.P, angle, about);
-        rotate(this.H1, angle, about);
-        rotate(this.H2, angle, about);
-        // debug('\t this.P ' + json(this.P, true));
+        rotate(this.p, angle, about);
+        rotate(this.h1, angle, about);
+        rotate(this.h2, angle, about);
+        // debug('\t this.p ' + json(this.p, true));
         // debug(' PathPoint.rotate - END\n');
     }
 
     /** Resets handles to defaults */
     resetHandles() {
         this.type = 'corner';
-        this.useh1 = true;
-        this.useh2 = true;
-        this.H2.x = this.P.x - 100;
-        this.H2.y = this.P.y;
-        this.H1.x = this.P.x + 100;
-        this.H1.y = this.P.y;
-    }
-
-    /**
-     * Figure out where this point is in the overall path
-     * @return {number}
-    */
-    getPointNum() {
-        let parr = this.parentpath;
-        if (!parr) return false;
-
-        parr = parr.pathpoints;
-        if (!parr) return false;
-
-        for (let p=0; p<parr.length; p++) {
-            if (parr[p] === this) return p;
-        }
-
-        return false;
+        this.h1.use = true;
+        this.h2.use = true;
+        this.h2.x = this.p.x - 100;
+        this.h2.y = this.p.y;
+        this.h1.x = this.p.x + 100;
+        this.h1.y = this.p.y;
     }
 
     /**
@@ -605,12 +508,12 @@ class PathPoint {
      * @param {number} i - precision
      */
     roundAll(i = 9) {
-        this.P.x = round(this.P.x, i);
-        this.P.y = round(this.P.y, i);
-        this.H1.x = round(this.H1.x, i);
-        this.H1.y = round(this.H1.y, i);
-        this.H2.x = round(this.H2.x, i);
-        this.H2.y = round(this.H2.y, i);
+        this.p.x = round(this.p.x, i);
+        this.p.y = round(this.p.y, i);
+        this.h1.x = round(this.h1.x, i);
+        this.h1.y = round(this.h1.y, i);
+        this.h2.x = round(this.h2.x, i);
+        this.h2.y = round(this.h2.y, i);
     }
 
 
@@ -622,7 +525,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignY(pathPoint) {
-        this.P.y = pathPoint.P.y;
+        this.p.y = pathPoint.p.y;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -631,7 +534,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignX(pathPoint) {
-        this.P.x = pathPoint.P.x;
+        this.p.x = pathPoint.p.x;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -640,8 +543,8 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignHV() {
-        this.H1.x = this.P.x;
-        this.H2.x = this.P.x;
+        this.h1.x = this.p.x;
+        this.h2.x = this.p.x;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -650,8 +553,8 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignHH() {
-        this.H1.y = this.P.y;
-        this.H2.y = this.P.y;
+        this.h1.y = this.p.y;
+        this.h2.y = this.p.y;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -660,7 +563,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignH1X(pathPoint) {
-        this.H1.x = pathPoint.H1.x;
+        this.h1.x = pathPoint.h1.x;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -669,7 +572,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignH1XCross(pathPoint) {
-        this.H1.x = pathPoint.H2.x;
+        this.h1.x = pathPoint.h2.x;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -678,7 +581,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignH1Y(pathPoint) {
-        this.H1.y = pathPoint.H1.y;
+        this.h1.y = pathPoint.h1.y;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -687,7 +590,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignH1YCross(pathPoint) {
-        this.H1.y = pathPoint.H2.y;
+        this.h1.y = pathPoint.h2.y;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -696,7 +599,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignH2X(pathPoint) {
-        this.H2.x = pathPoint.H2.x;
+        this.h2.x = pathPoint.h2.x;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -705,7 +608,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignH2XCross(pathPoint) {
-        this.H2.x = pathPoint.H1.x;
+        this.h2.x = pathPoint.h1.x;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -714,7 +617,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignH2Y(pathPoint) {
-        this.H2.y = pathPoint.H2.y;
+        this.h2.y = pathPoint.h2.y;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -723,7 +626,7 @@ class PathPoint {
      * @param {PathPoint} pathPoint - other point with which to align
      */
     alignH2YCross(pathPoint) {
-        this.H2.y = pathPoint.H1.y;
+        this.h2.y = pathPoint.h1.y;
         redraw({calledBy: 'pointDetails'});
     }
 
@@ -787,13 +690,13 @@ class PathPoint {
      * @return {number}
      */
     getMutualOffset(pathPoint) {
-        if (this.P.x === pathPoint.P.x) {
-            return Math.abs(this.P.y - pathPoint.P.y);
-        } else if (this.P.y === pathPoint.P.y) {
-            return Math.abs(this.P.x - pathPoint.P.x);
+        if (this.p.x === pathPoint.p.x) {
+            return Math.abs(this.p.y - pathPoint.p.y);
+        } else if (this.p.y === pathPoint.p.y) {
+            return Math.abs(this.p.x - pathPoint.p.x);
         } else {
-            let dX = Math.abs(this.P.x - pathPoint.P.x);
-            let dY = Math.abs(this.P.y - pathPoint.P.y);
+            let dX = Math.abs(this.p.x - pathPoint.p.x);
+            let dY = Math.abs(this.p.y - pathPoint.p.y);
             return Math.sqrt(Math.abs(dX^2 + dY^2));
         }
     }
@@ -818,14 +721,14 @@ class PathPoint {
      * @param {number} p3 - third point
      */
     alignMutualOffsetX(p1, p2, p3) {
-        let dRef = Math.abs(p1.P.x - p2.P.x);
-        let dCur = Math.abs(this.P.x - (p3.P.x || p2.P.x ));
+        let dRef = Math.abs(p1.p.x - p2.p.x);
+        let dCur = Math.abs(this.p.x - (p3.p.x || p2.p.x ));
         let delta = dRef - dCur;
 
-        if ((this.P.x > p3.P.x) || (this.P.x == p3.P.x)) this.P.x += delta;
-        else if (this.P.x < p3.P.x) this.P.x -= delta;
-        else if ((this.P.x > p2.P.x) || (this.P.x == p2.P.x)) this.P.x += delta;
-        else if (this.P.x < p2.P.x) this.P.x -= delta;
+        if ((this.p.x > p3.p.x) || (this.p.x == p3.p.x)) this.p.x += delta;
+        else if (this.p.x < p3.p.x) this.p.x -= delta;
+        else if ((this.p.x > p2.p.x) || (this.p.x == p2.p.x)) this.p.x += delta;
+        else if (this.p.x < p2.p.x) this.p.x -= delta;
 
         redraw({calledBy: 'pointDetails'});
     }
@@ -837,14 +740,14 @@ class PathPoint {
      * @param {number} p3 - third point
      */
     alignMutualOffsetY(p1, p2, p3) {
-        let dRef = Math.abs(p1.P.y - p2.P.y);
-        let dCur = Math.abs(this.P.y - (p3.P.y || p2.P.y ));
+        let dRef = Math.abs(p1.p.y - p2.p.y);
+        let dCur = Math.abs(this.p.y - (p3.p.y || p2.p.y ));
         let delta = dRef - dCur;
 
-        if ((this.P.y > p3.P.y) || (this.P.y == p3.P.y)) this.P.y += delta;
-        else if (this.P.y < p3.P.y) this.P.y -= delta;
-        else if ((this.P.y > p2.P.y) || (this.P.y == p2.P.y)) this.P.y += delta;
-        else if (this.P.y < p2.P.y) this.P.y -= delta;
+        if ((this.p.y > p3.p.y) || (this.p.y == p3.p.y)) this.p.y += delta;
+        else if (this.p.y < p3.p.y) this.p.y -= delta;
+        else if ((this.p.y > p2.p.y) || (this.p.y == p2.p.y)) this.p.y += delta;
+        else if (this.p.y < p2.p.y) this.p.y -= delta;
 
         redraw({calledBy: 'pointDetails'});
     }
@@ -870,11 +773,11 @@ class PathPoint {
         _UI.glyphEditCTX.strokeStyle = accent.l65;
         _UI.glyphEditCTX.font = '10px Consolas';
 
-        _UI.glyphEditCTX.fillRect((sx_cx(this.P.x)-hp), (sy_cy(this.P.y)-hp), ps, ps);
-        _UI.glyphEditCTX.strokeRect((sx_cx(this.P.x)-hp), (sy_cy(this.P.y)-hp), ps, ps);
+        _UI.glyphEditCTX.fillRect((sx_cx(this.p.x)-hp), (sy_cy(this.p.y)-hp), ps, ps);
+        _UI.glyphEditCTX.strokeRect((sx_cx(this.p.x)-hp), (sy_cy(this.p.y)-hp), ps, ps);
 
         _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.fillText(this.getPointNum(), sx_cx(this.P.x + 12), sy_cy(this.P.y));
+        _UI.glyphEditCTX.fillText(this.pointNumber, sx_cx(this.p.x + 12), sy_cy(this.p.y));
         // debug(' PathPoint.drawPoint - END\n');
     }
 
@@ -889,11 +792,11 @@ class PathPoint {
         _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
         _UI.glyphEditCTX.strokeStyle = accent.l65;
         _UI.glyphEditCTX.lineWidth = 1;
-        let begin = {'x': this.P.x, 'y': this.P.y};
-        let end = {'x': this.H2.x, 'y': this.H2.y};
+        let begin = {'x': this.p.x, 'y': this.p.y};
+        let end = {'x': this.h2.x, 'y': this.h2.y};
 
-        if (!this.useh2) {
-            end = {'x': next.P.x, 'y': next.P.y};
+        if (!this.h2.use) {
+            end = {'x': next.p.x, 'y': next.p.y};
         }
 
         let ps = (_GP.projectsettings.pointsize*0.5);
@@ -909,7 +812,7 @@ class PathPoint {
 
         // FAILURE CASE FALLBACK
         if (!ang && ang !== 0) {
-            ang = (this.P.x > this.H2.x)? Math.PI : 0;
+            ang = (this.p.x > this.h2.x)? Math.PI : 0;
         }
 
         for (let a in arrow) {
@@ -924,21 +827,21 @@ class PathPoint {
         // debug('DRAWPOINT arrow = ' + JSON.stringify(arrow) + '  - rotatedarrow = ' + JSON.stringify(rotatedarrow));
 
         _UI.glyphEditCTX.beginPath();
-        _UI.glyphEditCTX.moveTo((rotatedarrow[0][0] + sx_cx(this.P.x)), (rotatedarrow[0][1] + sy_cy(this.P.y)));
+        _UI.glyphEditCTX.moveTo((rotatedarrow[0][0] + sx_cx(this.p.x)), (rotatedarrow[0][1] + sy_cy(this.p.y)));
 
         for (let p in rotatedarrow) {
             if (p > 0) {
-                _UI.glyphEditCTX.lineTo((rotatedarrow[p][0] + sx_cx(this.P.x)), (rotatedarrow[p][1] + sy_cy(this.P.y)));
+                _UI.glyphEditCTX.lineTo((rotatedarrow[p][0] + sx_cx(this.p.x)), (rotatedarrow[p][1] + sy_cy(this.p.y)));
             }
         }
 
-        _UI.glyphEditCTX.lineTo((rotatedarrow[0][0] + sx_cx(this.P.x)), (rotatedarrow[0][1] + sy_cy(this.P.y)));
+        _UI.glyphEditCTX.lineTo((rotatedarrow[0][0] + sx_cx(this.p.x)), (rotatedarrow[0][1] + sy_cy(this.p.y)));
         _UI.glyphEditCTX.fill();
         _UI.glyphEditCTX.stroke();
 
         // Exact Middle Point
         _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.fillRect(makeCrisp(sx_cx(this.P.x)), makeCrisp(sy_cy(this.P.y)), 1, 1);
+        _UI.glyphEditCTX.fillRect(makeCrisp(sx_cx(this.p.x)), makeCrisp(sy_cy(this.p.y)), 1, 1);
     }
 
     /**
@@ -957,32 +860,32 @@ class PathPoint {
 
         let hp = _GP.projectsettings.pointsize/2;
 
-        if (drawH1 && this.useh1) {
+        if (drawH1 && this.h1.use) {
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sx_cx(this.H1.x), sy_cy(this.H1.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.arc(sx_cx(this.h1.x), sy_cy(this.h1.y), hp, 0, Math.PI*2, true);
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.fill();
 
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sx_cx(this.P.x), sy_cy(this.P.y));
-            _UI.glyphEditCTX.lineTo(sx_cx(this.H1.x), sy_cy(this.H1.y));
+            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
+            _UI.glyphEditCTX.lineTo(sx_cx(this.h1.x), sy_cy(this.h1.y));
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.stroke();
-            _UI.glyphEditCTX.fillText('1', sx_cx(this.H1.x + 12), sy_cy(this.H1.y));
+            _UI.glyphEditCTX.fillText('1', sx_cx(this.h1.x + 12), sy_cy(this.h1.y));
         }
 
-        if (drawH2 && this.useh2) {
+        if (drawH2 && this.h2.use) {
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sx_cx(this.H2.x), sy_cy(this.H2.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.arc(sx_cx(this.h2.x), sy_cy(this.h2.y), hp, 0, Math.PI*2, true);
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.fill();
 
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sx_cx(this.P.x), sy_cy(this.P.y));
-            _UI.glyphEditCTX.lineTo(sx_cx(this.H2.x), sy_cy(this.H2.y));
+            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
+            _UI.glyphEditCTX.lineTo(sx_cx(this.h2.x), sy_cy(this.h2.y));
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.stroke();
-            _UI.glyphEditCTX.fillText('2', sx_cx(this.H2.x + 12), sy_cy(this.H2.y));
+            _UI.glyphEditCTX.fillText('2', sx_cx(this.h2.x + 12), sy_cy(this.h2.y));
         }
     }
 
@@ -997,22 +900,22 @@ class PathPoint {
         _UI.glyphEditCTX.lineWidth = 1;
         let hp = _GP.projectsettings.pointsize/2;
 
-        if (this.Q) {
+        if (this.q) {
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sx_cx(this.Q.x), sy_cy(this.Q.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.arc(sx_cx(this.q.x), sy_cy(this.q.y), hp, 0, Math.PI*2, true);
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.fill();
 
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sx_cx(this.P.x), sy_cy(this.P.y));
-            _UI.glyphEditCTX.lineTo(sx_cx(this.Q.x), sy_cy(this.Q.y));
+            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
+            _UI.glyphEditCTX.lineTo(sx_cx(this.q.x), sy_cy(this.q.y));
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.stroke();
 
             if (prevP) {
                 _UI.glyphEditCTX.beginPath();
                 _UI.glyphEditCTX.moveTo(sx_cx(prevP.x), sy_cy(prevP.y));
-                _UI.glyphEditCTX.lineTo(sx_cx(this.Q.x), sy_cy(this.Q.y));
+                _UI.glyphEditCTX.lineTo(sx_cx(this.q.x), sy_cy(this.q.y));
                 _UI.glyphEditCTX.closePath();
                 _UI.glyphEditCTX.stroke();
             }
@@ -1032,15 +935,15 @@ class PathPoint {
  */
 function makePathPointFromSegments(seg1, seg2) {
     let newpp = new PathPoint({
-        H1: new Coord({x: seg1.p3x, y: seg1.p3y}),
-        P: new Coord({x: seg2.p1x, y: seg2.p1y}),
-        H2: new Coord({x: seg2.p2x, y: seg2.p2y}),
-        useh1: true,
-        useh2: true,
+        h1: new Coord({x: seg1.p3x, y: seg1.p3y}),
+        p: new Coord({x: seg2.p1x, y: seg2.p1y}),
+        h2: new Coord({x: seg2.p2x, y: seg2.p2y}),
+        useH1: true,
+        useH2: true,
     });
 
-    if (seg1.line || coordsAreEqual(newpp.H1, newpp.P)) newpp.useh1 = false;
-    if (seg2.line || coordsAreEqual(newpp.H2, newpp.P)) newpp.useh2 = false;
+    if (seg1.line || coordsAreEqual(newpp.h1, newpp.p)) newpp.h1.use = false;
+    if (seg2.line || coordsAreEqual(newpp.h2, newpp.p)) newpp.h2.use = false;
 
     // newpp.resolvePointType();
 

@@ -89,17 +89,17 @@
                 return;
             }
 
-            let result;
+            let test;
             let currResultSection = document.querySelector(`#${getResultSectionID(_TEST.testList[currTest].category)}`);
 
             try {
-                result = _TEST.testList[currTest].assertion();
-                currResultSection.innerHTML += addTestResult(result, _TEST.testList[currTest].name);
-                if(result) _TEST.succeeded++;
+                test = _TEST.testList[currTest].assertion();
+                currResultSection.innerHTML += addTestResult(test.result, test.description, _TEST.testList[currTest].name);
+                if(test.result) _TEST.succeeded++;
                 else _TEST.failed++;
 
             } catch (error) {
-                currResultSection.innerHTML += addTestResult(error, _TEST.testList[currTest].name);
+                currResultSection.innerHTML += addTestResult('didNotRun', error.message, _TEST.testList[currTest].name);
                 _TEST.didNotRun++;
             }
 
@@ -111,14 +111,39 @@
         window.setTimeout(runNextTest, 100);
     }
 
-    function addTestResult(result, title) {
+    function is(leftHand){
+        let test = {};
+        test.description = JSON.stringify(leftHand);
+
+        this.leftHand = leftHand;
+
+        this.equalTo = function(rightHand){
+            test.result = areEqual(this.leftHand, rightHand);
+
+            test.description += test.result? '\nEQUALS\n' : '\nDOES NOT EQUAL\n';
+            test.description += JSON.stringify(rightHand);
+
+            return test;
+        }
+
+        return this;
+    }
+
+    function expression(ex){
+        return {
+            description: 'Expression evaluated to: ' + JSON.stringify(ex),
+            result: ex
+        }
+    }
+
+    function addTestResult(result, message, title) {
         let resultClass;
 
         if(result === true) resultClass = 'pass';
         else if(result === false) resultClass = 'fail';
         else resultClass = 'didNotRun';
 
-        return `<span class="testResult ${resultClass}" title="${result.message || result}">
+        return `<span class="testResult ${resultClass}" title='${message}'>
             <span class="icon">&#x${resultIcons[resultClass]};</span>
             ${title}
         </span>`;

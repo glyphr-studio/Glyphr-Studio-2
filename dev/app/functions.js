@@ -188,7 +188,7 @@ function saveFile(fname, buffer, ftype) {
 // -------------------
 // Common Functions
 // -------------------
-/* exported clone, json, makeCrisp, round, numSan, strSan, trim, isVal, getOverallMaxes, reqAniFrame */
+/* exported clone, json, areEqual, makeCrisp, round, numSan, strSan, trim, isVal, getOverallMaxes, reqAniFrame */
 
 /**
  * Returns a full new copy of any object
@@ -222,6 +222,27 @@ function json(obj, raw) {
         if (j) return j.replace(/\n/g, '\r\n');
         else return '';
     }
+}
+
+/**
+ * Simple way of comparing equality between things (including Objects)
+ * Not intended for complex objects :-)
+ * @param {object} obj1 - first object to compare
+ * @param {object} obj2 - second object to compare
+ * @return {boolean}
+ */
+function areEqual(obj1, obj2) {
+    if (typeof obj1 !== 'object' && typeof obj2 !== 'object') return obj1 === obj2;
+
+    for (let key in obj1) {
+        if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
+            if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+                if (!areEqual(obj1[key], obj2[key])) return false;
+            } else if (obj1[key] !== obj2[key]) return false;
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -584,102 +605,6 @@ function genEmailContent() {
     // debug(con);
 
     return con;
-}
-
-
-// -------------------
-// COLORS
-// -------------------
-/* exported parseColorString, shiftColor, RGBAtoRGB, transparencyToAlpha */
-
-/**
- * Convert a color string into an object
- * @param {string} c - color string
- * @return {object}
- */
-function parseColorString(c) {
-    let val = {r: 0, g: 0, b: 0, a: 1};
-
-    if (typeof c !== 'string') return val;
-
-    if (c.charAt(0)==='#') {
-        c = c.substring(1, 7);
-        val.r = parseInt(c.substring(0, 2), 16);
-        val.g = parseInt(c.substring(2, 4), 16);
-        val.b = parseInt(c.substring(4, 6), 16);
-    } else if (c.substring(0, 4) === 'rgb(') {
-        c = c.split('(')[1].split(')')[0].split(',');
-        val.r = parseInt(c[0], 10);
-        val.g = parseInt(c[1], 10);
-        val.b = parseInt(c[2], 10);
-        val.a = parseInt(c[3], 10) || 1;
-    }
-
-    return val;
-}
-
-/**
- * Takes a color string, then lightens or darkens that color
- * by a certain percentage
- * @param {string} c - color string
- * @param {number} percent - ammount to shift color
- * @param {boolean} lighter - true = lighten, false = darken
- * @return {string}
- */
-function shiftColor(c, percent, lighter) {
-    percent = Math.max(0, Math.min(percent, 1));
-    let val = parseColorString(c);
-
-    val.r = Math.max(0, Math.min(val.r, 255));
-    val.g = Math.max(0, Math.min(val.g, 255));
-    val.b = Math.max(0, Math.min(val.b, 255));
-
-    if (lighter) {
-        val.r = round(((255-val.r)*percent)+val.r);
-        val.g = round(((255-val.g)*percent)+val.g);
-        val.b = round(((255-val.b)*percent)+val.b);
-    } else {
-        val.r = round(val.r-(val.r*percent));
-        val.g = round(val.g-(val.g*percent));
-        val.b = round(val.b-(val.b*percent));
-    }
-
-    return `rgb(${val.r},${val.g},${val.b})`;
-}
-
-/**
- * Converts an RGBA color to it's opaque RGB equivallent
- * @param {object} rgb - color object in RGB
- * @param {number} alpha - transparency
- * @return {string}
- */
-function RGBAtoRGB(rgb, alpha) {
-    let val = parseColorString(rgb);
-
-    let dr = round((255-val.r) * (1-alpha));
-    let dg = round((255-val.g) * (1-alpha));
-    let db = round((255-val.b) * (1-alpha));
-
-    let r = val.r + dr;
-    let g = val.g + dg;
-    let b = val.b + db;
-
-    return `rgb(${r},${g},${b})`;
-}
-
-/**
- * Converts Transparency to Alpha, invert and change scale
- * @param {number} transparency - 0=opaque, 100=transparent
- * @return {number}
- */
-function transparencyToAlpha(transparency) {
-    let t = parseInt(transparency);
-    if (!t || isNaN(t)) return 1;
-
-    if (t > 100) return 0;
-    if (t < 0) return 1;
-
-    return ((100 - transparency) / 100);
 }
 
 

@@ -606,8 +606,8 @@ return a.path.getWinding() - b.path.getWinding();
                 H1: clone(s1h1.overlap.H1),
                 H2: clone(s2h1.overlap.H2),
                 type: 'corner',
-                useh1: s1h1.overlap.useh1,
-                useh2: s2h1.overlap.useh2,
+                useH1: s1h1.overlap.h1.use,
+                useH2: s2h1.overlap.h2.use,
             })
         );
 
@@ -620,8 +620,8 @@ return a.path.getWinding() - b.path.getWinding();
                 H1: clone(s2h1.overlap.H1),
                 H2: clone(s1h2.overlap.H2),
                 type: 'corner',
-                useh1: s2h1.overlap.useh1,
-                useh2: s1h2.overlap.useh2,
+                useH1: s2h1.overlap.h1.use,
+                useH2: s1h2.overlap.h2.use,
             })
         );
 
