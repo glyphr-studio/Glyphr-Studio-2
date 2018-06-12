@@ -14,14 +14,11 @@ class PathPoint {
      * @param {Coord} h2 - Second handle
      * @param {Coord} q - Storing the Quadratic handle point from Import SVG action
      * @param {string} type - corner, flat, or symmetric
-     * @param {boolean} useH1 - toggle for using Handle 1
-     * @param {boolean} useH2 - toggle for using Handle 2
      */
     constructor({
         p = new Coord({x: 100, y: 100}),
         h1 = new Handle({x: 0, y: 0}),
         h2 = new Handle({x: 200, y: 200}),
-        q = false,
         type = 'corner',
     } = {}) {
         this.p = p;
@@ -32,6 +29,8 @@ class PathPoint {
 
         this.h1.rootPoint = this;
         this.h2.rootPoint = this;
+
+        if(q) this.q = q;
 
         if (this.type === 'symmetric') {
             this.makeSymmetric('h1');
@@ -409,7 +408,7 @@ class PathPoint {
         if (this.p.y === this.h1.y && this.p.y === this.h2.y) return true;
 
         let a1 = this.h1.angle;
-        let a2 = this..h2.angle;
+        let a2 = this.h2.angle;
         // debug('\t comparing ' + a1 + ' / ' + a2);
 
         return (round((Math.abs(a1) + Math.abs(a2)), 2) === 3.14);
@@ -935,11 +934,9 @@ class PathPoint {
  */
 function makePathPointFromSegments(seg1, seg2) {
     let newpp = new PathPoint({
-        h1: new Coord({x: seg1.p3x, y: seg1.p3y}),
+        h1: new Handle({point: Coord({x: seg1.p3x, y: seg1.p3y})}),
         p: new Coord({x: seg2.p1x, y: seg2.p1y}),
-        h2: new Coord({x: seg2.p2x, y: seg2.p2y}),
-        useH1: true,
-        useH2: true,
+        h2: new Handle({point: Coord({x: seg2.p2x, y: seg2.p2y})}),
     });
 
     if (seg1.line || coordsAreEqual(newpp.h1, newpp.p)) newpp.h1.use = false;

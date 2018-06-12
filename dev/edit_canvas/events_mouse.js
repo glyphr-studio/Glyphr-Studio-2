@@ -365,12 +365,10 @@ function Tool_NewPath() {
 
         let eh = _UI.eventhandlers;
         let newpoint = new PathPoint({
-            'P': new Coord({'x': cx_sx(eh.mousex), 'y': cy_sy(eh.mousey)}),
-            'H1': new Coord({'x': cx_sx(eh.mousex-100), 'y': cy_sy(eh.mousey)}),
-            'H2': new Coord({'x': cx_sx(eh.mousex+100), 'y': cy_sy(eh.mousey)}),
-            'type': 'flat',
-            'useH1': false,
-            'useH2': false,
+            p: new Coord({x: cx_sx(eh.mousex), y: cy_sy(eh.mousey)}),
+            h1: new Handle({point: new Coord({x: cx_sx(eh.mousex-100), y: cy_sy(eh.mousey)}), use: false}),
+            h2: new Handle({point: new Coord({x: cx_sx(eh.mousex+100), y: cy_sy(eh.mousey)}), use: false}),
+            type: 'flat',
         });
 
         if (this.firstpoint) {
@@ -416,13 +414,13 @@ function Tool_NewPath() {
 
         if (this.dragging) {
             // avoid really small handles
-            if ((Math.abs(this.currpt.P.x-cx_sx(eh.mousex)) > (_GP.projectsettings.pointsize*2)) ||
-                (Math.abs(this.currpt.P.y-cy_sy(eh.mousey)) > (_GP.projectsettings.pointsize*2)) ) {
+            if ((Math.abs(this.currpt.p.x-cx_sx(eh.mousex)) > (_GP.projectsettings.pointsize*2)) ||
+                (Math.abs(this.currpt.p.y-cy_sy(eh.mousey)) > (_GP.projectsettings.pointsize*2)) ) {
                 this.currpt.h1.use = true;
                 this.currpt.h2.use = true;
-                this.currpt.H2.x = cx_sx(eh.mousex);
-                this.currpt.H2.y = cy_sy(eh.mousey);
-                this.currpt.makeSymmetric('H2');
+                this.currpt.h2.x = cx_sx(eh.mousex);
+                this.currpt.h2.y = cy_sy(eh.mousey);
+                this.currpt.makeSymmetric('h2');
             }
 
             setCursor('penCircle');
@@ -480,7 +478,7 @@ function Tool_PathEdit() {
 
         if (this.controlpoint) {
             this.dragging = true;
-            if (this.controlpoint.type === 'P') {
+            if (this.controlpoint.type === 'p') {
                 if (eh.multi) _UI.multiSelect.points.toggle(this.controlpoint.point);
                 else if (!_UI.multiSelect.points.isSelected(this.controlpoint.point)) _UI.multiSelect.points.select(this.controlpoint.point);
                 setCursor('penSquare');
@@ -512,13 +510,13 @@ function Tool_PathEdit() {
         if (eh.toolhandoff) {
             eh.toolhandoff = false;
             this.controlpoint = {
-                'type': 'H2',
+                'type': 'h2',
                 'point': sp.getSingleton(),
             };
 
             this.controlpoint.point.h2.use = true;
-            this.controlpoint.point.H2.x = cx_sx(eh.mousex);
-            this.controlpoint.point.H2.y = cy_sy(eh.mousey);
+            this.controlpoint.point.h2.x = cx_sx(eh.mousex);
+            this.controlpoint.point.h2.y = cy_sy(eh.mousey);
             _UI.multiSelect.points.handlesingleton = this.controlpoint.point;
 
             this.dragging = true;
@@ -537,7 +535,7 @@ function Tool_PathEdit() {
             let dy = (eh.lasty-eh.mousey)/dz;
             let cpt = this.controlpoint.type;
 
-            if (this.controlpoint.type === 'P') setCursor('penSquare');
+            if (this.controlpoint.type === 'p') setCursor('penSquare');
             else setCursor('penCircle');
 
             if (sp.getMembers().length === 1) {
@@ -565,7 +563,7 @@ function Tool_PathEdit() {
         checkForMouseOverHotspot(eh.mousex, eh.mousey);
 
         let cp = _UI.multiSelect.shapes.isOverControlPoint(cx_sx(eh.mousex), cy_sy(eh.mousey));
-        if (cp.type === 'P') setCursor('penSquare');
+        if (cp.type === 'p') setCursor('penSquare');
         else if (_UI.multiSelect.points.isSelected(cp.point)) setCursor('penCircle');
         if (!cp && eh.multi) setCursor('penPlus');
 

@@ -12,22 +12,22 @@ class Coord {
      * @param {boolean} yLock - if the Y value is locked
      */
     constructor({x = 0, y = 0, xLock = false, yLock = false} = {}) {
-        this.x = parseFloat(x);
-        this.y = parseFloat(y);
-        if (xLock) this.xLock = xLock;
-        if (yLock) this.yLock = yLock;
+        this._x = x;
+        this._y = y;
+        if (xLock) this._xLock = xLock;
+        if (yLock) this._yLock = yLock;
     }
 
     /* GETTERS */
 
     /** Gets the xLock property */
     get xLock() {
-        return this.xLock? true : false;
+        return this._xLock? true : false;
     }
 
     /** Gets the yLock property */
     get yLock() {
-        return this.yLock? true : false;
+        return this._yLock? true : false;
     }
 
     /**
@@ -35,10 +35,10 @@ class Coord {
      * @return {number}
      */
     get x() {
-        if (!isNaN(this.x)) {
-            return this.x;
+        if (!isNaN(this._x)) {
+            return this._x;
         } else {
-            this.x = 0;
+            this._x = 0;
             console.warn('Coord.x was NaN, setting to 0');
             return 0;
         }
@@ -49,10 +49,10 @@ class Coord {
      * @return {number}
      */
     get y() {
-        if (!isNaN(this.y)) {
-            return this.y;
+        if (!isNaN(this._y)) {
+            return this._y;
         } else {
-            this.y = 0;
+            this._y = 0;
             console.warn('Coord.y was NaN, setting to 0');
             return 0;
         }
@@ -61,13 +61,37 @@ class Coord {
     /* SETTERS */
 
     /**
+     * Set the x position of the point
+     * @param {number} position
+     */
+    set x(position = 0) {
+        debug(`\n Coord.x SET - START`, true);
+
+        position = parseFloat(position);
+        if (isNaN(position)) this._x = 0;
+        else this._x = position;
+
+        debug(`Coord.x SET - END\n\n`);
+    }
+
+    /**
+     * Set the y position of the point
+     * @param {number} position
+     */
+    set y(position = 0) {
+        position = parseFloat(position);
+        if (isNaN(position)) this._y = 0;
+        else this._y = position;
+    }
+
+    /**
      * Sets if the x value can be moved
      * @param {boolean} lock
      */
     set xLock(lock) {
-        if (lock) this.xLock = true;
+        if (lock) this._xLock = true;
         else {
-            if (this.xLock) delete this.xLock;
+            if (this._xLock) delete this._xLock;
         }
     }
 
@@ -76,9 +100,9 @@ class Coord {
      * @param {boolean} lock
      */
     set yLock(lock) {
-        if (lock) this.yLock = true;
+        if (lock) this._yLock = true;
         else {
-            if (this.yLock) delete this.yLock;
+            if (this._yLock) delete this._yLock;
         }
     }
 }

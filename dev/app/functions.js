@@ -58,7 +58,7 @@ function makeSuperTitleSeperator() {
  * @param {boolean} force - show message even if _UI.devmode = false
  */
 function debug(message, force) {
-    if (!_UI.devMode) return;
+    // if (!_UI.devMode) return;
 
     if (_UI.debug || force) {
         if (typeof message === 'string') {

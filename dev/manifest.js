@@ -11,6 +11,8 @@ const manifest = [
     {
         path: 'glyph_classes',
         files: [
+            'coord.js',
+            'handle.js',
             'pathpoint.js',
             'path.js',
             'segment.js',
@@ -19,6 +21,8 @@ const manifest = [
             'shape.js',
             'glyph.js',
             'hkern.js',
+
+            'coord.test.js',
         ],
     },
 
@@ -27,13 +31,15 @@ const manifest = [
         files: [
             'settings.js',
             'functions.js',
-            'global.css',
-            'colors.css',
             'colors.js',
-            'colors.test.js',
             'nav.js',
             'history.js',
             'unicode.js',
+
+            'global.css',
+            'colors.css',
+
+            'colors.test.js',
             'test.test.js',
         ],
     },
@@ -42,9 +48,10 @@ const manifest = [
         path: 'project',
         files: [
             'glyphrstudioproject.js',
-            'glyphrstudioproject.test.js',
             'project_functions.js',
             'project_import.js',
+
+            'glyphrstudioproject.test.js',
         ],
     },
 
@@ -52,12 +59,13 @@ const manifest = [
         path: 'edit_canvas',
         files: [
             'edit_canvas.js',
-            'edit_canvas.css',
             'events_mouse.js',
             'events_keyboard.js',
             'guide.js',
             'multiselect.js',
             'glyph_sequence.js',
+
+            'edit_canvas.css',
         ],
     },
 
@@ -84,7 +92,6 @@ const manifest = [
     {
         path: 'pages',
         files: [
-            'pages.css',
             'glyphedit.js',
             'components.js',
             'ligatures.js',
@@ -97,13 +104,14 @@ const manifest = [
             'importSVG.js',
             'exportfont.js',
             'about.js',
+
+            'pages.css',
         ],
     },
 
     {
         path: 'panels',
         files: [
-            'panels.css',
             'attributes_glyph.js',
             'attributes_component.js',
             'attributes_kern.js',
@@ -112,6 +120,8 @@ const manifest = [
             'guides.js',
             'history.js',
             'actions.js',
+
+            'panels.css',
         ],
     },
 

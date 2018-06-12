@@ -15,3 +15,5 @@ PathPoint.setH1/H2/AngleX/Y - setters << what is with these?
 UPGRADE STUFF
 Camel Case
 - stopPageNavigation
+
+PathPoint.getPx - PathPoint.p.x

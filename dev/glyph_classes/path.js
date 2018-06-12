@@ -102,12 +102,12 @@
 
         for (let e=0; e<this.pathpoints.length; e++) {
             let pp = this.pathpoints[e];
-            pp.P.x = (((pp.P.x - this.maxes.xmin) * ratiodw) + this.maxes.xmin);
-            pp.H1.x = (((pp.H1.x - this.maxes.xmin) * ratiodw) + this.maxes.xmin);
-            pp.H2.x = (((pp.H2.x - this.maxes.xmin) * ratiodw) + this.maxes.xmin);
-            pp.P.y = (((pp.P.y - this.maxes.ymin) * ratiodh) + this.maxes.ymin);
-            pp.H1.y = (((pp.H1.y - this.maxes.ymin) * ratiodh) + this.maxes.ymin);
-            pp.H2.y = (((pp.H2.y - this.maxes.ymin) * ratiodh) + this.maxes.ymin);
+            pp.p.x = (((pp.p.x - this.maxes.xmin) * ratiodw) + this.maxes.xmin);
+            pp.h1.x = (((pp.h1.x - this.maxes.xmin) * ratiodw) + this.maxes.xmin);
+            pp.h2.x = (((pp.h2.x - this.maxes.xmin) * ratiodw) + this.maxes.xmin);
+            pp.p.y = (((pp.p.y - this.maxes.ymin) * ratiodh) + this.maxes.ymin);
+            pp.h1.y = (((pp.h1.y - this.maxes.ymin) * ratiodh) + this.maxes.ymin);
+            pp.h2.y = (((pp.h2.y - this.maxes.ymin) * ratiodh) + this.maxes.ymin);
         }
 
         if (this.checkForNaN()) {
@@ -151,7 +151,7 @@
         for (let d=0; d<this.pathpoints.length; d++) {
             let pp = this.pathpoints[d];
             // debug('-------------------- pathPoint #' + d);
-            pp.updatePathPointPosition('P', dx, dy, force);
+            pp.updatePathPointPosition('p', dx, dy, force);
         }
 
         this.changed();
@@ -196,7 +196,7 @@
             // debug('\t starting point ' + d);
             let pp = this.pathpoints[d];
             pp.rotate(angle, about);
-            // debug('\t p['+d+'].P.x ' + pp.P.x);
+            // debug('\t p['+d+'].p.x ' + pp.p.x);
         }
         this.changed();
         // debug(' Path.rotate - END\n');
@@ -330,10 +330,10 @@
             let tpp;
             for (let pp=0; pp<chk.pathpoints.length; pp++) {
                 tpp = chk.pathpoints[pp];
-                if ( (tpp.P.x === m.xmin) || (tpp.P.x === m.xmax) ||
-                    (tpp.P.y === m.ymin) || (tpp.P.y === m.ymax) ) {
-                    if (against.isHere(sx_cx(tpp.P.x), sy_cy(tpp.P.y))) {
-                        re.push(''+tpp.P.x+'/'+tpp.P.y);
+                if ( (tpp.p.x === m.xmin) || (tpp.p.x === m.xmax) ||
+                    (tpp.p.y === m.ymin) || (tpp.p.y === m.ymax) ) {
+                    if (against.isHere(sx_cx(tpp.p.x), sy_cy(tpp.p.y))) {
+                        re.push(''+tpp.p.x+'/'+tpp.p.y);
                     }
                 }
             }
@@ -354,8 +354,8 @@
 
         for (let pp1=0; pp1<p1.pathpoints.length; pp1++) {
             for (let pp2=0; pp2<p2.pathpoints.length; pp2++) {
-                if (coordsAreEqual(p1.pathpoints[pp1].P, p2.pathpoints[pp2].P, 0.01)) {
-                    re.push(''+p1.pathpoints[pp1].P.x+'/'+p1.pathpoints[pp1].P.y);
+                if (coordsAreEqual(p1.pathpoints[pp1].p, p2.pathpoints[pp2].p, 0.01)) {
+                    re.push(''+p1.pathpoints[pp1].p.x+'/'+p1.pathpoints[pp1].p.y);
                 }
             }
         }
@@ -379,7 +379,7 @@
 
     Path.prototype.containsPoint = function(c, wantsecond) {
         for (let pp=0; pp<this.pathpoints.length; pp++) {
-            if (coordsAreEqual(c, this.pathpoints[pp].P, 0.01)) {
+            if (coordsAreEqual(c, this.pathpoints[pp].p, 0.01)) {
                 if (wantsecond) wantsecond = false;
                 else return this.pathpoints[pp];
             }
@@ -417,8 +417,8 @@
         if (this.pathpoints === false || this.pathpoints.length < 2) return;
         let pp, np, pph2x, pph2y, nxh1x, nxh1y, nxppx, nxppy;
 
-        if (snap) lctx.moveTo(sx_cx(round(this.pathpoints[0].P.x)), sy_cy(round(this.pathpoints[0].P.y)));
-        else lctx.moveTo(sx_cx(this.pathpoints[0].P.x), sy_cy(this.pathpoints[0].P.y));
+        if (snap) lctx.moveTo(sx_cx(round(this.pathpoints[0].p.x)), sy_cy(round(this.pathpoints[0].p.y)));
+        else lctx.moveTo(sx_cx(this.pathpoints[0].p.x), sy_cy(this.pathpoints[0].p.y));
 
         for (let cp = 0; cp < this.pathpoints.length; cp++) {
             pp = this.pathpoints[cp];
@@ -426,9 +426,9 @@
             np = this.pathpoints[this.getNextPointNum(cp)];
 
             if (pp.type === 'symmetric') {
- pp.makeSymmetric('H1');
+ pp.makeSymmetric('h1');
 } else if (pp.type === 'flat') {
- pp.makeFlat('H1');
+ pp.makeFlat('h1');
 }
 
             // this.validate('DRAW PATH');
@@ -438,15 +438,15 @@
                 pph2y = sy_cy(round(pp.h2.y));
                 nxh1x = sx_cx(round(np.h1.x));
                 nxh1y = sy_cy(round(np.h1.y));
-                nxppx = sx_cx(round(np.P.x));
-                nxppy = sy_cy(round(np.P.y));
+                nxppx = sx_cx(round(np.p.x));
+                nxppy = sy_cy(round(np.p.y));
             } else {
                 pph2x = sx_cx(pp.h2.x);
                 pph2y = sy_cy(pp.h2.y);
                 nxh1x = sx_cx(np.h1.x);
                 nxh1y = sy_cy(np.h1.y);
-                nxppx = sx_cx(np.P.x);
-                nxppy = sy_cy(np.P.y);
+                nxppx = sx_cx(np.p.x);
+                nxppy = sy_cy(np.p.y);
             }
 
             // debug('\t curve ' + pph2x +' '+ pph2y +' '+ nxh1x +' '+ nxh1y +' '+ nxppx +' '+ nxppy);
@@ -468,7 +468,7 @@
         let p1, p2, p1h2x, p1h2y, p2h1x, p2h1y, p2ppx, p2ppy;
         let trr = '';
 
-        let re = '\t\t\t\t' + (this.pathpoints[0].P.x - lastx) + ' ' + (this.pathpoints[0].P.y - lasty) + ' rmoveto \n';
+        let re = '\t\t\t\t' + (this.pathpoints[0].p.x - lastx) + ' ' + (this.pathpoints[0].p.y - lasty) + ' rmoveto \n';
 
         // debug('GENPATHPOSTSCRIPT:\n\t ' + re);
 
@@ -477,12 +477,12 @@
             // p2 = this.pathpoints[(cp+1) % this.pathpoints.length];
             p2 = this.pathpoints[this.getNextPointNum(cp)];
 
-            p1h2x = p1.h2.x - p1.P.x;
-            p1h2y = p1.h2.y - p1.P.y;
+            p1h2x = p1.h2.x - p1.p.x;
+            p1h2y = p1.h2.y - p1.p.y;
             p2h1x = p2.h1.x - p1.h2.x;
             p2h1y = p2.h1.y - p1.h2.y;
-            p2ppx = p2.P.x - p2.h1.x;
-            p2ppy = p2.P.y - p2.h1.y;
+            p2ppx = p2.p.x - p2.h1.x;
+            p2ppy = p2.p.y - p2.h1.y;
 
             trr = '\t\t\t\t' + p1h2x + ' ' + p1h2y + ' ' + p2h1x + ' ' + p2h1y + ' ' + p2ppx + ' ' + p2ppy + ' rrcurveto \n';
 
@@ -493,8 +493,8 @@
 
         return {
             're': re,
-            'lastx': p2.P.x,
-            'lasty': p2.P.y,
+            'lastx': p2.p.x,
+            'lasty': p2.p.y,
         };
     };
 
@@ -562,7 +562,7 @@
             return otpath;
         }
 
-        otpath.moveTo(round(this.pathpoints[0].P.x), round(this.pathpoints[0].P.y));
+        otpath.moveTo(round(this.pathpoints[0].p.x), round(this.pathpoints[0].p.y));
 
         for (let cp = 0; cp < this.pathpoints.length; cp++) {
             p1 = this.pathpoints[cp];
@@ -573,8 +573,8 @@
                 round(p1.h2.y),
                 round(p2.h1.x),
                 round(p2.h1.y),
-                round(p2.P.x),
-                round(p2.P.y)
+                round(p2.p.x),
+                round(p2.p.y)
             );
         }
 
@@ -604,10 +604,10 @@
         let pp2 = this.pathpoints[this.getNextPointNum(num)];
 
         let re = new Segment({
-            'p1x': pp1.P.x, 'p1y': pp1.P.y,
+            'p1x': pp1.p.x, 'p1y': pp1.p.y,
             'p2x': pp1.h2.x, 'p2y': pp1.h2.y,
             'p3x': pp2.h1.x, 'p3y': pp2.h1.y,
-            'p4x': pp2.P.x, 'p4y': pp2.P.y,
+            'p4x': pp2.p.x, 'p4y': pp2.p.y,
         });
 
         this.cache.segments[num] = re;
@@ -655,11 +655,11 @@
         let a = this.pathpoints[0];
 
         let hp = _GP.projectsettings.pointsize/getView('Path.isOverFirstPoint').dz;
-        // debug('\t Checking ' + a.P.x + '/' + a.P.y + ' around ' + hp);
+        // debug('\t Checking ' + a.p.x + '/' + a.p.y + ' around ' + hp);
 
         if (!a) return false;
 
-        if ( ((a.P.x+hp) > x) && ((a.P.x-hp) < x) && ((a.P.y+hp) > y) && ((a.P.y-hp) < y) ) {
+        if ( ((a.p.x+hp) > x) && ((a.p.x-hp) < x) && ((a.p.y+hp) > y) && ((a.p.y-hp) < y) ) {
             // debug(' Path.isOverFirstPoint - END - return TRUE\n');
             return true;
         }
@@ -675,13 +675,13 @@
         let parr = this.pathpoints;
 
         if (parr.length === 2) {
-            count = parr[1].P.x > parr[0].P.x? -1 : 1;
+            count = parr[1].p.x > parr[0].p.x? -1 : 1;
         } else if (parr.length > 2) {
             for (let i=0; i<parr.length; i++) {
                 j = (i + 1) % parr.length;
                 k = (i + 2) % parr.length;
-                z = (parr[j].P.x - parr[i].P.x) * (parr[k].P.y - parr[j].P.y);
-                z -= (parr[j].P.y - parr[i].P.y) * (parr[k].P.x - parr[j].P.x);
+                z = (parr[j].p.x - parr[i].p.x) * (parr[k].p.y - parr[j].p.y);
+                z -= (parr[j].p.y - parr[i].p.y) * (parr[k].p.x - parr[j].p.x);
 
                 if (z < 0) count--;
                 else if (z > 0) count++;
@@ -711,9 +711,9 @@
         if (this.pathpoints) {
             for (let i = 0; i < this.pathpoints.length; i++) {
                 pp = this.pathpoints[i];
-                HT = pp.H1;
-                pp.H1 = pp.H2;
-                pp.H2 = HT;
+                HT = pp.h1;
+                pp.h1 = pp.h2;
+                pp.h2 = HT;
                 if (pp.h1.use !== pp.h2.use) {
                     pp.h1.use = !pp.h1.use;
                     pp.h2.use = !pp.h2.use;
@@ -734,9 +734,9 @@
 
         for (let e=0; e<this.pathpoints.length; e++) {
             let pp = this.pathpoints[e];
-            pp.P.y += ((mid-pp.P.y)*2);
-            pp.H1.y += ((mid-pp.H1.y)*2);
-            pp.H2.y += ((mid-pp.H2.y)*2);
+            pp.p.y += ((mid-pp.p.y)*2);
+            pp.h1.y += ((mid-pp.h1.y)*2);
+            pp.h2.y += ((mid-pp.h2.y)*2);
         }
 
         this.setPathPosition(false, ly);
@@ -751,9 +751,9 @@
 
         for (let e=0; e<this.pathpoints.length; e++) {
             let pp = this.pathpoints[e];
-            pp.P.x += ((mid-pp.P.x)*2);
-            pp.H1.x += ((mid-pp.H1.x)*2);
-            pp.H2.x += ((mid-pp.H2.x)*2);
+            pp.p.x += ((mid-pp.p.x)*2);
+            pp.h1.x += ((mid-pp.h1.x)*2);
+            pp.h2.x += ((mid-pp.h2.x)*2);
         }
 
         this.setPathPosition(lx, false);
@@ -769,18 +769,18 @@
             // No pathpoint passed to function - make a new one
             newpp = new PathPoint();
             newpp.parentpath = this;
-            newpp.H1.x = newpp.P.x;
-            newpp.H1.y = newpp.P.y-100;
-            newpp.H2.x = newpp.P.x+100;
-            newpp.H2.y = newpp.P.y;
+            newpp.h1.x = newpp.p.x;
+            newpp.h1.y = newpp.p.y-100;
+            newpp.h2.x = newpp.p.x+100;
+            newpp.h2.y = newpp.p.y;
 
             if (addtostart) {
                 // Adds new pathpoint to start of path
                 if (this.pathpoints.length > 0) {
                     let firstpp = this.pathpoints[0];
 
-                    newpp.P.x = firstpp.P.x-200;
-                    newpp.P.y = firstpp.P.y-200;
+                    newpp.p.x = firstpp.p.x-200;
+                    newpp.p.y = firstpp.p.y-200;
                 }
 
                 this.pathpoints.unshift(newpp);
@@ -790,8 +790,8 @@
                 if (this.pathpoints.length > 0) {
                     let lastpp = this.pathpoints[this.pathpoints.length-1];
 
-                    newpp.P.x = lastpp.P.x+200;
-                    newpp.P.y = lastpp.P.y+200;
+                    newpp.p.x = lastpp.p.x+200;
+                    newpp.p.y = lastpp.p.y+200;
                 }
 
                 this.pathpoints.push(newpp);
@@ -826,30 +826,30 @@
             let s2 = splits[1];
 
             // New Point
-            nP = new Coord({'x': s1.p4x, 'y': s1.p4y});
-            nH1 = new Coord({'x': s1.p3x, 'y': s1.p3y});
-            nH2 = new Coord({'x': s2.p2x, 'y': s2.p2y});
-            ppn = new PathPoint({'P': nP, 'H1': nH1, 'H2': nH2, 'type': 'flat', 'useH1': true, 'useH2': true});
+            nP = new Coord({x: s1.p4x, y: s1.p4y});
+            nH1 = new Handle({point: new Coord({x: s1.p3x, y: s1.p3y})});
+            nH2 = new Handle({point: new Coord({x: s2.p2x, y: s2.p2y})});
+            ppn = new PathPoint({P: nP, H1: nH1, H2: nH2, type: 'flat'});
             ppn.round();
 
             // Update P1
             if (pp1.type === 'symmetric') pp1.type = 'flat';
-            pp1.H2.x = s1.p2x;
-            pp1.H2.y = s1.p2y;
+            pp1.h2.x = s1.p2x;
+            pp1.h2.y = s1.p2y;
             pp1.round();
 
             // Update P2
             if (pp2.type === 'symmetric') pp2.type = 'flat';
-            pp2.H1.x = s2.p3x;
-            pp2.H1.y = s2.p3y;
+            pp2.h1.x = s2.p3x;
+            pp2.h1.y = s2.p3y;
             pp2.round();
         } else {
             // just make a random point
             let d = 100;
-            nP = new Coord({'x': pp1.P.x+d, 'y': pp1.P.y+d});
+            nP = new Coord({'x': pp1.p.x+d, 'y': pp1.p.y+d});
             nH1 = new Coord({'x': pp1.h2.x+d, 'y': pp1.h2.y+d});
             nH2 = new Coord({'x': pp1.h1.x+d, 'y': pp1.h1.y+d});
-            ppn = new PathPoint({'P': nP, 'H1': nH1, 'H2': nH2, 'type': pp1.type});
+            ppn = new PathPoint({'p': nP, 'h1': nH1, 'h2': nH2, 'type': pp1.type});
         }
 
         // Insert
@@ -897,7 +897,7 @@
             let seg = this.getSegment(pointnum);
             return seg.getCoordFromSplit(t);
         } else {
-            return this.pathpoints[0].P;
+            return this.pathpoints[0].p;
         }
     };
 
@@ -967,29 +967,29 @@
         let tp;
         for (let pp=0; pp<this.pathpoints.length; pp++) {
             tp = this.pathpoints[pp];
-            if (!tp.P.x && tp.P.x !== 0) {
-                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' P.x from ' + tp.P.x);
-                tp.P.x = 0;
+            if (!tp.p.x && tp.p.x !== 0) {
+                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' P.x from ' + tp.p.x);
+                tp.p.x = 0;
             }
-            if (!tp.P.y && tp.P.y !== 0) {
-                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' P.y from ' + tp.P.y);
-                tp.P.y = 0;
+            if (!tp.p.y && tp.p.y !== 0) {
+                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' P.y from ' + tp.p.y);
+                tp.p.y = 0;
             }
-            if (!tp.H1.x && tp.H1.x !== 0) {
-                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H1.x from ' + tp.H1.x);
-                tp.H1.x = 0;
+            if (!tp.h1.x && tp.h1.x !== 0) {
+                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H1.x from ' + tp.h1.x);
+                tp.h1.x = 0;
             }
-            if (!tp.H1.y && tp.H1.y !== 0) {
-                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H1.y from ' + tp.H1.y);
-                tp.H1.y = 0;
+            if (!tp.h1.y && tp.h1.y !== 0) {
+                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H1.y from ' + tp.h1.y);
+                tp.h1.y = 0;
             }
-            if (!tp.H2.x && tp.H2.x !== 0) {
-                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H2.x from ' + tp.H2.x);
-                tp.H2.x = 0;
+            if (!tp.h2.x && tp.h2.x !== 0) {
+                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H2.x from ' + tp.h2.x);
+                tp.h2.x = 0;
             }
-            if (!tp.H2.y && tp.H2.y !== 0) {
-                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H2.y from ' + tp.H2.y);
-                tp.H2.y = 0;
+            if (!tp.h2.y && tp.h2.y !== 0) {
+                // debug('VALIDATE PATH: '+calledBy+' - resetting point '+pp+' H2.y from ' + tp.h2.y);
+                tp.h2.y = 0;
             }
 
             tp.roundAll();
@@ -999,9 +999,9 @@
     Path.prototype.checkForNaN = function() {
         for (let pp = 0; pp < this.pathpoints.length; pp++) {
             let tp = this.pathpoints[pp];
-            if ( isNaN(tp.P.x) || isNaN(tp.P.y) ||
-                isNaN(tp.H1.x) || isNaN(tp.H1.y) ||
-                isNaN(tp.H2.x) || isNaN(tp.H2.y) ) {
+            if ( isNaN(tp.p.x) || isNaN(tp.p.y) ||
+                isNaN(tp.h1.x) || isNaN(tp.h1.y) ||
+                isNaN(tp.h2.x) || isNaN(tp.h2.y) ) {
                 return true;
             }
         }

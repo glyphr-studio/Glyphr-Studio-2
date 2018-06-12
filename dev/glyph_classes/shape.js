@@ -164,7 +164,7 @@
         // debug('\n Shape.rotate - START');
         about = about || this.getCenter();
         this.path.rotate(angle, about);
-        // debug('\t first p[0].P.x ' + this.path.pathpoints[0].P.x);
+        // debug('\t first p[0].p.x ' + this.path.pathpoints[0].p.x);
         // debug(' Shape.rotate - END\n');
     };
 
@@ -239,10 +239,10 @@
         let H2ll = new Coord({'x': lx, 'y': (by+qh)});
 
         let patharr = [];
-        patharr[0] = new PathPoint({'P': Pul, 'H1': H1ul, 'H2': H2ul});
-        patharr[1] = new PathPoint({'P': Pur, 'H1': H1ur, 'H2': H2ur});
-        patharr[2] = new PathPoint({'P': Plr, 'H1': H1lr, 'H2': H2lr});
-        patharr[3] = new PathPoint({'P': Pll, 'H1': H1ll, 'H2': H2ll});
+        patharr[0] = new PathPoint({'p': Pul, 'h1': H1ul, 'h2': H2ul});
+        patharr[1] = new PathPoint({'p': Pur, 'h1': H1ur, 'h2': H2ur});
+        patharr[2] = new PathPoint({'p': Plr, 'h1': H1lr, 'h2': H2lr});
+        patharr[3] = new PathPoint({'p': Pll, 'h1': H1ll, 'h2': H2ll});
 
         let rp = new Path({'pathpoints': patharr, 'leftx': lx, 'rightx': rx, 'topy': ty, 'bottomy': by});
         // debug('RETURNING PATH: ' + JSON.stringify(rp));
@@ -286,10 +286,10 @@
         let H2l = new Coord({'x': lx, 'y': (ty-hhd)});
 
         let patharr = [];
-        patharr[0] = new PathPoint({'P': Pt, 'H1': H1t, 'H2': H2t, 'type': 'symmetric'});
-        patharr[1] = new PathPoint({'P': Pr, 'H1': H1r, 'H2': H2r, 'type': 'symmetric'});
-        patharr[2] = new PathPoint({'P': Pb, 'H1': H1b, 'H2': H2b, 'type': 'symmetric'});
-        patharr[3] = new PathPoint({'P': Pl, 'H1': H1l, 'H2': H2l, 'type': 'symmetric'});
+        patharr[0] = new PathPoint({'p': Pt, 'h1': H1t, 'h2': H2t, 'type': 'symmetric'});
+        patharr[1] = new PathPoint({'p': Pr, 'h1': H1r, 'h2': H2r, 'type': 'symmetric'});
+        patharr[2] = new PathPoint({'p': Pb, 'h1': H1b, 'h2': H2b, 'type': 'symmetric'});
+        patharr[3] = new PathPoint({'p': Pl, 'h1': H1l, 'h2': H2l, 'type': 'symmetric'});
 
         return new Path({'pathpoints': patharr});
     }
@@ -340,17 +340,17 @@
         let p1, p2, p3, p4;
 
         if (type === 'oval') {
-            p1 = new PathPoint({'P': new Coord({'x': 0, 'y': (th/2)}), 'H1': new Coord({'x': 0, 'y': hd}), 'H2': new Coord({'x': 0, 'y': (th-hd)}), 'type': 'symmetric'});
-            p2 = new PathPoint({'P': new Coord({'x': (tw/2), 'y': th}), 'H1': new Coord({'x': hd, 'y': th}), 'H2': new Coord({'x': (tw-hd), 'y': th}), 'type': 'symmetric'});
-            p3 = new PathPoint({'P': new Coord({'x': tw, 'y': (th/2)}), 'H1': new Coord({'x': tw, 'y': (th-hd)}), 'H2': new Coord({'x': tw, 'y': hd}), 'type': 'symmetric'});
-            p4 = new PathPoint({'P': new Coord({'x': (tw/2), 'y': 0}), 'H1': new Coord({'x': (tw-hd), 'y': 0}), 'H2': new Coord({'x': hd, 'y': 0}), 'type': 'symmetric'});
+            p1 = new PathPoint({'p': new Coord({'x': 0, 'y': (th/2)}), 'h1': new Coord({'x': 0, 'y': hd}), 'h2': new Coord({'x': 0, 'y': (th-hd)}), 'type': 'symmetric'});
+            p2 = new PathPoint({'p': new Coord({'x': (tw/2), 'y': th}), 'h1': new Coord({'x': hd, 'y': th}), 'h2': new Coord({'x': (tw-hd), 'y': th}), 'type': 'symmetric'});
+            p3 = new PathPoint({'p': new Coord({'x': tw, 'y': (th/2)}), 'h1': new Coord({'x': tw, 'y': (th-hd)}), 'h2': new Coord({'x': tw, 'y': hd}), 'type': 'symmetric'});
+            p4 = new PathPoint({'p': new Coord({'x': (tw/2), 'y': 0}), 'h1': new Coord({'x': (tw-hd), 'y': 0}), 'h2': new Coord({'x': hd, 'y': 0}), 'type': 'symmetric'});
             parr = [p1, p2, p3, p4];
             shapetype = 'Oval ';
         } else {
-            p1 = new PathPoint({'P': new Coord({'x': 0, 'y': 0}), 'H1': new Coord({'x': hd, 'y': 0}), 'H2': new Coord({'x': 0, 'y': hd})});
-            p2 = new PathPoint({'P': new Coord({'x': 0, 'y': th}), 'H1': new Coord({'x': 0, 'y': (th-hd)}), 'H2': new Coord({'x': hd, 'y': th})});
-            p3 = new PathPoint({'P': new Coord({'x': tw, 'y': th}), 'H1': new Coord({'x': (tw-hd), 'y': th}), 'H2': new Coord({'x': tw, 'y': (th-hd)})});
-            p4 = new PathPoint({'P': new Coord({'x': tw, 'y': 0}), 'H1': new Coord({'x': tw, 'y': hd}), 'H2': new Coord({'x': (tw-hd), 'y': 0})});
+            p1 = new PathPoint({'p': new Coord({'x': 0, 'y': 0}), 'h1': new Coord({'x': hd, 'y': 0}), 'h2': new Coord({'x': 0, 'y': hd})});
+            p2 = new PathPoint({'p': new Coord({'x': 0, 'y': th}), 'h1': new Coord({'x': 0, 'y': (th-hd)}), 'h2': new Coord({'x': hd, 'y': th})});
+            p3 = new PathPoint({'p': new Coord({'x': tw, 'y': th}), 'h1': new Coord({'x': (tw-hd), 'y': th}), 'h2': new Coord({'x': tw, 'y': (th-hd)})});
+            p4 = new PathPoint({'p': new Coord({'x': tw, 'y': 0}), 'h1': new Coord({'x': tw, 'y': hd}), 'h2': new Coord({'x': (tw-hd), 'y': 0})});
             parr = [p1, p2, p3, p4];
             shapetype = 'Rectangle ';
         }
@@ -602,12 +602,10 @@ return a.path.getWinding() - b.path.getWinding();
 
         newpoints.push(
             new PathPoint({
-                P: clone(s1h1.overlap.P),
-                H1: clone(s1h1.overlap.H1),
-                H2: clone(s2h1.overlap.H2),
+                p: clone(s1h1.overlap.p),
+                h1: clone(s1h1.overlap.h1),
+                h2: clone(s2h1.overlap.h2),
                 type: 'corner',
-                useH1: s1h1.overlap.h1.use,
-                useH2: s2h1.overlap.h2.use,
             })
         );
 
@@ -616,12 +614,10 @@ return a.path.getWinding() - b.path.getWinding();
 
         newpoints.push(
             new PathPoint({
-                P: clone(s2h1.overlap.P),
-                H1: clone(s2h1.overlap.H1),
-                H2: clone(s1h2.overlap.H2),
+                P: clone(s2h1.overlap.p),
+                H1: clone(s2h1.overlap.h1),
+                H2: clone(s1h2.overlap.h2),
                 type: 'corner',
-                useH1: s2h1.overlap.h1.use,
-                useH2: s1h2.overlap.h2.use,
             })
         );
 
@@ -720,14 +716,14 @@ return a.path.getWinding() - b.path.getWinding();
 
         for (let pp = 0; pp < this.path.pathpoints.length; pp++) {
             let tp = this.path.pathpoints[pp];
-            if (!(tp.P.x)) debug(this.name + ' p' + pp + '.P.x is ' + tp.P.x);
-            if (!(tp.P.y)) debug(this.name + ' p' + pp + '.P.y is ' + tp.P.y);
+            if (!(tp.p.x)) debug(this.name + ' p' + pp + '.p.x is ' + tp.p.x);
+            if (!(tp.p.y)) debug(this.name + ' p' + pp + '.p.y is ' + tp.p.y);
 
-            if (!(tp.H1.x)) debug(this.name + ' p' + pp + '.H1.x is ' + tp.H1.x);
-            if (!(tp.H1.y)) debug(this.name + ' p' + pp + '.H1.y is ' + tp.H1.y);
+            if (!(tp.h1.x)) debug(this.name + ' p' + pp + '.h1.x is ' + tp.h1.x);
+            if (!(tp.h1.y)) debug(this.name + ' p' + pp + '.h1.y is ' + tp.h1.y);
 
-            if (!(tp.H2.x)) debug(this.name + ' p' + pp + '.H2.x is ' + tp.H2.x);
-            if (!(tp.H2.y)) debug(this.name + ' p' + pp + '.H2.y is ' + tp.H2.y);
+            if (!(tp.h2.x)) debug(this.name + ' p' + pp + '.h2.x is ' + tp.h2.x);
+            if (!(tp.h2.y)) debug(this.name + ' p' + pp + '.h2.y is ' + tp.h2.y);
         }
     };
 

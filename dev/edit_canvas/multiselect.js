@@ -191,7 +191,7 @@
     };
 
     _UI.multiSelect.points.updatePathPointPosition = function(controlpoint, dx, dy) {
-        if (controlpoint === 'P') {
+        if (controlpoint === 'p') {
             for (let m=0; m<this.members.length; m++) {
                 this.members[m].updatePathPointPosition(controlpoint, dx, dy);
             }

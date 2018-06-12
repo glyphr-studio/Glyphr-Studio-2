@@ -17,8 +17,8 @@ class Handle {
         use = true,
         rootPoint = false,
     } = {}) {
-        this.point = point;
-        if (use) this.use = use;
+        this._point = point;
+        if (use) this._use = use;
         this.rootPoint = rootPoint;
     }
 
@@ -31,7 +31,7 @@ class Handle {
      * @return {number}
      */
     get x() {
-        return this.use? this.point.x : this.rootPoint.p.x;
+        return this._use? this._point.x : this.rootPoint.p.x;
     }
 
     /**
@@ -39,7 +39,7 @@ class Handle {
      * @return {number}
      */
     get y() {
-        return this.use? this.point.y : this.rootPoint.p.x;
+        return this._use? this._point.y : this.rootPoint.p.x;
     }
 
     /**
@@ -47,7 +47,7 @@ class Handle {
      * @return {boolean}
      */
     get use() {
-        return this.use? true : false;
+        return this._use? true : false;
     }
 
     /**
@@ -55,7 +55,7 @@ class Handle {
      * @return {boolean}
      */
     get xLock() {
-        return this.point.xLock;
+        return this._point.xLock;
     }
 
     /**
@@ -63,7 +63,7 @@ class Handle {
      * @return {boolean}
      */
     get yLock() {
-        return this.point.yLock;
+        return this._point.yLock;
     }
 
     /**
@@ -71,7 +71,7 @@ class Handle {
      * @return {number}
      */
     get angle() {
-        return calculateAngle(this.point, this.rootPoint.p);
+        return calculateAngle(this._point, this.rootPoint.p);
     }
 
     /**
@@ -79,7 +79,7 @@ class Handle {
      * @return {number}
      */
     get niceAngle() {
-        return angleToNiceAngle(this.angle);
+        return angleToNiceAngle(this._angle);
     }
 
     /**
@@ -87,7 +87,7 @@ class Handle {
      * @return {number}
      */
     get length() {
-        return calculateLength(this.point, this.rootPoint.p);
+        return calculateLength(this._point, this.rootPoint.p);
     }
 
 
@@ -100,7 +100,7 @@ class Handle {
      * @param {number} possition
      */
     set x(possition) {
-        this.point.x = possition;
+        this._point.x = possition;
     }
 
     /**
@@ -108,7 +108,7 @@ class Handle {
      * @param {number} possition
      */
     set y(possition) {
-        this.point.y = possition;
+        this._point.y = possition;
     }
 
     /**
@@ -116,9 +116,9 @@ class Handle {
      * @param {boolean} show
      */
     set use(show) {
-        if (show) this.use = true;
+        if (show) this._use = true;
         else {
-            if (this.use) delete this.use;
+            if (this._use) delete this._use;
         }
     }
 
@@ -127,7 +127,7 @@ class Handle {
      * @param {boolean} lock
      */
     set xLock(lock) {
-        this.point.xLock = lock;
+        this._point.xLock = lock;
     }
 
     /**
@@ -135,6 +135,6 @@ class Handle {
      * @param {boolean} lock
      */
     set yLock(lock) {
-        this.point.yLock = lock;
+        this._point.yLock = lock;
     }
 }
