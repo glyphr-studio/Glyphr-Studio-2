@@ -326,10 +326,10 @@
         };
     };
 
-    ComponentInstance.prototype.makeOpenTypeJSpath = function(otpath) {
+    ComponentInstance.prototype.makeOpentypeJsPath = function(otpath) {
         otpath = otpath || new opentype.Path();
         let g = this.getTransformedGlyph();
-        return g.makeOpenTypeJSpath(otpath);
+        return g.makeOpentypeJsPath(otpath);
     };
 
     ComponentInstance.prototype.draw_PathOutline = function(accent, thickness) {

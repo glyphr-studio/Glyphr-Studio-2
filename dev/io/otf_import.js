@@ -140,7 +140,7 @@
                             np = ioSVG_convertPathTag(data[d]);
                             // debug('\t created shape from PathTag');
                             // debug(np);
-                            if (np.pathpoints.length) {
+                            if (np.pathPoints.length) {
                                 shapecounter++;
                                 newshapes.push(new Shape({'path': np, 'name': ('Shape ' + shapecounter)}));
                             } else {

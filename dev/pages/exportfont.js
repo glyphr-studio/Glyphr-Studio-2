@@ -26,10 +26,10 @@
                     '<tr><td class="uicolumn">'+checkUI('_GP.projectsettings.combineshapesonexport', ps.combineshapesonexport)+'</td>'+
                     '<td class="longlabel"><label for="combineshapesonexport">Combine all glyph shapes<br>Sometimes fonts behave better if there are less path outlines in a glyph.  This option will combine all overlapping shapes with the same winding into as few shapes as possible.</label></td></tr>'+
 
-                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.maxcombineshapesonexport)+'" onchange="var r=Math.round(parseInt(this.value)); r=r||30; _GP.projectsettings.maxcombineshapesonexport=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
+                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.maxcombineshapesonexport)+'" onchange="var r=round(parseInt(this.value)); r=r||30; _GP.projectsettings.maxcombineshapesonexport=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
                     '<td class="longlabel">Maximum shapes to attempt to combine<br>Combining glyph shapes is a time-intensive process.  If a glyph has more than this number of shapes, combine will not be attempted, and overlapping shapes will be exported as-is.</td></tr>'+
 
-                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.svgprecision)+'" onchange="var r=Math.round(parseInt(this.value)); r=r||3; _GP.projectsettings.svgprecision=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
+                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.svgprecision)+'" onchange="var r=round(parseInt(this.value)); r=r||3; _GP.projectsettings.svgprecision=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
                     '<td class="longlabel">SVG Decimal Precision<br>Number of decimal places to round point data.</td></tr>'+
 
                     '</table>';

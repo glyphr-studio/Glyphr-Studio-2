@@ -23,6 +23,7 @@ const manifest = [
             'hkern.js',
 
             'coord.test.js',
+            'handle.test.js',
         ],
     },
 

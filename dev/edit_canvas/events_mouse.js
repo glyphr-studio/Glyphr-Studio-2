@@ -385,7 +385,7 @@ function Tool_NewPath() {
                 eh.eh_pathedit.dragging = true;
                 eh.lastx = eh.mousex;
                 eh.lasty = eh.mousey;
-                _UI.multiSelect.points.select(this.newshape.path.pathpoints[0]);
+                _UI.multiSelect.points.select(this.newshape.path.pathPoints[0]);
                 _UI.selectedTool = 'pathedit';
 
                 this.dragging = false;
@@ -396,7 +396,7 @@ function Tool_NewPath() {
                 return;
             }
 
-            this.currpt = this.newshape.path.addPathPoint(newpoint, false);
+            this.currpt = this.newshape.path.addPathPoint(newpoint);
             // _UI.multiSelect.points.select(this.currpt);
         }
 

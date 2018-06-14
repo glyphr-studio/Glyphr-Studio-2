@@ -1,6 +1,7 @@
 /* exported Coord coordsAreEqual */
 
 /**
+ * Coordinate
  * A single x/y coordinate
  */
 class Coord {
@@ -18,7 +19,26 @@ class Coord {
         if (yLock) this._yLock = yLock;
     }
 
-    /* GETTERS */
+    /**
+     * Export object to project file
+     * @return {object}
+     */
+    save() {
+        let re = {
+            x: this.x,
+            y: this.y,
+        };
+
+        if (this._xLock) re.xLock = true;
+        if (this._yLock) re.yLock = true;
+
+        return re;
+    }
+
+
+    // --------------------
+    // GETTERS
+    // --------------------
 
     /** Gets the xLock property */
     get xLock() {
@@ -58,20 +78,19 @@ class Coord {
         }
     }
 
-    /* SETTERS */
+
+    // --------------------
+    // SETTERS
+    // --------------------
 
     /**
      * Set the x position of the point
      * @param {number} position
      */
     set x(position = 0) {
-        debug(`\n Coord.x SET - START`, true);
-
         position = parseFloat(position);
         if (isNaN(position)) this._x = 0;
         else this._x = position;
-
-        debug(`Coord.x SET - END\n\n`);
     }
 
     /**

@@ -13,7 +13,7 @@
         this.scale = oa.scale || 1;
         this.glyphstring = oa.glyphstring || '';
         this.textblocks = this.glyphstring.split('\n');
-        this.lineGap = oa.lineGap || Math.round(_GP.projectsettings.upm / 4);
+        this.lineGap = oa.lineGap || round(_GP.projectsettings.upm / 4);
 
         this.drawPageExtras = oa.drawPageExtras || false;
         this.drawLineExtras = oa.drawLineExtras || false;

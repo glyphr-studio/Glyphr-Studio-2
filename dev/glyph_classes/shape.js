@@ -111,7 +111,7 @@
         // re += '<rect x="0" y="-'+desc+'" height="'+desc+'" width="1000" fill="lime"/>';
         // re += '<rect x="0" y="0" height="'+(upm-desc)+'" width="1000" fill="cyan"/>';
         re += '<path d="';
-        re += this.path.getSVGpathData();
+        re += this.path.svgPathData;
         re += '"/>';
         re += '</g>';
         re += '</svg>';
@@ -123,8 +123,8 @@
         return this.path? this.path.genPathPostScript(lastx, lasty) : {'re': '', 'lastx': lastx, 'lasty': lasty};
     };
 
-    Shape.prototype.makeOpenTypeJSpath = function(otpath) {
- return this.path.makeOpenTypeJSpath(otpath);
+    Shape.prototype.makeOpentypeJsPath = function(otpath) {
+ return this.path.makeOpentypeJsPath(otpath);
 };
 
 
@@ -164,7 +164,7 @@
         // debug('\n Shape.rotate - START');
         about = about || this.getCenter();
         this.path.rotate(angle, about);
-        // debug('\t first p[0].p.x ' + this.path.pathpoints[0].p.x);
+        // debug('\t first p[0].p.x ' + this.path.pathPoints[0].p.x);
         // debug(' Shape.rotate - END\n');
     };
 
@@ -472,7 +472,7 @@ return v;
         if (!tempshapes) {
             tempshapes = clone(shapes);
             tempshapes.sort(function(a, b) {
-return a.path.getWinding() - b.path.getWinding();
+return a.path.winding - b.path.winding;
 });
 
             // Main collapsing loop
@@ -557,10 +557,10 @@ return a.path.getWinding() - b.path.getWinding();
             let re = [];
             let pt = {};
 
-            for (let pp=0; pp<path.pathpoints.length; pp++) {
-                pt = new PathPoint(path.pathpoints[pp]);
+            for (let pp=0; pp<path.pathPoints.length; pp++) {
+                pt = new PathPoint(path.pathPoints[pp]);
 
-                if (path.pathpoints[pp].customid !== 'overlap') {
+                if (path.pathPoints[pp].customid !== 'overlap') {
                     re.push(pt);
                 } else {
                     return {
@@ -575,12 +575,12 @@ return a.path.getWinding() - b.path.getWinding();
             let re = [];
             let ov = {};
 
-            for (let pp=0; pp<path.pathpoints.length; pp++) {
-                if (path.pathpoints[pp].customid === 'overlap') {
-                    ov = new PathPoint(path.pathpoints[pp]);
+            for (let pp=0; pp<path.pathPoints.length; pp++) {
+                if (path.pathPoints[pp].customid === 'overlap') {
+                    ov = new PathPoint(path.pathPoints[pp]);
 
-                    for (let pa=(pp+1); pa<path.pathpoints.length; pa++) {
-                        re.push(new PathPoint(path.pathpoints[pa]));
+                    for (let pa=(pp+1); pa<path.pathPoints.length; pa++) {
+                        re.push(new PathPoint(path.pathPoints[pa]));
                     }
 
                     return {
@@ -714,8 +714,8 @@ return a.path.getWinding() - b.path.getWinding();
     Shape.prototype.checkPath = function() {
         // debug('CHECKPATH - checking ' + this.name + '\n' + JSON.stringify(this.path));
 
-        for (let pp = 0; pp < this.path.pathpoints.length; pp++) {
-            let tp = this.path.pathpoints[pp];
+        for (let pp = 0; pp < this.path.pathPoints.length; pp++) {
+            let tp = this.path.pathPoints[pp];
             if (!(tp.p.x)) debug(this.name + ' p' + pp + '.p.x is ' + tp.p.x);
             if (!(tp.p.y)) debug(this.name + ' p' + pp + '.p.y is ' + tp.p.y);
 

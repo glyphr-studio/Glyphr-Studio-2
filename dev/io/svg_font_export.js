@@ -176,7 +176,7 @@ if (md.hasOwnProperty(d)) {
         uni = uni.join('');
 
         if (_GP.projectsettings.combineshapesonexport) gl = new Glyph(gl).flattenGlyph().combineAllShapes(true);
-        let pathdata = gl.getSVGpathData();
+        let pathdata = gl.svgPathData;
         pathdata = pathdata || 'M0,0Z';
 
         let con = '\t\t\t';

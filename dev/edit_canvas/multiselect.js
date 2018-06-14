@@ -124,7 +124,7 @@
             pindex = point.pointNumber;
 
             if (pindex > -1) {
-                path.pathpoints.splice(pindex, 1);
+                path.pathPoints.splice(pindex, 1);
                 path.calcMaxes();
             }
         }
@@ -142,7 +142,7 @@
 
     _UI.multiSelect.points.draw_PathPointHandles = function() {
         let sh = this.getShape();
-        draw_PathPointHandles(sh.path.pathpoints);
+        draw_PathPointHandles(sh.path.pathPoints);
     };
 
     _UI.multiSelect.points.draw_PathPoints = function() {
@@ -150,7 +150,7 @@
         let sh = this.getShape();
         // ('\t shape is ' + json(sh));
 
-        draw_PathPoints(sh.path.pathpoints);
+        draw_PathPoints(sh.path.pathPoints);
 
         // debug(' MS.points.draw_PathPoints - END\n');
     };
@@ -425,8 +425,8 @@
         let s;
         for (let m=0; m<this.members.length; m++) {
             s = this.members[m];
-            // debug('\t drawing points on shape ' + m + ' as ' + s.path.pathpoints);
-                if (s.objtype !== 'componentinstance') draw_PathPoints(this.members[m].path.pathpoints);
+            // debug('\t drawing points on shape ' + m + ' as ' + s.path.pathPoints);
+                if (s.objtype !== 'componentinstance') draw_PathPoints(this.members[m].path.pathPoints);
         }
 
         // debug(' MS.shapes.draw_PathPoints - END\n');

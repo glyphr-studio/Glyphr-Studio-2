@@ -43,7 +43,7 @@ function genProjectID() {
     let re = 'g_';
 
     for (let i=0; i<10; i++) {
-        re += j.charAt(Math.floor(Math.round(Math.random()*j.length)));
+        re += j.charAt(Math.floor(round(Math.random()*j.length)));
     }
 
     return re;

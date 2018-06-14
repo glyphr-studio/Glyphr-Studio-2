@@ -415,7 +415,7 @@ function newGlyphrStudioProject() {
     _GP.projectsettings.projectid = genProjectID();
 
     getGlyph('0x0020', true).isautowide = false;
-    getGlyph('0x0020', true).glyphwidth = Math.round(_GP.projectsettings.upm/3);
+    getGlyph('0x0020', true).glyphwidth = round(_GP.projectsettings.upm/3);
     getGlyph('0x0041', true);
 
     finalizeUI();
@@ -457,7 +457,7 @@ function finalizeUI() {
     _UI.selectedKern = _UI.selectedKern || getFirstID(_GP.kerning);
 
     let sp = getGlyph('0x0020', true);
-    if (!sp.isautowide && sp.glyphwidth === 0) sp.glyphwidth = Math.round(_GP.projectsettings.upm/3);
+    if (!sp.isautowide && sp.glyphwidth === 0) sp.glyphwidth = round(_GP.projectsettings.upm/3);
 
     calculateDefaultView();
     resetThumbView();

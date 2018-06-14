@@ -1,32 +1,20 @@
 _TEST.testList.push(
     {
-        category: 'Coord',
+    category: 'Handle',
         name: 'Constructor - x',
         assertion: function() {
-            return is((new Coord({x: 101})).x).equalTo(101);
+            return is((new Handle()).x).equalTo(100);
         },
     },
     {
-        category: 'Coord',
-        name: 'Constructor - y',
+    category: 'Handle',
+        name: 'niceAngle',
         assertion: function() {
-            return is((new Coord({x: 101})).y).equalTo(0);
-        },
-    },
-    {
-        category: 'Coord',
-        name: 'Constructor - xLock',
-        assertion: function() {
-            return is((new Coord({x: 101})).xLock).equalTo(false);
-        },
-    },
-    {
-        category: 'Coord',
-        name: 'coordsAreEqual',
-        assertion: function() {
-            let c1 = new Coord({x: 100, y: 100});
-            let c2 = new Coord({x: 99.1, y: 100.9});
-            return expression(coordsAreEqual(c1, c2));
+            let han = new Handle();
+            console.log(han);
+            han.x = 100;
+            han.y = 100;
+            return is(han.niceAngle).equalTo(45);
         },
     }
 );

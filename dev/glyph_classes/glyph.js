@@ -631,10 +631,10 @@
         return pathdata;
     };
 
-    Glyph.prototype.makeOpenTypeJSpath = function(otpath) {
+    Glyph.prototype.makeOpentypeJsPath = function(otpath) {
         otpath = otpath || new opentype.Path();
         for (let s=0; s < this.shapes.length; s++) {
-            otpath = this.shapes[s].makeOpenTypeJSpath(otpath);
+            otpath = this.shapes[s].makeOpentypeJsPath(otpath);
         }
         return otpath;
     };
@@ -644,7 +644,7 @@
 
         for (let s=0; s<this.shapes.length; s++) {
             if (this.shapes[s].objtype !== 'componentinstance') {
-                allpoints = allpoints.concat(this.shapes[s].path.pathpoints);
+                allpoints = allpoints.concat(this.shapes[s].path.pathPoints);
                 this.shapes[s].draw_PathOutline(_UI.colors.blue, 1);
             }
         }
@@ -815,7 +815,7 @@
 
     Glyph.prototype.removeShapesWithZeroLengthPaths = function() {
         for (let s=0; s<this.shapes.length; s++) {
-            if (this.shapes[s].path && this.shapes[s].path.pathpoints.length === 0) {
+            if (this.shapes[s].path && this.shapes[s].path.pathPoints.length === 0) {
                 this.shapes.splice(s, 1);
                 s--;
             }
@@ -825,7 +825,7 @@
     Glyph.prototype.getPathPoints = function() {
         let points = [];
         this.shapes.forEach(function(shape, i) {
-            points = points.concat(shape.path.pathpoints);
+            points = points.concat(shape.path.pathPoints);
         });
         return points;
     };

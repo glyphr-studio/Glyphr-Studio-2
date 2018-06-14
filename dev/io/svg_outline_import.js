@@ -66,7 +66,7 @@
                 for (let d=0; d<data.length; d++) {
                     if (data[d].length) {
                         ppath = ioSVG_convertPathTag(data[d]);
-                        if (ppath.pathpoints.length) {
+                        if (ppath.pathPoints.length) {
                             pushShape(ppath, 'Path');
                         }
                     }

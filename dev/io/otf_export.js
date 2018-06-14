@@ -45,7 +45,7 @@
                 notdef.updateGlyphSize(delta, delta, true);
             }
 
-            let ndpath = notdef.makeOpenTypeJSpath();
+            let ndpath = notdef.makeOpentypeJsPath();
 
             options.glyphs.push(new opentype.Glyph({
                 name: '.notdef',
@@ -99,7 +99,7 @@
 
             if (glyph.isautowide) glyph.updateGlyphPosition(glyph.getLSB(), 0);
 
-            let tgpath = glyph.makeOpenTypeJSpath(new opentype.Path());
+            let tgpath = glyph.makeOpentypeJsPath(new opentype.Path());
 
             let otglyph = new opentype.Glyph({
                 name: getUnicodeShortName(''+decToHex(num)),

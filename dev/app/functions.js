@@ -263,9 +263,8 @@ function makeCrisp(num, dir) {
  * @param {number} dec - number of decimal places
  * @return {number}
  */
-function round(num, dec) {
+function round(num, dec = 0) {
     if (!num) return 0;
-    dec = dec || 0;
     return Number(Math.round(num+'e'+dec)+'e-'+dec) || 0;
 }
 

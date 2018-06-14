@@ -1,4 +1,5 @@
 /* exported Handle */
+
 /**
  * Handle
  * There are two of these associated with a single PathPoint
@@ -19,8 +20,23 @@ class Handle {
     } = {}) {
         this._point = point;
         if (use) this._use = use;
-        this.rootPoint = rootPoint;
+        this._rootPoint = rootPoint;
     }
+
+    /**
+     * Export object to project file
+     * @return {object}
+     */
+    save() {
+        let re = {
+            point: point.save(),
+        };
+
+        if (this._use) re.use = true;
+
+        return re;
+    }
+
 
     // --------------------
     // GETTERS
@@ -40,6 +56,14 @@ class Handle {
      */
     get y() {
         return this._use? this._point.y : this.rootPoint.p.x;
+    }
+
+    /**
+     * Get the root point this handle is connected to
+     * @return {PathPoint}
+     */
+    get rootPoint() {
+        return this._rootPoint || new PathPoint();
     }
 
     /**
@@ -109,6 +133,14 @@ class Handle {
      */
     set y(possition) {
         this._point.y = possition;
+    }
+
+    /**
+     * Set the root point this handle is connected to
+     * @param {PathPoint} root
+     */
+    set rootPoint(root) {
+        this._rootPoint = root;
     }
 
     /**

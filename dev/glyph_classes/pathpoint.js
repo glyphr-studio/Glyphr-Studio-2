@@ -1,4 +1,5 @@
 /* exported makePathPointFromSegments */
+
 /**
  * Path Point
  * A collection of these units make up a Path,
@@ -20,23 +21,42 @@ class PathPoint {
         h1 = new Handle({x: 0, y: 0}),
         h2 = new Handle({x: 200, y: 200}),
         type = 'corner',
+        q = false,
+        parentPath = false,
     } = {}) {
-        this.p = p;
-        this.h1 = h1;
-        this.h2 = h2;
-        this.q = q;
-        this.type = type;
+        this._p = p;
+        this._h1 = h1;
+        this._h2 = h2;
+        this._type = type;
+        this._parentPath = parentPath;
 
-        this.h1.rootPoint = this;
-        this.h2.rootPoint = this;
+        this._h1.rootPoint = this;
+        this._h2.rootPoint = this;
 
-        if(q) this.q = q;
+        if (q) this._q = q;
 
         if (this.type === 'symmetric') {
             this.makeSymmetric('h1');
         } else if (this.type === 'flat') {
             this.makeFlat('h1');
         }
+    }
+
+    /**
+     * Export object to project file
+     * @return {object}
+     */
+    save() {
+        let re = {
+            p: this.p.save(),
+            h1: this.h1.save(),
+            h2: this.h2.save(),
+            type: this.type,
+        };
+
+        if (this.q) re.q = this.q;
+
+        return re;
     }
 
 
@@ -49,180 +69,37 @@ class PathPoint {
      * @return {number}
     */
     get pointNumber() {
-        let parr = this.parentpath;
-        if (!parr) return false;
+        if (!this._parentPath) return false;
 
-        parr = parr.pathpoints;
-        if (!parr) return false;
+        let pp = this._parentPath.pathPoints;
+        if (!pp) return false;
 
-        for (let p=0; p<parr.length; p++) {
-            if (parr[p] === this) return p;
+        for (let p=0; p<pp.length; p++) {
+            if (pp[p] === this) return p;
         }
 
         return false;
     }
 
-    // ---------------------------------------------------
+
+    // -------------------------------------------------------
     // SETTERS
-    // ---------------------------------------------------
-    /**
-     * Set Handle 1 Angle X
-     * @param {number} angle - angle to set
-     * */
-    set h1AngleX(angle) {
-        this.h1.x = Math.tan(angle * this.h1.y);
-    }
+    // -------------------------------------------------------
 
     /**
-     * Set Handle 1 Angle Y
-     * @param {number} angle - angle to set
+     * Change a point's type
+     * @param {string} type - symmetric / flat / corner
      */
-    set h1AngleY(angle) {
-        this.h1.y = Math.tan(angle * this.h1.x);
-    }
-
-    /**
-     * Set Handle 2 Angle X
-     * @param {number} angle - angle to set
-     * */
-    set h2AngleX(angle) {
-        this.h2.x = Math.tan(angle * this.h2.y);
-    }
-
-    /**
-     * Set Handle 2 Angle Y
-     * @param {number} angle - angle to set
-     */
-    set h2AngleY(angle) {
-        this.h2.y = Math.tan(angle * this.h2.x);
+    set type(type) {
+        if (type === 'symmetric') this.makeSymmetric();
+        else if (type === 'flat') this.makeFlat();
+        else this.type = 'corner';
     }
 
 
-// -------------------------------------------------------
-// PATH POINT METHODS
-// -------------------------------------------------------
-
-    /**
-     * Moves a point to a specific place
-     * @param {strung} controlpoint - p / h1 / h2
-     * @param {number} nx - New x value
-     * @param {number} ny - New y value
-     */
-    setPathPointPosition(controlpoint, nx, ny) {
-        let dx = 0;
-        let dy = 0;
-        if (nx !== false) nx = parseFloat(nx);
-        if (ny !== false) ny = parseFloat(ny);
-        let changed = false;
-
-        switch (controlpoint) {
-            case 'p':
-                if (!this.p.xLock && !isNaN(nx)) {
-                    dx = (this.p.x - nx);
-                    this.p.x = nx;
-                    this.h1.x -= dx;
-                    this.h2.x -= dx;
-                }
-                if (!this.p.yLock && !isNaN(ny)) {
-                    dy = (this.p.y - ny);
-                    this.p.y = ny;
-                    this.h1.y -= dy;
-                    this.h2.y -= dy;
-                }
-                break;
-
-            case 'h1':
-                if (!this.h1.xLock && !isNaN(nx)) {
-                    this.h1.x = nx;
-                    changed = 'h1';
-                }
-                if (!this.h1.yLock && !isNaN(ny)) {
-                    this.h1.y = ny;
-                    changed = 'h1';
-                }
-                break;
-
-            case 'h2':
-                if (!this.h2.xLock && !isNaN(nx)) {
-                    this.h2.x = nx;
-                    changed = 'h2';
-                }
-                if (!this.h2.yLock && !isNaN(ny)) {
-                    this.h2.y = ny;
-                    changed = 'h2';
-                }
-                break;
-            }
-
-            if (changed) {
-                if (this.type === 'symmetric') {
-                this.makeSymmetric(changed);
-                } else if (this.type === 'flat') {
-                    this.makeFlat(changed);
-                }
-            }
-
-            // this.roundAll();
-        }
-
-        /**
-         * Update the possition of a point based on delta values
-         * @param {string} controlpoint - p / h1 / h2
-         * @param {number} dx - delta x
-         * @param {number} dy - delta y
-         * @param {boolean} force - move points even if they're locked
-         * @param {object} ev - keyboard event to check for Ctrl key
-         */
-        updatePathPointPosition(controlpoint, dx, dy, force, ev) {
-        // debug('UPDATEPOINTPOSITION - cp / dx / dy / force:\n' + controlpoint + ' / ' + dx + ' / ' + dy + ' / ' + force);
-        if (ev && ev.ctrlKey) return;
-
-        if (dx !== false) dx = parseFloat(dx);
-        if (dy !== false) dy = parseFloat(dy);
-        let lockx = (_UI.selectedTool==='pathedit'? this.p.xLock : false);
-        let locky = (_UI.selectedTool==='pathedit'? this.p.yLock : false);
-
-        if (isVal(force)) {
-            if (force) {
-                lockx = false;
-                locky = false;
-            }
-        }
-
-        switch (controlpoint) {
-            case 'p':
-                if (!lockx) this.p.x += dx;
-                if (!locky) this.p.y += dy;
-                if (!lockx) this.h1.x += dx;
-                if (!locky) this.h1.y += dy;
-                if (!lockx) this.h2.x += dx;
-                if (!locky) this.h2.y += dy;
-                break;
-
-            case 'h1':
-                this.h1.x += dx;
-                this.h1.y += dy;
-                // debug('\t Hold h1, updated to: ' + this.h1.x + ' ' + this.h1.y);
-                if (this.type === 'symmetric') {
-                    this.makeSymmetric('h1');
-                } else if (this.type === 'flat') {
-                    this.makeFlat('h1');
-                }
-                break;
-
-            case 'h2':
-                this.h2.x += dx;
-                this.h2.y += dy;
-                if (this.type === 'symmetric') {
-                    this.makeSymmetric('h2');
-                } else if (this.type === 'flat') {
-                    this.makeFlat('h2');
-                }
-                break;
-        }
-
-        // this.roundAll();
-    }
+    // -------------------------------------------------------
+    // METHODS
+    // -------------------------------------------------------
 
     /**
      * Checks to see if there is a control point where the mouse is
@@ -255,32 +132,6 @@ class PathPoint {
         }
 
         return false;
-    }
-
-    /**
-     * Toggles a handle on or off
-     * @param {boolean} toggleH1 - toggle h1 or h2
-     */
-    toggleUseHandle(toggleH1) {
-        if (toggleH1) {
-            this.h1.use = !this.h1.use;
-            history_put('Use Handle 1 : ' + this.h1.use);
-        } else {
-            this.h2.use = !this.h2.use;
-            history_put('Use Handle 2 : ' + this.h2.use);
-        }
-        _UI.multiSelect.shapes.calcMaxes();
-        redraw({calledBy: 'pointDetails'});
-    }
-
-    /**
-     * Change a point's type
-     * @param {string} type - symmetric / flat / corner
-     */
-    set type(type) {
-        if (type === 'symmetric') this.makeSymmetric();
-        else if (type === 'flat') this.makeFlat();
-        else this.type = 'corner';
     }
 
     /**
@@ -353,7 +204,6 @@ class PathPoint {
                 }
             }
         }
-
 
         let angle1 = this.h1.angle;
         let angle2 = this.h2.angle;
@@ -470,14 +320,6 @@ class PathPoint {
     }
 
     /**
-     * Rounds all the Point and Handle coords
-     * @param {number} precision - how many decimal places to round to
-     */
-    round(precision = 3) {
-        this.roundAll(prec);
-    }
-
-    /**
      * Rotate Point and Handles around a center of rotation
      * @param {number} angle - How far to rotate
      * @param {object} about - x/y coordinate center of rotation
@@ -516,9 +358,180 @@ class PathPoint {
     }
 
 
-// -------------------------------------------------------
-// Alignment
-// -------------------------------------------------------
+    // -------------------------------------------------------
+    // DRAW
+    // -------------------------------------------------------
+
+    /**
+     * Draws this point on the edit canvas
+     * @param {string} accent - accent color
+     */
+    drawPoint(accent) {
+        // debug('\n PathPoint.drawPoint - START');
+        // debug('\t sel = ' + _UI.multiSelect.points.isSelected(this));
+
+        accent = accent || _UI.colors.blue;
+        let ps = _GP.projectsettings.pointsize;
+        let hp = ps/2;
+        // _UI.glyphEditCTX.fillStyle = sel? 'white' : accent.l65;
+        _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
+        _UI.glyphEditCTX.strokeStyle = accent.l65;
+        _UI.glyphEditCTX.font = '10px Consolas';
+
+        _UI.glyphEditCTX.fillRect((sx_cx(this.p.x)-hp), (sy_cy(this.p.y)-hp), ps, ps);
+        _UI.glyphEditCTX.strokeRect((sx_cx(this.p.x)-hp), (sy_cy(this.p.y)-hp), ps, ps);
+
+        _UI.glyphEditCTX.fillStyle = accent.l65;
+        _UI.glyphEditCTX.fillText(this.pointNumber, sx_cx(this.p.x + 12), sy_cy(this.p.y));
+        // debug(' PathPoint.drawPoint - END\n');
+    }
+
+    /**
+     * Draws a point with an arrow to show path winding
+     * @param {string} accent - accent color
+     * @param {Point} next - next Point in the path sequence
+     */
+    drawDirectionalityPoint(accent, next) {
+        accent = accent || _UI.colors.blue;
+        // _UI.glyphEditCTX.fillStyle = sel? 'white' : accent.l65;
+        _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
+        _UI.glyphEditCTX.strokeStyle = accent.l65;
+        _UI.glyphEditCTX.lineWidth = 1;
+        let begin = {'x': this.p.x, 'y': this.p.y};
+        let end = {'x': this.h2.x, 'y': this.h2.y};
+
+        if (!this.h2.use) {
+            end = {'x': next.p.x, 'y': next.p.y};
+        }
+
+        let ps = (_GP.projectsettings.pointsize*0.5);
+        let arrow = [
+            [(ps*3), 0],
+            [ps, ps],
+            [-ps, ps],
+            [-ps, -ps],
+            [ps, -ps],
+        ];
+        let rotatedarrow = [];
+        let ang = (Math.atan2((end.y-begin.y), (end.x-begin.x))*-1);
+
+        // FAILURE CASE FALLBACK
+        if (!ang && ang !== 0) {
+            ang = (this.p.x > this.h2.x)? Math.PI : 0;
+        }
+
+        for (let a in arrow) {
+            if (arrow.hasOwnProperty(a)) {
+                rotatedarrow.push([
+                    ((arrow[a][0] * Math.cos(ang)) - (arrow[a][1] * Math.sin(ang))),
+                    ((arrow[a][0] * Math.sin(ang)) + (arrow[a][1] * Math.cos(ang))),
+                ]);
+            }
+        }
+
+        // debug('DRAWPOINT arrow = ' + JSON.stringify(arrow) + '  - rotatedarrow = ' + JSON.stringify(rotatedarrow));
+
+        _UI.glyphEditCTX.beginPath();
+        _UI.glyphEditCTX.moveTo((rotatedarrow[0][0] + sx_cx(this.p.x)), (rotatedarrow[0][1] + sy_cy(this.p.y)));
+
+        for (let p in rotatedarrow) {
+            if (p > 0) {
+                _UI.glyphEditCTX.lineTo((rotatedarrow[p][0] + sx_cx(this.p.x)), (rotatedarrow[p][1] + sy_cy(this.p.y)));
+            }
+        }
+
+        _UI.glyphEditCTX.lineTo((rotatedarrow[0][0] + sx_cx(this.p.x)), (rotatedarrow[0][1] + sy_cy(this.p.y)));
+        _UI.glyphEditCTX.fill();
+        _UI.glyphEditCTX.stroke();
+
+        // Exact Middle Point
+        _UI.glyphEditCTX.fillStyle = accent.l65;
+        _UI.glyphEditCTX.fillRect(makeCrisp(sx_cx(this.p.x)), makeCrisp(sy_cy(this.p.y)), 1, 1);
+    }
+
+    /**
+     * Draws the handles on the edit canvas
+     * @param {boolean} drawH1 - draw the first handle
+     * @param {boolean} drawH2 - draw the second handle
+     * @param {string} accent - accent color
+     */
+    drawHandles(drawH1, drawH2, accent) {
+        accent = accent || _UI.colors.blue;
+        _UI.glyphEditCTX.fillStyle = accent.l65;
+        _UI.glyphEditCTX.strokeStyle = accent.l65;
+        _UI.glyphEditCTX.lineWidth = 1;
+        _UI.glyphEditCTX.font = '10px Consolas';
+
+
+        let hp = _GP.projectsettings.pointsize/2;
+
+        if (drawH1 && this.h1.use) {
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.arc(sx_cx(this.h1.x), sy_cy(this.h1.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.fill();
+
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
+            _UI.glyphEditCTX.lineTo(sx_cx(this.h1.x), sy_cy(this.h1.y));
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.stroke();
+            _UI.glyphEditCTX.fillText('1', sx_cx(this.h1.x + 12), sy_cy(this.h1.y));
+        }
+
+        if (drawH2 && this.h2.use) {
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.arc(sx_cx(this.h2.x), sy_cy(this.h2.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.fill();
+
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
+            _UI.glyphEditCTX.lineTo(sx_cx(this.h2.x), sy_cy(this.h2.y));
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.stroke();
+            _UI.glyphEditCTX.fillText('2', sx_cx(this.h2.x + 12), sy_cy(this.h2.y));
+        }
+    }
+
+    /**
+     * Draws a Quadratic point to the edit canvas
+     * @param {Point} prevP - Previous point in the path sequence
+     */
+    drawQuadraticHandle(prevP) {
+        // Draw Quadratic handle point from imported SVG
+        _UI.glyphEditCTX.fillStyle = _UI.colors.error.medium;
+        _UI.glyphEditCTX.strokeStyle = _UI.colors.error.medium;
+        _UI.glyphEditCTX.lineWidth = 1;
+        let hp = _GP.projectsettings.pointsize/2;
+
+        if (this.q) {
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.arc(sx_cx(this.q.x), sy_cy(this.q.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.fill();
+
+            _UI.glyphEditCTX.beginPath();
+            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
+            _UI.glyphEditCTX.lineTo(sx_cx(this.q.x), sy_cy(this.q.y));
+            _UI.glyphEditCTX.closePath();
+            _UI.glyphEditCTX.stroke();
+
+            if (prevP) {
+                _UI.glyphEditCTX.beginPath();
+                _UI.glyphEditCTX.moveTo(sx_cx(prevP.x), sy_cy(prevP.y));
+                _UI.glyphEditCTX.lineTo(sx_cx(this.q.x), sy_cy(this.q.y));
+                _UI.glyphEditCTX.closePath();
+                _UI.glyphEditCTX.stroke();
+            }
+        }
+    }
+
+
+    // -------------------------------------------------------
+    // Alignment
+    // -------------------------------------------------------
+
     /**
      * Align
      * @param {PathPoint} pathPoint - other point with which to align
@@ -749,176 +762,6 @@ class PathPoint {
         else if (this.p.y < p2.p.y) this.p.y -= delta;
 
         redraw({calledBy: 'pointDetails'});
-    }
-
-
-// -------------------------------------------------------
-// DRAW
-// -------------------------------------------------------
-
-    /**
-     * Draws this point on the edit canvas
-     * @param {string} accent - accent color
-     */
-    drawPoint(accent) {
-        // debug('\n PathPoint.drawPoint - START');
-        // debug('\t sel = ' + _UI.multiSelect.points.isSelected(this));
-
-        accent = accent || _UI.colors.blue;
-        let ps = _GP.projectsettings.pointsize;
-        let hp = ps/2;
-        // _UI.glyphEditCTX.fillStyle = sel? 'white' : accent.l65;
-        _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
-        _UI.glyphEditCTX.strokeStyle = accent.l65;
-        _UI.glyphEditCTX.font = '10px Consolas';
-
-        _UI.glyphEditCTX.fillRect((sx_cx(this.p.x)-hp), (sy_cy(this.p.y)-hp), ps, ps);
-        _UI.glyphEditCTX.strokeRect((sx_cx(this.p.x)-hp), (sy_cy(this.p.y)-hp), ps, ps);
-
-        _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.fillText(this.pointNumber, sx_cx(this.p.x + 12), sy_cy(this.p.y));
-        // debug(' PathPoint.drawPoint - END\n');
-    }
-
-    /**
-     * Draws a point with an arrow to show path winding
-     * @param {string} accent - accent color
-     * @param {Point} next - next Point in the path sequence
-     */
-    drawDirectionalityPoint(accent, next) {
-        accent = accent || _UI.colors.blue;
-        // _UI.glyphEditCTX.fillStyle = sel? 'white' : accent.l65;
-        _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
-        _UI.glyphEditCTX.strokeStyle = accent.l65;
-        _UI.glyphEditCTX.lineWidth = 1;
-        let begin = {'x': this.p.x, 'y': this.p.y};
-        let end = {'x': this.h2.x, 'y': this.h2.y};
-
-        if (!this.h2.use) {
-            end = {'x': next.p.x, 'y': next.p.y};
-        }
-
-        let ps = (_GP.projectsettings.pointsize*0.5);
-        let arrow = [
-            [(ps*3), 0],
-            [ps, ps],
-            [-ps, ps],
-            [-ps, -ps],
-            [ps, -ps],
-        ];
-        let rotatedarrow = [];
-        let ang = (Math.atan2((end.y-begin.y), (end.x-begin.x))*-1);
-
-        // FAILURE CASE FALLBACK
-        if (!ang && ang !== 0) {
-            ang = (this.p.x > this.h2.x)? Math.PI : 0;
-        }
-
-        for (let a in arrow) {
-            if (arrow.hasOwnProperty(a)) {
-                rotatedarrow.push([
-                    ((arrow[a][0] * Math.cos(ang)) - (arrow[a][1] * Math.sin(ang))),
-                    ((arrow[a][0] * Math.sin(ang)) + (arrow[a][1] * Math.cos(ang))),
-                ]);
-            }
-        }
-
-        // debug('DRAWPOINT arrow = ' + JSON.stringify(arrow) + '  - rotatedarrow = ' + JSON.stringify(rotatedarrow));
-
-        _UI.glyphEditCTX.beginPath();
-        _UI.glyphEditCTX.moveTo((rotatedarrow[0][0] + sx_cx(this.p.x)), (rotatedarrow[0][1] + sy_cy(this.p.y)));
-
-        for (let p in rotatedarrow) {
-            if (p > 0) {
-                _UI.glyphEditCTX.lineTo((rotatedarrow[p][0] + sx_cx(this.p.x)), (rotatedarrow[p][1] + sy_cy(this.p.y)));
-            }
-        }
-
-        _UI.glyphEditCTX.lineTo((rotatedarrow[0][0] + sx_cx(this.p.x)), (rotatedarrow[0][1] + sy_cy(this.p.y)));
-        _UI.glyphEditCTX.fill();
-        _UI.glyphEditCTX.stroke();
-
-        // Exact Middle Point
-        _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.fillRect(makeCrisp(sx_cx(this.p.x)), makeCrisp(sy_cy(this.p.y)), 1, 1);
-    }
-
-    /**
-     * Draws the handles on the edit canvas
-     * @param {boolean} drawH1 - draw the first handle
-     * @param {boolean} drawH2 - draw the second handle
-     * @param {string} accent - accent color
-     */
-    drawHandles(drawH1, drawH2, accent) {
-        accent = accent || _UI.colors.blue;
-        _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.strokeStyle = accent.l65;
-        _UI.glyphEditCTX.lineWidth = 1;
-        _UI.glyphEditCTX.font = '10px Consolas';
-
-
-        let hp = _GP.projectsettings.pointsize/2;
-
-        if (drawH1 && this.h1.use) {
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sx_cx(this.h1.x), sy_cy(this.h1.y), hp, 0, Math.PI*2, true);
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.fill();
-
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
-            _UI.glyphEditCTX.lineTo(sx_cx(this.h1.x), sy_cy(this.h1.y));
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.stroke();
-            _UI.glyphEditCTX.fillText('1', sx_cx(this.h1.x + 12), sy_cy(this.h1.y));
-        }
-
-        if (drawH2 && this.h2.use) {
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sx_cx(this.h2.x), sy_cy(this.h2.y), hp, 0, Math.PI*2, true);
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.fill();
-
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
-            _UI.glyphEditCTX.lineTo(sx_cx(this.h2.x), sy_cy(this.h2.y));
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.stroke();
-            _UI.glyphEditCTX.fillText('2', sx_cx(this.h2.x + 12), sy_cy(this.h2.y));
-        }
-    }
-
-    /**
-     * Draws a Quadratic point to the edit canvas
-     * @param {Point} prevP - Previous point in the path sequence
-     */
-    drawQuadraticHandle(prevP) {
-        // Draw Quadratic handle point from imported SVG
-        _UI.glyphEditCTX.fillStyle = _UI.colors.error.medium;
-        _UI.glyphEditCTX.strokeStyle = _UI.colors.error.medium;
-        _UI.glyphEditCTX.lineWidth = 1;
-        let hp = _GP.projectsettings.pointsize/2;
-
-        if (this.q) {
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sx_cx(this.q.x), sy_cy(this.q.y), hp, 0, Math.PI*2, true);
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.fill();
-
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
-            _UI.glyphEditCTX.lineTo(sx_cx(this.q.x), sy_cy(this.q.y));
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.stroke();
-
-            if (prevP) {
-                _UI.glyphEditCTX.beginPath();
-                _UI.glyphEditCTX.moveTo(sx_cx(prevP.x), sy_cy(prevP.y));
-                _UI.glyphEditCTX.lineTo(sx_cx(this.q.x), sy_cy(this.q.y));
-                _UI.glyphEditCTX.closePath();
-                _UI.glyphEditCTX.stroke();
-            }
-        }
     }
 }
 

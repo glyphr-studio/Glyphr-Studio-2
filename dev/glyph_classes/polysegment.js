@@ -94,11 +94,11 @@
         return false;
     };
 
-    PolySegment.prototype.round = function(precision) {
+    PolySegment.prototype.roundAll = function(precision) {
         precision = isVal(precision)? precision : 3;
 
         for (let s=0; s<this.segments.length; s++) {
-            this.segments[s].round(precision);
+            this.segments[s].roundAll(precision);
         }
     };
 

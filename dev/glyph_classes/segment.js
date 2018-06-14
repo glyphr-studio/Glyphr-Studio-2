@@ -864,15 +864,15 @@
         return re;
     };
 
-    Segment.prototype.round = function(precision) {
+    Segment.prototype.roundAll = function(precision) {
         precision = isVal(precision)? precision : 3;
 
-        this.p1x = round(this.p1x, precision);
-        this.p1y = round(this.p1y, precision);
-        this.p2x = round(this.p2x, precision);
-        this.p2y = round(this.p2y, precision);
-        this.p3x = round(this.p3x, precision);
-        this.p3y = round(this.p3y, precision);
-        this.p4x = round(this.p4x, precision);
-        this.p4y = round(this.p4y, precision);
+        this.p1x = roundAll(this.p1x, precision);
+        this.p1y = roundAll(this.p1y, precision);
+        this.p2x = roundAll(this.p2x, precision);
+        this.p2y = roundAll(this.p2y, precision);
+        this.p3x = roundAll(this.p3x, precision);
+        this.p3y = roundAll(this.p3y, precision);
+        this.p4x = roundAll(this.p4x, precision);
+        this.p4y = roundAll(this.p4y, precision);
     };
