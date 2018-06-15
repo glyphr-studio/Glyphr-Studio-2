@@ -319,8 +319,8 @@ function Tool_NewBasicShape() {
         // prevent really small shapes
         let tnbs = _UI.eventhandlers.tempnewbasicshape;
 
-        if ( (Math.abs(tnbs.xmax-tnbs.xmin) > _GP.projectsettings.pointsize) &&
-            (Math.abs(tnbs.ymax-tnbs.ymin) > _GP.projectsettings.pointsize) ) {
+        if ( (Math.abs(tnbs.xmax-tnbs.xmin) > _GP.projectSettings.pointsize) &&
+            (Math.abs(tnbs.ymax-tnbs.ymin) > _GP.projectSettings.pointsize) ) {
             let count = (_UI.currentPage === 'components')? (getLength(_GP.components)) : getSelectedWorkItemShapes().length;
             let s = _UI.multiSelect.shapes.getSingleton();
 
@@ -414,8 +414,8 @@ function Tool_NewPath() {
 
         if (this.dragging) {
             // avoid really small handles
-            if ((Math.abs(this.currpt.p.x-cx_sx(eh.mousex)) > (_GP.projectsettings.pointsize*2)) ||
-                (Math.abs(this.currpt.p.y-cy_sy(eh.mousey)) > (_GP.projectsettings.pointsize*2)) ) {
+            if ((Math.abs(this.currpt.p.x-cx_sx(eh.mousex)) > (_GP.projectSettings.pointsize*2)) ||
+                (Math.abs(this.currpt.p.y-cy_sy(eh.mousey)) > (_GP.projectSettings.pointsize*2)) ) {
                 this.currpt.h1.use = true;
                 this.currpt.h2.use = true;
                 this.currpt.h2.x = cx_sx(eh.mousex);
@@ -631,7 +631,7 @@ function Tool_PathAddPoint() {
             let pt = singleshape.path.getClosestPointOnCurve({'x': cx_sx(_UI.eventhandlers.mousex), 'y': cy_sy(_UI.eventhandlers.mousey)});
             if (pt && pt.distance < 20) {
                 this.addpoint = pt;
-                let ptsize = _GP.projectsettings.pointsize;
+                let ptsize = _GP.projectSettings.pointsize;
                 let ptx = makeCrisp(sx_cx(pt.x) - (ptsize/2));
                 let pty = makeCrisp(sy_cy(pt.y) - (ptsize/2));
                 openNotation(('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3)), ptx, pty);

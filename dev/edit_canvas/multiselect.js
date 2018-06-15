@@ -106,7 +106,7 @@
     _UI.multiSelect.points.shape = new Shape({'name': 'multiselected points', 'path': new Path()});
 
     _UI.multiSelect.points.getShape = function() {
-        this.shape.path = new Path({'pathpoints': this.members});
+        this.shape.path = new Path({pathPoints: this.members});
         this.shape.calcMaxes();
         return this.shape;
     };

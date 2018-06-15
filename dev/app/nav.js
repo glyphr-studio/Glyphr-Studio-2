@@ -369,7 +369,7 @@
             case 'openproject': loadPage_openproject(); break;
             case 'global actions': loadPage_globalactions(); break;
             case 'font settings': loadPage_fontsettings(); break;
-            case 'project settings': loadPage_projectsettings(); break;
+            case 'project settings': loadPage_projectSettings(); break;
             case 'export font': loadPage_exportfont(); break;
             case 'import svg': loadPage_importsvg(); break;
             case 'about': loadPage_about(); break;

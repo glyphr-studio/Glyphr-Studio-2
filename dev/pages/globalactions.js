@@ -8,7 +8,7 @@
 
     function loadPage_globalactions() {
         // debug("LOADING PAGE >> loadPage_globalactions");
-        let ps = _GP.projectsettings;
+        let ps = _GP.projectSettings;
 
         let con = '<h1 class="pagetitle">Global Actions</h1><div class="pagecontent textpage">';
 
@@ -178,7 +178,7 @@
 
         showToast('Starting to assemble Diacritical Glyphs', 10000);
 
-        _GP.projectsettings.glyphrange.latinsupplement = true;
+        _GP.projectSettings.glyphrange.latinsupplement = true;
 
         setTimeout(doOneGlyph, 500);
     }

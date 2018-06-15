@@ -73,7 +73,7 @@
             }
         }
 
-        if(_TEST.autoRun) window.setTimeout(runTests, 100);
+        if(_TEST.autoRun) window.setTimeout(runTests, 10);
         else header.innerHTML += `<br><br><button onclick="runTests();">Run Tests</button>`;
     }
 
@@ -91,6 +91,7 @@
             }
 
             let test;
+            // console.log(`outputting to section ${_TEST.testList[currTest].category}`);
             let currResultSection = document.querySelector(`#${getResultSectionID(_TEST.testList[currTest].category)}`);
 
             try {
@@ -183,6 +184,8 @@
     .resultSection {
         padding-bottom:20px;
         border-bottom: 1px solid lightgray;
+        min-height: 85px;
+        animation: fadein 0.5s;
     }
 
     #header {
@@ -216,7 +219,12 @@
         opacity: 1;
     }
 
+    @keyframes fadein {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
     .category {
+        animation: fadein 1s;
         padding: 2px 16px 4px 16px;
         background-color: #EEF9FF;
         border-color: #D7E8F2;
@@ -229,6 +237,7 @@
     }
 
     .testResult {
+        animation: fadein 1s;
         padding: 2px 16px 4px 6px;
         border-style: solid;
         border-width: 1px;
@@ -278,6 +287,7 @@
     }
 
     .testSummary {
+        animation: fadein 1s;
         display: inline-block;
         margin:0px 10px 0px 0px;
         padding:0px 10px 5px 10px;

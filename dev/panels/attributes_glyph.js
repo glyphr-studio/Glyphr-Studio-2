@@ -76,7 +76,7 @@
 
     function multiSelectDetails() {
         let sc = _UI.multiSelect.shapes.getGlyph();
-        let svc = _GP.projectsettings.spinnervaluechange*1 || 1;
+        let svc = _GP.projectSettings.spinnervaluechange*1 || 1;
         let content = '';
 
         content += '<tr>'+
@@ -115,7 +115,7 @@
 
     function glyphDetails(s) {
         let sc = getSelectedWorkItem();
-        let svc = _GP.projectsettings.spinnervaluechange*1 || 1;
+        let svc = _GP.projectSettings.spinnervaluechange*1 || 1;
         sc.calcGlyphMaxes();
         let content = '';
         let numshapes = getSelectedWorkItemShapes().length;
@@ -191,13 +191,13 @@
                     '&emsp;';
 
                     if (sc.leftsidebearing) {
-                        if (sc.leftsidebearing === true) sc.leftsidebearing = _GP.projectsettings.defaultlsb;
+                        if (sc.leftsidebearing === true) sc.leftsidebearing = _GP.projectSettings.defaultlsb;
                         content += '<input type="number" id="charlsb" step="'+svc+'" '+
                         'value="' + sc.leftsidebearing + '" '+
                         'onchange="_UI.focusElement=this.id; getSelectedWorkItem().leftsidebearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
                     } else {
                         content +='<input type="number" disabled="disabled" '+
-                        'value="'+ round(_GP.projectsettings.defaultlsb, 3) + '"/>';
+                        'value="'+ round(_GP.projectSettings.defaultlsb, 3) + '"/>';
                     }
             content += '</td>'+
             '</tr>';
@@ -215,13 +215,13 @@
                     '&emsp;';
 
                     if (sc.rightsidebearing) {
-                        if (sc.rightsidebearing === true) sc.rightsidebearing = _GP.projectsettings.defaultrsb;
+                        if (sc.rightsidebearing === true) sc.rightsidebearing = _GP.projectSettings.defaultrsb;
                         content += '<input type="number" id="charrsb" step="'+svc+'" '+
                         'value="' + sc.rightsidebearing + '" '+
                         'onchange="_UI.focusElement=this.id; getSelectedWorkItem().rightsidebearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
                     } else {
                         content += '<input type="number" disabled="disabled" '+
-                        'value="'+round(_GP.projectsettings.defaultrsb, 3) + '"/>';
+                        'value="'+round(_GP.projectSettings.defaultrsb, 3) + '"/>';
                     }
             content += '</td>'+
             '</tr>';
@@ -240,7 +240,7 @@
 
     function shapeDetails(s) {
         // debug("SHAPEDETAILS - Drawing Shape Details");
-        let svc = _GP.projectsettings.spinnervaluechange*1 || 1;
+        let svc = _GP.projectSettings.spinnervaluechange*1 || 1;
         let content = '';
         content += '<tr><td colspan=2 class="detailtitle"><h3 style="margin:0px;">shape</h3></td></tr>';
 
@@ -339,7 +339,7 @@
     }
 
     function pointDetails(tp) {
-        let svc = _GP.projectsettings.spinnervaluechange*1 || 1;
+        let svc = _GP.projectSettings.spinnervaluechange*1 || 1;
         let content = '';
 
         // POINT
@@ -403,7 +403,7 @@
 
             content += '<tr>'+
                 '<td> angle'+dimSplit()+'length </span></td>'+
-                '<td><input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.getH1NiceAngle(), 1) || 0)+'">'+
+                '<td><input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.h1.niceAngle, 1) || 0)+'">'+
                 dimSplit()+
                 '<input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.h1.length, 3) || 0)+'"></td>'+
             '</tr>';
@@ -434,7 +434,7 @@
 
             content += '<tr>'+
                 '<td> angle'+dimSplit()+'length </span></td>'+
-                '<td><input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.getH2NiceAngle(), 1) || 0)+'">'+
+                '<td><input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.h2.niceAngle, 1) || 0)+'">'+
                 dimSplit()+
                 '<input type="number" class="lockpad" disabled="disabled" value="'+(round(tp.h2.length, 3) || 0)+'"></td>'+
             '</tr>';

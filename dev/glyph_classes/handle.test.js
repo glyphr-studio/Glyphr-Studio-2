@@ -1,20 +1,19 @@
 _TEST.testList.push(
     {
-    category: 'Handle',
+        category: 'Handle',
         name: 'Constructor - x',
         assertion: function() {
             return is((new Handle()).x).equalTo(100);
         },
     },
     {
-    category: 'Handle',
-        name: 'niceAngle',
+        category: 'Handle',
+        name: 'Change Possition',
         assertion: function() {
             let han = new Handle();
-            console.log(han);
-            han.x = 100;
-            han.y = 100;
-            return is(han.niceAngle).equalTo(45);
+            han.x = 500;
+            han.y = 500;
+            return expression(han.x === 500 && han.y === 500);
         },
     }
 );

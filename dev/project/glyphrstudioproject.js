@@ -11,7 +11,7 @@ class GlyphrStudioProject {
      */
     constructor(newProject = {}) {
         // Set up all default values first
-        this.projectsettings = {
+        this.projectSettings = {
             // Internal Stuff
             version: _UI.thisGlyphrStudioVersion,
             versionnum: _UI.thisGlyphrStudioVersionNum,
@@ -136,26 +136,26 @@ class GlyphrStudioProject {
         // debug(newProject);
 
         // Project Settings
-        newProject.projectsettings = newProject.projectsettings || {};
-        newProject.projectsettings.guies = newProject.projectsettings.guides || {};
-        newProject.projectsettings.glyphrange = newProject.projectsettings.glyphrange || {};
+        newProject.projectSettings = newProject.projectSettings || {};
+        newProject.projectSettings.guies = newProject.projectSettings.guides || {};
+        newProject.projectSettings.glyphrange = newProject.projectSettings.glyphrange || {};
 
         // Guides can be custom, so save a copy before merging with templates
-        let dataguides = clone(newProject.projectsettings.guides || {});
+        let dataguides = clone(newProject.projectSettings.guides || {});
 
         // Merge with templates
-        if (newProject.projectsettings) {
-            this.projectsettings = merge(this.projectsettings, newProject.projectsettings);
-            this.projectsettings.glyphrange.custom = newProject.projectsettings.glyphrange.custom || [];
+        if (newProject.projectSettings) {
+            this.projectSettings = merge(this.projectSettings, newProject.projectSettings);
+            this.projectSettings.glyphrange.custom = newProject.projectSettings.glyphrange.custom || [];
         }
-        this.projectsettings.projectid = this.projectsettings.projectid || genProjectID();
-        this.projectsettings.descent = -1 * Math.abs(this.projectsettings.descent);
-        // debug('\t finished merging projectsettings');
-        // debug(this.projectsettings);
+        this.projectSettings.projectid = this.projectSettings.projectid || genProjectID();
+        this.projectSettings.descent = -1 * Math.abs(this.projectSettings.descent);
+        // debug('\t finished merging projectSettings');
+        // debug(this.projectSettings);
 
 
         // Guides
-        hydrateGlyphrObjectList(Guide, dataguides, this.projectsettings.guides);
+        hydrateGlyphrObjectList(Guide, dataguides, this.projectSettings.guides);
         // debug('\t finished hydrating guides');
 
         // Metadata

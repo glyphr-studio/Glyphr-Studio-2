@@ -44,7 +44,7 @@ function importGlyphrProjectFromText() {
 
     let tempVersion = false;
     let v = false;
-    let ps = fcontent.projectsettings;
+    let ps = fcontent.projectSettings;
     if (ps) {
         tempVersion = ps.versionnum;
         v = ps.version;
@@ -93,8 +93,8 @@ function importGlyphrProjectFromText() {
         // Roll through minor versions
         // The only change for v < 1.10 is correcting the spelling of 'suppliment'
         if (projectVersion.minor < 10) {
-            fcontent.projectsettings.glyphrange.latinsupplement = fcontent.projectsettings.glyphrange.latinsuppliment;
-            delete fcontent.projectsettings.glyphrange.latinsuppliment;
+            fcontent.projectSettings.glyphrange.latinsupplement = fcontent.projectSettings.glyphrange.latinsuppliment;
+            delete fcontent.projectSettings.glyphrange.latinsuppliment;
         }
 
         fcontent = migrateV1toV2(fcontent, projectVersion.minor);
@@ -220,10 +220,10 @@ function importGlyphrProjectFromText() {
         // Update new top level objects
         project.glyphs = clone(project.fontchars);
         project.components = clone(project.linkedshapes);
-        project.projectsettings.glyphrange = clone(project.projectsettings.charrange);
+        project.projectSettings.glyphrange = clone(project.projectSettings.charrange);
         delete project.fontchars;
         delete project.linkedshapes;
-        delete project.projectsettings.charrange;
+        delete project.projectSettings.charrange;
         // debug('\t DONE tlo');
 
 
@@ -322,7 +322,7 @@ function importGlyphrProjectFromText() {
             if (project.fontchars.hasOwnProperty(i)) {
                     tc = project.fontchars[i];
                     // debug("migrate03to04 - fontchars " + i + " is " + tc);
-                    tc.charwidth = tc.advancewidth || project.projectsettings.upm || 1000;
+                    tc.charwidth = tc.advancewidth || project.projectSettings.upm || 1000;
                 }
             }
         // debug(project);
@@ -353,13 +353,13 @@ function importGlyphrProjectFromText() {
             }
         }
 
-        let newps = newgp.projectsettings;
-        for (let e in fc.projectsettings) {
+        let newps = newgp.projectSettings;
+        for (let e in fc.projectSettings) {
             if (newps.hasOwnProperty(e)) {
-                newps[e] = fc.projectsettings[e];
+                newps[e] = fc.projectSettings[e];
             }
         }
-        fc.projectsettings = newps;
+        fc.projectSettings = newps;
 
         let tc;
         let hex;
@@ -407,15 +407,15 @@ function newGlyphrStudioProject() {
 
     _GP = new GlyphrStudioProject();
 
-    _GP.projectsettings.name = fn;
+    _GP.projectSettings.name = fn;
     _GP.metadata.font_family = fn.substr(0, 31);
 
-    _GP.projectsettings.version = _UI.thisGlyphrStudioVersion;
-    _GP.projectsettings.versionnum = _UI.thisGlyphrStudioVersionNum;
-    _GP.projectsettings.projectid = genProjectID();
+    _GP.projectSettings.version = _UI.thisGlyphrStudioVersion;
+    _GP.projectSettings.versionnum = _UI.thisGlyphrStudioVersionNum;
+    _GP.projectSettings.projectid = genProjectID();
 
     getGlyph('0x0020', true).isautowide = false;
-    getGlyph('0x0020', true).glyphwidth = round(_GP.projectsettings.upm/3);
+    getGlyph('0x0020', true).glyphwidth = round(_GP.projectSettings.upm/3);
     getGlyph('0x0041', true);
 
     finalizeUI();
@@ -438,7 +438,7 @@ function finalizeUI() {
     _UI.guides.leftGroupXMax = new Guide(_UI.guides.leftGroupXMax);
     _UI.guides.rightGroupXMin = new Guide(_UI.guides.rightGroupXMin);
 
-    let ps = _GP.projectsettings;
+    let ps = _GP.projectSettings;
 
     ps.guides.ascent = ps.guides.ascent || new Guide({name: 'ascent', type: 'horizontal', location: ps.ascent, editable: false, color: ps.colors.guide_med});
     ps.guides.capheight = ps.guides.capheight || new Guide({name: 'capheight', type: 'horizontal', location: ps.capheight, editable: false, color: ps.colors.guide_light});
@@ -457,7 +457,7 @@ function finalizeUI() {
     _UI.selectedKern = _UI.selectedKern || getFirstID(_GP.kerning);
 
     let sp = getGlyph('0x0020', true);
-    if (!sp.isautowide && sp.glyphwidth === 0) sp.glyphwidth = round(_GP.projectsettings.upm/3);
+    if (!sp.isautowide && sp.glyphwidth === 0) sp.glyphwidth = round(_GP.projectSettings.upm/3);
 
     calculateDefaultView();
     resetThumbView();

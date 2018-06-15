@@ -24,6 +24,7 @@ const manifest = [
 
             'coord.test.js',
             'handle.test.js',
+            'pathpoint.test.js',
         ],
     },
 
@@ -100,7 +101,7 @@ const manifest = [
             'testdrive.js',
             'globalactions.js',
             'fontsettings.js',
-            'projectsettings.js',
+            'projectSettings.js',
             'openproject.js',
             'importSVG.js',
             'exportfont.js',

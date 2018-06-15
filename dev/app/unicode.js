@@ -170,7 +170,7 @@
     function addCustomGlyphRange() {
         let newrange = getCustomRange(true);
         if (newrange) {
-            _GP.projectsettings.glyphrange.custom.unshift(newrange);
+            _GP.projectSettings.glyphrange.custom.unshift(newrange);
             updateCustomRangeTable();
         }
     }
@@ -213,7 +213,7 @@ document.getElementById('customrangeerror').style.display = 'none';
     }
 
     function updateCustomRangeTable() {
-        let cr = _GP.projectsettings.glyphrange.custom;
+        let cr = _GP.projectSettings.glyphrange.custom;
         // debug('UPDATECUSTOMRANGETABLE - \n\t custom is ' + JSON.stringify(cr));
         let content = '';
         if (cr.length) {
@@ -233,7 +233,7 @@ document.getElementById('customrangeerror').style.display = 'none';
     }
 
     function removeCustomGlyphRange(i) {
-        let cr = _GP.projectsettings.glyphrange.custom;
+        let cr = _GP.projectSettings.glyphrange.custom;
         // debug('REMOVECUSTOMGLYPHRANGE - called on index ' + i + '\n\t custom is ' + JSON.stringify(cr));
         cr.splice(i, 1);
         updateCustomRangeTable();

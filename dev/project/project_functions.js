@@ -1,7 +1,7 @@
 
 function saveGlyphrProjectFile(overwrite) {
     // debug('SAVEGLYPHRPROJECTVILE');
-    // debug('\t ' + _GP.projectsettings.formatsavefile);
+    // debug('\t ' + _GP.projectSettings.formatsavefile);
 
     // desktop overwrite / save as logic
     if (window && window.process && window.process.type) {
@@ -14,11 +14,11 @@ function saveGlyphrProjectFile(overwrite) {
 
     let savedata = cloneForSaveData(_GP);
 
-    if (_GP.projectsettings.formatsavefile) savedata = json(savedata);
+    if (_GP.projectSettings.formatsavefile) savedata = json(savedata);
     else savedata = JSON.stringify(savedata);
 
     // debug('saveGlyphrProjectFile - \n'+savedata);
-    let fname = _GP.projectsettings.name + ' - Glyphr Project - ' + genDateStampSuffix() + '.txt';
+    let fname = _GP.projectSettings.name + ' - Glyphr Project - ' + genDateStampSuffix() + '.txt';
 
     saveFile(fname, savedata);
 
@@ -62,7 +62,7 @@ function genDateStampSuffix() {
 }
 
 function glyphRangeIterator(fname) {
-    let cr = _GP.projectsettings.glyphrange;
+    let cr = _GP.projectSettings.glyphrange;
     let ccon = '';
     // var count = 0;
 
@@ -127,7 +127,7 @@ function calcFontMaxes() {
     });
 
     // var proportion = (fm.ymax / (fm.ymax-fm.ymin));
-    // var total = fm.ymax + Math.abs(fm.ymin) + _GP.projectsettings.lineGap;
+    // var total = fm.ymax + Math.abs(fm.ymin) + _GP.projectSettings.lineGap;
     // fm.hhea_ascent = round(total*proportion);
     // fm.hhea_descent = (fm.hhea_ascent - total);
 

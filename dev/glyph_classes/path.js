@@ -31,11 +31,11 @@
         this._pathPoints = [];
 
         // path points
-        if (pathpoints && pathpoints.length) {
-            // debug('NEW PATH : Hydrating Path Points, length ' + pathpoints.length);
-            for (let i = 0; i < pathpoints.length; i++) {
-                this._pathpoints[i] = new PathPoint(pathpoints[i]);
-                this._pathpoints[i].parentpath = this;
+        if (pathPoints && pathPoints.length) {
+            // debug('NEW PATH : Hydrating Path Points, length ' + pathPoints.length);
+            for (let i = 0; i < pathPoints.length; i++) {
+                this._pathPoints[i] = new PathPoint(pathPoints[i]);
+                this._pathPoints[i].parentpath = this;
             }
         }
 
@@ -406,7 +406,7 @@
         // debug('\n Path.drawPath - START');
         // debug('\t view ' + json(view, true));
 
-        let snap = _GP.projectsettings.renderpointssnappedtogrid;
+        let snap = _GP.projectSettings.renderpointssnappedtogrid;
 
         let currview = getView('Path.drawPath');
         view = view || clone(currview);
@@ -530,7 +530,7 @@
             return '';
         }
 
-        let roundvalue = _GP.projectsettings.svgprecision || 8;
+        let roundvalue = _GP.projectSettings.svgprecision || 8;
         let p1;
         let p2;
         let trr = '';
@@ -697,7 +697,7 @@
         // debug('\n Path.isOverFirstPoint - START');
         // debug('\t Passed ' + x + '/' + y);
         let a = this.pathPoints[0];
-        let hp = _GP.projectsettings.pointsize / getView('Path.isOverFirstPoint').dz;
+        let hp = _GP.projectSettings.pointsize / getView('Path.isOverFirstPoint').dz;
         // debug('\t Checking ' + a.p.x + '/' + a.p.y + ' around ' + hp);
 
         if (!a) return false;

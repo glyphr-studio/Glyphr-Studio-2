@@ -127,7 +127,7 @@ _FN.insertGlobalDOMElements = function() {
 
     window.onBeforeUnload = function() {
         popIn();
-        if (_GP && _GP.projectsettings.stopPageNavigation && _UI.stopPageNavigation && !_UI.devMode) {
+        if (_GP && _GP.projectSettings.stopPageNavigation && _UI.stopPageNavigation && !_UI.devMode) {
             return '\n\nOh Noes!\nUnless you specifically saved your Glyphr Project, all your progress will be lost.\n\n';
         } else {
             return;

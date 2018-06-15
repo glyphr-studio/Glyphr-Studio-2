@@ -265,8 +265,8 @@
 
         let multiplyer = _UI.eventhandlers.isShiftDown? 10 : 1;
 
-        let mx = (dx * _GP.projectsettings.spinnervaluechange * multiplyer);
-        let my = (dy * _GP.projectsettings.spinnervaluechange * multiplyer);
+        let mx = (dx * _GP.projectSettings.spinnervaluechange * multiplyer);
+        let my = (dy * _GP.projectSettings.spinnervaluechange * multiplyer);
         let em = getEditMode();
 
         if (em === 'kern') {

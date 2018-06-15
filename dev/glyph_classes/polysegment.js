@@ -83,7 +83,7 @@
         // debug(pp);
         // debug(' PolySegment.getPath - END\n');
 
-        return new Path({pathpoints: pp});
+        return new Path({pathPoints: pp});
     };
 
     PolySegment.prototype.containsSegment = function(seg) {

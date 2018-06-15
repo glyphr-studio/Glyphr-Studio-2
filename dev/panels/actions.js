@@ -302,7 +302,7 @@
         if (type === 'shapes') content += 'When copying the shapes from the other glyph, also copy these attributes to this glyph:';
         else content += 'When inserting the Component Instance, also copy these attributes from the Root Component to this glyph:';
 
-        content += '<table class="settingstable projectsettings">';
+        content += '<table class="settingstable projectSettings">';
 
         content += '<tr><td style="text-align:right; vertical-align:top;">'+checkUI('_UI.glyphChooser.getShapeOptions.srcAutoWidth', gso.srcAutoWidth)+'</td>'+
                     '<td style="vertical-align:top;"><label for="srcAutoWidth">Auto-calculate Width</label><br><br></td></tr>';

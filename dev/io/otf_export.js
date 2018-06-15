@@ -8,14 +8,14 @@
 
     function ioOTF_exportOTFfont() {
         // debug('\n ioOTF_exportOTFfont - START');
-        // debug('\t combineshapesonexport = ' + _GP.projectsettings.combineshapesonexport);
+        // debug('\t combineshapesonexport = ' + _GP.projectSettings.combineshapesonexport);
 
         function firstExportStep() {
             // debug('\n firstExportStep - START');
 
             // Add metadata
             let md = _GP.metadata;
-            let ps = _GP.projectsettings;
+            let ps = _GP.projectSettings;
 
             options.unitsPerEm = ps.upm || 1000;
             options.ascender = ps.ascent || 0.00001;
@@ -88,14 +88,14 @@
             // export this glyph
             let glyph = currexportglyph.xg;
             let num = currexportglyph.xc;
-            let comb = _GP.projectsettings.combineshapesonexport;
+            let comb = _GP.projectSettings.combineshapesonexport;
             let maxes = glyph.getMaxes();
 
             // debug('\t ' + glyph.name);
 
             showToast('Exporting<br>'+glyph.name, 999999);
 
-            if (comb && glyph.shapes.length <= _GP.projectsettings.maxcombineshapesonexport) glyph.combineAllShapes(true);
+            if (comb && glyph.shapes.length <= _GP.projectSettings.maxcombineshapesonexport) glyph.combineAllShapes(true);
 
             if (glyph.isautowide) glyph.updateGlyphPosition(glyph.getLSB(), 0);
 

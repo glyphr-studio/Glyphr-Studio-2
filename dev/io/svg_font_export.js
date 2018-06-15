@@ -8,7 +8,7 @@
 
     function ioSVG_exportSVGfont() {
         // debug('\n ioSVG_exportSVGfont - Start');
-        let ps = _GP.projectsettings;
+        let ps = _GP.projectSettings;
         let md = _GP.metadata;
         let family = md.font_family;
         let familyid = family.replace(/ /g, '_');
@@ -75,7 +75,7 @@
         calcFontMaxes();
         let t = '\t\t\t\t';
         let md = _GP.metadata;
-        let ps = _GP.projectsettings;
+        let ps = _GP.projectSettings;
         let fm = _UI.fontMetrics;
         let con = '';
 
@@ -111,7 +111,7 @@ if (md.hasOwnProperty(d)) {
     function ioSVG_makeMissingGlyph() {
         // debug('\n ioSVG_makeMissingGlyph - START');
         let con = '         ';
-        let gh = _GP.projectsettings.ascent;
+        let gh = _GP.projectSettings.ascent;
         let gw = round(gh * 0.618);
         let gt = round(gh/100);
 
@@ -175,7 +175,7 @@ if (md.hasOwnProperty(d)) {
         });
         uni = uni.join('');
 
-        if (_GP.projectsettings.combineshapesonexport) gl = new Glyph(gl).flattenGlyph().combineAllShapes(true);
+        if (_GP.projectSettings.combineshapesonexport) gl = new Glyph(gl).flattenGlyph().combineAllShapes(true);
         let pathdata = gl.svgPathData;
         pathdata = pathdata || 'M0,0Z';
 

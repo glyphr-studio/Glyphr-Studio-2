@@ -6,24 +6,24 @@ _TEST.testList.push(
             // Stick this here for other tests to use
             _TEST.globals.newProject = new GlyphrStudioProject();
 
-            return is(_TEST.globals.newProject.projectsettings.upm).equalTo(1000);
+            return is(_TEST.globals.newProject.projectSettings.upm).equalTo(1000);
         },
     },
     {
         category: 'Project',
         name: 'New project: Dark Guideline',
         assertion: function() {
-            return is(_TEST.globals.newProject.projectsettings.colors.guide_dark).equalTo('rgb(204,81,0)');
+            return is(_TEST.globals.newProject.projectSettings.colors.guide_dark).equalTo('rgb(204,81,0)');
         },
     },
     {
         category: 'Project',
         name: 'Partial New project: Dark Guideline',
         assertion: function() {
-            let projectPartial = new GlyphrStudioProject({projectsettings: {colors: {guide_light: 'it-works'}}});
+            let projectPartial = new GlyphrStudioProject({projectSettings: {colors: {guide_light: 'it-works'}}});
 
-            return expression(projectPartial.projectsettings.colors.guide_light === 'it-works' &&
-                projectPartial.projectsettings.colors.guide_dark === 'rgb(204,81,0)');
+            return expression(projectPartial.projectSettings.colors.guide_light === 'it-works' &&
+                projectPartial.projectSettings.colors.guide_dark === 'rgb(204,81,0)');
         },
     },
     {

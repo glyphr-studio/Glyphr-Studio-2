@@ -329,12 +329,12 @@
 };
 
     Glyph.prototype.getLSB = function() {
-        if (this.leftsidebearing === false) return _GP.projectsettings.defaultlsb;
+        if (this.leftsidebearing === false) return _GP.projectSettings.defaultlsb;
         else return this.leftsidebearing;
     };
 
     Glyph.prototype.getRSB = function() {
-        if (this.rightsidebearing === false) return _GP.projectsettings.defaultrsb;
+        if (this.rightsidebearing === false) return _GP.projectSettings.defaultrsb;
         else return this.rightsidebearing;
     };
 
@@ -556,8 +556,8 @@
         }
 
         lctx.closePath();
-        // lctx.fillStyle = RGBAtoRGB(_GP.projectsettings.colors.glyphfill, alpha);
-        lctx.fillStyle = _GP.projectsettings.colors.glyphfill;
+        // lctx.fillStyle = RGBAtoRGB(_GP.projectSettings.colors.glyphfill, alpha);
+        lctx.fillStyle = _GP.projectSettings.colors.glyphfill;
         lctx.globalAlpha = alpha;
         lctx.fill('nonzero');
         lctx.globalAlpha = 1;
@@ -568,7 +568,7 @@
 
     Glyph.prototype.makeSVG = function(size, gutter) {
         // debug('\n Glyph.makeSVG - START');
-        let ps = _GP.projectsettings;
+        let ps = _GP.projectSettings;
         size = size || _UI.thumbSize;
         gutter = gutter || _UI.thumbGutter;
         let emsquare = Math.max(ps.upm, (ps.ascent - ps.descent));
@@ -936,7 +936,7 @@
         if (!sc) return 0;
         if (sc.objtype === 'component') return 0;
         if (!sc.isautowide) return 0;
-        return sc.leftsidebearing || _GP.projectsettings.defaultlsb;
+        return sc.leftsidebearing || _GP.projectSettings.defaultlsb;
     }
 
     function getSelectedGlyphRightSideBearing() {
@@ -945,7 +945,7 @@
         if (!sc) return 0;
         if (sc.objtype === 'component') return 0;
         if (!sc.isautowide) return 0;
-        return sc.rightsidebearing || _GP.projectsettings.defaultrsb;
+        return sc.rightsidebearing || _GP.projectSettings.defaultrsb;
     }
 
     function updateCurrentGlyphWidth() {

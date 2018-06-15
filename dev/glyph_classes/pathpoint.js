@@ -18,8 +18,8 @@ class PathPoint {
      */
     constructor({
         p = new Coord({x: 100, y: 100}),
-        h1 = new Handle({x: 0, y: 0}),
-        h2 = new Handle({x: 200, y: 200}),
+        h1 = new Handle({point: {x: 0, y: 0}}),
+        h2 = new Handle({point: {x: 200, y: 200}}),
         type = 'corner',
         q = false,
         parentPath = false,
@@ -63,6 +63,46 @@ class PathPoint {
     // -------------------------------------------------------
     // GETTERS
     // -------------------------------------------------------
+
+    /**
+     * Get the main point
+     * @return {Coord}
+     */
+    get p() {
+        return this._p;
+    }
+
+    /**
+     * Get the first handle
+     * @return {Coord}
+     */
+    get h1() {
+        return this._h1;
+    }
+
+    /**
+     * Get the second handle
+     * @return {Coord}
+     */
+    get h2() {
+        return this._h2;
+    }
+
+    /**
+     * Get a point's type
+     * @return {string} type - symmetric / flat / corner
+     */
+    get type() {
+        return this._type;
+    }
+
+    /**
+     * Get a point's parent path
+     * @return {Path}
+     */
+    get parentPath() {
+        return this._parentPath;
+    }
 
     /**
      * Figure out where this point is in the overall path
@@ -109,7 +149,8 @@ class PathPoint {
      * @return {object}
      */
     isOverControlPoint(x, y, nohandles) {
-        let hp = _GP.projectsettings.pointsize/getView('Path.isOverControlPoint').dz;
+        let hp = 1;
+        if(_GP.projectSettings) hp = _GP.projectSettings.pointsize/getView('Path.isOverControlPoint').dz;
 
         if ( ((this.p.x+hp) > x) && ((this.p.x-hp) < x) && ((this.p.y+hp) > y) && ((this.p.y-hp) < y) ) {
             // debug('PathPoint.isOverControlPoint - Returning P1');
@@ -371,7 +412,7 @@ class PathPoint {
         // debug('\t sel = ' + _UI.multiSelect.points.isSelected(this));
 
         accent = accent || _UI.colors.blue;
-        let ps = _GP.projectsettings.pointsize;
+        let ps = _GP.projectSettings.pointsize;
         let hp = ps/2;
         // _UI.glyphEditCTX.fillStyle = sel? 'white' : accent.l65;
         _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
@@ -404,7 +445,7 @@ class PathPoint {
             end = {'x': next.p.x, 'y': next.p.y};
         }
 
-        let ps = (_GP.projectsettings.pointsize*0.5);
+        let ps = (_GP.projectSettings.pointsize*0.5);
         let arrow = [
             [(ps*3), 0],
             [ps, ps],
@@ -463,7 +504,7 @@ class PathPoint {
         _UI.glyphEditCTX.font = '10px Consolas';
 
 
-        let hp = _GP.projectsettings.pointsize/2;
+        let hp = _GP.projectSettings.pointsize/2;
 
         if (drawH1 && this.h1.use) {
             _UI.glyphEditCTX.beginPath();
@@ -503,7 +544,7 @@ class PathPoint {
         _UI.glyphEditCTX.fillStyle = _UI.colors.error.medium;
         _UI.glyphEditCTX.strokeStyle = _UI.colors.error.medium;
         _UI.glyphEditCTX.lineWidth = 1;
-        let hp = _GP.projectsettings.pointsize/2;
+        let hp = _GP.projectSettings.pointsize/2;
 
         if (this.q) {
             _UI.glyphEditCTX.beginPath();

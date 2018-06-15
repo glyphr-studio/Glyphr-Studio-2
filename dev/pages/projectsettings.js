@@ -8,16 +8,16 @@
 **/
 
 
-    function loadPage_projectsettings() {
-        // debug("LOADING PAGE >> loadPage_projectsettings");
-        let ps = _GP.projectsettings;
+    function loadPage_projectSettings() {
+        // debug("LOADING PAGE >> loadPage_projectSettings");
+        let ps = _GP.projectSettings;
 
         let content = '<h1 class="pagetitle">Project Settings</h1><div class="pagecontent textpage">';
 
         content += '<h1>Project Name</h1>'+
                     'The Font Name and the Project name can be different, but they start out the same.  The Font Name can be changed on the Font Settings page.'+
                     '<table class="settingstable">'+
-                    '<tr><td>Project Name:</td><td><input type="text" style="width:100%" value="' + ps.name + '" onchange="_GP.projectsettings.name = this.value;" /></td></tr>'+
+                    '<tr><td>Project Name:</td><td><input type="text" style="width:100%" value="' + ps.name + '" onchange="_GP.projectSettings.name = this.value;" /></td></tr>'+
                     '</table>';
 
         content += '<h1>Grids and Guides</h1>';
@@ -35,28 +35,28 @@
                     'Round letters usually extend a little above the x height line and below the baseline. ' +
                     'A light guideline will show this overshoot distance.<br>' +
                     '<table class=\'settingstable\'>'+
-                    '<tr><td>Overshoot:</td><td><input type=\'number\' value=\''+ps.overshoot+'\' onchange=\'_GP.projectsettings.overshoot = this.value;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
+                    '<tr><td>Overshoot:</td><td><input type=\'number\' value=\''+ps.overshoot+'\' onchange=\'_GP.projectSettings.overshoot = this.value;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
                     '</table>';
 
         content += '<h1>UI Behavior</h1>'+
                     '<table class="settingstable">'+
 
-                    '<tr><td class="uicolumn">'+checkUI('_GP.projectsettings.renderpointssnappedtogrid', ps.renderpointssnappedtogrid)+'</td>'+
+                    '<tr><td class="uicolumn">'+checkUI('_GP.projectSettings.renderpointssnappedtogrid', ps.renderpointssnappedtogrid)+'</td>'+
                     '<td class="longlabel"><label for="renderpointssnappedtogrid">Render shape outlines with their points snapped to a 1em grid.<br>(required for .otf export - Project Files will still store decimal values)</label></td></tr>'+
 
-                    '<tr><td class="uicolumn">'+checkUI('_GP.projectsettings.showkeyboardtipsicon', ps.showkeyboardtipsicon)+'</td>'+
+                    '<tr><td class="uicolumn">'+checkUI('_GP.projectSettings.showkeyboardtipsicon', ps.showkeyboardtipsicon)+'</td>'+
                     '<td><label for="showkeyboardtipsicon" style="position:relative; top:-6px;">Show the &nbsp;<span style="position:relative; top:6px; height:22px;">'+makeIcon({'name': 'keyboard', 'size': 50, 'width': 22, 'height': 22, 'color': 'rgb(76, 81, 86)', 'hovercolor': 'rgb(76, 81, 86)'})+'</span>&nbsp; button on the edit canvas.</label></td></tr>'+
 
-                    '<tr><td class="uicolumn">'+checkUI('_GP.projectsettings.stopPageNavigation', ps.stopPageNavigation)+'</td>'+
+                    '<tr><td class="uicolumn">'+checkUI('_GP.projectSettings.stopPageNavigation', ps.stopPageNavigation)+'</td>'+
                     '<td><label for="stopPageNavigation">Show a confirmation message if you attempt to close an unsaved project.</label></td></tr>'+
 
-                    '<tr><td class="uicolumn">'+checkUI('_GP.projectsettings.formatsavefile', ps.formatsavefile)+'</td>'+
+                    '<tr><td class="uicolumn">'+checkUI('_GP.projectSettings.formatsavefile', ps.formatsavefile)+'</td>'+
                     '<td><label for="formatsavefile">Format the Glyphr Project text file for easy reading.  This may increase the file size by 2x.</label></td></tr>'+
 
-                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.spinnervaluechange)+'" onchange="var r=round(parseInt(this.value)); r=r||1; _GP.projectsettings.spinnervaluechange=r; this.value=r;" style="width:25px;"/></td>'+
+                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.spinnervaluechange)+'" onchange="var r=round(parseInt(this.value)); r=r||1; _GP.projectSettings.spinnervaluechange=r; this.value=r;" style="width:25px;"/></td>'+
                     '<td>Spinner Button and Keyboard Nudge increment or decrement value.</td></tr>'+
 
-                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.pointsize)+'" onchange="var r=round(parseInt(this.value)); r=r||1; _GP.projectsettings.pointsize=r; this.value=r;" style="width:25px;"/></td>'+
+                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.pointsize)+'" onchange="var r=round(parseInt(this.value)); r=r||1; _GP.projectSettings.pointsize=r; this.value=r;" style="width:25px;"/></td>'+
                     '<td>Path Point and Handle size.</td></tr>'+
 
                     '<tr><td class="uicolumn"><input type="text" value="'+(ps.colors.gridtransparency || 95)+'" onchange="var r=Math.max(1, Math.min(99, round(parseInt(this.value)))); r=r||95; this.value=r; updateGridLightness(r);" style="width:25px;"/></td>'+
@@ -68,13 +68,13 @@
         content += '<h1>Export Options</h1>'+
                     '<table class="settingstable">'+
 
-                    '<tr><td class="uicolumn">'+checkUI('_GP.projectsettings.combineshapesonexport', ps.combineshapesonexport)+'</td>'+
+                    '<tr><td class="uicolumn">'+checkUI('_GP.projectSettings.combineshapesonexport', ps.combineshapesonexport)+'</td>'+
                     '<td class="longlabel"><label for="combineshapesonexport">Combine all glyph shapes<br>Sometimes fonts behave better if there are less path outlines in a glyph.  This option will combine all overlapping shapes with the same winding into as few shapes as possible.</label></td></tr>'+
 
-                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.maxcombineshapesonexport)+'" onchange="var r=round(parseInt(this.value)); r=r||30; _GP.projectsettings.maxcombineshapesonexport=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
+                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.maxcombineshapesonexport)+'" onchange="var r=round(parseInt(this.value)); r=r||30; _GP.projectSettings.maxcombineshapesonexport=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
                     '<td class="longlabel">Maximum shapes to attempt to combine<br>Combining glyph shapes is a time-intensive process.  If a glyph has more than this number of shapes, combine will not be attempted, and overlapping shapes will be exported as-is.</td></tr>'+
 
-                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.svgprecision)+'" onchange="var r=round(parseInt(this.value)); r=r||3; _GP.projectsettings.svgprecision=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
+                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.svgprecision)+'" onchange="var r=round(parseInt(this.value)); r=r||3; _GP.projectSettings.svgprecision=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
                     '<td class="longlabel">SVG Decimal Precision<br>Number of decimal places to round point data.</td></tr>'+
 
                     '</table>';
@@ -87,11 +87,11 @@
 
     function updateGridLightness(l) {
         l = l || 95;
-        _GP.projectsettings.colors.gridtransparency = l;
+        _GP.projectSettings.colors.gridtransparency = l;
     }
 
     function updateGridDivisions(val) {
-        let ps = _GP.projectsettings;
+        let ps = _GP.projectSettings;
         ps.griddivisions = Math.min(ps.upm, Math.max(1, val));
         document.getElementById('metirc-ssize').value = round((ps.upm / ps.griddivisions), 3);
     }

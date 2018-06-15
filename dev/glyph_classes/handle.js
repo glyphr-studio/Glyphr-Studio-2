@@ -14,11 +14,11 @@ class Handle {
      * @param {PathPoint} rootPoint - point that this handle is connected to
      */
     constructor({
-        point = new Coord({x: 100, y: 100}),
+        point = {x: 100, y: 100},
         use = true,
         rootPoint = false,
     } = {}) {
-        this._point = point;
+        this._point = new Coord(point);
         if (use) this._use = use;
         this._rootPoint = rootPoint;
     }
@@ -29,7 +29,7 @@ class Handle {
      */
     save() {
         let re = {
-            point: point.save(),
+            point: this.point.save(),
         };
 
         if (this._use) re.use = true;
@@ -59,11 +59,11 @@ class Handle {
     }
 
     /**
-     * Get the root point this handle is connected to
-     * @return {PathPoint}
+     * Get the x/y Coord
+     * @return {Coord}
      */
-    get rootPoint() {
-        return this._rootPoint || new PathPoint();
+    get point() {
+        return this._point || new Coord();
     }
 
     /**
@@ -79,7 +79,7 @@ class Handle {
      * @return {boolean}
      */
     get xLock() {
-        return this._point.xLock;
+        return this.point.xLock;
     }
 
     /**
@@ -87,7 +87,7 @@ class Handle {
      * @return {boolean}
      */
     get yLock() {
-        return this._point.yLock;
+        return this.point.yLock;
     }
 
     /**
@@ -95,7 +95,7 @@ class Handle {
      * @return {number}
      */
     get angle() {
-        return calculateAngle(this._point, this.rootPoint.p);
+        return calculateAngle(this.point, this.rootPoint.p);
     }
 
     /**
@@ -103,7 +103,15 @@ class Handle {
      * @return {number}
      */
     get niceAngle() {
-        return angleToNiceAngle(this._angle);
+        return angleToNiceAngle(this.angle);
+    }
+
+    /**
+     * Get the root point this handle is connected to
+     * @return {PathPoint}
+     */
+    get rootPoint() {
+        return this._rootPoint || new PathPoint();
     }
 
     /**
@@ -111,7 +119,7 @@ class Handle {
      * @return {number}
      */
     get length() {
-        return calculateLength(this._point, this.rootPoint.p);
+        return calculateLength(this.point, this.rootPoint.p);
     }
 
 
@@ -124,7 +132,7 @@ class Handle {
      * @param {number} possition
      */
     set x(possition) {
-        this._point.x = possition;
+        this.point.x = possition;
     }
 
     /**
@@ -132,15 +140,15 @@ class Handle {
      * @param {number} possition
      */
     set y(possition) {
-        this._point.y = possition;
+        this.point.y = possition;
     }
 
     /**
-     * Set the root point this handle is connected to
-     * @param {PathPoint} root
+     * Set the x/y Coord
+     * @param {Coord} pt
      */
-    set rootPoint(root) {
-        this._rootPoint = root;
+    set point(pt) {
+        this._point = pt;
     }
 
     /**
@@ -159,7 +167,7 @@ class Handle {
      * @param {boolean} lock
      */
     set xLock(lock) {
-        this._point.xLock = lock;
+        this.point.xLock = lock;
     }
 
     /**
@@ -167,6 +175,14 @@ class Handle {
      * @param {boolean} lock
      */
     set yLock(lock) {
-        this._point.yLock = lock;
+        this.point.yLock = lock;
+    }
+
+    /**
+     * Set the root point this handle is connected to
+     * @param {PathPoint} root
+     */
+    set rootPoint(root) {
+        this._rootPoint = root;
     }
 }

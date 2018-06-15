@@ -126,7 +126,7 @@
             if (selrange === 'glyphs') selrange = 'basiclatin';
 
             if (!isNaN(parseInt(selrange))) {
-                selectGlyph(_GP.projectsettings.glyphrange.custom[selrange].begin, true);
+                selectGlyph(_GP.projectSettings.glyphrange.custom[selrange].begin, true);
             } else {
                 switch (selrange) {
                     case 'basiclatin': selectGlyph('0x0041', true); break;
@@ -184,7 +184,7 @@
 
     function make_GlyphChooser_DropDown(ch) {
         let content = '<div class="glyphChooser-dropdown">';
-        let gr = _GP.projectsettings.glyphrange;
+        let gr = _GP.projectSettings.glyphrange;
 
         if (ch === 'glyphs' || ch === 'all') {
             if (gr.basiclatin) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'basiclatin\');">Basic Latin</button>';
@@ -224,7 +224,7 @@
 
     function pluralGlyphRange() {
         // debug('\n pluralGlyphRange - START');
-        let gr = _GP.projectsettings.glyphrange;
+        let gr = _GP.projectSettings.glyphrange;
         let count = gr.custom.length;
 
         if (gr.basiclatin) {
@@ -286,13 +286,13 @@
             return re + '</div>';
         }
 
-        let cr = _GP.projectsettings.glyphrange;
+        let cr = _GP.projectSettings.glyphrange;
         let c = parseInt(sel);
         if (!isNaN(c)) {
             // debug('\t triggered custom range');
             for (let range=cr.custom[c].begin; range<=cr.custom[c].end; range++) {
                 cn = decToHex(range);
-                if (_GP.projectsettings.glyphrange.filternoncharpoints) {
+                if (_GP.projectSettings.glyphrange.filternoncharpoints) {
                     if (getUnicodeName(cn) !== '[name not found]') re += make_GlyphChooser_Button(cn, fname, selwi);
                 } else {
                     re += make_GlyphChooser_Button(cn, fname, selwi);

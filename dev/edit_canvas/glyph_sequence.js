@@ -13,7 +13,7 @@
         this.scale = oa.scale || 1;
         this.glyphstring = oa.glyphstring || '';
         this.textblocks = this.glyphstring.split('\n');
-        this.lineGap = oa.lineGap || round(_GP.projectsettings.upm / 4);
+        this.lineGap = oa.lineGap || round(_GP.projectSettings.upm / 4);
 
         this.drawPageExtras = oa.drawPageExtras || false;
         this.drawLineExtras = oa.drawLineExtras || false;
@@ -70,7 +70,7 @@
     GlyphSequence.prototype.generateData = function() {
         // debug('\n GlyphSequence.generateData - START');
         // debug(`\t this.textblocks ${this.textblocks}`);
-        let ps = _GP.projectsettings;
+        let ps = _GP.projectSettings;
 
         let aggregateWidth = 0;
         let thisWidth;
@@ -110,7 +110,7 @@
 
             for (tg=0; tg<currblock.length; tg++) {
                 thisGlyph = getGlyph(charsToHexArray(currblock[tg]).join(''));
-                thisWidth = thisGlyph? thisGlyph.getAdvanceWidth() : (_GP.projectsettings.upm / 2);
+                thisWidth = thisGlyph? thisGlyph.getAdvanceWidth() : (_GP.projectSettings.upm / 2);
                 thisKern = calculateKernOffset(currblock[tg], currblock[tg+1]);
                 aggregateWidth += thisWidth + thisKern;
 
@@ -267,13 +267,13 @@
     };
 
     function calcNewLineY(starty, linenum, lineGap) {
-        let ps = _GP.projectsettings;
+        let ps = _GP.projectSettings;
         return starty + (linenum*((lineGap + ps.upm)));
     }
 
     function canNextLineFit(curry, area, lineGap) {
         let bottom = area.y + area.height;
-        let nextliney = curry + lineGap + _GP.projectsettings.upm;
+        let nextliney = curry + lineGap + _GP.projectSettings.upm;
 
         // debug(`\t canNextLineFit - ${bottom} > ${nextliney}`);
         return bottom > nextliney;

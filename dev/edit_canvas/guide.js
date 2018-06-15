@@ -29,7 +29,7 @@
         delta = delta*1;
         let ctx = _UI.glyphEditCTX;
         let cansize = _UI.glyphEditCanvasSize;
-        let psc = _GP.projectsettings.colors;
+        let psc = _GP.projectSettings.colors;
         let v = getView('guide');
         let start = {x: 0, y: 0};
         let end = {x: 0, y: 0};

@@ -13,7 +13,7 @@
 
         let newshapes = [];
         let ns;
-        let mid = (_GP.projectsettings.ascent / 2);
+        let mid = (_GP.projectSettings.ascent / 2);
         let parsedshape = {};
         let data = {};
         let shapecounter = 0;
@@ -132,7 +132,7 @@
                         pparr.push(new PathPoint({'p': tcoord, 'h1': tcoord, 'h2': tcoord, 'useH1': false, 'useH2': false}));
                     }
 
-                    pushShape(new Path({'pathpoints': pparr}), 'Polygon');
+                    pushShape(new Path({pathPoints: pparr}), 'Polygon');
                 }
             }
         }
@@ -422,7 +422,7 @@
             // debug('\t AFTER:\nFirst Point: '+json(fp));
         }
 
-        let newpath = new Path({'pathpoints': patharr});
+        let newpath = new Path({pathPoints: patharr});
         newpath.validate('IMPORTSVG');
 
         // debug('\t unscaled path:');

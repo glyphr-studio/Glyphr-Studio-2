@@ -98,8 +98,8 @@
     Shape.prototype.makeSVG = function(size, gutter) {
         size = size || _UI.thumbSize;
         gutter = gutter || _UI.thumbGutter;
-        let upm = _GP.projectsettings.upm;
-        let desc = upm - _GP.projectsettings.ascent;
+        let upm = _GP.projectSettings.upm;
+        let desc = upm - _GP.projectSettings.ascent;
         let charscale = (size-(gutter*2)) / size;
         let gutterscale = (gutter / size) * upm;
         let vbsize = upm - (gutter*2);
@@ -204,8 +204,8 @@
     function rectPathFromMaxes(maxes) {
         // Default Shape size
         let lx = 0;
-        let ty = _GP.projectsettings.ascent;
-        let rx = (_GP.projectsettings.upm / _GP.projectsettings.griddivisions);
+        let ty = _GP.projectSettings.ascent;
+        let rx = (_GP.projectSettings.upm / _GP.projectSettings.griddivisions);
         let by = 0;
 
         if (maxes) {
@@ -244,7 +244,7 @@
         patharr[2] = new PathPoint({'p': Plr, 'h1': H1lr, 'h2': H2lr});
         patharr[3] = new PathPoint({'p': Pll, 'h1': H1ll, 'h2': H2ll});
 
-        let rp = new Path({'pathpoints': patharr, 'leftx': lx, 'rightx': rx, 'topy': ty, 'bottomy': by});
+        let rp = new Path({pathPoints: patharr, 'leftx': lx, 'rightx': rx, 'topy': ty, 'bottomy': by});
         // debug('RETURNING PATH: ' + JSON.stringify(rp));
 
         return rp;
@@ -255,8 +255,8 @@
 
         // Default Circle size
         lx = isVal(maxes.xmin)? maxes.xmin : 0;
-        ty = isVal(maxes.ymax)? maxes.ymax : _GP.projectsettings.xheight || 500;
-        rx = isVal(maxes.xmax)? maxes.xmax : _GP.projectsettings.xheight || 500;
+        ty = isVal(maxes.ymax)? maxes.ymax : _GP.projectSettings.xheight || 500;
+        rx = isVal(maxes.xmax)? maxes.xmax : _GP.projectSettings.xheight || 500;
         by = isVal(maxes.ymin)? maxes.ymin : 0;
 
 
@@ -291,7 +291,7 @@
         patharr[2] = new PathPoint({'p': Pb, 'h1': H1b, 'h2': H2b, 'type': 'symmetric'});
         patharr[3] = new PathPoint({'p': Pl, 'h1': H1l, 'h2': H2l, 'type': 'symmetric'});
 
-        return new Path({'pathpoints': patharr});
+        return new Path({pathPoints: patharr});
     }
 
 
@@ -355,7 +355,7 @@
             shapetype = 'Rectangle ';
         }
 
-        newshape.path = new Path({'pathpoints': parr});
+        newshape.path = new Path({pathPoints: parr});
         newshape.name = (shapetype + getSelectedWorkItemShapes().length+1);
 
         getSelectedWorkItemShapes().push(newshape);
@@ -625,7 +625,7 @@ return a.path.winding - b.path.winding;
 
         // debug(' combineShapes - returning successfully - END\n');
 
-        return new Shape({path: {pathpoints: newpoints}});
+        return new Shape({path: {pathPoints: newpoints}});
     }
 
     Shape.prototype.resolveSelfOverlaps = function() {

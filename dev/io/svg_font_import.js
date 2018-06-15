@@ -178,7 +178,7 @@
                     if (1*uni > _UI.glyphrange.latinextendedb.end) customglyphrange.push(uni);
 
                     fc[uni] = new Glyph({'shapes': newshapes, 'glyphhex': uni, 'glyphwidth': adv, 'isautowide': isautowide});
-                    if (getUnicodeName(uni) === '[name not found]') _GP.projectsettings.glyphrange.filternoncharpoints = false;
+                    if (getUnicodeName(uni) === '[name not found]') _GP.projectSettings.glyphrange.filternoncharpoints = false;
                 } else {
                     // It's a LIGATURE
                     uni = uni.join('');
@@ -270,7 +270,7 @@
                     rend = 1*_UI.glyphrange[r].end+1;
                     for (let t=rstart; t<rend; t++) {
                         if (getGlyph(t)) {
-                            _GP.projectsettings.glyphrange[r] = true;
+                            _GP.projectSettings.glyphrange[r] = true;
                             break;
                         }
                     }
@@ -280,7 +280,7 @@
             // Make a custom range for the rest
             if (customglyphrange.length) {
                 customglyphrange = customglyphrange.sort();
-                _GP.projectsettings.glyphrange.custom.push({'begin': customglyphrange[0], 'end': customglyphrange[customglyphrange.length-1]});
+                _GP.projectSettings.glyphrange.custom.push({'begin': customglyphrange[0], 'end': customglyphrange[customglyphrange.length-1]});
             }
 
             // Import Font Settings
@@ -289,7 +289,7 @@
 
             // Font Settings
             let fatt = ioSVG_getFirstTagInstance(font, 'font-face').attributes;
-            let ps = _GP.projectsettings;
+            let ps = _GP.projectSettings;
             let md = _GP.metadata;
             let fname = fatt['font-family'] || 'My Font';
 
