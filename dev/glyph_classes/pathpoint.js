@@ -133,7 +133,7 @@ class PathPoint {
     set type(type) {
         if (type === 'symmetric') this.makeSymmetric();
         else if (type === 'flat') this.makeFlat();
-        else this.type = 'corner';
+        else this._type = 'corner';
     }
 
 
@@ -150,7 +150,7 @@ class PathPoint {
      */
     isOverControlPoint(x, y, nohandles) {
         let hp = 1;
-        if(_GP.projectSettings) hp = _GP.projectSettings.pointsize/getView('Path.isOverControlPoint').dz;
+        if (_GP.projectSettings) hp = _GP.projectSettings.pointsize/getView('Path.isOverControlPoint').dz;
 
         if ( ((this.p.x+hp) > x) && ((this.p.x-hp) < x) && ((this.p.y+hp) > y) && ((this.p.y-hp) < y) ) {
             // debug('PathPoint.isOverControlPoint - Returning P1');
@@ -178,6 +178,7 @@ class PathPoint {
     /**
      * Moves one handle to be symmetrical with the other
      * @param {string} hold - Handle to not move while making symmetric
+     * @return {PathPoint}
      */
     makeSymmetric(hold) {
         // debug('MAKESYMETRIC - hold ' + hold + ' starts as ' + JSON.stringify(this));
@@ -190,7 +191,6 @@ class PathPoint {
                     // Handles and points are all in the same place
                     this.h2.x-=200;
                     this.h1.x+=200;
-                    this.type = 'symmetric';
                     this.h1.use = true;
                     this.h2.use = true;
                     return;
@@ -209,24 +209,27 @@ class PathPoint {
                 break;
         }
 
-        this.type = 'symmetric';
+        this._type = 'symmetric';
         this.h1.use = true;
         this.h2.use = true;
 
         // this.roundAll();
         // debug('MAKESYMETRIC - returns ' + JSON.stringify(this));
+
+        return this;
     }
 
     /**
      * Moves one handle to be inline with the other, while maintaining handle length
      * @param {string} hold - handle to not move
+     * @return {PathPoint}
      */
     makeFlat(hold) {
         // debug('\n PathPoint.makeFlat - START');
         // debug('\t hold passed ' + hold);
 
         if (this.isFlat()) {
-            this.type = 'flat';
+            this._type = 'flat';
             return;
         }
 
@@ -238,7 +241,6 @@ class PathPoint {
                     // Handles and points are all in the same place
                     this.h2.x-=300;
                     this.h1.x+=100;
-                    this.type = 'flat';
                     this.h1.use = true;
                     this.h2.use = true;
                     return;
@@ -285,9 +287,11 @@ class PathPoint {
             }
         }
 
-        this.type = 'flat';
+        this._type = 'flat';
 
         // debug(' PathPoint.makeFlat - END\n');
+
+        return this;
     }
 
     /**
@@ -307,6 +311,7 @@ class PathPoint {
 
     /**
      * Figures out what type a point is based on handle possitions
+     * @return {string}
      */
     resolvePointType() {
         // debug('\n PathPoint.resolvePointType - START');
@@ -314,15 +319,17 @@ class PathPoint {
         if (this.isFlat()) {
             if (this.h1.length === this.h2.length) {
                 // debug('\t resolvePointType - setting to Symmetric');
-                this.type = 'symmetric';
+                this._type = 'symmetric';
             } else {
                 // debug('\t resolvePointType - setting to Flat');
-                this.type = 'flat';
+                this._type = 'flat';
             }
         } else {
             // debug('\t resolvePointType - setting to Corner');
-            this.type = 'corner';
+            this._type = 'corner';
         }
+
+        return this.type;
         // debug(' pathPoint.resolvePointType - END\n');
     }
 
@@ -333,8 +340,9 @@ class PathPoint {
      * @param {number} length - Length the handle should end up
      * @param {string} handle - Which handle to move
      * @param {boolean} dontresolvetype - After updating, skip auto-resolving the point type
+     * @return {PathPoint}
      */
-    makePointedTo(px, py, length, handle, dontresolvetype) {
+    makePointedTo(px, py, length = false, handle = 'h2', dontresolvetype = false) {
         // figure out angle
         let adj1 = this.p.x-px;
         let opp1 = this.p.y-py;
@@ -346,7 +354,6 @@ class PathPoint {
         let angle1 = Math.acos(adj1 / hyp1);
 
         length = length || (hyp1/3);
-        handle = (handle==='h2')? 'h2' : 'h1';
 
         // debug('MAKEPOINTEDTO - x/y/l ' + px + ' ' + py + ' ' + length + ' - Before H1x/y ' + this.h1.x + ' ' + this.h1.y);
         this[handle].x = this.p.x + (Math.cos(angle1) * length * xmod);
@@ -358,12 +365,15 @@ class PathPoint {
             else this.makeSymmetric(handle);
             // debug('MAKEPOINTEDTO - after makesymmetric H1x/y ' + this.h1.x + ' ' + this.h1.y);
         }
+
+        return this;
     }
 
     /**
      * Rotate Point and Handles around a center of rotation
      * @param {number} angle - How far to rotate
      * @param {object} about - x/y coordinate center of rotation
+     * @return {PathPoint}
      */
     rotate(angle, about) {
         // debug('\n PathPoint.rotate - START');
@@ -372,9 +382,14 @@ class PathPoint {
         rotate(this.h2, angle, about);
         // debug('\t this.p ' + json(this.p, true));
         // debug(' PathPoint.rotate - END\n');
+
+        return this;
     }
 
-    /** Resets handles to defaults */
+    /**
+     * Resets handles to defaults
+     * @return {PathPoint}
+     */
     resetHandles() {
         this.type = 'corner';
         this.h1.use = true;
@@ -383,11 +398,14 @@ class PathPoint {
         this.h2.y = this.p.y;
         this.h1.x = this.p.x + 100;
         this.h1.y = this.p.y;
+
+        return this;
     }
 
     /**
      * Rounds all the Point and Handle data to a precision
      * @param {number} i - precision
+     * @return {PathPoint}
      */
     roundAll(i = 9) {
         this.p.x = round(this.p.x, i);
@@ -396,6 +414,8 @@ class PathPoint {
         this.h1.y = round(this.h1.y, i);
         this.h2.x = round(this.h2.x, i);
         this.h2.y = round(this.h2.y, i);
+
+        return this;
     }
 
 

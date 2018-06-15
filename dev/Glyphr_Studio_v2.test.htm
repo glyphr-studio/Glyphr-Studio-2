@@ -59,7 +59,7 @@
                 _TEST.categories[element.category]++;
             } else {
                 _TEST.categories[element.category] = 1;
-                results.innerHTML += `<div class="resultSection" id="${getResultSectionID(element.category)}"><h2>${element.category}</h2></div>`;
+                results.innerHTML = `<div class="resultSection" id="${getResultSectionID(element.category)}"><h2>${element.category}</h2></div>` + results.innerHTML;
             }
 
             _TEST.total++;
@@ -107,10 +107,10 @@
 
             currTest++;
 
-            window.setTimeout(runNextTest, 100);
+            window.setTimeout(runNextTest, 10);
         }
 
-        window.setTimeout(runNextTest, 100);
+        window.setTimeout(runNextTest, 10);
     }
 
     function is(leftHand){
@@ -145,6 +145,8 @@
         else if(result === false) resultClass = 'fail';
         else resultClass = 'didNotRun';
 
+        if(result !== true) console.warn(`Test ${title} \n${message}`);
+
         return `<span class="testResult ${resultClass}" title='${message}'>
             <span class="icon">&#x${resultIcons[resultClass]};</span>
             ${title}
@@ -152,8 +154,9 @@
     }
 
     function finishTests() {
-        document.querySelector('#header').innerHTML = `
-            <div class="testSummary fail">
+        document.querySelector('#header').innerHTML += `
+        <br><br>
+        <div class="testSummary fail">
                 <span class="count">${_TEST.failed}</span>
                 <span class="title">Failed</span>
             </div>
@@ -308,7 +311,7 @@
     <h1>Glyphr Studio v2 Tests</h1>
 
     <div id="header">
-        Loading tests...
+        <i style="color: lightgray">Loading tests...</i>
     </div>
     <div id="results">
 
