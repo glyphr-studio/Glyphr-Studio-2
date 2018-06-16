@@ -17,29 +17,23 @@ class PathPoint {
      * @param {string} type - corner, flat, or symmetric
      */
     constructor({
-        p = new Coord({x: 100, y: 100}),
-        h1 = new Handle({point: {x: 0, y: 0}}),
-        h2 = new Handle({point: {x: 200, y: 200}}),
+        p = {x: 100, y: 100},
+        h1 = {point: {x: 0, y: 0}},
+        h2 = {point: {x: 200, y: 200}},
         type = 'corner',
         q = false,
         parentPath = false,
     } = {}) {
-        this._p = p;
-        this._h1 = h1;
-        this._h2 = h2;
-        this._type = type;
+        this._p = new Coord(p);
+        this._h1 = new Handle(h1);
+        this._h2 = new Handle(h2);
+        this.type = type; // use setter for validation
         this._parentPath = parentPath;
 
         this._h1.rootPoint = this;
         this._h2.rootPoint = this;
 
         if (q) this._q = q;
-
-        if (this.type === 'symmetric') {
-            this.makeSymmetric('h1');
-        } else if (this.type === 'flat') {
-            this.makeFlat('h1');
-        }
     }
 
     /**

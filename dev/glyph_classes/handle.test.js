@@ -15,5 +15,22 @@ _TEST.testList.push(
             han.y = 500;
             return expression(han.x === 500 && han.y === 500);
         },
-    }
+    },
+    {
+        category: 'Handle',
+        name: 'xLock',
+        assertion: function() {
+            let han = new Handle();
+            han.xLock = true;
+            return expression(han.xLock);
+        },
+    },
+    {
+        category: 'Handle',
+        name: 'save',
+        assertion: function() {
+            let han = new Handle();
+            return is(han.save).equalTo({point: {x: 0, y: 0}, use: true});
+        },
+    },
 );

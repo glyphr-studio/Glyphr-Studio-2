@@ -14,6 +14,7 @@ const manifest = [
             'coord.js',
             'handle.js',
             'pathpoint.js',
+            'maxes.js',
             'path.js',
             'segment.js',
             'polysegment.js',
@@ -25,6 +26,7 @@ const manifest = [
             'coord.test.js',
             'handle.test.js',
             'pathpoint.test.js',
+            'path.test.js',
         ],
     },
 

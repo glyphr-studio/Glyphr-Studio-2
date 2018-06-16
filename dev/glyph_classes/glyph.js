@@ -400,13 +400,13 @@
         }
 
         if (this.shapes.length) {
-            if ( this.maxes.xmin === _UI.maxes.xmin ||
+            if ( this.maxes.xmin === this.maxes.maxBounds.xmin ||
                 this.maxes.xmin === _UI.mins.xmin ||
-                this.maxes.xmax === _UI.maxes.xmax ||
+                this.maxes.xmax === this.maxes.maxBounds.xmax ||
                 this.maxes.xmax === _UI.mins.xmax ||
-                this.maxes.ymin === _UI.maxes.ymin ||
+                this.maxes.ymin === this.maxes.maxBounds.ymin ||
                 this.maxes.ymin === _UI.mins.ymin ||
-                this.maxes.ymax === _UI.maxes.ymax ||
+                this.maxes.ymax === this.maxes.maxBounds.ymax ||
                 this.maxes.ymax === _UI.mins.ymax
                 ) {
                 this.calcGlyphMaxes();

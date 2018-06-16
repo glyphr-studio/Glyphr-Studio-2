@@ -16,16 +16,16 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'PathPoint',
-        name: 'p.h1.length',
+        category: 'Handle',
+        name: 'length',
         assertion: function() {
             let pp = new PathPoint();
             return is(pp.h1.length).equalTo(141.4213562373095);
         },
     },
     {
-        category: 'PathPoint',
-        name: 'p.h1.angle',
+        category: 'Handle',
+        name: 'angle',
         assertion: function() {
             let pp = new PathPoint();
             return is(pp.h1.angle).equalTo(-2.356194490192345);
@@ -33,7 +33,15 @@ _TEST.testList.push(
     },
     {
         category: 'Handle',
-        name: 'p.h1=false, h1.x===p.x',
+        name: 'niceAngle',
+        assertion: function() {
+            let pp = new PathPoint();
+            return is(pp.h1.niceAngle).equalTo(225);
+        },
+    },
+    {
+        category: 'Handle',
+        name: 'use',
         assertion: function() {
             let p = new PathPoint();
             p.h1.use = false;

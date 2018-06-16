@@ -28,21 +28,12 @@
     } = {}) {
         // debug('\n PATH - START');
 
-        this._pathPoints = [];
-
-        // path points
-        if (pathPoints && pathPoints.length) {
-            // debug('NEW PATH : Hydrating Path Points, length ' + pathPoints.length);
-            for (let i = 0; i < pathPoints.length; i++) {
-                this._pathPoints[i] = new PathPoint(pathPoints[i]);
-                this._pathPoints[i].parentpath = this;
-            }
-        }
+        this.pathPoints = pathPoints; // use setter for hydration
 
         this._winding = isVal(winding) ? winding : this.findWinding();
 
         // internal
-        this._maxes = maxes || clone(_UI.mins);
+        this.maxes = maxes; // use setter for hydration
 
         // cache
         this._cache = {};
@@ -112,6 +103,30 @@
     }
 
     /**
+     * Get Maxes
+     * @return {Maxes}
+     */
+    get maxes() {
+        return this._maxes;
+    }
+
+    /**
+     * Get X possition
+     * @return {number} x
+     */
+    get x() {
+        return this._maxes.xmin;
+    }
+
+    /**
+     * Get Y possition
+     * @return {number} y
+     */
+    get y() {
+        return this._maxes.ymax;
+    }
+
+    /**
      * Get Height
      * @return {number}
      */
@@ -161,6 +176,112 @@
     //  -----------------------------------
     //  SETTERS
     //  -----------------------------------
+
+    /**
+     * Set PathPoints
+     * @param {array} pathPoints - array of Path Points
+     * @return {Path} - reference to this Path
+     */
+    set pathPoints(pathPoints) {
+        this._pathPoints = [];
+
+        if (pathPoints && pathPoints.length) {
+            // debug('NEW PATH : Hydrating Path Points, length ' + pathPoints.length);
+            for (let i = 0; i < pathPoints.length; i++) {
+                this._pathPoints[i] = new PathPoint(pathPoints[i]);
+                this._pathPoints[i].parentpath = this;
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * Set Winding
+     * negative = clockwise
+     * positive = counterclockwise
+     * zero = unknown
+     * @param {number} winding
+     * @return {Path} - reference to this Path
+     */
+    set winding(winding) {
+        this._winding = winding;
+        return this;
+    }
+
+    /**
+     * Set Maxes
+     * @param {Maxes} maxes
+     * @return {Path} - reference to this Path
+     */
+    set maxes(maxes) {
+        this._maxes = new Maxes(maxes);
+        return this;
+    }
+
+    /**
+     * Set X possition
+     * @param {number} x
+     * @return {Path} - reference to this Path
+     */
+    set x(x) {
+        this.setPathPosition(x, false);
+        return this;
+    }
+
+    /**
+     * Set Y possition
+     * @param {number} y
+     * @return {Path} - reference to this Path
+     */
+    set y(y) {
+        this.setPathPosition(false, y);
+        return this;
+    }
+
+    /**
+     * Set Height
+     * @param {number} h
+     * @return {Path} - reference to this Path
+     */
+    set height(h) {
+        this.updatePathSize(0, this.height - h);
+        return this;
+    }
+
+    /**
+     * Set Width
+     * @param {number} w
+     * @return {Path} - reference to this Path
+     */
+    set width(w) {
+        this.updatePathSize(this.width - w, 0);
+        return this;
+    }
+
+    /**
+     * Set Maxes
+     * @param {object} m
+     * @return {Path} - reference to this Path
+     */
+    set maxes(m) {
+        this._maxes.xmax = m.xmax;
+        this._maxes.ymax = m.ymax;
+        this._maxes.xmin = m.xmin;
+        this._maxes.ymin = m.ymin;
+
+        return this;
+    }
+
+    /**
+     * Set or generate SVG path data
+     * @param {string} data
+     * @return {Path} - reference to this Path
+     */
+    set svgPathData(data) {
+        this._cache.svgpathdata = data;
+        return this;
+    }
 
 
     //  -----------------------------------
@@ -318,7 +439,7 @@
      * @param {number} py - target Y
      * @return {boolean}
      */
-     isHere(px, py) {
+    isHere(px, py) {
         let gctx = _UI.isHereGhostCTX;
         gctx.clearRect(0, 0, _UI.glyphEditCanvasSize, _UI.glyphEditCanvasSize);
         gctx.fillStyle = 'rgba(0,0,255,0.2)';
@@ -1222,21 +1343,5 @@ function findPathPointIntersections(p1, p2) {
 
     // debug('\t returning ' + re);
     // debug(' findPathPointIntersections - END\n');
-    return re;
-}
-
-/**
- * Given two bounding boxes, check if they overlap
- * @param {object} m1 - first maxes
- * @param {object} m2 - second maxes
- * @param {boolean} exclusive - 'inclusive' or 'exclusive'
- * @return {boolean}
- */
-function maxesOverlap(m1, m2, exclusive = true) {
-    let re;
-
-    if (exclusive) re = (m1.xmin < m2.xmax && m1.xmax > m2.xmin && m1.ymin < m2.ymax && m1.ymax > m2.ymin);
-    else re = (m1.xmin <= m2.xmax && m1.xmax >= m2.xmin && m1.ymin <= m2.ymax && m1.ymax >= m2.ymin);
-
     return re;
 }

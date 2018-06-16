@@ -275,7 +275,7 @@ function round(num, dec = 0) {
  * @param {number} num - number to sanitize
  * @return {number}
  */
- function numSan(num) {
+function numSan(num) {
     num = parseFloat(num);
     let strnum = ''+num;
 
@@ -293,7 +293,7 @@ function round(num, dec = 0) {
  * @param {string} val - string to sanitize
  * @return {string}
  */
- function strSan(val) {
+function strSan(val) {
     return val.replace(/[<>'"\\]/g, '');
 }
 
@@ -302,7 +302,7 @@ function round(num, dec = 0) {
  * @param {string} text - text to trim
  * @return {string}
  */
- function trim(text) {
+function trim(text) {
     try {
         text = text.replace(/^\s+|\s+$/g, '');
         return text.replace(/(\r\n|\n|\r|\t)/gm, '');
@@ -323,46 +323,6 @@ function isVal(val) {
     // else if ( typeof val === 'number' && isNaN(val)) return false;
     else if ( typeof val === 'object' && Object.keys(val).length === 0 ) return false;
     else return !!val;
-}
-
-/**
- * 'Maxes' is an object with xmax, xmin, ymax, ymin properties
- * This takes an array of maxes objects, and returns a maxes
- * object that represents the extremes of all the passed objects
- * @param {array} maxarr - array of 'maxes' objects
- * @return {object}
- */
-function getOverallMaxes(maxarr) {
-    // debug('\n getOverallMaxes - START');
-    // debug('\t start');
-    // debug(maxarr);
-
-    let re = clone(_UI.mins);
-    let tm;
-
-    for (let m=0; m<maxarr.length; m++) {
-        // debug('\t pass ' + m);
-        tm = maxarr[m];
-        // debug([tm]);
-
-        // sanitize
-        if (!isVal(tm.xmax)) tm.xmax = clone(_UI.mins.xmax);
-        if (!isVal(tm.xmin)) tm.xmin = clone(_UI.mins.xmin);
-        if (!isVal(tm.ymax)) tm.ymax = clone(_UI.mins.ymax);
-        if (!isVal(tm.ymin)) tm.ymin = clone(_UI.mins.ymin);
-        // debug([tm]);
-
-        // find
-        re.xmax = Math.max(re.xmax, tm.xmax);
-        re.xmin = Math.min(re.xmin, tm.xmin);
-        re.ymax = Math.max(re.ymax, tm.ymax);
-        re.ymin = Math.min(re.ymin, tm.ymin);
-        // debug([re]);
-    }
-
-    // debug(' getOverallMaxes - END\n');
-
-    return re;
 }
 
 /**

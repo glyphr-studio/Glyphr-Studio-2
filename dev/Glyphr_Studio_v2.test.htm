@@ -101,7 +101,11 @@
                 else _TEST.failed++;
 
             } catch (error) {
-                currResultSection.innerHTML += addTestResult('didNotRun', error.message, _TEST.testList[currTest].name);
+                if(currResultSection){
+                    currResultSection.innerHTML += addTestResult('didNotRun', error.message, _TEST.testList[currTest].name);
+                } else {
+                    console.warn(`Test ${_TEST.testList[currTest].name} \n${error.message}`);
+                }
                 _TEST.didNotRun++;
             }
 
@@ -157,15 +161,24 @@
         document.querySelector('#header').innerHTML += `
         <br><br>
         <div class="testSummary fail">
-                <span class="count">${_TEST.failed}</span>
+                <span class="count">
+                    ${_TEST.failed}
+                    <span class="icon">&#x${resultIcons['fail']};</span>
+                </span>
                 <span class="title">Failed</span>
             </div>
             <div class="testSummary didNotRun">
-                <span class="count">${_TEST.didNotRun}</span>
+                <span class="count">
+                    ${_TEST.didNotRun}
+                    <span class="icon">&#x${resultIcons['didNotRun']};</span>
+                </span>
                 <span class="title">Did not run</span>
             </div>
             <div class="testSummary pass">
-                <span class="count">${_TEST.succeeded}</span>
+                <span class="count">
+                    ${_TEST.succeeded}
+                    <span class="icon">&#x${resultIcons['pass']};</span>
+                </span>
                 <span class="title">Passed</span>
             </div>
         `;
@@ -302,6 +315,13 @@
     .testSummary .count {
         font-size: 2em;
         display: block;
+    }
+
+    .testSummary .icon {
+        font-size: 14px;
+        position: relative;
+        top: -2px;
+        left: -2px;
     }
 </style>
 </head>
