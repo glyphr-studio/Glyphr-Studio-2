@@ -54,7 +54,7 @@
         // debug('\t view ' + json(view, true));
 
         if (this.visible) {
-            if ((this.path.maxes.xmax === -1) &&
+            if ((this.path.maxes.xMax === -1) &&
                     (lctx === _UI.glyphEditCTX) &&
                     (_UI.selectedTool !== 'newpath')) {
                 this.calcMaxes();
@@ -171,8 +171,8 @@
     Shape.prototype.getCenter = function() {
         let m = this.getMaxes();
         let re = {};
-        re.x = ((m.xmax - m.xmin) / 2) + m.xmin;
-        re.y = ((m.ymax - m.ymin) / 2) + m.ymin;
+        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
+        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
 
         return re;
     };
@@ -209,10 +209,10 @@
         let by = 0;
 
         if (maxes) {
-            lx = maxes.xmin;
-            ty = maxes.ymax;
-            rx = maxes.xmax;
-            by = maxes.ymin;
+            lx = maxes.xMin;
+            ty = maxes.yMax;
+            rx = maxes.xMax;
+            by = maxes.yMin;
         }
 
         let qw = round((rx-lx)/4);
@@ -254,10 +254,10 @@
         maxes = maxes || {};
 
         // Default Circle size
-        lx = isVal(maxes.xmin)? maxes.xmin : 0;
-        ty = isVal(maxes.ymax)? maxes.ymax : _GP.projectSettings.xheight || 500;
-        rx = isVal(maxes.xmax)? maxes.xmax : _GP.projectSettings.xheight || 500;
-        by = isVal(maxes.ymin)? maxes.ymin : 0;
+        lx = isVal(maxes.xMin)? maxes.xMin : 0;
+        ty = isVal(maxes.yMax)? maxes.yMax : _GP.projectSettings.xheight || 500;
+        rx = isVal(maxes.xMax)? maxes.xMax : _GP.projectSettings.xheight || 500;
+        by = isVal(maxes.yMin)? maxes.yMin : 0;
 
 
         let hw = round((rx-lx)/2);

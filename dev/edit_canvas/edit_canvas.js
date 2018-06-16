@@ -526,8 +526,8 @@
                 drawGlyphExtras: drawContextGlyphExtras,
                 drawGlyph: drawContextGlyph,
                 maxes: {
-                    xmin: (v.dx - (leftdistance*v.dz)),
-                    ymin: (v.dy),
+                    xMin: (v.dx - (leftdistance*v.dz)),
+                    yMin: (v.dy),
                 },
             });
 
@@ -548,8 +548,8 @@
                 drawGlyphExtras: drawContextGlyphExtras,
                 drawGlyph: drawContextGlyph,
                 maxes: {
-                    xmin: (v.dx + (rightdistance*v.dz)),
-                    ymin: (v.dy),
+                    xMin: (v.dx + (rightdistance*v.dz)),
+                    yMin: (v.dy),
                 },
             });
 
@@ -692,14 +692,14 @@
         if (regHotspot) {
             registerCanvasHotspot({
                 target: {
-                    xmin: currx,
-                    xmax: (currx + advanceWidth),
-                    ymin: texty-20,
-                    ymax: (texty+20),
+                    xMin: currx,
+                    xMax: (currx + advanceWidth),
+                    yMin: texty-20,
+                    yMax: (texty+20),
                 },
                 underline: {
-                    xmin: textx-1,
-                    xmax: textx+textw+1,
+                    xMin: textx-1,
+                    xMax: textx+textw+1,
                     y: texty+6,
                 },
                 onclick: function() {
@@ -781,9 +781,9 @@
 
         for (let i=0; i<chs.length; i++) {
             v = chs[i];
-            // debug(`isHotspotHere - checking ${v.target.xmin} - ${v.target.xmax} - ${v.target.ymin} - ${v.target.ymax}`);
-            // debug(`results ${(cx <= v.target.xmax)} - ${(cx >= v.target.xmin)} - ${(cy <= v.target.ymax)} - ${(cy >= v.target.ymin)}`);
-            if ((cx <= v.target.xmax) && (cx >= v.target.xmin) && (cy <= v.target.ymax) && (cy >= v.target.ymin)) {
+            // debug(`isHotspotHere - checking ${v.target.xMin} - ${v.target.xMax} - ${v.target.yMin} - ${v.target.yMax}`);
+            // debug(`results ${(cx <= v.target.xMax)} - ${(cx >= v.target.xMin)} - ${(cy <= v.target.yMax)} - ${(cy >= v.target.yMin)}`);
+            if ((cx <= v.target.xMax) && (cx >= v.target.xMin) && (cy <= v.target.yMax) && (cy >= v.target.yMin)) {
                 return v;
                 break;
             }
@@ -794,7 +794,7 @@
 
     function findAndCallHotspot(cx, cy) {
         _UI.canvasHotSpots.forEach(function(v, i, a) {
-            if ((cx <= v.target.xmax) && (cx >= v.target.xmin) && (cy <= v.target.ymax) && (cy >= v.target.ymin)) {
+            if ((cx <= v.target.xMax) && (cx >= v.target.xMin) && (cy <= v.target.yMax) && (cy >= v.target.yMin)) {
                 v.onclick();
             }
         });
@@ -862,13 +862,13 @@
 
             ctx.strokeStyle = rgb;
             ctx.beginPath();
-            ctx.moveTo(hs.underline.xmin, makeCrisp(hs.underline.y));
-            ctx.lineTo(hs.underline.xmax, makeCrisp(hs.underline.y));
+            ctx.moveTo(hs.underline.xMin, makeCrisp(hs.underline.y));
+            ctx.lineTo(hs.underline.xMax, makeCrisp(hs.underline.y));
             ctx.stroke();
             setCursor('arrow');
         }
 
-        return hs.target.xmin;
+        return hs.target.xMin;
         // debug(' findAndUnderlineHotspot - END\n');
     }
 
@@ -1313,10 +1313,10 @@
 
         accent = accent || _UI.colors.blue;
         thickness = thickness || 1;
-        let lx = sx_cx(maxes.xmin);
-        let rx = sx_cx(maxes.xmax);
-        let ty = sy_cy(maxes.ymax);
-        let by = sy_cy(maxes.ymin);
+        let lx = sx_cx(maxes.xMin);
+        let rx = sx_cx(maxes.xMax);
+        let ty = sy_cy(maxes.yMax);
+        let by = sy_cy(maxes.yMin);
 
         if (thickness > 1) {
             lx -= thickness;
@@ -1553,13 +1553,13 @@
         thickness = thickness || 1;
 
         // Translation Fidelity - converting passed canvas values to saved value system
-        dimensions.leftx = (sx_cx(maxes.xmin) - hp);
-        dimensions.midx = Math.floor(sx_cx(maxes.xmin)+((sx_cx(maxes.xmax)-sx_cx(maxes.xmin))/2)-hp);
-        dimensions.rightx = (sx_cx(maxes.xmax) - hp);
+        dimensions.leftx = (sx_cx(maxes.xMin) - hp);
+        dimensions.midx = Math.floor(sx_cx(maxes.xMin)+((sx_cx(maxes.xMax)-sx_cx(maxes.xMin))/2)-hp);
+        dimensions.rightx = (sx_cx(maxes.xMax) - hp);
 
-        dimensions.topy = (sy_cy(maxes.ymax) - hp);
-        dimensions.midy = Math.floor(sy_cy(maxes.ymax)+((sy_cy(maxes.ymin)-sy_cy(maxes.ymax))/2)-hp);
-        dimensions.bottomy = (sy_cy(maxes.ymin) - hp);
+        dimensions.topy = (sy_cy(maxes.yMax) - hp);
+        dimensions.midy = Math.floor(sy_cy(maxes.yMax)+((sy_cy(maxes.yMin)-sy_cy(maxes.yMax))/2)-hp);
+        dimensions.bottomy = (sy_cy(maxes.yMin) - hp);
 
 
         if (thickness > 1) {
@@ -1583,15 +1583,15 @@
         // debug('\n drawGrid - START');
 
         let xs = {
-            'xmax': _UI.glyphEditCanvasSize,
-            'xmin': 0,
-            'ymax': _UI.glyphEditCanvasSize,
-            'ymin': 0,
+            'xMax': _UI.glyphEditCanvasSize,
+            'xMin': 0,
+            'yMax': _UI.glyphEditCanvasSize,
+            'yMin': 0,
         };
 
         // background white square
         _UI.glyphEditCTX.fillStyle = 'white';
-        _UI.glyphEditCTX.fillRect(xs.xmin, xs.ymin, xs.xmax-xs.xmin, xs.ymax-xs.ymin);
+        _UI.glyphEditCTX.fillRect(xs.xMin, xs.yMin, xs.xMax-xs.xMin, xs.yMax-xs.yMin);
 
         if (_UI.showGrid) {
             let ps = _GP.projectSettings;
@@ -1601,19 +1601,19 @@
             _UI.glyphEditCTX.lineWidth = 1;
 
             if (gsize > 0 && gsize < _UI.glyphEditCanvasSize) {
-                for (let i=v.dx; i<xs.xmax-1; i+=gsize) {
+                for (let i=v.dx; i<xs.xMax-1; i+=gsize) {
  drawVerticalLine(i, _UI.glyphEditCTX, gridcolor);
 }
-                drawVerticalLine(xs.xmax+1, _UI.glyphEditCTX, gridcolor);
-                for (let j=v.dx; j>=xs.xmin; j-=gsize) {
+                drawVerticalLine(xs.xMax+1, _UI.glyphEditCTX, gridcolor);
+                for (let j=v.dx; j>=xs.xMin; j-=gsize) {
  drawVerticalLine(j, _UI.glyphEditCTX, gridcolor);
 }
 
-                for (let k=v.dy; k<xs.ymax-1; k+=gsize) {
+                for (let k=v.dy; k<xs.yMax-1; k+=gsize) {
  drawHorizontalLine(k, _UI.glyphEditCTX, gridcolor);
 }
-                drawHorizontalLine(xs.ymax, _UI.glyphEditCTX, gridcolor);
-                for (let p=v.dy; p>=xs.ymin; p-=gsize) {
+                drawHorizontalLine(xs.yMax, _UI.glyphEditCTX, gridcolor);
+                for (let p=v.dy; p>=xs.yMin; p-=gsize) {
  drawHorizontalLine(p, _UI.glyphEditCTX, gridcolor);
 }
             } else {
@@ -1684,8 +1684,8 @@ if (ps.guides.hasOwnProperty(c)) {
             let selwi = getSelectedWorkItem();
             if (selwi) {
                 let t = _UI.eventhandlers.tempnewbasicshape;
-                let rl = t? Math.max(selwi.glyphwidth, t.xmax) : selwi.glyphwidth;
-                let ll = Math.min(selwi.maxes.xmin, 0);
+                let rl = t? Math.max(selwi.glyphwidth, t.xMax) : selwi.glyphwidth;
+                let ll = Math.min(selwi.maxes.xMin, 0);
 
 
                 // Update system guides

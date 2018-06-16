@@ -35,10 +35,10 @@
         // Maxes are in Canvas Px units (not Project Em units)
         maxes = maxes || {};
         this.maxes = {
-            xmin: maxes.xmin || 0,
-            xmax: maxes.xmax || Infinity,
-            ymin: maxes.ymin || 0,
-            ymax: maxes.ymax || Infinity,
+            xMin: maxes.xMin || 0,
+            xMax: maxes.xMax || Infinity,
+            yMin: maxes.yMin || 0,
+            yMax: maxes.yMax || Infinity,
         };
     };
 
@@ -85,13 +85,13 @@
         let checkforbreak = false;
 
         // Maxes are in px, Area is in Em
-        let currx = this.maxes.xmin / this.scale;
-        let curry = this.maxes.ymin / this.scale;
+        let currx = this.maxes.xMin / this.scale;
+        let curry = this.maxes.yMin / this.scale;
         let area = {
-            x: this.maxes.xmin / this.scale,
-            y: this.maxes.ymin / this.scale,
-            width: (this.maxes.xmax - this.maxes.xmin) / this.scale,
-            height: (this.maxes.ymax - this.maxes.ymin) / this.scale,
+            x: this.maxes.xMin / this.scale,
+            y: this.maxes.yMin / this.scale,
+            width: (this.maxes.xMax - this.maxes.xMin) / this.scale,
+            height: (this.maxes.yMax - this.maxes.yMin) / this.scale,
         };
 
         // debug(`\t Em unit currs ${currx}, ${curry}, ${this.scale}`);

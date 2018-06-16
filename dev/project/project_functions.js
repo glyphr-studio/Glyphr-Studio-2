@@ -119,15 +119,15 @@ function calcFontMaxes() {
         let cm = _GP.glyphs[hex];
         if (cm) {
             cm = cm.maxes;
-            fm.maxes.xmax = Math.max(cm.xmax, fm.maxes.xmax);
-            fm.maxes.xmin = Math.min(cm.xmin, fm.maxes.xmin);
-            fm.maxes.ymax = Math.max(cm.ymax, fm.maxes.ymax);
-            fm.maxes.ymin = Math.min(cm.ymin, fm.maxes.ymin);
+            fm.maxes.xMax = Math.max(cm.xMax, fm.maxes.xMax);
+            fm.maxes.xMin = Math.min(cm.xMin, fm.maxes.xMin);
+            fm.maxes.yMax = Math.max(cm.yMax, fm.maxes.yMax);
+            fm.maxes.yMin = Math.min(cm.yMin, fm.maxes.yMin);
         }
     });
 
-    // var proportion = (fm.ymax / (fm.ymax-fm.ymin));
-    // var total = fm.ymax + Math.abs(fm.ymin) + _GP.projectSettings.lineGap;
+    // var proportion = (fm.yMax / (fm.yMax-fm.yMin));
+    // var total = fm.yMax + Math.abs(fm.yMin) + _GP.projectSettings.lineGap;
     // fm.hhea_ascent = round(total*proportion);
     // fm.hhea_descent = (fm.hhea_ascent - total);
 

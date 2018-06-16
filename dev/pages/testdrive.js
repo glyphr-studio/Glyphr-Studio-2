@@ -35,10 +35,10 @@
             glyphstring: td.sampleText,
             lineGap: td.lineGap,
             maxes: {
-                xmin: 10,
-                xmax: 790,
-                ymin: 10 + (_GP.projectSettings.ascent * td.fontScale),
-                ymax: false,
+                xMin: 10,
+                xMax: 790,
+                yMin: 10 + (_GP.projectSettings.ascent * td.fontScale),
+                yMax: false,
             },
             scale: td.fontScale,
             drawPageExtras: drawTestDrivePageExtras,
@@ -103,11 +103,11 @@
         // debug('\n drawTestDrivePageExtras - START');
         let tdc = _UI.testdrive.canvas;
 
-        // var top = (maxes.ymin - (_GP.projectSettings.ascent * scale)) || 0;
-        let top = maxes.ymin || 0;
-        let bottom = (maxes.ymax === Infinity)? tdc.height : (maxes.ymax || tdc.height);
-        let left = maxes.xmin || 0;
-        let right = (maxes.xmax === Infinity)? tdc.width : (maxes.xmax || tdc.width);
+        // var top = (maxes.yMin - (_GP.projectSettings.ascent * scale)) || 0;
+        let top = maxes.yMin || 0;
+        let bottom = (maxes.yMax === Infinity)? tdc.height : (maxes.yMax || tdc.height);
+        let left = maxes.xMin || 0;
+        let right = (maxes.xMax === Infinity)? tdc.width : (maxes.xMax || tdc.width);
         let width = right - left;
         let height = bottom - top;
         let ctx = _UI.testdrive.ctx;
@@ -295,10 +295,10 @@
         td.fontScale = (newval/_GP.projectSettings.upm);
         td.glyphSequence.setScale(td.fontScale);
         td.glyphSequence.setMaxes({
-            xmin: 10,
-            xmax: 790,
-            ymin: 10 + (_GP.projectSettings.ascent * td.fontScale),
-            ymax: false,
+            xMin: 10,
+            xMax: 790,
+            yMin: 10 + (_GP.projectSettings.ascent * td.fontScale),
+            yMax: false,
         });
         document.getElementById('roughptsize').value = (newval*0.75);
         document.getElementById('tdtextarea').style.fontSize = ((newval*0.75) + 'pt');

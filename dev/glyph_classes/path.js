@@ -115,7 +115,7 @@
      * @return {number} x
      */
     get x() {
-        return this._maxes.xmin;
+        return this._maxes.xMin;
     }
 
     /**
@@ -123,7 +123,7 @@
      * @return {number} y
      */
     get y() {
-        return this._maxes.ymax;
+        return this._maxes.yMax;
     }
 
     /**
@@ -131,7 +131,7 @@
      * @return {number}
      */
     get height() {
-        let h = this.maxes.ymax - this.maxes.ymin;
+        let h = this.maxes.yMax - this.maxes.yMin;
         return Math.max(h, 0);
     }
 
@@ -140,7 +140,7 @@
      * @return {number}
      */
     get width() {
-        let w = this.maxes.xmax - this.maxes.xmin;
+        let w = this.maxes.xMax - this.maxes.xMin;
         return Math.max(w, 0);
     }
 
@@ -260,20 +260,6 @@
     }
 
     /**
-     * Set Maxes
-     * @param {object} m
-     * @return {Path} - reference to this Path
-     */
-    set maxes(m) {
-        this._maxes.xmax = m.xmax;
-        this._maxes.ymax = m.ymax;
-        this._maxes.xmin = m.xmin;
-        this._maxes.ymin = m.ymin;
-
-        return this;
-    }
-
-    /**
      * Set or generate SVG path data
      * @param {string} data
      * @return {Path} - reference to this Path
@@ -351,12 +337,12 @@
 
         for (let e = 0; e < this.pathPoints.length; e++) {
             let pp = this.pathPoints[e];
-            pp.p.x = (((pp.p.x - this.maxes.xmin) * ratiodw) + this.maxes.xmin);
-            pp.h1.x = (((pp.h1.x - this.maxes.xmin) * ratiodw) + this.maxes.xmin);
-            pp.h2.x = (((pp.h2.x - this.maxes.xmin) * ratiodw) + this.maxes.xmin);
-            pp.p.y = (((pp.p.y - this.maxes.ymin) * ratiodh) + this.maxes.ymin);
-            pp.h1.y = (((pp.h1.y - this.maxes.ymin) * ratiodh) + this.maxes.ymin);
-            pp.h2.y = (((pp.h2.y - this.maxes.ymin) * ratiodh) + this.maxes.ymin);
+            pp.p.x = (((pp.p.x - this.maxes.xMin) * ratiodw) + this.maxes.xMin);
+            pp.h1.x = (((pp.h1.x - this.maxes.xMin) * ratiodw) + this.maxes.xMin);
+            pp.h2.x = (((pp.h2.x - this.maxes.xMin) * ratiodw) + this.maxes.xMin);
+            pp.p.y = (((pp.p.y - this.maxes.yMin) * ratiodh) + this.maxes.yMin);
+            pp.h1.y = (((pp.h1.y - this.maxes.yMin) * ratiodh) + this.maxes.yMin);
+            pp.h2.y = (((pp.h2.y - this.maxes.yMin) * ratiodh) + this.maxes.yMin);
         }
 
         if (this.checkForNaN()) {
@@ -386,8 +372,8 @@
         if (nx !== false) nx = parseFloat(nx);
         if (ny !== false) ny = parseFloat(ny);
 
-        let dx = (nx !== false) ? ((nx * 1) - this.maxes.xmin) : 0;
-        let dy = (ny !== false) ? ((ny * 1) - this.maxes.ymax) : 0;
+        let dx = (nx !== false) ? ((nx * 1) - this.maxes.xMin) : 0;
+        let dy = (ny !== false) ? ((ny * 1) - this.maxes.yMax) : 0;
         // debug('\t dx dy: ' + dx + ' ' + dy);
 
         this.updatePathPosition(dx, dy, force);
@@ -910,9 +896,9 @@
      * @param {number} mid - y value about which to flip
      */
     flipNS(mid) {
-        let ly = this.maxes.ymax;
-        mid = isVal(mid) ? mid : (this.height / 2) + this.maxes.ymin;
-        // debug('FLIPNS - calculating mid: (b-t)/2 + t = mid: ' + this.maxes.ymin +','+ this.maxes.ymax + ','+ mid);
+        let ly = this.maxes.yMax;
+        mid = isVal(mid) ? mid : (this.height / 2) + this.maxes.yMin;
+        // debug('FLIPNS - calculating mid: (b-t)/2 + t = mid: ' + this.maxes.yMin +','+ this.maxes.yMax + ','+ mid);
         for (let e = 0; e < this.pathPoints.length; e++) {
             let pp = this.pathPoints[e];
             pp.p.y += ((mid - pp.p.y) * 2);
@@ -928,9 +914,9 @@
      * @param {number} mid - x value about which to flip
      */
     flipEW(mid) {
-        let lx = this.maxes.xmin;
-        mid = isVal(mid) ? mid : (this.width / 2) + this.maxes.xmin;
-        // debug('flipEW - calculating mid: (b-t)/2 + t = mid: ' + this.maxes.xmax +','+ this.maxes.xmin +','+ mid);
+        let lx = this.maxes.xMin;
+        mid = isVal(mid) ? mid : (this.width / 2) + this.maxes.xMin;
+        // debug('flipEW - calculating mid: (b-t)/2 + t = mid: ' + this.maxes.xMax +','+ this.maxes.xMin +','+ mid);
         for (let e = 0; e < this.pathPoints.length; e++) {
             let pp = this.pathPoints[e];
             pp.p.x += ((mid - pp.p.x) * 2);
@@ -1126,10 +1112,10 @@
             // debug('\t ++++++ ending seg ' + s);
         }
 
-        this._maxes.xmax = round(this._maxes.xmax, 4);
-        this._maxes.xmin = round(this._maxes.xmin, 4);
-        this._maxes.ymax = round(this._maxes.ymax, 4);
-        this._maxes.ymin = round(this._maxes.ymin, 4);
+        this._maxes.xMax = round(this._maxes.xMax, 4);
+        this._maxes.xMin = round(this._maxes.xMin, 4);
+        this._maxes.yMax = round(this._maxes.yMax, 4);
+        this._maxes.yMin = round(this._maxes.yMin, 4);
         // debug('\t afters ' + json(this.maxes, true));
         // debug(' Path.calcMaxes - END\n');
     }
@@ -1304,8 +1290,8 @@ function findPathPointBoundaryIntersections(p1, p2) {
         let tpp;
         for (let pp=0; pp<chk.pathPoints.length; pp++) {
             tpp = chk.pathPoints[pp];
-            if ( (tpp.p.x === m.xmin) || (tpp.p.x === m.xmax) ||
-                (tpp.p.y === m.ymin) || (tpp.p.y === m.ymax) ) {
+            if ( (tpp.p.x === m.xMin) || (tpp.p.x === m.xMax) ||
+                (tpp.p.y === m.yMin) || (tpp.p.y === m.yMax) ) {
                 if (against.isHere(sx_cx(tpp.p.x), sy_cy(tpp.p.y))) {
                     re.push(''+tpp.p.x+'/'+tpp.p.y);
                 }

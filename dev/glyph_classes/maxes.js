@@ -7,21 +7,21 @@
 class Maxes {
     /**
      * Create a Maxes object
-     * @param {number} xmax - largest x value
-     * @param {number} xmin - smallest x value
-     * @param {number} ymax - largest y value
-     * @param {number} ymin - smallest y value
+     * @param {number} xMax - largest x value
+     * @param {number} xMin - smallest x value
+     * @param {number} yMax - largest y value
+     * @param {number} yMin - smallest y value
      */
     constructor({
-        xmax = -Infinity,
-        xmin = Infinity,
-        ymax = -Infinity,
-        ymin = Infinity,
+        xMax = -Infinity,
+        xMin = Infinity,
+        yMax = -Infinity,
+        yMin = Infinity,
     } = {}) {
-        this.xmax = xmax;
-        this.xmin = xmin;
-        this.ymax = ymax;
-        this.ymin = ymin;
+        this.xMax = xMax;
+        this.xMin = xMin;
+        this.yMax = yMax;
+        this.yMin = yMin;
     }
 
     /**
@@ -30,10 +30,10 @@ class Maxes {
      */
     get minBounds() {
         return {
-            xmax: -Infinity,
-            xmin: Infinity,
-            ymax: -Infinity,
-            ymin: Infinity,
+            xMax: -Infinity,
+            xMin: Infinity,
+            yMax: -Infinity,
+            yMin: Infinity,
         };
     }
 
@@ -43,10 +43,10 @@ class Maxes {
      */
     get maxBounds() {
         return {
-            xmax: Infinity,
-            xmin: -Infinity,
-            ymax: Infinity,
-            ymin: -Infinity,
+            xMax: Infinity,
+            xMin: -Infinity,
+            yMax: Infinity,
+            yMin: -Infinity,
         };
     }
 }
@@ -62,8 +62,8 @@ class Maxes {
 function maxesOverlap(m1, m2, exclusive = true) {
     let re;
 
-    if (exclusive) re = (m1.xmin < m2.xmax && m1.xmax > m2.xmin && m1.ymin < m2.ymax && m1.ymax > m2.ymin);
-    else re = (m1.xmin <= m2.xmax && m1.xmax >= m2.xmin && m1.ymin <= m2.ymax && m1.ymax >= m2.ymin);
+    if (exclusive) re = (m1.xMin < m2.xMax && m1.xMax > m2.xMin && m1.yMin < m2.yMax && m1.yMax > m2.yMin);
+    else re = (m1.xMin <= m2.xMax && m1.xMax >= m2.xMin && m1.yMin <= m2.yMax && m1.yMax >= m2.yMin);
 
     return re;
 }
@@ -88,10 +88,10 @@ function getOverallMaxes(maxarr) {
         tm = maxarr[m];
 
         // find
-        re.xmax = Math.max(re.xmax, tm.xmax);
-        re.xmin = Math.min(re.xmin, tm.xmin);
-        re.ymax = Math.max(re.ymax, tm.ymax);
-        re.ymin = Math.min(re.ymin, tm.ymin);
+        re.xMax = Math.max(re.xMax, tm.xMax);
+        re.xMin = Math.min(re.xMin, tm.xMin);
+        re.yMax = Math.max(re.yMax, tm.yMax);
+        re.yMin = Math.min(re.yMin, tm.yMin);
         // debug([re]);
     }
 

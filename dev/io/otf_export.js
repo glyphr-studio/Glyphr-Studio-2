@@ -52,10 +52,10 @@
                 unicode: 0,
                 index: 0,
                 advanceWidth: round(notdef.getAdvanceWidth()),
-                xMin: round(notdef.maxes.xmin),
-                xMax: round(notdef.maxes.xmax),
-                yMin: round(notdef.maxes.ymin),
-                yMax: round(notdef.maxes.ymax),
+                xMin: round(notdef.maxes.xMin),
+                xMax: round(notdef.maxes.xMax),
+                yMin: round(notdef.maxes.yMin),
+                yMax: round(notdef.maxes.yMax),
                 path: ndpath,
             }));
 
@@ -106,10 +106,10 @@
                 unicode: parseInt(num),
                 index: parseInt(num),
                 advanceWidth: round(glyph.getAdvanceWidth() || 1), // has to be non-zero
-                xMin: round(maxes.xmin),
-                xMax: round(maxes.xmax),
-                yMin: round(maxes.ymin),
-                yMax: round(maxes.ymax),
+                xMin: round(maxes.xMin),
+                xMax: round(maxes.xMax),
+                yMin: round(maxes.yMin),
+                yMax: round(maxes.yMax),
                 path: tgpath,
             });
 

@@ -185,8 +185,8 @@
         let ts, w, h;
         if (selci.ratiolock) {
             ts = selci.getTransformedGlyph();
-            w = (ts.maxes.xmax - ts.maxes.xmin);
-            h = (ts.maxes.ymax - ts.maxes.ymin);
+            w = (ts.maxes.xMax - ts.maxes.xMin);
+            h = (ts.maxes.yMax - ts.maxes.yMin);
 
             if (key === 'scalew') {
                 selci.scaleh += ((value - oldval) * (h / w));

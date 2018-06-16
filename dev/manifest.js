@@ -26,6 +26,7 @@ const manifest = [
             'coord.test.js',
             'handle.test.js',
             'pathpoint.test.js',
+            'maxes.test.js',
             'path.test.js',
         ],
     },

@@ -138,7 +138,7 @@ function Tool_ShapeEdit() {
                 // debug('\t mousedown - setting rotating = true');
                 this.rotating = true;
                 eh.rotationcenter = _UI.multiSelect.shapes.getCenter();
-                eh.rotationstarttopy = _UI.multiSelect.shapes.getMaxes().ymax + (_UI.rotateHandleHeight / getView().dz);
+                eh.rotationstarttopy = _UI.multiSelect.shapes.getMaxes().yMax + (_UI.rotateHandleHeight / getView().dz);
             } else {
                 // debug('\t clicked on eh.handle: ' + eh.handle);
                 this.resizing = true;
@@ -282,10 +282,10 @@ function Tool_NewBasicShape() {
 
     this.mousedown = function(ev) {
         _UI.eventhandlers.tempnewbasicshape = {
-            'xmax': cx_sx(_UI.eventhandlers.mousex),
-            'xmin': cx_sx(_UI.eventhandlers.mousex),
-            'ymax': cy_sy(_UI.eventhandlers.mousey),
-            'ymin': cy_sy(_UI.eventhandlers.mousey),
+            'xMax': cx_sx(_UI.eventhandlers.mousex),
+            'xMin': cx_sx(_UI.eventhandlers.mousex),
+            'yMax': cy_sy(_UI.eventhandlers.mousey),
+            'yMin': cy_sy(_UI.eventhandlers.mousey),
         };
 
         let newshape = new Shape({'visible': false, 'name': '...'});
@@ -304,10 +304,10 @@ function Tool_NewBasicShape() {
 
     this.mousemove = function(ev) {
         if (_UI.eventhandlers.tempnewbasicshape) {
-            _UI.eventhandlers.tempnewbasicshape.xmax = Math.max(_UI.eventhandlers.firstx, cx_sx(_UI.eventhandlers.mousex));
-            _UI.eventhandlers.tempnewbasicshape.xmin = Math.min(_UI.eventhandlers.firstx, cx_sx(_UI.eventhandlers.mousex));
-            _UI.eventhandlers.tempnewbasicshape.ymax = Math.max(_UI.eventhandlers.firsty, cy_sy(_UI.eventhandlers.mousey));
-            _UI.eventhandlers.tempnewbasicshape.ymin = Math.min(_UI.eventhandlers.firsty, cy_sy(_UI.eventhandlers.mousey));
+            _UI.eventhandlers.tempnewbasicshape.xMax = Math.max(_UI.eventhandlers.firstx, cx_sx(_UI.eventhandlers.mousex));
+            _UI.eventhandlers.tempnewbasicshape.xMin = Math.min(_UI.eventhandlers.firstx, cx_sx(_UI.eventhandlers.mousex));
+            _UI.eventhandlers.tempnewbasicshape.yMax = Math.max(_UI.eventhandlers.firsty, cy_sy(_UI.eventhandlers.mousey));
+            _UI.eventhandlers.tempnewbasicshape.yMin = Math.min(_UI.eventhandlers.firsty, cy_sy(_UI.eventhandlers.mousey));
 
             _UI.eventhandlers.uqhaschanged = true;
             redraw({calledBy: 'Event Handler Tool_NewBasicShape mousemove'});
@@ -319,8 +319,8 @@ function Tool_NewBasicShape() {
         // prevent really small shapes
         let tnbs = _UI.eventhandlers.tempnewbasicshape;
 
-        if ( (Math.abs(tnbs.xmax-tnbs.xmin) > _GP.projectSettings.pointsize) &&
-            (Math.abs(tnbs.ymax-tnbs.ymin) > _GP.projectSettings.pointsize) ) {
+        if ( (Math.abs(tnbs.xMax-tnbs.xMin) > _GP.projectSettings.pointsize) &&
+            (Math.abs(tnbs.yMax-tnbs.yMin) > _GP.projectSettings.pointsize) ) {
             let count = (_UI.currentPage === 'components')? (getLength(_GP.components)) : getSelectedWorkItemShapes().length;
             let s = _UI.multiSelect.shapes.getSingleton();
 
@@ -763,8 +763,8 @@ function eventHandler_ShapeResize() {
     // debug('\t eventHandler_ShapeResize dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
 
     // Check that the shape won't have negative dimensions
-    if (mx >= maxes.xmax && maxes.xmax-maxes.xmin+dw < 2) dw=0;
-    if (my >= maxes.ymax && maxes.ymax-maxes.ymin+dh < 2) dh=0;
+    if (mx >= maxes.xMax && maxes.xMax-maxes.xMin+dw < 2) dw=0;
+    if (my >= maxes.yMax && maxes.yMax-maxes.yMin+dh < 2) dh=0;
 
     // Resize the shape
     switch (pcorner) {
@@ -832,7 +832,7 @@ function eventHandler_ShapeResize() {
 
     // if(!_UI.eventhandlers.tempnewbasicshape) s.calcMaxes();
 
-    // debug('eventHandler_ShapeResize - Done lx/rx/ty/by: ' + s.path.maxes.xmin + ',' + s.path.maxes.xmax + ',' + s.path.maxes.ymax + ',' + s.path.maxes.ymin);
+    // debug('eventHandler_ShapeResize - Done lx/rx/ty/by: ' + s.path.maxes.xMin + ',' + s.path.maxes.xMax + ',' + s.path.maxes.yMax + ',' + s.path.maxes.yMin);
 }
 
 function checkForMouseOverHotspot(x, y) {
@@ -849,18 +849,18 @@ function checkForMouseOverHotspot(x, y) {
 
 function updateTNBS(dx, dy, dw, dh) {
     // debug('updateTNBS dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
-    _UI.eventhandlers.tempnewbasicshape.xmin += (dx);
-    _UI.eventhandlers.tempnewbasicshape.ymax += (dy);
-    _UI.eventhandlers.tempnewbasicshape.xmax += (dw+dx);
-    _UI.eventhandlers.tempnewbasicshape.ymin += (dh+dy);
+    _UI.eventhandlers.tempnewbasicshape.xMin += (dx);
+    _UI.eventhandlers.tempnewbasicshape.yMax += (dy);
+    _UI.eventhandlers.tempnewbasicshape.xMax += (dw+dx);
+    _UI.eventhandlers.tempnewbasicshape.yMin += (dh+dy);
 }
 
 function updateDragSelectArea(dx, dy, dw, dh) {
     // debug('updateDragSelectArea dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
-    _UI.eventhandlers.dragselectarea.xmin += (dx);
-    _UI.eventhandlers.dragselectarea.ymax += (dy);
-    _UI.eventhandlers.dragselectarea.xmax += (dw+dx);
-    _UI.eventhandlers.dragselectarea.ymin += (dh+dy);
+    _UI.eventhandlers.dragselectarea.xMin += (dx);
+    _UI.eventhandlers.dragselectarea.yMax += (dy);
+    _UI.eventhandlers.dragselectarea.xMax += (dw+dx);
+    _UI.eventhandlers.dragselectarea.yMin += (dh+dy);
 }
 
 function canResize(pc) {

@@ -84,11 +84,11 @@
             '<td>'+
                 '<input type="number" id="charx" step="'+svc+'" '+
                 'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapePosition(this.value, false, true); history_put(\'Multi-selected Shapes X Position : \'+this.value); redraw({calledBy:\'Glyph Details - X Position\'});}"'+
-                ' value="' + round(sc.maxes.xmin, 3) + '" >'+
+                ' value="' + round(sc.maxes.xMin, 3) + '" >'+
                 dimSplit()+
                 '<input type="number" id="chary" step="'+svc+'" '+
                 'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapePosition(false, this.value, true); history_put(\'Multi-selected Shapes Y Position : \'+this.value); redraw({calledBy:\'Glyph Details - Y Position\'});}"'+
-                ' value="' + round(sc.maxes.ymax, 3) + '" >'+
+                ' value="' + round(sc.maxes.yMax, 3) + '" >'+
             '</td>'+
         '</tr>';
 
@@ -97,11 +97,11 @@
             '<td>'+
                 '<input type="number" id="charw" step="'+svc+'" '+
                 'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(this.value,false,'+sc.ratiolock+'); history_put(\'Multi-selected Shapes Width : \'+this.value); redraw({calledBy:\'Glyph Details - Width\'});}"'+
-                ' value="' + round(sc.maxes.xmax-sc.maxes.xmin, 3) + '" >'+
+                ' value="' + round(sc.maxes.xMax-sc.maxes.xMin, 3) + '" >'+
                 dimSplit()+
                 '<input type="number" id="charh" step="'+svc+'" '+
                 'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(false,this.value,'+sc.ratiolock+'); history_put(\'Multi-selected Shapes Height : \'+this.value); redraw({calledBy:\'Glyph Details - Height\'});}"'+
-                ' value="' + round(sc.maxes.ymax-sc.maxes.ymin, 3) + '" >'+
+                ' value="' + round(sc.maxes.yMax-sc.maxes.yMin, 3) + '" >'+
             '</td>'+
         '</tr>';
 
@@ -128,11 +128,11 @@
                 '<td>'+
                     '<input type="number" id="charx" step="'+svc+'" '+
                     'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphPosition(this.value, false, true); history_put(\'Glyph X Position : \'+this.value); redraw({calledBy:\'Glyph Details - X Position\'});}"'+
-                    ' value="' + round(sc.maxes.xmin, 3) + '" >'+
+                    ' value="' + round(sc.maxes.xMin, 3) + '" >'+
                     dimSplit()+
                     '<input type="number" id="chary" step="'+svc+'" '+
                     'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphPosition(false, this.value, true); history_put(\'Glyph Y Position : \'+this.value); redraw({calledBy:\'Glyph Details - Y Position\'});}"'+
-                    ' value="' + round(sc.maxes.ymax, 3) + '" >'+
+                    ' value="' + round(sc.maxes.yMax, 3) + '" >'+
                 '</td>'+
             '</tr>';
 
@@ -141,11 +141,11 @@
                 '<td>'+
                     '<input type="number" id="charw" step="'+svc+'" '+
                     'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphSize(this.value,false,'+sc.ratiolock+'); history_put(\'Glyph Width : \'+this.value); redraw({calledBy:\'Glyph Details - Width\'});}"'+
-                    ' value="' + round(sc.maxes.xmax-sc.maxes.xmin, 3) + '" >'+
+                    ' value="' + round(sc.maxes.xMax-sc.maxes.xMin, 3) + '" >'+
                     dimSplit()+
                     '<input type="number" id="charh" step="'+svc+'" '+
                     'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphSize(false,this.value,'+sc.ratiolock+'); history_put(\'Glyph Height : \'+this.value); redraw({calledBy:\'Glyph Details - Height\'});}"'+
-                    ' value="' + round(sc.maxes.ymax-sc.maxes.ymin, 3) + '" >'+
+                    ' value="' + round(sc.maxes.yMax-sc.maxes.yMin, 3) + '" >'+
                 '</td>'+
             '</tr>';
 
@@ -254,15 +254,15 @@
         let xval, yval, hval, wval;
 
         if (!_UI.eventhandlers.tempnewbasicshape) {
-            xval = round(s.path.maxes.xmin, 3);
-            yval = round(s.path.maxes.ymax, 3);
+            xval = round(s.path.maxes.xMin, 3);
+            yval = round(s.path.maxes.yMax, 3);
             wval = round(s.path.width, 3);
             hval = round(s.path.height, 3);
         } else {
-            xval = round(_UI.eventhandlers.tempnewbasicshape.xmin, 3);
-            yval = round(_UI.eventhandlers.tempnewbasicshape.ymax, 3);
-            wval = Math.abs(round(_UI.eventhandlers.tempnewbasicshape.xmax-_UI.eventhandlers.tempnewbasicshape.xmin, 3));
-            hval = Math.abs(round(_UI.eventhandlers.tempnewbasicshape.ymax-_UI.eventhandlers.tempnewbasicshape.ymin, 3));
+            xval = round(_UI.eventhandlers.tempnewbasicshape.xMin, 3);
+            yval = round(_UI.eventhandlers.tempnewbasicshape.yMax, 3);
+            wval = Math.abs(round(_UI.eventhandlers.tempnewbasicshape.xMax-_UI.eventhandlers.tempnewbasicshape.xMin, 3));
+            hval = Math.abs(round(_UI.eventhandlers.tempnewbasicshape.yMax-_UI.eventhandlers.tempnewbasicshape.yMin, 3));
         }
 
         content += '<tr>'+

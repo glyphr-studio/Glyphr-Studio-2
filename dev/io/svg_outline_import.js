@@ -91,10 +91,10 @@
 
                 if (!(w===0 && h===0)) {
                     rectmaxes = {
-                        xmax: x+w,
-                        xmin: x,
-                        ymax: y+h,
-                        ymin: y,
+                        xMax: x+w,
+                        xMin: x,
+                        yMax: y+h,
+                        yMin: y,
                     };
 
                     pushShape(rectPathFromMaxes(rectmaxes), 'Rectangle');
@@ -159,10 +159,10 @@
 
                 if (!(rx===0 && ry===0)) {
                     ellipsemaxes = {
-                        xmin: cx-rx,
-                        xmax: cx+rx,
-                        ymin: cy-ry,
-                        ymax: cy+ry,
+                        xMin: cx-rx,
+                        xMax: cx+rx,
+                        yMin: cy-ry,
+                        yMax: cy+ry,
                     };
 
                     pushShape(ovalPathFromMaxes(ellipsemaxes), 'Oval');

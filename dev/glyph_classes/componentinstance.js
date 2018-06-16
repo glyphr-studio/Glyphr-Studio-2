@@ -170,8 +170,8 @@
 
         // debug('\t ogm ' + json(ogm, true));
 
-        if (!isNaN(nx)) this.translatex = (nx - ogm.xmin);
-        if (!isNaN(ny)) this.translatey = (ny - ogm.ymax);
+        if (!isNaN(nx)) this.translatex = (nx - ogm.xMin);
+        if (!isNaN(ny)) this.translatey = (ny - ogm.yMax);
 
         this.changed();
 
@@ -187,8 +187,8 @@
 
         if (ratiolock) {
             let ts = this.getTransformedGlyph().getMaxes();
-            let w = (ts.xmax - ts.xmin);
-            let h = (ts.ymax - ts.ymin);
+            let w = (ts.xMax - ts.xMin);
+            let h = (ts.yMax - ts.yMin);
 
             if (Math.abs(dw) > Math.abs(dh)) {
                 dh = (dw * (h / w));
@@ -211,27 +211,27 @@
 
     ComponentInstance.prototype.setShapeSize = function(nw, nh, ratiolock) {
         let og = getGlyph(this.link).getMaxes();
-        let dx = nx? ((nx*1) - og.xmin) : 0;
-        let dy = ny? ((ny*1) - og.ymax) : 0;
+        let dx = nx? ((nx*1) - og.xMin) : 0;
+        let dy = ny? ((ny*1) - og.yMax) : 0;
 
         this.updateShapePosition(dx, dy, ratiolock);
     };
 
     ComponentInstance.prototype.getWidth = function() {
         let g = this.getTransformedGlyph().getMaxes();
-        return g.xmax - g.xmin;
+        return g.xMax - g.xMin;
     };
 
     ComponentInstance.prototype.getHeight = function() {
         let g = this.getTransformedGlyph().getMaxes();
-        return g.ymax - g.ymin;
+        return g.yMax - g.yMin;
     };
 
     ComponentInstance.prototype.flipEW = function(mid) {
         this.flipew = !this.flipew;
         if (mid) {
             let g = this.getTransformedGlyph().getMaxes();
-            this.translatex += (((mid - g.xmax) + mid) - g.xmin);
+            this.translatex += (((mid - g.xMax) + mid) - g.xMin);
         }
         if (this.rotation === 0) this.rotatefirst = false;
 
@@ -242,7 +242,7 @@
         this.flipns = !this.flipns;
         if (mid) {
             let g = this.getTransformedGlyph().getMaxes();
-            this.translatey += (((mid - g.ymax) + mid) - g.ymin);
+            this.translatey += (((mid - g.yMax) + mid) - g.yMin);
         }
         if (this.rotation === 0) this.rotatefirst = false;
 

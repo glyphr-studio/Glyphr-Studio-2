@@ -284,10 +284,10 @@
     Segment.prototype.pointIsWithinMaxes = function(co) {
         let m = this.getMaxes();
 
-        let re = (co.x <= m.xmax &&
-            co.x >= m.xmin &&
-            co.y <= m.ymax &&
-            co.y >= m.ymin );
+        let re = (co.x <= m.xMax &&
+            co.x >= m.xMin &&
+            co.y <= m.yMax &&
+            co.y >= m.yMin );
 
         return re;
     };
@@ -409,10 +409,10 @@
 
     Segment.prototype.getFastMaxes = function() {
         let bounds = {
-            'xmin': Math.min(this.p1x, Math.min(this.p2x, Math.min(this.p3x, this.p4x))),
-            'ymin': Math.min(this.p1y, Math.min(this.p2y, Math.min(this.p3y, this.p4y))),
-            'xmax': Math.max(this.p1x, Math.max(this.p2x, Math.max(this.p3x, this.p4x))),
-            'ymax': Math.max(this.p1y, Math.max(this.p2y, Math.max(this.p3y, this.p4y))),
+            'xMin': Math.min(this.p1x, Math.min(this.p2x, Math.min(this.p3x, this.p4x))),
+            'yMin': Math.min(this.p1y, Math.min(this.p2y, Math.min(this.p3y, this.p4y))),
+            'xMax': Math.max(this.p1x, Math.max(this.p2x, Math.max(this.p3x, this.p4x))),
+            'yMax': Math.max(this.p1y, Math.max(this.p2y, Math.max(this.p3y, this.p4y))),
         };
 
         return bounds;
@@ -423,10 +423,10 @@
         // debug(this);
 
         let bounds = {
-            'xmin': Math.min(this.p1x, this.p4x),
-            'ymin': Math.min(this.p1y, this.p4y),
-            'xmax': Math.max(this.p1x, this.p4x),
-            'ymax': Math.max(this.p1y, this.p4y),
+            'xMin': Math.min(this.p1x, this.p4x),
+            'yMin': Math.min(this.p1y, this.p4y),
+            'xMax': Math.max(this.p1x, this.p4x),
+            'yMax': Math.max(this.p1y, this.p4y),
         };
 
         if (this.line) {
@@ -444,7 +444,7 @@
 
         let numerator, denominator, quadroot, root, t1, t2;
 
-        if (this.p2x<bounds.xmin || this.p2x>bounds.xmax || this.p3x<bounds.xmin || this.p3x>bounds.xmax) {
+        if (this.p2x<bounds.xMin || this.p2x>bounds.xMax || this.p3x<bounds.xMin || this.p3x>bounds.xMax) {
             // X bounds
             if (d1x+d3x !== 2*d2x) {
  d2x+=0.01;
@@ -464,7 +464,7 @@
         }
 
         // Y bounds
-        if (this.p2y<bounds.ymin || this.p2y>bounds.ymax || this.p3y<bounds.ymin || this.p3y>bounds.ymax) {
+        if (this.p2y<bounds.yMin || this.p2y>bounds.yMax || this.p3y<bounds.yMin || this.p3y>bounds.yMax) {
             if (d1y+d3y !== 2*d2y) {
  d2y+=0.01;
 }
@@ -488,18 +488,18 @@
     };
 
     function checkXbounds(bounds, value) {
-        if (bounds.xmin > value) {
- bounds.xmin = value;
-} else if (bounds.xmax < value) {
- bounds.xmax = value;
+        if (bounds.xMin > value) {
+ bounds.xMin = value;
+} else if (bounds.xMax < value) {
+ bounds.xMax = value;
 }
     }
 
     function checkYbounds(bounds, value) {
-        if (bounds.ymin > value) {
- bounds.ymin = value;
-} else if (bounds.ymax < value) {
- bounds.ymax = value;
+        if (bounds.yMin > value) {
+ bounds.yMin = value;
+} else if (bounds.yMax < value) {
+ bounds.yMax = value;
 }
     }
 
@@ -569,10 +569,10 @@
         let threshold = 0.00005;
         let precision = 3;
 
-        let s1w = (s1m.xmax - s1m.xmin);
-        let s1h = (s1m.ymax - s1m.ymin);
-        let s2w = (s2m.xmax - s2m.xmin);
-        let s2h = (s2m.ymax - s2m.ymin);
+        let s1w = (s1m.xMax - s1m.xMin);
+        let s1h = (s1m.yMax - s1m.yMin);
+        let s2w = (s2m.xMax - s2m.xMin);
+        let s2h = (s2m.yMax - s2m.yMin);
         // debug('\t s1 w/h: ' + s1w + ' / ' + s1h);
         // debug('\t s2 w/h: ' + s2w + ' / ' + s2h);
 
@@ -584,8 +584,8 @@
                 s1h *= 0.5;
                 s2w *= 0.5;
                 s2h *= 0.5;
-                let x = ((s1m.xmin + s1w) + (s2m.xmin + s2w)) / 2;
-                let y = ((s1m.ymin + s1h) + (s2m.ymin + s2h)) / 2;
+                let x = ((s1m.xMin + s1w) + (s2m.xMin + s2w)) / 2;
+                let y = ((s1m.yMin + s1h) + (s2m.yMin + s2h)) / 2;
 
                 x = round(x, precision);
                 y = round(y, precision);

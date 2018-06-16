@@ -832,9 +832,9 @@ class PathPoint {
  */
 function makePathPointFromSegments(seg1, seg2) {
     let newpp = new PathPoint({
-        h1: new Handle({point: Coord({x: seg1.p3x, y: seg1.p3y})}),
+        h1: new Handle({point: {x: seg1.p3x, y: seg1.p3y}}),
         p: new Coord({x: seg2.p1x, y: seg2.p1y}),
-        h2: new Handle({point: Coord({x: seg2.p2x, y: seg2.p2y})}),
+        h2: new Handle({point: {x: seg2.p2x, y: seg2.p2y}}),
     });
 
     if (seg1.line || coordsAreEqual(newpp.h1, newpp.p)) newpp.h1.use = false;

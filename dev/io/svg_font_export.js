@@ -85,7 +85,7 @@
         con += t+'x-height="'+ps.xheight+'"\n';
         con += t+'ascent="'+ps.ascent+'"\n';
         con += t+'descent="'+ps.descent+'"\n';
-        con += t+'bbox="'+fm.maxes.xmin+', '+fm.maxes.ymin+', '+fm.maxes.xmax+', '+fm.maxes.ymax+'"\n';
+        con += t+'bbox="'+fm.maxes.xMin+', '+fm.maxes.yMin+', '+fm.maxes.xMax+', '+fm.maxes.yMax+'"\n';
         con += t+'unicode-range="U+20-'+fm.maxGlyph+'"\n';
 
         // Metadata properties

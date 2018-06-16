@@ -32,7 +32,6 @@ _TEST.testList.push(
             ];
 
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
-            console.log(path.save());
             return is(path.x).equalTo(170);
         },
     }
