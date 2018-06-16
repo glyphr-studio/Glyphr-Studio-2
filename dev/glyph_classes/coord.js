@@ -13,8 +13,8 @@ class Coord {
      * @param {boolean} yLock - if the Y value is locked
      */
     constructor({x = 0, y = 0, xLock = false, yLock = false} = {}) {
-        this._x = x;
-        this._y = y;
+        this._x = numSan(x);
+        this._y = numSan(y);
         if (xLock) this._xLock = xLock;
         if (yLock) this._yLock = yLock;
     }

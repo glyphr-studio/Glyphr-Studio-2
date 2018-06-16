@@ -232,13 +232,20 @@ function json(obj, raw) {
  * @return {boolean}
  */
 function areEqual(obj1, obj2) {
-    if (typeof obj1 !== 'object' && typeof obj2 !== 'object') return obj1 === obj2;
+    // debug(`\n areEqual - START`);
+    // debug(`\t passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
+
+    if (typeof obj1 !== 'object' && typeof obj2 !== 'object') {
+        return obj1 === obj2;
+    }
 
     for (let key in obj1) {
         if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
             if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
                 if (!areEqual(obj1[key], obj2[key])) return false;
             } else if (obj1[key] !== obj2[key]) return false;
+        } else if (obj1.hasOwnProperty(key) || obj2.hasOwnProperty(key)) {
+            return false;
         }
     }
 
@@ -280,7 +287,7 @@ function numSan(num) {
     let strnum = ''+num;
 
     if (strnum.indexOf('0000') > -1 || strnum.indexOf('9999') > -1) {
-        num = round(num, 6);
+        num = round(num, 4);
     }
 
     if (num < 0.0000 && num > 0) num = 0;

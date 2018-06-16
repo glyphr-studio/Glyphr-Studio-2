@@ -7,21 +7,34 @@
 class Maxes {
     /**
      * Create a Maxes object
-     * @param {number} xMax - largest x value
      * @param {number} xMin - smallest x value
-     * @param {number} yMax - largest y value
+     * @param {number} xMax - largest x value
      * @param {number} yMin - smallest y value
+     * @param {number} yMax - largest y value
      */
     constructor({
-        xMax = -Infinity,
         xMin = Infinity,
-        yMax = -Infinity,
+        xMax = -Infinity,
         yMin = Infinity,
+        yMax = -Infinity,
     } = {}) {
-        this.xMax = xMax;
         this.xMin = xMin;
-        this.yMax = yMax;
+        this.xMax = xMax;
         this.yMin = yMin;
+        this.yMax = yMax;
+    }
+
+    /**
+     * Export object to a project file
+     * @return {object}
+     */
+    save() {
+        return {
+            xMin: this.xMin,
+            xMax: this.xMax,
+            yMin: this.yMin,
+            yMax: this.yMax,
+        };
     }
 
     /**
@@ -30,10 +43,10 @@ class Maxes {
      */
     get minBounds() {
         return {
-            xMax: -Infinity,
             xMin: Infinity,
-            yMax: -Infinity,
+            xMax: -Infinity,
             yMin: Infinity,
+            yMax: -Infinity,
         };
     }
 
@@ -43,10 +56,10 @@ class Maxes {
      */
     get maxBounds() {
         return {
-            xMax: Infinity,
             xMin: -Infinity,
-            yMax: Infinity,
+            xMax: Infinity,
             yMin: -Infinity,
+            yMax: Infinity,
         };
     }
 }
@@ -88,10 +101,10 @@ function getOverallMaxes(maxarr) {
         tm = maxarr[m];
 
         // find
-        re.xMax = Math.max(re.xMax, tm.xMax);
         re.xMin = Math.min(re.xMin, tm.xMin);
-        re.yMax = Math.max(re.yMax, tm.yMax);
+        re.xMax = Math.max(re.xMax, tm.xMax);
         re.yMin = Math.min(re.yMin, tm.yMin);
+        re.yMax = Math.max(re.yMax, tm.yMax);
         // debug([re]);
     }
 

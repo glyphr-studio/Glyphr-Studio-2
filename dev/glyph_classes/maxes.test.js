@@ -17,6 +17,14 @@ _TEST.testList.push(
     },
     {
         category: 'Maxes',
+        name: 'save',
+        assertion: function() {
+            let m1 = new Maxes({xMax: 100, xMin: 0, yMax: 100, yMin: 0});
+            return is(m1.save()).equalTo({xMax: 100, xMin: 0, yMax: 100, yMin: 0});
+        },
+    },
+    {
+        category: 'Maxes',
         name: 'maxesOverlap',
         assertion: function() {
             let m1 = new Maxes({xMax: 100, xMin: 0, yMax: 100, yMin: 0});

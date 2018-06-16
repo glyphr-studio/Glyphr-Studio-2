@@ -1,7 +1,7 @@
 _TEST.testList.push(
     {
         category: 'Path',
-        name: 'constructor',
+        name: 'pathPoints',
         assertion: function() {
             // It's a circle!
             _TEST.globals.testPathPoints = [
@@ -32,24 +32,76 @@ _TEST.testList.push(
             ];
 
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            return is(path.pathPoints[3].p.x).equalTo(170);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'save',
+        assertion: function() {
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            return is(path.save()).equalTo({'winding': -5, 'pathPoints': [{'p': {'x': 326.65249430318556, 'y': 500}, 'h1': {'point': {'x': 239.84504649235828, 'y': 500}, 'use': true}, 'h2': {'point': {'x': 413.45994211401285, 'y': 500}, 'use': true}, 'type': 'symmetric'}, {'p': {'x': 484, 'y': 343.4570087834163}, 'h1': {'point': {'x': 484, 'y': 428.9899571029709}, 'use': true}, 'h2': {'point': {'x': 484, 'y': 257.92406046386174}, 'use': true}, 'type': 'symmetric'}, {'p': {'x': 326.65249430318556, 'y': 186}, 'h1': {'point': {'x': 414.1548862447006, 'y': 186}, 'use': true}, 'h2': {'point': {'x': 239.15010236167052, 'y': 186}, 'use': true}, 'type': 'symmetric'}, {'p': {'x': 170, 'y': 343.4570087834163}, 'h1': {'point': {'x': 170, 'y': 257.0100080446707}, 'use': true}, 'h2': {'point': {'x': 170, 'y': 429.9040095221619}, 'use': true}, 'type': 'symmetric'}]});
+        },
+    },
+    {
+        category: 'Path',
+        name: 'winding',
+        assertion: function() {
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            return is(path.winding).equalTo(-5);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'x',
+        assertion: function() {
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
             return is(path.x).equalTo(170);
         },
+    },
+    {
+        category: 'Path',
+        name: 'y',
+        assertion: function() {
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            return is(path.y).equalTo(500);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'width',
+        assertion: function() {
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            return is(path.width).equalTo(314);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'height',
+        assertion: function() {
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            return is(path.height).equalTo(314);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'maxes',
+        assertion: function() {
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            return is(path.maxes).equalTo({'xMin': 170, 'xMax': 484, 'yMin': 186, 'yMax': 500});
+        },
+    },
+    {
+        category: 'Path',
+        name: 'svgPathData',
+        assertion: function() {
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            return is(path.svgPathData).equalTo('M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z');
+        },
     }
-
 );
 
 /*
-save
-changed
-
-pathPoints
-winding
-x
-y
-height
-width
-maxes
-svgPathData
 
 setPathSize
 updatePathSize

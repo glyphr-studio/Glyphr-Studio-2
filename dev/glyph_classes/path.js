@@ -30,7 +30,8 @@
 
         this.pathPoints = pathPoints; // use setter for hydration
 
-        this._winding = isVal(winding) ? winding : this.findWinding();
+        this._winding = winding;
+        if (!this._winding) this.findWinding();
 
         // internal
         this.maxes = maxes; // use setter for hydration
@@ -628,7 +629,6 @@
      * @return {string}
      */
     makeSVGpathData(glyphName = 'not specified') {
-        glyphName = glyphName || 'not specified';
         // debug('\n Path.makeSVGpathData - START');
         // debug('\t Glyph ' + glyphName);
         // debug('\t this.pathPoints: ' + json(this.pathPoints, true));
@@ -637,11 +637,15 @@
             return '';
         }
 
-        let roundvalue = _GP.projectSettings.svgprecision || 8;
+        let roundValue = 8;
+        if (_GP && _GP.projectSettings && _GP.projectSettings.svgprecision) {
+            roundValue = _GP.projectSettings.svgprecision;
+        }
+
         let p1;
         let p2;
         let trr = '';
-        let re = 'M' + round(this.pathPoints[0].p.x, roundvalue) + ',' + round(this.pathPoints[0].p.y, roundvalue);
+        let re = 'M' + round(this.pathPoints[0].p.x, roundValue) + ',' + round(this.pathPoints[0].p.y, roundValue);
 
         // debug('GENPATHPOSTSCRIPT:\n\t ' + re);
         if (re.indexOf('NaN') > -1) {
@@ -653,7 +657,7 @@
             p1 = this.pathPoints[cp];
             // p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
             p2 = this.pathPoints[this.getNextPointNum(cp)];
-            trr = ' C' + round(p1.h2.x, roundvalue) + ',' + round(p1.h2.y, roundvalue) + ',' + round(p2.h1.x, roundvalue) + ',' + round(p2.h1.y, roundvalue) + ',' + round(p2.p.x, roundvalue) + ',' + round(p2.p.y, roundvalue);
+            trr = ' C' + round(p1.h2.x, roundValue) + ',' + round(p1.h2.y, roundValue) + ',' + round(p2.h1.x, roundValue) + ',' + round(p2.h1.y, roundValue) + ',' + round(p2.p.x, roundValue) + ',' + round(p2.p.y, roundValue);
             // debug('\t ' + trr);
             if (trr.indexOf('NaN') > -1) {
                 console.warn(glyphName + ' PathPoint ' + cp + ' has NaN: ' + trr);
@@ -854,7 +858,7 @@
             this.reverseWinding();
         }
 
-        this.winding = count;
+        this._winding = count;
         // if(!secondtry) debug(' Path.findWinding - END returning: ' + count + '\n');
         return count;
     }
