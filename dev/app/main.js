@@ -180,5 +180,5 @@ _FN.assemble = function(manifest = [], loadTests = false, callback = new functio
         });
     }
 
-    window.setTimeout(callback, 10);
+    window.setTimeout(callback, 500);
 };

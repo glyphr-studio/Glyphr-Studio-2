@@ -549,7 +549,7 @@ function Tool_PathEdit() {
             sp.getMembers().forEach(function(point, i) {
             // debug('\t UpdatePPP ' + cpt + '\t' + dx + '\t' + dy);
                 if (ev.ctrlKey || ev.metaKey) return;
-                point.updatePathPointPosition(cpt, dx, dy, ev);
+                point.updatePathPointPosition(cpt, dx, dy);
             });
             _UI.multiSelect.shapes.calcMaxes();
 

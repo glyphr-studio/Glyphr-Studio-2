@@ -136,6 +136,43 @@ class PathPoint {
     // -------------------------------------------------------
 
     /**
+     * Updates position based on deltas
+     * @param {string} controlPoint - p / h1 / h2
+     * @param {number} dx - delta x
+     * @param {number} dy - delta y
+     */
+    updatePathPointPosition(controlPoint = 'p', dx = 0, dy = 0) {
+        dx = parseFloat(dx);
+        dy = parseFloat(dy);
+
+        switch (controlPoint) {
+            case 'P':
+                if (!this.p.xLock) this.p.x += dx;
+                if (!this.p.yLock) this.p.y += dy;
+                if (!this.p.xLock) this.h1.x += dx;
+                if (!this.p.yLock) this.h1.y += dy;
+                if (!this.p.xLock) this.h2.x += dx;
+                if (!this.p.yLock) this.h2.y += dy;
+            break;
+
+            case 'h1':
+                if (!this.h1.xLock) this.h1.x += dx;
+                if (!this.h1.yLock) this.h1.y += dy;
+                if (this.type === 'symmetric') this.makeSymmetric('h1');
+                else if (this.type === 'flat') this.makeFlat('h1');
+
+            break;
+
+            case 'h2':
+                if (!this.h2.xLock) this.h2.x += dx;
+                if (!this.h2.yLock) this.h2.y += dy;
+                if (this.type === 'symmetric') this.makeSymmetric('h2');
+                else if (this.type === 'flat') this.makeFlat('h2');
+            break;
+        }
+    }
+
+    /**
      * Checks to see if there is a control point where the mouse is
      * @param {number} x - mouse x possition
      * @param {number} y - mouse y possition

@@ -246,7 +246,7 @@
      * @return {Path} - reference to this Path
      */
     set height(h) {
-        this.updatePathSize(0, this.height - h);
+        this.setPathSize(false, h);
         return this;
     }
 
@@ -256,7 +256,7 @@
      * @return {Path} - reference to this Path
      */
     set width(w) {
-        this.updatePathSize(this.width - w, 0);
+        this.setPathSize(w, false);
         return this;
     }
 
@@ -397,7 +397,7 @@
         for (let d = 0; d < this.pathPoints.length; d++) {
             let pp = this.pathPoints[d];
             // debug('-------------------- pathPoint #' + d);
-            pp.updatePathPointPosition('p', dx, dy, force);
+            pp.updatePathPointPosition('p', dx, dy);
         }
         this.changed();
         // debug(' Path.updatePathPosition - END\n');

@@ -45,7 +45,7 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
-        name: 'winding',
+        name: 'winding getter',
         assertion: function() {
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
             return is(path.winding).equalTo(-5);
@@ -53,7 +53,7 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
-        name: 'x',
+        name: 'x getter',
         assertion: function() {
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
             return is(path.x).equalTo(170);
@@ -61,7 +61,7 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
-        name: 'y',
+        name: 'y getter',
         assertion: function() {
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
             return is(path.y).equalTo(500);
@@ -69,7 +69,7 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
-        name: 'width',
+        name: 'width getter',
         assertion: function() {
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
             return is(path.width).equalTo(314);
@@ -77,7 +77,7 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
-        name: 'height',
+        name: 'height getter',
         assertion: function() {
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
             return is(path.height).equalTo(314);
@@ -85,7 +85,7 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
-        name: 'maxes',
+        name: 'maxes getter',
         assertion: function() {
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
             return is(path.maxes).equalTo({'xMin': 170, 'xMax': 484, 'yMin': 186, 'yMax': 500});
@@ -98,13 +98,52 @@ _TEST.testList.push(
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
             return is(path.svgPathData).equalTo('M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z');
         },
-    }
+    },
+    {
+        category: 'Path',
+        name: 'width setter',
+        assertion: function() {
+            // width setter uses setPathSize and updatePathSize
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            path.width = 500;
+            return is(path.width).equalTo(500);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'height setter',
+        assertion: function() {
+            // height setter uses setPathSize and updatePathSize
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            path.height = 654;
+            return is(path.height).equalTo(654);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'y setter',
+        assertion: function() {
+            // y setter uses setPathPosition and updatePathPosition
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            path.y = 654;
+            return is(path.y).equalTo(654);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'x setter',
+        assertion: function() {
+            // x setter uses setPathPosition and updatePathPosition
+            let path = new Path({pathPoints: _TEST.globals.testPathPoints});
+            path.x = 654;
+            return is(path.x).equalTo(654);
+        },
+    },
 );
 
 /*
 
-setPathSize
-updatePathSize
+
 setPathPosition
 updatePathPosition
 rotate

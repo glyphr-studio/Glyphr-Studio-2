@@ -36,6 +36,7 @@
         succeeded: 0,
         failed: 0,
         didNotRun: 0,
+        total: 0,
         autoRun: true
     };
 
@@ -54,21 +55,28 @@
         let header = document.querySelector('#header');
         let results = document.querySelector('#results');
 
-        _TEST.testList.forEach(element => {
-            if(_TEST.categories.hasOwnProperty(element.category)){
-                _TEST.categories[element.category]++;
+
+        let test;
+        let t=0;
+        while(_TEST.testList[t]) {
+            test = _TEST.testList[t];
+
+            if(_TEST.categories.hasOwnProperty(test.category)){
+                _TEST.categories[test.category]++;
             } else {
-                _TEST.categories[element.category] = 1;
-                results.innerHTML = `<div class="resultSection" id="${getResultSectionID(element.category)}"><h2>${element.category}</h2></div>` + results.innerHTML;
+                _TEST.categories[test.category] = 1;
             }
 
             _TEST.total++;
-        });
+            t++;
+        };
+
 
         header.innerHTML = '';
 
         for(let key in _TEST.categories){
             if(_TEST.categories.hasOwnProperty(key)){
+                results.innerHTML = `<div class="resultSection" id="${getResultSectionID(key)}"><h2>${key}</h2></div>` + results.innerHTML;
                 header.innerHTML += `<span class="category">${key} : ${_TEST.categories[key]}</span>`;
             }
         }
@@ -78,7 +86,8 @@
     }
 
     function getResultSectionID(category) {
-        return 'resultSection' + category.split(' ').join('_');
+        let rsid = 'resultSection' + category.split(' ').join('_');
+        return rsid;
     }
 
     function runTests() {
@@ -91,7 +100,6 @@
             }
 
             let test;
-            // console.log(`outputting to section ${_TEST.testList[currTest].category}`);
             let currResultSection = document.querySelector(`#${getResultSectionID(_TEST.testList[currTest].category)}`);
 
             try {
