@@ -1,4 +1,5 @@
-/* exported Handle */
+import {Coord} from 'coord';
+import {PathPoint} from 'pathpoint';
 
 /**
  * Handle
@@ -6,7 +7,7 @@
  * They can be hidden or used, which alters the overall path
  * shape.
  */
-class Handle {
+export default class Handle {
     /**
      * Create a Handle
      * @param {Coord} point - possition of the handle

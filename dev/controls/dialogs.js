@@ -1,9 +1,9 @@
 // --------------------------------------
 // Dialog Box, Error Box, Notation, toasts
 // --------------------------------------
-/* exported closeDialog, openDialog, openBigDialog, isBigDialogOpen,
+export {closeDialog, openDialog, openBigDialog, isBigDialogOpen,
 openNotation, closeNotation, makeErrorMessageBox, showErrorMessageBox,
-closeErrorMessageBox, toggleDialogExportOptions, showToast */
+closeErrorMessageBox, toggleDialogExportOptions, showToast};
 
 /**
  * Closes any type of dialog box that may be open

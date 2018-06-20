@@ -1,3 +1,4 @@
+export {importGlyphrProjectFromText, newGlyphrStudioProject};
 
 /**
  * IO > Import > Glyphr Studio Project
@@ -7,7 +8,7 @@
  * 'hydrated' from simple text / JSON to full
  * Glyphr Studio Objects, and saved to the _GP
  * global variable.
-
+ *
  * !!! DANGER !!!
  * Because this file contains "old" variables that
  * have since been corrected, there are probably a
@@ -19,7 +20,7 @@
  */
 
 /* eslint-disable camel-case */
-/* exported importGlyphrProjectFromText newGlyphrStudioProject */
+
 
 // -------------------------------
 // IMPORT FUNCTIONS

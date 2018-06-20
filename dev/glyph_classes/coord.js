@@ -1,4 +1,4 @@
-/* exported Coord coordsAreEqual */
+export {Coord, coordsAreEqual};
 
 /**
  * Coordinate

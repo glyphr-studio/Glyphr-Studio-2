@@ -1,3 +1,4 @@
+import _TEST from '../app/test.js';
 _TEST.testList.push(
     {
         category: 'Path',
@@ -138,7 +139,7 @@ _TEST.testList.push(
             path.x = 654;
             return is(path.x).equalTo(654);
         },
-    },
+    }
 );
 
 /*

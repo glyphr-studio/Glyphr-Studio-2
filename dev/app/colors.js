@@ -1,8 +1,8 @@
+export {parseColorString, shiftColor, RGBAtoRGB, transparencyToAlpha};
 
 // -------------------
 // COLORS
 // -------------------
-/* exported parseColorString, shiftColor, RGBAtoRGB, transparencyToAlpha */
 
 /**
  * Convert a color string into an object

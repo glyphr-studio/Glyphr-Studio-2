@@ -1,13 +1,14 @@
-/* exported manifest */
-
 /**
+ * MANIFEST
  * Object describing Glyphr Studio's project file structure.
  * This is used to:
  *  Assemble the Development environment, maintaining individual files
  *  Concat / Minimize to a single file for Distribution
  */
+// debug(`\n MANIFEST.js - START`);
 
-const manifest = [
+
+let manifest = [
     {
         path: 'glyph_classes',
         files: [
@@ -141,3 +142,5 @@ const manifest = [
         ],
     },
 ];
+
+export default manifest;

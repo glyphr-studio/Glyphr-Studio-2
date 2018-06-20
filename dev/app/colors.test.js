@@ -1,3 +1,4 @@
+import _TEST from '../app/test.js';
 _TEST.testList.push(
     {
         category: 'Colors',
@@ -17,6 +18,7 @@ _TEST.testList.push(
         category: 'Colors',
         name: 'RGBAtoRGB',
         assertion: function() {
+            /* eslint-disable new-cap */
             return is(RGBAtoRGB('rgb(123,45,67)', 0.2)).equalTo('rgb(229,213,217)');
         },
     },

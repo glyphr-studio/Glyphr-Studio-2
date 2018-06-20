@@ -1,3 +1,4 @@
+import _TEST from '../app/test.js';
 _TEST.testList.push(
     {
         category: 'Coord',

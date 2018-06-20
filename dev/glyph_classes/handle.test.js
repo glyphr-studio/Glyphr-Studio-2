@@ -1,3 +1,4 @@
+import _TEST from '../app/test.js';
 _TEST.testList.push(
     {
         category: 'Handle',
@@ -32,5 +33,5 @@ _TEST.testList.push(
             let han = new Handle();
             return is(han.save).equalTo({point: {x: 0, y: 0}, use: true});
         },
-    },
+    }
 );

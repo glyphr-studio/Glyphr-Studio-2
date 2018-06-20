@@ -1,4 +1,4 @@
-/* exported Maxes maxesOverlap getOverallMaxes */
+export {Maxes, maxesOverlap, getOverallMaxes};
 
 /**
  * Maxes

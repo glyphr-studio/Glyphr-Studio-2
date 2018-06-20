@@ -1,4 +1,10 @@
-/* exported Path findPathIntersections */
+export {Path, findPathIntersections};
+
+import {Maxes} from 'maxes';
+import {Coord} from 'coord';
+import {Segment} from 'segment';
+import {Handle} from 'handle';
+import {PathPoint} from 'pathpoint';
 
 /**
  * Path

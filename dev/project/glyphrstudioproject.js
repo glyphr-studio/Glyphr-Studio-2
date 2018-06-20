@@ -1,4 +1,4 @@
-/* exported GlyphrStudioProject */
+export {GlyphrStudioProject};
 /* eslint-disable camelcase*/
 
 /**
@@ -177,35 +177,35 @@ class GlyphrStudioProject {
         // Kerning
         hydrateGlyphrObjectList(HKern, newProject.kerning, this.kerning);
         // debug('\t finished hydrating kern pairs');
+    }
+}
 
 
-        /**
-         * Takes a template object of expected keys and default values
-         * and an object to import:
-         *   Overwites template values if they exist in the imported object
-         *   Ignores extra values in the imported object that aren't in the template
-         * @param {Object} template - default values
-         * @param {Object} importing - custom values
-         * @param {Boolean} trim - remove spaces from strings
-         * @return {Object}
-         */
-        function merge(template, importing, trim) {
-            for (let a in template) {
-                if (template.hasOwnProperty(a)) {
-                    if (typeof template[a] === 'object') {
-                        if (importing.hasOwnProperty(a)) template[a] = merge(template[a], importing[a]);
-                    } else {
-                        if (importing.hasOwnProperty(a)) {
-                            if (typeof importing[a] === 'string' && trim) template[a] = removeEmptyStringInputs(importing[a]);
-                            else template[a] = importing[a];
-                        }
-                    }
+/**
+ * Takes a template object of expected keys and default values
+ * and an object to import:
+ *   Overwites template values if they exist in the imported object
+ *   Ignores extra values in the imported object that aren't in the template
+ * @param {Object} template - default values
+ * @param {Object} importing - custom values
+ * @param {Boolean} trim - remove spaces from strings
+ * @return {Object}
+ */
+function merge(template, importing, trim) {
+    for (let a in template) {
+        if (template.hasOwnProperty(a)) {
+            if (typeof template[a] === 'object') {
+                if (importing.hasOwnProperty(a)) template[a] = merge(template[a], importing[a]);
+            } else {
+                if (importing.hasOwnProperty(a)) {
+                    if (typeof importing[a] === 'string' && trim) template[a] = removeEmptyStringInputs(importing[a]);
+                    else template[a] = importing[a];
                 }
             }
-
-            return template;
         }
     }
+
+    return template;
 }
 
 

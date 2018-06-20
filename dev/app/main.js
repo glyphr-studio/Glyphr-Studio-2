@@ -1,25 +1,26 @@
+import manifest from '../manifest.js';
+import _UI from './settings.js';
+import {debug} from './functions.js';
+export let _GP = {};
+
 /**
  * MAIN
  * Some stuff to get up and running
  */
+//  debug(`\n MAIN.js - START`);
 
-let _FN = {};
-let _GP = {};
-let _UI = {};
-
-window.onload = _FN.glyphrStudioOnLoad;
 
 /**
  * First function to run when the browser starts
  */
-_FN.glyphrStudioOnLoad = function() {
+export default function glyphrStudioOnLoad() {
     // console.clear();
     console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\nv' + _UI.thisGlyphrStudioVersionNum + '\n\n', 'color:rgb(0,170,225)');
     // debug('\n MAIN SETUP - START');
 
     // Initialize Stuff
-    _FN.assemble(manifest);
-    _FN.insertGlobalDOMElements();
+    assemble();
+    insertGlobalDOMElements();
     setupGhostCanvas();
     document.title = 'Glyphr Studio';
 
@@ -80,7 +81,7 @@ _FN.glyphrStudioOnLoad = function() {
 /**
  * Global DOM elements that other UI relies on
  */
-_FN.insertGlobalDOMElements = function() {
+function insertGlobalDOMElements() {
     document.body.innerHTML = `<div id="primaryScreenLayout"></div>
 
         <canvas id="isHereGhostCanvas" height=10 width=10 ></canvas>
@@ -137,14 +138,17 @@ _FN.insertGlobalDOMElements = function() {
 
 /**
  * Assemble adds .js and .css file references to the current HTML doc
- * @param {array} manifest - collection of paths and files to add
  * @param {boolean} loadTests - optionally load test files
  * @param {function} callback - function to run after assembly
  *  manifest.js is found in the root of the dev directory
  */
-_FN.assemble = function(manifest = [], loadTests = false, callback = new function() {}) {
+export function assemble(loadTests = false, callback = new function() {}) {
+    debug(`\n assemble - START`);
+
     let tests = [];
     let newElement;
+
+    console.log(manifest);
 
     manifest.forEach((directory) => {
         directory.files.forEach((file) => {
@@ -155,6 +159,7 @@ _FN.assemble = function(manifest = [], loadTests = false, callback = new functio
             if (suffix === 'js' || suffix === 'map') {
                 newElement = document.createElement('script');
                 newElement.setAttribute('src', `${directory.path}/${file}`);
+                newElement.setAttribute('type', 'module');
                 document.getElementsByTagName('head')[0].appendChild(newElement);
             } else if (suffix === 'css') {
                 newElement = document.createElement('link');
@@ -169,6 +174,8 @@ _FN.assemble = function(manifest = [], loadTests = false, callback = new functio
             } else {
                 console.warn(`Assemble - unhandled file type ${suffix}`);
             }
+
+            debug(`\t added ${file}`);
         });
     });
 
@@ -177,8 +184,11 @@ _FN.assemble = function(manifest = [], loadTests = false, callback = new functio
             newElement = document.createElement('script');
             newElement.setAttribute('src', element);
             document.getElementsByTagName('head')[0].appendChild(newElement);
+
+            debug(`\t added test ${element}`);
         });
     }
 
+    debug(` assemble - END\n\n`);
     window.setTimeout(callback, 500);
 };

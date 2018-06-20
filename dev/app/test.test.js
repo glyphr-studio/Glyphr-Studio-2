@@ -1,4 +1,4 @@
-// _TEST.testList.push(
+// import _TEST from '../app/test.js'\n_TEST.testList.push(
 //     {
 //         category: 'Meta Tests',
 //         name: 'Failure',

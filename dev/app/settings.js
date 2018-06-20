@@ -3,7 +3,8 @@
  * This is the global variable that stores all the stuff
  * the UI needs to operate.
  */
-_UI = {
+
+let _UI = {
 
     // Version
     thisGlyphrStudioVersion: 'Version 2 alpha',
@@ -273,8 +274,4 @@ _UI = {
     },
 };
 
-_UI.colors.text_dark = _UI.colors.gray.l10;
-_UI.colors.text_light = _UI.colors.gray.l80;
-_UI.colors.button_disabled = _UI.colors.gray.l40;
-_UI.colors.button_resting = _UI.colors.gray.l80;
-_UI.colors.button_selected = _UI.colors.blue.l65;
+export default _UI;

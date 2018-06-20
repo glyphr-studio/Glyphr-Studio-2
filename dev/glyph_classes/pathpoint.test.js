@@ -1,3 +1,4 @@
+import _TEST from '../app/test.js';
 _TEST.testList.push(
     {
         category: 'PathPoint',
@@ -111,7 +112,7 @@ _TEST.testList.push(
         name: 'rotate',
         assertion: function() {
             let pp = new PathPoint();
-            return is(pp.rotate(90, {x:0, y:0}).p.x).equalTo(-134.2070279729728);
+            return is(pp.rotate(90, {x: 0, y: 0}).p.x).equalTo(-134.2070279729728);
         },
     },
     {

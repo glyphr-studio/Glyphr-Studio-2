@@ -1,4 +1,4 @@
-/* exported makePathPointFromSegments */
+export {PathPoint, makePathPointFromSegments};
 
 /**
  * Path Point
