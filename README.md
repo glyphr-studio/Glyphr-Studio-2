@@ -3,18 +3,23 @@
 
 ## What's changing
 * Convert our JavaScript to use ES6 stuff
-  * Change prototypes to classes
-  * Let / Const instead of Var
-  * Template strings instead of string concatenation
+  * :soon: Change prototypes to classes
+  * :white_check_mark: Let / Const instead of Var
+  * :white_large_square: Template strings instead of string concatenation
+  * :soon: Modules (native)
   * Probably more...
-* Lint everything with ESLint, Google style
-* JSDoc *all the things*
-* CSS3, mostly for Variables and Layout
-* New test framework and tests for all our code
-* Dev and Prod environments that make it easy to keep code separate and testable, but also concatenate-able and minimize-able.
-* Minimize global variables
-* Investigation - HTML Templates or Web Components for UI Controls
-* Investigation - Language switching for localization
+* :soon: Lint everything with ESLint, Google style
+* :soon: JSDoc *all the things*
+* :white_large_square: CSS3, mostly for Variables and Layout
+* :white_check_mark: New test framework and tests for all our code
+* :white_check_mark: Dev and Prod environments that make it easy to keep code separate and testable, but also concatenate-able and minimize-able.
+* :soon: Minimize global variables
+* :white_large_square: Investigation - HTML Templates or Web Components for UI Controls
+* :white_large_square: Investigation - Language switching for localization
+
+:white_large_square: *Not Started*
+:soon: *In Progress*
+:white_check_mark: *Done*
 
 ## What's not changing
 So, here at Glyphr Studio, we've always had a very strong DIY attitude - this means:
