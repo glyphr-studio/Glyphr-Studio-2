@@ -1,10 +1,10 @@
-export {Coord, coordsAreEqual};
+import {numSan} from '../app/functions.js';
 
 /**
  * Coordinate
  * A single x/y coordinate
  */
-class Coord {
+export default class Coord {
     /**
      * Create a coordinate
      * @param {number} x - The X value
@@ -133,7 +133,7 @@ class Coord {
  * @param {number} threshold - how close to compare positions
  * @return {boolean}
  */
-function coordsAreEqual(c1, c2, threshold = 1) {
+export function coordsAreEqual(c1, c2, threshold = 1) {
     // debug('\n coordsAreEqual - START');
     // debug('\t c1 ' + json(c1, true));
     // debug('\t c2 ' + json(c2, true));

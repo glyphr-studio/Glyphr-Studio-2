@@ -1,5 +1,6 @@
-import {Coord} from 'coord';
-import {PathPoint} from 'pathpoint';
+import Coord from './coord.js';
+import PathPoint from './pathpoint.js';
+import {calculateAngle, calculateLength, angleToNiceAngle} from '../app/functions.js';
 
 /**
  * Handle
@@ -7,7 +8,7 @@ import {PathPoint} from 'pathpoint';
  * They can be hidden or used, which alters the overall path
  * shape.
  */
-export default class Handle {
+class Handle {
     /**
      * Create a Handle
      * @param {Coord} point - possition of the handle
@@ -187,3 +188,6 @@ export default class Handle {
         this._rootPoint = root;
     }
 }
+
+
+export default Handle;

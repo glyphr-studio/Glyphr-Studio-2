@@ -1,10 +1,8 @@
-export {Maxes, maxesOverlap, getOverallMaxes};
-
 /**
  * Maxes
  * Standard way of defining a bounding box
  */
-class Maxes {
+export default class Maxes {
     /**
      * Create a Maxes object
      * @param {number} xMin - smallest x value
@@ -72,7 +70,7 @@ class Maxes {
  * @param {boolean} exclusive - 'inclusive' or 'exclusive'
  * @return {boolean}
  */
-function maxesOverlap(m1, m2, exclusive = true) {
+export function maxesOverlap(m1, m2, exclusive = true) {
     let re;
 
     if (exclusive) re = (m1.xMin < m2.xMax && m1.xMax > m2.xMin && m1.yMin < m2.yMax && m1.yMax > m2.yMin);
@@ -88,7 +86,7 @@ function maxesOverlap(m1, m2, exclusive = true) {
  * @param {array} maxarr - array of 'maxes' objects
  * @return {Maxes}
  */
-function getOverallMaxes(maxarr) {
+export function getOverallMaxes(maxarr) {
     // debug('\n getOverallMaxes - START');
     // debug('\t start');
     // debug(maxarr);

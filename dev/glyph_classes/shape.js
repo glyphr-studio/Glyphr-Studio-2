@@ -7,38 +7,245 @@
     interchangeably - any method added to Shape
     should also be added to Component Instance.
 **/
-
-
-    function Shape(oa) {
+class Shape {
+    constructor(oa) {
         // debug('\n SHAPE - START');
         oa = oa || {};
         this.objtype = 'shape';
-
         // common settings
         this.name = oa.name || 'Shape';
-        this.path = isVal(oa.path)? new Path(oa.path) : rectPathFromMaxes(false);
-        this.visible = isVal(oa.visible)? oa.visible : true;
+        this.path = isVal(oa.path) ? new Path(oa.path) : rectPathFromMaxes(false);
+        this.visible = isVal(oa.visible) ? oa.visible : true;
         this.xLock = oa.xLock || false;
         this.yLock = oa.yLock || false;
         this.wlock = oa.wlock || false;
         this.hlock = oa.hlock || false;
         this.ratiolock = oa.ratiolock || false;
-
         // debug(' SHAPE - END\n');
     }
+    //    -------------------------------------------------------
+    //    SHAPE METHODS
+    //    -------------------------------------------------------
+    getName() {
+        return this.name;
+    }
+    changed() {
+        this.path.changed();
+    }
+    drawShape(lctx, view) {
+        // debug('\n Shape.drawShape - START');
+        // debug('\t view ' + json(view, true));
+        if (this.visible) {
+            if ((this.path.maxes.xMax === -1) &&
+                (lctx === _UI.glyphEditCTX) &&
+                (_UI.selectedTool !== 'newpath')) {
+                this.calcMaxes();
+            }
+            this.path.drawPath(lctx, view);
+        }
+        // debug(' Shape.drawShape - returning true by default - END\n');
+        return true;
+    }
+    //    -------------------------------------------------------
+    //    DRAWING THE SELECTION OUTLINE AND BOUNDING BOX
+    //    -------------------------------------------------------
+    draw_PathOutline(accent, thickness) {
+        // debug('\n Shape.draw_PathOutline - START');
+        accent = accent || _UI.colors.blue;
+        thickness = thickness || 1;
+        draw_PathOutline(this, accent, thickness);
+    }
+    draw_BoundingBox(accent, thickness) {
+        // debug('\n Shape.draw_BoundingBox - START');
+        accent = accent || _UI.colors.blue;
+        thickness = thickness || 1;
+        draw_BoundingBox(this.path.maxes, accent, thickness);
+    }
+    draw_BoundingBoxHandles(accent, thickness) {
+        // debug('\n Shape.draw_BoundingBoxHandles - START');
+        accent = accent || _UI.colors.blue;
+        thickness = thickness || 1;
+        draw_BoundingBoxHandles(this.path.maxes, accent, thickness);
+    }
+    // -------------------------------------------------------
+    // TRANSLATE TO DIFFERENT LANGUAGES
+    // -------------------------------------------------------
+    makeSVG(size, gutter) {
+        size = size || _UI.thumbSize;
+        gutter = gutter || _UI.thumbGutter;
+        let upm = _GP.projectSettings.upm;
+        let desc = upm - _GP.projectSettings.ascent;
+        let charscale = (size - (gutter * 2)) / size;
+        let gutterscale = (gutter / size) * upm;
+        let vbsize = upm - (gutter * 2);
+        let re = '<svg version="1.1" ';
+        re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
+        re += 'width="' + size + '" height="' + size + '" viewBox="0,0,' + vbsize + ',' + vbsize + '">';
+        re += '<g transform="translate(' + (gutterscale) + ',' + (upm - desc - (gutterscale / 2)) + ') scale(' + charscale + ',-' + charscale + ')">';
+        // re += '<rect x="0" y="-'+desc+'" height="'+desc+'" width="1000" fill="lime"/>';
+        // re += '<rect x="0" y="0" height="'+(upm-desc)+'" width="1000" fill="cyan"/>';
+        re += '<path d="';
+        re += this.path.svgPathData;
+        re += '"/>';
+        re += '</g>';
+        re += '</svg>';
+        return re;
+    }
+    genPostScript(lastx, lasty) {
+        return this.path ? this.path.genPathPostScript(lastx, lasty) : { 're': '', 'lastx': lastx, 'lasty': lasty };
+    }
+    makeOpentypeJsPath(otpath) {
+        return this.path.makeOpentypeJsPath(otpath);
+    }
+    //    -------------------------------------------------------
+    //    PATH WRAPPER FUNCTIONS FOR COMPONENT INSTANCE PARITY
+    //    -------------------------------------------------------
+    updateShapePosition(dx, dy, force) {
+        this.path.updatePathPosition(dx, dy, force);
+    }
+    setShapePosition(nx, ny, force) {
+        this.path.setPathPosition(nx, ny, force);
+    }
+    updateShapeSize(dx, dy, ratiolock) {
+        this.path.updatePathSize(dx, dy, ratiolock);
+    }
+    setShapeSize(nx, ny, ratiolock) {
+        this.path.setPathSize(nx, ny, ratiolock);
+    }
+    isOverControlPoint(x, y, nohandles) {
+        return this.path.isOverControlPoint(x, y, nohandles);
+    }
+    flipEW(mid) {
+        this.path.flipEW(mid);
+    }
+    flipNS(mid) {
+        this.path.flipNS(mid);
+    }
+    rotate(angle, about) {
+        // debug('\n Shape.rotate - START');
+        about = about || this.getCenter();
+        this.path.rotate(angle, about);
+        // debug('\t first p[0].p.x ' + this.path.pathPoints[0].p.x);
+        // debug(' Shape.rotate - END\n');
+    }
+    getCenter() {
+        let m = this.getMaxes();
+        let re = {};
+        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
+        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
+        return re;
+    }
+    reverseWinding() {
+        this.path.reverseWinding();
+    }
+    getMaxes() {
+        return this.path.getMaxes();
+    }
+    calcMaxes() {
+        this.path.calcMaxes();
+    }
+    getPath() {
+        return clone(this.path);
+    }
+    getSegment(num) {
+        return this.path.getSegment(num);
+    }
+    resolveSelfOverlaps() {
+        // debug('\n Shape.resolveSelfOverlaps - START');
+        // Add self intersects to path
+        let polyseg = this.path.getPolySegment();
+        let ix = polyseg.findIntersections();
+        // debug('\t intersections');
+        // debug(json(ix, true));
+        if (ix.length === 0)
+            return new Shape(clone(this));
+        let segnum = polyseg.segments.length;
+        let threshold = 0.01;
+        polyseg.splitSegmentsAtProvidedIntersections(ix, threshold);
+        if (segnum === polyseg.segments.length)
+            return new Shape(clone(this));
+        // debug('\t before filtering ' + polyseg.segments.length);
+        polyseg.removeZeroLengthSegments();
+        polyseg.removeDuplicateSegments();
+        polyseg.removeSegmentsOverlappingShape(this);
+        polyseg.removeRedundantSegments();
+        polyseg.removeNonConnectingSegments();
+        // polyseg.combineInlineSegments();
+        // debug('\t afters filtering ' + polyseg.segments.length);
+        if (_UI.devMode)
+            polyseg.drawPolySegmentOutline();
+        // var reshapes = [];
+        // reshapes.push(new Shape({'name':this.name, 'path':polyseg.getPath()}));
+        let resegs = polyseg.stitchSegmentsTogether();
+        let reshapes = [];
+        let psn;
+        for (let ps = 0; ps < resegs.length; ps++) {
+            psn = resegs[ps];
+            if (psn.segments.length > 1)
+                reshapes.push(new Shape({ 'name': this.name, 'path': psn.getPath() }));
+        }
+        // debug(' Shape.resolveSelfOverlaps - END\n');
+        return reshapes;
+    }
+    //    ----------------------------------------------
+    //    CANVAS HELPER FUNCTIONS
+    //    ----------------------------------------------
+    isHere(px, py) {
+        return this.path.isHere(px, py);
+    }
+    isOverBoundingBoxHandle(px, py) {
+        // debug('\n Shape.isOverBoundingBoxHandle - START');
+        let c = isOverBoundingBoxHandle(px, py, this.path.maxes);
+        // debug('\t Shape.isOverBoundingBoxHandle returning ' + c);
+        return c;
+    }
+    changeShapeName(sn) {
+        // debug('\n Shape.changeShapeName - START');
+        // debug('\t passed: ' + sn);
+        sn = strSan(sn);
+        // debug('\t sanitized: ' + sn);
+        if (sn !== '') {
+            this.name = sn;
+            history_put('shape name');
+        }
+        else {
+            showToast('Invalid shape name - shape names must only contain alphanumeric characters or spaces.');
+        }
+        redraw({ calledBy: 'Shape Name', redrawCanvas: false });
+        // debug(' Shape.changeShapeName - END\n');
+    }
+    //    -----------------------------------
+    //    HELPER FUNCTIONS
+    //    ------------------------------------
+    checkPath() {
+        // debug('CHECKPATH - checking ' + this.name + '\n' + JSON.stringify(this.path));
+        for (let pp = 0; pp < this.path.pathPoints.length; pp++) {
+            let tp = this.path.pathPoints[pp];
+            if (!(tp.p.x))
+                debug(this.name + ' p' + pp + '.p.x is ' + tp.p.x);
+            if (!(tp.p.y))
+                debug(this.name + ' p' + pp + '.p.y is ' + tp.p.y);
+            if (!(tp.h1.x))
+                debug(this.name + ' p' + pp + '.h1.x is ' + tp.h1.x);
+            if (!(tp.h1.y))
+                debug(this.name + ' p' + pp + '.h1.y is ' + tp.h1.y);
+            if (!(tp.h2.x))
+                debug(this.name + ' p' + pp + '.h2.x is ' + tp.h2.x);
+            if (!(tp.h2.y))
+                debug(this.name + ' p' + pp + '.h2.y is ' + tp.h2.y);
+        }
+    }
+    checkForNaN() {
+        return this.path.checkForNaN();
+    }
+    drawSegments() {
+        let segs = this.path.getPolySegment();
+        segs.slowlyDrawSegments();
+    }
+}
 
 
-//    -------------------------------------------------------
-//    SHAPE METHODS
-//    -------------------------------------------------------
 
-    Shape.prototype.getName = function() {
- return this.name;
-};
-
-    Shape.prototype.changed = function() {
- this.path.changed();
-};
 
 
 //    -------------------------------------------------------
@@ -49,153 +256,29 @@
  return this.name;
 };
 
-    Shape.prototype.drawShape = function(lctx, view) {
-        // debug('\n Shape.drawShape - START');
-        // debug('\t view ' + json(view, true));
-
-        if (this.visible) {
-            if ((this.path.maxes.xMax === -1) &&
-                    (lctx === _UI.glyphEditCTX) &&
-                    (_UI.selectedTool !== 'newpath')) {
-                this.calcMaxes();
-            }
-            this.path.drawPath(lctx, view);
-        }
-
-        // debug(' Shape.drawShape - returning true by default - END\n');
-        return true;
-    };
 
 
-//    -------------------------------------------------------
-//    DRAWING THE SELECTION OUTLINE AND BOUNDING BOX
-//    -------------------------------------------------------
-    Shape.prototype.draw_PathOutline = function(accent, thickness) {
-        // debug('\n Shape.draw_PathOutline - START');
-        accent = accent || _UI.colors.blue;
-        thickness = thickness || 1;
-        draw_PathOutline(this, accent, thickness);
-    };
-
-    Shape.prototype.draw_BoundingBox = function(accent, thickness) {
-        // debug('\n Shape.draw_BoundingBox - START');
-        accent = accent || _UI.colors.blue;
-        thickness = thickness || 1;
-        draw_BoundingBox(this.path.maxes, accent, thickness);
-    };
-
-    Shape.prototype.draw_BoundingBoxHandles = function(accent, thickness) {
-        // debug('\n Shape.draw_BoundingBoxHandles - START');
-        accent = accent || _UI.colors.blue;
-        thickness = thickness || 1;
-        draw_BoundingBoxHandles(this.path.maxes, accent, thickness);
-    };
 
 
-// -------------------------------------------------------
-// TRANSLATE TO DIFFERENT LANGUAGES
-// -------------------------------------------------------
-    Shape.prototype.makeSVG = function(size, gutter) {
-        size = size || _UI.thumbSize;
-        gutter = gutter || _UI.thumbGutter;
-        let upm = _GP.projectSettings.upm;
-        let desc = upm - _GP.projectSettings.ascent;
-        let charscale = (size-(gutter*2)) / size;
-        let gutterscale = (gutter / size) * upm;
-        let vbsize = upm - (gutter*2);
-
-        let re = '<svg version="1.1" ';
-        re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
-        re += 'width="'+size+'" height="'+size+'" viewBox="0,0,'+vbsize+','+vbsize+'">';
-        re += '<g transform="translate('+(gutterscale)+','+(upm-desc-(gutterscale/2))+') scale('+charscale+',-'+charscale+')">';
-        // re += '<rect x="0" y="-'+desc+'" height="'+desc+'" width="1000" fill="lime"/>';
-        // re += '<rect x="0" y="0" height="'+(upm-desc)+'" width="1000" fill="cyan"/>';
-        re += '<path d="';
-        re += this.path.svgPathData;
-        re += '"/>';
-        re += '</g>';
-        re += '</svg>';
-
-        return re;
-    };
-
-    Shape.prototype.genPostScript = function(lastx, lasty) {
-        return this.path? this.path.genPathPostScript(lastx, lasty) : {'re': '', 'lastx': lastx, 'lasty': lasty};
-    };
-
-    Shape.prototype.makeOpentypeJsPath = function(otpath) {
- return this.path.makeOpentypeJsPath(otpath);
-};
 
 
-//    -------------------------------------------------------
-//    PATH WRAPPER FUNCTIONS FOR COMPONENT INSTANCE PARITY
-//    -------------------------------------------------------
 
-    Shape.prototype.updateShapePosition = function(dx, dy, force) {
- this.path.updatePathPosition(dx, dy, force);
-};
 
-    Shape.prototype.setShapePosition = function(nx, ny, force) {
- this.path.setPathPosition(nx, ny, force);
-};
 
-    Shape.prototype.updateShapeSize = function(dx, dy, ratiolock) {
- this.path.updatePathSize(dx, dy, ratiolock);
-};
 
-    Shape.prototype.setShapeSize = function(nx, ny, ratiolock) {
- this.path.setPathSize(nx, ny, ratiolock);
-};
 
-    Shape.prototype.isOverControlPoint = function(x, y, nohandles) {
- return this.path.isOverControlPoint(x, y, nohandles);
-};
 
-    Shape.prototype.flipEW = function(mid) {
- this.path.flipEW(mid);
-};
 
-    Shape.prototype.flipNS = function(mid) {
- this.path.flipNS(mid);
-};
 
-    Shape.prototype.rotate = function(angle, about) {
-        // debug('\n Shape.rotate - START');
-        about = about || this.getCenter();
-        this.path.rotate(angle, about);
-        // debug('\t first p[0].p.x ' + this.path.pathPoints[0].p.x);
-        // debug(' Shape.rotate - END\n');
-    };
 
-    Shape.prototype.getCenter = function() {
-        let m = this.getMaxes();
-        let re = {};
-        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
-        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
 
-        return re;
-    };
 
-    Shape.prototype.reverseWinding = function() {
- this.path.reverseWinding();
-};
 
-    Shape.prototype.getMaxes = function() {
- return this.path.getMaxes();
-};
 
-    Shape.prototype.calcMaxes = function() {
- this.path.calcMaxes();
-};
 
-    Shape.prototype.getPath = function() {
- return clone(this.path);
-};
 
-    Shape.prototype.getSegment = function(num) {
- return this.path.getSegment(num);
-};
+
+
 
 
 //    -------------------------------------------------------
@@ -627,111 +710,3 @@ return a.path.winding - b.path.winding;
 
         return new Shape({path: {pathPoints: newpoints}});
     }
-
-    Shape.prototype.resolveSelfOverlaps = function() {
-        // debug('\n Shape.resolveSelfOverlaps - START');
-        // Add self intersects to path
-        let polyseg = this.path.getPolySegment();
-        let ix = polyseg.findIntersections();
-        // debug('\t intersections');
-        // debug(json(ix, true));
-
-        if (ix.length === 0) return new Shape(clone(this));
-
-        let segnum = polyseg.segments.length;
-
-        let threshold = 0.01;
-        polyseg.splitSegmentsAtProvidedIntersections(ix, threshold);
-
-        if (segnum === polyseg.segments.length) return new Shape(clone(this));
-
-        // debug('\t before filtering ' + polyseg.segments.length);
-        polyseg.removeZeroLengthSegments();
-        polyseg.removeDuplicateSegments();
-        polyseg.removeSegmentsOverlappingShape(this);
-        polyseg.removeRedundantSegments();
-        polyseg.removeNonConnectingSegments();
-        // polyseg.combineInlineSegments();
-        // debug('\t afters filtering ' + polyseg.segments.length);
-
-        if (_UI.devMode) polyseg.drawPolySegmentOutline();
-
-        // var reshapes = [];
-        // reshapes.push(new Shape({'name':this.name, 'path':polyseg.getPath()}));
-
-        let resegs = polyseg.stitchSegmentsTogether();
-
-        let reshapes = [];
-        let psn;
-        for (let ps=0; ps<resegs.length; ps++) {
-            psn = resegs[ps];
-            if (psn.segments.length > 1) reshapes.push(new Shape({'name': this.name, 'path': psn.getPath()}));
-        }
-
-
-        // debug(' Shape.resolveSelfOverlaps - END\n');
-        return reshapes;
-    };
-
-
-//    ----------------------------------------------
-//    CANVAS HELPER FUNCTIONS
-//    ----------------------------------------------
-    Shape.prototype.isHere = function(px, py) {
- return this.path.isHere(px, py);
-};
-
-    Shape.prototype.isOverBoundingBoxHandle = function(px, py) {
-        // debug('\n Shape.isOverBoundingBoxHandle - START');
-        let c = isOverBoundingBoxHandle(px, py, this.path.maxes);
-        // debug('\t Shape.isOverBoundingBoxHandle returning ' + c);
-        return c;
-    };
-
-    Shape.prototype.changeShapeName = function(sn) {
-        // debug('\n Shape.changeShapeName - START');
-        // debug('\t passed: ' + sn);
-        sn = strSan(sn);
-        // debug('\t sanitized: ' + sn);
-
-        if (sn !== '') {
-            this.name = sn;
-            history_put('shape name');
-        } else {
-            showToast('Invalid shape name - shape names must only contain alphanumeric characters or spaces.');
-        }
-
-        redraw({calledBy: 'Shape Name', redrawCanvas: false});
-
-        // debug(' Shape.changeShapeName - END\n');
-    };
-
-
-//    -----------------------------------
-//    HELPER FUNCTIONS
-//    ------------------------------------
-
-    Shape.prototype.checkPath = function() {
-        // debug('CHECKPATH - checking ' + this.name + '\n' + JSON.stringify(this.path));
-
-        for (let pp = 0; pp < this.path.pathPoints.length; pp++) {
-            let tp = this.path.pathPoints[pp];
-            if (!(tp.p.x)) debug(this.name + ' p' + pp + '.p.x is ' + tp.p.x);
-            if (!(tp.p.y)) debug(this.name + ' p' + pp + '.p.y is ' + tp.p.y);
-
-            if (!(tp.h1.x)) debug(this.name + ' p' + pp + '.h1.x is ' + tp.h1.x);
-            if (!(tp.h1.y)) debug(this.name + ' p' + pp + '.h1.y is ' + tp.h1.y);
-
-            if (!(tp.h2.x)) debug(this.name + ' p' + pp + '.h2.x is ' + tp.h2.x);
-            if (!(tp.h2.y)) debug(this.name + ' p' + pp + '.h2.y is ' + tp.h2.y);
-        }
-    };
-
-    Shape.prototype.checkForNaN = function() {
-        return this.path.checkForNaN();
-    };
-
-    Shape.prototype.drawSegments = function() {
-        let segs = this.path.getPolySegment();
-        segs.slowlyDrawSegments();
-    };

@@ -1,10 +1,10 @@
-export {Path, findPathIntersections};
-
-import {Maxes} from 'maxes';
-import {Coord} from 'coord';
-import {Segment} from 'segment';
-import {Handle} from 'handle';
-import {PathPoint} from 'pathpoint';
+import Maxes from './maxes.js';
+import Coord from './coord.js';
+import Segment from './segment.js';
+import Handle from './handle.js';
+import PathPoint from './pathpoint.js';
+import {clone, round, isVal, hasNonValues} from '../app/functions.js';
+import {getOverallMaxes} from './maxes.js';
 
 /**
  * Path
@@ -18,7 +18,7 @@ import {PathPoint} from 'pathpoint';
  * interchangeably, even though Component Instance
  * objects don't have a Path.
  */
- class Path {
+ export default class Path {
     /**
      * Create a Path
      * @param {array} pathPoints - array of Path Point objects that make up this path
@@ -1199,7 +1199,7 @@ import {PathPoint} from 'pathpoint';
  * @param {Path} p2 - second path
  * @return {array}
  */
-function findPathIntersections(p1, p2) {
+export function findPathIntersections(p1, p2) {
     // debug('\n findPathIntersections - START');
     let intersects = [];
 
@@ -1323,7 +1323,7 @@ function findPathPointBoundaryIntersections(p1, p2) {
  * @param {Path} p2 - second path
  * @return {array} - collection of strings representing coordinates
  */
-function findPathPointIntersections(p1, p2) {
+export function findPathPointIntersections(p1, p2) {
     // debug('\n findPathPointIntersections - START');
     let re = [];
 

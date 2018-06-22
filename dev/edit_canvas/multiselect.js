@@ -1,3 +1,4 @@
+import _UI from '../app/settings.js';
 
 /**
     Multi-Select
@@ -112,8 +113,8 @@
     };
 
     _UI.multiSelect.points.updateShapePosition = function(dx, dy, force) {
- this.getShape().updateShapePosition(dx, dy, force);
-};
+        this.getShape().updateShapePosition(dx, dy, force);
+    };
 
     _UI.multiSelect.points.deletePathPoints = function() {
         let point, path, pindex;

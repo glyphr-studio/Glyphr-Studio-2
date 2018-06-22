@@ -1,6 +1,4 @@
-// start of file
-
-_UI.shortunicodenames = {
+export const shortUnicodeNames = {
     '0x0041': 'A',
     '0x00C6': 'AE',
     '0x01FC': 'AEacute',
@@ -589,7 +587,7 @@ _UI.shortunicodenames = {
     '0x03B6': 'zeta',
 };
 
-_UI.unicodenames = {
+const unicodeNames = {
     // Basic Latin
     '0x0020': 'Space',
     '0x0021': 'Exclamation mark',
@@ -16654,6 +16652,6 @@ _UI.unicodenames = {
     '0xFFFD': 'REPLACEMENT CHARACTER',
     '0xFFFE': '[not a character]',
     '0xFFFF': '[not a character]',
-    };
+};
 
-// end of file
+export default unicodeNames;

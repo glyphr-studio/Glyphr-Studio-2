@@ -1,10 +1,11 @@
-import _TEST from '../app/test.js';
+import Handle from './handle.js';
+
 _TEST.testList.push(
     {
         category: 'Handle',
         name: 'Constructor - x',
         assertion: function() {
-            return is((new Handle()).x).equalTo(100);
+            return _TEST.is((new Handle()).x).equalTo(100);
         },
     },
     {
@@ -14,7 +15,7 @@ _TEST.testList.push(
             let han = new Handle();
             han.x = 500;
             han.y = 500;
-            return expression(han.x === 500 && han.y === 500);
+            return _TEST.expression(han.x === 500 && han.y === 500);
         },
     },
     {
@@ -23,7 +24,7 @@ _TEST.testList.push(
         assertion: function() {
             let han = new Handle();
             han.xLock = true;
-            return expression(han.xLock);
+            return _TEST.expression(han.xLock);
         },
     },
     {
@@ -31,7 +32,7 @@ _TEST.testList.push(
         name: 'save',
         assertion: function() {
             let han = new Handle();
-            return is(han.save).equalTo({point: {x: 0, y: 0}, use: true});
+            return _TEST.is(han.save).equalTo({point: {x: 0, y: 0}, use: true});
         },
     }
 );

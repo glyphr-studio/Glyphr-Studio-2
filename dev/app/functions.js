@@ -1,16 +1,17 @@
-import _UI from './settings.js';
-// export default {
-//     makePanelSuperTitle,
-//     debug,
-//     setProjectAsSaved, setProjectAsUnsaved,
-//     saveFile,
-//     clone, json, areEqual, makeCrisp, round, numSan, strSan, trim, isVal, reqAniFrame,
-//     calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle,
-//     getFirstID, generateNewID, getMyID, getLength,
-//     genEmailContent,
-//     kCombinations,
-// };
 
+export {debug as default};
+export {
+    makePanelSuperTitle,
+    setProjectAsSaved, setProjectAsUnsaved,
+    saveFile,
+    clone, json, areEqual, makeCrisp, round, numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
+    calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle,
+    getFirstID, generateNewID, getMyID, getLength,
+    genEmailContent,
+    kCombinations,
+};
+
+// let _UI = window._UI;
 
 /**
  * FUNCTIONS
@@ -27,7 +28,7 @@ debug(`\n FUNCTIONS.js - START`);
  * Panel Title
  * @return {string}
  */
-export function makePanelSuperTitle() {
+function makePanelSuperTitle() {
     // debug('\n makePanelSuperTitle - START');
     let content = '';
     if (!_UI.popOut) {
@@ -62,7 +63,7 @@ export function makePanelSuperTitle() {
  * Panel Title Seperator
  * @return {string}
  */
-export function makeSuperTitleSeperator() {
+function makeSuperTitleSeperator() {
     let re = '<span class="supertitleseperator">';
     re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
     re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
@@ -77,7 +78,7 @@ export function makeSuperTitleSeperator() {
  * @param {string} message - message to show in the console
  * @param {boolean} force - show message even if _UI.devmode = false
  */
-export function debug(message, force) {
+function debug(message, force) {
     // if (!_UI.devMode) return;
 
     if (_UI.debug || force) {
@@ -116,7 +117,7 @@ export function debug(message, force) {
 /**
  * Handles various UI pieces when a project is saved
  */
-export function setProjectAsSaved() {
+function setProjectAsSaved() {
     _UI.projectSaved = true;
 
     if (_UI.devMode) {
@@ -134,7 +135,7 @@ export function setProjectAsSaved() {
 /**
  * Handles various UI pieces when a project is unsaved
  */
-export function setProjectAsUnsaved() {
+function setProjectAsUnsaved() {
     _UI.projectSaved = false;
 
     if (_UI.devMode) {
@@ -152,7 +153,7 @@ export function setProjectAsUnsaved() {
 /**
  * Updates the Save icon
  */
-export function updateSaveIcon() {
+function updateSaveIcon() {
     if (_UI.currentPanel === 'npNav') return;
 
     let savecolor = _UI.colors.gray.l90;
@@ -181,7 +182,7 @@ export function updateSaveIcon() {
  * @param {string} buffer - data for the file
  * @param {string} ftype - file suffix
  */
-export function saveFile(fname, buffer, ftype) {
+function saveFile(fname, buffer, ftype) {
     ftype = ftype || 'text/plain;charset=utf-8';
     let fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
 
@@ -217,7 +218,7 @@ export function saveFile(fname, buffer, ftype) {
  * @param {object} cobj - object to clone
  * @return {object}
  */
-export function clone(cobj) {
+function clone(cobj) {
     let newObj = (cobj instanceof Array) ? [] : {};
     for (let i in cobj) {
         if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parentpath' && i !== 'cache') {
@@ -234,7 +235,7 @@ export function clone(cobj) {
  * @param {boolean} raw - true = don't format
  * @return {string}
  */
-export function json(obj, raw) {
+function json(obj, raw) {
     obj = clone(obj);
     if (raw) return JSON.stringify(obj);
     else {
@@ -251,7 +252,7 @@ export function json(obj, raw) {
  * @param {object} obj2 - second object to compare
  * @return {boolean}
  */
-export function areEqual(obj1, obj2) {
+function areEqual(obj1, obj2) {
     // debug(`\n areEqual - START`);
     // debug(`\t passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
 
@@ -279,7 +280,7 @@ export function areEqual(obj1, obj2) {
  * @param {boolean} dir - direction, plus or minus, to adjust number
  * @return {number}
  */
-export function makeCrisp(num, dir) {
+function makeCrisp(num, dir) {
     let mul = dir? 1 : -1;
     return round(num) + (0.5 * mul);
 };
@@ -290,7 +291,7 @@ export function makeCrisp(num, dir) {
  * @param {number} dec - number of decimal places
  * @return {number}
  */
-export function round(num, dec = 0) {
+function round(num, dec = 0) {
     if (!num) return 0;
     return Number(Math.round(num+'e'+dec)+'e-'+dec) || 0;
 }
@@ -302,7 +303,7 @@ export function round(num, dec = 0) {
  * @param {number} num - number to sanitize
  * @return {number}
  */
-export function numSan(num) {
+function numSan(num) {
     num = parseFloat(num);
     let strnum = ''+num;
 
@@ -320,7 +321,7 @@ export function numSan(num) {
  * @param {string} val - string to sanitize
  * @return {string}
  */
-export function strSan(val) {
+function strSan(val) {
     return val.replace(/[<>'"\\]/g, '');
 }
 
@@ -329,7 +330,7 @@ export function strSan(val) {
  * @param {string} text - text to trim
  * @return {string}
  */
-export function trim(text) {
+function trim(text) {
     try {
         text = text.replace(/^\s+|\s+$/g, '');
         return text.replace(/(\r\n|\n|\r|\t)/gm, '');
@@ -343,7 +344,7 @@ export function trim(text) {
  * @param {*} val - variable to test
  * @return {boolean}
  */
-export function isVal(val) {
+function isVal(val) {
     if (val === 0) return true;
     else if (val === false) return true;
     else if (val === null || val === undefined) return false;
@@ -353,10 +354,27 @@ export function isVal(val) {
 }
 
 /**
+ * Checks all object properties for isVal
+ * @param {object} obj - object to check
+ * @return {boolean}
+ */
+function hasNonValues(obj) {
+    if (!obj) return true;
+
+    for (let v in obj) {
+        if (obj.hasOwnProperty(v)) {
+            if (!isVal(obj[v])) return true;
+        }
+    }
+
+    return false;
+}
+
+/**
  * Calls the right Request Animation Frame in two screen mode
  * @param {function} fun - function to call
  */
-export function reqAniFrame(fun) {
+function reqAniFrame(fun) {
     if (_UI.popOut) {
         if (_UI.popOut.requestAnimationFrame) _UI.popOut.requestAnimationFrame(fun);
         else {
@@ -370,6 +388,17 @@ export function reqAniFrame(fun) {
             fun();
         }
     }
+}
+
+/**
+ * A function for filtering duplicates in an array
+ * @param {*} v
+ * @param {number} i
+ * @param {array} a
+ * @return {boolean}
+ */
+function duplicates(v, i, a) {
+    return a.indexOf(v) === i;
 }
 
 
@@ -391,7 +420,7 @@ export function reqAniFrame(fun) {
  * @param {object} point - x/y coordinate of point
  * @return {number}
  */
-export function calculateAngle(handle, point = {x: 0, y: 0}) {
+function calculateAngle(handle, point = {x: 0, y: 0}) {
     let result = Math.atan2(handle.y - point.y, handle.x - point.x);
 
     if (isNaN(result)) {
@@ -408,7 +437,7 @@ export function calculateAngle(handle, point = {x: 0, y: 0}) {
  * @param {object} point - x/y coordinate of point
  * @return {number}
  */
-export function calculateLength(handle, point) {
+function calculateLength(handle, point) {
     let adj = point.x - handle.x;
     let opp = point.y - handle.y;
     let result = Math.sqrt( (adj*adj) + (opp*opp) );
@@ -421,7 +450,7 @@ export function calculateLength(handle, point) {
  * @param {number} angle - how much to rotate
  * @param {object} about - x/y point of rotation
  */
-export function rotate(coord, angle, about = {x: 0, y: 0}) {
+function rotate(coord, angle, about = {x: 0, y: 0}) {
     // debug('\n rotate - START');
     // debug('\t coord ' + json(coord, true));
     // debug('\t Math angle:\t' + angle);
@@ -447,7 +476,7 @@ export function rotate(coord, angle, about = {x: 0, y: 0}) {
  * @param {number} deg - degrees
  * @return {number}
  */
-export function rad(deg) {
+function rad(deg) {
     return (deg * Math.PI / 180) % Math.PI;
 }
 
@@ -456,7 +485,7 @@ export function rad(deg) {
  * @param {number} rad - radians
  * @return {number}
  */
-export function deg(rad) {
+function deg(rad) {
     return (rad * 180 / Math.PI) % 360;
 }
 
@@ -466,7 +495,7 @@ export function deg(rad) {
  * @param {number} angle - Angle from standard JavaScript
  * @return {number}
  */
-export function angleToNiceAngle(angle) {
+function angleToNiceAngle(angle) {
     angle = deg(angle);
     angle = 360 - angle;
     angle -= 270;
@@ -482,7 +511,7 @@ export function angleToNiceAngle(angle) {
  * @param {number} angle - Nice Angle
  * @return {number}
  */
-export function niceAngleToAngle(angle) {
+function niceAngleToAngle(angle) {
     angle += 90;
     angle = angle % 360;
     if (angle < 180) angle = 360 - angle;
@@ -504,7 +533,7 @@ export function niceAngleToAngle(angle) {
  * @param {object} obj
  * @return {string}
  */
-export function getFirstID(obj) {
+function getFirstID(obj) {
     for (let key in obj) {
         if (obj.hasOwnProperty(key)) {
             return key;
@@ -520,7 +549,7 @@ export function getFirstID(obj) {
  * @param {string} base - string prefix for the new ID
  * @return {string}
  */
-export function generateNewID(obj, base) {
+function generateNewID(obj, base) {
     let number = 1;
     base = base || 'id';
     let id = ('' + base + number);
@@ -534,7 +563,7 @@ export function generateNewID(obj, base) {
  * @param {object} obj - Glyph object to search for
  * @return {string}
  */
-export function getMyID(obj) {
+function getMyID(obj) {
     for (let g in _GP.glyphs) {
        if (_GP.glyphs.hasOwnProperty(g)) {
            if (obj === _GP.glyphs[g]) return g;
@@ -561,7 +590,7 @@ export function getMyID(obj) {
  * @param {object} obj
  * @return {number}
  */
-export function getLength(obj) {
+function getLength(obj) {
     let len = 0;
     for (let key in obj) {
         if ( obj.hasOwnProperty(key)) len++;
@@ -579,7 +608,7 @@ export function getLength(obj) {
  * Generates the content for the "email us" link
  * @return {string}
  */
-export function genEmailContent() {
+function genEmailContent() {
     let con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
     %0A%0A%0A%0A___________________________________________%0A
     version %09Glyphr Studio  ${_UI.thisGlyphrStudioVersionNum} %0A
@@ -631,7 +660,7 @@ export function genEmailContent() {
  * @param {number} k - size of combinations to search for.
  * @return {array} - Array of found combinations, size of a combination is k.
  */
-export function kCombinations(set, k) {
+function kCombinations(set, k) {
     let i;
     let j;
     let combs;

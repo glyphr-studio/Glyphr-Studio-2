@@ -1,10 +1,13 @@
-export {GlyphrStudioProject};
+import Guide from '../edit_canvas/guide.js';
+import {clone} from '../app/functions.js';
+import {genProjectID} from './project_functions.js';
+
 /* eslint-disable camelcase*/
 
 /**
  * Creates a new Glyphr Studio Project
  */
-class GlyphrStudioProject {
+export default class GlyphrStudioProject {
     /**
      * Initialize a project, with defaults
      * @param {object} newProject - Glyphr Studio Project File JSON

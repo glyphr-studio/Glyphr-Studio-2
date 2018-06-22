@@ -418,18 +418,6 @@
         return clone(this.maxes);
     };
 
-    function hasNonValues(obj) {
-        if (!obj) return true;
-
-        for (let v in obj) {
- if (obj.hasOwnProperty(v)) {
-            if (!isVal(obj[v])) return true;
-        }
-}
-
-        return false;
-    }
-
 
 // -------------------------------------------------------
 // COMPONENT STUFF

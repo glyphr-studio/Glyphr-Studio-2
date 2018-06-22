@@ -1,4 +1,5 @@
-export {parseColorString, shiftColor, RGBAtoRGB, transparencyToAlpha};
+import {round} from './functions.js';
+export {parseColorString, shiftColor, RGBAtoRGB, transparencyToAlpha, makeRandomSaturatedColor};
 
 // -------------------
 // COLORS
@@ -92,4 +93,31 @@ function transparencyToAlpha(transparency) {
     if (t < 0) return 1;
 
     return ((100 - transparency) / 100);
+}
+
+
+/**
+ * Makes a random fully saturated color
+ * @return {string}
+ */
+function makeRandomSaturatedColor() {
+    let sat = Math.floor(Math.random()*5)*51;
+    let arr = [];
+    let satloc = Math.floor(Math.random()*3);
+    arr[satloc] = sat;
+    switch (satloc) {
+        case 0:
+            arr[1] = 0;
+            arr[2] = 255;
+            break;
+        case 1:
+            arr[0] = 0;
+            arr[2] = 255;
+            break;
+        case 2:
+            arr[0] = 255;
+            arr[1] = 0;
+            break;
+    }
+    return 'rgb('+arr[0]+','+arr[1]+','+arr[2]+')';
 }

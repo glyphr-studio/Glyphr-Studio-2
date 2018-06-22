@@ -1,4 +1,13 @@
+import {decToHex} from '../app/unicode.js';
+import {round} from '../app/functions.js';
 
+export {saveGlyphrProjectFile, cloneForSaveData, genProjectID,
+    genDateStampSuffix, glyphRangeIterator, calcFontMaxes};
+
+/**
+ * Save a Glyphr Project Text File
+ * @param {boolean} overwrite - for Electron app, overwrite current working file
+ */
 function saveGlyphrProjectFile(overwrite) {
     // debug('SAVEGLYPHRPROJECTVILE');
     // debug('\t ' + _GP.projectSettings.formatsavefile);
@@ -26,6 +35,11 @@ function saveGlyphrProjectFile(overwrite) {
     setProjectAsSaved();
 }
 
+/**
+ * Clone the _GP object with some special omissions
+ * @param {object} cobj - _GP to clone
+ * @return {object}
+ */
 function cloneForSaveData(cobj) {
     let newObj = (cobj instanceof Array) ? [] : {};
     for (let i in cobj) {
@@ -38,6 +52,11 @@ function cloneForSaveData(cobj) {
     return newObj;
 }
 
+/**
+ * Generate a unique Project ID so we can recognize a
+ * project through file name and project name re-naming
+ * @return {string} - ID
+ */
 function genProjectID() {
     let j = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     let re = 'g_';
@@ -49,6 +68,10 @@ function genProjectID() {
     return re;
 }
 
+/**
+ * Generates a date suffix for file saves
+ * @return {string}
+ */
 function genDateStampSuffix() {
     let d = new Date();
     let yr = d.getFullYear();
@@ -61,6 +84,12 @@ function genDateStampSuffix() {
     return (''+yr+'.'+mo+'.'+day+'-'+hr+'.'+min+'.'+sec);
 }
 
+/**
+ * Iterates through each glyph calling a function
+ * collecting results if they are provided
+ * @param {function} fname - function to call on each glyph
+ * @return {*}
+ */
 function glyphRangeIterator(fname) {
     let cr = _GP.projectSettings.glyphrange;
     let ccon = '';
@@ -108,6 +137,9 @@ function glyphRangeIterator(fname) {
     return ccon;
 }
 
+/**
+ * Calculate the overall bounds given every glyph in this font
+ */
 function calcFontMaxes() {
     let fm = _UI.fontMetrics;
     fm.numberOfGlyphs = 0;

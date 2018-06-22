@@ -1,4 +1,6 @@
-export {PathPoint, makePathPointFromSegments};
+import Coord from './coord.js';
+import Handle from './handle.js';
+import {round, rotate} from '../app/functions.js';
 
 /**
  * Path Point
@@ -7,12 +9,12 @@ export {PathPoint, makePathPointFromSegments};
  * points). There are a few Path Point types, and
  * individual handles can be shown or hidden.
  */
-class PathPoint {
+export default class PathPoint {
     /**
      * Create a PathPoint
      * @param {Coord} p - Main control point
-     * @param {Coord} h1 - First handle
-     * @param {Coord} h2 - Second handle
+     * @param {Handle} h1 - First handle
+     * @param {Handle} h2 - Second handle
      * @param {Coord} q - Storing the Quadratic handle point from Import SVG action
      * @param {string} type - corner, flat, or symmetric
      */
@@ -867,7 +869,7 @@ class PathPoint {
  * @param {Segment} seg2 - Second segment
  * @return {PathPoint}
  */
-function makePathPointFromSegments(seg1, seg2) {
+export function makePathPointFromSegments(seg1, seg2) {
     let newpp = new PathPoint({
         h1: new Handle({point: {x: seg1.p3x, y: seg1.p3y}}),
         p: new Coord({x: seg2.p1x, y: seg2.p1y}),

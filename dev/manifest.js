@@ -17,12 +17,12 @@ let manifest = [
             'pathpoint.js',
             'maxes.js',
             'path.js',
-            'segment.js',
-            'polysegment.js',
-            'componentinstance.js',
-            'shape.js',
-            'glyph.js',
-            'hkern.js',
+            // 'segment.js',
+            // 'polysegment.js',
+            // 'componentinstance.js',
+            // 'shape.js',
+            // 'glyph.js',
+            // 'hkern.js',
 
             'coord.test.js',
             'handle.test.js',
@@ -38,18 +38,18 @@ let manifest = [
             'settings.js',
             'functions.js',
             'colors.js',
-            'nav.js',
-            'history.js',
-            'unicode.js',
+            // 'nav.js',
+            // 'history.js',
+            // 'unicode.js',
 
-            'global.css',
-            'colors.css',
+            // 'global.css',
+            // 'colors.css',
 
             'colors.test.js',
-            'test.test.js',
+            // 'test.test.js',
         ],
     },
-
+/*
     {
         path: 'project',
         files: [
@@ -141,6 +141,7 @@ let manifest = [
             'opentypejs_0-8-0.js',
         ],
     },
+*/
 ];
 
 export default manifest;

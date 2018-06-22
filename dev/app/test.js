@@ -1,9 +1,9 @@
-import {debug} from './functions.js';
+import './settings.js';
+import debug from './functions.js';
+import {areEqual} from './functions.js';
 import {assemble} from './main.js';
 
-export {loadTests, is, expression};
-
-export let _TEST = {
+window._TEST = {
     testList: [],
     globals: {},
     categories: {},
@@ -13,6 +13,8 @@ export let _TEST = {
     total: 0,
     autoRun: true,
 };
+
+window.onload = loadTests;
 
 /**
  * TEST
@@ -27,7 +29,6 @@ let resultIcons = {
     didNotRun: 2718,
 };
 
-window.onload = loadTests;
 /**
  * Kick off the tests
  */
@@ -40,6 +41,8 @@ function loadTests() {
  * Callback after tests load
  */
 function afterLoadTests() {
+    debug(`\n afterLoadTests - START`);
+
     let header = document.querySelector('#header');
     let results = document.querySelector('#results');
 
@@ -71,6 +74,8 @@ function afterLoadTests() {
 
     if (_TEST.autoRun) window.setTimeout(runTests, 10);
     else header.innerHTML += `<br><br><button onclick="runTests();">Run Tests</button>`;
+
+    debug(` afterLoadTests - END\n\n`);
 }
 
 /**
@@ -87,6 +92,8 @@ function getResultSectionID(category) {
  * Runs the tests
  */
 function runTests() {
+    debug(`\n runTests - START`);
+
     let currTest = 0;
 
     /** Runs the next test in the list */
@@ -119,6 +126,8 @@ function runTests() {
     }
 
     window.setTimeout(runNextTest, 10);
+
+    debug(` runTests - END\n\n`);
 }
 
 /**
@@ -126,7 +135,7 @@ function runTests() {
  * @param {*} leftHand
  * @return {object}
  */
-function is(leftHand) {
+_TEST.is = function(leftHand) {
     let test = {};
     test.description = JSON.stringify(leftHand);
 
@@ -138,19 +147,19 @@ function is(leftHand) {
 
         return test;
     }};
-}
+};
 
 /**
  * Evaluates an expression
  * @param {*} ex
  * @return {boolean}
  */
-function expression(ex) {
+_TEST.expression = function(ex) {
     return {
         description: 'Expression evaluated to: ' + JSON.stringify(ex),
         result: ex,
     };
-}
+};
 
 /**
  * Creates HTML test result

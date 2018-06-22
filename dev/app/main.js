@@ -1,7 +1,8 @@
 import manifest from '../manifest.js';
-import _UI from './settings.js';
-import {debug} from './functions.js';
-export let _GP = {};
+import debug from './functions.js';
+
+window._UI = {};
+window._GP = {};
 
 /**
  * MAIN
@@ -148,7 +149,7 @@ export function assemble(loadTests = false, callback = new function() {}) {
     let tests = [];
     let newElement;
 
-    console.log(manifest);
+    // debug(manifest);
 
     manifest.forEach((directory) => {
         directory.files.forEach((file) => {
@@ -175,7 +176,7 @@ export function assemble(loadTests = false, callback = new function() {}) {
                 console.warn(`Assemble - unhandled file type ${suffix}`);
             }
 
-            debug(`\t added ${file}`);
+            // debug(`\t added ${file}`);
         });
     });
 
@@ -183,9 +184,10 @@ export function assemble(loadTests = false, callback = new function() {}) {
         tests.forEach((element) => {
             newElement = document.createElement('script');
             newElement.setAttribute('src', element);
+            newElement.setAttribute('type', 'module');
             document.getElementsByTagName('head')[0].appendChild(newElement);
 
-            debug(`\t added test ${element}`);
+            // debug(`\t added test ${element}`);
         });
     }
 

@@ -4,7 +4,7 @@
  * the UI needs to operate.
  */
 
-let _UI = {
+window._UI = {
 
     // Version
     thisGlyphrStudioVersion: 'Version 2 alpha',
@@ -273,5 +273,3 @@ let _UI = {
         trademark: '',
     },
 };
-
-export default _UI;
