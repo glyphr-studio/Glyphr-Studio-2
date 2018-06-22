@@ -2,8 +2,7 @@
  V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010, so it's time to do an all-up scrub.
 
 ## What's changing
-**Convert our JavaScript to use ES6 stuff**
-| | |
+| | **Convert our JavaScript to use ES6 stuff** |
 | --- | --- |
 | :soon: | Change prototypes to classes |
 | :white_check_mark: | Let / Const instead of Var |
@@ -11,8 +10,7 @@
 | :soon: | Modules (native) |
 | | Probably more... |
 
-**Other stuff**
-| | |
+| | **Other stuff** |
 | --- | --- |
 | :soon: | Lint everything with ESLint, Google style |
 | :soon: | JSDoc *all the things* |
