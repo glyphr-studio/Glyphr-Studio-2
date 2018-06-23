@@ -4,6 +4,8 @@ import Segment from './segment.js';
 import Handle from './handle.js';
 import PathPoint from './pathpoint.js';
 import {clone, round, isVal, hasNonValues} from '../app/functions.js';
+// import {json} from '../app/functions.js';
+// import debug from '../app/functions.js';
 import {getOverallMaxes} from './maxes.js';
 
 /**
@@ -32,7 +34,9 @@ import {getOverallMaxes} from './maxes.js';
         maxes = {},
         cache = {},
     } = {}) {
-        // debug('\n PATH - START');
+        // debug('\n Path.constructor - START');
+
+        // debug(`\t passed maxes: ${json(maxes)}`);
 
         this.pathPoints = pathPoints; // use setter for hydration
 
@@ -41,16 +45,13 @@ import {getOverallMaxes} from './maxes.js';
 
         // internal
         this.maxes = maxes; // use setter for hydration
-
-        // cache
         this._cache = {};
         this._cache.segments = cache.segments || [];
         this._cache.segmentlengths = cache.segmentlengths || [];
+        this.calcMaxes();
 
-        // Setup the object
-        if (this.pathPoints && this.calcMaxes) this.calcMaxes();
-
-        // debug(' PATH - END\n');
+        // debug(this);
+        // debug(' Path.constructor - END\n');
     }
 
     /**
@@ -110,14 +111,6 @@ import {getOverallMaxes} from './maxes.js';
     }
 
     /**
-     * Get Maxes
-     * @return {Maxes}
-     */
-    get maxes() {
-        return this._maxes;
-    }
-
-    /**
      * Get X possition
      * @return {number} x
      */
@@ -163,7 +156,7 @@ import {getOverallMaxes} from './maxes.js';
         }
         // debug('\t returning ' + json(this.maxes, true));
         // debug(' Path.getMaxes - END\n');
-        return clone(this._maxes);
+        return new Maxes(this._maxes);
     }
 
     /**
@@ -222,7 +215,14 @@ import {getOverallMaxes} from './maxes.js';
      * @return {Path} - reference to this Path
      */
     set maxes(maxes) {
+        // debug(`\n Path.set maxes - START`);
+        // debug(`\t passed ${json(this._maxes, true)}`);
         this._maxes = new Maxes(maxes);
+        // debug(`\t _maxes is now`);
+        // debug(this._maxes);
+
+
+        // debug(` Path.set maxes - END\n\n`);
         return this;
     }
 

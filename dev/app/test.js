@@ -41,6 +41,7 @@ function loadTests() {
  * Callback after tests load
  */
 function afterLoadTests() {
+    _UI.debug = true;
     debug(`\n afterLoadTests - START`);
 
     let header = document.querySelector('#header');

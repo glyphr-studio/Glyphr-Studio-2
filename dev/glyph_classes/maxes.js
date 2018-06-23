@@ -1,3 +1,6 @@
+// import debug from '../app/functions.js';
+import {isVal} from '../app/functions.js';
+
 /**
  * Maxes
  * Standard way of defining a bounding box
@@ -10,16 +13,18 @@ export default class Maxes {
      * @param {number} yMin - smallest y value
      * @param {number} yMax - largest y value
      */
-    constructor({
-        xMin = Infinity,
-        xMax = -Infinity,
-        yMin = Infinity,
-        yMax = -Infinity,
-    } = {}) {
-        this.xMin = xMin;
-        this.xMax = xMax;
-        this.yMin = yMin;
-        this.yMax = yMax;
+    constructor({xMin, xMax, yMin, yMax} = {}) {
+        // debug(`\n Maxes.constructor - START`);
+
+        this.xMin = xMin; // use setter for hydration
+        this.xMax = xMax; // use setter for hydration
+        this.yMin = yMin; // use setter for hydration
+        this.yMax = yMax; // use setter for hydration
+
+        // debug(`\t maxes is now`);
+        // debug(this);
+        // debug(` Maxes.constructor - END\n\n`);
+        return this;
     }
 
     /**
@@ -27,13 +32,57 @@ export default class Maxes {
      * @return {object}
      */
     save() {
-        return {
-            xMin: this.xMin,
-            xMax: this.xMax,
-            yMin: this.yMin,
-            yMax: this.yMax,
-        };
+        // debug(`\n Maxes.save - START`);
+
+        let re = {};
+
+        if (isVal(this._xMin)) re.xMin = this._xMin;
+        if (isVal(this._xMax)) re.xMax = this._xMax;
+        if (isVal(this._yMin)) re.yMin = this._yMin;
+        if (isVal(this._yMax)) re.yMax = this._yMax;
+
+        // debug(`\t returning`);
+        // debug(re);
+        // debug(` Maxes.save - END\n\n`);
+        return re;
     }
+
+    /**
+     * Get xMin
+     * @return {number} value
+     */
+    get xMin() {
+        if (isVal(this._xMin)) return this._xMin;
+        else return Number.MAX_SAFE_INTEGER;
+    }
+
+    /**
+     * Get xMax
+     * @return {number} value
+     */
+    get xMax() {
+        if (isVal(this._xMax)) return this._xMax;
+        else return Number.MIN_SAFE_INTEGER;
+    }
+
+    /**
+     * Get yMin
+     * @return {number} value
+     */
+    get yMin() {
+        if (isVal(this._yMin)) return this._yMin;
+        else return Number.MAX_SAFE_INTEGER;
+    }
+
+    /**
+     * Get yMax
+     * @return {number} value
+     */
+    get yMax() {
+        if (isVal(this._yMax)) return this._yMax;
+        else return Number.MIN_SAFE_INTEGER;
+    }
+
 
     /**
      * Generic smallest box
@@ -41,10 +90,10 @@ export default class Maxes {
      */
     get minBounds() {
         return {
-            xMin: Infinity,
-            xMax: -Infinity,
-            yMin: Infinity,
-            yMax: -Infinity,
+            xMin: Number.MAX_SAFE_INTEGER,
+            xMax: Number.MIN_SAFE_INTEGER,
+            yMin: Number.MAX_SAFE_INTEGER,
+            yMax: Number.MIN_SAFE_INTEGER,
         };
     }
 
@@ -54,11 +103,59 @@ export default class Maxes {
      */
     get maxBounds() {
         return {
-            xMin: -Infinity,
-            xMax: Infinity,
-            yMin: -Infinity,
-            yMax: Infinity,
+            xMin: Number.MIN_SAFE_INTEGER,
+            xMax: Number.MAX_SAFE_INTEGER,
+            yMin: Number.MIN_SAFE_INTEGER,
+            yMax: Number.MAX_SAFE_INTEGER,
         };
+    }
+
+    /**
+     * Set xMin
+     * @param {number} x - new value
+     * @return {Maxes}
+     */
+    set xMin(x) {
+        x = parseFloat(x);
+        if (!isNaN(x)) this._xMin = x;
+        else delete this._xMin;
+        return this;
+    }
+
+    /**
+     * Set xMax
+     * @param {number} x - new value
+     * @return {Maxes}
+     */
+    set xMax(x) {
+        x = parseFloat(x);
+        if (!isNaN(x)) this._xMax = x;
+        else delete this._xMax;
+        return this;
+    }
+
+    /**
+     * Set yMin
+     * @param {number} y - new value
+     * @return {Maxes}
+     */
+    set yMin(y) {
+        y = parseFloat(y);
+        if (!isNaN(y)) this._yMin = y;
+        else delete this._yMin;
+        return this;
+    }
+
+    /**
+     * Set yMax
+     * @param {number} y - new value
+     * @return {Maxes}
+     */
+    set yMax(y) {
+        y = parseFloat(y);
+        if (!isNaN(y)) this._yMax = y;
+        else delete this._yMax;
+        return this;
     }
 }
 
@@ -71,11 +168,17 @@ export default class Maxes {
  * @return {boolean}
  */
 export function maxesOverlap(m1, m2, exclusive = true) {
+    // debug(`\n maxesOverlap - START`);
+    // debug(`\t passed m1 / m2`);
+    // debug(m1.save());
+    // debug(m2.save());
+
     let re;
 
     if (exclusive) re = (m1.xMin < m2.xMax && m1.xMax > m2.xMin && m1.yMin < m2.yMax && m1.yMax > m2.yMin);
     else re = (m1.xMin <= m2.xMax && m1.xMax >= m2.xMin && m1.yMin <= m2.yMax && m1.yMax >= m2.yMin);
 
+    // debug(` maxesOverlap - END returning ${re} \n\n`);
     return re;
 }
 
@@ -96,7 +199,7 @@ export function getOverallMaxes(maxarr) {
 
     for (let m=0; m<maxarr.length; m++) {
         // debug('\t pass ' + m);
-        tm = maxarr[m];
+        tm = new Maxes(maxarr[m]);
 
         // find
         re.xMin = Math.min(re.xMin, tm.xMin);

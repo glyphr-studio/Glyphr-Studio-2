@@ -1,4 +1,5 @@
 import Path from './path.js';
+import debug from '../app/functions.js';
 
 _TEST.testList.push(
     {
@@ -90,7 +91,8 @@ _TEST.testList.push(
         name: 'maxes getter',
         assertion: function() {
             let path = new Path({pathPoints: _TEST.globals.testPathPoints});
-            return _TEST.is(path.maxes).equalTo({'xMin': 170, 'xMax': 484, 'yMin': 186, 'yMax': 500});
+            debug(path);
+            return _TEST.is(path.maxes.save()).equalTo({'xMin': 170, 'xMax': 484, 'yMin': 186, 'yMax': 500});
         },
     },
     {

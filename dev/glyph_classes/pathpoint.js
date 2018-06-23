@@ -1,6 +1,7 @@
 import Coord from './coord.js';
 import Handle from './handle.js';
 import {round, rotate} from '../app/functions.js';
+// import debug from '../app/functions.js';
 
 /**
  * Path Point
@@ -144,11 +145,14 @@ export default class PathPoint {
      * @param {number} dy - delta y
      */
     updatePathPointPosition(controlPoint = 'p', dx = 0, dy = 0) {
+        // debug(`\n PathPoint.updatePathPointPosition - START`);
+        // debug(`\t controlpoint ${controlPoint} dx ${dx} dy ${dy}`);
+
         dx = parseFloat(dx);
         dy = parseFloat(dy);
 
         switch (controlPoint) {
-            case 'P':
+            case 'p':
                 if (!this.p.xLock) this.p.x += dx;
                 if (!this.p.yLock) this.p.y += dy;
                 if (!this.p.xLock) this.h1.x += dx;
@@ -172,6 +176,8 @@ export default class PathPoint {
                 else if (this.type === 'flat') this.makeFlat('h2');
             break;
         }
+
+        // debug(` PathPoint.updatePathPointPosition - END\n\n`);
     }
 
     /**
