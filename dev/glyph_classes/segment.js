@@ -1,3 +1,5 @@
+import Maxes from './maxes.js';
+import Coord from './coord.js';
 import {numSan, duplicates, isVal, round} from '../app/functions.js';
 
 export {findSegmentIntersections, ixToCoord, segmentsAreEqual};
@@ -18,44 +20,95 @@ export {findSegmentIntersections, ixToCoord, segmentsAreEqual};
     make Bezier math easier for Paths.
 **/
 export default class Segment {
-    constructor(oa) {
-        // debug('\n SEGMENT - START');
-        oa = oa || {};
-        this.objtype = 'segment';
-        this.p1x = numSan(oa.p1x) || 0;
-        this.p1y = numSan(oa.p1y) || 0;
-        this.p2x = numSan(oa.p2x) || this.p1x || 0;
-        this.p2y = numSan(oa.p2y) || this.p1y || 0;
-        this.p3x = numSan(oa.p3x) || 0;
-        this.p3y = numSan(oa.p3y) || 0;
-        this.p4x = numSan(oa.p4x) || 0;
-        this.p4y = numSan(oa.p4y) || 0;
-        if (!oa.p3x)
-            this.p3x = this.p4x;
-        if (!oa.p3y)
-            this.p3y = this.p4y;
+    /**
+     * Create a Segment
+     * @param {*} oa
+     */
+    constructor({p1x = 0, p1y = 0, p2x = 0, p2y = 0, p3x = 0, p3y = 0, p4x = 0, p4y = 0} = {}) {
+        this.p1x = numSan(p1x);
+        this.p1y = numSan(p1y);
+        this.p4x = numSan(p4x);
+        this.p4y = numSan(p4y);
+        this.p2x = isVal(p2x) ? numSan(p2x) : this.p1x;
+        this.p2y = isVal(p2y) ? numSan(p2y) : this.p1y;
+        this.p3x = isVal(p3x) ? numSan(p3x) : this.p3x;
+        this.p3y = isVal(p3y) ? numSan(p3y) : this.p3y;
+
         this.line = this.isLine();
+
+        this._maxes = this.calcMaxes();
+
         // cache
         oa.cache = oa.cache || {};
         this.cache = {};
         this.cache.length = oa.cache.length || false;
-        // debug(' SEGMENT - END\n');
     }
-    //    -----------------------------------
-    //    Methods
-    //    -----------------------------------
+
+    /**
+     * Export object to a project file
+     * @return {object}
+     */
+    save() {
+        return {
+            p1x: this.p1x,
+            p1y: this.p1y,
+            p2x: this.p2x,
+            p2y: this.p2y,
+            p3x: this.p3x,
+            p3y: this.p3y,
+            p4x: this.p4x,
+            p4y: this.p4y,
+        };
+    }
+
+    /**
+     * Reset the cache
+     */
     changed() {
         this.cache = {};
         this.line = this.isLine();
+        this._maxes = this.calcMaxes();
     }
+
+
+    //    -----------------------------------
+    //    Getters
+    //    -----------------------------------
+
+    /**
+     * Returns the length of this curve
+     */
+    get length() {
+        if (this.cache && this.cache.length) return this.cache.length;
+
+        this.cache.length = this.calculateLength();
+
+        return this.cache.length;
+    }
+
+    /**
+     * Get the Maxes object for this Segment
+     */
+    get maxes() {
+        return new Maxes(this._maxes);
+    }
+
+
     //    -----------------------------------
     //    Drawing
     //    -----------------------------------
+
+    /**
+     * Draws this segment to the Edit Canvas
+     * @param {string} color
+     * @param {number} dx - delta offset
+     * @param {number} dy - delta offset
+     */
     drawSegmentOutline(color, dx, dy) {
-        if (!_UI.glyphEditCTX)
-            setupEditCanvas();
+        if (!_UI.glyphEditCTX) setupEditCanvas();
+
         let ctx = _UI.glyphEditCTX;
-        ctx.strokeStyle = RGBAtoRGB((color || _UI.colors.green.l65), 0.9);
+        ctx.strokeStyle = getRGBfromRGBA((color || _UI.colors.green.l65), 0.9);
         dx = dx || 0;
         dy = dy || 0;
         let p1x = sx_cx(this.p1x + dx);
@@ -73,9 +126,15 @@ export default class Segment {
         ctx.stroke();
         ctx.closePath();
     }
+
+    /**
+     * Draws the control points for this Segment
+     * @param {string} color
+     * @param {string} txt - text to display at the first point
+     */
     drawSegmentPoints(color, txt) {
-        if (!_UI.glyphEditCTX)
-            setupEditCanvas();
+        if (!_UI.glyphEditCTX) setupEditCanvas();
+
         let ctx = _UI.glyphEditCTX;
         txt = isVal(txt) ? txt : '•';
         let p1x = sx_cx(this.p1x);
@@ -86,7 +145,7 @@ export default class Segment {
         let p3y = sy_cy(this.p3y);
         let p4x = sx_cx(this.p4x);
         let p4y = sy_cy(this.p4y);
-        color = RGBAtoRGB((color || _UI.colors.green.l65), 0.4);
+        color = getRGBfromRGBA((color || _UI.colors.green.l65), 0.4);
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
         ctx.font = '48px sans-serif';
@@ -100,26 +159,38 @@ export default class Segment {
         ctx.fillRect(p4x, p4y, 5, 5);
         // else draw_CircleHandle({'x':sx_cx(this.p4x), 'y':sy_cy(this.p4y)});
     }
+
+
     //    -----------------------------------
     //    Splitting
     //    -----------------------------------
-    split(sp) {
-        sp = sp || 0.5;
+    /**
+     * Splits a segment at either an x/y value or a decimal %
+     * @param {*} sp - decimal or x/y object
+     * @return {array} - Array with two segments resulting from the split
+     */
+    split(sp = 0.5) {
         if (typeof sp === 'object' && isVal(sp.x) && isVal(sp.y)) {
             return this.splitAtCoord(sp);
-        }
-        else if (!isNaN(sp)) {
+        } else if (!isNaN(sp)) {
             return this.splitAtTime(sp);
         }
         return false;
     }
+
+    /**
+     * Splits a segment at a specific x/y position
+     * @param {object} co - x/y coordinate where to split
+     * @return {array} - Array with two segments resulting from the split
+     */
     splitAtCoord(co) {
         // debug('\n Segment.splitAtCoord - START');
         // debug('\t splitting at ' + json(co, true));
-        if (this.containsTerminalPoint(co, 0.1))
-            return false;
+        if (this.containsTerminalPoint(co, 0.1)) return false;
+
         if (this.line && this.line !== 'diagonal') {
-            let newx, newy;
+            let newx;
+            let newy;
             let online = false;
             if (this.line === 'horizontal') {
                 if (round(co.y, 2) === round(this.p1y, 2)) {
@@ -129,8 +200,7 @@ export default class Segment {
                         online = true;
                     }
                 }
-            }
-            else if (this.line === 'vertical') {
+            } else if (this.line === 'vertical') {
                 if (round(co.x, 2) === round(this.p1x, 2)) {
                     if ((co.y > Math.min(this.p1y, this.p4y)) && (co.y < Math.max(this.p1y, this.p4y))) {
                         newx = this.p1x;
@@ -160,8 +230,7 @@ export default class Segment {
                     'p4y': this.p4y,
                 }),
             ];
-        }
-        else if (this.pointIsWithinMaxes(co)) {
+        } else if (this.pointIsWithinMaxes(co)) {
             let threshold = 0.1;
             let sp = this.getSplitFromCoord(co, threshold);
             // debug('\t distance is ' + sp.distance);
@@ -181,6 +250,12 @@ export default class Segment {
         // debug(' Segment.splitAtCoord - returning false - END\n');
         return false;
     }
+
+    /**
+     * Splits a segment based on a decmial value ("time" is a metaphor here, from 0 to 1 second)
+     * @param {number} t - decimal from 0 to 1 representing how far along the curve to split
+     * @return {array} - Array with two segments resulting from the split
+     */
     splitAtTime(t) {
         // debug('\n Segment.splitAtTime - START');
         let fs = t || 0.5;
@@ -222,6 +297,13 @@ export default class Segment {
             }),
         ];
     }
+
+    /**
+     * Splits a segment at many x/y points
+     * @param {array} coords - collection of many Coords objects where to split
+     * @param {number} threshold - precision to look for a control point
+     * @return {array} - Array with many segments resulting from the split
+     */
     splitSegmentAtProvidedCoords(coords, threshold) {
         // debug('\n Segment.splitSegmentAtProvidedCoords - START');
         let segs = [new Segment(clone(this))];
@@ -242,25 +324,42 @@ export default class Segment {
         // debug(' Segment.splitSegmentAtProvidedCoords - END\n');
         return segs;
     }
+
+    /**
+     * Checks to see if a point is inside the bounding box of this Segment
+     * @param {object} co - x/y point to check
+     * @return {boolean}
+     */
     pointIsWithinMaxes(co) {
-        let m = this.getMaxes();
+        let m = this.maxes;
         let re = (co.x <= m.xMax &&
             co.x >= m.xMin &&
             co.y <= m.yMax &&
             co.y >= m.yMin);
         return re;
     }
+
+    /**
+     * Removes the "handle" control points, effectively making this a straight line
+     * @return {Segment}
+     */
     convertToLine() {
-        return new Segment({ p1x: this.p1x, p1y: this.p1y, p4x: this.p4x, p4y: this.p4y });
+        return new Segment({p1x: this.p1x, p1y: this.p1y, p4x: this.p4x, p4y: this.p4y});
     }
-    //    -----------------------------------
-    //    Getters
-    //    -----------------------------------
+
+    /**
+     * Given an x/y point, find the equivalent split distance t
+     * @param {Coord} coord - place to look
+     * @param {number} threshold - how close to look
+     * @return {object} - collection of results
+     */
     getSplitFromCoord(coord, threshold) {
         let grains = this.getQuickLength() * 1000;
         let mindistance = 999999999;
         let re = false;
-        let check, d;
+        let check;
+        let d;
+
         for (let t = 0; t < 1; t += (1 / grains)) {
             check = this.getCoordFromSplit(t);
             d = Math.sqrt(((check.x - coord.x) * (check.x - coord.x)) + ((check.y - coord.y) * (check.y - coord.y)));
@@ -272,39 +371,53 @@ export default class Segment {
                     'x': check.x,
                     'y': check.y,
                 };
-                if (threshold && re.distance < threshold)
-                    return re;
+                if (threshold && re.distance < threshold) return re;
             }
         }
         return re;
     }
-    getLength() {
+
+    /**
+     * Find the length of a curve, recursively
+     * At small enough sizes, assume a curve is a straight line
+     * @return {number}
+     */
+    calculateLength() {
         // this function is only used as an approximation
         // threshold in em units
-        if (this.cache && this.cache.length)
-            return this.cache.length;
         let re;
         let threshold = 10;
         let a = Math.abs(this.p1x - this.p4x);
         let b = Math.abs(this.p1y - this.p4y);
         let c = Math.sqrt((a * a) + (b * b));
+
         if (this.line || c < threshold) {
             this.cache.length = c;
             return c;
-        }
-        else {
+        } else {
             let s = this.split();
-            re = s[0].getLength() + s[1].getLength();
-            this.cache.length = re;
+            re = s[0].calculateLength() + s[1].calculateLength();
             return re;
         }
     }
+
+    /**
+     * Find the length of a curve, in a fast/cheap way
+     * Just assume a straight line between the first and last points
+     * @return {number}
+     */
     getQuickLength() {
         let a = Math.abs(this.p1x - this.p4x);
         let b = Math.abs(this.p1y - this.p4y);
         let c = Math.sqrt((a * a) + (b * b));
         return c;
     }
+
+    /**
+     * Given a percent distance, return a x/y value
+     * @param {number} t - between 0 and 1
+     * @return {Coord}
+     */
     getCoordFromSplit(t) {
         t = t || 0.5;
         let rs = (1 - t);
@@ -321,8 +434,13 @@ export default class Segment {
         let y234 = (y23 * rs) + (y34 * t);
         let x1234 = (x123 * rs) + (x234 * t);
         let y1234 = (y123 * rs) + (y234 * t);
-        return { 'x': x1234, 'y': y1234 };
+        return new Coord({'x': x1234, 'y': y1234});
     }
+
+    /**
+     * Reverses the 'winding' of this segment
+     * @return {Segment}
+     */
     getReverse() {
         return new Segment({
             'p1x': this.p4x,
@@ -335,19 +453,33 @@ export default class Segment {
             'p4y': this.p1y,
         });
     }
+
+    /**
+     * Given a control point number, return a Coord
+     * 1 - first 'PathPoint'
+     * 2 - first 'Handle'
+     * 3 - second 'Handle'
+     * 4 - second 'PathPoint'
+     * @param {number} pt - Which point to return
+     * @return {Coord}
+     */
     getCoord(pt) {
-        if (pt === 1)
-            return { x: this.p1x, y: this.p1y };
-        else if (pt === 2)
-            return { x: this.p2x, y: this.p2y };
-        else if (pt === 3)
-            return { x: this.p3x, y: this.p3y };
-        else if (pt === 4)
-            return { x: this.p4x, y: this.p4y };
+        if (pt === 1) return new Coord({x: this.p1x, y: this.p1y});
+        else if (pt === 2) return new Coord({x: this.p2x, y: this.p2y});
+        else if (pt === 3) return new Coord({x: this.p3x, y: this.p3y});
+        else if (pt === 4) return new Coord({x: this.p4x, y: this.p4y});
     }
+
+
     //    -----------------------------------
     //    Bounds
     //    -----------------------------------
+
+    /**
+     * A Bezier Segment can never be outside the bounding box
+     * created by all 4 of it's control points
+     * @return {Maxes}
+     */
     getFastMaxes() {
         let bounds = {
             'xMin': Math.min(this.p1x, Math.min(this.p2x, Math.min(this.p3x, this.p4x))),
@@ -355,31 +487,85 @@ export default class Segment {
             'xMax': Math.max(this.p1x, Math.max(this.p2x, Math.max(this.p3x, this.p4x))),
             'yMax': Math.max(this.p1y, Math.max(this.p2y, Math.max(this.p3y, this.p4y))),
         };
-        return bounds;
+        return new Maxes(bounds);
     }
-    getMaxes() {
-        // debug('\n Segment.getMaxes - START');
+
+    /**
+     * Calculate the bounding box for this Segment
+     * @return {Maxes}
+     */
+    calcMaxes() {
+        // debug('\n Segment.calcMaxes - START');
         // debug(this);
-        let bounds = {
+
+        /**
+         * Takes a value and updates a maxes object if that value falls outside the current maxes
+         * @param {Maxes} maxes - maxes object to check against
+         * @param {number} value - new value that may fall outside the current maxes object
+         */
+        function checkXbounds(maxes, value) {
+            if (maxes.xMin > value) {
+                maxes.xMin = value;
+            } else if (maxes.xMax < value) {
+                maxes.xMax = value;
+            }
+        }
+
+        /**
+         * Takes a value and updates a maxes object if that value falls outside the current maxes
+         * @param {Maxes} maxes - maxes object to check against
+         * @param {number} value - new value that may fall outside the current maxes object
+         */
+        function checkYbounds(maxes, value) {
+            if (maxes.yMin > value) {
+                maxes.yMin = value;
+            } else if (maxes.yMax < value) {
+                maxes.yMax = value;
+            }
+        }
+
+        /**
+         * Some crazy Bezier math sh*t goin' down in this helper funciton
+         * @param {number} t
+         * @param {number} p0
+         * @param {number} p1
+         * @param {number} p2
+         * @param {number} p3
+         * @return {number}
+         */
+        function getBezierValue(t, p0, p1, p2, p3) {
+            let mt = (1-t);
+            return (mt*mt*mt*p0) + (3*mt*mt*t*p1) + (3*mt*t*t*p2) + (t*t*t*p3);
+        }
+
+        let bounds = new Maxes({
             'xMin': Math.min(this.p1x, this.p4x),
             'yMin': Math.min(this.p1y, this.p4y),
             'xMax': Math.max(this.p1x, this.p4x),
             'yMax': Math.max(this.p1y, this.p4y),
-        };
+        });
+
         if (this.line) {
             // debug([bounds]);
-            // debug(' Segment.getMaxes - returning fastmaxes for line - END\n');
+            // debug(' Segment.calcMaxes - returning fastmaxes for line - END\n');
             return bounds;
         }
+
         let d1x = this.p2x - this.p1x;
         let d1y = this.p2y - this.p1y;
         let d2x = this.p3x - this.p2x;
         let d2y = this.p3y - this.p2y;
         let d3x = this.p4x - this.p3x;
         let d3y = this.p4y - this.p3y;
-        let numerator, denominator, quadroot, root, t1, t2;
+        let numerator;
+        let denominator;
+        let quadroot;
+        let root;
+        let t1;
+        let t2;
+
+        // X bounds
         if (this.p2x < bounds.xMin || this.p2x > bounds.xMax || this.p3x < bounds.xMin || this.p3x > bounds.xMax) {
-            // X bounds
             if (d1x + d3x !== 2 * d2x) {
                 d2x += 0.01;
             }
@@ -396,6 +582,7 @@ export default class Segment {
                 checkXbounds(bounds, getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x));
             }
         }
+
         // Y bounds
         if (this.p2y < bounds.yMin || this.p2y > bounds.yMax || this.p3y < bounds.yMin || this.p3y > bounds.yMax) {
             if (d1y + d3y !== 2 * d2y) {
@@ -415,48 +602,80 @@ export default class Segment {
             }
         }
         // debug([this.getFastMaxes(), bounds]);
-        // debug(' Segment.getMaxes - END\n');
-        return bounds;
+        // debug(' Segment.calcMaxes - END\n');
+        return new Maxes(bounds);
     }
+
+
     //    -----------------------------------
     //    Curve Checking
     //    -----------------------------------
+
+    /**
+     * A segment is redundant to another segment if
+     * it is completely overlapped by the other segment
+     * @param {Segment} s - segment to check against this segment
+     * @return {boolean}
+     */
     isRedundantTo(s) {
-        // A segment is  Redundant redundant to another segment if
-        // it is completely overlapped by the other segment
-        if (!this.line)
-            return false;
+        if (!this.line) return false;
         return (s.containsPointOnLine(this.getCoord(1)) && s.containsPointOnLine(this.getCoord(4)));
     }
-    containsTerminalPoint(pt, threshold) {
-        threshold = threshold || 1;
-        if (this.containsStartPoint(pt, threshold))
-            return 'start';
-        else if (this.containsEndPoint(pt, threshold))
-            return 'end';
-        else
-            return false;
+
+    /**
+     * Checks to see if an x/y value is one of the points of this Segment
+     * @param {Coord} pt - point to check
+     * @param {number} threshold - how close to check
+     * @return {boolean} - kind of
+     */
+    containsTerminalPoint(pt, threshold = 1) {
+        if (this.containsStartPoint(pt, threshold)) return 'start';
+        else if (this.containsEndPoint(pt, threshold)) return 'end';
+        else return false;
     }
-    containsStartPoint(pt, threshold) {
-        threshold = threshold || 1;
+
+    /**
+     * Checks to see if an x/y value is the start of this Segment
+     * @param {Coord} pt - point to check
+     * @param {number} threshold - how close to check
+     * @return {boolean}
+     */
+    containsStartPoint(pt, threshold = 1) {
         return coordsAreEqual(this.getCoord(1), pt, threshold);
     }
-    containsEndPoint(pt, threshold) {
-        threshold = threshold || 1;
+    /**
+     * Checks to see if an x/y value is the end of this Segment
+     * @param {Coord} pt - point to check
+     * @param {number} threshold - how close to check
+     * @return {boolean}
+     */
+    containsEndPoint(pt, threshold = 1) {
         return coordsAreEqual(this.getCoord(4), pt, threshold);
     }
+
+    /**
+     * Checks to see if an x/y value is anywhere on this Segment
+     * @param {Coord} pt - point to check
+     * @param {number} threshold - how close to check
+     * @return {boolean}
+     */
     containsPointOnCurve(pt, threshold) {
-        if (this.containsTerminalPoint(pt, threshold))
-            return true;
-        if (this.line)
-            return this.containsPointOnLine(pt);
+        if (this.containsTerminalPoint(pt, threshold)) return true;
+
+        if (this.line) return this.containsPointOnLine(pt);
+
         threshold = isVal(threshold) ? threshold : 0.1;
         let t = this.getSplitFromCoord(pt, threshold);
-        if (t && t.distance < threshold)
-            return true;
-        else
-            return false;
+
+        if (t && t.distance < threshold) return true;
+        else return false;
     }
+
+    /**
+     * Checks to see if an x/y value is on this Line Segment
+     * @param {Coord} pt - point to check
+     * @return {boolean}
+     */
     containsPointOnLine(pt) {
         // debug('\n Segment.containsPointOnLine - START');
         // debug('\t checking ' + pt.x + ' \t' + pt.y);
@@ -468,40 +687,70 @@ export default class Segment {
             // debug('\t this segment contains the point as an end point, returning false');
             return false;
         }
+
+        /**
+         * Checks to see if a middle value is between two other values
+         * @param {number} l - left point
+         * @param {number} m - middle point
+         * @param {number} r - right point
+         * @return {boolean}
+         */
         function within(l, m, r) {
             return ((l <= m) && (m <= r)) || ((r <= m) && (m <= l));
         }
+
         if (within(this.p1x, pt.x, this.p4x) &&
             within(this.p1y, pt.y, this.p4y) &&
             pointsAreCollinear(this.getCoord(1), this.getCoord(4), pt)) {
             // debug('\t returning true');
             return true;
         }
+
         // debug('\t fallthrough returning false');
         return false;
     }
-    preceeds(s2, threshold) {
-        threshold = threshold || 1;
+
+    /**
+     * Checks to see if this segment's last point is another Segment's first point
+     * @param {Segment} s2 - other segment to check
+     * @param {number} threshold - how close to check
+     * @return {boolean}
+     */
+    preceeds(s2, threshold = 1) {
         return (coordsAreEqual(this.getCoord(4)), s2.getCoord(1), threshold);
     }
+
+    /**
+     * Determines if this Segment is actually a Line Segment
+     * and if so, what kind
+     * @param {number} precision - how close to look
+     * @return {string}
+     */
     isLine(precision) {
         precision = isVal(precision) ? precision : 1;
         let rex = (round(this.p1x, precision) === round(this.p2x, precision) &&
             round(this.p1x, precision) === round(this.p3x, precision) &&
             round(this.p1x, precision) === round(this.p4x, precision));
-        if (rex)
-            return 'vertical';
+
+        if (rex) return 'vertical';
+
         let rey = (round(this.p1y, precision) === round(this.p2y, precision) &&
             round(this.p1y, precision) === round(this.p3y, precision) &&
             round(this.p1y, precision) === round(this.p4y, precision));
-        if (rey)
-            return 'horizontal';
+        if (rey) return 'horizontal';
+
         let red = (pointsAreCollinear(this.getCoord(1), this.getCoord(4), this.getCoord(2)) &&
             pointsAreCollinear(this.getCoord(1), this.getCoord(4), this.getCoord(3)));
-        if (red)
-            return 'diagonal';
+        if (red) return 'diagonal';
+
         return false;
     }
+
+    /**
+     * Creates a string representation of this Segment
+     * @param {number} precision - how far to round
+     * @return {string}
+     */
     toString(precision) {
         precision = isVal(precision) ? precision : 1;
         re = '';
@@ -511,6 +760,11 @@ export default class Segment {
         re += round(this.p4x, precision) + '\t' + round(this.p4y, precision) + '\n';
         return re;
     }
+
+    /**
+     * Rounds all the values in this Segment
+     * @param {number} precision - how many decimal places to round
+     */
     roundAll(precision) {
         precision = isVal(precision) ? precision : 3;
         this.p1x = roundAll(this.p1x, precision);
@@ -522,27 +776,6 @@ export default class Segment {
         this.p4x = roundAll(this.p4x, precision);
         this.p4y = roundAll(this.p4y, precision);
     }
-
-    checkXbounds(bounds, value) {
-        if (bounds.xMin > value) {
-            bounds.xMin = value;
-        } else if (bounds.xMax < value) {
-            bounds.xMax = value;
-        }
-    }
-
-    checkYbounds(bounds, value) {
-        if (bounds.yMin > value) {
-            bounds.yMin = value;
-        } else if (bounds.yMax < value) {
-            bounds.yMax = value;
-        }
-    }
-
-    getBezierValue(t, p0, p1, p2, p3) {
-        let mt = (1-t);
-        return (mt*mt*mt*p0) + (3*mt*mt*t*p1) + (3*mt*t*t*p2) + (t*t*t*p3);
-    }
 }
 
 
@@ -550,6 +783,14 @@ export default class Segment {
 //    Curve Intersections
 //    -----------------------------------
 
+/**
+ * Find all places where two segments cross eachother
+ * This is a recursive algorithm
+ * @param {Segment} s1 - first segment
+ * @param {Segment} s2 - second segment
+ * @param {number} depth - How deep this recursive call has gone
+ * @return {array} - collection of overlap points in ix format (text: 'x/y,x/y,x/y...')
+ */
 function findSegmentIntersections(s1, s2, depth) {
     // debug('\n findSegmentIntersections - START');
     depth = depth || 0;
@@ -666,18 +907,13 @@ function findSegmentIntersections(s1, s2, depth) {
     return re;
 }
 
-function ixToCoord(ix) {
-    // debug('\n ixToCoord - START');
-    // debug(ix);
-    let re = {
-        x: parseFloat(ix.split('/')[0]),
-        y: parseFloat(ix.split('/')[1]),
-    };
-    // debug([re]);
-    // debug(' ixToCoord - END\n');
-    return re;
-}
-
+/**
+ * Checks a segment's points to see of two segments are equal
+ * @param {Segment} s1 - first segment
+ * @param {Segment} s2 - second segment
+ * @param {number} threshold - precision
+ * @return {boolean}
+ */
 function segmentsAreEqual(s1, s2, threshold) {
     // debug('\n segmentsAreEqual - START');
     threshold = threshold || 1;
@@ -699,9 +935,14 @@ function segmentsAreEqual(s1, s2, threshold) {
     return false;
 }
 
+/**
+ * Check if the two segments are overlapping horizontal or vertical lines
+ * If so, just return one point from the coincident lines
+ * @param {Segment} s1 - first segment
+ * @param {Segment} s2 - second segment
+ * @return {array} - collection of overlaps in ix format
+ */
 function findOverlappingLineSegmentIntersections(s1, s2) {
-    // Check if the two segments are overlapping horizontal or vertical lines
-    // If so, just return one point from the coincident lines
     let re = [];
 
     if (s1.containsPointOnLine(s2.getCoord(1))) re.push(''+s2.p1x+'/'+s2.p1y);
@@ -720,6 +961,13 @@ function findOverlappingLineSegmentIntersections(s1, s2) {
     return re;
 }
 
+/**
+ * Find overlap points for Segments that are Lines (no curves)
+ * This is much faster than comparing two curves
+ * @param {Segment} s1 - first segment
+ * @param {Segment} s2 - second segment
+ * @return {array} - overlap point in ix format
+ */
 function findCrossingLineSegmentIntersections(s1, s2) {
     // debug('\n findCrossingLineSegmentIntersections - START');
     if (!s1.line || !s2.line) return [];
@@ -753,6 +1001,12 @@ function findCrossingLineSegmentIntersections(s1, s2) {
     return [];
 }
 
+/**
+ * Finds if two segments overlap in their end points
+ * @param {Segment} s1 - first segment
+ * @param {Segment} s2 - second segment
+ * @return {array} - collection of overlaps in ix format
+ */
 function findEndPointSegmentIntersections(s1, s2) {
     // debug('\n findEndPointSegmentIntersections - START');
     let s1s = s1.getCoord(1);
@@ -772,10 +1026,40 @@ function findEndPointSegmentIntersections(s1, s2) {
     return re;
 }
 
+/**
+ * Takes the string ix format for a point and returns a Coord
+ * @param {string} ix - x/y value in text string format
+ * @return {Coord}
+ */
+function ixToCoord(ix) {
+    // debug('\n ixToCoord - START');
+    // debug(ix);
+    let re = {
+        x: parseFloat(ix.split('/')[0]),
+        y: parseFloat(ix.split('/')[1]),
+    };
+    // debug([re]);
+    // debug(' ixToCoord - END\n');
+    return new Coord(re);
+}
+
+/**
+ * Converts a Coord to a string in ix format
+ * @param {Coord} co - x y object to convert
+ * @return {string}
+ */
 function coordToIx(co) {
     return (''+co.x+'/'+co.y);
 }
 
+/**
+ * Returns true if three points are in a straight line
+ * @param {Coord} a - poitn to evaluate
+ * @param {Coord} b - poitn to evaluate
+ * @param {Coord} c - poitn to evaluate
+ * @param {number} precision - how close to compare
+ * @return {boolean}
+ */
 function pointsAreCollinear(a, b, c, precision) {
     precision = isVal(precision)? precision : 3;
 

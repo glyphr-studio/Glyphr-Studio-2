@@ -544,7 +544,7 @@
         }
 
         lctx.closePath();
-        // lctx.fillStyle = RGBAtoRGB(_GP.projectSettings.colors.glyphfill, alpha);
+        // lctx.fillStyle = getRGBfromRGBA(_GP.projectSettings.colors.glyphfill, alpha);
         lctx.fillStyle = _GP.projectSettings.colors.glyphfill;
         lctx.globalAlpha = alpha;
         lctx.fill('nonzero');

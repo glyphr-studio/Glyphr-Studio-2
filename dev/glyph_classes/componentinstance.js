@@ -381,7 +381,7 @@
 
 //    Insert Component
     function showDialog_AddComponent() {
-        let show = getLength(_GP.components)? 'components' : 'glyphs';
+        let show = countObjectKeys(_GP.components)? 'components' : 'glyphs';
         _UI.glyphChooser.dialog = {
             'fname': 'addComponent',
             'choices': 'all',

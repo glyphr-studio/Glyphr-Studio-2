@@ -1,4 +1,4 @@
-import {parseColorString, shiftColor, RGBAtoRGB, transparencyToAlpha} from './colors.js';
+import {parseColorString, shiftColor, getRGBfromRGBA, transparencyToAlpha} from './colors.js';
 
 _TEST.testList.push(
     {
@@ -17,10 +17,10 @@ _TEST.testList.push(
     },
     {
         category: 'Colors',
-        name: 'RGBAtoRGB',
+        name: 'getRGBfromRGBA',
         assertion: function() {
             /* eslint-disable new-cap */
-            return _TEST.is(RGBAtoRGB('rgb(123,45,67)', 0.2)).equalTo('rgb(229,213,217)');
+            return _TEST.is(getRGBfromRGBA('rgb(123,45,67)', 0.2)).equalTo('rgb(229,213,217)');
         },
     },
     {

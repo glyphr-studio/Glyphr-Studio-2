@@ -598,7 +598,7 @@
 
     function drawContextGlyphLeftLineExtras(char, seq) {
         let alpha = transparencyToAlpha(_GP.projectSettings.colors.systemguidetransparency);
-        let color = RGBAtoRGB('rgb(204,81,0)', alpha);
+        let color = getRGBfromRGBA('rgb(204,81,0)', alpha);
         drawVerticalLine((char.view.dx*char.view.dz), false, color);
 
         let kern = calculateKernOffset(seq.glyphstring[seq.glyphstring.length-1], getSelectedWorkItemChar());
@@ -651,7 +651,7 @@
             let advanceWidth = char.width * view.dz;
             let currx = (char.view.dx*view.dz);
             let rightx = currx + advanceWidth;
-            let color = RGBAtoRGB('rgb(204,81,0)', alpha);
+            let color = getRGBfromRGBA('rgb(204,81,0)', alpha);
             let texty = sy_cy(_GP.projectSettings.descent-60);
 
 
@@ -713,7 +713,7 @@
         let desc = _GP.projectSettings.descent;
         let ctx = _UI.glyphEditCTX;
         let offset = 40;
-        let color = RGBAtoRGB('rgb(255,0,255)', transparencyToAlpha(_GP.projectSettings.colors.systemguidetransparency));
+        let color = getRGBfromRGBA('rgb(255,0,255)', transparencyToAlpha(_GP.projectSettings.colors.systemguidetransparency));
         let barheight = Math.max((scale * 10), 1);
 
         ctx.font = '12px tahoma, verdana, sans-serif';
@@ -858,7 +858,7 @@
             let t = (_GP.projectSettings.colors.systemguidetransparency);
             // var t2 = (((100 - t) / 2) + t);
             let alpha = transparencyToAlpha(t);
-            let rgb = RGBAtoRGB('rgb(204,81,0)', alpha);
+            let rgb = getRGBfromRGBA('rgb(204,81,0)', alpha);
 
             ctx.strokeStyle = rgb;
             ctx.beginPath();
@@ -1076,21 +1076,21 @@
         let nph = _UI.currentPanel;
 
         if (_UI.currentPage === 'ligatures') {
-            len = getLength(_GP.ligatures);
+            len = countObjectKeys(_GP.ligatures);
             if (!len) {
                 _UI.selectedLigature = false;
                 if (nph !== 'npNav') nph = 'npChooser';
                 return false;
             }
         } else if (_UI.currentPage === 'components') {
-            len = getLength(_GP.components);
+            len = countObjectKeys(_GP.components);
             if (!len) {
                 _UI.selectedComponent = false;
                 if (nph !== 'npNav') nph = 'npChooser';
                 return false;
             }
         } else if (_UI.currentPage === 'kerning') {
-            len = getLength(_GP.kerning);
+            len = countObjectKeys(_GP.kerning);
             if (!len) {
                 _UI.selectedKern = false;
                 if (nph !== 'npNav') nph = 'npAttributes';
@@ -1597,7 +1597,7 @@
             let ps = _GP.projectSettings;
             let v = getView('grid');
             let gsize = ((ps.upm/ps.griddivisions)*v.dz);
-            let gridcolor = RGBAtoRGB('rgb(170,170,170)', transparencyToAlpha(_GP.projectSettings.colors.gridtransparency));
+            let gridcolor = getRGBfromRGBA('rgb(170,170,170)', transparencyToAlpha(_GP.projectSettings.colors.gridtransparency));
             _UI.glyphEditCTX.lineWidth = 1;
 
             if (gsize > 0 && gsize < _UI.glyphEditCanvasSize) {

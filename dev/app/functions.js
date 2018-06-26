@@ -6,7 +6,7 @@ export {
     saveFile,
     clone, json, areEqual, makeCrisp, round, numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
     calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle,
-    getFirstID, generateNewID, getMyID, getLength,
+    getFirstID, generateNewID, getMyID, countObjectKeys,
     genEmailContent,
     kCombinations,
 };
@@ -17,7 +17,6 @@ export {
  * FUNCTIONS
  * some random general-use functions
  */
-debug(`\n FUNCTIONS.js - START`);
 
 
 // -------------------
@@ -590,7 +589,7 @@ function getMyID(obj) {
  * @param {object} obj
  * @return {number}
  */
-function getLength(obj) {
+function countObjectKeys(obj) {
     let len = 0;
     for (let key in obj) {
         if ( obj.hasOwnProperty(key)) len++;

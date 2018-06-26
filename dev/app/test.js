@@ -20,7 +20,6 @@ window.onload = loadTests;
  * TEST
  * controlls the test functionality for GS2 Test Suite
  */
-debug(`\n TEST.js - START`);
 
 
 let resultIcons = {
@@ -42,7 +41,8 @@ function loadTests() {
  */
 function afterLoadTests() {
     _UI.debug = true;
-    debug(`\n afterLoadTests - START`);
+    debug(`Starting tests...`);
+    // debug(`\n afterLoadTests - START`);
 
     let header = document.querySelector('#header');
     let results = document.querySelector('#results');
@@ -76,7 +76,7 @@ function afterLoadTests() {
     if (_TEST.autoRun) window.setTimeout(runTests, 10);
     else header.innerHTML += `<br><br><button onclick="runTests();">Run Tests</button>`;
 
-    debug(` afterLoadTests - END\n\n`);
+    // debug(` afterLoadTests - END\n\n`);
 }
 
 /**
@@ -93,7 +93,7 @@ function getResultSectionID(category) {
  * Runs the tests
  */
 function runTests() {
-    debug(`\n runTests - START`);
+    // debug(`\n runTests - START`);
 
     let currTest = 0;
 
@@ -128,7 +128,7 @@ function runTests() {
 
     window.setTimeout(runNextTest, 10);
 
-    debug(` runTests - END\n\n`);
+    // debug(` runTests - END\n\n`);
 }
 
 /**
@@ -212,4 +212,6 @@ function finishTests() {
             <span class="title">Passed</span>
         </div>
     `;
+
+    debug(`..done!`);
 }

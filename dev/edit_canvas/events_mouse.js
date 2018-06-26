@@ -322,7 +322,7 @@ function Tool_NewBasicShape() {
 
         if ( (Math.abs(tnbs.xMax-tnbs.xMin) > _GP.projectSettings.pointsize) &&
             (Math.abs(tnbs.yMax-tnbs.yMin) > _GP.projectSettings.pointsize) ) {
-            let count = (_UI.currentPage === 'components')? (getLength(_GP.components)) : getSelectedWorkItemShapes().length;
+            let count = (_UI.currentPage === 'components')? (countObjectKeys(_GP.components)) : getSelectedWorkItemShapes().length;
             let s = _UI.multiSelect.shapes.getSingleton();
 
             if (_UI.selectedTool==='newrect') {
@@ -374,7 +374,7 @@ function Tool_NewPath() {
 
         if (this.firstpoint) {
             // make a new shape with the new pathpoint
-            let count = (_UI.currentPage === 'components')? (getLength(_GP.components)) : getSelectedWorkItemShapes().length;
+            let count = (_UI.currentPage === 'components')? (countObjectKeys(_GP.components)) : getSelectedWorkItemShapes().length;
             this.newshape = addShape(new Shape({'name': ('Shape '+count), 'path': new Path()}));
             this.currpt = this.newshape.path.addPathPoint(newpoint);
         } else if (this.newshape) {

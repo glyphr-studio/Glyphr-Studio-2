@@ -448,7 +448,7 @@ class Shape {
 
     function turnSelectedShapeIntoAComponent() {
         let s = clone(_UI.multiSelect.shapes.getMembers());
-        let n = s.length === 1? ('Component ' + s[0].name) : ('Component ' + (getLength(_GP.components)+1));
+        let n = s.length === 1? ('Component ' + s[0].name) : ('Component ' + (countObjectKeys(_GP.components)+1));
 
         _UI.multiSelect.shapes.deleteShapes();
         let newid = createNewComponent(new Glyph({'shapes': s, 'name': n}));

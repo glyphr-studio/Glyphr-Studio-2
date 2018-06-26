@@ -30,7 +30,7 @@
     function createNewComponent(pglyph) {
         // debug('\n createNewComponent - START');
 
-        pglyph = pglyph || new Glyph({'name': 'Component ' + (getLength(_GP.components)+1)});
+        pglyph = pglyph || new Glyph({'name': 'Component ' + (countObjectKeys(_GP.components)+1)});
         let newid = generateNewID(_GP.components, 'com');
         _UI.selectedComponent = newid;
 

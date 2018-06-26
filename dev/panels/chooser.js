@@ -26,7 +26,7 @@
             asyncLoadChooserPanel();
             // _UI.glyphChooser.cache = make_GlyphChooser(_UI.glyphChooser.panel);
          } else if (_UI.currentPage === 'ligatures') {
-            let emptyligs = getLength(_GP.ligatures) === 0;
+            let emptyligs = countObjectKeys(_GP.ligatures) === 0;
             if (!emptyligs) {
                 content += make_GlyphChooser(gcp);
             }
@@ -46,7 +46,7 @@
                 content += '</div>';
             }
         } else if (_UI.currentPage === 'components') {
-            let emptycoms = getLength(_GP.components) === 0;
+            let emptycoms = countObjectKeys(_GP.components) === 0;
             if (!emptycoms) {
                 content += make_GlyphChooser(gcp);
             }
@@ -91,7 +91,7 @@
 
         if ( (gcdata.choices === 'all') ||
             (_UI.currentPage === 'glyph edit' && pluralGlyphRange()) ||
-            (_UI.currentPage === 'import svg' && (pluralGlyphRange() || getLength(_GP.components) || getLength(_GP.ligatures))) ) {
+            (_UI.currentPage === 'import svg' && (pluralGlyphRange() || countObjectKeys(_GP.components) || countObjectKeys(_GP.ligatures))) ) {
                 con += make_GlyphChooser_Header(gcdata.selected);
         }
 
@@ -202,19 +202,19 @@
         }
 
         if (ch === 'components' || ch === 'all') {
-            if (getLength(_GP.components)) {
+            if (countObjectKeys(_GP.components)) {
                 content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'components\');">';
                 content += 'Components&emsp;';
-                content += '<span class="units">(' + getLength(_GP.components) + ')</span>';
+                content += '<span class="units">(' + countObjectKeys(_GP.components) + ')</span>';
                 content += '</button>';
             }
         }
 
         if (ch === 'ligatures' || ch === 'all') {
-            if (getLength(_GP.ligatures)) {
+            if (countObjectKeys(_GP.ligatures)) {
                 content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'ligatures\');">';
                 content += 'Ligatures&emsp;';
-                content += '<span class="units">(' + getLength(_GP.ligatures) + ')</span>';
+                content += '<span class="units">(' + countObjectKeys(_GP.ligatures) + ')</span>';
                 content += '</button>';
             }
         }
