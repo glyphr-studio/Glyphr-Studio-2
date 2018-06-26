@@ -1,21 +1,18 @@
-/*
-    SatChooser
-
-    Shows a small in-context dialog box so that a user can choose a
-    color.  The colors displayed are fully saturated colors, in the
-    HSL sense.  The idea is that the UI can take this saturated color
-    and lighten or darken it as needed by certain other UI elements.
-
-    Define a function in your own code that get's passed to the
-    constructor.  This function will be called whenever the UI
-    element is triggered, and will be passed an arguments object.
-    You can add to that arguments object, but by default the two
-    properties 'colorobject' and 'colorstring' will exist.
-
+/**
+ * SatChooser
+ *
+ * Shows a small in-context dialog box so that a user can choose a
+ * color.  The colors displayed are fully saturated colors, in the
+ * HSL sense.  The idea is that the UI can take this saturated color
+ * and lighten or darken it as needed by certain other UI elements.
+ *
+ * Define a function in your own code that get's passed to the
+ * constructor.  This function will be called whenever the UI
+ * element is triggered, and will be passed an arguments object.
+ * You can add to that arguments object, but by default the two
+ * properties 'colorobject' and 'colorstring' will exist.
 */
-/* exported SatChooser */
-/* eslint-disable no-console */
-class SatChooser {
+export default class SatChooser {
     constructor({
         pointerSize = 20,
         borderSize = 10,
@@ -38,7 +35,7 @@ class SatChooser {
         this.height = this.width + this.pointerSize + this.borderSize;
         this.showSat = showSat;
         this.bhcID = bhcID;
-        this.borderColor = borderColor;        
+        this.borderColor = borderColor;
         this.clickCallbackArgs = {};
         this.cellSize = cellSize;
         this.screenx = -1000;

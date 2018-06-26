@@ -23,9 +23,9 @@ window.onload = loadTests;
 
 
 let resultIcons = {
-    pass: 2714,
-    fail: 2716,
-    didNotRun: 2718,
+    pass: '2714',
+    fail: '2716',
+    didNotRun: '2756',
 };
 
 /**
@@ -41,7 +41,7 @@ function loadTests() {
  */
 function afterLoadTests() {
     _UI.debug = true;
-    debug(`Starting tests...`);
+    debug(`Starting tests...\n`);
     // debug(`\n afterLoadTests - START`);
 
     let header = document.querySelector('#header');
@@ -115,6 +115,7 @@ function runTests() {
         } catch (error) {
             if (currResultSection) {
                 currResultSection.innerHTML += addTestResult('didNotRun', error.message, _TEST.testList[currTest].name);
+                console.log(error);
             } else {
                 console.warn(`Test ${_TEST.testList[currTest].name} \n${error.message}`);
             }
@@ -157,8 +158,8 @@ _TEST.is = function(leftHand) {
  */
 _TEST.expression = function(ex) {
     return {
-        description: 'Expression evaluated to: ' + JSON.stringify(ex),
-        result: ex,
+        description: `Expression evaluated to: ${!!(ex)}`,
+        result: !!ex,
     };
 };
 
@@ -213,5 +214,5 @@ function finishTests() {
         </div>
     `;
 
-    debug(`..done!`);
+    debug(`\n...done!`);
 }

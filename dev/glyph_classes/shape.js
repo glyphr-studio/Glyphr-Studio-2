@@ -91,8 +91,8 @@ class Shape {
         re += '</svg>';
         return re;
     }
-    genPostScript(lastx, lasty) {
-        return this.path ? this.path.genPathPostScript(lastx, lasty) : { 're': '', 'lastx': lastx, 'lasty': lasty };
+    makePostScript(lastx, lasty) {
+        return this.path ? this.path.makePathPostScript(lastx, lasty) : { 're': '', 'lastx': lastx, 'lasty': lasty };
     }
     makeOpentypeJsPath(otpath) {
         return this.path.makeOpentypeJsPath(otpath);
@@ -139,7 +139,7 @@ class Shape {
         this.path.reverseWinding();
     }
     getMaxes() {
-        return this.path.getMaxes();
+        return this.path.maxes;
     }
     calcMaxes() {
         this.path.calcMaxes();

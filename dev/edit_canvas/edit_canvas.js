@@ -887,15 +887,9 @@
         }
 
         // Check for which to set
-        if (isVal(oa.dx)) {
- v[sc].dx = oa.dx;
-}
-        if (isVal(oa.dy)) {
- v[sc].dy = oa.dy;
-}
-        if (isVal(oa.dz)) {
- v[sc].dz = oa.dz;
-}
+        if (isVal(oa.dx)) v[sc].dx = oa.dx;
+        if (isVal(oa.dy)) v[sc].dy = oa.dy;
+        if (isVal(oa.dz)) v[sc].dz = oa.dz;
     }
 
     function getView(calledBy) {

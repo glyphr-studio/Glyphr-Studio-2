@@ -585,12 +585,12 @@
     Glyph.prototype.getSVGpathData = function() {
         if (this.cache.svgpathdata) return this.cache.svgpathdata;
 
-        this.cache.svgpathdata = this.makeSVGpathData();
+        this.cache.svgpathdata = this.makeSVGPathData();
 
         return this.cache.svgpathdata;
     };
 
-    Glyph.prototype.makeSVGpathData = function() {
+    Glyph.prototype.makeSVGPathData = function() {
         if (this.cache.svg) return this.cache.svg;
 
         let sl = this.shapes;

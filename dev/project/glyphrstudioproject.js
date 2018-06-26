@@ -1,6 +1,6 @@
 import Guide from '../edit_canvas/guide.js';
 import {clone} from '../app/functions.js';
-import {genProjectID} from './project_functions.js';
+import {makeProjectID} from './project_functions.js';
 
 /* eslint-disable camelcase*/
 
@@ -151,7 +151,7 @@ export default class GlyphrStudioProject {
             this.projectSettings = merge(this.projectSettings, newProject.projectSettings);
             this.projectSettings.glyphrange.custom = newProject.projectSettings.glyphrange.custom || [];
         }
-        this.projectSettings.projectid = this.projectSettings.projectid || genProjectID();
+        this.projectSettings.projectid = this.projectSettings.projectid || makeProjectID();
         this.projectSettings.descent = -1 * Math.abs(this.projectSettings.descent);
         // debug('\t finished merging projectSettings');
         // debug(this.projectSettings);

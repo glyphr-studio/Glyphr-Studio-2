@@ -7,7 +7,7 @@ export {
     clone, json, areEqual, makeCrisp, round, numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
     calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle,
     getFirstID, generateNewID, getMyID, countObjectKeys,
-    genEmailContent,
+    makeEmailContent,
     kCombinations,
 };
 
@@ -607,7 +607,7 @@ function countObjectKeys(obj) {
  * Generates the content for the "email us" link
  * @return {string}
  */
-function genEmailContent() {
+function makeEmailContent() {
     let con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
     %0A%0A%0A%0A___________________________________________%0A
     version %09Glyphr Studio  ${_UI.thisGlyphrStudioVersionNum} %0A

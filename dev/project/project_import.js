@@ -413,7 +413,7 @@ function newGlyphrStudioProject() {
 
     _GP.projectSettings.version = _UI.thisGlyphrStudioVersion;
     _GP.projectSettings.versionnum = _UI.thisGlyphrStudioVersionNum;
-    _GP.projectSettings.projectid = genProjectID();
+    _GP.projectSettings.projectid = makeProjectID();
 
     getGlyph('0x0020', true).isautowide = false;
     getGlyph('0x0020', true).glyphwidth = round(_GP.projectSettings.upm/3);

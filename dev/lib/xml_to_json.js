@@ -7,7 +7,7 @@
  * @param {string} inputXML - XML data
  * @return {string}
  */
-function XMLtoJSON(inputXML){
+export default function XMLtoJSON(inputXML){
     var console_debug = false;
     var XMLdoc, XMLerror;
     // log('convertXMLtoJSON \t PASSED\n' + inputXML);
@@ -91,7 +91,7 @@ function XMLtoJSON(inputXML){
     }
 
     function trim(text) {
-        try { 
+        try {
             text = text.replace(/^\s+|\s+$/g, '');
             return text.replace(/(\r\n|\n|\r|\t)/gm,'');
         } catch(e) { return ''; }

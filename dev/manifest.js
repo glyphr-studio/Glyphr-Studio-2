@@ -136,18 +136,18 @@ let manifest = [
             'panels.css',
         ],
     },
+    */
 
     {
         path: 'lib',
         files: [
-            'satchooser.js',
-            'samples.js',
+            // 'satchooser.js',
+            // 'samples.js',
             'unicode_names.js',
             'xml_to_json.js',
-            'opentypejs_0-8-0.js',
+            'opentypejs_0-9-0.js',
         ],
     },
-*/
 ];
 
 export default manifest;

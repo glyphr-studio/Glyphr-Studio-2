@@ -1,8 +1,8 @@
 import {decToHex} from '../app/unicode.js';
 import {round} from '../app/functions.js';
 
-export {saveGlyphrProjectFile, cloneForSaveData, genProjectID,
-    genDateStampSuffix, glyphRangeIterator, calcFontMaxes};
+export {saveGlyphrProjectFile, cloneForSaveData, makeProjectID,
+    makeDateStampSuffix, glyphRangeIterator, calcFontMaxes};
 
 /**
  * Save a Glyphr Project Text File
@@ -27,7 +27,7 @@ function saveGlyphrProjectFile(overwrite) {
     else savedata = JSON.stringify(savedata);
 
     // debug('saveGlyphrProjectFile - \n'+savedata);
-    let fname = _GP.projectSettings.name + ' - Glyphr Project - ' + genDateStampSuffix() + '.txt';
+    let fname = _GP.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
 
     saveFile(fname, savedata);
 
@@ -57,7 +57,7 @@ function cloneForSaveData(cobj) {
  * project through file name and project name re-naming
  * @return {string} - ID
  */
-function genProjectID() {
+function makeProjectID() {
     let j = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
     let re = 'g_';
 
@@ -72,7 +72,7 @@ function genProjectID() {
  * Generates a date suffix for file saves
  * @return {string}
  */
-function genDateStampSuffix() {
+function makeDateStampSuffix() {
     let d = new Date();
     let yr = d.getFullYear();
     let mo = d.getMonth()+1;

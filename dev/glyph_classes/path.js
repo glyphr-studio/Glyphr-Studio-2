@@ -4,6 +4,7 @@ import Segment from './segment.js';
 import Handle from './handle.js';
 import PathPoint from './pathpoint.js';
 import {clone, round, isVal, hasNonValues} from '../app/functions.js';
+import {coordsAreEqual} from './coord.js';
 // import {json} from '../app/functions.js';
 // import debug from '../app/functions.js';
 import {getOverallMaxes} from './maxes.js';
@@ -149,13 +150,13 @@ import {getOverallMaxes} from './maxes.js';
      * @return {object}
      */
     get maxes() {
-        // debug('\n Path.getMaxes - START');
+        // debug('\n Path.maxes - START');
         if (hasNonValues(this._maxes)) {
             // debug('\t no cache, calcMaxes');
             this.calcMaxes();
         }
         // debug('\t returning ' + json(this.maxes, true));
-        // debug(' Path.getMaxes - END\n');
+        // debug(' Path.maxes - END\n');
         return new Maxes(this._maxes);
     }
 
@@ -168,7 +169,7 @@ import {getOverallMaxes} from './maxes.js';
             return this._cache.svgpathdata;
         }
 
-        this._cache.svgpathdata = this.makeSVGpathData();
+        this._cache.svgpathdata = this.makeSVGPathData();
         return this._cache.svgpathdata;
     }
 
@@ -413,6 +414,7 @@ import {getOverallMaxes} from './maxes.js';
      * Rotate this path about a point
      * @param {number} angle - how much to rotate
      * @param {Coord} about - x/y center of rotation
+     * @return {Path} - reference to this path
      */
     rotate(angle, about) {
         // debug('\n Path.rotate - START');
@@ -424,6 +426,7 @@ import {getOverallMaxes} from './maxes.js';
         }
         this.changed();
         // debug(' Path.rotate - END\n');
+        return this;
     }
 
     /**
@@ -590,7 +593,7 @@ import {getOverallMaxes} from './maxes.js';
      * @param {number} lasty - Last y value in the sequence
      * @return {string}
      */
-    genPathPostScript(lastx, lasty) {
+    makePathPostScript(lastx = 0, lasty = 0) {
         if (!this.pathPoints) {
             return {'re': '', 'lastx': lastx, 'lasty': lasty};
         }
@@ -606,7 +609,7 @@ import {getOverallMaxes} from './maxes.js';
         let trr = '';
         let re = '\t\t\t\t' + (this.pathPoints[0].p.x - lastx) + ' ' + (this.pathPoints[0].p.y - lasty) + ' rmoveto \n';
 
-        // debug('GENPATHPOSTSCRIPT:\n\t ' + re);
+        // debug('makePathPostScript:\n\t ' + re);
         for (let cp = 0; cp < this.pathPoints.length; cp++) {
             p1 = this.pathPoints[cp];
             // p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
@@ -634,8 +637,8 @@ import {getOverallMaxes} from './maxes.js';
      * @param {string} glyphName - Name of the glyph this path belongs to
      * @return {string}
      */
-    makeSVGpathData(glyphName = 'not specified') {
-        // debug('\n Path.makeSVGpathData - START');
+    makeSVGPathData(glyphName = 'not specified') {
+        // debug('\n Path.makeSVGPathData - START');
         // debug('\t Glyph ' + glyphName);
         // debug('\t this.pathPoints: ' + json(this.pathPoints, true));
 
@@ -653,7 +656,7 @@ import {getOverallMaxes} from './maxes.js';
         let trr = '';
         let re = 'M' + round(this.pathPoints[0].p.x, roundValue) + ',' + round(this.pathPoints[0].p.y, roundValue);
 
-        // debug('GENPATHPOSTSCRIPT:\n\t ' + re);
+        // debug('makePathPostScript:\n\t ' + re);
         if (re.indexOf('NaN') > -1) {
             console.warn(glyphName + ' PathPoint 0 MOVE has NaN: ' + re);
             // debug(this.pathPoints[0]);
@@ -674,7 +677,7 @@ import {getOverallMaxes} from './maxes.js';
         re += 'Z';
 
         // debug('\t returning: ' + re);
-        // debug('Path.makeSVGpathData - END\n');
+        // debug('Path.makeSVGPathData - END\n');
         return re;
     }
 
@@ -792,7 +795,7 @@ import {getOverallMaxes} from './maxes.js';
      * @param {number} x - x value to check
      * @param {number} y - y value to check
      * @param {boolean} nohandles - true = only check points
-     * @return {object} - point reference and a p/h1/h2 string
+     * @return {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
      */
     isOverControlPoint(x, y, nohandles) {
         let a = this.pathPoints || [];
@@ -814,7 +817,8 @@ import {getOverallMaxes} from './maxes.js';
         // debug('\n Path.isOverFirstPoint - START');
         // debug('\t Passed ' + x + '/' + y);
         let a = this.pathPoints[0];
-        let hp = _GP.projectSettings.pointsize / getView('Path.isOverFirstPoint').dz;
+        let hp = 1;
+        if (_GP.projectSettings) hp = _GP.projectSettings.pointsize/getView('Path.isOverControlPoint').dz;
         // debug('\t Checking ' + a.p.x + '/' + a.p.y + ' around ' + hp);
 
         if (!a) return false;
@@ -1113,7 +1117,7 @@ import {getOverallMaxes} from './maxes.js';
         for (let s = 0; s < this.pathPoints.length; s++) {
             // debug('\t ++++++ starting seg ' + s);
             seg = this.getSegment(s);
-            tbounds = seg.getMaxes();
+            tbounds = seg.maxes;
             // debug('\t tseg maxes ' + json(tbounds, true));
             // debug('\t this maxes ' + json(this._maxes, true));
             this._maxes = getOverallMaxes([this._maxes, tbounds]);
@@ -1213,10 +1217,10 @@ export function findPathIntersections(p1, p2) {
     // debug(intersects);
 
     // Maxes within boundaries
-    if (!maxesOverlap(p1.getMaxes(), p2.getMaxes())) {
+    if (!maxesOverlap(p1.maxes, p2.maxes)) {
         // debug(' findPathIntersections - paths dont\'t overlap - END\n');
-        // debug(p1.getMaxes());
-        // debug(p2.getMaxes());
+        // debug(p1.maxes);
+        // debug(p2.maxes);
         return intersects;
     }
 
@@ -1296,7 +1300,7 @@ function findPathPointBoundaryIntersections(p1, p2) {
      * @param {Path} against - check against these maxes
      */
     function check(chk, against) {
-        let m = against.getMaxes();
+        let m = against.maxes;
         let tpp;
         for (let pp=0; pp<chk.pathPoints.length; pp++) {
             tpp = chk.pathPoints[pp];

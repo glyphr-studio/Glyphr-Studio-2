@@ -71,7 +71,7 @@ export default class PathPoint {
 
     /**
      * Get the first handle
-     * @return {Coord}
+     * @return {Handle}
      */
     get h1() {
         return this._h1;
@@ -79,7 +79,7 @@ export default class PathPoint {
 
     /**
      * Get the second handle
-     * @return {Coord}
+     * @return {Handle}
      */
     get h2() {
         return this._h2;
@@ -122,6 +122,30 @@ export default class PathPoint {
     // -------------------------------------------------------
     // SETTERS
     // -------------------------------------------------------
+
+    /**
+     * set the main point
+     * @param {Coord} newp
+     */
+    set p(newp) {
+        this._p = new Coord(newp);
+    }
+
+    /**
+     * set the first handle
+     * @param {Handle} newh1
+     */
+    set h1(newh1) {
+        this._h1 = new Handle(newh1);
+    }
+
+    /**
+     * set the second handle
+     * @param {Handle} newh2
+     */
+    set h2(newh2) {
+        this._h2 = new Handle(newh2);
+    }
 
     /**
      * Change a point's type
@@ -185,7 +209,7 @@ export default class PathPoint {
      * @param {number} x - mouse x possition
      * @param {number} y - mouse y possition
      * @param {boolean} nohandles - Eliminates checking for handles in multi-select situations
-     * @return {object}
+     * @return {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
      */
     isOverControlPoint(x, y, nohandles) {
         let hp = 1;

@@ -148,6 +148,7 @@ export function assemble(loadTests = false, callback = new function() {}) {
 
     let tests = [];
     let newElement;
+    let nonModules = 'opentypejs';
 
     // debug(manifest);
 
@@ -160,7 +161,7 @@ export function assemble(loadTests = false, callback = new function() {}) {
             if (suffix === 'js' || suffix === 'map') {
                 newElement = document.createElement('script');
                 newElement.setAttribute('src', `${directory.path}/${file}`);
-                newElement.setAttribute('type', 'module');
+                if (file.indexOf(nonModules) === -1) newElement.setAttribute('type', 'module');
                 document.getElementsByTagName('head')[0].appendChild(newElement);
             } else if (suffix === 'css') {
                 newElement = document.createElement('link');

@@ -548,7 +548,7 @@
                     '<div class="navtargeticon">'+makeIcon({'name': 'nav_help', 'color': iconcolor, 'hovercolor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
                     'help</a>';
             } else if (navarr[i] === 'email') {
-                newsub += ('<a href="mailto:mail@glyphrstudio.com?subject=Hi%20Glyphr%20Studio&amp;body='+genEmailContent()+'" target="_blank" class="navpanellink">Email the glyphr studio team</a><br>');
+                newsub += ('<a href="mailto:mail@glyphrstudio.com?subject=Hi%20Glyphr%20Studio&amp;body='+makeEmailContent()+'" target="_blank" class="navpanellink">Email the glyphr studio team</a><br>');
             } else if (navarr[i] === 'newproject') {
                 newsub += ('<a href="http://glyphrstudio.com/online" class="navpanellink" target="_blank">Open a new project (Ctrl + O)</a><br>');
             } else if (navarr[i] === 'feature') {

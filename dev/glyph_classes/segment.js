@@ -22,7 +22,14 @@ export {findSegmentIntersections, ixToCoord, segmentsAreEqual};
 export default class Segment {
     /**
      * Create a Segment
-     * @param {*} oa
+     * @param {number} p1x - First point x
+     * @param {number} p1y - First point y
+     * @param {number} p2x - First handle x
+     * @param {number} p2y - First handle y
+     * @param {number} p3x - Second handle x
+     * @param {number} p3y - Second handle y
+     * @param {number} p4x - Second point x
+     * @param {number} p4y - Second point y
      */
     constructor({p1x = 0, p1y = 0, p2x = 0, p2y = 0, p3x = 0, p3y = 0, p4x = 0, p4y = 0} = {}) {
         this.p1x = numSan(p1x);
@@ -34,14 +41,12 @@ export default class Segment {
         this.p3x = isVal(p3x) ? numSan(p3x) : this.p3x;
         this.p3y = isVal(p3y) ? numSan(p3y) : this.p3y;
 
+        // cache
+        this.cache = {};
+
         this.line = this.isLine();
 
         this._maxes = this.calcMaxes();
-
-        // cache
-        oa.cache = oa.cache || {};
-        this.cache = {};
-        this.cache.length = oa.cache.length || false;
     }
 
     /**

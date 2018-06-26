@@ -12,7 +12,7 @@
         let md = _GP.metadata;
         let family = md.font_family;
         let familyid = family.replace(/ /g, '_');
-        let timestamp = genDateStampSuffix();
+        let timestamp = makeDateStampSuffix();
         let timeoutput = timestamp.split('-');
         timeoutput[0] = timeoutput[0].replace(/\./g, '-');
         timeoutput[1] = timeoutput[1].replace(/\./g, ':');

@@ -307,13 +307,13 @@
         return !failed;
     };
 
-    ComponentInstance.prototype.genPostScript = function(lastx, lasty) {
+    ComponentInstance.prototype.makePostScript = function(lastx, lasty) {
         // debug('GENLINKEDPOSTSCRIPT');
         let g = this.getTransformedGlyph();
         let re, part;
 
         for (let s=0; s<g.shapes.length; s++) {
-            part = g.shapes[s].genPostScript(lastx, lasty);
+            part = g.shapes[s].makePostScript(lastx, lasty);
             lastx = part.lastx;
             lasty = part.lasty;
             re += part.re;
