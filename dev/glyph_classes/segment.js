@@ -1,6 +1,7 @@
 import Maxes from './maxes.js';
 import Coord from './coord.js';
-import {numSan, duplicates, isVal, round} from '../app/functions.js';
+import {coordsAreEqual} from './coord.js';
+import {clone, numSan, duplicates, isVal, round} from '../app/functions.js';
 
 export {findSegmentIntersections, ixToCoord, segmentsAreEqual};
 
@@ -241,15 +242,7 @@ export default class Segment {
             // debug('\t distance is ' + sp.distance);
             if (sp && sp.distance < threshold) {
                 // debug('\t splitting at ' + sp.split);
-                // if(this.line === 'diagonal'){
-                //     // debug('\t splitting diagonal');
-                //     var re = this.splitAtTime(sp.split);
-                //     re[0] = re[0].convertToLine();
-                //     re[1] = re[1].convertToLine();
-                //     return re;
-                // } else {
                 return this.splitAtTime(sp.split);
-                // }
             }
         }
         // debug(' Segment.splitAtCoord - returning false - END\n');
@@ -261,23 +254,22 @@ export default class Segment {
      * @param {number} t - decimal from 0 to 1 representing how far along the curve to split
      * @return {array} - Array with two segments resulting from the split
      */
-    splitAtTime(t) {
+    splitAtTime(t = 0.5) {
         // debug('\n Segment.splitAtTime - START');
-        let fs = t || 0.5;
-        let rs = (1 - fs);
+        let rs = (1 - t);
         // Do some math
-        let x12 = (this.p1x * rs) + (this.p2x * fs);
-        let y12 = (this.p1y * rs) + (this.p2y * fs);
-        let x23 = (this.p2x * rs) + (this.p3x * fs);
-        let y23 = (this.p2y * rs) + (this.p3y * fs);
-        let x34 = (this.p3x * rs) + (this.p4x * fs);
-        let y34 = (this.p3y * rs) + (this.p4y * fs);
-        let x123 = (x12 * rs) + (x23 * fs);
-        let y123 = (y12 * rs) + (y23 * fs);
-        let x234 = (x23 * rs) + (x34 * fs);
-        let y234 = (y23 * rs) + (y34 * fs);
-        let x1234 = (x123 * rs) + (x234 * fs);
-        let y1234 = (y123 * rs) + (y234 * fs);
+        let x12 = (this.p1x * rs) + (this.p2x * t);
+        let y12 = (this.p1y * rs) + (this.p2y * t);
+        let x23 = (this.p2x * rs) + (this.p3x * t);
+        let y23 = (this.p2y * rs) + (this.p3y * t);
+        let x34 = (this.p3x * rs) + (this.p4x * t);
+        let y34 = (this.p3y * rs) + (this.p4y * t);
+        let x123 = (x12 * rs) + (x23 * t);
+        let y123 = (y12 * rs) + (y23 * t);
+        let x234 = (x23 * rs) + (x34 * t);
+        let y234 = (y23 * rs) + (y34 * t);
+        let x1234 = (x123 * rs) + (x234 * t);
+        let y1234 = (y123 * rs) + (y234 * t);
         // Return two new Segments
         return [
             new Segment({
@@ -358,7 +350,9 @@ export default class Segment {
      * @param {number} threshold - how close to look
      * @return {object} - collection of results
      */
-    getSplitFromCoord(coord, threshold) {
+    getSplitFromCoord(coord, threshold = 1) {
+        // debug(`\n getSplitFromCoord - START`);
+
         let grains = this.getQuickLength() * 1000;
         let mindistance = 999999999;
         let re = false;
@@ -367,7 +361,10 @@ export default class Segment {
 
         for (let t = 0; t < 1; t += (1 / grains)) {
             check = this.getCoordFromSplit(t);
+            // debug(`\t checking x:${check.x}\ty:${check.y}\tt${t}`);
+
             d = Math.sqrt(((check.x - coord.x) * (check.x - coord.x)) + ((check.y - coord.y) * (check.y - coord.y)));
+
             if (d < mindistance) {
                 mindistance = d;
                 re = {
@@ -379,6 +376,7 @@ export default class Segment {
                 if (threshold && re.distance < threshold) return re;
             }
         }
+        // debug(` getSplitFromCoord - END\n\n`);
         return re;
     }
 
@@ -423,8 +421,7 @@ export default class Segment {
      * @param {number} t - between 0 and 1
      * @return {Coord}
      */
-    getCoordFromSplit(t) {
-        t = t || 0.5;
+    getCoordFromSplit(t = 0.5) {
         let rs = (1 - t);
         // Do some math
         let x12 = (this.p1x * rs) + (this.p2x * t);

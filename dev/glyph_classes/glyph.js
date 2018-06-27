@@ -640,11 +640,11 @@
         draw_PathPoints(allpoints, _UI.colors.blue);
     };
 
-    Glyph.prototype.isOverControlPoint = function(x, y, nohandles) {
+    Glyph.prototype.isOverControlPoint = function(x, y, targetSize, noHandles) {
         let re = false;
         for (let s=0; s<this.shapes.length; s++) {
             if (this.shapes[s].objtype !== 'componentinstance') {
-                re = this.shapes[s].path.isOverControlPoint(x, y, nohandles);
+                re = this.shapes[s].path.isOverControlPoint(x, y, targetSize, noHandles);
                 if (re) return re;
             }
         }

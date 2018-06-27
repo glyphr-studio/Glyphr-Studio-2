@@ -80,13 +80,18 @@
 
     .testResult {
         animation: fadein 1s;
-        padding: 2px 16px 4px 6px;
+        padding: 2px 6px 4px 6px;
         border-style: solid;
         border-width: 1px;
         border-radius: 3px;
         margin:0px 10px 10px 0px;
         display: inline-block;
         cursor: default;
+        box-shadow: none;
+    }
+
+    .testResult:hover {
+        box-shadow: rgba(0,0,0,0.1) -1px 1px 4px;
     }
 
     .pass {

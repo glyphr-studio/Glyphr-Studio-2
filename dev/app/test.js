@@ -104,20 +104,29 @@ function runTests() {
             return;
         }
 
+        let start;
+        let finish;
         let test;
         let currResultSection = document.querySelector(`#${getResultSectionID(_TEST.testList[currTest].category)}`);
 
         try {
+            start = new Date().getTime();
             test = _TEST.testList[currTest].assertion();
-            currResultSection.innerHTML += addTestResult(test.result, test.description, _TEST.testList[currTest].name);
+            finish = new Date().getTime();
+            currResultSection.innerHTML += addTestResult(
+                test.result, test.description, _TEST.testList[currTest].name, (finish-start)
+            );
             if (test.result) _TEST.succeeded++;
-            else _TEST.failed++;
+            else {
+                _TEST.failed++;
+                console.warn(`Test ${_TEST.testList[currTest].name}`);
+                console.log(test.description);
+            }
         } catch (error) {
+            console.warn(`Test ${_TEST.testList[currTest].name}`);
+            console.log(error);
             if (currResultSection) {
                 currResultSection.innerHTML += addTestResult('didNotRun', error.message, _TEST.testList[currTest].name);
-                console.log(error);
-            } else {
-                console.warn(`Test ${_TEST.testList[currTest].name} \n${error.message}`);
             }
             _TEST.didNotRun++;
         }
@@ -168,20 +177,19 @@ _TEST.expression = function(ex) {
  * @param {string} result
  * @param {string} message
  * @param {string} title
+ * @param {number} durration
  * @return {string}
  */
-function addTestResult(result, message, title) {
+function addTestResult(result, message, title, durration = 0) {
     let resultClass;
 
     if (result === true) resultClass = 'pass';
     else if (result === false) resultClass = 'fail';
     else resultClass = 'didNotRun';
 
-    if (result !== true) console.warn(`Test ${title} \n${message}`);
-
     return `<span class="testResult ${resultClass}" title='${message}'>
         <span class="icon">&#x${resultIcons[resultClass]};</span>
-        ${title}
+        ${title}&nbsp;(${durration})
     </span>`;
 }
 

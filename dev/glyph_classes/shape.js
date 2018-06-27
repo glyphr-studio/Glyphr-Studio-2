@@ -112,8 +112,8 @@ class Shape {
     setShapeSize(nx, ny, ratiolock) {
         this.path.setPathSize(nx, ny, ratiolock);
     }
-    isOverControlPoint(x, y, nohandles) {
-        return this.path.isOverControlPoint(x, y, nohandles);
+    isOverControlPoint(x, y, targetSize, noHandles) {
+        return this.path.isOverControlPoint(x, y, targetSize, noHandles);
     }
     flipEW(mid) {
         this.path.flipEW(mid);

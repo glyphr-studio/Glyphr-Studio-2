@@ -1,5 +1,4 @@
 import Path from './path.js';
-// import debug from '../app/functions.js';
 
 // It's a circle!
 _TEST.globals.testPathPoints = [

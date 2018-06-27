@@ -28,6 +28,8 @@ _UI.eventhandlers = {
     'multi': false,
 };
 
+/* eslint-disable require-jsdoc */
+
 function initEventHandlers() {
     // debug('\n initEventHandlers - START');
 
@@ -378,7 +380,8 @@ function Tool_NewPath() {
             this.newshape = addShape(new Shape({'name': ('Shape '+count), 'path': new Path()}));
             this.currpt = this.newshape.path.addPathPoint(newpoint);
         } else if (this.newshape) {
-            if (this.newshape.path.isOverFirstPoint(cx_sx(eh.mousex), cy_sy(eh.mousey))) {
+            let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
+            if (this.newshape.path.isOverFirstPoint(cx_sx(eh.mousex), cy_sy(eh.mousey), targetSize)) {
                 // clicked on an existing control point in this path
                 // if first point - close the path
 
@@ -412,6 +415,7 @@ function Tool_NewPath() {
 
     this.mousemove = function(ev) {
         let eh = _UI.eventhandlers;
+        let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
 
         if (this.dragging) {
             // avoid really small handles
@@ -430,7 +434,7 @@ function Tool_NewPath() {
             eh.uqhaschanged = true;
 
             redraw({calledBy: 'Event Handler Tool_NewPath mousemove'});
-        } else if (this.newshape && this.newshape.path.isOverFirstPoint(cx_sx(eh.mousex), cy_sy(eh.mousey))) {
+        } else if (this.newshape && this.newshape.path.isOverFirstPoint(cx_sx(eh.mousex), cy_sy(eh.mousey), targetSize)) {
             setCursor('penSquare');
         } else {
             setCursor('penPlus');
@@ -472,7 +476,8 @@ function Tool_PathEdit() {
         let eh = _UI.eventhandlers;
         eh.lastx = eh.mousex;
         eh.lasty = eh.mousey;
-        this.controlpoint = getSelectedWorkItem().isOverControlPoint(cx_sx(eh.mousex), cy_sy(eh.mousey), eh.multi);
+        let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
+        this.controlpoint = getSelectedWorkItem().isOverControlPoint(cx_sx(eh.mousex), cy_sy(eh.mousey), targetSize, eh.multi);
         let s = getClickedShape(eh.mousex, eh.mousey);
 
         // debug(this.controlpoint);
@@ -563,7 +568,8 @@ function Tool_PathEdit() {
 
         checkForMouseOverHotspot(eh.mousex, eh.mousey);
 
-        let cp = _UI.multiSelect.shapes.isOverControlPoint(cx_sx(eh.mousex), cy_sy(eh.mousey));
+        let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
+        let cp = _UI.multiSelect.shapes.isOverControlPoint(cx_sx(eh.mousex), cy_sy(eh.mousey), targetSize);
         if (cp.type === 'p') setCursor('penSquare');
         else if (_UI.multiSelect.points.isSelected(cp.point)) setCursor('penCircle');
         if (!cp && eh.multi) setCursor('penPlus');

@@ -368,11 +368,11 @@ import _UI from '../app/settings.js';
         else return false;
     };
 
-    _UI.multiSelect.shapes.isOverControlPoint = function(x, y, nohandles) {
+    _UI.multiSelect.shapes.isOverControlPoint = function(x, y, targetSize, noHandles) {
         if (this.members.length === 0) return false;
         let re = false;
         for (let m=0; m<this.members.length; m++) {
-            re = this.members[m].isOverControlPoint(x, y, nohandles);
+            re = this.members[m].isOverControlPoint(x, y, targetSize, noHandles);
             if (re) return re;
         }
 

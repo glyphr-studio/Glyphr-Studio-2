@@ -371,9 +371,9 @@
         return c;
     };
 
-    ComponentInstance.prototype.isOverControlPoint = function(x, y, nohandles) {
- return false;
-};
+    ComponentInstance.prototype.isOverControlPoint = function(x, y, targetSize, noHandles) {
+        return false;
+    };
 
 // -------------------------------------------------------
 // COMPONENT INSTANCE METHODS

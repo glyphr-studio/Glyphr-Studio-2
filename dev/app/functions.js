@@ -1,4 +1,3 @@
-
 export {debug as default};
 export {
     makePanelSuperTitle,
@@ -17,6 +16,45 @@ export {
  * FUNCTIONS
  * some random general-use functions
  */
+
+ /**
+ * Wrapper for console.log that does some extra fancy stuff, and
+ * also adheres to a global switch in settings
+ * @param {string} message - message to show in the console
+ * @param {boolean} force - show message even if _UI.devmode = false
+ */
+function debug(message, force) {
+    // if (!_UI.devMode) return;
+
+    if (_UI.debug || force) {
+        if (typeof message === 'string') {
+            message = message.replace(/&lt;/gi, '<');
+            message = message.replace(/&gt;/gi, '>');
+
+            if (message === 'group') {
+                console.group();
+                return;
+            } else if (message === 'groupCollapsed') {
+                console.groupCollapsed();
+                return;
+            } else if (_UI.debugAutoGroup && message.indexOf('- START') > 0) {
+                console.group(message.substr(2).replace(' - START', ''));
+                return;
+            } else if (message === 'groupEnd'|| (_UI.debugAutoGroup && message.indexOf('- END') > 0)) {
+                console.groupEnd(message);
+                return;
+            } else {
+                console.log(message);
+            }
+        } else if (typeof message === 'object') {
+            if (_UI.debugTableObjects) console.table(message);
+            else console.log(message);
+        }
+    }
+}
+
+/* tired of importing this everywhere */
+window.debug = debug;
 
 
 // -------------------
@@ -68,43 +106,6 @@ function makeSuperTitleSeperator() {
     re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
     re += '</span>';
     return re;
-}
-
-
-/**
- * Wrapper for console.log that does some extra fancy stuff, and
- * also adheres to a global switch in settings
- * @param {string} message - message to show in the console
- * @param {boolean} force - show message even if _UI.devmode = false
- */
-function debug(message, force) {
-    // if (!_UI.devMode) return;
-
-    if (_UI.debug || force) {
-        if (typeof message === 'string') {
-            message = message.replace(/&lt;/gi, '<');
-            message = message.replace(/&gt;/gi, '>');
-
-            if (message === 'group') {
-                console.group();
-                return;
-            } else if (message === 'groupCollapsed') {
-                console.groupCollapsed();
-                return;
-            } else if (_UI.debugAutoGroup && message.indexOf('- START') > 0) {
-                console.group(message.substr(2).replace(' - START', ''));
-                return;
-            } else if (message === 'groupEnd'|| (_UI.debugAutoGroup && message.indexOf('- END') > 0)) {
-                console.groupEnd(message);
-                return;
-            } else {
-                console.log(message);
-            }
-        } else if (typeof message === 'object') {
-            if (_UI.debugTableObjects) console.table(message);
-            else console.log(message);
-        }
-    }
 }
 
 

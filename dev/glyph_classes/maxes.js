@@ -1,4 +1,3 @@
-// import debug from '../app/functions.js';
 import {isVal} from '../app/functions.js';
 
 /**

@@ -1,7 +1,6 @@
 import Coord from './coord.js';
 import Handle from './handle.js';
 import {round, rotate} from '../app/functions.js';
-// import debug from '../app/functions.js';
 
 /**
  * Path Point
@@ -208,28 +207,30 @@ export default class PathPoint {
      * Checks to see if there is a control point where the mouse is
      * @param {number} x - mouse x possition
      * @param {number} y - mouse y possition
-     * @param {boolean} nohandles - Eliminates checking for handles in multi-select situations
+     * @param {number} targetSize - radius around the point to return true
+     * @param {boolean} noHandles - Eliminates checking for handles in multi-select situations
      * @return {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
      */
-    isOverControlPoint(x, y, nohandles) {
-        let hp = 1;
-        if (_GP.projectSettings) hp = _GP.projectSettings.pointsize/getView('Path.isOverControlPoint').dz;
+    isOverControlPoint(x = 0, y = 0, targetSize = 3, noHandles = false) {
 
-        if ( ((this.p.x+hp) > x) && ((this.p.x-hp) < x) && ((this.p.y+hp) > y) && ((this.p.y-hp) < y) ) {
-            // debug('PathPoint.isOverControlPoint - Returning P1');
+        if (((this.p.x+targetSize) > x) && ((this.p.x-targetSize) < x) &&
+            ((this.p.y+targetSize) > y) && ((this.p.y-targetSize) < y)) {
+            // debug('PattargetSizeoint.isOverControlPoint - Returning P1');
 
             return {point: this, type: 'p'};
         }
 
-        if (this.h1.use && !nohandles) {
-            if ( ((this.h1.x+hp) > x) && ((this.h1.x-hp) < x) && ((this.h1.y+hp) > y) && ((this.h1.y-hp) < y) ) {
-                // debug('PathPoint.isOverControlPoint - Returning h1');
+        if (this.h1.use && !noHandles) {
+            if (((this.h1.x+targetSize) > x) && ((this.h1.x-targetSize) < x) &&
+                ((this.h1.y+targetSize) > y) && ((this.h1.y-targetSize) < y)) {
+                // debug('PattargetSizeoint.isOverControlPoint - Returning h1');
                 return {point: this, type: 'h1'};
             }
         }
 
-        if (this.h2.use && !nohandles) {
-            if ( ((this.h2.x+hp) > x) && ((this.h2.x-hp) < x) && ((this.h2.y+hp) > y) && ((this.h2.y-hp) < y) ) {
+        if (this.h2.use && !noHandles) {
+            if (((this.h2.x+targetSize) > x) && ((this.h2.x-targetSize) < x) &&
+                ((this.h2.y+targetSize) > y) && ((this.h2.y-targetSize) < y)) {
                 // debug('PathPoint.isOverControlPoint - Returning h2');
                 return {point: this, type: 'h2'};
             }

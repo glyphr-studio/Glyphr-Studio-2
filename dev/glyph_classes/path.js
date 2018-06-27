@@ -6,7 +6,6 @@ import PathPoint from './pathpoint.js';
 import {clone, round, isVal, hasNonValues} from '../app/functions.js';
 import {coordsAreEqual} from './coord.js';
 // import {json} from '../app/functions.js';
-// import debug from '../app/functions.js';
 import {getOverallMaxes} from './maxes.js';
 
 /**
@@ -794,14 +793,15 @@ import {getOverallMaxes} from './maxes.js';
      * at the designated coordinate
      * @param {number} x - x value to check
      * @param {number} y - y value to check
-     * @param {boolean} nohandles - true = only check points
+     * @param {number} targetSize - radius around the point to return true
+     * @param {boolean} noHandles - true = only check points
      * @return {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
      */
-    isOverControlPoint(x, y, nohandles) {
+    isOverControlPoint(x, y, targetSize, noHandles) {
         let a = this.pathPoints || [];
         let re = false;
         for (let k = a.length - 1; k >= 0; k--) {
-            re = a[k].isOverControlPoint(x, y, nohandles);
+            re = a[k].isOverControlPoint(x, y, targetSize, noHandles);
             if (re) return re;
         }
         return false;
@@ -811,19 +811,19 @@ import {getOverallMaxes} from './maxes.js';
      * Checks to see if the first point in the path is at a coordinate
      * @param {number} x - x value to check
      * @param {number} y - y value to check
+     * @param {number} targetSize - radius around the point to return true
      * @return {boolean}
      */
-    isOverFirstPoint(x, y) {
+    isOverFirstPoint(x = 0, y = 0, targetSize = 3) {
         // debug('\n Path.isOverFirstPoint - START');
         // debug('\t Passed ' + x + '/' + y);
         let a = this.pathPoints[0];
-        let hp = 1;
-        if (_GP.projectSettings) hp = _GP.projectSettings.pointsize/getView('Path.isOverControlPoint').dz;
-        // debug('\t Checking ' + a.p.x + '/' + a.p.y + ' around ' + hp);
+        // debug('\t Checking ' + a.p.x + '/' + a.p.y + ' around ' + targetSize);
 
         if (!a) return false;
 
-        if (((a.p.x + hp) > x) && ((a.p.x - hp) < x) && ((a.p.y + hp) > y) && ((a.p.y - hp) < y)) {
+        if (((a.p.x + targetSize) > x) && ((a.p.x - targetSize) < x) &&
+            ((a.p.y + targetSize) > y) && ((a.p.y - targetSize) < y)) {
             // debug(' Path.isOverFirstPoint - END - return TRUE\n');
             return true;
         }
