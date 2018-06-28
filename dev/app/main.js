@@ -1,8 +1,40 @@
 import manifest from '../manifest.js';
-import debug from './functions.js';
 
 window._UI = {};
 window._GP = {};
+window._DEV = {};
+
+// Window stuff
+// It would be great if we could conditionally load modules.
+
+import * as colors from './colors.js';
+window._DEV.colors = colors;
+
+import * as functions from './functions.js';
+window._DEV.functions = functions;
+
+import * as coord from '../glyph_classes/coord.js';
+window._DEV.coord = coord;
+
+import * as maxes from '../glyph_classes/maxes.js';
+window._DEV.maxes = maxes;
+
+import * as handle from '../glyph_classes/handle.js';
+window._DEV.handle = handle;
+
+import * as pathpoint from '../glyph_classes/pathpoint.js';
+window._DEV.pathpoint = pathpoint;
+
+import * as segment from '../glyph_classes/segment.js';
+window._DEV.segment = segment;
+
+import * as path from '../glyph_classes/path.js';
+window._DEV.path = path;
+/*
+import * as polysegment from '../glyph_classes/polysegment.js';
+window._DEV.polysegment = polysegment;
+*/
+
 
 /**
  * MAIN
@@ -45,6 +77,8 @@ export default function glyphrStudioOnLoad() {
         }
 
         navigate({page: (_UI.dev_currentPage || 'openproject'), panel: _UI.dev_currentPanel});
+    } else {
+        _DEV = {};
     }
 
     /* eslint-disable */

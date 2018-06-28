@@ -1,5 +1,4 @@
 import './settings.js';
-import debug from './functions.js';
 import {areEqual} from './functions.js';
 import {assemble} from './main.js';
 
@@ -187,9 +186,17 @@ function addTestResult(result, message, title, durration = 0) {
     else if (result === false) resultClass = 'fail';
     else resultClass = 'didNotRun';
 
+    let durr = `|&thinsp;${durration}`;
+    if (durration > 51) {
+        let bar = Math.round(durration / 100);
+        durr = '<b>';
+        for (let i=0; i<bar; i++) durr += '▓';
+        durr += `&thinsp;${durration}</b>`;
+    }
+
     return `<span class="testResult ${resultClass}" title='${message}'>
         <span class="icon">&#x${resultIcons[resultClass]};</span>
-        ${title}&nbsp;(${durration})
+        ${title}&nbsp;${durr}
     </span>`;
 }
 

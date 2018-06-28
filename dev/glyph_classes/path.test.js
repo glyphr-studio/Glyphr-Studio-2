@@ -246,12 +246,24 @@ _TEST.testList.push(
             return _TEST.is(path.winding).equalTo(5);
         },
     },
+    {
+        category: 'Path',
+        name: 'getSegment',
+        assertion: function() {
+            return _TEST.is(samplePath().getSegment(1).p1x).equalTo(484);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'getSegment',
+        assertion: function() {
+            return _TEST.is(samplePath().getQuickSegmentLength()).equalTo(221.95482794488714);
+        },
+    },
 );
 
 /*
 
-getSegment
-getQuickSegmentLength
 getPolySegment
 
 flipNS

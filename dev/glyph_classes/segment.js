@@ -1,9 +1,12 @@
 import Maxes from './maxes.js';
 import Coord from './coord.js';
 import {coordsAreEqual} from './coord.js';
+import {maxesOverlap} from './maxes.js';
 import {clone, numSan, duplicates, isVal, round} from '../app/functions.js';
 
-export {findSegmentIntersections, ixToCoord, segmentsAreEqual};
+export {segmentsAreEqual, findSegmentIntersections,
+    findOverlappingLineSegmentIntersections, findCrossingLineSegmentIntersections,
+    findEndPointSegmentIntersections, ixToCoord, coordToIx, pointsAreCollinear};
 
 /**
     Object > Segment
@@ -32,15 +35,16 @@ export default class Segment {
      * @param {number} p4x - Second point x
      * @param {number} p4y - Second point y
      */
-    constructor({p1x = 0, p1y = 0, p2x = 0, p2y = 0, p3x = 0, p3y = 0, p4x = 0, p4y = 0} = {}) {
+    constructor({p1x = 0, p1y = 0, p2x, p2y, p3x, p3y, p4x = 0, p4y = 0} = {}) {
         this.p1x = numSan(p1x);
         this.p1y = numSan(p1y);
         this.p4x = numSan(p4x);
         this.p4y = numSan(p4y);
+        // For lines, it's better to default p2 to p1 values, and p3 to p4 values
         this.p2x = isVal(p2x) ? numSan(p2x) : this.p1x;
         this.p2y = isVal(p2y) ? numSan(p2y) : this.p1y;
-        this.p3x = isVal(p3x) ? numSan(p3x) : this.p3x;
-        this.p3y = isVal(p3y) ? numSan(p3y) : this.p3y;
+        this.p3x = isVal(p3x) ? numSan(p3x) : this.p4x;
+        this.p3y = isVal(p3y) ? numSan(p3y) : this.p4y;
 
         // cache
         this.cache = {};
@@ -489,6 +493,9 @@ export default class Segment {
             'xMax': Math.max(this.p1x, Math.max(this.p2x, Math.max(this.p3x, this.p4x))),
             'yMax': Math.max(this.p1y, Math.max(this.p2y, Math.max(this.p3y, this.p4y))),
         };
+        // debug(`\t Segment.getFastMaxes - returning`);
+        // debug(bounds);
+
         return new Maxes(bounds);
     }
 
@@ -614,14 +621,27 @@ export default class Segment {
     //    -----------------------------------
 
     /**
-     * A segment is redundant to another segment if
-     * it is completely overlapped by the other segment
-     * @param {Segment} s - segment to check against this segment
+     * Checks to see if this (line) Segment is overlapped by
+     * a larger (line) Segment
+     * @param {Segment} largeSegment - Larger segment to check against
      * @return {boolean}
      */
-    isRedundantTo(s) {
-        if (!this.line) return false;
-        return (s.containsPointOnLine(this.getCoord(1)) && s.containsPointOnLine(this.getCoord(4)));
+    isLineOverlappedByLine(largeSegment) {
+        // debug(`\n Segment.isLineOverlappedByLine - START`);
+
+        if (!this.line || !largeSegment.line) {
+            // debug(`\t this.line: ${this.line} and largeSegment.line: ${largeSegment.line}`);
+            // debug(` Segment.isLineOverlappedByLine - END - returning false\n\n`);
+            return false;
+        }
+
+        let c1 = largeSegment.containsPointOnLine(this.getCoord(1));
+        let c4 = largeSegment.containsPointOnLine(this.getCoord(4));
+
+        // debug(`\t this.p1 / p4 is on largeSegment: ${c1} / ${c4}`);
+
+        // debug(` Segment.isLineOverlappedByLine - END - returning ${c1&&c4}\n\n`);
+        return (c1 && c4);
     }
 
     /**
@@ -719,7 +739,10 @@ export default class Segment {
      * @return {boolean}
      */
     preceeds(s2, threshold = 1) {
-        return (coordsAreEqual(this.getCoord(4)), s2.getCoord(1), threshold);
+        let s1c4 = this.getCoord(4);
+        let s2c1 = s2.getCoord(1);
+
+        return coordsAreEqual(s1c4, s2c1, threshold);
     }
 
     /**
@@ -749,34 +772,21 @@ export default class Segment {
     }
 
     /**
-     * Creates a string representation of this Segment
-     * @param {number} precision - how far to round
-     * @return {string}
-     */
-    toString(precision) {
-        precision = isVal(precision) ? precision : 1;
-        re = '';
-        re += round(this.p1x, precision) + '\t' + round(this.p1y, precision) + '\n';
-        // re += round(this.p2x, precision) + '\t' + round(this.p2y, precision) + '\n';
-        // re += round(this.p3x, precision) + '\t' + round(this.p3y, precision) + '\n';
-        re += round(this.p4x, precision) + '\t' + round(this.p4y, precision) + '\n';
-        return re;
-    }
-
-    /**
      * Rounds all the values in this Segment
      * @param {number} precision - how many decimal places to round
+     * @return {Segment} - reference to this segment
      */
-    roundAll(precision) {
-        precision = isVal(precision) ? precision : 3;
-        this.p1x = roundAll(this.p1x, precision);
-        this.p1y = roundAll(this.p1y, precision);
-        this.p2x = roundAll(this.p2x, precision);
-        this.p2y = roundAll(this.p2y, precision);
-        this.p3x = roundAll(this.p3x, precision);
-        this.p3y = roundAll(this.p3y, precision);
-        this.p4x = roundAll(this.p4x, precision);
-        this.p4y = roundAll(this.p4y, precision);
+    roundAll(precision = 3) {
+        this.p1x = round(this.p1x, precision);
+        this.p1y = round(this.p1y, precision);
+        this.p2x = round(this.p2x, precision);
+        this.p2y = round(this.p2y, precision);
+        this.p3x = round(this.p3x, precision);
+        this.p3y = round(this.p3y, precision);
+        this.p4x = round(this.p4x, precision);
+        this.p4y = round(this.p4y, precision);
+
+        return this;
     }
 }
 
@@ -791,7 +801,7 @@ export default class Segment {
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
  * @param {number} depth - How deep this recursive call has gone
- * @return {array} - collection of overlap points in ix format (text: 'x/y,x/y,x/y...')
+ * @return {array} - collection of overlap points in ix format like ['x/y', 'x/y', 'x/y']
  */
 function findSegmentIntersections(s1, s2, depth) {
     // debug('\n findSegmentIntersections - START');

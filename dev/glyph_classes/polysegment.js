@@ -337,7 +337,7 @@
         for (let s=0; s<this.segments.length; s++) {
         for (let t=0; t<this.segments.length; t++) {
             if (s !== t && this.segments[s] && this.segments[t]) {
-                if (this.segments[s].isRedundantTo(this.segments[t])) {
+                if (this.segments[s].isLineOverlappedByLine(this.segments[t])) {
                     this.segments[s] = 'REDUNDANT';
                 }
             }

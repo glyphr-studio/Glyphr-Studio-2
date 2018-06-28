@@ -1,6 +1,9 @@
 import Coord from './coord.js';
 import Handle from './handle.js';
+import {coordsAreEqual} from './coord.js';
 import {round, rotate} from '../app/functions.js';
+
+export {makePathPointFromSegments};
 
 /**
  * Path Point
@@ -900,7 +903,7 @@ export default class PathPoint {
  * @param {Segment} seg2 - Second segment
  * @return {PathPoint}
  */
-export function makePathPointFromSegments(seg1, seg2) {
+function makePathPointFromSegments(seg1, seg2) {
     let newpp = new PathPoint({
         h1: new Handle({point: {x: seg1.p3x, y: seg1.p3y}}),
         p: new Coord({x: seg2.p1x, y: seg2.p1y}),

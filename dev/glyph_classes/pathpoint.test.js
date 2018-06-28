@@ -1,4 +1,6 @@
 import PathPoint from './pathpoint.js';
+import {makePathPointFromSegments} from './pathpoint.js';
+import Segment from './segment.js';
 
 _TEST.testList.push(
     {
@@ -133,10 +135,26 @@ _TEST.testList.push(
             pp.h1.x = 39.9999;
             return _TEST.is(pp.roundAll(3).h1.x).equalTo(40);
         },
+    },
+    {
+        category: 'PathPoint',
+        name: 'makePathPointFromSegments',
+        assertion: function() {
+            let seg1 = new Segment({p1x: 100, p1y: 100, p3x: 200, p3y: 200, p4x: 400, p4y: 300});
+            let seg2 = new Segment({p1x: 400, p1y: 300, p2x: 500, p2y: 200, p4x: 600, p4y: 600});
+            let pp = makePathPointFromSegments(seg1, seg2);
+            return _TEST.is(pp.save()).equalTo(
+                {
+                    'p': {'x': 400, 'y': 300},
+                    'h1': {'point': {'x': 200, 'y': 200}, 'use': true},
+                    'h2': {'point': {'x': 500, 'y': 200}, 'use': true},
+                    'type': 'corner',
+                }
+            );
+        },
     }
 );
 
 /*
 pointNumber
-makePathPointFromSegments
 */
