@@ -165,7 +165,7 @@
         content += '</table>';
 
         // content += '<tr><td> root name </td><td>' +
-        //     '<input type="text" disabled="disabled" value="' + getGlyphName(s.link) + '">'+
+        //  '<input type="text" disabled="disabled" value="' + getGlyphName(s.link) + '">'+
         // '</td></tr>';
         // content += '<tr><td colspan=2><button onclick="goToEditGlyph(\''+s.link+'\');">edit this component</button>';
 

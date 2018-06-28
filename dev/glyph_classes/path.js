@@ -1,3 +1,4 @@
+import GlyphElement from './glyphelement.js';
 import Maxes from './maxes.js';
 import Coord from './coord.js';
 import Segment from './segment.js';
@@ -20,7 +21,7 @@ import {getOverallMaxes} from './maxes.js';
  * interchangeably, even though Component Instance
  * objects don't have a Path.
  */
- export default class Path {
+ export default class Path extends GlyphElement {
     /**
      * Create a Path
      * @param {array} pathPoints - array of Path Point objects that make up this path
@@ -34,6 +35,7 @@ import {getOverallMaxes} from './maxes.js';
         maxes = {},
         cache = {},
     } = {}) {
+        super();
         // debug('\n Path.constructor - START');
 
         // debug(`\t passed maxes: ${json(maxes)}`);
@@ -54,11 +56,17 @@ import {getOverallMaxes} from './maxes.js';
         // debug(' Path.constructor - END\n');
     }
 
+
+    // --------------------------------------------------------------
+    // Common Glyphr Studio object methods
+    // --------------------------------------------------------------
+
     /**
-     * Export object to a project file
-     * @return {object}
+     * Export object properties that need to be saved to a project file
+     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+     * @return {*}
      */
-    save() {
+    save(verbose = false) {
         let re = {
             winding: this.winding,
             pathPoints: [],
@@ -67,6 +75,8 @@ import {getOverallMaxes} from './maxes.js';
         this._pathPoints.forEach((point) => {
             re.pathPoints.push(point.save());
         });
+
+        if (verbose) re.objType = this.objType;
 
         return re;
     }
@@ -80,9 +90,9 @@ import {getOverallMaxes} from './maxes.js';
     }
 
 
-    //  -----------------------------------
-    //  GETTERS
-    //  -----------------------------------
+    // --------------------------------------------------------------
+    // Getters
+    // --------------------------------------------------------------
 
     /**
      * Get PathPoints
@@ -173,9 +183,9 @@ import {getOverallMaxes} from './maxes.js';
     }
 
 
-    //  -----------------------------------
-    //  SETTERS
-    //  -----------------------------------
+    // --------------------------------------------------------------
+    //  Setters
+    // --------------------------------------------------------------
 
     /**
      * Set PathPoints
@@ -277,9 +287,9 @@ import {getOverallMaxes} from './maxes.js';
     }
 
 
-    //  -----------------------------------
+    // --------------------------------------------------------------
     //  SIZE AND POSSITION
-    //  -----------------------------------
+    // --------------------------------------------------------------
 
     /**
      * Sets the overall Path width or height to a specific value
@@ -448,9 +458,9 @@ import {getOverallMaxes} from './maxes.js';
     }
 
 
-    //  -----------------------------------
-    //  METHODS
-    //  -----------------------------------
+    // --------------------------------------------------------------
+    //  Methods
+    // --------------------------------------------------------------
 
     /**
      * Get the next point number in the path
@@ -509,9 +519,9 @@ import {getOverallMaxes} from './maxes.js';
     }
 
 
-    //  -----------------------------------
+    // --------------------------------------------------------------
     //  DRAWING
-    //  -----------------------------------
+    // --------------------------------------------------------------
 
     /**
      * Draw a path to a canvas
@@ -582,9 +592,9 @@ import {getOverallMaxes} from './maxes.js';
     }
 
 
-    //  -----------------------------------
+    // --------------------------------------------------------------
     //  TRANSLATE TO OTHER LANGUAGES
-    //  -----------------------------------
+    // --------------------------------------------------------------
 
     /**
      * Converts this path to Post Script
@@ -784,9 +794,9 @@ import {getOverallMaxes} from './maxes.js';
     }
 
 
-    //  -----------------------------------
+    // --------------------------------------------------------------
     //  CANVAS HELPER FUNCTIONS
-    //  -----------------------------------
+    // --------------------------------------------------------------
 
     /**
      * Looks through path points to see if there is a control point
@@ -1100,9 +1110,9 @@ import {getOverallMaxes} from './maxes.js';
     }
 
 
-    //    ----------------------------------
-    //    Calc Maxes
-    //    ----------------------------------
+    // ----------------------------------
+    // Calc Maxes
+    // ----------------------------------
 
     /**
      * Find the bounding box for this path
@@ -1133,11 +1143,6 @@ import {getOverallMaxes} from './maxes.js';
         // debug('\t afters ' + json(this.maxes, true));
         // debug(' Path.calcMaxes - END\n');
     }
-
-
-    //  -----------------------------------
-    //  HELPER FUNCTIONS
-    //  -----------------------------------
 
     /**
      * Looks through the whole path and sets erronious values to 0
@@ -1193,9 +1198,9 @@ import {getOverallMaxes} from './maxes.js';
 }
 
 
-//    -----------------------------------
-//     Boolean Combine
-//    -----------------------------------
+// --------------------------------------------------------------
+// Boolean Combine
+// --------------------------------------------------------------
 
 /**
  * Fin overlaps between two paths

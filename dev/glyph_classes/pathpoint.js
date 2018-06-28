@@ -1,3 +1,4 @@
+import GlyphElement from './glyphelement.js';
 import Coord from './coord.js';
 import Handle from './handle.js';
 import {coordsAreEqual} from './coord.js';
@@ -12,7 +13,7 @@ export {makePathPointFromSegments};
  * points). There are a few Path Point types, and
  * individual handles can be shown or hidden.
  */
-export default class PathPoint {
+export default class PathPoint extends GlyphElement {
     /**
      * Create a PathPoint
      * @param {Coord} p - Main control point
@@ -29,6 +30,7 @@ export default class PathPoint {
         q = false,
         parentPath = false,
     } = {}) {
+        super();
         this._p = new Coord(p);
         this._h1 = new Handle(h1);
         this._h2 = new Handle(h2);
@@ -41,11 +43,17 @@ export default class PathPoint {
         if (q) this._q = q;
     }
 
+
+    // --------------------------------------------------------------
+    // Common Glyphr Studio object methods
+    // --------------------------------------------------------------
+
     /**
-     * Export object to project file
-     * @return {object}
+     * Export object properties that need to be saved to a project file
+     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+     * @return {*}
      */
-    save() {
+    save(verbose = false) {
         let re = {
             p: this.p.save(),
             h1: this.h1.save(),
@@ -55,13 +63,15 @@ export default class PathPoint {
 
         if (this.q) re.q = this.q;
 
+        if (verbose) re.objType = this.objType;
+
         return re;
     }
 
 
-    // -------------------------------------------------------
-    // GETTERS
-    // -------------------------------------------------------
+    // --------------------------------------------------------------
+    // Getters
+    // --------------------------------------------------------------
 
     /**
      * Get the main point
@@ -121,9 +131,9 @@ export default class PathPoint {
     }
 
 
-    // -------------------------------------------------------
-    // SETTERS
-    // -------------------------------------------------------
+    // --------------------------------------------------------------
+    // Setters
+    // --------------------------------------------------------------
 
     /**
      * set the main point
@@ -160,9 +170,9 @@ export default class PathPoint {
     }
 
 
-    // -------------------------------------------------------
-    // METHODS
-    // -------------------------------------------------------
+    // --------------------------------------------------------------
+    // Methods
+    // --------------------------------------------------------------
 
     /**
      * Updates position based on deltas
@@ -215,7 +225,6 @@ export default class PathPoint {
      * @return {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
      */
     isOverControlPoint(x = 0, y = 0, targetSize = 3, noHandles = false) {
-
         if (((this.p.x+targetSize) > x) && ((this.p.x-targetSize) < x) &&
             ((this.p.y+targetSize) > y) && ((this.p.y-targetSize) < y)) {
             // debug('PattargetSizeoint.isOverControlPoint - Returning P1');
@@ -486,9 +495,9 @@ export default class PathPoint {
     }
 
 
-    // -------------------------------------------------------
-    // DRAW
-    // -------------------------------------------------------
+    // --------------------------------------------------------------
+    // Draw
+    // --------------------------------------------------------------
 
     /**
      * Draws this point on the edit canvas
@@ -656,9 +665,9 @@ export default class PathPoint {
     }
 
 
-    // -------------------------------------------------------
+    // --------------------------------------------------------------
     // Alignment
-    // -------------------------------------------------------
+    // --------------------------------------------------------------
 
     /**
      * Align
@@ -894,9 +903,10 @@ export default class PathPoint {
 }
 
 
-// -------------------------------------------------------
-// HELPERS
-// -------------------------------------------------------
+// --------------------------------------------------------------
+// Helpers
+// --------------------------------------------------------------
+
 /**
  * Creates a single Point from two segments
  * @param {Segment} seg1 - First segment

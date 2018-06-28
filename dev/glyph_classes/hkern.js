@@ -7,7 +7,7 @@
 
 
     function HKern(oa) {
-        this.objtype = 'hkern';
+        this.objType = 'hkern';
 
         this.leftgroup = oa.leftgroup || [];
         this.rightgroup = oa.rightgroup || [];

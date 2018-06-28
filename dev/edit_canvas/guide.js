@@ -9,7 +9,7 @@ import {makeCrisp} from '../app/functions.js';
 **/
 export default class Guide {
     constructor(oa) {
-        this.objtype = 'guide';
+        this.objType = 'guide';
         this.type = oa.type || 'vertical';
         this.name = oa.name || (this.type + ' guide');
         this.location = isVal(oa.location) ? oa.location : 200;

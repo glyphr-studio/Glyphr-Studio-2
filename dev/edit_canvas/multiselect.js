@@ -8,9 +8,9 @@ import _UI from '../app/settings.js';
 **/
 
 
-// -------------------------------------------------------
+// --------------------------------------------------------------
 // COMMON MULTI-SELECT OBJECT
-// -------------------------------------------------------
+// --------------------------------------------------------------
     function MultiSelect() {
         this.members = [];
         this.handlesingleton = false;
@@ -18,12 +18,12 @@ import _UI from '../app/settings.js';
 
     MultiSelect.prototype.isSelectable = function(obj) {
         if (obj && (
-            obj.objtype === 'pathpoint' ||
-            obj.objtype === 'shape' ||
-            obj.objtype === 'componentinstance'
+            obj.objType === 'pathpoint' ||
+            obj.objType === 'shape' ||
+            obj.objType === 'componentinstance'
         )) return true;
         else {
-            // debug('MultiSelect - cannot select \n' + obj.objtype);
+            // debug('MultiSelect - cannot select \n' + obj.objType);
             return false;
         }
     };
@@ -76,7 +76,7 @@ import _UI from '../app/settings.js';
 
     MultiSelect.prototype.getType = function() {
         if (this.members.length === 0) return false;
-        else if (this.members.length === 1) return this.members[0].objtype;
+        else if (this.members.length === 1) return this.members[0].objType;
         else return 'multi';
     };
 
@@ -98,9 +98,9 @@ import _UI from '../app/settings.js';
     };
 
 
-// -------------------------------------------------------
+// --------------------------------------------------------------
 // SELECTED POINTS
-// -------------------------------------------------------
+// --------------------------------------------------------------
 
     // Initialize fake Shape of multiselected Points
     _UI.multiSelect.points = new MultiSelect();
@@ -131,7 +131,7 @@ import _UI from '../app/settings.js';
         }
 
         let wi = getSelectedWorkItem();
-        if (wi.objtype === 'glyph') wi.removeShapesWithZeroLengthPaths();
+        if (wi.objType === 'glyph') wi.removeShapesWithZeroLengthPaths();
 
         this.clear();
     };
@@ -218,7 +218,7 @@ import _UI from '../app/settings.js';
             path = points[p].parentpath;
 
             for (let s=0; s<shapes.length; s++) {
-                if (shapes[s].objtype !== 'componentinstance') {
+                if (shapes[s].objType !== 'componentinstance') {
                     if (path === shapes[s].path) {
                         _UI.multiSelect.shapes.add(shapes[s]);
                         count++;
@@ -231,9 +231,9 @@ import _UI from '../app/settings.js';
     };
 
 
-// -------------------------------------------------------
+// --------------------------------------------------------------
 // SELECTED SHAPES
-// -------------------------------------------------------
+// --------------------------------------------------------------
 
     // Initialize fake Glyph of multiselected shapes
     _UI.multiSelect.shapes = new MultiSelect();
@@ -249,7 +249,7 @@ import _UI from '../app/settings.js';
         if (this.members.length === 0) return false;
         let re = false;
         for (let m=0; m<this.members.length; m++) {
-            re = this.members[m].objtype === objtypename;
+            re = this.members[m].objType === objtypename;
             if (re) return true;
         }
 
@@ -290,7 +290,7 @@ import _UI from '../app/settings.js';
             for (let s=0; s<sels.length; s++) {
                 curs = sels[s];
 
-                if (curs.objtype === 'componentinstance') {
+                if (curs.objType === 'componentinstance') {
                     removeFromUsedIn(curs.link, _UI.selectedGlyph);
                 }
 
@@ -300,7 +300,7 @@ import _UI from '../app/settings.js';
 
             _UI.multiSelect.shapes.select(wishapes[i] || wishapes[wishapes.length-1]);
             let singleshape = _UI.multiSelect.shapes.getSingleton();
-            if (singleshape && singleshape.objtype === 'componentinstance') clickTool('shaperesize');
+            if (singleshape && singleshape.objType === 'componentinstance') clickTool('shaperesize');
         }
 
         updateCurrentGlyphWidth();
@@ -427,7 +427,7 @@ import _UI from '../app/settings.js';
         for (let m=0; m<this.members.length; m++) {
             s = this.members[m];
             // debug('\t drawing points on shape ' + m + ' as ' + s.path.pathPoints);
-                if (s.objtype !== 'componentinstance') draw_PathPoints(this.members[m].path.pathPoints);
+                if (s.objType !== 'componentinstance') draw_PathPoints(this.members[m].path.pathPoints);
         }
 
         // debug(' MS.shapes.draw_PathPoints - END\n');
@@ -467,7 +467,7 @@ import _UI from '../app/settings.js';
         let ss;
         if (this.members.length === 1) {
             ss = this.members[0];
-            let accent = ss.objtype === 'componentinstance'? _UI.colors.green : _UI.colors.blue;
+            let accent = ss.objType === 'componentinstance'? _UI.colors.green : _UI.colors.blue;
             draw_RotationAffordance(accent, false);
         } else if (this.members.length > 1) {
             ss = this.getGlyph();

@@ -12,7 +12,7 @@
 
 
     function ComponentInstance(oa) {
-        this.objtype = 'componentinstance';
+        this.objType = 'componentinstance';
 
         this.link = oa.link || getFirstID(_GP.components);
         this.name = oa.name || 'Component Instance';
@@ -96,7 +96,7 @@
         let tempglyph, tempshapes;
 
         for (let s=0; s<og.shapes.length; s++) {
-            if (og.shapes[s].objtype === 'componentinstance') {
+            if (og.shapes[s].objType === 'componentinstance') {
                 tempglyph = og.shapes[s].getTransformedGlyph(true);
                 newshapes = newshapes.concat(tempglyph.shapes);
             } else {
@@ -111,9 +111,9 @@
     }
 
 
-//    -------------------------------------
+// ----------------------------------------------------------------
 //    Component to Shape Parity Functions
-//    -------------------------------------
+// ----------------------------------------------------------------
     ComponentInstance.prototype.changed = function() {
         // debug('\n ComponentInstance.changed - START');
         // debug('\t ' + this.name);
@@ -375,9 +375,9 @@
         return false;
     };
 
-// -------------------------------------------------------
-// COMPONENT INSTANCE METHODS
-// -------------------------------------------------------
+// --------------------------------------------------------------
+// COMPONENT INSTANCE Methods
+// --------------------------------------------------------------
 
 //    Insert Component
     function showDialog_AddComponent() {

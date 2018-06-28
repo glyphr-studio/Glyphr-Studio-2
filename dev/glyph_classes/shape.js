@@ -11,7 +11,7 @@ class Shape {
     constructor(oa) {
         // debug('\n SHAPE - START');
         oa = oa || {};
-        this.objtype = 'shape';
+        this.objType = 'shape';
         // common settings
         this.name = oa.name || 'Shape';
         this.path = isVal(oa.path) ? new Path(oa.path) : rectPathFromMaxes(false);
@@ -23,9 +23,9 @@ class Shape {
         this.ratiolock = oa.ratiolock || false;
         // debug(' SHAPE - END\n');
     }
-    //    -------------------------------------------------------
-    //    SHAPE METHODS
-    //    -------------------------------------------------------
+    // --------------------------------------------------------------
+    // SHAPE Methods
+    // --------------------------------------------------------------
     getName() {
         return this.name;
     }
@@ -46,9 +46,9 @@ class Shape {
         // debug(' Shape.drawShape - returning true by default - END\n');
         return true;
     }
-    //    -------------------------------------------------------
-    //    DRAWING THE SELECTION OUTLINE AND BOUNDING BOX
-    //    -------------------------------------------------------
+    // --------------------------------------------------------------
+    // DRAWING THE SELECTION OUTLINE AND BOUNDING BOX
+    // --------------------------------------------------------------
     draw_PathOutline(accent, thickness) {
         // debug('\n Shape.draw_PathOutline - START');
         accent = accent || _UI.colors.blue;
@@ -67,9 +67,9 @@ class Shape {
         thickness = thickness || 1;
         draw_BoundingBoxHandles(this.path.maxes, accent, thickness);
     }
-    // -------------------------------------------------------
+    // --------------------------------------------------------------
     // TRANSLATE TO DIFFERENT LANGUAGES
-    // -------------------------------------------------------
+    // --------------------------------------------------------------
     makeSVG(size, gutter) {
         size = size || _UI.thumbSize;
         gutter = gutter || _UI.thumbGutter;
@@ -97,9 +97,9 @@ class Shape {
     makeOpentypeJsPath(otpath) {
         return this.path.makeOpentypeJsPath(otpath);
     }
-    //    -------------------------------------------------------
-    //    PATH WRAPPER FUNCTIONS FOR COMPONENT INSTANCE PARITY
-    //    -------------------------------------------------------
+    // --------------------------------------------------------------
+    // PATH WRAPPER FUNCTIONS FOR COMPONENT INSTANCE PARITY
+    // --------------------------------------------------------------
     updateShapePosition(dx, dy, force) {
         this.path.updatePathPosition(dx, dy, force);
     }
@@ -187,9 +187,9 @@ class Shape {
         // debug(' Shape.resolveSelfOverlaps - END\n');
         return reshapes;
     }
-    //    ----------------------------------------------
-    //    CANVAS HELPER FUNCTIONS
-    //    ----------------------------------------------
+    // -------------------------------------------------------------------------
+    // CANVAS HELPER FUNCTIONS
+    // -------------------------------------------------------------------------
     isHere(px, py) {
         return this.path.isHere(px, py);
     }
@@ -214,9 +214,9 @@ class Shape {
         redraw({ calledBy: 'Shape Name', redrawCanvas: false });
         // debug(' Shape.changeShapeName - END\n');
     }
-    //    -----------------------------------
-    //    HELPER FUNCTIONS
-    //    ------------------------------------
+    // --------------------------------------------------------------
+    // HELPER FUNCTIONS
+    // ---------------------------------------------------------------
     checkPath() {
         // debug('CHECKPATH - checking ' + this.name + '\n' + JSON.stringify(this.path));
         for (let pp = 0; pp < this.path.pathPoints.length; pp++) {
@@ -248,9 +248,9 @@ class Shape {
 
 
 
-//    -------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //    DRAWING THE SHAPE
-//    -------------------------------------------------------
+// ----------------------------------------------------------------------------------
 
     Shape.prototype.getName = function() {
  return this.name;
@@ -281,9 +281,9 @@ class Shape {
 
 
 
-//    -------------------------------------------------------
+// ----------------------------------------------------------------------------------
 //    NEW SHAPE FUNCTIONS
-//    -------------------------------------------------------
+// ----------------------------------------------------------------------------------
     function rectPathFromMaxes(maxes) {
         // Default Shape size
         let lx = 0;
@@ -384,10 +384,10 @@ class Shape {
     function addShape(newshape) {
         // debug('addShape - START');
         // debug('\t name: ' + newshape.name);
-        // debug('\t objtype: ' + newshape.objtype);
+        // debug('\t objType: ' + newshape.objType);
 
         if (newshape) {
-            if (newshape.objtype === 'componentinstance') {
+            if (newshape.objType === 'componentinstance') {
                 // debug('\t is a Component instance');
                 _UI.selectedTool = 'shaperesize';
             } else if (newshape.path && (_UI.selectedTool === 'shaperesize')) {

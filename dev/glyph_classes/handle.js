@@ -1,3 +1,4 @@
+import GlyphElement from './glyphelement.js';
 import Coord from './coord.js';
 import PathPoint from './pathpoint.js';
 import {calculateAngle, calculateLength, angleToNiceAngle} from '../app/functions.js';
@@ -8,7 +9,7 @@ import {calculateAngle, calculateLength, angleToNiceAngle} from '../app/function
  * They can be hidden or used, which alters the overall path
  * shape.
  */
-class Handle {
+export default class Handle extends GlyphElement {
     /**
      * Create a Handle
      * @param {Coord} point - possition of the handle
@@ -20,29 +21,38 @@ class Handle {
         use = true,
         rootPoint = false,
     } = {}) {
+        super();
         this._point = new Coord(point);
         if (use) this._use = use;
         this._rootPoint = rootPoint;
     }
 
+
+    // --------------------------------------------------------------
+    // Common Glyphr Studio object methods
+    // --------------------------------------------------------------
+
     /**
-     * Export object to project file
-     * @return {object}
+     * Export object properties that need to be saved to a project file
+     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+     * @return {*}
      */
-    save() {
+    save(verbose = false) {
         let re = {
             point: this.point.save(),
         };
 
         if (this._use) re.use = true;
 
+        if (verbose) re.objType = this.objType;
+
         return re;
     }
 
 
-    // --------------------
-    // GETTERS
-    // --------------------
+    // --------------------------------------------------------------
+    // Getters
+    // --------------------------------------------------------------
 
     /**
      * Get the x coordinate
@@ -125,9 +135,9 @@ class Handle {
     }
 
 
-    // --------------------
-    // SETTERS
-    // --------------------
+    // --------------------------------------------------------------
+    // Setters
+    // --------------------------------------------------------------
 
     /**
      * Set the X possiiton
@@ -188,6 +198,3 @@ class Handle {
         this._rootPoint = root;
     }
 }
-
-
-export default Handle;

@@ -1,10 +1,11 @@
+import GlyphElement from './glyphelement.js';
 import {isVal} from '../app/functions.js';
 
 /**
  * Maxes
  * Standard way of defining a bounding box
  */
-export default class Maxes {
+export default class Maxes extends GlyphElement {
     /**
      * Create a Maxes object
      * @param {number} xMin - smallest x value
@@ -13,6 +14,7 @@ export default class Maxes {
      * @param {number} yMax - largest y value
      */
     constructor({xMin, xMax, yMin, yMax} = {}) {
+        super();
         // debug(`\n Maxes.constructor - START`);
 
         this.xMin = xMin; // use setter for hydration
@@ -26,11 +28,17 @@ export default class Maxes {
         return this;
     }
 
+
+    // --------------------------------------------------------------
+    // Common Glyphr Studio object methods
+    // --------------------------------------------------------------
+
     /**
-     * Export object to a project file
-     * @return {object}
+     * Export object properties that need to be saved to a project file
+     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+     * @return {*}
      */
-    save() {
+    save(verbose = false) {
         // debug(`\n Maxes.save - START`);
 
         let re = {};
@@ -40,11 +48,18 @@ export default class Maxes {
         if (isVal(this._yMin)) re.yMin = this._yMin;
         if (isVal(this._yMax)) re.yMax = this._yMax;
 
+        if (verbose) re.objType = this.objType;
+
         // debug(`\t returning`);
         // debug(re);
         // debug(` Maxes.save - END\n\n`);
         return re;
     }
+
+
+    // --------------------------------------------------------------
+    // Getters
+    // --------------------------------------------------------------
 
     /**
      * Get xMin
@@ -109,6 +124,11 @@ export default class Maxes {
         };
     }
 
+
+    // --------------------------------------------------------------
+    // Setters
+    // --------------------------------------------------------------
+
     /**
      * Set xMin
      * @param {number} x - new value
@@ -158,6 +178,10 @@ export default class Maxes {
     }
 }
 
+
+// --------------------------------------------------------------
+// Helpers
+// --------------------------------------------------------------
 
 /**
  * Given two Maxes, check if they overlap

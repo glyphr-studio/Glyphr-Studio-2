@@ -634,11 +634,11 @@
         // debug('\n drawContextGlyphExtras - START');
 
         // debug(`\t ${char.char}
-        //     width \t ${char.width}
-        //     aggr \t ${char.aggregate}
-        //     lnbr \t ${char.islinebreaker}
-        //     view \t ${json(char.view, true)}
-        //     line \t ${char.linenumber}
+        //  width \t ${char.width}
+        //  aggr \t ${char.aggregate}
+        //  lnbr \t ${char.islinebreaker}
+        //  view \t ${json(char.view, true)}
+        //  line \t ${char.linenumber}
         // \n`);
         // debug(char.glyph);
 
@@ -746,11 +746,11 @@
     function drawContextGlyph(char) {
         // debug('\n drawContextGlyph - START');
         // debug(`\t ${char.char}
-        //     width \t ${char.width}
-        //     aggr \t ${char.aggregate}
-        //     lnbr \t ${char.islinebreaker}
-        //     view \t ${json(char.view, true)}
-        //     line \t ${char.linenumber}
+        //  width \t ${char.width}
+        //  aggr \t ${char.aggregate}
+        //  lnbr \t ${char.islinebreaker}
+        //  view \t ${json(char.view, true)}
+        //  line \t ${char.linenumber}
         // \n`);
         // debug(char.glyph);
         let v = getView('drawContextGlyph');
@@ -1031,9 +1031,9 @@
     }
 
 
-//    -----------------------------------------------
+// --------------------------------------------------------------------------
 //    Convert between Saved values and Canvas values
-//    -----------------------------------------------
+// --------------------------------------------------------------------------
     // convert stored x-y coord to canvas x-y
     function sx_cx(sx) {
         let v = getView('sx_cx');
@@ -1061,9 +1061,9 @@
     }
 
 
-//    ------------------------------------------
+// ---------------------------------------------------------------------
 //    Global Get Selected Glyph and Shape
-//    ------------------------------------------
+// ---------------------------------------------------------------------
 
     function existingWorkItem() {
         let len = 0;

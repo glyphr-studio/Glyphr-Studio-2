@@ -1,6 +1,6 @@
-// --------------------------------------
+// -----------------------------------------------------------------
 // Dialog Box, Error Box, Notation, toasts
-// --------------------------------------
+// -----------------------------------------------------------------
 export {closeDialog, openDialog, openBigDialog, isBigDialogOpen,
 openNotation, closeNotation, makeErrorMessageBox, showErrorMessageBox,
 closeErrorMessageBox, toggleDialogExportOptions, showToast};

@@ -57,8 +57,8 @@
 
 
     //  ------------------
-    //    Action Functions
-    //    ------------------
+    // Action Functions
+    // ------------------
 
     function convertProjectToMonospace() {
         let gwidth = document.getElementById('monospacewidth').value;
@@ -184,9 +184,9 @@
     }
 
 
-    //    ------------------
-    //    Glyph Iterator
-    //    ------------------
+    // ------------------
+    // Glyph Iterator
+    // ------------------
 
     function glyphIterator(oa) {
         // debug('\n glyphIterator - START');

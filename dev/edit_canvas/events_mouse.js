@@ -102,9 +102,9 @@ ev.stopPropagation();
 }
 
 
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 // Shape Resize - resizes whole shapes (Arrow / Pointer)
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 function Tool_ShapeEdit() {
     this.dragging = false;
     this.resizing = false;
@@ -179,7 +179,7 @@ function Tool_ShapeEdit() {
                     _UI.multiSelect.shapes.select(this.clickedshape);
                 }
 
-                if (this.clickedshape.objtype === 'componentinstance') clickTool('shaperesize');
+                if (this.clickedshape.objType === 'componentinstance') clickTool('shaperesize');
                 _UI.currentPanel = 'npAttributes';
             }
 
@@ -246,7 +246,7 @@ function Tool_ShapeEdit() {
             if (eh.multi) _UI.multiSelect.shapes.toggle(this.clickedshape);
             else _UI.multiSelect.shapes.select(this.clickedshape);
 
-            if (this.clickedshape.objtype === 'componentinstance') clickTool('shaperesize');
+            if (this.clickedshape.objType === 'componentinstance') clickTool('shaperesize');
             else setCursor('arrowSquare');
 
             _UI.currentPanel = 'npAttributes';
@@ -277,9 +277,9 @@ function Tool_ShapeEdit() {
 }
 
 
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 // New Basic Shape - adds many points to a new path
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 function Tool_NewBasicShape() {
     this.dragging = false;
 
@@ -354,9 +354,9 @@ function Tool_NewBasicShape() {
 }
 
 
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 // New Path - adds many points to a new path (Pen Plus)
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 function Tool_NewPath() {
     this.dragging = false;
     this.firstpoint = true;
@@ -464,9 +464,9 @@ function Tool_NewPath() {
 }
 
 
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 // Path Edit - selects points and moves points and handles (Pen)
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 function Tool_PathEdit() {
     this.dragging = false;
     this.controlpoint = false;
@@ -599,9 +599,9 @@ function Tool_PathEdit() {
 }
 
 
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 // Path Add Point - adds points to an existing path (Pen Plus)
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 function Tool_PathAddPoint() {
     this.addpoint = false;
 
@@ -609,7 +609,7 @@ function Tool_PathAddPoint() {
         let singleshape = _UI.multiSelect.shapes.getSingleton();
         let s = getClickedShape(_UI.eventhandlers.mousex, _UI.eventhandlers.mousey);
 
-        if (this.addpoint && singleshape && singleshape.objtype !== 'componentinstance') {
+        if (this.addpoint && singleshape && singleshape.objType !== 'componentinstance') {
             let p = singleshape.path.insertPathPoint(this.addpoint.split, this.addpoint.point);
             if (p) _UI.multiSelect.points.select(p);
             history_put('Added point to path');
@@ -618,7 +618,7 @@ function Tool_PathAddPoint() {
             if (_UI.eventhandlers.multi) _UI.multiSelect.shapes.add(s);
             else _UI.multiSelect.shapes.select(s);
 
-            if (s.objtype === 'componentinstance') clickTool('shaperesize');
+            if (s.objType === 'componentinstance') clickTool('shaperesize');
             _UI.currentPanel = 'npAttributes';
         } else {
             _UI.selectedTool = 'newpath';
@@ -661,9 +661,9 @@ function Tool_PathAddPoint() {
 }
 
 
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 // Slice - cuts a shape along a certain line
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 function Tool_Slice() {
     this.mousedown = function(ev) {
         redraw({calledBy: 'Tool_PathAddPoint.mousedown'});
@@ -677,9 +677,9 @@ function Tool_Slice() {
 }
 
 
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 // Pan - moves the canvas view
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 function Tool_Pan() {
     this.dragging = false;
     this.deltax = 0;
@@ -710,9 +710,9 @@ function Tool_Pan() {
 }
 
 
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 // Kern - moves the left kern group
-// ---------------------------------------------------------
+// ----------------------------------------------------------------
 function Tool_Kern() {
     this.dragging = false;
     this.deltax = 0;

@@ -289,7 +289,7 @@ _TEST.testList.push(
 );
 
 /*
-CLASS METHODS
+CLASS Methods
 
 drawSegmentOutline(color, dx, dy)
 drawSegmentPoints(color, txt)

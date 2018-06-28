@@ -1,10 +1,11 @@
+import GlyphElement from './glyphelement.js';
 import {numSan} from '../app/functions.js';
 
 /**
  * Coordinate
  * A single x/y coordinate
  */
-export default class Coord {
+export default class Coord extends GlyphElement {
     /**
      * Create a coordinate
      * @param {number} x - The X value
@@ -13,17 +14,24 @@ export default class Coord {
      * @param {boolean} yLock - if the Y value is locked
      */
     constructor({x = 0, y = 0, xLock = false, yLock = false} = {}) {
+        super();
         this._x = numSan(x);
         this._y = numSan(y);
         if (xLock) this._xLock = xLock;
         if (yLock) this._yLock = yLock;
     }
 
+
+    // --------------------------------------------------------------
+    // Common Glyphr Studio object methods
+    // --------------------------------------------------------------
+
     /**
-     * Export object to project file
-     * @return {object}
+     * Export object properties that need to be saved to a project file
+     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+     * @return {*}
      */
-    save() {
+    save(verbose = false) {
         let re = {
             x: this.x,
             y: this.y,
@@ -32,13 +40,15 @@ export default class Coord {
         if (this._xLock) re.xLock = true;
         if (this._yLock) re.yLock = true;
 
+        if (verbose) re.objType = this.objType;
+
         return re;
     }
 
 
-    // --------------------
-    // GETTERS
-    // --------------------
+    // --------------------------------------------------------------
+    // Getters
+    // --------------------------------------------------------------
 
     /** Gets the xLock property */
     get xLock() {
@@ -79,9 +89,9 @@ export default class Coord {
     }
 
 
-    // --------------------
-    // SETTERS
-    // --------------------
+    // --------------------------------------------------------------
+    // Setters
+    // --------------------------------------------------------------
 
     /**
      * Set the x position of the point
@@ -125,6 +135,11 @@ export default class Coord {
         }
     }
 }
+
+
+// --------------------------------------------------------------
+// Helpers
+// --------------------------------------------------------------
 
 /**
  * Compare two coordinates within a margin of rounding

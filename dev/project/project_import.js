@@ -292,7 +292,7 @@ function importGlyphrProjectFromText() {
         // debug('\t Glyph ' + glyph.charname);
         for (let s=0; s<gshapes.length; s++) {
             sh = gshapes[s];
-            if (sh.objtype === 'linkedshapeinstance') {
+            if (sh.objType === 'linkedshapeinstance') {
                 dx = sh.uselinkedshapexy? 0 : sh.xpos;
                 dy = sh.uselinkedshapexy? 0 : sh.ypos;
                 gshapes[s] = new ComponentInstance({'name': sh.name, 'link': sh.link, 'translatex': dx, 'translatey': dy, 'xLock': sh.xLock, 'yLock': sh.yLock});

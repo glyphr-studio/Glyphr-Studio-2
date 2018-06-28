@@ -71,7 +71,7 @@ function makePanelSuperTitle() {
     if (!_UI.popOut) {
         let selwi = getSelectedWorkItem();
         let name;
-        // debug('\t selwi = ' + selwi.objtype);
+        // debug('\t selwi = ' + selwi.objType);
 
         content += '<h1 class="panelsupertitle">'+_UI.currentPage.toUpperCase();
         if (_UI.currentPanel === 'npChooser' ||

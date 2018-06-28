@@ -1,3 +1,4 @@
+import GlyphElement from './glyphelement.js';
 import Maxes from './maxes.js';
 import Coord from './coord.js';
 import {coordsAreEqual} from './coord.js';
@@ -23,7 +24,7 @@ export {segmentsAreEqual, findSegmentIntersections,
     This Segment object is basically here just to
     make Bezier math easier for Paths.
 **/
-export default class Segment {
+export default class Segment extends GlyphElement{
     /**
      * Create a Segment
      * @param {number} p1x - First point x
@@ -36,6 +37,7 @@ export default class Segment {
      * @param {number} p4y - Second point y
      */
     constructor({p1x = 0, p1y = 0, p2x, p2y, p3x, p3y, p4x = 0, p4y = 0} = {}) {
+        super();
         this.p1x = numSan(p1x);
         this.p1y = numSan(p1y);
         this.p4x = numSan(p4x);
@@ -54,12 +56,18 @@ export default class Segment {
         this._maxes = this.calcMaxes();
     }
 
+
+    // --------------------------------------------------------------
+    // Common Glyphr Studio object methods
+    // --------------------------------------------------------------
+
     /**
-     * Export object to a project file
-     * @return {object}
+     * Export object properties that need to be saved to a project file
+     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+     * @return {*}
      */
-    save() {
-        return {
+    save(verbose = false) {
+        let re = {
             p1x: this.p1x,
             p1y: this.p1y,
             p2x: this.p2x,
@@ -69,6 +77,10 @@ export default class Segment {
             p4x: this.p4x,
             p4y: this.p4y,
         };
+
+        if (verbose) re.objType = this.objType;
+
+        return re;
     }
 
     /**
@@ -81,9 +93,9 @@ export default class Segment {
     }
 
 
-    //    -----------------------------------
-    //    Getters
-    //    -----------------------------------
+    // --------------------------------------------------------------
+    // Getters
+    // --------------------------------------------------------------
 
     /**
      * Returns the length of this curve
@@ -104,9 +116,9 @@ export default class Segment {
     }
 
 
-    //    -----------------------------------
-    //    Drawing
-    //    -----------------------------------
+    // --------------------------------------------------------------
+    // Drawing
+    // --------------------------------------------------------------
 
     /**
      * Draws this segment to the Edit Canvas
@@ -171,9 +183,10 @@ export default class Segment {
     }
 
 
-    //    -----------------------------------
-    //    Splitting
-    //    -----------------------------------
+    // --------------------------------------------------------------
+    // Splitting
+    // --------------------------------------------------------------
+
     /**
      * Splits a segment at either an x/y value or a decimal %
      * @param {*} sp - decimal or x/y object
@@ -477,9 +490,9 @@ export default class Segment {
     }
 
 
-    //    -----------------------------------
-    //    Bounds
-    //    -----------------------------------
+    // --------------------------------------------------------------
+    // Bounds
+    // --------------------------------------------------------------
 
     /**
      * A Bezier Segment can never be outside the bounding box
@@ -616,9 +629,9 @@ export default class Segment {
     }
 
 
-    //    -----------------------------------
-    //    Curve Checking
-    //    -----------------------------------
+    // --------------------------------------------------------------
+    // Curve Checking
+    // --------------------------------------------------------------
 
     /**
      * Checks to see if this (line) Segment is overlapped by
@@ -791,9 +804,14 @@ export default class Segment {
 }
 
 
-//    -----------------------------------
+// --------------------------------------------------------------
+// Helpers
+// --------------------------------------------------------------
+
+
+// --------------------------------------------------------------
 //    Curve Intersections
-//    -----------------------------------
+// --------------------------------------------------------------
 
 /**
  * Find all places where two segments cross eachother
@@ -811,7 +829,7 @@ function findSegmentIntersections(s1, s2, depth) {
 
     // if(depth > 15) {
         // debug('\t fINDsEGMENTiNTERSECTIONS debug early return');
-    //     return [];
+    //  return [];
     // }
     // s1.drawSegmentOutline();
     // s2.drawSegmentOutline();
