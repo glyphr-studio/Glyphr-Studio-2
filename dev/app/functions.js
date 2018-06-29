@@ -189,7 +189,6 @@ function saveFile(fname, buffer, ftype) {
     try {
         // IE
         window.navigator.msSaveBlob(fblob, fname);
-        return;
     } catch (err) {
         // Others
         let link = document.createElement('a');
@@ -201,7 +200,6 @@ function saveFile(fname, buffer, ftype) {
         let event = document.createEvent('MouseEvents');
         event.initEvent('click', true, false);
         link.dispatchEvent(event);
-        return;
     }
 }
 

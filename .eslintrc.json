@@ -16,6 +16,14 @@
             "ignoreTemplateLiterals": true,
             "ignoreRegExpLiterals": true
         }],
+        "valid-jsdoc": [2, {
+            "prefer": {
+                "return": "returns"
+            },
+            "requireReturn": false,
+            "requireReturnDescription": false,
+            "requireParamDescription": false
+        }],
         "linebreak-style": "off"
     }
 }
