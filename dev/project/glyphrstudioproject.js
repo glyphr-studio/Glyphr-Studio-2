@@ -192,7 +192,7 @@ export default class GlyphrStudioProject {
  * @param {Object} template - default values
  * @param {Object} importing - custom values
  * @param {Boolean} trim - remove spaces from strings
- * @return {Object}
+ * @returns {Object}
  */
 function merge(template, importing, trim) {
     for (let a in template) {

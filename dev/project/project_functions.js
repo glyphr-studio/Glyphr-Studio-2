@@ -38,12 +38,12 @@ function saveGlyphrProjectFile(overwrite) {
 /**
  * Clone the _GP object with some special omissions
  * @param {object} cobj - _GP to clone
- * @return {object}
+ * @returns {object}
  */
 function cloneForSaveData(cobj) {
     let newObj = (cobj instanceof Array) ? [] : {};
     for (let i in cobj) {
-        if (i !== 'parentpath' && i !== 'cache') {
+        if (i !== 'parentPath' && i !== 'cache') {
             if (cobj[i] && typeof cobj[i] === 'object') {
                 newObj[i] = cloneForSaveData(cobj[i]);
             } else newObj[i] = cobj[i];
@@ -55,7 +55,7 @@ function cloneForSaveData(cobj) {
 /**
  * Generate a unique Project ID so we can recognize a
  * project through file name and project name re-naming
- * @return {string} - ID
+ * @returns {string} - ID
  */
 function makeProjectID() {
     let j = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
@@ -70,7 +70,7 @@ function makeProjectID() {
 
 /**
  * Generates a date suffix for file saves
- * @return {string}
+ * @returns {string}
  */
 function makeDateStampSuffix() {
     let d = new Date();
@@ -88,7 +88,7 @@ function makeDateStampSuffix() {
  * Iterates through each glyph calling a function
  * collecting results if they are provided
  * @param {function} fname - function to call on each glyph
- * @return {*}
+ * @returns {*}
  */
 function glyphRangeIterator(fname) {
     let cr = _GP.projectSettings.glyphrange;

@@ -22,9 +22,9 @@ export default class Handle extends GlyphElement {
         rootPoint = false,
     } = {}) {
         super();
-        this._point = new Coord(point);
-        if (use) this._use = use;
-        this._rootPoint = rootPoint;
+        this.point = point;
+        this.use = use;
+        this.rootPoint = rootPoint;
     }
 
 
@@ -35,14 +35,14 @@ export default class Handle extends GlyphElement {
     /**
      * Export object properties that need to be saved to a project file
      * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @return {*}
+     * @returns {*}
      */
     save(verbose = false) {
         let re = {
             point: this.point.save(),
         };
 
-        if (this._use) re.use = true;
+        if (this.use) re.use = true;
 
         if (verbose) re.objType = this.objType;
 
@@ -56,7 +56,7 @@ export default class Handle extends GlyphElement {
 
     /**
      * Get the x coordinate
-     * @return {number}
+     * @returns {number}
      */
     get x() {
         return this._use? this._point.x : this.rootPoint.p.x;
@@ -64,15 +64,15 @@ export default class Handle extends GlyphElement {
 
     /**
      * Get the y coordinate
-     * @return {number}
+     * @returns {number}
      */
     get y() {
-        return this._use? this._point.y : this.rootPoint.p.x;
+        return this._use? this._point.y : this.rootPoint.p.y;
     }
 
     /**
      * Get the x/y Coord
-     * @return {Coord}
+     * @returns {Coord}
      */
     get point() {
         return this._point || new Coord();
@@ -80,7 +80,7 @@ export default class Handle extends GlyphElement {
 
     /**
      * Get the show/hide value
-     * @return {boolean}
+     * @returns {boolean}
      */
     get use() {
         return this._use? true : false;
@@ -88,7 +88,7 @@ export default class Handle extends GlyphElement {
 
     /**
      * Is the handle locked in the x dimension
-     * @return {boolean}
+     * @returns {boolean}
      */
     get xLock() {
         return this.point.xLock;
@@ -96,7 +96,7 @@ export default class Handle extends GlyphElement {
 
     /**
      * Is the handle locked in the y dimension
-     * @return {boolean}
+     * @returns {boolean}
      */
     get yLock() {
         return this.point.yLock;
@@ -104,7 +104,7 @@ export default class Handle extends GlyphElement {
 
     /**
      * Handle angle relative to Root Point
-     * @return {number}
+     * @returns {number}
      */
     get angle() {
         return calculateAngle(this.point, this.rootPoint.p);
@@ -112,7 +112,7 @@ export default class Handle extends GlyphElement {
 
     /**
      * Handle "Nice Angle" for UI
-     * @return {number}
+     * @returns {number}
      */
     get niceAngle() {
         return angleToNiceAngle(this.angle);
@@ -120,7 +120,7 @@ export default class Handle extends GlyphElement {
 
     /**
      * Get the root point this handle is connected to
-     * @return {PathPoint}
+     * @returns {PathPoint}
      */
     get rootPoint() {
         return this._rootPoint || new PathPoint();
@@ -128,7 +128,7 @@ export default class Handle extends GlyphElement {
 
     /**
      * Handle Length
-     * @return {number}
+     * @returns {number}
      */
     get length() {
         return calculateLength(this.point, this.rootPoint.p);
@@ -145,6 +145,7 @@ export default class Handle extends GlyphElement {
      */
     set x(possition) {
         this.point.x = possition;
+        this.use = true;
     }
 
     /**
@@ -153,6 +154,7 @@ export default class Handle extends GlyphElement {
      */
     set y(possition) {
         this.point.y = possition;
+        this.use = true;
     }
 
     /**
@@ -160,7 +162,8 @@ export default class Handle extends GlyphElement {
      * @param {Coord} pt
      */
     set point(pt) {
-        this._point = pt;
+        this._point = new Coord(pt);
+        this.use = true;
     }
 
     /**
@@ -168,10 +171,7 @@ export default class Handle extends GlyphElement {
      * @param {boolean} show
      */
     set use(show) {
-        if (show) this._use = true;
-        else {
-            if (this._use) delete this._use;
-        }
+        this._use = !!show;
     }
 
     /**
@@ -179,7 +179,7 @@ export default class Handle extends GlyphElement {
      * @param {boolean} lock
      */
     set xLock(lock) {
-        this.point.xLock = lock;
+        this.point.xLock = !!lock;
     }
 
     /**
@@ -187,7 +187,7 @@ export default class Handle extends GlyphElement {
      * @param {boolean} lock
      */
     set yLock(lock) {
-        this.point.yLock = lock;
+        this.point.yLock = !!lock;
     }
 
     /**

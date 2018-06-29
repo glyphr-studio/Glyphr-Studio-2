@@ -24,23 +24,20 @@ export default class PathPoint extends GlyphElement {
      */
     constructor({
         p = {x: 100, y: 100},
-        h1 = {point: {x: 0, y: 0}},
-        h2 = {point: {x: 200, y: 200}},
+        h1,
+        h2,
         type = 'corner',
         q = false,
         parentPath = false,
     } = {}) {
         super();
-        this._p = new Coord(p);
-        this._h1 = new Handle(h1);
-        this._h2 = new Handle(h2);
-        this.type = type; // use setter for validation
-        this._parentPath = parentPath;
+        this.p = p;
+        this.h1 = h1;
+        this.h2 = h2;
+        this.type = type;
+        this.parentPath = parentPath;
 
-        this._h1.rootPoint = this;
-        this._h2.rootPoint = this;
-
-        if (q) this._q = q;
+        if (q) this.q = q;
     }
 
 
@@ -51,15 +48,16 @@ export default class PathPoint extends GlyphElement {
     /**
      * Export object properties that need to be saved to a project file
      * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @return {*}
+     * @returns {*}
      */
     save(verbose = false) {
         let re = {
             p: this.p.save(),
-            h1: this.h1.save(),
-            h2: this.h2.save(),
             type: this.type,
         };
+
+        if (this.h1.use) re.h1 = this.h1.save();
+        if (this.h2.use) re.h2 = this.h2.save();
 
         if (this.q) re.q = this.q;
 
@@ -75,7 +73,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Get the main point
-     * @return {Coord}
+     * @returns {Coord}
      */
     get p() {
         return this._p;
@@ -83,7 +81,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Get the first handle
-     * @return {Handle}
+     * @returns {Handle}
      */
     get h1() {
         return this._h1;
@@ -91,7 +89,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Get the second handle
-     * @return {Handle}
+     * @returns {Handle}
      */
     get h2() {
         return this._h2;
@@ -99,7 +97,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Get a point's type
-     * @return {string} type - symmetric / flat / corner
+     * @returns {string} type - symmetric / flat / corner
      */
     get type() {
         return this._type;
@@ -107,7 +105,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Get a point's parent path
-     * @return {Path}
+     * @returns {Path}
      */
     get parentPath() {
         return this._parentPath;
@@ -115,12 +113,12 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Figure out where this point is in the overall path
-     * @return {number}
+     * @returns {number}
     */
     get pointNumber() {
-        if (!this._parentPath) return false;
+        if (!this.parentPath) return false;
 
-        let pp = this._parentPath.pathPoints;
+        let pp = this.parentPath.pathPoints;
         if (!pp) return false;
 
         for (let p=0; p<pp.length; p++) {
@@ -147,16 +145,26 @@ export default class PathPoint extends GlyphElement {
      * set the first handle
      * @param {Handle} newh1
      */
-    set h1(newh1) {
+    set h1(newh1 = {}) {
+        if (!newh1.point) {
+            newh1.point = {x: this.x-100, y: this.y};
+            newh1.use = false;
+        }
         this._h1 = new Handle(newh1);
+        this._h1.rootPoint = this;
     }
 
     /**
      * set the second handle
      * @param {Handle} newh2
      */
-    set h2(newh2) {
+    set h2(newh2 = {}) {
+        if (!newh2.point) {
+            newh2.point = {x: this.x+100, y: this.y};
+            newh2.use = false;
+        }
         this._h2 = new Handle(newh2);
+        this._h2.rootPoint = this;
     }
 
     /**
@@ -169,6 +177,13 @@ export default class PathPoint extends GlyphElement {
         else this._type = 'corner';
     }
 
+    /**
+     * Set a point's parent path
+     * @param {Path} parentPath
+     */
+    set parentPath(parentPath) {
+        this._parentPath = parentPath;
+    }
 
     // --------------------------------------------------------------
     // Methods
@@ -222,7 +237,7 @@ export default class PathPoint extends GlyphElement {
      * @param {number} y - mouse y possition
      * @param {number} targetSize - radius around the point to return true
      * @param {boolean} noHandles - Eliminates checking for handles in multi-select situations
-     * @return {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
+     * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
      */
     isOverControlPoint(x = 0, y = 0, targetSize = 3, noHandles = false) {
         if (((this.p.x+targetSize) > x) && ((this.p.x-targetSize) < x) &&
@@ -254,7 +269,7 @@ export default class PathPoint extends GlyphElement {
     /**
      * Moves one handle to be symmetrical with the other
      * @param {string} hold - Handle to not move while making symmetric
-     * @return {PathPoint}
+     * @returns {PathPoint}
      */
     makeSymmetric(hold) {
         // debug('MAKESYMETRIC - hold ' + hold + ' starts as ' + JSON.stringify(this));
@@ -298,7 +313,7 @@ export default class PathPoint extends GlyphElement {
     /**
      * Moves one handle to be inline with the other, while maintaining handle length
      * @param {string} hold - handle to not move
-     * @return {PathPoint}
+     * @returns {PathPoint}
      */
     makeFlat(hold) {
         // debug('\n PathPoint.makeFlat - START');
@@ -372,7 +387,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Checks to see if two handles are flat
-     * @return {boolean}
+     * @returns {boolean}
      * */
     isFlat() {
         if (this.p.x === this.h1.x && this.p.x === this.h2.x) return true;
@@ -387,7 +402,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Figures out what type a point is based on handle possitions
-     * @return {string}
+     * @returns {string}
      */
     resolvePointType() {
         // debug('\n PathPoint.resolvePointType - START');
@@ -416,7 +431,7 @@ export default class PathPoint extends GlyphElement {
      * @param {number} length - Length the handle should end up
      * @param {string} handle - Which handle to move
      * @param {boolean} dontresolvetype - After updating, skip auto-resolving the point type
-     * @return {PathPoint}
+     * @returns {PathPoint}
      */
     makePointedTo(px, py, length = false, handle = 'h2', dontresolvetype = false) {
         // figure out angle
@@ -449,7 +464,7 @@ export default class PathPoint extends GlyphElement {
      * Rotate Point and Handles around a center of rotation
      * @param {number} angle - How far to rotate
      * @param {object} about - x/y coordinate center of rotation
-     * @return {PathPoint}
+     * @returns {PathPoint}
      */
     rotate(angle, about) {
         // debug('\n PathPoint.rotate - START');
@@ -464,7 +479,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Resets handles to defaults
-     * @return {PathPoint}
+     * @returns {PathPoint}
      */
     resetHandles() {
         this.type = 'corner';
@@ -481,7 +496,7 @@ export default class PathPoint extends GlyphElement {
     /**
      * Rounds all the Point and Handle data to a precision
      * @param {number} i - precision
-     * @return {PathPoint}
+     * @returns {PathPoint}
      */
     roundAll(i = 9) {
         this.p.x = round(this.p.x, i);
@@ -836,7 +851,7 @@ export default class PathPoint extends GlyphElement {
     /**
      * Find the offset between two points
      * @param {PathPoint} pathPoint - other point with which to align
-     * @return {number}
+     * @returns {number}
      */
     getMutualOffset(pathPoint) {
         if (this.p.x === pathPoint.p.x) {
@@ -911,7 +926,7 @@ export default class PathPoint extends GlyphElement {
  * Creates a single Point from two segments
  * @param {Segment} seg1 - First segment
  * @param {Segment} seg2 - Second segment
- * @return {PathPoint}
+ * @returns {PathPoint}
  */
 function makePathPointFromSegments(seg1, seg2) {
     let newpp = new PathPoint({

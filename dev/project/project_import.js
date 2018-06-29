@@ -128,7 +128,7 @@ function importGlyphrProjectFromText() {
     /**
      * Parse text version number to variables
      * @param {string} vn - version number
-     * @return {object}
+     * @returns {object}
      */
     function parseVersionNum(vn) {
         vn = vn.split('.');
@@ -168,7 +168,7 @@ function importGlyphrProjectFromText() {
      * This is mostly camelCaseIng project variables
      * @param {GlyphrStudioProject} project
      * @param {number} minor - minor version
-     * @return {GlyphrStudioProject}
+     * @returns {GlyphrStudioProject}
      */
     function migrateV1toV2(project, minor) {
         // CamelCase the project variables
@@ -181,7 +181,7 @@ function importGlyphrProjectFromText() {
      * migrate all Beta versions to V1
      * @param {GlyphrStudioProject} project - project object
      * @param {number} minor - minor version
-     * @return {GlyphrStudioProject} - project JSON
+     * @returns {GlyphrStudioProject} - project JSON
      */
     function migrateBetasToV1(project, minor) {
         // debug('\n migrateBetasToV1 - START');
@@ -213,7 +213,7 @@ function importGlyphrProjectFromText() {
     /**
      * Migrate 0.5 to 1.0
      * @param {GlyphrStudioProject} project - project object
-     * @return {GlyphrStudioProject}
+     * @returns {GlyphrStudioProject}
      */
     function migrate05to10(project) {
         // debug('\n migrate05to10 - START');
@@ -273,7 +273,7 @@ function importGlyphrProjectFromText() {
     /**
      * Convert old Char object to new Glyph format
      * @param {Glyph} glyph - old Char
-     * @return {Glyph}
+     * @returns {Glyph}
      */
     function charToGlyph(glyph) {
         let gshapes;
@@ -313,7 +313,7 @@ function importGlyphrProjectFromText() {
     /**
      * Migrate beta 4 to beta 5
      * @param {GlyphrStudioProject} project - Char objects
-     * @return {GlyphrStudioProject}
+     * @returns {GlyphrStudioProject}
      */
     function migrate04to05(project) {
         // debug('\n migrate04to05 - START');
@@ -334,7 +334,7 @@ function importGlyphrProjectFromText() {
     /**
      *
      * @param {Object} fc - project
-     * @return {GlyphrStudioProject}
+     * @returns {GlyphrStudioProject}
      */
     function migrate03to04(fc) {
         // debug('\n migrate03to04 - START');

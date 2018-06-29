@@ -81,7 +81,7 @@ function afterLoadTests() {
 /**
  * Generate an unique ID
  * @param {string} category
- * @return {string}
+ * @returns {string}
  */
 function getResultSectionID(category) {
     let rsid = 'resultSection' + category.split(' ').join('_');
@@ -106,7 +106,8 @@ function runTests() {
         let start;
         let finish;
         let test;
-        let currResultSection = document.querySelector(`#${getResultSectionID(_TEST.testList[currTest].category)}`);
+        let category = _TEST.testList[currTest].category;
+        let currResultSection = document.querySelector(`#${getResultSectionID(category)}`);
 
         try {
             start = new Date().getTime();
@@ -118,11 +119,11 @@ function runTests() {
             if (test.result) _TEST.succeeded++;
             else {
                 _TEST.failed++;
-                console.warn(`Test ${_TEST.testList[currTest].name}`);
+                console.warn(`t> ${category} - ${_TEST.testList[currTest].name}`);
                 console.log(test.description);
             }
         } catch (error) {
-            console.warn(`Test ${_TEST.testList[currTest].name}`);
+            console.warn(`t> ${category} - ${_TEST.testList[currTest].name}`);
             console.log(error);
             if (currResultSection) {
                 currResultSection.innerHTML += addTestResult('didNotRun', error.message, _TEST.testList[currTest].name);
@@ -143,7 +144,7 @@ function runTests() {
 /**
  * First part of the comparison
  * @param {*} leftHand
- * @return {object}
+ * @returns {object}
  */
 _TEST.is = function(leftHand) {
     let test = {};
@@ -162,7 +163,7 @@ _TEST.is = function(leftHand) {
 /**
  * Evaluates an expression
  * @param {*} ex
- * @return {boolean}
+ * @returns {boolean}
  */
 _TEST.expression = function(ex) {
     return {
@@ -177,7 +178,7 @@ _TEST.expression = function(ex) {
  * @param {string} message
  * @param {string} title
  * @param {number} durration
- * @return {string}
+ * @returns {string}
  */
 function addTestResult(result, message, title, durration = 0) {
     let resultClass;

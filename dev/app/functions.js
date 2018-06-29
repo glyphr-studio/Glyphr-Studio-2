@@ -63,7 +63,7 @@ window.debug = debug;
 
 /**
  * Panel Title
- * @return {string}
+ * @returns {string}
  */
 function makePanelSuperTitle() {
     // debug('\n makePanelSuperTitle - START');
@@ -98,7 +98,7 @@ function makePanelSuperTitle() {
 
 /**
  * Panel Title Seperator
- * @return {string}
+ * @returns {string}
  */
 function makeSuperTitleSeperator() {
     let re = '<span class="supertitleseperator">';
@@ -213,15 +213,15 @@ function saveFile(fname, buffer, ftype) {
 
 /**
  * Returns a full new copy of any object
- * 'parentpath' is a PathPoint property that is a pointer to it's parent Path
- * causes infinite loops when cloning objects.  Kind of a hack.
+ * 'parentPath' and 'rootPoint' are pointers up to parent objects, they
+ * cause infinite loops when cloning objects.  Kind of a hack.
  * @param {object} cobj - object to clone
- * @return {object}
+ * @returns {object}
  */
 function clone(cobj) {
     let newObj = (cobj instanceof Array) ? [] : {};
     for (let i in cobj) {
-        if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parentpath' && i !== 'cache') {
+        if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parentPath' && i !== 'rootPoint' && i !== 'cache') {
             newObj[i] = clone(cobj[i]);
         } else newObj[i] = cobj[i];
     }
@@ -233,7 +233,7 @@ function clone(cobj) {
  * formatting by default
  * @param {object} obj - object to stringify
  * @param {boolean} raw - true = don't format
- * @return {string}
+ * @returns {string}
  */
 function json(obj, raw) {
     obj = clone(obj);
@@ -250,7 +250,7 @@ function json(obj, raw) {
  * Not intended for complex objects :-)
  * @param {object} obj1 - first object to compare
  * @param {object} obj2 - second object to compare
- * @return {boolean}
+ * @returns {boolean}
  */
 function areEqual(obj1, obj2) {
     // debug(`\n areEqual - START`);
@@ -278,7 +278,7 @@ function areEqual(obj1, obj2) {
  * true = +0.5, false = -0.5
  * @param {number} num - number to crisp
  * @param {boolean} dir - direction, plus or minus, to adjust number
- * @return {number}
+ * @returns {number}
  */
 function makeCrisp(num, dir) {
     let mul = dir? 1 : -1;
@@ -289,7 +289,7 @@ function makeCrisp(num, dir) {
  * Better rounding than Math.round
  * @param {number} num - number to round
  * @param {number} dec - number of decimal places
- * @return {number}
+ * @returns {number}
  */
 function round(num, dec = 0) {
     if (!num) return 0;
@@ -301,7 +301,7 @@ function round(num, dec = 0) {
  * Floating point numbers make me mad
  * Looks for sequences of 0s or 9s
  * @param {number} num - number to sanitize
- * @return {number}
+ * @returns {number}
  */
 function numSan(num) {
     num = parseFloat(num);
@@ -319,7 +319,7 @@ function numSan(num) {
 /**
  * Removes illegal file name chars
  * @param {string} val - string to sanitize
- * @return {string}
+ * @returns {string}
  */
 function strSan(val) {
     return val.replace(/[<>'"\\]/g, '');
@@ -328,7 +328,7 @@ function strSan(val) {
 /**
  * Removes begining and trailing whitespace, and any breaking or tab chars
  * @param {string} text - text to trim
- * @return {string}
+ * @returns {string}
  */
 function trim(text) {
     try {
@@ -342,7 +342,7 @@ function trim(text) {
 /**
  * Checks to see if something is a value, and not null or undefined
  * @param {*} val - variable to test
- * @return {boolean}
+ * @returns {boolean}
  */
 function isVal(val) {
     if (val === 0) return true;
@@ -356,7 +356,7 @@ function isVal(val) {
 /**
  * Checks all object properties for isVal
  * @param {object} obj - object to check
- * @return {boolean}
+ * @returns {boolean}
  */
 function hasNonValues(obj) {
     if (!obj) return true;
@@ -395,7 +395,7 @@ function reqAniFrame(fun) {
  * @param {*} v
  * @param {number} i
  * @param {array} a
- * @return {boolean}
+ * @returns {boolean}
  */
 function duplicates(v, i, a) {
     return a.indexOf(v) === i;
@@ -418,7 +418,7 @@ function duplicates(v, i, a) {
  * Calculates the angle of a handle given a point
  * @param {object} handle - x/y coordinate of handle
  * @param {object} point - x/y coordinate of point
- * @return {number}
+ * @returns {number}
  */
 function calculateAngle(handle, point = {x: 0, y: 0}) {
     let result = Math.atan2(handle.y - point.y, handle.x - point.x);
@@ -435,7 +435,7 @@ function calculateAngle(handle, point = {x: 0, y: 0}) {
  * Calculates the length of a handle, given a point
  * @param {object} handle - x/y coordinate of handle
  * @param {object} point - x/y coordinate of point
- * @return {number}
+ * @returns {number}
  */
 function calculateLength(handle, point) {
     let adj = point.x - handle.x;
@@ -474,7 +474,7 @@ function rotate(coord, angle, about = {x: 0, y: 0}) {
 /**
  * Convert degrees to radians
  * @param {number} deg - degrees
- * @return {number}
+ * @returns {number}
  */
 function rad(deg) {
     return (deg * Math.PI / 180) % Math.PI;
@@ -483,7 +483,7 @@ function rad(deg) {
 /**
  * Convert radians to degrees
  * @param {number} rad - radians
- * @return {number}
+ * @returns {number}
  */
 function deg(rad) {
     return (rad * 180 / Math.PI) % 360;
@@ -493,7 +493,7 @@ function deg(rad) {
  * Given a standard JavaScript angle, convert it to the angle
  * system we show the user (aka "Nice Angle")
  * @param {number} angle - Angle from standard JavaScript
- * @return {number}
+ * @returns {number}
  */
 function angleToNiceAngle(angle) {
     angle = deg(angle);
@@ -509,7 +509,7 @@ function angleToNiceAngle(angle) {
  * Given a "Nice Angle" from the UI, calculate the type of
  * angle that JavaScript knows about
  * @param {number} angle - Nice Angle
- * @return {number}
+ * @returns {number}
  */
 function niceAngleToAngle(angle) {
     angle += 90;
@@ -531,7 +531,7 @@ function niceAngleToAngle(angle) {
 /**
  * Gets the first key in an object
  * @param {object} obj
- * @return {string}
+ * @returns {string}
  */
 function getFirstID(obj) {
     for (let key in obj) {
@@ -547,7 +547,7 @@ function getFirstID(obj) {
  * Creates a unique key for an object given a prefix
  * @param {object} obj
  * @param {string} base - string prefix for the new ID
- * @return {string}
+ * @returns {string}
  */
 function generateNewID(obj, base) {
     let number = 1;
@@ -561,7 +561,7 @@ function generateNewID(obj, base) {
 /**
  * Return the ID for a given Glyph object
  * @param {object} obj - Glyph object to search for
- * @return {string}
+ * @returns {string}
  */
 function getMyID(obj) {
     for (let g in _GP.glyphs) {
@@ -588,7 +588,7 @@ function getMyID(obj) {
 /**
  * Returns how many objects are in an object
  * @param {object} obj
- * @return {number}
+ * @returns {number}
  */
 function countObjectKeys(obj) {
     let len = 0;
@@ -606,7 +606,7 @@ function countObjectKeys(obj) {
 
 /**
  * Generates the content for the "email us" link
- * @return {string}
+ * @returns {string}
  */
 function makeEmailContent() {
     let con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
@@ -658,7 +658,7 @@ function makeEmailContent() {
  *
  * @param {number} set - Array of objects of any type. They are treated as unique.
  * @param {number} k - size of combinations to search for.
- * @return {array} - Array of found combinations, size of a combination is k.
+ * @returns {array} - Array of found combinations, size of a combination is k.
  */
 function kCombinations(set, k) {
     let i;

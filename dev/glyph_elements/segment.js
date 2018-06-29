@@ -37,6 +37,9 @@ export default class Segment extends GlyphElement {
      * @param {number} p4y - Second point y
      */
     constructor({p1x = 0, p1y = 0, p2x, p2y, p3x, p3y, p4x = 0, p4y = 0} = {}) {
+        // debug(`\n Segment.constructor - START`);
+        // debug(`\t passed:\np1x:${p1x}, p1y:${p1y}\np2x:${p2x}, p2y:${p2y}\np3x:${p3x}, p3y:${p3y}\np4x:${p4x}, p4y:${p4y}\n`);
+
         super();
         this.p1x = numSan(p1x);
         this.p1y = numSan(p1y);
@@ -48,12 +51,15 @@ export default class Segment extends GlyphElement {
         this.p3x = isVal(p3x) ? numSan(p3x) : this.p4x;
         this.p3y = isVal(p3y) ? numSan(p3y) : this.p4y;
 
+        // debug(`\t is now:\np1x:${this.p1x}, p1y:${this.p1y}\np2x:${this.p2x}, p2y:${this.p2y}\np3x:${this.p3x}, p3y:${this.p3y}\np4x:${this.p4x}, p4y:${this.p4y}\n`);
+
         // cache
         this.cache = {};
 
         this.line = this.isLine();
 
         this._maxes = this.calcMaxes();
+        // debug(` Segment.constructor - END\n\n`);
     }
 
 
@@ -64,7 +70,7 @@ export default class Segment extends GlyphElement {
     /**
      * Export object properties that need to be saved to a project file
      * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @return {*}
+     * @returns {*}
      */
     save(verbose = false) {
         let re = {
@@ -190,7 +196,7 @@ export default class Segment extends GlyphElement {
     /**
      * Splits a segment at either an x/y value or a decimal %
      * @param {*} sp - decimal or x/y object
-     * @return {array} - Array with two segments resulting from the split
+     * @returns {array} - Array with two segments resulting from the split
      */
     split(sp = 0.5) {
         if (typeof sp === 'object' && isVal(sp.x) && isVal(sp.y)) {
@@ -204,7 +210,7 @@ export default class Segment extends GlyphElement {
     /**
      * Splits a segment at a specific x/y position
      * @param {object} co - x/y coordinate where to split
-     * @return {array} - Array with two segments resulting from the split
+     * @returns {array} - Array with two segments resulting from the split
      */
     splitAtCoord(co) {
         // debug('\n Segment.splitAtCoord - START');
@@ -269,7 +275,7 @@ export default class Segment extends GlyphElement {
     /**
      * Splits a segment based on a decmial value ("time" is a metaphor here, from 0 to 1 second)
      * @param {number} t - decimal from 0 to 1 representing how far along the curve to split
-     * @return {array} - Array with two segments resulting from the split
+     * @returns {array} - Array with two segments resulting from the split
      */
     splitAtTime(t = 0.5) {
         // debug('\n Segment.splitAtTime - START');
@@ -316,7 +322,7 @@ export default class Segment extends GlyphElement {
      * Splits a segment at many x/y points
      * @param {array} coords - collection of many Coords objects where to split
      * @param {number} threshold - precision to look for a control point
-     * @return {array} - Array with many segments resulting from the split
+     * @returns {array} - Array with many segments resulting from the split
      */
     splitSegmentAtProvidedCoords(coords, threshold) {
         // debug('\n Segment.splitSegmentAtProvidedCoords - START');
@@ -342,7 +348,7 @@ export default class Segment extends GlyphElement {
     /**
      * Checks to see if a point is inside the bounding box of this Segment
      * @param {object} co - x/y point to check
-     * @return {boolean}
+     * @returns {boolean}
      */
     pointIsWithinMaxes(co) {
         let m = this.maxes;
@@ -355,7 +361,7 @@ export default class Segment extends GlyphElement {
 
     /**
      * Removes the "handle" control points, effectively making this a straight line
-     * @return {Segment}
+     * @returns {Segment}
      */
     convertToLine() {
         return new Segment({p1x: this.p1x, p1y: this.p1y, p4x: this.p4x, p4y: this.p4y});
@@ -365,7 +371,7 @@ export default class Segment extends GlyphElement {
      * Given an x/y point, find the equivalent split distance t
      * @param {Coord} coord - place to look
      * @param {number} threshold - how close to look
-     * @return {object} - collection of results
+     * @returns {object} - collection of results
      */
     getSplitFromCoord(coord, threshold = 1) {
         // debug(`\n getSplitFromCoord - START`);
@@ -400,7 +406,7 @@ export default class Segment extends GlyphElement {
     /**
      * Find the length of a curve, recursively
      * At small enough sizes, assume a curve is a straight line
-     * @return {number}
+     * @returns {number}
      */
     calculateLength() {
         // this function is only used as an approximation
@@ -424,7 +430,7 @@ export default class Segment extends GlyphElement {
     /**
      * Find the length of a curve, in a fast/cheap way
      * Just assume a straight line between the first and last points
-     * @return {number}
+     * @returns {number}
      */
     getQuickLength() {
         let a = Math.abs(this.p1x - this.p4x);
@@ -436,7 +442,7 @@ export default class Segment extends GlyphElement {
     /**
      * Given a percent distance, return a x/y value
      * @param {number} t - between 0 and 1
-     * @return {Coord}
+     * @returns {Coord}
      */
     getCoordFromSplit(t = 0.5) {
         let rs = (1 - t);
@@ -458,7 +464,7 @@ export default class Segment extends GlyphElement {
 
     /**
      * Reverses the 'winding' of this segment
-     * @return {Segment}
+     * @returns {Segment}
      */
     getReverse() {
         return new Segment({
@@ -480,7 +486,7 @@ export default class Segment extends GlyphElement {
      * 3 - second 'Handle'
      * 4 - second 'PathPoint'
      * @param {number} pt - Which point to return
-     * @return {Coord}
+     * @returns {Coord}
      */
     getCoord(pt) {
         if (pt === 1) return new Coord({x: this.p1x, y: this.p1y});
@@ -497,7 +503,7 @@ export default class Segment extends GlyphElement {
     /**
      * A Bezier Segment can never be outside the bounding box
      * created by all 4 of it's control points
-     * @return {Maxes}
+     * @returns {Maxes}
      */
     getFastMaxes() {
         let bounds = {
@@ -514,7 +520,7 @@ export default class Segment extends GlyphElement {
 
     /**
      * Calculate the bounding box for this Segment
-     * @return {Maxes}
+     * @returns {Maxes}
      */
     calcMaxes() {
         // debug('\n Segment.calcMaxes - START');
@@ -553,7 +559,7 @@ export default class Segment extends GlyphElement {
          * @param {number} p1
          * @param {number} p2
          * @param {number} p3
-         * @return {number}
+         * @returns {number}
          */
         function getBezierValue(t, p0, p1, p2, p3) {
             let mt = (1-t);
@@ -637,7 +643,7 @@ export default class Segment extends GlyphElement {
      * Checks to see if this (line) Segment is overlapped by
      * a larger (line) Segment
      * @param {Segment} largeSegment - Larger segment to check against
-     * @return {boolean}
+     * @returns {boolean}
      */
     isLineOverlappedByLine(largeSegment) {
         // debug(`\n Segment.isLineOverlappedByLine - START`);
@@ -661,7 +667,7 @@ export default class Segment extends GlyphElement {
      * Checks to see if an x/y value is one of the points of this Segment
      * @param {Coord} pt - point to check
      * @param {number} threshold - how close to check
-     * @return {boolean} - kind of
+     * @returns {boolean} - kind of
      */
     containsTerminalPoint(pt, threshold = 1) {
         if (this.containsStartPoint(pt, threshold)) return 'start';
@@ -673,7 +679,7 @@ export default class Segment extends GlyphElement {
      * Checks to see if an x/y value is the start of this Segment
      * @param {Coord} pt - point to check
      * @param {number} threshold - how close to check
-     * @return {boolean}
+     * @returns {boolean}
      */
     containsStartPoint(pt, threshold = 1) {
         return coordsAreEqual(this.getCoord(1), pt, threshold);
@@ -682,7 +688,7 @@ export default class Segment extends GlyphElement {
      * Checks to see if an x/y value is the end of this Segment
      * @param {Coord} pt - point to check
      * @param {number} threshold - how close to check
-     * @return {boolean}
+     * @returns {boolean}
      */
     containsEndPoint(pt, threshold = 1) {
         return coordsAreEqual(this.getCoord(4), pt, threshold);
@@ -692,7 +698,7 @@ export default class Segment extends GlyphElement {
      * Checks to see if an x/y value is anywhere on this Segment
      * @param {Coord} pt - point to check
      * @param {number} threshold - how close to check
-     * @return {boolean}
+     * @returns {boolean}
      */
     containsPointOnCurve(pt, threshold) {
         if (this.containsTerminalPoint(pt, threshold)) return true;
@@ -709,7 +715,7 @@ export default class Segment extends GlyphElement {
     /**
      * Checks to see if an x/y value is on this Line Segment
      * @param {Coord} pt - point to check
-     * @return {boolean}
+     * @returns {boolean}
      */
     containsPointOnLine(pt) {
         // debug('\n Segment.containsPointOnLine - START');
@@ -728,7 +734,7 @@ export default class Segment extends GlyphElement {
          * @param {number} l - left point
          * @param {number} m - middle point
          * @param {number} r - right point
-         * @return {boolean}
+         * @returns {boolean}
          */
         function within(l, m, r) {
             return ((l <= m) && (m <= r)) || ((r <= m) && (m <= l));
@@ -749,7 +755,7 @@ export default class Segment extends GlyphElement {
      * Checks to see if this segment's last point is another Segment's first point
      * @param {Segment} s2 - other segment to check
      * @param {number} threshold - how close to check
-     * @return {boolean}
+     * @returns {boolean}
      */
     preceeds(s2, threshold = 1) {
         let s1c4 = this.getCoord(4);
@@ -762,7 +768,7 @@ export default class Segment extends GlyphElement {
      * Determines if this Segment is actually a Line Segment
      * and if so, what kind
      * @param {number} precision - how close to look
-     * @return {string}
+     * @returns {string}
      */
     isLine(precision) {
         precision = isVal(precision) ? precision : 1;
@@ -787,7 +793,7 @@ export default class Segment extends GlyphElement {
     /**
      * Rounds all the values in this Segment
      * @param {number} precision - how many decimal places to round
-     * @return {Segment} - reference to this segment
+     * @returns {Segment} - reference to this segment
      */
     roundAll(precision = 3) {
         this.p1x = round(this.p1x, precision);
@@ -819,7 +825,7 @@ export default class Segment extends GlyphElement {
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
  * @param {number} depth - How deep this recursive call has gone
- * @return {array} - collection of overlap points in ix format like ['x/y', 'x/y', 'x/y']
+ * @returns {array} - collection of overlap points in ix format like ['x/y', 'x/y', 'x/y']
  */
 function findSegmentIntersections(s1, s2, depth) {
     // debug('\n findSegmentIntersections - START');
@@ -942,7 +948,7 @@ function findSegmentIntersections(s1, s2, depth) {
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
  * @param {number} threshold - precision
- * @return {boolean}
+ * @returns {boolean}
  */
 function segmentsAreEqual(s1, s2, threshold) {
     // debug('\n segmentsAreEqual - START');
@@ -970,7 +976,7 @@ function segmentsAreEqual(s1, s2, threshold) {
  * If so, just return one point from the coincident lines
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
- * @return {array} - collection of overlaps in ix format
+ * @returns {array} - collection of overlaps in ix format
  */
 function findOverlappingLineSegmentIntersections(s1, s2) {
     // debug(`\n findOverlappingLineSegmentIntersections - START`);
@@ -998,7 +1004,7 @@ function findOverlappingLineSegmentIntersections(s1, s2) {
  * This is much faster than comparing two curves
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
- * @return {array} - overlap point in ix format
+ * @returns {array} - overlap point in ix format
  */
 function findCrossingLineSegmentIntersections(s1, s2) {
     // debug('\n findCrossingLineSegmentIntersections - START');
@@ -1037,7 +1043,7 @@ function findCrossingLineSegmentIntersections(s1, s2) {
  * Finds if two segments overlap in their end points
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
- * @return {array} - collection of overlaps in ix format
+ * @returns {array} - collection of overlaps in ix format
  */
 function findEndPointSegmentIntersections(s1, s2) {
     // debug('\n findEndPointSegmentIntersections - START');
@@ -1061,7 +1067,7 @@ function findEndPointSegmentIntersections(s1, s2) {
 /**
  * Takes the string ix format for a point and returns a Coord
  * @param {string} ix - x/y value in text string format
- * @return {Coord}
+ * @returns {Coord}
  */
 function ixToCoord(ix) {
     // debug('\n ixToCoord - START');
@@ -1078,7 +1084,7 @@ function ixToCoord(ix) {
 /**
  * Converts a Coord to a string in ix format
  * @param {Coord} co - x y object to convert
- * @return {string}
+ * @returns {string}
  */
 function coordToIx(co) {
     return (''+co.x+'/'+co.y);
@@ -1090,7 +1096,7 @@ function coordToIx(co) {
  * @param {Coord} b - poitn to evaluate
  * @param {Coord} c - poitn to evaluate
  * @param {number} precision - how close to compare
- * @return {boolean}
+ * @returns {boolean}
  */
 function pointsAreCollinear(a, b, c, precision) {
     precision = isVal(precision)? precision : 3;

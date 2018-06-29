@@ -8,7 +8,7 @@ export {parseColorString, shiftColor, getRGBfromRGBA, transparencyToAlpha, makeR
 /**
  * Convert a color string into an object
  * @param {string} c - color string
- * @return {object}
+ * @returns {object}
  */
 function parseColorString(c) {
     let val = {r: 0, g: 0, b: 0, a: 1};
@@ -37,7 +37,7 @@ function parseColorString(c) {
  * @param {string} c - color string
  * @param {number} percent - ammount to shift color
  * @param {boolean} lighter - true = lighten, false = darken
- * @return {string}
+ * @returns {string}
  */
 function shiftColor(c, percent, lighter) {
     percent = Math.max(0, Math.min(percent, 1));
@@ -64,7 +64,7 @@ function shiftColor(c, percent, lighter) {
  * Converts an RGBA color to it's opaque RGB equivallent
  * @param {object} rgb - color object in RGB
  * @param {number} alpha - transparency
- * @return {string}
+ * @returns {string}
  */
 function getRGBfromRGBA(rgb, alpha) {
     let val = parseColorString(rgb);
@@ -83,7 +83,7 @@ function getRGBfromRGBA(rgb, alpha) {
 /**
  * Converts Transparency to Alpha, invert and change scale
  * @param {number} transparency - 0=opaque, 100=transparent
- * @return {number}
+ * @returns {number}
  */
 function transparencyToAlpha(transparency) {
     let t = parseInt(transparency);
@@ -98,7 +98,7 @@ function transparencyToAlpha(transparency) {
 
 /**
  * Makes a random fully saturated color
- * @return {string}
+ * @returns {string}
  */
 function makeRandomSaturatedColor() {
     let sat = Math.floor(Math.random()*5)*51;

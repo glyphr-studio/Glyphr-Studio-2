@@ -55,7 +55,7 @@ function openBigDialog(content) {
 
 /**
  * Returns true if the big dialog box is open
- * @return {boolean}
+ * @returns {boolean}
  */
 function isBigDialogOpen() {
     return document.getElementById('big_dialog_box').style.display === 'block';
@@ -104,7 +104,7 @@ function toggleDialogExportOptions() {
 
 /**
  * Creates (but does not show) a small error message box
- * @return {string} - HTML content
+ * @returns {string} - HTML content
  */
 function makeErrorMessageBox() {
     let con ='<div id="errormessagebox" style="display:none;">' +

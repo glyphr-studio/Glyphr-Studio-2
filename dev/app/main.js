@@ -13,25 +13,25 @@ window._DEV.colors = colors;
 import * as functions from './functions.js';
 window._DEV.functions = functions;
 
-import * as coord from '../glyph_classes/coord.js';
+import * as coord from '../glyph_elements/coord.js';
 window._DEV.coord = coord;
 
-import * as maxes from '../glyph_classes/maxes.js';
+import * as maxes from '../glyph_elements/maxes.js';
 window._DEV.maxes = maxes;
 
-import * as handle from '../glyph_classes/handle.js';
+import * as handle from '../glyph_elements/handle.js';
 window._DEV.handle = handle;
 
-import * as pathpoint from '../glyph_classes/pathpoint.js';
+import * as pathpoint from '../glyph_elements/pathpoint.js';
 window._DEV.pathpoint = pathpoint;
 
-import * as segment from '../glyph_classes/segment.js';
+import * as segment from '../glyph_elements/segment.js';
 window._DEV.segment = segment;
 
-import * as path from '../glyph_classes/path.js';
+import * as path from '../glyph_elements/path.js';
 window._DEV.path = path;
 /*
-import * as polysegment from '../glyph_classes/polysegment.js';
+import * as polysegment from '../glyph_elements/polysegment.js';
 window._DEV.polysegment = polysegment;
 */
 

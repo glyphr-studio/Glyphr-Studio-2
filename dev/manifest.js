@@ -10,7 +10,7 @@
 
 let manifest = [
     {
-        path: 'glyph_classes',
+        path: 'glyph_elements',
         files: [
             'coord.js',
             'handle.js',
@@ -30,7 +30,7 @@ let manifest = [
             'maxes.test.js',
             'path.test.js',
             'segment.test.js',
-            // 'polysegment.test.js',
+            'polysegment.test.js',
             // 'componentinstance.test.js',
             // 'shape.test.js',
             // 'glyph.test.js',

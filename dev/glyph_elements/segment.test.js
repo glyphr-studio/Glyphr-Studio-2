@@ -9,7 +9,7 @@ _TEST.globals.testSegment1 = {p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 200, p3y: 3
 
 /**
  * easy segment for testing
- * @return {Segment}
+ * @returns {Segment}
  */
 function sampleSegment() {
     return new Segment(_TEST.globals.testSegment1);
@@ -289,7 +289,7 @@ _TEST.testList.push(
 );
 
 /*
-CLASS Methods
+CANVAS METHODS
 
 drawSegmentOutline(color, dx, dy)
 drawSegmentPoints(color, txt)

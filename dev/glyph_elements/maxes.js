@@ -36,7 +36,7 @@ export default class Maxes extends GlyphElement {
     /**
      * Export object properties that need to be saved to a project file
      * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @return {*}
+     * @returns {*}
      */
     save(verbose = false) {
         // debug(`\n Maxes.save - START`);
@@ -63,7 +63,7 @@ export default class Maxes extends GlyphElement {
 
     /**
      * Get xMin
-     * @return {number} value
+     * @returns {number} value
      */
     get xMin() {
         if (isVal(this._xMin)) return this._xMin;
@@ -72,7 +72,7 @@ export default class Maxes extends GlyphElement {
 
     /**
      * Get xMax
-     * @return {number} value
+     * @returns {number} value
      */
     get xMax() {
         if (isVal(this._xMax)) return this._xMax;
@@ -81,7 +81,7 @@ export default class Maxes extends GlyphElement {
 
     /**
      * Get yMin
-     * @return {number} value
+     * @returns {number} value
      */
     get yMin() {
         if (isVal(this._yMin)) return this._yMin;
@@ -90,7 +90,7 @@ export default class Maxes extends GlyphElement {
 
     /**
      * Get yMax
-     * @return {number} value
+     * @returns {number} value
      */
     get yMax() {
         if (isVal(this._yMax)) return this._yMax;
@@ -100,7 +100,7 @@ export default class Maxes extends GlyphElement {
 
     /**
      * Generic smallest box
-     * @return {object}
+     * @returns {object}
      */
     get minBounds() {
         return {
@@ -113,7 +113,7 @@ export default class Maxes extends GlyphElement {
 
     /**
      * Generic largest box
-     * @return {object}
+     * @returns {object}
      */
     get maxBounds() {
         return {
@@ -132,7 +132,7 @@ export default class Maxes extends GlyphElement {
     /**
      * Set xMin
      * @param {number} x - new value
-     * @return {Maxes}
+     * @returns {Maxes}
      */
     set xMin(x) {
         x = parseFloat(x);
@@ -144,7 +144,7 @@ export default class Maxes extends GlyphElement {
     /**
      * Set xMax
      * @param {number} x - new value
-     * @return {Maxes}
+     * @returns {Maxes}
      */
     set xMax(x) {
         x = parseFloat(x);
@@ -156,7 +156,7 @@ export default class Maxes extends GlyphElement {
     /**
      * Set yMin
      * @param {number} y - new value
-     * @return {Maxes}
+     * @returns {Maxes}
      */
     set yMin(y) {
         y = parseFloat(y);
@@ -168,7 +168,7 @@ export default class Maxes extends GlyphElement {
     /**
      * Set yMax
      * @param {number} y - new value
-     * @return {Maxes}
+     * @returns {Maxes}
      */
     set yMax(y) {
         y = parseFloat(y);
@@ -188,7 +188,7 @@ export default class Maxes extends GlyphElement {
  * @param {Maxes} m1 - first maxes
  * @param {Maxes} m2 - second maxes
  * @param {boolean} exclusive - 'inclusive' or 'exclusive'
- * @return {boolean}
+ * @returns {boolean}
  */
 export function maxesOverlap(m1, m2, exclusive = true) {
     // debug(`\n maxesOverlap - START`);
@@ -210,7 +210,7 @@ export function maxesOverlap(m1, m2, exclusive = true) {
  * This takes an array of maxes objects, and returns a maxes
  * object that represents the extremes of all the passed objects
  * @param {array} maxarr - array of 'maxes' objects
- * @return {Maxes}
+ * @returns {Maxes}
  */
 export function getOverallMaxes(maxarr) {
     // debug('\n getOverallMaxes - START');

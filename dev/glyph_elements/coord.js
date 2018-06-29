@@ -15,10 +15,10 @@ export default class Coord extends GlyphElement {
      */
     constructor({x = 0, y = 0, xLock = false, yLock = false} = {}) {
         super();
-        this._x = numSan(x);
-        this._y = numSan(y);
-        if (xLock) this._xLock = xLock;
-        if (yLock) this._yLock = yLock;
+        this.x = x;
+        this.y = y;
+        this.xLock = xLock;
+        this.yLock = yLock;
     }
 
 
@@ -29,7 +29,7 @@ export default class Coord extends GlyphElement {
     /**
      * Export object properties that need to be saved to a project file
      * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @return {*}
+     * @returns {*}
      */
     save(verbose = false) {
         let re = {
@@ -62,7 +62,7 @@ export default class Coord extends GlyphElement {
 
     /**
      * Make sure x is a number
-     * @return {number}
+     * @returns {number}
      */
     get x() {
         if (!isNaN(this._x)) {
@@ -76,7 +76,7 @@ export default class Coord extends GlyphElement {
 
     /**
      * Make sure y is a number
-     * @return {number}
+     * @returns {number}
      */
     get y() {
         if (!isNaN(this._y)) {
@@ -98,7 +98,7 @@ export default class Coord extends GlyphElement {
      * @param {number} position
      */
     set x(position = 0) {
-        position = parseFloat(position);
+        position = numSan(position);
         if (isNaN(position)) this._x = 0;
         else this._x = position;
     }
@@ -108,7 +108,7 @@ export default class Coord extends GlyphElement {
      * @param {number} position
      */
     set y(position = 0) {
-        position = parseFloat(position);
+        position = numSan(position);
         if (isNaN(position)) this._y = 0;
         else this._y = position;
     }
@@ -118,10 +118,7 @@ export default class Coord extends GlyphElement {
      * @param {boolean} lock
      */
     set xLock(lock) {
-        if (lock) this._xLock = true;
-        else {
-            if (this._xLock) delete this._xLock;
-        }
+        this._xLock = !!lock;
     }
 
     /**
@@ -129,10 +126,7 @@ export default class Coord extends GlyphElement {
      * @param {boolean} lock
      */
     set yLock(lock) {
-        if (lock) this._yLock = true;
-        else {
-            if (this._yLock) delete this._yLock;
-        }
+        this._yLock = !!lock;
     }
 }
 
@@ -146,7 +140,7 @@ export default class Coord extends GlyphElement {
  * @param {Coord} c1 - First coordinate to compare
  * @param {Coord} c2 - Second coordinate to compare
  * @param {number} threshold - how close to compare positions
- * @return {boolean}
+ * @returns {boolean}
  */
 export function coordsAreEqual(c1, c2, threshold = 1) {
     // debug('\n coordsAreEqual - START');

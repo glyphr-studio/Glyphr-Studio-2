@@ -5,10 +5,11 @@ import Segment from './segment.js';
 import PolySegment from './polysegment.js';
 import Handle from './handle.js';
 import PathPoint from './pathpoint.js';
-import {clone, round, isVal, hasNonValues} from '../app/functions.js';
+import {clone, round, isVal, hasNonValues, duplicates} from '../app/functions.js';
 import {coordsAreEqual} from './coord.js';
 // import {json} from '../app/functions.js';
-import {getOverallMaxes} from './maxes.js';
+import {getOverallMaxes, maxesOverlap} from './maxes.js';
+import {findSegmentIntersections} from './segment.js';
 
 /**
  * Path
@@ -38,22 +39,19 @@ import {getOverallMaxes} from './maxes.js';
     } = {}) {
         super();
         // debug('\n Path.constructor - START');
-
-        // debug(`\t passed maxes: ${json(maxes)}`);
-
-        this.pathPoints = pathPoints; // use setter for hydration
-
-        this._winding = winding;
-        if (!this._winding) this.findWinding();
+        this.pathPoints = pathPoints;
+        this.winding = winding;
+        if (!this.winding) this.findWinding();
 
         // internal
-        this.maxes = maxes; // use setter for hydration
+        this.maxes = maxes;
         this._cache = {};
         this._cache.segments = cache.segments || [];
         this._cache.segmentlengths = cache.segmentlengths || [];
         this.calcMaxes();
 
-        // debug(this);
+        // debug(`\t maxes: ${json(this.maxes, true)}`);
+
         // debug(' Path.constructor - END\n');
     }
 
@@ -65,7 +63,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Export object properties that need to be saved to a project file
      * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @return {*}
+     * @returns {*}
      */
     save(verbose = false) {
         let re = {
@@ -97,7 +95,7 @@ import {getOverallMaxes} from './maxes.js';
 
     /**
      * Get PathPoints
-     * @return {array}
+     * @returns {array}
      */
     get pathPoints() {
         return this._pathPoints;
@@ -108,7 +106,7 @@ import {getOverallMaxes} from './maxes.js';
      * negative = clockwise
      * positive = counterclockwise
      * zero = unknown
-     * @return {number}
+     * @returns {number}
      */
     get winding() {
         if (!isVal(this._winding)) {
@@ -123,7 +121,7 @@ import {getOverallMaxes} from './maxes.js';
 
     /**
      * Get X possition
-     * @return {number} x
+     * @returns {number} x
      */
     get x() {
         return this._maxes.xMin;
@@ -131,7 +129,7 @@ import {getOverallMaxes} from './maxes.js';
 
     /**
      * Get Y possition
-     * @return {number} y
+     * @returns {number} y
      */
     get y() {
         return this._maxes.yMax;
@@ -139,7 +137,7 @@ import {getOverallMaxes} from './maxes.js';
 
     /**
      * Get Height
-     * @return {number}
+     * @returns {number}
      */
     get height() {
         let h = this.maxes.yMax - this.maxes.yMin;
@@ -148,7 +146,7 @@ import {getOverallMaxes} from './maxes.js';
 
     /**
      * Get Width
-     * @return {number}
+     * @returns {number}
      */
     get width() {
         let w = this.maxes.xMax - this.maxes.xMin;
@@ -157,7 +155,7 @@ import {getOverallMaxes} from './maxes.js';
 
     /**
      * Get Maxes
-     * @return {object}
+     * @returns {object}
      */
     get maxes() {
         // debug('\n Path.maxes - START');
@@ -172,7 +170,7 @@ import {getOverallMaxes} from './maxes.js';
 
     /**
      * Get or generate SVG path data
-     * @return {string}
+     * @returns {string}
      */
     get svgPathData() {
         if (this._cache.svgpathdata) {
@@ -191,7 +189,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Set PathPoints
      * @param {array} pathPoints - array of Path Points
-     * @return {Path} - reference to this Path
+     * @returns {Path} - reference to this Path
      */
     set pathPoints(pathPoints) {
         this._pathPoints = [];
@@ -200,7 +198,7 @@ import {getOverallMaxes} from './maxes.js';
             // debug('NEW PATH : Hydrating Path Points, length ' + pathPoints.length);
             for (let i = 0; i < pathPoints.length; i++) {
                 this._pathPoints[i] = new PathPoint(pathPoints[i]);
-                this._pathPoints[i].parentpath = this;
+                this._pathPoints[i].parentPath = this;
             }
         }
 
@@ -213,7 +211,7 @@ import {getOverallMaxes} from './maxes.js';
      * positive = counterclockwise
      * zero = unknown
      * @param {number} winding
-     * @return {Path} - reference to this Path
+     * @returns {Path} - reference to this Path
      */
     set winding(winding) {
         this._winding = winding;
@@ -223,7 +221,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Set Maxes
      * @param {Maxes} maxes
-     * @return {Path} - reference to this Path
+     * @returns {Path} - reference to this Path
      */
     set maxes(maxes) {
         // debug(`\n Path.set maxes - START`);
@@ -240,7 +238,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Set X possition
      * @param {number} x
-     * @return {Path} - reference to this Path
+     * @returns {Path} - reference to this Path
      */
     set x(x) {
         this.setPathPosition(x, false);
@@ -250,7 +248,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Set Y possition
      * @param {number} y
-     * @return {Path} - reference to this Path
+     * @returns {Path} - reference to this Path
      */
     set y(y) {
         this.setPathPosition(false, y);
@@ -260,7 +258,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Set Height
      * @param {number} h
-     * @return {Path} - reference to this Path
+     * @returns {Path} - reference to this Path
      */
     set height(h) {
         this.setPathSize(false, h);
@@ -270,7 +268,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Set Width
      * @param {number} w
-     * @return {Path} - reference to this Path
+     * @returns {Path} - reference to this Path
      */
     set width(w) {
         this.setPathSize(w, false);
@@ -280,7 +278,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Set or generate SVG path data
      * @param {string} data
-     * @return {Path} - reference to this Path
+     * @returns {Path} - reference to this Path
      */
     set svgPathData(data) {
         this._cache.svgpathdata = data;
@@ -424,7 +422,7 @@ import {getOverallMaxes} from './maxes.js';
      * Rotate this path about a point
      * @param {number} angle - how much to rotate
      * @param {Coord} about - x/y center of rotation
-     * @return {Path} - reference to this path
+     * @returns {Path} - reference to this path
      */
     rotate(angle, about) {
         // debug('\n Path.rotate - START');
@@ -443,7 +441,7 @@ import {getOverallMaxes} from './maxes.js';
      * Returns true if this path is at the specified point
      * @param {number} px - target X
      * @param {number} py - target Y
-     * @return {boolean}
+     * @returns {boolean}
      */
     isHere(px, py) {
         let gctx = _UI.isHereGhostCTX;
@@ -467,7 +465,7 @@ import {getOverallMaxes} from './maxes.js';
      * Get the next point number in the path
      * Handle looping
      * @param {number} pnum - point number
-     * @return {number}
+     * @returns {number}
      */
     getNextPointNum(pnum = 0) {
         pnum = parseInt(pnum);
@@ -480,7 +478,7 @@ import {getOverallMaxes} from './maxes.js';
      * Get the previous point number in the path
      * Handle looping
      * @param {number} pnum - point number
-     * @return {number}
+     * @returns {number}
      */
     getPreviousPointNum(pnum = 0) {
         pnum = parseInt(pnum);
@@ -508,7 +506,7 @@ import {getOverallMaxes} from './maxes.js';
      * Looks for a point in the path that matches a given coordinate
      * @param {Coord} coordinate - Coordinate to test for
      * @param {boolean} wantSecond - return the second result, not the first
-     * @return {PathPoint}
+     * @returns {PathPoint}
      */
     containsPoint(coordinate, wantSecond) {
         for (let pp = 0; pp < this.pathPoints.length; pp++) {
@@ -602,7 +600,7 @@ import {getOverallMaxes} from './maxes.js';
      * Converts this path to Post Script
      * @param {number} lastx - Last x value in the sequence
      * @param {number} lasty - Last y value in the sequence
-     * @return {string}
+     * @returns {string}
      */
     makePathPostScript(lastx = 0, lasty = 0) {
         if (!this.pathPoints) {
@@ -646,7 +644,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Create SVG data
      * @param {string} glyphName - Name of the glyph this path belongs to
-     * @return {string}
+     * @returns {string}
      */
     makeSVGPathData(glyphName = 'not specified') {
         // debug('\n Path.makeSVGPathData - START');
@@ -696,7 +694,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Export an Opentype.js Path
      * @param {object} otpath - Opentype.js Path object
-     * @return {object}
+     * @returns {object}
      */
     makeOpentypeJsPath(otpath) {
         // debug('\n Path.makeOpentypeJsPath - START');
@@ -738,7 +736,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Get a part of the path in Segment format
      * @param {number} num - segment number
-     * @return {Segment}
+     * @returns {Segment}
      */
     getSegment(num = 0) {
         // debug('\n Path.getSegment - START');
@@ -775,7 +773,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Use a quick algorithm to get a segment's length
      * @param {number} num - segment number
-     * @return {number}
+     * @returns {number}
      */
     getQuickSegmentLength(num = 0) {
         let re = this.getSegment(num);
@@ -785,7 +783,7 @@ import {getOverallMaxes} from './maxes.js';
 
     /**
      * PolySegment is an industry-standard way of describing Bezier paths
-     * @return {PolySegment}
+     * @returns {PolySegment}
      */
     getPolySegment() {
         // debug(`\n Path.getPolySegment - START`);
@@ -816,7 +814,7 @@ import {getOverallMaxes} from './maxes.js';
      * @param {number} y - y value to check
      * @param {number} targetSize - radius around the point to return true
      * @param {boolean} noHandles - true = only check points
-     * @return {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
+     * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
      */
     isOverControlPoint(x, y, targetSize, noHandles) {
         let a = this.pathPoints || [];
@@ -833,7 +831,7 @@ import {getOverallMaxes} from './maxes.js';
      * @param {number} x - x value to check
      * @param {number} y - y value to check
      * @param {number} targetSize - radius around the point to return true
-     * @return {boolean}
+     * @returns {boolean}
      */
     isOverFirstPoint(x = 0, y = 0, targetSize = 3) {
         // debug('\n Path.isOverFirstPoint - START');
@@ -856,7 +854,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Finds either the clockwise or counterclockwise winding of a path
      * @param {boolean} secondtry - If the first try fails, do a trick for a second pass
-     * @return {number} - negative = clockwise, positive = counterclockwise, 0 = unknown
+     * @returns {number} - negative = clockwise, positive = counterclockwise, 0 = unknown
      */
     findWinding(secondtry) {
         // debug('\n Path.findWinding - START');
@@ -929,49 +927,63 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Flips a path about a horizontal line
      * @param {number} mid - y value about which to flip
+     * @returns {Path} - reference to this path
      */
     flipNS(mid) {
-        let ly = this.maxes.yMax;
+        // debug(`\n Path.flipNS - START`);
+        // debug(json(this.save()));
+        let startingY = this.y;
         mid = isVal(mid) ? mid : (this.height / 2) + this.maxes.yMin;
-        // debug('FLIPNS - calculating mid: (b-t)/2 + t = mid: ' + this.maxes.yMin +','+ this.maxes.yMax + ','+ mid);
+        // debug(`\t calculating mid: (height)/2 + ymin = mid: ${this.height}/2 + ${this.maxes.yMin} = ${mid}`);
+
         for (let e = 0; e < this.pathPoints.length; e++) {
             let pp = this.pathPoints[e];
             pp.p.y += ((mid - pp.p.y) * 2);
             pp.h1.y += ((mid - pp.h1.y) * 2);
             pp.h2.y += ((mid - pp.h2.y) * 2);
         }
-        this.setPathPosition(false, ly);
+        this.y = startingY;
         this.reverseWinding();
+
+        // debug(` Path.flipNS - END\n\n`);
+        return this;
     }
 
     /**
      * Flips a path about a vertical line
      * @param {number} mid - x value about which to flip
+     * @returns {Path} - reference to this path
      */
     flipEW(mid) {
-        let lx = this.maxes.xMin;
-        mid = isVal(mid) ? mid : (this.width / 2) + this.maxes.xMin;
-        // debug('flipEW - calculating mid: (b-t)/2 + t = mid: ' + this.maxes.xMax +','+ this.maxes.xMin +','+ mid);
+        // debug(`\n Path.flipEW - START`);
+        // debug(json(this.save()));
+        let startingX = this.x;
+        mid = isVal(mid) ? mid : (this.width / 2) + this.x;
+        // debug(`\t calculating mid: (width)/2 + x = mid: ${this.width}/2 + ${this.x} = ${mid}`);
+
         for (let e = 0; e < this.pathPoints.length; e++) {
             let pp = this.pathPoints[e];
             pp.p.x += ((mid - pp.p.x) * 2);
             pp.h1.x += ((mid - pp.h1.x) * 2);
             pp.h2.x += ((mid - pp.h2.x) * 2);
         }
-        this.setPathPosition(lx, false);
+        this.x = startingX;
         this.reverseWinding();
+
+        // debug(` Path.flipEW - END\n\n`);
+        return this;
     }
 
     /**
      * Adds a Path Point to the beginning of this path
      * @param {PathPoint} newpp - Path Point to add
-     * @return {PathPoint} - reference to the added point
+     * @returns {PathPoint} - reference to the added point
      */
     addPathPoint(newpp) {
         // debug('\n Path.addPathPoint - START');
         // debug('\t newpp = ' + newpp);
 
-        newpp.parentpath = this;
+        newpp.parentPath = this;
         this.pathPoints.push(newpp);
         let re = this.selectPathPoint(this.pathPoints.length - 1);
 
@@ -987,7 +999,7 @@ import {getOverallMaxes} from './maxes.js';
      * Add a Path Point along a curve at a certain distance
      * @param {number} t - decimal from 0 to 1 representing how far along the curve to split
      * @param {number} pointnum - point number before the new split
-     * @return {PathPoint} - reference to the added path point
+     * @returns {PathPoint} - reference to the added path point
      */
     insertPathPoint(t, pointnum) {
         let pp1i = pointnum || 0;
@@ -1033,7 +1045,7 @@ import {getOverallMaxes} from './maxes.js';
         }
 
         // Insert
-        ppn.parentpath = this;
+        ppn.parentPath = this;
         this.pathPoints.splice(pp2i, 0, ppn);
         // this.selectPathPoint(pp2i);
         this.changed();
@@ -1045,9 +1057,9 @@ import {getOverallMaxes} from './maxes.js';
      * Given a target coordinate, find the closes point on this path
      * @param {Coord} coord - x/y value to target
      * @param {boolean} wantsecond - return the second result
-     * @return {object}
+     * @returns {object}
      */
-    getClosestPointOnCurve(coord, wantsecond) {
+    getClosestPointOnCurve(coord = new Coord(), wantsecond = false) {
         let grains = 10000;
         let first = false;
         let second = false;
@@ -1087,9 +1099,9 @@ import {getOverallMaxes} from './maxes.js';
      * Get an X/Y value from a curve split
      * @param {number} t - decimal from 0 to 1 how far along the curve to split
      * @param {number} pointnum - after which point to split
-     * @return {Coord}
+     * @returns {Coord}
      */
-    getCoordFromSplit(t, pointnum) {
+    getCoordFromSplit(t, pointnum = 0) {
         if (this.pathPoints.length > 1) {
             let seg = this.getSegment(pointnum);
             return seg.getCoordFromSplit(t);
@@ -1101,7 +1113,7 @@ import {getOverallMaxes} from './maxes.js';
     /**
      * Selects a point on this curve
      * @param {number} index - point to select
-     * @return {PathPoint} - reference to the selected point
+     * @returns {PathPoint} - reference to the selected point
      */
     selectPathPoint(index) {
         index = parseInt(index);
@@ -1115,7 +1127,8 @@ import {getOverallMaxes} from './maxes.js';
         }
 
         index = index % this.pathPoints.length;
-        _UI.multiSelect.points.select(this.pathPoints[index]);
+
+        if (_UI.multiSelect) _UI.multiSelect.points.select(this.pathPoints[index]);
 
         return this.pathPoints[index];
     }
@@ -1193,7 +1206,7 @@ import {getOverallMaxes} from './maxes.js';
 
     /**
      * Checks all the data for NaN
-     * @return {boolean}
+     * @returns {boolean}
      */
     checkForNaN() {
         for (let pp = 0; pp < this.pathPoints.length; pp++) {
@@ -1217,7 +1230,7 @@ import {getOverallMaxes} from './maxes.js';
  * Fin overlaps between two paths
  * @param {Path} p1 - first path
  * @param {Path} p2 - second path
- * @return {array}
+ * @returns {array}
  */
 export function findPathIntersections(p1, p2) {
     // debug('\n findPathIntersections - START');
@@ -1305,10 +1318,10 @@ export function findPathIntersections(p1, p2) {
  * box of the other path
  * @param {Path} p1 - first path
  * @param {Path} p2 - second path
- * @return {array}
+ * @returns {array}
  */
-function findPathPointBoundaryIntersections(p1, p2) {
-    re = [];
+export function findPathPointBoundaryIntersections(p1, p2) {
+    let re = [];
 
     /**
      * Check points in a path against the bounding box of another path
@@ -1338,19 +1351,26 @@ function findPathPointBoundaryIntersections(p1, p2) {
 }
 
 /**
- * Finds x/y overlaps between two paths
+ * Finds x/y overlaps between any points given two paths
  * @param {Path} p1 - first path
  * @param {Path} p2 - second path
- * @return {array} - collection of strings representing coordinates
+ * @returns {array} - collection of strings representing coordinates
  */
 export function findPathPointIntersections(p1, p2) {
     // debug('\n findPathPointIntersections - START');
     let re = [];
+    let ix;
+
+    // debug(p1.toString());
+    // debug(p2.toString());
 
     for (let pp1=0; pp1<p1.pathPoints.length; pp1++) {
         for (let pp2=0; pp2<p2.pathPoints.length; pp2++) {
             if (coordsAreEqual(p1.pathPoints[pp1].p, p2.pathPoints[pp2].p, 0.01)) {
-                re.push(''+p1.pathPoints[pp1].p.x+'/'+p1.pathPoints[pp1].p.y);
+                ix = ''+p1.pathPoints[pp1].p.x+'/'+p1.pathPoints[pp1].p.y;
+                // debug(`\t found ${ix}`);
+
+                re.push(ix);
             }
         }
     }

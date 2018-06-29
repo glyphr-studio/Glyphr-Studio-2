@@ -347,7 +347,7 @@
 
         content += '<tr>'+
             '<td class="leftcol"> selected point </td>'+
-            '<td><input type="number" id="pointnum" class="lockpad" value="' + _UI.multiSelect.points.getSingletonPointNumber() + '" onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().parentpath.selectPathPoint(this.value); redraw({calledBy:\'pointDetails\'});"></td>'+
+            '<td><input type="number" id="pointnum" class="lockpad" value="' + _UI.multiSelect.points.getSingletonPointNumber() + '" onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().parentPath.selectPathPoint(this.value); redraw({calledBy:\'pointDetails\'});"></td>'+
         '</tr>';
 
         content += '<tr><td> point type </td><td>';

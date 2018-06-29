@@ -1,4 +1,7 @@
 import Path from './path.js';
+import {findPathIntersections, findPathPointIntersections} from './path.js';
+import {clone} from '../app/functions.js';
+import PathPoint from './pathpoint.js';
 
 // It's a circle!
 _TEST.globals.testPathPoints = [
@@ -28,8 +31,20 @@ _TEST.globals.testPathPoints = [
     },
 ];
 
-function samplePath(){
-    return new Path({pathPoints: _TEST.globals.testPathPoints});
+/**
+ * A sample path
+ * @returns {Path}
+ */
+function samplePath() {
+    return new Path({pathPoints: clone(_TEST.globals.testPathPoints)});
+}
+
+/**
+ * Another sample path
+ * @returns {Path}
+ */
+function trianglePath() {
+    return new Path({pathPoints: [{p: {x: 100, y: 200}}, {p: {x: 300, y: 400}}, {p: {x: 500, y: 600}}]});
 }
 
 _TEST.testList.push(
@@ -37,7 +52,6 @@ _TEST.testList.push(
         category: 'Path',
         name: 'pathPoints',
         assertion: function() {
-
             let path = samplePath();
             return _TEST.is(path.pathPoints[3].p.x).equalTo(170);
         },
@@ -184,7 +198,7 @@ _TEST.testList.push(
         name: 'makePathPostScript',
         assertion: function() {
             let path = samplePath();
-            return _TEST.is(path.makePathPostScript().re).equalTo("\t\t\t\t326.65249430318556 500 rmoveto \n\t\t\t\t86.80744781082728 0 70.54005788598715 -71.01004289702911 0 -85.53294831955458 rrcurveto \n\t\t\t\t0 -85.53294831955458 -69.8451137552994 -71.92406046386174 -87.50239194151504 0 rrcurveto \n\t\t\t\t-87.50239194151504 0 -69.15010236167052 71.01000804467071 0 86.4470007387456 rrcurveto \n\t\t\t\t0 86.4470007387456 69.84504649235828 70.09599047783809 86.80744781082728 0 rrcurveto \n");
+            return _TEST.is(path.makePathPostScript().re).equalTo('\t\t\t\t326.65249430318556 500 rmoveto \n\t\t\t\t86.80744781082728 0 70.54005788598715 -71.01004289702911 0 -85.53294831955458 rrcurveto \n\t\t\t\t0 -85.53294831955458 -69.8451137552994 -71.92406046386174 -87.50239194151504 0 rrcurveto \n\t\t\t\t-87.50239194151504 0 -69.15010236167052 71.01000804467071 0 86.4470007387456 rrcurveto \n\t\t\t\t0 86.4470007387456 69.84504649235828 70.09599047783809 86.80744781082728 0 rrcurveto \n');
         },
     },
     {
@@ -200,7 +214,7 @@ _TEST.testList.push(
         name: 'makeOpenTypeJsPath',
         assertion: function() {
             let path = samplePath();
-            return _TEST.is(path.makeOpentypeJsPath()).equalTo({"commands":[{"type":"M","x":327,"y":500},{"type":"C","x1":413,"y1":500,"x2":484,"y2":429,"x":484,"y":343},{"type":"C","x1":484,"y1":258,"x2":414,"y2":186,"x":327,"y":186},{"type":"C","x1":239,"y1":186,"x2":170,"y2":257,"x":170,"y":343},{"type":"C","x1":170,"y1":430,"x2":240,"y2":500,"x":327,"y":500},{"type":"Z"}],"fill":"black","stroke":null,"strokeWidth":1});
+            return _TEST.is(path.makeOpentypeJsPath()).equalTo({'commands': [{'type': 'M', 'x': 327, 'y': 500}, {'type': 'C', 'x1': 413, 'y1': 500, 'x2': 484, 'y2': 429, 'x': 484, 'y': 343}, {'type': 'C', 'x1': 484, 'y1': 258, 'x2': 414, 'y2': 186, 'x': 327, 'y': 186}, {'type': 'C', 'x1': 239, 'y1': 186, 'x2': 170, 'y2': 257, 'x': 170, 'y': 343}, {'type': 'C', 'x1': 170, 'y1': 430, 'x2': 240, 'y2': 500, 'x': 327, 'y': 500}, {'type': 'Z'}], 'fill': 'black', 'stroke': null, 'strokeWidth': 1});
         },
     },
     {
@@ -269,25 +283,99 @@ _TEST.testList.push(
             return _TEST.is(ps.segments[3].p1x).equalTo(170);
         },
     },
+    {
+        category: 'Path',
+        name: 'flipNS',
+        assertion: function() {
+            let p = trianglePath();
+            p.flipNS();
+            return _TEST.is(p.pathPoints[2].p.y).equalTo(600);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'flipEW',
+        assertion: function() {
+            let p = trianglePath();
+            p.flipEW();
+            return _TEST.is(p.pathPoints[2].p.x).equalTo(500);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'selectPathPoint',
+        assertion: function() {
+            return _TEST.is(samplePath().selectPathPoint(2).p.x).equalTo(326.65249430318556);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'addPathPoint',
+        assertion: function() {
+            let pp = new PathPoint();
+            return _TEST.is(samplePath().addPathPoint(pp).p.x).equalTo(100);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'insertPathPoint',
+        assertion: function() {
+            return _TEST.is(samplePath().insertPathPoint().p.x).equalTo(100);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'getClosestPointOnCurve',
+        assertion: function() {
+            return _TEST.is(samplePath().getClosestPointOnCurve({x: 100, y: 100}).x).equalTo(219.88497706136906);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'getCoordFromSplit',
+        assertion: function() {
+            return _TEST.is(samplePath().getCoordFromSplit().x).equalTo(437.879040080653);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'checkForNaN',
+        assertion: function() {
+            let p = samplePath();
+            p.pathPoints[2].h1.x = 'asdf';
+            return _TEST.expression(!p.checkForNaN());
+        },
+    },
+    {
+        category: 'Path',
+        name: 'findPathIntersections',
+        assertion: function() {
+            return _TEST.is(findPathIntersections(samplePath(), trianglePath()).length).equalTo(2);
+        },
+    },
+    {
+        category: 'Path',
+        name: 'findPathPointIntersections',
+        assertion: function() {
+            let p2 = samplePath();
+            p2.y = 814;
+            return _TEST.is(findPathPointIntersections(samplePath(), p2)[0]).equalTo('326.65249430318556/500');
+        },
+    },
+    {
+        category: 'PathPoint',
+        name: 'pointNumber',
+        assertion: function() {
+            let pp = samplePath().pathPoints[3];
+            return _TEST.is(pp.pointNumber).equalTo(3);
+        },
+    }
 );
 
 /*
-
-flipNS
-flipEW
-addPathPoint
-insertPathPoint
-getClosestPointOnCurve
-getCoordFromSplit
-selectPathPoint
-calcMaxes
-validate
-checkForNaN
+CANVAS METHODS
 
 isHere
 drawPath
-
-findPathIntersections
 findPathPointBoundaryIntersections
-findPathPointIntersections
 */

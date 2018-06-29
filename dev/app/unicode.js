@@ -20,7 +20,7 @@ export {
 /**
  * Convert decimal to hexadecimal
  * @param {number} d - decimal
- * @return {string} - hexadecimal
+ * @returns {string} - hexadecimal
  */
 function decToHex(d) {
     let dr = Number(d).toString(16);
@@ -35,7 +35,7 @@ function decToHex(d) {
 /**
  * Convert decimal to HTML
  * @param {number} d - decimal
- * @return {string} - HTML
+ * @returns {string} - HTML
  */
 function decToHTML(d) {
     return hexToHTML(decToHex(d));
@@ -44,7 +44,7 @@ function decToHTML(d) {
 /**
  * Convert Unicode glyph to hexadecimal
  * @param {string} s - unicode
- * @return {string} - hexadecimal
+ * @returns {string} - hexadecimal
  */
 function glyphToHex(s) {
     let result = '';
@@ -55,7 +55,7 @@ function glyphToHex(s) {
 /**
  * Convert string to an array of hexadecimal
  * @param {number} s - string
- * @return {array} - hexadecimal
+ * @returns {array} - hexadecimal
  */
 function charsToHexArray(s) {
     let result = [];
@@ -67,7 +67,7 @@ function charsToHexArray(s) {
 /**
  * Convert hexadecimal to string
  * @param {string} u - hexadecimal
- * @return {string} - string
+ * @returns {string} - string
  */
 function hexToChars(u) {
     if (String(u).charAt(1) !== 'x') u = String(decToHex(u));
@@ -92,7 +92,7 @@ function hexToChars(u) {
 /**
  * Convert hexadecimal to HTML
  * @param {string} h - hexadecimal
- * @return {string} - HTML
+ * @returns {string} - HTML
  */
 function hexToHTML(h) {
     // debug('\n hexToHTML - START');
@@ -115,7 +115,7 @@ function hexToHTML(h) {
 /**
  * Convert hexidecimal to Unicode format
  * @param {number} h - hexidecimal
- * @return {string} - Unicode
+ * @returns {string} - Unicode
  */
 function hexToUnicodeHex(h) {
     return (h.replace(/0x/, '&#x') + ';');
@@ -124,7 +124,7 @@ function hexToUnicodeHex(h) {
 /**
  * Take user input and try to get Unicode out
  * @param {string} str - input string
- * @return {string} - sanitized string
+ * @returns {string} - sanitized string
  */
 function parseUnicodeInput(str) {
     // takes any kind or number of input
@@ -169,7 +169,7 @@ function parseUnicodeInput(str) {
 /**
  * Detects if this string is has Unicode chars in it
  * @param {string} str - input Unicode
- * @return {number} - count of chars
+ * @returns {number} - count of chars
  */
 function isInputUnicode(str) {
     str = str.replace(/u\+/g, 'U+');
@@ -185,7 +185,7 @@ function isInputUnicode(str) {
 /**
  * Detects if this string has Hex chars in it
  * @param {string} str - input Hex
- * @return {number} - count of chars
+ * @returns {number} - count of chars
  */
 function isInputHex(str) {
     str = str.replace(/0X/g, '0x');
@@ -201,7 +201,7 @@ function isInputHex(str) {
 /**
  * Checks to see if a string is valid Hex Char
  * @param {string} str - input Hex
- * @return {boolean}
+ * @returns {boolean}
  */
 function validateHex(str) {
     let green = '0123456789ABCDEF';
@@ -220,7 +220,7 @@ function validateHex(str) {
 
 /**
  * help content for inputting Unicode
- * @return {string}
+ * @returns {string}
  */
 function unicodeInputHelp() {
     let re = '<h1>Using Unicode Values</h1>'+
@@ -257,7 +257,7 @@ function addCustomGlyphRange() {
 /**
  * Gets user input on a new custom range, makes sure it's a valid custom range
  * @param {boolean} filterbasicrange - removes Unicode Latin ranges if true
- * @return {object} - Range object
+ * @returns {object} - Range object
  */
 function getCustomRange(filterbasicrange) {
     let newrange = {'begin': 0, 'end': 0};
@@ -339,7 +339,7 @@ function removeCustomGlyphRange(i) {
 /**
  * Gets the name of a Unicode character
  * @param {number} ch - Unicode code point
- * @return {string} - name
+ * @returns {string} - name
  */
 function getUnicodeName(ch) {
     // debug('\n getUnicodeName - START');
@@ -362,7 +362,7 @@ function getUnicodeName(ch) {
  * Gets a short name for a Unicode character, and if not,
  * returns the regular long name
  * @param {number} ch - Unicode code point
- * @return {string} - name
+ * @returns {string} - name
  */
 function getUnicodeShortName(ch) {
     // debug('\n getUnicodeShortName - START');

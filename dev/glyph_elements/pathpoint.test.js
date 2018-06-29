@@ -2,12 +2,29 @@ import PathPoint from './pathpoint.js';
 import {makePathPointFromSegments} from './pathpoint.js';
 import Segment from './segment.js';
 
+_TEST.globals.testPathPoint = {
+    p: {x: 100, y: 100},
+    h1: {point: {x: 0, y: 0}},
+    h2: {point: {x: 200, y: 200}},
+    type: 'corner',
+    q: false,
+    parentPath: false,
+};
+
+/**
+ * default sample PathPoint
+ * @returns {PathPoint}
+ */
+function samplePathPoint() {
+    return new PathPoint(_TEST.globals.testPathPoint);
+}
+
 _TEST.testList.push(
     {
         category: 'PathPoint',
         name: 'Constructor - p.x',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is(pp.p.x).equalTo(100);
         },
     },
@@ -15,7 +32,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'Constructor - type',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is(pp.type).equalTo('corner');
         },
     },
@@ -23,7 +40,7 @@ _TEST.testList.push(
         category: 'Handle',
         name: 'length',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is(pp.h1.length).equalTo(141.4213562373095);
         },
     },
@@ -31,7 +48,7 @@ _TEST.testList.push(
         category: 'Handle',
         name: 'angle',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is(pp.h1.angle).equalTo(-2.356194490192345);
         },
     },
@@ -39,7 +56,7 @@ _TEST.testList.push(
         category: 'Handle',
         name: 'niceAngle',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is(pp.h1.niceAngle).equalTo(225);
         },
     },
@@ -56,7 +73,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'save',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is(pp.save()).equalTo(JSON.parse('{"p":{"x":100,"y":100},"h1":{"point":{"x":0,"y":0},"use":true},"h2":{"point":{"x":200,"y":200},"use":true},"type":"corner"}'));
         },
     },
@@ -64,7 +81,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'isOverControlPoint',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is((pp.isOverControlPoint(200, 200)).type).equalTo('h2');
         },
     },
@@ -72,7 +89,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'isFlat',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.expression(pp.isFlat());
         },
     },
@@ -80,7 +97,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'resolvePointType',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is(pp.resolvePointType()).equalTo('symmetric');
         },
     },
@@ -88,7 +105,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'makePointedTo',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is(pp.makePointedTo(300, 0).h2.x).equalTo(166.66666666666666);
         },
     },
@@ -96,7 +113,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'makeSymmetric',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             pp.h2.x = 555;
             return _TEST.is(pp.makeSymmetric('h1').h2.x).equalTo(200);
         },
@@ -105,7 +122,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'makeFlat',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             pp.h2.x = 555;
             return _TEST.is(pp.makeFlat('h1').h2.x).equalTo(429.412355566697);
         },
@@ -114,7 +131,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'rotate',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             return _TEST.is(pp.rotate(90, {x: 0, y: 0}).p.x).equalTo(-134.2070279729728);
         },
     },
@@ -122,7 +139,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'resetHandles',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             pp.h1.x = 555;
             return _TEST.is(pp.resetHandles().p.x).equalTo(100);
         },
@@ -131,7 +148,7 @@ _TEST.testList.push(
         category: 'PathPoint',
         name: 'roundAll',
         assertion: function() {
-            let pp = new PathPoint();
+            let pp = samplePathPoint();
             pp.h1.x = 39.9999;
             return _TEST.is(pp.roundAll(3).h1.x).equalTo(40);
         },
@@ -154,7 +171,3 @@ _TEST.testList.push(
         },
     }
 );
-
-/*
-pointNumber
-*/

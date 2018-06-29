@@ -121,7 +121,7 @@ import _UI from '../app/settings.js';
 
         for (let m=0; m<this.members.length; m++) {
             point = this.members[m];
-            path = point.parentpath;
+            path = point.parentPath;
             pindex = point.pointNumber;
 
             if (pindex > -1) {
@@ -167,7 +167,7 @@ import _UI from '../app/settings.js';
         let newpoints = [];
 
         for (let m=0; m<this.members.length; m++) {
-            path = this.members[m].parentpath;
+            path = this.members[m].parentPath;
             pp = this.members[m].pointNumber;
             newpoints.push(path.insertPathPoint(false, pp));
         }
@@ -215,7 +215,7 @@ import _UI from '../app/settings.js';
         // debug('\t WI shapes ' + shapes);
 
         for (let p=0; p<points.length; p++) {
-            path = points[p].parentpath;
+            path = points[p].parentPath;
 
             for (let s=0; s<shapes.length; s++) {
                 if (shapes[s].objType !== 'componentinstance') {

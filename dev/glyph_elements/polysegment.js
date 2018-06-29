@@ -26,10 +26,7 @@ export default class PolySegment extends GlyphElement {
      */
     constructor({segments = []} = {}) {
         super();
-        // debug('\n SEGMENT - START');
-        this._segments = segments; // use setter for hydration
-
-        // debug(' SEGMENT - END\n');
+        this.segments = segments;
     }
 
 
@@ -40,7 +37,7 @@ export default class PolySegment extends GlyphElement {
     /**
      * Export object properties that need to be saved to a project file
      * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @return {*}
+     * @returns {*}
      */
     save(verbose = false) {
         let re = {segments: []};
@@ -60,7 +57,7 @@ export default class PolySegment extends GlyphElement {
 
     /**
      * get the Segments array
-     * @return {array}
+     * @returns {array}
      */
     get segments() {
         return this._segments;
@@ -76,6 +73,7 @@ export default class PolySegment extends GlyphElement {
      * @param {array} segs
      */
     set segments(segs = []) {
+        this._segments = [];
         for (let s = 0; s < segs.length; s++) {
             this._segments[s] = new Segment(segs[s]);
         }
@@ -134,7 +132,7 @@ export default class PolySegment extends GlyphElement {
 
     /**
      * Convert this PolySegment to a Path
-     * @return {Path}
+     * @returns {Path}
      */
     getPath() {
         // debug('\n PolySegment.getPath - START');
@@ -154,7 +152,7 @@ export default class PolySegment extends GlyphElement {
     /**
      * Search to see if a Segment is in this PolySegment
      * @param {Segment} seg - to look for
-     * @return {boolean}
+     * @returns {boolean}
      */
     containsSegment(seg) {
         for (let s = 0; s < this._segments.length; s++) {
@@ -208,7 +206,7 @@ export default class PolySegment extends GlyphElement {
 
     /**
      * Finds all the intersections between segments
-     * @return {array} - collection of intersections in ix format
+     * @returns {array} - collection of intersections in ix format
      */
     findIntersections() {
         // debug('\n PolySegment.findIntersections - START');
@@ -278,7 +276,7 @@ export default class PolySegment extends GlyphElement {
     /**
      * Takes all the segments and orders them based on their
      * starting and ending points
-     * @return {array} - sorted Segments
+     * @returns {array} - sorted Segments
      */
     stitchSegmentsTogether() {
         // debug('\n PolySegment.stitchSegmentsTogether - START');
@@ -290,7 +288,7 @@ export default class PolySegment extends GlyphElement {
          * Takes the end of a segment, and looks for another segment
          * with that point as it's start
          * @param {Coordinate} co - starting point to look for
-         * @return {Segment}
+         * @returns {Segment}
          */
         function getNextSegment(co) {
             let ts;
@@ -321,7 +319,7 @@ export default class PolySegment extends GlyphElement {
 
         /**
          * Get the next unsorted segment's first point
-         * @return {Coord}
+         * @returns {Coord}
          */
         function getNextUnusedSegmentP1() {
             for (let s = 0; s < source.length; s++) {
@@ -479,7 +477,7 @@ export default class PolySegment extends GlyphElement {
          * @param {Segment} seg - segment to test
          * @param {array} split
          * @param {Shape} shape - shape to test
-         * @return {boolean}
+         * @returns {boolean}
          */
         function testForHit(seg, split, shape) {
             split = seg.splitAtTime(split);
