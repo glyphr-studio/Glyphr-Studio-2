@@ -24,7 +24,7 @@ export {segmentsAreEqual, findSegmentIntersections,
     This Segment object is basically here just to
     make Bezier math easier for Paths.
 **/
-export default class Segment extends GlyphElement{
+export default class Segment extends GlyphElement {
     /**
      * Create a Segment
      * @param {number} p1x - First point x
@@ -973,6 +973,7 @@ function segmentsAreEqual(s1, s2, threshold) {
  * @return {array} - collection of overlaps in ix format
  */
 function findOverlappingLineSegmentIntersections(s1, s2) {
+    // debug(`\n findOverlappingLineSegmentIntersections - START`);
     let re = [];
 
     if (s1.containsPointOnLine(s2.getCoord(1))) re.push(''+s2.p1x+'/'+s2.p1y);
@@ -988,6 +989,7 @@ function findOverlappingLineSegmentIntersections(s1, s2) {
         // debug(' findOverlappingLineSegmentIntersections - END\n');
     }
 
+    // debug(` findOverlappingLineSegmentIntersections - END\n\n`);
     return re;
 }
 

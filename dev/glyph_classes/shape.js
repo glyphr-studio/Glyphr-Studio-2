@@ -161,7 +161,7 @@ class Shape {
             return new Shape(clone(this));
         let segnum = polyseg.segments.length;
         let threshold = 0.01;
-        polyseg.splitSegmentsAtProvidedIntersections(ix, threshold);
+        polyseg.splitSegmentsAtIntersections(ix, threshold);
         if (segnum === polyseg.segments.length)
             return new Shape(clone(this));
         // debug('\t before filtering ' + polyseg.segments.length);

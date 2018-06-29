@@ -2,6 +2,7 @@ import GlyphElement from './glyphelement.js';
 import Maxes from './maxes.js';
 import Coord from './coord.js';
 import Segment from './segment.js';
+import PolySegment from './polysegment.js';
 import Handle from './handle.js';
 import PathPoint from './pathpoint.js';
 import {clone, round, isVal, hasNonValues} from '../app/functions.js';
@@ -499,7 +500,8 @@ import {getOverallMaxes} from './maxes.js';
         let polyseg = this.getPolySegment();
         polyseg.splitSegmentsAtIntersections();
         let newpath = polyseg.getPath();
-        this._pathPoints = clone(newpath.pathPoints);
+        // this._pathPoints = clone(newpath.pathPoints);
+        this._pathPoints = newpath.pathPoints;
     }
 
     /**
@@ -786,11 +788,20 @@ import {getOverallMaxes} from './maxes.js';
      * @return {PolySegment}
      */
     getPolySegment() {
+        // debug(`\n Path.getPolySegment - START`);
+
         let seg = [];
         for (let pp = 0; pp < this.pathPoints.length; pp++) {
             seg.push(this.getSegment(pp));
         }
-        return new PolySegment({segments: seg});
+
+        let re = new PolySegment({segments: seg});
+
+        // debug(`\t returning`);
+        // debug(re);
+        // debug(` Path.getPolySegment - END\n\n`);
+
+        return re;
     }
 
 

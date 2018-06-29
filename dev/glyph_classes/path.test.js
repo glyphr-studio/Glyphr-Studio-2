@@ -208,9 +208,10 @@ _TEST.testList.push(
         name: 'addPointsAtPathIntersections',
         assertion: function() {
             let path = samplePath();
-            path.pathPoints[0].p.x = 0;
+            // Pull the top point down below the original bottom point
+            path.pathPoints[0].p.y = 100;
             path.addPointsAtPathIntersections();
-            return _TEST.is(path.pathPoints.length).equalTo(6);
+            return _TEST.is(path.pathPoints.length).equalTo(8);
         },
     },
     {
@@ -260,11 +261,17 @@ _TEST.testList.push(
             return _TEST.is(samplePath().getQuickSegmentLength()).equalTo(221.95482794488714);
         },
     },
+    {
+        category: 'Path',
+        name: 'getPolySegment',
+        assertion: function() {
+            let ps = samplePath().getPolySegment();
+            return _TEST.is(ps.segments[3].p1x).equalTo(170);
+        },
+    },
 );
 
 /*
-
-getPolySegment
 
 flipNS
 flipEW
