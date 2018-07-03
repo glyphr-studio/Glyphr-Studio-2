@@ -1,35 +1,40 @@
 # Glyphr Studio v2!
- V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010, so it's time to do an all-up scrub.
+ V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010,
+ so it's time to do an all-up scrub.
 
 ## What's changing
 | | **Convert our JavaScript to use ES6 stuff** |
-|:---:| --- |
+|:---:|:--- |
 | :soon: | Change prototypes to classes |
 | :white_check_mark: | Let / Const instead of Var |
 | :black_square_button: | Template strings instead of string concatenation |
 | :soon: | Modules (native) |
+| :black_square_button: | Investigation - HTML Templates or Web Components for UI Controls |
 | | Probably more... |
 
 | | **Other stuff** |
-|:---:| --- |
+|:---:|:--- |
 | :soon: | Lint everything with ESLint, Google style |
 | :soon: | JSDoc *all the things* |
 | :black_square_button: | CSS3, mostly for Variables and Layout |
 | :white_check_mark: | New test framework and tests for all our code |
-| :white_check_mark: | Dev and Prod environments that make it easy to keep code separate and testable, but also concatenate-able and minimize-able. |
+| :white_check_mark: | Dev and Test environments that make it easy to keep code separate and testable. |
 | :soon: | Minimize global variables |
-| :black_square_button: | Investigation - HTML Templates or Web Components for UI Controls |
 | :black_square_button: | Investigation - Language switching for localization |
 
 
 ## What's not changing
 So, here at Glyphr Studio, we've always had a very strong DIY attitude - this means:
-* The whole tool will still concat down to a single .html file that includes CSS and JavaScript, able to run locally or online without a back-end
-* The only external library we will use is OpenType.js, for importing and exporting OTF files
+* The only external library we will use *for the UI* is OpenType.js, for importing and exporting OTF files
   * This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js
+* The whole app will still concat down to a single .html file that includes CSS and JavaScript
+  * Continuing the ability to run locally (or online) without a back-end
+  * Build process is still TBD - maybe using rollup.js for modules
 
 ## Timeline
-Let's call it v2-alpha while things are being refactored.  This will probably extend through the summer of 2018.  V2 will be released in beta side-by-side with V1.  And, despite the new major version number, V2 will accept project files created with V1 (backwards compatible).
+Let's call it v2-alpha while things are being refactored.  This will probably extend through the summer of 2018.
+V2 will be released in beta side-by-side with V1.  And, despite the new major version number, the V2 App will accept
+V1 Project Files (upgrade them when first loaded).  V2 Project Files will not work in the V1 App.
 
 
 ## License
