@@ -10,7 +10,7 @@ window._TEST = {
     failed: 0,
     didNotRun: 0,
     total: 0,
-    autoRun: true,
+    autoRun: false,
 };
 
 window.onload = loadTests;
@@ -53,9 +53,9 @@ function afterLoadTests() {
         test = _TEST.testList[t];
 
         if (_TEST.categories.hasOwnProperty(test.category)) {
-            _TEST.categories[test.category]++;
+            _TEST.categories[test.category].count++;
         } else {
-            _TEST.categories[test.category] = 1;
+            _TEST.categories[test.category] = {count: 1, checked: true};
         }
 
         _TEST.total++;
@@ -64,19 +64,55 @@ function afterLoadTests() {
 
 
     header.innerHTML = '';
-
+    let cat;
     for (let key in _TEST.categories) {
         if (_TEST.categories.hasOwnProperty(key)) {
+            cat = _TEST.categories[key];
             results.innerHTML = `<div class="resultSection" id="${getResultSectionID(key)}"><h2>${key}</h2></div>` + results.innerHTML;
-            header.innerHTML += `<span class="category">${key} : ${_TEST.categories[key]}</span>`;
+            header.innerHTML += `<span class="category">
+                <input type="checkbox" checked="${cat.checked}" onclick="toggleTestCategory('${key}');" id="checkbox${getResultSectionID(key)}"/>
+                ${key} : ${cat.count}
+            </span>`;
         }
     }
 
     if (_TEST.autoRun) window.setTimeout(runTests, 10);
-    else header.innerHTML += `<br><br><button onclick="runTests();">Run Tests</button>`;
+    else {
+        header.innerHTML += `<br><br><button onclick="runTests();">Run Tests</button> &emsp; `;
+        header.innerHTML += `<button onclick="toggleAllTestCategories();">Toggle all tests</button>`;
+    }
 
     // debug(` afterLoadTests - END\n\n`);
 }
+
+/**
+ * Event Handler for cateogry checkboxes
+ * @param {string} key - category name
+ * @returns {boolean} - new state
+ */
+window.toggleTestCategory = function(key) {
+    let cat = _TEST.categories[key];
+    if (cat) {
+        cat.checked = !cat.checked;
+
+        if (cat.checked) document.getElementById(`${getResultSectionID(key)}`).style.display = 'block';
+        else document.getElementById(`${getResultSectionID(key)}`).style.display = 'none';
+
+        return cat.checked;
+    }
+};
+
+/**
+ * Toggles all the test checkboxes
+ */
+window.toggleAllTestCategories = function() {
+    for (let key in _TEST.categories) {
+        if (_TEST.categories.hasOwnProperty(key)) {
+            document.getElementById(`checkbox${getResultSectionID(key)}`).checked = toggleTestCategory(key);
+        }
+    }
+};
+
 
 /**
  * Generate an unique ID
@@ -88,16 +124,19 @@ function getResultSectionID(category) {
     return rsid;
 }
 
+
 /**
  * Runs the tests
  */
-function runTests() {
+window.runTests = function() {
     // debug(`\n runTests - START`);
 
     let currTest = 0;
 
     /** Runs the next test in the list */
     function runNextTest() {
+        window.setTimeout(updateProgressBar, 10);
+
         if (currTest === _TEST.testList.length) {
             finishTests();
             return;
@@ -107,6 +146,13 @@ function runTests() {
         let finish;
         let test;
         let category = _TEST.testList[currTest].category;
+
+        if (!_TEST.categories[category].checked) {
+            currTest++;
+            window.setTimeout(runNextTest, 10);
+            return;
+        }
+
         let currResultSection = document.querySelector(`#${getResultSectionID(category)}`);
 
         try {
@@ -136,10 +182,24 @@ function runTests() {
         window.setTimeout(runNextTest, 10);
     }
 
+    /**
+     * Animates the fancy progress bar
+     * @param {number} curr - current progress
+     * @param {number} total - total tests
+     */
+    function updateProgressBar() {
+        let width = document.getElementById('progressBarWrapper').offsetWidth;
+        let percent = currTest / _TEST.testList.length;
+
+        let bar = document.getElementById('progressBar');
+        bar.style.width = (width*percent);
+        bar.style.opacity = percent;
+    };
+
     window.setTimeout(runNextTest, 10);
 
     // debug(` runTests - END\n\n`);
-}
+};
 
 /**
  * First part of the comparison

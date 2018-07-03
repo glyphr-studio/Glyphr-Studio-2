@@ -158,6 +158,19 @@
         top: -2px;
         left: -2px;
     }
+
+    #progressBarWrapper {
+        height: 2px;
+        background-color: lightblue;
+        width: 100%;
+    }
+
+    #progressBar {
+        width: 0px;
+        height: 2px;
+        background-color: #223E66;
+        opacity: 0.0;
+    }
 </style>
 </head>
 
@@ -168,9 +181,8 @@
     <div id="header">
         <i style="color: lightgray">Loading tests...</i>
     </div>
-    <div id="results">
-
-    </div>
+    <div id="progressBarWrapper"><div id="progressBar"></div></div>
+    <div id="results"></div>
 
 </body>
 </html>
