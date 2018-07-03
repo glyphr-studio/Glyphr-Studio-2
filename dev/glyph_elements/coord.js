@@ -1,5 +1,5 @@
 import GlyphElement from './glyphelement.js';
-import {numSan} from '../app/functions.js';
+import {numSan, isVal} from '../app/functions.js';
 
 /**
  * Coordinate
@@ -48,13 +48,12 @@ export default class Coord extends GlyphElement {
     /**
      * Create a nicely-formatted string for this object
      * @param {number} level - how far down we are
-     * @param {string} indentChar - what to use for indention
      * @returns {string}
      */
-    print(level = 0, indentChar = '  ') {
+    print(level = 0) {
         let re = `{`;
-        re += `x: ${this.xLock? 'L' : ' '}${this._x || '--'} `;
-        re += `y: ${this.yLock? 'L' : ' '}${this._y || '--'} `;
+        re += `x: ${this.xLock? 'L' : ' '}${isVal(this._x)? this._x : '--'} `;
+        re += `y: ${this.yLock? 'L' : ' '}${isVal(this._y)? this._y : '--'} `;
         re += `}`;
 
         return re;

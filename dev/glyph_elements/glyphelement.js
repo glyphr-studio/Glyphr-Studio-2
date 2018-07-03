@@ -41,25 +41,36 @@ export default class GlyphElement {
     /**
      * Create a nicely-formatted string for this object
      * @param {number} level - how far down we are
-     * @param {string} indentChar - what to use for indention
      * @returns {string}
      */
-    print(level = 0, indentChar = '  ') {
-        let re = '';
+    print(level = 0) {
         let ind = '';
-        for (let i=0; i<level; i++) ind += indentChar;
+        for (let i=0; i<level; i++) ind += '  ';
+
+        let re = `${ind}{${this.objType}\n`;
+        ind += '  ';
 
         let safeObj = this.save();
+        let elem;
 
         for (let key in safeObj) {
             if (safeObj.hasOwnProperty(key)) {
-                if (this[key].print) {
-                    re += `${ind}${key}: ${this[key].print(level+1, indentChar)}\n`;
+                elem = this[key];
+                if (elem.print) {
+                    re += `${ind}${key}: ${elem.print(level+1)}\n`;
                 } else {
-                    re += `${ind}${key}: ${JSON.stringify(this[key])}\n`;
+                    if (typeof elem !== 'function') {
+                        if (typeof elem === 'object') {
+                            re += `${ind}${key}: ${JSON.stringify(elem)}\n`;
+                        } else {
+                            re += `${ind}${key}: ${elem}\n`;
+                        }
+                    }
                 }
             }
         }
+
+        re += `${ind.substring(2)}}`;
 
         return re;
     }

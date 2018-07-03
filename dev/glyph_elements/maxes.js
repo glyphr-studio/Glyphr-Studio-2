@@ -59,10 +59,9 @@ export default class Maxes extends GlyphElement {
     /**
      * Create a nicely-formatted string for this object
      * @param {number} level - how far down we are
-     * @param {string} indentChar - what to use for indention
      * @returns {string}
      */
-    print(level = 0, indentChar = '  ') {
+    print(level = 0) {
         let re = `{`;
         re += `xMin: ${this._xMin || '--'} `;
         re += `xMax: ${this._xMax || '--'} `;

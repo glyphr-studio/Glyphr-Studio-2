@@ -92,21 +92,22 @@ export default class Segment extends GlyphElement {
     /**
      * Create a nicely-formatted string for this object
      * @param {number} level - how far down we are
-     * @param {string} indentChar - what to use for indention
      * @returns {string}
      */
-    print(level = 0, indentChar = '  ') {
+    print(level = 0) {
         let ind = '';
-        for (let i=0; i<level; i++) ind += indentChar;
+        for (let i=0; i<level; i++) ind += '  ';
 
-        let re = `{\n`;
-        re += `${ind+indentChar}line: ${this.line}\n`;
-        re += `${ind+indentChar}p1: ${this.p1x}/${this.p1y}\n`;
-        re += `${ind+indentChar}p2: ${this.p2x}/${this.p2y}\n`;
-        re += `${ind+indentChar}p3: ${this.p3x}/${this.p3y}\n`;
-        re += `${ind+indentChar}p4: ${this.p4x}/${this.p4y}\n`;
-        re += `${ind+indentChar}maxes: ${this.maxes.print(level+1, indentChar)}`;
-        re += `${ind}}`;
+        let re = `${ind}{Segment\n`;
+        ind += '  ';
+
+        re += `${ind+'  '}line: ${this.line}\n`;
+        re += `${ind+'  '}p1: ${this.p1x}/${this.p1y}\n`;
+        re += `${ind+'  '}p2: ${this.p2x}/${this.p2y}\n`;
+        re += `${ind+'  '}p3: ${this.p3x}/${this.p3y}\n`;
+        re += `${ind+'  '}p4: ${this.p4x}/${this.p4y}\n`;
+        re += `${ind+'  '}maxes: ${this.maxes.print(level+1)}\n`;
+        re += `${ind.substring(2)}}`;
 
         return re;
     }

@@ -50,6 +50,29 @@ export default class PolySegment extends GlyphElement {
         return re;
     }
 
+    /**
+     * Create a nicely-formatted string for this object
+     * @param {number} level - how far down we are
+     * @returns {string}
+     */
+    print(level = 0) {
+        let ind = '';
+        for (let i=0; i<level; i++) ind += '  ';
+
+        let re = `${ind}{PolySegment\n`;
+        ind += '  ';
+
+        re += `${ind}segments: [\n`;
+        this.segments.forEach((seg) => {
+            re += seg.print(level+2);
+            re += `\n`;
+        });
+        re += `${ind}]\n`;
+
+        re += `${ind.substring(2)}}`;
+
+        return re;
+    }
 
     // --------------------------------------------------------------
     // Getters

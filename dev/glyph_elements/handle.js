@@ -49,6 +49,25 @@ export default class Handle extends GlyphElement {
         return re;
     }
 
+    /**
+     * Create a nicely-formatted string for this object
+     * @param {number} level - how far down we are
+     * @returns {string}
+     */
+    print(level = 0) {
+        let ind = '';
+        for (let i=0; i<level; i++) ind += '  ';
+
+        let re = `{Handle\n`;
+        ind += '  ';
+
+        re += `${ind}point: ${this.point.print(level+1)}\n`;
+        re += `${ind}use: ${this.use}\n`;
+
+        re += `${ind.substring(2)}}`;
+
+        return re;
+    }
 
     // --------------------------------------------------------------
     // Getters

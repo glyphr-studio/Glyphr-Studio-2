@@ -66,6 +66,28 @@ export default class PathPoint extends GlyphElement {
         return re;
     }
 
+    /**
+     * Create a nicely-formatted string for this object
+     * @param {number} level - how far down we are
+     * @returns {string}
+     */
+    print(level = 0) {
+        let ind = '';
+        for (let i=0; i<level; i++) ind += '  ';
+
+        let re = `${ind}{PathPoint\n`;
+        ind += '  ';
+
+        re += `${ind}type: ${this.type}\n`;
+        re += `${ind}p: ${this.p.print(level+1)}\n`;
+        re += `${ind}h1: ${this.h1.print(level+1)}\n`;
+        re += `${ind}h2: ${this.h2.print(level+1)}\n`;
+
+        re += `${ind.substring(2)}}`;
+
+        return re;
+    }
+
 
     // --------------------------------------------------------------
     // Getters
@@ -147,7 +169,7 @@ export default class PathPoint extends GlyphElement {
      */
     set h1(newh1 = {}) {
         if (!newh1.point) {
-            newh1.point = {x: this.x-100, y: this.y};
+            newh1.point = {x: this.p.x-100, y: this.p.y};
             newh1.use = false;
         }
         this._h1 = new Handle(newh1);
@@ -160,7 +182,7 @@ export default class PathPoint extends GlyphElement {
      */
     set h2(newh2 = {}) {
         if (!newh2.point) {
-            newh2.point = {x: this.x+100, y: this.y};
+            newh2.point = {x: this.p.x+100, y: this.p.y};
             newh2.use = false;
         }
         this._h2 = new Handle(newh2);
@@ -204,25 +226,28 @@ export default class PathPoint extends GlyphElement {
 
         switch (controlPoint) {
             case 'p':
-                if (!this.p.xLock) this.p.x += dx;
-                if (!this.p.yLock) this.p.y += dy;
-                if (!this.p.xLock) this.h1.x += dx;
-                if (!this.p.yLock) this.h1.y += dy;
-                if (!this.p.xLock) this.h2.x += dx;
-                if (!this.p.yLock) this.h2.y += dy;
+                // Should this honor xLock / yLock?
+                this.p._x += dx;
+                this.p._y += dy;
+                this.h1.point._x += dx;
+                this.h1.point._y += dy;
+                this.h2.point._x += dx;
+                this.h2.point._y += dy;
             break;
 
             case 'h1':
-                if (!this.h1.xLock) this.h1.x += dx;
-                if (!this.h1.yLock) this.h1.y += dy;
+                // Should this honor xLock / yLock?
+                this.h1.point._x += dx;
+                this.h1.point._y += dy;
                 if (this.type === 'symmetric') this.makeSymmetric('h1');
                 else if (this.type === 'flat') this.makeFlat('h1');
 
             break;
 
             case 'h2':
-                if (!this.h2.xLock) this.h2.x += dx;
-                if (!this.h2.yLock) this.h2.y += dy;
+                // Should this honor xLock / yLock?
+                this.h2.point._x += dx;
+                this.h2.point._y += dy;
                 if (this.type === 'symmetric') this.makeSymmetric('h2');
                 else if (this.type === 'flat') this.makeFlat('h2');
             break;

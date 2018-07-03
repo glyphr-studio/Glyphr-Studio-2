@@ -84,25 +84,27 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
     /**
      * Create a nicely-formatted string for this object
      * @param {number} level - how far down we are
-     * @param {string} indentChar - what to use for indention
      * @returns {string}
      */
-    print(level = 0, indentChar = '  ') {
+    print(level = 0) {
         let ind = '';
-        for (let i=0; i<level; i++) ind += indentChar;
+        for (let i=0; i<level; i++) ind += '  ';
 
-        let re = `{\n`;
-        re += `${ind+indentChar}winding: ${this.winding}\n`;
+        let re = `${ind}{Path\n`;
+        ind += '  ';
 
-        re += `${ind+indentChar}pathPoints: [\n`;
+        re += `${ind}winding: ${this.winding}\n`;
+
+        re += `${ind}pathPoints: [\n`;
         this._pathPoints.forEach((point) => {
-            re += point.print(level+1, indentChar);
-            re += `${ind+indentChar},\n`;
+            re += point.print(level+2);
+            re += `\n`;
         });
-        re += `${ind+indentChar}]\n`;
+        re += `${ind}]\n`;
 
-        re += `${ind+indentChar}maxes: ${this.maxes.print(level+1, indentChar)}`;
-        re += `\n${ind}}`;
+        re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
+
+        re += `${ind.substring(2)}}`;
 
         return re;
     }
