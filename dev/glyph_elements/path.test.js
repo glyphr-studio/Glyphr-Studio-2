@@ -44,7 +44,7 @@ function samplePath() {
  * @returns {Path}
  */
 function trianglePath() {
-    return new Path({pathPoints: [{p: {x: 100, y: 200}}, {p: {x: 300, y: 400}}, {p: {x: 500, y: 600}}]});
+    return new Path({pathPoints: [{p: {x: 100, y: 200}}, {p: {x: 300, y: 600}}, {p: {x: 400, y: 500}}]});
 }
 
 _TEST.testList.push(
@@ -298,7 +298,7 @@ _TEST.testList.push(
         assertion: function() {
             let p = trianglePath();
             p.flipEW();
-            return _TEST.is(p.pathPoints[2].p.x).equalTo(500);
+            return _TEST.is(p.pathPoints[2].p.x).equalTo(400);
         },
     },
     {
@@ -350,7 +350,15 @@ _TEST.testList.push(
         category: 'Path',
         name: 'findPathIntersections',
         assertion: function() {
-            return _TEST.is(findPathIntersections(samplePath(), trianglePath()).length).equalTo(2);
+            let tp2 = trianglePath();
+            tp2.x = 150;
+
+            debug(`Path 1`);
+            debug(trianglePath().print(0, '  '));
+            debug(`Path 2 (P1.x + 150)`);
+            debug(tp2.print(0, '  '));
+
+            return _TEST.is(findPathIntersections(trianglePath(), tp2).length).equalTo(2);
         },
     },
     {

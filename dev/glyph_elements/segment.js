@@ -90,6 +90,28 @@ export default class Segment extends GlyphElement {
     }
 
     /**
+     * Create a nicely-formatted string for this object
+     * @param {number} level - how far down we are
+     * @param {string} indentChar - what to use for indention
+     * @returns {string}
+     */
+    print(level = 0, indentChar = '  ') {
+        let ind = '';
+        for (let i=0; i<level; i++) ind += indentChar;
+
+        let re = `{\n`;
+        re += `${ind+indentChar}line: ${this.line}\n`;
+        re += `${ind+indentChar}p1: ${this.p1x}/${this.p1y}\n`;
+        re += `${ind+indentChar}p2: ${this.p2x}/${this.p2y}\n`;
+        re += `${ind+indentChar}p3: ${this.p3x}/${this.p3y}\n`;
+        re += `${ind+indentChar}p4: ${this.p4x}/${this.p4y}\n`;
+        re += `${ind+indentChar}maxes: ${this.maxes.print(level+1, indentChar)}`;
+        re += `${ind}}`;
+
+        return re;
+    }
+
+    /**
      * Reset the cache
      */
     changed() {

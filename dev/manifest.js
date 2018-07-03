@@ -19,10 +19,10 @@ let manifest = [
             'path.js',
             'segment.js',
             // 'polysegment.js',
-            // 'componentinstance.js',
             // 'shape.js',
+            // 'componentinstance.js',
             // 'glyph.js',
-            // 'hkern.js',
+            'hkern.js',
 
             'coord.test.js',
             'handle.test.js',
@@ -31,10 +31,10 @@ let manifest = [
             'path.test.js',
             'segment.test.js',
             'polysegment.test.js',
-            // 'componentinstance.test.js',
             // 'shape.test.js',
+            // 'componentinstance.test.js',
             // 'glyph.test.js',
-            // 'hkern.test.js',
+            'hkern.test.js',
         ],
     },
 
@@ -46,7 +46,7 @@ let manifest = [
             'colors.js',
             // 'nav.js',
             // 'history.js',
-            // 'unicode.js',
+            'unicode.js',
 
             // 'global.css',
             // 'colors.css',
@@ -66,21 +66,21 @@ let manifest = [
             'glyphrstudioproject.test.js',
         ],
     },
-
+*/
     {
         path: 'edit_canvas',
         files: [
             'edit_canvas.js',
-            'events_mouse.js',
-            'events_keyboard.js',
-            'guide.js',
-            'multiselect.js',
-            'glyph_sequence.js',
+            // 'events_mouse.js',
+            // 'events_keyboard.js',
+            // 'guide.js',
+            // 'multiselect.js',
+            // 'glyph_sequence.js',
 
-            'edit_canvas.css',
+            // 'edit_canvas.css',
         ],
     },
-
+/*
     {
         path: 'controls',
         files: [

@@ -1,7 +1,0 @@
-
-
-UPGRADE STUFF
-Camel Case
-- stopPageNavigation
-
-PathPoint.getPx - PathPoint.p.x

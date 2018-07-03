@@ -7,9 +7,10 @@ import Handle from './handle.js';
 import PathPoint from './pathpoint.js';
 import {clone, round, isVal, hasNonValues, duplicates} from '../app/functions.js';
 import {coordsAreEqual} from './coord.js';
-// import {json} from '../app/functions.js';
+import {json} from '../app/functions.js';
 import {getOverallMaxes, maxesOverlap} from './maxes.js';
 import {findSegmentIntersections} from './segment.js';
+import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
 
 /**
  * Path
@@ -76,6 +77,32 @@ import {findSegmentIntersections} from './segment.js';
         });
 
         if (verbose) re.objType = this.objType;
+
+        return re;
+    }
+
+    /**
+     * Create a nicely-formatted string for this object
+     * @param {number} level - how far down we are
+     * @param {string} indentChar - what to use for indention
+     * @returns {string}
+     */
+    print(level = 0, indentChar = '  ') {
+        let ind = '';
+        for (let i=0; i<level; i++) ind += indentChar;
+
+        let re = `{\n`;
+        re += `${ind+indentChar}winding: ${this.winding}\n`;
+
+        re += `${ind+indentChar}pathPoints: [\n`;
+        this._pathPoints.forEach((point) => {
+            re += point.print(level+1, indentChar);
+            re += `${ind+indentChar},\n`;
+        });
+        re += `${ind+indentChar}]\n`;
+
+        re += `${ind+indentChar}maxes: ${this.maxes.print(level+1, indentChar)}`;
+        re += `\n${ind}}`;
 
         return re;
     }
@@ -439,20 +466,25 @@ import {findSegmentIntersections} from './segment.js';
 
     /**
      * Returns true if this path is at the specified point
-     * @param {number} px - target X
-     * @param {number} py - target Y
+     * @param {number} px - target X in Em Units
+     * @param {number} py - target Y in Em Units
      * @returns {boolean}
      */
     isHere(px, py) {
-        let gctx = _UI.isHereGhostCTX;
-        gctx.clearRect(0, 0, _UI.glyphEditCanvasSize, _UI.glyphEditCanvasSize);
-        gctx.fillStyle = 'rgba(0,0,255,0.2)';
-        gctx.beginPath();
-        this.drawPath(gctx);
-        gctx.closePath();
-        gctx.fill();
-        let imageData = gctx.getImageData(px, py, 1, 1);
+        let element = document.createElement('canvas');
+        element.setAttribute('height', '3000');
+        element.setAttribute('width', '3000');
+
+        let ctx = element.getContext('2d');
+        ctx.fillStyle = 'rgba(0,0,255,0.2)';
+
+        ctx.beginPath();
+        this.drawPath(ctx);
+        ctx.closePath();
+        ctx.fill();
+        let imageData = ctx.getImageData(px, py, 1, 1);
         // debug('ISHERE? alpha = ' + imageData.data[3] + '  returning: ' + (imageData.data[3] > 0));
+
         return (imageData.data[3] > 0);
     }
 
@@ -532,7 +564,8 @@ import {findSegmentIntersections} from './segment.js';
         // debug('\n Path.drawPath - START');
         // debug('\t view ' + json(view, true));
 
-        let snap = _GP.projectSettings.renderpointssnappedtogrid;
+        let snap = true;
+        if (_GP && _GP.projectSettings) snap = _GP.projectSettings.renderpointssnappedtogrid;
 
         let currview = getView('Path.drawPath');
         view = view || clone(currview);
@@ -1233,7 +1266,7 @@ import {findSegmentIntersections} from './segment.js';
  * @returns {array}
  */
 export function findPathIntersections(p1, p2) {
-    // debug('\n findPathIntersections - START');
+    debug('\n findPathIntersections - START');
     let intersects = [];
 
     // Find overlaps at boundaries
@@ -1242,14 +1275,14 @@ export function findPathIntersections(p1, p2) {
     intersects = intersects.concat(findPathPointBoundaryIntersections(p1, p2));
 
     intersects = intersects.filter(duplicates);
-    // debug('\t intersections');
-    // debug(intersects);
+    debug('\t intersections after boundary detection');
+    debug(intersects);
 
     // Maxes within boundaries
     if (!maxesOverlap(p1.maxes, p2.maxes)) {
-        // debug(' findPathIntersections - paths dont\'t overlap - END\n');
-        // debug(p1.maxes);
-        // debug(p2.maxes);
+        debug(' findPathIntersections - paths dont\'t overlap - END\n');
+        debug(p1.maxes);
+        debug(p2.maxes);
         return intersects;
     }
 
@@ -1267,13 +1300,13 @@ export function findPathIntersections(p1, p2) {
      * @param {PathPoint} p2p - second path point
      */
     function pushSegOverlaps(p1, p1p, p2, p2p) {
-        // debug('\t pushSegOverlaps - p1p ' + p1p + ' - p2p ' + p2p);
+        debug('\t pushSegOverlaps - p1p ' + p1p + ' - p2p ' + p2p);
         bs = p1.getSegment(p1p);
         ts = p2.getSegment(p2p);
 
 
         if (maxesOverlap(bs.getFastMaxes(), ts.getFastMaxes())) {
-            // debug('\t\t pushed!');
+            debug('\t\t pushed!');
             // bs.drawSegmentOutline();
             // ts.drawSegmentOutline();
             segoverlaps.push({'bottom': bs, 'top': ts});
@@ -1290,26 +1323,28 @@ export function findPathIntersections(p1, p2) {
         }
     }
 
-    // debug('\t segoverlaps ');
-    // debug(json(segoverlaps));
+    debug('\t segoverlaps are now:');
+    segoverlaps.forEach((element) => {
+        debug(`bottom:\n${element.bottom.print()}\ntop:\n${element.top.print()}`);
+    });
 
     // Use overlaps to find intersections
     let re = [];
     for (let v=0; v<segoverlaps.length; v++) {
-        // debug('\n\t SEGOVERLAPS ' + v);
+        debug('\n\t SEGOVERLAPS ' + v);
         re = findSegmentIntersections(segoverlaps[v].bottom, segoverlaps[v].top, 0);
         if (re.length > 0) {
             intersects = intersects.concat(re);
         }
-        // debug('\t intersects is now');
-        // debug(intersects);
+        debug('\t intersects is now');
+        debug(intersects);
     }
 
-    // debug('\t pre filter ' + intersects);
+    debug('\t pre filter ' + intersects);
     intersects = intersects.filter(duplicates);
 
-    // debug('\t returning ' + intersects);
-    // debug(' findPathIntersections - END\n');
+    debug('\t returning ' + intersects);
+    debug(' findPathIntersections - END\n');
     return intersects;
 }
 
@@ -1335,7 +1370,8 @@ export function findPathPointBoundaryIntersections(p1, p2) {
             tpp = chk.pathPoints[pp];
             if ( (tpp.p.x === m.xMin) || (tpp.p.x === m.xMax) ||
                 (tpp.p.y === m.yMin) || (tpp.p.y === m.yMax) ) {
-                if (against.isHere(sx_cx(tpp.p.x), sy_cy(tpp.p.y))) {
+                // if (against.isHere(sx_cx(tpp.p.x), sy_cy(tpp.p.y))) {
+                if (against.isHere(tpp.p.x, tpp.p.y)) {
                     re.push(''+tpp.p.x+'/'+tpp.p.y);
                 }
             }

@@ -45,6 +45,21 @@ export default class Coord extends GlyphElement {
         return re;
     }
 
+    /**
+     * Create a nicely-formatted string for this object
+     * @param {number} level - how far down we are
+     * @param {string} indentChar - what to use for indention
+     * @returns {string}
+     */
+    print(level = 0, indentChar = '  ') {
+        let re = `{`;
+        re += `x: ${this.xLock? 'L' : ' '}${this._x || '--'} `;
+        re += `y: ${this.yLock? 'L' : ' '}${this._y || '--'} `;
+        re += `}`;
+
+        return re;
+    }
+
 
     // --------------------------------------------------------------
     // Getters

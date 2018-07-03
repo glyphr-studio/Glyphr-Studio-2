@@ -140,8 +140,6 @@ window._UI = {
     glyphEditCanvas: false,
     glyphEditCanvasSize: 2000, // How big the viewport canvas is
     glyphEditCTX: false,
-    isHereGhostCanvas: false,
-    isHereGhostCTX: false,
     defaultView: {
         dx: 200, // X offset for the canvas origin
         dy: 500, // Y offset for the canvas origin

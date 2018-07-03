@@ -1,3 +1,8 @@
+import {isVal, clone} from '../app/functions.js';
+
+export {sx_cx, sy_cy};
+export {getView, setView};
+export default redraw;
 
 /**
     Framework > Edit Canvas
@@ -879,7 +884,7 @@
 
     function setView(oa) {
         let sc = (_UI.currentPage === 'kerning')? getSelectedKernID() : getSelectedWorkItemID();
-        let v = _UI.views;
+        let v = _UI.views || {};
 
         // Ensure there are at least defaults
         if (!isVal(v[sc])) {
@@ -898,7 +903,7 @@
 
         let onkern = (_UI.currentPage === 'kerning');
         let sc = onkern? getSelectedKernID() : getSelectedWorkItemID();
-        let v = _UI.views;
+        let v = _UI.views || {};
         let re;
 
         if (isVal(v[sc])) {
@@ -1741,17 +1746,6 @@ if (ps.guides.hasOwnProperty(c)) {
 // -------------------
 // INIT
 // -------------------
-    function setupGhostCanvas() {
-        // Is Here Ghost Canvas - same size as CEC
-        _UI.isHereGhostCanvas = getEditDocument().getElementById('isHereGhostCanvas');
-        _UI.isHereGhostCanvas.height = _UI.glyphEditCanvasSize;
-        _UI.isHereGhostCanvas.width = _UI.glyphEditCanvasSize;
-        _UI.isHereGhostCTX = _UI.isHereGhostCanvas.getContext('2d');
-        _UI.isHereGhostCTX.fillStyle = 'cyan';
-        // _UI.isHereGhostCTX.globalAlpha = 0.5;
-        _UI.isHereGhostCanvas.style.backgroundColor = 'transparent';
-    }
-
     function setupEditCanvas() {
         _UI.glyphEditCanvas = getEditDocument().getElementById('glyphEditCanvas');
         _UI.glyphEditCanvas.height = _UI.glyphEditCanvasSize;

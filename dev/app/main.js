@@ -54,7 +54,6 @@ export default function glyphrStudioOnLoad() {
     // Initialize Stuff
     assemble();
     insertGlobalDOMElements();
-    setupGhostCanvas();
     document.title = 'Glyphr Studio';
 
     // Navigate
@@ -118,8 +117,6 @@ export default function glyphrStudioOnLoad() {
  */
 function insertGlobalDOMElements() {
     document.body.innerHTML = `<div id="primaryScreenLayout"></div>
-
-        <canvas id="isHereGhostCanvas" height=10 width=10 ></canvas>
 
         <div id="npSave"></div>
 

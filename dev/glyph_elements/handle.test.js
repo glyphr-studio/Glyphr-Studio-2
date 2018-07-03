@@ -10,7 +10,7 @@ _TEST.testList.push(
     },
     {
         category: 'Handle',
-        name: 'Change Possition',
+        name: 'Change Position',
         assertion: function() {
             let han = new Handle();
             han.x = 500;
