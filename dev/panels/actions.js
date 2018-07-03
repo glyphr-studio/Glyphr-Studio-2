@@ -37,7 +37,7 @@
         shapeactions += '<button title="Copy\nAdds a copy of the currently selected shape or shapes to the clipboard" onclick="copyShape();">' + makeActionButton_Copy() + '</button>';
         if (!_UI.popOut) shapeactions += '<button title="Delete\nRemoves the currently selected shape or shapes from this glyph" onclick="_UI.multiSelect.shapes.deleteShapes(); history_put(\'Delete Shape\'); redraw({calledBy:\'actions panel\'});">' + makeActionButton_DeleteShape() + '</button>';
         shapeactions += '<button title="Reverse Overlap Mode\nToggles the clockwise or counterclockwise winding of the shape\'s path" onclick="_UI.multiSelect.shapes.reverseWinding(); history_put(\'Reverse Path Direction\'); redraw({calledBy:\'shapeDetails - Winding\'});">' + makeActionButton_ReverseWinding() + '</button>';
-        if (ss.length === 1 && ss[0].objType === 'componentinstance') {
+        if (ss.length === 1 && ss[0].objType === 'ComponentInstance') {
             shapeactions += '<button title="Turn Component Instance into a Shape\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component\'s shapes as regular Shapes to this glyph" onclick="turnComponentIntoShapes(); history_put(\'Unlinked Component\'); redraw({calledBy:\'turnComponentIntoShapes\'});">' + makeActionButton_SwitchShapeComponent(true) + '</button>';
         } else {
             shapeactions += '<button title="Turn Shape into a Component Instance\nTakes the selected shape and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance" onclick="turnSelectedShapeIntoAComponent(); history_put(\'Turned Shape into a Component\'); redraw({calledBy:\'turnSelectedShapeIntoAComponent\'});">' + makeActionButton_SwitchShapeComponent(false) + '</button>';
@@ -206,7 +206,7 @@
             for (let s=0; s<sourceshapes.length; s++) {
                 var ts;
 
-                if (sourceshapes[s].objType === 'componentinstance') {
+                if (sourceshapes[s].objType === 'ComponentInstance') {
                     ts = new ComponentInstance(sourceshapes[s]);
                 } else {
                     ts = new Shape(sourceshapes[s]);
@@ -250,7 +250,7 @@
                 }
                 ts.name = newname + newsuffix;
 
-                if (ts.objType === 'componentinstance') {
+                if (ts.objType === 'ComponentInstance') {
                     addToUsedIn(ts.link, _UI.selectedGlyph);
                     // debug("PASTESHAPE - pasted a component, added " + _UI.selectedGlyph + " to usedin array.");
                 }

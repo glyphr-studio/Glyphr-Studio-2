@@ -11,7 +11,7 @@ class Shape {
     constructor(oa) {
         // debug('\n SHAPE - START');
         oa = oa || {};
-        this.objType = 'shape';
+        this.objType = 'Shape';
         // common settings
         this.name = oa.name || 'Shape';
         this.path = isVal(oa.path) ? new Path(oa.path) : rectPathFromMaxes(false);
@@ -168,9 +168,8 @@ class Shape {
         polyseg.removeZeroLengthSegments();
         polyseg.removeDuplicateSegments();
         polyseg.removeSegmentsOverlappingShape(this);
-        polyseg.removeRedundantSegments();
+        polyseg.removeRedundantLineSegments();
         polyseg.removeNonConnectingSegments();
-        // polyseg.combineInlineSegments();
         // debug('\t afters filtering ' + polyseg.segments.length);
         if (_UI.devMode)
             polyseg.drawPolySegmentOutline();
@@ -387,7 +386,7 @@ class Shape {
         // debug('\t objType: ' + newshape.objType);
 
         if (newshape) {
-            if (newshape.objType === 'componentinstance') {
+            if (newshape.objType === 'ComponentInstance') {
                 // debug('\t is a Component instance');
                 _UI.selectedTool = 'shaperesize';
             } else if (newshape.path && (_UI.selectedTool === 'shaperesize')) {

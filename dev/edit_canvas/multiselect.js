@@ -19,8 +19,8 @@ import _UI from '../app/settings.js';
     MultiSelect.prototype.isSelectable = function(obj) {
         if (obj && (
             obj.objType === 'pathpoint' ||
-            obj.objType === 'shape' ||
-            obj.objType === 'componentinstance'
+            obj.objType === 'Shape' ||
+            obj.objType === 'ComponentInstance'
         )) return true;
         else {
             // debug('MultiSelect - cannot select \n' + obj.objType);
@@ -218,7 +218,7 @@ import _UI from '../app/settings.js';
             path = points[p].parentPath;
 
             for (let s=0; s<shapes.length; s++) {
-                if (shapes[s].objType !== 'componentinstance') {
+                if (shapes[s].objType !==  'ComponentInstance') {
                     if (path === shapes[s].path) {
                         _UI.multiSelect.shapes.add(shapes[s]);
                         count++;
@@ -290,7 +290,7 @@ import _UI from '../app/settings.js';
             for (let s=0; s<sels.length; s++) {
                 curs = sels[s];
 
-                if (curs.objType === 'componentinstance') {
+                if (curs.objType === 'ComponentInstance') {
                     removeFromUsedIn(curs.link, _UI.selectedGlyph);
                 }
 
@@ -300,7 +300,7 @@ import _UI from '../app/settings.js';
 
             _UI.multiSelect.shapes.select(wishapes[i] || wishapes[wishapes.length-1]);
             let singleshape = _UI.multiSelect.shapes.getSingleton();
-            if (singleshape && singleshape.objType === 'componentinstance') clickTool('shaperesize');
+            if (singleshape && singleshape.objType === 'ComponentInstance') clickTool('shaperesize');
         }
 
         updateCurrentGlyphWidth();
@@ -351,7 +351,7 @@ import _UI from '../app/settings.js';
 
     _UI.multiSelect.shapes.rotateable = function() {
         if (this.members.length === 1) return true;
-        else return !this.contains(('componentinstance'));
+        else return !this.contains(( 'ComponentInstance'));
     };
 
     _UI.multiSelect.shapes.flipNS = function(mid) {
@@ -427,7 +427,7 @@ import _UI from '../app/settings.js';
         for (let m=0; m<this.members.length; m++) {
             s = this.members[m];
             // debug('\t drawing points on shape ' + m + ' as ' + s.path.pathPoints);
-                if (s.objType !== 'componentinstance') draw_PathPoints(this.members[m].path.pathPoints);
+                if (s.objType !==  'ComponentInstance') draw_PathPoints(this.members[m].path.pathPoints);
         }
 
         // debug(' MS.shapes.draw_PathPoints - END\n');
@@ -467,7 +467,7 @@ import _UI from '../app/settings.js';
         let ss;
         if (this.members.length === 1) {
             ss = this.members[0];
-            let accent = ss.objType === 'componentinstance'? _UI.colors.green : _UI.colors.blue;
+            let accent = ss.objType === 'ComponentInstance'? _UI.colors.green : _UI.colors.blue;
             draw_RotationAffordance(accent, false);
         } else if (this.members.length > 1) {
             ss = this.getGlyph();

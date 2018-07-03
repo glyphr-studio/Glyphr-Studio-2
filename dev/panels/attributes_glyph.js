@@ -33,7 +33,7 @@
             content += glyphDetails();
         } else if (ss.length === 1) {
             // One shape selected
-            if (ss[0].objType === 'componentinstance') {
+            if (ss[0].objType === 'ComponentInstance') {
                 // component selected
                 // debug(" \t component selected");
                 content += componentInstanceDetails(ss[0]);

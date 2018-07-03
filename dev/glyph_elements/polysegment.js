@@ -1,9 +1,11 @@
 import GlyphElement from './glyphelement.js';
+import Coord from './coord.js';
 import Segment from './segment.js';
 import Path from './path.js';
+import {coordsAreEqual} from './coord.js';
 import {makePathPointFromSegments} from './pathpoint.js';
 import {segmentsAreEqual, findSegmentIntersections, ixToCoord} from './segment.js';
-import {duplicates} from '../app/functions.js';
+import {duplicates, clone} from '../app/functions.js';
 
 /**
  * Object > Poly Segment
@@ -161,12 +163,25 @@ export default class PolySegment extends GlyphElement {
         // debug('\n PolySegment.getPath - START');
         // debug(this._segments);
         let pp = [];
-        pp.push(makePathPointFromSegments(this._segments[this._segments.length - 1], this._segments[0]));
-        let ns;
-        for (let s = 0; s < this._segments.length - 1; s++) {
-            ns = this._segments[s + 1];
-            pp.push(makePathPointFromSegments(this._segments[s], ns));
+        let segs = clone(this._segments);
+
+        // Connect the first / last point if not already
+        let firstP = new Coord({x: segs[0].p1x, y: segs[0].p1y});
+        let lastP = new Coord({x: segs[segs.length-1].p4x, y: segs[segs.length-1].p4y});
+        if (!coordsAreEqual(firstP, lastP)) {
+            segs.push(new Segment({p1x: lastP.x, p1y: lastP.y, p4x: firstP.x, p4y: firstP.y}));
         }
+
+        // Fencepost make the first PathPoint
+        pp.push(makePathPointFromSegments(segs[segs.length - 1], segs[0]));
+
+        // Loop through Segments and create PathPoints
+        let ns;
+        for (let s = 0; s < segs.length - 1; s++) {
+            ns = segs[s + 1];
+            pp.push(makePathPointFromSegments(segs[s], ns));
+        }
+
         // debug(pp);
         // debug(' PolySegment.getPath - END\n');
         return new Path({pathPoints: pp});
@@ -187,39 +202,14 @@ export default class PolySegment extends GlyphElement {
     /**
      * Round all the Segment values
      * @param {number} precision - decimal places
+     * @returns {PolySegment}
      */
     roundAll(precision = 3) {
         for (let s = 0; s < this._segments.length; s++) {
             this._segments[s].roundAll(precision);
         }
-    }
 
-    /**
-     * Look for a Segment, and if found, split it at time=t
-     * @param {Segment} seg - Look for this one and split it
-     * @param {number} t - decimal between 0 and 1
-     */
-    splitSegment(seg, t) {
-        // debug('\n PolySegment.splitSegment - START');
-        // if(typeof t === 'number') debug('\t ' + t);
-        // else debug('\t' + json(t, true));
-        let ns;
-        for (let s = 0; s < this._segments.length; s++) {
-            if (this._segments.length > 100) {
-                // console.warn('\t Breaking, over 100');
-                return;
-            }
-            if (segmentsAreEqual(seg, this._segments[s])) {
-                ns = this._segments[s].split(t);
-                // debug('\t adding at pos ' + s);
-                // debug(ns);
-                // debug(this._segments);
-                this._segments.splice(s, 1, ns[0], ns[1]);
-                s++;
-                // debug(this._segments);
-            }
-        }
-        // debug(' PolySegment.splitSegment - END\n');
+        return this;
     }
 
 
@@ -278,6 +268,7 @@ export default class PolySegment extends GlyphElement {
      * segments at those points
      * @param {array} ixarr - array of intersections in ix format
      * @param {number} threshold - how closely to look and split
+     * @returns {PolySegment}
      */
     splitSegmentsAtIntersections(ixarr = this.findIntersections(), threshold) {
         // debug('\n PolySegment.splitSegmentsAtIntersections - START');
@@ -294,12 +285,13 @@ export default class PolySegment extends GlyphElement {
         this._segments = result;
         // debug('\t afters length ' + this._segments.length);
         // debug(' PolySegment.splitSegmentsAtIntersections - END\n');
+        return this;
     }
 
     /**
      * Takes all the segments and orders them based on their
      * starting and ending points
-     * @returns {array} - sorted Segments
+     * @returns {array} - Returns a collection of *PolySegments*
      */
     stitchSegmentsTogether() {
         // debug('\n PolySegment.stitchSegmentsTogether - START');
@@ -308,17 +300,16 @@ export default class PolySegment extends GlyphElement {
         let result = [];
 
         /**
-         * Takes the end of a segment, and looks for another segment
-         * with that point as it's start
+         * Looks for a segment with a provided starting point
          * @param {Coordinate} co - starting point to look for
          * @returns {Segment}
          */
-        function getNextSegment(co) {
+        function getSegmentStartingAt(co) {
             let ts;
             let re;
             for (let s = 0; s < source.length; s++) {
                 ts = source[s];
-                if (ts.objType === 'segment') {
+                if (ts.objType === 'Segment') {
                     if (ts.containsStartPoint(co, 0)) {
                         re = new Segment(ts);
                         ts.objType = '-' + result.length + '.' + sorted.length;
@@ -329,7 +320,7 @@ export default class PolySegment extends GlyphElement {
             // if not, try all the segments reversed
             for (let r = 0; r < source.length; r++) {
                 ts = source[r].getReverse();
-                if (source[r].objType === 'segment') {
+                if (source[r].objType === 'Segment') {
                     if (ts.containsStartPoint(co, 0)) {
                         re = new Segment(ts);
                         source[r].objType = 'R' + result.length + '.' + sorted.length;
@@ -346,7 +337,7 @@ export default class PolySegment extends GlyphElement {
          */
         function getNextUnusedSegmentP1() {
             for (let s = 0; s < source.length; s++) {
-                if (source[s].objType === 'segment') {
+                if (source[s].objType === 'Segment') {
                     return source[s].getCoord(1);
                 }
             }
@@ -354,17 +345,17 @@ export default class PolySegment extends GlyphElement {
 
 
         // Start ordering
-        let reseg;
-        let nextcoord = getNextUnusedSegmentP1();
+        let resultSegment;
+        let nextCoord = getNextUnusedSegmentP1();
         // debug('\t starting loop');
-        // debug([nextcoord]);
+        // debug([nextCoord]);
         // debug('\t source.length ' + source.length);
         for (let i = 0; i < source.length; i++) {
-            reseg = getNextSegment(nextcoord);
-            if (reseg) {
+            resultSegment = getSegmentStartingAt(nextCoord);
+            if (resultSegment) {
                 // debug('\t LOOP ' + i + ' added a segment,  ' + result.length + '.' + sorted.length);
-                sorted.push(reseg);
-                nextcoord = reseg.getCoord(4);
+                sorted.push(resultSegment);
+                nextCoord = resultSegment.getCoord(4);
             } else {
                 // debug('\t LOOP ' + i + ' NO NEXT SEGMENT FOUND');
                 if (sorted.length) {
@@ -375,7 +366,7 @@ export default class PolySegment extends GlyphElement {
                         // debug('\t\t Pushed sorted polyseg, OPEN LOOP');
                     }
                     sorted = [];
-                    nextcoord = getNextUnusedSegmentP1();
+                    nextCoord = getNextUnusedSegmentP1();
                     i--;
                 }
             }
@@ -391,12 +382,12 @@ export default class PolySegment extends GlyphElement {
                 // debug('\t\t Pushed sorted polyseg, OPEN LOOP');
             }
         }
-        // debug('\t SOURCE');
-        // debug(source);
-        result.forEach(function(v, i) {
+        // debug('\t result');
+        // debug(result);
+        // result.forEach(function(v, i) {
             // debug('\n\t RETURNING ' + i);
             // debug(v.segments);
-        });
+        // });
         // debug(' PolySegment.stitchSegmentsTogether - END\n');
 
         return result;
@@ -409,6 +400,7 @@ export default class PolySegment extends GlyphElement {
 
     /**
      * Removes all the zero length segments
+     * @returns {PolySegment}
      */
     removeZeroLengthSegments() {
         // debug('\n PolySegment.removeZeroLengthSegments - START');
@@ -428,37 +420,49 @@ export default class PolySegment extends GlyphElement {
             }
         }
 
-        // debug(this._segments);
+        // debug(this.print());
         this._segments = this._segments.filter(function(v) {
-            return v.objType === 'segment';
+            return v.objType === 'Segment';
         });
-        // debug(' PolySegment.removeZeroLengthSegments - removed ' + (len-this._segments.length) + ' - END\n');
+        // debug(' PolySegment.removeZeroLengthSegments - END\n');
+
+        return this;
     }
 
     /**
-     * Removes all redundant segments (line overlappings)
+     * Removes all line segments that are overlapped
+     * by larger line segments
+     * @returns {PolySegment}
      */
-    removeRedundantSegments() {
-        // debug('\n PolySegment.removeRedundantSegments - START');
+    removeRedundantLineSegments() {
+        // debug('\n PolySegment.removeRedundantLineSegments - START');
         for (let s = 0; s < this._segments.length; s++) {
             for (let t = 0; t < this._segments.length; t++) {
                 if (s !== t && this._segments[s] && this._segments[t]) {
+                    // try one way
                     if (this._segments[s].isLineOverlappedByLine(this._segments[t])) {
-                        this._segments[s] = 'REDUNDANT';
+                        this._segments[s].objType = 'REDUNDANT';
+                    }
+                    // try other way
+                    if (this._segments[t].isLineOverlappedByLine(this._segments[s])) {
+                        this._segments[t].objType = 'REDUNDANT';
                     }
                 }
+                // debug(`\t Seg ${s} ${this._segments[s].objType}`);
             }
         }
 
-        // debug(this._segments);
         this._segments = this._segments.filter(function(v) {
-            return v.objType === 'segment';
+            return v.objType === 'Segment';
         });
-        // debug(' PolySegment.removeRedundantSegments - removed ' + (len-this._segments.length) + ' - END\n');
+        // debug(' PolySegment.removeRedundantLineSegments - END\n');
+
+        return this;
     }
 
     /**
      * Removes all duplicate segments
+     * @returns {PolySegment}
      */
     removeDuplicateSegments() {
         // debug('\n PolySegment.removeDuplicateSegments - START');
@@ -478,14 +482,17 @@ export default class PolySegment extends GlyphElement {
 
         // debug(this._segments);
         this._segments = this._segments.filter(function(v) {
-            return v.objType === 'segment';
+            return v.objType === 'Segment';
         });
-        // debug(' PolySegment.removeDuplicateSegments - removed ' + (len-this._segments.length) + ' - END\n');
+        // debug(' PolySegment.removeDuplicateSegments - END\n');
+
+        return this;
     }
 
     /**
      * Removes all the segments that overlap a provided shape
      * @param {Shape} shape
+     * @returns {PolySegment}
      */
     removeSegmentsOverlappingShape(shape) {
         // debug('\n PolySegment.removeSegmentsOverlappingShape - START');
@@ -506,7 +513,7 @@ export default class PolySegment extends GlyphElement {
             split = seg.splitAtTime(split);
             tx = split[0].p4x;
             ty = split[0].p4y;
-            // Big hit dectection, to miss border paths
+            // Big hit detection, to miss border paths
             // var re = shape.isHere(sx_cx(tx), sy_cy(ty)) &&
             // shape.isHere(sx_cx(tx), sy_cy(ty + pt)) &&
             // shape.isHere(sx_cx(tx), sy_cy(ty - pt)) &&
@@ -538,14 +545,17 @@ export default class PolySegment extends GlyphElement {
 
         // debug(this._segments);
         this._segments = this._segments.filter(function(v) {
-            return v.objType === 'segment';
+            return v.objType === 'Segment';
         });
         // alert('removeSegmentsOverlappingShape - hits and misses');
-        // debug(' PolySegment.removeSegmentsOverlappingShape - removed ' + (len-this._segments.length) + ' - END\n');
+
+        return this;
+        // debug(' PolySegment.removeSegmentsOverlappingShape - END\n');
     }
 
     /**
      * Removes all segments not 'connected' to other segments
+     * @returns {PolySegment}
      */
     removeNonConnectingSegments() {
         // debug('\n PolySegment.removeNonConnectingSegments - START');
@@ -561,7 +571,7 @@ export default class PolySegment extends GlyphElement {
             connected4[t] = false;
             for (let a = 0; a < this._segments.length; a++) {
                 against = this._segments[a];
-                // if(t !== a && against.objType === 'segment'){
+                // if(t !== a && against.objType === 'Segment'){
                 if (t !== a) {
                     if (against.containsTerminalPoint(test.getCoord(1), threshold)) {
                         connected1[t] = true;
@@ -589,33 +599,10 @@ export default class PolySegment extends GlyphElement {
 
         // debug(this._segments);
         this._segments = this._segments.filter(function(v) {
-            return v.objType === 'segment';
+            return v.objType === 'Segment';
         });
-        // debug(' PolySegment.removeNonConnectingSegments - removed ' + (len-this._segments.length) + ' - END\n');
-    }
+        // debug(' PolySegment.removeNonConnectingSegments - END\n');
 
-    /**
-     * Combines the first and last segments if they are
-     * lines and if they are inline with eachother
-     */
-    combineInlineSegments() {
-        // debug('\n PolySegment.combineInlineSegments - START');
-        let ts;
-        let ns;
-        for (let s = 0; s < this._segments.length; s++) {
-            ts = this._segments[s];
-            ns = (s === this._segments.length - 1) ? this._segments[0] : this._segments[s + 1];
-            if (ts.line === ns.line) {
-                this._segments[s] = new Segment({
-                    'p1x': ts.p1x,
-                    'p1y': ts.p1y,
-                    'p4x': ns.p4x,
-                    'p4y': ns.p4y,
-                });
-                this._segments.splice(s + 1, 1);
-                s--;
-            }
-        }
-        // debug(' PolySegment.combineInlineSegments - removed ' + (len-this._segments.length) + ' - END\n');
+        return this;
     }
 }

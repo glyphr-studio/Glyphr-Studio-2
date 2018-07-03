@@ -428,7 +428,7 @@ export default class Segment extends GlyphElement {
 
     /**
      * Find the length of a curve, recursively
-     * At small enough sizes, assume a curve is a straight line
+     * At small enough sizes, straight lines approximate a curve
      * @returns {number}
      */
     calculateLength() {
@@ -664,7 +664,8 @@ export default class Segment extends GlyphElement {
 
     /**
      * Checks to see if this (line) Segment is overlapped by
-     * a larger (line) Segment
+     * a larger (line) Segment.
+     * Returning true basically means we can get rid of this Segment
      * @param {Segment} largeSegment - Larger segment to check against
      * @returns {boolean}
      */

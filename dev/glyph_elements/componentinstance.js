@@ -12,7 +12,7 @@
 
 
     function ComponentInstance(oa) {
-        this.objType = 'componentinstance';
+        this.objType =  'ComponentInstance';
 
         this.link = oa.link || getFirstID(_GP.components);
         this.name = oa.name || 'Component Instance';
@@ -96,7 +96,7 @@
         let tempglyph, tempshapes;
 
         for (let s=0; s<og.shapes.length; s++) {
-            if (og.shapes[s].objType === 'componentinstance') {
+            if (og.shapes[s].objType === 'ComponentInstance') {
                 tempglyph = og.shapes[s].getTransformedGlyph(true);
                 newshapes = newshapes.concat(tempglyph.shapes);
             } else {

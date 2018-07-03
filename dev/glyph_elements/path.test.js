@@ -353,10 +353,10 @@ _TEST.testList.push(
             let tp2 = trianglePath();
             tp2.x = 150;
 
-            debug(`Path 1`);
-            debug(trianglePath().print(0, '  '));
-            debug(`Path 2 (P1.x + 150)`);
-            debug(tp2.print(0, '  '));
+            // debug(`Path 1`);
+            // debug(trianglePath().print(0, '  '));
+            // debug(`Path 2 (P1.x + 150)`);
+            // debug(tp2.print(0, '  '));
 
             return _TEST.is(findPathIntersections(trianglePath(), tp2).length).equalTo(2);
         },

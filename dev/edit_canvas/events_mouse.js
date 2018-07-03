@@ -179,7 +179,7 @@ function Tool_ShapeEdit() {
                     _UI.multiSelect.shapes.select(this.clickedshape);
                 }
 
-                if (this.clickedshape.objType === 'componentinstance') clickTool('shaperesize');
+                if (this.clickedshape.objType === 'ComponentInstance') clickTool('shaperesize');
                 _UI.currentPanel = 'npAttributes';
             }
 
@@ -246,7 +246,7 @@ function Tool_ShapeEdit() {
             if (eh.multi) _UI.multiSelect.shapes.toggle(this.clickedshape);
             else _UI.multiSelect.shapes.select(this.clickedshape);
 
-            if (this.clickedshape.objType === 'componentinstance') clickTool('shaperesize');
+            if (this.clickedshape.objType === 'ComponentInstance') clickTool('shaperesize');
             else setCursor('arrowSquare');
 
             _UI.currentPanel = 'npAttributes';
@@ -609,7 +609,7 @@ function Tool_PathAddPoint() {
         let singleshape = _UI.multiSelect.shapes.getSingleton();
         let s = getClickedShape(_UI.eventhandlers.mousex, _UI.eventhandlers.mousey);
 
-        if (this.addpoint && singleshape && singleshape.objType !== 'componentinstance') {
+        if (this.addpoint && singleshape && singleshape.objType !==  'ComponentInstance') {
             let p = singleshape.path.insertPathPoint(this.addpoint.split, this.addpoint.point);
             if (p) _UI.multiSelect.points.select(p);
             history_put('Added point to path');
@@ -618,7 +618,7 @@ function Tool_PathAddPoint() {
             if (_UI.eventhandlers.multi) _UI.multiSelect.shapes.add(s);
             else _UI.multiSelect.shapes.select(s);
 
-            if (s.objType === 'componentinstance') clickTool('shaperesize');
+            if (s.objType === 'ComponentInstance') clickTool('shaperesize');
             _UI.currentPanel = 'npAttributes';
         } else {
             _UI.selectedTool = 'newpath';

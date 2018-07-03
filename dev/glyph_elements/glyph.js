@@ -39,7 +39,7 @@
         let cs = 0;
         if (oa.shapes && oa.shapes.length) {
             for (let i=0; i<oa.shapes.length; i++) {
-                if (oa.shapes[i].objType === 'componentinstance') {
+                if (oa.shapes[i].objType === 'ComponentInstance') {
                     // debug('\t hydrating ci ' + oa.shapes[i].name);
                     this.shapes[i] = new ComponentInstance(oa.shapes[i]);
                     lc++;
@@ -424,7 +424,7 @@
 // --------------------------------------------------------------
     Glyph.prototype.containsComponents = function() {
         for (let s=0; s<this.shapes.length; s++) {
-            if (this.shapes[s].objType === 'componentinstance') {
+            if (this.shapes[s].objType === 'ComponentInstance') {
                 return true;
             }
         }
@@ -461,7 +461,7 @@
     Glyph.prototype.collectAllDownstreamLinks = function(re, excludepeers) {
         re = re || [];
         for (let s=0; s<this.shapes.length; s++) {
-            if (this.shapes[s].objType === 'componentinstance') {
+            if (this.shapes[s].objType === 'ComponentInstance') {
                 re = re.concat(getGlyph(this.shapes[s].link).collectAllDownstreamLinks(re));
                 if (!excludepeers) re.push(this.shapes[s].link);
             }
@@ -491,7 +491,7 @@
             // debug('\t removing from ' + upstreamglyph.name);
             // debug(upstreamglyph.shapes);
             for (let u=0; u<upstreamglyph.shapes.length; u++) {
-                if (upstreamglyph.shapes[u].objType === 'componentinstance' && upstreamglyph.shapes[u].link === thisid) {
+                if (upstreamglyph.shapes[u].objType === 'ComponentInstance' && upstreamglyph.shapes[u].link === thisid) {
                     upstreamglyph.shapes.splice(u, 1);
                     u--;
                 }
@@ -501,7 +501,7 @@
 
         // Delete downstream usedin array values
         for (let s=0; s<this.shapes.length; s++) {
-            if (this.shapes[s].objType === 'componentinstance') {
+            if (this.shapes[s].objType === 'ComponentInstance') {
                 removeFromUsedIn(this.shapes[s].link, thisid);
             }
         }
@@ -530,7 +530,7 @@
 
                 if (!drewshape) {
                     console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + this.name);
-                    if (shape.objType === 'componentinstance' && !getGlyph(shape.link)) {
+                    if (shape.objType === 'ComponentInstance' && !getGlyph(shape.link)) {
                         console.warn('>>> Component Instance has bad link: ' + shape.link);
 
                         let i = this.shapes.indexOf(shape);
@@ -602,7 +602,7 @@
         for (let j=0; j<sl.length; j++) {
             shape = sl[j];
             if (shape.visible) {
-                if (shape.objType === 'componentinstance') {
+                if (shape.objType === 'ComponentInstance') {
                     tg = shape.getTransformedGlyph();
                     if (tg) pathdata += tg.getSVGpathData();
                 } else {
@@ -631,7 +631,7 @@
         let allpoints = [];
 
         for (let s=0; s<this.shapes.length; s++) {
-            if (this.shapes[s].objType !== 'componentinstance') {
+            if (this.shapes[s].objType !==  'ComponentInstance') {
                 allpoints = allpoints.concat(this.shapes[s].path.pathPoints);
                 this.shapes[s].draw_PathOutline(_UI.colors.blue, 1);
             }
@@ -643,7 +643,7 @@
     Glyph.prototype.isOverControlPoint = function(x, y, targetSize, noHandles) {
         let re = false;
         for (let s=0; s<this.shapes.length; s++) {
-            if (this.shapes[s].objType !== 'componentinstance') {
+            if (this.shapes[s].objType !==  'ComponentInstance') {
                 re = this.shapes[s].path.isOverControlPoint(x, y, targetSize, noHandles);
                 if (re) return re;
             }
@@ -659,9 +659,9 @@
         for (let s=0; s<this.shapes.length; s++) {
             ts = this.shapes[s];
 
-            if (ts.objType === 'shape') {
+            if (ts.objType === 'Shape') {
                 reshapes.push(clone(ts));
-            } else if (ts.objType === 'componentinstance') {
+            } else if (ts.objType === 'ComponentInstance') {
                 tg = ts.getTransformedGlyph();
                 tg = tg.flattenGlyph();
                 reshapes = reshapes.concat(tg.shapes);
@@ -737,9 +737,9 @@
 
         for (let s=0; s < this.shapes.length; s++) {
             ts = this.shapes[s];
-            if (ts.objType === 'shape') {
+            if (ts.objType === 'Shape') {
                 re += (indents + '-' + s + '-' + ts.name + ' ' + json(ts.path.maxes, true) + '\n');
-            } else if (ts.objType === 'componentinstance') {
+            } else if (ts.objType === 'ComponentInstance') {
                 re += (indents+ '~' + s + '~' + ts.name + '\n');
                 re += getGlyph(ts.link).map(indents + '   ');
             }
@@ -757,10 +757,10 @@
 
         for (let c=0; c<this.shapes.length; c++) {
             tc = this.shapes[c];
-            if (tc.objType === 'componentinstance') {
+            if (tc.objType === 'ComponentInstance') {
                 addToUsedIn(tc.link, destinationID);
                 tc = new ComponentInstance(clone(tc));
-            } else if (tc.objType === 'shape') {
+            } else if (tc.objType === 'Shape') {
                 tc = new Shape(clone(tc));
             }
 
@@ -791,7 +791,7 @@
     Glyph.prototype.hasShapes = function() {
         let tg;
         for (let s=0; s<this.shapes.length; s++) {
-            if (this.shapes[s].objType !== 'componentinstance') return true;
+            if (this.shapes[s].objType !==  'ComponentInstance') return true;
             else {
                 tg = this.shapes[s].getTransformedGlyph();
                 if (tg.hasShapes()) return true;

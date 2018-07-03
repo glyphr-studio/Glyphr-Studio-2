@@ -12,9 +12,16 @@ export default class GlyphElement {
      * Find out what type of Element this is
      */
     get objType() {
-        return this.constructor.name;
+        return this._objType || this.constructor.name;
     }
 
+    /**
+     * Find out what type of Element this is
+     * @param {string} type
+     */
+    set objType(type) {
+        return this._objType = type;
+    }
 
     /**
      * Export object properties that need to be saved to a project file

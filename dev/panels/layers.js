@@ -32,20 +32,20 @@
 
                 if (_UI.multiSelect.shapes.isSelected(ts)) {
                     // debug(`\t i: ${i} is selected`);
-                    if (ts.objType === 'componentinstance') content += '<tr class="componentlayersel"';
+                    if (ts.objType === 'ComponentInstance') content += '<tr class="componentlayersel"';
                     else content += '<tr class="layersel"';
                 } else {
                     // debug(`\t i: ${i} is NOT selected`);
-                    if (ts.objType === 'componentinstance') content += '<tr class="componentlayer"';
+                    if (ts.objType === 'ComponentInstance') content += '<tr class="componentlayer"';
                     else content += '<tr class="layer"';
                 }
 
                 content += ' onclick="selectShape(' + i + '); ';
-                if (ts.objType === 'componentinstance') content += 'clickTool(\'shaperesize\'); ';
+                if (ts.objType === 'ComponentInstance') content += 'clickTool(\'shaperesize\'); ';
                 content += ' redraw({calledBy:\'updatelayers\'});';
                 content += '">';
 
-                if (ts.objType === 'componentinstance') {
+                if (ts.objType === 'ComponentInstance') {
                     content += '<td class="layerthumb">'+ts.getTransformedGlyph().makeSVG()+'</td>';
                     content += '<td class="layername">' +ts.name;
                     content += '<span class="layernote">[linked to component: '+getGlyphName(ts.link)+']</span>';

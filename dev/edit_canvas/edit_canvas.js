@@ -133,7 +133,7 @@ export default redraw;
 
         if (_UI.selectedTool === 'pathedit') {
             patheditclass = 'buttonsel';
-        } else if (type === 'componentinstance') {
+        } else if (type ===  'ComponentInstance') {
             patheditclass = 'buttondis';
             penclickable = false;
             penaddpointclickable = false;
@@ -141,7 +141,7 @@ export default redraw;
 
         if (_UI.selectedTool === 'pathaddpoint') {
             pathaddpointclass = 'buttonsel';
-        } else if (type === 'componentinstance') {
+        } else if (type ===  'ComponentInstance') {
             pathaddpointclass = 'buttondis';
             penclickable = false;
             penaddpointclickable = false;
