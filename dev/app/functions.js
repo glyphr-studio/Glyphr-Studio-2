@@ -1,16 +1,20 @@
 export {debug as default};
 export {
     makePanelSuperTitle,
-    setProjectAsSaved, setProjectAsUnsaved,
-    saveFile,
+    setProjectAsSaved, setProjectAsUnsaved, saveFile,
     clone, json, areEqual, makeCrisp, round, numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
+    localStorageGet, localStorageSet,
     calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle,
     getFirstID, generateNewID, getMyID, countObjectKeys,
     makeEmailContent,
     kCombinations,
 };
 
-// let _UI = window._UI;
+/* Uber Export */
+window.debug = debug;
+window.localStorageGet = localStorageGet;
+window.localStorageSet = localStorageSet;
+
 
 /**
  * FUNCTIONS
@@ -52,9 +56,6 @@ function debug(message, force) {
         }
     }
 }
-
-/* tired of importing this everywhere */
-window.debug = debug;
 
 
 // -------------------
@@ -399,6 +400,39 @@ function duplicates(v, i, a) {
     return a.indexOf(v) === i;
 }
 
+
+// --------------------------
+// Local Storage
+// --------------------------
+
+/**
+ * Wrapper for window.localStorage.setItem
+ * @param {string} key - storage key
+ * @param {*} value - what to save
+ */
+function localStorageSet(key, value) {
+    key = 'GlyphrStudio_' + key;
+
+    if(value.save) value = JSON.stringify(value.save());
+    else if (typeof value != 'string') value = JSON.stringify(value);
+
+    window.localStorage.setItem(key, value);
+}
+
+/**
+ * Wrapper for window.localStorage.getItem
+ * @param {string} key - key to look for
+ * @returns {*}
+ */
+function localStorageGet(key) {
+    if (window.localStorage[key]) {
+        return JSON.parse(window.localStorage.getItem(key))
+    } else if (window.localStorage['GlyphrStudio_'+key]) {
+        return JSON.parse(window.localStorage.getItem('GlyphrStudio_'+key));
+    } else {
+        return undefined;
+    }
+}
 
 // --------------------------
 // Angle and Rotation Stuff

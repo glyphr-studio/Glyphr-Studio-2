@@ -1,5 +1,5 @@
 import './settings.js';
-import {areEqual} from './functions.js';
+import {areEqual, localStorageGet, localStorageSet} from './functions.js';
 import {assemble} from './main.js';
 
 /**
@@ -11,11 +11,11 @@ window._TEST = {
     testList: [],
     globals: {},
     autoRun: false,
+    categories: {},
 };
 
 window.onload = loadTests;
 
-let categories = {};
 let succeeded = 0;
 let failed = 0;
 let didNotRun = 0;
@@ -36,35 +36,49 @@ function loadTestList() {
     _UI.debug = true;
     debug(`t> Loading tests...`);
 
-    let header = document.querySelector('#header');
-    let results = document.querySelector('#results');
+    let savedState = localStorageGet('TEST');
 
+    /**
+     * Loads category state from local storage (if it exists)
+     * @param {string} cat - category
+     * @returns {boolean}
+     */
+    function getInitialCheckedState(cat) {
+        if (savedState && savedState[cat]) {
+            return savedState[cat].checked;
+        }
+
+        return true;
+    }
 
     let test;
+    let cat;
     let t=0;
     while (_TEST.testList[t]) {
         test = _TEST.testList[t];
+        cat = test.category;
 
-        if (categories.hasOwnProperty(test.category)) {
-            categories[test.category].count++;
+        if (_TEST.categories.hasOwnProperty(cat)) {
+            _TEST.categories[cat].count++;
         } else {
-            categories[test.category] = {count: 1, checked: true};
+            _TEST.categories[cat] = {count: 1, checked: getInitialCheckedState(cat)};
         }
 
         total++;
         t++;
     };
 
-
+    let results = document.querySelector('#results');
+    let header = document.querySelector('#header');
     header.innerHTML = '';
-    let cat;
-    for (let key in categories) {
-        if (categories.hasOwnProperty(key)) {
-            cat = categories[key];
-            results.innerHTML = `<div class="resultSection" id="${getResultSectionID(key)}"><h2>${key}</h2></div>` + results.innerHTML;
+    for (let key in _TEST.categories) {
+        if (_TEST.categories.hasOwnProperty(key)) {
+            cat = _TEST.categories[key];
+
+            results.innerHTML = `<div class="resultSection" style="display:${cat.checked? 'block' : 'none'};" id="${getResultSectionID(key)}"><h2>${key}</h2></div>` + results.innerHTML;
 
             header.innerHTML += `<span class="category">
-                ${_TEST.autoRun? '' : `<input type="checkbox" checked="${cat.checked}" onclick="_TEST.toggleTestCategory('${key}');" id="checkbox${getResultSectionID(key)}"/>`}
+                ${_TEST.autoRun? '' : `<input type="checkbox" ${cat.checked? 'checked' : ''} onclick="_TEST.toggleTestCategory('${key}');" id="checkbox${getResultSectionID(key)}"/>`}
                 <label for="checkbox${getResultSectionID(key)}">${key} : ${cat.count}</label>
             </span>`;
         }
@@ -85,12 +99,14 @@ function loadTestList() {
  * @returns {boolean} - new state
  */
 _TEST.toggleTestCategory = function(key) {
-    let cat = categories[key];
+    let cat = _TEST.categories[key];
     if (cat) {
         cat.checked = !cat.checked;
 
         if (cat.checked) document.getElementById(`${getResultSectionID(key)}`).style.display = 'block';
         else document.getElementById(`${getResultSectionID(key)}`).style.display = 'none';
+
+        localStorageSet('TEST', _TEST.categories);
 
         return cat.checked;
     }
@@ -100,8 +116,8 @@ _TEST.toggleTestCategory = function(key) {
  * Toggles all the test checkboxes
  */
 _TEST.toggleAllTestCategories = function() {
-    for (let key in categories) {
-        if (categories.hasOwnProperty(key)) {
+    for (let key in _TEST.categories) {
+        if (_TEST.categories.hasOwnProperty(key)) {
             document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.toggleTestCategory(key);
         }
     }
@@ -123,7 +139,7 @@ function getResultSectionID(category) {
  * Runs the tests
  */
 _TEST.runTests = function() {
-    debug(`t> Running tests`);
+    debug(`t> Running tests...`);
 
     let currTest = 0;
 
@@ -141,7 +157,7 @@ _TEST.runTests = function() {
         let test;
         let category = _TEST.testList[currTest].category;
 
-        if (!categories[category].checked) {
+        if (!_TEST.categories[category].checked) {
             currTest++;
             window.setTimeout(runNextTest, 10);
             return;
@@ -154,7 +170,7 @@ _TEST.runTests = function() {
             test = _TEST.testList[currTest].assertion();
             finish = new Date().getTime();
             currResultSection.appendChild(
-                addTestResult(test.result, test.description, _TEST.testList[currTest].name, (finish-start))
+                makeTestResult(test.result, test.description, _TEST.testList[currTest].name, (finish-start))
             );
             if (test.result) succeeded++;
             else {
@@ -167,7 +183,7 @@ _TEST.runTests = function() {
             console.log(error);
             if (currResultSection) {
                 currResultSection.appendChild(
-                    addTestResult('didNotRun', error.message, _TEST.testList[currTest].name)
+                    makeTestResult('didNotRun', error.message, _TEST.testList[currTest].name)
                 );
             }
             didNotRun++;
@@ -221,7 +237,7 @@ function s(code) {
  * @param {number} durration
  * @returns {string}
  */
-function addTestResult(result, message, title, durration = 0) {
+function makeTestResult(result, message, title, durration = 0) {
     let resultClass;
 
     if (result === true) resultClass = 'pass';
