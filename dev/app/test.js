@@ -2,46 +2,39 @@ import './settings.js';
 import {areEqual} from './functions.js';
 import {assemble} from './main.js';
 
-window._TEST = {
-    testList: [],
-    globals: {},
-    categories: {},
-    succeeded: 0,
-    failed: 0,
-    didNotRun: 0,
-    total: 0,
-    autoRun: false,
-};
-
-window.onload = loadTests;
-
 /**
  * TEST
  * controlls the test functionality for GS2 Test Suite
  */
 
-
-let resultIcons = {
-    pass: '2714',
-    fail: '2716',
-    didNotRun: '2756',
+window._TEST = {
+    testList: [],
+    globals: {},
+    autoRun: false,
 };
+
+window.onload = loadTests;
+
+let categories = {};
+let succeeded = 0;
+let failed = 0;
+let didNotRun = 0;
+let total = 0;
+
 
 /**
  * Kick off the tests
  */
 function loadTests() {
-    assemble(true, afterLoadTests);
-    // afterLoadTests();
+    assemble(true, loadTestList);
 }
 
 /**
  * Callback after tests load
  */
-function afterLoadTests() {
+function loadTestList() {
     _UI.debug = true;
-    debug(`Starting tests...\n`);
-    // debug(`\n afterLoadTests - START`);
+    debug(`t> Loading tests...`);
 
     let header = document.querySelector('#header');
     let results = document.querySelector('#results');
@@ -52,37 +45,38 @@ function afterLoadTests() {
     while (_TEST.testList[t]) {
         test = _TEST.testList[t];
 
-        if (_TEST.categories.hasOwnProperty(test.category)) {
-            _TEST.categories[test.category].count++;
+        if (categories.hasOwnProperty(test.category)) {
+            categories[test.category].count++;
         } else {
-            _TEST.categories[test.category] = {count: 1, checked: true};
+            categories[test.category] = {count: 1, checked: true};
         }
 
-        _TEST.total++;
+        total++;
         t++;
     };
 
 
     header.innerHTML = '';
     let cat;
-    for (let key in _TEST.categories) {
-        if (_TEST.categories.hasOwnProperty(key)) {
-            cat = _TEST.categories[key];
+    for (let key in categories) {
+        if (categories.hasOwnProperty(key)) {
+            cat = categories[key];
             results.innerHTML = `<div class="resultSection" id="${getResultSectionID(key)}"><h2>${key}</h2></div>` + results.innerHTML;
+
             header.innerHTML += `<span class="category">
-                <input type="checkbox" checked="${cat.checked}" onclick="toggleTestCategory('${key}');" id="checkbox${getResultSectionID(key)}"/>
-                ${key} : ${cat.count}
+                ${_TEST.autoRun? '' : `<input type="checkbox" checked="${cat.checked}" onclick="_TEST.toggleTestCategory('${key}');" id="checkbox${getResultSectionID(key)}"/>`}
+                <label for="checkbox${getResultSectionID(key)}">${key} : ${cat.count}</label>
             </span>`;
         }
     }
 
-    if (_TEST.autoRun) window.setTimeout(runTests, 10);
+    if (_TEST.autoRun) window.setTimeout(_TEST.runTests, 10);
     else {
-        header.innerHTML += `<br><br><button onclick="runTests();">Run Tests</button> &emsp; `;
-        header.innerHTML += `<button onclick="toggleAllTestCategories();">Toggle all tests</button>`;
+        header.innerHTML += `<button class="secondary" onclick="_TEST.toggleAllTestCategories();"><i>Toggle all tests</i></button>`;
+        header.innerHTML += `<br><br><button onclick="_TEST.runTests();">Run Tests</button> &emsp; `;
     }
 
-    // debug(` afterLoadTests - END\n\n`);
+    debug(`t> Done loading tests\n`);
 }
 
 /**
@@ -90,8 +84,8 @@ function afterLoadTests() {
  * @param {string} key - category name
  * @returns {boolean} - new state
  */
-window.toggleTestCategory = function(key) {
-    let cat = _TEST.categories[key];
+_TEST.toggleTestCategory = function(key) {
+    let cat = categories[key];
     if (cat) {
         cat.checked = !cat.checked;
 
@@ -105,10 +99,10 @@ window.toggleTestCategory = function(key) {
 /**
  * Toggles all the test checkboxes
  */
-window.toggleAllTestCategories = function() {
-    for (let key in _TEST.categories) {
-        if (_TEST.categories.hasOwnProperty(key)) {
-            document.getElementById(`checkbox${getResultSectionID(key)}`).checked = toggleTestCategory(key);
+_TEST.toggleAllTestCategories = function() {
+    for (let key in categories) {
+        if (categories.hasOwnProperty(key)) {
+            document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.toggleTestCategory(key);
         }
     }
 };
@@ -128,8 +122,8 @@ function getResultSectionID(category) {
 /**
  * Runs the tests
  */
-window.runTests = function() {
-    // debug(`\n runTests - START`);
+_TEST.runTests = function() {
+    debug(`t> Running tests`);
 
     let currTest = 0;
 
@@ -147,7 +141,7 @@ window.runTests = function() {
         let test;
         let category = _TEST.testList[currTest].category;
 
-        if (!_TEST.categories[category].checked) {
+        if (!categories[category].checked) {
             currTest++;
             window.setTimeout(runNextTest, 10);
             return;
@@ -159,12 +153,12 @@ window.runTests = function() {
             start = new Date().getTime();
             test = _TEST.testList[currTest].assertion();
             finish = new Date().getTime();
-            currResultSection.innerHTML += addTestResult(
-                test.result, test.description, _TEST.testList[currTest].name, (finish-start)
+            currResultSection.appendChild(
+                addTestResult(test.result, test.description, _TEST.testList[currTest].name, (finish-start))
             );
-            if (test.result) _TEST.succeeded++;
+            if (test.result) succeeded++;
             else {
-                _TEST.failed++;
+                failed++;
                 console.warn(`t> ${category} - ${_TEST.testList[currTest].name}`);
                 console.log(test.description);
             }
@@ -172,9 +166,11 @@ window.runTests = function() {
             console.warn(`t> ${category} - ${_TEST.testList[currTest].name}`);
             console.log(error);
             if (currResultSection) {
-                currResultSection.innerHTML += addTestResult('didNotRun', error.message, _TEST.testList[currTest].name);
+                currResultSection.appendChild(
+                    addTestResult('didNotRun', error.message, _TEST.testList[currTest].name)
+                );
             }
-            _TEST.didNotRun++;
+            didNotRun++;
         }
 
         currTest++;
@@ -184,22 +180,118 @@ window.runTests = function() {
 
     /**
      * Animates the fancy progress bar
-     * @param {number} curr - current progress
-     * @param {number} total - total tests
      */
     function updateProgressBar() {
         let width = document.getElementById('progressBarWrapper').offsetWidth;
         let percent = currTest / _TEST.testList.length;
 
         let bar = document.getElementById('progressBar');
-        bar.style.width = (width*percent);
-        bar.style.opacity = percent;
+        bar.style.width = `${Math.round(width*percent)}px`;
+        bar.style.opacity = 0.2 + (0.8 * percent);
     };
 
     window.setTimeout(runNextTest, 10);
 
-    // debug(` runTests - END\n\n`);
+    // debug(` _TEST.runTests - END\n\n`);
 };
+
+
+let resultIcons = {
+    pass: '✔',
+    fail: '✖',
+    didNotRun: '❖',
+};
+
+/**
+ * Converts an HTML Entity to a string
+ * @param {string} code
+ * @returns {string}
+ */
+function s(code) {
+    let txt = document.createElement('textarea');
+    txt.innerHTML = code;
+    return txt.value;
+}
+
+/**
+ * Creates HTML test result
+ * @param {string} result
+ * @param {string} message
+ * @param {string} title
+ * @param {number} durration
+ * @returns {string}
+ */
+function addTestResult(result, message, title, durration = 0) {
+    let resultClass;
+
+    if (result === true) resultClass = 'pass';
+    else if (result === false) resultClass = 'fail';
+    else resultClass = 'didNotRun';
+
+    let durr = `${s('&thinsp;')}`;
+    let durrSpan = document.createElement('span');
+
+    if (durration < 51) {
+        durr += `|${s('&thinsp;')}${durration}`;
+    } else {
+        let bar = Math.round(durration / 100);
+        for (let i=0; i<bar; i++) durr += '▓';
+        durr += `${s('&thinsp;')}${durration}`;
+        durrSpan.setAttribute('style', 'font-weight:bold;');
+    }
+
+    durrSpan.appendChild(document.createTextNode(durr));
+
+    let iconSpan = document.createElement('span');
+    iconSpan.setAttribute('class', 'icon');
+    iconSpan.appendChild(document.createTextNode(resultIcons[resultClass]));
+
+    let tr = document.createElement('span');
+    tr.setAttribute('class', `testResult ${resultClass}`);
+    tr.setAttribute('title', `${message}`);
+    tr.appendChild(iconSpan);
+    tr.appendChild(document.createTextNode(`${title}`));
+    tr.appendChild(durrSpan);
+
+    return tr;
+}
+
+/**
+ * Do at the end
+ */
+function finishTests() {
+    document.querySelector('#header').innerHTML += `
+    <br><br>
+    <div class="testSummary fail">
+            <span class="count">
+                ${failed}
+                <span class="icon">${resultIcons['fail']}</span>
+            </span>
+            <span class="title">Failed</span>
+        </div>
+        <div class="testSummary didNotRun">
+            <span class="count">
+                ${didNotRun}
+                <span class="icon">${resultIcons['didNotRun']}</span>
+            </span>
+            <span class="title">Did not run</span>
+        </div>
+        <div class="testSummary pass">
+            <span class="count">
+                ${succeeded}
+                <span class="icon">${resultIcons['pass']}</span>
+            </span>
+            <span class="title">Passed</span>
+        </div>
+    `;
+
+    debug(`t> Done running tests\n`);
+}
+
+
+// ------------------------------------------------------------
+// Chain functions that run individual tests
+// ------------------------------------------------------------
 
 /**
  * First part of the comparison
@@ -231,64 +323,3 @@ _TEST.expression = function(ex) {
         result: !!ex,
     };
 };
-
-/**
- * Creates HTML test result
- * @param {string} result
- * @param {string} message
- * @param {string} title
- * @param {number} durration
- * @returns {string}
- */
-function addTestResult(result, message, title, durration = 0) {
-    let resultClass;
-
-    if (result === true) resultClass = 'pass';
-    else if (result === false) resultClass = 'fail';
-    else resultClass = 'didNotRun';
-
-    let durr = `|&thinsp;${durration}`;
-    if (durration > 51) {
-        let bar = Math.round(durration / 100);
-        durr = '<b>';
-        for (let i=0; i<bar; i++) durr += '▓';
-        durr += `&thinsp;${durration}</b>`;
-    }
-
-    return `<span class="testResult ${resultClass}" title='${message}'>
-        <span class="icon">&#x${resultIcons[resultClass]};</span>
-        ${title}&nbsp;${durr}
-    </span>`;
-}
-
-/**
- * Do at the end
- */
-function finishTests() {
-    document.querySelector('#header').innerHTML += `
-    <br><br>
-    <div class="testSummary fail">
-            <span class="count">
-                ${_TEST.failed}
-                <span class="icon">&#x${resultIcons['fail']};</span>
-            </span>
-            <span class="title">Failed</span>
-        </div>
-        <div class="testSummary didNotRun">
-            <span class="count">
-                ${_TEST.didNotRun}
-                <span class="icon">&#x${resultIcons['didNotRun']};</span>
-            </span>
-            <span class="title">Did not run</span>
-        </div>
-        <div class="testSummary pass">
-            <span class="count">
-                ${_TEST.succeeded}
-                <span class="icon">&#x${resultIcons['pass']};</span>
-            </span>
-            <span class="title">Passed</span>
-        </div>
-    `;
-
-    debug(`\n...done!`);
-}

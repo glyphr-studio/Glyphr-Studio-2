@@ -32,6 +32,7 @@
 
     #header {
         min-height: 100px;
+        border-width: 0px;
     }
 
     h1 {
@@ -65,12 +66,17 @@
         font-weight: bold;
     }
 
+    input:hover {
+        cursor: pointer;
+    }
+
     @keyframes fadein {
         from { opacity: 0; }
         to   { opacity: 1; }
     }
 
-    .category {
+    .category,
+    .secondary {
         animation: fadein 1s;
         padding: 2px 16px 4px 16px;
         background-color: #EEF9FF;
@@ -79,8 +85,12 @@
         border-style: solid;
         border-width: 1px;
         border-radius: 16px;
-        margin:0px 10px 4px 0px;
+        margin:0px 8px 8px 0px;
         display: inline-block;
+    }
+
+    .category label:hover {
+        cursor: pointer;
     }
 
     .testResult {
@@ -161,15 +171,15 @@
 
     #progressBarWrapper {
         height: 2px;
-        background-color: lightblue;
+        background-color: #f8f8f8;
         width: 100%;
     }
 
     #progressBar {
         width: 0px;
         height: 2px;
-        background-color: #223E66;
-        opacity: 0.0;
+        background-color: #00388d;
+        opacity: 0.2;
     }
 </style>
 </head>
