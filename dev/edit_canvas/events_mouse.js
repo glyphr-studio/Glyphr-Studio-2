@@ -765,7 +765,7 @@ function eventHandler_ShapeResize() {
     let ly = cy_sy(_UI.eventhandlers.lasty);
     let dh = (ly-my);
     let dw = (lx-mx);
-    let rl = s.getAttribute('ratiolock');
+    let rl = s.getAttribute('ratioLock');
 
     // debug('\t eventHandler_ShapeResize dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
 
@@ -871,11 +871,11 @@ function updateDragSelectArea(dx, dy, dw, dh) {
 }
 
 function canResize(pc) {
-    let rl = _UI.multiSelect.shapes.getAttribute('ratiolock');
+    let rl = _UI.multiSelect.shapes.getAttribute('ratioLock');
     let xl = _UI.multiSelect.shapes.getAttribute('xLock');
     let yl = _UI.multiSelect.shapes.getAttribute('yLock');
-    let wl = _UI.multiSelect.shapes.getAttribute('wlock');
-    let hl = _UI.multiSelect.shapes.getAttribute('hlock');
+    let wl = _UI.multiSelect.shapes.getAttribute('wLock');
+    let hl = _UI.multiSelect.shapes.getAttribute('hLock');
     let re = true;
 
     switch (pc) {

@@ -39,7 +39,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         cache = {},
     } = {}) {
         super();
-        // debug('\n Path.constructor - START');
+
         this.pathPoints = pathPoints;
         this.winding = winding;
         if (!this.winding) this.findWinding();
@@ -50,10 +50,6 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         this._cache.segments = cache.segments || [];
         this._cache.segmentlengths = cache.segmentlengths || [];
         this.calcMaxes();
-
-        // debug(`\t maxes: ${json(this.maxes, true)}`);
-
-        // debug(' Path.constructor - END\n');
     }
 
 
@@ -323,33 +319,33 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * Sets the overall Path width or height to a specific value
      * @param {number} nw - new Width
      * @param {number} nh - new Height
-     * @param {boolean} ratiolock - if one is changed, change the other
+     * @param {boolean} ratioLock - if one is changed, change the other
      */
-    setPathSize(nw, nh, ratiolock = false) {
+    setPathSize(nw, nh, ratioLock = false) {
         if (nw !== false) nw = parseFloat(nw);
         if (nh !== false) nh = parseFloat(nh);
 
         let dw = (nw !== false) ? (nw - this.width) : 0;
         let dh = (nh !== false) ? (nh - this.height) : 0;
 
-        this.updatePathSize(dw, dh, ratiolock);
+        this.updatePathSize(dw, dh, ratioLock);
     }
 
     /**
      * Updates the overall Path width or height by a delta value
      * @param {number} dw - delta width
      * @param {number} dh - delta height
-     * @param {boolean} ratiolock - if one is changed, change the other
+     * @param {boolean} ratioLock - if one is changed, change the other
      */
-    updatePathSize(dw = 0, dh = 0, ratiolock = false) {
+    updatePathSize(dw = 0, dh = 0, ratioLock = false) {
         // debug('\n Path.updatePathSize - START');
-        // debug('dw,dh,rl\t'+dw+' , '+dh+' , '+ratiolock);
+        // debug('dw,dh,rl\t'+dw+' , '+dh+' , '+ratioLock);
         dw = parseFloat(dw) || 0;
         dh = parseFloat(dh) || 0;
         if (!dw && !dh) return;
 
         // Lock Aspect Ratio
-        if (ratiolock) {
+        if (ratioLock) {
             if (dw !== dh) {
                 let ratio = this.width / this.height;
                 if (Math.abs(dw) > Math.abs(dh)) {
@@ -373,9 +369,9 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         let ratiodw = (neww / oldw);
 
         // If ratiolocked, keep both w&h from min'ing out at 1
-        if (ratiolock) {
+        if (ratioLock) {
             if (neww <= 1 || newh <= 1) {
-                // debug('\t RETURNING: ratiolock forcing width or height to be less than 1.');
+                // debug('\t RETURNING: ratioLock forcing width or height to be less than 1.');
                 return;
             }
         }

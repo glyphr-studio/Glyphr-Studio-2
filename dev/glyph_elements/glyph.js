@@ -27,7 +27,7 @@
         this.glyphwidth = isVal(oa.glyphwidth)? oa.glyphwidth : 0;
         this.leftsidebearing = isVal(oa.leftsidebearing)? oa.leftsidebearing : false;
         this.rightsidebearing = isVal(oa.rightsidebearing)? oa.rightsidebearing : false;
-        this.ratiolock = isVal(oa.ratiolock)? oa.ratiolock : false;
+        this.ratioLock = isVal(oa.ratioLock)? oa.ratioLock : false;
         this.maxes = oa.maxes || clone(_UI.mins);
         this.shapes = oa.shapes || [];
         this.usedin = oa.usedin || [];
@@ -94,8 +94,8 @@
         // debug(' Glyph.updateGlyphPosition - END ' + this.name + '\n\n');
     };
 
-    Glyph.prototype.setGlyphSize = function(nw, nh, ratiolock) {
-        // debug('SET GLYPHSIZE ---- nw/nh/ra:\t' + nw + '\t ' + nh + '\t ' + ratiolock);
+    Glyph.prototype.setGlyphSize = function(nw, nh, ratioLock) {
+        // debug('SET GLYPHSIZE ---- nw/nh/ra:\t' + nw + '\t ' + nh + '\t ' + ratioLock);
         // debug('\t maxes: ' + json(this.maxes));
         let m = this.getMaxes();
         if (nw !== false) nw = parseFloat(nw);
@@ -105,17 +105,17 @@
         let dw = (nw !== false)? (nw - cw) : 0;
         let dh = (nh !== false)? (nh - ch) : 0;
 
-        if (ratiolock) {
+        if (ratioLock) {
             if (Math.abs(nh) > Math.abs(nw)) dw = (cw*(nh/ch)) - cw;
             else dh = (ch*(nw/cw)) - ch;
         }
         this.updateGlyphSize(dw, dh, false);
     };
 
-    Glyph.prototype.updateGlyphSize = function(dw, dh, ratiolock) {
+    Glyph.prototype.updateGlyphSize = function(dw, dh, ratioLock) {
         // debug('\n Glyph.updateGlyphSize - START ' + this.name);
         // debug('\t number of shapes: ' + this.shapes.length);
-        // debug('\t dw dh rl:\t' + dw + '/' + dh + '/' + ratiolock);
+        // debug('\t dw dh rl:\t' + dw + '/' + dh + '/' + ratioLock);
 
         let m = this.getMaxes();
         if (dw !== false) dw = parseFloat(dw) || 0;
@@ -134,7 +134,7 @@
         let ratiodh = (newh/oldh);
         let ratiodw = (neww/oldw);
         // debug('\t ratio dw/dh:\t' + ratiodw + '/' + ratiodh);
-        if (ratiolock) {
+        if (ratioLock) {
             // Assuming only one will be nonzero
             // if(Math.abs(ratiodh) > Math.abs(ratiodw)) ratiodw = ratiodh;
             // else ratiodh = ratiodw;

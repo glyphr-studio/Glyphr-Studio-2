@@ -29,9 +29,9 @@
 
         this.xLock = oa.xLock || false;
         this.yLock = oa.yLock || false;
-        this.wlock = oa.wlock || false;
-        this.hlock = oa.hlock || false;
-        this.ratiolock = oa.ratiolock || false;
+        this.wLock = oa.wLock || false;
+        this.hLock = oa.hLock || false;
+        this.ratioLock = oa.ratioLock || false;
         this.visible = isVal(oa.visible)? oa.visible : true;
 
         // cache
@@ -179,13 +179,13 @@
         // debug(' ComponentInstance.setShapePosition - END\n');
     };
 
-    ComponentInstance.prototype.updateShapeSize = function(dw, dh, ratiolock) {
+    ComponentInstance.prototype.updateShapeSize = function(dw, dh, ratioLock) {
         // debug('\n ComponentInstance.updateShapeSize - START');
-        // debug('\t passed dw/dh/ratiolock: ' + dw + ' / ' + dh + ' / ' + ratiolock);
+        // debug('\t passed dw/dh/ratioLock: ' + dw + ' / ' + dh + ' / ' + ratioLock);
         if (dw !== false) dw = parseFloat(dw) || 0;
         if (dh !== false) dh = parseFloat(dh) || 0;
 
-        if (ratiolock) {
+        if (ratioLock) {
             let ts = this.getTransformedGlyph().getMaxes();
             let w = (ts.xMax - ts.xMin);
             let h = (ts.yMax - ts.yMin);
@@ -209,12 +209,12 @@
         // debug(' ComponentInstance.updateShapeSize - END\n');
     };
 
-    ComponentInstance.prototype.setShapeSize = function(nw, nh, ratiolock) {
+    ComponentInstance.prototype.setShapeSize = function(nw, nh, ratioLock) {
         let og = getGlyph(this.link).getMaxes();
         let dx = nx? ((nx*1) - og.xMin) : 0;
         let dy = ny? ((ny*1) - og.yMax) : 0;
 
-        this.updateShapePosition(dx, dy, ratiolock);
+        this.updateShapePosition(dx, dy, ratioLock);
     };
 
     ComponentInstance.prototype.getWidth = function() {

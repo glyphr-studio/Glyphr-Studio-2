@@ -96,18 +96,18 @@
             '<td>width'+dimSplit()+'height</td>'+
             '<td>'+
                 '<input type="number" id="charw" step="'+svc+'" '+
-                'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(this.value,false,'+sc.ratiolock+'); history_put(\'Multi-selected Shapes Width : \'+this.value); redraw({calledBy:\'Glyph Details - Width\'});}"'+
+                'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(this.value,false,'+sc.ratioLock+'); history_put(\'Multi-selected Shapes Width : \'+this.value); redraw({calledBy:\'Glyph Details - Width\'});}"'+
                 ' value="' + round(sc.maxes.xMax-sc.maxes.xMin, 3) + '" >'+
                 dimSplit()+
                 '<input type="number" id="charh" step="'+svc+'" '+
-                'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(false,this.value,'+sc.ratiolock+'); history_put(\'Multi-selected Shapes Height : \'+this.value); redraw({calledBy:\'Glyph Details - Height\'});}"'+
+                'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(false,this.value,'+sc.ratioLock+'); history_put(\'Multi-selected Shapes Height : \'+this.value); redraw({calledBy:\'Glyph Details - Height\'});}"'+
                 ' value="' + round(sc.maxes.yMax-sc.maxes.yMin, 3) + '" >'+
             '</td>'+
         '</tr>';
 
         content += '<tr>'+
             '<td> lock aspect ratio </td>'+
-            '<td>'+checkUI('_UI.multiSelect.shapes.getGlyph().ratiolock', sc.ratiolock, true)+'</td>'+
+            '<td>'+checkUI('_UI.multiSelect.shapes.getGlyph().ratioLock', sc.ratioLock, true)+'</td>'+
         '</tr>';
 
         return content;
@@ -140,18 +140,18 @@
                 '<td>width'+dimSplit()+'height</td>'+
                 '<td>'+
                     '<input type="number" id="charw" step="'+svc+'" '+
-                    'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphSize(this.value,false,'+sc.ratiolock+'); history_put(\'Glyph Width : \'+this.value); redraw({calledBy:\'Glyph Details - Width\'});}"'+
+                    'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphSize(this.value,false,'+sc.ratioLock+'); history_put(\'Glyph Width : \'+this.value); redraw({calledBy:\'Glyph Details - Width\'});}"'+
                     ' value="' + round(sc.maxes.xMax-sc.maxes.xMin, 3) + '" >'+
                     dimSplit()+
                     '<input type="number" id="charh" step="'+svc+'" '+
-                    'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphSize(false,this.value,'+sc.ratiolock+'); history_put(\'Glyph Height : \'+this.value); redraw({calledBy:\'Glyph Details - Height\'});}"'+
+                    'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphSize(false,this.value,'+sc.ratioLock+'); history_put(\'Glyph Height : \'+this.value); redraw({calledBy:\'Glyph Details - Height\'});}"'+
                     ' value="' + round(sc.maxes.yMax-sc.maxes.yMin, 3) + '" >'+
                 '</td>'+
             '</tr>';
 
             content += '<tr>'+
                 '<td> lock aspect ratio </td>'+
-                '<td>'+checkUI('getSelectedWorkItem().ratiolock', sc.ratiolock, true)+'</td>'+
+                '<td>'+checkUI('getSelectedWorkItem().ratioLock', sc.ratioLock, true)+'</td>'+
             '</tr>';
         }
 
@@ -288,16 +288,16 @@
             '<td>width'+dimSplit()+'height &emsp;</td>'+
             '<td>'+
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.multiSelect.shapes.getSingleton().wlock', s.wlock, 'sswlock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().wLock', s.wLock, 'sswlock')+
                     '<input type="number" id="shapew" step="'+svc+'" '+
-                    (s.wlock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(this.value,false,'+s.ratiolock+'); history_put(\'Shape Width : \'+this.value); redraw({calledBy:\'shapeDetails - Width\'});}"')+
+                    (s.wLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(this.value,false,'+s.ratioLock+'); history_put(\'Shape Width : \'+this.value); redraw({calledBy:\'shapeDetails - Width\'});}"')+
                     ' value="' + wval + '" >'+
                 '</div>'+
                 dimSplit()+
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.multiSelect.shapes.getSingleton().hlock', s.hlock, 'sshlock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().hLock', s.hLock, 'sshlock')+
                     '<input type="number" id="shapeh" step="'+svc+'" '+
-                    (s.hlock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(false,this.value,'+s.ratiolock+'); history_put(\'Shape Height : \'+this.value); redraw({calledBy:\'shapeDetails - Height\'});}"')+
+                    (s.hLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(false,this.value,'+s.ratioLock+'); history_put(\'Shape Height : \'+this.value); redraw({calledBy:\'shapeDetails - Height\'});}"')+
                     ' value="' + hval + '" ></td>'+
                 '</div>'+
             '</td>'+
@@ -330,7 +330,7 @@
         if (_UI.selectedTool !== 'pathedit') {
             content += '<tr>'+
                 '<td> lock aspect ratio </td>'+
-                '<td>'+checkUI('_UI.multiSelect.shapes.getSingleton().ratiolock', s.ratiolock, true)+'</td>'+
+                '<td>'+checkUI('_UI.multiSelect.shapes.getSingleton().ratioLock', s.ratioLock, true)+'</td>'+
             '</tr>';
         }
 

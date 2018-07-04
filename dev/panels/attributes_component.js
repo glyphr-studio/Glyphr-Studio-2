@@ -96,15 +96,15 @@
             '<td>&#916; width' + dimSplit() + '&#916; height</td>'+
             '<td>'+
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.multiSelect.shapes.getSingleton().wlock', s.wlock, 'wlock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().wLock', s.wLock, 'wLock')+
                     '<input type="number" id="comw" step="'+svc+'" value="' + round(s.scalew, 3) + '" '+
-                        (s.wlock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scalew\', this.value, this.id);">')+
+                        (s.wLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scalew\', this.value, this.id);">')+
                 '</div>'+
                 dimSplit()+
                 '<div class="lockwrapper">'+
-                    lockUI('_UI.multiSelect.shapes.getSingleton().hlock', s.hlock, 'hlock')+
+                    lockUI('_UI.multiSelect.shapes.getSingleton().hLock', s.hLock, 'hLock')+
                     '<input type="number" id="comh" step="'+svc+'" value="' + round(s.scaleh, 3) + '" '+
-                        (s.hlock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scaleh\', this.value, this.id);">')+
+                        (s.hLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scaleh\', this.value, this.id);">')+
                 '</div>'+
             '</td>'+
         '</tr>';
@@ -112,7 +112,7 @@
         if (_UI.selectedTool !== 'pathedit') {
             content += '<tr>'+
                 '<td> lock aspect ratio </td>'+
-                '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().ratiolock', s.ratiolock, true) + '</td>'+
+                '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().ratioLock', s.ratioLock, true) + '</td>'+
             '</tr>';
         }
 
@@ -183,7 +183,7 @@
         selci[key] = value;
 
         let ts, w, h;
-        if (selci.ratiolock) {
+        if (selci.ratioLock) {
             ts = selci.getTransformedGlyph();
             w = (ts.maxes.xMax - ts.maxes.xMin);
             h = (ts.maxes.yMax - ts.maxes.yMin);

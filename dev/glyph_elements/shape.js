@@ -1,28 +1,46 @@
+import GlyphElement from './glyphelement.js';
 
 /**
-    Object > Shape
-    The Shape object is the high level object that
-    represents an outline.  The Glyph object treats
-    Shape objects and Component Instance objects
-    interchangeably - any method added to Shape
-    should also be added to Component Instance.
-**/
-class Shape {
-    constructor(oa) {
-        // debug('\n SHAPE - START');
-        oa = oa || {};
-        this.objType = 'Shape';
-        // common settings
-        this.name = oa.name || 'Shape';
-        this.path = isVal(oa.path) ? new Path(oa.path) : rectPathFromMaxes(false);
-        this.visible = isVal(oa.visible) ? oa.visible : true;
-        this.xLock = oa.xLock || false;
-        this.yLock = oa.yLock || false;
-        this.wlock = oa.wlock || false;
-        this.hlock = oa.hlock || false;
-        this.ratiolock = oa.ratiolock || false;
-        // debug(' SHAPE - END\n');
+ * Object > Shape
+ * The Shape object is the high level object that
+ * represents an outline.  The Glyph object treats
+ * Shape objects and Component Instance objects
+ * interchangeably - any method added to Shape
+ * should also be added to Component Instance.
+ */
+export default class Shape extends GlyphElement {
+    /**
+     * Create a Shape
+     * @param {string} name
+     * @param {Path} path
+     * @param {boolean} xLock
+     * @param {boolean} yLock
+     * @param {boolean} wLock
+     * @param {boolean} hLock
+     * @param {boolean} ratioLock
+     */
+    constructor({
+        name = 'Shape',
+        path = [],
+        visible = true,
+        xLock = false,
+        yLock = false,
+        wLock = false,
+        hLock = false,
+        ratioLock = false,
+    } = {}) {
+        super();
+        this.name = name;
+        this.path = path;
+        this.visible = visible;
+        this.xLock = xLock;
+        this.yLock = yLock;
+        this.wLock = wLock;
+        this.hLock = hLock;
+        this.ratioLock = ratioLock;
     }
+
+
     // --------------------------------------------------------------
     // SHAPE Methods
     // --------------------------------------------------------------
@@ -106,11 +124,11 @@ class Shape {
     setShapePosition(nx, ny, force) {
         this.path.setPathPosition(nx, ny, force);
     }
-    updateShapeSize(dx, dy, ratiolock) {
-        this.path.updatePathSize(dx, dy, ratiolock);
+    updateShapeSize(dx, dy, ratioLock) {
+        this.path.updatePathSize(dx, dy, ratioLock);
     }
-    setShapeSize(nx, ny, ratiolock) {
-        this.path.setPathSize(nx, ny, ratiolock);
+    setShapeSize(nx, ny, ratioLock) {
+        this.path.setPathSize(nx, ny, ratioLock);
     }
     isOverControlPoint(x, y, targetSize, noHandles) {
         return this.path.isOverControlPoint(x, y, targetSize, noHandles);

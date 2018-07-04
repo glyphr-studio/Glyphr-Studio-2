@@ -44,7 +44,7 @@ import _UI from '../app/settings.js';
 
     MultiSelect.prototype.clear = function() {
         this.members = [];
-        if (this.glyph) this.glyph.ratiolock = false;
+        if (this.glyph) this.glyph.ratioLock = false;
         this.handlesingleton = false;
         this.selectShapesThatHaveSelectedPoints();
     };
@@ -336,13 +336,13 @@ import _UI from '../app/settings.js';
  this.getGlyph().setGlyphPosition(nx, ny, force);
 };
 
-    _UI.multiSelect.shapes.updateShapeSize = function(dw, dh, ratiolock) {
-        if (this.members.length === 1) this.members[0].updateShapeSize(dw, dh, ratiolock);
-        else if (this.members.length > 1) this.getGlyph().updateGlyphSize(dw, dh, ratiolock);
+    _UI.multiSelect.shapes.updateShapeSize = function(dw, dh, ratioLock) {
+        if (this.members.length === 1) this.members[0].updateShapeSize(dw, dh, ratioLock);
+        else if (this.members.length > 1) this.getGlyph().updateGlyphSize(dw, dh, ratioLock);
     };
 
-    _UI.multiSelect.shapes.setShapeSize = function(nw, nh, ratiolock) {
- this.getGlyph().setGlyphSize(nw, nh, ratiolock);
+    _UI.multiSelect.shapes.setShapeSize = function(nw, nh, ratioLock) {
+ this.getGlyph().setGlyphSize(nw, nh, ratioLock);
 };
 
     _UI.multiSelect.shapes.rotate = function(angle, about) {
