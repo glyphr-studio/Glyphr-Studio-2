@@ -10,7 +10,7 @@
 
     function makeUsedInThumbs() {
         let re = '<div class=\'ssthumbcontainer\'>';
-        let ui = getSelectedWorkItem().usedin;
+        let ui = getSelectedWorkItem().usedIn;
         let unique = ui.filter(function(elem, pos) {
  return ui.indexOf(elem) === pos;
 });
@@ -80,14 +80,14 @@
             '<td>'+
                 '<div class="lockwrapper">'+
                     lockUI('_UI.multiSelect.shapes.getSingleton().xLock', s.xLock, 'xLock')+
-                    '<input type="number" id="comx" step="'+svc+'" value="' + round(s.translatex, 3) + '" '+
-                        (s.xLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translatex\', this.value, this.id);">')+
+                    '<input type="number" id="comx" step="'+svc+'" value="' + round(s.translateX, 3) + '" '+
+                        (s.xLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translateX\', this.value, this.id);">')+
                 '</div>'+
                 dimSplit() +
                 '<div class="lockwrapper">'+
                     lockUI('_UI.multiSelect.shapes.getSingleton().yLock', s.yLock, 'yLock')+
-                    '<input type="number" id="comy" step="'+svc+'" value="' + round(s.translatey, 3) + '" '+
-                        (s.yLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translatey\', this.value, this.id);">')+
+                    '<input type="number" id="comy" step="'+svc+'" value="' + round(s.translateY, 3) + '" '+
+                        (s.yLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'translateY\', this.value, this.id);">')+
                 '</div>'+
             '</td>'+
         '</tr>';
@@ -97,14 +97,14 @@
             '<td>'+
                 '<div class="lockwrapper">'+
                     lockUI('_UI.multiSelect.shapes.getSingleton().wLock', s.wLock, 'wLock')+
-                    '<input type="number" id="comw" step="'+svc+'" value="' + round(s.scalew, 3) + '" '+
-                        (s.wLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scalew\', this.value, this.id);">')+
+                    '<input type="number" id="comw" step="'+svc+'" value="' + round(s.scaleW, 3) + '" '+
+                        (s.wLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scaleW\', this.value, this.id);">')+
                 '</div>'+
                 dimSplit()+
                 '<div class="lockwrapper">'+
                     lockUI('_UI.multiSelect.shapes.getSingleton().hLock', s.hLock, 'hLock')+
-                    '<input type="number" id="comh" step="'+svc+'" value="' + round(s.scaleh, 3) + '" '+
-                        (s.hLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scaleh\', this.value, this.id);">')+
+                    '<input type="number" id="comh" step="'+svc+'" value="' + round(s.scaleH, 3) + '" '+
+                        (s.hLock? 'disabled="disabled" ' : 'onchange="updateComponentInstanceDetail(\'scaleH\', this.value, this.id);">')+
                 '</div>'+
             '</td>'+
         '</tr>';
@@ -120,17 +120,17 @@
         // CHECKBOXES
         content += '<tr>'+
             '<td> flip horizontal </td>'+
-            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().flipew', s.flipew, true) + '</td>'+
+            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().flipEW', s.flipEW, true) + '</td>'+
         '</tr>';
 
         content += '<tr>'+
             '<td> flip vertical </td>'+
-            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().flipns', s.flipns, true) + '</td>'+
+            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().flipNS', s.flipNS, true) + '</td>'+
         '</tr>';
 
         content += '<tr>'+
             '<td> reverse winding </td>'+
-            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().reversewinding', s.reversewinding, true) + '</td>'+
+            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().reverseWinding', s.reverseWinding, true) + '</td>'+
         '</tr>';
 
         // ROTATE
@@ -150,7 +150,7 @@
 
         content += '<tr>'+
             '<td> rotate first </td>'+
-            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().rotatefirst', s.rotatefirst, true) + '&ensp;'+helpUI(rotationhelp)+ '</td>'+
+            '<td>' + checkUI('_UI.multiSelect.shapes.getSingleton().rotateFirst', s.rotateFirst, true) + '&ensp;'+helpUI(rotationhelp)+ '</td>'+
         '</tr>';
 
         // ROOT
@@ -188,10 +188,10 @@
             w = (ts.maxes.xMax - ts.maxes.xMin);
             h = (ts.maxes.yMax - ts.maxes.yMin);
 
-            if (key === 'scalew') {
-                selci.scaleh += ((value - oldval) * (h / w));
-            } else if (key === 'scaleh') {
-                selci.scalew += ((value - oldval) * (w / h));
+            if (key === 'scaleW') {
+                selci.scaleH += ((value - oldval) * (h / w));
+            } else if (key === 'scaleH') {
+                selci.scaleW += ((value - oldval) * (w / h));
             }
         }
 

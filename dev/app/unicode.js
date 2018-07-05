@@ -13,9 +13,10 @@ export {
 **/
 
 
-//    --------------------
-//    Conversion Functions
-//    --------------------
+// --------------------------------------------------------------
+// Conversion Functions
+// --------------------------------------------------------------
+
 
 /**
  * Convert decimal to hexadecimal
@@ -161,6 +162,7 @@ function parseUnicodeInput(str) {
         }
     }
 
+    if (results.length === 0) results.push('0x0000');
     // debug('\t returning ' + JSON.stringify(results));
     // debug('parseUnicodeInput - END\n');
     return results;
@@ -239,9 +241,10 @@ function unicodeInputHelp() {
 }
 
 
-//    --------------------
-//    Range functions
-//    --------------------
+// --------------------------------------------------------------
+// Range Functions
+// --------------------------------------------------------------
+
 
 /**
  * Adds a custom glyph range to the project

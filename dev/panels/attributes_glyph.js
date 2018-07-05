@@ -58,11 +58,11 @@
         if (_UI.currentPage === 'components') {
             content += '<tr><td colspan=2 class="detailtitle"><h3>glyphs that use this component</h3></td></tr>';
             content += '<tr><td colspan=2>';
-            if (sc.usedin.length > 0) {
+            if (sc.usedIn.length > 0) {
                 content += makeUsedInThumbs();
             } else {
                 content += '<br><i>this component is not currently being used by any glyphs. ';
-                content += '<a href="#" onclick="showDialog_LinkComponentToGlyph();">add this component to a glyph now</a>.</i>';
+                content += '<a href="#" onclick="showDialogLinkComponentToGlyph();">add this component to a glyph now</a>.</i>';
             }
             content += '</td></tr>';
         }
@@ -228,7 +228,7 @@
         }
 
         // USED IN
-        if (sc.usedin.length > 0) {
+        if (sc.usedIn.length > 0) {
             content += '<tr><td colspan=2><br class="detailtitle"><h3>glyphs that use this component</h3></td></tr>';
             content += '<tr><td colspan=2>';
             content += makeUsedInThumbs();

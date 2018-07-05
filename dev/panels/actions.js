@@ -26,10 +26,10 @@
         allactions += '<button title="Undo\nStep backwards in time one action" '+(history_length()? '': 'disabled')+' onclick="history_pull();">' + makeActionButton_Undo(!history_length()) + '</button>';
 
         if (!_UI.popOut) allactions += '<button title="Add Shape\nCreates a new default shape and adds it to this glyph" onclick="addShape(); history_put(\'Add Shape\'); redraw({calledBy:\'actions panel\'});">' + makeActionButton_AddShape(false) + '</button>';
-        if (!_UI.popOut) allactions += '<button title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph" onclick="showDialog_AddComponent();">'+ makeActionButton_AddShape(true) + '</button>';
-        if (!_UI.popOut) allactions += '<button title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one" onclick="showDialog_GetShapes();">' + makeActionButton_PasteShapesFromAnotherGlyph() + '</button>';
+        if (!_UI.popOut) allactions += '<button title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph" onclick="showDialogAddComponent();">'+ makeActionButton_AddShape(true) + '</button>';
+        if (!_UI.popOut) allactions += '<button title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one" onclick="showDialogGetShapes();">' + makeActionButton_PasteShapesFromAnotherGlyph() + '</button>';
 
-        if (_UI.currentPage === 'components') allactions += '<button title="Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance" onclick="showDialog_LinkComponentToGlyph();">' + makeActionButton_LinkToGlyph() + '</button>';
+        if (_UI.currentPage === 'components') allactions += '<button title="Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance" onclick="showDialogLinkComponentToGlyph();">' + makeActionButton_LinkToGlyph() + '</button>';
 
 
         // SHAPE
@@ -252,7 +252,7 @@
 
                 if (ts.objType === 'ComponentInstance') {
                     addToUsedIn(ts.link, _UI.selectedGlyph);
-                    // debug("PASTESHAPE - pasted a component, added " + _UI.selectedGlyph + " to usedin array.");
+                    // debug("PASTESHAPE - pasted a component, added " + _UI.selectedGlyph + " to usedIn array.");
                 }
 
                 newshapes.push(addShape(ts));
@@ -269,7 +269,7 @@
         }
     }
 
-    function showDialog_GetShapes(msg) {
+    function showDialogGetShapes(msg) {
         let content = '<h1>Get Shapes</h1>';
         content += 'Clicking a glyph will copy all the shapes in that glyph, and paste them into this glyph.<br><br>';
         content += msg? msg : '';
@@ -332,7 +332,7 @@
             if (_UI.selectedTool === 'pathaddpoint') _UI.selectedTool = 'shaperesize';
             closeDialog();
         } else {
-            showDialog_GetShapes('Sorry, you can\'t paste shapes from the glyph you selected.<br>');
+            showDialogGetShapes('Sorry, you can\'t paste shapes from the glyph you selected.<br>');
         }
     }
 
@@ -341,11 +341,11 @@
 // COMPONENT Actions
 // -------------------
 
-    function showDialog_LinkComponentToGlyph(msg) {
+    function showDialogLinkComponentToGlyph(msg) {
         let sls = getSelectedWorkItem();
         let content = '<h1>Link to Glyph</h1>';
         content += 'Select a Glyph you would like to link to this Component.<br><br>';
-        content += msg? msg : 'There are currently ' + sls.usedin.length + ' instances of "' + sls.name + '" being used in various Glyphs.<br><br>';
+        content += msg? msg : 'There are currently ' + sls.usedIn.length + ' instances of "' + sls.name + '" being used in various Glyphs.<br><br>';
 
         _UI.glyphChooser.dialog = {
             'fname': 'linkComponentToGlyph',
@@ -358,6 +358,6 @@
 
     function linkComponentToGlyph(id) {
         if (insertComponentInstance(_UI.selectedComponent, id)) {
-            showDialog_LinkComponentToGlyph('The Component "' + getSelectedWorkItem().name + '" was successfully linked to Glyph "' + getGlyphName(id) + '".<br><br>');
+            showDialogLinkComponentToGlyph('The Component "' + getSelectedWorkItem().name + '" was successfully linked to Glyph "' + getGlyphName(id) + '".<br><br>');
         }
     }

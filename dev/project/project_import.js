@@ -243,8 +243,8 @@ function importGlyphrProjectFromText() {
                     sh = [];
                     gn = 'Shape';
                 }
-                ui = com.usedin? com.usedin : [];
-                project.components[c] = new Glyph({'shapes': sh, 'usedin': ui, 'name': gn, 'glyphhtml': ''});
+                ui = com.usedIn? com.usedIn : [];
+                project.components[c] = new Glyph({'shapes': sh, 'usedIn': ui, 'name': gn, 'glyphhtml': ''});
             }
         }
         // debug('\t DONE ls > glyph');
@@ -295,7 +295,7 @@ function importGlyphrProjectFromText() {
             if (sh.objType === 'linkedshapeinstance') {
                 dx = sh.uselinkedshapexy? 0 : sh.xpos;
                 dy = sh.uselinkedshapexy? 0 : sh.ypos;
-                gshapes[s] = new ComponentInstance({'name': sh.name, 'link': sh.link, 'translatex': dx, 'translatey': dy, 'xLock': sh.xLock, 'yLock': sh.yLock});
+                gshapes[s] = new ComponentInstance({'name': sh.name, 'link': sh.link, 'translateX': dx, 'translateY': dy, 'xLock': sh.xLock, 'yLock': sh.yLock});
             }
 
 
@@ -344,12 +344,12 @@ function importGlyphrProjectFromText() {
         for (let l in fc.linkedshapes) {
             if (fc.linkedshapes.hasOwnProperty(l)) {
                 tls = fc.linkedshapes[l];
-                // debug("migrate03to04 - usedin before " + tls.usedin);
-                if (tls.usedin) {
-                    for (let u=0; u<tls.usedin.length; u++) {
-                        tls.usedin[u] = decToHex(tls.usedin[u]);
+                // debug("migrate03to04 - usedIn before " + tls.usedIn);
+                if (tls.usedIn) {
+                    for (let u=0; u<tls.usedIn.length; u++) {
+                        tls.usedIn[u] = decToHex(tls.usedIn[u]);
                     }
-                    // debug("migrate03to04 - usedin after " + tls.usedin);
+                    // debug("migrate03to04 - usedIn after " + tls.usedIn);
                 }
             }
         }

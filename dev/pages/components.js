@@ -45,7 +45,7 @@
         let content = '<h1>Delete Component</h1>';
         content += '<b style="color:'+_UI.colors.error.medium+';">This action cannot be undone!</b> &nbsp; Are you sure you want to delete this Component?<br><br>';
 
-        let uia = getSelectedWorkItem().usedin;
+        let uia = getSelectedWorkItem().usedIn;
         if (uia.length > 0) {
             content += 'This Component is linked to the following Glyphs as a Component Instance:<br><ul>';
 

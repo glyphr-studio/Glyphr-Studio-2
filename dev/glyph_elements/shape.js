@@ -1,4 +1,5 @@
 import GlyphElement from './glyphelement.js';
+import Path from './path.js';
 
 export {rectPathFromMaxes, ovalPathFromMaxes, addShape,
     turnSelectedShapeIntoAComponent, getClickedShape, isOverShape,
@@ -57,15 +58,16 @@ export default class Shape extends GlyphElement {
     save(verbose = false) {
         let re = {
             object: this.objType,
-            name: this.name,
             path: this.path.save(verbose),
-            visible: this.visible,
-            xLock: this.xLock,
-            yLock: this.yLock,
-            wLock: this.wLock,
-            hLock: this.hLock,
-            ratioLock: this.ratioLock,
         };
+
+        if (this.name !== 'Shape') re.name = this.name;
+        // if (!this.visible) re.visible = this.visible;
+        if (this.xLock) re.xLock = this.xLock;
+        if (this.yLock) re.yLock = this.yLock;
+        if (this.wLock) re.wLock = this.wLock;
+        if (this.hLock) re.hLock = this.hLock;
+        if (this.ratioLock) re.ratioLock = this.ratioLock;
 
         if (!verbose) delete re.objType;
 
@@ -150,7 +152,7 @@ export default class Shape extends GlyphElement {
 
     /**
      * Get X possition
-     * @returns {number} x
+     * @returns {number}
      */
     get x() {
         return this.maxes.xMin;
@@ -158,19 +160,10 @@ export default class Shape extends GlyphElement {
 
     /**
      * Get Y possition
-     * @returns {number} y
+     * @returns {number}
      */
     get y() {
         return this.maxes.yMax;
-    }
-
-    /**
-     * Get Height
-     * @returns {number}
-     */
-    get height() {
-        let h = this.maxes.yMax - this.maxes.yMin;
-        return Math.max(h, 0);
     }
 
     /**
@@ -180,6 +173,15 @@ export default class Shape extends GlyphElement {
     get width() {
         let w = this.maxes.xMax - this.maxes.xMin;
         return Math.max(w, 0);
+    }
+
+    /**
+     * Get Height
+     * @returns {number}
+     */
+    get height() {
+        let h = this.maxes.yMax - this.maxes.yMin;
+        return Math.max(h, 0);
     }
 
     /**
@@ -228,7 +230,7 @@ export default class Shape extends GlyphElement {
      * @returns {Shape} - reference to this Shape
      */
     set visible(visible) {
-        this._visible = visible;
+        this._visible = !!visible;
         return this;
     }
 
@@ -238,7 +240,7 @@ export default class Shape extends GlyphElement {
      * @returns {Shape} - reference to this Shape
      */
     set xLock(xLock) {
-        this._xLock = xLock;
+        this._xLock = !!xLock;
         return this;
     }
 
@@ -248,7 +250,7 @@ export default class Shape extends GlyphElement {
      * @returns {Shape} - reference to this Shape
      */
     set yLock(yLock) {
-        this._yLock = yLock;
+        this._yLock = !!yLock;
         return this;
     }
 
@@ -258,7 +260,7 @@ export default class Shape extends GlyphElement {
      * @returns {Shape} - reference to this Shape
      */
     set wLock(wLock) {
-        this._wLock = wLock;
+        this._wLock = !!wLock;
         return this;
     }
 
@@ -268,7 +270,7 @@ export default class Shape extends GlyphElement {
      * @returns {Shape} - reference to this Shape
      */
     set hLock(hLock) {
-        this._hLock = hLock;
+        this._hLock = !!hLock;
         return this;
     }
 
@@ -278,7 +280,7 @@ export default class Shape extends GlyphElement {
      * @returns {Shape} - reference to this Shape
      */
     set ratioLock(ratioLock) {
-        this._ratioLock = ratioLock;
+        this._ratioLock = !!ratioLock;
         return this;
     }
 
@@ -303,6 +305,16 @@ export default class Shape extends GlyphElement {
     }
 
     /**
+     * Set Width
+     * @param {number} w
+     * @returns {Shape} - reference to this Shape
+     */
+    set width(w) {
+        this.setShapeSize(w, false);
+        return this;
+    }
+
+    /**
      * Set Height
      * @param {number} h
      * @returns {Shape} - reference to this Shape
@@ -312,15 +324,6 @@ export default class Shape extends GlyphElement {
         return this;
     }
 
-    /**
-     * Set Width
-     * @param {number} w
-     * @returns {Shape} - reference to this Shape
-     */
-    set width(w) {
-        this.setShapeSize(w, false);
-        return this;
-    }
 
     // --------------------------------------------------------------
     // Export to different languages
@@ -377,7 +380,7 @@ export default class Shape extends GlyphElement {
 
 
     // --------------------------------------------------------------
-    // Path wrapper functions for Component Instance parity
+    // Parity methods, shared between Shapes and ComponentInstances
     // --------------------------------------------------------------
 
     /**
@@ -400,22 +403,22 @@ export default class Shape extends GlyphElement {
 
     /**
      * Call path.updatePathSize
-     * @param {number} dx - delta x
-     * @param {number} dy - delta y
+     * @param {number} dw - delta width
+     * @param {number} dh - delta height
      * @param {boolean} ratioLock - maintain aspect ratio
      */
-    updateShapeSize(dx, dy, ratioLock) {
-        this.path.updatePathSize(dx, dy, ratioLock);
+    updateShapeSize(dw, dh, ratioLock) {
+        this.path.updatePathSize(dw, dh, ratioLock);
     }
 
     /**
      * Call path.setPathSize
-     * @param {number} nx - new x value
-     * @param {number} ny - new y value
+     * @param {number} nw - new width
+     * @param {number} nh - new height
      * @param {boolean} ratioLock - maintain aspect ratio
      */
-    setShapeSize(nx, ny, ratioLock) {
-        this.path.setPathSize(nx, ny, ratioLock);
+    setShapeSize(nw, nh, ratioLock) {
+        this.path.setPathSize(nw, nh, ratioLock);
     }
 
     /**
@@ -433,33 +436,36 @@ export default class Shape extends GlyphElement {
     /**
      * Call path.flipEW
      * @param {number} mid - x value about which to flip
-     * @returns {Path} - reference to this path
+     * @returns {Shape} - reference to this shape
      */
     flipEW(mid) {
-        return this.path.flipEW(mid);
+        this.path.flipEW(mid);
+        return this;
     }
 
     /**
      * Call path.flipNS
      * @param {number} mid - y value about which to flip
-     * @returns {Path} - reference to this path
+     * @returns {Shape} - reference to this shape
      */
     flipNS(mid) {
-        return this.path.flipNS(mid);
+        this.path.flipNS(mid);
+        return this;
     }
 
     /**
      * Call path.rotate
      * @param {number} angle - how much to rotate
      * @param {Coord} about - x/y center of rotation
-     * @returns {Path} - reference to this path
+     * @returns {Shape} - reference to this shape
      */
     rotate(angle, about) {
         // debug('\n Shape.rotate - START');
         about = about || this.getCenter();
         // debug('\t first p[0].p.x ' + this.path.pathPoints[0].p.x);
         // debug(' Shape.rotate - END\n');
-        return this.path.rotate(angle, about);
+        this.path.rotate(angle, about);
+        return this;
     }
 
     /**
@@ -491,14 +497,6 @@ export default class Shape extends GlyphElement {
      */
     getSegment(num) {
         return this.path.getSegment(num);
-    }
-
-    /**
-     * Checks for any NaN
-     * @returns {boolean}
-     */
-    checkForNaN() {
-        return this.path.checkForNaN();
     }
 
     /**
@@ -592,6 +590,20 @@ export default class Shape extends GlyphElement {
         let segs = this.path.getPolySegment();
         segs.slowlyDrawSegments();
     }
+
+
+    // --------------------------------------------------------------
+    // Checking
+    // --------------------------------------------------------------
+
+    /**
+     * Checks for any NaN
+     * @returns {boolean}
+     */
+    checkForNaN() {
+        return this.path.checkForNaN();
+    }
+
 
 /* NEEDS REFACTORING - NO NEED TO DUPLICATE THESE METHODS HERE
 

@@ -150,7 +150,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {number} x
      */
     get x() {
-        return this._maxes.xMin;
+        return this.maxes.xMin;
     }
 
     /**
@@ -158,7 +158,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {number} y
      */
     get y() {
-        return this._maxes.yMax;
+        return this.maxes.yMax;
     }
 
     /**

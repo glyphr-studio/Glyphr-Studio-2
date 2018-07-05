@@ -30,7 +30,7 @@
         this.ratioLock = isVal(oa.ratioLock)? oa.ratioLock : false;
         this.maxes = oa.maxes || clone(_UI.mins);
         this.shapes = oa.shapes || [];
-        this.usedin = oa.usedin || [];
+        this.usedIn = oa.usedIn || [];
         this.contextGlyphs = '';
 
         // debug('\t name: ' + this.name);
@@ -437,7 +437,7 @@
         // debug('\t adding ' + cid + ' to (me) ' + myid);
 
         if (myid === cid) return false;
-        if (this.usedin.length === 0) return true;
+        if (this.usedIn.length === 0) return true;
 
         let downlinks = this.collectAllDownstreamLinks([], true);
         downlinks = downlinks.filter(function(elem, pos) {
@@ -471,9 +471,9 @@
 
     Glyph.prototype.collectAllUpstreamLinks = function(re) {
         re = re || [];
-        for (let g=0; g<this.usedin.length; g++) {
-            re = re.concat(getGlyph(this.usedin[g]).collectAllUpstreamLinks(re));
-            re.push(this.usedin[g]);
+        for (let g=0; g<this.usedIn.length; g++) {
+            re = re.concat(getGlyph(this.usedIn[g]).collectAllUpstreamLinks(re));
+            re.push(this.usedIn[g]);
         }
         return re;
     };
@@ -486,8 +486,8 @@
 
         // Delete upstream Component Instances
         let upstreamglyph;
-        for (let c=0; c<this.usedin.length; c++) {
-            upstreamglyph = getGlyph(this.usedin[c]);
+        for (let c=0; c<this.usedIn.length; c++) {
+            upstreamglyph = getGlyph(this.usedIn[c]);
             // debug('\t removing from ' + upstreamglyph.name);
             // debug(upstreamglyph.shapes);
             for (let u=0; u<upstreamglyph.shapes.length; u++) {
@@ -499,7 +499,7 @@
             // debug(upstreamglyph.shapes);
         }
 
-        // Delete downstream usedin array values
+        // Delete downstream usedIn array values
         for (let s=0; s<this.shapes.length; s++) {
             if (this.shapes[s].objType === 'ComponentInstance') {
                 removeFromUsedIn(this.shapes[s].link, thisid);
@@ -718,8 +718,8 @@
         this.cache = {};
 
         if (ascend) {
-            for (let g=0; g<this.usedin.length; g++) {
-                getGlyph(this.usedin[g]).changed(descend, ascend);
+            for (let g=0; g<this.usedIn.length; g++) {
+                getGlyph(this.usedIn[g]).changed(descend, ascend);
             }
         }
 
@@ -942,7 +942,7 @@
         if (_UI.currentPage === 'glyph edit') {
             sc.changed();
         } else if (_UI.currentPage === 'components' && sc) {
-            let lsarr = sc.usedin;
+            let lsarr = sc.usedIn;
             if (lsarr) for (let c=0; c<lsarr.length; c++) getGlyph(lsarr[c]).changed();
         }
     }
