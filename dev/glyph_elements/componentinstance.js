@@ -126,6 +126,7 @@
 };
 
     ComponentInstance.prototype.changeShapeName = function(sn) {
+        // CONVERT TO NAME SETTER
         // debug('\n ComponentInstance.changeShapeName - START');
         // debug('\t passed: ' + sn);
         sn = strSan(sn);
@@ -163,7 +164,7 @@
         // debug('\n ComponentInstance.setShapePosition - START');
         // debug('\t passed nx/ny/force: ' + nx + ' / ' + ny + ' / ' + force);
         // debug('\t translate was: ' + this.translatex + ' / ' + this.translatey);
-        let ogm = getGlyph(this.link).getMaxes();
+        let ogm = getGlyph(this.link).maxes;
 
         nx = parseFloat(nx);
         ny = parseFloat(ny);
@@ -186,7 +187,7 @@
         if (dh !== false) dh = parseFloat(dh) || 0;
 
         if (ratioLock) {
-            let ts = this.getTransformedGlyph().getMaxes();
+            let ts = this.getTransformedGlyph().maxes;
             let w = (ts.xMax - ts.xMin);
             let h = (ts.yMax - ts.yMin);
 
@@ -210,7 +211,7 @@
     };
 
     ComponentInstance.prototype.setShapeSize = function(nw, nh, ratioLock) {
-        let og = getGlyph(this.link).getMaxes();
+        let og = getGlyph(this.link).maxes;
         let dx = nx? ((nx*1) - og.xMin) : 0;
         let dy = ny? ((ny*1) - og.yMax) : 0;
 
@@ -218,19 +219,19 @@
     };
 
     ComponentInstance.prototype.getWidth = function() {
-        let g = this.getTransformedGlyph().getMaxes();
+        let g = this.getTransformedGlyph().maxes;
         return g.xMax - g.xMin;
     };
 
     ComponentInstance.prototype.getHeight = function() {
-        let g = this.getTransformedGlyph().getMaxes();
+        let g = this.getTransformedGlyph().maxes;
         return g.yMax - g.yMin;
     };
 
     ComponentInstance.prototype.flipEW = function(mid) {
         this.flipew = !this.flipew;
         if (mid) {
-            let g = this.getTransformedGlyph().getMaxes();
+            let g = this.getTransformedGlyph().maxes;
             this.translatex += (((mid - g.xMax) + mid) - g.xMin);
         }
         if (this.rotation === 0) this.rotatefirst = false;
@@ -241,7 +242,7 @@
     ComponentInstance.prototype.flipNS = function(mid) {
         this.flipns = !this.flipns;
         if (mid) {
-            let g = this.getTransformedGlyph().getMaxes();
+            let g = this.getTransformedGlyph().maxes;
             this.translatey += (((mid - g.yMax) + mid) - g.yMin);
         }
         if (this.rotation === 0) this.rotatefirst = false;
@@ -274,7 +275,7 @@
 
     ComponentInstance.prototype.getMaxes = function() {
         // debug('\n ComponentInstance.getMaxes - ' + this.name);
-        return this.getTransformedGlyph().getMaxes();
+        return this.getTransformedGlyph().maxes;
     };
 
     ComponentInstance.prototype.calcMaxes = function() {
@@ -346,7 +347,7 @@
         // debug('\n ComponentInstance.draw_BoundingBox - START');
         accent = accent || _UI.colors.green;
         thickness = thickness || 1;
-        let g = this.getTransformedGlyph().getMaxes();
+        let g = this.getTransformedGlyph().maxes;
         draw_BoundingBox(g, accent, thickness);
     };
 
@@ -354,7 +355,7 @@
         // debug('\n ComponentInstance.draw_BoundingBoxHandles - START');
         accent = accent || _UI.colors.green;
         thickness = thickness || 1;
-        let g = this.getTransformedGlyph().getMaxes();
+        let g = this.getTransformedGlyph().maxes;
          draw_BoundingBoxHandles(g, accent, thickness);
     };
 
@@ -366,7 +367,7 @@
 
     ComponentInstance.prototype.isOverBoundingBoxHandle = function(px, py) {
         // debug('\n ComponentInstance.isOverBoundingBoxHandle - START');
-        let c = isOverBoundingBoxHandle(px, py, this.getMaxes());
+        let c = isOverBoundingBoxHandle(px, py, this.maxes);
         // debug('\t ComponentInstance.isOverBoundingBoxHandle returning ' + c);
         return c;
     };

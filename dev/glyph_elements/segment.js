@@ -74,6 +74,7 @@ export default class Segment extends GlyphElement {
      */
     save(verbose = false) {
         let re = {
+            object: this.objType,
             p1x: this.p1x,
             p1y: this.p1y,
             p2x: this.p2x,
@@ -84,7 +85,7 @@ export default class Segment extends GlyphElement {
             p4y: this.p4y,
         };
 
-        if (verbose) re.objType = this.objType;
+        if (!verbose) delete re.objType;
 
         return re;
     }
@@ -113,7 +114,7 @@ export default class Segment extends GlyphElement {
     }
 
     /**
-     * Reset the cache
+     * Reset the cache and calculate dimensions
      */
     changed() {
         this.cache = {};

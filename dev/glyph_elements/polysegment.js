@@ -42,12 +42,16 @@ export default class PolySegment extends GlyphElement {
      * @returns {*}
      */
     save(verbose = false) {
-        let re = {segments: []};
+        let re = {
+            object: this.objType,
+            segments: [],
+        };
+
         for (let s = 0; s < this._segments.length; s++) {
-            re.segments[s] = this._segments[s].save();
+            re.segments[s] = this._segments[s].save(verbose);
         }
 
-        if (verbose) re.objType = this.objType;
+        if (!verbose) delete re.objType;
 
         return re;
     }

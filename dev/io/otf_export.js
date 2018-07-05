@@ -89,7 +89,7 @@
             let glyph = currexportglyph.xg;
             let num = currexportglyph.xc;
             let comb = _GP.projectSettings.combineshapesonexport;
-            let maxes = glyph.getMaxes();
+            let maxes = glyph.maxes;
 
             // debug('\t ' + glyph.name);
 

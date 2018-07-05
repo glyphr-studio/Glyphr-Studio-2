@@ -324,6 +324,7 @@ import _UI from '../app/settings.js';
         }
     };
 
+    // convert to name setter
     _UI.multiSelect.shapes.changeShapeName = function(n) {
  this.getSingleton().changeShapeName(n);
 };
@@ -406,7 +407,7 @@ import _UI from '../app/settings.js';
     };
 
     _UI.multiSelect.shapes.getMaxes = function() {
-        if (this.members.length === 1) return this.members[0].getMaxes();
+        if (this.members.length === 1) return this.members[0].maxes;
         else return this.getGlyph().maxes;
     };
 
@@ -456,7 +457,7 @@ import _UI from '../app/settings.js';
             let bmaxes = clone(_UI.mins);
 
             for (let m=0; m<this.members.length; m++) {
-                bmaxes = getOverallMaxes([bmaxes, this.members[m].getMaxes()]);
+                bmaxes = getOverallMaxes([bmaxes, this.members[m].maxes]);
             }
 
             draw_BoundingBox(bmaxes, _UI.colors.gray, _UI.multiSelectThickness);
@@ -482,7 +483,7 @@ import _UI from '../app/settings.js';
             let bmaxes = clone(_UI.mins);
 
             for (let m=0; m<this.members.length; m++) {
-                bmaxes = getOverallMaxes([bmaxes, this.members[m].getMaxes()]);
+                bmaxes = getOverallMaxes([bmaxes, this.members[m].maxes]);
             }
 
             draw_BoundingBoxHandles(bmaxes, _UI.colors.gray, _UI.multiSelectThickness);

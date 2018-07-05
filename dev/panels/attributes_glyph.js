@@ -247,7 +247,7 @@
         content += '<tr>'+
             '<td class="leftcol">name</td>'+
             '<td>'+
-                '<input class="namewidth" type="text" value="' + s.name + '" onchange="_UI.multiSelect.shapes.changeShapeName(this.value);">'+
+                '<input class="namewidth" type="text" value="' + s.name + '" onchange="_UI.multiSelect.shapes.name = this.value;">'+
             '</td>'+
         '</tr>';
 

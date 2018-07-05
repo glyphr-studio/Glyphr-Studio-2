@@ -52,16 +52,17 @@ export default class PathPoint extends GlyphElement {
      */
     save(verbose = false) {
         let re = {
-            p: this.p.save(),
+            object: this.objType,
+            p: this.p.save(verbose),
             type: this.type,
         };
 
-        if (this.h1.use) re.h1 = this.h1.save();
-        if (this.h2.use) re.h2 = this.h2.save();
+        if (this.h1.use) re.h1 = this.h1.save(verbose);
+        if (this.h2.use) re.h2 = this.h2.save(verbose);
 
         if (this.q) re.q = this.q;
 
-        if (verbose) re.objType = this.objType;
+        if (!verbose) delete re.objType;
 
         return re;
     }

@@ -71,7 +71,7 @@
         content += '<tr><td class="leftcol"> instance name </td>'+
             '<td style="margin-top:0px; padding-top:0px;">'+
                 '<input class="namewidth" id="comname" type="text" value="' + s.name + '" '+
-                    'onchange="_UI.multiSelect.shapes.changeShapeName(this.value);">' +
+                    'onchange="_UI.multiSelect.shapes.name = this.value;">' +
             '</td>'+
         '</tr>';
 

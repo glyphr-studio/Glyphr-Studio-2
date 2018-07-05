@@ -39,12 +39,13 @@ export default class Handle extends GlyphElement {
      */
     save(verbose = false) {
         let re = {
-            point: this.point.save(),
+            object: this.objType,
+            point: this.point.save(verbose),
         };
 
         if (this.use) re.use = true;
 
-        if (verbose) re.objType = this.objType;
+        if (!verbose) delete re.objType;
 
         return re;
     }

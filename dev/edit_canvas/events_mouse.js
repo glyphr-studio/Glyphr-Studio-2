@@ -141,7 +141,7 @@ function Tool_ShapeEdit() {
                 // debug('\t mousedown - setting rotating = true');
                 this.rotating = true;
                 eh.rotationcenter = _UI.multiSelect.shapes.getCenter();
-                eh.rotationstarttopy = _UI.multiSelect.shapes.getMaxes().yMax + (_UI.rotateHandleHeight / getView().dz);
+                eh.rotationstarttopy = _UI.multiSelect.shapes.maxes.yMax + (_UI.rotateHandleHeight / getView().dz);
             } else {
                 // debug('\t clicked on eh.handle: ' + eh.handle);
                 this.resizing = true;
@@ -758,7 +758,7 @@ function eventHandler_ShapeResize() {
     let pcorner = _UI.eventhandlers.handle;
     // debug('\t handle ' + pcorner);
 
-    let maxes = s.getMaxes();
+    let maxes = s.maxes;
     let mx = cx_sx(_UI.eventhandlers.mousex);
     let my = cy_sy(_UI.eventhandlers.mousey);
     let lx = cx_sx(_UI.eventhandlers.lastx);

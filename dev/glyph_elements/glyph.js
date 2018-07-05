@@ -68,7 +68,7 @@
     Glyph.prototype.setGlyphPosition = function(nx, ny, force) {
         // debug('Glyph.setGlyphPosition - START');
         // debug('\t nx/ny/force: ' + nx + ' ' + ny + ' ' + force);
-        let m = this.getMaxes();
+        let m = this.maxes;
         if (nx !== false) nx = parseFloat(nx);
         if (ny !== false) ny = parseFloat(ny);
         let dx = (nx !== false)? (nx - m.xMin) : 0;
@@ -97,7 +97,7 @@
     Glyph.prototype.setGlyphSize = function(nw, nh, ratioLock) {
         // debug('SET GLYPHSIZE ---- nw/nh/ra:\t' + nw + '\t ' + nh + '\t ' + ratioLock);
         // debug('\t maxes: ' + json(this.maxes));
-        let m = this.getMaxes();
+        let m = this.maxes;
         if (nw !== false) nw = parseFloat(nw);
         if (nh !== false) nh = parseFloat(nh);
         let ch = (m.yMax - m.yMin);
@@ -117,7 +117,7 @@
         // debug('\t number of shapes: ' + this.shapes.length);
         // debug('\t dw dh rl:\t' + dw + '/' + dh + '/' + ratioLock);
 
-        let m = this.getMaxes();
+        let m = this.maxes;
         if (dw !== false) dw = parseFloat(dw) || 0;
         if (dh !== false) dh = parseFloat(dh) || 0;
         // debug('\t adjust dw/dh:\t' + dw + '/' + dh);
@@ -153,7 +153,7 @@
         for (let i=0; i<cs.length; i++) {
             s = cs[i];
             // debug('\t >>> Updating ' + s.objType + ' ' + i + '/' + cs.length + ' : ' + s.name);
-            smaxes = s.getMaxes();
+            smaxes = s.maxes;
 
             // scale
             oldsw = smaxes.xMax - smaxes.xMin;
@@ -193,7 +193,7 @@
         // debug('\n Glyph.flipEW - START');
         // debug('\t ' + this.name);
         // debug('\t passed mid = ' + mid);
-        let m = this.getMaxes();
+        let m = this.maxes;
         mid = isVal(mid)? mid : ((m.xMax - m.xMin) / 2) + m.xMin;
         // debug('\t mid = ' + mid);
         // debug('\t maxes = ' + json(m, true));
@@ -206,7 +206,7 @@
     };
 
     Glyph.prototype.flipNS = function(mid) {
-        let m = this.getMaxes();
+        let m = this.maxes;
         mid = isVal(mid)? mid : ((m.yMax - m.yMin) / 2) + m.yMin;
         for (let s=0; s < this.shapes.length; s++) {
             this.shapes[s].flipNS(mid);
@@ -242,7 +242,7 @@
             target = -999999;
 
             this.shapes.forEach(function(v) {
-                target = Math.max(target, v.getMaxes().yMax);
+                target = Math.max(target, v.maxes.yMax);
             });
 
             // debug('\t found TOP: ' + target);
@@ -263,20 +263,20 @@
             target = 999999;
 
             this.shapes.forEach(function(v) {
-                target = Math.min(target, v.getMaxes().yMin);
+                target = Math.min(target, v.maxes.yMin);
             });
 
             // debug('\t found BOTTOM: ' + target);
 
             this.shapes.forEach(function(v) {
-                offset = v.getMaxes().yMin;
+                offset = v.maxes.yMin;
                 v.updateShapePosition(false, (target - offset));
             });
         } else if (edge === 'left') {
             target = 999999;
 
             this.shapes.forEach(function(v) {
-                target = Math.min(target, v.getMaxes().xMin);
+                target = Math.min(target, v.maxes.xMin);
             });
 
             // debug('\t found LEFT: ' + target);
@@ -297,13 +297,13 @@
             target = -999999;
 
             this.shapes.forEach(function(v) {
-                target = Math.max(target, v.getMaxes().xMax);
+                target = Math.max(target, v.maxes.xMax);
             });
 
             // debug('\t found RIGHT: ' + target);
 
             this.shapes.forEach(function(v) {
-                offset = v.getMaxes().xMax;
+                offset = v.maxes.xMax;
                 v.updateShapePosition((target - offset), false);
             });
         }
@@ -339,7 +339,7 @@
     };
 
     Glyph.prototype.getCenter = function() {
-        let m = this.getMaxes();
+        let m = this.maxes;
         let re = {};
         re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
         re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
@@ -363,7 +363,7 @@
                 // debug(this.shapes[jj]);
 
                 if (this.shapes[jj].getMaxes) {
-                    tm = this.shapes[jj].getMaxes();
+                    tm = this.shapes[jj].maxes;
                     // debug('\t before ' + json(tm, true));
                     this.maxes = getOverallMaxes([tm, this.maxes]);
                     // debug('\t afters ' + json(tm, true));

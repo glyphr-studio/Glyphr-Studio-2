@@ -30,8 +30,9 @@ export default class GlyphElement {
      */
     save(verbose = false) {
         let re = clone(this);
+        re.objType = this.objType;
 
-        if (verbose) re.objType = this.objType;
+        if (!verbose) delete re.objType;
 
         return re;
     }

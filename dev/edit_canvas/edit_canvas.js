@@ -1250,7 +1250,7 @@ export default redraw;
         _UI.glyphEditCTX.fillStyle = 'transparent';
 
         if (_UI.selectedTool==='newrect') {
-            draw_BoundingBox(sh.getMaxes(), accent);
+            draw_BoundingBox(sh.maxes, accent);
         } else if (_UI.selectedTool==='newoval') {
             _UI.glyphEditCTX.strokeStyle = accent.l65;
             let tpdso = ovalPathFromMaxes(_UI.eventhandlers.tempnewbasicshape);

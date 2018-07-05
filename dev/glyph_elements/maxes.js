@@ -41,14 +41,16 @@ export default class Maxes extends GlyphElement {
     save(verbose = false) {
         // debug(`\n Maxes.save - START`);
 
-        let re = {};
+        let re = {
+            object: this.objType,
+        };
 
         if (isVal(this._xMin)) re.xMin = this._xMin;
         if (isVal(this._xMax)) re.xMax = this._xMax;
         if (isVal(this._yMin)) re.yMin = this._yMin;
         if (isVal(this._yMax)) re.yMax = this._yMax;
 
-        if (verbose) re.objType = this.objType;
+        if (!verbose) delete re.objType;
 
         // debug(`\t returning`);
         // debug(re);

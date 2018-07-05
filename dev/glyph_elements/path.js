@@ -64,15 +64,16 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      */
     save(verbose = false) {
         let re = {
+            object: this.objType,
             winding: this.winding,
             pathPoints: [],
         };
 
         this._pathPoints.forEach((point) => {
-            re.pathPoints.push(point.save());
+            re.pathPoints.push(point.save(verbose));
         });
 
-        if (verbose) re.objType = this.objType;
+        if (!verbose) delete re.objType;
 
         return re;
     }
@@ -106,7 +107,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Reset the cache
+     * Reset the cache and calculate dimensions
      */
     changed() {
         this._cache = {};
@@ -404,9 +405,8 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * Moves a path to a specific possition
      * @param {number} nx - new X
      * @param {number} ny - new Y
-     * @param {boolean} force - disregard lock setting
      */
-    setPathPosition(nx, ny, force = false) {
+    setPathPosition(nx, ny) {
         // debug('\n Path.setPathPosition - START');
         // debug('\t nx ny force:\t ' + nx + '\t ' + ny + '\t ' + force);
 
@@ -425,9 +425,8 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * Moves the path based on delta values
      * @param {number} dx - delta X
      * @param {number} dy - delta Y
-     * @param {boolean} force - disreagard lock setting
      */
-    updatePathPosition(dx = 0, dy = 0, force = false) {
+    updatePathPosition(dx = 0, dy = 0) {
         // debug('\n Path.updatePathPosition - START');
 
         if (dx !== false) dx = parseFloat(dx);
@@ -449,7 +448,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {Coord} about - x/y center of rotation
      * @returns {Path} - reference to this path
      */
-    rotate(angle, about) {
+    rotate(angle, about = this.getCenter()) {
         // debug('\n Path.rotate - START');
         for (let d = 0; d < this.pathPoints.length; d++) {
             // debug('\t starting point ' + d);
@@ -460,6 +459,18 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         this.changed();
         // debug(' Path.rotate - END\n');
         return this;
+    }
+
+    /**
+     * Figures out the center point of this path
+     * @returns {Coord}
+     */
+    getCenter() {
+        let m = this.maxes;
+        let re = {};
+        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
+        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
+        return re;
     }
 
     /**
@@ -727,10 +738,9 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {object} otpath - Opentype.js Path object
      * @returns {object}
      */
-    makeOpentypeJsPath(otpath) {
+    makeOpentypeJsPath(otpath = new opentype.Path()) {
         // debug('\n Path.makeOpentypeJsPath - START');
         // debug('\t otpath: ' + json(otpath));
-        otpath = otpath || new opentype.Path();
 
         let p1;
         let p2;

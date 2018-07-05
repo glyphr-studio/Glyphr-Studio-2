@@ -34,12 +34,13 @@ export default class HKern extends GlyphElement {
      */
     save(verbose = false) {
         let re = {
+            object: this.objType,
             leftGroup: this.leftGroup.slice(),
             rightGroup: this.rightGroup.slice(),
             value: this._value,
         };
 
-        if (verbose) re.objType = this.objType;
+        if (!verbose) delete re.objType;
 
         return re;
     }
