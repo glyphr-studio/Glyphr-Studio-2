@@ -519,7 +519,7 @@ export default redraw;
 
         if (split.left) {
             let leftdistance = getGlyphSequenceAdvanceWidth(split.left);
-            if (currGlyphObject.isautowide) leftdistance += currGlyphObject.getLSB();
+            if (currGlyphObject.isAutoWide) leftdistance += currGlyphObject.getLSB();
             leftdistance += calculateKernOffset(split.left.charAt(split.left.length-1), currGlyphChar);
 
             // debug(`\t leftdistance: ${leftdistance}`);
@@ -541,7 +541,7 @@ export default redraw;
 
         if (split.right) {
             let rightdistance = currGlyphObject.getAdvanceWidth();
-            if (currGlyphObject.isautowide) rightdistance -= currGlyphObject.getLSB();
+            if (currGlyphObject.isAutoWide) rightdistance -= currGlyphObject.getLSB();
             rightdistance += calculateKernOffset(currGlyphChar, split.right.charAt(0));
 
             // debug(`\t rightdistance: ${rightdistance}`);
@@ -612,7 +612,7 @@ export default redraw;
             let selwi = getSelectedWorkItem();
             let v = getView('drawContextGlyphLeftLineExtras');
             kern *= -1;
-            let rightx = selwi.isautowide? kern-selwi.getLSB() : kern;
+            let rightx = selwi.isAutoWide? kern-selwi.getLSB() : kern;
             rightx = v.dx + (rightx * v.dz);
             let texty = sy_cy(_GP.projectSettings.descent-60);
 
@@ -627,7 +627,7 @@ export default redraw;
             let v = getView('drawContextGlyphRightLineExtras');
             let selwi = getSelectedWorkItem();
             let rightx = selwi.getAdvanceWidth();
-            if (selwi.isautowide) rightx -= selwi.getLSB();
+            if (selwi.isAutoWide) rightx -= selwi.getLSB();
             rightx = v.dx + (rightx * v.dz);
             let texty = sy_cy(_GP.projectSettings.descent-60);
 
@@ -1683,7 +1683,7 @@ if (ps.guides.hasOwnProperty(c)) {
             let selwi = getSelectedWorkItem();
             if (selwi) {
                 let t = _UI.eventhandlers.tempnewbasicshape;
-                let rl = t? Math.max(selwi.glyphwidth, t.xMax) : selwi.glyphwidth;
+                let rl = t? Math.max(selwi.glyphWidth, t.xMax) : selwi.glyphWidth;
                 let ll = Math.min(selwi.maxes.xMin, 0);
 
 
@@ -1712,7 +1712,7 @@ if (ps.guides.hasOwnProperty(c)) {
                 if (onglyphedit) {
                     ps.guides.min.draw(0);
                     ps.guides.leftside.draw();
-                    if (getSelectedWorkItemShapes().length || !selwi.isautowide) {
+                    if (getSelectedWorkItemShapes().length || !selwi.isAutoWide) {
                         ps.guides.max.draw(0);
                         ps.guides.rightside.draw();
                     }

@@ -282,7 +282,7 @@ function importGlyphrProjectFromText() {
         glyph.shapes = glyph.charshapes || [];
         glyph.name = glyph.charname || false;
         glyph.glyphhtml = glyph.charhtml || false;
-        glyph.glyphwidth = glyph.charwidth || false;
+        glyph.glyphWidth = glyph.charwidth || false;
         delete glyph.charshapes;
         delete glyph.charname;
         delete glyph.charhtml;
@@ -415,8 +415,8 @@ function newGlyphrStudioProject() {
     _GP.projectSettings.versionnum = _UI.thisGlyphrStudioVersionNum;
     _GP.projectSettings.projectid = makeProjectID();
 
-    getGlyph('0x0020', true).isautowide = false;
-    getGlyph('0x0020', true).glyphwidth = round(_GP.projectSettings.upm/3);
+    getGlyph('0x0020', true).isAutoWide = false;
+    getGlyph('0x0020', true).glyphWidth = round(_GP.projectSettings.upm/3);
     getGlyph('0x0041', true);
 
     finalizeUI();
@@ -458,7 +458,7 @@ function finalizeUI() {
     _UI.selectedKern = _UI.selectedKern || getFirstID(_GP.kerning);
 
     let sp = getGlyph('0x0020', true);
-    if (!sp.isautowide && sp.glyphwidth === 0) sp.glyphwidth = round(_GP.projectSettings.upm/3);
+    if (!sp.isAutoWide && sp.glyphWidth === 0) sp.glyphWidth = round(_GP.projectSettings.upm/3);
 
     calculateDefaultView();
     resetThumbView();

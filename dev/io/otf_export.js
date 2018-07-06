@@ -97,7 +97,7 @@
 
             if (comb && glyph.shapes.length <= _GP.projectSettings.maxcombineshapesonexport) glyph.combineAllShapes(true);
 
-            if (glyph.isautowide) glyph.updateGlyphPosition(glyph.getLSB(), 0);
+            if (glyph.isAutoWide) glyph.updateGlyphPosition(glyph.getLSB(), 0);
 
             let tgpath = glyph.makeOpentypeJsPath(new opentype.Path());
 

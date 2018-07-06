@@ -88,7 +88,7 @@
         *    GLYPH IMPORT
         *
         */
-        let tca, data, uni, np, cname, chtml, adv, isautowide;
+        let tca, data, uni, np, cname, chtml, adv, isAutoWide;
         let maxGlyph = 0;
         let minchar = 0xffff;
         let customglyphrange = [];
@@ -160,11 +160,11 @@
                 }
 
                 // Get Advance Width
-                isautowide = true;
+                isAutoWide = true;
                 adv = parseInt(tca['horiz-adv-x']);
                 if (adv) {
                     if (!isNaN(adv) && adv > 0) {
-                        isautowide = false;
+                        isAutoWide = false;
                     }
                 } else adv = false;
 
@@ -177,12 +177,12 @@
                     maxGlyph = Math.max(maxGlyph, uni);
                     if (1*uni > _UI.glyphrange.latinextendedb.end) customglyphrange.push(uni);
 
-                    fc[uni] = new Glyph({'shapes': newshapes, 'glyphhex': uni, 'glyphwidth': adv, 'isautowide': isautowide});
+                    fc[uni] = new Glyph({'shapes': newshapes, 'glyphhex': uni, 'glyphWidth': adv, 'isAutoWide': isAutoWide});
                     if (getUnicodeName(uni) === '[name not found]') _GP.projectSettings.glyphrange.filternoncharpoints = false;
                 } else {
                     // It's a LIGATURE
                     uni = uni.join('');
-                    fl[uni] = new Glyph({'shapes': newshapes, 'glyphhex': uni, 'glyphwidth': adv, 'isautowide': isautowide});
+                    fl[uni] = new Glyph({'shapes': newshapes, 'glyphhex': uni, 'glyphWidth': adv, 'isAutoWide': isAutoWide});
                 }
 
                 // Successfull loop, advance c

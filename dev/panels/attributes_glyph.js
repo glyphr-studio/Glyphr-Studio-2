@@ -164,16 +164,16 @@
         content += '<tr>'+
                 '<td> auto calculate <span class="unit">(em units)</span></td>'+
                 '<td>'+
-                    checkUI('getSelectedWorkItem().isautowide', sc.isautowide, true)+
+                    checkUI('getSelectedWorkItem().isAutoWide', sc.isAutoWide, true)+
                     '&emsp;';
 
-                    if (!sc.isautowide) {
+                    if (!sc.isAutoWide) {
                         content += '<input type="number" id="charaw" step="'+svc+'" '+
-                        'value="' + round(sc.glyphwidth, 3) + '" '+
-                        'onchange="_UI.focusElement=this.id; getSelectedWorkItem().glyphwidth = (this.value*1); redraw({calledBy:{calledBy:\'glyphDetails\'}});">';
+                        'value="' + round(sc.glyphWidth, 3) + '" '+
+                        'onchange="_UI.focusElement=this.id; getSelectedWorkItem().glyphWidth = (this.value*1); redraw({calledBy:{calledBy:\'glyphDetails\'}});">';
                     } else {
                         content += '<input type="number" disabled="disabled" '+
-                        'value="'+ round(sc.glyphwidth, 3) + '"/>';
+                        'value="'+ round(sc.glyphWidth, 3) + '"/>';
                     }
 
             content += '</td>'+
@@ -181,20 +181,20 @@
 
 
         // LEFT SIDE BEARING
-        if (sc.isautowide) {
+        if (sc.isAutoWide) {
             content += '<tr><td colspan=2 class="detailtitle"><h3> left side bearing </h3></td></tr>';
 
             content += '<tr>'+
                 '<td> use default <span class="unit">(em units)</span> </td>'+
                 '<td>'+
-                    checkUI('getSelectedWorkItem().leftsidebearing', sc.leftsidebearing, true, true)+
+                    checkUI('getSelectedWorkItem().leftSideBearing', sc.leftSideBearing, true, true)+
                     '&emsp;';
 
-                    if (sc.leftsidebearing) {
-                        if (sc.leftsidebearing === true) sc.leftsidebearing = _GP.projectSettings.defaultlsb;
+                    if (sc.leftSideBearing) {
+                        if (sc.leftSideBearing === true) sc.leftSideBearing = _GP.projectSettings.defaultlsb;
                         content += '<input type="number" id="charlsb" step="'+svc+'" '+
-                        'value="' + sc.leftsidebearing + '" '+
-                        'onchange="_UI.focusElement=this.id; getSelectedWorkItem().leftsidebearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
+                        'value="' + sc.leftSideBearing + '" '+
+                        'onchange="_UI.focusElement=this.id; getSelectedWorkItem().leftSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
                     } else {
                         content +='<input type="number" disabled="disabled" '+
                         'value="'+ round(_GP.projectSettings.defaultlsb, 3) + '"/>';
@@ -205,20 +205,20 @@
 
 
         // RIGHT SIDE BEARING
-        if (sc.isautowide) {
+        if (sc.isAutoWide) {
             content += '<tr><td colspan=2 class="detailtitle"><h3> right side bearing </h3></td></tr>';
 
             content += '<tr>'+
                 '<td> use default <span class="unit">(em units)</span> </td>'+
                 '<td>'+
-                    checkUI('getSelectedWorkItem().rightsidebearing', sc.rightsidebearing, true, true)+
+                    checkUI('getSelectedWorkItem().rightSideBearing', sc.rightSideBearing, true, true)+
                     '&emsp;';
 
-                    if (sc.rightsidebearing) {
-                        if (sc.rightsidebearing === true) sc.rightsidebearing = _GP.projectSettings.defaultrsb;
+                    if (sc.rightSideBearing) {
+                        if (sc.rightSideBearing === true) sc.rightSideBearing = _GP.projectSettings.defaultrsb;
                         content += '<input type="number" id="charrsb" step="'+svc+'" '+
-                        'value="' + sc.rightsidebearing + '" '+
-                        'onchange="_UI.focusElement=this.id; getSelectedWorkItem().rightsidebearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
+                        'value="' + sc.rightSideBearing + '" '+
+                        'onchange="_UI.focusElement=this.id; getSelectedWorkItem().rightSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
                     } else {
                         content += '<input type="number" disabled="disabled" '+
                         'value="'+round(_GP.projectSettings.defaultrsb, 3) + '"/>';

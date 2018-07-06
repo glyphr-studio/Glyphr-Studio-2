@@ -70,8 +70,8 @@
                 return gtype === 'glyph' || gtype === 'ligature';
             },
             action: function(glyph) {
-                glyph.isautowide = false;
-                glyph.glyphwidth = gwidth;
+                glyph.isAutoWide = false;
+                glyph.glyphWidth = gwidth;
             },
         });
     }

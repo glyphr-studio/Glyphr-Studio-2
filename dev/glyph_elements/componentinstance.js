@@ -969,10 +969,10 @@ function insertComponentInstance(sourceComponentID, destinationGlyphID, copyGlyp
 
         addToUsedIn(sourceComponentID, destinationGlyphID);
 
-        if (copyGlyphAttributes.srcAutoWidth) destinationGlyph.isautowide = sourceComponentGlyph.isautowide;
-        if (copyGlyphAttributes.srcWidth) destinationGlyph.glyphwidth = sourceComponentGlyph.glyphwidth;
-        if (copyGlyphAttributes.srcLSB) destinationGlyph.leftsidebearing = sourceComponentGlyph.leftsidebearing;
-        if (copyGlyphAttributes.srcRSB) destinationGlyph.rightsidebearing = sourceComponentGlyph.rightsidebearing;
+        if (copyGlyphAttributes.srcAutoWidth) destinationGlyph.isAutoWide = sourceComponentGlyph.isAutoWide;
+        if (copyGlyphAttributes.srcWidth) destinationGlyph.glyphWidth = sourceComponentGlyph.glyphWidth;
+        if (copyGlyphAttributes.srcLSB) destinationGlyph.leftSideBearing = sourceComponentGlyph.leftSideBearing;
+        if (copyGlyphAttributes.srcRSB) destinationGlyph.rightSideBearing = sourceComponentGlyph.rightSideBearing;
 
         closeDialog();
         history_put('insert component from glyphedit');
