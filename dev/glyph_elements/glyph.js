@@ -47,20 +47,6 @@ export default class Glyph extends GlyphElement {
         this.contextGlyphs = contextGlyphs;
         // debug('\t name: ' + this.name);
 
-        if (oa.shapes && oa.shapes.length) {
-            for (let i = 0; i < oa.shapes.length; i++) {
-                if (oa.shapes[i].objType === 'ComponentInstance') {
-                    // debug('\t hydrating ci ' + oa.shapes[i].name);
-                    this.shapes[i] = new ComponentInstance(oa.shapes[i]);
-                    lc++;
-                } else {
-                    // debug('\t hydrating sh ' + oa.shapes[i].name);
-                    this.shapes[i] = new Shape(oa.shapes[i]);
-                    cs++;
-                }
-            }
-        }
-
         this.calcGlyphMaxes();
 
         // cache
@@ -192,9 +178,53 @@ export default class Glyph extends GlyphElement {
         return this._contextGlyphs;
     }
 
+    // computed properties
+
+    /**
+     * Get X possition
+     * @returns {number}
+     */
+    get x() {
+        return this.maxes.xMin;
+    }
+
+    /**
+     * Get Y possition
+     * @returns {number}
+     */
+    get y() {
+        return this.maxes.yMax;
+    }
+
+    /**
+     * Get Width
+     * @returns {number}
+     */
+    get width() {
+        let w = this.maxes.xMax - this.maxes.xMin;
+        return Math.max(w, 0);
+    }
+
+    /**
+     * Get Height
+     * @returns {number}
+     */
+    get height() {
+        let h = this.maxes.yMax - this.maxes.yMin;
+        return Math.max(h, 0);
+    }
+
+    /**
+     * get maxes
+     * @returns {boolean}
+     */
+    get maxes() {
+        return this.path.maxes;
+    }
+
 
     // --------------------------------------------------------------
-    // Getters
+    // Setters
     // --------------------------------------------------------------
 
     /**
@@ -213,7 +243,7 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set isAutoWide(isAutoWide) {
-        this._isAutoWide = isAutoWide;
+        this._isAutoWide = !!isAutoWide;
         return this;
     }
 
@@ -223,7 +253,8 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set glyphWidth(glyphWidth) {
-        this._glyphWidth = glyphWidth;
+        this._glyphWidth = parseFloat(glyphWidth);
+        if (isNaN(this._glyphWidth)) this._glyphWidth = 0;
         return this;
     }
 
@@ -233,7 +264,8 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set leftSideBearing(leftSideBearing) {
-        this._leftSideBearing = leftSideBearing;
+        this._leftSideBearing = parseFloat(leftSideBearing);
+        if (isNaN(this._leftSideBearing)) this._leftSideBearing = 0;
         return this;
     }
 
@@ -243,7 +275,8 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set rightSideBearing(rightSideBearing) {
-        this._rightSideBearing = rightSideBearing;
+        this._rightSideBearing = parseFloat(rightSideBearing);
+        if (isNaN(this._rightSideBearing)) this._rightSideBearing = 0;
         return this;
     }
 
@@ -253,7 +286,7 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set ratioLock(ratioLock) {
-        this._ratioLock = ratioLock;
+        this._ratioLock = !!ratioLock;
         return this;
     }
 
@@ -263,7 +296,18 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set shapes(shapes) {
-        this._shapes = shapes;
+        if (shapes && shapes.length) {
+            for (let i = 0; i < shapes.length; i++) {
+                if (shapes[i].objType === 'ComponentInstance') {
+                    // debug('\t hydrating ci ' + shapes[i].name);
+                    this._shapes[i] = new ComponentInstance(shapes[i]);
+                } else {
+                    // debug('\t hydrating sh ' + shapes[i].name);
+                    this._shapes[i] = new Shape(shapes[i]);
+                }
+            }
+        }
+
         return this;
     }
 
@@ -287,22 +331,75 @@ export default class Glyph extends GlyphElement {
         return this;
     }
 
+    // computed properties
+
+    /**
+     * Set X possition
+     * @param {number} x
+     * @returns {Glyph} - reference to this Glyph
+     */
+    set x(x) {
+        this.setGlyphPosition(x, false);
+        return this;
+    }
+
+    /**
+     * Set Y possition
+     * @param {number} y
+     * @returns {Glyph} - reference to this Glyph
+     */
+    set y(y) {
+        this.setGlyphPosition(false, y);
+        return this;
+    }
+
+    /**
+     * Set Width
+     * @param {number} w
+     * @returns {Glyph} - reference to this Glyph
+     */
+    set width(w) {
+        this.setGlyphSize(w, false);
+        return this;
+    }
+
+    /**
+     * Set Height
+     * @param {number} h
+     * @returns {Glyph} - reference to this Glyph
+     */
+    set height(h) {
+        this.setGlyphSize(false, h);
+        return this;
+    }
+
+
     // --------------------------------------------------------------
-    // TRANSFORM & MOVE
+    // Transform & move
     // --------------------------------------------------------------
+
+    /**
+     * Move all the shapes in this glyph as one group
+     * @param {number} nx - new x
+     * @param {number} ny - new y
+     */
     setGlyphPosition(nx, ny) {
         // debug('Glyph.setGlyphPosition - START');
         // debug('\t nx/ny/force: ' + nx + ' ' + ny + ' ' + force);
         let m = this.maxes;
-        if (nx !== false)
-            nx = parseFloat(nx);
-        if (ny !== false)
-            ny = parseFloat(ny);
+        if (nx !== false) nx = parseFloat(nx);
+        if (ny !== false) ny = parseFloat(ny);
         let dx = (nx !== false) ? (nx - m.xMin) : 0;
         let dy = (ny !== false) ? (ny - m.yMax) : 0;
         this.updateGlyphPosition(dx, dy);
         // debug(' Glyph.setGlyphPosition - END\n');
     }
+
+    /**
+     * Update all the shapes' possiitons in this glyph as one group
+     * @param {number} dx - delta x
+     * @param {number} dy - delta y
+     */
     updateGlyphPosition(dx, dy) {
         // debug('\n Glyph.updateGlyphPosition - START ' + this.name);
         // debug('\t dx/dy/force: ' + dx + ' ' + dy + ' ' + force);
@@ -316,44 +413,50 @@ export default class Glyph extends GlyphElement {
         this.changed();
         // debug(' Glyph.updateGlyphPosition - END ' + this.name + '\n\n');
     }
+
+    /**
+     * Set all the sizes of the shapes in this glyph as one group
+     * @param {number} nw - new width
+     * @param {number} nh - new height
+     * @param {boolean} ratioLock - true to scale width and height 1:1
+     */
     setGlyphSize(nw, nh, ratioLock) {
         // debug('SET GLYPHSIZE ---- nw/nh/ra:\t' + nw + '\t ' + nh + '\t ' + ratioLock);
         // debug('\t maxes: ' + json(this.maxes));
         let m = this.maxes;
-        if (nw !== false)
-            nw = parseFloat(nw);
-        if (nh !== false)
-            nh = parseFloat(nh);
+        if (nw !== false) nw = parseFloat(nw);
+        if (nh !== false) nh = parseFloat(nh);
         let ch = (m.yMax - m.yMin);
         let cw = (m.xMax - m.xMin);
         let dw = (nw !== false) ? (nw - cw) : 0;
         let dh = (nh !== false) ? (nh - ch) : 0;
         if (ratioLock) {
-            if (Math.abs(nh) > Math.abs(nw))
-                dw = (cw * (nh / ch)) - cw;
-            else
-                dh = (ch * (nw / cw)) - ch;
+            if (Math.abs(nh) > Math.abs(nw)) dw = (cw * (nh / ch)) - cw;
+            else dh = (ch * (nw / cw)) - ch;
         }
         this.updateGlyphSize(dw, dh, false);
     }
+
+    /**
+     * Update all the sizes of the shapes in this glyph as one group
+     * @param {number} dw - delta width
+     * @param {number} dh - delta height
+     * @param {boolean} ratioLock - true to scale width and height 1:1
+     */
     updateGlyphSize(dw, dh, ratioLock) {
         // debug('\n Glyph.updateGlyphSize - START ' + this.name);
         // debug('\t number of shapes: ' + this.shapes.length);
         // debug('\t dw dh rl:\t' + dw + '/' + dh + '/' + ratioLock);
         let m = this.maxes;
-        if (dw !== false)
-            dw = parseFloat(dw) || 0;
-        if (dh !== false)
-            dh = parseFloat(dh) || 0;
+        if (dw !== false) dw = parseFloat(dw) || 0;
+        if (dh !== false) dh = parseFloat(dh) || 0;
         // debug('\t adjust dw/dh:\t' + dw + '/' + dh);
         let oldw = m.xMax - m.xMin;
         let oldh = m.yMax - m.yMin;
         let neww = (oldw + dw);
         let newh = (oldh + dh);
-        if (Math.abs(neww) < 1)
-            neww = 1;
-        if (Math.abs(newh) < 1)
-            newh = 1;
+        if (Math.abs(neww) < 1) neww = 1;
+        if (Math.abs(newh) < 1) newh = 1;
         // debug('\t new w/h:\t' + neww + '/' + newh);
         let ratiodh = (newh / oldh);
         let ratiodw = (neww / oldw);
@@ -362,54 +465,71 @@ export default class Glyph extends GlyphElement {
             // Assuming only one will be nonzero
             // if(Math.abs(ratiodh) > Math.abs(ratiodw)) ratiodw = ratiodh;
             // else ratiodh = ratiodw;
-            if (dw !== 0 && dh === 0)
-                ratiodh = ratiodw;
-            else
-                ratiodw = ratiodh;
+            if (dw !== 0 && dh === 0) ratiodh = ratiodw;
+            else ratiodw = ratiodh;
         }
         // debug('\t ratio dw/dh:\t' + ratiodw + '/' + ratiodh);
+
         let cs = this.shapes;
-        let s, smaxes, oldsw, oldsh, oldsx, oldsy, newsw, newsh, newsx, newsy, sdw, sdh, sdx, sdy;
+        let s;
+        let smaxes;
+        let oldsw;
+        let oldsh;
+        let oldsx;
+        let oldsy;
+        let newsw;
+        let newsh;
+        let newsx;
+        let newsy;
+        let sdw;
+        let sdh;
+        let sdx;
+        let sdy;
+
         // debug('\t Before Maxes ' + json(m, true));
         for (let i = 0; i < cs.length; i++) {
             s = cs[i];
             // debug('\t >>> Updating ' + s.objType + ' ' + i + '/' + cs.length + ' : ' + s.name);
             smaxes = s.maxes;
+
             // scale
             oldsw = smaxes.xMax - smaxes.xMin;
             newsw = oldsw * ratiodw;
-            if (ratiodw === 0)
-                sdw = false;
-            else
-                sdw = newsw - oldsw;
+
+            if (ratiodw === 0) sdw = false;
+            else sdw = newsw - oldsw;
+
             oldsh = smaxes.yMax - smaxes.yMin;
             newsh = oldsh * ratiodh;
-            if (ratiodh === 0)
-                sdh = false;
-            else
-                sdh = newsh - oldsh;
+
+            if (ratiodh === 0) sdh = false;
+            else sdh = newsh - oldsh;
+
             // debug('\t Shape ' + i + ' dw dh ' + sdw + ' ' + sdh);
             s.updateShapeSize(sdw, sdh, false);
+
             // move
             oldsx = smaxes.xMin - m.xMin;
             newsx = oldsx * ratiodw;
-            if (ratiodw === 0)
-                sdx = false;
-            else
-                sdx = newsx - oldsx;
+
+            if (ratiodw === 0) sdx = false;
+            else sdx = newsx - oldsx;
+
             oldsy = smaxes.yMin - m.yMin;
             newsy = oldsy * ratiodh;
-            if (ratiodh === 0)
-                sdy = false;
-            else
-                sdy = newsy - oldsy;
+
+            if (ratiodh === 0) sdy = false;
+            else sdy = newsy - oldsy;
+
             // debug('\t Shape Pos ' + i + ' dx dy ' + sdx + ' ' + sdy);
             s.updateShapePosition(sdx, sdy, true);
         }
+
         this.changed();
         // debug('\t Afters Maxes ' + json(this.maxes, true));
         // debug(' Glyph.updateGlyphSize - END ' + this.name + '\n');
     }
+
     flipEW(mid) {
         // debug('\n Glyph.flipEW - START');
         // debug('\t ' + this.name);

@@ -155,6 +155,8 @@ export default class Shape extends GlyphElement {
         return this._ratioLock;
     }
 
+    // computed properties
+
     /**
      * Get X possition
      * @returns {number}
@@ -288,6 +290,8 @@ export default class Shape extends GlyphElement {
         this._ratioLock = !!ratioLock;
         return this;
     }
+
+    // computed properties
 
     /**
      * Set X possition
