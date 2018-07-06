@@ -33,7 +33,7 @@ export default class Coord extends GlyphElement {
      */
     save(verbose = false) {
         let re = {
-            object: this.objType,
+            objType: this.objType,
             x: this.x,
             y: this.y,
         };
@@ -53,8 +53,8 @@ export default class Coord extends GlyphElement {
      */
     print(level = 0) {
         let re = `{`;
-        re += `x: ${this.xLock? 'L' : ' '}${isVal(this._x)? this._x : '--'} `;
-        re += `y: ${this.yLock? 'L' : ' '}${isVal(this._y)? this._y : '--'} `;
+        re += `x: ${this.xLock? 'L' : ''}${isVal(this._x)? this._x : '--'}  `;
+        re += `y: ${this.yLock? 'L' : ''}${isVal(this._y)? this._y : '--'}`;
         re += `}`;
 
         return re;

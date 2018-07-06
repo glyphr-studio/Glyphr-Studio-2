@@ -195,6 +195,13 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
+        name: 'getCenter',
+        assertion: function() {
+            return _TEST.is(samplePath().getCenter().x).equalTo(327);
+        },
+    },
+    {
+        category: 'Path',
         name: 'makePathPostScript',
         assertion: function() {
             let path = samplePath();
@@ -320,7 +327,7 @@ _TEST.testList.push(
         category: 'Path',
         name: 'insertPathPoint',
         assertion: function() {
-            return _TEST.is(samplePath().insertPathPoint().p.x).equalTo(100);
+            return _TEST.is(samplePath().insertPathPoint().p.x).equalTo(437.879040081);
         },
     },
     {

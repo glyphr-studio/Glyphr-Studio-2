@@ -65,7 +65,7 @@
 // --------------------------------------------------------------
 // TRANSFORM & MOVE
 // --------------------------------------------------------------
-    Glyph.prototype.setGlyphPosition = function(nx, ny, force) {
+    Glyph.prototype.setGlyphPosition = function(nx, ny) {
         // debug('Glyph.setGlyphPosition - START');
         // debug('\t nx/ny/force: ' + nx + ' ' + ny + ' ' + force);
         let m = this.maxes;
@@ -73,11 +73,11 @@
         if (ny !== false) ny = parseFloat(ny);
         let dx = (nx !== false)? (nx - m.xMin) : 0;
         let dy = (ny !== false)? (ny - m.yMax) : 0;
-        this.updateGlyphPosition(dx, dy, force);
+        this.updateGlyphPosition(dx, dy);
         // debug(' Glyph.setGlyphPosition - END\n');
     };
 
-    Glyph.prototype.updateGlyphPosition = function(dx, dy, force) {
+    Glyph.prototype.updateGlyphPosition = function(dx, dy) {
         // debug('\n Glyph.updateGlyphPosition - START ' + this.name);
         // debug('\t dx/dy/force: ' + dx + ' ' + dy + ' ' + force);
         // debug('\t number of shapes: ' + this.shapes.length);
@@ -86,7 +86,7 @@
         dy = parseFloat(dy) || 0;
         let cs = this.shapes;
         for (let i=0; i<cs.length; i++) {
-            cs[i].updateShapePosition(dx, dy, force);
+            cs[i].updateShapePosition(dx, dy);
         }
 
         this.changed();

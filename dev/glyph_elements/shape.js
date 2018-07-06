@@ -1,9 +1,14 @@
 import GlyphElement from './glyphelement.js';
 import Path from './path.js';
+import PathPoint from './pathpoint.js';
+import Coord from './coord.js';
+import {findPathIntersections} from './path.js';
+import {ixToCoord} from './segment.js';
+import {strSan, clone, isVal, round} from '../app/functions.js';
 
 export {rectPathFromMaxes, ovalPathFromMaxes, addShape,
     turnSelectedShapeIntoAComponent, getClickedShape, isOverShape,
-    combineShapes, singlePass, combineTwoShapes};
+    combineShapes, combineTwoShapes};
 
 /**
  * Object > Shape
@@ -57,7 +62,7 @@ export default class Shape extends GlyphElement {
      */
     save(verbose = false) {
         let re = {
-            object: this.objType,
+            objType: this.objType,
             path: this.path.save(verbose),
         };
 
@@ -336,10 +341,14 @@ export default class Shape extends GlyphElement {
      * @returns {string} - svg
      */
     makeSVG(size = 50, gutter = 10) {
-        size = size || _UI.thumbSize;
-        gutter = gutter || _UI.thumbGutter;
-        let upm = _GP.projectSettings.upm;
-        let desc = upm - _GP.projectSettings.ascent;
+        let upm = 1000;
+        let desc = 300;
+
+        if (_GP && _GP.projectSettings) {
+            upm = _GP.projectSettings.upm;
+            desc = upm - _GP.projectSettings.ascent;
+        }
+
         let charscale = (size - (gutter * 2)) / size;
         let gutterscale = (gutter / size) * upm;
         let vbsize = upm - (gutter * 2);
@@ -387,18 +396,22 @@ export default class Shape extends GlyphElement {
      * Call path.updatePathPosition
      * @param {number} dx - delta x
      * @param {number} dy - delta y
+     * @returns {Shape} - reference to this shape
      */
-    updateShapePosition(dx, dy) {
+    updateShapePosition(dx = 0, dy = 0) {
         this.path.updatePathPosition(dx, dy);
+        return this;
     }
 
     /**
      * Call path.setPathPosition
      * @param {number} nx - new x value
      * @param {number} ny - new y value
+     * @returns {Shape} - reference to this shape
      */
-    setShapePosition(nx, ny) {
+    setShapePosition(nx = false, ny = false) {
         this.path.setPathPosition(nx, ny);
+        return this;
     }
 
     /**
@@ -406,9 +419,11 @@ export default class Shape extends GlyphElement {
      * @param {number} dw - delta width
      * @param {number} dh - delta height
      * @param {boolean} ratioLock - maintain aspect ratio
+     * @returns {Shape} - reference to this shape
      */
-    updateShapeSize(dw, dh, ratioLock) {
+    updateShapeSize(dw = 0, dh = 0, ratioLock = false) {
         this.path.updatePathSize(dw, dh, ratioLock);
+        return this;
     }
 
     /**
@@ -416,9 +431,11 @@ export default class Shape extends GlyphElement {
      * @param {number} nw - new width
      * @param {number} nh - new height
      * @param {boolean} ratioLock - maintain aspect ratio
+     * @returns {Shape} - reference to this shape
      */
-    setShapeSize(nw, nh, ratioLock) {
+    setShapeSize(nw = false, nh = false, ratioLock = false) {
         this.path.setPathSize(nw, nh, ratioLock);
+        return this;
     }
 
     /**
@@ -438,7 +455,7 @@ export default class Shape extends GlyphElement {
      * @param {number} mid - x value about which to flip
      * @returns {Shape} - reference to this shape
      */
-    flipEW(mid) {
+    flipEW(mid = this.getCenter().x) {
         this.path.flipEW(mid);
         return this;
     }
@@ -448,7 +465,7 @@ export default class Shape extends GlyphElement {
      * @param {number} mid - y value about which to flip
      * @returns {Shape} - reference to this shape
      */
-    flipNS(mid) {
+    flipNS(mid = this.getCenter().y) {
         this.path.flipNS(mid);
         return this;
     }
@@ -655,9 +672,14 @@ export default class Shape extends GlyphElement {
 function rectPathFromMaxes(maxes) {
     // Default Shape size
     let lx = 0;
-    let ty = _GP.projectSettings.ascent;
-    let rx = (_GP.projectSettings.upm / _GP.projectSettings.griddivisions);
+    let ty = 700;
+    let rx = 100;
     let by = 0;
+
+    if (_GP && _GP.projectSettings) {
+        ty = _GP.projectSettings.ascent;
+        rx = (_GP.projectSettings.upm / _GP.projectSettings.griddivisions);
+    }
 
     if (maxes) {
         lx = maxes.xMin;
@@ -710,10 +732,10 @@ function ovalPathFromMaxes(maxes) {
     maxes = maxes || {};
 
     // Default Circle size
-    lx = isVal(maxes.xMin)? maxes.xMin : 0;
-    ty = isVal(maxes.yMax)? maxes.yMax : _GP.projectSettings.xheight || 500;
-    rx = isVal(maxes.xMax)? maxes.xMax : _GP.projectSettings.xheight || 500;
-    by = isVal(maxes.yMin)? maxes.yMin : 0;
+    let lx = isVal(maxes.xMin)? maxes.xMin : 0;
+    let ty = isVal(maxes.yMax)? maxes.yMax : _GP.projectSettings.xheight || 500;
+    let rx = isVal(maxes.xMax)? maxes.xMax : _GP.projectSettings.xheight || 500;
+    let by = isVal(maxes.yMin)? maxes.yMin : 0;
 
 
     let hw = round((rx-lx)/2);
@@ -898,19 +920,19 @@ function combineShapes(shapes, donttoast, dontresolveoverlaps) {
             for (let inner=0; inner<arr.length; inner++) {
             // debug('\t\t testing shape ' + outer + ' and ' + inner);
 
-            if ((outer !== inner) && arr[outer] && arr[inner]) {
-                re = combineTwoShapes(arr[outer], arr[inner], donttoast);
+                if ((outer !== inner) && arr[outer] && arr[inner]) {
+                    re = combineTwoShapes(arr[outer], arr[inner], donttoast);
 
-                // debug('\t\t combineShapes returned ' + (re.length || re));
-                if (re !== false) {
-                    newarr.push(re);
-                    didstuff = true;
-                    arr[outer] = false;
-                    arr[inner] = false;
+                    // debug('\t\t combineShapes returned ' + (re.length || re));
+                    if (re !== false) {
+                        newarr.push(re);
+                        didstuff = true;
+                        arr[outer] = false;
+                        arr[inner] = false;
+                    }
                 }
             }
         }
-}
 
         newarr = newarr.concat(arr.filter(function(v) {
             return v;
@@ -984,6 +1006,13 @@ function combineShapes(shapes, donttoast, dontresolveoverlaps) {
  */
 function combineTwoShapes(shape1, shape2) {
     // debug('\n combineShapes - START');
+
+    // debug(`\t shape 1`);
+    // debug(shape1.print());
+
+    // debug(`\t shape 2`);
+    // debug(shape2.print());
+
     // Find intersections
     let intersections = findPathIntersections(shape1.path, shape2.path);
 
@@ -992,23 +1021,37 @@ function combineTwoShapes(shape1, shape2) {
         return false;
     }
 
-    // Insert one intersection into both shapes
-    let ix = ixToCoord(intersections[0]);
+    // debug(`\t found ${intersections.length} intersections`);
 
-    let p1 = shape1.path.containsPoint(ix);
+    // Insert one intersection into both shapes
+    let co = ixToCoord(intersections[0]);
+    // debug(`\t chose coord ${co.print()} to start with`);
+
+    let p1 = shape1.path.containsPoint(co);
+    let p2 = shape2.path.containsPoint(co);
+
     if (!p1) {
-        p1 = shape1.path.getClosestPointOnCurve(ix);
+        // debug(`\t p1.containsPoint returned false, getting closes point on curve`);
+
+        p1 = shape1.path.getClosestPointOnCurve(co);
         p1 = shape1.path.insertPathPoint(p1.split, p1.point);
     }
-    p1.customid = 'overlap';
 
-    let p2 = shape2.path.containsPoint(ix);
     if (!p2) {
-        p2 = shape2.path.getClosestPointOnCurve(ix);
+        // debug(`\t p2.containsPoint returned false, getting closes point on curve`);
+
+        p2 = shape2.path.getClosestPointOnCurve(co);
         p2 = shape2.path.insertPathPoint(p2.split, p2.point);
     }
-    p2.customid = 'overlap';
 
+    p1.customID = 'overlap';
+    p2.customID = 'overlap';
+
+    // debug(`\t point 1`);
+    // debug(p1.print());
+
+    // debug(`\t point 2`);
+    // debug(p2.print());
 
     /*
         Walk one shape until the overlap point is found
@@ -1027,7 +1070,7 @@ function combineTwoShapes(shape1, shape2) {
         for (let pp=0; pp<path.pathPoints.length; pp++) {
             pt = new PathPoint(path.pathPoints[pp]);
 
-            if (path.pathPoints[pp].customid !== 'overlap') {
+            if (path.pathPoints[pp].customID !== 'overlap') {
                 re.push(pt);
             } else {
                 return {
@@ -1048,7 +1091,7 @@ function combineTwoShapes(shape1, shape2) {
         let ov = {};
 
         for (let pp=0; pp<path.pathPoints.length; pp++) {
-            if (path.pathPoints[pp].customid === 'overlap') {
+            if (path.pathPoints[pp].customID === 'overlap') {
                 ov = new PathPoint(path.pathPoints[pp]);
 
                 for (let pa=(pp+1); pa<path.pathPoints.length; pa++) {
@@ -1068,15 +1111,25 @@ function combineTwoShapes(shape1, shape2) {
     let s2h1 = getPointsBeforeOverlap(shape2.path);
     let s2h2 = getPointsAfterOverlap(shape2.path);
 
+    // debug(`\t After getPoints/Before/After/Overlap`);
+    // debug(`\t s1h1`);
+    // debug(s1h1);
+    // debug(`\t s1h2`);
+    // debug(s1h2);
+    // debug(`\t s2h1`);
+    // debug(s2h1);
+    // debug(`\t s2h2`);
+    // debug(s2h2);
+
     let newpoints = [];
 
     newpoints = newpoints.concat(s1h1.points);
 
     newpoints.push(
         new PathPoint({
-            p: clone(s1h1.overlap.p),
-            h1: clone(s1h1.overlap.h1),
-            h2: clone(s2h1.overlap.h2),
+            p: s1h1.overlap.p,
+            h1: s1h1.overlap.h1,
+            h2: s2h1.overlap.h2,
             type: 'corner',
         })
     );
@@ -1086,9 +1139,9 @@ function combineTwoShapes(shape1, shape2) {
 
     newpoints.push(
         new PathPoint({
-            P: clone(s2h1.overlap.p),
-            H1: clone(s2h1.overlap.h1),
-            H2: clone(s1h2.overlap.h2),
+            p: s2h1.overlap.p,
+            h1: s2h1.overlap.h1,
+            h2: s1h2.overlap.h2,
             type: 'corner',
         })
     );

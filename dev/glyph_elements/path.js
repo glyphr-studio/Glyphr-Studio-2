@@ -64,7 +64,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      */
     save(verbose = false) {
         let re = {
-            object: this.objType,
+            objType: this.objType,
             winding: this.winding,
             pathPoints: [],
         };
@@ -322,7 +322,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {number} nh - new Height
      * @param {boolean} ratioLock - if one is changed, change the other
      */
-    setPathSize(nw, nh, ratioLock = false) {
+    setPathSize(nw = false, nh = false, ratioLock = false) {
         if (nw !== false) nw = parseFloat(nw);
         if (nh !== false) nh = parseFloat(nh);
 
@@ -341,8 +341,8 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
     updatePathSize(dw = 0, dh = 0, ratioLock = false) {
         // debug('\n Path.updatePathSize - START');
         // debug('dw,dh,rl\t'+dw+' , '+dh+' , '+ratioLock);
-        dw = parseFloat(dw) || 0;
-        dh = parseFloat(dh) || 0;
+        dw = parseFloat(dw);
+        dh = parseFloat(dh);
         if (!dw && !dh) return;
 
         // Lock Aspect Ratio
@@ -406,7 +406,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {number} nx - new X
      * @param {number} ny - new Y
      */
-    setPathPosition(nx, ny) {
+    setPathPosition(nx = false, ny = false) {
         // debug('\n Path.setPathPosition - START');
         // debug('\t nx ny force:\t ' + nx + '\t ' + ny + '\t ' + force);
 
@@ -417,7 +417,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         let dy = (ny !== false) ? ((ny * 1) - this.maxes.yMax) : 0;
         // debug('\t dx dy: ' + dx + ' ' + dy);
 
-        this.updatePathPosition(dx, dy, force);
+        this.updatePathPosition(dx, dy);
         // debug(' Path.setPathPosition - END\n');
     }
 
@@ -561,7 +561,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
 
 
     // --------------------------------------------------------------
-    //  DRAWING
+    //  Drawing
     // --------------------------------------------------------------
 
     /**
@@ -635,7 +635,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
 
 
     // --------------------------------------------------------------
-    //  TRANSLATE TO OTHER LANGUAGES
+    //  Translate to other languages
     // --------------------------------------------------------------
 
     /**
@@ -845,7 +845,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
 
 
     // --------------------------------------------------------------
-    //  CANVAS HELPER FUNCTIONS
+    //  Canvas helper functions
     // --------------------------------------------------------------
 
     /**
@@ -970,11 +970,10 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {number} mid - y value about which to flip
      * @returns {Path} - reference to this path
      */
-    flipNS(mid) {
+    flipNS(mid = this.getCenter().y) {
         // debug(`\n Path.flipNS - START`);
         // debug(json(this.save()));
         let startingY = this.y;
-        mid = isVal(mid) ? mid : (this.height / 2) + this.maxes.yMin;
         // debug(`\t calculating mid: (height)/2 + ymin = mid: ${this.height}/2 + ${this.maxes.yMin} = ${mid}`);
 
         for (let e = 0; e < this.pathPoints.length; e++) {
@@ -995,11 +994,10 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {number} mid - x value about which to flip
      * @returns {Path} - reference to this path
      */
-    flipEW(mid) {
+    flipEW(mid = this.getCenter().x) {
         // debug(`\n Path.flipEW - START`);
         // debug(json(this.save()));
         let startingX = this.x;
-        mid = isVal(mid) ? mid : (this.width / 2) + this.x;
         // debug(`\t calculating mid: (width)/2 + x = mid: ${this.width}/2 + ${this.x} = ${mid}`);
 
         for (let e = 0; e < this.pathPoints.length; e++) {
@@ -1062,7 +1060,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
             nP = new Coord({x: s1.p4x, y: s1.p4y});
             nH1 = new Handle({point: new Coord({x: s1.p3x, y: s1.p3y})});
             nH2 = new Handle({point: new Coord({x: s2.p2x, y: s2.p2y})});
-            ppn = new PathPoint({P: nP, H1: nH1, H2: nH2, type: 'flat'});
+            ppn = new PathPoint({p: nP, h1: nH1, h2: nH2, type: 'flat'});
             ppn.roundAll();
 
             // Update P1
@@ -1201,10 +1199,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
             // debug('\t ++++++ ending seg ' + s);
         }
 
-        this._maxes.xMax = round(this._maxes.xMax, 4);
-        this._maxes.xMin = round(this._maxes.xMin, 4);
-        this._maxes.yMax = round(this._maxes.yMax, 4);
-        this._maxes.yMin = round(this._maxes.yMin, 4);
+        this._maxes.roundAll(4);
         // debug('\t afters ' + json(this.maxes, true));
         // debug(' Path.calcMaxes - END\n');
     }
@@ -1218,27 +1213,27 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         for (let pp = 0; pp < this.pathPoints.length; pp++) {
             tp = this.pathPoints[pp];
             if (!tp.p.x && tp.p.x !== 0) {
-                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} P.x from ${tp.p.x}`);
+                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} p.x from ${tp.p.x}`);
                 tp.p.x = 0;
             }
             if (!tp.p.y && tp.p.y !== 0) {
-                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} P.y from ${tp.p.y}`);
+                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} p.y from ${tp.p.y}`);
                 tp.p.y = 0;
             }
             if (!tp.h1.x && tp.h1.x !== 0) {
-                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} H1.x from ${tp.h1.x}`);
+                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h1.x from ${tp.h1.x}`);
                 tp.h1.x = 0;
             }
             if (!tp.h1.y && tp.h1.y !== 0) {
-                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} H1.y from ${tp.h1.y}`);
+                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h1.y from ${tp.h1.y}`);
                 tp.h1.y = 0;
             }
             if (!tp.h2.x && tp.h2.x !== 0) {
-                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} H2.x from ${tp.h2.x}`);
+                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h2.x from ${tp.h2.x}`);
                 tp.h2.x = 0;
             }
             if (!tp.h2.y && tp.h2.y !== 0) {
-                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} H2.y from ${tp.h2.y}`);
+                // debug(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h2.y from ${tp.h2.y}`);
                 tp.h2.y = 0;
             }
             tp.roundAll();

@@ -86,7 +86,7 @@ class ComponentInstance {
      */
     save(verbose = false) {
         let re = {
-            object: this.objType,
+            objType: this.objType,
             link: this.link,
         };
 

@@ -112,8 +112,8 @@ import _UI from '../app/settings.js';
         return this.shape;
     };
 
-    _UI.multiSelect.points.updateShapePosition = function(dx, dy, force) {
-        this.getShape().updateShapePosition(dx, dy, force);
+    _UI.multiSelect.points.updateShapePosition = function(dx, dy) {
+        this.getShape().updateShapePosition(dx, dy);
     };
 
     _UI.multiSelect.points.deletePathPoints = function() {
@@ -329,12 +329,12 @@ import _UI from '../app/settings.js';
  this.getSingleton().changeShapeName(n);
 };
 
-    _UI.multiSelect.shapes.updateShapePosition = function(dx, dy, force) {
- this.getGlyph().updateGlyphPosition(dx, dy, force);
+    _UI.multiSelect.shapes.updateShapePosition = function(dx, dy) {
+ this.getGlyph().updateGlyphPosition(dx, dy);
 };
 
-    _UI.multiSelect.shapes.setShapePosition = function(nx, ny, force) {
- this.getGlyph().setGlyphPosition(nx, ny, force);
+    _UI.multiSelect.shapes.setShapePosition = function(nx, ny) {
+ this.getGlyph().setGlyphPosition(nx, ny);
 };
 
     _UI.multiSelect.shapes.updateShapeSize = function(dw, dh, ratioLock) {

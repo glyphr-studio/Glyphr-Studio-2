@@ -362,14 +362,14 @@
                 '<div class="lockwrapper">'+
                     lockUI('_UI.multiSelect.points.getSingleton().p.xLock', tp.p.xLock, 'Pxlock')+
                     '<input type="number" id="pointx" step="'+svc+'" '+
-                    (tp.p.xLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'P\', (this.value), \'null\'); history_put(\'Point X Position : \'+this.value); redraw({calledBy:\'pointDetails\'});"')+
+                    (tp.p.xLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'p\', (this.value), \'null\'); history_put(\'Point X Position : \'+this.value); redraw({calledBy:\'pointDetails\'});"')+
                     ' value="' + round(tp.p.x, 3) + '" >'+
                 '</div>'+
                 dimSplit()+
                 '<div class="lockwrapper">'+
                     lockUI('_UI.multiSelect.points.getSingleton().p.yLock', tp.p.yLock, 'Pylock')+
                     '<input type="number" id="pointy" step="'+svc+'" '+
-                    (tp.p.yLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'P\', \'null\', (this.value)); history_put(\'Point Y Position : \'+this.value); redraw({calledBy:\'pointDetails\'});"')+
+                    (tp.p.yLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'p\', \'null\', (this.value)); history_put(\'Point Y Position : \'+this.value); redraw({calledBy:\'pointDetails\'});"')+
                     ' value="' + round(tp.p.y, 3) + '" >'+
                 '</div>'+
             '</td>'+
@@ -388,14 +388,14 @@
                     '<div class="lockwrapper">'+
                         lockUI('_UI.multiSelect.points.getSingleton().h1.xLock', tp.h1.xLock, 'H1xlock')+
                         '<input type="number" id="handle1x" step="'+svc+'" '+
-                        (tp.h1.xLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'H1\', (this.value), \'null\'); history_put(\'H1 X Position : \'+round(this.value)); redraw({calledBy:\'pointDetails\'});"')+
+                        (tp.h1.xLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'h1\', (this.value), \'null\'); history_put(\'h1 X Position : \'+round(this.value)); redraw({calledBy:\'pointDetails\'});"')+
                         ' value="' + round(tp.h1.x, 3) + '" >'+
                     '</div>'+
                     dimSplit()+
                     '<div class="lockwrapper">'+
                         lockUI('_UI.multiSelect.points.getSingleton().h1.yLock', tp.h1.yLock, 'H1ylock')+
                         '<input type="number" id="handle1y" step="'+svc+'" '+
-                        (tp.h1.yLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'H1\', \'null\', (this.value)); history_put(\'H1 Y Position : \'+round(this.value)); redraw({calledBy:\'pointDetails\'});"')+
+                        (tp.h1.yLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'h1\', \'null\', (this.value)); history_put(\'h1 Y Position : \'+round(this.value)); redraw({calledBy:\'pointDetails\'});"')+
                         ' value="' + round(tp.h1.y, 3) + '" >'+
                     '</div>'+
                 '</td>'+
@@ -419,14 +419,14 @@
                     '<div class="lockwrapper">'+
                         lockUI('_UI.multiSelect.points.getSingleton().h2.xLock', tp.h2.xLock, 'H2xlock')+
                         '<input type="number" id="handle2x" step="'+svc+'" '+
-                        (tp.h2.xLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'H2\', (this.value), \'null\'); history_put(\'H2 X Position : \'+round(this.value)); redraw({calledBy:\'pointDetails\'});"')+
+                        (tp.h2.xLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'h2\', (this.value), \'null\'); history_put(\'h2 X Position : \'+round(this.value)); redraw({calledBy:\'pointDetails\'});"')+
                         ' value="' + round(tp.h2.x, 3) + '" >'+
                     '</div>'+
                     dimSplit()+
                     '<div class="lockwrapper">'+
                         lockUI('_UI.multiSelect.points.getSingleton().h2.yLock', tp.h2.yLock, 'H2ylock')+
                         '<input type="number" id="handle2y" step="'+svc+'" '+
-                        (tp.h2.yLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'H2\', \'null\', (this.value)); history_put(\'H2 Y Position : \'+round(this.value)); redraw({calledBy:\'pointDetails\'});"')+
+                        (tp.h2.yLock? 'disabled="disabled"' : 'onchange="_UI.focusElement=this.id; _UI.multiSelect.points.getSingleton().setPathPointPosition(\'h2\', \'null\', (this.value)); history_put(\'h2 Y Position : \'+round(this.value)); redraw({calledBy:\'pointDetails\'});"')+
                         ' value="' + round(tp.h2.y, 3) + '" >'+
                     '</div>'+
                 '</td>'+

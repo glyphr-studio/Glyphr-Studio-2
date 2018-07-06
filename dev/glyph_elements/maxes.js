@@ -1,5 +1,5 @@
 import GlyphElement from './glyphelement.js';
-import {isVal} from '../app/functions.js';
+import {isVal, round} from '../app/functions.js';
 
 /**
  * Maxes
@@ -42,7 +42,7 @@ export default class Maxes extends GlyphElement {
         // debug(`\n Maxes.save - START`);
 
         let re = {
-            object: this.objType,
+            objType: this.objType,
         };
 
         if (isVal(this._xMin)) re.xMin = this._xMin;
@@ -193,6 +193,24 @@ export default class Maxes extends GlyphElement {
         else delete this._yMax;
         return this;
     }
+
+
+    // --------------------------------------------------------------
+    // Methods
+    // --------------------------------------------------------------
+
+    /**
+     * Rounds all the values to a certain precision
+     * @param {number} precision - how many decimal paces to round to
+     */
+    roundAll(precision = 3) {
+        this.xMin = round(this.xMin, precision);
+        this.xMax = round(this.xMax, precision);
+        this.yMin = round(this.yMin, precision);
+        this.yMax = round(this.yMax, precision);
+    }
+
+
 }
 
 

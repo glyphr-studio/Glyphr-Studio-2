@@ -746,7 +746,7 @@
                 h1 = new Coord({'x': currdata[0], 'y': currdata[1]});
                 p = new Coord({'x': currdata[2], 'y': currdata[3]});
 
-                // debug('\t P before: ' + json(p, true));
+                // debug('\t p before: ' + json(p, true));
 
                 if (iscmd('s')) {
                     // Relative offset for st
@@ -758,8 +758,8 @@
                     p.y += prevy;
                 }
 
-                // debug('\t P afters: ' + json(p, true));
-                // debug('\t H1 after: ' + json(h1, true));
+                // debug('\t p afters: ' + json(p, true));
+                // debug('\t h1 after: ' + json(h1, true));
 
 
                 patharr.push(new PathPoint({'p': clone(p), 'h1': clone(h1), 'h2': clone(p), 'type': 'symmetric', 'useH1': true, 'useH2': true}));

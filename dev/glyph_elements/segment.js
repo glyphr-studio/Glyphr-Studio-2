@@ -74,7 +74,7 @@ export default class Segment extends GlyphElement {
      */
     save(verbose = false) {
         let re = {
-            object: this.objType,
+            objType: this.objType,
             p1x: this.p1x,
             p1y: this.p1y,
             p2x: this.p2x,

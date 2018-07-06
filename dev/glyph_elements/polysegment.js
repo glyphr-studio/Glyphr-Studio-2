@@ -43,7 +43,7 @@ export default class PolySegment extends GlyphElement {
      */
     save(verbose = false) {
         let re = {
-            object: this.objType,
+            objType: this.objType,
             segments: [],
         };
 
@@ -541,7 +541,7 @@ export default class PolySegment extends GlyphElement {
         for (let s = 0; s < this._segments.length; s++) {
             if (testForHit(this._segments[s], 0.33, shape) && testForHit(this._segments[s], 0.66, shape)) {
                 // this._segments[s].drawSegmentPoints('rgb(255,0,0)', s);
-                this._segments[s].objType = 'hit';
+                this._segments[s].objType = 'HIT';
             } else {
                 // this._segments[s].drawSegmentPoints('rgb(0,255,0)', s);
             }
