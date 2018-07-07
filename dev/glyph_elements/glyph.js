@@ -221,7 +221,37 @@ export default class Glyph extends GlyphElement {
     get maxes() {
         return this.path.maxes;
     }
-
+    // --------------------------------------------------------------
+    // Getters
+    // --------------------------------------------------------------
+    getName() {
+        return this.name;
+    }
+    getChar() {
+        return getGlyphName(this.hex);
+    }
+    getHTML() {
+        return this.glyphhtml || '';
+    }
+    getLSB() {
+        if (this.leftSideBearing === false)
+            return _GP.projectSettings.defaultlsb;
+        else
+            return this.leftSideBearing;
+    }
+    getRSB() {
+        if (this.rightSideBearing === false)
+            return _GP.projectSettings.defaultrsb;
+        else
+            return this.rightSideBearing;
+    }
+    getCenter() {
+        let m = this.maxes;
+        let re = {};
+        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
+        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
+        return re;
+    }
 
     // --------------------------------------------------------------
     // Setters
@@ -530,6 +560,27 @@ export default class Glyph extends GlyphElement {
         // debug(' Glyph.updateGlyphSize - END ' + this.name + '\n');
     }
 
+    /**
+     * Flips this glyph about a horizontal line
+     * @param {number} mid - y value about which to flip
+     * @returns {Glyph} - reference to this glyph
+     */
+    flipNS(mid) {
+        let m = this.maxes;
+        mid = isVal(mid) ? mid : ((m.yMax - m.yMin) / 2) + m.yMin;
+        for (let s = 0; s < this.shapes.length; s++) {
+            this.shapes[s].flipNS(mid);
+        }
+        this.changed();
+
+        return this;
+    }
+
+    /**
+     * Flips this glyph about a vertical line
+     * @param {number} mid - y value about which to flip
+     * @returns {Glyph} - reference to this glyph
+     */
     flipEW(mid) {
         // debug('\n Glyph.flipEW - START');
         // debug('\t ' + this.name);
@@ -543,119 +594,110 @@ export default class Glyph extends GlyphElement {
         }
         this.changed();
         // debug('\t maxes = ' + json(this.maxes, true));
+        return this;
     }
-    flipNS(mid) {
-        let m = this.maxes;
-        mid = isVal(mid) ? mid : ((m.yMax - m.yMin) / 2) + m.yMin;
-        for (let s = 0; s < this.shapes.length; s++) {
-            this.shapes[s].flipNS(mid);
-        }
-        this.changed();
-    }
+
+    /**
+     * Rotate about a point
+     * @param {number} angle - how much to rotate
+     * @param {Coord} about - x/y center of rotation
+     * @returns {Glyph} - reference to this glyph
+     */
     rotate(angle, about) {
         about = about || this.getCenter();
         for (let s = 0; s < this.shapes.length; s++) {
             this.shapes[s].rotate(angle, about);
         }
         this.changed();
+
+        return this;
     }
+
+    /**
+     * Reverses the order of the path points in all the paths,
+     * thus reversing the winding
+     */
     reverseWinding() {
         for (let s = 0; s < this.shapes.length; s++) {
             this.shapes[s].reverseWinding();
         }
         this.changed();
     }
+
+
+    // --------------------------------------------------------------
+    // Alignment
+    // --------------------------------------------------------------
+
+
+    /**
+     * Move all the shapes to align with an edge
+     * @param {string} edge - which edge to align all the shapes to
+     */
     alignShapes(edge) {
         // debug('\n Glyph.alignShapes - START');
         // debug('\t edge: ' + edge);
-        let target, offset;
+        let target;
+        let offset;
+
         if (edge === 'top') {
             target = -999999;
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 target = Math.max(target, v.maxes.yMax);
             });
             // debug('\t found TOP: ' + target);
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 v.setShapePosition(false, target);
             });
         } else if (edge === 'middle') {
             target = this.getCenter().y;
             // debug('\t found MIDDLE: ' + target);
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 offset = v.getCenter().y;
                 v.updateShapePosition(false, (target - offset));
             });
         } else if (edge === 'bottom') {
             target = 999999;
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 target = Math.min(target, v.maxes.yMin);
             });
             // debug('\t found BOTTOM: ' + target);
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 offset = v.maxes.yMin;
                 v.updateShapePosition(false, (target - offset));
             });
         } else if (edge === 'left') {
             target = 999999;
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 target = Math.min(target, v.maxes.xMin);
             });
             // debug('\t found LEFT: ' + target);
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 v.setShapePosition(target, false);
             });
         } else if (edge === 'center') {
             target = this.getCenter().x;
             // debug('\t found CENTER: ' + target);
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 offset = v.getCenter().x;
                 v.updateShapePosition((target - offset), false);
             });
         } else if (edge === 'right') {
             target = -999999;
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 target = Math.max(target, v.maxes.xMax);
             });
             // debug('\t found RIGHT: ' + target);
-            this.shapes.forEach(function (v) {
+            this.shapes.forEach(function(v) {
                 offset = v.maxes.xMax;
                 v.updateShapePosition((target - offset), false);
             });
         }
+
         this.changed();
         // debug(' Glyph.alignShapes - END\n');
     }
-    // --------------------------------------------------------------
-    // Getters
-    // --------------------------------------------------------------
-    getName() {
-        return this.name;
-    }
-    getChar() {
-        return getGlyphName(this.hex);
-    }
-    getHTML() {
-        return this.glyphhtml || '';
-    }
-    getLSB() {
-        if (this.leftSideBearing === false)
-            return _GP.projectSettings.defaultlsb;
-        else
-            return this.leftSideBearing;
-    }
-    getRSB() {
-        if (this.rightSideBearing === false)
-            return _GP.projectSettings.defaultrsb;
-        else
-            return this.rightSideBearing;
-    }
-    getCenter() {
-        let m = this.maxes;
-        let re = {};
-        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
-        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
-        return re;
-    }
+
     // --------------------------------------------------------------
     // CALCULATING SIZE
     // --------------------------------------------------------------
