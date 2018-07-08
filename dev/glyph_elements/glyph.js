@@ -70,6 +70,7 @@ export default class Glyph extends GlyphElement {
         let re = {
             objType: this.objType,
             name: this.name,
+            hex: this._hex,
         };
 
         if (isAutoWide !== true) re.isAutoWide = this.isAutoWide;
@@ -221,37 +222,58 @@ export default class Glyph extends GlyphElement {
     get maxes() {
         return this.path.maxes;
     }
-    // --------------------------------------------------------------
-    // Getters
-    // --------------------------------------------------------------
-    getName() {
-        return this.name;
+
+    // Computed properties
+
+    /**
+     * get name
+     * @returns {string}
+     */
+    get name() {
+        return getUnicodeName(this.hex);
     }
-    getChar() {
+
+    /**
+     * get char name
+     * @returns {string}
+     */
+    get char() {
         return getGlyphName(this.hex);
     }
-    getHTML() {
-        return this.glyphhtml || '';
+
+    /**
+     * get HTML Char Code
+     * @returns {String}
+     */
+    get charCode() {
+        let code = hexToHTML(this.hex);
+        return code || '';
     }
-    getLSB() {
-        if (this.leftSideBearing === false)
+
+    /**
+     * get Left Side Bearing
+     * @returns {number}
+     */
+    get lsb() {
+        if (this.leftSideBearing === false) {
             return _GP.projectSettings.defaultlsb;
-        else
+        } else {
             return this.leftSideBearing;
+        }
     }
-    getRSB() {
-        if (this.rightSideBearing === false)
+
+    /**
+     * get Right Side Bearing
+     * @returns {number}
+     */
+    get rsb() {
+        if (this.rightSideBearing === false) {
             return _GP.projectSettings.defaultrsb;
-        else
+        } else {
             return this.rightSideBearing;
+        }
     }
-    getCenter() {
-        let m = this.maxes;
-        let re = {};
-        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
-        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
-        return re;
-    }
+
 
     // --------------------------------------------------------------
     // Setters
@@ -698,9 +720,15 @@ export default class Glyph extends GlyphElement {
         // debug(' Glyph.alignShapes - END\n');
     }
 
+
     // --------------------------------------------------------------
-    // CALCULATING SIZE
+    // Calculating dimensions
     // --------------------------------------------------------------
+
+    /**
+     * Calcualte the overal maxes for this Glyph
+     * @returns {Maxes}
+     */
     calcGlyphMaxes() {
         // debug('\n Glyph.calcGlyphMaxes - START ' + this.name);
         this.maxes = clone(_UI.mins);
@@ -759,6 +787,15 @@ export default class Glyph extends GlyphElement {
         // debug(' Glyph.getMaxes - END ' + this.name + '\n');
         return clone(this.maxes);
     }
+    getCenter() {
+        let m = this.maxes;
+        let re = {};
+        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
+        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
+        return re;
+    }
+
+
     // --------------------------------------------------------------
     // COMPONENT STUFF
     // --------------------------------------------------------------
