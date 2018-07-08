@@ -33,6 +33,7 @@ export default class GlyphElement {
         re.objType = this.objType;
 
         if (!verbose) delete re.objType;
+        if (re.cache) delete re.cache;
 
         return re;
     }
@@ -81,5 +82,19 @@ export default class GlyphElement {
         re += `${ind.substring(2)}}`;
 
         return re;
+    }
+
+    /**
+     * Figures out the center of the bounding box
+     */
+    get center() {
+        if (this.maxes ) {
+            return {
+                x: ((this.maxes.xMax - this.maxes.xMin) / 2) + this.maxes.xMin,
+                y: ((this.maxes.yMax - this.maxes.yMin) / 2) + this.maxes.yMin,
+            };
+        }
+
+        return false;
     }
 }

@@ -47,12 +47,8 @@ export default class Glyph extends GlyphElement {
         this.contextGlyphs = contextGlyphs;
         // debug('\t name: ' + this.name);
 
-        this.calcGlyphMaxes();
+        this.changed();
 
-        // cache
-        oa.cache = oa.cache || {};
-        this.cache = {};
-        this.cache.svg = oa.cache.svg || false;
         // debug(' Glyph - END\n');
     }
 
@@ -99,6 +95,7 @@ export default class Glyph extends GlyphElement {
      */
     changed() {
         for (let s=0; s<this.shapes.length; s++) this.shapes[s].chaged();
+        this.cache = {};
         this.calcGlyphMaxes();
     }
 
@@ -202,8 +199,12 @@ export default class Glyph extends GlyphElement {
      * @returns {number}
      */
     get width() {
-        let w = this.maxes.xMax - this.maxes.xMin;
-        return Math.max(w, 0);
+        if (this.isAutoWide) {
+            let w = this.maxes.xMax - this.maxes.xMin;
+            return Math.max(w, 0);
+        } else {
+            return this.glyphWidth;
+        }
     }
 
     /**
@@ -220,7 +221,22 @@ export default class Glyph extends GlyphElement {
      * @returns {boolean}
      */
     get maxes() {
-        return this.path.maxes;
+        // debug('\n Glyph.getMaxes - START ' + this.name);
+        if (!this._maxes || hasNonValues(this._maxes)) {
+            this.calcGlyphMaxes();
+        }
+        if (this.shapes.length) {
+            if (this._maxes.xMin === this._maxes.maxBounds.xMin ||
+                this._maxes.xMax === this._maxes.maxBounds.xMax ||
+                this._maxes.yMin === this._maxes.maxBounds.yMin ||
+                this._maxes.yMax === this._maxes.maxBounds.yMax
+            ) {
+                this.calcGlyphMaxes();
+            }
+        }
+        // debug('\t returning ' + json(this.maxes));
+        // debug(' Glyph.getMaxes - END ' + this.name + '\n');
+        return this._maxes;
     }
 
     // Computed properties
@@ -272,6 +288,15 @@ export default class Glyph extends GlyphElement {
         } else {
             return this.rightSideBearing;
         }
+    }
+
+    /**
+     * get Advance Width
+     * @returns {number}
+     */
+    get advanceWidth() {
+        if (this.isAutoWide) this.width + this.lsb + this.rsb;
+        else return this.glyphWidth;
     }
 
 
@@ -422,6 +447,16 @@ export default class Glyph extends GlyphElement {
      */
     set height(h) {
         this.setGlyphSize(false, h);
+        return this;
+    }
+
+    /**
+     * Set Maxes
+     * @param {Maxes} maxes
+     * @returns {Glyph} - reference to this Glyph
+     */
+    set maxes(maxes) {
+        this._maxes = new Maxes(maxes);
         return this;
     }
 
@@ -746,59 +781,22 @@ export default class Glyph extends GlyphElement {
                 }
             }
         } else {
-            this.maxes = { 'xMax': 0, 'xMin': 0, 'yMax': 0, 'yMin': 0 };
+            this.maxes = {'xMax': 0, 'xMin': 0, 'yMax': 0, 'yMin': 0};
         }
-        this.calcGlyphWidth();
+
         // debug(' Glyph.calcGlyphMaxes - END ' + this.name + '\n');
         return clone(this.maxes);
-    }
-    calcGlyphWidth() {
-        if (!this.isAutoWide)
-            return;
-        this.glyphWidth = Math.max(this.maxes.xMax, 0);
-    }
-    getAdvanceWidth() {
-        this.calcGlyphWidth();
-        if (!this.isAutoWide)
-            return this.glyphWidth;
-        else
-            return this.glyphWidth + this.getLSB() + this.getRSB();
-    }
-    getMaxes() {
-        // debug('\n Glyph.getMaxes - START ' + this.name);
-        if (hasNonValues(this.maxes)) {
-            // debug('\t ^^^^^^ maxes found NaN, calculating...');
-            this.calcGlyphMaxes();
-            // debug('\t ^^^^^^ maxes found NaN, DONE calculating...');
-        }
-        if (this.shapes.length) {
-            if (this.maxes.xMin === this.maxes.maxBounds.xMin ||
-                this.maxes.xMin === _UI.mins.xMin ||
-                this.maxes.xMax === this.maxes.maxBounds.xMax ||
-                this.maxes.xMax === _UI.mins.xMax ||
-                this.maxes.yMin === this.maxes.maxBounds.yMin ||
-                this.maxes.yMin === _UI.mins.yMin ||
-                this.maxes.yMax === this.maxes.maxBounds.yMax ||
-                this.maxes.yMax === _UI.mins.yMax) {
-                this.calcGlyphMaxes();
-            }
-        }
-        // debug('\t returning ' + json(this.maxes));
-        // debug(' Glyph.getMaxes - END ' + this.name + '\n');
-        return clone(this.maxes);
-    }
-    getCenter() {
-        let m = this.maxes;
-        let re = {};
-        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
-        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
-        return re;
     }
 
 
     // --------------------------------------------------------------
     // COMPONENT STUFF
     // --------------------------------------------------------------
+
+    /**
+     * Searches this Glyph for any Comonent Instance
+     * @returns {boolean}
+     */
     containsComponents() {
         for (let s = 0; s < this.shapes.length; s++) {
             if (this.shapes[s].objType === 'ComponentInstance') {
@@ -807,30 +805,36 @@ export default class Glyph extends GlyphElement {
         }
         return false;
     }
+
+    /**
+     * Component Instances contain links to other Glyphs, or
+     * other Component Instances.  Circular links cause the world
+     * to explode, so let's check for those before we add a new link.
+     * @param {string} cid - ID of component to look for
+     * @returns {boolean}
+     */
     canAddComponent(cid) {
         // debug('\n Glyph.canAddComponent - START');
         let myid = '' + getMyID(this);
         // debug('\t adding ' + cid + ' to (me) ' + myid);
-        if (myid === cid)
-            return false;
-        if (this.usedIn.length === 0)
-            return true;
+        if (myid === cid) return false;
+        if (this.usedIn.length === 0) return true;
         let downlinks = this.collectAllDownstreamLinks([], true);
-        downlinks = downlinks.filter(function (elem, pos) {
+        downlinks = downlinks.filter(function(elem, pos) {
             return downlinks.indexOf(elem) === pos;
         });
         let uplinks = this.collectAllUpstreamLinks([]);
-        uplinks = uplinks.filter(function (elem, pos) {
+        uplinks = uplinks.filter(function(elem, pos) {
             return uplinks.indexOf(elem) === pos;
         });
         // debug('\t downlinks: ' + downlinks);
         // debug('\t uplinks: ' + uplinks);
-        if (downlinks.indexOf(cid) > -1)
-            return false;
-        if (uplinks.indexOf(cid) > -1)
-            return false;
+        if (downlinks.indexOf(cid) > -1) return false;
+        if (uplinks.indexOf(cid) > -1) return false;
+
         return true;
     }
+
     collectAllDownstreamLinks(re, excludepeers) {
         re = re || [];
         for (let s = 0; s < this.shapes.length; s++) {

@@ -490,14 +490,6 @@ export default class Shape extends GlyphElement {
     }
 
     /**
-     * Call path.getCenter
-     * @returns {Coord}
-     */
-    getCenter() {
-        return this.path.getCenter();
-    }
-
-    /**
      * Call path.reverseWinding
      */
     reverseWinding() {
