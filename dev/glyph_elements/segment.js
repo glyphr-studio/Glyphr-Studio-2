@@ -10,20 +10,20 @@ export {segmentsAreEqual, findSegmentIntersections,
     findEndPointSegmentIntersections, ixToCoord, coordToIx, pointsAreCollinear};
 
 /**
-    Object > Segment
-    A Segment stores and acts on a piece of a Path
-    according to the mathmatical definition of a
-    Bezier curve.
-
-    Paths in Glyphr Studio are a collection of
-    Path Points, which themselves contain a point
-    and two handles.  Bezier curves, on the other
-    hand, are represented as two points, with two
-    handles between them.
-
-    This Segment object is basically here just to
-    make Bezier math easier for Paths.
-**/
+ * Glyph Element > Segment
+ * A Segment stores and acts on a piece of a Path
+ * according to the mathmatical definition of a
+ * Bezier curve.
+ *
+ * Paths in Glyphr Studio are a collection of
+ * Path Points, which themselves contain a point
+ * and two handles.  Bezier curves, on the other
+ * hand, are represented as two points, with two
+ * handles between them.
+ *
+ * This Segment object is basically here just to
+ * make Bezier math easier for Paths.
+ */
 export default class Segment extends GlyphElement {
     /**
      * Create a Segment

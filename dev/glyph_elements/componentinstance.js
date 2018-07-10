@@ -3,7 +3,7 @@ import {parseUnicodeInput} from '../app/unicode.js';
 export {showDialogAddComponent, addComponent, insertComponentInstance,
     turnComponentIntoShapes, addToUsedIn, removeFromUsedIn};
 /**
-     * Object > Component Instance
+     * Glyph Element > Component Instance
      * Component Instances are a link to any other
      * Glyph Object (Glyphs, Components, or Ligatures).
      * Additionally they hold transformation info about

@@ -2,7 +2,7 @@ import GlyphElement from './glyphelement.js';
 import {numSan, isVal} from '../app/functions.js';
 
 /**
- * Coordinate
+ * Glyph Element > Coordinate
  * A single x/y coordinate
  */
 export default class Coord extends GlyphElement {

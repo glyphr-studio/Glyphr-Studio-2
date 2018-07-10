@@ -13,7 +13,7 @@ import {findSegmentIntersections} from './segment.js';
 import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
 
 /**
- * Path
+ * Glyph Element > Path
  * A Path is a collection of Path Points, plus
  * a few properties like selected point, winding,
  * and maxes.

@@ -65,7 +65,7 @@
         } else if (editmode === 'rotate') {
             _UI.multiSelect.shapes.draw_RotationAffordance();
         } else if (editmode === 'pen') {
-            if (_UI.eventhandlers.multi) sg.draw_MultiSelectAffordances();
+            if (_UI.eventhandlers.multi) sg.drawMultiSelectAffordances();
             _UI.multiSelect.points.draw_PathPointHandles();
             _UI.multiSelect.shapes.draw_PathPoints();
             // _UI.multiSelect.points.draw_PathPoints();

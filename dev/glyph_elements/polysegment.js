@@ -8,7 +8,7 @@ import {segmentsAreEqual, findSegmentIntersections, ixToCoord} from './segment.j
 import {duplicates, clone} from '../app/functions.js';
 
 /**
- * Object > Poly Segment
+ * Glyph Element > Poly Segment
  * A Poly Segment (aka poly bezier) stores a
  * series of Segments that represent a Path.
 

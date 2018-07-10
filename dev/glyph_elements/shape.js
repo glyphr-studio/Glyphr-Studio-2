@@ -11,7 +11,7 @@ export {rectPathFromMaxes, ovalPathFromMaxes, addShape,
     combineShapes, combineTwoShapes};
 
 /**
- * Object > Shape
+ * Glyph Element > Shape
  * The Shape object is the high level object that
  * represents an outline.  The Glyph object treats
  * Shape objects and Component Instance objects

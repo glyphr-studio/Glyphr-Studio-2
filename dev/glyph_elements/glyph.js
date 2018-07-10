@@ -1,7 +1,10 @@
 import GlyphElement from './glyphelement.js';
+export {getGlyph, getGlyphType, getGlyphName, getFirstGlyphID,
+    getSelectedGlyphLeftSideBearing, getSelectedGlyphRightSideBearing,
+    updateCurrentGlyphWidth};
 
 /**
- * Object > Glyph
+ * Glyph Element > Glyph
  * A single collection of outlines that could
  * either represent a character, or be used as
  * part of another character through components.
@@ -98,8 +101,36 @@ export default class Glyph extends GlyphElement {
         this.cache = {};
         this.calcGlyphMaxes();
     }
-
-
+/*
+    changed(descend, ascend) {
+        this.cache = {};
+        if (ascend) {
+            for (let g = 0; g < this.usedIn.length; g++) {
+                getGlyph(this.usedIn[g]).changed(descend, ascend);
+            }
+        }
+        if (descend) {
+            for (let s = 0; s < this.shapes.length; s++)
+                this.shapes[s].changed(descend, ascend);
+        }
+        this.calcGlyphMaxes();
+    }
+    print(indents) {
+        indents = indents || '   ';
+        let re = (indents + 'GLYPH ' + this.name + '\n');
+        let ts;
+        for (let s = 0; s < this.shapes.length; s++) {
+            ts = this.shapes[s];
+            if (ts.objType === 'Shape') {
+                re += (indents + '-' + s + '-' + ts.name + ' ' + json(ts.path.maxes, true) + '\n');
+            } else if (ts.objType === 'ComponentInstance') {
+                re += (indents + '~' + s + '~' + ts.name + '\n');
+                re += getGlyph(ts.link).map(indents + '   ');
+            }
+        }
+        return re;
+    }
+*/
     // --------------------------------------------------------------
     // Getters
     // --------------------------------------------------------------
@@ -299,6 +330,15 @@ export default class Glyph extends GlyphElement {
         else return this.glyphWidth;
     }
 
+    /**
+     * get SVG Path Data
+     * @returns {string}
+     */
+    get svgPathData() {
+        if (this.cache.svgpathdata) return this.cache.svgpathdata;
+        this.cache.svgpathdata = this.makeSVGPathData();
+        return this.cache.svgpathdata;
+    }
 
     // --------------------------------------------------------------
     // Setters
@@ -835,30 +875,43 @@ export default class Glyph extends GlyphElement {
         return true;
     }
 
-    collectAllDownstreamLinks(re, excludepeers) {
-        re = re || [];
+    /**
+     * Look "down" through component instances, collecting IDs
+     * @param {array} re - collection of glyph IDs
+     * @param {boolean} excludePeers - At the top level, no need to collect IDs
+     * @returns {array}
+     */
+    collectAllDownstreamLinks(re = [], excludePeers = false) {
         for (let s = 0; s < this.shapes.length; s++) {
             if (this.shapes[s].objType === 'ComponentInstance') {
                 re = re.concat(getGlyph(this.shapes[s].link).collectAllDownstreamLinks(re));
-                if (!excludepeers)
-                    re.push(this.shapes[s].link);
+                if (!excludePeers) re.push(this.shapes[s].link);
             }
         }
         return re;
     }
-    collectAllUpstreamLinks(re) {
-        re = re || [];
+
+    /**
+     * Look "up" through the usedIn array to collect IDs
+     * @param {array} re - collection of glyph IDs
+     * @returns {array}
+     */
+    collectAllUpstreamLinks(re = []) {
         for (let g = 0; g < this.usedIn.length; g++) {
             re = re.concat(getGlyph(this.usedIn[g]).collectAllUpstreamLinks(re));
             re.push(this.usedIn[g]);
         }
         return re;
     }
-    // This method is called on Glyphs just before they are deleted
-    // to clean up all the component instance linking
-    deleteLinks(thisid) {
+
+    /**
+     * This method is called on Glyphs just before they are deleted
+     * to clean up all the component instance linking
+     * @param {string} thisID - ID of the glyph being deleted
+     */
+    deleteLinks(thisID) {
         // debug('\n Glyph.deleteLinks - START');
-        // debug('\t passed this as id: ' + thisid);
+        // debug('\t passed this as id: ' + thisID);
         // Delete upstream Component Instances
         let upstreamglyph;
         for (let c = 0; c < this.usedIn.length; c++) {
@@ -866,7 +919,7 @@ export default class Glyph extends GlyphElement {
             // debug('\t removing from ' + upstreamglyph.name);
             // debug(upstreamglyph.shapes);
             for (let u = 0; u < upstreamglyph.shapes.length; u++) {
-                if (upstreamglyph.shapes[u].objType === 'ComponentInstance' && upstreamglyph.shapes[u].link === thisid) {
+                if (upstreamglyph.shapes[u].objType === 'ComponentInstance' && upstreamglyph.shapes[u].link === thisID) {
                     upstreamglyph.shapes.splice(u, 1);
                     u--;
                 }
@@ -876,22 +929,32 @@ export default class Glyph extends GlyphElement {
         // Delete downstream usedIn array values
         for (let s = 0; s < this.shapes.length; s++) {
             if (this.shapes[s].objType === 'ComponentInstance') {
-                removeFromUsedIn(this.shapes[s].link, thisid);
+                removeFromUsedIn(this.shapes[s].link, thisID);
             }
         }
     }
+
+
     // --------------------------------------------------------------
-    // DRAWING AND EXPORTING
+    // Drawing
     // --------------------------------------------------------------
-    drawGlyph(lctx, view, alpha, addLSB) {
+    /**
+     * Draw a Glyph to a canvas
+     * @param {object} lctx - canvas context
+     * @param {object} view - x/y/z view object
+     * @param {number} alpha - transparency between 0 and 1
+     * @param {boolean} addLSB - optionally move everything to account for LSB
+     * @returns {number} - Advance Width, according to view.z
+     */
+    drawGlyph(lctx, view = {x: 0, y: 0, z: 1}, alpha = 1, addLSB = false) {
         // debug('\n Glyph.drawGlyph - START ' + this.name);
         // debug('\t view ' + json(view, true));
         let sl = this.shapes;
-        let shape, drewshape;
-        if (isNaN(alpha) || alpha > 1 || alpha < 0)
-            alpha = 1;
-        if (addLSB && this.isAutoWide)
-            view.dx += (this.getLSB() * view.dz);
+        let shape;
+        let drewshape;
+
+        if (addLSB && this.isAutoWide) view.dx += (this.getLSB() * view.dz);
+
         lctx.beginPath();
         for (let j = 0; j < sl.length; j++) {
             shape = sl[j];
@@ -911,6 +974,7 @@ export default class Glyph extends GlyphElement {
                 }
             }
         }
+
         lctx.closePath();
         // lctx.fillStyle = getRGBfromRGBA(_GP.projectSettings.colors.glyphfill, alpha);
         lctx.fillStyle = _GP.projectSettings.colors.glyphfill;
@@ -918,8 +982,67 @@ export default class Glyph extends GlyphElement {
         lctx.fill('nonzero');
         lctx.globalAlpha = 1;
         // debug(' Glyph.drawGlyph - END ' + this.name + '\n');
+
         return (this.getAdvanceWidth() * view.dz);
     }
+
+    /**
+     * Draw points that can be multi-selected
+     */
+    drawMultiSelectAffordances() {
+        let allpoints = [];
+        for (let s = 0; s < this.shapes.length; s++) {
+            if (this.shapes[s].objType !== 'ComponentInstance') {
+                allpoints = allpoints.concat(this.shapes[s].path.pathPoints);
+                this.shapes[s].draw_PathOutline(_UI.colors.blue, 1);
+            }
+        }
+        draw_PathPoints(allpoints, _UI.colors.blue);
+    }
+
+    /**
+     * Check to see if a Glyph shape is here, for cursor hover effect
+     * @param {number} x - x to check
+     * @param {number} y - y to check
+     * @returns {boolean}
+     */
+    isHere(x, y) {
+        for (let s = 0; s < this.shapes.length; s++) {
+            if (this.shapes[s].isHere(x, y)) return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks to see if the cursor is over a control point, for cursor hover effect
+     * @param {number} x - x to check
+     * @param {number} y - y to check
+     * @param {number} targetSize - hit target around point to check
+     * @param {boolean} noHandles - only check for Path Points, not Handles
+     * @returns {boolean}
+     */
+    isOverControlPoint(x, y, targetSize, noHandles) {
+        let re = false;
+        for (let s = 0; s < this.shapes.length; s++) {
+            if (this.shapes[s].objType !== 'ComponentInstance') {
+                re = this.shapes[s].path.isOverControlPoint(x, y, targetSize, noHandles);
+                if (re) return re;
+            }
+        }
+        return false;
+    }
+
+
+    // --------------------------------------------------------------
+    // Export to different languages
+    // --------------------------------------------------------------
+
+    /**
+     * Make SVG from this Shape
+     * @param {number} size - how big
+     * @param {number} gutter - margin
+     * @returns {string} - svg
+     */
     makeSVG(size, gutter) {
         // debug('\n Glyph.makeSVG - START');
         let ps = _GP.projectSettings;
@@ -930,7 +1053,7 @@ export default class Glyph extends GlyphElement {
         let charscale = (size - (gutter * 2)) / size;
         let gutterscale = (gutter / size) * emsquare;
         let vbsize = emsquare - (gutter * 2);
-        let pathdata = this.getSVGpathData();
+        let pathdata = this.svgPathData;
         // Assemble SVG
         let re = '<svg version="1.1" ';
         re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
@@ -944,41 +1067,46 @@ export default class Glyph extends GlyphElement {
         // debug(' Glyph.makeSVG - END\n');
         return re;
     }
-    getSVGpathData() {
-        if (this.cache.svgpathdata)
-            return this.cache.svgpathdata;
-        this.cache.svgpathdata = this.makeSVGPathData();
-        return this.cache.svgpathdata;
-    }
+
+    /**
+     * Make the data (attribute d="") for an SVG path tag
+     * @returns {string}
+     */
     makeSVGPathData() {
-        if (this.cache.svg)
-            return this.cache.svg;
+        if (this.cache.svg) return this.cache.svg;
+
         let sl = this.shapes;
         let pathdata = '';
         let lsb = this.getLSB();
-        let shape, path, tg;
+        let shape;
+        let path;
+        let tg;
+
         // Make Pathdata
         for (let j = 0; j < sl.length; j++) {
             shape = sl[j];
             if (shape.visible) {
                 if (shape.objType === 'ComponentInstance') {
                     tg = shape.getTransformedGlyph();
-                    if (tg)
-                        pathdata += tg.getSVGpathData();
+                    if (tg) pathdata += tg.svgPathData;
                 } else {
                     path = shape.getPath();
                     path.updatePathPosition(lsb, 0, true);
                     pathdata += path.getSVGpathData('Glyph ' + this.name + ' Shape ' + shape.name);
-                    if (j < sl.length - 1)
-                        pathdata += ' ';
+                    if (j < sl.length - 1) pathdata += ' ';
                 }
             }
         }
-        if (trim(pathdata) === '')
-            pathdata = 'M0,0Z';
+        if (trim(pathdata) === '') pathdata = 'M0,0Z';
         this.cache.svg = pathdata;
         return pathdata;
     }
+
+    /**
+     * Make an Opentype.js Path
+     * @param {opentype.Path} otpath
+     * @returns {opentype.Path}
+     */
     makeOpentypeJsPath(otpath) {
         otpath = otpath || new opentype.Path();
         for (let s = 0; s < this.shapes.length; s++) {
@@ -986,30 +1114,20 @@ export default class Glyph extends GlyphElement {
         }
         return otpath;
     }
-    draw_MultiSelectAffordances() {
-        let allpoints = [];
-        for (let s = 0; s < this.shapes.length; s++) {
-            if (this.shapes[s].objType !== 'ComponentInstance') {
-                allpoints = allpoints.concat(this.shapes[s].path.pathPoints);
-                this.shapes[s].draw_PathOutline(_UI.colors.blue, 1);
-            }
-        }
-        draw_PathPoints(allpoints, _UI.colors.blue);
-    }
-    isOverControlPoint(x, y, targetSize, noHandles) {
-        let re = false;
-        for (let s = 0; s < this.shapes.length; s++) {
-            if (this.shapes[s].objType !== 'ComponentInstance') {
-                re = this.shapes[s].path.isOverControlPoint(x, y, targetSize, noHandles);
-                if (re)
-                    return re;
-            }
-        }
-        return false;
-    }
+
+
+    // --------------------------------------------------------------
+    // Boolean Combine
+    // --------------------------------------------------------------
+
+    /**
+     * Converts all the Component Instances in this Glyph to stand-alone shapes
+     * @returns {Glyph}
+     */
     flattenGlyph() {
         let reshapes = [];
-        let ts, tg;
+        let ts;
+        let tg;
         for (let s = 0; s < this.shapes.length; s++) {
             ts = this.shapes[s];
             if (ts.objType === 'Shape') {
@@ -1026,10 +1144,17 @@ export default class Glyph extends GlyphElement {
         // this.calcGlyphMaxes();
         return this;
     }
-    combineAllShapes(donttoast, dontresolveoverlaps) {
+
+    /**
+     * Boolean combine all shapes in this Glyph to as few shapes as possible
+     * @param {boolean} dontToast - don't show progress messages
+     * @param {boolean} dontResolveOverlaps - speed up process by skipping resolve overlaps
+     * @returns {Glyph}
+     */
+    combineAllShapes(dontToast = false, dontResolveOverlaps = false) {
         // debug('\n Glyph.combineAllShapes - START - ' + this.name);
         this.flattenGlyph();
-        let cs = combineShapes(this.shapes, donttoast, dontresolveoverlaps);
+        let cs = combineShapes(this.shapes, dontToast, dontResolveOverlaps);
         if (cs) {
             // debug('\t new shapes');
             this.shapes = cs;
@@ -1040,6 +1165,10 @@ export default class Glyph extends GlyphElement {
         // debug(' Glyph.combineAllShapes - END - ' + this.name + '\n');
         return this;
     }
+
+    /**
+     * If a path in this Glyph overlaps itself, split them into separate shapes
+     */
     resolveOverlapsForAllShapes() {
         let newshapes = [];
         for (let ts = 0; ts < this.shapes.length; ts++) {
@@ -1048,40 +1177,21 @@ export default class Glyph extends GlyphElement {
         this.shapes = newshapes;
         this.changed();
     }
+
+
     // --------------------------------------------------------------
     // Methods
     // --------------------------------------------------------------
-    changed(descend, ascend) {
-        this.cache = {};
-        if (ascend) {
-            for (let g = 0; g < this.usedIn.length; g++) {
-                getGlyph(this.usedIn[g]).changed(descend, ascend);
-            }
-        }
-        if (descend) {
-            for (let s = 0; s < this.shapes.length; s++)
-                this.shapes[s].changed(descend, ascend);
-        }
-        this.calcGlyphMaxes();
-    }
-    map(indents) {
-        indents = indents || '   ';
-        let re = (indents + 'GLYPH ' + this.name + '\n');
-        let ts;
-        for (let s = 0; s < this.shapes.length; s++) {
-            ts = this.shapes[s];
-            if (ts.objType === 'Shape') {
-                re += (indents + '-' + s + '-' + ts.name + ' ' + json(ts.path.maxes, true) + '\n');
-            } else if (ts.objType === 'ComponentInstance') {
-                re += (indents + '~' + s + '~' + ts.name + '\n');
-                re += getGlyph(ts.link).map(indents + '   ');
-            }
-        }
-        return re;
-    }
-    copyShapesTo(destinationID, copyGlyphAttributes) {
+
+    /**
+     * Copy shapes (and attributes) from one glyph to another
+     * @param {string} destinationID - where to copy shapes to
+     * @param {object} copyGlyphAttributes - which attributes to copy in addition to shapes
+     */
+    copyShapesTo(destinationID, copyGlyphAttributes = {
+        srcAutoWidth: false, srcWidth: false, srcLSB: false, srcRSB: false,
+    }) {
         // debug('\n Glyph.copyShapesTo - START');
-        copyGlyphAttributes = copyGlyphAttributes || { srcAutoWidth: false, srcWidth: false, srcLSB: false, srcRSB: false };
         let destinationGlyph = getGlyph(destinationID, true);
         let tc;
         for (let c = 0; c < this.shapes.length; c++) {
@@ -1094,40 +1204,36 @@ export default class Glyph extends GlyphElement {
             }
             destinationGlyph.shapes.push(tc);
         }
-        if (copyGlyphAttributes.srcAutoWidth)
-            destinationGlyph.isAutoWide = this.isAutoWide;
-        if (copyGlyphAttributes.srcWidth)
-            destinationGlyph.glyphWidth = this.glyphWidth;
-        if (copyGlyphAttributes.srcLSB)
-            destinationGlyph.leftSideBearing = this.leftSideBearing;
-        if (copyGlyphAttributes.srcRSB)
-            destinationGlyph.rightSideBearing = this.rightSideBearing;
+        if (copyGlyphAttributes.srcAutoWidth) destinationGlyph.isAutoWide = this.isAutoWide;
+        if (copyGlyphAttributes.srcWidth) destinationGlyph.glyphWidth = this.glyphWidth;
+        if (copyGlyphAttributes.srcLSB) destinationGlyph.leftSideBearing = this.leftSideBearing;
+        if (copyGlyphAttributes.srcRSB) destinationGlyph.rightSideBearing = this.rightSideBearing;
         showToast('Copied ' + this.shapes.length + ' shapes');
         destinationGlyph.changed();
         // debug('\t new shapes');
         // debug(destinationGlyph.shapes);
         // debug(' Glyph.copyShapesTo - END\n');
     }
-    isHere(x, y) {
-        for (let s = 0; s < this.shapes.length; s++) {
-            if (this.shapes[s].isHere(x, y))
-                return true;
-        }
-        return false;
-    }
+
+    /**
+     * Return true if there is anything to draw for this Glyph
+     * @returns {boolean}
+     */
     hasShapes() {
         let tg;
         for (let s = 0; s < this.shapes.length; s++) {
-            if (this.shapes[s].objType !== 'ComponentInstance')
-                return true;
+            if (this.shapes[s].objType !== 'ComponentInstance') return true;
             else {
                 tg = this.shapes[s].getTransformedGlyph();
-                if (tg.hasShapes())
-                    return true;
+                if (tg.hasShapes()) return true;
             }
         }
         return false;
     }
+
+    /**
+     * Clean up any shapes with zero path points
+     */
     removeShapesWithZeroLengthPaths() {
         for (let s = 0; s < this.shapes.length; s++) {
             if (this.shapes[s].path && this.shapes[s].path.pathPoints.length === 0) {
@@ -1136,71 +1242,19 @@ export default class Glyph extends GlyphElement {
             }
         }
     }
-    getPathPoints() {
-        let points = [];
-        this.shapes.forEach(function (shape, i) {
-            points = points.concat(shape.path.pathPoints);
-        });
-        return points;
-    }
-    getShapes() {
-        return this.shapes;
-    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // --------------------------------------------------------------
 // GLYPH FUNCTIONS
 // --------------------------------------------------------------
-// GET
+
+/**
+ * Get a glyph by ID, create it if need be
+ * @param {string} id - which Glyph to return
+ * @param {boolean} create - create if it doesn't exist yet
+ * @returns {Glyph}
+ */
 function getGlyph(id, create) {
     // debug('\n getGlyph - START');
     // debug('\t passed: ' + id + ' create: ' + create);
@@ -1248,35 +1302,45 @@ function getGlyph(id, create) {
     return false;
 }
 
+/**
+ * Get the type of glyph based on it's ID
+ * @param {string} id - Glyph ID
+ * @returns {string}
+ */
 function getGlyphType(id) {
     if (id.indexOf('0x', 2) > -1) return 'ligature';
     else if (id.indexOf('0x') > -1) return 'glyph';
     else return 'component';
 }
 
-function getGlyphName(ch) {
-    ch = ''+ch;
+/**
+ * Get a glyph's name based on it's ID
+ * @param {string} id - Glyph ID
+ * @returns {string}
+ */
+function getGlyphName(id) {
+    id = ''+id;
     // debug('\n getGlyphName');
-    // debug('\t passed ' + ch);
+    // debug('\t passed ' + id);
 
     // not passed an id
-    if (!ch) {
+    if (!id) {
         // debug('\t not passed an ID, returning false');
         return false;
     }
 
     // known unicode names
-    let un = getUnicodeName(ch);
+    let un = getUnicodeName(id);
     if (un && un !== '[name not found]') {
         // debug('\t got unicode name: ' + un);
         return un;
     }
 
-    let cobj = getGlyph(ch);
-    if (ch.indexOf('0x', 2) > -1) {
+    let cobj = getGlyph(id);
+    if (id.indexOf('0x', 2) > -1) {
         // ligature
-        // debug('\t ligature - returning ' + hexToHTML(ch));
-        return cobj.name || hexToHTML(ch);
+        // debug('\t ligature - returning ' + hexToHTML(id));
+        return cobj.name || hexToHTML(id);
     } else {
         // Component
         // debug('getGlyphName - inexplicably fails, returning [name not found]\n');
@@ -1286,12 +1350,19 @@ function getGlyphName(ch) {
     // debug(' getGlyphName - returning nothing - END\n');
 }
 
+/**
+ * Just return the first Glyph that exists
+ * @returns {Glyph}
+ */
 function getFirstGlyphID() {
     if (_GP.glyphs['0x0041']) return '0x0041';
     else return getFirstID(_GP.glyphs);
 }
 
-// GET SELECTED
+/**
+ * Get the selected glyph's left side bearing
+ * @returns {number}
+ */
 function getSelectedGlyphLeftSideBearing() {
     // debug('getSelectedGlyphLeftSideBearing');
     let sc = getSelectedWorkItem();
@@ -1301,6 +1372,10 @@ function getSelectedGlyphLeftSideBearing() {
     return sc.leftSideBearing || _GP.projectSettings.defaultlsb;
 }
 
+/**
+ * Get the selected glyph's right side bearing
+ * @returns {number}
+ */
 function getSelectedGlyphRightSideBearing() {
     // debug('getSelectedGlyphLeftSideBearing');
     let sc = getSelectedWorkItem();
@@ -1310,6 +1385,9 @@ function getSelectedGlyphRightSideBearing() {
     return sc.rightSideBearing || _GP.projectSettings.defaultrsb;
 }
 
+/**
+ * Updates the selected glyphs width
+ */
 function updateCurrentGlyphWidth() {
     let sc = getSelectedWorkItem();
     if (!sc) return;

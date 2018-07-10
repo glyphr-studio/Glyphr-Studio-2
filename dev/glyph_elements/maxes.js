@@ -2,7 +2,7 @@ import GlyphElement from './glyphelement.js';
 import {isVal, round} from '../app/functions.js';
 
 /**
- * Maxes
+ * Glyph Element > Maxes
  * Standard way of defining a bounding box
  */
 export default class Maxes extends GlyphElement {

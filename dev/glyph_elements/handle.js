@@ -4,7 +4,7 @@ import PathPoint from './pathpoint.js';
 import {calculateAngle, calculateLength, angleToNiceAngle} from '../app/functions.js';
 
 /**
- * Handle
+ * Glyph Element > Handle
  * There are two of these associated with a single PathPoint
  * They can be hidden or used, which alters the overall path
  * shape.

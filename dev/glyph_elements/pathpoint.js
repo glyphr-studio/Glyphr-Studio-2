@@ -7,7 +7,7 @@ import {round, rotate} from '../app/functions.js';
 export {makePathPointFromSegments};
 
 /**
- * Path Point
+ * Glyph Element > Path Point
  * A collection of these units make up a Path,
  * they have position and handles (or control
  * points). There are a few Path Point types, and
