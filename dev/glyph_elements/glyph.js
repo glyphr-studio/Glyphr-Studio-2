@@ -1,4 +1,9 @@
 import GlyphElement from './glyphelement.js';
+import Maxes from './maxes.js';
+import Shape from './shape.js';
+import ComponentInstance from './componentinstance.js';
+import {clone, hasNonValues, isVal} from '../app/functions.js';
+import {parseUnicodeInput} from '../app/unicode.js';
 export {getGlyph, getGlyphType, getGlyphName, getFirstGlyphID,
     getSelectedGlyphLeftSideBearing, getSelectedGlyphRightSideBearing,
     updateCurrentGlyphWidth};
@@ -29,23 +34,23 @@ export default class Glyph extends GlyphElement {
      */
     constructor({
         hex = false,
+        shapes = [],
         isAutoWide = true,
         glyphWidth = 0,
         leftSideBearing = false,
         rightSideBearing = false,
         ratioLock = false,
-        shapes = [],
         usedIn = [],
         contextGlyphs = '',
     } = {}) {
         super();
         this.hex = hex || false;
+        this.shapes = shapes;
         this.isAutoWide = isAutoWide;
         this.glyphWidth = glyphWidth;
         this.leftSideBearing = leftSideBearing;
         this.rightSideBearing = rightSideBearing;
         this.ratioLock = ratioLock;
-        this.shapes = shapes;
         this.usedIn = usedIn;
         this.contextGlyphs = contextGlyphs;
         // debug('\t name: ' + this.name);
@@ -144,6 +149,14 @@ export default class Glyph extends GlyphElement {
     }
 
     /**
+     * get shapes
+     * @returns {array}
+     */
+    get shapes() {
+        return this._shapes;
+    }
+
+    /**
      * get isAutoWide
      * @returns {boolean}
      */
@@ -181,14 +194,6 @@ export default class Glyph extends GlyphElement {
      */
     get ratioLock() {
         return this._ratioLock;
-    }
-
-    /**
-     * get shapes
-     * @returns {array}
-     */
-    get shapes() {
-        return this._shapes;
     }
 
     /**
@@ -340,6 +345,7 @@ export default class Glyph extends GlyphElement {
         return this.cache.svgpathdata;
     }
 
+
     // --------------------------------------------------------------
     // Setters
     // --------------------------------------------------------------
@@ -350,7 +356,32 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set hex(hex) {
+        hex = parseUnicodeInput(hex);
+        hex = hex.join? hex.join('') : '0x0000';
         this._hex = hex;
+        return this;
+    }
+
+    /**
+     * set shapes
+     * @param {array} shapes
+     * @returns {Glyph} - reference to this Glyph
+     */
+    set shapes(shapes = []) {
+        if (shapes && shapes.length) {
+            for (let i = 0; i < shapes.length; i++) {
+                if (isVal(shapes[i].link)) {
+                    // debug('\t hydrating ci ' + shapes[i].name);
+                    this._shapes[i] = new ComponentInstance(shapes[i]);
+                } else if (isVal(shapes[i].name)) {
+                    // debug('\t hydrating sh ' + shapes[i].name);
+                    this._shapes[i] = new Shape(shapes[i]);
+                }
+            }
+        } else {
+            this._shapes = [];
+        }
+
         return this;
     }
 
@@ -404,27 +435,6 @@ export default class Glyph extends GlyphElement {
      */
     set ratioLock(ratioLock) {
         this._ratioLock = !!ratioLock;
-        return this;
-    }
-
-    /**
-     * set shapes
-     * @param {array} shapes
-     * @returns {Glyph} - reference to this Glyph
-     */
-    set shapes(shapes) {
-        if (shapes && shapes.length) {
-            for (let i = 0; i < shapes.length; i++) {
-                if (shapes[i].objType === 'ComponentInstance') {
-                    // debug('\t hydrating ci ' + shapes[i].name);
-                    this._shapes[i] = new ComponentInstance(shapes[i]);
-                } else {
-                    // debug('\t hydrating sh ' + shapes[i].name);
-                    this._shapes[i] = new Shape(shapes[i]);
-                }
-            }
-        }
-
         return this;
     }
 
@@ -701,7 +711,7 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this glyph
      */
     rotate(angle, about) {
-        about = about || this.getCenter();
+        about = about || this.center;
         for (let s = 0; s < this.shapes.length; s++) {
             this.shapes[s].rotate(angle, about);
         }
@@ -747,10 +757,10 @@ export default class Glyph extends GlyphElement {
                 v.setShapePosition(false, target);
             });
         } else if (edge === 'middle') {
-            target = this.getCenter().y;
+            target = this.center.y;
             // debug('\t found MIDDLE: ' + target);
             this.shapes.forEach(function(v) {
-                offset = v.getCenter().y;
+                offset = v.center.y;
                 v.updateShapePosition(false, (target - offset));
             });
         } else if (edge === 'bottom') {
@@ -773,10 +783,10 @@ export default class Glyph extends GlyphElement {
                 v.setShapePosition(target, false);
             });
         } else if (edge === 'center') {
-            target = this.getCenter().x;
+            target = this.center.x;
             // debug('\t found CENTER: ' + target);
             this.shapes.forEach(function(v) {
-                offset = v.getCenter().x;
+                offset = v.center.x;
                 v.updateShapePosition((target - offset), false);
             });
         } else if (edge === 'right') {
@@ -1308,9 +1318,9 @@ function getGlyph(id, create) {
  * @returns {string}
  */
 function getGlyphType(id) {
-    if (id.indexOf('0x', 2) > -1) return 'ligature';
-    else if (id.indexOf('0x') > -1) return 'glyph';
-    else return 'component';
+    if (id.indexOf('0x', 2) > -1) return 'Ligature';
+    else if (id.indexOf('0x') > -1) return 'Glyph';
+    else return 'Component';
 }
 
 /**

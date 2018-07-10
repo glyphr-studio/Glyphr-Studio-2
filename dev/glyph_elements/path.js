@@ -46,9 +46,9 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
 
         // internal
         this.maxes = maxes;
-        this._cache = {};
-        this._cache.segments = cache.segments || [];
-        this._cache.segmentlengths = cache.segmentlengths || [];
+        this.cache = {};
+        this.cache.segments = cache.segments || [];
+        this.cache.segmentlengths = cache.segmentlengths || [];
         this.calcMaxes();
     }
 
@@ -110,7 +110,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * Reset the cache and calculate dimensions
      */
     changed() {
-        this._cache = {};
+        this.cache = {};
         this.calcMaxes();
     }
 
@@ -199,12 +199,12 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {string}
      */
     get svgPathData() {
-        if (this._cache.svgpathdata) {
-            return this._cache.svgpathdata;
+        if (this.cache.svgpathdata) {
+            return this.cache.svgpathdata;
         }
 
-        this._cache.svgpathdata = this.makeSVGPathData();
-        return this._cache.svgpathdata;
+        this.cache.svgpathdata = this.makeSVGPathData();
+        return this.cache.svgpathdata;
     }
 
 
@@ -307,7 +307,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {Path} - reference to this Path
      */
     set svgPathData(data) {
-        this._cache.svgpathdata = data;
+        this.cache.svgpathdata = data;
         return this;
     }
 
@@ -448,7 +448,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {Coord} about - x/y center of rotation
      * @returns {Path} - reference to this path
      */
-    rotate(angle, about = this.getCenter()) {
+    rotate(angle, about = this.center) {
         // debug('\n Path.rotate - START');
         for (let d = 0; d < this.pathPoints.length; d++) {
             // debug('\t starting point ' + d);
@@ -459,18 +459,6 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         this.changed();
         // debug(' Path.rotate - END\n');
         return this;
-    }
-
-    /**
-     * Figures out the center point of this path
-     * @returns {Coord}
-     */
-    getCenter() {
-        let m = this.maxes;
-        let re = {};
-        re.x = ((m.xMax - m.xMin) / 2) + m.xMin;
-        re.y = ((m.yMax - m.yMin) / 2) + m.yMin;
-        return re;
     }
 
     /**
@@ -787,10 +775,10 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         num = num % this.pathPoints.length;
 
         // check cache
-        if (this._cache.segments && this._cache.segments[num]) {
-            return this._cache.segments[num];
+        if (this.cache.segments && this.cache.segments[num]) {
+            return this.cache.segments[num];
         } else {
-            this._cache.segments = [];
+            this.cache.segments = [];
         }
 
         // debug('\t validated as ' + num);
@@ -804,7 +792,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
             'p3x': pp2.h1.x, 'p3y': pp2.h1.y,
             'p4x': pp2.p.x, 'p4y': pp2.p.y,
         });
-        this._cache.segments[num] = re;
+        this.cache.segments[num] = re;
         // debug([re, re2]);
         // debug(' Path.getSegment - END\n');
 
@@ -970,7 +958,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {number} mid - y value about which to flip
      * @returns {Path} - reference to this path
      */
-    flipNS(mid = this.getCenter().y) {
+    flipNS(mid = this.center.y) {
         // debug(`\n Path.flipNS - START`);
         // debug(json(this.save()));
         let startingY = this.y;
@@ -994,7 +982,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {number} mid - x value about which to flip
      * @returns {Path} - reference to this path
      */
-    flipEW(mid = this.getCenter().x) {
+    flipEW(mid = this.center.x) {
         // debug(`\n Path.flipEW - START`);
         // debug(json(this.save()));
         let startingX = this.x;
@@ -1107,7 +1095,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         let d;
 
         for (let pp = 0; pp < this.pathPoints.length; pp++) {
-            // grains = this._cache.segmentlengths[pp] * 100;
+            // grains = this.cache.segmentlengths[pp] * 100;
             grains = this.getSegment(pp).getQuickLength() * 100;
 
             for (let t = 0; t < 1; t += (1 / grains)) {
@@ -1195,11 +1183,11 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
             // debug('\t this maxes ' + json(this._maxes, true));
             this._maxes = getOverallMaxes([this._maxes, tbounds]);
             // debug('\t path maxes is now ' + json(this._maxes, true));
-            this._cache.segments[s] = seg;
+            this.cache.segments[s] = seg;
             // debug('\t ++++++ ending seg ' + s);
         }
 
-        this._maxes.roundAll(4);
+        this.maxes.roundAll(4);
         // debug('\t afters ' + json(this.maxes, true));
         // debug(' Path.calcMaxes - END\n');
     }

@@ -30,10 +30,21 @@ window._DEV.segment = segment;
 
 import * as path from '../glyph_elements/path.js';
 window._DEV.path = path;
-/*
+
 import * as polysegment from '../glyph_elements/polysegment.js';
 window._DEV.polysegment = polysegment;
-*/
+
+import * as shape from '../glyph_elements/shape.js';
+window._DEV.shape = shape;
+
+import * as componentinstance from '../glyph_elements/componentinstance.js';
+window._DEV.componentinstance = componentinstance;
+
+import * as glyph from '../glyph_elements/glyph.js';
+window._DEV.glyph = glyph;
+
+import * as hkern from '../glyph_elements/hkern.js';
+window._DEV.hkern = hkern;
 
 
 /**

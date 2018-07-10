@@ -125,7 +125,7 @@ function hexToUnicodeHex(h) {
 /**
  * Take user input and try to get Unicode out
  * @param {string} str - input string
- * @returns {string} - sanitized string
+ * @returns {array} - sanitized array of strings
  */
 function parseUnicodeInput(str) {
     // takes any kind or number of input

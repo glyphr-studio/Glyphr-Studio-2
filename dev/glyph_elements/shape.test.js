@@ -244,7 +244,7 @@ _TEST.testList.push(
         category: 'Shape',
         name: 'getCenter',
         assertion: function() {
-            return _TEST.is(sampleShape().getCenter().x).equalTo(327);
+            return _TEST.is(sampleShape().center.x).equalTo(327);
         },
     },
     {

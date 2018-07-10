@@ -197,7 +197,7 @@ _TEST.testList.push(
         category: 'Path',
         name: 'getCenter',
         assertion: function() {
-            return _TEST.is(samplePath().getCenter().x).equalTo(327);
+            return _TEST.is(samplePath().center.x).equalTo(327);
         },
     },
     {

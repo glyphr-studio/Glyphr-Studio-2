@@ -67,7 +67,7 @@
             title: 'Converting to Monospace',
             filter: function(glyphid) {
                 let gtype = getGlyphType(glyphid);
-                return gtype === 'glyph' || gtype === 'ligature';
+                return gtype === 'Glyph' || gtype === 'Ligature';
             },
             action: function(glyph) {
                 glyph.isAutoWide = false;
@@ -208,7 +208,7 @@
             let gint;
 
             function rangefilter(glyphid) {
-                if (getGlyphType(glyphid) === 'glyph') {
+                if (getGlyphType(glyphid) === 'Glyph') {
                     gint = parseInt(glyphid, 16);
                     return ((gint >= begin) && (gint <= end));
                 } else {

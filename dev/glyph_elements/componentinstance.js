@@ -1,4 +1,7 @@
+import GlyphElement from './glyphelement.js';
 import {parseUnicodeInput} from '../app/unicode.js';
+import {strSan} from '../app/functions.js';
+import {getGlyph} from './glyph.js';
 
 export {showDialogAddComponent, addComponent, insertComponentInstance,
     turnComponentIntoShapes, addToUsedIn, removeFromUsedIn};
@@ -12,7 +15,7 @@ export {showDialogAddComponent, addComponent, insertComponentInstance,
      * methods as a Shape, and are stored along side
      * regular Shapes in a Glyph.
      */
-class ComponentInstance {
+export default class ComponentInstance extends GlyphElement {
     /**
      * Create a ComponentInstance
      * @param {number} link
@@ -40,8 +43,8 @@ class ComponentInstance {
         translateY = 0,
         scaleW = 0,
         scaleH = 0,
-        flipEW = false,
-        flipNS = false,
+        isFlippedNS = false,
+        isFlippedEW = false,
         reverseWinding = false,
         rotation = 0,
         rotateFirst = false,
@@ -52,14 +55,15 @@ class ComponentInstance {
         ratioLock = false,
         visible = true,
     } = {}) {
+        super();
         this.link = link;
         this.name = name;
         this.translateX = translateX;
         this.translateY = translateY;
         this.scaleW = scaleW;
         this.scaleH = scaleH;
-        this.flipEW = flipEW;
-        this.flipNS = flipNS;
+        this.isFlippedNS = isFlippedNS; // These have a different name because there is a function 'flipNS'
+        this.isFlippedEW = isFlippedEW; // These have a different name because there is a function 'flipEW'
         this.reverseWinding = reverseWinding;
         this.rotation = rotation;
         this.rotateFirst = rotateFirst;
@@ -90,22 +94,22 @@ class ComponentInstance {
             link: this.link,
         };
 
-        if (name !== 'Component Instance') re.name = this.name;
-        if (translateX !== 0) re.translateX = this.translateX;
-        if (translateY !== 0) re.translateY = this.translateY;
-        if (scaleW !== 0) re.scaleW = this.scaleW;
-        if (scaleH !== 0) re.scaleH = this.scaleH;
-        if (flipEW !== false) re.flipEW = this.flipEW;
-        if (flipNS !== false) re.flipNS = this.flipNS;
-        if (reverseWinding !== false) re.reverseWinding = this.reverseWinding;
-        if (rotation !== 0) re.rotation = this.rotation;
-        if (rotateFirst !== false) re.rotateFirst = this.rotateFirst;
-        if (xLock !== false) re.xLock = this.xLock;
-        if (yLock !== false) re.yLock = this.yLock;
-        if (wLock !== false) re.wLock = this.wLock;
-        if (hLock !== false) re.hLock = this.hLock;
-        if (ratioLock !== false) re.ratioLock = this.ratioLock;
-        if (visible !== true) re.visible = this.visible;
+        if (this.name !== 'Component Instance') re.name = this.name;
+        if (this.translateX !== 0) re.translateX = this.translateX;
+        if (this.translateY !== 0) re.translateY = this.translateY;
+        if (this.scaleW !== 0) re.scaleW = this.scaleW;
+        if (this.scaleH !== 0) re.scaleH = this.scaleH;
+        if (this.isFlippedNS !== false) re.isFlippedNS = this.isFlippedNS;
+        if (this.isFlippedEW !== false) re.isFlippedEW = this.isFlippedEW;
+        if (this.reverseWinding !== false) re.reverseWinding = this.reverseWinding;
+        if (this.rotation !== 0) re.rotation = this.rotation;
+        if (this.rotateFirst !== false) re.rotateFirst = this.rotateFirst;
+        if (this.xLock !== false) re.xLock = this.xLock;
+        if (this.yLock !== false) re.yLock = this.yLock;
+        if (this.wLock !== false) re.wLock = this.wLock;
+        if (this.hLock !== false) re.hLock = this.hLock;
+        if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
+        if (this.visible !== true) re.visible = this.visible;
 
         if (!verbose) delete re.objType;
 
@@ -174,19 +178,19 @@ class ComponentInstance {
     }
 
     /**
-     * get flipEW
+     * get isFlippedEW
      * @returns {boolean}
      */
-    get flipEW() {
-        return this._flipEW;
+    get isFlippedEW() {
+        return this._isFlippedEW;
     }
 
     /**
-     * get flipNS
+     * get isFlippedNS
      * @returns {boolean}
      */
-    get flipNS() {
-        return this._flipNS;
+    get isFlippedNS() {
+        return this._isFlippedNS;
     }
 
     /**
@@ -261,6 +265,8 @@ class ComponentInstance {
         return this._visible;
     }
 
+    // Computed properties
+
     /**
      * get x
      * @returns {number}
@@ -303,6 +309,14 @@ class ComponentInstance {
         return this.getTransformedGlyph().maxes;
     }
 
+    /**
+     * center
+     * @returns {Coord}
+     */
+    get center() {
+        return this.getTransformedGlyph().center;
+    }
+
     // --------------------------------------------------------------
     // Setters
     // --------------------------------------------------------------
@@ -322,7 +336,7 @@ class ComponentInstance {
      * @param {string} name
      * @returns {ComponentInstance} - reference to this ComponentInstance
      */
-    set name(name) {
+    set name(name = '') {
         name = strSan(name);
         if (name !== '') {
             this._name = name;
@@ -377,22 +391,23 @@ class ComponentInstance {
     }
 
     /**
-     * set flipEW
-     * @param {boolean} flipEW
+     * set isFlippedNS
+     * @param {boolean} isFlippedNS
      * @returns {ComponentInstance} - reference to this ComponentInstance
      */
-    set flipEW(flipEW) {
-        this._flipEW = !!flipEW;
+    set isFlippedNS(isFlippedNS) {
+        this._isFlippedNS = !!isFlippedNS;
+
         return this;
     }
 
     /**
-     * set flipNS
-     * @param {boolean} flipNS
+     * set isFlippedEW
+     * @param {boolean} isFlippedEW
      * @returns {ComponentInstance} - reference to this ComponentInstance
      */
-    set flipNS(flipNS) {
-        this._flipNS = !!flipNS;
+    set isFlippedEW(isFlippedEW) {
+        this._isFlippedEW = !!isFlippedEW;
         return this;
     }
 
@@ -432,7 +447,7 @@ class ComponentInstance {
      * @param {boolean} xLock
      * @returns {ComponentInstance} - reference to this ComponentInstance
      */
-    set xLock(xLock ) {
+    set xLock(xLock) {
         this._xLock = !!xLock;
         return this;
     }
@@ -442,7 +457,7 @@ class ComponentInstance {
      * @param {boolean} yLock
      * @returns {ComponentInstance} - reference to this ComponentInstance
      */
-    set yLock(yLock ) {
+    set yLock(yLock) {
         this._yLock = !!yLock;
         return this;
     }
@@ -452,7 +467,7 @@ class ComponentInstance {
      * @param {boolean} wLock
      * @returns {ComponentInstance} - reference to this ComponentInstance
      */
-    set wLock(wLock ) {
+    set wLock(wLock) {
         this._wLock = !!wLock;
         return this;
     }
@@ -462,7 +477,7 @@ class ComponentInstance {
      * @param {boolean} hLock
      * @returns {ComponentInstance} - reference to this ComponentInstance
      */
-    set hLock(hLock ) {
+    set hLock(hLock) {
         this._hLock = !!hLock;
         return this;
     }
@@ -486,6 +501,8 @@ class ComponentInstance {
         this._visible = !!visible;
         return this;
     }
+
+    // Computed properties
 
     /**
      * Set X possition
@@ -552,20 +569,20 @@ class ComponentInstance {
             console.warn('Tried to get Component: ' + this.link + ' but it doesn\'t exist - bad usedIn array maintenance.');
             return false;
         }
-        // debug('\t DELTAS' + '\n\t translateX:\t' + this.translateX  + '\n\t translateY:\t' + this.translateY  + '\n\t scaleW:\t' + this.scaleW  + '\n\t scaleH:\t' + this.scaleH  + '\n\t flipEW:\t' + this.flipEW  + '\n\t flipNS:\t' + this.flipNS  + '\n\t reverseWinding:\t' + this.reverseWinding  + '\n\t rotation:\t' + this.rotation);
+        // debug('\t DELTAS' + '\n\t translateX:\t' + this.translateX  + '\n\t translateY:\t' + this.translateY  + '\n\t scaleW:\t' + this.scaleW  + '\n\t scaleH:\t' + this.scaleH  + '\n\t flipEW:\t' + this.isFlippedEW  + '\n\t flipNS:\t' + this.isFlippedNS  + '\n\t reverseWinding:\t' + this.reverseWinding  + '\n\t rotation:\t' + this.rotation);
         if (this.translateX || this.translateY ||
             this.scaleW || this.scaleH ||
-            this.flipEW || this.flipNS ||
+            this.isFlippedEW || this.isFlippedNS ||
             this.reverseWinding || this.rotation) {
             // debug('\t Modifying w ' + this.scaleW + ' h ' + this.scaleH);
             // debug('\t before maxes ' + json(g.maxes, true));
-            if (this.rotateFirst) g.rotate(rad(this.rotation, g.getCenter()));
-            if (this.flipEW) g.flipEW();
-            if (this.flipNS) g.flipNS();
+            if (this.rotateFirst) g.rotate(rad(this.rotation, g.center));
+            if (this.isFlippedEW) g.flipEW();
+            if (this.isFlippedNS) g.flipNS();
             g.updateGlyphPosition(this.translateX, this.translateY, true);
             g.updateGlyphSize(this.scaleW, this.scaleH, false);
             if (this.reverseWinding) g.reverseWinding();
-            if (!this.rotateFirst) g.rotate(rad(this.rotation, g.getCenter()));
+            if (!this.rotateFirst) g.rotate(rad(this.rotation, g.center));
             // debug('\t afters maxes ' + json(g.maxes, true));
         } else {
             // debug('\t Not changing, no deltas');
@@ -720,7 +737,7 @@ class ComponentInstance {
      * @returns {ComponentInstance} - reference to this component instance
      */
     flipEW(mid) {
-        this.flipEW = !this.flipEW;
+        this.isFlippedEW = !this.isFlippedEW;
         if (mid) {
             let g = this.getTransformedGlyph().maxes;
             this.translateX += (((mid - g.xMax) + mid) - g.xMin);
@@ -736,7 +753,7 @@ class ComponentInstance {
      * @returns {ComponentInstance} - reference to this component instance
      */
     flipNS(mid) {
-        this.flipNS = !this.flipNS;
+        this.isFlippedNS = !this.isFlippedNS;
         if (mid) {
             let g = this.getTransformedGlyph().maxes;
             this.translateY += (((mid - g.yMax) + mid) - g.yMin);
@@ -758,23 +775,15 @@ class ComponentInstance {
         let degrees = deg(angle);
         // debug('\t deg ' + degrees);
         // debug('\t was ' + this.rotation);
-        // if(this.flipEW || this.flipNS) degrees *= -1;
+        // if(this.isFlippedEW || this.isFlippedNS) degrees *= -1;
         this.rotation = ((this.rotation + degrees) % 360);
-        if (this.scaleH === 0 && this.scaleW === 0 && !this.flipEW && !this.flipNS) {
+        if (this.scaleH === 0 && this.scaleW === 0 && !this.isFlippedEW && !this.isFlippedNS) {
             this.rotateFirst = true;
         }
         this.changed();
         // debug('\t is now ' + this.rotation);
         // debug(' ComponentInstance.rotate - END\n');
         return this;
-    }
-
-    /**
-     * getCenter
-     * @returns {Coord}
-     */
-    getCenter() {
-        return this.getTransformedGlyph().getCenter();
     }
 
     /**

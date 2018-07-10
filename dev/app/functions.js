@@ -320,7 +320,8 @@ function numSan(num) {
  * @param {string} val - string to sanitize
  * @returns {string}
  */
-function strSan(val) {
+function strSan(val = '') {
+    val = String(val);
     return val.replace(/[<>'"\\]/g, '');
 }
 
@@ -329,7 +330,8 @@ function strSan(val) {
  * @param {string} text - text to trim
  * @returns {string}
  */
-function trim(text) {
+function trim(text = '') {
+    text = String(text);
     try {
         text = text.replace(/^\s+|\s+$/g, '');
         return text.replace(/(\r\n|\n|\r|\t)/gm, '');

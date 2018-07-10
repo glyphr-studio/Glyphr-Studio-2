@@ -140,7 +140,7 @@ function Tool_ShapeEdit() {
             if (eh.handle === 'rotate') {
                 // debug('\t mousedown - setting rotating = true');
                 this.rotating = true;
-                eh.rotationcenter = _UI.multiSelect.shapes.getCenter();
+                eh.rotationcenter = _UI.multiSelect.shapes.center;
                 eh.rotationstarttopy = _UI.multiSelect.shapes.maxes.yMax + (_UI.rotateHandleHeight / getView().dz);
             } else {
                 // debug('\t clicked on eh.handle: ' + eh.handle);

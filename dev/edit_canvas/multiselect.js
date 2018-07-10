@@ -397,7 +397,7 @@ import _UI from '../app/settings.js';
     };
 
     _UI.multiSelect.shapes.getCenter = function() {
- return this.getGlyph().getCenter();
+ return this.getGlyph().center;
 };
 
     _UI.multiSelect.shapes.calcMaxes = function() {
