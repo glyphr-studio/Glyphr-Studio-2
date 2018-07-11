@@ -13,7 +13,7 @@ let manifest = [
         path: 'glyph_elements',
         files: [
             'coord.js',
-            'handle.js',
+            'controlpoint.js',
             'pathpoint.js',
             'maxes.js',
             'path.js',
@@ -25,7 +25,7 @@ let manifest = [
             'hkern.js',
 
             'coord.test.js',
-            'handle.test.js',
+            'controlpoint.test.js',
             'pathpoint.test.js',
             'maxes.test.js',
             'path.test.js',

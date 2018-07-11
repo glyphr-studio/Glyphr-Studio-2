@@ -129,6 +129,11 @@
                         py = data[co+1] || 0;
 
                         tcoord = new Coord({'x': px, 'y': py});
+                        /*
+                         *
+                         * REFACTOR
+                         *
+                         */
                         pparr.push(new PathPoint({'p': tcoord, 'h1': tcoord, 'h2': tcoord, 'useH1': false, 'useH2': false}));
                     }
 
@@ -446,6 +451,11 @@
  return str.indexOf(cmd) > -1;
 };
         let p, a, nx, ny, h1;
+        /*
+        *
+        * REFACTOR
+        *
+        */
         let lastpoint = patharr[patharr.length-1] || new PathPoint({'p': new Coord({'x': 0, 'y': 0})});
         let prevx, prevy;
 
@@ -533,6 +543,11 @@
                 // debug('\t new point ' + p.x + '\t' + p.y);
 
                 lastpoint.h2.use = false;
+                /*
+                *
+                * REFACTOR
+                *
+                */
                 patharr.push(new PathPoint({'p': p, 'h1': clone(p), 'h2': clone(p), 'type': 'corner', 'useH1': false, 'useH2': true}));
                 lastpoint = patharr[patharr.length-1];
             }
@@ -576,6 +591,11 @@
                 lastpoint.h2.use = true;
                 lastpoint.makePointedTo(p.x, p.y, false, 'h2', true);
 
+        /*
+        *
+        * REFACTOR
+        *
+        */
                 let pp = new PathPoint({'p': p, 'h1': clone(p), 'h2': clone(p), 'type': 'corner', 'useH1': true, 'useH2': true});
                 pp.makePointedTo(prevx, prevy, false, 'h1', true);
                 patharr.push(pp);
@@ -625,6 +645,11 @@
 
                 // debug('\t bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
 
+        /*
+        *
+        * REFACTOR
+        *
+        */
                 patharr.push(new PathPoint({'p': clone(p), 'h1': clone(h1), 'h2': clone(p), 'q': clone(q), 'useH1': true, 'useH2': true, 'type': 'corner'}));
                 lastpoint = patharr[patharr.length-1];
             }
@@ -672,6 +697,11 @@
 
                 // debug('\t bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
 
+        /*
+        *
+        * REFACTOR
+        *
+        */
                 patharr.push(new PathPoint({'p': clone(p), 'h1': clone(h1), 'h2': clone(p), 'q': clone(q), 'useH1': true, 'useH2': true, 'type': 'corner'}));
                 lastpoint = patharr[patharr.length-1];
             }
@@ -717,6 +747,11 @@
                 }
 
                 // debug('\t bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
+        /*
+        *
+        * REFACTOR
+        *
+        */
                 patharr.push(new PathPoint({'p': clone(p), 'h1': clone(h1), 'h2': clone(p), 'useH1': true, 'useH2': true, 'type': 'corner'}));
                 lastpoint = patharr[patharr.length-1];
             }
@@ -762,6 +797,11 @@
                 // debug('\t h1 after: ' + json(h1, true));
 
 
+        /*
+        *
+        * REFACTOR
+        *
+        */
                 patharr.push(new PathPoint({'p': clone(p), 'h1': clone(h1), 'h2': clone(p), 'type': 'symmetric', 'useH1': true, 'useH2': true}));
                 lastpoint = patharr[patharr.length-1];
             }

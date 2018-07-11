@@ -37,7 +37,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Handle',
+        category: 'ControlPoint',
         name: 'length',
         assertion: function() {
             let pp = samplePathPoint();
@@ -45,7 +45,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Handle',
+        category: 'ControlPoint',
         name: 'angle',
         assertion: function() {
             let pp = samplePathPoint();
@@ -53,7 +53,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Handle',
+        category: 'ControlPoint',
         name: 'niceAngle',
         assertion: function() {
             let pp = samplePathPoint();
@@ -61,7 +61,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Handle',
+        category: 'ControlPoint',
         name: 'use',
         assertion: function() {
             let p = new PathPoint();
@@ -74,7 +74,7 @@ _TEST.testList.push(
         name: 'save',
         assertion: function() {
             let pp = samplePathPoint();
-            return _TEST.is(pp.save()).equalTo(JSON.parse('{"p":{"x":100,"y":100},"h1":{"point":{"x":0,"y":0},"use":true},"h2":{"point":{"x":200,"y":200},"use":true},"type":"corner"}'));
+            return _TEST.is(pp.save()).equalTo(JSON.parse('{"p":{"point":{"x":100,"y":100},"use":true},"type":"corner","h1":{"point":{"x":0,"y":0},"use":true},"h2":{"point":{"x":200,"y":200},"use":true}}'));
         },
     },
     {
@@ -162,7 +162,7 @@ _TEST.testList.push(
             let pp = makePathPointFromSegments(seg1, seg2);
             return _TEST.is(pp.save()).equalTo(
                 {
-                    'p': {'x': 400, 'y': 300},
+                    'p': {'point': {'x': 400, 'y': 300}, 'use': true},
                     'h1': {'point': {'x': 200, 'y': 200}, 'use': true},
                     'h2': {'point': {'x': 500, 'y': 200}, 'use': true},
                     'type': 'corner',

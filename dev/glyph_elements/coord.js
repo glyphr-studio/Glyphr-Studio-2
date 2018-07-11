@@ -10,15 +10,11 @@ export default class Coord extends GlyphElement {
      * Create a coordinate
      * @param {number} x - The X value
      * @param {number} y - The Y value
-     * @param {boolean} xLock - if the X value is locked
-     * @param {boolean} yLock - if the Y value is locked
      */
-    constructor({x = 0, y = 0, xLock = false, yLock = false} = {}) {
+    constructor({x = 0, y = 0} = {}) {
         super();
         this.x = x;
         this.y = y;
-        this.xLock = xLock;
-        this.yLock = yLock;
     }
 
 
@@ -28,20 +24,13 @@ export default class Coord extends GlyphElement {
 
     /**
      * Export object properties that need to be saved to a project file
-     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
      * @returns {*}
      */
-    save(verbose = false) {
+    save() {
         let re = {
-            objType: this.objType,
             x: this.x,
             y: this.y,
         };
-
-        if (this._xLock) re.xLock = true;
-        if (this._yLock) re.yLock = true;
-
-        if (!verbose) delete re.objType;
 
         return re;
     }
@@ -53,8 +42,8 @@ export default class Coord extends GlyphElement {
      */
     print(level = 0) {
         let re = `{`;
-        re += `x: ${this.xLock? 'L' : ''}${isVal(this._x)? this._x : '--'}  `;
-        re += `y: ${this.yLock? 'L' : ''}${isVal(this._y)? this._y : '--'}`;
+        re += `x: ${isVal(this._x)? this._x : '--'}  `;
+        re += `y: ${isVal(this._y)? this._y : '--'}`;
         re += `}`;
 
         return re;
@@ -64,16 +53,6 @@ export default class Coord extends GlyphElement {
     // --------------------------------------------------------------
     // Getters
     // --------------------------------------------------------------
-
-    /** Gets the xLock property */
-    get xLock() {
-        return this._xLock? true : false;
-    }
-
-    /** Gets the yLock property */
-    get yLock() {
-        return this._yLock? true : false;
-    }
 
     /**
      * Make sure x is a number
@@ -126,22 +105,6 @@ export default class Coord extends GlyphElement {
         position = numSan(position);
         if (isNaN(position)) this._y = 0;
         else this._y = position;
-    }
-
-    /**
-     * Sets if the x value can be moved
-     * @param {boolean} lock
-     */
-    set xLock(lock) {
-        this._xLock = !!lock;
-    }
-
-    /**
-     * Sets if the y value can be moved
-     * @param {boolean} lock
-     */
-    set yLock(lock) {
-        this._yLock = !!lock;
     }
 }
 

@@ -1428,7 +1428,7 @@ export default redraw;
         ctx.stroke();
         ctx.fill();
 
-        // rotate Handle
+        // rotate handle
         ctx.strokeStyle = accent.l65;
         ctx.fillStyle = 'white';
         ctx.lineWidth = thickness;

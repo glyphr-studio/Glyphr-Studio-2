@@ -368,9 +368,9 @@ function Tool_NewPath() {
 
         let eh = _UI.eventhandlers;
         let newpoint = new PathPoint({
-            p: new Coord({x: cx_sx(eh.mousex), y: cy_sy(eh.mousey)}),
-            h1: new Handle({point: new Coord({x: cx_sx(eh.mousex-100), y: cy_sy(eh.mousey)}), use: false}),
-            h2: new Handle({point: new Coord({x: cx_sx(eh.mousex+100), y: cy_sy(eh.mousey)}), use: false}),
+            p: {point: {x: cx_sx(eh.mousex), y: cy_sy(eh.mousey)}},
+            h1: {point: {x: cx_sx(eh.mousex-100), y: cy_sy(eh.mousey)}, use: false},
+            h2: {point: {x: cx_sx(eh.mousex+100), y: cy_sy(eh.mousey)}, use: false},
             type: 'flat',
         });
 

@@ -4,14 +4,12 @@ import PathPoint from './pathpoint.js';
 import {calculateAngle, calculateLength, angleToNiceAngle} from '../app/functions.js';
 
 /**
- * Glyph Element > Handle
- * There are two of these associated with a single PathPoint
- * They can be hidden or used, which alters the overall path
- * shape.
+ * Glyph Element > ControlPoint
+ * Either the central Point in a Path Point, or one of it's Handles
  */
-export default class Handle extends GlyphElement {
+export default class ControlPoint extends GlyphElement {
     /**
-     * Create a Handle
+     * Create a ControlPoint
      * @param {Coord} point - possition of the handle
      * @param {boolean} use - show or hide the handle
      * @param {PathPoint} rootPoint - point that this handle is connected to
@@ -19,6 +17,8 @@ export default class Handle extends GlyphElement {
     constructor({
         point = {x: 100, y: 100},
         use = true,
+        xLock = false,
+        yLock = false,
         rootPoint = false,
     } = {}) {
         super();
@@ -44,6 +44,8 @@ export default class Handle extends GlyphElement {
         };
 
         if (this.use) re.use = true;
+        if (this.xLock) re.xLock = true;
+        if (this.yLock) re.yLock = true;
 
         if (!verbose) delete re.objType;
 
@@ -111,7 +113,7 @@ export default class Handle extends GlyphElement {
      * @returns {boolean}
      */
     get xLock() {
-        return this.point.xLock;
+        return this._xLock;
     }
 
     /**
@@ -119,7 +121,7 @@ export default class Handle extends GlyphElement {
      * @returns {boolean}
      */
     get yLock() {
-        return this.point.yLock;
+        return this._yLock;
     }
 
     /**
@@ -199,7 +201,7 @@ export default class Handle extends GlyphElement {
      * @param {boolean} lock
      */
     set xLock(lock) {
-        this.point.xLock = !!lock;
+        this._xLock = !!lock;
     }
 
     /**
@@ -207,7 +209,7 @@ export default class Handle extends GlyphElement {
      * @param {boolean} lock
      */
     set yLock(lock) {
-        this.point.yLock = !!lock;
+        this._yLock = !!lock;
     }
 
     /**

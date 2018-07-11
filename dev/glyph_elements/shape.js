@@ -688,30 +688,50 @@ function rectPathFromMaxes(maxes) {
     let qh = round((ty-by)/4);
 
     // First Point
-    let Pul = new Coord({'x': lx, 'y': ty});
-    let H1ul = new Coord({'x': lx, 'y': (ty-qh)});
-    let H2ul = new Coord({'x': (lx+qw), 'y': ty});
+    let Pul = {'x': lx, 'y': ty};
+    let H1ul = {'x': lx, 'y': (ty-qh)};
+    let H2ul = {'x': (lx+qw), 'y': ty};
 
     // Second Point
-    let Pur = new Coord({'x': rx, 'y': ty});
-    let H1ur = new Coord({'x': (rx-qw), 'y': ty});
-    let H2ur = new Coord({'x': rx, 'y': (ty-qh)});
+    let Pur = {'x': rx, 'y': ty};
+    let H1ur = {'x': (rx-qw), 'y': ty};
+    let H2ur = {'x': rx, 'y': (ty-qh)};
 
     // Third Point
-    let Plr = new Coord({'x': rx, 'y': by});
-    let H1lr = new Coord({'x': rx, 'y': (by+qh)});
-    let H2lr = new Coord({'x': (rx-qw), 'y': by});
+    let Plr = {'x': rx, 'y': by};
+    let H1lr = {'x': rx, 'y': (by+qh)};
+    let H2lr = {'x': (rx-qw), 'y': by};
 
     // Fourth Point
-    let Pll = new Coord({'x': lx, 'y': by});
-    let H1ll = new Coord({'x': (lx+qw), 'y': by});
-    let H2ll = new Coord({'x': lx, 'y': (by+qh)});
+    let Pll = {'x': lx, 'y': by};
+    let H1ll = {'x': (lx+qw), 'y': by};
+    let H2ll = {'x': lx, 'y': (by+qh)};
 
     let patharr = [];
-    patharr[0] = new PathPoint({'p': Pul, 'h1': H1ul, 'h2': H2ul});
-    patharr[1] = new PathPoint({'p': Pur, 'h1': H1ur, 'h2': H2ur});
-    patharr[2] = new PathPoint({'p': Plr, 'h1': H1lr, 'h2': H2lr});
-    patharr[3] = new PathPoint({'p': Pll, 'h1': H1ll, 'h2': H2ll});
+    patharr[0] = {
+        'p': {point: new Coord(Pul)},
+        'h1': {point: new Coord(H1ul)},
+        'h2': {point: new Coord(H2ul)}
+    };
+
+    patharr[1] = {
+        'p': {point: new Coord(Pur)},
+        'h1': {point: new Coord(H1ur)},
+        'h2': {point: new Coord(H2ur)}
+    };
+
+    patharr[2] = {
+        'p': {point: new Coord(Plr)},
+        'h1': {point: new Coord(H1lr)},
+        'h2': {point: new Coord(H2lr)}
+    };
+
+    patharr[3] = {
+        'p': {point: new Coord(Pll)},
+        'h1': {point: new Coord(H1ll)},
+        'h2': {point: new Coord(H2ll)}
+    };
+
 
     let rp = new Path({'pathPoints': patharr, 'leftx': lx, 'rightx': rx, 'topy': ty, 'bottomy': by});
     // debug('RETURNING PATH: ' + JSON.stringify(rp));
@@ -740,30 +760,54 @@ function ovalPathFromMaxes(maxes) {
     let hhd = round(hh*0.448);
 
     // First Point - Top
-    let Pt = new Coord({'x': (lx+hw), 'y': ty});
-    let H1t = new Coord({'x': (lx+hwd), 'y': ty});
-    let H2t = new Coord({'x': (rx-hwd), 'y': ty});
+    let Pt = {'x': (lx+hw), 'y': ty};
+    let H1t = {'x': (lx+hwd), 'y': ty};
+    let H2t = {'x': (rx-hwd), 'y': ty};
 
     // Second Point - Right
-    let Pr = new Coord({'x': rx, 'y': (by+hh)});
-    let H1r = new Coord({'x': rx, 'y': (ty-hhd)});
-    let H2r = new Coord({'x': rx, 'y': (by-hhd)});
+    let Pr = {'x': rx, 'y': (by+hh)};
+    let H1r = {'x': rx, 'y': (ty-hhd)};
+    let H2r = {'x': rx, 'y': (by-hhd)};
 
     // Third Point - Bottom
-    let Pb = new Coord({'x': (lx+hw), 'y': by});
-    let H1b = new Coord({'x': (rx-hwd), 'y': by});
-    let H2b = new Coord({'x': (lx+hwd), 'y': by});
+    let Pb = {'x': (lx+hw), 'y': by};
+    let H1b = {'x': (rx-hwd), 'y': by};
+    let H2b = {'x': (lx+hwd), 'y': by};
 
     // Fourth Point - Left
-    let Pl = new Coord({'x': lx, 'y': (by+hh)});
-    let H1l = new Coord({'x': lx, 'y': (by+hhd)});
-    let H2l = new Coord({'x': lx, 'y': (ty-hhd)});
+    let Pl = {'x': lx, 'y': (by+hh)};
+    let H1l = {'x': lx, 'y': (by+hhd)};
+    let H2l = {'x': lx, 'y': (ty-hhd)};
 
     let patharr = [];
-    patharr[0] = new PathPoint({'p': Pt, 'h1': H1t, 'h2': H2t, 'type': 'symmetric'});
-    patharr[1] = new PathPoint({'p': Pr, 'h1': H1r, 'h2': H2r, 'type': 'symmetric'});
-    patharr[2] = new PathPoint({'p': Pb, 'h1': H1b, 'h2': H2b, 'type': 'symmetric'});
-    patharr[3] = new PathPoint({'p': Pl, 'h1': H1l, 'h2': H2l, 'type': 'symmetric'});
+    patharr[0] = {
+        'p': {point: new Coord(Pt)},
+        'h1': {point: new Coord(H1t)},
+        'h2': {point: new Coord(H2t)},
+        'type': 'symmetric',
+    };
+
+    patharr[1] = {
+        'p': {point: new Coord(Pr)},
+        'h1': {point: new Coord(H1r)},
+        'h2': {point: new Coord(H2r)},
+        'type': 'symmetric',
+    };
+
+    patharr[2] = {
+        'p': {point: new Coord(Pb)},
+        'h1': {point: new Coord(H1b)},
+        'h2': {point: new Coord(H2b)},
+        'type': 'symmetric',
+    };
+
+    patharr[3] = {
+        'p': {point: new Coord(Pl)},
+        'h1': {point: new Coord(H1l)},
+        'h2': {point: new Coord(H2l)},
+        'type': 'symmetric',
+    };
+
 
     return new Path({pathPoints: patharr});
 }

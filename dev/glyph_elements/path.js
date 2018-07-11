@@ -3,7 +3,6 @@ import Maxes from './maxes.js';
 import Coord from './coord.js';
 import Segment from './segment.js';
 import PolySegment from './polysegment.js';
-import Handle from './handle.js';
 import PathPoint from './pathpoint.js';
 import {clone, round, isVal, hasNonValues, duplicates} from '../app/functions.js';
 import {coordsAreEqual} from './coord.js';
@@ -1045,9 +1044,9 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
             let s2 = splits[1];
 
             // New Point
-            nP = new Coord({x: s1.p4x, y: s1.p4y});
-            nH1 = new Handle({point: new Coord({x: s1.p3x, y: s1.p3y})});
-            nH2 = new Handle({point: new Coord({x: s2.p2x, y: s2.p2y})});
+            nP = {point: {x: s1.p4x, y: s1.p4y}};
+            nH1 = {point: {x: s1.p3x, y: s1.p3y}};
+            nH2 = {point: {x: s2.p2x, y: s2.p2y}};
             ppn = new PathPoint({p: nP, h1: nH1, h2: nH2, type: 'flat'});
             ppn.roundAll();
 
@@ -1065,9 +1064,9 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         } else {
             // just make a random point
             let d = 100;
-            nP = new Coord({'x': pp1.p.x + d, 'y': pp1.p.y + d});
-            nH1 = new Coord({'x': pp1.h2.x + d, 'y': pp1.h2.y + d});
-            nH2 = new Coord({'x': pp1.h1.x + d, 'y': pp1.h1.y + d});
+            nP = {point: {'x': pp1.p.x + d, 'y': pp1.p.y + d}};
+            nH1 = {point: {'x': pp1.h2.x + d, 'y': pp1.h2.y + d}};
+            nH2 = {point: {'x': pp1.h1.x + d, 'y': pp1.h1.y + d}};
             ppn = new PathPoint({'p': nP, 'h1': nH1, 'h2': nH2, 'type': pp1.type});
         }
 

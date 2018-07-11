@@ -1,6 +1,5 @@
 import GlyphElement from './glyphelement.js';
-import Coord from './coord.js';
-import Handle from './handle.js';
+import ControlPoint from './controlpoint.js';
 import {coordsAreEqual} from './coord.js';
 import {round, rotate} from '../app/functions.js';
 
@@ -16,14 +15,14 @@ export {makePathPointFromSegments};
 export default class PathPoint extends GlyphElement {
     /**
      * Create a PathPoint
-     * @param {Coord} p - Main control point
-     * @param {Handle} h1 - First handle
-     * @param {Handle} h2 - Second handle
-     * @param {Coord} q - Storing the Quadratic handle point from Import SVG action
+     * @param {ControlPoint} p - Main control point
+     * @param {ControlPoint} h1 - First handle
+     * @param {ControlPoint} h2 - Second handle
+     * @param {object} q - Storing the Quadratic handle point from Import SVG action
      * @param {string} type - corner, flat, or symmetric
      */
     constructor({
-        p = {x: 100, y: 100},
+        p,
         h1,
         h2,
         type = 'corner',
@@ -96,7 +95,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Get the main point
-     * @returns {Coord}
+     * @returns {ControlPoint}
      */
     get p() {
         return this._p;
@@ -104,7 +103,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Get the first handle
-     * @returns {Handle}
+     * @returns {ControlPoint}
      */
     get h1() {
         return this._h1;
@@ -112,7 +111,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Get the second handle
-     * @returns {Handle}
+     * @returns {ControlPoint}
      */
     get h2() {
         return this._h2;
@@ -158,35 +157,36 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * set the main point
-     * @param {Coord} newp
+     * @param {ControlPoint} newp
      */
     set p(newp) {
-        this._p = new Coord(newp);
+        this._p = new ControlPoint(newp);
+        this._p.rootPoint = this;
     }
 
     /**
      * set the first handle
-     * @param {Handle} newh1
+     * @param {ControlPoint} newh1
      */
     set h1(newh1 = {}) {
         if (!newh1.point) {
             newh1.point = {x: this.p.x-100, y: this.p.y};
             newh1.use = false;
         }
-        this._h1 = new Handle(newh1);
+        this._h1 = new ControlPoint(newh1);
         this._h1.rootPoint = this;
     }
 
     /**
      * set the second handle
-     * @param {Handle} newh2
+     * @param {ControlPoint} newh2
      */
     set h2(newh2 = {}) {
         if (!newh2.point) {
             newh2.point = {x: this.p.x+100, y: this.p.y};
             newh2.use = false;
         }
-        this._h2 = new Handle(newh2);
+        this._h2 = new ControlPoint(newh2);
         this._h2.rootPoint = this;
     }
 
@@ -956,9 +956,9 @@ export default class PathPoint extends GlyphElement {
  */
 function makePathPointFromSegments(seg1, seg2) {
     let newpp = new PathPoint({
-        h1: new Handle({point: {x: seg1.p3x, y: seg1.p3y}}),
-        p: new Coord({x: seg2.p1x, y: seg2.p1y}),
-        h2: new Handle({point: {x: seg2.p2x, y: seg2.p2y}}),
+        h1: {point: {x: seg1.p3x, y: seg1.p3y}},
+        p: {point: {x: seg2.p1x, y: seg2.p1y}},
+        h2: {point: {x: seg2.p2x, y: seg2.p2y}},
     });
 
     if (seg1.line || coordsAreEqual(newpp.h1, newpp.p)) newpp.h1.use = false;

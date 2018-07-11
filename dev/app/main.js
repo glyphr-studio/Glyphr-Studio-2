@@ -19,8 +19,8 @@ window._DEV.coord = coord;
 import * as maxes from '../glyph_elements/maxes.js';
 window._DEV.maxes = maxes;
 
-import * as handle from '../glyph_elements/handle.js';
-window._DEV.handle = handle;
+import * as controlpoint from '../glyph_elements/controlpoint.js';
+window._DEV.controlpoint = controlpoint;
 
 import * as pathpoint from '../glyph_elements/pathpoint.js';
 window._DEV.pathpoint = pathpoint;

@@ -18,13 +18,6 @@ _TEST.testList.push(
     },
     {
         category: 'Coord',
-        name: 'Constructor - xLock',
-        assertion: function() {
-            return _TEST.is((new Coord({x: 101})).xLock).equalTo(false);
-        },
-    },
-    {
-        category: 'Coord',
         name: 'coordsAreEqual',
         assertion: function() {
             let c1 = new Coord({x: 100, y: 100});
