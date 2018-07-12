@@ -28,27 +28,19 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * Create a Path
      * @param {array} pathPoints - array of Path Point objects that make up this path
      * @param {number} winding - number representing winding direction
-     * @param {object} maxes - a Maxes object that contains max and min information
-     * @param {object} cache - any cached information
+     * @param {object} parent - link to the parent Shape object
      */
     constructor({
         pathPoints = [],
-        winding = 0,
-        maxes = {},
-        cache = {},
+        winding,
+        parent = false,
     } = {}) {
         super();
-
         this.pathPoints = pathPoints;
         this.winding = winding;
-        if (!this.winding) this.findWinding();
+        this.parent = parent;
 
-        // internal
-        this.maxes = maxes;
-        this.cache = {};
-        this.cache.segments = cache.segments || [];
-        this.cache.segmentlengths = cache.segmentlengths || [];
-        this.calcMaxes();
+        this.changed();
     }
 
 
@@ -103,14 +95,6 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         re += `${ind.substring(2)}}`;
 
         return re;
-    }
-
-    /**
-     * Reset the cache and calculate dimensions
-     */
-    changed() {
-        this.cache = {};
-        this.calcMaxes();
     }
 
 
@@ -223,10 +207,11 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
             // debug('NEW PATH : Hydrating Path Points, length ' + pathPoints.length);
             for (let i = 0; i < pathPoints.length; i++) {
                 this._pathPoints[i] = new PathPoint(pathPoints[i]);
-                this._pathPoints[i].parentPath = this;
+                this._pathPoints[i].parent = this;
             }
         }
 
+        this.changed();
         return this;
     }
 
@@ -239,7 +224,8 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {Path} - reference to this Path
      */
     set winding(winding) {
-        this._winding = winding;
+        if (isVal(winding)) this._winding = winding;
+        else this.findWinding();
         return this;
     }
 
@@ -396,7 +382,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
             // debug('ratiodh = ' + ratiodh);
             // debug('ratiodw = ' + ratiodw);
         }
-        this.calcMaxes();
+        // this.calcMaxes();
         // debug(' Path.updatePathSize - END\n');
     }
 
@@ -774,11 +760,8 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         num = num % this.pathPoints.length;
 
         // check cache
-        if (this.cache.segments && this.cache.segments[num]) {
-            return this.cache.segments[num];
-        } else {
-            this.cache.segments = [];
-        }
+        if (!this.cache.segments) this.cache.segments = [];
+        if (this.cache.segments[num]) return this.cache.segments[num];
 
         // debug('\t validated as ' + num);
         let pp1 = this.pathPoints[num];
@@ -805,7 +788,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      */
     getQuickSegmentLength(num = 0) {
         let re = this.getSegment(num);
-        re = re.getQuickLength();
+        re = re.quickLength;
         return re;
     }
 
@@ -1009,7 +992,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         // debug('\n Path.addPathPoint - START');
         // debug('\t newpp = ' + newpp);
 
-        newpp.parentPath = this;
+        newpp.parent = this;
         this.pathPoints.push(newpp);
         let re = this.selectPathPoint(this.pathPoints.length - 1);
 
@@ -1071,7 +1054,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         }
 
         // Insert
-        ppn.parentPath = this;
+        ppn.parent = this;
         this.pathPoints.splice(pp2i, 0, ppn);
         // this.selectPathPoint(pp2i);
         this.changed();
@@ -1095,7 +1078,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
 
         for (let pp = 0; pp < this.pathPoints.length; pp++) {
             // grains = this.cache.segmentlengths[pp] * 100;
-            grains = this.getSegment(pp).getQuickLength() * 100;
+            grains = this.getSegment(pp).quickLength * 100;
 
             for (let t = 0; t < 1; t += (1 / grains)) {
                 check = this.getCoordFromSplit(t, pp);
@@ -1173,6 +1156,8 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         this._maxes = clone(_UI.mins);
         let seg;
         let tbounds;
+
+        if (!this.cache.segments) this.cache.segments = [];
 
         for (let s = 0; s < this.pathPoints.length; s++) {
             // debug('\t ++++++ starting seg ' + s);

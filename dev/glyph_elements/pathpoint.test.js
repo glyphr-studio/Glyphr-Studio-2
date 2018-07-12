@@ -8,7 +8,7 @@ _TEST.globals.testPathPoint = {
     h2: {point: {x: 200, y: 200}},
     type: 'corner',
     q: false,
-    parentPath: false,
+    parent: false,
 };
 
 /**

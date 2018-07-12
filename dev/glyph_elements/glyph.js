@@ -53,17 +53,25 @@ export default class Glyph extends GlyphElement {
         this.ratioLock = ratioLock;
         this.usedIn = usedIn;
         this.contextGlyphs = contextGlyphs;
-        // debug('\t name: ' + this.name);
 
         this.changed();
-
-        // debug(' Glyph - END\n');
     }
 
 
     // --------------------------------------------------------------
     // Common Glyphr Studio object methods
     // --------------------------------------------------------------
+
+    /**
+     * Any change that updates the shape of any part of a glyph
+     * gets bubbled up through the GlyphElement hierarchy
+     */
+    changed() {
+        this.calcMaxes();
+        for (let g=0; g<this.usedIn.length; g++) {
+            getGlyph(this.usedIn[g]).changed();
+        }
+    }
 
     /**
      * Export object properties that need to be saved to a project file
@@ -98,14 +106,6 @@ export default class Glyph extends GlyphElement {
         return re;
     }
 
-    /**
-     * Reset the cache and calculate dimensions
-     */
-    changed() {
-        for (let s=0; s<this.shapes.length; s++) this.shapes[s].chaged();
-        this.cache = {};
-        this.calcGlyphMaxes();
-    }
 /*
     changed(descend, ascend) {
         this.cache = {};
@@ -118,7 +118,7 @@ export default class Glyph extends GlyphElement {
             for (let s = 0; s < this.shapes.length; s++)
                 this.shapes[s].changed(descend, ascend);
         }
-        this.calcGlyphMaxes();
+        this.calcMaxes();
     }
     print(indents) {
         indents = indents || '   ';
@@ -259,7 +259,7 @@ export default class Glyph extends GlyphElement {
     get maxes() {
         // debug('\n Glyph.getMaxes - START ' + this.name);
         if (!this._maxes || hasNonValues(this._maxes)) {
-            this.calcGlyphMaxes();
+            this.calcMaxes();
         }
         if (this.shapes.length) {
             if (this._maxes.xMin === this._maxes.maxBounds.xMin ||
@@ -267,7 +267,7 @@ export default class Glyph extends GlyphElement {
                 this._maxes.yMin === this._maxes.maxBounds.yMin ||
                 this._maxes.yMax === this._maxes.maxBounds.yMax
             ) {
-                this.calcGlyphMaxes();
+                this.calcMaxes();
             }
         }
         // debug('\t returning ' + json(this.maxes));
@@ -373,9 +373,11 @@ export default class Glyph extends GlyphElement {
                 if (isVal(shapes[i].link)) {
                     // debug('\t hydrating ci ' + shapes[i].name);
                     this._shapes[i] = new ComponentInstance(shapes[i]);
+                    this._shapes[i].parent = this;
                 } else if (isVal(shapes[i].name)) {
                     // debug('\t hydrating sh ' + shapes[i].name);
                     this._shapes[i] = new Shape(shapes[i]);
+                    this._shapes[i].parent = this;
                 }
             }
         } else {
@@ -814,9 +816,9 @@ export default class Glyph extends GlyphElement {
      * Calcualte the overal maxes for this Glyph
      * @returns {Maxes}
      */
-    calcGlyphMaxes() {
-        // debug('\n Glyph.calcGlyphMaxes - START ' + this.name);
-        this.maxes = clone(_UI.mins);
+    calcMaxes() {
+        // debug('\n Glyph.calcMaxes - START ' + this.name);
+        // this.maxes = clone(_UI.mins);
         let tm;
         if (this.shapes.length > 0) {
             for (let jj = 0; jj < this.shapes.length; jj++) {
@@ -834,8 +836,8 @@ export default class Glyph extends GlyphElement {
             this.maxes = {'xMax': 0, 'xMin': 0, 'yMax': 0, 'yMin': 0};
         }
 
-        // debug(' Glyph.calcGlyphMaxes - END ' + this.name + '\n');
-        return clone(this.maxes);
+        // debug(' Glyph.calcMaxes - END ' + this.name + '\n');
+        return this.maxes;
     }
 
 
@@ -1151,7 +1153,8 @@ export default class Glyph extends GlyphElement {
             }
         }
         this.shapes = reshapes;
-        // this.calcGlyphMaxes();
+        // this.calcMaxes();
+        this.changed();
         return this;
     }
 

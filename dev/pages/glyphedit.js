@@ -40,7 +40,7 @@
         let sg = getSelectedWorkItem();
         let editmode = getEditMode();
 
-        if (sg) sg.calcGlyphMaxes();
+        // if (sg) sg.calcMaxes();
         // debug('\t Selected WI ' + sg.name);
 
         // draw grids

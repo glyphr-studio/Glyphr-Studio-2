@@ -281,7 +281,6 @@ export default redraw;
             setCursor('slice');
         } else if (ctool === 'shaperesize') {
             setCursor('arrow');
-            // _UI.multiSelect.shapes.calcMaxes();
         }
 
         _UI.eventhandlers.hoverpoint = false;

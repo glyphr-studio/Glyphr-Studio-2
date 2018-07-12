@@ -9,6 +9,16 @@ export default class GlyphElement {
 
 
     /**
+     * Any change that updates the shape of any part of a glyph
+     * gets bubbled up through the GlyphElement hierarchy
+     */
+    changed() {
+        if (this.cache) this.cache = {};
+        if (this.calcMaxes) this.calcMaxes();
+        if (this.parent) this.parent.changed();
+    }
+
+    /**
      * Find out what type of Element this is
      */
     get objType() {
@@ -18,9 +28,28 @@ export default class GlyphElement {
     /**
      * Find out what type of Element this is
      * @param {string} type
+     * @returns {string}
      */
     set objType(type) {
         return this._objType = type;
+    }
+
+    /**
+     * get the cache
+     * @returns {object}
+     */
+    get cache() {
+        if (!this._cache) this._cache = {};
+        return this._cache;
+    }
+
+    /**
+     * set the cache
+     * @param {object} cache
+     * @returns {object}
+     */
+    set cache(cache = {}) {
+        return this._cache = cache;
     }
 
     /**

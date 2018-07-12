@@ -258,16 +258,6 @@ _TEST.testList.push(
     },
     {
         category: 'Shape',
-        name: 'calcMaxes',
-        assertion: function() {
-            let s = sampleShape();
-            s.x = 700;
-            s.calcMaxes();
-            return _TEST.is(s.maxes.xMax).equalTo(1014);
-        },
-    },
-    {
-        category: 'Shape',
         name: 'getSegment',
         assertion: function() {
             return _TEST.is(sampleShape().getSegment(1).p1x).equalTo(484);

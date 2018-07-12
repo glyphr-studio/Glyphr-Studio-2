@@ -28,6 +28,7 @@ export default class Shape extends GlyphElement {
      * @param {boolean} wLock
      * @param {boolean} hLock
      * @param {boolean} ratioLock
+     * @param {object} parent
      */
     constructor({
         name = 'Shape',
@@ -38,6 +39,7 @@ export default class Shape extends GlyphElement {
         wLock = false,
         hLock = false,
         ratioLock = false,
+        parent = false,
     } = {}) {
         super();
         this.name = name;
@@ -48,6 +50,9 @@ export default class Shape extends GlyphElement {
         this.wLock = wLock;
         this.hLock = hLock;
         this.ratioLock = ratioLock;
+        this.parent = parent;
+
+        this.changed();
     }
 
 
@@ -77,13 +82,6 @@ export default class Shape extends GlyphElement {
         if (!verbose) delete re.objType;
 
         return re;
-    }
-
-    /**
-     * Reset the cache and calculate dimensions
-     */
-    changed() {
-        this.path.changed();
     }
 
 
@@ -228,6 +226,7 @@ export default class Shape extends GlyphElement {
      */
     set path(path) {
         this._path = new Path(path);
+        this._path.parent = this;
         return this;
     }
 
@@ -496,12 +495,12 @@ export default class Shape extends GlyphElement {
         this.path.reverseWinding();
     }
 
-    /**
-     * Call path.calcMaxes
-     */
-    calcMaxes() {
-        this.path.calcMaxes();
-    }
+    // /**
+    //  * Call path.calcMaxes
+    //  */
+    // calcMaxes() {
+    //     this.path.calcMaxes();
+    // }
 
     /**
      * Call path.getSegment
@@ -584,11 +583,11 @@ export default class Shape extends GlyphElement {
         // debug('\n Shape.drawShape - START');
         // debug('\t view ' + json(view, true));
         if (this.visible) {
-            if ((this.path.maxes.xMax === -1) &&
-                (lctx === _UI.glyphEditCTX) &&
-                (_UI.selectedTool !== 'newpath')) {
-                this.calcMaxes();
-            }
+            // if ((this.path.maxes.xMax === -1) &&
+            //     (lctx === _UI.glyphEditCTX) &&
+            //     (_UI.selectedTool !== 'newpath')) {
+            //     this.calcMaxes();
+            // }
             this.path.drawPath(lctx, view);
         }
         // debug(' Shape.drawShape - returning true by default - END\n');
@@ -711,25 +710,25 @@ function rectPathFromMaxes(maxes) {
     patharr[0] = {
         'p': {point: new Coord(Pul)},
         'h1': {point: new Coord(H1ul)},
-        'h2': {point: new Coord(H2ul)}
+        'h2': {point: new Coord(H2ul)},
     };
 
     patharr[1] = {
         'p': {point: new Coord(Pur)},
         'h1': {point: new Coord(H1ur)},
-        'h2': {point: new Coord(H2ur)}
+        'h2': {point: new Coord(H2ur)},
     };
 
     patharr[2] = {
         'p': {point: new Coord(Plr)},
         'h1': {point: new Coord(H1lr)},
-        'h2': {point: new Coord(H2lr)}
+        'h2': {point: new Coord(H2lr)},
     };
 
     patharr[3] = {
         'p': {point: new Coord(Pll)},
         'h1': {point: new Coord(H1ll)},
-        'h2': {point: new Coord(H2ll)}
+        'h2': {point: new Coord(H2ll)},
     };
 
 

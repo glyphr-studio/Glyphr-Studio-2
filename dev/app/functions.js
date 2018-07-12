@@ -212,7 +212,7 @@ function saveFile(fname, buffer, ftype) {
 
 /**
  * Returns a full new copy of any object
- * 'parentPath' and 'rootPoint' are pointers up to parent objects, they
+ * 'parent' and 'parent' are pointers up to parent objects, they
  * cause infinite loops when cloning objects.  Kind of a hack.
  * @param {object} cobj - object to clone
  * @returns {object}
@@ -220,7 +220,7 @@ function saveFile(fname, buffer, ftype) {
 function clone(cobj) {
     let newObj = (cobj instanceof Array) ? [] : {};
     for (let i in cobj) {
-        if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parentPath' && i !== 'rootPoint' && i !== 'cache') {
+        if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parent' && i !== 'parent' && i !== 'cache') {
             newObj[i] = clone(cobj[i]);
         } else newObj[i] = cobj[i];
     }

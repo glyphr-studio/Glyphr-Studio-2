@@ -28,7 +28,14 @@ _TEST.testList.push(
         category: 'Segment',
         name: 'length getter',
         assertion: function() {
-            return _TEST.is(sampleSegment().length).equalTo(445.8599063561878);
+            return _TEST.is(sampleSegment().length).equalTo(445.90009425053995);
+        },
+    },
+    {
+        category: 'Segment',
+        name: 'quickLength getter',
+        assertion: function() {
+            return _TEST.is(sampleSegment().quickLength).equalTo(482.842712474619);
         },
     },
     {
@@ -43,7 +50,7 @@ _TEST.testList.push(
         name: 'line getter',
         assertion: function() {
             let seg = new Segment({p1x: 0, p1y: 100, p4x: 100, p4y: 0});
-            return _TEST.is(seg.line).equalTo('diagonal');
+            return _TEST.is(seg.lineType).equalTo('diagonal');
         },
     },
     {
@@ -71,7 +78,7 @@ _TEST.testList.push(
         category: 'Segment',
         name: 'splitAtCoord',
         assertion: function() {
-            return _TEST.is(sampleSegment().splitAtCoord({x: 112, y: 187})[1].p1x).equalTo(111.93021257079866);
+            return _TEST.is(sampleSegment().splitAtCoord({x: 112, y: 187})[1].p1x).equalTo(111.9300099391252);
         },
     },
     {
@@ -109,21 +116,14 @@ _TEST.testList.push(
         category: 'Segment',
         name: 'convertToLine',
         assertion: function() {
-            return _TEST.is(sampleSegment().convertToLine().line).equalTo('diagonal');
+            return _TEST.is(sampleSegment().convertToLine().lineType).equalTo('diagonal');
         },
     },
     {
         category: 'Segment',
         name: 'calculateLength',
         assertion: function() {
-            return _TEST.is(sampleSegment().calculateLength()).equalTo(445.8599063561878);
-        },
-    },
-    {
-        category: 'Segment',
-        name: 'getQuickLength',
-        assertion: function() {
-            return _TEST.is(sampleSegment().getQuickLength()).equalTo(424.26406871192853);
+            return _TEST.is(sampleSegment().calculateLength()).equalTo(445.90009425053995);
         },
     },
     {
@@ -145,15 +145,6 @@ _TEST.testList.push(
         name: 'getFastMaxes',
         assertion: function() {
             return _TEST.is(sampleSegment().getFastMaxes().xMax).equalTo(300);
-        },
-    },
-    {
-        category: 'Segment',
-        name: 'calcMaxes',
-        assertion: function() {
-            let seg = sampleSegment();
-            seg.p3y = 600;
-            return _TEST.is(seg.calcMaxes().yMax).equalTo(394.66954639881936);
         },
     },
     {
@@ -206,7 +197,7 @@ _TEST.testList.push(
         category: 'Segment',
         name: 'isLine',
         assertion: function() {
-            return _TEST.expression(sampleSegment().convertToLine().isLine());
+            return _TEST.expression(sampleSegment().convertToLine().lineType);
         },
     },
     {

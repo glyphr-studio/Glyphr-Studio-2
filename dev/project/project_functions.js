@@ -43,7 +43,7 @@ function saveGlyphrProjectFile(overwrite) {
 function cloneForSaveData(cobj) {
     let newObj = (cobj instanceof Array) ? [] : {};
     for (let i in cobj) {
-        if (i !== 'parentPath' && i !== 'cache') {
+        if (i !== 'parent' && i !== 'cache') {
             if (cobj[i] && typeof cobj[i] === 'object') {
                 newObj[i] = cloneForSaveData(cobj[i]);
             } else newObj[i] = cobj[i];

@@ -18,25 +18,22 @@ export default class PathPoint extends GlyphElement {
      * @param {ControlPoint} p - Main control point
      * @param {ControlPoint} h1 - First handle
      * @param {ControlPoint} h2 - Second handle
-     * @param {object} q - Storing the Quadratic handle point from Import SVG action
      * @param {string} type - corner, flat, or symmetric
+     * @param {object} parent - link to the parent Path object
      */
     constructor({
         p,
         h1,
         h2,
         type = 'corner',
-        q = false,
-        parentPath = false,
+        parent = false,
     } = {}) {
         super();
         this.p = p;
         this.h1 = h1;
         this.h2 = h2;
         this.type = type;
-        this.parentPath = parentPath;
-
-        if (q) this.q = q;
+        this.parent = parent;
     }
 
 
@@ -58,8 +55,6 @@ export default class PathPoint extends GlyphElement {
 
         if (this.h1.use) re.h1 = this.h1.save(verbose);
         if (this.h2.use) re.h2 = this.h2.save(verbose);
-
-        if (this.q) re.q = this.q;
 
         if (!verbose) delete re.objType;
 
@@ -126,21 +121,13 @@ export default class PathPoint extends GlyphElement {
     }
 
     /**
-     * Get a point's parent path
-     * @returns {Path}
-     */
-    get parentPath() {
-        return this._parentPath;
-    }
-
-    /**
      * Figure out where this point is in the overall path
      * @returns {number}
     */
     get pointNumber() {
-        if (!this.parentPath) return false;
+        if (!this.parent) return false;
 
-        let pp = this.parentPath.pathPoints;
+        let pp = this.parent.pathPoints;
         if (!pp) return false;
 
         for (let p=0; p<pp.length; p++) {
@@ -161,7 +148,8 @@ export default class PathPoint extends GlyphElement {
      */
     set p(newp) {
         this._p = new ControlPoint(newp);
-        this._p.rootPoint = this;
+        this._p.parent = this;
+        this.changed();
     }
 
     /**
@@ -174,7 +162,8 @@ export default class PathPoint extends GlyphElement {
             newh1.use = false;
         }
         this._h1 = new ControlPoint(newh1);
-        this._h1.rootPoint = this;
+        this._h1.parent = this;
+        this.changed();
     }
 
     /**
@@ -187,7 +176,8 @@ export default class PathPoint extends GlyphElement {
             newh2.use = false;
         }
         this._h2 = new ControlPoint(newh2);
-        this._h2.rootPoint = this;
+        this._h2.parent = this;
+        this.changed();
     }
 
     /**
@@ -200,13 +190,6 @@ export default class PathPoint extends GlyphElement {
         else this._type = 'corner';
     }
 
-    /**
-     * Set a point's parent path
-     * @param {Path} parentPath
-     */
-    set parentPath(parentPath) {
-        this._parentPath = parentPath;
-    }
 
     // --------------------------------------------------------------
     // Methods
@@ -228,8 +211,8 @@ export default class PathPoint extends GlyphElement {
         switch (controlPoint) {
             case 'p':
                 // Should this honor xLock / yLock?
-                this.p._x += dx;
-                this.p._y += dy;
+                this.p.point._x += dx;
+                this.p.point._y += dy;
                 this.h1.point._x += dx;
                 this.h1.point._y += dy;
                 this.h2.point._x += dx;
@@ -333,6 +316,8 @@ export default class PathPoint extends GlyphElement {
         // this.roundAll();
         // debug('MAKESYMETRIC - returns ' + JSON.stringify(this));
 
+        this.changed();
+
         return this;
     }
 
@@ -407,6 +392,8 @@ export default class PathPoint extends GlyphElement {
         this._type = 'flat';
 
         // debug(' PathPoint.makeFlat - END\n');
+
+        this.changed();
 
         return this;
     }

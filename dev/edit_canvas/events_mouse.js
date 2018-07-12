@@ -253,7 +253,7 @@ function Tool_ShapeEdit() {
         }
 
         // Resized a shape
-        if (this.resizing || this.rotating) _UI.multiSelect.shapes.calcMaxes();
+        // if (this.resizing || this.rotating) _UI.multiSelect.shapes.calcMaxes();
         updateCurrentGlyphWidth();
 
         // Finish Up
@@ -446,7 +446,7 @@ function Tool_NewPath() {
         setCursor('penPlus');
 
         if (_UI.eventhandlers.uqhaschanged) {
-            if (this.newshape) this.newshape.path.calcMaxes();
+            // if (this.newshape) this.newshape.path.calcMaxes();
             updateCurrentGlyphWidth();
             // For new shape tools, mouse up always adds to the undo-queue
             history_put('New Path tool');
@@ -498,7 +498,7 @@ function Tool_PathEdit() {
             clickEmptySpace();
             _UI.multiSelect.shapes.select(s);
         } else {
-            _UI.multiSelect.shapes.calcMaxes();
+            // _UI.multiSelect.shapes.calcMaxes();
             clickEmptySpace();
             findAndCallHotspot(eh.mousex, eh.mousey);
         }
@@ -557,7 +557,7 @@ function Tool_PathEdit() {
                 if (ev.ctrlKey || ev.metaKey) return;
                 point.updatePathPointPosition(cpt, dx, dy);
             });
-            _UI.multiSelect.shapes.calcMaxes();
+            // _UI.multiSelect.shapes.calcMaxes();
 
             eh.lastx = eh.mousex;
             eh.lasty = eh.mousey;
@@ -588,7 +588,7 @@ function Tool_PathEdit() {
         eh.lasty = -100;
 
         if (eh.uqhaschanged) {
-            _UI.multiSelect.shapes.calcMaxes();
+            // _UI.multiSelect.shapes.calcMaxes();
             updateCurrentGlyphWidth();
             history_put('Path Edit tool');
             eh.uqhaschanged = false;

@@ -4,7 +4,7 @@ import {assemble} from './main.js';
 
 /**
  * TEST
- * controlls the test functionality for GS2 Test Suite
+ * controls the test functionality for GS2 Test Suite
  */
 
 window._TEST = {

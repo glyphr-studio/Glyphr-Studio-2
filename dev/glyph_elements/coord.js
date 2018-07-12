@@ -10,11 +10,13 @@ export default class Coord extends GlyphElement {
      * Create a coordinate
      * @param {number} x - The X value
      * @param {number} y - The Y value
+     * @param {object} parent - link to the parent ControlPoint object
      */
-    constructor({x = 0, y = 0} = {}) {
+    constructor({x = 0, y = 0, parent = false} = {}) {
         super();
         this.x = x;
         this.y = y;
+        this.parent = parent;
     }
 
 

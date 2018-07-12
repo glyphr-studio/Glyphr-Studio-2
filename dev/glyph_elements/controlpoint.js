@@ -1,6 +1,5 @@
 import GlyphElement from './glyphelement.js';
 import Coord from './coord.js';
-import PathPoint from './pathpoint.js';
 import {calculateAngle, calculateLength, angleToNiceAngle} from '../app/functions.js';
 
 /**
@@ -12,19 +11,21 @@ export default class ControlPoint extends GlyphElement {
      * Create a ControlPoint
      * @param {Coord} point - possition of the handle
      * @param {boolean} use - show or hide the handle
-     * @param {PathPoint} rootPoint - point that this handle is connected to
+     * @param {PathPoint} parent - link to the parent Path object
      */
     constructor({
         point = {x: 100, y: 100},
         use = true,
         xLock = false,
         yLock = false,
-        rootPoint = false,
+        parent = false,
     } = {}) {
         super();
         this.point = point;
         this.use = use;
-        this.rootPoint = rootPoint;
+        this.xLock = xLock;
+        this.yLock = yLock;
+        this.parent = parent;
     }
 
 
@@ -81,7 +82,7 @@ export default class ControlPoint extends GlyphElement {
      * @returns {number}
      */
     get x() {
-        return this._use? this._point.x : this.rootPoint.p.x;
+        return this._use? this._point.x : this.parent.p.x;
     }
 
     /**
@@ -89,7 +90,7 @@ export default class ControlPoint extends GlyphElement {
      * @returns {number}
      */
     get y() {
-        return this._use? this._point.y : this.rootPoint.p.y;
+        return this._use? this._point.y : this.parent.p.y;
     }
 
     /**
@@ -129,7 +130,7 @@ export default class ControlPoint extends GlyphElement {
      * @returns {number}
      */
     get angle() {
-        return calculateAngle(this.point, this.rootPoint.p);
+        return calculateAngle(this.point, this.parent.p);
     }
 
     /**
@@ -141,19 +142,11 @@ export default class ControlPoint extends GlyphElement {
     }
 
     /**
-     * Get the root point this handle is connected to
-     * @returns {PathPoint}
-     */
-    get rootPoint() {
-        return this._rootPoint || new PathPoint();
-    }
-
-    /**
      * Handle Length
      * @returns {number}
      */
     get length() {
-        return calculateLength(this.point, this.rootPoint.p);
+        return calculateLength(this.point, this.parent.p);
     }
 
 
@@ -168,6 +161,7 @@ export default class ControlPoint extends GlyphElement {
     set x(possition) {
         this.point.x = possition;
         this.use = true;
+        this.changed();
     }
 
     /**
@@ -177,6 +171,7 @@ export default class ControlPoint extends GlyphElement {
     set y(possition) {
         this.point.y = possition;
         this.use = true;
+        this.changed();
     }
 
     /**
@@ -186,6 +181,7 @@ export default class ControlPoint extends GlyphElement {
     set point(pt) {
         this._point = new Coord(pt);
         this.use = true;
+        this.changed();
     }
 
     /**
@@ -194,6 +190,7 @@ export default class ControlPoint extends GlyphElement {
      */
     set use(show) {
         this._use = !!show;
+        this.changed();
     }
 
     /**
@@ -210,13 +207,5 @@ export default class ControlPoint extends GlyphElement {
      */
     set yLock(lock) {
         this._yLock = !!lock;
-    }
-
-    /**
-     * Set the root point this handle is connected to
-     * @param {PathPoint} root
-     */
-    set rootPoint(root) {
-        this._rootPoint = root;
     }
 }

@@ -108,7 +108,7 @@ import _UI from '../app/settings.js';
 
     _UI.multiSelect.points.getShape = function() {
         this.shape.path = new Path({pathPoints: this.members});
-        this.shape.calcMaxes();
+        // this.shape.calcMaxes();
         return this.shape;
     };
 
@@ -121,12 +121,13 @@ import _UI from '../app/settings.js';
 
         for (let m=0; m<this.members.length; m++) {
             point = this.members[m];
-            path = point.parentPath;
+            path = point.parent;
             pindex = point.pointNumber;
 
             if (pindex > -1) {
                 path.pathPoints.splice(pindex, 1);
-                path.calcMaxes();
+                // path.calcMaxes();
+                path.changed();
             }
         }
 
@@ -167,7 +168,7 @@ import _UI from '../app/settings.js';
         let newpoints = [];
 
         for (let m=0; m<this.members.length; m++) {
-            path = this.members[m].parentPath;
+            path = this.members[m].parent;
             pp = this.members[m].pointNumber;
             newpoints.push(path.insertPathPoint(false, pp));
         }
@@ -215,7 +216,7 @@ import _UI from '../app/settings.js';
         // debug('\t WI shapes ' + shapes);
 
         for (let p=0; p<points.length; p++) {
-            path = points[p].parentPath;
+            path = points[p].parent;
 
             for (let s=0; s<shapes.length; s++) {
                 if (shapes[s].objType !==  'ComponentInstance') {
@@ -400,11 +401,11 @@ import _UI from '../app/settings.js';
  return this.getGlyph().center;
 };
 
-    _UI.multiSelect.shapes.calcMaxes = function() {
-        for (let m=0; m<this.members.length; m++) {
-            this.members[m].calcMaxes();
-        }
-    };
+    // _UI.multiSelect.shapes.calcMaxes = function() {
+    //     for (let m=0; m<this.members.length; m++) {
+    //         this.members[m].calcMaxes();
+    //     }
+    // };
 
     _UI.multiSelect.shapes.getMaxes = function() {
         if (this.members.length === 1) return this.members[0].maxes;

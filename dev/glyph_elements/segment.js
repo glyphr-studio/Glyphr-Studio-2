@@ -37,9 +37,6 @@ export default class Segment extends GlyphElement {
      * @param {number} p4y - Second point y
      */
     constructor({p1x = 0, p1y = 0, p2x, p2y, p3x, p3y, p4x = 0, p4y = 0} = {}) {
-        // debug(`\n Segment.constructor - START`);
-        // debug(`\t passed:\np1x:${p1x}, p1y:${p1y}\np2x:${p2x}, p2y:${p2y}\np3x:${p3x}, p3y:${p3y}\np4x:${p4x}, p4y:${p4y}\n`);
-
         super();
         this.p1x = numSan(p1x);
         this.p1y = numSan(p1y);
@@ -51,15 +48,7 @@ export default class Segment extends GlyphElement {
         this.p3x = isVal(p3x) ? numSan(p3x) : this.p4x;
         this.p3y = isVal(p3y) ? numSan(p3y) : this.p4y;
 
-        // debug(`\t is now:\np1x:${this.p1x}, p1y:${this.p1y}\np2x:${this.p2x}, p2y:${this.p2y}\np3x:${this.p3x}, p3y:${this.p3y}\np4x:${this.p4x}, p4y:${this.p4y}\n`);
-
-        // cache
-        this.cache = {};
-
-        this.line = this.isLine();
-
-        this._maxes = this.calcMaxes();
-        // debug(` Segment.constructor - END\n\n`);
+        this.changed();
     }
 
 
@@ -102,7 +91,7 @@ export default class Segment extends GlyphElement {
         let re = `${ind}{Segment\n`;
         ind += '  ';
 
-        re += `${ind+'  '}line: ${this.line}\n`;
+        re += `${ind+'  '}line: ${this.lineType}\n`;
         re += `${ind+'  '}p1: ${this.p1x}/${this.p1y}\n`;
         re += `${ind+'  '}p2: ${this.p2x}/${this.p2y}\n`;
         re += `${ind+'  '}p3: ${this.p3x}/${this.p3y}\n`;
@@ -113,19 +102,19 @@ export default class Segment extends GlyphElement {
         return re;
     }
 
-    /**
-     * Reset the cache and calculate dimensions
-     */
-    changed() {
-        this.cache = {};
-        this.line = this.isLine();
-        this._maxes = this.calcMaxes();
-    }
-
 
     // --------------------------------------------------------------
     // Getters
     // --------------------------------------------------------------
+
+    /**
+     * Vertical, Horizontal, Diagonal, or boolean False
+     * @returns {*} - Line Type
+     */
+    get lineType() {
+        if (!isVal(this._lineType)) this.determineLineType();
+        return this._lineType;
+    }
 
     /**
      * Returns the length of this curve
@@ -139,10 +128,45 @@ export default class Segment extends GlyphElement {
     }
 
     /**
-     * Get the Maxes object for this Segment
+     * Gets the length between p1 and p4
+     * @returns {number}
      */
-    get maxes() {
-        return new Maxes(this._maxes);
+    get baseLength() {
+        return getLineLength(
+            this.p1x, this.p1y,
+            this.p4x, this.p4y
+        );
+    }
+
+    /**
+     * Gets the length between p1/p2/p3/p4
+     * @returns {number}
+     */
+    get topLength() {
+        let a = getLineLength(
+            this.p1x, this.p1y,
+            this.p2x, this.p2y
+        );
+        let b = getLineLength(
+            this.p2x, this.p2y,
+            this.p3x, this.p3y
+        );
+        let c = getLineLength(
+            this.p3x, this.p3y,
+            this.p4x, this.p4y
+        );
+
+        return a+b+c;
+    }
+
+    /**
+     * A rough way of determining length without doing
+     * calculus or recurrsion. quickLength will almost always
+     * be greater than the actual length.
+     * @returns {number}
+     */
+    get quickLength() {
+        return Math.max(this.topLength, this.baseLength);
     }
 
 
@@ -241,11 +265,11 @@ export default class Segment extends GlyphElement {
         // debug('\t splitting at ' + json(co, true));
         if (this.containsTerminalPoint(co, 0.1)) return false;
 
-        if (this.line && this.line !== 'diagonal') {
+        if (this.lineType === 'horizontal' || this.lineType === 'vertical') {
             let newx;
             let newy;
             let online = false;
-            if (this.line === 'horizontal') {
+            if (this.lineType === 'horizontal') {
                 if (round(co.y, 2) === round(this.p1y, 2)) {
                     if ((co.x > Math.min(this.p1x, this.p4x)) && (co.x < Math.max(this.p1x, this.p4x))) {
                         newx = co.x;
@@ -253,7 +277,7 @@ export default class Segment extends GlyphElement {
                         online = true;
                     }
                 }
-            } else if (this.line === 'vertical') {
+            } else if (this.lineType === 'vertical') {
                 if (round(co.x, 2) === round(this.p1x, 2)) {
                     if ((co.y > Math.min(this.p1y, this.p4y)) && (co.y < Math.max(this.p1y, this.p4y))) {
                         newx = this.p1x;
@@ -400,7 +424,7 @@ export default class Segment extends GlyphElement {
     getSplitFromCoord(coord, threshold = 1) {
         // debug(`\n getSplitFromCoord - START`);
 
-        let grains = this.getQuickLength() * 1000;
+        let grains = this.quickLength * 1000;
         let mindistance = 999999999;
         let re = false;
         let check;
@@ -435,32 +459,19 @@ export default class Segment extends GlyphElement {
     calculateLength() {
         // this function is only used as an approximation
         // threshold in em units
+
+        if (this.lineType) return this.baseLength;
+
         let re;
         let threshold = 10;
-        let a = Math.abs(this.p1x - this.p4x);
-        let b = Math.abs(this.p1y - this.p4y);
-        let c = Math.sqrt((a * a) + (b * b));
 
-        if (this.line || c < threshold) {
-            this.cache.length = c;
-            return c;
+        if (this.quickLength < threshold) {
+            return this.quickLength;
         } else {
             let s = this.split();
             re = s[0].calculateLength() + s[1].calculateLength();
             return re;
         }
-    }
-
-    /**
-     * Find the length of a curve, in a fast/cheap way
-     * Just assume a straight line between the first and last points
-     * @returns {number}
-     */
-    getQuickLength() {
-        let a = Math.abs(this.p1x - this.p4x);
-        let b = Math.abs(this.p1y - this.p4y);
-        let c = Math.sqrt((a * a) + (b * b));
-        return c;
     }
 
     /**
@@ -597,7 +608,7 @@ export default class Segment extends GlyphElement {
             'yMax': Math.max(this.p1y, this.p4y),
         });
 
-        if (this.line) {
+        if (this.lineType) {
             // debug([bounds]);
             // debug(' Segment.calcMaxes - returning fastmaxes for line - END\n');
             return bounds;
@@ -655,7 +666,8 @@ export default class Segment extends GlyphElement {
         }
         // debug([this.getFastMaxes(), bounds]);
         // debug(' Segment.calcMaxes - END\n');
-        return new Maxes(bounds);
+        this.maxes = new Maxes(bounds);
+        return this.maxes;
     }
 
 
@@ -673,8 +685,8 @@ export default class Segment extends GlyphElement {
     isLineOverlappedByLine(largeSegment) {
         // debug(`\n Segment.isLineOverlappedByLine - START`);
 
-        if (!this.line || !largeSegment.line) {
-            // debug(`\t this.line: ${this.line} and largeSegment.line: ${largeSegment.line}`);
+        if (!this.lineType || !largeSegment.lineType) {
+            // debug(`\t this.lineType: ${this.lineType} and largeSegment.lineType: ${largeSegment.lineType}`);
             // debug(` Segment.isLineOverlappedByLine - END - returning false\n\n`);
             return false;
         }
@@ -728,7 +740,7 @@ export default class Segment extends GlyphElement {
     containsPointOnCurve(pt, threshold) {
         if (this.containsTerminalPoint(pt, threshold)) return true;
 
-        if (this.line) return this.containsPointOnLine(pt);
+        if (this.lineType) return this.containsPointOnLine(pt);
 
         threshold = isVal(threshold) ? threshold : 0.1;
         let t = this.getSplitFromCoord(pt, threshold);
@@ -745,7 +757,7 @@ export default class Segment extends GlyphElement {
     containsPointOnLine(pt) {
         // debug('\n Segment.containsPointOnLine - START');
         // debug('\t checking ' + pt.x + ' \t' + pt.y);
-        if (!this.line) {
+        if (!this.lineType) {
             // debug('\t this is not a line, returning false');
             return false;
         }
@@ -795,24 +807,27 @@ export default class Segment extends GlyphElement {
      * @param {number} precision - how close to look
      * @returns {string}
      */
-    isLine(precision) {
+    determineLineType(precision) {
         precision = isVal(precision) ? precision : 1;
+        let type = false;
+
         let rex = (round(this.p1x, precision) === round(this.p2x, precision) &&
             round(this.p1x, precision) === round(this.p3x, precision) &&
             round(this.p1x, precision) === round(this.p4x, precision));
 
-        if (rex) return 'vertical';
+        if (rex) type = 'vertical';
 
         let rey = (round(this.p1y, precision) === round(this.p2y, precision) &&
             round(this.p1y, precision) === round(this.p3y, precision) &&
             round(this.p1y, precision) === round(this.p4y, precision));
-        if (rey) return 'horizontal';
+        if (rey) type = 'horizontal';
 
         let red = (pointsAreCollinear(this.getCoord(1), this.getCoord(4), this.getCoord(2)) &&
             pointsAreCollinear(this.getCoord(1), this.getCoord(4), this.getCoord(3)));
-        if (red) return 'diagonal';
+        if (red) type = 'diagonal';
 
-        return false;
+        this._lineType = type;
+        return type;
     }
 
     /**
@@ -839,6 +854,20 @@ export default class Segment extends GlyphElement {
 // Helpers
 // --------------------------------------------------------------
 
+/**
+ * Find the length between two points
+ * @param {number} p1x
+ * @param {number} p1y
+ * @param {number} p2x
+ * @param {number} p2y
+ * @returns {number}
+ */
+function getLineLength(p1x, p1y, p2x, p2y) {
+    let a = Math.abs(p1x - p2x);
+    let b = Math.abs(p1y - p2y);
+    let c = Math.sqrt((a * a) + (b * b));
+    return c;
+}
 
 // --------------------------------------------------------------
 //    Curve Intersections
@@ -886,7 +915,7 @@ function findSegmentIntersections(s1, s2, depth) {
 
     // Edge case, find end points overlapping the other segment
     let endpoints = [];
-    if (depth===0 && (s1.line || s2.line)) {
+    if (depth===0 && (s1.lineType || s2.lineType)) {
         // findEndPointSegmentIntersections is a perf hit
         // only run if either s1 or s2 is a line segment
         endpoints = findEndPointSegmentIntersections(s1, s2);
@@ -982,7 +1011,7 @@ function segmentsAreEqual(s1, s2, threshold) {
 
     if ( coordsAreEqual(s1.getCoord(1), s2.getCoord(1), threshold) &&
         coordsAreEqual(s1.getCoord(4), s2.getCoord(4), threshold) ) {
-        if (s1.line && s2.line) {
+        if (s1.lineType && s2.lineType) {
             // debug(' segmentsAreEqual - returning LINE true - END\n');
             return true;
         } else if ( coordsAreEqual(s1.getCoord(2), s2.getCoord(2), threshold) &&
@@ -1033,7 +1062,7 @@ function findOverlappingLineSegmentIntersections(s1, s2) {
  */
 function findCrossingLineSegmentIntersections(s1, s2) {
     // debug('\n findCrossingLineSegmentIntersections - START');
-    if (!s1.line || !s2.line) return [];
+    if (!s1.lineType || !s2.lineType) return [];
 
     let d1x = s1.p4x - s1.p1x;
     let d1y = s1.p4y - s1.p1y;

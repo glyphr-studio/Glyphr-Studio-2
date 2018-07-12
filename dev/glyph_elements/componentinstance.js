@@ -18,23 +18,24 @@ export {showDialogAddComponent, addComponent, insertComponentInstance,
 export default class ComponentInstance extends GlyphElement {
     /**
      * Create a ComponentInstance
-     * @param {number} link
-     * @param {string} name
-     * @param {number} translateX
-     * @param {number} translateY
-     * @param {number} scaleW
-     * @param {number} scaleH
-     * @param {boolean} flipEW
-     * @param {boolean} flipNS
-     * @param {boolean} reverseWinding
-     * @param {number} rotation
-     * @param {boolean} rotateFirst
-     * @param {boolean} xLock
-     * @param {boolean} yLock
-     * @param {boolean} wLock
-     * @param {boolean} hLock
-     * @param {boolean} ratioLock
-     * @param {boolean} visible
+     * @param {number} link - Root component that this instances is based on
+     * @param {string} name - name
+     * @param {number} translateX - horizontal position difference
+     * @param {number} translateY - vertical position difference
+     * @param {number} scaleW - horizontal size difference
+     * @param {number} scaleH - vertical size difference
+     * @param {boolean} flipEW - flipped horizontally
+     * @param {boolean} flipNS - flipped vertically
+     * @param {boolean} reverseWinding - paths have opposite winding
+     * @param {number} rotation - rotation difference
+     * @param {boolean} rotateFirst - rotate/resize is different than resize/rotate
+     * @param {boolean} xLock - can't change horizontal position
+     * @param {boolean} yLock - can't change vertical position
+     * @param {boolean} wLock - can't change width
+     * @param {boolean} hLock - can't change height
+     * @param {boolean} ratioLock - change width and height 1:1
+     * @param {boolean} visible - is this shape visible
+     * @param {object} parent - link to the parent Glyph object
      */
     constructor({
         link = '0x0000',
@@ -54,6 +55,7 @@ export default class ComponentInstance extends GlyphElement {
         hLock = false,
         ratioLock = false,
         visible = true,
+        parent = false,
     } = {}) {
         super();
         this.link = link;
@@ -73,9 +75,9 @@ export default class ComponentInstance extends GlyphElement {
         this.hLock = hLock;
         this.ratioLock = ratioLock;
         this.visible = visible;
+        this.parent = parent;
 
-        // cache
-        this.cache = {};
+        this.changed();
     }
 
 
@@ -114,14 +116,6 @@ export default class ComponentInstance extends GlyphElement {
         if (!verbose) delete re.objType;
 
         return re;
-    }
-
-    /**
-     * Reset the cache and calculate dimensions
-     */
-    changed() {
-        this.cache = {};
-        this.calcMaxes();
     }
 
 
@@ -794,14 +788,14 @@ export default class ComponentInstance extends GlyphElement {
         this.changed();
     }
 
-    /**
-     * calcMaxes
-     * @returns {Maxes}
-     */
-    calcMaxes() {
-        this._maxes = this.getTransformedGlyph().calcGlyphMaxes();
-        return this.maxes;
-    }
+    // /**
+    //  * calcMaxes
+    //  * @returns {Maxes}
+    //  */
+    // calcMaxes() {
+    //     this._maxes = this.getTransformedGlyph().calcMaxes();
+    //     return this.maxes;
+    // }
 
     /**
      * isHere
