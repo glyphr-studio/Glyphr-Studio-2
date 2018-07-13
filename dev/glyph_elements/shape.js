@@ -149,7 +149,7 @@ export default class Shape extends GlyphElement {
     // computed properties
 
     /**
-     * Get X possition
+     * Get X position
      * @returns {number}
      */
     get x() {
@@ -157,7 +157,7 @@ export default class Shape extends GlyphElement {
     }
 
     /**
-     * Get Y possition
+     * Get Y position
      * @returns {number}
      */
     get y() {
@@ -286,7 +286,7 @@ export default class Shape extends GlyphElement {
     // computed properties
 
     /**
-     * Set X possition
+     * Set X position
      * @param {number} x
      * @returns {Shape} - reference to this Shape
      */
@@ -296,7 +296,7 @@ export default class Shape extends GlyphElement {
     }
 
     /**
-     * Set Y possition
+     * Set Y position
      * @param {number} y
      * @returns {Shape} - reference to this Shape
      */
@@ -334,26 +334,20 @@ export default class Shape extends GlyphElement {
      * Make SVG from this Shape
      * @param {number} size - how big
      * @param {number} gutter - margin
+     * @param {number} upm - project UPM size
+     * @param {number} descender - project descender size
      * @returns {string} - svg
      */
-    makeSVG(size = 50, gutter = 5) {
-        let upm = 1000;
-        let desc = 300;
-
-        if (_GP && _GP.projectSettings) {
-            upm = _GP.projectSettings.upm;
-            desc = upm - _GP.projectSettings.ascent;
-        }
-
-        let charscale = (size - (gutter * 2)) / size;
-        let gutterscale = (gutter / size) * upm;
-        let vbsize = upm - (gutter * 2);
+    makeSVG(size = 50, gutter = 5, upm = 1000, descender = 300) {
+        let charScale = (size - (gutter * 2)) / size;
+        let gutterScale = (gutter / size) * upm;
+        let vbSize = upm - (gutter * 2);
         let re = '<svg version="1.1" ';
         re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
-        re += 'width="' + size + '" height="' + size + '" viewBox="0,0,' + vbsize + ',' + vbsize + '">';
-        re += '<g transform="translate(' + (gutterscale) + ',' + (upm - desc - (gutterscale / 2)) + ') scale(' + charscale + ',-' + charscale + ')">';
-        // re += '<rect x="0" y="-'+desc+'" height="'+desc+'" width="1000" fill="lime"/>';
-        // re += '<rect x="0" y="0" height="'+(upm-desc)+'" width="1000" fill="cyan"/>';
+        re += 'width="' + size + '" height="' + size + '" viewBox="0,0,' + vbSize + ',' + vbSize + '">';
+        re += '<g transform="translate(' + (gutterScale) + ',' + (upm - descender - (gutterScale / 2)) + ') scale(' + charScale + ',-' + charScale + ')">';
+        // re += '<rect x="0" y="-'+descender+'" height="'+descender+'" width="1000" fill="lime"/>';
+        // re += '<rect x="0" y="0" height="'+(upm-descender)+'" width="1000" fill="cyan"/>';
         re += '<path d="';
         re += this.path.svgPathData;
         re += '"/>';
@@ -366,21 +360,21 @@ export default class Shape extends GlyphElement {
      * Make a PostScript path from this shape
      * PostScript paths use relative MoveTo commands, so
      * this shape must know about where the last shape left off
-     * @param {number} lastx - x from previous path
-     * @param {number} lasty - y from previous path
+     * @param {number} lastX - x from previous path
+     * @param {number} lastY - y from previous path
      * @returns {string} - PostScript path data
      */
-    makePostScript(lastx = 0, lasty = 0) {
-        return this.path ? this.path.makePathPostScript(lastx, lasty) : {'re': '', 'lastx': lastx, 'lasty': lasty};
+    makePostScript(lastX = 0, lastY = 0) {
+        return this.path ? this.path.makePathPostScript(lastX, lastY) : {re: '', lastX: lastX, lastY: lastY};
     }
 
     /**
-     * Make an Opentype.js Path
-     * @param {opentype.Path} otpath
-     * @returns {opentype.Path}
+     * Make an OpenType.js Path
+     * @param {OpenType.js.Path} otPath
+     * @returns {OpenType.js.Path}
      */
-    makeOpentypeJsPath(otpath) {
-        return this.path.makeOpentypeJsPath(otpath);
+    makeOpenTypeJsPath(otPath) {
+        return this.path.makeOpenTypeJsPath(otPath);
     }
 
 
@@ -526,39 +520,39 @@ export default class Shape extends GlyphElement {
     resolveSelfOverlaps() {
         // debug('\n Shape.resolveSelfOverlaps - START');
         // Add self intersects to path
-        let polyseg = this.path.getPolySegment();
-        let ix = polyseg.findIntersections();
+        let polySeg = this.path.getPolySegment();
+        let ix = polySeg.findIntersections();
         // debug('\t intersections');
         // debug(json(ix, true));
 
         if (ix.length === 0) return new Shape(clone(this));
 
-        let segnum = polyseg.segments.length;
+        let segNum = polySeg.segments.length;
         let threshold = 0.01;
-        polyseg.splitSegmentsAtIntersections(ix, threshold);
-        if (segnum === polyseg.segments.length) return new Shape(clone(this));
+        polySeg.splitSegmentsAtIntersections(ix, threshold);
+        if (segNum === polySeg.segments.length) return new Shape(clone(this));
 
-        // debug('\t before filtering ' + polyseg.segments.length);
-        polyseg.removeZeroLengthSegments();
-        polyseg.removeDuplicateSegments();
-        polyseg.removeSegmentsOverlappingShape(this);
-        polyseg.removeRedundantLineSegments();
-        polyseg.removeNonConnectingSegments();
-        // debug('\t afters filtering ' + polyseg.segments.length);
-        if (_UI.devMode) polyseg.drawPolySegmentOutline();
-        // var reshapes = [];
-        // reshapes.push(new Shape({'name':this.name, 'path':polyseg.getPath()}));
+        // debug('\t before filtering ' + polySeg.segments.length);
+        polySeg.removeZeroLengthSegments();
+        polySeg.removeDuplicateSegments();
+        polySeg.removeSegmentsOverlappingShape(this);
+        polySeg.removeRedundantLineSegments();
+        polySeg.removeNonConnectingSegments();
+        // debug('\t afters filtering ' + polySeg.segments.length);
+        if (_UI.devMode) polySeg.drawPolySegmentOutline();
+        // var returnShapes = [];
+        // returnShapes.push(new Shape({'name':this.name, 'path':polySeg.getPath()}));
 
-        let resegs = polyseg.stitchSegmentsTogether();
-        let reshapes = [];
+        let returnSegments = polySeg.stitchSegmentsTogether();
+        let returnShapes = [];
         let psn;
-        for (let ps = 0; ps < resegs.length; ps++) {
-            psn = resegs[ps];
-            if (psn.segments.length > 1) reshapes.push(new Shape({'name': this.name, 'path': psn.getPath()}));
+        for (let ps = 0; ps < returnSegments.length; ps++) {
+            psn = returnSegments[ps];
+            if (psn.segments.length > 1) returnShapes.push(new Shape({'name': this.name, 'path': psn.getPath()}));
         }
 
         // debug(' Shape.resolveSelfOverlaps - END\n');
-        return reshapes;
+        return returnShapes;
     }
 
 
@@ -568,15 +562,15 @@ export default class Shape extends GlyphElement {
 
     /**
      * Draw this Shape to a canvas
-     * @param {object} lctx - canvas context
+     * @param {object} ctx - canvas context
      * @param {view} view
      * @returns {boolean}
      */
-    drawShape(lctx, view) {
+    drawShape(ctx, view) {
         // debug('\n Shape.drawShape - START');
         // debug('\t view ' + json(view, true));
         if (this.visible) {
-            this.path.drawPath(lctx, view);
+            this.path.drawPath(ctx, view);
         }
         // debug(' Shape.drawShape - returning true by default - END\n');
         return true;
@@ -587,8 +581,8 @@ export default class Shape extends GlyphElement {
      * for debugging purposes
      */
     drawSegments() {
-        let segs = this.path.getPolySegment();
-        segs.slowlyDrawSegments();
+        let segments = this.path.getPolySegment();
+        segments.slowlyDrawSegments();
     }
 
 

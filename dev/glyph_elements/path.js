@@ -127,7 +127,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Get X possition
+     * Get X position
      * @returns {number} x
      */
     get x() {
@@ -135,7 +135,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Get Y possition
+     * Get Y position
      * @returns {number} y
      */
     get y() {
@@ -180,12 +180,12 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {string}
      */
     get svgPathData() {
-        if (this.cache.svgpathdata) {
-            return this.cache.svgpathdata;
+        if (this.cache.svgPathData) {
+            return this.cache.svgPathData;
         }
 
-        this.cache.svgpathdata = this.makeSVGPathData();
-        return this.cache.svgpathdata;
+        this.cache.svgPathData = this.makeSVGPathData();
+        return this.cache.svgPathData;
     }
 
 
@@ -245,7 +245,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Set X possition
+     * Set X position
      * @param {number} x
      * @returns {Path} - reference to this Path
      */
@@ -255,7 +255,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Set Y possition
+     * Set Y position
      * @param {number} y
      * @returns {Path} - reference to this Path
      */
@@ -290,13 +290,13 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {Path} - reference to this Path
      */
     set svgPathData(data) {
-        this.cache.svgpathdata = data;
+        this.cache.svgPathData = data;
         return this;
     }
 
 
     // --------------------------------------------------------------
-    //  SIZE AND POSSITION
+    //  SIZE AND POSITION
     // --------------------------------------------------------------
 
     /**
@@ -341,20 +341,20 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         }
 
         // debug('\t dw / dh is now ' + dw + ' / ' + dh);
-        let oldw = this.width;
-        if (oldw === 0) oldw = 1;
+        let oldWidth = this.width;
+        if (oldWidth === 0) oldWidth = 1;
 
-        let oldh = this.height;
-        if (oldh === 0) oldh = 1;
+        let oldHeight = this.height;
+        if (oldHeight === 0) oldHeight = 1;
 
-        let neww = Math.max((oldw + dw), 1);
-        let newh = Math.max((oldh + dh), 1);
-        let ratiodh = (newh / oldh);
-        let ratiodw = (neww / oldw);
+        let newWidth = Math.max((oldWidth + dw), 1);
+        let newHeight = Math.max((oldHeight + dh), 1);
+        let ratioHeight = (newHeight / oldHeight);
+        let ratioWidth = (newWidth / oldWidth);
 
-        // If ratiolocked, keep both w&h from min'ing out at 1
+        // If ratio locked, keep both w&h from bottoming out at 1
         if (ratioLock) {
-            if (neww <= 1 || newh <= 1) {
+            if (newWidth <= 1 || newHeight <= 1) {
                 // debug('\t RETURNING: ratioLock forcing width or height to be less than 1.');
                 return;
             }
@@ -362,30 +362,30 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
         for (let e = 0; e < this.pathPoints.length; e++) {
             let pp = this.pathPoints[e];
-            pp.p.x = (((pp.p.x - this.maxes.xMin) * ratiodw) + this.maxes.xMin);
-            pp.h1.x = (((pp.h1.x - this.maxes.xMin) * ratiodw) + this.maxes.xMin);
-            pp.h2.x = (((pp.h2.x - this.maxes.xMin) * ratiodw) + this.maxes.xMin);
-            pp.p.y = (((pp.p.y - this.maxes.yMin) * ratiodh) + this.maxes.yMin);
-            pp.h1.y = (((pp.h1.y - this.maxes.yMin) * ratiodh) + this.maxes.yMin);
-            pp.h2.y = (((pp.h2.y - this.maxes.yMin) * ratiodh) + this.maxes.yMin);
+            pp.p.x = (((pp.p.x - this.maxes.xMin) * ratioWidth) + this.maxes.xMin);
+            pp.h1.x = (((pp.h1.x - this.maxes.xMin) * ratioWidth) + this.maxes.xMin);
+            pp.h2.x = (((pp.h2.x - this.maxes.xMin) * ratioWidth) + this.maxes.xMin);
+            pp.p.y = (((pp.p.y - this.maxes.yMin) * ratioHeight) + this.maxes.yMin);
+            pp.h1.y = (((pp.h1.y - this.maxes.yMin) * ratioHeight) + this.maxes.yMin);
+            pp.h2.y = (((pp.h2.y - this.maxes.yMin) * ratioHeight) + this.maxes.yMin);
         }
 
         if (this.checkForNaN()) {
             // debug('\t NAN FOUND IN THIS PATH');
             // debug('\t this.maxes = ' + json(this.maxes));
-            // debug('oldw = ' + oldw);
-            // debug('oldh = ' + oldh);
-            // debug('neww = ' + neww);
-            // debug('newh = ' + newh);
-            // debug('ratiodh = ' + ratiodh);
-            // debug('ratiodw = ' + ratiodw);
+            // debug('oldWidth = ' + oldWidth);
+            // debug('oldHeight = ' + oldHeight);
+            // debug('newWidth = ' + newWidth);
+            // debug('newHeight = ' + newHeight);
+            // debug('ratioHeight = ' + ratioHeight);
+            // debug('ratioWidth = ' + ratioWidth);
         }
         // this.calcMaxes();
         // debug(' Path.updatePathSize - END\n');
     }
 
     /**
-     * Moves a path to a specific possition
+     * Moves a path to a specific position
      * @param {number} nx - new X
      * @param {number} ny - new Y
      */
@@ -463,7 +463,6 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         ctx.closePath();
         ctx.fill();
         let imageData = ctx.getImageData(px, py, 1, 1);
-        // debug('ISHERE? alpha = ' + imageData.data[3] + '  returning: ' + (imageData.data[3] > 0));
 
         return (imageData.data[3] > 0);
     }
@@ -476,30 +475,30 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     /**
      * Get the next point number in the path
      * Handle looping
-     * @param {number} pnum - point number
+     * @param {number} pointNumber - point number
      * @returns {number}
      */
-    getNextPointNum(pnum = 0) {
-        pnum = parseInt(pnum);
-        pnum += 1;
-        pnum = pnum % this.pathPoints.length;
-        return pnum;
+    getNextPointNum(pointNumber = 0) {
+        pointNumber = parseInt(pointNumber);
+        pointNumber += 1;
+        pointNumber = pointNumber % this.pathPoints.length;
+        return pointNumber;
     }
 
     /**
      * Get the previous point number in the path
      * Handle looping
-     * @param {number} pnum - point number
+     * @param {number} pointNumber - point number
      * @returns {number}
      */
-    getPreviousPointNum(pnum = 0) {
-        pnum = parseInt(pnum);
-        pnum -= 1;
-        if (pnum < 0) {
-            pnum = pnum + this.pathPoints.length;
+    getPreviousPointNum(pointNumber = 0) {
+        pointNumber = parseInt(pointNumber);
+        pointNumber -= 1;
+        if (pointNumber < 0) {
+            pointNumber = pointNumber + this.pathPoints.length;
         }
 
-        return pnum;
+        return pointNumber;
     }
 
     /**
@@ -507,11 +506,11 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * where it overlaps
      */
     addPointsAtPathIntersections() {
-        let polyseg = this.getPolySegment();
-        polyseg.splitSegmentsAtIntersections();
-        let newpath = polyseg.getPath();
-        // this._pathPoints = clone(newpath.pathPoints);
-        this._pathPoints = newpath.pathPoints;
+        let polySegment = this.getPolySegment();
+        polySegment.splitSegmentsAtIntersections();
+        let newPath = polySegment.getPath();
+        // this._pathPoints = clone(newPath.pathPoints);
+        this._pathPoints = newPath.pathPoints;
     }
 
     /**
@@ -537,35 +536,28 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
     /**
      * Draw a path to a canvas
-     * @param {object} lctx - HTML Canvas Context
+     * @param {object} ctx - HTML Canvas Context
      * @param {object} view - View object with x / y offset and Zoom
+     * @param {boolean} snap - snap values to whole numbers
      */
-    drawPath(lctx, view) {
+    drawPath(ctx, view, snap = true) {
         // debug('\n Path.drawPath - START');
         // debug('\t view ' + json(view, true));
 
-        let snap = true;
-        if (_GP && _GP.projectSettings) snap = _GP.projectSettings.renderpointssnappedtogrid;
-
-        let currview = getView('Path.drawPath');
-        view = view || clone(currview);
+        let currView = getView('Path.drawPath');
+        view = view || clone(currView);
         setView(view);
 
         if (this.pathPoints === false || this.pathPoints.length < 2) return;
 
         let pp;
         let np;
-        let pph2x;
-        let pph2y;
-        let nxh1x;
-        let nxh1y;
-        let nxppx;
-        let nxppy;
+        let precision = 9;
 
         if (snap) {
-            lctx.moveTo(sXcX(round(this.pathPoints[0].p.x)), sYcY(round(this.pathPoints[0].p.y)));
+            ctx.moveTo(sXcX(round(this.pathPoints[0].p.x)), sYcY(round(this.pathPoints[0].p.y)));
         } else {
-            lctx.moveTo( sXcX(this.pathPoints[0].p.x), sYcY(this.pathPoints[0].p.y));
+            ctx.moveTo( sXcX(this.pathPoints[0].p.x), sYcY(this.pathPoints[0].p.y));
         }
 
         for (let cp = 0; cp < this.pathPoints.length; cp++) {
@@ -579,28 +571,19 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
                 pp.makeFlat('h1');
             }
 
-            // this.validate('DRAW PATH');
-            if (snap) {
-                pph2x = sXcX(round(pp.h2.x));
-                pph2y = sYcY(round(pp.h2.y));
-                nxh1x = sXcX(round(np.h1.x));
-                nxh1y = sYcY(round(np.h1.y));
-                nxppx = sXcX(round(np.p.x));
-                nxppy = sYcY(round(np.p.y));
-            } else {
-                pph2x = sXcX(pp.h2.x);
-                pph2y = sYcY(pp.h2.y);
-                nxh1x = sXcX(np.h1.x);
-                nxh1y = sYcY(np.h1.y);
-                nxppx = sXcX(np.p.x);
-                nxppy = sYcY(np.p.y);
-            }
+            if (snap) precision = 0;
 
-            // debug('\t curve ' + pph2x +' '+ pph2y +' '+ nxh1x +' '+ nxh1y +' '+ nxppx +' '+ nxppy);
-            lctx.bezierCurveTo(pph2x, pph2y, nxh1x, nxh1y, nxppx, nxppy);
+            ctx.bezierCurveTo(
+                sXcX(round(pp.h2.x, precision)),
+                sYcY(round(pp.h2.y, precision)),
+                sXcX(round(np.h1.x, precision)),
+                sYcY(round(np.h1.y, precision)),
+                sXcX(round(np.p.x, precision)),
+                sYcY(round(np.p.y, precision))
+            );
         }
 
-        setView(currview);
+        setView(currView);
         // debug(' Path.drawPath - END\n');
     }
 
@@ -611,13 +594,13 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
     /**
      * Converts this path to Post Script
-     * @param {number} lastx - Last x value in the sequence
-     * @param {number} lasty - Last y value in the sequence
+     * @param {number} lastX - Last x value in the sequence
+     * @param {number} lastY - Last y value in the sequence
      * @returns {string}
      */
-    makePathPostScript(lastx = 0, lasty = 0) {
+    makePathPostScript(lastX = 0, lastY = 0) {
         if (!this.pathPoints) {
-            return {'re': '', 'lastx': lastx, 'lasty': lasty};
+            return {'re': '', 'lastX': lastX, 'lastY': lastY};
         }
 
         let p1;
@@ -629,7 +612,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         let p2ppx;
         let p2ppy;
         let trr = '';
-        let re = '\t\t\t\t' + (this.pathPoints[0].p.x - lastx) + ' ' + (this.pathPoints[0].p.y - lasty) + ' rmoveto \n';
+        let re = '\t\t\t\t' + (this.pathPoints[0].p.x - lastX) + ' ' + (this.pathPoints[0].p.y - lastY) + ' rmoveto \n';
 
         // debug('makePathPostScript:\n\t ' + re);
         for (let cp = 0; cp < this.pathPoints.length; cp++) {
@@ -649,28 +632,24 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
         return {
             're': re,
-            'lastx': p2.p.x,
-            'lasty': p2.p.y,
+            'lastX': p2.p.x,
+            'lastY': p2.p.y,
         };
     }
 
     /**
      * Create SVG data
      * @param {string} glyphName - Name of the glyph this path belongs to
+     * @param {number} roundValue - how many decimal places
      * @returns {string}
      */
-    makeSVGPathData(glyphName = 'not specified') {
+    makeSVGPathData(glyphName = 'not specified', roundValue = 8) {
         // debug('\n Path.makeSVGPathData - START');
         // debug('\t Glyph ' + glyphName);
         // debug('\t this.pathPoints: ' + json(this.pathPoints, true));
 
         if (!this.pathPoints || !this.pathPoints.length) {
             return '';
-        }
-
-        let roundValue = 8;
-        if (_GP && _GP.projectSettings && _GP.projectSettings.svgprecision) {
-            roundValue = _GP.projectSettings.svgprecision;
         }
 
         let p1;
@@ -705,13 +684,13 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
 
     /**
-     * Export an Opentype.js Path
-     * @param {object} otpath - Opentype.js Path object
+     * Export an OpenType.js Path
+     * @param {object} otPath - OpenType.js Path object
      * @returns {object}
      */
-    makeOpentypeJsPath(otpath = new opentype.Path()) {
-        // debug('\n Path.makeOpentypeJsPath - START');
-        // debug('\t otpath: ' + json(otpath));
+    makeOpenTypeJsPath(otPath = new opentype.Path()) {
+        // debug('\n Path.makeOpenTypeJsPath - START');
+        // debug('\t otPath: ' + json(otPath));
 
         let p1;
         let p2;
@@ -719,17 +698,17 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             if (this.pathPoints.length === 0) {
                 // debug('\t !!!Path has zero points!');
             }
-            otpath.close();
-            return otpath;
+            otPath.close();
+            return otPath;
         }
 
-        otpath.moveTo(round(this.pathPoints[0].p.x), round(this.pathPoints[0].p.y));
+        otPath.moveTo(round(this.pathPoints[0].p.x), round(this.pathPoints[0].p.y));
 
         for (let cp = 0; cp < this.pathPoints.length; cp++) {
             p1 = this.pathPoints[cp];
             // p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
             p2 = this.pathPoints[this.getNextPointNum(cp)];
-            otpath.curveTo(
+            otPath.curveTo(
                 round(p1.h2.x),
                 round(p1.h2.y),
                 round(p2.h1.x),
@@ -739,10 +718,10 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             );
         }
 
-        otpath.close();
-        // debug('\t returning path ' + json(otpath));
-        // debug(' Path.makeOpentypeJsPath - END\n');
-        return otpath;
+        otPath.close();
+        // debug('\t returning path ' + json(otPath));
+        // debug(' Path.makeOpenTypeJsPath - END\n');
+        return otPath;
     }
 
     /**
@@ -862,10 +841,10 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
     /**
      * Finds either the clockwise or counterclockwise winding of a path
-     * @param {boolean} secondtry - If the first try fails, do a trick for a second pass
+     * @param {boolean} secondTry - If the first try fails, do a trick for a second pass
      * @returns {number} - negative = clockwise, positive = counterclockwise, 0 = unknown
      */
-    findWinding(secondtry) {
+    findWinding(secondTry) {
         // debug('\n Path.findWinding - START');
         let j;
         let k;
@@ -889,7 +868,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
         // negative = clockwise
         // positive = counterclockwise
-        if (count === 0 && !secondtry) {
+        if (count === 0 && !secondTry) {
             // debug('\t second try...');
             this.reverseWinding();
             count = this.findWinding(true) * -1;
@@ -897,7 +876,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         }
 
         this._winding = count;
-        // if(!secondtry) debug(' Path.findWinding - END returning: ' + count + '\n');
+        // if(!secondTry) debug(' Path.findWinding - END returning: ' + count + '\n');
         return count;
     }
 
@@ -942,7 +921,6 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         // debug(`\n Path.flipNS - START`);
         // debug(json(this.save()));
         let startingY = this.y;
-        // debug(`\t calculating mid: (height)/2 + ymin = mid: ${this.height}/2 + ${this.maxes.yMin} = ${mid}`);
 
         for (let e = 0; e < this.pathPoints.length; e++) {
             let pp = this.pathPoints[e];
@@ -983,15 +961,15 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
     /**
      * Adds a Path Point to the beginning of this path
-     * @param {PathPoint} newpp - Path Point to add
+     * @param {PathPoint} newPoint - Path Point to add
      * @returns {PathPoint} - reference to the added point
      */
-    addPathPoint(newpp) {
+    addPathPoint(newPoint) {
         // debug('\n Path.addPathPoint - START');
-        // debug('\t newpp = ' + newpp);
+        // debug('\t newPoint = ' + newPoint);
 
-        newpp.parent = this;
-        this.pathPoints.push(newpp);
+        newPoint.parent = this;
+        this.pathPoints.push(newPoint);
         let re = this.selectPathPoint(this.pathPoints.length - 1);
 
         this.findWinding();
@@ -1005,11 +983,11 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     /**
      * Add a Path Point along a curve at a certain distance
      * @param {number} t - decimal from 0 to 1 representing how far along the curve to split
-     * @param {number} pointnum - point number before the new split
+     * @param {number} pointNumber - point number before the new split
      * @returns {PathPoint} - reference to the added path point
      */
-    insertPathPoint(t, pointnum) {
-        let pp1i = pointnum || 0;
+    insertPathPoint(t, pointNumber) {
+        let pp1i = pointNumber || 0;
         let pp1 = (pp1i === false ? this.pathPoints[0] : this.pathPoints[pp1i]);
         // var pp2i = (pp1i+1)%this.pathPoints.length;
         let pp2i = this.getNextPointNum(pp1i);
@@ -1063,19 +1041,18 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     /**
      * Given a target point, find the closes point on this path
      * @param {XYPoint} point - x/y value to target
-     * @param {boolean} wantsecond - return the second result
+     * @param {boolean} wantSecond - return the second result
      * @returns {object}
      */
-    getClosestPointOnCurve(point = new XYPoint(), wantsecond = false) {
+    getClosestPointOnCurve(point = new XYPoint(), wantSecond = false) {
         let grains = 10000;
         let first = false;
         let second = false;
-        let mindistance = 999999999;
+        let minDistance = 999999999;
         let check;
         let d;
 
         for (let pp = 0; pp < this.pathPoints.length; pp++) {
-            // grains = this.cache.segmentlengths[pp] * 100;
             grains = this.getSegment(pp).quickLength * 100;
 
             for (let t = 0; t < 1; t += (1 / grains)) {
@@ -1085,10 +1062,10 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
                     ((check.y - point.y) * (check.y - point.y))
                 );
 
-                if (d < mindistance) {
+                if (d < minDistance) {
                     if (first && first.point !== pp) second = clone(first);
 
-                    mindistance = d;
+                    minDistance = d;
                     first = {
                         'point': pp,
                         'split': t,
@@ -1099,18 +1076,18 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
                 }
             }
         }
-        return wantsecond ? second : first;
+        return wantSecond ? second : first;
     }
 
     /**
      * Get an X/Y value from a curve split
      * @param {number} t - decimal from 0 to 1 how far along the curve to split
-     * @param {number} pointnum - after which point to split
+     * @param {number} pointNumber - after which point to split
      * @returns {XYPoint}
      */
-    getXYPointFromSplit(t, pointnum = 0) {
+    getXYPointFromSplit(t, pointNumber = 0) {
         if (this.pathPoints.length > 1) {
-            let seg = this.getSegment(pointnum);
+            let seg = this.getSegment(pointNumber);
             return seg.getXYPointFromSplit(t);
         } else {
             return this.pathPoints[0].p;
@@ -1152,17 +1129,17 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         // debug('\n Path.calcMaxes - START');
         // debug('\t before ' + json(this._maxes, true));
         let seg;
-        let tbounds;
+        let bounds;
 
         if (!this.cache.segments) this.cache.segments = [];
 
         for (let s = 0; s < this.pathPoints.length; s++) {
             // debug('\t ++++++ starting seg ' + s);
             seg = this.getSegment(s);
-            tbounds = seg.maxes;
-            // debug('\t tseg maxes ' + json(tbounds, true));
+            bounds = seg.maxes;
+            // debug('\t this seg maxes ' + json(bounds, true));
             // debug('\t this maxes ' + json(this._maxes, true));
-            this._maxes = getOverallMaxes([this._maxes, tbounds]);
+            this._maxes = getOverallMaxes([this._maxes, bounds]);
             // debug('\t path maxes is now ' + json(this._maxes, true));
             this.cache.segments[s] = seg;
             // debug('\t ++++++ ending seg ' + s);
@@ -1174,7 +1151,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Looks through the whole path and sets erronious values to 0
+     * Looks through the whole path and sets erroneous values to 0
      * @param {string} calledBy - message for who called this
      */
     validate(calledBy) {
@@ -1252,7 +1229,7 @@ export function findPathIntersections(p1, p2) {
 
     // Maxes within boundaries
     if (!maxesOverlap(p1.maxes, p2.maxes)) {
-        // debug(' findPathIntersections - paths dont\'t overlap - END\n');
+        // debug(`\t findPathIntersections - paths don't overlap - END\n`);
         // debug(p1.maxes);
         // debug(p2.maxes);
         return intersects;
@@ -1261,10 +1238,10 @@ export function findPathIntersections(p1, p2) {
     // Continue with recursive overlap detection
     let bs;
     let ts;
-    let segoverlaps = [];
+    let segmentOverlaps = [];
 
     /**
-     * Quicly find if two segments could overlap by checking
+     * Quickly find if two segments could overlap by checking
      * their bounding boxes
      * @param {Path} p1 - first path
      * @param {PathPoint} p1p - first path point
@@ -1281,7 +1258,7 @@ export function findPathIntersections(p1, p2) {
             // debug('\t\t pushed!');
             // bs.drawSegmentOutline();
             // ts.drawSegmentOutline();
-            segoverlaps.push({'bottom': bs, 'top': ts});
+            segmentOverlaps.push({'bottom': bs, 'top': ts});
         }
     }
 
@@ -1295,16 +1272,15 @@ export function findPathIntersections(p1, p2) {
         }
     }
 
-    // debug('\t segoverlaps are now:');
-    segoverlaps.forEach((element) => {
+    // debug('\t segmentOverlaps are now:');
+    segmentOverlaps.forEach((element) => {
         // debug(`bottom:\n${element.bottom.print()}\ntop:\n${element.top.print()}`);
     });
 
     // Use overlaps to find intersections
     let re = [];
-    for (let v=0; v<segoverlaps.length; v++) {
-        // debug('\n\t SEGOVERLAPS ' + v);
-        re = findSegmentIntersections(segoverlaps[v].bottom, segoverlaps[v].top, 0);
+    for (let v=0; v<segmentOverlaps.length; v++) {
+        re = findSegmentIntersections(segmentOverlaps[v].bottom, segmentOverlaps[v].top, 0);
         if (re.length > 0) {
             intersects = intersects.concat(re);
         }

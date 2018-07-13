@@ -32,8 +32,8 @@ export default class GlyphrStudioProject {
             italicangle: 0,
             griddivisions: 10,
             overshoot: 10,
-            defaultlsb: 20,
-            defaultrsb: 20,
+            defaultLSB: 20,
+            defaultRSB: 20,
             glyphrange: {
                 basiclatin: true,
                 latinsupplement: false,

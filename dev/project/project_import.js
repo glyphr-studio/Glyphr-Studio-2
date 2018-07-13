@@ -448,7 +448,7 @@ function finalizeUI() {
     ps.guides.xheight = ps.guides.xheight || new Guide({name: 'xheight', type: 'horizontal', location: ps.xheight, editable: false, color: ps.colors.guide_light});
     ps.guides.baseline = ps.guides.baseline || new Guide({name: 'baseline', type: 'horizontal', location: 0, editable: false, color: ps.colors.guide_dark});
     ps.guides.descent = ps.guides.descent || new Guide({name: 'descent', type: 'horizontal', location: ( ps.ascent- ps.upm), editable: false, color: ps.colors.guide_med});
-    ps.guides.leftside = ps.guides.leftside || new Guide({name: 'leftside', type: 'vertical', location: ps.defaultlsb*-1, editable: false, color: ps.colors.guide_dark});
+    ps.guides.leftside = ps.guides.leftside || new Guide({name: 'leftside', type: 'vertical', location: ps.defaultLSB*-1, editable: false, color: ps.colors.guide_dark});
     ps.guides.rightside = ps.guides.rightside || new Guide({name: 'rightside', type: 'vertical', location: ps.upm, editable: false, color: ps.colors.guide_dark});
     ps.guides.zero = ps.guides.zero || new Guide({name: 'zero', type: 'vertical', showname: false, location: 0, editable: false, color: ps.colors.guide_med});
     ps.guides.min = ps.guides.min || new Guide({name: 'min', type: 'vertical', showname: false, location: ps.upm, editable: false, color: ps.colors.guide_light});

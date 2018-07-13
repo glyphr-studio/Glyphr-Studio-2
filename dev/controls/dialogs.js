@@ -63,7 +63,7 @@ function isBigDialogOpen() {
 
 /**
  * Creates and shows a small dialog box at a certain
- * screen x,y possiiton
+ * screen x,y position
  * @param {string} content - HTML content of the dialog box
  * @param {number} x - screen x location
  * @param {number} y - screen y location

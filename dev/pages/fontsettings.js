@@ -44,8 +44,8 @@
         content += '<h3>Default Side Bearings</h3>' +
                     'Side Bearings are the amount of blank space that is added to the left or right of glyphs when they are displayed.  This metric can be set individually per glyph, but will default to this value if not set. '+
                     '<table class=\'settingstable\'>'+
-                    '<tr><td>Left Side Bearing: </td><td><input type=\'number\' value=\''+ps.defaultlsb+'\' onchange=\'_GP.projectSettings.defaultlsb = Math.abs(parseInt(this.value)) || 0;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
-                    '<tr><td>Right Side Bearing: </td><td><input type=\'number\' value=\''+ps.defaultrsb+'\' onchange=\'_GP.projectSettings.defaultrsb = Math.abs(parseInt(this.value)) || 0;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
+                    '<tr><td>Left Side Bearing: </td><td><input type=\'number\' value=\''+ps.defaultLSB+'\' onchange=\'_GP.projectSettings.defaultLSB = Math.abs(parseInt(this.value)) || 0;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
+                    '<tr><td>Right Side Bearing: </td><td><input type=\'number\' value=\''+ps.defaultRSB+'\' onchange=\'_GP.projectSettings.defaultRSB = Math.abs(parseInt(this.value)) || 0;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
                     '</table>';
 
 

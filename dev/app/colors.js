@@ -1,5 +1,5 @@
 import {round} from './functions.js';
-export {parseColorString, shiftColor, getRGBfromRGBA, transparencyToAlpha, makeRandomSaturatedColor};
+export {parseColorString, shiftColor, getColorFromRGBA, transparencyToAlpha, makeRandomSaturatedColor};
 
 // -------------------
 // COLORS
@@ -66,7 +66,7 @@ function shiftColor(c, percent, lighter) {
  * @param {number} alpha - transparency
  * @returns {string}
  */
-function getRGBfromRGBA(rgb, alpha) {
+function getColorFromRGBA(rgb, alpha) {
     let val = parseColorString(rgb);
 
     let dr = round((255-val.r) * (1-alpha));

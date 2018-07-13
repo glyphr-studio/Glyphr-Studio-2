@@ -126,7 +126,7 @@ function getSelectedGlyphLeftSideBearing() {
     if (!sc) return 0;
     if (sc.objType === 'component') return 0;
     if (!sc.isAutoWide) return 0;
-    return sc.leftSideBearing || _GP.projectSettings.defaultlsb;
+    return sc.leftSideBearing || _GP.projectSettings.defaultLSB;
 }
 
 /**
@@ -139,7 +139,7 @@ function getSelectedGlyphRightSideBearing() {
     if (!sc) return 0;
     if (sc.objType === 'component') return 0;
     if (!sc.isAutoWide) return 0;
-    return sc.rightSideBearing || _GP.projectSettings.defaultrsb;
+    return sc.rightSideBearing || _GP.projectSettings.defaultRSB;
 }
 
 /**

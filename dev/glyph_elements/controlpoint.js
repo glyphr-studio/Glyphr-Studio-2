@@ -9,7 +9,7 @@ import {calculateAngle, calculateLength, angleToNiceAngle} from '../app/function
 export default class ControlPoint extends GlyphElement {
     /**
      * Create a ControlPoint
-     * @param {Coord} coord - possition of the handle
+     * @param {Coord} coord - position of the handle
      * @param {boolean} use - show or hide the handle
      * @param {PathPoint} parent - link to the parent Path object
      */
@@ -155,21 +155,21 @@ export default class ControlPoint extends GlyphElement {
     // --------------------------------------------------------------
 
     /**
-     * Set the X possiiton
-     * @param {number} possition
+     * Set the X position
+     * @param {number} position
      */
-    set x(possition) {
-        this.coord.x = possition;
+    set x(position) {
+        this.coord.x = position;
         this.use = true;
         this.changed();
     }
 
     /**
-     * Set the Y possiiton
-     * @param {number} possition
+     * Set the Y position
+     * @param {number} position
      */
-    set y(possition) {
-        this.coord.y = possition;
+    set y(position) {
+        this.coord.y = position;
         this.use = true;
         this.changed();
     }

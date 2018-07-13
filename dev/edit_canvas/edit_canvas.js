@@ -603,7 +603,7 @@ export default redraw;
 
     function drawContextGlyphLeftLineExtras(char, seq) {
         let alpha = transparencyToAlpha(_GP.projectSettings.colors.systemguidetransparency);
-        let color = getRGBfromRGBA('rgb(204,81,0)', alpha);
+        let color = getColorFromRGBA('rgb(204,81,0)', alpha);
         drawVerticalLine((char.view.dx*char.view.dz), false, color);
 
         let kern = calculateKernOffset(seq.glyphstring[seq.glyphstring.length-1], getSelectedWorkItemChar());
@@ -656,7 +656,7 @@ export default redraw;
             let advanceWidth = char.width * view.dz;
             let currx = (char.view.dx*view.dz);
             let rightx = currx + advanceWidth;
-            let color = getRGBfromRGBA('rgb(204,81,0)', alpha);
+            let color = getColorFromRGBA('rgb(204,81,0)', alpha);
             let texty = sYcY(_GP.projectSettings.descent-60);
 
 
@@ -718,7 +718,7 @@ export default redraw;
         let desc = _GP.projectSettings.descent;
         let ctx = _UI.glyphEditCTX;
         let offset = 40;
-        let color = getRGBfromRGBA('rgb(255,0,255)', transparencyToAlpha(_GP.projectSettings.colors.systemguidetransparency));
+        let color = getColorFromRGBA('rgb(255,0,255)', transparencyToAlpha(_GP.projectSettings.colors.systemguidetransparency));
         let barheight = Math.max((scale * 10), 1);
 
         ctx.font = '12px tahoma, verdana, sans-serif';
@@ -863,7 +863,7 @@ export default redraw;
             let t = (_GP.projectSettings.colors.systemguidetransparency);
             // var t2 = (((100 - t) / 2) + t);
             let alpha = transparencyToAlpha(t);
-            let rgb = getRGBfromRGBA('rgb(204,81,0)', alpha);
+            let rgb = getColorFromRGBA('rgb(204,81,0)', alpha);
 
             ctx.strokeStyle = rgb;
             ctx.beginPath();
@@ -1596,7 +1596,7 @@ export default redraw;
             let ps = _GP.projectSettings;
             let v = getView('grid');
             let gsize = ((ps.upm/ps.griddivisions)*v.dz);
-            let gridcolor = getRGBfromRGBA('rgb(170,170,170)', transparencyToAlpha(_GP.projectSettings.colors.gridtransparency));
+            let gridcolor = getColorFromRGBA('rgb(170,170,170)', transparencyToAlpha(_GP.projectSettings.colors.gridtransparency));
             _UI.glyphEditCTX.lineWidth = 1;
 
             if (gsize > 0 && gsize < _UI.glyphEditCanvasSize) {

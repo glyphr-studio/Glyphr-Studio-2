@@ -96,12 +96,12 @@ export default class PolySegment extends GlyphElement {
 
     /**
      * set the Segments array
-     * @param {array} segs
+     * @param {array} segments
      */
-    set segments(segs = []) {
+    set segments(segments = []) {
         this._segments = [];
-        for (let s = 0; s < segs.length; s++) {
-            this._segments[s] = new Segment(segs[s]);
+        for (let s = 0; s < segments.length; s++) {
+            this._segments[s] = new Segment(segments[s]);
         }
     }
 
@@ -139,15 +139,15 @@ export default class PolySegment extends GlyphElement {
     slowlyDrawSegments(delay = 600) {
         // debug('\n PolySegment.slowlyDrawSegments - START');
         // debug(this._segments);
-        currseg = 0;
-        segs = this._segments;
+        currentSegment = 0;
+        segments = this._segments;
 
         /** Draw one segment */
         function ds() {
-            if (currseg < segs.length) {
-                segs[currseg].drawSegmentOutline();
-                segs[currseg].drawSegmentPoints('red', currseg);
-                currseg++;
+            if (currentSegment < segments.length) {
+                segments[currentSegment].drawSegmentOutline();
+                segments[currentSegment].drawSegmentPoints('red', currentSegment);
+                currentSegment++;
                 setTimeout(ds, delay);
             } else {
                 // debug(' PolySegment.slowlyDrawSegments - END\n');
@@ -171,38 +171,38 @@ export default class PolySegment extends GlyphElement {
          * @returns {PathPoint}
          */
         function makePathPointFromSegments(seg1, seg2) {
-            let newpp = new PathPoint({
+            let newPP = new PathPoint({
                 h1: {point: {x: seg1.p3x, y: seg1.p3y}},
                 p: {point: {x: seg2.p1x, y: seg2.p1y}},
                 h2: {point: {x: seg2.p2x, y: seg2.p2y}},
             });
 
-            if (seg1.line || pointsAreEqual(newpp.h1, newpp.p)) newpp.h1.use = false;
-            if (seg2.line || pointsAreEqual(newpp.h2, newpp.p)) newpp.h2.use = false;
+            if (seg1.line || pointsAreEqual(newPP.h1, newPP.p)) newPP.h1.use = false;
+            if (seg2.line || pointsAreEqual(newPP.h2, newPP.p)) newPP.h2.use = false;
 
-            // newpp.resolvePointType();
+            // newPP.resolvePointType();
 
-            return newpp;
+            return newPP;
         }
 
         let pp = [];
-        let segs = clone(this._segments);
+        let segments = clone(this._segments);
 
         // Connect the first / last point if not already
-        let firstP = new XYPoint({x: segs[0].p1x, y: segs[0].p1y});
-        let lastP = new XYPoint({x: segs[segs.length-1].p4x, y: segs[segs.length-1].p4y});
+        let firstP = new XYPoint({x: segments[0].p1x, y: segments[0].p1y});
+        let lastP = new XYPoint({x: segments[segments.length-1].p4x, y: segments[segments.length-1].p4y});
         if (!pointsAreEqual(firstP, lastP)) {
-            segs.push(new Segment({p1x: lastP.x, p1y: lastP.y, p4x: firstP.x, p4y: firstP.y}));
+            segments.push(new Segment({p1x: lastP.x, p1y: lastP.y, p4x: firstP.x, p4y: firstP.y}));
         }
 
         // Fencepost make the first PathPoint
-        pp.push(makePathPointFromSegments(segs[segs.length - 1], segs[0]));
+        pp.push(makePathPointFromSegments(segments[segments.length - 1], segments[0]));
 
         // Loop through Segments and create PathPoints
         let ns;
-        for (let s = 0; s < segs.length - 1; s++) {
-            ns = segs[s + 1];
-            pp.push(makePathPointFromSegments(segs[s], ns));
+        for (let s = 0; s < segments.length - 1; s++) {
+            ns = segments[s + 1];
+            pp.push(makePathPointFromSegments(segments[s], ns));
         }
 
         // debug(pp);
@@ -289,21 +289,21 @@ export default class PolySegment extends GlyphElement {
     /**
      * Takes a collection of intersections, and splits all the applicable
      * segments at those points
-     * @param {array} ixarr - array of intersections in ix format
+     * @param {array} ixArray - array of intersections in ix format
      * @param {number} threshold - how closely to look and split
      * @returns {PolySegment}
      */
-    splitSegmentsAtIntersections(ixarr = this.findIntersections(), threshold) {
+    splitSegmentsAtIntersections(ixArray = this.findIntersections(), threshold) {
         // debug('\n PolySegment.splitSegmentsAtIntersections - START');
         // debug('\t before length ' + this._segments.length);
         // debug(this._segments);
-        ixarr.forEach(function(v, i) {
-            ixarr[i] = new XYPoint(...v.split('/'));
+        ixArray.forEach(function(v, i) {
+            ixArray[i] = new XYPoint(...v.split('/'));
         });
-        // debug(ixarr);
+        // debug(ixArray);
         let result = [];
         for (let s = 0; s < this._segments.length; s++) {
-            result = result.concat(this._segments[s].splitSegmentAtProvidedCoords(ixarr, threshold));
+            result = result.concat(this._segments[s].splitSegmentAtProvidedCoords(ixArray, threshold));
         }
         this._segments = result;
         // debug('\t afters length ' + this._segments.length);
@@ -384,9 +384,9 @@ export default class PolySegment extends GlyphElement {
                 if (sorted.length) {
                     result.push(new PolySegment({segments: sorted}));
                     if (sorted[sorted.length - 1].containsEndPoint(sorted[0].getXYPoint(1))) {
-                        // debug('\t\t Pushed sorted polyseg, connected nicely');
+                        // debug('\t\t Pushed sorted PolySegment, connected nicely');
                     } else {
-                        // debug('\t\t Pushed sorted polyseg, OPEN LOOP');
+                        // debug('\t\t Pushed sorted PolySegment, OPEN LOOP');
                     }
                     sorted = [];
                     nextCoord = getNextUnusedSegmentP1();
@@ -400,9 +400,9 @@ export default class PolySegment extends GlyphElement {
             // debug('\t FINISHING');
             result.push(new PolySegment({segments: sorted}));
             if (sorted[sorted.length - 1].containsEndPoint(sorted[0].getXYPoint(1))) {
-                // debug('\t\t Pushed sorted polyseg, connected nicely');
+                // debug('\t\t Pushed sorted PolySegment, connected nicely');
             } else {
-                // debug('\t\t Pushed sorted polyseg, OPEN LOOP');
+                // debug('\t\t Pushed sorted PolySegment, OPEN LOOP');
             }
         }
         // debug('\t result');
@@ -433,7 +433,7 @@ export default class PolySegment extends GlyphElement {
             s = this._segments[t];
             if (pointsAreEqual(s.getXYPoint(1), s.getXYPoint(4))) {
                 if (s.line) {
-                    s.objType = 'LZERO';
+                    s.objType = 'LINE ZERO';
                 } else if (
                     pointsAreEqual(s.getXYPoint(1), s.getXYPoint(2)) &&
                     pointsAreEqual(s.getXYPoint(1), s.getXYPoint(3))
@@ -636,7 +636,7 @@ export default class PolySegment extends GlyphElement {
 // --------------------------------------------------------------
 
 /**
- * Find all places where two segments cross eachother
+ * Find all places where two segments cross each other
  * This is a recursive algorithm
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
@@ -650,7 +650,7 @@ export function findSegmentIntersections(s1, s2, depth) {
 
 
     // if(depth > 15) {
-        // debug('\t fINDsEGMENTiNTERSECTIONS debug early return');
+        // debug('\t findSegmentIntersections debug early return');
     //  return [];
     // }
     // s1.drawSegmentOutline();
@@ -688,10 +688,10 @@ export function findSegmentIntersections(s1, s2, depth) {
     let s2m = s2.getFastMaxes();
 
     if (!maxesOverlap(s1m, s2m)) {
-        // debug('\t segments have non overlapping fastmaxes');
+        // debug('\t segments have non overlapping fast maxes');
         return [];
     }
-    // debug('\t segments fastmaxes overlap');
+    // debug('\t segments fast maxes overlap');
     // debug([s1m]);
     // debug([s2m]);
 

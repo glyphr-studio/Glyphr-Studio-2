@@ -191,13 +191,13 @@
                     '&emsp;';
 
                     if (sc.leftSideBearing) {
-                        if (sc.leftSideBearing === true) sc.leftSideBearing = _GP.projectSettings.defaultlsb;
+                        if (sc.leftSideBearing === true) sc.leftSideBearing = _GP.projectSettings.defaultLSB;
                         content += '<input type="number" id="charlsb" step="'+svc+'" '+
                         'value="' + sc.leftSideBearing + '" '+
                         'onchange="_UI.focusElement=this.id; getSelectedWorkItem().leftSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
                     } else {
                         content +='<input type="number" disabled="disabled" '+
-                        'value="'+ round(_GP.projectSettings.defaultlsb, 3) + '"/>';
+                        'value="'+ round(_GP.projectSettings.defaultLSB, 3) + '"/>';
                     }
             content += '</td>'+
             '</tr>';
@@ -215,13 +215,13 @@
                     '&emsp;';
 
                     if (sc.rightSideBearing) {
-                        if (sc.rightSideBearing === true) sc.rightSideBearing = _GP.projectSettings.defaultrsb;
+                        if (sc.rightSideBearing === true) sc.rightSideBearing = _GP.projectSettings.defaultRSB;
                         content += '<input type="number" id="charrsb" step="'+svc+'" '+
                         'value="' + sc.rightSideBearing + '" '+
                         'onchange="_UI.focusElement=this.id; getSelectedWorkItem().rightSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
                     } else {
                         content += '<input type="number" disabled="disabled" '+
-                        'value="'+round(_GP.projectSettings.defaultrsb, 3) + '"/>';
+                        'value="'+round(_GP.projectSettings.defaultRSB, 3) + '"/>';
                     }
             content += '</td>'+
             '</tr>';

@@ -242,20 +242,20 @@ export function maxesOverlap(m1, m2, exclusive = true) {
 /**
  * This takes an array of maxes objects, and returns a maxes
  * object that represents the extremes of all the passed objects
- * @param {array} maxarr - array of 'maxes' objects
+ * @param {array} maxesArray - array of 'maxes' objects
  * @returns {Maxes}
  */
-export function getOverallMaxes(maxarr) {
+export function getOverallMaxes(maxesArray) {
     // debug('\n getOverallMaxes - START');
     // debug('\t start');
-    // debug(maxarr);
+    // debug(maxesArray);
 
     let re = new Maxes();
     let tm;
 
-    for (let m=0; m<maxarr.length; m++) {
+    for (let m=0; m<maxesArray.length; m++) {
         // debug('\t pass ' + m);
-        tm = new Maxes(maxarr[m]);
+        tm = new Maxes(maxesArray[m]);
 
         // find
         re.xMin = Math.min(re.xMin, tm.xMin);

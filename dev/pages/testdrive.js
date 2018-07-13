@@ -255,7 +255,7 @@
 
     function drawTDOptions() {
         if (!_UI.testdrive.lineGap) _UI.testdrive.lineGap = _GP.projectSettings.lineGap;
-        if (!isVal(_UI.testdrive.padSize)) _UI.testdrive.padSize = _GP.projectSettings.defaultlsb;
+        if (!isVal(_UI.testdrive.padSize)) _UI.testdrive.padSize = _GP.projectSettings.defaultLSB;
 
         let flattenmessage = '<h1>Combine Glyphs Shapes</h1>'+
             'In <a href=# onclick=navToProjectSettings()>Project Settings &rsaquo; Export Options</a> you have the option to combine all glyph shapes.<br>'+

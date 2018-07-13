@@ -5,7 +5,7 @@ import {clone, numSan, isVal, round, pointsAreEqual} from '../app/functions.js';
 /**
  * Glyph Element > Segment
  * A Segment stores and acts on a piece of a Path
- * according to the mathmatical definition of a
+ * according to the mathematical definition of a
  * Bezier curve.
  *
  * Paths in Glyphr Studio are a collection of
@@ -154,7 +154,7 @@ export default class Segment extends GlyphElement {
 
     /**
      * A rough way of determining length without doing
-     * calculus or recurrsion. quickLength will almost always
+     * calculus or recursion. quickLength will almost always
      * be greater than the actual length.
      * @returns {number}
      */
@@ -175,7 +175,7 @@ export default class Segment extends GlyphElement {
      * @param {number} dy - delta offset
      */
     drawSegmentOutline(ctx, color = '#000', dx = 0, dy = 0) {
-        ctx.strokeStyle = getRGBfromRGBA((color), 0.9);
+        ctx.strokeStyle = getColorFromRGBA((color), 0.9);
         let p1x = sXcX(this.p1x + dx);
         let p1y = sYcY(this.p1y + dy);
         let p2x = sXcX(this.p2x + dx);
@@ -207,7 +207,7 @@ export default class Segment extends GlyphElement {
         let p3y = sYcY(this.p3y);
         let p4x = sXcX(this.p4x);
         let p4y = sYcY(this.p4y);
-        color = getRGBfromRGBA(color, 0.4);
+        color = getColorFromRGBA(color, 0.4);
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
         ctx.font = '48px sans-serif';
@@ -252,22 +252,22 @@ export default class Segment extends GlyphElement {
         if (this.containsTerminalPoint(co, 0.1)) return false;
 
         if (this.lineType === 'horizontal' || this.lineType === 'vertical') {
-            let newx;
-            let newy;
+            let newX;
+            let newY;
             let online = false;
             if (this.lineType === 'horizontal') {
                 if (round(co.y, 2) === round(this.p1y, 2)) {
                     if ((co.x > Math.min(this.p1x, this.p4x)) && (co.x < Math.max(this.p1x, this.p4x))) {
-                        newx = co.x;
-                        newy = this.p1y;
+                        newX = co.x;
+                        newY = this.p1y;
                         online = true;
                     }
                 }
             } else if (this.lineType === 'vertical') {
                 if (round(co.x, 2) === round(this.p1x, 2)) {
                     if ((co.y > Math.min(this.p1y, this.p4y)) && (co.y < Math.max(this.p1y, this.p4y))) {
-                        newx = this.p1x;
-                        newy = co.y;
+                        newX = this.p1x;
+                        newY = co.y;
                         online = true;
                     }
                 }
@@ -283,12 +283,12 @@ export default class Segment extends GlyphElement {
                 new Segment({
                     'p1x': this.p1x,
                     'p1y': this.p1y,
-                    'p4x': newx,
-                    'p4y': newy,
+                    'p4x': newX,
+                    'p4y': newY,
                 }),
                 new Segment({
-                    'p1x': newx,
-                    'p1y': newy,
+                    'p1x': newX,
+                    'p1y': newY,
                     'p4x': this.p4x,
                     'p4y': this.p4y,
                 }),
@@ -307,7 +307,7 @@ export default class Segment extends GlyphElement {
     }
 
     /**
-     * Splits a segment based on a decmial value ("time" is a metaphor here, from 0 to 1 second)
+     * Splits a segment based on a decimal value ("time" is a metaphor here, from 0 to 1 second)
      * @param {number} t - decimal from 0 to 1 representing how far along the curve to split
      * @returns {array} - Array with two segments resulting from the split
      */
@@ -360,23 +360,23 @@ export default class Segment extends GlyphElement {
      */
     splitSegmentAtProvidedCoords(coords, threshold) {
         // debug('\n Segment.splitSegmentAtProvidedCoords - START');
-        let segs = [new Segment(clone(this))];
+        let segments = [new Segment(clone(this))];
         let tr;
         for (let x = 0; x < coords.length; x++) {
-            for (let s = 0; s < segs.length; s++) {
-                if (!segs[s].containsTerminalPoint(coords[x], threshold)) {
-                    tr = segs[s].splitAtCoord(coords[x]);
+            for (let s = 0; s < segments.length; s++) {
+                if (!segments[s].containsTerminalPoint(coords[x], threshold)) {
+                    tr = segments[s].splitAtCoord(coords[x]);
                     if (tr) {
-                        segs.splice(s, 1, tr[0], tr[1]);
+                        segments.splice(s, 1, tr[0], tr[1]);
                         // s++;
                         // break;
                     }
                 }
             }
         }
-        // debug('\t split into ' + segs.length);
+        // debug('\t split into ' + segments.length);
         // debug(' Segment.splitSegmentAtProvidedCoords - END\n');
-        return segs;
+        return segments;
     }
 
     /**
@@ -411,7 +411,7 @@ export default class Segment extends GlyphElement {
         // debug(`\n getSplitFromXYPoint - START`);
 
         let grains = this.quickLength * 1000;
-        let mindistance = 999999999;
+        let minDistance = 999999999;
         let re = false;
         let check;
         let d;
@@ -422,8 +422,8 @@ export default class Segment extends GlyphElement {
 
             d = Math.sqrt(((check.x - point.x) * (check.x - point.x)) + ((check.y - point.y) * (check.y - point.y)));
 
-            if (d < mindistance) {
-                mindistance = d;
+            if (d < minDistance) {
+                minDistance = d;
                 re = {
                     'split': t,
                     'distance': d,
@@ -552,7 +552,7 @@ export default class Segment extends GlyphElement {
          * @param {Maxes} maxes - maxes object to check against
          * @param {number} value - new value that may fall outside the current maxes object
          */
-        function checkXbounds(maxes, value) {
+        function checkXBounds(maxes, value) {
             if (maxes.xMin > value) {
                 maxes.xMin = value;
             } else if (maxes.xMax < value) {
@@ -565,7 +565,7 @@ export default class Segment extends GlyphElement {
          * @param {Maxes} maxes - maxes object to check against
          * @param {number} value - new value that may fall outside the current maxes object
          */
-        function checkYbounds(maxes, value) {
+        function checkYBounds(maxes, value) {
             if (maxes.yMin > value) {
                 maxes.yMin = value;
             } else if (maxes.yMax < value) {
@@ -574,7 +574,7 @@ export default class Segment extends GlyphElement {
         }
 
         /**
-         * Some crazy Bezier math sh*t goin' down in this helper funciton
+         * Some crazy Bezier math sh*t goin' down in this helper function
          * @param {number} t
          * @param {number} p0
          * @param {number} p1
@@ -596,7 +596,7 @@ export default class Segment extends GlyphElement {
 
         if (this.lineType) {
             // debug([bounds]);
-            // debug(' Segment.calcMaxes - returning fastmaxes for line - END\n');
+            // debug(' Segment.calcMaxes - returning fast maxes for line - END\n');
             return bounds;
         }
 
@@ -608,7 +608,7 @@ export default class Segment extends GlyphElement {
         let d3y = this.p4y - this.p3y;
         let numerator;
         let denominator;
-        let quadroot;
+        let quadRoot;
         let root;
         let t1;
         let t2;
@@ -620,15 +620,15 @@ export default class Segment extends GlyphElement {
             }
             numerator = 2 * (d1x - d2x);
             denominator = 2 * (d1x - 2 * d2x + d3x);
-            quadroot = (2 * d2x - 2 * d1x) * (2 * d2x - 2 * d1x) - 2 * d1x * denominator;
-            root = Math.sqrt(quadroot);
+            quadRoot = (2 * d2x - 2 * d1x) * (2 * d2x - 2 * d1x) - 2 * d1x * denominator;
+            root = Math.sqrt(quadRoot);
             t1 = (numerator + root) / denominator;
             t2 = (numerator - root) / denominator;
             if (0 < t1 && t1 < 1) {
-                checkXbounds(bounds, getBezierValue(t1, this.p1x, this.p2x, this.p3x, this.p4x));
+                checkXBounds(bounds, getBezierValue(t1, this.p1x, this.p2x, this.p3x, this.p4x));
             }
             if (0 < t2 && t2 < 1) {
-                checkXbounds(bounds, getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x));
+                checkXBounds(bounds, getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x));
             }
         }
 
@@ -639,15 +639,15 @@ export default class Segment extends GlyphElement {
             }
             numerator = 2 * (d1y - d2y);
             denominator = 2 * (d1y - 2 * d2y + d3y);
-            quadroot = (2 * d2y - 2 * d1y) * (2 * d2y - 2 * d1y) - 2 * d1y * denominator;
-            root = Math.sqrt(quadroot);
+            quadRoot = (2 * d2y - 2 * d1y) * (2 * d2y - 2 * d1y) - 2 * d1y * denominator;
+            root = Math.sqrt(quadRoot);
             t1 = (numerator + root) / denominator;
             t2 = (numerator - root) / denominator;
             if (0 < t1 && t1 < 1) {
-                checkYbounds(bounds, getBezierValue(t1, this.p1y, this.p2y, this.p3y, this.p4y));
+                checkYBounds(bounds, getBezierValue(t1, this.p1y, this.p2y, this.p3y, this.p4y));
             }
             if (0 < t2 && t2 < 1) {
-                checkYbounds(bounds, getBezierValue(t2, this.p1y, this.p2y, this.p3y, this.p4y));
+                checkYBounds(bounds, getBezierValue(t2, this.p1y, this.p2y, this.p3y, this.p4y));
             }
         }
         // debug([this.getFastMaxes(), bounds]);
@@ -780,7 +780,7 @@ export default class Segment extends GlyphElement {
      * @param {number} threshold - how close to check
      * @returns {boolean}
      */
-    preceeds(s2, threshold = 1) {
+    precedes(s2, threshold = 1) {
         let s1c4 = this.getXYPoint(4);
         let s2c1 = s2.getXYPoint(1);
 
@@ -857,9 +857,9 @@ export function getLineLength(p1x, p1y, p2x, p2y) {
 
 /**
  * Returns true if three points are in a straight line
- * @param {XYPoint} a - poit to evaluate
- * @param {XYPoint} b - poit to evaluate
- * @param {XYPoint} c - poit to evaluate
+ * @param {XYPoint} a - point to evaluate
+ * @param {XYPoint} b - point to evaluate
+ * @param {XYPoint} c - point to evaluate
  * @param {number} precision - how close to compare
  * @returns {boolean}
  */

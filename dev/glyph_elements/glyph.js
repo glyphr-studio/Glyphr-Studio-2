@@ -2,7 +2,7 @@ import GlyphElement from './glyphelement.js';
 import Maxes from './maxes.js';
 import Shape from './shape.js';
 import ComponentInstance from './componentinstance.js';
-import {getGlyph} from '../app/globalgetters.js';
+import {getGlyph, getProject} from '../app/globalgetters.js';
 import {clone, hasNonValues, isVal} from '../app/functions.js';
 import {parseUnicodeInput} from '../app/unicode.js';
 
@@ -214,7 +214,7 @@ export default class Glyph extends GlyphElement {
     // computed properties
 
     /**
-     * Get X possition
+     * Get X position
      * @returns {number}
      */
     get x() {
@@ -222,7 +222,7 @@ export default class Glyph extends GlyphElement {
     }
 
     /**
-     * Get Y possition
+     * Get Y position
      * @returns {number}
      */
     get y() {
@@ -307,7 +307,7 @@ export default class Glyph extends GlyphElement {
      */
     get lsb() {
         if (this.leftSideBearing === false) {
-            return _GP.projectSettings.defaultlsb;
+            return getProject().projectSettings.defaultLSB;
         } else {
             return this.leftSideBearing;
         }
@@ -319,7 +319,7 @@ export default class Glyph extends GlyphElement {
      */
     get rsb() {
         if (this.rightSideBearing === false) {
-            return _GP.projectSettings.defaultrsb;
+            return getProject().projectSettings.defaultRSB;
         } else {
             return this.rightSideBearing;
         }
@@ -339,9 +339,9 @@ export default class Glyph extends GlyphElement {
      * @returns {string}
      */
     get svgPathData() {
-        if (this.cache.svgpathdata) return this.cache.svgpathdata;
-        this.cache.svgpathdata = this.makeSVGPathData();
-        return this.cache.svgpathdata;
+        if (this.cache.svgPathData) return this.cache.svgPathData;
+        this.cache.svgPathData = this.makeSVGPathData();
+        return this.cache.svgPathData;
     }
 
 
@@ -462,7 +462,7 @@ export default class Glyph extends GlyphElement {
     // computed properties
 
     /**
-     * Set X possition
+     * Set X position
      * @param {number} x
      * @returns {Glyph} - reference to this Glyph
      */
@@ -472,7 +472,7 @@ export default class Glyph extends GlyphElement {
     }
 
     /**
-     * Set Y possition
+     * Set Y position
      * @param {number} y
      * @returns {Glyph} - reference to this Glyph
      */
@@ -534,7 +534,7 @@ export default class Glyph extends GlyphElement {
     }
 
     /**
-     * Update all the shapes' possiitons in this glyph as one group
+     * Update all the shapes' positions in this glyph as one group
      * @param {number} dx - delta x
      * @param {number} dy - delta y
      */
@@ -559,8 +559,6 @@ export default class Glyph extends GlyphElement {
      * @param {boolean} ratioLock - true to scale width and height 1:1
      */
     setGlyphSize(nw, nh, ratioLock) {
-        // debug('SET GLYPHSIZE ---- nw/nh/ra:\t' + nw + '\t ' + nh + '\t ' + ratioLock);
-        // debug('\t maxes: ' + json(this.maxes));
         let m = this.maxes;
         if (nw !== false) nw = parseFloat(nw);
         if (nh !== false) nh = parseFloat(nh);
@@ -589,78 +587,77 @@ export default class Glyph extends GlyphElement {
         if (dw !== false) dw = parseFloat(dw) || 0;
         if (dh !== false) dh = parseFloat(dh) || 0;
         // debug('\t adjust dw/dh:\t' + dw + '/' + dh);
-        let oldw = m.xMax - m.xMin;
-        let oldh = m.yMax - m.yMin;
-        let neww = (oldw + dw);
-        let newh = (oldh + dh);
-        if (Math.abs(neww) < 1) neww = 1;
-        if (Math.abs(newh) < 1) newh = 1;
-        // debug('\t new w/h:\t' + neww + '/' + newh);
-        let ratiodh = (newh / oldh);
-        let ratiodw = (neww / oldw);
-        // debug('\t ratio dw/dh:\t' + ratiodw + '/' + ratiodh);
+        let oldW = m.xMax - m.xMin;
+        let oldH = m.yMax - m.yMin;
+        let newW = (oldW + dw);
+        let newH = (oldH + dh);
+        if (Math.abs(newW) < 1) newW = 1;
+        if (Math.abs(newH) < 1) newH = 1;
+        // debug('\t new w/h:\t' + newW + '/' + newH);
+        let ratioHeight = (newH / oldH);
+        let ratioWidth = (newW / oldW);
+        // debug('\t ratio dw/dh:\t' + ratioWidth + '/' + ratioHeight);
         if (ratioLock) {
             // Assuming only one will be nonzero
-            // if(Math.abs(ratiodh) > Math.abs(ratiodw)) ratiodw = ratiodh;
-            // else ratiodh = ratiodw;
-            if (dw !== 0 && dh === 0) ratiodh = ratiodw;
-            else ratiodw = ratiodh;
+            // if(Math.abs(ratioHeight) > Math.abs(ratioWidth)) ratioWidth = ratioHeight;
+            // else ratioHeight = ratioWidth;
+            if (dw !== 0 && dh === 0) ratioHeight = ratioWidth;
+            else ratioWidth = ratioHeight;
         }
-        // debug('\t ratio dw/dh:\t' + ratiodw + '/' + ratiodh);
+        // debug('\t ratio dw/dh:\t' + ratioWidth + '/' + ratioHeight);
 
-        let cs = this.shapes;
-        let s;
-        let smaxes;
-        let oldsw;
-        let oldsh;
-        let oldsx;
-        let oldsy;
-        let newsw;
-        let newsh;
-        let newsx;
-        let newsy;
-        let sdw;
-        let sdh;
-        let sdx;
-        let sdy;
+        let shape;
+        let shapeMaxes;
+        let oldShapeWidth;
+        let oldShapeHeight;
+        let oldShapeX;
+        let oldShapeY;
+        let newShapeWidth;
+        let newShapeHeight;
+        let newShapeX;
+        let newShapeY;
+        let deltaWidth;
+        let deltaHeight;
+        let deltaX;
+        let deltaY;
 
         // debug('\t Before Maxes ' + json(m, true));
-        for (let i = 0; i < cs.length; i++) {
-            s = cs[i];
-            // debug('\t >>> Updating ' + s.objType + ' ' + i + '/' + cs.length + ' : ' + s.name);
-            smaxes = s.maxes;
+        for (let i = 0; i < this.shapes.length; i++) {
+            shape = this.shapes[i];
+            // debug('\t >>> Updating ' + shape.objType + ' ' + i + '/' + this.shapes.length + ' : ' + shape.name);
+            shapeMaxes = shape.maxes;
 
             // scale
-            oldsw = smaxes.xMax - smaxes.xMin;
-            newsw = oldsw * ratiodw;
+            oldShapeWidth = shapeMaxes.xMax - shapeMaxes.xMin;
+            newShapeWidth = oldShapeWidth * ratioWidth;
 
-            if (ratiodw === 0) sdw = false;
-            else sdw = newsw - oldsw;
+            if (ratioWidth === 0) deltaWidth = false;
+            else deltaWidth = newShapeWidth - oldShapeWidth;
 
-            oldsh = smaxes.yMax - smaxes.yMin;
-            newsh = oldsh * ratiodh;
+            oldShapeHeight = shapeMaxes.yMax - shapeMaxes.yMin;
+            newShapeHeight = oldShapeHeight * ratioHeight;
 
-            if (ratiodh === 0) sdh = false;
-            else sdh = newsh - oldsh;
+            if (ratioHeight === 0) deltaHeight = false;
+            else deltaHeight = newShapeHeight - oldShapeHeight;
 
-            // debug('\t Shape ' + i + ' dw dh ' + sdw + ' ' + sdh);
-            s.updateShapeSize(sdw, sdh, false);
+            // debug('\t Shape ' + i + ' dw dh ' + deltaWidth + ' ' + deltaHeight);
+            shape.updateShapeSize(deltaWidth, deltaHeight, false);
 
             // move
-            oldsx = smaxes.xMin - m.xMin;
-            newsx = oldsx * ratiodw;
+            oldShapeX = shapeMaxes.xMin - m.xMin;
+            newShapeX = oldShapeX * ratioWidth;
 
-            if (ratiodw === 0) sdx = false;
-            else sdx = newsx - oldsx;
+            if (ratioWidth === 0) deltaX = false;
+            else deltaX = newShapeX - oldShapeX;
 
-            oldsy = smaxes.yMin - m.yMin;
-            newsy = oldsy * ratiodh;
+            oldShapeY = shapeMaxes.yMin - m.yMin;
+            newShapeY = oldShapeY * ratioHeight;
 
-            if (ratiodh === 0) sdy = false;
-            else sdy = newsy - oldsy;
+            if (ratioHeight === 0) deltaY = false;
+            else deltaY = newShapeY - oldShapeY;
 
-            // debug('\t Shape Pos ' + i + ' dx dy ' + sdx + ' ' + sdy);
-            s.updateShapePosition(sdx, sdy, true);
+            // debug('\t Shape Pos ' + i + ' dx dy ' + deltaX + ' ' + deltaY);
+            s.updateShapePosition(deltaX, deltaY, true);
         }
 
         this.changed();
@@ -812,7 +809,7 @@ export default class Glyph extends GlyphElement {
     // --------------------------------------------------------------
 
     /**
-     * Calcualte the overal maxes for this Glyph
+     * Calculate the overall maxes for this Glyph
      * @returns {Maxes}
      */
     calcMaxes() {
@@ -844,7 +841,7 @@ export default class Glyph extends GlyphElement {
     // --------------------------------------------------------------
 
     /**
-     * Searches this Glyph for any Comonent Instance
+     * Searches this Glyph for any Component Instance
      * @returns {boolean}
      */
     containsComponents() {
@@ -865,9 +862,9 @@ export default class Glyph extends GlyphElement {
      */
     canAddComponent(cid) {
         // debug('\n Glyph.canAddComponent - START');
-        let myid = '' + getMyID(this);
-        // debug('\t adding ' + cid + ' to (me) ' + myid);
-        if (myid === cid) return false;
+        let myID = '' + getMyID(this);
+        // debug('\t adding ' + cid + ' to (me) ' + myID);
+        if (myID === cid) return false;
         if (this.usedIn.length === 0) return true;
         let downlinks = this.collectAllDownstreamLinks([], true);
         downlinks = downlinks.filter(function(elem, pos) {
@@ -923,18 +920,18 @@ export default class Glyph extends GlyphElement {
         // debug('\n Glyph.deleteLinks - START');
         // debug('\t passed this as id: ' + thisID);
         // Delete upstream Component Instances
-        let upstreamglyph;
+        let upstreamGlyph;
         for (let c = 0; c < this.usedIn.length; c++) {
-            upstreamglyph = getGlyph(this.usedIn[c]);
-            // debug('\t removing from ' + upstreamglyph.name);
-            // debug(upstreamglyph.shapes);
-            for (let u = 0; u < upstreamglyph.shapes.length; u++) {
-                if (upstreamglyph.shapes[u].objType === 'ComponentInstance' && upstreamglyph.shapes[u].link === thisID) {
-                    upstreamglyph.shapes.splice(u, 1);
+            upstreamGlyph = getGlyph(this.usedIn[c]);
+            // debug('\t removing from ' + upstreamGlyph.name);
+            // debug(upstreamGlyph.shapes);
+            for (let u = 0; u < upstreamGlyph.shapes.length; u++) {
+                if (upstreamGlyph.shapes[u].objType === 'ComponentInstance' && upstreamGlyph.shapes[u].link === thisID) {
+                    upstreamGlyph.shapes.splice(u, 1);
                     u--;
                 }
             }
-            // debug(upstreamglyph.shapes);
+            // debug(upstreamGlyph.shapes);
         }
         // Delete downstream usedIn array values
         for (let s = 0; s < this.shapes.length; s++) {
@@ -950,28 +947,29 @@ export default class Glyph extends GlyphElement {
     // --------------------------------------------------------------
     /**
      * Draw a Glyph to a canvas
-     * @param {object} lctx - canvas context
+     * @param {object} ctx - canvas context
      * @param {object} view - x/y/z view object
      * @param {number} alpha - transparency between 0 and 1
      * @param {boolean} addLSB - optionally move everything to account for LSB
+     * @param {string} fill - glyph fill color
      * @returns {number} - Advance Width, according to view.z
      */
-    drawGlyph(lctx, view = {x: 0, y: 0, z: 1}, alpha = 1, addLSB = false) {
+    drawGlyph(ctx, view = {x: 0, y: 0, z: 1}, alpha = 1, addLSB = false, fill = '#000') {
         // debug('\n Glyph.drawGlyph - START ' + this.name);
         // debug('\t view ' + json(view, true));
         let sl = this.shapes;
         let shape;
-        let drewshape;
+        let drewShape;
 
         if (addLSB && this.isAutoWide) view.dx += (this.getLSB() * view.dz);
 
-        lctx.beginPath();
+        ctx.beginPath();
         for (let j = 0; j < sl.length; j++) {
             shape = sl[j];
             if (shape.visible) {
                 // debug('\t ' + this.name + ' drawing ' + shape.objType + ' ' + j + ' ' + shape.name);
-                drewshape = shape.drawShape(lctx, view);
-                if (!drewshape) {
+                drewShape = shape.drawShape(ctx, view);
+                if (!drewShape) {
                     console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + this.name);
                     if (shape.objType === 'ComponentInstance' && !getGlyph(shape.link)) {
                         console.warn('>>> Component Instance has bad link: ' + shape.link);
@@ -985,12 +983,11 @@ export default class Glyph extends GlyphElement {
             }
         }
 
-        lctx.closePath();
-        // lctx.fillStyle = getRGBfromRGBA(_GP.projectSettings.colors.glyphfill, alpha);
-        lctx.fillStyle = _GP.projectSettings.colors.glyphfill;
-        lctx.globalAlpha = alpha;
-        lctx.fill('nonzero');
-        lctx.globalAlpha = 1;
+        ctx.closePath();
+        ctx.fillStyle = fill;
+        ctx.globalAlpha = alpha;
+        ctx.fill('nonzero');
+        ctx.globalAlpha = 1;
         // debug(' Glyph.drawGlyph - END ' + this.name + '\n');
 
         return (this.getAdvanceWidth() * view.dz);
@@ -1001,14 +998,14 @@ export default class Glyph extends GlyphElement {
      * @param {string} color - accent color
      */
     drawMultiSelectAffordances(color = '#000') {
-        let allpoints = [];
+        let allPoints = [];
         for (let s = 0; s < this.shapes.length; s++) {
             if (this.shapes[s].objType !== 'ComponentInstance') {
-                allpoints = allpoints.concat(this.shapes[s].path.pathPoints);
+                allPoints = allPoints.concat(this.shapes[s].path.pathPoints);
                 this.shapes[s].draw_PathOutline(color, 1);
             }
         }
-        draw_PathPoints(allpoints, color);
+        draw_PathPoints(allPoints, color);
     }
 
     /**
@@ -1056,21 +1053,21 @@ export default class Glyph extends GlyphElement {
      */
     makeSVG(size = 50, gutter = 5) {
         // debug('\n Glyph.makeSVG - START');
-        let ps = _GP.projectSettings;
-        let emsquare = Math.max(ps.upm, (ps.ascent - ps.descent));
+        let ps = getProject().projectSettings;
+        let emSquare = Math.max(ps.upm, (ps.ascent - ps.descent));
         let desc = Math.abs(ps.descent);
-        let charscale = (size - (gutter * 2)) / size;
-        let gutterscale = (gutter / size) * emsquare;
-        let vbsize = emsquare - (gutter * 2);
-        let pathdata = this.svgPathData;
+        let charScale = (size - (gutter * 2)) / size;
+        let gutterScale = (gutter / size) * emSquare;
+        let vbSize = emSquare - (gutter * 2);
+        let pathData = this.svgPathData;
         // Assemble SVG
         let re = '<svg version="1.1" ';
         re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
-        re += 'width="' + size + '" height="' + size + '" viewBox="0,0,' + vbsize + ',' + vbsize + '">';
-        re += '<g transform="translate(' + (gutterscale) + ',' + (emsquare - desc - (gutterscale / 2)) + ') scale(' + charscale + ',-' + charscale + ')">';
+        re += 'width="' + size + '" height="' + size + '" viewBox="0,0,' + vbSize + ',' + vbSize + '">';
+        re += '<g transform="translate(' + (gutterScale) + ',' + (emSquare - desc - (gutterScale / 2)) + ') scale(' + charScale + ',-' + charScale + ')">';
         // re += '<rect x="0" y="-'+desc+'" height="'+desc+'" width="1000" fill="lime"/>';
-        // re += '<rect x="0" y="0" height="'+(emsquare-desc)+'" width="1000" fill="cyan"/>';
-        re += '<path d="' + pathdata + '"/>';
+        // re += '<rect x="0" y="0" height="'+(emSquare-desc)+'" width="1000" fill="cyan"/>';
+        re += '<path d="' + pathData + '"/>';
         re += '</g>';
         re += '</svg>';
         // debug(' Glyph.makeSVG - END\n');
@@ -1085,43 +1082,43 @@ export default class Glyph extends GlyphElement {
         if (this.cache.svg) return this.cache.svg;
 
         let sl = this.shapes;
-        let pathdata = '';
+        let pathData = '';
         let lsb = this.getLSB();
         let shape;
         let path;
         let tg;
 
-        // Make Pathdata
+        // Make Path Data
         for (let j = 0; j < sl.length; j++) {
             shape = sl[j];
             if (shape.visible) {
                 if (shape.objType === 'ComponentInstance') {
                     tg = shape.getTransformedGlyph();
-                    if (tg) pathdata += tg.svgPathData;
+                    if (tg) pathData += tg.svgPathData;
                 } else {
                     path = shape.getPath();
                     path.updatePathPosition(lsb, 0, true);
-                    pathdata += path.getSVGpathData('Glyph ' + this.name + ' Shape ' + shape.name);
-                    if (j < sl.length - 1) pathdata += ' ';
+                    pathData += path.svgPathData('Glyph ' + this.name + ' Shape ' + shape.name);
+                    if (j < sl.length - 1) pathData += ' ';
                 }
             }
         }
-        if (trim(pathdata) === '') pathdata = 'M0,0Z';
-        this.cache.svg = pathdata;
-        return pathdata;
+        if (trim(pathData) === '') pathData = 'M0,0Z';
+        this.cache.svg = pathData;
+        return pathData;
     }
 
     /**
-     * Make an Opentype.js Path
-     * @param {opentype.Path} otpath
+     * Make an OpenType.js Path
+     * @param {opentype.Path} otPath
      * @returns {opentype.Path}
      */
-    makeOpentypeJsPath(otpath) {
-        otpath = otpath || new opentype.Path();
+    makeOpenTypeJsPath(otPath) {
+        otPath = otPath || new opentype.Path();
         for (let s = 0; s < this.shapes.length; s++) {
-            otpath = this.shapes[s].makeOpentypeJsPath(otpath);
+            otPath = this.shapes[s].makeOpenTypeJsPath(otPath);
         }
-        return otpath;
+        return otPath;
     }
 
 
@@ -1164,10 +1161,10 @@ export default class Glyph extends GlyphElement {
     combineAllShapes(dontToast = false, dontResolveOverlaps = false) {
         // debug('\n Glyph.combineAllShapes - START - ' + this.name);
         this.flattenGlyph();
-        let cs = combineShapes(this.shapes, dontToast, dontResolveOverlaps);
-        if (cs) {
+        let shapes = combineShapes(this.shapes, dontToast, dontResolveOverlaps);
+        if (shapes) {
             // debug('\t new shapes');
-            this.shapes = cs;
+            this.shapes = shapes;
             // debug(this.shapes);
             this.changed();
         }
@@ -1180,11 +1177,11 @@ export default class Glyph extends GlyphElement {
      * If a path in this Glyph overlaps itself, split them into separate shapes
      */
     resolveOverlapsForAllShapes() {
-        let newshapes = [];
+        let newShapes = [];
         for (let ts = 0; ts < this.shapes.length; ts++) {
-            newshapes = newshapes.concat(this.shapes[ts].resolveSelfOverlaps());
+            newShapes = newShapes.concat(this.shapes[ts].resolveSelfOverlaps());
         }
-        this.shapes = newshapes;
+        this.shapes = newShapes;
         this.changed();
     }
 
@@ -1275,9 +1272,9 @@ export default class Glyph extends GlyphElement {
      * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
      */
     removeFromUsedIn(linkID) {
-        let gindex = this.usedIn.indexOf(''+linkID);
-        if (gindex !== -1) {
-            this.usedIn.splice(gindex, 1);
+        let id = this.usedIn.indexOf(''+linkID);
+        if (id !== -1) {
+            this.usedIn.splice(id, 1);
         }
     }
 }

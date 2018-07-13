@@ -187,10 +187,10 @@ _TEST.testList.push(
     },
     {
         category: 'Segment',
-        name: 'preceeds',
+        name: 'precedes',
         assertion: function() {
             let seg2 = new Segment({p1x: 300, p1y: 300});
-            return _TEST.expression(sampleSegment().preceeds(seg2));
+            return _TEST.expression(sampleSegment().precedes(seg2));
         },
     },
     {

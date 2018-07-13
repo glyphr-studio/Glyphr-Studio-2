@@ -16,8 +16,8 @@ _UI.eventhandlers = {
     'ismouseovercec': false,
     'corner': false,
     'toolhandoff': false,
-    'lastx': -100,
-    'lasty': -100,
+    'lastX': -100,
+    'lastY': -100,
     'firstx': -100,
     'firsty': -100,
     'uqhaschanged': false,
@@ -121,9 +121,9 @@ function Tool_ShapeEdit() {
         this.didstuff = false;
         let eh = _UI.eventhandlers;
         eh.handle = false;
-        eh.lastx = eh.mousex;
+        eh.lastX = eh.mousex;
         eh.firstx = eh.mousex;
-        eh.lasty = eh.mousey;
+        eh.lastY = eh.mousey;
         eh.firsty = eh.mousey;
 
         this.clickedshape = getClickedShape(eh.mousex, eh.mousey);
@@ -166,8 +166,8 @@ function Tool_ShapeEdit() {
         let corner = eh.handle || _UI.multiSelect.shapes.isOverBoundingBoxHandle(eh.mousex, eh.mousey);
 
         let dz = getView('Event Handler Tool_ShapeEdit mousemove').dz;
-        let dx = ((eh.mousex-eh.lastx)/dz) || 0;
-        let dy = ((eh.lasty-eh.mousey)/dz) || 0;
+        let dx = ((eh.mousex-eh.lastX)/dz) || 0;
+        let dy = ((eh.lastY-eh.mousey)/dz) || 0;
 
         if (this.dragging) {
             // debug('\n Tool_ShapeEdit.mousemove - dragging');
@@ -201,7 +201,7 @@ function Tool_ShapeEdit() {
             this.didstuff = true;
         } else if (this.rotating) {
             let a1 = calculateAngle({x: cXsX(eh.mousex), y: cYsY(eh.mousey)}, eh.rotationcenter),
-                    a2 = calculateAngle({x: cXsX(eh.lastx), y: cYsY(eh.lasty)}, eh.rotationcenter);
+                    a2 = calculateAngle({x: cXsX(eh.lastX), y: cYsY(eh.lastY)}, eh.rotationcenter);
 
             _UI.multiSelect.shapes.rotate(a1-a2, eh.rotationcenter);
             this.didstuff = true;
@@ -222,8 +222,8 @@ function Tool_ShapeEdit() {
         checkForMouseOverHotspot(eh.mousex, eh.mousey);
 
         if (this.didstuff) {
-            eh.lastx = eh.mousex;
-            eh.lasty = eh.mousey;
+            eh.lastX = eh.mousex;
+            eh.lastY = eh.mousey;
             eh.uqhaschanged = true;
             redraw({calledBy: 'Event Handler Tool_ShapeEdit mousemove'});
         }
@@ -236,8 +236,8 @@ function Tool_ShapeEdit() {
         // New Basic Shape
         if (eh.tempnewbasicshape) {
             eh.tempnewbasicshape = false;
-            eh.lastx = eh.firstx;
-            eh.lasty = eh.firsty;
+            eh.lastX = eh.firstx;
+            eh.lastY = eh.firsty;
             eventHandler_ShapeResize();
         }
 
@@ -263,8 +263,8 @@ function Tool_ShapeEdit() {
         this.resizing = false;
         this.rotating = false;
         eh.handle = false;
-        eh.lastx = -100;
-        eh.lasty = -100;
+        eh.lastX = -100;
+        eh.lastY = -100;
         eh.firstx = -100;
         eh.firsty = -100;
         eh.rotationcenter = false;
@@ -387,8 +387,8 @@ function Tool_NewPath() {
 
                 eh.toolhandoff = true;
                 eh.eh_pathedit.dragging = true;
-                eh.lastx = eh.mousex;
-                eh.lasty = eh.mousey;
+                eh.lastX = eh.mousex;
+                eh.lastY = eh.mousey;
                 _UI.multiSelect.points.select(this.newshape.path.pathPoints[0]);
                 _UI.selectedTool = 'pathedit';
 
@@ -406,8 +406,8 @@ function Tool_NewPath() {
 
         this.firstpoint = false;
         this.dragging = true;
-        eh.lastx = eh.mousex;
-        eh.lasty = eh.mousey;
+        eh.lastX = eh.mousex;
+        eh.lastY = eh.mousey;
 
         redraw({calledBy: 'Event Handler Tool_NewPath mousedown'});
         // debug(' Tool_NewPath.mousedown - END\n');
@@ -429,8 +429,8 @@ function Tool_NewPath() {
             }
 
             setCursor('penCircle');
-            eh.lastx = eh.mousex;
-            eh.lasty = eh.mousey;
+            eh.lastX = eh.mousex;
+            eh.lastY = eh.mousey;
             eh.uqhaschanged = true;
 
             redraw({calledBy: 'Event Handler Tool_NewPath mousemove'});
@@ -457,8 +457,8 @@ function Tool_NewPath() {
         this.dragging = false;
         this.firstpoint = false;
         this.currpt = {};
-        _UI.eventhandlers.lastx = -100;
-        _UI.eventhandlers.lasty = -100;
+        _UI.eventhandlers.lastX = -100;
+        _UI.eventhandlers.lastY = -100;
         // debug(' Tool_NewPath.mouseup - END\n');
     };
 }
@@ -474,8 +474,8 @@ function Tool_PathEdit() {
     this.mousedown = function(ev) {
         // debug('\n Tool_PathEdit.mousedown - START');
         let eh = _UI.eventhandlers;
-        eh.lastx = eh.mousex;
-        eh.lasty = eh.mousey;
+        eh.lastX = eh.mousex;
+        eh.lastY = eh.mousey;
         let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
         this.controlpoint = getSelectedWorkItem().isOverControlPoint(cXsX(eh.mousex), cYsY(eh.mousey), targetSize, eh.multi);
         let s = getClickedShape(eh.mousex, eh.mousey);
@@ -537,8 +537,8 @@ function Tool_PathEdit() {
 
             // Moving points if mousedown
             let dz = getView('Event Handler Tool_PathEdit mousemove').dz;
-            let dx = (eh.mousex-eh.lastx)/dz;
-            let dy = (eh.lasty-eh.mousey)/dz;
+            let dx = (eh.mousex-eh.lastX)/dz;
+            let dy = (eh.lastY-eh.mousey)/dz;
             let cpt = this.controlpoint.type;
 
             if (this.controlpoint.type === 'p') setCursor('penSquare');
@@ -559,8 +559,8 @@ function Tool_PathEdit() {
             });
             // _UI.multiSelect.shapes.calcMaxes();
 
-            eh.lastx = eh.mousex;
-            eh.lasty = eh.mousey;
+            eh.lastX = eh.mousex;
+            eh.lastY = eh.mousey;
             eh.uqhaschanged = true;
             // selectShapesThatHaveSelectedPoints();
             redraw({calledBy: 'Event Handler Tool_PathEdit mousemove'});
@@ -584,8 +584,8 @@ function Tool_PathEdit() {
         this.controlpoint = false;
         eh.toolhandoff = false;
         _UI.multiSelect.points.handlesingleton = false;
-        eh.lastx = -100;
-        eh.lasty = -100;
+        eh.lastX = -100;
+        eh.lastY = -100;
 
         if (eh.uqhaschanged) {
             // _UI.multiSelect.shapes.calcMaxes();
@@ -761,8 +761,8 @@ function eventHandler_ShapeResize() {
     let maxes = s.maxes;
     let mx = cXsX(_UI.eventhandlers.mousex);
     let my = cYsY(_UI.eventhandlers.mousey);
-    let lx = cXsX(_UI.eventhandlers.lastx);
-    let ly = cYsY(_UI.eventhandlers.lasty);
+    let lx = cXsX(_UI.eventhandlers.lastX);
+    let ly = cYsY(_UI.eventhandlers.lastY);
     let dh = (ly-my);
     let dw = (lx-mx);
     let rl = s.getAttribute('ratioLock');

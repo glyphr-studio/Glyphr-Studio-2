@@ -497,7 +497,7 @@ export default class ComponentInstance extends GlyphElement {
     // Computed properties
 
     /**
-     * Set X possition
+     * Set X position
      * @param {number} x
      * @returns {ComponentInstance} - reference to this ComponentInstanceShape
      */
@@ -507,7 +507,7 @@ export default class ComponentInstance extends GlyphElement {
     }
 
     /**
-     * Set Y possition
+     * Set Y position
      * @param {number} y
      * @returns {ComponentInstance} - reference to this ComponentInstance
      */
@@ -543,7 +543,7 @@ export default class ComponentInstance extends GlyphElement {
 
     /**
      * Component Instances are basically links to other Glyphs, plus some transformations.
-     * This function grabs a clone of the linked-to Glyph, applys the transformations,
+     * This function grabs a clone of the linked-to Glyph, applies the transformations,
      * and returns a Glyph object
      * @param {boolean} dontUseCache - false to force a new transform
      * @returns {Glyph}
@@ -596,37 +596,36 @@ export default class ComponentInstance extends GlyphElement {
      * Make a PostScript path from this shape
      * PostScript paths use relative MoveTo commands, so
      * this shape must know about where the last shape left off
-     * @param {number} lastx - x from previous path
-     * @param {number} lasty - y from previous path
+     * @param {number} lastX - x from previous path
+     * @param {number} lastY - y from previous path
      * @returns {string} - PostScript path data
      */
-    makePostScript(lastx, lasty) {
-        // debug('GENLINKEDPOSTSCRIPT');
+    makePostScript(lastX, lastY) {
         let g = this.getTransformedGlyph();
         let re;
         let part;
         for (let s = 0; s < g.shapes.length; s++) {
-            part = g.shapes[s].makePostScript(lastx, lasty);
-            lastx = part.lastx;
-            lasty = part.lasty;
+            part = g.shapes[s].makePostScript(lastX, lastY);
+            lastX = part.lastX;
+            lastY = part.lastY;
             re += part.re;
         }
         return {
             're': re,
-            'lastx': lastx,
-            'lasty': lasty,
+            'lastX': lastX,
+            'lastY': lastY,
         };
     }
 
     /**
-     * Make an Opentype.js Path
-     * @param {opentype.Path} otpath
-     * @returns {opentype.Path}
+     * Make an OpenType.js Path
+     * @param {OpenType.js.Path} otPath
+     * @returns {OpenType.js.Path}
      */
-    makeOpentypeJsPath(otpath) {
-        otpath = otpath || new opentype.Path();
+    makeOpenTypeJsPath(otPath) {
+        otPath = otPath || new opentype.Path();
         let g = this.getTransformedGlyph();
-        return g.makeOpentypeJsPath(otpath);
+        return g.makeOpenTypeJsPath(otPath);
     }
 
 
@@ -802,7 +801,6 @@ export default class ComponentInstance extends GlyphElement {
      * @returns {boolean}
      */
     isHere(px, py) {
-        // debug('ISCOMPONENTHERE - checking ' + px + ',' + py);
         let g = this.getTransformedGlyph();
         return g ? g.isHere(px, py) : false;
     }
@@ -814,11 +812,11 @@ export default class ComponentInstance extends GlyphElement {
 
     /**
      * Draw this Shape to a canvas
-     * @param {object} lctx - canvas context
+     * @param {object} ctx - canvas context
      * @param {view} view
      * @returns {boolean}
      */
-    drawShape(lctx, view) {
+    drawShape(ctx, view) {
         // debug('\n ComponentInstance.drawShape - START');
         // debug('\t view ' + json(view, true));
         /*
@@ -827,11 +825,11 @@ export default class ComponentInstance extends GlyphElement {
         */
         let g = this.getTransformedGlyph();
         if (!g) return false;
-        let drewshape = false;
+        let drewShape = false;
         let failed = false;
         for (let s = 0; s < g.shapes.length; s++) {
-            drewshape = g.shapes[s].drawShape(lctx, view);
-            failed = failed || !drewshape;
+            drewShape = g.shapes[s].drawShape(ctx, view);
+            failed = failed || !drewShape;
         }
         // debug(' ComponentInstance.drawShape - returning ' + !failed + ' - END\n');
         return !failed;
