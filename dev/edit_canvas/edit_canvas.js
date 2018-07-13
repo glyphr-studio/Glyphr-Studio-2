@@ -1,6 +1,7 @@
 import {isVal, clone} from '../app/functions.js';
+import {getGlyph, getGlyphName} from '../app/globalgetters.js';
 
-export {sx_cx, sy_cy};
+export {sXcX, sYcY};
 export {getView, setView};
 export default redraw;
 
@@ -613,7 +614,7 @@ export default redraw;
             kern *= -1;
             let rightx = selwi.isAutoWide? kern-selwi.getLSB() : kern;
             rightx = v.dx + (rightx * v.dz);
-            let texty = sy_cy(_GP.projectSettings.descent-60);
+            let texty = sYcY(_GP.projectSettings.descent-60);
 
             drawGlyphKernExtra(-kern, rightx, texty, v.dz);
         }
@@ -628,7 +629,7 @@ export default redraw;
             let rightx = selwi.getAdvanceWidth();
             if (selwi.isAutoWide) rightx -= selwi.getLSB();
             rightx = v.dx + (rightx * v.dz);
-            let texty = sy_cy(_GP.projectSettings.descent-60);
+            let texty = sYcY(_GP.projectSettings.descent-60);
 
             drawGlyphKernExtra(kern, rightx, texty, v.dz);
         }
@@ -656,7 +657,7 @@ export default redraw;
             let currx = (char.view.dx*view.dz);
             let rightx = currx + advanceWidth;
             let color = getRGBfromRGBA('rgb(204,81,0)', alpha);
-            let texty = sy_cy(_GP.projectSettings.descent-60);
+            let texty = sYcY(_GP.projectSettings.descent-60);
 
 
             // Draw the glyph name
@@ -834,8 +835,8 @@ export default redraw;
 
         let delta = getGlyphSequenceAdvanceWidth(str);
 
-        // debug(`\t advance width: ${delta} screen pixels: ${sx_cx(delta)}`);
-        // v.dx += sx_cx(delta);
+        // debug(`\t advance width: ${delta} screen pixels: ${sXcX(delta)}`);
+        // v.dx += sXcX(delta);
         let kern = calculateKernOffset(leftchar, rightchar);
         // debug(`\t kern offset ${leftchar} and ${rightchar} is ${kern}`);
 
@@ -1038,29 +1039,29 @@ export default redraw;
 // --------------------------------------------------------------------------
 //    Convert between Saved values and Canvas values
 // --------------------------------------------------------------------------
-    // convert stored x-y coord to canvas x-y
-    function sx_cx(sx) {
-        let v = getView('sx_cx');
+    // convert stored x-y point to canvas x-y
+    function sXcX(sx) {
+        let v = getView('sXcX');
         let canvasx = v.dx;
         canvasx += (sx*v.dz);
         return canvasx || v.dx;
     }
 
-    function sy_cy(sy) {
-        let v = getView('sy_cy');
+    function sYcY(sy) {
+        let v = getView('sYcY');
         let canvasy = v.dy;
         canvasy -= (sy*v.dz);
         return canvasy || v.dy;
     }
 
     // convert canvas x-y inputs to saved shape x-y
-    function cx_sx(cx) {
-        let v = getView('cx_sx');
+    function cXsX(cx) {
+        let v = getView('cXsX');
         return ((cx-v.dx)/(v.dz));
     }
 
-    function cy_sy(cy) {
-        let v = getView('cy_sy');
+    function cYsY(cy) {
+        let v = getView('cYsY');
         return ((v.dy-cy)/(v.dz));
     }
 
@@ -1311,10 +1312,10 @@ export default redraw;
 
         accent = accent || _UI.colors.blue;
         thickness = thickness || 1;
-        let lx = sx_cx(maxes.xMin);
-        let rx = sx_cx(maxes.xMax);
-        let ty = sy_cy(maxes.yMax);
-        let by = sy_cy(maxes.yMin);
+        let lx = sXcX(maxes.xMin);
+        let rx = sXcX(maxes.xMax);
+        let ty = sYcY(maxes.yMax);
+        let by = sYcY(maxes.yMin);
 
         if (thickness > 1) {
             lx -= thickness;
@@ -1389,7 +1390,7 @@ export default redraw;
         let mx = _UI.eventhandlers.mousex;
         let my = _UI.eventhandlers.mousey;
         let ss = _UI.multiSelect.shapes;
-        let angle = calculateAngle({x: cx_sx(mx), y: cy_sy(my)}, center);
+        let angle = calculateAngle({x: cXsX(mx), y: cYsY(my)}, center);
 
         // debug('\t Init angle:\t' + angle);
 
@@ -1406,11 +1407,11 @@ export default redraw;
 
 
         // Convert things to Canvas System
-        rotatehandle.x = sx_cx(rotatehandle.x);
-        rotatehandle.y = sy_cy(rotatehandle.y);
-        center.x = sx_cx(center.x);
-        center.y = sy_cy(center.y);
-        starttopy = sy_cy(starttopy);
+        rotatehandle.x = sXcX(rotatehandle.x);
+        rotatehandle.y = sYcY(rotatehandle.y);
+        center.x = sXcX(center.x);
+        center.y = sYcY(center.y);
+        starttopy = sYcY(starttopy);
         let radius = calculateLength(center, rotatehandle);
 
 
@@ -1551,13 +1552,13 @@ export default redraw;
         thickness = thickness || 1;
 
         // Translation Fidelity - converting passed canvas values to saved value system
-        dimensions.leftx = (sx_cx(maxes.xMin) - hp);
-        dimensions.midx = Math.floor(sx_cx(maxes.xMin)+((sx_cx(maxes.xMax)-sx_cx(maxes.xMin))/2)-hp);
-        dimensions.rightx = (sx_cx(maxes.xMax) - hp);
+        dimensions.leftx = (sXcX(maxes.xMin) - hp);
+        dimensions.midx = Math.floor(sXcX(maxes.xMin)+((sXcX(maxes.xMax)-sXcX(maxes.xMin))/2)-hp);
+        dimensions.rightx = (sXcX(maxes.xMax) - hp);
 
-        dimensions.topy = (sy_cy(maxes.yMax) - hp);
-        dimensions.midy = Math.floor(sy_cy(maxes.yMax)+((sy_cy(maxes.yMin)-sy_cy(maxes.yMax))/2)-hp);
-        dimensions.bottomy = (sy_cy(maxes.yMin) - hp);
+        dimensions.topy = (sYcY(maxes.yMax) - hp);
+        dimensions.midy = Math.floor(sYcY(maxes.yMax)+((sYcY(maxes.yMin)-sYcY(maxes.yMax))/2)-hp);
+        dimensions.bottomy = (sYcY(maxes.yMin) - hp);
 
 
         if (thickness > 1) {

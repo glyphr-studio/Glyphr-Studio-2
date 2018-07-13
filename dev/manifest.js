@@ -12,6 +12,7 @@ let manifest = [
     {
         path: 'glyph_elements',
         files: [
+            'xypoint.js',
             'coord.js',
             'controlpoint.js',
             'pathpoint.js',
@@ -24,6 +25,7 @@ let manifest = [
             'glyph.js',
             'hkern.js',
 
+            'xypoint.test.js',
             'coord.test.js',
             'controlpoint.test.js',
             'pathpoint.test.js',

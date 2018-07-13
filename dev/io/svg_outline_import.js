@@ -128,13 +128,13 @@
                         px = data[co] || 0;
                         py = data[co+1] || 0;
 
-                        tcoord = new Coord({'x': px, 'y': py});
+                        tcoord = new XYPoint(px, py);
                         /*
                          *
                          * REFACTOR
                          *
                          */
-                        pparr.push(new PathPoint({'p': tcoord, 'h1': tcoord, 'h2': tcoord, 'useH1': false, 'useH2': false}));
+                        pparr.push({p: {coord: tcoord}, h1: {coord: tcoord}, h2: {coord: tcoord}, useH1: false, useH2: false});
                     }
 
                     pushShape(new Path({pathPoints: pparr}), 'Polygon');
@@ -456,7 +456,7 @@
         * REFACTOR
         *
         */
-        let lastpoint = patharr[patharr.length-1] || new PathPoint({'p': new Coord({'x': 0, 'y': 0})});
+        let lastpoint = patharr[patharr.length-1] || new PathPoint();
         let prevx, prevy;
 
         // debug('\t previous point: \t'+lastpoint.p.x+','+lastpoint.p.y);
@@ -539,7 +539,7 @@
                 }
 
                 // debug('\t linear end nx ny\t' + nx + ' ' + ny);
-                p = new Coord({'x': nx, 'y': ny});
+                p = new XYPoint(nx, ny);
                 // debug('\t new point ' + p.x + '\t' + p.y);
 
                 lastpoint.h2.use = false;
@@ -548,7 +548,7 @@
                 * REFACTOR
                 *
                 */
-                patharr.push(new PathPoint({'p': p, 'h1': clone(p), 'h2': clone(p), 'type': 'corner', 'useH1': false, 'useH2': true}));
+                patharr.push(new PathPoint({p: clone(p), h1: clone(p), h2: clone(p), type: 'corner', useH1: false, useH2: true}));
                 lastpoint = patharr[patharr.length-1];
             }
 
@@ -562,7 +562,7 @@
             ny = lastpoint.p.y;
 
             if (chunk.data.length % 7 !== 0) {
-                showErrorMessageBox('Arc To path command (A or a) was expecting 7 arguments, was passed ['+chunk.data+']\n<br>Failing "gracefully" by just drawing a line to the last two data points as if they were a coordinate.');
+                showErrorMessageBox('Arc To path command (A or a) was expecting 7 arguments, was passed ['+chunk.data+']\n<br>Failing "gracefully" by just drawing a line to the last two data points as if they were a x/y point.');
                 chunk.data.splice(0, chunk.data.length-2, 0, 0, 0, 0, 0);
             }
 

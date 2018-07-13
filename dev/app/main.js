@@ -13,6 +13,9 @@ window._DEV.colors = colors;
 import * as functions from './functions.js';
 window._DEV.functions = functions;
 
+import * as xypoint from '../glyph_elements/xypoint.js';
+window._DEV.xypoint = xypoint;
+
 import * as coord from '../glyph_elements/coord.js';
 window._DEV.coord = coord;
 

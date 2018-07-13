@@ -273,6 +273,40 @@ function areEqual(obj1, obj2) {
 }
 
 /**
+ * Compare two x/y points within a margin of rounding
+ * @param {object} c1 - Coord or XYPoint, First point to compare
+ * @param {object} c2 - Coord or XYPoint, Second point to compare
+ * @param {number} threshold - how close to compare positions
+ * @returns {boolean}
+ */
+export function pointsAreEqual(c1, c2, threshold = 1) {
+    // debug('\n pointsAreEqual - START');
+    // debug('\t c1 ' + json(c1, true));
+    // debug('\t c2 ' + json(c2, true));
+    // debug('\t threshold ' + threshold);
+
+    if (c1.x === c2.x && c1.y === c2.y) {
+        // debug('\t exact match');
+        return true;
+    }
+
+    let dx = Math.abs(c1.x - c2.x);
+    let dy = Math.abs(c1.y - c2.y);
+
+    // debug('\t dx ' + dx + '\tdy ' + dy);
+
+    if (dx <= threshold && dy <= threshold) {
+        // debug('\t below threshold match');
+        return true;
+    }
+
+    // debug('\t not a match');
+    // debug(' pointsAreEqual - END\n');
+
+    return false;
+}
+
+/**
  * Rounds a number to include a .5 so it draws nicely on canvas
  * true = +0.5, false = -0.5
  * @param {number} num - number to crisp
@@ -450,8 +484,8 @@ function localStorageGet(key) {
 
 /**
  * Calculates the angle of a handle given a point
- * @param {object} handle - x/y coordinate of handle
- * @param {object} point - x/y coordinate of point
+ * @param {XYPoint} handle - x/y point of handle
+ * @param {XYPoint} point - x/y point of point
  * @returns {number}
  */
 function calculateAngle(handle, point = {x: 0, y: 0}) {
@@ -467,8 +501,8 @@ function calculateAngle(handle, point = {x: 0, y: 0}) {
 
 /**
  * Calculates the length of a handle, given a point
- * @param {object} handle - x/y coordinate of handle
- * @param {object} point - x/y coordinate of point
+ * @param {XYPoint} handle - x/y point of handle
+ * @param {XYPoint} point - x/y point of point
  * @returns {number}
  */
 function calculateLength(handle, point) {
@@ -480,28 +514,28 @@ function calculateLength(handle, point) {
 
 /**
  * Rotates a point a certain number of degrees around a given point
- * @param {object} coord - x/y point to rotate
+ * @param {XYPoint} point - x/y point to rotate
  * @param {number} angle - how much to rotate
- * @param {object} about - x/y point of rotation
+ * @param {XYPoint} about - x/y point of rotation
  */
-function rotate(coord, angle, about = {x: 0, y: 0}) {
+function rotate(point, angle, about = {x: 0, y: 0}) {
     // debug('\n rotate - START');
-    // debug('\t coord ' + json(coord, true));
+    // debug('\t point ' + json(point, true));
     // debug('\t Math angle:\t' + angle);
     // debug('\t about ' + json(about, true));
 
-    if (!angle || !coord) return;
+    if (!angle || !point) return;
 
-    coord.x -= about.x;
-    coord.y -= about.y;
+    point.x -= about.x;
+    point.y -= about.y;
 
-    let newx = (coord.x * Math.cos(angle)) - (coord.y * Math.sin(angle));
-    let newy = (coord.x * Math.sin(angle)) + (coord.y * Math.cos(angle));
+    let newx = (point.x * Math.cos(angle)) - (point.y * Math.sin(angle));
+    let newy = (point.x * Math.sin(angle)) + (point.y * Math.cos(angle));
 
-    coord.x = newx + about.x;
-    coord.y = newy + about.y;
+    point.x = newx + about.x;
+    point.y = newy + about.y;
 
-    // debug('\t new coord x/y: ' + coord.x + '/' + coord.y);
+    // debug('\t new point x/y: ' + point.x + '/' + point.y);
     // debug(' rotate - END\n');
 }
 

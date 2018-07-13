@@ -1,15 +1,13 @@
 import GlyphElement from './glyphelement.js';
 import Maxes from './maxes.js';
-import Coord from './coord.js';
 import Segment from './segment.js';
 import PolySegment from './polysegment.js';
 import PathPoint from './pathpoint.js';
-import {clone, round, isVal, hasNonValues, duplicates} from '../app/functions.js';
-import {coordsAreEqual} from './coord.js';
+import {clone, round, isVal, hasNonValues, duplicates, pointsAreEqual} from '../app/functions.js';
 // import {json} from '../app/functions.js';
 import {getOverallMaxes, maxesOverlap} from './maxes.js';
 import {findSegmentIntersections} from './segment.js';
-import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
+import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
 /**
  * Glyph Element > Path
@@ -430,7 +428,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
     /**
      * Rotate this path about a point
      * @param {number} angle - how much to rotate
-     * @param {Coord} about - x/y center of rotation
+     * @param {XYPoint} about - x/y center of rotation
      * @returns {Path} - reference to this path
      */
     rotate(angle, about = this.center) {
@@ -517,14 +515,14 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Looks for a point in the path that matches a given coordinate
-     * @param {Coord} coordinate - Coordinate to test for
+     * Looks for a point in the path that matches a given point
+     * @param {XYPoint} point - Point to test for
      * @param {boolean} wantSecond - return the second result, not the first
      * @returns {PathPoint}
      */
-    containsPoint(coordinate, wantSecond) {
+    containsPoint(point, wantSecond) {
         for (let pp = 0; pp < this.pathPoints.length; pp++) {
-            if (coordsAreEqual(coordinate, this.pathPoints[pp].p, 0.01)) {
+            if (pointsAreEqual(point, this.pathPoints[pp].p, 0.01)) {
                 if (wantSecond) wantSecond = false;
                 else return this.pathPoints[pp];
             }
@@ -565,9 +563,9 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
         let nxppy;
 
         if (snap) {
-            lctx.moveTo(sx_cx(round(this.pathPoints[0].p.x)), sy_cy(round(this.pathPoints[0].p.y)));
+            lctx.moveTo(sXcX(round(this.pathPoints[0].p.x)), sYcY(round(this.pathPoints[0].p.y)));
         } else {
-            lctx.moveTo( sx_cx(this.pathPoints[0].p.x), sy_cy(this.pathPoints[0].p.y));
+            lctx.moveTo( sXcX(this.pathPoints[0].p.x), sYcY(this.pathPoints[0].p.y));
         }
 
         for (let cp = 0; cp < this.pathPoints.length; cp++) {
@@ -583,19 +581,19 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
 
             // this.validate('DRAW PATH');
             if (snap) {
-                pph2x = sx_cx(round(pp.h2.x));
-                pph2y = sy_cy(round(pp.h2.y));
-                nxh1x = sx_cx(round(np.h1.x));
-                nxh1y = sy_cy(round(np.h1.y));
-                nxppx = sx_cx(round(np.p.x));
-                nxppy = sy_cy(round(np.p.y));
+                pph2x = sXcX(round(pp.h2.x));
+                pph2y = sYcY(round(pp.h2.y));
+                nxh1x = sXcX(round(np.h1.x));
+                nxh1y = sYcY(round(np.h1.y));
+                nxppx = sXcX(round(np.p.x));
+                nxppy = sYcY(round(np.p.y));
             } else {
-                pph2x = sx_cx(pp.h2.x);
-                pph2y = sy_cy(pp.h2.y);
-                nxh1x = sx_cx(np.h1.x);
-                nxh1y = sy_cy(np.h1.y);
-                nxppx = sx_cx(np.p.x);
-                nxppy = sy_cy(np.p.y);
+                pph2x = sXcX(pp.h2.x);
+                pph2y = sYcY(pp.h2.y);
+                nxh1x = sXcX(np.h1.x);
+                nxh1y = sYcY(np.h1.y);
+                nxppx = sXcX(np.p.x);
+                nxppy = sYcY(np.p.y);
             }
 
             // debug('\t curve ' + pph2x +' '+ pph2y +' '+ nxh1x +' '+ nxh1y +' '+ nxppx +' '+ nxppy);
@@ -820,7 +818,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
 
     /**
      * Looks through path points to see if there is a control point
-     * at the designated coordinate
+     * at the designated point
      * @param {number} x - x value to check
      * @param {number} y - y value to check
      * @param {number} targetSize - radius around the point to return true
@@ -838,7 +836,7 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Checks to see if the first point in the path is at a coordinate
+     * Checks to see if the first point in the path is at a point
      * @param {number} x - x value to check
      * @param {number} y - y value to check
      * @param {number} targetSize - radius around the point to return true
@@ -1063,12 +1061,12 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Given a target coordinate, find the closes point on this path
-     * @param {Coord} coord - x/y value to target
+     * Given a target point, find the closes point on this path
+     * @param {XYPoint} point - x/y value to target
      * @param {boolean} wantsecond - return the second result
      * @returns {object}
      */
-    getClosestPointOnCurve(coord = new Coord(), wantsecond = false) {
+    getClosestPointOnCurve(point = new XYPoint(), wantsecond = false) {
         let grains = 10000;
         let first = false;
         let second = false;
@@ -1081,10 +1079,10 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
             grains = this.getSegment(pp).quickLength * 100;
 
             for (let t = 0; t < 1; t += (1 / grains)) {
-                check = this.getCoordFromSplit(t, pp);
+                check = this.getXYPointFromSplit(t, pp);
                 d = Math.sqrt(
-                    ((check.x - coord.x) * (check.x - coord.x)) +
-                    ((check.y - coord.y) * (check.y - coord.y))
+                    ((check.x - point.x) * (check.x - point.x)) +
+                    ((check.y - point.y) * (check.y - point.y))
                 );
 
                 if (d < mindistance) {
@@ -1108,12 +1106,12 @@ import {sx_cx, sy_cy, getView, setView} from '../edit_canvas/edit_canvas.js';
      * Get an X/Y value from a curve split
      * @param {number} t - decimal from 0 to 1 how far along the curve to split
      * @param {number} pointnum - after which point to split
-     * @returns {Coord}
+     * @returns {XYPoint}
      */
-    getCoordFromSplit(t, pointnum = 0) {
+    getXYPointFromSplit(t, pointnum = 0) {
         if (this.pathPoints.length > 1) {
             let seg = this.getSegment(pointnum);
-            return seg.getCoordFromSplit(t);
+            return seg.getXYPointFromSplit(t);
         } else {
             return this.pathPoints[0].p;
         }
@@ -1345,7 +1343,7 @@ export function findPathPointBoundaryIntersections(p1, p2) {
             tpp = chk.pathPoints[pp];
             if ( (tpp.p.x === m.xMin) || (tpp.p.x === m.xMax) ||
                 (tpp.p.y === m.yMin) || (tpp.p.y === m.yMax) ) {
-                // if (against.isHere(sx_cx(tpp.p.x), sy_cy(tpp.p.y))) {
+                // if (against.isHere(sXcX(tpp.p.x), sYcY(tpp.p.y))) {
                 if (against.isHere(tpp.p.x, tpp.p.y)) {
                     re.push(''+tpp.p.x+'/'+tpp.p.y);
                 }
@@ -1365,7 +1363,7 @@ export function findPathPointBoundaryIntersections(p1, p2) {
  * Finds x/y overlaps between any points given two paths
  * @param {Path} p1 - first path
  * @param {Path} p2 - second path
- * @returns {array} - collection of strings representing coordinates
+ * @returns {array} - collection of IX strings, representing xy points
  */
 export function findPathPointIntersections(p1, p2) {
     // debug('\n findPathPointIntersections - START');
@@ -1377,7 +1375,7 @@ export function findPathPointIntersections(p1, p2) {
 
     for (let pp1=0; pp1<p1.pathPoints.length; pp1++) {
         for (let pp2=0; pp2<p2.pathPoints.length; pp2++) {
-            if (coordsAreEqual(p1.pathPoints[pp1].p, p2.pathPoints[pp2].p, 0.01)) {
+            if (pointsAreEqual(p1.pathPoints[pp1].p, p2.pathPoints[pp2].p, 0.01)) {
                 ix = ''+p1.pathPoints[pp1].p.x+'/'+p1.pathPoints[pp1].p.y;
                 // debug(`\t found ${ix}`);
 

@@ -1,6 +1,5 @@
 import GlyphElement from './glyphelement.js';
 import ControlPoint from './controlpoint.js';
-import {coordsAreEqual} from './coord.js';
 import {round, rotate} from '../app/functions.js';
 
 export {makePathPointFromSegments};
@@ -157,8 +156,8 @@ export default class PathPoint extends GlyphElement {
      * @param {ControlPoint} newh1
      */
     set h1(newh1 = {}) {
-        if (!newh1.point) {
-            newh1.point = {x: this.p.x-100, y: this.p.y};
+        if (!newh1.coord) {
+            newh1.coord = {x: this.p.x-100, y: this.p.y};
             newh1.use = false;
         }
         this._h1 = new ControlPoint(newh1);
@@ -171,8 +170,8 @@ export default class PathPoint extends GlyphElement {
      * @param {ControlPoint} newh2
      */
     set h2(newh2 = {}) {
-        if (!newh2.point) {
-            newh2.point = {x: this.p.x+100, y: this.p.y};
+        if (!newh2.coord) {
+            newh2.coord = {x: this.p.x+100, y: this.p.y};
             newh2.use = false;
         }
         this._h2 = new ControlPoint(newh2);
@@ -211,29 +210,35 @@ export default class PathPoint extends GlyphElement {
         switch (controlPoint) {
             case 'p':
                 // Should this honor xLock / yLock?
-                this.p.point._x += dx;
-                this.p.point._y += dy;
-                this.h1.point._x += dx;
-                this.h1.point._y += dy;
-                this.h2.point._x += dx;
-                this.h2.point._y += dy;
+                this.p.coord._x += dx;
+                this.p.coord._y += dy;
+                this.p.coord.changed();
+
+                this.h1.coord._x += dx;
+                this.h1.coord._y += dy;
+                this.h1.coord.changed();
+
+                this.h2.coord._x += dx;
+                this.h2.coord._y += dy;
+                this.h2.coord.changed();
             break;
 
             case 'h1':
                 // Should this honor xLock / yLock?
-                this.h1.point._x += dx;
-                this.h1.point._y += dy;
+                this.h1.coord._x += dx;
+                this.h1.coord._y += dy;
                 if (this.type === 'symmetric') this.makeSymmetric('h1');
                 else if (this.type === 'flat') this.makeFlat('h1');
-
+                this.h1.coord.changed();
             break;
 
             case 'h2':
                 // Should this honor xLock / yLock?
-                this.h2.point._x += dx;
-                this.h2.point._y += dy;
+                this.h2.coord._x += dx;
+                this.h2.coord._y += dy;
                 if (this.type === 'symmetric') this.makeSymmetric('h2');
                 else if (this.type === 'flat') this.makeFlat('h2');
+                this.h2.coord.changed();
             break;
         }
 
@@ -438,7 +443,7 @@ export default class PathPoint extends GlyphElement {
     }
 
     /**
-     * Makes handles pointed at a specific coordinate
+     * Makes handles pointed at a specific point
      * @param {number} px - X value to point at
      * @param {number} py - Y value to point at
      * @param {number} length - Length the handle should end up
@@ -476,7 +481,7 @@ export default class PathPoint extends GlyphElement {
     /**
      * Rotate Point and Handles around a center of rotation
      * @param {number} angle - How far to rotate
-     * @param {object} about - x/y coordinate center of rotation
+     * @param {XYPoint} about - x/y point center of rotation
      * @returns {PathPoint}
      */
     rotate(angle, about) {
@@ -543,11 +548,11 @@ export default class PathPoint extends GlyphElement {
         _UI.glyphEditCTX.strokeStyle = accent.l65;
         _UI.glyphEditCTX.font = '10px Consolas';
 
-        _UI.glyphEditCTX.fillRect((sx_cx(this.p.x)-hp), (sy_cy(this.p.y)-hp), ps, ps);
-        _UI.glyphEditCTX.strokeRect((sx_cx(this.p.x)-hp), (sy_cy(this.p.y)-hp), ps, ps);
+        _UI.glyphEditCTX.fillRect((sXcX(this.p.x)-hp), (sYcY(this.p.y)-hp), ps, ps);
+        _UI.glyphEditCTX.strokeRect((sXcX(this.p.x)-hp), (sYcY(this.p.y)-hp), ps, ps);
 
         _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.fillText(this.pointNumber, sx_cx(this.p.x + 12), sy_cy(this.p.y));
+        _UI.glyphEditCTX.fillText(this.pointNumber, sXcX(this.p.x + 12), sYcY(this.p.y));
         // debug(' PathPoint.drawPoint - END\n');
     }
 
@@ -597,21 +602,21 @@ export default class PathPoint extends GlyphElement {
         // debug('DRAWPOINT arrow = ' + JSON.stringify(arrow) + '  - rotatedarrow = ' + JSON.stringify(rotatedarrow));
 
         _UI.glyphEditCTX.beginPath();
-        _UI.glyphEditCTX.moveTo((rotatedarrow[0][0] + sx_cx(this.p.x)), (rotatedarrow[0][1] + sy_cy(this.p.y)));
+        _UI.glyphEditCTX.moveTo((rotatedarrow[0][0] + sXcX(this.p.x)), (rotatedarrow[0][1] + sYcY(this.p.y)));
 
         for (let p in rotatedarrow) {
             if (p > 0) {
-                _UI.glyphEditCTX.lineTo((rotatedarrow[p][0] + sx_cx(this.p.x)), (rotatedarrow[p][1] + sy_cy(this.p.y)));
+                _UI.glyphEditCTX.lineTo((rotatedarrow[p][0] + sXcX(this.p.x)), (rotatedarrow[p][1] + sYcY(this.p.y)));
             }
         }
 
-        _UI.glyphEditCTX.lineTo((rotatedarrow[0][0] + sx_cx(this.p.x)), (rotatedarrow[0][1] + sy_cy(this.p.y)));
+        _UI.glyphEditCTX.lineTo((rotatedarrow[0][0] + sXcX(this.p.x)), (rotatedarrow[0][1] + sYcY(this.p.y)));
         _UI.glyphEditCTX.fill();
         _UI.glyphEditCTX.stroke();
 
         // Exact Middle Point
         _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.fillRect(makeCrisp(sx_cx(this.p.x)), makeCrisp(sy_cy(this.p.y)), 1, 1);
+        _UI.glyphEditCTX.fillRect(makeCrisp(sXcX(this.p.x)), makeCrisp(sYcY(this.p.y)), 1, 1);
     }
 
     /**
@@ -632,30 +637,30 @@ export default class PathPoint extends GlyphElement {
 
         if (drawH1 && this.h1.use) {
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sx_cx(this.h1.x), sy_cy(this.h1.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.arc(sXcX(this.h1.x), sYcY(this.h1.y), hp, 0, Math.PI*2, true);
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.fill();
 
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
-            _UI.glyphEditCTX.lineTo(sx_cx(this.h1.x), sy_cy(this.h1.y));
+            _UI.glyphEditCTX.moveTo(sXcX(this.p.x), sYcY(this.p.y));
+            _UI.glyphEditCTX.lineTo(sXcX(this.h1.x), sYcY(this.h1.y));
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.stroke();
-            _UI.glyphEditCTX.fillText('1', sx_cx(this.h1.x + 12), sy_cy(this.h1.y));
+            _UI.glyphEditCTX.fillText('1', sXcX(this.h1.x + 12), sYcY(this.h1.y));
         }
 
         if (drawH2 && this.h2.use) {
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sx_cx(this.h2.x), sy_cy(this.h2.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.arc(sXcX(this.h2.x), sYcY(this.h2.y), hp, 0, Math.PI*2, true);
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.fill();
 
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
-            _UI.glyphEditCTX.lineTo(sx_cx(this.h2.x), sy_cy(this.h2.y));
+            _UI.glyphEditCTX.moveTo(sXcX(this.p.x), sYcY(this.p.y));
+            _UI.glyphEditCTX.lineTo(sXcX(this.h2.x), sYcY(this.h2.y));
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.stroke();
-            _UI.glyphEditCTX.fillText('2', sx_cx(this.h2.x + 12), sy_cy(this.h2.y));
+            _UI.glyphEditCTX.fillText('2', sXcX(this.h2.x + 12), sYcY(this.h2.y));
         }
     }
 
@@ -672,20 +677,20 @@ export default class PathPoint extends GlyphElement {
 
         if (this.q) {
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sx_cx(this.q.x), sy_cy(this.q.y), hp, 0, Math.PI*2, true);
+            _UI.glyphEditCTX.arc(sXcX(this.q.x), sYcY(this.q.y), hp, 0, Math.PI*2, true);
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.fill();
 
             _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sx_cx(this.p.x), sy_cy(this.p.y));
-            _UI.glyphEditCTX.lineTo(sx_cx(this.q.x), sy_cy(this.q.y));
+            _UI.glyphEditCTX.moveTo(sXcX(this.p.x), sYcY(this.p.y));
+            _UI.glyphEditCTX.lineTo(sXcX(this.q.x), sYcY(this.q.y));
             _UI.glyphEditCTX.closePath();
             _UI.glyphEditCTX.stroke();
 
             if (prevP) {
                 _UI.glyphEditCTX.beginPath();
-                _UI.glyphEditCTX.moveTo(sx_cx(prevP.x), sy_cy(prevP.y));
-                _UI.glyphEditCTX.lineTo(sx_cx(this.q.x), sy_cy(this.q.y));
+                _UI.glyphEditCTX.moveTo(sXcX(prevP.x), sYcY(prevP.y));
+                _UI.glyphEditCTX.lineTo(sXcX(this.q.x), sYcY(this.q.y));
                 _UI.glyphEditCTX.closePath();
                 _UI.glyphEditCTX.stroke();
             }
@@ -928,30 +933,4 @@ export default class PathPoint extends GlyphElement {
 
         redraw({calledBy: 'pointDetails'});
     }
-}
-
-
-// --------------------------------------------------------------
-// Helpers
-// --------------------------------------------------------------
-
-/**
- * Creates a single Point from two segments
- * @param {Segment} seg1 - First segment
- * @param {Segment} seg2 - Second segment
- * @returns {PathPoint}
- */
-function makePathPointFromSegments(seg1, seg2) {
-    let newpp = new PathPoint({
-        h1: {point: {x: seg1.p3x, y: seg1.p3y}},
-        p: {point: {x: seg2.p1x, y: seg2.p1y}},
-        h2: {point: {x: seg2.p2x, y: seg2.p2y}},
-    });
-
-    if (seg1.line || coordsAreEqual(newpp.h1, newpp.p)) newpp.h1.use = false;
-    if (seg2.line || coordsAreEqual(newpp.h2, newpp.p)) newpp.h2.use = false;
-
-    // newpp.resolvePointType();
-
-    return newpp;
 }

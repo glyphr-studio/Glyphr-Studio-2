@@ -3,7 +3,8 @@ import {numSan, isVal} from '../app/functions.js';
 
 /**
  * Glyph Element > Coordinate
- * A single x/y coordinate
+ * A single x/y coordinate with fancy GlyphElement stuff, used as a child of ControlPoint
+ * For simple x/y object, use XYPoint
  */
 export default class Coord extends GlyphElement {
     /**
@@ -108,43 +109,4 @@ export default class Coord extends GlyphElement {
         if (isNaN(position)) this._y = 0;
         else this._y = position;
     }
-}
-
-
-// --------------------------------------------------------------
-// Helpers
-// --------------------------------------------------------------
-
-/**
- * Compare two coordinates within a margin of rounding
- * @param {Coord} c1 - First coordinate to compare
- * @param {Coord} c2 - Second coordinate to compare
- * @param {number} threshold - how close to compare positions
- * @returns {boolean}
- */
-export function coordsAreEqual(c1, c2, threshold = 1) {
-    // debug('\n coordsAreEqual - START');
-    // debug('\t c1 ' + json(c1, true));
-    // debug('\t c2 ' + json(c2, true));
-    // debug('\t threshold ' + threshold);
-
-    if (c1.x === c2.x && c1.y === c2.y) {
-        // debug('\t exact match');
-        return true;
-    }
-
-    let dx = Math.abs(c1.x - c2.x);
-    let dy = Math.abs(c1.y - c2.y);
-
-    // debug('\t dx ' + dx + '\tdy ' + dy);
-
-    if (dx <= threshold && dy <= threshold) {
-        // debug('\t below threshold match');
-        return true;
-    }
-
-    // debug('\t not a match');
-    // debug(' coordsAreEqual - END\n');
-
-    return false;
 }

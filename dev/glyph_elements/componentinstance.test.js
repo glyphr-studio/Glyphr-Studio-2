@@ -10,7 +10,7 @@ function sampleComponentInstance() {
 
 _TEST.testList.push(
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set link',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -19,7 +19,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set name',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -28,7 +28,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set translateX',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -37,7 +37,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set translateY',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -46,7 +46,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set scaleW',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -55,7 +55,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set scaleH',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -64,7 +64,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set isFlippedNS',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -73,7 +73,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set isFlippedEW',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -83,7 +83,7 @@ _TEST.testList.push(
     },
 
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set reverseWinding',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -92,7 +92,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set rotation',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -101,7 +101,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set rotateFirst',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -110,7 +110,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set xLock',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -119,7 +119,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set yLock',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -128,7 +128,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set wLock',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -137,7 +137,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set hLock',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -146,7 +146,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set ratioLock',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -155,7 +155,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set visible',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -165,7 +165,7 @@ _TEST.testList.push(
     }
     /*
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set x',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -174,7 +174,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set y',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -183,7 +183,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set width',
         assertion: function() {
             let ci = sampleComponentInstance();
@@ -192,7 +192,7 @@ _TEST.testList.push(
         },
     },
     {
-        category: 'Component Instance',
+        category: 'ComponentInstance',
         name: 'get/set height',
         assertion: function() {
             let ci = sampleComponentInstance();

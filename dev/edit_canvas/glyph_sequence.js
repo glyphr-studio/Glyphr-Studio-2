@@ -1,4 +1,5 @@
 
+import {getGlyph} from '../app/globalgetters.js';
 /**
     Framework > Glyph Sequence
     Drawing multiple lines of text.

@@ -1,6 +1,6 @@
 import Segment, {segmentsAreEqual, findSegmentIntersections,
     findOverlappingLineSegmentIntersections, findCrossingLineSegmentIntersections,
-    findEndPointSegmentIntersections, ixToCoord, coordToIx, pointsAreCollinear} from './segment.js';
+    findEndPointSegmentIntersections} from './polysegment.js';
 import {round} from '../app/functions.js';
 
 // basically an upper-left quadrant quarter circle
@@ -62,16 +62,16 @@ _TEST.testList.push(
     },
     {
         category: 'Segment',
-        name: 'getCoordFromSplit',
+        name: 'getXYPointFromSplit',
         assertion: function() {
-            return _TEST.is(sampleSegment().getCoordFromSplit().y).equalTo(187.5);
+            return _TEST.is(sampleSegment().getXYPointFromSplit().y).equalTo(187.5);
         },
     },
     {
         category: 'Segment',
-        name: 'getSplitFromCoord',
+        name: 'getSplitFromXYPoint',
         assertion: function() {
-            return _TEST.is(round(sampleSegment().getSplitFromCoord({x: 112, y: 187}).split, 2)).equalTo(0.5);
+            return _TEST.is(round(sampleSegment().getSplitFromXYPoint({x: 112, y: 187}).split, 2)).equalTo(0.5);
         },
     },
     {
@@ -135,9 +135,9 @@ _TEST.testList.push(
     },
     {
         category: 'Segment',
-        name: 'getCoord',
+        name: 'getXYPoint',
         assertion: function() {
-            return _TEST.is(sampleSegment().getCoord(4).x).equalTo(300);
+            return _TEST.is(sampleSegment().getXYPoint(4).x).equalTo(300);
         },
     },
     {
@@ -250,31 +250,6 @@ _TEST.testList.push(
             let seg1 = sampleSegment();
             let seg2 = new Segment({p1x: 300, p1y: 300});
             return _TEST.is(findEndPointSegmentIntersections(seg1, seg2)[0]).equalTo('300/300');
-        },
-    },
-    {
-        category: 'Segment',
-        name: 'ixToCoord',
-        assertion: function() {
-            return _TEST.is(ixToCoord('123/456').y).equalTo(456);
-        },
-    },
-    {
-        category: 'Segment',
-        name: 'coordToIx',
-        assertion: function() {
-            return _TEST.is(coordToIx({x: 123, y: 456})).equalTo('123/456');
-        },
-    },
-    {
-        category: 'Segment',
-        name: 'pointsAreCollinear',
-        assertion: function() {
-            return _TEST.expression(pointsAreCollinear(
-                {x: 100, y: 100},
-                {x: 200, y: 200},
-                {x: 300, y: 300}
-            ));
         },
     }
 );

@@ -251,7 +251,8 @@
                 ts.name = newname + newsuffix;
 
                 if (ts.objType === 'ComponentInstance') {
-                    addToUsedIn(ts.link, _UI.selectedGlyph);
+                    getGlyph(ts.link).addToUsedIn(getSelectedWorkItemID);
+                    // _UI.selectedGlyph.addToUsedIn(ts.link);
                     // debug("PASTESHAPE - pasted a component, added " + _UI.selectedGlyph + " to usedIn array.");
                 }
 

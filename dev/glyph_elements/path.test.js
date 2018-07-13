@@ -339,9 +339,9 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
-        name: 'getCoordFromSplit',
+        name: 'getXYPointFromSplit',
         assertion: function() {
-            return _TEST.is(samplePath().getCoordFromSplit().x).equalTo(437.879040080653);
+            return _TEST.is(samplePath().getXYPointFromSplit().x).equalTo(437.879040080653);
         },
     },
     {

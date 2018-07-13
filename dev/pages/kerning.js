@@ -1,4 +1,5 @@
 
+import {getGlyph} from '../app/globalgetters.js';
 /**
     Page > Kerning
     HTML and associated functions for this page.
@@ -52,7 +53,7 @@
             // debug('\t Kern Pair ' + selkern.leftgroup[0] + ' | ' + selkern.rightgroup[0]);
 
             // drawGlyphKernExtra(kern, rightx, texty, scale)
-            drawGlyphKernExtra(selkern.value, v.dx, sy_cy(_GP.projectSettings.descent-60), v.dz);
+            drawGlyphKernExtra(selkern.value, v.dx, sYcY(_GP.projectSettings.descent-60), v.dz);
 
             // DRAW ALL RIGHT HAND GROUP
             let ra = Math.max(0.25, (1 / selkern.rightgroup.length));

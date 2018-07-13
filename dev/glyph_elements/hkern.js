@@ -1,6 +1,5 @@
 import GlyphElement from './glyphelement.js';
 import {hexToChars} from '../app/unicode.js';
-export {getSelectedKern, getSelectedKernID};
 
 
 /**
@@ -80,27 +79,4 @@ export default class HKern extends GlyphElement {
     set value(val) {
         this._value = parseInt(val) || 0;
     }
-}
-
-
-// --------------------------------------------------------------
-// Helpers
-// --------------------------------------------------------------
-
-/**
- * Get the selected kern object
- * @returns {HKern}
- */
-function getSelectedKern() {
-    let re = _GP.kerning[_UI.selectedKern];
-    return re || _GP.kerning[getFirstID(_GP.kerning)] || false;
-}
-
-/**
- * Get the selected kern ID
- * @returns {string}
- */
-function getSelectedKernID() {
-    _UI.selectedKern = _UI.selectedKern || getFirstID(_GP.kerning);
-    return _UI.selectedKern;
 }

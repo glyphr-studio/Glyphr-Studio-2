@@ -1,13 +1,6 @@
 import GlyphElement from './glyphelement.js';
 import Maxes from './maxes.js';
-import Coord from './coord.js';
-import {coordsAreEqual} from './coord.js';
-import {maxesOverlap} from './maxes.js';
-import {clone, numSan, duplicates, isVal, round} from '../app/functions.js';
-
-export {segmentsAreEqual, findSegmentIntersections,
-    findOverlappingLineSegmentIntersections, findCrossingLineSegmentIntersections,
-    findEndPointSegmentIntersections, ixToCoord, coordToIx, pointsAreCollinear};
+import {clone, numSan, isVal, round, pointsAreEqual} from '../app/functions.js';
 
 /**
  * Glyph Element > Segment
@@ -187,14 +180,14 @@ export default class Segment extends GlyphElement {
         ctx.strokeStyle = getRGBfromRGBA((color || _UI.colors.green.l65), 0.9);
         dx = dx || 0;
         dy = dy || 0;
-        let p1x = sx_cx(this.p1x + dx);
-        let p1y = sy_cy(this.p1y + dy);
-        let p2x = sx_cx(this.p2x + dx);
-        let p2y = sy_cy(this.p2y + dy);
-        let p3x = sx_cx(this.p3x + dx);
-        let p3y = sy_cy(this.p3y + dy);
-        let p4x = sx_cx(this.p4x + dx);
-        let p4y = sy_cy(this.p4y + dy);
+        let p1x = sXcX(this.p1x + dx);
+        let p1y = sYcY(this.p1y + dy);
+        let p2x = sXcX(this.p2x + dx);
+        let p2y = sYcY(this.p2y + dy);
+        let p3x = sXcX(this.p3x + dx);
+        let p3y = sYcY(this.p3y + dy);
+        let p4x = sXcX(this.p4x + dx);
+        let p4y = sYcY(this.p4y + dy);
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(p1x, p1y);
@@ -213,14 +206,14 @@ export default class Segment extends GlyphElement {
 
         let ctx = _UI.glyphEditCTX;
         txt = isVal(txt) ? txt : '•';
-        let p1x = sx_cx(this.p1x);
-        let p1y = sy_cy(this.p1y);
-        let p2x = sx_cx(this.p2x);
-        let p2y = sy_cy(this.p2y);
-        let p3x = sx_cx(this.p3x);
-        let p3y = sy_cy(this.p3y);
-        let p4x = sx_cx(this.p4x);
-        let p4y = sy_cy(this.p4y);
+        let p1x = sXcX(this.p1x);
+        let p1y = sYcY(this.p1y);
+        let p2x = sXcX(this.p2x);
+        let p2y = sYcY(this.p2y);
+        let p3x = sXcX(this.p3x);
+        let p3y = sYcY(this.p3y);
+        let p4x = sXcX(this.p4x);
+        let p4y = sYcY(this.p4y);
         color = getRGBfromRGBA((color || _UI.colors.green.l65), 0.4);
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
@@ -233,7 +226,7 @@ export default class Segment extends GlyphElement {
         ctx.strokeRect(p2x, p2y, 5, 5);
         ctx.strokeRect(p3x, p3y, 5, 5);
         ctx.fillRect(p4x, p4y, 5, 5);
-        // else draw_CircleHandle({'x':sx_cx(this.p4x), 'y':sy_cy(this.p4y)});
+        // else draw_CircleHandle({'x':sXcX(this.p4x), 'y':sYcY(this.p4y)});
     }
 
 
@@ -257,7 +250,7 @@ export default class Segment extends GlyphElement {
 
     /**
      * Splits a segment at a specific x/y position
-     * @param {object} co - x/y coordinate where to split
+     * @param {XYPoint} co - x/y point where to split
      * @returns {array} - Array with two segments resulting from the split
      */
     splitAtCoord(co) {
@@ -309,7 +302,7 @@ export default class Segment extends GlyphElement {
             ];
         } else if (this.pointIsWithinMaxes(co)) {
             let threshold = 0.1;
-            let sp = this.getSplitFromCoord(co, threshold);
+            let sp = this.getSplitFromXYPoint(co, threshold);
             // debug('\t distance is ' + sp.distance);
             if (sp && sp.distance < threshold) {
                 // debug('\t splitting at ' + sp.split);
@@ -417,12 +410,12 @@ export default class Segment extends GlyphElement {
 
     /**
      * Given an x/y point, find the equivalent split distance t
-     * @param {Coord} coord - place to look
+     * @param {XYPoint} point - place to look
      * @param {number} threshold - how close to look
      * @returns {object} - collection of results
      */
-    getSplitFromCoord(coord, threshold = 1) {
-        // debug(`\n getSplitFromCoord - START`);
+    getSplitFromXYPoint(point, threshold = 1) {
+        // debug(`\n getSplitFromXYPoint - START`);
 
         let grains = this.quickLength * 1000;
         let mindistance = 999999999;
@@ -431,10 +424,10 @@ export default class Segment extends GlyphElement {
         let d;
 
         for (let t = 0; t < 1; t += (1 / grains)) {
-            check = this.getCoordFromSplit(t);
+            check = this.getXYPointFromSplit(t);
             // debug(`\t checking x:${check.x}\ty:${check.y}\tt${t}`);
 
-            d = Math.sqrt(((check.x - coord.x) * (check.x - coord.x)) + ((check.y - coord.y) * (check.y - coord.y)));
+            d = Math.sqrt(((check.x - point.x) * (check.x - point.x)) + ((check.y - point.y) * (check.y - point.y)));
 
             if (d < mindistance) {
                 mindistance = d;
@@ -447,7 +440,7 @@ export default class Segment extends GlyphElement {
                 if (threshold && re.distance < threshold) return re;
             }
         }
-        // debug(` getSplitFromCoord - END\n\n`);
+        // debug(` getSplitFromXYPoint - END\n\n`);
         return re;
     }
 
@@ -477,9 +470,9 @@ export default class Segment extends GlyphElement {
     /**
      * Given a percent distance, return a x/y value
      * @param {number} t - between 0 and 1
-     * @returns {Coord}
+     * @returns {XYPoint}
      */
-    getCoordFromSplit(t = 0.5) {
+    getXYPointFromSplit(t = 0.5) {
         let rs = (1 - t);
         // Do some math
         let x12 = (this.p1x * rs) + (this.p2x * t);
@@ -494,7 +487,7 @@ export default class Segment extends GlyphElement {
         let y234 = (y23 * rs) + (y34 * t);
         let x1234 = (x123 * rs) + (x234 * t);
         let y1234 = (y123 * rs) + (y234 * t);
-        return new Coord({'x': x1234, 'y': y1234});
+        return new XYPoint({'x': x1234, 'y': y1234});
     }
 
     /**
@@ -515,19 +508,19 @@ export default class Segment extends GlyphElement {
     }
 
     /**
-     * Given a control point number, return a Coord
+     * Given a control point number, return a xy point
      * 1 - first 'PathPoint'
      * 2 - first 'Handle'
      * 3 - second 'Handle'
      * 4 - second 'PathPoint'
      * @param {number} pt - Which point to return
-     * @returns {Coord}
+     * @returns {XYPoint}
      */
-    getCoord(pt) {
-        if (pt === 1) return new Coord({x: this.p1x, y: this.p1y});
-        else if (pt === 2) return new Coord({x: this.p2x, y: this.p2y});
-        else if (pt === 3) return new Coord({x: this.p3x, y: this.p3y});
-        else if (pt === 4) return new Coord({x: this.p4x, y: this.p4y});
+    getXYPoint(pt) {
+        if (pt === 1) return new XYPoint({x: this.p1x, y: this.p1y});
+        else if (pt === 2) return new XYPoint({x: this.p2x, y: this.p2y});
+        else if (pt === 3) return new XYPoint({x: this.p3x, y: this.p3y});
+        else if (pt === 4) return new XYPoint({x: this.p4x, y: this.p4y});
     }
 
 
@@ -691,8 +684,8 @@ export default class Segment extends GlyphElement {
             return false;
         }
 
-        let c1 = largeSegment.containsPointOnLine(this.getCoord(1));
-        let c4 = largeSegment.containsPointOnLine(this.getCoord(4));
+        let c1 = largeSegment.containsPointOnLine(this.getXYPoint(1));
+        let c4 = largeSegment.containsPointOnLine(this.getXYPoint(4));
 
         // debug(`\t this.p1 / p4 is on largeSegment: ${c1} / ${c4}`);
 
@@ -702,7 +695,7 @@ export default class Segment extends GlyphElement {
 
     /**
      * Checks to see if an x/y value is one of the points of this Segment
-     * @param {Coord} pt - point to check
+     * @param {XYPoint} pt - point to check
      * @param {number} threshold - how close to check
      * @returns {boolean} - kind of
      */
@@ -714,26 +707,26 @@ export default class Segment extends GlyphElement {
 
     /**
      * Checks to see if an x/y value is the start of this Segment
-     * @param {Coord} pt - point to check
+     * @param {XYPoint} pt - point to check
      * @param {number} threshold - how close to check
      * @returns {boolean}
      */
     containsStartPoint(pt, threshold = 1) {
-        return coordsAreEqual(this.getCoord(1), pt, threshold);
+        return pointsAreEqual(this.getXYPoint(1), pt, threshold);
     }
     /**
      * Checks to see if an x/y value is the end of this Segment
-     * @param {Coord} pt - point to check
+     * @param {XYPoint} pt - point to check
      * @param {number} threshold - how close to check
      * @returns {boolean}
      */
     containsEndPoint(pt, threshold = 1) {
-        return coordsAreEqual(this.getCoord(4), pt, threshold);
+        return pointsAreEqual(this.getXYPoint(4), pt, threshold);
     }
 
     /**
      * Checks to see if an x/y value is anywhere on this Segment
-     * @param {Coord} pt - point to check
+     * @param {XYPoint} pt - point to check
      * @param {number} threshold - how close to check
      * @returns {boolean}
      */
@@ -743,7 +736,7 @@ export default class Segment extends GlyphElement {
         if (this.lineType) return this.containsPointOnLine(pt);
 
         threshold = isVal(threshold) ? threshold : 0.1;
-        let t = this.getSplitFromCoord(pt, threshold);
+        let t = this.getSplitFromXYPoint(pt, threshold);
 
         if (t && t.distance < threshold) return true;
         else return false;
@@ -751,7 +744,7 @@ export default class Segment extends GlyphElement {
 
     /**
      * Checks to see if an x/y value is on this Line Segment
-     * @param {Coord} pt - point to check
+     * @param {XYPoint} pt - point to check
      * @returns {boolean}
      */
     containsPointOnLine(pt) {
@@ -779,7 +772,7 @@ export default class Segment extends GlyphElement {
 
         if (within(this.p1x, pt.x, this.p4x) &&
             within(this.p1y, pt.y, this.p4y) &&
-            pointsAreCollinear(this.getCoord(1), this.getCoord(4), pt)) {
+            pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), pt)) {
             // debug('\t returning true');
             return true;
         }
@@ -795,10 +788,10 @@ export default class Segment extends GlyphElement {
      * @returns {boolean}
      */
     preceeds(s2, threshold = 1) {
-        let s1c4 = this.getCoord(4);
-        let s2c1 = s2.getCoord(1);
+        let s1c4 = this.getXYPoint(4);
+        let s2c1 = s2.getXYPoint(1);
 
-        return coordsAreEqual(s1c4, s2c1, threshold);
+        return pointsAreEqual(s1c4, s2c1, threshold);
     }
 
     /**
@@ -822,8 +815,8 @@ export default class Segment extends GlyphElement {
             round(this.p1y, precision) === round(this.p4y, precision));
         if (rey) type = 'horizontal';
 
-        let red = (pointsAreCollinear(this.getCoord(1), this.getCoord(4), this.getCoord(2)) &&
-            pointsAreCollinear(this.getCoord(1), this.getCoord(4), this.getCoord(3)));
+        let red = (pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), this.getXYPoint(2)) &&
+            pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), this.getXYPoint(3)));
         if (red) type = 'diagonal';
 
         this._lineType = type;
@@ -862,297 +855,22 @@ export default class Segment extends GlyphElement {
  * @param {number} p2y
  * @returns {number}
  */
-function getLineLength(p1x, p1y, p2x, p2y) {
+export function getLineLength(p1x, p1y, p2x, p2y) {
     let a = Math.abs(p1x - p2x);
     let b = Math.abs(p1y - p2y);
     let c = Math.sqrt((a * a) + (b * b));
     return c;
 }
 
-// --------------------------------------------------------------
-//    Curve Intersections
-// --------------------------------------------------------------
-
-/**
- * Find all places where two segments cross eachother
- * This is a recursive algorithm
- * @param {Segment} s1 - first segment
- * @param {Segment} s2 - second segment
- * @param {number} depth - How deep this recursive call has gone
- * @returns {array} - collection of overlap points in ix format like ['x/y', 'x/y', 'x/y']
- */
-function findSegmentIntersections(s1, s2, depth) {
-    // debug('\n findSegmentIntersections - START');
-    depth = depth || 0;
-    // debug('\t depth ' + depth);
-
-
-    // if(depth > 15) {
-        // debug('\t fINDsEGMENTiNTERSECTIONS debug early return');
-    //  return [];
-    // }
-    // s1.drawSegmentOutline();
-    // s2.drawSegmentOutline();
-
-
-    // Check for overlapping / coincident segments
-    if (depth === 0) {
-        let co = findOverlappingLineSegmentIntersections(s1, s2);
-        if (co.length) {
-            // debug('\t found overlapping line ' + co[0]);
-                return co;
-        }
-    }
-
-    // If both segments are lines, check for intersection
-    if (depth === 0) {
-        let cr = findCrossingLineSegmentIntersections(s1, s2);
-        if (cr.length) {
-            // debug('\t found cross line ' + cr[0]);
-            return cr;
-        }
-    }
-
-    // Edge case, find end points overlapping the other segment
-    let endpoints = [];
-    if (depth===0 && (s1.lineType || s2.lineType)) {
-        // findEndPointSegmentIntersections is a perf hit
-        // only run if either s1 or s2 is a line segment
-        endpoints = findEndPointSegmentIntersections(s1, s2);
-    }
-
-    // Check to stop recursion
-    let s1m = s1.getFastMaxes();
-    let s2m = s2.getFastMaxes();
-
-    if (!maxesOverlap(s1m, s2m)) {
-        // debug('\t segments have non overlapping fastmaxes');
-        return [];
-    }
-    // debug('\t segments fastmaxes overlap');
-    // debug([s1m]);
-    // debug([s2m]);
-
-    // Complex segment intersections
-    let threshold = 0.00005;
-    let precision = 3;
-
-    let s1w = (s1m.xMax - s1m.xMin);
-    let s1h = (s1m.yMax - s1m.yMin);
-    let s2w = (s2m.xMax - s2m.xMin);
-    let s2h = (s2m.yMax - s2m.yMin);
-    // debug('\t s1 w/h: ' + s1w + ' / ' + s1h);
-    // debug('\t s2 w/h: ' + s2w + ' / ' + s2h);
-
-    if ( (s1w < threshold) &&
-        (s1h < threshold) &&
-        (s2w < threshold) &&
-        (s2h < threshold) ) {
-            s1w *= 0.5;
-            s1h *= 0.5;
-            s2w *= 0.5;
-            s2h *= 0.5;
-            let x = ((s1m.xMin + s1w) + (s2m.xMin + s2w)) / 2;
-            let y = ((s1m.yMin + s1h) + (s2m.yMin + s2h)) / 2;
-
-            x = round(x, precision);
-            y = round(y, precision);
-
-            let ix = ''+x+'/'+y;
-            // debug('\t <<<<<<<<<<<<<<<<< hit bottom, found ' + ix);
-            return [ix];
-    } else {
-        // debug('\t not below threshold at ' + depth);
-    }
-
-    // More recursion needed
-    let re = [];
-    let s1split = s1.splitAtTime(0.5);
-    let s2split = s2.splitAtTime(0.5);
-    let pairs = [
-        [s1split[0], s2split[0]],
-        [s1split[0], s2split[1]],
-        [s1split[1], s2split[1]],
-        [s1split[1], s2split[0]],
-    ];
-
-    pairs = pairs.filter(function(p) {
-        return maxesOverlap(p[0].getFastMaxes(), p[1].getFastMaxes(), 'inclusive');
-    });
-
-    // debug('\t ' + pairs.length + ' pairs after maxes overlap filter');
-    // debug(pairs);
-
-    pairs.forEach(function(p) {
-        re = re.concat( findSegmentIntersections(p[0], p[1], depth+1) );
-    });
-
-    re = re.concat(endpoints);
-    re = re.filter(duplicates);
-
-    // if(depth === 0) alert('break');
-
-    // debug('\t return length ' + re.length);
-    // debug(' findSegmentIntersections - END\n');
-    return re;
-}
-
-/**
- * Checks a segment's points to see of two segments are equal
- * @param {Segment} s1 - first segment
- * @param {Segment} s2 - second segment
- * @param {number} threshold - precision
- * @returns {boolean}
- */
-function segmentsAreEqual(s1, s2, threshold) {
-    // debug('\n segmentsAreEqual - START');
-    threshold = threshold || 1;
-    // debug([s1, s2]);
-
-    if ( coordsAreEqual(s1.getCoord(1), s2.getCoord(1), threshold) &&
-        coordsAreEqual(s1.getCoord(4), s2.getCoord(4), threshold) ) {
-        if (s1.lineType && s2.lineType) {
-            // debug(' segmentsAreEqual - returning LINE true - END\n');
-            return true;
-        } else if ( coordsAreEqual(s1.getCoord(2), s2.getCoord(2), threshold) &&
-                    coordsAreEqual(s1.getCoord(3), s2.getCoord(3), threshold) ) {
-            // debug(' segmentsAreEqual - returning FULLY true - END\n');
-            return true;
-        }
-    }
-
-    // debug(' segmentsAreEqual - returning false - END\n');
-    return false;
-}
-
-/**
- * Check if the two segments are overlapping horizontal or vertical lines
- * If so, just return one point from the coincident lines
- * @param {Segment} s1 - first segment
- * @param {Segment} s2 - second segment
- * @returns {array} - collection of overlaps in ix format
- */
-function findOverlappingLineSegmentIntersections(s1, s2) {
-    // debug(`\n findOverlappingLineSegmentIntersections - START`);
-    let re = [];
-
-    if (s1.containsPointOnLine(s2.getCoord(1))) re.push(''+s2.p1x+'/'+s2.p1y);
-    if (s1.containsPointOnLine(s2.getCoord(4))) re.push(''+s2.p4x+'/'+s2.p4y);
-
-    if (s2.containsPointOnLine(s1.getCoord(1))) re.push(''+s1.p1x+'/'+s1.p1y);
-    if (s2.containsPointOnLine(s1.getCoord(4))) re.push(''+s1.p4x+'/'+s1.p4y);
-
-    if (re.length) {
-        // debug('\n findOverlappingLineSegmentIntersections - START');
-        // debug([s1, s2]);
-        // debug(json(re));
-        // debug(' findOverlappingLineSegmentIntersections - END\n');
-    }
-
-    // debug(` findOverlappingLineSegmentIntersections - END\n\n`);
-    return re;
-}
-
-/**
- * Find overlap points for Segments that are Lines (no curves)
- * This is much faster than comparing two curves
- * @param {Segment} s1 - first segment
- * @param {Segment} s2 - second segment
- * @returns {array} - overlap point in ix format
- */
-function findCrossingLineSegmentIntersections(s1, s2) {
-    // debug('\n findCrossingLineSegmentIntersections - START');
-    if (!s1.lineType || !s2.lineType) return [];
-
-    let d1x = s1.p4x - s1.p1x;
-    let d1y = s1.p4y - s1.p1y;
-    let d2x = s2.p4x - s2.p1x;
-    let d2y = s2.p4y - s2.p1y;
-
-    let s = ((-1*d1y) * (s1.p1x - s2.p1x) + d1x * (s1.p1y - s2.p1y)) / ((-1*d2x) * d1y + d1x * d2y);
-    let t = ( d2x * (s1.p1y - s2.p1y) - d2y * (s1.p1x - s2.p1x)) / ((-1*d2x) * d1y + d1x * d2y);
-
-    if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
-        let rx = numSan(s1.p1x + (t * d1x));
-        let ry = numSan(s1.p1y + (t * d1y));
-
-        // debug('\t found ' + rx + ', ' + ry);
-        if (s1.containsTerminalPoint({x: rx, y: ry}) && s2.containsTerminalPoint({x: rx, y: ry})) {
-            // debug('\t its an end point');
-            // debug(' findCrossingLineSegmentIntersections - END\n');
-            return [];
-        }
-
-
-        let re = [(''+rx+'/'+ry)];
-        // debug(' findCrossingLineSegmentIntersections - END\n');
-        return re;
-    }
-
-    // debug(' findCrossingLineSegmentIntersections - END\n');
-    return [];
-}
-
-/**
- * Finds if two segments overlap in their end points
- * @param {Segment} s1 - first segment
- * @param {Segment} s2 - second segment
- * @returns {array} - collection of overlaps in ix format
- */
-function findEndPointSegmentIntersections(s1, s2) {
-    // debug('\n findEndPointSegmentIntersections - START');
-    let s1s = s1.getCoord(1);
-    let s1e = s1.getCoord(4);
-    let s2s = s2.getCoord(1);
-    let s2e = s2.getCoord(4);
-
-    let re = [];
-
-    if (s1.containsPointOnCurve(s2s)) re.push(coordToIx(s2s));
-    if (s1.containsPointOnCurve(s2e)) re.push(coordToIx(s2e));
-    if (s2.containsPointOnCurve(s1s)) re.push(coordToIx(s1s));
-    if (s2.containsPointOnCurve(s1e)) re.push(coordToIx(s1e));
-
-    // debug('\t returning ' + re);
-    // debug(' findEndPointSegmentIntersections - END\n');
-    return re;
-}
-
-/**
- * Takes the string ix format for a point and returns a Coord
- * @param {string} ix - x/y value in text string format
- * @returns {Coord}
- */
-function ixToCoord(ix) {
-    // debug('\n ixToCoord - START');
-    // debug(ix);
-    let re = {
-        x: parseFloat(ix.split('/')[0]),
-        y: parseFloat(ix.split('/')[1]),
-    };
-    // debug([re]);
-    // debug(' ixToCoord - END\n');
-    return new Coord(re);
-}
-
-/**
- * Converts a Coord to a string in ix format
- * @param {Coord} co - x y object to convert
- * @returns {string}
- */
-function coordToIx(co) {
-    return (''+co.x+'/'+co.y);
-}
-
 /**
  * Returns true if three points are in a straight line
- * @param {Coord} a - poitn to evaluate
- * @param {Coord} b - poitn to evaluate
- * @param {Coord} c - poitn to evaluate
+ * @param {XYPoint} a - poit to evaluate
+ * @param {XYPoint} b - poit to evaluate
+ * @param {XYPoint} c - poit to evaluate
  * @param {number} precision - how close to compare
  * @returns {boolean}
  */
-function pointsAreCollinear(a, b, c, precision) {
+export function pointsAreCollinear(a, b, c, precision) {
     precision = isVal(precision)? precision : 3;
 
     let s1 = (b.x - a.x) * (c.y - a.y);

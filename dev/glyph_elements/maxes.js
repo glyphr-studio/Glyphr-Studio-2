@@ -209,8 +209,6 @@ export default class Maxes extends GlyphElement {
         this.yMin = round(this.yMin, precision);
         this.yMax = round(this.yMax, precision);
     }
-
-
 }
 
 

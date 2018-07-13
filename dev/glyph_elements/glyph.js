@@ -2,11 +2,10 @@ import GlyphElement from './glyphelement.js';
 import Maxes from './maxes.js';
 import Shape from './shape.js';
 import ComponentInstance from './componentinstance.js';
+import {getGlyph} from '../app/globalgetters.js';
 import {clone, hasNonValues, isVal} from '../app/functions.js';
 import {parseUnicodeInput} from '../app/unicode.js';
-export {getGlyph, getGlyphType, getGlyphName, getFirstGlyphID,
-    getSelectedGlyphLeftSideBearing, getSelectedGlyphRightSideBearing,
-    updateCurrentGlyphWidth};
+
 
 /**
  * Glyph Element > Glyph
@@ -709,7 +708,7 @@ export default class Glyph extends GlyphElement {
     /**
      * Rotate about a point
      * @param {number} angle - how much to rotate
-     * @param {Coord} about - x/y center of rotation
+     * @param {XYPoint} about - x/y center of rotation
      * @returns {Glyph} - reference to this glyph
      */
     rotate(angle, about) {
@@ -1210,7 +1209,7 @@ export default class Glyph extends GlyphElement {
         for (let c = 0; c < this.shapes.length; c++) {
             tc = this.shapes[c];
             if (tc.objType === 'ComponentInstance') {
-                addToUsedIn(tc.link, destinationID);
+                getGlyph(tc.link).addToUsedIn(destinationID);
                 tc = new ComponentInstance(clone(tc));
             } else if (tc.objType === 'Shape') {
                 tc = new Shape(clone(tc));
@@ -1255,159 +1254,32 @@ export default class Glyph extends GlyphElement {
             }
         }
     }
-}
 
+    // --------------------------------------------------------------
+    // Used-In array
+    // --------------------------------------------------------------
 
-// --------------------------------------------------------------
-// GLYPH FUNCTIONS
-// --------------------------------------------------------------
-
-/**
- * Get a glyph by ID, create it if need be
- * @param {string} id - which Glyph to return
- * @param {boolean} create - create if it doesn't exist yet
- * @returns {Glyph}
- */
-function getGlyph(id, create) {
-    // debug('\n getGlyph - START');
-    // debug('\t passed: ' + id + ' create: ' + create);
-
-    if (!id) {
-        // debug('\t Not passed an ID, returning false');
-        return false;
+    /**
+     * When this Glyph is linked-to from another ComponentInstance, track
+     * where it's being used by adding it to this.usedIn
+     * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
+     */
+    addToUsedIn(linkID) {
+        this.usedIn.push(''+linkID);
+        // sort numerically as opposed to alpha
+        this.usedIn.sort(function(a, b) {
+            return a-b;
+        });
     }
 
-    if (_GP === {}) {
-        // debug('\t _GP is uninitialized, returning false');
-        return false;
-    }
-
-    id = ''+id;
-    let rechar;
-
-    if (id.indexOf('0x', 2) > -1) {
-        rechar = _GP.ligatures[id];
-        // debug('\t retrieved ' + rechar + ' from ligatures.');
-        if (rechar) {
-            return rechar;
-        } else if (create) {
-            // debug('\t create was true, returning a new ligature.');
-            _GP.ligatures[id] = new Glyph({'glyphhex': id});
-            return _GP.ligatures[id];
+    /**
+     * Removes a link from this usedIn array
+     * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
+     */
+    removeFromUsedIn(linkID) {
+        let gindex = this.usedIn.indexOf(''+linkID);
+        if (gindex !== -1) {
+            this.usedIn.splice(gindex, 1);
         }
-    } else if (id.indexOf('0x') > -1) {
-        rechar = _GP.glyphs[id];
-        // debug('\t retrieved ' + rechar + ' from glyphs.');
-        if (rechar) {
-            return rechar;
-        } else if (create) {
-            // debug('\t create was true, returning a new char.');
-            _GP.glyphs[id] = new Glyph({'glyphhex': id});
-            return _GP.glyphs[id];
-        }
-    } else {
-        // debug('\t component, retrieved');
-        // debug(_GP.components[id]);
-        return _GP.components[id] || false;
-    }
-
-    // debug('getGlyph - returning FALSE\n');
-    return false;
-}
-
-/**
- * Get the type of glyph based on it's ID
- * @param {string} id - Glyph ID
- * @returns {string}
- */
-function getGlyphType(id) {
-    if (id.indexOf('0x', 2) > -1) return 'Ligature';
-    else if (id.indexOf('0x') > -1) return 'Glyph';
-    else return 'Component';
-}
-
-/**
- * Get a glyph's name based on it's ID
- * @param {string} id - Glyph ID
- * @returns {string}
- */
-function getGlyphName(id) {
-    id = ''+id;
-    // debug('\n getGlyphName');
-    // debug('\t passed ' + id);
-
-    // not passed an id
-    if (!id) {
-        // debug('\t not passed an ID, returning false');
-        return false;
-    }
-
-    // known unicode names
-    let un = getUnicodeName(id);
-    if (un && un !== '[name not found]') {
-        // debug('\t got unicode name: ' + un);
-        return un;
-    }
-
-    let cobj = getGlyph(id);
-    if (id.indexOf('0x', 2) > -1) {
-        // ligature
-        // debug('\t ligature - returning ' + hexToHTML(id));
-        return cobj.name || hexToHTML(id);
-    } else {
-        // Component
-        // debug('getGlyphName - inexplicably fails, returning [name not found]\n');
-        return cobj.name || '[name not found]';
-    }
-
-    // debug(' getGlyphName - returning nothing - END\n');
-}
-
-/**
- * Just return the first Glyph that exists
- * @returns {Glyph}
- */
-function getFirstGlyphID() {
-    if (_GP.glyphs['0x0041']) return '0x0041';
-    else return getFirstID(_GP.glyphs);
-}
-
-/**
- * Get the selected glyph's left side bearing
- * @returns {number}
- */
-function getSelectedGlyphLeftSideBearing() {
-    // debug('getSelectedGlyphLeftSideBearing');
-    let sc = getSelectedWorkItem();
-    if (!sc) return 0;
-    if (sc.objType === 'component') return 0;
-    if (!sc.isAutoWide) return 0;
-    return sc.leftSideBearing || _GP.projectSettings.defaultlsb;
-}
-
-/**
- * Get the selected glyph's right side bearing
- * @returns {number}
- */
-function getSelectedGlyphRightSideBearing() {
-    // debug('getSelectedGlyphLeftSideBearing');
-    let sc = getSelectedWorkItem();
-    if (!sc) return 0;
-    if (sc.objType === 'component') return 0;
-    if (!sc.isAutoWide) return 0;
-    return sc.rightSideBearing || _GP.projectSettings.defaultrsb;
-}
-
-/**
- * Updates the selected glyphs width
- */
-function updateCurrentGlyphWidth() {
-    let sc = getSelectedWorkItem();
-    if (!sc) return;
-    if (_UI.currentPage === 'glyph edit') {
-        sc.changed();
-    } else if (_UI.currentPage === 'components' && sc) {
-        let lsarr = sc.usedIn;
-        if (lsarr) for (let c=0; c<lsarr.length; c++) getGlyph(lsarr[c]).changed();
     }
 }

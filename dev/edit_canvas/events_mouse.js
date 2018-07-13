@@ -200,8 +200,8 @@ function Tool_ShapeEdit() {
             eventHandler_ShapeResize();
             this.didstuff = true;
         } else if (this.rotating) {
-            let a1 = calculateAngle({x: cx_sx(eh.mousex), y: cy_sy(eh.mousey)}, eh.rotationcenter),
-                    a2 = calculateAngle({x: cx_sx(eh.lastx), y: cy_sy(eh.lasty)}, eh.rotationcenter);
+            let a1 = calculateAngle({x: cXsX(eh.mousex), y: cYsY(eh.mousey)}, eh.rotationcenter),
+                    a2 = calculateAngle({x: cXsX(eh.lastx), y: cYsY(eh.lasty)}, eh.rotationcenter);
 
             _UI.multiSelect.shapes.rotate(a1-a2, eh.rotationcenter);
             this.didstuff = true;
@@ -285,10 +285,10 @@ function Tool_NewBasicShape() {
 
     this.mousedown = function(ev) {
         _UI.eventhandlers.tempnewbasicshape = {
-            'xMax': cx_sx(_UI.eventhandlers.mousex),
-            'xMin': cx_sx(_UI.eventhandlers.mousex),
-            'yMax': cy_sy(_UI.eventhandlers.mousey),
-            'yMin': cy_sy(_UI.eventhandlers.mousey),
+            'xMax': cXsX(_UI.eventhandlers.mousex),
+            'xMin': cXsX(_UI.eventhandlers.mousex),
+            'yMax': cYsY(_UI.eventhandlers.mousey),
+            'yMin': cYsY(_UI.eventhandlers.mousey),
         };
 
         let newshape = new Shape({'visible': false, 'name': '...'});
@@ -296,8 +296,8 @@ function Tool_NewBasicShape() {
         newshape = addShape(newshape);
         _UI.multiSelect.shapes.select(newshape);
 
-        _UI.eventhandlers.firstx = cx_sx(_UI.eventhandlers.mousex);
-        _UI.eventhandlers.firsty = cy_sy(_UI.eventhandlers.mousey);
+        _UI.eventhandlers.firstx = cXsX(_UI.eventhandlers.mousex);
+        _UI.eventhandlers.firsty = cYsY(_UI.eventhandlers.mousey);
 
         this.dragging = true;
 
@@ -307,10 +307,10 @@ function Tool_NewBasicShape() {
 
     this.mousemove = function(ev) {
         if (_UI.eventhandlers.tempnewbasicshape) {
-            _UI.eventhandlers.tempnewbasicshape.xMax = Math.max(_UI.eventhandlers.firstx, cx_sx(_UI.eventhandlers.mousex));
-            _UI.eventhandlers.tempnewbasicshape.xMin = Math.min(_UI.eventhandlers.firstx, cx_sx(_UI.eventhandlers.mousex));
-            _UI.eventhandlers.tempnewbasicshape.yMax = Math.max(_UI.eventhandlers.firsty, cy_sy(_UI.eventhandlers.mousey));
-            _UI.eventhandlers.tempnewbasicshape.yMin = Math.min(_UI.eventhandlers.firsty, cy_sy(_UI.eventhandlers.mousey));
+            _UI.eventhandlers.tempnewbasicshape.xMax = Math.max(_UI.eventhandlers.firstx, cXsX(_UI.eventhandlers.mousex));
+            _UI.eventhandlers.tempnewbasicshape.xMin = Math.min(_UI.eventhandlers.firstx, cXsX(_UI.eventhandlers.mousex));
+            _UI.eventhandlers.tempnewbasicshape.yMax = Math.max(_UI.eventhandlers.firsty, cYsY(_UI.eventhandlers.mousey));
+            _UI.eventhandlers.tempnewbasicshape.yMin = Math.min(_UI.eventhandlers.firsty, cYsY(_UI.eventhandlers.mousey));
 
             _UI.eventhandlers.uqhaschanged = true;
             redraw({calledBy: 'Event Handler Tool_NewBasicShape mousemove'});
@@ -368,9 +368,9 @@ function Tool_NewPath() {
 
         let eh = _UI.eventhandlers;
         let newpoint = new PathPoint({
-            p: {point: {x: cx_sx(eh.mousex), y: cy_sy(eh.mousey)}},
-            h1: {point: {x: cx_sx(eh.mousex-100), y: cy_sy(eh.mousey)}, use: false},
-            h2: {point: {x: cx_sx(eh.mousex+100), y: cy_sy(eh.mousey)}, use: false},
+            p: {point: {x: cXsX(eh.mousex), y: cYsY(eh.mousey)}},
+            h1: {point: {x: cXsX(eh.mousex-100), y: cYsY(eh.mousey)}, use: false},
+            h2: {point: {x: cXsX(eh.mousex+100), y: cYsY(eh.mousey)}, use: false},
             type: 'flat',
         });
 
@@ -381,7 +381,7 @@ function Tool_NewPath() {
             this.currpt = this.newshape.path.addPathPoint(newpoint);
         } else if (this.newshape) {
             let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
-            if (this.newshape.path.isOverFirstPoint(cx_sx(eh.mousex), cy_sy(eh.mousey), targetSize)) {
+            if (this.newshape.path.isOverFirstPoint(cXsX(eh.mousex), cYsY(eh.mousey), targetSize)) {
                 // clicked on an existing control point in this path
                 // if first point - close the path
 
@@ -419,12 +419,12 @@ function Tool_NewPath() {
 
         if (this.dragging) {
             // avoid really small handles
-            if ((Math.abs(this.currpt.p.x-cx_sx(eh.mousex)) > (_GP.projectSettings.pointsize*2)) ||
-                (Math.abs(this.currpt.p.y-cy_sy(eh.mousey)) > (_GP.projectSettings.pointsize*2)) ) {
+            if ((Math.abs(this.currpt.p.x-cXsX(eh.mousex)) > (_GP.projectSettings.pointsize*2)) ||
+                (Math.abs(this.currpt.p.y-cYsY(eh.mousey)) > (_GP.projectSettings.pointsize*2)) ) {
                 this.currpt.h1.use = true;
                 this.currpt.h2.use = true;
-                this.currpt.h2.x = cx_sx(eh.mousex);
-                this.currpt.h2.y = cy_sy(eh.mousey);
+                this.currpt.h2.x = cXsX(eh.mousex);
+                this.currpt.h2.y = cYsY(eh.mousey);
                 this.currpt.makeSymmetric('h2');
             }
 
@@ -434,7 +434,7 @@ function Tool_NewPath() {
             eh.uqhaschanged = true;
 
             redraw({calledBy: 'Event Handler Tool_NewPath mousemove'});
-        } else if (this.newshape && this.newshape.path.isOverFirstPoint(cx_sx(eh.mousex), cy_sy(eh.mousey), targetSize)) {
+        } else if (this.newshape && this.newshape.path.isOverFirstPoint(cXsX(eh.mousex), cYsY(eh.mousey), targetSize)) {
             setCursor('penSquare');
         } else {
             setCursor('penPlus');
@@ -477,7 +477,7 @@ function Tool_PathEdit() {
         eh.lastx = eh.mousex;
         eh.lasty = eh.mousey;
         let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
-        this.controlpoint = getSelectedWorkItem().isOverControlPoint(cx_sx(eh.mousex), cy_sy(eh.mousey), targetSize, eh.multi);
+        this.controlpoint = getSelectedWorkItem().isOverControlPoint(cXsX(eh.mousex), cYsY(eh.mousey), targetSize, eh.multi);
         let s = getClickedShape(eh.mousex, eh.mousey);
 
         // debug(this.controlpoint);
@@ -521,8 +521,8 @@ function Tool_PathEdit() {
             };
 
             this.controlpoint.point.h2.use = true;
-            this.controlpoint.point.h2.x = cx_sx(eh.mousex);
-            this.controlpoint.point.h2.y = cy_sy(eh.mousey);
+            this.controlpoint.point.h2.x = cXsX(eh.mousex);
+            this.controlpoint.point.h2.y = cYsY(eh.mousey);
             _UI.multiSelect.points.handlesingleton = this.controlpoint.point;
 
             this.dragging = true;
@@ -569,7 +569,7 @@ function Tool_PathEdit() {
         checkForMouseOverHotspot(eh.mousex, eh.mousey);
 
         let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
-        let cp = _UI.multiSelect.shapes.isOverControlPoint(cx_sx(eh.mousex), cy_sy(eh.mousey), targetSize);
+        let cp = _UI.multiSelect.shapes.isOverControlPoint(cXsX(eh.mousex), cYsY(eh.mousey), targetSize);
         if (cp.type === 'p') setCursor('penSquare');
         else if (_UI.multiSelect.points.isSelected(cp.point)) setCursor('penCircle');
         if (!cp && eh.multi) setCursor('penPlus');
@@ -635,12 +635,12 @@ function Tool_PathAddPoint() {
     this.mousemove = function(ev) {
         let singleshape = _UI.multiSelect.shapes.getSingleton();
         if (singleshape) {
-            let pt = singleshape.path.getClosestPointOnCurve({'x': cx_sx(_UI.eventhandlers.mousex), 'y': cy_sy(_UI.eventhandlers.mousey)});
+            let pt = singleshape.path.getClosestPointOnCurve({'x': cXsX(_UI.eventhandlers.mousex), 'y': cYsY(_UI.eventhandlers.mousey)});
             if (pt && pt.distance < 20) {
                 this.addpoint = pt;
                 let ptsize = _GP.projectSettings.pointsize;
-                let ptx = makeCrisp(sx_cx(pt.x) - (ptsize/2));
-                let pty = makeCrisp(sy_cy(pt.y) - (ptsize/2));
+                let ptx = makeCrisp(sXcX(pt.x) - (ptsize/2));
+                let pty = makeCrisp(sYcY(pt.y) - (ptsize/2));
                 openNotation(('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3)), ptx, pty);
                 _UI.eventhandlers.hoverpoint = {'fill': _UI.colors.blue.l75, 'x': ptx, 'y': pty, 'size': ptsize};
             } else {
@@ -759,10 +759,10 @@ function eventHandler_ShapeResize() {
     // debug('\t handle ' + pcorner);
 
     let maxes = s.maxes;
-    let mx = cx_sx(_UI.eventhandlers.mousex);
-    let my = cy_sy(_UI.eventhandlers.mousey);
-    let lx = cx_sx(_UI.eventhandlers.lastx);
-    let ly = cy_sy(_UI.eventhandlers.lasty);
+    let mx = cXsX(_UI.eventhandlers.mousex);
+    let my = cYsY(_UI.eventhandlers.mousey);
+    let lx = cXsX(_UI.eventhandlers.lastx);
+    let ly = cYsY(_UI.eventhandlers.lasty);
     let dh = (ly-my);
     let dw = (lx-mx);
     let rl = s.getAttribute('ratioLock');
