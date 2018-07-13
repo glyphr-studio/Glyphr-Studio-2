@@ -534,39 +534,41 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Draws this point on the edit canvas
+     * @param {object} ctx - canvas context
+     * @param {boolean} isSelected - draw this as selected
      * @param {string} accent - accent color
      */
-    drawPoint(accent) {
+    drawPoint(ctx, isSelected, accent = '#000') {
         // debug('\n PathPoint.drawPoint - START');
-        // debug('\t sel = ' + _UI.multiSelect.points.isSelected(this));
+        // debug('\t sel = ' + isSelected);
 
-        accent = accent || _UI.colors.blue;
         let ps = _GP.projectSettings.pointsize;
         let hp = ps/2;
-        // _UI.glyphEditCTX.fillStyle = sel? 'white' : accent.l65;
-        _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
-        _UI.glyphEditCTX.strokeStyle = accent.l65;
-        _UI.glyphEditCTX.font = '10px Consolas';
+        // ctx.fillStyle = sel? 'white' : accent;
+        ctx.fillStyle = isSelected? 'white' : accent;
+        ctx.strokeStyle = accent;
+        ctx.font = '10px Consolas';
 
-        _UI.glyphEditCTX.fillRect((sXcX(this.p.x)-hp), (sYcY(this.p.y)-hp), ps, ps);
-        _UI.glyphEditCTX.strokeRect((sXcX(this.p.x)-hp), (sYcY(this.p.y)-hp), ps, ps);
+        ctx.fillRect((sXcX(this.p.x)-hp), (sYcY(this.p.y)-hp), ps, ps);
+        ctx.strokeRect((sXcX(this.p.x)-hp), (sYcY(this.p.y)-hp), ps, ps);
 
-        _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.fillText(this.pointNumber, sXcX(this.p.x + 12), sYcY(this.p.y));
+        ctx.fillStyle = accent;
+        ctx.fillText(this.pointNumber, sXcX(this.p.x + 12), sYcY(this.p.y));
         // debug(' PathPoint.drawPoint - END\n');
     }
 
     /**
      * Draws a point with an arrow to show path winding
+     * @param {object} ctx - canvas context
+     * @param {boolean} isSelected - draw this as selected
      * @param {string} accent - accent color
      * @param {Point} next - next Point in the path sequence
      */
-    drawDirectionalityPoint(accent, next) {
-        accent = accent || _UI.colors.blue;
-        // _UI.glyphEditCTX.fillStyle = sel? 'white' : accent.l65;
-        _UI.glyphEditCTX.fillStyle = _UI.multiSelect.points.isSelected(this)? 'white' : accent.l65;
-        _UI.glyphEditCTX.strokeStyle = accent.l65;
-        _UI.glyphEditCTX.lineWidth = 1;
+    drawDirectionalityPoint(ctx, isSelected, accent = '#000', next) {
+        // ctx.fillStyle = sel? 'white' : accent;
+        ctx.fillStyle = isSelected? 'white' : accent;
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 1;
         let begin = {'x': this.p.x, 'y': this.p.y};
         let end = {'x': this.h2.x, 'y': this.h2.y};
 
@@ -601,98 +603,100 @@ export default class PathPoint extends GlyphElement {
 
         // debug('DRAWPOINT arrow = ' + JSON.stringify(arrow) + '  - rotatedarrow = ' + JSON.stringify(rotatedarrow));
 
-        _UI.glyphEditCTX.beginPath();
-        _UI.glyphEditCTX.moveTo((rotatedarrow[0][0] + sXcX(this.p.x)), (rotatedarrow[0][1] + sYcY(this.p.y)));
+        ctx.beginPath();
+        ctx.moveTo((rotatedarrow[0][0] + sXcX(this.p.x)), (rotatedarrow[0][1] + sYcY(this.p.y)));
 
         for (let p in rotatedarrow) {
             if (p > 0) {
-                _UI.glyphEditCTX.lineTo((rotatedarrow[p][0] + sXcX(this.p.x)), (rotatedarrow[p][1] + sYcY(this.p.y)));
+                ctx.lineTo((rotatedarrow[p][0] + sXcX(this.p.x)), (rotatedarrow[p][1] + sYcY(this.p.y)));
             }
         }
 
-        _UI.glyphEditCTX.lineTo((rotatedarrow[0][0] + sXcX(this.p.x)), (rotatedarrow[0][1] + sYcY(this.p.y)));
-        _UI.glyphEditCTX.fill();
-        _UI.glyphEditCTX.stroke();
+        ctx.lineTo((rotatedarrow[0][0] + sXcX(this.p.x)), (rotatedarrow[0][1] + sYcY(this.p.y)));
+        ctx.fill();
+        ctx.stroke();
 
         // Exact Middle Point
-        _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.fillRect(makeCrisp(sXcX(this.p.x)), makeCrisp(sYcY(this.p.y)), 1, 1);
+        ctx.fillStyle = accent;
+        ctx.fillRect(makeCrisp(sXcX(this.p.x)), makeCrisp(sYcY(this.p.y)), 1, 1);
     }
 
     /**
      * Draws the handles on the edit canvas
+     * @param {object} ctx - canvas context
      * @param {boolean} drawH1 - draw the first handle
      * @param {boolean} drawH2 - draw the second handle
      * @param {string} accent - accent color
      */
-    drawHandles(drawH1, drawH2, accent) {
-        accent = accent || _UI.colors.blue;
-        _UI.glyphEditCTX.fillStyle = accent.l65;
-        _UI.glyphEditCTX.strokeStyle = accent.l65;
-        _UI.glyphEditCTX.lineWidth = 1;
-        _UI.glyphEditCTX.font = '10px Consolas';
+    drawHandles(ctx, drawH1, drawH2, accent = '#000') {
+        ctx.fillStyle = accent;
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 1;
+        ctx.font = '10px Consolas';
 
 
         let hp = _GP.projectSettings.pointsize/2;
 
         if (drawH1 && this.h1.use) {
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sXcX(this.h1.x), sYcY(this.h1.y), hp, 0, Math.PI*2, true);
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.fill();
+            ctx.beginPath();
+            ctx.arc(sXcX(this.h1.x), sYcY(this.h1.y), hp, 0, Math.PI*2, true);
+            ctx.closePath();
+            ctx.fill();
 
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sXcX(this.p.x), sYcY(this.p.y));
-            _UI.glyphEditCTX.lineTo(sXcX(this.h1.x), sYcY(this.h1.y));
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.stroke();
-            _UI.glyphEditCTX.fillText('1', sXcX(this.h1.x + 12), sYcY(this.h1.y));
+            ctx.beginPath();
+            ctx.moveTo(sXcX(this.p.x), sYcY(this.p.y));
+            ctx.lineTo(sXcX(this.h1.x), sYcY(this.h1.y));
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fillText('1', sXcX(this.h1.x + 12), sYcY(this.h1.y));
         }
 
         if (drawH2 && this.h2.use) {
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sXcX(this.h2.x), sYcY(this.h2.y), hp, 0, Math.PI*2, true);
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.fill();
+            ctx.beginPath();
+            ctx.arc(sXcX(this.h2.x), sYcY(this.h2.y), hp, 0, Math.PI*2, true);
+            ctx.closePath();
+            ctx.fill();
 
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sXcX(this.p.x), sYcY(this.p.y));
-            _UI.glyphEditCTX.lineTo(sXcX(this.h2.x), sYcY(this.h2.y));
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.stroke();
-            _UI.glyphEditCTX.fillText('2', sXcX(this.h2.x + 12), sYcY(this.h2.y));
+            ctx.beginPath();
+            ctx.moveTo(sXcX(this.p.x), sYcY(this.p.y));
+            ctx.lineTo(sXcX(this.h2.x), sYcY(this.h2.y));
+            ctx.closePath();
+            ctx.stroke();
+            ctx.fillText('2', sXcX(this.h2.x + 12), sYcY(this.h2.y));
         }
     }
 
     /**
      * Draws a Quadratic point to the edit canvas
+     * @param {object} ctx - canvas context
+     * @param {string} accent - accent color
      * @param {Point} prevP - Previous point in the path sequence
      */
-    drawQuadraticHandle(prevP) {
+    drawQuadraticHandle(ctx, accent = '#000', prevP) {
         // Draw Quadratic handle point from imported SVG
-        _UI.glyphEditCTX.fillStyle = _UI.colors.error.medium;
-        _UI.glyphEditCTX.strokeStyle = _UI.colors.error.medium;
-        _UI.glyphEditCTX.lineWidth = 1;
+        ctx.fillStyle = accent;
+        ctx.strokeStyle = accent;
+        ctx.lineWidth = 1;
         let hp = _GP.projectSettings.pointsize/2;
 
         if (this.q) {
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.arc(sXcX(this.q.x), sYcY(this.q.y), hp, 0, Math.PI*2, true);
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.fill();
+            ctx.beginPath();
+            ctx.arc(sXcX(this.q.x), sYcY(this.q.y), hp, 0, Math.PI*2, true);
+            ctx.closePath();
+            ctx.fill();
 
-            _UI.glyphEditCTX.beginPath();
-            _UI.glyphEditCTX.moveTo(sXcX(this.p.x), sYcY(this.p.y));
-            _UI.glyphEditCTX.lineTo(sXcX(this.q.x), sYcY(this.q.y));
-            _UI.glyphEditCTX.closePath();
-            _UI.glyphEditCTX.stroke();
+            ctx.beginPath();
+            ctx.moveTo(sXcX(this.p.x), sYcY(this.p.y));
+            ctx.lineTo(sXcX(this.q.x), sYcY(this.q.y));
+            ctx.closePath();
+            ctx.stroke();
 
             if (prevP) {
-                _UI.glyphEditCTX.beginPath();
-                _UI.glyphEditCTX.moveTo(sXcX(prevP.x), sYcY(prevP.y));
-                _UI.glyphEditCTX.lineTo(sXcX(this.q.x), sYcY(this.q.y));
-                _UI.glyphEditCTX.closePath();
-                _UI.glyphEditCTX.stroke();
+                ctx.beginPath();
+                ctx.moveTo(sXcX(prevP.x), sYcY(prevP.y));
+                ctx.lineTo(sXcX(this.q.x), sYcY(this.q.y));
+                ctx.closePath();
+                ctx.stroke();
             }
         }
     }

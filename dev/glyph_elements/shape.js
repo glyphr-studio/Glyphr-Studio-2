@@ -336,7 +336,7 @@ export default class Shape extends GlyphElement {
      * @param {number} gutter - margin
      * @returns {string} - svg
      */
-    makeSVG(size = 50, gutter = 10) {
+    makeSVG(size = 50, gutter = 5) {
         let upm = 1000;
         let desc = 300;
 
@@ -576,11 +576,6 @@ export default class Shape extends GlyphElement {
         // debug('\n Shape.drawShape - START');
         // debug('\t view ' + json(view, true));
         if (this.visible) {
-            // if ((this.path.maxes.xMax === -1) &&
-            //     (lctx === _UI.glyphEditCTX) &&
-            //     (_UI.selectedTool !== 'newpath')) {
-            //     this.calcMaxes();
-            // }
             this.path.drawPath(lctx, view);
         }
         // debug(' Shape.drawShape - returning true by default - END\n');
@@ -612,24 +607,18 @@ export default class Shape extends GlyphElement {
 
 /* NEEDS REFACTORING - NO NEED TO DUPLICATE THESE METHODS HERE
 
-    draw_PathOutline(accent, thickness) {
+    draw_PathOutline(accent = '#000', thickness = 1) {
         // debug('\n Shape.draw_PathOutline - START');
-        accent = accent || _UI.colors.blue;
-        thickness = thickness || 1;
         draw_PathOutline(this, accent, thickness);
     }
 
-    draw_BoundingBox(accent, thickness) {
+    draw_BoundingBox(accent = '#000', thickness = 1) {
         // debug('\n Shape.draw_BoundingBox - START');
-        accent = accent || _UI.colors.blue;
-        thickness = thickness || 1;
         draw_BoundingBox(this.path.maxes, accent, thickness);
     }
 
-    draw_BoundingBoxHandles(accent, thickness) {
+    draw_BoundingBoxHandles(accent = '#000', thickness = 1) {
         // debug('\n Shape.draw_BoundingBoxHandles - START');
-        accent = accent || _UI.colors.blue;
-        thickness = thickness || 1;
         draw_BoundingBoxHandles(this.path.maxes, accent, thickness);
     }
 

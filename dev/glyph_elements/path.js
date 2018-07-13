@@ -1151,7 +1151,6 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     calcMaxes() {
         // debug('\n Path.calcMaxes - START');
         // debug('\t before ' + json(this._maxes, true));
-        this._maxes = clone(_UI.mins);
         let seg;
         let tbounds;
 

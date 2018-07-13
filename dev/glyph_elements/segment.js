@@ -169,17 +169,13 @@ export default class Segment extends GlyphElement {
 
     /**
      * Draws this segment to the Edit Canvas
+     * @param {object} ctx - canvas context
      * @param {string} color
      * @param {number} dx - delta offset
      * @param {number} dy - delta offset
      */
-    drawSegmentOutline(color, dx, dy) {
-        if (!_UI.glyphEditCTX) setupEditCanvas();
-
-        let ctx = _UI.glyphEditCTX;
-        ctx.strokeStyle = getRGBfromRGBA((color || _UI.colors.green.l65), 0.9);
-        dx = dx || 0;
-        dy = dy || 0;
+    drawSegmentOutline(ctx, color = '#000', dx = 0, dy = 0) {
+        ctx.strokeStyle = getRGBfromRGBA((color), 0.9);
         let p1x = sXcX(this.p1x + dx);
         let p1y = sYcY(this.p1y + dy);
         let p2x = sXcX(this.p2x + dx);
@@ -198,14 +194,11 @@ export default class Segment extends GlyphElement {
 
     /**
      * Draws the control points for this Segment
+     * @param {object} ctx - canvas context
      * @param {string} color
      * @param {string} txt - text to display at the first point
      */
-    drawSegmentPoints(color, txt) {
-        if (!_UI.glyphEditCTX) setupEditCanvas();
-
-        let ctx = _UI.glyphEditCTX;
-        txt = isVal(txt) ? txt : '•';
+    drawSegmentPoints(ctx, color = '#000', txt = '•') {
         let p1x = sXcX(this.p1x);
         let p1y = sYcY(this.p1y);
         let p2x = sXcX(this.p2x);
@@ -214,7 +207,7 @@ export default class Segment extends GlyphElement {
         let p3y = sYcY(this.p3y);
         let p4x = sXcX(this.p4x);
         let p4y = sYcY(this.p4y);
-        color = getRGBfromRGBA((color || _UI.colors.green.l65), 0.4);
+        color = getRGBfromRGBA(color, 0.4);
         ctx.strokeStyle = color;
         ctx.fillStyle = color;
         ctx.font = '48px sans-serif';

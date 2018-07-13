@@ -817,7 +817,6 @@ export default class Glyph extends GlyphElement {
      */
     calcMaxes() {
         // debug('\n Glyph.calcMaxes - START ' + this.name);
-        // this.maxes = clone(_UI.mins);
         let tm;
         if (this.shapes.length > 0) {
             for (let jj = 0; jj < this.shapes.length; jj++) {
@@ -999,16 +998,17 @@ export default class Glyph extends GlyphElement {
 
     /**
      * Draw points that can be multi-selected
+     * @param {string} color - accent color
      */
-    drawMultiSelectAffordances() {
+    drawMultiSelectAffordances(color = '#000') {
         let allpoints = [];
         for (let s = 0; s < this.shapes.length; s++) {
             if (this.shapes[s].objType !== 'ComponentInstance') {
                 allpoints = allpoints.concat(this.shapes[s].path.pathPoints);
-                this.shapes[s].draw_PathOutline(_UI.colors.blue, 1);
+                this.shapes[s].draw_PathOutline(color, 1);
             }
         }
-        draw_PathPoints(allpoints, _UI.colors.blue);
+        draw_PathPoints(allpoints, color);
     }
 
     /**
@@ -1054,11 +1054,9 @@ export default class Glyph extends GlyphElement {
      * @param {number} gutter - margin
      * @returns {string} - svg
      */
-    makeSVG(size, gutter) {
+    makeSVG(size = 50, gutter = 5) {
         // debug('\n Glyph.makeSVG - START');
         let ps = _GP.projectSettings;
-        size = size || _UI.thumbSize;
-        gutter = gutter || _UI.thumbGutter;
         let emsquare = Math.max(ps.upm, (ps.ascent - ps.descent));
         let desc = Math.abs(ps.descent);
         let charscale = (size - (gutter * 2)) / size;

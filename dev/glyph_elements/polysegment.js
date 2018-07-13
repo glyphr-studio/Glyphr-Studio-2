@@ -269,13 +269,13 @@ export default class PolySegment extends GlyphElement {
 
     /**
      * Draws all the intersections between segments
+     * @param {object} ctx - canvas context
      * @param {string} color
      */
-    drawIntersections(color = 'rgb(200, 50, 60)') {
+    drawIntersections(ctx, color = 'rgb(200, 50, 60)') {
         // debug('\n PolySegment.drawIntersections - START');
         let ix = this.findIntersections();
         let co;
-        let ctx = _UI.glyphEditCTX;
         ctx.fillStyle = color;
         ix.forEach(function(v, i) {
             ix[i] = new XYPoint(...v.split('/'));
