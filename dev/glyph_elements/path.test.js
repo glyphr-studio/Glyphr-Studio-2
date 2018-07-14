@@ -6,27 +6,27 @@ import PathPoint from './pathpoint.js';
 // It's a circle!
 _TEST.globals.testPathPoints = [
     {
-        p: {x: 326.65249430318556, y: 499.9999934240834},
-        h1: {point: {x: 239.84504649235828, y: 499.9999934240834}},
-        h2: {point: {x: 413.45994211401285, y: 499.9999934240834}},
+        p: {coord: {x: 326.65249430318556, y: 499.9999934240834}},
+        h1: {coord: {x: 239.84504649235828, y: 499.9999934240834}},
+        h2: {coord: {x: 413.45994211401285, y: 499.9999934240834}},
         type: 'symmetric',
     },
     {
-        p: {x: 483.99995919594085, y: 343.4570087834163},
-        h1: {point: {x: 483.99995919594085, y: 428.9899571029709}},
-        h2: {point: {x: 483.99995919594085, y: 257.92406046386174}},
+        p: {coord: {x: 483.99995919594085, y: 343.4570087834163}},
+        h1: {coord: {x: 483.99995919594085, y: 428.9899571029709}},
+        h2: {coord: {x: 483.99995919594085, y: 257.92406046386174}},
         type: 'symmetric',
     },
     {
-        p: {x: 326.65249430318556, y: 185.99997172355825},
-        h1: {point: {x: 414.1548862447006, y: 185.99997172355825}},
-        h2: {point: {x: 239.15010236167052, y: 185.99997172355825}},
+        p: {coord: {x: 326.65249430318556, y: 185.99997172355825}},
+        h1: {coord: {x: 414.1548862447006, y: 185.99997172355825}},
+        h2: {coord: {x: 239.15010236167052, y: 185.99997172355825}},
         type: 'symmetric',
     },
     {
-        p: {x: 169.99997354111795, y: 343.4570087834163},
-        h1: {point: {x: 169.99997354111795, y: 257.0100080446707}},
-        h2: {point: {x: 169.99997354111795, y: 429.9040095221619}},
+        p: {coord: {x: 169.99997354111795, y: 343.4570087834163}},
+        h1: {coord: {x: 169.99997354111795, y: 257.0100080446707}},
+        h2: {coord: {x: 169.99997354111795, y: 429.9040095221619}},
         type: 'symmetric',
     },
 ];
@@ -61,7 +61,7 @@ _TEST.testList.push(
         name: 'save',
         assertion: function() {
             let path = samplePath();
-            return _TEST.is(path.save()).equalTo({'winding': -5, 'pathPoints': [{'p': {'x': 326.65249430318556, 'y': 500}, 'h1': {'point': {'x': 239.84504649235828, 'y': 500}, 'use': true}, 'h2': {'point': {'x': 413.45994211401285, 'y': 500}, 'use': true}, 'type': 'symmetric'}, {'p': {'x': 484, 'y': 343.4570087834163}, 'h1': {'point': {'x': 484, 'y': 428.9899571029709}, 'use': true}, 'h2': {'point': {'x': 484, 'y': 257.92406046386174}, 'use': true}, 'type': 'symmetric'}, {'p': {'x': 326.65249430318556, 'y': 186}, 'h1': {'point': {'x': 414.1548862447006, 'y': 186}, 'use': true}, 'h2': {'point': {'x': 239.15010236167052, 'y': 186}, 'use': true}, 'type': 'symmetric'}, {'p': {'x': 170, 'y': 343.4570087834163}, 'h1': {'point': {'x': 170, 'y': 257.0100080446707}, 'use': true}, 'h2': {'point': {'x': 170, 'y': 429.9040095221619}, 'use': true}, 'type': 'symmetric'}]});
+            return _TEST.is(path.save()).equalTo(JSON.parse('{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500},"use":true},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500},"use":true},"h2":{"coord":{"x":413.45994211401285,"y":500},"use":true}},{"p":{"coord":{"x":484,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709},"use":true},"h2":{"coord":{"x":484,"y":257.92406046386174},"use":true}},{"p":{"coord":{"x":326.65249430318556,"y":186},"use":true},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186},"use":true},"h2":{"coord":{"x":239.15010236167052,"y":186},"use":true}},{"p":{"coord":{"x":170,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707},"use":true},"h2":{"coord":{"x":170,"y":429.9040095221619},"use":true}}]}'));
         },
     },
     {
@@ -157,6 +157,7 @@ _TEST.testList.push(
             // x setter uses setPathPosition and updatePathPosition
             let path = samplePath();
             path.x = 654;
+
             return _TEST.is(path.x).equalTo(654);
         },
     },
@@ -229,7 +230,7 @@ _TEST.testList.push(
         name: 'addPointsAtPathIntersections',
         assertion: function() {
             let path = samplePath();
-            // Pull the top point down below the original bottom point
+            // Pull the top coord down below the original bottom coord
             path.pathPoints[0].p.y = 100;
             path.addPointsAtPathIntersections();
             return _TEST.is(path.pathPoints.length).equalTo(8);
@@ -277,9 +278,9 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
-        name: 'getSegment',
+        name: 'getQuickSegmentLength',
         assertion: function() {
-            return _TEST.is(samplePath().getQuickSegmentLength()).equalTo(221.95482794488714);
+            return _TEST.is(samplePath().getQuickSegmentLength()).equalTo(272.4319839826901);
         },
     },
     {
@@ -334,7 +335,7 @@ _TEST.testList.push(
         category: 'Path',
         name: 'getClosestPointOnCurve',
         assertion: function() {
-            return _TEST.is(samplePath().getClosestPointOnCurve({x: 100, y: 100}).x).equalTo(219.88497706136906);
+            return _TEST.is(samplePath().getClosestPointOnCurve({x: 100, y: 100}).x).equalTo(219.88358613439445);
         },
     },
     {

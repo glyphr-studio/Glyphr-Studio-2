@@ -12,9 +12,8 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
 /**
  * Glyph Element > Path
- * A Path is a collection of Path Points, plus
- * a few properties like selected point, winding,
- * and maxes.
+ * A Path is a collection of PathPoints, plus
+ * a few properties like winding, and maxes.
  * Higher level objects should only have access to
  * a Shape object, not direct access to a Shape's
  * Path object. This is to enable Shape objects and
@@ -59,8 +58,8 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             pathPoints: [],
         };
 
-        this._pathPoints.forEach((point) => {
-            re.pathPoints.push(point.save(verbose));
+        this._pathPoints.forEach((pp) => {
+            re.pathPoints.push(pp.save(verbose));
         });
 
         if (!verbose) delete re.objType;
@@ -83,8 +82,8 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         re += `${ind}winding: ${this.winding}\n`;
 
         re += `${ind}pathPoints: [\n`;
-        this._pathPoints.forEach((point) => {
-            re += point.print(level+2);
+        this._pathPoints.forEach((pp) => {
+            re += pp.print(level+2);
             re += `\n`;
         });
         re += `${ind}]\n`;
@@ -816,7 +815,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Checks to see if the first point in the path is at a point
+     * Checks to see if the first PathPoint in the path is at a point
      * @param {number} x - x value to check
      * @param {number} y - y value to check
      * @param {number} targetSize - radius around the point to return true
@@ -987,7 +986,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {number} pointNumber - point number before the new split
      * @returns {PathPoint} - reference to the added path point
      */
-    insertPathPoint(t, pointNumber) {
+    insertPathPoint(t = 0.5, pointNumber) {
         let pp1i = pointNumber || 0;
         let pp1 = (pp1i === false ? this.pathPoints[0] : this.pathPoints[pp1i]);
         // var pp2i = (pp1i+1)%this.pathPoints.length;
@@ -1004,9 +1003,9 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             let s2 = splits[1];
 
             // New Point
-            nP = {point: {x: s1.p4x, y: s1.p4y}};
-            nH1 = {point: {x: s1.p3x, y: s1.p3y}};
-            nH2 = {point: {x: s2.p2x, y: s2.p2y}};
+            nP = {coord: {x: s1.p4x, y: s1.p4y}};
+            nH1 = {coord: {x: s1.p3x, y: s1.p3y}};
+            nH2 = {coord: {x: s2.p2x, y: s2.p2y}};
             ppn = new PathPoint({p: nP, h1: nH1, h2: nH2, type: 'flat'});
             ppn.roundAll();
 
@@ -1024,9 +1023,9 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         } else {
             // just make a random point
             let d = 100;
-            nP = {point: {'x': pp1.p.x + d, 'y': pp1.p.y + d}};
-            nH1 = {point: {'x': pp1.h2.x + d, 'y': pp1.h2.y + d}};
-            nH2 = {point: {'x': pp1.h1.x + d, 'y': pp1.h1.y + d}};
+            nP = {coord: {'x': pp1.p.x + d, 'y': pp1.p.y + d}};
+            nH1 = {coord: {'x': pp1.h2.x + d, 'y': pp1.h2.y + d}};
+            nH2 = {coord: {'x': pp1.h1.x + d, 'y': pp1.h1.y + d}};
             ppn = new PathPoint({'p': nP, 'h1': nH1, 'h2': nH2, 'type': pp1.type});
         }
 
@@ -1128,7 +1127,8 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      */
     calcMaxes() {
         // debug('\n Path.calcMaxes - START');
-        // debug('\t before ' + json(this._maxes, true));
+        this._maxes = new Maxes();
+        // debug('\t before ' + JSON.stringify(this._maxes.print()));
         let seg;
         let bounds;
 
@@ -1138,16 +1138,16 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             // debug('\t ++++++ starting seg ' + s);
             seg = this.getSegment(s);
             bounds = seg.maxes;
-            // debug('\t this seg maxes ' + json(bounds, true));
-            // debug('\t this maxes ' + json(this._maxes, true));
+            // debug('\t this seg maxes ' + JSON.stringify(bounds));
+            // debug('\t this maxes ' + JSON.stringify(this._maxes.print()));
             this._maxes = getOverallMaxes([this._maxes, bounds]);
-            // debug('\t path maxes is now ' + json(this._maxes, true));
+            // debug('\t path maxes is now ' + JSON.stringify(this._maxes.print()));
             this.cache.segments[s] = seg;
             // debug('\t ++++++ ending seg ' + s);
         }
 
         this.maxes.roundAll(4);
-        // debug('\t afters ' + json(this.maxes, true));
+        // debug('\t afters ' + JSON.stringify(this._maxes.print()));
         // debug(' Path.calcMaxes - END\n');
     }
 

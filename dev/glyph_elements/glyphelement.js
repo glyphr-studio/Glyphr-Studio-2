@@ -13,9 +13,24 @@ export default class GlyphElement {
      * gets bubbled up through the GlyphElement hierarchy
      */
     changed() {
-        if (this.cache) this.cache = {};
-        if (this.calcMaxes) this.calcMaxes();
-        if (this.parent) this.parent.changed();
+        // let status = 'changed ' + this.objType;
+
+        if (this.cache) {
+            // status += ' - cache';
+            this.cache = {};
+        }
+
+        if (this.calcMaxes) {
+            // status += ' - calcMaxes';
+            this.calcMaxes();
+        }
+
+        if (this.parent) {
+            // debug(status + ' - calling parent.changed()');
+            this.parent.changed();
+        } else {
+            // debug(status + ' - No Parent!');
+        }
     }
 
     /**

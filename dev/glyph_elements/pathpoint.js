@@ -209,35 +209,38 @@ export default class PathPoint extends GlyphElement {
         switch (controlPoint) {
             case 'p':
                 // Should this honor xLock / yLock?
+                // Should this be _x/_y instead of x/y?
                 this.p.coord._x += dx;
-                this.p.coord._y += dy;
-                this.p.coord.changed();
+                this.p.coord.y += dy;
+                // this.p.coord.changed();
 
-                this.h1.coord._x += dx;
-                this.h1.coord._y += dy;
-                this.h1.coord.changed();
+                this.h1.coord.x += dx;
+                this.h1.coord.y += dy;
+                // this.h1.coord.changed();
 
-                this.h2.coord._x += dx;
-                this.h2.coord._y += dy;
-                this.h2.coord.changed();
+                this.h2.coord.x += dx;
+                this.h2.coord.y += dy;
+                // this.h2.coord.changed();
             break;
 
             case 'h1':
                 // Should this honor xLock / yLock?
-                this.h1.coord._x += dx;
-                this.h1.coord._y += dy;
+                // Should this be _x/_y instead of x/y?
+                this.h1.coord.x += dx;
+                this.h1.coord.y += dy;
                 if (this.type === 'symmetric') this.makeSymmetric('h1');
                 else if (this.type === 'flat') this.makeFlat('h1');
-                this.h1.coord.changed();
+                // this.h1.coord.changed();
             break;
 
             case 'h2':
                 // Should this honor xLock / yLock?
-                this.h2.coord._x += dx;
-                this.h2.coord._y += dy;
+                // Should this be _x/_y instead of x/y?
+                this.h2.coord.x += dx;
+                this.h2.coord.y += dy;
                 if (this.type === 'symmetric') this.makeSymmetric('h2');
                 else if (this.type === 'flat') this.makeFlat('h2');
-                this.h2.coord.changed();
+                // this.h2.coord.changed();
             break;
         }
 

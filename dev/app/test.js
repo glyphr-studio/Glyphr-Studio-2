@@ -84,7 +84,8 @@ function loadTestList() {
 
     if (_TEST.autoRun) window.setTimeout(_TEST.runTests, 10);
     else {
-        header.innerHTML += `<button onclick="_TEST.toggleAllTestCategories();">Toggle all tests</button>`;
+        header.innerHTML += `<button class="secondary" onclick="_TEST.selectAllTestCategories();">Select all</button>`;
+        header.innerHTML += `<button class="secondary" onclick="_TEST.toggleAllTestCategories();">Toggle all</button>`;
         header.innerHTML += `<button onclick="_TEST.runTests();">Run Tests</button>`;
     }
 
@@ -111,12 +112,36 @@ _TEST.toggleTestCategory = function(key) {
 };
 
 /**
+ * Set category to true
+ * @param {string} key - category name
+ * @returns {boolean} - new state
+ */
+_TEST.checkTestCategory = function(key) {
+    let cat = _TEST.categories[key];
+    cat.checked = true;
+    document.getElementById(`${getResultSectionID(key)}`).style.display = 'block';
+    localStorageSet('TEST', _TEST.categories);
+    return true;
+};
+
+/**
  * Toggles all the test checkboxes
  */
 _TEST.toggleAllTestCategories = function() {
     for (let key in _TEST.categories) {
         if (_TEST.categories.hasOwnProperty(key)) {
             document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.toggleTestCategory(key);
+        }
+    }
+};
+
+/**
+ * Select all the test checkboxes
+ */
+_TEST.selectAllTestCategories = function() {
+    for (let key in _TEST.categories) {
+        if (_TEST.categories.hasOwnProperty(key)) {
+            document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.checkTestCategory(key);
         }
     }
 };

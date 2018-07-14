@@ -275,8 +275,8 @@ export default class Segment extends GlyphElement {
      * @returns {array} - Array with two segments resulting from the split
      */
     splitAtPoint(co) {
-        debug('\n Segment.splitAtPoint - START');
-        debug(`\t splitting at ${co.x} ${co.y}`);
+        // debug('\n Segment.splitAtPoint - START');
+        // debug(`\t splitting at ${co.x} ${co.y}`);
         if (this.containsTerminalPoint(co, 0.1)) return false;
 
         if (this.lineType === 'horizontal' || this.lineType === 'vertical') {
@@ -301,12 +301,12 @@ export default class Segment extends GlyphElement {
                 }
             }
             if (!online) {
-                debug('\t not on the line');
-                debug(' Segment.splitAtPoint - END\n');
+                // debug('\t not on the line');
+                // debug(' Segment.splitAtPoint - END\n');
                 return false;
             }
-            debug('\t returning simple line split');
-            debug(' Segment.splitAtPoint - END\n');
+            // debug('\t returning simple line split');
+            // debug(' Segment.splitAtPoint - END\n');
             return [
                 new Segment({
                     'p1x': this.p1x,
@@ -324,13 +324,13 @@ export default class Segment extends GlyphElement {
         } else if (this.pointIsWithinMaxes(co)) {
             let threshold = 0.1;
             let sp = this.getSplitFromXYPoint(co, threshold);
-            debug('\t distance is ' + sp.distance);
+            // debug('\t distance is ' + sp.distance);
             if (sp && sp.distance < threshold) {
-                debug('\t splitting at ' + sp.split);
+                // debug('\t splitting at ' + sp.split);
                 return this.splitAtTime(sp.split);
             }
         }
-        debug(' Segment.splitAtPoint - returning false - END\n');
+        // debug(' Segment.splitAtPoint - returning false - END\n');
         return false;
     }
 
