@@ -8,65 +8,11 @@ export default class XYPoint {
      * @param {number} x - The X value
      * @param {number} y - The Y value
      */
-    constructor({x = 0, y = 0} = {}) {
-        this.x = x;
-        this.y = y;
-    }
+    constructor(x = 0, y = 0) {
+        x = parseFloat(x);
+        this.x = isNaN(x)? 0 : x;
 
-    // --------------------------------------------------------------
-    // Getters
-    // --------------------------------------------------------------
-
-    /**
-     * Make sure x is a number
-     * @returns {number}
-     */
-    get x() {
-        if (!isNaN(this._x)) {
-            return this._x;
-        } else {
-            this._x = 0;
-            console.warn('XYPoint.x was NaN, setting to 0');
-            return 0;
-        }
-    }
-
-    /**
-     * Make sure y is a number
-     * @returns {number}
-     */
-    get y() {
-        if (!isNaN(this._y)) {
-            return this._y;
-        } else {
-            this._y = 0;
-            console.warn('XYPoint.y was NaN, setting to 0');
-            return 0;
-        }
-    }
-
-
-    // --------------------------------------------------------------
-    // Setters
-    // --------------------------------------------------------------
-
-    /**
-     * Set the x position of the point
-     * @param {number} position
-     */
-    set x(position = 0) {
-        position = parseFloat(position);
-        if (isNaN(position)) this._x = 0;
-        else this._x = position;
-    }
-
-    /**
-     * Set the y position of the point
-     * @param {number} position
-     */
-    set y(position = 0) {
-        position = parseFloat(position);
-        if (isNaN(position)) this._y = 0;
-        else this._y = position;
+        y = parseFloat(y);
+        this.y = isNaN(y)? 0 : y;
     }
 }

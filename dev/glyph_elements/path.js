@@ -1,4 +1,5 @@
 import GlyphElement from './glyphelement.js';
+import XYPoint from './xypoint.js';
 import Maxes from './maxes.js';
 import Segment from './segment.js';
 import PolySegment from './polysegment.js';
@@ -6,7 +7,7 @@ import PathPoint from './pathpoint.js';
 import {clone, round, isVal, hasNonValues, duplicates, pointsAreEqual} from '../app/functions.js';
 // import {json} from '../app/functions.js';
 import {getOverallMaxes, maxesOverlap} from './maxes.js';
-import {findSegmentIntersections} from './segment.js';
+import {findSegmentIntersections} from './polysegment.js';
 import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
 /**
@@ -162,7 +163,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
     /**
      * Get Maxes
-     * @returns {object}
+     * @returns {Maxes}
      */
     get maxes() {
         // debug('\n Path.maxes - START');

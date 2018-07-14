@@ -62,7 +62,7 @@ export default class ControlPoint extends GlyphElement {
         let ind = '';
         for (let i=0; i<level; i++) ind += '  ';
 
-        let re = `{Handle\n`;
+        let re = `{ControlPoint\n`;
         ind += '  ';
 
         re += `${ind}coord: ${this.coord.print(level+1)}\n`;
@@ -98,7 +98,7 @@ export default class ControlPoint extends GlyphElement {
      * @returns {Coord}
      */
     get coord() {
-        return this._coord || new Coord();
+        return this._coord;
     }
 
     /**
@@ -130,7 +130,7 @@ export default class ControlPoint extends GlyphElement {
      * @returns {number}
      */
     get angle() {
-        return calculateAngle(this.coord, this.parent.p);
+        return calculateAngle(this.coord, this.parent.p.coord);
     }
 
     /**
@@ -146,7 +146,7 @@ export default class ControlPoint extends GlyphElement {
      * @returns {number}
      */
     get length() {
-        return calculateLength(this.coord, this.parent.p);
+        return calculateLength(this.coord, this.parent.p.coord);
     }
 
 

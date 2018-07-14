@@ -1,8 +1,10 @@
 import GlyphElement from './glyphelement.js';
+import XYPoint from './xypoint.js';
 import Segment from './segment.js';
 import Path from './path.js';
 import PathPoint from './pathpoint.js';
-import {duplicates, clone, pointsAreEqual} from '../app/functions.js';
+import {maxesOverlap} from './maxes.js';
+import {duplicates, clone, pointsAreEqual, round, numSan} from '../app/functions.js';
 
 /**
  * Glyph Element > Poly Segment
@@ -189,8 +191,8 @@ export default class PolySegment extends GlyphElement {
         let segments = clone(this._segments);
 
         // Connect the first / last point if not already
-        let firstP = new XYPoint({x: segments[0].p1x, y: segments[0].p1y});
-        let lastP = new XYPoint({x: segments[segments.length-1].p4x, y: segments[segments.length-1].p4y});
+        let firstP = new XYPoint(segments[0].p1x, segments[0].p1y);
+        let lastP = new XYPoint(segments[segments.length-1].p4x, segments[segments.length-1].p4y);
         if (!pointsAreEqual(firstP, lastP)) {
             segments.push(new Segment({p1x: lastP.x, p1y: lastP.y, p4x: firstP.x, p4y: firstP.y}));
         }
@@ -294,20 +296,29 @@ export default class PolySegment extends GlyphElement {
      * @returns {PolySegment}
      */
     splitSegmentsAtIntersections(ixArray = this.findIntersections(), threshold) {
-        // debug('\n PolySegment.splitSegmentsAtIntersections - START');
-        // debug('\t before length ' + this._segments.length);
-        // debug(this._segments);
+        debug('\n PolySegment.splitSegmentsAtIntersections - START');
+        debug('\t before length ' + this._segments.length);
+        debug(this.print());
+        debug(`\t ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
+
+        let x;
+        let y;
         ixArray.forEach(function(v, i) {
-            ixArray[i] = new XYPoint(...v.split('/'));
+            x = v.split('/')[0];
+            y = v.split('/')[1];
+            ixArray[i] = new XYPoint(x, y);
         });
-        // debug(ixArray);
+
+        debug(`\t ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
+
         let result = [];
         for (let s = 0; s < this._segments.length; s++) {
-            result = result.concat(this._segments[s].splitSegmentAtProvidedCoords(ixArray, threshold));
+            result = result.concat(this._segments[s].splitAtManyPoints(ixArray, threshold));
         }
         this._segments = result;
-        // debug('\t afters length ' + this._segments.length);
-        // debug(' PolySegment.splitSegmentsAtIntersections - END\n');
+        debug('\t afters length ' + this._segments.length);
+        debug(this.print());
+        debug(' PolySegment.splitSegmentsAtIntersections - END\n');
         return this;
     }
 
@@ -428,17 +439,17 @@ export default class PolySegment extends GlyphElement {
     removeZeroLengthSegments() {
         // debug('\n PolySegment.removeZeroLengthSegments - START');
 
-        let s;
-        for (let t = 0; t < this._segments.length; t++) {
-            s = this._segments[t];
-            if (pointsAreEqual(s.getXYPoint(1), s.getXYPoint(4))) {
-                if (s.line) {
-                    s.objType = 'LINE ZERO';
+        let currSeg;
+        for (let s = 0; s < this._segments.length; s++) {
+            currSeg = this._segments[s];
+            if (pointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(4))) {
+                if (currSeg.line) {
+                    currSeg.objType = 'LINE ZERO';
                 } else if (
-                    pointsAreEqual(s.getXYPoint(1), s.getXYPoint(2)) &&
-                    pointsAreEqual(s.getXYPoint(1), s.getXYPoint(3))
+                    pointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(2)) &&
+                    pointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(3))
                 ) {
-                    s.objType = 'ZERO';
+                    currSeg.objType = 'ZERO';
                 }
             }
         }

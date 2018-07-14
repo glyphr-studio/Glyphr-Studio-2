@@ -65,10 +65,10 @@ export default class Maxes extends GlyphElement {
      */
     print(level = 0) {
         let re = `{`;
-        re += `xMin: ${this._xMin || '--'} `;
-        re += `xMax: ${this._xMax || '--'} `;
-        re += `yMin: ${this._yMin || '--'} `;
-        re += `yMax: ${this._yMax || '--'}`;
+        re += `xMin:${this._xMin} `;
+        re += `xMax:${this._xMax} `;
+        re += `yMin:${this._yMin} `;
+        re += `yMax:${this._yMax}`;
         re += `}`;
 
         return re;

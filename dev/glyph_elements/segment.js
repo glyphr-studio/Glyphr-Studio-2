@@ -1,6 +1,7 @@
 import GlyphElement from './glyphelement.js';
+import XYPoint from './xypoint.js';
 import Maxes from './maxes.js';
-import {clone, numSan, isVal, round, pointsAreEqual} from '../app/functions.js';
+import {clone, numSan, isVal, round, hasNonValues, pointsAreEqual} from '../app/functions.js';
 
 /**
  * Glyph Element > Segment
@@ -162,6 +163,33 @@ export default class Segment extends GlyphElement {
         return Math.max(this.topLength, this.baseLength);
     }
 
+    /**
+     * Get Maxes
+     * @returns {Maxes}
+     */
+    get maxes() {
+        if (hasNonValues(this._maxes)) {
+            this.calcMaxes();
+        }
+
+        return new Maxes(this._maxes);
+    }
+
+
+    // --------------------------------------------------------------
+    // Setters
+    // --------------------------------------------------------------
+
+    /**
+     * Set Maxes
+     * @param {Maxes} maxes
+     * @returns {Path} - reference to this Segment
+     */
+    set maxes(maxes) {
+        this._maxes = new Maxes(maxes);
+        return this;
+    }
+
 
     // --------------------------------------------------------------
     // Drawing
@@ -234,7 +262,7 @@ export default class Segment extends GlyphElement {
      */
     split(sp = 0.5) {
         if (typeof sp === 'object' && isVal(sp.x) && isVal(sp.y)) {
-            return this.splitAtCoord(sp);
+            return this.splitAtPoint(sp);
         } else if (!isNaN(sp)) {
             return this.splitAtTime(sp);
         }
@@ -246,9 +274,9 @@ export default class Segment extends GlyphElement {
      * @param {XYPoint} co - x/y point where to split
      * @returns {array} - Array with two segments resulting from the split
      */
-    splitAtCoord(co) {
-        // debug('\n Segment.splitAtCoord - START');
-        // debug('\t splitting at ' + json(co, true));
+    splitAtPoint(co) {
+        debug('\n Segment.splitAtPoint - START');
+        debug(`\t splitting at ${co.x} ${co.y}`);
         if (this.containsTerminalPoint(co, 0.1)) return false;
 
         if (this.lineType === 'horizontal' || this.lineType === 'vertical') {
@@ -273,12 +301,12 @@ export default class Segment extends GlyphElement {
                 }
             }
             if (!online) {
-                // debug('\t not on the line');
-                // debug(' Segment.splitAtCoord - END\n');
+                debug('\t not on the line');
+                debug(' Segment.splitAtPoint - END\n');
                 return false;
             }
-            // debug('\t returning simple line split');
-            // debug(' Segment.splitAtCoord - END\n');
+            debug('\t returning simple line split');
+            debug(' Segment.splitAtPoint - END\n');
             return [
                 new Segment({
                     'p1x': this.p1x,
@@ -296,13 +324,13 @@ export default class Segment extends GlyphElement {
         } else if (this.pointIsWithinMaxes(co)) {
             let threshold = 0.1;
             let sp = this.getSplitFromXYPoint(co, threshold);
-            // debug('\t distance is ' + sp.distance);
+            debug('\t distance is ' + sp.distance);
             if (sp && sp.distance < threshold) {
-                // debug('\t splitting at ' + sp.split);
+                debug('\t splitting at ' + sp.split);
                 return this.splitAtTime(sp.split);
             }
         }
-        // debug(' Segment.splitAtCoord - returning false - END\n');
+        debug(' Segment.splitAtPoint - returning false - END\n');
         return false;
     }
 
@@ -354,28 +382,26 @@ export default class Segment extends GlyphElement {
 
     /**
      * Splits a segment at many x/y points
-     * @param {array} coords - collection of many Coords objects where to split
+     * @param {array} points - collection of many XYPoint objects where to split
      * @param {number} threshold - precision to look for a control point
      * @returns {array} - Array with many segments resulting from the split
      */
-    splitSegmentAtProvidedCoords(coords, threshold) {
-        // debug('\n Segment.splitSegmentAtProvidedCoords - START');
+    splitAtManyPoints(points, threshold) {
+        // debug('\n Segment.splitAtManyPoints - START');
         let segments = [new Segment(clone(this))];
         let tr;
-        for (let x = 0; x < coords.length; x++) {
+        for (let x = 0; x < points.length; x++) {
             for (let s = 0; s < segments.length; s++) {
-                if (!segments[s].containsTerminalPoint(coords[x], threshold)) {
-                    tr = segments[s].splitAtCoord(coords[x]);
+                if (!segments[s].containsTerminalPoint(points[x], threshold)) {
+                    tr = segments[s].splitAtPoint(points[x]);
                     if (tr) {
                         segments.splice(s, 1, tr[0], tr[1]);
-                        // s++;
-                        // break;
                     }
                 }
             }
         }
         // debug('\t split into ' + segments.length);
-        // debug(' Segment.splitSegmentAtProvidedCoords - END\n');
+        // debug(' Segment.splitAtManyPoints - END\n');
         return segments;
     }
 
@@ -480,7 +506,7 @@ export default class Segment extends GlyphElement {
         let y234 = (y23 * rs) + (y34 * t);
         let x1234 = (x123 * rs) + (x234 * t);
         let y1234 = (y123 * rs) + (y234 * t);
-        return new XYPoint({'x': x1234, 'y': y1234});
+        return new XYPoint(x1234, y1234);
     }
 
     /**
@@ -510,10 +536,10 @@ export default class Segment extends GlyphElement {
      * @returns {XYPoint}
      */
     getXYPoint(pt) {
-        if (pt === 1) return new XYPoint({x: this.p1x, y: this.p1y});
-        else if (pt === 2) return new XYPoint({x: this.p2x, y: this.p2y});
-        else if (pt === 3) return new XYPoint({x: this.p3x, y: this.p3y});
-        else if (pt === 4) return new XYPoint({x: this.p4x, y: this.p4y});
+        if (pt === 1) return new XYPoint(this.p1x, this.p1y);
+        else if (pt === 2) return new XYPoint(this.p2x, this.p2y);
+        else if (pt === 3) return new XYPoint(this.p3x, this.p3y);
+        else if (pt === 4) return new XYPoint(this.p4x, this.p4y);
     }
 
 

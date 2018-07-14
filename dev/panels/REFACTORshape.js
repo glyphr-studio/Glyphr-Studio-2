@@ -1,7 +1,7 @@
-
-import PathPoint from './pathpoint.js';
-import Coord from './coord.js';
-import {findPathIntersections} from './path.js';
+import XYPoint from '../glyph_elements/xypoint.js';
+import Coord from '../glyph_elements/coord.js';
+import PathPoint from '../glyph_elements/pathpoint.js';
+import {findPathIntersections} from '../glyph_elements/path.js';
 import {clone, isVal, round} from '../app/functions.js';
 
 export {rectPathFromMaxes, ovalPathFromMaxes, addShape,

@@ -1,11 +1,9 @@
 import PathPoint from './pathpoint.js';
-import {makePathPointFromSegments} from './pathpoint.js';
-import Segment from './segment.js';
 
 _TEST.globals.testPathPoint = {
-    p: {x: 100, y: 100},
-    h1: {point: {x: 0, y: 0}},
-    h2: {point: {x: 200, y: 200}},
+    p: {coord: {x: 100, y: 100}},
+    h1: {coord: {x: 0, y: 0}},
+    h2: {coord: {x: 200, y: 200}},
     type: 'corner',
     q: false,
     parent: false,
@@ -49,7 +47,8 @@ _TEST.testList.push(
         name: 'angle',
         assertion: function() {
             let pp = samplePathPoint();
-            return _TEST.is(pp.h1.angle).equalTo(-2.356194490192345);
+            pp.h1.y = 100;
+            return _TEST.is(pp.h1.angle).equalTo(3.141592653589793);
         },
     },
     {
@@ -57,7 +56,8 @@ _TEST.testList.push(
         name: 'niceAngle',
         assertion: function() {
             let pp = samplePathPoint();
-            return _TEST.is(pp.h1.niceAngle).equalTo(225);
+            pp.h1.y = 100;
+            return _TEST.is(pp.h1.niceAngle).equalTo(270);
         },
     },
     {
@@ -74,7 +74,7 @@ _TEST.testList.push(
         name: 'save',
         assertion: function() {
             let pp = samplePathPoint();
-            return _TEST.is(pp.save()).equalTo(JSON.parse('{"p":{"point":{"x":100,"y":100},"use":true},"type":"corner","h1":{"point":{"x":0,"y":0},"use":true},"h2":{"point":{"x":200,"y":200},"use":true}}'));
+            return _TEST.is(pp.save()).equalTo(JSON.parse('{"p":{"coord":{"x":100,"y":100},"use":true},"type":"corner","h1":{"coord":{"x":0,"y":0},"use":true},"h2":{"coord":{"x":200,"y":200},"use":true}}'));
         },
     },
     {
@@ -151,23 +151,6 @@ _TEST.testList.push(
             let pp = samplePathPoint();
             pp.h1.x = 39.9999;
             return _TEST.is(pp.roundAll(3).h1.x).equalTo(40);
-        },
-    },
-    {
-        category: 'PathPoint',
-        name: 'makePathPointFromSegments',
-        assertion: function() {
-            let seg1 = new Segment({p1x: 100, p1y: 100, p3x: 200, p3y: 200, p4x: 400, p4y: 300});
-            let seg2 = new Segment({p1x: 400, p1y: 300, p2x: 500, p2y: 200, p4x: 600, p4y: 600});
-            let pp = makePathPointFromSegments(seg1, seg2);
-            return _TEST.is(pp.save()).equalTo(
-                {
-                    'p': {'point': {'x': 400, 'y': 300}, 'use': true},
-                    'h1': {'point': {'x': 200, 'y': 200}, 'use': true},
-                    'h2': {'point': {'x': 500, 'y': 200}, 'use': true},
-                    'type': 'corner',
-                }
-            );
         },
     }
 );

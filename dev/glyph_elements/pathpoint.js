@@ -1,8 +1,7 @@
 import GlyphElement from './glyphelement.js';
 import ControlPoint from './controlpoint.js';
-import {round, rotate} from '../app/functions.js';
+import {round, rotate, pointsAreEqual} from '../app/functions.js';
 
-export {makePathPointFromSegments};
 
 /**
  * Glyph Element > Path Point
@@ -254,24 +253,21 @@ export default class PathPoint extends GlyphElement {
      * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
      */
     isOverControlPoint(x = 0, y = 0, targetSize = 3, noHandles = false) {
-        if (((this.p.x+targetSize) > x) && ((this.p.x-targetSize) < x) &&
-            ((this.p.y+targetSize) > y) && ((this.p.y-targetSize) < y)) {
+        let test = {x: x, y: y};
+        if (pointsAreEqual(this.p, test, targetSize)) {
             // debug('PathPoint.isOverControlPoint - Returning P1');
-
             return {point: this, type: 'p'};
         }
 
         if (this.h1.use && !noHandles) {
-            if (((this.h1.x+targetSize) > x) && ((this.h1.x-targetSize) < x) &&
-                ((this.h1.y+targetSize) > y) && ((this.h1.y-targetSize) < y)) {
+            if (pointsAreEqual(this.h1, test, targetSize)) {
                 // debug('PathPoint.isOverControlPoint - Returning h1');
                 return {point: this, type: 'h1'};
             }
         }
 
         if (this.h2.use && !noHandles) {
-            if (((this.h2.x+targetSize) > x) && ((this.h2.x-targetSize) < x) &&
-                ((this.h2.y+targetSize) > y) && ((this.h2.y-targetSize) < y)) {
+            if (pointsAreEqual(this.h2, test, targetSize)) {
                 // debug('PathPoint.isOverControlPoint - Returning h2');
                 return {point: this, type: 'h2'};
             }

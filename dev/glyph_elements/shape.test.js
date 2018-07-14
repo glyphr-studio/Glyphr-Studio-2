@@ -1,6 +1,5 @@
 import Shape from './shape.js';
 import Path from './path.js';
-import {rectPathFromMaxes, ovalPathFromMaxes, combineShapes, combineTwoShapes} from './shape.js';
 import {clone} from '../app/functions.js';
 
 
@@ -270,40 +269,6 @@ _TEST.testList.push(
             let s = sampleShape();
             s.path.pathPoints[2].h1.x = 'asdf';
             return _TEST.expression(!s.checkForNaN());
-        },
-    },
-    {
-        category: 'Shape',
-        name: 'rectPathFromMaxes',
-        assertion: function() {
-            let re = rectPathFromMaxes({xMin: 123, xMax: 456, yMin: 123, yMax: 456});
-            return _TEST.is(re.maxes.xMin).equalTo(123);
-        },
-    },
-    {
-        category: 'Shape',
-        name: 'ovalPathFromMaxes',
-        assertion: function() {
-            let re = ovalPathFromMaxes({xMin: 123, xMax: 456, yMin: 123, yMax: 456});
-            return _TEST.is(re.pathPoints[1].h1.x).equalTo(656);
-        },
-    },
-    // {
-    //     category: 'Shape',
-    //     name: 'combineShapes',
-    //     assertion: function() {
-    //         let re = combineShapes([sampleShape(), triangleShape()]);
-    //         return _TEST.is(re.length).equalTo(1);
-    //     },
-    // },
-    {
-        category: 'Shape',
-        name: 'combineTwoShapes',
-        assertion: function() {
-            let ts2 = triangleShape();
-            ts2.x = 150;
-            let re = combineTwoShapes(triangleShape(), ts2);
-            return _TEST.is(re.maxes.xMax).equalTo(450);
         },
     }
 );

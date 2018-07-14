@@ -32,7 +32,7 @@ _TEST.testList.push(
     },
     {
         category: 'PolySegment',
-        name: 'getPath',
+        name: 'get path',
         assertion: function() {
             let p = samplePolySegment().getPath();
             return _TEST.is(p.pathPoints.length).equalTo(3);
@@ -61,8 +61,8 @@ _TEST.testList.push(
         name: 'findIntersections',
         assertion: function() {
             let ps = new PolySegment({segments: [
-                {p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 200, p3y: 300, p4x: 300, p4y: 300},
-                {p1x: 0, p1y: 300, p2x: 100, p2y: 300, p3x: 300, p3y: 200, p4x: 300, p4y: 0},
+                {p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 100, p3y: 200, p4x: 200, p4y: 200},
+                {p1x: 0, p1y: 200, p2x: 100, p2y: 200, p3x: 200, p3y: 100, p4x: 200, p4y: 0},
             ]});
             return _TEST.is(ps.findIntersections()[0]).equalTo('169.757/238.309');
         },
@@ -72,8 +72,8 @@ _TEST.testList.push(
         name: 'splitSegmentsAtIntersections',
         assertion: function() {
             let ps = new PolySegment({segments: [
-                {p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 200, p3y: 300, p4x: 300, p4y: 300},
-                {p1x: 0, p1y: 300, p2x: 100, p2y: 300, p3x: 300, p3y: 200, p4x: 300, p4y: 0},
+                {p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 100, p3y: 200, p4x: 200, p4y: 200},
+                {p1x: 0, p1y: 200, p2x: 100, p2y: 200, p3x: 200, p3y: 100, p4x: 200, p4y: 0},
             ]});
             return _TEST.is(ps.splitSegmentsAtIntersections().segments.length).equalTo(4);
         },

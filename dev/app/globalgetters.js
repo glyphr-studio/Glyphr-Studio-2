@@ -1,6 +1,21 @@
-export {getGlyph, getGlyphType, getGlyphName, getFirstGlyphID,
+export {
+    getProject,
+    getGlyph, getGlyphType, getGlyphName, getFirstGlyphID,
     getSelectedGlyphLeftSideBearing, getSelectedGlyphRightSideBearing,
-    updateCurrentGlyphWidth, getSelectedKern, getSelectedKernID};
+    updateCurrentGlyphWidth,
+    getSelectedKern, getSelectedKernID,
+};
+
+export default {};
+
+/**
+ * Get the current Glyphr Studio Project
+ * @returns {GlyphrStudioProject}
+ */
+function getProject() {
+    if (_GP) return _GP;
+    else return {};
+}
 
 // --------------------------------------------------------------
 // GLYPH FUNCTIONS
