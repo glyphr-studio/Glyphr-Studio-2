@@ -64,7 +64,7 @@ _TEST.testList.push(
                 {p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 100, p3y: 200, p4x: 200, p4y: 200},
                 {p1x: 0, p1y: 200, p2x: 100, p2y: 200, p3x: 200, p3y: 100, p4x: 200, p4y: 0},
             ]});
-            return _TEST.is(ps.findIntersections()[0]).equalTo('169.757/238.309');
+            return _TEST.is(ps.findIntersections()[0]).equalTo('100/168.004');
         },
     },
     {

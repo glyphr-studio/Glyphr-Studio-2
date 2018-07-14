@@ -296,10 +296,10 @@ export default class PolySegment extends GlyphElement {
      * @returns {PolySegment}
      */
     splitSegmentsAtIntersections(ixArray = this.findIntersections(), threshold) {
-        debug('\n PolySegment.splitSegmentsAtIntersections - START');
-        debug('\t before length ' + this._segments.length);
-        debug(this.print());
-        debug(`\t ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
+        // debug('\n PolySegment.splitSegmentsAtIntersections - START');
+        // debug('\t before length ' + this._segments.length);
+        // debug(this.print());
+        // debug(`\t ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
 
         let x;
         let y;
@@ -309,16 +309,16 @@ export default class PolySegment extends GlyphElement {
             ixArray[i] = new XYPoint(x, y);
         });
 
-        debug(`\t ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
+        // debug(`\t ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
 
         let result = [];
         for (let s = 0; s < this._segments.length; s++) {
             result = result.concat(this._segments[s].splitAtManyPoints(ixArray, threshold));
         }
         this._segments = result;
-        debug('\t afters length ' + this._segments.length);
-        debug(this.print());
-        debug(' PolySegment.splitSegmentsAtIntersections - END\n');
+        // debug('\t afters length ' + this._segments.length);
+        // debug(this.print());
+        // debug(' PolySegment.splitSegmentsAtIntersections - END\n');
         return this;
     }
 
@@ -661,7 +661,7 @@ export function findSegmentIntersections(s1, s2, depth) {
 
 
     // if(depth > 15) {
-        // debug('\t findSegmentIntersections debug early return');
+        // debug('\t findSegmentIntersections early return');
     //  return [];
     // }
     // s1.drawSegmentOutline();
@@ -707,7 +707,8 @@ export function findSegmentIntersections(s1, s2, depth) {
     // debug([s2m]);
 
     // Complex segment intersections
-    let threshold = 0.00005;
+    // let threshold = 0.00005; // Wow, this was the threshold???
+    let threshold = 0.0005;
     let precision = 3;
 
     let s1w = (s1m.xMax - s1m.xMin);
@@ -717,10 +718,8 @@ export function findSegmentIntersections(s1, s2, depth) {
     // debug('\t s1 w/h: ' + s1w + ' / ' + s1h);
     // debug('\t s2 w/h: ' + s2w + ' / ' + s2h);
 
-    if ( (s1w < threshold) &&
-        (s1h < threshold) &&
-        (s2w < threshold) &&
-        (s2h < threshold) ) {
+    if ( (s1w < threshold) && (s1h < threshold) &&
+        (s2w < threshold) && (s2h < threshold) ) {
             s1w *= 0.5;
             s1h *= 0.5;
             s2w *= 0.5;

@@ -150,7 +150,7 @@ _TEST.testList.push(
         category: 'Segment',
         name: 'isLineOverlappedByLine',
         assertion: function() {
-            let seg = new Segment({p1x: 100, p1y: 100, p4x: 200, p4y: 200});
+            let seg = new Segment({p1x: 50, p1y: 50, p4x: 150, p4y: 150});
             return _TEST.expression(seg.isLineOverlappedByLine(sampleSegment().convertToLine()));
         },
     },
@@ -167,14 +167,14 @@ _TEST.testList.push(
         name: 'containsTerminalPoint - end',
         assertion: function() {
             // also tests Segment.containsEndPoint
-            return _TEST.is(sampleSegment().containsTerminalPoint({x: 300, y: 300})).equalTo('end');
+            return _TEST.is(sampleSegment().containsTerminalPoint({x: 200, y: 200})).equalTo('end');
         },
     },
     {
         category: 'Segment',
         name: 'containsPointOnCurve',
         assertion: function() {
-            return _TEST.expression(sampleSegment().containsPointOnCurve({x: 112, y: 187}));
+            return _TEST.expression(sampleSegment().containsPointOnCurve({x: 29.0763, y: 95.4063}));
         },
     },
     {
@@ -188,7 +188,7 @@ _TEST.testList.push(
         category: 'Segment',
         name: 'precedes',
         assertion: function() {
-            let seg2 = new Segment({p1x: 300, p1y: 300});
+            let seg2 = new Segment({p1x: 200, p1y: 200});
             return _TEST.expression(sampleSegment().precedes(seg2));
         },
     },
@@ -213,8 +213,8 @@ _TEST.testList.push(
         name: 'findSegmentIntersections',
         assertion: function() {
             // basically an upper-right quadrant quarter circle
-            let seg2 = new Segment({p1x: 0, p1y: 300, p2x: 100, p2y: 300, p3x: 300, p3y: 200, p4x: 300, p4y: 0});
-            return _TEST.is(findSegmentIntersections(sampleSegment(), seg2)[0]).equalTo('169.757/238.309');
+            let seg2 = new Segment({p1x: 0, p1y: 200, p2x: 100, p2y: 200, p3x: 200, p3y: 100, p4x: 200, p4y: 0});
+            return _TEST.is(findSegmentIntersections(sampleSegment(), seg2)[0]).equalTo('100/168.004');
         },
     },
     {
@@ -247,8 +247,8 @@ _TEST.testList.push(
         name: 'findEndPointSegmentIntersections',
         assertion: function() {
             let seg1 = sampleSegment();
-            let seg2 = new Segment({p1x: 300, p1y: 300});
-            return _TEST.is(findEndPointSegmentIntersections(seg1, seg2)[0]).equalTo('300/300');
+            let seg2 = new Segment({p1x: 200, p1y: 200});
+            return _TEST.is(findEndPointSegmentIntersections(seg1, seg2)[0]).equalTo('200/200');
         },
     }
 );

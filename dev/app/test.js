@@ -19,7 +19,6 @@ window.onload = loadTests;
 let succeeded = 0;
 let failed = 0;
 let didNotRun = 0;
-let total = 0;
 
 
 /**
@@ -64,7 +63,6 @@ function loadTestList() {
             _TEST.categories[cat] = {count: 1, checked: getInitialCheckedState(cat)};
         }
 
-        total++;
         t++;
     };
 
@@ -86,8 +84,8 @@ function loadTestList() {
 
     if (_TEST.autoRun) window.setTimeout(_TEST.runTests, 10);
     else {
-        header.innerHTML += `<button class="secondary" onclick="_TEST.toggleAllTestCategories();"><i>Toggle all tests</i></button>`;
-        header.innerHTML += `<br><br><button onclick="_TEST.runTests();">Run Tests</button> &emsp; `;
+        header.innerHTML += `<button onclick="_TEST.toggleAllTestCategories();">Toggle all tests</button>`;
+        header.innerHTML += `<button onclick="_TEST.runTests();">Run Tests</button>`;
     }
 
     debug(`t> Done loading tests\n`);
