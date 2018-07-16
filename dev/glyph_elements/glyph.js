@@ -52,8 +52,6 @@ export default class Glyph extends GlyphElement {
         this.ratioLock = ratioLock;
         this.usedIn = usedIn;
         this.contextGlyphs = contextGlyphs;
-
-        this.changed();
     }
 
 
@@ -548,7 +546,6 @@ export default class Glyph extends GlyphElement {
         for (let i = 0; i < cs.length; i++) {
             cs[i].updateShapePosition(dx, dy);
         }
-        this.changed();
         // debug(' Glyph.updateGlyphPosition - END ' + this.name + '\n\n');
     }
 
@@ -657,10 +654,9 @@ export default class Glyph extends GlyphElement {
             else deltaY = newShapeY - oldShapeY;
 
             // debug('\t Shape Pos ' + i + ' dx dy ' + deltaX + ' ' + deltaY);
-            s.updateShapePosition(deltaX, deltaY, true);
+            shape.updateShapePosition(deltaX, deltaY, true);
         }
 
-        this.changed();
         // debug('\t Afters Maxes ' + json(this.maxes, true));
         // debug(' Glyph.updateGlyphSize - END ' + this.name + '\n');
     }
@@ -676,7 +672,6 @@ export default class Glyph extends GlyphElement {
         for (let s = 0; s < this.shapes.length; s++) {
             this.shapes[s].flipNS(mid);
         }
-        this.changed();
 
         return this;
     }
@@ -697,7 +692,7 @@ export default class Glyph extends GlyphElement {
         for (let s = 0; s < this.shapes.length; s++) {
             this.shapes[s].flipEW(mid);
         }
-        this.changed();
+
         // debug('\t maxes = ' + json(this.maxes, true));
         return this;
     }
@@ -713,7 +708,6 @@ export default class Glyph extends GlyphElement {
         for (let s = 0; s < this.shapes.length; s++) {
             this.shapes[s].rotate(angle, about);
         }
-        this.changed();
 
         return this;
     }
@@ -721,12 +715,14 @@ export default class Glyph extends GlyphElement {
     /**
      * Reverses the order of the path points in all the paths,
      * thus reversing the winding
+     * @returns {Glyph} - reference to this glyph
      */
     reverseWinding() {
         for (let s = 0; s < this.shapes.length; s++) {
             this.shapes[s].reverseWinding();
         }
-        this.changed();
+
+        return this;
     }
 
 
@@ -799,7 +795,6 @@ export default class Glyph extends GlyphElement {
             });
         }
 
-        this.changed();
         // debug(' Glyph.alignShapes - END\n');
     }
 
@@ -1148,7 +1143,6 @@ export default class Glyph extends GlyphElement {
         }
         this.shapes = reshapes;
         // this.calcMaxes();
-        this.changed();
         return this;
     }
 
@@ -1166,7 +1160,6 @@ export default class Glyph extends GlyphElement {
             // debug('\t new shapes');
             this.shapes = shapes;
             // debug(this.shapes);
-            this.changed();
         }
         // debug(this.name + ' \t\t ' + this.shapes.length);
         // debug(' Glyph.combineAllShapes - END - ' + this.name + '\n');
@@ -1182,7 +1175,6 @@ export default class Glyph extends GlyphElement {
             newShapes = newShapes.concat(this.shapes[ts].resolveSelfOverlaps());
         }
         this.shapes = newShapes;
-        this.changed();
     }
 
 

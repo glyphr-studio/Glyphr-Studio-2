@@ -21,11 +21,11 @@ export default class ControlPoint extends GlyphElement {
         parent = false,
     } = {}) {
         super();
+        this.parent = parent;
         this.coord = coord;
         this.use = use;
         this.xLock = xLock;
         this.yLock = yLock;
-        this.parent = parent;
     }
 
 
@@ -161,7 +161,6 @@ export default class ControlPoint extends GlyphElement {
     set x(position) {
         this.coord.x = position;
         this.use = true;
-        // this.changed();
     }
 
     /**
@@ -171,7 +170,6 @@ export default class ControlPoint extends GlyphElement {
     set y(position) {
         this.coord.y = position;
         this.use = true;
-        // this.changed();
     }
 
     /**
@@ -179,10 +177,9 @@ export default class ControlPoint extends GlyphElement {
      * @param {Coord} pt
      */
     set coord(pt) {
+        pt.parent = this;
         this._coord = new Coord(pt);
-        this._coord.parent = this;
         this.use = true;
-        this.changed();
     }
 
     /**

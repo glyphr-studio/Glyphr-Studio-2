@@ -56,6 +56,7 @@ export default class ComponentInstance extends GlyphElement {
         parent = false,
     } = {}) {
         super();
+        this.parent = parent;
         this.link = link;
         this.name = name;
         this.translateX = translateX;
@@ -73,9 +74,6 @@ export default class ComponentInstance extends GlyphElement {
         this.hLock = hLock;
         this.ratioLock = ratioLock;
         this.visible = visible;
-        this.parent = parent;
-
-        this.changed();
     }
 
 
@@ -320,6 +318,7 @@ export default class ComponentInstance extends GlyphElement {
      */
     set link(link) {
         this._link = parseUnicodeInput(link)[0];
+        this.changed();
         return this;
     }
 
@@ -346,6 +345,7 @@ export default class ComponentInstance extends GlyphElement {
     set translateX(translateX) {
         this._translateX = parseFloat(translateX);
         if (isNaN(this._translateX)) this._translateX = 0;
+        this.changed();
         return this;
     }
 
@@ -357,6 +357,7 @@ export default class ComponentInstance extends GlyphElement {
     set translateY(translateY) {
         this._translateY = parseFloat(translateY);
         if (isNaN(this._translateY)) this._translateY = 0;
+        this.changed();
         return this;
     }
 
@@ -368,6 +369,7 @@ export default class ComponentInstance extends GlyphElement {
     set scaleW(scaleW) {
         this._scaleW = parseFloat(scaleW);
         if (isNaN(this._scaleW)) this._scaleW = 0;
+        this.changed();
         return this;
     }
 
@@ -379,6 +381,7 @@ export default class ComponentInstance extends GlyphElement {
     set scaleH(scaleH) {
         this._scaleH = parseFloat(scaleH);
         if (isNaN(this._scaleH)) this._scaleH = 0;
+        this.changed();
         return this;
     }
 
@@ -389,7 +392,7 @@ export default class ComponentInstance extends GlyphElement {
      */
     set isFlippedNS(isFlippedNS) {
         this._isFlippedNS = !!isFlippedNS;
-
+        this.changed();
         return this;
     }
 
@@ -400,6 +403,7 @@ export default class ComponentInstance extends GlyphElement {
      */
     set isFlippedEW(isFlippedEW) {
         this._isFlippedEW = !!isFlippedEW;
+        this.changed();
         return this;
     }
 
@@ -410,6 +414,7 @@ export default class ComponentInstance extends GlyphElement {
      */
     set reverseWinding(reverseWinding) {
         this._reverseWinding = !!reverseWinding;
+        this.changed();
         return this;
     }
 
@@ -421,6 +426,7 @@ export default class ComponentInstance extends GlyphElement {
     set rotation(rotation) {
         this._rotation = parseFloat(rotation);
         if (isNaN(this._rotation)) this._rotation = 0;
+        this.changed();
         return this;
     }
 
@@ -431,6 +437,7 @@ export default class ComponentInstance extends GlyphElement {
      */
     set rotateFirst(rotateFirst) {
         this._rotateFirst = !!rotateFirst;
+        this.changed();
         return this;
     }
 
@@ -491,6 +498,7 @@ export default class ComponentInstance extends GlyphElement {
      */
     set visible(visible) {
         this._visible = !!visible;
+        this.changed();
         return this;
     }
 
@@ -646,7 +654,6 @@ export default class ComponentInstance extends GlyphElement {
         dy = parseFloat(dy) || 0;
         this.translateX = (1 * this.translateX) + dx;
         this.translateY = (1 * this.translateY) + dy;
-        this.changed();
         // debug('\t translate now: ' + this.translateX + ' / ' + this.translateY);
         // debug(' ComponentInstance.updateShapePosition - END\n');
     }
@@ -666,7 +673,6 @@ export default class ComponentInstance extends GlyphElement {
         // debug('\t ogm ' + json(ogm, true));
         if (!isNaN(nx)) this.translateX = (nx - ogm.xMin);
         if (!isNaN(ny)) this.translateY = (ny - ogm.yMax);
-        this.changed();
         // debug('\t translate now: ' + this.translateX + ' / ' + this.translateY);
         // debug(' ComponentInstance.setShapePosition - END\n');
     }
@@ -696,7 +702,6 @@ export default class ComponentInstance extends GlyphElement {
         this.scaleW = (1 * this.scaleW) + dw;
         this.scaleH = (1 * this.scaleH) + dh;
         if (this.rotation === 0) this.rotateFirst = false;
-        this.changed();
         // debug('\t translate now: ' + this.scaleW + ' / ' + this.scaleH);
         // debug(' ComponentInstance.updateShapeSize - END\n');
     }
@@ -734,7 +739,6 @@ export default class ComponentInstance extends GlyphElement {
             this.translateX += (((mid - g.xMax) + mid) - g.xMin);
         }
         if (this.rotation === 0) this.rotateFirst = false;
-        this.changed();
         return this;
     }
 
@@ -750,7 +754,6 @@ export default class ComponentInstance extends GlyphElement {
             this.translateY += (((mid - g.yMax) + mid) - g.yMin);
         }
         if (this.rotation === 0) this.rotateFirst = false;
-        this.changed();
         return this;
     }
 
@@ -771,19 +774,11 @@ export default class ComponentInstance extends GlyphElement {
         if (this.scaleH === 0 && this.scaleW === 0 && !this.isFlippedEW && !this.isFlippedNS) {
             this.rotateFirst = true;
         }
-        this.changed();
         // debug('\t is now ' + this.rotation);
         // debug(' ComponentInstance.rotate - END\n');
         return this;
     }
 
-    /**
-     * reverseWinding
-     */
-    reverseWinding() {
-        this.reverseWinding = !this.reverseWinding;
-        this.changed();
-    }
 
     // /**
     //  * calcMaxes

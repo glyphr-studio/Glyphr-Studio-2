@@ -35,6 +35,7 @@ export default class Shape extends GlyphElement {
         parent = false,
     } = {}) {
         super();
+        this.parent = parent;
         this.name = name;
         this.path = path;
         this.visible = visible;
@@ -43,9 +44,6 @@ export default class Shape extends GlyphElement {
         this.wLock = wLock;
         this.hLock = hLock;
         this.ratioLock = ratioLock;
-        this.parent = parent;
-
-        this.changed();
     }
 
 

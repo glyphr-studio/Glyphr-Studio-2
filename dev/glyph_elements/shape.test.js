@@ -16,7 +16,11 @@ function sampleShape() {
  * @returns {Shape}
  */
 function triangleShape() {
-    return new Shape({path: {pathPoints: [{p: {x: 100, y: 200}}, {p: {x: 300, y: 600}}, {p: {x: 400, y: 500}}]}});
+    return new Shape({path: {pathPoints: [
+        {p: {coord: {x: 100, y: 200}}},
+        {p: {coord: {x: 300, y: 600}}},
+        {p: {coord: {x: 400, y: 500}}},
+    ]}});
 }
 
 _TEST.testList.push(
@@ -34,7 +38,11 @@ _TEST.testList.push(
         name: 'get/set path',
         assertion: function() {
             let s = sampleShape();
-            s.path = new Path({pathPoints: [{p: {x: 100, y: 200}}, {p: {x: 300, y: 600}}, {p: {x: 400, y: 500}}]});
+            s.path = new Path({pathPoints: [
+                {p: {coord: {x: 100, y: 200}}},
+                {p: {coord: {x: 300, y: 600}}},
+                {p: {coord: {x: 400, y: 500}}},
+            ]});
             return _TEST.is(s.path.pathPoints[2].p.x).equalTo(400);
         },
     },
@@ -134,7 +142,7 @@ _TEST.testList.push(
         assertion: function() {
             let s = sampleShape();
             let re = s.save();
-            return _TEST.is(re).equalTo({'path': {'winding': -5, 'pathPoints': [{'p': {'x': 326.65249430318556, 'y': 500}, 'type': 'symmetric', 'h1': {'point': {'x': 239.84504649235828, 'y': 500}, 'use': true}, 'h2': {'point': {'x': 413.45994211401285, 'y': 500}, 'use': true}}, {'p': {'x': 484, 'y': 343.4570087834163}, 'type': 'symmetric', 'h1': {'point': {'x': 484, 'y': 428.9899571029709}, 'use': true}, 'h2': {'point': {'x': 484, 'y': 257.92406046386174}, 'use': true}}, {'p': {'x': 326.65249430318556, 'y': 186}, 'type': 'symmetric', 'h1': {'point': {'x': 414.1548862447006, 'y': 186}, 'use': true}, 'h2': {'point': {'x': 239.15010236167052, 'y': 186}, 'use': true}}, {'p': {'x': 170, 'y': 343.4570087834163}, 'type': 'symmetric', 'h1': {'point': {'x': 170, 'y': 257.0100080446707}, 'use': true}, 'h2': {'point': {'x': 170, 'y': 429.9040095221619}, 'use': true}}]}});
+            return _TEST.is(re).equalTo(JSON.parse('{"path":{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500},"use":true},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500},"use":true},"h2":{"coord":{"x":413.45994211401285,"y":500},"use":true}},{"p":{"coord":{"x":484,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709},"use":true},"h2":{"coord":{"x":484,"y":257.92406046386174},"use":true}},{"p":{"coord":{"x":326.65249430318556,"y":186},"use":true},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186},"use":true},"h2":{"coord":{"x":239.15010236167052,"y":186},"use":true}},{"p":{"coord":{"x":170,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707},"use":true},"h2":{"coord":{"x":170,"y":429.9040095221619},"use":true}}]}}'));
         },
     },
     {
@@ -143,7 +151,7 @@ _TEST.testList.push(
         assertion: function() {
             let s = sampleShape();
             let re = s.makeSVG();
-            return _TEST.is(re).equalTo('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0,0,980,980"><g transform="translate(200,600) scale(0.6,-0.6)"><path d="M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z"/></g></svg>');
+            return _TEST.is(re).equalTo('<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"50\" height=\"50\" viewBox=\"0,0,990,990\"><g transform=\"translate(100,650) scale(0.8,-0.8)\"><path d=\"M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z\"/></g></svg>');
         },
     },
     {

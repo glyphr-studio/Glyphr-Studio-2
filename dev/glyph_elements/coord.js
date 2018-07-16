@@ -15,9 +15,9 @@ export default class Coord extends GlyphElement {
      */
     constructor({x = 0, y = 0, parent = false} = {}) {
         super();
+        this.parent = parent;
         this.x = x;
         this.y = y;
-        this.parent = parent;
     }
 
 

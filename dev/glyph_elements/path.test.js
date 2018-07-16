@@ -44,7 +44,11 @@ function samplePath() {
  * @returns {Path}
  */
 function trianglePath() {
-    return new Path({pathPoints: [{p: {x: 100, y: 200}}, {p: {x: 300, y: 600}}, {p: {x: 400, y: 500}}]});
+    return new Path({pathPoints: [
+        {p: {coord: {x: 100, y: 200}}},
+        {p: {coord: {x: 300, y: 600}}},
+        {p: {coord: {x: 400, y: 500}}},
+    ]});
 }
 
 _TEST.testList.push(

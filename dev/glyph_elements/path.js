@@ -33,12 +33,14 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         winding,
         parent = false,
     } = {}) {
+        // debug(`\nPath.constructor - Start`);
         super();
+        this.bubbleChanges = false;
+        this.parent = parent;
         this.pathPoints = pathPoints;
         this.winding = winding;
-        this.parent = parent;
-
         this.changed();
+        // debug(`Path.constructor - End\n`);
     }
 
 
@@ -204,12 +206,11 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         if (pathPoints && pathPoints.length) {
             // debug('NEW PATH : Hydrating Path Points, length ' + pathPoints.length);
             for (let i = 0; i < pathPoints.length; i++) {
+                pathPoints[i].parent = this;
                 this._pathPoints[i] = new PathPoint(pathPoints[i]);
-                this._pathPoints[i].parent = this;
             }
         }
 
-        this.changed();
         return this;
     }
 
@@ -304,6 +305,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {number} nw - new Width
      * @param {number} nh - new Height
      * @param {boolean} ratioLock - if one is changed, change the other
+     * @returns {Path} - reference to this path
      */
     setPathSize(nw = false, nh = false, ratioLock = false) {
         if (nw !== false) nw = parseFloat(nw);
@@ -313,6 +315,8 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         let dh = (nh !== false) ? (nh - this.height) : 0;
 
         this.updatePathSize(dw, dh, ratioLock);
+
+        return this;
     }
 
     /**
@@ -320,6 +324,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {number} dw - delta width
      * @param {number} dh - delta height
      * @param {boolean} ratioLock - if one is changed, change the other
+     * @returns {Path} - reference to this path
      */
     updatePathSize(dw = 0, dh = 0, ratioLock = false) {
         // debug('\n Path.updatePathSize - START');
@@ -380,14 +385,16 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             // debug('ratioHeight = ' + ratioHeight);
             // debug('ratioWidth = ' + ratioWidth);
         }
-        // this.calcMaxes();
+
         // debug(' Path.updatePathSize - END\n');
+        return this;
     }
 
     /**
      * Moves a path to a specific position
      * @param {number} nx - new X
      * @param {number} ny - new Y
+     * @returns {Path} - reference to this path
      */
     setPathPosition(nx = false, ny = false) {
         // debug('\n Path.setPathPosition - START');
@@ -402,12 +409,14 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
         this.updatePathPosition(dx, dy);
         // debug(' Path.setPathPosition - END\n');
+        return this;
     }
 
     /**
      * Moves the path based on delta values
      * @param {number} dx - delta X
      * @param {number} dy - delta Y
+     * @returns {Path} - reference to this path
      */
     updatePathPosition(dx = 0, dy = 0) {
         // debug('\n Path.updatePathPosition - START');
@@ -421,8 +430,9 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             // debug('-------------------- pathPoint #' + d);
             pp.updatePathPointPosition('p', dx, dy);
         }
-        this.changed();
+
         // debug(' Path.updatePathPosition - END\n');
+        return this;
     }
 
     /**
@@ -439,7 +449,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             pp.rotate(angle, about);
             // debug('\t p['+d+'].p.x ' + pp.p.x);
         }
-        this.changed();
+
         // debug(' Path.rotate - END\n');
         return this;
     }
@@ -752,7 +762,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             'p4x': pp2.p.x, 'p4y': pp2.p.y,
         });
         this.cache.segments[num] = re;
-        // debug([re, re2]);
+        // debug(re.print());
         // debug(' Path.getSegment - END\n');
 
         return re;
@@ -919,7 +929,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      */
     flipNS(mid = this.center.y) {
         // debug(`\n Path.flipNS - START`);
-        // debug(json(this.save()));
+        // debug(this.print());
         let startingY = this.y;
 
         for (let e = 0; e < this.pathPoints.length; e++) {
@@ -931,6 +941,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         this.y = startingY;
         this.reverseWinding();
 
+        // debug(this.print());
         // debug(` Path.flipNS - END\n\n`);
         return this;
     }
@@ -942,7 +953,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      */
     flipEW(mid = this.center.x) {
         // debug(`\n Path.flipEW - START`);
-        // debug(json(this.save()));
+        // debug(this.print());
         let startingX = this.x;
         // debug(`\t calculating mid: (width)/2 + x = mid: ${this.width}/2 + ${this.x} = ${mid}`);
 
@@ -960,7 +971,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     }
 
     /**
-     * Adds a Path Point to the beginning of this path
+     * Adds a Path Point to the end of this path
      * @param {PathPoint} newPoint - Path Point to add
      * @returns {PathPoint} - reference to the added point
      */
@@ -973,8 +984,6 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         let re = this.selectPathPoint(this.pathPoints.length - 1);
 
         this.findWinding();
-        // debug('\t calling calcMaxes');
-        this.changed();
         // debug(' Path.addPathPoint - END - returning ' + re + '\n');
 
         return re;
@@ -1033,7 +1042,6 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
         ppn.parent = this;
         this.pathPoints.splice(pp2i, 0, ppn);
         // this.selectPathPoint(pp2i);
-        this.changed();
 
         return ppn;
     }
@@ -1127,27 +1135,25 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      */
     calcMaxes() {
         // debug('\n Path.calcMaxes - START');
+        // debug(`\t before ${this._maxes.print()}`);
         this._maxes = new Maxes();
-        // debug('\t before ' + JSON.stringify(this._maxes.print()));
         let seg;
-        let bounds;
 
         if (!this.cache.segments) this.cache.segments = [];
 
         for (let s = 0; s < this.pathPoints.length; s++) {
             // debug('\t ++++++ starting seg ' + s);
             seg = this.getSegment(s);
-            bounds = seg.maxes;
-            // debug('\t this seg maxes ' + JSON.stringify(bounds));
-            // debug('\t this maxes ' + JSON.stringify(this._maxes.print()));
-            this._maxes = getOverallMaxes([this._maxes, bounds]);
-            // debug('\t path maxes is now ' + JSON.stringify(this._maxes.print()));
-            this.cache.segments[s] = seg;
+            // debug(`\t this seg maxes ${seg.maxes.print()}`);
+            // debug(`\t this maxes ${this._maxes.print()}`);
+
+            this._maxes = getOverallMaxes([this._maxes, seg.maxes]);
+            // debug(`\t path maxes is now ${this._maxes.print()}`);
             // debug('\t ++++++ ending seg ' + s);
         }
 
         this.maxes.roundAll(4);
-        // debug('\t afters ' + JSON.stringify(this._maxes.print()));
+        // debug(`\t after> ${this._maxes.print()}`);
         // debug(' Path.calcMaxes - END\n');
     }
 

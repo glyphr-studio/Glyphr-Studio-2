@@ -42,7 +42,7 @@ export default class Segment extends GlyphElement {
         this.p3x = isVal(p3x) ? numSan(p3x) : this.p4x;
         this.p3y = isVal(p3y) ? numSan(p3y) : this.p4y;
 
-        this.changed();
+        this.calcMaxes();
     }
 
 
@@ -613,17 +613,18 @@ export default class Segment extends GlyphElement {
             return (mt*mt*mt*p0) + (3*mt*mt*t*p1) + (3*mt*t*t*p2) + (t*t*t*p3);
         }
 
-        let bounds = new Maxes({
+        let bounds = {
             'xMin': Math.min(this.p1x, this.p4x),
             'yMin': Math.min(this.p1y, this.p4y),
             'xMax': Math.max(this.p1x, this.p4x),
             'yMax': Math.max(this.p1y, this.p4y),
-        });
+        };
 
         if (this.lineType) {
-            // debug([bounds]);
+            this.maxes = bounds;
+            // debug(this.maxes.print());
             // debug(' Segment.calcMaxes - returning fast maxes for line - END\n');
-            return bounds;
+            return this.maxes;
         }
 
         let d1x = this.p2x - this.p1x;
@@ -678,7 +679,7 @@ export default class Segment extends GlyphElement {
         }
         // debug([this.getFastMaxes(), bounds]);
         // debug(' Segment.calcMaxes - END\n');
-        this.maxes = new Maxes(bounds);
+        this.maxes = bounds;
         return this.maxes;
     }
 

@@ -399,6 +399,8 @@ function hasNonValues(obj) {
     for (let v in obj) {
         if (obj.hasOwnProperty(v)) {
             if (!isVal(obj[v])) return true;
+            if (obj[v] === Number.MAX_SAFE_INTEGER) return true;
+            if (obj[v] === Number.MIN_SAFE_INTEGER) return true;
         }
     }
 

@@ -17,10 +17,10 @@ export default class Maxes extends GlyphElement {
         super();
         // debug(`\n Maxes.constructor - START`);
 
-        this.xMin = xMin; // use setter for hydration
-        this.xMax = xMax; // use setter for hydration
-        this.yMin = yMin; // use setter for hydration
-        this.yMax = yMax; // use setter for hydration
+        this.xMin = xMin;
+        this.xMax = xMax;
+        this.yMin = yMin;
+        this.yMax = yMax;
 
         // debug(`\t maxes is now`);
         // debug(this);

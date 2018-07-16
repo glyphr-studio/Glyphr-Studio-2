@@ -5,7 +5,9 @@ import {json} from '../app/functions.js';
  */
 export default class GlyphElement {
     /** Yay! */
-    constructor() {}
+    constructor() {
+        this.bubbleChanges = true;
+    }
 
 
     /**
@@ -13,14 +15,15 @@ export default class GlyphElement {
      * gets bubbled up through the GlyphElement hierarchy
      */
     changed() {
+        this.bubbleChanges = true;
+
         // let status = 'changed ' + this.objType;
 
         if (this.cache) {
-            // status += ' - cache';
             this.cache = {};
         }
 
-        if (this.calcMaxes) {
+        if (this.calcMaxes && this.canBubbleChanges()) {
             // status += ' - calcMaxes';
             this.calcMaxes();
         }
@@ -31,6 +34,18 @@ export default class GlyphElement {
         } else {
             // debug(status + ' - No Parent!');
         }
+    }
+
+    /**
+     * Looks up the parent chain to see if any parents
+     * are blocking change bubbles
+     * @returns {boolean}
+     */
+    canBubbleChanges() {
+        if (!this.bubbleChanges) return false;
+
+        if (!this.parent) return true;
+        else return this.parent.canBubbleChanges();
     }
 
     /**

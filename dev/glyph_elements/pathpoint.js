@@ -27,11 +27,11 @@ export default class PathPoint extends GlyphElement {
         parent = false,
     } = {}) {
         super();
+        this.parent = parent;
         this.p = p;
         this.h1 = h1;
         this.h2 = h2;
         this.type = type;
-        this.parent = parent;
     }
 
 
@@ -144,10 +144,9 @@ export default class PathPoint extends GlyphElement {
      * set the main point
      * @param {ControlPoint} newPoint
      */
-    set p(newPoint) {
+    set p(newPoint = {}) {
+        newPoint.parent = this;
         this._p = new ControlPoint(newPoint);
-        this._p.parent = this;
-        this.changed();
     }
 
     /**
@@ -159,9 +158,8 @@ export default class PathPoint extends GlyphElement {
             newPoint.coord = {x: this.p.x-100, y: this.p.y};
             newPoint.use = false;
         }
+        newPoint.parent = this;
         this._h1 = new ControlPoint(newPoint);
-        this._h1.parent = this;
-        this.changed();
     }
 
     /**
@@ -173,9 +171,8 @@ export default class PathPoint extends GlyphElement {
             newPoint.coord = {x: this.p.x+100, y: this.p.y};
             newPoint.use = false;
         }
+        newPoint.parent = this;
         this._h2 = new ControlPoint(newPoint);
-        this._h2.parent = this;
-        this.changed();
     }
 
     /**
@@ -320,8 +317,6 @@ export default class PathPoint extends GlyphElement {
         // this.roundAll();
         // debug('PathPoint.makeSymmetric - returns ' + JSON.stringify(this));
 
-        this.changed();
-
         return this;
     }
 
@@ -396,8 +391,6 @@ export default class PathPoint extends GlyphElement {
         this._type = 'flat';
 
         // debug(' PathPoint.makeFlat - END\n');
-
-        this.changed();
 
         return this;
     }
