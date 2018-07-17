@@ -323,6 +323,15 @@ export default class Shape extends GlyphElement {
         return this;
     }
 
+    /**
+     * set maxes
+     * @param {Maxes} maxes
+     * @returns {Shape} - reference to this Shape
+     */
+    set maxes(maxes) {
+        this.path.maxes = maxes;
+        return this;
+    }
 
     // --------------------------------------------------------------
     // Export to different languages
@@ -460,7 +469,7 @@ export default class Shape extends GlyphElement {
 
     /**
      * Call path.rotate
-     * @param {number} angle - how much to rotate
+     * @param {number} angle - how much to rotate (radians)
      * @param {XYPoint} about - x/y center of rotation
      * @returns {Shape} - reference to this shape
      */

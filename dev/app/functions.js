@@ -485,7 +485,7 @@ function localStorageGet(key) {
 // 360 Degrees, 12 o'clock is zero, clockwise = positve
 
 /**
- * Calculates the angle of a handle given a point
+ * Calculates the angle (in radians) of a handle given a point
  * @param {XYPoint} handle - x/y point of handle
  * @param {XYPoint} point - x/y point of point
  * @returns {number}
@@ -517,8 +517,8 @@ function calculateLength(handle, point) {
 /**
  * Rotates a point a certain number of degrees around a given point
  * @param {XYPoint} point - x/y point to rotate
- * @param {number} angle - how much to rotate
- * @param {XYPoint} about - x/y point of rotation
+ * @param {number} angle - how much to rotate (radians)
+ * @param {XYPoint} about - x/y point center of rotation
  */
 function rotate(point, angle, about = {x: 0, y: 0}) {
     // debug('\n rotate - START');
@@ -560,10 +560,10 @@ function deg(rad) {
 }
 
 /**
- * Given a standard JavaScript angle, convert it to the angle
- * system we show the user (aka "Nice Angle")
- * @param {number} angle - Angle from standard JavaScript
- * @returns {number}
+ * Given a standard JavaScript angle (radians), convert it to the angle
+ * system we show the user (degrees, aka "Nice Angle")
+ * @param {number} angle - Angle in Radians
+ * @returns {number} - Angle in Degrees
  */
 function angleToNiceAngle(angle) {
     angle = deg(angle);
@@ -576,10 +576,10 @@ function angleToNiceAngle(angle) {
 }
 
 /**
- * Given a "Nice Angle" from the UI, calculate the type of
- * angle that JavaScript knows about
- * @param {number} angle - Nice Angle
- * @returns {number}
+ * Given a "Nice Angle" in degrees from the UI, calculate the type of
+ * angle that JavaScript knows about (radians)
+ * @param {number} angle - Angle in Degrees
+ * @returns {number} - Angle in Radians
  */
 function niceAngleToAngle(angle) {
     angle += 90;

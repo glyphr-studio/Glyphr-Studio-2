@@ -472,7 +472,7 @@ export default class PathPoint extends GlyphElement {
 
     /**
      * Rotate Point and Handles around a center of rotation
-     * @param {number} angle - How far to rotate
+     * @param {number} angle - how much to rotate (radians)
      * @param {XYPoint} about - x/y point center of rotation
      * @returns {PathPoint}
      */

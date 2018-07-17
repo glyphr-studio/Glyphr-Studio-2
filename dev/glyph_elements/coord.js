@@ -96,6 +96,7 @@ export default class Coord extends GlyphElement {
      */
     set x(position = 0) {
         position = numSan(position);
+        // position = round(position, 4);
         if (isNaN(position)) this._x = 0;
         else this._x = position;
         this.changed();
@@ -107,6 +108,7 @@ export default class Coord extends GlyphElement {
      */
     set y(position = 0) {
         position = numSan(position);
+        // position = round(position, 4);
         if (isNaN(position)) this._y = 0;
         else this._y = position;
         this.changed();

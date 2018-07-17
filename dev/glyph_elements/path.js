@@ -234,14 +234,8 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {Path} - reference to this Path
      */
     set maxes(maxes) {
-        // debug(`\n Path.set maxes - START`);
-        // debug(`\t passed ${json(this._maxes, true)}`);
+        this._maxes = {};
         this._maxes = new Maxes(maxes);
-        // debug(`\t _maxes is now`);
-        // debug(this._maxes);
-
-
-        // debug(` Path.set maxes - END\n\n`);
         return this;
     }
 
@@ -437,7 +431,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
     /**
      * Rotate this path about a point
-     * @param {number} angle - how much to rotate
+     * @param {number} angle - how much to rotate (radians)
      * @param {XYPoint} about - x/y center of rotation
      * @returns {Path} - reference to this path
      */

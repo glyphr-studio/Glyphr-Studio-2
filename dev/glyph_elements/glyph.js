@@ -4,7 +4,8 @@ import Shape from './shape.js';
 import ComponentInstance from './componentinstance.js';
 import {getGlyph, getProject} from '../app/globalgetters.js';
 import {clone, hasNonValues, isVal} from '../app/functions.js';
-import {parseUnicodeInput} from '../app/unicode.js';
+import {parseUnicodeInput, getUnicodeName} from '../app/unicode.js';
+import {getOverallMaxes} from './maxes.js';
 
 
 /**
@@ -42,8 +43,10 @@ export default class Glyph extends GlyphElement {
         usedIn = [],
         contextGlyphs = '',
     } = {}) {
+        // debug(`\n Glyph.constructor - START`);
         super();
-        this.hex = hex || false;
+        this.bubbleChanges = false;
+        this.hex = hex;
         this.shapes = shapes;
         this.isAutoWide = isAutoWide;
         this.glyphWidth = glyphWidth;
@@ -52,6 +55,10 @@ export default class Glyph extends GlyphElement {
         this.ratioLock = ratioLock;
         this.usedIn = usedIn;
         this.contextGlyphs = contextGlyphs;
+        this.changed();
+
+        // debug(this.print());
+        // debug(` Glyph.constructor - END\n\n`);
     }
 
 
@@ -64,10 +71,16 @@ export default class Glyph extends GlyphElement {
      * gets bubbled up through the GlyphElement hierarchy
      */
     changed() {
+        // debug(`\n Glyph.changed - Start`);
+        this.bubbleChanges = true;
         this.calcMaxes();
+        if (this.cache) this.cache = {};
+
+        // debug(`\t calling changed on usedIn`);
         for (let g=0; g<this.usedIn.length; g++) {
             getGlyph(this.usedIn[g]).changed();
         }
+        // debug(`  Glyph.changed - End\n`);
     }
 
     /**
@@ -82,15 +95,15 @@ export default class Glyph extends GlyphElement {
             hex: this._hex,
         };
 
-        if (isAutoWide !== true) re.isAutoWide = this.isAutoWide;
-        if (glyphWidth !== 0) re.glyphWidth = this.glyphWidth;
-        if (leftSideBearing !== false) re.leftSideBearing = this.leftSideBearing;
-        if (rightSideBearing !== false) re.rightSideBearing = this.rightSideBearing;
-        if (ratioLock !== false) re.ratioLock = this.ratioLock;
-        if (usedIn !== []) re.usedIn = this.usedIn;
-        if (contextGlyphs !== '') re.contextGlyphs = this.contextGlyphs;
+        if (this.isAutoWide !== true) re.isAutoWide = this.isAutoWide;
+        if (this.glyphWidth !== 0) re.glyphWidth = this.glyphWidth;
+        if (this.leftSideBearing !== false) re.leftSideBearing = this.leftSideBearing;
+        if (this.rightSideBearing !== false) re.rightSideBearing = this.rightSideBearing;
+        if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
+        if (this.usedIn.length) re.usedIn = this.usedIn;
+        if (this.contextGlyphs !== '') re.contextGlyphs = this.contextGlyphs;
 
-        if (this.shapes.length) {
+        if (this.shapes && this.shapes.length) {
             re.shapes = [];
             for (let s=0; s<this.shapes.length; s++) re.shapes.push(this.shapes[s].save(verbose));
         }
@@ -99,6 +112,47 @@ export default class Glyph extends GlyphElement {
             delete re.objType;
             delete re.name;
         }
+
+        return re;
+    }
+
+    /**
+     * Create a nicely-formatted string for this object
+     * @param {number} level - how far down we are
+     * @returns {string}
+     */
+    print(level = 0) {
+        let ind = '';
+        for (let i=0; i<level; i++) ind += '  ';
+
+        let re = `${ind}{Glyph\n`;
+        ind += '  ';
+
+        re += `${ind}hex: ${this.hex}\n`;
+        re += `${ind}name: ${this.name}\n`;
+
+        if (this.isAutoWide !== true) re += `${ind}isAutoWide: ${this.isAutoWide}\n`;
+        if (this.glyphWidth !== 0) re += `${ind}glyphWidth: ${this.glyphWidth}\n`;
+        if (this.leftSideBearing !== false) re += `${ind}leftSideBearing: ${this.leftSideBearing}\n`;
+        if (this.rightSideBearing !== false) re += `${ind}rightSideBearing: ${this.rightSideBearing}\n`;
+        if (this.ratioLock !== false) re += `${ind}ratioLock: ${this.ratioLock}\n`;
+        if (this.usedIn.length) re += `${ind}usedIn: ${JSON.stringify(this.usedIn)}\n`;
+        if (this.contextGlyphs !== '') re += `${ind}contextGlyphs: ${this.contextGlyphs}\n`;
+
+        // if (this.shapes && this.shapes.length) {
+        //     re += `${ind}shapes: [\n`;
+        //     this._shapes.forEach((sh) => {
+        //         re += sh.print(level+2);
+        //         re += `\n`;
+        //     });
+        //     re += `${ind}]\n`;
+        // } else {
+        //     re += `${ind}shapes: []\n`;
+        // }
+
+        // if (this.maxes) re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
+
+        re += `${ind.substring(2)}}`;
 
         return re;
     }
@@ -198,7 +252,8 @@ export default class Glyph extends GlyphElement {
      * @returns {array}
      */
     get usedIn() {
-        return this._usedIn;
+        // debug(`\t Glyph.usedIn Getter - is array? ${Array.isArray(this._usedIn)}`);
+        return this._usedIn || [];
     }
 
     /**
@@ -258,18 +313,9 @@ export default class Glyph extends GlyphElement {
         if (!this._maxes || hasNonValues(this._maxes)) {
             this.calcMaxes();
         }
-        if (this.shapes.length) {
-            if (this._maxes.xMin === this._maxes.maxBounds.xMin ||
-                this._maxes.xMax === this._maxes.maxBounds.xMax ||
-                this._maxes.yMin === this._maxes.maxBounds.yMin ||
-                this._maxes.yMax === this._maxes.maxBounds.yMax
-            ) {
-                this.calcMaxes();
-            }
-        }
         // debug('\t returning ' + json(this.maxes));
         // debug(' Glyph.getMaxes - END ' + this.name + '\n');
-        return this._maxes;
+        return new Maxes(this._maxes);
     }
 
     // Computed properties
@@ -365,22 +411,25 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set shapes(shapes = []) {
+        // debug(`\n Glyph.shapes setter - Start`);
+        this._shapes = [];
+
         if (shapes && shapes.length) {
             for (let i = 0; i < shapes.length; i++) {
                 if (isVal(shapes[i].link)) {
                     // debug('\t hydrating ci ' + shapes[i].name);
+                    shapes[i].parent = this;
                     this._shapes[i] = new ComponentInstance(shapes[i]);
-                    this._shapes[i].parent = this;
-                } else if (isVal(shapes[i].name)) {
+                } else {
                     // debug('\t hydrating sh ' + shapes[i].name);
+                    shapes[i].parent = this;
                     this._shapes[i] = new Shape(shapes[i]);
-                    this._shapes[i].parent = this;
                 }
             }
-        } else {
-            this._shapes = [];
         }
 
+        // debug(`\t Glyph.shapes is now length = ${this.shapes? this.shapes.length : 'NULL'}`);
+        // debug(`  Glyph.shapes setter - End\n`);
         return this;
     }
 
@@ -411,8 +460,12 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set leftSideBearing(leftSideBearing) {
-        this._leftSideBearing = parseFloat(leftSideBearing);
-        if (isNaN(this._leftSideBearing)) this._leftSideBearing = 0;
+        if (leftSideBearing === false) {
+            this._leftSideBearing = false;
+        } else {
+            this._leftSideBearing = parseFloat(leftSideBearing);
+            if (isNaN(this._leftSideBearing)) this._leftSideBearing = 0;
+        }
         return this;
     }
 
@@ -422,8 +475,12 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set rightSideBearing(rightSideBearing) {
-        this._rightSideBearing = parseFloat(rightSideBearing);
-        if (isNaN(this._rightSideBearing)) this._rightSideBearing = 0;
+        if (rightSideBearing === false) {
+            this._rightSideBearing = false;
+        } else {
+            this._rightSideBearing = parseFloat(rightSideBearing);
+            if (isNaN(this._rightSideBearing)) this._rightSideBearing = 0;
+        }
         return this;
     }
 
@@ -443,7 +500,7 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set usedIn(usedIn) {
-        this._usedIn = usedIn;
+        this._usedIn = usedIn || [];
         return this;
     }
 
@@ -505,6 +562,7 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set maxes(maxes) {
+        this._maxes = {};
         this._maxes = new Maxes(maxes);
         return this;
     }
@@ -520,8 +578,8 @@ export default class Glyph extends GlyphElement {
      * @param {number} ny - new y
      */
     setGlyphPosition(nx, ny) {
-        // debug('Glyph.setGlyphPosition - START');
-        // debug('\t nx/ny/force: ' + nx + ' ' + ny + ' ' + force);
+        // debug('\n Glyph.setGlyphPosition - START');
+        // debug('\t nx/ny: ' + nx + ' ' + ny);
         let m = this.maxes;
         if (nx !== false) nx = parseFloat(nx);
         if (ny !== false) ny = parseFloat(ny);
@@ -538,7 +596,7 @@ export default class Glyph extends GlyphElement {
      */
     updateGlyphPosition(dx, dy) {
         // debug('\n Glyph.updateGlyphPosition - START ' + this.name);
-        // debug('\t dx/dy/force: ' + dx + ' ' + dy + ' ' + force);
+        // debug('\t dx/dy: ' + dx + ' ' + dy);
         // debug('\t number of shapes: ' + this.shapes.length);
         dx = parseFloat(dx) || 0;
         dy = parseFloat(dy) || 0;
@@ -699,7 +757,7 @@ export default class Glyph extends GlyphElement {
 
     /**
      * Rotate about a point
-     * @param {number} angle - how much to rotate
+     * @param {number} angle - how much to rotate (radians)
      * @param {XYPoint} about - x/y center of rotation
      * @returns {Glyph} - reference to this glyph
      */
@@ -808,25 +866,25 @@ export default class Glyph extends GlyphElement {
      * @returns {Maxes}
      */
     calcMaxes() {
-        // debug('\n Glyph.calcMaxes - START ' + this.name);
+        // debug(`\n Glyph.calcMaxes - START `);
+        this._maxes = {};
         let tm;
-        if (this.shapes.length > 0) {
+        if (this.shapes && this.shapes.length > 0) {
             for (let jj = 0; jj < this.shapes.length; jj++) {
-                // debug('\t ++++++ START shape ' + jj);
-                // debug(this.shapes[jj]);
-                if (this.shapes[jj].getMaxes) {
-                    tm = this.shapes[jj].maxes;
-                    // debug('\t before ' + json(tm, true));
-                    this.maxes = getOverallMaxes([tm, this.maxes]);
-                    // debug('\t afters ' + json(tm, true));
-                    // debug('\t ++++++ END shape ' + jj + ' - ' + this.shapes[jj].name);
-                }
+                // debug(`\t ++++++ START shape ${jj}`);
+                tm = this.shapes[jj].maxes;
+                // debug(`\t before ${this.maxes.print()}`);
+                this._maxes = getOverallMaxes([tm, this.maxes]);
+                // debug(`\t afters ${this.maxes.print()}`);
+                // debug(`\t ++++++ END shape ${jj}`);
             }
         } else {
-            this.maxes = {'xMax': 0, 'xMin': 0, 'yMax': 0, 'yMin': 0};
+            // debug(`\t No shapes, returning zeros`);
+            this._maxes = {'xMax': 0, 'xMin': 0, 'yMax': 0, 'yMin': 0};
         }
 
-        // debug(' Glyph.calcMaxes - END ' + this.name + '\n');
+        // debug(`\t result: ${this.maxes.print()}`);
+        // debug(` Glyph.calcMaxes - END \n`);
         return this.maxes;
     }
 

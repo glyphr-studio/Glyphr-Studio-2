@@ -759,7 +759,7 @@ export default class ComponentInstance extends GlyphElement {
 
     /**
      * rotate
-     * @param {number} angle - how much to rotate
+     * @param {number} angle - how much to rotate (radians)
      * @param {XYPoint} about - x/y center of rotation
      * @returns {ComponentInstance} - reference to this component instance
      */
