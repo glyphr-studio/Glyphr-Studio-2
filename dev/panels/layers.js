@@ -46,7 +46,7 @@
                 content += '">';
 
                 if (ts.objType === 'ComponentInstance') {
-                    content += '<td class="layerthumb">'+ts.getTransformedGlyph().makeSVG()+'</td>';
+                    content += '<td class="layerthumb">'+ts.transformedGlyph.makeSVG()+'</td>';
                     content += '<td class="layername">' +ts.name;
                     content += '<span class="layernote">[linked to component: '+getGlyphName(ts.link)+']</span>';
                 } else {

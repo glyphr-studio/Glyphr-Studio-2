@@ -25,7 +25,7 @@ function cloneAndFlattenGlyph(gid) {
 
     for (let s=0; s<og.shapes.length; s++) {
         if (og.shapes[s].objType === 'ComponentInstance') {
-            tempglyph = og.shapes[s].getTransformedGlyph(true);
+            tempglyph = og.shapes[s].transformedGlyph;
             newshapes = newshapes.concat(tempglyph.shapes);
         } else {
             newshapes.push(og.shapes[s]);
@@ -123,7 +123,7 @@ function insertComponentInstance(sourceComponentID, destinationGlyphID, copyGlyp
  */
 function turnComponentIntoShapes() {
     let selshape = _UI.multiSelect.shapes.getSingleton();
-    let shapes = selshape.getTransformedGlyph().shapes;
+    let shapes = selshape.transformedGlyph.shapes;
 
     _UI.multiSelect.shapes.deleteShapes();
 

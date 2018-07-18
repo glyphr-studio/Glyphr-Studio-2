@@ -35,11 +35,9 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
     } = {}) {
         // debug(`\nPath.constructor - Start`);
         super();
-        this.bubbleChanges = false;
         this.parent = parent;
         this.pathPoints = pathPoints;
         this.winding = winding;
-        this.changed();
         // debug(`Path.constructor - End\n`);
     }
 
@@ -168,13 +166,13 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      */
     get maxes() {
         // debug('\n Path.maxes - START');
-        if (hasNonValues(this._maxes)) {
+        if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
             // debug('\t no cache, calcMaxes');
             this.calcMaxes();
         }
         // debug('\t returning ' + json(this.maxes, true));
         // debug(' Path.maxes - END\n');
-        return new Maxes(this._maxes);
+        return new Maxes(this.cache.maxes);
     }
 
     /**
@@ -234,8 +232,8 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {Path} - reference to this Path
      */
     set maxes(maxes) {
-        this._maxes = {};
-        this._maxes = new Maxes(maxes);
+        this.cache.maxes = {};
+        this.cache.maxes = new Maxes(maxes);
         return this;
     }
 
@@ -1129,8 +1127,8 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      */
     calcMaxes() {
         // debug('\n Path.calcMaxes - START');
-        // debug(`\t before ${this._maxes.print()}`);
-        this._maxes = new Maxes();
+        // debug(`\t before ${this.cache.maxes.print()}`);
+        this.cache.maxes = new Maxes();
         let seg;
 
         if (!this.cache.segments) this.cache.segments = [];
@@ -1139,15 +1137,15 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
             // debug('\t ++++++ starting seg ' + s);
             seg = this.getSegment(s);
             // debug(`\t this seg maxes ${seg.maxes.print()}`);
-            // debug(`\t this maxes ${this._maxes.print()}`);
+            // debug(`\t this maxes ${this.cache.maxes.print()}`);
 
-            this._maxes = getOverallMaxes([this._maxes, seg.maxes]);
-            // debug(`\t path maxes is now ${this._maxes.print()}`);
+            this.cache.maxes = getOverallMaxes([this.cache.maxes, seg.maxes]);
+            // debug(`\t path maxes is now ${this.cache.maxes.print()}`);
             // debug('\t ++++++ ending seg ' + s);
         }
 
         this.maxes.roundAll(4);
-        // debug(`\t after> ${this._maxes.print()}`);
+        // debug(`\t after> ${this.cache.maxes.print()}`);
         // debug(' Path.calcMaxes - END\n');
     }
 

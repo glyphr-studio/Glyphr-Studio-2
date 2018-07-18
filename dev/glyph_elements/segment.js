@@ -168,11 +168,11 @@ export default class Segment extends GlyphElement {
      * @returns {Maxes}
      */
     get maxes() {
-        if (hasNonValues(this._maxes)) {
+        if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
             this.calcMaxes();
         }
 
-        return new Maxes(this._maxes);
+        return new Maxes(this.cache.maxes);
     }
 
 
@@ -186,7 +186,8 @@ export default class Segment extends GlyphElement {
      * @returns {Path} - reference to this Segment
      */
     set maxes(maxes) {
-        this._maxes = new Maxes(maxes);
+        this.cache.maxes = {};
+        this.cache.maxes = new Maxes(maxes);
         return this;
     }
 

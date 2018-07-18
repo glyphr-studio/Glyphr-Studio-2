@@ -184,7 +184,7 @@
 
         let ts, w, h;
         if (selci.ratioLock) {
-            ts = selci.getTransformedGlyph();
+            ts = selci.transformedGlyph;
             w = (ts.maxes.xMax - ts.maxes.xMin);
             h = (ts.maxes.yMax - ts.maxes.yMin);
 

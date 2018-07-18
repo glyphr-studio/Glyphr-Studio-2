@@ -45,7 +45,6 @@ export default class Glyph extends GlyphElement {
     } = {}) {
         // debug(`\n Glyph.constructor - START`);
         super();
-        this.bubbleChanges = false;
         this.hex = hex;
         this.shapes = shapes;
         this.isAutoWide = isAutoWide;
@@ -55,7 +54,6 @@ export default class Glyph extends GlyphElement {
         this.ratioLock = ratioLock;
         this.usedIn = usedIn;
         this.contextGlyphs = contextGlyphs;
-        this.changed();
 
         // debug(this.print());
         // debug(` Glyph.constructor - END\n\n`);
@@ -72,7 +70,6 @@ export default class Glyph extends GlyphElement {
      */
     changed() {
         // debug(`\n Glyph.changed - Start`);
-        this.bubbleChanges = true;
         this.calcMaxes();
         if (this.cache) this.cache = {};
 
@@ -310,12 +307,12 @@ export default class Glyph extends GlyphElement {
      */
     get maxes() {
         // debug('\n Glyph.getMaxes - START ' + this.name);
-        if (!this._maxes || hasNonValues(this._maxes)) {
+        if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
             this.calcMaxes();
         }
         // debug('\t returning ' + json(this.maxes));
         // debug(' Glyph.getMaxes - END ' + this.name + '\n');
-        return new Maxes(this._maxes);
+        return new Maxes(this.cache.maxes);
     }
 
     // Computed properties
@@ -562,8 +559,8 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     set maxes(maxes) {
-        this._maxes = {};
-        this._maxes = new Maxes(maxes);
+        this.cache.maxes = {};
+        this.cache.maxes = new Maxes(maxes);
         return this;
     }
 
@@ -867,20 +864,20 @@ export default class Glyph extends GlyphElement {
      */
     calcMaxes() {
         // debug(`\n Glyph.calcMaxes - START `);
-        this._maxes = {};
+        this.cache.maxes = {};
         let tm;
         if (this.shapes && this.shapes.length > 0) {
             for (let jj = 0; jj < this.shapes.length; jj++) {
                 // debug(`\t ++++++ START shape ${jj}`);
                 tm = this.shapes[jj].maxes;
                 // debug(`\t before ${this.maxes.print()}`);
-                this._maxes = getOverallMaxes([tm, this.maxes]);
+                this.cache.maxes = getOverallMaxes([tm, this.maxes]);
                 // debug(`\t afters ${this.maxes.print()}`);
                 // debug(`\t ++++++ END shape ${jj}`);
             }
         } else {
             // debug(`\t No shapes, returning zeros`);
-            this._maxes = {'xMax': 0, 'xMin': 0, 'yMax': 0, 'yMin': 0};
+            this.cache.maxes = {'xMax': 0, 'xMin': 0, 'yMax': 0, 'yMin': 0};
         }
 
         // debug(`\t result: ${this.maxes.print()}`);
@@ -1146,7 +1143,7 @@ export default class Glyph extends GlyphElement {
             shape = sl[j];
             if (shape.visible) {
                 if (shape.objType === 'ComponentInstance') {
-                    tg = shape.getTransformedGlyph();
+                    tg = shape.transformedGlyph;
                     if (tg) pathData += tg.svgPathData;
                 } else {
                     path = shape.getPath();
@@ -1192,7 +1189,7 @@ export default class Glyph extends GlyphElement {
             if (ts.objType === 'Shape') {
                 reshapes.push(clone(ts));
             } else if (ts.objType === 'ComponentInstance') {
-                tg = ts.getTransformedGlyph();
+                tg = ts.transformedGlyph;
                 tg = tg.flattenGlyph();
                 reshapes = reshapes.concat(tg.shapes);
             } else {
@@ -1281,7 +1278,7 @@ export default class Glyph extends GlyphElement {
         for (let s = 0; s < this.shapes.length; s++) {
             if (this.shapes[s].objType !== 'ComponentInstance') return true;
             else {
-                tg = this.shapes[s].getTransformedGlyph();
+                tg = this.shapes[s].transformedGlyph;
                 if (tg.hasShapes()) return true;
             }
         }

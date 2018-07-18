@@ -258,6 +258,15 @@ export default class ComponentInstance extends GlyphElement {
     // Computed properties
 
     /**
+     * get transformedGlyph
+     * @returns {Glyph}
+     */
+    get transformedGlyph() {
+        if (!this.cache.transformedGlyph) makeTransformedGlyph();
+        return this.cache.transformedGlyph;
+    }
+
+    /**
      * get x
      * @returns {number}
      */
@@ -278,7 +287,7 @@ export default class ComponentInstance extends GlyphElement {
      * @returns {number} width
      */
     get width() {
-        let g = this.getTransformedGlyph().maxes;
+        let g = this.transformedGlyph.maxes;
         return g.xMax - g.xMin;
     }
 
@@ -287,7 +296,7 @@ export default class ComponentInstance extends GlyphElement {
      * @returns {number} height
      */
     get height() {
-        let g = this.getTransformedGlyph().maxes;
+        let g = this.transformedGlyph.maxes;
         return g.yMax - g.yMin;
     }
 
@@ -296,7 +305,7 @@ export default class ComponentInstance extends GlyphElement {
      * @returns {Maxes} maxes
      */
     get maxes() {
-        return this.getTransformedGlyph().maxes;
+        return this.transformedGlyph.maxes;
     }
 
     /**
@@ -304,7 +313,7 @@ export default class ComponentInstance extends GlyphElement {
      * @returns {XYPoint}
      */
     get center() {
-        return this.getTransformedGlyph().center;
+        return this.transformedGlyph.center;
     }
 
     // --------------------------------------------------------------
@@ -552,18 +561,12 @@ export default class ComponentInstance extends GlyphElement {
     /**
      * Component Instances are basically links to other Glyphs, plus some transformations.
      * This function grabs a clone of the linked-to Glyph, applies the transformations,
-     * and returns a Glyph object
-     * @param {boolean} dontUseCache - false to force a new transform
+     * and returns a Glyph object - while also updating the cache
      * @returns {Glyph}
      */
-    getTransformedGlyph(dontUseCache) {
-        // debug('\n ComponentInstance.getTransformedGlyph - START ' + this.name);
-        // debug(`\t dontUseCache: ${dontUseCache}`);
-        if (this.cache.transformedGlyph && !dontUseCache) {
-            // debug('\t returning glyph in cache.transformedGlyph ');
-            // debug(' ComponentInstance.getTransformedGlyph - END\n\n');
-            return this.cache.transformedGlyph;
-        }
+    makeTransformedGlyph() {
+        // debug('\n ComponentInstance.makeTransformedGlyph - START ' + this.name);
+
         let g = cloneAndFlattenGlyph(this.link);
         if (!g) {
             console.warn('Tried to get Component: ' + this.link + ' but it doesn\'t exist - bad usedIn array maintenance.');
@@ -590,7 +593,7 @@ export default class ComponentInstance extends GlyphElement {
 
         g.changed();
         this.cache.transformedGlyph = g;
-        // debug(' ComponentInstance.getTransformedGlyph - END\n\n');
+        // debug(' ComponentInstance.makeTransformedGlyph - END\n\n');
 
         return g;
     }
@@ -609,7 +612,7 @@ export default class ComponentInstance extends GlyphElement {
      * @returns {string} - PostScript path data
      */
     makePostScript(lastX, lastY) {
-        let g = this.getTransformedGlyph();
+        let g = this.transformedGlyph;
         let re;
         let part;
         for (let s = 0; s < g.shapes.length; s++) {
@@ -632,7 +635,7 @@ export default class ComponentInstance extends GlyphElement {
      */
     makeOpenTypeJsPath(otPath) {
         otPath = otPath || new opentype.Path();
-        let g = this.getTransformedGlyph();
+        let g = this.transformedGlyph;
         return g.makeOpenTypeJsPath(otPath);
     }
 
@@ -689,7 +692,7 @@ export default class ComponentInstance extends GlyphElement {
         if (dw !== false) dw = parseFloat(dw) || 0;
         if (dh !== false) dh = parseFloat(dh) || 0;
         if (ratioLock) {
-            let ts = this.getTransformedGlyph().maxes;
+            let ts = this.transformedGlyph.maxes;
             let w = (ts.xMax - ts.xMin);
             let h = (ts.yMax - ts.yMin);
             if (Math.abs(dw) > Math.abs(dh)) {
@@ -735,7 +738,7 @@ export default class ComponentInstance extends GlyphElement {
     flipEW(mid) {
         this.isFlippedEW = !this.isFlippedEW;
         if (mid) {
-            let g = this.getTransformedGlyph().maxes;
+            let g = this.transformedGlyph.maxes;
             this.translateX += (((mid - g.xMax) + mid) - g.xMin);
         }
         if (this.rotation === 0) this.rotateFirst = false;
@@ -750,7 +753,7 @@ export default class ComponentInstance extends GlyphElement {
     flipNS(mid) {
         this.isFlippedNS = !this.isFlippedNS;
         if (mid) {
-            let g = this.getTransformedGlyph().maxes;
+            let g = this.transformedGlyph.maxes;
             this.translateY += (((mid - g.yMax) + mid) - g.yMin);
         }
         if (this.rotation === 0) this.rotateFirst = false;
@@ -779,16 +782,6 @@ export default class ComponentInstance extends GlyphElement {
         return this;
     }
 
-
-    // /**
-    //  * calcMaxes
-    //  * @returns {Maxes}
-    //  */
-    // calcMaxes() {
-    //     this._maxes = this.getTransformedGlyph().calcMaxes();
-    //     return this.maxes;
-    // }
-
     /**
      * isHere
      * @param {number} px - check x
@@ -796,7 +789,7 @@ export default class ComponentInstance extends GlyphElement {
      * @returns {boolean}
      */
     isHere(px, py) {
-        let g = this.getTransformedGlyph();
+        let g = this.transformedGlyph;
         return g ? g.isHere(px, py) : false;
     }
 
@@ -818,7 +811,7 @@ export default class ComponentInstance extends GlyphElement {
         Have to iterate through shapes instead of using Glyph.drawGlyph
         due to stacking shapes with appropriate winding
         */
-        let g = this.getTransformedGlyph();
+        let g = this.transformedGlyph;
         if (!g) return false;
         let drewShape = false;
         let failed = false;
@@ -833,19 +826,19 @@ export default class ComponentInstance extends GlyphElement {
 /* NEEDS TO BE REFACTORED
     draw_PathOutline(accent = '#000', thickness = 1) {
         // debug('\n ComponentInstance.draw_PathOutline - START');
-        let g = this.getTransformedGlyph();
+        let g = this.transformedGlyph;
         for (let s = 0; s < g.shapes.length; s++) {
             draw_PathOutline(g.shapes[s], accent, thickness);
         }
     }
     draw_BoundingBox(accent = '#000', thickness = 1) {
         // debug('\n ComponentInstance.draw_BoundingBox - START');
-        let g = this.getTransformedGlyph().maxes;
+        let g = this.transformedGlyph.maxes;
         draw_BoundingBox(g, accent, thickness);
     }
     draw_BoundingBoxHandles(accent = '#000', thickness = 1) {
         // debug('\n ComponentInstance.draw_BoundingBoxHandles - START');
-        let g = this.getTransformedGlyph().maxes;
+        let g = this.transformedGlyph.maxes;
         draw_BoundingBoxHandles(g, accent, thickness);
     }
     isOverBoundingBoxHandle(px, py) {
