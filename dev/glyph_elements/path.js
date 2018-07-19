@@ -453,19 +453,28 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @returns {boolean}
      */
     isHere(px, py) {
-        let element = document.createElement('canvas');
-        element.setAttribute('height', '3000');
-        element.setAttribute('width', '3000');
+        let ghostCanvas = document.getElementById('ghostCanvas');
 
-        let ctx = element.getContext('2d');
+        if (!ghostCanvas) {
+            let element = document.createElement('canvas');
+            element.setAttribute('height', '3000');
+            element.setAttribute('width', '3000');
+            // element.setAttribute('style', 'display:none;');
+            element.setAttribute('id', 'ghostCanvas');
+            document.body.appendChild(element);
+            ghostCanvas = element;
+        }
+
+        let ctx = ghostCanvas.getContext('2d');
+        ctx.clearRect(0, 0, 3000, 3000);
         ctx.fillStyle = 'rgba(0,0,255,0.2)';
 
         ctx.beginPath();
-        this.drawPath(ctx);
+        this.drawPath(ctx, {x: 0, y: 2000, z: 1});
         ctx.closePath();
         ctx.fill();
         let imageData = ctx.getImageData(px, py, 1, 1);
-
+        debug(`Path.isHere ${px} ${py} at imageData ${JSON.stringify(imageData.data)}`);
         return (imageData.data[3] > 0);
     }
 
@@ -690,8 +699,8 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {object} otPath - OpenType.js Path object
      * @returns {object}
      */
-    makeOpenTypeJsPath(otPath = new opentype.Path()) {
-        // debug('\n Path.makeOpenTypeJsPath - START');
+    makeOpenTypeJSPath(otPath = new opentype.Path()) {
+        // debug('\n Path.makeOpenTypeJSPath - START');
         // debug('\t otPath: ' + json(otPath));
 
         let p1;
@@ -722,7 +731,7 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
         otPath.close();
         // debug('\t returning path ' + json(otPath));
-        // debug(' Path.makeOpenTypeJsPath - END\n');
+        // debug(' Path.makeOpenTypeJSPath - END\n');
         return otPath;
     }
 

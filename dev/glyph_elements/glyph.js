@@ -1,9 +1,10 @@
 import GlyphElement from './glyphelement.js';
 import Maxes from './maxes.js';
+import Path from './path.js';
 import Shape from './shape.js';
 import ComponentInstance from './componentinstance.js';
 import {getGlyph, getProject} from '../app/globalgetters.js';
-import {clone, hasNonValues, isVal} from '../app/functions.js';
+import {clone, hasNonValues, isVal, trim} from '../app/functions.js';
 import {parseUnicodeInput, getUnicodeName} from '../app/unicode.js';
 import {getOverallMaxes} from './maxes.js';
 
@@ -348,7 +349,9 @@ export default class Glyph extends GlyphElement {
      */
     get lsb() {
         if (this.leftSideBearing === false) {
-            return getProject().projectSettings.defaultLSB;
+            let p = getProject();
+            if (p && p.projectSettings) return p.projectSettings.defaultLSB;
+            else return 0;
         } else {
             return this.leftSideBearing;
         }
@@ -360,7 +363,9 @@ export default class Glyph extends GlyphElement {
      */
     get rsb() {
         if (this.rightSideBearing === false) {
-            return getProject().projectSettings.defaultRSB;
+            let p = getProject();
+            if (p && p.projectSettings) return p.projectSettings.defaultRSB;
+            else return 0;
         } else {
             return this.rightSideBearing;
         }
@@ -891,19 +896,6 @@ export default class Glyph extends GlyphElement {
     // --------------------------------------------------------------
 
     /**
-     * Searches this Glyph for any Component Instance
-     * @returns {boolean}
-     */
-    containsComponents() {
-        for (let s = 0; s < this.shapes.length; s++) {
-            if (this.shapes[s].objType === 'ComponentInstance') {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Component Instances contain links to other Glyphs, or
      * other Component Instances.  Circular links cause the world
      * to explode, so let's check for those before we add a new link.
@@ -1011,7 +1003,7 @@ export default class Glyph extends GlyphElement {
         let shape;
         let drewShape;
 
-        if (addLSB && this.isAutoWide) view.dx += (this.getLSB() * view.dz);
+        if (addLSB && this.isAutoWide) view.dx += (this.lsb * view.dz);
 
         ctx.beginPath();
         for (let j = 0; j < sl.length; j++) {
@@ -1103,13 +1095,21 @@ export default class Glyph extends GlyphElement {
      */
     makeSVG(size = 50, gutter = 5) {
         // debug('\n Glyph.makeSVG - START');
-        let ps = getProject().projectSettings;
-        let emSquare = Math.max(ps.upm, (ps.ascent - ps.descent));
-        let desc = Math.abs(ps.descent);
+
+        let emSquare = 1000;
+        let desc = 300;
+
+        if (_GP && _GP.projectSettings) {
+            let ps = _GP.projectSettings;
+            emSquare = Math.max(ps.upm, (ps.ascent - ps.descent));
+            desc = Math.abs(ps.descent);
+        }
+
         let charScale = (size - (gutter * 2)) / size;
         let gutterScale = (gutter / size) * emSquare;
         let vbSize = emSquare - (gutter * 2);
         let pathData = this.svgPathData;
+
         // Assemble SVG
         let re = '<svg version="1.1" ';
         re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
@@ -1133,7 +1133,6 @@ export default class Glyph extends GlyphElement {
 
         let sl = this.shapes;
         let pathData = '';
-        let lsb = this.getLSB();
         let shape;
         let path;
         let tg;
@@ -1146,9 +1145,9 @@ export default class Glyph extends GlyphElement {
                     tg = shape.transformedGlyph;
                     if (tg) pathData += tg.svgPathData;
                 } else {
-                    path = shape.getPath();
-                    path.updatePathPosition(lsb, 0, true);
-                    pathData += path.svgPathData('Glyph ' + this.name + ' Shape ' + shape.name);
+                    path = new Path(clone(shape.path));
+                    path.updatePathPosition(this.lsb, 0, true);
+                    pathData += shape.path.svgPathData;
                     if (j < sl.length - 1) pathData += ' ';
                 }
             }
@@ -1163,10 +1162,10 @@ export default class Glyph extends GlyphElement {
      * @param {opentype.Path} otPath
      * @returns {opentype.Path}
      */
-    makeOpenTypeJsPath(otPath) {
+    makeOpenTypeJSPath(otPath) {
         otPath = otPath || new opentype.Path();
         for (let s = 0; s < this.shapes.length; s++) {
-            otPath = this.shapes[s].makeOpenTypeJsPath(otPath);
+            otPath = this.shapes[s].makeOpenTypeJSPath(otPath);
         }
         return otPath;
     }

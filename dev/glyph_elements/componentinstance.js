@@ -633,10 +633,10 @@ export default class ComponentInstance extends GlyphElement {
      * @param {OpenType.js.Path} otPath
      * @returns {OpenType.js.Path}
      */
-    makeOpenTypeJsPath(otPath) {
+    makeOpenTypeJSPath(otPath) {
         otPath = otPath || new opentype.Path();
         let g = this.transformedGlyph;
-        return g.makeOpenTypeJsPath(otPath);
+        return g.makeOpenTypeJSPath(otPath);
     }
 
 

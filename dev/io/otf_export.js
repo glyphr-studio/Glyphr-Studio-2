@@ -45,7 +45,7 @@
                 notdef.updateGlyphSize(delta, delta, true);
             }
 
-            let ndpath = notdef.makeOpenTypeJsPath();
+            let ndpath = notdef.makeOpenTypeJSPath();
 
             options.glyphs.push(new opentype.Glyph({
                 name: '.notdef',
@@ -97,9 +97,9 @@
 
             if (comb && glyph.shapes.length <= _GP.projectSettings.maxcombineshapesonexport) glyph.combineAllShapes(true);
 
-            if (glyph.isAutoWide) glyph.updateGlyphPosition(glyph.getLSB(), 0);
+            if (glyph.isAutoWide) glyph.updateGlyphPosition(glyph.lsb, 0);
 
-            let tgpath = glyph.makeOpenTypeJsPath(new opentype.Path());
+            let tgpath = glyph.makeOpenTypeJSPath(new opentype.Path());
 
             let otglyph = new opentype.Glyph({
                 name: getUnicodeShortName(''+decToHex(num)),

@@ -223,10 +223,10 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
-        name: 'makeOpenTypeJsPath',
+        name: 'makeOpenTypeJSPath',
         assertion: function() {
             let path = samplePath();
-            return _TEST.is(path.makeOpenTypeJsPath()).equalTo({'commands': [{'type': 'M', 'x': 327, 'y': 500}, {'type': 'C', 'x1': 413, 'y1': 500, 'x2': 484, 'y2': 429, 'x': 484, 'y': 343}, {'type': 'C', 'x1': 484, 'y1': 258, 'x2': 414, 'y2': 186, 'x': 327, 'y': 186}, {'type': 'C', 'x1': 239, 'y1': 186, 'x2': 170, 'y2': 257, 'x': 170, 'y': 343}, {'type': 'C', 'x1': 170, 'y1': 430, 'x2': 240, 'y2': 500, 'x': 327, 'y': 500}, {'type': 'Z'}], 'fill': 'black', 'stroke': null, 'strokeWidth': 1});
+            return _TEST.is(path.makeOpenTypeJSPath()).equalTo({'commands': [{'type': 'M', 'x': 327, 'y': 500}, {'type': 'C', 'x1': 413, 'y1': 500, 'x2': 484, 'y2': 429, 'x': 484, 'y': 343}, {'type': 'C', 'x1': 484, 'y1': 258, 'x2': 414, 'y2': 186, 'x': 327, 'y': 186}, {'type': 'C', 'x1': 239, 'y1': 186, 'x2': 170, 'y2': 257, 'x': 170, 'y': 343}, {'type': 'C', 'x1': 170, 'y1': 430, 'x2': 240, 'y2': 500, 'x': 327, 'y': 500}, {'type': 'Z'}], 'fill': 'black', 'stroke': null, 'strokeWidth': 1});
         },
     },
     {
@@ -389,13 +389,19 @@ _TEST.testList.push(
             let pp = samplePath().pathPoints[3];
             return _TEST.is(pp.pointNumber).equalTo(3);
         },
+    },
+    {
+        category: 'Path',
+        name: 'isHere',
+        assertion: function() {
+            return _TEST.expression(samplePath().isHere(300, 300));
+        },
     }
 );
 
 /*
 CANVAS METHODS
 
-isHere
 drawPath
 findPathPointBoundaryIntersections
 */

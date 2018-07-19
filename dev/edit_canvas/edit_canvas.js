@@ -519,7 +519,7 @@ export default redraw;
 
         if (split.left) {
             let leftdistance = getGlyphSequenceAdvanceWidth(split.left);
-            if (currGlyphObject.isAutoWide) leftdistance += currGlyphObject.getLSB();
+            if (currGlyphObject.isAutoWide) leftdistance += currGlyphObject.lsb;
             leftdistance += calculateKernOffset(split.left.charAt(split.left.length-1), currGlyphChar);
 
             // debug(`\t leftdistance: ${leftdistance}`);
@@ -541,7 +541,7 @@ export default redraw;
 
         if (split.right) {
             let rightdistance = currGlyphObject.getAdvanceWidth();
-            if (currGlyphObject.isAutoWide) rightdistance -= currGlyphObject.getLSB();
+            if (currGlyphObject.isAutoWide) rightdistance -= currGlyphObject.lsb;
             rightdistance += calculateKernOffset(currGlyphChar, split.right.charAt(0));
 
             // debug(`\t rightdistance: ${rightdistance}`);
@@ -612,7 +612,7 @@ export default redraw;
             let selwi = getSelectedWorkItem();
             let v = getView('drawContextGlyphLeftLineExtras');
             kern *= -1;
-            let rightx = selwi.isAutoWide? kern-selwi.getLSB() : kern;
+            let rightx = selwi.isAutoWide? kern-selwi.lsb : kern;
             rightx = v.dx + (rightx * v.dz);
             let texty = sYcY(_GP.projectSettings.descent-60);
 
@@ -627,7 +627,7 @@ export default redraw;
             let v = getView('drawContextGlyphRightLineExtras');
             let selwi = getSelectedWorkItem();
             let rightx = selwi.getAdvanceWidth();
-            if (selwi.isAutoWide) rightx -= selwi.getLSB();
+            if (selwi.isAutoWide) rightx -= selwi.lsb;
             rightx = v.dx + (rightx * v.dz);
             let texty = sYcY(_GP.projectSettings.descent-60);
 

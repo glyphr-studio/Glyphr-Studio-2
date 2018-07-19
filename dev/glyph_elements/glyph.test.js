@@ -1,5 +1,6 @@
 import Glyph from './glyph.js';
 import {clone} from '../app/functions.js';
+import ComponentInstance from './componentinstance.js';
 
 /**
  * Create a sample Glyph
@@ -205,29 +206,50 @@ _TEST.testList.push(
             g.alignShapes('right');
             return _TEST.is(g.shapes[2].maxes.xMax).equalTo(800);
         },
-    }
+    },
+    {
+        category: 'Glyph',
+        name: 'isHere',
+        assertion: function() {
+            return _TEST.expression(sampleGlyph().isHere(300, 300));
+        },
+    },
+    {
+        category: 'Glyph',
+        name: 'isOverControlPoint',
+        assertion: function() {
+            return _TEST.is(sampleGlyph().isOverControlPoint(484, 343.5).type).equalTo('p');
+        },
+    },
+    {
+        category: 'Glyph',
+        name: 'makeSVG',
+        assertion: function() {
+            // also tests makeSVGPathData
+            return _TEST.is(sampleGlyph().makeSVG()).equalTo('<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"50\" height=\"50\" viewBox=\"0,0,990,990\"><g transform=\"translate(100,650) scale(0.8,-0.8)\"><path d=\"M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z\"/></g></svg>');
+        },
+    },
+    {
+        category: 'Glyph',
+        name: 'makeOpenTypeJSPath',
+        assertion: function() {
+            return _TEST.is(sampleGlyph().makeOpenTypeJSPath()).equalTo(JSON.parse('{"commands":[{"type":"M","x":327,"y":500},{"type":"C","x1":413,"y1":500,"x2":484,"y2":429,"x":484,"y":343},{"type":"C","x1":484,"y1":258,"x2":414,"y2":186,"x":327,"y":186},{"type":"C","x1":239,"y1":186,"x2":170,"y2":257,"x":170,"y":343},{"type":"C","x1":170,"y1":430,"x2":240,"y2":500,"x":327,"y":500},{"type":"Z"}],"fill":"black","stroke":null,"strokeWidth":1}'));
+        },
+    },
 );
 
 /*
-
-flipNS(mid)
-flipEW(mid)
-rotate(angle, about)
-reverseWinding()
-alignShapes(edge)
-
-containsComponents()
+LINKED SHAPE METHODS
 canAddComponent(cid)
 collectAllDownstreamLinks(re = [], excludePeers = false)
 collectAllUpstreamLinks(re = [])
 deleteLinks(thisID)
+
+DRAW METHODS
 drawGlyph(ctx, view =x: 0, y: 0, z: 1}, alpha = 1, addLSB = false, fill = '#000')
 drawMultiSelectAffordances(color = '#000')
-isHere(x, y)
-isOverControlPoint(x, y, targetSize, noHandles)
-makeSVG(size = 50, gutter = 5)
-makeSVGPathData()
-makeOpenTypeJsPath(otPath)
+
+
 flattenGlyph()
 combineAllShapes(dontToast = false, dontResolveOverlaps = false)
 resolveOverlapsForAllShapes()

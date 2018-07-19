@@ -380,8 +380,8 @@ export default class Shape extends GlyphElement {
      * @param {OpenType.js.Path} otPath
      * @returns {OpenType.js.Path}
      */
-    makeOpenTypeJsPath(otPath) {
-        return this.path.makeOpenTypeJsPath(otPath);
+    makeOpenTypeJSPath(otPath) {
+        return this.path.makeOpenTypeJSPath(otPath);
     }
 
 
