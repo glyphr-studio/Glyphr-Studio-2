@@ -7,6 +7,7 @@ import {getGlyph, getProject} from '../app/globalgetters.js';
 import {clone, hasNonValues, isVal, trim} from '../app/functions.js';
 import {parseUnicodeInput, getUnicodeName} from '../app/unicode.js';
 import {getOverallMaxes} from './maxes.js';
+import {combineShapes} from '../panels/REFACTORshape.js';
 
 
 /**
@@ -137,18 +138,18 @@ export default class Glyph extends GlyphElement {
         if (this.usedIn.length) re += `${ind}usedIn: ${JSON.stringify(this.usedIn)}\n`;
         if (this.contextGlyphs !== '') re += `${ind}contextGlyphs: ${this.contextGlyphs}\n`;
 
-        // if (this.shapes && this.shapes.length) {
-        //     re += `${ind}shapes: [\n`;
-        //     this._shapes.forEach((sh) => {
-        //         re += sh.print(level+2);
-        //         re += `\n`;
-        //     });
-        //     re += `${ind}]\n`;
-        // } else {
-        //     re += `${ind}shapes: []\n`;
-        // }
+        if (this.shapes && this.shapes.length) {
+            re += `${ind}shapes: [\n`;
+            this._shapes.forEach((sh) => {
+                re += sh.print(level+2);
+                re += `\n`;
+            });
+            re += `${ind}]\n`;
+        } else {
+            re += `${ind}shapes: []\n`;
+        }
 
-        // if (this.maxes) re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
+        if (this.maxes) re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
 
         re += `${ind.substring(2)}}`;
 
@@ -414,16 +415,18 @@ export default class Glyph extends GlyphElement {
      */
     set shapes(shapes = []) {
         // debug(`\n Glyph.shapes setter - Start`);
+        // debug(`\t passed length ${shapes.length}`);
+
         this._shapes = [];
 
         if (shapes && shapes.length) {
             for (let i = 0; i < shapes.length; i++) {
                 if (isVal(shapes[i].link)) {
-                    // debug('\t hydrating ci ' + shapes[i].name);
+                    // debug(`\t hydrating ci ${i} - name: ${shapes[i].name}`);
                     shapes[i].parent = this;
                     this._shapes[i] = new ComponentInstance(shapes[i]);
                 } else {
-                    // debug('\t hydrating sh ' + shapes[i].name);
+                    // debug(`\t hydrating sh ${i} - name: ${shapes[i].name}`);
                     shapes[i].parent = this;
                     this._shapes[i] = new Shape(shapes[i]);
                 }
@@ -1180,23 +1183,30 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph}
      */
     flattenGlyph() {
+        // debug(`\n Glyph.flattenGlyph - START`);
+
         let reshapes = [];
         let ts;
         let tg;
         for (let s = 0; s < this.shapes.length; s++) {
             ts = this.shapes[s];
+            // debug(`\t shape ${s} is ${ts.objType}`);
+
             if (ts.objType === 'Shape') {
-                reshapes.push(clone(ts));
+                reshapes.push(ts.save());
             } else if (ts.objType === 'ComponentInstance') {
                 tg = ts.transformedGlyph;
                 tg = tg.flattenGlyph();
-                reshapes = reshapes.concat(tg.shapes);
+                for (let c=0; c<tg.shapes.length; c++) {
+                    reshapes.push(tg.shapes[c].save());
+                }
             } else {
                 // debug('\n Glyph.flattenGlyph - ERROR - none shape or ci in shapes array');
             }
         }
         this.shapes = reshapes;
-        // this.calcMaxes();
+
+        // debug(` Glyph.flattenGlyph - END\n\n`);
         return this;
     }
 
@@ -1204,24 +1214,29 @@ export default class Glyph extends GlyphElement {
      * Boolean combine all shapes in this Glyph to as few shapes as possible
      * @param {boolean} dontToast - don't show progress messages
      * @param {boolean} dontResolveOverlaps - speed up process by skipping resolve overlaps
-     * @returns {Glyph}
+     * @returns {Glyph} - reference to this Glyph
      */
     combineAllShapes(dontToast = false, dontResolveOverlaps = false) {
         // debug('\n Glyph.combineAllShapes - START - ' + this.name);
         this.flattenGlyph();
+
         let shapes = combineShapes(this.shapes, dontToast, dontResolveOverlaps);
         if (shapes) {
             // debug('\t new shapes');
             this.shapes = shapes;
             // debug(this.shapes);
         }
-        // debug(this.name + ' \t\t ' + this.shapes.length);
+
+        // debug(`\t this glyph AFTER`);
+        // debug(this.print());
+
         // debug(' Glyph.combineAllShapes - END - ' + this.name + '\n');
         return this;
     }
 
     /**
      * If a path in this Glyph overlaps itself, split them into separate shapes
+     * @returns {Glyph} - reference to this Glyph
      */
     resolveOverlapsForAllShapes() {
         let newShapes = [];
@@ -1229,6 +1244,8 @@ export default class Glyph extends GlyphElement {
             newShapes = newShapes.concat(this.shapes[ts].resolveSelfOverlaps());
         }
         this.shapes = newShapes;
+
+        return this;
     }
 
 
@@ -1286,6 +1303,7 @@ export default class Glyph extends GlyphElement {
 
     /**
      * Clean up any shapes with zero path points
+     * @returns {Glyph} - reference to this Glyph
      */
     removeShapesWithZeroLengthPaths() {
         for (let s = 0; s < this.shapes.length; s++) {
@@ -1294,6 +1312,8 @@ export default class Glyph extends GlyphElement {
                 s--;
             }
         }
+
+        return this;
     }
 
     // --------------------------------------------------------------

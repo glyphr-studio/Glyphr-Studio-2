@@ -26,6 +26,23 @@ function triangleShape() {
 _TEST.testList.push(
     {
         category: 'Shape',
+        name: 'save',
+        assertion: function() {
+            let s = sampleShape();
+            let re = s.save();
+            return _TEST.is(re).equalTo(JSON.parse('{"path":{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500},"use":true},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500},"use":true},"h2":{"coord":{"x":413.45994211401285,"y":500},"use":true}},{"p":{"coord":{"x":484,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709},"use":true},"h2":{"coord":{"x":484,"y":257.92406046386174},"use":true}},{"p":{"coord":{"x":326.65249430318556,"y":186},"use":true},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186},"use":true},"h2":{"coord":{"x":239.15010236167052,"y":186},"use":true}},{"p":{"coord":{"x":170,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707},"use":true},"h2":{"coord":{"x":170,"y":429.9040095221619},"use":true}}]}}'));
+        },
+    },
+    {
+        category: 'Shape',
+        name: 'print',
+        assertion: function() {
+            let s = sampleShape();
+            return _TEST.expression(s.print());
+        },
+    },
+    {
+        category: 'Shape',
         name: 'get/set name',
         assertion: function() {
             let s = sampleShape();
@@ -134,15 +151,6 @@ _TEST.testList.push(
             let s = sampleShape();
             s.height = 100;
             return _TEST.is(s.height).equalTo(100);
-        },
-    },
-    {
-        category: 'Shape',
-        name: 'save',
-        assertion: function() {
-            let s = sampleShape();
-            let re = s.save();
-            return _TEST.is(re).equalTo(JSON.parse('{"path":{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500},"use":true},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500},"use":true},"h2":{"coord":{"x":413.45994211401285,"y":500},"use":true}},{"p":{"coord":{"x":484,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709},"use":true},"h2":{"coord":{"x":484,"y":257.92406046386174},"use":true}},{"p":{"coord":{"x":326.65249430318556,"y":186},"use":true},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186},"use":true},"h2":{"coord":{"x":239.15010236167052,"y":186},"use":true}},{"p":{"coord":{"x":170,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707},"use":true},"h2":{"coord":{"x":170,"y":429.9040095221619},"use":true}}]}}'));
         },
     },
     {

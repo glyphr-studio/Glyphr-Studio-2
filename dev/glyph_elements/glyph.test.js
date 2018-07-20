@@ -1,6 +1,6 @@
 import Glyph from './glyph.js';
 import {clone} from '../app/functions.js';
-import ComponentInstance from './componentinstance.js';
+import Shape from './shape.js';
 
 /**
  * Create a sample Glyph
@@ -35,7 +35,20 @@ function multiTriangleGlyph() {
 }
 
 _TEST.testList.push(
-
+    {
+        category: 'Glyph',
+        name: 'save',
+        assertion: function() {
+            return _TEST.is(sampleGlyph().save()).equalTo(JSON.parse('{"hex":"0x0000","shapes":[{"path":{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500},"use":true},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500},"use":true},"h2":{"coord":{"x":413.45994211401285,"y":500},"use":true}},{"p":{"coord":{"x":484,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709},"use":true},"h2":{"coord":{"x":484,"y":257.92406046386174},"use":true}},{"p":{"coord":{"x":326.65249430318556,"y":186},"use":true},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186},"use":true},"h2":{"coord":{"x":239.15010236167052,"y":186},"use":true}},{"p":{"coord":{"x":170,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707},"use":true},"h2":{"coord":{"x":170,"y":429.9040095221619},"use":true}}]}}]}'));
+        },
+    },
+    {
+        category: 'Glyph',
+        name: 'print',
+        assertion: function() {
+            return _TEST.expression(sampleGlyph().print());
+        },
+    },
     {
         category: 'Glyph',
         name: 'get/set hex',
@@ -236,26 +249,58 @@ _TEST.testList.push(
             return _TEST.is(sampleGlyph().makeOpenTypeJSPath()).equalTo(JSON.parse('{"commands":[{"type":"M","x":327,"y":500},{"type":"C","x1":413,"y1":500,"x2":484,"y2":429,"x":484,"y":343},{"type":"C","x1":484,"y1":258,"x2":414,"y2":186,"x":327,"y":186},{"type":"C","x1":239,"y1":186,"x2":170,"y2":257,"x":170,"y":343},{"type":"C","x1":170,"y1":430,"x2":240,"y2":500,"x":327,"y":500},{"type":"Z"}],"fill":"black","stroke":null,"strokeWidth":1}'));
         },
     },
+    {
+        category: 'Glyph',
+        name: 'combineAllShapes',
+        assertion: function() {
+            let g = multiTriangleGlyph();
+            let re = g.combineAllShapes(true);
+            return _TEST.is(re.shapes.length).equalTo(2);
+        },
+    },
+    {
+        category: 'Glyph',
+        name: 'resolveOverlapsForAllShapes',
+        assertion: function() {
+            let g = sampleGlyph();
+            // Pull the top coord down below the original bottom coord
+            g.shapes[0].path.pathPoints[0].p.y = 100;
+            debug(g.shapes[0].path.print());
+
+            return _TEST.is(sampleGlyph().resolveOverlapsForAllShapes().shapes.length).equalTo(3);
+        },
+    },
+    {
+        category: 'Glyph',
+        name: 'hasShapes',
+        assertion: function() {
+            return _TEST.expression(sampleGlyph().hasShapes());
+        },
+    },
+    {
+        category: 'Glyph',
+        name: 'removeShapesWithZeroLengthPaths',
+        assertion: function() {
+            let g = sampleGlyph();
+            g.shapes.push(new Shape());
+            return _TEST.is(g.removeShapesWithZeroLengthPaths().shapes.length).equalTo(1);
+        },
+    }
 );
 
 /*
-LINKED SHAPE METHODS
+CROSS GLYPH METHODS
 canAddComponent(cid)
 collectAllDownstreamLinks(re = [], excludePeers = false)
 collectAllUpstreamLinks(re = [])
 deleteLinks(thisID)
+flattenGlyph()
+copyShapesTo(destinationID, copyGlyphAttributes =
+addToUsedIn(linkID)
+removeFromUsedIn(linkID)
 
 DRAW METHODS
 drawGlyph(ctx, view =x: 0, y: 0, z: 1}, alpha = 1, addLSB = false, fill = '#000')
 drawMultiSelectAffordances(color = '#000')
 
-
-flattenGlyph()
-combineAllShapes(dontToast = false, dontResolveOverlaps = false)
-resolveOverlapsForAllShapes()
-copyShapesTo(destinationID, copyGlyphAttributes =
-hasShapes()
-removeShapesWithZeroLengthPaths()
-addToUsedIn(linkID)
-removeFromUsedIn(linkID)
 */

@@ -34,6 +34,7 @@ export default class Shape extends GlyphElement {
         ratioLock = false,
         parent = false,
     } = {}) {
+        // debug(`\n Shape.constructor - START`);
         super();
         this.parent = parent;
         this.name = name;
@@ -44,6 +45,7 @@ export default class Shape extends GlyphElement {
         this.wLock = wLock;
         this.hLock = hLock;
         this.ratioLock = ratioLock;
+        // debug(` Shape.constructor - END\n\n`);
     }
 
 
@@ -75,6 +77,33 @@ export default class Shape extends GlyphElement {
         return re;
     }
 
+    /**
+     * Create a nicely-formatted string for this object
+     * @param {number} level - how far down we are
+     * @returns {string}
+     */
+    print(level = 0) {
+        let ind = '';
+        for (let i=0; i<level; i++) ind += '  ';
+
+        let re = `${ind}{Shape\n`;
+        ind += '  ';
+
+        if (this.name !== 'Shape') re += `${ind}name: ${this.name}\n`;
+        if (this.xLock) re += `${ind}xLock: ${this.xLock}\n`;
+        if (this.yLock) re += `${ind}yLock: ${this.yLock}\n`;
+        if (this.wLock) re += `${ind}wLock: ${this.wLock}\n`;
+        if (this.hLock) re += `${ind}hLock: ${this.hLock}\n`;
+        if (this.ratioLock) re += `${ind}ratioLock: ${this.ratioLock}\n`;
+
+        re += `${ind}path: ${this.path.print(level+1)}\n`;
+
+        re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
+
+        re += `${ind.substring(2)}}`;
+
+        return re;
+    }
 
     // --------------------------------------------------------------
     // Getters
@@ -520,7 +549,10 @@ export default class Shape extends GlyphElement {
     // --------------------------------------------------------------
 
     /**
-     * Converts this Shape to a PolySegment to look for self-overlaps.
+     * If this shape's path is something like a Figure 8 that overlaps
+     * itself, this method will split this individual shape into separate
+     * shapes that don't overlap.  The result should look the same as the
+     * single path original, just with multiple paths that don't overlap.
      * @returns {array} - new collection of shapes that are separated
      *                    versions of the original shape
      */

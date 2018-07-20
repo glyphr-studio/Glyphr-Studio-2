@@ -8,7 +8,7 @@ import {clone, round, isVal, hasNonValues, duplicates, pointsAreEqual} from '../
 // import {json} from '../app/functions.js';
 import {getOverallMaxes, maxesOverlap} from './maxes.js';
 import {findSegmentIntersections} from './polysegment.js';
-import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
+import {sXcX, sYcY, getView} from '../edit_canvas/edit_canvas.js';
 
 /**
  * Glyph Element > Path
@@ -448,33 +448,56 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
 
     /**
      * Returns true if this path is at the specified point
-     * @param {number} px - target X in Em Units
-     * @param {number} py - target Y in Em Units
+     * @param {number} emX - target X in Em Units
+     * @param {number} emY - target Y in Em Units
      * @returns {boolean}
      */
-    isHere(px, py) {
+    isHere(emX, emY) {
+        // debug(`\n Path.isHere - START`);
+
+        let gcSize = 6000;
         let ghostCanvas = document.getElementById('ghostCanvas');
 
         if (!ghostCanvas) {
             let element = document.createElement('canvas');
-            element.setAttribute('height', '3000');
-            element.setAttribute('width', '3000');
-            // element.setAttribute('style', 'display:none;');
+            element.setAttribute('height', gcSize);
+            element.setAttribute('width', gcSize);
+            // element.setAttribute('style', 'border: 1px solid lime;');
+            element.setAttribute('style', 'display:none;');
             element.setAttribute('id', 'ghostCanvas');
             document.body.appendChild(element);
             ghostCanvas = element;
         }
 
+        let axisX = gcSize / 3;
+        let axisY = (gcSize * 2) / 3;
+        let view = {dx: axisX, dy: axisY, dz: 1};
+        let cX = sXcX(emX, view);
+        let cY = sYcY(emY, view);
+
         let ctx = ghostCanvas.getContext('2d');
-        ctx.clearRect(0, 0, 3000, 3000);
+        ctx.clearRect(0, 0, gcSize, gcSize);
         ctx.fillStyle = 'rgba(0,0,255,0.2)';
 
         ctx.beginPath();
-        this.drawPath(ctx, {x: 0, y: 2000, z: 1});
-        ctx.closePath();
+        this.drawPath(ctx, view);
         ctx.fill();
-        let imageData = ctx.getImageData(px, py, 1, 1);
-        debug(`Path.isHere ${px} ${py} at imageData ${JSON.stringify(imageData.data)}`);
+        ctx.closePath();
+        let imageData = ctx.getImageData(cX, cY, 1, 1);
+        // debug(`\t Path.maxes ${this.maxes.print()}`);
+
+        // debug(`\t checking ${cX} ${cY} at imageData ${JSON.stringify(imageData.data)}`);
+/*
+        // Debug Stuff, axis and point
+        ctx.beginPath();
+        ctx.rect(cX-1, cY-1, 2, 2);
+        ctx.rect(axisX, 0, 1, gcSize);
+        ctx.rect(0, axisY, gcSize, 1);
+        ctx.fillStyle = 'rgb(255,0,0)';
+        ctx.fill();
+        ctx.closePath();
+ */
+        // debug(` Path.isHere - returning ${imageData.data[3] > 0} - END\n\n`);
         return (imageData.data[3] > 0);
     }
 
@@ -551,25 +574,34 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
      * @param {object} view - View object with x / y offset and Zoom
      * @param {boolean} snap - snap values to whole numbers
      */
-    drawPath(ctx, view, snap = true) {
+    drawPath(ctx, view = getView('Path.drawPath'), snap = true) {
         // debug('\n Path.drawPath - START');
-        // debug('\t view ' + json(view, true));
+        // debug(`\t view ${view.dx}, ${view.dy}, ${view.dz}`);
 
-        let currView = getView('Path.drawPath');
-        view = view || clone(currView);
-        setView(view);
+        // let currView = getView('Path.drawPath');
+        // view = view || clone(currView);
+        // setView(view);
 
         if (this.pathPoints === false || this.pathPoints.length < 2) return;
 
         let pp;
         let np;
-        let precision = 9;
+        let precision = snap? 0 : 9;
 
-        if (snap) {
-            ctx.moveTo(sXcX(round(this.pathPoints[0].p.x)), sYcY(round(this.pathPoints[0].p.y)));
-        } else {
-            ctx.moveTo( sXcX(this.pathPoints[0].p.x), sYcY(this.pathPoints[0].p.y));
-        }
+        let p1x;
+        let p1y;
+        let p2x;
+        let p2y;
+        let p3x;
+        let p3y;
+        let p4x;
+        let p4y;
+
+        p1x = sXcX(round(this.pathPoints[0].p.x, precision), view);
+        p1y = sYcY(round(this.pathPoints[0].p.y, precision), view);
+
+        ctx.moveTo(p1x, p1y);
+        // debug(`\t move to ${p1x}, ${p1y}`);
 
         for (let cp = 0; cp < this.pathPoints.length; cp++) {
             pp = this.pathPoints[cp];
@@ -582,19 +614,19 @@ import {sXcX, sYcY, getView, setView} from '../edit_canvas/edit_canvas.js';
                 pp.makeFlat('h1');
             }
 
-            if (snap) precision = 0;
+            p2x = sXcX(round(pp.h2.x, precision), view);
+            p2y = sYcY(round(pp.h2.y, precision), view);
+            p3x = sXcX(round(np.h1.x, precision), view);
+            p3y = sYcY(round(np.h1.y, precision), view);
+            p4x = sXcX(round(np.p.x, precision), view);
+            p4y = sYcY(round(np.p.y, precision), view);
 
-            ctx.bezierCurveTo(
-                sXcX(round(pp.h2.x, precision)),
-                sYcY(round(pp.h2.y, precision)),
-                sXcX(round(np.h1.x, precision)),
-                sYcY(round(np.h1.y, precision)),
-                sXcX(round(np.p.x, precision)),
-                sYcY(round(np.p.y, precision))
-            );
+            // debug(`\t curveTo ${p2x}, ${p2y}, ${p3x}, ${p3y}, ${p4x}, ${p4y}`);
+
+            ctx.bezierCurveTo(p2x, p2y, p3x, p3y, p4x, p4y);
         }
 
-        setView(currView);
+        // setView(currView);
         // debug(' Path.drawPath - END\n');
     }
 

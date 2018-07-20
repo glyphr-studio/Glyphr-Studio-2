@@ -70,6 +70,14 @@ _TEST.testList.push(
     },
     {
         category: 'Path',
+        name: 'print',
+        assertion: function() {
+            let path = samplePath();
+            return _TEST.expression(path.print());
+        },
+    },
+    {
+        category: 'Path',
         name: 'winding getter',
         assertion: function() {
             let path = samplePath();

@@ -220,7 +220,7 @@ function saveFile(fname, buffer, ftype) {
 function clone(cobj) {
     let newObj = (cobj instanceof Array) ? [] : {};
     for (let i in cobj) {
-        if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parent' && i !== 'parent' && i !== 'cache') {
+        if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parent' && i !== 'cache') {
             newObj[i] = clone(cobj[i]);
         } else newObj[i] = cobj[i];
     }

@@ -1040,29 +1040,25 @@ export default redraw;
 //    Convert between Saved values and Canvas values
 // --------------------------------------------------------------------------
     // convert stored x-y point to canvas x-y
-    function sXcX(sx) {
-        let v = getView('sXcX');
-        let canvasx = v.dx;
-        canvasx += (sx*v.dz);
-        return canvasx || v.dx;
+    function sXcX(sx, view = getView('sXcX')) {
+        let canvasx = view.dx;
+        canvasx += (sx*view.dz);
+        return canvasx || view.dx;
     }
 
-    function sYcY(sy) {
-        let v = getView('sYcY');
-        let canvasy = v.dy;
-        canvasy -= (sy*v.dz);
-        return canvasy || v.dy;
+    function sYcY(sy, view = getView('sYcY')) {
+        let canvasy = view.dy;
+        canvasy -= (sy*view.dz);
+        return canvasy || view.dy;
     }
 
     // convert canvas x-y inputs to saved shape x-y
-    function cXsX(cx) {
-        let v = getView('cXsX');
-        return ((cx-v.dx)/(v.dz));
+    function cXsX(cx, view = getView('cXsX')) {
+        return ((cx-view.dx)/(view.dz));
     }
 
-    function cYsY(cy) {
-        let v = getView('cYsY');
-        return ((v.dy-cy)/(v.dz));
+    function cYsY(cy, view = getView('cYsY')) {
+        return ((view.dy-cy)/(view.dz));
     }
 
 
