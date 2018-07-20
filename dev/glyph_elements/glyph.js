@@ -1239,12 +1239,18 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     resolveOverlapsForAllShapes() {
+        debug(`\n Glyph.resolveOverlapsForAllShapes - START`);
+
         let newShapes = [];
         for (let ts = 0; ts < this.shapes.length; ts++) {
             newShapes = newShapes.concat(this.shapes[ts].resolveSelfOverlaps());
         }
+
+        debug(`\t Assigning new shapes to this.shapes:`);
+        debug(newShapes);
         this.shapes = newShapes;
 
+        debug(` Glyph.resolveOverlapsForAllShapes - END\n\n`);
         return this;
     }
 
@@ -1324,6 +1330,7 @@ export default class Glyph extends GlyphElement {
      * When this Glyph is linked-to from another ComponentInstance, track
      * where it's being used by adding it to this.usedIn
      * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
+     * @returns {Glyph} - reference to this Glyph
      */
     addToUsedIn(linkID) {
         this.usedIn.push(''+linkID);
@@ -1331,16 +1338,21 @@ export default class Glyph extends GlyphElement {
         this.usedIn.sort(function(a, b) {
             return a-b;
         });
+
+        return this;
     }
 
     /**
      * Removes a link from this usedIn array
      * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
+     * @returns {Glyph} - reference to this Glyph
      */
     removeFromUsedIn(linkID) {
         let id = this.usedIn.indexOf(''+linkID);
         if (id !== -1) {
             this.usedIn.splice(id, 1);
         }
+
+        return this;
     }
 }

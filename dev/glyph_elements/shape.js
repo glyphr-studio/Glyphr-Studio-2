@@ -557,7 +557,7 @@ export default class Shape extends GlyphElement {
      *                    versions of the original shape
      */
     resolveSelfOverlaps() {
-        // debug('\n Shape.resolveSelfOverlaps - START');
+        debug('\n Shape.resolveSelfOverlaps - START');
         // Add self intersects to path
         let polySeg = this.path.getPolySegment();
         let ix = polySeg.findIntersections();
@@ -587,10 +587,12 @@ export default class Shape extends GlyphElement {
         let psn;
         for (let ps = 0; ps < returnSegments.length; ps++) {
             psn = returnSegments[ps];
-            if (psn.segments.length > 1) returnShapes.push(new Shape({'name': this.name, 'path': psn.getPath()}));
+            if (psn.segments.length > 1) returnShapes.push({'name': this.name, 'path': psn.getPath()});
         }
 
-        // debug(' Shape.resolveSelfOverlaps - END\n');
+        debug(`\t Returning:`);
+        debug(returnShapes);
+        debug(' Shape.resolveSelfOverlaps - END\n');
         return returnShapes;
     }
 

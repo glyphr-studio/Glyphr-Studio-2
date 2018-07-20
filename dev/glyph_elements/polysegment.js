@@ -5,6 +5,7 @@ import Path from './path.js';
 import PathPoint from './pathpoint.js';
 import {maxesOverlap} from './maxes.js';
 import {duplicates, clone, pointsAreEqual, round, numSan} from '../app/functions.js';
+import {sXcX, sYcY} from '../edit_canvas/edit_canvas.js';
 
 /**
  * Glyph Element > Poly Segment
@@ -173,11 +174,11 @@ export default class PolySegment extends GlyphElement {
          * @returns {PathPoint}
          */
         function makePathPointFromSegments(seg1, seg2) {
-            let newPP = new PathPoint({
+            let newPP = {
                 h1: {point: {x: seg1.p3x, y: seg1.p3y}},
                 p: {point: {x: seg2.p1x, y: seg2.p1y}},
                 h2: {point: {x: seg2.p2x, y: seg2.p2y}},
-            });
+            };
 
             if (seg1.line || pointsAreEqual(newPP.h1, newPP.p)) newPP.h1.use = false;
             if (seg2.line || pointsAreEqual(newPP.h2, newPP.p)) newPP.h2.use = false;
@@ -209,7 +210,7 @@ export default class PolySegment extends GlyphElement {
 
         // debug(pp);
         // debug(' PolySegment.getPath - END\n');
-        return new Path({pathPoints: pp});
+        return {pathPoints: pp};
     }
 
     /**

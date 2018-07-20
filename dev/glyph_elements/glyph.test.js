@@ -265,9 +265,17 @@ _TEST.testList.push(
             let g = sampleGlyph();
             // Pull the top coord down below the original bottom coord
             g.shapes[0].path.pathPoints[0].p.y = 100;
-            debug(g.shapes[0].path.print());
 
-            return _TEST.is(sampleGlyph().resolveOverlapsForAllShapes().shapes.length).equalTo(3);
+            debug(`\n TEST Glyph.resolveOverlapsForAllShapes - START`);
+            debug(`\t BEFORE SPLIT`);
+            debug(g.print());
+
+            g.resolveOverlapsForAllShapes();
+
+            debug(`\t AFTER SPLIT`);
+            debug(g.print());
+
+            return _TEST.is(g.shapes.length).equalTo(3);
         },
     },
     {
@@ -285,6 +293,18 @@ _TEST.testList.push(
             g.shapes.push(new Shape());
             return _TEST.is(g.removeShapesWithZeroLengthPaths().shapes.length).equalTo(1);
         },
+    },
+    {
+        category: 'Glyph',
+        name: 'addToUsedIn / RemoveFromUsedIn',
+        assertion: function() {
+            let g = sampleGlyph();
+            g.addToUsedIn('0x0012');
+            g.addToUsedIn('0x0322');
+            g.addToUsedIn('0x0004');
+            g.removeFromUsedIn('0x0012');
+            return _TEST.is(g.usedIn[0]).equalTo('0x0004');
+        },
     }
 );
 
@@ -296,8 +316,6 @@ collectAllUpstreamLinks(re = [])
 deleteLinks(thisID)
 flattenGlyph()
 copyShapesTo(destinationID, copyGlyphAttributes =
-addToUsedIn(linkID)
-removeFromUsedIn(linkID)
 
 DRAW METHODS
 drawGlyph(ctx, view =x: 0, y: 0, z: 1}, alpha = 1, addLSB = false, fill = '#000')

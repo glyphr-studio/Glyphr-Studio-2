@@ -339,13 +339,13 @@ function finishTests() {
  */
 _TEST.is = function(leftHand) {
     let test = {};
-    test.description = JSON.stringify(leftHand);
 
     return {equalTo: function(rightHand) {
         test.result = areEqual(leftHand, rightHand);
 
-        test.description += test.result? '\nEQUALS\n' : '\nDOES NOT EQUAL\n';
-        test.description += JSON.stringify(rightHand);
+        test.description = 'EXPECTED\n' + JSON.stringify(rightHand);
+        test.description += test.result? '\nCONFIRMED\n' : '\nGOT INSTEAD\n';
+        test.description += JSON.stringify(leftHand);
 
         return test;
     }};
