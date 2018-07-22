@@ -1239,6 +1239,7 @@ export default class Glyph extends GlyphElement {
      * @returns {Glyph} - reference to this Glyph
      */
     resolveOverlapsForAllShapes() {
+        /*
         debug(`\n Glyph.resolveOverlapsForAllShapes - START`);
 
         let newShapes = [];
@@ -1247,11 +1248,13 @@ export default class Glyph extends GlyphElement {
         }
 
         debug(`\t Assigning new shapes to this.shapes:`);
-        debug(newShapes);
+        let test = new Shape(newshapes[0]);
+        debug(test.print());
+
         this.shapes = newShapes;
 
         debug(` Glyph.resolveOverlapsForAllShapes - END\n\n`);
-        return this;
+         */return this;
     }
 
 

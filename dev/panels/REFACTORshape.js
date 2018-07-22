@@ -276,24 +276,24 @@ function isOverShape(x, y) {
  * @returns {array} - collection of result shapes
  */
 function combineShapes(shapes, donttoast, dontresolveoverlaps) {
-    debug('\n combineShapes - START');
-    debug(`\t shapes.length ${shapes.length}`);
+    // debug('\n combineShapes - START');
+    // debug(`\t shapes.length ${shapes.length}`);
 
     let tempshapes = false;
 
     if (shapes.length <= 1) {
-        debug('\t length=1 - returning what was passed');
+        // debug('\t length=1 - returning what was passed');
         return false;
     } else if (shapes.length === 2) {
         tempshapes = combineTwoShapes(shapes[0], shapes[1], donttoast);
         if (!tempshapes) {
-            debug('\t length=2 - returning what was passed');
+            // debug('\t length=2 - returning what was passed');
             if (!donttoast) showToast('The selected shapes do not have overlapping paths.');
             return false;
         } else {
             tempshapes = [tempshapes];
-            debug('\t length=2 - continuing with tempshapes from combineTwoShapes');
-            debug(tempshapes);
+            // debug('\t length=2 - continuing with tempshapes from combineTwoShapes');
+            // debug(tempshapes);
         }
     }
 
@@ -304,20 +304,20 @@ function combineShapes(shapes, donttoast, dontresolveoverlaps) {
      * @returns {array} - collection of combined shapes
      */
     function singlePass(arr) {
-        debug('\n\t SinglePass');
-        debug('\t\t start arr len ' + arr.length);
+        // debug('\n\t SinglePass');
+        // debug('\t\t start arr len ' + arr.length);
         let re;
         let newarr = [];
         let didstuff = false;
 
         for (let outer=0; outer<arr.length; outer++) {
             for (let inner=0; inner<arr.length; inner++) {
-            debug('\t\t testing shape ' + outer + ' and ' + inner);
+            // debug('\t\t testing shape ' + outer + ' and ' + inner);
 
                 if ((outer !== inner) && arr[outer] && arr[inner]) {
                     re = combineTwoShapes(arr[outer], arr[inner], donttoast);
 
-                    debug('\t\t combineShapes returned ' + (re.length || re));
+                    // debug('\t\t combineShapes returned ' + (re.length || re));
                     if (re !== false) {
                         newarr.push(re);
                         didstuff = true;
@@ -332,7 +332,7 @@ function combineShapes(shapes, donttoast, dontresolveoverlaps) {
             return v;
         }));
 
-        debug('\t singlepass didstuff = ' + didstuff);
+        // debug('\t singlepass didstuff = ' + didstuff);
 
         return {'arr': newarr, 'didstuff': didstuff};
     }
@@ -348,9 +348,9 @@ function combineShapes(shapes, donttoast, dontresolveoverlaps) {
         });
         // tempshapes = clone(shapes);
 
-        debug(`\t tempshapes:`);
+        // debug(`\t tempshapes:`);
         tempshapes.forEach((element) => {
-            debug(element.print());
+            // debug(element.print());
         });
 
         tempshapes.sort(function(a, b) {
@@ -373,34 +373,34 @@ function combineShapes(shapes, donttoast, dontresolveoverlaps) {
             }
 
             tempshapes = lr.arr;
-            debug('\t didstuff ' + lr.didstuff);
+            // debug('\t didstuff ' + lr.didstuff);
             count++;
         }
     }
 
 
-    debug(tempshapes);
+    // debug(tempshapes);
 
     let newshapes = [];
     if (dontresolveoverlaps) {
-        debug('\t dontresolveoverlaps is true');
+        // debug('\t dontresolveoverlaps is true');
         newshapes = tempshapes;
-        debug('\t newshapes is now ');
-        debug(newshapes);
+        // debug('\t newshapes is now ');
+        // debug(newshapes);
     } else {
-        debug('\t dontresolveoverlaps is false, tempshapes.length = ' + tempshapes.length);
+        // debug('\t dontresolveoverlaps is false, tempshapes.length = ' + tempshapes.length);
         // Collapse each shape's overlapping paths
         for (let ts=0; ts<tempshapes.length; ts++) {
             newshapes = newshapes.concat(tempshapes[ts].resolveSelfOverlaps());
         }
-        debug('\t newshapes is now ');
-        debug(newshapes);
+        // debug('\t newshapes is now ');
+        // debug(newshapes);
     }
 
-    debug('\t returning');
-    debug(newshapes);
+    // debug('\t returning');
+    // debug(newshapes);
 
-    debug(' combineShapes - END\n');
+    // debug(' combineShapes - END\n');
     return newshapes;
 }
 

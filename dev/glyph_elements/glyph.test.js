@@ -253,9 +253,18 @@ _TEST.testList.push(
         category: 'Glyph',
         name: 'combineAllShapes',
         assertion: function() {
-            let g = multiTriangleGlyph();
-            let re = g.combineAllShapes(true);
-            return _TEST.is(re.shapes.length).equalTo(2);
+            let s1 = new Shape({path: {pathPoints: [
+                {p: {coord: {x: 100, y: 200}}},
+                {p: {coord: {x: 300, y: 600}}},
+                {p: {coord: {x: 400, y: 500}}},
+            ]}});
+            let s2 = new Shape(s1);
+            s2.y = 500;
+
+            let g = new Glyph({shapes: [s1, s2]});
+
+            let re = g.combineAllShapes(true, true);
+            return _TEST.is(re.shapes.length).equalTo(1);
         },
     },
     {
