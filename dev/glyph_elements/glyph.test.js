@@ -269,26 +269,6 @@ _TEST.testList.push(
     },
     {
         category: 'Glyph',
-        name: 'resolveOverlapsForAllShapes',
-        assertion: function() {
-            let g = sampleGlyph();
-            // Pull the top coord down below the original bottom coord
-            g.shapes[0].path.pathPoints[0].p.y = 100;
-
-            debug(`\n TEST Glyph.resolveOverlapsForAllShapes - START`);
-            debug(`\t BEFORE SPLIT`);
-            debug(g.print());
-
-            g.resolveOverlapsForAllShapes();
-
-            debug(`\t AFTER SPLIT`);
-            debug(g.print());
-
-            return _TEST.is(g.shapes.length).equalTo(3);
-        },
-    },
-    {
-        category: 'Glyph',
         name: 'hasShapes',
         assertion: function() {
             return _TEST.expression(sampleGlyph().hasShapes());

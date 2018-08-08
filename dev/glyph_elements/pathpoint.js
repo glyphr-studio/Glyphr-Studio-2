@@ -1,6 +1,6 @@
 import GlyphElement from './glyphelement.js';
 import ControlPoint from './controlpoint.js';
-import {round, rotate, pointsAreEqual} from '../app/functions.js';
+import {round, rotate, pointsAreEqual, isVal} from '../app/functions.js';
 
 
 /**
@@ -62,13 +62,14 @@ export default class PathPoint extends GlyphElement {
     /**
      * Create a nicely-formatted string for this object
      * @param {number} level - how far down we are
+     * @param {number} num - increment designator for arrays
      * @returns {string}
      */
-    print(level = 0) {
+    print(level = 0, num = false) {
         let ind = '';
         for (let i=0; i<level; i++) ind += '  ';
 
-        let re = `${ind}{PathPoint\n`;
+        let re = `${ind}{PathPoint ${isVal(num)? num : ''}\n`;
         ind += '  ';
 
         re += `${ind}type: ${this.type}\n`;
@@ -76,7 +77,7 @@ export default class PathPoint extends GlyphElement {
         re += `${ind}h1: ${this.h1.print(level+1)}\n`;
         re += `${ind}h2: ${this.h2.print(level+1)}\n`;
 
-        re += `${ind.substring(2)}}`;
+        re += `${ind.substring(2)}}/PathPoint ${isVal(num)? num : ''}`;
 
         return re;
     }

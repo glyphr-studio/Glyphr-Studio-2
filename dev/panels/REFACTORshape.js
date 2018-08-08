@@ -272,10 +272,9 @@ function isOverShape(x, y) {
  * Combine a bunch of shapes into as few shapes as possible
  * @param {array} shapes - array of shapes to combine
  * @param {boolean} donttoast - 'silent' if true
- * @param {boolean} dontresolveoverlaps - faster if true
  * @returns {array} - collection of result shapes
  */
-function combineShapes(shapes, donttoast, dontresolveoverlaps) {
+function combineShapes(shapes, donttoast) {
     // debug('\n combineShapes - START');
     // debug(`\t shapes.length ${shapes.length}`);
 
@@ -382,20 +381,9 @@ function combineShapes(shapes, donttoast, dontresolveoverlaps) {
     // debug(tempshapes);
 
     let newshapes = [];
-    if (dontresolveoverlaps) {
-        // debug('\t dontresolveoverlaps is true');
-        newshapes = tempshapes;
-        // debug('\t newshapes is now ');
-        // debug(newshapes);
-    } else {
-        // debug('\t dontresolveoverlaps is false, tempshapes.length = ' + tempshapes.length);
-        // Collapse each shape's overlapping paths
-        for (let ts=0; ts<tempshapes.length; ts++) {
-            newshapes = newshapes.concat(tempshapes[ts].resolveSelfOverlaps());
-        }
-        // debug('\t newshapes is now ');
-        // debug(newshapes);
-    }
+    newshapes = tempshapes;
+    // debug('\t newshapes is now ');
+    // debug(newshapes);
 
     // debug('\t returning');
     // debug(newshapes);

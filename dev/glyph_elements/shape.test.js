@@ -302,7 +302,6 @@ addShape
 turnSelectedShapeIntoAComponent
 
 CANVAS METHODS
-resolveSelfOverlaps
 drawShape(lctx, view)
 drawSegments()
 getClickedShape

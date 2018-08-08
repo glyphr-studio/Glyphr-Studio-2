@@ -100,7 +100,7 @@ export default class Shape extends GlyphElement {
 
         re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
 
-        re += `${ind.substring(2)}}`;
+        re += `${ind.substring(2)}}/Shape`;
 
         return re;
     }
@@ -542,58 +542,6 @@ export default class Shape extends GlyphElement {
      */
     isHere(px, py) {
         return this.path.isHere(px, py);
-    }
-
-    // --------------------------------------------------------------
-    // Boolean Combine
-    // --------------------------------------------------------------
-
-    /**
-     * If this shape's path is something like a Figure 8 that overlaps
-     * itself, this method will split this individual shape into separate
-     * shapes that don't overlap.  The result should look the same as the
-     * single path original, just with multiple paths that don't overlap.
-     * @returns {array} - new collection of shapes that are separated
-     *                    versions of the original shape
-     */
-    resolveSelfOverlaps() {
-        debug('\n Shape.resolveSelfOverlaps - START');
-        // Add self intersects to path
-        let polySeg = this.path.getPolySegment();
-        let ix = polySeg.findIntersections();
-        // debug('\t intersections');
-        // debug(json(ix, true));
-
-        if (ix.length === 0) return new Shape(clone(this));
-
-        let segNum = polySeg.segments.length;
-        let threshold = 0.01;
-        polySeg.splitSegmentsAtIntersections(ix, threshold);
-        if (segNum === polySeg.segments.length) return new Shape(clone(this));
-
-        // debug('\t before filtering ' + polySeg.segments.length);
-        polySeg.removeZeroLengthSegments();
-        polySeg.removeDuplicateSegments();
-        polySeg.removeSegmentsOverlappingShape(this);
-        polySeg.removeRedundantLineSegments();
-        polySeg.removeNonConnectingSegments();
-        // debug('\t afters filtering ' + polySeg.segments.length);
-        if (_UI.devMode) polySeg.drawPolySegmentOutline();
-        // var returnShapes = [];
-        // returnShapes.push(new Shape({'name':this.name, 'path':polySeg.getPath()}));
-
-        let returnSegments = polySeg.stitchSegmentsTogether();
-        let returnShapes = [];
-        let psn;
-        for (let ps = 0; ps < returnSegments.length; ps++) {
-            psn = returnSegments[ps];
-            if (psn.segments.length > 1) returnShapes.push({'name': this.name, 'path': psn.getPath()});
-        }
-
-        debug(`\t Returning:`);
-        debug(returnShapes);
-        debug(' Shape.resolveSelfOverlaps - END\n');
-        return returnShapes;
     }
 
 

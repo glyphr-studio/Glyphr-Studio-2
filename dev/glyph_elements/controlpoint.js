@@ -62,7 +62,7 @@ export default class ControlPoint extends GlyphElement {
         let ind = '';
         for (let i=0; i<level; i++) ind += '  ';
 
-        let re = `{ControlPoint\n`;
+        let re = `${ind}{ControlPoint\n`;
         ind += '  ';
 
         re += `${ind}coord: ${this.coord.print(level+1)}\n`;

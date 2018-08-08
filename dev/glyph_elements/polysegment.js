@@ -1,8 +1,8 @@
 import GlyphElement from './glyphelement.js';
 import XYPoint from './xypoint.js';
 import Segment from './segment.js';
-import Path from './path.js';
-import PathPoint from './pathpoint.js';
+// import Path from './path.js';
+// import PathPoint from './pathpoint.js';
 import {maxesOverlap} from './maxes.js';
 import {duplicates, clone, pointsAreEqual, round, numSan} from '../app/functions.js';
 import {sXcX, sYcY} from '../edit_canvas/edit_canvas.js';
@@ -175,9 +175,9 @@ export default class PolySegment extends GlyphElement {
          */
         function makePathPointFromSegments(seg1, seg2) {
             let newPP = {
-                h1: {point: {x: seg1.p3x, y: seg1.p3y}},
-                p: {point: {x: seg2.p1x, y: seg2.p1y}},
-                h2: {point: {x: seg2.p2x, y: seg2.p2y}},
+                h1: {coord: {x: seg1.p3x, y: seg1.p3y}},
+                p: {coord: {x: seg2.p1x, y: seg2.p1y}},
+                h2: {coord: {x: seg2.p2x, y: seg2.p2y}},
             };
 
             if (seg1.line || pointsAreEqual(newPP.h1, newPP.p)) newPP.h1.use = false;
@@ -317,6 +317,8 @@ export default class PolySegment extends GlyphElement {
             result = result.concat(this._segments[s].splitAtManyPoints(ixArray, threshold));
         }
         this._segments = result;
+        this.cache.splits = ixArray;
+
         // debug('\t afters length ' + this._segments.length);
         // debug(this.print());
         // debug(' PolySegment.splitSegmentsAtIntersections - END\n');
@@ -326,11 +328,11 @@ export default class PolySegment extends GlyphElement {
     /**
      * Takes all the segments and orders them based on their
      * starting and ending points
-     * @returns {array} - Returns a collection of *PolySegments*
+     * @returns {array} - collection of stitched PolySegments (hopefully just one)
      */
     stitchSegmentsTogether() {
         // debug('\n PolySegment.stitchSegmentsTogether - START');
-        let source = new PolySegment(this).segments;
+        let source = this.segments;
         let sorted = [];
         let result = [];
 
@@ -381,16 +383,16 @@ export default class PolySegment extends GlyphElement {
 
         // Start ordering
         let resultSegment;
-        let nextCoord = getNextUnusedSegmentP1();
+        let nextXYPoint = getNextUnusedSegmentP1();
         // debug('\t starting loop');
-        // debug([nextCoord]);
+        // debug(nextXYPoint);
         // debug('\t source.length ' + source.length);
         for (let i = 0; i < source.length; i++) {
-            resultSegment = getSegmentStartingAt(nextCoord);
+            resultSegment = getSegmentStartingAt(nextXYPoint);
             if (resultSegment) {
                 // debug('\t LOOP ' + i + ' added a segment,  ' + result.length + '.' + sorted.length);
                 sorted.push(resultSegment);
-                nextCoord = resultSegment.getXYPoint(4);
+                nextXYPoint = resultSegment.getXYPoint(4);
             } else {
                 // debug('\t LOOP ' + i + ' NO NEXT SEGMENT FOUND');
                 if (sorted.length) {
@@ -401,7 +403,7 @@ export default class PolySegment extends GlyphElement {
                         // debug('\t\t Pushed sorted PolySegment, OPEN LOOP');
                     }
                     sorted = [];
-                    nextCoord = getNextUnusedSegmentP1();
+                    nextXYPoint = getNextUnusedSegmentP1();
                     i--;
                 }
             }
@@ -417,17 +419,29 @@ export default class PolySegment extends GlyphElement {
                 // debug('\t\t Pushed sorted PolySegment, OPEN LOOP');
             }
         }
+
         // debug('\t result');
         // debug(result);
-        // result.forEach(function(v, i) {
+        result.forEach(function(v, i) {
             // debug('\n\t RETURNING ' + i);
             // debug(v.segments);
-        // });
+        });
         // debug(' PolySegment.stitchSegmentsTogether - END\n');
 
         return result;
     }
 
+    /**
+     * Takes individual Segments in this PolySegment, and figures out
+     * if they represent a single Shape, or multiple Shapes
+     * @param {string} name - name prefix for the new Shapes
+     * @returns {array} - collection of Shape objects
+     */
+    getSplitShapes(name = 'Shape') {
+        let shapes = [];
+
+        return shapes;
+    }
 
     // --------------------------------------------------------------
     // Segment Filtering

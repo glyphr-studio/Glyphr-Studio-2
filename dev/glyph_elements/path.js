@@ -82,15 +82,15 @@ import {sXcX, sYcY, getView} from '../edit_canvas/edit_canvas.js';
         re += `${ind}winding: ${this.winding}\n`;
 
         re += `${ind}pathPoints: [\n`;
-        this._pathPoints.forEach((pp) => {
-            re += pp.print(level+2);
+        this._pathPoints.forEach((pp, i) => {
+            re += pp.print(level+2, i);
             re += `\n`;
         });
         re += `${ind}]\n`;
 
         re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
 
-        re += `${ind.substring(2)}}`;
+        re += `${ind.substring(2)}}/Path`;
 
         return re;
     }

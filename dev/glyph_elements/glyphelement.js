@@ -88,13 +88,14 @@ export default class GlyphElement {
     /**
      * Create a nicely-formatted string for this object
      * @param {number} level - how far down we are
+     * @param {number} num - increment designator for arrays
      * @returns {string}
      */
-    print(level = 0) {
+    print(level = 0, num = false) {
         let ind = '';
         for (let i=0; i<level; i++) ind += '  ';
 
-        let re = `${ind}{${this.objType}\n`;
+        let re = `${ind}{${this.objType} ${num? num : ''}\n`;
         ind += '  ';
 
         let safeObj = this.save();
@@ -117,7 +118,7 @@ export default class GlyphElement {
             }
         }
 
-        re += `${ind.substring(2)}}`;
+        re += `${ind.substring(2)}}/${this.objType} ${num? num : ''}`;
 
         return re;
     }

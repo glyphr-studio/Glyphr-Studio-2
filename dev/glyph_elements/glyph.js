@@ -151,7 +151,7 @@ export default class Glyph extends GlyphElement {
 
         if (this.maxes) re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
 
-        re += `${ind.substring(2)}}`;
+        re += `${ind.substring(2)}}/Glyph ${this.hex}`;
 
         return re;
     }
@@ -1213,14 +1213,13 @@ export default class Glyph extends GlyphElement {
     /**
      * Boolean combine all shapes in this Glyph to as few shapes as possible
      * @param {boolean} dontToast - don't show progress messages
-     * @param {boolean} dontResolveOverlaps - speed up process by skipping resolve overlaps
      * @returns {Glyph} - reference to this Glyph
      */
-    combineAllShapes(dontToast = false, dontResolveOverlaps = false) {
+    combineAllShapes(dontToast = false) {
         // debug('\n Glyph.combineAllShapes - START - ' + this.name);
         this.flattenGlyph();
 
-        let shapes = combineShapes(this.shapes, dontToast, dontResolveOverlaps);
+        let shapes = combineShapes(this.shapes, dontToast);
         if (shapes) {
             // debug('\t new shapes');
             this.shapes = shapes;
@@ -1232,29 +1231,6 @@ export default class Glyph extends GlyphElement {
 
         // debug(' Glyph.combineAllShapes - END - ' + this.name + '\n');
         return this;
-    }
-
-    /**
-     * If a path in this Glyph overlaps itself, split them into separate shapes
-     * @returns {Glyph} - reference to this Glyph
-     */
-    resolveOverlapsForAllShapes() {
-        /*
-        debug(`\n Glyph.resolveOverlapsForAllShapes - START`);
-
-        let newShapes = [];
-        for (let ts = 0; ts < this.shapes.length; ts++) {
-            newShapes = newShapes.concat(this.shapes[ts].resolveSelfOverlaps());
-        }
-
-        debug(`\t Assigning new shapes to this.shapes:`);
-        let test = new Shape(newshapes[0]);
-        debug(test.print());
-
-        this.shapes = newShapes;
-
-        debug(` Glyph.resolveOverlapsForAllShapes - END\n\n`);
-         */return this;
     }
 
 
