@@ -10,6 +10,7 @@
         "package.json": true,
         "package-lock.json": true,
         "README.md": true,
+        "LICENSE*.txt": true,
         ".eslintrc.json": true,
         ".gitattributes": true,
         ".gitignore": true
