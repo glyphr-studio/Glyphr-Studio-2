@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>info-bubble test</title>
+    <script src="infobubble.test.js" type="module"></script>
+    <style>
+        * {
+            font-family: sans-serif;
+        }
+
+        info-bubble {
+            width: 18px;
+            height: 18px;
+            display: inline-block;
+        }
+
+        label {
+            display:block;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body style="padding:100px;">
+    <label>Sample input
+        <info-bubble text="This is a sample info-bubble"></info-bubble>
+        <input type="text" value="something">
+    </label>
+    <label>foobar
+        <info-bubble text="here is some info about foobar, that happens to be long"></info-bubble>
+        <input type="text" value="foo">
+    </label>
+    <label>multi-line bubble
+        <info-bubble text="This<br/>is a sample<br/>multi-line info-bubble"></info-bubble>
+        <input type="text" value="asdf">
+    </label>
+    <label>Sample input
+        <info-bubble text="This is a sample info-bubble"></info-bubble>
+        <input type="text" value="something">
+    </label>
+</body>
+</html>
