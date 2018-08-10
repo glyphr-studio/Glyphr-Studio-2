@@ -1,5 +1,5 @@
 import {makeElement} from '../controls.js';
-import ButtonToggle from './button-toggle.js';
+import ButtonToggle from '../button-toggle/button-toggle.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement,
@@ -13,7 +13,8 @@ export default class InputLockableNumber extends HTMLElement {
     constructor() {
         super();
 
-        customElements.define('button-toggle', ButtonToggle);
+        // customElements.define('button-toggle', ButtonToggle);
+        document.customElements.define('button-toggle', ButtonToggle);
 
         this.wrapper = makeElement({className: 'wrapper'});
         this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: true});
@@ -155,7 +156,7 @@ export default class InputLockableNumber extends HTMLElement {
         this.arrowWrapper.appendChild(this.upArrow);
         this.arrowWrapper.appendChild(this.downArrow);
 
-        // this.padlockWrapper.appendChild(this.padlock);
+        this.padlockWrapper.appendChild(this.padlock);
 
         this.wrapper.appendChild(this.numberInput);
         this.wrapper.appendChild(this.arrowWrapper);
@@ -215,3 +216,5 @@ export default class InputLockableNumber extends HTMLElement {
         console.log(`input-lockable-number.blur() - END`);
     }
 }
+
+customElements.define('input-lockable-number', InputLockableNumber);
