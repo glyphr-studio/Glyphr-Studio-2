@@ -7,9 +7,13 @@ import {makeElement} from '../controls.js';
 export default class ButtonToggle extends HTMLElement {
     /**
      * Create an ButtonToggle
+     * @param {array} attributes - collection of [key, value] pairs to set as attributes
      */
-    constructor() {
+    constructor(attributes = []) {
+        console.log(`ButtonToggle.constructor() - START`);
         super();
+
+        attributes.forEach((a) => this.setAttribute(a[0], a[1]));
 
         this.size = this.getAttribute('size') || 24;
         this.gutterSize = Math.round(this.size * 0.05);
@@ -17,7 +21,9 @@ export default class ButtonToggle extends HTMLElement {
         this.selected = this.hasAttribute('selected');
         this.disabled = this.hasAttribute('disabled');
 
-        this.wrapper = makeElement({className: 'wrapper', tabindex: !this.disabled});
+        this.wrapper = makeElement({tag: 'div', className: 'wrapper', tabindex: !this.disabled});
+        let iconName = this.getAttribute('icon');
+        console.log(`Attribute 'icon' = ${iconName}`);
         this.wrapper.innerHTML = this.getIcon(this.getAttribute('icon'), this.iconSize);
 
         this.colors = {
@@ -30,6 +36,14 @@ export default class ButtonToggle extends HTMLElement {
         this.restingOpacity = 0.9;
 
         let style = makeElement({tag: 'style', content: `
+            :host {
+                box-sizing: border-box;
+                margin: 0;
+                border: 0;
+                width: ${this.size}px;
+                height: ${this.size}px;
+            }
+
             .wrapper {
                 box-sizing: border-box;
                 margin: 0;
@@ -107,6 +121,7 @@ export default class ButtonToggle extends HTMLElement {
      * @returns {string} - full SVG
      */
     getIcon(id, size = '24') {
+        console.log(`getIcon - passed ${id} at size ${size}`);
         let header = ` version="1.1" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
             x="0px" y="0px" width="${size}px" height="${size}px"`;

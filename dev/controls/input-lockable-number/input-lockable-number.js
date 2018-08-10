@@ -1,5 +1,6 @@
 import {makeElement} from '../controls.js';
 import ButtonToggle from '../button-toggle/button-toggle.js';
+import {uiColors} from '../../app/colors.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement,
@@ -13,9 +14,6 @@ export default class InputLockableNumber extends HTMLElement {
     constructor() {
         super();
 
-        // customElements.define('button-toggle', ButtonToggle);
-        document.customElements.define('button-toggle', ButtonToggle);
-
         this.wrapper = makeElement({className: 'wrapper'});
         this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: true});
         this.setInputValue(this.getAttribute('value'));
@@ -27,50 +25,39 @@ export default class InputLockableNumber extends HTMLElement {
         this.locked = this.hasAttribute('locked');
 
         this.padlockWrapper = makeElement({className: 'padlockWrapper', tabindex: true});
-        this.padlock = document.createElement('botton-toggle');
-        this.padlock.setAttribute('class', 'padlock');
-        this.padlock.setAttribute('icon', 'lock');
-        this.padlock.setAttribute('size', '20');
+        this.padlock = new ButtonToggle([
+            ['class', 'padlock'],
+            ['icon', 'lock'],
+            ['size', '20'],
+        ]);
 
         if (this.locked) {
             this.numberInput.setAttribute('disabled', '');
             this.padlock.setAttribute('selected', '');
         }
 
-        this.restingOpacity = '0.8';
-
-        this.colors = {
-            accent: 'rgb(0, 140, 210);',
-            unlocked: {
-                selected:   'rgba(0, 0, 0, 0.5)',
-                unselected: 'rgba(0, 0, 0, 0.4)',
-                border:     'rgba(0, 0, 0, 0.2)',
-                background: 'white',
-            },
-            locked: {
-                selected:   'rgba(0, 0, 0, 0.4)',
-                unselected: 'rgba(0, 0, 0, 0.3)',
-                border:     'rgba(0, 0, 0, 0.06)',
-                background: 'rgba(0, 0, 0, 0.05)',
-            },
-        };
-
         let style = makeElement({tag: 'style', content: `
+            * {
+                box-sizing: border-box;
+            }
+
             .wrapper {
                 margin: 0px;
                 padding: 0px;
-                opacity: ${this.restingOpacity};
+                opacity: ${uiColors.restingOpacity};
                 display: grid;
                 grid-template-columns: 1fr 24px 24px;
                 height: 100%;
                 border-style: solid;
                 border-width: 1px;
-                border-color: ${this.locked? this.colors.locked.border : this.colors.unlocked.border};
-                background-color: ${this.locked? this.colors.locked.background : this.colors.unlocked.background};
+                border-color: ${uiColors.locked? uiColors.colors.locked.border : uiColors.colors.unlocked.border};
+                background-color: ${uiColors.locked? uiColors.colors.locked.background : uiColors.colors.unlocked.background};
             }
 
             .wrapper:hover,
-            .wrapper *:hover {
+            .wrapper *:hover,
+            .wrapper:focus,
+            .wrapper *:focus {
                 opacity: 1;
             }
 
@@ -135,6 +122,7 @@ export default class InputLockableNumber extends HTMLElement {
 
             .padlockWrapper {
                 grid-column-start: 3;
+                padding: 2px 0px 0px 1px;
                 text-align: center;
                 vertical-align: middle;
                 cursor: pointer

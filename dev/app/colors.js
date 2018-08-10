@@ -1,8 +1,35 @@
 import {round} from './functions.js';
-export {parseColorString, shiftColor, getColorFromRGBA, transparencyToAlpha, makeRandomSaturatedColor};
+export {uiColors, parseColorString, shiftColor, getColorFromRGBA, transparencyToAlpha, makeRandomSaturatedColor};
 
 // -------------------
-// COLORS
+// Re-usable Colors
+// -------------------
+/* eslint-disable key-spacing */
+const uiColors = {
+    accent: 'rgb(0, 140, 210)',
+    restingOpacity: 0.85,
+    enabled: {
+        resting: {
+            fill:       'rgba(0, 0, 0, 0.4)',
+            border:     'rgba(0, 0, 0, 0.2)',
+            background: 'rgba(255, 255, 255, 0.9)',
+        },
+        active: {
+            fill:       'rgba(0, 0, 0, 0.5)',
+            border:     'rgba(0, 0, 0, 0.3)',
+            background: 'rgba(0, 140, 210, 0.2)',
+        },
+    },
+    disabled: {
+        fill:       'rgba(0, 0, 0, 0.3)',
+        border:     'rgba(0, 0, 0, 0.06)',
+        background: 'rgba(0, 0, 0, 0.05)',
+    },
+};
+/* eslint-enable key-spacing */
+
+// -------------------
+// Color Math
 // -------------------
 
 /**
