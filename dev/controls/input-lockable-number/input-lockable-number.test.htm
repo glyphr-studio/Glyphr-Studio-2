@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>input-lockable-number test</title>
+    <script src="input-lockable-number.test.js" type="module"></script>
+    <style>
+        * {
+            font-family: sans-serif;
+        }
+
+        body {
+            background-color: rgb(229, 234, 239);
+        }
+
+        input-lockable-number {
+            display: inline-block;
+        }
+
+        label {
+            display:block;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body style="padding:20px;">
+    <label>Sample input
+        <input-lockable-number value="123"></input-lockable-number>
+    </label>
+    <label>Sample input
+        <input-lockable-number value="123" locked></input-lockable-number>
+    </label>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>button-toggle test</title>
+    <script src="button-toggle.test.js" type="module"></script>
+    <style>
+        * {
+            font-family: sans-serif;
+        }
+
+        body {
+            background-color: rgb(229, 234, 239);
+        }
+
+        button-toggle {
+            display: inline-block;
+            margin: 10px;
+        }
+
+        label {
+            display:block;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body style="padding:20px;">
+    <button-toggle icon="lock"></button-toggle>
+    <button-toggle icon="lock" selected></button-toggle>
+    <button-toggle icon="lock" disabled></button-toggle>
+
+    <br><br>
+
+    <button-toggle icon="lock" size="32"></button-toggle>
+    <button-toggle icon="lock" size="32" selected></button-toggle>
+    <button-toggle icon="lock" size="32" disabled></button-toggle>
+
+    <br><br>
+
+    <button-toggle icon="lock" size="48"></button-toggle>
+    <button-toggle icon="lock" size="48" selected></button-toggle>
+    <button-toggle icon="lock" size="48" disabled></button-toggle>
+
+
+</body>
+</html>
