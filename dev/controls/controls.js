@@ -13,7 +13,7 @@ export default function() {};
  * @param {array} attributes - collection of [attributeName, attributeValue]
  * @returns {HTMLElement}
  */
-export function makeElement({tag = 'span', className, id, content, tabindex = false, attributes = []} = {}) {
+export function makeElement({tag = 'span', className, id, content, elementRoot, tabindex = false, attributes = []} = {}) {
     let newElement = document.createElement(tag);
 
     if (className) newElement.setAttribute('class', className);
@@ -22,6 +22,8 @@ export function makeElement({tag = 'span', className, id, content, tabindex = fa
     else if (window.getUniqueControlID) newElement.setAttribute('id', document.getUniqueControlID());
 
     if (content) newElement.innerHTML = content;
+
+    if (elementRoot) newElement.elementRoot - elementRoot;
 
     if (tabindex) newElement.setAttribute('tabindex', '0');
 

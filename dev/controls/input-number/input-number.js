@@ -10,17 +10,23 @@ export default class InputNumber extends HTMLElement {
      * Create an InputNumber
      */
     constructor() {
+        // console.log(`InputNumber.constructor - START`);
         super();
         this.precision = this.getAttribute('precision') || 3;
+        let disabled = this.hasAttribute('disabled');
 
         this.wrapper = makeElement({className: 'wrapper'});
         this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: true, attributes: [['type', 'text']]});
+        if (disabled) this.numberInput.setAttribute('disabled', '');
 
-        this.numberValue = parseFloat(this.getAttribute('value'));
+        this.value = this.getAttribute('value');
 
         this.arrowWrapper = makeElement({className: 'arrowWrapper', tabindex: true});
         this.upArrow = makeElement({className: 'upArrow', content: '⏶'});
         this.downArrow = makeElement({className: 'downArrow', content: '⏷'});
+
+        // console.log('upArrow');
+        // console.log(this.upArrow);
 
         let style = makeElement({tag: 'style', content: `
             * {
@@ -69,8 +75,12 @@ export default class InputNumber extends HTMLElement {
                 background-color: white;
             }
 
+            .numberInput:focus {
+                outline: 1px dashed ${uiColors.accent};
+                outline-offset: 0px;
+            }
+
             .arrowWrapper {
-                user-select: none;
                 grid-column-start: 2;
                 display: grid;
                 grid-template-rows: 1fr 1fr;
@@ -80,19 +90,21 @@ export default class InputNumber extends HTMLElement {
                 margin: 0;
             }
 
-            .numberInput:focus,
+            .arrowWrapper:hover {
+                border-left-color: ${uiColors.enabled.active.border};
+            }
+
             .arrowWrapper:focus {
                 outline: 1px dashed ${uiColors.accent};
                 outline-offset: 0px;
             }
 
-            .arrowWrapper:hover {
-                border-left-color: ${uiColors.enabled.active.border};
-            }
-
             .upArrow,
             .downArrow {
                 user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
                 padding: 0;
                 text-align: center;
                 line-height: 10px;
@@ -125,24 +137,45 @@ export default class InputNumber extends HTMLElement {
         let shadow = this.attachShadow({mode: 'open'});
         shadow.appendChild(style);
 
-        this.upArrow.addEventListener('click', this.increment);
-        this.downArrow.addEventListener('click', this.decrement);
-        this.arrowWrapper.addEventListener('keydown', this.arrowKeyboardPressed);
+        let elementRoot = this;
+
+        this.upArrow.addEventListener('click', function(ev) {
+            elementRoot.increment(ev, elementRoot);
+        });
+
+        this.downArrow.addEventListener('click', function(ev) {
+            elementRoot.decrement(ev, elementRoot);
+        });
+
+        this.arrowWrapper.addEventListener('keydown', function(ev) {
+            elementRoot.arrowKeyboardPressed(ev, elementRoot);
+        });
+
         this.arrowWrapper.appendChild(this.upArrow);
         this.arrowWrapper.appendChild(this.downArrow);
 
-        this.numberInput.addEventListener('change', this.numberInputChanged);
+        this.numberInput.addEventListener('change', function(ev) {
+            elementRoot.numberInputChanged(ev, elementRoot);
+        });
+
+        this.numberInput.addEventListener('keydown', function(ev) {
+            elementRoot.numberInputKeyboardPress(ev, elementRoot);
+        });
 
         this.wrapper.appendChild(this.numberInput);
         this.wrapper.appendChild(this.arrowWrapper);
 
         shadow.appendChild(this.wrapper);
+
+        // console.log(this);
+        // console.log(`InputNumber.constructor - END`);
     }
 
     /**
      * Get the main value
+     * @returns {number}
      */
-    get numberValue() {
+    get value() {
         return this._numberValue;
     }
 
@@ -150,62 +183,67 @@ export default class InputNumber extends HTMLElement {
      * Set the main numberValue
      * @param {number} number - new main value
      */
-    set numberValue(number) {
-        console.log(`InputNumber.set value - START`);
-        console.log(`\t passed ${number}`);
+    set value(number) {
+        // console.log(`InputNumber.set value - START`);
+        // console.log(`\t passed ${number}`);
         this._numberValue = round(parseFloat(number), this.precision) || 0;
-        console.log(`\t this._numberValue is now ${this._numberValue}`);
-        console.log(`\t this.numberValue is now ${this.numberValue}`);
+        // console.log(`\t this._numberValue is now ${this._numberValue}`);
+        // console.log(`\t this.value is now ${this.value}`);
 
-        this.numberInput.value = this.numberValue;
-        this.setAttribute('value', this.numberValue);
-        console.log(`InputNumber.set value - END`);
+        this.numberInput.value = this._numberValue;
+        this.setAttribute('value', this._numberValue);
+        // console.log(`InputNumber.set value - END`);
     }
 
     /**
      * Handle onChange event
      * @param {object} ev - event
+     * @param {object} elementRoot - context
      */
-    numberInputChanged(ev) {
-        this.numberValue = this.numberInput.value;
+    numberInputChanged(ev, elementRoot) {
+        elementRoot.value = elementRoot.numberInput.value;
     }
 
     /**
      * Increment the value
      * @param {object} ev - event
+     * @param {object} elementRoot - context
      */
-    increment(ev) {
-        console.log(`InputNumber.increment - START`);
+    increment(ev, elementRoot) {
         let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-        console.log(`\t mod = ${mod}`);
-        console.log(`\t this.numberValue before: ${this.numberValue}`);
-        this.numberValue += mod? 10 : 1;
-        console.log(`\t this.numberValue afterz: ${this.numberValue}`);
-        console.log(`InputNumber.increment - END`);
+        elementRoot.value += mod? 10 : 1;
     }
 
     /**
      * Decrement the value
      * @param {object} ev - event
+     * @param {object} elementRoot - context
      */
-    decrement(ev) {
+    decrement(ev, elementRoot) {
         let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-
-        this.numberValue -= mod? 10 : 1;
+        elementRoot.value -= mod? 10 : 1;
     }
 
     /**
      * Handle keypress event
      * @param {object} ev - event
+     * @param {object} elementRoot - context
      */
-    arrowKeyboardPressed(ev) {
+    arrowKeyboardPressed(ev, elementRoot) {
+        let click = new MouseEvent('click', {
+            shiftKey: ev.shiftKey,
+            ctrlKey: ev.ctrlKey,
+            altKey: ev.altKey,
+            metaKey: ev.metaKey,
+        });
+
         switch (ev.keyCode) {
             case 38: // d-pad up
             case 39: // d-pad right
             case 104: // ten key up
             case 102: // ten key right
             case 107: // ten key +
-                this.upArrow.dispatchEvent('click');
+                elementRoot.upArrow.dispatchEvent(click);
                 break;
 
             case 40: // d-pad down
@@ -213,7 +251,38 @@ export default class InputNumber extends HTMLElement {
             case 98: // ten key down
             case 100: // ten key left
             case 109: // ten key -
-                this.downArrow.dispatchEvent('click');
+                elementRoot.downArrow.dispatchEvent(click);
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    /**
+     * Handle keypress event
+     * @param {object} ev - event
+     * @param {object} elementRoot - context
+     */
+    numberInputKeyboardPress(ev, elementRoot) {
+        let click = new MouseEvent('click', {
+            shiftKey: ev.shiftKey,
+            ctrlKey: ev.ctrlKey,
+            altKey: ev.altKey,
+            metaKey: ev.metaKey,
+        });
+
+        switch (ev.keyCode) {
+            case 38: // d-pad up
+            case 104: // ten key up
+            case 107: // ten key +
+                elementRoot.upArrow.dispatchEvent(click);
+                break;
+
+            case 40: // d-pad down
+            case 98: // ten key down
+            case 109: // ten key -
+                elementRoot.downArrow.dispatchEvent(click);
                 break;
 
             default:
