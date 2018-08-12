@@ -42,8 +42,8 @@ export default class InputNumber extends HTMLElement {
                 height: 100%;
                 border-style: solid;
                 border-width: 1px;
-                border-color: ${this.disabled? uiColors.disabled.border : uiColors.enabled.resting.border};
-                background-color: ${this.disabled? uiColors.disabled.background : uiColors.enabled.resting.background};
+                border-color: ${uiColors.enabled.resting.border};
+                background-color: ${uiColors.enabled.resting.background};
             }
 
             .wrapper:hover,
@@ -51,18 +51,22 @@ export default class InputNumber extends HTMLElement {
             .wrapper:focus,
             .wrapper *:focus {
                 opacity: 1;
-                border-color: ${this.disabled? uiColors.disabled.border : uiColors.enabled.active.border};
+                border-color: ${uiColors.enabled.active.border};
             }
 
-            .wrapper button,
-            .wrapper input {
-                background-color: transparent;
-                border: 0;
-                margin: 0;
+            .wrapper[disabled],
+            .wrapper:hover[disabled],
+            .wrapper:focus[disabled],
+            .wrapper:active[disabled] {
+                background-color: ${uiColors.disabled.background};
+                border-color: ${uiColors.disabled.border};
             }
 
             .numberInput {
-                color: ${this.disabled? uiColors.disabled.text : uiColors.enabled.resting.text};
+                background-color: transparent;
+                border: 0;
+                margin: 0;
+                color: ${uiColors.enabled.resting.text};
                 grid-column-start: 1;
                 min-width: 80px;
                 height: 24px;
@@ -81,28 +85,39 @@ export default class InputNumber extends HTMLElement {
                 outline-offset: 0px;
             }
 
-            .numberInput:disabled {
+            .numberInput[disabled],
+            .numberInput:hover[disabled],
+            .numberInput:focus[disabled],
+            .numberInput:active[disabled] {
                 background-color: ${uiColors.disabled.background};
                 border-color: ${uiColors.disabled.border};
+                color: ${uiColors.disabled.text};
             }
 
             .arrowWrapper {
                 grid-column-start: 2;
                 display: grid;
                 grid-template-rows: 1fr 1fr;
-                border-left: 1px solid ${this.disabled? uiColors.disabled.border : uiColors.enabled.resting.border};
+                border-left: 1px solid ${uiColors.enabled.resting.border};
                 width: 24px;
                 height: 24px;
                 margin: 0;
             }
 
             .arrowWrapper:hover {
-                border-left-color: ${this.disabled? uiColors.disabled.border : uiColors.enabled.active.border};
+                border-left-color: ${uiColors.enabled.active.border};
             }
 
             .arrowWrapper:focus {
                 outline: 1px dashed ${uiColors.accent};
                 outline-offset: 0px;
+            }
+
+            .arrowWrapper[disabled],
+            .arrowWrapper:hover[disabled],
+            .arrowWrapper:focus[disabled],
+            .arrowWrapper:active[disabled] {
+                border-color: ${uiColors.disabled.border};
             }
 
             .upArrow,
@@ -114,30 +129,41 @@ export default class InputNumber extends HTMLElement {
                 padding: 0;
                 text-align: center;
                 line-height: 10px;
+                height: 12px;
                 font-size: 0.9em;
-                cursor: ${this.disabled? 'default' : 'pointer'};
-                color: ${this.disabled? uiColors.disabled.fill : uiColors.enabled.resting.fill};
+                cursor: pointer;
+                color: ${uiColors.enabled.resting.fill};
             }
 
             .upArrow {
                 grid-row-start: 1;
-                height: 12px;
                 vertical-align: bottom;
             }
 
             .downArrow {
                 grid-row-start: 2;
-                height: 12px;
                 vertical-align: top;
             }
 
             .upArrow:hover,
             .downArrow:hover {
-                color: ${this.disabled? uiColors.disabled.fill : uiColors.enabled.active.fill};
-                background-color: ${this.disabled? 'transparent' : uiColors.enabled.active.background};
+                color: ${uiColors.enabled.active.fill};
+                background-color: ${uiColors.enabled.active.background};
+            }
+
+            .upArrow[disabled],
+            .downArrow[disabled],
+            .upArrow:hover[disabled],
+            .downArrow:hover[disabled],
+            .upArrow:focus[disabled],
+            .downArrow:focus[disabled],
+            .upArrow:active[disabled],
+            .downArrow:active[disabled] {
+                cursor: default;
+                color: ${uiColors.disabled.fill};
+                background-color: transparent;
             }
         `});
-
 
         // Put it all together
         let shadow = this.attachShadow({mode: 'open'});
@@ -149,7 +175,7 @@ export default class InputNumber extends HTMLElement {
         this.wrapper.appendChild(this.numberInput);
         this.wrapper.appendChild(this.arrowWrapper);
 
-        if (!this.disabled) this.addEventListeners();
+        if (!this.disabled) this.addAllEventListeners();
 
         shadow.appendChild(this.wrapper);
 
@@ -158,9 +184,49 @@ export default class InputNumber extends HTMLElement {
     }
 
     /**
+     * Specify which attributes are observed and trigger attributeChangedCallback
+     */
+    static get observedAttributes() {
+        return ['disabled'];
+    }
+
+    /**
+     * Listens for attribute changes on this element
+     * @param {string} attributeName - which attribute was changed
+     * @param {string} oldValue - value before the change
+     * @param {string} newValue - value after the change
+     */
+    attributeChangedCallback(attributeName, oldValue, newValue) {
+        // console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+
+        if (attributeName === 'disabled') {
+            if (newValue === '') {
+                // disabled
+                this.numberInput.removeAttribute('tabindex');
+                this.numberInput.setAttribute('disabled', '');
+                this.arrowWrapper.removeAttribute('tabindex');
+                this.arrowWrapper.setAttribute('disabled', '');
+                this.upArrow.setAttribute('disabled', '');
+                this.downArrow.setAttribute('disabled', '');
+                this.removeAllEventListeners();
+            } else if (oldValue === '') {
+                // enabled
+                this.numberInput.setAttribute('tabindex', '0');
+                this.numberInput.removeAttribute('disabled');
+                this.arrowWrapper.setAttribute('tabindex', '0');
+                this.arrowWrapper.removeAttribute('disabled');
+                this.upArrow.removeAttribute('disabled');
+                this.downArrow.removeAttribute('disabled');
+                this.addAllEventListeners();
+            }
+        }
+    }
+
+    /**
      * Add all event listeners to elements
      */
-    addEventListeners() {
+    addAllEventListeners() {
+        console.log('addAllEventListeners');
         let elementRoot = this;
 
         this.upArrow.addEventListener('click', function(ev) {
@@ -182,6 +248,18 @@ export default class InputNumber extends HTMLElement {
         this.numberInput.addEventListener('keydown', function(ev) {
             elementRoot.numberInputKeyboardPress(ev, elementRoot);
         });
+    }
+
+    /**
+     * Add all event listeners to elements
+     */
+    removeAllEventListeners() {
+        console.log('removeAllEventListeners');
+        this.upArrow.removeEventListener('click', this.increment);
+        this.downArrow.removeEventListener('click', this.decrement);
+        this.arrowWrapper.removeEventListener('keydown', this.arrowKeyboardPressed);
+        this.numberInput.removeEventListener('change', this.numberInputChanged);
+        this.numberInput.removeEventListener('keydown', this.numberInputKeyboardPress);
     }
 
     /**

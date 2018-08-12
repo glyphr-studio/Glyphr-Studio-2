@@ -35,5 +35,14 @@
     <label>Precision input
         <input-number value="123.1234567" precision="2"></input-number>
     </label>
+
+    <hr>
+
+    State change<br>
+    <label>Sample input
+        <input-number value="123" id="attrTest"></input-number>
+    </label>
+    <button onclick="document.getElementById('attrTest').setAttribute('disabled', '');">Disable</button>
+    <button onclick="document.getElementById('attrTest').removeAttribute('disabled');">Enable</button>
 </body>
 </html>
