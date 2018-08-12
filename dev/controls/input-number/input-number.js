@@ -13,15 +13,15 @@ export default class InputNumber extends HTMLElement {
         // console.log(`InputNumber.constructor - START`);
         super();
         this.precision = this.getAttribute('precision') || 3;
-        let disabled = this.hasAttribute('disabled');
+        this.disabled = this.hasAttribute('disabled');
 
         this.wrapper = makeElement({className: 'wrapper'});
-        this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: true, attributes: [['type', 'text']]});
-        if (disabled) this.numberInput.setAttribute('disabled', '');
+        this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: !this.disabled, attributes: [['type', 'text']]});
+        if (this.disabled) this.numberInput.setAttribute('disabled', '');
 
         this.value = this.getAttribute('value');
 
-        this.arrowWrapper = makeElement({className: 'arrowWrapper', tabindex: true});
+        this.arrowWrapper = makeElement({className: 'arrowWrapper', tabindex: !this.disabled});
         this.upArrow = makeElement({className: 'upArrow', content: '⏶'});
         this.downArrow = makeElement({className: 'downArrow', content: '⏷'});
 
@@ -42,8 +42,8 @@ export default class InputNumber extends HTMLElement {
                 height: 100%;
                 border-style: solid;
                 border-width: 1px;
-                border-color: ${uiColors.enabled.resting.border};
-                background-color: ${uiColors.enabled.resting.background};
+                border-color: ${this.disabled? uiColors.disabled.border : uiColors.enabled.resting.border};
+                background-color: ${this.disabled? uiColors.disabled.background : uiColors.enabled.resting.background};
             }
 
             .wrapper:hover,
@@ -51,7 +51,7 @@ export default class InputNumber extends HTMLElement {
             .wrapper:focus,
             .wrapper *:focus {
                 opacity: 1;
-                border-color: ${uiColors.enabled.active.border};
+                border-color: ${this.disabled? uiColors.disabled.border : uiColors.enabled.active.border};
             }
 
             .wrapper button,
@@ -62,6 +62,7 @@ export default class InputNumber extends HTMLElement {
             }
 
             .numberInput {
+                color: ${this.disabled? uiColors.disabled.text : uiColors.enabled.resting.text};
                 grid-column-start: 1;
                 min-width: 80px;
                 height: 24px;
@@ -80,18 +81,23 @@ export default class InputNumber extends HTMLElement {
                 outline-offset: 0px;
             }
 
+            .numberInput:disabled {
+                background-color: ${uiColors.disabled.background};
+                border-color: ${uiColors.disabled.border};
+            }
+
             .arrowWrapper {
                 grid-column-start: 2;
                 display: grid;
                 grid-template-rows: 1fr 1fr;
-                border-left: 1px solid ${uiColors.enabled.resting.border};
+                border-left: 1px solid ${this.disabled? uiColors.disabled.border : uiColors.enabled.resting.border};
                 width: 24px;
                 height: 24px;
                 margin: 0;
             }
 
             .arrowWrapper:hover {
-                border-left-color: ${uiColors.enabled.active.border};
+                border-left-color: ${this.disabled? uiColors.disabled.border : uiColors.enabled.active.border};
             }
 
             .arrowWrapper:focus {
@@ -109,8 +115,8 @@ export default class InputNumber extends HTMLElement {
                 text-align: center;
                 line-height: 10px;
                 font-size: 0.9em;
-                cursor: pointer;
-                color: ${uiColors.enabled.resting.fill};
+                cursor: ${this.disabled? 'default' : 'pointer'};
+                color: ${this.disabled? uiColors.disabled.fill : uiColors.enabled.resting.fill};
             }
 
             .upArrow {
@@ -127,8 +133,8 @@ export default class InputNumber extends HTMLElement {
 
             .upArrow:hover,
             .downArrow:hover {
-                color: ${uiColors.enabled.active.fill};
-                background-color: ${uiColors.enabled.active.background};
+                color: ${this.disabled? uiColors.disabled.fill : uiColors.enabled.active.fill};
+                background-color: ${this.disabled? 'transparent' : uiColors.enabled.active.background};
             }
         `});
 
@@ -137,6 +143,24 @@ export default class InputNumber extends HTMLElement {
         let shadow = this.attachShadow({mode: 'open'});
         shadow.appendChild(style);
 
+        this.arrowWrapper.appendChild(this.upArrow);
+        this.arrowWrapper.appendChild(this.downArrow);
+
+        this.wrapper.appendChild(this.numberInput);
+        this.wrapper.appendChild(this.arrowWrapper);
+
+        if (!this.disabled) this.addEventListeners();
+
+        shadow.appendChild(this.wrapper);
+
+        // console.log(this);
+        // console.log(`InputNumber.constructor - END`);
+    }
+
+    /**
+     * Add all event listeners to elements
+     */
+    addEventListeners() {
         let elementRoot = this;
 
         this.upArrow.addEventListener('click', function(ev) {
@@ -151,9 +175,6 @@ export default class InputNumber extends HTMLElement {
             elementRoot.arrowKeyboardPressed(ev, elementRoot);
         });
 
-        this.arrowWrapper.appendChild(this.upArrow);
-        this.arrowWrapper.appendChild(this.downArrow);
-
         this.numberInput.addEventListener('change', function(ev) {
             elementRoot.numberInputChanged(ev, elementRoot);
         });
@@ -161,14 +182,6 @@ export default class InputNumber extends HTMLElement {
         this.numberInput.addEventListener('keydown', function(ev) {
             elementRoot.numberInputKeyboardPress(ev, elementRoot);
         });
-
-        this.wrapper.appendChild(this.numberInput);
-        this.wrapper.appendChild(this.arrowWrapper);
-
-        shadow.appendChild(this.wrapper);
-
-        // console.log(this);
-        // console.log(`InputNumber.constructor - END`);
     }
 
     /**
