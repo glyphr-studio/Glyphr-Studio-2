@@ -7,9 +7,9 @@ import {uiColors} from '../../app/colors.js';
  * and also a lock control that toggles a locked state.
  * Primarily used for a ControlPoint x/y input.
  */
-export default class InputLockableNumber extends HTMLElement {
+export default class InputNumberLockable extends HTMLElement {
     /**
-     * Create an InputLockableNumber
+     * Create an InputNumberLockable
      */
     constructor() {
         super();
@@ -175,7 +175,7 @@ export default class InputLockableNumber extends HTMLElement {
      * @param {object} ev - event
      */
     focus(ev) {
-        console.log(`input-lockable-number.focus() - START`);
+        console.log(`input-number-lockable.focus() - START`);
         // this.wrapper.style.opacity = 1;
 
         let borderColor = this.locked? this.colors.locked.border : this.colors.accent;
@@ -184,7 +184,7 @@ export default class InputLockableNumber extends HTMLElement {
         this.wrapper.style.borderColor = borderColor;
         this.arrowWrapper.style.borderColor = borderColor;
         this.padlockWrapper.style.borderColor = borderColor;
-        console.log(`input-lockable-number.focus() - END`);
+        console.log(`input-number-lockable.focus() - END`);
     }
 
     /**
@@ -192,7 +192,7 @@ export default class InputLockableNumber extends HTMLElement {
      * @param {object} ev - event
      */
     blur(ev) {
-        console.log(`input-lockable-number.blur() - START`);
+        console.log(`input-number-lockable.blur() - START`);
         // this.wrapper.style.opacity = this.restingOpacity;
 
         let borderColor = this.locked? this.colors.locked.border : this.colors.unlocked.border;
@@ -201,8 +201,8 @@ export default class InputLockableNumber extends HTMLElement {
         this.wrapper.style.borderColor = borderColor;
         this.arrowWrapper.style.borderColor = borderColor;
         this.padlockWrapper.style.borderColor = borderColor;
-        console.log(`input-lockable-number.blur() - END`);
+        console.log(`input-number-lockable.blur() - END`);
     }
 }
 
-customElements.define('input-lockable-number', InputLockableNumber);
+customElements.define('input-number-lockable', InputNumberLockable);
