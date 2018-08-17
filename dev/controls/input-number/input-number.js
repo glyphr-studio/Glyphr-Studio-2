@@ -16,14 +16,19 @@ export default class InputNumber extends HTMLElement {
         this.disabled = this.hasAttribute('disabled');
 
         this.wrapper = makeElement({className: 'wrapper'});
+        this.wrapper.elementRoot = this;
         this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: !this.disabled, attributes: [['type', 'text']]});
         if (this.disabled) this.numberInput.setAttribute('disabled', '');
+        this.numberInput.elementRoot = this;
 
         this.value = this.getAttribute('value');
 
         this.arrowWrapper = makeElement({className: 'arrowWrapper', tabindex: !this.disabled});
+        this.arrowWrapper.elementRoot = this;
         this.upArrow = makeElement({className: 'upArrow', content: '⏶'});
+        this.upArrow.elementRoot = this;
         this.downArrow = makeElement({className: 'downArrow', content: '⏷'});
+        this.downArrow.elementRoot = this;
 
         // console.log('upArrow');
         // console.log(this.upArrow);
@@ -227,28 +232,12 @@ export default class InputNumber extends HTMLElement {
      */
     addAllEventListeners() {
         console.log('addAllEventListeners');
-        let elementRoot = this;
 
-        this.upArrow.addEventListener('click', function(ev) {
-            elementRoot.increment(ev, elementRoot);
-        });
-
-        this.downArrow.addEventListener('click', function(ev) {
-            elementRoot.decrement(ev, elementRoot);
-        });
-
-        this.arrowWrapper.addEventListener('keydown', function(ev) {
-            elementRoot.arrowKeyboardPressed(ev, elementRoot);
-        });
-
-        this.numberInput.addEventListener('change', function(ev) {
-            elementRoot.numberInputChanged(ev, elementRoot);
-        });
-
-        this.numberInput.addEventListener('keydown', function(ev) {
-            elementRoot.numberInputKeyboardPress(ev, elementRoot);
-        });
-    }
+        this.upArrow.addEventListener('click', this.increment);
+        this.downArrow.addEventListener('click', this.decrement);
+        this.arrowWrapper.addEventListener('keydown', this.arrowKeyboardPressed);
+        this.numberInput.addEventListener('change', this.numberInputChanged);
+        this.numberInput.addEventListener('keydown', this.numberInputKeyboardPress);    }
 
     /**
      * Add all event listeners to elements
@@ -289,38 +278,34 @@ export default class InputNumber extends HTMLElement {
     /**
      * Handle onChange event
      * @param {object} ev - event
-     * @param {object} elementRoot - context
      */
-    numberInputChanged(ev, elementRoot) {
-        elementRoot.value = elementRoot.numberInput.value;
+    numberInputChanged(ev) {
+        this.elementRoot.value = this.elementRoot.numberInput.value;
     }
 
     /**
      * Increment the value
      * @param {object} ev - event
-     * @param {object} elementRoot - context
      */
-    increment(ev, elementRoot) {
+    increment(ev) {
         let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-        elementRoot.value += mod? 10 : 1;
+        this.elementRoot.value += mod? 10 : 1;
     }
 
     /**
      * Decrement the value
      * @param {object} ev - event
-     * @param {object} elementRoot - context
      */
-    decrement(ev, elementRoot) {
+    decrement(ev) {
         let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-        elementRoot.value -= mod? 10 : 1;
+        this.elementRoot.value -= mod? 10 : 1;
     }
 
     /**
      * Handle keypress event
      * @param {object} ev - event
-     * @param {object} elementRoot - context
      */
-    arrowKeyboardPressed(ev, elementRoot) {
+    arrowKeyboardPressed(ev) {
         let click = new MouseEvent('click', {
             shiftKey: ev.shiftKey,
             ctrlKey: ev.ctrlKey,
@@ -334,7 +319,7 @@ export default class InputNumber extends HTMLElement {
             case 104: // ten key up
             case 102: // ten key right
             case 107: // ten key +
-                elementRoot.upArrow.dispatchEvent(click);
+                this.elementRoot.upArrow.dispatchEvent(click);
                 break;
 
             case 40: // d-pad down
@@ -342,7 +327,7 @@ export default class InputNumber extends HTMLElement {
             case 98: // ten key down
             case 100: // ten key left
             case 109: // ten key -
-                elementRoot.downArrow.dispatchEvent(click);
+                this.elementRoot.downArrow.dispatchEvent(click);
                 break;
 
             default:
@@ -353,9 +338,8 @@ export default class InputNumber extends HTMLElement {
     /**
      * Handle keypress event
      * @param {object} ev - event
-     * @param {object} elementRoot - context
      */
-    numberInputKeyboardPress(ev, elementRoot) {
+    numberInputKeyboardPress(ev) {
         let click = new MouseEvent('click', {
             shiftKey: ev.shiftKey,
             ctrlKey: ev.ctrlKey,
@@ -367,13 +351,13 @@ export default class InputNumber extends HTMLElement {
             case 38: // d-pad up
             case 104: // ten key up
             case 107: // ten key +
-                elementRoot.upArrow.dispatchEvent(click);
+                this.elementRoot.upArrow.dispatchEvent(click);
                 break;
 
             case 40: // d-pad down
             case 98: // ten key down
             case 109: // ten key -
-                elementRoot.downArrow.dispatchEvent(click);
+                this.elementRoot.downArrow.dispatchEvent(click);
                 break;
 
             default:
