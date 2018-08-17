@@ -10,20 +10,23 @@ const uiColors = {
     restingOpacity: 0.85,
     enabled: {
         resting: {
+            text:       'rgba(0, 0, 0, 1)',
             fill:       'rgba(0, 0, 0, 0.4)',
             border:     'rgba(0, 0, 0, 0.2)',
             background: 'rgba(255, 255, 255, 0.9)',
         },
         active: {
+            text:       'rgba(0, 0, 0, 1)',
             fill:       'rgba(0, 0, 0, 0.5)',
             border:     'rgba(0, 0, 0, 0.3)',
             background: 'rgba(0, 140, 210, 0.2)',
         },
     },
     disabled: {
-        fill:       'rgba(0, 0, 0, 0.3)',
-        border:     'rgba(0, 0, 0, 0.06)',
-        background: 'rgba(0, 0, 0, 0.05)',
+        text:       'rgba(0, 0, 0, 0.9)',
+        fill:       'rgba(0, 0, 0, 0.1)',
+        border:     'rgba(0, 0, 0, 0.03)',
+        background: 'rgba(0, 0, 0, 0.02)',
     },
 };
 /* eslint-enable key-spacing */
