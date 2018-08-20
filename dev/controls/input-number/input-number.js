@@ -17,6 +17,8 @@ export default class InputNumber extends HTMLElement {
 
         this.wrapper = makeElement({className: 'wrapper'});
         this.wrapper.elementRoot = this;
+        if (this.disabled) this.wrapper.setAttribute('disabled', '');
+
         this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: !this.disabled, attributes: [['type', 'text']]});
         if (this.disabled) this.numberInput.setAttribute('disabled', '');
         this.numberInput.elementRoot = this;
@@ -25,10 +27,14 @@ export default class InputNumber extends HTMLElement {
 
         this.arrowWrapper = makeElement({className: 'arrowWrapper', tabindex: !this.disabled});
         this.arrowWrapper.elementRoot = this;
-        this.upArrow = makeElement({className: 'upArrow', content: '⏶'});
+
+        this.upArrow = makeElement({className: 'upArrow', content: '⏶', tabindex: -1});
         this.upArrow.elementRoot = this;
-        this.downArrow = makeElement({className: 'downArrow', content: '⏷'});
+        if (this.disabled) this.upArrow.setAttribute('disabled', '');
+
+        this.downArrow = makeElement({className: 'downArrow', content: '⏷', tabindex: -1});
         this.downArrow.elementRoot = this;
+        if (this.disabled) this.downArrow.setAttribute('disabled', '');
 
         // console.log('upArrow');
         // console.log(this.upArrow);
@@ -41,7 +47,6 @@ export default class InputNumber extends HTMLElement {
             .wrapper {
                 margin: 0px;
                 padding: 0px;
-                opacity: ${uiColors.restingOpacity};
                 display: grid;
                 grid-template-columns: 1fr 24px;
                 height: 100%;
@@ -55,8 +60,7 @@ export default class InputNumber extends HTMLElement {
             .wrapper *:hover,
             .wrapper:focus,
             .wrapper *:focus {
-                opacity: 1;
-                border-color: ${uiColors.enabled.active.border};
+                border-color: ${uiColors.enabled.focus.border};
             }
 
             .wrapper[disabled],
@@ -87,6 +91,7 @@ export default class InputNumber extends HTMLElement {
 
             .numberInput:focus {
                 outline: 1px dashed ${uiColors.accent};
+                background-color: white;
                 outline-offset: 0px;
             }
 
@@ -97,6 +102,7 @@ export default class InputNumber extends HTMLElement {
                 background-color: ${uiColors.disabled.background};
                 border-color: ${uiColors.disabled.border};
                 color: ${uiColors.disabled.text};
+                text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
             }
 
             .arrowWrapper {
@@ -110,7 +116,7 @@ export default class InputNumber extends HTMLElement {
             }
 
             .arrowWrapper:hover {
-                border-left-color: ${uiColors.enabled.active.border};
+                border-left-color: ${uiColors.enabled.focus.border};
             }
 
             .arrowWrapper:focus {
@@ -132,12 +138,15 @@ export default class InputNumber extends HTMLElement {
                 -webkit-user-select: none;
                 -ms-user-select: none;
                 padding: 0;
+                margin: 0;
+                border-width: 1px;
                 text-align: center;
                 line-height: 10px;
                 height: 12px;
                 font-size: 0.9em;
                 cursor: pointer;
                 color: ${uiColors.enabled.resting.fill};
+                outline: 0;
             }
 
             .upArrow {
@@ -152,6 +161,12 @@ export default class InputNumber extends HTMLElement {
 
             .upArrow:hover,
             .downArrow:hover {
+                color: ${uiColors.enabled.focus.fill};
+                background-color: ${uiColors.enabled.focus.background};
+            }
+
+            .upArrow:active,
+            .downArrow:active {
                 color: ${uiColors.enabled.active.fill};
                 background-color: ${uiColors.enabled.active.background};
             }
@@ -166,7 +181,7 @@ export default class InputNumber extends HTMLElement {
             .downArrow:active[disabled] {
                 cursor: default;
                 color: ${uiColors.disabled.fill};
-                background-color: transparent;
+                background-color: ${uiColors.disabled.background};
             }
         `});
 
@@ -207,6 +222,7 @@ export default class InputNumber extends HTMLElement {
         if (attributeName === 'disabled') {
             if (newValue === '') {
                 // disabled
+                this.wrapper.setAttribute('disabled', '');
                 this.numberInput.removeAttribute('tabindex');
                 this.numberInput.setAttribute('disabled', '');
                 this.arrowWrapper.removeAttribute('tabindex');
@@ -216,6 +232,7 @@ export default class InputNumber extends HTMLElement {
                 this.removeAllEventListeners();
             } else if (oldValue === '') {
                 // enabled
+                this.wrapper.removeAttribute('disabled');
                 this.numberInput.setAttribute('tabindex', '0');
                 this.numberInput.removeAttribute('disabled');
                 this.arrowWrapper.setAttribute('tabindex', '0');
@@ -231,19 +248,19 @@ export default class InputNumber extends HTMLElement {
      * Add all event listeners to elements
      */
     addAllEventListeners() {
-        console.log('addAllEventListeners');
-
+        // console.log('addAllEventListeners');
         this.upArrow.addEventListener('click', this.increment);
         this.downArrow.addEventListener('click', this.decrement);
         this.arrowWrapper.addEventListener('keydown', this.arrowKeyboardPressed);
         this.numberInput.addEventListener('change', this.numberInputChanged);
-        this.numberInput.addEventListener('keydown', this.numberInputKeyboardPress);    }
+        this.numberInput.addEventListener('keydown', this.numberInputKeyboardPress);
+    }
 
     /**
      * Add all event listeners to elements
      */
     removeAllEventListeners() {
-        console.log('removeAllEventListeners');
+        // console.log('removeAllEventListeners');
         this.upArrow.removeEventListener('click', this.increment);
         this.downArrow.removeEventListener('click', this.decrement);
         this.arrowWrapper.removeEventListener('keydown', this.arrowKeyboardPressed);

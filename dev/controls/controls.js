@@ -25,7 +25,8 @@ export function makeElement({tag = 'span', className, id, content, elementRoot, 
 
     if (elementRoot) newElement.elementRoot - elementRoot;
 
-    if (tabindex) newElement.setAttribute('tabindex', '0');
+    if (tabindex === true) newElement.setAttribute('tabindex', '0');
+    else if (tabindex !== false) newElement.setAttribute('tabindex', tabindex);
 
     for (let a=0; a<attributes.length; a++) {
         newElement.setAttribute(attributes[a][0], attributes[a][1]);
