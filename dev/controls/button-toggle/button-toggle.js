@@ -1,4 +1,5 @@
 import {makeElement} from '../controls.js';
+import {uiColors, flashUIElementAsActive} from '../../app/colors.js';
 
 /**
  * Shows an icon that is either selected or unselected,
@@ -10,30 +11,21 @@ export default class ButtonToggle extends HTMLElement {
      * @param {array} attributes - collection of [key, value] pairs to set as attributes
      */
     constructor(attributes = []) {
-        console.log(`ButtonToggle.constructor() - START`);
+        // console.log(`ButtonToggle.constructor() - START`);
         super();
 
         attributes.forEach((a) => this.setAttribute(a[0], a[1]));
 
         this.size = this.getAttribute('size') || 24;
         this.gutterSize = Math.round(this.size * 0.05);
-        this.iconSize = this.size - (this.gutterSize * 2);
+        this.iconSize = this.size - (this.gutterSize * 2) - 2;
         this.selected = this.hasAttribute('selected');
         this.disabled = this.hasAttribute('disabled');
 
         this.wrapper = makeElement({tag: 'div', className: 'wrapper', tabindex: !this.disabled});
-        let iconName = this.getAttribute('icon');
-        console.log(`Attribute 'icon' = ${iconName}`);
+        if (this.disabled) this.wrapper.setAttribute('disabled', '');
+        if (this.selected) this.wrapper.setAttribute('selected', '');
         this.wrapper.innerHTML = this.getIcon(this.getAttribute('icon'), this.iconSize);
-
-        this.colors = {
-            selected: 'rgb(0, 140, 210)',
-            unselected: 'rgba(0, 0, 0, 0.5)',
-            active: 'rgba(0, 0, 0, 0.6)',
-            disabled: 'rgba(0, 0, 0, 0.1)',
-        };
-
-        this.restingOpacity = 0.9;
 
         let style = makeElement({tag: 'style', content: `
             :host {
@@ -47,25 +39,78 @@ export default class ButtonToggle extends HTMLElement {
             .wrapper {
                 box-sizing: border-box;
                 margin: 0;
-                border: 0;
+                border-width: 1px;
+                border-style: solid;
                 padding: ${this.gutterSize}px;
                 width: ${this.size}px;
                 height: ${this.size}px;
+                vertical-align: top;
+                text-align: left;
                 overflow: hidden;
                 user-select: none;
-                opacity: ${this.disabled? '1' : this.restingOpacity};
+                border-color: ${uiColors.enabled.resting.border};
+                background-color: ${uiColors.enabled.resting.background};
             }
 
-            .wrapper:hover,
-            .wrapper *:hover {
-                opacity: 1;
-                cursor: ${this.disabled? 'normal' : 'pointer'};
+            .wrapper svg {
+                fill: ${uiColors.enabled.resting.fill};
+            }
+
+            .wrapper:hover {
+                cursor: pointer;
+                border-color: ${uiColors.enabled.active.border};
+                background-color: ${uiColors.enabled.active.background};
+            }
+
+            .wrapper:hover svg {
+                fill: ${uiColors.enabled.active.fill};
             }
 
             .wrapper:focus {
-                outline: 1px dashed ${this.colors.selected};
-                outline-offset: 2px;
+                outline: 1px dashed ${uiColors.accent};
+                fill: ${uiColors.enabled.active.fill};
+                outline-offset: -1px;
             }
+
+
+            .wrapper[selected] {
+                border-color: ${uiColors.accent};
+                background-color: ${uiColors.enabled.active.background};
+            }
+
+            .wrapper[selected]:hover {
+                cursor: pointer;
+                border-color: ${uiColors.enabled.active.border};
+                background-color: ${uiColors.enabled.resting.background};
+            }
+
+            .wrapper[selected]:focus {
+                border-color: ${uiColors.enabled.resting.border};
+                outline: 1px dashed ${uiColors.accent};
+                outline-offset: -1px;
+            }
+
+            .wrapper[selected] svg {
+                fill: ${uiColors.accent};
+            }
+
+
+            .wrapper[disabled],
+            .wrapper:hover[disabled],
+            .wrapper:focus[disabled],
+            .wrapper:active[disabled] {
+                cursor: default;
+                border-color: ${uiColors.disabled.border};
+                background-color: ${uiColors.disabled.background};
+            }
+
+            .wrapper[disabled] svg,
+            .wrapper:hover[disabled] svg,
+            .wrapper:focus[disabled] svg,
+            .wrapper:active[disabled] svg {
+                fill: ${uiColors.disabled.fill};
+            }
+
         `});
 
 
@@ -74,10 +119,47 @@ export default class ButtonToggle extends HTMLElement {
         shadow.appendChild(style);
         shadow.appendChild(this.wrapper);
 
-        this.updateFillColor();
+        if (!this.disabled) {
+            this.addEventListener('click', this.toggle);
+            this.addEventListener('keydown', this.keyPress);
+        }
+    }
 
-        this.addEventListener('click', this.toggle);
-        this.addEventListener('keypress', this.keyPress);
+    /**
+     * Specify which attributes are observed and trigger attributeChangedCallback
+     */
+    static get observedAttributes() {
+        return ['disabled', 'selected'];
+    }
+
+    /**
+     * Listens for attribute changes on this element
+     * @param {string} attributeName - which attribute was changed
+     * @param {string} oldValue - value before the change
+     * @param {string} newValue - value after the change
+     */
+    attributeChangedCallback(attributeName, oldValue, newValue) {
+        console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+
+        if (attributeName === 'disabled') {
+            if (newValue === '') {
+                // disabled
+                this.wrapper.setAttribute('disabled', '');
+            } else if (oldValue === '') {
+                // enabled
+                this.wrapper.removeAttribute('disabled');
+            }
+        }
+
+        if (attributeName === 'selected') {
+            if (newValue === '') {
+                // selected
+                this.wrapper.setAttribute('selected', '');
+            } else if (oldValue === '') {
+                // not selected
+                this.wrapper.removeAttribute('selected');
+            }
+        }
     }
 
     /**
@@ -85,8 +167,25 @@ export default class ButtonToggle extends HTMLElement {
      * @param {object} ev - event
      */
     keyPress(ev) {
-        // space or enter key
-        if (ev.which === 32 || ev.which === 13) this.toggle();
+        switch (ev.keyCode) {
+            case 13: // enter
+            case 32: // spacebar
+            case 37: // d-pad left
+            case 38: // d-pad up
+            case 39: // d-pad right
+            case 40: // d-pad down
+            case 98: // ten key down
+            case 100: // ten key left
+            case 102: // ten key right
+            case 104: // ten key up
+            case 107: // ten key +
+            case 109: // ten key -
+                this.toggle();
+                break;
+
+            default:
+                break;
+        }
     }
 
     /**
@@ -94,24 +193,16 @@ export default class ButtonToggle extends HTMLElement {
      */
     toggle() {
         this.selected = !this.selected;
-        this.updateFillColor();
-    }
 
-    /**
-     * Colors the icon appropriately based on state
-     */
-    updateFillColor() {
-        let icon = this.wrapper.getElementsByTagName('svg')[0];
-
-        if (this.disabled) {
-            icon.style.fill = this.colors.disabled;
-        } else if (this.selected) {
-            icon.style.fill = this.colors.selected;
+        if (this.selected) {
             this.setAttribute('selected', '');
+            this.wrapper.setAttribute('selected', '');
         } else {
-            icon.style.fill = this.colors.unselected;
             this.removeAttribute('selected');
+            this.wrapper.removeAttribute('selected');
         }
+
+        flashUIElementAsActive(this);
     }
 
     /**
@@ -121,7 +212,7 @@ export default class ButtonToggle extends HTMLElement {
      * @returns {string} - full SVG
      */
     getIcon(id, size = '24') {
-        console.log(`getIcon - passed ${id} at size ${size}`);
+        // console.log(`getIcon - passed ${id} at size ${size}`);
         let header = ` version="1.1" xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
             x="0px" y="0px" width="${size}px" height="${size}px"`;

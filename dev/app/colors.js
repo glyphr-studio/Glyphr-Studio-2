@@ -1,12 +1,14 @@
 import {round} from './functions.js';
-export {uiColors, parseColorString, shiftColor, getColorFromRGBA, transparencyToAlpha, makeRandomSaturatedColor};
+export {uiColors, parseColorString, shiftColor, getColorFromRGBA,
+    transparencyToAlpha, makeRandomSaturatedColor, flashUIElementAsActive};
 
 // -------------------
 // Re-usable Colors
 // -------------------
 /* eslint-disable key-spacing */
+const accentColor = 'rgb(0, 140, 210)';
 const uiColors = {
-    accent: 'rgb(0, 140, 210)',
+    accent: accentColor,
     restingOpacity: 0.85,
     enabled: {
         resting: {
@@ -19,13 +21,13 @@ const uiColors = {
             text:       'rgb(0, 0, 0)',
             border:     'rgb(160, 160, 160)',
             fill:       'rgb(30, 40, 50)',
-            background: 'rgb(200, 230, 255)',
+            background: getColorFromRGBA(accentColor, 0.2),
         },
         active: {
             text:       'rgb(0, 0, 0)',
             border:     'rgb(160, 160, 160)',
-            fill:       'rgb(50, 60, 255)',
-            background: 'rgb(220, 240, 255)',
+            fill:       accentColor,
+            background: getColorFromRGBA(accentColor, 0.1),
         },
     },
     disabled: {
@@ -156,4 +158,26 @@ function makeRandomSaturatedColor() {
             break;
     }
     return 'rgb('+arr[0]+','+arr[1]+','+arr[2]+')';
+}
+
+/**
+ * When a UI Element is sent an event via JavaScript
+ * (as opposed to a user's input via keyboard or mouse)
+ * the element's Style does not look like a native
+ * :active style. This function sends an artificial
+ * :active style for a brief moment.
+ * @param {object} elem - HTML Element to flash
+ */
+function flashUIElementAsActive(elem) {
+    elem.style.borderColor = uiColors.enabled.active.border;
+    elem.style.backgroundColor = uiColors.enabled.active.background;
+    elem.style.color = uiColors.enabled.active.fill;
+    elem.style.fill = uiColors.enabled.active.fill;
+
+    window.setTimeout(function() {
+        elem.style.borderColor = uiColors.enabled.resting.border;
+        elem.style.backgroundColor = uiColors.enabled.resting.background;
+        elem.style.color = uiColors.enabled.resting.fill;
+        elem.style.fill = uiColors.enabled.resting.fill;
+    }, 250);
 }

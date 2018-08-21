@@ -1,5 +1,5 @@
 import {makeElement} from '../controls.js';
-import {uiColors} from '../../app/colors.js';
+import {uiColors, flashUIElementAsActive} from '../../app/colors.js';
 import {round} from '../../app/functions.js';
 
 /**
@@ -42,6 +42,7 @@ export default class InputNumber extends HTMLElement {
         let style = makeElement({tag: 'style', content: `
             * {
                 box-sizing: border-box;
+                transition: all 100ms easeOutExpo;
             }
 
             .wrapper {
@@ -307,6 +308,7 @@ export default class InputNumber extends HTMLElement {
     increment(ev) {
         let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
         this.elementRoot.value += mod? 10 : 1;
+        flashUIElementAsActive(this);
     }
 
     /**
@@ -316,6 +318,7 @@ export default class InputNumber extends HTMLElement {
     decrement(ev) {
         let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
         this.elementRoot.value -= mod? 10 : 1;
+        flashUIElementAsActive(this);
     }
 
     /**
