@@ -8,10 +8,14 @@ import {round} from '../../app/functions.js';
 export default class InputNumber extends HTMLElement {
     /**
      * Create an InputNumber
+     * @param {object} attributes - collection of key: value pairs to set as attributes
      */
-    constructor() {
+    constructor(attributes = {}) {
         // console.log(`InputNumber.constructor - START`);
         super();
+
+        Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
+
         this.precision = this.getAttribute('precision') || 3;
         this.disabled = this.hasAttribute('disabled');
 
@@ -19,7 +23,7 @@ export default class InputNumber extends HTMLElement {
         this.wrapper.elementRoot = this;
         if (this.disabled) this.wrapper.setAttribute('disabled', '');
 
-        this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: !this.disabled, attributes: [['type', 'text']]});
+        this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: !this.disabled, attributes: {'type': 'text'}});
         if (this.disabled) this.numberInput.setAttribute('disabled', '');
         this.numberInput.elementRoot = this;
 
@@ -52,7 +56,7 @@ export default class InputNumber extends HTMLElement {
                 grid-template-columns: 1fr 24px;
                 height: 100%;
                 border-style: solid;
-                border-width: 1px;
+                border-width: 1px ${this.hasAttribute('hideRightBorder')? '0' : '1'}px 1px 1px;
                 border-color: ${uiColors.enabled.resting.border};
                 background-color: ${uiColors.enabled.resting.background};
             }

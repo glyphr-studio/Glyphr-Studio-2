@@ -8,13 +8,13 @@ import {uiColors, flashUIElementAsActive} from '../../app/colors.js';
 export default class ButtonToggle extends HTMLElement {
     /**
      * Create an ButtonToggle
-     * @param {array} attributes - collection of [key, value] pairs to set as attributes
+     * @param {object} attributes - collection of key: value pairs to set as attributes
      */
-    constructor(attributes = []) {
+    constructor(attributes = {}) {
         // console.log(`ButtonToggle.constructor() - START`);
         super();
 
-        attributes.forEach((a) => this.setAttribute(a[0], a[1]));
+        Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
         this.size = this.getAttribute('size') || 24;
         this.gutterSize = Math.round(this.size * 0.05);
@@ -139,7 +139,7 @@ export default class ButtonToggle extends HTMLElement {
      * @param {string} newValue - value after the change
      */
     attributeChangedCallback(attributeName, oldValue, newValue) {
-        console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+        // console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
         if (attributeName === 'disabled') {
             if (newValue === '') {
