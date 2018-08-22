@@ -32,11 +32,11 @@ export default class InputNumber extends HTMLElement {
         this.arrowWrapper = makeElement({className: 'arrowWrapper', tabindex: !this.disabled});
         this.arrowWrapper.elementRoot = this;
 
-        this.upArrow = makeElement({className: 'upArrow', content: '⏶', tabindex: -1});
+        this.upArrow = makeElement({className: 'upArrow', content: '⏶', attributes: {tabindex: -1}});
         this.upArrow.elementRoot = this;
         if (this.disabled) this.upArrow.setAttribute('disabled', '');
 
-        this.downArrow = makeElement({className: 'downArrow', content: '⏷', tabindex: -1});
+        this.downArrow = makeElement({className: 'downArrow', content: '⏷', attributes: {tabindex: -1}});
         this.downArrow.elementRoot = this;
         if (this.disabled) this.downArrow.setAttribute('disabled', '');
 

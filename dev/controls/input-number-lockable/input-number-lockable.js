@@ -70,10 +70,35 @@ export default class InputNumberLockable extends HTMLElement {
         let shadow = this.attachShadow({mode: 'open'});
         shadow.appendChild(style);
 
+        this.observer = new MutationObserver(this.childAttributeChanged);
+        this.observer.elementRoot = this;
+        this.observer.observe(this.padlock, {attributes: true, attributeOldValue: true});
+
         this.wrapper.appendChild(this.inputNumber);
         this.wrapper.appendChild(this.padlock);
 
         shadow.appendChild(this.wrapper);
+    }
+
+    /**
+     * Listen for changes on child elements
+     * @param {object} mutationsList - collection of changes
+     */
+    childAttributeChanged(mutationsList) {
+        for (let mutation of mutationsList) {
+            if (mutation.type == 'attributes' && mutation.attributeName === 'selected') {
+                console.log('The ' + mutation.attributeName + ' attribute was modified.');
+                console.log(mutation);
+
+                if (mutation.oldValue === '') {
+                    // unlock
+                    this.elementRoot.inputNumber.removeAttribute('disabled');
+                } else {
+                    // lock
+                    this.elementRoot.inputNumber.setAttribute('disabled', '');
+                }
+            }
+        }
     }
 }
 
