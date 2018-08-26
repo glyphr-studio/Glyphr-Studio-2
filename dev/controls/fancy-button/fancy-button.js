@@ -24,7 +24,8 @@ export default class FancyButton extends HTMLElement {
             this.wrapper.setAttribute('tabindex', '0');
         }
 
-        this.buttonContent = makeElement({tag: 'slot', className: 'buttonContent'});
+        this.buttonContent = makeElement({className: 'buttonContent'});
+        this.buttonText = makeElement({tag: 'slot', className: 'buttonText'});
 
         let style = makeElement({tag: 'style', content: `
             * {
@@ -37,11 +38,8 @@ export default class FancyButton extends HTMLElement {
 
             .wrapper {
                 display: inline-block;
-                position: relative;
-                top: 0px;
-                left: 0px;
                 margin: 0px;
-                padding: 0px 3.5px 3px 0px;
+                padding: 2px;
                 height: 100%;
                 border-style: solid;
                 border-width: 0px;
@@ -70,32 +68,38 @@ export default class FancyButton extends HTMLElement {
 
             .buttonContent {
                 display: inline-block;
-                position: relative;
-                top: 1.5px;
-                left: 1.5px;
-                padding: 4px 12px;
+                padding: 0px;
                 margin: 0px;
                 border-radius: 3px;
-                text-align: center;
-                vertical-align: middle;
                 background-color: transparent;
                 width: 100%;
                 height: 100%;
+            }
+
+            .buttonText {
+                display: inline-block;
+                text-align: center;
+                vertical-align: middle;
                 color: white;
-            }
-
-            .wrapper:hover .buttonContent,
-            .wrapper:active .buttonContent {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-
-            :host:active .buttonContent {
-                text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.9);
+                margin: 4px 12px;
+                background-color: transparent;
             }
 
             .wrapper[secondary] .buttonContent {
                 background-color: rgba(255, 255, 255, 0.95);
-                color: ${accentColors.blue.l45};
+            }
+
+            .wrapper[secondary] .buttonText {
+                background: linear-gradient(to bottom right, ${accentColors.blue.l60}, ${accentColors.purple.l40});
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+
+
+            .wrapper:hover .buttonContent,
+            .wrapper:active .buttonContent {
+                background-color: rgba(255, 255, 255, 0.1);
             }
 
             .wrapper[secondary]:hover .buttonContent,
@@ -103,12 +107,14 @@ export default class FancyButton extends HTMLElement {
                 background-color: white;
             }
 
+
             .wrapper[disabled],
             .wrapper[disabled]:hover,
             .wrapper[disabled]:focus,
             .wrapper[disabled]:active {
                 background-image: linear-gradient(to bottom right, ${uiColors.disabled.background}, ${uiColors.disabled.border});
                 cursor: default;
+                box-shadow: none;
             }
 
             .wrapper[disabled] .buttonContent,
@@ -116,7 +122,16 @@ export default class FancyButton extends HTMLElement {
             .wrapper[disabled]:focus .buttonContent,
             .wrapper[disabled]:active .buttonContent {
                 background-color: ${uiColors.disabled.background};
-                color: ${uiColors.disabled.border};
+                cursor: default;
+            }
+
+            .wrapper[disabled] .buttonText,
+            .wrapper[disabled]:hover .buttonText,
+            .wrapper[disabled]:focus .buttonText,
+            .wrapper[disabled]:active .buttonText {
+                background-clip: none;
+                -webkit-text-fill-color: ${uiColors.disabled.border};
+                color: transparent;
                 cursor: default;
             }
         `});
@@ -125,7 +140,7 @@ export default class FancyButton extends HTMLElement {
         // Put it all together
         let shadow = this.attachShadow({mode: 'open'});
         shadow.appendChild(style);
-        // this.buttonContent.appendChild(document.createTextNode(this.text));
+        this.buttonContent.appendChild(this.buttonText);
         this.wrapper.appendChild(this.buttonContent);
         shadow.appendChild(this.wrapper);
     }
