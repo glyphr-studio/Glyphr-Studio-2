@@ -19,6 +19,10 @@ export default class AControlTemplate extends HTMLElement {
         let style = makeElement({tag: 'style', content: `
             * {
                 box-sizing: border-box;
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
             }
 
             .wrapper {
