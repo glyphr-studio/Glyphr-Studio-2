@@ -24,6 +24,13 @@ export default class InfoBubble extends HTMLElement {
         let bgColor = 'rgb(60,60,60)';
         let textColor = 'white';
         let style = makeElement({tag: 'style', content: `
+            * {
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+
             .wrapper {
                 margin: 0px;
                 padding: 0px;
@@ -43,7 +50,6 @@ export default class InfoBubble extends HTMLElement {
                 font-family: verdana, sans-serif;
                 font-size: 8px;
                 font-weight: bold;
-                user-select: none;
                 position: relative;
                 top: -5px;
                 display: inline-block;
@@ -62,7 +68,6 @@ export default class InfoBubble extends HTMLElement {
                 position: absolute;
                 left: -1000px;
                 top: -1000px;
-                user-select: none;
                 text-align: center;
             }
 
@@ -75,7 +80,6 @@ export default class InfoBubble extends HTMLElement {
                 background-color: ${bgColor};
                 text-align: left;
                 display: block;
-                user-select: none;
                 box-shadow: 4px 4px 2px rgba(0,0,0,0.2);
             }
 

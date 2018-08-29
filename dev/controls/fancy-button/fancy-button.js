@@ -14,7 +14,7 @@ export default class FancyButton extends HTMLElement {
 
         Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
-        this.text = this.innerText || 'fancy button';
+        let fast = this.hasAttribute('fast');
 
         this.wrapper = makeElement({className: 'wrapper'});
         if (this.hasAttribute('secondary')) this.wrapper.setAttribute('secondary', '');
@@ -36,6 +36,21 @@ export default class FancyButton extends HTMLElement {
                 -ms-user-select: none;
             }
 
+            :host(:active) {
+                position: relative;
+                top: 1px;
+                left: 1px;
+            }
+
+            :host(:active) .wrapper {
+                box-shadow: none;
+            }
+
+            :host([disabled]:active) {
+                top: 0px;
+                left: 0px;
+            }
+
             .wrapper {
                 display: inline-block;
                 margin: 0px;
@@ -44,14 +59,23 @@ export default class FancyButton extends HTMLElement {
                 border-style: solid;
                 border-width: 0px;
                 border-radius: 5px;
-                background-image: linear-gradient(to bottom right, ${accentColors.blue.l60}, ${accentColors.purple.l40});
-                box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+                box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
+
+                background: linear-gradient(320deg,
+                    ${accentColors.blue.l55},
+                    ${accentColors.purple.l55},
+                    ${accentColors.orange.l55},
+                    ${accentColors.purple.l55},
+                    ${accentColors.blue.l55},
+                    ${accentColors.purple.l55}
+                );
+                background-size: 500% 500%;
+                animation: gradFade ${fast? '20s' : '600'} linear infinite;
             }
 
-            :host:active .wrapper {
-                box-shadow: none;
-                top: 2px;
-                left: 2px;
+            @keyframes gradFade {
+                0%  {background-position:0% 0%}
+                100% {background-position:100% 100%}
             }
 
             .wrapper:hover,
@@ -78,6 +102,9 @@ export default class FancyButton extends HTMLElement {
 
             .buttonText {
                 display: inline-block;
+                position: relative;
+                top: 0px;
+                left: 0px;
                 text-align: center;
                 vertical-align: middle;
                 color: white;
@@ -90,7 +117,17 @@ export default class FancyButton extends HTMLElement {
             }
 
             .wrapper[secondary] .buttonText {
-                background: linear-gradient(to bottom right, ${accentColors.blue.l60}, ${accentColors.purple.l40});
+                background: linear-gradient(320deg,
+                    ${accentColors.blue.l45},
+                    ${accentColors.purple.l45},
+                    ${accentColors.orange.l45},
+                    ${accentColors.purple.l45},
+                    ${accentColors.blue.l45},
+                    ${accentColors.purple.l45}
+                );
+                background-size: 500% 500%;
+                animation: gradFade ${fast? '20s' : '600'} linear infinite;
+
                 background-clip: text;
                 -webkit-text-fill-color: transparent;
             }
@@ -129,9 +166,10 @@ export default class FancyButton extends HTMLElement {
             .wrapper[disabled]:hover .buttonText,
             .wrapper[disabled]:focus .buttonText,
             .wrapper[disabled]:active .buttonText {
+                background: ${uiColors.disabled.background};
                 background-clip: none;
                 -webkit-text-fill-color: ${uiColors.disabled.border};
-                color: transparent;
+                color: ${uiColors.disabled.border};
                 cursor: default;
             }
         `});
@@ -164,11 +202,9 @@ export default class FancyButton extends HTMLElement {
         if (attributeName === 'disabled') {
             if (newValue === '') {
                 // disabled
-                this.setAttribute('disabled', '');
                 this.wrapper.setAttribute('disabled', '');
             } else if (oldValue === '') {
                 // enabled
-                this.removeAttribute('disabled');
                 this.wrapper.removeAttribute('disabled');
             }
         }

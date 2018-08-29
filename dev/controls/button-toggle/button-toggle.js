@@ -36,6 +36,13 @@ export default class ButtonToggle extends HTMLElement {
                 height: ${this.size}px;
             }
 
+            * {
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+
             .wrapper {
                 box-sizing: border-box;
                 margin: 0;
@@ -47,7 +54,6 @@ export default class ButtonToggle extends HTMLElement {
                 vertical-align: top;
                 text-align: left;
                 overflow: hidden;
-                user-select: none;
                 border-color: ${uiColors.enabled.resting.border};
                 background-color: ${uiColors.enabled.resting.background};
             }

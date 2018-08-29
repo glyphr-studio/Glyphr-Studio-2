@@ -5,6 +5,16 @@
     <title>glyph-tile test</title>
     <script type="module">
         import GlyphTile from './glyph-tile.js';
+        import {basicLatinOrder} from '../../app/unicode.js';
+        let target = document.getElementById('container');
+
+        for (let i=0; i<basicLatinOrder.length; i++) {
+            if (Math.random() < 0.2) {
+                target.innerHTML += `<glyph-tile glyph="${basicLatinOrder[i]}" selected></glyph-tile>`;
+            } else {
+                target.innerHTML += `<glyph-tile glyph="${basicLatinOrder[i]}"></glyph-tile>`;
+            }
+        }
     </script>
     <style>
         * {
@@ -21,11 +31,6 @@
     </style>
 </head>
 <body style="padding:20px;">
-        <glyph-tile glyph="0x41" selected></glyph-tile>
-        <glyph-tile glyph="0x67"></glyph-tile>
-        <glyph-tile></glyph-tile>
-        <glyph-tile glyph="0x41"></glyph-tile>
-        <glyph-tile glyph="0x67"></glyph-tile>
-        <glyph-tile></glyph-tile>
+    <div id="container"></div>
 </body>
 </html>

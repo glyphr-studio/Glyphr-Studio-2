@@ -34,9 +34,22 @@ export default class GlyphTile extends HTMLElement {
         let style = makeElement({tag: 'style', content: `
             * {
                 box-sizing: border-box;
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            }
+
+            :host {
+                width: 52px;
+                overflow-y: hidden;
+                overflow-x: hidden;
+                margin: 0px 5px 2px 0px;
+                padding: 0px;
             }
 
             .wrapper {
+                transition: border-color 2s easeOutExpo;
                 display: inline-block;
                 margin: 0px;
                 padding: 0px;
@@ -45,23 +58,24 @@ export default class GlyphTile extends HTMLElement {
                 border-style: solid;
                 border-width: 1px;
                 border-color: transparent;
-                background-color: transparent;
+                background-color: rgba(255, 255, 255, 0.3);
                 overflow-x: hidden;
                 overflow-y: hidden;
             }
 
             .wrapper:hover,
-            .wrapper *:hover,
-            .wrapper:focus,
-            .wrapper *:focus {
-                border-color: ${uiColors.accent};
+            .wrapper:focus {
+                border-image: linear-gradient(${uiColors.accent}, rgba(0, 0, 0, 0)) 1 100%;
                 cursor: pointer;
             }
 
+            .wrapper:hover .thumbnail,
+            .wrapper:focus .thumbnail {
+                box-shadow: 0px 5px 4px rgba(0, 0, 0, 0.06);
+            }
+
             .wrapper[selected]:hover,
-            .wrapper[selected] *:hover,
-            .wrapper[selected]:focus,
-            .wrapper[selected] *:focus {
+            .wrapper[selected]:focus {
                 border-color: transparent;
                 cursor: default;
             }
@@ -71,14 +85,18 @@ export default class GlyphTile extends HTMLElement {
                 background-color: white;
                 width: 50px;
                 height: 50px;
-                border-style: solid;
-                border-width: 1px;
-                border-color: white;
+                box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.05);
+            }
+
+            .wrapper[selected] {
+                border-top: 2px solid ${uiColors.accent};
+                border-image-source: linear-gradient(${uiColors.accent}, rgba(0, 0, 0, 0));
+                border-image-slice: 2;
+                border-image-width: 100%;
             }
 
             .wrapper[selected] .thumbnail {
                 background-color: ${uiColors.enabled.active.background};
-                border-color: ${uiColors.accent};
             }
 
             .wrapper:hover .thumbnail {
@@ -86,7 +104,6 @@ export default class GlyphTile extends HTMLElement {
             }
 
             .wrapper[selected]:hover .thumbnail {
-                border-color: ${uiColors.accent};
                 cursor: default;
             }
 
@@ -95,8 +112,15 @@ export default class GlyphTile extends HTMLElement {
                 width: 300px;
                 height: 28px;
                 padding: 2px 0px 0px 4px;
-                color: ${uiColors.disabled.text};
-                background-color: rgba(255, 255, 255, 0.3);
+                color: #6D6D6D;
+            }
+
+            .wrapper[selected] .name {
+                color: ${uiColors.accent};
+            }
+
+            .wrapper:hover .name {
+                color: ${uiColors.enabled.resting.text};
             }
 
 
