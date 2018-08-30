@@ -15,13 +15,17 @@ export default class FancyButton extends HTMLElement {
         Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
         let fast = this.hasAttribute('fast');
+        let fastSpeed = '18s';
+        let slowSpeed = '90s';
 
         this.wrapper = makeElement({className: 'wrapper'});
         if (this.hasAttribute('secondary')) this.wrapper.setAttribute('secondary', '');
         if (this.hasAttribute('disabled')) {
             this.wrapper.setAttribute('disabled', '');
+            this.disabled = true;
         } else {
             this.wrapper.setAttribute('tabindex', '0');
+            this.disabled = false;
         }
 
         this.buttonContent = makeElement({className: 'buttonContent'});
@@ -36,23 +40,26 @@ export default class FancyButton extends HTMLElement {
                 -ms-user-select: none;
             }
 
-            :host(:active) {
-                position: relative;
-                top: 1px;
-                left: 1px;
+            :host {
+                margin-right: 8px;
             }
 
             :host(:active) .wrapper {
+                top: 1px;
+                left: 1px;
                 box-shadow: none;
             }
 
-            :host([disabled]:active) {
+            :host([disabled]:active) .wrapper {
                 top: 0px;
                 left: 0px;
             }
 
             .wrapper {
                 display: inline-block;
+                position: relative;
+                top: 0px;
+                left: 0px;
                 margin: 0px;
                 padding: 2px;
                 height: 100%;
@@ -61,16 +68,16 @@ export default class FancyButton extends HTMLElement {
                 border-radius: 5px;
                 box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3);
 
-                background: linear-gradient(320deg,
+                background: linear-gradient(135deg,
                     ${accentColors.blue.l55},
-                    ${accentColors.purple.l55},
+                    ${accentColors.purple.l45},
                     ${accentColors.orange.l55},
-                    ${accentColors.purple.l55},
+                    ${accentColors.purple.l45},
                     ${accentColors.blue.l55},
-                    ${accentColors.purple.l55}
+                    ${accentColors.purple.l45}
                 );
                 background-size: 500% 500%;
-                animation: gradFade ${fast? '20s' : '600'} linear infinite;
+                animation: gradFade ${fast? fastSpeed : slowSpeed} linear infinite;
             }
 
             @keyframes gradFade {
@@ -105,6 +112,7 @@ export default class FancyButton extends HTMLElement {
                 position: relative;
                 top: 0px;
                 left: 0px;
+                min-width: 80px;
                 text-align: center;
                 vertical-align: middle;
                 color: white;
@@ -117,7 +125,7 @@ export default class FancyButton extends HTMLElement {
             }
 
             .wrapper[secondary] .buttonText {
-                background: linear-gradient(320deg,
+                background: linear-gradient(135deg,
                     ${accentColors.blue.l45},
                     ${accentColors.purple.l45},
                     ${accentColors.orange.l45},
@@ -126,7 +134,7 @@ export default class FancyButton extends HTMLElement {
                     ${accentColors.purple.l45}
                 );
                 background-size: 500% 500%;
-                animation: gradFade ${fast? '20s' : '600'} linear infinite;
+                animation: gradFade ${fast? fastSpeed : slowSpeed} linear infinite;
 
                 background-clip: text;
                 -webkit-text-fill-color: transparent;
@@ -149,7 +157,8 @@ export default class FancyButton extends HTMLElement {
             .wrapper[disabled]:hover,
             .wrapper[disabled]:focus,
             .wrapper[disabled]:active {
-                background-image: linear-gradient(to bottom right, ${uiColors.disabled.background}, ${uiColors.disabled.border});
+                background-image: none;
+                background-color: ${uiColors.disabled.border};
                 cursor: default;
                 box-shadow: none;
             }
@@ -181,6 +190,11 @@ export default class FancyButton extends HTMLElement {
         this.buttonContent.appendChild(this.buttonText);
         this.wrapper.appendChild(this.buttonContent);
         shadow.appendChild(this.wrapper);
+
+        if (!this.disabled) {
+            this.addEventListener('click', this.toggle);
+            this.addEventListener('keydown', this.keyPress);
+        }
     }
 
     /**
@@ -208,6 +222,39 @@ export default class FancyButton extends HTMLElement {
                 this.wrapper.removeAttribute('disabled');
             }
         }
+    }
+
+    /**
+     * Handle keypress events
+     * @param {object} ev - event
+     */
+    keyPress(ev) {
+        if (ev.keyCode === 13) {
+            let click = new MouseEvent('click', {
+                shiftKey: ev.shiftKey,
+                ctrlKey: ev.ctrlKey,
+                altKey: ev.altKey,
+                metaKey: ev.metaKey,
+            });
+            this.dispatchEvent(click);
+            this.flashAsPressed(this);
+        }
+    }
+
+    /**
+     * Fake pressed state for keyboard event
+     * @param {object} elem - element that got pressed
+     */
+    flashAsPressed(elem) {
+        elem.wrapper.style.top = '1px';
+        elem.wrapper.style.left = '1px';
+        elem.wrapper.style.boxShadow = 'none';
+
+        setTimeout(function() {
+            elem.wrapper.style.top = '0px';
+            elem.wrapper.style.left = '0px';
+            elem.wrapper.style.boxShadow = '2px 2px 2px rgba(0, 0, 0, 0.3)';
+        }, 100);
     }
 }
 

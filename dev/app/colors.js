@@ -296,5 +296,5 @@ function flashUIElementAsActive(elem) {
         elem.style.backgroundColor = uiColors.enabled.resting.background;
         elem.style.color = uiColors.enabled.resting.fill;
         elem.style.fill = uiColors.enabled.resting.fill;
-    }, 250);
+    }, 200);
 }
