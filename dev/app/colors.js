@@ -130,18 +130,21 @@ const uiColors = {
     enabled: {
         resting: {
             text:       'rgb(10, 10, 10)',
+            lightText:  'rgb(30, 30, 30)',
             border:     'rgb(190, 190, 190)',
             fill:       'rgb(100, 100, 100)',
             background: 'rgb(250, 250, 250)',
         },
         focus: {
             text:       'rgb(0, 0, 0)',
+            lightText:  'rgb(20, 20, 20)',
             border:     'rgb(160, 160, 160)',
             fill:       'rgb(30, 40, 50)',
             background: getColorFromRGBA(accentColor, 0.2),
         },
         active: {
             text:       'rgb(0, 0, 0)',
+            lightText:  getColorFromRGBA(accentColor, 0.25),
             border:     'rgb(160, 160, 160)',
             fill:       accentColor,
             background: getColorFromRGBA(accentColor, 0.1),

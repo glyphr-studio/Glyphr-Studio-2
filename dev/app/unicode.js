@@ -6,6 +6,8 @@ export {
     basicLatinOrder, unicodeRanges, ligatureToUnicode,
 };
 
+import debug from './functions.js';
+
 /**
     Framework > Unicode
     Anything having to do with / working with
@@ -72,9 +74,11 @@ function charsToHexArray(s) {
  * @returns {string} - string
  */
 function hexToChars(u) {
-    if (String(u).charAt(1) !== 'x') u = String(decToHex(u));
     // debug('\n hexToChars - START');
-    // debug('\t passed ' + u + ' which is a ' + typeof u);
+    // debug(`\t passed ${u} which is a ${typeof u}`);
+
+    if (String(u).charAt(1) !== 'x') u = String(decToHex(u));
+    // debug(`\t u is now ${u} which is a ${typeof u}`);
 
     u = u.split('0x');
     let result = '';
@@ -87,7 +91,7 @@ function hexToChars(u) {
         }
     }
 
-    // debug(' hexToHTML - END\n');
+    // debug(` hexToHTML - END\n`);
     return result;
 }
 
