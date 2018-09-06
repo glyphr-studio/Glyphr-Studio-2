@@ -1,3 +1,5 @@
+import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
+
 export {
     getProject,
     getGlyph, getGlyphType, getGlyphName, getFirstGlyphID,
@@ -8,17 +10,22 @@ export {
 
 export default {};
 
+// --------------------------------------------------------------
+// PROJECT GETTERS
+// --------------------------------------------------------------
 /**
  * Get the current Glyphr Studio Project
  * @returns {GlyphrStudioProject}
  */
 function getProject() {
-    if (_GP) return _GP;
-    else return {};
+    // if (_GP) return _GP;
+    // else return {};
+    return {};
 }
 
+
 // --------------------------------------------------------------
-// GLYPH FUNCTIONS
+// GLYPH GETTERS
 // --------------------------------------------------------------
 
 /**
@@ -31,47 +38,49 @@ function getGlyph(id, create) {
     // debug('\n getGlyph - START');
     // debug('\t passed: ' + id + ' create: ' + create);
 
+    let project = getProject();
+
     if (!id) {
         // debug('\t Not passed an ID, returning false');
         return false;
     }
 
-    if (_GP === {}) {
-        // debug('\t _GP is uninitialized, returning false');
+    if (project === {}) {
+        // debug('\t project is uninitialized, returning false');
         return false;
     }
 
     id = ''+id;
     let rechar;
 
-    if (id.indexOf('0x', 2) > -1) {
-        rechar = _GP.ligatures[id];
+    if (project.ligatures && id.indexOf('0x', 2) > -1) {
+        rechar = project.ligatures[id];
         // debug('\t retrieved ' + rechar + ' from ligatures.');
         if (rechar) {
             return rechar;
         } else if (create) {
             // debug('\t create was true, returning a new ligature.');
-            _GP.ligatures[id] = new Glyph({'glyphhex': id});
-            return _GP.ligatures[id];
+            project.ligatures[id] = new Glyph({'glyphhex': id});
+            return project.ligatures[id];
         }
-    } else if (id.indexOf('0x') > -1) {
-        rechar = _GP.glyphs[id];
+    } else if (project.glyphs && id.indexOf('0x') > -1) {
+        rechar = project.glyphs[id];
         // debug('\t retrieved ' + rechar + ' from glyphs.');
         if (rechar) {
             return rechar;
         } else if (create) {
             // debug('\t create was true, returning a new char.');
-            _GP.glyphs[id] = new Glyph({'glyphhex': id});
-            return _GP.glyphs[id];
+            project.glyphs[id] = new Glyph({'glyphhex': id});
+            return project.glyphs[id];
         }
-    } else {
+    } else if (project.components) {
         // debug('\t component, retrieved');
-        // debug(_GP.components[id]);
-        return _GP.components[id] || false;
+        // debug(project.components[id]);
+        return project.components[id] || false;
+    } else {
+        // debug('getGlyph - returning FALSE\n');
+        return false;
     }
-
-    // debug('getGlyph - returning FALSE\n');
-    return false;
 }
 
 /**
@@ -88,9 +97,10 @@ function getGlyphType(id) {
 /**
  * Get a glyph's name based on it's ID
  * @param {string} id - Glyph ID
+ * @param {boolean} forceLongName - don't use the short Unicode name by default
  * @returns {string}
  */
-function getGlyphName(id) {
+function getGlyphName(id, forceLongName = false) {
     id = ''+id;
     // debug('\n getGlyphName');
     // debug('\t passed ' + id);
@@ -102,8 +112,8 @@ function getGlyphName(id) {
     }
 
     // known unicode names
-    let un = getUnicodeName(id);
-    if (un && un !== '[name not found]') {
+    let un = forceLongName? unicodeNames[id] : shortUnicodeNames[id];
+    if (un) {
         // debug('\t got unicode name: ' + un);
         return un;
     }
@@ -173,7 +183,7 @@ function updateCurrentGlyphWidth() {
 
 
 // --------------------------------------------------------------
-// Kern
+// Kern Getters
 // --------------------------------------------------------------
 
 /**

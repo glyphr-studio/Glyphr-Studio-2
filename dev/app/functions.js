@@ -30,7 +30,7 @@ window.localStorageSet = localStorageSet;
 function debug(message, force) {
     // if (!_UI.devMode) return;
 
-    if ((_UI && _UI.debug) || force) {
+    if ((window._UI && window._UI.debug) || force) {
         if (typeof message === 'string') {
             message = message.replace(/&lt;/gi, '<');
             message = message.replace(/&gt;/gi, '>');

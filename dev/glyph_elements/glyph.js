@@ -45,7 +45,7 @@ export default class Glyph extends GlyphElement {
         usedIn = [],
         contextGlyphs = '',
     } = {}) {
-        // debug(`\n Glyph.constructor - START`);
+        debug(`\n Glyph.constructor - START`);
         super();
         this.hex = hex;
         this.shapes = shapes;
@@ -57,8 +57,8 @@ export default class Glyph extends GlyphElement {
         this.usedIn = usedIn;
         this.contextGlyphs = contextGlyphs;
 
-        // debug(this.print());
-        // debug(` Glyph.constructor - END\n\n`);
+        debug(this.print());
+        debug(` Glyph.constructor - END\n\n`);
     }
 
 
@@ -1035,7 +1035,7 @@ export default class Glyph extends GlyphElement {
         ctx.globalAlpha = 1;
         // debug(' Glyph.drawGlyph - END ' + this.name + '\n');
 
-        return (this.getAdvanceWidth() * view.dz);
+        return (this.advanceWidth * view.dz);
     }
 
     /**

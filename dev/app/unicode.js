@@ -1,3 +1,5 @@
+import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
+
 export {
     decToHex, decToHTML, glyphToHex, charsToHexArray, hexToChars, hexToHTML,
     hexToUnicodeHex, parseUnicodeInput, isInputUnicode, isInputHex, validateHex,
@@ -5,8 +7,6 @@ export {
     removeCustomGlyphRange, getUnicodeName, getUnicodeShortName,
     basicLatinOrder, unicodeRanges, ligatureToUnicode,
 };
-
-import debug from './functions.js';
 
 /**
     Framework > Unicode
@@ -358,8 +358,8 @@ function getUnicodeName(ch) {
 
     if (chn >= 0x4E00 && chn < 0xA000) {
         return 'CJK Unified Ideograph ' + ch.substr(2);
-    } else if (_UI && _UI.unicodenames) {
-        re = _UI.unicodenames[ch] || '[name not found]';
+    } else {
+        unicodeNames[ch] || '[name not found]';
     }
 
     // debug(' getUnicodeName - END - returning ' + re + '\n');
@@ -376,7 +376,7 @@ function getUnicodeShortName(ch) {
     // debug('\n getUnicodeShortName - START');
     // debug('\t passed ' + ch);
     ch = ''+ch;
-    let name = _UI.shortunicodenames[ch];
+    let name = shortUnicodeNames[ch];
     if (!name) {
         name = getUnicodeName(ch);
         if (name) name = name.replace(/latin /gi, '').replace(/ /g, '').substr(0, 20);

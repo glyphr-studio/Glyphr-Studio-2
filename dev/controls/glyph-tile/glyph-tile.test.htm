@@ -6,6 +6,7 @@
     <script type="module">
         import GlyphTile from './glyph-tile.js';
         import {basicLatinOrder} from '../../app/unicode.js';
+        import glyphrStudioOnLoad from '../../app/main.js';
         let target = document.getElementById('container');
 
         for (let i=0; i<basicLatinOrder.length; i++) {
@@ -31,6 +32,14 @@
     </style>
 </head>
 <body style="padding:20px;">
+    <glyph-tile glyph="0x41"></glyph-tile>
+    <glyph-tile glyph="0x41" selected></glyph-tile>
+    <glyph-tile glyph="0x77B"></glyph-tile>
+    <glyph-tile glyph="0x77B" selected></glyph-tile>
+    <glyph-tile glyph="0x0"></glyph-tile>
+    <glyph-tile glyph="0x0" selected></glyph-tile>
+    <br><br>
+    <hr>
     <div id="container"></div>
 </body>
 </html>
