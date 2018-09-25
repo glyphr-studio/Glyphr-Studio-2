@@ -178,7 +178,7 @@
                     if (1*uni > _UI.glyphrange.latinextendedb.end) customglyphrange.push(uni);
 
                     fc[uni] = new Glyph({'shapes': newshapes, 'glyphhex': uni, 'glyphWidth': adv, 'isAutoWide': isAutoWide});
-                    if (getUnicodeName(uni) === '[name not found]') _GP.projectSettings.glyphrange.filternoncharpoints = false;
+                    if (getUnicodeName(uni) === '[name not found]') getCurrentProject().projectSettings.glyphrange.filternoncharpoints = false;
                 } else {
                     // It's a LIGATURE
                     uni = uni.join('');
@@ -259,9 +259,9 @@
         }
 
         function finalizeFontImport() {
-            _GP.glyphs = fc;
-            _GP.ligatures = fl;
-            _GP.kerning = fk;
+            getCurrentProject().glyphs = fc;
+            getCurrentProject().ligatures = fl;
+            getCurrentProject().kerning = fk;
 
             let rstart, rend;
             for (let r in _UI.glyphrange) {
@@ -270,7 +270,7 @@
                     rend = 1*_UI.glyphrange[r].end+1;
                     for (let t=rstart; t<rend; t++) {
                         if (getGlyph(t)) {
-                            _GP.projectSettings.glyphrange[r] = true;
+                            getCurrentProject().projectSettings.glyphrange[r] = true;
                             break;
                         }
                     }
@@ -280,7 +280,7 @@
             // Make a custom range for the rest
             if (customglyphrange.length) {
                 customglyphrange = customglyphrange.sort();
-                _GP.projectSettings.glyphrange.custom.push({'begin': customglyphrange[0], 'end': customglyphrange[customglyphrange.length-1]});
+                getCurrentProject().projectSettings.glyphrange.custom.push({'begin': customglyphrange[0], 'end': customglyphrange[customglyphrange.length-1]});
             }
 
             // Import Font Settings
@@ -289,8 +289,8 @@
 
             // Font Settings
             let fatt = ioSVG_getFirstTagInstance(font, 'font-face').attributes;
-            let ps = _GP.projectSettings;
-            let md = _GP.metadata;
+            let ps = getCurrentProject().projectSettings;
+            let md = getCurrentProject().metadata;
             let fname = fatt['font-family'] || 'My Font';
 
             ps.upm = 1*fatt['units-per-em'] || 1000;

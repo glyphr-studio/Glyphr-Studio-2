@@ -26,9 +26,9 @@ function rectPathFromMaxes(maxes) {
     let rx = 100;
     let by = 0;
 
-    if (_GP && _GP.projectSettings) {
-        ty = _GP.projectSettings.ascent;
-        rx = (_GP.projectSettings.upm / _GP.projectSettings.griddivisions);
+    if (_GP && getCurrentProject().projectSettings) {
+        ty = getCurrentProject().projectSettings.ascent;
+        rx = (getCurrentProject().projectSettings.upm / getCurrentProject().projectSettings.griddivisions);
     }
 
     if (maxes) {
@@ -103,8 +103,8 @@ function ovalPathFromMaxes(maxes) {
 
     // Default Circle size
     let lx = isVal(maxes.xMin)? maxes.xMin : 0;
-    let ty = isVal(maxes.yMax)? maxes.yMax : _GP.projectSettings.xheight || 500;
-    let rx = isVal(maxes.xMax)? maxes.xMax : _GP.projectSettings.xheight || 500;
+    let ty = isVal(maxes.yMax)? maxes.yMax : getCurrentProject().projectSettings.xheight || 500;
+    let rx = isVal(maxes.xMax)? maxes.xMax : getCurrentProject().projectSettings.xheight || 500;
     let by = isVal(maxes.yMin)? maxes.yMin : 0;
 
 
@@ -213,7 +213,7 @@ function addShape(newshape) {
  */
 function turnSelectedShapeIntoAComponent() {
     let s = clone(_UI.multiSelect.shapes.getMembers());
-    let n = s.length === 1? ('Component ' + s[0].name) : ('Component ' + (countObjectKeys(_GP.components)+1));
+    let n = s.length === 1? ('Component ' + s[0].name) : ('Component ' + (countObjectKeys(getCurrentProject().components)+1));
 
     _UI.multiSelect.shapes.deleteShapes();
     let newid = createNewComponent(new Glyph({'shapes': s, 'name': n}));

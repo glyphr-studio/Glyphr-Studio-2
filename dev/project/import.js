@@ -168,15 +168,15 @@ function newGlyphrStudioProject() {
 
     _GP = new GlyphrStudioProject();
 
-    _GP.projectSettings.name = fn;
-    _GP.metadata.font_family = fn.substr(0, 31);
+    getCurrentProject().projectSettings.name = fn;
+    getCurrentProject().metadata.font_family = fn.substr(0, 31);
 
-    _GP.projectSettings.version = _UI.thisGlyphrStudioVersion;
-    _GP.projectSettings.versionnum = _UI.thisGlyphrStudioVersionNum;
-    _GP.projectSettings.projectid = makeProjectID();
+    getCurrentProject().projectSettings.version = _UI.thisGlyphrStudioVersion;
+    getCurrentProject().projectSettings.versionnum = _UI.thisGlyphrStudioVersionNum;
+    getCurrentProject().projectSettings.projectid = makeProjectID();
 
     getGlyph('0x0020', true).isAutoWide = false;
-    getGlyph('0x0020', true).glyphWidth = round(_GP.projectSettings.upm/3);
+    getGlyph('0x0020', true).glyphWidth = round(getCurrentProject().projectSettings.upm/3);
     getGlyph('0x0041', true);
 
     finalizeUI();
@@ -199,7 +199,7 @@ function finalizeUI() {
     _UI.guides.leftGroupXMax = new Guide(_UI.guides.leftGroupXMax);
     _UI.guides.rightGroupXMin = new Guide(_UI.guides.rightGroupXMin);
 
-    let ps = _GP.projectSettings;
+    let ps = getCurrentProject().projectSettings;
 
     ps.guides.ascent = ps.guides.ascent || new Guide({name: 'ascent', type: 'horizontal', location: ps.ascent, editable: false, color: ps.colors.guide_med});
     ps.guides.capheight = ps.guides.capheight || new Guide({name: 'capheight', type: 'horizontal', location: ps.capheight, editable: false, color: ps.colors.guide_light});
@@ -213,12 +213,12 @@ function finalizeUI() {
     ps.guides.max = ps.guides.max || new Guide({name: 'max', type: 'vertical', showname: false, location: ps.upm, editable: false, color: ps.colors.guide_light});
 
     _UI.selectedGlyph = _UI.selectedGlyph || getFirstGlyphID();
-    _UI.selectedLigature = _UI.selectedLigature || getFirstID(_GP.ligatures);
-    _UI.selectedComponent = _UI.selectedComponent || getFirstID(_GP.components);
-    _UI.selectedKern = _UI.selectedKern || getFirstID(_GP.kerning);
+    _UI.selectedLigature = _UI.selectedLigature || getFirstID(getCurrentProject().ligatures);
+    _UI.selectedComponent = _UI.selectedComponent || getFirstID(getCurrentProject().components);
+    _UI.selectedKern = _UI.selectedKern || getFirstID(getCurrentProject().kerning);
 
     let sp = getGlyph('0x0020', true);
-    if (!sp.isAutoWide && sp.glyphWidth === 0) sp.glyphWidth = round(_GP.projectSettings.upm/3);
+    if (!sp.isAutoWide && sp.glyphWidth === 0) sp.glyphWidth = round(getCurrentProject().projectSettings.upm/3);
 
     calculateDefaultView();
     resetThumbView();

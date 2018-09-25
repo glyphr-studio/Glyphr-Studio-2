@@ -1100,9 +1100,9 @@ export default class Glyph extends GlyphElement {
 
         let emSquare = 1000;
         let desc = 300;
+        let ps = getCurrentProject().projectSettings;
 
-        if (_GP && _GP.projectSettings) {
-            let ps = _GP.projectSettings;
+        if (ps) {
             emSquare = Math.max(ps.upm, (ps.ascent - ps.descent));
             desc = Math.abs(ps.descent);
         }

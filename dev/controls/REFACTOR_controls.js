@@ -971,7 +971,7 @@ import _UI from '../app/settings.js';
         rdpanels = rdpanels || false;
         rdtools = rdtools || false;
 
-        let psct = _GP.projectSettings.colors[varname];
+        let psct = getCurrentProject().projectSettings.colors[varname];
         let re = 'transparency:<input type="range" min="0" max="100" value="'+psct+'" step="1" ';
         re += 'oninput="updateTransparency(\''+varname+'\', \''+id+'\', this.value, '+rdpanels+', '+rdtools+');"/>';
         re += '<span id="'+id+'">'+psct+'</span>%';
@@ -984,7 +984,7 @@ import _UI from '../app/settings.js';
         rdpanels = rdpanels && _UI.currentPanel === 'npGuides';
         rdtools = rdtools || false;
 
-        _GP.projectSettings.colors[varname] = value;
+        getCurrentProject().projectSettings.colors[varname] = value;
         document.getElementById(id).innerHTML = value;
         redraw({calledBy: 'updateTransparency', redrawPanels: rdpanels, redrawTools: rdtools});
     }

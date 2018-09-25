@@ -26,7 +26,7 @@
             asyncLoadChooserPanel();
             // _UI.glyphChooser.cache = make_GlyphChooser(_UI.glyphChooser.panel);
          } else if (_UI.currentPage === 'ligatures') {
-            let emptyligs = countObjectKeys(_GP.ligatures) === 0;
+            let emptyligs = countObjectKeys(getCurrentProject().ligatures) === 0;
             if (!emptyligs) {
                 content += make_GlyphChooser(gcp);
             }
@@ -46,7 +46,7 @@
                 content += '</div>';
             }
         } else if (_UI.currentPage === 'components') {
-            let emptycoms = countObjectKeys(_GP.components) === 0;
+            let emptycoms = countObjectKeys(getCurrentProject().components) === 0;
             if (!emptycoms) {
                 content += make_GlyphChooser(gcp);
             }
@@ -91,7 +91,7 @@
 
         if ( (gcdata.choices === 'all') ||
             (_UI.currentPage === 'glyph edit' && pluralGlyphRange()) ||
-            (_UI.currentPage === 'import svg' && (pluralGlyphRange() || countObjectKeys(_GP.components) || countObjectKeys(_GP.ligatures))) ) {
+            (_UI.currentPage === 'import svg' && (pluralGlyphRange() || countObjectKeys(getCurrentProject().components) || countObjectKeys(getCurrentProject().ligatures))) ) {
                 con += make_GlyphChooser_Header(gcdata.selected);
         }
 
@@ -126,15 +126,15 @@
             if (selrange === 'glyphs') selrange = 'basiclatin';
 
             if (!isNaN(parseInt(selrange))) {
-                selectGlyph(_GP.projectSettings.glyphrange.custom[selrange].begin, true);
+                selectGlyph(getCurrentProject().projectSettings.glyphrange.custom[selrange].begin, true);
             } else {
                 switch (selrange) {
                     case 'basiclatin': selectGlyph('0x0041', true); break;
                     case 'latinsupplement': selectGlyph('0x00A0', true); break;
                     case 'latinextendeda': selectGlyph('0x0100', true); break;
                     case 'latinextendedb': selectGlyph('0x0180', true); break;
-                    case 'components': selectGlyph(getFirstID(_GP.components), true); break;
-                    case 'ligatures': selectGlyph(getFirstID(_GP.ligatures), true); break;
+                    case 'components': selectGlyph(getFirstID(getCurrentProject().components), true); break;
+                    case 'ligatures': selectGlyph(getFirstID(getCurrentProject().ligatures), true); break;
                 }
             }
 
@@ -184,7 +184,7 @@
 
     function make_GlyphChooser_DropDown(ch) {
         let content = '<div class="glyphChooser-dropdown">';
-        let gr = _GP.projectSettings.glyphrange;
+        let gr = getCurrentProject().projectSettings.glyphrange;
 
         if (ch === 'glyphs' || ch === 'all') {
             if (gr.basiclatin) content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'basiclatin\');">Basic Latin</button>';
@@ -202,19 +202,19 @@
         }
 
         if (ch === 'components' || ch === 'all') {
-            if (countObjectKeys(_GP.components)) {
+            if (countObjectKeys(getCurrentProject().components)) {
                 content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'components\');">';
                 content += 'Components&emsp;';
-                content += '<span class="units">(' + countObjectKeys(_GP.components) + ')</span>';
+                content += '<span class="units">(' + countObjectKeys(getCurrentProject().components) + ')</span>';
                 content += '</button>';
             }
         }
 
         if (ch === 'ligatures' || ch === 'all') {
-            if (countObjectKeys(_GP.ligatures)) {
+            if (countObjectKeys(getCurrentProject().ligatures)) {
                 content += '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'ligatures\');">';
                 content += 'Ligatures&emsp;';
-                content += '<span class="units">(' + countObjectKeys(_GP.ligatures) + ')</span>';
+                content += '<span class="units">(' + countObjectKeys(getCurrentProject().ligatures) + ')</span>';
                 content += '</button>';
             }
         }
@@ -224,7 +224,7 @@
 
     function pluralGlyphRange() {
         // debug('\n pluralGlyphRange - START');
-        let gr = _GP.projectSettings.glyphrange;
+        let gr = getCurrentProject().projectSettings.glyphrange;
         let count = gr.custom.length;
 
         if (gr.basiclatin) {
@@ -286,13 +286,13 @@
             return re + '</div>';
         }
 
-        let cr = _GP.projectSettings.glyphrange;
+        let cr = getCurrentProject().projectSettings.glyphrange;
         let c = parseInt(sel);
         if (!isNaN(c)) {
             // debug('\t triggered custom range');
             for (let range=cr.custom[c].begin; range<=cr.custom[c].end; range++) {
                 cn = decToHex(range);
-                if (_GP.projectSettings.glyphrange.filternoncharpoints) {
+                if (getCurrentProject().projectSettings.glyphrange.filternoncharpoints) {
                     if (getUnicodeName(cn) !== '[name not found]') re += make_GlyphChooser_Button(cn, fname, selwi);
                 } else {
                     re += make_GlyphChooser_Button(cn, fname, selwi);
@@ -301,9 +301,9 @@
             return re + '</div>';
         }
 
-        if (sel === 'ligatures' && getFirstID(_GP.ligatures)) {
+        if (sel === 'ligatures' && getFirstID(getCurrentProject().ligatures)) {
             sortLigatures();
-            let lig = _GP.ligatures;
+            let lig = getCurrentProject().ligatures;
             for (let l in lig) {
  if (lig.hasOwnProperty(l)) {
                 re += make_GlyphChooser_Button(l, fname, selwi);
@@ -312,8 +312,8 @@
             return re + '</div>';
         }
 
-        if (sel === 'components' && getFirstID(_GP.components)) {
-            let com = _GP.components;
+        if (sel === 'components' && getFirstID(getCurrentProject().components)) {
+            let com = getCurrentProject().components;
             for (let d in com) {
  if (com.hasOwnProperty(d)) {
                 re += make_GlyphChooser_Button(d, fname, selwi);

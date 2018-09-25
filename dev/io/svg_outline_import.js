@@ -14,7 +14,7 @@ import XYPoint from './xypoint.js';
 
         let newshapes = [];
         let ns;
-        let mid = (_GP.projectSettings.ascent / 2);
+        let mid = (getCurrentProject().projectSettings.ascent / 2);
         let parsedshape = {};
         let data = {};
         let shapecounter = 0;

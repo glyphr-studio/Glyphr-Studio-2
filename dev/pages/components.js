@@ -18,7 +18,7 @@
             _UI.dev_selectedShape = false;
         }
 
-        _UI.selectedComponent = _UI.selectedComponent || getFirstID(_GP.components);
+        _UI.selectedComponent = _UI.selectedComponent || getFirstID(getCurrentProject().components);
 
         if (getSelectedWorkItemShapes().length > 0) _UI.selectedTool = 'pathedit';
         else _UI.selectedTool = 'pathaddpoint';
@@ -30,13 +30,13 @@
     function createNewComponent(pglyph) {
         // debug('\n createNewComponent - START');
 
-        pglyph = pglyph || new Glyph({'name': 'Component ' + (countObjectKeys(_GP.components)+1)});
-        let newid = generateNewID(_GP.components, 'com');
+        pglyph = pglyph || new Glyph({'name': 'Component ' + (countObjectKeys(getCurrentProject().components)+1)});
+        let newid = generateNewID(getCurrentProject().components, 'com');
         _UI.selectedComponent = newid;
 
-        _GP.components[newid] = pglyph;
+        getCurrentProject().components[newid] = pglyph;
 
-        // debug("Added New Component: " + newid + " JSON=" + json(_GP.components));
+        // debug("Added New Component: " + newid + " JSON=" + json(getCurrentProject().components));
 
         return newid;
     }
@@ -73,12 +73,12 @@
 
         // Delete it
         let oldname = getSelectedWorkItemName();
-        delete _GP.components[_UI.selectedComponent];
-        _UI.selectedComponent = getFirstID(_GP.components);
+        delete getCurrentProject().components[_UI.selectedComponent];
+        _UI.selectedComponent = getFirstID(getCurrentProject().components);
 
         // history_put('Deleted ' + oldname);
 
-        // debug('\t after delete ' + _GP.components);
+        // debug('\t after delete ' + getCurrentProject().components);
         redraw({calledBy: 'deleteComponent'});
 
         // debug('deleteComponent - END\n');

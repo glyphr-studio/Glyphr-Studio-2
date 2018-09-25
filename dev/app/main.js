@@ -60,14 +60,10 @@ window._DEV.hkern = hkern;
  * First function to run when the browser starts
  */
 export default function glyphrStudioOnLoad() {
-    // console.clear();
-    console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\nv' + _UI.thisGlyphrStudioVersionNum + '\n\n', 'color:rgb(0,170,225)');
-    // debug('\n MAIN SETUP - START');
-
-    // Initialize Stuff
     assemble();
     window.GlyphrStudio = new GlyphrStudioApp();
     window.GlyphrStudio.start();
+    console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\nv' + window.GlyphrStudio.versionNum + '\n\n', 'color:rgb(0,170,225)');
 }
 
 

@@ -76,7 +76,7 @@
 
     function multiSelectDetails() {
         let sc = _UI.multiSelect.shapes.getGlyph();
-        let svc = _GP.projectSettings.spinnervaluechange*1 || 1;
+        let svc = getCurrentProject().projectSettings.spinnervaluechange*1 || 1;
         let content = '';
 
         content += '<tr>'+
@@ -115,7 +115,7 @@
 
     function glyphDetails(s) {
         let sc = getSelectedWorkItem();
-        let svc = _GP.projectSettings.spinnervaluechange*1 || 1;
+        let svc = getCurrentProject().projectSettings.spinnervaluechange*1 || 1;
         // sc.calcMaxes();
         let content = '';
         let numshapes = getSelectedWorkItemShapes().length;
@@ -191,13 +191,13 @@
                     '&emsp;';
 
                     if (sc.leftSideBearing) {
-                        if (sc.leftSideBearing === true) sc.leftSideBearing = _GP.projectSettings.defaultLSB;
+                        if (sc.leftSideBearing === true) sc.leftSideBearing = getCurrentProject().projectSettings.defaultLSB;
                         content += '<input type="number" id="charlsb" step="'+svc+'" '+
                         'value="' + sc.leftSideBearing + '" '+
                         'onchange="_UI.focusElement=this.id; getSelectedWorkItem().leftSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
                     } else {
                         content +='<input type="number" disabled="disabled" '+
-                        'value="'+ round(_GP.projectSettings.defaultLSB, 3) + '"/>';
+                        'value="'+ round(getCurrentProject().projectSettings.defaultLSB, 3) + '"/>';
                     }
             content += '</td>'+
             '</tr>';
@@ -215,13 +215,13 @@
                     '&emsp;';
 
                     if (sc.rightSideBearing) {
-                        if (sc.rightSideBearing === true) sc.rightSideBearing = _GP.projectSettings.defaultRSB;
+                        if (sc.rightSideBearing === true) sc.rightSideBearing = getCurrentProject().projectSettings.defaultRSB;
                         content += '<input type="number" id="charrsb" step="'+svc+'" '+
                         'value="' + sc.rightSideBearing + '" '+
                         'onchange="_UI.focusElement=this.id; getSelectedWorkItem().rightSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
                     } else {
                         content += '<input type="number" disabled="disabled" '+
-                        'value="'+round(_GP.projectSettings.defaultRSB, 3) + '"/>';
+                        'value="'+round(getCurrentProject().projectSettings.defaultRSB, 3) + '"/>';
                     }
             content += '</td>'+
             '</tr>';
@@ -240,7 +240,7 @@
 
     function shapeDetails(s) {
         // debug("SHAPEDETAILS - Drawing Shape Details");
-        let svc = _GP.projectSettings.spinnervaluechange*1 || 1;
+        let svc = getCurrentProject().projectSettings.spinnervaluechange*1 || 1;
         let content = '';
         content += '<tr><td colspan=2 class="detailtitle"><h3 style="margin:0px;">shape</h3></td></tr>';
 
@@ -339,7 +339,7 @@
     }
 
     function pointDetails(tp) {
-        let svc = _GP.projectSettings.spinnervaluechange*1 || 1;
+        let svc = getCurrentProject().projectSettings.spinnervaluechange*1 || 1;
         let content = '';
 
         // POINT

@@ -47,7 +47,7 @@ function cloneAndFlattenGlyph(gid) {
  * Shows the Add Component dialog
  */
 function showDialogAddComponent() {
-    let show = countObjectKeys(_GP.components)? 'components' : 'glyphs';
+    let show = countObjectKeys(getCurrentProject().components)? 'components' : 'glyphs';
     _UI.glyphChooser.dialog = {
         'fname': 'addComponent',
         'choices': 'all',

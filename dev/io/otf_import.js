@@ -168,7 +168,7 @@ import {getGlyph} from '../app/globalgetters.js';
                 if (1*uni > _UI.glyphrange.latinextendedb.end) customglyphrange.push(uni);
 
                 fc[uni] = new Glyph({'shapes': newshapes, 'glyphhex': uni, 'glyphWidth': adv, 'isAutoWide': isAutoWide});
-                if (getUnicodeName(uni) === '[name not found]') _GP.projectSettings.glyphrange.filternoncharpoints = false;
+                if (getUnicodeName(uni) === '[name not found]') getCurrentProject().projectSettings.glyphrange.filternoncharpoints = false;
 
 
                 // Successfull loop, advance c
@@ -235,9 +235,9 @@ import {getGlyph} from '../app/globalgetters.js';
 
         function finalizeFontImport() {
             // debug('\n finalizeFontImport - START');
-            _GP.glyphs = fc;
-            _GP.ligatures = fl;
-            _GP.kerning = fk;
+            getCurrentProject().glyphs = fc;
+            getCurrentProject().ligatures = fl;
+            getCurrentProject().kerning = fk;
 
             let rstart, rend;
             for (let r in _UI.glyphrange) {
@@ -246,7 +246,7 @@ import {getGlyph} from '../app/globalgetters.js';
                 rend = 1*_UI.glyphrange[r].end+1;
                 for (let t=rstart; t<rend; t++) {
                     if (getGlyph(''+decToHex(t))) {
-                        _GP.projectSettings.glyphrange[r] = true;
+                        getCurrentProject().projectSettings.glyphrange[r] = true;
                         break;
                     }
                 }
@@ -257,7 +257,7 @@ import {getGlyph} from '../app/globalgetters.js';
             // debug('\t customglyphrange.length ' + customglyphrange.length);
 
             if (customglyphrange.length) {
-                let ranges = _GP.projectSettings.glyphrange.custom;
+                let ranges = getCurrentProject().projectSettings.glyphrange.custom;
                 let maxvalley = 50;
                 let maxrange = 100;
                 customglyphrange = customglyphrange.sort();
@@ -291,8 +291,8 @@ import {getGlyph} from '../app/globalgetters.js';
             // Check to make sure certain stuff is there
             // space has horiz-adv-x
             // debug('\t Custom range stuff done');
-            let ps = _GP.projectSettings;
-            let md = _GP.metadata;
+            let ps = getCurrentProject().projectSettings;
+            let md = getCurrentProject().metadata;
             let fname = font.familyName || 'My Font';
 
             ps.name = fname;

@@ -9,7 +9,7 @@ import {getGlyphType} from '../app/globalgetters.js';
 
     function loadPage_globalactions() {
         // debug("LOADING PAGE >> loadPage_globalactions");
-        let ps = _GP.projectSettings;
+        let ps = getCurrentProject().projectSettings;
 
         let con = '<h1 class="pagetitle">Global Actions</h1><div class="pagecontent textpage">';
 
@@ -179,7 +179,7 @@ import {getGlyphType} from '../app/globalgetters.js';
 
         showToast('Starting to assemble Diacritical Glyphs', 10000);
 
-        _GP.projectSettings.glyphrange.latinsupplement = true;
+        getCurrentProject().projectSettings.glyphrange.latinsupplement = true;
 
         setTimeout(doOneGlyph, 500);
     }
@@ -245,22 +245,22 @@ import {getGlyphType} from '../app/globalgetters.js';
 
         function makeGlyphList() {
             // Components
-            for (let com in _GP.components) {
-                if (_GP.components.hasOwnProperty(com)) {
+            for (let com in getCurrentProject().components) {
+                if (getCurrentProject().components.hasOwnProperty(com)) {
                     if (filter(com)) glyphlist.push(com);
                 }
             }
 
             // Ligatures
-            for (let lig in _GP.ligatures) {
-                if (_GP.ligatures.hasOwnProperty(lig)) {
+            for (let lig in getCurrentProject().ligatures) {
+                if (getCurrentProject().ligatures.hasOwnProperty(lig)) {
                     if (filter(lig)) glyphlist.push(lig);
                 }
             }
 
             // Glyphs
-            for (let gly in _GP.glyphs) {
-                if (_GP.glyphs.hasOwnProperty(gly)) {
+            for (let gly in getCurrentProject().glyphs) {
+                if (getCurrentProject().glyphs.hasOwnProperty(gly)) {
                     if (filter(gly)) glyphlist.push(gly);
                 }
             }

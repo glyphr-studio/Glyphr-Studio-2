@@ -262,7 +262,7 @@ export default class ProjectEditor {
      */
     saveGlyphrProjectFile(overwrite) {
         // debug('SAVEGLYPHRPROJECTVILE');
-        // debug('\t ' + _GP.projectSettings.formatsavefile);
+        // debug('\t ' + getCurrentProject().projectSettings.formatsavefile);
 
         // desktop overwrite / save as logic
         if (window && window.process && window.process.type) {
@@ -275,11 +275,11 @@ export default class ProjectEditor {
 
         let savedata = cloneForSaveData(_GP);
 
-        if (_GP.projectSettings.formatsavefile) savedata = json(savedata);
+        if (getCurrentProject().projectSettings.formatsavefile) savedata = json(savedata);
         else savedata = JSON.stringify(savedata);
 
         // debug('saveGlyphrProjectFile - \n'+savedata);
-        let fname = _GP.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
+        let fname = getCurrentProject().projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
 
         saveFile(fname, savedata);
 
@@ -326,7 +326,7 @@ export default class ProjectEditor {
      * @returns {*}
      */
     glyphRangeIterator(fname) {
-        let cr = _GP.projectSettings.glyphrange;
+        let cr = getCurrentProject().projectSettings.glyphrange;
         let ccon = '';
         // var count = 0;
 
@@ -383,7 +383,7 @@ export default class ProjectEditor {
         glyphRangeIterator(function(hexID) {
             fm.numberOfGlyphs++;
             fm.maxGlyph = Math.max(fm.maxGlyph, hexID);
-            let cm = _GP.glyphs[hexID];
+            let cm = getCurrentProject().glyphs[hexID];
             if (cm) {
                 cm = cm.maxes;
                 fm.maxes.xMax = Math.max(cm.xMax, fm.maxes.xMax);
@@ -394,7 +394,7 @@ export default class ProjectEditor {
         });
 
         // var proportion = (fm.yMax / (fm.yMax-fm.yMin));
-        // var total = fm.yMax + Math.abs(fm.yMin) + _GP.projectSettings.lineGap;
+        // var total = fm.yMax + Math.abs(fm.yMin) + getCurrentProject().projectSettings.lineGap;
         // fm.hhea_ascent = round(total*proportion);
         // fm.hhea_descent = (fm.hhea_ascent - total);
 

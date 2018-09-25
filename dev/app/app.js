@@ -1,3 +1,7 @@
+import {colors} from './colors.js';
+import GlyphrStudioProject from '../project/glyphr_studio_project.js';
+import ProjectEditor from '../project/project_editor.js';
+
 /**
  * Creates a new Glyphr Studio Application
  */
@@ -13,6 +17,8 @@ export default class GlyphrStudioApp {
 
         this.projectEditors = [];
         this.selectedProjectEditor = 0;
+
+        this.settings = {};
     }
 
     /**
@@ -20,25 +26,25 @@ export default class GlyphrStudioApp {
      */
     start() {
         // Navigate
-        if (_UI.devMode) {
-            // debug('\t >>> DEV NAV - to ' + _UI.dev_currentPage);
+        if (this.settings.devMode) {
+            // debug('\t >>> DEV NAV - to ' + this.settings.dev_currentPage);
             document.title = '░▒▓█ GSDEVMODE █▓▒░';
 
-            if (_UI.dev_sampleProject) {
+            if (this.settings.dev_sampleProject) {
                 // debug('\t >>> Using sample project');
-                _UI.droppedFileContent = JSON.stringify(_UI.sampleproject[_UI.dev_sampleProject]);
+                this.settings.droppedFileContent = JSON.stringify(this.settings.sampleproject[this.settings.dev_sampleProject]);
                 importGlyphrProjectFromText();
-                _UI.dev_sampleProject = false;
+                this.settings.dev_sampleProject = false;
             } else {
                 newGlyphrStudioProject();
             }
 
-            if (_UI.dev_currentPage === 'import svg') {
-                _UI.importSVG.scale = false;
-                _UI.importSVG.move = false;
+            if (this.settings.dev_currentPage === 'import svg') {
+                this.settings.importSVG.scale = false;
+                this.settings.importSVG.move = false;
             }
 
-            navigate({page: (_UI.dev_currentPage || 'openproject'), panel: _UI.dev_currentPanel});
+            navigate({page: (this.settings.dev_currentPage || 'openproject'), panel: this.settings.dev_currentPanel});
         } else {
             _DEV = {};
         }
@@ -58,7 +64,7 @@ export default class GlyphrStudioApp {
         }
         /* eslint-enable */
 
-        if (!_UI.devMode && _UI.telemetry) {
+        if (!this.settings.devMode && this.settings.telemetry) {
             try {
                 setupga(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
                 ga('create', 'UA-71021902-1', 'auto');
@@ -70,10 +76,35 @@ export default class GlyphrStudioApp {
 
         navigate();
 
-        if (_UI.devMode) _UI.testOnLoad();
+        if (this.settings.devMode) this.settings.testOnLoad();
 
         // debug(' MAIN SETUP - END\n');
     }
+
+    /**
+     * Returns the project that is currently being edited
+     * @returns {GlyphrStudioProject}
+     */
+    getCurrentProject() {
+        return this.getCurrentProjectEditor().project;
+    }
+
+    /**
+     * Returns the current Project Editor
+     * @returns {ProjectEditor}
+     */
+    getCurrentProjectEditor() {
+        if (!this.projectEditors[this.selectedProjectEditor]) {
+            this.projectEditors[this.selectedProjectEditor] = new ProjectEditor();
+        }
+
+        return this.projectEditors[this.selectedProjectEditor];
+    }
+
+
+    // --------------------------------------------------------------
+    // OTHER STUFF
+    // --------------------------------------------------------------
 
     /**
      * Global DOM elements that other UI relies on
@@ -87,17 +118,17 @@ export default class GlyphrStudioApp {
                 <div class="closeFormatFlyout" onclick="closeDialog();">&times</div>
 
                 <button onclick="closeDialog(); showToast('Saving Glyphr Studio Project file...'); setTimeout(saveGlyphrProjectFile, 500);">
-                    ${makeIcon({'name': 'button_npNav', 'width': 32, 'height': 32, 'size': 50, 'color': _UI.colors.blue.l95, 'hovercolor': false})}
+                    ${makeIcon({'name': 'button_npNav', 'width': 32, 'height': 32, 'size': 50, 'color': colors.blue.l95, 'hovercolor': false})}
                     <span>Glyphr Studio Project File</span>
                 </button>
 
                 <button onclick="closeDialog(); showToast('Exporting OTF font file...'); setTimeout(ioOTF_exportOTFfont, 500);">
-                    ${makeIcon({'name': 'nav_exportotf', 'width': 32, 'height': 32, 'size': 50, 'color': _UI.colors.blue.l95, 'hovercolor': false})}
+                    ${makeIcon({'name': 'nav_exportotf', 'width': 32, 'height': 32, 'size': 50, 'color': colors.blue.l95, 'hovercolor': false})}
                     <span>OTF Font</span>
                 </button>
 
                 <button onclick="closeDialog(); showToast('Exporting SVG font file...'); setTimeout(ioSVG_exportSVGfont, 500);">
-                    ${makeIcon({'name': 'nav_exportsvg', 'width': 32, 'height': 32, 'size': 50, 'color': _UI.colors.blue.l95, 'hovercolor': false})}
+                    ${makeIcon({'name': 'nav_exportsvg', 'width': 32, 'height': 32, 'size': 50, 'color': colors.blue.l95, 'hovercolor': false})}
                     <span>SVG Font</span>
                 </button>
 
@@ -122,8 +153,12 @@ export default class GlyphrStudioApp {
         `;
 
         window.onBeforeUnload = function() {
+            let project = getCurrentProjectEditor();
             popIn();
-            if (_GP && _GP.projectSettings.stopPageNavigation && _UI.stopPageNavigation && !_UI.devMode) {
+            if (project &&
+                project.projectSettings.stopPageNavigation &&
+                this.settings.stopPageNavigation &&
+                !this.settings.devMode) {
                 return '\n\nOh Noes!\nUnless you specifically saved your Glyphr Project, all your progress will be lost.\n\n';
             } else {
                 return;

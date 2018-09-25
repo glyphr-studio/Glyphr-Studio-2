@@ -176,7 +176,7 @@
         if (!tempchar) return;
 
         // Flip and Scale
-        let mid = _GP.projectSettings.ascent / 2;
+        let mid = getCurrentProject().projectSettings.ascent / 2;
         // debug('\t Flipping tempchar about ' + mid);
         tempchar.flipNS(mid);
         // debug('\t >><< AFTER FLIPNS');
@@ -184,7 +184,7 @@
 
         // debug("IMPORTSVG_IMPORTCODE - scale / move " + so.scale + " / " + so.move);
         let so = _UI.importSVG;
-        let gp = _GP.projectSettings;
+        let gp = getCurrentProject().projectSettings;
 
         if (so.scale || so.move) {
             let chartop = gp.xheight*1;

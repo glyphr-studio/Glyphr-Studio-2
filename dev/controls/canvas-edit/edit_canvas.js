@@ -209,7 +209,7 @@ export default redraw;
         let ctxg = '<div class="contextglyphsarea">';
         ctxg += '<div id="contextglyphsoptions">';
         ctxg += '<b>Context Glyphs</b> are letters you can display around the glyph you are currently editing.<br><br>';
-        ctxg += checkUI('_GP.projectSettings.showcontextglyphguides', _GP.projectSettings.showcontextglyphguides, true);
+        ctxg += checkUI('getCurrentProject().projectSettings.showcontextglyphguides', getCurrentProject().projectSettings.showcontextglyphguides, true);
         ctxg += '<label style="margin-left:10px; position:relative; top:-6px;" for="showcontextglyphguides">show guides</label><br>';
         ctxg += 'glyph ' + sliderUI('contextglyphtransparency', 'contextglyphtransparency_dropdown', true, false);
         ctxg += '<br/>';
@@ -249,7 +249,7 @@ export default redraw;
         if (onkern) toolcontent += kern;
         if (onglyph || onlig) toolcontent += ctxg;
 
-        if (_GP.projectSettings.showkeyboardtipsicon) utilitiescontent += kbt;
+        if (getCurrentProject().projectSettings.showkeyboardtipsicon) utilitiescontent += kbt;
 
         getEditDocument().getElementById('toolsarea_upperleft').innerHTML = toolcontent;
         getEditDocument().getElementById('toolsarea_upperright').innerHTML = viewcontent;
@@ -433,7 +433,7 @@ export default redraw;
             con += makeKeyboardShortcutsTable();
 
             con += '<table><tr><td style="vertical-align:top; padding:20px 10px 0px 0px;">'+
-                checkUI('_GP.projectSettings.showkeyboardtipsicon', _GP.projectSettings.showkeyboardtipsicon)+
+                checkUI('getCurrentProject().projectSettings.showkeyboardtipsicon', getCurrentProject().projectSettings.showkeyboardtipsicon)+
             '</td><td style="vertical-align:top; padding:20px 10px 0px 0px;">'+
                 '<label style="position:relative; top:-5px;" for="showkeyboardtipsicon">show the &nbsp;<span style="position:relative; top:6px;">'+makeIcon({'name': 'keyboard', 'size': 50, 'width': 22, 'height': 22, 'color': 'rgb(76, 81, 86)', 'hovercolor': 'rgb(76, 81, 86)'})+'</span>&nbsp; button on the edit canvas</label>'+
             '</td></tr></table>';
@@ -478,7 +478,7 @@ export default redraw;
             <span class='arrow'>&#x21E6;</span>
             <span class='arrow'>&#x21E9;</span>
             <span class='arrow' style='margin-right:4px;'>&#x21E8;</span>
-            </td><td>nudges the selected shape<br>or point ${_GP.projectSettings.spinnervaluechange} em units</td></tr>
+            </td><td>nudges the selected shape<br>or point ${getCurrentProject().projectSettings.spinnervaluechange} em units</td></tr>
             </table>
 
         </td><td style='padding-left:40px;'>
@@ -594,7 +594,7 @@ export default redraw;
                 advanceWidth += g.getAdvanceWidth();
                 if (a[i+1]) advanceWidth += calculateKernOffset(v, a[i+1]);
             } else {
-                advanceWidth += _GP.projectSettings.upm*1 / 2;
+                advanceWidth += getCurrentProject().projectSettings.upm*1 / 2;
             }
         });
 
@@ -602,7 +602,7 @@ export default redraw;
     }
 
     function drawContextGlyphLeftLineExtras(char, seq) {
-        let alpha = transparencyToAlpha(_GP.projectSettings.colors.systemguidetransparency);
+        let alpha = transparencyToAlpha(getCurrentProject().projectSettings.colors.systemguidetransparency);
         let color = getColorFromRGBA('rgb(204,81,0)', alpha);
         drawVerticalLine((char.view.dx*char.view.dz), false, color);
 
@@ -614,7 +614,7 @@ export default redraw;
             kern *= -1;
             let rightx = selwi.isAutoWide? kern-selwi.lsb : kern;
             rightx = v.dx + (rightx * v.dz);
-            let texty = sYcY(_GP.projectSettings.descent-60);
+            let texty = sYcY(getCurrentProject().projectSettings.descent-60);
 
             drawGlyphKernExtra(-kern, rightx, texty, v.dz);
         }
@@ -629,7 +629,7 @@ export default redraw;
             let rightx = selwi.getAdvanceWidth();
             if (selwi.isAutoWide) rightx -= selwi.lsb;
             rightx = v.dx + (rightx * v.dz);
-            let texty = sYcY(_GP.projectSettings.descent-60);
+            let texty = sYcY(getCurrentProject().projectSettings.descent-60);
 
             drawGlyphKernExtra(kern, rightx, texty, v.dz);
         }
@@ -647,7 +647,7 @@ export default redraw;
         // \n`);
         // debug(char.glyph);
 
-        let ps = _GP.projectSettings;
+        let ps = getCurrentProject().projectSettings;
         let alpha = transparencyToAlpha(ps.colors.systemguidetransparency);
 
         if (ps.showcontextglyphguides && alpha) {
@@ -657,7 +657,7 @@ export default redraw;
             let currx = (char.view.dx*view.dz);
             let rightx = currx + advanceWidth;
             let color = getColorFromRGBA('rgb(204,81,0)', alpha);
-            let texty = sYcY(_GP.projectSettings.descent-60);
+            let texty = sYcY(getCurrentProject().projectSettings.descent-60);
 
 
             // Draw the glyph name
@@ -715,10 +715,10 @@ export default redraw;
     }
 
     function drawGlyphKernExtra(kern, rightx, topy, scale) {
-        let desc = _GP.projectSettings.descent;
+        let desc = getCurrentProject().projectSettings.descent;
         let ctx = _UI.glyphEditCTX;
         let offset = 40;
-        let color = getColorFromRGBA('rgb(255,0,255)', transparencyToAlpha(_GP.projectSettings.colors.systemguidetransparency));
+        let color = getColorFromRGBA('rgb(255,0,255)', transparencyToAlpha(getCurrentProject().projectSettings.colors.systemguidetransparency));
         let barheight = Math.max((scale * 10), 1);
 
         ctx.font = '12px tahoma, verdana, sans-serif';
@@ -762,7 +762,7 @@ export default redraw;
         let c = char.view;
 
         if (!char.glyph) return;
-        char.glyph.drawGlyph(_UI.glyphEditCTX, {dx: (c.dx*c.dz), dy: v.dy, dz: c.dz}, transparencyToAlpha(_GP.projectSettings.colors.contextglyphtransparency), true);
+        char.glyph.drawGlyph(_UI.glyphEditCTX, {dx: (c.dx*c.dz), dy: v.dy, dz: c.dz}, transparencyToAlpha(getCurrentProject().projectSettings.colors.contextglyphtransparency), true);
 
         // debug(' drawContextGlyph - END\n');
     }
@@ -860,7 +860,7 @@ export default redraw;
         let ctx = _UI.glyphEditCTX;
         // debug(`\t ${hs}`);
         if (hs) {
-            let t = (_GP.projectSettings.colors.systemguidetransparency);
+            let t = (getCurrentProject().projectSettings.colors.systemguidetransparency);
             // var t2 = (((100 - t) / 2) + t);
             let alpha = transparencyToAlpha(t);
             let rgb = getColorFromRGBA('rgb(204,81,0)', alpha);
@@ -950,11 +950,11 @@ export default redraw;
     }
 
     function resetThumbView() {
-        let zoom = ((_UI.thumbSize-(2*_UI.thumbGutter))/(_GP.projectSettings.upm));
+        let zoom = ((_UI.thumbSize-(2*_UI.thumbGutter))/(getCurrentProject().projectSettings.upm));
 
         _UI.thumbView = {
             'dx': _UI.thumbGutter,
-            'dy': (_UI.thumbGutter+(_GP.projectSettings.ascent*zoom)),
+            'dy': (_UI.thumbGutter+(getCurrentProject().projectSettings.ascent*zoom)),
             'dz': zoom,
         };
 
@@ -962,7 +962,7 @@ export default redraw;
     }
 
     function calculateDefaultView() {
-        let ps = _GP.projectSettings;
+        let ps = getCurrentProject().projectSettings;
 
         let xpadding = 80;
         let ypadding = 80; // Height of the UI across the top
@@ -986,7 +986,7 @@ export default redraw;
 
     function fitViewToContextGlyphs(dontzoom) {
         // debug('\n fitViewToContextGlyphs - START');
-        let ps = _GP.projectSettings;
+        let ps = getCurrentProject().projectSettings;
 
         let xpadding = 80;
         let ypadding = 80; // Height of the UI across the top
@@ -1071,21 +1071,21 @@ export default redraw;
         let nph = _UI.currentPanel;
 
         if (_UI.currentPage === 'ligatures') {
-            len = countObjectKeys(_GP.ligatures);
+            len = countObjectKeys(getCurrentProject().ligatures);
             if (!len) {
                 _UI.selectedLigature = false;
                 if (nph !== 'npNav') nph = 'npChooser';
                 return false;
             }
         } else if (_UI.currentPage === 'components') {
-            len = countObjectKeys(_GP.components);
+            len = countObjectKeys(getCurrentProject().components);
             if (!len) {
                 _UI.selectedComponent = false;
                 if (nph !== 'npNav') nph = 'npChooser';
                 return false;
             }
         } else if (_UI.currentPage === 'kerning') {
-            len = countObjectKeys(_GP.kerning);
+            len = countObjectKeys(getCurrentProject().kerning);
             if (!len) {
                 _UI.selectedKern = false;
                 if (nph !== 'npNav') nph = 'npAttributes';
@@ -1122,8 +1122,8 @@ export default redraw;
                 return re;
             case 'kerning':
                 // debug('\t case KERN - selkern = ' + _UI.selectedKern);
-                if (!_UI.selectedKern) _UI.selectedKern = getFirstID(_GP.kerning);
-                re = _GP.kerning[_UI.selectedKern] || false;
+                if (!_UI.selectedKern) _UI.selectedKern = getFirstID(getCurrentProject().kerning);
+                re = getCurrentProject().kerning[_UI.selectedKern] || false;
                 // debug('\t case kerning, returning ' + re);
                 return re;
         }
@@ -1182,7 +1182,7 @@ export default redraw;
         markSelectedWorkItemAsChanged();
 
         if (!dontnavigate) {
-            // debug('\t selecting ' + _GP.glyphs[c].glyphhtml + ' and navigating.');
+            // debug('\t selecting ' + getCurrentProject().glyphs[c].glyphhtml + ' and navigating.');
             navigate({panel: 'npAttributes'});
         }
 
@@ -1197,7 +1197,7 @@ export default redraw;
         markSelectedWorkItemAsChanged();
 
         if (!dontnavigate) {
-            // debug('SELECTCOMPONENT: selecting ' + _GP.components[c].name + ' and navigating.');
+            // debug('SELECTCOMPONENT: selecting ' + getCurrentProject().components[c].name + ' and navigating.');
             navigate({panel: 'npAttributes'});
         }
     }
@@ -1210,7 +1210,7 @@ export default redraw;
         markSelectedWorkItemAsChanged();
 
         if (!dontnavigate) {
-            // debug('SELECTLIGATURE: selecting ' + _GP.ligatures[c].glyphhtml + ' and navigating.');
+            // debug('SELECTLIGATURE: selecting ' + getCurrentProject().ligatures[c].glyphhtml + ' and navigating.');
             navigate({panel: 'npAttributes'});
         }
     }
@@ -1241,7 +1241,7 @@ export default redraw;
 
         accent = accent || _UI.colors.blue;
         thickness = thickness || 1;
-        let hp = (_GP.projectSettings.pointsize/2);
+        let hp = (getCurrentProject().projectSettings.pointsize/2);
         _UI.glyphEditCTX.strokeStyle = accent.l65;
         _UI.glyphEditCTX.fillStyle = 'transparent';
 
@@ -1456,14 +1456,14 @@ export default redraw;
     }
 
     function draw_SquareHandle(ul) {
-        let ps = _GP.projectSettings.pointsize;
+        let ps = getCurrentProject().projectSettings.pointsize;
         _UI.glyphEditCTX.fillRect(ul.x, ul.y, ps, ps);
         _UI.glyphEditCTX.strokeRect(ul.x, ul.y, ps, ps);
     }
 
     function draw_CircleHandle(center) {
         _UI.glyphEditCTX.beginPath();
-        _UI.glyphEditCTX.arc(center.x, center.y, (_GP.projectSettings.pointsize/2), 0, Math.PI*2, true);
+        _UI.glyphEditCTX.arc(center.x, center.y, (getCurrentProject().projectSettings.pointsize/2), 0, Math.PI*2, true);
         _UI.glyphEditCTX.closePath();
         _UI.glyphEditCTX.fill();
         _UI.glyphEditCTX.stroke();
@@ -1475,7 +1475,7 @@ export default redraw;
         // debug('\t maxes - ' + json(maxes, true));
 
         if (!maxes) return false;
-        let ps = _GP.projectSettings.pointsize;
+        let ps = getCurrentProject().projectSettings.pointsize;
         let bb = getBoundingBoxHandleDimensions(maxes, thickness);
 
         // debug('\t point size - ' + ps);
@@ -1544,7 +1544,7 @@ export default redraw;
 
     function getBoundingBoxHandleDimensions(maxes, thickness) {
         let dimensions = {};
-        let hp = _GP.projectSettings.pointsize/2;
+        let hp = getCurrentProject().projectSettings.pointsize/2;
         thickness = thickness || 1;
 
         // Translation Fidelity - converting passed canvas values to saved value system
@@ -1589,10 +1589,10 @@ export default redraw;
         _UI.glyphEditCTX.fillRect(xs.xMin, xs.yMin, xs.xMax-xs.xMin, xs.yMax-xs.yMin);
 
         if (_UI.showGrid) {
-            let ps = _GP.projectSettings;
+            let ps = getCurrentProject().projectSettings;
             let v = getView('grid');
             let gsize = ((ps.upm/ps.griddivisions)*v.dz);
-            let gridcolor = getColorFromRGBA('rgb(170,170,170)', transparencyToAlpha(_GP.projectSettings.colors.gridtransparency));
+            let gridcolor = getColorFromRGBA('rgb(170,170,170)', transparencyToAlpha(getCurrentProject().projectSettings.colors.gridtransparency));
             _UI.glyphEditCTX.lineWidth = 1;
 
             if (gsize > 0 && gsize < _UI.glyphEditCanvasSize) {
@@ -1650,7 +1650,7 @@ export default redraw;
 
         if (!getSelectedWorkItemID()) return;
 
-        let ps = _GP.projectSettings;
+        let ps = getCurrentProject().projectSettings;
         let onglyphedit = (_UI.currentPage === 'glyph edit' || _UI.currentPage === 'ligatures');
         let onkern = (_UI.currentPage === 'kerning');
         // debug('\t ps.guides: ');

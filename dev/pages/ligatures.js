@@ -18,7 +18,7 @@
             _UI.dev_selectedShape = false;
         }
 
-        _UI.selectedLigature = _UI.selectedLigature || getFirstID(_GP.ligatures);
+        _UI.selectedLigature = _UI.selectedLigature || getFirstID(getCurrentProject().ligatures);
 
         if (getSelectedWorkItemShapes().length > 0) _UI.selectedTool = 'pathedit';
         else _UI.selectedTool = 'pathaddpoint';
@@ -57,7 +57,7 @@
 
         // debug('\t parsed ' + lid);
 
-        let lig = _GP.ligatures;
+        let lig = getCurrentProject().ligatures;
 
         if (lig[lid]) {
             showErrorMessageBox('Ligature allready exists.');
@@ -81,14 +81,14 @@
         let ffi = parseUnicodeInput('ffi').join('');
         let ffl = parseUnicodeInput('ffl').join('');
 
-        if (!_GP.ligatures[ff]) _GP.ligatures[ff] = new Glyph({'glyphhex': ff});
-        if (!_GP.ligatures[fi]) _GP.ligatures[fi] = new Glyph({'glyphhex': fi});
-        if (!_GP.ligatures[fl]) _GP.ligatures[fl] = new Glyph({'glyphhex': fl});
-        if (!_GP.ligatures[ft]) _GP.ligatures[fl] = new Glyph({'glyphhex': ft});
-        if (!_GP.ligatures[ffi]) _GP.ligatures[ffi] = new Glyph({'glyphhex': ffi});
-        if (!_GP.ligatures[ffl]) _GP.ligatures[ffl] = new Glyph({'glyphhex': ffl});
+        if (!getCurrentProject().ligatures[ff]) getCurrentProject().ligatures[ff] = new Glyph({'glyphhex': ff});
+        if (!getCurrentProject().ligatures[fi]) getCurrentProject().ligatures[fi] = new Glyph({'glyphhex': fi});
+        if (!getCurrentProject().ligatures[fl]) getCurrentProject().ligatures[fl] = new Glyph({'glyphhex': fl});
+        if (!getCurrentProject().ligatures[ft]) getCurrentProject().ligatures[fl] = new Glyph({'glyphhex': ft});
+        if (!getCurrentProject().ligatures[ffi]) getCurrentProject().ligatures[ffi] = new Glyph({'glyphhex': ffi});
+        if (!getCurrentProject().ligatures[ffl]) getCurrentProject().ligatures[ffl] = new Glyph({'glyphhex': ffl});
 
-        _UI.selectedGlyph = getFirstID(_GP.ligatures);
+        _UI.selectedGlyph = getFirstID(getCurrentProject().ligatures);
         redraw({calledBy: 'addCommonLigatures'});
     }
 
@@ -124,12 +124,12 @@
 
         // Delete it
         let oldname = getSelectedWorkItemName();
-        delete _GP.ligatures[_UI.selectedLigature];
-        _UI.selectedLigature = getFirstID(_GP.ligatures);
+        delete getCurrentProject().ligatures[_UI.selectedLigature];
+        _UI.selectedLigature = getFirstID(getCurrentProject().ligatures);
 
         // history_put('Deleted ' + oldname);
 
-        // debug('\t after delete ' + _GP.ligatures);
+        // debug('\t after delete ' + getCurrentProject().ligatures);
         redraw({calledBy: 'deleteLigature'});
 
         // debug('deleteLigature - END\n');
@@ -139,9 +139,9 @@
         let temp;
         let sortarr = [];
 
-        for (let n in _GP.ligatures) {
- if (_GP.ligatures.hasOwnProperty(n)) {
-            temp = _GP.ligatures[n];
+        for (let n in getCurrentProject().ligatures) {
+ if (getCurrentProject().ligatures.hasOwnProperty(n)) {
+            temp = getCurrentProject().ligatures[n];
             sortarr.push({'id': n, 'ligature': temp});
         }
 }
@@ -157,11 +157,11 @@
             } else return 0;
         });
 
-        _GP.ligatures = {};
+        getCurrentProject().ligatures = {};
 
         for (let s=0; s<sortarr.length; s++) {
             temp = sortarr[s];
-            _GP.ligatures[temp.id] = temp.ligature;
+            getCurrentProject().ligatures[temp.id] = temp.ligature;
         }
 
         return sortarr;

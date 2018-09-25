@@ -8,8 +8,8 @@
 
     function ioSVG_exportSVGfont() {
         // debug('\n ioSVG_exportSVGfont - Start');
-        let ps = _GP.projectSettings;
-        let md = _GP.metadata;
+        let ps = getCurrentProject().projectSettings;
+        let md = getCurrentProject().metadata;
         let family = md.font_family;
         let familyid = family.replace(/ /g, '_');
         let timestamp = makeDateStampSuffix();
@@ -74,8 +74,8 @@
         // debug('\n ioSVG_makeFontFace - START');
         calcFontMaxes();
         let t = '\t\t\t\t';
-        let md = _GP.metadata;
-        let ps = _GP.projectSettings;
+        let md = getCurrentProject().metadata;
+        let ps = getCurrentProject().projectSettings;
         let fm = _UI.fontMetrics;
         let con = '';
 
@@ -111,7 +111,7 @@ if (md.hasOwnProperty(d)) {
     function ioSVG_makeMissingGlyph() {
         // debug('\n ioSVG_makeMissingGlyph - START');
         let con = '         ';
-        let gh = _GP.projectSettings.ascent;
+        let gh = getCurrentProject().projectSettings.ascent;
         let gw = round(gh * 0.618);
         let gt = round(gh/100);
 
@@ -129,11 +129,11 @@ if (md.hasOwnProperty(d)) {
 
         // <glyph glyph-name="uniFEDF_uniFEE0_uniFBAB.liga" unicode="&#xfedf;&#xfee0;&#xfbab;" horiz-adv-x="1262" d="M1224 5
 
-        let fc = _GP.glyphs;
+        let fc = getCurrentProject().glyphs;
         let con = '';
 
         sortLigatures();
-        let li = _GP.ligatures;
+        let li = getCurrentProject().ligatures;
         con += '\t\t\t<!-- Ligatures -->\n';
         for (let l in li) {
  if (li.hasOwnProperty(l)) {
@@ -175,7 +175,7 @@ if (md.hasOwnProperty(d)) {
         });
         uni = uni.join('');
 
-        if (_GP.projectSettings.combineshapesonexport) gl = new Glyph(gl).flattenGlyph().combineAllShapes(true);
+        if (getCurrentProject().projectSettings.combineshapesonexport) gl = new Glyph(gl).flattenGlyph().combineAllShapes(true);
         let pathdata = gl.svgPathData;
         pathdata = pathdata || 'M0,0Z';
 
@@ -189,7 +189,7 @@ if (md.hasOwnProperty(d)) {
 
     function ioSVG_makeAllKernPairs() {
         // debug('\n ioSVG_makeAllKernPairs - START');
-        let kp = _GP.kerning;
+        let kp = getCurrentProject().kerning;
         let con = '\t\t\t<!-- Kern Pairs -->\n';
 
         for (let k in kp) {

@@ -120,10 +120,10 @@
         }
 
         if ((isCtrlDown) && kc==='a') {
-            for (let i in _GP.s) {
-                if (!_GP.glyphs[i].getShapes) return;
+            for (let i in getCurrentProject().s) {
+                if (!getCurrentProject().glyphs[i].getShapes) return;
 
-                _GP.glyphs[i].getShapes().forEach(function(shape, i) {
+                getCurrentProject().glyphs[i].getShapes().forEach(function(shape, i) {
                     _UI.multiSelect.shapes.members.push(shape);
                     console.log(_UI.multiSelect.shapes.members);
                 });
@@ -265,8 +265,8 @@
 
         let multiplyer = _UI.eventhandlers.isShiftDown? 10 : 1;
 
-        let mx = (dx * _GP.projectSettings.spinnervaluechange * multiplyer);
-        let my = (dy * _GP.projectSettings.spinnervaluechange * multiplyer);
+        let mx = (dx * getCurrentProject().projectSettings.spinnervaluechange * multiplyer);
+        let my = (dy * getCurrentProject().projectSettings.spinnervaluechange * multiplyer);
         let em = getEditMode();
 
         if (em === 'kern') {

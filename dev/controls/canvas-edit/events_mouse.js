@@ -322,9 +322,9 @@ function Tool_NewBasicShape() {
         // prevent really small shapes
         let tnbs = _UI.eventhandlers.tempnewbasicshape;
 
-        if ( (Math.abs(tnbs.xMax-tnbs.xMin) > _GP.projectSettings.pointsize) &&
-            (Math.abs(tnbs.yMax-tnbs.yMin) > _GP.projectSettings.pointsize) ) {
-            let count = (_UI.currentPage === 'components')? (countObjectKeys(_GP.components)) : getSelectedWorkItemShapes().length;
+        if ( (Math.abs(tnbs.xMax-tnbs.xMin) > getCurrentProject().projectSettings.pointsize) &&
+            (Math.abs(tnbs.yMax-tnbs.yMin) > getCurrentProject().projectSettings.pointsize) ) {
+            let count = (_UI.currentPage === 'components')? (countObjectKeys(getCurrentProject().components)) : getSelectedWorkItemShapes().length;
             let s = _UI.multiSelect.shapes.getSingleton();
 
             if (_UI.selectedTool==='newrect') {
@@ -376,11 +376,11 @@ function Tool_NewPath() {
 
         if (this.firstpoint) {
             // make a new shape with the new pathpoint
-            let count = (_UI.currentPage === 'components')? (countObjectKeys(_GP.components)) : getSelectedWorkItemShapes().length;
+            let count = (_UI.currentPage === 'components')? (countObjectKeys(getCurrentProject().components)) : getSelectedWorkItemShapes().length;
             this.newshape = addShape(new Shape({'name': ('Shape '+count), 'path': new Path()}));
             this.currpt = this.newshape.path.addPathPoint(newpoint);
         } else if (this.newshape) {
-            let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
+            let targetSize = getCurrentProject().projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
             if (this.newshape.path.isOverFirstPoint(cXsX(eh.mousex), cYsY(eh.mousey), targetSize)) {
                 // clicked on an existing control point in this path
                 // if first point - close the path
@@ -415,12 +415,12 @@ function Tool_NewPath() {
 
     this.mousemove = function(ev) {
         let eh = _UI.eventhandlers;
-        let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
+        let targetSize = getCurrentProject().projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
 
         if (this.dragging) {
             // avoid really small handles
-            if ((Math.abs(this.currpt.p.x-cXsX(eh.mousex)) > (_GP.projectSettings.pointsize*2)) ||
-                (Math.abs(this.currpt.p.y-cYsY(eh.mousey)) > (_GP.projectSettings.pointsize*2)) ) {
+            if ((Math.abs(this.currpt.p.x-cXsX(eh.mousex)) > (getCurrentProject().projectSettings.pointsize*2)) ||
+                (Math.abs(this.currpt.p.y-cYsY(eh.mousey)) > (getCurrentProject().projectSettings.pointsize*2)) ) {
                 this.currpt.h1.use = true;
                 this.currpt.h2.use = true;
                 this.currpt.h2.x = cXsX(eh.mousex);
@@ -476,7 +476,7 @@ function Tool_PathEdit() {
         let eh = _UI.eventhandlers;
         eh.lastX = eh.mousex;
         eh.lastY = eh.mousey;
-        let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
+        let targetSize = getCurrentProject().projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
         this.controlpoint = getSelectedWorkItem().isOverControlPoint(cXsX(eh.mousex), cYsY(eh.mousey), targetSize, eh.multi);
         let s = getClickedShape(eh.mousex, eh.mousey);
 
@@ -568,7 +568,7 @@ function Tool_PathEdit() {
 
         checkForMouseOverHotspot(eh.mousex, eh.mousey);
 
-        let targetSize = _GP.projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
+        let targetSize = getCurrentProject().projectSettings.pointsize/getView('Event Handler Tool_PathEdit.mousedown').dz;
         let cp = _UI.multiSelect.shapes.isOverControlPoint(cXsX(eh.mousex), cYsY(eh.mousey), targetSize);
         if (cp.type === 'p') setCursor('penSquare');
         else if (_UI.multiSelect.points.isSelected(cp.point)) setCursor('penCircle');
@@ -638,7 +638,7 @@ function Tool_PathAddPoint() {
             let pt = singleshape.path.getClosestPointOnCurve({'x': cXsX(_UI.eventhandlers.mousex), 'y': cYsY(_UI.eventhandlers.mousey)});
             if (pt && pt.distance < 20) {
                 this.addpoint = pt;
-                let ptsize = _GP.projectSettings.pointsize;
+                let ptsize = getCurrentProject().projectSettings.pointsize;
                 let ptx = makeCrisp(sXcX(pt.x) - (ptsize/2));
                 let pty = makeCrisp(sYcY(pt.y) - (ptsize/2));
                 openNotation(('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3)), ptx, pty);

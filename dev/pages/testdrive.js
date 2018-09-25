@@ -37,7 +37,7 @@
             maxes: {
                 xMin: 10,
                 xMax: 790,
-                yMin: 10 + (_GP.projectSettings.ascent * td.fontScale),
+                yMin: 10 + (getCurrentProject().projectSettings.ascent * td.fontScale),
                 yMax: false,
             },
             scale: td.fontScale,
@@ -84,7 +84,7 @@
         _UI.redrawing = true;
 
         let td = _UI.testdrive;
-        let ps = _GP.projectSettings;
+        let ps = getCurrentProject().projectSettings;
 
         if (_UI.currentPanel === 'npAttributes') changefontscale(td.fontSize);
         document.getElementById('tdtextarea').value = td.sampleText;
@@ -103,7 +103,7 @@
         // debug('\n drawTestDrivePageExtras - START');
         let tdc = _UI.testdrive.canvas;
 
-        // var top = (maxes.yMin - (_GP.projectSettings.ascent * scale)) || 0;
+        // var top = (maxes.yMin - (getCurrentProject().projectSettings.ascent * scale)) || 0;
         let top = maxes.yMin || 0;
         let bottom = (maxes.yMax === Infinity)? tdc.height : (maxes.yMax || tdc.height);
         let left = maxes.xMin || 0;
@@ -144,8 +144,8 @@
         if (_UI.testdrive.showGlyphExtras) {
             let ctx = _UI.testdrive.ctx;
             let drawwidth = chardata.width * chardata.view.dz;
-            let drawheight = _GP.projectSettings.upm * chardata.view.dz;
-            let drawy = (chardata.view.dy - _GP.projectSettings.ascent) * chardata.view.dz;
+            let drawheight = getCurrentProject().projectSettings.upm * chardata.view.dz;
+            let drawy = (chardata.view.dy - getCurrentProject().projectSettings.ascent) * chardata.view.dz;
             let drawx = chardata.view.dx * chardata.view.dz;
             let drawk = chardata.kern * chardata.view.dz * -1;
 
@@ -254,8 +254,8 @@
     }
 
     function drawTDOptions() {
-        if (!_UI.testdrive.lineGap) _UI.testdrive.lineGap = _GP.projectSettings.lineGap;
-        if (!isVal(_UI.testdrive.padSize)) _UI.testdrive.padSize = _GP.projectSettings.defaultLSB;
+        if (!_UI.testdrive.lineGap) _UI.testdrive.lineGap = getCurrentProject().projectSettings.lineGap;
+        if (!isVal(_UI.testdrive.padSize)) _UI.testdrive.padSize = getCurrentProject().projectSettings.defaultLSB;
 
         let flattenmessage = '<h1>Combine Glyphs Shapes</h1>'+
             'In <a href=# onclick=navToProjectSettings()>Project Settings &rsaquo; Export Options</a> you have the option to combine all glyph shapes.<br>'+
@@ -292,12 +292,12 @@
         let td = _UI.testdrive;
 
         td.fontSize = newval*1;
-        td.fontScale = (newval/_GP.projectSettings.upm);
+        td.fontScale = (newval/getCurrentProject().projectSettings.upm);
         td.glyphSequence.setScale(td.fontScale);
         td.glyphSequence.setMaxes({
             xMin: 10,
             xMax: 790,
-            yMin: 10 + (_GP.projectSettings.ascent * td.fontScale),
+            yMin: 10 + (getCurrentProject().projectSettings.ascent * td.fontScale),
             yMax: false,
         });
         document.getElementById('roughptsize').value = (newval*0.75);

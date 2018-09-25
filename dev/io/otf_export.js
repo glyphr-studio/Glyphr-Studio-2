@@ -8,14 +8,14 @@
 
     function ioOTF_exportOTFfont() {
         // debug('\n ioOTF_exportOTFfont - START');
-        // debug('\t combineshapesonexport = ' + _GP.projectSettings.combineshapesonexport);
+        // debug('\t combineshapesonexport = ' + getCurrentProject().projectSettings.combineshapesonexport);
 
         function firstExportStep() {
             // debug('\n firstExportStep - START');
 
             // Add metadata
-            let md = _GP.metadata;
-            let ps = _GP.projectSettings;
+            let md = getCurrentProject().metadata;
+            let ps = getCurrentProject().projectSettings;
 
             options.unitsPerEm = ps.upm || 1000;
             options.ascender = ps.ascent || 0.00001;
@@ -40,8 +40,8 @@
 
             // Add Notdef
             let notdef = new Glyph({'name': 'notdef', 'shapes': JSON.parse(_UI.notDefGlyphShapes)});
-            if (_GP.upm !== 1000) {
-                let delta = _GP.upm / 1000;
+            if (getCurrentProject().upm !== 1000) {
+                let delta = getCurrentProject().upm / 1000;
                 notdef.updateGlyphSize(delta, delta, true);
             }
 
@@ -66,10 +66,10 @@
             // debug('\n populateExportList - START');
 
             // Add Glyphs and Ligatures
-            for (let c in _GP.glyphs) {
- if (_GP.glyphs.hasOwnProperty(c)) {
+            for (let c in getCurrentProject().glyphs) {
+ if (getCurrentProject().glyphs.hasOwnProperty(c)) {
                 if (parseInt(c)) {
-                    tg = new Glyph(clone(_GP.glyphs[c]));
+                    tg = new Glyph(clone(getCurrentProject().glyphs[c]));
                     exportarr.push({xg: tg, xc: c});
                 } else {
                     console.warn('Skipped exporting Glyph ' + c + ' - non-numeric key value.');
@@ -88,14 +88,14 @@
             // export this glyph
             let glyph = currexportglyph.xg;
             let num = currexportglyph.xc;
-            let comb = _GP.projectSettings.combineshapesonexport;
+            let comb = getCurrentProject().projectSettings.combineshapesonexport;
             let maxes = glyph.maxes;
 
             // debug('\t ' + glyph.name);
 
             showToast('Exporting<br>'+glyph.name, 999999);
 
-            if (comb && glyph.shapes.length <= _GP.projectSettings.maxcombineshapesonexport) glyph.combineAllShapes(true);
+            if (comb && glyph.shapes.length <= getCurrentProject().projectSettings.maxcombineshapesonexport) glyph.combineAllShapes(true);
 
             if (glyph.isAutoWide) glyph.updateGlyphPosition(glyph.lsb, 0);
 

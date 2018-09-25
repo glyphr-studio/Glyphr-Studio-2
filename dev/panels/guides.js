@@ -14,8 +14,8 @@
 
         let system = '';
         let user = '';
-        let guides = _GP.projectSettings.guides;
-        let ps = _GP.projectSettings;
+        let guides = getCurrentProject().projectSettings.guides;
+        let ps = getCurrentProject().projectSettings;
         let tg;
 
         for (let g in guides) {
@@ -23,9 +23,9 @@
             tg = guides[g];
 
             if (tg.editable) {
-                user += makeOneGuideRow(tg, ('_GP.projectSettings.guides.'+g), tg.visible, g);
+                user += makeOneGuideRow(tg, ('getCurrentProject().projectSettings.guides.'+g), tg.visible, g);
             } else if (tg.showname) {
-                system += makeOneGuideRow(tg, ('_GP.projectSettings.guides.'+g), tg.visible, g);
+                system += makeOneGuideRow(tg, ('getCurrentProject().projectSettings.guides.'+g), tg.visible, g);
             }
         }
 }
@@ -105,7 +105,7 @@
     }
 
     function updateGuide(id, key, value) {
-        let g = _GP.projectSettings.guides[id];
+        let g = getCurrentProject().projectSettings.guides[id];
         g[key] = value;
         if (key === 'type') {
             if (g.name === 'horizontal guide') g.name = 'vertical guide';
@@ -115,16 +115,16 @@
     }
 
     function deleteGuide(id) {
-        let g = _GP.projectSettings.guides[id];
+        let g = getCurrentProject().projectSettings.guides[id];
         showToast('Deleted ' + g.name);
 
-        delete _GP.projectSettings.guides[id];
+        delete getCurrentProject().projectSettings.guides[id];
         redraw({calledBy: 'deleteGuide'});
     }
 
     function showGuideSatChooser(ctx, id) {
         let sc = new SatChooser({clickCallback: function(args) {
-            _GP.projectSettings.guides[id].color = args.colorstring;
+            getCurrentProject().projectSettings.guides[id].color = args.colorstring;
             redraw({calledBy: 'SatChooser.callback'});
         }});
         sc.show({elem: ctx});
@@ -139,7 +139,7 @@
     }
 
     function newGuide() {
-        let g = _GP.projectSettings.guides;
+        let g = getCurrentProject().projectSettings.guides;
         let id = generateNewID(g, 'guide');
 
         g[id] = new Guide({});

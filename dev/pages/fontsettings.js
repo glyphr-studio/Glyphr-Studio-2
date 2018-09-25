@@ -8,44 +8,44 @@
     function loadPage_fontsettings() {
         // debug("LOADING PAGE >> loadPage_fontsettings");
         // SETTINGS
-        let ps = _GP.projectSettings;
-        let meta = _GP.metadata;
+        let ps = getCurrentProject().projectSettings;
+        let meta = getCurrentProject().metadata;
 
         let content = '<h1 class=\'pagetitle\'>Font Settings</h1><div class=\'pagecontent textpage\'>';
 
         content += '<h1>Font Name</h1>';
-        content += '<input type=\'text\' maxlength=31 style=\'width:300px; padding:8px; font-size:1.2em;\' value=\''+meta.font_family+'\' onchange=\'_GP.metadata.font_family = this.value.substr(0, 31);\'/><span class=\'unit\'>(max 31 characters)</span>';
+        content += '<input type=\'text\' maxlength=31 style=\'width:300px; padding:8px; font-size:1.2em;\' value=\''+meta.font_family+'\' onchange=\'getCurrentProject().metadata.font_family = this.value.substr(0, 31);\'/><span class=\'unit\'>(max 31 characters)</span>';
 
         content += '<h1>Glyph Proportions</h1>';
 
         content += '<h3>Key Metrics</h3>'+
                     '<table class=\'settingstable\'>'+
-                    '<tr><td>Ascent height: </td><td><input type=\'number\' value=\''+ps.ascent+'\' onchange=\'_GP.projectSettings.ascent = Math.abs(parseInt(this.value));\'></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
-                    '<tr><td>Cap height: </td><td><input type=\'number\' value=\''+ps.capheight+'\' onchange=\'_GP.projectSettings.capheight = Math.abs(parseInt(this.value));\'></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
-                    '<tr><td>x Height: </td><td><input type=\'number\' id=\'metric-xheight\' value=\''+ps.xheight+'\' onchange=\'_GP.projectSettings.xheight = Math.abs(parseInt(this.value));\'></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
-                    '<tr><td>Descent height: </td><td><input type=\'number\' id=\'metric-des\' value=\''+ps.descent+'\' onchange=\'_GP.projectSettings.descent = Math.abs(parseInt(this.value))*-1;\'/></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
-                    '<tr><td><b>Total Units per Em: </b></td><td><input type=\'number\' value=\''+ps.upm+'\' onchange=\'_GP.projectSettings.upm = Math.abs(parseInt(this.value));\'/></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
+                    '<tr><td>Ascent height: </td><td><input type=\'number\' value=\''+ps.ascent+'\' onchange=\'getCurrentProject().projectSettings.ascent = Math.abs(parseInt(this.value));\'></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
+                    '<tr><td>Cap height: </td><td><input type=\'number\' value=\''+ps.capheight+'\' onchange=\'getCurrentProject().projectSettings.capheight = Math.abs(parseInt(this.value));\'></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
+                    '<tr><td>x Height: </td><td><input type=\'number\' id=\'metric-xheight\' value=\''+ps.xheight+'\' onchange=\'getCurrentProject().projectSettings.xheight = Math.abs(parseInt(this.value));\'></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
+                    '<tr><td>Descent height: </td><td><input type=\'number\' id=\'metric-des\' value=\''+ps.descent+'\' onchange=\'getCurrentProject().projectSettings.descent = Math.abs(parseInt(this.value))*-1;\'/></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
+                    '<tr><td><b>Total Units per Em: </b></td><td><input type=\'number\' value=\''+ps.upm+'\' onchange=\'getCurrentProject().projectSettings.upm = Math.abs(parseInt(this.value));\'/></td><td><span class=\'unit\'>(em units)</span></td></tr>' +
                     '</table>';
 
         content += '<h3>Overshoot</h3>'+
                     'Round letters usually extend a little above the x height line and below the baseline. ' +
                     'A light guideline will show this overshoot distance.<br>' +
                     '<table class=\'settingstable\'>'+
-                    '<tr><td>Overshoot:</td><td><input type=\'number\' value=\''+ps.overshoot+'\' onchange=\'_GP.projectSettings.overshoot = this.value;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
+                    '<tr><td>Overshoot:</td><td><input type=\'number\' value=\''+ps.overshoot+'\' onchange=\'getCurrentProject().projectSettings.overshoot = this.value;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
                     '</table>';
 
                     /*
         content += "<h3>Line Gap</h3>" +
                     "This is the amount of vertical space between glyphs on separate lines. This is recomended to be 20% to 25% of the total Units per Em."+
                     "<table class='settingstable'>"+
-                    "<tr><td>Line Gap: </td><td><input type='number' value='"+ps.lineGap+"' onchange='_GP.projectSettings.lineGap = this.value;'></td><td><span class='unit'>(em units)</span></td></tr>"+
+                    "<tr><td>Line Gap: </td><td><input type='number' value='"+ps.lineGap+"' onchange='getCurrentProject().projectSettings.lineGap = this.value;'></td><td><span class='unit'>(em units)</span></td></tr>"+
                     "</table>";
 */
         content += '<h3>Default Side Bearings</h3>' +
                     'Side Bearings are the amount of blank space that is added to the left or right of glyphs when they are displayed.  This metric can be set individually per glyph, but will default to this value if not set. '+
                     '<table class=\'settingstable\'>'+
-                    '<tr><td>Left Side Bearing: </td><td><input type=\'number\' value=\''+ps.defaultLSB+'\' onchange=\'_GP.projectSettings.defaultLSB = Math.abs(parseInt(this.value)) || 0;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
-                    '<tr><td>Right Side Bearing: </td><td><input type=\'number\' value=\''+ps.defaultRSB+'\' onchange=\'_GP.projectSettings.defaultRSB = Math.abs(parseInt(this.value)) || 0;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
+                    '<tr><td>Left Side Bearing: </td><td><input type=\'number\' value=\''+ps.defaultLSB+'\' onchange=\'getCurrentProject().projectSettings.defaultLSB = Math.abs(parseInt(this.value)) || 0;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
+                    '<tr><td>Right Side Bearing: </td><td><input type=\'number\' value=\''+ps.defaultRSB+'\' onchange=\'getCurrentProject().projectSettings.defaultRSB = Math.abs(parseInt(this.value)) || 0;\'></td><td><span class=\'unit\'>(em units)</span></td></tr>'+
                     '</table>';
 
 
@@ -57,7 +57,7 @@
                     'The most common glyph sets are built into Glyphr Studio, and can be toggled with the checkboxes below.';
 
         content += '<table class=\'settingstable\'><tr>'+
-                    '<td class=\'uicolumn\'>'+checkUI('_GP.projectSettings.glyphrange.basiclatin', ps.glyphrange.basiclatin)+'</td>'+
+                    '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.basiclatin', ps.glyphrange.basiclatin)+'</td>'+
                     '<td><label for=\'basiclatin\'><b>Basic Latin</b> - Unicode glyphs 0x0020 through 0x007E</label></td></tr>'+
                     '<tr><td>&nbsp;</td><td colspan=\'2\'><div class=\'glyphrangepreview\'>';
                     let bl = _UI.basiclatinorder;
@@ -67,7 +67,7 @@
         content += '</div></td></tr></table>';
 
         content += '<table class=\'settingstable\'><tr>'+
-                    '<td class=\'uicolumn\'>'+checkUI('_GP.projectSettings.glyphrange.latinsupplement', ps.glyphrange.latinsupplement)+'</td>'+
+                    '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.latinsupplement', ps.glyphrange.latinsupplement)+'</td>'+
                     '<td><label for=\'latinsupplement\'><b>Latin Supplement</b> - Unicode glyphs 0x00A0 through 0x00FF</label></td></tr>'+
                     '<tr><td>&nbsp;</td><td colspan=\'2\'><div class=\'glyphrangepreview\'>';
                     for (let s=_UI.glyphrange.latinsupplement.begin; s<=_UI.glyphrange.latinsupplement.end; s++) {
@@ -76,7 +76,7 @@
         content += '</div></td></tr></table>';
 
         content += '<table class=\'settingstable\'><tr>'+
-                    '<td class=\'uicolumn\'>'+checkUI('_GP.projectSettings.glyphrange.latinextendeda', ps.glyphrange.latinextendeda)+'</td>'+
+                    '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.latinextendeda', ps.glyphrange.latinextendeda)+'</td>'+
                     '<td><label for=\'latinextendeda\'><b>Latin Extended-A</b> - Unicode glyphs 0x0100 through 0x017F</label></td></tr>'+
                     '<tr><td>&nbsp;</td><td colspan=\'2\'><div class=\'glyphrangepreview\'>';
                     for (let a=_UI.glyphrange.latinextendeda.begin; a<=_UI.glyphrange.latinextendeda.end; a++) {
@@ -86,7 +86,7 @@
 
 
         content += '<table class=\'settingstable\'><tr>'+
-                    '<td class=\'uicolumn\'>'+checkUI('_GP.projectSettings.glyphrange.latinextendedb', ps.glyphrange.latinextendedb)+'</td>'+
+                    '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.latinextendedb', ps.glyphrange.latinextendedb)+'</td>'+
                     '<td><label for=\'latinextendedb\'><b>Latin Extended-B</b> - Unicode glyphs 0x0180 through 0x024F</label></td></tr>'+
                     '<tr><td>&nbsp;</td><td colspan=\'2\'><div class=\'glyphrangepreview\'>';
                     for (let b=_UI.glyphrange.latinextendedb.begin; b<=_UI.glyphrange.latinextendedb.end; b++) {
@@ -98,7 +98,7 @@
                     'Additional glyph ranges above 0x024F can be included here. '+
                     'A nice overview of glyph ranges can be found at <a href=\'https://en.wikipedia.org/wiki/Unicode_block\' target=\'_blank\'>Wikipedia\'s Unicode Block page</a>.<br>' +
                     'Custom glyph ranges are inclusive, must be unique (non-overlapping), must be greater than 0x024F and less than 0xFFFF.<br><br>'+
-                    '<table class=\'settingstable\'><tr><td class=\'uicolumn\'>'+checkUI('_GP.projectSettings.glyphrange.filternoncharpoints', ps.glyphrange.filternoncharpoints)+'</td>'+
+                    '<table class=\'settingstable\'><tr><td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.filternoncharpoints', ps.glyphrange.filternoncharpoints)+'</td>'+
                     '<td><label for=\'filternoncharpoints\'>Filter out reserved Unicode code points.</label></td></tr></table>'+
                     '<table class=\'settingstable\'><tr>'+
                     '<td>begin:<br><input type=\'text\' id=\'customrangebegin\'></td>'+
@@ -132,7 +132,7 @@
                 meta[m] = meta[m] || '""';
                 content += '<tr>';
                 content += '<td class="propname" style="padding-top:8px;">' + m.replace(/_/g, '-') + '</td>';
-                content += '<td><input type="text" value="'+escapeTableValue(meta[m])+'" onchange="_GP.metadata.'+m+' = removeEmptyStringInputs(this.value);"/></td>';
+                content += '<td><input type="text" value="'+escapeTableValue(meta[m])+'" onchange="getCurrentProject().metadata.'+m+' = removeEmptyStringInputs(this.value);"/></td>';
                 content += '<td class="prophelp" style="padding-top:8px;">'+_UI.metadataHelp[m]+'</td>';
                 content += '</tr>';
             }

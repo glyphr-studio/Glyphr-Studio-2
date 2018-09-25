@@ -60,12 +60,12 @@
         if (_UI.currentPage === 'import svg') {
             update_NavPanels();
         } else if (_UI.currentPage === 'components') {
-            if (!_GP.components[_UI.selectedComponent]) {
-                _UI.selectedComponent = getFirstID(_GP.components);
+            if (!getCurrentProject().components[_UI.selectedComponent]) {
+                _UI.selectedComponent = getFirstID(getCurrentProject().components);
             }
         } else if (_UI.currentPage === 'ligatures') {
-            if (!_GP.ligatures[_UI.selectedLigature]) {
-                _UI.selectedLigature = getFirstID(_GP.ligatures);
+            if (!getCurrentProject().ligatures[_UI.selectedLigature]) {
+                _UI.selectedLigature = getFirstID(getCurrentProject().ligatures);
             }
         }
 

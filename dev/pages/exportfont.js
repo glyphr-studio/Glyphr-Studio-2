@@ -8,7 +8,7 @@
     function loadPage_exportfont() {
         // debug("LOADING PAGE >> loadPage_exportfont");
         let content = '<h1 class="pagetitle">Export Font</h1><div class="pagecontent textpage">';
-        let ps = _GP.projectSettings;
+        let ps = getCurrentProject().projectSettings;
 
         content += '<h1 style="color:'+_UI.colors.error.medium+';">Warning</h1>'+
             'Not all Glyphr Studio Project features are available in exported font file formats. '+
@@ -23,13 +23,13 @@
         content += '<h1>Export Options</h1>'+
                     '<table class="settingstable">'+
 
-                    '<tr><td class="uicolumn">'+checkUI('_GP.projectSettings.combineshapesonexport', ps.combineshapesonexport)+'</td>'+
+                    '<tr><td class="uicolumn">'+checkUI('getCurrentProject().projectSettings.combineshapesonexport', ps.combineshapesonexport)+'</td>'+
                     '<td class="longlabel"><label for="combineshapesonexport">Combine all glyph shapes<br>Sometimes fonts behave better if there are less path outlines in a glyph.  This option will combine all overlapping shapes with the same winding into as few shapes as possible.</label></td></tr>'+
 
-                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.maxcombineshapesonexport)+'" onchange="var r=round(parseInt(this.value)); r=r||30; _GP.projectSettings.maxcombineshapesonexport=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
+                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.maxcombineshapesonexport)+'" onchange="var r=round(parseInt(this.value)); r=r||30; getCurrentProject().projectSettings.maxcombineshapesonexport=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
                     '<td class="longlabel">Maximum shapes to attempt to combine<br>Combining glyph shapes is a time-intensive process.  If a glyph has more than this number of shapes, combine will not be attempted, and overlapping shapes will be exported as-is.</td></tr>'+
 
-                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.svgprecision)+'" onchange="var r=round(parseInt(this.value)); r=r||3; _GP.projectSettings.svgprecision=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
+                    '<tr><td class="uicolumn"><input type="text" value="'+(ps.svgprecision)+'" onchange="var r=round(parseInt(this.value)); r=r||3; getCurrentProject().projectSettings.svgprecision=r; this.value=r;" style="width:40px; padding-left:4px; margin-top:0px;"/></td>'+
                     '<td class="longlabel">SVG Decimal Precision<br>Number of decimal places to round point data.</td></tr>'+
 
                     '</table>';

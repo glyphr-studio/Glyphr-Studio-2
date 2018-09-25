@@ -1,4 +1,4 @@
-import {getGlyph} from '../app/globalgetters.js';
+import {getCurrentProject} from '../app/app.js';
 
 /**
  * Glyph Sequence is a string of glyphs that has a concept
@@ -33,6 +33,9 @@ export default class GlyphSequence {
         this.drawLineExtras = oa.drawLineExtras;
         this.drawGlyphExtras = oa.drawGlyphExtras;
         this.drawGlyph = oa.drawGlyph;
+
+        // Internal
+        this.project = getCurrentProject();
 
         // Computed
         this.maxes = oa.maxes;
@@ -174,8 +177,8 @@ export default class GlyphSequence {
             currblock = findAndMergeLigatures(this.textblocks[tb].split(''));
             this.data[tb] = [];
             for (tg = 0; tg < currblock.length; tg++) {
-                thisGlyph = getGlyph(charsToHexArray(currblock[tg]).join(''));
-                thisWidth = thisGlyph ? thisGlyph.getAdvanceWidth() : (_GP.projectSettings.upm / 2);
+                thisGlyph = this.project.getGlyph(charsToHexArray(currblock[tg]).join(''));
+                thisWidth = thisGlyph ? thisGlyph.getAdvanceWidth() : (this.project.projectSettings.upm / 2);
                 thisKern = calculateKernOffset(currblock[tg], currblock[tg + 1]);
                 aggregateWidth += thisWidth + thisKern;
                 // Each glyph gets this data to draw it
@@ -327,8 +330,7 @@ export default class GlyphSequence {
      * @returns {number}
      */
     function calcNewLineY(topPaddingY = 0, lineNumber = 1, lineGap = 0) {
-        let ps = _GP.projectSettings;
-        return topPaddingY + (lineNumber*((lineGap + ps.upm)));
+        return topPaddingY + (lineNumber*((lineGap + this.project.projectSettings.upm)));
     }
 
     /**
@@ -340,7 +342,7 @@ export default class GlyphSequence {
      */
     function canNextLineFit(currentLineY, area, lineGap) {
         let bottom = area.y + area.height;
-        let nextLineY = currentLineY + lineGap + _GP.projectSettings.upm;
+        let nextLineY = currentLineY + lineGap + this.project.projectSettings.upm;
 
         // debug(`\t canNextLineFit - ${bottom} > ${nextLineY}`);
         return bottom > nextLineY;
@@ -405,7 +407,7 @@ export default class GlyphSequence {
         c2 = parseUnicodeInput(c2).join('');
         // debug('\t converted: ' + c1 + ' and ' + c2);
 
-        let k = _GP.kerning;
+        let k = getCurrentProject().kerning;
         let tlc;
         let trc;
         let re;

@@ -15,9 +15,9 @@
 
         content += '<div class="panel_section">';
         let rows = '';
-        for (let k in _GP.kerning) {
- if (_GP.kerning.hasOwnProperty(k)) {
-            rows += makeOneKernPairRow(_GP.kerning[k], k);
+        for (let k in getCurrentProject().kerning) {
+ if (getCurrentProject().kerning.hasOwnProperty(k)) {
+            rows += makeOneKernPairRow(getCurrentProject().kerning[k], k);
         }
 }
         content += rows || 'No kern pairs exist yet.  You can create a new one, or add some common kern pairs to get started.';
@@ -61,16 +61,16 @@
         let nid;
 
         for (let k=0; k<add.length; k+=2) {
-            nid = generateNewID(_GP.kerning);
-            _GP.kerning[nid] = new HKern({'leftgroup': parseKernGroupInput(add[k]), 'rightgroup': parseKernGroupInput(add[k+1])});
+            nid = generateNewID(getCurrentProject().kerning);
+            getCurrentProject().kerning[nid] = new HKern({'leftgroup': parseKernGroupInput(add[k]), 'rightgroup': parseKernGroupInput(add[k+1])});
         }
 
-        _UI.selectedKern = getFirstID(_GP.kerning);
+        _UI.selectedKern = getFirstID(getCurrentProject().kerning);
         redraw({calledBy: 'addCommonKernPairs'});
     }
 
     function updateKernValue(id, val) {
-        let k = _GP.kerning[id];
+        let k = getCurrentProject().kerning[id];
         k.value = val;
         // selectKern(id);
         getEditDocument().getElementById(id).value = val;
@@ -78,7 +78,7 @@
     }
 
     function updateKernGroup(id, side, val) {
-        let k = _GP.kerning[id];
+        let k = getCurrentProject().kerning[id];
         if (side === 'left') k.leftgroup = parseKernGroupInput(val);
         else if (side === 'right') k.rightgroup = parseKernGroupInput(val);
         selectKern(id);
@@ -115,9 +115,9 @@
         if (!l || !l.length) showErrorMessageBox('The left kern group cannot be empty.');
         else if (!r || !r.length) showErrorMessageBox('The right kern group cannot be empty.');
         else {
-            let id = generateNewID(_GP.kerning, 'kern');
+            let id = generateNewID(getCurrentProject().kerning, 'kern');
 
-            _GP.kerning[id] = new HKern({'leftgroup': l, 'rightgroup': r});
+            getCurrentProject().kerning[id] = new HKern({'leftgroup': l, 'rightgroup': r});
 
             closeDialog();
             _UI.selectedKern = id;
@@ -136,10 +136,10 @@
     }
 
     function deleteKernPair(id) {
-        let k = _GP.kerning[id];
+        let k = getCurrentProject().kerning[id];
         showToast('Deleted ' + k.getName());
 
-        delete _GP.kerning[id];
-        _UI.selectedKern = getFirstID(_GP.kerning);
+        delete getCurrentProject().kerning[id];
+        _UI.selectedKern = getFirstID(getCurrentProject().kerning);
         redraw({calledBy: 'deleteKernPair'});
     }
