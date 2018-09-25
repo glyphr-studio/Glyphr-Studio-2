@@ -2,10 +2,11 @@ export {debug as default};
 export {
     makePanelSuperTitle,
     setProjectAsSaved, setProjectAsUnsaved, saveFile,
-    clone, json, areEqual, makeCrisp, round, numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
+    getFirstID, generateNewID, countObjectKeys,
+    clone, json, areEqual, makeCrisp, round,
+    numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
     localStorageGet, localStorageSet,
     calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle,
-    getFirstID, generateNewID, getMyID, countObjectKeys,
     makeEmailContent,
     kCombinations,
 };
@@ -114,7 +115,6 @@ function makeSuperTitleSeperator() {
 // Saved Sate
 // -------------------
 
-
 /**
  * Handles various UI pieces when a project is saved
  */
@@ -176,7 +176,6 @@ function updateSaveIcon() {
 // File Saver
 // -------------------
 
-
 /**
  * Saves a file
  * @param {string} fname - name for the saved file
@@ -205,10 +204,57 @@ function saveFile(fname, buffer, ftype) {
 }
 
 
+// --------------------------------------------------------------
+// Object Functions
+// --------------------------------------------------------------
+
+/**
+ * Gets the first key in an object
+ * @param {object} obj
+ * @returns {string}
+ */
+function getFirstID(obj) {
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            return key;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Creates a unique key for an object given a prefix
+ * @param {object} obj
+ * @param {string} base - string prefix for the new ID
+ * @returns {string}
+ */
+function generateNewID(obj, base) {
+    let number = 1;
+    base = base || 'id';
+    let id = ('' + base + number);
+    while (obj.hasOwnProperty(id)) id = ('' + base + (++number));
+
+    return id;
+}
+
+/**
+ * Returns how many objects are in an object
+ * @param {object} obj
+ * @returns {number}
+ */
+function countObjectKeys(obj) {
+    let len = 0;
+    for (let key in obj) {
+        if ( obj.hasOwnProperty(key)) len++;
+    }
+    return len;
+}
+
+
 // -------------------
 // Common Functions
 // -------------------
-
 
 /**
  * Returns a full new copy of any object
@@ -251,7 +297,7 @@ function json(obj, raw) {
  * @param {object} obj2 - second object to compare
  * @returns {boolean}
  */
-function areEqual(obj1, obj2) {
+ function areEqual(obj1, obj2) {
     // debug(`\n areEqual - START`);
     // debug(`\t passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
 
@@ -451,7 +497,7 @@ function duplicates(v, i, a) {
 function localStorageSet(key, value) {
     key = 'GlyphrStudio_' + key;
 
-    if(value.save) value = JSON.stringify(value.save());
+    if (value.save) value = JSON.stringify(value.save());
     else if (typeof value != 'string') value = JSON.stringify(value);
 
     window.localStorage.setItem(key, value);
@@ -464,7 +510,7 @@ function localStorageSet(key, value) {
  */
 function localStorageGet(key) {
     if (window.localStorage[key]) {
-        return JSON.parse(window.localStorage.getItem(key))
+        return JSON.parse(window.localStorage.getItem(key));
     } else if (window.localStorage['GlyphrStudio_'+key]) {
         return JSON.parse(window.localStorage.getItem('GlyphrStudio_'+key));
     } else {
@@ -590,82 +636,6 @@ function niceAngleToAngle(angle) {
     angle = rad(angle);
 
     return angle;
-}
-
-
-// -------------------
-// Object ID Stuff
-// -------------------
-
-
-/**
- * Gets the first key in an object
- * @param {object} obj
- * @returns {string}
- */
-function getFirstID(obj) {
-    for (let key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            return key;
-        }
-    }
-
-    return false;
-}
-
-/**
- * Creates a unique key for an object given a prefix
- * @param {object} obj
- * @param {string} base - string prefix for the new ID
- * @returns {string}
- */
-function generateNewID(obj, base) {
-    let number = 1;
-    base = base || 'id';
-    let id = ('' + base + number);
-    while (obj.hasOwnProperty(id)) id = ('' + base + (++number));
-
-    return id;
-}
-
-/**
- * Return the ID for a given Glyph object
- * @param {object} obj - Glyph object to search for
- * @returns {string}
- */
-function getMyID(obj) {
-    for (let g in _GP.glyphs) {
-       if (_GP.glyphs.hasOwnProperty(g)) {
-           if (obj === _GP.glyphs[g]) return g;
-        }
-    }
-
-    for (let c in _GP.components) {
-        if (_GP.components.hasOwnProperty(c)) {
-            if (obj === _GP.components[c]) return c;
-        }
-    }
-
-    for (let l in _GP.ligatures) {
-        if (_GP.ligatures.hasOwnProperty(l)) {
-            if (obj === _GP.ligatures[l]) return l;
-        }
-    }
-
-    return false;
-}
-
-/**
- * Returns how many objects are in an object
- * @param {object} obj
- * @returns {number}
- */
-function countObjectKeys(obj) {
-    let len = 0;
-    for (let key in obj) {
-        if ( obj.hasOwnProperty(key)) len++;
-    }
-    return len;
 }
 
 

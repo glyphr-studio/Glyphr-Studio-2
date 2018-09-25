@@ -3,7 +3,7 @@ import Coord from '../glyph_elements/coord.js';
 import PathPoint from '../glyph_elements/pathpoint.js';
 import Shape from '../glyph_elements/shape.js';
 import {findPathIntersections} from '../glyph_elements/path.js';
-import {clone, isVal, round} from '../app/functions.js';
+import {clone, isVal, round} from '../common/functions.js';
 
 export {rectPathFromMaxes, ovalPathFromMaxes, addShape,
     turnSelectedShapeIntoAComponent, getClickedShape, isOverShape,

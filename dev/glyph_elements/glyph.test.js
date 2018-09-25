@@ -1,5 +1,5 @@
 import Glyph from './glyph.js';
-import {clone} from '../app/functions.js';
+import {clone} from '../common/functions.js';
 import Shape from './shape.js';
 
 /**
@@ -39,7 +39,7 @@ _TEST.testList.push(
         category: 'Glyph',
         name: 'save',
         assertion: function() {
-            return _TEST.is(sampleGlyph().save()).equalTo(JSON.parse('{"hex":"0x0000","shapes":[{"path":{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500},"use":true},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500},"use":true},"h2":{"coord":{"x":413.45994211401285,"y":500},"use":true}},{"p":{"coord":{"x":484,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709},"use":true},"h2":{"coord":{"x":484,"y":257.92406046386174},"use":true}},{"p":{"coord":{"x":326.65249430318556,"y":186},"use":true},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186},"use":true},"h2":{"coord":{"x":239.15010236167052,"y":186},"use":true}},{"p":{"coord":{"x":170,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707},"use":true},"h2":{"coord":{"x":170,"y":429.9040095221619},"use":true}}]}}]}'));
+            return _TEST.is(sampleGlyph().save()).equalTo(JSON.parse('{"id":"0x0000","shapes":[{"path":{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500},"use":true},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500},"use":true},"h2":{"coord":{"x":413.45994211401285,"y":500},"use":true}},{"p":{"coord":{"x":484,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709},"use":true},"h2":{"coord":{"x":484,"y":257.92406046386174},"use":true}},{"p":{"coord":{"x":326.65249430318556,"y":186},"use":true},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186},"use":true},"h2":{"coord":{"x":239.15010236167052,"y":186},"use":true}},{"p":{"coord":{"x":170,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707},"use":true},"h2":{"coord":{"x":170,"y":429.9040095221619},"use":true}}]}}]}'));
         },
     },
     {
@@ -51,11 +51,11 @@ _TEST.testList.push(
     },
     {
         category: 'Glyph',
-        name: 'get/set hex',
+        name: 'get/set id',
         assertion: function() {
             let g = sampleGlyph();
-            g.hex = '0x1234';
-            return _TEST.is(g.hex).equalTo('0x1234');
+            g.id = '0x1234';
+            return _TEST.is(g.id).equalTo('0x1234');
         },
     },
     {

@@ -1,4 +1,4 @@
-import {isVal, clone} from '../app/functions.js';
+import {isVal, clone} from '../common/functions.js';
 import {getGlyph, getGlyphName} from '../app/globalgetters.js';
 
 export {sXcX, sYcY};

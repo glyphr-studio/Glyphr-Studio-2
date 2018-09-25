@@ -1,5 +1,5 @@
 import Coord from './coord.js';
-import {pointsAreEqual} from '../app/functions.js';
+import {pointsAreEqual} from '../common/functions.js';
 
 _TEST.testList.push(
     {

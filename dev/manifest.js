@@ -43,29 +43,33 @@ let manifest = [
     {
         path: 'app',
         files: [
-            'settings.js',
-            'functions.js',
+            'app.js',
             'colors.js',
             // 'nav.js',
-            // 'history.js',
-            'unicode.js',
-
-            // 'global.css',
-            // 'colors.css',
 
             'colors.test.js',
             // 'test.test.js',
+        ],
+    },
+
+    {
+        path: 'common',
+        files: [
+            'functions.js',
+            'unicode.js',
         ],
     },
 /*
     {
         path: 'project',
         files: [
-            'glyphrstudioproject.js',
-            'project_functions.js',
-            'project_import.js',
+            'glyphr_studio_project.js',
+            'project_editor.js',
+            'import.js',
+            'migrate.js',
+            'history.js',
 
-            'glyphrstudioproject.test.js',
+            'glyphr_studio_project.test.js',
         ],
     },
 */

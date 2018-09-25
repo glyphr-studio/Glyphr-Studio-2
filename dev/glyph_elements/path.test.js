@@ -1,6 +1,6 @@
 import Path from './path.js';
 import {findPathIntersections, findPathPointIntersections} from './path.js';
-import {clone} from '../app/functions.js';
+import {clone} from '../common/functions.js';
 import PathPoint from './pathpoint.js';
 
 // It's a circle!

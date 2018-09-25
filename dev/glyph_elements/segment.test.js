@@ -2,7 +2,7 @@ import Segment from './segment.js';
 import {segmentsAreEqual, findSegmentIntersections,
     findOverlappingLineSegmentIntersections, findCrossingLineSegmentIntersections,
     findEndPointSegmentIntersections} from './polysegment.js';
-import {round} from '../app/functions.js';
+import {round} from '../common/functions.js';
 
 // basically an upper-left quadrant quarter circle
 // Test Segment at t=0.5 is {x: 62.5, y: 137.5}

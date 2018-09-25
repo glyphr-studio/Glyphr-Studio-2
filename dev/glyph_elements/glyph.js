@@ -4,8 +4,8 @@ import Path from './path.js';
 import Shape from './shape.js';
 import ComponentInstance from './componentinstance.js';
 import {getGlyph, getProject} from '../app/globalgetters.js';
-import {clone, hasNonValues, isVal, trim} from '../app/functions.js';
-import {parseUnicodeInput, getUnicodeName} from '../app/unicode.js';
+import {clone, hasNonValues, isVal, trim} from '../common/functions.js';
+import {parseUnicodeInput, getUnicodeName} from '../common/unicode.js';
 import {getOverallMaxes} from './maxes.js';
 import {combineShapes} from '../panels/REFACTORshape.js';
 
@@ -24,7 +24,7 @@ import {combineShapes} from '../panels/REFACTORshape.js';
 export default class Glyph extends GlyphElement {
     /**
      * Create a Glyph
-     * @param {string} hex
+     * @param {string} id
      * @param {boolean} isAutoWide
      * @param {number} glyphWidth
      * @param {number} leftSideBearing
@@ -35,7 +35,7 @@ export default class Glyph extends GlyphElement {
      * @param {boolean} contextGlyphs
      */
     constructor({
-        hex = false,
+        id = false,
         shapes = [],
         isAutoWide = true,
         glyphWidth = 0,
@@ -47,7 +47,7 @@ export default class Glyph extends GlyphElement {
     } = {}) {
         debug(`\n Glyph.constructor - START`);
         super();
-        this.hex = hex;
+        this.id = id;
         this.shapes = shapes;
         this.isAutoWide = isAutoWide;
         this.glyphWidth = glyphWidth;
@@ -91,7 +91,7 @@ export default class Glyph extends GlyphElement {
         let re = {
             objType: this.objType,
             name: this.name,
-            hex: this._hex,
+            id: this._id,
         };
 
         if (this.isAutoWide !== true) re.isAutoWide = this.isAutoWide;
@@ -127,7 +127,7 @@ export default class Glyph extends GlyphElement {
         let re = `${ind}{Glyph\n`;
         ind += '  ';
 
-        re += `${ind}hex: ${this.hex}\n`;
+        re += `${ind}id: ${this.id}\n`;
         re += `${ind}name: ${this.name}\n`;
 
         if (this.isAutoWide !== true) re += `${ind}isAutoWide: ${this.isAutoWide}\n`;
@@ -151,7 +151,7 @@ export default class Glyph extends GlyphElement {
 
         if (this.maxes) re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
 
-        re += `${ind.substring(2)}}/Glyph ${this.hex}`;
+        re += `${ind.substring(2)}}/Glyph ${this.id}`;
 
         return re;
     }
@@ -191,11 +191,11 @@ export default class Glyph extends GlyphElement {
     // --------------------------------------------------------------
 
     /**
-     * get hex
+     * get id
      * @returns {string}
      */
-    get hex() {
-        return this._hex;
+    get id() {
+        return this._id;
     }
 
     /**
@@ -324,7 +324,7 @@ export default class Glyph extends GlyphElement {
      * @returns {string}
      */
     get name() {
-        return getUnicodeName(this.hex);
+        return getUnicodeName(this.id);
     }
 
     /**
@@ -332,7 +332,7 @@ export default class Glyph extends GlyphElement {
      * @returns {string}
      */
     get char() {
-        return getGlyphName(this.hex);
+        return getGlyphName(this.id);
     }
 
     /**
@@ -340,7 +340,7 @@ export default class Glyph extends GlyphElement {
      * @returns {String}
      */
     get charCode() {
-        let code = hexToHTML(this.hex);
+        let code = hexToHTML(this.id);
         return code || '';
     }
 
@@ -397,14 +397,14 @@ export default class Glyph extends GlyphElement {
     // --------------------------------------------------------------
 
     /**
-     * set hex
-     * @param {string} hex
+     * set id
+     * @param {string} newID
      * @returns {Glyph} - reference to this Glyph
      */
-    set hex(hex) {
-        hex = parseUnicodeInput(hex);
-        hex = hex.join? hex.join('') : '0x0000';
-        this._hex = hex;
+    set id(newID) {
+        newID = parseUnicodeInput(newID);
+        newID = newID.join? newID.join('') : '0x0000';
+        this._id = newID;
         return this;
     }
 
@@ -907,9 +907,8 @@ export default class Glyph extends GlyphElement {
      */
     canAddComponent(cid) {
         // debug('\n Glyph.canAddComponent - START');
-        let myID = '' + getMyID(this);
-        // debug('\t adding ' + cid + ' to (me) ' + myID);
-        if (myID === cid) return false;
+        // debug('\t adding ' + cid + ' to (me) ' + this.id);
+        if (this.id === cid) return false;
         if (this.usedIn.length === 0) return true;
         let downlinks = this.collectAllDownstreamLinks([], true);
         downlinks = downlinks.filter(function(elem, pos) {

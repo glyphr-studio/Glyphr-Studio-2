@@ -1,6 +1,6 @@
 import GlyphElement from './glyphelement.js';
-import {parseUnicodeInput} from '../app/unicode.js';
-import {strSan} from '../app/functions.js';
+import {parseUnicodeInput} from '../common/unicode.js';
+import {strSan} from '../common/functions.js';
 import {getGlyph} from '../app/globalgetters.js';
 
 /**

@@ -1,5 +1,5 @@
 import {makeRandomSaturatedColor} from '../app/colors.js';
-import {makeCrisp} from '../app/functions.js';
+import {makeCrisp} from '../common/functions.js';
 
 /**
     Guide

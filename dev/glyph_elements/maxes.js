@@ -1,5 +1,5 @@
 import GlyphElement from './glyphelement.js';
-import {isVal, round} from '../app/functions.js';
+import {isVal, round} from '../common/functions.js';
 
 /**
  * Glyph Element > Maxes

@@ -1,6 +1,6 @@
 import {makeElement} from '../controls.js';
 import {uiColors, flashUIElementAsActive} from '../../app/colors.js';
-import {round} from '../../app/functions.js';
+import {round} from '../../common/functions.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement

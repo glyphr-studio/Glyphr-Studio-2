@@ -1,6 +1,6 @@
 import GlyphElement from './glyphelement.js';
 import Path from './path.js';
-import {strSan, clone} from '../app/functions.js';
+import {strSan, clone} from '../common/functions.js';
 
 
 /**

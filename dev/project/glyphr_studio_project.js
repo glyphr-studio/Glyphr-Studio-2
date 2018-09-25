@@ -1,6 +1,7 @@
 import Guide from '../edit_canvas/guide.js';
-import {clone} from '../app/functions.js';
+import {clone} from '../common/functions.js';
 import {makeProjectID} from './project_functions.js';
+import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
 
 /* eslint-disable camelcase*/
 
@@ -131,7 +132,6 @@ export default class GlyphrStudioProject {
         this.kerning = {};
         this.components = {};
 
-
         // ---------------------------------------------------------------
         // Handle passed object
         // ---------------------------------------------------------------
@@ -180,6 +180,108 @@ export default class GlyphrStudioProject {
         // Kerning
         hydrateGlyphrObjectList(HKern, newProject.kerning, this.kerning);
         // debug('\t finished hydrating kern pairs');
+    }
+
+
+    // --------------------------------------------------------------
+    // GLYPH GETTERS
+    // --------------------------------------------------------------
+
+    /**
+     * Get a glyph by ID, create it if need be
+     * @param {string} id - which Glyph to return
+     * @param {boolean} create - create if it doesn't exist yet
+     * @returns {Glyph}
+     */
+    getGlyph(id, create) {
+        // debug('\n getGlyph - START');
+        // debug('\t passed: ' + id + ' create: ' + create);
+
+        if (!id) {
+            // debug('\t Not passed an ID, returning false');
+            return false;
+        }
+
+        id = ''+id;
+        let rechar;
+
+        if (this.ligatures && id.indexOf('0x', 2) > -1) {
+            rechar = this.ligatures[id];
+            // debug('\t retrieved ' + rechar + ' from ligatures.');
+            if (rechar) {
+                return rechar;
+            } else if (create) {
+                // debug('\t create was true, returning a new ligature.');
+                this.ligatures[id] = new Glyph({'glyphhex': id});
+                return this.ligatures[id];
+            }
+        } else if (this.glyphs && id.indexOf('0x') > -1) {
+            rechar = this.glyphs[id];
+            // debug('\t retrieved ' + rechar + ' from glyphs.');
+            if (rechar) {
+                return rechar;
+            } else if (create) {
+                // debug('\t create was true, returning a new char.');
+                this.glyphs[id] = new Glyph({'glyphhex': id});
+                return this.glyphs[id];
+            }
+        } else if (this.components) {
+            // debug('\t component, retrieved');
+            // debug(this.components[id]);
+            return this.components[id] || false;
+        } else {
+            // debug('getGlyph - returning FALSE\n');
+            return false;
+        }
+    }
+
+    /**
+     * Get the type of glyph based on it's ID
+     * @param {string} id - Glyph ID
+     * @returns {string}
+     */
+    getGlyphType(id) {
+        if (id.indexOf('0x', 2) > -1) return 'Ligature';
+        else if (id.indexOf('0x') > -1) return 'Glyph';
+        else return 'Component';
+    }
+
+    /**
+     * Get a glyph's name based on it's ID
+     * @param {string} id - Glyph ID
+     * @param {boolean} forceLongName - don't use the short Unicode name by default
+     * @returns {string}
+     */
+    getGlyphName(id, forceLongName = false) {
+        id = ''+id;
+        // debug('\n getGlyphName');
+        // debug('\t passed ' + id);
+
+        // not passed an id
+        if (!id) {
+            // debug('\t not passed an ID, returning false');
+            return false;
+        }
+
+        // known unicode names
+        let un = forceLongName? unicodeNames[id] : shortUnicodeNames[id];
+        if (un) {
+            // debug('\t got unicode name: ' + un);
+            return un;
+        }
+
+        let cobj = getGlyph(id);
+        if (id.indexOf('0x', 2) > -1) {
+            // ligature
+            // debug('\t ligature - returning ' + hexToHTML(id));
+            return cobj.name || hexToHTML(id);
+        } else {
+            // Component
+            // debug('getGlyphName - inexplicably fails, returning [name not found]\n');
+            return cobj.name || '[name not found]';
+        }
+
+        // debug(' getGlyphName - returning nothing - END\n');
     }
 }
 

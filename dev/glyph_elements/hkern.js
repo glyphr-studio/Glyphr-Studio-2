@@ -1,5 +1,5 @@
 import GlyphElement from './glyphelement.js';
-import {hexToChars} from '../app/unicode.js';
+import {hexToChars} from '../common/unicode.js';
 
 
 /**

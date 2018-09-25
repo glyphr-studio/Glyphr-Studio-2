@@ -1,6 +1,6 @@
 import Shape from './shape.js';
 import Path from './path.js';
-import {clone} from '../app/functions.js';
+import {clone} from '../common/functions.js';
 
 
 /**

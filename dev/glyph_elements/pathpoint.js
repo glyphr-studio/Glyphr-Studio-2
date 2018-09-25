@@ -1,6 +1,6 @@
 import GlyphElement from './glyphelement.js';
 import ControlPoint from './controlpoint.js';
-import {round, rotate, pointsAreEqual, isVal} from '../app/functions.js';
+import {round, rotate, pointsAreEqual, isVal} from '../common/functions.js';
 
 
 /**

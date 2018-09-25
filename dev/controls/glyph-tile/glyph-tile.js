@@ -1,6 +1,6 @@
 import {makeElement} from '../controls.js';
 import {uiColors, accentColors} from '../../app/colors.js';
-import {hexToChars} from '../../app/unicode.js';
+import {hexToChars} from '../../common/unicode.js';
 import {getGlyphName} from '../../app/globalgetters.js';
 import Glyph from '../../glyph_elements/glyph.js';
 
@@ -186,7 +186,7 @@ export default class GlyphTile extends HTMLElement {
  */
 function getGlyph(gid) {
     if (gid === '0x41') {
-        return new Glyph({hex: gid,
+        return new Glyph({id: gid,
             shapes: [
                 {path: {pathPoints: [
                     {p: {coord: {x: 0, y: 0}}},

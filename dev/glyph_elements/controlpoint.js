@@ -1,6 +1,6 @@
 import GlyphElement from './glyphelement.js';
 import Coord from './coord.js';
-import {calculateAngle, calculateLength, angleToNiceAngle} from '../app/functions.js';
+import {calculateAngle, calculateLength, angleToNiceAngle} from '../common/functions.js';
 
 /**
  * Glyph Element > ControlPoint

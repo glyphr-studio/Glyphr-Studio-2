@@ -4,7 +4,7 @@ import Segment from './segment.js';
 // import Path from './path.js';
 // import PathPoint from './pathpoint.js';
 import {maxesOverlap} from './maxes.js';
-import {duplicates, clone, pointsAreEqual, round, numSan} from '../app/functions.js';
+import {duplicates, clone, pointsAreEqual, round, numSan} from '../common/functions.js';
 import {sXcX, sYcY} from '../edit_canvas/edit_canvas.js';
 
 /**

@@ -1,7 +1,7 @@
 import GlyphElement from './glyphelement.js';
 import XYPoint from './xypoint.js';
 import Maxes from './maxes.js';
-import {clone, numSan, isVal, round, hasNonValues, pointsAreEqual} from '../app/functions.js';
+import {clone, numSan, isVal, round, hasNonValues, pointsAreEqual} from '../common/functions.js';
 
 /**
  * Glyph Element > Segment

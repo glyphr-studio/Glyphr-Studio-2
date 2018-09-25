@@ -1,5 +1,5 @@
 
-import GlyphrStudioProject from './glyphrstudioproject.js';
+import GlyphrStudioProject from './glyphr_studio_project.js';
 
 _TEST.testList.push(
     {
