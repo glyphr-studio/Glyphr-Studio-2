@@ -184,6 +184,49 @@ export default class GlyphrStudioProject {
 
 
     // --------------------------------------------------------------
+    // Save
+    // --------------------------------------------------------------
+
+    /**
+     * Saves Glyph Element, Settings, and Metadata hierarchy
+     * that describes a Glyphr Studio Project
+     * @param {boolean} verbose - include extra properties for better readability
+     * @returns {GlyphrStudioProject}
+     */
+    save(verbose = false) {
+        let savedProject = {
+            projectSettings: clone(this.projectSettings),
+            metadata: clone(this.metadata),
+            glyphs: {},
+            ligatures: {},
+            components: {},
+            kerning: {},
+        };
+
+        /**
+         * Generic iterator for glyphs, ligatures, components, and kerning
+         * @param {object} group - which group to do
+         * @param {string} name - name of the group
+         */
+        function iterator(group, name) {
+            for (let key in group) {
+                if (group.hasOwnProperty(key)) {
+                    if (group[key].save) {
+                        savedProject[name][key] = group[key].save(verbose);
+                    }
+                }
+            }
+        }
+
+        iterator(this.glyphs, 'glyphs');
+        iterator(this.ligatures, 'ligatures');
+        iterator(this.components, 'components');
+        iterator(this.kerning, 'kerning');
+
+        return savedProject;
+    }
+
+    // --------------------------------------------------------------
     // GLYPH GETTERS
     // --------------------------------------------------------------
 

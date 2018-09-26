@@ -383,7 +383,7 @@ export default class ProjectEditor {
             }
         }
 
-        let savedata = cloneForSaveData(_GP);
+        let savedata = this.project.save();
 
         if (getCurrentProject().projectSettings.formatsavefile) savedata = json(savedata);
         else savedata = JSON.stringify(savedata);
@@ -650,7 +650,6 @@ window._UI = {
     },
 
     // page: openproject
-    droppedFileContent: false,
     overflowCount: 326,
     spinning: true,
     importRange: {
