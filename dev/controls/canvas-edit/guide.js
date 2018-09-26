@@ -1,4 +1,4 @@
-import {makeRandomSaturatedColor} from '../app/colors.js';
+import {makeRandomSaturatedColor} from '../common/colors.js';
 import {makeCrisp} from '../common/functions.js';
 
 /**

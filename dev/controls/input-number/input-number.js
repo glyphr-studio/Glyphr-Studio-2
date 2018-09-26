@@ -1,5 +1,5 @@
 import {makeElement} from '../controls.js';
-import {uiColors, flashUIElementAsActive} from '../../app/colors.js';
+import {uiColors, flashUIElementAsActive} from '../../common/colors.js';
 import {round} from '../../common/functions.js';
 
 /**

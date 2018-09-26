@@ -44,10 +44,8 @@ let manifest = [
         path: 'app',
         files: [
             'app.js',
-            'colors.js',
             // 'nav.js',
-
-            'colors.test.js',
+            // 'test.js,
             // 'test.test.js',
         ],
     },
@@ -57,6 +55,9 @@ let manifest = [
         files: [
             'functions.js',
             'unicode.js',
+            'colors.js',
+
+            'colors.test.js',
         ],
     },
 /*

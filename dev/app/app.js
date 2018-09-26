@@ -1,5 +1,4 @@
-import {colors} from './colors.js';
-import GlyphrStudioProject from '../project/glyphr_studio_project.js';
+import {colors} from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
 
 /**
@@ -18,7 +17,22 @@ export default class GlyphrStudioApp {
         this.projectEditors = [];
         this.selectedProjectEditor = 0;
 
-        this.settings = {};
+        this.settings = {
+            dev: {
+                // Internal Dev Stuff
+                mode: false, // global switch for all the stuff below
+                sampleProject: false, // if sampleproject is present, load it and skip open project experience
+                currentPage: false, // navigate straight to a page
+                currentPanel: false, // navigate straight to a panel
+                selectedShape: false, // automatically select a shape
+                debugAutoGroup: false, // try to console.group based on text strings
+                debugTableObjects: false, // Show objects in tables in the console
+                testActions: [],
+                testOnLoad: function() {},
+                testOnRedraw: function() {},
+            },
+            telemetry: true, // Load google analytics
+        };
     }
 
     /**
@@ -26,27 +40,25 @@ export default class GlyphrStudioApp {
      */
     start() {
         // Navigate
-        if (this.settings.devMode) {
-            // debug('\t >>> DEV NAV - to ' + this.settings.dev_currentPage);
+        if (this.settings.dev.mode) {
+            // debug('\t >>> DEV NAV - to ' + this.settings.dev.currentPage);
             document.title = '░▒▓█ GSDEVMODE █▓▒░';
 
-            if (this.settings.dev_sampleProject) {
+            if (this.settings.dev.sampleProject) {
                 // debug('\t >>> Using sample project');
-                this.settings.droppedFileContent = JSON.stringify(this.settings.sampleproject[this.settings.dev_sampleProject]);
+                this.settings.droppedFileContent = JSON.stringify(this.settings.sampleproject[this.settings.dev.sampleProject]);
                 importGlyphrProjectFromText();
-                this.settings.dev_sampleProject = false;
+                this.settings.dev.sampleProject = false;
             } else {
                 newGlyphrStudioProject();
             }
 
-            if (this.settings.dev_currentPage === 'import svg') {
+            if (this.settings.dev.currentPage === 'import svg') {
                 this.settings.importSVG.scale = false;
                 this.settings.importSVG.move = false;
             }
 
-            navigate({page: (this.settings.dev_currentPage || 'openproject'), panel: this.settings.dev_currentPanel});
-        } else {
-            _DEV = {};
+            navigate({page: (this.settings.dev.currentPage || 'openproject'), panel: this.settings.dev.currentPanel});
         }
 
         /* eslint-disable */
@@ -64,7 +76,7 @@ export default class GlyphrStudioApp {
         }
         /* eslint-enable */
 
-        if (!this.settings.devMode && this.settings.telemetry) {
+        if (!this.settings.dev.mode && this.settings.telemetry) {
             try {
                 setupga(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
                 ga('create', 'UA-71021902-1', 'auto');
@@ -76,7 +88,7 @@ export default class GlyphrStudioApp {
 
         navigate();
 
-        if (this.settings.devMode) this.settings.testOnLoad();
+        if (this.settings.dev.mode) this.settings.dev.testOnLoad();
 
         // debug(' MAIN SETUP - END\n');
     }
@@ -158,7 +170,7 @@ export default class GlyphrStudioApp {
             if (project &&
                 project.projectSettings.stopPageNavigation &&
                 this.settings.stopPageNavigation &&
-                !this.settings.devMode) {
+                !this.settings.dev.mode) {
                 return '\n\nOh Noes!\nUnless you specifically saved your Glyphr Project, all your progress will be lost.\n\n';
             } else {
                 return;

@@ -1,7 +1,7 @@
 import {makeElement} from '../controls.js';
 import ButtonToggle from '../button-toggle/button-toggle.js';
 import InputNumber from '../input-number/input-number.js';
-import {uiColors} from '../../app/colors.js';
+import {uiColors} from '../../common/colors.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement,

@@ -92,7 +92,7 @@
 
         // q
         // for dev mode clear console
-        if (_UI.devMode && (isCtrlDown) && kc==='q') {
+        if (window.GlyphrStudio.settings.dev.mode && (isCtrlDown) && kc==='q') {
             event.preventDefault();
             console.clear();
         }

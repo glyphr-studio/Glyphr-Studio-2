@@ -406,20 +406,6 @@ export default class ProjectEditor {
 
 window._UI = {
 
-    // Internal Dev Stuff
-    devMode: false, // global switch for all the stuff below
-    dev_sampleProject: false, // if sampleproject is present, load it and skip open project experience
-    dev_currentPage: false, // navigate straight to a page
-    dev_currentPanel: false, // navigate straight to a panel
-    dev_selectedShape: false, // automatically select a shape
-    debug: true, // show messages sent to the browser console
-    debugAutoGroup: false, // try to console.group based on text strings
-    debugTableObjects: false, // Show objects in tables in the console
-    telemetry: true, // Load google analytics
-    testActions: [],
-    testOnLoad: function() {},
-    testOnRedraw: function() {},
-
     // all pages
     currentPage: 'openproject',
     currentPanel: false,

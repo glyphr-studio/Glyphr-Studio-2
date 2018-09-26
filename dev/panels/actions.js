@@ -100,7 +100,7 @@
         pointactions += '<button title="Autofit Y\nAutofit a point based on the selected points" onclick="kCombinations(_UI.multiSelect.points.members, _UI.multiSelect.points.members.length > 3 ? 4 : 3).forEach(function(o, i) { o[o[3] ? 3 : 2].alignMutualOffsetY(o[0], o[1], o[3] ? o[2] : {p:{x:undefined}}) }); history_put(\'Autofit Y\');">' + makeActionButton_AutofitY() + '</button>';
 
 
-    // GLYPH
+        // GLYPH
         let glyphactions = '<h3>glyph</h3>';
         glyphactions += '<button title="Combine all shapes\nCombines the paths of all shapes with the same winding into as few shapes as possible" onclick="combineAllGlyphShapes();">' + makeActionButton_Combine() + '</button>';
         glyphactions += '<button title="Flip Vertical\nReflects the glyph vertically" onclick="getSelectedWorkItem().flipEW(); history_put(\'Flip Glyph : Vertical\'); redraw({calledBy:\'Glyph Details - FlipEW\'});">' + makeActionButton_FlipHorizontal() + '</button>';
@@ -109,10 +109,11 @@
 
         // DEV
         let devactions = '';
-        if (_UI.devMode) {
-            if (_UI.testActions.length) devactions += '<h3>test</h3>';
-            for (let a=0; a<_UI.testActions.length; a++) {
-                devactions += '<button onclick="'+_UI.testActions[a].onclick+'">'+_UI.testActions[a].name+'</button>';
+        let dev = window.GlyphrStudio.settings.dev;
+        if (dev.mode) {
+            if (dev.testActions.length) devactions += '<h3>test</h3>';
+            for (let a=0; a<dev.testActions.length; a++) {
+                devactions += '<button onclick="'+dev.testActions[a].onclick+'">'+dev.testActions[a].name+'</button>';
             }
         }
 

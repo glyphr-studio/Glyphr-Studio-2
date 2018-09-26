@@ -32,7 +32,6 @@ function loadTests() {
  * Callback after tests load
  */
 function loadTestList() {
-    _UI.debug = true;
     debug(`t> Loading tests...`);
 
     let savedState = localStorageGet('TEST');

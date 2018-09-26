@@ -1,5 +1,5 @@
 import {makeElement} from '../controls.js';
-import {uiColors} from '../../app/colors.js';
+import {uiColors} from '../../common/colors.js';
 
 /**
  * description

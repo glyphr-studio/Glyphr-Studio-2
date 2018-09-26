@@ -13,9 +13,9 @@
         initEventHandlers();
         clickEmptySpace();
 
-        if (_UI.devMode && isVal(_UI.dev_selectedShape)) {
-            selectShape(_UI.dev_selectedShape);
-            _UI.dev_selectedShape = false;
+        if (window.GlyphrStudio.settings.dev.mode && isVal(window.GlyphrStudio.settings.dev.selectedShape)) {
+            selectShape(window.GlyphrStudio.settings.dev.selectedShape);
+            window.GlyphrStudio.settings.dev.selectedShape = false;
         }
 
         _UI.selectedGlyph = _UI.selectedGlyph || getFirstGlyphID();

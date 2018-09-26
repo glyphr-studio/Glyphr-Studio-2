@@ -1,53 +1,5 @@
 import manifest from '../manifest.js';
-
-window._DEV = {};
-
-// Window stuff
-// It would be great if we could conditionally load modules.
-
-import * as colors from './colors.js';
-window._DEV.colors = colors;
-
-import * as functions from './functions.js';
-window._DEV.functions = functions;
-
-import * as xypoint from '../glyph_elements/xypoint.js';
-window._DEV.xypoint = xypoint;
-
-import * as coord from '../glyph_elements/coord.js';
-window._DEV.coord = coord;
-
-import * as maxes from '../glyph_elements/maxes.js';
-window._DEV.maxes = maxes;
-
-import * as controlpoint from '../glyph_elements/controlpoint.js';
-window._DEV.controlpoint = controlpoint;
-
-import * as pathpoint from '../glyph_elements/pathpoint.js';
-window._DEV.pathpoint = pathpoint;
-
-import * as segment from '../glyph_elements/segment.js';
-window._DEV.segment = segment;
-
-import * as path from '../glyph_elements/path.js';
-window._DEV.path = path;
-
-import * as polysegment from '../glyph_elements/polysegment.js';
-window._DEV.polysegment = polysegment;
-
-import * as shape from '../glyph_elements/shape.js';
-window._DEV.shape = shape;
-
-import * as componentinstance from '../glyph_elements/componentinstance.js';
-window._DEV.componentinstance = componentinstance;
-
-import * as glyph from '../glyph_elements/glyph.js';
-window._DEV.glyph = glyph;
-
-import * as hkern from '../glyph_elements/hkern.js';
 import GlyphrStudioApp from './app.js';
-window._DEV.hkern = hkern;
-
 
 /**
  * MAIN
@@ -120,6 +72,12 @@ export function assemble(loadTests = false, callback = new function() {}) {
 
             // debug(`\t added test ${element}`);
         });
+
+        // main.test.js adds Glyph Element classes to the window._DEV object
+        newElement = document.createElement('script');
+        newElement.setAttribute('src', `app/main.test.js`);
+        newElement.setAttribute('type', 'module');
+        document.getElementsByTagName('head')[0].appendChild(newElement);
     }
 
     debug(` assemble - END\n\n`);

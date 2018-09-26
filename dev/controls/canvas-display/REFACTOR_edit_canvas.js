@@ -94,7 +94,7 @@ export default redraw;
 
         if (!_UI.contextGlyphs.string) updateContextGlyphs();
 
-        if (_UI.devMode && _UI.testOnRedraw) _UI.testOnRedraw();
+        if (window.GlyphrStudio.settings.dev.mode && _UI.testOnRedraw) _UI.testOnRedraw();
         // debug(' redrawUnit - END\n');
     }
 

@@ -26,12 +26,13 @@ window.localStorageSet = localStorageSet;
  * Wrapper for console.log that does some extra fancy stuff, and
  * also adheres to a global switch in settings
  * @param {string} message - message to show in the console
- * @param {boolean} force - show message even if _UI.devmode = false
+ * @param {boolean} force - show message even if devmode = false
  */
 function debug(message, force) {
-    // if (!_UI.devMode) return;
+    let dev = window.GlyphrStudio.settings.dev;
+    // if (!dev.devMode) return;
 
-    if ((window._UI && window._UI.debug) || force) {
+    if (dev.mode || force) {
         if (typeof message === 'string') {
             message = message.replace(/&lt;/gi, '<');
             message = message.replace(/&gt;/gi, '>');
@@ -42,17 +43,17 @@ function debug(message, force) {
             } else if (message === 'groupCollapsed') {
                 console.groupCollapsed();
                 return;
-            } else if (_UI.debugAutoGroup && message.indexOf('- START') > 0) {
+            } else if (dev.debugAutoGroup && message.indexOf('- START') > 0) {
                 console.group(message.substr(2).replace(' - START', ''));
                 return;
-            } else if (message === 'groupEnd'|| (_UI.debugAutoGroup && message.indexOf('- END') > 0)) {
+            } else if (message === 'groupEnd'|| (dev.debugAutoGroup && message.indexOf('- END') > 0)) {
                 console.groupEnd(message);
                 return;
             } else {
                 console.log(message);
             }
         } else if (typeof message === 'object') {
-            if (_UI.debugTableObjects) console.table(message);
+            if (dev.debugTableObjects) console.table(message);
             else console.log(message);
         }
     }
@@ -121,7 +122,7 @@ function makeSuperTitleSeperator() {
 function setProjectAsSaved() {
     _UI.projectSaved = true;
 
-    if (_UI.devMode) {
+    if (window.GlyphrStudio.settings.dev.mode) {
         document.title = '░▒▓█ GSDEVMODE █▓▒░';
     } else if (_UI.popOut) {
         document.title = 'Glyphr Studio - Tools';
@@ -139,7 +140,7 @@ function setProjectAsSaved() {
 function setProjectAsUnsaved() {
     _UI.projectSaved = false;
 
-    if (_UI.devMode) {
+    if (window.GlyphrStudio.settings.dev.mode) {
         document.title = '░▒▓█ GSDEVM❖DE █▓▒░';
     } else if (_UI.popOut) {
         document.title = ' ❖ Glyphr Studio - Tools';

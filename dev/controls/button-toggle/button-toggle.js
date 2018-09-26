@@ -1,5 +1,5 @@
 import {makeElement} from '../controls.js';
-import {uiColors, flashUIElementAsActive} from '../../app/colors.js';
+import {uiColors, flashUIElementAsActive} from '../../common/colors.js';
 
 /**
  * Shows an icon that is either selected or unselected,
