@@ -3,7 +3,16 @@ import {decToHex} from '../common/unicode.js';
 import {round} from '../common/functions.js';
 
 /**
- * Creates a new Glyphr Studio Project Editor
+ * Creates a new Glyphr Studio Project Editor.
+ * An Editor is all the UI it takes to edit a project,
+ * including Pages, Panels, History, Saved State,
+ * Import/Export, etc.
+ *
+ * Many Project Editors can be run side-by-side,
+ * editing many Glyphr Studio Projects. Could be
+ * in tabs or separate windows, but the App has
+ * access to all the Project Editors, enabling
+ * cross-project features like glyph copy/paste.
  */
 export default class ProjectEditor {
     /**
@@ -13,12 +22,30 @@ export default class ProjectEditor {
     constructor({
         project = {},
         selectedWorkItems = {},
-        selectedNavItems = {},
         } = {}) {
         this.project = project;
         this.selectedWorkItems = selectedWorkItems;
-        this.selectedNavItems = selectedNavItems;
-        this._history = {};
+
+        // Navigation
+        this.nav = {
+            page: 'openproject',
+            panel: false,
+            lastPanel: 'npChooser',
+            hamburger: {
+                state: 11,
+                direction: -1,
+                timeout: {},
+            },
+            projectSaved: true,
+            stopPageNavigation: true,
+        };
+
+        // History
+        this.history = {};
+        this.history['glyph edit'] = new History('glyphs', this);
+        this.history.components = new History('components', this);
+        this.history.ligatures = new History('ligatures', this);
+        this.history.kerning = new History('kerning', this);
     }
 
 
@@ -57,30 +84,30 @@ export default class ProjectEditor {
      * Get the selected work items
      * @returns {GlyphrStudioProject}
      */
-    get selectedWorkItems() {
-        if (this._selectedWorkItems && this._selectedWorkItems !== {}) return this._selectedWorkItems;
+    get selectedWorkItemIDs() {
+        if (this._selectedWorkItemIDs && this._selectedWorkItemIDs !== {}) return this._selectedWorkItemIDs;
         else {
-            this._selectedWorkItems = {
+            this._selectedWorkItemIDs = {
                 glyph: this.selectedGlyphID(),
                 ligature: this.selectedLigatureID(),
                 component: this.selectedComponentID(),
                 kern: this.selectedKernID(),
             };
-            return this._selectedWorkItems;
+            return this._selectedWorkItemIDs;
         }
     }
 
     /**
      * Set the selected work items
-     * @param {GlyphrStudioProject} swi - selectedWorkItems to set
+     * @param {GlyphrStudioProject} swi - selectedWorkItemIDs to set
      * @returns {GlyphrStudioProject}
      */
-    set selectedWorkItems(swi) {
-        this._selectedWorkItems.glyph = swi.glyph || this.selectedGlyphID();
-        this._selectedWorkItems.ligature = swi.ligature || this.selectedLigatureID();
-        this._selectedWorkItems.component = swi.component || this.selectedComponentID();
-        this._selectedWorkItems.kern = swi.kern || this.selectedKernID();
-        return this._selectedWorkItems;
+    set selectedWorkItemIDs(swi) {
+        this._selectedWorkItemIDs.glyph = swi.glyph || this.selectedGlyphID();
+        this._selectedWorkItemIDs.ligature = swi.ligature || this.selectedLigatureID();
+        this._selectedWorkItemIDs.component = swi.component || this.selectedComponentID();
+        this._selectedWorkItemIDs.kern = swi.kern || this.selectedKernID();
+        return this._selectedWorkItemIDs;
     }
 
 
@@ -243,12 +270,95 @@ export default class ProjectEditor {
     updateCurrentGlyphWidth() {
         let sc = getSelectedWorkItem();
         if (!sc) return;
-        if (_UI.currentPage === 'glyph edit') {
+        if (editor.nav.page === 'glyph edit') {
             sc.changed();
-        } else if (_UI.currentPage === 'components' && sc) {
+        } else if (editor.nav.page === 'components' && sc) {
             let lsarr = sc.usedIn;
             if (lsarr) for (let c=0; c<lsarr.length; c++) getGlyph(lsarr[c]).changed();
         }
+    }
+
+
+    // --------------------------------------------------------------
+    // History
+    // --------------------------------------------------------------
+
+    /**
+     * Adds to the history queue
+     * @param {string} description
+     */
+    historyPut(description) {
+        if (this.onCanvasEditPage()) {
+            let queue = this.nav.page === 'import svg'? 'glyph edit' : this.nav.page;
+            this.history[queue].put(description);
+        }
+    }
+
+    /**
+     * Moves backwards in time in the history queue
+     */
+    historyPull() {
+        if (this.onCanvasEditPage()) {
+            this.closeDialog();
+            this.closeNotation();
+            this.history[this.nav.page].pull();
+        }
+    }
+
+    /**
+     * Get the length of the current history queue
+     * @returns {number}
+     */
+    historyLength() {
+        if (this.onCanvasEditPage()) {
+            return this.history[this.nav.page].queue.length || 0;
+        }
+
+        return 0;
+    }
+
+
+    // --------------------------------------------------------------
+    // Navigation identifyer functions
+    // --------------------------------------------------------------
+
+    /**
+     * Returns True if the current page has a glyph chooser panel
+     * @returns {boolean}
+     */
+    onChooserPanelPage() {
+        let nh = this.nav.page;
+        return ( nh==='glyph edit' ||
+                    nh==='components' ||
+                    nh==='kerning' ||
+                    nh==='import svg' ||
+                    nh==='ligatures');
+    }
+
+    /**
+     * Returns true if the current page has an Edit Canvas
+     * @returns {boolean}
+     */
+    onCanvasEditPage() {
+        let nh = this.nav.page;
+        return ( nh==='glyph edit' ||
+                    nh==='components' ||
+                    nh==='kerning' ||
+                    nh==='ligatures');
+    }
+
+    /**
+     * Returns true if the current page has no panels
+     * @returns {boolean}
+     */
+    onNoNavPage() {
+        let nh = this.nav.page;
+        return ( nh==='font settings' ||
+                    nh==='project settings' ||
+                    nh==='global actions' ||
+                    nh==='export font' ||
+                    nh==='help' ||
+                    nh==='about');
     }
 
 
@@ -406,17 +516,7 @@ export default class ProjectEditor {
 
 window._UI = {
 
-    // all pages
-    currentPage: 'openproject',
-    currentPanel: false,
-    lastPanel: 'npChooser',
-    hamburger: {
-        state: 11,
-        direction: -1,
-        timeout: {},
-    },
-    projectSaved: true,
-    stopPageNavigation: true,
+
     icons: {},
     cursors: {},
 

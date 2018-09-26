@@ -76,7 +76,7 @@
         delete getCurrentProject().components[_UI.selectedComponent];
         _UI.selectedComponent = getFirstID(getCurrentProject().components);
 
-        // history_put('Deleted ' + oldname);
+        // historyPut('Deleted ' + oldname);
 
         // debug('\t after delete ' + getCurrentProject().components);
         redraw({calledBy: 'deleteComponent'});

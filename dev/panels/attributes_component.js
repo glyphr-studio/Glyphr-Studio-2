@@ -195,7 +195,7 @@
             }
         }
 
-        history_put('component '+key);
+        historyPut('component '+key);
         _UI.focusElement = id;
         redraw({calledBy: 'componentInstanceDetails'});
     }

@@ -67,7 +67,7 @@
             lig[lid] = new Glyph({'glyphhex': lid, 'name': ('Ligature ' + inlig)});
             sortLigatures();
             _UI.selectedLigature = lid;
-            history_put('Created ' + getSelectedWorkItemName());
+            historyPut('Created ' + getSelectedWorkItemName());
             navigate();
             closeDialog();
         }
@@ -127,7 +127,7 @@
         delete getCurrentProject().ligatures[_UI.selectedLigature];
         _UI.selectedLigature = getFirstID(getCurrentProject().ligatures);
 
-        // history_put('Deleted ' + oldname);
+        // historyPut('Deleted ' + oldname);
 
         // debug('\t after delete ' + getCurrentProject().ligatures);
         redraw({calledBy: 'deleteLigature'});

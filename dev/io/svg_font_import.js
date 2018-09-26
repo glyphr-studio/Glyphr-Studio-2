@@ -35,7 +35,7 @@
 
             try {
                 // Get Font
-                let svgdata = _UI.droppedFileContent;
+                let svgdata = window.GlyphrStudio.temp.droppedFileContent;
                 // Convert unicode glyphs to decimal values
                 // DOM Parser does not return unicode values as text strings
                 // Kern groups containing '&#x' will get fuck'd

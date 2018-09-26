@@ -108,7 +108,7 @@ function insertComponentInstance(sourceComponentID, destinationGlyphID, copyGlyp
         if (copyGlyphAttributes.srcRSB) destinationGlyph.rightSideBearing = sourceComponentGlyph.rightSideBearing;
 
         closeDialog();
-        history_put('insert component from glyphedit');
+        historyPut('insert component from glyphedit');
         redraw({calledBy: 'insertComponent'});
         return true;
     } else {

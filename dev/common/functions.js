@@ -76,7 +76,7 @@ function makePanelSuperTitle() {
         let name;
         // debug('\t selwi = ' + selwi.objType);
 
-        content += '<h1 class="panelsupertitle">'+_UI.currentPage.toUpperCase();
+        content += '<h1 class="panelsupertitle">'+editor.nav.page.toUpperCase();
         if (_UI.currentPanel === 'npChooser' ||
             _UI.currentPanel === 'npGuides' ||
             _UI.currentPanel === 'npHistory') return content + '</h1>';
@@ -88,7 +88,7 @@ function makePanelSuperTitle() {
             if (selwi.name) name = name.replace(/latin /i, '');
             content += makeSuperTitleSeperator();
             content += name;
-        } else if (_UI.currentPage === 'kerning') {
+        } else if (editor.nav.page === 'kerning') {
             // debug('\t selwi = false, on kerning');
             name = getSelectedKern();
             content += name? makeSuperTitleSeperator() + name.getName() : '';

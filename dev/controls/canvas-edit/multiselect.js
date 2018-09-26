@@ -274,7 +274,7 @@ import _UI from '../app/settings.js';
 
             for (let n=0; n<cs.length; n++) addShape(cs[n]);
 
-            history_put('Combined shapes');
+            historyPut('Combined shapes');
         }
 
         // debug(' multiSelect.shapes.combine - END\n');
@@ -314,7 +314,7 @@ import _UI from '../app/settings.js';
         let gnum = g.shapes.length;
         g.alignShapes(edge);
 
-        history_put('Aligned ' + gnum + ' shapes ' + edge);
+        historyPut('Aligned ' + gnum + ' shapes ' + edge);
     };
 
     // Wrapper functions

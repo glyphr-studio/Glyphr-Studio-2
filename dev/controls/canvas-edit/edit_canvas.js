@@ -67,7 +67,7 @@ export default redraw;
         if (_UI.redraw.redrawCanvas) {
             if (_UI.glyphEditCTX) _UI.glyphEditCTX.clearRect(0, 0, _UI.glyphEditCanvasSize, _UI.glyphEditCanvasSize);
 
-            switch (_UI.currentPage) {
+            switch (editor.nav.page) {
                 case 'glyph edit': redraw_GlyphEdit(); break;
                 case 'components': redraw_GlyphEdit(); break;
                 case 'ligatures': redraw_GlyphEdit(); break;
@@ -125,10 +125,10 @@ export default redraw;
         let pathaddpointclass = '';
         let penclickable = true;
         let penaddpointclickable = true;
-        let onglyph = (_UI.currentPage === 'glyph edit');
-        let oncom = (_UI.currentPage === 'components');
-        let onlig = (_UI.currentPage === 'ligatures');
-        let onkern = (_UI.currentPage === 'kerning');
+        let onglyph = (editor.nav.page === 'glyph edit');
+        let oncom = (editor.nav.page === 'components');
+        let onlig = (editor.nav.page === 'ligatures');
+        let onkern = (editor.nav.page === 'kerning');
         let type = _UI.multiSelect.shapes.getType();
         let selectedWorkItem = getSelectedWorkItem();
 
@@ -883,7 +883,7 @@ export default redraw;
 // -------------------
 
     function setView(oa) {
-        let sc = (_UI.currentPage === 'kerning')? getSelectedKernID() : getSelectedWorkItemID();
+        let sc = (editor.nav.page === 'kerning')? getSelectedKernID() : getSelectedWorkItemID();
         let v = _UI.views || {};
 
         // Ensure there are at least defaults
@@ -901,7 +901,7 @@ export default redraw;
         // debug('\n getView - START');
         // debug('\t calledBy: ' + calledBy);
 
-        let onkern = (_UI.currentPage === 'kerning');
+        let onkern = (editor.nav.page === 'kerning');
         let sc = onkern? getSelectedKernID() : getSelectedWorkItemID();
         let v = _UI.views || {};
         let re;
@@ -1070,21 +1070,21 @@ export default redraw;
         let len = 0;
         let nph = _UI.currentPanel;
 
-        if (_UI.currentPage === 'ligatures') {
+        if (editor.nav.page === 'ligatures') {
             len = countObjectKeys(getCurrentProject().ligatures);
             if (!len) {
                 _UI.selectedLigature = false;
                 if (nph !== 'npNav') nph = 'npChooser';
                 return false;
             }
-        } else if (_UI.currentPage === 'components') {
+        } else if (editor.nav.page === 'components') {
             len = countObjectKeys(getCurrentProject().components);
             if (!len) {
                 _UI.selectedComponent = false;
                 if (nph !== 'npNav') nph = 'npChooser';
                 return false;
             }
-        } else if (_UI.currentPage === 'kerning') {
+        } else if (editor.nav.page === 'kerning') {
             len = countObjectKeys(getCurrentProject().kerning);
             if (!len) {
                 _UI.selectedKern = false;
@@ -1098,10 +1098,10 @@ export default redraw;
 
     function getSelectedWorkItem() {
         // debug('\n getSelectedWorkItem - START');
-        // debug('\t currentPage: ' + _UI.currentPage);
+        // debug('\t currentPage: ' + editor.nav.page);
         let re;
 
-        switch (_UI.currentPage) {
+        switch (editor.nav.page) {
             case 'glyph edit':
                 if (!_UI.selectedGlyph) _UI.selectedGlyph = '0x0041';
                 re = getGlyph(_UI.selectedGlyph, true);
@@ -1132,7 +1132,7 @@ export default redraw;
     }
 
     function getSelectedWorkItemID() {
-        switch (_UI.currentPage) {
+        switch (editor.nav.page) {
             case 'glyph edit': return _UI.selectedGlyph;
             case 'import svg': return _UI.selectedSVGImportTarget;
             case 'ligatures': return _UI.selectedLigature;
@@ -1651,8 +1651,8 @@ export default redraw;
         if (!getSelectedWorkItemID()) return;
 
         let ps = getCurrentProject().projectSettings;
-        let onglyphedit = (_UI.currentPage === 'glyph edit' || _UI.currentPage === 'ligatures');
-        let onkern = (_UI.currentPage === 'kerning');
+        let onglyphedit = (editor.nav.page === 'glyph edit' || editor.nav.page === 'ligatures');
+        let onkern = (editor.nav.page === 'kerning');
         // debug('\t ps.guides: ');
         // debug(ps.guides);
 

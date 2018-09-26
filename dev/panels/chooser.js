@@ -19,13 +19,13 @@
         let gcp = _UI.glyphChooser.panel;
         // _UI.glyphChooser.cache = false;
 
-        if (_UI.currentPage === 'glyph edit') {
+        if (editor.nav.page === 'glyph edit') {
             asyncLoadChooserPanel();
             // _UI.glyphChooser.cache = make_GlyphChooser(_UI.glyphChooser.panel);
-        } else if (_UI.currentPage === 'import svg') {
+        } else if (editor.nav.page === 'import svg') {
             asyncLoadChooserPanel();
             // _UI.glyphChooser.cache = make_GlyphChooser(_UI.glyphChooser.panel);
-         } else if (_UI.currentPage === 'ligatures') {
+         } else if (editor.nav.page === 'ligatures') {
             let emptyligs = countObjectKeys(getCurrentProject().ligatures) === 0;
             if (!emptyligs) {
                 content += make_GlyphChooser(gcp);
@@ -45,14 +45,14 @@
                 content += 'convert your SVG Font to an OTF Font.';
                 content += '</div>';
             }
-        } else if (_UI.currentPage === 'components') {
+        } else if (editor.nav.page === 'components') {
             let emptycoms = countObjectKeys(getCurrentProject().components) === 0;
             if (!emptycoms) {
                 content += make_GlyphChooser(gcp);
             }
             content += '<div class="panel_section" ';
             content += emptycoms? 'style="padding-top:-10px;">' : '>';
-            content += '<button onclick="createNewComponent();history_put(\'Create New Component\');navigate({panel:\'npAttributes\'});">create new component</button><br>';
+            content += '<button onclick="createNewComponent();historyPut(\'Create New Component\');navigate({panel:\'npAttributes\'});">create new component</button><br>';
             if (!emptycoms) content += '<button onclick="deleteComponentConfirm();">delete selected component</button><br>';
             content += '</div>';
         }
@@ -90,8 +90,8 @@
         let con = '';
 
         if ( (gcdata.choices === 'all') ||
-            (_UI.currentPage === 'glyph edit' && pluralGlyphRange()) ||
-            (_UI.currentPage === 'import svg' && (pluralGlyphRange() || countObjectKeys(getCurrentProject().components) || countObjectKeys(getCurrentProject().ligatures))) ) {
+            (editor.nav.page === 'glyph edit' && pluralGlyphRange()) ||
+            (editor.nav.page === 'import svg' && (pluralGlyphRange() || countObjectKeys(getCurrentProject().components) || countObjectKeys(getCurrentProject().ligatures))) ) {
                 con += make_GlyphChooser_Header(gcdata.selected);
         }
 

@@ -1,6 +1,6 @@
 
 import {getGlyph} from '../app/globalgetters.js';
-export {importGlyphrProjectFromText, newGlyphrStudioProject};
+export {importGlyphrProjectFromText, newProjectHandler};
 
 
 // -------------------------------
@@ -19,7 +19,7 @@ function importGlyphrProjectFromText() {
 
     let fcontent;
     try {
-        fcontent = JSON.parse(_UI.droppedFileContent);
+        fcontent = JSON.parse(window.GlyphrStudio.temp.droppedFileContent);
     } catch (e) {
         fcontent = {};
     }
@@ -28,7 +28,7 @@ function importGlyphrProjectFromText() {
     let v = false;
     let ps = fcontent.projectSettings;
     if (ps) {
-        tempVersion = ps.versionnum;
+        tempVersion = ps.versionNum;
         v = ps.version;
     }
     // debug(fcontent);
@@ -42,12 +42,12 @@ function importGlyphrProjectFromText() {
     // Give pre-Beta-3 accurate version
     if (!tempVersion) {
         tempVersion = '0.3.0';
-        ps.initialversionnum = '0.3.0';
+        ps.initialVersionNum = '0.3.0';
     }
-    if (!ps.initialversionnum) ps.initialversionnum = tempVersion;
+    if (!ps.initialVersionNum) ps.initialVersionNum = tempVersion;
 
     let projectVersion = parseVersionNum(tempVersion);
-    let currentAppVersion = parseVersionNum(_UI.thisGlyphrStudioVersionNum);
+    let currentAppVersion = parseVersionNum(window.GlyphrStudio.versionNum);
     // debug("\t versionnum found " + tempVersion);
 
 
@@ -93,8 +93,8 @@ function importGlyphrProjectFromText() {
 
 
     // Update the version
-    ps.versionnum = _UI.thisGlyphrStudioVersionNum;
-    ps.version = _UI.thisGlyphrStudioVersion;
+    ps.versionNum = window.GlyphrStudio.versionNum;
+    ps.version = window.GlyphrStudio.version;
 
 
     // Hydrate after all updates
@@ -155,10 +155,10 @@ function loadGlyphrStudioProject(newProject, callback) {
 
 
 /**
- * Creates a new Glyphr Studio Project object from scratch,
- * and assigns it to the global _GP variable
+ * Creates a new Glyphr Studio Project object from scratch
+ * @returns {GlyphrStudioProject}
  */
-function newGlyphrStudioProject() {
+function newProjectHandler() {
     let fn;
     if (document.getElementById('newprojectname') && document.getElementById('newprojectname').value) {
         fn = document.getElementById('newprojectname').value;
@@ -166,21 +166,22 @@ function newGlyphrStudioProject() {
         fn = 'My Font';
     }
 
-    _GP = new GlyphrStudioProject();
+    let project = new GlyphrStudioProject();
 
-    getCurrentProject().projectSettings.name = fn;
-    getCurrentProject().metadata.font_family = fn.substr(0, 31);
+    project.projectSettings.name = fn;
+    project.metadata.font_family = fn.substr(0, 31);
 
-    getCurrentProject().projectSettings.version = _UI.thisGlyphrStudioVersion;
-    getCurrentProject().projectSettings.versionnum = _UI.thisGlyphrStudioVersionNum;
-    getCurrentProject().projectSettings.projectid = makeProjectID();
+    project.projectSettings.version = window.GlyphrStudio.version;
+    project.projectSettings.versionNum = window.GlyphrStudio.versionNum;
+    project.projectSettings.projectID = makeProjectID();
 
-    getGlyph('0x0020', true).isAutoWide = false;
-    getGlyph('0x0020', true).glyphWidth = round(getCurrentProject().projectSettings.upm/3);
-    getGlyph('0x0041', true);
+    project.getGlyph('0x0020', true).isAutoWide = false;
+    project.getGlyph('0x0020', true).glyphWidth = round(project.projectSettings.upm/3);
+    project.getGlyph('0x0041', true);
 
     finalizeUI();
-    // navigate();
+
+    return project;
 }
 
 /**
@@ -189,12 +190,6 @@ function newGlyphrStudioProject() {
  */
 function finalizeUI() {
     // debug("finalizeUI \t START");
-
-    // UI Defaults
-    _UI.history['glyph edit'] = new History('glyphs');
-    _UI.history.components = new History('components');
-    _UI.history.ligatures = new History('ligatures');
-    _UI.history.kerning = new History('kerning');
 
     _UI.guides.leftGroupXMax = new Guide(_UI.guides.leftGroupXMax);
     _UI.guides.rightGroupXMin = new Guide(_UI.guides.rightGroupXMin);
@@ -223,7 +218,7 @@ function finalizeUI() {
     calculateDefaultView();
     resetThumbView();
 
-    _UI.currentPage = 'glyph edit';
+    editor.nav.page = 'glyph edit';
 
     // debug("finalizeUI \t END\n");
 }

@@ -44,7 +44,7 @@
             '<td colspan="2">grid '+sliderUI('gridtransparency', 'gridtransparency_panel', false, true)+'</td></tr>'+
             '</table>';
 
-        if (_UI.currentPage !== 'kerning') {
+        if (editor.nav.page !== 'kerning') {
             content += '<br><h3 style=" margin-bottom:0px;">system guides</h3>';
             // content += 'transparency:<input type="range" min="0" max="100" value="'+ps.colors.systemguidetransparency+'" step="1" oninput="updateTransparency(\'systemguidetransparency\', this.value);"/><span id="systemguidetransparency">'+ps.colors.systemguidetransparency+'</span>%<br><br>';
             content += 'guide ' + sliderUI('systemguidetransparency', 'systemguidetransparency_panel', false, true) + '<br><br>';

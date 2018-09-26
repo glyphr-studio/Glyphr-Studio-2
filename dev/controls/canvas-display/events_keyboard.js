@@ -38,7 +38,7 @@
     function keypress(event) {
         // debug('\n keypress - START');
         if (event.type !== 'keydown') return;
-        if (_UI.currentPage === 'openproject') return;
+        if (editor.nav.page === 'openproject') return;
         if (getEditDocument().activeElement.id === 'contextglyphsinput') return;
 
         let eh = _UI.eventhandlers;
@@ -157,7 +157,7 @@
         // z
         if (kc==='undo' || ((eh.multi || event.metaKey) && kc==='z')) {
             event.preventDefault();
-            history_pull();
+            historyPull();
         }
 
         // plus
@@ -207,7 +207,7 @@
 
 
         // Only allow above stuff on Kerning page
-        if (_UI.currentPage === 'kerning') return;
+        if (editor.nav.page === 'kerning') return;
 
         // Only do the below stuff if the canvas has focus
 
@@ -219,11 +219,11 @@
 
                 if (em === 'pen') {
                     _UI.multiSelect.points.deletePathPoints();
-                    history_put('Delete Path Point');
+                    historyPut('Delete Path Point');
                     redraw({calledBy: 'Keypress DEL or BACKSPACE'});
                 } else if (em === 'arrow') {
                     _UI.multiSelect.shapes.deleteShapes();
-                    history_put('Delete Shape');
+                    historyPut('Delete Shape');
                     redraw({calledBy: 'Keypress DEL or BACKSPACE'});
                 }
             }
@@ -238,7 +238,7 @@
             if ((eh.multi || event.metaKey) && kc==='v') {
                 event.preventDefault();
                 pasteShape();
-                history_put('Paste Shape');
+                historyPut('Paste Shape');
                 redraw({calledBy: 'Paste Shape'});
             }
 

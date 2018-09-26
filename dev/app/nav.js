@@ -21,8 +21,8 @@
         clickEmptySpace();
         clearCanvasHotspots();
 
-        if (oa.page && _UI.currentPage !== oa.page) {
-            _UI.currentPage = oa.page;
+        if (oa.page && editor.nav.page !== oa.page) {
+            editor.nav.page = oa.page;
             _UI.currentPanel = false;
         } else {
             _UI.currentPanel = oa.panel || _UI.currentPanel;
@@ -33,10 +33,10 @@
         if (onChooserPanelPage()) setDefaultGlyphChooserPanel();
         if (oa.forcepanel) _UI.currentPanel = oa.panel;
 
-        // debug('\t page  set to ' + _UI.currentPage);
+        // debug('\t page  set to ' + editor.nav.page);
         // debug('\t panel set to ' + _UI.currentPanel);
 
-        if (_UI.currentPage === 'openproject') {
+        if (editor.nav.page === 'openproject') {
             makeLayout_OpenProject();
         } else if (_UI.popOut) {
             if (onCanvasEditPage()) {
@@ -52,7 +52,7 @@
         updateCursor();
         loadPageContent();
         getEditDocument().body.focus();
-        // debug('>>> NAVIGATED - to ' + _UI.currentPage);
+        // debug('>>> NAVIGATED - to ' + editor.nav.page);
     }
 
 
@@ -126,7 +126,7 @@
 
     function makeLayout_PopOut() {
         // debug('\n makeLayout_PopOut - START');
-        let onkern = _UI.currentPage === 'kerning';
+        let onkern = editor.nav.page === 'kerning';
 
         let pol = '<table class="popOut_table"><tr>';
         pol += '<td id="popOut_pagenav"></td>';
@@ -148,11 +148,11 @@
     function make_NavPanels_PopOut() {
         // debug('\n make_NavPanels_PopOut - START');
         // debug('\t\t primaryscreenlayout.innerhtml:\n' + document.getElementById('primaryScreenLayout').innerHTML);
-        let onge = _UI.currentPage === 'glyph edit';
-        let oncom = _UI.currentPage === 'components';
-        let onlig = _UI.currentPage === 'ligatures';
-        let ontd = _UI.currentPage === 'test drive';
-        let onkern = _UI.currentPage === 'kerning';
+        let onge = editor.nav.page === 'glyph edit';
+        let oncom = editor.nav.page === 'components';
+        let onlig = editor.nav.page === 'ligatures';
+        let ontd = editor.nav.page === 'test drive';
+        let onkern = editor.nav.page === 'kerning';
         let evmove = _UI.eventhandlers.currtool.dragging || _UI.eventhandlers.currtool.resizing;
 
         document.getElementById('popOut_pagenav').innerHTML = makePanel_PageNav();
@@ -219,9 +219,9 @@
     function setDefaultPanel() {
         // debug('\n setDefaultPanel - START');
         // debug('\t panel was ' + _UI.currentPanel);
-        // debug('\t on page ' + _UI.currentPage);
+        // debug('\t on page ' + editor.nav.page);
 
-        let nh = _UI.currentPage;
+        let nh = editor.nav.page;
 
         switch (nh) {
             case 'glyph edit': _UI.currentPanel = 'npChooser'; break;
@@ -244,7 +244,7 @@
 
     function setDefaultGlyphChooserPanel() {
         // debug('\n setDefaultGlyphChooserPanel - START');
-        let nh = _UI.currentPage;
+        let nh = editor.nav.page;
 
         switch (nh) {
             case 'glyph edit':
@@ -272,36 +272,9 @@
         // debug(' setDefaultGlyphChooserPanel - END\n');
     }
 
-    function onChooserPanelPage() {
-        let nh = _UI.currentPage;
-        return ( nh==='glyph edit' ||
-                    nh==='components' ||
-                    nh==='kerning' ||
-                    nh==='import svg' ||
-                    nh==='ligatures');
-    }
-
-    function onCanvasEditPage() {
-        let nh = _UI.currentPage;
-        return ( nh==='glyph edit' ||
-                    nh==='components' ||
-                    nh==='kerning' ||
-                    nh==='ligatures');
-    }
-
-    function onNoNavPage() {
-        let nh = _UI.currentPage;
-        return ( nh==='font settings' ||
-                    nh==='project settings' ||
-                    nh==='global actions' ||
-                    nh==='export font' ||
-                    nh==='help' ||
-                    nh==='about');
-    }
-
     function make_NavPanels_PopIn() {
         // debug('\n make_NavPanels_PopIn - START');
-        // debug('\t currentPage: ' + _UI.currentPage + '\tnavprimaryhere: ' + _UI.currentPanel);
+        // debug('\t currentPage: ' + editor.nav.page + '\tnavprimaryhere: ' + _UI.currentPanel);
 
         let np = document.getElementById('navarea_panel');
         document.getElementById('navarea_tabs').innerHTML = makePanel_NavTabs();
@@ -311,7 +284,7 @@
 
 
         if (!_UI.currentPanel) setDefaultPanel();
-        // if(_UI.currentPage === 'import svg') _UI.currentPanel = 'npChooser';
+        // if(editor.nav.page === 'import svg') _UI.currentPanel = 'npChooser';
 
         if (onNoNavPage() || _UI.currentPanel === 'npNav') {
             _UI.currentPanel = 'npNav';
@@ -330,7 +303,7 @@
 
             case 'npAttributes':
                 // debug('\t case npAttributes');
-                switch (_UI.currentPage) {
+                switch (editor.nav.page) {
                     case 'glyph edit':
                     case 'components':
                     case 'ligatures':
@@ -365,7 +338,7 @@
     }
 
     function loadPageContent() {
-        switch (_UI.currentPage) {
+        switch (editor.nav.page) {
             case 'openproject': loadPage_openproject(); break;
             case 'global actions': loadPage_globalactions(); break;
             case 'font settings': loadPage_fontsettings(); break;
@@ -388,7 +361,7 @@
         let wi = existingWorkItem();
 
         if (_UI.currentPanel !== 'npNav') {
-            switch (_UI.currentPage) {
+            switch (editor.nav.page) {
                 case 'glyph edit':
                 navarr.push('npChooser');
                 navarr.push('npLayers');
@@ -531,7 +504,7 @@
         for (let i=0; i<navarr.length; i++) {
             bc = 'navtargetbutton';
             iconcolor = _UI.colors.blue.l25;
-            if (navarr[i] === _UI.currentPage) {
+            if (navarr[i] === editor.nav.page) {
                 bc = 'navtargetbuttonsel';
                 iconcolor = _UI.colors.blue.l55;
             }
@@ -555,7 +528,7 @@
                 newsub += ('<a href="http://glyphrstudio.uservoice.com" class="navpanellink" target="_blank">Suggest a feature or improvement</a><br>');
             } else if (navarr[i] === 'issue') {
                 newsub += ('<a href="https://github.com/mattlag/Glyphr-Studio/issues/new" target="_blank" class="navpanellink">Create a new issue on github</a><br>');
-            } else if (navarr[i] === _UI.currentPage) {
+            } else if (navarr[i] === editor.nav.page) {
                 iconname = 'nav_'+navarr[i].replace(' ', '');
                 newsub += '<button class="'+bc+'" onclick="clickHamburger();">'+
                     '<div class="navtargeticon">'+makeIcon({'name': iconname, 'color': iconcolor, 'hovercolor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+

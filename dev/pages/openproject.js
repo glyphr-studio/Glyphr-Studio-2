@@ -76,7 +76,7 @@
         con += '<div class="openproject_tile" id="new_content" style="display: none;">'+
                     '<h2>Start a new Glyphr Studio Project</h2>'+
                     'Project name: &nbsp; <input id="newprojectname" type="text" value="My Font" autofocus/><br>'+
-                    '<button onclick="newGlyphrStudioProject(); navigate({page:\'glyph edit\'});" class="buttonsel">Start a new font from scratch</button>'+
+                    '<button onclick="newProjectHandler(); navigate({page:\'glyph edit\'});" class="buttonsel">Start a new font from scratch</button>'+
                 '</div>';
 
         // EXAMPLES
@@ -153,7 +153,7 @@
         if (fname === 'otf' || fname === 'ttf') {
             reader.onload = function() {
                 // debug('\n reader.onload::OTF or TTF - START');
-                _UI.droppedFileContent = reader.result;
+                window.GlyphrStudio.temp.droppedFileContent = reader.result;
                 ioOTF_importOTFfont();
                 // debug(' reader.onload:: OTF or TTF - END\n');
             };
@@ -162,7 +162,7 @@
         } else if (fname === 'svg' || fname === 'txt') {
             reader.onload = function() {
                 // debug('\n reader.onload::SVG or TXT - START');
-                _UI.droppedFileContent = reader.result;
+                window.GlyphrStudio.temp.droppedFileContent = reader.result;
                 if (fname === 'svg') {
                     // debug('\t File = .svg');
                     ioSVG_importSVGfont();
@@ -190,7 +190,7 @@
 
     function handleMessage(evt) {
         // assume strings are SVG fonts
-        _UI.droppedFileContent = evt.data;
+        window.GlyphrStudio.temp.droppedFileContent = evt.data;
 
         if ( typeof evt.data === 'string' ) {
             ioSVG_importSVGfont(false);

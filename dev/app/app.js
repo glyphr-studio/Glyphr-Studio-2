@@ -1,5 +1,6 @@
 import {colors} from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
+import {modegg, californiagothic, merriweathersans} from '../lib/samples.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -33,6 +34,8 @@ export default class GlyphrStudioApp {
             },
             telemetry: true, // Load google analytics
         };
+
+        this.temp = {};
     }
 
     /**
@@ -46,11 +49,12 @@ export default class GlyphrStudioApp {
 
             if (this.settings.dev.sampleProject) {
                 // debug('\t >>> Using sample project');
-                this.settings.droppedFileContent = JSON.stringify(this.settings.sampleproject[this.settings.dev.sampleProject]);
+                let samples = {modegg: modegg, californiagothic: californiagothic, merriweathersans: merriweathersans}
+                this.temp.droppedFileContent = JSON.stringify(samples[this.settings.dev.sampleProject]);
                 importGlyphrProjectFromText();
                 this.settings.dev.sampleProject = false;
             } else {
-                newGlyphrStudioProject();
+                this.projectEditors[0] = new ProjectEditor({project: newProjectHandler()});
             }
 
             if (this.settings.dev.currentPage === 'import svg') {

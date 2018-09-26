@@ -26,7 +26,7 @@
         '<h1>This Glyphr Project</h1>'+
         '<p>'+
         'The currently opened project was initially created with: '+
-        '<span style="font-weight:bold; color:rgb(102, 107, 112);">Version ' + getCurrentProject().projectSettings.initialversionnum + ' </span> '+
+        '<span style="font-weight:bold; color:rgb(102, 107, 112);">Version ' + getCurrentProject().projectSettings.initialVersionNum + ' </span> '+
         '</p>'+
 
         '<br><br>'+

@@ -284,7 +284,7 @@
     }
 
     function navToProjectSettings() {
-        _UI.currentPage = 'project settings';
+        editor.nav.page = 'project settings';
         navigate();
     }
 

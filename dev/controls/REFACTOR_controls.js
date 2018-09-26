@@ -873,7 +873,7 @@ import _UI from '../app/settings.js';
         let re = '';
 
         re += '<button class="pointtypebutton" style="background-color:'+bgcolor+';" ';
-        re += 'onclick="_UI.multiSelect.points.setPointType(\''+type+'\'); history_put(\'Point Type: '+type+'\'); redraw({calledBy:\'pointDetails\'});" ';
+        re += 'onclick="_UI.multiSelect.points.setPointType(\''+type+'\'); historyPut(\'Point Type: '+type+'\'); redraw({calledBy:\'pointDetails\'});" ';
         re += 'title="point type: '+type+'" ';
         re += '>';
         re += '<svg version="1.1" ';
@@ -938,7 +938,7 @@ import _UI from '../app/settings.js';
             'onclick="' +
                 // 'debug(\'Clicked on checkbox '+varname+'\'); ' +
                 varname + ' = !' + varname + '; ' +
-                // 'history_put(\'Toggled '+idname+': '+!currbool+'\'); '+
+                // 'historyPut(\'Toggled '+idname+': '+!currbool+'\'); '+
                 'redraw({calledBy:\'checkbox '+idname+'\'}); ' +
             '">';
         re += '<path fill="'+(currbool? selcolor : restcolor)+'" d="M17,12V8h-1V7h-1V6h-4v1h-1v1H9v4H8v8h10v-8H17z M15,12h-4V9h1V8h2v1h1V12z"/>';
@@ -958,7 +958,7 @@ import _UI from '../app/settings.js';
         re += 'onclick="'+varname+' = !'+varname+';';
 
         if (doredraw) {
-            re += ' history_put(\'Toggled '+idname+': '+!currbool+'\');';
+            re += ' historyPut(\'Toggled '+idname+': '+!currbool+'\');';
             re += ' redraw({calledBy:\'checkbox '+idname+'\', redrawTools:false});';
         }
 

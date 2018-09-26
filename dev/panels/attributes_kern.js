@@ -74,7 +74,7 @@
         k.value = val;
         // selectKern(id);
         getEditDocument().getElementById(id).value = val;
-        history_put(k.getName() + ' value: ' + val);
+        historyPut(k.getName() + ' value: ' + val);
     }
 
     function updateKernGroup(id, side, val) {
@@ -82,7 +82,7 @@
         if (side === 'left') k.leftgroup = parseKernGroupInput(val);
         else if (side === 'right') k.rightgroup = parseKernGroupInput(val);
         selectKern(id);
-        history_put('Updated Members: ' + k.getName());
+        historyPut('Updated Members: ' + k.getName());
     }
 
     function selectKern(id) {

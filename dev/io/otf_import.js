@@ -35,7 +35,7 @@ import {getGlyph} from '../app/globalgetters.js';
 
             try {
                 // Get Font
-                font = opentype.parse(_UI.droppedFileContent);
+                font = opentype.parse(window.GlyphrStudio.temp.droppedFileContent);
             } catch (err) {
                 loadPage_openproject();
                 openproject_changeTab('load');

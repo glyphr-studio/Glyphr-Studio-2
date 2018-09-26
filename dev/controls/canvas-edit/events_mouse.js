@@ -269,7 +269,7 @@ function Tool_ShapeEdit() {
         eh.firsty = -100;
         eh.rotationcenter = false;
         eh.rotationstarttopy = false;
-        if (eh.uqhaschanged) history_put('Path Edit tool');
+        if (eh.uqhaschanged) historyPut('Path Edit tool');
         eh.uqhaschanged = false;
         redraw({calledBy: 'Event Handler Tool_ShapeEdit mouseup'});
         // debug('EVENTHANDLER - after Tool_ShapeEdit Mouse Up REDRAW');
@@ -324,7 +324,7 @@ function Tool_NewBasicShape() {
 
         if ( (Math.abs(tnbs.xMax-tnbs.xMin) > getCurrentProject().projectSettings.pointsize) &&
             (Math.abs(tnbs.yMax-tnbs.yMin) > getCurrentProject().projectSettings.pointsize) ) {
-            let count = (_UI.currentPage === 'components')? (countObjectKeys(getCurrentProject().components)) : getSelectedWorkItemShapes().length;
+            let count = (editor.nav.page === 'components')? (countObjectKeys(getCurrentProject().components)) : getSelectedWorkItemShapes().length;
             let s = _UI.multiSelect.shapes.getSingleton();
 
             if (_UI.selectedTool==='newrect') {
@@ -344,7 +344,7 @@ function Tool_NewBasicShape() {
         _UI.eventhandlers.firstx = -100;
         _UI.eventhandlers.firsty = -100;
         _UI.eventhandlers.tempnewbasicshape = false;
-        history_put('New Basic Shape tool');
+        historyPut('New Basic Shape tool');
         _UI.eventhandlers.uqhaschanged = false;
 
         this.dragging = false;
@@ -376,7 +376,7 @@ function Tool_NewPath() {
 
         if (this.firstpoint) {
             // make a new shape with the new pathpoint
-            let count = (_UI.currentPage === 'components')? (countObjectKeys(getCurrentProject().components)) : getSelectedWorkItemShapes().length;
+            let count = (editor.nav.page === 'components')? (countObjectKeys(getCurrentProject().components)) : getSelectedWorkItemShapes().length;
             this.newshape = addShape(new Shape({'name': ('Shape '+count), 'path': new Path()}));
             this.currpt = this.newshape.path.addPathPoint(newpoint);
         } else if (this.newshape) {
@@ -449,7 +449,7 @@ function Tool_NewPath() {
             // if (this.newshape) this.newshape.path.calcMaxes();
             updateCurrentGlyphWidth();
             // For new shape tools, mouse up always adds to the undo-queue
-            history_put('New Path tool');
+            historyPut('New Path tool');
             _UI.eventhandlers.uqhaschanged = false;
             redraw({calledBy: 'Event Handler Tool_NewPath mouseup'});
         }
@@ -590,7 +590,7 @@ function Tool_PathEdit() {
         if (eh.uqhaschanged) {
             // _UI.multiSelect.shapes.calcMaxes();
             updateCurrentGlyphWidth();
-            history_put('Path Edit tool');
+            historyPut('Path Edit tool');
             eh.uqhaschanged = false;
             redraw({calledBy: 'Event Handler Tool_PathEdit mouseup'});
         }
@@ -612,7 +612,7 @@ function Tool_PathAddPoint() {
         if (this.addpoint && singleshape && singleshape.objType !==  'ComponentInstance') {
             let p = singleshape.path.insertPathPoint(this.addpoint.split, this.addpoint.point);
             if (p) _UI.multiSelect.points.select(p);
-            history_put('Added point to path');
+            historyPut('Added point to path');
         } else if (s) {
             _UI.multiSelect.points.clear();
             if (_UI.eventhandlers.multi) _UI.multiSelect.shapes.add(s);
@@ -728,7 +728,7 @@ function Tool_Kern() {
         // debug('Tool_Kern - Mouse Up');
         this.dragging = false;
         this.deltax = 0;
-        history_put('Kern Adjustment: ' + getSelectedKern().value);
+        historyPut('Kern Adjustment: ' + getSelectedKern().value);
         // redraw({calledBy:'Kern.mouseup'});
     };
 
