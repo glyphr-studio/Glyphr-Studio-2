@@ -13,7 +13,24 @@ divided out into folders.  Those two main areas are:
  that data in a way that's easy and slick.  That's where the App comes
  in.
 
- # The Glyph Element Hierarchy
+## Meta
+There are a few supporting things here, the root of which is **manifest.js**.
+It has a representation of all the files in the project.
+
+It is used by *./app/main.js* to build **Glyphr_Studio_v2.htm** which acts
+as a preview for the whole App.
+
+It is also used by *./app/test.js* to build **Glyphr_Studio_v2.test.htm**.
+Basic modules that can have automated tests are tested through this framework.
+For each *file.js* there should be a *file.test.js* that feeds into the
+results shown there.  For more interactive code that can't be tested in an
+automated way, like UI Controls, there should be individual *control.test.htm* files
+alongside the main *control.js* file in their respective directories.
+
+All code should have tests!
+
+
+# The Glyph Element Hierarchy
 
  Our data structure is roughly hierarchical:
 

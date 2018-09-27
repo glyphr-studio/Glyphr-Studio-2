@@ -14,36 +14,19 @@
         "LICENSE*.txt": true,
         "package-lock.json": true,
         "package.json": true,
-        "README.md": true
+        "README.md": false
     },
-    "cSpell.enabled": true,
-    "cSpell.enabledLanguageIds": [
-        "asciidoc",
-        "c",
-        "cpp",
-        "csharp",
-        "css",
-        "go",
-        "handlebars",
-        "html",
-        "jade",
-        "javascript",
-        "javascriptreact",
-        "json",
-        "latex",
-        "less",
-        "markdown",
-        "php",
-        "plaintext",
-        "pub",
-        "python",
-        "restructuredtext",
-        "rust",
-        "scss",
-        "text",
-        "typescript",
-        "typescriptreact",
-        "yml"
-    ],
-    "cSpell.language": "en"
+    "cSpell.language": "en",
+    "cSpell.words": [
+        "Coord",
+        "Affordances",
+        "Bezier",
+        "Directionality",
+        "glyphr",
+        "opentype",
+        "rmoveto",
+        "rrcurveto",
+        "xlink",
+        "xmlns"
+    ]
 }
