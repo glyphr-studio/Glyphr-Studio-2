@@ -62,7 +62,7 @@ export default class GlyphrStudioApp {
                 this.settings.importSVG.move = false;
             }
 
-            this.getCurrentProject().navigate({page: (this.settings.dev.currentPage || 'openproject'), panel: this.settings.dev.currentPanel});
+            this.getCurrentProjectEditor().navigate({page: (this.settings.dev.currentPage || 'openproject'), panel: this.settings.dev.currentPanel});
         }
 
         /* eslint-disable */
@@ -90,7 +90,7 @@ export default class GlyphrStudioApp {
             }
         }
 
-        this.getCurrentProject().navigate();
+        this.getCurrentProjectEditor().navigate();
 
         if (this.settings.dev.mode) this.settings.dev.testOnLoad();
 

@@ -1,3 +1,4 @@
+import {clone} from '../common/functions.js';
 
 /**
     History

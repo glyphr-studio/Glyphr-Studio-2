@@ -1,4 +1,5 @@
 import GlyphrStudioProject from './glyphr_studio_project.js';
+import History from './history.js';
 import {decToHex} from '../common/unicode.js';
 import {round} from '../common/functions.js';
 

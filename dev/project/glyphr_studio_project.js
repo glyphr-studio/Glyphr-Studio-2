@@ -1,4 +1,5 @@
 import Glyph from '../glyph_elements/glyph.js';
+import HKern from '../glyph_elements/hkern.js';
 import {clone, round} from '../common/functions.js';
 import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
 
