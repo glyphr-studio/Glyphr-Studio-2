@@ -80,7 +80,6 @@ let manifest = [
         files: [
             'controls.js',
             'controls.css',
-            'dialogs.js',
             'button-toggle/button-toggle.js',
             'canvas-display/canvas-display.js',
             'canvas-edit/canvas-edit.js',

@@ -23,7 +23,7 @@ export function glyphrStudioOnLoad() {
  * @param {function} callback - function to run after assembly
  *  manifest.js is found in the root of the dev directory
  */
-export function assemble(loadTests = false, callback = new function() {}) {
+export function assemble(loadTests = false, callback = false) {
     console.log(`\n assemble - START`);
 
     let tests = [];
@@ -78,6 +78,6 @@ export function assemble(loadTests = false, callback = new function() {}) {
         document.getElementsByTagName('head')[0].appendChild(newElement);
     }
 
+    if(callback) window.setTimeout(callback, 500);
     console.log(` assemble - END\n\n`);
-    window.setTimeout(callback, 500);
 };
