@@ -3,6 +3,7 @@ import History from './history.js';
 import {decToHex} from '../common/unicode.js';
 import {round} from '../common/functions.js';
 import {saveFile, makeDateStampSuffix} from '../common/functions.js';
+import PageOpenProject from '../pages/openproject.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -41,6 +42,8 @@ export default class ProjectEditor {
             projectSaved: true,
             stopPageNavigation: true,
         };
+
+        this.pages = [];
 
         // History
         this.history = {};
@@ -284,7 +287,8 @@ export default class ProjectEditor {
      * @param {object} oa
      */
     navigate(oa) {
-        document.body.innerHTML = '<h1 style="color: white;">hello, world!</h1>';
+        if (!this.pages.openProject) this.pages.openProject = new PageOpenProject();
+        this.pages.openProject.load();
     }
 
     /**
