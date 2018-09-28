@@ -1,5 +1,5 @@
 
-import {getGlyph} from '../app/globalgetters.js';
+
 export {importGlyphrProjectFromText, newProjectHandler};
 
 

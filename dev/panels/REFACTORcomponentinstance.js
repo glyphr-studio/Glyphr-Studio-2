@@ -1,5 +1,5 @@
 
-import {getGlyph} from '../app/globalgetters.js';
+
 export {cloneAndFlattenGlyph, showDialogAddComponent, addComponent,
     insertComponentInstance, turnComponentIntoShapes};
 

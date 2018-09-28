@@ -398,22 +398,6 @@ export default class ProjectEditor {
     }
 
     /**
-     * Generate a unique Project ID so we can recognize a
-     * project through file name and project name re-naming
-     * @returns {string} - ID
-     */
-    makeProjectID() {
-        let j = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-        let re = 'g_';
-
-        for (let i=0; i<10; i++) {
-            re += j.charAt(Math.floor(round(Math.random()*j.length)));
-        }
-
-        return re;
-    }
-
-    /**
      * Generates a date suffix for file saves
      * @returns {string}
      */

@@ -1,4 +1,4 @@
-import {colors} from '../common/colors.js';
+import {accentColors} from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
 import {modegg, californiagothic, merriweathersans} from '../lib/samples.js';
 
@@ -62,7 +62,7 @@ export default class GlyphrStudioApp {
                 this.settings.importSVG.move = false;
             }
 
-            navigate({page: (this.settings.dev.currentPage || 'openproject'), panel: this.settings.dev.currentPanel});
+            this.getCurrentProject().navigate({page: (this.settings.dev.currentPage || 'openproject'), panel: this.settings.dev.currentPanel});
         }
 
         /* eslint-disable */
@@ -90,7 +90,7 @@ export default class GlyphrStudioApp {
             }
         }
 
-        navigate();
+        this.getCurrentProject().navigate();
 
         if (this.settings.dev.mode) this.settings.dev.testOnLoad();
 
@@ -134,17 +134,17 @@ export default class GlyphrStudioApp {
                 <div class="closeFormatFlyout" onclick="closeDialog();">&times</div>
 
                 <button onclick="closeDialog(); showToast('Saving Glyphr Studio Project file...'); setTimeout(saveGlyphrProjectFile, 500);">
-                    ${makeIcon({'name': 'button_npNav', 'width': 32, 'height': 32, 'size': 50, 'color': colors.blue.l95, 'hovercolor': false})}
+                    ${makeIcon({'name': 'button_npNav', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hovercolor': false})}
                     <span>Glyphr Studio Project File</span>
                 </button>
 
                 <button onclick="closeDialog(); showToast('Exporting OTF font file...'); setTimeout(ioOTF_exportOTFfont, 500);">
-                    ${makeIcon({'name': 'nav_exportotf', 'width': 32, 'height': 32, 'size': 50, 'color': colors.blue.l95, 'hovercolor': false})}
+                    ${makeIcon({'name': 'nav_exportotf', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hovercolor': false})}
                     <span>OTF Font</span>
                 </button>
 
                 <button onclick="closeDialog(); showToast('Exporting SVG font file...'); setTimeout(ioSVG_exportSVGfont, 500);">
-                    ${makeIcon({'name': 'nav_exportsvg', 'width': 32, 'height': 32, 'size': 50, 'color': colors.blue.l95, 'hovercolor': false})}
+                    ${makeIcon({'name': 'nav_exportsvg', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hovercolor': false})}
                     <span>SVG Font</span>
                 </button>
 

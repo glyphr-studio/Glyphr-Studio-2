@@ -8,7 +8,7 @@ import {clone, round, isVal, hasNonValues, duplicates, pointsAreEqual} from '../
 // import {json} from '../common/functions.js';
 import {getOverallMaxes, maxesOverlap} from './maxes.js';
 import {findSegmentIntersections} from './polysegment.js';
-import {sXcX, sYcY, getView} from '../edit_canvas/edit_canvas.js';
+import {sXcX, sYcY, getView} from '../controls/canvas-edit/canvas-edit.js';
 
 /**
  * Glyph Element > Path

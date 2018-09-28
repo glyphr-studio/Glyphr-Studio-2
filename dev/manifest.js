@@ -74,29 +74,25 @@ let manifest = [
         ],
     },
 */
-    {
-        path: 'edit_canvas',
-        files: [
-            'edit_canvas.js',
-            // 'events_mouse.js',
-            // 'events_keyboard.js',
-            // 'guide.js',
-            // 'multiselect.js',
-            // 'glyph_sequence.js',
 
-            // 'edit_canvas.css',
-        ],
-    },
-/*
     {
         path: 'controls',
         files: [
             'controls.js',
             'controls.css',
             'dialogs.js',
+            'button-toggle/button-toggle.js',
+            'canvas-display/canvas-display.js',
+            'canvas-edit/canvas-edit.js',
+            'fancy-button/fancy-button.js',
+            'glyph-tile/glyph-tile.js',
+            'info-bubble/info-bubble.js',
+            'input-number/input-number.js',
+            'input-number-lockable/input-number-lockable.js',
         ],
     },
 
+/*
     {
         path: 'io',
         files: [

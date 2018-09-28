@@ -1,5 +1,5 @@
 
-import {getGlyph} from '../app/globalgetters.js';
+
 /**
     Page > Kerning
     HTML and associated functions for this page.

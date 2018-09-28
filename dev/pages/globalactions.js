@@ -1,5 +1,3 @@
-import {getGlyphType} from '../app/globalgetters.js';
-
 /**
     Page > Global Actions
     This page has actions that can be taken

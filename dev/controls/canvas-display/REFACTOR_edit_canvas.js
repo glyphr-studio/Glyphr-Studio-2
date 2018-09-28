@@ -1,5 +1,4 @@
 import {isVal, clone} from '../common/functions.js';
-import {getGlyph, getGlyphName} from '../app/globalgetters.js';
 
 export {sXcX, sYcY};
 export {getView, setView};

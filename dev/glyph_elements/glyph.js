@@ -3,7 +3,6 @@ import Maxes from './maxes.js';
 import Path from './path.js';
 import Shape from './shape.js';
 import ComponentInstance from './componentinstance.js';
-import {getGlyph, getProject} from '../app/globalgetters.js';
 import {clone, hasNonValues, isVal, trim} from '../common/functions.js';
 import {parseUnicodeInput, getUnicodeName} from '../common/unicode.js';
 import {getOverallMaxes} from './maxes.js';

@@ -1,23 +1,21 @@
 import manifest from '../manifest.js';
 import GlyphrStudioApp from './app.js';
 
-/**
- * MAIN
- * Some stuff to get up and running
- */
-//  debug(`\n MAIN.js - START`);
+/** export nothing by default */
+export default function() {};
 
+document.body.onload = glyphrStudioOnLoad;
 
 /**
  * First function to run when the browser starts
  */
-export default function glyphrStudioOnLoad() {
+export function glyphrStudioOnLoad() {
+    console.log(`glyphrStudioOnLoad - START`);
     assemble();
     window.GlyphrStudio = new GlyphrStudioApp();
     window.GlyphrStudio.start();
     console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\nv' + window.GlyphrStudio.versionNum + '\n\n', 'color:rgb(0,170,225)');
 }
-
 
 /**
  * Assemble adds .js and .css file references to the current HTML doc
@@ -26,13 +24,13 @@ export default function glyphrStudioOnLoad() {
  *  manifest.js is found in the root of the dev directory
  */
 export function assemble(loadTests = false, callback = new function() {}) {
-    debug(`\n assemble - START`);
+    console.log(`\n assemble - START`);
 
     let tests = [];
     let newElement;
     let nonModules = 'opentypejs';
 
-    // debug(manifest);
+    // console.log(manifest);
 
     manifest.forEach((directory) => {
         directory.files.forEach((file) => {
@@ -59,7 +57,7 @@ export function assemble(loadTests = false, callback = new function() {}) {
                 console.warn(`Assemble - unhandled file type ${suffix}`);
             }
 
-            // debug(`\t added ${file}`);
+            // console.log(`\t added ${file}`);
         });
     });
 
@@ -70,7 +68,7 @@ export function assemble(loadTests = false, callback = new function() {}) {
             newElement.setAttribute('type', 'module');
             document.getElementsByTagName('head')[0].appendChild(newElement);
 
-            // debug(`\t added test ${element}`);
+            // console.log(`\t added test ${element}`);
         });
 
         // main.test.js adds Glyph Element classes to the window._DEV object
@@ -80,6 +78,6 @@ export function assemble(loadTests = false, callback = new function() {}) {
         document.getElementsByTagName('head')[0].appendChild(newElement);
     }
 
-    debug(` assemble - END\n\n`);
+    console.log(` assemble - END\n\n`);
     window.setTimeout(callback, 500);
 };

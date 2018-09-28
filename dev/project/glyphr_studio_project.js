@@ -1,6 +1,5 @@
-import Guide from '../edit_canvas/guide.js';
-import {clone} from '../common/functions.js';
-import {makeProjectID} from './project_functions.js';
+import Glyph from '../glyph_elements/glyph.js';
+import {clone, round} from '../common/functions.js';
 import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
 
 /* eslint-disable camelcase*/
@@ -144,7 +143,7 @@ export default class GlyphrStudioProject {
         newProject.projectSettings.glyphrange = newProject.projectSettings.glyphrange || {};
 
         // Guides can be custom, so save a copy before merging with templates
-        let dataguides = clone(newProject.projectSettings.guides || {});
+        // let dataGuides = clone(newProject.projectSettings.guides || {});
 
         // Merge with templates
         if (newProject.projectSettings) {
@@ -158,7 +157,7 @@ export default class GlyphrStudioProject {
 
 
         // Guides
-        hydrateGlyphrObjectList(Guide, dataguides, this.projectSettings.guides);
+        // hydrateGlyphrObjectList(Guide, dataGuides, this.projectSettings.guides);
         // debug('\t finished hydrating guides');
 
         // Metadata
@@ -356,7 +355,6 @@ function merge(template, importing, trim) {
     return template;
 }
 
-
 /**
  * Takes generic Objects, and initializes them as Glyphr Studio objects
  * @param {Object} GlyphrStudioItem - Glyph, Guide, or HKern
@@ -369,4 +367,20 @@ function hydrateGlyphrObjectList(GlyphrStudioItem, source, destination) {
             destination[key] = new GlyphrStudioItem(source[key]);
         }
     }
+}
+
+/**
+ * Generate a unique Project ID so we can recognize a
+ * project through file name and project name re-naming
+ * @returns {string} - ID
+ */
+function makeProjectID() {
+    let j = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+    let re = 'g_';
+
+    for (let i=0; i<10; i++) {
+        re += j.charAt(Math.floor(round(Math.random()*j.length)));
+    }
+
+    return re;
 }

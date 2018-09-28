@@ -1,5 +1,5 @@
 
-import {getGlyph} from '../app/globalgetters.js';
+
 /**
     IO > Import > OpenType
     Using OpenType.js to read in a font file

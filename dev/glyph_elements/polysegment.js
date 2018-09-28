@@ -5,7 +5,7 @@ import Segment from './segment.js';
 // import PathPoint from './pathpoint.js';
 import {maxesOverlap} from './maxes.js';
 import {duplicates, clone, pointsAreEqual, round, numSan} from '../common/functions.js';
-import {sXcX, sYcY} from '../edit_canvas/edit_canvas.js';
+import {sXcX, sYcY} from '../controls/canvas-edit/canvas-edit.js';
 
 /**
  * Glyph Element > Poly Segment

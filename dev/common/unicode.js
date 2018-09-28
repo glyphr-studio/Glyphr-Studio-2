@@ -3,8 +3,7 @@ import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
 export {
     decToHex, decToHTML, glyphToHex, charsToHexArray, hexToChars, hexToHTML,
     hexToUnicodeHex, parseUnicodeInput, isInputUnicode, isInputHex, validateHex,
-    unicodeInputHelp, addCustomGlyphRange, getCustomRange, updateCustomRangeTable,
-    removeCustomGlyphRange, getUnicodeName, getUnicodeShortName,
+    getUnicodeName, getUnicodeShortName,
     basicLatinOrder, unicodeRanges, ligatureToUnicode,
 };
 

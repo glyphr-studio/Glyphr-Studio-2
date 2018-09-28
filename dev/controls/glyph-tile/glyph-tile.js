@@ -1,7 +1,6 @@
 import {makeElement} from '../controls.js';
 import {uiColors, accentColors} from '../../common/colors.js';
 import {hexToChars} from '../../common/unicode.js';
-import {getGlyphName} from '../../app/globalgetters.js';
 import Glyph from '../../glyph_elements/glyph.js';
 
 /**
