@@ -78,6 +78,6 @@ export function assemble(loadTests = false, callback = false) {
         document.getElementsByTagName('head')[0].appendChild(newElement);
     }
 
-    if(callback) window.setTimeout(callback, 500);
+    if (callback) window.setTimeout(callback, 500);
     console.log(` assemble - END\n\n`);
 };

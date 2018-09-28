@@ -1,7 +1,7 @@
 export {debug as default};
 export {
     makePanelSuperTitle,
-    setProjectAsSaved, setProjectAsUnsaved, saveFile,
+    setProjectAsSaved, setProjectAsUnsaved, saveFile, makeDateStampSuffix,
     getFirstID, generateNewID, countObjectKeys,
     clone, json, areEqual, makeCrisp, round,
     numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
@@ -204,6 +204,21 @@ function saveFile(fname, buffer, ftype) {
     }
 }
 
+/**
+ * Generates a date suffix for file saves
+ * @returns {string}
+ */
+function makeDateStampSuffix() {
+    let d = new Date();
+    let yr = d.getFullYear();
+    let mo = d.getMonth()+1;
+    let day = d.getDate();
+    let hr = d.getHours();
+    let min = (d.getMinutes()<10? '0' : '') + d.getMinutes();
+    let sec = (d.getSeconds()<10? '0' : '') + d.getSeconds();
+
+    return (''+yr+'.'+mo+'.'+day+'-'+hr+'.'+min+'.'+sec);
+}
 
 // --------------------------------------------------------------
 // Object Functions

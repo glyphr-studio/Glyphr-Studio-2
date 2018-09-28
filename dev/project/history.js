@@ -10,14 +10,14 @@ import {clone} from '../common/functions.js';
 export default class History {
     /**
      * Create a new History
-     * @param {string} parentName - glyphs / ligatgures / components / kerning
+     * @param {string} parentName - glyphs / ligatures / components / kerning
      * @param {ProjectEditor} editor - parent to this history
      */
     constructor(parentName, editor) {
         this.queue = [];
         this.editor = editor;
         this.parentName = parentName;
-        this.currstate = clone(this.editor.project[this.parentName]);
+        this.currentState = clone(this.editor.project[this.parentName]);
         this.initialState = clone(this.editor.project[this.parentName]);
         this.initialDate = new Date().getTime();
     }
@@ -35,9 +35,9 @@ export default class History {
             'id': currentID,
             'description': des,
             'date': new Date().getTime(),
-            'state': clone(this.currstate),
+            'state': clone(this.currentState),
         });
-        this.currstate = clone(this.editor.project[this.parentName]);
+        this.currentState = clone(this.editor.project[this.parentName]);
         this.editor.setProjectAsUnsaved();
         this.editor.markSelectedWorkItemAsChanged();
         // debug(' History.put - END\n');
@@ -58,7 +58,7 @@ export default class History {
             } else {
                 hydrateGlyphrObjectList(Glyph, clone(top), this.editor.project[this.parentName]);
             }
-            this.currstate = clone(top);
+            this.currentState = clone(top);
         } else {
             // If the next undo item is a different glyph,
             // navigate to that glyph before undo-ing

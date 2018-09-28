@@ -2,6 +2,8 @@ import Glyph from '../glyph_elements/glyph.js';
 import HKern from '../glyph_elements/hkern.js';
 import {clone, round} from '../common/functions.js';
 import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
+import {decToHex, basicLatinOrder} from '../common/unicode.js';
+import Maxes, {getOverallMaxes} from '../glyph_elements/maxes.js';
 
 /* eslint-disable camelcase*/
 
@@ -325,6 +327,46 @@ export default class GlyphrStudioProject {
         }
 
         // debug(' getGlyphName - returning nothing - END\n');
+    }
+
+    /**
+     * Calculate the overall bounds given every glyph in this font
+     * @returns {object} - font maxes
+     */
+    calcFontMaxes() {
+        let fm = {
+            numberOfGlyphs: 0,
+            maxGlyph: 0x20,
+            maxes: new Maxes(),
+        };
+
+        let thisGlyph;
+        let cr = this.projectSettings.glyphrange;
+
+        if (cr.basiclatin) {
+            for (let i=0; i<basicLatinOrder.length; i++) {
+                thisGlyph = this.getGlyph(basicLatinOrder[i]);
+                fm.numberOfGlyphs++;
+                fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[i]);
+                fm.maxes = getOverallMaxes(fm.maxes, thisGlyph.maxes);
+            }
+        }
+
+        if (cr.custom.length) {
+            for (let c=0; c<cr.custom.length; c++) {
+                for (let char=cr.custom[c].begin; char<cr.custom[c].end; char++) {
+                    thisGlyph = this.getGlyph(decToHex(char));
+                    fm.numberOfGlyphs++;
+                    fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[i]);
+                    fm.maxes = getOverallMaxes(fm.maxes, thisGlyph.maxes);
+                    // count++;
+                }
+            }
+        }
+
+        // Ligatures!
+
+        return fm;
     }
 }
 

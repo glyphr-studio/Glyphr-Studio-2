@@ -2,6 +2,7 @@ import GlyphrStudioProject from './glyphr_studio_project.js';
 import History from './history.js';
 import {decToHex} from '../common/unicode.js';
 import {round} from '../common/functions.js';
+import {saveFile, makeDateStampSuffix} from '../common/functions.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -236,51 +237,6 @@ export default class ProjectEditor {
 
 
     // --------------------------------------------------------------
-    // Selected Work Item Helper Functions
-    // --------------------------------------------------------------
-
-    /**
-     * Get the selected glyph's left side bearing
-     * @returns {number}
-     */
-    getSelectedGlyphLeftSideBearing() {
-        // debug('getSelectedGlyphLeftSideBearing');
-        let sc = getSelectedWorkItem();
-        if (!sc) return 0;
-        if (sc.objType === 'component') return 0;
-        if (!sc.isAutoWide) return 0;
-        return sc.leftSideBearing || this.project.projectSettings.defaultLSB;
-    }
-
-    /**
-     * Get the selected glyph's right side bearing
-     * @returns {number}
-     */
-    getSelectedGlyphRightSideBearing() {
-        // debug('getSelectedGlyphLeftSideBearing');
-        let sc = getSelectedWorkItem();
-        if (!sc) return 0;
-        if (sc.objType === 'component') return 0;
-        if (!sc.isAutoWide) return 0;
-        return sc.rightSideBearing || this.project.projectSettings.defaultRSB;
-    }
-
-    /**
-     * Updates the selected glyphs width
-     */
-    updateCurrentGlyphWidth() {
-        let sc = getSelectedWorkItem();
-        if (!sc) return;
-        if (editor.nav.page === 'glyph edit') {
-            sc.changed();
-        } else if (editor.nav.page === 'components' && sc) {
-            let lsarr = sc.usedIn;
-            if (lsarr) for (let c=0; c<lsarr.length; c++) getGlyph(lsarr[c]).changed();
-        }
-    }
-
-
-    // --------------------------------------------------------------
     // History
     // --------------------------------------------------------------
 
@@ -323,14 +279,13 @@ export default class ProjectEditor {
     // Navigation
     // --------------------------------------------------------------
 
-    navigate(oa){
+    /**
+     * Resets the current view to the appropriate Page and Panel
+     * @param {object} oa
+     */
+    navigate(oa) {
         document.body.innerHTML = '<h1 style="color: white;">hello, world!</h1>';
     }
-
-
-    // --------------------------------------------------------------
-    // Navigation identifyer functions
-    // --------------------------------------------------------------
 
     /**
      * Returns True if the current page has a glyph chooser panel
@@ -373,7 +328,7 @@ export default class ProjectEditor {
 
 
     // --------------------------------------------------------------
-    // Project Saving
+    // Save
     // --------------------------------------------------------------
 
     /**
@@ -382,7 +337,7 @@ export default class ProjectEditor {
      */
     saveGlyphrProjectFile(overwrite) {
         // debug('SAVEGLYPHRPROJECTVILE');
-        // debug('\t ' + getCurrentProject().projectSettings.formatsavefile);
+        // debug('\t ' + this.project.projectSettings.formatsavefile);
 
         // desktop overwrite / save as logic
         if (window && window.process && window.process.type) {
@@ -393,116 +348,18 @@ export default class ProjectEditor {
             }
         }
 
-        let savedata = this.project.save();
+        let saveData = this.project.save();
 
-        if (getCurrentProject().projectSettings.formatsavefile) savedata = json(savedata);
-        else savedata = JSON.stringify(savedata);
+        if (this.project.projectSettings.formatsavefile) saveData = json(saveData);
+        else saveData = JSON.stringify(saveData);
 
-        // debug('saveGlyphrProjectFile - \n'+savedata);
-        let fname = getCurrentProject().projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
+        // debug('saveGlyphrProjectFile - \n'+saveData);
+        let fileName = this.project.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
 
-        saveFile(fname, savedata);
+        saveFile(fileName, saveData);
 
-        closeDialog();
-        setProjectAsSaved();
-    }
-
-    /**
-     * Generates a date suffix for file saves
-     * @returns {string}
-     */
-    makeDateStampSuffix() {
-        let d = new Date();
-        let yr = d.getFullYear();
-        let mo = d.getMonth()+1;
-        let day = d.getDate();
-        let hr = d.getHours();
-        let min = (d.getMinutes()<10? '0' : '') + d.getMinutes();
-        let sec = (d.getSeconds()<10? '0' : '') + d.getSeconds();
-
-        return (''+yr+'.'+mo+'.'+day+'-'+hr+'.'+min+'.'+sec);
-    }
-
-    /**
-     * Iterates through each glyph calling a function
-     * collecting results if they are provided
-     * @param {function} fname - function to call on each glyph
-     * @returns {*}
-     */
-    glyphRangeIterator(fname) {
-        let cr = getCurrentProject().projectSettings.glyphrange;
-        let ccon = '';
-        // var count = 0;
-
-        if (cr.basiclatin) {
-            for (let i=0; i<_UI.basiclatinorder.length; i++) {
-                ccon += fname(_UI.basiclatinorder[i]);
-                // count++;
-            }
-        }
-
-        if (cr.latinsupplement) {
-            for (let s=_UI.glyphrange.latinsupplement.begin; s<=_UI.glyphrange.latinsupplement.end; s++) {
-                ccon += fname(decToHex(s));
-                // count++;
-            }
-        }
-
-        if (cr.latinextendeda) {
-            for (let a=_UI.glyphrange.latinextendeda.begin; a<=_UI.glyphrange.latinextendeda.end; a++) {
-                ccon += fname(decToHex(a));
-                // count++;
-            }
-        }
-
-        if (cr.latinextendedb) {
-            for (let b=_UI.glyphrange.latinextendedb.begin; b<=_UI.glyphrange.latinextendedb.end; b++) {
-                ccon += fname(decToHex(b));
-                // count++;
-            }
-        }
-
-        if (cr.custom.length) {
-            for (let c=0; c<cr.custom.length; c++) {
-                for (let range=cr.custom[c].begin; range<cr.custom[c].end; range++) {
-                    ccon += fname(decToHex(range));
-                    // count++;
-                }
-            }
-        }
-
-        // debug('GLYPHRangeITERATOR - count returned ' + count);
-
-        return ccon;
-    }
-
-    /**
-     * Calculate the overall bounds given every glyph in this font
-     */
-    calcFontMaxes() {
-        let fm = _UI.fontMetrics;
-        fm.numberOfGlyphs = 0;
-        fm.maxGlyph = 0x20;
-
-        glyphRangeIterator(function(hexID) {
-            fm.numberOfGlyphs++;
-            fm.maxGlyph = Math.max(fm.maxGlyph, hexID);
-            let cm = getCurrentProject().glyphs[hexID];
-            if (cm) {
-                cm = cm.maxes;
-                fm.maxes.xMax = Math.max(cm.xMax, fm.maxes.xMax);
-                fm.maxes.xMin = Math.min(cm.xMin, fm.maxes.xMin);
-                fm.maxes.yMax = Math.max(cm.yMax, fm.maxes.yMax);
-                fm.maxes.yMin = Math.min(cm.yMin, fm.maxes.yMin);
-            }
-        });
-
-        // var proportion = (fm.yMax / (fm.yMax-fm.yMin));
-        // var total = fm.yMax + Math.abs(fm.yMin) + getCurrentProject().projectSettings.lineGap;
-        // fm.hhea_ascent = round(total*proportion);
-        // fm.hhea_descent = (fm.hhea_ascent - total);
-
-        // debug('CALCFONTMAXES - numberOfGlyphs ' + _UI.fontMetrics.numberOfGlyphs);
+        this.closeDialog();
+        this.setProjectAsSaved();
     }
 }
 
@@ -651,17 +508,6 @@ window._UI = {
         end: 0x024F,
     },
 
-    // page: export font
-    fontMetrics: {
-        numberOfGlyphs: 0,
-        maxGlyph: 0x20,
-        maxes: {
-            xMax: -999999,
-            xMin: 999999,
-            yMax: -999999,
-            yMin: 999999,
-        },
-    },
     notDefGlyphShapes: '[]',
 
     // page: font settings
@@ -693,4 +539,210 @@ window._UI = {
         trademark: '',
     },
 };
+*/
+
+
+/*
+// ---------------------------------------------------------------------
+//    Global Get Selected Glyph and Shape
+// ---------------------------------------------------------------------
+    /**
+     * Get the selected glyph's left side bearing
+     * @returns {number}
+     *
+    getSelectedGlyphLeftSideBearing() {
+        // debug('getSelectedGlyphLeftSideBearing');
+        let sc = getSelectedWorkItem();
+        if (!sc) return 0;
+        if (sc.objType === 'component') return 0;
+        if (!sc.isAutoWide) return 0;
+        return sc.leftSideBearing || this.project.projectSettings.defaultLSB;
+    }
+
+    /**
+     * Get the selected glyph's right side bearing
+     * @returns {number}
+     *
+    getSelectedGlyphRightSideBearing() {
+        // debug('getSelectedGlyphLeftSideBearing');
+        let sc = getSelectedWorkItem();
+        if (!sc) return 0;
+        if (sc.objType === 'component') return 0;
+        if (!sc.isAutoWide) return 0;
+        return sc.rightSideBearing || this.project.projectSettings.defaultRSB;
+    }
+
+    /**
+     * Updates the selected glyphs width
+     *
+    updateCurrentGlyphWidth() {
+        let sc = getSelectedWorkItem();
+        if (!sc) return;
+        if (editor.nav.page === 'glyph edit') {
+            sc.changed();
+        } else if (editor.nav.page === 'components' && sc) {
+            let lsarr = sc.usedIn;
+            if (lsarr) for (let c=0; c<lsarr.length; c++) getGlyph(lsarr[c]).changed();
+        }
+    }
+
+function existingWorkItem() {
+    let len = 0;
+    let nph = _UI.currentPanel;
+
+    if (editor.nav.page === 'ligatures') {
+        len = countObjectKeys(getCurrentProject().ligatures);
+        if (!len) {
+            _UI.selectedLigature = false;
+            if (nph !== 'npNav') nph = 'npChooser';
+            return false;
+        }
+    } else if (editor.nav.page === 'components') {
+        len = countObjectKeys(getCurrentProject().components);
+        if (!len) {
+            _UI.selectedComponent = false;
+            if (nph !== 'npNav') nph = 'npChooser';
+            return false;
+        }
+    } else if (editor.nav.page === 'kerning') {
+        len = countObjectKeys(getCurrentProject().kerning);
+        if (!len) {
+            _UI.selectedKern = false;
+            if (nph !== 'npNav') nph = 'npAttributes';
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function getSelectedWorkItem() {
+    // debug('\n getSelectedWorkItem - START');
+    // debug('\t currentPage: ' + editor.nav.page);
+    let re;
+
+    switch (editor.nav.page) {
+        case 'glyph edit':
+            if (!_UI.selectedGlyph) _UI.selectedGlyph = '0x0041';
+            re = getGlyph(_UI.selectedGlyph, true);
+            // debug('\t case glyph edit, returning ' + re.name);
+            return re;
+        case 'import svg':
+            if (!_UI.selectedSVGImportTarget) _UI.selectedSVGImportTarget = '0x0041';
+            re = getGlyph(_UI.selectedSVGImportTarget, true);
+            // debug('\t case import svg, returning ' + re.name);
+            return re;
+        case 'ligatures':
+            re = getGlyph(_UI.selectedLigature, true);
+            // debug('\t case glyph edit, returning ' + re.name);
+            return re;
+        case 'components':
+            re = getGlyph(_UI.selectedComponent, false);
+            // debug('\t case components, returning ' + re.name);
+            return re;
+        case 'kerning':
+            // debug('\t case KERN - selkern = ' + _UI.selectedKern);
+            if (!_UI.selectedKern) _UI.selectedKern = getFirstID(getCurrentProject().kerning);
+            re = getCurrentProject().kerning[_UI.selectedKern] || false;
+            // debug('\t case kerning, returning ' + re);
+            return re;
+    }
+
+    return false;
+}
+
+function getSelectedWorkItemID() {
+    switch (editor.nav.page) {
+        case 'glyph edit': return _UI.selectedGlyph;
+        case 'import svg': return _UI.selectedSVGImportTarget;
+        case 'ligatures': return _UI.selectedLigature;
+        case 'components': return _UI.selectedComponent;
+        case 'kerning': return _UI.selectedKern;
+    }
+
+    return false;
+}
+
+function getSelectedWorkItemChar() {
+    let swiid = getSelectedWorkItemID();
+    return hexToChars(swiid);
+}
+
+function getSelectedWorkItemName() {
+    // debug('\n getSelectedWorkItemName - START');
+    let wi = getSelectedWorkItem();
+    // debug('\t wi = '+wi);
+    return wi.name || wi.getName() || '[name not found]';
+}
+
+function getSelectedWorkItemShapes() {
+    // debug('GETSELECTEDGLYPHSHAPES');
+    let rechar = getSelectedWorkItem();
+    return rechar? rechar.shapes : [];
+}
+
+function markSelectedWorkItemAsChanged() {
+    // debug('\n markSelectedWorkItemAsChanged - START');
+    let wi = getSelectedWorkItem();
+
+    if (wi && wi.changed) {
+        // debug('\t marking as changed');
+        wi.changed(true, true);
+    }
+
+    // debug(' markSelectedWorkItemAsChanged - END\n');
+}
+
+function selectGlyph(c, dontnavigate) {
+    // debug('\n selectGlyph - START');
+    // debug('\t selecting ' + getGlyph(c, true).name + ' from value ' + c);
+
+    _UI.selectedGlyph = c;
+    clickEmptySpace();
+    markSelectedWorkItemAsChanged();
+
+    if (!dontnavigate) {
+        // debug('\t selecting ' + getCurrentProject().glyphs[c].glyphhtml + ' and navigating.');
+        navigate({panel: 'npAttributes'});
+    }
+
+    // debug(' selectGlyph - END\n');
+}
+
+function selectComponent(c, dontnavigate) {
+    // debug('SELECTCOMPONENT - selecting ' + getGlyph(c, true).name + ' from value ' + c);
+
+    _UI.selectedComponent = c;
+    clickEmptySpace();
+    markSelectedWorkItemAsChanged();
+
+    if (!dontnavigate) {
+        // debug('SELECTCOMPONENT: selecting ' + getCurrentProject().components[c].name + ' and navigating.');
+        navigate({panel: 'npAttributes'});
+    }
+}
+
+function selectLigature(c, dontnavigate) {
+    // debug('SELECTLIGATURE - selecting ' + getGlyph(c, true).name + ' from value ' + c);
+
+    _UI.selectedLigature = c;
+    clickEmptySpace();
+    markSelectedWorkItemAsChanged();
+
+    if (!dontnavigate) {
+        // debug('SELECTLIGATURE: selecting ' + getCurrentProject().ligatures[c].glyphhtml + ' and navigating.');
+        navigate({panel: 'npAttributes'});
+    }
+}
+
+function selectSVGImportTarget(c, dontnavigate) {
+    // debug('SELECTSVGIMPORTTARGET - selecting ' + getGlyph(c, true).name + ' from value ' + c);
+
+    _UI.selectedSVGImportTarget = c;
+
+    if (!dontnavigate) {
+        // debug('SELECTSVGIMPORTTARGET: selecting ' + c + ' and navigating.');
+        navigate({panel: 'npAttributes'});
+    }
+}
 */
