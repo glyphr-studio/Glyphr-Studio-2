@@ -286,16 +286,22 @@ export default class ProjectEditor {
     // --------------------------------------------------------------
 
     /**
-     * Resets the current view to the appropriate Page and Panel
-     * @param {object} oa
+     * Sets the current view to the appropriate Page and Panel
      * @returns {object} UI Content of this Project Editor
      */
     get content() {
-        this.content.innerHTML = '';
+        this._content.innerHTML = '';
         if (!this.pages.openProject) this.pages.openProject = new PageOpenProject();
-        this.content.appendChild(this.pages.openProject.content);
+        this._content.appendChild(this.pages.openProject.content);
 
-        return this.content;
+        return this._content;
+    }
+
+    /**
+     * Sets the HTML content of this Project Editor
+     */
+    set content(con) {
+        this._content = con;
     }
 
     /**

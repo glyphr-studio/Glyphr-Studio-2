@@ -1,3 +1,4 @@
+import {makeElement} from './../controls/controls.js';
 
 /**
  * Page > Open Project
@@ -14,9 +15,8 @@ export default class PageOpenProject {
 
     /**
      * Load the Open Project page
-     * @param {string} tab - which tab to show
      */
-    get content(tab) {
+    get content() {
         // debug("LOADING PAGE >> openproject");
         let recent = 1000*60*60*24*7; // seven days in milliseconds
         let recentMessage = '';
@@ -28,7 +28,7 @@ export default class PageOpenProject {
         let ct = `
         <table style="height:100%; width:100%;"><tr>
         <td id="openprojecttableleft" vertical-align="middle">
-            <div id="splashscreenlogo"></div>';
+            <div id="splashscreenlogo"></div>
 
             <span class="splashvername">${app.version}</span>
 
@@ -45,6 +45,7 @@ export default class PageOpenProject {
         <td id="openprojecttableright" vertical-align="middle">${this.makeTabs()}</td>
         </tr></table>`;
 
+        /*
         document.body.innerHTML = '<div id="mainwrapper"></div>';
         let mp = document.getElementById('mainwrapper');
         mp.innerHTML = ct;
@@ -59,9 +60,13 @@ export default class PageOpenProject {
         window.addEventListener('message', this.handleMessage, false);
 
         if (window.opener) window.opener.postMessage('ready', '*');
-        this.changeTab(tab);
+        this.changeTab();
 
         // document.getElementById('splashscreenlogo').innerHTML = makeGlyphrStudioLogo({'fill': 'white', 'width': 400});
+        */
+        let re = makeElement({className: 'pageWrapper'});
+        re.innerHTML = ct;
+        return re;
     }
 
     /**

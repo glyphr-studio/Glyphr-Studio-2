@@ -91,7 +91,7 @@ export default class GlyphrStudioApp {
             }
         }
 
-        this.getCurrentProjectEditor().navigate();
+        this.navigate();
 
         if (this.settings.dev.mode) this.settings.dev.testOnLoad();
 
