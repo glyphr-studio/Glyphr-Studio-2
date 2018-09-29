@@ -4,6 +4,7 @@ import {decToHex} from '../common/unicode.js';
 import {round} from '../common/functions.js';
 import {saveFile, makeDateStampSuffix} from '../common/functions.js';
 import PageOpenProject from '../pages/openproject.js';
+import { makeElement } from '../controls/controls.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -42,6 +43,8 @@ export default class ProjectEditor {
             projectSaved: true,
             stopPageNavigation: true,
         };
+
+        this.content = makeElement({className: 'editorWrapper'});
 
         this.pages = [];
 
@@ -285,10 +288,14 @@ export default class ProjectEditor {
     /**
      * Resets the current view to the appropriate Page and Panel
      * @param {object} oa
+     * @returns {object} UI Content of this Project Editor
      */
-    navigate(oa) {
+    get content() {
+        this.content.innerHTML = '';
         if (!this.pages.openProject) this.pages.openProject = new PageOpenProject();
-        this.pages.openProject.load();
+        this.content.appendChild(this.pages.openProject.content);
+
+        return this.content;
     }
 
     /**

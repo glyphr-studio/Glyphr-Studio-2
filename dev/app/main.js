@@ -11,10 +11,14 @@ document.body.onload = glyphrStudioOnLoad;
  */
 export function glyphrStudioOnLoad() {
     console.log(`glyphrStudioOnLoad - START`);
+
     assemble();
     window.GlyphrStudio = new GlyphrStudioApp();
-    window.GlyphrStudio.start();
+    window.GlyphrStudio.setUp();
     console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\nv' + window.GlyphrStudio.versionNum + '\n\n', 'color:rgb(0,170,225)');
+    window.GlyphrStudio.navigate();
+
+    console.log(`glyphrStudioOnLoad - END`);
 }
 
 /**

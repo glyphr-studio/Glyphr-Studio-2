@@ -16,7 +16,7 @@ export default class PageOpenProject {
      * Load the Open Project page
      * @param {string} tab - which tab to show
      */
-    load(tab) {
+    get content(tab) {
         // debug("LOADING PAGE >> openproject");
         let recent = 1000*60*60*24*7; // seven days in milliseconds
         let recentMessage = '';
