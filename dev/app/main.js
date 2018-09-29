@@ -19,6 +19,7 @@ export function glyphrStudioOnLoad() {
     window.GlyphrStudio.navigate();
 
     console.log(`glyphrStudioOnLoad - END`);
+
 }
 
 /**
