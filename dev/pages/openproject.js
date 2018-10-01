@@ -16,8 +16,9 @@ export default class PageOpenProject {
     /**
      * Load the Open Project page
      */
-    get content() {
-        // debug("LOADING PAGE >> openproject");
+    pageLoader() {
+        debug(`\n PageOpenProject.pageLoader - START`);
+
         let recent = 1000*60*60*24*7; // seven days in milliseconds
         let recentMessage = '';
         let app = window.GlyphrStudio;
@@ -25,47 +26,52 @@ export default class PageOpenProject {
             recentMessage = ` - <a href="http://help.glyphrstudio.com/overview_updates.html" target="_blank">recently updated!</a>`;
         }
 
-        let ct = `
-        <table style="height:100%; width:100%;"><tr>
-        <td id="openprojecttableleft" vertical-align="middle">
+        let content = makeElement({tag: 'div', className: 'pageWrapper', innerHTML: `
+            <table style="height:100%; width:100%;"><tr>
+            <td id="openProjectTableLeft" vertical-align="middle">
             <div id="splashscreenlogo"></div>
 
-            <span class="splashvername">${app.version}</span>
+                <span class="splashvername">${app.version}</span>
 
-            <span class="splashvernum">${app.versionNum.split('.')[2]}${recentMessage}</span>
+                <span class="splashvernum">${app.versionNum.split('.')[2]}${recentMessage}</span>
 
-            <div class="splashblurb">
+                <div class="splashblurb">
                 For more informaiton visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>
-                Glyphr Studio is licensed under a <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a>,
-                which is a free / open source "copyleft" license. You are free to use, distribute, and modify Glyphr Studio as long as
-                this license and its freeness stays intact.
-            </div>
-            <input style="display:none;" type="file" id="filechooser"/>
-        </td>
-        <td id="openprojecttableright" vertical-align="middle">${this.makeTabs()}</td>
-        </tr></table>`;
+                    Glyphr Studio is licensed under a <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a>,
+                    which is a free / open source "copyleft" license. You are free to use, distribute, and modify Glyphr Studio as long as
+                    this license and its freeness stays intact.
+                </div>
+                <input style="display:none;" type="file" id="openProjectFileChooser"/>
+            </td>
+            <td id="openProjectTableRight" vertical-align="middle">${this.makeTabs()}</td>
+            </tr></table>`
+        });
 
-        /*
-        document.body.innerHTML = '<div id="mainwrapper"></div>';
-        let mp = document.getElementById('mainwrapper');
-        mp.innerHTML = ct;
-        mp.style.marginLeft = '0px';
-        document.getElementById('openprojecttableright').addEventListener('dragover', this.handleDragOver, false);
-        document.getElementById('openprojecttableright').addEventListener('drop', this.handleDrop, false);
-        document.getElementById('openprojecttableright').addEventListener('dragleave', this.handleDragLeave, false);
-        document.getElementById('openprojecttableleft').addEventListener('dragover', this.handleDragOver, false);
-        document.getElementById('openprojecttableleft').addEventListener('drop', this.handleDrop, false);
-        document.getElementById('openprojecttableleft').addEventListener('dragleave', this.handleDragLeave, false);
-        document.getElementById('filechooser').addEventListener('change', this.handleDrop, false);
-        window.addEventListener('message', this.handleMessage, false);
+        let callback = function() {
+            debug(`\n PageOpenProject.pageLoader.callback - START`);
 
-        if (window.opener) window.opener.postMessage('ready', '*');
-        this.changeTab();
+            // document.getElementById('openProjectTableRight').addEventListener('dragover', this.handleDragOver, false);
+            // document.getElementById('openProjectTableRight').addEventListener('drop', this.handleDrop, false);
+            // document.getElementById('openProjectTableRight').addEventListener('dragleave', this.handleDragLeave, false);
+            // document.getElementById('openProjectTableLeft').addEventListener('dragover', this.handleDragOver, false);
+            // document.getElementById('openProjectTableLeft').addEventListener('drop', this.handleDrop, false);
+            // document.getElementById('openProjectTableLeft').addEventListener('dragleave', this.handleDragLeave, false);
+            // document.getElementById('openProjectFileChooser').addEventListener('change', this.handleDrop, false);
 
-        // document.getElementById('splashscreenlogo').innerHTML = makeGlyphrStudioLogo({'fill': 'white', 'width': 400});
-        */
-        let re = makeElement({className: 'pageWrapper'});
-        re.innerHTML = ct;
+            // window.addEventListener('message', this.handleMessage, false);
+
+            // if (window.opener) window.opener.postMessage('ready', '*');
+            // this.changeTab();
+
+            // document.getElementById('splashscreenlogo').innerHTML = makeGlyphrStudioLogo({'fill': 'white', 'width': 400});
+
+            debug(` PageOpenProject.pageLoader.callback - END\n\n`);
+        };
+
+        let re = {content: content, callback: callback};
+        debug(re);
+        debug(` PageOpenProject.pageLoader - END\n\n`);
+
         return re;
     }
 
@@ -76,7 +82,7 @@ export default class PageOpenProject {
     makeTabs() {
         // TABS
         let con = `
-        <div class="openproject_tabs">
+        <div class="openProjectTabs">
             <button id="new_tab" onclick="getCurrentPage().changeTab(\'new\');">new</button>
             <button id="load_tab" onclick="getCurrentPage().changeTab(\'load\');">load</button>
             <button id="examples_tab" onclick="getCurrentPage().changeTab(\'examples\');">examples</button>
@@ -84,9 +90,9 @@ export default class PageOpenProject {
 
         // LOAD
         con += `
-        <div class="openproject_tile" id="load_content" style="display: none;">
+        <div class="openProjectTile" id="openProjectLoadContent" style="display: none;">
             <h2>Load a file</h2>
-            <button onclick="document.getElementById(\'filechooser\').click();" class="buttonsel">Browse for a File</button>&ensp; or Drag and Drop:
+            <button onclick="document.getElementById(\'openProjectFileChooser\').click();" class="buttonsel">Browse for a File</button>&ensp; or Drag and Drop:
             <div id="droptarget">
                 Glyphr Studio Project &ensp;(.txt)<br>
                 Open Type or True Type Font &ensp;(.otf or .ttf)<br>
@@ -97,7 +103,7 @@ export default class PageOpenProject {
 
         // NEW
         con += `
-        <div class="openproject_tile" id="new_content" style="display: none;">
+        <div class="openProjectTile" id="openProjectNewContent" style="display: none;">
             <h2>Start a new Glyphr Studio Project</h2>
             Project name: &nbsp; <input id="newprojectname" type="text" value="My Font" autofocus/><br>
             <button onclick="newProjectHandler(); navigate({page:\'glyph edit\'});" class="buttonsel">Start a new font from scratch</button>
@@ -105,7 +111,7 @@ export default class PageOpenProject {
 
         // EXAMPLES
         con += `
-        <div class="openproject_tile" id="examples_content" style="display: none;">
+        <div class="openProjectTile" id="openProjectExampleProjects" style="display: none;">
             <h2>Load an Example project</h2>
 
             Modegg is a project that utilizes Glyphr Studio features, like Components:<br>
@@ -126,9 +132,9 @@ export default class PageOpenProject {
      * @param {string} tab - which tab to select
      */
     changeTab(tab) {
-        let contentnew = document.getElementById('new_content');
-        let contentload = document.getElementById('load_content');
-        let contentexamples = document.getElementById('examples_content');
+        let contentnew = document.getElementById('openProjectNewContent');
+        let contentload = document.getElementById('openProjectLoadContent');
+        let contentexamples = document.getElementById('openProjectExampleProjects');
         // var contentrecent = document.getElementById('recent_content');
 
         let tabnew = document.getElementById('new_tab');
@@ -172,7 +178,7 @@ export default class PageOpenProject {
         evt.stopPropagation();
         evt.preventDefault();
 
-        let f = evt.dataTransfer || document.getElementById('filechooser');
+        let f = evt.dataTransfer || document.getElementById('openProjectFileChooser');
         f = f.files[0];
         // debug('\t filename: ' + f.name);
         let fname = f.name.split('.');
@@ -269,7 +275,7 @@ export default class PageOpenProject {
      * @param {string} name - which sample to load
      */
     openproject_loadSample(name) {
-        document.getElementById('examples_content').innerHTML = '<h2>Load an Example project</h2>Loading example project...';
+        document.getElementById('openProjectExampleProjects').innerHTML = '<h2>Load an Example project</h2>Loading example project...';
 
         setTimeout(function() {
             loadGlyphrStudioProject(_UI.sampleproject[name]);

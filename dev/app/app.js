@@ -22,7 +22,7 @@ export default class GlyphrStudioApp {
         this.settings = {
             dev: {
                 // Internal Dev Stuff
-                mode: false, // global switch for all the stuff below
+                mode: true, // global switch for all the stuff below
                 sampleProject: false, // if sampleproject is present, load it and skip open project experience
                 currentPage: false, // navigate straight to a page
                 currentPanel: false, // navigate straight to a panel
@@ -102,10 +102,16 @@ export default class GlyphrStudioApp {
      * Draws the current Project Editor to the document
      */
     navigate(oa) {
+        debug(`\n App.navigate - START`);
+
         document.body.innerHTML = '';
-        let wrapper = makeElement({className: 'appWrapper'});
-        wrapper.appendChild(this.getCurrentProjectEditor().content);
+        let wrapper = makeElement({tag: 'div', className: 'appWrapper'});
+        let loader = this.getCurrentProjectEditor().pageLoader();
+        wrapper.appendChild(loader.content);
         document.body.appendChild(wrapper);
+        loader.callback();
+
+        debug(` App.navigate - END\n\n`);
     }
 
     /**

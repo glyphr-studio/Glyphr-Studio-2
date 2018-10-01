@@ -12,5 +12,8 @@
   },
   "dependencies": {
     "http-server": "^0.11.1"
+  },
+  "jshintConfig": {
+    "esversion": "6"
   }
 }

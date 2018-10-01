@@ -289,19 +289,17 @@ export default class ProjectEditor {
      * Sets the current view to the appropriate Page and Panel
      * @returns {object} UI Content of this Project Editor
      */
-    get content() {
-        this._content.innerHTML = '';
+    pageLoader() {
+        debug(`\n ProjectEditor.pageLoader - START`);
+
         if (!this.pages.openProject) this.pages.openProject = new PageOpenProject();
-        this._content.appendChild(this.pages.openProject.content);
+        let content = makeElement({tag: 'div', className: 'editorWrapper'});
+        let openProjectPageLoader = this.pages.openProject.pageLoader();
+        content.appendChild(openProjectPageLoader.content);
 
-        return this._content;
-    }
+        debug(` ProjectEditor.pageLoader - END\n\n`);
 
-    /**
-     * Sets the HTML content of this Project Editor
-     */
-    set content(con) {
-        this._content = con;
+        return {content: content, callback: openProjectPageLoader.callback};
     }
 
     /**
