@@ -11,7 +11,7 @@ export default class InfoBubble extends HTMLElement {
     constructor() {
         super();
 
-        let wrapper = makeElement({className: 'wrapper', tabindex: true});
+        let wrapper = makeElement({className: 'wrapper', tabIndex: true});
 
         this.entryPoint = makeElement({className: 'entryPoint', content: '?'});
 

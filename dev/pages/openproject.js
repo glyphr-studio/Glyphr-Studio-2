@@ -15,6 +15,7 @@ export default class PageOpenProject {
 
     /**
      * Load the Open Project page
+     * @returns {object} HTML Element + callback function
      */
     pageLoader() {
         debug(`\n PageOpenProject.pageLoader - START`);
@@ -44,7 +45,7 @@ export default class PageOpenProject {
                 <input style="display:none;" type="file" id="openProjectFileChooser"/>
             </td>
             <td id="openProjectTableRight" vertical-align="middle">${this.makeTabs()}</td>
-            </tr></table>`
+            </tr></table>`,
         });
 
         let callback = function() {

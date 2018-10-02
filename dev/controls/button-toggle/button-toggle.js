@@ -22,7 +22,7 @@ export default class ButtonToggle extends HTMLElement {
         this.selected = this.hasAttribute('selected');
         this.disabled = this.hasAttribute('disabled');
 
-        this.wrapper = makeElement({tag: 'div', className: 'wrapper', tabindex: !this.disabled});
+        this.wrapper = makeElement({tag: 'div', className: 'wrapper', tabIndex: !this.disabled});
         if (this.disabled) this.wrapper.setAttribute('disabled', '');
         if (this.selected) this.wrapper.setAttribute('selected', '');
         this.wrapper.innerHTML = this.getIcon(this.getAttribute('icon'), this.iconSize);

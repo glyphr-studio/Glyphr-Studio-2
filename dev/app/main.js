@@ -10,16 +10,34 @@ document.body.onload = glyphrStudioOnLoad;
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
-    console.log(`glyphrStudioOnLoad - START`);
+    console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n', 'color:rgb(0,170,225)');
 
-    assemble();
-    window.GlyphrStudio = new GlyphrStudioApp();
-    window.GlyphrStudio.setUp();
-    console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\nv' + window.GlyphrStudio.versionNum + '\n\n', 'color:rgb(0,170,225)');
-    window.GlyphrStudio.navigate();
+    if (passPreChecks()) {
+        assemble();
+        window.GlyphrStudio = new GlyphrStudioApp();
+        console.log(`%cApp Version ${window.GlyphrStudio.versionNum} \n\n`, 'color:rgb(0,170,225)');
+        window.GlyphrStudio.setUp();
+        window.GlyphrStudio.navigate();
+    }
 
-    console.log(`glyphrStudioOnLoad - END`);
+    debug(`glyphrStudioOnLoad - END`);
+}
 
+/**
+ * Does some checking against new-ish HTML/JavaScript features
+ * @returns {boolean}
+ */
+function passPreChecks() {
+    let pass = true;
+
+    // Templates
+    let template = document.createElement('template');
+    if (!template.content) {
+        console.error('Browser does not support HTML Templates');
+        pass = false;
+    }
+
+    return pass;
 }
 
 /**
@@ -29,8 +47,6 @@ export function glyphrStudioOnLoad() {
  *  manifest.js is found in the root of the dev directory
  */
 export function assemble(loadTests = false, callback = false) {
-    console.log(`\n assemble - START`);
-
     let tests = [];
     let newElement;
     let nonModules = 'opentypejs';
@@ -84,5 +100,4 @@ export function assemble(loadTests = false, callback = false) {
     }
 
     if (callback) window.setTimeout(callback, 500);
-    console.log(` assemble - END\n\n`);
 };

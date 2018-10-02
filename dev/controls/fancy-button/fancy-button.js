@@ -24,7 +24,7 @@ export default class FancyButton extends HTMLElement {
             this.wrapper.setAttribute('disabled', '');
             this.disabled = true;
         } else {
-            this.wrapper.setAttribute('tabindex', '0');
+            this.wrapper.setAttribute('tabIndex', '0');
             this.disabled = false;
         }
 

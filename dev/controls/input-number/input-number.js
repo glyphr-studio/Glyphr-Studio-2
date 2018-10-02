@@ -23,20 +23,20 @@ export default class InputNumber extends HTMLElement {
         this.wrapper.elementRoot = this;
         if (this.disabled) this.wrapper.setAttribute('disabled', '');
 
-        this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabindex: !this.disabled, attributes: {'type': 'text'}});
+        this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabIndex: !this.disabled, attributes: {'type': 'text'}});
         if (this.disabled) this.numberInput.setAttribute('disabled', '');
         this.numberInput.elementRoot = this;
 
         this.value = this.getAttribute('value');
 
-        this.arrowWrapper = makeElement({className: 'arrowWrapper', tabindex: !this.disabled});
+        this.arrowWrapper = makeElement({className: 'arrowWrapper', tabIndex: !this.disabled});
         this.arrowWrapper.elementRoot = this;
 
-        this.upArrow = makeElement({className: 'upArrow', content: '⏶', attributes: {tabindex: -1}});
+        this.upArrow = makeElement({className: 'upArrow', content: '⏶', attributes: {tabIndex: -1}});
         this.upArrow.elementRoot = this;
         if (this.disabled) this.upArrow.setAttribute('disabled', '');
 
-        this.downArrow = makeElement({className: 'downArrow', content: '⏷', attributes: {tabindex: -1}});
+        this.downArrow = makeElement({className: 'downArrow', content: '⏷', attributes: {tabIndex: -1}});
         this.downArrow.elementRoot = this;
         if (this.disabled) this.downArrow.setAttribute('disabled', '');
 
@@ -228,9 +228,9 @@ export default class InputNumber extends HTMLElement {
             if (newValue === '') {
                 // disabled
                 this.wrapper.setAttribute('disabled', '');
-                this.numberInput.removeAttribute('tabindex');
+                this.numberInput.removeAttribute('tabIndex');
                 this.numberInput.setAttribute('disabled', '');
-                this.arrowWrapper.removeAttribute('tabindex');
+                this.arrowWrapper.removeAttribute('tabIndex');
                 this.arrowWrapper.setAttribute('disabled', '');
                 this.upArrow.setAttribute('disabled', '');
                 this.downArrow.setAttribute('disabled', '');
@@ -238,9 +238,9 @@ export default class InputNumber extends HTMLElement {
             } else if (oldValue === '') {
                 // enabled
                 this.wrapper.removeAttribute('disabled');
-                this.numberInput.setAttribute('tabindex', '0');
+                this.numberInput.setAttribute('tabIndex', '0');
                 this.numberInput.removeAttribute('disabled');
-                this.arrowWrapper.setAttribute('tabindex', '0');
+                this.arrowWrapper.setAttribute('tabIndex', '0');
                 this.arrowWrapper.removeAttribute('disabled');
                 this.upArrow.removeAttribute('disabled');
                 this.downArrow.removeAttribute('disabled');

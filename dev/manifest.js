@@ -79,7 +79,6 @@ let manifest = [
         path: 'controls',
         files: [
             'controls.js',
-            'controls.css',
             'button-toggle/button-toggle.js',
             'canvas-display/canvas-display.js',
             'canvas-edit/canvas-edit.js',

@@ -55,7 +55,7 @@ export default class GlyphrStudioApp {
                 importGlyphrProjectFromText();
                 this.settings.dev.sampleProject = false;
             } else {
-                this.projectEditors[0] = new ProjectEditor({project: newProjectHandler()});
+                this.projectEditors[0] = new ProjectEditor();
             }
 
             if (this.settings.dev.currentPage === 'import svg') {
@@ -63,7 +63,7 @@ export default class GlyphrStudioApp {
                 this.settings.importSVG.move = false;
             }
 
-            this.getCurrentProjectEditor().navigate({page: (this.settings.dev.currentPage || 'openproject'), panel: this.settings.dev.currentPanel});
+            this.navigate();
         }
 
         /* eslint-disable */
@@ -101,7 +101,7 @@ export default class GlyphrStudioApp {
     /**
      * Draws the current Project Editor to the document
      */
-    navigate(oa) {
+    navigate() {
         debug(`\n App.navigate - START`);
 
         document.body.innerHTML = '';
