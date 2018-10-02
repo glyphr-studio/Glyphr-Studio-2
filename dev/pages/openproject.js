@@ -30,14 +30,14 @@ export default class PageOpenProject {
         let content = makeElement({tag: 'div', className: 'pageWrapper', innerHTML: `
             <table style="height:100%; width:100%;"><tr>
             <td id="openProjectTableLeft" vertical-align="middle">
-            <div id="splashscreenlogo"></div>
+            <div id="splashScreenLogo"></div>
 
-                <span class="splashvername">${app.version}</span>
+                <span class="splashVerName">${app.version}</span>
 
-                <span class="splashvernum">${app.versionNum.split('.')[2]}${recentMessage}</span>
+                <span class="splashVerNum">${app.versionNum.split('.')[2]}${recentMessage}</span>
 
-                <div class="splashblurb">
-                For more informaiton visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>
+                <div class="splashBlurb">
+                    For more informaiton visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>
                     Glyphr Studio is licensed under a <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a>,
                     which is a free / open source "copyleft" license. You are free to use, distribute, and modify Glyphr Studio as long as
                     this license and its freeness stays intact.
@@ -64,7 +64,7 @@ export default class PageOpenProject {
             // if (window.opener) window.opener.postMessage('ready', '*');
             // this.changeTab();
 
-            // document.getElementById('splashscreenlogo').innerHTML = makeGlyphrStudioLogo({'fill': 'white', 'width': 400});
+            // document.getElementById('splashScreenLogo').innerHTML = makeGlyphrStudioLogo({'fill': 'white', 'width': 400});
 
             debug(` PageOpenProject.pageLoader.callback - END\n\n`);
         };
@@ -84,9 +84,9 @@ export default class PageOpenProject {
         // TABS
         let con = `
         <div class="openProjectTabs">
-            <button id="new_tab" onclick="getCurrentPage().changeTab(\'new\');">new</button>
-            <button id="load_tab" onclick="getCurrentPage().changeTab(\'load\');">load</button>
-            <button id="examples_tab" onclick="getCurrentPage().changeTab(\'examples\');">examples</button>
+            <button id="newTab" onclick="getCurrentPage().changeTab(\'new\');">new</button>
+            <button id="loadTab" onclick="getCurrentPage().changeTab(\'load\');">load</button>
+            <button id="examplesTab" onclick="getCurrentPage().changeTab(\'examples\');">examples</button>
         </div>`;
 
         // LOAD
@@ -94,7 +94,7 @@ export default class PageOpenProject {
         <div class="openProjectTile" id="openProjectLoadContent" style="display: none;">
             <h2>Load a file</h2>
             <button onclick="document.getElementById(\'openProjectFileChooser\').click();" class="buttonsel">Browse for a File</button>&ensp; or Drag and Drop:
-            <div id="droptarget">
+            <div id="dropTarget">
                 Glyphr Studio Project &ensp;(.txt)<br>
                 Open Type or True Type Font &ensp;(.otf or .ttf)<br>
                 SVG Font &ensp;(.svg)
@@ -106,7 +106,7 @@ export default class PageOpenProject {
         con += `
         <div class="openProjectTile" id="openProjectNewContent" style="display: none;">
             <h2>Start a new Glyphr Studio Project</h2>
-            Project name: &nbsp; <input id="newprojectname" type="text" value="My Font" autofocus/><br>
+            Project name: &nbsp; <input id="newProjectName" type="text" value="My Font" autofocus/><br>
             <button onclick="newProjectHandler(); navigate({page:\'glyph edit\'});" class="buttonsel">Start a new font from scratch</button>
         </div>`;
 
@@ -138,9 +138,9 @@ export default class PageOpenProject {
         let contentexamples = document.getElementById('openProjectExampleProjects');
         // var contentrecent = document.getElementById('recent_content');
 
-        let tabnew = document.getElementById('new_tab');
-        let tabload = document.getElementById('load_tab');
-        let tabexamples = document.getElementById('examples_tab');
+        let tabnew = document.getElementById('newTab');
+        let tabload = document.getElementById('loadTab');
+        let tabexamples = document.getElementById('examplesTab');
         // var tabrecent = document.getElementById('recent_tab');
 
         contentnew.style.display = 'none';
@@ -173,8 +173,8 @@ export default class PageOpenProject {
      */
     handleDrop(evt) {
         // debug('\n handleDrop - START');
-        document.getElementById('openprojecttableright').innerHTML = 'Loading File...';
-        document.getElementById('openprojecttableright').style.backgroundColor = _UI.colors.gray.offwhite;
+        document.getElementById('openProjectTableRight').innerHTML = 'Loading File...';
+        document.getElementById('openProjectTableRight').style.backgroundColor = _UI.colors.gray.offwhite;
 
         evt.stopPropagation();
         evt.preventDefault();
@@ -217,10 +217,10 @@ export default class PageOpenProject {
             let con = '<h3>Unsupported file type</h3>';
             con += 'Glyphr Studio can\'t import .' + fname + ' files.<br>';
             con += 'Try loading another file.';
-            document.getElementById('openprojecttableright').innerHTML = makeTabs();
+            document.getElementById('openProjectTableRight').innerHTML = makeTabs();
             changeTab('load');
             showErrorMessageBox(con);
-            document.getElementById('openprojecttableright').style.backgroundColor = _UI.colors.gray.offwhite;
+            document.getElementById('openProjectTableRight').style.backgroundColor = _UI.colors.gray.offwhite;
         }
 
         // debug(' handleDrop - END\n');
@@ -252,7 +252,7 @@ export default class PageOpenProject {
         evt.preventDefault();
         evt.dataTransfer.dropEffect = 'copy';
 
-        let frtr = document.getElementById('openprojecttableright');
+        let frtr = document.getElementById('openProjectTableRight');
         frtr.style.backgroundColor = _UI.colors.blue.l95;
         frtr.innerHTML = 'Drop it!';
     }
@@ -265,7 +265,7 @@ export default class PageOpenProject {
         evt.stopPropagation();
         evt.preventDefault();
 
-        let frtr = document.getElementById('openprojecttableright');
+        let frtr = document.getElementById('openProjectTableRight');
         frtr.style.backgroundColor = _UI.colors.gray.offwhite;
         frtr.innerHTML = makeTabs();
         changeTab('load');

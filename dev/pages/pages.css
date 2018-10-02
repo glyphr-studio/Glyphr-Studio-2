@@ -1,0 +1,132 @@
+/*
+----------------------------------------
+ Open Project
+----------------------------------------
+*/
+
+#openProjectTableLeft {
+    background-color: rgb(0,170,225);
+    width:475px;
+    vertical-align: middle;
+    padding:0px 0px 0px 50px;
+}
+
+#openProjectTableRight {
+    vertical-align: middle;
+    padding:0px 0px 0px 50px;
+    font-size:40px;
+    color:rgb(0,140,210);
+}
+
+#splashScreenLogo {
+    width: 400px;
+    margin:0px 20px 16px 0px;
+}
+
+.splashVerName,
+.splashVerNum,
+.splashBlurb {
+    color:white;
+    width:350px;
+}
+
+.splashVerName {
+    font-size:1em;
+}
+
+.splashVerNum {
+    font-size:.8em;
+}
+
+.splashVerNum a {
+    color: white;
+    font-size:1em;
+    text-decoration: underline;
+}
+
+.splashBlurb {
+    font-size:.6em;
+    margin-top:10px;
+}
+
+.splashBlurb a {
+    color: white;
+    font-size:1em;
+    text-decoration:underline;
+}
+
+.splashVerNum a,
+.splashBlurb a {
+    text-decoration-color: rgba(255,255,255,0.4);
+}
+
+.splashVerNum a:hover,
+.splashBlurb a:hover {
+    text-decoration-color: white;
+}
+
+.openProjectTitle {
+    width:350px;
+    height:200px;
+    margin:20px 4px 0px 10px;
+    display:inline;
+    float:left;
+}
+
+.openProjectTitle h2 {
+    display:block;
+    padding-right:0px;
+}
+
+.openProjectTitle .buttonsel {
+    padding:8px 25px;
+}
+
+.openProjectTitle #customRangeBegin,
+.openProjectTitle #customRangeEnd {
+    width:140px;
+}
+
+.openProjectTabs {
+    margin-left:10px;
+}
+
+.openProjectTabs button {
+    /*background-color: rgb(229,234,239);*/
+    background-color: transparent;
+    border-bottom: 3px solid rgb(229,234,239);
+    padding:4px 16px;
+    margin: 0px;
+    color:rgb(0,140,210);
+    outline-width: 0px;
+    border-radius: 0px;
+}
+.openProjectTabs button:hover {
+    border-bottom: 3px solid rgb(155,221,255) !important;
+    background-color: rgb(225,245,255);
+}
+
+#newProjectName	{
+    width:94%;
+    height:25px;
+    margin:10px 0px 0px 0px;
+    color:rgb(51,56,61);
+    display: block;
+}
+
+#dropTarget {
+    width: 90%;
+    margin: 5px 0px 0px 0px;
+    background-color: white;
+    border:1px dashed rgb(127,134,137);
+    color: rgb(0,140,210);
+    font-weight: bold;
+    padding: 18px 0px 20px 20px;
+    line-height: 2em;
+}
+
+.checkCol {
+    width:30px;
+    vertical-align: top;
+    padding:4px;
+}

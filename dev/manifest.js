@@ -44,7 +44,7 @@ let manifest = [
         path: 'app',
         files: [
             'app.js',
-            // 'nav.js',
+            'app.css',
             // 'test.js,
             // 'test.test.js',
         ],
@@ -101,6 +101,7 @@ let manifest = [
             'otf_export.js',
         ],
     },
+*/
 
     {
         path: 'pages',
@@ -121,7 +122,7 @@ let manifest = [
             'pages.css',
         ],
     },
-
+/*
     {
         path: 'panels',
         files: [
