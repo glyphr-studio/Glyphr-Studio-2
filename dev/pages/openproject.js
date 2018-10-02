@@ -1,4 +1,5 @@
 import {makeElement} from './../controls/controls.js';
+import {makeGlyphrStudioLogo} from './../common/graphics.js';
 
 /**
  * Page > Open Project
@@ -48,23 +49,23 @@ export default class PageOpenProject {
             </tr></table>`,
         });
 
-        let callback = function() {
+        let callback = function(page) {
             debug(`\n PageOpenProject.pageLoader.callback - START`);
 
-            // document.getElementById('openProjectTableRight').addEventListener('dragover', this.handleDragOver, false);
-            // document.getElementById('openProjectTableRight').addEventListener('drop', this.handleDrop, false);
-            // document.getElementById('openProjectTableRight').addEventListener('dragleave', this.handleDragLeave, false);
-            // document.getElementById('openProjectTableLeft').addEventListener('dragover', this.handleDragOver, false);
-            // document.getElementById('openProjectTableLeft').addEventListener('drop', this.handleDrop, false);
-            // document.getElementById('openProjectTableLeft').addEventListener('dragleave', this.handleDragLeave, false);
-            // document.getElementById('openProjectFileChooser').addEventListener('change', this.handleDrop, false);
+            document.getElementById('openProjectTableRight').addEventListener('dragover', page.handleDragOver, false);
+            document.getElementById('openProjectTableRight').addEventListener('drop', page.handleDrop, false);
+            document.getElementById('openProjectTableRight').addEventListener('dragleave', page.handleDragLeave, false);
+            document.getElementById('openProjectTableLeft').addEventListener('dragover', page.handleDragOver, false);
+            document.getElementById('openProjectTableLeft').addEventListener('drop', page.handleDrop, false);
+            document.getElementById('openProjectTableLeft').addEventListener('dragleave', page.handleDragLeave, false);
+            document.getElementById('openProjectFileChooser').addEventListener('change', page.handleDrop, false);
 
-            // window.addEventListener('message', this.handleMessage, false);
+            window.addEventListener('message', page.handleMessage, false);
 
-            // if (window.opener) window.opener.postMessage('ready', '*');
-            // this.changeTab();
+            if (window.opener) window.opener.postMessage('ready', '*');
+            page.changeTab();
 
-            // document.getElementById('splashScreenLogo').innerHTML = makeGlyphrStudioLogo({'fill': 'white', 'width': 400});
+            document.getElementById('splashScreenLogo').innerHTML = makeGlyphrStudioLogo({'fill': 'white', 'width': 400});
 
             debug(` PageOpenProject.pageLoader.callback - END\n\n`);
         };
@@ -84,16 +85,16 @@ export default class PageOpenProject {
         // TABS
         let con = `
         <div class="openProjectTabs">
-            <button id="newTab" onclick="getCurrentPage().changeTab(\'new\');">new</button>
-            <button id="loadTab" onclick="getCurrentPage().changeTab(\'load\');">load</button>
-            <button id="examplesTab" onclick="getCurrentPage().changeTab(\'examples\');">examples</button>
+            <button id="newTab" onclick="getCurrentPage().changeTab('new');">new</button>
+            <button id="loadTab" onclick="getCurrentPage().changeTab('load');">load</button>
+            <button id="examplesTab" onclick="getCurrentPage().changeTab('examples');">examples</button>
         </div>`;
 
         // LOAD
         con += `
         <div class="openProjectTile" id="openProjectLoadContent" style="display: none;">
             <h2>Load a file</h2>
-            <button onclick="document.getElementById(\'openProjectFileChooser\').click();" class="buttonsel">Browse for a File</button>&ensp; or Drag and Drop:
+            <button onclick="document.getElementById('openProjectFileChooser').click();" class="buttonsel">Browse for a File</button>&ensp; or Drag and Drop:
             <div id="dropTarget">
                 Glyphr Studio Project &ensp;(.txt)<br>
                 Open Type or True Type Font &ensp;(.otf or .ttf)<br>
@@ -107,7 +108,7 @@ export default class PageOpenProject {
         <div class="openProjectTile" id="openProjectNewContent" style="display: none;">
             <h2>Start a new Glyphr Studio Project</h2>
             Project name: &nbsp; <input id="newProjectName" type="text" value="My Font" autofocus/><br>
-            <button onclick="newProjectHandler(); navigate({page:\'glyph edit\'});" class="buttonsel">Start a new font from scratch</button>
+            <fancy-button onclick="newProjectHandler();">Start a new font from scratch</fancy-button>
         </div>`;
 
         // EXAMPLES
@@ -116,13 +117,13 @@ export default class PageOpenProject {
             <h2>Load an Example project</h2>
 
             Modegg is a project that utilizes Glyphr Studio features, like Components:<br>
-            <button onclick="openproject_loadSample(\'modegg\');" class="buttonsel">Modegg</button><br><br>
+            <button onclick="openproject_loadSample('modegg');" class="buttonsel">Modegg</button><br><br>
 
             California Gothic is an all-caps display font:<br>' +
-            <button onclick="openproject_loadSample(\'californiagothic\');" class="buttonsel">California Gothic</button><br><br>
+            <button onclick="openproject_loadSample('californiagothic');" class="buttonsel">California Gothic</button><br><br>
 
             Merriweather Sans is an open-source font imported from an Open Type file:<br>
-            <button onclick="openproject_loadSample(\'merriweathersans\');" class="buttonsel">Merriweather Sans</button><br><br>
+            <button onclick="openproject_loadSample('merriweathersans');" class="buttonsel">Merriweather Sans</button><br><br>
         </div>`;
 
         return con;

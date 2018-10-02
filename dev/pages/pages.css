@@ -5,7 +5,7 @@
 */
 
 #openProjectTableLeft {
-    background-color: rgb(0,170,225);
+    background-color: #161D20;
     width:475px;
     vertical-align: middle;
     padding:0px 0px 0px 50px;
@@ -15,7 +15,7 @@
     vertical-align: middle;
     padding:0px 0px 0px 50px;
     font-size:40px;
-    color:rgb(0,140,210);
+    background-color: #1F272C;
 }
 
 #splashScreenLogo {

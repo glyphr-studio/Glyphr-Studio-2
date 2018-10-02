@@ -109,7 +109,7 @@ export default class GlyphrStudioApp {
         let loader = this.getCurrentProjectEditor().pageLoader();
         wrapper.appendChild(loader.content);
         document.body.appendChild(wrapper);
-        loader.callback();
+        loader.callback(this.getCurrentProjectEditor().getCurrentPage());
 
         debug(` App.navigate - END\n\n`);
     }
