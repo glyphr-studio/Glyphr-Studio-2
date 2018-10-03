@@ -56,6 +56,7 @@ let manifest = [
             'functions.js',
             'unicode.js',
             'colors.js',
+            'colors.css',
 
             'colors.test.js',
         ],
