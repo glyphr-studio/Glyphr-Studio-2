@@ -5,132 +5,132 @@
 */
 
 #openProjectTableLeft {
-    background-color: #0E1214;
-    color: white;
-    width:475px;
+    background-color: var(--gray-l05);
+    color: var(--gray-l95);
+    width: 475px;
     vertical-align: middle;
-    padding:0px 0px 0px 50px;
+    padding: 0px 0px 0px 50px;
 }
 
 #openProjectTableRight {
-    color: white;
+    color: var(--gray-l95);
     vertical-align: middle;
     padding:0px 0px 0px 50px;
-    font-size:40px;
-    background-color: #161D20;
+    font-size: 40px;
+    background-color: var(--gray-l10);
 }
 
 #splashScreenLogo {
     width: 400px;
-    margin:0px 20px 16px 0px;
+    margin: 0px 20px 16px 0px;
 }
 
 .splashVerName,
 .splashVerNum,
 .splashBlurb {
-    color: #CFE7F3;
-    width:350px;
+    color: var(--gray-l90);
+    width: 350px;
 }
 
 .splashVerName {
-    font-size:1em;
+    font-size: 1em;
 }
 
 .splashVerNum {
-    font-size:.8em;
+    font-size: 0.8em;
 }
 
 .splashVerNum a {
-    color: #CFE7F3;
-    font-size:1em;
+    color: var(--gray-l90);
+    font-size: 1em;
     text-decoration: underline;
 }
 
 .splashBlurb {
-    color: #BAD9E9;
-    font-size:.6em;
-    margin-top:10px;
+    color: var(--gray-l70);
+    font-size: 0.6em;
+    margin-top: 10px;
 }
 
 .splashBlurb a {
-    color: #CFE7F3;
-    font-size:1em;
-    text-decoration:underline;
+    color: var(--gray-l80);
+    font-size: 1em;
+    text-decoration: underline;
 }
 
 .splashVerNum a,
 .splashBlurb a {
-    text-decoration-color: rgba(255,255,255,0.4);
+    text-decoration-color: var(--gray-l60);
 }
 
 .splashVerNum a:hover,
 .splashBlurb a:hover {
-    text-decoration-color: white;
+    text-decoration-color: var(--gray-l85);
+    color: var(--gray-l85);
 }
 
 .openProjectTabWrapper {
-    width:400px;
+    width: 400px;
     position: absolute;
     top: calc(50% - 100px);
 }
 .openProjectTabContent {
-    margin:20px 4px 0px 10px;
-    display:inline;
-    float:left;
-    color: white;
+    margin: 20px 4px 0px 10px;
+    display: inline;
+    color: var(--gray-l95);
 }
 
 .openProjectTabContent h2 {
-    color: white;
-    display:block;
-    padding-right:0px;
+    color: var(--gray-l95);
+    display: block;
+    padding-right: 0px;
 }
 
 .openProjectTabContent #customRangeBegin,
 .openProjectTabContent #customRangeEnd {
-    width:140px;
+    width: 140px;
 }
 
 .openProjectTabs {
-    margin-left:10px;
+    margin-left: 10px;
 }
 
 .openProjectTabs button {
     /*background-color: rgb(229,234,239);*/
     background-color: transparent;
-    border-bottom: 3px solid rgba(127, 127, 127, 0.5);
-    padding:4px 16px;
+    border-bottom: 3px solid var(--gray-l35);
+    padding: 4px 16px;
     margin: 0px;
-    color:#2EB5FA;
+    color: var(--blue-l70);
     outline-width: 0px;
     border-radius: 0px;
 }
 .openProjectTabs button:hover {
-    border-bottom: 3px solid #0071AA !important;
-    background-color: rgba(127, 127, 127, 0.2);
+    border-bottom: 3px solid var(--blue-l45) !important;
+    background-color: var(--gray-l45);
 }
 
 #newProjectName	{
-    width:94%;
-    height:25px;
-    margin:10px 0px 0px 0px;
-    color:rgb(51,56,61);
+    width: 94%;
+    height: 25px;
+    margin: 10px 0px 0px 0px;
+    color: var(--gray-l30);
     display: block;
 }
 
 #dropTarget {
     width: 90%;
     margin: 5px 0px 0px 0px;
-    background-color: white;
-    border:1px dashed rgb(127,134,137);
-    color: rgb(0,140,210);
+    background-color: var(--gray-l95);
+    border:1px dashed var(--gray-l65);
+    color: var(--blue-l35);
     font-weight: bold;
     padding: 18px 0px 20px 20px;
     line-height: 2em;
 }
 
 .checkCol {
-    width:30px;
+    width: 30px;
     vertical-align: top;
-    padding:4px;
+    padding: 4px;
 }

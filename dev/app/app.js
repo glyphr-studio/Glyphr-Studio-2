@@ -63,7 +63,7 @@ export default class GlyphrStudioApp {
                 this.settings.importSVG.move = false;
             }
 
-            this.navigate();
+            if (this.settings.dev.mode) this.settings.dev.testOnLoad();
         }
 
         /* eslint-disable */
@@ -93,8 +93,6 @@ export default class GlyphrStudioApp {
 
         this.navigate();
 
-        if (this.settings.dev.mode) this.settings.dev.testOnLoad();
-
         // debug(' MAIN SETUP - END\n');
     }
 
@@ -104,11 +102,10 @@ export default class GlyphrStudioApp {
     navigate() {
         debug(`\n App.navigate - START`);
 
-        document.body.innerHTML = '';
-        let wrapper = makeElement({tag: 'div', className: 'appWrapper'});
+        let wrapper = document.getElementById('appWrapper');
         let loader = this.getCurrentProjectEditor().pageLoader();
+        wrapper.innerHTML = '';
         wrapper.appendChild(loader.content);
-        document.body.appendChild(wrapper);
         loader.callback(this.getCurrentProjectEditor().getCurrentPage());
 
         debug(` App.navigate - END\n\n`);

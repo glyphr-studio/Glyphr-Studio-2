@@ -1,4 +1,4 @@
-import {makeElement} from './../controls/controls.js';
+import {makeElement, addEventHandler} from './../controls/controls.js';
 import {makeGlyphrStudioLogo} from './../common/graphics.js';
 import {makeErrorMessageBox} from './../controls/dialogs.js';
 
@@ -29,7 +29,7 @@ export default class PageOpenProject {
             recentMessage = ` - <a href="http://help.glyphrstudio.com/overview_updates.html" target="_blank">recently updated!</a>`;
         }
 
-        let content = makeElement({tag: 'div', className: 'pageWrapper', innerHTML: `
+        let content = makeElement({tag: 'div', id: 'pageWrapper', innerHTML: `
             <table style="height:100%; width:100%;"><tr>
             <td id="openProjectTableLeft" vertical-align="middle">
             <div id="splashScreenLogo"></div>
@@ -58,12 +58,11 @@ export default class PageOpenProject {
             addEventHandler('openProjectTableRight', 'dragover', page.handleDragOver);
             addEventHandler('openProjectTableRight', 'drop', page.handleDrop);
             addEventHandler('openProjectTableRight', 'dragleave', page.handleDragLeave);
-
             addEventHandler('openProjectTableLeft', 'dragover', page.handleDragOver);
             addEventHandler('openProjectTableLeft', 'drop', page.handleDrop);
             addEventHandler('openProjectTableLeft', 'dragleave', page.handleDragLeave);
-
             addEventHandler('openProjectFileChooser', 'change', page.handleDrop);
+
 
             // Tab click
             addEventHandler('newTab', 'click',
@@ -84,11 +83,18 @@ export default class PageOpenProject {
                 }
             );
 
+
+            // Starting a project
+            addEventHandler('openProjectCreateNewProject', 'click', page.handleNewProject);
+
+
+            // For Electron app
             window.addEventListener('message', page.handleMessage, false);
-
             if (window.opener) window.opener.postMessage('ready', '*');
-            page.changeTab();
 
+
+            // Finish up populating UI
+            page.changeTab();
             document.getElementById('splashScreenLogo').innerHTML = makeGlyphrStudioLogo({'fill': '#BAD9E9', 'width': 400});
 
             debug(` PageOpenProject.pageLoader.callback - END\n\n`);
@@ -132,7 +138,7 @@ export default class PageOpenProject {
         <div class="openProjectTabContent" id="openProjectNewContent" style="display: none;">
             <h2>Start a new Glyphr Studio Project</h2>
             Project name: &nbsp; <input id="newProjectName" type="text" value="My Font" autofocus/><br>
-            <fancy-button onclick="newProjectHandler();">Start a new font from scratch</fancy-button>
+            <fancy-button id="openProjectCreateNewProject">Start a new font from scratch</fancy-button>
         </div>`;
 
         // EXAMPLES
@@ -296,8 +302,14 @@ export default class PageOpenProject {
         changeTab('load');
     }
 
-    handleNewProject(){
-
+    /**
+     * Create a new project from scratch
+     */
+    handleNewProject() {
+        setTimeout(function() {
+            loadGlyphrStudioProject();
+            window.GlyphrStudio.navigate();
+        }, 5);
     }
 
     /**
@@ -308,8 +320,10 @@ export default class PageOpenProject {
         document.getElementById('openProjectExampleProjects').innerHTML = '<h2>Load an Example project</h2>Loading example project...';
 
         setTimeout(function() {
-            loadGlyphrStudioProject(_UI.sampleproject[name]);
-            navigate({page: 'glyph edit'});
+            // loadGlyphrStudioProject(_UI.sampleproject[name]);
+            window.GlyphrStudio.getCurrentProjectEditor().project =
+            window.GlyphrStudio.getCurrentProjectEditor().nav.page = 'glyph edit';
+            window.GlyphrStudio.navigate();
         }, 5);
     }
 }

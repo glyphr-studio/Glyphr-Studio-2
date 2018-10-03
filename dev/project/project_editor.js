@@ -302,7 +302,7 @@ export default class ProjectEditor {
 
         if (!this.pages.openProject) this.pages.openProject = new PageOpenProject();
         this.nav.page = 'openProject';
-        let content = makeElement({tag: 'div', className: 'editorWrapper'});
+        let content = makeElement({tag: 'div', id: 'editorWrapper'});
         let openProjectPageLoader = this.pages.openProject.pageLoader();
         content.appendChild(openProjectPageLoader.content);
 

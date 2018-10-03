@@ -45,6 +45,7 @@ let manifest = [
         files: [
             'app.js',
             'app.css',
+            'fonts.css',
             // 'test.js,
             // 'test.test.js',
         ],
