@@ -1,5 +1,6 @@
 import {makeElement} from './../controls/controls.js';
 import {makeGlyphrStudioLogo} from './../common/graphics.js';
+import {makeErrorMessageBox} from './../controls/dialogs.js';
 
 /**
  * Page > Open Project
@@ -46,26 +47,49 @@ export default class PageOpenProject {
                 <input style="display:none;" type="file" id="openProjectFileChooser"/>
             </td>
             <td id="openProjectTableRight" vertical-align="middle">${this.makeTabs()}</td>
-            </tr></table>`,
+            </tr></table>
+            <input type="file" style="display:none" id="openProjectFileChooser"></input>`,
         });
 
         let callback = function(page) {
             debug(`\n PageOpenProject.pageLoader.callback - START`);
 
-            document.getElementById('openProjectTableRight').addEventListener('dragover', page.handleDragOver, false);
-            document.getElementById('openProjectTableRight').addEventListener('drop', page.handleDrop, false);
-            document.getElementById('openProjectTableRight').addEventListener('dragleave', page.handleDragLeave, false);
-            document.getElementById('openProjectTableLeft').addEventListener('dragover', page.handleDragOver, false);
-            document.getElementById('openProjectTableLeft').addEventListener('drop', page.handleDrop, false);
-            document.getElementById('openProjectTableLeft').addEventListener('dragleave', page.handleDragLeave, false);
-            document.getElementById('openProjectFileChooser').addEventListener('change', page.handleDrop, false);
+            // Overall page drag + drop handlers
+            addEventHandler('openProjectTableRight', 'dragover', page.handleDragOver);
+            addEventHandler('openProjectTableRight', 'drop', page.handleDrop);
+            addEventHandler('openProjectTableRight', 'dragleave', page.handleDragLeave);
+
+            addEventHandler('openProjectTableLeft', 'dragover', page.handleDragOver);
+            addEventHandler('openProjectTableLeft', 'drop', page.handleDrop);
+            addEventHandler('openProjectTableLeft', 'dragleave', page.handleDragLeave);
+
+            addEventHandler('openProjectFileChooser', 'change', page.handleDrop);
+
+            // Tab click
+            addEventHandler('newTab', 'click',
+                function() {
+                    page.changeTab('new');
+                }
+            );
+
+            addEventHandler('loadTab', 'click',
+                function() {
+                    page.changeTab('load');
+                }
+            );
+
+            addEventHandler('examplesTab', 'click',
+                function() {
+                    page.changeTab('examples');
+                }
+            );
 
             window.addEventListener('message', page.handleMessage, false);
 
             if (window.opener) window.opener.postMessage('ready', '*');
             page.changeTab();
 
-            document.getElementById('splashScreenLogo').innerHTML = makeGlyphrStudioLogo({'fill': 'white', 'width': 400});
+            document.getElementById('splashScreenLogo').innerHTML = makeGlyphrStudioLogo({'fill': '#BAD9E9', 'width': 400});
 
             debug(` PageOpenProject.pageLoader.callback - END\n\n`);
         };
@@ -85,27 +109,27 @@ export default class PageOpenProject {
         // TABS
         let con = `
         <div class="openProjectTabs">
-            <button id="newTab" onclick="getCurrentPage().changeTab('new');">new</button>
-            <button id="loadTab" onclick="getCurrentPage().changeTab('load');">load</button>
-            <button id="examplesTab" onclick="getCurrentPage().changeTab('examples');">examples</button>
+            <button id="newTab">new</button><button id="loadTab">load</button><button id="examplesTab">examples</button>
         </div>`;
 
         // LOAD
         con += `
-        <div class="openProjectTile" id="openProjectLoadContent" style="display: none;">
+        <div class="openProjectTabContent" id="openProjectLoadContent" style="display: none;">
             <h2>Load a file</h2>
-            <button onclick="document.getElementById('openProjectFileChooser').click();" class="buttonsel">Browse for a File</button>&ensp; or Drag and Drop:
+            <fancy-button secondary onclick="document.getElementById('openProjectFileChooser').click();">
+                Browse for a File
+            </fancy-button>&ensp; or Drag and Drop:
             <div id="dropTarget">
                 Glyphr Studio Project &ensp;(.txt)<br>
                 Open Type or True Type Font &ensp;(.otf or .ttf)<br>
                 SVG Font &ensp;(.svg)
             </div>
-            <div style="width:335px;"> makeErrorMessageBox() + '</div>
+            <div style="width:335px;">${makeErrorMessageBox()}</div>
         </div>`;
 
         // NEW
         con += `
-        <div class="openProjectTile" id="openProjectNewContent" style="display: none;">
+        <div class="openProjectTabContent" id="openProjectNewContent" style="display: none;">
             <h2>Start a new Glyphr Studio Project</h2>
             Project name: &nbsp; <input id="newProjectName" type="text" value="My Font" autofocus/><br>
             <fancy-button onclick="newProjectHandler();">Start a new font from scratch</fancy-button>
@@ -113,20 +137,20 @@ export default class PageOpenProject {
 
         // EXAMPLES
         con += `
-        <div class="openProjectTile" id="openProjectExampleProjects" style="display: none;">
+        <div class="openProjectTabContent" id="openProjectExampleProjects" style="display: none;">
             <h2>Load an Example project</h2>
 
             Modegg is a project that utilizes Glyphr Studio features, like Components:<br>
-            <button onclick="openproject_loadSample('modegg');" class="buttonsel">Modegg</button><br><br>
+            <fancy-button secondary onclick="handleLoadSample('modegg');">Modegg</fancy-button><br><br>
 
-            California Gothic is an all-caps display font:<br>' +
-            <button onclick="openproject_loadSample('californiagothic');" class="buttonsel">California Gothic</button><br><br>
+            California Gothic is an all-caps display font:<br>
+            <fancy-button secondary onclick="handleLoadSample('californiagothic');">California Gothic</fancy-button><br><br>
 
             Merriweather Sans is an open-source font imported from an Open Type file:<br>
-            <button onclick="openproject_loadSample('merriweathersans');" class="buttonsel">Merriweather Sans</button><br><br>
+            <fancy-button secondary onclick="handleLoadSample('merriweathersans');">Merriweather Sans</fancy-button><br><br>
         </div>`;
 
-        return con;
+        return '<div class="openProjectTabWrapper">' + con + '</div>';
     }
 
     /**
@@ -149,22 +173,22 @@ export default class PageOpenProject {
         contentexamples.style.display = 'none';
         // contentrecent.style.display = 'none';
 
-        tabnew.style.borderBottomColor = 'rgb(229,234,239)';
-        tabload.style.borderBottomColor = 'rgb(229,234,239)';
-        tabexamples.style.borderBottomColor = 'rgb(229,234,239)';
-        // tabrecent.style.borderBottomColor = 'rgb(229,234,239)';
+        tabnew.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
+        tabload.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
+        tabexamples.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
+        // tabrecent.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
 
 
         if (tab === 'load') {
             contentload.style.display = 'block';
-            tabload.style.borderBottomColor = 'rgb(0,140,210)';
+            tabload.style.borderBottomColor = '#2EB5FA';
         } else if (tab === 'examples') {
             contentexamples.style.display = 'block';
-            tabexamples.style.borderBottomColor = 'rgb(0,140,210)';
+            tabexamples.style.borderBottomColor = '#2EB5FA';
         } else {
             // default to new
             contentnew.style.display = 'block';
-            tabnew.style.borderBottomColor = 'rgb(0,140,210)';
+            tabnew.style.borderBottomColor = '#2EB5FA';
         }
     }
 
@@ -272,11 +296,15 @@ export default class PageOpenProject {
         changeTab('load');
     }
 
+    handleNewProject(){
+
+    }
+
     /**
      * Load a project sample
      * @param {string} name - which sample to load
      */
-    openproject_loadSample(name) {
+    handleLoadSample(name) {
         document.getElementById('openProjectExampleProjects').innerHTML = '<h2>Load an Example project</h2>Loading example project...';
 
         setTimeout(function() {

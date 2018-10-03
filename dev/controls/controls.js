@@ -41,3 +41,16 @@ export function makeElement({tag = 'span', className, id, content, elementRoot, 
 
     return newElement;
 }
+
+/**
+ * Nicer centralized way of adding events to DOM elements
+ * @param {string} elementID - ID of the element to which we are adding an event
+ * @param {string} eventType - type of event
+ * @param {function} eventFunction - what to do
+ */
+export function addEventHandler(elementID, eventType = 'click', eventFunction = function() {}) {
+    let elem = document.getElementById(elementID);
+    if (elem) {
+        elem.addEventListener(eventType, eventFunction, false);
+    }
+}

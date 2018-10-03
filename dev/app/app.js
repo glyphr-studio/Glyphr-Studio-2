@@ -1,7 +1,7 @@
 import {accentColors} from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
 import {modegg, californiagothic, merriweathersans} from '../lib/samples.js';
-import { makeElement } from '../controls/controls.js';
+import {makeElement} from '../controls/controls.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -23,7 +23,7 @@ export default class GlyphrStudioApp {
             dev: {
                 // Internal Dev Stuff
                 mode: true, // global switch for all the stuff below
-                sampleProject: false, // if sampleproject is present, load it and skip open project experience
+                sampleProject: false, // if sampleProject is present, load it and skip open project experience
                 currentPage: false, // navigate straight to a page
                 currentPanel: false, // navigate straight to a panel
                 selectedShape: false, // automatically select a shape
@@ -50,7 +50,7 @@ export default class GlyphrStudioApp {
 
             if (this.settings.dev.sampleProject) {
                 // debug('\t >>> Using sample project');
-                let samples = {modegg: modegg, californiagothic: californiagothic, merriweathersans: merriweathersans}
+                let samples = {modegg: modegg, californiagothic: californiagothic, merriweathersans: merriweathersans};
                 this.temp.droppedFileContent = JSON.stringify(samples[this.settings.dev.sampleProject]);
                 importGlyphrProjectFromText();
                 this.settings.dev.sampleProject = false;

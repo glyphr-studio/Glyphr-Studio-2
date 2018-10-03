@@ -5,17 +5,19 @@
 */
 
 #openProjectTableLeft {
-    background-color: #161D20;
+    background-color: #0E1214;
+    color: white;
     width:475px;
     vertical-align: middle;
     padding:0px 0px 0px 50px;
 }
 
 #openProjectTableRight {
+    color: white;
     vertical-align: middle;
     padding:0px 0px 0px 50px;
     font-size:40px;
-    background-color: #1F272C;
+    background-color: #161D20;
 }
 
 #splashScreenLogo {
@@ -26,7 +28,7 @@
 .splashVerName,
 .splashVerNum,
 .splashBlurb {
-    color:white;
+    color: #CFE7F3;
     width:350px;
 }
 
@@ -39,18 +41,19 @@
 }
 
 .splashVerNum a {
-    color: white;
+    color: #CFE7F3;
     font-size:1em;
     text-decoration: underline;
 }
 
 .splashBlurb {
+    color: #BAD9E9;
     font-size:.6em;
     margin-top:10px;
 }
 
 .splashBlurb a {
-    color: white;
+    color: #CFE7F3;
     font-size:1em;
     text-decoration:underline;
 }
@@ -65,25 +68,26 @@
     text-decoration-color: white;
 }
 
-.openProjectTitle {
-    width:350px;
-    height:200px;
+.openProjectTabWrapper {
+    width:400px;
+    position: absolute;
+    top: calc(50% - 100px);
+}
+.openProjectTabContent {
     margin:20px 4px 0px 10px;
     display:inline;
     float:left;
+    color: white;
 }
 
-.openProjectTitle h2 {
+.openProjectTabContent h2 {
+    color: white;
     display:block;
     padding-right:0px;
 }
 
-.openProjectTitle .buttonsel {
-    padding:8px 25px;
-}
-
-.openProjectTitle #customRangeBegin,
-.openProjectTitle #customRangeEnd {
+.openProjectTabContent #customRangeBegin,
+.openProjectTabContent #customRangeEnd {
     width:140px;
 }
 
@@ -94,16 +98,16 @@
 .openProjectTabs button {
     /*background-color: rgb(229,234,239);*/
     background-color: transparent;
-    border-bottom: 3px solid rgb(229,234,239);
+    border-bottom: 3px solid rgba(127, 127, 127, 0.5);
     padding:4px 16px;
     margin: 0px;
-    color:rgb(0,140,210);
+    color:#2EB5FA;
     outline-width: 0px;
     border-radius: 0px;
 }
 .openProjectTabs button:hover {
-    border-bottom: 3px solid rgb(155,221,255) !important;
-    background-color: rgb(225,245,255);
+    border-bottom: 3px solid #0071AA !important;
+    background-color: rgba(127, 127, 127, 0.2);
 }
 
 #newProjectName	{
