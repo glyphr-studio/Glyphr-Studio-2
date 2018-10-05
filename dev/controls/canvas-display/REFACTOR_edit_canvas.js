@@ -1273,7 +1273,7 @@ export default redraw;
 
         // debug('\t Readout angle:\t' + readout);
 
-        ctx.font = '24px OpenSans';
+        ctx.font = '24px FiraGO';
         ctx.fillStyle = accent.l65;
         ctx.globalAlpha = 0.8;
         ctx.fillText((''+readout+'°'), center.x, starttopy-24);

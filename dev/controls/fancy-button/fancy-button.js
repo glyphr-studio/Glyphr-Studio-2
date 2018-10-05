@@ -137,6 +137,7 @@ export default class FancyButton extends HTMLElement {
                 animation: gradFade ${fast? fastSpeed : slowSpeed} linear infinite;
 
                 background-clip: text;
+                -webkit-background-clip: text;
                 -webkit-text-fill-color: transparent;
             }
 
