@@ -58,11 +58,6 @@ export default class GlyphrStudioApp {
                 this.projectEditors[0] = new ProjectEditor();
             }
 
-            if (this.settings.dev.currentPage === 'import svg') {
-                this.settings.importSVG.scale = false;
-                this.settings.importSVG.move = false;
-            }
-
             if (this.settings.dev.mode) this.settings.dev.testOnLoad();
         }
 

@@ -17,25 +17,9 @@ export function glyphrStudioOnLoad() {
         window.GlyphrStudio = new GlyphrStudioApp();
         console.log(`%cApp Version ${window.GlyphrStudio.versionNum} \n\n`, 'color:rgb(0,170,225)');
         window.GlyphrStudio.setUp();
-
-        setTimeout(fadeOutLoadScreen, 2000);
     }
 
     debug(`glyphrStudioOnLoad - END`);
-}
-
-/**
- * Fades out the initial load screen to show the App
- */
-function fadeOutLoadScreen() {
-    let loadScreen = document.getElementById('loadScreen');
-    loadScreen.style.opacity = 0;
-
-    setTimeout(function() {
-        // loadScreen.style.visibility = 'hidden';
-        // loadScreen.style.display = 'none';
-        document.body.removeChild(loadScreen);
-    }, 3000);
 }
 
 /**
