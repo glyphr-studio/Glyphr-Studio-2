@@ -98,7 +98,7 @@ function importGlyphrProjectFromText() {
 
 
     // Hydrate after all updates
-    loadGlyphrStudioProject(fcontent);
+    window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(fcontent);
     // debug(' importGlyphrProjectFromText - END\n');
 
 
@@ -140,20 +140,6 @@ function importGlyphrProjectFromText() {
     }
 }
 
-
-/**
- * Load a new project into the global _GP variable, and do some
- * finalizing for the UI
- * @param {GlyphrStudioProject} newProject - project to hydrate
- * @param {Function} callback - What function to call when done
- */
-function loadGlyphrStudioProject(newProject, callback) {
-    _GP = new GlyphrStudioProject(newProject);
-    if (callback) callback();
-    finalizeUI();
-}
-
-
 /**
  * Creates a new Glyphr Studio Project object from scratch
  * @returns {GlyphrStudioProject}
@@ -188,6 +174,7 @@ function newProjectHandler() {
  * Updates various UI and Glyphr Project settings based on
  * a new Glyphr Studio Project
  */
+/*
 function finalizeUI() {
     // debug("finalizeUI \t START");
 
@@ -222,3 +209,4 @@ function finalizeUI() {
 
     // debug("finalizeUI \t END\n");
 }
+*/

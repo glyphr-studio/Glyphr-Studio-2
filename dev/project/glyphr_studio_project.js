@@ -1,6 +1,6 @@
 import Glyph from '../glyph_elements/glyph.js';
 import HKern from '../glyph_elements/hkern.js';
-import {clone, round} from '../common/functions.js';
+import {clone, round, trim} from '../common/functions.js';
 import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
 import {decToHex, basicLatinOrder} from '../common/unicode.js';
 import Maxes, {getOverallMaxes} from '../glyph_elements/maxes.js';
@@ -374,21 +374,21 @@ export default class GlyphrStudioProject {
 /**
  * Takes a template object of expected keys and default values
  * and an object to import:
- *   Overwites template values if they exist in the imported object
+ *   Overwrites template values if they exist in the imported object
  *   Ignores extra values in the imported object that aren't in the template
  * @param {Object} template - default values
  * @param {Object} importing - custom values
- * @param {Boolean} trim - remove spaces from strings
+ * @param {Boolean} trimStrings - remove spaces from strings
  * @returns {Object}
  */
-function merge(template, importing, trim) {
+function merge(template, importing, trimStrings) {
     for (let a in template) {
         if (template.hasOwnProperty(a)) {
             if (typeof template[a] === 'object') {
                 if (importing.hasOwnProperty(a)) template[a] = merge(template[a], importing[a]);
             } else {
                 if (importing.hasOwnProperty(a)) {
-                    if (typeof importing[a] === 'string' && trim) template[a] = removeEmptyStringInputs(importing[a]);
+                    if (typeof importing[a] === 'string' && trimStrings) template[a] = trim(importing[a]);
                     else template[a] = importing[a];
                 }
             }

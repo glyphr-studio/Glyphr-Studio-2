@@ -35,8 +35,8 @@ export function makeElement({tag = 'span', className, id, content, elementRoot, 
         template.innerHTML = innerHTML;
         newElement.appendChild(template.content);
 
-        debug(`\t makeElement - newElement:`);
-        debug(newElement);
+        // debug(`\t makeElement - newElement:`);
+        // debug(newElement);
     }
 
     return newElement;

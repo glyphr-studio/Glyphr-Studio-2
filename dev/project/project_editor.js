@@ -1,7 +1,5 @@
 import GlyphrStudioProject from './glyphr_studio_project.js';
 import History from './history.js';
-import {decToHex} from '../common/unicode.js';
-import {round} from '../common/functions.js';
 import {saveFile, makeDateStampSuffix} from '../common/functions.js';
 import PageOpenProject from '../pages/openproject.js';
 import {makeElement} from '../controls/controls.js';
@@ -32,7 +30,7 @@ export default class ProjectEditor {
 
         // Navigation
         this.nav = {
-            page: 'openproject',
+            page: 'open project',
             panel: false,
             lastPanel: 'npChooser',
             hamburger: {
@@ -46,7 +44,7 @@ export default class ProjectEditor {
 
         this.content = makeElement({className: 'editorWrapper'});
 
-        this.pages = [];
+        this.pages = {};
 
         // History
         this.history = {};
@@ -286,29 +284,57 @@ export default class ProjectEditor {
     // --------------------------------------------------------------
 
     /**
+     * Changes the page of this Project Editor
+     * @param {string} pageName - where to go
+     */
+    navigate(pageName) {
+        if (pageName) this.nav.page = pageName;
+        window.GlyphrStudio.navigate();
+    }
+
+    /**
      * Returns the currently selected page
      * @returns {object}
      */
     getCurrentPage() {
+        debug(`\n ProjectEditor.getCurrentPage - START`);
+        debug(this.pages);
+        debug(` ProjectEditor.getCurrentPage - END\n\n`);
         return this.pages[this.nav.page];
     }
 
     /**
-     * Sets the current view to the appropriate Page and Panel
-     * @returns {object} UI Content of this Project Editor
+     * Sets the current view to the appropriate Page
+     * @returns {object} Page Loader object - {string} content and {function} callback
      */
     pageLoader() {
         debug(`\n ProjectEditor.pageLoader - START`);
+        let editorContent = makeElement({tag: 'div', id: 'editorWrapper'});
+        let currentPageLoader = {
+            content: makeElement({tag: 'h1', innerHTML: 'Uninitialized page content'}),
+            callback: false,
+        };
 
-        if (!this.pages.openProject) this.pages.openProject = new PageOpenProject();
-        this.nav.page = 'openProject';
-        let content = makeElement({tag: 'div', id: 'editorWrapper'});
-        let openProjectPageLoader = this.pages.openProject.pageLoader();
-        content.appendChild(openProjectPageLoader.content);
+        // Collect the Page Loader for the current page
+        if (this.nav.page === 'open project') {
+            debug(`\t page detected as open project`);
+            if (!this.pages['open project']) this.pages['open project'] = new PageOpenProject();
+            currentPageLoader = this.pages['open project'].pageLoader();
+        } else if (this.nav.page === 'glyph edit') {
+            debug(`\t page detected as glyph edit`);
+            if (!this.pages['glyph edit']) this.pages['glyph edit'] = new PageGlyphEdit();
+            currentPageLoader = this.pages['glyph edit'].pageLoader();
+        }
+
+        // Append results
+        editorContent.appendChild(currentPageLoader.content);
+
+        debug(`\t this.pages`);
+        debug(this.pages);
 
         debug(` ProjectEditor.pageLoader - END\n\n`);
 
-        return {content: content, callback: openProjectPageLoader.callback};
+        return {content: editorContent, callback: currentPageLoader.callback};
     }
 
     /**

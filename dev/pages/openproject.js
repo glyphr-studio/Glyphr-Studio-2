@@ -1,6 +1,7 @@
 import {makeElement, addEventHandler} from './../controls/controls.js';
 import {makeGlyphrStudioLogo} from './../common/graphics.js';
 import {makeErrorMessageBox} from './../controls/dialogs.js';
+import GlyphrStudioProject from './../project/glyphr_studio_project.js';
 
 /**
  * Page > Open Project
@@ -103,7 +104,7 @@ export default class PageOpenProject {
         };
 
         let re = {content: content, callback: callback};
-        debug(re);
+        // debug(re);
         debug(` PageOpenProject.pageLoader - END\n\n`);
 
         return re;
@@ -323,7 +324,9 @@ export default class PageOpenProject {
      */
     handleNewProject() {
         setTimeout(function() {
-            loadGlyphrStudioProject();
+            let projectEditor = window.GlyphrStudio.getCurrentProjectEditor();
+            projectEditor.project = new GlyphrStudioProject();
+            projectEditor.nav.page = 'glyph edit';
             window.GlyphrStudio.navigate();
         }, 5);
     }
@@ -336,7 +339,7 @@ export default class PageOpenProject {
         document.getElementById('openProjectExampleProjects').innerHTML = '<h2>Load an Example project</h2>Loading example project...';
 
         setTimeout(function() {
-            // loadGlyphrStudioProject(_UI.sampleproject[name]);
+            // window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(_UI.sampleproject[name]);
             window.GlyphrStudio.getCurrentProjectEditor().project =
             window.GlyphrStudio.getCurrentProjectEditor().nav.page = 'glyph edit';
             window.GlyphrStudio.navigate();

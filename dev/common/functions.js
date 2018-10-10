@@ -428,6 +428,10 @@ function strSan(val = '') {
  */
 function trim(text = '') {
     text = String(text);
+
+    // Old school quotes stored as values bug
+    if (text === `""` || text === `''`) return '';
+
     try {
         text = text.replace(/^\s+|\s+$/g, '');
         return text.replace(/(\r\n|\n|\r|\t)/gm, '');

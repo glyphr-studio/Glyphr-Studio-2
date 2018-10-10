@@ -1,7 +1,6 @@
 import {accentColors} from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
 import {modegg, californiagothic, merriweathersans} from '../lib/samples.js';
-import {makeElement} from '../controls/controls.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -101,7 +100,7 @@ export default class GlyphrStudioApp {
         let loader = this.getCurrentProjectEditor().pageLoader();
         wrapper.innerHTML = '';
         wrapper.appendChild(loader.content);
-        loader.callback(this.getCurrentProjectEditor().getCurrentPage());
+        if (loader.callback) loader.callback(this.getCurrentProjectEditor().getCurrentPage());
 
         debug(` App.navigate - END\n\n`);
     }
