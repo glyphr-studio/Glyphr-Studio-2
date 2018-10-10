@@ -1,7 +1,7 @@
 import GlyphrStudioProject from './glyphr_studio_project.js';
 import History from './history.js';
 import {saveFile, makeDateStampSuffix} from '../common/functions.js';
-import PageOpenProject from '../pages/openproject.js';
+import PageOpenProject from '../pages/open_project.js';
 import {makeElement} from '../controls/controls.js';
 
 /**
