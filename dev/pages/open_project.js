@@ -12,9 +12,7 @@ export default class PageOpenProject {
     /**
      * Initialize this page
      */
-    constructor() {
-
-    }
+    constructor() {}
 
     /**
      * Load the Open Project page

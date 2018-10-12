@@ -1,10 +1,44 @@
+import {makeElement} from '../controls/controls.js';
 
 /**
-    Page > Glyph Edit
-    HTML and associated functions for this page.
-**/
+ * Page > Glyph Edit
+ * The main edit surface for Glyphr Studio
+ * Comprised of Panels of tools, and the Edit Canvas
+ */
+export default class PageGlyphEdit {
+    /**
+     * Initialize this page
+     */
+    constructor() {}
 
+    /**
+     * Load the Open Project page
+     * @returns {object} HTML Element + callback function
+     */
+    pageLoader() {
+        debug(`\n PageGlyphEdit.pageLoader - START`);
 
+        let content = makeElement({tag: 'div', id: 'pageWrapper', innerHTML: `
+            <div class="glyphEdit">
+                <div class="glyphEditLeftArea">
+                    <fancy-button>Glyphr Studio</fancy-button>
+                    <panel-area panel="attributes"></panel-area>
+                </div>
+                <div class="glyphEditRightArea">
+                    <canvas-display glyphs="A"></canvas-display>
+                </div>
+            </div>
+        `});
+
+        let callback = function() {};
+
+        debug(` PageGlyphEdit.pageLoader - END\n\n`);
+
+        return {content: content, callback: callback};
+    }
+}
+
+/*
     function loadPage_glyphedit() {
         // debug('\n loadPage_glyphedit - START');
 
@@ -84,3 +118,4 @@
         _UI.redrawing = false;
         // debug(' redraw_GlyphEdit - END\n');
     }
+*/
