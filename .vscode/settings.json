@@ -18,14 +18,16 @@
     },
     "cSpell.language": "en",
     "cSpell.words": [
-        "Coord",
         "Affordances",
         "Bezier",
+        "Coord",
         "Directionality",
+        "anchor",
         "glyphr",
         "opentype",
         "rmoveto",
         "rrcurveto",
+        "twelvepoint",
         "xlink",
         "xmlns"
     ]

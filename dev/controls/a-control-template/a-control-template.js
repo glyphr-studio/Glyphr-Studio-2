@@ -59,7 +59,7 @@ export default class AControlTemplate extends HTMLElement {
         /*
         this.observer = new MutationObserver(this.childAttributeChanged);
         this.observer.elementRoot = this;
-        this.observer.observe(this.padlock, {attributes: true, attributeOldValue: true});
+        this.observer.observe(this.ELEMENT, {attributes: true, attributeOldValue: true});
         */
 
         shadow.appendChild(this.wrapper);
@@ -102,10 +102,10 @@ export default class AControlTemplate extends HTMLElement {
 
                 if (mutation.oldValue === '') {
                     // enabled
-                    this.elementRoot.inputNumber.removeAttribute('disabled');
+                    this.elementRoot.ELEMENT.removeAttribute('disabled');
                 } else {
                     // disabled
-                    this.elementRoot.inputNumber.setAttribute('disabled', '');
+                    this.elementRoot.ELEMENT.setAttribute('disabled', '');
                 }
             }
         }

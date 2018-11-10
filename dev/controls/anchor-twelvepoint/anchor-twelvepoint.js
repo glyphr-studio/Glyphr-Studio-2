@@ -12,37 +12,35 @@ export default class AnchorTwelvepoint extends HTMLElement {
     constructor(attributes = {}) {
         super();
 
+        this.anchorNames = [
+            'topLeft',
+            'topCenter',
+            'topRight',
+            'middleLeft',
+            'middleCenter',
+            'middleRight',
+            'baselineLeft',
+            'baselineCenter',
+            'baselineRight',
+            'bottomLeft',
+            'bottomCenter',
+            'bottomRight',
+        ];
+
+        this.defaultAnchor = 'baselineLeft';
+
         Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
-        this.topLeft = makeElement({tag: 'input', id: 'topLeft', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.topCenter = makeElement({tag: 'input', id: 'topCenter', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.topRight = makeElement({tag: 'input', id: 'topRight', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.middleLeft = makeElement({tag: 'input', id: 'middleLeft', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.middleCenter = makeElement({tag: 'input', id: 'middleCenter', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.middleRight = makeElement({tag: 'input', id: 'middleRight', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.baselineLeft = makeElement({tag: 'input', id: 'baselineLeft', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.baselineCenter = makeElement({tag: 'input', id: 'baselineCenter', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.baselineRight = makeElement({tag: 'input', id: 'baselineRight', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.bottomLeft = makeElement({tag: 'input', id: 'bottomLeft', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.bottomCenter = makeElement({tag: 'input', id: 'bottomCenter', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
-        this.bottomRight = makeElement({tag: 'input', id: 'bottomRight', tabIndex: true, attributes: {type: 'radio', name: 'marker'}});
+        // Create radio button HTML for each anchor
+        this.anchorNames.forEach((anchorName) => this[anchorName] = makeElement({tag: 'input', id: anchorName, tabIndex: true, attributes: {type: 'radio', name: 'marker', title: anchorName}}));
+        this.anchorNames.forEach((anchorName) => this[anchorName].elementRoot = this);
 
-        this.baselineLeft.setAttribute('checked', '');
+        // Default selection
+        this.setValue(this.getAttribute('value'));
+
+        // Append to wrapper
         this.wrapper = makeElement({className: 'wrapper'});
-
-        this.wrapper.appendChild(this.topLeft);
-        this.wrapper.appendChild(this.topCenter);
-        this.wrapper.appendChild(this.topRight);
-        this.wrapper.appendChild(this.middleLeft);
-        this.wrapper.appendChild(this.middleCenter);
-        this.wrapper.appendChild(this.middleRight);
-        this.wrapper.appendChild(this.baselineLeft);
-        this.wrapper.appendChild(this.baselineCenter);
-        this.wrapper.appendChild(this.baselineRight);
-        this.wrapper.appendChild(this.bottomLeft);
-        this.wrapper.appendChild(this.bottomCenter);
-        this.wrapper.appendChild(this.bottomRight);
-
+        this.anchorNames.forEach((anchorName) => this.wrapper.appendChild(this[anchorName]));
 
         let style = makeElement({tag: 'style', content: `
             * {
@@ -114,6 +112,11 @@ export default class AnchorTwelvepoint extends HTMLElement {
         */
 
         shadow.appendChild(this.wrapper);
+
+        // Add onclick handlers
+        this.anchorNames.forEach((anchorName) => this[anchorName].addEventListener('click', function() {
+            this.elementRoot.setValue(anchorName);
+        }));
     }
 
     /**
@@ -135,30 +138,35 @@ export default class AnchorTwelvepoint extends HTMLElement {
         if (attributeName === 'disabled') {
             if (newValue === '') {
                 // disabled
+                this.anchorNames.forEach((anchorName) => this[anchorName].setAttribute('disabled', ''));
             } else if (oldValue === '') {
                 // enabled
+                this.anchorNames.forEach((anchorName) => this[anchorName].removeAttribute('disabled', ''));
             }
+        }
+
+        if (attributeName === 'value') {
+            this.setValue(newValue);
         }
     }
 
     /**
-     * Listen for changes on child elements
-     * @param {object} mutationsList - collection of changes
+     * Selects a new anchor
+     * @param {string} newAnchor - name of the anchor to select
      */
-    childAttributeChanged(mutationsList) {
-        for (let mutation of mutationsList) {
-            if (mutation.type == 'attributes' && mutation.attributeName === 'disabled') {
-                console.log('The ' + mutation.attributeName + ' attribute was modified.');
-                console.log(mutation);
+    setValue(newAnchor) {
+        console.log(`setValue ${newAnchor}`);
 
-                if (mutation.oldValue === '') {
-                    // enabled
-                    this.elementRoot.inputNumber.removeAttribute('disabled');
-                } else {
-                    // disabled
-                    this.elementRoot.inputNumber.setAttribute('disabled', '');
-                }
-            }
+        this.anchorNames.forEach((anchorName) => this[anchorName].removeAttribute('checked', ''));
+
+        if (this.anchorNames.indexOf(newAnchor) > -1) {
+            this[newAnchor].setAttribute('checked', '');
+            this.value = newAnchor;
+            this.setAttribute('value', newAnchor);
+        } else {
+            this.baselineLeft.setAttribute('checked', '');
+            this.value = 'baselineLeft';
+            this.setAttribute('value', 'baselineLeft');
         }
     }
 }
