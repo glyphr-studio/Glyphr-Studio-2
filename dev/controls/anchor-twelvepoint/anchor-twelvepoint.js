@@ -62,7 +62,7 @@ export default class AnchorTwelvepoint extends HTMLElement {
                 display: grid;
                 grid-template-columns: 3;
                 grid-template-rows: 4;
-                grid-gap: 2px;
+                grid-gap: 0px;
             }
 
             .wrapper:hover,
@@ -93,9 +93,8 @@ export default class AnchorTwelvepoint extends HTMLElement {
             #bottomCenter {     grid-row: 4;    grid-column: 2; }
             #bottomRight {      grid-row: 4;    grid-column: 3; }
 
-            radio {
-                width: 20px;
-                height: 20px;
+            input[type='radio'] {
+                margin: 0px;
             }
 
         `});
