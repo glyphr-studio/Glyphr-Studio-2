@@ -13,18 +13,18 @@ export default class AnchorTwelvepoint extends HTMLElement {
         super();
 
         this.anchorNames = [
-            'topLeft',
-            'topCenter',
-            'topRight',
-            'middleLeft',
-            'middleCenter',
-            'middleRight',
-            'baselineLeft',
-            'baselineCenter',
-            'baselineRight',
-            'bottomLeft',
-            'bottomCenter',
-            'bottomRight',
+            {id: 'topLeft', name: 'top left'},
+            {id: 'topCenter', name: 'top center'},
+            {id: 'topRight', name: 'top right'},
+            {id: 'middleLeft', name: 'middle left'},
+            {id: 'middleCenter', name: 'middle center'},
+            {id: 'middleRight', name: 'middle right'},
+            {id: 'baselineLeft', name: 'baseline left'},
+            {id: 'baselineCenter', name: 'baseline center'},
+            {id: 'baselineRight', name: 'baseline right'},
+            {id: 'bottomLeft', name: 'bottom left'},
+            {id: 'bottomCenter', name: 'bottom center'},
+            {id: 'bottomRight', name: 'bottom right'},
         ];
 
         this.defaultAnchor = 'baselineLeft';
@@ -32,15 +32,17 @@ export default class AnchorTwelvepoint extends HTMLElement {
         Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
         // Create radio button HTML for each anchor
-        this.anchorNames.forEach((anchorName) => this[anchorName] = makeElement({tag: 'input', id: anchorName, tabIndex: true, attributes: {type: 'radio', name: 'marker', title: anchorName}}));
-        this.anchorNames.forEach((anchorName) => this[anchorName].elementRoot = this);
+        this.anchorNames.forEach((anchor) => {
+            this[anchor.id] = makeElement({id: anchor.id, className: 'anchor', tabIndex: true, attributes: {title: anchor.name}});
+            this[anchor.id].elementRoot = this;
+        });
 
         // Default selection
         this.setValue(this.getAttribute('value'));
 
         // Append to wrapper
         this.wrapper = makeElement({className: 'wrapper'});
-        this.anchorNames.forEach((anchorName) => this.wrapper.appendChild(this[anchorName]));
+        this.anchorNames.forEach((anchor) => this.wrapper.appendChild(this[anchor.id]));
 
         let style = makeElement({tag: 'style', content: `
             * {
@@ -62,7 +64,8 @@ export default class AnchorTwelvepoint extends HTMLElement {
                 display: grid;
                 grid-template-columns: 3;
                 grid-template-rows: 4;
-                grid-gap: 0px;
+                grid-gap: 3px;
+                padding: 3px;
             }
 
             .wrapper:hover,
@@ -93,8 +96,29 @@ export default class AnchorTwelvepoint extends HTMLElement {
             #bottomCenter {     grid-row: 4;    grid-column: 2; }
             #bottomRight {      grid-row: 4;    grid-column: 3; }
 
-            input[type='radio'] {
-                margin: 0px;
+            .anchor {
+                height: 5px;
+                width: 5px;
+                border-style: solid;
+                border-width: 1px;
+                border-color: ${uiColors.disabled.background};
+                background-color: ${uiColors.disabled.background};
+                cursor: pointer;
+            }
+
+            .anchor[checked] {
+                background-color: ${uiColors.accent};
+                border-color: ${uiColors.accent};
+            }
+
+            .anchor:hover {
+                border-color: ${uiColors.accent};
+            }
+
+            .anchor:focus {
+                outline: 1px dashed ${uiColors.accent};
+                border-color: ${uiColors.accent};
+                outline-offset: 0px;
             }
 
         `});
@@ -113,8 +137,8 @@ export default class AnchorTwelvepoint extends HTMLElement {
         shadow.appendChild(this.wrapper);
 
         // Add onclick handlers
-        this.anchorNames.forEach((anchorName) => this[anchorName].addEventListener('click', function() {
-            this.elementRoot.setValue(anchorName);
+        this.anchorNames.forEach((anchor) => this[anchor.id].addEventListener('click', function() {
+            this.elementRoot.setValue(anchor.id);
         }));
     }
 
@@ -137,10 +161,10 @@ export default class AnchorTwelvepoint extends HTMLElement {
         if (attributeName === 'disabled') {
             if (newValue === '') {
                 // disabled
-                this.anchorNames.forEach((anchorName) => this[anchorName].setAttribute('disabled', ''));
+                this.anchorNames.forEach((anchor) => this[anchor.id].setAttribute('disabled', ''));
             } else if (oldValue === '') {
                 // enabled
-                this.anchorNames.forEach((anchorName) => this[anchorName].removeAttribute('disabled', ''));
+                this.anchorNames.forEach((anchor) => this[anchor.id].removeAttribute('disabled', ''));
             }
         }
 
@@ -156,9 +180,9 @@ export default class AnchorTwelvepoint extends HTMLElement {
     setValue(newAnchor) {
         console.log(`setValue ${newAnchor}`);
 
-        this.anchorNames.forEach((anchorName) => this[anchorName].removeAttribute('checked', ''));
+        this.anchorNames.forEach((anchor) => this[anchor.id].removeAttribute('checked', ''));
 
-        if (this.anchorNames.indexOf(newAnchor) > -1) {
+        if (newAnchor) {
             this[newAnchor].setAttribute('checked', '');
             this.value = newAnchor;
             this.setAttribute('value', newAnchor);
