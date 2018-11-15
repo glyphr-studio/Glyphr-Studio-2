@@ -1,4 +1,5 @@
 import {makeElement} from '../controls.js';
+import GlyphrStudioApp from '../../app/app.js';
 
 /**
  * CanvasDisplay takes a string of glyphs and displays them on the canvas
@@ -18,10 +19,10 @@ export default class CanvasDisplay extends HTMLElement {
         this.ctx = this.canvas.getContext('2d');
 
         this.glyphs = this.getAttribute('glyphs') || '';
-        this.width = this.getAttribute('width') || 800;
-        this.height = this.getAttribute('height') || 600;
+        this.width = this.getAttribute('width') || 2000;
+        this.height = this.getAttribute('height') || 1100;
         this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
-        this.horozontalAlign = this.getAttribute('horizontal-align') || 'center';
+        this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
 
         let style = makeElement({tag: 'style', content: `
             * {
@@ -30,6 +31,10 @@ export default class CanvasDisplay extends HTMLElement {
                 -moz-user-select: none;
                 -webkit-user-select: none;
                 -ms-user-select: none;
+            }
+
+            canvas {
+                background-color: white;
             }
         `});
 
@@ -45,6 +50,9 @@ export default class CanvasDisplay extends HTMLElement {
         */
 
         shadow.appendChild(this.canvas);
+
+        this.canvas.height = this.height;
+        this.canvas.width = this.width;
     }
 
     /**
@@ -61,7 +69,8 @@ export default class CanvasDisplay extends HTMLElement {
      * @param {string} newValue - value after the change
      */
     attributeChangedCallback(attributeName, oldValue, newValue) {
-        // console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+        console.log(` canvs-display.attributeChangeCallback`);
+        console.log(`\t Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
         switch (attributeName) {
             case 'glyphs':
@@ -102,7 +111,19 @@ export default class CanvasDisplay extends HTMLElement {
      * Updates the canvas
      */
     redraw() {
+        console.log(` canvas-display.redraw`);
+        this.ctx.fillStyle = 'lime';
+        this.ctx.fillRect(0, 0, 100, 100);
+        this.ctx.fillRect(100, 100, 100, 100);
+        this.ctx.fillRect(200, 200, 100, 100);
+        console.log(` THREE SQUARES >>>>>>>>>>>>>>>>>>>>>>>`);
 
+        let cp = GlyphrStudio.getCurrentProject();
+        let sg = cp.getGlyph('0x22', true);
+
+        console.log(sg);
+
+        sg.drawGlyph(this.ctx);
     }
 }
 

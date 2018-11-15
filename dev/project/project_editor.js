@@ -298,9 +298,9 @@ export default class ProjectEditor {
      * @returns {object}
      */
     getCurrentPage() {
-        debug(`\n ProjectEditor.getCurrentPage - START`);
-        debug(this.pages);
-        debug(` ProjectEditor.getCurrentPage - END\n\n`);
+        // debug(`\n ProjectEditor.getCurrentPage - START`);
+        // debug(this.pages);
+        // debug(` ProjectEditor.getCurrentPage - END\n\n`);
         return this.pages[this.nav.page];
     }
 

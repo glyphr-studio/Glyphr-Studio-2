@@ -30,7 +30,11 @@ export default class PageGlyphEdit {
             </div>
         `});
 
-        let callback = function() {};
+        let callback = function() {
+            let can = document.querySelector('canvas-display');
+            can.redraw();
+            debug(` PageGlyphEdit.pageLoader.callback - END\n\n`);
+        };
 
         debug(` PageGlyphEdit.pageLoader - END\n\n`);
 

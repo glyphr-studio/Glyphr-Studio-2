@@ -349,7 +349,7 @@ export default class Glyph extends GlyphElement {
      */
     get lsb() {
         if (this.leftSideBearing === false) {
-            let p = getProject();
+            let p = GlyphrStudio.getCurrentProject();
             if (p && p.projectSettings) return p.projectSettings.defaultLSB;
             else return 0;
         } else {
@@ -363,7 +363,7 @@ export default class Glyph extends GlyphElement {
      */
     get rsb() {
         if (this.rightSideBearing === false) {
-            let p = getProject();
+            let p = GlyphrStudio.getCurrentProject();
             if (p && p.projectSettings) return p.projectSettings.defaultRSB;
             else return 0;
         } else {
