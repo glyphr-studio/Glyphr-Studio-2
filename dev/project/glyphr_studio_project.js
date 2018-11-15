@@ -1,5 +1,5 @@
 import Glyph from '../glyph_elements/glyph.js';
-import HKern from '../glyph_elements/hkern.js';
+import HKern from '../glyph_elements/h_kern.js';
 import {clone, round, trim} from '../common/functions.js';
 import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
 import {decToHex, basicLatinOrder} from '../common/unicode.js';

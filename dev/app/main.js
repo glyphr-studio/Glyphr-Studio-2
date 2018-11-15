@@ -64,11 +64,13 @@ export function assemble(loadTests = false, callback = false) {
                 if (file.indexOf(nonModules) === -1) newElement.setAttribute('type', 'module');
                 document.getElementsByTagName('head')[0].appendChild(newElement);
             } else if (suffix === 'css') {
-                newElement = document.createElement('link');
-                newElement.setAttribute('rel', 'stylesheet');
-                newElement.setAttribute('type', 'text/css');
-                newElement.setAttribute('href', `${directory.path}/${file}`);
-                document.getElementsByTagName('head')[0].appendChild(newElement);
+                if (!loadTests) {
+                    newElement = document.createElement('link');
+                    newElement.setAttribute('rel', 'stylesheet');
+                    newElement.setAttribute('type', 'text/css');
+                    newElement.setAttribute('href', `${directory.path}/${file}`);
+                    document.getElementsByTagName('head')[0].appendChild(newElement);
+                }
             } else if (suffix === 'test') {
                 if (loadTests) {
                     tests.push(`${directory.path}/${file}`);

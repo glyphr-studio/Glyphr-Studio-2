@@ -1,4 +1,4 @@
-import PathPoint from './pathpoint.js';
+import PathPoint from './path_point.js';
 
 _TEST.globals.testPathPoint = {
     p: {coord: {x: 100, y: 100}},

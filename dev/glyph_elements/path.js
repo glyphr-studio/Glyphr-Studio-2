@@ -1,13 +1,13 @@
-import GlyphElement from './glyphelement.js';
-import XYPoint from './xypoint.js';
+import GlyphElement from './glyph_element.js';
+import XYPoint from './xy_point.js';
 import Maxes from './maxes.js';
 import Segment from './segment.js';
-import PolySegment from './polysegment.js';
-import PathPoint from './pathpoint.js';
+import PolySegment from './poly_segment.js';
+import PathPoint from './path_point.js';
 import {clone, round, isVal, hasNonValues, duplicates, pointsAreEqual} from '../common/functions.js';
 // import {json} from '../common/functions.js';
 import {getOverallMaxes, maxesOverlap} from './maxes.js';
-import {findSegmentIntersections} from './polysegment.js';
+import {findSegmentIntersections} from './poly_segment.js';
 import {sXcX, sYcY, getView} from '../controls/canvas-edit/canvas-edit.js';
 
 /**

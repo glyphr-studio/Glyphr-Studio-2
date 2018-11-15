@@ -40,7 +40,8 @@ export default class GlyphElement {
      * @returns {string}
      */
     set objType(type) {
-        return this._objType = type;
+        this._objType = type;
+        return this._objType;
     }
 
     /**
@@ -58,7 +59,8 @@ export default class GlyphElement {
      * @returns {object}
      */
     set cache(cache = {}) {
-        return this._cache = cache;
+        this._cache = cache;
+        return this._cache;
     }
 
     /**

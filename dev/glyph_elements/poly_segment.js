@@ -1,8 +1,8 @@
-import GlyphElement from './glyphelement.js';
-import XYPoint from './xypoint.js';
+import GlyphElement from './glyph_element.js';
+import XYPoint from './xy_point.js';
 import Segment from './segment.js';
 // import Path from './path.js';
-// import PathPoint from './pathpoint.js';
+// import PathPoint from './path_point.js';
 import {maxesOverlap} from './maxes.js';
 import {duplicates, clone, pointsAreEqual, round, numSan} from '../common/functions.js';
 import {sXcX, sYcY} from '../controls/canvas-edit/canvas-edit.js';

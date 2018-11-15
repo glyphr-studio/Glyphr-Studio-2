@@ -1,7 +1,7 @@
 import Segment from './segment.js';
 import {segmentsAreEqual, findSegmentIntersections,
     findOverlappingLineSegmentIntersections, findCrossingLineSegmentIntersections,
-    findEndPointSegmentIntersections} from './polysegment.js';
+    findEndPointSegmentIntersections} from './poly_segment.js';
 import {round} from '../common/functions.js';
 
 // basically an upper-left quadrant quarter circle

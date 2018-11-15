@@ -1,4 +1,4 @@
-import GlyphElement from './glyphelement.js';
+import GlyphElement from './glyph_element.js';
 import Path from './path.js';
 import {strSan, clone} from '../common/functions.js';
 

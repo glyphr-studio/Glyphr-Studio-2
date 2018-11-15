@@ -1,4 +1,4 @@
-import GlyphElement from './glyphelement.js';
+import GlyphElement from './glyph_element.js';
 import {parseUnicodeInput} from '../common/unicode.js';
 import {strSan} from '../common/functions.js';
 

@@ -1,5 +1,5 @@
-import GlyphElement from './glyphelement.js';
-import ControlPoint from './controlpoint.js';
+import GlyphElement from './glyph_element.js';
+import ControlPoint from './control_point.js';
 import {round, rotate, pointsAreEqual, isVal} from '../common/functions.js';
 
 

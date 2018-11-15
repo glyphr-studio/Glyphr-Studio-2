@@ -1,6 +1,6 @@
-import './settings.js';
-import {areEqual, localStorageGet, localStorageSet} from './functions.js';
+import {areEqual, localStorageGet, localStorageSet} from '../common/functions.js';
 import {assemble} from './main.js';
+import GlyphrStudioApp from './app.js';
 
 /**
  * TEST
@@ -25,6 +25,7 @@ let didNotRun = 0;
  * Kick off the tests
  */
 function loadTests() {
+    window.GlyphrStudio = new GlyphrStudioApp();
     assemble(true, loadTestList);
 }
 

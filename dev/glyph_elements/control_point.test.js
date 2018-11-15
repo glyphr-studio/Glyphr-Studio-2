@@ -1,4 +1,4 @@
-import ControlPoint from './controlpoint.js';
+import ControlPoint from './control_point.js';
 
 _TEST.testList.push(
     {

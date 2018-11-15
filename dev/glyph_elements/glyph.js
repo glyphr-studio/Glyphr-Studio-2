@@ -1,12 +1,12 @@
-import GlyphElement from './glyphelement.js';
+import GlyphElement from './glyph_element.js';
 import Maxes from './maxes.js';
 import Path from './path.js';
 import Shape from './shape.js';
-import ComponentInstance from './componentinstance.js';
+import ComponentInstance from './component_instance.js';
 import {clone, hasNonValues, isVal, trim} from '../common/functions.js';
 import {parseUnicodeInput, getUnicodeName} from '../common/unicode.js';
 import {getOverallMaxes} from './maxes.js';
-import {combineShapes} from '../panels/REFACTORshape.js';
+import {combineShapes} from '../panels/REFACTOR_shape.js';
 
 
 /**

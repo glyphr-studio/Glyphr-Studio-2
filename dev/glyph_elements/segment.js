@@ -1,5 +1,5 @@
-import GlyphElement from './glyphelement.js';
-import XYPoint from './xypoint.js';
+import GlyphElement from './glyph_element.js';
+import XYPoint from './xy_point.js';
 import Maxes from './maxes.js';
 import {clone, numSan, isVal, round, hasNonValues, pointsAreEqual} from '../common/functions.js';
 

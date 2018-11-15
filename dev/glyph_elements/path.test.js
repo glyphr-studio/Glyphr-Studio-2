@@ -1,7 +1,7 @@
 import Path from './path.js';
 import {findPathIntersections, findPathPointIntersections} from './path.js';
 import {clone} from '../common/functions.js';
-import PathPoint from './pathpoint.js';
+import PathPoint from './path_point.js';
 
 // It's a circle!
 _TEST.globals.testPathPoints = [

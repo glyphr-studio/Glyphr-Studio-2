@@ -1,6 +1,6 @@
-import XYPoint from '../glyph_elements/xypoint.js';
+import XYPoint from '../glyph_elements/xy_point.js';
 import Coord from '../glyph_elements/coord.js';
-import PathPoint from '../glyph_elements/pathpoint.js';
+import PathPoint from '../glyph_elements/path_point.js';
 import Shape from '../glyph_elements/shape.js';
 import {findPathIntersections} from '../glyph_elements/path.js';
 import {clone, isVal, round} from '../common/functions.js';

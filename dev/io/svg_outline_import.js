@@ -1,5 +1,5 @@
 
-import XYPoint from './xypoint.js';
+import XYPoint from './xy_point.js';
 /**
     IO > Import > SVG Outlines
     Takes a set of XML and pulls out any path or

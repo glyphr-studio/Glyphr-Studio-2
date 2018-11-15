@@ -1,5 +1,4 @@
 import {makeElement} from '../controls.js';
-import GlyphrStudioApp from '../../app/app.js';
 
 /**
  * CanvasDisplay takes a string of glyphs and displays them on the canvas

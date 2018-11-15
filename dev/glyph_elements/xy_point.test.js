@@ -1,4 +1,4 @@
-import XYPoint from './xypoint.js';
+import XYPoint from './xy_point.js';
 
 _TEST.testList.push(
     {
