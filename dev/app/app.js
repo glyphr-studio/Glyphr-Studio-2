@@ -11,8 +11,8 @@ export default class GlyphrStudioApp {
      */
     constructor() {
         // Version
-        this.version = 'Version 2 alpha';
-        this.versionNum = '2.0.0';
+        this.versionName = 'Version 2 alpha';
+        this.versionNumber = '2.0.0';
         this.versionDate = 0;
 
         this.projectEditors = [];

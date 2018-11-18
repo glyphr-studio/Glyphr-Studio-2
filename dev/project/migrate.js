@@ -17,17 +17,107 @@
 /* eslint-disable camel-case */
 
 /**
+ * Check a project save file content, and do neccessary
+ * data structure updates if it happens to be saved from
+ * a previous version of Glyphr Studio
+ * @param {string} project - project object data
+ * @returns {object} - Glyphr Studio v2 Project strucutre
+ */
+export function migrateGlyphrStudioProject(project = {}) {
+    // debug('\n upgradeGlyphrStudioProject - START');
+
+    let noVersionFound = 'No version information was found.  Either the file is not a Glyphr Studio Project, or the file has non-valid JSON data.  Please try a different file...';
+    let timeTraveller = 'Your Glyphr Project was created with a later version of Glyphr Studio.  This version of Glyphr Studio cannot open project files created in the future O_o (whoa).  Please go to glyphrstudio.com to get the latest release.';
+
+    let semanticVersion = false;
+    if (project.projectSettings && project.projectSettings.versionNumber) {
+        // Glyphr Studio V2
+        semanticVersion = project.projectSettings.versionNumber;
+    } else if (project.projectsettings && project.projectsettings.versionnum) {
+        // Glyphr Studio V1 and Betas 3,4,5
+        semanticVersion = project.projectsettings.versionnum;
+    } else if (project.projectsettings && project.projectsettings.version) {
+        // Glyphr Studio Beta 3 and before
+        // These had a version title string, but not a semantic version
+        semanticVersion = '0.3.0';
+        project.projectsettings.versionnum = '0.3.0';
+        project.projectsettings.initialversionnum = '0.3.0';
+    } else {
+        return noVersionFound;
+    }
+
+    /**
+     * Parse a semantic version string to an object
+     * @param {sting} vn - version string to parse
+     * @returns {object}
+     */
+    function parseVersionNum(vn) {
+        vn = vn.split('.');
+        return {
+            'major': (vn[0]*1),
+            'minor': (vn[1]*1),
+            'patch': (vn[2]*1),
+        };
+    }
+
+    semanticVersion = parseVersionNum(semanticVersion);
+    let appVersion = parseVersionNum(window.GlyphrStudio.versionNumber);
+
+    // Check for future versions
+    if (semanticVersion.major > appVersion.major) {
+        return timeTraveller;
+    }
+
+    // Roll upgrades through Beta
+    if (semanticVersion.major === 0) {
+        project = migrate_betas_to_v1(project, semanticVersion.minor);
+        semanticVersion.major = 1;
+        semanticVersion.minor = 0;
+    }
+    // debug('\t done with beta updates');
+
+    // Roll upgrades through v1 then to V2
+    if (semanticVersion.major === 1) {
+        project = migrateThroughV1(project, semanticVersion.minor);
+        semanticVersion.major = 1;
+        semanticVersion.minor = 99;
+
+        project = migrateV1toV2(project);
+    }
+    // debug('\t done with v1 minor updates');
+
+    return project;
+    // debug(' upgradeGlyphrStudioProject - END\n');
+}
+
+
+/**
  * Migrate V1 to V2
  * This is mostly camelCaseIng project variables
  * @param {GlyphrStudioProject} project
  * @param {number} minor - minor version
  * @returns {GlyphrStudioProject}
  */
-export function migrateV1toV2(project, minor) {
+function migrateV1toV2(project) {
     // CamelCase the project variables
     return project;
 }
 
+/**
+ * migrate from v1.0 through v1.99
+ * @param {object} project - project data
+ * @param {number} minor - semantic v1 minor
+ * @returns {object} - project
+ */
+function migrateThroughV1(project, minor) {
+    // Roll through minor versions
+    if (minor < 10) {
+        project.projectsettings.glyphrange.latinsupplement = project.projectsettings.glyphrange.latinsuppliment;
+        delete project.projectsettings.glyphrange.latinsuppliment;
+    }
+
+    return project;
+}
 
 /**
  * Wrapper function to do rolling upgrades to
@@ -36,7 +126,7 @@ export function migrateV1toV2(project, minor) {
  * @param {number} minor - minor version
  * @returns {GlyphrStudioProject} - project JSON
  */
-export function migrateBetasToV1(project, minor) {
+function migrateBetasToV1(project, minor) {
     // debug('\n migrateBetasToV1 - START');
     // debug(project);
     // Start rolling upgrades
@@ -68,7 +158,7 @@ export function migrateBetasToV1(project, minor) {
  * @param {GlyphrStudioProject} project - project object
  * @returns {GlyphrStudioProject}
  */
-export function migrate05to10(project) {
+function migrate05to10(project) {
     // debug('\n migrate05to10 - START');
 
     // Update new top level objects
@@ -128,7 +218,7 @@ export function migrate05to10(project) {
  * @param {Glyph} glyph - old Char
  * @returns {Glyph}
  */
-export function charToGlyph(glyph) {
+function charToGlyph(glyph) {
     let gshapes;
     let dx;
     let dy;
@@ -168,7 +258,7 @@ export function charToGlyph(glyph) {
  * @param {GlyphrStudioProject} project - Char objects
  * @returns {GlyphrStudioProject}
  */
-export function migrate04to05(project) {
+function migrate04to05(project) {
     // debug('\n migrate04to05 - START');
     let tc;
 
@@ -189,7 +279,7 @@ export function migrate04to05(project) {
  * @param {Object} fc - project
  * @returns {GlyphrStudioProject}
  */
-export function migrate03to04(fc) {
+function migrate03to04(fc) {
     // debug('\n migrate03to04 - START');
     newgp = new GlyphrStudioProject();
 
