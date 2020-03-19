@@ -2,7 +2,7 @@ import manifest from '../manifest.js';
 import GlyphrStudioApp from './app.js';
 
 /** export nothing by default */
-export default function() {};
+export default function() {}
 
 document.body.onload = glyphrStudioOnLoad;
 
@@ -10,12 +10,14 @@ document.body.onload = glyphrStudioOnLoad;
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
+    console.log(`glyphrStudioOnLoad - Start`);
     console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n', 'color:rgb(0,170,225)');
 
     if (passPreChecks()) {
         assemble();
         window.GlyphrStudio = new GlyphrStudioApp();
-        console.log(`%cApp Version ${window.GlyphrStudio.versionNum} \n\n`, 'color:rgb(0,170,225)');
+        console.log(window.GlyphrStudio);
+        console.log(`%cApp Version ${window.GlyphrStudio.versionNumber} \n\n`, 'color:rgb(0,170,225)');
         window.GlyphrStudio.setUp();
     }
 
@@ -101,4 +103,4 @@ export function assemble(loadTests = false, callback = false) {
     }
 
     if (callback) window.setTimeout(callback, 500);
-};
+}

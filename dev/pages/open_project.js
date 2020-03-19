@@ -33,9 +33,9 @@ export default class PageOpenProject {
             <td id="openProjectTableLeft" vertical-align="middle">
             <div id="splashScreenLogo"></div>
 
-                <span class="splashVerName">${app.version}</span>
+                <span class="splashVerName">${app.versionName}</span>
 
-                <span class="splashVerNum">${app.versionNum.split('.')[2]}${recentMessage}</span>
+                <span class="splashVerNum">${app.versionNumber.split('.')[2]}${recentMessage}</span>
 
                 <div class="splashBlurb">
                     For more informaiton visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>

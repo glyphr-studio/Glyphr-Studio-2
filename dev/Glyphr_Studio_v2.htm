@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <!--
-    Copyright (C) 2010 - 2018 Matthew LaGrandeur
+    Copyright (C) 2010 - 2020 Matthew LaGrandeur
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,88 +19,82 @@
 -->
 
 <head>
+    <meta charset="utf-8">
+    <title>~~Glyphr Studio V2~~</title>
+    <link rel="icon" type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUhJREFUeNpiZACBVQ8NgGQ9EDsAsQADfvABiA8AcSNDmPwFRqjm/egaDQTYgJgVzL7w4TcQ/8JmkCML1GYBZI3zTYXANDIAGZB4+h2yQSA99SAXvIcZoMDNwnDeVQIsW3jhPcOGp9/B7ABpToZ+A0Ew23D3C4YHX//AXcGEbHu9Fj9c0YIHXxk+/P4HxiA2SAxZDcwVTMg8kE0gxUg2wAFIDCQHUoMMUAwQYGVi+Ai0ERcAyYHU4DQA5Fx9fjacBmCTQzFg4u3PYCeutxIF0yDbQBhZDB2wIHMarn4E0/mqvBiKQa4DRSF69KIY8D9UDkwzrn7E4CDKgaLwwOsfDA3a/PgNANkCiwGQBmxh8AEtkJmgSRIeBiAbQP5FdgGIDQsDkBpkO1mgGSOAmDBovPYRrgbmM5yZCWQrcmbC4iVwZmKkNDsDBBgAPeaW5sdU9+kAAAAASUVORK5CYII=" />
+    <script src="./app/main.js" type="module"></script>
+    <style>
+        body,
+        #appWrapper,
+        #loadScreen {
+            height: 100%;
+            width: 100%;
+            min-height: 100%;
+            min-width: 100%;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            overflow: hidden;
+        }
 
-<meta charset="utf-8">
+        #appWrapper {
+            z-index: 1;
+            background-color: #161D20;
+        }
 
-<title>~~Glyphr Studio V2~~</title>
+        #loadScreen {
+            z-index: 10;
+            font-family: sans-serif;
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 500ms ease-out;
+            background-color: #0E1214;
+            padding: auto;
+            text-align: center;
+            vertical-align: middle;
+        }
 
-<link rel="icon" type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUhJREFUeNpiZACBVQ8NgGQ9EDsAsQADfvABiA8AcSNDmPwFRqjm/egaDQTYgJgVzL7w4TcQ/8JmkCML1GYBZI3zTYXANDIAGZB4+h2yQSA99SAXvIcZoMDNwnDeVQIsW3jhPcOGp9/B7ABpToZ+A0Ew23D3C4YHX//AXcGEbHu9Fj9c0YIHXxk+/P4HxiA2SAxZDcwVTMg8kE0gxUg2wAFIDCQHUoMMUAwQYGVi+Ai0ERcAyYHU4DQA5Fx9fjacBmCTQzFg4u3PYCeutxIF0yDbQBhZDB2wIHMarn4E0/mqvBiKQa4DRSF69KIY8D9UDkwzrn7E4CDKgaLwwOsfDA3a/PgNANkCiwGQBmxh8AEtkJmgSRIeBiAbQP5FdgGIDQsDkBpkO1mgGSOAmDBovPYRrgbmM5yZCWQrcmbC4iVwZmKkNDsDBBgAPeaW5sdU9+kAAAAASUVORK5CYII=" />
+        #loadScreen svg,
+        #loadScreen #errorMessage {
+            margin: auto;
+            position: relative;
+            top: calc(50% - 128px);
+        }
 
-<script src="./app/main.js" type="module"></script>
-
-<style>
-    body,
-    #appWrapper,
-    #loadScreen {
-        height: 100%;
-        width: 100%;
-        min-height: 100%;
-        min-width: 100%;
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        overflow: hidden;
-    }
-
-    #appWrapper {
-        z-index: 1;
-        background-color: #161D20;
-    }
-
-    #loadScreen {
-        z-index: 10;
-        font-family: sans-serif;
-        opacity: 1;
-        visibility: visible;
-        transition: opacity 500ms ease-out;
-        background-color: #0E1214;
-        padding: auto;
-        text-align: center;
-        vertical-align: middle;
-    }
-
-    #loadScreen svg,
-    #loadScreen #errorMessage {
-        margin: auto;
-        position: relative;
-        top: calc(50% - 128px);
-    }
-
-    #loadLogo {
-        fill: #00344E;
-        stroke: #008ACF;
-        stroke-width: 1px;
-        stroke-opacity: 1;
-        animation-name: border-pulse;
-        animation-duration: 800ms;
-        animation-iteration-count: infinite;
-    }
-
-    @keyframes fill {
-        0% {
+        #loadLogo {
             fill: #00344E;
-        }
-        20% {
-            fill: #00283D;
-        }
-        100% {
-            fill: #00344E;
-        }
-    }
-
-    @keyframes border-pulse {
-        0% {
+            stroke: #008ACF;
+            stroke-width: 1px;
             stroke-opacity: 1;
+            animation-name: border-pulse;
+            animation-duration: 800ms;
+            animation-iteration-count: infinite;
         }
-        20% {
-            stroke-opacity: 0.6;
-        }
-        100% {
-            stroke-opacity: 1;
-        }
-    }
-</style>
 
+        @keyframes fill {
+            0% {
+                fill: #00344E;
+            }
+            20% {
+                fill: #00283D;
+            }
+            100% {
+                fill: #00344E;
+            }
+        }
+
+        @keyframes border-pulse {
+            0% {
+                stroke-opacity: 1;
+            }
+            20% {
+                stroke-opacity: 0.6;
+            }
+            100% {
+                stroke-opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; margin: 0; padding: 0;">
