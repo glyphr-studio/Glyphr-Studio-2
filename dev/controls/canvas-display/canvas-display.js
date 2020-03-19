@@ -118,7 +118,7 @@ export default class CanvasDisplay extends HTMLElement {
         console.log(` THREE SQUARES >>>>>>>>>>>>>>>>>>>>>>>`);
 
         let cp = GlyphrStudio.getCurrentProject();
-        let sg = cp.getGlyph('0x22', true);
+        let sg = cp.getGlyph('0x41', true);
 
         console.log(sg);
 

@@ -73,7 +73,7 @@ export default class GlyphrStudioProject {
                 guide_med: 'rgb(255,132,51)',
                 guide_light: 'rgb(255,193,153)',
             },
-        },
+        };
 
         this.metadata = {
            // Shared Properties
@@ -238,7 +238,7 @@ export default class GlyphrStudioProject {
      * @param {boolean} create - create if it doesn't exist yet
      * @returns {Glyph}
      */
-    getGlyph(id, create) {
+    getGlyph(id, create = false) {
         // debug('\n getGlyph - START');
         // debug('\t passed: ' + id + ' create: ' + create);
 
@@ -266,7 +266,7 @@ export default class GlyphrStudioProject {
             if (rechar) {
                 return rechar;
             } else if (create) {
-                // debug('\t create was true, returning a new char.');
+                debug('\t create was true, returning a new char.');
                 this.glyphs[id] = new Glyph({'glyphhex': id});
                 return this.glyphs[id];
             }
