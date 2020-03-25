@@ -1,6 +1,6 @@
 import {accentColors} from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
-import {modegg, californiagothic, merriweathersans} from '../lib/samples.js';
+import {sampleProjects} from '../lib/samples.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -49,8 +49,7 @@ export default class GlyphrStudioApp {
 
             if (this.settings.dev.sampleProject) {
                 // debug('\t >>> Using sample project');
-                let samples = {modegg: modegg, californiagothic: californiagothic, merriweathersans: merriweathersans};
-                this.temp.droppedFileContent = JSON.stringify(samples[this.settings.dev.sampleProject]);
+                this.temp.droppedFileContent = JSON.stringify(sampleProjects[this.settings.dev.sampleProject]);
                 importGlyphrProjectFromText();
                 this.settings.dev.sampleProject = false;
             } else {
@@ -61,7 +60,7 @@ export default class GlyphrStudioApp {
         }
 
         /* eslint-disable */
-        function setupga(i, s, o, g, r, a, m) {
+        function setUpGoogleAnalytics(i, s, o, g, r, a, m) {
             i.GoogleAnalyticsObject = r;
             i[r] = i[r] || function() {
                 (i[r].q = i[r].q || []).push(arguments);
@@ -77,7 +76,7 @@ export default class GlyphrStudioApp {
 
         if (!this.settings.dev.mode && this.settings.telemetry) {
             try {
-                setupga(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+                setUpGoogleAnalytics(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
                 ga('create', 'UA-71021902-1', 'auto');
                 ga('send', 'pageview');
             } catch (err) {

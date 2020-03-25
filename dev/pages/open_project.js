@@ -1,7 +1,8 @@
-import {makeElement, addEventHandler} from '../controls/controls.js';
+import {makeElement} from '../controls/controls.js';
 import {makeGlyphrStudioLogo} from '../common/graphics.js';
 import {makeErrorMessageBox} from '../controls/dialogs.js';
 import GlyphrStudioProject from '../project/glyphr_studio_project.js';
+import sampleProjects from '../lib/samples.js';
 
 /**
  * Page > Open Project
@@ -38,7 +39,7 @@ export default class PageOpenProject {
                 <span class="splashVerNum">${app.versionNumber.split('.')[2]}${recentMessage}</span>
 
                 <div class="splashBlurb">
-                    For more informaiton visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>
+                    For more information visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>
                     Glyphr Studio is licensed under a <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a>,
                     which is a free / open source "copyleft" license. You are free to use, distribute, and modify Glyphr Studio as long as
                     this license and its freeness stays intact.
@@ -50,47 +51,39 @@ export default class PageOpenProject {
             <input type="file" style="display:none" id="openProjectFileChooser"></input>`,
         });
 
+        // Tab click
+        content.querySelector('#newTab').addEventListener('click', () => this.changeTab('new'));
+        content.querySelector('#loadTab').addEventListener('click', () => this.changeTab('load'));
+        content.querySelector('#examplesTab').addEventListener('click', () => this.changeTab('examples'));
+
+        // Dragging and dropping to load
+        let tableRight = content.querySelector('#openProjectTableRight');
+        tableRight.addEventListener('dragover', this.handleDragOver);
+        tableRight.addEventListener('drop', this.handleDrop);
+        tableRight.addEventListener('dragleave', this.handleDragLeave);
+
+        let tableLeft = content.querySelector('#openProjectTableLeft');
+        tableLeft.addEventListener('dragover', this.handleDragOver);
+        tableLeft.addEventListener('drop', this.handleDrop);
+        tableLeft.addEventListener('dragleave', this.handleDragLeave);
+
+        content.querySelector('#openProjectFileChooser').addEventListener('change', this.handleDrop);
+
+        // Sample Projects click
+        content.querySelector('#loadModegg').addEventListener('click', () => this.handleLoadSample('modegg'));
+        content.querySelector('#loadCaliforniaGothic').addEventListener('click', () => this.handleLoadSample('californiaGothic'));
+        content.querySelector('#loadMerriweatherSans').addEventListener('click', () => this.handleLoadSample('merriweatherSans'));
+
+        // Starting a project
+        content.querySelector('#openProjectCreateNewProject').addEventListener('click', this.handleNewProject);
+
+
         let callback = function(page) {
             debug(`\n PageOpenProject.pageLoader.callback - START`);
-
-            // Overall page drag + drop handlers
-            addEventHandler('openProjectTableRight', 'dragover', page.handleDragOver);
-            addEventHandler('openProjectTableRight', 'drop', page.handleDrop);
-            addEventHandler('openProjectTableRight', 'dragleave', page.handleDragLeave);
-            addEventHandler('openProjectTableLeft', 'dragover', page.handleDragOver);
-            addEventHandler('openProjectTableLeft', 'drop', page.handleDrop);
-            addEventHandler('openProjectTableLeft', 'dragleave', page.handleDragLeave);
-            addEventHandler('openProjectFileChooser', 'change', page.handleDrop);
-
-
-            // Tab click
-            addEventHandler('newTab', 'click',
-                function() {
-                    page.changeTab('new');
-                }
-            );
-
-            addEventHandler('loadTab', 'click',
-                function() {
-                    page.changeTab('load');
-                }
-            );
-
-            addEventHandler('examplesTab', 'click',
-                function() {
-                    page.changeTab('examples');
-                }
-            );
-
-
-            // Starting a project
-            addEventHandler('openProjectCreateNewProject', 'click', page.handleNewProject);
-
 
             // For Electron app
             window.addEventListener('message', page.handleMessage, false);
             if (window.opener) window.opener.postMessage('ready', '*');
-
 
             // Finish up populating UI
             page.changeTab();
@@ -162,13 +155,13 @@ export default class PageOpenProject {
             <h2>Load an Example project</h2>
 
             Modegg is a project that utilizes Glyphr Studio features, like Components:<br>
-            <fancy-button secondary onclick="handleLoadSample('modegg');">Modegg</fancy-button><br><br>
+            <fancy-button secondary id="loadModegg">Modegg</fancy-button><br><br>
 
             California Gothic is an all-caps display font:<br>
-            <fancy-button secondary onclick="handleLoadSample('californiagothic');">California Gothic</fancy-button><br><br>
+            <fancy-button secondary id="loadCaliforniaGothic">California Gothic</fancy-button><br><br>
 
             Merriweather Sans is an open-source font imported from an Open Type file:<br>
-            <fancy-button secondary onclick="handleLoadSample('merriweathersans');">Merriweather Sans</fancy-button><br><br>
+            <fancy-button secondary id="loadMerriweatherSans">Merriweather Sans</fancy-button><br><br>
         </div>`;
 
         return '<div class="openProjectTabWrapper">' + con + '</div>';
@@ -179,37 +172,37 @@ export default class PageOpenProject {
      * @param {string} tab - which tab to select
      */
     changeTab(tab) {
-        let contentnew = document.getElementById('openProjectNewContent');
-        let contentload = document.getElementById('openProjectLoadContent');
-        let contentexamples = document.getElementById('openProjectExampleProjects');
-        // var contentrecent = document.getElementById('recent_content');
+        let contentNew = document.getElementById('openProjectNewContent');
+        let contentLoad = document.getElementById('openProjectLoadContent');
+        let contentExamples = document.getElementById('openProjectExampleProjects');
+        // var contentRecent = document.getElementById('recent_content');
 
-        let tabnew = document.getElementById('newTab');
-        let tabload = document.getElementById('loadTab');
-        let tabexamples = document.getElementById('examplesTab');
-        // var tabrecent = document.getElementById('recent_tab');
+        let tabNew = document.getElementById('newTab');
+        let tabLoad = document.getElementById('loadTab');
+        let tabExamples = document.getElementById('examplesTab');
+        // var tabRecent = document.getElementById('recent_tab');
 
-        contentnew.style.display = 'none';
-        contentload.style.display = 'none';
-        contentexamples.style.display = 'none';
-        // contentrecent.style.display = 'none';
+        contentNew.style.display = 'none';
+        contentLoad.style.display = 'none';
+        contentExamples.style.display = 'none';
+        // contentRecent.style.display = 'none';
 
-        tabnew.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
-        tabload.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
-        tabexamples.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
-        // tabrecent.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
+        tabNew.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
+        tabLoad.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
+        tabExamples.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
+        // tabRecent.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
 
 
         if (tab === 'load') {
-            contentload.style.display = 'block';
-            tabload.style.borderBottomColor = '#2EB5FA';
+            contentLoad.style.display = 'block';
+            tabLoad.style.borderBottomColor = '#2EB5FA';
         } else if (tab === 'examples') {
-            contentexamples.style.display = 'block';
-            tabexamples.style.borderBottomColor = '#2EB5FA';
+            contentExamples.style.display = 'block';
+            tabExamples.style.borderBottomColor = '#2EB5FA';
         } else {
             // default to new
-            contentnew.style.display = 'block';
-            tabnew.style.borderBottomColor = '#2EB5FA';
+            contentNew.style.display = 'block';
+            tabNew.style.borderBottomColor = '#2EB5FA';
         }
     }
 
@@ -338,7 +331,7 @@ export default class PageOpenProject {
 
         setTimeout(function() {
             // window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(_UI.sampleproject[name]);
-            window.GlyphrStudio.getCurrentProjectEditor().project =
+            window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(sampleProjects[name]);
             window.GlyphrStudio.getCurrentProjectEditor().nav.page = 'glyph edit';
             window.GlyphrStudio.navigate();
         }, 5);

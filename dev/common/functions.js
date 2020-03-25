@@ -72,26 +72,26 @@ function makePanelSuperTitle() {
     // debug('\n makePanelSuperTitle - START');
     let content = '';
     if (!_UI.popOut) {
-        let selwi = getSelectedWorkItem();
+        let selectedWorkItem = getSelectedWorkItem();
         let name;
-        // debug('\t selwi = ' + selwi.objType);
+        // debug('\t selectedWorkItem = ' + selectedWorkItem.objType);
 
-        content += '<h1 class="panelsupertitle">'+editor.nav.page.toUpperCase();
+        content += '<h1 class="panelSuperTitle">'+editor.nav.page.toUpperCase();
         if (_UI.currentPanel === 'npChooser' ||
             _UI.currentPanel === 'npGuides' ||
             _UI.currentPanel === 'npHistory') return content + '</h1>';
 
-        if (selwi) {
-            name = (selwi.getName() || selwi.glyphhtml || selwi.shape.name || '[no shape outline yet]');
-            // debug('\t selwi name is ' + name);
+        if (selectedWorkItem) {
+            name = (selectedWorkItem.getName() || selectedWorkItem.glyphhtml || selectedWorkItem.shape.name || '[no shape outline yet]');
+            // debug('\t selectedWorkItem name is ' + name);
 
-            if (selwi.name) name = name.replace(/latin /i, '');
-            content += makeSuperTitleSeperator();
+            if (selectedWorkItem.name) name = name.replace(/latin /i, '');
+            content += makeSuperTitleSeparator();
             content += name;
         } else if (editor.nav.page === 'kerning') {
-            // debug('\t selwi = false, on kerning');
+            // debug('\t selectedWorkItem = false, on kerning');
             name = getSelectedKern();
-            content += name? makeSuperTitleSeperator() + name.getName() : '';
+            content += name? makeSuperTitleSeparator() + name.getName() : '';
         }
         content += '</h1>';
     }
@@ -100,11 +100,11 @@ function makePanelSuperTitle() {
 }
 
 /**
- * Panel Title Seperator
+ * Panel Title Separator
  * @returns {string}
  */
-function makeSuperTitleSeperator() {
-    let re = '<span class="supertitleseperator">';
+function makeSuperTitleSeparator() {
+    let re = '<span class="superTitleSeparator">';
     re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
     re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
     re += '</span>';

@@ -419,7 +419,7 @@ function hydrateGlyphrObjectList(GlyphrStudioItem, source, destination) {
  */
 function makeProjectID() {
     let j = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
-    let re = 'g_';
+    let re = 'g2_';
 
     for (let i=0; i<10; i++) {
         re += j.charAt(Math.floor(round(Math.random()*j.length)));

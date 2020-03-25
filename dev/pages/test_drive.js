@@ -61,7 +61,7 @@
         if (_UI.currentPanel !== 'npAttributes') return;
 
         let content = '<div class="navarea_header">';
-        content += '<h1 class="panelsupertitle">TEST DRIVE</h1>';
+        content += '<h1 class="panelSuperTitle">TEST DRIVE</h1>';
         content += '<h1 class="paneltitle">controls</h1>';
 
         content += '</div><div class="panel_section">';

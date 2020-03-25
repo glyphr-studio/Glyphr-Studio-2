@@ -22,10 +22,7 @@ export default class ProjectEditor {
      * Initialize a project editor, with defaults
      * @param {object} newEditor - Glyphr Studio Project File JSON
      */
-    constructor({
-        project = {},
-        selectedWorkItems = {},
-        } = {}) {
+    constructor({project = {}, selectedWorkItems = {}} = {}) {
         this.project = project;
         this.selectedWorkItems = selectedWorkItems;
 
