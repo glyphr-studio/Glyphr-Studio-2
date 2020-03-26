@@ -1,4 +1,6 @@
 import {makeElement} from '../controls.js';
+import {sampleObjects} from '../../samples/samples.js';
+import Glyph from '../../glyph_elements/glyph.js';
 
 /**
  * CanvasDisplay takes a string of glyphs and displays them on the canvas
@@ -112,16 +114,14 @@ export default class CanvasDisplay extends HTMLElement {
     redraw() {
         console.log(` canvas-display.redraw`);
         this.ctx.fillStyle = 'lime';
-        this.ctx.fillRect(0, 0, 100, 100);
-        this.ctx.fillRect(100, 100, 100, 100);
-        this.ctx.fillRect(200, 200, 100, 100);
-        console.log(` THREE SQUARES >>>>>>>>>>>>>>>>>>>>>>>`);
+        this.ctx.fillRect(100, 0, 1, 1000);
+        this.ctx.fillRect(0, 700, 1000, 1);
 
-        let cp = GlyphrStudio.getCurrentProject();
-        let sg = cp.getGlyph('0x41', true);
+        // let cp = GlyphrStudio.getCurrentProject();
+        // let sg = cp.getGlyph('0x41', true);
+        // console.log(sg);
 
-        console.log(sg);
-
+        let sg = new Glyph(sampleObjects.simpleGlyph);
         sg.drawGlyph(this.ctx);
     }
 }

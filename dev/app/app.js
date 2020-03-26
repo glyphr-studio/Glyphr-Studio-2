@@ -1,6 +1,7 @@
 import {accentColors} from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
-import {sampleProjects} from '../lib/samples.js';
+import {importGlyphrProjectFromText} from '../project/import.js';
+import {sampleProjects} from '../samples/samples.js';
 
 /**
  * Creates a new Glyphr Studio Application

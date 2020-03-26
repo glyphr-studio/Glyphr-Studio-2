@@ -2,7 +2,7 @@ import {makeElement} from '../controls/controls.js';
 import {makeGlyphrStudioLogo} from '../common/graphics.js';
 import {makeErrorMessageBox} from '../controls/dialogs.js';
 import GlyphrStudioProject from '../project/glyphr_studio_project.js';
-import sampleProjects from '../lib/samples.js';
+import {sampleProjects} from '../samples/samples.js';
 
 /**
  * Page > Open Project

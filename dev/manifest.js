@@ -148,10 +148,15 @@ let manifest = [
         path: 'lib',
         files: [
             // 'satchooser.js',
-            // 'samples.js',
             'unicode_names.js',
             'xml_to_json.js',
             'opentypejs_0-9-0.js',
+        ],
+    },
+    {
+        path: 'samples',
+        files: [
+            'samples.js',
         ],
     },
 ];
