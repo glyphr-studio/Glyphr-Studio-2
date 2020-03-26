@@ -31,8 +31,8 @@ export default class PageGlyphEdit {
         `});
 
         let callback = function() {
-            let can = document.querySelector('canvas-display');
-            can.redraw();
+            // let can = document.querySelector('canvas-display');
+            // if (can) can.redraw();
             debug(` PageGlyphEdit.pageLoader.callback - END\n\n`);
         };
 

@@ -89,7 +89,7 @@ export default class PageOpenProject {
             page.changeTab();
             document.getElementById('splashScreenLogo').innerHTML = makeGlyphrStudioLogo({'fill': '#BAD9E9', 'width': 400});
 
-            setTimeout(page.fadeOutLoadScreen, 2000);
+            setTimeout(window.GlyphrStudio.fadeOutLoadScreen, 2000);
 
             debug(` PageOpenProject.pageLoader.callback - END\n\n`);
         };
@@ -99,20 +99,6 @@ export default class PageOpenProject {
         debug(` PageOpenProject.pageLoader - END\n\n`);
 
         return re;
-    }
-
-    /**
-     * Fades out the initial load screen to show the App
-     */
-    fadeOutLoadScreen() {
-        let loadScreen = document.getElementById('loadScreen');
-        loadScreen.style.opacity = 0;
-
-        setTimeout(function() {
-            // loadScreen.style.visibility = 'hidden';
-            // loadScreen.style.display = 'none';
-            document.body.removeChild(loadScreen);
-        }, 700);
     }
 
     /**

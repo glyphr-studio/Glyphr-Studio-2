@@ -24,7 +24,7 @@ export default class GlyphrStudioApp {
                 // Internal Dev Stuff
                 mode: true, // global switch for all the stuff below
                 sampleProject: false, // if sampleProject is present, load it and skip open project experience
-                currentPage: false, // navigate straight to a page
+                currentPage: 'glyph edit', // navigate straight to a page
                 currentPanel: false, // navigate straight to a panel
                 selectedShape: false, // automatically select a shape
                 debugAutoGroup: false, // try to console.group based on text strings
@@ -43,11 +43,12 @@ export default class GlyphrStudioApp {
      * Starts up the app
      */
     setUp() {
-        // Navigate
+        // Dev mode stuff
         if (this.settings.dev.mode) {
             // debug('\t >>> DEV NAV - to ' + this.settings.dev.currentPage);
             document.title = '░▒▓█ GSDEVMODE █▓▒░';
 
+            // Project
             if (this.settings.dev.sampleProject) {
                 // debug('\t >>> Using sample project');
                 this.temp.droppedFileContent = JSON.stringify(sampleProjects[this.settings.dev.sampleProject]);
@@ -57,9 +58,17 @@ export default class GlyphrStudioApp {
                 this.projectEditors[0] = new ProjectEditor();
             }
 
-            if (this.settings.dev.mode) this.settings.dev.testOnLoad();
+            // Page Navigate
+            if (this.settings.dev.currentPage) {
+                this.getCurrentProjectEditor().nav.page = this.settings.dev.currentPage;
+                this.fadeOutLoadScreen(100);
+            }
+
+            // Test Function
+            if (this.settings.dev.testOnLoad) this.settings.dev.testOnLoad();
         }
 
+        // Telemetry
         /* eslint-disable */
         function setUpGoogleAnalytics(i, s, o, g, r, a, m) {
             i.GoogleAnalyticsObject = r;
@@ -103,6 +112,23 @@ export default class GlyphrStudioApp {
         if (loader.callback) loader.callback(this.getCurrentProjectEditor().getCurrentPage());
 
         debug(` App.navigate - END\n\n`);
+    }
+
+    /**
+     * Fades out the initial load screen to show the App
+     * @param {number} delay - override default fadeout time
+     */
+    fadeOutLoadScreen(delay = 700) {
+        let loadScreen = document.getElementById('loadScreen');
+        if (loadScreen) {
+            loadScreen.style.opacity = 0;
+
+            setTimeout(function() {
+                // loadScreen.style.visibility = 'hidden';
+                // loadScreen.style.display = 'none';
+                document.body.removeChild(loadScreen);
+            }, delay);
+        }
     }
 
     /**

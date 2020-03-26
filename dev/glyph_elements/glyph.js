@@ -998,8 +998,8 @@ export default class Glyph extends GlyphElement {
      * @returns {number} - Advance Width, according to view.z
      */
     drawGlyph(ctx, view = {x: 0, y: 0, z: 1}, alpha = 1, addLSB = false, fill = '#000') {
-        // debug('\n Glyph.drawGlyph - START ' + this.name);
-        // debug('\t view ' + json(view, true));
+        debug('\n Glyph.drawGlyph - START ' + this.name);
+        debug('\t view ' + json(view, true));
         let sl = this.shapes;
         let shape;
         let drewShape;
@@ -1010,7 +1010,7 @@ export default class Glyph extends GlyphElement {
         for (let j = 0; j < sl.length; j++) {
             shape = sl[j];
             if (shape.visible) {
-                // debug('\t ' + this.name + ' drawing ' + shape.objType + ' ' + j + ' ' + shape.name);
+                debug('\t ' + this.name + ' drawing ' + shape.objType + ' ' + j + ' ' + shape.name);
                 drewShape = shape.drawShape(ctx, view);
                 if (!drewShape) {
                     console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + this.name);
@@ -1031,7 +1031,7 @@ export default class Glyph extends GlyphElement {
         ctx.globalAlpha = alpha;
         ctx.fill('nonzero');
         ctx.globalAlpha = 1;
-        // debug(' Glyph.drawGlyph - END ' + this.name + '\n');
+        debug(' Glyph.drawGlyph - END ' + this.name + '\n');
 
         return (this.advanceWidth * view.dz);
     }
