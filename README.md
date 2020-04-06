@@ -1,6 +1,9 @@
 # Glyphr Studio v2!
- V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010,
- so it's time to do an all-up scrub.
+V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010,
+so it's time to do an all-up scrub.
+
+While most features and functionality will be the same as V1, the one main functionality improvement will
+be **multi-project editing** that will allow for cross-project copy/paste and merging fonts.
 
 ## What's changing
 | | **Convert our JavaScript to use ES6 stuff** |
@@ -32,13 +35,18 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
   * Build process is still TBD - maybe using rollup.js for modules
 
 ## Timeline
-Let's call it v2-alpha while things are being refactored.  This will probably extend through the summer of 2018.
-V2 will be released in beta side-by-side with V1.  And, despite the new major version number, the V2 App will accept
-V1 Project Files (upgrade them when first loaded).  V2 Project Files will not work in the V1 App.
+The V2 effort took a pause while major work on V1 was being completed.  With that done (around the end of
+2019) I'm in the stage of thinking about just what major architecture changes I want to tackle.  Currently
+there is a rough version of the glyph, font, and project data structure (which you can read about in the
+dev/readme) and I've begun thinking about UI controls, and page view rendering. Since we're not using any
+UI Frameworks, these are big items that will probably take time.
+
+Call this early stage of churn "V2 Alpha" - my guess is it will probably last through 2020. Bug fixes on V1
+will still happen, so I don't feel particularly rushed to make progress on V2.
 
 
 ## License
- Copyright (C) 2010 - 2018 Matthew LaGrandeur, released under
+ Copyright (C) 2010 - 2020 Matthew LaGrandeur, released under
  [GPL 3.0](https://github.com/mattlag/Glyphr-Studio/blob/master/LICENSE-gpl-3.0.txt)
 
 ## Author
