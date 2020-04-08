@@ -7,8 +7,8 @@
 **/
 
 
-    function ioSVG_importSVGfont(filter) {
-        // debug('\n ioSVG_importSVGfont - Start');
+    function ioSVG_importSVGFont(filter) {
+        // debug('\n ioSVG_importSVGFont - Start');
 
         // Spinner Animation
         document.getElementById('openprojecttableright').innerHTML = make_LoadingAnimation(false);
@@ -69,7 +69,7 @@
                 // Dump JSON
                 // saveFile('Parsed JSON', json(jsondata));
             } else {
-                document.getElementById('openprojecttableright').innerHTML = make_ImportFilter(chars.length, kerns.length, 'ioSVG_importSVGfont');
+                document.getElementById('openprojecttableright').innerHTML = make_ImportFilter(chars.length, kerns.length, 'ioSVG_importSVGFont');
             }
 
             // debug(' setupFontImport - END\n');
@@ -314,10 +314,10 @@
             finalizeUI();
             closeDialog();
 
-            // debug(' ioSVG_importSVGfont - END\n');
+            // debug(' ioSVG_importSVGFont - END\n');
             navigate();
         }
-        // debug(' ioSVG_importSVGfont - END\n');
+        // debug(' ioSVG_importSVGFont - END\n');
     }
 
     function make_LoadingAnimation() {

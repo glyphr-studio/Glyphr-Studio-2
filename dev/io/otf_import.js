@@ -7,8 +7,8 @@
 **/
 
 
-    function ioOTF_importOTFfont(filter) {
-        // debug('\n ioOTF_importOTFfont - START');
+    function ioOTF_importOTFFont(filter) {
+        // debug('\n ioOTF_importOTFFont - START');
 
         // Spinner Animation
         document.getElementById('openprojecttableright').innerHTML = make_LoadingAnimation(false);
@@ -49,7 +49,7 @@
                     importStatus('Importing Glyph 1 of ' + font.glyphs.length);
                     setTimeout(startFontImport, 1);
                 } else {
-                    document.getElementById('openprojecttableright').innerHTML = make_ImportFilter(font.glyphs.length, 0, 'ioOTF_importOTFfont');
+                    document.getElementById('openprojecttableright').innerHTML = make_ImportFilter(font.glyphs.length, 0, 'ioOTF_importOTFFont');
                 }
 
                 Object.keys(font.glyphs.glyphs).forEach(function(key) {
@@ -336,7 +336,7 @@
             navigate();
         }
 
-        // debug(' ioOTF_importOTFfont - END\n');
+        // debug(' ioOTF_importOTFFont - END\n');
     }
 
  function getTableValue(val) {
