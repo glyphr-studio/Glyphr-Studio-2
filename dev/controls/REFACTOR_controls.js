@@ -866,7 +866,7 @@ import _UI from '../app/settings.js';
 
         if (selected) {
             color = _UI.colors.blue.l65;
-            bgcolor = _UI.colors.gray.offwhite;
+            bgcolor = _UI.colors.gray.offWhite;
         }
 
         // debug("MAKEPOINTBUTTON - " + type + " selected: " + selected + " color: " + color);

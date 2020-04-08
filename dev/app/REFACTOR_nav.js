@@ -399,7 +399,7 @@
 
         // defaults for logo
         let nfill = _UI.colors.blue.l85;
-        let nhover = _UI.colors.gray.offwhite;
+        let nhover = _UI.colors.gray.offWhite;
 
         if (_UI.currentPanel === 'npNav') {
             nfill = _UI.colors.blue.l35;
