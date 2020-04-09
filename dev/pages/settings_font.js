@@ -49,8 +49,8 @@
           'The most common glyph sets are built into Glyphr Studio, and can be toggled with the checkboxes below.';
 
     content += '<table class=\'settingstable\'><tr>'+
-          '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.basiclatin', ps.glyphrange.basiclatin)+'</td>'+
-          '<td><label for=\'basiclatin\'><b>Basic Latin</b> - Unicode glyphs 0x0020 through 0x007E</label></td></tr>'+
+          '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.basicLatin', ps.glyphrange.basicLatin)+'</td>'+
+          '<td><label for=\'basicLatin\'><b>Basic Latin</b> - Unicode glyphs 0x0020 through 0x007E</label></td></tr>'+
           '<tr><td>&nbsp;</td><td colspan=\'2\'><div class=\'glyphrangepreview\'>';
           let bl = _UI.basiclatinorder;
           for (let t=0; t<bl.length; t++) {
@@ -59,29 +59,29 @@
     content += '</div></td></tr></table>';
 
     content += '<table class=\'settingstable\'><tr>'+
-          '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.latinsupplement', ps.glyphrange.latinsupplement)+'</td>'+
-          '<td><label for=\'latinsupplement\'><b>Latin Supplement</b> - Unicode glyphs 0x00A0 through 0x00FF</label></td></tr>'+
+          '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.latinSupplement', ps.glyphrange.latinSupplement)+'</td>'+
+          '<td><label for=\'latinSupplement\'><b>Latin Supplement</b> - Unicode glyphs 0x00A0 through 0x00FF</label></td></tr>'+
           '<tr><td>&nbsp;</td><td colspan=\'2\'><div class=\'glyphrangepreview\'>';
-          for (let s=_UI.glyphrange.latinsupplement.begin; s<=_UI.glyphrange.latinsupplement.end; s++) {
+          for (let s=_UI.glyphrange.latinSupplement.begin; s<=_UI.glyphrange.latinSupplement.end; s++) {
  content += (decToHTML(s) + ' ');
 }
     content += '</div></td></tr></table>';
 
     content += '<table class=\'settingstable\'><tr>'+
-          '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.latinextendeda', ps.glyphrange.latinextendeda)+'</td>'+
-          '<td><label for=\'latinextendeda\'><b>Latin Extended-A</b> - Unicode glyphs 0x0100 through 0x017F</label></td></tr>'+
+          '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.latinExtendedA', ps.glyphrange.latinExtendedA)+'</td>'+
+          '<td><label for=\'latinExtendedA\'><b>Latin Extended-A</b> - Unicode glyphs 0x0100 through 0x017F</label></td></tr>'+
           '<tr><td>&nbsp;</td><td colspan=\'2\'><div class=\'glyphrangepreview\'>';
-          for (let a=_UI.glyphrange.latinextendeda.begin; a<=_UI.glyphrange.latinextendeda.end; a++) {
+          for (let a=_UI.glyphrange.latinExtendedA.begin; a<=_UI.glyphrange.latinExtendedA.end; a++) {
  content += (hexToChars(a) + ' ');
 }
     content += '</div></td></tr></table>';
 
 
     content += '<table class=\'settingstable\'><tr>'+
-          '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.latinextendedb', ps.glyphrange.latinextendedb)+'</td>'+
-          '<td><label for=\'latinextendedb\'><b>Latin Extended-B</b> - Unicode glyphs 0x0180 through 0x024F</label></td></tr>'+
+          '<td class=\'uicolumn\'>'+checkUI('getCurrentProject().projectSettings.glyphrange.latinExtendedB', ps.glyphrange.latinExtendedB)+'</td>'+
+          '<td><label for=\'latinExtendedB\'><b>Latin Extended-B</b> - Unicode glyphs 0x0180 through 0x024F</label></td></tr>'+
           '<tr><td>&nbsp;</td><td colspan=\'2\'><div class=\'glyphrangepreview\'>';
-          for (let b=_UI.glyphrange.latinextendedb.begin; b<=_UI.glyphrange.latinextendedb.end; b++) {
+          for (let b=_UI.glyphrange.latinExtendedB.begin; b<=_UI.glyphrange.latinExtendedB.end; b++) {
  content += (hexToChars(b) + ' ');
 }
     content += '</div></td></tr></table>';

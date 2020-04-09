@@ -11,11 +11,11 @@ import {accentColors} from './colors.js';
  */
 export function makeGlyphrStudioLogo(oa) {
   oa = oa || {};
-  let fill = oa.fill || accentColors.blue.l65;
-  let width = oa.width || 184;
-  let height = width * (55/184); // dimensions of the native logo
+  const fill = oa.fill || accentColors.blue.l65;
+  const width = oa.width || 184;
+  const height = width * (55/184); // dimensions of the native logo
 
-  let re = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="'+width+'px" height="'+height+'px" viewBox="0 0 '+width+' '+height+'" enable-background="new 0 0 '+width+' '+height+'" xml:space="preserve">'+
+  const re = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="'+width+'px" height="'+height+'px" viewBox="0 0 '+width+' '+height+'" enable-background="new 0 0 '+width+' '+height+'" xml:space="preserve">'+
     '<g id="LOGO" fill="' + fill + '" transform="scale('+ (width/184) +')" >'+
     '<polygon points="42,0 36,0 36,40 40,40 40,4 42,4"/>'+
     '<path d="M17,11C8.6,11,0,16.8,0,28c0,8.6,8.8,12.5,17,12.5c4.7,0,9.7-1.3,13-4.1V42c0,5.8-6.7,8.5-13,8.5c-5.5,0-11.4-2-12.7-6.5H6v-4H0v2c0,8.6,8.8,12.5,17,12.5S34,50.6,34,42V28C34,16.8,25.4,11,17,11z M17,36.5c-6.3,0-13-2.7-13-8.5c0-8.9,6.7-13,13-13s13,4.1,13,13C30,33.8,23.3,36.5,17,36.5z"/>'+

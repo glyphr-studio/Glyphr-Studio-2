@@ -2,8 +2,8 @@
 // Dialog Box, Error Box, Notation, toasts
 // -----------------------------------------------------------------
 export {closeDialog, openDialog, openBigDialog, isBigDialogOpen,
-openNotation, closeNotation, makeErrorMessageBox, showErrorMessageBox,
-closeErrorMessageBox, toggleDialogExportOptions, showToast};
+  openNotation, closeNotation, makeErrorMessageBox, showErrorMessageBox,
+  closeErrorMessageBox, toggleDialogExportOptions, showToast};
 
 /**
  * Closes any type of dialog box that may be open
@@ -28,7 +28,7 @@ function closeDialog() {
 function openDialog(content) {
   closeDialog();
   document.body.focus();
-  let dc = document.getElementById('dialogRightContent');
+  const dc = document.getElementById('dialogRightContent');
   dc.innerHTML = content;
 
   if (dc.style.height > 800) dc.style.height = 800;
@@ -70,7 +70,7 @@ function isBigDialogOpen() {
  */
 function openNotation(content, x, y) {
   getEditDocument().body.focus();
-  let n = getEditDocument().getElementById('notation');
+  const n = getEditDocument().getElementById('notation');
   n.innerHTML = content;
   n.style.top = (round(y)+'px');
   n.style.left = (round(x+50)+'px');
@@ -91,8 +91,8 @@ function closeNotation() {
  * asking which format to export
  */
 function toggleDialogExportOptions() {
-  let sff = document.getElementById('saveFormatFlyout');
-  let nps = document.getElementById('npSave');
+  const sff = document.getElementById('saveFormatFlyout');
+  const nps = document.getElementById('npSave');
 
   if (sff.style.display === 'block') {
     closeDialog();
@@ -107,7 +107,7 @@ function toggleDialogExportOptions() {
  * @returns {string} - HTML content
  */
 function makeErrorMessageBox() {
-  let con ='<div id="errormessagebox" style="display:none;">' +
+  const con ='<div id="errormessagebox" style="display:none;">' +
   '<table cellpadding=0 cellspacing=0 border=0><tr>' +
   '<td class="errormessageleftbar">'+
   '<button class="errormessageclosebutton" onclick="closeErrorMessageBox();">&times;</button></td>' +
@@ -122,8 +122,8 @@ function makeErrorMessageBox() {
  * @param {string} msg - HTML content of the dialog box
  */
 function showErrorMessageBox(msg) {
-  let msgcon = document.getElementById('errormessagecontent');
-  let msgbox = document.getElementById('errormessagebox');
+  const msgcon = document.getElementById('errormessagecontent');
+  const msgbox = document.getElementById('errormessagebox');
   msgcon.innerHTML = msg;
   msgbox.style.display = 'block';
   console.warn(msg);
@@ -147,11 +147,11 @@ function closeErrorMessageBox() {
 function showToast(msg, dur, fn) {
   // debug('\n showToast - START');
   let step = -1;
-  let stepmax = 20;
-  let timestep = 10;
-  let divisor = 5;
-  let msgdiv = getEditDocument().getElementById('toast');
-  let durration = dur || 3000;
+  const stepmax = 20;
+  const timestep = 10;
+  const divisor = 5;
+  const msgdiv = getEditDocument().getElementById('toast');
+  const durration = dur || 3000;
   msgdiv.innerHTML = msg || 'Howdy!';
 
   // debug('\t Typeof fn: ' + typeof fn);
@@ -169,9 +169,9 @@ function showToast(msg, dur, fn) {
   }
 
   let currtop = -50;
-  let finaltop = 15;
+  const finaltop = 15;
   let curropacity = 0;
-  let finalopacity = 1;
+  const finalopacity = 1;
 
   /** start to dissapear */
   function appearFinish() {

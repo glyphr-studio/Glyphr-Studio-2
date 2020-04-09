@@ -9,161 +9,160 @@ function sampleComponentInstance() {
 }
 
 _TEST.testList.push(
-  {
-    category: 'ComponentInstance',
-    name: 'get/set link',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.link = '0x1234';
-      return _TEST.is(ci.link).equalTo('0x1234');
+    {
+      category: 'ComponentInstance',
+      name: 'get/set link',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.link = '0x1234';
+        return _TEST.is(ci.link).equalTo('0x1234');
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set name',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.name = 'New Name';
-      return _TEST.is(ci.name).equalTo('New Name');
+    {
+      category: 'ComponentInstance',
+      name: 'get/set name',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.name = 'New Name';
+        return _TEST.is(ci.name).equalTo('New Name');
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set translateX',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.translateX = 123;
-      return _TEST.is(ci.translateX).equalTo(123);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set translateX',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.translateX = 123;
+        return _TEST.is(ci.translateX).equalTo(123);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set translateY',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.translateY = 456;
-      return _TEST.is(ci.translateY).equalTo(456);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set translateY',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.translateY = 456;
+        return _TEST.is(ci.translateY).equalTo(456);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set scaleW',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.scaleW = 789;
-      return _TEST.is(ci.scaleW).equalTo(789);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set scaleW',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.scaleW = 789;
+        return _TEST.is(ci.scaleW).equalTo(789);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set scaleH',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.scaleH = 246;
-      return _TEST.is(ci.scaleH).equalTo(246);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set scaleH',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.scaleH = 246;
+        return _TEST.is(ci.scaleH).equalTo(246);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set isFlippedNS',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.isFlippedNS = 123;
-      return _TEST.is(ci.isFlippedNS).equalTo(true);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set isFlippedNS',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.isFlippedNS = 123;
+        return _TEST.is(ci.isFlippedNS).equalTo(true);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set isFlippedEW',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.isFlippedEW = 123;
-      return _TEST.is(ci.isFlippedEW).equalTo(true);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set isFlippedEW',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.isFlippedEW = 123;
+        return _TEST.is(ci.isFlippedEW).equalTo(true);
+      },
     },
-  },
-
-  {
-    category: 'ComponentInstance',
-    name: 'get/set reverseWinding',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.reverseWinding = true;
-      return _TEST.is(ci.reverseWinding).equalTo(true);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set reverseWinding',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.reverseWinding = true;
+        return _TEST.is(ci.reverseWinding).equalTo(true);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set rotation',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.rotation = 90;
-      return _TEST.is(ci.rotation).equalTo(90);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set rotation',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.rotation = 90;
+        return _TEST.is(ci.rotation).equalTo(90);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set rotateFirst',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.rotateFirst = false;
-      return _TEST.is(ci.rotateFirst).equalTo(false);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set rotateFirst',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.rotateFirst = false;
+        return _TEST.is(ci.rotateFirst).equalTo(false);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set xLock',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.xLock = true;
-      return _TEST.is(ci.xLock).equalTo(true);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set xLock',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.xLock = true;
+        return _TEST.is(ci.xLock).equalTo(true);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set yLock',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.yLock = true;
-      return _TEST.is(ci.yLock).equalTo(true);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set yLock',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.yLock = true;
+        return _TEST.is(ci.yLock).equalTo(true);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set wLock',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.wLock = true;
-      return _TEST.is(ci.wLock).equalTo(true);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set wLock',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.wLock = true;
+        return _TEST.is(ci.wLock).equalTo(true);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set hLock',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.hLock = true;
-      return _TEST.is(ci.hLock).equalTo(true);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set hLock',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.hLock = true;
+        return _TEST.is(ci.hLock).equalTo(true);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set ratioLock',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.ratioLock = true;
-      return _TEST.is(ci.ratioLock).equalTo(true);
+    {
+      category: 'ComponentInstance',
+      name: 'get/set ratioLock',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.ratioLock = true;
+        return _TEST.is(ci.ratioLock).equalTo(true);
+      },
     },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set visible',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.visible = false;
-      return _TEST.is(ci.visible).equalTo(false);
-    },
-  }
-  /*
+    {
+      category: 'ComponentInstance',
+      name: 'get/set visible',
+      assertion: function() {
+        const ci = sampleComponentInstance();
+        ci.visible = false;
+        return _TEST.is(ci.visible).equalTo(false);
+      },
+    }
+    /*
   {
     category: 'ComponentInstance',
     name: 'get/set x',

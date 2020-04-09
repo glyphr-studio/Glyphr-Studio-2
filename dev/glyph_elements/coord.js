@@ -30,7 +30,7 @@ export default class Coord extends GlyphElement {
    * @returns {*}
    */
   save() {
-    let re = {
+    const re = {
       x: this.x,
       y: this.y,
     };

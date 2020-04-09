@@ -7,7 +7,7 @@
   function loadPage_ligatures() {
     // debug('\n loadPage_ligatures - START');
 
-    getEditDocument().getElementById('mainwrapper').innerHTML = editPage_Content();
+    getEditDocument().getElementById('mainwrapper').innerHTML = makeEditPageContent();
     setupEditCanvas();
     initEventHandlers();
     clickEmptySpace();

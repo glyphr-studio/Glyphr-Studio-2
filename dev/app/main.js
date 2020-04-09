@@ -11,7 +11,7 @@ document.body.onload = glyphrStudioOnLoad;
  */
 export function glyphrStudioOnLoad() {
   console.log(`glyphrStudioOnLoad - Start`);
-    console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n', 'color:rgb(0,170,225)');
+  console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n', 'color:rgb(0,170,225)');
 
   if (passPreChecks()) {
     assemble();
@@ -32,7 +32,7 @@ function passPreChecks() {
   let pass = true;
 
   // Templates
-  let template = document.createElement('template');
+  const template = document.createElement('template');
   if (!template.content) {
     console.error('Browser does not support HTML Templates');
     pass = false;
@@ -48,15 +48,15 @@ function passPreChecks() {
  *  manifest.js is found in the root of the dev directory
  */
 export function assemble(loadTests = false, callback = false) {
-  let tests = [];
+  const tests = [];
   let newElement;
-  let nonModules = 'opentypejs';
+  const nonModules = 'opentypejs';
 
   // console.log(manifest);
 
   manifest.forEach((directory) => {
     directory.files.forEach((file) => {
-      let suffix = file.split('.')[1];
+      const suffix = file.split('.')[1];
 
       // console.log(`loading file ${file} with suffix ${suffix}`);
 

@@ -44,7 +44,7 @@
           '<td class="longlabel"><label for="renderpointssnappedtogrid">Render shape outlines with their points snapped to a 1em grid.<br>(required for .otf export - Project Files will still store decimal values)</label></td></tr>'+
 
           '<tr><td class="uicolumn">'+checkUI('getCurrentProject().projectSettings.showkeyboardtipsicon', ps.showkeyboardtipsicon)+'</td>'+
-          '<td><label for="showkeyboardtipsicon" style="position:relative; top:-6px;">Show the &nbsp;<span style="position:relative; top:6px; height:22px;">'+makeIcon({'name': 'keyboard', 'size': 50, 'width': 22, 'height': 22, 'color': 'rgb(76, 81, 86)', 'hovercolor': 'rgb(76, 81, 86)'})+'</span>&nbsp; button on the edit canvas.</label></td></tr>'+
+          '<td><label for="showkeyboardtipsicon" style="position:relative; top:-6px;">Show the &nbsp;<span style="position:relative; top:6px; height:22px;">'+makeIcon({'name': 'keyboard', 'size': 50, 'width': 22, 'height': 22, 'color': 'rgb(76, 81, 86)', 'hoverColor': 'rgb(76, 81, 86)'})+'</span>&nbsp; button on the edit canvas.</label></td></tr>'+
 
           '<tr><td class="uicolumn">'+checkUI('getCurrentProject().projectSettings.stopPageNavigation', ps.stopPageNavigation)+'</td>'+
           '<td><label for="stopPageNavigation">Show a confirmation message if you attempt to close an unsaved project.</label></td></tr>'+
@@ -118,7 +118,6 @@ function unicodeInputHelp() {
 // --------------------------------------------------------------
 
 
-
 function addCustomGlyphRange() {
   let newrange = getCustomRange(true);
   if (newrange) {
@@ -151,8 +150,8 @@ function getCustomRange(filterbasicrange) {
 
     // maxes
     if (filterbasicrange) {
-      newrange.begin = Math.max(newrange.begin, (_UI.glyphrange.latinextendedb.end+1));
-      newrange.end = Math.max(newrange.end, (_UI.glyphrange.latinextendedb.end+2));
+      newrange.begin = Math.max(newrange.begin, (_UI.glyphrange.latinExtendedB.end+1));
+      newrange.end = Math.max(newrange.end, (_UI.glyphrange.latinExtendedB.end+2));
     }
     newrange.begin = Math.min(newrange.begin, 0xFFFE);
     newrange.end = Math.min(newrange.end, 0xFFFF);
