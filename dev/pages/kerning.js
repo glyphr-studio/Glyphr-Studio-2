@@ -6,7 +6,7 @@
 /*
   function loadPage_kerning() {
     // debug("LOADING PAGE >> loadPage_kerning");
-    getEditDocument().getElementById('mainwrapper').innerHTML = editPage_Content();
+    getEditDocument().getElementById('mainwrapper').innerHTML = makeEditPageContent();
 
     setupKerningEditCanvas();
 

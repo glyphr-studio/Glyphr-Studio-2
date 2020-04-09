@@ -8,7 +8,7 @@
 // debug(`\n MANIFEST.js - START`);
 
 
-let manifest = [
+const manifest = [
   {
     path: 'glyph_elements',
     files: [
@@ -62,7 +62,7 @@ let manifest = [
       'colors.test.js',
     ],
   },
-/*
+  /*
   {
     path: 'project',
     files: [
@@ -94,7 +94,7 @@ let manifest = [
     ],
   },
 
-/*
+  /*
   {
     path: 'io',
     files: [
@@ -126,7 +126,7 @@ let manifest = [
       'pages.css',
     ],
   },
-/*
+  /*
   {
     path: 'panels',
     files: [

@@ -1,7 +1,7 @@
 /**
  * Export nothing by default
  */
-export default function() {};
+export default function() {}
 
 /**
  * Nicer centralized way of creating DOM elements
@@ -14,7 +14,7 @@ export default function() {};
  * @returns {HTMLElement}
  */
 export function makeElement({tag = 'span', className, id, content, elementRoot, tabIndex = false, attributes = {}, innerHTML = false} = {}) {
-  let newElement = document.createElement(tag);
+  const newElement = document.createElement(tag);
 
   if (className) newElement.setAttribute('class', className);
 
@@ -31,7 +31,7 @@ export function makeElement({tag = 'span', className, id, content, elementRoot, 
   Object.keys(attributes).forEach((key) => newElement.setAttribute(key, attributes[key]));
 
   if (innerHTML) {
-    let template = document.createElement('template');
+    const template = document.createElement('template');
     template.innerHTML = innerHTML;
     newElement.appendChild(template.content);
 
@@ -49,7 +49,7 @@ export function makeElement({tag = 'span', className, id, content, elementRoot, 
  * @param {function} eventFunction - what to do
  */
 export function addEventHandler(elementID, eventType = 'click', eventFunction = function() {}) {
-  let elem = document.getElementById(elementID);
+  const elem = document.getElementById(elementID);
   if (elem) {
     elem.addEventListener(eventType, eventFunction, false);
   }

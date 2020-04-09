@@ -177,7 +177,7 @@
 
     showToast('Starting to assemble Diacritical Glyphs', 10000);
 
-    getCurrentProject().projectSettings.glyphrange.latinsupplement = true;
+    getCurrentProject().projectSettings.glyphrange.latinSupplement = true;
 
     setTimeout(doOneGlyph, 500);
   }

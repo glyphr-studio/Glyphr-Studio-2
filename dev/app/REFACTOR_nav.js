@@ -414,14 +414,14 @@
             newsub += '<div class="navarea_header">';
             if (!onNoNavPage()) {
                 newsub += '<button class="primarynavbutton" id="npNav" onclick="clickHamburger();">';
-                newsub += makeIcon({'name': 'button_npBack', 'color': _UI.colors.blue.l65, 'hovercolor': _UI.colors.blue.l85});
+                newsub += makeIcon({'name': 'button_npBack', 'color': _UI.colors.blue.l65, 'hoverColor': _UI.colors.blue.l85});
                 newsub += '</button>';
             }
             newsub += '</div>';
         } else {
             newsub += '<div class="navarea_header" title="Navigate" style="background-color:'+_UI.colors.blue.l45+';">';
             newsub += '<button class="primarynavbutton" id="npNav" onclick="clickHamburger();">';
-            newsub += makeIcon({'name': 'button_npNav', 'color': nfill, 'hovercolor': nhover});
+            newsub += makeIcon({'name': 'button_npNav', 'color': nfill, 'hoverColor': nhover});
             newsub += '</button></div>';
         }
 
@@ -434,7 +434,7 @@
                 nhover = 'white';
             }
             newsub += '<div class="np_section" title="'+navarr[i].substr(2)+'"><button class="primarynavbutton" id="'+navarr[i]+'" onclick="navigate({panel:\''+navarr[i]+'\'});">';
-            newsub += makeIcon({'name': ('button_'+navarr[i]), 'color': nfill, 'hovercolor': nhover});
+            newsub += makeIcon({'name': ('button_'+navarr[i]), 'color': nfill, 'hoverColor': nhover});
             newsub += '</button></div>';
         }
 
@@ -513,12 +513,12 @@
                 newsub += '<div style="height:12px;"></div>';
             } else if (navarr[i] === 'popin') {
                 newsub += '<div style="cursor:pointer; background-color:rgb(0,113,170); height:32px; position:relative; left:-10px; top:-4px; padding:50px 0px 0px 14px;" title="one screen mode" onclick="popIn();">'+
-                    makeIcon({'name': 'tool_popIn', 'color': 'white', 'hovercolor': 'white', 'size': 20, 'width': 25, 'height': 25})+
+                    makeIcon({'name': 'tool_popIn', 'color': 'white', 'hoverColor': 'white', 'size': 20, 'width': 25, 'height': 25})+
                     '<span style="position:relative; top:-5px; margin-left:10px; color:white;">Pop In</span>'+
                     '</div>';
             } else if (navarr[i] === 'help') {
                 newsub += '<a href="http://help.glyphrstudio.com/" style="text-decoration:none; color:rgb(51, 56, 61);" target="_blank" class="navtargetbutton">'+
-                    '<div class="navtargeticon">'+makeIcon({'name': 'nav_help', 'color': iconcolor, 'hovercolor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
+                    '<div class="navtargeticon">'+makeIcon({'name': 'nav_help', 'color': iconcolor, 'hoverColor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
                     'help</a>';
             } else if (navarr[i] === 'email') {
                 newsub += ('<a href="mailto:mail@glyphrstudio.com?subject=Hi%20Glyphr%20Studio&amp;body='+makeEmailContent()+'" target="_blank" class="navpanellink">Email the glyphr studio team</a><br>');
@@ -531,12 +531,12 @@
             } else if (navarr[i] === editor.nav.page) {
                 iconname = 'nav_'+navarr[i].replace(' ', '');
                 newsub += '<button class="'+bc+'" onclick="clickHamburger();">'+
-                    '<div class="navtargeticon">'+makeIcon({'name': iconname, 'color': iconcolor, 'hovercolor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
+                    '<div class="navtargeticon">'+makeIcon({'name': iconname, 'color': iconcolor, 'hoverColor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
                     navarr[i]+'</button>';
             } else {
                 iconname = 'nav_'+navarr[i].replace(' ', '');
                 newsub += '<button class="'+bc+'" onclick="navigate({page:\''+navarr[i]+'\'});">'+
-                    '<div class="navtargeticon">'+makeIcon({'name': iconname, 'color': iconcolor, 'hovercolor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
+                    '<div class="navtargeticon">'+makeIcon({'name': iconname, 'color': iconcolor, 'hoverColor': false, 'size': 50, 'width': 25, 'height': 25})+'</div>'+
                     navarr[i]+'</button>';
             }
         }

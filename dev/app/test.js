@@ -35,7 +35,7 @@ function loadTests() {
 function loadTestList() {
   debug(`t> Loading tests...`);
 
-  let savedState = localStorageGet('TEST');
+  const savedState = localStorageGet('TEST');
 
   /**
    * Loads category state from local storage (if it exists)
@@ -64,12 +64,12 @@ function loadTestList() {
     }
 
     t++;
-  };
+  }
 
-  let results = document.querySelector('#results');
-  let header = document.querySelector('#header');
+  const results = document.querySelector('#results');
+  const header = document.querySelector('#header');
   header.innerHTML = '';
-  for (let key in _TEST.categories) {
+  for (const key in _TEST.categories) {
     if (_TEST.categories.hasOwnProperty(key)) {
       cat = _TEST.categories[key];
 
@@ -98,7 +98,7 @@ function loadTestList() {
  * @returns {boolean} - new state
  */
 _TEST.toggleTestCategory = function(key) {
-  let cat = _TEST.categories[key];
+  const cat = _TEST.categories[key];
   if (cat) {
     cat.checked = !cat.checked;
 
@@ -117,7 +117,7 @@ _TEST.toggleTestCategory = function(key) {
  * @returns {boolean} - new state
  */
 _TEST.checkTestCategory = function(key) {
-  let cat = _TEST.categories[key];
+  const cat = _TEST.categories[key];
   cat.checked = true;
   document.getElementById(`${getResultSectionID(key)}`).style.display = 'block';
   localStorageSet('TEST', _TEST.categories);
@@ -128,7 +128,7 @@ _TEST.checkTestCategory = function(key) {
  * Toggles all the test checkboxes
  */
 _TEST.toggleAllTestCategories = function() {
-  for (let key in _TEST.categories) {
+  for (const key in _TEST.categories) {
     if (_TEST.categories.hasOwnProperty(key)) {
       document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.toggleTestCategory(key);
     }
@@ -139,7 +139,7 @@ _TEST.toggleAllTestCategories = function() {
  * Select all the test checkboxes
  */
 _TEST.selectAllTestCategories = function() {
-  for (let key in _TEST.categories) {
+  for (const key in _TEST.categories) {
     if (_TEST.categories.hasOwnProperty(key)) {
       document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.checkTestCategory(key);
     }
@@ -153,7 +153,7 @@ _TEST.selectAllTestCategories = function() {
  * @returns {string}
  */
 function getResultSectionID(category) {
-  let rsid = 'resultSection' + category.split(' ').join('_');
+  const rsid = 'resultSection' + category.split(' ').join('_');
   return rsid;
 }
 
@@ -178,7 +178,7 @@ _TEST.runTests = function() {
     let start;
     let finish;
     let test;
-    let category = _TEST.testList[currTest].category;
+    const category = _TEST.testList[currTest].category;
 
     if (!_TEST.categories[category].checked) {
       currTest++;
@@ -186,14 +186,14 @@ _TEST.runTests = function() {
       return;
     }
 
-    let currResultSection = document.querySelector(`#${getResultSectionID(category)}`);
+    const currResultSection = document.querySelector(`#${getResultSectionID(category)}`);
 
     try {
       start = new Date().getTime();
       test = _TEST.testList[currTest].assertion();
       finish = new Date().getTime();
       currResultSection.appendChild(
-        makeTestResult(test.result, test.description, _TEST.testList[currTest].name, (finish-start))
+          makeTestResult(test.result, test.description, _TEST.testList[currTest].name, (finish-start))
       );
       if (test.result) succeeded++;
       else {
@@ -206,7 +206,7 @@ _TEST.runTests = function() {
       console.log(error);
       if (currResultSection) {
         currResultSection.appendChild(
-          makeTestResult('didNotRun', error.message, _TEST.testList[currTest].name)
+            makeTestResult('didNotRun', error.message, _TEST.testList[currTest].name)
         );
       }
       didNotRun++;
@@ -221,13 +221,13 @@ _TEST.runTests = function() {
    * Animates the fancy progress bar
    */
   function updateProgressBar() {
-    let width = document.getElementById('progressBarWrapper').offsetWidth;
-    let percent = currTest / _TEST.testList.length;
+    const width = document.getElementById('progressBarWrapper').offsetWidth;
+    const percent = currTest / _TEST.testList.length;
 
-    let bar = document.getElementById('progressBar');
+    const bar = document.getElementById('progressBar');
     bar.style.width = `${Math.round(width*percent)}px`;
     bar.style.opacity = 0.2 + (0.8 * percent);
-  };
+  }
 
   window.setTimeout(runNextTest, 10);
 
@@ -235,7 +235,7 @@ _TEST.runTests = function() {
 };
 
 
-let resultIcons = {
+const resultIcons = {
   pass: '✔',
   fail: '✖',
   didNotRun: '❖',
@@ -247,7 +247,7 @@ let resultIcons = {
  * @returns {string}
  */
 function s(code) {
-  let txt = document.createElement('textarea');
+  const txt = document.createElement('textarea');
   txt.innerHTML = code;
   return txt.value;
 }
@@ -268,12 +268,12 @@ function makeTestResult(result, message, title, durration = 0) {
   else resultClass = 'didNotRun';
 
   let durr = `${s('&thinsp;')}`;
-  let durrSpan = document.createElement('span');
+  const durrSpan = document.createElement('span');
 
   if (durration < 51) {
     durr += `|${s('&thinsp;')}${durration}`;
   } else {
-    let bar = Math.round(durration / 100);
+    const bar = Math.round(durration / 100);
     for (let i=0; i<bar; i++) durr += '▓';
     durr += `${s('&thinsp;')}${durration}`;
     durrSpan.setAttribute('style', 'font-weight:bold;');
@@ -281,11 +281,11 @@ function makeTestResult(result, message, title, durration = 0) {
 
   durrSpan.appendChild(document.createTextNode(durr));
 
-  let iconSpan = document.createElement('span');
+  const iconSpan = document.createElement('span');
   iconSpan.setAttribute('class', 'icon');
   iconSpan.appendChild(document.createTextNode(resultIcons[resultClass]));
 
-  let tr = document.createElement('span');
+  const tr = document.createElement('span');
   tr.setAttribute('class', `testResult ${resultClass}`);
   tr.setAttribute('title', `${message}`);
   tr.appendChild(iconSpan);
@@ -304,21 +304,21 @@ function finishTests() {
   <div class="testSummary fail">
       <span class="count">
         ${failed}
-        <span class="icon">${resultIcons['fail']}</span>
+        <span class="icon">${resultIcons.fail}</span>
       </span>
       <span class="title">Failed</span>
     </div>
     <div class="testSummary didNotRun">
       <span class="count">
         ${didNotRun}
-        <span class="icon">${resultIcons['didNotRun']}</span>
+        <span class="icon">${resultIcons.didNotRun}</span>
       </span>
       <span class="title">Did not run</span>
     </div>
     <div class="testSummary pass">
       <span class="count">
         ${succeeded}
-        <span class="icon">${resultIcons['pass']}</span>
+        <span class="icon">${resultIcons.pass}</span>
       </span>
       <span class="title">Passed</span>
     </div>
@@ -338,7 +338,7 @@ function finishTests() {
  * @returns {object}
  */
 _TEST.is = function(leftHand) {
-  let test = {};
+  const test = {};
 
   return {equalTo: function(rightHand) {
     test.result = areEqual(leftHand, rightHand);

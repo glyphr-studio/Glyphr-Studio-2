@@ -14,8 +14,8 @@ import * as functions from '../common/functions.js';
 window._DEV.functions = functions;
 
 // glyph_elements
-import * as xypoint from '../glyph_elements/xy_point.js';
-window._DEV.xypoint = xypoint;
+import * as xyPoint from '../glyph_elements/xy_point.js';
+window._DEV.xyPoint = xyPoint;
 
 import * as coord from '../glyph_elements/coord.js';
 window._DEV.coord = coord;
@@ -23,11 +23,11 @@ window._DEV.coord = coord;
 import * as maxes from '../glyph_elements/maxes.js';
 window._DEV.maxes = maxes;
 
-import * as controlpoint from '../glyph_elements/control_point.js';
-window._DEV.controlpoint = controlpoint;
+import * as controlPoint from '../glyph_elements/control_point.js';
+window._DEV.controlPoint = controlPoint;
 
-import * as pathpoint from '../glyph_elements/path_point.js';
-window._DEV.pathpoint = pathpoint;
+import * as pathPoint from '../glyph_elements/path_point.js';
+window._DEV.pathPoint = pathPoint;
 
 import * as segment from '../glyph_elements/segment.js';
 window._DEV.segment = segment;
@@ -35,17 +35,17 @@ window._DEV.segment = segment;
 import * as path from '../glyph_elements/path.js';
 window._DEV.path = path;
 
-import * as polysegment from '../glyph_elements/poly_segment.js';
-window._DEV.polysegment = polysegment;
+import * as polySegment from '../glyph_elements/poly_segment.js';
+window._DEV.polySegment = polySegment;
 
 import * as shape from '../glyph_elements/shape.js';
 window._DEV.shape = shape;
 
-import * as componentinstance from '../glyph_elements/component_instance.js';
-window._DEV.componentinstance = componentinstance;
+import * as componentInstance from '../glyph_elements/component_instance.js';
+window._DEV.componentInstance = componentInstance;
 
 import * as glyph from '../glyph_elements/glyph.js';
 window._DEV.glyph = glyph;
 
-import * as hkern from '../glyph_elements/h_kern.js';
-window._DEV.hkern = hkern;
+import * as hKern from '../glyph_elements/h_kern.js';
+window._DEV.hKern = hKern;

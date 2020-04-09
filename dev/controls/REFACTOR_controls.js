@@ -51,8 +51,8 @@ import _UI from '../app/settings.js';
     let width = oa.width || size;
     let height = oa.height || size;
     let color = oa.color || 'rgb(76,81,86)';
-    let hovercolor = oa.hovercolor || 'rgb(0,170,225)';
-    if (oa.hovercolor === false) hovercolor = color;
+    let hoverColor = oa.hoverColor || 'rgb(0,170,225)';
+    if (oa.hoverColor === false) hoverColor = color;
 
     let con;
     if (oa.name === 'button_npNav') {
@@ -70,7 +70,7 @@ import _UI from '../app/settings.js';
     re += 'x="0px" y="0px" width="'+width+'px" height="'+height+'px" viewBox="0 0 ' + size + ' ' + size + '"> ';
     re += '<defs></defs> ';
     re += '<rect fill="transparent" width="'+width+'" height="'+height+'" ';
-    re += 'customguidetransparency="mouseOverIcon(\''+hovercolor+'\', this);" ';
+    re += 'customguidetransparency="mouseOverIcon(\''+hoverColor+'\', this);" ';
     re += 'onmouseout="mouseOutIcon(\''+color+'\', this);" ';
     re += '/> ';
     re += '<g pointer-events="none" fill="'+color+'">';
@@ -81,11 +81,11 @@ import _UI from '../app/settings.js';
     return re;
   }
 
-  function mouseOverIcon(hovercolor, elem) {
+  function mouseOverIcon(hoverColor, elem) {
     // debug('\n mouseOverIcon - START');
     let gs = elem.parentNode.getElementsByTagName('g');
     for (let i=0; i<gs.length; i++) {
-      gs[i].style.fill = ''+hovercolor;
+      gs[i].style.fill = ''+hoverColor;
     }
     // debug(' mouseOverIcon - END\n');
   }
@@ -118,7 +118,7 @@ import _UI from '../app/settings.js';
       h.state = Math.max(0, Math.min(len-1, (h.state + h.direction)));
       // debug('\t\t hamburgerStep ' + h.state);
 
-      if (con) con.innerHTML = makeIcon({'name': 'button_npNav', 'color': _UI.colors.blue.l85, 'hovercolor': _UI.colors.blue.l85});
+      if (con) con.innerHTML = makeIcon({'name': 'button_npNav', 'color': _UI.colors.blue.l85, 'hoverColor': _UI.colors.blue.l85});
       // con.style.fill = _UI.icons.button_npNavColors[len - h.state];
       // bg.style.fill = _UI.icons.button_npNavColors[h.state];
 

@@ -22,15 +22,15 @@ window.localStorageSet = localStorageSet;
  * some random general-use functions
  */
 
- /**
+/**
  * Wrapper for console.log that does some extra fancy stuff, and
  * also adheres to a global switch in settings
  * @param {string} message - message to show in the console
- * @param {boolean} force - show message even if devmode = false
+ * @param {boolean} force - show message even if dev.mode = false
  */
 function debug(message, force) {
-  let dev = window.GlyphrStudio.settings.dev;
-  // if (!dev.devMode) return;
+  const dev = window.GlyphrStudio.settings.dev;
+  // if (!dev.mode) return;
 
   if (dev.mode || force) {
     if (typeof message === 'string') {
@@ -72,7 +72,7 @@ function makePanelSuperTitle() {
   // debug('\n makePanelSuperTitle - START');
   let content = '';
   if (!_UI.popOut) {
-    let selectedWorkItem = getSelectedWorkItem();
+    const selectedWorkItem = getSelectedWorkItem();
     let name;
     // debug('\t selectedWorkItem = ' + selectedWorkItem.objType);
 
@@ -82,7 +82,7 @@ function makePanelSuperTitle() {
       _UI.currentPanel === 'npHistory') return content + '</h1>';
 
     if (selectedWorkItem) {
-      name = (selectedWorkItem.getName() || selectedWorkItem.glyphhtml || selectedWorkItem.shape.name || '[no shape outline yet]');
+      name = (selectedWorkItem.getName() || selectedWorkItem.shape.name || '[no shape outline yet]');
       // debug('\t selectedWorkItem name is ' + name);
 
       if (selectedWorkItem.name) name = name.replace(/latin /i, '');
@@ -105,8 +105,8 @@ function makePanelSuperTitle() {
  */
 function makeSuperTitleSeparator() {
   let re = '<span class="superTitleSeparator">';
-  re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
-  re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
+  re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hoverColor: _UI.colors.blue.l75, size: 10});
+  re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hoverColor: _UI.colors.blue.l75, size: 10});
   re += '</span>';
   return re;
 }
@@ -164,10 +164,10 @@ function updateSaveIcon() {
   document.getElementById('npSave').innerHTML = '<table class="saveButtonTable">' +
   '<tr><td style="border-right:1px solid rgb(204, 209, 214);">' +
     '<button class="primarynavbutton" style="height:32px; width:38px; padding:4px 0px 0px 7px;" title="Save Glyphr Project File" onclick="showToast(\'Saving Glyphr Studio Project file...\'); setTimeout(saveGlyphrProjectFile, 500);">' +
-      makeIcon({'name': 'button_npSave', 'size': 24, 'color': savecolor, 'hovercolor': 'white'}) +
+      makeIcon({'name': 'button_npSave', 'size': 24, 'color': savecolor, 'hoverColor': 'white'}) +
     '</button></td><td>' +
     '<button class="primarynavbutton" style="height:36px; width:21px; text-align:left; padding:0px 0px 0px 4px;" title="Save File Format Options" onclick="toggleDialogExportOptions();">' +
-      makeIcon({'name': 'button_more', 'height': 10, 'width': 10, 'size': 10, 'color': savecolor, 'hovercolor': 'white'}) +
+      makeIcon({'name': 'button_more', 'height': 10, 'width': 10, 'size': 10, 'color': savecolor, 'hoverColor': 'white'}) +
     '</button></td></tr>'+
   '</table>';
 }
@@ -185,20 +185,20 @@ function updateSaveIcon() {
  */
 function saveFile(fname, buffer, ftype) {
   ftype = ftype || 'text/plain;charset=utf-8';
-  let fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
+  const fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
 
   try {
     // IE
     window.navigator.msSaveBlob(fblob, fname);
   } catch (err) {
     // Others
-    let link = document.createElement('a');
+    const link = document.createElement('a');
     window.URL = window.URL || window.webkitURL;
     link.href = window.URL.createObjectURL(fblob);
     // link.onclick = ("alert("+window.URL.createObjectURL(fblob)+");");
     link.download = fname;
 
-    let event = document.createEvent('MouseEvents');
+    const event = document.createEvent('MouseEvents');
     event.initEvent('click', true, false);
     link.dispatchEvent(event);
   }
@@ -209,13 +209,13 @@ function saveFile(fname, buffer, ftype) {
  * @returns {string}
  */
 function makeDateStampSuffix() {
-  let d = new Date();
-  let yr = d.getFullYear();
-  let mo = d.getMonth()+1;
-  let day = d.getDate();
-  let hr = d.getHours();
-  let min = (d.getMinutes()<10? '0' : '') + d.getMinutes();
-  let sec = (d.getSeconds()<10? '0' : '') + d.getSeconds();
+  const d = new Date();
+  const yr = d.getFullYear();
+  const mo = d.getMonth()+1;
+  const day = d.getDate();
+  const hr = d.getHours();
+  const min = (d.getMinutes()<10? '0' : '') + d.getMinutes();
+  const sec = (d.getSeconds()<10? '0' : '') + d.getSeconds();
 
   return (''+yr+'.'+mo+'.'+day+'-'+hr+'.'+min+'.'+sec);
 }
@@ -230,7 +230,7 @@ function makeDateStampSuffix() {
  * @returns {string}
  */
 function getFirstID(obj) {
-  for (let key in obj) {
+  for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
       return key;
     }
@@ -261,7 +261,7 @@ function generateNewID(obj, base) {
  */
 function countObjectKeys(obj) {
   let len = 0;
-  for (let key in obj) {
+  for (const key in obj) {
     if ( obj.hasOwnProperty(key)) len++;
   }
   return len;
@@ -280,8 +280,8 @@ function countObjectKeys(obj) {
  * @returns {object}
  */
 function clone(cobj) {
-  let newObj = (cobj instanceof Array) ? [] : {};
-  for (let i in cobj) {
+  const newObj = (cobj instanceof Array) ? [] : {};
+  for (const i in cobj) {
     if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parent' && i !== 'cache') {
       newObj[i] = clone(cobj[i]);
     } else newObj[i] = cobj[i];
@@ -300,7 +300,7 @@ function json(obj, raw) {
   obj = clone(obj);
   if (raw) return JSON.stringify(obj);
   else {
-    let j = JSON.stringify(obj, undefined, '\t');
+    const j = JSON.stringify(obj, undefined, '\t');
     if (j) return j.replace(/\n/g, '\r\n');
     else return '';
   }
@@ -313,7 +313,7 @@ function json(obj, raw) {
  * @param {object} obj2 - second object to compare
  * @returns {boolean}
  */
- function areEqual(obj1, obj2) {
+function areEqual(obj1, obj2) {
   // debug(`\n areEqual - START`);
   // debug(`\t passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
 
@@ -321,7 +321,7 @@ function json(obj, raw) {
     return obj1 === obj2;
   }
 
-  for (let key in obj1) {
+  for (const key in obj1) {
     if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
       if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
         if (!areEqual(obj1[key], obj2[key])) return false;
@@ -352,8 +352,8 @@ export function pointsAreEqual(c1, c2, threshold = 1) {
     return true;
   }
 
-  let dx = Math.abs(c1.x - c2.x);
-  let dy = Math.abs(c1.y - c2.y);
+  const dx = Math.abs(c1.x - c2.x);
+  const dy = Math.abs(c1.y - c2.y);
 
   // debug('\t dx ' + dx + '\tdy ' + dy);
 
@@ -376,9 +376,9 @@ export function pointsAreEqual(c1, c2, threshold = 1) {
  * @returns {number}
  */
 function makeCrisp(num, dir) {
-  let mul = dir? 1 : -1;
+  const mul = dir? 1 : -1;
   return round(num) + (0.5 * mul);
-};
+}
 
 /**
  * Better rounding than Math.round
@@ -400,7 +400,7 @@ function round(num, dec = 0) {
  */
 function numSan(num) {
   num = parseFloat(num);
-  let strnum = ''+num;
+  const strnum = ''+num;
 
   if (strnum.indexOf('0000') > -1 || strnum.indexOf('9999') > -1) {
     num = round(num, 4);
@@ -462,7 +462,7 @@ function isVal(val) {
 function hasNonValues(obj) {
   if (!obj) return true;
 
-  for (let v in obj) {
+  for (const v in obj) {
     if (obj.hasOwnProperty(v)) {
       if (!isVal(obj[v])) return true;
       if (obj[v] === Number.MAX_SAFE_INTEGER) return true;
@@ -574,9 +574,9 @@ function calculateAngle(handle, point = {x: 0, y: 0}) {
  * @returns {number}
  */
 function calculateLength(handle, point) {
-  let adj = point.x - handle.x;
-  let opp = point.y - handle.y;
-  let result = Math.sqrt( (adj*adj) + (opp*opp) );
+  const adj = point.x - handle.x;
+  const opp = point.y - handle.y;
+  const result = Math.sqrt( (adj*adj) + (opp*opp) );
   return result;
 }
 
@@ -597,8 +597,8 @@ function rotate(point, angle, about = {x: 0, y: 0}) {
   point.x -= about.x;
   point.y -= about.y;
 
-  let newx = (point.x * Math.cos(angle)) - (point.y * Math.sin(angle));
-  let newy = (point.x * Math.sin(angle)) + (point.y * Math.cos(angle));
+  const newx = (point.x * Math.cos(angle)) - (point.y * Math.sin(angle));
+  const newy = (point.x * Math.sin(angle)) + (point.y * Math.cos(angle));
 
   point.x = newx + about.x;
   point.y = newy + about.y;
@@ -669,7 +669,7 @@ function niceAngleToAngle(angle) {
  * @returns {string}
  */
 function makeEmailContent() {
-  let con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
+  const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
   %0A%0A%0A%0A___________________________________________%0A
   version %09Glyphr Studio  ${_UI.thisGlyphrStudioVersionNum} %0A
   app name %09 ${navigator.appName} %0A

@@ -105,8 +105,8 @@ export default class GlyphrStudioApp {
   navigate() {
     debug(`\n App.navigate - START`);
 
-    let wrapper = document.getElementById('appWrapper');
-    let loader = this.getCurrentProjectEditor().pageLoader();
+    const wrapper = document.getElementById('appWrapper');
+    const loader = this.getCurrentProjectEditor().pageLoader();
     wrapper.innerHTML = '';
     wrapper.appendChild(loader.content);
     if (loader.callback) loader.callback(this.getCurrentProjectEditor().getCurrentPage());
@@ -119,7 +119,7 @@ export default class GlyphrStudioApp {
    * @param {number} delay - override default fadeout time
    */
   fadeOutLoadScreen(delay = 700) {
-    let loadScreen = document.getElementById('loadScreen');
+    const loadScreen = document.getElementById('loadScreen');
     if (loadScreen) {
       loadScreen.style.opacity = 0;
 
@@ -168,17 +168,17 @@ export default class GlyphrStudioApp {
         <div class="closeFormatFlyout" onclick="closeDialog();">&times</div>
 
         <button onclick="closeDialog(); showToast('Saving Glyphr Studio Project file...'); setTimeout(saveGlyphrProjectFile, 500);">
-          ${makeIcon({'name': 'button_npNav', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hovercolor': false})}
+          ${makeIcon({'name': 'button_npNav', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hoverColor': false})}
           <span>Glyphr Studio Project File</span>
         </button>
 
         <button onclick="closeDialog(); showToast('Exporting OTF font file...'); setTimeout(ioOTF_exportOTFfont, 500);">
-          ${makeIcon({'name': 'nav_exportotf', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hovercolor': false})}
+          ${makeIcon({'name': 'nav_exportotf', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hoverColor': false})}
           <span>OTF Font</span>
         </button>
 
         <button onclick="closeDialog(); showToast('Exporting SVG font file...'); setTimeout(ioSVG_exportSVGfont, 500);">
-          ${makeIcon({'name': 'nav_exportsvg', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hovercolor': false})}
+          ${makeIcon({'name': 'nav_exportsvg', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hoverColor': false})}
           <span>SVG Font</span>
         </button>
 
@@ -203,7 +203,7 @@ export default class GlyphrStudioApp {
     `;
 
     window.onBeforeUnload = function() {
-      let project = getCurrentProjectEditor();
+      const project = getCurrentProjectEditor();
       popIn();
       if (project &&
         project.projectSettings.stopPageNavigation &&
