@@ -1,169 +1,169 @@
 
 import XYPoint from './xy_point.js';
 /**
-    IO > Import > SVG Outlines
-    Takes a set of XML and pulls out any path or
-    shape data that could be converted into a
-    Glyphr Studio shape.  Ignores lots of XML tags
-    and attributes.
+  IO > Import > SVG Outlines
+  Takes a set of XML and pulls out any path or
+  shape data that could be converted into a
+  Glyphr Studio shape.  Ignores lots of XML tags
+  and attributes.
 **/
 
 
-    function ioSVG_convertTagsToGlyph(svgdata) {
-        // debug('\n ioSVG_convertTagsToGlyph - START');
+  function ioSVG_convertTagsToGlyph(svgdata) {
+    // debug('\n ioSVG_convertTagsToGlyph - START');
 
-        let newshapes = [];
-        let ns;
-        let mid = (getCurrentProject().projectSettings.ascent / 2);
-        let parsedshape = {};
-        let data = {};
-        let shapecounter = 0;
-        let error = false;
-        let grabtags = ['path', 'rect', 'polyline', 'polygon', 'ellipse', 'circle'];
-        let jsondata;
+    let newshapes = [];
+    let ns;
+    let mid = (getCurrentProject().projectSettings.ascent / 2);
+    let parsedshape = {};
+    let data = {};
+    let shapecounter = 0;
+    let error = false;
+    let grabtags = ['path', 'rect', 'polyline', 'polygon', 'ellipse', 'circle'];
+    let jsondata;
 
-        try {
-            jsondata = convertXMLtoJSON(svgdata);
-        } catch (e) {
-            if (e.message === 'XMLdoc.getElementsByTagName(...)[0] is undefined') {
-                e.message = 'No SVG Shape or Path Tags could be found.  Make sure the SVG code is in proper XML format.';
+    try {
+      jsondata = convertXMLtoJSON(svgdata);
+    } catch (e) {
+      if (e.message === 'XMLdoc.getElementsByTagName(...)[0] is undefined') {
+        e.message = 'No SVG Shape or Path Tags could be found.  Make sure the SVG code is in proper XML format.';
+      }
+      showErrorMessageBox(e.message);
+      return;
+    }
+
+    let unsortedshapetags = ioSVG_getTags(jsondata, grabtags);
+    let shapetags = {};
+
+    // debug('\t unsorted shapetags from imported XML: ');
+    // debug(unsortedshapetags);
+
+    // get a sorted shapetags object
+    for (let g=0; g<grabtags.length; g++) shapetags[grabtags[g]] = [];
+    for (let s=0; s<unsortedshapetags.length; s++) shapetags[unsortedshapetags[s].name].push(unsortedshapetags[s]);
+
+    // debug('\t shapetags from imported XML: ');
+    // debug(shapetags);
+
+    function pushShape(p, n) {
+      shapecounter++;
+      n = (n + ' ' + shapecounter);
+      newshapes.push(new Shape({'path': p, 'name': n}));
+    }
+
+
+    /*
+      GET PATH TAGS
+    */
+    if (shapetags.path.length) {
+      data = '';
+      ppath = {};
+
+      for (let p=0; p<shapetags.path.length; p++) {
+        // Compound Paths are treated as different Glyphr Shapes
+        data = shapetags.path[p].attributes.d;
+        data = cleanAndFormatPathPointData(data);
+
+        for (let d=0; d<data.length; d++) {
+          if (data[d].length) {
+            ppath = ioSVG_convertPathTag(data[d]);
+            if (ppath.pathPoints.length) {
+              pushShape(ppath, 'Path');
             }
-            showErrorMessageBox(e.message);
-            return;
+          }
         }
+      }
+    }
 
-        let unsortedshapetags = ioSVG_getTags(jsondata, grabtags);
-        let shapetags = {};
 
-        // debug('\t unsorted shapetags from imported XML: ');
-        // debug(unsortedshapetags);
+    /*
+      GET RECT TAGS
+    */
+    if (shapetags.rect.length) {
+      data = {};
+      let rectmaxes, x, y, w, h;
 
-        // get a sorted shapetags object
-        for (let g=0; g<grabtags.length; g++) shapetags[grabtags[g]] = [];
-        for (let s=0; s<unsortedshapetags.length; s++) shapetags[unsortedshapetags[s].name].push(unsortedshapetags[s]);
+      for (let r=0; r<shapetags.rect.length; r++) {
+        data = shapetags.rect[r].attributes || {};
+        x = data.x*1 || 0;
+        y = data.y*1 || 0;
+        w = data.width*1 || 0;
+        h = data.height*1 || 0;
 
-        // debug('\t shapetags from imported XML: ');
-        // debug(shapetags);
+        if (!(w===0 && h===0)) {
+          rectmaxes = {
+            xMax: x+w,
+            xMin: x,
+            yMax: y+h,
+            yMin: y,
+          };
 
-        function pushShape(p, n) {
-            shapecounter++;
-            n = (n + ' ' + shapecounter);
-            newshapes.push(new Shape({'path': p, 'name': n}));
+          pushShape(rectPathFromMaxes(rectmaxes), 'Rectangle');
         }
+      }
+    }
 
 
-        /*
-            GET PATH TAGS
-        */
-        if (shapetags.path.length) {
-            data = '';
-            ppath = {};
+    /*
+      GET POLYLINE OR POLYGON TAGS
+    */
+    let poly = shapetags.polygon;
+    poly = poly.concat(shapetags.polyline);
 
-            for (let p=0; p<shapetags.path.length; p++) {
-                // Compound Paths are treated as different Glyphr Shapes
-                data = shapetags.path[p].attributes.d;
-                data = cleanAndFormatPathPointData(data);
+    if (poly.length) {
+      data = {};
+      let pparr, tpp, tcoord, px, py;
 
-                for (let d=0; d<data.length; d++) {
-                    if (data[d].length) {
-                        ppath = ioSVG_convertPathTag(data[d]);
-                        if (ppath.pathPoints.length) {
-                            pushShape(ppath, 'Path');
-                        }
-                    }
-                }
-            }
+      for (let po=0; po<poly.length; po++) {
+        data = poly[po].attributes.points;
+        data = cleanAndFormatPathPointData(data);
+        data = data[0].split(',');
+
+        // debug('\t Polyline or Polygon data, cleaned & formatted:');
+        // debug(data);
+
+        if (data.length) {
+          pparr = [];
+
+          for (let co=0; co<data.length; co+=2) {
+            px = data[co] || 0;
+            py = data[co+1] || 0;
+
+            tcoord = new XYPoint(px, py);
+            /*
+             *
+             * REFACTOR
+             *
+             */
+            pparr.push({p: {coord: tcoord}, h1: {coord: tcoord}, h2: {coord: tcoord}, useH1: false, useH2: false});
+          }
+
+          pushShape(new Path({pathPoints: pparr}), 'Polygon');
         }
+      }
+    }
 
 
-        /*
-            GET RECT TAGS
-        */
-        if (shapetags.rect.length) {
-            data = {};
-            let rectmaxes, x, y, w, h;
+    /*
+      GET ELLIPSE OR CIRCLE TAGS
+    */
+    let elli = shapetags.circle;
+    elli = elli.concat(shapetags.ellipse);
 
-            for (let r=0; r<shapetags.rect.length; r++) {
-                data = shapetags.rect[r].attributes || {};
-                x = data.x*1 || 0;
-                y = data.y*1 || 0;
-                w = data.width*1 || 0;
-                h = data.height*1 || 0;
+    if (elli.length) {
+      data = {};
+      let ellipsemaxes, rx, ry, cx, cy;
 
-                if (!(w===0 && h===0)) {
-                    rectmaxes = {
-                        xMax: x+w,
-                        xMin: x,
-                        yMax: y+h,
-                        yMin: y,
-                    };
+      for (let c=0; c<elli.length; c++) {
+        data = elli[c].attributes;
+        rx = data.r*1 || data.rx*1 || 0;
+        rx = Math.abs(rx);
+        ry = data.r*1 || data.ry*1 || 0;
+        ry = Math.abs(ry);
+        cx = data.cx*1 || 0;
+        cy = data.cy*1 || 0;
 
-                    pushShape(rectPathFromMaxes(rectmaxes), 'Rectangle');
-                }
-            }
-        }
-
-
-        /*
-            GET POLYLINE OR POLYGON TAGS
-        */
-        let poly = shapetags.polygon;
-        poly = poly.concat(shapetags.polyline);
-
-        if (poly.length) {
-            data = {};
-            let pparr, tpp, tcoord, px, py;
-
-            for (let po=0; po<poly.length; po++) {
-                data = poly[po].attributes.points;
-                data = cleanAndFormatPathPointData(data);
-                data = data[0].split(',');
-
-                // debug('\t Polyline or Polygon data, cleaned & formatted:');
-                // debug(data);
-
-                if (data.length) {
-                    pparr = [];
-
-                    for (let co=0; co<data.length; co+=2) {
-                        px = data[co] || 0;
-                        py = data[co+1] || 0;
-
-                        tcoord = new XYPoint(px, py);
-                        /*
-                         *
-                         * REFACTOR
-                         *
-                         */
-                        pparr.push({p: {coord: tcoord}, h1: {coord: tcoord}, h2: {coord: tcoord}, useH1: false, useH2: false});
-                    }
-
-                    pushShape(new Path({pathPoints: pparr}), 'Polygon');
-                }
-            }
-        }
-
-
-        /*
-            GET ELLIPSE OR CIRCLE TAGS
-        */
-        let elli = shapetags.circle;
-        elli = elli.concat(shapetags.ellipse);
-
-        if (elli.length) {
-            data = {};
-            let ellipsemaxes, rx, ry, cx, cy;
-
-            for (let c=0; c<elli.length; c++) {
-                data = elli[c].attributes;
-                rx = data.r*1 || data.rx*1 || 0;
-                rx = Math.abs(rx);
-                ry = data.r*1 || data.ry*1 || 0;
-                ry = Math.abs(ry);
-                cx = data.cx*1 || 0;
-                cy = data.cy*1 || 0;
-
-                if (!(rx===0 && ry===0)) {
+            if (!(rx===0 && ry===0)) {
                     ellipsemaxes = {
                         xMin: cx-rx,
                         xMax: cx+rx,

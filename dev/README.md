@@ -34,15 +34,15 @@ All code should have tests!
 
  Our data structure is roughly hierarchical:
 
-    Glyph
-     ┣━ Component Instance
-     ┗━ Shape
-         ┣━ Poly Segment
-         ┃   ┗━ Segment
-         ┗━ Path
-             ┗━ Path Point
-                 ┗━ Control Point
-                     ┗━ Coord
+  Glyph
+   ┣━ Component Instance
+   ┗━ Shape
+     ┣━ Poly Segment
+     ┃   ┗━ Segment
+     ┗━ Path
+       ┗━ Path Point
+         ┗━ Control Point
+           ┗━ Coord
 
 Though there is also **XY Point** type for simple coordinates.  Additionally,
 there is also the **HKern** type, used to represent class-based kern information.
@@ -50,7 +50,7 @@ there is also the **HKern** type, used to represent class-based kern information
 
 Besides this, the most common hierarchy is:
 
-    Glyph ⟩ Shape ⟩ Path ⟩ Path Point ⟩ Control Point ⟩ Coord
+  Glyph ⟩ Shape ⟩ Path ⟩ Path Point ⟩ Control Point ⟩ Coord
 
 The classes in this main hierarchy all extend the **Glyph Element** class,
 which implements some common concepts - the main one being caching
@@ -113,17 +113,17 @@ and Selected State information needed to edit the current project.
 
 The new App hierarchy will look roughly like this:
 
-    App
-     ┗━ Project Editor
-         ┣━ Glyphr Studio Project
-         ┣━ Current Selected State
-         ┣━ History
-         ┗━ Navigation
-             ┗━ Page
-                 ┣━ Content
-                 ┃   ┗━ Controls
-                 ┗━ Panels
-                     ┗━ Controls
+  App
+   ┗━ Project Editor
+     ┣━ Glyphr Studio Project
+     ┣━ Current Selected State
+     ┣━ History
+     ┗━ Navigation
+       ┗━ Page
+         ┣━ Content
+         ┃   ┗━ Controls
+         ┗━ Panels
+           ┗━ Controls
 
 The App will manage the currently selected / visible Project Editor,
 or possibly displaying two or more at one time. Through the App,

@@ -8,10 +8,10 @@ import GlyphrStudioApp from './app.js';
  */
 
 window._TEST = {
-    testList: [],
-    globals: {},
-    autoRun: false,
-    categories: {},
+  testList: [],
+  globals: {},
+  autoRun: false,
+  categories: {},
 };
 
 window.onload = loadTests;
@@ -25,71 +25,71 @@ let didNotRun = 0;
  * Kick off the tests
  */
 function loadTests() {
-    window.GlyphrStudio = new GlyphrStudioApp();
-    assemble(true, loadTestList);
+  window.GlyphrStudio = new GlyphrStudioApp();
+  assemble(true, loadTestList);
 }
 
 /**
  * Callback after tests load
  */
 function loadTestList() {
-    debug(`t> Loading tests...`);
+  debug(`t> Loading tests...`);
 
-    let savedState = localStorageGet('TEST');
+  let savedState = localStorageGet('TEST');
 
-    /**
-     * Loads category state from local storage (if it exists)
-     * @param {string} cat - category
-     * @returns {boolean}
-     */
-    function getInitialCheckedState(cat) {
-        if (savedState && savedState[cat]) {
-            return savedState[cat].checked;
-        }
-
-        return true;
+  /**
+   * Loads category state from local storage (if it exists)
+   * @param {string} cat - category
+   * @returns {boolean}
+   */
+  function getInitialCheckedState(cat) {
+    if (savedState && savedState[cat]) {
+      return savedState[cat].checked;
     }
 
-    let test;
-    let cat;
-    let t=0;
-    while (_TEST.testList[t]) {
-        test = _TEST.testList[t];
-        cat = test.category;
+    return true;
+  }
 
-        if (_TEST.categories.hasOwnProperty(cat)) {
-            _TEST.categories[cat].count++;
-        } else {
-            _TEST.categories[cat] = {count: 1, checked: getInitialCheckedState(cat)};
-        }
+  let test;
+  let cat;
+  let t=0;
+  while (_TEST.testList[t]) {
+    test = _TEST.testList[t];
+    cat = test.category;
 
-        t++;
-    };
-
-    let results = document.querySelector('#results');
-    let header = document.querySelector('#header');
-    header.innerHTML = '';
-    for (let key in _TEST.categories) {
-        if (_TEST.categories.hasOwnProperty(key)) {
-            cat = _TEST.categories[key];
-
-            results.innerHTML = `<div class="resultSection" style="display:${cat.checked? 'block' : 'none'};" id="${getResultSectionID(key)}"><h2>${key}</h2></div>` + results.innerHTML;
-
-            header.innerHTML += `<span class="category">
-                ${_TEST.autoRun? '' : `<input type="checkbox" ${cat.checked? 'checked' : ''} onclick="_TEST.toggleTestCategory('${key}');" id="checkbox${getResultSectionID(key)}"/>`}
-                <label for="checkbox${getResultSectionID(key)}">${key} : ${cat.count}</label>
-            </span>`;
-        }
+    if (_TEST.categories.hasOwnProperty(cat)) {
+      _TEST.categories[cat].count++;
+    } else {
+      _TEST.categories[cat] = {count: 1, checked: getInitialCheckedState(cat)};
     }
 
-    if (_TEST.autoRun) window.setTimeout(_TEST.runTests, 10);
-    else {
-        header.innerHTML += `<button class="secondary" onclick="_TEST.selectAllTestCategories();">Select all</button>`;
-        header.innerHTML += `<button class="secondary" onclick="_TEST.toggleAllTestCategories();">Toggle all</button>`;
-        header.innerHTML += `<button onclick="_TEST.runTests();">Run Tests</button>`;
-    }
+    t++;
+  };
 
-    debug(`t> Done loading tests\n`);
+  let results = document.querySelector('#results');
+  let header = document.querySelector('#header');
+  header.innerHTML = '';
+  for (let key in _TEST.categories) {
+    if (_TEST.categories.hasOwnProperty(key)) {
+      cat = _TEST.categories[key];
+
+      results.innerHTML = `<div class="resultSection" style="display:${cat.checked? 'block' : 'none'};" id="${getResultSectionID(key)}"><h2>${key}</h2></div>` + results.innerHTML;
+
+      header.innerHTML += `<span class="category">
+        ${_TEST.autoRun? '' : `<input type="checkbox" ${cat.checked? 'checked' : ''} onclick="_TEST.toggleTestCategory('${key}');" id="checkbox${getResultSectionID(key)}"/>`}
+        <label for="checkbox${getResultSectionID(key)}">${key} : ${cat.count}</label>
+      </span>`;
+    }
+  }
+
+  if (_TEST.autoRun) window.setTimeout(_TEST.runTests, 10);
+  else {
+    header.innerHTML += `<button class="secondary" onclick="_TEST.selectAllTestCategories();">Select all</button>`;
+    header.innerHTML += `<button class="secondary" onclick="_TEST.toggleAllTestCategories();">Toggle all</button>`;
+    header.innerHTML += `<button onclick="_TEST.runTests();">Run Tests</button>`;
+  }
+
+  debug(`t> Done loading tests\n`);
 }
 
 /**
@@ -98,17 +98,17 @@ function loadTestList() {
  * @returns {boolean} - new state
  */
 _TEST.toggleTestCategory = function(key) {
-    let cat = _TEST.categories[key];
-    if (cat) {
-        cat.checked = !cat.checked;
+  let cat = _TEST.categories[key];
+  if (cat) {
+    cat.checked = !cat.checked;
 
-        if (cat.checked) document.getElementById(`${getResultSectionID(key)}`).style.display = 'block';
-        else document.getElementById(`${getResultSectionID(key)}`).style.display = 'none';
+    if (cat.checked) document.getElementById(`${getResultSectionID(key)}`).style.display = 'block';
+    else document.getElementById(`${getResultSectionID(key)}`).style.display = 'none';
 
-        localStorageSet('TEST', _TEST.categories);
+    localStorageSet('TEST', _TEST.categories);
 
-        return cat.checked;
-    }
+    return cat.checked;
+  }
 };
 
 /**
@@ -117,33 +117,33 @@ _TEST.toggleTestCategory = function(key) {
  * @returns {boolean} - new state
  */
 _TEST.checkTestCategory = function(key) {
-    let cat = _TEST.categories[key];
-    cat.checked = true;
-    document.getElementById(`${getResultSectionID(key)}`).style.display = 'block';
-    localStorageSet('TEST', _TEST.categories);
-    return true;
+  let cat = _TEST.categories[key];
+  cat.checked = true;
+  document.getElementById(`${getResultSectionID(key)}`).style.display = 'block';
+  localStorageSet('TEST', _TEST.categories);
+  return true;
 };
 
 /**
  * Toggles all the test checkboxes
  */
 _TEST.toggleAllTestCategories = function() {
-    for (let key in _TEST.categories) {
-        if (_TEST.categories.hasOwnProperty(key)) {
-            document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.toggleTestCategory(key);
-        }
+  for (let key in _TEST.categories) {
+    if (_TEST.categories.hasOwnProperty(key)) {
+      document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.toggleTestCategory(key);
     }
+  }
 };
 
 /**
  * Select all the test checkboxes
  */
 _TEST.selectAllTestCategories = function() {
-    for (let key in _TEST.categories) {
-        if (_TEST.categories.hasOwnProperty(key)) {
-            document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.checkTestCategory(key);
-        }
+  for (let key in _TEST.categories) {
+    if (_TEST.categories.hasOwnProperty(key)) {
+      document.getElementById(`checkbox${getResultSectionID(key)}`).checked = _TEST.checkTestCategory(key);
     }
+  }
 };
 
 
@@ -153,8 +153,8 @@ _TEST.selectAllTestCategories = function() {
  * @returns {string}
  */
 function getResultSectionID(category) {
-    let rsid = 'resultSection' + category.split(' ').join('_');
-    return rsid;
+  let rsid = 'resultSection' + category.split(' ').join('_');
+  return rsid;
 }
 
 
@@ -162,83 +162,83 @@ function getResultSectionID(category) {
  * Runs the tests
  */
 _TEST.runTests = function() {
-    debug(`t> Running tests...`);
+  debug(`t> Running tests...`);
 
-    let currTest = 0;
+  let currTest = 0;
 
-    /** Runs the next test in the list */
-    function runNextTest() {
-        window.setTimeout(updateProgressBar, 10);
+  /** Runs the next test in the list */
+  function runNextTest() {
+    window.setTimeout(updateProgressBar, 10);
 
-        if (currTest === _TEST.testList.length) {
-            finishTests();
-            return;
-        }
-
-        let start;
-        let finish;
-        let test;
-        let category = _TEST.testList[currTest].category;
-
-        if (!_TEST.categories[category].checked) {
-            currTest++;
-            window.setTimeout(runNextTest, 10);
-            return;
-        }
-
-        let currResultSection = document.querySelector(`#${getResultSectionID(category)}`);
-
-        try {
-            start = new Date().getTime();
-            test = _TEST.testList[currTest].assertion();
-            finish = new Date().getTime();
-            currResultSection.appendChild(
-                makeTestResult(test.result, test.description, _TEST.testList[currTest].name, (finish-start))
-            );
-            if (test.result) succeeded++;
-            else {
-                failed++;
-                console.warn(`t> ${category} - ${_TEST.testList[currTest].name}`);
-                console.log(test.description);
-            }
-        } catch (error) {
-            console.warn(`t> ${category} - ${_TEST.testList[currTest].name}`);
-            console.log(error);
-            if (currResultSection) {
-                currResultSection.appendChild(
-                    makeTestResult('didNotRun', error.message, _TEST.testList[currTest].name)
-                );
-            }
-            didNotRun++;
-        }
-
-        currTest++;
-
-        window.setTimeout(runNextTest, 10);
+    if (currTest === _TEST.testList.length) {
+      finishTests();
+      return;
     }
 
-    /**
-     * Animates the fancy progress bar
-     */
-    function updateProgressBar() {
-        let width = document.getElementById('progressBarWrapper').offsetWidth;
-        let percent = currTest / _TEST.testList.length;
+    let start;
+    let finish;
+    let test;
+    let category = _TEST.testList[currTest].category;
 
-        let bar = document.getElementById('progressBar');
-        bar.style.width = `${Math.round(width*percent)}px`;
-        bar.style.opacity = 0.2 + (0.8 * percent);
-    };
+    if (!_TEST.categories[category].checked) {
+      currTest++;
+      window.setTimeout(runNextTest, 10);
+      return;
+    }
+
+    let currResultSection = document.querySelector(`#${getResultSectionID(category)}`);
+
+    try {
+      start = new Date().getTime();
+      test = _TEST.testList[currTest].assertion();
+      finish = new Date().getTime();
+      currResultSection.appendChild(
+        makeTestResult(test.result, test.description, _TEST.testList[currTest].name, (finish-start))
+      );
+      if (test.result) succeeded++;
+      else {
+        failed++;
+        console.warn(`t> ${category} - ${_TEST.testList[currTest].name}`);
+        console.log(test.description);
+      }
+    } catch (error) {
+      console.warn(`t> ${category} - ${_TEST.testList[currTest].name}`);
+      console.log(error);
+      if (currResultSection) {
+        currResultSection.appendChild(
+          makeTestResult('didNotRun', error.message, _TEST.testList[currTest].name)
+        );
+      }
+      didNotRun++;
+    }
+
+    currTest++;
 
     window.setTimeout(runNextTest, 10);
+  }
 
-    // debug(` _TEST.runTests - END\n\n`);
+  /**
+   * Animates the fancy progress bar
+   */
+  function updateProgressBar() {
+    let width = document.getElementById('progressBarWrapper').offsetWidth;
+    let percent = currTest / _TEST.testList.length;
+
+    let bar = document.getElementById('progressBar');
+    bar.style.width = `${Math.round(width*percent)}px`;
+    bar.style.opacity = 0.2 + (0.8 * percent);
+  };
+
+  window.setTimeout(runNextTest, 10);
+
+  // debug(` _TEST.runTests - END\n\n`);
 };
 
 
 let resultIcons = {
-    pass: '✔',
-    fail: '✖',
-    didNotRun: '❖',
+  pass: '✔',
+  fail: '✖',
+  didNotRun: '❖',
 };
 
 /**
@@ -247,9 +247,9 @@ let resultIcons = {
  * @returns {string}
  */
 function s(code) {
-    let txt = document.createElement('textarea');
-    txt.innerHTML = code;
-    return txt.value;
+  let txt = document.createElement('textarea');
+  txt.innerHTML = code;
+  return txt.value;
 }
 
 /**
@@ -261,70 +261,70 @@ function s(code) {
  * @returns {string}
  */
 function makeTestResult(result, message, title, durration = 0) {
-    let resultClass;
+  let resultClass;
 
-    if (result === true) resultClass = 'pass';
-    else if (result === false) resultClass = 'fail';
-    else resultClass = 'didNotRun';
+  if (result === true) resultClass = 'pass';
+  else if (result === false) resultClass = 'fail';
+  else resultClass = 'didNotRun';
 
-    let durr = `${s('&thinsp;')}`;
-    let durrSpan = document.createElement('span');
+  let durr = `${s('&thinsp;')}`;
+  let durrSpan = document.createElement('span');
 
-    if (durration < 51) {
-        durr += `|${s('&thinsp;')}${durration}`;
-    } else {
-        let bar = Math.round(durration / 100);
-        for (let i=0; i<bar; i++) durr += '▓';
-        durr += `${s('&thinsp;')}${durration}`;
-        durrSpan.setAttribute('style', 'font-weight:bold;');
-    }
+  if (durration < 51) {
+    durr += `|${s('&thinsp;')}${durration}`;
+  } else {
+    let bar = Math.round(durration / 100);
+    for (let i=0; i<bar; i++) durr += '▓';
+    durr += `${s('&thinsp;')}${durration}`;
+    durrSpan.setAttribute('style', 'font-weight:bold;');
+  }
 
-    durrSpan.appendChild(document.createTextNode(durr));
+  durrSpan.appendChild(document.createTextNode(durr));
 
-    let iconSpan = document.createElement('span');
-    iconSpan.setAttribute('class', 'icon');
-    iconSpan.appendChild(document.createTextNode(resultIcons[resultClass]));
+  let iconSpan = document.createElement('span');
+  iconSpan.setAttribute('class', 'icon');
+  iconSpan.appendChild(document.createTextNode(resultIcons[resultClass]));
 
-    let tr = document.createElement('span');
-    tr.setAttribute('class', `testResult ${resultClass}`);
-    tr.setAttribute('title', `${message}`);
-    tr.appendChild(iconSpan);
-    tr.appendChild(document.createTextNode(`${title}`));
-    tr.appendChild(durrSpan);
+  let tr = document.createElement('span');
+  tr.setAttribute('class', `testResult ${resultClass}`);
+  tr.setAttribute('title', `${message}`);
+  tr.appendChild(iconSpan);
+  tr.appendChild(document.createTextNode(`${title}`));
+  tr.appendChild(durrSpan);
 
-    return tr;
+  return tr;
 }
 
 /**
  * Do at the end
  */
 function finishTests() {
-    document.querySelector('#header').innerHTML += `
-    <br><br>
-    <div class="testSummary fail">
-            <span class="count">
-                ${failed}
-                <span class="icon">${resultIcons['fail']}</span>
-            </span>
-            <span class="title">Failed</span>
-        </div>
-        <div class="testSummary didNotRun">
-            <span class="count">
-                ${didNotRun}
-                <span class="icon">${resultIcons['didNotRun']}</span>
-            </span>
-            <span class="title">Did not run</span>
-        </div>
-        <div class="testSummary pass">
-            <span class="count">
-                ${succeeded}
-                <span class="icon">${resultIcons['pass']}</span>
-            </span>
-            <span class="title">Passed</span>
-        </div>
-    `;
+  document.querySelector('#header').innerHTML += `
+  <br><br>
+  <div class="testSummary fail">
+      <span class="count">
+        ${failed}
+        <span class="icon">${resultIcons['fail']}</span>
+      </span>
+      <span class="title">Failed</span>
+    </div>
+    <div class="testSummary didNotRun">
+      <span class="count">
+        ${didNotRun}
+        <span class="icon">${resultIcons['didNotRun']}</span>
+      </span>
+      <span class="title">Did not run</span>
+    </div>
+    <div class="testSummary pass">
+      <span class="count">
+        ${succeeded}
+        <span class="icon">${resultIcons['pass']}</span>
+      </span>
+      <span class="title">Passed</span>
+    </div>
+  `;
 
-    debug(`t> Done running tests\n`);
+  debug(`t> Done running tests\n`);
 }
 
 
@@ -338,17 +338,17 @@ function finishTests() {
  * @returns {object}
  */
 _TEST.is = function(leftHand) {
-    let test = {};
+  let test = {};
 
-    return {equalTo: function(rightHand) {
-        test.result = areEqual(leftHand, rightHand);
+  return {equalTo: function(rightHand) {
+    test.result = areEqual(leftHand, rightHand);
 
-        test.description = 'EXPECTED\n' + JSON.stringify(rightHand);
-        test.description += test.result? '\nCONFIRMED\n' : '\nGOT INSTEAD\n';
-        test.description += JSON.stringify(leftHand);
+    test.description = 'EXPECTED\n' + JSON.stringify(rightHand);
+    test.description += test.result? '\nCONFIRMED\n' : '\nGOT INSTEAD\n';
+    test.description += JSON.stringify(leftHand);
 
-        return test;
-    }};
+    return test;
+  }};
 };
 
 /**
@@ -357,8 +357,8 @@ _TEST.is = function(leftHand) {
  * @returns {boolean}
  */
 _TEST.expression = function(ex) {
-    return {
-        description: `Expression evaluated to: ${!!(ex)}`,
-        result: !!ex,
-    };
+  return {
+    description: `Expression evaluated to: ${!!(ex)}`,
+    result: !!ex,
+  };
 };
