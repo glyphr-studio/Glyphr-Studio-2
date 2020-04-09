@@ -9,156 +9,156 @@
 
 
 let manifest = [
-    {
-        path: 'glyph_elements',
-        files: [
-            'xy_point.js',
-            'coord.js',
-            'control_point.js',
-            'path_point.js',
-            'maxes.js',
-            'path.js',
-            'segment.js',
-            'poly_segment.js',
-            'shape.js',
-            'component_instance.js',
-            'glyph.js',
-            'h_kern.js',
+  {
+    path: 'glyph_elements',
+    files: [
+      'xy_point.js',
+      'coord.js',
+      'control_point.js',
+      'path_point.js',
+      'maxes.js',
+      'path.js',
+      'segment.js',
+      'poly_segment.js',
+      'shape.js',
+      'component_instance.js',
+      'glyph.js',
+      'h_kern.js',
 
-            'xy_point.test.js',
-            'coord.test.js',
-            'control_point.test.js',
-            'path_point.test.js',
-            'maxes.test.js',
-            'path.test.js',
-            'segment.test.js',
-            'poly_segment.test.js',
-            'shape.test.js',
-            'component_instance.test.js',
-            'glyph.test.js',
-            'h_kern.test.js',
-        ],
-    },
+      'xy_point.test.js',
+      'coord.test.js',
+      'control_point.test.js',
+      'path_point.test.js',
+      'maxes.test.js',
+      'path.test.js',
+      'segment.test.js',
+      'poly_segment.test.js',
+      'shape.test.js',
+      'component_instance.test.js',
+      'glyph.test.js',
+      'h_kern.test.js',
+    ],
+  },
 
-    {
-        path: 'app',
-        files: [
-            'app.js',
-            'app.css',
-            'fonts.css',
-            // 'test.js,
-            // 'test.test.js',
-        ],
-    },
+  {
+    path: 'app',
+    files: [
+      'app.js',
+      'app.css',
+      'fonts.css',
+      // 'test.js,
+      // 'test.test.js',
+    ],
+  },
 
-    {
-        path: 'common',
-        files: [
-            'functions.js',
-            'unicode.js',
-            'colors.js',
-            'colors.css',
+  {
+    path: 'common',
+    files: [
+      'functions.js',
+      'unicode.js',
+      'colors.js',
+      'colors.css',
 
-            'colors.test.js',
-        ],
-    },
+      'colors.test.js',
+    ],
+  },
 /*
-    {
-        path: 'project',
-        files: [
-            'glyphr_studio_project.js',
-            'project_editor.js',
-            'import.js',
-            'migrate.js',
-            'history.js',
+  {
+    path: 'project',
+    files: [
+      'glyphr_studio_project.js',
+      'project_editor.js',
+      'import.js',
+      'migrate.js',
+      'history.js',
 
-            'glyphr_studio_project.test.js',
-        ],
-    },
+      'glyphr_studio_project.test.js',
+    ],
+  },
 */
 
-    {
-        path: 'controls',
-        files: [
-            'controls.js',
-            'dialogs.js',
-            'button-toggle/button-toggle.js',
-            'canvas-display/canvas-display.js',
-            'canvas-edit/canvas-edit.js',
-            'fancy-button/fancy-button.js',
-            'panel-area/panel-area.js',
-            'glyph-tile/glyph-tile.js',
-            'info-bubble/info-bubble.js',
-            'input-number/input-number.js',
-            'input-number-lockable/input-number-lockable.js',
-        ],
-    },
+  {
+    path: 'controls',
+    files: [
+      'controls.js',
+      'dialogs.js',
+      'button-toggle/button-toggle.js',
+      'canvas-display/canvas-display.js',
+      'canvas-edit/canvas-edit.js',
+      'fancy-button/fancy-button.js',
+      'panel-area/panel-area.js',
+      'glyph-tile/glyph-tile.js',
+      'info-bubble/info-bubble.js',
+      'input-number/input-number.js',
+      'input-number-lockable/input-number-lockable.js',
+    ],
+  },
 
 /*
-    {
-        path: 'io',
-        files: [
-            'svg_outline_import.js',
-            'svg_font_import.js',
-            'svg_font_export.js',
-            'otf_import.js',
-            'otf_export.js',
-        ],
-    },
+  {
+    path: 'io',
+    files: [
+      'svg_outline_import.js',
+      'svg_font_import.js',
+      'svg_font_export.js',
+      'otf_import.js',
+      'otf_export.js',
+    ],
+  },
 */
 
-    {
-        path: 'pages',
-        files: [
-            'open_project.js',
-            'glyph_edit.js',
-            // 'components.js',
-            // 'ligatures.js',
-            // 'kerning.js',
-            // 'test_drive.js',
-            // 'global_actions.js',
-            // 'settings_font.js',
-            // 'settings_project.js',
-            // 'import_svg.js',
-            // 'export_font.js',
-            // 'about.js',
+  {
+    path: 'pages',
+    files: [
+      'open_project.js',
+      'glyph_edit.js',
+      // 'components.js',
+      // 'ligatures.js',
+      // 'kerning.js',
+      // 'test_drive.js',
+      // 'global_actions.js',
+      // 'settings_font.js',
+      // 'settings_project.js',
+      // 'import_svg.js',
+      // 'export_font.js',
+      // 'about.js',
 
-            'pages.css',
-        ],
-    },
+      'pages.css',
+    ],
+  },
 /*
-    {
-        path: 'panels',
-        files: [
-            'attributes_glyph.js',
-            'attributes_component.js',
-            'attributes_kern.js',
-            'chooser.js',
-            'layers.js',
-            'guides.js',
-            'history.js',
-            'actions.js',
+  {
+    path: 'panels',
+    files: [
+      'attributes_glyph.js',
+      'attributes_component.js',
+      'attributes_kern.js',
+      'chooser.js',
+      'layers.js',
+      'guides.js',
+      'history.js',
+      'actions.js',
 
-            'panels.css',
-        ],
-    },
-    */
+      'panels.css',
+    ],
+  },
+  */
 
-    {
-        path: 'lib',
-        files: [
-            // 'satchooser.js',
-            'unicode_names.js',
-            'xml_to_json.js',
-            'opentypejs_0-9-0.js',
-        ],
-    },
-    {
-        path: 'samples',
-        files: [
-            'samples.js',
-        ],
-    },
+  {
+    path: 'lib',
+    files: [
+      // 'satchooser.js',
+      'unicode_names.js',
+      'xml_to_json.js',
+      'opentypejs_0-9-0.js',
+    ],
+  },
+  {
+    path: 'samples',
+    files: [
+      'samples.js',
+    ],
+  },
 ];
 
 export default manifest;

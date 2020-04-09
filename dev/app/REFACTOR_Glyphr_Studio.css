@@ -9,15 +9,15 @@
 		width: 100%;
 		height: 100%;
 		overflow: hidden;
-        position: absolute;
-        top:0px;
-        left:0px;
+    position: absolute;
+    top:0px;
+    left:0px;
 	}
 
-    .poppedOut #primaryScreenLayout {
-        overflow-x: auto;
-        overflow-y: hidden;
-    }
+  .poppedOut #primaryScreenLayout {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
 
 	#navarea_tabs {
 		display:block;
@@ -927,10 +927,10 @@
 		z-index:10;
 	}
 
-    #secondaryScreenLayout #toolsarea_upperleft,
-    #secondaryScreenLayout #keyboardtips {
-        left: 15px;
-    }
+  #secondaryScreenLayout #toolsarea_upperleft,
+  #secondaryScreenLayout #keyboardtips {
+    left: 15px;
+  }
 
 	#toolsarea_upperleft div,
 	#toolsarea_upperright div {

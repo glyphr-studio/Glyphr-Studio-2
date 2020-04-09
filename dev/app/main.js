@@ -10,18 +10,18 @@ document.body.onload = glyphrStudioOnLoad;
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
-    console.log(`glyphrStudioOnLoad - Start`);
+  console.log(`glyphrStudioOnLoad - Start`);
     console.log('%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n', 'color:rgb(0,170,225)');
 
-    if (passPreChecks()) {
-        assemble();
-        window.GlyphrStudio = new GlyphrStudioApp();
-        console.log(window.GlyphrStudio);
-        console.log(`%cApp Version ${window.GlyphrStudio.versionNumber} \n\n`, 'color:rgb(0,170,225)');
-        window.GlyphrStudio.setUp();
-    }
+  if (passPreChecks()) {
+    assemble();
+    window.GlyphrStudio = new GlyphrStudioApp();
+    console.log(window.GlyphrStudio);
+    console.log(`%cApp Version ${window.GlyphrStudio.versionNumber} \n\n`, 'color:rgb(0,170,225)');
+    window.GlyphrStudio.setUp();
+  }
 
-    debug(`glyphrStudioOnLoad - END`);
+  debug(`glyphrStudioOnLoad - END`);
 }
 
 /**
@@ -29,16 +29,16 @@ export function glyphrStudioOnLoad() {
  * @returns {boolean}
  */
 function passPreChecks() {
-    let pass = true;
+  let pass = true;
 
-    // Templates
-    let template = document.createElement('template');
-    if (!template.content) {
-        console.error('Browser does not support HTML Templates');
-        pass = false;
-    }
+  // Templates
+  let template = document.createElement('template');
+  if (!template.content) {
+    console.error('Browser does not support HTML Templates');
+    pass = false;
+  }
 
-    return pass;
+  return pass;
 }
 
 /**
@@ -48,59 +48,59 @@ function passPreChecks() {
  *  manifest.js is found in the root of the dev directory
  */
 export function assemble(loadTests = false, callback = false) {
-    let tests = [];
-    let newElement;
-    let nonModules = 'opentypejs';
+  let tests = [];
+  let newElement;
+  let nonModules = 'opentypejs';
 
-    // console.log(manifest);
+  // console.log(manifest);
 
-    manifest.forEach((directory) => {
-        directory.files.forEach((file) => {
-            let suffix = file.split('.')[1];
+  manifest.forEach((directory) => {
+    directory.files.forEach((file) => {
+      let suffix = file.split('.')[1];
 
-            // console.log(`loading file ${file} with suffix ${suffix}`);
+      // console.log(`loading file ${file} with suffix ${suffix}`);
 
-            if (suffix === 'js' || suffix === 'map') {
-                newElement = document.createElement('script');
-                newElement.setAttribute('src', `${directory.path}/${file}`);
-                if (file.indexOf(nonModules) === -1) newElement.setAttribute('type', 'module');
-                document.getElementsByTagName('head')[0].appendChild(newElement);
-            } else if (suffix === 'css') {
-                if (!loadTests) {
-                    newElement = document.createElement('link');
-                    newElement.setAttribute('rel', 'stylesheet');
-                    newElement.setAttribute('type', 'text/css');
-                    newElement.setAttribute('href', `${directory.path}/${file}`);
-                    document.getElementsByTagName('head')[0].appendChild(newElement);
-                }
-            } else if (suffix === 'test') {
-                if (loadTests) {
-                    tests.push(`${directory.path}/${file}`);
-                }
-            } else {
-                console.warn(`Assemble - unhandled file type ${suffix}`);
-            }
+      if (suffix === 'js' || suffix === 'map') {
+        newElement = document.createElement('script');
+        newElement.setAttribute('src', `${directory.path}/${file}`);
+        if (file.indexOf(nonModules) === -1) newElement.setAttribute('type', 'module');
+        document.getElementsByTagName('head')[0].appendChild(newElement);
+      } else if (suffix === 'css') {
+        if (!loadTests) {
+          newElement = document.createElement('link');
+          newElement.setAttribute('rel', 'stylesheet');
+          newElement.setAttribute('type', 'text/css');
+          newElement.setAttribute('href', `${directory.path}/${file}`);
+          document.getElementsByTagName('head')[0].appendChild(newElement);
+        }
+      } else if (suffix === 'test') {
+        if (loadTests) {
+          tests.push(`${directory.path}/${file}`);
+        }
+      } else {
+        console.warn(`Assemble - unhandled file type ${suffix}`);
+      }
 
-            // console.log(`\t added ${file}`);
-        });
+      // console.log(`\t added ${file}`);
+    });
+  });
+
+  if (loadTests) {
+    tests.forEach((element) => {
+      newElement = document.createElement('script');
+      newElement.setAttribute('src', element);
+      newElement.setAttribute('type', 'module');
+      document.getElementsByTagName('head')[0].appendChild(newElement);
+
+      // console.log(`\t added test ${element}`);
     });
 
-    if (loadTests) {
-        tests.forEach((element) => {
-            newElement = document.createElement('script');
-            newElement.setAttribute('src', element);
-            newElement.setAttribute('type', 'module');
-            document.getElementsByTagName('head')[0].appendChild(newElement);
+    // main.test.js adds Glyph Element classes to the window._DEV object
+    newElement = document.createElement('script');
+    newElement.setAttribute('src', `app/main.test.js`);
+    newElement.setAttribute('type', 'module');
+    document.getElementsByTagName('head')[0].appendChild(newElement);
+  }
 
-            // console.log(`\t added test ${element}`);
-        });
-
-        // main.test.js adds Glyph Element classes to the window._DEV object
-        newElement = document.createElement('script');
-        newElement.setAttribute('src', `app/main.test.js`);
-        newElement.setAttribute('type', 'module');
-        document.getElementsByTagName('head')[0].appendChild(newElement);
-    }
-
-    if (callback) window.setTimeout(callback, 500);
+  if (callback) window.setTimeout(callback, 500);
 }

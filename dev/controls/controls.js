@@ -14,32 +14,32 @@ export default function() {};
  * @returns {HTMLElement}
  */
 export function makeElement({tag = 'span', className, id, content, elementRoot, tabIndex = false, attributes = {}, innerHTML = false} = {}) {
-    let newElement = document.createElement(tag);
+  let newElement = document.createElement(tag);
 
-    if (className) newElement.setAttribute('class', className);
+  if (className) newElement.setAttribute('class', className);
 
-    if (id) newElement.setAttribute('id', id);
-    else if (window.getUniqueControlID) newElement.setAttribute('id', document.getUniqueControlID());
+  if (id) newElement.setAttribute('id', id);
+  else if (window.getUniqueControlID) newElement.setAttribute('id', document.getUniqueControlID());
 
-    if (content) newElement.innerHTML = content;
+  if (content) newElement.innerHTML = content;
 
-    if (elementRoot) newElement.elementRoot = elementRoot;
+  if (elementRoot) newElement.elementRoot = elementRoot;
 
-    if (tabIndex === true) newElement.setAttribute('tabIndex', '0');
-    else if (tabIndex !== false) newElement.setAttribute('tabIndex', tabIndex);
+  if (tabIndex === true) newElement.setAttribute('tabIndex', '0');
+  else if (tabIndex !== false) newElement.setAttribute('tabIndex', tabIndex);
 
-    Object.keys(attributes).forEach((key) => newElement.setAttribute(key, attributes[key]));
+  Object.keys(attributes).forEach((key) => newElement.setAttribute(key, attributes[key]));
 
-    if (innerHTML) {
-        let template = document.createElement('template');
-        template.innerHTML = innerHTML;
-        newElement.appendChild(template.content);
+  if (innerHTML) {
+    let template = document.createElement('template');
+    template.innerHTML = innerHTML;
+    newElement.appendChild(template.content);
 
-        // debug(`\t makeElement - newElement:`);
-        // debug(newElement);
-    }
+    // debug(`\t makeElement - newElement:`);
+    // debug(newElement);
+  }
 
-    return newElement;
+  return newElement;
 }
 
 /**
@@ -49,8 +49,8 @@ export function makeElement({tag = 'span', className, id, content, elementRoot, 
  * @param {function} eventFunction - what to do
  */
 export function addEventHandler(elementID, eventType = 'click', eventFunction = function() {}) {
-    let elem = document.getElementById(elementID);
-    if (elem) {
-        elem.addEventListener(eventType, eventFunction, false);
-    }
+  let elem = document.getElementById(elementID);
+  if (elem) {
+    elem.addEventListener(eventType, eventFunction, false);
+  }
 }

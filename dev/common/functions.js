@@ -1,14 +1,14 @@
 export {debug as default};
 export {
-    makePanelSuperTitle,
-    setProjectAsSaved, setProjectAsUnsaved, saveFile, makeDateStampSuffix,
-    getFirstID, generateNewID, countObjectKeys,
-    clone, json, areEqual, makeCrisp, round,
-    numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
-    localStorageGet, localStorageSet,
-    calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle,
-    makeEmailContent,
-    kCombinations,
+  makePanelSuperTitle,
+  setProjectAsSaved, setProjectAsUnsaved, saveFile, makeDateStampSuffix,
+  getFirstID, generateNewID, countObjectKeys,
+  clone, json, areEqual, makeCrisp, round,
+  numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
+  localStorageGet, localStorageSet,
+  calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle,
+  makeEmailContent,
+  kCombinations,
 };
 
 /* Uber Export */
@@ -29,34 +29,34 @@ window.localStorageSet = localStorageSet;
  * @param {boolean} force - show message even if devmode = false
  */
 function debug(message, force) {
-    let dev = window.GlyphrStudio.settings.dev;
-    // if (!dev.devMode) return;
+  let dev = window.GlyphrStudio.settings.dev;
+  // if (!dev.devMode) return;
 
-    if (dev.mode || force) {
-        if (typeof message === 'string') {
-            message = message.replace(/&lt;/gi, '<');
-            message = message.replace(/&gt;/gi, '>');
+  if (dev.mode || force) {
+    if (typeof message === 'string') {
+      message = message.replace(/&lt;/gi, '<');
+      message = message.replace(/&gt;/gi, '>');
 
-            if (message === 'group') {
-                console.group();
-                return;
-            } else if (message === 'groupCollapsed') {
-                console.groupCollapsed();
-                return;
-            } else if (dev.debugAutoGroup && message.indexOf('- START') > 0) {
-                console.group(message.substr(2).replace(' - START', ''));
-                return;
-            } else if (message === 'groupEnd'|| (dev.debugAutoGroup && message.indexOf('- END') > 0)) {
-                console.groupEnd(message);
-                return;
-            } else {
-                console.log(message);
-            }
-        } else if (typeof message === 'object') {
-            if (dev.debugTableObjects) console.table(message);
-            else console.log(message);
-        }
+      if (message === 'group') {
+        console.group();
+        return;
+      } else if (message === 'groupCollapsed') {
+        console.groupCollapsed();
+        return;
+      } else if (dev.debugAutoGroup && message.indexOf('- START') > 0) {
+        console.group(message.substr(2).replace(' - START', ''));
+        return;
+      } else if (message === 'groupEnd'|| (dev.debugAutoGroup && message.indexOf('- END') > 0)) {
+        console.groupEnd(message);
+        return;
+      } else {
+        console.log(message);
+      }
+    } else if (typeof message === 'object') {
+      if (dev.debugTableObjects) console.table(message);
+      else console.log(message);
     }
+  }
 }
 
 
@@ -69,34 +69,34 @@ function debug(message, force) {
  * @returns {string}
  */
 function makePanelSuperTitle() {
-    // debug('\n makePanelSuperTitle - START');
-    let content = '';
-    if (!_UI.popOut) {
-        let selectedWorkItem = getSelectedWorkItem();
-        let name;
-        // debug('\t selectedWorkItem = ' + selectedWorkItem.objType);
+  // debug('\n makePanelSuperTitle - START');
+  let content = '';
+  if (!_UI.popOut) {
+    let selectedWorkItem = getSelectedWorkItem();
+    let name;
+    // debug('\t selectedWorkItem = ' + selectedWorkItem.objType);
 
-        content += '<h1 class="panelSuperTitle">'+editor.nav.page.toUpperCase();
-        if (_UI.currentPanel === 'npChooser' ||
-            _UI.currentPanel === 'npGuides' ||
-            _UI.currentPanel === 'npHistory') return content + '</h1>';
+    content += '<h1 class="panelSuperTitle">'+editor.nav.page.toUpperCase();
+    if (_UI.currentPanel === 'npChooser' ||
+      _UI.currentPanel === 'npGuides' ||
+      _UI.currentPanel === 'npHistory') return content + '</h1>';
 
-        if (selectedWorkItem) {
-            name = (selectedWorkItem.getName() || selectedWorkItem.glyphhtml || selectedWorkItem.shape.name || '[no shape outline yet]');
-            // debug('\t selectedWorkItem name is ' + name);
+    if (selectedWorkItem) {
+      name = (selectedWorkItem.getName() || selectedWorkItem.glyphhtml || selectedWorkItem.shape.name || '[no shape outline yet]');
+      // debug('\t selectedWorkItem name is ' + name);
 
-            if (selectedWorkItem.name) name = name.replace(/latin /i, '');
-            content += makeSuperTitleSeparator();
-            content += name;
-        } else if (editor.nav.page === 'kerning') {
-            // debug('\t selectedWorkItem = false, on kerning');
-            name = getSelectedKern();
-            content += name? makeSuperTitleSeparator() + name.getName() : '';
-        }
-        content += '</h1>';
+      if (selectedWorkItem.name) name = name.replace(/latin /i, '');
+      content += makeSuperTitleSeparator();
+      content += name;
+    } else if (editor.nav.page === 'kerning') {
+      // debug('\t selectedWorkItem = false, on kerning');
+      name = getSelectedKern();
+      content += name? makeSuperTitleSeparator() + name.getName() : '';
     }
-    // debug(' makePanelSuperTitle - returning\n' + content + '\n');
-    return content;
+    content += '</h1>';
+  }
+  // debug(' makePanelSuperTitle - returning\n' + content + '\n');
+  return content;
 }
 
 /**
@@ -104,11 +104,11 @@ function makePanelSuperTitle() {
  * @returns {string}
  */
 function makeSuperTitleSeparator() {
-    let re = '<span class="superTitleSeparator">';
-    re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
-    re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
-    re += '</span>';
-    return re;
+  let re = '<span class="superTitleSeparator">';
+  re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
+  re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hovercolor: _UI.colors.blue.l75, size: 10});
+  re += '</span>';
+  return re;
 }
 
 
@@ -120,56 +120,56 @@ function makeSuperTitleSeparator() {
  * Handles various UI pieces when a project is saved
  */
 function setProjectAsSaved() {
-    _UI.projectSaved = true;
+  _UI.projectSaved = true;
 
-    if (window.GlyphrStudio.settings.dev.mode) {
-        document.title = '░▒▓█ GSDEVMODE █▓▒░';
-    } else if (_UI.popOut) {
-        document.title = 'Glyphr Studio - Tools';
-        _UI.popOut.document.title = 'Glyphr Studio - Canvas';
-    } else {
-        document.title = 'Glyphr Studio';
-    }
+  if (window.GlyphrStudio.settings.dev.mode) {
+    document.title = '░▒▓█ GSDEVMODE █▓▒░';
+  } else if (_UI.popOut) {
+    document.title = 'Glyphr Studio - Tools';
+    _UI.popOut.document.title = 'Glyphr Studio - Canvas';
+  } else {
+    document.title = 'Glyphr Studio';
+  }
 
-    updateSaveIcon();
+  updateSaveIcon();
 }
 
 /**
  * Handles various UI pieces when a project is unsaved
  */
 function setProjectAsUnsaved() {
-    _UI.projectSaved = false;
+  _UI.projectSaved = false;
 
-    if (window.GlyphrStudio.settings.dev.mode) {
-        document.title = '░▒▓█ GSDEVM❖DE █▓▒░';
-    } else if (_UI.popOut) {
-        document.title = ' ❖ Glyphr Studio - Tools';
-        _UI.popOut.document.title = ' ❖ Glyphr Studio - Canvas';
-    } else {
-        document.title = ' ❖ Glyphr Studio';
-    }
+  if (window.GlyphrStudio.settings.dev.mode) {
+    document.title = '░▒▓█ GSDEVM❖DE █▓▒░';
+  } else if (_UI.popOut) {
+    document.title = ' ❖ Glyphr Studio - Tools';
+    _UI.popOut.document.title = ' ❖ Glyphr Studio - Canvas';
+  } else {
+    document.title = ' ❖ Glyphr Studio';
+  }
 
-    updateSaveIcon();
+  updateSaveIcon();
 }
 
 /**
  * Updates the Save icon
  */
 function updateSaveIcon() {
-    if (_UI.currentPanel === 'npNav') return;
+  if (_UI.currentPanel === 'npNav') return;
 
-    let savecolor = _UI.colors.gray.l90;
-    if (!_UI.projectSaved) savecolor = 'white';
+  let savecolor = _UI.colors.gray.l90;
+  if (!_UI.projectSaved) savecolor = 'white';
 
-    document.getElementById('npSave').innerHTML = '<table class="saveButtonTable">' +
-    '<tr><td style="border-right:1px solid rgb(204, 209, 214);">' +
-        '<button class="primarynavbutton" style="height:32px; width:38px; padding:4px 0px 0px 7px;" title="Save Glyphr Project File" onclick="showToast(\'Saving Glyphr Studio Project file...\'); setTimeout(saveGlyphrProjectFile, 500);">' +
-            makeIcon({'name': 'button_npSave', 'size': 24, 'color': savecolor, 'hovercolor': 'white'}) +
-        '</button></td><td>' +
-        '<button class="primarynavbutton" style="height:36px; width:21px; text-align:left; padding:0px 0px 0px 4px;" title="Save File Format Options" onclick="toggleDialogExportOptions();">' +
-            makeIcon({'name': 'button_more', 'height': 10, 'width': 10, 'size': 10, 'color': savecolor, 'hovercolor': 'white'}) +
-        '</button></td></tr>'+
-    '</table>';
+  document.getElementById('npSave').innerHTML = '<table class="saveButtonTable">' +
+  '<tr><td style="border-right:1px solid rgb(204, 209, 214);">' +
+    '<button class="primarynavbutton" style="height:32px; width:38px; padding:4px 0px 0px 7px;" title="Save Glyphr Project File" onclick="showToast(\'Saving Glyphr Studio Project file...\'); setTimeout(saveGlyphrProjectFile, 500);">' +
+      makeIcon({'name': 'button_npSave', 'size': 24, 'color': savecolor, 'hovercolor': 'white'}) +
+    '</button></td><td>' +
+    '<button class="primarynavbutton" style="height:36px; width:21px; text-align:left; padding:0px 0px 0px 4px;" title="Save File Format Options" onclick="toggleDialogExportOptions();">' +
+      makeIcon({'name': 'button_more', 'height': 10, 'width': 10, 'size': 10, 'color': savecolor, 'hovercolor': 'white'}) +
+    '</button></td></tr>'+
+  '</table>';
 }
 
 
@@ -184,24 +184,24 @@ function updateSaveIcon() {
  * @param {string} ftype - file suffix
  */
 function saveFile(fname, buffer, ftype) {
-    ftype = ftype || 'text/plain;charset=utf-8';
-    let fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
+  ftype = ftype || 'text/plain;charset=utf-8';
+  let fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
 
-    try {
-        // IE
-        window.navigator.msSaveBlob(fblob, fname);
-    } catch (err) {
-        // Others
-        let link = document.createElement('a');
-        window.URL = window.URL || window.webkitURL;
-        link.href = window.URL.createObjectURL(fblob);
-        // link.onclick = ("alert("+window.URL.createObjectURL(fblob)+");");
-        link.download = fname;
+  try {
+    // IE
+    window.navigator.msSaveBlob(fblob, fname);
+  } catch (err) {
+    // Others
+    let link = document.createElement('a');
+    window.URL = window.URL || window.webkitURL;
+    link.href = window.URL.createObjectURL(fblob);
+    // link.onclick = ("alert("+window.URL.createObjectURL(fblob)+");");
+    link.download = fname;
 
-        let event = document.createEvent('MouseEvents');
-        event.initEvent('click', true, false);
-        link.dispatchEvent(event);
-    }
+    let event = document.createEvent('MouseEvents');
+    event.initEvent('click', true, false);
+    link.dispatchEvent(event);
+  }
 }
 
 /**
@@ -209,15 +209,15 @@ function saveFile(fname, buffer, ftype) {
  * @returns {string}
  */
 function makeDateStampSuffix() {
-    let d = new Date();
-    let yr = d.getFullYear();
-    let mo = d.getMonth()+1;
-    let day = d.getDate();
-    let hr = d.getHours();
-    let min = (d.getMinutes()<10? '0' : '') + d.getMinutes();
-    let sec = (d.getSeconds()<10? '0' : '') + d.getSeconds();
+  let d = new Date();
+  let yr = d.getFullYear();
+  let mo = d.getMonth()+1;
+  let day = d.getDate();
+  let hr = d.getHours();
+  let min = (d.getMinutes()<10? '0' : '') + d.getMinutes();
+  let sec = (d.getSeconds()<10? '0' : '') + d.getSeconds();
 
-    return (''+yr+'.'+mo+'.'+day+'-'+hr+'.'+min+'.'+sec);
+  return (''+yr+'.'+mo+'.'+day+'-'+hr+'.'+min+'.'+sec);
 }
 
 // --------------------------------------------------------------
@@ -230,13 +230,13 @@ function makeDateStampSuffix() {
  * @returns {string}
  */
 function getFirstID(obj) {
-    for (let key in obj) {
-        if (obj.hasOwnProperty(key)) {
-            return key;
-        }
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      return key;
     }
+  }
 
-    return false;
+  return false;
 }
 
 /**
@@ -246,12 +246,12 @@ function getFirstID(obj) {
  * @returns {string}
  */
 function generateNewID(obj, base) {
-    let number = 1;
-    base = base || 'id';
-    let id = ('' + base + number);
-    while (obj.hasOwnProperty(id)) id = ('' + base + (++number));
+  let number = 1;
+  base = base || 'id';
+  let id = ('' + base + number);
+  while (obj.hasOwnProperty(id)) id = ('' + base + (++number));
 
-    return id;
+  return id;
 }
 
 /**
@@ -260,11 +260,11 @@ function generateNewID(obj, base) {
  * @returns {number}
  */
 function countObjectKeys(obj) {
-    let len = 0;
-    for (let key in obj) {
-        if ( obj.hasOwnProperty(key)) len++;
-    }
-    return len;
+  let len = 0;
+  for (let key in obj) {
+    if ( obj.hasOwnProperty(key)) len++;
+  }
+  return len;
 }
 
 
@@ -280,13 +280,13 @@ function countObjectKeys(obj) {
  * @returns {object}
  */
 function clone(cobj) {
-    let newObj = (cobj instanceof Array) ? [] : {};
-    for (let i in cobj) {
-        if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parent' && i !== 'cache') {
-            newObj[i] = clone(cobj[i]);
-        } else newObj[i] = cobj[i];
-    }
-    return newObj;
+  let newObj = (cobj instanceof Array) ? [] : {};
+  for (let i in cobj) {
+    if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parent' && i !== 'cache') {
+      newObj[i] = clone(cobj[i]);
+    } else newObj[i] = cobj[i];
+  }
+  return newObj;
 }
 
 /**
@@ -297,13 +297,13 @@ function clone(cobj) {
  * @returns {string}
  */
 function json(obj, raw) {
-    obj = clone(obj);
-    if (raw) return JSON.stringify(obj);
-    else {
-        let j = JSON.stringify(obj, undefined, '\t');
-        if (j) return j.replace(/\n/g, '\r\n');
-        else return '';
-    }
+  obj = clone(obj);
+  if (raw) return JSON.stringify(obj);
+  else {
+    let j = JSON.stringify(obj, undefined, '\t');
+    if (j) return j.replace(/\n/g, '\r\n');
+    else return '';
+  }
 }
 
 /**
@@ -314,24 +314,24 @@ function json(obj, raw) {
  * @returns {boolean}
  */
  function areEqual(obj1, obj2) {
-    // debug(`\n areEqual - START`);
-    // debug(`\t passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
+  // debug(`\n areEqual - START`);
+  // debug(`\t passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
 
-    if (typeof obj1 !== 'object' && typeof obj2 !== 'object') {
-        return obj1 === obj2;
+  if (typeof obj1 !== 'object' && typeof obj2 !== 'object') {
+    return obj1 === obj2;
+  }
+
+  for (let key in obj1) {
+    if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
+      if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+        if (!areEqual(obj1[key], obj2[key])) return false;
+      } else if (obj1[key] !== obj2[key]) return false;
+    } else if (obj1.hasOwnProperty(key) || obj2.hasOwnProperty(key)) {
+      return false;
     }
+  }
 
-    for (let key in obj1) {
-        if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
-            if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
-                if (!areEqual(obj1[key], obj2[key])) return false;
-            } else if (obj1[key] !== obj2[key]) return false;
-        } else if (obj1.hasOwnProperty(key) || obj2.hasOwnProperty(key)) {
-            return false;
-        }
-    }
-
-    return true;
+  return true;
 }
 
 /**
@@ -342,30 +342,30 @@ function json(obj, raw) {
  * @returns {boolean}
  */
 export function pointsAreEqual(c1, c2, threshold = 1) {
-    // debug('\n pointsAreEqual - START');
-    // debug('\t c1 ' + json(c1, true));
-    // debug('\t c2 ' + json(c2, true));
-    // debug('\t threshold ' + threshold);
+  // debug('\n pointsAreEqual - START');
+  // debug('\t c1 ' + json(c1, true));
+  // debug('\t c2 ' + json(c2, true));
+  // debug('\t threshold ' + threshold);
 
-    if (c1.x === c2.x && c1.y === c2.y) {
-        // debug('\t exact match');
-        return true;
-    }
+  if (c1.x === c2.x && c1.y === c2.y) {
+    // debug('\t exact match');
+    return true;
+  }
 
-    let dx = Math.abs(c1.x - c2.x);
-    let dy = Math.abs(c1.y - c2.y);
+  let dx = Math.abs(c1.x - c2.x);
+  let dy = Math.abs(c1.y - c2.y);
 
-    // debug('\t dx ' + dx + '\tdy ' + dy);
+  // debug('\t dx ' + dx + '\tdy ' + dy);
 
-    if (dx <= threshold && dy <= threshold) {
-        // debug('\t below threshold match');
-        return true;
-    }
+  if (dx <= threshold && dy <= threshold) {
+    // debug('\t below threshold match');
+    return true;
+  }
 
-    // debug('\t not a match');
-    // debug(' pointsAreEqual - END\n');
+  // debug('\t not a match');
+  // debug(' pointsAreEqual - END\n');
 
-    return false;
+  return false;
 }
 
 /**
@@ -376,8 +376,8 @@ export function pointsAreEqual(c1, c2, threshold = 1) {
  * @returns {number}
  */
 function makeCrisp(num, dir) {
-    let mul = dir? 1 : -1;
-    return round(num) + (0.5 * mul);
+  let mul = dir? 1 : -1;
+  return round(num) + (0.5 * mul);
 };
 
 /**
@@ -387,8 +387,8 @@ function makeCrisp(num, dir) {
  * @returns {number}
  */
 function round(num, dec = 0) {
-    if (!num) return 0;
-    return Number(Math.round(num+'e'+dec)+'e-'+dec) || 0;
+  if (!num) return 0;
+  return Number(Math.round(num+'e'+dec)+'e-'+dec) || 0;
 }
 
 
@@ -399,16 +399,16 @@ function round(num, dec = 0) {
  * @returns {number}
  */
 function numSan(num) {
-    num = parseFloat(num);
-    let strnum = ''+num;
+  num = parseFloat(num);
+  let strnum = ''+num;
 
-    if (strnum.indexOf('0000') > -1 || strnum.indexOf('9999') > -1) {
-        num = round(num, 4);
-    }
+  if (strnum.indexOf('0000') > -1 || strnum.indexOf('9999') > -1) {
+    num = round(num, 4);
+  }
 
-    if (num < 0.0000 && num > 0) num = 0;
+  if (num < 0.0000 && num > 0) num = 0;
 
-    return num;
+  return num;
 }
 
 /**
@@ -417,8 +417,8 @@ function numSan(num) {
  * @returns {string}
  */
 function strSan(val = '') {
-    val = String(val);
-    return val.replace(/[<>'"\\]/g, '');
+  val = String(val);
+  return val.replace(/[<>'"\\]/g, '');
 }
 
 /**
@@ -427,17 +427,17 @@ function strSan(val = '') {
  * @returns {string}
  */
 function trim(text = '') {
-    text = String(text);
+  text = String(text);
 
-    // Old school quotes stored as values bug
-    if (text === `""` || text === `''`) return '';
+  // Old school quotes stored as values bug
+  if (text === `""` || text === `''`) return '';
 
-    try {
-        text = text.replace(/^\s+|\s+$/g, '');
-        return text.replace(/(\r\n|\n|\r|\t)/gm, '');
-    } catch (e) {
-        return '';
-    }
+  try {
+    text = text.replace(/^\s+|\s+$/g, '');
+    return text.replace(/(\r\n|\n|\r|\t)/gm, '');
+  } catch (e) {
+    return '';
+  }
 }
 
 /**
@@ -446,12 +446,12 @@ function trim(text = '') {
  * @returns {boolean}
  */
 function isVal(val) {
-    if (val === 0) return true;
-    else if (val === false) return true;
-    else if (val === null || val === undefined) return false;
-    // else if ( typeof val === 'number' && isNaN(val)) return false;
-    else if ( typeof val === 'object' && Object.keys(val).length === 0 ) return false;
-    else return !!val;
+  if (val === 0) return true;
+  else if (val === false) return true;
+  else if (val === null || val === undefined) return false;
+  // else if ( typeof val === 'number' && isNaN(val)) return false;
+  else if ( typeof val === 'object' && Object.keys(val).length === 0 ) return false;
+  else return !!val;
 }
 
 /**
@@ -460,17 +460,17 @@ function isVal(val) {
  * @returns {boolean}
  */
 function hasNonValues(obj) {
-    if (!obj) return true;
+  if (!obj) return true;
 
-    for (let v in obj) {
-        if (obj.hasOwnProperty(v)) {
-            if (!isVal(obj[v])) return true;
-            if (obj[v] === Number.MAX_SAFE_INTEGER) return true;
-            if (obj[v] === Number.MIN_SAFE_INTEGER) return true;
-        }
+  for (let v in obj) {
+    if (obj.hasOwnProperty(v)) {
+      if (!isVal(obj[v])) return true;
+      if (obj[v] === Number.MAX_SAFE_INTEGER) return true;
+      if (obj[v] === Number.MIN_SAFE_INTEGER) return true;
     }
+  }
 
-    return false;
+  return false;
 }
 
 /**
@@ -478,19 +478,19 @@ function hasNonValues(obj) {
  * @param {function} fun - function to call
  */
 function reqAniFrame(fun) {
-    if (_UI.popOut) {
-        if (_UI.popOut.requestAnimationFrame) _UI.popOut.requestAnimationFrame(fun);
-        else {
-            console.warn('no requestAnimationFrame');
-            fun();
-        }
-    } else {
-        if (window.requestAnimationFrame) window.requestAnimationFrame(fun);
-        else {
-            console.warn('no requestAnimationFrame');
-            fun();
-        }
+  if (_UI.popOut) {
+    if (_UI.popOut.requestAnimationFrame) _UI.popOut.requestAnimationFrame(fun);
+    else {
+      console.warn('no requestAnimationFrame');
+      fun();
     }
+  } else {
+    if (window.requestAnimationFrame) window.requestAnimationFrame(fun);
+    else {
+      console.warn('no requestAnimationFrame');
+      fun();
+    }
+  }
 }
 
 /**
@@ -501,7 +501,7 @@ function reqAniFrame(fun) {
  * @returns {boolean}
  */
 function duplicates(v, i, a) {
-    return a.indexOf(v) === i;
+  return a.indexOf(v) === i;
 }
 
 
@@ -515,12 +515,12 @@ function duplicates(v, i, a) {
  * @param {*} value - what to save
  */
 function localStorageSet(key, value) {
-    key = 'GlyphrStudio_' + key;
+  key = 'GlyphrStudio_' + key;
 
-    if (value.save) value = JSON.stringify(value.save());
-    else if (typeof value != 'string') value = JSON.stringify(value);
+  if (value.save) value = JSON.stringify(value.save());
+  else if (typeof value != 'string') value = JSON.stringify(value);
 
-    window.localStorage.setItem(key, value);
+  window.localStorage.setItem(key, value);
 }
 
 /**
@@ -529,13 +529,13 @@ function localStorageSet(key, value) {
  * @returns {*}
  */
 function localStorageGet(key) {
-    if (window.localStorage[key]) {
-        return JSON.parse(window.localStorage.getItem(key));
-    } else if (window.localStorage['GlyphrStudio_'+key]) {
-        return JSON.parse(window.localStorage.getItem('GlyphrStudio_'+key));
-    } else {
-        return undefined;
-    }
+  if (window.localStorage[key]) {
+    return JSON.parse(window.localStorage.getItem(key));
+  } else if (window.localStorage['GlyphrStudio_'+key]) {
+    return JSON.parse(window.localStorage.getItem('GlyphrStudio_'+key));
+  } else {
+    return undefined;
+  }
 }
 
 // --------------------------
@@ -557,14 +557,14 @@ function localStorageGet(key) {
  * @returns {number}
  */
 function calculateAngle(handle, point = {x: 0, y: 0}) {
-    let result = Math.atan2(handle.y - point.y, handle.x - point.x);
+  let result = Math.atan2(handle.y - point.y, handle.x - point.x);
 
-    if (isNaN(result)) {
-        console.warn('calculateAngle returned NaN\n' + json(handle) + '\n' + json(point));
-        result = 0;
-    }
+  if (isNaN(result)) {
+    console.warn('calculateAngle returned NaN\n' + json(handle) + '\n' + json(point));
+    result = 0;
+  }
 
-    return result;
+  return result;
 }
 
 /**
@@ -574,10 +574,10 @@ function calculateAngle(handle, point = {x: 0, y: 0}) {
  * @returns {number}
  */
 function calculateLength(handle, point) {
-    let adj = point.x - handle.x;
-    let opp = point.y - handle.y;
-    let result = Math.sqrt( (adj*adj) + (opp*opp) );
-    return result;
+  let adj = point.x - handle.x;
+  let opp = point.y - handle.y;
+  let result = Math.sqrt( (adj*adj) + (opp*opp) );
+  return result;
 }
 
 /**
@@ -587,24 +587,24 @@ function calculateLength(handle, point) {
  * @param {XYPoint} about - x/y point center of rotation
  */
 function rotate(point, angle, about = {x: 0, y: 0}) {
-    // debug('\n rotate - START');
-    // debug('\t point ' + json(point, true));
-    // debug('\t Math angle:\t' + angle);
-    // debug('\t about ' + json(about, true));
+  // debug('\n rotate - START');
+  // debug('\t point ' + json(point, true));
+  // debug('\t Math angle:\t' + angle);
+  // debug('\t about ' + json(about, true));
 
-    if (!angle || !point) return;
+  if (!angle || !point) return;
 
-    point.x -= about.x;
-    point.y -= about.y;
+  point.x -= about.x;
+  point.y -= about.y;
 
-    let newx = (point.x * Math.cos(angle)) - (point.y * Math.sin(angle));
-    let newy = (point.x * Math.sin(angle)) + (point.y * Math.cos(angle));
+  let newx = (point.x * Math.cos(angle)) - (point.y * Math.sin(angle));
+  let newy = (point.x * Math.sin(angle)) + (point.y * Math.cos(angle));
 
-    point.x = newx + about.x;
-    point.y = newy + about.y;
+  point.x = newx + about.x;
+  point.y = newy + about.y;
 
-    // debug('\t new point x/y: ' + point.x + '/' + point.y);
-    // debug(' rotate - END\n');
+  // debug('\t new point x/y: ' + point.x + '/' + point.y);
+  // debug(' rotate - END\n');
 }
 
 /**
@@ -613,7 +613,7 @@ function rotate(point, angle, about = {x: 0, y: 0}) {
  * @returns {number}
  */
 function rad(deg) {
-    return (deg * Math.PI / 180) % Math.PI;
+  return (deg * Math.PI / 180) % Math.PI;
 }
 
 /**
@@ -622,7 +622,7 @@ function rad(deg) {
  * @returns {number}
  */
 function deg(rad) {
-    return (rad * 180 / Math.PI) % 360;
+  return (rad * 180 / Math.PI) % 360;
 }
 
 /**
@@ -632,13 +632,13 @@ function deg(rad) {
  * @returns {number} - Angle in Degrees
  */
 function angleToNiceAngle(angle) {
-    angle = deg(angle);
-    angle = 360 - angle;
-    angle -= 270;
-    angle = angle % 360;
-    if (angle < 0) angle += 360;
+  angle = deg(angle);
+  angle = 360 - angle;
+  angle -= 270;
+  angle = angle % 360;
+  if (angle < 0) angle += 360;
 
-    return angle;
+  return angle;
 }
 
 /**
@@ -648,14 +648,14 @@ function angleToNiceAngle(angle) {
  * @returns {number} - Angle in Radians
  */
 function niceAngleToAngle(angle) {
-    angle += 90;
-    angle = angle % 360;
-    if (angle < 180) angle = 360 - angle;
-    else angle *=-1;
+  angle += 90;
+  angle = angle % 360;
+  if (angle < 180) angle = 360 - angle;
+  else angle *=-1;
 
-    angle = rad(angle);
+  angle = rad(angle);
 
-    return angle;
+  return angle;
 }
 
 
@@ -669,17 +669,17 @@ function niceAngleToAngle(angle) {
  * @returns {string}
  */
 function makeEmailContent() {
-    let con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
-    %0A%0A%0A%0A___________________________________________%0A
-    version %09Glyphr Studio  ${_UI.thisGlyphrStudioVersionNum} %0A
-    app name %09 ${navigator.appName} %0A
-    language %09 ${navigator.language} %0A
-    platform %09 ${navigator.platform} %0A
-    user agent %09 ${encodeURIComponent(navigator.userAgent)} %0A`;
+  let con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
+  %0A%0A%0A%0A___________________________________________%0A
+  version %09Glyphr Studio  ${_UI.thisGlyphrStudioVersionNum} %0A
+  app name %09 ${navigator.appName} %0A
+  language %09 ${navigator.language} %0A
+  platform %09 ${navigator.platform} %0A
+  user agent %09 ${encodeURIComponent(navigator.userAgent)} %0A`;
 
-    // debug(con);
+  // debug(con);
 
-    return con;
+  return con;
 }
 
 
@@ -721,37 +721,37 @@ function makeEmailContent() {
  * @returns {array} - Array of found combinations, size of a combination is k.
  */
 function kCombinations(set, k) {
-    let i;
-    let j;
-    let combs;
-    let head;
-    let tailcombs;
+  let i;
+  let j;
+  let combs;
+  let head;
+  let tailcombs;
 
-    if (k > set.length || k <= 0) {
-        return [];
-    }
+  if (k > set.length || k <= 0) {
+    return [];
+  }
 
-    if (k == set.length) {
-        return [set];
-    }
+  if (k == set.length) {
+    return [set];
+  }
 
-    if (k == 1) {
-        combs = [];
-        for (i = 0; i < set.length; i++) {
-            combs.push([set[i]]);
-        }
-        return combs;
-    }
-
-    // Assert {1 < k < set.length}
-
+  if (k == 1) {
     combs = [];
-    for (i = 0; i < set.length - k + 1; i++) {
-        head = set.slice(i, i+1);
-        tailcombs = kCombinations(set.slice(i + 1), k - 1);
-        for (j = 0; j < tailcombs.length; j++) {
-            combs.push(head.concat(tailcombs[j]));
-        }
+    for (i = 0; i < set.length; i++) {
+      combs.push([set[i]]);
     }
     return combs;
+  }
+
+  // Assert {1 < k < set.length}
+
+  combs = [];
+  for (i = 0; i < set.length - k + 1; i++) {
+    head = set.slice(i, i+1);
+    tailcombs = kCombinations(set.slice(i + 1), k - 1);
+    for (j = 0; j < tailcombs.length; j++) {
+      combs.push(head.concat(tailcombs[j]));
+    }
+  }
+  return combs;
 }
