@@ -39,7 +39,7 @@ export default class ControlPoint extends GlyphElement {
    * @returns {*}
    */
   save(verbose = false) {
-    let re = {
+    const re = {
       objType: this.objType,
       coord: this.coord.save(verbose),
     };
