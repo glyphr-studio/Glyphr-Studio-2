@@ -87,7 +87,7 @@ export default class ComponentInstance extends GlyphElement {
    * @returns {*}
    */
   save(verbose = false) {
-    let re = {
+    const re = {
       objType: this.objType,
       link: this.link,
     };
@@ -287,7 +287,7 @@ export default class ComponentInstance extends GlyphElement {
    * @returns {number} width
    */
   get width() {
-    let g = this.transformedGlyph.maxes;
+    const g = this.transformedGlyph.maxes;
     return g.xMax - g.xMin;
   }
 
@@ -296,7 +296,7 @@ export default class ComponentInstance extends GlyphElement {
    * @returns {number} height
    */
   get height() {
-    let g = this.transformedGlyph.maxes;
+    const g = this.transformedGlyph.maxes;
     return g.yMax - g.yMin;
   }
 
@@ -567,7 +567,7 @@ export default class ComponentInstance extends GlyphElement {
   makeTransformedGlyph() {
     // debug('\n ComponentInstance.makeTransformedGlyph - START ' + this.name);
 
-    let g = cloneAndFlattenGlyph(this.link);
+    const g = cloneAndFlattenGlyph(this.link);
     if (!g) {
       console.warn('Tried to get Component: ' + this.link + ' but it doesn\'t exist - bad usedIn array maintenance.');
       return false;
@@ -612,7 +612,7 @@ export default class ComponentInstance extends GlyphElement {
    * @returns {string} - PostScript path data
    */
   makePostScript(lastX, lastY) {
-    let g = this.transformedGlyph;
+    const g = this.transformedGlyph;
     let re;
     let part;
     for (let s = 0; s < g.shapes.length; s++) {
@@ -635,7 +635,7 @@ export default class ComponentInstance extends GlyphElement {
    */
   makeOpenTypeJSPath(otPath) {
     otPath = otPath || new opentype.Path();
-    let g = this.transformedGlyph;
+    const g = this.transformedGlyph;
     return g.makeOpenTypeJSPath(otPath);
   }
 
@@ -670,7 +670,7 @@ export default class ComponentInstance extends GlyphElement {
     // debug('\n ComponentInstance.setShapePosition - START');
     // debug('\t passed nx/ny/force: ' + nx + ' / ' + ny + ' / ' + force);
     // debug('\t translate was: ' + this.translateX + ' / ' + this.translateY);
-    let ogm = getGlyph(this.link).maxes;
+    const ogm = getGlyph(this.link).maxes;
     nx = parseFloat(nx);
     ny = parseFloat(ny);
     // debug('\t ogm ' + json(ogm, true));
@@ -692,9 +692,9 @@ export default class ComponentInstance extends GlyphElement {
     if (dw !== false) dw = parseFloat(dw) || 0;
     if (dh !== false) dh = parseFloat(dh) || 0;
     if (ratioLock) {
-      let ts = this.transformedGlyph.maxes;
-      let w = (ts.xMax - ts.xMin);
-      let h = (ts.yMax - ts.yMin);
+      const ts = this.transformedGlyph.maxes;
+      const w = (ts.xMax - ts.xMin);
+      const h = (ts.yMax - ts.yMin);
       if (Math.abs(dw) > Math.abs(dh)) {
         dh = (dw * (h / w));
       } else {
@@ -716,9 +716,9 @@ export default class ComponentInstance extends GlyphElement {
    * @param {boolean} ratioLock - maintain aspect ratio
    */
   setShapeSize(nw, nh, ratioLock) {
-    let og = getGlyph(this.link).maxes;
-    let dx = nx ? ((nx * 1) - og.xMin) : 0;
-    let dy = ny ? ((ny * 1) - og.yMax) : 0;
+    const og = getGlyph(this.link).maxes;
+    const dx = nx ? ((nx * 1) - og.xMin) : 0;
+    const dy = ny ? ((ny * 1) - og.yMax) : 0;
     this.updateShapePosition(dx, dy, ratioLock);
   }
 
@@ -738,7 +738,7 @@ export default class ComponentInstance extends GlyphElement {
   flipEW(mid) {
     this.isFlippedEW = !this.isFlippedEW;
     if (mid) {
-      let g = this.transformedGlyph.maxes;
+      const g = this.transformedGlyph.maxes;
       this.translateX += (((mid - g.xMax) + mid) - g.xMin);
     }
     if (this.rotation === 0) this.rotateFirst = false;
@@ -753,7 +753,7 @@ export default class ComponentInstance extends GlyphElement {
   flipNS(mid) {
     this.isFlippedNS = !this.isFlippedNS;
     if (mid) {
-      let g = this.transformedGlyph.maxes;
+      const g = this.transformedGlyph.maxes;
       this.translateY += (((mid - g.yMax) + mid) - g.yMin);
     }
     if (this.rotation === 0) this.rotateFirst = false;
@@ -769,7 +769,7 @@ export default class ComponentInstance extends GlyphElement {
   rotate(angle, about) {
     // debug('\n ComponentInstance.rotate - START');
     // debug('\t passed ' + angle);
-    let degrees = deg(angle);
+    const degrees = deg(angle);
     // debug('\t deg ' + degrees);
     // debug('\t was ' + this.rotation);
     // if(this.isFlippedEW || this.isFlippedNS) degrees *= -1;
@@ -789,7 +789,7 @@ export default class ComponentInstance extends GlyphElement {
    * @returns {boolean}
    */
   isHere(px, py) {
-    let g = this.transformedGlyph;
+    const g = this.transformedGlyph;
     return g ? g.isHere(px, py) : false;
   }
 
@@ -811,7 +811,7 @@ export default class ComponentInstance extends GlyphElement {
     Have to iterate through shapes instead of using Glyph.drawGlyph
     due to stacking shapes with appropriate winding
     */
-    let g = this.transformedGlyph;
+    const g = this.transformedGlyph;
     if (!g) return false;
     let drewShape = false;
     let failed = false;

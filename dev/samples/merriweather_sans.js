@@ -1,4 +1,4 @@
-const merriweatherSans = {};
+let merriweatherSans = {};
 export {merriweatherSans};
 export default {};
 
