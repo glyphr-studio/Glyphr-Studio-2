@@ -44,7 +44,7 @@ export default class Glyph extends GlyphElement {
     usedIn = [],
     contextGlyphs = '',
   } = {}) {
-    debug(`\n Glyph.constructor - START`);
+    // debug(`\n Glyph.constructor - START`);
     super();
     this.id = id;
     this.shapes = shapes;
@@ -56,8 +56,8 @@ export default class Glyph extends GlyphElement {
     this.usedIn = usedIn;
     this.contextGlyphs = contextGlyphs;
 
-    debug(this.print());
-    debug(` Glyph.constructor - END\n\n`);
+    // debug(this.print());
+    // debug(` Glyph.constructor - END\n\n`);
   }
 
 

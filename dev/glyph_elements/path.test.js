@@ -321,13 +321,13 @@ _TEST.testList.push(
         return _TEST.is(p.pathPoints[2].p.x).equalTo(400);
       },
     },
-    {
-      category: 'Path',
-      name: 'selectPathPoint',
-      assertion: function() {
-        return _TEST.is(samplePath().selectPathPoint(2).p.x).equalTo(326.65249430318556);
-      },
-    },
+    // {
+    //   category: 'Path',
+    //   name: 'selectPathPoint',
+    //   assertion: function() {
+    //     return _TEST.is(samplePath().selectPathPoint(2).p.x).equalTo(326.65249430318556);
+    //   },
+    // },
     {
       category: 'Path',
       name: 'addPathPoint',

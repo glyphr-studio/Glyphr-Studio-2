@@ -46,7 +46,7 @@ export default class GlyphrStudioApp {
     // Dev mode stuff
     if (this.settings.dev.mode) {
       // debug('\t >>> DEV NAV - to ' + this.settings.dev.currentPage);
-      document.title = '░▒▓█ GSDEVMODE █▓▒░';
+      document.title = '⡄⡆⡇ ⃨G⃨S⃨2⃨D⃨E⃨V⃨M⃨O⃨D⃨E⃨ ⡇⡆⡄';
 
       // Project
       if (this.settings.dev.sampleProject) {

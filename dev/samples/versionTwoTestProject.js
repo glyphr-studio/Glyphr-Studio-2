@@ -1,4 +1,2 @@
-export {versionTwoTestProject};
 export default {};
-
-const versionTwoTestProject = {};
+export const versionTwoTestProject = {};
