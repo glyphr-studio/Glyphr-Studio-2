@@ -16654,5 +16654,3 @@ export const unicodeNames = {
   '0xFFFE': '[not a character]',
   '0xFFFF': '[not a character]',
 };
-
-export default unicodeNames;
