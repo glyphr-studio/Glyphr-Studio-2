@@ -376,7 +376,7 @@ export default class Glyph extends GlyphElement {
      * @returns {number}
      */
   get advanceWidth() {
-    if (this.isAutoWide) this.width + this.lsb + this.rsb;
+    if (this.isAutoWide) return this.width + this.lsb + this.rsb;
     else return this.glyphWidth;
   }
 
@@ -1099,9 +1099,9 @@ export default class Glyph extends GlyphElement {
 
     let emSquare = 1000;
     let desc = 300;
-    const ps = getCurrentProject().projectSettings;
 
-    if (ps) {
+    if (window.GlyphrStudio.getCurrentProject) {
+      const ps = window.GlyphrStudio.getCurrentProject().projectSettings;
       emSquare = Math.max(ps.upm, (ps.ascent - ps.descent));
       desc = Math.abs(ps.descent);
     }
