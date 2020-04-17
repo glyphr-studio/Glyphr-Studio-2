@@ -4,16 +4,15 @@ import {merriweatherSans} from './merriweather_sans.js';
 import {versionTwoTestProject} from './versionTwoTestProject.js';
 import {simpleGlyph} from './simpleGlyph.js';
 
-export {sampleProjects, sampleObjects};
 export default {};
 
-const sampleProjects = {
-    versionTwoTestProject: versionTwoTestProject,
-    modegg: modegg,
-    californiaGothic: californiaGothic,
-    merriweatherSans: merriweatherSans,
+export const sampleProjects = {
+  versionTwoTestProject: versionTwoTestProject,
+  modegg: modegg,
+  californiaGothic: californiaGothic,
+  merriweatherSans: merriweatherSans,
 };
 
-const sampleObjects = {
-    simpleGlyph: simpleGlyph,
+export const sampleObjects = {
+  simpleGlyph: simpleGlyph,
 };

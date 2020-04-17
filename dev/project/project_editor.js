@@ -50,6 +50,12 @@ export default class ProjectEditor {
     this.history.components = new History('components', this);
     this.history.ligatures = new History('ligatures', this);
     this.history.kerning = new History('kerning', this);
+
+    // MultiSelect
+    this.multiSelect = {
+      points: {},
+      shapes: {},
+    };
   }
 
 

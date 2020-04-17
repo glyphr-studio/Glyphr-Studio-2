@@ -1011,12 +1011,14 @@ export default class Path extends GlyphElement {
 
     newPoint.parent = this;
     this.pathPoints.push(newPoint);
-    const re = this.selectPathPoint(this.pathPoints.length - 1);
+
+    // TODO remove UI stuff from glyph elements
+    // const re = this.selectPathPoint(this.pathPoints.length - 1);
 
     this.findWinding();
-    // debug(' Path.addPathPoint - END - returning ' + re + '\n');
+    // debug(' Path.addPathPoint - END \n');
 
-    return re;
+    return newPoint;
   }
 
   /**
@@ -1025,8 +1027,8 @@ export default class Path extends GlyphElement {
      * @param {number} pointNumber - point number before the new split
      * @returns {PathPoint} - reference to the added path point
      */
-  insertPathPoint(t = 0.5, pointNumber) {
-    const pp1i = pointNumber || 0;
+  insertPathPoint(t = 0.5, pointNumber = 0) {
+    const pp1i = pointNumber;
     const pp1 = (pp1i === false ? this.pathPoints[0] : this.pathPoints[pp1i]);
     // var pp2i = (pp1i+1)%this.pathPoints.length;
     const pp2i = this.getNextPointNum(pp1i);
@@ -1132,28 +1134,39 @@ export default class Path extends GlyphElement {
     }
   }
 
+  /*
+
+
+    TODO
+    UI stuff shouldn't be in glyph elements
+
+
+  */
   /**
      * Selects a point on this curve
      * @param {number} index - point to select
      * @returns {PathPoint} - reference to the selected point
-     */
-  selectPathPoint(index) {
-    index = parseInt(index);
+     selectPathPoint(index) {
+       index = parseInt(index);
 
-    if (index === false) return false;
+       if (index === false) return false;
 
-    if (index === -1) {
-      index = this.pathPoints.length - 1;
-    } else {
-      index = Math.abs(index);
-    }
+       if (index === -1) {
+         index = this.pathPoints.length - 1;
+        } else {
+          index = Math.abs(index);
+        }
 
-    index = index % this.pathPoints.length;
+        index = index % this.pathPoints.length;
 
-    if (_UI.multiSelect) _UI.multiSelect.points.select(this.pathPoints[index]);
 
-    return this.pathPoints[index];
-  }
+        if (window.GlyphrStudio.getCurrentProjectEditor()) {
+          window.GlyphrStudio.getCurrentProjectEditor().multiSelect.points.select(this.pathPoints[index]);
+        }
+
+        return this.pathPoints[index];
+      }
+    */
 
 
   // ----------------------------------
