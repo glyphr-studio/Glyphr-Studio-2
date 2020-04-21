@@ -102,7 +102,7 @@
         con += '<input type="text" id="rightgroup" style="font-size:24px; width:45%; padding:8px;"/><br>';
         con += makeErrorMessageBox();
         con += '<br>';
-        con += '<button class="buttonsel" onclick="createNewKernPair();">create new kern pair</button>';
+        con += '<button class="button--call-to-action" onclick="createNewKernPair();">create new kern pair</button>';
         con += '</div>';
 
         openDialog(con);

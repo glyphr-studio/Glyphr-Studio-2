@@ -44,6 +44,7 @@ const manifest = [
     path: 'app',
     files: [
       'app.js',
+      'resets.css',
       'app.css',
       'fonts.css',
       // 'test.js,

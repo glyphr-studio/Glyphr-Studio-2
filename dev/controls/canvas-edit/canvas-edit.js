@@ -133,23 +133,23 @@ function update_ToolsArea() {
   const selectedWorkItem = getSelectedWorkItem();
 
   if (_UI.selectedTool === 'pathedit') {
-    patheditclass = 'buttonsel';
+    patheditclass = 'button--call-to-action';
   } else if (type === 'ComponentInstance') {
-    patheditclass = 'buttondis';
+    patheditclass = 'buttondis';  // No more buttondis
     penclickable = false;
     penaddpointclickable = false;
   }
 
   if (_UI.selectedTool === 'pathaddpoint') {
-    pathaddpointclass = 'buttonsel';
+    pathaddpointclass = 'button--call-to-action';
   } else if (type === 'ComponentInstance') {
-    pathaddpointclass = 'buttondis';
+    pathaddpointclass = 'buttondis';  // No more buttondis
     penclickable = false;
     penaddpointclickable = false;
   }
 
   if (_UI.multiSelect.shapes.count() > 1) {
-    pathaddpointclass = 'buttondis';
+    pathaddpointclass = 'buttondis';  // No more buttondis
     penaddpointclickable = false;
   }
 
@@ -171,7 +171,7 @@ function update_ToolsArea() {
 
   let zoom = '';
   // Pan
-  zoom += '<button title="scroll and pan" class="' + (st==='pan'? 'buttonsel ' : ' ') + 'tool" onclick="clickTool(\'pan\');"/>'+makeToolButton({'name': 'tool_pan', 'selected': (st==='pan')})+'</button>';
+  zoom += '<button title="scroll and pan" class="' + (st==='pan'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'pan\');"/>'+makeToolButton({'name': 'tool_pan', 'selected': (st==='pan')})+'</button>';
   zoom += '<span style="width:15px; display:inline-block;">&nbsp;</span>';
   // Zoom
   zoom += '<button title="zoom: one to one" class="tool" onclick="setView({dz:1});redraw({calledBy:\'updatetools\'});">'+makeToolButton({'name': 'tool_zoom1to1'})+'</button>';
@@ -184,26 +184,26 @@ function update_ToolsArea() {
   // UPPER LEFT
   // New Shape
   let newshape = '';
-  newshape += '<button onmouseover="mouseovercec();" title="new rectangle shape" class="' + (st==='newrect'? 'buttonsel ' : ' ') + 'tool" onclick="clickTool(\'newrect\');"/>'+makeToolButton({'name': 'tool_newRect', 'selected': (st==='newrect')})+'</button>';
-  newshape += '<button onmouseover="mouseovercec();" title="new oval shape" class="' + (st==='newoval'? 'buttonsel ' : ' ') + 'tool" onclick="clickTool(\'newoval\');"/>'+makeToolButton({'name': 'tool_newOval', 'selected': (st==='newoval')})+'</button>';
-  newshape += '<button onmouseover="mouseovercec();" title="new path shape" class="' + (st==='newpath'? 'buttonsel ' : ' ') + 'tool" onclick="clickTool(\'newpath\');"/>'+makeToolButton({'name': 'tool_newPath', 'selected': (st==='newpath')})+'</button>';
+  newshape += '<button onmouseover="mouseovercec();" title="new rectangle shape" class="' + (st==='newrect'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'newrect\');"/>'+makeToolButton({'name': 'tool_newRect', 'selected': (st==='newrect')})+'</button>';
+  newshape += '<button onmouseover="mouseovercec();" title="new oval shape" class="' + (st==='newoval'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'newoval\');"/>'+makeToolButton({'name': 'tool_newOval', 'selected': (st==='newoval')})+'</button>';
+  newshape += '<button onmouseover="mouseovercec();" title="new path shape" class="' + (st==='newpath'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'newpath\');"/>'+makeToolButton({'name': 'tool_newPath', 'selected': (st==='newpath')})+'</button>';
   newshape += '<br>';
 
   // Path and Shape Edit
   let edittools = '';
   edittools += '<button onmouseover="mouseovercec();" title="add path point" class="' + pathaddpointclass + ' tool" ' + (penaddpointclickable? 'onclick="clickTool(\'pathaddpoint\');"':'') + '/>'+makeToolButton({'name': 'tool_penPlus', 'selected': (st==='pathaddpoint'), 'disabled': !penaddpointclickable})+'</button>';
   edittools += '<button onmouseover="mouseovercec();" title="path edit" class="' + patheditclass + ' tool" ' + (penclickable? 'onclick="clickTool(\'pathedit\');"':'') + '/>'+makeToolButton({'name': 'tool_pen', 'selected': (st==='pathedit'), 'disabled': !penclickable})+'</button>';
-  edittools += '<button onmouseover="mouseovercec();" title="shape edit" class="' + (st==='shaperesize'? 'buttonsel ' : ' ') + 'tool" onclick="clickTool(\'shaperesize\');"/>'+makeToolButton({'name': 'tool_arrow', 'selected': (st==='shaperesize')})+'</button>';
+  edittools += '<button onmouseover="mouseovercec();" title="shape edit" class="' + (st==='shaperesize'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'shaperesize\');"/>'+makeToolButton({'name': 'tool_arrow', 'selected': (st==='shaperesize')})+'</button>';
   edittools += '<br>';
 
   let donepath = '<div style="height:5px;">&nbsp;</div>';
-  donepath += '<button class="buttonsel" style="width:94px; font-size:.8em; padding:2px;" title="done editing path" onclick="clickTool(\'pathedit\');">done editing path</button>';
+  donepath += '<button class="button--call-to-action" style="width:94px; font-size:.8em; padding:2px;" title="done editing path" onclick="clickTool(\'pathedit\');">done editing path</button>';
 
   // Slice
-  // var slice = '<button title="slice" class="' + (st==='slice'? 'buttonsel ' : ' ') + 'tool" onclick="clickTool(\'slice\');"/>'+makeToolButton({'name':'tool_slice', 'selected':(st==='slice')})+'</button>';
+  // var slice = '<button title="slice" class="' + (st==='slice'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'slice\');"/>'+makeToolButton({'name':'tool_slice', 'selected':(st==='slice')})+'</button>';
 
   // Kern
-  const kern = '<button title="kern" class="' + (st==='kern'? 'buttonsel ' : ' ') + 'tool" onclick="clickTool(\'kern\');"/>'+makeToolButton({'name': 'tool_kern', 'selected': (st==='kern')})+'</button>';
+  const kern = '<button title="kern" class="' + (st==='kern'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'kern\');"/>'+makeToolButton({'name': 'tool_kern', 'selected': (st==='kern')})+'</button>';
 
   // Context Glyphs
   let ctxg = '<div class="contextglyphsarea">';
