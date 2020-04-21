@@ -36,13 +36,13 @@
     content += '<table style="margin-top:20px;"><tr><td style="padding-top:10px;">'+makeIcon({'name': 'nav_exportotf', 'size': 60, 'color': _UI.colors.blue.l35, 'hoverColor': false})+'</td><td style="padding-left:10px;">'+
       '</td><td><h2>OTF Font</h2>'+
       'Open Type Fonts are font files that can be installed on any computer, then used for things like word processing or graphics.<br>'+
-      '<button class="buttonsel" style="padding:6px 12px; font-size:1.1em; margin-top:10px;" onclick="showToast(\'Exporting OTF font file...\'); setTimeout(ioOTF_exportOTFfont, 500);">Export OTF Font</button>'+
+      '<button class="button--call-to-action" style="padding:6px 12px; font-size:1.1em; margin-top:10px;" onclick="showToast(\'Exporting OTF font file...\'); setTimeout(ioOTF_exportOTFfont, 500);">Export OTF Font</button>'+
       '</td></tr></table>';
 
     content += '<table style="margin-top:20px;"><tr><td style="padding-top:10px;">'+makeIcon({'name': 'nav_exportsvg', 'size': 60, 'color': _UI.colors.blue.l35, 'hoverColor': false})+'</td><td style="padding-left:10px;">'+
       '</td><td><h2>SVG Font</h2>'+
       'Scalable Vector Graphics Fonts are text-file-based fonts that some browsers can use natively to display web page text. You can also convert SVG Fonts to any other kind of font using free online services.<br>'+
-      '<button class="buttonsel" style="padding:6px 12px; font-size:1.1em; margin-top:10px;" onclick="showToast(\'Exporting SVG font file...\'); setTimeout(ioSVG_exportSVGfont, 500);">Export SVG Font</button>'+
+      '<button class="button--call-to-action" style="padding:6px 12px; font-size:1.1em; margin-top:10px;" onclick="showToast(\'Exporting SVG font file...\'); setTimeout(ioSVG_exportSVGfont, 500);">Export SVG Font</button>'+
       '</td></tr></table>';
 
     content += '<br><br>';

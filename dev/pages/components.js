@@ -56,7 +56,7 @@
       // content += '<br>The Component Instances in these Glyphs will also be deleted.<br><br>';
     }
 
-    content += '<br><br><button class="buttonsel" onclick="deleteComponent();">delete this component</button> &nbsp; <button onclick="closeDialog();">cancel</button>';
+    content += '<br><br><button class="button--call-to-action" onclick="deleteComponent();">delete this component</button> &nbsp; <button onclick="closeDialog();">cancel</button>';
 
     openDialog(content);
   }

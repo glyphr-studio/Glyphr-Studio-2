@@ -112,7 +112,7 @@ function insertComponentInstance(sourceComponentID, destinationGlyphID, copyGlyp
         redraw({calledBy: 'insertComponent'});
         return true;
     } else {
-        openDialog('<h1>Whoops</h1><div class="dialoglargetext">A circular link was found, components can\'t include links to themselves.<br>They can\'t handle the philosophical conundrum it poses.</div><br><br><button class="buttonsel" onclick="closeDialog();">Fine, I guess.</button>');
+        openDialog('<h1>Whoops</h1><div class="dialoglargetext">A circular link was found, components can\'t include links to themselves.<br>They can\'t handle the philosophical conundrum it poses.</div><br><br><button class="button--call-to-action" onclick="closeDialog();">Fine, I guess.</button>');
         return false;
     }
 }

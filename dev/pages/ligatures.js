@@ -35,7 +35,7 @@
     con += '<input type="text" id="newligatureinput" style="font-size:24px; padding:8px;"/><br>';
     con += makeErrorMessageBox();
     con += '<br>';
-    con += '<button class="buttonsel" onclick="createNewLigature();">create new ligature</button>';
+    con += '<button class="button--call-to-action" onclick="createNewLigature();">create new ligature</button>';
     con += '</div>';
 
     openDialog(con);
@@ -107,7 +107,7 @@
       // content += '<br>The Component Instances in these Glyphs will also be deleted.<br><br>';
     }
 
-    content += '<br><br><button class="buttonsel" onclick="deleteLigature();">delete this ligature</button> &nbsp; <button onclick="closeDialog();">cancel</button>';
+    content += '<br><br><button class="button--call-to-action" onclick="deleteLigature();">delete this ligature</button> &nbsp; <button onclick="closeDialog();">cancel</button>';
 
     openDialog(content);
   }

@@ -21,7 +21,7 @@
     con += '<div class="effect">Each ligature and glyph\'s Auto Width property will be set to false, and it\'s '+
         'width property will be set to the number provided.</div>';
     con += 'Glyph Width: &nbsp; <input id="monospacewidth" type="number" value="500"><br>';
-    con += '<button class="buttonsel commit" onclick="convertProjectToMonospace();">Convert project to Monospace</button>';
+    con += '<button class="button--call-to-action commit" onclick="convertProjectToMonospace();">Convert project to Monospace</button>';
     con += '<hr>';
 
     // All Caps
@@ -30,7 +30,7 @@
         'in these fonts contain duplicates of their uppercase form.';
     con += '<div class="effect">Capital letters will be added as Component Instances to their lowercase '+
         'counterparts.</div>';
-    con += '<button class="buttonsel commit" onclick="convertProjectToAllCaps();">Convert project to All Caps</button>';
+    con += '<button class="button--call-to-action commit" onclick="convertProjectToAllCaps();">Convert project to All Caps</button>';
     con += '<hr>';
 
     // Diacriticals
@@ -40,7 +40,7 @@
         'glyphs are easy to create from merging two existing glyphs from the basic Latin character range.';
     con += '<div class="effect">The Latin Supplement character range will be enabled, and diacritical glyphs will be assembled '+
         'as Component Instances from their respective glyphs.</div>';
-    con += '<button class="buttonsel commit" onclick="generateDiacriticals();">Generate Diacritical Glyphs</button>';
+    con += '<button class="button--call-to-action commit" onclick="generateDiacriticals();">Generate Diacritical Glyphs</button>';
     con += '<hr>';
 
 

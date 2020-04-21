@@ -382,7 +382,7 @@ function make_ImportFilter(chars, kerns, funname) {
 
   re += '</table>';
 
-  re += '<br><br><button class="buttonsel" id="importfontbutton" onclick="'+funname+'(true);">Import Font</button>';
+  re += '<br><br><button class="button--call-to-action" id="importfontbutton" onclick="'+funname+'(true);">Import Font</button>';
 
   return re;
 }
