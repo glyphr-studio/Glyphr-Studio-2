@@ -131,10 +131,10 @@
     }
 
     function hideAllSatChoosers() {
-        let scid = document.getElementById('satchooser');
+        let scid = document.getElementById('satChooser');
         while (scid) {
             scid.parentNode.removeChild(scid);
-            scid = document.getElementById('satchooser');
+            scid = document.getElementById('satChooser');
         }
     }
 

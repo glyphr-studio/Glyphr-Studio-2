@@ -40,7 +40,7 @@ export default class ProjectEditor {
       stopPageNavigation: true,
     };
 
-    this.content = makeElement({className: 'editorWrapper'});
+    this.content = makeElement({className: 'app__editor'});
 
     this.pages = {};
 
@@ -313,7 +313,7 @@ export default class ProjectEditor {
      */
   pageLoader() {
     debug(`\n ProjectEditor.pageLoader - START`);
-    const editorContent = makeElement({tag: 'div', id: 'editorWrapper'});
+    const editorContent = makeElement({tag: 'div', id: 'app__editor'});
     let currentPageLoader = {
       content: makeElement({tag: 'h1', innerHTML: 'Uninitialized page content'}),
       callback: false,

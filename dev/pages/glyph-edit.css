@@ -1,0 +1,36 @@
+.glyph-edit__page {
+	display: grid;
+	height: 100%;
+	width: 100%;
+	min-height: 100%;
+	min-width: 100%;
+	grid-template-columns: 400px 1fr;
+}
+
+.glyph-edit__left-area {
+	grid-column: 1;
+	display: grid;
+	grid-template-rows: 50px 1fr;
+}
+
+.glyph-edit__right-area {
+	grid-column: 2;
+	display: grid;
+	grid-template: 1fr 1fr;
+}
+
+.glyph-edit__left-area fancy-button {
+	grid-row: 1;
+	width: 100%;
+}
+
+.glyph-edit__left-area panel-area {
+	grid-row: 2;
+}
+
+canvas-display {
+	grid-column: 1;
+	grid-row: 1;
+	width: 100vw;
+	height: 100vh;
+}

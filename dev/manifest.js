@@ -43,10 +43,11 @@ const manifest = [
   {
     path: 'app',
     files: [
-      'app.js',
       'resets.css',
-      'app.css',
       'fonts.css',
+      'app.js',
+      'app.css',
+
       // 'test.js,
       // 'test.test.js',
     ],
@@ -112,7 +113,9 @@ const manifest = [
     path: 'pages',
     files: [
       'open_project.js',
+      'open-project.css',
       'glyph_edit.js',
+      'glyph-edit.css',
       // 'components.js',
       // 'ligatures.js',
       // 'kerning.js',
@@ -123,8 +126,6 @@ const manifest = [
       // 'import_svg.js',
       // 'export_font.js',
       // 'about.js',
-
-      'pages.css',
     ],
   },
   /*
@@ -148,12 +149,13 @@ const manifest = [
   {
     path: 'lib',
     files: [
-      // 'satchooser.js',
+      // 'satChooser.js',
       'unicode_names.js',
       'xml_to_json.js',
       'opentypejs_0-9-0.js',
     ],
   },
+
   {
     path: 'samples',
     files: [
