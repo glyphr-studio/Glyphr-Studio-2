@@ -1,6 +1,6 @@
-#appWrapper,
-#editorWrapper,
-#pageWrapper {
+#app__wrapper,
+#app__editor,
+#app__page {
   background-color: var(--gray-l95);
   height: 100%;
   width: 100%;
@@ -9,7 +9,7 @@
   overflow: hidden;
 }
 
-#appWrapper {
+#app__wrapper {
   position: absolute;
   top: 0px;
   left: 0px;

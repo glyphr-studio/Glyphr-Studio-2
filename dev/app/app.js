@@ -105,7 +105,7 @@ export default class GlyphrStudioApp {
   navigate() {
     debug(`\n App.navigate - START`);
 
-    const wrapper = document.getElementById('appWrapper');
+    const wrapper = document.getElementById('app__wrapper');
     const loader = this.getCurrentProjectEditor().pageLoader();
     wrapper.innerHTML = '';
     wrapper.appendChild(loader.content);

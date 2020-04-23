@@ -18,13 +18,13 @@ export default class PageGlyphEdit {
   pageLoader() {
     debug(`\n PageGlyphEdit.pageLoader - START`);
 
-    const content = makeElement({tag: 'div', id: 'pageWrapper', innerHTML: `
-      <div class="glyphEdit">
-        <div class="glyphEditLeftArea">
+    const content = makeElement({tag: 'div', id: 'app__page', innerHTML: `
+      <div class="glyph-edit__page">
+        <div class="glyph-edit__left-area">
           <fancy-button>Glyphr Studio</fancy-button>
           <panel-area panel="attributes"></panel-area>
         </div>
-        <div class="glyphEditRightArea">
+        <div class="glyph-edit__right-area">
           <canvas-display glyphs="A"></canvas-display>
         </div>
       </div>

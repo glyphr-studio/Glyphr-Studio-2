@@ -1,10 +1,4 @@
-/*
-----------------------------------------
- Open Project
-----------------------------------------
-*/
-
-#openProjectTableLeft {
+#open-project__left-area {
     background-color: var(--gray-l05);
     color: var(--gray-l95);
     width: 475px;
@@ -12,7 +6,7 @@
     padding: 0px 0px 0px 50px;
 }
 
-#openProjectTableRight {
+#open-project__right-area {
     color: var(--gray-l95);
     vertical-align: middle;
     padding:0px 0px 0px 50px;
@@ -20,82 +14,82 @@
     background-color: var(--gray-l10);
 }
 
-#splashScreenLogo {
+#open-project__logo {
     width: 400px;
     margin: 0px 20px 16px 0px;
 }
 
-.splashVerName,
-.splashVerNum,
-.splashBlurb {
+.open-project__version-name,
+.open-project__version-number,
+.open-project__blurb {
     color: var(--gray-l90);
     width: 350px;
 }
 
-.splashVerName {
+.open-project__version-name {
     font-size: 1em;
 }
 
-.splashVerNum {
+.open-project__version-number {
     font-size: 0.8em;
 }
 
-.splashVerNum a {
+.open-project__version-number a {
     color: var(--gray-l90);
     font-size: 1em;
     text-decoration: underline;
 }
 
-.splashBlurb {
+.open-project__blurb {
     color: var(--gray-l70);
     font-size: 0.6em;
     margin-top: 10px;
 }
 
-.splashBlurb a {
+.open-project__blurb a {
     color: var(--gray-l80);
     font-size: 1em;
     text-decoration: underline;
 }
 
-.splashVerNum a,
-.splashBlurb a {
+.open-project__version-number a,
+.open-project__blurb a {
     text-decoration-color: var(--gray-l60);
 }
 
-.splashVerNum a:hover,
-.splashBlurb a:hover {
+.open-project__version-number a:hover,
+.open-project__blurb a:hover {
     text-decoration-color: var(--gray-l85);
     color: var(--gray-l85);
 }
 
-.openProjectTabWrapper {
+.open-project__tab-wrapper {
     width: 400px;
     position: absolute;
     top: calc(50% - 100px);
 }
-.openProjectTabContent {
+.open-project__tab-content {
     margin: 20px 4px 0px 10px;
     display: inline;
     color: var(--gray-l95);
 }
 
-.openProjectTabContent h2 {
+.open-project__tab-content h2 {
     color: var(--gray-l95);
     display: block;
     padding-right: 0px;
 }
 
-.openProjectTabContent #customRangeBegin,
-.openProjectTabContent #customRangeEnd {
+.open-project__tab-content #customRangeBegin,
+.open-project__tab-content #customRangeEnd {
     width: 140px;
 }
 
-.openProjectTabs {
+.open-project__tabs {
     margin-left: 10px;
 }
 
-.openProjectTabs button {
+.open-project__tabs button {
     /*background-color: rgb(229,234,239);*/
     background-color: transparent;
     border-bottom: 3px solid var(--gray-l35);
@@ -105,12 +99,12 @@
     outline-width: 0px;
     border-radius: 0px;
 }
-.openProjectTabs button:hover {
+.open-project__tabs button:hover {
     border-bottom: 3px solid var(--blue-l45) !important;
     background-color: var(--gray-l45);
 }
 
-#newProjectName	{
+#open-project__project-name	{
     width: 94%;
     height: 25px;
     margin: 10px 0px 0px 0px;
@@ -118,7 +112,7 @@
     display: block;
 }
 
-#dropTarget {
+#open-project__drop-target {
     width: 90%;
     margin: 5px 0px 0px 0px;
     background-color: var(--gray-l95);
@@ -127,53 +121,4 @@
     font-weight: bold;
     padding: 18px 0px 20px 20px;
     line-height: 2em;
-}
-
-.checkCol {
-    width: 30px;
-    vertical-align: top;
-    padding: 4px;
-}
-
-/*
-----------------------------------------
- Glyph Edit
-----------------------------------------
-*/
-
-.glyphEdit {
-    display: grid;
-    height: 100%;
-    width: 100%;
-    min-height: 100%;
-    min-width: 100%;
-    grid-template-columns: 400px 1fr;
-}
-
-.glyphEditLeftArea {
-    grid-column: 1;
-    display: grid;
-    grid-template-rows: 50px 1fr;
-}
-
-.glyphEditRightArea {
-    grid-column: 2;
-    display: grid;
-    grid-template: 1fr 1fr;
-}
-
-.glyphEditLeftArea fancy-button {
-    grid-row: 1;
-    width: 100%;
-}
-
-.glyphEditLeftArea panel-area {
-    grid-row: 2;
-}
-
-canvas-display {
-    grid-column: 1;
-    grid-row: 1;
-    width: 100vw;
-    height: 100vh;
 }
