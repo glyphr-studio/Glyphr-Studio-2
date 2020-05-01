@@ -293,7 +293,12 @@ export default class ProjectEditor {
      */
   navigate(pageName) {
     if (pageName) this.nav.page = pageName;
-    window.GlyphrStudio.navigate();
+
+    const wrapper = document.getElementById('app__wrapper');
+    const loader = this.pageLoader();
+    wrapper.innerHTML = '';
+    wrapper.appendChild(loader.content);
+    if (loader.callback) loader.callback(this.getCurrentPage());
   }
 
   /**

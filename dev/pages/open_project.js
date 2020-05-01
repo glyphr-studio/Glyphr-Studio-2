@@ -303,8 +303,7 @@ export default class PageOpenProject {
     setTimeout(function() {
       const projectEditor = window.GlyphrStudio.getCurrentProjectEditor();
       projectEditor.project = new GlyphrStudioProject();
-      projectEditor.nav.page = 'glyph edit';
-      window.GlyphrStudio.navigate();
+      window.GlyphrStudio.navigate('glyph edit');
     }, 5);
   }
 
@@ -317,8 +316,7 @@ export default class PageOpenProject {
 
     setTimeout(function() {
       window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(sampleProjects[name]);
-      window.GlyphrStudio.getCurrentProjectEditor().nav.page = 'glyph edit';
-      window.GlyphrStudio.navigate();
+      window.GlyphrStudio.navigate('glyph edit');
     }, 5);
   }
 }
