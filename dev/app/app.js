@@ -24,7 +24,7 @@ export default class GlyphrStudioApp {
         // Internal Dev Stuff
         mode: true, // global switch for all the stuff below
         sampleProject: false, // if sampleProject is present, load it and skip open project experience
-        currentPage: 'glyph edit', // navigate straight to a page
+        currentPage: false, // navigate straight to a page
         currentPanel: false, // navigate straight to a panel
         selectedShape: false, // automatically select a shape
         debugAutoGroup: false, // try to console.group based on text strings
@@ -101,16 +101,11 @@ export default class GlyphrStudioApp {
 
   /**
    * Draws the current Project Editor to the document
+   * @param {string} pageName - what page to navigate to
    */
-  navigate() {
+  navigate(pageName) {
     debug(`\n App.navigate - START`);
-
-    const wrapper = document.getElementById('app__wrapper');
-    const loader = this.getCurrentProjectEditor().pageLoader();
-    wrapper.innerHTML = '';
-    wrapper.appendChild(loader.content);
-    if (loader.callback) loader.callback(this.getCurrentProjectEditor().getCurrentPage());
-
+    this.getCurrentProjectEditor().navigate(pageName);
     debug(` App.navigate - END\n\n`);
   }
 
