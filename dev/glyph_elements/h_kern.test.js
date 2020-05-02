@@ -1,4 +1,5 @@
 import HKern from './h_kern.js';
+jest.mock('./h_kern.js');
 
 /**
  * Sample kern for testing
@@ -12,19 +13,11 @@ function sampleHKern() {
   });
 }
 
-_TEST.testList.push(
-    {
-      category: 'HKern',
-      name: 'value',
-      assertion: function() {
-        return _TEST.is(sampleHKern().value).equalTo(123);
-      },
-    },
-    {
-      category: 'HKern',
-      name: 'name',
-      assertion: function() {
-        return _TEST.is(sampleHKern().name).equalTo('Aa | Vv');
-      },
-    }
-);
+
+test('HKern: value', () => {
+  expect(sampleHKern().value).toBe(123);
+});
+
+test('HKern: name', () => {
+  expect(sampleHKern().name).toBe('Aa | Vv');
+});

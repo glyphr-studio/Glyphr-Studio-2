@@ -1,39 +1,26 @@
 
 import GlyphrStudioProject from './glyphr_studio_project.js';
+jest.mock('./glyphr_studio_project.js');
 
-_TEST.testList.push(
-    {
-        category: 'GlyphrStudioProject',
-        name: 'New project: UPM',
-        assertion: function() {
-            // Stick this here for other tests to use
-            _TEST.globals.newProject = new GlyphrStudioProject();
 
-            return _TEST.is(_TEST.globals.newProject.projectSettings.upm).equalTo(1000);
-        },
-    },
-    {
-        category: 'GlyphrStudioProject',
-        name: 'New project: Dark Guideline',
-        assertion: function() {
-            return _TEST.is(_TEST.globals.newProject.projectSettings.colors.guide_dark).equalTo('rgb(204,81,0)');
-        },
-    },
-    {
-        category: 'GlyphrStudioProject',
-        name: 'Partial New project: Dark Guideline',
-        assertion: function() {
-            let projectPartial = new GlyphrStudioProject({projectSettings: {colors: {guide_light: 'it-works'}}});
+test('GlyphrStudioProject: New project: UPM', () => {
+  // Stick this here for other tests to use
+  _TEST.globals.newProject = new GlyphrStudioProject();
 
-            return _TEST.expression(projectPartial.projectSettings.colors.guide_light === 'it-works' &&
-                projectPartial.projectSettings.colors.guide_dark === 'rgb(204,81,0)');
-        },
-    },
-    {
-        category: 'GlyphrStudioProject',
-        name: 'New project: Font Variant',
-        assertion: function() {
-            return _TEST.is(_TEST.globals.newProject.metadata.font_variant).equalTo('normal');
-        },
-    }
-);
+  expect(_TEST.globals.newProject.projectSettings.upm).toBe(1000);
+});
+
+test('GlyphrStudioProject: New project: Dark Guideline', () => {
+  expect(_TEST.globals.newProject.projectSettings.colors.guide_dark).toBe('rgb(204,81,0)');
+});
+
+test('GlyphrStudioProject: Partial New project: Dark Guideline', () => {
+  const projectPartial = new GlyphrStudioProject({projectSettings: {colors: {guide_light: 'it-works'}}});
+
+  expect(projectPartial.projectSettings.colors.guide_light === 'it-works' &&
+    projectPartial.projectSettings.colors.guide_dark === 'rgb(204,81,0)').toBeTruthy();
+});
+
+test('GlyphrStudioProject: New project: Font Variant', () => {
+  expect(_TEST.globals.newProject.metadata.font_variant).toBe('normal');
+});
