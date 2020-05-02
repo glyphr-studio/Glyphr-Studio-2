@@ -1,5 +1,7 @@
+// const XYPoint = require('xy_point.js');
 import XYPoint from 'xy_point';
 // jest.moc('./xy_point.js');
+
 
 describe('XYPoint', () => {
   it('Constructor - x', () => {

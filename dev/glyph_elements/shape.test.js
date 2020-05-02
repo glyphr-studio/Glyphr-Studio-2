@@ -198,7 +198,7 @@ it('Shape: getSegment', () => {
 
 it('Shape: checkForNaN', () => {
   const s = sampleShape();
-  s.path.pathPoints[2].h1.x = 'asdf';
+  s.path.pathPoints[2].h1.x = 'test';
   expect(!s.checkForNaN()).toBeTruthy();
 });
 
@@ -213,7 +213,7 @@ addShape
 turnSelectedShapeIntoAComponent
 
 CANVAS METHODS
-drawShape(lctx, view)
+drawShape(ctx, view)
 drawSegments()
 getClickedShape
 isOverShape
