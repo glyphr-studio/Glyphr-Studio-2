@@ -1,5 +1,5 @@
 import ComponentInstance from './component_instance.js';
-jest.mock('./component_instance.js');
+// jest.moc('./component_instance.js');
 
 /**
  * Create a sample Component Instance
@@ -10,103 +10,103 @@ function sampleComponentInstance() {
 }
 
 
-test('ComponentInstance: get/set link', () => {
+it('ComponentInstance: get/set link', () => {
   const ci = sampleComponentInstance();
   ci.link = '0x1234';
   expect(ci.link).toBe('0x1234');
 });
 
-test('ComponentInstance: get/set name', () => {
+it('ComponentInstance: get/set name', () => {
   const ci = sampleComponentInstance();
   ci.name = 'New Name';
   expect(ci.name).toBe('New Name');
 });
 
-test('ComponentInstance: get/set translateX', () => {
+it('ComponentInstance: get/set translateX', () => {
   const ci = sampleComponentInstance();
   ci.translateX = 123;
   expect(ci.translateX).toBe(123);
 });
 
-test('ComponentInstance: get/set translateY', () => {
+it('ComponentInstance: get/set translateY', () => {
   const ci = sampleComponentInstance();
   ci.translateY = 456;
   expect(ci.translateY).toBe(456);
 });
 
-test('ComponentInstance: get/set scaleW', () => {
+it('ComponentInstance: get/set scaleW', () => {
   const ci = sampleComponentInstance();
   ci.scaleW = 789;
   expect(ci.scaleW).toBe(789);
 });
 
-test('ComponentInstance: get/set scaleH', () => {
+it('ComponentInstance: get/set scaleH', () => {
   const ci = sampleComponentInstance();
   ci.scaleH = 246;
   expect(ci.scaleH).toBe(246);
 });
 
-test('ComponentInstance: get/set isFlippedNS', () => {
+it('ComponentInstance: get/set isFlippedNS', () => {
   const ci = sampleComponentInstance();
   ci.isFlippedNS = 123;
   expect(ci.isFlippedNS).toBe(true);
 });
 
-test('ComponentInstance: get/set isFlippedEW', () => {
+it('ComponentInstance: get/set isFlippedEW', () => {
   const ci = sampleComponentInstance();
   ci.isFlippedEW = 123;
   expect(ci.isFlippedEW).toBe(true);
 });
 
-test('ComponentInstance: get/set reverseWinding', () => {
+it('ComponentInstance: get/set reverseWinding', () => {
   const ci = sampleComponentInstance();
   ci.reverseWinding = true;
   expect(ci.reverseWinding).toBe(true);
 });
 
-test('ComponentInstance: get/set rotation', () => {
+it('ComponentInstance: get/set rotation', () => {
   const ci = sampleComponentInstance();
   ci.rotation = 90;
   expect(ci.rotation).toBe(90);
 });
 
-test('ComponentInstance: get/set rotateFirst', () => {
+it('ComponentInstance: get/set rotateFirst', () => {
   const ci = sampleComponentInstance();
   ci.rotateFirst = false;
   expect(ci.rotateFirst).toBe(false);
 });
 
-test('ComponentInstance: get/set xLock', () => {
+it('ComponentInstance: get/set xLock', () => {
   const ci = sampleComponentInstance();
   ci.xLock = true;
   expect(ci.xLock).toBe(true);
 });
 
-test('ComponentInstance: get/set yLock', () => {
+it('ComponentInstance: get/set yLock', () => {
   const ci = sampleComponentInstance();
   ci.yLock = true;
   expect(ci.yLock).toBe(true);
 });
 
-test('ComponentInstance: get/set wLock', () => {
+it('ComponentInstance: get/set wLock', () => {
   const ci = sampleComponentInstance();
   ci.wLock = true;
   expect(ci.wLock).toBe(true);
 });
 
-test('ComponentInstance: get/set hLock', () => {
+it('ComponentInstance: get/set hLock', () => {
   const ci = sampleComponentInstance();
   ci.hLock = true;
   expect(ci.hLock).toBe(true);
 });
 
-test('ComponentInstance: get/set ratioLock', () => {
+it('ComponentInstance: get/set ratioLock', () => {
   const ci = sampleComponentInstance();
   ci.ratioLock = true;
   expect(ci.ratioLock).toBe(true);
 });
 
-test('ComponentInstance: get/set visible', () => {
+it('ComponentInstance: get/set visible', () => {
   const ci = sampleComponentInstance();
   ci.visible = false;
   expect(ci.visible).toBe(false);

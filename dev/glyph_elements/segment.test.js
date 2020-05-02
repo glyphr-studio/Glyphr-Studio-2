@@ -3,9 +3,9 @@ import {segmentsAreEqual, findSegmentIntersections,
   findOverlappingLineSegmentIntersections, findCrossingLineSegmentIntersections,
   findEndPointSegmentIntersections} from './poly_segment.js';
 import {round} from '../common/functions.js';
-jest.mock('./segment.js');
-jest.mock('./poly_segment.js');
-jest.mock('../common/functions.js');
+// jest.moc('./segment.js');
+// jest.moc('./poly_segment.js');
+// jest.moc('../common/functions.js');
 
 // basically an upper-left quadrant quarter circle
 // Test Segment at t=0.5 is {x: 62.5, y: 137.5}
@@ -20,49 +20,49 @@ function sampleSegment() {
 }
 
 
-test('Segment: save', () => {
+it('Segment: save', () => {
   expect(sampleSegment().save()).toBe({
     p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 100, p3y: 200, p4x: 200, p4y: 200});
 });
 
-test('Segment: length getter', () => {
+it('Segment: length getter', () => {
   expect(sampleSegment().length).toBe(309.8050662153215);
 });
 
-test('Segment: quickLength getter', () => {
+it('Segment: quickLength getter', () => {
   expect(sampleSegment().quickLength).toBe(341.4213562373095);
 });
 
-test('Segment: maxes getter', () => {
+it('Segment: maxes getter', () => {
   expect(sampleSegment().maxes.xMax).toBe(200);
 });
 
-test('Segment: line getter', () => {
+it('Segment: line getter', () => {
   const seg = new Segment({p1x: 0, p1y: 100, p4x: 100, p4y: 0});
   expect(seg.lineType).toBe('diagonal');
 });
 
-test('Segment: split', () => {
+it('Segment: split', () => {
   expect(sampleSegment().split()[1].p1x).toBe(62.5);
 });
 
-test('Segment: getXYPointFromSplit', () => {
+it('Segment: getXYPointFromSplit', () => {
   expect(sampleSegment().getXYPointFromSplit().y).toBe(137.5);
 });
 
-test('Segment: getSplitFromXYPoint', () => {
+it('Segment: getSplitFromXYPoint', () => {
   expect(round(sampleSegment().getSplitFromXYPoint({x: 62.5, y: 137.5}).split, 2)).toBe(0.5);
 });
 
-test('Segment: splitAtPoint', () => {
+it('Segment: splitAtPoint', () => {
   expect(sampleSegment().splitAtPoint({x: 62.5, y: 137.5})[1].p1x).toBe(62.42971272735194);
 });
 
-test('Segment: splitAtTime', () => {
+it('Segment: splitAtTime', () => {
   expect(sampleSegment().splitAtTime(0.5)[1].p1x).toBe(62.5);
 });
 
-test('Segment: splitAtManyPoints', () => {
+it('Segment: splitAtManyPoints', () => {
   const points = [
     {x: 29.0763, y: 95.4063}, // t=0.33
     {x: 101.9304, y: 169.2504}, // t=0.66
@@ -74,91 +74,91 @@ test('Segment: splitAtManyPoints', () => {
   expect(round(segs[2].p1x)).toBe(102);
 });
 
-test('Segment: pointIsWithinMaxes', () => {
+it('Segment: pointIsWithinMaxes', () => {
   expect(sampleSegment().pointIsWithinMaxes({x: 100, y: 100})).toBeTruthy();
 });
 
-test('Segment: convertToLine', () => {
+it('Segment: convertToLine', () => {
   expect(sampleSegment().convertToLine().lineType).toBe('diagonal');
 });
 
-test('Segment: calculateLength', () => {
+it('Segment: calculateLength', () => {
   expect(sampleSegment().calculateLength()).toBe(309.8050662153215);
 });
 
-test('Segment: getReverse', () => {
+it('Segment: getReverse', () => {
   expect(sampleSegment().getReverse().p1x).toBe(200);
 });
 
-test('Segment: getXYPoint', () => {
+it('Segment: getXYPoint', () => {
   expect(sampleSegment().getXYPoint(4).x).toBe(200);
 });
 
-test('Segment: getFastMaxes', () => {
+it('Segment: getFastMaxes', () => {
   expect(sampleSegment().getFastMaxes().xMax).toBe(200);
 });
 
-test('Segment: isLineOverlappedByLine', () => {
+it('Segment: isLineOverlappedByLine', () => {
   const seg = new Segment({p1x: 50, p1y: 50, p4x: 150, p4y: 150});
   expect(seg.isLineOverlappedByLine(sampleSegment().convertToLine())).toBeTruthy();
 });
 
-test('Segment: containsTerminalPoint - start', () => {
+it('Segment: containsTerminalPoint - start', () => {
   // also tests Segment.containsStartPoint
   expect(sampleSegment().containsTerminalPoint({x: 0, y: 0})).toBe('start');
 });
 
-test('Segment: containsTerminalPoint - end', () => {
+it('Segment: containsTerminalPoint - end', () => {
   // also tests Segment.containsEndPoint
   expect(sampleSegment().containsTerminalPoint({x: 200, y: 200})).toBe('end');
 });
 
-test('Segment: containsPointOnCurve', () => {
+it('Segment: containsPointOnCurve', () => {
   expect(sampleSegment().containsPointOnCurve({x: 29.0763, y: 95.4063})).toBeTruthy();
 });
 
-test('Segment: containsPointOnLine', () => {
+it('Segment: containsPointOnLine', () => {
   expect(sampleSegment().convertToLine().containsPointOnLine({x: 100, y: 100})).toBeTruthy();
 });
 
-test('Segment: precedes', () => {
+it('Segment: precedes', () => {
   const seg2 = new Segment({p1x: 200, p1y: 200});
   expect(sampleSegment().precedes(seg2)).toBeTruthy();
 });
 
-test('Segment: isLine', () => {
+it('Segment: isLine', () => {
   expect(sampleSegment().convertToLine().lineType).toBeTruthy();
 });
 
-test('Segment: roundAll', () => {
+it('Segment: roundAll', () => {
   const seg = sampleSegment();
   seg.p2y = 123.4559;
   expect(seg.roundAll(3).p2y).toBe(123.456);
 });
 
-test('Segment: findSegmentIntersections', () => {
+it('Segment: findSegmentIntersections', () => {
   // basically an upper-right quadrant quarter circle
   const seg2 = new Segment({p1x: 0, p1y: 200, p2x: 100, p2y: 200, p3x: 200, p3y: 100, p4x: 200, p4y: 0});
   expect(findSegmentIntersections(sampleSegment(), seg2)[0]).toBe('100/168.004');
 });
 
-test('Segment: segmentsAreEqual', () => {
+it('Segment: segmentsAreEqual', () => {
   expect(segmentsAreEqual(sampleSegment(), sampleSegment())).toBeTruthy();
 });
 
-test('Segment: findOverlappingLineSegmentIntersections', () => {
+it('Segment: findOverlappingLineSegmentIntersections', () => {
   const seg1 = new Segment({p1x: 0, p1y: 0, p4x: 100, p4y: 0});
   const seg2 = new Segment({p1x: 50, p1y: 0, p4x: 200, p4y: 0});
   expect(findOverlappingLineSegmentIntersections(seg1, seg2)[0]).toBe('50/0');
 });
 
-test('Segment: findCrossingLineSegmentIntersections', () => {
+it('Segment: findCrossingLineSegmentIntersections', () => {
   const seg1 = new Segment({p1x: 0, p1y: 0, p4x: 100, p4y: 100});
   const seg2 = new Segment({p1x: 0, p1y: 100, p4x: 100, p4y: 0});
   expect(findCrossingLineSegmentIntersections(seg1, seg2)[0]).toBe('50/50');
 });
 
-test('Segment: findEndPointSegmentIntersections', () => {
+it('Segment: findEndPointSegmentIntersections', () => {
   const seg1 = sampleSegment();
   const seg2 = new Segment({p1x: 200, p1y: 200});
   expect(findEndPointSegmentIntersections(seg1, seg2)[0]).toBe('200/200');

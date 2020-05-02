@@ -1,20 +1,20 @@
 import {parseColorString, shiftColor, getColorFromRGBA, transparencyToAlpha} from './colors.js';
-jest.mock('./colors.js');
+// jest.moc('./colors.js');
 
 
-test('Colors: parseColorString', () => {
+it('Colors: parseColorString', () => {
   expect(parseColorString('rgb(123,45,67')).toBe({r: 123, g: 45, b: 67, a: 1});
 });
 
-test('Colors: shiftColor', () => {
+it('Colors: shiftColor', () => {
   expect(shiftColor('rgb(123,45,67)', 0.5, true)).toBe('rgb(189,150,161)');
 });
 
-test('Colors: getColorFromRGBA', () => {
+it('Colors: getColorFromRGBA', () => {
 /* eslint-disable new-cap */
   expect(getColorFromRGBA('rgb(123,45,67)', 0.2)).toBe('rgb(229,213,217)');
 });
 
-test('Colors: transparencyToAlpha', () => {
+it('Colors: transparencyToAlpha', () => {
   expect(transparencyToAlpha(45)).toBe(0.55);
 });
