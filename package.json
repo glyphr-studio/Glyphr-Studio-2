@@ -7,16 +7,17 @@
     "url": "https://github.com/glyphr-studio/Glyphr-Studio-2"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jasmine"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
     "http-server": "^0.12.3",
-    "jest": "^25.5.3",
+    "jasmine": "^3.5.0",
     "jshint": "^2.11.0"
   },
   "jshintConfig": {
     "esversion": 6
-  }
+  },
+  "dependencies": {}
 }

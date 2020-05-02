@@ -1,5 +1,5 @@
 import PathPoint from './path_point.js';
-jest.mock('./path_point.js');
+// jest.moc('./path_point.js');
 
 _TEST.globals.testPathPoint = {
   p: {coord: {x: 100, y: 100}},
@@ -19,88 +19,88 @@ function samplePathPoint() {
 }
 
 
-test('PathPoint: Constructor - p.x', () => {
+it('PathPoint: Constructor - p.x', () => {
   const pp = samplePathPoint();
   expect(pp.p.x).toBe(100);
 });
 
-test('PathPoint: Constructor - type', () => {
+it('PathPoint: Constructor - type', () => {
   const pp = samplePathPoint();
   expect(pp.type).toBe('corner');
 });
 
-test('ControlPoint: length', () => {
+it('ControlPoint: length', () => {
   const pp = samplePathPoint();
   expect(pp.h1.length).toBe(141.4213562373095);
 });
 
-test('ControlPoint: angle', () => {
+it('ControlPoint: angle', () => {
   const pp = samplePathPoint();
   pp.h1.y = 100;
   expect(pp.h1.angle).toBe(3.141592653589793);
 });
 
-test('ControlPoint: niceAngle', () => {
+it('ControlPoint: niceAngle', () => {
   const pp = samplePathPoint();
   pp.h1.y = 100;
   expect(pp.h1.niceAngle).toBe(270);
 });
 
-test('ControlPoint: use', () => {
+it('ControlPoint: use', () => {
   const p = new PathPoint();
   p.h1.use = false;
   expect(p.h1.x).toBe(p.p.x);
 });
 
-test('PathPoint: save', () => {
+it('PathPoint: save', () => {
   const pp = samplePathPoint();
   expect(pp.save()).toBe(JSON.parse('{"p":{"coord":{"x":100,"y":100},"use":true},"type":"corner","h1":{"coord":{"x":0,"y":0},"use":true},"h2":{"coord":{"x":200,"y":200},"use":true}}'));
 });
 
-test('PathPoint: isOverControlPoint', () => {
+it('PathPoint: isOverControlPoint', () => {
   const pp = samplePathPoint();
   expect((pp.isOverControlPoint(200, 200)).type).toBe('h2');
 });
 
-test('PathPoint: isFlat', () => {
+it('PathPoint: isFlat', () => {
   const pp = samplePathPoint();
   expect(pp.isFlat()).toBeTruthy();
 });
 
-test('PathPoint: resolvePointType', () => {
+it('PathPoint: resolvePointType', () => {
   const pp = samplePathPoint();
   expect(pp.resolvePointType()).toBe('symmetric');
 });
 
-test('PathPoint: makePointedTo', () => {
+it('PathPoint: makePointedTo', () => {
   const pp = samplePathPoint();
   expect(pp.makePointedTo(300, 0).h2.x).toBe(166.66666666666666);
 });
 
-test('PathPoint: makeSymmetric', () => {
+it('PathPoint: makeSymmetric', () => {
   const pp = samplePathPoint();
   pp.h2.x = 555;
   expect(pp.makeSymmetric('h1').h2.x).toBe(200);
 });
 
-test('PathPoint: makeFlat', () => {
+it('PathPoint: makeFlat', () => {
   const pp = samplePathPoint();
   pp.h2.x = 555;
   expect(pp.makeFlat('h1').h2.x).toBe(429.412355566697);
 });
 
-test('PathPoint: rotate', () => {
+it('PathPoint: rotate', () => {
   const pp = samplePathPoint();
   expect(pp.rotate(90, {x: 0, y: 0}).p.x).toBe(-134.2070279729728);
 });
 
-test('PathPoint: resetHandles', () => {
+it('PathPoint: resetHandles', () => {
   const pp = samplePathPoint();
   pp.h1.x = 555;
   expect(pp.resetHandles().p.x).toBe(100);
 });
 
-test('PathPoint: roundAll', () => {
+it('PathPoint: roundAll', () => {
   const pp = samplePathPoint();
   pp.h1.x = 39.9999;
   expect(pp.roundAll(3).h1.x).toBe(40);
