@@ -1,0 +1,11 @@
+{
+  "spec_dir": "",
+  "spec_files": [
+    "dev/glyph_elements/xy_point.test.mjs"
+  ],
+  "helpers": [
+    "helpers/**/*.js"
+  ],
+  "stopSpecOnExpectationFailure": false,
+  "random": true
+}
