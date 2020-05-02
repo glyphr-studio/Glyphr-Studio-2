@@ -95,9 +95,9 @@ export function assemble(loadTests = false, callback = false) {
       // console.log(`\t added test ${element}`);
     });
 
-    // main.test.js adds Glyph Element classes to the window._DEV object
+    // dev_mode_includes.js adds Glyph Element classes to the window._DEV object
     newElement = document.createElement('script');
-    newElement.setAttribute('src', `app/main.test.js`);
+    newElement.setAttribute('src', `app/dev_mode_includes.js`);
     newElement.setAttribute('type', 'module');
     document.getElementsByTagName('head')[0].appendChild(newElement);
   }

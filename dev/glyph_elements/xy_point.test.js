@@ -1,36 +1,23 @@
 import XYPoint from './xy_point.js';
+jest.mock('./xy_point.js');
 
-_TEST.testList.push(
-    {
-      category: 'XYPoint',
-      name: 'Constructor - x',
-      assertion: function() {
-        return _TEST.is(new XYPoint(101, 123).x).equalTo(101);
-      },
-    },
-    {
-      category: 'XYPoint',
-      name: 'Constructor - y',
-      assertion: function() {
-        return _TEST.is(new XYPoint(101, 123).y).equalTo(123);
-      },
-    },
-    {
-      category: 'XYPoint',
-      name: 'X Setter',
-      assertion: function() {
-        const xyp = new XYPoint(101, 123);
-        xyp.x = 789;
-        return _TEST.is(xyp.x).equalTo(789);
-      },
-    },
-    {
-      category: 'XYPoint',
-      name: 'Y Setter',
-      assertion: function() {
-        const xyp = new XYPoint(101, 123);
-        xyp.y = 789;
-        return _TEST.is(xyp.y).equalTo(789);
-      },
-    }
-);
+
+test('XYPoint: Constructor - x', () => {
+  expect(new XYPoint(101, 123).x).toBe(101);
+});
+
+test('XYPoint: Constructor - y', () => {
+  expect(new XYPoint(101, 123).y).toBe(123);
+});
+
+test('XYPoint: X Setter', () => {
+  const xyp = new XYPoint(101, 123);
+  xyp.x = 789;
+  expect(xyp.x).toBe(789);
+});
+
+test('XYPoint: Y Setter', () => {
+  const xyp = new XYPoint(101, 123);
+  xyp.y = 789;
+  expect(xyp.y).toBe(789);
+});

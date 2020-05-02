@@ -1,4 +1,5 @@
 import ComponentInstance from './component_instance.js';
+jest.mock('./component_instance.js');
 
 /**
  * Create a sample Component Instance
@@ -8,200 +9,148 @@ function sampleComponentInstance() {
   return new ComponentInstance();
 }
 
-_TEST.testList.push(
-    {
-      category: 'ComponentInstance',
-      name: 'get/set link',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.link = '0x1234';
-        return _TEST.is(ci.link).equalTo('0x1234');
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set name',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.name = 'New Name';
-        return _TEST.is(ci.name).equalTo('New Name');
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set translateX',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.translateX = 123;
-        return _TEST.is(ci.translateX).equalTo(123);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set translateY',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.translateY = 456;
-        return _TEST.is(ci.translateY).equalTo(456);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set scaleW',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.scaleW = 789;
-        return _TEST.is(ci.scaleW).equalTo(789);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set scaleH',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.scaleH = 246;
-        return _TEST.is(ci.scaleH).equalTo(246);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set isFlippedNS',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.isFlippedNS = 123;
-        return _TEST.is(ci.isFlippedNS).equalTo(true);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set isFlippedEW',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.isFlippedEW = 123;
-        return _TEST.is(ci.isFlippedEW).equalTo(true);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set reverseWinding',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.reverseWinding = true;
-        return _TEST.is(ci.reverseWinding).equalTo(true);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set rotation',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.rotation = 90;
-        return _TEST.is(ci.rotation).equalTo(90);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set rotateFirst',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.rotateFirst = false;
-        return _TEST.is(ci.rotateFirst).equalTo(false);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set xLock',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.xLock = true;
-        return _TEST.is(ci.xLock).equalTo(true);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set yLock',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.yLock = true;
-        return _TEST.is(ci.yLock).equalTo(true);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set wLock',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.wLock = true;
-        return _TEST.is(ci.wLock).equalTo(true);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set hLock',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.hLock = true;
-        return _TEST.is(ci.hLock).equalTo(true);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set ratioLock',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.ratioLock = true;
-        return _TEST.is(ci.ratioLock).equalTo(true);
-      },
-    },
-    {
-      category: 'ComponentInstance',
-      name: 'get/set visible',
-      assertion: function() {
-        const ci = sampleComponentInstance();
-        ci.visible = false;
-        return _TEST.is(ci.visible).equalTo(false);
-      },
-    }
-    /*
-  {
-    category: 'ComponentInstance',
-    name: 'get/set x',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.x = false;
-      return _TEST.is(ci.x).equalTo(false);
-    },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set y',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.y = false;
-      return _TEST.is(ci.y).equalTo(false);
-    },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set width',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.width = false;
-      return _TEST.is(ci.width).equalTo(false);
-    },
-  },
-  {
-    category: 'ComponentInstance',
-    name: 'get/set height',
-    assertion: function() {
-      let ci = sampleComponentInstance();
-      ci.height = false;
-      return _TEST.is(ci.height).equalTo(false);
-    },
-  },
-  */
 
-);
+test('ComponentInstance: get/set link', () => {
+  const ci = sampleComponentInstance();
+  ci.link = '0x1234';
+  expect(ci.link).toBe('0x1234');
+});
+
+test('ComponentInstance: get/set name', () => {
+  const ci = sampleComponentInstance();
+  ci.name = 'New Name';
+  expect(ci.name).toBe('New Name');
+});
+
+test('ComponentInstance: get/set translateX', () => {
+  const ci = sampleComponentInstance();
+  ci.translateX = 123;
+  expect(ci.translateX).toBe(123);
+});
+
+test('ComponentInstance: get/set translateY', () => {
+  const ci = sampleComponentInstance();
+  ci.translateY = 456;
+  expect(ci.translateY).toBe(456);
+});
+
+test('ComponentInstance: get/set scaleW', () => {
+  const ci = sampleComponentInstance();
+  ci.scaleW = 789;
+  expect(ci.scaleW).toBe(789);
+});
+
+test('ComponentInstance: get/set scaleH', () => {
+  const ci = sampleComponentInstance();
+  ci.scaleH = 246;
+  expect(ci.scaleH).toBe(246);
+});
+
+test('ComponentInstance: get/set isFlippedNS', () => {
+  const ci = sampleComponentInstance();
+  ci.isFlippedNS = 123;
+  expect(ci.isFlippedNS).toBe(true);
+});
+
+test('ComponentInstance: get/set isFlippedEW', () => {
+  const ci = sampleComponentInstance();
+  ci.isFlippedEW = 123;
+  expect(ci.isFlippedEW).toBe(true);
+});
+
+test('ComponentInstance: get/set reverseWinding', () => {
+  const ci = sampleComponentInstance();
+  ci.reverseWinding = true;
+  expect(ci.reverseWinding).toBe(true);
+});
+
+test('ComponentInstance: get/set rotation', () => {
+  const ci = sampleComponentInstance();
+  ci.rotation = 90;
+  expect(ci.rotation).toBe(90);
+});
+
+test('ComponentInstance: get/set rotateFirst', () => {
+  const ci = sampleComponentInstance();
+  ci.rotateFirst = false;
+  expect(ci.rotateFirst).toBe(false);
+});
+
+test('ComponentInstance: get/set xLock', () => {
+  const ci = sampleComponentInstance();
+  ci.xLock = true;
+  expect(ci.xLock).toBe(true);
+});
+
+test('ComponentInstance: get/set yLock', () => {
+  const ci = sampleComponentInstance();
+  ci.yLock = true;
+  expect(ci.yLock).toBe(true);
+});
+
+test('ComponentInstance: get/set wLock', () => {
+  const ci = sampleComponentInstance();
+  ci.wLock = true;
+  expect(ci.wLock).toBe(true);
+});
+
+test('ComponentInstance: get/set hLock', () => {
+  const ci = sampleComponentInstance();
+  ci.hLock = true;
+  expect(ci.hLock).toBe(true);
+});
+
+test('ComponentInstance: get/set ratioLock', () => {
+  const ci = sampleComponentInstance();
+  ci.ratioLock = true;
+  expect(ci.ratioLock).toBe(true);
+});
+
+test('ComponentInstance: get/set visible', () => {
+  const ci = sampleComponentInstance();
+  ci.visible = false;
+  expect(ci.visible).toBe(false);
+});
+
+
+/*
+{
+category: 'ComponentInstance',
+name: 'get/set x',
+() => {
+let ci = sampleComponentInstance();
+ci.x = false;
+expect(ci.x).toBe(false);
+},
+},
+{
+category: 'ComponentInstance',
+name: 'get/set y',
+() => {
+let ci = sampleComponentInstance();
+ci.y = false;
+expect(ci.y).toBe(false);
+},
+},
+{
+category: 'ComponentInstance',
+name: 'get/set width',
+() => {
+let ci = sampleComponentInstance();
+ci.width = false;
+expect(ci.width).toBe(false);
+},
+},
+{
+category: 'ComponentInstance',
+name: 'get/set height',
+() => {
+let ci = sampleComponentInstance();
+ci.height = false;
+expect(ci.height).toBe(false);
+},
+},
+*/
 
 /*
 
