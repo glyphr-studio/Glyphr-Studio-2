@@ -6,10 +6,14 @@
     "type": "git",
     "url": "https://github.com/glyphr-studio/Glyphr-Studio-2"
   },
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
-    "http-server": "^0.12.1",
+    "http-server": "^0.12.3",
+    "jest": "^25.5.3",
     "jshint": "^2.11.0"
   },
   "jshintConfig": {
