@@ -15,7 +15,11 @@ export function glyphrStudioOnLoad() {
 
   if (passPreChecks()) {
     assemble();
+
+    /* Uber Export */
     window.GlyphrStudio = new GlyphrStudioApp();
+    window.debug = debug;
+
     console.log(window.GlyphrStudio);
     console.log(`%cApp Version ${window.GlyphrStudio.versionNumber} \n\n`, 'color:rgb(0,170,225)');
     window.GlyphrStudio.setUp();

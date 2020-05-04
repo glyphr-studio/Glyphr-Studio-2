@@ -2,22 +2,30 @@
   "name": "glyphr-studio-2",
   "license": "GPL-3.0-or-later",
   "main": "dev/Glyphr_Studio_v2.htm",
+  "module": "dev/main.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/glyphr-studio/Glyphr-Studio-2"
+    "url": "git+https://github.com/glyphr-studio/Glyphr-Studio-2.git"
   },
-  "type": "commonjs",
   "scripts": {
-    "test": "jasmine"
+    "test": "jasmine --require=esm"
   },
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
-    "http-server": "^0.12.3",
+    "esm": "^3.2.25",
     "jasmine": "^3.5.0",
     "jshint": "^2.11.0"
   },
   "jshintConfig": {
     "esversion": 6
-  }
+  },
+  "description": "V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010, so it's time to do an all-up scrub.",
+  "bugs": {
+    "url": "https://github.com/glyphr-studio/Glyphr-Studio-2/issues"
+  },
+  "homepage": "https://github.com/glyphr-studio/Glyphr-Studio-2#readme",
+  "version": "0.0.1-alpha",
+  "dependencies": {},
+  "author": "Matt LaGrandeur"
 }

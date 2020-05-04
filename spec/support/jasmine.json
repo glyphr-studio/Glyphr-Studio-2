@@ -1,10 +1,10 @@
 {
-  "spec_dir": "",
+  "spec_dir": "dev",
   "spec_files": [
-    "dev/glyph_elements/xy_point.test.*"
+    "common/colors.test.js"
   ],
   "helpers": [
-    "helpers/**/*.js"
+    "node_modules/esm"
   ],
   "stopSpecOnExpectationFailure": false,
   "random": true

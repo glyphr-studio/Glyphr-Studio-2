@@ -21,7 +21,7 @@ function sampleSegment() {
 
 
 it('Segment: save', () => {
-  expect(sampleSegment().save()).toBe({
+  expect(sampleSegment().save()).toEqual({
     p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 100, p3y: 200, p4x: 200, p4y: 200});
 });
 
