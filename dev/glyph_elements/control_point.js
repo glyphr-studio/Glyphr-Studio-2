@@ -14,7 +14,7 @@ export default class ControlPoint extends GlyphElement {
    * @param {PathPoint} parent - link to the parent Path object
    */
   constructor({
-    coord = {x: 100, y: 100},
+    coord = {x: 0, y: 0},
     use = true,
     xLock = false,
     yLock = false,

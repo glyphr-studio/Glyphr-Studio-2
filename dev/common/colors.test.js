@@ -1,5 +1,4 @@
 import {parseColorString, shiftColor, getColorFromRGBA, transparencyToAlpha} from './colors.js';
-// jest.moc('./colors.js');
 
 describe('Colors', () => {
   it('parseColorString', () => {

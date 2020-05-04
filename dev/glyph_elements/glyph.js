@@ -1092,19 +1092,12 @@ export default class Glyph extends GlyphElement {
      * Make SVG from this Shape
      * @param {number} size - how big
      * @param {number} gutter - margin
+     * @param {number} emSquare - em square of the font
+     * @param {number} desc - descender value of the font (positive integer)
      * @returns {string} - svg
      */
-  makeSVG(size = 50, gutter = 5) {
+  makeSVG(size = 50, gutter = 5, emSquare = 1000, desc = 300) {
     // debug('\n Glyph.makeSVG - START');
-
-    let emSquare = 1000;
-    let desc = 300;
-
-    if (window.GlyphrStudio.getCurrentProject) {
-      const ps = window.GlyphrStudio.getCurrentProject().projectSettings;
-      emSquare = Math.max(ps.upm, (ps.ascent - ps.descent));
-      desc = Math.abs(ps.descent);
-    }
 
     const charScale = (size - (gutter * 2)) / size;
     const gutterScale = (gutter / size) * emSquare;

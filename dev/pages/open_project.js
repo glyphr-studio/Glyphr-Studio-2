@@ -2,7 +2,7 @@ import {makeElement} from '../controls/controls.js';
 import {makeGlyphrStudioLogo} from '../common/graphics.js';
 import {makeErrorMessageBox} from '../controls/dialogs.js';
 import GlyphrStudioProject from '../project/glyphr_studio_project.js';
-import {sampleProjects} from '../samples/samples.js';
+import {projects} from '../samples/samples.js';
 
 /**
  * Page > Open Project
@@ -315,7 +315,7 @@ export default class PageOpenProject {
     document.getElementById('openProjectExampleProjects').innerHTML = '<h2>Load an Example project</h2>Loading example project...';
 
     setTimeout(function() {
-      window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(sampleProjects[name]);
+      window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(projects[name]);
       window.GlyphrStudio.navigate('glyph edit');
     }, 5);
   }

@@ -1,5 +1,4 @@
 import HKern from './h_kern.js';
-// jest.moc('./h_kern.js');
 
 /**
  * Sample kern for testing
@@ -13,11 +12,12 @@ function sampleHKern() {
   });
 }
 
+describe('HKern', () => {
+  it('value', () => {
+    expect(sampleHKern().value).toBe(123);
+  });
 
-it('HKern: value', () => {
-  expect(sampleHKern().value).toBe(123);
-});
-
-it('HKern: name', () => {
-  expect(sampleHKern().name).toBe('Aa | Vv');
+  it('name', () => {
+    expect(sampleHKern().name).toBe('Aa | Vv');
+  });
 });

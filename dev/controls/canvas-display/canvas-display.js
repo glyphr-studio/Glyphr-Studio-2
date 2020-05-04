@@ -1,5 +1,5 @@
 import {makeElement} from '../controls.js';
-import {sampleObjects} from '../../samples/samples.js';
+import {samples} from '../../samples/samples.js';
 import Glyph from '../../glyph_elements/glyph.js';
 
 /**
@@ -121,7 +121,7 @@ export default class CanvasDisplay extends HTMLElement {
         // let sg = cp.getGlyph('0x41', true);
         // console.log(sg);
 
-        let sg = new Glyph(sampleObjects.simpleGlyph);
+        let sg = new Glyph(samples.glyph);
         sg.drawGlyph(this.ctx);
     }
 }
