@@ -18,7 +18,7 @@ function samplePolySegment() {
 
 
 it('PolySegment: save', () => {
-  expect(samplePolySegment().save()).toBe({
+  expect(samplePolySegment().save()).toEqual({
     'segments': [{'p1x': 0, 'p1y': 0, 'p2x': 0, 'p2y': 100, 'p3x': 200, 'p3y': 300, 'p4x': 300, 'p4y': 300}, {'p1x': 300, 'p1y': 300, 'p2x': 400, 'p2y': 300, 'p3x': 600, 'p3y': 200, 'p4x': 600, 'p4y': 0}]}
   );
 });

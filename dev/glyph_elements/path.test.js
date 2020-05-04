@@ -98,7 +98,7 @@ it('Path: height getter', () => {
 
 it('Path: maxes getter', () => {
   const path = samplePath();
-  expect(path.maxes.save()).toBe({'xMin': 170, 'xMax': 484, 'yMin': 186, 'yMax': 500});
+  expect(path.maxes.save()).toEqual({'xMin': 170, 'xMax': 484, 'yMin': 186, 'yMax': 500});
 });
 
 it('Path: svgPathData', () => {
@@ -172,7 +172,7 @@ it('Path: makeSVGPathData', () => {
 
 it('Path: makeOpenTypeJSPath', () => {
   const path = samplePath();
-  expect(path.makeOpenTypeJSPath()).toBe({'commands': [{'type': 'M', 'x': 327, 'y': 500}, {'type': 'C', 'x1': 413, 'y1': 500, 'x2': 484, 'y2': 429, 'x': 484, 'y': 343}, {'type': 'C', 'x1': 484, 'y1': 258, 'x2': 414, 'y2': 186, 'x': 327, 'y': 186}, {'type': 'C', 'x1': 239, 'y1': 186, 'x2': 170, 'y2': 257, 'x': 170, 'y': 343}, {'type': 'C', 'x1': 170, 'y1': 430, 'x2': 240, 'y2': 500, 'x': 327, 'y': 500}, {'type': 'Z'}], 'fill': 'black', 'stroke': null, 'strokeWidth': 1});
+  expect(path.makeOpenTypeJSPath()).toEqual({'commands': [{'type': 'M', 'x': 327, 'y': 500}, {'type': 'C', 'x1': 413, 'y1': 500, 'x2': 484, 'y2': 429, 'x': 484, 'y': 343}, {'type': 'C', 'x1': 484, 'y1': 258, 'x2': 414, 'y2': 186, 'x': 327, 'y': 186}, {'type': 'C', 'x1': 239, 'y1': 186, 'x2': 170, 'y2': 257, 'x': 170, 'y': 343}, {'type': 'C', 'x1': 170, 'y1': 430, 'x2': 240, 'y2': 500, 'x': 327, 'y': 500}, {'type': 'Z'}], 'fill': 'black', 'stroke': null, 'strokeWidth': 1});
 });
 
 it('Path: addPointsAtPathIntersections', () => {

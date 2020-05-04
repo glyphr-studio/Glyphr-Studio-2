@@ -127,7 +127,7 @@ it('Glyph: get/set height', () => {
 it('Glyph: get/set maxes', () => {
   const g = sampleGlyph();
   g.maxes = {xMax: 123, xMin: 123, yMax: 435, yMin: 345};
-  expect(g.maxes.save()).toBe({xMax: 123, xMin: 123, yMax: 435, yMin: 345});
+  expect(g.maxes.save()).toEqual({xMax: 123, xMin: 123, yMax: 435, yMin: 345});
 });
 
 it('Glyph: flipNS', () => {

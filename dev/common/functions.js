@@ -11,12 +11,6 @@ export {
   kCombinations,
 };
 
-/* Uber Export */
-window.debug = debug;
-window.localStorageGet = localStorageGet;
-window.localStorageSet = localStorageSet;
-
-
 /**
  * FUNCTIONS
  * some random general-use functions

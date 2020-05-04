@@ -21,5 +21,5 @@ it('ControlPoint: xLock', () => {
 
 it('ControlPoint: save', () => {
   const cp = new ControlPoint();
-  expect(cp.save).toBe({point: {x: 0, y: 0}, use: true});
+  expect(cp.save).toEqual({point: {x: 0, y: 0}, use: true});
 });
