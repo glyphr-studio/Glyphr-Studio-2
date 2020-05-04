@@ -19,9 +19,9 @@ export default class GlyphrStudioProject {
     // Set up all default values first
     this.projectSettings = {
       // Internal Stuff
-      versionName: window.GlyphrStudio.versionName,
-      versionNumber: window.GlyphrStudio.versionNumber,
-      initialVersionNumber: window.GlyphrStudio.versionNumber,
+      versionName: 'Version 2 Alpha',
+      versionNumber: '2.0.0',
+      initialVersionNumber: '2.0.0',
       projectid: false,
 
       // Font Metrics

@@ -20,29 +20,25 @@ It has a representation of all the files in the project.
 It is used by *./app/main.js* to build **Glyphr_Studio_v2.htm** which acts
 as a preview for the whole App.
 
-It is also used by *./app/test.js* to build **Glyphr_Studio_v2.test.htm**.
-Basic modules that can have automated tests are tested through this framework.
-For each *file.js* there should be a *file.test.js* that feeds into the
-results shown there.  For more interactive code that can't be tested in an
-automated way, like UI Controls, there should be individual *control.test.htm* files
-alongside the main *control.js* file in their respective directories.
-
-All code should have tests!
+Testing has been set up using Jasmine, and can be run by doing `npm test`.
+Tests are stored as `-.test.js` next to the file they test, not in the
+`spec` directory as is common with Jasmine.  All files with this suffix
+will be included in the test pass.
 
 
 # The Glyph Element Hierarchy
 
  Our data structure is roughly hierarchical:
 
-  Glyph
-   ┣━ Component Instance
-   ┗━ Shape
-     ┣━ Poly Segment
-     ┃   ┗━ Segment
-     ┗━ Path
-       ┗━ Path Point
-         ┗━ Control Point
-           ┗━ Coord
+    Glyph
+    ┣━ Component Instance
+    ┗━ Shape
+      ┣━ Poly Segment
+      ┃ ┗━ Segment
+      ┗━ Path
+        ┗━ Path Point
+          ┗━ Control Point
+            ┗━ Coord
 
 Though there is also **XY Point** type for simple coordinates.  Additionally,
 there is also the **HKern** type, used to represent class-based kern information.
@@ -63,6 +59,8 @@ and can be treated interchangeably from a **Glyph** point of view.
 Under the covers, though, a **Shape** relies on a **Path** to draw
 itself, where a **Component Instance** relies on a link to another
 **Glyph**, plus some transforms, to draw itself.
+
+**All Glyph Elements should have 100% test coverage**
 
 ## Paths, Path Points, and Bézier Curves
 Early in the history of Glyphr Studio, a decision was made to base **Path**
@@ -113,17 +111,17 @@ and Selected State information needed to edit the current project.
 
 The new App hierarchy will look roughly like this:
 
-  App
-   ┗━ Project Editor
-     ┣━ Glyphr Studio Project
-     ┣━ Current Selected State
-     ┣━ History
-     ┗━ Navigation
-       ┗━ Page
-         ┣━ Content
-         ┃   ┗━ Controls
-         ┗━ Panels
-           ┗━ Controls
+    App
+    ┗━ Project Editor
+      ┣━ Glyphr Studio Project
+      ┣━ Current Selected State
+      ┣━ History
+      ┗━ Navigation
+        ┗━ Page
+          ┣━ Content
+          ┃ ┗━ Controls
+          ┗━ Panels
+            ┗━ Controls
 
 The App will manage the currently selected / visible Project Editor,
 or possibly displaying two or more at one time. Through the App,
@@ -131,6 +129,8 @@ cross-project-editor scenarios (like glyph copy/paste) will be enabled.
 
 The **App**, **Controls**, **IO**, **Pages**, **Panels**, and **Project**
 folders all support this overall App model.
+
+**App files should have as many tests as is feasable**
 
 # Other Stuff
 There are a few other folders:

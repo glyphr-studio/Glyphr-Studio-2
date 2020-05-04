@@ -1,7 +1,7 @@
 import {accentColors} from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
 import {importGlyphrProjectFromText} from '../project/import.js';
-import {sampleProjects} from '../samples/samples.js';
+import {projects} from '../samples/samples.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -51,7 +51,7 @@ export default class GlyphrStudioApp {
       // Project
       if (this.settings.dev.sampleProject) {
         // debug('\t >>> Using sample project');
-        this.temp.droppedFileContent = JSON.stringify(sampleProjects[this.settings.dev.sampleProject]);
+        this.temp.droppedFileContent = JSON.stringify(projects[this.settings.dev.sampleProject]);
         importGlyphrProjectFromText();
         this.settings.dev.sampleProject = false;
       } else {

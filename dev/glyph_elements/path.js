@@ -451,7 +451,7 @@ export default class Path extends GlyphElement {
      * @param {number} emX - target X in Em Units
      * @param {number} emY - target Y in Em Units
      * @returns {boolean}
-     */
+     *
   isHere(emX, emY) {
     // debug(`\n Path.isHere - START`);
 
@@ -487,19 +487,20 @@ export default class Path extends GlyphElement {
     // debug(`\t Path.maxes ${this.maxes.print()}`);
 
     // debug(`\t checking ${cX} ${cY} at imageData ${JSON.stringify(imageData.data)}`);
-    /*
+
         // Debug Stuff, axis and point
-        ctx.beginPath();
-        ctx.rect(cX-1, cY-1, 2, 2);
-        ctx.rect(axisX, 0, 1, gcSize);
-        ctx.rect(0, axisY, gcSize, 1);
-        ctx.fillStyle = 'rgb(255,0,0)';
-        ctx.fill();
-        ctx.closePath();
- */
+        // ctx.beginPath();
+        // ctx.rect(cX-1, cY-1, 2, 2);
+        // ctx.rect(axisX, 0, 1, gcSize);
+        // ctx.rect(0, axisY, gcSize, 1);
+        // ctx.fillStyle = 'rgb(255,0,0)';
+        // ctx.fill();
+        // ctx.closePath();
+
     // debug(` Path.isHere - returning ${imageData.data[3] > 0} - END\n\n`);
     return (imageData.data[3] > 0);
   }
+  */
 
 
   // --------------------------------------------------------------
@@ -727,7 +728,7 @@ export default class Path extends GlyphElement {
      * Export an OpenType.js Path
      * @param {object} otPath - OpenType.js Path object
      * @returns {object}
-     */
+     *
   makeOpenTypeJSPath(otPath = new opentype.Path()) {
     // debug('\n Path.makeOpenTypeJSPath - START');
     // debug('\t otPath: ' + json(otPath));
@@ -763,6 +764,7 @@ export default class Path extends GlyphElement {
     // debug(' Path.makeOpenTypeJSPath - END\n');
     return otPath;
   }
+  */
 
   /**
      * Get a part of the path in Segment format
