@@ -348,13 +348,9 @@ export default class Glyph extends GlyphElement {
      * @returns {number}
      */
   get lsb() {
-    if (this.leftSideBearing === false) {
-      const p = GlyphrStudio.getCurrentProject();
-      if (p && p.projectSettings) return p.projectSettings.defaultLSB;
-      else return 0;
-    } else {
-      return this.leftSideBearing;
-    }
+    // Nullish coalescing would be great here
+    if (this._leftSideBearing === 0) return this._leftSideBearing;
+    else return this._leftSideBearing || false;
   }
 
   /**
@@ -362,13 +358,9 @@ export default class Glyph extends GlyphElement {
      * @returns {number}
      */
   get rsb() {
-    if (this.rightSideBearing === false) {
-      const p = GlyphrStudio.getCurrentProject();
-      if (p && p.projectSettings) return p.projectSettings.defaultRSB;
-      else return 0;
-    } else {
-      return this.rightSideBearing;
-    }
+    // Nullish coalescing would be great here
+    if (this._rightSideBearing === 0) return this._rightSideBearing;
+    else return this._rightSideBearing || false;
   }
 
   /**
@@ -1052,19 +1044,6 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Check to see if a Glyph shape is here, for cursor hover effect
-     * @param {number} x - x to check
-     * @param {number} y - y to check
-     * @returns {boolean}
-     */
-  isHere(x, y) {
-    for (let s = 0; s < this.shapes.length; s++) {
-      if (this.shapes[s].isHere(x, y)) return true;
-    }
-    return false;
-  }
-
-  /**
      * Checks to see if the cursor is over a control point, for cursor hover effect
      * @param {number} x - x to check
      * @param {number} y - y to check
@@ -1149,19 +1128,6 @@ export default class Glyph extends GlyphElement {
     if (trim(pathData) === '') pathData = 'M0,0Z';
     this.cache.svg = pathData;
     return pathData;
-  }
-
-  /**
-     * Make an OpenType.js Path
-     * @param {opentype.Path} otPath
-     * @returns {opentype.Path}
-     */
-  makeOpenTypeJSPath(otPath) {
-    otPath = otPath || new opentype.Path();
-    for (let s = 0; s < this.shapes.length; s++) {
-      otPath = this.shapes[s].makeOpenTypeJSPath(otPath);
-    }
-    return otPath;
   }
 
 

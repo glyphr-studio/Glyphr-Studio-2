@@ -34,7 +34,7 @@ describe('Path', () => {
 
   it('save', () => {
     const path = samplePath();
-    expect(path.save()).toEqual(JSON.parse('{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500},"use":true},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500},"use":true},"h2":{"coord":{"x":413.45994211401285,"y":500},"use":true}},{"p":{"coord":{"x":484,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709},"use":true},"h2":{"coord":{"x":484,"y":257.92406046386174},"use":true}},{"p":{"coord":{"x":326.65249430318556,"y":186},"use":true},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186},"use":true},"h2":{"coord":{"x":239.15010236167052,"y":186},"use":true}},{"p":{"coord":{"x":170,"y":343.4570087834163},"use":true},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707},"use":true},"h2":{"coord":{"x":170,"y":429.9040095221619},"use":true}}]}'));
+    expect(path.save()).toEqual(JSON.parse('{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500}},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500}},"h2":{"coord":{"x":413.45994211401285,"y":500}}},{"p":{"coord":{"x":484,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709}},"h2":{"coord":{"x":484,"y":257.92406046386174}}},{"p":{"coord":{"x":326.65249430318556,"y":186}},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186}},"h2":{"coord":{"x":239.15010236167052,"y":186}}},{"p":{"coord":{"x":170,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707}},"h2":{"coord":{"x":170,"y":429.9040095221619}}}]}'));
   });
 
   it('print', () => {
@@ -141,13 +141,6 @@ describe('Path', () => {
     expect(path.makeSVGPathData()).toBe('M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z');
   });
 
-  /*
-  it('makeOpenTypeJSPath', () => {
-    const path = samplePath();
-    expect(path.makeOpenTypeJSPath()).toEqual({'commands': [{'type': 'M', 'x': 327, 'y': 500}, {'type': 'C', 'x1': 413, 'y1': 500, 'x2': 484, 'y2': 429, 'x': 484, 'y': 343}, {'type': 'C', 'x1': 484, 'y1': 258, 'x2': 414, 'y2': 186, 'x': 327, 'y': 186}, {'type': 'C', 'x1': 239, 'y1': 186, 'x2': 170, 'y2': 257, 'x': 170, 'y': 343}, {'type': 'C', 'x1': 170, 'y1': 430, 'x2': 240, 'y2': 500, 'x': 327, 'y': 500}, {'type': 'Z'}], 'fill': 'black', 'stroke': null, 'strokeWidth': 1});
-  });
-  */
-
   it('addPointsAtPathIntersections', () => {
     const path = samplePath();
     // Pull the top coord down below the original bottom coord
@@ -202,11 +195,6 @@ describe('Path', () => {
     expect(p.pathPoints[2].p.x).toBe(400);
   });
 
-
-  //   test(selectPathPoint', () => {
-  //     expect(samplePath().selectPathPoint(2).p.x).toBe(326.65249430318556);
-  //   });
-
   it('addPathPoint', () => {
     const pp = new PathPoint();
     expect(samplePath().addPathPoint(pp).p.x).toBe(0);
@@ -251,7 +239,6 @@ describe('Path', () => {
 
 /*
 CANVAS METHODS
-isHere
 drawPath
 findPathPointBoundaryIntersections
 */

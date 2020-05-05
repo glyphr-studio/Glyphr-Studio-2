@@ -44,7 +44,7 @@ export default class ControlPoint extends GlyphElement {
       coord: this.coord.save(verbose),
     };
 
-    if (this.use) re.use = true;
+    if (!this.use) re.use = false;
     if (this.xLock) re.xLock = true;
     if (this.yLock) re.yLock = true;
 
@@ -82,7 +82,7 @@ export default class ControlPoint extends GlyphElement {
    * @returns {number}
    */
   get x() {
-    return this._use? this._coord.x : this.parent.p.x;
+    return this.use? this._coord.x : this.parent.p.x;
   }
 
   /**
@@ -90,7 +90,7 @@ export default class ControlPoint extends GlyphElement {
    * @returns {number}
    */
   get y() {
-    return this._use? this._coord.y : this.parent.p.y;
+    return this.use? this._coord.y : this.parent.p.y;
   }
 
   /**
@@ -106,7 +106,7 @@ export default class ControlPoint extends GlyphElement {
    * @returns {boolean}
    */
   get use() {
-    return this._use? true : false;
+    return this._use === false? false : true;
   }
 
   /**

@@ -20,6 +20,7 @@ describe('ControlPoint', () => {
 
   it('save', () => {
     const cp = new ControlPoint();
-    expect(cp.save()).toEqual({coord: {x: 0, y: 0}});
+    const savePoint = cp.save();
+    expect(savePoint).toEqual({coord: {x: 0, y: 0}});
   });
 });

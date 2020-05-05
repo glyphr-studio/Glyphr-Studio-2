@@ -562,13 +562,6 @@ export default class PolySegment extends GlyphElement {
       split = seg.splitAtTime(split);
       tx = split[0].p4x;
       ty = split[0].p4y;
-      // Big hit detection, to miss border paths
-      // var re = shape.isHere(sXcX(tx), sYcY(ty)) &&
-      // shape.isHere(sXcX(tx), sYcY(ty + pt)) &&
-      // shape.isHere(sXcX(tx), sYcY(ty - pt)) &&
-      // shape.isHere(sXcX(tx + pt), sYcY(ty)) &&
-      // shape.isHere(sXcX(tx - pt), sYcY(ty));
-      // if (re) alert('HIT ' + tx + ', ' + ty);
 
       if (!shape.isHere(sXcX(tx), sYcY(ty + pt))) return false;
 
