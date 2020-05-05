@@ -55,7 +55,7 @@ describe('PathPoint', () => {
 
   it('save', () => {
     const pp = samplePathPoint();
-    expect(pp.save()).toEqual(JSON.parse('{"p":{"coord":{"x":100,"y":100},"use":true},"type":"corner","h1":{"coord":{"x":0,"y":0},"use":true},"h2":{"coord":{"x":200,"y":200},"use":true}}'));
+    expect(pp.save()).toEqual(JSON.parse('{"p":{"coord":{"x":100,"y":100}},"type":"corner","h1":{"coord":{"x":0,"y":0}},"h2":{"coord":{"x":200,"y":200}}}'));
   });
 
   it('isOverControlPoint', () => {

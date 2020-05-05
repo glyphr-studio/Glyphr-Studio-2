@@ -404,15 +404,6 @@ export default class Shape extends GlyphElement {
     return this.path ? this.path.makePathPostScript(lastX, lastY) : {re: '', lastX: lastX, lastY: lastY};
   }
 
-  /**
-     * Make an OpenType.js Path
-     * @param {OpenType.js.Path} otPath
-     * @returns {OpenType.js.Path}
-     */
-  makeOpenTypeJSPath(otPath) {
-    return this.path.makeOpenTypeJSPath(otPath);
-  }
-
 
   // --------------------------------------------------------------
   // Parity methods, shared between Shapes and ComponentInstances
@@ -532,16 +523,6 @@ export default class Shape extends GlyphElement {
      */
   getSegment(num) {
     return this.path.getSegment(num);
-  }
-
-  /**
-     * Call path.isHere
-     * @param {number} px - check x
-     * @param {number} py - check y
-     * @returns {boolean}
-     */
-  isHere(px, py) {
-    return this.path.isHere(px, py);
   }
 
 

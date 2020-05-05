@@ -628,17 +628,6 @@ export default class ComponentInstance extends GlyphElement {
     };
   }
 
-  /**
-   * Make an OpenType.js Path
-   * @param {OpenType.js.Path} otPath
-   * @returns {OpenType.js.Path}
-   */
-  makeOpenTypeJSPath(otPath) {
-    otPath = otPath || new opentype.Path();
-    const g = this.transformedGlyph;
-    return g.makeOpenTypeJSPath(otPath);
-  }
-
 
   // --------------------------------------------------------------
   // Parity methods, shared between Shapes and ComponentInstances
@@ -781,18 +770,6 @@ export default class ComponentInstance extends GlyphElement {
     // debug(' ComponentInstance.rotate - END\n');
     return this;
   }
-
-  /**
-   * isHere
-   * @param {number} px - check x
-   * @param {number} py - check y
-   * @returns {boolean}
-   */
-  isHere(px, py) {
-    const g = this.transformedGlyph;
-    return g ? g.isHere(px, py) : false;
-  }
-
 
   // --------------------------------------------------------------
   // Drawing

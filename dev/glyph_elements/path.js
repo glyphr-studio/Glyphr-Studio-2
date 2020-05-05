@@ -446,63 +446,6 @@ export default class Path extends GlyphElement {
     return this;
   }
 
-  /**
-     * Returns true if this path is at the specified point
-     * @param {number} emX - target X in Em Units
-     * @param {number} emY - target Y in Em Units
-     * @returns {boolean}
-     *
-  isHere(emX, emY) {
-    // debug(`\n Path.isHere - START`);
-
-    const gcSize = 6000;
-    let ghostCanvas = document.getElementById('ghostCanvas');
-
-    if (!ghostCanvas) {
-      const element = document.createElement('canvas');
-      element.setAttribute('height', gcSize);
-      element.setAttribute('width', gcSize);
-      // element.setAttribute('style', 'border: 1px solid lime;');
-      element.setAttribute('style', 'display:none;');
-      element.setAttribute('id', 'ghostCanvas');
-      document.body.appendChild(element);
-      ghostCanvas = element;
-    }
-
-    const axisX = gcSize / 3;
-    const axisY = (gcSize * 2) / 3;
-    const view = {dx: axisX, dy: axisY, dz: 1};
-    const cX = sXcX(emX, view);
-    const cY = sYcY(emY, view);
-
-    const ctx = ghostCanvas.getContext('2d');
-    ctx.clearRect(0, 0, gcSize, gcSize);
-    ctx.fillStyle = 'rgba(0,0,255,0.2)';
-
-    ctx.beginPath();
-    this.drawPath(ctx, view);
-    ctx.fill();
-    ctx.closePath();
-    const imageData = ctx.getImageData(cX, cY, 1, 1);
-    // debug(`\t Path.maxes ${this.maxes.print()}`);
-
-    // debug(`\t checking ${cX} ${cY} at imageData ${JSON.stringify(imageData.data)}`);
-
-        // Debug Stuff, axis and point
-        // ctx.beginPath();
-        // ctx.rect(cX-1, cY-1, 2, 2);
-        // ctx.rect(axisX, 0, 1, gcSize);
-        // ctx.rect(0, axisY, gcSize, 1);
-        // ctx.fillStyle = 'rgb(255,0,0)';
-        // ctx.fill();
-        // ctx.closePath();
-
-    // debug(` Path.isHere - returning ${imageData.data[3] > 0} - END\n\n`);
-    return (imageData.data[3] > 0);
-  }
-  */
-
-
   // --------------------------------------------------------------
   //  Methods
   // --------------------------------------------------------------
@@ -722,49 +665,6 @@ export default class Path extends GlyphElement {
     // debug('Path.makeSVGPathData - END\n');
     return re;
   }
-
-
-  /**
-     * Export an OpenType.js Path
-     * @param {object} otPath - OpenType.js Path object
-     * @returns {object}
-     *
-  makeOpenTypeJSPath(otPath = new opentype.Path()) {
-    // debug('\n Path.makeOpenTypeJSPath - START');
-    // debug('\t otPath: ' + json(otPath));
-
-    let p1;
-    let p2;
-    if (!this.pathPoints) {
-      if (this.pathPoints.length === 0) {
-        // debug('\t !!!Path has zero points!');
-      }
-      otPath.close();
-      return otPath;
-    }
-
-    otPath.moveTo(round(this.pathPoints[0].p.x), round(this.pathPoints[0].p.y));
-
-    for (let cp = 0; cp < this.pathPoints.length; cp++) {
-      p1 = this.pathPoints[cp];
-      // p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
-      p2 = this.pathPoints[this.getNextPointNum(cp)];
-      otPath.curveTo(
-          round(p1.h2.x),
-          round(p1.h2.y),
-          round(p2.h1.x),
-          round(p2.h1.y),
-          round(p2.p.x),
-          round(p2.p.y)
-      );
-    }
-
-    otPath.close();
-    // debug('\t returning path ' + json(otPath));
-    // debug(' Path.makeOpenTypeJSPath - END\n');
-    return otPath;
-  }
-  */
 
   /**
      * Get a part of the path in Segment format
@@ -1370,10 +1270,11 @@ export function findPathPointBoundaryIntersections(p1, p2) {
       tpp = chk.pathPoints[pp];
       if ( (tpp.p.x === m.xMin) || (tpp.p.x === m.xMax) ||
                 (tpp.p.y === m.yMin) || (tpp.p.y === m.yMax) ) {
+        // TODO - get rid of .isHere
         // if (against.isHere(sXcX(tpp.p.x), sYcY(tpp.p.y))) {
-        if (against.isHere(tpp.p.x, tpp.p.y)) {
-          re.push(''+tpp.p.x+'/'+tpp.p.y);
-        }
+        // if (against.isHere(tpp.p.x, tpp.p.y)) {
+        //   re.push(''+tpp.p.x+'/'+tpp.p.y);
+        // }
       }
     }
   }
