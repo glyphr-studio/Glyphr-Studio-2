@@ -23,11 +23,11 @@ import {sXcX, sYcY, getView} from '../controls/canvas-edit/canvas-edit.js';
  */
 export default class Path extends GlyphElement {
   /**
-     * Create a Path
-     * @param {array} pathPoints - array of Path Point objects that make up this path
-     * @param {number} winding - number representing winding direction
-     * @param {object} parent - link to the parent Shape object
-     */
+   * Create a Path
+   * @param {array} pathPoints - array of Path Point objects that make up this path
+   * @param {number} winding - number representing winding direction
+   * @param {object} parent - link to the parent Shape object
+   */
   constructor({
     pathPoints = [],
     winding,
@@ -38,6 +38,9 @@ export default class Path extends GlyphElement {
     this.parent = parent;
     this.pathPoints = pathPoints;
     this.winding = winding;
+
+    this.objType = 'Path';
+
     // debug(`Path.constructor - End\n`);
   }
 
@@ -47,13 +50,12 @@ export default class Path extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Export object properties that need to be saved to a project file
-     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @returns {*}
-     */
+   * Export object properties that need to be saved to a project file
+   * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+   * @returns {*}
+   */
   save(verbose = false) {
     const re = {
-      objType: this.objType,
       winding: this.winding,
       pathPoints: [],
     };
@@ -62,16 +64,16 @@ export default class Path extends GlyphElement {
       re.pathPoints.push(pp.save(verbose));
     });
 
-    if (!verbose) delete re.objType;
+    if (verbose) re.objType = this.objType;
 
     return re;
   }
 
   /**
-     * Create a nicely-formatted string for this object
-     * @param {number} level - how far down we are
-     * @returns {string}
-     */
+   * Create a nicely-formatted string for this object
+   * @param {number} level - how far down we are
+   * @returns {string}
+   */
   print(level = 0) {
     let ind = '';
     for (let i=0; i<level; i++) ind += '  ';
@@ -101,20 +103,20 @@ export default class Path extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Get PathPoints
-     * @returns {array}
-     */
+   * Get PathPoints
+   * @returns {array}
+   */
   get pathPoints() {
     return this._pathPoints;
   }
 
   /**
-     * Get Winding
-     * negative = clockwise
-     * positive = counterclockwise
-     * zero = unknown
-     * @returns {number}
-     */
+   * Get Winding
+   * negative = clockwise
+   * positive = counterclockwise
+   * zero = unknown
+   * @returns {number}
+   */
   get winding() {
     if (!isVal(this._winding)) {
       if (this.findWinding) {
@@ -127,43 +129,43 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Get X position
-     * @returns {number} x
-     */
+   * Get X position
+   * @returns {number} x
+   */
   get x() {
     return this.maxes.xMin;
   }
 
   /**
-     * Get Y position
-     * @returns {number} y
-     */
+   * Get Y position
+   * @returns {number} y
+   */
   get y() {
     return this.maxes.yMax;
   }
 
   /**
-     * Get Height
-     * @returns {number}
-     */
+   * Get Height
+   * @returns {number}
+   */
   get height() {
     const h = this.maxes.yMax - this.maxes.yMin;
     return Math.max(h, 0);
   }
 
   /**
-     * Get Width
-     * @returns {number}
-     */
+   * Get Width
+   * @returns {number}
+   */
   get width() {
     const w = this.maxes.xMax - this.maxes.xMin;
     return Math.max(w, 0);
   }
 
   /**
-     * Get Maxes
-     * @returns {Maxes}
-     */
+   * Get Maxes
+   * @returns {Maxes}
+   */
   get maxes() {
     // debug('\n Path.maxes - START');
     if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
@@ -176,9 +178,9 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Get or generate SVG path data
-     * @returns {string}
-     */
+   * Get or generate SVG path data
+   * @returns {string}
+   */
   get svgPathData() {
     if (this.cache.svgPathData) {
       return this.cache.svgPathData;
@@ -194,10 +196,10 @@ export default class Path extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Set PathPoints
-     * @param {array} pathPoints - array of Path Points
-     * @returns {Path} - reference to this Path
-     */
+   * Set PathPoints
+   * @param {array} pathPoints - array of Path Points
+   * @returns {Path} - reference to this Path
+   */
   set pathPoints(pathPoints) {
     this._pathPoints = [];
 
@@ -213,13 +215,13 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Set Winding
-     * negative = clockwise
-     * positive = counterclockwise
-     * zero = unknown
-     * @param {number} winding
-     * @returns {Path} - reference to this Path
-     */
+   * Set Winding
+   * negative = clockwise
+   * positive = counterclockwise
+   * zero = unknown
+   * @param {number} winding
+   * @returns {Path} - reference to this Path
+   */
   set winding(winding) {
     if (isVal(winding)) this._winding = winding;
     else this.findWinding();
@@ -227,10 +229,10 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Set Maxes
-     * @param {Maxes} maxes
-     * @returns {Path} - reference to this Path
-     */
+   * Set Maxes
+   * @param {Maxes} maxes
+   * @returns {Path} - reference to this Path
+   */
   set maxes(maxes) {
     this.cache.maxes = {};
     this.cache.maxes = new Maxes(maxes);
@@ -238,50 +240,50 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Set X position
-     * @param {number} x
-     * @returns {Path} - reference to this Path
-     */
+   * Set X position
+   * @param {number} x
+   * @returns {Path} - reference to this Path
+   */
   set x(x) {
     this.setPathPosition(x, false);
     return this;
   }
 
   /**
-     * Set Y position
-     * @param {number} y
-     * @returns {Path} - reference to this Path
-     */
+   * Set Y position
+   * @param {number} y
+   * @returns {Path} - reference to this Path
+   */
   set y(y) {
     this.setPathPosition(false, y);
     return this;
   }
 
   /**
-     * Set Height
-     * @param {number} h
-     * @returns {Path} - reference to this Path
-     */
+   * Set Height
+   * @param {number} h
+   * @returns {Path} - reference to this Path
+   */
   set height(h) {
     this.setPathSize(false, h);
     return this;
   }
 
   /**
-     * Set Width
-     * @param {number} w
-     * @returns {Path} - reference to this Path
-     */
+   * Set Width
+   * @param {number} w
+   * @returns {Path} - reference to this Path
+   */
   set width(w) {
     this.setPathSize(w, false);
     return this;
   }
 
   /**
-     * Set or generate SVG path data
-     * @param {string} data
-     * @returns {Path} - reference to this Path
-     */
+   * Set or generate SVG path data
+   * @param {string} data
+   * @returns {Path} - reference to this Path
+   */
   set svgPathData(data) {
     this.cache.svgPathData = data;
     return this;
@@ -293,12 +295,12 @@ export default class Path extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Sets the overall Path width or height to a specific value
-     * @param {number} nw - new Width
-     * @param {number} nh - new Height
-     * @param {boolean} ratioLock - if one is changed, change the other
-     * @returns {Path} - reference to this path
-     */
+   * Sets the overall Path width or height to a specific value
+   * @param {number} nw - new Width
+   * @param {number} nh - new Height
+   * @param {boolean} ratioLock - if one is changed, change the other
+   * @returns {Path} - reference to this path
+   */
   setPathSize(nw = false, nh = false, ratioLock = false) {
     if (nw !== false) nw = parseFloat(nw);
     if (nh !== false) nh = parseFloat(nh);
@@ -312,12 +314,12 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Updates the overall Path width or height by a delta value
-     * @param {number} dw - delta width
-     * @param {number} dh - delta height
-     * @param {boolean} ratioLock - if one is changed, change the other
-     * @returns {Path} - reference to this path
-     */
+   * Updates the overall Path width or height by a delta value
+   * @param {number} dw - delta width
+   * @param {number} dh - delta height
+   * @param {boolean} ratioLock - if one is changed, change the other
+   * @returns {Path} - reference to this path
+   */
   updatePathSize(dw = 0, dh = 0, ratioLock = false) {
     // debug('\n Path.updatePathSize - START');
     // debug('dw,dh,rl\t'+dw+' , '+dh+' , '+ratioLock);
@@ -383,11 +385,11 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Moves a path to a specific position
-     * @param {number} nx - new X
-     * @param {number} ny - new Y
-     * @returns {Path} - reference to this path
-     */
+   * Moves a path to a specific position
+   * @param {number} nx - new X
+   * @param {number} ny - new Y
+   * @returns {Path} - reference to this path
+   */
   setPathPosition(nx = false, ny = false) {
     // debug('\n Path.setPathPosition - START');
     // debug('\t nx ny force:\t ' + nx + '\t ' + ny + '\t ' + force);
@@ -405,11 +407,11 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Moves the path based on delta values
-     * @param {number} dx - delta X
-     * @param {number} dy - delta Y
-     * @returns {Path} - reference to this path
-     */
+   * Moves the path based on delta values
+   * @param {number} dx - delta X
+   * @param {number} dy - delta Y
+   * @returns {Path} - reference to this path
+   */
   updatePathPosition(dx = 0, dy = 0) {
     // debug('\n Path.updatePathPosition - START');
 
@@ -428,11 +430,11 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Rotate this path about a point
-     * @param {number} angle - how much to rotate (radians)
-     * @param {XYPoint} about - x/y center of rotation
-     * @returns {Path} - reference to this path
-     */
+   * Rotate this path about a point
+   * @param {number} angle - how much to rotate (radians)
+   * @param {XYPoint} about - x/y center of rotation
+   * @returns {Path} - reference to this path
+   */
   rotate(angle, about = this.center) {
     // debug('\n Path.rotate - START');
     for (let d = 0; d < this.pathPoints.length; d++) {
@@ -451,11 +453,11 @@ export default class Path extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Get the next point number in the path
-     * Handle looping
-     * @param {number} pointNumber - point number
-     * @returns {number}
-     */
+   * Get the next point number in the path
+   * Handle looping
+   * @param {number} pointNumber - point number
+   * @returns {number}
+   */
   getNextPointNum(pointNumber = 0) {
     pointNumber = parseInt(pointNumber);
     pointNumber += 1;
@@ -464,11 +466,11 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Get the previous point number in the path
-     * Handle looping
-     * @param {number} pointNumber - point number
-     * @returns {number}
-     */
+   * Get the previous point number in the path
+   * Handle looping
+   * @param {number} pointNumber - point number
+   * @returns {number}
+   */
   getPreviousPointNum(pointNumber = 0) {
     pointNumber = parseInt(pointNumber);
     pointNumber -= 1;
@@ -480,9 +482,9 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * If this path overlaps itself, add Path Points
-     * where it overlaps
-     */
+   * If this path overlaps itself, add Path Points
+   * where it overlaps
+   */
   addPointsAtPathIntersections() {
     const polySegment = this.getPolySegment();
     polySegment.splitSegmentsAtIntersections();
@@ -492,11 +494,11 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Looks for a point in the path that matches a given point
-     * @param {XYPoint} point - Point to test for
-     * @param {boolean} wantSecond - return the second result, not the first
-     * @returns {PathPoint}
-     */
+   * Looks for a point in the path that matches a given point
+   * @param {XYPoint} point - Point to test for
+   * @param {boolean} wantSecond - return the second result, not the first
+   * @returns {PathPoint}
+   */
   containsPoint(point, wantSecond) {
     for (let pp = 0; pp < this.pathPoints.length; pp++) {
       if (pointsAreEqual(point, this.pathPoints[pp].p, 0.01)) {
@@ -513,11 +515,11 @@ export default class Path extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Draw a path to a canvas
-     * @param {object} ctx - HTML Canvas Context
-     * @param {object} view - View object with x / y offset and Zoom
-     * @param {boolean} snap - snap values to whole numbers
-     */
+   * Draw a path to a canvas
+   * @param {object} ctx - HTML Canvas Context
+   * @param {object} view - View object with x / y offset and Zoom
+   * @param {boolean} snap - snap values to whole numbers
+   */
   drawPath(ctx, view = getView('Path.drawPath'), snap = true) {
     // debug('\n Path.drawPath - START');
     // debug(`\t view ${view.dx}, ${view.dy}, ${view.dz}`);
@@ -577,11 +579,11 @@ export default class Path extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Converts this path to Post Script
-     * @param {number} lastX - Last x value in the sequence
-     * @param {number} lastY - Last y value in the sequence
-     * @returns {string}
-     */
+   * Converts this path to Post Script
+   * @param {number} lastX - Last x value in the sequence
+   * @param {number} lastY - Last y value in the sequence
+   * @returns {string}
+   */
   makePathPostScript(lastX = 0, lastY = 0) {
     if (!this.pathPoints) {
       return {'re': '', 'lastX': lastX, 'lastY': lastY};
@@ -622,11 +624,11 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Create SVG data
-     * @param {string} glyphName - Name of the glyph this path belongs to
-     * @param {number} roundValue - how many decimal places
-     * @returns {string}
-     */
+   * Create SVG data
+   * @param {string} glyphName - Name of the glyph this path belongs to
+   * @param {number} roundValue - how many decimal places
+   * @returns {string}
+   */
   makeSVGPathData(glyphName = 'not specified', roundValue = 8) {
     // debug('\n Path.makeSVGPathData - START');
     // debug('\t Glyph ' + glyphName);
@@ -667,10 +669,10 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Get a part of the path in Segment format
-     * @param {number} num - segment number
-     * @returns {Segment}
-     */
+   * Get a part of the path in Segment format
+   * @param {number} num - segment number
+   * @returns {Segment}
+   */
   getSegment(num = 0) {
     // debug('\n Path.getSegment - START');
     // debug('\t passed ' + num);
@@ -701,10 +703,10 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Use a quick algorithm to get a segment's length
-     * @param {number} num - segment number
-     * @returns {number}
-     */
+   * Use a quick algorithm to get a segment's length
+   * @param {number} num - segment number
+   * @returns {number}
+   */
   getQuickSegmentLength(num = 0) {
     let re = this.getSegment(num);
     re = re.quickLength;
@@ -712,9 +714,9 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * PolySegment is an industry-standard way of describing Bezier paths
-     * @returns {PolySegment}
-     */
+   * PolySegment is an industry-standard way of describing Bezier paths
+   * @returns {PolySegment}
+   */
   getPolySegment() {
     // debug(`\n Path.getPolySegment - START`);
 
@@ -738,14 +740,14 @@ export default class Path extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Looks through path points to see if there is a control point
-     * at the designated point
-     * @param {number} x - x value to check
-     * @param {number} y - y value to check
-     * @param {number} targetSize - radius around the point to return true
-     * @param {boolean} noHandles - true = only check points
-     * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
-     */
+   * Looks through path points to see if there is a control point
+   * at the designated point
+   * @param {number} x - x value to check
+   * @param {number} y - y value to check
+   * @param {number} targetSize - radius around the point to return true
+   * @param {boolean} noHandles - true = only check points
+   * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
+   */
   isOverControlPoint(x, y, targetSize, noHandles) {
     const a = this.pathPoints || [];
     let re = false;
@@ -757,12 +759,12 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Checks to see if the first PathPoint in the path is at a point
-     * @param {number} x - x value to check
-     * @param {number} y - y value to check
-     * @param {number} targetSize - radius around the point to return true
-     * @returns {boolean}
-     */
+   * Checks to see if the first PathPoint in the path is at a point
+   * @param {number} x - x value to check
+   * @param {number} y - y value to check
+   * @param {number} targetSize - radius around the point to return true
+   * @returns {boolean}
+   */
   isOverFirstPoint(x = 0, y = 0, targetSize = 3) {
     // debug('\n Path.isOverFirstPoint - START');
     // debug('\t Passed ' + x + '/' + y);
@@ -782,10 +784,10 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Finds either the clockwise or counterclockwise winding of a path
-     * @param {boolean} secondTry - If the first try fails, do a trick for a second pass
-     * @returns {number} - negative = clockwise, positive = counterclockwise, 0 = unknown
-     */
+   * Finds either the clockwise or counterclockwise winding of a path
+   * @param {boolean} secondTry - If the first try fails, do a trick for a second pass
+   * @returns {number} - negative = clockwise, positive = counterclockwise, 0 = unknown
+   */
   findWinding(secondTry) {
     // debug('\n Path.findWinding - START');
     let j;
@@ -823,9 +825,9 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Reverses the order of the path points in the path,
-     * thus reversing the winding
-     */
+   * Reverses the order of the path points in the path,
+   * thus reversing the winding
+   */
   reverseWinding() {
     // debug('\n Path.reverseWinding - START');
     let ht;
@@ -855,10 +857,10 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Flips a path about a horizontal line
-     * @param {number} mid - y value about which to flip
-     * @returns {Path} - reference to this path
-     */
+   * Flips a path about a horizontal line
+   * @param {number} mid - y value about which to flip
+   * @returns {Path} - reference to this path
+   */
   flipNS(mid = this.center.y) {
     // debug(`\n Path.flipNS - START`);
     // debug(this.print());
@@ -879,10 +881,10 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Flips a path about a vertical line
-     * @param {number} mid - x value about which to flip
-     * @returns {Path} - reference to this path
-     */
+   * Flips a path about a vertical line
+   * @param {number} mid - x value about which to flip
+   * @returns {Path} - reference to this path
+   */
   flipEW(mid = this.center.x) {
     // debug(`\n Path.flipEW - START`);
     // debug(this.print());
@@ -903,10 +905,10 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Adds a Path Point to the end of this path
-     * @param {PathPoint} newPoint - Path Point to add
-     * @returns {PathPoint} - reference to the added point
-     */
+   * Adds a Path Point to the end of this path
+   * @param {PathPoint} newPoint - Path Point to add
+   * @returns {PathPoint} - reference to the added point
+   */
   addPathPoint(newPoint) {
     // debug('\n Path.addPathPoint - START');
     // debug('\t newPoint = ' + newPoint);
@@ -924,11 +926,11 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Add a Path Point along a curve at a certain distance
-     * @param {number} t - decimal from 0 to 1 representing how far along the curve to split
-     * @param {number} pointNumber - point number before the new split
-     * @returns {PathPoint} - reference to the added path point
-     */
+   * Add a Path Point along a curve at a certain distance
+   * @param {number} t - decimal from 0 to 1 representing how far along the curve to split
+   * @param {number} pointNumber - point number before the new split
+   * @returns {PathPoint} - reference to the added path point
+   */
   insertPathPoint(t = 0.5, pointNumber = 0) {
     const pp1i = pointNumber;
     const pp1 = (pp1i === false ? this.pathPoints[0] : this.pathPoints[pp1i]);
@@ -981,11 +983,11 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Given a target point, find the closes point on this path
-     * @param {XYPoint} point - x/y value to target
-     * @param {boolean} wantSecond - return the second result
-     * @returns {object}
-     */
+   * Given a target point, find the closes point on this path
+   * @param {XYPoint} point - x/y value to target
+   * @param {boolean} wantSecond - return the second result
+   * @returns {object}
+   */
   getClosestPointOnCurve(point = new XYPoint(), wantSecond = false) {
     let grains = 10000;
     let first = false;
@@ -1022,11 +1024,11 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Get an X/Y value from a curve split
-     * @param {number} t - decimal from 0 to 1 how far along the curve to split
-     * @param {number} pointNumber - after which point to split
-     * @returns {XYPoint}
-     */
+   * Get an X/Y value from a curve split
+   * @param {number} t - decimal from 0 to 1 how far along the curve to split
+   * @param {number} pointNumber - after which point to split
+   * @returns {XYPoint}
+   */
   getXYPointFromSplit(t, pointNumber = 0) {
     if (this.pathPoints.length > 1) {
       const seg = this.getSegment(pointNumber);
@@ -1045,9 +1047,9 @@ export default class Path extends GlyphElement {
 
   */
   /**
-     * Selects a point on this curve
-     * @param {number} index - point to select
-     * @returns {PathPoint} - reference to the selected point
+   * Selects a point on this curve
+   * @param {number} index - point to select
+   * @returns {PathPoint} - reference to the selected point
      selectPathPoint(index) {
        index = parseInt(index);
 
@@ -1076,8 +1078,8 @@ export default class Path extends GlyphElement {
   // ----------------------------------
 
   /**
-     * Find the bounding box for this path
-     */
+   * Find the bounding box for this path
+   */
   calcMaxes() {
     // debug('\n Path.calcMaxes - START');
     // debug(`\t before ${this.cache.maxes.print()}`);
@@ -1103,9 +1105,9 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Looks through the whole path and sets erroneous values to 0
-     * @param {string} calledBy - message for who called this
-     */
+   * Looks through the whole path and sets erroneous values to 0
+   * @param {string} calledBy - message for who called this
+   */
   validate(calledBy) {
     let tp;
     for (let pp = 0; pp < this.pathPoints.length; pp++) {
@@ -1139,9 +1141,9 @@ export default class Path extends GlyphElement {
   }
 
   /**
-     * Checks all the data for NaN
-     * @returns {boolean}
-     */
+   * Checks all the data for NaN
+   * @returns {boolean}
+   */
   checkForNaN() {
     for (let pp = 0; pp < this.pathPoints.length; pp++) {
       const tp = this.pathPoints[pp];
@@ -1193,13 +1195,13 @@ export function findPathIntersections(p1, p2) {
   const segmentOverlaps = [];
 
   /**
-     * Quickly find if two segments could overlap by checking
-     * their bounding boxes
-     * @param {Path} p1 - first path
-     * @param {PathPoint} p1p - first path point
-     * @param {Path} p2 - second path
-     * @param {PathPoint} p2p - second path point
-     */
+   * Quickly find if two segments could overlap by checking
+   * their bounding boxes
+   * @param {Path} p1 - first path
+   * @param {PathPoint} p1p - first path point
+   * @param {Path} p2 - second path
+   * @param {PathPoint} p2p - second path point
+   */
   function pushSegOverlaps(p1, p1p, p2, p2p) {
     // debug('\t pushSegOverlaps - p1p ' + p1p + ' - p2p ' + p2p);
     bs = p1.getSegment(p1p);
@@ -1259,10 +1261,10 @@ export function findPathPointBoundaryIntersections(p1, p2) {
   let re = [];
 
   /**
-     * Check points in a path against the bounding box of another path
-     * @param {Path} chk - first point to check
-     * @param {Path} against - check against these maxes
-     */
+   * Check points in a path against the bounding box of another path
+   * @param {Path} chk - first point to check
+   * @param {Path} against - check against these maxes
+   */
   function check(chk, against) {
     const m = against.maxes;
     let tpp;

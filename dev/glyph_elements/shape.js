@@ -13,20 +13,19 @@ import {strSan} from '../common/functions.js';
  */
 export default class Shape extends GlyphElement {
   /**
-     * Create a Shape
-     * @param {string} name
-     * @param {Path} path
-     * @param {boolean} xLock
-     * @param {boolean} yLock
-     * @param {boolean} wLock
-     * @param {boolean} hLock
-     * @param {boolean} ratioLock
-     * @param {object} parent
-     */
+   * Create a Shape
+   * @param {string} name - customizable name for this shape
+   * @param {Path} path - outline for this shape
+   * @param {boolean} xLock - can the shape be moved horizontally
+   * @param {boolean} yLock - can the shape be moved vertically
+   * @param {boolean} wLock - can the shape be resized horizontally
+   * @param {boolean} hLock - can the shape be resized vertically
+   * @param {boolean} ratioLock - while resizing, maintain aspect ratio
+   * @param {object} parent - link to the parent Glyph object
+   */
   constructor({
     name = 'Shape',
     path = [],
-    visible = true,
     xLock = false,
     yLock = false,
     wLock = false,
@@ -39,12 +38,13 @@ export default class Shape extends GlyphElement {
     this.parent = parent;
     this.name = name;
     this.path = path;
-    this.visible = visible;
     this.xLock = xLock;
     this.yLock = yLock;
     this.wLock = wLock;
     this.hLock = hLock;
     this.ratioLock = ratioLock;
+
+    this.objType = 'Shape';
     // debug(` Shape.constructor - END\n\n`);
   }
 
@@ -54,34 +54,32 @@ export default class Shape extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Export object properties that need to be saved to a project file
-     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @returns {*}
-     */
+   * Export object properties that need to be saved to a project file
+   * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+   * @returns {*}
+   */
   save(verbose = false) {
     const re = {
-      objType: this.objType,
       path: this.path.save(verbose),
     };
 
     if (this.name !== 'Shape') re.name = this.name;
-    // if (!this.visible) re.visible = this.visible;
     if (this.xLock) re.xLock = this.xLock;
     if (this.yLock) re.yLock = this.yLock;
     if (this.wLock) re.wLock = this.wLock;
     if (this.hLock) re.hLock = this.hLock;
     if (this.ratioLock) re.ratioLock = this.ratioLock;
 
-    if (!verbose) delete re.objType;
+    if (verbose) re.objType = this.objType;
 
     return re;
   }
 
   /**
-     * Create a nicely-formatted string for this object
-     * @param {number} level - how far down we are
-     * @returns {string}
-     */
+   * Create a nicely-formatted string for this object
+   * @param {number} level - how far down we are
+   * @returns {string}
+   */
   print(level = 0) {
     let ind = '';
     for (let i=0; i<level; i++) ind += '  ';
@@ -110,65 +108,57 @@ export default class Shape extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * get name
-     * @returns {string}
-     */
+   * get name
+   * @returns {string}
+   */
   get name() {
     return this._name;
   }
 
   /**
-     * get path
-     * @returns {Path}
-     */
+   * get path
+   * @returns {Path}
+   */
   get path() {
     return this._path;
   }
 
   /**
-     * get visible
-     * @returns {boolean}
-     */
-  get visible() {
-    return this._visible;
-  }
-
-  /**
-     * get xLock
-     * @returns {boolean}
-     */
+   * get xLock
+   * @returns {boolean}
+   */
   get xLock() {
     return this._xLock;
   }
 
   /**
-     * get yLock
-     * @returns {boolean}
-     */
+   * get yLock
+   * @returns {boolean}
+   */
   get yLock() {
     return this._yLock;
   }
 
   /**
-     * get wLock
-     * @returns {boolean}
-     */
+   * get wLock
+   * @returns {boolean}
+   */
   get wLock() {
     return this._wLock;
   }
 
   /**
-     * get hLock
-     * @returns {boolean}
-     */
+   * get hLock
+   * @returns {boolean}
+   */
   get hLock() {
     return this._hLock;
   }
 
   /**
-     * get ratioLock
-     * @returns {boolean}
-     */
+   * get ratioLock
+   * @returns {boolean}
+   */
   get ratioLock() {
     return this._ratioLock;
   }
@@ -176,43 +166,43 @@ export default class Shape extends GlyphElement {
   // computed properties
 
   /**
-     * Get X position
-     * @returns {number}
-     */
+   * Get X position
+   * @returns {number}
+   */
   get x() {
     return this.maxes.xMin;
   }
 
   /**
-     * Get Y position
-     * @returns {number}
-     */
+   * Get Y position
+   * @returns {number}
+   */
   get y() {
     return this.maxes.yMax;
   }
 
   /**
-     * Get Width
-     * @returns {number}
-     */
+   * Get Width
+   * @returns {number}
+   */
   get width() {
     const w = this.maxes.xMax - this.maxes.xMin;
     return Math.max(w, 0);
   }
 
   /**
-     * Get Height
-     * @returns {number}
-     */
+   * Get Height
+   * @returns {number}
+   */
   get height() {
     const h = this.maxes.yMax - this.maxes.yMin;
     return Math.max(h, 0);
   }
 
   /**
-     * get maxes
-     * @returns {boolean}
-     */
+   * get maxes
+   * @returns {boolean}
+   */
   get maxes() {
     return this.path.maxes;
   }
@@ -223,10 +213,10 @@ export default class Shape extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * set name
-     * @param {string} name
-     * @returns {Shape} - reference to this Shape
-     */
+   * set name
+   * @param {string} name
+   * @returns {Shape} - reference to this Shape
+   */
   set name(name) {
     name = strSan(name);
     // debug('\t sanitized: ' + name);
@@ -240,10 +230,10 @@ export default class Shape extends GlyphElement {
   }
 
   /**
-     * set path
-     * @param {boolean} path
-     * @returns {Shape} - reference to this Shape
-     */
+   * set path
+   * @param {boolean} path
+   * @returns {Shape} - reference to this Shape
+   */
   set path(path) {
     this._path = new Path(path);
     this._path.parent = this;
@@ -251,60 +241,50 @@ export default class Shape extends GlyphElement {
   }
 
   /**
-     * set visible
-     * @param {boolean} visible
-     * @returns {Shape} - reference to this Shape
-     */
-  set visible(visible) {
-    this._visible = !!visible;
-    return this;
-  }
-
-  /**
-     * set xLock
-     * @param {boolean} xLock
-     * @returns {Shape} - reference to this Shape
-     */
+   * set xLock
+   * @param {boolean} xLock
+   * @returns {Shape} - reference to this Shape
+   */
   set xLock(xLock) {
     this._xLock = !!xLock;
     return this;
   }
 
   /**
-     * set yLock
-     * @param {boolean} yLock
-     * @returns {Shape} - reference to this Shape
-     */
+   * set yLock
+   * @param {boolean} yLock
+   * @returns {Shape} - reference to this Shape
+   */
   set yLock(yLock) {
     this._yLock = !!yLock;
     return this;
   }
 
   /**
-     * set wLock
-     * @param {boolean} wLock
-     * @returns {Shape} - reference to this Shape
-     */
+   * set wLock
+   * @param {boolean} wLock
+   * @returns {Shape} - reference to this Shape
+   */
   set wLock(wLock) {
     this._wLock = !!wLock;
     return this;
   }
 
   /**
-     * set hLock
-     * @param {boolean} hLock
-     * @returns {Shape} - reference to this Shape
-     */
+   * set hLock
+   * @param {boolean} hLock
+   * @returns {Shape} - reference to this Shape
+   */
   set hLock(hLock) {
     this._hLock = !!hLock;
     return this;
   }
 
   /**
-     * set ratioLock
-     * @param {boolean} ratioLock
-     * @returns {Shape} - reference to this Shape
-     */
+   * set ratioLock
+   * @param {boolean} ratioLock
+   * @returns {Shape} - reference to this Shape
+   */
   set ratioLock(ratioLock) {
     this._ratioLock = !!ratioLock;
     return this;
@@ -313,50 +293,50 @@ export default class Shape extends GlyphElement {
   // computed properties
 
   /**
-     * Set X position
-     * @param {number} x
-     * @returns {Shape} - reference to this Shape
-     */
+   * Set X position
+   * @param {number} x
+   * @returns {Shape} - reference to this Shape
+   */
   set x(x) {
     this.setShapePosition(x, false);
     return this;
   }
 
   /**
-     * Set Y position
-     * @param {number} y
-     * @returns {Shape} - reference to this Shape
-     */
+   * Set Y position
+   * @param {number} y
+   * @returns {Shape} - reference to this Shape
+   */
   set y(y) {
     this.setShapePosition(false, y);
     return this;
   }
 
   /**
-     * Set Width
-     * @param {number} w
-     * @returns {Shape} - reference to this Shape
-     */
+   * Set Width
+   * @param {number} w
+   * @returns {Shape} - reference to this Shape
+   */
   set width(w) {
     this.setShapeSize(w, false);
     return this;
   }
 
   /**
-     * Set Height
-     * @param {number} h
-     * @returns {Shape} - reference to this Shape
-     */
+   * Set Height
+   * @param {number} h
+   * @returns {Shape} - reference to this Shape
+   */
   set height(h) {
     this.setShapeSize(false, h);
     return this;
   }
 
   /**
-     * set maxes
-     * @param {Maxes} maxes
-     * @returns {Shape} - reference to this Shape
-     */
+   * set maxes
+   * @param {Maxes} maxes
+   * @returns {Shape} - reference to this Shape
+   */
   set maxes(maxes) {
     this.path.maxes = maxes;
     return this;
@@ -367,13 +347,13 @@ export default class Shape extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Make SVG from this Shape
-     * @param {number} size - how big
-     * @param {number} gutter - margin
-     * @param {number} upm - project UPM size
-     * @param {number} descender - project descender size
-     * @returns {string} - svg
-     */
+   * Make SVG from this Shape
+   * @param {number} size - how big
+   * @param {number} gutter - margin
+   * @param {number} upm - project UPM size
+   * @param {number} descender - project descender size
+   * @returns {string} - svg
+   */
   makeSVG(size = 50, gutter = 5, upm = 1000, descender = 300) {
     const charScale = (size - (gutter * 2)) / size;
     const gutterScale = (gutter / size) * upm;
@@ -393,13 +373,13 @@ export default class Shape extends GlyphElement {
   }
 
   /**
-     * Make a PostScript path from this shape
-     * PostScript paths use relative MoveTo commands, so
-     * this shape must know about where the last shape left off
-     * @param {number} lastX - x from previous path
-     * @param {number} lastY - y from previous path
-     * @returns {string} - PostScript path data
-     */
+   * Make a PostScript path from this shape
+   * PostScript paths use relative MoveTo commands, so
+   * this shape must know about where the last shape left off
+   * @param {number} lastX - x from previous path
+   * @param {number} lastY - y from previous path
+   * @returns {string} - PostScript path data
+   */
   makePostScript(lastX = 0, lastY = 0) {
     return this.path ? this.path.makePathPostScript(lastX, lastY) : {re: '', lastX: lastX, lastY: lastY};
   }
@@ -410,89 +390,89 @@ export default class Shape extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Call path.updatePathPosition
-     * @param {number} dx - delta x
-     * @param {number} dy - delta y
-     * @returns {Shape} - reference to this shape
-     */
+   * Call path.updatePathPosition
+   * @param {number} dx - delta x
+   * @param {number} dy - delta y
+   * @returns {Shape} - reference to this shape
+   */
   updateShapePosition(dx = 0, dy = 0) {
     this.path.updatePathPosition(dx, dy);
     return this;
   }
 
   /**
-     * Call path.setPathPosition
-     * @param {number} nx - new x value
-     * @param {number} ny - new y value
-     * @returns {Shape} - reference to this shape
-     */
+   * Call path.setPathPosition
+   * @param {number} nx - new x value
+   * @param {number} ny - new y value
+   * @returns {Shape} - reference to this shape
+   */
   setShapePosition(nx = false, ny = false) {
     this.path.setPathPosition(nx, ny);
     return this;
   }
 
   /**
-     * Call path.updatePathSize
-     * @param {number} dw - delta width
-     * @param {number} dh - delta height
-     * @param {boolean} ratioLock - maintain aspect ratio
-     * @returns {Shape} - reference to this shape
-     */
+   * Call path.updatePathSize
+   * @param {number} dw - delta width
+   * @param {number} dh - delta height
+   * @param {boolean} ratioLock - maintain aspect ratio
+   * @returns {Shape} - reference to this shape
+   */
   updateShapeSize(dw = 0, dh = 0, ratioLock = false) {
     this.path.updatePathSize(dw, dh, ratioLock);
     return this;
   }
 
   /**
-     * Call path.setPathSize
-     * @param {number} nw - new width
-     * @param {number} nh - new height
-     * @param {boolean} ratioLock - maintain aspect ratio
-     * @returns {Shape} - reference to this shape
-     */
+   * Call path.setPathSize
+   * @param {number} nw - new width
+   * @param {number} nh - new height
+   * @param {boolean} ratioLock - maintain aspect ratio
+   * @returns {Shape} - reference to this shape
+   */
   setShapeSize(nw = false, nh = false, ratioLock = false) {
     this.path.setPathSize(nw, nh, ratioLock);
     return this;
   }
 
   /**
-     * Call path.isOverControlPoint
-     * @param {number} x - x value to check
-     * @param {number} y - y value to check
-     * @param {number} targetSize - radius around the point to return true
-     * @param {boolean} noHandles - true = only check points
-     * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
-     */
+   * Call path.isOverControlPoint
+   * @param {number} x - x value to check
+   * @param {number} y - y value to check
+   * @param {number} targetSize - radius around the point to return true
+   * @param {boolean} noHandles - true = only check points
+   * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
+   */
   isOverControlPoint(x, y, targetSize, noHandles) {
     return this.path.isOverControlPoint(x, y, targetSize, noHandles);
   }
 
   /**
-     * Call path.flipEW
-     * @param {number} mid - x value about which to flip
-     * @returns {Shape} - reference to this shape
-     */
+   * Call path.flipEW
+   * @param {number} mid - x value about which to flip
+   * @returns {Shape} - reference to this shape
+   */
   flipEW(mid = this.center.x) {
     this.path.flipEW(mid);
     return this;
   }
 
   /**
-     * Call path.flipNS
-     * @param {number} mid - y value about which to flip
-     * @returns {Shape} - reference to this shape
-     */
+   * Call path.flipNS
+   * @param {number} mid - y value about which to flip
+   * @returns {Shape} - reference to this shape
+   */
   flipNS(mid = this.center.y) {
     this.path.flipNS(mid);
     return this;
   }
 
   /**
-     * Call path.rotate
-     * @param {number} angle - how much to rotate (radians)
-     * @param {XYPoint} about - x/y center of rotation
-     * @returns {Shape} - reference to this shape
-     */
+   * Call path.rotate
+   * @param {number} angle - how much to rotate (radians)
+   * @param {XYPoint} about - x/y center of rotation
+   * @returns {Shape} - reference to this shape
+   */
   rotate(angle, about) {
     // debug('\n Shape.rotate - START');
     about = about || this.center;
@@ -503,8 +483,8 @@ export default class Shape extends GlyphElement {
   }
 
   /**
-     * Call path.reverseWinding
-     */
+   * Call path.reverseWinding
+   */
   reverseWinding() {
     this.path.reverseWinding();
   }
@@ -517,10 +497,10 @@ export default class Shape extends GlyphElement {
   // }
 
   /**
-     * Call path.getSegment
-     * @param {number} num - which segment to get
-     * @returns {Segment}
-     */
+   * Call path.getSegment
+   * @param {number} num - which segment to get
+   * @returns {Segment}
+   */
   getSegment(num) {
     return this.path.getSegment(num);
   }
@@ -531,25 +511,23 @@ export default class Shape extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Draw this Shape to a canvas
-     * @param {object} ctx - canvas context
-     * @param {view} view
-     * @returns {boolean}
-     */
+   * Draw this Shape to a canvas
+   * @param {object} ctx - canvas context
+   * @param {view} view
+   * @returns {boolean}
+   */
   drawShape(ctx, view) {
     // debug('\n Shape.drawShape - START');
     // debug('\t view ' + json(view, true));
-    if (this.visible) {
-      this.path.drawPath(ctx, view);
-    }
+    this.path.drawPath(ctx, view);
     // debug(' Shape.drawShape - returning true by default - END\n');
     return true;
   }
 
   /**
-     * Draws the segment version of this shape
-     * for debugging purposes
-     */
+   * Draws the segment version of this shape
+   * for debugging purposes
+   */
   drawSegments() {
     const segments = this.path.getPolySegment();
     segments.slowlyDrawSegments();
@@ -561,9 +539,9 @@ export default class Shape extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Checks for any NaN
-     * @returns {boolean}
-     */
+   * Checks for any NaN
+   * @returns {boolean}
+   */
   checkForNaN() {
     return this.path.checkForNaN();
   }

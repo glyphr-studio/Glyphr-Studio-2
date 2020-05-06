@@ -18,6 +18,8 @@ export default class Coord extends GlyphElement {
     this.parent = parent;
     this.x = x;
     this.y = y;
+
+    this.objType = 'Coord';
   }
 
 
@@ -44,7 +46,10 @@ export default class Coord extends GlyphElement {
    * @returns {string}
    */
   print(level = 0) {
-    let re = `{`;
+    let ind = '';
+    for (let i=0; i<level; i++) ind += '  ';
+
+    let re = `${ind}{`;
     re += `x: ${isVal(this._x)? this._x : '--'}  `;
     re += `y: ${isVal(this._y)? this._y : '--'}`;
     re += `}`;

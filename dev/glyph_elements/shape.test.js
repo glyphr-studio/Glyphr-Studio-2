@@ -52,12 +52,6 @@ describe('Shape', () => {
     expect(s.path.pathPoints[2].p.x).toBe(400);
   });
 
-  it('get/set visible', () => {
-    const s = sampleShape();
-    s.visible = false;
-    expect(s.visible).toBe(false);
-  });
-
   it('get/set xLock', () => {
     const s = sampleShape();
     s.xLock = true;

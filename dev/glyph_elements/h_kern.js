@@ -19,6 +19,8 @@ export default class HKern extends GlyphElement {
     this.leftGroup = leftGroup;
     this.rightGroup = rightGroup;
     this.value = value;
+
+    this.objType = 'HKern';
   }
 
 
@@ -27,19 +29,18 @@ export default class HKern extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Export object properties that need to be saved to a project file
-     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @returns {*}
-     */
+   * Export object properties that need to be saved to a project file
+   * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+   * @returns {*}
+   */
   save(verbose = false) {
     const re = {
-      objType: this.objType,
       leftGroup: this.leftGroup.slice(),
       rightGroup: this.rightGroup.slice(),
       value: this._value,
     };
 
-    if (!verbose) delete re.objType;
+    if (verbose) re.objType = this.objType;
 
     return re;
   }
@@ -50,17 +51,17 @@ export default class HKern extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Return the value for this kern
-     * @returns {number}
-     */
+   * Return the value for this kern
+   * @returns {number}
+   */
   get value() {
     return this._value || 0;
   }
 
   /**
-     * Creates a display name for this kern group
-     * @returns {string}
-     */
+   * Creates a display name for this kern group
+   * @returns {string}
+   */
   get name() {
     const left = hexToChars(this.leftGroup.join(''));
     const right = hexToChars(this.rightGroup.join(''));
@@ -73,9 +74,9 @@ export default class HKern extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Set the value for this kern
-     * @param {number} val
-     */
+   * Set the value for this kern
+   * @param {number} val
+   */
   set value(val) {
     this._value = parseInt(val) || 0;
   }

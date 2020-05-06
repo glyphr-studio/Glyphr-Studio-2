@@ -93,12 +93,6 @@ describe('Glyph', () => {
     expect(g.usedIn).toEqual(['0x1235', '0x1236']);
   });
 
-  it('get/set contextGlyphs', () => {
-    const g = sampleGlyph();
-    g.contextGlyphs = 'asdf';
-    expect(g.contextGlyphs).toBe('asdf');
-  });
-
   it('get/set x', () => {
     const g = sampleGlyph();
     g.x = 789;

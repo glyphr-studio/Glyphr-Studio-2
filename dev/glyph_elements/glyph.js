@@ -22,17 +22,16 @@ import {combineShapes} from '../panels/REFACTOR_shape.js';
  */
 export default class Glyph extends GlyphElement {
   /**
-     * Create a Glyph
-     * @param {string} id
-     * @param {boolean} isAutoWide
-     * @param {number} glyphWidth
-     * @param {number} leftSideBearing
-     * @param {number} rightSideBearing
-     * @param {boolean} ratioLock
-     * @param {boolean} shapes
-     * @param {boolean} usedIn
-     * @param {boolean} contextGlyphs
-     */
+   * Create a Glyph
+   * @param {string} id - unique identifier (Unicode code point)
+   * @param {boolean} isAutoWide - is advance width automatically calculated
+   * @param {number} glyphWidth - manual setting for advance width
+   * @param {number} leftSideBearing - left side bearing distance
+   * @param {number} rightSideBearing - right side bearing distance
+   * @param {boolean} ratioLock - maintain aspect ratio while resizing
+   * @param {boolean} shapes - collection of Shapes and Component Instances in this Glyph
+   * @param {array} usedIn - array of IDs where this Glyph is used as a component instance
+   */
   constructor({
     id = false,
     shapes = [],
@@ -42,7 +41,6 @@ export default class Glyph extends GlyphElement {
     rightSideBearing = false,
     ratioLock = false,
     usedIn = [],
-    contextGlyphs = '',
   } = {}) {
     // debug(`\n Glyph.constructor - START`);
     super();
@@ -54,8 +52,8 @@ export default class Glyph extends GlyphElement {
     this.rightSideBearing = rightSideBearing;
     this.ratioLock = ratioLock;
     this.usedIn = usedIn;
-    this.contextGlyphs = contextGlyphs;
 
+    this.objType = 'Glyph';
     // debug(this.print());
     // debug(` Glyph.constructor - END\n\n`);
   }
@@ -66,9 +64,9 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Any change that updates the shape of any part of a glyph
-     * gets bubbled up through the GlyphElement hierarchy
-     */
+   * Any change that updates the shape of any part of a glyph
+   * gets bubbled up through the GlyphElement hierarchy
+   */
   changed() {
     // debug(`\n Glyph.changed - Start`);
     this.calcMaxes();
@@ -82,13 +80,12 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Export object properties that need to be saved to a project file
-     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @returns {*}
-     */
+   * Export object properties that need to be saved to a project file
+   * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+   * @returns {*}
+   */
   save(verbose = false) {
     const re = {
-      objType: this.objType,
       name: this.name,
       id: this._id,
     };
@@ -99,7 +96,6 @@ export default class Glyph extends GlyphElement {
     if (this.rightSideBearing !== false) re.rightSideBearing = this.rightSideBearing;
     if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
     if (this.usedIn.length) re.usedIn = this.usedIn;
-    if (this.contextGlyphs !== '') re.contextGlyphs = this.contextGlyphs;
 
     if (this.shapes && this.shapes.length) {
       re.shapes = [];
@@ -115,10 +111,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Create a nicely-formatted string for this object
-     * @param {number} level - how far down we are
-     * @returns {string}
-     */
+   * Create a nicely-formatted string for this object
+   * @param {number} level - how far down we are
+   * @returns {string}
+   */
   print(level = 0) {
     let ind = '';
     for (let i=0; i<level; i++) ind += '  ';
@@ -135,7 +131,6 @@ export default class Glyph extends GlyphElement {
     if (this.rightSideBearing !== false) re += `${ind}rightSideBearing: ${this.rightSideBearing}\n`;
     if (this.ratioLock !== false) re += `${ind}ratioLock: ${this.ratioLock}\n`;
     if (this.usedIn.length) re += `${ind}usedIn: ${JSON.stringify(this.usedIn)}\n`;
-    if (this.contextGlyphs !== '') re += `${ind}contextGlyphs: ${this.contextGlyphs}\n`;
 
     if (this.shapes && this.shapes.length) {
       re += `${ind}shapes: [\n`;
@@ -190,100 +185,92 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * get id
-     * @returns {string}
-     */
+   * get id
+   * @returns {string}
+   */
   get id() {
     return this._id;
   }
 
   /**
-     * get shapes
-     * @returns {array}
-     */
+   * get shapes
+   * @returns {array}
+   */
   get shapes() {
     return this._shapes;
   }
 
   /**
-     * get isAutoWide
-     * @returns {boolean}
-     */
+   * get isAutoWide
+   * @returns {boolean}
+   */
   get isAutoWide() {
     return this._isAutoWide;
   }
 
   /**
-     * get glyphWidth
-     * @returns {number}
-     */
+   * get glyphWidth
+   * @returns {number}
+   */
   get glyphWidth() {
     return this._glyphWidth;
   }
 
   /**
-     * get leftSideBearing
-     * @returns {number}
-     */
+   * get leftSideBearing
+   * @returns {number}
+   */
   get leftSideBearing() {
     return this._leftSideBearing;
   }
 
   /**
-     * get rightSideBearing
-     * @returns {number}
-     */
+   * get rightSideBearing
+   * @returns {number}
+   */
   get rightSideBearing() {
     return this._rightSideBearing;
   }
 
   /**
-     * get ratioLock
-     * @returns {boolean}
-     */
+   * get ratioLock
+   * @returns {boolean}
+   */
   get ratioLock() {
     return this._ratioLock;
   }
 
   /**
-     * get usedIn
-     * @returns {array}
-     */
+   * get usedIn
+   * @returns {array}
+   */
   get usedIn() {
     // debug(`\t Glyph.usedIn Getter - is array? ${Array.isArray(this._usedIn)}`);
     return this._usedIn || [];
   }
 
-  /**
-     * get contextGlyphs
-     * @returns {string}
-     */
-  get contextGlyphs() {
-    return this._contextGlyphs;
-  }
-
   // computed properties
 
   /**
-     * Get X position
-     * @returns {number}
-     */
+   * Get X position
+   * @returns {number}
+   */
   get x() {
     return this.maxes.xMin;
   }
 
   /**
-     * Get Y position
-     * @returns {number}
-     */
+   * Get Y position
+   * @returns {number}
+   */
   get y() {
     return this.maxes.yMax;
   }
 
   /**
-     * Get Width
-     * @returns {number}
-     */
+   * Get Width
+   * @returns {number}
+   */
   get width() {
     if (this.isAutoWide) {
       const w = this.maxes.xMax - this.maxes.xMin;
@@ -294,18 +281,18 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Get Height
-     * @returns {number}
-     */
+   * Get Height
+   * @returns {number}
+   */
   get height() {
     const h = this.maxes.yMax - this.maxes.yMin;
     return Math.max(h, 0);
   }
 
   /**
-     * get maxes
-     * @returns {boolean}
-     */
+   * get maxes
+   * @returns {boolean}
+   */
   get maxes() {
     // debug('\n Glyph.getMaxes - START ' + this.name);
     if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
@@ -319,34 +306,34 @@ export default class Glyph extends GlyphElement {
   // Computed properties
 
   /**
-     * get name
-     * @returns {string}
-     */
+   * get name
+   * @returns {string}
+   */
   get name() {
     return getUnicodeName(this.id);
   }
 
   /**
-     * get char name
-     * @returns {string}
-     */
+   * get char name
+   * @returns {string}
+   */
   get char() {
     return getGlyphName(this.id);
   }
 
   /**
-     * get HTML Char Code
-     * @returns {String}
-     */
+   * get HTML Char Code
+   * @returns {String}
+   */
   get charCode() {
     const code = hexToHTML(this.id);
     return code || '';
   }
 
   /**
-     * get Left Side Bearing
-     * @returns {number}
-     */
+   * get Left Side Bearing
+   * @returns {number}
+   */
   get lsb() {
     // Nullish coalescing would be great here
     if (this._leftSideBearing === 0) return this._leftSideBearing;
@@ -354,9 +341,9 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * get Right Side Bearing
-     * @returns {number}
-     */
+   * get Right Side Bearing
+   * @returns {number}
+   */
   get rsb() {
     // Nullish coalescing would be great here
     if (this._rightSideBearing === 0) return this._rightSideBearing;
@@ -364,18 +351,18 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * get Advance Width
-     * @returns {number}
-     */
+   * get Advance Width
+   * @returns {number}
+   */
   get advanceWidth() {
     if (this.isAutoWide) return this.width + this.lsb + this.rsb;
     else return this.glyphWidth;
   }
 
   /**
-     * get SVG Path Data
-     * @returns {string}
-     */
+   * get SVG Path Data
+   * @returns {string}
+   */
   get svgPathData() {
     if (this.cache.svgPathData) return this.cache.svgPathData;
     this.cache.svgPathData = this.makeSVGPathData();
@@ -388,10 +375,10 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * set id
-     * @param {string} newID
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * set id
+   * @param {string} newID
+   * @returns {Glyph} - reference to this Glyph
+   */
   set id(newID) {
     newID = parseUnicodeInput(newID);
     newID = newID.join? newID.join('') : '0x0000';
@@ -400,10 +387,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * set shapes
-     * @param {array} shapes
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * set shapes
+   * @param {array} shapes
+   * @returns {Glyph} - reference to this Glyph
+   */
   set shapes(shapes = []) {
     // debug(`\n Glyph.shapes setter - Start`);
     // debug(`\t passed length ${shapes.length}`);
@@ -430,20 +417,20 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * set isAutoWide
-     * @param {boolean} isAutoWide
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * set isAutoWide
+   * @param {boolean} isAutoWide
+   * @returns {Glyph} - reference to this Glyph
+   */
   set isAutoWide(isAutoWide) {
     this._isAutoWide = !!isAutoWide;
     return this;
   }
 
   /**
-     * set glyphWidth
-     * @param {number} glyphWidth
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * set glyphWidth
+   * @param {number} glyphWidth
+   * @returns {Glyph} - reference to this Glyph
+   */
   set glyphWidth(glyphWidth) {
     this._glyphWidth = parseFloat(glyphWidth);
     if (isNaN(this._glyphWidth)) this._glyphWidth = 0;
@@ -451,10 +438,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * set leftSideBearing
-     * @param {number} leftSideBearing
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * set leftSideBearing
+   * @param {number} leftSideBearing
+   * @returns {Glyph} - reference to this Glyph
+   */
   set leftSideBearing(leftSideBearing) {
     if (leftSideBearing === false) {
       this._leftSideBearing = false;
@@ -466,10 +453,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * set rightSideBearing
-     * @param {number} rightSideBearing
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * set rightSideBearing
+   * @param {number} rightSideBearing
+   * @returns {Glyph} - reference to this Glyph
+   */
   set rightSideBearing(rightSideBearing) {
     if (rightSideBearing === false) {
       this._rightSideBearing = false;
@@ -481,82 +468,72 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * set ratioLock
-     * @param {boolean} ratioLock
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * set ratioLock
+   * @param {boolean} ratioLock
+   * @returns {Glyph} - reference to this Glyph
+   */
   set ratioLock(ratioLock) {
     this._ratioLock = !!ratioLock;
     return this;
   }
 
   /**
-     * set usedIn
-     * @param {array} usedIn
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * set usedIn
+   * @param {array} usedIn
+   * @returns {Glyph} - reference to this Glyph
+   */
   set usedIn(usedIn) {
     this._usedIn = usedIn || [];
-    return this;
-  }
-
-  /**
-     * set contextGlyphs
-     * @param {string} contextGlyphs
-     * @returns {Glyph} - reference to this Glyph
-     */
-  set contextGlyphs(contextGlyphs) {
-    this._contextGlyphs = contextGlyphs;
     return this;
   }
 
   // computed properties
 
   /**
-     * Set X position
-     * @param {number} x
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * Set X position
+   * @param {number} x
+   * @returns {Glyph} - reference to this Glyph
+   */
   set x(x) {
     this.setGlyphPosition(x, false);
     return this;
   }
 
   /**
-     * Set Y position
-     * @param {number} y
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * Set Y position
+   * @param {number} y
+   * @returns {Glyph} - reference to this Glyph
+   */
   set y(y) {
     this.setGlyphPosition(false, y);
     return this;
   }
 
   /**
-     * Set Width
-     * @param {number} w
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * Set Width
+   * @param {number} w
+   * @returns {Glyph} - reference to this Glyph
+   */
   set width(w) {
     this.setGlyphSize(w, false);
     return this;
   }
 
   /**
-     * Set Height
-     * @param {number} h
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * Set Height
+   * @param {number} h
+   * @returns {Glyph} - reference to this Glyph
+   */
   set height(h) {
     this.setGlyphSize(false, h);
     return this;
   }
 
   /**
-     * Set Maxes
-     * @param {Maxes} maxes
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * Set Maxes
+   * @param {Maxes} maxes
+   * @returns {Glyph} - reference to this Glyph
+   */
   set maxes(maxes) {
     this.cache.maxes = {};
     this.cache.maxes = new Maxes(maxes);
@@ -569,10 +546,10 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Move all the shapes in this glyph as one group
-     * @param {number} nx - new x
-     * @param {number} ny - new y
-     */
+   * Move all the shapes in this glyph as one group
+   * @param {number} nx - new x
+   * @param {number} ny - new y
+   */
   setGlyphPosition(nx, ny) {
     // debug('\n Glyph.setGlyphPosition - START');
     // debug('\t nx/ny: ' + nx + ' ' + ny);
@@ -586,10 +563,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Update all the shapes' positions in this glyph as one group
-     * @param {number} dx - delta x
-     * @param {number} dy - delta y
-     */
+   * Update all the shapes' positions in this glyph as one group
+   * @param {number} dx - delta x
+   * @param {number} dy - delta y
+   */
   updateGlyphPosition(dx, dy) {
     // debug('\n Glyph.updateGlyphPosition - START ' + this.name);
     // debug('\t dx/dy: ' + dx + ' ' + dy);
@@ -604,11 +581,11 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Set all the sizes of the shapes in this glyph as one group
-     * @param {number} nw - new width
-     * @param {number} nh - new height
-     * @param {boolean} ratioLock - true to scale width and height 1:1
-     */
+   * Set all the sizes of the shapes in this glyph as one group
+   * @param {number} nw - new width
+   * @param {number} nh - new height
+   * @param {boolean} ratioLock - true to scale width and height 1:1
+   */
   setGlyphSize(nw, nh, ratioLock) {
     const m = this.maxes;
     if (nw !== false) nw = parseFloat(nw);
@@ -625,11 +602,11 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Update all the sizes of the shapes in this glyph as one group
-     * @param {number} dw - delta width
-     * @param {number} dh - delta height
-     * @param {boolean} ratioLock - true to scale width and height 1:1
-     */
+   * Update all the sizes of the shapes in this glyph as one group
+   * @param {number} dw - delta width
+   * @param {number} dh - delta height
+   * @param {boolean} ratioLock - true to scale width and height 1:1
+   */
   updateGlyphSize(dw, dh, ratioLock) {
     // debug('\n Glyph.updateGlyphSize - START ' + this.name);
     // debug('\t number of shapes: ' + this.shapes.length);
@@ -716,10 +693,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Flips this glyph about a horizontal line
-     * @param {number} mid - y value about which to flip
-     * @returns {Glyph} - reference to this glyph
-     */
+   * Flips this glyph about a horizontal line
+   * @param {number} mid - y value about which to flip
+   * @returns {Glyph} - reference to this glyph
+   */
   flipNS(mid) {
     const m = this.maxes;
     mid = isVal(mid) ? mid : ((m.yMax - m.yMin) / 2) + m.yMin;
@@ -731,10 +708,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Flips this glyph about a vertical line
-     * @param {number} mid - y value about which to flip
-     * @returns {Glyph} - reference to this glyph
-     */
+   * Flips this glyph about a vertical line
+   * @param {number} mid - y value about which to flip
+   * @returns {Glyph} - reference to this glyph
+   */
   flipEW(mid) {
     // debug('\n Glyph.flipEW - START');
     // debug('\t ' + this.name);
@@ -752,11 +729,11 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Rotate about a point
-     * @param {number} angle - how much to rotate (radians)
-     * @param {XYPoint} about - x/y center of rotation
-     * @returns {Glyph} - reference to this glyph
-     */
+   * Rotate about a point
+   * @param {number} angle - how much to rotate (radians)
+   * @param {XYPoint} about - x/y center of rotation
+   * @returns {Glyph} - reference to this glyph
+   */
   rotate(angle, about) {
     about = about || this.center;
     for (let s = 0; s < this.shapes.length; s++) {
@@ -767,10 +744,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Reverses the order of the path points in all the paths,
-     * thus reversing the winding
-     * @returns {Glyph} - reference to this glyph
-     */
+   * Reverses the order of the path points in all the paths,
+   * thus reversing the winding
+   * @returns {Glyph} - reference to this glyph
+   */
   reverseWinding() {
     for (let s = 0; s < this.shapes.length; s++) {
       this.shapes[s].reverseWinding();
@@ -784,11 +761,10 @@ export default class Glyph extends GlyphElement {
   // Alignment
   // --------------------------------------------------------------
 
-
   /**
-     * Move all the shapes to align with an edge
-     * @param {string} edge - which edge to align all the shapes to
-     */
+   * Move all the shapes to align with an edge
+   * @param {string} edge - which edge to align all the shapes to
+   */
   alignShapes(edge) {
     // debug('\n Glyph.alignShapes - START');
     // debug('\t edge: ' + edge);
@@ -858,9 +834,9 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Calculate the overall maxes for this Glyph
-     * @returns {Maxes}
-     */
+   * Calculate the overall maxes for this Glyph
+   * @returns {Maxes}
+   */
   calcMaxes() {
     // debug(`\n Glyph.calcMaxes - START `);
     this.cache.maxes = {};
@@ -890,12 +866,12 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Component Instances contain links to other Glyphs, or
-     * other Component Instances.  Circular links cause the world
-     * to explode, so let's check for those before we add a new link.
-     * @param {string} cid - ID of component to look for
-     * @returns {boolean}
-     */
+   * Component Instances contain links to other Glyphs, or
+   * other Component Instances.  Circular links cause the world
+   * to explode, so let's check for those before we add a new link.
+   * @param {string} cid - ID of component to look for
+   * @returns {boolean}
+   */
   canAddComponent(cid) {
     // debug('\n Glyph.canAddComponent - START');
     // debug('\t adding ' + cid + ' to (me) ' + this.id);
@@ -918,11 +894,11 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Look "down" through component instances, collecting IDs
-     * @param {array} re - collection of glyph IDs
-     * @param {boolean} excludePeers - At the top level, no need to collect IDs
-     * @returns {array}
-     */
+   * Look "down" through component instances, collecting IDs
+   * @param {array} re - collection of glyph IDs
+   * @param {boolean} excludePeers - At the top level, no need to collect IDs
+   * @returns {array}
+   */
   collectAllDownstreamLinks(re = [], excludePeers = false) {
     for (let s = 0; s < this.shapes.length; s++) {
       if (this.shapes[s].objType === 'ComponentInstance') {
@@ -934,10 +910,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Look "up" through the usedIn array to collect IDs
-     * @param {array} re - collection of glyph IDs
-     * @returns {array}
-     */
+   * Look "up" through the usedIn array to collect IDs
+   * @param {array} re - collection of glyph IDs
+   * @returns {array}
+   */
   collectAllUpstreamLinks(re = []) {
     for (let g = 0; g < this.usedIn.length; g++) {
       re = re.concat(getGlyph(this.usedIn[g]).collectAllUpstreamLinks(re));
@@ -947,10 +923,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * This method is called on Glyphs just before they are deleted
-     * to clean up all the component instance linking
-     * @param {string} thisID - ID of the glyph being deleted
-     */
+   * This method is called on Glyphs just before they are deleted
+   * to clean up all the component instance linking
+   * @param {string} thisID - ID of the glyph being deleted
+   */
   deleteLinks(thisID) {
     // debug('\n Glyph.deleteLinks - START');
     // debug('\t passed this as id: ' + thisID);
@@ -981,14 +957,14 @@ export default class Glyph extends GlyphElement {
   // Drawing
   // --------------------------------------------------------------
   /**
-     * Draw a Glyph to a canvas
-     * @param {object} ctx - canvas context
-     * @param {object} view - x/y/z view object
-     * @param {number} alpha - transparency between 0 and 1
-     * @param {boolean} addLSB - optionally move everything to account for LSB
-     * @param {string} fill - glyph fill color
-     * @returns {number} - Advance Width, according to view.z
-     */
+   * Draw a Glyph to a canvas
+   * @param {object} ctx - canvas context
+   * @param {object} view - x/y/z view object
+   * @param {number} alpha - transparency between 0 and 1
+   * @param {boolean} addLSB - optionally move everything to account for LSB
+   * @param {string} fill - glyph fill color
+   * @returns {number} - Advance Width, according to view.z
+   */
   drawGlyph(ctx, view = {x: 0, y: 0, z: 1}, alpha = 1, addLSB = false, fill = '#000') {
     debug('\n Glyph.drawGlyph - START ' + this.name);
     debug('\t view ' + json(view, true));
@@ -1001,18 +977,16 @@ export default class Glyph extends GlyphElement {
     ctx.beginPath();
     for (let j = 0; j < sl.length; j++) {
       shape = sl[j];
-      if (shape.visible) {
-        debug('\t ' + this.name + ' drawing ' + shape.objType + ' ' + j + ' ' + shape.name);
-        drewShape = shape.drawShape(ctx, view);
-        if (!drewShape) {
-          console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + this.name);
-          if (shape.objType === 'ComponentInstance' && !getGlyph(shape.link)) {
-            console.warn('>>> Component Instance has bad link: ' + shape.link);
-            const i = this.shapes.indexOf(shape);
-            if (i > -1) {
-              this.shapes.splice(i, 1);
-              console.warn('>>> Deleted the Instance');
-            }
+      debug('\t ' + this.name + ' drawing ' + shape.objType + ' ' + j + ' ' + shape.name);
+      drewShape = shape.drawShape(ctx, view);
+      if (!drewShape) {
+        console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + this.name);
+        if (shape.objType === 'ComponentInstance' && !getGlyph(shape.link)) {
+          console.warn('>>> Component Instance has bad link: ' + shape.link);
+          const i = this.shapes.indexOf(shape);
+          if (i > -1) {
+            this.shapes.splice(i, 1);
+            console.warn('>>> Deleted the Instance');
           }
         }
       }
@@ -1029,9 +1003,9 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Draw points that can be multi-selected
-     * @param {string} color - accent color
-     */
+   * Draw points that can be multi-selected
+   * @param {string} color - accent color
+   */
   drawMultiSelectAffordances(color = '#000') {
     let allPoints = [];
     for (let s = 0; s < this.shapes.length; s++) {
@@ -1044,13 +1018,13 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Checks to see if the cursor is over a control point, for cursor hover effect
-     * @param {number} x - x to check
-     * @param {number} y - y to check
-     * @param {number} targetSize - hit target around point to check
-     * @param {boolean} noHandles - only check for Path Points, not Handles
-     * @returns {boolean}
-     */
+   * Checks to see if the cursor is over a control point, for cursor hover effect
+   * @param {number} x - x to check
+   * @param {number} y - y to check
+   * @param {number} targetSize - hit target around point to check
+   * @param {boolean} noHandles - only check for Path Points, not Handles
+   * @returns {boolean}
+   */
   isOverControlPoint(x, y, targetSize, noHandles) {
     let re = false;
     for (let s = 0; s < this.shapes.length; s++) {
@@ -1068,13 +1042,13 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Make SVG from this Shape
-     * @param {number} size - how big
-     * @param {number} gutter - margin
-     * @param {number} emSquare - em square of the font
-     * @param {number} desc - descender value of the font (positive integer)
-     * @returns {string} - svg
-     */
+   * Make SVG from this Shape
+   * @param {number} size - how big
+   * @param {number} gutter - margin
+   * @param {number} emSquare - em square of the font
+   * @param {number} desc - descender value of the font (positive integer)
+   * @returns {string} - svg
+   */
   makeSVG(size = 50, gutter = 5, emSquare = 1000, desc = 300) {
     // debug('\n Glyph.makeSVG - START');
 
@@ -1098,9 +1072,9 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Make the data (attribute d="") for an SVG path tag
-     * @returns {string}
-     */
+   * Make the data (attribute d="") for an SVG path tag
+   * @returns {string}
+   */
   makeSVGPathData() {
     if (this.cache.svg) return this.cache.svg;
 
@@ -1113,16 +1087,14 @@ export default class Glyph extends GlyphElement {
     // Make Path Data
     for (let j = 0; j < sl.length; j++) {
       shape = sl[j];
-      if (shape.visible) {
-        if (shape.objType === 'ComponentInstance') {
-          tg = shape.transformedGlyph;
-          if (tg) pathData += tg.svgPathData;
-        } else {
-          path = new Path(clone(shape.path));
-          path.updatePathPosition(this.lsb, 0, true);
-          pathData += shape.path.svgPathData;
-          if (j < sl.length - 1) pathData += ' ';
-        }
+      if (shape.objType === 'ComponentInstance') {
+        tg = shape.transformedGlyph;
+        if (tg) pathData += tg.svgPathData;
+      } else {
+        path = new Path(clone(shape.path));
+        path.updatePathPosition(this.lsb, 0, true);
+        pathData += shape.path.svgPathData;
+        if (j < sl.length - 1) pathData += ' ';
       }
     }
     if (trim(pathData) === '') pathData = 'M0,0Z';
@@ -1136,9 +1108,9 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Converts all the Component Instances in this Glyph to stand-alone shapes
-     * @returns {Glyph}
-     */
+   * Converts all the Component Instances in this Glyph to stand-alone shapes
+   * @returns {Glyph}
+   */
   flattenGlyph() {
     // debug(`\n Glyph.flattenGlyph - START`);
 
@@ -1168,10 +1140,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Boolean combine all shapes in this Glyph to as few shapes as possible
-     * @param {boolean} dontToast - don't show progress messages
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * Boolean combine all shapes in this Glyph to as few shapes as possible
+   * @param {boolean} dontToast - don't show progress messages
+   * @returns {Glyph} - reference to this Glyph
+   */
   combineAllShapes(dontToast = false) {
     // debug('\n Glyph.combineAllShapes - START - ' + this.name);
     this.flattenGlyph();
@@ -1196,10 +1168,10 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Copy shapes (and attributes) from one glyph to another
-     * @param {string} destinationID - where to copy shapes to
-     * @param {object} copyGlyphAttributes - which attributes to copy in addition to shapes
-     */
+   * Copy shapes (and attributes) from one glyph to another
+   * @param {string} destinationID - where to copy shapes to
+   * @param {object} copyGlyphAttributes - which attributes to copy in addition to shapes
+   */
   copyShapesTo(destinationID, copyGlyphAttributes = {
     srcAutoWidth: false, srcWidth: false, srcLSB: false, srcRSB: false,
   }) {
@@ -1228,9 +1200,9 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Return true if there is anything to draw for this Glyph
-     * @returns {boolean}
-     */
+   * Return true if there is anything to draw for this Glyph
+   * @returns {boolean}
+   */
   hasShapes() {
     let tg;
     for (let s = 0; s < this.shapes.length; s++) {
@@ -1244,9 +1216,9 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Clean up any shapes with zero path points
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * Clean up any shapes with zero path points
+   * @returns {Glyph} - reference to this Glyph
+   */
   removeShapesWithZeroLengthPaths() {
     for (let s = 0; s < this.shapes.length; s++) {
       if (this.shapes[s].path && this.shapes[s].path.pathPoints.length === 0) {
@@ -1263,11 +1235,11 @@ export default class Glyph extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * When this Glyph is linked-to from another ComponentInstance, track
-     * where it's being used by adding it to this.usedIn
-     * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * When this Glyph is linked-to from another ComponentInstance, track
+   * where it's being used by adding it to this.usedIn
+   * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
+   * @returns {Glyph} - reference to this Glyph
+   */
   addToUsedIn(linkID) {
     this.usedIn.push(''+linkID);
     // sort numerically as opposed to alpha
@@ -1279,10 +1251,10 @@ export default class Glyph extends GlyphElement {
   }
 
   /**
-     * Removes a link from this usedIn array
-     * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
-     * @returns {Glyph} - reference to this Glyph
-     */
+   * Removes a link from this usedIn array
+   * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
+   * @returns {Glyph} - reference to this Glyph
+   */
   removeFromUsedIn(linkID) {
     const id = this.usedIn.indexOf(''+linkID);
     if (id !== -1) {

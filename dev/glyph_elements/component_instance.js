@@ -27,12 +27,11 @@ export default class ComponentInstance extends GlyphElement {
    * @param {boolean} reverseWinding - paths have opposite winding
    * @param {number} rotation - rotation difference
    * @param {boolean} rotateFirst - rotate/resize is different than resize/rotate
-   * @param {boolean} xLock - can't change horizontal position
-   * @param {boolean} yLock - can't change vertical position
-   * @param {boolean} wLock - can't change width
-   * @param {boolean} hLock - can't change height
-   * @param {boolean} ratioLock - change width and height 1:1
-   * @param {boolean} visible - is this shape visible
+   * @param {boolean} xLock - can the shape be moved horizontally
+   * @param {boolean} yLock - can the shape be moved vertically
+   * @param {boolean} wLock - can the shape be resized horizontally
+   * @param {boolean} hLock - can the shape be resized vertically
+   * @param {boolean} ratioLock - while resizing, maintain aspect ratio
    * @param {object} parent - link to the parent Glyph object
    */
   constructor({
@@ -52,7 +51,6 @@ export default class ComponentInstance extends GlyphElement {
     wLock = false,
     hLock = false,
     ratioLock = false,
-    visible = true,
     parent = false,
   } = {}) {
     super();
@@ -73,7 +71,8 @@ export default class ComponentInstance extends GlyphElement {
     this.wLock = wLock;
     this.hLock = hLock;
     this.ratioLock = ratioLock;
-    this.visible = visible;
+
+    this.objType = 'ComponentInstance';
   }
 
 
@@ -88,7 +87,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   save(verbose = false) {
     const re = {
-      objType: this.objType,
       link: this.link,
     };
 
@@ -107,9 +105,8 @@ export default class ComponentInstance extends GlyphElement {
     if (this.wLock !== false) re.wLock = this.wLock;
     if (this.hLock !== false) re.hLock = this.hLock;
     if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
-    if (this.visible !== true) re.visible = this.visible;
 
-    if (!verbose) delete re.objType;
+    if (verbose) re.objType = this.objType;
 
     return re;
   }
@@ -245,14 +242,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   get ratioLock() {
     return this._ratioLock;
-  }
-
-  /**
-   * get visible
-   * @returns {boolean}
-   */
-  get visible() {
-    return this._visible;
   }
 
   // Computed properties
@@ -497,17 +486,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set ratioLock(ratioLock) {
     this._ratioLock = !!ratioLock;
-    return this;
-  }
-
-  /**
-   * set visible
-   * @param {boolean} visible
-   * @returns {ComponentInstance} - reference to this ComponentInstance
-   */
-  set visible(visible) {
-    this._visible = !!visible;
-    this.changed();
     return this;
   }
 
