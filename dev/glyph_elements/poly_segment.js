@@ -23,12 +23,14 @@ import {sXcX, sYcY} from '../controls/canvas-edit/canvas-edit.js';
  */
 export default class PolySegment extends GlyphElement {
   /**
-     * Make a PolySegment
-     * @param {Array} segments
-     */
+   * Make a PolySegment
+   * @param {Array} segments
+   */
   constructor({segments = []} = {}) {
     super();
     this.segments = segments;
+
+    this.objType = 'PolySegment';
   }
 
 
@@ -37,13 +39,12 @@ export default class PolySegment extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Export object properties that need to be saved to a project file
-     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @returns {*}
-     */
+   * Export object properties that need to be saved to a project file
+   * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+   * @returns {*}
+   */
   save(verbose = false) {
     const re = {
-      objType: this.objType,
       segments: [],
     };
 
@@ -51,16 +52,16 @@ export default class PolySegment extends GlyphElement {
       re.segments[s] = this._segments[s].save(verbose);
     }
 
-    if (!verbose) delete re.objType;
+    if (verbose) re.objType = this.objType;
 
     return re;
   }
 
   /**
-     * Create a nicely-formatted string for this object
-     * @param {number} level - how far down we are
-     * @returns {string}
-     */
+   * Create a nicely-formatted string for this object
+   * @param {number} level - how far down we are
+   * @returns {string}
+   */
   print(level = 0) {
     let ind = '';
     for (let i=0; i<level; i++) ind += '  ';
@@ -85,9 +86,9 @@ export default class PolySegment extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * get the Segments array
-     * @returns {array}
-     */
+   * get the Segments array
+   * @returns {array}
+   */
   get segments() {
     return this._segments;
   }
@@ -98,9 +99,9 @@ export default class PolySegment extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * set the Segments array
-     * @param {array} segments
-     */
+   * set the Segments array
+   * @param {array} segments
+   */
   set segments(segments = []) {
     this._segments = [];
     for (let s = 0; s < segments.length; s++) {
@@ -114,10 +115,10 @@ export default class PolySegment extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Draw this PolySegment with random colors for each segment
-     * @param {number} dx - delta x
-     * @param {number} dy - delta y
-     */
+   * Draw this PolySegment with random colors for each segment
+   * @param {number} dx - delta x
+   * @param {number} dy - delta y
+   */
   drawPolySegmentOutline(dx, dy) {
     let c;
     for (let s = 0; s < this._segments.length; s++) {
@@ -127,8 +128,8 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Draw all the control points
-     */
+   * Draw all the control points
+   */
   drawPolySegmentPoints() {
     this._segments.forEach(function(v, i) {
       v.drawSegmentPoints(false, i);
@@ -136,9 +137,9 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Slowly draw each segment
-     * @param {number} delay - ms delay
-     */
+   * Slowly draw each segment
+   * @param {number} delay - ms delay
+   */
   slowlyDrawSegments(delay = 600) {
     // debug('\n PolySegment.slowlyDrawSegments - START');
     // debug(this._segments);
@@ -160,19 +161,19 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Convert this PolySegment to a Path
-     * @returns {Path}
-     */
+   * Convert this PolySegment to a Path
+   * @returns {Path}
+   */
   getPath() {
     // debug('\n PolySegment.getPath - START');
     // debug(this._segments);
 
     /**
-         * Creates a single Point from two segments
-         * @param {Segment} seg1 - First segment
-         * @param {Segment} seg2 - Second segment
-         * @returns {PathPoint}
-         */
+     * Creates a single Point from two segments
+     * @param {Segment} seg1 - First segment
+     * @param {Segment} seg2 - Second segment
+     * @returns {PathPoint}
+     */
     function makePathPointFromSegments(seg1, seg2) {
       const newPP = {
         h1: {coord: {x: seg1.p3x, y: seg1.p3y}},
@@ -214,10 +215,10 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Search to see if a Segment is in this PolySegment
-     * @param {Segment} seg - to look for
-     * @returns {boolean}
-     */
+   * Search to see if a Segment is in this PolySegment
+   * @param {Segment} seg - to look for
+   * @returns {boolean}
+   */
   containsSegment(seg) {
     for (let s = 0; s < this._segments.length; s++) {
       if (segmentsAreEqual(this._segments[s], seg)) return true;
@@ -226,10 +227,10 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Round all the Segment values
-     * @param {number} precision - decimal places
-     * @returns {PolySegment}
-     */
+   * Round all the Segment values
+   * @param {number} precision - decimal places
+   * @returns {PolySegment}
+   */
   roundAll(precision = 3) {
     for (let s = 0; s < this._segments.length; s++) {
       this._segments[s].roundAll(precision);
@@ -244,9 +245,9 @@ export default class PolySegment extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Finds all the intersections between segments
-     * @returns {array} - collection of intersections in ix format
-     */
+   * Finds all the intersections between segments
+   * @returns {array} - collection of intersections in ix format
+   */
   findIntersections() {
     // debug('\n PolySegment.findIntersections - START');
     // debug('\t ' + this._segments.length + ' segments');
@@ -271,10 +272,10 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Draws all the intersections between segments
-     * @param {object} ctx - canvas context
-     * @param {string} color
-     */
+   * Draws all the intersections between segments
+   * @param {object} ctx - canvas context
+   * @param {string} color
+   */
   drawIntersections(ctx, color = 'rgb(200, 50, 60)') {
     // debug('\n PolySegment.drawIntersections - START');
     const ix = this.findIntersections();
@@ -290,12 +291,12 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Takes a collection of intersections, and splits all the applicable
-     * segments at those points
-     * @param {array} ixArray - array of intersections in ix format
-     * @param {number} threshold - how closely to look and split
-     * @returns {PolySegment}
-     */
+   * Takes a collection of intersections, and splits all the applicable
+   * segments at those points
+   * @param {array} ixArray - array of intersections in ix format
+   * @param {number} threshold - how closely to look and split
+   * @returns {PolySegment}
+   */
   splitSegmentsAtIntersections(ixArray = this.findIntersections(), threshold) {
     // debug('\n PolySegment.splitSegmentsAtIntersections - START');
     // debug('\t before length ' + this._segments.length);
@@ -326,10 +327,10 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Takes all the segments and orders them based on their
-     * starting and ending points
-     * @returns {array} - collection of stitched PolySegments (hopefully just one)
-     */
+   * Takes all the segments and orders them based on their
+   * starting and ending points
+   * @returns {array} - collection of stitched PolySegments (hopefully just one)
+   */
   stitchSegmentsTogether() {
     // debug('\n PolySegment.stitchSegmentsTogether - START');
     const source = this.segments;
@@ -337,10 +338,10 @@ export default class PolySegment extends GlyphElement {
     const result = [];
 
     /**
-         * Looks for a segment with a provided starting point
-         * @param {XYPoint} co - starting point to look for
-         * @returns {Segment}
-         */
+     * Looks for a segment with a provided starting point
+     * @param {XYPoint} co - starting point to look for
+     * @returns {Segment}
+     */
     function getSegmentStartingAt(co) {
       let ts;
       let re;
@@ -369,9 +370,9 @@ export default class PolySegment extends GlyphElement {
     }
 
     /**
-         * Get the next unsorted segment's first point
-         * @returns {XYPoint}
-         */
+     * Get the next unsorted segment's first point
+     * @returns {XYPoint}
+     */
     function getNextUnusedSegmentP1() {
       for (let s = 0; s < source.length; s++) {
         if (source[s].objType === 'Segment') {
@@ -432,11 +433,11 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Takes individual Segments in this PolySegment, and figures out
-     * if they represent a single Shape, or multiple Shapes
-     * @param {string} name - name prefix for the new Shapes
-     * @returns {array} - collection of Shape objects
-     */
+   * Takes individual Segments in this PolySegment, and figures out
+   * if they represent a single Shape, or multiple Shapes
+   * @param {string} name - name prefix for the new Shapes
+   * @returns {array} - collection of Shape objects
+   */
   getSplitShapes(name = 'Shape') {
     const shapes = [];
 
@@ -448,9 +449,9 @@ export default class PolySegment extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Removes all the zero length segments
-     * @returns {PolySegment}
-     */
+   * Removes all the zero length segments
+   * @returns {PolySegment}
+   */
   removeZeroLengthSegments() {
     // debug('\n PolySegment.removeZeroLengthSegments - START');
 
@@ -479,10 +480,10 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Removes all line segments that are overlapped
-     * by larger line segments
-     * @returns {PolySegment}
-     */
+   * Removes all line segments that are overlapped
+   * by larger line segments
+   * @returns {PolySegment}
+   */
   removeRedundantLineSegments() {
     // debug('\n PolySegment.removeRedundantLineSegments - START');
     for (let s = 0; s < this._segments.length; s++) {
@@ -510,9 +511,9 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Removes all duplicate segments
-     * @returns {PolySegment}
-     */
+   * Removes all duplicate segments
+   * @returns {PolySegment}
+   */
   removeDuplicateSegments() {
     // debug('\n PolySegment.removeDuplicateSegments - START');
     for (let x = 0; x < this._segments.length; x++) {
@@ -539,10 +540,10 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Removes all the segments that overlap a provided shape
-     * @param {Shape} shape
-     * @returns {PolySegment}
-     */
+   * Removes all the segments that overlap a provided shape
+   * @param {Shape} shape
+   * @returns {PolySegment}
+   */
   removeSegmentsOverlappingShape(shape) {
     // debug('\n PolySegment.removeSegmentsOverlappingShape - START');
     // debug('\t segments starting as ' + this._segments.length);
@@ -552,12 +553,12 @@ export default class PolySegment extends GlyphElement {
     let ty;
 
     /**
-         * Finds out if a segment overlaps a shape
-         * @param {Segment} seg - segment to test
-         * @param {array} split
-         * @param {Shape} shape - shape to test
-         * @returns {boolean}
-         */
+     * Finds out if a segment overlaps a shape
+     * @param {Segment} seg - segment to test
+     * @param {array} split
+     * @param {Shape} shape - shape to test
+     * @returns {boolean}
+     */
     function testForHit(seg, split, shape) {
       split = seg.splitAtTime(split);
       tx = split[0].p4x;
@@ -596,9 +597,9 @@ export default class PolySegment extends GlyphElement {
   }
 
   /**
-     * Removes all segments not 'connected' to other segments
-     * @returns {PolySegment}
-     */
+   * Removes all segments not 'connected' to other segments
+   * @returns {PolySegment}
+   */
   removeNonConnectingSegments() {
     // debug('\n PolySegment.removeNonConnectingSegments - START');
     let test;

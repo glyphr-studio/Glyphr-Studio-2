@@ -105,12 +105,6 @@ describe('ComponentInstance', () => {
     ci.ratioLock = true;
     expect(ci.ratioLock).toBe(true);
   });
-
-  it('get/set visible', () => {
-    const ci = sampleComponentInstance();
-    ci.visible = false;
-    expect(ci.visible).toBe(false);
-  });
 });
 
 
@@ -171,7 +165,6 @@ yLock(yLock)
 wLock(wLock)
 hLock(hLock)
 ratioLock(ratioLock)
-visible(visible)
 x(x)
 y(y)
 width(w)

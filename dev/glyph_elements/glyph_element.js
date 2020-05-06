@@ -9,9 +9,9 @@ export default class GlyphElement {
 
 
   /**
-     * Any change that updates the shape of any part of a glyph
-     * gets bubbled up through the GlyphElement hierarchy
-     */
+   * Any change that updates the shape of any part of a glyph
+   * gets bubbled up through the GlyphElement hierarchy
+   */
   changed() {
     // let status = 'changed ' + this.objType;
 
@@ -28,71 +28,71 @@ export default class GlyphElement {
   }
 
   /**
-     * Find out what type of Element this is
-     */
+   * Find out what type of Element this is
+   */
   get objType() {
     return this._objType || this.constructor.name;
   }
 
   /**
-     * Find out what type of Element this is
-     * @param {string} type
-     * @returns {string}
-     */
+   * Find out what type of Element this is
+   * @param {string} type
+   * @returns {string}
+   */
   set objType(type) {
     this._objType = type;
     return this._objType;
   }
 
   /**
-     * get the cache
-     * @returns {object}
-     */
+   * get the cache
+   * @returns {object}
+   */
   get cache() {
     if (!this._cache) this._cache = {};
     return this._cache;
   }
 
   /**
-     * set the cache
-     * @param {object} cache
-     * @returns {object}
-     */
+   * set the cache
+   * @param {object} cache
+   * @returns {object}
+   */
   set cache(cache = {}) {
     this._cache = cache;
     return this._cache;
   }
 
   /**
-     * Export object properties that need to be saved to a project file
-     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @returns {*}
-     */
+   * Export object properties that need to be saved to a project file
+   * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+   * @returns {*}
+   */
   save(verbose = false) {
     const re = clone(this);
     re.objType = this.objType;
 
-    if (!verbose) delete re.objType;
+    if (verbose) re.objType = this.objType;
     if (re.cache) delete re.cache;
 
     return re;
   }
 
   /**
-     * String representation of this object
-     * Uses .save() to only get defaults
-     * @returns {string}
-     */
+   * String representation of this object
+   * Uses .save() to only get defaults
+   * @returns {string}
+   */
   toString() {
     return json(this.save());
   }
 
   /**
-     * Create a nicely-formatted string for this object
-     * @param {number} level - how far down we are
-     * @param {number} num - increment designator for arrays
-     * @returns {string}
-     */
+   * Create a nicely-formatted string for this object
+   * @param {number} level - how far down we are
+   * @param {number} num - increment designator for arrays
+   * @returns {string}
+   */
   print(level = 0, num = false) {
     let ind = '';
     for (let i=0; i<level; i++) ind += '  ';
@@ -126,8 +126,8 @@ export default class GlyphElement {
   }
 
   /**
-     * Figures out the center of the bounding box
-     */
+   * Figures out the center of the bounding box
+   */
   get center() {
     if (this.maxes ) {
       return {

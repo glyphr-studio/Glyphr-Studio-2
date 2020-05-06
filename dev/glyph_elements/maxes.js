@@ -7,12 +7,12 @@ import {isVal, round} from '../common/functions.js';
  */
 export default class Maxes extends GlyphElement {
   /**
-     * Create a Maxes object
-     * @param {number} xMin - smallest x value
-     * @param {number} xMax - largest x value
-     * @param {number} yMin - smallest y value
-     * @param {number} yMax - largest y value
-     */
+   * Create a Maxes object
+   * @param {number} xMin - smallest x value
+   * @param {number} xMax - largest x value
+   * @param {number} yMin - smallest y value
+   * @param {number} yMax - largest y value
+   */
   constructor({xMin, xMax, yMin, yMax} = {}) {
     super();
     // debug(`\n Maxes.constructor - START`);
@@ -21,6 +21,8 @@ export default class Maxes extends GlyphElement {
     this.xMax = xMax;
     this.yMin = yMin;
     this.yMax = yMax;
+
+    this.objType = 'Maxes';
 
     // debug(`\t maxes is now`);
     // debug(this);
@@ -34,15 +36,14 @@ export default class Maxes extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Export object properties that need to be saved to a project file
-     * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
-     * @returns {*}
-     */
+   * Export object properties that need to be saved to a project file
+   * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+   * @returns {*}
+   */
   save(verbose = false) {
     // debug(`\n Maxes.save - START`);
 
     const re = {
-      objType: this.objType,
     };
 
     if (isVal(this._xMin)) re.xMin = this._xMin;
@@ -50,7 +51,7 @@ export default class Maxes extends GlyphElement {
     if (isVal(this._yMin)) re.yMin = this._yMin;
     if (isVal(this._yMax)) re.yMax = this._yMax;
 
-    if (!verbose) delete re.objType;
+    if (verbose) re.objType = this.objType;
 
     // debug(`\t returning`);
     // debug(re);
@@ -59,12 +60,15 @@ export default class Maxes extends GlyphElement {
   }
 
   /**
-     * Create a nicely-formatted string for this object
-     * @param {number} level - how far down we are
-     * @returns {string}
-     */
+   * Create a nicely-formatted string for this object
+   * @param {number} level - how far down we are
+   * @returns {string}
+   */
   print(level = 0) {
-    let re = `{`;
+    let ind = '';
+    for (let i=0; i<level; i++) ind += '  ';
+
+    let re = `${ind}{`;
     re += `xMin:${this._xMin} `;
     re += `xMax:${this._xMax} `;
     re += `yMin:${this._yMin} `;
@@ -79,36 +83,36 @@ export default class Maxes extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Get xMin
-     * @returns {number} value
-     */
+   * Get xMin
+   * @returns {number} value
+   */
   get xMin() {
     if (isVal(this._xMin)) return this._xMin;
     else return Number.MAX_SAFE_INTEGER;
   }
 
   /**
-     * Get xMax
-     * @returns {number} value
-     */
+   * Get xMax
+   * @returns {number} value
+   */
   get xMax() {
     if (isVal(this._xMax)) return this._xMax;
     else return Number.MIN_SAFE_INTEGER;
   }
 
   /**
-     * Get yMin
-     * @returns {number} value
-     */
+   * Get yMin
+   * @returns {number} value
+   */
   get yMin() {
     if (isVal(this._yMin)) return this._yMin;
     else return Number.MAX_SAFE_INTEGER;
   }
 
   /**
-     * Get yMax
-     * @returns {number} value
-     */
+   * Get yMax
+   * @returns {number} value
+   */
   get yMax() {
     if (isVal(this._yMax)) return this._yMax;
     else return Number.MIN_SAFE_INTEGER;
@@ -116,9 +120,9 @@ export default class Maxes extends GlyphElement {
 
 
   /**
-     * Generic smallest box
-     * @returns {object}
-     */
+   * Generic smallest box
+   * @returns {object}
+   */
   get minBounds() {
     return {
       xMin: Number.MAX_SAFE_INTEGER,
@@ -129,9 +133,9 @@ export default class Maxes extends GlyphElement {
   }
 
   /**
-     * Generic largest box
-     * @returns {object}
-     */
+   * Generic largest box
+   * @returns {object}
+   */
   get maxBounds() {
     return {
       xMin: Number.MIN_SAFE_INTEGER,
@@ -147,10 +151,10 @@ export default class Maxes extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Set xMin
-     * @param {number} x - new value
-     * @returns {Maxes}
-     */
+   * Set xMin
+   * @param {number} x - new value
+   * @returns {Maxes}
+   */
   set xMin(x) {
     x = parseFloat(x);
     if (!isNaN(x)) this._xMin = x;
@@ -159,10 +163,10 @@ export default class Maxes extends GlyphElement {
   }
 
   /**
-     * Set xMax
-     * @param {number} x - new value
-     * @returns {Maxes}
-     */
+   * Set xMax
+   * @param {number} x - new value
+   * @returns {Maxes}
+   */
   set xMax(x) {
     x = parseFloat(x);
     if (!isNaN(x)) this._xMax = x;
@@ -171,10 +175,10 @@ export default class Maxes extends GlyphElement {
   }
 
   /**
-     * Set yMin
-     * @param {number} y - new value
-     * @returns {Maxes}
-     */
+   * Set yMin
+   * @param {number} y - new value
+   * @returns {Maxes}
+   */
   set yMin(y) {
     y = parseFloat(y);
     if (!isNaN(y)) this._yMin = y;
@@ -183,10 +187,10 @@ export default class Maxes extends GlyphElement {
   }
 
   /**
-     * Set yMax
-     * @param {number} y - new value
-     * @returns {Maxes}
-     */
+   * Set yMax
+   * @param {number} y - new value
+   * @returns {Maxes}
+   */
   set yMax(y) {
     y = parseFloat(y);
     if (!isNaN(y)) this._yMax = y;
@@ -200,9 +204,9 @@ export default class Maxes extends GlyphElement {
   // --------------------------------------------------------------
 
   /**
-     * Rounds all the values to a certain precision
-     * @param {number} precision - how many decimal paces to round to
-     */
+   * Rounds all the values to a certain precision
+   * @param {number} precision - how many decimal paces to round to
+   */
   roundAll(precision = 3) {
     this.xMin = round(this.xMin, precision);
     this.xMax = round(this.xMax, precision);

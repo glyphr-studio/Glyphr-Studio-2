@@ -26,6 +26,8 @@ export default class ControlPoint extends GlyphElement {
     this.use = use;
     this.xLock = xLock;
     this.yLock = yLock;
+
+    this.objType = 'ControlPoint';
   }
 
 
@@ -40,7 +42,6 @@ export default class ControlPoint extends GlyphElement {
    */
   save(verbose = false) {
     const re = {
-      objType: this.objType,
       coord: this.coord.save(verbose),
     };
 
@@ -48,7 +49,7 @@ export default class ControlPoint extends GlyphElement {
     if (this.xLock) re.xLock = true;
     if (this.yLock) re.yLock = true;
 
-    if (!verbose) delete re.objType;
+    if (verbose) re.objType = this.objType;
 
     return re;
   }

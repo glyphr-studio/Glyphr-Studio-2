@@ -89,7 +89,6 @@ export default class GlyphSequence {
     // Setters
     // --------------------------------------------------------------
 
-
     /**
      * sets a new maxes
      * @param {object} maxes - bounding box
