@@ -15,17 +15,20 @@ the new UI layer.
 | :white_check_mark: | Change prototypes to classes |
 | :white_check_mark: | Let / Const instead of Var |
 | :white_check_mark: | Template strings instead of string concatenation |
+| :white_check_mark: | Lint everything with ESLint, Google style |
 | :white_check_mark: | JSDoc *all the things* |
 | :white_check_mark: | Jasmine tests for everything (basic coverage) |
 | :soon: | Jasmine tests for everything (advanced coverage) |
 
 | | **UI Layer stuff** |
 |:---:|:--- |
-| :soon: | New top-level navigation / page view switching |
 | :white_check_mark: | Use Web Components to define atomic controls |
+| :soon: | New top-level navigation / page view switching |
+| :soon: | CSS3, mostly for Variables and Layout |
+| :soon: | Let / Const instead of Var |
+| :soon: | Template strings instead of string concatenation |
 | :soon: | Lint everything with ESLint, Google style |
 | :soon: | JSDoc *all the things* |
-| :soon: | CSS3, mostly for Variables and Layout |
 | :black_square_button: | Jasmine tests for everything (basic coverage) |
 | :black_square_button: | Investigation - Language switching for localization |
 
