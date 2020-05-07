@@ -6,23 +6,27 @@ While most features and functionality will be the same as V1, the one main funct
 be **multi-project editing** that will allow for cross-project copy/paste and merging fonts.
 
 ## What's changing
-| | **Convert our JavaScript to use ES6 stuff** |
+My rough road-map is to start refactoring the Glyph Element objects (the underlying data structures
+that describe glyphs), ensure we have good separation between data and the UI, then start working on
+the new UI layer.
+| | **Glyph Elements / data structure stuff** |
 |:---:|:--- |
-| :soon: | Change prototypes to classes |
+| :white_check_mark: | Modules (native) |
+| :white_check_mark: | Change prototypes to classes |
 | :white_check_mark: | Let / Const instead of Var |
-| :black_square_button: | Template strings instead of string concatenation |
-| :soon: | Modules (native) |
-| :black_square_button: | Investigation - HTML Templates or Web Components for UI Controls |
-| | Probably more... |
+| :white_check_mark: | Template strings instead of string concatenation |
+| :white_check_mark: | JSDoc *all the things* |
+| :white_check_mark: | Jasmine tests for everything (basic coverage) |
+| :soon: | Jasmine tests for everything (advanced coverage) |
 
-| | **Other stuff** |
+| | **UI Layer stuff** |
 |:---:|:--- |
+| :soon: | New top-level navigation / page view switching |
+| :white_check_mark: | Use Web Components to define atomic controls |
 | :soon: | Lint everything with ESLint, Google style |
 | :soon: | JSDoc *all the things* |
-| :black_square_button: | CSS3, mostly for Variables and Layout |
-| :white_check_mark: | New test framework and tests for all our code |
-| :white_check_mark: | Dev and Test environments that make it easy to keep code separate and testable. |
-| :soon: | Minimize global variables |
+| :soon: | CSS3, mostly for Variables and Layout |
+| :black_square_button: | Jasmine tests for everything (basic coverage) |
 | :black_square_button: | Investigation - Language switching for localization |
 
 
