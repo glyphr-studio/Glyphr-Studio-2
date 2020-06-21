@@ -4,11 +4,18 @@ import Maxes from './maxes.js';
 import Segment from './segment.js';
 import PolySegment from './poly_segment.js';
 import PathPoint from './path_point.js';
-import {clone, round, isVal, hasNonValues, duplicates, pointsAreEqual} from '../common/functions.js';
+import {
+  clone,
+  round,
+  isVal,
+  hasNonValues,
+  duplicates,
+  pointsAreEqual,
+} from '../common/functions.js';
 // import {json} from '../common/functions.js';
-import {getOverallMaxes, maxesOverlap} from './maxes.js';
-import {findSegmentIntersections} from './poly_segment.js';
-import {sXcX, sYcY, getView} from '../controls/canvas-edit/canvas-edit.js';
+import { getOverallMaxes, maxesOverlap } from './maxes.js';
+import { findSegmentIntersections } from './poly_segment.js';
+import { sXcX, sYcY, getView } from '../controls/canvas-edit/canvas-edit.js';
 
 /**
  * Glyph Element > Path
@@ -28,11 +35,7 @@ export default class Path extends GlyphElement {
    * @param {number} winding - number representing winding direction
    * @param {object} parent - link to the parent Shape object
    */
-  constructor({
-    pathPoints = [],
-    winding,
-    parent = false,
-  } = {}) {
+  constructor({ pathPoints = [], winding, parent = false } = {}) {
     // debug(`\nPath.constructor - Start`);
     super();
     this.parent = parent;
@@ -43,7 +46,6 @@ export default class Path extends GlyphElement {
 
     // debug(`Path.constructor - End\n`);
   }
-
 
   // --------------------------------------------------------------
   // Common Glyphr Studio object methods
@@ -76,7 +78,7 @@ export default class Path extends GlyphElement {
    */
   print(level = 0) {
     let ind = '';
-    for (let i=0; i<level; i++) ind += '  ';
+    for (let i = 0; i < level; i++) ind += '  ';
 
     let re = `${ind}{Path\n`;
     ind += '  ';
@@ -85,18 +87,17 @@ export default class Path extends GlyphElement {
 
     re += `${ind}pathPoints: [\n`;
     this._pathPoints.forEach((pp, i) => {
-      re += pp.print(level+2, i);
+      re += pp.print(level + 2, i);
       re += `\n`;
     });
     re += `${ind}]\n`;
 
-    re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
+    re += `${ind}maxes: ${this.maxes.print(level + 1)}\n`;
 
     re += `${ind.substring(2)}}/Path`;
 
     return re;
   }
-
 
   // --------------------------------------------------------------
   // Getters
@@ -189,7 +190,6 @@ export default class Path extends GlyphElement {
     this.cache.svgPathData = this.makeSVGPathData();
     return this.cache.svgPathData;
   }
-
 
   // --------------------------------------------------------------
   //  Setters
@@ -289,7 +289,6 @@ export default class Path extends GlyphElement {
     return this;
   }
 
-
   // --------------------------------------------------------------
   //  SIZE AND POSITION
   // --------------------------------------------------------------
@@ -305,8 +304,8 @@ export default class Path extends GlyphElement {
     if (nw !== false) nw = parseFloat(nw);
     if (nh !== false) nh = parseFloat(nh);
 
-    const dw = (nw !== false) ? (nw - this.width) : 0;
-    const dh = (nh !== false) ? (nh - this.height) : 0;
+    const dw = nw !== false ? nw - this.width : 0;
+    const dh = nh !== false ? nh - this.height : 0;
 
     this.updatePathSize(dw, dh, ratioLock);
 
@@ -346,10 +345,10 @@ export default class Path extends GlyphElement {
     let oldHeight = this.height;
     if (oldHeight === 0) oldHeight = 1;
 
-    const newWidth = Math.max((oldWidth + dw), 1);
-    const newHeight = Math.max((oldHeight + dh), 1);
-    const ratioHeight = (newHeight / oldHeight);
-    const ratioWidth = (newWidth / oldWidth);
+    const newWidth = Math.max(oldWidth + dw, 1);
+    const newHeight = Math.max(oldHeight + dh, 1);
+    const ratioHeight = newHeight / oldHeight;
+    const ratioWidth = newWidth / oldWidth;
 
     // If ratio locked, keep both w&h from bottoming out at 1
     if (ratioLock) {
@@ -361,12 +360,12 @@ export default class Path extends GlyphElement {
 
     for (let e = 0; e < this.pathPoints.length; e++) {
       const pp = this.pathPoints[e];
-      pp.p.x = (((pp.p.x - this.maxes.xMin) * ratioWidth) + this.maxes.xMin);
-      pp.h1.x = (((pp.h1.x - this.maxes.xMin) * ratioWidth) + this.maxes.xMin);
-      pp.h2.x = (((pp.h2.x - this.maxes.xMin) * ratioWidth) + this.maxes.xMin);
-      pp.p.y = (((pp.p.y - this.maxes.yMin) * ratioHeight) + this.maxes.yMin);
-      pp.h1.y = (((pp.h1.y - this.maxes.yMin) * ratioHeight) + this.maxes.yMin);
-      pp.h2.y = (((pp.h2.y - this.maxes.yMin) * ratioHeight) + this.maxes.yMin);
+      pp.p.x = (pp.p.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
+      pp.h1.x = (pp.h1.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
+      pp.h2.x = (pp.h2.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
+      pp.p.y = (pp.p.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
+      pp.h1.y = (pp.h1.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
+      pp.h2.y = (pp.h2.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
     }
 
     if (this.checkForNaN()) {
@@ -397,8 +396,8 @@ export default class Path extends GlyphElement {
     if (nx !== false) nx = parseFloat(nx);
     if (ny !== false) ny = parseFloat(ny);
 
-    const dx = (nx !== false) ? ((nx * 1) - this.maxes.xMin) : 0;
-    const dy = (ny !== false) ? ((ny * 1) - this.maxes.yMax) : 0;
+    const dx = nx !== false ? nx * 1 - this.maxes.xMin : 0;
+    const dy = ny !== false ? ny * 1 - this.maxes.yMax : 0;
     // debug('\t dx dy: ' + dx + ' ' + dy);
 
     this.updatePathPosition(dx, dy);
@@ -509,7 +508,6 @@ export default class Path extends GlyphElement {
     return false;
   }
 
-
   // --------------------------------------------------------------
   //  Drawing
   // --------------------------------------------------------------
@@ -532,7 +530,7 @@ export default class Path extends GlyphElement {
 
     let pp;
     let np;
-    const precision = snap? 0 : 9;
+    const precision = snap ? 0 : 9;
 
     const p1x = sXcX(round(this.pathPoints[0].p.x, precision), view);
     const p1y = sYcY(round(this.pathPoints[0].p.y, precision), view);
@@ -573,7 +571,6 @@ export default class Path extends GlyphElement {
     // debug(' Path.drawPath - END\n');
   }
 
-
   // --------------------------------------------------------------
   //  Translate to other languages
   // --------------------------------------------------------------
@@ -586,7 +583,7 @@ export default class Path extends GlyphElement {
    */
   makePathPostScript(lastX = 0, lastY = 0) {
     if (!this.pathPoints) {
-      return {'re': '', 'lastX': lastX, 'lastY': lastY};
+      return { re: '', lastX: lastX, lastY: lastY };
     }
 
     let p1;
@@ -598,7 +595,12 @@ export default class Path extends GlyphElement {
     let p2ppx;
     let p2ppy;
     let trr = '';
-    let re = '\t\t\t\t' + (this.pathPoints[0].p.x - lastX) + ' ' + (this.pathPoints[0].p.y - lastY) + ' rmoveto \n';
+    let re =
+      '\t\t\t\t' +
+      (this.pathPoints[0].p.x - lastX) +
+      ' ' +
+      (this.pathPoints[0].p.y - lastY) +
+      ' rmoveto \n';
 
     // debug('makePathPostScript:\n\t ' + re);
     for (let cp = 0; cp < this.pathPoints.length; cp++) {
@@ -611,15 +613,28 @@ export default class Path extends GlyphElement {
       p2h1y = p2.h1.y - p1.h2.y;
       p2ppx = p2.p.x - p2.h1.x;
       p2ppy = p2.p.y - p2.h1.y;
-      trr = '\t\t\t\t' + p1h2x + ' ' + p1h2y + ' ' + p2h1x + ' ' + p2h1y + ' ' + p2ppx + ' ' + p2ppy + ' rrcurveto \n';
+      trr =
+        '\t\t\t\t' +
+        p1h2x +
+        ' ' +
+        p1h2y +
+        ' ' +
+        p2h1x +
+        ' ' +
+        p2h1y +
+        ' ' +
+        p2ppx +
+        ' ' +
+        p2ppy +
+        ' rrcurveto \n';
       // debug('\t ' + trr);
       re += trr;
     }
 
     return {
-      're': re,
-      'lastX': p2.p.x,
-      'lastY': p2.p.y,
+      re: re,
+      lastX: p2.p.x,
+      lastY: p2.p.y,
     };
   }
 
@@ -641,7 +656,11 @@ export default class Path extends GlyphElement {
     let p1;
     let p2;
     let trr = '';
-    let re = 'M' + round(this.pathPoints[0].p.x, roundValue) + ',' + round(this.pathPoints[0].p.y, roundValue);
+    let re =
+      'M' +
+      round(this.pathPoints[0].p.x, roundValue) +
+      ',' +
+      round(this.pathPoints[0].p.y, roundValue);
 
     // debug('makePathPostScript:\n\t ' + re);
     if (re.indexOf('NaN') > -1) {
@@ -653,7 +672,19 @@ export default class Path extends GlyphElement {
       p1 = this.pathPoints[cp];
       // p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
       p2 = this.pathPoints[this.getNextPointNum(cp)];
-      trr = ' C' + round(p1.h2.x, roundValue) + ',' + round(p1.h2.y, roundValue) + ',' + round(p2.h1.x, roundValue) + ',' + round(p2.h1.y, roundValue) + ',' + round(p2.p.x, roundValue) + ',' + round(p2.p.y, roundValue);
+      trr =
+        ' C' +
+        round(p1.h2.x, roundValue) +
+        ',' +
+        round(p1.h2.y, roundValue) +
+        ',' +
+        round(p2.h1.x, roundValue) +
+        ',' +
+        round(p2.h1.y, roundValue) +
+        ',' +
+        round(p2.p.x, roundValue) +
+        ',' +
+        round(p2.p.y, roundValue);
       // debug('\t ' + trr);
       if (trr.indexOf('NaN') > -1) {
         console.warn(glyphName + ' PathPoint ' + cp + ' has NaN: ' + trr);
@@ -690,10 +721,14 @@ export default class Path extends GlyphElement {
     const pp2 = this.pathPoints[this.getNextPointNum(num)];
 
     const re = new Segment({
-      'p1x': pp1.p.x, 'p1y': pp1.p.y,
-      'p2x': pp1.h2.x, 'p2y': pp1.h2.y,
-      'p3x': pp2.h1.x, 'p3y': pp2.h1.y,
-      'p4x': pp2.p.x, 'p4y': pp2.p.y,
+      p1x: pp1.p.x,
+      p1y: pp1.p.y,
+      p2x: pp1.h2.x,
+      p2y: pp1.h2.y,
+      p3x: pp2.h1.x,
+      p3y: pp2.h1.y,
+      p4x: pp2.p.x,
+      p4y: pp2.p.y,
     });
     this.cache.segments[num] = re;
     // debug(re.print());
@@ -725,7 +760,7 @@ export default class Path extends GlyphElement {
       seg.push(this.getSegment(pp));
     }
 
-    const re = new PolySegment({segments: seg});
+    const re = new PolySegment({ segments: seg });
 
     // debug(`\t returning`);
     // debug(re);
@@ -733,7 +768,6 @@ export default class Path extends GlyphElement {
 
     return re;
   }
-
 
   // --------------------------------------------------------------
   //  Canvas helper functions
@@ -773,8 +807,12 @@ export default class Path extends GlyphElement {
 
     if (!a) return false;
 
-    if (((a.p.x + targetSize) > x) && ((a.p.x - targetSize) < x) &&
-            ((a.p.y + targetSize) > y) && ((a.p.y - targetSize) < y)) {
+    if (
+      a.p.x + targetSize > x &&
+      a.p.x - targetSize < x &&
+      a.p.y + targetSize > y &&
+      a.p.y - targetSize < y
+    ) {
       // debug(' Path.isOverFirstPoint - END - return TRUE\n');
       return true;
     }
@@ -868,9 +906,9 @@ export default class Path extends GlyphElement {
 
     for (let e = 0; e < this.pathPoints.length; e++) {
       const pp = this.pathPoints[e];
-      pp.p.y += ((mid - pp.p.y) * 2);
-      pp.h1.y += ((mid - pp.h1.y) * 2);
-      pp.h2.y += ((mid - pp.h2.y) * 2);
+      pp.p.y += (mid - pp.p.y) * 2;
+      pp.h1.y += (mid - pp.h1.y) * 2;
+      pp.h2.y += (mid - pp.h2.y) * 2;
     }
     this.y = startingY;
     this.reverseWinding();
@@ -893,9 +931,9 @@ export default class Path extends GlyphElement {
 
     for (let e = 0; e < this.pathPoints.length; e++) {
       const pp = this.pathPoints[e];
-      pp.p.x += ((mid - pp.p.x) * 2);
-      pp.h1.x += ((mid - pp.h1.x) * 2);
-      pp.h2.x += ((mid - pp.h2.x) * 2);
+      pp.p.x += (mid - pp.p.x) * 2;
+      pp.h1.x += (mid - pp.h1.x) * 2;
+      pp.h2.x += (mid - pp.h2.x) * 2;
     }
     this.x = startingX;
     this.reverseWinding();
@@ -933,7 +971,7 @@ export default class Path extends GlyphElement {
    */
   insertPathPoint(t = 0.5, pointNumber = 0) {
     const pp1i = pointNumber;
-    const pp1 = (pp1i === false ? this.pathPoints[0] : this.pathPoints[pp1i]);
+    const pp1 = pp1i === false ? this.pathPoints[0] : this.pathPoints[pp1i];
     // var pp2i = (pp1i+1)%this.pathPoints.length;
     const pp2i = this.getNextPointNum(pp1i);
     const pp2 = this.pathPoints[pp2i];
@@ -948,10 +986,10 @@ export default class Path extends GlyphElement {
       const s2 = splits[1];
 
       // New Point
-      nP = {coord: {x: s1.p4x, y: s1.p4y}};
-      nH1 = {coord: {x: s1.p3x, y: s1.p3y}};
-      nH2 = {coord: {x: s2.p2x, y: s2.p2y}};
-      ppn = new PathPoint({p: nP, h1: nH1, h2: nH2, type: 'flat'});
+      nP = { coord: { x: s1.p4x, y: s1.p4y } };
+      nH1 = { coord: { x: s1.p3x, y: s1.p3y } };
+      nH2 = { coord: { x: s2.p2x, y: s2.p2y } };
+      ppn = new PathPoint({ p: nP, h1: nH1, h2: nH2, type: 'flat' });
       ppn.roundAll();
 
       // Update P1
@@ -968,10 +1006,10 @@ export default class Path extends GlyphElement {
     } else {
       // just make a random point
       const d = 100;
-      nP = {coord: {'x': pp1.p.x + d, 'y': pp1.p.y + d}};
-      nH1 = {coord: {'x': pp1.h2.x + d, 'y': pp1.h2.y + d}};
-      nH2 = {coord: {'x': pp1.h1.x + d, 'y': pp1.h1.y + d}};
-      ppn = new PathPoint({'p': nP, 'h1': nH1, 'h2': nH2, 'type': pp1.type});
+      nP = { coord: { x: pp1.p.x + d, y: pp1.p.y + d } };
+      nH1 = { coord: { x: pp1.h2.x + d, y: pp1.h2.y + d } };
+      nH2 = { coord: { x: pp1.h1.x + d, y: pp1.h1.y + d } };
+      ppn = new PathPoint({ p: nP, h1: nH1, h2: nH2, type: pp1.type });
     }
 
     // Insert
@@ -999,11 +1037,11 @@ export default class Path extends GlyphElement {
     for (let pp = 0; pp < this.pathPoints.length; pp++) {
       grains = this.getSegment(pp).quickLength * 100;
 
-      for (let t = 0; t < 1; t += (1 / grains)) {
+      for (let t = 0; t < 1; t += 1 / grains) {
         check = this.getXYPointFromSplit(t, pp);
         d = Math.sqrt(
-            ((check.x - point.x) * (check.x - point.x)) +
-                    ((check.y - point.y) * (check.y - point.y))
+          (check.x - point.x) * (check.x - point.x) +
+            (check.y - point.y) * (check.y - point.y)
         );
 
         if (d < minDistance) {
@@ -1011,11 +1049,11 @@ export default class Path extends GlyphElement {
 
           minDistance = d;
           first = {
-            'point': pp,
-            'split': t,
-            'distance': d,
-            'x': check.x,
-            'y': check.y,
+            point: pp,
+            split: t,
+            distance: d,
+            x: check.x,
+            y: check.y,
           };
         }
       }
@@ -1071,7 +1109,6 @@ export default class Path extends GlyphElement {
         return this.pathPoints[index];
       }
     */
-
 
   // ----------------------------------
   // Calc Maxes
@@ -1147,16 +1184,20 @@ export default class Path extends GlyphElement {
   checkForNaN() {
     for (let pp = 0; pp < this.pathPoints.length; pp++) {
       const tp = this.pathPoints[pp];
-      if (isNaN(tp.p.x) || isNaN(tp.p.y) ||
-                isNaN(tp.h1.x) || isNaN(tp.h1.y) ||
-                isNaN(tp.h2.x) || isNaN(tp.h2.y)) {
+      if (
+        isNaN(tp.p.x) ||
+        isNaN(tp.p.y) ||
+        isNaN(tp.h1.x) ||
+        isNaN(tp.h1.y) ||
+        isNaN(tp.h2.x) ||
+        isNaN(tp.h2.y)
+      ) {
         return true;
       }
     }
     return false;
   }
 }
-
 
 // --------------------------------------------------------------
 // Boolean Combine
@@ -1207,12 +1248,11 @@ export function findPathIntersections(p1, p2) {
     bs = p1.getSegment(p1p);
     ts = p2.getSegment(p2p);
 
-
     if (maxesOverlap(bs.getFastMaxes(), ts.getFastMaxes())) {
       // debug('\t\t pushed!');
       // bs.drawSegmentOutline();
       // ts.drawSegmentOutline();
-      segmentOverlaps.push({'bottom': bs, 'top': ts});
+      segmentOverlaps.push({ bottom: bs, top: ts });
     }
   }
 
@@ -1220,8 +1260,8 @@ export function findPathIntersections(p1, p2) {
   // Find overlaps within a single path -- don't care about this case
 
   // Find overlaps between two paths
-  for (let bpp=0; bpp < p1.pathPoints.length; bpp++) {
-    for (let tpp=0; tpp < p2.pathPoints.length; tpp++) {
+  for (let bpp = 0; bpp < p1.pathPoints.length; bpp++) {
+    for (let tpp = 0; tpp < p2.pathPoints.length; tpp++) {
       pushSegOverlaps(p1, bpp, p2, tpp);
     }
   }
@@ -1233,8 +1273,12 @@ export function findPathIntersections(p1, p2) {
 
   // Use overlaps to find intersections
   let re = [];
-  for (let v=0; v<segmentOverlaps.length; v++) {
-    re = findSegmentIntersections(segmentOverlaps[v].bottom, segmentOverlaps[v].top, 0);
+  for (let v = 0; v < segmentOverlaps.length; v++) {
+    re = findSegmentIntersections(
+      segmentOverlaps[v].bottom,
+      segmentOverlaps[v].top,
+      0
+    );
     if (re.length > 0) {
       intersects = intersects.concat(re);
     }
@@ -1268,10 +1312,14 @@ export function findPathPointBoundaryIntersections(p1, p2) {
   function check(chk, against) {
     const m = against.maxes;
     let tpp;
-    for (let pp=0; pp<chk.pathPoints.length; pp++) {
+    for (let pp = 0; pp < chk.pathPoints.length; pp++) {
       tpp = chk.pathPoints[pp];
-      if ( (tpp.p.x === m.xMin) || (tpp.p.x === m.xMax) ||
-                (tpp.p.y === m.yMin) || (tpp.p.y === m.yMax) ) {
+      if (
+        tpp.p.x === m.xMin ||
+        tpp.p.x === m.xMax ||
+        tpp.p.y === m.yMin ||
+        tpp.p.y === m.yMax
+      ) {
         // TODO - get rid of .isHere
         // if (against.isHere(sXcX(tpp.p.x), sYcY(tpp.p.y))) {
         // if (against.isHere(tpp.p.x, tpp.p.y)) {
@@ -1303,10 +1351,10 @@ export function findPathPointIntersections(p1, p2) {
   // debug(p1.toString());
   // debug(p2.toString());
 
-  for (let pp1=0; pp1<p1.pathPoints.length; pp1++) {
-    for (let pp2=0; pp2<p2.pathPoints.length; pp2++) {
+  for (let pp1 = 0; pp1 < p1.pathPoints.length; pp1++) {
+    for (let pp2 = 0; pp2 < p2.pathPoints.length; pp2++) {
       if (pointsAreEqual(p1.pathPoints[pp1].p, p2.pathPoints[pp2].p, 0.01)) {
-        ix = ''+p1.pathPoints[pp1].p.x+'/'+p1.pathPoints[pp1].p.y;
+        ix = '' + p1.pathPoints[pp1].p.x + '/' + p1.pathPoints[pp1].p.y;
         // debug(`\t found ${ix}`);
 
         re.push(ix);

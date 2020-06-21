@@ -1,22 +1,35 @@
 // -----------------------------------------------------------------
 // Dialog Box, Error Box, Notation, toasts
 // -----------------------------------------------------------------
-export {closeDialog, openDialog, openBigDialog, isBigDialogOpen,
-  openNotation, closeNotation, makeErrorMessageBox, showErrorMessageBox,
-  closeErrorMessageBox, toggleDialogExportOptions, showToast};
+export {
+  closeDialog,
+  openDialog,
+  openBigDialog,
+  isBigDialogOpen,
+  openNotation,
+  closeNotation,
+  makeErrorMessageBox,
+  showErrorMessageBox,
+  closeErrorMessageBox,
+  toggleDialogExportOptions,
+  showToast,
+};
 
 /**
  * Closes any type of dialog box that may be open
  */
 function closeDialog() {
-  if (!_UI.popOut && document.getElementById('npSave')) document.getElementById('npSave').style.backgroundColor = 'transparent';
-  document.getElementById('dialog_bg').style.display='none';
-  document.getElementById('big_dialog_box').style.display='none';
-  document.getElementById('dialog_box').style.display='none';
-  document.getElementById('saveFormatFlyout').style.display='none';
+  if (!_UI.popOut && document.getElementById('npSave'))
+    document.getElementById('npSave').style.backgroundColor = 'transparent';
+  document.getElementById('dialog_bg').style.display = 'none';
+  document.getElementById('big_dialog_box').style.display = 'none';
+  document.getElementById('dialog_box').style.display = 'none';
+  document.getElementById('saveFormatFlyout').style.display = 'none';
 
-  document.getElementById('dialogRightContent').innerHTML = '<b>Error: unspecified dialog box content.</b>';
-  document.getElementById('bigDialogLeftContent').innerHTML = '<b>Error: unspecified dialog box content.</b>';
+  document.getElementById('dialogRightContent').innerHTML =
+    '<b>Error: unspecified dialog box content.</b>';
+  document.getElementById('bigDialogLeftContent').innerHTML =
+    '<b>Error: unspecified dialog box content.</b>';
 
   // document.body.focus();
 }
@@ -34,8 +47,8 @@ function openDialog(content) {
   if (dc.style.height > 800) dc.style.height = 800;
   else dc.style.width = 'auto';
 
-  document.getElementById('dialog_box').style.display='block';
-  document.getElementById('dialog_bg').style.display='block';
+  document.getElementById('dialog_box').style.display = 'block';
+  document.getElementById('dialog_bg').style.display = 'block';
 }
 
 /**
@@ -47,10 +60,12 @@ function openBigDialog(content) {
   closeDialog();
   document.body.focus();
   document.getElementById('bigDialogLeftContent').innerHTML = content;
-  document.getElementById('bigDialogScrollContent').innerHTML = make_GlyphChooser(_UI.glyphChooser.dialog);
+  document.getElementById(
+    'bigDialogScrollContent'
+  ).innerHTML = make_GlyphChooser(_UI.glyphChooser.dialog);
 
-  document.getElementById('big_dialog_box').style.display='block';
-  document.getElementById('dialog_bg').style.display='block';
+  document.getElementById('big_dialog_box').style.display = 'block';
+  document.getElementById('dialog_bg').style.display = 'block';
 }
 
 /**
@@ -72,16 +87,16 @@ function openNotation(content, x, y) {
   getEditDocument().body.focus();
   const n = getEditDocument().getElementById('notation');
   n.innerHTML = content;
-  n.style.top = (round(y)+'px');
-  n.style.left = (round(x+50)+'px');
-  n.style.display='block';
+  n.style.top = round(y) + 'px';
+  n.style.left = round(x + 50) + 'px';
+  n.style.display = 'block';
 }
 
 /**
  * Closes any notation dialog boxes
  */
 function closeNotation() {
-  getEditDocument().getElementById('notation').style.display='none';
+  getEditDocument().getElementById('notation').style.display = 'none';
   getEditDocument().getElementById('notation').innerHTML = '&#x20E2;';
   getEditDocument().body.focus();
 }
@@ -107,12 +122,13 @@ function toggleDialogExportOptions() {
  * @returns {string} - HTML content
  */
 function makeErrorMessageBox() {
-  const con ='<div id="errormessagebox" style="display:none;">' +
-  '<table cellpadding=0 cellspacing=0 border=0><tr>' +
-  '<td class="errormessageleftbar">'+
-  '<button class="errormessageclosebutton" onclick="closeErrorMessageBox();">&times;</button></td>' +
-  '<td id="errormessagecontent"></td>' +
-  '</tr></table></div>';
+  const con =
+    '<div id="errormessagebox" style="display:none;">' +
+    '<table cellpadding=0 cellspacing=0 border=0><tr>' +
+    '<td class="errormessageleftbar">' +
+    '<button class="errormessageclosebutton" onclick="closeErrorMessageBox();">&times;</button></td>' +
+    '<td id="errormessagecontent"></td>' +
+    '</tr></table></div>';
 
   return con;
 }
@@ -180,7 +196,7 @@ function showToast(msg, dur, fn) {
     curropacity = finalopacity;
     step = stepmax;
 
-    msgdiv.style.marginTop = (finaltop + 'px');
+    msgdiv.style.marginTop = finaltop + 'px';
     msgdiv.style.opacity = finalopacity;
 
     setToastTimeout(disappearStep, durration);
@@ -201,10 +217,10 @@ function showToast(msg, dur, fn) {
       setToastTimeout(appearStep, timestep);
     } else if (step < stepmax) {
       step++;
-      currtop = currtop + ((finaltop - currtop) / divisor);
-      curropacity = curropacity + ((finalopacity - curropacity) / divisor);
+      currtop = currtop + (finaltop - currtop) / divisor;
+      curropacity = curropacity + (finalopacity - curropacity) / divisor;
 
-      msgdiv.style.marginTop = (currtop + 'px');
+      msgdiv.style.marginTop = currtop + 'px';
       msgdiv.style.opacity = curropacity;
 
       setToastTimeout(appearStep, timestep);
@@ -227,10 +243,10 @@ function showToast(msg, dur, fn) {
       }
     } else {
       step--;
-      currtop = currtop - (currtop / divisor);
-      curropacity = curropacity - (curropacity / divisor);
+      currtop = currtop - currtop / divisor;
+      curropacity = curropacity - curropacity / divisor;
 
-      msgdiv.style.marginTop = (currtop + 'px');
+      msgdiv.style.marginTop = currtop + 'px';
       msgdiv.style.opacity = curropacity;
 
       setToastTimeout(disappearStep, timestep);

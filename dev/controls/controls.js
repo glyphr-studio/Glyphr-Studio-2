@@ -1,7 +1,7 @@
 /**
  * Export nothing by default
  */
-export default function() {}
+export default function () {}
 
 /**
  * Nicer centralized way of creating DOM elements
@@ -13,13 +13,23 @@ export default function() {}
  * @param {array} attributes - collection of [attributeName, attributeValue]
  * @returns {HTMLElement}
  */
-export function makeElement({tag = 'span', className, id, content, elementRoot, tabIndex = false, attributes = {}, innerHTML = false} = {}) {
+export function makeElement({
+  tag = 'span',
+  className,
+  id,
+  content,
+  elementRoot,
+  tabIndex = false,
+  attributes = {},
+  innerHTML = false,
+} = {}) {
   const newElement = document.createElement(tag);
 
   if (className) newElement.setAttribute('class', className);
 
   if (id) newElement.setAttribute('id', id);
-  else if (window.getUniqueControlID) newElement.setAttribute('id', document.getUniqueControlID());
+  else if (window.getUniqueControlID)
+    newElement.setAttribute('id', document.getUniqueControlID());
 
   if (content) newElement.innerHTML = content;
 
@@ -28,7 +38,9 @@ export function makeElement({tag = 'span', className, id, content, elementRoot, 
   if (tabIndex === true) newElement.setAttribute('tabIndex', '0');
   else if (tabIndex !== false) newElement.setAttribute('tabIndex', tabIndex);
 
-  Object.keys(attributes).forEach((key) => newElement.setAttribute(key, attributes[key]));
+  Object.keys(attributes).forEach((key) =>
+    newElement.setAttribute(key, attributes[key])
+  );
 
   if (innerHTML) {
     const template = document.createElement('template');
@@ -48,7 +60,11 @@ export function makeElement({tag = 'span', className, id, content, elementRoot, 
  * @param {string} eventType - type of event
  * @param {function} eventFunction - what to do
  */
-export function addEventHandler(elementID, eventType = 'click', eventFunction = function() {}) {
+export function addEventHandler(
+  elementID,
+  eventType = 'click',
+  eventFunction = function () {}
+) {
   const elem = document.getElementById(elementID);
   if (elem) {
     elem.addEventListener(eventType, eventFunction, false);

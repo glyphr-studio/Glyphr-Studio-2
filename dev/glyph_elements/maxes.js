@@ -1,5 +1,5 @@
 import GlyphElement from './glyph_element.js';
-import {isVal, round} from '../common/functions.js';
+import { isVal, round } from '../common/functions.js';
 
 /**
  * Glyph Element > Maxes
@@ -13,7 +13,7 @@ export default class Maxes extends GlyphElement {
    * @param {number} yMin - smallest y value
    * @param {number} yMax - largest y value
    */
-  constructor({xMin, xMax, yMin, yMax} = {}) {
+  constructor({ xMin, xMax, yMin, yMax } = {}) {
     super();
     // debug(`\n Maxes.constructor - START`);
 
@@ -30,7 +30,6 @@ export default class Maxes extends GlyphElement {
     return this;
   }
 
-
   // --------------------------------------------------------------
   // Common Glyphr Studio object methods
   // --------------------------------------------------------------
@@ -43,8 +42,7 @@ export default class Maxes extends GlyphElement {
   save(verbose = false) {
     // debug(`\n Maxes.save - START`);
 
-    const re = {
-    };
+    const re = {};
 
     if (isVal(this._xMin)) re.xMin = this._xMin;
     if (isVal(this._xMax)) re.xMax = this._xMax;
@@ -66,7 +64,7 @@ export default class Maxes extends GlyphElement {
    */
   print(level = 0) {
     let ind = '';
-    for (let i=0; i<level; i++) ind += '  ';
+    for (let i = 0; i < level; i++) ind += '  ';
 
     let re = `${ind}{`;
     re += `xMin:${this._xMin} `;
@@ -118,7 +116,6 @@ export default class Maxes extends GlyphElement {
     else return Number.MIN_SAFE_INTEGER;
   }
 
-
   /**
    * Generic smallest box
    * @returns {object}
@@ -144,7 +141,6 @@ export default class Maxes extends GlyphElement {
       yMax: Number.MAX_SAFE_INTEGER,
     };
   }
-
 
   // --------------------------------------------------------------
   // Setters
@@ -198,7 +194,6 @@ export default class Maxes extends GlyphElement {
     return this;
   }
 
-
   // --------------------------------------------------------------
   // Methods
   // --------------------------------------------------------------
@@ -214,7 +209,6 @@ export default class Maxes extends GlyphElement {
     this.yMax = round(this.yMax, precision);
   }
 }
-
 
 // --------------------------------------------------------------
 // Helpers
@@ -235,13 +229,22 @@ export function maxesOverlap(m1, m2, exclusive = true) {
 
   let re;
 
-  if (exclusive) re = (m1.xMin < m2.xMax && m1.xMax > m2.xMin && m1.yMin < m2.yMax && m1.yMax > m2.yMin);
-  else re = (m1.xMin <= m2.xMax && m1.xMax >= m2.xMin && m1.yMin <= m2.yMax && m1.yMax >= m2.yMin);
+  if (exclusive)
+    re =
+      m1.xMin < m2.xMax &&
+      m1.xMax > m2.xMin &&
+      m1.yMin < m2.yMax &&
+      m1.yMax > m2.yMin;
+  else
+    re =
+      m1.xMin <= m2.xMax &&
+      m1.xMax >= m2.xMin &&
+      m1.yMin <= m2.yMax &&
+      m1.yMax >= m2.yMin;
 
   // debug(` maxesOverlap - END returning ${re} \n\n`);
   return re;
 }
-
 
 /**
  * This takes an array of maxes objects, and returns a maxes
@@ -257,7 +260,7 @@ export function getOverallMaxes(maxesArray) {
   const re = new Maxes();
   let tm;
 
-  for (let m=0; m<maxesArray.length; m++) {
+  for (let m = 0; m < maxesArray.length; m++) {
     // debug('\t pass ' + m);
     tm = new Maxes(maxesArray[m]);
 

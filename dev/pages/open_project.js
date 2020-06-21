@@ -1,8 +1,8 @@
-import {makeElement} from '../controls/controls.js';
-import {makeGlyphrStudioLogo} from '../common/graphics.js';
-import {makeErrorMessageBox} from '../controls/dialogs.js';
+import { makeElement } from '../controls/controls.js';
+import { makeGlyphrStudioLogo } from '../common/graphics.js';
+import { makeErrorMessageBox } from '../controls/dialogs.js';
 import GlyphrStudioProject from '../project/glyphr_studio_project.js';
-import {projects} from '../samples/samples.js';
+import { projects } from '../samples/samples.js';
 
 /**
  * Page > Open Project
@@ -22,21 +22,26 @@ export default class PageOpenProject {
   pageLoader() {
     debug(`\n PageOpenProject.pageLoader - START`);
 
-    const recent = 1000*60*60*24*7; // seven days in milliseconds
+    const recent = 1000 * 60 * 60 * 24 * 7; // seven days in milliseconds
     let recentMessage = '';
     const app = window.GlyphrStudio;
-    if ((Date.now() - app.versionDate) < recent) {
+    if (Date.now() - app.versionDate < recent) {
       recentMessage = ` - <a href="http://help.glyphrstudio.com/overview_updates.html" target="_blank">recently updated!</a>`;
     }
 
-    const content = makeElement({tag: 'div', id: 'app__page', innerHTML: `
+    const content = makeElement({
+      tag: 'div',
+      id: 'app__page',
+      innerHTML: `
       <table style="height:100%; width:100%;"><tr>
       <td id="open-project__left-area" vertical-align="middle">
       <div id="open-project__logo"></div>
 
         <span class="open-project__version-name">${app.versionName}</span>
 
-        <span class="open-project__version-number">${app.versionNumber.split('.')[2]}${recentMessage}</span>
+        <span class="open-project__version-number">${
+          app.versionNumber.split('.')[2]
+        }${recentMessage}</span>
 
         <div class="open-project__blurb">
           For more information visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>
@@ -52,9 +57,15 @@ export default class PageOpenProject {
     });
 
     // Tab click
-    content.querySelector('#newTab').addEventListener('click', () => this.changeTab('new'));
-    content.querySelector('#loadTab').addEventListener('click', () => this.changeTab('load'));
-    content.querySelector('#examplesTab').addEventListener('click', () => this.changeTab('examples'));
+    content
+      .querySelector('#newTab')
+      .addEventListener('click', () => this.changeTab('new'));
+    content
+      .querySelector('#loadTab')
+      .addEventListener('click', () => this.changeTab('load'));
+    content
+      .querySelector('#examplesTab')
+      .addEventListener('click', () => this.changeTab('examples'));
 
     // Dragging and dropping to load
     const tableRight = content.querySelector('#open-project__right-area');
@@ -67,18 +78,31 @@ export default class PageOpenProject {
     tableLeft.addEventListener('drop', this.handleDrop);
     tableLeft.addEventListener('dragleave', this.handleDragLeave);
 
-    content.querySelector('#openProjectFileChooser').addEventListener('change', this.handleDrop);
+    content
+      .querySelector('#openProjectFileChooser')
+      .addEventListener('change', this.handleDrop);
 
     // Sample Projects click
-    content.querySelector('#loadModegg').addEventListener('click', () => this.handleLoadSample('modegg'));
-    content.querySelector('#loadCaliforniaGothic').addEventListener('click', () => this.handleLoadSample('californiaGothic'));
-    content.querySelector('#loadMerriweatherSans').addEventListener('click', () => this.handleLoadSample('merriweatherSans'));
+    content
+      .querySelector('#loadModegg')
+      .addEventListener('click', () => this.handleLoadSample('modegg'));
+    content
+      .querySelector('#loadCaliforniaGothic')
+      .addEventListener('click', () =>
+        this.handleLoadSample('californiaGothic')
+      );
+    content
+      .querySelector('#loadMerriweatherSans')
+      .addEventListener('click', () =>
+        this.handleLoadSample('merriweatherSans')
+      );
 
     // Starting a project
-    content.querySelector('#openProjectCreateNewProject').addEventListener('click', this.handleNewProject);
+    content
+      .querySelector('#openProjectCreateNewProject')
+      .addEventListener('click', this.handleNewProject);
 
-
-    const callback = function(page) {
+    const callback = function (page) {
       debug(`\n PageOpenProject.pageLoader.callback - START`);
 
       // For Electron app
@@ -87,14 +111,16 @@ export default class PageOpenProject {
 
       // Finish up populating UI
       page.changeTab();
-      document.getElementById('open-project__logo').innerHTML = makeGlyphrStudioLogo({'fill': '#BAD9E9', 'width': 400});
+      document.getElementById(
+        'open-project__logo'
+      ).innerHTML = makeGlyphrStudioLogo({ fill: '#BAD9E9', width: 400 });
 
       setTimeout(window.GlyphrStudio.fadeOutLoadScreen, 2000);
 
       debug(` PageOpenProject.pageLoader.callback - END\n\n`);
     };
 
-    const re = {content: content, callback: callback};
+    const re = { content: content, callback: callback };
     // debug(re);
     debug(` PageOpenProject.pageLoader - END\n\n`);
 
@@ -160,7 +186,9 @@ export default class PageOpenProject {
   changeTab(tab) {
     const contentNew = document.getElementById('openProjectNewContent');
     const contentLoad = document.getElementById('openProjectLoadContent');
-    const contentExamples = document.getElementById('openProjectExampleProjects');
+    const contentExamples = document.getElementById(
+      'openProjectExampleProjects'
+    );
     // var contentRecent = document.getElementById('recent_content');
 
     const tabNew = document.getElementById('newTab');
@@ -177,7 +205,6 @@ export default class PageOpenProject {
     tabLoad.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
     tabExamples.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
     // tabRecent.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
-
 
     if (tab === 'load') {
       contentLoad.style.display = 'block';
@@ -198,23 +225,26 @@ export default class PageOpenProject {
    */
   handleDrop(evt) {
     // debug('\n handleDrop - START');
-    document.getElementById('open-project__right-area').innerHTML = 'Loading File...';
-    document.getElementById('open-project__right-area').style.backgroundColor = _UI.colors.gray.offWhite;
+    document.getElementById('open-project__right-area').innerHTML =
+      'Loading File...';
+    document.getElementById('open-project__right-area').style.backgroundColor =
+      _UI.colors.gray.offWhite;
 
     evt.stopPropagation();
     evt.preventDefault();
 
-    let f = evt.dataTransfer || document.getElementById('openProjectFileChooser');
+    let f =
+      evt.dataTransfer || document.getElementById('openProjectFileChooser');
     f = f.files[0];
     // debug('\t filename: ' + f.name);
     let fname = f.name.split('.');
-    fname = fname[fname.length-1].toLowerCase();
+    fname = fname[fname.length - 1].toLowerCase();
     // debug('\t fname = ' + fname);
 
     const reader = new FileReader();
 
     if (fname === 'otf' || fname === 'ttf') {
-      reader.onload = function() {
+      reader.onload = function () {
         // debug('\n reader.onload::OTF or TTF - START');
         window.GlyphrStudio.temp.droppedFileContent = reader.result;
         ioOTF_importOTFFont();
@@ -223,7 +253,7 @@ export default class PageOpenProject {
 
       reader.readAsArrayBuffer(f);
     } else if (fname === 'svg' || fname === 'txt') {
-      reader.onload = function() {
+      reader.onload = function () {
         // debug('\n reader.onload::SVG or TXT - START');
         window.GlyphrStudio.temp.droppedFileContent = reader.result;
         if (fname === 'svg') {
@@ -240,12 +270,16 @@ export default class PageOpenProject {
       reader.readAsText(f);
     } else {
       let con = '<h3>Unsupported file type</h3>';
-      con += 'Glyphr Studio can\'t import .' + fname + ' files.<br>';
+      con += "Glyphr Studio can't import ." + fname + ' files.<br>';
       con += 'Try loading another file.';
-      document.getElementById('open-project__right-area').innerHTML = makeTabs();
+      document.getElementById(
+        'open-project__right-area'
+      ).innerHTML = makeTabs();
       changeTab('load');
       showErrorMessageBox(con);
-      document.getElementById('open-project__right-area').style.backgroundColor = _UI.colors.gray.offWhite;
+      document.getElementById(
+        'open-project__right-area'
+      ).style.backgroundColor = _UI.colors.gray.offWhite;
     }
 
     // debug(' handleDrop - END\n');
@@ -259,11 +293,11 @@ export default class PageOpenProject {
     // assume strings are SVG fonts
     window.GlyphrStudio.temp.droppedFileContent = evt.data;
 
-    if ( typeof evt.data === 'string' ) {
+    if (typeof evt.data === 'string') {
       ioSVG_importSVGFont(false);
 
-    // assume array buffers are otf fonts
-    } else if ( evt.data instanceof ArrayBuffer ) {
+      // assume array buffers are otf fonts
+    } else if (evt.data instanceof ArrayBuffer) {
       ioOTF_importOTFFont(false);
     }
   }
@@ -300,7 +334,7 @@ export default class PageOpenProject {
    * Create a new project from scratch
    */
   handleNewProject() {
-    setTimeout(function() {
+    setTimeout(function () {
       const projectEditor = window.GlyphrStudio.getCurrentProjectEditor();
       projectEditor.project = new GlyphrStudioProject();
       window.GlyphrStudio.navigate('glyph edit');
@@ -312,10 +346,13 @@ export default class PageOpenProject {
    * @param {string} name - which sample to load
    */
   handleLoadSample(name) {
-    document.getElementById('openProjectExampleProjects').innerHTML = '<h2>Load an Example project</h2>Loading example project...';
+    document.getElementById('openProjectExampleProjects').innerHTML =
+      '<h2>Load an Example project</h2>Loading example project...';
 
-    setTimeout(function() {
-      window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(projects[name]);
+    setTimeout(function () {
+      window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(
+        projects[name]
+      );
       window.GlyphrStudio.navigate('glyph edit');
     }, 5);
   }

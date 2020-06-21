@@ -1,37 +1,42 @@
-import {makeElement} from '../controls.js';
-import {uiColors, accentColors} from '../../common/colors.js';
+import { makeElement } from '../controls.js';
+import { uiColors, accentColors } from '../../common/colors.js';
 
 /**
  * description
  */
 export default class FancyButton extends HTMLElement {
-    /**
-     * Create an FancyButton
-     * @param {object} attributes - collection of key: value pairs to set as attributes
-     */
-    constructor(attributes = {}) {
-        super();
+  /**
+   * Create an FancyButton
+   * @param {object} attributes - collection of key: value pairs to set as attributes
+   */
+  constructor(attributes = {}) {
+    super();
 
-        Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
+    Object.keys(attributes).forEach((key) =>
+      this.setAttribute(key, attributes[key])
+    );
 
-        let fast = this.hasAttribute('fast');
-        let fastSpeed = '18s';
-        let slowSpeed = '90s';
+    let fast = this.hasAttribute('fast');
+    let fastSpeed = '18s';
+    let slowSpeed = '90s';
 
-        this.wrapper = makeElement({className: 'wrapper'});
-        if (this.hasAttribute('secondary')) this.wrapper.setAttribute('secondary', '');
-        if (this.hasAttribute('disabled')) {
-            this.wrapper.setAttribute('disabled', '');
-            this.disabled = true;
-        } else {
-            this.wrapper.setAttribute('tabIndex', '0');
-            this.disabled = false;
-        }
+    this.wrapper = makeElement({ className: 'wrapper' });
+    if (this.hasAttribute('secondary'))
+      this.wrapper.setAttribute('secondary', '');
+    if (this.hasAttribute('disabled')) {
+      this.wrapper.setAttribute('disabled', '');
+      this.disabled = true;
+    } else {
+      this.wrapper.setAttribute('tabIndex', '0');
+      this.disabled = false;
+    }
 
-        this.buttonContent = makeElement({className: 'buttonContent'});
-        this.buttonText = makeElement({tag: 'slot', className: 'buttonText'});
+    this.buttonContent = makeElement({ className: 'buttonContent' });
+    this.buttonText = makeElement({ tag: 'slot', className: 'buttonText' });
 
-        let style = makeElement({tag: 'style', content: `
+    let style = makeElement({
+      tag: 'style',
+      content: `
             * {
                 box-sizing: border-box;
                 user-select: none;
@@ -77,7 +82,9 @@ export default class FancyButton extends HTMLElement {
                     ${accentColors.purple.l45}
                 );
                 background-size: 500% 500%;
-                animation: gradFade ${fast? fastSpeed : slowSpeed} linear infinite;
+                animation: gradFade ${
+                  fast ? fastSpeed : slowSpeed
+                } linear infinite;
             }
 
             @keyframes gradFade {
@@ -134,7 +141,9 @@ export default class FancyButton extends HTMLElement {
                     ${accentColors.purple.l45}
                 );
                 background-size: 500% 500%;
-                animation: gradFade ${fast? fastSpeed : slowSpeed} linear infinite;
+                animation: gradFade ${
+                  fast ? fastSpeed : slowSpeed
+                } linear infinite;
 
                 background-clip: text;
                 -webkit-background-clip: text;
@@ -182,81 +191,81 @@ export default class FancyButton extends HTMLElement {
                 color: ${uiColors.disabled.border};
                 cursor: default;
             }
-        `});
+        `,
+    });
 
+    // Put it all together
+    let shadow = this.attachShadow({ mode: 'open' });
+    shadow.appendChild(style);
+    this.buttonContent.appendChild(this.buttonText);
+    this.wrapper.appendChild(this.buttonContent);
+    shadow.appendChild(this.wrapper);
 
-        // Put it all together
-        let shadow = this.attachShadow({mode: 'open'});
-        shadow.appendChild(style);
-        this.buttonContent.appendChild(this.buttonText);
-        this.wrapper.appendChild(this.buttonContent);
-        shadow.appendChild(this.wrapper);
-
-        if (!this.disabled) {
-            this.addEventListener('click', this.toggle);
-            this.addEventListener('keydown', this.keyPress);
-        }
+    if (!this.disabled) {
+      this.addEventListener('click', this.toggle);
+      this.addEventListener('keydown', this.keyPress);
     }
+  }
 
-    /**
-     * Specify which attributes are observed and trigger attributeChangedCallback
-     */
-    static get observedAttributes() {
-        return ['disabled'];
+  /**
+   * Specify which attributes are observed and trigger attributeChangedCallback
+   */
+  static get observedAttributes() {
+    return ['disabled'];
+  }
+
+  /**
+   * Listens for attribute changes on this element
+   * @param {string} attributeName - which attribute was changed
+   * @param {string} oldValue - value before the change
+   * @param {string} newValue - value after the change
+   */
+  attributeChangedCallback(attributeName, oldValue, newValue) {
+    // console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+
+    if (attributeName === 'disabled') {
+      if (newValue === '') {
+        // disabled
+        this.wrapper.setAttribute('disabled', '');
+      } else if (oldValue === '') {
+        // enabled
+        this.wrapper.removeAttribute('disabled');
+      }
     }
+  }
 
-    /**
-     * Listens for attribute changes on this element
-     * @param {string} attributeName - which attribute was changed
-     * @param {string} oldValue - value before the change
-     * @param {string} newValue - value after the change
-     */
-    attributeChangedCallback(attributeName, oldValue, newValue) {
-        // console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
-
-        if (attributeName === 'disabled') {
-            if (newValue === '') {
-                // disabled
-                this.wrapper.setAttribute('disabled', '');
-            } else if (oldValue === '') {
-                // enabled
-                this.wrapper.removeAttribute('disabled');
-            }
-        }
+  /**
+   * Handle keypress events
+   * @param {object} ev - event
+   */
+  keyPress(ev) {
+    if (ev.keyCode === 13) {
+      let click = new MouseEvent('click', {
+        shiftKey: ev.shiftKey,
+        ctrlKey: ev.ctrlKey,
+        altKey: ev.altKey,
+        metaKey: ev.metaKey,
+      });
+      this.dispatchEvent(click);
+      this.flashAsPressed(this);
     }
+  }
 
-    /**
-     * Handle keypress events
-     * @param {object} ev - event
-     */
-    keyPress(ev) {
-        if (ev.keyCode === 13) {
-            let click = new MouseEvent('click', {
-                shiftKey: ev.shiftKey,
-                ctrlKey: ev.ctrlKey,
-                altKey: ev.altKey,
-                metaKey: ev.metaKey,
-            });
-            this.dispatchEvent(click);
-            this.flashAsPressed(this);
-        }
-    }
+  /**
+   * Fake pressed state for keyboard event
+   * @param {object} elem - element that got pressed
+   */
+  flashAsPressed(elem) {
+    elem.wrapper.style.top = '1px';
+    elem.wrapper.style.left = '1px';
+    elem.wrapper.style.boxShadow = 'none';
 
-    /**
-     * Fake pressed state for keyboard event
-     * @param {object} elem - element that got pressed
-     */
-    flashAsPressed(elem) {
-        elem.wrapper.style.top = '1px';
-        elem.wrapper.style.left = '1px';
-        elem.wrapper.style.boxShadow = 'none';
-
-        setTimeout(function() {
-            elem.wrapper.style.top = '0px';
-            elem.wrapper.style.left = '0px';
-            elem.wrapper.style.boxShadow = '2px 2px 2px rgba(0, 0, 0, 0.3)';
-        }, 100);
-    }
+    setTimeout(function () {
+      elem.wrapper.style.top = '0px';
+      elem.wrapper.style.left = '0px';
+      elem.wrapper.style.boxShadow = '2px 2px 2px rgba(0, 0, 0, 0.3)';
+    }, 100);
+  }
 }
 
 customElements.define('fancy-button', FancyButton);

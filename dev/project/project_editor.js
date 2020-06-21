@@ -1,7 +1,7 @@
 import GlyphrStudioProject from './glyphr_studio_project.js';
 import History from './history.js';
-import {saveFile, makeDateStampSuffix} from '../common/functions.js';
-import {makeElement} from '../controls/controls.js';
+import { saveFile, makeDateStampSuffix } from '../common/functions.js';
+import { makeElement } from '../controls/controls.js';
 import PageOpenProject from '../pages/open_project.js';
 import PageGlyphEdit from '../pages/glyph_edit.js';
 
@@ -19,10 +19,10 @@ import PageGlyphEdit from '../pages/glyph_edit.js';
  */
 export default class ProjectEditor {
   /**
-     * Initialize a project editor, with defaults
-     * @param {object} newEditor - Glyphr Studio Project File JSON
-     */
-  constructor({project = {}, selectedWorkItems = {}} = {}) {
+   * Initialize a project editor, with defaults
+   * @param {object} newEditor - Glyphr Studio Project File JSON
+   */
+  constructor({ project = {}, selectedWorkItems = {} } = {}) {
     this.project = project;
     this.selectedWorkItems = selectedWorkItems;
 
@@ -40,7 +40,7 @@ export default class ProjectEditor {
       stopPageNavigation: true,
     };
 
-    this.content = makeElement({className: 'app__editor'});
+    this.content = makeElement({ className: 'app__editor' });
 
     this.pages = {};
 
@@ -58,15 +58,14 @@ export default class ProjectEditor {
     };
   }
 
-
   // --------------------------------------------------------------
   // Project
   // --------------------------------------------------------------
 
   /**
-     * Get the project for this editor
-     * @returns {GlyphrStudioProject}
-     */
+   * Get the project for this editor
+   * @returns {GlyphrStudioProject}
+   */
   get project() {
     if (this._project && this._project !== {}) return this._project;
     else {
@@ -76,26 +75,26 @@ export default class ProjectEditor {
   }
 
   /**
-     * Set the project for this editor
-     * @param {GlyphrStudioProject} gsp - project to set
-     * @returns {GlyphrStudioProject}
-     */
+   * Set the project for this editor
+   * @param {GlyphrStudioProject} gsp - project to set
+   * @returns {GlyphrStudioProject}
+   */
   set project(gsp) {
     this._project = new GlyphrStudioProject(gsp);
     return this._project;
   }
-
 
   // --------------------------------------------------------------
   // Work Items
   // --------------------------------------------------------------
 
   /**
-     * Get the selected work items
-     * @returns {GlyphrStudioProject}
-     */
+   * Get the selected work items
+   * @returns {GlyphrStudioProject}
+   */
   get selectedWorkItemIDs() {
-    if (this._selectedWorkItemIDs && this._selectedWorkItemIDs !== {}) return this._selectedWorkItemIDs;
+    if (this._selectedWorkItemIDs && this._selectedWorkItemIDs !== {})
+      return this._selectedWorkItemIDs;
     else {
       this._selectedWorkItemIDs = {
         glyph: this.selectedGlyphID(),
@@ -108,160 +107,160 @@ export default class ProjectEditor {
   }
 
   /**
-     * Set the selected work items
-     * @param {GlyphrStudioProject} swi - selectedWorkItemIDs to set
-     * @returns {GlyphrStudioProject}
-     */
+   * Set the selected work items
+   * @param {GlyphrStudioProject} swi - selectedWorkItemIDs to set
+   * @returns {GlyphrStudioProject}
+   */
   set selectedWorkItemIDs(swi) {
     this._selectedWorkItemIDs.glyph = swi.glyph || this.selectedGlyphID();
-    this._selectedWorkItemIDs.ligature = swi.ligature || this.selectedLigatureID();
-    this._selectedWorkItemIDs.component = swi.component || this.selectedComponentID();
+    this._selectedWorkItemIDs.ligature =
+      swi.ligature || this.selectedLigatureID();
+    this._selectedWorkItemIDs.component =
+      swi.component || this.selectedComponentID();
     this._selectedWorkItemIDs.kern = swi.kern || this.selectedKernID();
     return this._selectedWorkItemIDs;
   }
-
 
   // --------------------------------------------------------------
   // Get Individual Selected Work Items
   // --------------------------------------------------------------
 
   /**
-     * Returns the selected glyph
-     * @returns {object}
-     */
+   * Returns the selected glyph
+   * @returns {object}
+   */
   get selectedGlyph() {
     const re = this.glyphs[this.selectedGlyphID];
     return re;
   }
 
   /**
-     * Returns the selected glyph ID
-     * @returns {string}
-     */
+   * Returns the selected glyph ID
+   * @returns {string}
+   */
   get selectedGlyphID() {
-    return this._selectedWorkItems.glyph ||
-            getFirstGlyphID() ||
-            getFirstID(this.glyph) ||
-            false;
+    return (
+      this._selectedWorkItems.glyph ||
+      getFirstGlyphID() ||
+      getFirstID(this.glyph) ||
+      false
+    );
   }
 
   /**
-     * Returns the selected ligature
-     * @returns {object}
-     */
+   * Returns the selected ligature
+   * @returns {object}
+   */
   get selectedLigature() {
     const re = this.ligatures[this.selectedLigatureID];
     return re;
   }
 
   /**
-     * Returns the selected ligature ID
-     * @returns {string}
-     */
+   * Returns the selected ligature ID
+   * @returns {string}
+   */
   get selectedLigatureID() {
-    return this._selectedWorkItems.ligature ||
-            getFirstID(this.ligature) ||
-            false;
+    return (
+      this._selectedWorkItems.ligature || getFirstID(this.ligature) || false
+    );
   }
 
   /**
-     * Returns the selected kern
-     * @returns {object}
-     */
+   * Returns the selected kern
+   * @returns {object}
+   */
   get selectedKern() {
     const re = this.kerns[this.selectedKernID];
     return re;
   }
 
   /**
-     * Returns the selected kern ID
-     * @returns {string}
-     */
+   * Returns the selected kern ID
+   * @returns {string}
+   */
   get selectedKernID() {
-    return this._selectedWorkItems.kern ||
-            getFirstID(this.kern) ||
-            false;
+    return this._selectedWorkItems.kern || getFirstID(this.kern) || false;
   }
 
   /**
-     * Returns the selected component
-     * @returns {object}
-     */
+   * Returns the selected component
+   * @returns {object}
+   */
   get selectedComponent() {
     const re = this.components[this.selectedComponentID];
     return re;
   }
 
   /**
-     * Returns the selected component ID
-     * @returns {string}
-     */
+   * Returns the selected component ID
+   * @returns {string}
+   */
   get selectedComponentID() {
-    return this._selectedWorkItems.component ||
-            getFirstID(this.component) ||
-            false;
+    return (
+      this._selectedWorkItems.component || getFirstID(this.component) || false
+    );
   }
-
 
   // --------------------------------------------------------------
   // Set Selected Work Items
   // --------------------------------------------------------------
 
   /**
-     * Sets the selected glyph
-     * @param {string} id - ID to select
-     */
+   * Sets the selected glyph
+   * @param {string} id - ID to select
+   */
   set selectedGlyph(id) {
     // Validate ID!
     this._selectedWorkItems.glyph = id;
   }
 
   /**
-     * Sets the selected ligature
-     * @param {string} id - ID to select
-     */
+   * Sets the selected ligature
+   * @param {string} id - ID to select
+   */
   set selectedLigature(id) {
     // Validate ID!
     this._selectedWorkItems.ligature = id;
   }
 
   /**
-     * Sets the selected kern
-     * @param {string} id - ID to select
-     */
+   * Sets the selected kern
+   * @param {string} id - ID to select
+   */
   set selectedKern(id) {
     // Validate ID!
     this._selectedWorkItems.kern = id;
   }
 
   /**
-     * Sets the selected component
-     * @param {string} id - ID to select
-     */
+   * Sets the selected component
+   * @param {string} id - ID to select
+   */
   set selectedComponent(id) {
     // Validate ID!
     this._selectedWorkItems.component = id;
   }
-
 
   // --------------------------------------------------------------
   // History
   // --------------------------------------------------------------
 
   /**
-     * Adds to the history queue
-     * @param {string} description
-     */
+   * Adds to the history queue
+   * @param {string} description
+   */
   historyPut(description) {
     if (this.onCanvasEditPage()) {
-      const queue = this.nav.page === 'import svg'? 'glyph edit' : this.nav.page;
+      const queue =
+        this.nav.page === 'import svg' ? 'glyph edit' : this.nav.page;
       this.history[queue].put(description);
     }
   }
 
   /**
-     * Moves backwards in time in the history queue
-     */
+   * Moves backwards in time in the history queue
+   */
   historyPull() {
     if (this.onCanvasEditPage()) {
       this.closeDialog();
@@ -271,9 +270,9 @@ export default class ProjectEditor {
   }
 
   /**
-     * Get the length of the current history queue
-     * @returns {number}
-     */
+   * Get the length of the current history queue
+   * @returns {number}
+   */
   historyLength() {
     if (this.onCanvasEditPage()) {
       return this.history[this.nav.page].queue.length || 0;
@@ -282,15 +281,14 @@ export default class ProjectEditor {
     return 0;
   }
 
-
   // --------------------------------------------------------------
   // Navigation
   // --------------------------------------------------------------
 
   /**
-     * Changes the page of this Project Editor
-     * @param {string} pageName - where to go
-     */
+   * Changes the page of this Project Editor
+   * @param {string} pageName - where to go
+   */
   navigate(pageName) {
     if (pageName) this.nav.page = pageName;
 
@@ -302,9 +300,9 @@ export default class ProjectEditor {
   }
 
   /**
-     * Returns the currently selected page
-     * @returns {object}
-     */
+   * Returns the currently selected page
+   * @returns {object}
+   */
   getCurrentPage() {
     // debug(`\n ProjectEditor.getCurrentPage - START`);
     // debug(this.pages);
@@ -313,25 +311,30 @@ export default class ProjectEditor {
   }
 
   /**
-     * Sets the current view to the appropriate Page
-     * @returns {object} Page Loader object - {string} content and {function} callback
-     */
+   * Sets the current view to the appropriate Page
+   * @returns {object} Page Loader object - {string} content and {function} callback
+   */
   pageLoader() {
     debug(`\n ProjectEditor.pageLoader - START`);
-    const editorContent = makeElement({tag: 'div', id: 'app__editor'});
+    const editorContent = makeElement({ tag: 'div', id: 'app__editor' });
     let currentPageLoader = {
-      content: makeElement({tag: 'h1', innerHTML: 'Uninitialized page content'}),
+      content: makeElement({
+        tag: 'h1',
+        innerHTML: 'Uninitialized page content',
+      }),
       callback: false,
     };
 
     // Collect the Page Loader for the current page
     if (this.nav.page === 'open project') {
       debug(`\t page detected as open project`);
-      if (!this.pages['open project']) this.pages['open project'] = new PageOpenProject();
+      if (!this.pages['open project'])
+        this.pages['open project'] = new PageOpenProject();
       currentPageLoader = this.pages['open project'].pageLoader();
     } else if (this.nav.page === 'glyph edit') {
       debug(`\t page detected as glyph edit`);
-      if (!this.pages['glyph edit']) this.pages['glyph edit'] = new PageGlyphEdit();
+      if (!this.pages['glyph edit'])
+        this.pages['glyph edit'] = new PageGlyphEdit();
       currentPageLoader = this.pages['glyph edit'].pageLoader();
     }
 
@@ -343,57 +346,62 @@ export default class ProjectEditor {
 
     debug(` ProjectEditor.pageLoader - END\n\n`);
 
-    return {content: editorContent, callback: currentPageLoader.callback};
+    return { content: editorContent, callback: currentPageLoader.callback };
   }
 
   /**
-     * Returns True if the current page has a glyph chooser panel
-     * @returns {boolean}
-     */
+   * Returns True if the current page has a glyph chooser panel
+   * @returns {boolean}
+   */
   onChooserPanelPage() {
     const nh = this.nav.page;
-    return ( nh==='glyph edit' ||
-                    nh==='components' ||
-                    nh==='kerning' ||
-                    nh==='import svg' ||
-                    nh==='ligatures');
+    return (
+      nh === 'glyph edit' ||
+      nh === 'components' ||
+      nh === 'kerning' ||
+      nh === 'import svg' ||
+      nh === 'ligatures'
+    );
   }
 
   /**
-     * Returns true if the current page has an Edit Canvas
-     * @returns {boolean}
-     */
+   * Returns true if the current page has an Edit Canvas
+   * @returns {boolean}
+   */
   onCanvasEditPage() {
     const nh = this.nav.page;
-    return ( nh==='glyph edit' ||
-                    nh==='components' ||
-                    nh==='kerning' ||
-                    nh==='ligatures');
+    return (
+      nh === 'glyph edit' ||
+      nh === 'components' ||
+      nh === 'kerning' ||
+      nh === 'ligatures'
+    );
   }
 
   /**
-     * Returns true if the current page has no panels
-     * @returns {boolean}
-     */
+   * Returns true if the current page has no panels
+   * @returns {boolean}
+   */
   onNoNavPage() {
     const nh = this.nav.page;
-    return ( nh==='font settings' ||
-                    nh==='project settings' ||
-                    nh==='global actions' ||
-                    nh==='export font' ||
-                    nh==='help' ||
-                    nh==='about');
+    return (
+      nh === 'font settings' ||
+      nh === 'project settings' ||
+      nh === 'global actions' ||
+      nh === 'export font' ||
+      nh === 'help' ||
+      nh === 'about'
+    );
   }
-
 
   // --------------------------------------------------------------
   // Save
   // --------------------------------------------------------------
 
   /**
-     * Save a Glyphr Project Text File
-     * @param {boolean} overwrite - for Electron app, overwrite current working file
-     */
+   * Save a Glyphr Project Text File
+   * @param {boolean} overwrite - for Electron app, overwrite current working file
+   */
   saveGlyphrProjectFile(overwrite) {
     // debug('SAVEGLYPHRPROJECTVILE');
     // debug('\t ' + this.project.projectSettings.formatsavefile);
@@ -413,7 +421,11 @@ export default class ProjectEditor {
     else saveData = JSON.stringify(saveData);
 
     // debug('saveGlyphrProjectFile - \n'+saveData);
-    const fileName = this.project.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
+    const fileName =
+      this.project.projectSettings.name +
+      ' - Glyphr Project - ' +
+      makeDateStampSuffix() +
+      '.txt';
 
     saveFile(fileName, saveData);
 
@@ -599,7 +611,6 @@ window._UI = {
     },
 };
 */
-
 
 /*
 // ---------------------------------------------------------------------

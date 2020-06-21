@@ -7,7 +7,6 @@
  */
 // debug(`\n MANIFEST.js - START`);
 
-
 const manifest = [
   {
     path: 'glyph_elements',
@@ -158,9 +157,7 @@ const manifest = [
 
   {
     path: 'samples',
-    files: [
-      'samples.js',
-    ],
+    files: ['samples.js'],
   },
 ];
 

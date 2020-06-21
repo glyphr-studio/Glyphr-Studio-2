@@ -15,15 +15,24 @@
     "url": "git+https://github.com/glyphr-studio/Glyphr-Studio-2.git"
   },
   "scripts": {
-    "test": "jasmine --require=esm"
+    "test": "jasmine --require=esm",
+    "lint": "eslint dev",
+    "fix": "eslint dev --fix"
   },
   "dependencies": {},
   "devDependencies": {
     "eslint": "^6.8.0",
-    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "esm": "^3.2.25",
     "jasmine": "^3.5.0",
-    "jshint": "^2.11.0"
+    "jshint": "^2.11.0",
+    "prettier": "^2.0.5"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "arrowParens": "always"
   },
   "jshintConfig": {
     "esversion": 6

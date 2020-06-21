@@ -1,7 +1,6 @@
 import GlyphElement from './glyph_element.js';
 import ControlPoint from './control_point.js';
-import {round, rotate, pointsAreEqual, isVal} from '../common/functions.js';
-
+import { round, rotate, pointsAreEqual, isVal } from '../common/functions.js';
 
 /**
  * Glyph Element > Path Point
@@ -19,13 +18,7 @@ export default class PathPoint extends GlyphElement {
    * @param {string} type - corner, flat, or symmetric
    * @param {object} parent - link to the parent Path object
    */
-  constructor({
-    p,
-    h1,
-    h2,
-    type = 'corner',
-    parent = false,
-  } = {}) {
+  constructor({ p, h1, h2, type = 'corner', parent = false } = {}) {
     super();
     this.parent = parent;
     this.p = p;
@@ -35,7 +28,6 @@ export default class PathPoint extends GlyphElement {
 
     this.objType = 'PathPoint';
   }
-
 
   // --------------------------------------------------------------
   // Common Glyphr Studio object methods
@@ -68,21 +60,20 @@ export default class PathPoint extends GlyphElement {
    */
   print(level = 0, num = false) {
     let ind = '';
-    for (let i=0; i<level; i++) ind += '  ';
+    for (let i = 0; i < level; i++) ind += '  ';
 
-    let re = `${ind}{PathPoint ${isVal(num)? num : ''}\n`;
+    let re = `${ind}{PathPoint ${isVal(num) ? num : ''}\n`;
     ind += '  ';
 
     re += `${ind}type: ${this.type}\n`;
-    re += `${ind}p: ${this.p.print(level+1)}\n`;
-    re += `${ind}h1: ${this.h1.print(level+1)}\n`;
-    re += `${ind}h2: ${this.h2.print(level+1)}\n`;
+    re += `${ind}p: ${this.p.print(level + 1)}\n`;
+    re += `${ind}h1: ${this.h1.print(level + 1)}\n`;
+    re += `${ind}h2: ${this.h2.print(level + 1)}\n`;
 
-    re += `${ind.substring(2)}}/PathPoint ${isVal(num)? num : ''}`;
+    re += `${ind.substring(2)}}/PathPoint ${isVal(num) ? num : ''}`;
 
     return re;
   }
-
 
   // --------------------------------------------------------------
   // Getters
@@ -123,20 +114,19 @@ export default class PathPoint extends GlyphElement {
   /**
    * Figure out where this point is in the overall path
    * @returns {number}
-    */
+   */
   get pointNumber() {
     if (!this.parent) return false;
 
     const pp = this.parent.pathPoints;
     if (!pp) return false;
 
-    for (let p=0; p<pp.length; p++) {
+    for (let p = 0; p < pp.length; p++) {
       if (pp[p] === this) return p;
     }
 
     return false;
   }
-
 
   // --------------------------------------------------------------
   // Setters
@@ -157,7 +147,7 @@ export default class PathPoint extends GlyphElement {
    */
   set h1(newPoint = {}) {
     if (!newPoint.coord) {
-      newPoint.coord = {x: this.p.x-100, y: this.p.y};
+      newPoint.coord = { x: this.p.x - 100, y: this.p.y };
       newPoint.use = false;
     }
     newPoint.parent = this;
@@ -170,7 +160,7 @@ export default class PathPoint extends GlyphElement {
    */
   set h2(newPoint = {}) {
     if (!newPoint.coord) {
-      newPoint.coord = {x: this.p.x+100, y: this.p.y};
+      newPoint.coord = { x: this.p.x + 100, y: this.p.y };
       newPoint.use = false;
     }
     newPoint.parent = this;
@@ -186,7 +176,6 @@ export default class PathPoint extends GlyphElement {
     else if (type === 'flat') this.makeFlat();
     else this._type = 'corner';
   }
-
 
   // --------------------------------------------------------------
   // Methods
@@ -255,23 +244,23 @@ export default class PathPoint extends GlyphElement {
    * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
    */
   isOverControlPoint(x = 0, y = 0, targetSize = 3, noHandles = false) {
-    const test = {x: x, y: y};
+    const test = { x: x, y: y };
     if (pointsAreEqual(this.p, test, targetSize)) {
       // debug('PathPoint.isOverControlPoint - Returning P1');
-      return {point: this, type: 'p'};
+      return { point: this, type: 'p' };
     }
 
     if (this.h1.use && !noHandles) {
       if (pointsAreEqual(this.h1, test, targetSize)) {
         // debug('PathPoint.isOverControlPoint - Returning h1');
-        return {point: this, type: 'h1'};
+        return { point: this, type: 'h1' };
       }
     }
 
     if (this.h2.use && !noHandles) {
       if (pointsAreEqual(this.h2, test, targetSize)) {
         // debug('PathPoint.isOverControlPoint - Returning h2');
-        return {point: this, type: 'h2'};
+        return { point: this, type: 'h2' };
       }
     }
 
@@ -287,13 +276,15 @@ export default class PathPoint extends GlyphElement {
     // debug('PathPoint.makeSymmetric - hold ' + hold + ' starts as ' + JSON.stringify(this));
 
     if (!hold) {
-      hold = this.h1.use? 'h1' : 'h2';
+      hold = this.h1.use ? 'h1' : 'h2';
       if (!(this.h1.use || this.h2.use)) {
-        if ( ((this.h2.x+this.p.x+this.h1.x)/3 === this.p.x) &&
-                    ((this.h2.y+this.p.y+this.h1.y)/3 === this.p.y) ) {
+        if (
+          (this.h2.x + this.p.x + this.h1.x) / 3 === this.p.x &&
+          (this.h2.y + this.p.y + this.h1.y) / 3 === this.p.y
+        ) {
           // Handles and points are all in the same place
-          this.h2.x-=200;
-          this.h1.x+=200;
+          this.h2.x -= 200;
+          this.h1.x += 200;
           this.h1.use = true;
           this.h2.use = true;
           return;
@@ -303,12 +294,12 @@ export default class PathPoint extends GlyphElement {
 
     switch (hold) {
       case 'h1':
-        this.h2.x = ((this.p.x - this.h1.x) + this.p.x);
-        this.h2.y = ((this.p.y - this.h1.y) + this.p.y);
+        this.h2.x = this.p.x - this.h1.x + this.p.x;
+        this.h2.y = this.p.y - this.h1.y + this.p.y;
         break;
       case 'h2':
-        this.h1.x = ((this.p.x - this.h2.x) + this.p.x);
-        this.h1.y = ((this.p.y - this.h2.y) + this.p.y);
+        this.h1.x = this.p.x - this.h2.x + this.p.x;
+        this.h1.y = this.p.y - this.h2.y + this.p.y;
         break;
     }
 
@@ -337,13 +328,15 @@ export default class PathPoint extends GlyphElement {
     }
 
     if (!hold) {
-      hold = this.h1.use? 'h1' : 'h2';
+      hold = this.h1.use ? 'h1' : 'h2';
       if (!(this.h1.use || this.h2.use)) {
-        if ( ((this.h2.x+this.p.x+this.h1.x)/3 === this.p.x) &&
-                    ((this.h2.y+this.p.y+this.h1.y)/3 === this.p.y) ) {
+        if (
+          (this.h2.x + this.p.x + this.h1.x) / 3 === this.p.x &&
+          (this.h2.y + this.p.y + this.h1.y) / 3 === this.p.y
+        ) {
           // Handles and points are all in the same place
-          this.h2.x-=300;
-          this.h1.x+=100;
+          this.h2.x -= 300;
+          this.h1.x += 100;
           this.h1.use = true;
           this.h2.use = true;
           return;
@@ -368,8 +361,8 @@ export default class PathPoint extends GlyphElement {
       newOpp = Math.tan(angle1) * newAdj;
 
       // Set values
-      newHx = (this.p.x + (newAdj*-1));
-      newHy = (this.p.y + (newOpp*-1));
+      newHx = this.p.x + newAdj * -1;
+      newHy = this.p.y + newOpp * -1;
 
       if (!isNaN(newHx) && !isNaN(newHy)) {
         this.h2.x = newHx;
@@ -381,8 +374,8 @@ export default class PathPoint extends GlyphElement {
       newOpp = Math.tan(angle2) * newAdj;
 
       // Set values
-      newHx = (this.p.x + (newAdj*-1));
-      newHy = (this.p.y + (newOpp*-1));
+      newHx = this.p.x + newAdj * -1;
+      newHy = this.p.y + newOpp * -1;
 
       if (!isNaN(newHx) && !isNaN(newHy)) {
         this.h1.x = newHx;
@@ -409,7 +402,7 @@ export default class PathPoint extends GlyphElement {
     const a2 = this.h2.angle;
     // debug('\t comparing ' + a1 + ' / ' + a2);
 
-    return (round((Math.abs(a1) + Math.abs(a2)), 2) === 3.14);
+    return round(Math.abs(a1) + Math.abs(a2), 2) === 3.14;
   }
 
   /**
@@ -445,22 +438,28 @@ export default class PathPoint extends GlyphElement {
    * @param {boolean} dontResolvePointType - After updating, skip auto-resolving the point type
    * @returns {PathPoint}
    */
-  makePointedTo(px, py, length = false, handle = 'h2', dontResolvePointType = false) {
+  makePointedTo(
+    px,
+    py,
+    length = false,
+    handle = 'h2',
+    dontResolvePointType = false
+  ) {
     // figure out angle
-    const adj1 = this.p.x-px;
-    const opp1 = this.p.y-py;
+    const adj1 = this.p.x - px;
+    const opp1 = this.p.y - py;
 
-    const yMod = (opp1 >= 0)? -1 : 1;
+    const yMod = opp1 >= 0 ? -1 : 1;
     const xMod = -1;
 
-    const hyp1 = Math.sqrt( (adj1*adj1) + (opp1*opp1) );
+    const hyp1 = Math.sqrt(adj1 * adj1 + opp1 * opp1);
     const angle1 = Math.acos(adj1 / hyp1);
 
-    length = length || (hyp1/3);
+    length = length || hyp1 / 3;
 
     // debug('PathPoint.makePointedTo - x/y/l ' + px + ' ' + py + ' ' + length + ' - Before H1x/y ' + this.h1.x + ' ' + this.h1.y);
-    this[handle].x = this.p.x + (Math.cos(angle1) * length * xMod);
-    this[handle].y = this.p.y + (Math.sin(angle1) * length * yMod);
+    this[handle].x = this.p.x + Math.cos(angle1) * length * xMod;
+    this[handle].y = this.p.y + Math.sin(angle1) * length * yMod;
     // debug('PathPoint.makePointedTo - after H1x/y ' + this.h1.x + ' ' + this.h1.y);
 
     if (!dontResolvePointType) {
@@ -521,7 +520,6 @@ export default class PathPoint extends GlyphElement {
     return this;
   }
 
-
   // --------------------------------------------------------------
   // Draw
   // --------------------------------------------------------------
@@ -537,14 +535,24 @@ export default class PathPoint extends GlyphElement {
     // debug('\n PathPoint.drawPoint - START');
     // debug('\t sel = ' + isSelected);
 
-    const halfPointSize = pointSize/2;
+    const halfPointSize = pointSize / 2;
     // ctx.fillStyle = sel? 'white' : accent;
-    ctx.fillStyle = isSelected? 'white' : accent;
+    ctx.fillStyle = isSelected ? 'white' : accent;
     ctx.strokeStyle = accent;
     ctx.font = '10px Consolas';
 
-    ctx.fillRect((sXcX(this.p.x)-halfPointSize), (sYcY(this.p.y)-halfPointSize), pointSize, pointSize);
-    ctx.strokeRect((sXcX(this.p.x)-halfPointSize), (sYcY(this.p.y)-halfPointSize), pointSize, pointSize);
+    ctx.fillRect(
+      sXcX(this.p.x) - halfPointSize,
+      sYcY(this.p.y) - halfPointSize,
+      pointSize,
+      pointSize
+    );
+    ctx.strokeRect(
+      sXcX(this.p.x) - halfPointSize,
+      sYcY(this.p.y) - halfPointSize,
+      pointSize,
+      pointSize
+    );
 
     ctx.fillStyle = accent;
     ctx.fillText(this.pointNumber, sXcX(this.p.x + 12), sYcY(this.p.y));
@@ -559,39 +567,45 @@ export default class PathPoint extends GlyphElement {
    * @param {Point} next - next Point in the path sequence
    * @param {number} pointSize - how big to draw the point
    */
-  drawDirectionalityPoint(ctx, isSelected, accent = '#000', next, pointSize = 7) {
+  drawDirectionalityPoint(
+    ctx,
+    isSelected,
+    accent = '#000',
+    next,
+    pointSize = 7
+  ) {
     // ctx.fillStyle = sel? 'white' : accent;
-    ctx.fillStyle = isSelected? 'white' : accent;
+    ctx.fillStyle = isSelected ? 'white' : accent;
     ctx.strokeStyle = accent;
     ctx.lineWidth = 1;
-    const begin = {'x': this.p.x, 'y': this.p.y};
-    let end = {'x': this.h2.x, 'y': this.h2.y};
+    const begin = { x: this.p.x, y: this.p.y };
+    let end = { x: this.h2.x, y: this.h2.y };
 
     if (!this.h2.use) {
-      end = {'x': next.p.x, 'y': next.p.y};
+      end = { x: next.p.x, y: next.p.y };
     }
 
     const halfPointSize = pointSize / 2;
     const arrow = [
-      [(halfPointSize*3), 0],
+      [halfPointSize * 3, 0],
       [halfPointSize, halfPointSize],
       [-halfPointSize, halfPointSize],
       [-halfPointSize, -halfPointSize],
       [halfPointSize, -halfPointSize],
     ];
     const rotatedArrow = [];
-    let ang = (Math.atan2((end.y-begin.y), (end.x-begin.x))*-1);
+    let ang = Math.atan2(end.y - begin.y, end.x - begin.x) * -1;
 
     // FAILURE CASE FALLBACK
     if (!ang && ang !== 0) {
-      ang = (this.p.x > this.h2.x)? Math.PI : 0;
+      ang = this.p.x > this.h2.x ? Math.PI : 0;
     }
 
     for (const a in arrow) {
       if (arrow.hasOwnProperty(a)) {
         rotatedArrow.push([
-          ((arrow[a][0] * Math.cos(ang)) - (arrow[a][1] * Math.sin(ang))),
-          ((arrow[a][0] * Math.sin(ang)) + (arrow[a][1] * Math.cos(ang))),
+          arrow[a][0] * Math.cos(ang) - arrow[a][1] * Math.sin(ang),
+          arrow[a][0] * Math.sin(ang) + arrow[a][1] * Math.cos(ang),
         ]);
       }
     }
@@ -599,15 +613,24 @@ export default class PathPoint extends GlyphElement {
     // debug('PathPoint.drawPoint arrow = ' + JSON.stringify(arrow) + '  - rotatedArrow = ' + JSON.stringify(rotatedArrow));
 
     ctx.beginPath();
-    ctx.moveTo((rotatedArrow[0][0] + sXcX(this.p.x)), (rotatedArrow[0][1] + sYcY(this.p.y)));
+    ctx.moveTo(
+      rotatedArrow[0][0] + sXcX(this.p.x),
+      rotatedArrow[0][1] + sYcY(this.p.y)
+    );
 
     for (const p in rotatedArrow) {
       if (p > 0) {
-        ctx.lineTo((rotatedArrow[p][0] + sXcX(this.p.x)), (rotatedArrow[p][1] + sYcY(this.p.y)));
+        ctx.lineTo(
+          rotatedArrow[p][0] + sXcX(this.p.x),
+          rotatedArrow[p][1] + sYcY(this.p.y)
+        );
       }
     }
 
-    ctx.lineTo((rotatedArrow[0][0] + sXcX(this.p.x)), (rotatedArrow[0][1] + sYcY(this.p.y)));
+    ctx.lineTo(
+      rotatedArrow[0][0] + sXcX(this.p.x),
+      rotatedArrow[0][1] + sYcY(this.p.y)
+    );
     ctx.fill();
     ctx.stroke();
 
@@ -630,12 +653,18 @@ export default class PathPoint extends GlyphElement {
     ctx.lineWidth = 1;
     ctx.font = '10px Consolas';
 
-
     const halfPointSize = pointSize / 2;
 
     if (drawH1 && this.h1.use) {
       ctx.beginPath();
-      ctx.arc(sXcX(this.h1.x), sYcY(this.h1.y), halfPointSize, 0, Math.PI*2, true);
+      ctx.arc(
+        sXcX(this.h1.x),
+        sYcY(this.h1.y),
+        halfPointSize,
+        0,
+        Math.PI * 2,
+        true
+      );
       ctx.closePath();
       ctx.fill();
 
@@ -649,7 +678,14 @@ export default class PathPoint extends GlyphElement {
 
     if (drawH2 && this.h2.use) {
       ctx.beginPath();
-      ctx.arc(sXcX(this.h2.x), sYcY(this.h2.y), halfPointSize, 0, Math.PI*2, true);
+      ctx.arc(
+        sXcX(this.h2.x),
+        sYcY(this.h2.y),
+        halfPointSize,
+        0,
+        Math.PI * 2,
+        true
+      );
       ctx.closePath();
       ctx.fill();
 
@@ -678,7 +714,14 @@ export default class PathPoint extends GlyphElement {
 
     if (this.q) {
       ctx.beginPath();
-      ctx.arc(sXcX(this.q.x), sYcY(this.q.y), halfPointSize, 0, Math.PI*2, true);
+      ctx.arc(
+        sXcX(this.q.x),
+        sYcY(this.q.y),
+        halfPointSize,
+        0,
+        Math.PI * 2,
+        true
+      );
       ctx.closePath();
       ctx.fill();
 
@@ -698,7 +741,6 @@ export default class PathPoint extends GlyphElement {
     }
   }
 
-
   // --------------------------------------------------------------
   // Alignment
   // --------------------------------------------------------------
@@ -709,7 +751,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignY(pathPoint) {
     this.p.y = pathPoint.p.y;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -718,7 +760,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignX(pathPoint) {
     this.p.x = pathPoint.p.x;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -728,7 +770,7 @@ export default class PathPoint extends GlyphElement {
   alignHV() {
     this.h1.x = this.p.x;
     this.h2.x = this.p.x;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -738,7 +780,7 @@ export default class PathPoint extends GlyphElement {
   alignHH() {
     this.h1.y = this.p.y;
     this.h2.y = this.p.y;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -747,7 +789,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignH1X(pathPoint) {
     this.h1.x = pathPoint.h1.x;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -756,7 +798,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignH1XCross(pathPoint) {
     this.h1.x = pathPoint.h2.x;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -765,7 +807,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignH1Y(pathPoint) {
     this.h1.y = pathPoint.h1.y;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -774,7 +816,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignH1YCross(pathPoint) {
     this.h1.y = pathPoint.h2.y;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -783,7 +825,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignH2X(pathPoint) {
     this.h2.x = pathPoint.h2.x;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -792,7 +834,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignH2XCross(pathPoint) {
     this.h2.x = pathPoint.h1.x;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -801,7 +843,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignH2Y(pathPoint) {
     this.h2.y = pathPoint.h2.y;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -810,7 +852,7 @@ export default class PathPoint extends GlyphElement {
    */
   alignH2YCross(pathPoint) {
     this.h2.y = pathPoint.h1.y;
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -880,7 +922,7 @@ export default class PathPoint extends GlyphElement {
     } else {
       const dX = Math.abs(this.p.x - pathPoint.p.x);
       const dY = Math.abs(this.p.y - pathPoint.p.y);
-      return Math.sqrt(Math.abs(dX^2 + dY^2));
+      return Math.sqrt(Math.abs(dX ^ (2 + dY) ^ 2));
     }
   }
 
@@ -894,7 +936,7 @@ export default class PathPoint extends GlyphElement {
     this.alignMutualOffsetY(p1, p2, p3);
     this.alignMutualOffsetX(p1, p2, p3);
 
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -905,15 +947,15 @@ export default class PathPoint extends GlyphElement {
    */
   alignMutualOffsetX(p1, p2, p3) {
     const dRef = Math.abs(p1.p.x - p2.p.x);
-    const dCur = Math.abs(this.p.x - (p3.p.x || p2.p.x ));
+    const dCur = Math.abs(this.p.x - (p3.p.x || p2.p.x));
     const delta = dRef - dCur;
 
-    if ((this.p.x > p3.p.x) || (this.p.x == p3.p.x)) this.p.x += delta;
+    if (this.p.x > p3.p.x || this.p.x == p3.p.x) this.p.x += delta;
     else if (this.p.x < p3.p.x) this.p.x -= delta;
-    else if ((this.p.x > p2.p.x) || (this.p.x == p2.p.x)) this.p.x += delta;
+    else if (this.p.x > p2.p.x || this.p.x == p2.p.x) this.p.x += delta;
     else if (this.p.x < p2.p.x) this.p.x -= delta;
 
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 
   /**
@@ -924,14 +966,14 @@ export default class PathPoint extends GlyphElement {
    */
   alignMutualOffsetY(p1, p2, p3) {
     const dRef = Math.abs(p1.p.y - p2.p.y);
-    const dCur = Math.abs(this.p.y - (p3.p.y || p2.p.y ));
+    const dCur = Math.abs(this.p.y - (p3.p.y || p2.p.y));
     const delta = dRef - dCur;
 
-    if ((this.p.y > p3.p.y) || (this.p.y == p3.p.y)) this.p.y += delta;
+    if (this.p.y > p3.p.y || this.p.y == p3.p.y) this.p.y += delta;
     else if (this.p.y < p3.p.y) this.p.y -= delta;
-    else if ((this.p.y > p2.p.y) || (this.p.y == p2.p.y)) this.p.y += delta;
+    else if (this.p.y > p2.p.y || this.p.y == p2.p.y) this.p.y += delta;
     else if (this.p.y < p2.p.y) this.p.y -= delta;
 
-    redraw({calledBy: 'pointDetails'});
+    redraw({ calledBy: 'pointDetails' });
   }
 }

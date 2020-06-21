@@ -1,7 +1,7 @@
-import {isVal, clone} from '../common/functions.js';
+import { isVal, clone } from '../common/functions.js';
 
-export {sXcX, sYcY};
-export {getView, setView};
+export { sXcX, sYcY };
+export { getView, setView };
 export default redraw;
 
 /**
@@ -12,19 +12,20 @@ export default redraw;
     Common functions around this can be found here.
 **/
 
-
 // -------------------
 // Common Edit Page
 // -------------------
 
 function makeEditPageContent() {
-  return ''+
-            '<div id=\'notation\'>&#x20E2;</div>' +
-            '<canvas id=\'glyphEditCanvas\' width=12 height=12 ></canvas>' +
-            '<div id=\'toolsarea_upperleft\' onmouseover=\'mouseovercec();\'> (ノ°□°)ノ︵ ┻━┻ </div>' +
-            '<div id=\'toolsarea_upperright\'>&nbsp;</div>' +
-            '<div id=\'toolsarea_lowerleft\'>&nbsp;</div>' +
-            makeFloatLogo();
+  return (
+    '' +
+    "<div id='notation'>&#x20E2;</div>" +
+    "<canvas id='glyphEditCanvas' width=12 height=12 ></canvas>" +
+    "<div id='toolsarea_upperleft' onmouseover='mouseovercec();'> (ノ°□°)ノ︵ ┻━┻ </div>" +
+    "<div id='toolsarea_upperright'>&nbsp;</div>" +
+    "<div id='toolsarea_lowerleft'>&nbsp;</div>" +
+    makeFloatLogo()
+  );
 }
 
 // -------------------
@@ -45,7 +46,12 @@ function redraw(oa) {
   _UI.redraw.redrawPanels = isVal(oa.redrawPanels) ? oa.redrawPanels : true;
   _UI.redraw.calledBy = oa.calledBy || '';
 
-  if (!_UI.redraw.redrawPanels && document.getElementById('navarea_panel') && document.getElementById('navarea_panel').innerHTML === '') _UI.redraw.redrawPanels = true;
+  if (
+    !_UI.redraw.redrawPanels &&
+    document.getElementById('navarea_panel') &&
+    document.getElementById('navarea_panel').innerHTML === ''
+  )
+    _UI.redraw.redrawPanels = true;
 
   if (_UI.redrawing) {
     // this is totally a hack
@@ -64,14 +70,30 @@ function redrawUnit() {
   // debug('\t _UI.redraw ' + json(_UI.redraw));
 
   if (_UI.redraw.redrawCanvas) {
-    if (_UI.glyphEditCTX) _UI.glyphEditCTX.clearRect(0, 0, _UI.glyphEditCanvasSize, _UI.glyphEditCanvasSize);
+    if (_UI.glyphEditCTX)
+      _UI.glyphEditCTX.clearRect(
+        0,
+        0,
+        _UI.glyphEditCanvasSize,
+        _UI.glyphEditCanvasSize
+      );
 
     switch (editor.nav.page) {
-      case 'glyph edit': redraw_GlyphEdit(); break;
-      case 'components': redraw_GlyphEdit(); break;
-      case 'ligatures': redraw_GlyphEdit(); break;
-      case 'kerning': redraw_Kerning(); break;
-      case 'test drive': redraw_TestDrive(); break;
+      case 'glyph edit':
+        redraw_GlyphEdit();
+        break;
+      case 'components':
+        redraw_GlyphEdit();
+        break;
+      case 'ligatures':
+        redraw_GlyphEdit();
+        break;
+      case 'kerning':
+        redraw_Kerning();
+        break;
+      case 'test drive':
+        redraw_TestDrive();
+        break;
     }
   }
 
@@ -93,10 +115,10 @@ function redrawUnit() {
 
   if (!_UI.contextGlyphs.string) updateContextGlyphs();
 
-  if (window.GlyphrStudio.settings.dev.mode && _UI.testOnRedraw) _UI.testOnRedraw();
+  if (window.GlyphrStudio.settings.dev.mode && _UI.testOnRedraw)
+    _UI.testOnRedraw();
   // debug(' redrawUnit - END\n');
 }
-
 
 // -------------------
 // Update Tools
@@ -124,10 +146,10 @@ function update_ToolsArea() {
   let pathaddpointclass = '';
   let penclickable = true;
   let penaddpointclickable = true;
-  const onglyph = (editor.nav.page === 'glyph edit');
-  const oncom = (editor.nav.page === 'components');
-  const onlig = (editor.nav.page === 'ligatures');
-  const onkern = (editor.nav.page === 'kerning');
+  const onglyph = editor.nav.page === 'glyph edit';
+  const oncom = editor.nav.page === 'components';
+  const onlig = editor.nav.page === 'ligatures';
+  const onkern = editor.nav.page === 'kerning';
   const type = _UI.multiSelect.shapes.getType();
   const selectedWorkItem = getSelectedWorkItem();
 
@@ -162,69 +184,173 @@ function update_ToolsArea() {
   if (onCanvasEditPage()) {
     pop += '<span style="width:15px; display:inline-block;">&nbsp;</span>';
     if (_UI.popOut) {
-      pop += '<button title="one screen mode" class="tool" onclick="popIn();">'+makeToolButton({'name': 'tool_popIn'})+'</button>';
+      pop +=
+        '<button title="one screen mode" class="tool" onclick="popIn();">' +
+        makeToolButton({ name: 'tool_popIn' }) +
+        '</button>';
     } else {
-      pop += '<button title="two screen mode" class="tool" onclick="popOut();">'+makeToolButton({'name': 'tool_popOut'})+'</button>';
+      pop +=
+        '<button title="two screen mode" class="tool" onclick="popOut();">' +
+        makeToolButton({ name: 'tool_popOut' }) +
+        '</button>';
     }
   }
 
   let zoom = '';
   // Pan
-  zoom += '<button title="scroll and pan" class="' + (st==='pan'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'pan\');"/>'+makeToolButton({'name': 'tool_pan', 'selected': (st==='pan')})+'</button>';
+  zoom +=
+    '<button title="scroll and pan" class="' +
+    (st === 'pan' ? 'button--call-to-action ' : ' ') +
+    'tool" onclick="clickTool(\'pan\');"/>' +
+    makeToolButton({ name: 'tool_pan', selected: st === 'pan' }) +
+    '</button>';
   zoom += '<span style="width:15px; display:inline-block;">&nbsp;</span>';
   // Zoom
-  zoom += '<button title="zoom: one to one" class="tool" onclick="setView({dz:1});redraw({calledBy:\'updatetools\'});">'+makeToolButton({'name': 'tool_zoom1to1'})+'</button>';
-  zoom += '<button title="zoom: fit to screen" class="tool" onclick="fitViewToContextGlyphs(); redraw({calledBy:\'updatetools\'});">'+makeToolButton({'name': 'tool_zoomEm'})+'</button>';
-  zoom += '<input type="number" title="zoom level" class="zoomreadout" value="' + round(getView('updatetools').dz*100, 2) + '" onchange="setViewZoom(this.value);"/>';
-  zoom += '<button title="zoom: in" class="tool" onclick="viewZoom(1.1, true);">'+makeToolButton({'name': 'tool_zoomIn'})+'</button>';
-  zoom += '<button title="zoom: out" class="tool" onclick="viewZoom(.9, true);">'+makeToolButton({'name': 'tool_zoomOut'})+'</button>';
-
+  zoom +=
+    '<button title="zoom: one to one" class="tool" onclick="setView({dz:1});redraw({calledBy:\'updatetools\'});">' +
+    makeToolButton({ name: 'tool_zoom1to1' }) +
+    '</button>';
+  zoom +=
+    '<button title="zoom: fit to screen" class="tool" onclick="fitViewToContextGlyphs(); redraw({calledBy:\'updatetools\'});">' +
+    makeToolButton({ name: 'tool_zoomEm' }) +
+    '</button>';
+  zoom +=
+    '<input type="number" title="zoom level" class="zoomreadout" value="' +
+    round(getView('updatetools').dz * 100, 2) +
+    '" onchange="setViewZoom(this.value);"/>';
+  zoom +=
+    '<button title="zoom: in" class="tool" onclick="viewZoom(1.1, true);">' +
+    makeToolButton({ name: 'tool_zoomIn' }) +
+    '</button>';
+  zoom +=
+    '<button title="zoom: out" class="tool" onclick="viewZoom(.9, true);">' +
+    makeToolButton({ name: 'tool_zoomOut' }) +
+    '</button>';
 
   // UPPER LEFT
   // New Shape
   let newshape = '';
-  newshape += '<button onmouseover="mouseovercec();" title="new rectangle shape" class="' + (st==='newrect'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'newrect\');"/>'+makeToolButton({'name': 'tool_newRect', 'selected': (st==='newrect')})+'</button>';
-  newshape += '<button onmouseover="mouseovercec();" title="new oval shape" class="' + (st==='newoval'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'newoval\');"/>'+makeToolButton({'name': 'tool_newOval', 'selected': (st==='newoval')})+'</button>';
-  newshape += '<button onmouseover="mouseovercec();" title="new path shape" class="' + (st==='newpath'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'newpath\');"/>'+makeToolButton({'name': 'tool_newPath', 'selected': (st==='newpath')})+'</button>';
+  newshape +=
+    '<button onmouseover="mouseovercec();" title="new rectangle shape" class="' +
+    (st === 'newrect' ? 'button--call-to-action ' : ' ') +
+    'tool" onclick="clickTool(\'newrect\');"/>' +
+    makeToolButton({ name: 'tool_newRect', selected: st === 'newrect' }) +
+    '</button>';
+  newshape +=
+    '<button onmouseover="mouseovercec();" title="new oval shape" class="' +
+    (st === 'newoval' ? 'button--call-to-action ' : ' ') +
+    'tool" onclick="clickTool(\'newoval\');"/>' +
+    makeToolButton({ name: 'tool_newOval', selected: st === 'newoval' }) +
+    '</button>';
+  newshape +=
+    '<button onmouseover="mouseovercec();" title="new path shape" class="' +
+    (st === 'newpath' ? 'button--call-to-action ' : ' ') +
+    'tool" onclick="clickTool(\'newpath\');"/>' +
+    makeToolButton({ name: 'tool_newPath', selected: st === 'newpath' }) +
+    '</button>';
   newshape += '<br>';
 
   // Path and Shape Edit
   let edittools = '';
-  edittools += '<button onmouseover="mouseovercec();" title="add path point" class="' + pathaddpointclass + ' tool" ' + (penaddpointclickable? 'onclick="clickTool(\'pathaddpoint\');"':'') + '/>'+makeToolButton({'name': 'tool_penPlus', 'selected': (st==='pathaddpoint'), 'disabled': !penaddpointclickable})+'</button>';
-  edittools += '<button onmouseover="mouseovercec();" title="path edit" class="' + patheditclass + ' tool" ' + (penclickable? 'onclick="clickTool(\'pathedit\');"':'') + '/>'+makeToolButton({'name': 'tool_pen', 'selected': (st==='pathedit'), 'disabled': !penclickable})+'</button>';
-  edittools += '<button onmouseover="mouseovercec();" title="shape edit" class="' + (st==='shaperesize'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'shaperesize\');"/>'+makeToolButton({'name': 'tool_arrow', 'selected': (st==='shaperesize')})+'</button>';
+  edittools +=
+    '<button onmouseover="mouseovercec();" title="add path point" class="' +
+    pathaddpointclass +
+    ' tool" ' +
+    (penaddpointclickable ? 'onclick="clickTool(\'pathaddpoint\');"' : '') +
+    '/>' +
+    makeToolButton({
+      name: 'tool_penPlus',
+      selected: st === 'pathaddpoint',
+      disabled: !penaddpointclickable,
+    }) +
+    '</button>';
+  edittools +=
+    '<button onmouseover="mouseovercec();" title="path edit" class="' +
+    patheditclass +
+    ' tool" ' +
+    (penclickable ? 'onclick="clickTool(\'pathedit\');"' : '') +
+    '/>' +
+    makeToolButton({
+      name: 'tool_pen',
+      selected: st === 'pathedit',
+      disabled: !penclickable,
+    }) +
+    '</button>';
+  edittools +=
+    '<button onmouseover="mouseovercec();" title="shape edit" class="' +
+    (st === 'shaperesize' ? 'button--call-to-action ' : ' ') +
+    'tool" onclick="clickTool(\'shaperesize\');"/>' +
+    makeToolButton({ name: 'tool_arrow', selected: st === 'shaperesize' }) +
+    '</button>';
   edittools += '<br>';
 
   let donepath = '<div style="height:5px;">&nbsp;</div>';
-  donepath += '<button class="button--call-to-action" style="width:94px; font-size:.8em; padding:2px;" title="done editing path" onclick="clickTool(\'pathedit\');">done editing path</button>';
+  donepath +=
+    '<button class="button--call-to-action" style="width:94px; font-size:.8em; padding:2px;" title="done editing path" onclick="clickTool(\'pathedit\');">done editing path</button>';
 
   // Slice
   // var slice = '<button title="slice" class="' + (st==='slice'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'slice\');"/>'+makeToolButton({'name':'tool_slice', 'selected':(st==='slice')})+'</button>';
 
   // Kern
-  const kern = '<button title="kern" class="' + (st==='kern'? 'button--call-to-action ' : ' ') + 'tool" onclick="clickTool(\'kern\');"/>'+makeToolButton({'name': 'tool_kern', 'selected': (st==='kern')})+'</button>';
+  const kern =
+    '<button title="kern" class="' +
+    (st === 'kern' ? 'button--call-to-action ' : ' ') +
+    'tool" onclick="clickTool(\'kern\');"/>' +
+    makeToolButton({ name: 'tool_kern', selected: st === 'kern' }) +
+    '</button>';
 
   // Context Glyphs
   let ctxg = '<div class="contextglyphsarea">';
   ctxg += '<div id="contextglyphsoptions">';
-  ctxg += '<b>Context Glyphs</b> are letters you can display around the glyph you are currently editing.<br><br>';
-  ctxg += checkUI('getCurrentProject().projectSettings.showcontextglyphguides', getCurrentProject().projectSettings.showcontextglyphguides, true);
-  ctxg += '<label style="margin-left:10px; position:relative; top:-6px;" for="showcontextglyphguides">show guides</label><br>';
-  ctxg += 'glyph ' + sliderUI('contextglyphtransparency', 'contextglyphtransparency_dropdown', true, false);
+  ctxg +=
+    '<b>Context Glyphs</b> are letters you can display around the glyph you are currently editing.<br><br>';
+  ctxg += checkUI(
+    'getCurrentProject().projectSettings.showcontextglyphguides',
+    getCurrentProject().projectSettings.showcontextglyphguides,
+    true
+  );
+  ctxg +=
+    '<label style="margin-left:10px; position:relative; top:-6px;" for="showcontextglyphguides">show guides</label><br>';
+  ctxg +=
+    'glyph ' +
+    sliderUI(
+      'contextglyphtransparency',
+      'contextglyphtransparency_dropdown',
+      true,
+      false
+    );
   ctxg += '<br/>';
-  ctxg += 'guide ' + sliderUI('systemguidetransparency', 'systemguidetransparency_dropdown', true, false);
+  ctxg +=
+    'guide ' +
+    sliderUI(
+      'systemguidetransparency',
+      'systemguidetransparency_dropdown',
+      true,
+      false
+    );
   ctxg += '</div>';
-  ctxg += '<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
+  ctxg +=
+    '<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
   ctxg += 'onblur="_UI.focusElement = false;" onmouseover="mouseoutcec();" ';
-  ctxg += 'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
-  ctxg += 'value="'+getContextGlyphString()+'"/>';
-  ctxg += '<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
+  ctxg +=
+    'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
+  ctxg += 'value="' + getContextGlyphString() + '"/>';
+  ctxg +=
+    '<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
   ctxg += '</div>';
 
   // LOWER LEFT
   // Keyboard Tips Button
-  const kbt = '<button title="keyboard and mouse tips" onclick="toggleKeyboardTips();" id="keyboardtips">'+makeIcon({'name': 'keyboard', 'size': 50, 'width': 30, 'height': 30, 'color': 'rgb(229,234,239)'})+'</button>';
-
+  const kbt =
+    '<button title="keyboard and mouse tips" onclick="toggleKeyboardTips();" id="keyboardtips">' +
+    makeIcon({
+      name: 'keyboard',
+      size: 50,
+      width: 30,
+      height: 30,
+      color: 'rgb(229,234,239)',
+    }) +
+    '</button>';
 
   //
   // Put it all together
@@ -238,7 +364,8 @@ function update_ToolsArea() {
   viewcontent += pop;
 
   if (onglyph || onlig) toolcontent += newshape;
-  if (oncom && selectedWorkItem && !selectedWorkItem.shape) toolcontent += newshape;
+  if (oncom && selectedWorkItem && !selectedWorkItem.shape)
+    toolcontent += newshape;
 
   if (onglyph || oncom || onlig) {
     toolcontent += edittools;
@@ -248,11 +375,18 @@ function update_ToolsArea() {
   if (onkern) toolcontent += kern;
   if (onglyph || onlig) toolcontent += ctxg;
 
-  if (getCurrentProject().projectSettings.showkeyboardtipsicon) utilitiescontent += kbt;
+  if (getCurrentProject().projectSettings.showkeyboardtipsicon)
+    utilitiescontent += kbt;
 
-  getEditDocument().getElementById('toolsarea_upperleft').innerHTML = toolcontent;
-  getEditDocument().getElementById('toolsarea_upperright').innerHTML = viewcontent;
-  getEditDocument().getElementById('toolsarea_lowerleft').innerHTML = utilitiescontent;
+  getEditDocument().getElementById(
+    'toolsarea_upperleft'
+  ).innerHTML = toolcontent;
+  getEditDocument().getElementById(
+    'toolsarea_upperright'
+  ).innerHTML = viewcontent;
+  getEditDocument().getElementById(
+    'toolsarea_lowerleft'
+  ).innerHTML = utilitiescontent;
 
   // debug(' update_ToolsArea - END\n');
 }
@@ -287,7 +421,7 @@ function clickTool(ctool) {
   closeNotation();
   // updateCursor();
 
-  redraw({calledBy: 'clicktool', redrawPanels: false});
+  redraw({ calledBy: 'clicktool', redrawPanels: false });
 }
 
 function updateCursor(tool) {
@@ -306,7 +440,6 @@ function updateCursor(tool) {
     } else if (tool === 'shaperesize') {
       // debug('\t shaperesize :: not setting cursor');
       // Handled by eventHandler
-
     } else if (tool === 'newpath') {
       // debug('\t setting cursor to penPlus');
       setCursor('penPlus');
@@ -340,10 +473,47 @@ function updateCursor(tool) {
 function setCursor(name) {
   // debug('\n setCursor - START');
   // debug('\t passed ' + name);
-  const cur = ['auto', 'default', 'none', 'context-menu', 'help', 'pointer', 'progress', 'wait', 'cell', 'crosshair', 'text', 'vertical-text', 'alias', 'copy', 'move', 'no-drop', 'not-allowed', 'e-resize', 'n-resize', 'ne-resize', 'nw-resize', 's-resize', 'se-resize', 'sw-resize', 'w-resize', 'ew-resize', 'ns-resize', 'nesw-resize', 'nwse-resize', 'col-resize', 'row-resize', 'all-scroll', 'zoom-in', 'zoom-out', 'grab', 'grabbing'];
+  const cur = [
+    'auto',
+    'default',
+    'none',
+    'context-menu',
+    'help',
+    'pointer',
+    'progress',
+    'wait',
+    'cell',
+    'crosshair',
+    'text',
+    'vertical-text',
+    'alias',
+    'copy',
+    'move',
+    'no-drop',
+    'not-allowed',
+    'e-resize',
+    'n-resize',
+    'ne-resize',
+    'nw-resize',
+    's-resize',
+    'se-resize',
+    'sw-resize',
+    'w-resize',
+    'ew-resize',
+    'ns-resize',
+    'nesw-resize',
+    'nwse-resize',
+    'col-resize',
+    'row-resize',
+    'all-scroll',
+    'zoom-in',
+    'zoom-out',
+    'grab',
+    'grabbing',
+  ];
 
-  if (cur.indexOf(name+'-resize') > -1) {
-    if (canResize(name)) name+='-resize';
+  if (cur.indexOf(name + '-resize') > -1) {
+    if (canResize(name)) name += '-resize';
     // debug('\t SET -resize CURSOR');
   }
 
@@ -368,7 +538,8 @@ function getEditMode() {
 
   if (tool === 'newrect' || tool === 'newoval') return 'newbasicshape';
   else if (tool === 'newpath') return 'newpath';
-  else if (tool === 'shaperesize') return _UI.eventhandlers.handle === 'rotate'? 'rotate' : 'arrow';
+  else if (tool === 'shaperesize')
+    return _UI.eventhandlers.handle === 'rotate' ? 'rotate' : 'arrow';
   else if (tool === 'pathedit' || tool === 'pathaddpoint') return 'pen';
   else if (tool === 'kern') return 'kern';
 }
@@ -377,7 +548,8 @@ function mouseovercec() {
   // debug('\n mouseovercec - START');
   _UI.eventhandlers.ismouseovercec = true;
   updateCursor();
-  if (_UI.hamburger.state !== 0 && _UI.currentPanel !== 'npNav') goHamburger(false);
+  if (_UI.hamburger.state !== 0 && _UI.currentPanel !== 'npNav')
+    goHamburger(false);
   // debug(' mouseovercec - END\n');
 }
 
@@ -385,9 +557,10 @@ function mouseoutcec() {
   // debug('\n mouseoutcec - START');
   _UI.eventhandlers.ismouseovercec = false;
   // Fixes a Chrome cursor problem
-  document.onselectstart = function() {};
+  document.onselectstart = function () {};
   updateCursor();
-  if (_UI.hamburger.state !== 11 && _UI.currentPanel !== 'npNav') goHamburger(true);
+  if (_UI.hamburger.state !== 11 && _UI.currentPanel !== 'npNav')
+    goHamburger(true);
   // debug(' mouseoutcec - END\n');
 }
 
@@ -402,40 +575,67 @@ function updateContextGlyphs() {
     _UI.contextGlyphs.advancewidth = getStringAdvanceWidth(cgi.value);
     fitViewToContextGlyphs();
 
-    redraw({calledBy: 'updateContextGlyphs', redrawPanels: false, redrawTools: false});
+    redraw({
+      calledBy: 'updateContextGlyphs',
+      redrawPanels: false,
+      redrawTools: false,
+    });
   }
 }
 
 function getContextGlyphString() {
-  return getSelectedWorkItem().contextGlyphs || hexToChars(getSelectedWorkItemID());
+  return (
+    getSelectedWorkItem().contextGlyphs || hexToChars(getSelectedWorkItemID())
+  );
 }
 
 function showCtxGlyphsOptions() {
-  getEditDocument().getElementById('contextglyphsoptions').style.display = 'block';
-  getEditDocument().getElementById('contextglyphsoptionsbutton').onclick = hideCtxGlyphsOptions;
-  getEditDocument().getElementById('contextglyphsoptionsbutton').innerHTML = '&#x23F6;';
+  getEditDocument().getElementById('contextglyphsoptions').style.display =
+    'block';
+  getEditDocument().getElementById(
+    'contextglyphsoptionsbutton'
+  ).onclick = hideCtxGlyphsOptions;
+  getEditDocument().getElementById('contextglyphsoptionsbutton').innerHTML =
+    '&#x23F6;';
 }
 
 function hideCtxGlyphsOptions() {
-  getEditDocument().getElementById('contextglyphsoptions').style.display = 'none';
-  getEditDocument().getElementById('contextglyphsoptionsbutton').onclick = showCtxGlyphsOptions;
-  getEditDocument().getElementById('contextglyphsoptionsbutton').innerHTML = '&#x23F7;';
+  getEditDocument().getElementById('contextglyphsoptions').style.display =
+    'none';
+  getEditDocument().getElementById(
+    'contextglyphsoptionsbutton'
+  ).onclick = showCtxGlyphsOptions;
+  getEditDocument().getElementById('contextglyphsoptionsbutton').innerHTML =
+    '&#x23F7;';
   getEditDocument().getElementById('contextglyphsinput').focus();
 }
 
 function toggleKeyboardTips() {
-  if (document.getElementById('dialog_box').style.display==='block') {
+  if (document.getElementById('dialog_box').style.display === 'block') {
     closeDialog();
   } else {
     let con = '<h1>Keyboard and Mouse Shortcuts</h1>';
 
     con += makeKeyboardShortcutsTable();
 
-    con += '<table><tr><td style="vertical-align:top; padding:20px 10px 0px 0px;">'+
-                checkUI('getCurrentProject().projectSettings.showkeyboardtipsicon', getCurrentProject().projectSettings.showkeyboardtipsicon)+
-            '</td><td style="vertical-align:top; padding:20px 10px 0px 0px;">'+
-                '<label style="position:relative; top:-5px;" for="showkeyboardtipsicon">show the &nbsp;<span style="position:relative; top:6px;">'+makeIcon({'name': 'keyboard', 'size': 50, 'width': 22, 'height': 22, 'color': 'rgb(76, 81, 86)', 'hoverColor': 'rgb(76, 81, 86)'})+'</span>&nbsp; button on the edit canvas</label>'+
-            '</td></tr></table>';
+    con +=
+      '<table><tr><td style="vertical-align:top; padding:20px 10px 0px 0px;">' +
+      checkUI(
+        'getCurrentProject().projectSettings.showkeyboardtipsicon',
+        getCurrentProject().projectSettings.showkeyboardtipsicon
+      ) +
+      '</td><td style="vertical-align:top; padding:20px 10px 0px 0px;">' +
+      '<label style="position:relative; top:-5px;" for="showkeyboardtipsicon">show the &nbsp;<span style="position:relative; top:6px;">' +
+      makeIcon({
+        name: 'keyboard',
+        size: 50,
+        width: 22,
+        height: 22,
+        color: 'rgb(76, 81, 86)',
+        hoverColor: 'rgb(76, 81, 86)',
+      }) +
+      '</span>&nbsp; button on the edit canvas</label>' +
+      '</td></tr></table>';
 
     openDialog(con);
   }
@@ -477,7 +677,9 @@ function makeKeyboardShortcutsTable() {
             <span class='arrow'>&#x21E6;</span>
             <span class='arrow'>&#x21E9;</span>
             <span class='arrow' style='margin-right:4px;'>&#x21E8;</span>
-            </td><td>nudges the selected shape<br>or point ${getCurrentProject().projectSettings.spinnervaluechange} em units</td></tr>
+            </td><td>nudges the selected shape<br>or point ${
+              getCurrentProject().projectSettings.spinnervaluechange
+            } em units</td></tr>
             </table>
 
         </td><td style='padding-left:40px;'>
@@ -497,7 +699,6 @@ function makeKeyboardShortcutsTable() {
         </td></tr></table>`;
 }
 
-
 // -------------------
 // CONTEXT GLYPHS
 // -------------------
@@ -513,13 +714,15 @@ function drawContextGlyphs() {
   // debug('\t split: ' + split.left + ' | ' + split.right);
   // debug(`\t view: ${json(v, true)}`);
 
-
   clearCanvasHotspots();
 
   if (split.left) {
     let leftdistance = getGlyphSequenceAdvanceWidth(split.left);
     if (currGlyphObject.isAutoWide) leftdistance += currGlyphObject.lsb;
-    leftdistance += calculateKernOffset(split.left.charAt(split.left.length-1), currGlyphChar);
+    leftdistance += calculateKernOffset(
+      split.left.charAt(split.left.length - 1),
+      currGlyphChar
+    );
 
     // debug(`\t leftdistance: ${leftdistance}`);
 
@@ -530,8 +733,8 @@ function drawContextGlyphs() {
       drawGlyphExtras: drawContextGlyphExtras,
       drawGlyph: drawContextGlyph,
       maxes: {
-        xMin: (v.dx - (leftdistance*v.dz)),
-        yMin: (v.dy),
+        xMin: v.dx - leftdistance * v.dz,
+        yMin: v.dy,
       },
     });
 
@@ -552,8 +755,8 @@ function drawContextGlyphs() {
       drawGlyphExtras: drawContextGlyphExtras,
       drawGlyph: drawContextGlyph,
       maxes: {
-        xMin: (v.dx + (rightdistance*v.dz)),
-        yMin: (v.dy),
+        xMin: v.dx + rightdistance * v.dz,
+        yMin: v.dy,
       },
     });
 
@@ -576,10 +779,10 @@ function splitContextGlyphString(splitchar) {
     r = '';
   } else {
     l = ctxgs.substr(0, pos);
-    r = ctxgs.substr(pos+splitchar.length);
+    r = ctxgs.substr(pos + splitchar.length);
   }
 
-  return {left: l, right: r};
+  return { left: l, right: r };
 }
 
 function getGlyphSequenceAdvanceWidth(sequence) {
@@ -587,13 +790,13 @@ function getGlyphSequenceAdvanceWidth(sequence) {
   sequence = findAndMergeLigatures(sequence.split(''));
 
   let g;
-  sequence.forEach(function(v, i, a) {
+  sequence.forEach(function (v, i, a) {
     g = getGlyph(glyphToHex(v));
     if (g) {
       advanceWidth += g.getAdvanceWidth();
-      if (a[i+1]) advanceWidth += calculateKernOffset(v, a[i+1]);
+      if (a[i + 1]) advanceWidth += calculateKernOffset(v, a[i + 1]);
     } else {
-      advanceWidth += getCurrentProject().projectSettings.upm*1 / 2;
+      advanceWidth += (getCurrentProject().projectSettings.upm * 1) / 2;
     }
   });
 
@@ -601,19 +804,24 @@ function getGlyphSequenceAdvanceWidth(sequence) {
 }
 
 function drawContextGlyphLeftLineExtras(char, seq) {
-  const alpha = transparencyToAlpha(getCurrentProject().projectSettings.colors.systemguidetransparency);
+  const alpha = transparencyToAlpha(
+    getCurrentProject().projectSettings.colors.systemguidetransparency
+  );
   const color = getColorFromRGBA('rgb(204,81,0)', alpha);
-  drawVerticalLine((char.view.dx*char.view.dz), false, color);
+  drawVerticalLine(char.view.dx * char.view.dz, false, color);
 
-  let kern = calculateKernOffset(seq.glyphstring[seq.glyphstring.length-1], getSelectedWorkItemChar());
+  let kern = calculateKernOffset(
+    seq.glyphstring[seq.glyphstring.length - 1],
+    getSelectedWorkItemChar()
+  );
 
   if (kern) {
     const selwi = getSelectedWorkItem();
     const v = getView('drawContextGlyphLeftLineExtras');
     kern *= -1;
-    let rightx = selwi.isAutoWide? kern-selwi.lsb : kern;
-    rightx = v.dx + (rightx * v.dz);
-    const texty = sYcY(getCurrentProject().projectSettings.descent-60);
+    let rightx = selwi.isAutoWide ? kern - selwi.lsb : kern;
+    rightx = v.dx + rightx * v.dz;
+    const texty = sYcY(getCurrentProject().projectSettings.descent - 60);
 
     drawGlyphKernExtra(-kern, rightx, texty, v.dz);
   }
@@ -627,8 +835,8 @@ function drawContextGlyphRightLineExtras(char, seq) {
     const selwi = getSelectedWorkItem();
     let rightx = selwi.getAdvanceWidth();
     if (selwi.isAutoWide) rightx -= selwi.lsb;
-    rightx = v.dx + (rightx * v.dz);
-    const texty = sYcY(getCurrentProject().projectSettings.descent-60);
+    rightx = v.dx + rightx * v.dz;
+    const texty = sYcY(getCurrentProject().projectSettings.descent - 60);
 
     drawGlyphKernExtra(kern, rightx, texty, v.dz);
   }
@@ -653,14 +861,15 @@ function drawContextGlyphExtras(char) {
     const ctx = _UI.glyphEditCTX;
     const view = getView('drawContextGlyphExtras');
     const advanceWidth = char.width * view.dz;
-    const currx = (char.view.dx*view.dz);
+    const currx = char.view.dx * view.dz;
     const rightx = currx + advanceWidth;
     const color = getColorFromRGBA('rgb(204,81,0)', alpha);
-    const texty = sYcY(getCurrentProject().projectSettings.descent-60);
-
+    const texty = sYcY(getCurrentProject().projectSettings.descent - 60);
 
     // Draw the glyph name
-    let gname = char.glyph? char.glyph.getName() : getGlyphName(charsToHexArray(char.char));
+    let gname = char.glyph
+      ? char.glyph.getName()
+      : getGlyphName(charsToHexArray(char.char));
     gname = gname.replace(/latin /i, '');
     drawGlyphNameExtra(gname, currx, texty, advanceWidth, color, char.char);
 
@@ -674,13 +883,20 @@ function drawContextGlyphExtras(char) {
   // debug(' drawContextGlyphExtras - END\n');
 }
 
-function drawGlyphNameExtra(text, currx, topy, advanceWidth, color, regHotspot) {
+function drawGlyphNameExtra(
+  text,
+  currx,
+  topy,
+  advanceWidth,
+  color,
+  regHotspot
+) {
   // debug('\n drawGlyphNameExtra - START');
   // debug(`\t ${text} passed regHotspot ${regHotspot}`);
 
   const ctx = _UI.glyphEditCTX;
   const textw = ctx.measureText(text).width;
-  const textx = currx + ((advanceWidth - textw) / 2); // center the glyph name
+  const textx = currx + (advanceWidth - textw) / 2; // center the glyph name
   const texty = topy + 22;
 
   ctx.font = '12px tahoma, verdana, sans-serif';
@@ -697,16 +913,16 @@ function drawGlyphNameExtra(text, currx, topy, advanceWidth, color, regHotspot) 
     registerCanvasHotspot({
       target: {
         xMin: currx,
-        xMax: (currx + advanceWidth),
-        yMin: texty-20,
-        yMax: (texty+20),
+        xMax: currx + advanceWidth,
+        yMin: texty - 20,
+        yMax: texty + 20,
       },
       underline: {
-        xMin: textx-1,
-        xMax: textx+textw+1,
-        y: texty+6,
+        xMin: textx - 1,
+        xMax: textx + textw + 1,
+        y: texty + 6,
       },
-      onclick: function() {
+      onclick: function () {
         hotspotNavigateToGlyph(glyphToHex(regHotspot));
       },
     });
@@ -717,24 +933,24 @@ function drawGlyphKernExtra(kern, rightx, topy, scale) {
   const desc = getCurrentProject().projectSettings.descent;
   const ctx = _UI.glyphEditCTX;
   const offset = 40;
-  const color = getColorFromRGBA('rgb(255,0,255)', transparencyToAlpha(getCurrentProject().projectSettings.colors.systemguidetransparency));
-  const barheight = Math.max((scale * 10), 1);
+  const color = getColorFromRGBA(
+    'rgb(255,0,255)',
+    transparencyToAlpha(
+      getCurrentProject().projectSettings.colors.systemguidetransparency
+    )
+  );
+  const barheight = Math.max(scale * 10, 1);
 
   ctx.font = '12px tahoma, verdana, sans-serif';
   ctx.fillStyle = color;
-  ctx.fillRect(
-      rightx,
-      (topy + offset),
-      (kern * scale),
-      barheight
-  );
+  ctx.fillRect(rightx, topy + offset, kern * scale, barheight);
 
   const text = 'kern: ' + kern;
   const textwidth = ctx.measureText(text).width;
-  const textx = rightx - (((kern*-1*scale) - textwidth)/2) - textwidth;
+  const textx = rightx - (kern * -1 * scale - textwidth) / 2 - textwidth;
 
   ctx.strokeStyle = color;
-  drawVerticalLine((rightx + (kern*scale)), false, color);
+  drawVerticalLine(rightx + kern * scale, false, color);
 
   ctx.strokeStyle = 'white';
   ctx.lineWidth = 10;
@@ -743,8 +959,8 @@ function drawGlyphKernExtra(kern, rightx, topy, scale) {
   // ctx.strokeText(text, textx, (topy + (offset*4)));
   // ctx.fillText(text, textx, (topy + (offset*4)));
 
-  ctx.strokeText(text, textx, (topy + offset + barheight + 22));
-  ctx.fillText(text, textx, (topy + offset + barheight + 22));
+  ctx.strokeText(text, textx, topy + offset + barheight + 22);
+  ctx.fillText(text, textx, topy + offset + barheight + 22);
 }
 
 function drawContextGlyph(char) {
@@ -761,11 +977,17 @@ function drawContextGlyph(char) {
   const c = char.view;
 
   if (!char.glyph) return;
-  char.glyph.drawGlyph(_UI.glyphEditCTX, {dx: (c.dx*c.dz), dy: v.dy, dz: c.dz}, transparencyToAlpha(getCurrentProject().projectSettings.colors.contextglyphtransparency), true);
+  char.glyph.drawGlyph(
+    _UI.glyphEditCTX,
+    { dx: c.dx * c.dz, dy: v.dy, dz: c.dz },
+    transparencyToAlpha(
+      getCurrentProject().projectSettings.colors.contextglyphtransparency
+    ),
+    true
+  );
 
   // debug(' drawContextGlyph - END\n');
 }
-
 
 // -------------------------------
 //    CANVAS HOTSPOTS
@@ -783,11 +1005,16 @@ function isHotspotHere(cx, cy) {
   const chs = _UI.canvasHotSpots;
   let v;
 
-  for (let i=0; i<chs.length; i++) {
+  for (let i = 0; i < chs.length; i++) {
     v = chs[i];
     // debug(`isHotspotHere - checking ${v.target.xMin} - ${v.target.xMax} - ${v.target.yMin} - ${v.target.yMax}`);
     // debug(`results ${(cx <= v.target.xMax)} - ${(cx >= v.target.xMin)} - ${(cy <= v.target.yMax)} - ${(cy >= v.target.yMin)}`);
-    if ((cx <= v.target.xMax) && (cx >= v.target.xMin) && (cy <= v.target.yMax) && (cy >= v.target.yMin)) {
+    if (
+      cx <= v.target.xMax &&
+      cx >= v.target.xMin &&
+      cy <= v.target.yMax &&
+      cy >= v.target.yMin
+    ) {
       return v;
     }
   }
@@ -796,8 +1023,13 @@ function isHotspotHere(cx, cy) {
 }
 
 function findAndCallHotspot(cx, cy) {
-  _UI.canvasHotSpots.forEach(function(v, i, a) {
-    if ((cx <= v.target.xMax) && (cx >= v.target.xMin) && (cy <= v.target.yMax) && (cy >= v.target.yMin)) {
+  _UI.canvasHotSpots.forEach(function (v, i, a) {
+    if (
+      cx <= v.target.xMax &&
+      cx >= v.target.xMin &&
+      cy <= v.target.yMax &&
+      cy >= v.target.yMin
+    ) {
       v.onclick();
     }
   });
@@ -827,7 +1059,6 @@ function hotspotNavigateToGlyph(gid) {
     rightchar = currchar;
   }
 
-
   const str = ctxg.substring(p1, p2);
   // debug(`\t substring from ${p1} to ${p2} yeilds ${str}`);
 
@@ -838,8 +1069,8 @@ function hotspotNavigateToGlyph(gid) {
   const kern = calculateKernOffset(leftchar, rightchar);
   // debug(`\t kern offset ${leftchar} and ${rightchar} is ${kern}`);
 
-  v.dx += (v.dz * delta * flipper);
-  v.dx += (v.dz * kern * flipper);
+  v.dx += v.dz * delta * flipper;
+  v.dx += v.dz * kern * flipper;
 
   getGlyph(gid, true).contextGlyphs = ctxg;
   selectGlyph(gid);
@@ -858,7 +1089,8 @@ function findAndUnderlineHotspot(cx, cy) {
   const ctx = _UI.glyphEditCTX;
   // debug(`\t ${hs}`);
   if (hs) {
-    const t = (getCurrentProject().projectSettings.colors.systemguidetransparency);
+    const t = getCurrentProject().projectSettings.colors
+      .systemguidetransparency;
     // var t2 = (((100 - t) / 2) + t);
     const alpha = transparencyToAlpha(t);
     const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);
@@ -875,13 +1107,15 @@ function findAndUnderlineHotspot(cx, cy) {
   // debug(' findAndUnderlineHotspot - END\n');
 }
 
-
 // -------------------
 // VIEW
 // -------------------
 
 function setView(oa) {
-  const sc = (editor.nav.page === 'kerning')? getSelectedKernID() : getSelectedWorkItemID();
+  const sc =
+    editor.nav.page === 'kerning'
+      ? getSelectedKernID()
+      : getSelectedWorkItemID();
   const v = _UI.views || {};
 
   // Ensure there are at least defaults
@@ -899,15 +1133,15 @@ function getView(calledBy) {
   // debug('\n getView - START');
   // debug('\t calledBy: ' + calledBy);
 
-  const onkern = (editor.nav.page === 'kerning');
-  const sc = onkern? getSelectedKernID() : getSelectedWorkItemID();
+  const onkern = editor.nav.page === 'kerning';
+  const sc = onkern ? getSelectedKernID() : getSelectedWorkItemID();
   const v = _UI.views || {};
   let re;
 
   if (isVal(v[sc])) {
     re = clone(v[sc]);
   } else {
-    re = onkern? clone(_UI.defaultKernView) : clone(_UI.defaultView);
+    re = onkern ? clone(_UI.defaultKernView) : clone(_UI.defaultView);
   }
 
   // debug('\t returning ' + json(re));
@@ -916,9 +1150,7 @@ function getView(calledBy) {
   return re;
 }
 
-function getDefaultView() {
-
-}
+function getDefaultView() {}
 
 function viewZoom(zfactor, center) {
   const v = getView('viewZoom');
@@ -926,12 +1158,12 @@ function viewZoom(zfactor, center) {
   const my = _UI.eventhandlers.mousey;
 
   setView({
-    'dz': round(v.dz *= zfactor, 2),
-    'dx': center? v.dx : (mx - ((mx - v.dx) * zfactor)),
-    'dy': center? v.dy : (my - ((my - v.dy) * zfactor)),
+    dz: round((v.dz *= zfactor), 2),
+    dx: center ? v.dx : mx - (mx - v.dx) * zfactor,
+    dy: center ? v.dy : my - (my - v.dy) * zfactor,
   });
 
-  redraw({calledBy: 'viewZoom', redrawPanels: false});
+  redraw({ calledBy: 'viewZoom', redrawPanels: false });
 }
 
 function setViewZoom(zoom) {
@@ -939,21 +1171,23 @@ function setViewZoom(zoom) {
   const v = getView('setViewZoom');
 
   setView({
-    'dz': round(zoom, 2),
-    'dx': v.dx,
-    'dy': v.dy,
+    dz: round(zoom, 2),
+    dx: v.dx,
+    dy: v.dy,
   });
 
-  redraw({calledBy: 'setViewZoom', redrawPanels: false});
+  redraw({ calledBy: 'setViewZoom', redrawPanels: false });
 }
 
 function resetThumbView() {
-  const zoom = ((_UI.thumbSize-(2*_UI.thumbGutter))/(getCurrentProject().projectSettings.upm));
+  const zoom =
+    (_UI.thumbSize - 2 * _UI.thumbGutter) /
+    getCurrentProject().projectSettings.upm;
 
   _UI.thumbView = {
-    'dx': _UI.thumbGutter,
-    'dy': (_UI.thumbGutter+(getCurrentProject().projectSettings.ascent*zoom)),
-    'dz': zoom,
+    dx: _UI.thumbGutter,
+    dy: _UI.thumbGutter + getCurrentProject().projectSettings.ascent * zoom,
+    dz: zoom,
   };
 
   // debug('RESETTHUMBVIEW - set to \n' + JSON.stringify(_UI.thumbView));
@@ -970,16 +1204,18 @@ function calculateDefaultView() {
   const strw = ps.upm / 2;
   const strh = ps.ascent - ps.descent;
 
-  let zw; let zh; var nz;
+  let zw;
+  let zh;
+  var nz;
 
-  zw = round((canw / (strw * 1.4)), 3);
-  zh = round((canh / (strh * 1.4)), 3);
+  zw = round(canw / (strw * 1.4), 3);
+  zh = round(canh / (strh * 1.4), 3);
 
   var nz = Math.min(zh, zw);
-  const nx = round(((canw - (nz * strw)) / 2));
-  const ny = round(((canh - (nz * strh)) / 2) + (ps.ascent * nz));
+  const nx = round((canw - nz * strw) / 2);
+  const ny = round((canh - nz * strh) / 2 + ps.ascent * nz);
 
-  _UI.defaultView = {dx: nx, dy: ny, dz: nz};
+  _UI.defaultView = { dx: nx, dy: ny, dz: nz };
 }
 
 function fitViewToContextGlyphs(dontzoom) {
@@ -996,23 +1232,25 @@ function fitViewToContextGlyphs(dontzoom) {
   const strh = ps.ascent - ps.descent;
   // debug(`\t STR \t ${strw} \t ${strh}`);
 
-  let zw; let zh; var nz;
+  let zw;
+  let zh;
+  var nz;
 
   if (dontzoom) {
     nz = getView('fitViewToContextGlyphs').dz;
     // debug(`\t VZ \t ${nz}`);
   } else {
-    zw = round((canw / (strw * 1.4)), 3);
-    zh = round((canh / (strh * 1.4)), 3);
+    zw = round(canw / (strw * 1.4), 3);
+    zh = round(canh / (strh * 1.4), 3);
     // debug(`\t NZ \t ${zw} \t ${zh}`);
   }
 
   var nz = Math.min(zh, zw);
-  const nx = round(((canw - (nz * strw)) / 2));
-  const ny = round(((canh - (nz * strh)) / 2) + (ps.ascent * nz));
+  const nx = round((canw - nz * strw) / 2);
+  const ny = round((canh - nz * strh) / 2 + ps.ascent * nz);
   // debug(`\t VIEW \t ${nx} \t ${ny} \t ${nz}`);
 
-  setView({dx: nx, dy: ny, dz: nz});
+  setView({ dx: nx, dy: ny, dz: nz });
 }
 
 function getStringAdvanceWidth(str) {
@@ -1020,19 +1258,18 @@ function getStringAdvanceWidth(str) {
   let g;
   let aw = 0;
 
-  for (let c=0; c<carr.length; c++) {
+  for (let c = 0; c < carr.length; c++) {
     g = getGlyph(charsToHexArray(carr[c])[0]);
 
     aw += g.getAdvanceWidth();
 
-    if (c < carr.length-2) {
-      aw += calculateKernOffset(carr[c], carr[c+1]);
+    if (c < carr.length - 2) {
+      aw += calculateKernOffset(carr[c], carr[c + 1]);
     }
   }
 
   return aw;
 }
-
 
 // --------------------------------------------------------------------------
 //    Convert between Saved values and Canvas values
@@ -1040,25 +1277,24 @@ function getStringAdvanceWidth(str) {
 // convert stored x-y point to canvas x-y
 function sXcX(sx, view = getView('sXcX')) {
   let canvasx = view.dx;
-  canvasx += (sx*view.dz);
+  canvasx += sx * view.dz;
   return canvasx || view.dx;
 }
 
 function sYcY(sy, view = getView('sYcY')) {
   let canvasy = view.dy;
-  canvasy -= (sy*view.dz);
+  canvasy -= sy * view.dz;
   return canvasy || view.dy;
 }
 
 // convert canvas x-y inputs to saved shape x-y
 function cXsX(cx, view = getView('cXsX')) {
-  return ((cx-view.dx)/(view.dz));
+  return (cx - view.dx) / view.dz;
 }
 
 function cYsY(cy, view = getView('cYsY')) {
-  return ((view.dy-cy)/(view.dz));
+  return (view.dy - cy) / view.dz;
 }
-
 
 // ------------------------------
 // Drawing controls
@@ -1074,13 +1310,13 @@ function draw_PathOutline(sh, accent, thickness) {
 
   accent = accent || _UI.colors.blue;
   thickness = thickness || 1;
-  const hp = (getCurrentProject().projectSettings.pointsize/2);
+  const hp = getCurrentProject().projectSettings.pointsize / 2;
   _UI.glyphEditCTX.strokeStyle = accent.l65;
   _UI.glyphEditCTX.fillStyle = 'transparent';
 
-  if (_UI.selectedTool==='newrect') {
+  if (_UI.selectedTool === 'newrect') {
     draw_BoundingBox(sh.maxes, accent);
-  } else if (_UI.selectedTool==='newoval') {
+  } else if (_UI.selectedTool === 'newoval') {
     _UI.glyphEditCTX.strokeStyle = accent.l65;
     const tpdso = ovalPathFromMaxes(_UI.eventhandlers.tempnewbasicshape);
 
@@ -1112,12 +1348,11 @@ function draw_PathPoints(pparr, accent) {
   // debug('\n draw_PathPoints - START');
   pparr = pparr || [];
 
-
-  for (let p=0; p<pparr.length; p++) {
+  for (let p = 0; p < pparr.length; p++) {
     // debug('\t point ' + p + ' isSelected ' + _UI.multiSelect.points.isSelected(pparr[p]));
 
-    if (p===0) {
-      pparr[p].drawDirectionalityPoint(accent, pparr[(p+1)%pparr.length]);
+    if (p === 0) {
+      pparr[p].drawDirectionalityPoint(accent, pparr[(p + 1) % pparr.length]);
     } else {
       pparr[p].drawPoint(accent);
     }
@@ -1129,7 +1364,7 @@ function draw_PathPoints(pparr, accent) {
 function draw_PathPointHandles(pparr, accent) {
   pparr = pparr || [];
 
-  for (let p=0; p<pparr.length; p++) {
+  for (let p = 0; p < pparr.length; p++) {
     pparr[p].drawHandles(true, true, accent);
   }
 }
@@ -1153,8 +1388,8 @@ function draw_BoundingBox(maxes, accent, thickness) {
     by += thickness;
   }
 
-  const w = (rx-lx);
-  const h = (by-ty);
+  const w = rx - lx;
+  const h = by - ty;
 
   _UI.glyphEditCTX.fillStyle = 'transparent';
   _UI.glyphEditCTX.strokeStyle = accent.l65;
@@ -1176,35 +1411,37 @@ function draw_BoundingBoxHandles(maxes, accent, thickness) {
   if (_UI.multiSelect.shapes.rotateable()) {
     const h = _UI.rotateHandleHeight;
     _UI.glyphEditCTX.lineWidth = thickness;
-    draw_Line({x: bb.midx + bb.hp, y: bb.topy}, {x: bb.midx + bb.hp, y: bb.topy - h});
+    draw_Line(
+      { x: bb.midx + bb.hp, y: bb.topy },
+      { x: bb.midx + bb.hp, y: bb.topy - h }
+    );
     _UI.glyphEditCTX.lineWidth = 1;
-    draw_CircleHandle({x: bb.midx + bb.hp, y: bb.topy - h + bb.hp});
+    draw_CircleHandle({ x: bb.midx + bb.hp, y: bb.topy - h + bb.hp });
   }
 
-
   // upper left
-  if (canResize('nw')) draw_SquareHandle({x: bb.leftx, y: bb.topy});
+  if (canResize('nw')) draw_SquareHandle({ x: bb.leftx, y: bb.topy });
 
   // top
-  if (canResize('n')) draw_SquareHandle({x: bb.midx, y: bb.topy});
+  if (canResize('n')) draw_SquareHandle({ x: bb.midx, y: bb.topy });
 
   // upper right
-  if (canResize('ne')) draw_SquareHandle({x: bb.rightx, y: bb.topy});
+  if (canResize('ne')) draw_SquareHandle({ x: bb.rightx, y: bb.topy });
 
   // right
-  if (canResize('e')) draw_SquareHandle({x: bb.rightx, y: bb.midy});
+  if (canResize('e')) draw_SquareHandle({ x: bb.rightx, y: bb.midy });
 
   // lower right
-  if (canResize('se')) draw_SquareHandle({x: bb.rightx, y: bb.bottomy});
+  if (canResize('se')) draw_SquareHandle({ x: bb.rightx, y: bb.bottomy });
 
   // bottom
-  if (canResize('s')) draw_SquareHandle({x: bb.midx, y: bb.bottomy});
+  if (canResize('s')) draw_SquareHandle({ x: bb.midx, y: bb.bottomy });
 
   // lower left
-  if (canResize('sw')) draw_SquareHandle({x: bb.leftx, y: bb.bottomy});
+  if (canResize('sw')) draw_SquareHandle({ x: bb.leftx, y: bb.bottomy });
 
   // left
-  if (canResize('w')) draw_SquareHandle({x: bb.leftx, y: bb.midy});
+  if (canResize('w')) draw_SquareHandle({ x: bb.leftx, y: bb.midy });
 
   // //Center Dot
   // _UI.glyphEditCTX.fillRect(bb.midx, bb.midy, ps, ps);
@@ -1219,21 +1456,20 @@ function draw_RotationAffordance(accent, thickness) {
   const mx = _UI.eventhandlers.mousex;
   const my = _UI.eventhandlers.mousey;
   const ss = _UI.multiSelect.shapes;
-  const angle = calculateAngle({x: cXsX(mx), y: cYsY(my)}, center);
+  const angle = calculateAngle({ x: cXsX(mx), y: cYsY(my) }, center);
 
   // debug('\t Init angle:\t' + angle);
 
-  const rotatehandle = {x: center.x, y: starttopy};
+  const rotatehandle = { x: center.x, y: starttopy };
   rotate(rotatehandle, angle, center);
-  rotate(rotatehandle, (Math.PI/-2), center);
+  rotate(rotatehandle, Math.PI / -2, center);
 
   // debug('\t Drag Angle:\t' + round(angle, 2));
 
   let counterclockwise = false;
-  if (Math.abs(angle) > (Math.PI/2)) {
+  if (Math.abs(angle) > Math.PI / 2) {
     counterclockwise = true;
   }
-
 
   // Convert things to Canvas System
   rotatehandle.x = sXcX(rotatehandle.x);
@@ -1243,7 +1479,6 @@ function draw_RotationAffordance(accent, thickness) {
   starttopy = sYcY(starttopy);
   const radius = calculateLength(center, rotatehandle);
 
-
   const ctx = _UI.glyphEditCTX;
 
   // Pizza Pie Sweep
@@ -1252,7 +1487,14 @@ function draw_RotationAffordance(accent, thickness) {
   ctx.globalAlpha = 0.3;
   ctx.beginPath();
   ctx.moveTo(center.x, center.y);
-  ctx.arc(center.x, center.y, radius, (Math.PI/-2), (angle*-1), counterclockwise);
+  ctx.arc(
+    center.x,
+    center.y,
+    radius,
+    Math.PI / -2,
+    angle * -1,
+    counterclockwise
+  );
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
@@ -1261,7 +1503,10 @@ function draw_RotationAffordance(accent, thickness) {
   ctx.strokeStyle = accent.l65;
   ctx.fillStyle = 'white';
   ctx.lineWidth = thickness;
-  draw_Line({x: rotatehandle.x, y: rotatehandle.y}, {x: center.x, y: center.y});
+  draw_Line(
+    { x: rotatehandle.x, y: rotatehandle.y },
+    { x: center.x, y: center.y }
+  );
   ctx.lineWidth = 1;
   draw_CircleHandle(rotatehandle);
 
@@ -1275,7 +1520,7 @@ function draw_RotationAffordance(accent, thickness) {
   ctx.font = '24px FiraGO';
   ctx.fillStyle = accent.l65;
   ctx.globalAlpha = 0.8;
-  ctx.fillText((''+readout+'°'), center.x, starttopy-24);
+  ctx.fillText('' + readout + '°', center.x, starttopy - 24);
 
   ctx.globalAlpha = 1;
 }
@@ -1296,7 +1541,14 @@ function draw_SquareHandle(ul) {
 
 function draw_CircleHandle(center) {
   _UI.glyphEditCTX.beginPath();
-  _UI.glyphEditCTX.arc(center.x, center.y, (getCurrentProject().projectSettings.pointsize/2), 0, Math.PI*2, true);
+  _UI.glyphEditCTX.arc(
+    center.x,
+    center.y,
+    getCurrentProject().projectSettings.pointsize / 2,
+    0,
+    Math.PI * 2,
+    true
+  );
   _UI.glyphEditCTX.closePath();
   _UI.glyphEditCTX.fill();
   _UI.glyphEditCTX.stroke();
@@ -1317,57 +1569,88 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
 
   // rotation handle
   if (_UI.multiSelect.shapes.rotateable()) {
-    if ( ((px > bb.midx) && (px < bb.midx+ps)) &&
-                ((py > bb.topy-_UI.rotateHandleHeight) && (py < bb.topy-_UI.rotateHandleHeight+ps)) ) {
+    if (
+      px > bb.midx &&
+      px < bb.midx + ps &&
+      py > bb.topy - _UI.rotateHandleHeight &&
+      py < bb.topy - _UI.rotateHandleHeight + ps
+    ) {
       return 'rotate';
     }
   }
 
   // upper left
-  if ( ((px > bb.leftx) && (px < bb.leftx+ps)) &&
-            ((py > bb.topy) && (py < bb.topy+ps)) ) {
+  if (
+    px > bb.leftx &&
+    px < bb.leftx + ps &&
+    py > bb.topy &&
+    py < bb.topy + ps
+  ) {
     return 'nw';
   }
 
   // top
-  if ( ((px > bb.midx) && (px < bb.midx+ps)) &&
-            ((py > bb.topy) && (py < bb.topy+ps)) ) {
+  if (px > bb.midx && px < bb.midx + ps && py > bb.topy && py < bb.topy + ps) {
     return 'n';
   }
 
   // upper right
-  if ( ((px > bb.rightx) && (px < bb.rightx+ps)) &&
-            ((py > bb.topy) && (py < bb.topy+ps)) ) {
+  if (
+    px > bb.rightx &&
+    px < bb.rightx + ps &&
+    py > bb.topy &&
+    py < bb.topy + ps
+  ) {
     return 'ne';
   }
 
   // right
-  if ( ((px > bb.rightx) && (px < bb.rightx+ps)) &&
-            ((py > bb.midy) && (py < bb.midy+ps)) ) {
+  if (
+    px > bb.rightx &&
+    px < bb.rightx + ps &&
+    py > bb.midy &&
+    py < bb.midy + ps
+  ) {
     return 'e';
   }
 
   // lower right
-  if ( ((px > bb.rightx) && (px < bb.rightx+ps)) &&
-            ((py > bb.bottomy) && (py < bb.bottomy+ps)) ) {
+  if (
+    px > bb.rightx &&
+    px < bb.rightx + ps &&
+    py > bb.bottomy &&
+    py < bb.bottomy + ps
+  ) {
     return 'se';
   }
 
   // bottom
-  if ( ((px > bb.midx) && (px < bb.midx+ps)) &&
-            ((py > bb.bottomy) && (py < bb.bottomy+ps)) ) {
+  if (
+    px > bb.midx &&
+    px < bb.midx + ps &&
+    py > bb.bottomy &&
+    py < bb.bottomy + ps
+  ) {
     return 's';
   }
 
   // lower left
-  if ( ((px > bb.leftx) && (px < bb.leftx+ps)) &&
-            ((py > bb.bottomy) && (py < bb.bottomy+ps)) ) {
+  if (
+    px > bb.leftx &&
+    px < bb.leftx + ps &&
+    py > bb.bottomy &&
+    py < bb.bottomy + ps
+  ) {
     return 'sw';
   }
 
   // left
-  if ( ((px > bb.leftx) && (px < bb.leftx+ps)) &&
-            ((py > bb.midy) && (py < bb.midy+ps)) ) {
+  if (
+    px > bb.leftx &&
+    px < bb.leftx + ps &&
+    py > bb.midy &&
+    py < bb.midy + ps
+  ) {
     return 'w';
   }
 
@@ -1377,18 +1660,21 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
 
 function getBoundingBoxHandleDimensions(maxes, thickness) {
   const dimensions = {};
-  const hp = getCurrentProject().projectSettings.pointsize/2;
+  const hp = getCurrentProject().projectSettings.pointsize / 2;
   thickness = thickness || 1;
 
   // Translation Fidelity - converting passed canvas values to saved value system
-  dimensions.leftx = (sXcX(maxes.xMin) - hp);
-  dimensions.midx = Math.floor(sXcX(maxes.xMin)+((sXcX(maxes.xMax)-sXcX(maxes.xMin))/2)-hp);
-  dimensions.rightx = (sXcX(maxes.xMax) - hp);
+  dimensions.leftx = sXcX(maxes.xMin) - hp;
+  dimensions.midx = Math.floor(
+    sXcX(maxes.xMin) + (sXcX(maxes.xMax) - sXcX(maxes.xMin)) / 2 - hp
+  );
+  dimensions.rightx = sXcX(maxes.xMax) - hp;
 
-  dimensions.topy = (sYcY(maxes.yMax) - hp);
-  dimensions.midy = Math.floor(sYcY(maxes.yMax)+((sYcY(maxes.yMin)-sYcY(maxes.yMax))/2)-hp);
-  dimensions.bottomy = (sYcY(maxes.yMin) - hp);
-
+  dimensions.topy = sYcY(maxes.yMax) - hp;
+  dimensions.midy = Math.floor(
+    sYcY(maxes.yMax) + (sYcY(maxes.yMin) - sYcY(maxes.yMax)) / 2 - hp
+  );
+  dimensions.bottomy = sYcY(maxes.yMin) - hp;
 
   if (thickness > 1) {
     dimensions.leftx -= thickness;
@@ -1402,7 +1688,6 @@ function getBoundingBoxHandleDimensions(maxes, thickness) {
   return dimensions;
 }
 
-
 // -------------------
 // Drawing Grid
 // -------------------
@@ -1411,37 +1696,47 @@ function drawGrid() {
   // debug('\n drawGrid - START');
 
   const xs = {
-    'xMax': _UI.glyphEditCanvasSize,
-    'xMin': 0,
-    'yMax': _UI.glyphEditCanvasSize,
-    'yMin': 0,
+    xMax: _UI.glyphEditCanvasSize,
+    xMin: 0,
+    yMax: _UI.glyphEditCanvasSize,
+    yMin: 0,
   };
 
   // background white square
   _UI.glyphEditCTX.fillStyle = 'white';
-  _UI.glyphEditCTX.fillRect(xs.xMin, xs.yMin, xs.xMax-xs.xMin, xs.yMax-xs.yMin);
+  _UI.glyphEditCTX.fillRect(
+    xs.xMin,
+    xs.yMin,
+    xs.xMax - xs.xMin,
+    xs.yMax - xs.yMin
+  );
 
   if (_UI.showGrid) {
     const ps = getCurrentProject().projectSettings;
     const v = getView('grid');
-    const gsize = ((ps.upm/ps.griddivisions)*v.dz);
-    const gridcolor = getColorFromRGBA('rgb(170,170,170)', transparencyToAlpha(getCurrentProject().projectSettings.colors.gridtransparency));
+    const gsize = (ps.upm / ps.griddivisions) * v.dz;
+    const gridcolor = getColorFromRGBA(
+      'rgb(170,170,170)',
+      transparencyToAlpha(
+        getCurrentProject().projectSettings.colors.gridtransparency
+      )
+    );
     _UI.glyphEditCTX.lineWidth = 1;
 
     if (gsize > 0 && gsize < _UI.glyphEditCanvasSize) {
-      for (let i=v.dx; i<xs.xMax-1; i+=gsize) {
+      for (let i = v.dx; i < xs.xMax - 1; i += gsize) {
         drawVerticalLine(i, _UI.glyphEditCTX, gridcolor);
       }
-      drawVerticalLine(xs.xMax+1, _UI.glyphEditCTX, gridcolor);
-      for (let j=v.dx; j>=xs.xMin; j-=gsize) {
+      drawVerticalLine(xs.xMax + 1, _UI.glyphEditCTX, gridcolor);
+      for (let j = v.dx; j >= xs.xMin; j -= gsize) {
         drawVerticalLine(j, _UI.glyphEditCTX, gridcolor);
       }
 
-      for (let k=v.dy; k<xs.yMax-1; k+=gsize) {
+      for (let k = v.dy; k < xs.yMax - 1; k += gsize) {
         drawHorizontalLine(k, _UI.glyphEditCTX, gridcolor);
       }
       drawHorizontalLine(xs.yMax, _UI.glyphEditCTX, gridcolor);
-      for (let p=v.dy; p>=xs.yMin; p-=gsize) {
+      for (let p = v.dy; p >= xs.yMin; p -= gsize) {
         drawHorizontalLine(p, _UI.glyphEditCTX, gridcolor);
       }
     } else {
@@ -1473,7 +1768,7 @@ function drawVerticalLine(x, ctx, color) {
   x = makeCrisp(x);
   ctx.beginPath();
   ctx.moveTo(x, 0);
-  ctx.lineTo(x, _UI.glyphEditCanvasSize+1);
+  ctx.lineTo(x, _UI.glyphEditCanvasSize + 1);
   ctx.stroke();
   ctx.closePath();
 }
@@ -1484,8 +1779,9 @@ function drawGuides() {
   if (!getSelectedWorkItemID()) return;
 
   const ps = getCurrentProject().projectSettings;
-  const onglyphedit = (editor.nav.page === 'glyph edit' || editor.nav.page === 'ligatures');
-  const onkern = (editor.nav.page === 'kerning');
+  const onglyphedit =
+    editor.nav.page === 'glyph edit' || editor.nav.page === 'ligatures';
+  const onkern = editor.nav.page === 'kerning';
   // debug('\t ps.guides: ');
   // debug(ps.guides);
 
@@ -1512,9 +1808,8 @@ function drawGuides() {
     const selwi = getSelectedWorkItem();
     if (selwi) {
       const t = _UI.eventhandlers.tempnewbasicshape;
-      const rl = t? Math.max(selwi.glyphWidth, t.xMax) : selwi.glyphWidth;
+      const rl = t ? Math.max(selwi.glyphWidth, t.xMax) : selwi.glyphWidth;
       const ll = Math.min(selwi.maxes.xMin, 0);
-
 
       // Update system guides
       ps.guides.xheight.location = ps.xheight;
@@ -1524,14 +1819,14 @@ function drawGuides() {
       ps.guides.descent.location = ps.descent;
       ps.guides.min.location = ll;
       ps.guides.max.location = rl;
-      ps.guides.leftside.location = (getSelectedWorkItem()*-1);
+      ps.guides.leftside.location = getSelectedWorkItem() * -1;
       ps.guides.rightside.location = getSelectedGlyphRightSideBearing() + rl;
 
       // Minor Guidelines - Overshoots
       if (_UI.showOvershoots) {
         const os = ps.overshoot;
-        ps.guides.xheight.draw(-1*os);
-        ps.guides.ascent.draw(-1*os);
+        ps.guides.xheight.draw(-1 * os);
+        ps.guides.ascent.draw(-1 * os);
         ps.guides.baseline.draw(os);
         ps.guides.descent.draw(os);
       }
@@ -1558,11 +1853,15 @@ function drawGuides() {
       if (ps.guides.baseline.visible || ps.guides.leftside.visible) {
         const ctx = _UI.glyphEditCTX;
         const v = getView('guides');
-        ctx.fillStyle = shiftColor(ps.guides.baseline.color, ps.colors.systemguidetransparency/100, true);
+        ctx.fillStyle = shiftColor(
+          ps.guides.baseline.color,
+          ps.colors.systemguidetransparency / 100,
+          true
+        );
         ctx.beginPath();
-        ctx.moveTo(v.dx-1, v.dy);
-        ctx.lineTo(v.dx-1, v.dy+(ps.pointsize*2));
-        ctx.lineTo(v.dx-1-(ps.pointsize*2), v.dy);
+        ctx.moveTo(v.dx - 1, v.dy);
+        ctx.lineTo(v.dx - 1, v.dy + ps.pointsize * 2);
+        ctx.lineTo(v.dx - 1 - ps.pointsize * 2, v.dy);
         ctx.closePath();
         ctx.fill();
       }
@@ -1570,7 +1869,6 @@ function drawGuides() {
   }
   // debug(' drawGuides - END\n');
 }
-
 
 // -------------------
 // INIT
@@ -1581,7 +1879,7 @@ function setupEditCanvas() {
   _UI.glyphEditCanvas.width = _UI.glyphEditCanvasSize;
   _UI.glyphEditCTX = _UI.glyphEditCanvas.getContext('2d');
   _UI.glyphEditCTX.globalAlpha = 1;
-  _UI.glyphEditCanvas.onselectstart = function() {
+  _UI.glyphEditCanvas.onselectstart = function () {
     return false;
   }; // for Chrome, disable text select while dragging
   _UI.glyphEditCanvas.onmouseout = mouseoutcec;

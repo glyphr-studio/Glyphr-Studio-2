@@ -1,4 +1,3 @@
-
 /**
  * Migrate Glyphr Studio Projects
  * Handling backwards compatibility for old Glyphr
@@ -24,9 +23,12 @@
 export function migrateGlyphrStudioProject(project = {}) {
   // debug('\n upgradeGlyphrStudioProject - START');
 
-  const noVersionFound = 'No version information was found.  Either the file is not a Glyphr Studio Project, or the file has non-valid JSON data.  Please try a different file...';
-  const timeTraveller = 'Your Glyphr Project was created with a later version of Glyphr Studio.  This version of Glyphr Studio cannot open project files created in the future O_o (whoa).  Please go to glyphrstudio.com to get the latest release.';
-  const betasNotSupported = 'Your Glyphr Project was created with a very early Beta version, and the project file is not supported in v2.  Glyphr Studio v1 *can* read this file, so open it in v1, save a new v1 project file, then open it in v2.';
+  const noVersionFound =
+    'No version information was found.  Either the file is not a Glyphr Studio Project, or the file has non-valid JSON data.  Please try a different file...';
+  const timeTraveller =
+    'Your Glyphr Project was created with a later version of Glyphr Studio.  This version of Glyphr Studio cannot open project files created in the future O_o (whoa).  Please go to glyphrstudio.com to get the latest release.';
+  const betasNotSupported =
+    'Your Glyphr Project was created with a very early Beta version, and the project file is not supported in v2.  Glyphr Studio v1 *can* read this file, so open it in v1, save a new v1 project file, then open it in v2.';
 
   let semanticVersion = false;
   if (project.projectSettings && project.projectSettings.versionNumber) {
@@ -40,16 +42,16 @@ export function migrateGlyphrStudioProject(project = {}) {
   }
 
   /**
-     * Parse a semantic version string to an object
-     * @param {sting} vn - version string to parse
-     * @returns {object}
-     */
+   * Parse a semantic version string to an object
+   * @param {sting} vn - version string to parse
+   * @returns {object}
+   */
   function parseVersionNum(vn) {
     vn = vn.split('.');
     return {
-      'major': (vn[0]*1),
-      'minor': (vn[1]*1),
-      'patch': (vn[2]*1),
+      major: vn[0] * 1,
+      minor: vn[1] * 1,
+      patch: vn[2] * 1,
     };
   }
 
@@ -70,7 +72,8 @@ export function migrateGlyphrStudioProject(project = {}) {
   // Roll upgrades through v1 then to V2
   if (semanticVersion.major === 1) {
     if (minor < 10) {
-      project.projectsettings.glyphrange.latinSupplement = project.projectsettings.glyphrange.latinsuppliment;
+      project.projectsettings.glyphrange.latinSupplement =
+        project.projectsettings.glyphrange.latinsuppliment;
       delete project.projectsettings.glyphrange.latinsuppliment;
     }
     semanticVersion.major = 1;
@@ -83,7 +86,6 @@ export function migrateGlyphrStudioProject(project = {}) {
   return project;
   // debug(' upgradeGlyphrStudioProject - END\n');
 }
-
 
 /**
  * Migrate V1 to V2

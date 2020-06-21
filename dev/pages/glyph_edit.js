@@ -1,4 +1,4 @@
-import {makeElement} from '../controls/controls.js';
+import { makeElement } from '../controls/controls.js';
 
 /**
  * Page > Glyph Edit
@@ -18,7 +18,10 @@ export default class PageGlyphEdit {
   pageLoader() {
     debug(`\n PageGlyphEdit.pageLoader - START`);
 
-    const content = makeElement({tag: 'div', id: 'app__page', innerHTML: `
+    const content = makeElement({
+      tag: 'div',
+      id: 'app__page',
+      innerHTML: `
       <div class="glyph-edit__page">
         <div class="glyph-edit__left-area">
           <fancy-button>Glyphr Studio</fancy-button>
@@ -28,9 +31,10 @@ export default class PageGlyphEdit {
           <canvas-display glyphs="A"></canvas-display>
         </div>
       </div>
-    `});
+    `,
+    });
 
-    const callback = function() {
+    const callback = function () {
       // let can = document.querySelector('canvas-display');
       // if (can) can.redraw();
       debug(` PageGlyphEdit.pageLoader.callback - END\n\n`);
@@ -38,7 +42,7 @@ export default class PageGlyphEdit {
 
     debug(` PageGlyphEdit.pageLoader - END\n\n`);
 
-    return {content: content, callback: callback};
+    return { content: content, callback: callback };
   }
 }
 

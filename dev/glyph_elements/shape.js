@@ -1,7 +1,6 @@
 import GlyphElement from './glyph_element.js';
 import Path from './path.js';
-import {strSan} from '../common/functions.js';
-
+import { strSan } from '../common/functions.js';
 
 /**
  * Glyph Element > Shape
@@ -48,7 +47,6 @@ export default class Shape extends GlyphElement {
     // debug(` Shape.constructor - END\n\n`);
   }
 
-
   // --------------------------------------------------------------
   // Common Glyphr Studio object methods
   // --------------------------------------------------------------
@@ -82,7 +80,7 @@ export default class Shape extends GlyphElement {
    */
   print(level = 0) {
     let ind = '';
-    for (let i=0; i<level; i++) ind += '  ';
+    for (let i = 0; i < level; i++) ind += '  ';
 
     let re = `${ind}{Shape\n`;
     ind += '  ';
@@ -94,9 +92,9 @@ export default class Shape extends GlyphElement {
     if (this.hLock) re += `${ind}hLock: ${this.hLock}\n`;
     if (this.ratioLock) re += `${ind}ratioLock: ${this.ratioLock}\n`;
 
-    re += `${ind}path: ${this.path.print(level+1)}\n`;
+    re += `${ind}path: ${this.path.print(level + 1)}\n`;
 
-    re += `${ind}maxes: ${this.maxes.print(level+1)}\n`;
+    re += `${ind}maxes: ${this.maxes.print(level + 1)}\n`;
 
     re += `${ind.substring(2)}}/Shape`;
 
@@ -207,7 +205,6 @@ export default class Shape extends GlyphElement {
     return this.path.maxes;
   }
 
-
   // --------------------------------------------------------------
   // Setters
   // --------------------------------------------------------------
@@ -223,7 +220,9 @@ export default class Shape extends GlyphElement {
     if (name !== '') {
       this._name = name;
     } else {
-      showToast('Invalid shape name - shape names must only contain alphanumeric characters or spaces.');
+      showToast(
+        'Invalid shape name - shape names must only contain alphanumeric characters or spaces.'
+      );
     }
 
     return this;
@@ -355,13 +354,32 @@ export default class Shape extends GlyphElement {
    * @returns {string} - svg
    */
   makeSVG(size = 50, gutter = 5, upm = 1000, descender = 300) {
-    const charScale = (size - (gutter * 2)) / size;
+    const charScale = (size - gutter * 2) / size;
     const gutterScale = (gutter / size) * upm;
-    const vbSize = upm - (gutter * 2);
+    const vbSize = upm - gutter * 2;
     let re = '<svg version="1.1" ';
-    re += 'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
-    re += 'width="' + size + '" height="' + size + '" viewBox="0,0,' + vbSize + ',' + vbSize + '">';
-    re += '<g transform="translate(' + (gutterScale) + ',' + (upm - descender - (gutterScale / 2)) + ') scale(' + charScale + ',-' + charScale + ')">';
+    re +=
+      'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
+    re +=
+      'width="' +
+      size +
+      '" height="' +
+      size +
+      '" viewBox="0,0,' +
+      vbSize +
+      ',' +
+      vbSize +
+      '">';
+    re +=
+      '<g transform="translate(' +
+      gutterScale +
+      ',' +
+      (upm - descender - gutterScale / 2) +
+      ') scale(' +
+      charScale +
+      ',-' +
+      charScale +
+      ')">';
     // re += '<rect x="0" y="-'+descender+'" height="'+descender+'" width="1000" fill="lime"/>';
     // re += '<rect x="0" y="0" height="'+(upm-descender)+'" width="1000" fill="cyan"/>';
     re += '<path d="';
@@ -381,9 +399,10 @@ export default class Shape extends GlyphElement {
    * @returns {string} - PostScript path data
    */
   makePostScript(lastX = 0, lastY = 0) {
-    return this.path ? this.path.makePathPostScript(lastX, lastY) : {re: '', lastX: lastX, lastY: lastY};
+    return this.path
+      ? this.path.makePathPostScript(lastX, lastY)
+      : { re: '', lastX: lastX, lastY: lastY };
   }
-
 
   // --------------------------------------------------------------
   // Parity methods, shared between Shapes and ComponentInstances
@@ -505,7 +524,6 @@ export default class Shape extends GlyphElement {
     return this.path.getSegment(num);
   }
 
-
   // --------------------------------------------------------------
   // Drawing
   // --------------------------------------------------------------
@@ -533,7 +551,6 @@ export default class Shape extends GlyphElement {
     segments.slowlyDrawSegments();
   }
 
-
   // --------------------------------------------------------------
   // Checking
   // --------------------------------------------------------------
@@ -546,8 +563,7 @@ export default class Shape extends GlyphElement {
     return this.path.checkForNaN();
   }
 
-
-/* NEEDS REFACTORING - NO NEED TO DUPLICATE THESE METHODS HERE
+  /* NEEDS REFACTORING - NO NEED TO DUPLICATE THESE METHODS HERE
 
     draw_PathOutline(accent = '#000', thickness = 1) {
         // debug('\n Shape.draw_PathOutline - START');
