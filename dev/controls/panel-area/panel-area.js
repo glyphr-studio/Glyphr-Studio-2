@@ -1,22 +1,26 @@
-import {makeElement} from '../controls.js';
-import {uiColors, accentColors} from '../../common/colors.js';
+import { makeElement } from '../controls.js';
+import { uiColors, accentColors } from '../../common/colors.js';
 
 /**
  * description
  */
 export default class PanelArea extends HTMLElement {
-    /**
-     * Create an PanelArea
-     * @param {object} attributes - collection of key: value pairs to set as attributes
-     */
-    constructor(attributes = {}) {
-        super();
+  /**
+   * Create an PanelArea
+   * @param {object} attributes - collection of key: value pairs to set as attributes
+   */
+  constructor(attributes = {}) {
+    super();
 
-        Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
+    Object.keys(attributes).forEach((key) =>
+      this.setAttribute(key, attributes[key])
+    );
 
-        this.wrapper = makeElement({className: 'wrapper'});
+    this.wrapper = makeElement({ className: 'wrapper' });
 
-        let style = makeElement({tag: 'style', content: `
+    let style = makeElement({
+      tag: 'style',
+      content: `
             * {
                 box-sizing: border-box;
                 user-select: none;
@@ -66,72 +70,78 @@ export default class PanelArea extends HTMLElement {
                 background-color: ${accentColors.gray.l90};
                 overflow-y: scroll;
             }
-        `});
+        `,
+    });
 
-        let panelName = this.getAttribute('panel') || 'panel';
+    let panelName = this.getAttribute('panel') || 'panel';
 
-        let header = makeElement({id: 'header', innerHTML: panelName});
-        let content = makeElement({id: 'content', innerHTML: 'hello!'});
+    let header = makeElement({ id: 'header', innerHTML: panelName });
+    let content = makeElement({ id: 'content', innerHTML: 'hello!' });
 
-        // Put it all together
-        let shadow = this.attachShadow({mode: 'open'});
-        shadow.appendChild(style);
-        this.wrapper.appendChild(header);
-        this.wrapper.appendChild(content);
-        /*
+    // Put it all together
+    let shadow = this.attachShadow({ mode: 'open' });
+    shadow.appendChild(style);
+    this.wrapper.appendChild(header);
+    this.wrapper.appendChild(content);
+    /*
         this.observer = new MutationObserver(this.childAttributeChanged);
         this.observer.elementRoot = this;
         this.observer.observe(this.padlock, {attributes: true, attributeOldValue: true});
         */
 
-        shadow.appendChild(this.wrapper);
+    shadow.appendChild(this.wrapper);
+  }
+
+  /**
+   * Specify which attributes are observed and trigger attributeChangedCallback
+   */
+  static get observedAttributes() {
+    return ['disabled'];
+  }
+
+  /**
+   * Listens for attribute changes on this element
+   * @param {string} attributeName - which attribute was changed
+   * @param {string} oldValue - value before the change
+   * @param {string} newValue - value after the change
+   */
+  attributeChangedCallback(attributeName, oldValue, newValue) {
+    // console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+
+    if (attributeName === 'disabled') {
+      if (newValue === '') {
+        // disabled
+      } else if (oldValue === '') {
+        // enabled
+      }
     }
+  }
 
-    /**
-     * Specify which attributes are observed and trigger attributeChangedCallback
-     */
-    static get observedAttributes() {
-        return ['disabled'];
-    }
+  /**
+   * Listen for changes on child elements
+   * @param {object} mutationsList - collection of changes
+   */
+  childAttributeChanged(mutationsList) {
+    for (let mutation of mutationsList) {
+      if (
+        mutation.type == 'attributes' &&
+        mutation.attributeName === 'disabled'
+      ) {
+        console.log(
+          'The ' + mutation.attributeName + ' attribute was modified.'
+        );
+        console.log(mutation);
 
-    /**
-     * Listens for attribute changes on this element
-     * @param {string} attributeName - which attribute was changed
-     * @param {string} oldValue - value before the change
-     * @param {string} newValue - value after the change
-     */
-    attributeChangedCallback(attributeName, oldValue, newValue) {
-        // console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
-
-        if (attributeName === 'disabled') {
-            if (newValue === '') {
-                // disabled
-            } else if (oldValue === '') {
-                // enabled
-            }
+        if (mutation.oldValue === '') {
+          // enabled
+          this.elementRoot.inputNumber.removeAttribute('disabled');
+        } else {
+          // disabled
+          this.elementRoot.inputNumber.setAttribute('disabled', '');
         }
+      }
     }
-
-    /**
-     * Listen for changes on child elements
-     * @param {object} mutationsList - collection of changes
-     */
-    childAttributeChanged(mutationsList) {
-        for (let mutation of mutationsList) {
-            if (mutation.type == 'attributes' && mutation.attributeName === 'disabled') {
-                console.log('The ' + mutation.attributeName + ' attribute was modified.');
-                console.log(mutation);
-
-                if (mutation.oldValue === '') {
-                    // enabled
-                    this.elementRoot.inputNumber.removeAttribute('disabled');
-                } else {
-                    // disabled
-                    this.elementRoot.inputNumber.setAttribute('disabled', '');
-                }
-            }
-        }
-    }
+  }
 }
 
 customElements.define('panel-area', PanelArea);

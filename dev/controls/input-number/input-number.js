@@ -1,49 +1,69 @@
-import {makeElement} from '../controls.js';
-import {uiColors, flashUIElementAsActive} from '../../common/colors.js';
-import {round} from '../../common/functions.js';
+import { makeElement } from '../controls.js';
+import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
+import { round } from '../../common/functions.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement
  */
 export default class InputNumber extends HTMLElement {
-    /**
-     * Create an InputNumber
-     * @param {object} attributes - collection of key: value pairs to set as attributes
-     */
-    constructor(attributes = {}) {
-        // console.log(`InputNumber.constructor - START`);
-        super();
+  /**
+   * Create an InputNumber
+   * @param {object} attributes - collection of key: value pairs to set as attributes
+   */
+  constructor(attributes = {}) {
+    // console.log(`InputNumber.constructor - START`);
+    super();
 
-        Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
+    Object.keys(attributes).forEach((key) =>
+      this.setAttribute(key, attributes[key])
+    );
 
-        this.precision = this.getAttribute('precision') || 3;
-        this.disabled = this.hasAttribute('disabled');
+    this.precision = this.getAttribute('precision') || 3;
+    this.disabled = this.hasAttribute('disabled');
 
-        this.wrapper = makeElement({className: 'wrapper'});
-        this.wrapper.elementRoot = this;
-        if (this.disabled) this.wrapper.setAttribute('disabled', '');
+    this.wrapper = makeElement({ className: 'wrapper' });
+    this.wrapper.elementRoot = this;
+    if (this.disabled) this.wrapper.setAttribute('disabled', '');
 
-        this.numberInput = makeElement({tag: 'input', className: 'numberInput', tabIndex: !this.disabled, attributes: {'type': 'text'}});
-        if (this.disabled) this.numberInput.setAttribute('disabled', '');
-        this.numberInput.elementRoot = this;
+    this.numberInput = makeElement({
+      tag: 'input',
+      className: 'numberInput',
+      tabIndex: !this.disabled,
+      attributes: { type: 'text' },
+    });
+    if (this.disabled) this.numberInput.setAttribute('disabled', '');
+    this.numberInput.elementRoot = this;
 
-        this.value = this.getAttribute('value');
+    this.value = this.getAttribute('value');
 
-        this.arrowWrapper = makeElement({className: 'arrowWrapper', tabIndex: !this.disabled});
-        this.arrowWrapper.elementRoot = this;
+    this.arrowWrapper = makeElement({
+      className: 'arrowWrapper',
+      tabIndex: !this.disabled,
+    });
+    this.arrowWrapper.elementRoot = this;
 
-        this.upArrow = makeElement({className: 'upArrow', content: '⏶', attributes: {tabIndex: -1}});
-        this.upArrow.elementRoot = this;
-        if (this.disabled) this.upArrow.setAttribute('disabled', '');
+    this.upArrow = makeElement({
+      className: 'upArrow',
+      content: '⏶',
+      attributes: { tabIndex: -1 },
+    });
+    this.upArrow.elementRoot = this;
+    if (this.disabled) this.upArrow.setAttribute('disabled', '');
 
-        this.downArrow = makeElement({className: 'downArrow', content: '⏷', attributes: {tabIndex: -1}});
-        this.downArrow.elementRoot = this;
-        if (this.disabled) this.downArrow.setAttribute('disabled', '');
+    this.downArrow = makeElement({
+      className: 'downArrow',
+      content: '⏷',
+      attributes: { tabIndex: -1 },
+    });
+    this.downArrow.elementRoot = this;
+    if (this.disabled) this.downArrow.setAttribute('disabled', '');
 
-        // console.log('upArrow');
-        // console.log(this.upArrow);
+    // console.log('upArrow');
+    // console.log(this.upArrow);
 
-        let style = makeElement({tag: 'style', content: `
+    let style = makeElement({
+      tag: 'style',
+      content: `
             * {
                 box-sizing: border-box;
                 transition: all 100ms easeOutExpo;
@@ -56,7 +76,9 @@ export default class InputNumber extends HTMLElement {
                 grid-template-columns: 1fr 24px;
                 height: 100%;
                 border-style: solid;
-                border-width: 1px ${this.hasAttribute('hideRightBorder')? '0' : '1'}px 1px 1px;
+                border-width: 1px ${
+                  this.hasAttribute('hideRightBorder') ? '0' : '1'
+                }px 1px 1px;
                 border-color: ${uiColors.enabled.resting.border};
                 background-color: ${uiColors.enabled.resting.background};
             }
@@ -188,206 +210,210 @@ export default class InputNumber extends HTMLElement {
                 color: ${uiColors.disabled.fill};
                 background-color: ${uiColors.disabled.background};
             }
-        `});
+        `,
+    });
 
-        // Put it all together
-        let shadow = this.attachShadow({mode: 'open'});
-        shadow.appendChild(style);
+    // Put it all together
+    let shadow = this.attachShadow({ mode: 'open' });
+    shadow.appendChild(style);
 
-        this.arrowWrapper.appendChild(this.upArrow);
-        this.arrowWrapper.appendChild(this.downArrow);
+    this.arrowWrapper.appendChild(this.upArrow);
+    this.arrowWrapper.appendChild(this.downArrow);
 
-        this.wrapper.appendChild(this.numberInput);
-        this.wrapper.appendChild(this.arrowWrapper);
+    this.wrapper.appendChild(this.numberInput);
+    this.wrapper.appendChild(this.arrowWrapper);
 
-        if (!this.disabled) this.addAllEventListeners();
+    if (!this.disabled) this.addAllEventListeners();
 
-        shadow.appendChild(this.wrapper);
+    shadow.appendChild(this.wrapper);
 
-        // console.log(this);
-        // console.log(`InputNumber.constructor - END`);
+    // console.log(this);
+    // console.log(`InputNumber.constructor - END`);
+  }
+
+  /**
+   * Specify which attributes are observed and trigger attributeChangedCallback
+   */
+  static get observedAttributes() {
+    return ['disabled'];
+  }
+
+  /**
+   * Listens for attribute changes on this element
+   * @param {string} attributeName - which attribute was changed
+   * @param {string} oldValue - value before the change
+   * @param {string} newValue - value after the change
+   */
+  attributeChangedCallback(attributeName, oldValue, newValue) {
+    // console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+
+    if (attributeName === 'disabled') {
+      if (newValue === '') {
+        // disabled
+        this.wrapper.setAttribute('disabled', '');
+        this.numberInput.removeAttribute('tabIndex');
+        this.numberInput.setAttribute('disabled', '');
+        this.arrowWrapper.removeAttribute('tabIndex');
+        this.arrowWrapper.setAttribute('disabled', '');
+        this.upArrow.setAttribute('disabled', '');
+        this.downArrow.setAttribute('disabled', '');
+        this.removeAllEventListeners();
+      } else if (oldValue === '') {
+        // enabled
+        this.wrapper.removeAttribute('disabled');
+        this.numberInput.setAttribute('tabIndex', '0');
+        this.numberInput.removeAttribute('disabled');
+        this.arrowWrapper.setAttribute('tabIndex', '0');
+        this.arrowWrapper.removeAttribute('disabled');
+        this.upArrow.removeAttribute('disabled');
+        this.downArrow.removeAttribute('disabled');
+        this.addAllEventListeners();
+      }
     }
+  }
 
-    /**
-     * Specify which attributes are observed and trigger attributeChangedCallback
-     */
-    static get observedAttributes() {
-        return ['disabled'];
+  /**
+   * Add all event listeners to elements
+   */
+  addAllEventListeners() {
+    // console.log('addAllEventListeners');
+    this.upArrow.addEventListener('click', this.increment);
+    this.downArrow.addEventListener('click', this.decrement);
+    this.arrowWrapper.addEventListener('keydown', this.arrowKeyboardPressed);
+    this.numberInput.addEventListener('change', this.numberInputChanged);
+    this.numberInput.addEventListener('keydown', this.numberInputKeyboardPress);
+  }
+
+  /**
+   * Add all event listeners to elements
+   */
+  removeAllEventListeners() {
+    // console.log('removeAllEventListeners');
+    this.upArrow.removeEventListener('click', this.increment);
+    this.downArrow.removeEventListener('click', this.decrement);
+    this.arrowWrapper.removeEventListener('keydown', this.arrowKeyboardPressed);
+    this.numberInput.removeEventListener('change', this.numberInputChanged);
+    this.numberInput.removeEventListener(
+      'keydown',
+      this.numberInputKeyboardPress
+    );
+  }
+
+  /**
+   * Get the main value
+   * @returns {number}
+   */
+  get value() {
+    return this._numberValue;
+  }
+
+  /**
+   * Set the main numberValue
+   * @param {number} number - new main value
+   */
+  set value(number) {
+    // console.log(`InputNumber.set value - START`);
+    // console.log(`\t passed ${number}`);
+    this._numberValue = round(parseFloat(number), this.precision) || 0;
+    // console.log(`\t this._numberValue is now ${this._numberValue}`);
+    // console.log(`\t this.value is now ${this.value}`);
+
+    this.numberInput.value = this._numberValue;
+    this.setAttribute('value', this._numberValue);
+    // console.log(`InputNumber.set value - END`);
+  }
+
+  /**
+   * Handle onChange event
+   * @param {object} ev - event
+   */
+  numberInputChanged(ev) {
+    this.elementRoot.value = this.elementRoot.numberInput.value;
+  }
+
+  /**
+   * Increment the value
+   * @param {object} ev - event
+   */
+  increment(ev) {
+    let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
+    this.elementRoot.value += mod ? 10 : 1;
+    flashUIElementAsActive(this);
+  }
+
+  /**
+   * Decrement the value
+   * @param {object} ev - event
+   */
+  decrement(ev) {
+    let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
+    this.elementRoot.value -= mod ? 10 : 1;
+    flashUIElementAsActive(this);
+  }
+
+  /**
+   * Handle keypress event
+   * @param {object} ev - event
+   */
+  arrowKeyboardPressed(ev) {
+    let click = new MouseEvent('click', {
+      shiftKey: ev.shiftKey,
+      ctrlKey: ev.ctrlKey,
+      altKey: ev.altKey,
+      metaKey: ev.metaKey,
+    });
+
+    switch (ev.keyCode) {
+      case 38: // d-pad up
+      case 39: // d-pad right
+      case 104: // ten key up
+      case 102: // ten key right
+      case 107: // ten key +
+        this.elementRoot.upArrow.dispatchEvent(click);
+        break;
+
+      case 40: // d-pad down
+      case 37: // d-pad left
+      case 98: // ten key down
+      case 100: // ten key left
+      case 109: // ten key -
+        this.elementRoot.downArrow.dispatchEvent(click);
+        break;
+
+      default:
+        break;
     }
+  }
 
-    /**
-     * Listens for attribute changes on this element
-     * @param {string} attributeName - which attribute was changed
-     * @param {string} oldValue - value before the change
-     * @param {string} newValue - value after the change
-     */
-    attributeChangedCallback(attributeName, oldValue, newValue) {
-        // console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+  /**
+   * Handle keypress event
+   * @param {object} ev - event
+   */
+  numberInputKeyboardPress(ev) {
+    let click = new MouseEvent('click', {
+      shiftKey: ev.shiftKey,
+      ctrlKey: ev.ctrlKey,
+      altKey: ev.altKey,
+      metaKey: ev.metaKey,
+    });
 
-        if (attributeName === 'disabled') {
-            if (newValue === '') {
-                // disabled
-                this.wrapper.setAttribute('disabled', '');
-                this.numberInput.removeAttribute('tabIndex');
-                this.numberInput.setAttribute('disabled', '');
-                this.arrowWrapper.removeAttribute('tabIndex');
-                this.arrowWrapper.setAttribute('disabled', '');
-                this.upArrow.setAttribute('disabled', '');
-                this.downArrow.setAttribute('disabled', '');
-                this.removeAllEventListeners();
-            } else if (oldValue === '') {
-                // enabled
-                this.wrapper.removeAttribute('disabled');
-                this.numberInput.setAttribute('tabIndex', '0');
-                this.numberInput.removeAttribute('disabled');
-                this.arrowWrapper.setAttribute('tabIndex', '0');
-                this.arrowWrapper.removeAttribute('disabled');
-                this.upArrow.removeAttribute('disabled');
-                this.downArrow.removeAttribute('disabled');
-                this.addAllEventListeners();
-            }
-        }
+    switch (ev.keyCode) {
+      case 38: // d-pad up
+      case 104: // ten key up
+      case 107: // ten key +
+        this.elementRoot.upArrow.dispatchEvent(click);
+        break;
+
+      case 40: // d-pad down
+      case 98: // ten key down
+      case 109: // ten key -
+        this.elementRoot.downArrow.dispatchEvent(click);
+        break;
+
+      default:
+        break;
     }
-
-    /**
-     * Add all event listeners to elements
-     */
-    addAllEventListeners() {
-        // console.log('addAllEventListeners');
-        this.upArrow.addEventListener('click', this.increment);
-        this.downArrow.addEventListener('click', this.decrement);
-        this.arrowWrapper.addEventListener('keydown', this.arrowKeyboardPressed);
-        this.numberInput.addEventListener('change', this.numberInputChanged);
-        this.numberInput.addEventListener('keydown', this.numberInputKeyboardPress);
-    }
-
-    /**
-     * Add all event listeners to elements
-     */
-    removeAllEventListeners() {
-        // console.log('removeAllEventListeners');
-        this.upArrow.removeEventListener('click', this.increment);
-        this.downArrow.removeEventListener('click', this.decrement);
-        this.arrowWrapper.removeEventListener('keydown', this.arrowKeyboardPressed);
-        this.numberInput.removeEventListener('change', this.numberInputChanged);
-        this.numberInput.removeEventListener('keydown', this.numberInputKeyboardPress);
-    }
-
-    /**
-     * Get the main value
-     * @returns {number}
-     */
-    get value() {
-        return this._numberValue;
-    }
-
-    /**
-     * Set the main numberValue
-     * @param {number} number - new main value
-     */
-    set value(number) {
-        // console.log(`InputNumber.set value - START`);
-        // console.log(`\t passed ${number}`);
-        this._numberValue = round(parseFloat(number), this.precision) || 0;
-        // console.log(`\t this._numberValue is now ${this._numberValue}`);
-        // console.log(`\t this.value is now ${this.value}`);
-
-        this.numberInput.value = this._numberValue;
-        this.setAttribute('value', this._numberValue);
-        // console.log(`InputNumber.set value - END`);
-    }
-
-    /**
-     * Handle onChange event
-     * @param {object} ev - event
-     */
-    numberInputChanged(ev) {
-        this.elementRoot.value = this.elementRoot.numberInput.value;
-    }
-
-    /**
-     * Increment the value
-     * @param {object} ev - event
-     */
-    increment(ev) {
-        let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-        this.elementRoot.value += mod? 10 : 1;
-        flashUIElementAsActive(this);
-    }
-
-    /**
-     * Decrement the value
-     * @param {object} ev - event
-     */
-    decrement(ev) {
-        let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-        this.elementRoot.value -= mod? 10 : 1;
-        flashUIElementAsActive(this);
-    }
-
-    /**
-     * Handle keypress event
-     * @param {object} ev - event
-     */
-    arrowKeyboardPressed(ev) {
-        let click = new MouseEvent('click', {
-            shiftKey: ev.shiftKey,
-            ctrlKey: ev.ctrlKey,
-            altKey: ev.altKey,
-            metaKey: ev.metaKey,
-        });
-
-        switch (ev.keyCode) {
-            case 38: // d-pad up
-            case 39: // d-pad right
-            case 104: // ten key up
-            case 102: // ten key right
-            case 107: // ten key +
-                this.elementRoot.upArrow.dispatchEvent(click);
-                break;
-
-            case 40: // d-pad down
-            case 37: // d-pad left
-            case 98: // ten key down
-            case 100: // ten key left
-            case 109: // ten key -
-                this.elementRoot.downArrow.dispatchEvent(click);
-                break;
-
-            default:
-                break;
-        }
-    }
-
-    /**
-     * Handle keypress event
-     * @param {object} ev - event
-     */
-    numberInputKeyboardPress(ev) {
-        let click = new MouseEvent('click', {
-            shiftKey: ev.shiftKey,
-            ctrlKey: ev.ctrlKey,
-            altKey: ev.altKey,
-            metaKey: ev.metaKey,
-        });
-
-        switch (ev.keyCode) {
-            case 38: // d-pad up
-            case 104: // ten key up
-            case 107: // ten key +
-                this.elementRoot.upArrow.dispatchEvent(click);
-                break;
-
-            case 40: // d-pad down
-            case 98: // ten key down
-            case 109: // ten key -
-                this.elementRoot.downArrow.dispatchEvent(click);
-                break;
-
-            default:
-                break;
-        }
-    }
+  }
 }
 
 customElements.define('input-number', InputNumber);

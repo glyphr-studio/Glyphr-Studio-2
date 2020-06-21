@@ -1,7 +1,7 @@
-import {makeElement} from '../controls.js';
+import { makeElement } from '../controls.js';
 import ButtonToggle from '../button-toggle/button-toggle.js';
 import InputNumber from '../input-number/input-number.js';
-import {uiColors} from '../../common/colors.js';
+import { uiColors } from '../../common/colors.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement,
@@ -9,29 +9,37 @@ import {uiColors} from '../../common/colors.js';
  * Primarily used for a ControlPoint x/y input.
  */
 export default class InputNumberLockable extends HTMLElement {
-    /**
-     * Create an InputNumberLockable
-     * @param {object} attributes - collection of key: value pairs to set as attributes
-     */
-    constructor(attributes = {}) {
-        super();
+  /**
+   * Create an InputNumberLockable
+   * @param {object} attributes - collection of key: value pairs to set as attributes
+   */
+  constructor(attributes = {}) {
+    super();
 
-        Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
+    Object.keys(attributes).forEach((key) =>
+      this.setAttribute(key, attributes[key])
+    );
 
-        this.locked = this.hasAttribute('locked');
+    this.locked = this.hasAttribute('locked');
 
-        this.wrapper = makeElement({className: 'wrapper'});
+    this.wrapper = makeElement({ className: 'wrapper' });
 
-        this.inputNumber = new InputNumber({hideRightBorder: ''});
+    this.inputNumber = new InputNumber({ hideRightBorder: '' });
 
-        this.padlock = new ButtonToggle({class: 'padlock', icon: 'lock', size: '26'});
+    this.padlock = new ButtonToggle({
+      class: 'padlock',
+      icon: 'lock',
+      size: '26',
+    });
 
-        if (this.locked) {
-            this.inputNumber.setAttribute('disabled', '');
-            this.padlock.setAttribute('selected', '');
-        }
+    if (this.locked) {
+      this.inputNumber.setAttribute('disabled', '');
+      this.padlock.setAttribute('selected', '');
+    }
 
-        let style = makeElement({tag: 'style', content: `
+    let style = makeElement({
+      tag: 'style',
+      content: `
             * {
                 box-sizing: border-box;
                 transition: all 100ms easeOutExpo;
@@ -63,43 +71,51 @@ export default class InputNumberLockable extends HTMLElement {
                 background-color: ${uiColors.disabled.background};
                 border-color: ${uiColors.disabled.border};
             }
-        `});
+        `,
+    });
 
+    // Put it all together
+    let shadow = this.attachShadow({ mode: 'open' });
+    shadow.appendChild(style);
 
-        // Put it all together
-        let shadow = this.attachShadow({mode: 'open'});
-        shadow.appendChild(style);
+    this.observer = new MutationObserver(this.childAttributeChanged);
+    this.observer.elementRoot = this;
+    this.observer.observe(this.padlock, {
+      attributes: true,
+      attributeOldValue: true,
+    });
 
-        this.observer = new MutationObserver(this.childAttributeChanged);
-        this.observer.elementRoot = this;
-        this.observer.observe(this.padlock, {attributes: true, attributeOldValue: true});
+    this.wrapper.appendChild(this.inputNumber);
+    this.wrapper.appendChild(this.padlock);
 
-        this.wrapper.appendChild(this.inputNumber);
-        this.wrapper.appendChild(this.padlock);
+    shadow.appendChild(this.wrapper);
+  }
 
-        shadow.appendChild(this.wrapper);
-    }
+  /**
+   * Listen for changes on child elements
+   * @param {object} mutationsList - collection of changes
+   */
+  childAttributeChanged(mutationsList) {
+    for (let mutation of mutationsList) {
+      if (
+        mutation.type == 'attributes' &&
+        mutation.attributeName === 'selected'
+      ) {
+        console.log(
+          'The ' + mutation.attributeName + ' attribute was modified.'
+        );
+        console.log(mutation);
 
-    /**
-     * Listen for changes on child elements
-     * @param {object} mutationsList - collection of changes
-     */
-    childAttributeChanged(mutationsList) {
-        for (let mutation of mutationsList) {
-            if (mutation.type == 'attributes' && mutation.attributeName === 'selected') {
-                console.log('The ' + mutation.attributeName + ' attribute was modified.');
-                console.log(mutation);
-
-                if (mutation.oldValue === '') {
-                    // unlock
-                    this.elementRoot.inputNumber.removeAttribute('disabled');
-                } else {
-                    // lock
-                    this.elementRoot.inputNumber.setAttribute('disabled', '');
-                }
-            }
+        if (mutation.oldValue === '') {
+          // unlock
+          this.elementRoot.inputNumber.removeAttribute('disabled');
+        } else {
+          // lock
+          this.elementRoot.inputNumber.setAttribute('disabled', '');
         }
+      }
     }
+  }
 }
 
 customElements.define('input-number-lockable', InputNumberLockable);

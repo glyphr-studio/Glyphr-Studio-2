@@ -1,4 +1,4 @@
-import {json} from '../common/functions.js';
+import { json } from '../common/functions.js';
 
 /**
  * Base for all Glyph Elements
@@ -6,7 +6,6 @@ import {json} from '../common/functions.js';
 export default class GlyphElement {
   /** Yay! */
   constructor() {}
-
 
   /**
    * Any change that updates the shape of any part of a glyph
@@ -95,9 +94,9 @@ export default class GlyphElement {
    */
   print(level = 0, num = false) {
     let ind = '';
-    for (let i=0; i<level; i++) ind += '  ';
+    for (let i = 0; i < level; i++) ind += '  ';
 
-    let re = `${ind}{${this.objType} ${num? num : ''}\n`;
+    let re = `${ind}{${this.objType} ${num ? num : ''}\n`;
     ind += '  ';
 
     const safeObj = this.save();
@@ -107,7 +106,7 @@ export default class GlyphElement {
       if (safeObj.hasOwnProperty(key)) {
         elem = this[key];
         if (elem.print) {
-          re += `${ind}${key}: ${elem.print(level+1)}\n`;
+          re += `${ind}${key}: ${elem.print(level + 1)}\n`;
         } else {
           if (typeof elem !== 'function') {
             if (typeof elem === 'object') {
@@ -120,7 +119,7 @@ export default class GlyphElement {
       }
     }
 
-    re += `${ind.substring(2)}}/${this.objType} ${num? num : ''}`;
+    re += `${ind.substring(2)}}/${this.objType} ${num ? num : ''}`;
 
     return re;
   }
@@ -129,10 +128,10 @@ export default class GlyphElement {
    * Figures out the center of the bounding box
    */
   get center() {
-    if (this.maxes ) {
+    if (this.maxes) {
       return {
-        x: ((this.maxes.xMax - this.maxes.xMin) / 2) + this.maxes.xMin,
-        y: ((this.maxes.yMax - this.maxes.yMin) / 2) + this.maxes.yMin,
+        x: (this.maxes.xMax - this.maxes.xMin) / 2 + this.maxes.xMin,
+        y: (this.maxes.yMax - this.maxes.yMin) / 2 + this.maxes.yMin,
       };
     }
 

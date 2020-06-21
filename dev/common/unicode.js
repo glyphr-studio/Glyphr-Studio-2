@@ -1,14 +1,25 @@
-
-import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
+import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 
 let basicLatinOrder = {};
 let unicodeRanges = {};
 let ligatureToUnicode = {};
 export {
-  decToHex, decToHTML, glyphToHex, charsToHexArray, hexToChars, hexToHTML,
-  hexToUnicodeHex, parseUnicodeInput, isInputUnicode, isInputHex, validateHex,
-  getUnicodeName, getUnicodeShortName,
-  basicLatinOrder, unicodeRanges, ligatureToUnicode,
+  decToHex,
+  decToHTML,
+  glyphToHex,
+  charsToHexArray,
+  hexToChars,
+  hexToHTML,
+  hexToUnicodeHex,
+  parseUnicodeInput,
+  isInputUnicode,
+  isInputHex,
+  validateHex,
+  getUnicodeName,
+  getUnicodeShortName,
+  basicLatinOrder,
+  unicodeRanges,
+  ligatureToUnicode,
 };
 
 /**
@@ -18,11 +29,9 @@ export {
   ranges, like basic latin.
 **/
 
-
 // --------------------------------------------------------------
 // Conversion Functions
 // --------------------------------------------------------------
-
 
 /**
  * Convert decimal to hexadecimal
@@ -33,10 +42,10 @@ function decToHex(d) {
   let dr = Number(d).toString(16);
 
   while (dr.length < 4) {
-    dr = '0'+dr;
+    dr = '0' + dr;
   }
 
-  return '0x'+dr.toUpperCase();
+  return '0x' + dr.toUpperCase();
 }
 
 /**
@@ -55,7 +64,8 @@ function decToHTML(d) {
  */
 function glyphToHex(s) {
   let result = '';
-  for (let i=0; i<s.length; i++) result += decToHex(String(s).charCodeAt(i));
+  for (let i = 0; i < s.length; i++)
+    result += decToHex(String(s).charCodeAt(i));
   return result;
 }
 
@@ -66,10 +76,10 @@ function glyphToHex(s) {
  */
 function charsToHexArray(s) {
   const result = [];
-  for (let i=0; i<s.length; i++) result.push(decToHex(String(s).charCodeAt(i)));
+  for (let i = 0; i < s.length; i++)
+    result.push(decToHex(String(s).charCodeAt(i)));
   return result;
 }
-
 
 /**
  * Convert hexadecimal to string
@@ -86,9 +96,9 @@ function hexToChars(u) {
   u = u.split('0x');
   let result = '';
 
-  for (let i=0; i<u.length; i++) {
+  for (let i = 0; i < u.length; i++) {
     if (u[i] !== '') {
-      u[i] = String.fromCharCode('0x'+u[i]);
+      u[i] = String.fromCharCode('0x' + u[i]);
       // debug('\t added ' + u[i]);
       if (u[i]) result += u[i];
     }
@@ -111,11 +121,11 @@ function hexToHTML(h) {
   h = String(h).split('0x');
   let result = '';
 
-  for (let i=0; i<h.length; i++) {
+  for (let i = 0; i < h.length; i++) {
     if (h[i] !== '') {
-      h[i] = ('0x'+h[i]);
+      h[i] = '0x' + h[i];
       h[i] = parseInt(h[i], 16);
-      if (h[i]) result += ('&#'+h[i]+';');
+      if (h[i]) result += '&#' + h[i] + ';';
     }
   }
   return result;
@@ -127,7 +137,7 @@ function hexToHTML(h) {
  * @returns {string} - Unicode
  */
 function hexToUnicodeHex(h) {
-  return (h.replace(/0x/, '&#x') + ';');
+  return h.replace(/0x/, '&#x') + ';';
 }
 
 /**
@@ -159,12 +169,12 @@ function parseUnicodeInput(str) {
   }
 
   let te;
-  for (let e=0; e<entries.length; e++) {
+  for (let e = 0; e < entries.length; e++) {
     te = entries[e];
     te = te.replace(/;/g, '');
     if (te !== '') {
-      while (te.length < 4) te = '0'+te;
-      te = ('0x'+te.toUpperCase());
+      while (te.length < 4) te = '0' + te;
+      te = '0x' + te.toUpperCase();
       // debug('\t parsed ' + e + ' as ' + te);
       results.push(te);
     }
@@ -186,8 +196,8 @@ function isInputUnicode(str) {
   let count = 0;
   let pos = str.indexOf('U+');
   while (pos !== -1) {
-    count ++;
-    pos = str.indexOf('U+', pos+2);
+    count++;
+    pos = str.indexOf('U+', pos + 2);
   }
   return count;
 }
@@ -202,8 +212,8 @@ function isInputHex(str) {
   let count = 0;
   let pos = str.indexOf('0x');
   while (pos !== -1) {
-    count ++;
-    pos = str.indexOf('0x', pos+2);
+    count++;
+    pos = str.indexOf('0x', pos + 2);
   }
   return count;
 }
@@ -221,13 +231,12 @@ function validateHex(str) {
 
   if (str.length > 4) return false;
 
-  for (let c=0; c<str.length; c++) {
+  for (let c = 0; c < str.length; c++) {
     if (green.indexOf(str.charAt(c)) === -1) return false;
   }
 
   return true;
 }
-
 
 //  -----------------
 //  Glyph Name Wrapper
@@ -241,11 +250,11 @@ function validateHex(str) {
 function getUnicodeName(ch) {
   // debug('\n getUnicodeName - START');
   // debug('\t passed ' + ch);
-  ch = ''+ch;
+  ch = '' + ch;
   let re;
-  const chn = ch*1;
+  const chn = ch * 1;
 
-  if (chn >= 0x4E00 && chn < 0xA000) {
+  if (chn >= 0x4e00 && chn < 0xa000) {
     return 'CJK Unified Ideograph ' + ch.substr(2);
   } else {
     return unicodeNames[ch] || '[name not found]';
@@ -264,11 +273,15 @@ function getUnicodeName(ch) {
 function getUnicodeShortName(ch) {
   // debug('\n getUnicodeShortName - START');
   // debug('\t passed ' + ch);
-  ch = ''+ch;
+  ch = '' + ch;
   let name = shortUnicodeNames[ch];
   if (!name) {
     name = getUnicodeName(ch);
-    if (name) name = name.replace(/latin /gi, '').replace(/ /g, '').substr(0, 20);
+    if (name)
+      name = name
+        .replace(/latin /gi, '')
+        .replace(/ /g, '')
+        .substr(0, 20);
     else name = 'none';
   }
 
@@ -276,27 +289,122 @@ function getUnicodeShortName(ch) {
   return name;
 }
 
-
 //  -----------------
 //  Global Vars
 //  -----------------
 
-basicLatinOrder = ['0x41', '0x42', '0x43', '0x44', '0x45', '0x46', '0x47', '0x48', '0x49', '0x4A', '0x4B', '0x4C', '0x4D', '0x4E', '0x4F', '0x50', '0x51', '0x52', '0x53', '0x54', '0x55', '0x56', '0x57', '0x58', '0x59', '0x5A', '0x61', '0x62', '0x63', '0x64', '0x65', '0x66', '0x67', '0x68', '0x69', '0x6A', '0x6B', '0x6C', '0x6D', '0x6E', '0x6F', '0x70', '0x71', '0x72', '0x73', '0x74', '0x75', '0x76', '0x77', '0x78', '0x79', '0x7A', '0x30', '0x31', '0x32', '0x33', '0x34', '0x35', '0x36', '0x37', '0x38', '0x39', '0x21', '0x22', '0x23', '0x24', '0x25', '0x26', '0x27', '0x28', '0x29', '0x2A', '0x2B', '0x2C', '0x2D', '0x2E', '0x2F', '0x3A', '0x3B', '0x3C', '0x3D', '0x3E', '0x3F', '0x40', '0x5B', '0x5C', '0x5D', '0x5E', '0x5F', '0x60', '0x7B', '0x7C', '0x7D', '0x7E', '0x20'];
+basicLatinOrder = [
+  '0x41',
+  '0x42',
+  '0x43',
+  '0x44',
+  '0x45',
+  '0x46',
+  '0x47',
+  '0x48',
+  '0x49',
+  '0x4A',
+  '0x4B',
+  '0x4C',
+  '0x4D',
+  '0x4E',
+  '0x4F',
+  '0x50',
+  '0x51',
+  '0x52',
+  '0x53',
+  '0x54',
+  '0x55',
+  '0x56',
+  '0x57',
+  '0x58',
+  '0x59',
+  '0x5A',
+  '0x61',
+  '0x62',
+  '0x63',
+  '0x64',
+  '0x65',
+  '0x66',
+  '0x67',
+  '0x68',
+  '0x69',
+  '0x6A',
+  '0x6B',
+  '0x6C',
+  '0x6D',
+  '0x6E',
+  '0x6F',
+  '0x70',
+  '0x71',
+  '0x72',
+  '0x73',
+  '0x74',
+  '0x75',
+  '0x76',
+  '0x77',
+  '0x78',
+  '0x79',
+  '0x7A',
+  '0x30',
+  '0x31',
+  '0x32',
+  '0x33',
+  '0x34',
+  '0x35',
+  '0x36',
+  '0x37',
+  '0x38',
+  '0x39',
+  '0x21',
+  '0x22',
+  '0x23',
+  '0x24',
+  '0x25',
+  '0x26',
+  '0x27',
+  '0x28',
+  '0x29',
+  '0x2A',
+  '0x2B',
+  '0x2C',
+  '0x2D',
+  '0x2E',
+  '0x2F',
+  '0x3A',
+  '0x3B',
+  '0x3C',
+  '0x3D',
+  '0x3E',
+  '0x3F',
+  '0x40',
+  '0x5B',
+  '0x5C',
+  '0x5D',
+  '0x5E',
+  '0x5F',
+  '0x60',
+  '0x7B',
+  '0x7C',
+  '0x7D',
+  '0x7E',
+  '0x20',
+];
 
 unicodeRanges = {
-  'basicLatin': {'begin': 0x20, 'end': 0x7E},
-  'latinSupplimentControls': {'begin': 0x80, 'end': 0x9F},
-  'latinSupplement': {'begin': 0xA0, 'end': 0xFF},
-  'latinExtendedA': {'begin': 0x100, 'end': 0x17F},
-  'latinExtendedB': {'begin': 0x180, 'end': 0x24F},
+  basicLatin: { begin: 0x20, end: 0x7e },
+  latinSupplimentControls: { begin: 0x80, end: 0x9f },
+  latinSupplement: { begin: 0xa0, end: 0xff },
+  latinExtendedA: { begin: 0x100, end: 0x17f },
+  latinExtendedB: { begin: 0x180, end: 0x24f },
 };
 
 // https://en.wikipedia.org/wiki/Typographic_ligature
 ligatureToUnicode = {
-  'ff': '0xFB00',
-  'fi': '0xFB01',
-  'fl': '0xFB02',
-  'ft': '0xFB05',
-  'ffi': '0xFB03',
-  'ffl': '0xFB04',
+  ff: '0xFB00',
+  fi: '0xFB01',
+  fl: '0xFB02',
+  ft: '0xFB05',
+  ffi: '0xFB03',
+  ffl: '0xFB04',
 };

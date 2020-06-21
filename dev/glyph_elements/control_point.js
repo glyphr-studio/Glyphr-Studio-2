@@ -1,6 +1,10 @@
 import GlyphElement from './glyph_element.js';
 import Coord from './coord.js';
-import {calculateAngle, calculateLength, angleToNiceAngle} from '../common/functions.js';
+import {
+  calculateAngle,
+  calculateLength,
+  angleToNiceAngle,
+} from '../common/functions.js';
 
 /**
  * Glyph Element > ControlPoint
@@ -14,7 +18,7 @@ export default class ControlPoint extends GlyphElement {
    * @param {PathPoint} parent - link to the parent Path object
    */
   constructor({
-    coord = {x: 0, y: 0},
+    coord = { x: 0, y: 0 },
     use = true,
     xLock = false,
     yLock = false,
@@ -29,7 +33,6 @@ export default class ControlPoint extends GlyphElement {
 
     this.objType = 'ControlPoint';
   }
-
 
   // --------------------------------------------------------------
   // Common Glyphr Studio object methods
@@ -61,12 +64,12 @@ export default class ControlPoint extends GlyphElement {
    */
   print(level = 0) {
     let ind = '';
-    for (let i=0; i<level; i++) ind += '  ';
+    for (let i = 0; i < level; i++) ind += '  ';
 
     let re = `${ind}{ControlPoint\n`;
     ind += '  ';
 
-    re += `${ind}coord: ${this.coord.print(level+1)}\n`;
+    re += `${ind}coord: ${this.coord.print(level + 1)}\n`;
     re += `${ind}use: ${this.use}\n`;
 
     re += `${ind.substring(2)}}`;
@@ -83,7 +86,7 @@ export default class ControlPoint extends GlyphElement {
    * @returns {number}
    */
   get x() {
-    return this.use? this._coord.x : this.parent.p.x;
+    return this.use ? this._coord.x : this.parent.p.x;
   }
 
   /**
@@ -91,7 +94,7 @@ export default class ControlPoint extends GlyphElement {
    * @returns {number}
    */
   get y() {
-    return this.use? this._coord.y : this.parent.p.y;
+    return this.use ? this._coord.y : this.parent.p.y;
   }
 
   /**
@@ -107,7 +110,7 @@ export default class ControlPoint extends GlyphElement {
    * @returns {boolean}
    */
   get use() {
-    return this._use === false? false : true;
+    return this._use === false ? false : true;
   }
 
   /**
@@ -149,7 +152,6 @@ export default class ControlPoint extends GlyphElement {
   get length() {
     return calculateLength(this.coord, this.parent.p.coord);
   }
-
 
   // --------------------------------------------------------------
   // Setters

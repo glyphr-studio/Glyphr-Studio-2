@@ -1,10 +1,8 @@
-
 /**
   IO > Export > OpenType
   Using OpenType.js to convert a Glyphr Studio
   Project into OpenType.js format for saving.
 **/
-
 
 function ioOTF_exportOTFfont() {
   // debug('\n ioOTF_exportOTFfont - START');
@@ -19,19 +17,19 @@ function ioOTF_exportOTFfont() {
 
     options.unitsPerEm = ps.upm || 1000;
     options.ascender = ps.ascent || 0.00001;
-    options.descender = (-1 * Math.abs(ps.descent)) || -0.00001;
-    options.familyName = (md.font_family) || ' ';
-    options.styleName = (md.font_style) || ' ';
-    options.designer = (md.designer) || ' ';
-    options.designerURL = (md.designerURL) || ' ';
-    options.manufacturer = (md.manufacturer) || ' ';
-    options.manufacturerURL = (md.manufacturerURL) || ' ';
-    options.license = (md.license) || ' ';
-    options.licenseURL = (md.licenseURL) || ' ';
-    options.version = (md.version) || 'Version 0.001';
-    options.description = (md.description) || ' ';
-    options.copyright = (md.copyright) || ' ';
-    options.trademark = (md.trademark) || ' ';
+    options.descender = -1 * Math.abs(ps.descent) || -0.00001;
+    options.familyName = md.font_family || ' ';
+    options.styleName = md.font_style || ' ';
+    options.designer = md.designer || ' ';
+    options.designerURL = md.designerURL || ' ';
+    options.manufacturer = md.manufacturer || ' ';
+    options.manufacturerURL = md.manufacturerURL || ' ';
+    options.license = md.license || ' ';
+    options.licenseURL = md.licenseURL || ' ';
+    options.version = md.version || 'Version 0.001';
+    options.description = md.description || ' ';
+    options.copyright = md.copyright || ' ';
+    options.trademark = md.trademark || ' ';
     options.glyphs = [];
 
     // debug('\t NEW options ARG BEFORE GLYPHS');
@@ -39,7 +37,10 @@ function ioOTF_exportOTFfont() {
     // debug('\t options.version ' + options.version);
 
     // Add Notdef
-    const notdef = new Glyph({'name': 'notdef', 'shapes': JSON.parse(_UI.notDefGlyphShapes)});
+    const notdef = new Glyph({
+      name: 'notdef',
+      shapes: JSON.parse(_UI.notDefGlyphShapes),
+    });
     if (getCurrentProject().upm !== 1000) {
       const delta = getCurrentProject().upm / 1000;
       notdef.updateGlyphSize(delta, delta, true);
@@ -47,17 +48,19 @@ function ioOTF_exportOTFfont() {
 
     const ndpath = notdef.makeOpenTypeJSPath();
 
-    options.glyphs.push(new opentype.Glyph({
-      name: '.notdef',
-      unicode: 0,
-      index: 0,
-      advanceWidth: round(notdef.getAdvanceWidth()),
-      xMin: round(notdef.maxes.xMin),
-      xMax: round(notdef.maxes.xMax),
-      yMin: round(notdef.maxes.yMin),
-      yMax: round(notdef.maxes.yMax),
-      path: ndpath,
-    }));
+    options.glyphs.push(
+      new opentype.Glyph({
+        name: '.notdef',
+        unicode: 0,
+        index: 0,
+        advanceWidth: round(notdef.getAdvanceWidth()),
+        xMin: round(notdef.maxes.xMin),
+        xMax: round(notdef.maxes.xMax),
+        yMin: round(notdef.maxes.yMin),
+        yMax: round(notdef.maxes.yMax),
+        path: ndpath,
+      })
+    );
 
     // debug(' firstExportStep - END\n');
   }
@@ -70,14 +73,16 @@ function ioOTF_exportOTFfont() {
       if (getCurrentProject().glyphs.hasOwnProperty(c)) {
         if (parseInt(c)) {
           tg = new Glyph(clone(getCurrentProject().glyphs[c]));
-          exportarr.push({xg: tg, xc: c});
+          exportarr.push({ xg: tg, xc: c });
         } else {
-          console.warn('Skipped exporting Glyph ' + c + ' - non-numeric key value.');
+          console.warn(
+            'Skipped exporting Glyph ' + c + ' - non-numeric key value.'
+          );
         }
       }
     }
 
-    exportarr.sort(function(a, b) {
+    exportarr.sort(function (a, b) {
       return a.xc - b.xc;
     });
     // debug(' populateExportList - END\n');
@@ -93,9 +98,13 @@ function ioOTF_exportOTFfont() {
 
     // debug('\t ' + glyph.name);
 
-    showToast('Exporting<br>'+glyph.name, 999999);
+    showToast('Exporting<br>' + glyph.name, 999999);
 
-    if (comb && glyph.shapes.length <= getCurrentProject().projectSettings.maxcombineshapesonexport) {
+    if (
+      comb &&
+      glyph.shapes.length <=
+        getCurrentProject().projectSettings.maxcombineshapesonexport
+    ) {
       glyph.combineAllShapes(true);
     }
 
@@ -104,7 +113,7 @@ function ioOTF_exportOTFfont() {
     const tgpath = glyph.makeOpenTypeJSPath(new opentype.Path());
 
     const otglyph = new opentype.Glyph({
-      name: getUnicodeShortName(''+decToHex(num)),
+      name: getUnicodeShortName('' + decToHex(num)),
       unicode: parseInt(num),
       index: parseInt(num),
       advanceWidth: round(glyph.getAdvanceWidth() || 1), // has to be non-zero
@@ -119,7 +128,6 @@ function ioOTF_exportOTFfont() {
 
     // Add this finshed glyph
     options.glyphs.push(otglyph);
-
 
     // start the next one
     currexportnum++;
@@ -137,7 +145,7 @@ function ioOTF_exportOTFfont() {
 
   function lastExportStep() {
     // debug('\n lastExportStep - START');
-    options.glyphs.sort(function(a, b) {
+    options.glyphs.sort(function (a, b) {
       return a.unicode - b.unicode;
     });
 
@@ -152,12 +160,11 @@ function ioOTF_exportOTFfont() {
     // Export
     _UI.stopPageNavigation = false;
     font.download();
-    setTimeout(function() {
+    setTimeout(function () {
       _UI.stopPageNavigation = true;
     }, 2000);
     // debug(' lastExportStep - END\n');
   }
-
 
   /*
     MAIN EXPORT LOOP
@@ -165,13 +172,12 @@ function ioOTF_exportOTFfont() {
   const options = {};
   const exportarr = [];
   const currexportnum = 0;
-  const currexportglyph ={};
+  const currexportglyph = {};
 
   firstExportStep();
   populateExportList();
   currexportglyph = exportarr[0];
   generateOneGlyph();
-
 
   // debug(' ioOTF_exportOTFfont - END\n');
 }

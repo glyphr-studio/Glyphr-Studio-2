@@ -1,7 +1,4 @@
-
-
-export {importGlyphrProjectFromText, newProjectHandler};
-
+export { importGlyphrProjectFromText, newProjectHandler };
 
 // -------------------------------
 // IMPORT FUNCTIONS
@@ -50,7 +47,6 @@ function importGlyphrProjectFromText() {
   const currentAppVersion = parseVersionNum(window.GlyphrStudio.versionNum);
   // debug("\t versionnum found " + tempVersion);
 
-
   // Check for future versions
   if (projectVersion.major > currentAppVersion.major) {
     errorTimeTraveller();
@@ -69,13 +65,15 @@ function importGlyphrProjectFromText() {
   if (projectVersion.major === 1) {
     // Check for future versions
     if (projectVersion.minor > currentAppVersion.minor) {
-      errorTimeTraveller(); return;
+      errorTimeTraveller();
+      return;
     }
 
     // Roll through minor versions
     // The only change for v < 1.10 is correcting the spelling of 'suppliment'
     if (projectVersion.minor < 10) {
-      fcontent.projectSettings.glyphrange.latinSupplement = fcontent.projectSettings.glyphrange.latinsuppliment;
+      fcontent.projectSettings.glyphrange.latinSupplement =
+        fcontent.projectSettings.glyphrange.latinsuppliment;
       delete fcontent.projectSettings.glyphrange.latinsuppliment;
     }
 
@@ -91,50 +89,51 @@ function importGlyphrProjectFromText() {
   }
   // debug(`\t done with v2 minor updates`);
 
-
   // Update the version
   ps.versionNum = window.GlyphrStudio.versionNum;
   ps.version = window.GlyphrStudio.version;
 
-
   // Hydrate after all updates
-  window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(fcontent);
+  window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(
+    fcontent
+  );
   // debug(' importGlyphrProjectFromText - END\n');
-
 
   // -----------------------------
   // HELPER FUNCTIONS
   // -----------------------------
 
   /**
-     * Parse text version number to variables
-     * @param {string} vn - version number
-     * @returns {object}
-     */
+   * Parse text version number to variables
+   * @param {string} vn - version number
+   * @returns {object}
+   */
   function parseVersionNum(vn) {
     vn = vn.split('.');
     return {
-      'major': (vn[0]*1),
-      'minor': (vn[1]*1),
-      'patch': (vn[2]*1),
+      major: vn[0] * 1,
+      minor: vn[1] * 1,
+      patch: vn[2] * 1,
     };
   }
 
   /**
-     * Error if no version information is found
-     */
+   * Error if no version information is found
+   */
   function errorNoVersionFound() {
-    const msg = 'No version information was found.  Either the file is not a Glyphr Studio Project, or the file has non-valid JSON data.  Please try a different file...';
+    const msg =
+      'No version information was found.  Either the file is not a Glyphr Studio Project, or the file has non-valid JSON data.  Please try a different file...';
     console.warn(msg);
     alert(msg);
   }
 
   /**
-     * Error if a version number is found that is later than
-     * the current app version number (which should be the latest)
-     */
+   * Error if a version number is found that is later than
+   * the current app version number (which should be the latest)
+   */
   function errorTimeTraveller() {
-    const msg = 'Your Glyphr Project was created with a later version of Glyphr Studio.  This version of Glyphr Studio cannot open project files created in the future O_o (whoa).  Please go to glyphrstudio.com to get the latest release.';
+    const msg =
+      'Your Glyphr Project was created with a later version of Glyphr Studio.  This version of Glyphr Studio cannot open project files created in the future O_o (whoa).  Please go to glyphrstudio.com to get the latest release.';
     console.warn(msg);
     alert(msg);
   }
@@ -146,7 +145,10 @@ function importGlyphrProjectFromText() {
  */
 function newProjectHandler() {
   let fn;
-  if (document.getElementById('newprojectname') && document.getElementById('newprojectname').value) {
+  if (
+    document.getElementById('newprojectname') &&
+    document.getElementById('newprojectname').value
+  ) {
     fn = document.getElementById('newprojectname').value;
   } else {
     fn = 'My Font';
@@ -162,7 +164,9 @@ function newProjectHandler() {
   project.projectSettings.projectID = makeProjectID();
 
   project.getGlyph('0x0020', true).isAutoWide = false;
-  project.getGlyph('0x0020', true).glyphWidth = round(project.projectSettings.upm/3);
+  project.getGlyph('0x0020', true).glyphWidth = round(
+    project.projectSettings.upm / 3
+  );
   project.getGlyph('0x0041', true);
 
   finalizeUI();

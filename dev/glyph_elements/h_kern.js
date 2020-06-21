@@ -1,6 +1,5 @@
 import GlyphElement from './glyph_element.js';
-import {hexToChars} from '../common/unicode.js';
-
+import { hexToChars } from '../common/unicode.js';
 
 /**
  * Horizontal Kern
@@ -9,12 +8,12 @@ import {hexToChars} from '../common/unicode.js';
  */
 export default class HKern extends GlyphElement {
   /**
-    * Set up the HKern object
-    * @param {array} leftGroup - Collection of Unicode values
-    * @param {array} rightGroup - Collection of Unicode values
-    * @param {number} value - Amount to move leftGroup to the right
-    */
-  constructor({leftGroup = [], rightGroup = [], value = 0} = {}) {
+   * Set up the HKern object
+   * @param {array} leftGroup - Collection of Unicode values
+   * @param {array} rightGroup - Collection of Unicode values
+   * @param {number} value - Amount to move leftGroup to the right
+   */
+  constructor({ leftGroup = [], rightGroup = [], value = 0 } = {}) {
     super();
     this.leftGroup = leftGroup;
     this.rightGroup = rightGroup;
@@ -22,7 +21,6 @@ export default class HKern extends GlyphElement {
 
     this.objType = 'HKern';
   }
-
 
   // --------------------------------------------------------------
   // Common Glyphr Studio object methods
@@ -45,7 +43,6 @@ export default class HKern extends GlyphElement {
     return re;
   }
 
-
   // --------------------------------------------------------------
   // Getters
   // --------------------------------------------------------------
@@ -67,7 +64,6 @@ export default class HKern extends GlyphElement {
     const right = hexToChars(this.rightGroup.join(''));
     return '' + left + ' | ' + right;
   }
-
 
   // --------------------------------------------------------------
   // Setters

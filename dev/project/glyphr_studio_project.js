@@ -1,9 +1,9 @@
 import Glyph from '../glyph_elements/glyph.js';
 import HKern from '../glyph_elements/h_kern.js';
-import {clone, round, trim} from '../common/functions.js';
-import {unicodeNames, shortUnicodeNames} from '../lib/unicode_names.js';
-import {decToHex, basicLatinOrder} from '../common/unicode.js';
-import Maxes, {getOverallMaxes} from '../glyph_elements/maxes.js';
+import { clone, round, trim } from '../common/functions.js';
+import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
+import { decToHex, basicLatinOrder } from '../common/unicode.js';
+import Maxes, { getOverallMaxes } from '../glyph_elements/maxes.js';
 
 /* eslint-disable camelcase*/
 
@@ -12,9 +12,9 @@ import Maxes, {getOverallMaxes} from '../glyph_elements/maxes.js';
  */
 export default class GlyphrStudioProject {
   /**
-     * Initialize a project, with defaults
-     * @param {object} newProject - Glyphr Studio Project File JSON
-     */
+   * Initialize a project, with defaults
+   * @param {object} newProject - Glyphr Studio Project File JSON
+   */
   constructor(newProject = {}) {
     // Set up all default values first
     this.projectSettings = {
@@ -143,28 +143,34 @@ export default class GlyphrStudioProject {
     // Project Settings
     newProject.projectSettings = newProject.projectSettings || {};
     newProject.projectSettings.guies = newProject.projectSettings.guides || {};
-    newProject.projectSettings.glyphrange = newProject.projectSettings.glyphrange || {};
+    newProject.projectSettings.glyphrange =
+      newProject.projectSettings.glyphrange || {};
 
     // Guides can be custom, so save a copy before merging with templates
     // let dataGuides = clone(newProject.projectSettings.guides || {});
 
     // Merge with templates
     if (newProject.projectSettings) {
-      this.projectSettings = merge(this.projectSettings, newProject.projectSettings);
-      this.projectSettings.glyphrange.custom = newProject.projectSettings.glyphrange.custom || [];
+      this.projectSettings = merge(
+        this.projectSettings,
+        newProject.projectSettings
+      );
+      this.projectSettings.glyphrange.custom =
+        newProject.projectSettings.glyphrange.custom || [];
     }
-    this.projectSettings.projectid = this.projectSettings.projectid || makeProjectID();
+    this.projectSettings.projectid =
+      this.projectSettings.projectid || makeProjectID();
     this.projectSettings.descent = -1 * Math.abs(this.projectSettings.descent);
     // debug('\t finished merging projectSettings');
     // debug(this.projectSettings);
-
 
     // Guides
     // hydrateGlyphrObjectList(Guide, dataGuides, this.projectSettings.guides);
     // debug('\t finished hydrating guides');
 
     // Metadata
-    if (newProject.metadata) this.metadata = merge(this.metadata, newProject.metadata, true);
+    if (newProject.metadata)
+      this.metadata = merge(this.metadata, newProject.metadata, true);
     // debug('\t finished merging metadata');
 
     // Components
@@ -184,17 +190,16 @@ export default class GlyphrStudioProject {
     // debug('\t finished hydrating kern pairs');
   }
 
-
   // --------------------------------------------------------------
   // Save
   // --------------------------------------------------------------
 
   /**
-     * Saves Glyph Element, Settings, and Metadata hierarchy
-     * that describes a Glyphr Studio Project
-     * @param {boolean} verbose - include extra properties for better readability
-     * @returns {GlyphrStudioProject}
-     */
+   * Saves Glyph Element, Settings, and Metadata hierarchy
+   * that describes a Glyphr Studio Project
+   * @param {boolean} verbose - include extra properties for better readability
+   * @returns {GlyphrStudioProject}
+   */
   save(verbose = false) {
     const savedProject = {
       projectSettings: clone(this.projectSettings),
@@ -206,10 +211,10 @@ export default class GlyphrStudioProject {
     };
 
     /**
-         * Generic iterator for glyphs, ligatures, components, and kerning
-         * @param {object} group - which group to do
-         * @param {string} name - name of the group
-         */
+     * Generic iterator for glyphs, ligatures, components, and kerning
+     * @param {object} group - which group to do
+     * @param {string} name - name of the group
+     */
     function iterator(group, name) {
       for (const key in group) {
         if (group.hasOwnProperty(key)) {
@@ -233,11 +238,11 @@ export default class GlyphrStudioProject {
   // --------------------------------------------------------------
 
   /**
-     * Get a glyph by ID, create it if need be
-     * @param {string} id - which Glyph to return
-     * @param {boolean} create - create if it doesn't exist yet
-     * @returns {Glyph}
-     */
+   * Get a glyph by ID, create it if need be
+   * @param {string} id - which Glyph to return
+   * @param {boolean} create - create if it doesn't exist yet
+   * @returns {Glyph}
+   */
   getGlyph(id, create = false) {
     // debug('\n getGlyph - START');
     // debug('\t passed: ' + id + ' create: ' + create);
@@ -247,7 +252,7 @@ export default class GlyphrStudioProject {
       return false;
     }
 
-    id = ''+id;
+    id = '' + id;
     let rechar;
 
     if (this.ligatures && id.indexOf('0x', 2) > -1) {
@@ -257,7 +262,7 @@ export default class GlyphrStudioProject {
         return rechar;
       } else if (create) {
         // debug('\t create was true, returning a new ligature.');
-        this.ligatures[id] = new Glyph({'glyphhex': id});
+        this.ligatures[id] = new Glyph({ glyphhex: id });
         return this.ligatures[id];
       }
     } else if (this.glyphs && id.indexOf('0x') > -1) {
@@ -267,7 +272,7 @@ export default class GlyphrStudioProject {
         return rechar;
       } else if (create) {
         debug('\t create was true, returning a new char.');
-        this.glyphs[id] = new Glyph({'glyphhex': id});
+        this.glyphs[id] = new Glyph({ glyphhex: id });
         return this.glyphs[id];
       }
     } else if (this.components) {
@@ -281,10 +286,10 @@ export default class GlyphrStudioProject {
   }
 
   /**
-     * Get the type of glyph based on it's ID
-     * @param {string} id - Glyph ID
-     * @returns {string}
-     */
+   * Get the type of glyph based on it's ID
+   * @param {string} id - Glyph ID
+   * @returns {string}
+   */
   getGlyphType(id) {
     if (id.indexOf('0x', 2) > -1) return 'Ligature';
     else if (id.indexOf('0x') > -1) return 'Glyph';
@@ -292,13 +297,13 @@ export default class GlyphrStudioProject {
   }
 
   /**
-     * Get a glyph's name based on it's ID
-     * @param {string} id - Glyph ID
-     * @param {boolean} forceLongName - don't use the short Unicode name by default
-     * @returns {string}
-     */
+   * Get a glyph's name based on it's ID
+   * @param {string} id - Glyph ID
+   * @param {boolean} forceLongName - don't use the short Unicode name by default
+   * @returns {string}
+   */
   getGlyphName(id, forceLongName = false) {
-    id = ''+id;
+    id = '' + id;
     // debug('\n getGlyphName');
     // debug('\t passed ' + id);
 
@@ -309,7 +314,7 @@ export default class GlyphrStudioProject {
     }
 
     // known unicode names
-    const un = forceLongName? unicodeNames[id] : shortUnicodeNames[id];
+    const un = forceLongName ? unicodeNames[id] : shortUnicodeNames[id];
     if (un) {
       // debug('\t got unicode name: ' + un);
       return un;
@@ -330,9 +335,9 @@ export default class GlyphrStudioProject {
   }
 
   /**
-     * Calculate the overall bounds given every glyph in this font
-     * @returns {object} - font maxes
-     */
+   * Calculate the overall bounds given every glyph in this font
+   * @returns {object} - font maxes
+   */
   calcFontMaxes() {
     const fm = {
       numberOfGlyphs: 0,
@@ -344,7 +349,7 @@ export default class GlyphrStudioProject {
     const cr = this.projectSettings.glyphrange;
 
     if (cr.basicLatin) {
-      for (let i=0; i<basicLatinOrder.length; i++) {
+      for (let i = 0; i < basicLatinOrder.length; i++) {
         thisGlyph = this.getGlyph(basicLatinOrder[i]);
         fm.numberOfGlyphs++;
         fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[i]);
@@ -353,8 +358,8 @@ export default class GlyphrStudioProject {
     }
 
     if (cr.custom.length) {
-      for (let c=0; c<cr.custom.length; c++) {
-        for (let char=cr.custom[c].begin; char<cr.custom[c].end; char++) {
+      for (let c = 0; c < cr.custom.length; c++) {
+        for (let char = cr.custom[c].begin; char < cr.custom[c].end; char++) {
           thisGlyph = this.getGlyph(decToHex(char));
           fm.numberOfGlyphs++;
           fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[i]);
@@ -370,7 +375,6 @@ export default class GlyphrStudioProject {
   }
 }
 
-
 /**
  * Takes a template object of expected keys and default values
  * and an object to import:
@@ -385,10 +389,12 @@ function merge(template, importing, trimStrings) {
   for (const a in template) {
     if (template.hasOwnProperty(a)) {
       if (typeof template[a] === 'object') {
-        if (importing.hasOwnProperty(a)) template[a] = merge(template[a], importing[a]);
+        if (importing.hasOwnProperty(a))
+          template[a] = merge(template[a], importing[a]);
       } else {
         if (importing.hasOwnProperty(a)) {
-          if (typeof importing[a] === 'string' && trimStrings) template[a] = trim(importing[a]);
+          if (typeof importing[a] === 'string' && trimStrings)
+            template[a] = trim(importing[a]);
           else template[a] = importing[a];
         }
       }
@@ -421,8 +427,8 @@ function makeProjectID() {
   const j = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
   let re = 'g2_';
 
-  for (let i=0; i<10; i++) {
-    re += j.charAt(Math.floor(round(Math.random()*j.length)));
+  for (let i = 0; i < 10; i++) {
+    re += j.charAt(Math.floor(round(Math.random() * j.length)));
   }
 
   return re;

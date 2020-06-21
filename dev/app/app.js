@@ -1,7 +1,7 @@
-import {accentColors} from '../common/colors.js';
+import { accentColors } from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
-import {importGlyphrProjectFromText} from '../project/import.js';
-import {projects} from '../samples/samples.js';
+import { importGlyphrProjectFromText } from '../project/import.js';
+import { projects } from '../samples/samples.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -30,8 +30,8 @@ export default class GlyphrStudioApp {
         debugAutoGroup: false, // try to console.group based on text strings
         debugTableObjects: false, // Show objects in tables in the console
         testActions: [],
-        testOnLoad: function() {},
-        testOnRedraw: function() {},
+        testOnLoad: function () {},
+        testOnRedraw: function () {},
       },
       telemetry: true, // Load google analytics
     };
@@ -51,7 +51,9 @@ export default class GlyphrStudioApp {
       // Project
       if (this.settings.dev.sampleProject) {
         // debug('\t >>> Using sample project');
-        this.temp.droppedFileContent = JSON.stringify(projects[this.settings.dev.sampleProject]);
+        this.temp.droppedFileContent = JSON.stringify(
+          projects[this.settings.dev.sampleProject]
+        );
         importGlyphrProjectFromText();
         this.settings.dev.sampleProject = false;
       } else {
@@ -86,7 +88,13 @@ export default class GlyphrStudioApp {
 
     if (!this.settings.dev.mode && this.settings.telemetry) {
       try {
-        setUpGoogleAnalytics(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+        setUpGoogleAnalytics(
+          window,
+          document,
+          'script',
+          '//www.google-analytics.com/analytics.js',
+          'ga'
+        );
         ga('create', 'UA-71021902-1', 'auto');
         ga('send', 'pageview');
       } catch (err) {
@@ -118,7 +126,7 @@ export default class GlyphrStudioApp {
     if (loadScreen) {
       loadScreen.style.opacity = 0;
 
-      setTimeout(function() {
+      setTimeout(function () {
         // loadScreen.style.visibility = 'hidden';
         // loadScreen.style.display = 'none';
         document.body.removeChild(loadScreen);
@@ -146,7 +154,6 @@ export default class GlyphrStudioApp {
     return this.projectEditors[this.selectedProjectEditor];
   }
 
-
   // --------------------------------------------------------------
   // OTHER STUFF
   // --------------------------------------------------------------
@@ -163,17 +170,38 @@ export default class GlyphrStudioApp {
         <div class="closeFormatFlyout" onclick="closeDialog();">&times</div>
 
         <button onclick="closeDialog(); showToast('Saving Glyphr Studio Project file...'); setTimeout(saveGlyphrProjectFile, 500);">
-          ${makeIcon({'name': 'button_npNav', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hoverColor': false})}
+          ${makeIcon({
+            name: 'button_npNav',
+            width: 32,
+            height: 32,
+            size: 50,
+            color: accentColors.blue.l95,
+            hoverColor: false,
+          })}
           <span>Glyphr Studio Project File</span>
         </button>
 
         <button onclick="closeDialog(); showToast('Exporting OTF font file...'); setTimeout(ioOTF_exportOTFfont, 500);">
-          ${makeIcon({'name': 'nav_exportotf', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hoverColor': false})}
+          ${makeIcon({
+            name: 'nav_exportotf',
+            width: 32,
+            height: 32,
+            size: 50,
+            color: accentColors.blue.l95,
+            hoverColor: false,
+          })}
           <span>OTF Font</span>
         </button>
 
         <button onclick="closeDialog(); showToast('Exporting SVG font file...'); setTimeout(ioSVG_exportSVGfont, 500);">
-          ${makeIcon({'name': 'nav_exportsvg', 'width': 32, 'height': 32, 'size': 50, 'color': accentColors.blue.l95, 'hoverColor': false})}
+          ${makeIcon({
+            name: 'nav_exportsvg',
+            width: 32,
+            height: 32,
+            size: 50,
+            color: accentColors.blue.l95,
+            hoverColor: false,
+          })}
           <span>SVG Font</span>
         </button>
 
@@ -197,13 +225,15 @@ export default class GlyphrStudioApp {
       </tr></table>
     `;
 
-    window.onBeforeUnload = function() {
+    window.onBeforeUnload = function () {
       const project = getCurrentProjectEditor();
       popIn();
-      if (project &&
+      if (
+        project &&
         project.projectSettings.stopPageNavigation &&
         this.settings.stopPageNavigation &&
-        !this.settings.dev.mode) {
+        !this.settings.dev.mode
+      ) {
         return '\n\nOh Noes!\nUnless you specifically saved your Glyphr Project, all your progress will be lost.\n\n';
       } else {
         return;

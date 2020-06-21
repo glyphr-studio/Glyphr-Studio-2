@@ -1,5 +1,5 @@
 import GlyphElement from './glyph_element.js';
-import {numSan, isVal} from '../common/functions.js';
+import { numSan, isVal } from '../common/functions.js';
 
 /**
  * Glyph Element > Coordinate
@@ -13,7 +13,7 @@ export default class Coord extends GlyphElement {
    * @param {number} y - The Y value
    * @param {object} parent - link to the parent ControlPoint object
    */
-  constructor({x = 0, y = 0, parent = false} = {}) {
+  constructor({ x = 0, y = 0, parent = false } = {}) {
     super();
     this.parent = parent;
     this.x = x;
@@ -21,7 +21,6 @@ export default class Coord extends GlyphElement {
 
     this.objType = 'Coord';
   }
-
 
   // --------------------------------------------------------------
   // Common Glyphr Studio object methods
@@ -47,16 +46,15 @@ export default class Coord extends GlyphElement {
    */
   print(level = 0) {
     let ind = '';
-    for (let i=0; i<level; i++) ind += '  ';
+    for (let i = 0; i < level; i++) ind += '  ';
 
     let re = `${ind}{`;
-    re += `x: ${isVal(this._x)? this._x : '--'}  `;
-    re += `y: ${isVal(this._y)? this._y : '--'}`;
+    re += `x: ${isVal(this._x) ? this._x : '--'}  `;
+    re += `y: ${isVal(this._y) ? this._y : '--'}`;
     re += `}`;
 
     return re;
   }
-
 
   // --------------------------------------------------------------
   // Getters
@@ -89,7 +87,6 @@ export default class Coord extends GlyphElement {
       return 0;
     }
   }
-
 
   // --------------------------------------------------------------
   // Setters

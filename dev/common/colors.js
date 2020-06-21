@@ -1,8 +1,16 @@
 let accentColors = {};
 let uiColors = {};
-import {round} from './functions.js';
-export {uiColors, accentColors, parseColorString, shiftColor, getColorFromRGBA,
-  transparencyToAlpha, makeRandomSaturatedColor, flashUIElementAsActive};
+import { round } from './functions.js';
+export {
+  uiColors,
+  accentColors,
+  parseColorString,
+  shiftColor,
+  getColorFromRGBA,
+  transparencyToAlpha,
+  makeRandomSaturatedColor,
+  flashUIElementAsActive,
+};
 
 // -------------------
 // Re-usable Colors
@@ -125,37 +133,37 @@ const accentColor = accentColors.blue.l65;
 
 uiColors = {
   accent: accentColor,
-  offWhite:   '#F2F6F9',
-  darkRed:  '#740000',
-  red:  '#F40000',
-  lightRed:   '#FFCCCC',
+  offWhite: '#F2F6F9',
+  darkRed: '#740000',
+  red: '#F40000',
+  lightRed: '#FFCCCC',
   enabled: {
     resting: {
-      text:   'rgb(10, 10, 10)',
-      lightText:  'rgb(30, 30, 30)',
-      border:   'rgb(190, 190, 190)',
-      fill:   'rgb(100, 100, 100)',
+      text: 'rgb(10, 10, 10)',
+      lightText: 'rgb(30, 30, 30)',
+      border: 'rgb(190, 190, 190)',
+      fill: 'rgb(100, 100, 100)',
       background: 'rgb(250, 250, 250)',
     },
     focus: {
-      text:   'rgb(0, 0, 0)',
-      lightText:  'rgb(20, 20, 20)',
-      border:   'rgb(160, 160, 160)',
-      fill:   'rgb(30, 40, 50)',
+      text: 'rgb(0, 0, 0)',
+      lightText: 'rgb(20, 20, 20)',
+      border: 'rgb(160, 160, 160)',
+      fill: 'rgb(30, 40, 50)',
       background: getColorFromRGBA(accentColor, 0.2),
     },
     active: {
-      text:   'rgb(0, 0, 0)',
-      lightText:  getColorFromRGBA(accentColor, 0.25),
-      border:   'rgb(160, 160, 160)',
-      fill:   accentColor,
+      text: 'rgb(0, 0, 0)',
+      lightText: getColorFromRGBA(accentColor, 0.25),
+      border: 'rgb(160, 160, 160)',
+      fill: accentColor,
       background: getColorFromRGBA(accentColor, 0.1),
     },
   },
   disabled: {
-    text:   'rgb(40, 40, 40)',
-    border:   'rgb(210, 210, 210)',
-    fill:   'rgb(210, 210, 210)',
+    text: 'rgb(40, 40, 40)',
+    border: 'rgb(210, 210, 210)',
+    fill: 'rgb(210, 210, 210)',
     background: 'rgb(240, 240,240)',
   },
 };
@@ -171,11 +179,11 @@ uiColors = {
  * @returns {object}
  */
 function parseColorString(c) {
-  const val = {r: 0, g: 0, b: 0, a: 1};
+  const val = { r: 0, g: 0, b: 0, a: 1 };
 
   if (typeof c !== 'string') return val;
 
-  if (c.charAt(0)==='#') {
+  if (c.charAt(0) === '#') {
     c = c.substring(1, 7);
     val.r = parseInt(c.substring(0, 2), 16);
     val.g = parseInt(c.substring(2, 4), 16);
@@ -208,13 +216,13 @@ function shiftColor(c, percent, lighter) {
   val.b = Math.max(0, Math.min(val.b, 255));
 
   if (lighter) {
-    val.r = round(((255-val.r)*percent)+val.r);
-    val.g = round(((255-val.g)*percent)+val.g);
-    val.b = round(((255-val.b)*percent)+val.b);
+    val.r = round((255 - val.r) * percent + val.r);
+    val.g = round((255 - val.g) * percent + val.g);
+    val.b = round((255 - val.b) * percent + val.b);
   } else {
-    val.r = round(val.r-(val.r*percent));
-    val.g = round(val.g-(val.g*percent));
-    val.b = round(val.b-(val.b*percent));
+    val.r = round(val.r - val.r * percent);
+    val.g = round(val.g - val.g * percent);
+    val.b = round(val.b - val.b * percent);
   }
 
   return `rgb(${val.r},${val.g},${val.b})`;
@@ -229,9 +237,9 @@ function shiftColor(c, percent, lighter) {
 function getColorFromRGBA(rgb, alpha) {
   const val = parseColorString(rgb);
 
-  const dr = round((255-val.r) * (1-alpha));
-  const dg = round((255-val.g) * (1-alpha));
-  const db = round((255-val.b) * (1-alpha));
+  const dr = round((255 - val.r) * (1 - alpha));
+  const dg = round((255 - val.g) * (1 - alpha));
+  const db = round((255 - val.b) * (1 - alpha));
 
   const r = val.r + dr;
   const g = val.g + dg;
@@ -252,18 +260,17 @@ function transparencyToAlpha(transparency) {
   if (t > 100) return 0;
   if (t < 0) return 1;
 
-  return ((100 - transparency) / 100);
+  return (100 - transparency) / 100;
 }
-
 
 /**
  * Makes a random fully saturated color
  * @returns {string}
  */
 function makeRandomSaturatedColor() {
-  const sat = Math.floor(Math.random()*5)*51;
+  const sat = Math.floor(Math.random() * 5) * 51;
   const arr = [];
-  const satloc = Math.floor(Math.random()*3);
+  const satloc = Math.floor(Math.random() * 3);
   arr[satloc] = sat;
   switch (satloc) {
     case 0:
@@ -279,7 +286,7 @@ function makeRandomSaturatedColor() {
       arr[1] = 0;
       break;
   }
-  return 'rgb('+arr[0]+','+arr[1]+','+arr[2]+')';
+  return 'rgb(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ')';
 }
 
 /**
@@ -296,7 +303,7 @@ function flashUIElementAsActive(elem) {
   elem.style.color = uiColors.enabled.active.fill;
   elem.style.fill = uiColors.enabled.active.fill;
 
-  window.setTimeout(function() {
+  window.setTimeout(function () {
     elem.style.borderColor = uiColors.enabled.resting.border;
     elem.style.backgroundColor = uiColors.enabled.resting.background;
     elem.style.color = uiColors.enabled.resting.fill;

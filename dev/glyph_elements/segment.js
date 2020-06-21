@@ -1,7 +1,14 @@
 import GlyphElement from './glyph_element.js';
 import XYPoint from './xy_point.js';
 import Maxes from './maxes.js';
-import {clone, numSan, isVal, round, hasNonValues, pointsAreEqual} from '../common/functions.js';
+import {
+  clone,
+  numSan,
+  isVal,
+  round,
+  hasNonValues,
+  pointsAreEqual,
+} from '../common/functions.js';
 
 /**
  * Glyph Element > Segment
@@ -30,7 +37,7 @@ export default class Segment extends GlyphElement {
    * @param {number} p4x - Second point x
    * @param {number} p4y - Second point y
    */
-  constructor({p1x = 0, p1y = 0, p2x, p2y, p3x, p3y, p4x = 0, p4y = 0} = {}) {
+  constructor({ p1x = 0, p1y = 0, p2x, p2y, p3x, p3y, p4x = 0, p4y = 0 } = {}) {
     super();
     this.p1x = numSan(p1x);
     this.p1y = numSan(p1y);
@@ -46,7 +53,6 @@ export default class Segment extends GlyphElement {
 
     this.calcMaxes();
   }
-
 
   // --------------------------------------------------------------
   // Common Glyphr Studio object methods
@@ -81,22 +87,21 @@ export default class Segment extends GlyphElement {
    */
   print(level = 0) {
     let ind = '';
-    for (let i=0; i<level; i++) ind += '  ';
+    for (let i = 0; i < level; i++) ind += '  ';
 
     let re = `${ind}{Segment\n`;
     ind += '  ';
 
-    re += `${ind+'  '}line: ${this.lineType}\n`;
-    re += `${ind+'  '}p1: ${this.p1x}/${this.p1y}\n`;
-    re += `${ind+'  '}p2: ${this.p2x}/${this.p2y}\n`;
-    re += `${ind+'  '}p3: ${this.p3x}/${this.p3y}\n`;
-    re += `${ind+'  '}p4: ${this.p4x}/${this.p4y}\n`;
-    re += `${ind+'  '}maxes: ${this.maxes.print(level+1)}\n`;
+    re += `${ind + '  '}line: ${this.lineType}\n`;
+    re += `${ind + '  '}p1: ${this.p1x}/${this.p1y}\n`;
+    re += `${ind + '  '}p2: ${this.p2x}/${this.p2y}\n`;
+    re += `${ind + '  '}p3: ${this.p3x}/${this.p3y}\n`;
+    re += `${ind + '  '}p4: ${this.p4x}/${this.p4y}\n`;
+    re += `${ind + '  '}maxes: ${this.maxes.print(level + 1)}\n`;
     re += `${ind.substring(2)}}`;
 
     return re;
   }
-
 
   // --------------------------------------------------------------
   // Getters
@@ -127,10 +132,7 @@ export default class Segment extends GlyphElement {
    * @returns {number}
    */
   get baseLength() {
-    return getLineLength(
-        this.p1x, this.p1y,
-        this.p4x, this.p4y
-    );
+    return getLineLength(this.p1x, this.p1y, this.p4x, this.p4y);
   }
 
   /**
@@ -138,20 +140,11 @@ export default class Segment extends GlyphElement {
    * @returns {number}
    */
   get topLength() {
-    const a = getLineLength(
-        this.p1x, this.p1y,
-        this.p2x, this.p2y
-    );
-    const b = getLineLength(
-        this.p2x, this.p2y,
-        this.p3x, this.p3y
-    );
-    const c = getLineLength(
-        this.p3x, this.p3y,
-        this.p4x, this.p4y
-    );
+    const a = getLineLength(this.p1x, this.p1y, this.p2x, this.p2y);
+    const b = getLineLength(this.p2x, this.p2y, this.p3x, this.p3y);
+    const c = getLineLength(this.p3x, this.p3y, this.p4x, this.p4y);
 
-    return a+b+c;
+    return a + b + c;
   }
 
   /**
@@ -176,7 +169,6 @@ export default class Segment extends GlyphElement {
     return new Maxes(this.cache.maxes);
   }
 
-
   // --------------------------------------------------------------
   // Setters
   // --------------------------------------------------------------
@@ -192,7 +184,6 @@ export default class Segment extends GlyphElement {
     return this;
   }
 
-
   // --------------------------------------------------------------
   // Drawing
   // --------------------------------------------------------------
@@ -205,7 +196,7 @@ export default class Segment extends GlyphElement {
    * @param {number} dy - delta offset
    */
   drawSegmentOutline(ctx, color = '#000', dx = 0, dy = 0) {
-    ctx.strokeStyle = getColorFromRGBA((color), 0.9);
+    ctx.strokeStyle = getColorFromRGBA(color, 0.9);
     const p1x = sXcX(this.p1x + dx);
     const p1y = sYcY(this.p1y + dy);
     const p2x = sXcX(this.p2x + dx);
@@ -252,7 +243,6 @@ export default class Segment extends GlyphElement {
     // else draw_CircleHandle({'x':sXcX(this.p4x), 'y':sYcY(this.p4y)});
   }
 
-
   // --------------------------------------------------------------
   // Splitting
   // --------------------------------------------------------------
@@ -287,7 +277,10 @@ export default class Segment extends GlyphElement {
       let online = false;
       if (this.lineType === 'horizontal') {
         if (round(co.y, 2) === round(this.p1y, 2)) {
-          if ((co.x > Math.min(this.p1x, this.p4x)) && (co.x < Math.max(this.p1x, this.p4x))) {
+          if (
+            co.x > Math.min(this.p1x, this.p4x) &&
+            co.x < Math.max(this.p1x, this.p4x)
+          ) {
             newX = co.x;
             newY = this.p1y;
             online = true;
@@ -295,7 +288,10 @@ export default class Segment extends GlyphElement {
         }
       } else if (this.lineType === 'vertical') {
         if (round(co.x, 2) === round(this.p1x, 2)) {
-          if ((co.y > Math.min(this.p1y, this.p4y)) && (co.y < Math.max(this.p1y, this.p4y))) {
+          if (
+            co.y > Math.min(this.p1y, this.p4y) &&
+            co.y < Math.max(this.p1y, this.p4y)
+          ) {
             newX = this.p1x;
             newY = co.y;
             online = true;
@@ -311,16 +307,16 @@ export default class Segment extends GlyphElement {
       // debug(' Segment.splitAtPoint - END\n');
       return [
         new Segment({
-          'p1x': this.p1x,
-          'p1y': this.p1y,
-          'p4x': newX,
-          'p4y': newY,
+          p1x: this.p1x,
+          p1y: this.p1y,
+          p4x: newX,
+          p4y: newY,
         }),
         new Segment({
-          'p1x': newX,
-          'p1y': newY,
-          'p4x': this.p4x,
-          'p4y': this.p4y,
+          p1x: newX,
+          p1y: newY,
+          p4x: this.p4x,
+          p4y: this.p4y,
         }),
       ];
     } else if (this.pointIsWithinMaxes(co)) {
@@ -343,41 +339,41 @@ export default class Segment extends GlyphElement {
    */
   splitAtTime(t = 0.5) {
     // debug('\n Segment.splitAtTime - START');
-    const rs = (1 - t);
+    const rs = 1 - t;
     // Do some math
-    const x12 = (this.p1x * rs) + (this.p2x * t);
-    const y12 = (this.p1y * rs) + (this.p2y * t);
-    const x23 = (this.p2x * rs) + (this.p3x * t);
-    const y23 = (this.p2y * rs) + (this.p3y * t);
-    const x34 = (this.p3x * rs) + (this.p4x * t);
-    const y34 = (this.p3y * rs) + (this.p4y * t);
-    const x123 = (x12 * rs) + (x23 * t);
-    const y123 = (y12 * rs) + (y23 * t);
-    const x234 = (x23 * rs) + (x34 * t);
-    const y234 = (y23 * rs) + (y34 * t);
-    const x1234 = (x123 * rs) + (x234 * t);
-    const y1234 = (y123 * rs) + (y234 * t);
+    const x12 = this.p1x * rs + this.p2x * t;
+    const y12 = this.p1y * rs + this.p2y * t;
+    const x23 = this.p2x * rs + this.p3x * t;
+    const y23 = this.p2y * rs + this.p3y * t;
+    const x34 = this.p3x * rs + this.p4x * t;
+    const y34 = this.p3y * rs + this.p4y * t;
+    const x123 = x12 * rs + x23 * t;
+    const y123 = y12 * rs + y23 * t;
+    const x234 = x23 * rs + x34 * t;
+    const y234 = y23 * rs + y34 * t;
+    const x1234 = x123 * rs + x234 * t;
+    const y1234 = y123 * rs + y234 * t;
     // Return two new Segments
     return [
       new Segment({
-        'p1x': this.p1x,
-        'p1y': this.p1y,
-        'p2x': x12,
-        'p2y': y12,
-        'p3x': x123,
-        'p3y': y123,
-        'p4x': x1234,
-        'p4y': y1234,
+        p1x: this.p1x,
+        p1y: this.p1y,
+        p2x: x12,
+        p2y: y12,
+        p3x: x123,
+        p3y: y123,
+        p4x: x1234,
+        p4y: y1234,
       }),
       new Segment({
-        'p1x': x1234,
-        'p1y': y1234,
-        'p2x': x234,
-        'p2y': y234,
-        'p3x': x34,
-        'p3y': y34,
-        'p4x': this.p4x,
-        'p4y': this.p4y,
+        p1x: x1234,
+        p1y: y1234,
+        p2x: x234,
+        p2y: y234,
+        p3x: x34,
+        p3y: y34,
+        p4x: this.p4x,
+        p4y: this.p4y,
       }),
     ];
   }
@@ -414,10 +410,8 @@ export default class Segment extends GlyphElement {
    */
   pointIsWithinMaxes(co) {
     const m = this.maxes;
-    const re = (co.x <= m.xMax &&
-            co.x >= m.xMin &&
-            co.y <= m.yMax &&
-            co.y >= m.yMin);
+    const re =
+      co.x <= m.xMax && co.x >= m.xMin && co.y <= m.yMax && co.y >= m.yMin;
     return re;
   }
 
@@ -426,7 +420,12 @@ export default class Segment extends GlyphElement {
    * @returns {Segment}
    */
   convertToLine() {
-    return new Segment({p1x: this.p1x, p1y: this.p1y, p4x: this.p4x, p4y: this.p4y});
+    return new Segment({
+      p1x: this.p1x,
+      p1y: this.p1y,
+      p4x: this.p4x,
+      p4y: this.p4y,
+    });
   }
 
   /**
@@ -444,19 +443,22 @@ export default class Segment extends GlyphElement {
     let check;
     let d;
 
-    for (let t = 0; t < 1; t += (1 / grains)) {
+    for (let t = 0; t < 1; t += 1 / grains) {
       check = this.getXYPointFromSplit(t);
       // debug(`\t checking x:${check.x}\ty:${check.y}\tt${t}`);
 
-      d = Math.sqrt(((check.x - point.x) * (check.x - point.x)) + ((check.y - point.y) * (check.y - point.y)));
+      d = Math.sqrt(
+        (check.x - point.x) * (check.x - point.x) +
+          (check.y - point.y) * (check.y - point.y)
+      );
 
       if (d < minDistance) {
         minDistance = d;
         re = {
-          'split': t,
-          'distance': d,
-          'x': check.x,
-          'y': check.y,
+          split: t,
+          distance: d,
+          x: check.x,
+          y: check.y,
         };
         if (threshold && re.distance < threshold) return re;
       }
@@ -494,20 +496,20 @@ export default class Segment extends GlyphElement {
    * @returns {XYPoint}
    */
   getXYPointFromSplit(t = 0.5) {
-    const rs = (1 - t);
+    const rs = 1 - t;
     // Do some math
-    const x12 = (this.p1x * rs) + (this.p2x * t);
-    const y12 = (this.p1y * rs) + (this.p2y * t);
-    const x23 = (this.p2x * rs) + (this.p3x * t);
-    const y23 = (this.p2y * rs) + (this.p3y * t);
-    const x34 = (this.p3x * rs) + (this.p4x * t);
-    const y34 = (this.p3y * rs) + (this.p4y * t);
-    const x123 = (x12 * rs) + (x23 * t);
-    const y123 = (y12 * rs) + (y23 * t);
-    const x234 = (x23 * rs) + (x34 * t);
-    const y234 = (y23 * rs) + (y34 * t);
-    const x1234 = (x123 * rs) + (x234 * t);
-    const y1234 = (y123 * rs) + (y234 * t);
+    const x12 = this.p1x * rs + this.p2x * t;
+    const y12 = this.p1y * rs + this.p2y * t;
+    const x23 = this.p2x * rs + this.p3x * t;
+    const y23 = this.p2y * rs + this.p3y * t;
+    const x34 = this.p3x * rs + this.p4x * t;
+    const y34 = this.p3y * rs + this.p4y * t;
+    const x123 = x12 * rs + x23 * t;
+    const y123 = y12 * rs + y23 * t;
+    const x234 = x23 * rs + x34 * t;
+    const y234 = y23 * rs + y34 * t;
+    const x1234 = x123 * rs + x234 * t;
+    const y1234 = y123 * rs + y234 * t;
     return new XYPoint(x1234, y1234);
   }
 
@@ -517,14 +519,14 @@ export default class Segment extends GlyphElement {
    */
   getReverse() {
     return new Segment({
-      'p1x': this.p4x,
-      'p1y': this.p4y,
-      'p2x': this.p3x,
-      'p2y': this.p3y,
-      'p3x': this.p2x,
-      'p3y': this.p2y,
-      'p4x': this.p1x,
-      'p4y': this.p1y,
+      p1x: this.p4x,
+      p1y: this.p4y,
+      p2x: this.p3x,
+      p2y: this.p3y,
+      p3x: this.p2x,
+      p3y: this.p2y,
+      p4x: this.p1x,
+      p4y: this.p1y,
     });
   }
 
@@ -544,7 +546,6 @@ export default class Segment extends GlyphElement {
     else if (pt === 4) return new XYPoint(this.p4x, this.p4y);
   }
 
-
   // --------------------------------------------------------------
   // Bounds
   // --------------------------------------------------------------
@@ -556,10 +557,22 @@ export default class Segment extends GlyphElement {
    */
   getFastMaxes() {
     const bounds = {
-      'xMin': Math.min(this.p1x, Math.min(this.p2x, Math.min(this.p3x, this.p4x))),
-      'yMin': Math.min(this.p1y, Math.min(this.p2y, Math.min(this.p3y, this.p4y))),
-      'xMax': Math.max(this.p1x, Math.max(this.p2x, Math.max(this.p3x, this.p4x))),
-      'yMax': Math.max(this.p1y, Math.max(this.p2y, Math.max(this.p3y, this.p4y))),
+      xMin: Math.min(
+        this.p1x,
+        Math.min(this.p2x, Math.min(this.p3x, this.p4x))
+      ),
+      yMin: Math.min(
+        this.p1y,
+        Math.min(this.p2y, Math.min(this.p3y, this.p4y))
+      ),
+      xMax: Math.max(
+        this.p1x,
+        Math.max(this.p2x, Math.max(this.p3x, this.p4x))
+      ),
+      yMax: Math.max(
+        this.p1y,
+        Math.max(this.p2y, Math.max(this.p3y, this.p4y))
+      ),
     };
     // debug(`\t Segment.getFastMaxes - returning`);
     // debug(bounds);
@@ -576,10 +589,10 @@ export default class Segment extends GlyphElement {
     // debug(this);
 
     /**
-       * Takes a value and updates a maxes object if that value falls outside the current maxes
-       * @param {Maxes} maxes - maxes object to check against
-       * @param {number} value - new value that may fall outside the current maxes object
-       */
+     * Takes a value and updates a maxes object if that value falls outside the current maxes
+     * @param {Maxes} maxes - maxes object to check against
+     * @param {number} value - new value that may fall outside the current maxes object
+     */
     function checkXBounds(maxes, value) {
       if (maxes.xMin > value) {
         maxes.xMin = value;
@@ -589,10 +602,10 @@ export default class Segment extends GlyphElement {
     }
 
     /**
-       * Takes a value and updates a maxes object if that value falls outside the current maxes
-       * @param {Maxes} maxes - maxes object to check against
-       * @param {number} value - new value that may fall outside the current maxes object
-       */
+     * Takes a value and updates a maxes object if that value falls outside the current maxes
+     * @param {Maxes} maxes - maxes object to check against
+     * @param {number} value - new value that may fall outside the current maxes object
+     */
     function checkYBounds(maxes, value) {
       if (maxes.yMin > value) {
         maxes.yMin = value;
@@ -602,24 +615,29 @@ export default class Segment extends GlyphElement {
     }
 
     /**
-       * Some crazy Bezier math sh*t goin' down in this helper function
-       * @param {number} t
-       * @param {number} p0
-       * @param {number} p1
-       * @param {number} p2
-       * @param {number} p3
-       * @returns {number}
-       */
+     * Some crazy Bezier math sh*t goin' down in this helper function
+     * @param {number} t
+     * @param {number} p0
+     * @param {number} p1
+     * @param {number} p2
+     * @param {number} p3
+     * @returns {number}
+     */
     function getBezierValue(t, p0, p1, p2, p3) {
-      const mt = (1-t);
-      return (mt*mt*mt*p0) + (3*mt*mt*t*p1) + (3*mt*t*t*p2) + (t*t*t*p3);
+      const mt = 1 - t;
+      return (
+        mt * mt * mt * p0 +
+        3 * mt * mt * t * p1 +
+        3 * mt * t * t * p2 +
+        t * t * t * p3
+      );
     }
 
     const bounds = {
-      'xMin': Math.min(this.p1x, this.p4x),
-      'yMin': Math.min(this.p1y, this.p4y),
-      'xMax': Math.max(this.p1x, this.p4x),
-      'yMax': Math.max(this.p1y, this.p4y),
+      xMin: Math.min(this.p1x, this.p4x),
+      yMin: Math.min(this.p1y, this.p4y),
+      xMax: Math.max(this.p1x, this.p4x),
+      yMax: Math.max(this.p1y, this.p4y),
     };
 
     if (this.lineType) {
@@ -643,40 +661,64 @@ export default class Segment extends GlyphElement {
     let t2;
 
     // X bounds
-    if (this.p2x < bounds.xMin || this.p2x > bounds.xMax || this.p3x < bounds.xMin || this.p3x > bounds.xMax) {
+    if (
+      this.p2x < bounds.xMin ||
+      this.p2x > bounds.xMax ||
+      this.p3x < bounds.xMin ||
+      this.p3x > bounds.xMax
+    ) {
       if (d1x + d3x !== 2 * d2x) {
         d2x += 0.01;
       }
       numerator = 2 * (d1x - d2x);
       denominator = 2 * (d1x - 2 * d2x + d3x);
-      quadRoot = (2 * d2x - 2 * d1x) * (2 * d2x - 2 * d1x) - 2 * d1x * denominator;
+      quadRoot =
+        (2 * d2x - 2 * d1x) * (2 * d2x - 2 * d1x) - 2 * d1x * denominator;
       root = Math.sqrt(quadRoot);
       t1 = (numerator + root) / denominator;
       t2 = (numerator - root) / denominator;
       if (0 < t1 && t1 < 1) {
-        checkXBounds(bounds, getBezierValue(t1, this.p1x, this.p2x, this.p3x, this.p4x));
+        checkXBounds(
+          bounds,
+          getBezierValue(t1, this.p1x, this.p2x, this.p3x, this.p4x)
+        );
       }
       if (0 < t2 && t2 < 1) {
-        checkXBounds(bounds, getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x));
+        checkXBounds(
+          bounds,
+          getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x)
+        );
       }
     }
 
     // Y bounds
-    if (this.p2y < bounds.yMin || this.p2y > bounds.yMax || this.p3y < bounds.yMin || this.p3y > bounds.yMax) {
+    if (
+      this.p2y < bounds.yMin ||
+      this.p2y > bounds.yMax ||
+      this.p3y < bounds.yMin ||
+      this.p3y > bounds.yMax
+    ) {
       if (d1y + d3y !== 2 * d2y) {
         d2y += 0.01;
       }
       numerator = 2 * (d1y - d2y);
       denominator = 2 * (d1y - 2 * d2y + d3y);
-      quadRoot = (2 * d2y - 2 * d1y) * (2 * d2y - 2 * d1y) - 2 * d1y * denominator;
+      quadRoot =
+        (2 * d2y - 2 * d1y) * (2 * d2y - 2 * d1y) - 2 * d1y * denominator;
       root = Math.sqrt(quadRoot);
       t1 = (numerator + root) / denominator;
       t2 = (numerator - root) / denominator;
       if (0 < t1 && t1 < 1) {
-        checkYBounds(bounds, getBezierValue(t1, this.p1y, this.p2y, this.p3y, this.p4y));
+        checkYBounds(
+          bounds,
+          getBezierValue(t1, this.p1y, this.p2y, this.p3y, this.p4y)
+        );
       }
       if (0 < t2 && t2 < 1) {
-        checkYBounds(bounds, getBezierValue(t2, this.p1y, this.p2y, this.p3y, this.p4y));
+        checkYBounds(
+          bounds,
+          getBezierValue(t2, this.p1y, this.p2y, this.p3y, this.p4y)
+        );
       }
     }
     // debug([this.getFastMaxes(), bounds]);
@@ -684,7 +726,6 @@ export default class Segment extends GlyphElement {
     this.maxes = bounds;
     return this.maxes;
   }
-
 
   // --------------------------------------------------------------
   // Curve Checking
@@ -712,7 +753,7 @@ export default class Segment extends GlyphElement {
     // debug(`\t this.p1 / p4 is on largeSegment: ${c1} / ${c4}`);
 
     // debug(` Segment.isLineOverlappedByLine - END - returning ${c1&&c4}\n\n`);
-    return (c1 && c4);
+    return c1 && c4;
   }
 
   /**
@@ -782,19 +823,21 @@ export default class Segment extends GlyphElement {
     }
 
     /**
-       * Checks to see if a middle value is between two other values
-       * @param {number} l - left point
-       * @param {number} m - middle point
-       * @param {number} r - right point
-       * @returns {boolean}
-       */
+     * Checks to see if a middle value is between two other values
+     * @param {number} l - left point
+     * @param {number} m - middle point
+     * @param {number} r - right point
+     * @returns {boolean}
+     */
     function within(l, m, r) {
-      return ((l <= m) && (m <= r)) || ((r <= m) && (m <= l));
+      return (l <= m && m <= r) || (r <= m && m <= l);
     }
 
-    if (within(this.p1x, pt.x, this.p4x) &&
-            within(this.p1y, pt.y, this.p4y) &&
-            pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), pt)) {
+    if (
+      within(this.p1x, pt.x, this.p4x) &&
+      within(this.p1y, pt.y, this.p4y) &&
+      pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), pt)
+    ) {
       // debug('\t returning true');
       return true;
     }
@@ -826,19 +869,30 @@ export default class Segment extends GlyphElement {
     precision = isVal(precision) ? precision : 1;
     let type = false;
 
-    const rex = (round(this.p1x, precision) === round(this.p2x, precision) &&
-            round(this.p1x, precision) === round(this.p3x, precision) &&
-            round(this.p1x, precision) === round(this.p4x, precision));
+    const rex =
+      round(this.p1x, precision) === round(this.p2x, precision) &&
+      round(this.p1x, precision) === round(this.p3x, precision) &&
+      round(this.p1x, precision) === round(this.p4x, precision);
 
     if (rex) type = 'vertical';
 
-    const rey = (round(this.p1y, precision) === round(this.p2y, precision) &&
-            round(this.p1y, precision) === round(this.p3y, precision) &&
-            round(this.p1y, precision) === round(this.p4y, precision));
+    const rey =
+      round(this.p1y, precision) === round(this.p2y, precision) &&
+      round(this.p1y, precision) === round(this.p3y, precision) &&
+      round(this.p1y, precision) === round(this.p4y, precision);
     if (rey) type = 'horizontal';
 
-    const red = (pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), this.getXYPoint(2)) &&
-            pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), this.getXYPoint(3)));
+    const red =
+      pointsAreCollinear(
+        this.getXYPoint(1),
+        this.getXYPoint(4),
+        this.getXYPoint(2)
+      ) &&
+      pointsAreCollinear(
+        this.getXYPoint(1),
+        this.getXYPoint(4),
+        this.getXYPoint(3)
+      );
     if (red) type = 'diagonal';
 
     this._lineType = type;
@@ -864,7 +918,6 @@ export default class Segment extends GlyphElement {
   }
 }
 
-
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
@@ -880,7 +933,7 @@ export default class Segment extends GlyphElement {
 export function getLineLength(p1x, p1y, p2x, p2y) {
   const a = Math.abs(p1x - p2x);
   const b = Math.abs(p1y - p2y);
-  const c = Math.sqrt((a * a) + (b * b));
+  const c = Math.sqrt(a * a + b * b);
   return c;
 }
 
@@ -893,7 +946,7 @@ export function getLineLength(p1x, p1y, p2x, p2y) {
  * @returns {boolean}
  */
 export function pointsAreCollinear(a, b, c, precision) {
-  precision = isVal(precision)? precision : 3;
+  precision = isVal(precision) ? precision : 3;
 
   const s1 = (b.x - a.x) * (c.y - a.y);
   const s2 = (c.x - a.x) * (b.y - a.y);

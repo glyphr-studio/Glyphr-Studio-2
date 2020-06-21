@@ -1,29 +1,20 @@
 {
-    "extends": "google",
+    "extends": "eslint:recommended",
+    "plugins": ["prettier"],
+    "env": {
+        "browser": true,
+        "es6": true
+    },
     "parserOptions": {
         "ecmaVersion": 6,
         "sourceType": "module"
     },
     "rules":{
-        "max-len": [2, {
-            "code": 120,
-            "tabWidth": 4,
-            "comments": 240,
-            "ignoreComments": true,
-            "ignoreTrailingComments": true,
-            "ignoreUrls": true,
-            "ignoreStrings": true,
-            "ignoreTemplateLiterals": true,
-            "ignoreRegExpLiterals": true
-        }],
-        "valid-jsdoc": [2, {
-            "prefer": {
-                "return": "returns"
-            },
-            "requireReturn": false,
-            "requireReturnDescription": false,
-            "requireParamDescription": false
-        }],
-        "linebreak-style": "off"
-    }
+        "prettier/prettier": "error"
+    },
+    "ignorePatterns": [
+        "*.test.js",
+        "dev/lib/*",
+        "dev/samples/*"
+    ]
 }

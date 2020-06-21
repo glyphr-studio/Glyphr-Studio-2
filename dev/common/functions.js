@@ -1,12 +1,34 @@
-export {debug as default};
+export { debug as default };
 export {
   makePanelSuperTitle,
-  setProjectAsSaved, setProjectAsUnsaved, saveFile, makeDateStampSuffix,
-  getFirstID, generateNewID, countObjectKeys,
-  clone, json, areEqual, makeCrisp, round,
-  numSan, strSan, trim, isVal, hasNonValues, reqAniFrame, duplicates,
-  localStorageGet, localStorageSet,
-  calculateAngle, calculateLength, rotate, rad, deg, angleToNiceAngle, niceAngleToAngle,
+  setProjectAsSaved,
+  setProjectAsUnsaved,
+  saveFile,
+  makeDateStampSuffix,
+  getFirstID,
+  generateNewID,
+  countObjectKeys,
+  clone,
+  json,
+  areEqual,
+  makeCrisp,
+  round,
+  numSan,
+  strSan,
+  trim,
+  isVal,
+  hasNonValues,
+  reqAniFrame,
+  duplicates,
+  localStorageGet,
+  localStorageSet,
+  calculateAngle,
+  calculateLength,
+  rotate,
+  rad,
+  deg,
+  angleToNiceAngle,
+  niceAngleToAngle,
   makeEmailContent,
   kCombinations,
 };
@@ -40,7 +62,10 @@ function debug(message, force) {
       } else if (dev.debugAutoGroup && message.indexOf('- START') > 0) {
         console.group(message.substr(2).replace(' - START', ''));
         return;
-      } else if (message === 'groupEnd'|| (dev.debugAutoGroup && message.indexOf('- END') > 0)) {
+      } else if (
+        message === 'groupEnd' ||
+        (dev.debugAutoGroup && message.indexOf('- END') > 0)
+      ) {
         console.groupEnd(message);
         return;
       } else {
@@ -52,7 +77,6 @@ function debug(message, force) {
     }
   }
 }
-
 
 // -------------------
 // Common Panel Title
@@ -70,13 +94,19 @@ function makePanelSuperTitle() {
     let name;
     // debug('\t selectedWorkItem = ' + selectedWorkItem.objType);
 
-    content += '<h1 class="panelSuperTitle">'+editor.nav.page.toUpperCase();
-    if (_UI.currentPanel === 'npChooser' ||
+    content += '<h1 class="panelSuperTitle">' + editor.nav.page.toUpperCase();
+    if (
+      _UI.currentPanel === 'npChooser' ||
       _UI.currentPanel === 'npGuides' ||
-      _UI.currentPanel === 'npHistory') return content + '</h1>';
+      _UI.currentPanel === 'npHistory'
+    )
+      return content + '</h1>';
 
     if (selectedWorkItem) {
-      name = (selectedWorkItem.getName() || selectedWorkItem.shape.name || '[no shape outline yet]');
+      name =
+        selectedWorkItem.getName() ||
+        selectedWorkItem.shape.name ||
+        '[no shape outline yet]';
       // debug('\t selectedWorkItem name is ' + name);
 
       if (selectedWorkItem.name) name = name.replace(/latin /i, '');
@@ -85,7 +115,7 @@ function makePanelSuperTitle() {
     } else if (editor.nav.page === 'kerning') {
       // debug('\t selectedWorkItem = false, on kerning');
       name = getSelectedKern();
-      content += name? makeSuperTitleSeparator() + name.getName() : '';
+      content += name ? makeSuperTitleSeparator() + name.getName() : '';
     }
     content += '</h1>';
   }
@@ -99,12 +129,21 @@ function makePanelSuperTitle() {
  */
 function makeSuperTitleSeparator() {
   let re = '<span class="superTitleSeparator">';
-  re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hoverColor: _UI.colors.blue.l75, size: 10});
-  re += makeIcon({name: 'button_more', color: _UI.colors.blue.l75, hoverColor: _UI.colors.blue.l75, size: 10});
+  re += makeIcon({
+    name: 'button_more',
+    color: _UI.colors.blue.l75,
+    hoverColor: _UI.colors.blue.l75,
+    size: 10,
+  });
+  re += makeIcon({
+    name: 'button_more',
+    color: _UI.colors.blue.l75,
+    hoverColor: _UI.colors.blue.l75,
+    size: 10,
+  });
   re += '</span>';
   return re;
 }
-
 
 // -------------------
 // Saved Sate
@@ -155,17 +194,29 @@ function updateSaveIcon() {
   let savecolor = _UI.colors.gray.l90;
   if (!_UI.projectSaved) savecolor = 'white';
 
-  document.getElementById('npSave').innerHTML = '<table class="saveButtonTable">' +
-  '<tr><td style="border-right:1px solid rgb(204, 209, 214);">' +
+  document.getElementById('npSave').innerHTML =
+    '<table class="saveButtonTable">' +
+    '<tr><td style="border-right:1px solid rgb(204, 209, 214);">' +
     '<button class="primarynavbutton" style="height:32px; width:38px; padding:4px 0px 0px 7px;" title="Save Glyphr Project File" onclick="showToast(\'Saving Glyphr Studio Project file...\'); setTimeout(saveGlyphrProjectFile, 500);">' +
-      makeIcon({'name': 'button_npSave', 'size': 24, 'color': savecolor, 'hoverColor': 'white'}) +
+    makeIcon({
+      name: 'button_npSave',
+      size: 24,
+      color: savecolor,
+      hoverColor: 'white',
+    }) +
     '</button></td><td>' +
     '<button class="primarynavbutton" style="height:36px; width:21px; text-align:left; padding:0px 0px 0px 4px;" title="Save File Format Options" onclick="toggleDialogExportOptions();">' +
-      makeIcon({'name': 'button_more', 'height': 10, 'width': 10, 'size': 10, 'color': savecolor, 'hoverColor': 'white'}) +
-    '</button></td></tr>'+
-  '</table>';
+    makeIcon({
+      name: 'button_more',
+      height: 10,
+      width: 10,
+      size: 10,
+      color: savecolor,
+      hoverColor: 'white',
+    }) +
+    '</button></td></tr>' +
+    '</table>';
 }
-
 
 // -------------------
 // File Saver
@@ -179,7 +230,7 @@ function updateSaveIcon() {
  */
 function saveFile(fname, buffer, ftype) {
   ftype = ftype || 'text/plain;charset=utf-8';
-  const fblob = new Blob([buffer], {'type': ftype, 'endings': 'native'});
+  const fblob = new Blob([buffer], { type: ftype, endings: 'native' });
 
   try {
     // IE
@@ -205,13 +256,13 @@ function saveFile(fname, buffer, ftype) {
 function makeDateStampSuffix() {
   const d = new Date();
   const yr = d.getFullYear();
-  const mo = d.getMonth()+1;
+  const mo = d.getMonth() + 1;
   const day = d.getDate();
   const hr = d.getHours();
-  const min = (d.getMinutes()<10? '0' : '') + d.getMinutes();
-  const sec = (d.getSeconds()<10? '0' : '') + d.getSeconds();
+  const min = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+  const sec = (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
 
-  return (''+yr+'.'+mo+'.'+day+'-'+hr+'.'+min+'.'+sec);
+  return '' + yr + '.' + mo + '.' + day + '-' + hr + '.' + min + '.' + sec;
 }
 
 // --------------------------------------------------------------
@@ -242,8 +293,8 @@ function getFirstID(obj) {
 function generateNewID(obj, base) {
   let number = 1;
   base = base || 'id';
-  let id = ('' + base + number);
-  while (obj.hasOwnProperty(id)) id = ('' + base + (++number));
+  let id = '' + base + number;
+  while (obj.hasOwnProperty(id)) id = '' + base + ++number;
 
   return id;
 }
@@ -256,11 +307,10 @@ function generateNewID(obj, base) {
 function countObjectKeys(obj) {
   let len = 0;
   for (const key in obj) {
-    if ( obj.hasOwnProperty(key)) len++;
+    if (obj.hasOwnProperty(key)) len++;
   }
   return len;
 }
-
 
 // -------------------
 // Common Functions
@@ -274,9 +324,14 @@ function countObjectKeys(obj) {
  * @returns {object}
  */
 function clone(cobj) {
-  const newObj = (cobj instanceof Array) ? [] : {};
+  const newObj = cobj instanceof Array ? [] : {};
   for (const i in cobj) {
-    if (cobj[i] && typeof cobj[i] === 'object' && i !== 'parent' && i !== 'cache') {
+    if (
+      cobj[i] &&
+      typeof cobj[i] === 'object' &&
+      i !== 'parent' &&
+      i !== 'cache'
+    ) {
       newObj[i] = clone(cobj[i]);
     } else newObj[i] = cobj[i];
   }
@@ -370,8 +425,8 @@ export function pointsAreEqual(c1, c2, threshold = 1) {
  * @returns {number}
  */
 function makeCrisp(num, dir) {
-  const mul = dir? 1 : -1;
-  return round(num) + (0.5 * mul);
+  const mul = dir ? 1 : -1;
+  return round(num) + 0.5 * mul;
 }
 
 /**
@@ -382,9 +437,8 @@ function makeCrisp(num, dir) {
  */
 function round(num, dec = 0) {
   if (!num) return 0;
-  return Number(Math.round(num+'e'+dec)+'e-'+dec) || 0;
+  return Number(Math.round(num + 'e' + dec) + 'e-' + dec) || 0;
 }
-
 
 /**
  * Floating point numbers make me mad
@@ -394,13 +448,13 @@ function round(num, dec = 0) {
  */
 function numSan(num) {
   num = parseFloat(num);
-  const strnum = ''+num;
+  const strnum = '' + num;
 
   if (strnum.indexOf('0000') > -1 || strnum.indexOf('9999') > -1) {
     num = round(num, 4);
   }
 
-  if (num < 0.0000 && num > 0) num = 0;
+  if (num < 0.0 && num > 0) num = 0;
 
   return num;
 }
@@ -444,7 +498,8 @@ function isVal(val) {
   else if (val === false) return true;
   else if (val === null || val === undefined) return false;
   // else if ( typeof val === 'number' && isNaN(val)) return false;
-  else if ( typeof val === 'object' && Object.keys(val).length === 0 ) return false;
+  else if (typeof val === 'object' && Object.keys(val).length === 0)
+    return false;
   else return !!val;
 }
 
@@ -498,7 +553,6 @@ function duplicates(v, i, a) {
   return a.indexOf(v) === i;
 }
 
-
 // --------------------------
 // Local Storage
 // --------------------------
@@ -525,8 +579,8 @@ function localStorageSet(key, value) {
 function localStorageGet(key) {
   if (window.localStorage[key]) {
     return JSON.parse(window.localStorage.getItem(key));
-  } else if (window.localStorage['GlyphrStudio_'+key]) {
-    return JSON.parse(window.localStorage.getItem('GlyphrStudio_'+key));
+  } else if (window.localStorage['GlyphrStudio_' + key]) {
+    return JSON.parse(window.localStorage.getItem('GlyphrStudio_' + key));
   } else {
     return undefined;
   }
@@ -535,7 +589,6 @@ function localStorageGet(key) {
 // --------------------------
 // Angle and Rotation Stuff
 // --------------------------
-
 
 // Use JavaScript "Angle" system by default:
 // Radians, top is positive bottom is negative
@@ -550,11 +603,13 @@ function localStorageGet(key) {
  * @param {XYPoint} point - x/y point of point
  * @returns {number}
  */
-function calculateAngle(handle, point = {x: 0, y: 0}) {
+function calculateAngle(handle, point = { x: 0, y: 0 }) {
   let result = Math.atan2(handle.y - point.y, handle.x - point.x);
 
   if (isNaN(result)) {
-    console.warn('calculateAngle returned NaN\n' + json(handle) + '\n' + json(point));
+    console.warn(
+      'calculateAngle returned NaN\n' + json(handle) + '\n' + json(point)
+    );
     result = 0;
   }
 
@@ -570,7 +625,7 @@ function calculateAngle(handle, point = {x: 0, y: 0}) {
 function calculateLength(handle, point) {
   const adj = point.x - handle.x;
   const opp = point.y - handle.y;
-  const result = Math.sqrt( (adj*adj) + (opp*opp) );
+  const result = Math.sqrt(adj * adj + opp * opp);
   return result;
 }
 
@@ -580,7 +635,7 @@ function calculateLength(handle, point) {
  * @param {number} angle - how much to rotate (radians)
  * @param {XYPoint} about - x/y point center of rotation
  */
-function rotate(point, angle, about = {x: 0, y: 0}) {
+function rotate(point, angle, about = { x: 0, y: 0 }) {
   // debug('\n rotate - START');
   // debug('\t point ' + json(point, true));
   // debug('\t Math angle:\t' + angle);
@@ -591,8 +646,8 @@ function rotate(point, angle, about = {x: 0, y: 0}) {
   point.x -= about.x;
   point.y -= about.y;
 
-  const newx = (point.x * Math.cos(angle)) - (point.y * Math.sin(angle));
-  const newy = (point.x * Math.sin(angle)) + (point.y * Math.cos(angle));
+  const newx = point.x * Math.cos(angle) - point.y * Math.sin(angle);
+  const newy = point.x * Math.sin(angle) + point.y * Math.cos(angle);
 
   point.x = newx + about.x;
   point.y = newy + about.y;
@@ -607,7 +662,7 @@ function rotate(point, angle, about = {x: 0, y: 0}) {
  * @returns {number}
  */
 function rad(deg) {
-  return (deg * Math.PI / 180) % Math.PI;
+  return ((deg * Math.PI) / 180) % Math.PI;
 }
 
 /**
@@ -616,7 +671,7 @@ function rad(deg) {
  * @returns {number}
  */
 function deg(rad) {
-  return (rad * 180 / Math.PI) % 360;
+  return ((rad * 180) / Math.PI) % 360;
 }
 
 /**
@@ -645,18 +700,16 @@ function niceAngleToAngle(angle) {
   angle += 90;
   angle = angle % 360;
   if (angle < 180) angle = 360 - angle;
-  else angle *=-1;
+  else angle *= -1;
 
   angle = rad(angle);
 
   return angle;
 }
 
-
 // -------------------
 // BUG EMAIL
 // -------------------
-
 
 /**
  * Generates the content for the "email us" link
@@ -676,11 +729,9 @@ function makeEmailContent() {
   return con;
 }
 
-
 // -------------------
 // COMBINATORICS
 // -------------------
-
 
 /**
  * K-combinations
@@ -741,7 +792,7 @@ function kCombinations(set, k) {
 
   combs = [];
   for (i = 0; i < set.length - k + 1; i++) {
-    head = set.slice(i, i+1);
+    head = set.slice(i, i + 1);
     tailcombs = kCombinations(set.slice(i + 1), k - 1);
     for (j = 0; j < tailcombs.length; j++) {
       combs.push(head.concat(tailcombs[j]));
