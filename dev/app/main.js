@@ -1,5 +1,6 @@
 import manifest from '../manifest.js';
 import GlyphrStudioApp from './app.js';
+import { debug } from '../common/functions.js';
 
 /** export nothing by default */
 export default function () {}

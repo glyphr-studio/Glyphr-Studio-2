@@ -6,7 +6,7 @@ import ComponentInstance from './component_instance.js';
 import { clone, hasNonValues, isVal, trim } from '../common/functions.js';
 import { parseUnicodeInput, getUnicodeName } from '../common/unicode.js';
 import { getOverallMaxes } from './maxes.js';
-import { combineShapes } from '../panels/REFACTOR_shape.js';
+// import { combineShapes } from '../panels/REFACTOR_shape.js';
 
 /**
  * Glyph Element > Glyph
@@ -1186,7 +1186,7 @@ export default class Glyph extends GlyphElement {
    * Boolean combine all shapes in this Glyph to as few shapes as possible
    * @param {boolean} dontToast - don't show progress messages
    * @returns {Glyph} - reference to this Glyph
-   */
+
   combineAllShapes(dontToast = false) {
     // debug('\n Glyph.combineAllShapes - START - ' + this.name);
     this.flattenGlyph();
@@ -1204,6 +1204,7 @@ export default class Glyph extends GlyphElement {
     // debug(' Glyph.combineAllShapes - END - ' + this.name + '\n');
     return this;
   }
+  */
 
   // --------------------------------------------------------------
   // Methods
