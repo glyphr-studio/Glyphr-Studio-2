@@ -16,7 +16,7 @@
   },
   "scripts": {
     "test": "jasmine --require=esm",
-    "lint": "eslint dev",
+    "lint": "eslint dev/app",
     "fix": "eslint dev --fix"
   },
   "dependencies": {},

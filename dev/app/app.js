@@ -1,7 +1,7 @@
-import { accentColors } from '../common/colors.js';
 import ProjectEditor from '../project/project_editor.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
 import { projects } from '../samples/samples.js';
+import { debug } from '../common/functions.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -95,8 +95,8 @@ export default class GlyphrStudioApp {
           '//www.google-analytics.com/analytics.js',
           'ga'
         );
-        ga('create', 'UA-71021902-1', 'auto');
-        ga('send', 'pageview');
+        window.ga('create', 'UA-71021902-1', 'auto');
+        window.ga('send', 'pageview');
       } catch (err) {
         console.warn('Google Analytics did not load.');
       }
@@ -152,92 +152,5 @@ export default class GlyphrStudioApp {
     }
 
     return this.projectEditors[this.selectedProjectEditor];
-  }
-
-  // --------------------------------------------------------------
-  // OTHER STUFF
-  // --------------------------------------------------------------
-
-  /**
-   * Global DOM elements that other UI relies on
-   */
-  insertGlobalDOMElements() {
-    document.body.innerHTML = `<div id="primaryScreenLayout"></div>
-
-      <div id="npSave"></div>
-
-      <div id="saveFormatFlyout" style="display:none;">
-        <div class="closeFormatFlyout" onclick="closeDialog();">&times</div>
-
-        <button onclick="closeDialog(); showToast('Saving Glyphr Studio Project file...'); setTimeout(saveGlyphrProjectFile, 500);">
-          ${makeIcon({
-            name: 'button_npNav',
-            width: 32,
-            height: 32,
-            size: 50,
-            color: accentColors.blue.l95,
-            hoverColor: false,
-          })}
-          <span>Glyphr Studio Project File</span>
-        </button>
-
-        <button onclick="closeDialog(); showToast('Exporting OTF font file...'); setTimeout(ioOTF_exportOTFfont, 500);">
-          ${makeIcon({
-            name: 'nav_exportotf',
-            width: 32,
-            height: 32,
-            size: 50,
-            color: accentColors.blue.l95,
-            hoverColor: false,
-          })}
-          <span>OTF Font</span>
-        </button>
-
-        <button onclick="closeDialog(); showToast('Exporting SVG font file...'); setTimeout(ioSVG_exportSVGfont, 500);">
-          ${makeIcon({
-            name: 'nav_exportsvg',
-            width: 32,
-            height: 32,
-            size: 50,
-            color: accentColors.blue.l95,
-            hoverColor: false,
-          })}
-          <span>SVG Font</span>
-        </button>
-
-      </div>
-
-      <span id="toast"></span>
-
-      <div id="dialog_bg" onclick="closeDialog();"></div>
-
-      <div id="dialog_box">
-        <table cellpadding=0 cellspacing=0 border=0><tr>
-        <td id="dialogLeftBar"><button class="dialogCloseButton" onclick="closeDialog();">&times;</button></td>
-        <td id="dialogRightContent"></td>
-        </tr></table>
-      </div>
-
-      <table id="big_dialog_box" cellpadding=0 cellspacing=0 border=0><tr>
-      <td id="dialogLeftBar"><button class="dialogCloseButton" onclick="closeDialog();">&times;</button></td>
-      <td id="bigDialogLeftContent"></td>
-      <td style="height:9999px;"><div id="bigDialogScrollContent"></div></td>
-      </tr></table>
-    `;
-
-    window.onBeforeUnload = function () {
-      const project = getCurrentProjectEditor();
-      popIn();
-      if (
-        project &&
-        project.projectSettings.stopPageNavigation &&
-        this.settings.stopPageNavigation &&
-        !this.settings.dev.mode
-      ) {
-        return '\n\nOh Noes!\nUnless you specifically saved your Glyphr Project, all your progress will be lost.\n\n';
-      } else {
-        return;
-      }
-    };
   }
 }

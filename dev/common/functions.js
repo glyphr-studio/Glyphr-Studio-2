@@ -1,5 +1,6 @@
-export { debug as default };
+export default {};
 export {
+  debug,
   makePanelSuperTitle,
   setProjectAsSaved,
   setProjectAsUnsaved,
