@@ -3,8 +3,20 @@ import Maxes from './maxes.js';
 import Path from './path.js';
 import Shape from './shape.js';
 import ComponentInstance from './component_instance.js';
-import { clone, hasNonValues, isVal, trim } from '../common/functions.js';
-import { parseUnicodeInput, getUnicodeName } from '../common/unicode.js';
+import { getCurrentProject } from '../project/glyphr_studio_project.js';
+import {
+  debug,
+  json,
+  clone,
+  hasNonValues,
+  isVal,
+  trim,
+} from '../common/functions.js';
+import {
+  parseUnicodeInput,
+  getUnicodeName,
+  hexToHTML,
+} from '../common/unicode.js';
 import { getOverallMaxes } from './maxes.js';
 // import { combineShapes } from '../panels/REFACTOR_shape.js';
 
@@ -72,7 +84,7 @@ export default class Glyph extends GlyphElement {
 
     // debug(`\t calling changed on usedIn`);
     for (let g = 0; g < this.usedIn.length; g++) {
-      getGlyph(this.usedIn[g]).changed();
+      getCurrentProject().getGlyph(this.usedIn[g]).changed();
     }
     // debug(`  Glyph.changed - End\n`);
   }
@@ -160,7 +172,7 @@ export default class Glyph extends GlyphElement {
         this.cache = {};
         if (ascend) {
             for (let g = 0; g < this.usedIn.length; g++) {
-                getGlyph(this.usedIn[g]).changed(descend, ascend);
+                getCurrentProject().getGlyph(this.usedIn[g]).changed(descend, ascend);
             }
         }
         if (descend) {
@@ -179,7 +191,7 @@ export default class Glyph extends GlyphElement {
                 re += (indents + '-' + s + '-' + ts.name + ' ' + json(ts.path.maxes, true) + '\n');
             } else if (ts.objType === 'ComponentInstance') {
                 re += (indents + '~' + s + '~' + ts.name + '\n');
-                re += getGlyph(ts.link).map(indents + '   ');
+                re += getCurrentProject().getGlyph(ts.link).map(indents + '   ');
             }
         }
         return re;
@@ -323,7 +335,7 @@ export default class Glyph extends GlyphElement {
    * @returns {string}
    */
   get char() {
-    return getGlyphName(this.id);
+    return getCurrentProject().getGlyphName(this.id);
   }
 
   /**
@@ -903,7 +915,9 @@ export default class Glyph extends GlyphElement {
     for (let s = 0; s < this.shapes.length; s++) {
       if (this.shapes[s].objType === 'ComponentInstance') {
         re = re.concat(
-          getGlyph(this.shapes[s].link).collectAllDownstreamLinks(re)
+          getCurrentProject()
+            .getGlyph(this.shapes[s].link)
+            .collectAllDownstreamLinks(re)
         );
         if (!excludePeers) re.push(this.shapes[s].link);
       }
@@ -918,7 +932,9 @@ export default class Glyph extends GlyphElement {
    */
   collectAllUpstreamLinks(re = []) {
     for (let g = 0; g < this.usedIn.length; g++) {
-      re = re.concat(getGlyph(this.usedIn[g]).collectAllUpstreamLinks(re));
+      re = re.concat(
+        getCurrentProject().getGlyph(this.usedIn[g]).collectAllUpstreamLinks(re)
+      );
       re.push(this.usedIn[g]);
     }
     return re;
@@ -935,7 +951,7 @@ export default class Glyph extends GlyphElement {
     // Delete upstream Component Instances
     let upstreamGlyph;
     for (let c = 0; c < this.usedIn.length; c++) {
-      upstreamGlyph = getGlyph(this.usedIn[c]);
+      upstreamGlyph = getCurrentProject().getGlyph(this.usedIn[c]);
       // debug('\t removing from ' + upstreamGlyph.name);
       // debug(upstreamGlyph.shapes);
       for (let u = 0; u < upstreamGlyph.shapes.length; u++) {
@@ -952,7 +968,7 @@ export default class Glyph extends GlyphElement {
     // Delete downstream usedIn array values
     for (let s = 0; s < this.shapes.length; s++) {
       if (this.shapes[s].objType === 'ComponentInstance') {
-        removeFromUsedIn(this.shapes[s].link, thisID);
+        this.removeFromUsedIn(this.shapes[s].link, thisID);
       }
     }
   }
@@ -1002,7 +1018,10 @@ export default class Glyph extends GlyphElement {
         console.warn(
           'Could not draw shape ' + shape.name + ' in Glyph ' + this.name
         );
-        if (shape.objType === 'ComponentInstance' && !getGlyph(shape.link)) {
+        if (
+          shape.objType === 'ComponentInstance' &&
+          !getCurrentProject().getGlyph(shape.link)
+        ) {
           console.warn('>>> Component Instance has bad link: ' + shape.link);
           const i = this.shapes.indexOf(shape);
           if (i > -1) {
@@ -1021,21 +1040,6 @@ export default class Glyph extends GlyphElement {
     debug(' Glyph.drawGlyph - END ' + this.name + '\n');
 
     return this.advanceWidth * view.dz;
-  }
-
-  /**
-   * Draw points that can be multi-selected
-   * @param {string} color - accent color
-   */
-  drawMultiSelectAffordances(color = '#000') {
-    let allPoints = [];
-    for (let s = 0; s < this.shapes.length; s++) {
-      if (this.shapes[s].objType !== 'ComponentInstance') {
-        allPoints = allPoints.concat(this.shapes[s].path.pathPoints);
-        this.shapes[s].draw_PathOutline(color, 1);
-      }
-    }
-    draw_PathPoints(allPoints, color);
   }
 
   /**
@@ -1184,14 +1188,14 @@ export default class Glyph extends GlyphElement {
 
   /**
    * Boolean combine all shapes in this Glyph to as few shapes as possible
-   * @param {boolean} dontToast - don't show progress messages
+   * @param {boolean} doNotToast - don't show progress messages
    * @returns {Glyph} - reference to this Glyph
 
-  combineAllShapes(dontToast = false) {
+  combineAllShapes(doNotToast = false) {
     // debug('\n Glyph.combineAllShapes - START - ' + this.name);
     this.flattenGlyph();
 
-    const shapes = combineShapes(this.shapes, dontToast);
+    const shapes = combineShapes(this.shapes, doNotToast);
     if (shapes) {
       // debug('\t new shapes');
       this.shapes = shapes;
@@ -1225,12 +1229,12 @@ export default class Glyph extends GlyphElement {
     }
   ) {
     // debug('\n Glyph.copyShapesTo - START');
-    const destinationGlyph = getGlyph(destinationID, true);
+    const destinationGlyph = getCurrentProject().getGlyph(destinationID, true);
     let tc;
     for (let c = 0; c < this.shapes.length; c++) {
       tc = this.shapes[c];
       if (tc.objType === 'ComponentInstance') {
-        getGlyph(tc.link).addToUsedIn(destinationID);
+        getCurrentProject().getGlyph(tc.link).addToUsedIn(destinationID);
         tc = new ComponentInstance(clone(tc));
       } else if (tc.objType === 'Shape') {
         tc = new Shape(clone(tc));
@@ -1245,7 +1249,6 @@ export default class Glyph extends GlyphElement {
       destinationGlyph.leftSideBearing = this.leftSideBearing;
     if (copyGlyphAttributes.srcRSB)
       destinationGlyph.rightSideBearing = this.rightSideBearing;
-    showToast('Copied ' + this.shapes.length + ' shapes');
     destinationGlyph.changed();
     // debug('\t new shapes');
     // debug(destinationGlyph.shapes);

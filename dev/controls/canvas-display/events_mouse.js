@@ -379,7 +379,7 @@ function Tool_NewBasicShape() {
     ) {
       let count =
         editor.nav.page === 'components'
-          ? countObjectKeys(getCurrentProject().components)
+          ? Object.keys(getCurrentProject().components).length
           : getSelectedWorkItemShapes().length;
       let s = _UI.multiSelect.shapes.getSingleton();
 
@@ -439,7 +439,7 @@ function Tool_NewPath() {
       // make a new shape with the new pathpoint
       let count =
         editor.nav.page === 'components'
-          ? countObjectKeys(getCurrentProject().components)
+          ? Object.keys(getCurrentProject().components).length
           : getSelectedWorkItemShapes().length;
       this.newshape = addShape(
         new Shape({ name: 'Shape ' + count, path: new Path() })

@@ -1,4 +1,4 @@
-import { json } from '../common/functions.js';
+import { json, clone } from '../common/functions.js';
 
 /**
  * Base for all Glyph Elements
@@ -102,18 +102,16 @@ export default class GlyphElement {
     const safeObj = this.save();
     let elem;
 
-    for (const key in safeObj) {
-      if (safeObj.hasOwnProperty(key)) {
-        elem = this[key];
-        if (elem.print) {
-          re += `${ind}${key}: ${elem.print(level + 1)}\n`;
-        } else {
-          if (typeof elem !== 'function') {
-            if (typeof elem === 'object') {
-              re += `${ind}${key}: ${JSON.stringify(elem)}\n`;
-            } else {
-              re += `${ind}${key}: ${elem}\n`;
-            }
+    for (const key of safeObj) {
+      elem = this[key];
+      if (elem.print) {
+        re += `${ind}${key}: ${elem.print(level + 1)}\n`;
+      } else {
+        if (typeof elem !== 'function') {
+          if (typeof elem === 'object') {
+            re += `${ind}${key}: ${JSON.stringify(elem)}\n`;
+          } else {
+            re += `${ind}${key}: ${elem}\n`;
           }
         }
       }

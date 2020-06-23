@@ -9,6 +9,8 @@ import {
   hasNonValues,
   pointsAreEqual,
 } from '../common/functions.js';
+import { sXcX, sYcY } from '../controls/canvas-edit/canvas-edit.js';
+import { getColorFromRGBA } from '../common/colors.js';
 
 /**
  * Glyph Element > Segment
@@ -615,7 +617,7 @@ export default class Segment extends GlyphElement {
     }
 
     /**
-     * Some crazy Bezier math sh*t goin' down in this helper function
+     * Some crazy Bezier math sh*t going down in this helper function
      * @param {number} t
      * @param {number} p0
      * @param {number} p1

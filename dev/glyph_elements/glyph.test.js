@@ -208,6 +208,5 @@ copyShapesTo(destinationID, copyGlyphAttributes =
 
 DRAW METHODS
 drawGlyph(ctx, view =x: 0, y: 0, z: 1}, alpha = 1, addLSB = false, fill = '#000')
-drawMultiSelectAffordances(color = '#000')
 
 */

@@ -24,7 +24,7 @@ function makePanel_GlyphChooser() {
     asyncLoadChooserPanel();
     // _UI.glyphChooser.cache = make_GlyphChooser(_UI.glyphChooser.panel);
   } else if (editor.nav.page === 'ligatures') {
-    const emptyligs = countObjectKeys(getCurrentProject().ligatures) === 0;
+    const emptyligs = Object.keys(getCurrentProject().ligatures).length === 0;
     if (!emptyligs) {
       content += make_GlyphChooser(gcp);
     }
@@ -51,7 +51,7 @@ function makePanel_GlyphChooser() {
       content += '</div>';
     }
   } else if (editor.nav.page === 'components') {
-    const emptycoms = countObjectKeys(getCurrentProject().components) === 0;
+    const emptycoms = Object.keys(getCurrentProject().components).length === 0;
     if (!emptycoms) {
       content += make_GlyphChooser(gcp);
     }
@@ -104,8 +104,8 @@ function make_GlyphChooser(gcdata) {
     (editor.nav.page === 'glyph edit' && pluralGlyphRange()) ||
     (editor.nav.page === 'import svg' &&
       (pluralGlyphRange() ||
-        countObjectKeys(getCurrentProject().components) ||
-        countObjectKeys(getCurrentProject().ligatures)))
+        Object.keys(getCurrentProject().components).length ||
+        Object.keys(getCurrentProject().ligatures).length))
   ) {
     con += make_GlyphChooser_Header(gcdata.selected);
   }
@@ -263,26 +263,26 @@ function make_GlyphChooser_DropDown(ch) {
   }
 
   if (ch === 'components' || ch === 'all') {
-    if (countObjectKeys(getCurrentProject().components)) {
+    if (Object.keys(getCurrentProject().components).length) {
       content +=
         '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'components\');">';
       content += 'Components&emsp;';
       content +=
         '<span class="units">(' +
-        countObjectKeys(getCurrentProject().components) +
+        Object.keys(getCurrentProject().components).length +
         ')</span>';
       content += '</button>';
     }
   }
 
   if (ch === 'ligatures' || ch === 'all') {
-    if (countObjectKeys(getCurrentProject().ligatures)) {
+    if (Object.keys(getCurrentProject().ligatures).length) {
       content +=
         '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'ligatures\');">';
       content += 'Ligatures&emsp;';
       content +=
         '<span class="units">(' +
-        countObjectKeys(getCurrentProject().ligatures) +
+        Object.keys(getCurrentProject().ligatures).length +
         ')</span>';
       content += '</button>';
     }

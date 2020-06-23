@@ -325,9 +325,8 @@ export default class InputNumber extends HTMLElement {
 
   /**
    * Handle onChange event
-   * @param {object} ev - event
    */
-  numberInputChanged(ev) {
+  numberInputChanged() {
     this.elementRoot.value = this.elementRoot.numberInput.value;
   }
 

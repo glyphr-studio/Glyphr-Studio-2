@@ -1145,7 +1145,7 @@ export default class Path extends GlyphElement {
    * Looks through the whole path and sets erroneous values to 0
    * @param {string} calledBy - message for who called this
    */
-  validate(calledBy) {
+  validate() {
     let tp;
     for (let pp = 0; pp < this.pathPoints.length; pp++) {
       tp = this.pathPoints[pp];
@@ -1267,9 +1267,9 @@ export function findPathIntersections(p1, p2) {
   }
 
   // debug('\t segmentOverlaps are now:');
-  segmentOverlaps.forEach((element) => {
-    // debug(`bottom:\n${element.bottom.print()}\ntop:\n${element.top.print()}`);
-  });
+  // segmentOverlaps.forEach((element) => {
+  // debug(`bottom:\n${element.bottom.print()}\ntop:\n${element.top.print()}`);
+  // });
 
   // Use overlaps to find intersections
   let re = [];

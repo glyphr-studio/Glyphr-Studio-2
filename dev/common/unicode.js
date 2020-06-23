@@ -255,9 +255,9 @@ function getUnicodeName(ch) {
   const chn = ch * 1;
 
   if (chn >= 0x4e00 && chn < 0xa000) {
-    return 'CJK Unified Ideograph ' + ch.substr(2);
+    re = 'CJK Unified Ideograph ' + ch.substr(2);
   } else {
-    return unicodeNames[ch] || '[name not found]';
+    re = unicodeNames[ch] || '[name not found]';
   }
 
   // debug(' getUnicodeName - END - returning ' + re + '\n');
@@ -393,7 +393,7 @@ basicLatinOrder = [
 
 unicodeRanges = {
   basicLatin: { begin: 0x20, end: 0x7e },
-  latinSupplimentControls: { begin: 0x80, end: 0x9f },
+  latinSupplementControls: { begin: 0x80, end: 0x9f },
   latinSupplement: { begin: 0xa0, end: 0xff },
   latinExtendedA: { begin: 0x100, end: 0x17f },
   latinExtendedB: { begin: 0x180, end: 0x24f },

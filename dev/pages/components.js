@@ -29,7 +29,7 @@
   function createNewComponent(pglyph) {
     // debug('\n createNewComponent - START');
 
-    pglyph = pglyph || new Glyph({'name': 'Component ' + (countObjectKeys(getCurrentProject().components)+1)});
+    pglyph = pglyph || new Glyph({'name': 'Component ' + (Object.keys(getCurrentProject().components).length+1)});
     let newid = generateNewID(getCurrentProject().components, 'com');
     _UI.selectedComponent = newid;
 
