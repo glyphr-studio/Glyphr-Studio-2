@@ -220,9 +220,7 @@ export default class Shape extends GlyphElement {
     if (name !== '') {
       this._name = name;
     } else {
-      showToast(
-        'Invalid shape name - shape names must only contain alphanumeric characters or spaces.'
-      );
+      return false;
     }
 
     return this;

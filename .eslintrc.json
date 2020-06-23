@@ -15,6 +15,7 @@
     "ignorePatterns": [
         "*.test.js",
         "dev/lib/*",
-        "dev/samples/*"
+        "dev/samples/*",
+        "REFACTOR_*"
     ]
 }

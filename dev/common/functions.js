@@ -1,14 +1,10 @@
 export default {};
 export {
   debug,
-  makePanelSuperTitle,
-  setProjectAsSaved,
-  setProjectAsUnsaved,
   saveFile,
   makeDateStampSuffix,
   getFirstID,
   generateNewID,
-  countObjectKeys,
   clone,
   json,
   areEqual,
@@ -80,169 +76,29 @@ function debug(message, force) {
 }
 
 // -------------------
-// Common Panel Title
-// -------------------
-
-/**
- * Panel Title
- * @returns {string}
- */
-function makePanelSuperTitle() {
-  // debug('\n makePanelSuperTitle - START');
-  let content = '';
-  if (!_UI.popOut) {
-    const selectedWorkItem = getSelectedWorkItem();
-    let name;
-    // debug('\t selectedWorkItem = ' + selectedWorkItem.objType);
-
-    content += '<h1 class="panelSuperTitle">' + editor.nav.page.toUpperCase();
-    if (
-      _UI.currentPanel === 'npChooser' ||
-      _UI.currentPanel === 'npGuides' ||
-      _UI.currentPanel === 'npHistory'
-    )
-      return content + '</h1>';
-
-    if (selectedWorkItem) {
-      name =
-        selectedWorkItem.getName() ||
-        selectedWorkItem.shape.name ||
-        '[no shape outline yet]';
-      // debug('\t selectedWorkItem name is ' + name);
-
-      if (selectedWorkItem.name) name = name.replace(/latin /i, '');
-      content += makeSuperTitleSeparator();
-      content += name;
-    } else if (editor.nav.page === 'kerning') {
-      // debug('\t selectedWorkItem = false, on kerning');
-      name = getSelectedKern();
-      content += name ? makeSuperTitleSeparator() + name.getName() : '';
-    }
-    content += '</h1>';
-  }
-  // debug(' makePanelSuperTitle - returning\n' + content + '\n');
-  return content;
-}
-
-/**
- * Panel Title Separator
- * @returns {string}
- */
-function makeSuperTitleSeparator() {
-  let re = '<span class="superTitleSeparator">';
-  re += makeIcon({
-    name: 'button_more',
-    color: _UI.colors.blue.l75,
-    hoverColor: _UI.colors.blue.l75,
-    size: 10,
-  });
-  re += makeIcon({
-    name: 'button_more',
-    color: _UI.colors.blue.l75,
-    hoverColor: _UI.colors.blue.l75,
-    size: 10,
-  });
-  re += '</span>';
-  return re;
-}
-
-// -------------------
-// Saved Sate
-// -------------------
-
-/**
- * Handles various UI pieces when a project is saved
- */
-function setProjectAsSaved() {
-  _UI.projectSaved = true;
-
-  if (window.GlyphrStudio.settings.dev.mode) {
-    document.title = '░▒▓█ GSDEVMODE █▓▒░';
-  } else if (_UI.popOut) {
-    document.title = 'Glyphr Studio - Tools';
-    _UI.popOut.document.title = 'Glyphr Studio - Canvas';
-  } else {
-    document.title = 'Glyphr Studio';
-  }
-
-  updateSaveIcon();
-}
-
-/**
- * Handles various UI pieces when a project is unsaved
- */
-function setProjectAsUnsaved() {
-  _UI.projectSaved = false;
-
-  if (window.GlyphrStudio.settings.dev.mode) {
-    document.title = '░▒▓█ GSDEVM❖DE █▓▒░';
-  } else if (_UI.popOut) {
-    document.title = ' ❖ Glyphr Studio - Tools';
-    _UI.popOut.document.title = ' ❖ Glyphr Studio - Canvas';
-  } else {
-    document.title = ' ❖ Glyphr Studio';
-  }
-
-  updateSaveIcon();
-}
-
-/**
- * Updates the Save icon
- */
-function updateSaveIcon() {
-  if (_UI.currentPanel === 'npNav') return;
-
-  let savecolor = _UI.colors.gray.l90;
-  if (!_UI.projectSaved) savecolor = 'white';
-
-  document.getElementById('npSave').innerHTML =
-    '<table class="saveButtonTable">' +
-    '<tr><td style="border-right:1px solid rgb(204, 209, 214);">' +
-    '<button class="primarynavbutton" style="height:32px; width:38px; padding:4px 0px 0px 7px;" title="Save Glyphr Project File" onclick="showToast(\'Saving Glyphr Studio Project file...\'); setTimeout(saveGlyphrProjectFile, 500);">' +
-    makeIcon({
-      name: 'button_npSave',
-      size: 24,
-      color: savecolor,
-      hoverColor: 'white',
-    }) +
-    '</button></td><td>' +
-    '<button class="primarynavbutton" style="height:36px; width:21px; text-align:left; padding:0px 0px 0px 4px;" title="Save File Format Options" onclick="toggleDialogExportOptions();">' +
-    makeIcon({
-      name: 'button_more',
-      height: 10,
-      width: 10,
-      size: 10,
-      color: savecolor,
-      hoverColor: 'white',
-    }) +
-    '</button></td></tr>' +
-    '</table>';
-}
-
-// -------------------
 // File Saver
 // -------------------
 
 /**
  * Saves a file
- * @param {string} fname - name for the saved file
+ * @param {string} fileName - name for the saved file
  * @param {string} buffer - data for the file
- * @param {string} ftype - file suffix
+ * @param {string} fileType - file suffix
  */
-function saveFile(fname, buffer, ftype) {
-  ftype = ftype || 'text/plain;charset=utf-8';
-  const fblob = new Blob([buffer], { type: ftype, endings: 'native' });
+function saveFile(fileName, buffer, fileType) {
+  fileType = fileType || 'text/plain;charset=utf-8';
+  const fileBlob = new Blob([buffer], { type: fileType, endings: 'native' });
 
   try {
     // IE
-    window.navigator.msSaveBlob(fblob, fname);
+    window.navigator.msSaveBlob(fileBlob, fileName);
   } catch (err) {
     // Others
     const link = document.createElement('a');
     window.URL = window.URL || window.webkitURL;
-    link.href = window.URL.createObjectURL(fblob);
-    // link.onclick = ("alert("+window.URL.createObjectURL(fblob)+");");
-    link.download = fname;
+    link.href = window.URL.createObjectURL(fileBlob);
+    // link.onclick = ("alert("+window.URL.createObjectURL(fileBlob)+");");
+    link.download = fileName;
 
     const event = document.createEvent('MouseEvents');
     event.initEvent('click', true, false);
@@ -276,12 +132,7 @@ function makeDateStampSuffix() {
  * @returns {string}
  */
 function getFirstID(obj) {
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      return key;
-    }
-  }
-
+  for (const key of obj) return key;
   return false;
 }
 
@@ -295,22 +146,12 @@ function generateNewID(obj, base) {
   let number = 1;
   base = base || 'id';
   let id = '' + base + number;
-  while (obj.hasOwnProperty(id)) id = '' + base + ++number;
+  while (obj[id]) {
+    number += 1;
+    id = '' + base + number;
+  }
 
   return id;
-}
-
-/**
- * Returns how many objects are in an object
- * @param {object} obj
- * @returns {number}
- */
-function countObjectKeys(obj) {
-  let len = 0;
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) len++;
-  }
-  return len;
 }
 
 // -------------------
@@ -321,20 +162,20 @@ function countObjectKeys(obj) {
  * Returns a full new copy of any object
  * 'parent' and 'parent' are pointers up to parent objects, they
  * cause infinite loops when cloning objects.  Kind of a hack.
- * @param {object} cobj - object to clone
+ * @param {object} source - object to clone
  * @returns {object}
  */
-function clone(cobj) {
-  const newObj = cobj instanceof Array ? [] : {};
-  for (const i in cobj) {
+function clone(source) {
+  const newObj = source instanceof Array ? [] : {};
+  for (const i in source) {
     if (
-      cobj[i] &&
-      typeof cobj[i] === 'object' &&
+      source[i] &&
+      typeof source[i] === 'object' &&
       i !== 'parent' &&
       i !== 'cache'
     ) {
-      newObj[i] = clone(cobj[i]);
-    } else newObj[i] = cobj[i];
+      newObj[i] = clone(source[i]);
+    } else newObj[i] = source[i];
   }
   return newObj;
 }
@@ -371,12 +212,12 @@ function areEqual(obj1, obj2) {
     return obj1 === obj2;
   }
 
-  for (const key in obj1) {
-    if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
+  for (const key of obj1) {
+    if (obj2[key]) {
       if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
         if (!areEqual(obj1[key], obj2[key])) return false;
       } else if (obj1[key] !== obj2[key]) return false;
-    } else if (obj1.hasOwnProperty(key) || obj2.hasOwnProperty(key)) {
+    } else {
       return false;
     }
   }
@@ -449,9 +290,9 @@ function round(num, dec = 0) {
  */
 function numSan(num) {
   num = parseFloat(num);
-  const strnum = '' + num;
+  const stringNumber = '' + num;
 
-  if (strnum.indexOf('0000') > -1 || strnum.indexOf('9999') > -1) {
+  if (stringNumber.indexOf('0000') > -1 || stringNumber.indexOf('9999') > -1) {
     num = round(num, 4);
   }
 
@@ -471,7 +312,7 @@ function strSan(val = '') {
 }
 
 /**
- * Removes begining and trailing whitespace, and any breaking or tab chars
+ * Removes beginning and trailing whitespace, and any breaking or tab chars
  * @param {string} text - text to trim
  * @returns {string}
  */
@@ -512,12 +353,10 @@ function isVal(val) {
 function hasNonValues(obj) {
   if (!obj) return true;
 
-  for (const v in obj) {
-    if (obj.hasOwnProperty(v)) {
-      if (!isVal(obj[v])) return true;
-      if (obj[v] === Number.MAX_SAFE_INTEGER) return true;
-      if (obj[v] === Number.MIN_SAFE_INTEGER) return true;
-    }
+  for (const v of obj) {
+    if (!isVal(obj[v])) return true;
+    if (obj[v] === Number.MAX_SAFE_INTEGER) return true;
+    if (obj[v] === Number.MIN_SAFE_INTEGER) return true;
   }
 
   return false;
@@ -528,18 +367,10 @@ function hasNonValues(obj) {
  * @param {function} fun - function to call
  */
 function reqAniFrame(fun) {
-  if (_UI.popOut) {
-    if (_UI.popOut.requestAnimationFrame) _UI.popOut.requestAnimationFrame(fun);
-    else {
-      console.warn('no requestAnimationFrame');
-      fun();
-    }
-  } else {
-    if (window.requestAnimationFrame) window.requestAnimationFrame(fun);
-    else {
-      console.warn('no requestAnimationFrame');
-      fun();
-    }
+  if (window.requestAnimationFrame) window.requestAnimationFrame(fun);
+  else {
+    console.warn('no requestAnimationFrame');
+    fun();
   }
 }
 
@@ -596,7 +427,7 @@ function localStorageGet(key) {
 // 3 o'clock is zero, 9 o'clock is pi
 
 // Glyphr Studio "Nice Angle" used in the UI
-// 360 Degrees, 12 o'clock is zero, clockwise = positve
+// 360 Degrees, 12 o'clock is zero, clockwise = positive
 
 /**
  * Calculates the angle (in radians) of a handle given a point
@@ -647,11 +478,11 @@ function rotate(point, angle, about = { x: 0, y: 0 }) {
   point.x -= about.x;
   point.y -= about.y;
 
-  const newx = point.x * Math.cos(angle) - point.y * Math.sin(angle);
-  const newy = point.x * Math.sin(angle) + point.y * Math.cos(angle);
+  const newX = point.x * Math.cos(angle) - point.y * Math.sin(angle);
+  const newY = point.x * Math.sin(angle) + point.y * Math.cos(angle);
 
-  point.x = newx + about.x;
-  point.y = newy + about.y;
+  point.x = newX + about.x;
+  point.y = newY + about.y;
 
   // debug('\t new point x/y: ' + point.x + '/' + point.y);
   // debug(' rotate - END\n');
@@ -719,7 +550,7 @@ function niceAngleToAngle(angle) {
 function makeEmailContent() {
   const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
   %0A%0A%0A%0A___________________________________________%0A
-  version %09Glyphr Studio  ${_UI.thisGlyphrStudioVersionNum} %0A
+  version %09Glyphr Studio  ${window.GlyphrStudio.versionNumber} %0A
   app name %09 ${navigator.appName} %0A
   language %09 ${navigator.language} %0A
   platform %09 ${navigator.platform} %0A
@@ -771,7 +602,7 @@ function kCombinations(set, k) {
   let j;
   let combs;
   let head;
-  let tailcombs;
+  let tailCombinations;
 
   if (k > set.length || k <= 0) {
     return [];
@@ -794,9 +625,9 @@ function kCombinations(set, k) {
   combs = [];
   for (i = 0; i < set.length - k + 1; i++) {
     head = set.slice(i, i + 1);
-    tailcombs = kCombinations(set.slice(i + 1), k - 1);
-    for (j = 0; j < tailcombs.length; j++) {
-      combs.push(head.concat(tailcombs[j]));
+    tailCombinations = kCombinations(set.slice(i + 1), k - 1);
+    for (j = 0; j < tailCombinations.length; j++) {
+      combs.push(head.concat(tailCombinations[j]));
     }
   }
   return combs;

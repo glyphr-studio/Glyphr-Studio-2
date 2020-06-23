@@ -126,9 +126,8 @@ export default class InfoBubble extends HTMLElement {
 
   /**
    * Show the bubble
-   * @param {object} ev - event
    */
-  show(ev) {
+  show() {
     this.bubble.style.display = 'block';
 
     let left = this.entryPoint.offsetLeft - this.bubble.offsetWidth / 2 + 7;
@@ -151,9 +150,8 @@ export default class InfoBubble extends HTMLElement {
 
   /**
    * Hide the bubble
-   * @param {object} ev - event
    */
-  hide(ev) {
+  hide() {
     this.bubble.style.left = '-1000px';
     this.bubble.style.top = '-1000px';
     this.bubble.style.display = 'none';

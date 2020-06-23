@@ -16,7 +16,7 @@
   },
   "scripts": {
     "test": "jasmine --require=esm",
-    "lint": "eslint dev/app",
+    "lint": "eslint dev/glyph_elements",
     "fix": "eslint dev --fix"
   },
   "dependencies": {},

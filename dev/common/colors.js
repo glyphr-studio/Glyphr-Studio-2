@@ -203,7 +203,7 @@ function parseColorString(c) {
  * Takes a color string, then lightens or darkens that color
  * by a certain percentage
  * @param {string} c - color string
- * @param {number} percent - ammount to shift color
+ * @param {number} percent - amount to shift color
  * @param {boolean} lighter - true = lighten, false = darken
  * @returns {string}
  */
@@ -229,7 +229,7 @@ function shiftColor(c, percent, lighter) {
 }
 
 /**
- * Converts an RGBA color to it's opaque RGB equivallent
+ * Converts an RGBA color to it's opaque RGB equivalent
  * @param {object} rgb - color object in RGB
  * @param {number} alpha - transparency
  * @returns {string}
@@ -270,9 +270,9 @@ function transparencyToAlpha(transparency) {
 function makeRandomSaturatedColor() {
   const sat = Math.floor(Math.random() * 5) * 51;
   const arr = [];
-  const satloc = Math.floor(Math.random() * 3);
-  arr[satloc] = sat;
-  switch (satloc) {
+  const saturatedColorLocation = Math.floor(Math.random() * 3);
+  arr[saturatedColorLocation] = sat;
+  switch (saturatedColorLocation) {
     case 0:
       arr[1] = 0;
       arr[2] = 255;

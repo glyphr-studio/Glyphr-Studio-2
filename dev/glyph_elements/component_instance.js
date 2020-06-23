@@ -1,6 +1,8 @@
 import GlyphElement from './glyph_element.js';
+import { getCurrentProject } from '../project/glyphr_studio_project.js';
 import { parseUnicodeInput } from '../common/unicode.js';
-import { strSan } from '../common/functions.js';
+import { strSan, rad, deg } from '../common/functions.js';
+import { showToast } from '../controls/dialogs.js';
 
 /**
  * Glyph Element > Component Instance
@@ -248,7 +250,7 @@ export default class ComponentInstance extends GlyphElement {
    * @returns {Glyph}
    */
   get transformedGlyph() {
-    if (!this.cache.transformedGlyph) makeTransformedGlyph();
+    if (!this.cache.transformedGlyph) this.makeTransformedGlyph();
     return this.cache.transformedGlyph;
   }
 
@@ -543,7 +545,7 @@ export default class ComponentInstance extends GlyphElement {
   makeTransformedGlyph() {
     // debug('\n ComponentInstance.makeTransformedGlyph - START ' + this.name);
 
-    const g = cloneAndFlattenGlyph(this.link);
+    const g = this.cloneAndFlattenGlyph(this.link);
     if (!g) {
       console.warn(
         'Tried to get Component: ' +
@@ -643,7 +645,7 @@ export default class ComponentInstance extends GlyphElement {
     // debug('\n ComponentInstance.setShapePosition - START');
     // debug('\t passed nx/ny/force: ' + nx + ' / ' + ny + ' / ' + force);
     // debug('\t translate was: ' + this.translateX + ' / ' + this.translateY);
-    const ogm = getGlyph(this.link).maxes;
+    const ogm = getCurrentProject().getGlyph(this.link).maxes;
     nx = parseFloat(nx);
     ny = parseFloat(ny);
     // debug('\t ogm ' + json(ogm, true));
@@ -689,9 +691,9 @@ export default class ComponentInstance extends GlyphElement {
    * @param {boolean} ratioLock - maintain aspect ratio
    */
   setShapeSize(nw, nh, ratioLock) {
-    const og = getGlyph(this.link).maxes;
-    const dx = nx ? nx * 1 - og.xMin : 0;
-    const dy = ny ? ny * 1 - og.yMax : 0;
+    const og = getCurrentProject().getGlyph(this.link).maxes;
+    const dx = nw ? nw * 1 - og.xMin : 0;
+    const dy = nh ? nh * 1 - og.yMax : 0;
     this.updateShapePosition(dx, dy, ratioLock);
   }
 
@@ -736,10 +738,9 @@ export default class ComponentInstance extends GlyphElement {
   /**
    * rotate
    * @param {number} angle - how much to rotate (radians)
-   * @param {XYPoint} about - x/y center of rotation
    * @returns {ComponentInstance} - reference to this component instance
    */
-  rotate(angle, about) {
+  rotate(angle) {
     // debug('\n ComponentInstance.rotate - START');
     // debug('\t passed ' + angle);
     const degrees = deg(angle);

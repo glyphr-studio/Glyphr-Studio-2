@@ -12,6 +12,7 @@ import {
   numSan,
 } from '../common/functions.js';
 import { sXcX, sYcY } from '../controls/canvas-edit/canvas-edit.js';
+import { makeRandomSaturatedColor } from '../common/colors.js';
 
 /**
  * Glyph Element > Poly Segment
@@ -146,8 +147,8 @@ export default class PolySegment extends GlyphElement {
   slowlyDrawSegments(delay = 600) {
     // debug('\n PolySegment.slowlyDrawSegments - START');
     // debug(this._segments);
-    currentSegment = 0;
-    segments = this._segments;
+    let currentSegment = 0;
+    let segments = this._segments;
 
     /** Draw one segment */
     function ds() {
@@ -440,25 +441,13 @@ export default class PolySegment extends GlyphElement {
 
     // debug('\t result');
     // debug(result);
-    result.forEach(function (v, i) {
-      // debug('\n\t RETURNING ' + i);
-      // debug(v.segments);
-    });
+    // result.forEach(function (v, i) {
+    // debug('\n\t RETURNING ' + i);
+    // debug(v.segments);
+    // });
     // debug(' PolySegment.stitchSegmentsTogether - END\n');
 
     return result;
-  }
-
-  /**
-   * Takes individual Segments in this PolySegment, and figures out
-   * if they represent a single Shape, or multiple Shapes
-   * @param {string} name - name prefix for the new Shapes
-   * @returns {array} - collection of Shape objects
-   */
-  getSplitShapes(name = 'Shape') {
-    const shapes = [];
-
-    return shapes;
   }
 
   // --------------------------------------------------------------

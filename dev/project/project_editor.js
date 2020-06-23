@@ -1,6 +1,6 @@
 import GlyphrStudioProject from './glyphr_studio_project.js';
 import History from './history.js';
-import { saveFile, makeDateStampSuffix } from '../common/functions.js';
+import { saveFile, makeDateStampSuffix, debug } from '../common/functions.js';
 import { makeElement } from '../controls/controls.js';
 import PageOpenProject from '../pages/open_project.js';
 import PageGlyphEdit from '../pages/glyph_edit.js';
@@ -661,21 +661,21 @@ function existingWorkItem() {
     let nph = _UI.currentPanel;
 
     if (editor.nav.page === 'ligatures') {
-        len = countObjectKeys(getCurrentProject().ligatures);
+        len = Object.keys(getCurrentProject().ligatures).length;
         if (!len) {
             _UI.selectedLigature = false;
             if (nph !== 'npNav') nph = 'npChooser';
             return false;
         }
     } else if (editor.nav.page === 'components') {
-        len = countObjectKeys(getCurrentProject().components);
+        len = Object.keys(getCurrentProject().components).length;
         if (!len) {
             _UI.selectedComponent = false;
             if (nph !== 'npNav') nph = 'npChooser';
             return false;
         }
     } else if (editor.nav.page === 'kerning') {
-        len = countObjectKeys(getCurrentProject().kerning);
+        len = Object.keys(getCurrentProject().kerning).length;
         if (!len) {
             _UI.selectedKern = false;
             if (nph !== 'npNav') nph = 'npAttributes';

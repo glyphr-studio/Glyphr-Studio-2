@@ -495,6 +495,8 @@ function pasteShapesFrom(sourceGlyphID) {
       destinationGlyphID,
       _UI.glyphChooser.getShapeOptions
     );
+
+    // showToast('Copied ' + this.shapes.length + ' shapes');
     redraw({ calledBy: 'pasteShapesFrom' });
     historyPut(
       'Copied shapes from "' +
