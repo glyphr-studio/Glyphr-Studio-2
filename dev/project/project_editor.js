@@ -1,9 +1,14 @@
 import GlyphrStudioProject from './glyphr_studio_project.js';
 import History from './history.js';
-import { saveFile, makeDateStampSuffix, debug } from '../common/functions.js';
-import { makeElement } from '../controls/controls.js';
 import PageOpenProject from '../pages/open_project.js';
 import PageGlyphEdit from '../pages/glyph_edit.js';
+import { makeElement } from '../controls/controls.js';
+import {
+  debug,
+  saveFile,
+  makeDateStampSuffix,
+  json,
+} from '../common/functions.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
