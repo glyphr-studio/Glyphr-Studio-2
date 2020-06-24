@@ -247,7 +247,7 @@ export default class PageOpenProject {
       reader.onload = function () {
         // debug('\n reader.onload::OTF or TTF - START');
         window.GlyphrStudio.temp.droppedFileContent = reader.result;
-        ioOTF_importOTFFont();
+        importOTFFont();
         // debug(' reader.onload:: OTF or TTF - END\n');
       };
 
@@ -298,7 +298,7 @@ export default class PageOpenProject {
 
       // assume array buffers are otf fonts
     } else if (evt.data instanceof ArrayBuffer) {
-      ioOTF_importOTFFont(false);
+      importOTFFont(false);
     }
   }
 

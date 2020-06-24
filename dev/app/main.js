@@ -22,7 +22,6 @@ export function glyphrStudioOnLoad() {
 
     /* Uber Export */
     window.GlyphrStudio = new GlyphrStudioApp();
-    window.debug = debug;
 
     console.log(window.GlyphrStudio);
     console.log(

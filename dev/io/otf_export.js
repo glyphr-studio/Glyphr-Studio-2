@@ -1,12 +1,22 @@
+export default {};
+export { exportOTFFont };
+
+import Glyph from '../glyph_elements/glyph.js';
+import { getCurrentProject } from '../project/glyphr_studio_project.js';
+import { round, clone } from '../common/functions.js';
+import { showToast } from '../controls/dialogs.js';
+import { decToHex, getUnicodeShortName } from '../common/unicode.js';
+import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
+
 /**
   IO > Export > OpenType
   Using OpenType.js to convert a Glyphr Studio
   Project into OpenType.js format for saving.
 **/
 
-function ioOTF_exportOTFfont() {
-  // debug('\n ioOTF_exportOTFfont - START');
-  // debug('\t combineshapesonexport = ' + getCurrentProject().projectSettings.combineshapesonexport);
+function exportOTFFont() {
+  // debug('\n exportOTFFont - START');
+  // debug('\t combineShapesOnExport = ' + getCurrentProject().projectSettings.combineShapesOnExport);
 
   function firstExportStep() {
     // debug('\n firstExportStep - START');
@@ -37,19 +47,12 @@ function ioOTF_exportOTFfont() {
     // debug('\t options.version ' + options.version);
 
     // Add Notdef
-    const notdef = new Glyph({
-      name: 'notdef',
-      shapes: JSON.parse(_UI.notDefGlyphShapes),
-    });
-    if (getCurrentProject().upm !== 1000) {
-      const delta = getCurrentProject().upm / 1000;
-      notdef.updateGlyphSize(delta, delta, true);
-    }
+    const notdef = generateNotdefGlyph();
 
-    const ndpath = notdef.makeOpenTypeJSPath();
+    const notdefPath = notdef.makeOpenTypeJSPath();
 
     options.glyphs.push(
-      new opentype.Glyph({
+      new OpenTypeJS.Glyph({
         name: '.notdef',
         unicode: 0,
         index: 0,
@@ -58,7 +61,7 @@ function ioOTF_exportOTFfont() {
         xMax: round(notdef.maxes.xMax),
         yMin: round(notdef.maxes.yMin),
         yMax: round(notdef.maxes.yMax),
-        path: ndpath,
+        path: notdefPath,
       })
     );
 
@@ -69,11 +72,12 @@ function ioOTF_exportOTFfont() {
     // debug('\n populateExportList - START');
 
     // Add Glyphs and Ligatures
+    let tg;
     for (const c in getCurrentProject().glyphs) {
-      if (getCurrentProject().glyphs.hasOwnProperty(c)) {
+      if (getCurrentProject().glyphs[c]) {
         if (parseInt(c)) {
           tg = new Glyph(clone(getCurrentProject().glyphs[c]));
-          exportarr.push({ xg: tg, xc: c });
+          exportArray.push({ xg: tg, xc: c });
         } else {
           console.warn(
             'Skipped exporting Glyph ' + c + ' - non-numeric key value.'
@@ -82,7 +86,7 @@ function ioOTF_exportOTFfont() {
       }
     }
 
-    exportarr.sort(function (a, b) {
+    exportArray.sort(function (a, b) {
       return a.xc - b.xc;
     });
     // debug(' populateExportList - END\n');
@@ -91,9 +95,9 @@ function ioOTF_exportOTFfont() {
   function generateOneGlyph() {
     // debug('\n generateOneGlyph - START');
     // export this glyph
-    const glyph = currexportglyph.xg;
-    const num = currexportglyph.xc;
-    const comb = getCurrentProject().projectSettings.combineshapesonexport;
+    const glyph = currentExportGlyph.xg;
+    const num = currentExportGlyph.xc;
+    const comb = getCurrentProject().projectSettings.combineShapesOnExport;
     const maxes = glyph.maxes;
 
     // debug('\t ' + glyph.name);
@@ -103,16 +107,16 @@ function ioOTF_exportOTFfont() {
     if (
       comb &&
       glyph.shapes.length <=
-        getCurrentProject().projectSettings.maxcombineshapesonexport
+        getCurrentProject().projectSettings.maxCombineShapesOnExport
     ) {
       glyph.combineAllShapes(true);
     }
 
     if (glyph.isAutoWide) glyph.updateGlyphPosition(glyph.lsb, 0);
 
-    const tgpath = glyph.makeOpenTypeJSPath(new opentype.Path());
+    const thisPath = glyph.makeOpenTypeJSPath(new OpenTypeJS.Path());
 
-    const otglyph = new opentype.Glyph({
+    const thisGlyph = new OpenTypeJS.Glyph({
       name: getUnicodeShortName('' + decToHex(num)),
       unicode: parseInt(num),
       index: parseInt(num),
@@ -121,19 +125,19 @@ function ioOTF_exportOTFfont() {
       xMax: round(maxes.xMax),
       yMin: round(maxes.yMin),
       yMax: round(maxes.yMax),
-      path: tgpath,
+      path: thisPath,
     });
 
-    // debug(otglyph);
+    // debug(thisGlyph);
 
-    // Add this finshed glyph
-    options.glyphs.push(otglyph);
+    // Add this finished glyph
+    options.glyphs.push(thisGlyph);
 
     // start the next one
-    currexportnum++;
+    currentExportNumber++;
 
-    if (currexportnum < exportarr.length) {
-      currexportglyph = exportarr[currexportnum];
+    if (currentExportNumber < exportArray.length) {
+      currentExportGlyph = exportArray[currentExportNumber];
       setTimeout(generateOneGlyph, 10);
     } else {
       showToast('Finalizing...', 10);
@@ -152,17 +156,17 @@ function ioOTF_exportOTFfont() {
     // Create Font
     // debug('\t NEW options ARG TO FONT');
     // debug(options);
-    const font = new opentype.Font(options);
+    const font = new OpenTypeJS.Font(options);
 
     // debug('\t Font object:');
     // debug(font.toTables());
 
     // Export
-    _UI.stopPageNavigation = false;
+    // _UI.stopPageNavigation = false;
     font.download();
-    setTimeout(function () {
-      _UI.stopPageNavigation = true;
-    }, 2000);
+    // setTimeout(function () {
+    //   _UI.stopPageNavigation = true;
+    // }, 2000);
     // debug(' lastExportStep - END\n');
   }
 
@@ -170,14 +174,41 @@ function ioOTF_exportOTFfont() {
     MAIN EXPORT LOOP
   */
   const options = {};
-  const exportarr = [];
-  const currexportnum = 0;
-  const currexportglyph = {};
+  const exportArray = [];
+  let currentExportNumber = 0;
+  let currentExportGlyph = {};
 
   firstExportStep();
   populateExportList();
-  currexportglyph = exportarr[0];
+  currentExportGlyph = exportArray[0];
   generateOneGlyph();
 
-  // debug(' ioOTF_exportOTFfont - END\n');
+  // debug(' exportOTFFont - END\n');
+}
+
+function generateNotdefGlyph() {
+  // debug(`\n generateNotdefGlyph - START`);
+  const capHeight = getCurrentProject().projectSettings.capHeight;
+  const notDefGlyphShapes =
+    '[{"objtype":"shape","name":"Outer Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":-4,"maxes":{"xmax":432,"xmin":0,"ymax":700,"ymin":0}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false},{"objtype":"shape","name":"Inner Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":4,"maxes":{"xmax":382,"xmin":50,"ymax":650,"ymin":50}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false}]';
+
+  var notdef = new Glyph({
+    name: 'notdef',
+    shapes: JSON.parse(notDefGlyphShapes),
+  });
+  // debug(`\t capheight ${capHeight}`);
+  // debug(`\t notdef.maxes.ymax ${notdef.maxes.ymax}`);
+
+  if (capHeight !== 700) {
+    var delta = capHeight - 700;
+    // debug(`\t delta is ${delta}`);
+    notdef.updateGlyphSize(false, delta, true);
+    // debug(`\t notdef.maxes.height ${notdef.maxes.ymax}`);
+  }
+
+  notdef.updateGlyphPosition(notdef.getLSB(), 0, true);
+  notdef.leftSideBearing = 0;
+
+  // debug(` generateNotdefGlyph - END\n\n`);
+  return notdef;
 }
