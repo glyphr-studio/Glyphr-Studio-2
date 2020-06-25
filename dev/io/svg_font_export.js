@@ -130,7 +130,7 @@ function ioSVG_makeFontFace() {
   con += t + 'unicode-range="U+20-' + fm.maxGlyph + '"\n';
 
   // Metadata properties
-  for (const d in md) {
+  for (const d of Object.keys(md)) {
     if (md[d] !== '{{sectionbreak}}') {
       con += t;
       con += d.replace(/_/g, '-');
@@ -188,14 +188,14 @@ function ioSVG_makeAllGlyphsAndLigatures() {
   sortLigatures();
   const li = getCurrentProject().ligatures;
   con += '\t\t\t<!-- Ligatures -->\n';
-  for (const l in li) {
+  for (const l of Object.keys(li)) {
     con += ioSVG_makeOneGlyphOrLigature(li[l], l);
   }
 
   con += '\n';
 
   con += '\t\t\t<!-- Glyphs -->\n';
-  for (const c in fc) {
+  for (const c of Object.keys(fc)) {
     con += ioSVG_makeOneGlyphOrLigature(fc[c], c);
   }
 
@@ -243,7 +243,7 @@ function ioSVG_makeAllKernPairs() {
   const kp = getCurrentProject().kerning;
   let con = '\t\t\t<!-- Kern Pairs -->\n';
 
-  for (const k in kp) {
+  for (const k of Object.keys(kp)) {
     for (let lg = 0; lg < kp[k].leftgroup.length; lg++) {
       for (let rg = 0; rg < kp[k].rightgroup.length; rg++) {
         con += '\t\t\t<hkern ';

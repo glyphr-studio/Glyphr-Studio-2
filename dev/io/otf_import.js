@@ -262,7 +262,7 @@ function importOTFFont(filter) {
 
     let rstart;
     let rend;
-    for (const r in _UI.glyphrange) {
+    for (const r of Object.keys(_UI.glyphrange)) {
       rstart = 1 * _UI.glyphrange[r].begin;
       rend = 1 * _UI.glyphrange[r].end + 1;
       for (let t = rstart; t < rend; t++) {

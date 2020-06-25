@@ -16,7 +16,7 @@ function makePanel_Guides() {
   let ps = getCurrentProject().projectSettings;
   let tg;
 
-  for (let g in guides) {
+  for (let g of Object.keys(guides)) {
     tg = guides[g];
 
     if (tg.editable) {

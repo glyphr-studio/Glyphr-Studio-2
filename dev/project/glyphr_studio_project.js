@@ -215,7 +215,7 @@ export default class GlyphrStudioProject {
      * @param {string} name - name of the group
      */
     function iterator(group, name) {
-      for (const key in group) {
+      for (const key of Object.keys(group)) {
         if (group[key].save) {
           savedProject[name][key] = group[key].save(verbose);
         }
@@ -388,7 +388,7 @@ export default class GlyphrStudioProject {
 function merge(template = {}, importing = {}, trimStrings = false) {
   debug(template);
 
-  for (const a in template) {
+  for (const a of Object.keys(template)) {
     if (typeof template[a] === 'object') {
       if (importing[a]) template[a] = merge(template[a], importing[a]);
     } else {
@@ -410,7 +410,7 @@ function merge(template = {}, importing = {}, trimStrings = false) {
  * @param {Object} destination - project object for final items
  */
 function hydrateGlyphrObjectList(GlyphrStudioItem, source, destination) {
-  for (const key in source) {
+  for (const key of Object.keys(source)) {
     if (source[key]) {
       destination[key] = new GlyphrStudioItem(source[key]);
     }

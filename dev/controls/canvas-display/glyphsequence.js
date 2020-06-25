@@ -409,24 +409,24 @@ function calculateKernOffset(c1, c2) {
   c2 = parseUnicodeInput(c2).join('');
   // debug('\t converted: ' + c1 + ' and ' + c2);
 
-  let k = getCurrentProject().kerning;
-  let tlc;
-  let trc;
-  let re;
+  let projectKerning = getCurrentProject().kerning;
+  let leftGroupKern;
+  let rightGroupKern;
+  let result;
 
-  for (let p in k) {
-    if (k[p]) {
-      for (let l = 0; l < k[p].leftgroup.length; l++) {
-        tlc = k[p].leftgroup[l];
-        // debug('\t checking leftgroup ' + tlc + ' against ' + c1);
-        if (parseUnicodeInput(tlc)[0] === c1) {
+  for (let pair of Object.keys(projectKerning)) {
+    if (projectKerning[pair]) {
+      for (let l = 0; l < projectKerning[pair].leftgroup.length; l++) {
+        leftGroupKern = projectKerning[pair].leftgroup[l];
+        // debug('\t checking leftgroup ' + leftGroupKern + ' against ' + c1);
+        if (parseUnicodeInput(leftGroupKern)[0] === c1) {
           // debug('\t LEFTGROUP MATCH! for ' + c1);
-          for (let r = 0; r < k[p].rightgroup.length; r++) {
-            trc = k[p].rightgroup[r];
-            if (parseUnicodeInput(trc)[0] === c2) {
-              re = k[p].value * -1;
-              // debug('\t FOUND MATCH! returning ' + re);
-              return re;
+          for (let r = 0; r < projectKerning[pair].rightgroup.length; r++) {
+            rightGroupKern = projectKerning[pair].rightgroup[r];
+            if (parseUnicodeInput(rightGroupKern)[0] === c2) {
+              result = projectKerning[pair].value * -1;
+              // debug('\t FOUND MATCH! returning ' + result);
+              return result;
             }
           }
         }

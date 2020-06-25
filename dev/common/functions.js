@@ -132,7 +132,7 @@ function makeDateStampSuffix() {
  * @returns {string}
  */
 function getFirstID(obj) {
-  for (const key in obj) return key;
+  for (const key of Object.keys(obj)) return key;
   return false;
 }
 
@@ -167,7 +167,7 @@ function generateNewID(obj, base) {
  */
 function clone(source) {
   const newObj = source instanceof Array ? [] : {};
-  for (const i in source) {
+  for (const i of Object.keys(source)) {
     if (
       source[i] &&
       typeof source[i] === 'object' &&
@@ -212,7 +212,7 @@ function areEqual(obj1, obj2) {
     return obj1 === obj2;
   }
 
-  for (const key in obj1) {
+  for (const key of Object.keys(obj1)) {
     if (obj2[key]) {
       if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
         if (!areEqual(obj1[key], obj2[key])) return false;
@@ -353,10 +353,10 @@ function isVal(val) {
 function hasNonValues(obj) {
   if (!obj) return true;
 
-  for (const v in obj) {
-    if (!isVal(obj[v])) return true;
-    if (obj[v] === Number.MAX_SAFE_INTEGER) return true;
-    if (obj[v] === Number.MIN_SAFE_INTEGER) return true;
+  for (const key of Object.keys(obj)) {
+    if (!isVal(obj[key])) return true;
+    if (obj[key] === Number.MAX_SAFE_INTEGER) return true;
+    if (obj[key] === Number.MIN_SAFE_INTEGER) return true;
   }
 
   return false;

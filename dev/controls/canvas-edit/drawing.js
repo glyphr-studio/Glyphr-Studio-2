@@ -80,7 +80,7 @@
       ang = this.p.x > this.h2.x ? Math.PI : 0;
     }
 
-    for (const a in arrow) {
+    for (const a of Object.keys(arrow)) {
       rotatedArrow.push([
         arrow[a][0] * Math.cos(ang) - arrow[a][1] * Math.sin(ang),
         arrow[a][0] * Math.sin(ang) + arrow[a][1] * Math.cos(ang),
@@ -95,7 +95,7 @@
       rotatedArrow[0][1] + sYcY(this.p.y)
     );
 
-    for (const p in rotatedArrow) {
+    for (const p of Object.keys(rotatedArrow)) {
       if (p > 0) {
         ctx.lineTo(
           rotatedArrow[p][0] + sXcX(this.p.x),

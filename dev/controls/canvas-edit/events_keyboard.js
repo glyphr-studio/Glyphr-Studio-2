@@ -125,7 +125,7 @@ function keypress(event) {
   }
 
   if (isCtrlDown && kc === 'a') {
-    for (let i in getCurrentProject().s) {
+    for (let i of Object.keys(getCurrentProject().s)) {
       if (!getCurrentProject().glyphs[i].getShapes) return;
 
       getCurrentProject()
