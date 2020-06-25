@@ -16,6 +16,7 @@
         "*.test.js",
         "dev/lib/*",
         "dev/samples/*",
+        "dev/io/*",
         "REFACTOR_*"
     ]
 }

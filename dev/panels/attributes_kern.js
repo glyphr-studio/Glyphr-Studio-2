@@ -14,9 +14,7 @@ function makePanel_KerningAttributes() {
   content += '<div class="panel_section">';
   let rows = '';
   for (let k in getCurrentProject().kerning) {
-    if (getCurrentProject().kerning.hasOwnProperty(k)) {
-      rows += makeOneKernPairRow(getCurrentProject().kerning[k], k);
-    }
+    rows += makeOneKernPairRow(getCurrentProject().kerning[k], k);
   }
   content +=
     rows ||

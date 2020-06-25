@@ -132,7 +132,7 @@ function makeDateStampSuffix() {
  * @returns {string}
  */
 function getFirstID(obj) {
-  for (const key of obj) return key;
+  for (const key in obj) return key;
   return false;
 }
 
@@ -212,7 +212,7 @@ function areEqual(obj1, obj2) {
     return obj1 === obj2;
   }
 
-  for (const key of obj1) {
+  for (const key in obj1) {
     if (obj2[key]) {
       if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
         if (!areEqual(obj1[key], obj2[key])) return false;
@@ -353,7 +353,7 @@ function isVal(val) {
 function hasNonValues(obj) {
   if (!obj) return true;
 
-  for (const v of obj) {
+  for (const v in obj) {
     if (!isVal(obj[v])) return true;
     if (obj[v] === Number.MAX_SAFE_INTEGER) return true;
     if (obj[v] === Number.MIN_SAFE_INTEGER) return true;
@@ -550,7 +550,7 @@ function niceAngleToAngle(angle) {
 function makeEmailContent() {
   const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
   %0A%0A%0A%0A___________________________________________%0A
-  version %09Glyphr Studio  ${window.GlyphrStudio.versionNumber} %0A
+  version %09Glyphr Studio  ${window.GlyphrStudio.version} %0A
   app name %09 ${navigator.appName} %0A
   language %09 ${navigator.language} %0A
   platform %09 ${navigator.platform} %0A

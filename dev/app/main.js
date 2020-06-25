@@ -1,16 +1,18 @@
 import manifest from '../manifest.js';
-import GlyphrStudioApp from './app.js';
+import ProjectEditor from '../project/project_editor.js';
+import GlyphrStudioApp from './glyphr_studio_app.js';
 import { debug } from '../common/functions.js';
 
 /** export nothing by default */
 export default function () {}
+export { getCurrentProject, getCurrentProjectEditor };
 
 document.body.onload = glyphrStudioOnLoad;
 
 /**
  * First function to run when the browser starts
  */
-export function glyphrStudioOnLoad() {
+function glyphrStudioOnLoad() {
   console.log(`glyphrStudioOnLoad - Start`);
   console.log(
     '%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n',
@@ -20,12 +22,11 @@ export function glyphrStudioOnLoad() {
   if (passPreChecks()) {
     assemble();
 
-    /* Uber Export */
     window.GlyphrStudio = new GlyphrStudioApp();
 
     console.log(window.GlyphrStudio);
     console.log(
-      `%cApp Version ${window.GlyphrStudio.versionNumber} \n\n`,
+      `%cApp Version ${window.GlyphrStudio.version} \n\n`,
       'color:rgb(0,170,225)'
     );
     window.GlyphrStudio.setUp();
@@ -57,7 +58,7 @@ function passPreChecks() {
  * @param {function} callback - function to run after assembly
  *  manifest.js is found in the root of the dev directory
  */
-export function assemble(loadTests = false, callback = false) {
+function assemble(loadTests = false, callback = false) {
   const tests = [];
   let newElement;
   const nonModules = 'opentypejs';
@@ -114,4 +115,25 @@ export function assemble(loadTests = false, callback = false) {
   }
 
   if (callback) window.setTimeout(callback, 500);
+}
+
+/**
+ * Returns the project that is currently being edited
+ * @returns {GlyphrStudioProject}
+ */
+function getCurrentProject() {
+  return window.GlyphrStudio.getCurrentProjectEditor().project;
+}
+
+/**
+ * Returns the current Project Editor
+ * @returns {ProjectEditor}
+ */
+function getCurrentProjectEditor() {
+  const gs = window.GlyphrStudio;
+  if (!gs.projectEditors[gs.selectedProjectEditor]) {
+    gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
+  }
+
+  return gs.projectEditors[gs.selectedProjectEditor];
 }

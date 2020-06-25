@@ -1797,11 +1797,9 @@ function drawGuides() {
     // Update custom guides
     let g;
     for (const c in ps.guides) {
-      if (ps.guides.hasOwnProperty(c)) {
-        g = ps.guides[c];
-        if (g.editable) {
-          g.draw();
-        }
+      g = ps.guides[c];
+      if (g.editable) {
+        g.draw();
       }
     }
 

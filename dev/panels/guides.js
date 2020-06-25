@@ -17,24 +17,22 @@ function makePanel_Guides() {
   let tg;
 
   for (let g in guides) {
-    if (guides.hasOwnProperty(g)) {
-      tg = guides[g];
+    tg = guides[g];
 
-      if (tg.editable) {
-        user += makeOneGuideRow(
-          tg,
-          'getCurrentProject().projectSettings.guides.' + g,
-          tg.visible,
-          g
-        );
-      } else if (tg.showname) {
-        system += makeOneGuideRow(
-          tg,
-          'getCurrentProject().projectSettings.guides.' + g,
-          tg.visible,
-          g
-        );
-      }
+    if (tg.editable) {
+      user += makeOneGuideRow(
+        tg,
+        'getCurrentProject().projectSettings.guides.' + g,
+        tg.visible,
+        g
+      );
+    } else if (tg.showname) {
+      system += makeOneGuideRow(
+        tg,
+        'getCurrentProject().projectSettings.guides.' + g,
+        tg.visible,
+        g
+      );
     }
   }
 

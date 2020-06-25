@@ -1,4 +1,3 @@
-import _UI from '../app/settings.js';
 
 /**
   Framework > Controls

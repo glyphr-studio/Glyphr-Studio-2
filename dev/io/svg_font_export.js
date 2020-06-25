@@ -131,18 +131,16 @@ function ioSVG_makeFontFace() {
 
   // Metadata properties
   for (const d in md) {
-    if (md.hasOwnProperty(d)) {
-      if (md[d] !== '{{sectionbreak}}') {
-        con += t;
-        con += d.replace(/_/g, '-');
-        con += '=';
-        // con += md[d] === '""'? '' : md[d];
-        con +=
-          typeof md[d] === 'string'
-            ? JSON.stringify(trim(md[d]))
-            : '"' + md[d] + '"';
-        con += '\n';
-      }
+    if (md[d] !== '{{sectionbreak}}') {
+      con += t;
+      con += d.replace(/_/g, '-');
+      con += '=';
+      // con += md[d] === '""'? '' : md[d];
+      con +=
+        typeof md[d] === 'string'
+          ? JSON.stringify(trim(md[d]))
+          : '"' + md[d] + '"';
+      con += '\n';
     }
   }
   con = con.substring(0, con.length - 1);
@@ -184,8 +182,6 @@ function ioSVG_makeMissingGlyph() {
 function ioSVG_makeAllGlyphsAndLigatures() {
   // debug('\n ioSVG_makeAllGlyphsAndLigatures - START');
 
-  // <glyph glyph-name="uniFEDF_uniFEE0_uniFBAB.liga" unicode="&#xfedf;&#xfee0;&#xfbab;" horiz-adv-x="1262" d="M1224 5
-
   const fc = getCurrentProject().glyphs;
   let con = '';
 
@@ -193,18 +189,14 @@ function ioSVG_makeAllGlyphsAndLigatures() {
   const li = getCurrentProject().ligatures;
   con += '\t\t\t<!-- Ligatures -->\n';
   for (const l in li) {
-    if (li.hasOwnProperty(l)) {
-      con += ioSVG_makeOneGlyphOrLigature(li[l], l);
-    }
+    con += ioSVG_makeOneGlyphOrLigature(li[l], l);
   }
 
   con += '\n';
 
   con += '\t\t\t<!-- Glyphs -->\n';
   for (const c in fc) {
-    if (fc.hasOwnProperty(c)) {
-      con += ioSVG_makeOneGlyphOrLigature(fc[c], c);
-    }
+    con += ioSVG_makeOneGlyphOrLigature(fc[c], c);
   }
 
   // debug(' ioSVG_makeAllGlyphsAndLigatures - END\n');
@@ -252,14 +244,12 @@ function ioSVG_makeAllKernPairs() {
   let con = '\t\t\t<!-- Kern Pairs -->\n';
 
   for (const k in kp) {
-    if (kp.hasOwnProperty(k)) {
-      for (let lg = 0; lg < kp[k].leftgroup.length; lg++) {
-        for (let rg = 0; rg < kp[k].rightgroup.length; rg++) {
-          con += '\t\t\t<hkern ';
-          con += 'u1="' + hexToUnicodeHex(kp[k].leftgroup[lg]) + '" ';
-          con += 'u2="' + hexToUnicodeHex(kp[k].rightgroup[rg]) + '" ';
-          con += 'k="' + kp[k].value + '" />\n';
-        }
+    for (let lg = 0; lg < kp[k].leftgroup.length; lg++) {
+      for (let rg = 0; rg < kp[k].rightgroup.length; rg++) {
+        con += '\t\t\t<hkern ';
+        con += 'u1="' + hexToUnicodeHex(kp[k].leftgroup[lg]) + '" ';
+        con += 'u2="' + hexToUnicodeHex(kp[k].rightgroup[rg]) + '" ';
+        con += 'k="' + kp[k].value + '" />\n';
       }
     }
   }
