@@ -386,7 +386,7 @@ function make_GlyphChooser_Content(gcdata) {
   if (sel === 'ligatures' && getFirstID(getCurrentProject().ligatures)) {
     sortLigatures();
     const lig = getCurrentProject().ligatures;
-    for (const l in lig) {
+    for (const l of Object.keys(lig)) {
       re += make_GlyphChooser_Button(l, fname, selwi);
     }
     return re + '</div>';
@@ -394,7 +394,7 @@ function make_GlyphChooser_Content(gcdata) {
 
   if (sel === 'components' && getFirstID(getCurrentProject().components)) {
     const com = getCurrentProject().components;
-    for (const d in com) {
+    for (const d of Object.keys(com)) {
       re += make_GlyphChooser_Button(d, fname, selwi);
     }
     return re + '</div>';

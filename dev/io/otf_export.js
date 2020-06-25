@@ -72,15 +72,15 @@ function exportOTFFont() {
     // debug('\n populateExportList - START');
 
     // Add Glyphs and Ligatures
-    let tg;
-    for (const c in getCurrentProject().glyphs) {
-      if (getCurrentProject().glyphs[c]) {
-        if (parseInt(c)) {
-          tg = new Glyph(clone(getCurrentProject().glyphs[c]));
-          exportArray.push({ xg: tg, xc: c });
+    let thisGlyph;
+    for (const key of Object.keys(getCurrentProject().glyphs)) {
+      if (getCurrentProject().glyphs[key]) {
+        if (parseInt(key)) {
+          thisGlyph = new Glyph(clone(getCurrentProject().glyphs[key]));
+          exportArray.push({ xg: thisGlyph, xc: key });
         } else {
           console.warn(
-            'Skipped exporting Glyph ' + c + ' - non-numeric key value.'
+            'Skipped exporting Glyph ' + key + ' - non-numeric key value.'
           );
         }
       }

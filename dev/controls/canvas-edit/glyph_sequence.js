@@ -323,21 +323,23 @@ function calculateKernOffset(c1, c2) {
   c2 = parseUnicodeInput(c2).join('');
   // debug('\t converted: ' + c1 + ' and ' + c2);
 
-  let k = getCurrentProject().kerning;
-  let tlc, trc, re;
+  let kernPairs = getCurrentProject().kerning;
+  let leftGroupChar;
+  let rightGroupChar;
+  let result;
 
-  for (let p in k) {
-    for (let l = 0; l < k[p].leftgroup.length; l++) {
-      tlc = k[p].leftgroup[l];
-      // debug('\t checking leftgroup ' + tlc + ' against ' + c1);
-      if (parseUnicodeInput(tlc)[0] === c1) {
+  for (let p of Object.keys(kernPairs)) {
+    for (let l = 0; l < kernPairs[p].leftgroup.length; l++) {
+      leftGroupChar = kernPairs[p].leftgroup[l];
+      // debug('\t checking leftgroup ' + leftGroupChar + ' against ' + c1);
+      if (parseUnicodeInput(leftGroupChar)[0] === c1) {
         // debug('\t LEFTGROUP MATCH! for ' + c1);
-        for (let r = 0; r < k[p].rightgroup.length; r++) {
-          trc = k[p].rightgroup[r];
-          if (parseUnicodeInput(trc)[0] === c2) {
-            re = k[p].value * -1;
-            // debug('\t FOUND MATCH! returning ' + re);
-            return re;
+        for (let r = 0; r < kernPairs[p].rightgroup.length; r++) {
+          rightGroupChar = kernPairs[p].rightgroup[r];
+          if (parseUnicodeInput(rightGroupChar)[0] === c2) {
+            result = kernPairs[p].value * -1;
+            // debug('\t FOUND MATCH! returning ' + result);
+            return result;
           }
         }
       }
