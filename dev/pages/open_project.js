@@ -5,8 +5,9 @@ import GlyphrStudioProject from '../project/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { debug } from '../common/functions.js';
 import { uiColors, accentColors } from '../common/colors.js';
-import { importOTFFont } from '../io/otf_import.js';
-import { importSVGFont } from '../io/svg_font_import.js';
+import FancyButton from '../controls/fancy-button/fancy-button.js';
+// import { importOTFFont } from '../io/otf_import.js';
+// import { importSVGFont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
 
 /**
@@ -45,7 +46,7 @@ export default class PageOpenProject {
         <span class="open-project__version-name">${app.versionName}</span>
 
         <span class="open-project__version-number">${
-          app.versionNumber.split('.')[2]
+          app.version.split('.')[2]
         }${recentMessage}</span>
 
         <div class="open-project__blurb">
@@ -252,7 +253,7 @@ export default class PageOpenProject {
       reader.onload = function () {
         // debug('\n reader.onload::OTF or TTF - START');
         window.GlyphrStudio.temp.droppedFileContent = reader.result;
-        importOTFFont();
+        // importOTFFont();
         // debug(' reader.onload:: OTF or TTF - END\n');
       };
 
@@ -263,7 +264,7 @@ export default class PageOpenProject {
         window.GlyphrStudio.temp.droppedFileContent = reader.result;
         if (fname === 'svg') {
           // debug('\t File = .svg');
-          importSVGFont();
+          // importSVGFont();
         } else if (fname === 'txt') {
           // debug('\t File = .txt');
           importGlyphrProjectFromText();
@@ -299,11 +300,10 @@ export default class PageOpenProject {
     window.GlyphrStudio.temp.droppedFileContent = evt.data;
 
     if (typeof evt.data === 'string') {
-      importSVGFont(false);
-
+      // importSVGFont(false);
       // assume array buffers are otf fonts
     } else if (evt.data instanceof ArrayBuffer) {
-      importOTFFont(false);
+      // importOTFFont(false);
     }
   }
 

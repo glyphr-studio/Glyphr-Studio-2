@@ -81,12 +81,10 @@
     }
 
     for (const a in arrow) {
-      if (arrow.hasOwnProperty(a)) {
-        rotatedArrow.push([
-          arrow[a][0] * Math.cos(ang) - arrow[a][1] * Math.sin(ang),
-          arrow[a][0] * Math.sin(ang) + arrow[a][1] * Math.cos(ang),
-        ]);
-      }
+      rotatedArrow.push([
+        arrow[a][0] * Math.cos(ang) - arrow[a][1] * Math.sin(ang),
+        arrow[a][0] * Math.sin(ang) + arrow[a][1] * Math.cos(ang),
+      ]);
     }
 
     // debug('PathPoint.drawPoint arrow = ' + JSON.stringify(arrow) + '  - rotatedArrow = ' + JSON.stringify(rotatedArrow));

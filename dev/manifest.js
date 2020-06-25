@@ -44,11 +44,8 @@ const manifest = [
     files: [
       'resets.css',
       'fonts.css',
-      'app.js',
-      'app.css',
-
-      // 'test.js,
-      // 'test.test.js',
+      'glyphr_studio_app.js',
+      'glyphr_studio_app.css',
     ],
   },
 
@@ -71,7 +68,6 @@ const manifest = [
       'project_editor.js',
       'import.js',
       'migrate.js',
-      'history.js',
 
       'glyphr_studio_project.test.js',
     ],

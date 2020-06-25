@@ -4,9 +4,7 @@ import { debug, clone, round, trim } from '../common/functions.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, hexToHTML, basicLatinOrder } from '../common/unicode.js';
 import Maxes, { getOverallMaxes } from '../glyph_elements/maxes.js';
-import { getCurrentProject } from '../app/app.js';
-
-/* eslint-disable camelcase*/
+import { getCurrentProject } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -21,8 +19,8 @@ export default class GlyphrStudioProject {
     this.projectSettings = {
       // Internal Stuff
       versionName: 'Version 2 Alpha',
-      versionNumber: '2.0.0',
-      initialVersionNumber: '2.0.0',
+      version: '2.0.0',
+      initialVersion: '2.0.0',
       projectid: false,
 
       // Font Metrics
@@ -387,8 +385,10 @@ export default class GlyphrStudioProject {
  * @param {Boolean} trimStrings - remove spaces from strings
  * @returns {Object}
  */
-function merge(template, importing, trimStrings) {
-  for (const a of template) {
+function merge(template = {}, importing = {}, trimStrings = false) {
+  debug(template);
+
+  for (const a in template) {
     if (typeof template[a] === 'object') {
       if (importing[a]) template[a] = merge(template[a], importing[a]);
     } else {

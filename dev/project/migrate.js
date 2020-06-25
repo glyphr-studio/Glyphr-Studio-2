@@ -14,11 +14,11 @@
  */
 
 /**
- * Check a project save file content, and do neccessary
+ * Check a project save file content, and do necessary
  * data structure updates if it happens to be saved from
  * a previous version of Glyphr Studio
  * @param {string} project - project object data
- * @returns {object} - Glyphr Studio v2 Project strucutre
+ * @returns {object} - Glyphr Studio v2 Project structure
  */
 export function migrateGlyphrStudioProject(project = {}) {
   // debug('\n upgradeGlyphrStudioProject - START');
@@ -31,9 +31,9 @@ export function migrateGlyphrStudioProject(project = {}) {
     'Your Glyphr Project was created with a very early Beta version, and the project file is not supported in v2.  Glyphr Studio v1 *can* read this file, so open it in v1, save a new v1 project file, then open it in v2.';
 
   let semanticVersion = false;
-  if (project.projectSettings && project.projectSettings.versionNumber) {
+  if (project.projectSettings && project.projectSettings.version) {
     // Glyphr Studio V2
-    semanticVersion = project.projectSettings.versionNumber;
+    semanticVersion = project.projectSettings.version;
   } else if (project.projectsettings && project.projectsettings.versionnum) {
     // Glyphr Studio V1
     semanticVersion = project.projectsettings.versionnum;
@@ -56,7 +56,7 @@ export function migrateGlyphrStudioProject(project = {}) {
   }
 
   semanticVersion = parseVersionNum(semanticVersion);
-  const appVersion = parseVersionNum(window.GlyphrStudio.versionNumber);
+  const appVersion = parseVersionNum(window.GlyphrStudio.version);
 
   // Check for future versions
   if (semanticVersion.major > appVersion.major) {
@@ -66,12 +66,11 @@ export function migrateGlyphrStudioProject(project = {}) {
   // Message v0 Betas not supported
   if (semanticVersion.major === 0) {
     return betasNotSupported;
-    return;
   }
 
   // Roll upgrades through v1 then to V2
   if (semanticVersion.major === 1) {
-    if (minor < 10) {
+    if (semanticVersion.minor < 10) {
       project.projectsettings.glyphrange.latinSupplement =
         project.projectsettings.glyphrange.latinsuppliment;
       delete project.projectsettings.glyphrange.latinsuppliment;

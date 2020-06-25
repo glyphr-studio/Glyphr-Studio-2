@@ -320,14 +320,12 @@ function ioSVG_importSVGFont(filter) {
     let rstart;
     let rend;
     for (const r in _UI.glyphrange) {
-      if (_UI.glyphrange.hasOwnProperty(r)) {
-        rstart = 1 * _UI.glyphrange[r].begin;
-        rend = 1 * _UI.glyphrange[r].end + 1;
-        for (let t = rstart; t < rend; t++) {
-          if (getGlyph(t)) {
-            getCurrentProject().projectSettings.glyphrange[r] = true;
-            break;
-          }
+      rstart = 1 * _UI.glyphrange[r].begin;
+      rend = 1 * _UI.glyphrange[r].end + 1;
+      for (let t = rstart; t < rend; t++) {
+        if (getGlyph(t)) {
+          getCurrentProject().projectSettings.glyphrange[r] = true;
+          break;
         }
       }
     }

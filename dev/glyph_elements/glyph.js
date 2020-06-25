@@ -3,7 +3,7 @@ import Maxes from './maxes.js';
 import Path from './path.js';
 import Shape from './shape.js';
 import ComponentInstance from './component_instance.js';
-import { getCurrentProject } from '../project/glyphr_studio_project.js';
+import { getCurrentProject } from '../app/main.js';
 import {
   debug,
   json,

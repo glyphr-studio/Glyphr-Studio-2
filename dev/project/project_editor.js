@@ -1,5 +1,5 @@
 import GlyphrStudioProject from './glyphr_studio_project.js';
-import History from './history.js';
+// import History from './history.js';
 import PageOpenProject from '../pages/open_project.js';
 import PageGlyphEdit from '../pages/glyph_edit.js';
 import { makeElement } from '../controls/controls.js';
@@ -8,6 +8,7 @@ import {
   saveFile,
   makeDateStampSuffix,
   json,
+  getFirstID,
 } from '../common/functions.js';
 
 /**
@@ -50,11 +51,11 @@ export default class ProjectEditor {
     this.pages = {};
 
     // History
-    this.history = {};
-    this.history['glyph edit'] = new History('glyphs', this);
-    this.history.components = new History('components', this);
-    this.history.ligatures = new History('ligatures', this);
-    this.history.kerning = new History('kerning', this);
+    // this.history = {};
+    // this.history['glyph edit'] = new History('glyphs', this);
+    // this.history.components = new History('components', this);
+    // this.history.ligatures = new History('ligatures', this);
+    // this.history.kerning = new History('kerning', this);
 
     // MultiSelect
     this.multiSelect = {
@@ -144,12 +145,10 @@ export default class ProjectEditor {
    * @returns {string}
    */
   get selectedGlyphID() {
-    return (
-      this._selectedWorkItems.glyph ||
-      getFirstGlyphID() ||
-      getFirstID(this.glyph) ||
-      false
-    );
+    if (!this._selectedWorkItems.glyph) {
+      this._selectedWorkItems.glyph = getFirstID(this.project.glyphs);
+    }
+    return this._selectedWorkItems.glyph;
   }
 
   /**
@@ -166,9 +165,10 @@ export default class ProjectEditor {
    * @returns {string}
    */
   get selectedLigatureID() {
-    return (
-      this._selectedWorkItems.ligature || getFirstID(this.ligature) || false
-    );
+    if (!this._selectedWorkItems.ligature) {
+      this._selectedWorkItems.ligature = getFirstID(this.project.ligatures);
+    }
+    return this._selectedWorkItems.ligature;
   }
 
   /**
@@ -185,7 +185,10 @@ export default class ProjectEditor {
    * @returns {string}
    */
   get selectedKernID() {
-    return this._selectedWorkItems.kern || getFirstID(this.kern) || false;
+    if (!this._selectedWorkItems.kern) {
+      this._selectedWorkItems.kern = getFirstID(this.project.kerning);
+    }
+    return this._selectedWorkItems.kern;
   }
 
   /**
@@ -202,9 +205,10 @@ export default class ProjectEditor {
    * @returns {string}
    */
   get selectedComponentID() {
-    return (
-      this._selectedWorkItems.component || getFirstID(this.component) || false
-    );
+    if (!this._selectedWorkItems.component) {
+      this._selectedWorkItems.component = getFirstID(this.project.components);
+    }
+    return this._selectedWorkItems.component;
   }
 
   // --------------------------------------------------------------
@@ -251,40 +255,40 @@ export default class ProjectEditor {
   // History
   // --------------------------------------------------------------
 
-  /**
-   * Adds to the history queue
-   * @param {string} description
-   */
-  historyPut(description) {
-    if (this.onCanvasEditPage()) {
-      const queue =
-        this.nav.page === 'import svg' ? 'glyph edit' : this.nav.page;
-      this.history[queue].put(description);
-    }
-  }
+  // /**
+  //  * Adds to the history queue
+  //  * @param {string} description
+  //  */
+  // historyPut(description) {
+  //   if (this.onCanvasEditPage()) {
+  //     const queue =
+  //       this.nav.page === 'import svg' ? 'glyph edit' : this.nav.page;
+  //     this.history[queue].put(description);
+  //   }
+  // }
 
-  /**
-   * Moves backwards in time in the history queue
-   */
-  historyPull() {
-    if (this.onCanvasEditPage()) {
-      this.closeDialog();
-      this.closeNotation();
-      this.history[this.nav.page].pull();
-    }
-  }
+  // /**
+  //  * Moves backwards in time in the history queue
+  //  */
+  // historyPull() {
+  //   if (this.onCanvasEditPage()) {
+  //     this.closeDialog();
+  //     this.closeNotation();
+  //     this.history[this.nav.page].pull();
+  //   }
+  // }
 
-  /**
-   * Get the length of the current history queue
-   * @returns {number}
-   */
-  historyLength() {
-    if (this.onCanvasEditPage()) {
-      return this.history[this.nav.page].queue.length || 0;
-    }
+  // /**
+  //  * Get the length of the current history queue
+  //  * @returns {number}
+  //  */
+  // historyLength() {
+  //   if (this.onCanvasEditPage()) {
+  //     return this.history[this.nav.page].queue.length || 0;
+  //   }
 
-    return 0;
-  }
+  //   return 0;
+  // }
 
   // --------------------------------------------------------------
   // Navigation

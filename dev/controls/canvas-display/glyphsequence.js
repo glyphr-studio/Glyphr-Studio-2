@@ -1,10 +1,10 @@
-import { getCurrentProject } from '../app/app.js';
+import { getCurrentProject } from '../app/main.js';
 
 /**
  * Glyph Sequence is a string of glyphs that has a concept
  * of type size and page width, with wrapping and
  * alignment and everything needed to display a large
- * ammount of text
+ * amount of text
  */
 export default class GlyphSequence {
   /**
@@ -415,7 +415,7 @@ function calculateKernOffset(c1, c2) {
   let re;
 
   for (let p in k) {
-    if (k.hasOwnProperty(p)) {
+    if (k[p]) {
       for (let l = 0; l < k[p].leftgroup.length; l++) {
         tlc = k[p].leftgroup[l];
         // debug('\t checking leftgroup ' + tlc + ' against ' + c1);

@@ -2,7 +2,7 @@ export default {};
 export { exportOTFFont };
 
 import Glyph from '../glyph_elements/glyph.js';
-import { getCurrentProject } from '../project/glyphr_studio_project.js';
+import { getCurrentProject } from '../app/main.js';
 import { round, clone } from '../common/functions.js';
 import { showToast } from '../controls/dialogs.js';
 import { decToHex, getUnicodeShortName } from '../common/unicode.js';

@@ -1,5 +1,5 @@
 import GlyphElement from './glyph_element.js';
-import { getCurrentProject } from '../project/glyphr_studio_project.js';
+import { getCurrentProject } from '../app/main.js';
 import { parseUnicodeInput } from '../common/unicode.js';
 import { strSan, rad, deg } from '../common/functions.js';
 import { showToast } from '../controls/dialogs.js';

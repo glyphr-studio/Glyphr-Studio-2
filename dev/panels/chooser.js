@@ -387,9 +387,7 @@ function make_GlyphChooser_Content(gcdata) {
     sortLigatures();
     const lig = getCurrentProject().ligatures;
     for (const l in lig) {
-      if (lig.hasOwnProperty(l)) {
-        re += make_GlyphChooser_Button(l, fname, selwi);
-      }
+      re += make_GlyphChooser_Button(l, fname, selwi);
     }
     return re + '</div>';
   }
@@ -397,9 +395,7 @@ function make_GlyphChooser_Content(gcdata) {
   if (sel === 'components' && getFirstID(getCurrentProject().components)) {
     const com = getCurrentProject().components;
     for (const d in com) {
-      if (com.hasOwnProperty(d)) {
-        re += make_GlyphChooser_Button(d, fname, selwi);
-      }
+      re += make_GlyphChooser_Button(d, fname, selwi);
     }
     return re + '</div>';
   }

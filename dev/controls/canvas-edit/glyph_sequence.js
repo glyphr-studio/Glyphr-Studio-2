@@ -327,19 +327,17 @@ function calculateKernOffset(c1, c2) {
   let tlc, trc, re;
 
   for (let p in k) {
-    if (k.hasOwnProperty(p)) {
-      for (let l = 0; l < k[p].leftgroup.length; l++) {
-        tlc = k[p].leftgroup[l];
-        // debug('\t checking leftgroup ' + tlc + ' against ' + c1);
-        if (parseUnicodeInput(tlc)[0] === c1) {
-          // debug('\t LEFTGROUP MATCH! for ' + c1);
-          for (let r = 0; r < k[p].rightgroup.length; r++) {
-            trc = k[p].rightgroup[r];
-            if (parseUnicodeInput(trc)[0] === c2) {
-              re = k[p].value * -1;
-              // debug('\t FOUND MATCH! returning ' + re);
-              return re;
-            }
+    for (let l = 0; l < k[p].leftgroup.length; l++) {
+      tlc = k[p].leftgroup[l];
+      // debug('\t checking leftgroup ' + tlc + ' against ' + c1);
+      if (parseUnicodeInput(tlc)[0] === c1) {
+        // debug('\t LEFTGROUP MATCH! for ' + c1);
+        for (let r = 0; r < k[p].rightgroup.length; r++) {
+          trc = k[p].rightgroup[r];
+          if (parseUnicodeInput(trc)[0] === c2) {
+            re = k[p].value * -1;
+            // debug('\t FOUND MATCH! returning ' + re);
+            return re;
           }
         }
       }
