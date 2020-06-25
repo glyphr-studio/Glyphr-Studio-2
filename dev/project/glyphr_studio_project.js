@@ -1,9 +1,10 @@
 import Glyph from '../glyph_elements/glyph.js';
 import HKern from '../glyph_elements/h_kern.js';
-import { clone, round, trim } from '../common/functions.js';
+import { debug, clone, round, trim } from '../common/functions.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
-import { decToHex, basicLatinOrder } from '../common/unicode.js';
+import { decToHex, hexToHTML, basicLatinOrder } from '../common/unicode.js';
 import Maxes, { getOverallMaxes } from '../glyph_elements/maxes.js';
+import { getCurrentProject } from '../app/app.js';
 
 /* eslint-disable camelcase*/
 
@@ -217,10 +218,8 @@ export default class GlyphrStudioProject {
      */
     function iterator(group, name) {
       for (const key in group) {
-        if (group.hasOwnProperty(key)) {
-          if (group[key].save) {
-            savedProject[name][key] = group[key].save(verbose);
-          }
+        if (group[key].save) {
+          savedProject[name][key] = group[key].save(verbose);
         }
       }
     }
@@ -320,7 +319,7 @@ export default class GlyphrStudioProject {
       return un;
     }
 
-    const cobj = getGlyph(id);
+    const cobj = getCurrentProject().getGlyph(id);
     if (id.indexOf('0x', 2) > -1) {
       // ligature
       // debug('\t ligature - returning ' + hexToHTML(id));
@@ -362,7 +361,10 @@ export default class GlyphrStudioProject {
         for (let char = cr.custom[c].begin; char < cr.custom[c].end; char++) {
           thisGlyph = this.getGlyph(decToHex(char));
           fm.numberOfGlyphs++;
-          fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[i]);
+          fm.maxGlyph = Math.max(
+            fm.maxGlyph,
+            basicLatinOrder[basicLatinOrder.length]
+          );
           fm.maxes = getOverallMaxes(fm.maxes, thisGlyph.maxes);
           // count++;
         }
@@ -386,17 +388,14 @@ export default class GlyphrStudioProject {
  * @returns {Object}
  */
 function merge(template, importing, trimStrings) {
-  for (const a in template) {
-    if (template.hasOwnProperty(a)) {
-      if (typeof template[a] === 'object') {
-        if (importing.hasOwnProperty(a))
-          template[a] = merge(template[a], importing[a]);
-      } else {
-        if (importing.hasOwnProperty(a)) {
-          if (typeof importing[a] === 'string' && trimStrings)
-            template[a] = trim(importing[a]);
-          else template[a] = importing[a];
-        }
+  for (const a of template) {
+    if (typeof template[a] === 'object') {
+      if (importing[a]) template[a] = merge(template[a], importing[a]);
+    } else {
+      if (importing[a]) {
+        if (typeof importing[a] === 'string' && trimStrings)
+          template[a] = trim(importing[a]);
+        else template[a] = importing[a];
       }
     }
   }
@@ -412,7 +411,7 @@ function merge(template, importing, trimStrings) {
  */
 function hydrateGlyphrObjectList(GlyphrStudioItem, source, destination) {
   for (const key in source) {
-    if (source.hasOwnProperty(key)) {
+    if (source[key]) {
       destination[key] = new GlyphrStudioItem(source[key]);
     }
   }

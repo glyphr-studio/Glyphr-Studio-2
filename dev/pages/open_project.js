@@ -3,6 +3,11 @@ import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { makeErrorMessageBox } from '../controls/dialogs.js';
 import GlyphrStudioProject from '../project/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
+import { debug } from '../common/functions.js';
+import { uiColors, accentColors } from '../common/colors.js';
+import { importOTFFont } from '../io/otf_import.js';
+import { importSVGFont } from '../io/svg_font_import.js';
+import { importGlyphrProjectFromText } from '../project/import.js';
 
 /**
  * Page > Open Project
@@ -228,7 +233,7 @@ export default class PageOpenProject {
     document.getElementById('open-project__right-area').innerHTML =
       'Loading File...';
     document.getElementById('open-project__right-area').style.backgroundColor =
-      _UI.colors.gray.offWhite;
+      uiColors.offWhite;
 
     evt.stopPropagation();
     evt.preventDefault();
@@ -258,28 +263,28 @@ export default class PageOpenProject {
         window.GlyphrStudio.temp.droppedFileContent = reader.result;
         if (fname === 'svg') {
           // debug('\t File = .svg');
-          ioSVG_importSVGFont();
+          importSVGFont();
         } else if (fname === 'txt') {
           // debug('\t File = .txt');
           importGlyphrProjectFromText();
-          navigate();
+          // navigate();
         }
         // debug(' reader.onload::SVG OR TXT - END\n');
       };
 
       reader.readAsText(f);
     } else {
-      let con = '<h3>Unsupported file type</h3>';
-      con += "Glyphr Studio can't import ." + fname + ' files.<br>';
-      con += 'Try loading another file.';
-      document.getElementById(
-        'open-project__right-area'
-      ).innerHTML = makeTabs();
-      changeTab('load');
-      showErrorMessageBox(con);
-      document.getElementById(
-        'open-project__right-area'
-      ).style.backgroundColor = _UI.colors.gray.offWhite;
+      // let con = '<h3>Unsupported file type</h3>';
+      // con += "Glyphr Studio can't import ." + fname + ' files.<br>';
+      // con += 'Try loading another file.';
+      // document.getElementById(
+      //   'open-project__right-area'
+      // ).innerHTML = makeTabs();
+      // changeTab('load');
+      // showErrorMessageBox(con);
+      // document.getElementById(
+      //   'open-project__right-area'
+      // ).style.backgroundColor = _UI.colors.gray.offWhite;
     }
 
     // debug(' handleDrop - END\n');
@@ -294,7 +299,7 @@ export default class PageOpenProject {
     window.GlyphrStudio.temp.droppedFileContent = evt.data;
 
     if (typeof evt.data === 'string') {
-      ioSVG_importSVGFont(false);
+      importSVGFont(false);
 
       // assume array buffers are otf fonts
     } else if (evt.data instanceof ArrayBuffer) {
@@ -312,7 +317,7 @@ export default class PageOpenProject {
     evt.dataTransfer.dropEffect = 'copy';
 
     const dropZone = document.getElementById('open-project__right-area');
-    dropZone.style.backgroundColor = _UI.colors.blue.l95;
+    dropZone.style.backgroundColor = accentColors.blue.l95;
     dropZone.innerHTML = 'Drop it!';
   }
 
@@ -325,9 +330,9 @@ export default class PageOpenProject {
     evt.preventDefault();
 
     const dropZone = document.getElementById('open-project__right-area');
-    dropZone.style.backgroundColor = _UI.colors.gray.offWhite;
-    dropZone.innerHTML = makeTabs();
-    changeTab('load');
+    dropZone.style.backgroundColor = accentColors.gray.offWhite;
+    dropZone.innerHTML = this.makeTabs();
+    this.changeTab('load');
   }
 
   /**

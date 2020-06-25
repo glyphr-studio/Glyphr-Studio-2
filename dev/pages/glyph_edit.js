@@ -1,4 +1,5 @@
 import { makeElement } from '../controls/controls.js';
+import { debug } from '../common/functions.js';
 
 /**
  * Page > Glyph Edit
