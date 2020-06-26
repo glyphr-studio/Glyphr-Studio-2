@@ -5,9 +5,7 @@ import { debug } from '../common/functions.js';
 
 /** export nothing by default */
 export default function () {}
-export { getCurrentProject, getCurrentProjectEditor };
-
-document.body.onload = glyphrStudioOnLoad;
+export { getCurrentProject, getCurrentProjectEditor, glyphrStudioOnLoad };
 
 /**
  * First function to run when the browser starts

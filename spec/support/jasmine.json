@@ -4,7 +4,7 @@
     "**/*.test.js"
   ],
   "helpers": [
-    "node_modules/esm"
+    "../node_modules/esm"
   ],
   "stopSpecOnExpectationFailure": false,
   "random": true
