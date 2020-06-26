@@ -4,12 +4,12 @@
   "version": "0.0.1-alpha",
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/glyphr-studio/Glyphr-Studio-2#readme",
-  "main": "dev/Glyphr_Studio_v2.htm",
   "description": "V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010, so it's time to do an all-up scrub.",
+  "main": "dev/Glyphr_Studio_v2.htm",
+  "module": "dev/main.js",
   "bugs": {
     "url": "https://github.com/glyphr-studio/Glyphr-Studio-2/issues"
   },
-  "module": "dev/main.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/glyphr-studio/Glyphr-Studio-2.git"

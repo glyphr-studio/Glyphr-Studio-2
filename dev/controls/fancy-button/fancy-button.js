@@ -2,7 +2,7 @@ import { makeElement } from '../controls.js';
 import { uiColors, accentColors } from '../../common/colors.js';
 
 /**
- * description
+ * It's a button... only fancier!
  */
 export default class FancyButton extends HTMLElement {
   /**

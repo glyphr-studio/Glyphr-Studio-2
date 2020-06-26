@@ -5,7 +5,7 @@ import GlyphrStudioProject from '../project/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { debug } from '../common/functions.js';
 import { uiColors, accentColors } from '../common/colors.js';
-import FancyButton from '../controls/fancy-button/fancy-button.js';
+// import FancyButton from '../controls/fancy-button/fancy-button.js';
 // import { importOTFFont } from '../io/otf_import.js';
 // import { importSVGFont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project/import.js';

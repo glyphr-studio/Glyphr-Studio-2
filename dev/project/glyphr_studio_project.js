@@ -141,7 +141,7 @@ export default class GlyphrStudioProject {
 
     // Project Settings
     newProject.projectSettings = newProject.projectSettings || {};
-    newProject.projectSettings.guies = newProject.projectSettings.guides || {};
+    newProject.projectSettings.guides = newProject.projectSettings.guides || {};
     newProject.projectSettings.glyphrange =
       newProject.projectSettings.glyphrange || {};
 
@@ -409,7 +409,7 @@ function merge(template = {}, importing = {}, trimStrings = false) {
  * @param {Object} source - collection of temporary objects to hydrate
  * @param {Object} destination - project object for final items
  */
-function hydrateGlyphrObjectList(GlyphrStudioItem, source, destination) {
+function hydrateGlyphrObjectList(GlyphrStudioItem, source = {}, destination) {
   for (const key of Object.keys(source)) {
     if (source[key]) {
       destination[key] = new GlyphrStudioItem(source[key]);
