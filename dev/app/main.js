@@ -5,7 +5,15 @@ import { debug } from '../common/functions.js';
 
 /** export nothing by default */
 export default function () {}
-export { getCurrentProject, getCurrentProjectEditor, glyphrStudioOnLoad };
+export {
+  getGlyphrStudioApp,
+  getCurrentProjectEditor,
+  getCurrentProject,
+  glyphrStudioOnLoad,
+};
+
+/** Here is the main app object */
+const GSApp = new GlyphrStudioApp();
 
 /**
  * First function to run when the browser starts
@@ -19,15 +27,9 @@ function glyphrStudioOnLoad() {
 
   if (passPreChecks()) {
     assemble();
-
-    window.GlyphrStudio = new GlyphrStudioApp();
-
-    console.log(window.GlyphrStudio);
-    console.log(
-      `%cApp Version ${window.GlyphrStudio.version} \n\n`,
-      'color:rgb(0,170,225)'
-    );
-    window.GlyphrStudio.setUp();
+    console.log(GSApp);
+    console.log(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
+    GSApp.setUp();
   }
 
   debug(`glyphrStudioOnLoad - END`);
@@ -116,11 +118,19 @@ function assemble(loadTests = false, callback = false) {
 }
 
 /**
+ * Returns the overall App object
+ * @returns {GlyphrStudioApp}
+ */
+function getGlyphrStudioApp() {
+  return GSApp;
+}
+
+/**
  * Returns the project that is currently being edited
  * @returns {GlyphrStudioProject}
  */
 function getCurrentProject() {
-  return window.GlyphrStudio.getCurrentProjectEditor().project;
+  return getGlyphrStudioApp().getCurrentProjectEditor().project;
 }
 
 /**
@@ -128,7 +138,7 @@ function getCurrentProject() {
  * @returns {ProjectEditor}
  */
 function getCurrentProjectEditor() {
-  const gs = window.GlyphrStudio;
+  const gs = getGlyphrStudioApp();
   if (!gs.projectEditors[gs.selectedProjectEditor]) {
     gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
   }

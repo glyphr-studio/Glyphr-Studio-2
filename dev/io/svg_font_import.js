@@ -36,7 +36,7 @@ function ioSVG_importSVGFont(filter) {
 
     try {
       // Get Font
-      let svgdata = window.GlyphrStudio.temp.droppedFileContent;
+      let svgdata = getGlyphrStudioApp().temp.droppedFileContent;
       // Convert unicode glyphs to decimal values
       // DOM Parser does not return unicode values as text strings
       // Kern groups containing '&#x' will get fuck'd

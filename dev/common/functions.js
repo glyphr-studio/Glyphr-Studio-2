@@ -1,3 +1,5 @@
+import { getGlyphrStudioApp } from '../app/main.js';
+
 export default {};
 export {
   debug,
@@ -42,7 +44,7 @@ export {
  * @param {boolean} force - show message even if dev.mode = false
  */
 function debug(message, force) {
-  const dev = window.GlyphrStudio.settings.dev;
+  let dev = getGlyphrStudioApp().settings.dev;
   // if (!dev.mode) return;
 
   if (dev.mode || force) {
@@ -550,7 +552,7 @@ function niceAngleToAngle(angle) {
 function makeEmailContent() {
   const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
   %0A%0A%0A%0A___________________________________________%0A
-  version %09Glyphr Studio  ${window.GlyphrStudio.version} %0A
+  version %09Glyphr Studio  ${getGlyphrStudioApp().version} %0A
   app name %09 ${navigator.appName} %0A
   language %09 ${navigator.language} %0A
   platform %09 ${navigator.platform} %0A

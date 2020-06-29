@@ -15,7 +15,7 @@ the new UI layer.
 | :white_check_mark: | Change prototypes to classes |
 | :white_check_mark: | Let / Const instead of Var |
 | :white_check_mark: | Template strings instead of string concatenation |
-| :white_check_mark: | Lint everything with ESLint, Google style |
+| :white_check_mark: | Lint everything with Prettier |
 | :white_check_mark: | JSDoc *all the things* |
 | :white_check_mark: | Jasmine tests for everything (basic coverage) |
 | :soon: | Jasmine tests for everything (advanced coverage) |
@@ -27,10 +27,16 @@ the new UI layer.
 | :soon: | CSS3, mostly for Variables and Layout |
 | :soon: | Let / Const instead of Var |
 | :soon: | Template strings instead of string concatenation |
-| :soon: | Lint everything with ESLint, Google style |
+| :soon: | Lint everything with Prettier |
 | :soon: | JSDoc *all the things* |
 | :black_square_button: | Jasmine tests for everything (basic coverage) |
 | :black_square_button: | Investigation - Language switching for localization |
+
+| | **Supplemental stuff** |
+|:---:|:--- |
+| :black_square_button: | Investigate tech stack for Help & Documentation site |
+| :black_square_button: | Investigate migration or redesign for Blog site |
+| :black_square_button: | Create new website |
 
 
 ## What's not changing

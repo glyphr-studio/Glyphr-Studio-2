@@ -13,6 +13,8 @@
  * disables.
  */
 
+import { getGlyphrStudioApp } from "../app/main";
+
 /**
  * Check a project save file content, and do necessary
  * data structure updates if it happens to be saved from
@@ -56,7 +58,7 @@ export function migrateGlyphrStudioProject(project = {}) {
   }
 
   semanticVersion = parseVersionNum(semanticVersion);
-  const appVersion = parseVersionNum(window.GlyphrStudio.version);
+  const appVersion = parseVersionNum(getGlyphrStudioApp().version);
 
   // Check for future versions
   if (semanticVersion.major > appVersion.major) {

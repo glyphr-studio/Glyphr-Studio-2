@@ -9,6 +9,7 @@ import { uiColors, accentColors } from '../common/colors.js';
 // import { importOTFFont } from '../io/otf_import.js';
 // import { importSVGFont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
+import { getGlyphrStudioApp } from '../app/main.js';
 
 /**
  * Page > Open Project
@@ -27,10 +28,9 @@ export default class PageOpenProject {
    */
   pageLoader() {
     debug(`\n PageOpenProject.pageLoader - START`);
-
     const recent = 1000 * 60 * 60 * 24 * 7; // seven days in milliseconds
     let recentMessage = '';
-    const app = window.GlyphrStudio;
+    const app = getGlyphrStudioApp();
     if (Date.now() - app.versionDate < recent) {
       recentMessage = ` - <a href="http://help.glyphrstudio.com/overview_updates.html" target="_blank">recently updated!</a>`;
     }
@@ -121,7 +121,7 @@ export default class PageOpenProject {
         'open-project__logo'
       ).innerHTML = makeGlyphrStudioLogo({ fill: '#BAD9E9', width: 400 });
 
-      setTimeout(window.GlyphrStudio.fadeOutLoadScreen, 2000);
+      setTimeout(app.fadeOutLoadScreen, 2000);
 
       debug(` PageOpenProject.pageLoader.callback - END\n\n`);
     };
@@ -252,7 +252,7 @@ export default class PageOpenProject {
     if (fname === 'otf' || fname === 'ttf') {
       reader.onload = function () {
         // debug('\n reader.onload::OTF or TTF - START');
-        window.GlyphrStudio.temp.droppedFileContent = reader.result;
+        app.temp.droppedFileContent = reader.result;
         // importOTFFont();
         // debug(' reader.onload:: OTF or TTF - END\n');
       };
@@ -261,7 +261,7 @@ export default class PageOpenProject {
     } else if (fname === 'svg' || fname === 'txt') {
       reader.onload = function () {
         // debug('\n reader.onload::SVG or TXT - START');
-        window.GlyphrStudio.temp.droppedFileContent = reader.result;
+        app.temp.droppedFileContent = reader.result;
         if (fname === 'svg') {
           // debug('\t File = .svg');
           // importSVGFont();
@@ -297,7 +297,7 @@ export default class PageOpenProject {
    */
   handleMessage(evt) {
     // assume strings are SVG fonts
-    window.GlyphrStudio.temp.droppedFileContent = evt.data;
+    app.temp.droppedFileContent = evt.data;
 
     if (typeof evt.data === 'string') {
       // importSVGFont(false);
@@ -340,9 +340,9 @@ export default class PageOpenProject {
    */
   handleNewProject() {
     setTimeout(function () {
-      const projectEditor = window.GlyphrStudio.getCurrentProjectEditor();
+      const projectEditor = app.getCurrentProjectEditor();
       projectEditor.project = new GlyphrStudioProject();
-      window.GlyphrStudio.navigate('glyph edit');
+      app.navigate('glyph edit');
     }, 5);
   }
 
@@ -355,10 +355,10 @@ export default class PageOpenProject {
       '<h2>Load an Example project</h2>Loading example project...';
 
     setTimeout(function () {
-      window.GlyphrStudio.getCurrentProjectEditor().project = new GlyphrStudioProject(
+      app.getCurrentProjectEditor().project = new GlyphrStudioProject(
         projects[name]
       );
-      window.GlyphrStudio.navigate('glyph edit');
+      app.navigate('glyph edit');
     }, 5);
   }
 }

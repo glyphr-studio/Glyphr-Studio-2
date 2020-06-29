@@ -3,6 +3,8 @@
     All keyboard handlers can be found here.
 **/
 
+const { getGlyphrStudioApp } = require("../../app/main");
+
 function keyup(event) {
   let eh = _UI.eventhandlers;
   // debug('\t eh.lastTool = ' + eh.lastTool);
@@ -95,7 +97,7 @@ function keypress(event) {
 
   // q
   // for dev mode clear console
-  if (window.GlyphrStudio.settings.dev.mode && isCtrlDown && kc === 'q') {
+  if (getGlyphrStudioApp().settings.dev.mode && isCtrlDown && kc === 'q') {
     event.preventDefault();
     console.clear();
   }

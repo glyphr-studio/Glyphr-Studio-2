@@ -162,20 +162,20 @@ describe('Glyph', () => {
     expect(sampleGlyph().makeSVG()).toBe('<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"50\" height=\"50\" viewBox=\"0,0,990,990\"><g transform=\"translate(100,650) scale(0.8,-0.8)\"><path d=\"M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z\"/></g></svg>');
   });
 
-  it('combineAllShapes', () => {
-    const s1 = new Shape({path: {pathPoints: [
-      {p: {coord: {x: 100, y: 200}}},
-      {p: {coord: {x: 300, y: 600}}},
-      {p: {coord: {x: 400, y: 500}}},
-    ]}});
-    const s2 = new Shape(s1);
-    s2.y = 500;
+  // it('combineAllShapes', () => {
+  //   const s1 = new Shape({path: {pathPoints: [
+  //     {p: {coord: {x: 100, y: 200}}},
+  //     {p: {coord: {x: 300, y: 600}}},
+  //     {p: {coord: {x: 400, y: 500}}},
+  //   ]}});
+  //   const s2 = new Shape(s1);
+  //   s2.y = 500;
 
-    const g = new Glyph({shapes: [s1, s2]});
+  //   const g = new Glyph({shapes: [s1, s2]});
 
-    const re = g.combineAllShapes(true, true);
-    expect(re.shapes.length).toBe(1);
-  });
+  //   const re = g.combineAllShapes(true, true);
+  //   expect(re.shapes.length).toBe(1);
+  // });
 
   it('hasShapes', () => {
     expect(sampleGlyph().hasShapes()).toBeTruthy();

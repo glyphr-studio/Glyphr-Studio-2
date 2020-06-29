@@ -1102,8 +1102,8 @@ export default class Path extends GlyphElement {
         index = index % this.pathPoints.length;
 
 
-        if (window.GlyphrStudio.getCurrentProjectEditor()) {
-          window.GlyphrStudio.getCurrentProjectEditor().multiSelect.points.select(this.pathPoints[index]);
+        if (getCurrentProjectEditor()) {
+          getCurrentProjectEditor().multiSelect.points.select(this.pathPoints[index]);
         }
 
         return this.pathPoints[index];
