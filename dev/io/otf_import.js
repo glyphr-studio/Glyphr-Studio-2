@@ -38,7 +38,7 @@ function importOTFFont(filter) {
 
     try {
       // Get Font
-      font = OpenTypeJS.parse(window.GlyphrStudio.temp.droppedFileContent);
+      font = OpenTypeJS.parse(getGlyphrStudioApp().temp.droppedFileContent);
     } catch (err) {
       console.error(
         'Something went wrong with opening the font file:<br><br>' + err

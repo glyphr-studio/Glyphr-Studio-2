@@ -1190,10 +1190,14 @@ export default class Glyph extends GlyphElement {
    * Boolean combine all shapes in this Glyph to as few shapes as possible
    * @param {boolean} doNotToast - don't show progress messages
    * @returns {Glyph} - reference to this Glyph
-
-  combineAllShapes(doNotToast = false) {
+   */
+  combineAllShapes() {
     // debug('\n Glyph.combineAllShapes - START - ' + this.name);
+
     this.flattenGlyph();
+    /*
+
+      TODO get functionality from V1
 
     const shapes = combineShapes(this.shapes, doNotToast);
     if (shapes) {
@@ -1206,9 +1210,9 @@ export default class Glyph extends GlyphElement {
     // debug(this.print());
 
     // debug(' Glyph.combineAllShapes - END - ' + this.name + '\n');
+    */
     return this;
   }
-  */
 
   // --------------------------------------------------------------
   // Methods

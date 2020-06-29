@@ -5,6 +5,8 @@
     the Attributes panel gets its own column.
 **/
 
+const { getGlyphrStudioApp } = require("../app/main");
+
 function makePanel_Actions() {
   let pop = _UI.popOut;
   let ss = _UI.multiSelect.shapes.getMembers();
@@ -251,7 +253,7 @@ function makePanel_Actions() {
 
   // DEV
   let devactions = '';
-  let dev = window.GlyphrStudio.settings.dev;
+  let dev = getGlyphrStudioApp().settings.dev;
   if (dev.mode) {
     if (dev.testActions.length) devactions += '<h3>test</h3>';
     for (let a = 0; a < dev.testActions.length; a++) {

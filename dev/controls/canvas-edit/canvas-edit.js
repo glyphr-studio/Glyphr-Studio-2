@@ -1,4 +1,5 @@
 import { isVal, clone } from '../../common/functions.js';
+import { getGlyphrStudioApp } from '../../app/main.js';
 
 export { sXcX, sYcY };
 export { getView, setView };
@@ -117,7 +118,7 @@ function redrawUnit() {
 
   if (!_UI.contextGlyphs.string) updateContextGlyphs();
 
-  if (window.GlyphrStudio.settings.dev.mode && _UI.testOnRedraw)
+  if (getGlyphrStudioApp().settings.dev.mode && _UI.testOnRedraw)
     _UI.testOnRedraw();
   // debug(' redrawUnit - END\n');
 }

@@ -1,5 +1,6 @@
 export { importGlyphrProjectFromText };
 import GlyphrStudioProject from '../project/glyphr_studio_project.js';
+import { getGlyphrStudioApp } from '../app/main.js';
 // import { migrateGlyphrStudioProject } from './migrate.js';
 
 // -------------------------------
@@ -16,9 +17,10 @@ function importGlyphrProjectFromText() {
   // START IMPORT
   // -----------------------------
 
+  let app = getGlyphrStudioApp();
   let fileContent;
   try {
-    fileContent = JSON.parse(window.GlyphrStudio.temp.droppedFileContent);
+    fileContent = JSON.parse(app.temp.droppedFileContent);
   } catch (e) {
     fileContent = {};
   }
@@ -29,7 +31,7 @@ function importGlyphrProjectFromText() {
   }
 
   const projectVersion = parseVersionNum(fileContent.projectSettings.version);
-  const currentAppVersion = parseVersionNum(window.GlyphrStudio.version);
+  const currentAppVersion = parseVersionNum(app.version);
   // debug("\t version found " + fileContent.projectSettings.version);
 
   // Check for future versions
@@ -45,8 +47,8 @@ function importGlyphrProjectFromText() {
   // debug(`\t done with v2 minor updates`);
 
   // Update the version
-  fileContent.projectSettings.version = window.GlyphrStudio.version;
-  fileContent.projectSettings.version = window.GlyphrStudio.version;
+  fileContent.projectSettings.version = app.version;
+  fileContent.projectSettings.version = app.version;
 
   // Hydrate after all updates
   // debug(' importGlyphrProjectFromText - END\n');
