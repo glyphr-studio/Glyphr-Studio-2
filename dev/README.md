@@ -30,16 +30,27 @@ will be included in the test pass.
 
  Our data structure is roughly hierarchical:
 
-    Glyph
-    ┣━ Component Instance
-    ┗━ Shape
-      ┣━ Poly Segment
-      ┃ ┗━ Segment
-      ┗━ Path
-        ┗━ Path Point
-          ┗━ Control Point
-            ┗━ Coord
+    Glyphr Studio Project
+      ┣━ Metadata
+      ┣━ Settings
+      ┣━ Kerning
+      ┃   ┗━ HKern
+      ┣━ Components
+      ┃   ┗━ Glyph
+      ┣━ Ligatures
+      ┃   ┗━ Glyph
+      ┗━ Glyphs
+          ┗━ Glyph
+              ┣━ Component Instance
+              ┗━ Shape
+                  ┣━ Poly Segment
+                  ┃   ┗━ Segment
+                  ┗━ Path
+                      ┗━ Path Point
+                          ┗━ Control Point
+                              ┗━ Coord
 
+**Glyph** objects are used to represent Glyphs, Components, and Ligatures.
 Though there is also **XY Point** type for simple coordinates.  Additionally,
 there is also the **HKern** type, used to represent class-based kern information.
 
@@ -112,16 +123,16 @@ and Selected State information needed to edit the current project.
 The new App hierarchy will look roughly like this:
 
     App
-    ┗━ Project Editor
-      ┣━ Glyphr Studio Project
-      ┣━ Current Selected State
-      ┣━ History
-      ┗━ Navigation
-        ┗━ Page
-          ┣━ Content
-          ┃ ┗━ Controls
-          ┗━ Panels
-            ┗━ Controls
+      ┗━ Project Editor
+          ┣━ Glyphr Studio Project
+          ┣━ Current Selected State
+          ┣━ History
+          ┗━ Navigation
+              ┗━ Page
+                  ┣━ Content
+                  ┃   ┗━ Controls
+                  ┗━ Panels
+                      ┗━ Controls
 
 The App will manage the currently selected / visible Project Editor,
 or possibly displaying two or more at one time. Through the App,

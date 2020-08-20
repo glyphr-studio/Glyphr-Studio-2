@@ -230,6 +230,7 @@ export default class PageOpenProject {
    * @param {object} evt - drop event
    */
   handleDrop(evt) {
+    const app = getGlyphrStudioApp();
     // debug('\n handleDrop - START');
     document.getElementById('open-project__right-area').innerHTML =
       'Loading File...';
@@ -296,6 +297,7 @@ export default class PageOpenProject {
    * @param {object} evt - event
    */
   handleMessage(evt) {
+    const app = getGlyphrStudioApp();
     // assume strings are SVG fonts
     app.temp.droppedFileContent = evt.data;
 
@@ -339,6 +341,7 @@ export default class PageOpenProject {
    * Create a new project from scratch
    */
   handleNewProject() {
+    const app = getGlyphrStudioApp();
     setTimeout(function () {
       const projectEditor = app.getCurrentProjectEditor();
       projectEditor.project = new GlyphrStudioProject();
@@ -351,6 +354,7 @@ export default class PageOpenProject {
    * @param {string} name - which sample to load
    */
   handleLoadSample(name) {
+    const app = getGlyphrStudioApp();
     document.getElementById('openProjectExampleProjects').innerHTML =
       '<h2>Load an Example project</h2>Loading example project...';
 
