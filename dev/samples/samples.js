@@ -32,6 +32,30 @@ export const samples = {
       ]}},
     ],
   },
+  glyphBox: {
+    shapes: [
+      {path: {pathPoints: [
+        {p: {coord: {x: 0, y: 0}}},
+        {p: {coord: {x: 100, y: 0}}},
+        {p: {coord: {x: 0, y: 100}}},
+      ]}},
+      {path: {pathPoints: [
+        {p: {coord: {x: 300, y: 0}}},
+        {p: {coord: {x: 400, y: 0}}},
+        {p: {coord: {x: 400, y: 100}}},
+      ]}},
+      {path: {pathPoints: [
+        {p: {coord: {x: 300, y: 700}}},
+        {p: {coord: {x: 400, y: 700}}},
+        {p: {coord: {x: 400, y: 600}}},
+      ]}},
+      {path: {pathPoints: [
+        {p: {coord: {x: 0, y: 700}}},
+        {p: {coord: {x: 100, y: 700}}},
+        {p: {coord: {x: 0, y: 600}}},
+      ]}},
+    ],
+  },
   pathPoints: [
     {
       p: {coord: {x: 326.65249430318556, y: 499.9999934240834}},
