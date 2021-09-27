@@ -84,10 +84,10 @@ export default class PanelArea extends HTMLElement {
     this.wrapper.appendChild(header);
     this.wrapper.appendChild(content);
     /*
-        this.observer = new MutationObserver(this.childAttributeChanged);
-        this.observer.elementRoot = this;
-        this.observer.observe(this.padlock, {attributes: true, attributeOldValue: true});
-        */
+    this.observer = new MutationObserver(this.childAttributeChanged);
+    this.observer.elementRoot = this;
+    this.observer.observe(this.padlock, {attributes: true, attributeOldValue: true});
+    */
 
     shadow.appendChild(this.wrapper);
   }

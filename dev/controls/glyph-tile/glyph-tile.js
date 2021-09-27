@@ -1,6 +1,8 @@
 import { makeElement } from '../controls.js';
 import { uiColors, accentColors } from '../../common/colors.js';
 import { hexToChars } from '../../common/unicode.js';
+// import { getCurrentProject } from '../../app/main.js';
+import { lookUpGlyphName } from '../../lib/unicode_names.js';
 import Glyph from '../../glyph_elements/glyph.js';
 
 /**
@@ -12,6 +14,7 @@ export default class GlyphTile extends HTMLElement {
    * @param {object} attributes - collection of key: value pairs to set as attributes
    */
   constructor(attributes = {}) {
+    console.log(`GlyphTile.constructor - START`);
     super();
 
     Object.keys(attributes).forEach((key) =>
@@ -27,7 +30,7 @@ export default class GlyphTile extends HTMLElement {
 
     this.setAttribute(
       'title',
-      `${getGlyphName(this.glyphHex, true)}\n${this.glyphHex}`
+      `${lookUpGlyphName(this.glyphHex, true)}\n${this.glyphHex}`
     );
 
     this.wrapper = makeElement({ className: 'wrapper' });
@@ -49,6 +52,7 @@ export default class GlyphTile extends HTMLElement {
         className: 'thumbnail',
         content: this.glyphChar,
       });
+      console.log(`no glyphObject`);
     }
 
     this.name = makeElement({ className: 'name' });
