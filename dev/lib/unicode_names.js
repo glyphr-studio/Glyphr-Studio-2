@@ -1,4 +1,33 @@
 export default {};
+
+/**
+* Get a glyph's name based on a unicode hex ID
+* @param {string} id - Unicode Hex ID
+* @param {boolean} forceLongName - don't use the short Unicode name by default
+* @returns {string}
+*/
+export function lookUpGlyphName(id, forceLongName = false) {
+  id = '' + id;
+  // debug('\n lookUpGlyphName');
+  // debug('\t passed ' + id);
+
+  // not passed an id
+  if (!id) {
+    // debug('\t not passed an ID, returning false');
+    return false;
+  }
+
+  // known unicode names
+  const un = forceLongName ? unicodeNames[id] : shortUnicodeNames[id];
+  if (un) {
+    // debug('\t got unicode name: ' + un);
+    return un;
+  }
+
+  // debug('lookUpGlyphName - inexplicably fails, returning [name not found]\n');
+  return '[name not found]';
+}
+
 export const shortUnicodeNames = {
   '0x41': 'A',
   '0xC6': 'AE',

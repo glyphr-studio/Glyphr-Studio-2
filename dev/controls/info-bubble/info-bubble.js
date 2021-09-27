@@ -42,27 +42,27 @@ export default class InfoBubble extends HTMLElement {
                 display: block;
                 width: 14px;
                 height: 14px;
-                overflow: hidden;
             }
 
             .entryPoint {
+                display: inline-block;
+                position: relative;
+                top: -2px;
                 border-style: solid;
                 border-width: 1px;
                 border-color: rgb(180, 180, 180);
                 background-color: transparent;
                 color: rgb(180, 180, 180);
                 border-radius: 50%;
-                font-family: verdana, sans-serif;
+                font-family: monospace, verdana, sans-serif;
                 font-size: 8px;
                 font-weight: bold;
-                position: relative;
-                top: -5px;
-                display: inline-block;
-                width: 14px;
-                height: 14px;
+                width: 12px;
+                height: 12px;
+                line-height: 10px;
                 text-align: center;
                 box-sizing: border-box;
-                padding: 0px 0px 2px 2px;
+                padding: 0px 0px 1px 0px;
                 transition: all 0.2s;
             }
 
