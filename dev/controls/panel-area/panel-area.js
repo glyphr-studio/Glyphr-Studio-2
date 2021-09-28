@@ -69,19 +69,24 @@ export default class PanelArea extends HTMLElement {
                 grid-row: 2;
                 background-color: ${accentColors.gray.l90};
                 overflow-y: scroll;
-            }
+                padding: 5px;
+              }
         `,
     });
 
     let panelName = this.getAttribute('panel') || 'panel';
 
     let header = makeElement({ id: 'header', innerHTML: panelName });
-    let content = makeElement({ id: 'content', innerHTML: 'hello!' });
+    let content = makeElement({ id: 'content' });
+    let outsideContent = makeElement({ tag: 'slot' });
+
+    // outsideContent.innerHTML = outsideContent.innerHTML.replace(/\n/g, '');
 
     // Put it all together
     let shadow = this.attachShadow({ mode: 'open' });
     shadow.appendChild(style);
     this.wrapper.appendChild(header);
+    content.appendChild(outsideContent);
     this.wrapper.appendChild(content);
     /*
     this.observer = new MutationObserver(this.childAttributeChanged);
