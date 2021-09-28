@@ -14,7 +14,8 @@ export default class GlyphTile extends HTMLElement {
    * @param {object} attributes - collection of key: value pairs to set as attributes
    */
   constructor(attributes = {}) {
-    console.log(`GlyphTile.constructor - START`);
+    console.log(`GlyphTile.constructor - START - ${attributes.glyph}`);
+    console.log(attributes);
     super();
 
     Object.keys(attributes).forEach((key) =>
@@ -75,7 +76,7 @@ export default class GlyphTile extends HTMLElement {
                 height: 75px;
                 overflow-y: hidden;
                 overflow-x: hidden;
-                margin: 0px 5px 2px 0px;
+                margin: 0px;
                 padding: 0px;
                 background-color: rgba(255, 255, 255, 0.4);
                 box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.04);

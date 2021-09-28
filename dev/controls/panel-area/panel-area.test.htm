@@ -4,7 +4,17 @@
     <meta charset="utf-8" />
     <title>panel-area test</title>
     <script type="module">
-        import AControlTemplate from './panel-area.js';
+        import PanelArea from './panel-area.js';
+        import GlyphTile from '../glyph-tile/glyph-tile.js';
+        import { basicLatinOrder } from '../../common/unicode.js';
+        import { makeElement } from '../controls.js';
+
+        document.body.onload = () => {
+            console.log(basicLatinOrder);
+            let content = '';
+            basicLatinOrder.forEach(element => content += `<glyph-tile glyph='${element}'></glyph-tile>`);
+            document.getElementById('glyphChooser').innerHTML = content;
+        };
     </script>
     <style>
         * {
@@ -23,14 +33,21 @@
 
         panel-area {
             display: inline-block;
-            width: 100%;
             height: 100%;
+            width: 500px;
+            min-width: 75px;
+            resize:horizontal;
+            overflow: auto;
+            max-width: fit-content;
+        }
+
+        glyph-tile {
+            display: inline-block;
+            margin: 5px;
         }
     </style>
 </head>
 <body>
-        <div style="width: 500px; height: 100%; min-height: 100%;">
-            <panel-area panel="chooser"></panel-area>
-        </div>
+    <panel-area panel="chooser" id="glyphChooser"></panel-area>
 </body>
 </html>
