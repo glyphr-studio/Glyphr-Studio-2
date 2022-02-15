@@ -2,7 +2,6 @@ import manifest from '../manifest.js';
 import ProjectEditor from '../project/project_editor.js';
 import GlyphrStudioApp from './glyphr_studio_app.js';
 import { debug } from '../common/functions.js';
-
 /** export nothing by default */
 export default function () {}
 export {
@@ -24,14 +23,12 @@ function glyphrStudioOnLoad() {
     '%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n',
     'color:rgb(0,170,225)'
   );
-
   if (passPreChecks()) {
     assemble();
     console.log(GSApp);
     console.log(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
     GSApp.setUp();
   }
-
   debug(`glyphrStudioOnLoad - END`);
 }
 
@@ -41,14 +38,12 @@ function glyphrStudioOnLoad() {
  */
 function passPreChecks() {
   let pass = true;
-
   // Templates
   const template = document.createElement('template');
   if (!template.content) {
     console.error('Browser does not support HTML Templates');
     pass = false;
   }
-
   return pass;
 }
 
@@ -62,15 +57,11 @@ function assemble(loadTests = false, callback = false) {
   const tests = [];
   let newElement;
   const nonModules = 'opentypejs';
-
   // console.log(manifest);
-
   manifest.forEach((directory) => {
     directory.files.forEach((file) => {
       const suffix = file.split('.')[1];
-
       // console.log(`loading file ${file} with suffix ${suffix}`);
-
       if (suffix === 'js' || suffix === 'map') {
         newElement = document.createElement('script');
         newElement.setAttribute('src', `${directory.path}/${file}`);
@@ -92,28 +83,23 @@ function assemble(loadTests = false, callback = false) {
       } else {
         console.warn(`Assemble - unhandled file type ${suffix}`);
       }
-
       // console.log(`\t added ${file}`);
     });
   });
-
   if (loadTests) {
     tests.forEach((element) => {
       newElement = document.createElement('script');
       newElement.setAttribute('src', element);
       newElement.setAttribute('type', 'module');
       document.getElementsByTagName('head')[0].appendChild(newElement);
-
       // console.log(`\t added test ${element}`);
     });
-
     // dev_mode_includes.js adds Glyph Element classes to the window._DEV object
     newElement = document.createElement('script');
     newElement.setAttribute('src', `app/dev_mode_includes.js`);
     newElement.setAttribute('type', 'module');
     document.getElementsByTagName('head')[0].appendChild(newElement);
   }
-
   if (callback) window.setTimeout(callback, 500);
 }
 
@@ -142,6 +128,5 @@ function getCurrentProjectEditor() {
   if (!gs.projectEditors[gs.selectedProjectEditor]) {
     gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
   }
-
   return gs.projectEditors[gs.selectedProjectEditor];
 }

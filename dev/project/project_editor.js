@@ -87,7 +87,6 @@ export default class ProjectEditor {
    */
   set project(gsp) {
     this._project = new GlyphrStudioProject(gsp);
-    return this._project;
   }
 
   // --------------------------------------------------------------
@@ -124,7 +123,6 @@ export default class ProjectEditor {
     this._selectedWorkItemIDs.component =
       swi.component || this.selectedComponentID();
     this._selectedWorkItemIDs.kern = swi.kern || this.selectedKernID();
-    return this._selectedWorkItemIDs;
   }
 
   // --------------------------------------------------------------

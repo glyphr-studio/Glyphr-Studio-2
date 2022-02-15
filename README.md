@@ -54,12 +54,13 @@ there is a rough version of the glyph, font, and project data structure (which y
 dev/readme) and I've begun thinking about UI controls, and page view rendering. Since we're not using any
 UI Frameworks, these are big items that will probably take time.
 
-Call this early stage of churn "V2 Alpha" - my guess is it will probably last through 2020. Bug fixes on V1
-will still happen, so I don't feel particularly rushed to make progress on V2.
+Call this early stage of churn "V2 Alpha" - my guess is it will probably last through 2020.
+**UPDATE** Covid drastically reduced free time, so this was a longer pause than once thought.
+Bug fixes on V1 will still happen, so I don't feel particularly rushed to make progress on V2.
 
 
 ## License
- Copyright (C) 2010 - 2020 Matthew LaGrandeur, released under
+ Copyright (C) 2010 - 2022 Matthew LaGrandeur, released under
  [GPL 3.0](https://github.com/mattlag/Glyphr-Studio/blob/master/LICENSE-gpl-3.0.txt)
 
 ## Author
