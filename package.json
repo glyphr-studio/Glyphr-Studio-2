@@ -19,9 +19,8 @@
     "lint": "eslint dev",
     "fix": "eslint dev --fix"
   },
-  "dependencies": {},
   "devDependencies": {
-    "eslint": "^6.8.0",
+    "eslint": "^8.9.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "esm": "^3.2.25",

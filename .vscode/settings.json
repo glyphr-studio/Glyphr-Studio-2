@@ -1,6 +1,7 @@
 {
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
+	"files.eol": "\n",
     "search.exclude": {
         ".eslintrc.json": true,
         ".gitattributes": true,
