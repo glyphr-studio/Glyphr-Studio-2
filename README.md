@@ -45,7 +45,7 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
   * This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js
 * The whole app will still concat down to a single .html file that includes CSS and JavaScript
   * Continuing the ability to run locally (or online) without a back-end
-  * Build process is still TBD - maybe using rollup.js for modules
+  * Build process is still TBD - maybe using rollup or parcel for modules
 
 ## Timeline
 The V2 effort took a pause while major work on V1 was being completed.  With that done (around the end of

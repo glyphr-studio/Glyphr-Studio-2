@@ -5,19 +5,13 @@
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/glyphr-studio/Glyphr-Studio-2#readme",
   "description": "V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010, so it's time to do an all-up scrub.",
-  "main": "dev/Glyphr_Studio_v2.htm",
-  "module": "dev/main.js",
-  "bugs": {
-    "url": "https://github.com/glyphr-studio/Glyphr-Studio-2/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/glyphr-studio/Glyphr-Studio-2.git"
-  },
+  "type": "module",
   "scripts": {
+    "start": "parcel --dist-dir ./dev src/Glyphr_Studio_v2.htm",
+    "build": "parcel build src/Glyphr_Studio_v2.htm",
     "test": "jasmine --require=esm",
-    "lint": "eslint dev",
-    "fix": "eslint dev --fix"
+    "lint": "eslint src",
+    "fix": "eslint src --fix"
   },
   "devDependencies": {
     "eslint": "^8.9.0",
@@ -26,7 +20,15 @@
     "esm": "^3.2.25",
     "jasmine": "^3.5.0",
     "jshint": "^2.11.0",
+    "parcel": "^2.3.1",
     "prettier": "^2.0.5"
+  },
+  "bugs": {
+    "url": "https://github.com/glyphr-studio/Glyphr-Studio-2/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/glyphr-studio/Glyphr-Studio-2.git"
   },
   "prettier": {
     "trailingComma": "es5",
