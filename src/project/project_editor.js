@@ -297,13 +297,24 @@ export default class ProjectEditor {
    * @param {string} pageName - where to go
    */
   navigate(pageName) {
-    if (pageName) this.nav.page = pageName;
+    debug(`\n ProjectEditor.navigate - START`);
+    debug(`\t pageName : ${pageName}`);
 
+    if (pageName) this.nav.page = pageName;
     const wrapper = document.getElementById('app__wrapper');
-    const loader = this.pageLoader();
-    wrapper.innerHTML = '';
-    wrapper.appendChild(loader.content);
-    if (loader.callback) loader.callback(this.getCurrentPage());
+    debug(`\t wrapper is:`);
+    debug(wrapper);
+
+    if (wrapper) {
+      const loader = this.pageLoader();
+      wrapper.innerHTML = '';
+      wrapper.appendChild(loader.content);
+      if (loader.callback) loader.callback(this.getCurrentPage());
+    } else {
+      console.warn(`app__wrapper could not be found, navigation failed`);
+    }
+
+    debug(` ProjectEditor.navigate - END\n\n`);
   }
 
   /**

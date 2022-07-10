@@ -43,14 +43,16 @@ export default class GlyphrStudioApp {
    * Starts up the app
    */
   setUp() {
+    debug(`\n App.setUp - START`);
+
     // Dev mode stuff
     if (this.settings.dev.mode) {
-      // debug('\t >>> DEV NAV - to ' + this.settings.dev.currentPage);
+      debug('\t >>> DEV NAV - to ' + this.settings.dev.currentPage);
       document.title = '⡄⡆⡇ ⃨G⃨S⃨2⃨D⃨E⃨V⃨M⃨O⃨D⃨E⃨ ⡇⡆⡄';
 
       // Project
       if (this.settings.dev.sampleProject) {
-        // debug('\t >>> Using sample project');
+        debug('\t >>> Using sample project');
         this.temp.droppedFileContent = JSON.stringify(
           projects[this.settings.dev.sampleProject]
         );
@@ -104,7 +106,7 @@ export default class GlyphrStudioApp {
 
     this.navigate();
 
-    // debug(' MAIN SETUP - END\n');
+    debug(` App.setUp - END\n\n`);
   }
 
   /**

@@ -147,8 +147,8 @@ folders all support this overall App model.
 There are a few other folders:
 
 **Lib** holds libraries (like OpenType.js)
-and also fixed reference data (like Unicode Names). The whole **Lib** folder
-should be excluded from **Dev** folder level searches, as those files
+and also fixed reference data (like Unicode Names). The whole **lib** folder
+should be excluded from **src** folder level searches, as those files
 should not need updating.
 
 **Common** is what it sounds like, it holds generic functionality that
