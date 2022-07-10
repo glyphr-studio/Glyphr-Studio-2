@@ -7,21 +7,21 @@
   "description": "V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010, so it's time to do an all-up scrub.",
   "type": "module",
   "scripts": {
-    "start": "parcel --dist-dir ./dev src/Glyphr_Studio_v2.htm",
+    "start": "parcel src/Glyphr_Studio_v2.htm",
     "build": "parcel build src/Glyphr_Studio_v2.htm",
     "test": "jasmine --require=esm",
     "lint": "eslint src",
     "fix": "eslint src --fix"
   },
   "devDependencies": {
-    "eslint": "^8.9.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.4",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "esm": "^3.2.25",
-    "jasmine": "^3.5.0",
-    "jshint": "^2.11.0",
-    "parcel": "^2.3.1",
-    "prettier": "^2.0.5"
+    "jasmine": "^4.2.1",
+    "jshint": "^2.13.5",
+    "parcel": "^2.6.2",
+    "prettier": "^2.7.1"
   },
   "bugs": {
     "url": "https://github.com/glyphr-studio/Glyphr-Studio-2/issues"
