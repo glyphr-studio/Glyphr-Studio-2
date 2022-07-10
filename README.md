@@ -43,20 +43,14 @@ the new UI layer.
 So, here at Glyphr Studio, we've always had a very strong DIY attitude - this means:
 * The only external library we will use *for the UI* is OpenType.js, for importing and exporting OTF files
   * This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js
-* The whole app will still concat down to a single .html file that includes CSS and JavaScript
+* The whole app will still concat down to HTML, CSS, and JavaScript files:
   * Continuing the ability to run locally (or online) without a back-end
-  * Build process is still TBD - maybe using rollup or parcel for modules
+  * Build process using Parcel for modules
 
 ## Timeline
-The V2 effort took a pause while major work on V1 was being completed.  With that done (around the end of
-2019) I'm in the stage of thinking about just what major architecture changes I want to tackle.  Currently
-there is a rough version of the glyph, font, and project data structure (which you can read about in the
-dev/readme) and I've begun thinking about UI controls, and page view rendering. Since we're not using any
-UI Frameworks, these are big items that will probably take time.
-
-Call this early stage of churn "V2 Alpha" - my guess is it will probably last through 2020.
-**UPDATE** Covid drastically reduced free time, so this was a longer pause than once thought.
-Bug fixes on V1 will still happen, so I don't feel particularly rushed to make progress on V2.
+Preliminary investigations started in 2019... but Covid slowed things way down. Progress will be very
+slow, and bug fixes for V1 will still take precidence over V2. Merging new ideas with old functionality
+is also time consuming :-)
 
 
 ## License
