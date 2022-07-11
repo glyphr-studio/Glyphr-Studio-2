@@ -121,4 +121,4 @@ export default class AControlTemplate extends HTMLElement {
   }
 }
 
-customElements.define('a-control-template', AControlTemplate);
+// customElements.define('a-control-template', AControlTemplate);

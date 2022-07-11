@@ -165,4 +165,4 @@ export default class InfoBubble extends HTMLElement {
   }
 }
 
-customElements.define('info-bubble', InfoBubble);
+// customElements.define('info-bubble', InfoBubble);

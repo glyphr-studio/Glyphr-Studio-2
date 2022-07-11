@@ -250,4 +250,4 @@ function getGlyph(gid) {
   }
 }
 
-customElements.define('glyph-tile', GlyphTile);
+// customElements.define('glyph-tile', GlyphTile);

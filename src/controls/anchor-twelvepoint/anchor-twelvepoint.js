@@ -213,4 +213,4 @@ export default class AnchorTwelvepoint extends HTMLElement {
   }
 }
 
-customElements.define('anchor-twelvepoint', AnchorTwelvepoint);
+// customElements.define('anchor-twelvepoint', AnchorTwelvepoint);

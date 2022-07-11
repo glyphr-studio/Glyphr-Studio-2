@@ -138,4 +138,4 @@ export default class CanvasDisplay extends HTMLElement {
   }
 }
 
-customElements.define('canvas-display', CanvasDisplay);
+// customElements.define('canvas-display', CanvasDisplay);
