@@ -269,8 +269,8 @@ export default class Segment extends GlyphElement {
    * @returns {array} - Array with two segments resulting from the split
    */
   splitAtPoint(co) {
-    // debug('\n Segment.splitAtPoint - START');
-    // debug(`\t splitting at ${co.x} ${co.y}`);
+    // log('\n Segment.splitAtPoint - START');
+    // log(`splitting at ${co.x} ${co.y}`);
     if (this.containsTerminalPoint(co, 0.1)) return false;
 
     if (this.lineType === 'horizontal' || this.lineType === 'vertical') {
@@ -301,12 +301,12 @@ export default class Segment extends GlyphElement {
         }
       }
       if (!online) {
-        // debug('\t not on the line');
-        // debug(' Segment.splitAtPoint - END\n');
+        // log('not on the line');
+        // log('Segment.splitAtPoint', 'end');
         return false;
       }
-      // debug('\t returning simple line split');
-      // debug(' Segment.splitAtPoint - END\n');
+      // log('returning simple line split');
+      // log('Segment.splitAtPoint', 'end');
       return [
         new Segment({
           p1x: this.p1x,
@@ -324,13 +324,13 @@ export default class Segment extends GlyphElement {
     } else if (this.pointIsWithinMaxes(co)) {
       const threshold = 0.1;
       const sp = this.getSplitFromXYPoint(co, threshold);
-      // debug('\t distance is ' + sp.distance);
+      // log('distance is ' + sp.distance);
       if (sp && sp.distance < threshold) {
-        // debug('\t splitting at ' + sp.split);
+        // log('splitting at ' + sp.split);
         return this.splitAtTime(sp.split);
       }
     }
-    // debug(' Segment.splitAtPoint - returning false - END\n');
+    // log('Segment.splitAtPoint - returning false', 'end');
     return false;
   }
 
@@ -340,7 +340,7 @@ export default class Segment extends GlyphElement {
    * @returns {array} - Array with two segments resulting from the split
    */
   splitAtTime(t = 0.5) {
-    // debug('\n Segment.splitAtTime - START');
+    // log('\n Segment.splitAtTime - START');
     const rs = 1 - t;
     // Do some math
     const x12 = this.p1x * rs + this.p2x * t;
@@ -387,7 +387,7 @@ export default class Segment extends GlyphElement {
    * @returns {array} - Array with many segments resulting from the split
    */
   splitAtManyPoints(points, threshold) {
-    // debug('\n Segment.splitAtManyPoints - START');
+    // log('\n Segment.splitAtManyPoints - START');
     const segments = [new Segment(clone(this))];
     let tr;
     for (let x = 0; x < points.length; x++) {
@@ -400,8 +400,8 @@ export default class Segment extends GlyphElement {
         }
       }
     }
-    // debug('\t split into ' + segments.length);
-    // debug(' Segment.splitAtManyPoints - END\n');
+    // log('split into ' + segments.length);
+    // log('Segment.splitAtManyPoints', 'end');
     return segments;
   }
 
@@ -437,7 +437,7 @@ export default class Segment extends GlyphElement {
    * @returns {object} - collection of results
    */
   getSplitFromXYPoint(point, threshold = 1) {
-    // debug(`\n getSplitFromXYPoint - START`);
+    // log(`getSplitFromXYPoint`, 'start');
 
     const grains = this.quickLength * 1000;
     let minDistance = 999999999;
@@ -447,7 +447,7 @@ export default class Segment extends GlyphElement {
 
     for (let t = 0; t < 1; t += 1 / grains) {
       check = this.getXYPointFromSplit(t);
-      // debug(`\t checking x:${check.x}\ty:${check.y}\tt${t}`);
+      // log(`checking x:${check.x}\ty:${check.y}\tt${t}`);
 
       d = Math.sqrt(
         (check.x - point.x) * (check.x - point.x) +
@@ -465,7 +465,7 @@ export default class Segment extends GlyphElement {
         if (threshold && re.distance < threshold) return re;
       }
     }
-    // debug(` getSplitFromXYPoint - END\n\n`);
+    // log(`getSplitFromXYPoint`, 'end');
     return re;
   }
 
@@ -576,8 +576,8 @@ export default class Segment extends GlyphElement {
         Math.max(this.p2y, Math.max(this.p3y, this.p4y))
       ),
     };
-    // debug(`\t Segment.getFastMaxes - returning`);
-    // debug(bounds);
+    // log(`Segment.getFastMaxes - returning`);
+    // log(bounds);
 
     return new Maxes(bounds);
   }
@@ -587,8 +587,8 @@ export default class Segment extends GlyphElement {
    * @returns {Maxes}
    */
   calcMaxes() {
-    // debug('\n Segment.calcMaxes - START');
-    // debug(this);
+    // log('\n Segment.calcMaxes - START');
+    // log(this);
 
     /**
      * Takes a value and updates a maxes object if that value falls outside the current maxes
@@ -644,8 +644,8 @@ export default class Segment extends GlyphElement {
 
     if (this.lineType) {
       this.maxes = bounds;
-      // debug(this.maxes.print());
-      // debug(' Segment.calcMaxes - returning fast maxes for line - END\n');
+      // log(this.maxes.print());
+      // log('Segment.calcMaxes - returning fast maxes for line', 'end');
       return this.maxes;
     }
 
@@ -723,8 +723,8 @@ export default class Segment extends GlyphElement {
         );
       }
     }
-    // debug([this.getFastMaxes(), bounds]);
-    // debug(' Segment.calcMaxes - END\n');
+    // log([this.getFastMaxes(), bounds]);
+    // log('Segment.calcMaxes', 'end');
     this.maxes = bounds;
     return this.maxes;
   }
@@ -741,20 +741,21 @@ export default class Segment extends GlyphElement {
    * @returns {boolean}
    */
   isLineOverlappedByLine(largeSegment) {
-    // debug(`\n Segment.isLineOverlappedByLine - START`);
+    // log(`Segment.isLineOverlappedByLine`, 'start');
 
     if (!this.lineType || !largeSegment.lineType) {
-      // debug(`\t this.lineType: ${this.lineType} and largeSegment.lineType: ${largeSegment.lineType}`);
-      // debug(` Segment.isLineOverlappedByLine - END - returning false\n\n`);
+      // log(`this.lineType: ${this.lineType} and largeSegment.lineType: ${largeSegment.lineType}`);
+      // log(`Segment.isLineOverlappedByLine`, 'end');
       return false;
     }
 
     const c1 = largeSegment.containsPointOnLine(this.getXYPoint(1));
     const c4 = largeSegment.containsPointOnLine(this.getXYPoint(4));
 
-    // debug(`\t this.p1 / p4 is on largeSegment: ${c1} / ${c4}`);
+    // log(`this.p1 / p4 is on largeSegment: ${c1} / ${c4}`);
 
-    // debug(` Segment.isLineOverlappedByLine - END - returning ${c1&&c4}\n\n`);
+    // log(`returning ${c1&&c4}`);
+    // log(`Segment.isLineOverlappedByLine`, 'end');
     return c1 && c4;
   }
 
@@ -813,14 +814,14 @@ export default class Segment extends GlyphElement {
    * @returns {boolean}
    */
   containsPointOnLine(pt) {
-    // debug('\n Segment.containsPointOnLine - START');
-    // debug('\t checking ' + pt.x + ' \t' + pt.y);
+    // log('\n Segment.containsPointOnLine - START');
+    // log('checking ' + pt.x + ' \t' + pt.y);
     if (!this.lineType) {
-      // debug('\t this is not a line, returning false');
+      // log('this is not a line, returning false');
       return false;
     }
     if (this.containsTerminalPoint(pt)) {
-      // debug('\t this segment contains the point as an end point, returning false');
+      // log('this segment contains the point as an end point, returning false');
       return false;
     }
 
@@ -840,11 +841,11 @@ export default class Segment extends GlyphElement {
       within(this.p1y, pt.y, this.p4y) &&
       pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), pt)
     ) {
-      // debug('\t returning true');
+      // log('returning true');
       return true;
     }
 
-    // debug('\t fallthrough returning false');
+    // log('fallthrough returning false');
     return false;
   }
 

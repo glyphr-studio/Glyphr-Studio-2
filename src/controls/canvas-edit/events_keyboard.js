@@ -7,13 +7,13 @@ const { getGlyphrStudioApp } = require("../../app/main");
 
 function keyup(event) {
   let eh = _UI.eventhandlers;
-  // debug('\t eh.lastTool = ' + eh.lastTool);
+  // log('eh.lastTool = ' + eh.lastTool);
 
   eh.isShiftDown = false;
   let kc = getKeyFromEvent(event);
-  // debug('Key Up:\t\t' + kc + ' from ' + event.which);
-  // debug('\t CTRL ' + event.ctrlKey + ' META ' + event.metaKey);
-  // debug(event);
+  // log('Key Up:\t\t' + kc + ' from ' + event.which);
+  // log('CTRL ' + event.ctrlKey + ' META ' + event.metaKey);
+  // log(event);
 
   if (!onCanvasEditPage()) return;
 
@@ -42,7 +42,7 @@ function keyup(event) {
 }
 
 function keypress(event) {
-  // debug('\n keypress - START');
+  // log('\n keypress - START');
   if (event.type !== 'keydown') return;
   if (editor.nav.page === 'openproject') return;
   if (getEditDocument().activeElement.id === 'contextglyphsinput') return;
@@ -55,9 +55,9 @@ function keypress(event) {
     eh.isShiftDown = true;
   }
 
-  // debug('Key Press:\t' + kc + ' from ' + event.which);
-  // debug('\t CTRL ' + event.ctrlKey + ' META ' + event.metaKey);
-  // debug(event);
+  // log('Key Press:\t' + kc + ' from ' + event.which);
+  // log('CTRL ' + event.ctrlKey + ' META ' + event.metaKey);
+  // log(event);
 
   // shift s (save as)
   if (isCtrlDown && eh.isShiftDown && kc === 's') {
@@ -89,7 +89,7 @@ function keypress(event) {
 
   // o
   if (isCtrlDown && kc === 'o') {
-    // debug('\t pressed Ctrl + O');
+    // log('pressed Ctrl + O');
     event.preventDefault();
 
     window.open('http://glyphrstudio.com/online', '_blank');
@@ -108,8 +108,8 @@ function keypress(event) {
 
   // Ctrl
   if ((isCtrlDown || kc === 'ctrl') && !eh.multi) {
-    // debug('\t event.ctrlKey = true');
-    // debug('\t selectedTool = ' + _UI.selectedTool);
+    // log('event.ctrlKey = true');
+    // log('selectedTool = ' + _UI.selectedTool);
     event.preventDefault();
     eh.multi = true;
 
@@ -118,7 +118,7 @@ function keypress(event) {
       if (em === 'pen') setCursor('penPlus');
     }
 
-    // debug('\t eh.lastTool = ' + eh.lastTool);
+    // log('eh.lastTool = ' + eh.lastTool);
     redraw({
       calledBy: 'Event Handler - Keydown Ctrl for multi select',
       redrawPanels: false,
@@ -259,11 +259,11 @@ function keypress(event) {
     // b
     if (kc === 'b') clickTool('pathedit');
   }
-  // debug(' keypress - END\n');
+  // log('keypress', 'end');
 }
 
 function getKeyFromEvent(event) {
-  // debug('GETKEYFROMEVENT - keyCode:' + event.keyCode + '\twhich:' + event.which);
+  // log('GETKEYFROMEVENT - keyCode:' + event.keyCode + '\twhich:' + event.which);
   let specialGlyphs = {
     8: 'backspace',
     9: 'tab',

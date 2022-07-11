@@ -50,7 +50,7 @@ export default function XMLtoJSON(inputXML) {
     for (let k=0; k<kids.length; k++) {
       tagresult = {};
       node = kids[k];
-      // log('\n\t>>START kid ' + k + ' ' + node.nodeName);
+      // log('\n\t>>start kid ' + k + ' ' + node.nodeName);
       if (node.nodeName === '#comment') break;
 
       tagcontent = tag_getContent(node);
@@ -66,7 +66,7 @@ export default function XMLtoJSON(inputXML) {
 
       if (tagresult !== '') result.push(tagresult);
 
-      // log('\t>>END kid ' + k);
+      // log('\t>>end kid ' + k);
     }
 
     return result;

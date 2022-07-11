@@ -6,7 +6,7 @@
 **/
 
 function makePanel_GlyphChooser() {
-  // debug('\n makePanel_GlyphChooser - START');
+  // log('\n makePanel_GlyphChooser - START');
 
   let content = '<div class="navarea_header">';
   content += makePanelSuperTitle();
@@ -67,12 +67,12 @@ function makePanel_GlyphChooser() {
 
   content += '</div>';
 
-  // debug(' makePanel_GlyphChooser - END\n');
+  // log('makePanel_GlyphChooser', 'end');
   return content;
 }
 
 function asyncLoadChooserPanel() {
-  // debug(' asyncLoadChooserPanel - START');
+  // log('asyncLoadChooserPanel - START');
 
   function tryLoadChooserPanel() {
     const np = _UI.popOut
@@ -82,9 +82,9 @@ function asyncLoadChooserPanel() {
 
     if (_UI.glyphChooser.cache && np && gc && gc.innerHTML === '') {
       gc.innerHTML = _UI.glyphChooser.cache;
-      // debug(' tryLoadChooserPanel - SUCCESS\n');
+      // log('tryLoadChooserPanel - SUCCESS\n');
     } else {
-      // debug(' tryLoadChooserPanel - TRYING AGAIN\n');
+      // log('tryLoadChooserPanel - TRYING AGAIN\n');
       setTimeout(tryLoadChooserPanel, 10);
     }
   }
@@ -94,8 +94,8 @@ function asyncLoadChooserPanel() {
 }
 
 function make_GlyphChooser(gcdata) {
-  // debug('\n make_GlyphChooser - START');
-  // debug([gcdata]);
+  // log('\n make_GlyphChooser - START');
+  // log([gcdata]);
 
   let con = '';
 
@@ -114,7 +114,7 @@ function make_GlyphChooser(gcdata) {
     con += make_GlyphChooser_DropDown(gcdata.choices);
   else con += make_GlyphChooser_Content(gcdata);
 
-  // debug(' make_GlyphChooser - END\n');
+  // log('make_GlyphChooser', 'end');
   return con;
 }
 
@@ -131,8 +131,8 @@ function toggle_GlyphChooser() {
 }
 
 function update_GlyphChooser(selrange) {
-  // debug('\n update_GlyphChooser - START');
-  // debug('\t passed ' + selrange);
+  // log('\n update_GlyphChooser - START');
+  // log('passed ' + selrange);
 
   if (isBigDialogOpen()) {
     _UI.glyphChooser.dialog.selected = selrange;
@@ -175,12 +175,12 @@ function update_GlyphChooser(selrange) {
     redraw({ calledBy: update_GlyphChooser, redrawPanels: false });
   }
 
-  // debug(' update_GlyphChooser - END\n');
+  // log('update_GlyphChooser', 'end');
 }
 
 function make_GlyphChooser_Header(selrange) {
-  // debug('\n make_GlyphChooser_Header - START');
-  // debug('\t passed selrange ' + selrange);
+  // log('\n make_GlyphChooser_Header - START');
+  // log('passed selrange ' + selrange);
 
   let content =
     '<div class="glyphChooser-header" onclick="toggle_GlyphChooser();">';
@@ -292,30 +292,31 @@ function make_GlyphChooser_DropDown(ch) {
 }
 
 function pluralGlyphRange() {
-  // debug('\n pluralGlyphRange - START');
+  // log('\n pluralGlyphRange - START');
   const gr = getCurrentProject().projectSettings.glyphrange;
   let count = gr.custom.length;
 
   if (gr.basicLatin) {
-    count++; /* debug('\t triggered basicLatin');*/
+    count++; /* log('triggered basicLatin');*/
   }
   if (gr.latinExtendedA) {
-    count++; /* debug('\t triggered latinExtendedA');*/
+    count++; /* log('triggered latinExtendedA');*/
   }
   if (gr.latinExtendedB) {
-    count++; /* debug('\t triggered latinExtendedB');*/
+    count++; /* log('triggered latinExtendedB');*/
   }
   if (gr.latinSupplement) {
-    count++; /* debug('\t triggered latinSupplement');*/
+    count++; /* log('triggered latinSupplement');*/
   }
 
-  // debug(' pluralGlyphRange - END - returning ' + count + '\n');
+  // log('returning ' + count);
+  // log('pluralGlyphRange', 'end');
   return count > 1;
 }
 
 function make_GlyphChooser_Content(gcdata) {
-  // debug('\n make_GlyphChooser_Content - START');
-  // debug([gcdata]);
+  // log('\n make_GlyphChooser_Content - START');
+  // log([gcdata]);
 
   const fname = gcdata.fname || 'selectGlyph';
   const sel = isVal(gcdata.selected) ? gcdata.selected : 'glyphs';
@@ -323,7 +324,7 @@ function make_GlyphChooser_Content(gcdata) {
   let re = '<div class="glyphChooser-content">';
 
   if (sel === 'basicLatin' || sel === 'glyphs') {
-    // debug('\t triggered glyphs');
+    // log('triggered glyphs');
     const bl = _UI.basiclatinorder;
     for (let i = 0; i < bl.length; i++) {
       re += make_GlyphChooser_Button(bl[i], fname, selwi);
@@ -332,7 +333,7 @@ function make_GlyphChooser_Content(gcdata) {
   }
 
   if (sel === 'latinSupplement') {
-    // debug('\t triggered latinSupplement');
+    // log('triggered latinSupplement');
     for (
       let s = _UI.glyphrange.latinSupplement.begin;
       s <= _UI.glyphrange.latinSupplement.end;
@@ -344,7 +345,7 @@ function make_GlyphChooser_Content(gcdata) {
   }
 
   if (sel === 'latinExtendedA') {
-    // debug('\t triggered latinExtendedA');
+    // log('triggered latinExtendedA');
     for (
       let a = _UI.glyphrange.latinExtendedA.begin;
       a <= _UI.glyphrange.latinExtendedA.end;
@@ -356,7 +357,7 @@ function make_GlyphChooser_Content(gcdata) {
   }
 
   if (sel === 'latinExtendedB') {
-    // debug('\t triggered latinExtendedB');
+    // log('triggered latinExtendedB');
     for (
       let b = _UI.glyphrange.latinExtendedB.begin;
       b <= _UI.glyphrange.latinExtendedB.end;
@@ -370,7 +371,7 @@ function make_GlyphChooser_Content(gcdata) {
   const cr = getCurrentProject().projectSettings.glyphrange;
   const c = parseInt(sel);
   if (!isNaN(c)) {
-    // debug('\t triggered custom range');
+    // log('triggered custom range');
     for (let range = cr.custom[c].begin; range <= cr.custom[c].end; range++) {
       cn = decToHex(range);
       if (getCurrentProject().projectSettings.glyphrange.filternoncharpoints) {
@@ -400,18 +401,19 @@ function make_GlyphChooser_Content(gcdata) {
     return re + '</div>';
   }
 
-  // debug(' make_GlyphChooser_HeaderContent - END ERROR\n');
+  // log('ERROR');
+  // log('make_GlyphChooser_HeaderContent', 'end');
   return '[error: make_GlyphChooser_HeaderContent]';
 }
 
 function make_GlyphChooser_Button(index, fname, selid) {
-  // debug('\n make_GlyphChooser_Button - START ' + index);
+  // log('\n make_GlyphChooser_Button - START ' + index);
   const onc = fname + "('" + index + "');";
-  // debug('\t constructed function: ' + onc);
+  // log('constructed function: ' + onc);
 
   const wi = getGlyph(index);
-  // debug('\t getGlyph returned');
-  // debug(wi);
+  // log('getGlyph returned');
+  // log(wi);
 
   let gname = wi.name;
   if (gname === '[name not found]' || !gname) gname = getGlyphName(index);
@@ -460,6 +462,6 @@ function make_GlyphChooser_Button(index, fname, selid) {
     '</div>';
   rv += '</div>';
 
-  // debug(' make_GlyphChooser_Button - END\n');
+  // log('make_GlyphChooser_Button', 'end');
   return rv;
 }

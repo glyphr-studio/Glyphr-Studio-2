@@ -2,7 +2,7 @@ import { makeElement } from '../controls.js';
 import { samples } from '../../samples/samples.js';
 import Glyph from '../../glyph_elements/glyph.js';
 // import { getGlyphrStudioApp } from '../app/main.js';
-import { debug } from '../../common/functions.js';
+import { log } from '../../common/functions.js';
 
 /**
  * CanvasDisplay takes a string of glyphs and displays them on the canvas
@@ -78,7 +78,7 @@ export default class CanvasDisplay extends HTMLElement {
    * @param {string} newValue - value after the change
    */
   attributeChangedCallback(attributeName, oldValue, newValue) {
-    console.log(` canvas-display.attributeChangeCallback`);
+    console.log(`canvas-display.attributeChangeCallback`);
     console.log(
       `\t Attribute ${attributeName} was ${oldValue}, is now ${newValue}`
     );
@@ -121,7 +121,7 @@ export default class CanvasDisplay extends HTMLElement {
    * Updates the canvas
    */
   redraw() {
-    console.log(` canvas-display.redraw`);
+    console.log(`canvas-display.redraw`);
     let view = { dx: 100, dy: 800, dz: 1 };
     // const app = getGlyphrStudioApp();
     this.ctx.fillStyle = 'lime';
@@ -133,7 +133,7 @@ export default class CanvasDisplay extends HTMLElement {
     // console.log(sg);
 
     let sg = new Glyph(samples.glyphBox);
-    debug(sg);
+    log(sg);
     sg.drawGlyph(this.ctx, view);
   }
 }

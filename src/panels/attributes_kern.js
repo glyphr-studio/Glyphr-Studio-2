@@ -4,7 +4,7 @@
 **/
 
 function makePanel_KerningAttributes() {
-  // debug('\n makePanel_KerningAttributes - START');
+  // log('\n makePanel_KerningAttributes - START');
 
   let content = '<div class="navarea_header">';
   content += makePanelSuperTitle();
@@ -40,7 +40,7 @@ function makePanel_KerningAttributes() {
     content += '</div>';
   }
 
-  // debug(' makePanel_KerningAttributes - END\n');
+  // log('makePanel_KerningAttributes', 'end');
   return content;
 }
 

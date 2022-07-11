@@ -5,7 +5,7 @@
 **/
 
 function ioSVG_exportSVGfont() {
-  // debug('\n ioSVG_exportSVGfont - Start');
+  // log('\n ioSVG_exportSVGfont - Start');
   const ps = getCurrentProject().projectSettings;
   const md = getCurrentProject().metadata;
   const family = md.font_family;
@@ -98,11 +98,11 @@ function ioSVG_exportSVGfont() {
 
   saveFile(filename, con);
 
-  // debug(' ioSVG_exportSVGfont - END\n');
+  // log('ioSVG_exportSVGfont', 'end');
 }
 
 function ioSVG_makeFontFace() {
-  // debug('\n ioSVG_makeFontFace - START');
+  // log('\n ioSVG_makeFontFace - START');
   calcFontMaxes();
   const t = '\t\t\t\t';
   const md = getCurrentProject().metadata;
@@ -146,12 +146,12 @@ function ioSVG_makeFontFace() {
   con = con.substring(0, con.length - 1);
   con += '>';
 
-  // debug(' ioSVG_makeFontFace - END\n');
+  // log('ioSVG_makeFontFace', 'end');
   return con;
 }
 
 function ioSVG_makeMissingGlyph() {
-  // debug('\n ioSVG_makeMissingGlyph - START');
+  // log('\n ioSVG_makeMissingGlyph - START');
   let con = '     ';
   const gh = getCurrentProject().projectSettings.ascent;
   const gw = round(gh * 0.618);
@@ -175,12 +175,12 @@ function ioSVG_makeMissingGlyph() {
     'z';
   con += '" />';
 
-  // debug(' ioSVG_makeMissingGlyph - END\n');
+  // log('ioSVG_makeMissingGlyph', 'end');
   return con;
 }
 
 function ioSVG_makeAllGlyphsAndLigatures() {
-  // debug('\n ioSVG_makeAllGlyphsAndLigatures - START');
+  // log('\n ioSVG_makeAllGlyphsAndLigatures - START');
 
   const fc = getCurrentProject().glyphs;
   let con = '';
@@ -199,7 +199,7 @@ function ioSVG_makeAllGlyphsAndLigatures() {
     con += ioSVG_makeOneGlyphOrLigature(fc[c], c);
   }
 
-  // debug(' ioSVG_makeAllGlyphsAndLigatures - END\n');
+  // log('ioSVG_makeAllGlyphsAndLigatures', 'end');
   return con;
 }
 
@@ -239,7 +239,7 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 }
 
 function ioSVG_makeAllKernPairs() {
-  // debug('\n ioSVG_makeAllKernPairs - START');
+  // log('\n ioSVG_makeAllKernPairs - START');
   const kp = getCurrentProject().kerning;
   let con = '\t\t\t<!-- Kern Pairs -->\n';
 
@@ -254,6 +254,6 @@ function ioSVG_makeAllKernPairs() {
     }
   }
 
-  // debug(' ioSVG_makeAllKernPairs - END\n');
+  // log('ioSVG_makeAllKernPairs', 'end');
   return con;
 }

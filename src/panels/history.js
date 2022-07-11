@@ -15,7 +15,7 @@ function makePanel_History() {
 
   content += '</div><div class="panel_section">';
 
-  // debug("MAKEPANEL_HISTORY - rolling out queue\n" + json(q));
+  // log("MAKEPANEL_HISTORY - rolling out queue\n" + json(q));
 
   content +=
     '<button style="width:100px;" class="' +

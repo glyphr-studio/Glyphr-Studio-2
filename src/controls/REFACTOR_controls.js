@@ -62,8 +62,8 @@ function makeFloatLogo() {
 // Navigation Icons
 // -------------------
 function makeIcon(oa) {
-  // debug('\n makeIcon - START ' + oa.name);
-  // debug('\t passed ' + json(oa, true));
+  // log('\n makeIcon - START ' + oa.name);
+  // log('passed ' + json(oa, true));
 
   let size = oa.size || 50;
   let width = oa.width || size;
@@ -112,26 +112,26 @@ function makeIcon(oa) {
 }
 
 function mouseOverIcon(hoverColor, elem) {
-  // debug('\n mouseOverIcon - START');
+  // log('\n mouseOverIcon - START');
   let gs = elem.parentNode.getElementsByTagName('g');
   for (let i = 0; i < gs.length; i++) {
     gs[i].style.fill = '' + hoverColor;
   }
-  // debug(' mouseOverIcon - END\n');
+  // log('mouseOverIcon', 'end');
 }
 
 function mouseOutIcon(color, elem) {
-  // debug('\n mouseOutIcon - START');
+  // log('\n mouseOutIcon - START');
   let gs = elem.parentNode.getElementsByTagName('g');
   for (let i = 0; i < gs.length; i++) {
     gs[i].style.fill = '' + color;
   }
-  // debug(' mouseOutIcon - END\n');
+  // log('mouseOutIcon', 'end');
 }
 
 function goHamburger(ham) {
-  // debug('\n goHamburger - START');
-  // debug('\t passed ' + ham);
+  // log('\n goHamburger - START');
+  // log('passed ' + ham);
 
   let h = _UI.hamburger;
   let step = 4;
@@ -146,7 +146,7 @@ function goHamburger(ham) {
   function hamburgerStep() {
     let con = document.getElementById('npNav');
     h.state = Math.max(0, Math.min(len - 1, h.state + h.direction));
-    // debug('\t\t hamburgerStep ' + h.state);
+    // log('\t\t hamburgerStep ' + h.state);
 
     if (con)
       con.innerHTML = makeIcon({
@@ -162,7 +162,7 @@ function goHamburger(ham) {
     }
   }
 
-  // debug(' goHamburger - END\n');
+  // log('goHamburger', 'end');
 }
 
 _UI.icons.button_npNavFrames = [
@@ -1063,7 +1063,7 @@ _UI.cursors.crosshairsSquare =
 //  TOOLS
 //  ---------------------
 function makeToolButton(oa) {
-  // debug("MAKETOOLBUTTON - oa: " + json(oa));
+  // log("MAKETOOLBUTTON - oa: " + json(oa));
 
   let color_outline = _UI.colors.blue.l75;
   let color_fill = _UI.colors.gray.l40;
@@ -1214,7 +1214,7 @@ function makePointButton(type, selected) {
     bgcolor = _UI.colors.gray.offWhite;
   }
 
-  // debug("MAKEPOINTBUTTON - " + type + " selected: " + selected + " color: " + color);
+  // log("MAKEPOINTBUTTON - " + type + " selected: " + selected + " color: " + color);
   let re = '';
 
   re +=
@@ -1278,7 +1278,7 @@ function makePointButton(type, selected) {
 //  -------------------------------
 
 function lockUI(varname, currbool, idname) {
-  // debug("CHECKUI -  varname:" + varname + " doredraw:" + doredraw);
+  // log("CHECKUI -  varname:" + varname + " doredraw:" + doredraw);
   let restcolor = _UI.colors.gray.l90;
   let selcolor = _UI.colors.blue.l65;
 
@@ -1294,7 +1294,7 @@ function lockUI(varname, currbool, idname) {
     (currbool ? _UI.colors.gray.l80 : 'white') +
     '" ' +
     'onclick="' +
-    // 'debug(\'Clicked on checkbox '+varname+'\'); ' +
+    // 'log(\'Clicked on checkbox '+varname+'\'); ' +
     varname +
     ' = !' +
     varname +
@@ -1313,7 +1313,7 @@ function lockUI(varname, currbool, idname) {
 }
 
 function checkUI(varname, currbool, doredraw, invert) {
-  // debug("CHECKUI -  varname:" + varname + " doredraw:" + doredraw);
+  // log("CHECKUI -  varname:" + varname + " doredraw:" + doredraw);
   let idname = varname.split('.');
   idname = idname[idname.length - 1];
   if (invert) currbool = !currbool;
@@ -1392,6 +1392,6 @@ function helpUI(message) {
     '" cx="8.8" cy="14.5" rx="1.4" ry="1.2"/>' +
     '</svg></button>';
 
-  // debug("HELPUI - output:\n"+re);
+  // log("HELPUI - output:\n"+re);
   return re;
 }

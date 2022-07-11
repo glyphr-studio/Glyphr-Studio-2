@@ -39,8 +39,8 @@ function makeEditPageContent() {
         the redraw, for debugging purposes.
     */
 function redraw(oa) {
-  // debug('\n REDRAW - START');
-  // debug('\t oa: ' + json(oa));
+  // log('\n REDRAW - START');
+  // log('oa: ' + json(oa));
   oa = oa || {};
   _UI.redraw.redrawCanvas = isVal(oa.redrawCanvas) ? oa.redrawCanvas : true;
   _UI.redraw.redrawTools = isVal(oa.redrawTools) ? oa.redrawTools : true;
@@ -56,19 +56,19 @@ function redraw(oa) {
 
   if (_UI.redrawing) {
     // this is totally a hack
-    // debug('\t RETURNING because _UI.redrawing = ' + _UI.redrawing);
+    // log('RETURNING because _UI.redrawing = ' + _UI.redrawing);
     return;
   }
 
   _UI.redrawing = false;
   reqAniFrame(redrawUnit);
   _UI.redrawing = false;
-  // debug(' REDRAW - END\n');
+  // log('REDRAW', 'end');
 }
 
 function redrawUnit() {
-  // debug('\n redrawUnit - START');
-  // debug('\t _UI.redraw ' + json(_UI.redraw));
+  // log('\n redrawUnit - START');
+  // log('_UI.redraw ' + json(_UI.redraw));
 
   if (_UI.redraw.redrawCanvas) {
     if (_UI.glyphEditCTX)
@@ -118,27 +118,27 @@ function redrawUnit() {
 
   if (getGlyphrStudioApp().settings.dev.mode && _UI.testOnRedraw)
     _UI.testOnRedraw();
-  // debug(' redrawUnit - END\n');
+  // log('redrawUnit', 'end');
 }
 
 // -------------------
 // Update Tools
 // -------------------
 function update_ToolsArea() {
-  // debug('\n update_ToolsArea - START');
+  // log('\n update_ToolsArea - START');
 
   if (!onCanvasEditPage()) {
-    // debug('\t returning, !onCanvasEditPage');
+    // log('returning, !onCanvasEditPage');
     return;
   }
 
   if (!_UI.redraw.redrawTools) {
-    // debug('\t returning, !_UI.redraw.redrawTools');
+    // log('returning, !_UI.redraw.redrawTools');
     return;
   }
 
   if (!getSelectedWorkItemID()) {
-    // debug('\t returning, !getSelectedWorkItemID');
+    // log('returning, !getSelectedWorkItemID');
     getEditDocument().getElementById('toolsarea_upperleft').innerHTML = '';
     return;
   }
@@ -177,7 +177,7 @@ function update_ToolsArea() {
 
   const st = _UI.selectedTool;
 
-  // debug(`\t selected glyph ${selectedWorkItem.name} selected tool ${st}`);
+  // log(`selected glyph ${selectedWorkItem.name} selected tool ${st}`);
 
   // UPPER RIGHT
   // Pop In/Out
@@ -389,14 +389,14 @@ function update_ToolsArea() {
     'toolsarea_lowerleft'
   ).innerHTML = utilitiescontent;
 
-  // debug(' update_ToolsArea - END\n');
+  // log('update_ToolsArea', 'end');
 }
 
 function clickTool(ctool) {
-  // debug('\n clickTool - START');
+  // log('\n clickTool - START');
   _UI.selectedTool = ctool;
 
-  // debug('\t passed: ' + ctool + ' and _UI.selectedTool now is: ' + _UI.selectedTool);
+  // log('passed: ' + ctool + ' and _UI.selectedTool now is: ' + _UI.selectedTool);
 
   _UI.eventhandlers.eh_addpath.firstpoint = true;
   _UI.eventhandlers.multi = false;
@@ -428,52 +428,52 @@ function clickTool(ctool) {
 function updateCursor(tool) {
   tool = tool || _UI.selectedTool;
 
-  // debug('\n updateCursor - START');
-  // debug('\t tool = ' + tool);
+  // log('\n updateCursor - START');
+  // log('tool = ' + tool);
 
   if (_UI.eventhandlers.ismouseovercec) {
     if (tool === 'newrect') {
-      // debug('\t setting cursor to crosshairsSquare');
+      // log('setting cursor to crosshairsSquare');
       setCursor('crosshairsSquare');
     } else if (tool === 'newoval') {
-      // debug('\t setting cursor to crosshairsCircle');
+      // log('setting cursor to crosshairsCircle');
       setCursor('crosshairsCircle');
     } else if (tool === 'shaperesize') {
-      // debug('\t shaperesize :: not setting cursor');
+      // log('shaperesize :: not setting cursor');
       // Handled by eventHandler
     } else if (tool === 'newpath') {
-      // debug('\t setting cursor to penPlus');
+      // log('setting cursor to penPlus');
       setCursor('penPlus');
     } else if (tool === 'pathedit') {
-      // debug('\t setting cursor to pen');
+      // log('setting cursor to pen');
       setCursor('pen');
     } else if (tool === 'pathaddpoint') {
-      // debug('\t setting cursor to pen');
+      // log('setting cursor to pen');
       setCursor('penPlus');
     } else if (tool === 'slice') {
-      // debug('\t setting cursor to slice');
+      // log('setting cursor to slice');
       setCursor('slice');
     } else if (tool === 'pan') {
-      // debug('\t setting cursor to move');
+      // log('setting cursor to move');
       setCursor('move');
     } else if (tool === 'kern') {
-      // debug('\t setting cursor to col-resize');
+      // log('setting cursor to col-resize');
       setCursor('col-resize');
     } else {
-      // debug('\t defaulting cursor to pointer');
+      // log('defaulting cursor to pointer');
       setCursor('arrow');
     }
   } else {
-    // debug('\t NOT ON EDIT CANVS setting cursor to default');
+    // log('NOT ON EDIT CANVS setting cursor to default');
     setCursor('default');
   }
 
-  // debug(' updateCursor - END\n');
+  // log('updateCursor', 'end');
 }
 
 function setCursor(name) {
-  // debug('\n setCursor - START');
-  // debug('\t passed ' + name);
+  // log('\n setCursor - START');
+  // log('passed ' + name);
   const cur = [
     'auto',
     'default',
@@ -515,22 +515,22 @@ function setCursor(name) {
 
   if (cur.indexOf(name + '-resize') > -1) {
     if (canResize(name)) name += '-resize';
-    // debug('\t SET -resize CURSOR');
+    // log('SET -resize CURSOR');
   }
 
   getEditDocument().body.style.cursor = 'auto';
 
   if (_UI.cursors[name]) {
     getEditDocument().body.style.cursor = _UI.cursors[name];
-    // debug('\t SET CUSTOM CURSOR:\t'+name);
+    // log('SET CUSTOM CURSOR:\t'+name);
   } else if (cur.indexOf(name) > -1) {
     getEditDocument().body.style.cursor = name;
-    // debug('\t SET BUILT-IN CURSOR:\t'+name);
+    // log('SET BUILT-IN CURSOR:\t'+name);
   } else {
-    // debug('\t DEFAULT TO auto');
+    // log('DEFAULT TO auto');
   }
 
-  // debug(' setCursor - END\n');
+  // log('setCursor', 'end');
 }
 
 function getEditMode() {
@@ -546,23 +546,23 @@ function getEditMode() {
 }
 
 function mouseovercec() {
-  // debug('\n mouseovercec - START');
+  // log('\n mouseovercec - START');
   _UI.eventhandlers.ismouseovercec = true;
   updateCursor();
   if (_UI.hamburger.state !== 0 && _UI.currentPanel !== 'npNav')
     goHamburger(false);
-  // debug(' mouseovercec - END\n');
+  // log('mouseovercec', 'end');
 }
 
 function mouseoutcec() {
-  // debug('\n mouseoutcec - START');
+  // log('\n mouseoutcec - START');
   _UI.eventhandlers.ismouseovercec = false;
   // Fixes a Chrome cursor problem
   document.onselectstart = function () {};
   updateCursor();
   if (_UI.hamburger.state !== 11 && _UI.currentPanel !== 'npNav')
     goHamburger(true);
-  // debug(' mouseoutcec - END\n');
+  // log('mouseoutcec', 'end');
 }
 
 function updateContextGlyphs() {
@@ -705,15 +705,15 @@ function makeKeyboardShortcutsTable() {
 // -------------------
 
 function drawContextGlyphs() {
-  // debug('\n drawContextGlyphs - START');
+  // log('\n drawContextGlyphs - START');
   const selwid = getSelectedWorkItemID();
   const currGlyphObject = getGlyph(selwid, true);
   const currGlyphChar = hexToChars(selwid);
   const v = getView('drawContextGlyphs');
   const split = splitContextGlyphString(currGlyphChar);
 
-  // debug('\t split: ' + split.left + ' | ' + split.right);
-  // debug(`\t view: ${json(v, true)}`);
+  // log('split: ' + split.left + ' | ' + split.right);
+  // log(`view: ${json(v, true)}`);
 
   clearCanvasHotspots();
 
@@ -725,7 +725,7 @@ function drawContextGlyphs() {
       currGlyphChar
     );
 
-    // debug(`\t leftdistance: ${leftdistance}`);
+    // log(`leftdistance: ${leftdistance}`);
 
     _UI.contextGlyphs.leftseq = new GlyphSequence({
       glyphstring: split.left,
@@ -747,7 +747,7 @@ function drawContextGlyphs() {
     if (currGlyphObject.isAutoWide) rightdistance -= currGlyphObject.lsb;
     rightdistance += calculateKernOffset(currGlyphChar, split.right.charAt(0));
 
-    // debug(`\t rightdistance: ${rightdistance}`);
+    // log(`rightdistance: ${rightdistance}`);
 
     _UI.contextGlyphs.rightseq = new GlyphSequence({
       glyphstring: split.right,
@@ -764,7 +764,7 @@ function drawContextGlyphs() {
     _UI.contextGlyphs.rightseq.draw();
   }
 
-  // debug(' drawContextGlyphs - END\n');
+  // log('drawContextGlyphs', 'end');
 }
 
 function splitContextGlyphString(splitchar) {
@@ -844,16 +844,16 @@ function drawContextGlyphRightLineExtras(char, seq) {
 }
 
 function drawContextGlyphExtras(char) {
-  // debug('\n drawContextGlyphExtras - START');
+  // log('\n drawContextGlyphExtras - START');
 
-  // debug(`\t ${char.char}
+  // log(`${char.char}
   //  width \t ${char.width}
   //  aggr \t ${char.aggregate}
   //  lnbr \t ${char.islinebreaker}
   //  view \t ${json(char.view, true)}
   //  line \t ${char.linenumber}
   // \n`);
-  // debug(char.glyph);
+  // log(char.glyph);
 
   const ps = getCurrentProject().projectSettings;
   const alpha = transparencyToAlpha(ps.colors.systemguidetransparency);
@@ -881,7 +881,7 @@ function drawContextGlyphExtras(char) {
     if (char.kern) drawGlyphKernExtra(char.kern, rightx, texty, view.dz);
   }
 
-  // debug(' drawContextGlyphExtras - END\n');
+  // log('drawContextGlyphExtras', 'end');
 }
 
 function drawGlyphNameExtra(
@@ -892,8 +892,8 @@ function drawGlyphNameExtra(
   color,
   regHotspot
 ) {
-  // debug('\n drawGlyphNameExtra - START');
-  // debug(`\t ${text} passed regHotspot ${regHotspot}`);
+  // log('\n drawGlyphNameExtra - START');
+  // log(`${text} passed regHotspot ${regHotspot}`);
 
   const ctx = _UI.glyphEditCTX;
   const textw = ctx.measureText(text).width;
@@ -965,15 +965,15 @@ function drawGlyphKernExtra(kern, rightx, topy, scale) {
 }
 
 function drawContextGlyph(char) {
-  // debug('\n drawContextGlyph - START');
-  // debug(`\t ${char.char}
+  // log('\n drawContextGlyph - START');
+  // log(`${char.char}
   //  width \t ${char.width}
   //  aggr \t ${char.aggregate}
   //  lnbr \t ${char.islinebreaker}
   //  view \t ${json(char.view, true)}
   //  line \t ${char.linenumber}
   // \n`);
-  // debug(char.glyph);
+  // log(char.glyph);
   const v = getView('drawContextGlyph');
   const c = char.view;
 
@@ -987,7 +987,7 @@ function drawContextGlyph(char) {
     true
   );
 
-  // debug(' drawContextGlyph - END\n');
+  // log('drawContextGlyph', 'end');
 }
 
 // -------------------------------
@@ -1008,8 +1008,8 @@ function isHotspotHere(cx, cy) {
 
   for (let i = 0; i < chs.length; i++) {
     v = chs[i];
-    // debug(`isHotspotHere - checking ${v.target.xMin} - ${v.target.xMax} - ${v.target.yMin} - ${v.target.yMax}`);
-    // debug(`results ${(cx <= v.target.xMax)} - ${(cx >= v.target.xMin)} - ${(cy <= v.target.yMax)} - ${(cy >= v.target.yMin)}`);
+    // log(`isHotspotHere - checking ${v.target.xMin} - ${v.target.xMax} - ${v.target.yMin} - ${v.target.yMax}`);
+    // log(`results ${(cx <= v.target.xMax)} - ${(cx >= v.target.xMin)} - ${(cy <= v.target.yMax)} - ${(cy >= v.target.yMin)}`);
     if (
       cx <= v.target.xMax &&
       cx >= v.target.xMin &&
@@ -1037,8 +1037,8 @@ function findAndCallHotspot(cx, cy) {
 }
 
 function hotspotNavigateToGlyph(gid) {
-  // debug('\n hotspotNavigateToGlyph - START');
-  // debug('\t passed ' + gid);
+  // log('\n hotspotNavigateToGlyph - START');
+  // log('passed ' + gid);
 
   const v = getView('hotspotNavigateToGlyph');
   const currchar = getSelectedWorkItemChar();
@@ -1061,14 +1061,14 @@ function hotspotNavigateToGlyph(gid) {
   }
 
   const str = ctxg.substring(p1, p2);
-  // debug(`\t substring from ${p1} to ${p2} yeilds ${str}`);
+  // log(`substring from ${p1} to ${p2} yeilds ${str}`);
 
   const delta = getGlyphSequenceAdvanceWidth(str);
 
-  // debug(`\t advance width: ${delta} screen pixels: ${sXcX(delta)}`);
+  // log(`advance width: ${delta} screen pixels: ${sXcX(delta)}`);
   // v.dx += sXcX(delta);
   const kern = calculateKernOffset(leftchar, rightchar);
-  // debug(`\t kern offset ${leftchar} and ${rightchar} is ${kern}`);
+  // log(`kern offset ${leftchar} and ${rightchar} is ${kern}`);
 
   v.dx += v.dz * delta * flipper;
   v.dx += v.dz * kern * flipper;
@@ -1080,15 +1080,15 @@ function hotspotNavigateToGlyph(gid) {
   _UI.redraw.redrawTools = true;
   update_ToolsArea();
 
-  // debug(' hotspotNavigateToGlyph - END\n');
+  // log('hotspotNavigateToGlyph', 'end');
 }
 
 function findAndUnderlineHotspot(cx, cy) {
-  // debug('\n findAndUnderlineHotspot - START');
-  // debug(`\t cx:${cx} \t cy:${cy}`);
+  // log('\n findAndUnderlineHotspot - START');
+  // log(`cx:${cx} \t cy:${cy}`);
   const hs = isHotspotHere(cx, cy);
   const ctx = _UI.glyphEditCTX;
-  // debug(`\t ${hs}`);
+  // log(`${hs}`);
   if (hs) {
     const t = getCurrentProject().projectSettings.colors
       .systemguidetransparency;
@@ -1105,7 +1105,7 @@ function findAndUnderlineHotspot(cx, cy) {
   }
 
   return hs.target.xMin;
-  // debug(' findAndUnderlineHotspot - END\n');
+  // log('findAndUnderlineHotspot', 'end');
 }
 
 // -------------------
@@ -1131,8 +1131,8 @@ function setView(oa) {
 }
 
 function getView(calledBy) {
-  // debug('\n getView - START');
-  // debug('\t calledBy: ' + calledBy);
+  // log('\n getView - START');
+  // log('calledBy: ' + calledBy);
 
   const onkern = editor.nav.page === 'kerning';
   const sc = onkern ? getSelectedKernID() : getSelectedWorkItemID();
@@ -1145,8 +1145,8 @@ function getView(calledBy) {
     re = onkern ? clone(_UI.defaultKernView) : clone(_UI.defaultView);
   }
 
-  // debug('\t returning ' + json(re));
-  // debug(' getView - END\n');
+  // log('returning ' + json(re));
+  // log('getView', 'end');
 
   return re;
 }
@@ -1191,7 +1191,7 @@ function resetThumbView() {
     dz: zoom,
   };
 
-  // debug('RESETTHUMBVIEW - set to \n' + JSON.stringify(_UI.thumbView));
+  // log('RESETTHUMBVIEW - set to \n' + JSON.stringify(_UI.thumbView));
 }
 
 function calculateDefaultView() {
@@ -1220,18 +1220,18 @@ function calculateDefaultView() {
 }
 
 function fitViewToContextGlyphs(dontzoom) {
-  // debug('\n fitViewToContextGlyphs - START');
+  // log('\n fitViewToContextGlyphs - START');
   const ps = getCurrentProject().projectSettings;
 
   const xpadding = 80;
   const ypadding = 80; // Height of the UI across the top
   const canw = window.innerWidth - 470; // 470 is the width of the left panel area
   const canh = window.innerHeight - ypadding;
-  // debug(`\t CAN \t ${canw} \t ${canh}`);
+  // log(`CAN \t ${canw} \t ${canh}`);
 
   const strw = _UI.contextGlyphs.advancewidth;
   const strh = ps.ascent - ps.descent;
-  // debug(`\t STR \t ${strw} \t ${strh}`);
+  // log(`STR \t ${strw} \t ${strh}`);
 
   let zw;
   let zh;
@@ -1239,17 +1239,17 @@ function fitViewToContextGlyphs(dontzoom) {
 
   if (dontzoom) {
     nz = getView('fitViewToContextGlyphs').dz;
-    // debug(`\t VZ \t ${nz}`);
+    // log(`VZ \t ${nz}`);
   } else {
     zw = round(canw / (strw * 1.4), 3);
     zh = round(canh / (strh * 1.4), 3);
-    // debug(`\t NZ \t ${zw} \t ${zh}`);
+    // log(`NZ \t ${zw} \t ${zh}`);
   }
 
   var nz = Math.min(zh, zw);
   const nx = round((canw - nz * strw) / 2);
   const ny = round((canh - nz * strh) / 2 + ps.ascent * nz);
-  // debug(`\t VIEW \t ${nx} \t ${ny} \t ${nz}`);
+  // log(`VIEW \t ${nx} \t ${ny} \t ${nz}`);
 
   setView({ dx: nx, dy: ny, dz: nz });
 }
@@ -1302,10 +1302,10 @@ function cYsY(cy, view = getView('cYsY')) {
 // ------------------------------
 
 function draw_PathOutline(sh, accent, thickness) {
-  // debug('\n draw_PathOutline - START');
-  // debug('\t shape name = ' + sh.name);
-  // debug('\t accent.l65 = ' + accent.l65);
-  // debug('\t selectedTool = ' + _UI.selectedTool);
+  // log('\n draw_PathOutline - START');
+  // log('shape name = ' + sh.name);
+  // log('accent.l65 = ' + accent.l65);
+  // log('selectedTool = ' + _UI.selectedTool);
 
   if (!sh) return;
 
@@ -1342,15 +1342,15 @@ function draw_PathOutline(sh, accent, thickness) {
     _UI.glyphEditCTX.stroke();
   }
 
-  // debug(' draw_PathOutline - END\n');
+  // log('draw_PathOutline', 'end');
 }
 
 function draw_PathPoints(pparr, accent) {
-  // debug('\n draw_PathPoints - START');
+  // log('\n draw_PathPoints - START');
   pparr = pparr || [];
 
   for (let p = 0; p < pparr.length; p++) {
-    // debug('\t point ' + p + ' isSelected ' + _UI.multiSelect.points.isSelected(pparr[p]));
+    // log('point ' + p + ' isSelected ' + _UI.multiSelect.points.isSelected(pparr[p]));
 
     if (p === 0) {
       pparr[p].drawDirectionalityPoint(accent, pparr[(p + 1) % pparr.length]);
@@ -1359,7 +1359,7 @@ function draw_PathPoints(pparr, accent) {
     }
   }
 
-  // debug(' draw_PathPoints - END\n');
+  // log('draw_PathPoints', 'end');
 }
 
 function draw_PathPointHandles(pparr, accent) {
@@ -1371,9 +1371,9 @@ function draw_PathPointHandles(pparr, accent) {
 }
 
 function draw_BoundingBox(maxes, accent, thickness) {
-  // debug('\n draw_BoundingBox - START');
-  // debug(maxes);
-  // debug('\t accent: ' + accent.l65);
+  // log('\n draw_BoundingBox - START');
+  // log(maxes);
+  // log('accent: ' + accent.l65);
 
   accent = accent || _UI.colors.blue;
   thickness = thickness || 1;
@@ -1396,7 +1396,7 @@ function draw_BoundingBox(maxes, accent, thickness) {
   _UI.glyphEditCTX.strokeStyle = accent.l65;
   _UI.glyphEditCTX.lineWidth = thickness;
   _UI.glyphEditCTX.strokeRect(lx, ty, w, h);
-  // debug(' draw_BoundingBox - END\n');
+  // log('draw_BoundingBox', 'end');
 }
 
 function draw_BoundingBoxHandles(maxes, accent, thickness) {
@@ -1459,13 +1459,13 @@ function draw_RotationAffordance(accent, thickness) {
   const ss = _UI.multiSelect.shapes;
   const angle = calculateAngle({ x: cXsX(mx), y: cYsY(my) }, center);
 
-  // debug('\t Init angle:\t' + angle);
+  // log('Init angle:\t' + angle);
 
   const rotatehandle = { x: center.x, y: starttopy };
   rotate(rotatehandle, angle, center);
   rotate(rotatehandle, Math.PI / -2, center);
 
-  // debug('\t Drag Angle:\t' + round(angle, 2));
+  // log('Drag Angle:\t' + round(angle, 2));
 
   let counterclockwise = false;
   if (Math.abs(angle) > Math.PI / 2) {
@@ -1516,7 +1516,7 @@ function draw_RotationAffordance(accent, thickness) {
   if (counterclockwise) readout -= 360;
   readout = round(readout, 1);
 
-  // debug('\t Readout angle:\t' + readout);
+  // log('Readout angle:\t' + readout);
 
   ctx.font = '24px FiraGO';
   ctx.fillStyle = accent.l65;
@@ -1556,17 +1556,17 @@ function draw_CircleHandle(center) {
 }
 
 function isOverBoundingBoxHandle(px, py, maxes, thickness) {
-  // debug('\n isOverBoundingBoxHandle - START');
-  // debug('\t px/py - ' + px + ' / ' + py);
-  // debug('\t maxes - ' + json(maxes, true));
+  // log('\n isOverBoundingBoxHandle - START');
+  // log('px/py - ' + px + ' / ' + py);
+  // log('maxes - ' + json(maxes, true));
 
   if (!maxes) return false;
   const ps = getCurrentProject().projectSettings.pointsize;
   const bb = getBoundingBoxHandleDimensions(maxes, thickness);
 
-  // debug('\t point size - ' + ps);
-  // debug('\t l/m/r x: ' + bb.leftx + ' / ' + bb.midx + ' / ' + bb.rightx);
-  // debug('\t t/m/b y: ' + bb.topy + ' / ' + bb.midy + ' / ' + bb.bottomy);
+  // log('point size - ' + ps);
+  // log('l/m/r x: ' + bb.leftx + ' / ' + bb.midx + ' / ' + bb.rightx);
+  // log('t/m/b y: ' + bb.topy + ' / ' + bb.midy + ' / ' + bb.bottomy);
 
   // rotation handle
   if (_UI.multiSelect.shapes.rotateable()) {
@@ -1655,7 +1655,7 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
     return 'w';
   }
 
-  // debug(' isOverBoundingBoxHandle - returning FALSE - END\n');
+  // log('isOverBoundingBoxHandle - returning FALSE', 'end');
   return false;
 }
 
@@ -1694,7 +1694,7 @@ function getBoundingBoxHandleDimensions(maxes, thickness) {
 // -------------------
 
 function drawGrid() {
-  // debug('\n drawGrid - START');
+  // log('\n drawGrid - START');
 
   const xs = {
     xMax: _UI.glyphEditCanvasSize,
@@ -1775,7 +1775,7 @@ function drawVerticalLine(x, ctx, color) {
 }
 
 function drawGuides() {
-  // debug('\n drawGuides - START');
+  // log('\n drawGuides - START');
 
   if (!getSelectedWorkItemID()) return;
 
@@ -1783,8 +1783,8 @@ function drawGuides() {
   const onglyphedit =
     editor.nav.page === 'glyph edit' || editor.nav.page === 'ligatures';
   const onkern = editor.nav.page === 'kerning';
-  // debug('\t ps.guides: ');
-  // debug(ps.guides);
+  // log('ps.guides: ');
+  // log(ps.guides);
 
   if (_UI.showGuides) {
     if (onkern) {
@@ -1866,7 +1866,7 @@ function drawGuides() {
       }
     }
   }
-  // debug(' drawGuides - END\n');
+  // log('drawGuides', 'end');
 }
 
 // -------------------

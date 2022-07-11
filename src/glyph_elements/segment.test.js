@@ -67,7 +67,7 @@ describe('Segment', () => {
     ];
 
     const segs = sampleSegment().splitAtManyPoints(points);
-    // debug(segs);
+    // log(segs);
 
     expect(round(segs[2].p1x)).toBe(102);
   });

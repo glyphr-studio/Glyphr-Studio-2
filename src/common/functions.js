@@ -2,7 +2,7 @@ import { getGlyphrStudioApp } from '../app/main.js';
 
 export default {};
 export {
-  debug,
+  log,
   saveFile,
   makeDateStampSuffix,
   getFirstID,
@@ -41,35 +41,32 @@ export {
  * Wrapper for console.log that does some extra fancy stuff, and
  * also adheres to a global switch in settings
  * @param {string} message - message to show in the console
- * @param {boolean} force - show message even if dev.mode = false
+ * @param {boolean} type - 'start' or 'end'
  */
-function debug(message, force) {
+function log(message, type) {
   let dev = getGlyphrStudioApp().settings.dev;
   // if (!dev.mode) return;
 
-  if (dev.mode || force) {
+  const commonStyle = `
+    font-weight:bold;
+    border-radius: 4px;
+    padding: 6px 12px 4px 12px;
+  `;
+  const style = {
+    start: `background-color:#004a70; color:#9bddff; margin-top:12px; ${commonStyle}`,
+    end: `background-color:#001e2e; color:#9bddff; margin-bottom: 12px; ${commonStyle}`,
+  };
+
+  if (dev.mode) {
     if (typeof message === 'string') {
       message = message.replace(/&lt;/gi, '<');
       message = message.replace(/&gt;/gi, '>');
-
-      if (message === 'group') {
-        console.group();
-        return;
-      } else if (message === 'groupCollapsed') {
-        console.groupCollapsed();
-        return;
-      } else if (dev.debugAutoGroup && message.indexOf('- START') > 0) {
-        console.group(message.substr(2).replace(' - START', ''));
-        return;
-      } else if (
-        message === 'groupEnd' ||
-        (dev.debugAutoGroup && message.indexOf('- END') > 0)
-      ) {
-        console.groupEnd(message);
-        return;
-      } else {
-        console.log(message);
-      }
+      if (style[type]) {
+        if (type === 'start') console.log(`%cSTART\t${message}`, style[type]);
+        else if (type === 'end')
+          console.log(`%cEND  \t${message}`, style[type]);
+        else console.log(`%c${message}`, style[type]);
+      } else console.log(message);
     } else if (typeof message === 'object') {
       if (dev.debugTableObjects) console.table(message);
       else console.log(message);
@@ -207,8 +204,8 @@ function json(obj, raw) {
  * @returns {boolean}
  */
 function areEqual(obj1, obj2) {
-  // debug(`\n areEqual - START`);
-  // debug(`\t passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
+  // log(`areEqual`, 'start');
+  // log(`passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
 
   if (typeof obj1 !== 'object' && typeof obj2 !== 'object') {
     return obj1 === obj2;
@@ -235,28 +232,28 @@ function areEqual(obj1, obj2) {
  * @returns {boolean}
  */
 export function pointsAreEqual(c1, c2, threshold = 1) {
-  // debug('\n pointsAreEqual - START');
-  // debug('\t c1 ' + json(c1, true));
-  // debug('\t c2 ' + json(c2, true));
-  // debug('\t threshold ' + threshold);
+  // log('\n pointsAreEqual - START');
+  // log('c1 ' + json(c1, true));
+  // log('c2 ' + json(c2, true));
+  // log('threshold ' + threshold);
 
   if (c1.x === c2.x && c1.y === c2.y) {
-    // debug('\t exact match');
+    // log('exact match');
     return true;
   }
 
   const dx = Math.abs(c1.x - c2.x);
   const dy = Math.abs(c1.y - c2.y);
 
-  // debug('\t dx ' + dx + '\tdy ' + dy);
+  // log('dx ' + dx + '\tdy ' + dy);
 
   if (dx <= threshold && dy <= threshold) {
-    // debug('\t below threshold match');
+    // log('below threshold match');
     return true;
   }
 
-  // debug('\t not a match');
-  // debug(' pointsAreEqual - END\n');
+  // log('not a match');
+  // log('pointsAreEqual', 'end');
 
   return false;
 }
@@ -470,10 +467,10 @@ function calculateLength(handle, point) {
  * @param {XYPoint} about - x/y point center of rotation
  */
 function rotate(point, angle, about = { x: 0, y: 0 }) {
-  // debug('\n rotate - START');
-  // debug('\t point ' + json(point, true));
-  // debug('\t Math angle:\t' + angle);
-  // debug('\t about ' + json(about, true));
+  // log('\n rotate - START');
+  // log('point ' + json(point, true));
+  // log('Math angle:\t' + angle);
+  // log('about ' + json(about, true));
 
   if (!angle || !point) return;
 
@@ -486,8 +483,8 @@ function rotate(point, angle, about = { x: 0, y: 0 }) {
   point.x = newX + about.x;
   point.y = newY + about.y;
 
-  // debug('\t new point x/y: ' + point.x + '/' + point.y);
-  // debug(' rotate - END\n');
+  // log('new point x/y: ' + point.x + '/' + point.y);
+  // log('rotate', 'end');
 }
 
 /**
@@ -558,7 +555,7 @@ function makeEmailContent() {
   platform %09 ${navigator.platform} %0A
   user agent %09 ${encodeURIComponent(navigator.userAgent)} %0A`;
 
-  // debug(con);
+  // log(con);
 
   return con;
 }

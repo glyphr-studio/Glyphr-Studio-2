@@ -4,7 +4,7 @@
 **/
 
 function GlyphSequence(oa) {
-  // debug('\n GlyphSequence - START');
+  // log('\n GlyphSequence - START');
   oa = oa || {};
 
   this.setMaxes(oa.maxes);
@@ -23,12 +23,12 @@ function GlyphSequence(oa) {
   this.linebreakers = oa.linebreakers || ['\u0020', '\u2002', '\u2003'];
   this.data = [];
 
-  // debug(this);
+  // log(this);
 
   // Initialize data
   this.generateData();
 
-  // debug(' GlyphSequence - END\n');
+  // log('GlyphSequence', 'end');
 }
 
 GlyphSequence.prototype.setMaxes = function (maxes) {
@@ -43,14 +43,14 @@ GlyphSequence.prototype.setMaxes = function (maxes) {
 };
 
 GlyphSequence.prototype.setString = function (newstring) {
-  // debug('\n GlyphSequence.setString - START');
-  // debug(`\t passed ${newstring}`);
+  // log('\n GlyphSequence.setString - START');
+  // log(`passed ${newstring}`);
 
   this.glyphstring = newstring;
   this.textblocks = this.glyphstring.split('\n');
 
-  // debug(`\t this.glyphstring ${this.glyphstring}`);
-  // debug(`\t this.textblocks ${this.textblocks}`);
+  // log(`this.glyphstring ${this.glyphstring}`);
+  // log(`this.textblocks ${this.textblocks}`);
 
   // Lots of opportunities for optimization
 
@@ -68,8 +68,8 @@ GlyphSequence.prototype.setLineGap = function (ns) {
 };
 
 GlyphSequence.prototype.generateData = function () {
-  // debug('\n GlyphSequence.generateData - START');
-  // debug(`\t this.textblocks ${this.textblocks}`);
+  // log('\n GlyphSequence.generateData - START');
+  // log(`this.textblocks ${this.textblocks}`);
   let ps = getCurrentProject().projectSettings;
 
   let aggregateWidth = 0;
@@ -94,7 +94,7 @@ GlyphSequence.prototype.generateData = function () {
     height: (this.maxes.yMax - this.maxes.yMin) / this.scale,
   };
 
-  // debug(`\t Em unit currs ${currx}, ${curry}, ${this.scale}`);
+  // log(`Em unit currs ${currx}, ${curry}, ${this.scale}`);
 
   /*
             ----------------------------------------
@@ -133,8 +133,8 @@ GlyphSequence.prototype.generateData = function () {
     }
   }
 
-  // debug('this.data');
-  // debug(this.data);
+  // log('this.data');
+  // log(this.data);
 
   /*
             ----------------------------------------
@@ -142,15 +142,15 @@ GlyphSequence.prototype.generateData = function () {
             within each block, and final possitions
             ----------------------------------------
         */
-  // debug('\t CALCUALTING DATA PER CHAR');
+  // log('CALCUALTING DATA PER CHAR');
   for (tb = 0; tb < this.data.length; tb++) {
     currblock = this.data[tb];
-    // debug(`block ${tb}`);
+    // log(`block ${tb}`);
 
     // char data units and width units are all in glyph em (not pixel) units
     for (tg = 0; tg < currblock.length; tg++) {
       currchar = currblock[tg];
-      // debug(`${currchar.char} num ${tg}`);
+      // log(`${currchar.char} num ${tg}`);
 
       if (currchar.view === false) {
         // pos for this currchar hasn't been calculated
@@ -158,9 +158,9 @@ GlyphSequence.prototype.generateData = function () {
           nlb = getNextLineBreaker(currblock, tg);
           wordagg = nlb.aggregate - currchar.aggregate;
 
-          // debug(`\t currx - area.x + wordagg > area.width`);
-          // debug(`\t ${currx} - ${area.x} + ${wordagg} > ${area.width}`);
-          // debug(`\t ${currx - area.x + wordagg} > ${area.width}`);
+          // log(`currx - area.x + wordagg > area.width`);
+          // log(`${currx} - ${area.x} + ${wordagg} > ${area.width}`);
+          // log(`${currx - area.x + wordagg} > ${area.width}`);
 
           if (currx - area.x + wordagg > area.width) {
             currline++;
@@ -168,7 +168,7 @@ GlyphSequence.prototype.generateData = function () {
             if (!canNextLineFit(curry, area, this.lineGap)) {
               // text takes up too much vertical space
               // returning early will leave unconputed chars.isvisible = false
-              // debug(' GlyphSequence.generateData - Vertical Max Reached - END\n');
+              // log('GlyphSequence.generateData - Vertical Max Reached', 'end');
               return;
             } else {
               currx = area.x;
@@ -187,7 +187,7 @@ GlyphSequence.prototype.generateData = function () {
 
       if (currchar.islinebreaker) checkforbreak = true;
 
-      // debug(`\twidth \t ${currchar.width}
+      // log(`\twidth \t ${currchar.width}
       // aggr \t ${currchar.aggregate}
       // lnbr \t ${currchar.islinebreaker}
       // view \t ${json(currchar.view, true)}
@@ -201,7 +201,7 @@ GlyphSequence.prototype.generateData = function () {
     if (!canNextLineFit(curry, area, this.lineGap)) {
       // text takes up too much vertical space
       // returning early will leave unconputed chars.isvisible = false
-      // debug(' GlyphSequence.generateData - Vertical Max Reached - END\n');
+      // log('GlyphSequence.generateData - Vertical Max Reached', 'end');
       return;
     }
 
@@ -209,10 +209,10 @@ GlyphSequence.prototype.generateData = function () {
     curry = calcNewLineY(area.y, currline, this.lineGap);
   }
 
-  // debug('\t after view calc this.data');
-  // debug(this.data)
+  // log('after view calc this.data');
+  // log(this.data)
 
-  // debug(' GlyphSequence.generateData - END\n');
+  // log('GlyphSequence.generateData', 'end');
 };
 
 GlyphSequence.prototype.iterator = function (fn) {
@@ -226,7 +226,7 @@ GlyphSequence.prototype.iterator = function (fn) {
 };
 
 GlyphSequence.prototype.draw = function () {
-  // debug('\n GlyphSequence.draw - START');
+  // log('\n GlyphSequence.draw - START');
 
   // Draw Page Extras
   if (this.drawPageExtras) {
@@ -237,7 +237,7 @@ GlyphSequence.prototype.draw = function () {
 
   // Draw Line Extras
   let currline = -1;
-  // debug('\t DRAW LINE EXTRAS');
+  // log('DRAW LINE EXTRAS');
   if (this.drawLineExtras) {
     this.iterator(function (char, gs) {
       if (char.linenumber !== currline) {
@@ -248,7 +248,7 @@ GlyphSequence.prototype.draw = function () {
   }
 
   // Draw Glyph Extras
-  // debug('\t DRAW GLYPH EXTRAS');
+  // log('DRAW GLYPH EXTRAS');
   if (this.drawGlyphExtras) {
     this.iterator(function (char, gs) {
       if (char.isvisible) gs.drawGlyphExtras(char);
@@ -256,14 +256,14 @@ GlyphSequence.prototype.draw = function () {
   }
 
   // Draw Glyphs
-  // debug('\t DRAW GLYPHS');
+  // log('DRAW GLYPHS');
   if (this.drawGlyph) {
     this.iterator(function (char, gs) {
       if (char.isvisible) gs.drawGlyph(char);
     });
   }
 
-  // debug(' GlyphSequence.draw - END\n');
+  // log('GlyphSequence.draw', 'end');
 };
 
 function calcNewLineY(starty, linenum, lineGap) {
@@ -275,22 +275,22 @@ function canNextLineFit(curry, area, lineGap) {
   let bottom = area.y + area.height;
   let nextliney = curry + lineGap + getCurrentProject().projectSettings.upm;
 
-  // debug(`\t canNextLineFit - ${bottom} > ${nextliney}`);
+  // log(`canNextLineFit - ${bottom} > ${nextliney}`);
   return bottom > nextliney;
 }
 
 function getNextLineBreaker(block, start) {
-  // debug('\n getNextLineBreaker - START');
-  // debug(`\t starting at pos ${start}`);
+  // log('\n getNextLineBreaker - START');
+  // log(`starting at pos ${start}`);
 
   for (let i = start; i < block.length; i++) {
     if (block[i].islinebreaker) {
-      // debug(`\t found ${i} returning *${block[i].char}* value ${block[i].aggregate}`);
+      // log(`found ${i} returning *${block[i].char}* value ${block[i].aggregate}`);
       return block[i];
     }
   }
 
-  // debug(`\t NOTHING found, returning ${block[block.length-1].char} value ${block[block.length-1].aggregate}`);
+  // log(`NOTHING found, returning ${block[block.length-1].char} value ${block[block.length-1].aggregate}`);
 
   return block[block.length - 1];
 }
@@ -314,14 +314,14 @@ function debugWidths() {
         are not returned, only kern values.
     */
 function calculateKernOffset(c1, c2) {
-  // debug('\n calculateKernOffset - START');
-  // debug('\t passed: ' + c1 + ' and ' + c2);
+  // log('\n calculateKernOffset - START');
+  // log('passed: ' + c1 + ' and ' + c2);
 
   if (!c1 || !c2) return 0;
 
   c1 = parseUnicodeInput(c1).join('');
   c2 = parseUnicodeInput(c2).join('');
-  // debug('\t converted: ' + c1 + ' and ' + c2);
+  // log('converted: ' + c1 + ' and ' + c2);
 
   let kernPairs = getCurrentProject().kerning;
   let leftGroupChar;
@@ -331,14 +331,14 @@ function calculateKernOffset(c1, c2) {
   for (let p of Object.keys(kernPairs)) {
     for (let l = 0; l < kernPairs[p].leftgroup.length; l++) {
       leftGroupChar = kernPairs[p].leftgroup[l];
-      // debug('\t checking leftgroup ' + leftGroupChar + ' against ' + c1);
+      // log('checking leftgroup ' + leftGroupChar + ' against ' + c1);
       if (parseUnicodeInput(leftGroupChar)[0] === c1) {
-        // debug('\t LEFTGROUP MATCH! for ' + c1);
+        // log('LEFTGROUP MATCH! for ' + c1);
         for (let r = 0; r < kernPairs[p].rightgroup.length; r++) {
           rightGroupChar = kernPairs[p].rightgroup[r];
           if (parseUnicodeInput(rightGroupChar)[0] === c2) {
             result = kernPairs[p].value * -1;
-            // debug('\t FOUND MATCH! returning ' + result);
+            // log('FOUND MATCH! returning ' + result);
             return result;
           }
         }
@@ -346,7 +346,7 @@ function calculateKernOffset(c1, c2) {
     }
   }
 
-  // debug(' calculateKernOffset - END\n');
+  // log('calculateKernOffset', 'end');
   return 0;
 }
 
@@ -356,26 +356,26 @@ function calculateKernOffset(c1, c2) {
         that merge to ligatures.  Returns an array with merged results.
     */
 function findAndMergeLigatures(carr) {
-  // debug('\n findAndMergeLigatures - START');
+  // log('\n findAndMergeLigatures - START');
   let ligs = sortLigatures();
-  // debug('\t sorted ligs: ');
-  // debug(ligs);
+  // log('sorted ligs: ');
+  // log(ligs);
 
   let ligchars, carrot;
   for (let c = 0; c < carr.length; c++) {
     // for(var g=ligs.length-1; g>-1; g--){
     for (let g = 0; g < ligs.length; g++) {
       ligchars = hexToChars(ligs[g].id);
-      // debug('\t checking ' + ligchars);
+      // log('checking ' + ligchars);
       carrot = carr.slice(c, c + ligchars.length).join('');
-      // debug('\t against ' + carrot);
+      // log('against ' + carrot);
       if (carrot === ligchars) {
         carr.splice(c, ligchars.length, ligchars);
-        // debug('\t !Ligature Found! array['+c+'] is now ' + carr[c]);
+        // log('!Ligature Found! array['+c+'] is now ' + carr[c]);
       }
     }
   }
 
-  // debug(' findAndMergeLigatures - END\n');
+  // log('findAndMergeLigatures', 'end');
   return carr;
 }

@@ -24,23 +24,23 @@ MultiSelect.prototype.isSelectable = function (obj) {
   )
     return true;
   else {
-    // debug('MultiSelect - cannot select \n' + obj.objType);
+    // log('MultiSelect - cannot select \n' + obj.objType);
     return false;
   }
 };
 
 MultiSelect.prototype.select = function (obj) {
-  // debug('\n MultiSelect.select - START');
+  // log('\n MultiSelect.select - START');
   if (this.isSelectable(obj)) {
-    // debug('\t selecting object');
+    // log('selecting object');
     this.members = [obj];
     this.selectShapesThatHaveSelectedPoints();
   } else {
-    // debug('\t this.isSelectable = false, clearing');
+    // log('this.isSelectable = false, clearing');
     this.clear();
   }
 
-  // debug(' MultiSelect.select - END\n');
+  // log('MultiSelect.select', 'end');
 };
 
 MultiSelect.prototype.clear = function () {
@@ -154,13 +154,13 @@ _UI.multiSelect.points.draw_PathPointHandles = function () {
 };
 
 _UI.multiSelect.points.draw_PathPoints = function () {
-  // debug('\n MS.points.draw_PathPoints - START');
+  // log('\n MS.points.draw_PathPoints - START');
   const sh = this.getShape();
   // ('\t shape is ' + json(sh));
 
   draw_PathPoints(sh.path.pathPoints);
 
-  // debug(' MS.points.draw_PathPoints - END\n');
+  // log('MS.points.draw_PathPoints', 'end');
 };
 
 _UI.multiSelect.points.setPointType = function (t) {
@@ -187,14 +187,14 @@ _UI.multiSelect.points.insertPathPoint = function () {
 
 _UI.multiSelect.points.resetHandles = function () {
   for (let m = 0; m < this.members.length; m++) {
-    // debug(this.members[m]);
+    // log(this.members[m]);
     this.members[m].resetHandles();
   }
 };
 
 _UI.multiSelect.points.resolvePointType = function () {
   for (let m = 0; m < this.members.length; m++) {
-    // debug(this.members[m]);
+    // log(this.members[m]);
     this.members[m].resolvePointType();
   }
 };
@@ -214,7 +214,7 @@ _UI.multiSelect.points.updatePathPointPosition = function (
 };
 
 _UI.multiSelect.points.selectShapesThatHaveSelectedPoints = function () {
-  // debug('\n MS.points.selectShapesThatHaveSelectedPoints - START');
+  // log('\n MS.points.selectShapesThatHaveSelectedPoints - START');
   _UI.multiSelect.shapes.clear();
   const points = _UI.multiSelect.points.getMembers();
   const shapes = getSelectedWorkItemShapes();
@@ -223,8 +223,8 @@ _UI.multiSelect.points.selectShapesThatHaveSelectedPoints = function () {
 
   if (points.length === 0) return;
 
-  // debug('\t selected points ' + points);
-  // debug('\t WI shapes ' + shapes);
+  // log('selected points ' + points);
+  // log('WI shapes ' + shapes);
 
   for (let p = 0; p < points.length; p++) {
     path = points[p].parent;
@@ -239,7 +239,7 @@ _UI.multiSelect.points.selectShapesThatHaveSelectedPoints = function () {
     }
   }
 
-  // debug(' MS.points.selectShapesThatHaveSelectedPoints - Selected ' + count + ' - END\n');
+  // log('MS.points.selectShapesThatHaveSelectedPoints - Selected ' + count + '', 'end');
 };
 
 // --------------------------------------------------------------
@@ -270,7 +270,7 @@ _UI.multiSelect.shapes.contains = function (objtypename) {
 _UI.multiSelect.shapes.selectShapesThatHaveSelectedPoints = function () {};
 
 _UI.multiSelect.shapes.combine = function () {
-  // debug('\n multiSelect.shapes.combine - START');
+  // log('\n multiSelect.shapes.combine - START');
 
   const ns = new Glyph(clone(_UI.multiSelect.shapes.getGlyph()));
 
@@ -287,11 +287,11 @@ _UI.multiSelect.shapes.combine = function () {
     historyPut('Combined shapes');
   }
 
-  // debug(' multiSelect.shapes.combine - END\n');
+  // log('multiSelect.shapes.combine', 'end');
 };
 
 _UI.multiSelect.shapes.deleteShapes = function () {
-  // debug('\n deleteShape - START');
+  // log('\n deleteShape - START');
   const wishapes = getSelectedWorkItemShapes();
   const sels = this.getMembers();
   let curs;
@@ -317,7 +317,7 @@ _UI.multiSelect.shapes.deleteShapes = function () {
   }
 
   updateCurrentGlyphWidth();
-  // debug(' deleteShape - END\n');
+  // log('deleteShape', 'end');
 };
 
 _UI.multiSelect.shapes.align = function (edge) {
@@ -401,13 +401,13 @@ _UI.multiSelect.shapes.isOverControlPoint = function (
 };
 
 _UI.multiSelect.shapes.isOverBoundingBoxHandle = function (px, py) {
-  // debug('\n SelectedShapes.isOverBoundingBoxHandle - START');
-  // debug('\t passed x/y: ' + px + '/' + py);
+  // log('\n SelectedShapes.isOverBoundingBoxHandle - START');
+  // log('passed x/y: ' + px + '/' + py);
 
   if (this.members.length === 0) {
     return false;
   } else if (this.members.length === 1) {
-    // debug('\t calling singleton method');
+    // log('calling singleton method');
     return this.members[0].isOverBoundingBoxHandle(px, py);
   }
 
@@ -417,7 +417,7 @@ _UI.multiSelect.shapes.isOverBoundingBoxHandle = function (px, py) {
     this.getGlyph().maxes,
     _UI.multiSelectThickness
   );
-  // debug('\t SelectedShapes.isOverBoundingBoxHandle returning ' + c);
+  // log('SelectedShapes.isOverBoundingBoxHandle returning ' + c);
   return c;
 };
 
@@ -448,16 +448,16 @@ _UI.multiSelect.shapes.drawShape = function (lctx, view) {
 };
 
 _UI.multiSelect.shapes.draw_PathPoints = function () {
-  // debug('\n MS.shapes.draw_PathPoints - START');
+  // log('\n MS.shapes.draw_PathPoints - START');
   let s;
   for (let m = 0; m < this.members.length; m++) {
     s = this.members[m];
-    // debug('\t drawing points on shape ' + m + ' as ' + s.path.pathPoints);
+    // log('drawing points on shape ' + m + ' as ' + s.path.pathPoints);
     if (s.objType !== 'ComponentInstance')
       draw_PathPoints(this.members[m].path.pathPoints);
   }
 
-  // debug(' MS.shapes.draw_PathPoints - END\n');
+  // log('MS.shapes.draw_PathPoints', 'end');
 };
 
 _UI.multiSelect.shapes.reverseWinding = function () {

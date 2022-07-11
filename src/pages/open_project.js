@@ -3,7 +3,7 @@ import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { makeErrorMessageBox } from '../controls/dialogs.js';
 import GlyphrStudioProject from '../project/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
-import { debug } from '../common/functions.js';
+import { log } from '../common/functions.js';
 import { uiColors, accentColors } from '../common/colors.js';
 // import { importOTFFont } from '../io/otf_import.js';
 // import { importSVGFont } from '../io/svg_font_import.js';
@@ -26,7 +26,7 @@ export default class PageOpenProject {
    * @returns {object} HTML Element + callback function
    */
   pageLoader() {
-    debug(`\n PageOpenProject.pageLoader - START`);
+    log(`PageOpenProject.pageLoader`, 'start');
     const recent = 1000 * 60 * 60 * 24 * 7; // seven days in milliseconds
     let recentMessage = '';
     const app = getGlyphrStudioApp();
@@ -108,7 +108,7 @@ export default class PageOpenProject {
       .addEventListener('click', this.handleNewProject);
 
     const callback = function (page) {
-      debug(`\n PageOpenProject.pageLoader.callback - START`);
+      log(`PageOpenProject.pageLoader.callback`, 'start');
 
       // For Electron app
       window.addEventListener('message', page.handleMessage, false);
@@ -121,12 +121,12 @@ export default class PageOpenProject {
 
       setTimeout(app.fadeOutLoadScreen, 2000);
 
-      debug(` PageOpenProject.pageLoader.callback - END\n\n`);
+      log(`PageOpenProject.pageLoader.callback`, 'end');
     };
 
     const re = { content: content, callback: callback };
-    // debug(re);
-    debug(` PageOpenProject.pageLoader - END\n\n`);
+    // log(re);
+    log(`PageOpenProject.pageLoader`, 'end');
 
     return re;
   }
@@ -229,7 +229,7 @@ export default class PageOpenProject {
    */
   handleDrop(evt) {
     const app = getGlyphrStudioApp();
-    // debug('\n handleDrop - START');
+    // log('\n handleDrop - START');
     document.getElementById('open-project__right-area').innerHTML =
       'Loading File...';
     document.getElementById('open-project__right-area').style.backgroundColor =
@@ -241,35 +241,35 @@ export default class PageOpenProject {
     let f =
       evt.dataTransfer || document.getElementById('openProjectFileChooser');
     f = f.files[0];
-    // debug('\t filename: ' + f.name);
+    // log('filename: ' + f.name);
     let fname = f.name.split('.');
     fname = fname[fname.length - 1].toLowerCase();
-    // debug('\t fname = ' + fname);
+    // log('fname = ' + fname);
 
     const reader = new FileReader();
 
     if (fname === 'otf' || fname === 'ttf') {
       reader.onload = function () {
-        // debug('\n reader.onload::OTF or TTF - START');
+        // log('\n reader.onload::OTF or TTF - START');
         app.temp.droppedFileContent = reader.result;
         // importOTFFont();
-        // debug(' reader.onload:: OTF or TTF - END\n');
+        // log('reader.onload:: OTF or TTF', 'end');
       };
 
       reader.readAsArrayBuffer(f);
     } else if (fname === 'svg' || fname === 'txt') {
       reader.onload = function () {
-        // debug('\n reader.onload::SVG or TXT - START');
+        // log('\n reader.onload::SVG or TXT - START');
         app.temp.droppedFileContent = reader.result;
         if (fname === 'svg') {
-          // debug('\t File = .svg');
+          // log('File = .svg');
           // importSVGFont();
         } else if (fname === 'txt') {
-          // debug('\t File = .txt');
+          // log('File = .txt');
           importGlyphrProjectFromText();
           // navigate();
         }
-        // debug(' reader.onload::SVG OR TXT - END\n');
+        // log('reader.onload::SVG OR TXT', 'end');
       };
 
       reader.readAsText(f);
@@ -287,7 +287,7 @@ export default class PageOpenProject {
       // ).style.backgroundColor = _UI.colors.gray.offWhite;
     }
 
-    // debug(' handleDrop - END\n');
+    // log('handleDrop', 'end');
   }
 
   /**

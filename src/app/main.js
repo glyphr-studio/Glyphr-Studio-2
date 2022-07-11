@@ -1,6 +1,6 @@
 import ProjectEditor from '../project/project_editor.js';
 import GlyphrStudioApp from './glyphr_studio_app.js';
-import { debug } from '../common/functions.js';
+import { log } from '../common/functions.js';
 
 /* Web Components */
 import AnchorTwelvepoint from '../controls/anchor-twelvepoint/anchor-twelvepoint.js';
@@ -29,20 +29,17 @@ const GSApp = new GlyphrStudioApp();
  * First function to run when the browser starts
  */
 function glyphrStudioOnLoad() {
-  console.log(`\n\n>>>>>>>>>>\nglyphrStudioOnLoad - Start`);
+  log(`glyphrStudioOnLoad`, 'start');
 
   if (passPreChecks()) {
-    debug(`\t passPreChecks = true`);
-    debug(`\t GSApp Object:`);
-    console.log(GSApp);
-    console.log(
-      `\t %cApp Version ${GSApp.version} \n\n`,
-      'color:rgb(0,170,225)'
-    );
+    log(`passPreChecks = true`);
+    log(`GSApp Object:`);
+    log(GSApp);
+    console.log(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
     registerCustomComponents();
     GSApp.setUp();
   }
-  debug(`glyphrStudioOnLoad - END\n<<<<<<<<<<<<\n\n\n`);
+  log(`glyphrStudioOnLoad`, 'end');
 }
 
 /**

@@ -31,7 +31,7 @@ _UI.eventhandlers = {
 /* eslint-disable require-jsdoc */
 
 function initEventHandlers() {
-  // debug('\n initEventHandlers - START');
+  // log('\n initEventHandlers - START');
 
   _UI.eventhandlers.eh_pantool = new Tool_Pan();
   _UI.eventhandlers.eh_addrectoval = new Tool_NewBasicShape();
@@ -66,7 +66,7 @@ function initEventHandlers() {
 
   // The general-purpose event handler.
   function ev_canvas(ev) {
-    // debug('EVENTHANDLER - Raw mouse event x/y = ' + ev.layerX + ' / ' + ev.layerY);
+    // log('EVENTHANDLER - Raw mouse event x/y = ' + ev.layerX + ' / ' + ev.layerY);
     mouseovercec();
 
     let eh = _UI.eventhandlers;
@@ -81,7 +81,7 @@ function initEventHandlers() {
       eh.mousey = ev.layerY;
     }
 
-    // debug('EV_CANVAS offsetx / offsety / layerx / layery: ' +  ev.offsetX + ' ' + ev.offsetY + ' ' + ev.layerX + ' ' + ev.layerY);
+    // log('EV_CANVAS offsetx / offsety / layerx / layery: ' +  ev.offsetX + ' ' + ev.offsetY + ' ' + ev.layerX + ' ' + ev.layerY);
 
     // updateCursor();
 
@@ -137,8 +137,8 @@ function Tool_ShapeEdit() {
   _UI.eventhandlers.handle = false;
 
   this.mousedown = function (ev) {
-    // debug('\n Tool_ShapeEdit.mousedown - START');
-    // debug('\t x:y ' + _UI.eventhandlers.mousex + ':' + _UI.eventhandlers.mousey);
+    // log('\n Tool_ShapeEdit.mousedown - START');
+    // log('x:y ' + _UI.eventhandlers.mousex + ':' + _UI.eventhandlers.mousey);
 
     this.didstuff = false;
     let eh = _UI.eventhandlers;
@@ -154,8 +154,8 @@ function Tool_ShapeEdit() {
       eh.mousey
     );
 
-    // debug('\t clickshape: ' + this.clickedshape);
-    // debug('\t corner: ' + eh.handle);
+    // log('clickshape: ' + this.clickedshape);
+    // log('corner: ' + eh.handle);
     this.resizing = false;
     this.dragging = false;
     this.rotating = false;
@@ -163,22 +163,22 @@ function Tool_ShapeEdit() {
 
     if (eh.handle) {
       if (eh.handle === 'rotate') {
-        // debug('\t mousedown - setting rotating = true');
+        // log('mousedown - setting rotating = true');
         this.rotating = true;
         eh.rotationcenter = _UI.multiSelect.shapes.center;
         eh.rotationstarttopy =
           _UI.multiSelect.shapes.maxes.yMax +
           _UI.rotateHandleHeight / getView().dz;
       } else {
-        // debug('\t clicked on eh.handle: ' + eh.handle);
+        // log('clicked on eh.handle: ' + eh.handle);
         this.resizing = true;
       }
       setCursor(eh.handle);
     } else if (this.clickedshape) {
-      // debug('\t clicked on shape = true');
+      // log('clicked on shape = true');
       this.dragging = true;
     } else if (!eh.multi) {
-      // debug('\t clicked on nothing');
+      // log('clicked on nothing');
       clickEmptySpace();
       this.dragselecting = true;
       findAndCallHotspot(eh.mousex, eh.mousey);
@@ -199,7 +199,7 @@ function Tool_ShapeEdit() {
     let dy = (eh.lastY - eh.mousey) / dz || 0;
 
     if (this.dragging) {
-      // debug('\n Tool_ShapeEdit.mousemove - dragging');
+      // log('\n Tool_ShapeEdit.mousemove - dragging');
       let cur = 'arrowSquare';
 
       if (this.clickedshape) {
@@ -227,7 +227,7 @@ function Tool_ShapeEdit() {
       this.didstuff = true;
       setCursor(cur);
     } else if (this.resizing) {
-      // debug('\n Tool_ShapeEdit.mousemove - resizing');
+      // log('\n Tool_ShapeEdit.mousemove - resizing');
       eventHandler_ShapeResize();
       this.didstuff = true;
     } else if (this.rotating) {
@@ -244,7 +244,7 @@ function Tool_ShapeEdit() {
       this.didstuff = true;
       setCursor('rotate');
     } else if (corner) {
-      // debug('\n Tool_ShapeEdit.mousemove - corner ' + corner);
+      // log('\n Tool_ShapeEdit.mousemove - corner ' + corner);
       // hovering over a corner
       setCursor(corner);
     } else if (eh.multi) {
@@ -252,7 +252,7 @@ function Tool_ShapeEdit() {
     } else if (isOverShape(eh.mousex, eh.mousey)) {
       setCursor('arrowSquare');
     } else {
-      // debug('\n Tool_ShapeEdit.mousemove - fallthrough else');
+      // log('\n Tool_ShapeEdit.mousemove - fallthrough else');
       setCursor('arrow');
     }
 
@@ -267,7 +267,7 @@ function Tool_ShapeEdit() {
   };
 
   this.mouseup = function () {
-    // debug('Mouse Up');
+    // log('Mouse Up');
     let eh = _UI.eventhandlers;
 
     // New Basic Shape
@@ -310,7 +310,7 @@ function Tool_ShapeEdit() {
     if (eh.uqhaschanged) historyPut('Path Edit tool');
     eh.uqhaschanged = false;
     redraw({ calledBy: 'Event Handler Tool_ShapeEdit mouseup' });
-    // debug('EVENTHANDLER - after Tool_ShapeEdit Mouse Up REDRAW');
+    // log('EVENTHANDLER - after Tool_ShapeEdit Mouse Up REDRAW');
   };
 }
 
@@ -339,7 +339,7 @@ function Tool_NewBasicShape() {
     this.dragging = true;
 
     redraw({ calledBy: 'Event Handler Tool_NewBasicShape mousedown' });
-    // debug('Tool_NewBasicShape MOUSEDOWN - after REDRAW');
+    // log('Tool_NewBasicShape MOUSEDOWN - after REDRAW');
   };
 
   this.mousemove = function (ev) {
@@ -363,7 +363,7 @@ function Tool_NewBasicShape() {
 
       _UI.eventhandlers.uqhaschanged = true;
       redraw({ calledBy: 'Event Handler Tool_NewBasicShape mousemove' });
-      // debug('Tool_NewBasicShape MOUSEMOVE past redraw');
+      // log('Tool_NewBasicShape MOUSEMOVE past redraw');
     }
   };
 
@@ -419,7 +419,7 @@ function Tool_NewPath() {
   this.newshape = false;
 
   this.mousedown = function (ev) {
-    // debug('\n Tool_NewPath.mousedown - START');
+    // log('\n Tool_NewPath.mousedown - START');
 
     let eh = _UI.eventhandlers;
     let newpoint = new PathPoint({
@@ -484,7 +484,7 @@ function Tool_NewPath() {
     eh.lastY = eh.mousey;
 
     redraw({ calledBy: 'Event Handler Tool_NewPath mousedown' });
-    // debug(' Tool_NewPath.mousedown - END\n');
+    // log('Tool_NewPath.mousedown', 'end');
   };
 
   this.mousemove = function (ev) {
@@ -529,7 +529,7 @@ function Tool_NewPath() {
   };
 
   this.mouseup = function () {
-    // debug('\n Tool_NewPath.mouseup - START');
+    // log('\n Tool_NewPath.mouseup - START');
     setCursor('penPlus');
 
     if (_UI.eventhandlers.uqhaschanged) {
@@ -546,7 +546,7 @@ function Tool_NewPath() {
     this.currpt = {};
     _UI.eventhandlers.lastX = -100;
     _UI.eventhandlers.lastY = -100;
-    // debug(' Tool_NewPath.mouseup - END\n');
+    // log('Tool_NewPath.mouseup', 'end');
   };
 }
 
@@ -558,7 +558,7 @@ function Tool_PathEdit() {
   this.controlpoint = false;
 
   this.mousedown = function (ev) {
-    // debug('\n Tool_PathEdit.mousedown - START');
+    // log('\n Tool_PathEdit.mousedown - START');
     let eh = _UI.eventhandlers;
     eh.lastX = eh.mousex;
     eh.lastY = eh.mousey;
@@ -573,7 +573,7 @@ function Tool_PathEdit() {
     );
     let s = getClickedShape(eh.mousex, eh.mousey);
 
-    // debug(this.controlpoint);
+    // log(this.controlpoint);
 
     if (this.controlpoint) {
       this.dragging = true;
@@ -600,11 +600,11 @@ function Tool_PathEdit() {
     if (_UI.multiSelect.shapes.getMembers().length)
       _UI.currentPanel = 'npAttributes';
     redraw({ calledBy: 'Event Handler Tool_PathEdit mousedown' });
-    // debug(' Tool_PathEdit.mousedown - END\n');
+    // log('Tool_PathEdit.mousedown', 'end');
   };
 
   this.mousemove = function (ev) {
-    // debug('\n Tool_PathEdit.mousemove - START');
+    // log('\n Tool_PathEdit.mousemove - START');
     let eh = _UI.eventhandlers;
     let sp = _UI.multiSelect.points;
 
@@ -622,12 +622,12 @@ function Tool_PathEdit() {
 
       this.dragging = true;
 
-      // debug('\t TOOLHANDOFF this.controlpoint = ');
-      // debug(this.controlpoint);
+      // log('TOOLHANDOFF this.controlpoint = ');
+      // log(this.controlpoint);
     }
 
     if (this.dragging) {
-      // debug('\t Dragging');
+      // log('Dragging');
 
       // Moving points if mousedown
       let dz = getView('Event Handler Tool_PathEdit mousemove').dz;
@@ -639,15 +639,15 @@ function Tool_PathEdit() {
       else setCursor('penCircle');
 
       if (sp.getMembers().length === 1) {
-        // debug('\t this.controlpoint.point ' + this.controlpoint.point);
-        // debug('\t this.controlpoint.type ' + cpt);
+        // log('this.controlpoint.point ' + this.controlpoint.point);
+        // log('this.controlpoint.type ' + cpt);
         let cpx = this.controlpoint.point[cpt];
         if (cpx && cpx.xLock) dx = 0;
         if (cpx && cpx.yLock) dy = 0;
       }
 
       sp.getMembers().forEach(function (point, i) {
-        // debug('\t UpdatePPP ' + cpt + '\t' + dx + '\t' + dy);
+        // log('UpdatePPP ' + cpt + '\t' + dx + '\t' + dy);
         if (ev.ctrlKey || ev.metaKey) return;
         point.updatePathPointPosition(cpt, dx, dy);
       });
@@ -675,11 +675,11 @@ function Tool_PathEdit() {
       setCursor('penCircle');
     if (!cp && eh.multi) setCursor('penPlus');
 
-    // debug(' Tool_PathEdit.mousemove - END\n');
+    // log('Tool_PathEdit.mousemove', 'end');
   };
 
   this.mouseup = function () {
-    // debug('\n Tool_PathEdit.mouseup - START');
+    // log('\n Tool_PathEdit.mouseup - START');
     let eh = _UI.eventhandlers;
     this.dragging = false;
     this.controlpoint = false;
@@ -695,7 +695,7 @@ function Tool_PathEdit() {
       eh.uqhaschanged = false;
       redraw({ calledBy: 'Event Handler Tool_PathEdit mouseup' });
     }
-    // debug(' Tool_PathEdit.mouseup - END\n');
+    // log('Tool_PathEdit.mouseup', 'end');
   };
 }
 
@@ -803,7 +803,7 @@ function Tool_Pan() {
   this.deltay = 0;
 
   this.mousedown = function (ev) {
-    // debug('PAN TOOL - mouse down: ' + _UI.eventhandlers.mousex + ':' + _UI.eventhandlers.mousey);
+    // log('PAN TOOL - mouse down: ' + _UI.eventhandlers.mousex + ':' + _UI.eventhandlers.mousey);
     let v = getView('Event Handler Tool_Pan mousedown');
     this.deltax = _UI.eventhandlers.mousex - v.dx;
     this.deltay = _UI.eventhandlers.mousey - v.dy;
@@ -811,7 +811,7 @@ function Tool_Pan() {
   };
 
   this.mouseup = function () {
-    // debug('PAN TOOL - Mouse Up');
+    // log('PAN TOOL - Mouse Up');
     this.dragging = false;
     this.deltax = 0;
     this.deltay = 0;
@@ -840,14 +840,14 @@ function Tool_Kern() {
   this.deltax = 0;
 
   this.mousedown = function (ev) {
-    // debug('Tool_Kern - mouse down: ' + _UI.eventhandlers.mousex + ':' + _UI.eventhandlers.mousey);
+    // log('Tool_Kern - mouse down: ' + _UI.eventhandlers.mousex + ':' + _UI.eventhandlers.mousey);
     let v = getView('Event Handler Tool_Kern mousedown');
     this.deltax = _UI.eventhandlers.mousex;
     this.dragging = true;
   };
 
   this.mouseup = function () {
-    // debug('Tool_Kern - Mouse Up');
+    // log('Tool_Kern - Mouse Up');
     this.dragging = false;
     this.deltax = 0;
     historyPut('Kern Adjustment: ' + getSelectedKern().value);
@@ -879,10 +879,10 @@ function clickEmptySpace() {
 }
 
 function eventHandler_ShapeResize() {
-  // debug('\n eventHandler_ShapeResize - START');
+  // log('\n eventHandler_ShapeResize - START');
   let s = _UI.multiSelect.shapes;
   let pcorner = _UI.eventhandlers.handle;
-  // debug('\t handle ' + pcorner);
+  // log('handle ' + pcorner);
 
   let maxes = s.maxes;
   let mx = cXsX(_UI.eventhandlers.mousex);
@@ -893,7 +893,7 @@ function eventHandler_ShapeResize() {
   let dw = lx - mx;
   let rl = s.getAttribute('ratioLock');
 
-  // debug('\t eventHandler_ShapeResize dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
+  // log('eventHandler_ShapeResize dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
 
   // Check that the shape won't have negative dimensions
   if (mx >= maxes.xMax && maxes.xMax - maxes.xMin + dw < 2) dw = 0;
@@ -965,7 +965,7 @@ function eventHandler_ShapeResize() {
 
   // if(!_UI.eventhandlers.tempnewbasicshape) s.calcMaxes();
 
-  // debug('eventHandler_ShapeResize - Done lx/rx/ty/by: ' + s.path.maxes.xMin + ',' + s.path.maxes.xMax + ',' + s.path.maxes.yMax + ',' + s.path.maxes.yMin);
+  // log('eventHandler_ShapeResize - Done lx/rx/ty/by: ' + s.path.maxes.xMin + ',' + s.path.maxes.xMax + ',' + s.path.maxes.yMax + ',' + s.path.maxes.yMin);
 }
 
 function checkForMouseOverHotspot(x, y) {
@@ -991,7 +991,7 @@ function checkForMouseOverHotspot(x, y) {
 }
 
 function updateTNBS(dx, dy, dw, dh) {
-  // debug('updateTNBS dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
+  // log('updateTNBS dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
   _UI.eventhandlers.tempnewbasicshape.xMin += dx;
   _UI.eventhandlers.tempnewbasicshape.yMax += dy;
   _UI.eventhandlers.tempnewbasicshape.xMax += dw + dx;
@@ -999,7 +999,7 @@ function updateTNBS(dx, dy, dw, dh) {
 }
 
 function updateDragSelectArea(dx, dy, dw, dh) {
-  // debug('updateDragSelectArea dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
+  // log('updateDragSelectArea dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
   _UI.eventhandlers.dragselectarea.xMin += dx;
   _UI.eventhandlers.dragselectarea.yMax += dy;
   _UI.eventhandlers.dragselectarea.xMax += dw + dx;
@@ -1040,13 +1040,13 @@ function canResize(pc) {
       re = !xl && !wl;
   }
 
-  // debug('\t canResize ' + pc + ' returning ' + re);
+  // log('canResize ' + pc + ' returning ' + re);
   return re;
 }
 
 function mousewheel(event) {
   let delta = event.deltaY * -1;
-  // debug('MOUSEWHEEL - deltaY: ' + event.deltaY);
+  // log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
   let canzoom =
     onCanvasEditPage() &&
@@ -1055,7 +1055,7 @@ function mousewheel(event) {
   if (canzoom) {
     if (event.ctrlKey || event.metaKey) {
       event.preventDefault();
-      // debug('MOUSEWHEEL: canzoom=true and delta=' + delta );
+      // log('MOUSEWHEEL: canzoom=true and delta=' + delta );
       if (delta > 0) {
         viewZoom(1.1);
       } else {

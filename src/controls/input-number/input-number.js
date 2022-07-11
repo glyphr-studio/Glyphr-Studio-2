@@ -11,7 +11,7 @@ export default class InputNumber extends HTMLElement {
    * @param {object} attributes - collection of key: value pairs to set as attributes
    */
   constructor(attributes = {}) {
-    // console.log(`InputNumber.constructor - START`);
+    // console.log(`InputNumber.constructor`, 'start');
     super();
 
     Object.keys(attributes).forEach((key) =>
@@ -228,7 +228,7 @@ export default class InputNumber extends HTMLElement {
     shadow.appendChild(this.wrapper);
 
     // console.log(this);
-    // console.log(`InputNumber.constructor - END`);
+    // console.log(`InputNumber.constructor`, 'end');
   }
 
   /**
@@ -312,15 +312,15 @@ export default class InputNumber extends HTMLElement {
    * @param {number} number - new main value
    */
   set value(number) {
-    // console.log(`InputNumber.set value - START`);
-    // console.log(`\t passed ${number}`);
+    // console.log(`InputNumber.set value`, 'start');
+    // console.log(`passed ${number}`);
     this._numberValue = round(parseFloat(number), this.precision) || 0;
-    // console.log(`\t this._numberValue is now ${this._numberValue}`);
-    // console.log(`\t this.value is now ${this.value}`);
+    // console.log(`this._numberValue is now ${this._numberValue}`);
+    // console.log(`this.value is now ${this.value}`);
 
     this.numberInput.value = this._numberValue;
     this.setAttribute('value', this._numberValue);
-    // console.log(`InputNumber.set value - END`);
+    // console.log(`InputNumber.set value`, 'end');
   }
 
   /**
