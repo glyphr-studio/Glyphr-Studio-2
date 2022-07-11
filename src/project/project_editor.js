@@ -4,7 +4,7 @@ import PageOpenProject from '../pages/open_project.js';
 import PageGlyphEdit from '../pages/glyph_edit.js';
 import { makeElement } from '../controls/controls.js';
 import {
-  debug,
+  log,
   saveFile,
   makeDateStampSuffix,
   json,
@@ -297,13 +297,13 @@ export default class ProjectEditor {
    * @param {string} pageName - where to go
    */
   navigate(pageName) {
-    debug(`\n ProjectEditor.navigate - START`);
-    debug(`\t pageName : ${pageName}`);
+    log(`ProjectEditor.navigate`, 'start');
+    log(`pageName : ${pageName}`);
 
     if (pageName) this.nav.page = pageName;
     const wrapper = document.getElementById('app__wrapper');
-    debug(`\t wrapper is:`);
-    debug(wrapper);
+    log(`wrapper is:`);
+    log(wrapper);
 
     if (wrapper) {
       const loader = this.pageLoader();
@@ -314,7 +314,7 @@ export default class ProjectEditor {
       console.warn(`app__wrapper could not be found, navigation failed`);
     }
 
-    debug(` ProjectEditor.navigate - END\n\n`);
+    log(`ProjectEditor.navigate`, 'end');
   }
 
   /**
@@ -322,9 +322,9 @@ export default class ProjectEditor {
    * @returns {object}
    */
   getCurrentPage() {
-    // debug(`\n ProjectEditor.getCurrentPage - START`);
-    // debug(this.pages);
-    // debug(` ProjectEditor.getCurrentPage - END\n\n`);
+    // log(`ProjectEditor.getCurrentPage`, 'start');
+    // log(this.pages);
+    // log(`ProjectEditor.getCurrentPage`, 'end');
     return this.pages[this.nav.page];
   }
 
@@ -333,7 +333,7 @@ export default class ProjectEditor {
    * @returns {object} Page Loader object - {string} content and {function} callback
    */
   pageLoader() {
-    debug(`\n ProjectEditor.pageLoader - START`);
+    log(`ProjectEditor.pageLoader`, 'start');
     const editorContent = makeElement({ tag: 'div', id: 'app__editor' });
     let currentPageLoader = {
       content: makeElement({
@@ -345,12 +345,12 @@ export default class ProjectEditor {
 
     // Collect the Page Loader for the current page
     if (this.nav.page === 'open project') {
-      debug(`\t page detected as open project`);
+      log(`page detected as open project`);
       if (!this.pages['open project'])
         this.pages['open project'] = new PageOpenProject();
       currentPageLoader = this.pages['open project'].pageLoader();
     } else if (this.nav.page === 'glyph edit') {
-      debug(`\t page detected as glyph edit`);
+      log(`page detected as glyph edit`);
       if (!this.pages['glyph edit'])
         this.pages['glyph edit'] = new PageGlyphEdit();
       currentPageLoader = this.pages['glyph edit'].pageLoader();
@@ -359,10 +359,10 @@ export default class ProjectEditor {
     // Append results
     editorContent.appendChild(currentPageLoader.content);
 
-    debug(`\t this.pages`);
-    debug(this.pages);
+    log(`this.pages`);
+    log(this.pages);
 
-    debug(` ProjectEditor.pageLoader - END\n\n`);
+    log(`ProjectEditor.pageLoader`, 'end');
 
     return { content: editorContent, callback: currentPageLoader.callback };
   }
@@ -421,8 +421,8 @@ export default class ProjectEditor {
    * @param {boolean} overwrite - for Electron app, overwrite current working file
    */
   saveGlyphrProjectFile(overwrite) {
-    // debug('SAVEGLYPHRPROJECTVILE');
-    // debug('\t ' + this.project.projectSettings.formatsavefile);
+    // log('SAVEGLYPHRPROJECTVILE');
+    // log('' + this.project.projectSettings.formatsavefile);
 
     // desktop overwrite / save as logic
     if (window && window.process && window.process.type) {
@@ -438,7 +438,7 @@ export default class ProjectEditor {
     if (this.project.projectSettings.formatsavefile) saveData = json(saveData);
     else saveData = JSON.stringify(saveData);
 
-    // debug('saveGlyphrProjectFile - \n'+saveData);
+    // log('saveGlyphrProjectFile - \n'+saveData);
     const fileName =
       this.project.projectSettings.name +
       ' - Glyphr Project - ' +
@@ -639,7 +639,7 @@ window._UI = {
      * @returns {number}
      *
     getSelectedGlyphLeftSideBearing() {
-        // debug('getSelectedGlyphLeftSideBearing');
+        // log('getSelectedGlyphLeftSideBearing');
         let sc = getSelectedWorkItem();
         if (!sc) return 0;
         if (sc.objType === 'component') return 0;
@@ -652,7 +652,7 @@ window._UI = {
      * @returns {number}
      *
     getSelectedGlyphRightSideBearing() {
-        // debug('getSelectedGlyphLeftSideBearing');
+        // log('getSelectedGlyphLeftSideBearing');
         let sc = getSelectedWorkItem();
         if (!sc) return 0;
         if (sc.objType === 'component') return 0;
@@ -705,34 +705,34 @@ function existingWorkItem() {
 }
 
 function getSelectedWorkItem() {
-    // debug('\n getSelectedWorkItem - START');
-    // debug('\t currentPage: ' + editor.nav.page);
+    // log('\n getSelectedWorkItem - START');
+    // log('currentPage: ' + editor.nav.page);
     let re;
 
     switch (editor.nav.page) {
         case 'glyph edit':
             if (!_UI.selectedGlyph) _UI.selectedGlyph = '0x0041';
             re = getGlyph(_UI.selectedGlyph, true);
-            // debug('\t case glyph edit, returning ' + re.name);
+            // log('case glyph edit, returning ' + re.name);
             return re;
         case 'import svg':
             if (!_UI.selectedSVGImportTarget) _UI.selectedSVGImportTarget = '0x0041';
             re = getGlyph(_UI.selectedSVGImportTarget, true);
-            // debug('\t case import svg, returning ' + re.name);
+            // log('case import svg, returning ' + re.name);
             return re;
         case 'ligatures':
             re = getGlyph(_UI.selectedLigature, true);
-            // debug('\t case glyph edit, returning ' + re.name);
+            // log('case glyph edit, returning ' + re.name);
             return re;
         case 'components':
             re = getGlyph(_UI.selectedComponent, false);
-            // debug('\t case components, returning ' + re.name);
+            // log('case components, returning ' + re.name);
             return re;
         case 'kerning':
-            // debug('\t case KERN - selkern = ' + _UI.selectedKern);
+            // log('case KERN - selkern = ' + _UI.selectedKern);
             if (!_UI.selectedKern) _UI.selectedKern = getFirstID(getCurrentProject().kerning);
             re = getCurrentProject().kerning[_UI.selectedKern] || false;
-            // debug('\t case kerning, returning ' + re);
+            // log('case kerning, returning ' + re);
             return re;
     }
 
@@ -757,79 +757,79 @@ function getSelectedWorkItemChar() {
 }
 
 function getSelectedWorkItemName() {
-    // debug('\n getSelectedWorkItemName - START');
+    // log('\n getSelectedWorkItemName - START');
     let wi = getSelectedWorkItem();
-    // debug('\t wi = '+wi);
+    // log('wi = '+wi);
     return wi.name || wi.getName() || '[name not found]';
 }
 
 function getSelectedWorkItemShapes() {
-    // debug('GETSELECTEDGLYPHSHAPES');
+    // log('GETSELECTEDGLYPHSHAPES');
     let rechar = getSelectedWorkItem();
     return rechar? rechar.shapes : [];
 }
 
 function markSelectedWorkItemAsChanged() {
-    // debug('\n markSelectedWorkItemAsChanged - START');
+    // log('\n markSelectedWorkItemAsChanged - START');
     let wi = getSelectedWorkItem();
 
     if (wi && wi.changed) {
-        // debug('\t marking as changed');
+        // log('marking as changed');
         wi.changed(true, true);
     }
 
-    // debug(' markSelectedWorkItemAsChanged - END\n');
+    // log('markSelectedWorkItemAsChanged', 'end');
 }
 
 function selectGlyph(c, dontnavigate) {
-    // debug('\n selectGlyph - START');
-    // debug('\t selecting ' + getGlyph(c, true).name + ' from value ' + c);
+    // log('\n selectGlyph - START');
+    // log('selecting ' + getGlyph(c, true).name + ' from value ' + c);
 
     _UI.selectedGlyph = c;
     clickEmptySpace();
     markSelectedWorkItemAsChanged();
 
     if (!dontnavigate) {
-        // debug('\t selecting ' + getCurrentProject().glyphs[c].glyphhtml + ' and navigating.');
+        // log('selecting ' + getCurrentProject().glyphs[c].glyphhtml + ' and navigating.');
         navigate({panel: 'npAttributes'});
     }
 
-    // debug(' selectGlyph - END\n');
+    // log('selectGlyph', 'end');
 }
 
 function selectComponent(c, dontnavigate) {
-    // debug('SELECTCOMPONENT - selecting ' + getGlyph(c, true).name + ' from value ' + c);
+    // log('SELECTCOMPONENT - selecting ' + getGlyph(c, true).name + ' from value ' + c);
 
     _UI.selectedComponent = c;
     clickEmptySpace();
     markSelectedWorkItemAsChanged();
 
     if (!dontnavigate) {
-        // debug('SELECTCOMPONENT: selecting ' + getCurrentProject().components[c].name + ' and navigating.');
+        // log('SELECTCOMPONENT: selecting ' + getCurrentProject().components[c].name + ' and navigating.');
         navigate({panel: 'npAttributes'});
     }
 }
 
 function selectLigature(c, dontnavigate) {
-    // debug('SELECTLIGATURE - selecting ' + getGlyph(c, true).name + ' from value ' + c);
+    // log('SELECTLIGATURE - selecting ' + getGlyph(c, true).name + ' from value ' + c);
 
     _UI.selectedLigature = c;
     clickEmptySpace();
     markSelectedWorkItemAsChanged();
 
     if (!dontnavigate) {
-        // debug('SELECTLIGATURE: selecting ' + getCurrentProject().ligatures[c].glyphhtml + ' and navigating.');
+        // log('SELECTLIGATURE: selecting ' + getCurrentProject().ligatures[c].glyphhtml + ' and navigating.');
         navigate({panel: 'npAttributes'});
     }
 }
 
 function selectSVGImportTarget(c, dontnavigate) {
-    // debug('SELECTSVGIMPORTTARGET - selecting ' + getGlyph(c, true).name + ' from value ' + c);
+    // log('SELECTSVGIMPORTTARGET - selecting ' + getGlyph(c, true).name + ' from value ' + c);
 
     _UI.selectedSVGImportTarget = c;
 
     if (!dontnavigate) {
-        // debug('SELECTSVGIMPORTTARGET: selecting ' + c + ' and navigating.');
+        // log('SELECTSVGIMPORTTARGET: selecting ' + c + ' and navigating.');
         navigate({panel: 'npAttributes'});
     }
 }

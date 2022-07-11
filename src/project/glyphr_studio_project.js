@@ -1,6 +1,6 @@
 import Glyph from '../glyph_elements/glyph.js';
 import HKern from '../glyph_elements/h_kern.js';
-import { debug, clone, round, trim } from '../common/functions.js';
+import { log, clone, round, trim } from '../common/functions.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, hexToHTML, basicLatinOrder } from '../common/unicode.js';
 import Maxes, { getOverallMaxes } from '../glyph_elements/maxes.js';
@@ -136,8 +136,8 @@ export default class GlyphrStudioProject {
     // ---------------------------------------------------------------
     // Handle passed object
     // ---------------------------------------------------------------
-    // debug("\t passed: ");
-    // debug(newProject);
+    // log("\t passed: ");
+    // log(newProject);
 
     // Project Settings
     newProject.projectSettings = newProject.projectSettings || {};
@@ -160,33 +160,33 @@ export default class GlyphrStudioProject {
     this.projectSettings.projectid =
       this.projectSettings.projectid || makeProjectID();
     this.projectSettings.descent = -1 * Math.abs(this.projectSettings.descent);
-    // debug('\t finished merging projectSettings');
-    // debug(this.projectSettings);
+    // log('finished merging projectSettings');
+    // log(this.projectSettings);
 
     // Guides
     // hydrateGlyphrObjectList(Guide, dataGuides, this.projectSettings.guides);
-    // debug('\t finished hydrating guides');
+    // log('finished hydrating guides');
 
     // Metadata
     if (newProject.metadata)
       this.metadata = merge(this.metadata, newProject.metadata, true);
-    // debug('\t finished merging metadata');
+    // log('finished merging metadata');
 
     // Components
     hydrateGlyphrObjectList(Glyph, newProject.components, this.components);
-    // debug('\t finished hydrating components');
+    // log('finished hydrating components');
 
     // Glyphs
     hydrateGlyphrObjectList(Glyph, newProject.glyphs, this.glyphs);
-    // debug('\t finished hydrating glyphs');
+    // log('finished hydrating glyphs');
 
     // Ligatures
     hydrateGlyphrObjectList(Glyph, newProject.ligatures, this.ligatures);
-    // debug('\t finished hydrating ligatures');
+    // log('finished hydrating ligatures');
 
     // Kerning
     hydrateGlyphrObjectList(HKern, newProject.kerning, this.kerning);
-    // debug('\t finished hydrating kern pairs');
+    // log('finished hydrating kern pairs');
   }
 
   // --------------------------------------------------------------
@@ -241,11 +241,11 @@ export default class GlyphrStudioProject {
    * @returns {Glyph}
    */
   getGlyph(id, create = false) {
-    // debug('\n getGlyph - START');
-    // debug('\t passed: ' + id + ' create: ' + create);
+    // log('\n getGlyph - START');
+    // log('passed: ' + id + ' create: ' + create);
 
     if (!id) {
-      // debug('\t Not passed an ID, returning false');
+      // log('Not passed an ID, returning false');
       return false;
     }
 
@@ -254,30 +254,30 @@ export default class GlyphrStudioProject {
 
     if (this.ligatures && id.indexOf('0x', 2) > -1) {
       rechar = this.ligatures[id];
-      // debug('\t retrieved ' + rechar + ' from ligatures.');
+      // log('retrieved ' + rechar + ' from ligatures.');
       if (rechar) {
         return rechar;
       } else if (create) {
-        // debug('\t create was true, returning a new ligature.');
+        // log('create was true, returning a new ligature.');
         this.ligatures[id] = new Glyph({ glyphhex: id });
         return this.ligatures[id];
       }
     } else if (this.glyphs && id.indexOf('0x') > -1) {
       rechar = this.glyphs[id];
-      // debug('\t retrieved ' + rechar + ' from glyphs.');
+      // log('retrieved ' + rechar + ' from glyphs.');
       if (rechar) {
         return rechar;
       } else if (create) {
-        debug('\t create was true, returning a new char.');
+        log('create was true, returning a new char.');
         this.glyphs[id] = new Glyph({ glyphhex: id });
         return this.glyphs[id];
       }
     } else if (this.components) {
-      // debug('\t component, retrieved');
-      // debug(this.components[id]);
+      // log('component, retrieved');
+      // log(this.components[id]);
       return this.components[id] || false;
     } else {
-      // debug('getGlyph - returning FALSE\n');
+      // log('getGlyph - returning FALSE\n');
       return false;
     }
   }
@@ -301,34 +301,34 @@ export default class GlyphrStudioProject {
    */
   getGlyphName(id, forceLongName = false) {
     id = '' + id;
-    // debug('\n getGlyphName');
-    // debug('\t passed ' + id);
+    // log('\n getGlyphName');
+    // log('passed ' + id);
 
     // not passed an id
     if (!id) {
-      // debug('\t not passed an ID, returning false');
+      // log('not passed an ID, returning false');
       return false;
     }
 
     // known unicode names
     const un = forceLongName ? unicodeNames[id] : shortUnicodeNames[id];
     if (un) {
-      // debug('\t got unicode name: ' + un);
+      // log('got unicode name: ' + un);
       return un;
     }
 
     const cobj = getCurrentProject().getGlyph(id);
     if (id.indexOf('0x', 2) > -1) {
       // ligature
-      // debug('\t ligature - returning ' + hexToHTML(id));
+      // log('ligature - returning ' + hexToHTML(id));
       return cobj.name || hexToHTML(id);
     } else {
       // Component
-      // debug('getGlyphName - inexplicably fails, returning [name not found]\n');
+      // log('getGlyphName - inexplicably fails, returning [name not found]\n');
       return cobj.name || '[name not found]';
     }
 
-    // debug(' getGlyphName - returning nothing - END\n');
+    // log('getGlyphName - returning nothing', 'end');
   }
 
   /**
@@ -386,7 +386,7 @@ export default class GlyphrStudioProject {
  * @returns {Object}
  */
 function merge(template = {}, importing = {}, trimStrings = false) {
-  debug(template);
+  log(template);
 
   for (const a of Object.keys(template)) {
     if (typeof template[a] === 'object') {
@@ -409,7 +409,8 @@ function merge(template = {}, importing = {}, trimStrings = false) {
  * @param {Object} source - collection of temporary objects to hydrate
  * @param {Object} destination - project object for final items
  */
-function hydrateGlyphrObjectList(GlyphrStudioItem, source = {}, destination) {
+function hydrateGlyphrObjectList(GlyphrStudioItem, source, destination) {
+  source = source || {};
   for (const key of Object.keys(source)) {
     if (source[key]) {
       destination[key] = new GlyphrStudioItem(source[key]);

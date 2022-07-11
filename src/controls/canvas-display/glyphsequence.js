@@ -42,10 +42,10 @@ export default class GlyphSequence {
     this.textblocks = this.glyphstring.split('\n');
     this.linebreakers = ['\u0020', '\u2002', '\u2003'];
     this.data = [];
-    // debug(this);
+    // log(this);
     // Initialize data
     this.generateData();
-    // debug(' GlyphSequence - END\n');
+    // log('GlyphSequence', 'end');
   }
 
   // --------------------------------------------------------------
@@ -107,12 +107,12 @@ export default class GlyphSequence {
    * @param {number} newstring - new set of glyphs to show
    */
   set glyphString(newstring) {
-    // debug('\n GlyphSequence.setString - START');
-    // debug(`\t passed ${newstring}`);
+    // log('\n GlyphSequence.setString - START');
+    // log(`passed ${newstring}`);
     this._glyphString = newstring;
     this._textBlocks = this._glyphString.split('\n');
-    // debug(`\t this._glyphString ${this._glyphString}`);
-    // debug(`\t this._textBlocks ${this._textBlocks}`);
+    // log(`this._glyphString ${this._glyphString}`);
+    // log(`this._textBlocks ${this._textBlocks}`);
     // Lots of opportunities for optimization
     if (this._glyphString !== '') this.generateData();
   }
@@ -140,8 +140,8 @@ export default class GlyphSequence {
    * the data needed to display them.
    */
   generateData() {
-    // debug('\n GlyphSequence.generateData - START');
-    // debug(`\t this.textblocks ${this.textblocks}`);
+    // log('\n GlyphSequence.generateData - START');
+    // log(`this.textblocks ${this.textblocks}`);
     let aggregateWidth = 0;
     let thisWidth;
     let thisKern;
@@ -163,7 +163,7 @@ export default class GlyphSequence {
       width: (this.maxes.xMax - this.maxes.xMin) / this.scale,
       height: (this.maxes.yMax - this.maxes.yMin) / this.scale,
     };
-    // debug(`\t Em unit currs ${currx}, ${curry}, ${this.scale}`);
+    // log(`Em unit currs ${currx}, ${curry}, ${this.scale}`);
     /*
             ----------------------------------------
             Initial loop to calculate widths
@@ -198,36 +198,36 @@ export default class GlyphSequence {
         currchar = this.data[tb][tg];
       }
     }
-    // debug('this.data');
-    // debug(this.data);
+    // log('this.data');
+    // log(this.data);
     /*
             ----------------------------------------
             Second loop to calculate line breaks
             within each block, and final possitions
             ----------------------------------------
         */
-    // debug('\t CALCUALTING DATA PER CHAR');
+    // log('CALCUALTING DATA PER CHAR');
     for (tb = 0; tb < this.data.length; tb++) {
       currblock = this.data[tb];
-      // debug(`block ${tb}`);
+      // log(`block ${tb}`);
       // char data units and width units are all in glyph em (not pixel) units
       for (tg = 0; tg < currblock.length; tg++) {
         currchar = currblock[tg];
-        // debug(`${currchar.char} num ${tg}`);
+        // log(`${currchar.char} num ${tg}`);
         if (currchar.view === false) {
           // pos for this currchar hasn't been calculated
           if (checkforbreak && this.maxwidth !== Infinity) {
             nlb = getNextLineBreaker(currblock, tg);
             wordagg = nlb.aggregate - currchar.aggregate;
-            // debug(`\t currx - area.x + wordagg > area.width`);
-            // debug(`\t ${currx} - ${area.x} + ${wordagg} > ${area.width}`);
-            // debug(`\t ${currx - area.x + wordagg} > ${area.width}`);
+            // log(`currx - area.x + wordagg > area.width`);
+            // log(`${currx} - ${area.x} + ${wordagg} > ${area.width}`);
+            // log(`${currx - area.x + wordagg} > ${area.width}`);
             if (currx - area.x + wordagg > area.width) {
               currline++;
               if (!canNextLineFit(curry, area, this.lineGap)) {
                 // text takes up too much vertical space
                 // returning early will leave unconputed chars.isvisible = false
-                // debug(' GlyphSequence.generateData - Vertical Max Reached - END\n');
+                // log('GlyphSequence.generateData - Vertical Max Reached', 'end');
                 return;
               } else {
                 currx = area.x;
@@ -242,7 +242,7 @@ export default class GlyphSequence {
           currx += currchar.width + currchar.kern;
         }
         if (currchar.islinebreaker) checkforbreak = true;
-        // debug(`\twidth \t ${currchar.width}
+        // log(`\twidth \t ${currchar.width}
         // aggr \t ${currchar.aggregate}
         // lnbr \t ${currchar.islinebreaker}
         // view \t ${json(currchar.view, true)}
@@ -254,15 +254,15 @@ export default class GlyphSequence {
       if (!canNextLineFit(curry, area, this.lineGap)) {
         // text takes up too much vertical space
         // returning early will leave unconputed chars.isvisible = false
-        // debug(' GlyphSequence.generateData - Vertical Max Reached - END\n');
+        // log('GlyphSequence.generateData - Vertical Max Reached', 'end');
         return;
       }
       currx = area.x;
       curry = calcNewLineY(area.y, currline, this.lineGap);
     }
-    // debug('\t after view calc this.data');
-    // debug(this.data)
-    // debug(' GlyphSequence.generateData - END\n');
+    // log('after view calc this.data');
+    // log(this.data)
+    // log('GlyphSequence.generateData', 'end');
   }
 
   /**
@@ -284,7 +284,7 @@ export default class GlyphSequence {
    * Draw the glyphs to the canvas
    */
   draw() {
-    // debug('\n GlyphSequence.draw - START');
+    // log('\n GlyphSequence.draw - START');
 
     // Draw Page Extras
     if (this.drawPageExtras) {
@@ -294,7 +294,7 @@ export default class GlyphSequence {
 
     // Draw Line Extras
     let currline = -1;
-    // debug('\t DRAW LINE EXTRAS');
+    // log('DRAW LINE EXTRAS');
     if (this.drawLineExtras) {
       this.iterator(function (char, gs) {
         if (char.linenumber !== currline) {
@@ -305,7 +305,7 @@ export default class GlyphSequence {
     }
 
     // Draw Glyph Extras
-    // debug('\t DRAW GLYPH EXTRAS');
+    // log('DRAW GLYPH EXTRAS');
     if (this.drawGlyphExtras) {
       this.iterator(function (char, gs) {
         if (char.isvisible) gs.drawGlyphExtras(char);
@@ -313,13 +313,13 @@ export default class GlyphSequence {
     }
 
     // Draw Glyphs
-    // debug('\t DRAW GLYPHS');
+    // log('DRAW GLYPHS');
     if (this.drawGlyph) {
       this.iterator(function (char, gs) {
         if (char.isvisible) gs.drawGlyph(char);
       });
     }
-    // debug(' GlyphSequence.draw - END\n');
+    // log('GlyphSequence.draw', 'end');
   }
 }
 
@@ -347,7 +347,7 @@ function canNextLineFit(currentLineY, area, lineGap) {
   let bottom = area.y + area.height;
   let nextLineY = currentLineY + lineGap + this.project.projectSettings.upm;
 
-  // debug(`\t canNextLineFit - ${bottom} > ${nextLineY}`);
+  // log(`canNextLineFit - ${bottom} > ${nextLineY}`);
   return bottom > nextLineY;
 }
 
@@ -359,17 +359,17 @@ function canNextLineFit(currentLineY, area, lineGap) {
  * @returns {object}
  */
 function getNextLineBreaker(block, start = 0) {
-  // debug('\n getNextLineBreaker - START');
-  // debug(`\t starting at pos ${start}`);
+  // log('\n getNextLineBreaker - START');
+  // log(`starting at pos ${start}`);
 
   for (let i = start; i < block.length; i++) {
     if (block[i].islinebreaker) {
-      // debug(`\t found ${i} returning *${block[i].char}* value ${block[i].aggregate}`);
+      // log(`found ${i} returning *${block[i].char}* value ${block[i].aggregate}`);
       return block[i];
     }
   }
 
-  // debug(`\t NOTHING found, returning ${block[block.length-1].char} value ${block[block.length-1].aggregate}`);
+  // log(`NOTHING found, returning ${block[block.length-1].char} value ${block[block.length-1].aggregate}`);
 
   return block[block.length - 1];
 }
@@ -400,14 +400,14 @@ function debugWidths() {
  * @returns {number} - kern offset in Em Units
  */
 function calculateKernOffset(c1, c2) {
-  // debug('\n calculateKernOffset - START');
-  // debug('\t passed: ' + c1 + ' and ' + c2);
+  // log('\n calculateKernOffset - START');
+  // log('passed: ' + c1 + ' and ' + c2);
 
   if (!c1 || !c2) return 0;
 
   c1 = parseUnicodeInput(c1).join('');
   c2 = parseUnicodeInput(c2).join('');
-  // debug('\t converted: ' + c1 + ' and ' + c2);
+  // log('converted: ' + c1 + ' and ' + c2);
 
   let projectKerning = getCurrentProject().kerning;
   let leftGroupKern;
@@ -418,14 +418,14 @@ function calculateKernOffset(c1, c2) {
     if (projectKerning[pair]) {
       for (let l = 0; l < projectKerning[pair].leftgroup.length; l++) {
         leftGroupKern = projectKerning[pair].leftgroup[l];
-        // debug('\t checking leftgroup ' + leftGroupKern + ' against ' + c1);
+        // log('checking leftgroup ' + leftGroupKern + ' against ' + c1);
         if (parseUnicodeInput(leftGroupKern)[0] === c1) {
-          // debug('\t LEFTGROUP MATCH! for ' + c1);
+          // log('LEFTGROUP MATCH! for ' + c1);
           for (let r = 0; r < projectKerning[pair].rightgroup.length; r++) {
             rightGroupKern = projectKerning[pair].rightgroup[r];
             if (parseUnicodeInput(rightGroupKern)[0] === c2) {
               result = projectKerning[pair].value * -1;
-              // debug('\t FOUND MATCH! returning ' + result);
+              // log('FOUND MATCH! returning ' + result);
               return result;
             }
           }
@@ -434,7 +434,7 @@ function calculateKernOffset(c1, c2) {
     }
   }
 
-  // debug(' calculateKernOffset - END\n');
+  // log('calculateKernOffset', 'end');
   return 0;
 }
 
@@ -445,10 +445,10 @@ function calculateKernOffset(c1, c2) {
  * @returns {array}
  */
 function findAndMergeLigatures(charArray) {
-  // debug('\n findAndMergeLigatures - START');
+  // log('\n findAndMergeLigatures - START');
   let ligs = sortLigatures();
-  // debug('\t sorted ligs: ');
-  // debug(ligs);
+  // log('sorted ligs: ');
+  // log(ligs);
 
   let ligatureChars;
   let carrot;
@@ -456,16 +456,16 @@ function findAndMergeLigatures(charArray) {
     // for(var g=ligs.length-1; g>-1; g--){
     for (let g = 0; g < ligs.length; g++) {
       ligatureChars = hexToChars(ligs[g].id);
-      // debug('\t checking ' + ligatureChars);
+      // log('checking ' + ligatureChars);
       carrot = charArray.slice(c, c + ligatureChars.length).join('');
-      // debug('\t against ' + carrot);
+      // log('against ' + carrot);
       if (carrot === ligatureChars) {
         charArray.splice(c, ligatureChars.length, ligatureChars);
-        // debug('\t !Ligature Found! array['+c+'] is now ' + charArray[c]);
+        // log('!Ligature Found! array['+c+'] is now ' + charArray[c]);
       }
     }
   }
 
-  // debug(' findAndMergeLigatures - END\n');
+  // log('findAndMergeLigatures', 'end');
   return charArray;
 }

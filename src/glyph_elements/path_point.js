@@ -188,8 +188,8 @@ export default class PathPoint extends GlyphElement {
    * @param {number} dy - delta y
    */
   updatePathPointPosition(controlPoint = 'p', dx = 0, dy = 0) {
-    // debug(`\n PathPoint.updatePathPointPosition - START`);
-    // debug(`\t control point ${controlPoint} dx ${dx} dy ${dy}`);
+    // log(`PathPoint.updatePathPointPosition`, 'start');
+    // log(`control point ${controlPoint} dx ${dx} dy ${dy}`);
 
     dx = parseFloat(dx);
     dy = parseFloat(dy);
@@ -232,7 +232,7 @@ export default class PathPoint extends GlyphElement {
         break;
     }
 
-    // debug(` PathPoint.updatePathPointPosition - END\n\n`);
+    // log(`PathPoint.updatePathPointPosition`, 'end');
   }
 
   /**
@@ -246,20 +246,20 @@ export default class PathPoint extends GlyphElement {
   isOverControlPoint(x = 0, y = 0, targetSize = 3, noHandles = false) {
     const test = { x: x, y: y };
     if (pointsAreEqual(this.p, test, targetSize)) {
-      // debug('PathPoint.isOverControlPoint - Returning P1');
+      // log('PathPoint.isOverControlPoint - Returning P1');
       return { point: this, type: 'p' };
     }
 
     if (this.h1.use && !noHandles) {
       if (pointsAreEqual(this.h1, test, targetSize)) {
-        // debug('PathPoint.isOverControlPoint - Returning h1');
+        // log('PathPoint.isOverControlPoint - Returning h1');
         return { point: this, type: 'h1' };
       }
     }
 
     if (this.h2.use && !noHandles) {
       if (pointsAreEqual(this.h2, test, targetSize)) {
-        // debug('PathPoint.isOverControlPoint - Returning h2');
+        // log('PathPoint.isOverControlPoint - Returning h2');
         return { point: this, type: 'h2' };
       }
     }
@@ -273,7 +273,7 @@ export default class PathPoint extends GlyphElement {
    * @returns {PathPoint}
    */
   makeSymmetric(hold) {
-    // debug('PathPoint.makeSymmetric - hold ' + hold + ' starts as ' + JSON.stringify(this));
+    // log('PathPoint.makeSymmetric - hold ' + hold + ' starts as ' + JSON.stringify(this));
 
     if (!hold) {
       hold = this.h1.use ? 'h1' : 'h2';
@@ -308,7 +308,7 @@ export default class PathPoint extends GlyphElement {
     this.h2.use = true;
 
     // this.roundAll();
-    // debug('PathPoint.makeSymmetric - returns ' + JSON.stringify(this));
+    // log('PathPoint.makeSymmetric - returns ' + JSON.stringify(this));
 
     return this;
   }
@@ -319,8 +319,8 @@ export default class PathPoint extends GlyphElement {
    * @returns {PathPoint}
    */
   makeFlat(hold) {
-    // debug('\n PathPoint.makeFlat - START');
-    // debug('\t hold passed ' + hold);
+    // log('\n PathPoint.makeFlat - START');
+    // log('hold passed ' + hold);
 
     if (this.isFlat()) {
       this._type = 'flat';
@@ -385,7 +385,7 @@ export default class PathPoint extends GlyphElement {
 
     this._type = 'flat';
 
-    // debug(' PathPoint.makeFlat - END\n');
+    // log('PathPoint.makeFlat', 'end');
 
     return this;
   }
@@ -400,7 +400,7 @@ export default class PathPoint extends GlyphElement {
 
     const a1 = this.h1.angle;
     const a2 = this.h2.angle;
-    // debug('\t comparing ' + a1 + ' / ' + a2);
+    // log('comparing ' + a1 + ' / ' + a2);
 
     return round(Math.abs(a1) + Math.abs(a2), 2) === 3.14;
   }
@@ -410,23 +410,23 @@ export default class PathPoint extends GlyphElement {
    * @returns {string}
    */
   resolvePointType() {
-    // debug('\n PathPoint.resolvePointType - START');
+    // log('\n PathPoint.resolvePointType - START');
 
     if (this.isFlat()) {
       if (this.h1.length === this.h2.length) {
-        // debug('\t resolvePointType - setting to Symmetric');
+        // log('resolvePointType - setting to Symmetric');
         this._type = 'symmetric';
       } else {
-        // debug('\t resolvePointType - setting to Flat');
+        // log('resolvePointType - setting to Flat');
         this._type = 'flat';
       }
     } else {
-      // debug('\t resolvePointType - setting to Corner');
+      // log('resolvePointType - setting to Corner');
       this._type = 'corner';
     }
 
     return this.type;
-    // debug(' pathPoint.resolvePointType - END\n');
+    // log('pathPoint.resolvePointType', 'end');
   }
 
   /**
@@ -457,15 +457,15 @@ export default class PathPoint extends GlyphElement {
 
     length = length || hyp1 / 3;
 
-    // debug('PathPoint.makePointedTo - x/y/l ' + px + ' ' + py + ' ' + length + ' - Before H1x/y ' + this.h1.x + ' ' + this.h1.y);
+    // log('PathPoint.makePointedTo - x/y/l ' + px + ' ' + py + ' ' + length + ' - Before H1x/y ' + this.h1.x + ' ' + this.h1.y);
     this[handle].x = this.p.x + Math.cos(angle1) * length * xMod;
     this[handle].y = this.p.y + Math.sin(angle1) * length * yMod;
-    // debug('PathPoint.makePointedTo - after H1x/y ' + this.h1.x + ' ' + this.h1.y);
+    // log('PathPoint.makePointedTo - after H1x/y ' + this.h1.x + ' ' + this.h1.y);
 
     if (!doNotResolvePointType) {
       if (this.type === 'corner') this.makeFlat(handle);
       else this.makeSymmetric(handle);
-      // debug('PathPoint.makePointedTo - after make symmetric H1x/y ' + this.h1.x + ' ' + this.h1.y);
+      // log('PathPoint.makePointedTo - after make symmetric H1x/y ' + this.h1.x + ' ' + this.h1.y);
     }
 
     return this;
@@ -478,12 +478,12 @@ export default class PathPoint extends GlyphElement {
    * @returns {PathPoint}
    */
   rotate(angle, about) {
-    // debug('\n PathPoint.rotate - START');
+    // log('\n PathPoint.rotate - START');
     rotate(this.p, angle, about);
     rotate(this.h1, angle, about);
     rotate(this.h2, angle, about);
-    // debug('\t this.p ' + json(this.p, true));
-    // debug(' PathPoint.rotate - END\n');
+    // log('this.p ' + json(this.p, true));
+    // log('PathPoint.rotate', 'end');
 
     return this;
   }

@@ -32,7 +32,7 @@ export default class Shape extends GlyphElement {
     ratioLock = false,
     parent = false,
   } = {}) {
-    // debug(`\n Shape.constructor - START`);
+    // log(`Shape.constructor`, 'start');
     super();
     this.parent = parent;
     this.name = name;
@@ -44,7 +44,7 @@ export default class Shape extends GlyphElement {
     this.ratioLock = ratioLock;
 
     this.objType = 'Shape';
-    // debug(` Shape.constructor - END\n\n`);
+    // log(`Shape.constructor`, 'end');
   }
 
   // --------------------------------------------------------------
@@ -216,7 +216,7 @@ export default class Shape extends GlyphElement {
    */
   set name(name) {
     name = strSan(name);
-    // debug('\t sanitized: ' + name);
+    // log('sanitized: ' + name);
     if (name !== '') {
       this._name = name;
     } else {
@@ -491,10 +491,10 @@ export default class Shape extends GlyphElement {
    * @returns {Shape} - reference to this shape
    */
   rotate(angle, about) {
-    // debug('\n Shape.rotate - START');
+    // log('\n Shape.rotate - START');
     about = about || this.center;
-    // debug('\t first p[0].p.x ' + this.path.pathPoints[0].p.x);
-    // debug(' Shape.rotate - END\n');
+    // log('first p[0].p.x ' + this.path.pathPoints[0].p.x);
+    // log('Shape.rotate', 'end');
     this.path.rotate(angle, about);
     return this;
   }
@@ -533,10 +533,10 @@ export default class Shape extends GlyphElement {
    * @returns {boolean}
    */
   drawShape(ctx, view) {
-    // debug('\n Shape.drawShape - START');
-    // debug('\t view ' + json(view, true));
+    // log('\n Shape.drawShape - START');
+    // log('view ' + json(view, true));
     this.path.drawPath(ctx, view);
-    // debug(' Shape.drawShape - returning true by default - END\n');
+    // log('Shape.drawShape - returning true by default', 'end');
     return true;
   }
 
@@ -564,24 +564,24 @@ export default class Shape extends GlyphElement {
   /* NEEDS REFACTORING - NO NEED TO DUPLICATE THESE METHODS HERE
 
     draw_PathOutline(accent = '#000', thickness = 1) {
-        // debug('\n Shape.draw_PathOutline - START');
+        // log('\n Shape.draw_PathOutline - START');
         draw_PathOutline(this, accent, thickness);
     }
 
     draw_BoundingBox(accent = '#000', thickness = 1) {
-        // debug('\n Shape.draw_BoundingBox - START');
+        // log('\n Shape.draw_BoundingBox - START');
         draw_BoundingBox(this.path.maxes, accent, thickness);
     }
 
     draw_BoundingBoxHandles(accent = '#000', thickness = 1) {
-        // debug('\n Shape.draw_BoundingBoxHandles - START');
+        // log('\n Shape.draw_BoundingBoxHandles - START');
         draw_BoundingBoxHandles(this.path.maxes, accent, thickness);
     }
 
     isOverBoundingBoxHandle(px, py) {
-        // debug('\n Shape.isOverBoundingBoxHandle - START');
+        // log('\n Shape.isOverBoundingBoxHandle - START');
         let c = isOverBoundingBoxHandle(px, py, this.maxes);
-        // debug('\t Shape.isOverBoundingBoxHandle returning ' + c);
+        // log('Shape.isOverBoundingBoxHandle returning ' + c);
         return c;
     }
 */

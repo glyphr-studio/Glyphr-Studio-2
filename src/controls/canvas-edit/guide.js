@@ -20,9 +20,9 @@ export default class Guide {
     this.editable = isVal(oa.editable) ? oa.editable : true;
   }
   draw(delta) {
-    // debug('\nGuide.draw \t START');
-    // debug('\t name: ' + this.name);
-    // debug('\t delta: ' + delta);
+    // log('\nGuide.draw \t START');
+    // log('name: ' + this.name);
+    // log('delta: ' + delta);
     if (!this.visible) return;
     delta = delta * 1;
     let ctx = _UI.glyphEditCTX;
@@ -34,8 +34,8 @@ export default class Guide {
     let label = { x: 0, y: 0 };
     let pad = 5;
     let pos;
-    // debug('\t view: ' + JSON.stringify(v));
-    // debug('\t location: ' + this.location);
+    // log('view: ' + JSON.stringify(v));
+    // log('location: ' + this.location);
     if (this.type === 'horizontal') {
       pos = makeCrisp(v.dy - this.location * v.dz);
       if (delta) pos += delta * v.dz;
@@ -61,7 +61,7 @@ export default class Guide {
     let color = getColorFromRGBA(this.color, alpha);
     if (color !== 'rgb(255,255,255)') {
       // Draw Line
-      // debug('\t start: ' + JSON.stringify(start) + ' / end: ' + JSON.stringify(end));
+      // log('start: ' + JSON.stringify(start) + ' / end: ' + JSON.stringify(end));
       ctx.strokeStyle = color;
       ctx.globalAlpha = 1;
       ctx.lineWidth = 1;
@@ -78,6 +78,6 @@ export default class Guide {
         _UI.glyphEditCTX.fillText(this.name, label.x, label.y);
       }
     }
-    // debug('Guide.draw \t END\n');
+    // log('Guide.draw', 'end');
   }
 }

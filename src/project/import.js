@@ -11,7 +11,7 @@ import { getGlyphrStudioApp } from '../app/main.js';
  * Event handler for dropped project text files
  */
 function importGlyphrProjectFromText() {
-  // debug('\n importGlyphrProjectFromText - START');
+  // log('\n importGlyphrProjectFromText - START');
 
   // -----------------------------
   // START IMPORT
@@ -32,7 +32,7 @@ function importGlyphrProjectFromText() {
 
   const projectVersion = parseVersionNum(fileContent.projectSettings.version);
   const currentAppVersion = parseVersionNum(app.version);
-  // debug("\t version found " + fileContent.projectSettings.version);
+  // log("\t version found " + fileContent.projectSettings.version);
 
   // Check for future versions
   if (projectVersion.major > currentAppVersion.major) {
@@ -44,14 +44,14 @@ function importGlyphrProjectFromText() {
   if (projectVersion.major === 2) {
     // So far no updates among minor V2 versions
   }
-  // debug(`\t done with v2 minor updates`);
+  // log(`done with v2 minor updates`);
 
   // Update the version
   fileContent.projectSettings.version = app.version;
   fileContent.projectSettings.version = app.version;
 
   // Hydrate after all updates
-  // debug(' importGlyphrProjectFromText - END\n');
+  // log('importGlyphrProjectFromText', 'end');
   return new GlyphrStudioProject(fileContent);
 }
 

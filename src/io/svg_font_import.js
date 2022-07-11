@@ -6,7 +6,7 @@
 **/
 
 function ioSVG_importSVGFont(filter) {
-  // debug('\n ioSVG_importSVGFont - Start');
+  // log('\n ioSVG_importSVGFont - Start');
 
   // Spinner Animation
   document.getElementById(
@@ -30,7 +30,7 @@ function ioSVG_importSVGFont(filter) {
   setTimeout(setupFontImport, 10);
 
   function setupFontImport() {
-    // debug('\n setupFontImport - START');
+    // log('\n setupFontImport - START');
     importStatus('Reading font data...');
     _GP = new GlyphrStudioProject();
 
@@ -83,14 +83,14 @@ function ioSVG_importSVGFont(filter) {
       );
     }
 
-    // debug(' setupFontImport - END\n');
+    // log('setupFontImport', 'end');
   }
 
   function startFontImport() {
-    // debug('\n startFontImport - START');
+    // log('\n startFontImport - START');
     importStatus('Importing Glyph 1 of ' + chars.length);
     setTimeout(importOneGlyph, 4);
-    // debug(' startFontImport - END\n');
+    // log('startFontImport', 'end');
   }
 
   /*
@@ -125,8 +125,8 @@ function ioSVG_importSVGFont(filter) {
     tca = chars[c].attributes;
 
     // Get the appropriate unicode decimal for this char
-    // debug('\n importOneGlyph - START');
-    // debug('\t starting  unicode \t' + tca.unicode + ' \t ' + tca['glyph-name']);
+    // log('\n importOneGlyph - START');
+    // log('starting  unicode \t' + tca.unicode + ' \t ' + tca['glyph-name']);
 
     uni = parseUnicodeInput(tca.unicode);
 
@@ -134,13 +134,13 @@ function ioSVG_importSVGFont(filter) {
 
     if (uni === false) {
       // Check for .notdef
-      // debug('\t !!! Skipping '+tca['glyph-name']+' NO UNICODE !!!');
+      // log('!!! Skipping '+tca['glyph-name']+' NO UNICODE !!!');
       chars.splice(c, 1);
     } else if (filter && isOutOfBounds(uni)) {
-      // debug('\t !!! Skipping '+tca['glyph-name']+' OUT OF BOUNDS !!!');
+      // log('!!! Skipping '+tca['glyph-name']+' OUT OF BOUNDS !!!');
       chars.splice(c, 1);
     } else {
-      // debug('\t GLYPH ' + c + '/'+chars.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(tca));
+      // log('GLYPH ' + c + '/'+chars.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(tca));
       /*
        *
        *  GLYPH OR LIGATURE IMPORT
@@ -151,26 +151,26 @@ function ioSVG_importSVGFont(filter) {
 
       // Import Path Data
       data = tca.d;
-      // debug('\t Glyph has path data ' + data);
+      // log('Glyph has path data ' + data);
       if (data && data !== 'z') {
         data = cleanAndFormatPathPointData(data);
 
-        // debug('\t split z, data into ' + data.length + ' Glyphr Studio shapes.');
-        // debug(data);
+        // log('split z, data into ' + data.length + ' Glyphr Studio shapes.');
+        // log(data);
 
         for (let d = 0; d < data.length; d++) {
           if (data[d].length) {
-            // debug('\t starting convertPathTag');
+            // log('starting convertPathTag');
             np = ioSVG_convertPathTag(data[d]);
-            // debug('\t created shape from PathTag');
-            // debug(np);
+            // log('created shape from PathTag');
+            // log(np);
             if (np.pathPoints.length) {
               shapecounter++;
               newshapes.push(
                 new Shape({ path: np, name: 'Shape ' + shapecounter })
               );
             } else {
-              // debug('\t !!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
+              // log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
             }
           }
         }
@@ -220,7 +220,7 @@ function ioSVG_importSVGFont(filter) {
     // finish loop
     setTimeout(importOneGlyph, 1);
 
-    // debug(' importOneGlyph - END\n');
+    // log('importOneGlyph', 'end');
   }
 
   /*
@@ -244,11 +244,11 @@ function ioSVG_importSVGFont(filter) {
 
     importStatus('Importing Kern Pair ' + k + ' of ' + kerns.length);
 
-    // debug('\n Kern Import - START ' + k + '/' + kerns.length);
+    // log('\n Kern Import - START ' + k + '/' + kerns.length);
     leftgroup = [];
     rightgroup = [];
     tk = kerns[k];
-    // debug('\t Kern Attributes: ' + json(tk.attributes, true));
+    // log('Kern Attributes: ' + json(tk.attributes, true));
 
     // Get members by name
     leftgroup = getKernMembersByName(
@@ -264,7 +264,7 @@ function ioSVG_importSVGFont(filter) {
       _UI.glyphrange.latinExtendedB.end
     );
 
-    // debug('\t kern groups by name ' + json(leftgroup, true) + ' ' + json(rightgroup, true));
+    // log('kern groups by name ' + json(leftgroup, true) + ' ' + json(rightgroup, true));
 
     // Get members by Unicode
     leftgroup = getKernMembersByUnicodeID(
@@ -280,25 +280,25 @@ function ioSVG_importSVGFont(filter) {
       _UI.glyphrange.latinExtendedB.end
     );
 
-    // debug('\t kern groups parsed as ' + json(leftgroup, true) + ' ' + json(rightgroup, true));
+    // log('kern groups parsed as ' + json(leftgroup, true) + ' ' + json(rightgroup, true));
 
     if (leftgroup.length && rightgroup.length) {
       newid = generateNewID(fk, 'kern');
       kernval = tk.attributes.k || 0;
-      // debug('\t Making a kern pair with k = ' + kernval);
+      // log('Making a kern pair with k = ' + kernval);
       fk[newid] = new HKern({
         leftgroup: leftgroup,
         rightgroup: rightgroup,
         value: kernval,
       });
-      // debug('\t Made the new kern successfully.');
+      // log('Made the new kern successfully.');
       k++;
     } else {
       kerns.splice(k, 1);
-      // debug('\t Kern ' + json(tk.attributes, true) + ' returned an empty group.');
+      // log('Kern ' + json(tk.attributes, true) + ' returned an empty group.');
     }
 
-    // debug(' Kern Import - END\n');
+    // log('Kern Import', 'end');
     setTimeout(importOneKern, 1);
   }
 
@@ -370,14 +370,14 @@ function ioSVG_importSVGFont(filter) {
     finalizeUI();
     closeDialog();
 
-    // debug(' ioSVG_importSVGFont - END\n');
+    // log('ioSVG_importSVGFont', 'end');
     navigate();
   }
-  // debug(' ioSVG_importSVGFont - END\n');
+  // log('ioSVG_importSVGFont', 'end');
 }
 
 function make_LoadingAnimation() {
-  // debug('\n make_LoadingAnimation - START');
+  // log('\n make_LoadingAnimation - START');
   let re = '';
   re += '<div class="openproject_tile">';
   re += '<h2>Importing Font</h2>';
@@ -396,7 +396,7 @@ function make_LoadingAnimation() {
   re += makeErrorMessageBox();
   re += '</div>';
 
-  // debug(' make_LoadingAnimation - END\n');
+  // log('make_LoadingAnimation', 'end');
   return re;
 }
 

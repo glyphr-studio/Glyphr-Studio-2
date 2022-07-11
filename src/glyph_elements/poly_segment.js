@@ -145,8 +145,8 @@ export default class PolySegment extends GlyphElement {
    * @param {number} delay - ms delay
    */
   slowlyDrawSegments(delay = 600) {
-    // debug('\n PolySegment.slowlyDrawSegments - START');
-    // debug(this._segments);
+    // log('\n PolySegment.slowlyDrawSegments - START');
+    // log(this._segments);
     let currentSegment = 0;
     let segments = this._segments;
 
@@ -158,7 +158,7 @@ export default class PolySegment extends GlyphElement {
         currentSegment++;
         setTimeout(ds, delay);
       } else {
-        // debug(' PolySegment.slowlyDrawSegments - END\n');
+        // log('PolySegment.slowlyDrawSegments', 'end');
       }
     }
     setTimeout(ds, delay);
@@ -169,8 +169,8 @@ export default class PolySegment extends GlyphElement {
    * @returns {Path}
    */
   getPath() {
-    // debug('\n PolySegment.getPath - START');
-    // debug(this._segments);
+    // log('\n PolySegment.getPath - START');
+    // log(this._segments);
 
     /**
      * Creates a single Point from two segments
@@ -225,8 +225,8 @@ export default class PolySegment extends GlyphElement {
       pp.push(makePathPointFromSegments(segments[s], ns));
     }
 
-    // debug(pp);
-    // debug(' PolySegment.getPath - END\n');
+    // log(pp);
+    // log('PolySegment.getPath', 'end');
     return { pathPoints: pp };
   }
 
@@ -264,8 +264,8 @@ export default class PolySegment extends GlyphElement {
    * @returns {array} - collection of intersections in ix format
    */
   findIntersections() {
-    // debug('\n PolySegment.findIntersections - START');
-    // debug('\t ' + this._segments.length + ' segments');
+    // log('\n PolySegment.findIntersections - START');
+    // log('' + this._segments.length + ' segments');
     let s1;
     let s2;
     let ix = [];
@@ -278,11 +278,11 @@ export default class PolySegment extends GlyphElement {
         }
       }
     }
-    // debug(ix);
+    // log(ix);
     ix = ix.filter(duplicates);
-    // debug('\t found ' + ix.length + ' ix');
-    // debug(ix);
-    // debug(' PolySegment.findIntersections - END\n');
+    // log('found ' + ix.length + ' ix');
+    // log(ix);
+    // log('PolySegment.findIntersections', 'end');
     return ix;
   }
 
@@ -292,7 +292,7 @@ export default class PolySegment extends GlyphElement {
    * @param {string} color
    */
   drawIntersections(ctx, color = 'rgb(200, 50, 60)') {
-    // debug('\n PolySegment.drawIntersections - START');
+    // log('\n PolySegment.drawIntersections - START');
     const ix = this.findIntersections();
     let co;
     ctx.fillStyle = color;
@@ -301,8 +301,8 @@ export default class PolySegment extends GlyphElement {
       co = ix[i];
       ctx.fillRect(sXcX(co.x), sYcY(co.y), 5, 5);
     });
-    // debug(ix);
-    // debug(' PolySegment.drawIntersections - END\n');
+    // log(ix);
+    // log('PolySegment.drawIntersections', 'end');
   }
 
   /**
@@ -313,10 +313,10 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   splitSegmentsAtIntersections(ixArray = this.findIntersections(), threshold) {
-    // debug('\n PolySegment.splitSegmentsAtIntersections - START');
-    // debug('\t before length ' + this._segments.length);
-    // debug(this.print());
-    // debug(`\t ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
+    // log('\n PolySegment.splitSegmentsAtIntersections - START');
+    // log('before length ' + this._segments.length);
+    // log(this.print());
+    // log(`ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
 
     let x;
     let y;
@@ -326,7 +326,7 @@ export default class PolySegment extends GlyphElement {
       ixArray[i] = new XYPoint(x, y);
     });
 
-    // debug(`\t ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
+    // log(`ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
 
     let result = [];
     for (let s = 0; s < this._segments.length; s++) {
@@ -337,9 +337,9 @@ export default class PolySegment extends GlyphElement {
     this._segments = result;
     this.cache.splits = ixArray;
 
-    // debug('\t afters length ' + this._segments.length);
-    // debug(this.print());
-    // debug(' PolySegment.splitSegmentsAtIntersections - END\n');
+    // log('afters length ' + this._segments.length);
+    // log(this.print());
+    // log('PolySegment.splitSegmentsAtIntersections', 'end');
     return this;
   }
 
@@ -349,7 +349,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {array} - collection of stitched PolySegments (hopefully just one)
    */
   stitchSegmentsTogether() {
-    // debug('\n PolySegment.stitchSegmentsTogether - START');
+    // log('\n PolySegment.stitchSegmentsTogether - START');
     const source = this.segments;
     let sorted = [];
     const result = [];
@@ -401,25 +401,25 @@ export default class PolySegment extends GlyphElement {
     // Start ordering
     let resultSegment;
     let nextXYPoint = getNextUnusedSegmentP1();
-    // debug('\t starting loop');
-    // debug(nextXYPoint);
-    // debug('\t source.length ' + source.length);
+    // log('starting loop');
+    // log(nextXYPoint);
+    // log('source.length ' + source.length);
     for (let i = 0; i < source.length; i++) {
       resultSegment = getSegmentStartingAt(nextXYPoint);
       if (resultSegment) {
-        // debug('\t LOOP ' + i + ' added a segment,  ' + result.length + '.' + sorted.length);
+        // log('LOOP ' + i + ' added a segment,  ' + result.length + '.' + sorted.length);
         sorted.push(resultSegment);
         nextXYPoint = resultSegment.getXYPoint(4);
       } else {
-        // debug('\t LOOP ' + i + ' NO NEXT SEGMENT FOUND');
+        // log('LOOP ' + i + ' NO NEXT SEGMENT FOUND');
         if (sorted.length) {
           result.push(new PolySegment({ segments: sorted }));
           if (
             sorted[sorted.length - 1].containsEndPoint(sorted[0].getXYPoint(1))
           ) {
-            // debug('\t\t Pushed sorted PolySegment, connected nicely');
+            // log('\t\t Pushed sorted PolySegment, connected nicely');
           } else {
-            // debug('\t\t Pushed sorted PolySegment, OPEN LOOP');
+            // log('\t\t Pushed sorted PolySegment, OPEN LOOP');
           }
           sorted = [];
           nextXYPoint = getNextUnusedSegmentP1();
@@ -430,22 +430,22 @@ export default class PolySegment extends GlyphElement {
 
     // Fencepost
     if (sorted.length) {
-      // debug('\t FINISHING');
+      // log('FINISHING');
       result.push(new PolySegment({ segments: sorted }));
       if (sorted[sorted.length - 1].containsEndPoint(sorted[0].getXYPoint(1))) {
-        // debug('\t\t Pushed sorted PolySegment, connected nicely');
+        // log('\t\t Pushed sorted PolySegment, connected nicely');
       } else {
-        // debug('\t\t Pushed sorted PolySegment, OPEN LOOP');
+        // log('\t\t Pushed sorted PolySegment, OPEN LOOP');
       }
     }
 
-    // debug('\t result');
-    // debug(result);
+    // log('result');
+    // log(result);
     // result.forEach(function (v, i) {
-    // debug('\n\t RETURNING ' + i);
-    // debug(v.segments);
+    // log('\n\t RETURNING ' + i);
+    // log(v.segments);
     // });
-    // debug(' PolySegment.stitchSegmentsTogether - END\n');
+    // log('PolySegment.stitchSegmentsTogether', 'end');
 
     return result;
   }
@@ -459,7 +459,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeZeroLengthSegments() {
-    // debug('\n PolySegment.removeZeroLengthSegments - START');
+    // log('\n PolySegment.removeZeroLengthSegments - START');
 
     let currSeg;
     for (let s = 0; s < this._segments.length; s++) {
@@ -476,11 +476,11 @@ export default class PolySegment extends GlyphElement {
       }
     }
 
-    // debug(this.print());
+    // log(this.print());
     this._segments = this._segments.filter(function (v) {
       return v.objType === 'Segment';
     });
-    // debug(' PolySegment.removeZeroLengthSegments - END\n');
+    // log('PolySegment.removeZeroLengthSegments', 'end');
 
     return this;
   }
@@ -491,7 +491,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeRedundantLineSegments() {
-    // debug('\n PolySegment.removeRedundantLineSegments - START');
+    // log('\n PolySegment.removeRedundantLineSegments - START');
     for (let s = 0; s < this._segments.length; s++) {
       for (let t = 0; t < this._segments.length; t++) {
         if (s !== t && this._segments[s] && this._segments[t]) {
@@ -504,14 +504,14 @@ export default class PolySegment extends GlyphElement {
             this._segments[t].objType = 'REDUNDANT';
           }
         }
-        // debug(`\t Seg ${s} ${this._segments[s].objType}`);
+        // log(`Seg ${s} ${this._segments[s].objType}`);
       }
     }
 
     this._segments = this._segments.filter(function (v) {
       return v.objType === 'Segment';
     });
-    // debug(' PolySegment.removeRedundantLineSegments - END\n');
+    // log('PolySegment.removeRedundantLineSegments', 'end');
 
     return this;
   }
@@ -521,7 +521,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeDuplicateSegments() {
-    // debug('\n PolySegment.removeDuplicateSegments - START');
+    // log('\n PolySegment.removeDuplicateSegments - START');
     for (let x = 0; x < this._segments.length; x++) {
       for (let y = x; y < this._segments.length; y++) {
         if (x !== y && this._segments[x] && this._segments[y]) {
@@ -538,11 +538,11 @@ export default class PolySegment extends GlyphElement {
       }
     }
 
-    // debug(this._segments);
+    // log(this._segments);
     this._segments = this._segments.filter(function (v) {
       return v.objType === 'Segment';
     });
-    // debug(' PolySegment.removeDuplicateSegments - END\n');
+    // log('PolySegment.removeDuplicateSegments', 'end');
 
     return this;
   }
@@ -553,9 +553,9 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeSegmentsOverlappingShape(shape) {
-    // debug('\n PolySegment.removeSegmentsOverlappingShape - START');
-    // debug('\t segments starting as ' + this._segments.length);
-    // debug(this._segments);
+    // log('\n PolySegment.removeSegmentsOverlappingShape - START');
+    // log('segments starting as ' + this._segments.length);
+    // log(this._segments);
     const pt = 3;
     let tx;
     let ty;
@@ -597,14 +597,14 @@ export default class PolySegment extends GlyphElement {
       }
     }
 
-    // debug(this._segments);
+    // log(this._segments);
     this._segments = this._segments.filter(function (v) {
       return v.objType === 'Segment';
     });
     // alert('removeSegmentsOverlappingShape - hits and misses');
 
     return this;
-    // debug(' PolySegment.removeSegmentsOverlappingShape - END\n');
+    // log('PolySegment.removeSegmentsOverlappingShape', 'end');
   }
 
   /**
@@ -612,14 +612,14 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeNonConnectingSegments() {
-    // debug('\n PolySegment.removeNonConnectingSegments - START');
+    // log('\n PolySegment.removeNonConnectingSegments - START');
     let test;
     let against;
     const connected1 = [];
     const connected4 = [];
     const threshold = 1;
     for (let t = 0; t < this._segments.length; t++) {
-      // debug('\t testing segment ' + t);
+      // log('testing segment ' + t);
       test = this._segments[t];
       connected1[t] = false;
       connected4[t] = false;
@@ -640,10 +640,10 @@ export default class PolySegment extends GlyphElement {
         }
       }
     }
-    // debug('\t segments by number, first point connected');
-    // debug(json(connected1, true));
-    // debug('\t segments by number, last point connected');
-    // debug(json(connected4, true));
+    // log('segments by number, first point connected');
+    // log(json(connected1, true));
+    // log('segments by number, last point connected');
+    // log(json(connected4, true));
 
     for (let c = 0; c < this._segments.length; c++) {
       if (!(connected1[c] && connected4[c])) {
@@ -651,11 +651,11 @@ export default class PolySegment extends GlyphElement {
       }
     }
 
-    // debug(this._segments);
+    // log(this._segments);
     this._segments = this._segments.filter(function (v) {
       return v.objType === 'Segment';
     });
-    // debug(' PolySegment.removeNonConnectingSegments - END\n');
+    // log('PolySegment.removeNonConnectingSegments', 'end');
 
     return this;
   }
@@ -674,12 +674,12 @@ export default class PolySegment extends GlyphElement {
  * @returns {array} - collection of overlap points in ix format like ['x/y', 'x/y', 'x/y']
  */
 export function findSegmentIntersections(s1, s2, depth) {
-  // debug('\n findSegmentIntersections - START');
+  // log('\n findSegmentIntersections - START');
   depth = depth || 0;
-  // debug('\t depth ' + depth);
+  // log('depth ' + depth);
 
   // if(depth > 15) {
-  // debug('\t findSegmentIntersections early return');
+  // log('findSegmentIntersections early return');
   //  return [];
   // }
   // s1.drawSegmentOutline();
@@ -689,7 +689,7 @@ export function findSegmentIntersections(s1, s2, depth) {
   if (depth === 0) {
     const co = findOverlappingLineSegmentIntersections(s1, s2);
     if (co.length) {
-      // debug('\t found overlapping line ' + co[0]);
+      // log('found overlapping line ' + co[0]);
       return co;
     }
   }
@@ -698,7 +698,7 @@ export function findSegmentIntersections(s1, s2, depth) {
   if (depth === 0) {
     const cr = findCrossingLineSegmentIntersections(s1, s2);
     if (cr.length) {
-      // debug('\t found cross line ' + cr[0]);
+      // log('found cross line ' + cr[0]);
       return cr;
     }
   }
@@ -716,12 +716,12 @@ export function findSegmentIntersections(s1, s2, depth) {
   const s2m = s2.getFastMaxes();
 
   if (!maxesOverlap(s1m, s2m)) {
-    // debug('\t segments have non overlapping fast maxes');
+    // log('segments have non overlapping fast maxes');
     return [];
   }
-  // debug('\t segments fast maxes overlap');
-  // debug([s1m]);
-  // debug([s2m]);
+  // log('segments fast maxes overlap');
+  // log([s1m]);
+  // log([s2m]);
 
   // Complex segment intersections
   // let threshold = 0.00005; // Wow, this was the threshold???
@@ -732,8 +732,8 @@ export function findSegmentIntersections(s1, s2, depth) {
   let s1h = s1m.yMax - s1m.yMin;
   let s2w = s2m.xMax - s2m.xMin;
   let s2h = s2m.yMax - s2m.yMin;
-  // debug('\t s1 w/h: ' + s1w + ' / ' + s1h);
-  // debug('\t s2 w/h: ' + s2w + ' / ' + s2h);
+  // log('s1 w/h: ' + s1w + ' / ' + s1h);
+  // log('s2 w/h: ' + s2w + ' / ' + s2h);
 
   if (
     s1w < threshold &&
@@ -752,10 +752,10 @@ export function findSegmentIntersections(s1, s2, depth) {
     y = round(y, precision);
 
     const ix = '' + x + '/' + y;
-    // debug('\t <<<<<<<<<<<<<<<<< hit bottom, found ' + ix);
+    // log('<<<<<<<<<<<<<<<<< hit bottom, found ' + ix);
     return [ix];
   } else {
-    // debug('\t not below threshold at ' + depth);
+    // log('not below threshold at ' + depth);
   }
 
   // More recursion needed
@@ -773,8 +773,8 @@ export function findSegmentIntersections(s1, s2, depth) {
     return maxesOverlap(p[0].getFastMaxes(), p[1].getFastMaxes(), 'inclusive');
   });
 
-  // debug('\t ' + pairs.length + ' pairs after maxes overlap filter');
-  // debug(pairs);
+  // log('' + pairs.length + ' pairs after maxes overlap filter');
+  // log(pairs);
 
   pairs.forEach(function (p) {
     re = re.concat(findSegmentIntersections(p[0], p[1], depth + 1));
@@ -785,8 +785,8 @@ export function findSegmentIntersections(s1, s2, depth) {
 
   // if(depth === 0) alert('break');
 
-  // debug('\t return length ' + re.length);
-  // debug(' findSegmentIntersections - END\n');
+  // log('return length ' + re.length);
+  // log('findSegmentIntersections', 'end');
   return re;
 }
 
@@ -798,27 +798,27 @@ export function findSegmentIntersections(s1, s2, depth) {
  * @returns {boolean}
  */
 export function segmentsAreEqual(s1, s2, threshold) {
-  // debug('\n segmentsAreEqual - START');
+  // log('\n segmentsAreEqual - START');
   threshold = threshold || 1;
-  // debug([s1, s2]);
+  // log([s1, s2]);
 
   if (
     pointsAreEqual(s1.getXYPoint(1), s2.getXYPoint(1), threshold) &&
     pointsAreEqual(s1.getXYPoint(4), s2.getXYPoint(4), threshold)
   ) {
     if (s1.lineType && s2.lineType) {
-      // debug(' segmentsAreEqual - returning LINE true - END\n');
+      // log('segmentsAreEqual - returning LINE true', 'end');
       return true;
     } else if (
       pointsAreEqual(s1.getXYPoint(2), s2.getXYPoint(2), threshold) &&
       pointsAreEqual(s1.getXYPoint(3), s2.getXYPoint(3), threshold)
     ) {
-      // debug(' segmentsAreEqual - returning FULLY true - END\n');
+      // log('segmentsAreEqual - returning FULLY true', 'end');
       return true;
     }
   }
 
-  // debug(' segmentsAreEqual - returning false - END\n');
+  // log('segmentsAreEqual - returning false', 'end');
   return false;
 }
 
@@ -830,7 +830,7 @@ export function segmentsAreEqual(s1, s2, threshold) {
  * @returns {array} - collection of overlaps in ix format
  */
 export function findOverlappingLineSegmentIntersections(s1, s2) {
-  // debug(`\n findOverlappingLineSegmentIntersections - START`);
+  // log(`findOverlappingLineSegmentIntersections`, 'start');
   const re = [];
 
   if (s1.containsPointOnLine(s2.getXYPoint(1)))
@@ -844,13 +844,13 @@ export function findOverlappingLineSegmentIntersections(s1, s2) {
     re.push('' + s1.p4x + '/' + s1.p4y);
 
   if (re.length) {
-    // debug('\n findOverlappingLineSegmentIntersections - START');
-    // debug([s1, s2]);
-    // debug(json(re));
-    // debug(' findOverlappingLineSegmentIntersections - END\n');
+    // log('\n findOverlappingLineSegmentIntersections - START');
+    // log([s1, s2]);
+    // log(json(re));
+    // log('findOverlappingLineSegmentIntersections', 'end');
   }
 
-  // debug(` findOverlappingLineSegmentIntersections - END\n\n`);
+  // log(`findOverlappingLineSegmentIntersections`, 'end');
   return re;
 }
 
@@ -862,7 +862,7 @@ export function findOverlappingLineSegmentIntersections(s1, s2) {
  * @returns {array} - overlap point in ix format
  */
 export function findCrossingLineSegmentIntersections(s1, s2) {
-  // debug('\n findCrossingLineSegmentIntersections - START');
+  // log('\n findCrossingLineSegmentIntersections - START');
   if (!s1.lineType || !s2.lineType) return [];
 
   const d1x = s1.p4x - s1.p1x;
@@ -881,22 +881,22 @@ export function findCrossingLineSegmentIntersections(s1, s2) {
     const rx = numSan(s1.p1x + t * d1x);
     const ry = numSan(s1.p1y + t * d1y);
 
-    // debug('\t found ' + rx + ', ' + ry);
+    // log('found ' + rx + ', ' + ry);
     if (
       s1.containsTerminalPoint({ x: rx, y: ry }) &&
       s2.containsTerminalPoint({ x: rx, y: ry })
     ) {
-      // debug('\t its an end point');
-      // debug(' findCrossingLineSegmentIntersections - END\n');
+      // log('its an end point');
+      // log('findCrossingLineSegmentIntersections', 'end');
       return [];
     }
 
     const re = ['' + rx + '/' + ry];
-    // debug(' findCrossingLineSegmentIntersections - END\n');
+    // log('findCrossingLineSegmentIntersections', 'end');
     return re;
   }
 
-  // debug(' findCrossingLineSegmentIntersections - END\n');
+  // log('findCrossingLineSegmentIntersections', 'end');
   return [];
 }
 
@@ -907,7 +907,7 @@ export function findCrossingLineSegmentIntersections(s1, s2) {
  * @returns {array} - collection of overlaps in ix format
  */
 export function findEndPointSegmentIntersections(s1, s2) {
-  // debug('\n findEndPointSegmentIntersections - START');
+  // log('\n findEndPointSegmentIntersections - START');
   const s1s = s1.getXYPoint(1);
   const s1e = s1.getXYPoint(4);
   const s2s = s2.getXYPoint(1);
@@ -920,7 +920,7 @@ export function findEndPointSegmentIntersections(s1, s2) {
   if (s2.containsPointOnCurve(s1s)) re.push(`${s1s.x}/${s1s.y}`);
   if (s2.containsPointOnCurve(s1e)) re.push(`${s1e.x}/${s1e.y}`);
 
-  // debug('\t returning ' + re);
-  // debug(' findEndPointSegmentIntersections - END\n');
+  // log('returning ' + re);
+  // log('findEndPointSegmentIntersections', 'end');
   return re;
 }

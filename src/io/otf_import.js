@@ -9,7 +9,7 @@ import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
 **/
 
 function importOTFFont(filter) {
-  // debug('\n importOTFFont - START');
+  // log('\n importOTFFont - START');
 
   /*
   // Spinner Animation
@@ -73,14 +73,14 @@ function importOTFFont(filter) {
       return;
     }
 
-    // debug('\t SetupFontImport - END\n');
+    // log('SetupFontImport', 'end');
   }
 
   function startFontImport() {
-    // debug('\n startFontImport - START');
-    // debug(font);
+    // log('\n startFontImport - START');
+    // log(font);
     setTimeout(importOneGlyph, 4);
-    // debug(' startFontImport - END\n');
+    // log('startFontImport', 'end');
   }
 
   /*
@@ -104,8 +104,8 @@ function importOTFFont(filter) {
 
   let c = 0;
   function importOneGlyph() {
-    // debug('\n\n=============================\n');
-    // debug('\n importOneGlyph - START');
+    // log('\n\n=============================\n');
+    // log('\n importOneGlyph - START');
     // importStatus('Importing Glyph ' + c + ' of ' + importGlyphs.length);
 
     if (c >= importGlyphs.length) {
@@ -118,20 +118,20 @@ function importOTFFont(filter) {
     thisGlyph = importGlyphs[c];
 
     // Get the appropriate unicode decimal for this glyph
-    // debug('\t starting  unicode \t' + thisGlyph.unicode + ' \t ' + thisGlyph.name);
-    // debug(thisGlyph);
+    // log('starting  unicode \t' + thisGlyph.unicode + ' \t ' + thisGlyph.name);
+    // log(thisGlyph);
 
     uni = decToHex(thisGlyph.unicode || 0);
 
     if (uni === false || uni === '0x0000') {
       // Check for .notdef
-      // debug('\t !!! Skipping '+thisGlyph.name+' NO UNICODE !!!');
+      // log('!!! Skipping '+thisGlyph.name+' NO UNICODE !!!');
       importGlyphs.splice(c, 1);
     } else if (filter && isOutOfBounds([uni])) {
-      // debug('\t !!! Skipping '+thisGlyph.name+' OUT OF BOUNDS !!!');
+      // log('!!! Skipping '+thisGlyph.name+' OUT OF BOUNDS !!!');
       importGlyphs.splice(c, 1);
     } else {
-      // debug('\t GLYPH ' + c + '/'+importGlyphs.length+'\t"'+thisGlyph.name + '" unicode: ' + uni);
+      // log('GLYPH ' + c + '/'+importGlyphs.length+'\t"'+thisGlyph.name + '" unicode: ' + uni);
       /*
        *
        *  GLYPH IMPORT
@@ -142,27 +142,27 @@ function importOTFFont(filter) {
 
       // Import Path Data
       data = flattenDataArray(thisGlyph.path.commands);
-      // debug('\t Glyph has path data \n' + data);
+      // log('Glyph has path data \n' + data);
 
       if (data && data !== 'z') {
         data = cleanAndFormatPathPointData(data);
 
-        // debug('\t split data into ' + data.length + ' Glyphr Studio shapes.');
-        // debug(data);
+        // log('split data into ' + data.length + ' Glyphr Studio shapes.');
+        // log(data);
 
         for (let d = 0; d < data.length; d++) {
           if (data[d].length) {
-            // debug('\t starting convertPathTag');
+            // log('starting convertPathTag');
             np = ioSVG_convertPathTag(data[d]);
-            // debug('\t created shape from PathTag');
-            // debug(np);
+            // log('created shape from PathTag');
+            // log(np);
             if (np.pathPoints.length) {
               shapeCounter++;
               newShapes.push(
                 new Shape({ path: np, name: 'Shape ' + shapeCounter })
               );
             } else {
-              // debug('\t !!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
+              // log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
             }
           }
         }
@@ -200,12 +200,12 @@ function importOTFFont(filter) {
     // finish loop
     setTimeout(importOneGlyph, 1);
 
-    // debug(' importOneGlyph - END\n');
+    // log('importOneGlyph', 'end');
   }
 
   function flattenDataArray(da) {
-    // debug('\n flattenDataArray - START');
-    // debug(json(da, true));
+    // log('\n flattenDataArray - START');
+    // log(json(da, true));
 
     let re = '';
     let tc;
@@ -224,8 +224,8 @@ function importOTFFont(filter) {
       if (isVal(tc.x) && isVal(tc.y)) re += tc.x + ',' + tc.y + ',';
     }
 
-    // debug(re);
-    // debug(' flattenDataArray - END\n');
+    // log(re);
+    // log('flattenDataArray', 'end');
 
     return re;
   }
@@ -255,7 +255,7 @@ function importOTFFont(filter) {
   }
 
   function finalizeFontImport() {
-    // debug('\n finalizeFontImport - START');
+    // log('\n finalizeFontImport - START');
     getCurrentProject().glyphs = fc;
     getCurrentProject().ligatures = fl;
     getCurrentProject().kerning = fk;
@@ -274,7 +274,7 @@ function importOTFFont(filter) {
     }
 
     // Make a custom ranges for the rest, with logical separations
-    // debug('\t customGlyphRange.length ' + customGlyphRange.length);
+    // log('customGlyphRange.length ' + customGlyphRange.length);
 
     if (customGlyphRange.length) {
       const ranges = getCurrentProject().projectSettings.glyphrange.custom;
@@ -288,29 +288,29 @@ function importOTFFont(filter) {
 
       for (let c = 0; c < customGlyphRange.length; c++) {
         current = customGlyphRange[c];
-        // debug('\t ' + current + ' \t ' + rangestart + ' \t ' + rangeend);
+        // log('' + current + ' \t ' + rangestart + ' \t ' + rangeend);
 
         if (current - rangestart > maxrange || current - rangeend > maxvalley) {
           ranges.push({ begin: rangestart, end: rangeend });
           rangestart = current;
           rangeend = current;
           fencepost = false;
-          // debug('\t new glyphrange ' + json(ranges));
+          // log('new glyphrange ' + json(ranges));
         } else {
           rangeend = current;
           fencepost = true;
-          // debug('\t incrementing...');
+          // log('incrementing...');
         }
       }
 
       if (fencepost) ranges.push({ begin: rangestart, end: rangeend });
-      // debug('\t new glyphrange ' + json(ranges));
+      // log('new glyphrange ' + json(ranges));
     }
 
     // Import Font Settings
     // Check to make sure certain stuff is there
     // space has horiz-adv-x
-    // debug('\t Custom range stuff done');
+    // log('Custom range stuff done');
     const ps = getCurrentProject().projectSettings;
     const md = getCurrentProject().metadata;
     const fname = font.familyName || 'My Font';
@@ -353,14 +353,14 @@ function importOTFFont(filter) {
     // md.overline_thickness = 1*font.overlinethickness || 10;
 
     // Finish Up
-    // debug('\t calling finalizeUI');
+    // log('calling finalizeUI');
     finalizeUI();
     closeDialog();
-    // debug(' finalizeFontImport - END\n');
+    // log('finalizeFontImport', 'end');
     navigate();
   }
 
-  // debug(' importOTFFont - END\n');
+  // log('importOTFFont', 'end');
 }
 
 function getTableValue(val) {

@@ -8,23 +8,23 @@ export default {};
 */
 export function lookUpGlyphName(id, forceLongName = false) {
   id = '' + id;
-  // debug('\n lookUpGlyphName');
-  // debug('\t passed ' + id);
+  // log('\n lookUpGlyphName');
+  // log('passed ' + id);
 
   // not passed an id
   if (!id) {
-    // debug('\t not passed an ID, returning false');
+    // log('not passed an ID, returning false');
     return false;
   }
 
   // known unicode names
   const un = forceLongName ? unicodeNames[id] : shortUnicodeNames[id];
   if (un) {
-    // debug('\t got unicode name: ' + un);
+    // log('got unicode name: ' + un);
     return un;
   }
 
-  // debug('lookUpGlyphName - inexplicably fails, returning [name not found]\n');
+  // log('lookUpGlyphName - inexplicably fails, returning [name not found]\n');
   return '[name not found]';
 }
 

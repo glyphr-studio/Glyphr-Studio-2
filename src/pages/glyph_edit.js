@@ -1,5 +1,5 @@
 import { makeElement } from '../controls/controls.js';
-import { debug } from '../common/functions.js';
+import { log } from '../common/functions.js';
 
 /**
  * Page > Glyph Edit
@@ -17,7 +17,7 @@ export default class PageGlyphEdit {
    * @returns {object} HTML Element + callback function
    */
   pageLoader() {
-    debug(`\n PageGlyphEdit.pageLoader - START`);
+    log(`PageGlyphEdit.pageLoader`, 'start');
 
     const content = makeElement({
       tag: 'div',
@@ -38,10 +38,10 @@ export default class PageGlyphEdit {
     const callback = function () {
       // let can = document.querySelector('canvas-display');
       // if (can) can.redraw();
-      debug(` PageGlyphEdit.pageLoader.callback - END\n\n`);
+      log(`PageGlyphEdit.pageLoader.callback`, 'end');
     };
 
-    debug(` PageGlyphEdit.pageLoader - END\n\n`);
+    log(`PageGlyphEdit.pageLoader`, 'end');
 
     return { content: content, callback: callback };
   }
@@ -54,14 +54,14 @@ export default class PageGlyphEdit {
 // Redraw
 // -------------------
   function redraw_GlyphEdit() {
-    // debug('\n redraw_GlyphEdit - START');
+    // log('\n redraw_GlyphEdit - START');
     _UI.redrawing = true;
 
     let sg = getSelectedWorkItem();
     let editmode = getEditMode();
 
     // if (sg) sg.calcMaxes();
-    // debug('\t Selected WI ' + sg.name);
+    // log('Selected WI ' + sg.name);
 
     // draw grids
     drawGrid();
@@ -102,6 +102,6 @@ export default class PageGlyphEdit {
     }
 
     _UI.redrawing = false;
-    // debug(' redraw_GlyphEdit - END\n');
+    // log('redraw_GlyphEdit', 'end');
   }
 */

@@ -23,7 +23,7 @@ import { getGlyphrStudioApp } from "../app/main";
  * @returns {object} - Glyphr Studio v2 Project structure
  */
 export function migrateGlyphrStudioProject(project = {}) {
-  // debug('\n upgradeGlyphrStudioProject - START');
+  // log('\n upgradeGlyphrStudioProject - START');
 
   const noVersionFound =
     'No version information was found.  Either the file is not a Glyphr Studio Project, or the file has non-valid JSON data.  Please try a different file...';
@@ -82,10 +82,10 @@ export function migrateGlyphrStudioProject(project = {}) {
 
     project = migrateV1toV2(project);
   }
-  // debug('\t done with v1 minor updates');
+  // log('done with v1 minor updates');
 
   return project;
-  // debug(' upgradeGlyphrStudioProject - END\n');
+  // log('upgradeGlyphrStudioProject', 'end');
 }
 
 /**

@@ -6,7 +6,7 @@
 **/
 
 function makePanel_GlyphAttributes() {
-  // debug('\n makePanel_GlyphAttributes - START');
+  // log('\n makePanel_GlyphAttributes - START');
   let sc = getSelectedWorkItem();
   let ss = _UI.multiSelect.shapes.getMembers();
 
@@ -20,7 +20,7 @@ function makePanel_GlyphAttributes() {
   content += '<table class="detail">';
 
   if (editor.nav.page === 'components') {
-    // debug(" \t  detected currentPage = components");
+    // log(" \t  detected currentPage = components");
     content +=
       '<tr><td colspan=2 class="detailtitle"><h3 style="margin-top:0px;">component</h3></td></tr>';
     content +=
@@ -31,17 +31,17 @@ function makePanel_GlyphAttributes() {
 
   if (ss.length === 0) {
     // no shape selected
-    // debug(" \t no shape selected");
+    // log(" \t no shape selected");
     content += glyphDetails();
   } else if (ss.length === 1) {
     // One shape selected
     if (ss[0].objType === 'ComponentInstance') {
       // component selected
-      // debug(" \t component selected");
+      // log(" \t component selected");
       content += componentInstanceDetails(ss[0]);
     } else {
       // regular shape selected
-      // debug(" \t regular shape selected");
+      // log(" \t regular shape selected");
       content += shapeDetails(ss[0]);
 
       let ispointsel = _UI.multiSelect.points.count() === 1;
@@ -83,7 +83,7 @@ function makePanel_GlyphAttributes() {
   content += '</table>';
   content += '</div>';
 
-  // debug(' makePanel_GlyphAttributes - END\n');
+  // log('makePanel_GlyphAttributes', 'end');
   return content;
 }
 
@@ -347,7 +347,7 @@ function glyphDetails(s) {
 }
 
 function shapeDetails(s) {
-  // debug("SHAPEDETAILS - Drawing Shape Details");
+  // log("SHAPEDETAILS - Drawing Shape Details");
   let svc = getCurrentProject().projectSettings.spinnervaluechange * 1 || 1;
   let content = '';
   content +=
@@ -506,7 +506,7 @@ function shapeDetails(s) {
       '</tr>';
   }
 
-  // debug("<b>SHAPE DETAILS OUTPUT:<b><br><textarea rows=9 cols=3000>" + content + "</textarea>");
+  // log("<b>SHAPE DETAILS OUTPUT:<b><br><textarea rows=9 cols=3000>" + content + "</textarea>");
   return content;
 }
 

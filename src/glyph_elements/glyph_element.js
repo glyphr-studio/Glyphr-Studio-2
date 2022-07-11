@@ -19,10 +19,10 @@ export default class GlyphElement {
     }
 
     if (this.parent) {
-      // debug(status + ' - calling parent.changed()');
+      // log(status + ' - calling parent.changed()');
       this.parent.changed();
     } else {
-      // debug(status + ' - No Parent!');
+      // log(status + ' - No Parent!');
     }
   }
 

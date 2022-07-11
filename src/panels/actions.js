@@ -336,15 +336,15 @@ function copyShape() {
       dx: 0,
       dy: 0,
     };
-    // debug("COPYShape() - new clipboard shape: " + _UI.clipboardShape._UI.multiSelect.shapes.name);
+    // log("COPYShape() - new clipboard shape: " + _UI.clipboardShape._UI.multiSelect.shapes.name);
   }
   redraw({ calledBy: 'copyShape', redrawCanvas: false });
 }
 
 function pasteShape() {
-  // debug('pasteShape - START');
+  // log('pasteShape - START');
   let cbs = _UI.clipboardShape;
-  // debug(cbs);
+  // log(cbs);
   let selwi = getSelectedWorkItemID();
 
   if (cbs) {
@@ -362,10 +362,10 @@ function pasteShape() {
         ts = new Shape(sourceshapes[s]);
       }
 
-      // debug('\t shape ' + s);
-      // debug('\t objType: ' + ts.objType);
-      // debug('\t checking for moved glyphs: ' + cbs.c + ' to ' + selwi);
-      // debug('\t offsetShapes: ' + offsetShapes);
+      // log('shape ' + s);
+      // log('objType: ' + ts.objType);
+      // log('checking for moved glyphs: ' + cbs.c + ' to ' + selwi);
+      // log('offsetShapes: ' + offsetShapes);
 
       if (offsetShapes) {
         if (s === 0) {
@@ -388,13 +388,13 @@ function pasteShape() {
         if (suffix === ')') {
           newsuffix = '(copy 2)';
         } else {
-          // debug("\t - suffix " + suffix);
+          // log("\t - suffix " + suffix);
           suffix = suffix.substring(1);
-          // debug("\t - suffix " + suffix);
+          // log("\t - suffix " + suffix);
           suffix = suffix.substring(0, suffix.length - 1);
-          // debug("\t - suffix " + suffix);
+          // log("\t - suffix " + suffix);
           newsuffix = '(copy ' + (parseInt(suffix) + 1) + ')';
-          // debug("\t - newsuffix " + newsuffix);
+          // log("\t - newsuffix " + newsuffix);
         }
       }
       ts.name = newname + newsuffix;
@@ -402,7 +402,7 @@ function pasteShape() {
       if (ts.objType === 'ComponentInstance') {
         getGlyph(ts.link).addToUsedIn(getSelectedWorkItemID);
         // _UI.selectedGlyph.addToUsedIn(ts.link);
-        // debug("PASTESHAPE - pasted a component, added " + _UI.selectedGlyph + " to usedIn array.");
+        // log("PASTESHAPE - pasted a component, added " + _UI.selectedGlyph + " to usedIn array.");
       }
 
       newshapes.push(addShape(ts));
@@ -416,7 +416,7 @@ function pasteShape() {
 
     cbs.c = selwi;
 
-    // debug('pasteShapes - END \n');
+    // log('pasteShapes', 'end');
   }
 }
 

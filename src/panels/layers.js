@@ -4,7 +4,7 @@
 **/
 
 function makePanel_LayerChooser() {
-  // debug(`\n makePanel_LayerChooser - START`);
+  // log(`makePanel_LayerChooser`, 'start');
 
   let content = '<div class="navarea_header">';
 
@@ -15,11 +15,11 @@ function makePanel_LayerChooser() {
   content += '</div><div class="panel_section">';
 
   let scs = getSelectedWorkItemShapes();
-  // debug(`\t selectedWorkItemShapes`);
-  // debug(scs);
+  // log(`selectedWorkItemShapes`);
+  // log(scs);
 
-  // debug(`\t selectedShapes`);
-  // debug(_UI.multiSelect.shapes.getMembers());
+  // log(`selectedShapes`);
+  // log(_UI.multiSelect.shapes.getMembers());
 
   let ts;
 
@@ -29,12 +29,12 @@ function makePanel_LayerChooser() {
       ts = scs[i];
 
       if (_UI.multiSelect.shapes.isSelected(ts)) {
-        // debug(`\t i: ${i} is selected`);
+        // log(`i: ${i} is selected`);
         if (ts.objType === 'ComponentInstance')
           content += '<tr class="componentlayersel"';
         else content += '<tr class="layersel"';
       } else {
-        // debug(`\t i: ${i} is NOT selected`);
+        // log(`i: ${i} is NOT selected`);
         if (ts.objType === 'ComponentInstance')
           content += '<tr class="componentlayer"';
         else content += '<tr class="layer"';
@@ -71,15 +71,15 @@ function makePanel_LayerChooser() {
 
   content += '</div>';
 
-  // debug(`makePanel_LayerChooser - END\n\n`);
+  // log(`makePanel_LayerChooser`, 'end');
   return content;
 }
 
 function selectShape(num) {
-  // debug('\n selectShape - START');
-  // debug('\t passed ' + num);
+  // log('\n selectShape - START');
+  // log('passed ' + num);
   let wishapes = getSelectedWorkItemShapes();
-  // debug('\t wishapes ' + wishapes);
+  // log('wishapes ' + wishapes);
 
   if (wishapes && wishapes[num]) {
     if (_UI.eventhandlers.multi) _UI.multiSelect.shapes.toggle(wishapes[num]);
@@ -90,7 +90,7 @@ function selectShape(num) {
   } else {
     _UI.multiSelect.shapes.clear();
   }
-  // debug(' selectShape - END\n');
+  // log('selectShape', 'end');
 }
 
 function updateLayerActions() {

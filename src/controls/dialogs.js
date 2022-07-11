@@ -161,7 +161,7 @@ function closeErrorMessageBox() {
  * @param {function} fn - function to call after message is shown
  */
 function showToast(msg, dur, fn) {
-  // debug('\n showToast - START');
+  // log('\n showToast - START');
   let step = -1;
   const stepmax = 20;
   const timestep = 10;
@@ -170,11 +170,11 @@ function showToast(msg, dur, fn) {
   const durration = dur || 3000;
   msgdiv.innerHTML = msg || 'Howdy!';
 
-  // debug('\t Typeof fn: ' + typeof fn);
+  // log('Typeof fn: ' + typeof fn);
   // console.log(fn);
 
   if (fn && typeof fn === 'function') {
-    // debug('\t CALLING FUNCTION NOW');
+    // log('CALLING FUNCTION NOW');
     setTimeout(fn, 100);
   }
 
@@ -191,7 +191,7 @@ function showToast(msg, dur, fn) {
 
   /** start to dissapear */
   function appearFinish() {
-    // debug('\t appearFinish');
+    // log('appearFinish');
     currtop = finaltop;
     curropacity = finalopacity;
     step = stepmax;
@@ -204,7 +204,7 @@ function showToast(msg, dur, fn) {
 
   /** animate appearance */
   function appearStep() {
-    // debug('\t appearStep ' + step);
+    // log('appearStep ' + step);
 
     if (step < 0) {
       msgdiv.style.display = 'block';
@@ -231,7 +231,7 @@ function showToast(msg, dur, fn) {
 
   /** animate dissapearance */
   function disappearStep() {
-    // debug('\t appearStep ' + step);
+    // log('appearStep ' + step);
     if (step < 0) {
       msgdiv.style.display = 'none';
       msgdiv.style.marginTop = '-50px;';
@@ -265,5 +265,5 @@ function showToast(msg, dur, fn) {
   }
 
   setToastTimeout(appearStep, 1);
-  // debug(' showToast - END\n');
+  // log('showToast', 'end');
 }

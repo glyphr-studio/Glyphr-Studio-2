@@ -1,7 +1,7 @@
 import ProjectEditor from '../project/project_editor.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
 import { projects } from '../samples/samples.js';
-import { debug } from '../common/functions.js';
+import { log } from '../common/functions.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -43,16 +43,16 @@ export default class GlyphrStudioApp {
    * Starts up the app
    */
   setUp() {
-    debug(`\n App.setUp - START`);
+    log(`App.setUp`, 'start');
 
     // Dev mode stuff
     if (this.settings.dev.mode) {
-      debug('\t >>> DEV NAV - to ' + this.settings.dev.currentPage);
+      log('>>> DEV NAV - to ' + this.settings.dev.currentPage);
       document.title = '⡄⡆⡇ ⃨G⃨S⃨2⃨D⃨E⃨V⃨M⃨O⃨D⃨E⃨ ⡇⡆⡄';
 
       // Project
       if (this.settings.dev.sampleProject) {
-        debug('\t >>> Using sample project');
+        log('>>> Using sample project');
         this.temp.droppedFileContent = JSON.stringify(
           projects[this.settings.dev.sampleProject]
         );
@@ -106,7 +106,7 @@ export default class GlyphrStudioApp {
 
     this.navigate();
 
-    debug(` App.setUp - END\n\n`);
+    log(`App.setUp`, 'end');
   }
 
   /**
@@ -114,9 +114,9 @@ export default class GlyphrStudioApp {
    * @param {string} pageName - what page to navigate to
    */
   navigate(pageName) {
-    debug(`\n App.navigate - START`);
+    log(`App.navigate`, 'start');
     this.getCurrentProjectEditor().navigate(pageName);
-    debug(` App.navigate - END\n\n`);
+    log(`App.navigate`, 'end');
   }
 
   /**

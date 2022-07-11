@@ -11,7 +11,7 @@ export default class ButtonToggle extends HTMLElement {
    * @param {object} attributes - collection of key: value pairs to set as attributes
    */
   constructor(attributes = {}) {
-    // console.log(`ButtonToggle.constructor() - START`);
+    // console.log(`ButtonToggle.constructor()`, 'start');
     super();
 
     Object.keys(attributes).forEach((key) =>

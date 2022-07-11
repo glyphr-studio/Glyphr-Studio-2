@@ -47,8 +47,8 @@ export function makeElement({
     template.innerHTML = innerHTML;
     newElement.appendChild(template.content);
 
-    // debug(`\t makeElement - newElement:`);
-    // debug(newElement);
+    // log(`makeElement - newElement:`);
+    // log(newElement);
   }
 
   return newElement;

@@ -28,15 +28,15 @@ function makeUsedInThumbs() {
     re += '</div></td></tr><tr><td>';
     re += cname === 'Space' ? cname : getGlyph(unique[k]).glyphhtml;
     re += '</td></tr></table>';
-    // debug("makeUsedInThumbs - created canvas 'thumb"+unique[k]+"'");
+    // log("makeUsedInThumbs - created canvas 'thumb"+unique[k]+"'");
   }
   re += '</div>';
   return re;
 }
 
 function goToEditGlyph(chid) {
-  // debug('\n goToEditGlyph - START');
-  // debug('\t passed ' + chid);
+  // log('\n goToEditGlyph - START');
+  // log('passed ' + chid);
   let p;
 
   if (chid.indexOf('0x', 2) > -1) {
@@ -55,7 +55,7 @@ function goToEditGlyph(chid) {
 
   clickEmptySpace();
   navigate({ page: p, panel: 'npAttributes', forcepanel: true });
-  // debug(' goToEditGlyph - END\n');
+  // log('goToEditGlyph', 'end');
 }
 
 //    ---------------------------------
@@ -63,7 +63,7 @@ function goToEditGlyph(chid) {
 //    ---------------------------------
 
 function componentInstanceDetails(s) {
-  // debug("COMPONENTINSTANCEDETAILS - start of function");
+  // log("COMPONENTINSTANCEDETAILS - start of function");
   let svc = getCurrentProject().projectSettings.spinnervaluechange || 1;
   content =
     '<tr><td colspan=2 class="detailtitle"><h3 style="margin:0px;">component instance</h3></td></tr>';

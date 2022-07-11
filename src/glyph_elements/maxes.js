@@ -15,7 +15,7 @@ export default class Maxes extends GlyphElement {
    */
   constructor({ xMin, xMax, yMin, yMax } = {}) {
     super();
-    // debug(`\n Maxes.constructor - START`);
+    // log(`Maxes.constructor`, 'start');
 
     this.xMin = xMin;
     this.xMax = xMax;
@@ -24,9 +24,9 @@ export default class Maxes extends GlyphElement {
 
     this.objType = 'Maxes';
 
-    // debug(`\t maxes is now`);
-    // debug(this);
-    // debug(` Maxes.constructor - END\n\n`);
+    // log(`maxes is now`);
+    // log(this);
+    // log(`Maxes.constructor`, 'end');
     return this;
   }
 
@@ -40,7 +40,7 @@ export default class Maxes extends GlyphElement {
    * @returns {*}
    */
   save(verbose = false) {
-    // debug(`\n Maxes.save - START`);
+    // log(`Maxes.save`, 'start');
 
     const re = {};
 
@@ -51,9 +51,9 @@ export default class Maxes extends GlyphElement {
 
     if (verbose) re.objType = this.objType;
 
-    // debug(`\t returning`);
-    // debug(re);
-    // debug(` Maxes.save - END\n\n`);
+    // log(`returning`);
+    // log(re);
+    // log(`Maxes.save`, 'end');
     return re;
   }
 
@@ -222,10 +222,10 @@ export default class Maxes extends GlyphElement {
  * @returns {boolean}
  */
 export function maxesOverlap(m1, m2, exclusive = true) {
-  // debug(`\n maxesOverlap - START`);
-  // debug(`\t passed m1 / m2`);
-  // debug(m1.save());
-  // debug(m2.save());
+  // log(`maxesOverlap`, 'start');
+  // log(`passed m1 / m2`);
+  // log(m1.save());
+  // log(m2.save());
 
   let re;
 
@@ -242,7 +242,8 @@ export function maxesOverlap(m1, m2, exclusive = true) {
       m1.yMin <= m2.yMax &&
       m1.yMax >= m2.yMin;
 
-  // debug(` maxesOverlap - END returning ${re} \n\n`);
+  // log(re);
+  // log(`maxesOverlap`, 'end');
   return re;
 }
 
@@ -253,15 +254,15 @@ export function maxesOverlap(m1, m2, exclusive = true) {
  * @returns {Maxes}
  */
 export function getOverallMaxes(maxesArray) {
-  // debug('\n getOverallMaxes - START');
-  // debug('\t start');
-  // debug(maxesArray);
+  // log('\n getOverallMaxes - START');
+  // log('start');
+  // log(maxesArray);
 
   const re = new Maxes();
   let tm;
 
   for (let m = 0; m < maxesArray.length; m++) {
-    // debug('\t pass ' + m);
+    // log('pass ' + m);
     tm = new Maxes(maxesArray[m]);
 
     // find
@@ -269,10 +270,10 @@ export function getOverallMaxes(maxesArray) {
     re.xMax = Math.max(re.xMax, tm.xMax);
     re.yMin = Math.min(re.yMin, tm.yMin);
     re.yMax = Math.max(re.yMax, tm.yMax);
-    // debug([re]);
+    // log([re]);
   }
 
-  // debug(' getOverallMaxes - END\n');
+  // log('getOverallMaxes', 'end');
 
   return re;
 }

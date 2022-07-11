@@ -87,11 +87,11 @@ function charsToHexArray(s) {
  * @returns {string} - string
  */
 function hexToChars(u) {
-  // debug('\n hexToChars - START');
-  // debug(`\t passed ${u} which is a ${typeof u}`);
+  // log('\n hexToChars - START');
+  // log(`passed ${u} which is a ${typeof u}`);
 
   if (String(u).charAt(1) !== 'x') u = String(decToHex(u));
-  // debug(`\t u is now ${u} which is a ${typeof u}`);
+  // log(`u is now ${u} which is a ${typeof u}`);
 
   u = u.split('0x');
   let result = '';
@@ -99,12 +99,12 @@ function hexToChars(u) {
   for (let i = 0; i < u.length; i++) {
     if (u[i] !== '') {
       u[i] = String.fromCharCode('0x' + u[i]);
-      // debug('\t added ' + u[i]);
+      // log('added ' + u[i]);
       if (u[i]) result += u[i];
     }
   }
 
-  // debug(` hexToHTML - END\n`);
+  // log(`hexToHTML`, 'end');
   return result;
 }
 
@@ -114,8 +114,8 @@ function hexToChars(u) {
  * @returns {string} - HTML
  */
 function hexToHTML(h) {
-  // debug('\n hexToHTML - START');
-  // debug('\t passed ' + h);
+  // log('\n hexToHTML - START');
+  // log('passed ' + h);
   if (!h || h.indexOf('0x') < 0) return false;
 
   h = String(h).split('0x');
@@ -150,8 +150,8 @@ function parseUnicodeInput(str) {
   // Unicode, Hex, or glyph
   // and returns an array of padded hex values
 
-  // debug('\n parseUnicodeInput - START');
-  // debug('\t passed ' + str);
+  // log('\n parseUnicodeInput - START');
+  // log('passed ' + str);
 
   if (!str) return false;
 
@@ -175,14 +175,14 @@ function parseUnicodeInput(str) {
     if (te !== '') {
       while (te.length < 4) te = '0' + te;
       te = '0x' + te.toUpperCase();
-      // debug('\t parsed ' + e + ' as ' + te);
+      // log('parsed ' + e + ' as ' + te);
       results.push(te);
     }
   }
 
   if (results.length === 0) results.push('0x0000');
-  // debug('\t returning ' + JSON.stringify(results));
-  // debug('parseUnicodeInput - END\n');
+  // log('returning ' + JSON.stringify(results));
+  // log('parseUnicodeInput', 'end');
   return results;
 }
 
@@ -248,8 +248,8 @@ function validateHex(str) {
  * @returns {string} - name
  */
 function getUnicodeName(ch) {
-  // debug('\n getUnicodeName - START');
-  // debug('\t passed ' + ch);
+  // log('\n getUnicodeName - START');
+  // log('passed ' + ch);
   ch = '' + ch;
   let re;
   const chn = ch * 1;
@@ -260,7 +260,8 @@ function getUnicodeName(ch) {
     re = unicodeNames[ch] || '[name not found]';
   }
 
-  // debug(' getUnicodeName - END - returning ' + re + '\n');
+  // log('returning ' + re + '\n');
+  // log('getUnicodeName', 'end');
   return re;
 }
 
@@ -271,8 +272,8 @@ function getUnicodeName(ch) {
  * @returns {string} - name
  */
 function getUnicodeShortName(ch) {
-  // debug('\n getUnicodeShortName - START');
-  // debug('\t passed ' + ch);
+  // log('\n getUnicodeShortName - START');
+  // log('passed ' + ch);
   ch = '' + ch;
   let name = shortUnicodeNames[ch];
   if (!name) {
@@ -285,7 +286,7 @@ function getUnicodeShortName(ch) {
     else name = 'none';
   }
 
-  // debug(' getUnicodeShortName - returning ' + name + ' - END\n');
+  // log('getUnicodeShortName - returning ' + name + '', 'end');
   return name;
 }
 

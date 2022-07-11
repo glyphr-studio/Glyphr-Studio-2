@@ -11,8 +11,8 @@
    * @param {number} pointSize - how big to draw the point
    */
   drawPoint(ctx, isSelected, accent = '#000', pointSize = 7) {
-    // debug('\n PathPoint.drawPoint - START');
-    // debug('\t sel = ' + isSelected);
+    // log('\n PathPoint.drawPoint - START');
+    // log('sel = ' + isSelected);
 
     const halfPointSize = pointSize / 2;
     // ctx.fillStyle = sel? 'white' : accent;
@@ -35,7 +35,7 @@
 
     ctx.fillStyle = accent;
     ctx.fillText(this.pointNumber, sXcX(this.p.x + 12), sYcY(this.p.y));
-    // debug(' PathPoint.drawPoint - END\n');
+    // log('PathPoint.drawPoint', 'end');
   }
 
   /**
@@ -87,7 +87,7 @@
       ]);
     }
 
-    // debug('PathPoint.drawPoint arrow = ' + JSON.stringify(arrow) + '  - rotatedArrow = ' + JSON.stringify(rotatedArrow));
+    // log('PathPoint.drawPoint arrow = ' + JSON.stringify(arrow) + '  - rotatedArrow = ' + JSON.stringify(rotatedArrow));
 
     ctx.beginPath();
     ctx.moveTo(

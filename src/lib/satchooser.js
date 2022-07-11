@@ -66,12 +66,12 @@ export default class SatChooser {
       const offsetX = e.offsetX || e.layerX;
       const offsetY = e.offsetY || e.layerY;
       // console.log('SatChooser.onclick');
-      // console.log('\t x / y: ' + offsetX + ' / ' + offsetY);
+      // console.log('x / y: ' + offsetX + ' / ' + offsetY);
       if ((offsetY < that.borderSize) ||
                 (offsetY > that.height - that.borderSize - that.pointerSize) ||
                 (offsetX < that.borderSize) ||
         (offsetX > that.width - that.borderSize)) {
-        // console.log('\t border');
+        // console.log('border');
         return;
       }
       const ipx = ((Math.floor(e.offsetX - 1) * 4) + (Math.floor(e.offsetY - 1) * that.imgData.width * 4));
@@ -80,7 +80,7 @@ export default class SatChooser {
       const bx = that.imgData.data[ipx + 2];
       const rgbx = 'rgb(' + rx + ',' + gx + ',' + bx + ')';
       const reox = {r: rx, g: gx, b: bx};
-      // console.log('\t ipx: ' + ipx + '\t = ' + rgbx);
+      // console.log('ipx: ' + ipx + '\t = ' + rgbx);
       that.clickCallbackArgs.colorobject = reox;
       that.clickCallbackArgs.colorstring = rgbx;
       that.clickCallback(that.clickCallbackArgs);
@@ -92,13 +92,13 @@ export default class SatChooser {
     const numcells = (255 * 6 / this.step);
     this.cellSize = Math.round((w - (this.borderSize * 2)) / numcells);
     const rw = ((this.cellSize * numcells) + (this.borderSize * 2));
-    // console.log('\t passed: ' + w + ' returns ' + rw + '\t numcells: ' + numcells + ' cellsize: ' + this.cellSize + ' step: ' + this.step);
+    // console.log('passed: ' + w + ' returns ' + rw + '\t numcells: ' + numcells + ' cellsize: ' + this.cellSize + ' step: ' + this.step);
     return rw;
   }
 
   show(pv) {
     // console.log('SatChooser.show');
-    // console.log('\t passed: ');
+    // console.log('passed: ');
     // console.log(pv.elem);
     document.body.appendChild(this.can);
     this.clickCallbackArgs = pv.args || {};
@@ -111,13 +111,13 @@ export default class SatChooser {
       total.offsetLeft += obj.offsetLeft;
       return total;
     }
-    // console.log('\t final offset: ' + JSON.stringify(offset));
+    // console.log('final offset: ' + JSON.stringify(offset));
     this.screeny = (offset.offsetTop - this.height);
     this.screenx = (offset.offsetLeft - hw + (pv.elem.offsetWidth / 2));
     cs.display = 'none';
     cs.top = (this.screeny + 'px');
     cs.left = (this.screenx + 'px');
-    // console.log('\t top / left: ' + cs.top + ' / ' + cs.left);
+    // console.log('top / left: ' + cs.top + ' / ' + cs.left);
     // Move & Show Chooser
     cs.display = 'block';
   }
