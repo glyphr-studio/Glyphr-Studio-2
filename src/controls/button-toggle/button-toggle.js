@@ -250,4 +250,4 @@ export default class ButtonToggle extends HTMLElement {
   }
 }
 
-customElements.define('button-toggle', ButtonToggle);
+// customElements.define('button-toggle', ButtonToggle);

@@ -149,4 +149,4 @@ export default class PanelArea extends HTMLElement {
   }
 }
 
-customElements.define('panel-area', PanelArea);
+// customElements.define('panel-area', PanelArea);

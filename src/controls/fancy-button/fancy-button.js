@@ -268,4 +268,4 @@ export default class FancyButton extends HTMLElement {
   }
 }
 
-customElements.define('fancy-button', FancyButton);
+// customElements.define('fancy-button', FancyButton);

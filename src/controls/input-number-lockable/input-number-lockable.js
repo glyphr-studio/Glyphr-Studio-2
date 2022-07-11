@@ -118,4 +118,4 @@ export default class InputNumberLockable extends HTMLElement {
   }
 }
 
-customElements.define('input-number-lockable', InputNumberLockable);
+// customElements.define('input-number-lockable', InputNumberLockable);

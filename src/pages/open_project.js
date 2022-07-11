@@ -5,7 +5,6 @@ import GlyphrStudioProject from '../project/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { debug } from '../common/functions.js';
 import { uiColors, accentColors } from '../common/colors.js';
-// import FancyButton from '../controls/fancy-button/fancy-button.js';
 // import { importOTFFont } from '../io/otf_import.js';
 // import { importSVGFont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
@@ -117,9 +116,8 @@ export default class PageOpenProject {
 
       // Finish up populating UI
       page.changeTab();
-      document.getElementById(
-        'open-project__logo'
-      ).innerHTML = makeGlyphrStudioLogo({ fill: '#BAD9E9', width: 400 });
+      document.getElementById('open-project__logo').innerHTML =
+        makeGlyphrStudioLogo({ fill: '#BAD9E9', width: 400 });
 
       setTimeout(app.fadeOutLoadScreen, 2000);
 
