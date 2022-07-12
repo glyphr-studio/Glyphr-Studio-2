@@ -1,17 +1,17 @@
 * {
-	margin: 0;
-	padding: 0;
-	font-family:FiraGO, tahoma, verdana, sans-serif;
-	font-size: 14px;
-	font-weight: normal;
-	z-index: 0;
-	text-align: left;
-	color: var(--gray-l20);
-	box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family:FiraGO, tahoma, verdana, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  z-index: 0;
+  text-align: left;
+  /* color: var(--gray-l20); */
+  box-sizing: border-box;
 }
 
 html,body {
-	background-color: var(--gray-l95);
+  background-color: var(--gray-l97);
   height: 100%;
   width: 100%;
   min-height: 100%;
@@ -20,10 +20,10 @@ html,body {
 }
 
 div,p,h1,h2,h3,table,td,label,button {
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 b {
@@ -98,8 +98,8 @@ textarea {
   background-color: white;
   color: var(--gray-l15);
   border: 1px solid var(--gray-l90);
-  -moz-user-select: text;
   -webkit-user-select: text;
+  -moz-user-select: text;
   -ms-user-select: text;
   user-select: text;
 }

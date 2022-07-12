@@ -78,6 +78,7 @@
     color: var(--gray-l95);
     display: block;
     padding-right: 0px;
+    margin-bottom: 10px;
 }
 
 .open-project__tab-content #customRangeBegin,
@@ -114,11 +115,10 @@
 
 #open-project__drop-target {
     width: 90%;
-    margin: 5px 0px 0px 0px;
-    background-color: var(--gray-l95);
+    margin: 10px 0px 0px 0px;
+    background-color: var(--gray-l15);
     border:1px dashed var(--gray-l65);
-    color: var(--blue-l35);
-    font-weight: bold;
+    color: var(--gray-l65);
     padding: 18px 0px 20px 20px;
     line-height: 2em;
 }
