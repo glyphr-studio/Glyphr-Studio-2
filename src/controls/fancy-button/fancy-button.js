@@ -23,6 +23,11 @@ export default class FancyButton extends HTMLElement {
     this.wrapper = makeElement({ className: 'wrapper' });
     if (this.hasAttribute('secondary'))
       this.wrapper.setAttribute('secondary', '');
+
+    if (this.hasAttribute('dark')) {
+      this.wrapper.setAttribute('dark', '');
+      this.dark = true;
+    }
     if (this.hasAttribute('disabled')) {
       this.wrapper.setAttribute('disabled', '');
       this.disabled = true;
@@ -40,13 +45,17 @@ export default class FancyButton extends HTMLElement {
             * {
                 box-sizing: border-box;
                 user-select: none;
-                -moz-user-select: none;
                 -webkit-user-select: none;
+                -moz-user-select: none;
                 -ms-user-select: none;
+                user-select: none;
             }
 
             :host {
                 margin-right: 8px;
+                display: inline-block;
+                width: max-content;
+                min-width: 40px;
             }
 
             :host(:active) .wrapper {
@@ -68,6 +77,7 @@ export default class FancyButton extends HTMLElement {
                 margin: 0px;
                 padding: 2px;
                 height: 100%;
+                width: 100%;
                 border-style: solid;
                 border-width: 0px;
                 border-radius: 5px;
@@ -103,11 +113,10 @@ export default class FancyButton extends HTMLElement {
                 outline: 1px dashed ${uiColors.accent};
             }
 
-
             .buttonContent {
-                display: inline-block;
+                display: flex;
+                align-items: center;
                 padding: 0px;
-                margin: 0px;
                 border-radius: 3px;
                 background-color: transparent;
                 width: 100%;
@@ -116,19 +125,19 @@ export default class FancyButton extends HTMLElement {
 
             .buttonText {
                 display: inline-block;
-                position: relative;
-                top: 0px;
-                left: 0px;
-                min-width: 80px;
-                text-align: center;
-                vertical-align: middle;
+                width: max-content;
+                height: max-content;
+                margin: 5px 10px;
                 color: white;
-                margin: 4px 12px;
                 background-color: transparent;
             }
 
             .wrapper[secondary] .buttonContent {
                 background-color: rgba(255, 255, 255, 0.95);
+            }
+
+            .wrapper[dark] .buttonContent {
+                background-color: ${accentColors.gray.l05};
             }
 
             .wrapper[secondary] .buttonText {
@@ -145,8 +154,8 @@ export default class FancyButton extends HTMLElement {
                   fast ? fastSpeed : slowSpeed
                 } linear infinite;
 
-                background-clip: text;
                 -webkit-background-clip: text;
+                background-clip: text;
                 -webkit-text-fill-color: transparent;
             }
 

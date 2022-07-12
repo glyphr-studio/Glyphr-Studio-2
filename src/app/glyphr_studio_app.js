@@ -43,7 +43,7 @@ export default class GlyphrStudioApp {
    * Starts up the app
    */
   setUp() {
-    log(`App.setUp`, 'start');
+    log(`GlyphrStudioApp.setUp`, 'start');
 
     // Dev mode stuff
     if (this.settings.dev.mode) {
@@ -106,7 +106,7 @@ export default class GlyphrStudioApp {
 
     this.navigate();
 
-    log(`App.setUp`, 'end');
+    log(`GlyphrStudioApp.setUp`, 'end');
   }
 
   /**
@@ -114,9 +114,9 @@ export default class GlyphrStudioApp {
    * @param {string} pageName - what page to navigate to
    */
   navigate(pageName) {
-    log(`App.navigate`, 'start');
+    log(`GlyphrStudioApp.navigate`, 'start');
     this.getCurrentProjectEditor().navigate(pageName);
-    log(`App.navigate`, 'end');
+    log(`GlyphrStudioApp.navigate`, 'end');
   }
 
   /**

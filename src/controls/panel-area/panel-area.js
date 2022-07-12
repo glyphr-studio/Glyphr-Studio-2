@@ -24,9 +24,10 @@ export default class PanelArea extends HTMLElement {
             * {
                 box-sizing: border-box;
                 user-select: none;
-                -moz-user-select: none;
                 -webkit-user-select: none;
+                -moz-user-select: none;
                 -ms-user-select: none;
+                user-select: none;
             }
 
             .wrapper {
@@ -37,7 +38,7 @@ export default class PanelArea extends HTMLElement {
                 border-style: solid;
                 border-width: 0px;
                 border-color: ${uiColors.enabled.resting.border};
-                background-color: ${uiColors.enabled.resting.background};
+                background-color: ${uiColors.offWhite};
                 display: grid;
                 grid-template-rows: 30px 1fr;
             }
@@ -60,14 +61,16 @@ export default class PanelArea extends HTMLElement {
             #header {
                 width: 100%;
                 grid-row: 1;
-                background-color: ${accentColors.gray.l25};
-                color: ${accentColors.blue.l95};
+                background-color: ${accentColors.gray.l95};
+                color: ${accentColors.blue.l05};
                 cursor: pointer;
+                align-items: center;
+                padding: 5px 10px;
             }
 
             #content {
                 grid-row: 2;
-                background-color: ${accentColors.gray.l90};
+                background-color: ${uiColors.offWhite};
                 overflow-y: scroll;
                 padding: 5px;
               }

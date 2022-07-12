@@ -54,11 +54,10 @@ export default class PageOpenProject {
           which is a free / open source "copyleft" license. You are free to use, distribute, and modify Glyphr Studio as long as
           this license and its freeness stays intact.
         </div>
-        <input style="display:none;" type="file" id="openProjectFileChooser"/>
       </td>
       <td id="open-project__right-area" vertical-align="middle">${this.makeTabs()}</td>
       </tr></table>
-      <input type="file" style="display:none" id="openProjectFileChooser"></input>`,
+      <input type="file" style="display:none" id="openProjectFileChooser"/>`,
     });
 
     // Tab click
@@ -146,7 +145,7 @@ export default class PageOpenProject {
     con += `
     <div class="open-project__tab-content" id="openProjectLoadContent" style="display: none;">
       <h2>Load a file</h2>
-      <fancy-button secondary onclick="document.getElementById('openProjectFileChooser').click();">
+      <fancy-button dark onclick="document.getElementById('openProjectFileChooser').click();">
         Browse for a File
       </fancy-button>&ensp; or Drag and Drop:
       <div id="open-project__drop-target">
@@ -168,16 +167,16 @@ export default class PageOpenProject {
     // EXAMPLES
     con += `
     <div class="open-project__tab-content" id="openProjectExampleProjects" style="display: none;">
-      <h2>Load an Example project</h2>
+      <h2>Load an example project</h2>
 
-      Modegg is a project that utilizes Glyphr Studio features, like Components:<br>
-      <fancy-button secondary id="loadModegg">Modegg</fancy-button><br><br>
+      Modegg is a project that utilizes Glyphr Studio features, like Components:<br><br>
+      <fancy-button dark id="loadModegg">Modegg</fancy-button><br><br>
 
-      California Gothic is an all-caps display font:<br>
-      <fancy-button secondary id="loadCaliforniaGothic">California Gothic</fancy-button><br><br>
+      California Gothic is an all-caps display font:<br><br>
+      <fancy-button dark id="loadCaliforniaGothic">California Gothic</fancy-button><br><br>
 
-      Merriweather Sans is an open-source font imported from an Open Type file:<br>
-      <fancy-button secondary id="loadMerriweatherSans">Merriweather Sans</fancy-button><br><br>
+      Merriweather Sans is an open-source font imported from an Open Type file:<br><br>
+      <fancy-button dark id="loadMerriweatherSans">Merriweather Sans</fancy-button><br><br>
     </div>`;
 
     return '<div class="open-project__tab-wrapper">' + con + '</div>';

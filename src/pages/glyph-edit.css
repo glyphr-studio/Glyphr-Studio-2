@@ -22,6 +22,7 @@
 .glyph-edit__left-area fancy-button {
 	grid-row: 1;
 	width: 100%;
+	border-radius: 0;
 }
 
 .glyph-edit__left-area panel-area {

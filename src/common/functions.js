@@ -99,8 +99,11 @@ function saveFile(fileName, buffer, fileType) {
     // link.onclick = ("alert("+window.URL.createObjectURL(fileBlob)+");");
     link.download = fileName;
 
-    const event = document.createEvent('MouseEvents');
-    event.initEvent('click', true, false);
+    const event = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    });
     link.dispatchEvent(event);
   }
 }
@@ -550,10 +553,7 @@ function makeEmailContent() {
   const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
   %0A%0A%0A%0A___________________________________________%0A
   version %09Glyphr Studio  ${getGlyphrStudioApp().version} %0A
-  app name %09 ${navigator.appName} %0A
-  language %09 ${navigator.language} %0A
-  platform %09 ${navigator.platform} %0A
-  user agent %09 ${encodeURIComponent(navigator.userAgent)} %0A`;
+  user agent %09 ${encodeURIComponent(navigator.userAgentData)} %0A`;
 
   // log(con);
 

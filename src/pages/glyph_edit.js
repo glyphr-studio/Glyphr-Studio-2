@@ -26,7 +26,7 @@ export default class PageGlyphEdit {
       <div class="glyph-edit__page">
         <div class="glyph-edit__left-area">
           <fancy-button>Glyphr Studio</fancy-button>
-          <panel-area panel="attributes"></panel-area>
+          <panel-area panel="Attributes"></panel-area>
         </div>
         <div class="glyph-edit__right-area">
           <canvas-display glyphs="A"></canvas-display>
