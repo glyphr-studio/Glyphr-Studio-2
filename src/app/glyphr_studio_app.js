@@ -1,6 +1,5 @@
 import ProjectEditor from '../project/project_editor.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
-import { projects } from '../samples/samples.js';
 import { log } from '../common/functions.js';
 
 /**
@@ -23,7 +22,6 @@ export default class GlyphrStudioApp {
       dev: {
         // Internal Dev Stuff
         mode: true, // global switch for all the stuff below
-        sampleProject: false, // if sampleProject is present, load it and skip open project experience
         currentPage: false, // navigate straight to a page
         currentPanel: false, // navigate straight to a panel
         selectedShape: false, // automatically select a shape
@@ -35,29 +33,23 @@ export default class GlyphrStudioApp {
       },
       telemetry: true, // Load google analytics
     };
-
-    this.temp = {};
   }
 
   /**
    * Starts up the app
    */
-  setUp() {
+  setUp(sampleProject = false) {
     log(`GlyphrStudioApp.setUp`, 'start');
 
     // Dev mode stuff
     if (this.settings.dev.mode) {
-      log('>>> DEV NAV - to ' + this.settings.dev.currentPage);
+      log('DEV NAV - to ' + this.settings.dev.currentPage);
       document.title = '⡄⡆⡇ ⃨G⃨S⃨2⃨D⃨E⃨V⃨M⃨O⃨D⃨E⃨ ⡇⡆⡄';
 
       // Project
-      if (this.settings.dev.sampleProject) {
-        log('>>> Using sample project');
-        this.temp.droppedFileContent = JSON.stringify(
-          projects[this.settings.dev.sampleProject]
-        );
-        importGlyphrProjectFromText();
-        this.settings.dev.sampleProject = false;
+      if (sampleProject) {
+        log('Using sample project');
+        importGlyphrProjectFromText(sampleProject);
       } else {
         this.projectEditors[0] = new ProjectEditor();
       }

@@ -26,7 +26,7 @@ export default class PageOpenProject {
    * @returns {object} HTML Element + callback function
    */
   pageLoader() {
-    log(`PageOpenProject.pageLoader`, 'start');
+    // log(`PageOpenProject.pageLoader`, 'start');
     const recent = 1000 * 60 * 60 * 24 * 7; // seven days in milliseconds
     let recentMessage = '';
     const app = getGlyphrStudioApp();
@@ -107,7 +107,7 @@ export default class PageOpenProject {
       .addEventListener('click', this.handleNewProject);
 
     const callback = function (page) {
-      log(`PageOpenProject.pageLoader.callback`, 'start');
+      // log(`PageOpenProject.pageLoader.callback`, 'start');
 
       // For Electron app
       window.addEventListener('message', page.handleMessage, false);
@@ -120,12 +120,12 @@ export default class PageOpenProject {
 
       setTimeout(app.fadeOutLoadScreen, 2000);
 
-      log(`PageOpenProject.pageLoader.callback`, 'end');
+      // log(`PageOpenProject.pageLoader.callback`, 'end');
     };
 
     const re = { content: content, callback: callback };
     // log(re);
-    log(`PageOpenProject.pageLoader`, 'end');
+    // log(`PageOpenProject.pageLoader`, 'end');
 
     return re;
   }

@@ -15,6 +15,7 @@ export default class GlyphrStudioProject {
    * @param {object} newProject - Glyphr Studio Project File JSON
    */
   constructor(newProject = {}) {
+    log('GlyphrStudioProject.constructor', 'start');
     // Set up all default values first
     this.projectSettings = {
       // Internal Stuff
@@ -187,6 +188,9 @@ export default class GlyphrStudioProject {
     // Kerning
     hydrateGlyphrObjectList(HKern, newProject.kerning, this.kerning);
     // log('finished hydrating kern pairs');
+
+    // log(this);
+    log('GlyphrStudioProject.constructor', 'end');
   }
 
   // --------------------------------------------------------------
@@ -241,7 +245,7 @@ export default class GlyphrStudioProject {
    * @returns {Glyph}
    */
   getGlyph(id, create = false) {
-    // log('\n getGlyph - START');
+    // log('GlyphrStudioProject.getGlyph', 'start');
     // log('passed: ' + id + ' create: ' + create);
 
     if (!id) {
@@ -268,7 +272,7 @@ export default class GlyphrStudioProject {
       if (rechar) {
         return rechar;
       } else if (create) {
-        log('create was true, returning a new char.');
+        // log('create was true, returning a new char.');
         this.glyphs[id] = new Glyph({ glyphhex: id });
         return this.glyphs[id];
       }
@@ -301,7 +305,7 @@ export default class GlyphrStudioProject {
    */
   getGlyphName(id, forceLongName = false) {
     id = '' + id;
-    // log('\n getGlyphName');
+    // log('GlyphrStudioProject.getGlyphName', 'start');
     // log('passed ' + id);
 
     // not passed an id
@@ -386,7 +390,8 @@ export default class GlyphrStudioProject {
  * @returns {Object}
  */
 function merge(template = {}, importing = {}, trimStrings = false) {
-  log(template);
+  // log('glyphr_studio_project - merge', 'start');
+  // log(template);
 
   for (const a of Object.keys(template)) {
     if (typeof template[a] === 'object') {
@@ -399,7 +404,7 @@ function merge(template = {}, importing = {}, trimStrings = false) {
       }
     }
   }
-
+  // log('glyphr_studio_project - merge', 'end');
   return template;
 }
 
