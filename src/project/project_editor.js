@@ -302,8 +302,8 @@ export default class ProjectEditor {
 
     if (pageName) this.nav.page = pageName;
     const wrapper = document.getElementById('app__wrapper');
-    log(`wrapper is:`);
-    log(wrapper);
+    // log(`wrapper is:`);
+    // log(wrapper);
 
     if (wrapper) {
       const loader = this.pageLoader();
@@ -359,8 +359,8 @@ export default class ProjectEditor {
     // Append results
     editorContent.appendChild(currentPageLoader.content);
 
-    log(`this.pages`);
-    log(this.pages);
+    // log(`this.pages`);
+    // log(this.pages);
 
     log(`ProjectEditor.pageLoader`, 'end');
 

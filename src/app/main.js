@@ -12,6 +12,7 @@ import InfoBubble from '../controls/info-bubble/info-bubble.js';
 import InputNumber from '../controls/input-number/input-number.js';
 import InputNumberLockable from '../controls/input-number-lockable/input-number-lockable.js';
 import PanelArea from '../controls/panel-area/panel-area.js';
+import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 
 /** export nothing by default */
 export default function () {}
@@ -32,12 +33,17 @@ function glyphrStudioOnLoad() {
   log(`glyphrStudioOnLoad`, 'start');
 
   if (passPreChecks()) {
-    log(`passPreChecks = true`);
-    log(`GSApp Object:`);
     log(GSApp);
     console.log(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
     registerCustomComponents();
-    GSApp.setUp();
+
+    // Load project
+    let sample = getVersionTwoTestProject();
+    log('loading sample project');
+    log(sample);
+    GSApp.setUp(JSON.stringify(sample));
+  } else {
+    log('did NOT pass pre-checks');
   }
   log(`glyphrStudioOnLoad`, 'end');
 }
