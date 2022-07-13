@@ -13,7 +13,7 @@
  * disables.
  */
 
-import { getGlyphrStudioApp } from "../app/main";
+import { getGlyphrStudioApp } from '../app/main.js';
 
 /**
  * Check a project save file content, and do necessary

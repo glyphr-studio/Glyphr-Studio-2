@@ -22,29 +22,23 @@ export default class GlyphrStudioProject {
       versionName: 'Version 2 Alpha',
       version: '2.0.0',
       initialVersion: '2.0.0',
-      projectid: false,
+      projectID: false,
 
       // Font Metrics
       name: 'My Font',
       upm: 1000,
       ascent: 700,
       descent: -300,
-      capheight: 675,
-      xheight: 400,
+      capHeight: 675,
+      xHeight: 400,
       lineGap: 250,
-      italicangle: 0,
-      griddivisions: 10,
+      italicAngle: 0,
+      gridDivisions: 10,
       overshoot: 10,
       defaultLSB: 20,
       defaultRSB: 20,
-      glyphrange: {
-        basicLatin: true,
-        latinSupplement: false,
-        latinExtendedA: false,
-        latinExtendedB: false,
-        custom: [],
-        filternoncharpoints: true,
-      },
+      glyphRanges: [{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' }],
+      filterNonCharPoints: true,
 
       // UI stuff
       pointsize: 7,
@@ -143,8 +137,8 @@ export default class GlyphrStudioProject {
     // Project Settings
     newProject.projectSettings = newProject.projectSettings || {};
     newProject.projectSettings.guides = newProject.projectSettings.guides || {};
-    newProject.projectSettings.glyphrange =
-      newProject.projectSettings.glyphrange || {};
+    newProject.projectSettings.glyphRanges =
+      newProject.projectSettings.glyphRanges || [];
 
     // Guides can be custom, so save a copy before merging with templates
     // let dataGuides = clone(newProject.projectSettings.guides || {});
@@ -155,11 +149,11 @@ export default class GlyphrStudioProject {
         this.projectSettings,
         newProject.projectSettings
       );
-      this.projectSettings.glyphrange.custom =
-        newProject.projectSettings.glyphrange.custom || [];
+      this.projectSettings.glyphRanges =
+        newProject.projectSettings.glyphRanges || [];
     }
-    this.projectSettings.projectid =
-      this.projectSettings.projectid || makeProjectID();
+    this.projectSettings.projectID =
+      this.projectSettings.projectID || makeProjectID();
     this.projectSettings.descent = -1 * Math.abs(this.projectSettings.descent);
     // log('finished merging projectSettings');
     // log(this.projectSettings);
@@ -347,20 +341,20 @@ export default class GlyphrStudioProject {
     };
 
     let thisGlyph;
-    const cr = this.projectSettings.glyphrange;
+    const cr = this.projectSettings.glyphRanges;
 
-    if (cr.basicLatin) {
-      for (let i = 0; i < basicLatinOrder.length; i++) {
-        thisGlyph = this.getGlyph(basicLatinOrder[i]);
-        fm.numberOfGlyphs++;
-        fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[i]);
-        fm.maxes = getOverallMaxes(fm.maxes, thisGlyph.maxes);
-      }
-    }
+    // if (cr.basicLatin) {
+    //   for (let i = 0; i < basicLatinOrder.length; i++) {
+    //     thisGlyph = this.getGlyph(basicLatinOrder[i]);
+    //     fm.numberOfGlyphs++;
+    //     fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[i]);
+    //     fm.maxes = getOverallMaxes(fm.maxes, thisGlyph.maxes);
+    //   }
+    // }
 
-    if (cr.custom.length) {
-      for (let c = 0; c < cr.custom.length; c++) {
-        for (let char = cr.custom[c].begin; char < cr.custom[c].end; char++) {
+    if (cr.length) {
+      for (let c = 0; c < cr.length; c++) {
+        for (let char = cr[c].begin; char < cr[c].end; char++) {
           thisGlyph = this.getGlyph(decToHex(char));
           fm.numberOfGlyphs++;
           fm.maxGlyph = Math.max(

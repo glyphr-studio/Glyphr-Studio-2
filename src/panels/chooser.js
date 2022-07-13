@@ -141,27 +141,15 @@ function update_GlyphChooser(selrange) {
     _UI.glyphChooser.panel.selected = selrange;
     _UI.glyphChooser.dropdown = !_UI.glyphChooser.dropdown;
 
-    if (selrange === 'glyphs') selrange = 'basicLatin';
+    // if (selrange === 'glyphs') selrange = 'basicLatin';
 
     if (!isNaN(parseInt(selrange))) {
       selectGlyph(
-        getCurrentProject().projectSettings.glyphrange.custom[selrange].begin,
+        getCurrentProject().projectSettings.glyphRanges[selrange].begin,
         true
       );
     } else {
       switch (selrange) {
-        case 'basicLatin':
-          selectGlyph('0x0041', true);
-          break;
-        case 'latinSupplement':
-          selectGlyph('0x00A0', true);
-          break;
-        case 'latinExtendedA':
-          selectGlyph('0x0100', true);
-          break;
-        case 'latinExtendedB':
-          selectGlyph('0x0180', true);
-          break;
         case 'components':
           selectGlyph(getFirstID(getCurrentProject().components), true);
           break;
@@ -192,24 +180,12 @@ function make_GlyphChooser_Header(selrange) {
     return content;
   }
 
-  if (selrange === 'glyphs') selrange = 'basicLatin';
+  // if (selrange === 'glyphs') selrange = 'basicLatin';
 
   if (!isNaN(parseInt(selrange))) {
     content += 'Custom Range ' + (selrange + 1);
   } else if (selrange) {
     switch (selrange) {
-      case 'basicLatin':
-        content += 'Basic Latin';
-        break;
-      case 'latinSupplement':
-        content += 'Latin Supplement';
-        break;
-      case 'latinExtendedA':
-        content += 'Latin Extended-A';
-        break;
-      case 'latinExtendedB':
-        content += 'Latin Extended-B';
-        break;
       case 'components':
         content += 'Components';
         break;
@@ -229,24 +205,11 @@ function make_GlyphChooser_Header(selrange) {
 
 function make_GlyphChooser_DropDown(ch) {
   let content = '<div class="glyphChooser-dropdown">';
-  const gr = getCurrentProject().projectSettings.glyphrange;
+  const gr = getCurrentProject().projectSettings.glyphRanges;
 
   if (ch === 'glyphs' || ch === 'all') {
-    if (gr.basicLatin)
-      content +=
-        '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'basicLatin\');">Basic Latin</button>';
-    if (gr.latinSupplement)
-      content +=
-        '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'latinSupplement\');">Latin Supplement</button>';
-    if (gr.latinExtendedA)
-      content +=
-        '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'latinExtendedA\');">Latin Extended-A</button>';
-    if (gr.latinExtendedB)
-      content +=
-        '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'latinExtendedB\');">Latin Extended-B</button>';
-
-    if (gr.custom.length) content += '<div style="height:12px;"></div>';
-    for (let c = 0; c < gr.custom.length; c++) {
+    if (gr.length) content += '<div style="height:12px;"></div>';
+    for (let c = 0; c < gr.length; c++) {
       content +=
         '<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(' +
         c +
@@ -254,9 +217,9 @@ function make_GlyphChooser_DropDown(ch) {
       content += 'Custom Range ' + (c + 1) + '&emsp;';
       content +=
         '<span class="units">' +
-        gr.custom[c].begin +
+        gr[c].begin +
         ' to ' +
-        gr.custom[c].end +
+        gr[c].end +
         '</span>';
       content += '</button>';
     }
@@ -293,21 +256,8 @@ function make_GlyphChooser_DropDown(ch) {
 
 function pluralGlyphRange() {
   // log('pluralGlyphRange', 'start');
-  const gr = getCurrentProject().projectSettings.glyphrange;
-  let count = gr.custom.length;
-
-  if (gr.basicLatin) {
-    count++; /* log('triggered basicLatin');*/
-  }
-  if (gr.latinExtendedA) {
-    count++; /* log('triggered latinExtendedA');*/
-  }
-  if (gr.latinExtendedB) {
-    count++; /* log('triggered latinExtendedB');*/
-  }
-  if (gr.latinSupplement) {
-    count++; /* log('triggered latinSupplement');*/
-  }
+  const gr = getCurrentProject().projectSettings.glyphRanges;
+  let count = gr.length;
 
   // log('returning ' + count);
   // log('pluralGlyphRange', 'end');
@@ -323,58 +273,13 @@ function make_GlyphChooser_Content(gcdata) {
   const selwi = getSelectedWorkItemID();
   let re = '<div class="glyphChooser-content">';
 
-  if (sel === 'basicLatin' || sel === 'glyphs') {
-    // log('triggered glyphs');
-    const bl = _UI.basiclatinorder;
-    for (let i = 0; i < bl.length; i++) {
-      re += make_GlyphChooser_Button(bl[i], fname, selwi);
-    }
-    return re + '</div>';
-  }
-
-  if (sel === 'latinSupplement') {
-    // log('triggered latinSupplement');
-    for (
-      let s = _UI.glyphrange.latinSupplement.begin;
-      s <= _UI.glyphrange.latinSupplement.end;
-      s++
-    ) {
-      re += make_GlyphChooser_Button(decToHex(s), fname, selwi);
-    }
-    return re + '</div>';
-  }
-
-  if (sel === 'latinExtendedA') {
-    // log('triggered latinExtendedA');
-    for (
-      let a = _UI.glyphrange.latinExtendedA.begin;
-      a <= _UI.glyphrange.latinExtendedA.end;
-      a++
-    ) {
-      re += make_GlyphChooser_Button(decToHex(a), fname, selwi);
-    }
-    return re + '</div>';
-  }
-
-  if (sel === 'latinExtendedB') {
-    // log('triggered latinExtendedB');
-    for (
-      let b = _UI.glyphrange.latinExtendedB.begin;
-      b <= _UI.glyphrange.latinExtendedB.end;
-      b++
-    ) {
-      re += make_GlyphChooser_Button(decToHex(b), fname, selwi);
-    }
-    return re + '</div>';
-  }
-
-  const cr = getCurrentProject().projectSettings.glyphrange;
+  const cr = getCurrentProject().projectSettings.glyphRanges;
   const c = parseInt(sel);
   if (!isNaN(c)) {
     // log('triggered custom range');
-    for (let range = cr.custom[c].begin; range <= cr.custom[c].end; range++) {
+    for (let range = cr[c].begin; range <= cr[c].end; range++) {
       cn = decToHex(range);
-      if (getCurrentProject().projectSettings.glyphrange.filternoncharpoints) {
+      if (getCurrentProject().projectSettings.filterNonCharPoints) {
         if (getUnicodeName(cn) !== '[name not found]')
           re += make_GlyphChooser_Button(cn, fname, selwi);
       } else {

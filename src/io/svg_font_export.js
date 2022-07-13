@@ -112,8 +112,8 @@ function ioSVG_makeFontFace() {
 
   // Project properties
   con += t + 'units-per-em="' + ps.upm + '"\n';
-  con += t + 'cap-height="' + ps.capheight + '"\n';
-  con += t + 'x-height="' + ps.xheight + '"\n';
+  con += t + 'cap-height="' + ps.capHeight + '"\n';
+  con += t + 'x-height="' + ps.xHeight + '"\n';
   con += t + 'ascent="' + ps.ascent + '"\n';
   con += t + 'descent="' + ps.descent + '"\n';
   con +=

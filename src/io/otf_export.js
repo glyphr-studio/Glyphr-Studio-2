@@ -196,7 +196,7 @@ function generateNotdefGlyph() {
     name: 'notdef',
     shapes: JSON.parse(notDefGlyphShapes),
   });
-  // log(`capheight ${capHeight}`);
+  // log(`capHeight ${capHeight}`);
   // log(`notdef.maxes.ymax ${notdef.maxes.ymax}`);
 
   if (capHeight !== 700) {
