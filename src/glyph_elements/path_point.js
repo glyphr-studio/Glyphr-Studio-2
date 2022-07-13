@@ -319,7 +319,7 @@ export default class PathPoint extends GlyphElement {
    * @returns {PathPoint}
    */
   makeFlat(hold) {
-    // log('\n PathPoint.makeFlat - START');
+    // log('PathPoint.makeFlat', 'start');
     // log('hold passed ' + hold);
 
     if (this.isFlat()) {
@@ -410,7 +410,7 @@ export default class PathPoint extends GlyphElement {
    * @returns {string}
    */
   resolvePointType() {
-    // log('\n PathPoint.resolvePointType - START');
+    // log('PathPoint.resolvePointType', 'start');
 
     if (this.isFlat()) {
       if (this.h1.length === this.h2.length) {
@@ -478,7 +478,7 @@ export default class PathPoint extends GlyphElement {
    * @returns {PathPoint}
    */
   rotate(angle, about) {
-    // log('\n PathPoint.rotate - START');
+    // log('PathPoint.rotate', 'start');
     rotate(this.p, angle, about);
     rotate(this.h1, angle, about);
     rotate(this.h2, angle, about);

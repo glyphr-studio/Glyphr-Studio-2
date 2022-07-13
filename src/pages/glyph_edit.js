@@ -54,7 +54,7 @@ export default class PageGlyphEdit {
 // Redraw
 // -------------------
   function redraw_GlyphEdit() {
-    // log('\n redraw_GlyphEdit - START');
+    // log('redraw_GlyphEdit', 'start');
     _UI.redrawing = true;
 
     let sg = getSelectedWorkItem();

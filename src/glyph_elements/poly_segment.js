@@ -145,7 +145,7 @@ export default class PolySegment extends GlyphElement {
    * @param {number} delay - ms delay
    */
   slowlyDrawSegments(delay = 600) {
-    // log('\n PolySegment.slowlyDrawSegments - START');
+    // log('PolySegment.slowlyDrawSegments', 'start');
     // log(this._segments);
     let currentSegment = 0;
     let segments = this._segments;
@@ -169,7 +169,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {Path}
    */
   getPath() {
-    // log('\n PolySegment.getPath - START');
+    // log('PolySegment.getPath', 'start');
     // log(this._segments);
 
     /**
@@ -264,7 +264,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {array} - collection of intersections in ix format
    */
   findIntersections() {
-    // log('\n PolySegment.findIntersections - START');
+    // log('PolySegment.findIntersections', 'start');
     // log('' + this._segments.length + ' segments');
     let s1;
     let s2;
@@ -292,7 +292,7 @@ export default class PolySegment extends GlyphElement {
    * @param {string} color
    */
   drawIntersections(ctx, color = 'rgb(200, 50, 60)') {
-    // log('\n PolySegment.drawIntersections - START');
+    // log('PolySegment.drawIntersections', 'start');
     const ix = this.findIntersections();
     let co;
     ctx.fillStyle = color;
@@ -312,8 +312,11 @@ export default class PolySegment extends GlyphElement {
    * @param {number} threshold - how closely to look and split
    * @returns {PolySegment}
    */
-  splitSegmentsAtIntersections(ixArray = this.findIntersections(), threshold) {
-    // log('\n PolySegment.splitSegmentsAtIntersections - START');
+  splitSegmentsAtIntersections(
+    ixArray = this.findIntersections(),
+    threshold = 1
+  ) {
+    // log('PolySegment.splitSegmentsAtIntersections', 'start');
     // log('before length ' + this._segments.length);
     // log(this.print());
     // log(`ixArray ${typeof ixArray} ${JSON.stringify(ixArray)}`);
@@ -349,14 +352,14 @@ export default class PolySegment extends GlyphElement {
    * @returns {array} - collection of stitched PolySegments (hopefully just one)
    */
   stitchSegmentsTogether() {
-    // log('\n PolySegment.stitchSegmentsTogether - START');
+    // log('PolySegment.stitchSegmentsTogether', 'start');
     const source = this.segments;
     let sorted = [];
     const result = [];
 
     /**
      * Looks for a segment with a provided starting point
-     * @param {XYPoint} co - starting point to look for
+     * @param {XYPoint} coi, 'start'ng point to look for
      * @returns {Segment}
      */
     function getSegmentStartingAt(co) {
@@ -459,7 +462,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeZeroLengthSegments() {
-    // log('\n PolySegment.removeZeroLengthSegments - START');
+    // log('PolySegment.removeZeroLengthSegments', 'start');
 
     let currSeg;
     for (let s = 0; s < this._segments.length; s++) {
@@ -491,7 +494,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeRedundantLineSegments() {
-    // log('\n PolySegment.removeRedundantLineSegments - START');
+    // log('PolySegment.removeRedundantLineSegments', 'start');
     for (let s = 0; s < this._segments.length; s++) {
       for (let t = 0; t < this._segments.length; t++) {
         if (s !== t && this._segments[s] && this._segments[t]) {
@@ -521,7 +524,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeDuplicateSegments() {
-    // log('\n PolySegment.removeDuplicateSegments - START');
+    // log('PolySegment.removeDuplicateSegments', 'start');
     for (let x = 0; x < this._segments.length; x++) {
       for (let y = x; y < this._segments.length; y++) {
         if (x !== y && this._segments[x] && this._segments[y]) {
@@ -553,7 +556,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeSegmentsOverlappingShape(shape) {
-    // log('\n PolySegment.removeSegmentsOverlappingShape - START');
+    // log('PolySegment.removeSegmentsOverlappingShape', 'start');
     // log('segments starting as ' + this._segments.length);
     // log(this._segments);
     const pt = 3;
@@ -612,7 +615,7 @@ export default class PolySegment extends GlyphElement {
    * @returns {PolySegment}
    */
   removeNonConnectingSegments() {
-    // log('\n PolySegment.removeNonConnectingSegments - START');
+    // log('PolySegment.removeNonConnectingSegments', 'start');
     let test;
     let against;
     const connected1 = [];
@@ -674,7 +677,7 @@ export default class PolySegment extends GlyphElement {
  * @returns {array} - collection of overlap points in ix format like ['x/y', 'x/y', 'x/y']
  */
 export function findSegmentIntersections(s1, s2, depth) {
-  // log('\n findSegmentIntersections - START');
+  // log('findSegmentIntersections', 'start');
   depth = depth || 0;
   // log('depth ' + depth);
 
@@ -798,7 +801,7 @@ export function findSegmentIntersections(s1, s2, depth) {
  * @returns {boolean}
  */
 export function segmentsAreEqual(s1, s2, threshold) {
-  // log('\n segmentsAreEqual - START');
+  // log('segmentsAreEqual', 'start');
   threshold = threshold || 1;
   // log([s1, s2]);
 
@@ -844,7 +847,7 @@ export function findOverlappingLineSegmentIntersections(s1, s2) {
     re.push('' + s1.p4x + '/' + s1.p4y);
 
   if (re.length) {
-    // log('\n findOverlappingLineSegmentIntersections - START');
+    // log('findOverlappingLineSegmentIntersections', 'start');
     // log([s1, s2]);
     // log(json(re));
     // log('findOverlappingLineSegmentIntersections', 'end');
@@ -862,7 +865,7 @@ export function findOverlappingLineSegmentIntersections(s1, s2) {
  * @returns {array} - overlap point in ix format
  */
 export function findCrossingLineSegmentIntersections(s1, s2) {
-  // log('\n findCrossingLineSegmentIntersections - START');
+  // log('findCrossingLineSegmentIntersections', 'start');
   if (!s1.lineType || !s2.lineType) return [];
 
   const d1x = s1.p4x - s1.p1x;
@@ -907,7 +910,7 @@ export function findCrossingLineSegmentIntersections(s1, s2) {
  * @returns {array} - collection of overlaps in ix format
  */
 export function findEndPointSegmentIntersections(s1, s2) {
-  // log('\n findEndPointSegmentIntersections - START');
+  // log('findEndPointSegmentIntersections', 'start');
   const s1s = s1.getXYPoint(1);
   const s1e = s1.getXYPoint(4);
   const s2s = s2.getXYPoint(1);

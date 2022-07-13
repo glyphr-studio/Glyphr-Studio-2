@@ -161,7 +161,7 @@ function closeErrorMessageBox() {
  * @param {function} fn - function to call after message is shown
  */
 function showToast(msg, dur, fn) {
-  // log('\n showToast - START');
+  // log('showToast', 'start');
   let step = -1;
   const stepmax = 20;
   const timestep = 10;

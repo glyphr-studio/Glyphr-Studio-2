@@ -35,7 +35,7 @@ function makeUsedInThumbs() {
 }
 
 function goToEditGlyph(chid) {
-  // log('\n goToEditGlyph - START');
+  // log('goToEditGlyph', 'start');
   // log('passed ' + chid);
   let p;
 

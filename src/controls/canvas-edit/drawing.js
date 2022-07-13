@@ -11,7 +11,7 @@
    * @param {number} pointSize - how big to draw the point
    */
   drawPoint(ctx, isSelected, accent = '#000', pointSize = 7) {
-    // log('\n PathPoint.drawPoint - START');
+    // log('PathPoint.drawPoint', 'start');
     // log('sel = ' + isSelected);
 
     const halfPointSize = pointSize / 2;

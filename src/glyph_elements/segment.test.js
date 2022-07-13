@@ -101,7 +101,7 @@ describe('Segment', () => {
     expect(seg.isLineOverlappedByLine(sampleSegment().convertToLine())).toBeTruthy();
   });
 
-  it('containsTerminalPoint - start', () => {
+  it('containsTerminalPoint', 'start', () => {
     // also tests Segment.containsStartPoint
     expect(sampleSegment().containsTerminalPoint({x: 0, y: 0})).toBe('start');
   });

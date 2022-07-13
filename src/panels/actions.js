@@ -342,7 +342,7 @@ function copyShape() {
 }
 
 function pasteShape() {
-  // log('pasteShape - START');
+  // log('pasteShape', 'start');
   let cbs = _UI.clipboardShape;
   // log(cbs);
   let selwi = getSelectedWorkItemID();

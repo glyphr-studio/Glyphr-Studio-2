@@ -705,7 +705,7 @@ function existingWorkItem() {
 }
 
 function getSelectedWorkItem() {
-    // log('\n getSelectedWorkItem - START');
+    // log('getSelectedWorkItem', 'start');
     // log('currentPage: ' + editor.nav.page);
     let re;
 
@@ -757,7 +757,7 @@ function getSelectedWorkItemChar() {
 }
 
 function getSelectedWorkItemName() {
-    // log('\n getSelectedWorkItemName - START');
+    // log('getSelectedWorkItemName', 'start');
     let wi = getSelectedWorkItem();
     // log('wi = '+wi);
     return wi.name || wi.getName() || '[name not found]';
@@ -770,7 +770,7 @@ function getSelectedWorkItemShapes() {
 }
 
 function markSelectedWorkItemAsChanged() {
-    // log('\n markSelectedWorkItemAsChanged - START');
+    // log('markSelectedWorkItemAsChanged', 'start');
     let wi = getSelectedWorkItem();
 
     if (wi && wi.changed) {
@@ -782,7 +782,7 @@ function markSelectedWorkItemAsChanged() {
 }
 
 function selectGlyph(c, dontnavigate) {
-    // log('\n selectGlyph - START');
+    // log('selectGlyph', 'start');
     // log('selecting ' + getGlyph(c, true).name + ' from value ' + c);
 
     _UI.selectedGlyph = c;

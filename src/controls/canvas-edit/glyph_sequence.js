@@ -4,7 +4,7 @@
 **/
 
 function GlyphSequence(oa) {
-  // log('\n GlyphSequence - START');
+  // log('GlyphSequence', 'start');
   oa = oa || {};
 
   this.setMaxes(oa.maxes);
@@ -43,7 +43,7 @@ GlyphSequence.prototype.setMaxes = function (maxes) {
 };
 
 GlyphSequence.prototype.setString = function (newstring) {
-  // log('\n GlyphSequence.setString - START');
+  // log('GlyphSequence.setString', 'start');
   // log(`passed ${newstring}`);
 
   this.glyphstring = newstring;
@@ -68,7 +68,7 @@ GlyphSequence.prototype.setLineGap = function (ns) {
 };
 
 GlyphSequence.prototype.generateData = function () {
-  // log('\n GlyphSequence.generateData - START');
+  // log('GlyphSequence.generateData', 'start');
   // log(`this.textblocks ${this.textblocks}`);
   let ps = getCurrentProject().projectSettings;
 
@@ -226,7 +226,7 @@ GlyphSequence.prototype.iterator = function (fn) {
 };
 
 GlyphSequence.prototype.draw = function () {
-  // log('\n GlyphSequence.draw - START');
+  // log('GlyphSequence.draw', 'start');
 
   // Draw Page Extras
   if (this.drawPageExtras) {
@@ -280,7 +280,7 @@ function canNextLineFit(curry, area, lineGap) {
 }
 
 function getNextLineBreaker(block, start) {
-  // log('\n getNextLineBreaker - START');
+  // log('getNextLineBreaker', 'start');
   // log(`starting at pos ${start}`);
 
   for (let i = start; i < block.length; i++) {
@@ -314,7 +314,7 @@ function debugWidths() {
         are not returned, only kern values.
     */
 function calculateKernOffset(c1, c2) {
-  // log('\n calculateKernOffset - START');
+  // log('calculateKernOffset', 'start');
   // log('passed: ' + c1 + ' and ' + c2);
 
   if (!c1 || !c2) return 0;
@@ -356,7 +356,7 @@ function calculateKernOffset(c1, c2) {
         that merge to ligatures.  Returns an array with merged results.
     */
 function findAndMergeLigatures(carr) {
-  // log('\n findAndMergeLigatures - START');
+  // log('findAndMergeLigatures', 'start');
   let ligs = sortLigatures();
   // log('sorted ligs: ');
   // log(ligs);

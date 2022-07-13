@@ -6,7 +6,7 @@
 **/
 
 function makePanel_GlyphAttributes() {
-  // log('\n makePanel_GlyphAttributes - START');
+  // log('makePanel_GlyphAttributes', 'start');
   let sc = getSelectedWorkItem();
   let ss = _UI.multiSelect.shapes.getMembers();
 

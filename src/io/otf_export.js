@@ -15,11 +15,11 @@ import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
 **/
 
 function exportOTFFont() {
-  // log('\n exportOTFFont - START');
+  // log('exportOTFFont', 'start');
   // log('combineShapesOnExport = ' + getCurrentProject().projectSettings.combineShapesOnExport);
 
   function firstExportStep() {
-    // log('\n firstExportStep - START');
+    // log('firstExportStep', 'start');
 
     // Add metadata
     const md = getCurrentProject().metadata;
@@ -69,7 +69,7 @@ function exportOTFFont() {
   }
 
   function populateExportList() {
-    // log('\n populateExportList - START');
+    // log('populateExportList', 'start');
 
     // Add Glyphs and Ligatures
     let thisGlyph;
@@ -93,7 +93,7 @@ function exportOTFFont() {
   }
 
   function generateOneGlyph() {
-    // log('\n generateOneGlyph - START');
+    // log('generateOneGlyph', 'start');
     // export this glyph
     const glyph = currentExportGlyph.xg;
     const num = currentExportGlyph.xc;
@@ -148,7 +148,7 @@ function exportOTFFont() {
   }
 
   function lastExportStep() {
-    // log('\n lastExportStep - START');
+    // log('lastExportStep', 'start');
     options.glyphs.sort(function (a, b) {
       return a.unicode - b.unicode;
     });

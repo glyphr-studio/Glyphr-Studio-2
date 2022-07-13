@@ -5,7 +5,7 @@
 **/
 
 function ioSVG_exportSVGfont() {
-  // log('\n ioSVG_exportSVGfont - Start');
+  // log('ioSVG_exportSVGfont', 'start');
   const ps = getCurrentProject().projectSettings;
   const md = getCurrentProject().metadata;
   const family = md.font_family;
@@ -102,7 +102,7 @@ function ioSVG_exportSVGfont() {
 }
 
 function ioSVG_makeFontFace() {
-  // log('\n ioSVG_makeFontFace - START');
+  // log('ioSVG_makeFontFace', 'start');
   calcFontMaxes();
   const t = '\t\t\t\t';
   const md = getCurrentProject().metadata;
@@ -151,7 +151,7 @@ function ioSVG_makeFontFace() {
 }
 
 function ioSVG_makeMissingGlyph() {
-  // log('\n ioSVG_makeMissingGlyph - START');
+  // log('ioSVG_makeMissingGlyph', 'start');
   let con = '     ';
   const gh = getCurrentProject().projectSettings.ascent;
   const gw = round(gh * 0.618);
@@ -180,7 +180,7 @@ function ioSVG_makeMissingGlyph() {
 }
 
 function ioSVG_makeAllGlyphsAndLigatures() {
-  // log('\n ioSVG_makeAllGlyphsAndLigatures - START');
+  // log('ioSVG_makeAllGlyphsAndLigatures', 'start');
 
   const fc = getCurrentProject().glyphs;
   let con = '';
@@ -239,7 +239,7 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 }
 
 function ioSVG_makeAllKernPairs() {
-  // log('\n ioSVG_makeAllKernPairs - START');
+  // log('ioSVG_makeAllKernPairs', 'start');
   const kp = getCurrentProject().kerning;
   let con = '\t\t\t<!-- Kern Pairs -->\n';
 

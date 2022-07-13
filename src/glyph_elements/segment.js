@@ -183,7 +183,6 @@ export default class Segment extends GlyphElement {
   set maxes(maxes) {
     this.cache.maxes = {};
     this.cache.maxes = new Maxes(maxes);
-    return this;
   }
 
   // --------------------------------------------------------------
@@ -269,7 +268,7 @@ export default class Segment extends GlyphElement {
    * @returns {array} - Array with two segments resulting from the split
    */
   splitAtPoint(co) {
-    // log('\n Segment.splitAtPoint - START');
+    // log('Segment.splitAtPoint', 'start');
     // log(`splitting at ${co.x} ${co.y}`);
     if (this.containsTerminalPoint(co, 0.1)) return false;
 
@@ -340,7 +339,7 @@ export default class Segment extends GlyphElement {
    * @returns {array} - Array with two segments resulting from the split
    */
   splitAtTime(t = 0.5) {
-    // log('\n Segment.splitAtTime - START');
+    // log('Segment.splitAtTime', 'start');
     const rs = 1 - t;
     // Do some math
     const x12 = this.p1x * rs + this.p2x * t;
@@ -386,8 +385,8 @@ export default class Segment extends GlyphElement {
    * @param {number} threshold - precision to look for a control point
    * @returns {array} - Array with many segments resulting from the split
    */
-  splitAtManyPoints(points, threshold) {
-    // log('\n Segment.splitAtManyPoints - START');
+  splitAtManyPoints(points, threshold = 1) {
+    // log('Segment.splitAtManyPoints', 'start');
     const segments = [new Segment(clone(this))];
     let tr;
     for (let x = 0; x < points.length; x++) {
@@ -587,7 +586,7 @@ export default class Segment extends GlyphElement {
    * @returns {Maxes}
    */
   calcMaxes() {
-    // log('\n Segment.calcMaxes - START');
+    // log('Segment.calcMaxes', 'start');
     // log(this);
 
     /**
@@ -814,7 +813,7 @@ export default class Segment extends GlyphElement {
    * @returns {boolean}
    */
   containsPointOnLine(pt) {
-    // log('\n Segment.containsPointOnLine - START');
+    // log('Segment.containsPointOnLine', 'start');
     // log('checking ' + pt.x + ' \t' + pt.y);
     if (!this.lineType) {
       // log('this is not a line, returning false');

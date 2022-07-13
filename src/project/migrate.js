@@ -23,7 +23,7 @@ import { getGlyphrStudioApp } from "../app/main";
  * @returns {object} - Glyphr Studio v2 Project structure
  */
 export function migrateGlyphrStudioProject(project = {}) {
-  // log('\n upgradeGlyphrStudioProject - START');
+  // log('upgradeGlyphrStudioProject', 'start');
 
   const noVersionFound =
     'No version information was found.  Either the file is not a Glyphr Studio Project, or the file has non-valid JSON data.  Please try a different file...';

@@ -491,7 +491,7 @@ export default class Shape extends GlyphElement {
    * @returns {Shape} - reference to this shape
    */
   rotate(angle, about) {
-    // log('\n Shape.rotate - START');
+    // log('Shape.rotate', 'start');
     about = about || this.center;
     // log('first p[0].p.x ' + this.path.pathPoints[0].p.x);
     // log('Shape.rotate', 'end');
@@ -533,7 +533,7 @@ export default class Shape extends GlyphElement {
    * @returns {boolean}
    */
   drawShape(ctx, view) {
-    // log('\n Shape.drawShape - START');
+    // log('Shape.drawShape', 'start');
     // log('view ' + json(view, true));
     this.path.drawPath(ctx, view);
     // log('Shape.drawShape - returning true by default', 'end');
@@ -564,22 +564,22 @@ export default class Shape extends GlyphElement {
   /* NEEDS REFACTORING - NO NEED TO DUPLICATE THESE METHODS HERE
 
     draw_PathOutline(accent = '#000', thickness = 1) {
-        // log('\n Shape.draw_PathOutline - START');
+        // log('Shape.draw_PathOutline', 'start');
         draw_PathOutline(this, accent, thickness);
     }
 
     draw_BoundingBox(accent = '#000', thickness = 1) {
-        // log('\n Shape.draw_BoundingBox - START');
+        // log('Shape.draw_BoundingBox', 'start');
         draw_BoundingBox(this.path.maxes, accent, thickness);
     }
 
     draw_BoundingBoxHandles(accent = '#000', thickness = 1) {
-        // log('\n Shape.draw_BoundingBoxHandles - START');
+        // log('Shape.draw_BoundingBoxHandles', 'start');
         draw_BoundingBoxHandles(this.path.maxes, accent, thickness);
     }
 
     isOverBoundingBoxHandle(px, py) {
-        // log('\n Shape.isOverBoundingBoxHandle - START');
+        // log('Shape.isOverBoundingBoxHandle', 'start');
         let c = isOverBoundingBoxHandle(px, py, this.maxes);
         // log('Shape.isOverBoundingBoxHandle returning ' + c);
         return c;

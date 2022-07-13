@@ -155,7 +155,6 @@ export default class Maxes extends GlyphElement {
     x = parseFloat(x);
     if (!isNaN(x)) this._xMin = x;
     else delete this._xMin;
-    return this;
   }
 
   /**
@@ -167,7 +166,6 @@ export default class Maxes extends GlyphElement {
     x = parseFloat(x);
     if (!isNaN(x)) this._xMax = x;
     else delete this._xMax;
-    return this;
   }
 
   /**
@@ -179,7 +177,6 @@ export default class Maxes extends GlyphElement {
     y = parseFloat(y);
     if (!isNaN(y)) this._yMin = y;
     else delete this._yMin;
-    return this;
   }
 
   /**
@@ -191,7 +188,6 @@ export default class Maxes extends GlyphElement {
     y = parseFloat(y);
     if (!isNaN(y)) this._yMax = y;
     else delete this._yMax;
-    return this;
   }
 
   // --------------------------------------------------------------
@@ -254,7 +250,7 @@ export function maxesOverlap(m1, m2, exclusive = true) {
  * @returns {Maxes}
  */
 export function getOverallMaxes(maxesArray) {
-  // log('\n getOverallMaxes - START');
+  // log('getOverallMaxes', 'start');
   // log('start');
   // log(maxesArray);
 

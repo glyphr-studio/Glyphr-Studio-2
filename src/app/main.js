@@ -39,8 +39,7 @@ function glyphrStudioOnLoad() {
 
     // Load project
     let sample = getVersionTwoTestProject();
-    log('loading sample project');
-    log(sample);
+    GSApp.settings.dev.currentPage = 'glyph edit';
     GSApp.setUp(JSON.stringify(sample));
   } else {
     log('did NOT pass pre-checks');

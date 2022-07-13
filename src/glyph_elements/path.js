@@ -36,7 +36,7 @@ export default class Path extends GlyphElement {
    * @param {object} parent - link to the parent Shape object
    */
   constructor({ pathPoints = [], winding, parent = false } = {}) {
-    // log(`Path.constructor - Start`);
+    // log(`Path.constructor`, 'start');
     super();
     this.parent = parent;
     this.pathPoints = pathPoints;
@@ -168,7 +168,7 @@ export default class Path extends GlyphElement {
    * @returns {Maxes}
    */
   get maxes() {
-    // log('\n Path.maxes - START');
+    // log('Path.maxes', 'start');
     if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
       // log('no cache, calcMaxes');
       this.calcMaxes();
@@ -210,8 +210,6 @@ export default class Path extends GlyphElement {
         this._pathPoints[i] = new PathPoint(pathPoints[i]);
       }
     }
-
-    return this;
   }
 
   /**
@@ -225,7 +223,6 @@ export default class Path extends GlyphElement {
   set winding(winding) {
     if (isVal(winding)) this._winding = winding;
     else this.findWinding();
-    return this;
   }
 
   /**
@@ -236,7 +233,6 @@ export default class Path extends GlyphElement {
   set maxes(maxes) {
     this.cache.maxes = {};
     this.cache.maxes = new Maxes(maxes);
-    return this;
   }
 
   /**
@@ -246,7 +242,6 @@ export default class Path extends GlyphElement {
    */
   set x(x) {
     this.setPathPosition(x, false);
-    return this;
   }
 
   /**
@@ -256,7 +251,6 @@ export default class Path extends GlyphElement {
    */
   set y(y) {
     this.setPathPosition(false, y);
-    return this;
   }
 
   /**
@@ -266,7 +260,6 @@ export default class Path extends GlyphElement {
    */
   set height(h) {
     this.setPathSize(false, h);
-    return this;
   }
 
   /**
@@ -276,7 +269,6 @@ export default class Path extends GlyphElement {
    */
   set width(w) {
     this.setPathSize(w, false);
-    return this;
   }
 
   /**
@@ -286,7 +278,6 @@ export default class Path extends GlyphElement {
    */
   set svgPathData(data) {
     this.cache.svgPathData = data;
-    return this;
   }
 
   // --------------------------------------------------------------
@@ -320,7 +311,7 @@ export default class Path extends GlyphElement {
    * @returns {Path} - reference to this path
    */
   updatePathSize(dw = 0, dh = 0, ratioLock = false) {
-    // log('\n Path.updatePathSize - START');
+    // log('Path.updatePathSize', 'start');
     // log('dw,dh,rl\t'+dw+' , '+dh+' , '+ratioLock);
     dw = parseFloat(dw);
     dh = parseFloat(dh);
@@ -380,7 +371,6 @@ export default class Path extends GlyphElement {
     }
 
     // log('Path.updatePathSize', 'end');
-    return this;
   }
 
   /**
@@ -390,7 +380,7 @@ export default class Path extends GlyphElement {
    * @returns {Path} - reference to this path
    */
   setPathPosition(nx = false, ny = false) {
-    // log('\n Path.setPathPosition - START');
+    // log('Path.setPathPosition', 'start');
     // log('nx ny force:\t ' + nx + '\t ' + ny + '\t ' + force);
 
     if (nx !== false) nx = parseFloat(nx);
@@ -402,7 +392,6 @@ export default class Path extends GlyphElement {
 
     this.updatePathPosition(dx, dy);
     // log('Path.setPathPosition', 'end');
-    return this;
   }
 
   /**
@@ -412,7 +401,7 @@ export default class Path extends GlyphElement {
    * @returns {Path} - reference to this path
    */
   updatePathPosition(dx = 0, dy = 0) {
-    // log('\n Path.updatePathPosition - START');
+    // log('Path.updatePathPosition', 'start');
 
     if (dx !== false) dx = parseFloat(dx);
     if (dy !== false) dy = parseFloat(dy);
@@ -425,7 +414,6 @@ export default class Path extends GlyphElement {
     }
 
     // log('Path.updatePathPosition', 'end');
-    return this;
   }
 
   /**
@@ -435,7 +423,7 @@ export default class Path extends GlyphElement {
    * @returns {Path} - reference to this path
    */
   rotate(angle, about = this.center) {
-    // log('\n Path.rotate - START');
+    // log('Path.rotate', 'start');
     for (let d = 0; d < this.pathPoints.length; d++) {
       // log('starting point ' + d);
       const pp = this.pathPoints[d];
@@ -444,7 +432,6 @@ export default class Path extends GlyphElement {
     }
 
     // log('Path.rotate', 'end');
-    return this;
   }
 
   // --------------------------------------------------------------
@@ -519,7 +506,7 @@ export default class Path extends GlyphElement {
    * @param {boolean} snap - snap values to whole numbers
    */
   drawPath(ctx, view = getView('Path.drawPath'), snap = true) {
-    // log('\n Path.drawPath - START');
+    // log('Path.drawPath', 'start');
     // log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
 
     // let currView = getView('Path.drawPath');
@@ -645,7 +632,7 @@ export default class Path extends GlyphElement {
    * @returns {string}
    */
   makeSVGPathData(glyphName = 'not specified', roundValue = 8) {
-    // log('\n Path.makeSVGPathData - START');
+    // log('Path.makeSVGPathData', 'start');
     // log('Glyph ' + glyphName);
     // log('this.pathPoints: ' + json(this.pathPoints, true));
 
@@ -705,7 +692,7 @@ export default class Path extends GlyphElement {
    * @returns {Segment}
    */
   getSegment(num = 0) {
-    // log('\n Path.getSegment - START');
+    // log('Path.getSegment', 'start');
     // log('passed ' + num);
     // make a segment
 
@@ -800,7 +787,7 @@ export default class Path extends GlyphElement {
    * @returns {boolean}
    */
   isOverFirstPoint(x = 0, y = 0, targetSize = 3) {
-    // log('\n Path.isOverFirstPoint - START');
+    // log('Path.isOverFirstPoint', 'start');
     // log('Passed ' + x + '/' + y);
     const a = this.pathPoints[0];
     // log('Checking ' + a.p.x + '/' + a.p.y + ' around ' + targetSize);
@@ -829,7 +816,7 @@ export default class Path extends GlyphElement {
    * @returns {number} - negative = clockwise, positive = counterclockwise, 0 = unknown
    */
   findWinding(secondTry) {
-    // log('\n Path.findWinding - START');
+    // log('Path.findWinding', 'start');
     let j;
     let k;
     let z;
@@ -872,7 +859,7 @@ export default class Path extends GlyphElement {
    * thus reversing the winding
    */
   reverseWinding() {
-    // log('\n Path.reverseWinding - START');
+    // log('Path.reverseWinding', 'start');
     let ht;
     let pp;
 
@@ -920,7 +907,6 @@ export default class Path extends GlyphElement {
 
     // log(this.print());
     // log(`Path.flipNS`, 'end');
-    return this;
   }
 
   /**
@@ -944,7 +930,6 @@ export default class Path extends GlyphElement {
     this.reverseWinding();
 
     // log(`Path.flipEW`, 'end');
-    return this;
   }
 
   /**
@@ -953,7 +938,7 @@ export default class Path extends GlyphElement {
    * @returns {PathPoint} - reference to the added point
    */
   addPathPoint(newPoint) {
-    // log('\n Path.addPathPoint - START');
+    // log('Path.addPathPoint', 'start');
     // log('newPoint = ' + newPoint);
 
     newPoint.parent = this;
@@ -1123,7 +1108,7 @@ export default class Path extends GlyphElement {
    * Find the bounding box for this path
    */
   calcMaxes() {
-    // log('\n Path.calcMaxes - START');
+    // log('Path.calcMaxes', 'start');
     // log(`before ${this.cache.maxes.print()}`);
     this.cache.maxes = new Maxes();
     let seg;
@@ -1215,7 +1200,7 @@ export default class Path extends GlyphElement {
  * @returns {array}
  */
 export function findPathIntersections(p1, p2) {
-  // log('\n findPathIntersections - START');
+  // log('findPathIntersections', 'start');
   let intersects = [];
 
   // Find overlaps at boundaries
@@ -1350,7 +1335,7 @@ export function findPathPointBoundaryIntersections(p1, p2) {
  * @returns {array} - collection of IX strings, representing xy points
  */
 export function findPathPointIntersections(p1, p2) {
-  // log('\n findPathPointIntersections - START');
+  // log('findPathPointIntersections', 'start');
   let re = [];
   let ix;
 

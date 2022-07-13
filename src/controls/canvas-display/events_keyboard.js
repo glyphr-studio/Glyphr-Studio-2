@@ -42,7 +42,7 @@ function keyup(event) {
 }
 
 function keypress(event) {
-  // log('\n keypress - START');
+  // log('keypress', 'start');
   if (event.type !== 'keydown') return;
   if (editor.nav.page === 'openproject') return;
   if (getEditDocument().activeElement.id === 'contextglyphsinput') return;

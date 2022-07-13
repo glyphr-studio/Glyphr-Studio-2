@@ -87,7 +87,7 @@ function charsToHexArray(s) {
  * @returns {string} - string
  */
 function hexToChars(u) {
-  // log('\n hexToChars - START');
+  // log('hexToChars', 'start');
   // log(`passed ${u} which is a ${typeof u}`);
 
   if (String(u).charAt(1) !== 'x') u = String(decToHex(u));
@@ -114,7 +114,7 @@ function hexToChars(u) {
  * @returns {string} - HTML
  */
 function hexToHTML(h) {
-  // log('\n hexToHTML - START');
+  // log('hexToHTML', 'start');
   // log('passed ' + h);
   if (!h || h.indexOf('0x') < 0) return false;
 
@@ -150,7 +150,7 @@ function parseUnicodeInput(str) {
   // Unicode, Hex, or glyph
   // and returns an array of padded hex values
 
-  // log('\n parseUnicodeInput - START');
+  // log('parseUnicodeInput', 'start');
   // log('passed ' + str);
 
   if (!str) return false;
@@ -248,7 +248,7 @@ function validateHex(str) {
  * @returns {string} - name
  */
 function getUnicodeName(ch) {
-  // log('\n getUnicodeName - START');
+  // log('getUnicodeName', 'start');
   // log('passed ' + ch);
   ch = '' + ch;
   let re;
@@ -272,7 +272,7 @@ function getUnicodeName(ch) {
  * @returns {string} - name
  */
 function getUnicodeShortName(ch) {
-  // log('\n getUnicodeShortName - START');
+  // log('getUnicodeShortName', 'start');
   // log('passed ' + ch);
   ch = '' + ch;
   let name = shortUnicodeNames[ch];
