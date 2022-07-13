@@ -45,8 +45,10 @@ export {
  */
 
 let logColors = {};
+let logCount = 0;
 function log(message, type) {
   let dev = getGlyphrStudioApp().settings.dev;
+  let ch = '･ ';
   // if (!dev.mode) return;
 
   const commonStyle = `
@@ -56,33 +58,33 @@ function log(message, type) {
     position: relative;
     left: -20px;
   `;
-  const style = {
-    start: `background-color:#004a70; color:#9bddff; margin-top:12px; ${commonStyle}`,
-    end: `background-color:#001e2e; color:#9bddff; margin-bottom: 12px; ${commonStyle}`,
-  };
 
   if (dev.mode) {
     if (typeof message === 'string') {
       message = message.replace(/&lt;/gi, '<');
       message = message.replace(/&gt;/gi, '>');
-      if (style[type]) {
+      if (type === 'start' || type === 'end') {
         if (type === 'start') {
           if (!logColors[message])
             logColors[message] = `hsl(${Math.floor(
               Math.random() * 360
             )}, 60%, 20%)`;
           console.log(
-            `%cSTART\t${message}`,
+            `${ch.repeat(logCount)}%cSTART\t${message}`,
             `background-color: ${logColors[message]}; margin-top: 20px; ${commonStyle}`
           );
+          logCount++;
         } else if (type === 'end') {
+          logCount--;
           console.log(
-            `%cEND  \t${message}`,
-            `background-color: ${logColors[message]}; margin-top: 20px; ${commonStyle}`
+            `${ch.repeat(logCount)}%cEND  \t${message}`,
+            `background-color: ${logColors[message]}; margin-bottom: 20px; ${commonStyle}`
           );
           delete logColors[message];
-        } else console.log(`%c${message}`, style[type]);
-      } else console.log(message);
+        }
+      } else {
+        console.log(`${ch.repeat(logCount)}${message}`);
+      }
     } else if (typeof message === 'object') {
       if (dev.debugTableObjects) console.table(message);
       else console.log(message);
