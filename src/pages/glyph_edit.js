@@ -38,7 +38,7 @@ export default class PageGlyphEdit {
     const callback = function () {
       // let can = document.querySelector('canvas-display');
       // if (can) can.redraw();
-      log(`PageGlyphEdit.pageLoader.callback`, 'end');
+      // log(`PageGlyphEdit.pageLoader.callback`, 'end');
     };
 
     log(`PageGlyphEdit.pageLoader`, 'end');
