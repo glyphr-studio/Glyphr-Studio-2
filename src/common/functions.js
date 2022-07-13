@@ -43,6 +43,8 @@ export {
  * @param {string} message - message to show in the console
  * @param {boolean} type - 'start' or 'end'
  */
+
+let logColors = {};
 function log(message, type) {
   let dev = getGlyphrStudioApp().settings.dev;
   // if (!dev.mode) return;
@@ -64,10 +66,22 @@ function log(message, type) {
       message = message.replace(/&lt;/gi, '<');
       message = message.replace(/&gt;/gi, '>');
       if (style[type]) {
-        if (type === 'start') console.log(`%cSTART\t${message}`, style[type]);
-        else if (type === 'end')
-          console.log(`%cEND  \t${message}`, style[type]);
-        else console.log(`%c${message}`, style[type]);
+        if (type === 'start') {
+          if (!logColors[message])
+            logColors[message] = `hsl(${Math.floor(
+              Math.random() * 360
+            )}, 60%, 20%)`;
+          console.log(
+            `%cSTART\t${message}`,
+            `background-color: ${logColors[message]}; margin-top: 20px; ${commonStyle}`
+          );
+        } else if (type === 'end') {
+          console.log(
+            `%cEND  \t${message}`,
+            `background-color: ${logColors[message]}; margin-top: 20px; ${commonStyle}`
+          );
+          delete logColors[message];
+        } else console.log(`%c${message}`, style[type]);
       } else console.log(message);
     } else if (typeof message === 'object') {
       if (dev.debugTableObjects) console.table(message);
