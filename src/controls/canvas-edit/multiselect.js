@@ -30,7 +30,7 @@ MultiSelect.prototype.isSelectable = function (obj) {
 };
 
 MultiSelect.prototype.select = function (obj) {
-  // log('\n MultiSelect.select - START');
+  // log('MultiSelect.select', 'start');
   if (this.isSelectable(obj)) {
     // log('selecting object');
     this.members = [obj];
@@ -154,7 +154,7 @@ _UI.multiSelect.points.draw_PathPointHandles = function () {
 };
 
 _UI.multiSelect.points.draw_PathPoints = function () {
-  // log('\n MS.points.draw_PathPoints - START');
+  // log('MS.points.draw_PathPoints', 'start');
   const sh = this.getShape();
   // ('\t shape is ' + json(sh));
 
@@ -214,7 +214,7 @@ _UI.multiSelect.points.updatePathPointPosition = function (
 };
 
 _UI.multiSelect.points.selectShapesThatHaveSelectedPoints = function () {
-  // log('\n MS.points.selectShapesThatHaveSelectedPoints - START');
+  // log('MS.points.selectShapesThatHaveSelectedPoints', 'start');
   _UI.multiSelect.shapes.clear();
   const points = _UI.multiSelect.points.getMembers();
   const shapes = getSelectedWorkItemShapes();
@@ -270,7 +270,7 @@ _UI.multiSelect.shapes.contains = function (objtypename) {
 _UI.multiSelect.shapes.selectShapesThatHaveSelectedPoints = function () {};
 
 _UI.multiSelect.shapes.combine = function () {
-  // log('\n multiSelect.shapes.combine - START');
+  // log('multiSelect.shapes.combine', 'start');
 
   const ns = new Glyph(clone(_UI.multiSelect.shapes.getGlyph()));
 
@@ -291,7 +291,7 @@ _UI.multiSelect.shapes.combine = function () {
 };
 
 _UI.multiSelect.shapes.deleteShapes = function () {
-  // log('\n deleteShape - START');
+  // log('deleteShape', 'start');
   const wishapes = getSelectedWorkItemShapes();
   const sels = this.getMembers();
   let curs;
@@ -401,7 +401,7 @@ _UI.multiSelect.shapes.isOverControlPoint = function (
 };
 
 _UI.multiSelect.shapes.isOverBoundingBoxHandle = function (px, py) {
-  // log('\n SelectedShapes.isOverBoundingBoxHandle - START');
+  // log('SelectedShapes.isOverBoundingBoxHandle', 'start');
   // log('passed x/y: ' + px + '/' + py);
 
   if (this.members.length === 0) {
@@ -448,7 +448,7 @@ _UI.multiSelect.shapes.drawShape = function (lctx, view) {
 };
 
 _UI.multiSelect.shapes.draw_PathPoints = function () {
-  // log('\n MS.shapes.draw_PathPoints - START');
+  // log('MS.shapes.draw_PathPoints', 'start');
   let s;
   for (let m = 0; m < this.members.length; m++) {
     s = this.members[m];

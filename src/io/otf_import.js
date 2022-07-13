@@ -9,7 +9,7 @@ import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
 **/
 
 function importOTFFont(filter) {
-  // log('\n importOTFFont - START');
+  // log('importOTFFont', 'start');
 
   /*
   // Spinner Animation
@@ -77,7 +77,7 @@ function importOTFFont(filter) {
   }
 
   function startFontImport() {
-    // log('\n startFontImport - START');
+    // log('startFontImport', 'start');
     // log(font);
     setTimeout(importOneGlyph, 4);
     // log('startFontImport', 'end');
@@ -105,7 +105,7 @@ function importOTFFont(filter) {
   let c = 0;
   function importOneGlyph() {
     // log('\n\n=============================\n');
-    // log('\n importOneGlyph - START');
+    // log('importOneGlyph', 'start');
     // importStatus('Importing Glyph ' + c + ' of ' + importGlyphs.length);
 
     if (c >= importGlyphs.length) {
@@ -204,7 +204,7 @@ function importOTFFont(filter) {
   }
 
   function flattenDataArray(da) {
-    // log('\n flattenDataArray - START');
+    // log('flattenDataArray', 'start');
     // log(json(da, true));
 
     let re = '';
@@ -255,7 +255,7 @@ function importOTFFont(filter) {
   }
 
   function finalizeFontImport() {
-    // log('\n finalizeFontImport - START');
+    // log('finalizeFontImport', 'start');
     getCurrentProject().glyphs = fc;
     getCurrentProject().ligatures = fl;
     getCurrentProject().kerning = fk;

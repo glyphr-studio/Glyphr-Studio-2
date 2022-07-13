@@ -8,7 +8,7 @@ export default {};
 */
 export function lookUpGlyphName(id, forceLongName = false) {
   id = '' + id;
-  // log('\n lookUpGlyphName');
+  // log('lookUpGlyphName');
   // log('passed ' + id);
 
   // not passed an id

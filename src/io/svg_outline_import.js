@@ -8,7 +8,7 @@ import XYPoint from './xy_point.js';
 **/
 
 function ioSVG_convertTagsToGlyph(svgdata) {
-  // log('\n ioSVG_convertTagsToGlyph - START');
+  // log('ioSVG_convertTagsToGlyph', 'start');
 
   const newshapes = [];
   let data = {};
@@ -220,7 +220,7 @@ function cleanAndFormatPathPointData(data) {
         */
   let returndata = [];
 
-  // log('\n cleanAndFormatPathPointData - START');
+  // log('cleanAndFormatPathPointData', 'start');
   // log('dirty data\n\t ' + data);
 
   // Move commands for a path are treated as different Glyphr Shapes
@@ -331,7 +331,7 @@ function cleanAndFormatPathPointData(data) {
 }
 
 function ioSVG_getTags(obj, grabtags) {
-  // log('\n ioSVG_getTags \t Start');
+  // log('ioSVG_getTags \t Start');
   // log('grabtags: ' + JSON.stringify(grabtags));
   // log('passed obj: ');
   // log(obj);
@@ -354,7 +354,7 @@ function ioSVG_getTags(obj, grabtags) {
 }
 
 function ioSVG_getFirstTagInstance(obj, tagname) {
-  // log('\n ioSVG_getFirstTagInstance - START');
+  // log('ioSVG_getFirstTagInstance', 'start');
   // log('finding ' + tagname + ' in:');
   // log(obj);
 
@@ -376,7 +376,7 @@ function ioSVG_getFirstTagInstance(obj, tagname) {
 }
 
 function ioSVG_convertPathTag(data) {
-  // log('\n ioSVG_convertPathTag - START');
+  // log('ioSVG_convertPathTag', 'start');
   // log('passed data ' + data);
 
   // Parse comma separated data into commands / data chunks
@@ -456,7 +456,7 @@ function ioSVG_isPathCommand(c) {
 }
 
 function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
-  // log('\n ioSVG_handlePathChunk - START');
+  // log('ioSVG_handlePathChunk', 'start');
   // log('chunk: ' + json(chunk, true));
 
   const cmd = chunk.command;
@@ -925,7 +925,7 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 }
 
 function findSymmetricPoint(p, h) {
-  // log('\n findSymmetricPoint - START');
+  // log('findSymmetricPoint', 'start');
   p = p || { x: 0, y: 0 };
   h = h || { x: 0, y: 0 };
 
@@ -944,7 +944,7 @@ function findSymmetricPoint(p, h) {
 }
 
 function convertQuadraticToCubic(data) {
-  // log('\n convertQuadraticToCubic - START');
+  // log('convertQuadraticToCubic', 'start');
   // log('data: ' + json(data, true));
   const re = [];
 

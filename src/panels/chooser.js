@@ -6,7 +6,7 @@
 **/
 
 function makePanel_GlyphChooser() {
-  // log('\n makePanel_GlyphChooser - START');
+  // log('makePanel_GlyphChooser', 'start');
 
   let content = '<div class="navarea_header">';
   content += makePanelSuperTitle();
@@ -72,7 +72,7 @@ function makePanel_GlyphChooser() {
 }
 
 function asyncLoadChooserPanel() {
-  // log('asyncLoadChooserPanel - START');
+  // log('asyncLoadChooserPanel', 'start');
 
   function tryLoadChooserPanel() {
     const np = _UI.popOut
@@ -94,7 +94,7 @@ function asyncLoadChooserPanel() {
 }
 
 function make_GlyphChooser(gcdata) {
-  // log('\n make_GlyphChooser - START');
+  // log('make_GlyphChooser', 'start');
   // log([gcdata]);
 
   let con = '';
@@ -131,7 +131,7 @@ function toggle_GlyphChooser() {
 }
 
 function update_GlyphChooser(selrange) {
-  // log('\n update_GlyphChooser - START');
+  // log('update_GlyphChooser', 'start');
   // log('passed ' + selrange);
 
   if (isBigDialogOpen()) {
@@ -179,7 +179,7 @@ function update_GlyphChooser(selrange) {
 }
 
 function make_GlyphChooser_Header(selrange) {
-  // log('\n make_GlyphChooser_Header - START');
+  // log('make_GlyphChooser_Header', 'start');
   // log('passed selrange ' + selrange);
 
   let content =
@@ -292,7 +292,7 @@ function make_GlyphChooser_DropDown(ch) {
 }
 
 function pluralGlyphRange() {
-  // log('\n pluralGlyphRange - START');
+  // log('pluralGlyphRange', 'start');
   const gr = getCurrentProject().projectSettings.glyphrange;
   let count = gr.custom.length;
 
@@ -315,7 +315,7 @@ function pluralGlyphRange() {
 }
 
 function make_GlyphChooser_Content(gcdata) {
-  // log('\n make_GlyphChooser_Content - START');
+  // log('make_GlyphChooser_Content', 'start');
   // log([gcdata]);
 
   const fname = gcdata.fname || 'selectGlyph';
@@ -407,7 +407,7 @@ function make_GlyphChooser_Content(gcdata) {
 }
 
 function make_GlyphChooser_Button(index, fname, selid) {
-  // log('\n make_GlyphChooser_Button - START ' + index);
+  // log('make_GlyphChooser_Button - START ' + index);
   const onc = fname + "('" + index + "');";
   // log('constructed function: ' + onc);
 

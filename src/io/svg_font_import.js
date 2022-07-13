@@ -6,7 +6,7 @@
 **/
 
 function ioSVG_importSVGFont(filter) {
-  // log('\n ioSVG_importSVGFont - Start');
+  // log('ioSVG_importSVGFont', 'start');
 
   // Spinner Animation
   document.getElementById(
@@ -30,7 +30,7 @@ function ioSVG_importSVGFont(filter) {
   setTimeout(setupFontImport, 10);
 
   function setupFontImport() {
-    // log('\n setupFontImport - START');
+    // log('setupFontImport', 'start');
     importStatus('Reading font data...');
     _GP = new GlyphrStudioProject();
 
@@ -87,7 +87,7 @@ function ioSVG_importSVGFont(filter) {
   }
 
   function startFontImport() {
-    // log('\n startFontImport - START');
+    // log('startFontImport', 'start');
     importStatus('Importing Glyph 1 of ' + chars.length);
     setTimeout(importOneGlyph, 4);
     // log('startFontImport', 'end');
@@ -125,7 +125,7 @@ function ioSVG_importSVGFont(filter) {
     tca = chars[c].attributes;
 
     // Get the appropriate unicode decimal for this char
-    // log('\n importOneGlyph - START');
+    // log('importOneGlyph', 'start');
     // log('starting  unicode \t' + tca.unicode + ' \t ' + tca['glyph-name']);
 
     uni = parseUnicodeInput(tca.unicode);
@@ -244,7 +244,7 @@ function ioSVG_importSVGFont(filter) {
 
     importStatus('Importing Kern Pair ' + k + ' of ' + kerns.length);
 
-    // log('\n Kern Import - START ' + k + '/' + kerns.length);
+    // log('Kern Import - START ' + k + '/' + kerns.length);
     leftgroup = [];
     rightgroup = [];
     tk = kerns[k];
@@ -377,7 +377,7 @@ function ioSVG_importSVGFont(filter) {
 }
 
 function make_LoadingAnimation() {
-  // log('\n make_LoadingAnimation - START');
+  // log('make_LoadingAnimation', 'start');
   let re = '';
   re += '<div class="openproject_tile">';
   re += '<h2>Importing Font</h2>';

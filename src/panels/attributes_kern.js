@@ -4,7 +4,7 @@
 **/
 
 function makePanel_KerningAttributes() {
-  // log('\n makePanel_KerningAttributes - START');
+  // log('makePanel_KerningAttributes', 'start');
 
   let content = '<div class="navarea_header">';
   content += makePanelSuperTitle();

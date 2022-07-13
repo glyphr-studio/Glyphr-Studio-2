@@ -62,7 +62,7 @@ function makeFloatLogo() {
 // Navigation Icons
 // -------------------
 function makeIcon(oa) {
-  // log('\n makeIcon - START ' + oa.name);
+  // log('makeIcon - START ' + oa.name);
   // log('passed ' + json(oa, true));
 
   let size = oa.size || 50;
@@ -112,7 +112,7 @@ function makeIcon(oa) {
 }
 
 function mouseOverIcon(hoverColor, elem) {
-  // log('\n mouseOverIcon - START');
+  // log('mouseOverIcon', 'start');
   let gs = elem.parentNode.getElementsByTagName('g');
   for (let i = 0; i < gs.length; i++) {
     gs[i].style.fill = '' + hoverColor;
@@ -121,7 +121,7 @@ function mouseOverIcon(hoverColor, elem) {
 }
 
 function mouseOutIcon(color, elem) {
-  // log('\n mouseOutIcon - START');
+  // log('mouseOutIcon', 'start');
   let gs = elem.parentNode.getElementsByTagName('g');
   for (let i = 0; i < gs.length; i++) {
     gs[i].style.fill = '' + color;
@@ -130,7 +130,7 @@ function mouseOutIcon(color, elem) {
 }
 
 function goHamburger(ham) {
-  // log('\n goHamburger - START');
+  // log('goHamburger', 'start');
   // log('passed ' + ham);
 
   let h = _UI.hamburger;

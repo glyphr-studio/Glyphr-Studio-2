@@ -51,6 +51,8 @@ function log(message, type) {
     font-weight:bold;
     border-radius: 4px;
     padding: 6px 12px 4px 12px;
+    position: relative;
+    left: -20px;
   `;
   const style = {
     start: `background-color:#004a70; color:#9bddff; margin-top:12px; ${commonStyle}`,
@@ -235,7 +237,7 @@ function areEqual(obj1, obj2) {
  * @returns {boolean}
  */
 export function pointsAreEqual(c1, c2, threshold = 1) {
-  // log('\n pointsAreEqual - START');
+  // log('pointsAreEqual', 'start');
   // log('c1 ' + json(c1, true));
   // log('c2 ' + json(c2, true));
   // log('threshold ' + threshold);
@@ -470,7 +472,7 @@ function calculateLength(handle, point) {
  * @param {XYPoint} about - x/y point center of rotation
  */
 function rotate(point, angle, about = { x: 0, y: 0 }) {
-  // log('\n rotate - START');
+  // log('rotate', 'start');
   // log('point ' + json(point, true));
   // log('Math angle:\t' + angle);
   // log('about ' + json(about, true));

@@ -39,7 +39,7 @@ function makeEditPageContent() {
         the redraw, for debugging purposes.
     */
 function redraw(oa) {
-  // log('\n REDRAW - START');
+  // log('REDRAW', 'start');
   // log('oa: ' + json(oa));
   oa = oa || {};
   _UI.redraw.redrawCanvas = isVal(oa.redrawCanvas) ? oa.redrawCanvas : true;
@@ -67,7 +67,7 @@ function redraw(oa) {
 }
 
 function redrawUnit() {
-  // log('\n redrawUnit - START');
+  // log('redrawUnit', 'start');
   // log('_UI.redraw ' + json(_UI.redraw));
 
   if (_UI.redraw.redrawCanvas) {
@@ -125,7 +125,7 @@ function redrawUnit() {
 // Update Tools
 // -------------------
 function update_ToolsArea() {
-  // log('\n update_ToolsArea - START');
+  // log('update_ToolsArea', 'start');
 
   if (!onCanvasEditPage()) {
     // log('returning, !onCanvasEditPage');
@@ -393,7 +393,7 @@ function update_ToolsArea() {
 }
 
 function clickTool(ctool) {
-  // log('\n clickTool - START');
+  // log('clickTool', 'start');
   _UI.selectedTool = ctool;
 
   // log('passed: ' + ctool + ' and _UI.selectedTool now is: ' + _UI.selectedTool);
@@ -428,7 +428,7 @@ function clickTool(ctool) {
 function updateCursor(tool) {
   tool = tool || _UI.selectedTool;
 
-  // log('\n updateCursor - START');
+  // log('updateCursor', 'start');
   // log('tool = ' + tool);
 
   if (_UI.eventhandlers.ismouseovercec) {
@@ -472,7 +472,7 @@ function updateCursor(tool) {
 }
 
 function setCursor(name) {
-  // log('\n setCursor - START');
+  // log('setCursor', 'start');
   // log('passed ' + name);
   const cur = [
     'auto',
@@ -546,7 +546,7 @@ function getEditMode() {
 }
 
 function mouseovercec() {
-  // log('\n mouseovercec - START');
+  // log('mouseovercec', 'start');
   _UI.eventhandlers.ismouseovercec = true;
   updateCursor();
   if (_UI.hamburger.state !== 0 && _UI.currentPanel !== 'npNav')
@@ -555,7 +555,7 @@ function mouseovercec() {
 }
 
 function mouseoutcec() {
-  // log('\n mouseoutcec - START');
+  // log('mouseoutcec', 'start');
   _UI.eventhandlers.ismouseovercec = false;
   // Fixes a Chrome cursor problem
   document.onselectstart = function () {};
@@ -705,7 +705,7 @@ function makeKeyboardShortcutsTable() {
 // -------------------
 
 function drawContextGlyphs() {
-  // log('\n drawContextGlyphs - START');
+  // log('drawContextGlyphs', 'start');
   const selwid = getSelectedWorkItemID();
   const currGlyphObject = getGlyph(selwid, true);
   const currGlyphChar = hexToChars(selwid);
@@ -844,7 +844,7 @@ function drawContextGlyphRightLineExtras(char, seq) {
 }
 
 function drawContextGlyphExtras(char) {
-  // log('\n drawContextGlyphExtras - START');
+  // log('drawContextGlyphExtras', 'start');
 
   // log(`${char.char}
   //  width \t ${char.width}
@@ -892,7 +892,7 @@ function drawGlyphNameExtra(
   color,
   regHotspot
 ) {
-  // log('\n drawGlyphNameExtra - START');
+  // log('drawGlyphNameExtra', 'start');
   // log(`${text} passed regHotspot ${regHotspot}`);
 
   const ctx = _UI.glyphEditCTX;
@@ -965,7 +965,7 @@ function drawGlyphKernExtra(kern, rightx, topy, scale) {
 }
 
 function drawContextGlyph(char) {
-  // log('\n drawContextGlyph - START');
+  // log('drawContextGlyph', 'start');
   // log(`${char.char}
   //  width \t ${char.width}
   //  aggr \t ${char.aggregate}
@@ -1037,7 +1037,7 @@ function findAndCallHotspot(cx, cy) {
 }
 
 function hotspotNavigateToGlyph(gid) {
-  // log('\n hotspotNavigateToGlyph - START');
+  // log('hotspotNavigateToGlyph', 'start');
   // log('passed ' + gid);
 
   const v = getView('hotspotNavigateToGlyph');
@@ -1084,7 +1084,7 @@ function hotspotNavigateToGlyph(gid) {
 }
 
 function findAndUnderlineHotspot(cx, cy) {
-  // log('\n findAndUnderlineHotspot - START');
+  // log('findAndUnderlineHotspot', 'start');
   // log(`cx:${cx} \t cy:${cy}`);
   const hs = isHotspotHere(cx, cy);
   const ctx = _UI.glyphEditCTX;
@@ -1131,7 +1131,7 @@ function setView(oa) {
 }
 
 function getView(calledBy) {
-  // log('\n getView - START');
+  // log('getView', 'start');
   // log('calledBy: ' + calledBy);
 
   const onkern = editor.nav.page === 'kerning';
@@ -1220,7 +1220,7 @@ function calculateDefaultView() {
 }
 
 function fitViewToContextGlyphs(dontzoom) {
-  // log('\n fitViewToContextGlyphs - START');
+  // log('fitViewToContextGlyphs', 'start');
   const ps = getCurrentProject().projectSettings;
 
   const xpadding = 80;
@@ -1302,7 +1302,7 @@ function cYsY(cy, view = getView('cYsY')) {
 // ------------------------------
 
 function draw_PathOutline(sh, accent, thickness) {
-  // log('\n draw_PathOutline - START');
+  // log('draw_PathOutline', 'start');
   // log('shape name = ' + sh.name);
   // log('accent.l65 = ' + accent.l65);
   // log('selectedTool = ' + _UI.selectedTool);
@@ -1346,7 +1346,7 @@ function draw_PathOutline(sh, accent, thickness) {
 }
 
 function draw_PathPoints(pparr, accent) {
-  // log('\n draw_PathPoints - START');
+  // log('draw_PathPoints', 'start');
   pparr = pparr || [];
 
   for (let p = 0; p < pparr.length; p++) {
@@ -1371,7 +1371,7 @@ function draw_PathPointHandles(pparr, accent) {
 }
 
 function draw_BoundingBox(maxes, accent, thickness) {
-  // log('\n draw_BoundingBox - START');
+  // log('draw_BoundingBox', 'start');
   // log(maxes);
   // log('accent: ' + accent.l65);
 
@@ -1556,7 +1556,7 @@ function draw_CircleHandle(center) {
 }
 
 function isOverBoundingBoxHandle(px, py, maxes, thickness) {
-  // log('\n isOverBoundingBoxHandle - START');
+  // log('isOverBoundingBoxHandle', 'start');
   // log('px/py - ' + px + ' / ' + py);
   // log('maxes - ' + json(maxes, true));
 
@@ -1694,7 +1694,7 @@ function getBoundingBoxHandleDimensions(maxes, thickness) {
 // -------------------
 
 function drawGrid() {
-  // log('\n drawGrid - START');
+  // log('drawGrid', 'start');
 
   const xs = {
     xMax: _UI.glyphEditCanvasSize,
@@ -1775,7 +1775,7 @@ function drawVerticalLine(x, ctx, color) {
 }
 
 function drawGuides() {
-  // log('\n drawGuides - START');
+  // log('drawGuides', 'start');
 
   if (!getSelectedWorkItemID()) return;
 

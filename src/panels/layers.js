@@ -76,7 +76,7 @@ function makePanel_LayerChooser() {
 }
 
 function selectShape(num) {
-  // log('\n selectShape - START');
+  // log('selectShape', 'start');
   // log('passed ' + num);
   let wishapes = getSelectedWorkItemShapes();
   // log('wishapes ' + wishapes);

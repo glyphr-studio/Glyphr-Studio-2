@@ -316,7 +316,6 @@ export default class ComponentInstance extends GlyphElement {
   set link(link) {
     this._link = parseUnicodeInput(link)[0];
     this.changed();
-    return this;
   }
 
   /**
@@ -333,7 +332,6 @@ export default class ComponentInstance extends GlyphElement {
         'Invalid component instance name - component instance names must only contain alphanumeric characters or spaces.'
       );
     }
-    return this;
   }
 
   /**
@@ -345,7 +343,6 @@ export default class ComponentInstance extends GlyphElement {
     this._translateX = parseFloat(translateX);
     if (isNaN(this._translateX)) this._translateX = 0;
     this.changed();
-    return this;
   }
 
   /**
@@ -357,7 +354,6 @@ export default class ComponentInstance extends GlyphElement {
     this._translateY = parseFloat(translateY);
     if (isNaN(this._translateY)) this._translateY = 0;
     this.changed();
-    return this;
   }
 
   /**
@@ -369,7 +365,6 @@ export default class ComponentInstance extends GlyphElement {
     this._scaleW = parseFloat(scaleW);
     if (isNaN(this._scaleW)) this._scaleW = 0;
     this.changed();
-    return this;
   }
 
   /**
@@ -381,7 +376,6 @@ export default class ComponentInstance extends GlyphElement {
     this._scaleH = parseFloat(scaleH);
     if (isNaN(this._scaleH)) this._scaleH = 0;
     this.changed();
-    return this;
   }
 
   /**
@@ -392,7 +386,6 @@ export default class ComponentInstance extends GlyphElement {
   set isFlippedNS(isFlippedNS) {
     this._isFlippedNS = !!isFlippedNS;
     this.changed();
-    return this;
   }
 
   /**
@@ -403,7 +396,6 @@ export default class ComponentInstance extends GlyphElement {
   set isFlippedEW(isFlippedEW) {
     this._isFlippedEW = !!isFlippedEW;
     this.changed();
-    return this;
   }
 
   /**
@@ -414,7 +406,6 @@ export default class ComponentInstance extends GlyphElement {
   set reverseWinding(reverseWinding) {
     this._reverseWinding = !!reverseWinding;
     this.changed();
-    return this;
   }
 
   /**
@@ -426,7 +417,6 @@ export default class ComponentInstance extends GlyphElement {
     this._rotation = parseFloat(rotation);
     if (isNaN(this._rotation)) this._rotation = 0;
     this.changed();
-    return this;
   }
 
   /**
@@ -437,7 +427,6 @@ export default class ComponentInstance extends GlyphElement {
   set rotateFirst(rotateFirst) {
     this._rotateFirst = !!rotateFirst;
     this.changed();
-    return this;
   }
 
   /**
@@ -447,7 +436,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set xLock(xLock) {
     this._xLock = !!xLock;
-    return this;
   }
 
   /**
@@ -457,7 +445,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set yLock(yLock) {
     this._yLock = !!yLock;
-    return this;
   }
 
   /**
@@ -467,7 +454,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set wLock(wLock) {
     this._wLock = !!wLock;
-    return this;
   }
 
   /**
@@ -477,7 +463,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set hLock(hLock) {
     this._hLock = !!hLock;
-    return this;
   }
 
   /**
@@ -487,7 +472,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set ratioLock(ratioLock) {
     this._ratioLock = !!ratioLock;
-    return this;
   }
 
   // Computed properties
@@ -499,7 +483,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set x(x) {
     this.setShapePosition(x, false);
-    return this;
   }
 
   /**
@@ -509,7 +492,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set y(y) {
     this.setShapePosition(false, y);
-    return this;
   }
 
   /**
@@ -519,7 +501,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set width(w) {
     this.setShapeSize(w, false);
-    return this;
   }
 
   /**
@@ -529,7 +510,6 @@ export default class ComponentInstance extends GlyphElement {
    */
   set height(h) {
     this.setShapeSize(false, h);
-    return this;
   }
 
   // --------------------------------------------------------------
@@ -543,7 +523,7 @@ export default class ComponentInstance extends GlyphElement {
    * @returns {Glyph}
    */
   makeTransformedGlyph() {
-    // log('\n ComponentInstance.makeTransformedGlyph - START ' + this.name);
+    // log('ComponentInstance.makeTransformedGlyph - START ' + this.name);
 
     const g = this.cloneAndFlattenGlyph(this.link);
     if (!g) {
@@ -625,7 +605,7 @@ export default class ComponentInstance extends GlyphElement {
    * @param {number} dy - delta y
    */
   updateShapePosition(dx, dy) {
-    // log('\n ComponentInstance.updateShapePosition - START');
+    // log('ComponentInstance.updateShapePosition', 'start');
     // log('passed dx/dy/force: ' + dx + ' / ' + dy + ' / ' + force);
     // log('translate was: ' + this.translateX + ' / ' + this.translateY);
     dx = parseFloat(dx) || 0;
@@ -642,7 +622,7 @@ export default class ComponentInstance extends GlyphElement {
    * @param {number} ny - new y value
    */
   setShapePosition(nx, ny) {
-    // log('\n ComponentInstance.setShapePosition - START');
+    // log('ComponentInstance.setShapePosition', 'start');
     // log('passed nx/ny/force: ' + nx + ' / ' + ny + ' / ' + force);
     // log('translate was: ' + this.translateX + ' / ' + this.translateY);
     const ogm = getCurrentProject().getGlyph(this.link).maxes;
@@ -662,7 +642,7 @@ export default class ComponentInstance extends GlyphElement {
    * @param {boolean} ratioLock - maintain aspect ratio
    */
   updateShapeSize(dw, dh, ratioLock) {
-    // log('\n ComponentInstance.updateShapeSize - START');
+    // log('ComponentInstance.updateShapeSize', 'start');
     // log('passed dw/dh/ratioLock: ' + dw + ' / ' + dh + ' / ' + ratioLock);
     if (dw !== false) dw = parseFloat(dw) || 0;
     if (dh !== false) dh = parseFloat(dh) || 0;
@@ -741,7 +721,7 @@ export default class ComponentInstance extends GlyphElement {
    * @returns {ComponentInstance} - reference to this component instance
    */
   rotate(angle) {
-    // log('\n ComponentInstance.rotate - START');
+    // log('ComponentInstance.rotate', 'start');
     // log('passed ' + angle);
     const degrees = deg(angle);
     // log('deg ' + degrees);
@@ -772,7 +752,7 @@ export default class ComponentInstance extends GlyphElement {
    * @returns {boolean}
    */
   drawShape(ctx, view) {
-    // log('\n ComponentInstance.drawShape - START');
+    // log('ComponentInstance.drawShape', 'start');
     // log('view ' + json(view, true));
     /*
     Have to iterate through shapes instead of using Glyph.drawGlyph
@@ -792,24 +772,24 @@ export default class ComponentInstance extends GlyphElement {
 
   /* NEEDS TO BE REFACTORED
   draw_PathOutline(accent = '#000', thickness = 1) {
-    // log('\n ComponentInstance.draw_PathOutline - START');
+    // log('ComponentInstance.draw_PathOutline', 'start');
     let g = this.transformedGlyph;
     for (let s = 0; s < g.shapes.length; s++) {
       draw_PathOutline(g.shapes[s], accent, thickness);
     }
   }
   draw_BoundingBox(accent = '#000', thickness = 1) {
-    // log('\n ComponentInstance.draw_BoundingBox - START');
+    // log('ComponentInstance.draw_BoundingBox', 'start');
     let g = this.transformedGlyph.maxes;
     draw_BoundingBox(g, accent, thickness);
   }
   draw_BoundingBoxHandles(accent = '#000', thickness = 1) {
-    // log('\n ComponentInstance.draw_BoundingBoxHandles - START');
+    // log('ComponentInstance.draw_BoundingBoxHandles', 'start');
     let g = this.transformedGlyph.maxes;
     draw_BoundingBoxHandles(g, accent, thickness);
   }
   isOverBoundingBoxHandle(px, py) {
-    // log('\n ComponentInstance.isOverBoundingBoxHandle - START');
+    // log('ComponentInstance.isOverBoundingBoxHandle', 'start');
     let c = isOverBoundingBoxHandle(px, py, this.maxes);
     // log('ComponentInstance.isOverBoundingBoxHandle returning ' + c);
     return c;

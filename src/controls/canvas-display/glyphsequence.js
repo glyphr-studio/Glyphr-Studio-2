@@ -107,7 +107,7 @@ export default class GlyphSequence {
    * @param {number} newstring - new set of glyphs to show
    */
   set glyphString(newstring) {
-    // log('\n GlyphSequence.setString - START');
+    // log('GlyphSequence.setString', 'start');
     // log(`passed ${newstring}`);
     this._glyphString = newstring;
     this._textBlocks = this._glyphString.split('\n');
@@ -140,7 +140,7 @@ export default class GlyphSequence {
    * the data needed to display them.
    */
   generateData() {
-    // log('\n GlyphSequence.generateData - START');
+    // log('GlyphSequence.generateData', 'start');
     // log(`this.textblocks ${this.textblocks}`);
     let aggregateWidth = 0;
     let thisWidth;
@@ -284,7 +284,7 @@ export default class GlyphSequence {
    * Draw the glyphs to the canvas
    */
   draw() {
-    // log('\n GlyphSequence.draw - START');
+    // log('GlyphSequence.draw', 'start');
 
     // Draw Page Extras
     if (this.drawPageExtras) {
@@ -359,7 +359,7 @@ function canNextLineFit(currentLineY, area, lineGap) {
  * @returns {object}
  */
 function getNextLineBreaker(block, start = 0) {
-  // log('\n getNextLineBreaker - START');
+  // log('getNextLineBreaker', 'start');
   // log(`starting at pos ${start}`);
 
   for (let i = start; i < block.length; i++) {
@@ -400,7 +400,7 @@ function debugWidths() {
  * @returns {number} - kern offset in Em Units
  */
 function calculateKernOffset(c1, c2) {
-  // log('\n calculateKernOffset - START');
+  // log('calculateKernOffset', 'start');
   // log('passed: ' + c1 + ' and ' + c2);
 
   if (!c1 || !c2) return 0;
@@ -445,7 +445,7 @@ function calculateKernOffset(c1, c2) {
  * @returns {array}
  */
 function findAndMergeLigatures(charArray) {
-  // log('\n findAndMergeLigatures - START');
+  // log('findAndMergeLigatures', 'start');
   let ligs = sortLigatures();
   // log('sorted ligs: ');
   // log(ligs);

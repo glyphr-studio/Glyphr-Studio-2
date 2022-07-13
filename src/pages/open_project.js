@@ -228,7 +228,7 @@ export default class PageOpenProject {
    */
   handleDrop(evt) {
     const app = getGlyphrStudioApp();
-    // log('\n handleDrop - START');
+    // log('handleDrop', 'start');
     document.getElementById('open-project__right-area').innerHTML =
       'Loading File...';
     document.getElementById('open-project__right-area').style.backgroundColor =
@@ -249,7 +249,7 @@ export default class PageOpenProject {
 
     if (fname === 'otf' || fname === 'ttf') {
       reader.onload = function () {
-        // log('\n reader.onload::OTF or TTF - START');
+        // log('reader.onload::OTF or TTF', 'start');
         app.temp.droppedFileContent = reader.result;
         // importOTFFont();
         // log('reader.onload:: OTF or TTF', 'end');
@@ -258,7 +258,7 @@ export default class PageOpenProject {
       reader.readAsArrayBuffer(f);
     } else if (fname === 'svg' || fname === 'txt') {
       reader.onload = function () {
-        // log('\n reader.onload::SVG or TXT - START');
+        // log('reader.onload::SVG or TXT', 'start');
         app.temp.droppedFileContent = reader.result;
         if (fname === 'svg') {
           // log('File = .svg');
