@@ -191,7 +191,7 @@ function ioSVG_importSVGFont(filter) {
         uni = uni[0];
         minchar = Math.min(minchar, uni);
         maxGlyph = Math.max(maxGlyph, uni);
-        if (1 * uni > _UI.glyphrange.latinExtendedB.end)
+        if (1 * uni > _UI.glyphRange.latinExtendedB.end)
           customglyphrange.push(uni);
 
         fc[uni] = new Glyph({
@@ -201,7 +201,7 @@ function ioSVG_importSVGFont(filter) {
           isAutoWide: isAutoWide,
         });
         if (getUnicodeName(uni) === '[name not found]')
-          getCurrentProject().projectSettings.glyphrange.filternoncharpoints = false;
+          getCurrentProject().projectSettings.filterNonCharPoints = false;
       } else {
         // It's a LIGATURE
         uni = uni.join('');
@@ -255,13 +255,13 @@ function ioSVG_importSVGFont(filter) {
       tk.attributes.g1,
       chars,
       leftgroup,
-      _UI.glyphrange.latinExtendedB.end
+      _UI.glyphRange.latinExtendedB.end
     );
     rightgroup = getKernMembersByName(
       tk.attributes.g2,
       chars,
       rightgroup,
-      _UI.glyphrange.latinExtendedB.end
+      _UI.glyphRange.latinExtendedB.end
     );
 
     // log('kern groups by name ' + json(leftgroup, true) + ' ' + json(rightgroup, true));
@@ -271,13 +271,13 @@ function ioSVG_importSVGFont(filter) {
       tk.attributes.u1,
       chars,
       leftgroup,
-      _UI.glyphrange.latinExtendedB.end
+      _UI.glyphRange.latinExtendedB.end
     );
     rightgroup = getKernMembersByUnicodeID(
       tk.attributes.u2,
       chars,
       rightgroup,
-      _UI.glyphrange.latinExtendedB.end
+      _UI.glyphRange.latinExtendedB.end
     );
 
     // log('kern groups parsed as ' + json(leftgroup, true) + ' ' + json(rightgroup, true));
@@ -317,23 +317,26 @@ function ioSVG_importSVGFont(filter) {
     getCurrentProject().ligatures = fl;
     getCurrentProject().kerning = fk;
 
+    /*
+    REFACTOR
     let rstart;
     let rend;
-    for (const r of Object.keys(_UI.glyphrange)) {
-      rstart = 1 * _UI.glyphrange[r].begin;
-      rend = 1 * _UI.glyphrange[r].end + 1;
+    for (const r of Object.keys(_UI.glyphRange)) {
+      rstart = 1 * _UI.glyphRange[r].begin;
+      rend = 1 * _UI.glyphRange[r].end + 1;
       for (let t = rstart; t < rend; t++) {
         if (getGlyph(t)) {
-          getCurrentProject().projectSettings.glyphrange[r] = true;
+          getCurrentProject().projectSettings.glyphRanges[r] = true;
           break;
         }
       }
     }
+    */
 
     // Make a custom range for the rest
     if (customglyphrange.length) {
       customglyphrange = customglyphrange.sort();
-      getCurrentProject().projectSettings.glyphrange.custom.push({
+      getCurrentProject().projectSettings.glyphRanges.push({
         begin: customglyphrange[0],
         end: customglyphrange[customglyphrange.length - 1],
       });
@@ -352,8 +355,8 @@ function ioSVG_importSVGFont(filter) {
     ps.upm = 1 * fatt['units-per-em'] || 1000;
     ps.name = fname;
     ps.ascent = 1 * fatt.ascent || 700;
-    ps.capheight = 1 * fatt['cap-height'] || 675;
-    ps.xheight = 1 * fatt['x-height'] || 400;
+    ps.capHeight = 1 * fatt['cap-height'] || 675;
+    ps.xHeight = 1 * fatt['x-height'] || 400;
     ps.overshoot = round(ps.upm / 100);
     md.font_family = fname;
     md.panose_1 = fatt['panose-1'] || '0 0 0 0 0 0 0 0 0 0';

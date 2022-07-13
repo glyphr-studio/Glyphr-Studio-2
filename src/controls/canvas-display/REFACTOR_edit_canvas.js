@@ -1715,7 +1715,7 @@ function drawGrid() {
   if (_UI.showGrid) {
     const ps = getCurrentProject().projectSettings;
     const v = getView('grid');
-    const gsize = (ps.upm / ps.griddivisions) * v.dz;
+    const gsize = (ps.upm / ps.gridDivisions) * v.dz;
     const gridcolor = getColorFromRGBA(
       'rgb(170,170,170)',
       transparencyToAlpha(
@@ -1811,8 +1811,8 @@ function drawGuides() {
       const ll = Math.min(selwi.maxes.xMin, 0);
 
       // Update system guides
-      ps.guides.xheight.location = ps.xheight;
-      ps.guides.capheight.location = ps.capheight;
+      ps.guides.xHeight.location = ps.xHeight;
+      ps.guides.capHeight.location = ps.capHeight;
       ps.guides.ascent.location = ps.ascent;
       ps.guides.baseline.location = 0;
       ps.guides.descent.location = ps.descent;
@@ -1824,7 +1824,7 @@ function drawGuides() {
       // Minor Guidelines - Overshoots
       if (_UI.showOvershoots) {
         const os = ps.overshoot;
-        ps.guides.xheight.draw(-1 * os);
+        ps.guides.xHeight.draw(-1 * os);
         ps.guides.ascent.draw(-1 * os);
         ps.guides.baseline.draw(os);
         ps.guides.descent.draw(os);
@@ -1842,8 +1842,8 @@ function drawGuides() {
       }
 
       // Horizontals
-      ps.guides.xheight.draw();
-      ps.guides.capheight.draw();
+      ps.guides.xHeight.draw();
+      ps.guides.capHeight.draw();
       ps.guides.ascent.draw();
       ps.guides.descent.draw();
       ps.guides.baseline.draw();

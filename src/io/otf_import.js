@@ -181,7 +181,7 @@ function importOTFFont(filter) {
       // uni = uni[0];
       minChar = Math.min(minChar, uni);
       maxGlyph = Math.max(maxGlyph, uni);
-      if (1 * uni > _UI.glyphrange.latinExtendedB.end)
+      if (1 * uni > _UI.glyphRange.latinExtendedB.end)
         customGlyphRange.push(uni);
 
       fc[uni] = new Glyph({
@@ -191,7 +191,7 @@ function importOTFFont(filter) {
         isAutoWide: isAutoWide,
       });
       if (getUnicodeName(uni) === '[name not found]')
-        getCurrentProject().projectSettings.glyphrange.filternoncharpoints = false;
+        getCurrentProject().projectSettings.filterNonCharPoints = false;
 
       // Successfull loop, advance c
       c++;
@@ -260,24 +260,27 @@ function importOTFFont(filter) {
     getCurrentProject().ligatures = fl;
     getCurrentProject().kerning = fk;
 
+    /*
+    REFACTOR
     let rstart;
     let rend;
-    for (const r of Object.keys(_UI.glyphrange)) {
-      rstart = 1 * _UI.glyphrange[r].begin;
-      rend = 1 * _UI.glyphrange[r].end + 1;
+    for (const r of Object.keys(_UI.glyphRange)) {
+      rstart = 1 * _UI.glyphRange[r].begin;
+      rend = 1 * _UI.glyphRange[r].end + 1;
       for (let t = rstart; t < rend; t++) {
         if (getGlyph('' + decToHex(t))) {
-          getCurrentProject().projectSettings.glyphrange[r] = true;
+          getCurrentProject().projectSettings.glyphRanges[r] = true;
           break;
         }
       }
     }
+    */
 
     // Make a custom ranges for the rest, with logical separations
     // log('customGlyphRange.length ' + customGlyphRange.length);
 
     if (customGlyphRange.length) {
-      const ranges = getCurrentProject().projectSettings.glyphrange.custom;
+      const ranges = getCurrentProject().projectSettings.glyphRanges;
       const maxvalley = 50;
       const maxrange = 100;
       customGlyphRange = customGlyphRange.sort();
@@ -295,7 +298,7 @@ function importOTFFont(filter) {
           rangestart = current;
           rangeend = current;
           fencepost = false;
-          // log('new glyphrange ' + json(ranges));
+          // log('new glyphRange ' + json(ranges));
         } else {
           rangeend = current;
           fencepost = true;
@@ -304,7 +307,7 @@ function importOTFFont(filter) {
       }
 
       if (fencepost) ranges.push({ begin: rangestart, end: rangeend });
-      // log('new glyphrange ' + json(ranges));
+      // log('new glyphRange ' + json(ranges));
     }
 
     // Import Font Settings
@@ -319,8 +322,8 @@ function importOTFFont(filter) {
     ps.upm = 1 * font.unitsPerEm || 1000;
     ps.ascent = 1 * font.ascender || 700;
     ps.descent = -1 * Math.abs(font.descender) || 300;
-    ps.capheight = 1 * getTableValue(font.tables.os2.sCapHeight) || 675;
-    ps.xheight = 1 * getTableValue(font.tables.os2.sxHeight) || 400;
+    ps.capHeight = 1 * getTableValue(font.tables.os2.sCapHeight) || 675;
+    ps.xHeight = 1 * getTableValue(font.tables.os2.sxHeight) || 400;
     ps.overshoot = round(ps.upm / 100);
 
     md.font_family = fname.substr(0, 31);

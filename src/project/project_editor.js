@@ -582,7 +582,7 @@ window._UI = {
         scale: true,
         move: true,
         ascender: false,
-        capheight: false,
+        capHeight: false,
         descender: false,
         overshootTop: false,
         overshootBottom: false,
