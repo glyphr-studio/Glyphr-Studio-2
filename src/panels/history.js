@@ -7,7 +7,7 @@
 function makePanel_History() {
   let content = '<div class="navarea_header">';
 
-  content += makePanelSuperTitle();
+  content += projectEditor.nav.page;
 
   content += '<h1 class="paneltitle">edit history</h1>';
 

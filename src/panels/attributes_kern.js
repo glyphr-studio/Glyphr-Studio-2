@@ -7,7 +7,7 @@ function makePanel_KerningAttributes() {
   // log('makePanel_KerningAttributes', 'start');
 
   let content = '<div class="navarea_header">';
-  content += makePanelSuperTitle();
+  content += projectEditor.nav.page;
   content += '<h1 class="paneltitle">Pairs</h1>';
   content += '</div>';
 

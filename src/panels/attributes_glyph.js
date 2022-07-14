@@ -4,45 +4,46 @@
     which changes based on Shape or Path Point
     selection.
 **/
+import { log, round } from "../common/functions.js";
+import { accentColors } from "../common/colors.js";
+import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 
-function makePanel_GlyphAttributes() {
-  // log('makePanel_GlyphAttributes', 'start');
-  let sc = getSelectedWorkItem();
-  let ss = _UI.multiSelect.shapes.getMembers();
+export default function makePanel_GlyphAttributes() {
+  log('makePanel_GlyphAttributes', 'start');
+  let projectEditor = getCurrentProjectEditor();
+  log(projectEditor);
 
-  let content = '<div class="navarea_header">';
-  content += makePanelSuperTitle();
-  content += '<h1 class="paneltitle">attributes</h1>';
-  content += '</div>';
-  if (!sc) return content;
+  let selectedGlyph = projectEditor.selectedGlyph;
 
-  content += '<div class="panel_section">';
+  // let projectEditor.multiSelect.shapes = _UI.multiSelect.shapes.getMembers();
+
+  let content = '<div class="panel_section">';
   content += '<table class="detail">';
 
-  if (editor.nav.page === 'components') {
+  if (projectEditor.nav.page === 'components') {
     // log(" \t  detected currentPage = components");
     content +=
       '<tr><td colspan=2 class="detailtitle"><h3 style="margin-top:0px;">component</h3></td></tr>';
     content +=
       '<tr><td class="leftcol">name</td><td><input class="namewidth" type="text" value="' +
-      sc.name +
+      selectedGlyph.name +
       '" onchange="getSelectedWorkItem().name = this.value;"/></td></tr>';
   }
 
-  if (ss.length === 0) {
+  if (projectEditor.multiSelect.shapes.length === 0) {
     // no shape selected
     // log(" \t no shape selected");
     content += glyphDetails();
-  } else if (ss.length === 1) {
+  } else if (projectEditor.multiSelect.shapes.length === 1) {
     // One shape selected
-    if (ss[0].objType === 'ComponentInstance') {
+    if (projectEditor.multiSelect.shapes[0].objType === 'ComponentInstance') {
       // component selected
       // log(" \t component selected");
-      content += componentInstanceDetails(ss[0]);
+      content += componentInstanceDetails(projectEditor.multiSelect.shapes[0]);
     } else {
       // regular shape selected
       // log(" \t regular shape selected");
-      content += shapeDetails(ss[0]);
+      content += shapeDetails(projectEditor.multiSelect.shapes[0]);
 
       let ispointsel = _UI.multiSelect.points.count() === 1;
       if (
@@ -60,16 +61,16 @@ function makePanel_GlyphAttributes() {
     // Many shapes selected
     content +=
       '<tr><td colspan=2 class="detailtitle"><h3 style="margin-top:0px;">' +
-      ss.length +
+      projectEditor.multiSelect.shapes.length +
       ' selected shapes</h3></td></tr>';
-    content += multiSelectDetails();
+    content += multiSelectDetails(projectEditor.multiSelect.shapes.getGlyph());
   }
 
-  if (editor.nav.page === 'components') {
+  if (projectEditor.nav.page === 'components') {
     content +=
       '<tr><td colspan=2 class="detailtitle"><h3>glyphs that use this component</h3></td></tr>';
     content += '<tr><td colspan=2>';
-    if (sc.usedIn.length > 0) {
+    if (selectedGlyph.usedIn.length > 0) {
       content += makeUsedInThumbs();
     } else {
       content +=
@@ -83,13 +84,12 @@ function makePanel_GlyphAttributes() {
   content += '</table>';
   content += '</div>';
 
-  // log('makePanel_GlyphAttributes', 'end');
+  log('makePanel_GlyphAttributes', 'end');
   return content;
 }
 
-function multiSelectDetails() {
-  let sc = _UI.multiSelect.shapes.getGlyph();
-  let svc = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
+function multiSelectDetails(virtualGlyph) {
+  let spinnerValueChange = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   let content = '';
 
   content +=
@@ -99,19 +99,19 @@ function multiSelectDetails() {
     'y</td>' +
     '<td>' +
     '<input type="number" id="charx" step="' +
-    svc +
+    spinnerValueChange +
     '" ' +
     "onchange=\"_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapePosition(this.value, false, true); historyPut('Multi-selected Shapes X Position : '+this.value); redraw({calledBy:'Glyph Details - X Position'});}\"" +
     ' value="' +
-    round(sc.maxes.xMin, 3) +
+    round(virtualGlyph.maxes.xMin, 3) +
     '" >' +
     dimSplit() +
     '<input type="number" id="chary" step="' +
-    svc +
+    spinnerValueChange +
     '" ' +
     "onchange=\"_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapePosition(false, this.value, true); historyPut('Multi-selected Shapes Y Position : '+this.value); redraw({calledBy:'Glyph Details - Y Position'});}\"" +
     ' value="' +
-    round(sc.maxes.yMax, 3) +
+    round(virtualGlyph.maxes.yMax, 3) +
     '" >' +
     '</td>' +
     '</tr>';
@@ -123,23 +123,23 @@ function multiSelectDetails() {
     'height</td>' +
     '<td>' +
     '<input type="number" id="charw" step="' +
-    svc +
+    spinnerValueChange +
     '" ' +
     'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(this.value,false,' +
-    sc.ratioLock +
+    virtualGlyph.ratioLock +
     "); historyPut('Multi-selected Shapes Width : '+this.value); redraw({calledBy:'Glyph Details - Width'});}\"" +
     ' value="' +
-    round(sc.maxes.xMax - sc.maxes.xMin, 3) +
+    round(virtualGlyph.maxes.xMax - virtualGlyph.maxes.xMin, 3) +
     '" >' +
     dimSplit() +
     '<input type="number" id="charh" step="' +
-    svc +
+    spinnerValueChange +
     '" ' +
     'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(false,this.value,' +
-    sc.ratioLock +
+    virtualGlyph.ratioLock +
     "); historyPut('Multi-selected Shapes Height : '+this.value); redraw({calledBy:'Glyph Details - Height'});}\"" +
     ' value="' +
-    round(sc.maxes.yMax - sc.maxes.yMin, 3) +
+    round(virtualGlyph.maxes.yMax - virtualGlyph.maxes.yMin, 3) +
     '" >' +
     '</td>' +
     '</tr>';
@@ -148,7 +148,7 @@ function multiSelectDetails() {
     '<tr>' +
     '<td> lock aspect ratio </td>' +
     '<td>' +
-    checkUI('_UI.multiSelect.shapes.getGlyph().ratioLock', sc.ratioLock, true) +
+    // checkUI('_UI.multiSelect.shapes.getGlyph().ratioLock', virtualGlyph.ratioLock, true) +
     '</td>' +
     '</tr>';
 
@@ -157,7 +157,7 @@ function multiSelectDetails() {
 
 function glyphDetails(s) {
   let sc = getSelectedWorkItem();
-  let svc = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
+  let spinn = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   // sc.calcMaxes();
   let content = '';
   let numshapes = getSelectedWorkItemShapes().length;
@@ -172,7 +172,7 @@ function glyphDetails(s) {
       'y</td>' +
       '<td>' +
       '<input type="number" id="charx" step="' +
-      svc +
+      spinn +
       '" ' +
       "onchange=\"_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphPosition(this.value, false, true); historyPut('Glyph X Position : '+this.value); redraw({calledBy:'Glyph Details - X Position'});}\"" +
       ' value="' +
@@ -180,7 +180,7 @@ function glyphDetails(s) {
       '" >' +
       dimSplit() +
       '<input type="number" id="chary" step="' +
-      svc +
+      spinn +
       '" ' +
       "onchange=\"_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphPosition(false, this.value, true); historyPut('Glyph Y Position : '+this.value); redraw({calledBy:'Glyph Details - Y Position'});}\"" +
       ' value="' +
@@ -196,7 +196,7 @@ function glyphDetails(s) {
       'height</td>' +
       '<td>' +
       '<input type="number" id="charw" step="' +
-      svc +
+      spinn +
       '" ' +
       'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphSize(this.value,false,' +
       sc.ratioLock +
@@ -206,7 +206,7 @@ function glyphDetails(s) {
       '" >' +
       dimSplit() +
       '<input type="number" id="charh" step="' +
-      svc +
+      spinn +
       '" ' +
       'onchange="_UI.focusElement=this.id; if(!_UI.redrawing){getSelectedWorkItem().setGlyphSize(false,this.value,' +
       sc.ratioLock +
@@ -221,12 +221,12 @@ function glyphDetails(s) {
       '<tr>' +
       '<td> lock aspect ratio </td>' +
       '<td>' +
-      checkUI('getSelectedWorkItem().ratioLock', sc.ratioLock, true) +
+      // checkUI('getSelectedWorkItem().ratioLock', sc.ratioLock, true) +
       '</td>' +
       '</tr>';
   }
 
-  if (editor.nav.page === 'components') return content;
+  if (projectEditor.nav.page === 'components') return content;
 
   // AUTO GLYPH WIDTH
   content +=
@@ -236,13 +236,13 @@ function glyphDetails(s) {
     '<tr>' +
     '<td> auto calculate <span class="unit">(em units)</span></td>' +
     '<td>' +
-    checkUI('getSelectedWorkItem().isAutoWide', sc.isAutoWide, true) +
+    // checkUI('getSelectedWorkItem().isAutoWide', sc.isAutoWide, true) +
     '&emsp;';
 
   if (!sc.isAutoWide) {
     content +=
       '<input type="number" id="charaw" step="' +
-      svc +
+      spinn +
       '" ' +
       'value="' +
       round(sc.glyphWidth, 3) +
@@ -267,12 +267,7 @@ function glyphDetails(s) {
       '<tr>' +
       '<td> use default <span class="unit">(em units)</span> </td>' +
       '<td>' +
-      checkUI(
-        'getSelectedWorkItem().leftSideBearing',
-        sc.leftSideBearing,
-        true,
-        true
-      ) +
+      // checkUI(  'getSelectedWorkItem().leftSideBearing',  sc.leftSideBearing,  true,  true) +
       '&emsp;';
 
     if (sc.leftSideBearing) {
@@ -280,7 +275,7 @@ function glyphDetails(s) {
         sc.leftSideBearing = getCurrentProject().projectSettings.defaultLSB;
       content +=
         '<input type="number" id="charlsb" step="' +
-        svc +
+        spinn +
         '" ' +
         'value="' +
         sc.leftSideBearing +
@@ -305,12 +300,7 @@ function glyphDetails(s) {
       '<tr>' +
       '<td> use default <span class="unit">(em units)</span> </td>' +
       '<td>' +
-      checkUI(
-        'getSelectedWorkItem().rightSideBearing',
-        sc.rightSideBearing,
-        true,
-        true
-      ) +
+      // checkUI(  'getSelectedWorkItem().rightSideBearing',  sc.rightSideBearing,  true,  true) +
       '&emsp;';
 
     if (sc.rightSideBearing) {
@@ -318,7 +308,7 @@ function glyphDetails(s) {
         sc.rightSideBearing = getCurrentProject().projectSettings.defaultRSB;
       content +=
         '<input type="number" id="charrsb" step="' +
-        svc +
+        spinn +
         '" ' +
         'value="' +
         sc.rightSideBearing +
@@ -348,7 +338,7 @@ function glyphDetails(s) {
 
 function shapeDetails(s) {
   // log("SHAPEDETAILS - Drawing Shape Details");
-  let svc = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
+  let spinn = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   let content = '';
   content +=
     '<tr><td colspan=2 class="detailtitle"><h3 style="margin:0px;">shape</h3></td></tr>';
@@ -363,31 +353,35 @@ function shapeDetails(s) {
     '</td>' +
     '</tr>';
 
-  let xval, yval, hval, wval;
+  let xval = 100;
+  let yval = 100;
+  let hval = 100;
+  let wval = 100;
 
-  if (!_UI.eventhandlers.tempnewbasicshape) {
-    xval = round(s.path.maxes.xMin, 3);
-    yval = round(s.path.maxes.yMax, 3);
-    wval = round(s.path.width, 3);
-    hval = round(s.path.height, 3);
-  } else {
-    xval = round(_UI.eventhandlers.tempnewbasicshape.xMin, 3);
-    yval = round(_UI.eventhandlers.tempnewbasicshape.yMax, 3);
-    wval = Math.abs(
-      round(
-        _UI.eventhandlers.tempnewbasicshape.xMax -
-          _UI.eventhandlers.tempnewbasicshape.xMin,
-        3
-      )
-    );
-    hval = Math.abs(
-      round(
-        _UI.eventhandlers.tempnewbasicshape.yMax -
-          _UI.eventhandlers.tempnewbasicshape.yMin,
-        3
-      )
-    );
-  }
+  // REFACTOR
+  // if (!_UI.eventhandlers.tempnewbasicshape) {
+  //   xval = round(s.path.maxes.xMin, 3);
+  //   yval = round(s.path.maxes.yMax, 3);
+  //   wval = round(s.path.width, 3);
+  //   hval = round(s.path.height, 3);
+  // } else {
+  //   xval = round(_UI.eventhandlers.tempnewbasicshape.xMin, 3);
+  //   yval = round(_UI.eventhandlers.tempnewbasicshape.yMax, 3);
+  //   wval = Math.abs(
+  //     round(
+  //       _UI.eventhandlers.tempnewbasicshape.xMax -
+  //         _UI.eventhandlers.tempnewbasicshape.xMin,
+  //       3
+  //     )
+  //   );
+  //   hval = Math.abs(
+  //     round(
+  //       _UI.eventhandlers.tempnewbasicshape.yMax -
+  //         _UI.eventhandlers.tempnewbasicshape.yMin,
+  //       3
+  //     )
+  //   );
+  // }
 
   content +=
     '<tr>' +
@@ -396,9 +390,9 @@ function shapeDetails(s) {
     'y</td>' +
     '<td>' +
     '<div class="lockwrapper">' +
-    lockUI('_UI.multiSelect.shapes.getSingleton().xLock', s.xLock, 'ssxlock') +
+    // lockUI('_UI.multiSelect.shapes.getSingleton().xLock', s.xLock, 'ssxlock') +
     '<input type="number" id="shapex" step="' +
-    svc +
+    spinn +
     '" ' +
     (s.xLock
       ? 'disabled="disabled"'
@@ -409,9 +403,9 @@ function shapeDetails(s) {
     '</div>' +
     dimSplit() +
     '<div class="lockwrapper">' +
-    lockUI('_UI.multiSelect.shapes.getSingleton().yLock', s.yLock, 'ssylock') +
+    // lockUI('_UI.multiSelect.shapes.getSingleton().yLock', s.yLock, 'ssylock') +
     '<input type="number" id="shapey" step="' +
-    svc +
+    spinn +
     '" ' +
     (s.yLock
       ? 'disabled="disabled"'
@@ -430,9 +424,9 @@ function shapeDetails(s) {
     'height &emsp;</td>' +
     '<td>' +
     '<div class="lockwrapper">' +
-    lockUI('_UI.multiSelect.shapes.getSingleton().wLock', s.wLock, 'sswlock') +
+    // lockUI('_UI.multiSelect.shapes.getSingleton().wLock', s.wLock, 'sswlock') +
     '<input type="number" id="shapew" step="' +
-    svc +
+    spinn +
     '" ' +
     (s.wLock
       ? 'disabled="disabled"'
@@ -445,9 +439,9 @@ function shapeDetails(s) {
     '</div>' +
     dimSplit() +
     '<div class="lockwrapper">' +
-    lockUI('_UI.multiSelect.shapes.getSingleton().hLock', s.hLock, 'sshlock') +
+    // lockUI('_UI.multiSelect.shapes.getSingleton().hLock', s.hLock, 'sshlock') +
     '<input type="number" id="shapeh" step="' +
-    svc +
+    spinn +
     '" ' +
     (s.hLock
       ? 'disabled="disabled"'
@@ -492,26 +486,27 @@ function shapeDetails(s) {
     '</td>' +
     '</tr>';
 
-  if (_UI.selectedTool !== 'pathedit') {
-    content +=
-      '<tr>' +
-      '<td> lock aspect ratio </td>' +
-      '<td>' +
-      checkUI(
-        '_UI.multiSelect.shapes.getSingleton().ratioLock',
-        s.ratioLock,
-        true
-      ) +
-      '</td>' +
-      '</tr>';
-  }
+  // REFACTOR
+  // if (_UI.selectedTool !== 'pathedit') {
+  //   content +=
+  //     '<tr>' +
+  //     '<td> lock aspect ratio </td>' +
+  //     '<td>' +
+  //     checkUI(
+  //       '_UI.multiSelect.shapes.getSingleton().ratioLock',
+  //       s.ratioLock,
+  //       true
+  //     ) +
+  //     '</td>' +
+  //     '</tr>';
+  // }
 
   // log("<b>SHAPE DETAILS OUTPUT:<b><br><textarea rows=9 cols=3000>" + content + "</textarea>");
   return content;
 }
 
 function pointDetails(tp) {
-  let svc = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
+  let spinn = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   let content = '';
 
   // POINT
@@ -539,13 +534,9 @@ function pointDetails(tp) {
     'y</td>' +
     '<td>' +
     '<div class="lockwrapper">' +
-    lockUI(
-      '_UI.multiSelect.points.getSingleton().p.xLock',
-      tp.p.xLock,
-      'Pxlock'
-    ) +
+    // lockUI(UI.multiSelect.points.getSingleton().p.xLock',p.p.xLock, xlock'+
     '<input type="number" id="pointx" step="' +
-    svc +
+    spinn +
     '" ' +
     (tp.p.xLock
       ? 'disabled="disabled"'
@@ -556,13 +547,9 @@ function pointDetails(tp) {
     '</div>' +
     dimSplit() +
     '<div class="lockwrapper">' +
-    lockUI(
-      '_UI.multiSelect.points.getSingleton().p.yLock',
-      tp.p.yLock,
-      'Pylock'
-    ) +
+    // lockUI(UI.multiSelect.points.getSingleton().p.yLock',p.p.yLock, ylock'+
     '<input type="number" id="pointy" step="' +
-    svc +
+    spinn +
     '" ' +
     (tp.p.yLock
       ? 'disabled="disabled"'
@@ -577,16 +564,16 @@ function pointDetails(tp) {
   let issymmetric = tp.type === 'symmetric';
 
   // HANDLE 1
-  content +=
-    '<tr><td colspan=2 class="detailtitle"><h3>' +
-    (issymmetric
-      ? '<input type="checkbox" checked disabled>'
-      : checkUI(
-          '_UI.multiSelect.points.getSingleton().h1.use',
-          tp.h1.use,
-          true
-        )) +
-    ' handle 1 <span class="unit">(before the point)</span></h3></td></tr>';
+  // content +=
+  //   '<tr><td colspan=2 class="detailtitle"><h3>' +
+  //   (issymmetric
+  //     ? '<input type="checkbox" checked disabled>'
+  //     : checkUI(
+  //         '_UI.multiSelect.points.getSingleton().h1.use',
+  //         tp.h1.use,
+  //         true
+  //       )) +
+  //   ' handle 1 <span class="unit">(before the point)</span></h3></td></tr>';
 
   if (tp.h1.use) {
     content +=
@@ -596,13 +583,9 @@ function pointDetails(tp) {
       'y</td>' +
       '<td>' +
       '<div class="lockwrapper">' +
-      lockUI(
-        '_UI.multiSelect.points.getSingleton().h1.xLock',
-        tp.h1.xLock,
-        'H1xlock'
-      ) +
+      // lockUI('_UI.multiSelect.points.getSingleton().h1.xLock', tp.h1.xLock, 'H1xlock') +
       '<input type="number" id="handle1x" step="' +
-      svc +
+      spinn +
       '" ' +
       (tp.h1.xLock
         ? 'disabled="disabled"'
@@ -613,13 +596,9 @@ function pointDetails(tp) {
       '</div>' +
       dimSplit() +
       '<div class="lockwrapper">' +
-      lockUI(
-        '_UI.multiSelect.points.getSingleton().h1.yLock',
-        tp.h1.yLock,
-        'H1ylock'
-      ) +
+      // lockUI('_UI.multiSelect.points.getSingleton().h1.yLock', tp.h1.yLock, 'H1ylock') +
       '<input type="number" id="handle1y" step="' +
-      svc +
+      spinn +
       '" ' +
       (tp.h1.yLock
         ? 'disabled="disabled"'
@@ -647,16 +626,16 @@ function pointDetails(tp) {
   }
 
   // HANDLE 2
-  content +=
-    '<tr><td colspan=2 class="detailtitle"><h3>' +
-    (issymmetric
-      ? '<input type="checkbox" checked disabled>'
-      : checkUI(
-          '_UI.multiSelect.points.getSingleton().h2.use',
-          tp.h2.use,
-          true
-        )) +
-    ' handle 2 <span class="unit">(after the point)</span></h3></td></tr>';
+  // content +=
+  //   '<tr><td colspan=2 class="detailtitle"><h3>' +
+  //   (issymmetric
+  //     ? '<input type="checkbox" checked disabled>'
+  //     : checkUI(
+  //         '_UI.multiSelect.points.getSingleton().h2.use',
+  //         tp.h2.use,
+  //         true
+  //       )) +
+  //   ' handle 2 <span class="unit">(after the point)</span></h3></td></tr>';
 
   if (tp.h2.use) {
     content +=
@@ -666,13 +645,9 @@ function pointDetails(tp) {
       'y</td>' +
       '<td>' +
       '<div class="lockwrapper">' +
-      lockUI(
-        '_UI.multiSelect.points.getSingleton().h2.xLock',
-        tp.h2.xLock,
-        'H2xlock'
-      ) +
+      // lockUI('_UI.multiSelect.points.getSingleton().h2.xLock', tp.h2.xLock, 'H2xlock') +
       '<input type="number" id="handle2x" step="' +
-      svc +
+      spinn +
       '" ' +
       (tp.h2.xLock
         ? 'disabled="disabled"'
@@ -683,13 +658,9 @@ function pointDetails(tp) {
       '</div>' +
       dimSplit() +
       '<div class="lockwrapper">' +
-      lockUI(
-        '_UI.multiSelect.points.getSingleton().h2.yLock',
-        tp.h2.yLock,
-        'H2ylock'
-      ) +
+      // lockUI('_UI.multiSelect.points.getSingleton().h2.yLock', tp.h2.yLock, 'H2ylock') +
       '<input type="number" id="handle2y" step="' +
-      svc +
+      spinn +
       '" ' +
       (tp.h2.yLock
         ? 'disabled="disabled"'
@@ -720,9 +691,14 @@ function pointDetails(tp) {
 }
 
 function dimSplit() {
-  return (
-    '<span style="color:' +
-    _UI.colors.gray.l60 +
-    '; width:20px; height:24px; text-align:center; display:inline-block; font-size:1.4em; vertical-align:-2px;">&#x2044;</span>'
-  );
+  return `<span style="
+      color:${accentColors.gray.l60}
+      width:20px;
+      height:24px;
+      text-align:center;
+      display:inline-block;
+      font-size:1.4em;
+      vertical-align:-2px;">
+        &#x2044;
+    </span>`;
 }
