@@ -186,7 +186,6 @@ function importOTFFont(filter) {
 
       fc[uni] = new Glyph({
         shapes: newShapes,
-        glyphhex: uni,
         glyphWidth: adv,
         isAutoWide: isAutoWide,
       });

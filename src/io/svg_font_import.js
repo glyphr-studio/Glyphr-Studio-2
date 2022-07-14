@@ -196,7 +196,6 @@ function ioSVG_importSVGFont(filter) {
 
         fc[uni] = new Glyph({
           shapes: newshapes,
-          glyphhex: uni,
           glyphWidth: adv,
           isAutoWide: isAutoWide,
         });
@@ -207,7 +206,6 @@ function ioSVG_importSVGFont(filter) {
         uni = uni.join('');
         fl[uni] = new Glyph({
           shapes: newshapes,
-          glyphhex: uni,
           glyphWidth: adv,
           isAutoWide: isAutoWide,
         });

@@ -44,7 +44,7 @@ export default class GlyphrStudioProject {
       pointSize: 7,
       spinnerValueChange: 1,
       combineShapesOnExport: false,
-      maxcombineShapesOnExport: 30,
+      maxCombineShapesOnExport: 30,
       showKeyboardTipsIcon: true,
       stopPageNavigation: true,
       formatSaveFile: true,

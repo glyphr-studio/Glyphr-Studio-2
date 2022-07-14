@@ -107,7 +107,7 @@ function exportOTFFont() {
     if (
       comb &&
       glyph.shapes.length <=
-        getCurrentProject().projectSettings.maxcombineShapesOnExport
+        getCurrentProject().projectSettings.maxCombineShapesOnExport
     ) {
       glyph.combineAllShapes(true);
     }
