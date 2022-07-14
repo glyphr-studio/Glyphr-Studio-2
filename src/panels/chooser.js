@@ -5,11 +5,11 @@
     the logic for creating Glyph chooser dialogs.
 **/
 
-function makePanel_GlyphChooser() {
+export default function makePanel_GlyphChooser() {
   // log('makePanel_GlyphChooser', 'start');
 
   let content = '<div class="navarea_header">';
-  content += makePanelSuperTitle();
+  content += projectEditor.nav.page;
   content += '<h1 class="paneltitle">chooser</h1>';
   content += '</div>';
   content += '<div class="panel_section" id="glyphChooser">';

@@ -10,6 +10,7 @@ import {
   json,
   getFirstID,
 } from '../common/functions.js';
+import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -28,9 +29,14 @@ export default class ProjectEditor {
    * Initialize a project editor, with defaults
    * @param {object} newEditor - Glyphr Studio Project File JSON
    */
-  constructor({ project = {}, selectedWorkItems = {} } = {}) {
+  constructor(project = {}) {
+    log('ProjectEditor.constructor', 'start');
+    // log('passed > project');
+    // log(project);
+    // log('passed > selectedWorkItemIDs');
+    // log(selectedWorkItemIDs);
+
     this.project = project;
-    this.selectedWorkItems = selectedWorkItems;
 
     // Navigation
     this.nav = {
@@ -59,9 +65,11 @@ export default class ProjectEditor {
 
     // MultiSelect
     this.multiSelect = {
-      points: {},
-      shapes: {},
+      points: new MultiSelectPoints(),
+      shapes: new MultiSelectShapes(),
     };
+    log(this);
+    log('ProjectEditor.constructor', 'end');
   }
 
   // --------------------------------------------------------------
@@ -73,11 +81,10 @@ export default class ProjectEditor {
    * @returns {GlyphrStudioProject}
    */
   get project() {
-    if (this._project && this._project !== {}) return this._project;
-    else {
+    if (!this._project || this._project === {}) {
       this._project = new GlyphrStudioProject();
-      return this._project;
     }
+    return this._project;
   }
 
   /**
@@ -90,42 +97,6 @@ export default class ProjectEditor {
   }
 
   // --------------------------------------------------------------
-  // Work Items
-  // --------------------------------------------------------------
-
-  /**
-   * Get the selected work items
-   * @returns {GlyphrStudioProject}
-   */
-  get selectedWorkItemIDs() {
-    if (this._selectedWorkItemIDs && this._selectedWorkItemIDs !== {})
-      return this._selectedWorkItemIDs;
-    else {
-      this._selectedWorkItemIDs = {
-        glyph: this.selectedGlyphID(),
-        ligature: this.selectedLigatureID(),
-        component: this.selectedComponentID(),
-        kern: this.selectedKernID(),
-      };
-      return this._selectedWorkItemIDs;
-    }
-  }
-
-  /**
-   * Set the selected work items
-   * @param {GlyphrStudioProject} swi - selectedWorkItemIDs to set
-   * @returns {GlyphrStudioProject}
-   */
-  set selectedWorkItemIDs(swi) {
-    this._selectedWorkItemIDs.glyph = swi.glyph || this.selectedGlyphID();
-    this._selectedWorkItemIDs.ligature =
-      swi.ligature || this.selectedLigatureID();
-    this._selectedWorkItemIDs.component =
-      swi.component || this.selectedComponentID();
-    this._selectedWorkItemIDs.kern = swi.kern || this.selectedKernID();
-  }
-
-  // --------------------------------------------------------------
   // Get Individual Selected Work Items
   // --------------------------------------------------------------
 
@@ -134,7 +105,11 @@ export default class ProjectEditor {
    * @returns {object}
    */
   get selectedGlyph() {
-    const re = this.glyphs[this.selectedGlyphID];
+    log('ProjectEditor GET selectedGlyph', 'start');
+    const id = this.selectedGlyphID;
+    log(`selectedWorkItemID: ${id}`);
+    const re = this.project.getGlyph(id);
+    log('ProjectEditor GET selectedGlyph', 'end');
     return re;
   }
 
@@ -143,10 +118,16 @@ export default class ProjectEditor {
    * @returns {string}
    */
   get selectedGlyphID() {
-    if (!this._selectedWorkItems.glyph) {
-      this._selectedWorkItems.glyph = getFirstID(this.project.glyphs);
+    log('ProjectEditor GET selectedGlyphID', 'start');
+    log(this.project);
+    log(this._selectedWorkItemIDs);
+    log('yep');
+    if (!this._selectedGlyphID) {
+      this._selectedGlyphID = getFirstID(this.project.glyphs);
     }
-    return this._selectedWorkItems.glyph;
+
+    log('ProjectEditor GET selectedGlyphID', 'end');
+    return this._selectedGlyphID;
   }
 
   /**
@@ -163,10 +144,10 @@ export default class ProjectEditor {
    * @returns {string}
    */
   get selectedLigatureID() {
-    if (!this._selectedWorkItems.ligature) {
-      this._selectedWorkItems.ligature = getFirstID(this.project.ligatures);
+    if (!this._selectedLigatureID) {
+      this._selectedLigatureID = getFirstID(this.project.ligatures);
     }
-    return this._selectedWorkItems.ligature;
+    return this._selectedLigatureID;
   }
 
   /**
@@ -183,10 +164,10 @@ export default class ProjectEditor {
    * @returns {string}
    */
   get selectedKernID() {
-    if (!this._selectedWorkItems.kern) {
-      this._selectedWorkItems.kern = getFirstID(this.project.kerning);
+    if (!this._selectedKernID) {
+      this._selectedKernID = getFirstID(this.project.kerning);
     }
-    return this._selectedWorkItems.kern;
+    return this._selectedKernID;
   }
 
   /**
@@ -203,10 +184,10 @@ export default class ProjectEditor {
    * @returns {string}
    */
   get selectedComponentID() {
-    if (!this._selectedWorkItems.component) {
-      this._selectedWorkItems.component = getFirstID(this.project.components);
+    if (!this._selectedComponentID) {
+      this._selectedComponentID = getFirstID(this.project.components);
     }
-    return this._selectedWorkItems.component;
+    return this._selectedComponentID;
   }
 
   // --------------------------------------------------------------
@@ -219,7 +200,7 @@ export default class ProjectEditor {
    */
   set selectedGlyph(id) {
     // Validate ID!
-    this._selectedWorkItems.glyph = id;
+    this._selectedGlyphID = id;
   }
 
   /**
@@ -228,7 +209,7 @@ export default class ProjectEditor {
    */
   set selectedLigature(id) {
     // Validate ID!
-    this._selectedWorkItems.ligature = id;
+    this._selectedLigatureID = id;
   }
 
   /**
@@ -237,7 +218,7 @@ export default class ProjectEditor {
    */
   set selectedKern(id) {
     // Validate ID!
-    this._selectedWorkItems.kern = id;
+    this._selectedKernID = id;
   }
 
   /**
@@ -246,7 +227,7 @@ export default class ProjectEditor {
    */
   set selectedComponent(id) {
     // Validate ID!
-    this._selectedWorkItems.component = id;
+    this._selectedComponentID = id;
   }
 
   // --------------------------------------------------------------

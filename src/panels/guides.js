@@ -6,7 +6,7 @@
 
 function makePanel_Guides() {
   let content = '<div class="navarea_header">';
-  content += makePanelSuperTitle();
+  content += projectEditor.nav.page;
   content += '<h1 class="paneltitle">guides</h1>';
   content += '</div><div class="panel_section">';
 

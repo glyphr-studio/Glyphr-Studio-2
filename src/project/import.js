@@ -13,8 +13,8 @@ import { log } from '../common/functions.js';
  */
 function importGlyphrProjectFromText(textProject) {
   log('importGlyphrProjectFromText', 'start');
-  log('passed:');
-  log(textProject);
+  // log('passed:');
+  // log(textProject);
 
   let app = getGlyphrStudioApp();
   let fileContent;
