@@ -10,7 +10,9 @@
         "sourceType": "module"
     },
     "rules":{
-        "prettier/prettier": "error"
+        "prettier/prettier": {
+            "endOfLine": "auto"
+        }
     },
     "ignorePatterns": [
         "*.test.js",
