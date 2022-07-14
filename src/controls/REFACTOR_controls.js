@@ -100,7 +100,7 @@ function makeIcon(oa) {
   re +=
     '<rect fill="transparent" width="' + width + '" height="' + height + '" ';
   re +=
-    'customguidetransparency="mouseOverIcon(\'' + hoverColor + '\', this);" ';
+    'customGuideTransparency="mouseOverIcon(\'' + hoverColor + '\', this);" ';
   re += 'onmouseout="mouseOutIcon(\'' + color + '\', this);" ';
   re += '/> ';
   re += '<g pointer-events="none" fill="' + color + '">';

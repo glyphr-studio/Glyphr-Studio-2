@@ -422,7 +422,7 @@ export default class ProjectEditor {
    */
   saveGlyphrProjectFile(overwrite) {
     // log('SAVEGLYPHRPROJECTVILE');
-    // log('' + this.project.projectSettings.formatsavefile);
+    // log('' + this.project.projectSettings.formatSaveFile);
 
     // desktop overwrite / save as logic
     if (window && window.process && window.process.type) {
@@ -435,7 +435,7 @@ export default class ProjectEditor {
 
     let saveData = this.project.save();
 
-    if (this.project.projectSettings.formatsavefile) saveData = json(saveData);
+    if (this.project.projectSettings.formatSaveFile) saveData = json(saveData);
     else saveData = JSON.stringify(saveData);
 
     // log('saveGlyphrProjectFile - \n'+saveData);

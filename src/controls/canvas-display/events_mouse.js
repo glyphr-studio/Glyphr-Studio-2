@@ -46,7 +46,7 @@ function initEventHandlers() {
   _UI.glyphEditCanvas.addEventListener('mousedown', ev_canvas, false);
   _UI.glyphEditCanvas.addEventListener('mousemove', ev_canvas, false);
   _UI.glyphEditCanvas.addEventListener('mouseup', ev_canvas, false);
-  _UI.glyphEditCanvas.customguidetransparency = mouseovercec;
+  _UI.glyphEditCanvas.customGuideTransparency = mouseovercec;
   _UI.glyphEditCanvas.onmouseout = mouseoutcec;
   _UI.glyphEditCanvas.addEventListener('wheel', mousewheel, false);
   if (document.getElementById('navarea_panel')) {
@@ -373,9 +373,9 @@ function Tool_NewBasicShape() {
 
     if (
       Math.abs(tnbs.xMax - tnbs.xMin) >
-        getCurrentProject().projectSettings.pointsize &&
+        getCurrentProject().projectSettings.pointSize &&
       Math.abs(tnbs.yMax - tnbs.yMin) >
-        getCurrentProject().projectSettings.pointsize
+        getCurrentProject().projectSettings.pointSize
     ) {
       let count =
         editor.nav.page === 'components'
@@ -447,7 +447,7 @@ function Tool_NewPath() {
       this.currpt = this.newshape.path.addPathPoint(newpoint);
     } else if (this.newshape) {
       let targetSize =
-        getCurrentProject().projectSettings.pointsize /
+        getCurrentProject().projectSettings.pointSize /
         getView('Event Handler Tool_PathEdit.mousedown').dz;
       if (
         this.newshape.path.isOverFirstPoint(
@@ -490,16 +490,16 @@ function Tool_NewPath() {
   this.mousemove = function (ev) {
     let eh = _UI.eventhandlers;
     let targetSize =
-      getCurrentProject().projectSettings.pointsize /
+      getCurrentProject().projectSettings.pointSize /
       getView('Event Handler Tool_PathEdit.mousedown').dz;
 
     if (this.dragging) {
       // avoid really small handles
       if (
         Math.abs(this.currpt.p.x - cXsX(eh.mousex)) >
-          getCurrentProject().projectSettings.pointsize * 2 ||
+          getCurrentProject().projectSettings.pointSize * 2 ||
         Math.abs(this.currpt.p.y - cYsY(eh.mousey)) >
-          getCurrentProject().projectSettings.pointsize * 2
+          getCurrentProject().projectSettings.pointSize * 2
       ) {
         this.currpt.h1.use = true;
         this.currpt.h2.use = true;
@@ -563,7 +563,7 @@ function Tool_PathEdit() {
     eh.lastX = eh.mousex;
     eh.lastY = eh.mousey;
     let targetSize =
-      getCurrentProject().projectSettings.pointsize /
+      getCurrentProject().projectSettings.pointSize /
       getView('Event Handler Tool_PathEdit.mousedown').dz;
     this.controlpoint = getSelectedWorkItem().isOverControlPoint(
       cXsX(eh.mousex),
@@ -663,7 +663,7 @@ function Tool_PathEdit() {
     checkForMouseOverHotspot(eh.mousex, eh.mousey);
 
     let targetSize =
-      getCurrentProject().projectSettings.pointsize /
+      getCurrentProject().projectSettings.pointSize /
       getView('Event Handler Tool_PathEdit.mousedown').dz;
     let cp = _UI.multiSelect.shapes.isOverControlPoint(
       cXsX(eh.mousex),
@@ -748,7 +748,7 @@ function Tool_PathAddPoint() {
       });
       if (pt && pt.distance < 20) {
         this.addpoint = pt;
-        let ptsize = getCurrentProject().projectSettings.pointsize;
+        let ptsize = getCurrentProject().projectSettings.pointSize;
         let ptx = makeCrisp(sXcX(pt.x) - ptsize / 2);
         let pty = makeCrisp(sYcY(pt.y) - ptsize / 2);
         openNotation(

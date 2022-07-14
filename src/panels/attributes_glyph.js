@@ -89,7 +89,7 @@ function makePanel_GlyphAttributes() {
 
 function multiSelectDetails() {
   let sc = _UI.multiSelect.shapes.getGlyph();
-  let svc = getCurrentProject().projectSettings.spinnervaluechange * 1 || 1;
+  let svc = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   let content = '';
 
   content +=
@@ -157,7 +157,7 @@ function multiSelectDetails() {
 
 function glyphDetails(s) {
   let sc = getSelectedWorkItem();
-  let svc = getCurrentProject().projectSettings.spinnervaluechange * 1 || 1;
+  let svc = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   // sc.calcMaxes();
   let content = '';
   let numshapes = getSelectedWorkItemShapes().length;
@@ -348,7 +348,7 @@ function glyphDetails(s) {
 
 function shapeDetails(s) {
   // log("SHAPEDETAILS - Drawing Shape Details");
-  let svc = getCurrentProject().projectSettings.spinnervaluechange * 1 || 1;
+  let svc = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   let content = '';
   content +=
     '<tr><td colspan=2 class="detailtitle"><h3 style="margin:0px;">shape</h3></td></tr>';
@@ -511,7 +511,7 @@ function shapeDetails(s) {
 }
 
 function pointDetails(tp) {
-  let svc = getCurrentProject().projectSettings.spinnervaluechange * 1 || 1;
+  let svc = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   let content = '';
 
   // POINT

@@ -223,7 +223,7 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
   });
   uni = uni.join('');
 
-  if (getCurrentProject().projectSettings.combineshapesonexport) {
+  if (getCurrentProject().projectSettings.combineShapesOnExport) {
     gl = new Glyph(gl).flattenGlyph().combineAllShapes(true);
   }
 
