@@ -57,32 +57,32 @@ function makePanel_Guides() {
     '<td><label style="margin-left:10px;" for="showOvershoots">show overshoots (' +
     ps.overshoot +
     ' em units)</label></td></tr>' +
-    // '<td colspan="2">grid transparency:<input type="range" min="0" max="100" value="'+ps.colors.gridtransparency+'" step="1" oninput="updateTransparency(\'gridtransparency\', this.value);"/><span id="gridtransparency">'+ps.colors.gridtransparency+'</span>%</td>'+sliderUI('gridtransparency')+'</tr>'+
+    // '<td colspan="2">grid transparency:<input type="range" min="0" max="100" value="'+ps.colors.glyphTransparency+'" step="1" oninput="updateTransparency(\'glyphTransparency\', this.value);"/><span id="glyphTransparency">'+ps.colors.glyphTransparency+'</span>%</td>'+sliderUI('glyphTransparency')+'</tr>'+
     '<td colspan="2">grid ' +
-    sliderUI('gridtransparency', 'gridtransparency_panel', false, true) +
+    sliderUI('glyphTransparency', 'glyphTransparency_panel', false, true) +
     '</td></tr>' +
     '</table>';
 
   if (editor.nav.page !== 'kerning') {
     content += '<br><h3 style=" margin-bottom:0px;">system guides</h3>';
-    // content += 'transparency:<input type="range" min="0" max="100" value="'+ps.colors.systemguidetransparency+'" step="1" oninput="updateTransparency(\'systemguidetransparency\', this.value);"/><span id="systemguidetransparency">'+ps.colors.systemguidetransparency+'</span>%<br><br>';
+    // content += 'transparency:<input type="range" min="0" max="100" value="'+ps.colors.systemGuideTransparency+'" step="1" oninput="updateTransparency(\'systemGuideTransparency\', this.value);"/><span id="systemGuideTransparency">'+ps.colors.systemGuideTransparency+'</span>%<br><br>';
     content +=
       'guide ' +
       sliderUI(
-        'systemguidetransparency',
-        'systemguidetransparency_panel',
+        'systemGuideTransparency',
+        'systemGuideTransparency_panel',
         false,
         true
       ) +
       '<br><br>';
     content += system;
     content += '<br><h3 style=" margin-bottom:0px;">custom guides</h3>';
-    // content += 'transparency:<input type="range" min="0" max="100" value="'+ps.colors.customguidetransparency+'" step="1" oninput="updateTransparency(\'customguidetransparency\', this.value);"/><span id="customguidetransparency">'+ps.colors.customguidetransparency+'</span>%<br><br>';
+    // content += 'transparency:<input type="range" min="0" max="100" value="'+ps.colors.customGuideTransparency+'" step="1" oninput="updateTransparency(\'customGuideTransparency\', this.value);"/><span id="customGuideTransparency">'+ps.colors.customGuideTransparency+'</span>%<br><br>';
     content +=
       'guide ' +
       sliderUI(
-        'customguidetransparency',
-        'customguidetransparency_panel',
+        'customGuideTransparency',
+        'customGuideTransparency_panel',
         false,
         true
       ) +
@@ -103,7 +103,7 @@ function makeOneGuideRow(guide, path, currviz, id) {
   re += '<td class="guidecolor" style="background-color:' + guide.color + ';"';
   if (!sys) {
     re +=
-      " customguidetransparency=\"hideAllSatChoosers(); this.style.cursor='pointer'; this.style.borderColor='" +
+      " customGuideTransparency=\"hideAllSatChoosers(); this.style.cursor='pointer'; this.style.borderColor='" +
       guide.color +
       '\';"';
     re += ' onmouseout="this.style.borderColor=\'rgb(250,252,255)\';"';

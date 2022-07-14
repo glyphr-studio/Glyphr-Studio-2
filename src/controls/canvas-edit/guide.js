@@ -56,7 +56,7 @@ export default class Guide {
       label.y = 11;
     }
     let alpha = transparencyToAlpha(
-      this.editable ? psc.customguidetransparency : psc.systemguidetransparency
+      this.editable ? psc.customGuideTransparency : psc.systemGuideTransparency
     );
     let color = getColorFromRGBA(this.color, alpha);
     if (color !== 'rgb(255,255,255)') {

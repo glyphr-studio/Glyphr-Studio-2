@@ -64,7 +64,7 @@ function goToEditGlyph(chid) {
 
 function componentInstanceDetails(s) {
   // log("COMPONENTINSTANCEDETAILS - start of function");
-  let svc = getCurrentProject().projectSettings.spinnervaluechange || 1;
+  let svc = getCurrentProject().projectSettings.spinnerValueChange || 1;
   content =
     '<tr><td colspan=2 class="detailtitle"><h3 style="margin:0px;">component instance</h3></td></tr>';
 

@@ -308,17 +308,17 @@ function update_ToolsArea() {
   ctxg +=
     '<b>Context Glyphs</b> are letters you can display around the glyph you are currently editing.<br><br>';
   ctxg += checkUI(
-    'getCurrentProject().projectSettings.showcontextglyphguides',
-    getCurrentProject().projectSettings.showcontextglyphguides,
+    'getCurrentProject().projectSettings.showContextGlyphGuides',
+    getCurrentProject().projectSettings.showContextGlyphGuides,
     true
   );
   ctxg +=
-    '<label style="margin-left:10px; position:relative; top:-6px;" for="showcontextglyphguides">show guides</label><br>';
+    '<label style="margin-left:10px; position:relative; top:-6px;" for="showContextGlyphGuides">show guides</label><br>';
   ctxg +=
     'glyph ' +
     sliderUI(
-      'contextglyphtransparency',
-      'contextglyphtransparency_dropdown',
+      'contextGlyphTransparency',
+      'contextGlyphTransparency_dropdown',
       true,
       false
     );
@@ -326,8 +326,8 @@ function update_ToolsArea() {
   ctxg +=
     'guide ' +
     sliderUI(
-      'systemguidetransparency',
-      'systemguidetransparency_dropdown',
+      'systemGuideTransparency',
+      'systemGuideTransparency_dropdown',
       true,
       false
     );
@@ -378,7 +378,7 @@ function update_ToolsArea() {
   if (onkern) toolcontent += kern;
   if (onglyph || onlig) toolcontent += ctxg;
 
-  if (getCurrentProject().projectSettings.showkeyboardtipsicon)
+  if (getCurrentProject().projectSettings.showKeyboardTipsIcon)
     utilitiescontent += kbt;
 
   getEditDocument().getElementById(
@@ -624,11 +624,11 @@ function toggleKeyboardTips() {
     con +=
       '<table><tr><td style="vertical-align:top; padding:20px 10px 0px 0px;">' +
       checkUI(
-        'getCurrentProject().projectSettings.showkeyboardtipsicon',
-        getCurrentProject().projectSettings.showkeyboardtipsicon
+        'getCurrentProject().projectSettings.showKeyboardTipsIcon',
+        getCurrentProject().projectSettings.showKeyboardTipsIcon
       ) +
       '</td><td style="vertical-align:top; padding:20px 10px 0px 0px;">' +
-      '<label style="position:relative; top:-5px;" for="showkeyboardtipsicon">show the &nbsp;<span style="position:relative; top:6px;">' +
+      '<label style="position:relative; top:-5px;" for="showKeyboardTipsIcon">show the &nbsp;<span style="position:relative; top:6px;">' +
       makeIcon({
         name: 'keyboard',
         size: 50,
@@ -681,7 +681,7 @@ function makeKeyboardShortcutsTable() {
       <span class='arrow'>&#x21E9;</span>
       <span class='arrow' style='margin-right:4px;'>&#x21E8;</span>
       </td><td>nudges the selected shape<br>or point ${
-        getCurrentProject().projectSettings.spinnervaluechange
+        getCurrentProject().projectSettings.spinnerValueChange
       } em units</td></tr>
       </table>
 
@@ -808,7 +808,7 @@ function getGlyphSequenceAdvanceWidth(sequence) {
 
 function drawContextGlyphLeftLineExtras(char, seq) {
   const alpha = transparencyToAlpha(
-    getCurrentProject().projectSettings.colors.systemguidetransparency
+    getCurrentProject().projectSettings.colors.systemGuideTransparency
   );
   const color = getColorFromRGBA('rgb(204,81,0)', alpha);
   drawVerticalLine(char.view.dx * char.view.dz, false, color);
@@ -858,9 +858,9 @@ function drawContextGlyphExtras(char) {
   // log(char.glyph);
 
   const ps = getCurrentProject().projectSettings;
-  const alpha = transparencyToAlpha(ps.colors.systemguidetransparency);
+  const alpha = transparencyToAlpha(ps.colors.systemGuideTransparency);
 
-  if (ps.showcontextglyphguides && alpha) {
+  if (ps.showContextGlyphGuides && alpha) {
     const ctx = _UI.glyphEditCTX;
     const view = getView('drawContextGlyphExtras');
     const advanceWidth = char.width * view.dz;
@@ -939,7 +939,7 @@ function drawGlyphKernExtra(kern, rightx, topy, scale) {
   const color = getColorFromRGBA(
     'rgb(255,0,255)',
     transparencyToAlpha(
-      getCurrentProject().projectSettings.colors.systemguidetransparency
+      getCurrentProject().projectSettings.colors.systemGuideTransparency
     )
   );
   const barheight = Math.max(scale * 10, 1);
@@ -984,7 +984,7 @@ function drawContextGlyph(char) {
     _UI.glyphEditCTX,
     { dx: c.dx * c.dz, dy: v.dy, dz: c.dz },
     transparencyToAlpha(
-      getCurrentProject().projectSettings.colors.contextglyphtransparency
+      getCurrentProject().projectSettings.colors.contextGlyphTransparency
     ),
     true
   );
@@ -1094,7 +1094,7 @@ function findAndUnderlineHotspot(cx, cy) {
   // log(`${hs}`);
   if (hs) {
     const t = getCurrentProject().projectSettings.colors
-      .systemguidetransparency;
+      .systemGuideTransparency;
     // var t2 = (((100 - t) / 2) + t);
     const alpha = transparencyToAlpha(t);
     const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);
@@ -1314,7 +1314,7 @@ function draw_PathOutline(sh, accent, thickness) {
 
   accent = accent || _UI.colors.blue;
   thickness = thickness || 1;
-  const hp = getCurrentProject().projectSettings.pointsize / 2;
+  const hp = getCurrentProject().projectSettings.pointSize / 2;
   _UI.glyphEditCTX.strokeStyle = accent.l65;
   _UI.glyphEditCTX.fillStyle = 'transparent';
 
@@ -1538,7 +1538,7 @@ function draw_Line(p1, p2) {
 }
 
 function draw_SquareHandle(ul) {
-  const ps = getCurrentProject().projectSettings.pointsize;
+  const ps = getCurrentProject().projectSettings.pointSize;
   _UI.glyphEditCTX.fillRect(ul.x, ul.y, ps, ps);
   _UI.glyphEditCTX.strokeRect(ul.x, ul.y, ps, ps);
 }
@@ -1548,7 +1548,7 @@ function draw_CircleHandle(center) {
   _UI.glyphEditCTX.arc(
     center.x,
     center.y,
-    getCurrentProject().projectSettings.pointsize / 2,
+    getCurrentProject().projectSettings.pointSize / 2,
     0,
     Math.PI * 2,
     true
@@ -1564,7 +1564,7 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
   // log('maxes - ' + json(maxes, true));
 
   if (!maxes) return false;
-  const ps = getCurrentProject().projectSettings.pointsize;
+  const ps = getCurrentProject().projectSettings.pointSize;
   const bb = getBoundingBoxHandleDimensions(maxes, thickness);
 
   // log('point size - ' + ps);
@@ -1664,7 +1664,7 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
 
 function getBoundingBoxHandleDimensions(maxes, thickness) {
   const dimensions = {};
-  const hp = getCurrentProject().projectSettings.pointsize / 2;
+  const hp = getCurrentProject().projectSettings.pointSize / 2;
   thickness = thickness || 1;
 
   // Translation Fidelity - converting passed canvas values to saved value system
@@ -1722,7 +1722,7 @@ function drawGrid() {
     const gridcolor = getColorFromRGBA(
       'rgb(170,170,170)',
       transparencyToAlpha(
-        getCurrentProject().projectSettings.colors.gridtransparency
+        getCurrentProject().projectSettings.colors.glyphTransparency
       )
     );
     _UI.glyphEditCTX.lineWidth = 1;
@@ -1857,13 +1857,13 @@ function drawGuides() {
         const v = getView('guides');
         ctx.fillStyle = shiftColor(
           ps.guides.baseline.color,
-          ps.colors.systemguidetransparency / 100,
+          ps.colors.systemGuideTransparency / 100,
           true
         );
         ctx.beginPath();
         ctx.moveTo(v.dx - 1, v.dy);
-        ctx.lineTo(v.dx - 1, v.dy + ps.pointsize * 2);
-        ctx.lineTo(v.dx - 1 - ps.pointsize * 2, v.dy);
+        ctx.lineTo(v.dx - 1, v.dy + ps.pointSize * 2);
+        ctx.lineTo(v.dx - 1 - ps.pointSize * 2, v.dy);
         ctx.closePath();
         ctx.fill();
       }
@@ -1885,5 +1885,5 @@ function setupEditCanvas() {
     return false;
   }; // for Chrome, disable text select while dragging
   _UI.glyphEditCanvas.onmouseout = mouseoutcec;
-  _UI.glyphEditCanvas.customguidetransparency = mouseovercec;
+  _UI.glyphEditCanvas.customGuideTransparency = mouseovercec;
 }
