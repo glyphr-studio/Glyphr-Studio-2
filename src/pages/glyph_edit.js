@@ -1,6 +1,7 @@
 import { makeElement } from '../controls/controls.js';
 import { log } from '../common/functions.js';
 import makePanel_GlyphAttributes from '../panels/attributes_glyph.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 
 /**
  * Page > Glyph Edit
@@ -20,6 +21,7 @@ export default class PageGlyphEdit {
   pageLoader() {
     log(`PageGlyphEdit.pageLoader`, 'start');
 
+
     const content = makeElement({
       tag: 'div',
       id: 'app__page',
@@ -27,6 +29,7 @@ export default class PageGlyphEdit {
       <div class="glyph-edit__page">
         <div class="glyph-edit__left-area">
           <fancy-button>Glyphr Studio</fancy-button>
+          <fancy-button>${getCurrentProjectEditor().selectedGlyph.id}</fancy-button>
           <panel-area panel="Attributes">${makePanel_GlyphAttributes()}</panel-area>
         </div>
         <div class="glyph-edit__right-area">
