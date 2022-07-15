@@ -30,12 +30,12 @@ export default class ProjectEditor {
    * Initialize a project editor, with defaults
    * @param {object} newEditor - Glyphr Studio Project File JSON
    */
-  constructor(project = {}) {
+  constructor(newProjectEditor = {}) {
     log('ProjectEditor.constructor', 'start');
-    // log('passed > project');
-    // log(project);
+    // log('passed > newProjectEditor');
+    // log(newProjectEditor);
 
-    this.project = project;
+    this.project = newProjectEditor.project;
     this.selectedGlyphID = '0x0042';
     this.selectedComponentID = false;
     this.selectedLigatureID = false;
@@ -43,14 +43,8 @@ export default class ProjectEditor {
 
     // Navigation
     this.nav = {
-      page: 'open project',
-      panel: false,
-      lastPanel: 'npChooser',
-      hamburger: {
-        state: 11,
-        direction: -1,
-        timeout: {},
-      },
+      page: newProjectEditor.nav.page || 'open project',
+      panel: newProjectEditor.nav.panel || false,
       projectSaved: true,
       stopPageNavigation: true,
     };
@@ -71,7 +65,7 @@ export default class ProjectEditor {
       points: new MultiSelectPoints(),
       shapes: new MultiSelectShapes(),
     };
-    log(this);
+    // log(this);
     log('ProjectEditor.constructor', 'end');
   }
 
@@ -108,11 +102,10 @@ export default class ProjectEditor {
    * @returns {object}
    */
   get selectedGlyph() {
-    log('ProjectEditor GET selectedGlyph', 'start');
+    // log('ProjectEditor GET selectedGlyph', 'start');
     const id = this.selectedGlyphID;
-    log(`selectedGlyphID: ${id}`);
     const re = this.project.getGlyph(id);
-    log('ProjectEditor GET selectedGlyph', 'end');
+    // log('ProjectEditor GET selectedGlyph', 'end');
     return re || new Glyph();
   }
 
@@ -121,15 +114,12 @@ export default class ProjectEditor {
    * @returns {string}
    */
   get selectedGlyphID() {
-    log('ProjectEditor GET selectedGlyphID', 'start');
-    log(this.project);
-    log(this._selectedGlyphID);
-    log('yep');
+    // log('ProjectEditor GET selectedGlyphID', 'start');
     if (!this._selectedGlyphID) {
       this._selectedGlyphID = getFirstID(this.project.glyphs);
     }
 
-    log('ProjectEditor GET selectedGlyphID', 'end');
+    // log('ProjectEditor GET selectedGlyphID', 'end');
     return this._selectedGlyphID;
   }
 

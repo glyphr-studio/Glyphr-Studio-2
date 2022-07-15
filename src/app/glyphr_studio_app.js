@@ -41,61 +41,30 @@ export default class GlyphrStudioApp {
   setUp(sampleProject = false) {
     log(`GlyphrStudioApp.setUp`, 'start');
 
+    let gsProject = {};
+
     // Dev mode stuff
     if (this.settings.dev.mode) {
       log('DEV NAV - to ' + this.settings.dev.currentPage);
       document.title = '⡄⡆⡇ ⃨G⃨S⃨2⃨D⃨E⃨V⃨M⃨O⃨D⃨E⃨ ⡇⡆⡄';
 
-      // Project
+      // Sample Project
       if (sampleProject) {
         log('Using sample project');
-        importGlyphrProjectFromText(sampleProject);
-      } else {
-        this.projectEditors[0] = new ProjectEditor();
-      }
-
-      // Page Navigate
-      if (this.settings.dev.currentPage) {
-        this.getCurrentProjectEditor().nav.page = this.settings.dev.currentPage;
-        this.fadeOutLoadScreen(100);
+        gsProject = importGlyphrProjectFromText(sampleProject);
       }
 
       // Test Function
       if (this.settings.dev.testOnLoad) this.settings.dev.testOnLoad();
     }
 
-    // Telemetry
-    /* eslint-disable */
-    function setUpGoogleAnalytics(i, s, o, g, r, a, m) {
-      i.GoogleAnalyticsObject = r;
-      i[r] = i[r] || function() {
-        (i[r].q = i[r].q || []).push(arguments);
-      };
-      i[r].l = 1*new Date();
-      a = s.createElement(o);
-      m = s.getElementsByTagName(o)[0];
-      a.async = 1;
-      a.src = g;
-      m.parentNode.insertBefore(a, m);
-    }
-    /* eslint-enable */
-
-    if (!this.settings.dev.mode && this.settings.telemetry) {
-      try {
-        setUpGoogleAnalytics(
-          window,
-          document,
-          'script',
-          '//www.google-analytics.com/analytics.js',
-          'ga'
-        );
-        window.ga('create', 'UA-71021902-1', 'auto');
-        window.ga('send', 'pageview');
-      } catch (err) {
-        console.warn('Google Analytics did not load.');
+    this.projectEditors[0] = new ProjectEditor({
+      project: gsProject,
+      nav: {
+        page: this.settings.dev.currentPage,
+        panel: this.settings.dev.currentPanel
       }
-    }
-
+    });
     this.navigate();
 
     log(`GlyphrStudioApp.setUp`, 'end');
@@ -107,6 +76,7 @@ export default class GlyphrStudioApp {
    */
   navigate(pageName) {
     log(`GlyphrStudioApp.navigate`, 'start');
+    this.fadeOutLoadScreen();
     this.getCurrentProjectEditor().navigate(pageName);
     log(`GlyphrStudioApp.navigate`, 'end');
   }

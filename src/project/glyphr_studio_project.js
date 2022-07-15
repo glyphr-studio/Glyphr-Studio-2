@@ -16,7 +16,10 @@ export default class GlyphrStudioProject {
    */
   constructor(newProject = {}) {
     log('GlyphrStudioProject.constructor', 'start');
-    // Set up all default values first
+    // log('passed newProject:');
+    // log(newProject);
+
+    // Set up all internal default values first
     this.projectSettings = {
       // Internal Stuff
       versionName: 'Version 2 Alpha',
@@ -129,30 +132,33 @@ export default class GlyphrStudioProject {
     // Project Settings
     newProject.projectSettings = newProject.projectSettings || {};
     newProject.projectSettings.guides = newProject.projectSettings.guides || {};
-    newProject.projectSettings.glyphRanges =
-      newProject.projectSettings.glyphRanges || [];
+    newProject.projectSettings.glyphRanges = newProject.projectSettings.glyphRanges || [];
 
     // Guides can be custom, so save a copy before merging with templates
     // let dataGuides = clone(newProject.projectSettings.guides || {});
 
     // Merge with templates
     if (newProject.projectSettings) {
+      // log('merging projectSettings from newProject');
       this.projectSettings = merge(this.projectSettings, newProject.projectSettings);
       this.projectSettings.glyphRanges = newProject.projectSettings.glyphRanges || [];
     }
     this.projectSettings.projectID = this.projectSettings.projectID || makeProjectID();
     this.projectSettings.descent = -1 * Math.abs(this.projectSettings.descent);
-    log('finished merging projectSettings');
-    log(this.projectSettings);
+    // log('finished merging projectSettings');
+    // log(this.projectSettings);
 
     // Guides
     // hydrateGlyphrObjectList(Guide, dataGuides, this.projectSettings.guides);
     // log('finished hydrating guides');
 
     // Metadata
-    if (newProject.metadata)
+    if (newProject.metadata) {
+      // log('merging metadata from newProject');
       this.metadata = merge(this.metadata, newProject.metadata, true);
+    }
     // log('finished merging metadata');
+    // log(this.metadata);
 
     // Components
     hydrateGlyphrObjectList(Glyph, newProject.components, this.components);
@@ -160,8 +166,8 @@ export default class GlyphrStudioProject {
 
     // Glyphs
     hydrateGlyphrObjectList(Glyph, newProject.glyphs, this.glyphs);
-    log('finished hydrating glyphs');
-    log(this.glyphs);
+    // log('finished hydrating glyphs');
+    // log(this.glyphs);
 
     // Ligatures
     hydrateGlyphrObjectList(Glyph, newProject.ligatures, this.ligatures);
@@ -171,7 +177,7 @@ export default class GlyphrStudioProject {
     hydrateGlyphrObjectList(HKern, newProject.kerning, this.kerning);
     // log('finished hydrating kern pairs');
 
-    log(this);
+    // log(this);
     log('GlyphrStudioProject.constructor', 'end');
   }
 
