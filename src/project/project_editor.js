@@ -11,6 +11,7 @@ import {
   getFirstID,
 } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
+import Glyph from '../glyph_elements/glyph.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -33,10 +34,12 @@ export default class ProjectEditor {
     log('ProjectEditor.constructor', 'start');
     // log('passed > project');
     // log(project);
-    // log('passed > selectedWorkItemIDs');
-    // log(selectedWorkItemIDs);
 
     this.project = project;
+    this.selectedGlyphID = '0x0042';
+    this.selectedComponentID = false;
+    this.selectedLigatureID = false;
+    this.selectedKernID = false;
 
     // Navigation
     this.nav = {
@@ -107,10 +110,10 @@ export default class ProjectEditor {
   get selectedGlyph() {
     log('ProjectEditor GET selectedGlyph', 'start');
     const id = this.selectedGlyphID;
-    log(`selectedWorkItemID: ${id}`);
+    log(`selectedGlyphID: ${id}`);
     const re = this.project.getGlyph(id);
     log('ProjectEditor GET selectedGlyph', 'end');
-    return re;
+    return re || new Glyph();
   }
 
   /**
@@ -120,7 +123,7 @@ export default class ProjectEditor {
   get selectedGlyphID() {
     log('ProjectEditor GET selectedGlyphID', 'start');
     log(this.project);
-    log(this._selectedWorkItemIDs);
+    log(this._selectedGlyphID);
     log('yep');
     if (!this._selectedGlyphID) {
       this._selectedGlyphID = getFirstID(this.project.glyphs);
@@ -198,7 +201,7 @@ export default class ProjectEditor {
    * Sets the selected glyph
    * @param {string} id - ID to select
    */
-  set selectedGlyph(id) {
+  set selectedGlyphID(id) {
     // Validate ID!
     this._selectedGlyphID = id;
   }
@@ -207,7 +210,7 @@ export default class ProjectEditor {
    * Sets the selected ligature
    * @param {string} id - ID to select
    */
-  set selectedLigature(id) {
+  set selectedLigatureID(id) {
     // Validate ID!
     this._selectedLigatureID = id;
   }
@@ -216,7 +219,7 @@ export default class ProjectEditor {
    * Sets the selected kern
    * @param {string} id - ID to select
    */
-  set selectedKern(id) {
+  set selectedKernID(id) {
     // Validate ID!
     this._selectedKernID = id;
   }
@@ -225,7 +228,7 @@ export default class ProjectEditor {
    * Sets the selected component
    * @param {string} id - ID to select
    */
-  set selectedComponent(id) {
+  set selectedComponentID(id) {
     // Validate ID!
     this._selectedComponentID = id;
   }
