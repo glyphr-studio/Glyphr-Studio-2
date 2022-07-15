@@ -10,7 +10,7 @@
 .glyph-edit__left-area {
 	grid-column: 1;
 	display: grid;
-	grid-template-rows: 50px 1fr;
+	grid-template-rows: 48px 48px 1fr;
 }
 
 .glyph-edit__right-area {
@@ -20,13 +20,13 @@
 }
 
 .glyph-edit__left-area fancy-button {
-	grid-row: 1;
 	width: 100%;
 	border-radius: 0;
+	height: 48px;
 }
 
 .glyph-edit__left-area panel-area {
-	grid-row: 2;
+	grid-row: 3;
 }
 
 canvas-display {
