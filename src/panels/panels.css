@@ -1,0 +1,21 @@
+.panel__section {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+.panel__section h1,
+.panel__section h2,
+.panel__section h3,
+.panel__section h4,
+.panel__section h5,
+.panel__section h6 {
+	grid-column: span 3;
+}
+
+.panel__section label {
+	grid-column: 1;
+}
+
+.panel__section .doubleInput {
+	grid-column: 2;
+}
