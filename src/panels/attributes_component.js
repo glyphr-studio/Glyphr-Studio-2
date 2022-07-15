@@ -7,6 +7,21 @@ export { makeUsedInThumbs };
     Instance objects.
 **/
 
+function makeComponentsAttributesPanel(selectedComponent) {
+  let content = `
+  <div class="panel__section">
+    <h3>component</h3>
+    <label>name</label>
+    <input type="text" value="${selectedComponent.name}" onchange="getSelectedWorkItem().name = this.value;"/>
+
+    <h3>glyphs that use this component</h3>
+    ${makeUsedInThumbs()}
+  </div>
+  `;
+
+  return content;
+}
+
 function makeUsedInThumbs() {
   let ui = getSelectedWorkItem().usedIn;
   let unique = ui.filter(function (elem, pos) {
@@ -72,8 +87,8 @@ function goToEditGlyph(chid) {
 //    COMPONENT INSTANCE ATTRIBUTES
 //    ---------------------------------
 
-function componentInstanceDetails(s) {
-  // log("COMPONENTINSTANCEDETAILS - start of function");
+function makeAttributesGroup_componentInstance(s) {
+  // log("makeAttributesGroup_componentInstance - start of function");
   let svc = getCurrentProject().projectSettings.spinnerValueChange || 1;
   content =
     '<tr><td colspan=2 class="detailtitle"><h3 style="margin:0px;">component instance</h3></td></tr>';
@@ -285,5 +300,5 @@ function updateComponentInstanceDetail(key, value, id) {
 
   historyPut('component ' + key);
   _UI.focusElement = id;
-  redraw({ calledBy: 'componentInstanceDetails' });
+  redraw({ calledBy: 'makeAttributesGroup_componentInstance' });
 }
