@@ -17,12 +17,15 @@ import Glyph from "../glyph_elements/glyph.js";
 export default function makePanel_GlyphAttributes() {
   log('makePanel_GlyphAttributes', 'start');
   let projectEditor = getCurrentProjectEditor();
-  log(projectEditor);
+  let content = '';
+  // log(projectEditor);
 
   if(projectEditor.nav.page === 'glyph edit') {
-    return makeGlyphAttributesPanel(projectEditor);
+    content = makeGlyphAttributesPanel(projectEditor);
   } else if(projectEditor.nav.page === 'components') {
-    return makeComponentsAttributesPanel(projectEditor.selectedComponent);
+    content = makeComponentsAttributesPanel(projectEditor);
+  } else {
+    content = 'NO PANEL FOR CURRENT PAGE';
   }
 
   log('makePanel_GlyphAttributes', 'end');
@@ -35,7 +38,7 @@ export default function makePanel_GlyphAttributes() {
 */
 function makeGlyphAttributesPanel(projectEditor) {
   log('makeGlyphAttributesPanel', 'start');
-  log(projectEditor);
+  // log(projectEditor);
   // let projectEditor.multiSelect.shapes = _UI.multiSelect.shapes.getMembers();
 
   let content = '<div class="panel__section">';
@@ -45,7 +48,7 @@ function makeGlyphAttributesPanel(projectEditor) {
   if (projectEditor.multiSelect.shapes.length === 0) {
     // no shape selected
     log("No shape selected");
-    content += glyphDetails();
+    content += glyphDetails(projectEditor.selectedGlyph);
 
   } else if (projectEditor.multiSelect.shapes.length === 1) {
     // One shape selected
@@ -77,7 +80,9 @@ function makeGlyphAttributesPanel(projectEditor) {
   }
 
   content += '</div>';
-
+  // log(content);
+  log('makeGlyphAttributesPanel', 'end');
+  return content;
 }
 
 function makeComponentsAttributesPanel(selectedComponent) {
@@ -154,18 +159,17 @@ function makeInputs_size(width, height){
 /*
  *  Making collections of sections for Glyph Element types
 */
-function glyphDetails(projectEditor) {
+function glyphDetails(selGlyph) {
   log('glyphDetails', 'start');
-  log(projectEditor);
-  log(projectEditor.selectedGlyph);
-  let glyph = projectEditor.selectedGlyph;
+  log(selGlyph);
   // let spinn = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
-  let content = '';
   // let numshapes = getSelectedWorkItemShapes().length;
 
-  content += makeInputs_position(glyph.x, glyph.y);
-  content += makeInputs_size(glyph.width, glyph.height);
+  let content = '';
+  content += makeInputs_position(selGlyph.x, selGlyph.y);
+  content += makeInputs_size(selGlyph.width, selGlyph.height);
 
+  // log(content);
   log('glyphDetails', 'end');
   return content;
   /*

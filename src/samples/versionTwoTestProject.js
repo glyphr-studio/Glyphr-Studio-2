@@ -13,6 +13,9 @@ function getVersionTwoTestProject() {
       version: '2.0.0',
       initialVersion: '2.0.0',
     },
+    metadata: {
+      font_family: 'Alpha Test'
+    },
     glyphs: {
       '0x0041': { id: '0x0041', shapes: testGlyphShapes },
       '0x0042': { id: '0x0042', shapes: testGlyphShapes },

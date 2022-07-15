@@ -33,7 +33,7 @@ function glyphrStudioOnLoad() {
   log(`glyphrStudioOnLoad`, 'start');
 
   if (passPreChecks()) {
-    log(GSApp);
+    // log(GSApp);
     console.log(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
     registerCustomComponents();
 
