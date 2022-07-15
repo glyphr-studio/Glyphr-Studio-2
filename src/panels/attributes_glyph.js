@@ -7,41 +7,56 @@
 import { log, round } from "../common/functions.js";
 import { accentColors } from "../common/colors.js";
 import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
+import { makeUsedInThumbs } from "./attributes_component.js";
+import Glyph from "../glyph_elements/glyph.js";
 
+
+/*
+ *  Overall switch to get the right attributes panel
+*/
 export default function makePanel_GlyphAttributes() {
   log('makePanel_GlyphAttributes', 'start');
   let projectEditor = getCurrentProjectEditor();
   log(projectEditor);
 
-  let selectedGlyph = projectEditor.selectedGlyph;
+  if(projectEditor.nav.page === 'glyph edit') {
+    return makeGlyphAttributesPanel(projectEditor);
+  } else if(projectEditor.nav.page === 'components') {
+    return makeComponentsAttributesPanel(projectEditor.selectedComponent);
+  }
 
+  log('makePanel_GlyphAttributes', 'end');
+  return content;
+}
+
+
+/*
+ *  Making each type of attributes panel
+*/
+function makeGlyphAttributesPanel(projectEditor) {
+  log('makeGlyphAttributesPanel', 'start');
+  log(projectEditor);
   // let projectEditor.multiSelect.shapes = _UI.multiSelect.shapes.getMembers();
 
   let content = '<div class="panel__section">';
 
-  if (projectEditor.nav.page === 'components') {
-    // log(" detected currentPage = components");
-    content += `
-      <h3>component</h3>
-      <label>name</label>
-      <input type="text" value="${selectedGlyph.name}" onchange="getSelectedWorkItem().name = this.value;"/>
-    `;
-  }
-
+  log(projectEditor.multiSelect.shapes);
+  log(`multiSelect length: ${projectEditor.multiSelect.shapes.length}`);
   if (projectEditor.multiSelect.shapes.length === 0) {
     // no shape selected
-    // log("no shape selected");
+    log("No shape selected");
     content += glyphDetails();
 
   } else if (projectEditor.multiSelect.shapes.length === 1) {
     // One shape selected
+    log('One shape selected');
     if (projectEditor.multiSelect.shapes[0].objType === 'ComponentInstance') {
       // component selected
-      // log("component selected");
+      log("...Component selected");
       content += componentInstanceDetails(projectEditor.multiSelect.shapes[0]);
     } else {
       // regular shape selected
-      // log("regular shape selected");
+      log("...Regular shape selected");
       content += shapeDetails(projectEditor.multiSelect.shapes[0]);
 
       let isPointSelected = _UI.multiSelect.points.count() === 1;
@@ -54,32 +69,37 @@ export default function makePanel_GlyphAttributes() {
     }
   } else {
     // Many shapes selected
-    content += `<h3>${projectEditor.multiSelect.shapes.length} selected shapes</h3>`
-    content += makeGlyphPositionAndSize(projectEditor.multiSelect.shapes.getGlyph());
-  }
-
-  if (projectEditor.nav.page === 'components') {
-    content += `<h3>glyphs that use this component</h3>`;
-    content += '<tr><td colspan=2>';
-    if (selectedGlyph.usedIn.length > 0) {
-      content += makeUsedInThumbs();
-    } else {
-      content += `<br>
-        <i>this component is not currently being used by any glyphs.
-        <a href="#" onclick="showDialogLinkComponentToGlyph();">
-          add this component to a glyph now
-        </a>.</i>
-      `;
-    }
+    log('More than one shape selected');
+    content += `<h3>${projectEditor.multiSelect.shapes.length} selected shapes</h3>`;
+    let virtualGlyph = projectEditor.multiSelect.shapes.getGlyph();
+    content += makeInputs_position(virtualGlyph.x, virtualGlyph.y);
+    content += makeInputs_size(virtualGlyph.width, virtualGlyph.height);
   }
 
   content += '</div>';
 
-  log('makePanel_GlyphAttributes', 'end');
+}
+
+function makeComponentsAttributesPanel(selectedComponent) {
+  let content = `
+  <div class="panel__section">
+    <h3>component</h3>
+    <label>name</label>
+    <input type="text" value="${selectedComponent.name}" onchange="getSelectedWorkItem().name = this.value;"/>
+
+    <h3>glyphs that use this component</h3>
+    ${makeUsedInThumbs()}
+  </div>
+  `;
+
   return content;
 }
 
-function makeGlyphPositionAndSize(virtualGlyph) {
+
+/*
+ *  Making common sections for panels
+*/
+function makeInputs_position(x, y) {
   let spinnerValueChange = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   let content = '';
 
@@ -87,28 +107,35 @@ function makeGlyphPositionAndSize(virtualGlyph) {
     <label>x ${dimSplit()} y</label>
     <div class="doubleInput">
       <input type="number" id="charx" step="${spinnerValueChange}"
-        onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapePosition(this.value, false, true); historyPut('Multi-selected Shapes X Position); redraw();"
-        value="${round(virtualGlyph.maxes.xMin, 3)}"
+        onchange=""
+        value="${round(x, 3)}"
       />
       ${dimSplit()}
       <input type="number" id="chary" step="${spinnerValueChange}"
-        onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapePosition(false, this.value, true); historyPut('Multi-selected Shapes Y Position); redraw();"
-        value="${round(virtualGlyph.maxes.yMax, 3)}"
+        onchange=""
+        value="${round(y, 3)}"
       />
     </div>
   `;
+
+  return content;
+}
+
+function makeInputs_size(width, height){
+  let spinnerValueChange = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
+  let content = '';
 
   content +=`
     <label>width ${dimSplit()} height</label>
     <div class="doubleInput">
       <input type="number" id="charw" step="${spinnerValueChange}"
-        onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(this.value,false,virtualGlyph.ratioLock); historyPut('Multi-selected Shapes Width); redraw();"
-        value="${round(virtualGlyph.maxes.xMax - virtualGlyph.maxes.xMin, 3)}"
+        onchange=""
+        value="${round(width, 3)}"
       />
       ${dimSplit()}
       <input type="number" id="charh" step="${spinnerValueChange}"
-        onchange="_UI.focusElement=this.id; if(!_UI.redrawing){_UI.multiSelect.shapes.setShapeSize(false,this.value,virtualGlyph.ratioLock); historyPut('Multi-selected Shapes Height); redraw();"
-        value="${round(virtualGlyph.maxes.yMax - virtualGlyph.maxes.yMin, 3)}"
+        onchange=""
+        value="${round(height, 3)}"
       />
     </div>
   `;
@@ -122,49 +149,57 @@ function makeGlyphPositionAndSize(virtualGlyph) {
   return content;
 }
 
-function glyphDetails(s) {
-  let sc = getSelectedWorkItem();
-  let spinn = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
-  // sc.calcMaxes();
+
+
+/*
+ *  Making collections of sections for Glyph Element types
+*/
+function glyphDetails(projectEditor) {
+  log('glyphDetails', 'start');
+  log(projectEditor);
+  log(projectEditor.selectedGlyph);
+  let glyph = projectEditor.selectedGlyph;
+  // let spinn = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
   let content = '';
-  let numshapes = getSelectedWorkItemShapes().length;
+  // let numshapes = getSelectedWorkItemShapes().length;
 
-  content = makeGlyphPositionAndSize(sc);
+  content += makeInputs_position(glyph.x, glyph.y);
+  content += makeInputs_size(glyph.width, glyph.height);
 
+  log('glyphDetails', 'end');
+  return content;
+  /*
   if (projectEditor.nav.page === 'components') return content;
 
   // AUTO GLYPH WIDTH
-  content +=
-    '<tr><td colspan=2 class="detailtitle"><h3> glyph width </h3>';
+  content += '<h3> glyph width </h3>';
 
-  content +=
-    '<tr>' +
-    '<td> auto calculate <span class="unit">(em units)</span></td>' +
-    '<td>' +
-    // checkUI('getSelectedWorkItem().isAutoWide', sc.isAutoWide, true) +
-    '&emsp;';
+  content +=`
+    <label>auto calculate <span class="unit">(em units)</span></label>
+    <input type="checkbox" checked="getSelectedWorkItem().isAutoWide"/>
+  `;
 
-  if (!sc.isAutoWide) {
+  if (!glyph.isAutoWide) {
     content +=
       '<input type="number" id="charaw" step="' +
       spinn +
       '" ' +
       'value="' +
-      round(sc.glyphWidth, 3) +
+      round(glyph.glyphWidth, 3) +
       '" ' +
       'onchange="_UI.focusElement=this.id; getSelectedWorkItem().glyphWidth = (this.value*1); redraw({calledBy:{calledBy:\'glyphDetails\'}});">';
   } else {
     content +=
       '<input type="number" disabled="disabled" ' +
       'value="' +
-      round(sc.glyphWidth, 3) +
+      round(glyph.glyphWidth, 3) +
       '"/>';
   }
 
   content += '</td>' + '</tr>';
 
   // LEFT SIDE BEARING
-  if (sc.isAutoWide) {
+  if (glyph.isAutoWide) {
     content +=
       '<tr><td colspan=2 class="detailtitle"><h3> left side bearing </h3>';
 
@@ -172,18 +207,18 @@ function glyphDetails(s) {
       '<tr>' +
       '<td> use default <span class="unit">(em units)</span> </td>' +
       '<td>' +
-      // checkUI(  'getSelectedWorkItem().leftSideBearing',  sc.leftSideBearing,  true,  true) +
+      // checkUI(  'getSelectedWorkItem().leftSideBearing',  glyph.leftSideBearing,  true,  true) +
       '&emsp;';
 
-    if (sc.leftSideBearing) {
-      if (sc.leftSideBearing === true)
-        sc.leftSideBearing = getCurrentProject().projectSettings.defaultLSB;
+    if (glyph.leftSideBearing) {
+      if (glyph.leftSideBearing === true)
+        glyph.leftSideBearing = getCurrentProject().projectSettings.defaultLSB;
       content +=
         '<input type="number" id="charlsb" step="' +
         spinn +
         '" ' +
         'value="' +
-        sc.leftSideBearing +
+        glyph.leftSideBearing +
         '" ' +
         'onchange="_UI.focusElement=this.id; getSelectedWorkItem().leftSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
     } else {
@@ -197,7 +232,7 @@ function glyphDetails(s) {
   }
 
   // RIGHT SIDE BEARING
-  if (sc.isAutoWide) {
+  if (glyph.isAutoWide) {
     content +=
       '<tr><td colspan=2 class="detailtitle"><h3> right side bearing </h3>';
 
@@ -205,18 +240,18 @@ function glyphDetails(s) {
       '<tr>' +
       '<td> use default <span class="unit">(em units)</span> </td>' +
       '<td>' +
-      // checkUI(  'getSelectedWorkItem().rightSideBearing',  sc.rightSideBearing,  true,  true) +
+      // checkUI(  'getSelectedWorkItem().rightSideBearing',  glyph.rightSideBearing,  true,  true) +
       '&emsp;';
 
-    if (sc.rightSideBearing) {
-      if (sc.rightSideBearing === true)
-        sc.rightSideBearing = getCurrentProject().projectSettings.defaultRSB;
+    if (glyph.rightSideBearing) {
+      if (glyph.rightSideBearing === true)
+        glyph.rightSideBearing = getCurrentProject().projectSettings.defaultRSB;
       content +=
         '<input type="number" id="charrsb" step="' +
         spinn +
         '" ' +
         'value="' +
-        sc.rightSideBearing +
+        glyph.rightSideBearing +
         '" ' +
         'onchange="_UI.focusElement=this.id; getSelectedWorkItem().rightSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
     } else {
@@ -230,7 +265,7 @@ function glyphDetails(s) {
   }
 
   // USED IN
-  if (sc.usedIn.length > 0) {
+  if (glyph.usedIn.length > 0) {
     content +=
       '<tr><td colspan=2><br class="detailtitle"><h3>glyphs that use this component</h3>';
     content += '<tr><td colspan=2>';
@@ -239,6 +274,7 @@ function glyphDetails(s) {
   }
 
   return content;
+  */
 }
 
 function shapeDetails(s) {
@@ -581,6 +617,10 @@ function pointDetails(tp) {
   return content;
 }
 
+
+/*
+ *  Helpers
+*/
 function dimSplit() {
   return `<span style="
     color:${accentColors.gray.l60}

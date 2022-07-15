@@ -75,7 +75,7 @@ class MultiSelect {
       this.add(obj);
     this.selectShapesThatHaveSelectedPoints();
   }
-  getType() {
+  get type() {
     if (this.members.length === 0)
       return false;
     else if (this.members.length === 1)
@@ -83,13 +83,16 @@ class MultiSelect {
     else
       return 'multi';
   }
-  count() {
+  get length() {
     return this.members.length;
   }
-  getMembers() {
-    return this.members;
+  set members(arr) {
+    this._members = arr;
   }
-  getSingleton() {
+  get members() {
+    return this._members;
+  }
+  get singleton() {
     if (this.members.length === 1)
       return this.members[0];
     else
@@ -257,10 +260,13 @@ export class MultiSelectShapes extends MultiSelect {
     this.glyph = new Glyph();
   }
 
-  getGlyph() {
-    this.glyph.shapes = this.members;
-    this.glyph.changed();
-    return this.glyph;
+  set glyph(newGlyph) {
+    this._glyph = newGlyph;
+  }
+  get glyph() {
+    this._glyph.shapes = this.members;
+    this._glyph.changed();
+    return this._glyph;
   };
 
   contains(objtypename) {

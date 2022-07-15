@@ -137,18 +137,13 @@ export default class GlyphrStudioProject {
 
     // Merge with templates
     if (newProject.projectSettings) {
-      this.projectSettings = merge(
-        this.projectSettings,
-        newProject.projectSettings
-      );
-      this.projectSettings.glyphRanges =
-        newProject.projectSettings.glyphRanges || [];
+      this.projectSettings = merge(this.projectSettings, newProject.projectSettings);
+      this.projectSettings.glyphRanges = newProject.projectSettings.glyphRanges || [];
     }
-    this.projectSettings.projectID =
-      this.projectSettings.projectID || makeProjectID();
+    this.projectSettings.projectID = this.projectSettings.projectID || makeProjectID();
     this.projectSettings.descent = -1 * Math.abs(this.projectSettings.descent);
-    // log('finished merging projectSettings');
-    // log(this.projectSettings);
+    log('finished merging projectSettings');
+    log(this.projectSettings);
 
     // Guides
     // hydrateGlyphrObjectList(Guide, dataGuides, this.projectSettings.guides);
@@ -165,7 +160,8 @@ export default class GlyphrStudioProject {
 
     // Glyphs
     hydrateGlyphrObjectList(Glyph, newProject.glyphs, this.glyphs);
-    // log('finished hydrating glyphs');
+    log('finished hydrating glyphs');
+    log(this.glyphs);
 
     // Ligatures
     hydrateGlyphrObjectList(Glyph, newProject.ligatures, this.ligatures);
@@ -175,7 +171,7 @@ export default class GlyphrStudioProject {
     hydrateGlyphrObjectList(HKern, newProject.kerning, this.kerning);
     // log('finished hydrating kern pairs');
 
-    // log(this);
+    log(this);
     log('GlyphrStudioProject.constructor', 'end');
   }
 

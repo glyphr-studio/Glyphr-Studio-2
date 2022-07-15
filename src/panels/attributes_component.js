@@ -1,3 +1,4 @@
+export { makeUsedInThumbs };
 /**
     Panel > Attributes > Component
     Panel > Attributes > Component Instance
@@ -7,31 +8,40 @@
 **/
 
 function makeUsedInThumbs() {
-  let re = "<div class='ssthumbcontainer'>";
   let ui = getSelectedWorkItem().usedIn;
   let unique = ui.filter(function (elem, pos) {
     return ui.indexOf(elem) === pos;
   });
   let cname;
 
-  for (let k = 0; k < unique.length; k++) {
-    cname = getGlyphName(unique[k]);
-    re +=
-      "<table cellpadding=0 cellspacing=0 border=0><tr><td title='" +
-      cname +
-      "'>";
-    re +=
-      "<div class='ssusedinthumb' onclick='goToEditGlyph(\"" +
-      unique[k] +
-      '");\'>';
-    re += getGlyph(unique[k]).makeSVG();
-    re += '</div></td></tr><tr><td>';
-    re += cname === 'Space' ? cname : getGlyph(unique[k]).glyphhtml;
-    re += '</td></tr></table>';
-    // log("makeUsedInThumbs - created canvas 'thumb"+unique[k]+"'");
+  let content = '<div class="ssthumbcontainer">';
+  if(unique.length > 0) {
+    for (let k = 0; k < unique.length; k++) {
+      cname = getGlyphName(unique[k]);
+      content += `
+        <table cellpadding=0 cellspacing=0 border=0>
+          <tr><td title="${cname}">
+            <div class="ssusedinthumb" onclick="goToEditGlyph(${unique[k]});">
+              ${getGlyph(unique[k]).makeSVG()}
+            </div>
+          </td></tr>
+          <tr><td>
+            ${cname === 'Space' ? cname : getGlyph(unique[k]).glyphhtml}
+          </td></tr>
+        </table>
+      `;
+      // log("makeUsedInThumbs - created canvas 'thumb"+unique[k]+"'");
+    }
+  } else {
+    content += `
+      <i>this component is not currently being used by any glyphs.
+      <a href="#" onclick="showDialogLinkComponentToGlyph();">
+        add this component to a glyph now
+      </a>.</i>
+    `;
   }
-  re += '</div>';
-  return re;
+  content += '</div>';
+  return content;
 }
 
 function goToEditGlyph(chid) {
