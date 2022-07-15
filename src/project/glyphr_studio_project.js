@@ -240,26 +240,26 @@ export default class GlyphrStudioProject {
     }
 
     id = '' + id;
-    let rechar;
+    let result;
 
     if (this.ligatures && id.indexOf('0x', 2) > -1) {
-      rechar = this.ligatures[id];
-      // log('retrieved ' + rechar + ' from ligatures.');
-      if (rechar) {
-        return rechar;
+      result = this.ligatures[id];
+      // log('retrieved ' + result + ' from ligatures.');
+      if (result) {
+        return result;
       } else if (create) {
         // log('create was true, returning a new ligature.');
-        this.ligatures[id] = new Glyph({ glyphhex: id });
+        this.ligatures[id] = new Glyph();
         return this.ligatures[id];
       }
     } else if (this.glyphs && id.indexOf('0x') > -1) {
-      rechar = this.glyphs[id];
-      // log('retrieved ' + rechar + ' from glyphs.');
-      if (rechar) {
-        return rechar;
+      result = this.glyphs[id];
+      // log('retrieved ' + result + ' from glyphs.');
+      if (result) {
+        return result;
       } else if (create) {
         // log('create was true, returning a new char.');
-        this.glyphs[id] = new Glyph({ glyphhex: id });
+        this.glyphs[id] = new Glyph();
         return this.glyphs[id];
       }
     } else if (this.components) {
