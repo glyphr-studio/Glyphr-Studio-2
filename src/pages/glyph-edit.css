@@ -11,6 +11,7 @@
 	grid-column: 1;
 	display: grid;
 	grid-template-rows: 48px 48px 1fr;
+	row-gap: 10px;
 }
 
 .glyph-edit__right-area {
