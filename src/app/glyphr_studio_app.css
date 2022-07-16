@@ -17,6 +17,7 @@
 
 #app__top-bar {
   background-color: var(--blue-l15);
-  color: var(--gray-l40);
-  padding: 4px 0px 4px 10px;
+  color: var(--blue-l50);
+  padding: 6px 0px 5px 10px;
+  font-size: 0.8em;
 }
