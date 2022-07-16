@@ -20,7 +20,9 @@ export default class PageGlyphEdit {
    */
   pageLoader() {
     log(`PageGlyphEdit.pageLoader`, 'start');
-
+    let selectedGlyph = getCurrentProjectEditor().selectedGlyph;
+    log('selected glyph');
+    log(selectedGlyph);
 
     const content = makeElement({
       tag: 'div',
@@ -28,8 +30,8 @@ export default class PageGlyphEdit {
       innerHTML: `
       <div class="glyph-edit__page">
         <div class="glyph-edit__left-area">
-          <fancy-button>Glyphr Studio</fancy-button>
-          <fancy-button>${getCurrentProjectEditor().selectedGlyph.id}</fancy-button>
+          <fancy-button>Glyph edit</fancy-button>
+          <fancy-button>${selectedGlyph.name}</fancy-button>
           <panel-area panel="Attributes">${makePanel_GlyphAttributes()}</panel-area>
         </div>
         <div class="glyph-edit__right-area">

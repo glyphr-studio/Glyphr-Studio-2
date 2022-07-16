@@ -2,6 +2,8 @@ import ProjectEditor from '../project/project_editor.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
 import { log } from '../common/functions.js';
 
+export { makeAppTopBar };
+
 /**
  * Creates a new Glyphr Studio Application
  */
@@ -117,4 +119,8 @@ export default class GlyphrStudioApp {
 
     return this.projectEditors[this.selectedProjectEditor];
   }
+}
+
+function makeAppTopBar() {
+  return `<div id="app__top-bar">Glyphr Studio</div>`;
 }

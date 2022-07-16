@@ -1,4 +1,5 @@
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
+import { log } from './functions.js';
 
 let basicLatinOrder = {};
 let unicodeRanges = {};
@@ -248,9 +249,13 @@ function validateHex(str) {
  * @returns {string} - name
  */
 function getUnicodeName(ch) {
-  // log('getUnicodeName', 'start');
-  // log('passed ' + ch);
-  ch = '' + ch;
+  log('getUnicodeName', 'start');
+  log('passed ' + ch);
+
+  //normalize hex format
+  ch = `0x${parseInt(ch).toString(16)}`;
+  log('normalized ' + ch);
+
   let re;
   const chn = ch * 1;
 
@@ -260,8 +265,8 @@ function getUnicodeName(ch) {
     re = unicodeNames[ch] || '[name not found]';
   }
 
-  // log('returning ' + re + '\n');
-  // log('getUnicodeName', 'end');
+  log('returning ' + re + '\n');
+  log('getUnicodeName', 'end');
   return re;
 }
 
