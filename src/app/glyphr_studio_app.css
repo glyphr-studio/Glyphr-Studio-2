@@ -14,3 +14,9 @@
   top: 0px;
   left: 0px;
 }
+
+#app__top-bar {
+  background-color: var(--blue-l15);
+  color: var(--gray-l40);
+  padding: 4px 0px 4px 10px;
+}

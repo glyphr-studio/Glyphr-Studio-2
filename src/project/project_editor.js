@@ -12,6 +12,7 @@ import {
 } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import Glyph from '../glyph_elements/glyph.js';
+import { makeAppTopBar } from '../app/glyphr_studio_app.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -48,8 +49,6 @@ export default class ProjectEditor {
       projectSaved: true,
       stopPageNavigation: true,
     };
-
-    this.content = makeElement({ className: 'app__editor' });
 
     this.pages = {};
 
@@ -281,7 +280,7 @@ export default class ProjectEditor {
 
     if (wrapper) {
       const loader = this.pageLoader();
-      wrapper.innerHTML = '';
+      wrapper.innerHTML = makeAppTopBar();
       wrapper.appendChild(loader.content);
       if (loader.callback) loader.callback(this.getCurrentPage());
     } else {

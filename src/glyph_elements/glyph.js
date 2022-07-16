@@ -328,7 +328,11 @@ export default class Glyph extends GlyphElement {
    * @returns {string}
    */
   get name() {
-    return getUnicodeName(this.id);
+    log('Glyph GET name', 'start');
+    let name = getUnicodeName(this.id);
+    log(`ID: ${this.id} result: ${name}`);
+    log('Glyph GET name', 'end');
+    return name;
   }
 
   /**
