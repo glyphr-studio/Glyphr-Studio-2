@@ -1,12 +1,18 @@
 #app__wrapper,
 #app__editor,
 #app__page {
-  background-color: var(--gray-l97);
+  background-color: var(--gray-l95);
   height: 100%;
   width: 100%;
-  min-height: 100%;
-  min-width: 100%;
   overflow: hidden;
+}
+
+#app__wrapper {
+  padding-bottom: 40px;
+}
+
+#app__editor {
+  margin-bottom: 10px;
 }
 
 #app__wrapper {
@@ -16,8 +22,7 @@
 }
 
 #app__top-bar {
-  background-color: var(--blue-l15);
   color: var(--blue-l50);
-  padding: 6px 0px 5px 10px;
-  font-size: 0.8em;
+  padding: 6px 0px 8px 10px;
+  font-size: 1.4em;
 }

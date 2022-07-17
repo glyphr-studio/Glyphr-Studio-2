@@ -1,10 +1,12 @@
 .glyph-edit__page {
 	display: grid;
-	height: 100%;
+	height: calc(100% - 10px);
 	width: 100%;
 	min-height: 100%;
 	min-width: 100%;
-	grid-template-columns: 400px 1fr;
+	grid-template-columns: 400px  50px 1fr;
+	column-gap: 10px;
+	padding: 0px 10px 10px 10px;
 }
 
 .glyph-edit__left-area {
@@ -12,12 +14,6 @@
 	display: grid;
 	grid-template-rows: 48px 48px 1fr;
 	row-gap: 10px;
-}
-
-.glyph-edit__right-area {
-	grid-column: 2;
-	display: grid;
-	grid-template: 1fr 1fr;
 }
 
 .glyph-edit__left-area fancy-button {
@@ -28,6 +24,25 @@
 
 .glyph-edit__left-area panel-area {
 	grid-row: 3;
+}
+
+.glyph-edit__left-area panel-area .wrapper {
+	border-radius: 4px;
+}
+
+.glyph-edit__tools-area {
+	border-radius: 4px;
+	padding: 10px;
+	height: min-content;
+	grid-column: 2;
+	background-color: var(--offWhite);
+}
+
+.glyph-edit__right-area {
+	grid-column: 3;
+	border-radius: 4px;
+	width: 100%;
+	overflow: hidden;
 }
 
 canvas-display {
