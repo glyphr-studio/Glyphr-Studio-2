@@ -1,0 +1,65 @@
+<template id="control__panel-area">
+	<style>
+		* {
+		box-sizing: border-box;
+		user-select: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+
+	.wrapper {
+			margin: 0px;
+			padding: 10px;
+			height: 100%;
+			width: 100%;
+			border-style: solid;
+			border-width: 0px;
+			border-radius: 4px;
+			border-color: var(--enabled-resting-border);
+			background-color: var(--offWhite);
+			display: grid;
+			grid-template-rows: 30px 1fr;
+	}
+
+	.wrapper:hover,
+	.wrapper *:hover,
+	.wrapper:focus,
+	.wrapper *:focus {
+			border-color: var(--enabled-focus-border);
+	}
+
+	.wrapper[disabled],
+	.wrapper:hover[disabled],
+	.wrapper:focus[disabled],
+	.wrapper:active[disabled] {
+			background-color: var(--disabled-background);
+			border-color: var(--disabled-border);
+	}
+
+	#header {
+			width: 100%;
+			grid-row: 1;
+			background-color: var(--offWhite);
+			color: var(--blue-l05);
+			cursor: pointer;
+			align-items: center;
+			padding: 5px 10px;
+	}
+
+	#content {
+		grid-row: 2;
+		background-color: var(--offWhite);
+		overflow-y: scroll;
+		padding: 5px;
+	}
+	</style>
+
+	<div id="wrapper">
+		<div id="header"></div>
+		<div id="content">
+			<slot></slot>
+		</div>
+	</div>
+</template>

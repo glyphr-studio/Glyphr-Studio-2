@@ -34,6 +34,7 @@ export default class PageGlyphEdit {
           <fancy-button secondary>${selectedGlyph.name}</fancy-button>
           <panel-area panel="Attributes">${makePanel_GlyphAttributes()}</panel-area>
         </div>
+        <div class="glyph-edit__tools-area">t<br>o<br>o<br>l<br>s</div>
         <div class="glyph-edit__right-area">
           <canvas-display glyphs="A"></canvas-display>
         </div>
