@@ -11,7 +11,6 @@ import FancyButton from '../controls/fancy-button/fancy-button.js';
 import InfoBubble from '../controls/info-bubble/info-bubble.js';
 import InputNumber from '../controls/input-number/input-number.js';
 import InputNumberLockable from '../controls/input-number-lockable/input-number-lockable.js';
-import PanelArea from '../controls/panel-area/panel-area.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 
 /** export nothing by default */
@@ -74,7 +73,6 @@ function registerCustomComponents() {
   customElements.define('info-bubble', InfoBubble);
   customElements.define('input-number', InputNumber);
   customElements.define('input-number-lockable', InputNumberLockable);
-  customElements.define('panel-area', PanelArea);
 }
 
 /**

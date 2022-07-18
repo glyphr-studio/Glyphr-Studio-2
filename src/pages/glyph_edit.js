@@ -32,7 +32,10 @@ export default class PageGlyphEdit {
         <div class="glyph-edit__left-area">
           <fancy-button secondary>Glyph edit</fancy-button>
           <fancy-button secondary>${selectedGlyph.name}</fancy-button>
-          <panel-area panel="Attributes">${makePanel_GlyphAttributes()}</panel-area>
+          <div id="panel">
+            <h3>Attributes</h3>
+            ${makePanel_GlyphAttributes()}
+          </div>
         </div>
         <div class="glyph-edit__tools-area">t<br>o<br>o<br>l<br>s</div>
         <div class="glyph-edit__right-area">

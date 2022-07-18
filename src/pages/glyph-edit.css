@@ -22,11 +22,10 @@
 	height: 48px;
 }
 
-.glyph-edit__left-area panel-area {
+.glyph-edit__left-area #panel {
+	padding: 10px;
+	background-color: var(--offWhite);
 	grid-row: 3;
-}
-
-.glyph-edit__left-area panel-area .wrapper {
 	border-radius: 4px;
 }
 
