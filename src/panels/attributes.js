@@ -365,17 +365,15 @@ function makeInputs_position(x, y) {
 	let content = '';
 
 	content +=`
-	  <label>x ${dimSplit()} y</label>
+	  <label>x${dimSplit()}y</label>
 	  <div class="doubleInput">
-		<input type="number" id="charx" step="${spinnerValueChange}"
-		  onchange=""
-		  value="${round(x, 3)}"
-		/>
+		<input-number-lockable id="charx" step="${spinnerValueChange}" onchange="">
+			${round(x, 3)}
+		</input-number-lockable>
 		${dimSplit()}
-		<input type="number" id="chary" step="${spinnerValueChange}"
-		  onchange=""
-		  value="${round(y, 3)}"
-		/>
+		<input-number-lockable id="chary" step="${spinnerValueChange}" onchange="">
+			${round(y, 3)}
+		</input-number-lockable>
 	  </div>
 	`;
 
@@ -387,22 +385,20 @@ function makeInputs_size(width, height){
 	let content = '';
 
 	content +=`
-	  <label>width ${dimSplit()} height</label>
+	  <label>width${dimSplit()}height</label>
 	  <div class="doubleInput">
-		<input type="number" id="charw" step="${spinnerValueChange}"
-		  onchange=""
-		  value="${round(width, 3)}"
-		/>
+		<input-number-lockable id="charw" step="${spinnerValueChange}" onchange="">
+			${round(width, 3)}
+		</input-number-lockable>
 		${dimSplit()}
-		<input type="number" id="charh" step="${spinnerValueChange}"
-		  onchange=""
-		  value="${round(height, 3)}"
-		/>
+		<input-number-lockable id="charh" step="${spinnerValueChange}" onchange="">
+			${round(height, 3)}
+		</input-number-lockable>
 	  </div>
 	`;
 
 	content += `
-	  <label>lock aspect ratio</label>
+	  <label>lock&nbsp;aspect&nbsp;ratio</label>
 	  <input type="checkbox" />
 	`;
 	// checkUI('_UI.multiSelect.shapes.getGlyph().ratioLock', virtualGlyph.ratioLock, true)
@@ -415,14 +411,5 @@ function makeInputs_size(width, height){
 //	Helpers
 //	-------------------------------------------
 function dimSplit() {
-	return `<span style="
-	  color:${accentColors.gray.l60}
-	  width:20px;
-	  height:24px;
-	  text-align:center;
-	  display:inline-block;
-	  font-size:1.4em;
-	  vertical-align:-2px;">
-		&#x2044;
-	</span>`;
-  }
+	return `<span class="dimSplit">&#x2044;</span>`;
+}

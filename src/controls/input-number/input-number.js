@@ -65,137 +65,137 @@ export default class InputNumber extends HTMLElement {
       tag: 'style',
       content: `
             * {
-                box-sizing: border-box;
-                transition: all 100ms easeOutExpo;
+              box-sizing: border-box;
+              transition: all 100ms easeOutExpo;
             }
 
             .wrapper {
-                margin: 0px;
-                padding: 0px;
-                display: grid;
-                grid-template-columns: 1fr 24px;
-                height: 100%;
-                border-style: solid;
-                border-width: 1px ${
-                  this.hasAttribute('hideRightBorder') ? '0' : '1'
-                }px 1px 1px;
-                border-color: ${uiColors.enabled.resting.border};
-                background-color: ${uiColors.enabled.resting.background};
+              margin: 0px;
+              padding: 0px;
+              display: grid;
+              grid-template-columns: 1fr 24px;
+              border-style: solid;
+              border-width: 1px ${
+                this.hasAttribute('hideRightBorder') ? '0' : '1'
+              }px 1px 1px;
+              border-color: ${uiColors.enabled.resting.border};
+              background-color: ${uiColors.enabled.resting.background};
+              border-radius: 4px 0px 0px 4px;
             }
 
             .wrapper:hover,
             .wrapper *:hover,
             .wrapper:focus,
             .wrapper *:focus {
-                border-color: ${uiColors.enabled.focus.border};
+              border-color: ${uiColors.enabled.focus.border};
             }
 
             .wrapper[disabled],
             .wrapper:hover[disabled],
             .wrapper:focus[disabled],
             .wrapper:active[disabled] {
-                background-color: ${uiColors.disabled.background};
-                border-color: ${uiColors.disabled.border};
+              background-color: ${uiColors.disabled.background};
+              border-color: ${uiColors.disabled.border};
             }
 
             .numberInput {
-                background-color: transparent;
-                border: 0;
-                margin: 0;
-                color: ${uiColors.enabled.resting.text};
-                grid-column-start: 1;
-                min-width: 80px;
-                height: 24px;
-                padding: 0px 8px 0px 2px;
-                text-align: right;
-                font-family: monospace;
+              background-color: transparent;
+              border: 0;
+              margin: 0;
+              color: ${uiColors.enabled.resting.text};
+              grid-column-start: 1;
+              min-width: 80px;
+              height: 24px;
+              padding: 0px 8px 0px 2px;
+              text-align: right;
+              font-family: monospace;
             }
 
             .numberInput:hover,
             .numberInput:active {
-                background-color: white;
+              background-color: white;
             }
 
             .numberInput:focus {
-                outline: 1px dashed ${uiColors.accent};
-                background-color: white;
-                outline-offset: 0px;
+              outline: 1px dashed ${uiColors.accent};
+              background-color: white;
+              outline-offset: 0px;
             }
 
             .numberInput[disabled],
             .numberInput:hover[disabled],
             .numberInput:focus[disabled],
             .numberInput:active[disabled] {
-                background-color: ${uiColors.disabled.background};
-                border-color: ${uiColors.disabled.border};
-                color: ${uiColors.disabled.text};
-                text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+              background-color: ${uiColors.disabled.background};
+              border-color: ${uiColors.disabled.border};
+              color: ${uiColors.disabled.text};
+              text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
             }
 
             .arrowWrapper {
-                grid-column-start: 2;
-                display: grid;
-                grid-template-rows: 1fr 1fr;
-                border-left: 1px solid ${uiColors.enabled.resting.border};
-                width: 24px;
-                height: 24px;
-                margin: 0;
+              grid-column-start: 2;
+              display: grid;
+              grid-template-rows: 1fr 1fr;
+              border-left: 1px solid ${uiColors.enabled.resting.border};
+              width: 24px;
+              height: 24px;
+              margin: 0;
             }
 
             .arrowWrapper:hover {
-                border-left-color: ${uiColors.enabled.focus.border};
+              border-left-color: ${uiColors.enabled.focus.border};
             }
 
             .arrowWrapper:focus {
-                outline: 1px dashed ${uiColors.accent};
-                outline-offset: 0px;
+              outline: 1px dashed ${uiColors.accent};
+              outline-offset: 0px;
             }
 
             .arrowWrapper[disabled],
             .arrowWrapper:hover[disabled],
             .arrowWrapper:focus[disabled],
             .arrowWrapper:active[disabled] {
-                border-color: ${uiColors.disabled.border};
+              border-color: ${uiColors.disabled.border};
             }
 
             .upArrow,
             .downArrow {
-                user-select: none;
-                -moz-user-select: none;
-                -webkit-user-select: none;
-                -ms-user-select: none;
-                padding: 0;
-                margin: 0;
-                border-width: 1px;
-                text-align: center;
-                line-height: 10px;
-                height: 12px;
-                font-size: 0.9em;
-                cursor: pointer;
-                color: ${uiColors.enabled.resting.fill};
-                outline: 0;
+              user-select: none;
+              -moz-user-select: none;
+              -webkit-user-select: none;
+              -ms-user-select: none;
+              padding: 0;
+              margin: 0;
+              border-width: 1px;
+              text-align: center;
+              line-height: 10px;
+              height: 12px;
+              font-size: 0.9em;
+              cursor: pointer;
+              color: ${uiColors.enabled.resting.fill};
+              outline: 0;
             }
 
             .upArrow {
-                grid-row-start: 1;
-                vertical-align: bottom;
+              grid-row-start: 1;
+              vertical-align: bottom;
             }
 
             .downArrow {
-                grid-row-start: 2;
-                vertical-align: top;
+              grid-row-start: 2;
+              vertical-align: top;
             }
 
             .upArrow:hover,
             .downArrow:hover {
-                color: ${uiColors.enabled.focus.fill};
-                background-color: ${uiColors.enabled.focus.background};
+              color: ${uiColors.enabled.focus.fill};
+              background-color: ${uiColors.enabled.focus.background};
             }
 
             .upArrow:active,
             .downArrow:active {
-                color: ${uiColors.enabled.active.fill};
-                background-color: ${uiColors.enabled.active.background};
+              color: ${uiColors.enabled.active.fill};
+              background-color: ${uiColors.enabled.active.background};
             }
 
             .upArrow[disabled],
@@ -206,9 +206,9 @@ export default class InputNumber extends HTMLElement {
             .downArrow:focus[disabled],
             .upArrow:active[disabled],
             .downArrow:active[disabled] {
-                cursor: default;
-                color: ${uiColors.disabled.fill};
-                background-color: ${uiColors.disabled.background};
+              cursor: default;
+              color: ${uiColors.disabled.fill};
+              background-color: ${uiColors.disabled.background};
             }
         `,
     });

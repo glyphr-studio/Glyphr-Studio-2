@@ -41,35 +41,35 @@ export default class InputNumberLockable extends HTMLElement {
       tag: 'style',
       content: `
             * {
-                box-sizing: border-box;
-                transition: all 100ms easeOutExpo;
+              box-sizing: border-box;
+              transition: all 100ms easeOutExpo;
             }
 
             .wrapper {
-                margin: 0px;
-                padding: 0px;
-                display: grid;
-                grid-template-columns: 1fr 24px;
-                height: 100%;
-                border-style: solid;
-                border-width: 0px;
-                border-color: ${uiColors.enabled.resting.border};
-                background-color: ${uiColors.enabled.resting.background};
+              margin: 0px;
+              padding: 0px;
+              display: grid;
+              grid-template-columns: 1fr 24px;
+              border-style: solid;
+              border-width: 0px;
+              border-color: ${uiColors.enabled.resting.border};
+              background-color: ${uiColors.enabled.resting.background};
+              border-radius: 4px;
             }
 
             .wrapper:hover,
             .wrapper *:hover,
             .wrapper:focus,
             .wrapper *:focus {
-                border-color: ${uiColors.enabled.focus.border};
+              border-color: ${uiColors.enabled.focus.border};
             }
 
             .wrapper[disabled],
             .wrapper:hover[disabled],
             .wrapper:focus[disabled],
             .wrapper:active[disabled] {
-                background-color: ${uiColors.disabled.background};
-                border-color: ${uiColors.disabled.border};
+              background-color: ${uiColors.disabled.background};
+              border-color: ${uiColors.disabled.border};
             }
         `,
     });
