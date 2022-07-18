@@ -138,5 +138,3 @@ export default class CanvasDisplay extends HTMLElement {
     // log('CanvasDisplay.redraw', 'end');
   }
 }
-
-// customElements.define('canvas-display', CanvasDisplay);

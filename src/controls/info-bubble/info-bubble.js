@@ -164,5 +164,3 @@ export default class InfoBubble extends HTMLElement {
     this.pointer.style.display = 'block';
   }
 }
-
-// customElements.define('info-bubble', InfoBubble);

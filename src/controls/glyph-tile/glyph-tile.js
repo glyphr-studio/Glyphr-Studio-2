@@ -249,5 +249,3 @@ function getGlyph(gid) {
     return false;
   }
 }
-
-// customElements.define('glyph-tile', GlyphTile);
