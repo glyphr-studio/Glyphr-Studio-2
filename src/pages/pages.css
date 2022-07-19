@@ -2,7 +2,9 @@
 .nav-button:hover,
 .nav-button:active,
 .nav-button:focus {
-	display: inline-block;
+	display: grid;
+	grid-template-rows: min-content 1fr;
+	gap: 2px;
 	height: 48px;
 	margin: 0;
 	padding: 10px;
@@ -46,4 +48,15 @@
 	border-bottom-right-radius: 4px;
 	background-color: var(--blue-l40);
 	border: 1px solid var(--blue-l60);
+}
+
+.nav-button__super-title {
+	font-size: 0.6em;
+	opacity: 80%;
+}
+
+.nav-button__title {
+	margin-bottom: 4px;
+	color: var(--blue-l90);
+	font-size: 1.1em;
 }

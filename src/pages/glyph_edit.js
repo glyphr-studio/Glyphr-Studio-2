@@ -31,9 +31,18 @@ export default class PageGlyphEdit {
       <div class="glyph-edit__page">
         <div class="glyph-edit__left-area">
           <div class="glyph-edit__nav-area">
-            <button class="nav-button l1">Glyph edit</button>
-            <button class="nav-button l2">${selectedGlyph.name}</button>
-            <button class="nav-button l3" class="glyph-edit__nav-area__span">Attributes</button>
+            <button class="nav-button l1">
+              <span class="nav-button__super-title">PAGE</span>
+              <span class="nav-button__title">Glyph edit</span>
+            </button>
+            <button class="nav-button l2">
+              <span class="nav-button__super-title">EDITING</span>
+              <span class="nav-button__title">${selectedGlyph.name}</span>
+            </button>
+            <button class="nav-button l3" class="glyph-edit__nav-area__span">
+              <span class="nav-button__super-title">PANEL</span>
+              <span class="nav-button__title">Attributes</span>
+            </button>
           </div>
           <div id="glyph-edit__panel">
             <h3>Glyph</h3>
