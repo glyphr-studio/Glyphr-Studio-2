@@ -8,7 +8,7 @@ function makePanel_Guides() {
   let content = '<div class="navarea_header">';
   content += projectEditor.nav.page;
   content += '<h1 class="paneltitle">guides</h1>';
-  content += '</div><div class="panel_section">';
+  content += '</div><div class="glyph-edit__panel-section">';
 
   let system = '';
   let user = '';

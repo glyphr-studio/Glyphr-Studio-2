@@ -12,7 +12,7 @@ import {
 } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import Glyph from '../glyph_elements/glyph.js';
-import { makeAppTopBar } from '../app/glyphr_studio_app.js';
+import { makeAppTopBar } from '../app/app.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.

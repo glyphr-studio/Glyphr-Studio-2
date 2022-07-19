@@ -75,12 +75,10 @@ export default class InputNumber extends HTMLElement {
               display: grid;
               grid-template-columns: 1fr 24px;
               border-style: solid;
-              border-width: 1px ${
-                this.hasAttribute('hideRightBorder') ? '0' : '1'
-              }px 1px 1px;
-              border-color: ${uiColors.enabled.resting.border};
-              background-color: ${uiColors.enabled.resting.background};
-              border-radius: 4px 0px 0px 4px;
+              border-width: ${attributes.hideBorder? '0px' : '1px'};
+              border-color: ${uiColors.enabled.restingLight.border};
+              background-color: ${uiColors.enabled.restingLight.background};
+              border-radius: 4px;
             }
 
             .wrapper:hover,
@@ -136,12 +134,13 @@ export default class InputNumber extends HTMLElement {
               grid-column-start: 2;
               display: grid;
               grid-template-rows: 1fr 1fr;
-              border-left: 1px solid ${uiColors.enabled.resting.border};
+              border-left: 1px solid ${uiColors.enabled.restingLight.border};
               width: 24px;
               height: 24px;
               margin: 0;
             }
 
+            .wrapper:hover .arrowWrapper,
             .arrowWrapper:hover {
               border-left-color: ${uiColors.enabled.focus.border};
             }
@@ -158,12 +157,14 @@ export default class InputNumber extends HTMLElement {
               border-color: ${uiColors.disabled.border};
             }
 
+            .wrapper .upArrow,
+            .wrapper .downArrow,
             .upArrow,
             .downArrow {
-              user-select: none;
-              -moz-user-select: none;
               -webkit-user-select: none;
+              -moz-user-select: none;
               -ms-user-select: none;
+              user-select: none;
               padding: 0;
               margin: 0;
               border-width: 1px;
@@ -172,7 +173,7 @@ export default class InputNumber extends HTMLElement {
               height: 12px;
               font-size: 0.9em;
               cursor: pointer;
-              color: ${uiColors.enabled.resting.fill};
+              color: ${uiColors.enabled.restingLight.fill};
               outline: 0;
             }
 
@@ -186,10 +187,12 @@ export default class InputNumber extends HTMLElement {
               vertical-align: top;
             }
 
+            .wrapper:hover .upArrow,
+            .wrapper:hover .downArrow,
             .upArrow:hover,
             .downArrow:hover {
               color: ${uiColors.enabled.focus.fill};
-              background-color: ${uiColors.enabled.focus.background};
+              background-color: ${uiColors.enabled.resting.background};
             }
 
             .upArrow:active,

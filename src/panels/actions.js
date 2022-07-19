@@ -11,7 +11,7 @@ function makePanel_Actions() {
   let pop = _UI.popOut;
   let ss = _UI.multiSelect.shapes.getMembers();
 
-  let content = '<div class="panel_section">';
+  let content = '<div class="glyph-edit__panel-section">';
   if (pop) content = '<div class="navarea_header">';
   content += '<h1 class="paneltitle">actions</h1>';
 
@@ -269,7 +269,7 @@ function makePanel_Actions() {
   // Put it all together
   if (pop)
     content +=
-      '</div><div class="panel_section"><div class="actionsarea" style="margin-top:0px;">';
+      '</div><div class="glyph-edit__panel-section"><div class="actionsarea" style="margin-top:0px;">';
   else content += '<div class="actionsarea">';
 
   content += allactions;

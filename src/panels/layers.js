@@ -12,7 +12,7 @@ function makePanel_LayerChooser() {
 
   content += '<h1 class="paneltitle">shapes</h1>';
 
-  content += '</div><div class="panel_section">';
+  content += '</div><div class="glyph-edit__panel-section">';
 
   let scs = getSelectedWorkItemShapes();
   // log(`selectedWorkItemShapes`);
