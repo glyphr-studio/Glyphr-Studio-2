@@ -146,6 +146,13 @@ uiColors = {
       fill: 'hsl(0, 0%, 39%)',
       background: 'hsl(0, 0%, 98%)',
     },
+    restingLight: {
+      text: 'hsl(0, 0%, 4%)',
+      lightText: 'hsl(0, 0%, 12%)',
+      border: 'hsla(0, 0%, 75%, 0.2)',
+      fill: 'hsl(0, 0%, 39%, 0.4)',
+      background: 'hsl(0, 0%, 98%)',
+    },
     focus: {
       text: 'hsl(0, 0%, 0%)',
       lightText: 'hsl(0, 0%, 8%)',

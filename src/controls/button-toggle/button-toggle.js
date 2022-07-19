@@ -20,7 +20,7 @@ export default class ButtonToggle extends HTMLElement {
 
     this.size = this.getAttribute('size') || 24;
     this.gutterSize = Math.round(this.size * 0.05);
-    this.iconSize = this.size - this.gutterSize * 2 - 2;
+    this.iconSize = this.size - (this.gutterSize * 2);
     this.selected = this.hasAttribute('selected');
     this.disabled = this.hasAttribute('disabled');
 
@@ -57,7 +57,7 @@ export default class ButtonToggle extends HTMLElement {
             .wrapper {
                 box-sizing: border-box;
                 margin: 0;
-                border-width: 1px;
+                border-width: ${attributes.hideBorder? '0px' : '1px'};
                 border-style: solid;
                 padding: ${this.gutterSize}px;
                 width: ${this.size}px;
@@ -65,12 +65,12 @@ export default class ButtonToggle extends HTMLElement {
                 vertical-align: top;
                 text-align: left;
                 overflow: hidden;
-                border-color: ${uiColors.enabled.resting.border};
-                background-color: ${uiColors.enabled.resting.background};
+                border-color: ${uiColors.enabled.restingLight.border};
+                background-color: ${uiColors.enabled.restingLight.background};
             }
 
             .wrapper svg {
-                fill: ${uiColors.enabled.resting.fill};
+                fill: ${uiColors.enabled.restingLight.fill};
             }
 
             .wrapper:hover {

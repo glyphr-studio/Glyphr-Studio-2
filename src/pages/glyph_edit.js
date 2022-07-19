@@ -30,10 +30,13 @@ export default class PageGlyphEdit {
       innerHTML: `
       <div class="glyph-edit__page">
         <div class="glyph-edit__left-area">
-          <fancy-button secondary>Glyph edit</fancy-button>
-          <fancy-button secondary>${selectedGlyph.name}</fancy-button>
-          <div id="panel">
-            <h3>Attributes</h3>
+          <div class="glyph-edit__nav-area">
+            <button class="nav-button l1">Glyph edit</button>
+            <button class="nav-button l2">${selectedGlyph.name}</button>
+            <button class="nav-button l3" class="glyph-edit__nav-area__span">Attributes</button>
+          </div>
+          <div id="glyph-edit__panel">
+            <h3>Glyph</h3>
             ${makePanel_GlyphAttributes()}
           </div>
         </div>

@@ -24,12 +24,13 @@ export default class InputNumberLockable extends HTMLElement {
 
     this.wrapper = makeElement({ className: 'wrapper' });
 
-    this.inputNumber = new InputNumber({ hideRightBorder: '' });
+    this.inputNumber = new InputNumber({ hideBorder: true });
 
     this.padlock = new ButtonToggle({
       class: 'padlock',
       icon: 'lock',
-      size: '26',
+      size: '24',
+      hideBorder: true
     });
 
     if (this.locked) {
@@ -51,9 +52,9 @@ export default class InputNumberLockable extends HTMLElement {
               display: grid;
               grid-template-columns: 1fr 24px;
               border-style: solid;
-              border-width: 0px;
-              border-color: ${uiColors.enabled.resting.border};
-              background-color: ${uiColors.enabled.resting.background};
+              border-width: 1px;
+              border-color: ${uiColors.enabled.restingLight.border};
+              background-color: ${uiColors.enabled.restingLight.background};
               border-radius: 4px;
             }
 

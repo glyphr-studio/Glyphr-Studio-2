@@ -1,5 +1,5 @@
 import ProjectEditor from '../project/project_editor.js';
-import GlyphrStudioApp from './glyphr_studio_app.js';
+import GlyphrStudioApp from './app.js';
 import { log } from '../common/functions.js';
 
 /* Web Components */

@@ -13,7 +13,7 @@ function makePanel_History() {
 
   let q = editor.history[editor.nav.page].queue;
 
-  content += '</div><div class="panel_section">';
+  content += '</div><div class="glyph-edit__panel-section">';
 
   // log("MAKEPANEL_HISTORY - rolling out queue\n" + json(q));
 

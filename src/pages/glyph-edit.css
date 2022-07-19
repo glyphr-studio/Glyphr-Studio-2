@@ -12,36 +12,47 @@
 .glyph-edit__left-area {
 	grid-column: 1;
 	display: grid;
-	grid-template-rows: 48px 48px 1fr;
-	row-gap: 10px;
+	grid-template-rows: min-content max-content;
+	row-gap: 2px;
 }
 
-.glyph-edit__left-area fancy-button {
-	width: 100%;
-	border-radius: 0;
-	height: 48px;
+.glyph-edit__nav-area {
+	display: grid;
+	grid-template-columns: min-content 1fr;
+	grid-template-rows: 1fr 1fr;
+	gap: 2px;
 }
 
-.glyph-edit__left-area #panel {
+.glyph-edit__nav-area .l3 {
+	grid-column: span 2;
+}
+
+#glyph-edit__panel {
+	border: 1px solid var(--blue-l85);
 	padding: 10px;
 	background-color: var(--offWhite);
 	grid-row: 3;
 	border-radius: 4px;
+	box-shadow: var(--l2-shadow);
 }
 
 .glyph-edit__tools-area {
+	border: 1px solid var(--blue-l85);
 	border-radius: 4px;
 	padding: 10px;
 	height: min-content;
 	grid-column: 2;
 	background-color: var(--offWhite);
+	box-shadow: var(--l2-shadow);
 }
 
 .glyph-edit__right-area {
+	border: 1px solid var(--blue-l85);
 	grid-column: 3;
 	border-radius: 4px;
 	width: 100%;
 	overflow: hidden;
+	box-shadow: var(--l3-shadow);
 }
 
 canvas-display {
