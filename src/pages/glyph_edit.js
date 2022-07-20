@@ -2,6 +2,7 @@ import { makeElement } from '../controls/controls.js';
 import { log } from '../common/functions.js';
 import makePanel_GlyphAttributes from '../panels/attributes_glyph.js';
 import { getCurrentProjectEditor } from '../app/main.js';
+import { makeNavButton } from './pages.js';
 
 /**
  * Page > Glyph Edit
@@ -31,18 +32,9 @@ export default class PageGlyphEdit {
       <div class="glyph-edit__page">
         <div class="glyph-edit__left-area">
           <div class="glyph-edit__nav-area">
-            <button class="nav-button l1">
-              <span class="nav-button__super-title">PAGE</span>
-              <span class="nav-button__title">Glyph edit</span>
-            </button>
-            <button class="nav-button l2">
-              <span class="nav-button__super-title">EDITING</span>
-              <span class="nav-button__title">${selectedGlyph.name}</span>
-            </button>
-            <button class="nav-button l3" class="glyph-edit__nav-area__span">
-              <span class="nav-button__super-title">PANEL</span>
-              <span class="nav-button__title">Attributes</span>
-            </button>
+            ${makeNavButton({level: 'l1', superTitle: 'PAGE', title: 'Glyph edit'})}
+            ${makeNavButton({level: 'l2', superTitle: 'EDITING', title: selectedGlyph.name})}
+            ${makeNavButton({level: 'l3', superTitle: 'PANEL', title: 'Attributes'})}
           </div>
           <div id="glyph-edit__panel">
             <h3>Glyph</h3>
