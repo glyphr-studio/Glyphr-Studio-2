@@ -437,7 +437,6 @@ function make_ImportFilter(chars, kerns, funname) {
     '" id="customrangeend"></td>' +
     '<td><br><button onclick="checkFilter(\'custom\');">Set Range</button></td>' +
     '<td style="padding-top:20px;">' +
-    helpUI(unicodeInputHelp()) +
     '</td>' +
     '<td><br><div id="customrangeerror">bad range input</div></td>' +
     '</tr></table><br>';

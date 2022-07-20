@@ -116,7 +116,7 @@ function makeAttributesGroup_componentInstance(s) {
     '&#916; y</td>' +
     '<td>' +
     '<div class="lockwrapper">' +
-    lockUI('_UI.multiSelect.shapes.getSingleton().xLock', s.xLock, 'xLock') +
+    lockUI('_UI.multiSelect.shapessingleton.xLock', s.xLock, 'xLock') +
     '<input type="number" id="comx" step="' +
     svc +
     '" value="' +
@@ -128,7 +128,7 @@ function makeAttributesGroup_componentInstance(s) {
     '</div>' +
     dimSplit() +
     '<div class="lockwrapper">' +
-    lockUI('_UI.multiSelect.shapes.getSingleton().yLock', s.yLock, 'yLock') +
+    lockUI('_UI.multiSelect.shapessingleton.yLock', s.yLock, 'yLock') +
     '<input type="number" id="comy" step="' +
     svc +
     '" value="' +
@@ -148,7 +148,7 @@ function makeAttributesGroup_componentInstance(s) {
     '&#916; height</td>' +
     '<td>' +
     '<div class="lockwrapper">' +
-    lockUI('_UI.multiSelect.shapes.getSingleton().wLock', s.wLock, 'wLock') +
+    lockUI('_UI.multiSelect.shapessingleton.wLock', s.wLock, 'wLock') +
     '<input type="number" id="comw" step="' +
     svc +
     '" value="' +
@@ -160,7 +160,7 @@ function makeAttributesGroup_componentInstance(s) {
     '</div>' +
     dimSplit() +
     '<div class="lockwrapper">' +
-    lockUI('_UI.multiSelect.shapes.getSingleton().hLock', s.hLock, 'hLock') +
+    lockUI('_UI.multiSelect.shapessingleton.hLock', s.hLock, 'hLock') +
     '<input type="number" id="comh" step="' +
     svc +
     '" value="' +
@@ -179,7 +179,7 @@ function makeAttributesGroup_componentInstance(s) {
       '<td> lock aspect ratio </td>' +
       '<td>' +
       checkUI(
-        '_UI.multiSelect.shapes.getSingleton().ratioLock',
+        '_UI.multiSelect.shapessingleton.ratioLock',
         s.ratioLock,
         true
       ) +
@@ -192,7 +192,7 @@ function makeAttributesGroup_componentInstance(s) {
     '<tr>' +
     '<td> flip horizontal </td>' +
     '<td>' +
-    checkUI('_UI.multiSelect.shapes.getSingleton().flipEW', s.flipEW, true) +
+    checkUI('_UI.multiSelect.shapessingleton.flipEW', s.flipEW, true) +
     '</td>' +
     '</tr>';
 
@@ -200,7 +200,7 @@ function makeAttributesGroup_componentInstance(s) {
     '<tr>' +
     '<td> flip vertical </td>' +
     '<td>' +
-    checkUI('_UI.multiSelect.shapes.getSingleton().flipNS', s.flipNS, true) +
+    checkUI('_UI.multiSelect.shapessingleton.flipNS', s.flipNS, true) +
     '</td>' +
     '</tr>';
 
@@ -209,7 +209,7 @@ function makeAttributesGroup_componentInstance(s) {
     '<td> reverse winding </td>' +
     '<td>' +
     checkUI(
-      '_UI.multiSelect.shapes.getSingleton().reverseWinding',
+      '_UI.multiSelect.shapessingleton.reverseWinding',
       s.reverseWinding,
       true
     ) +
@@ -246,12 +246,10 @@ function makeAttributesGroup_componentInstance(s) {
     '<td> rotate first </td>' +
     '<td>' +
     checkUI(
-      '_UI.multiSelect.shapes.getSingleton().rotateFirst',
+      '_UI.multiSelect.shapessingleton.rotateFirst',
       s.rotateFirst,
       true
     ) +
-    '&ensp;' +
-    helpUI(rotationhelp) +
     '</td>' +
     '</tr>';
 
@@ -278,7 +276,7 @@ function makeAttributesGroup_componentInstance(s) {
 }
 
 function updateComponentInstanceDetail(key, value, id) {
-  let selci = _UI.multiSelect.shapes.getSingleton();
+  let selci = _UI.multiSelect.shapessingleton;
   let oldval = selci[key];
 
   value = isVal(value) ? value : 0;
