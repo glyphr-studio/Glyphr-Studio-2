@@ -213,7 +213,7 @@ function Tool_ShapeEdit() {
         _UI.currentPanel = 'npAttributes';
       }
 
-      let singleshape = _UI.multiSelect.shapes.getSingleton();
+      let singleshape = _UI.multiSelect.shapessingleton;
 
       if (singleshape) {
         cur = singleshape.isOverBoundingBoxHandle(eh.mousex, eh.mousey);
@@ -381,7 +381,7 @@ function Tool_NewBasicShape() {
         editor.nav.page === 'components'
           ? Object.keys(getCurrentProject().components).length
           : getSelectedWorkItemShapes().length;
-      let s = _UI.multiSelect.shapes.getSingleton();
+      let s = _UI.multiSelect.shapessingleton;
 
       if (_UI.selectedTool === 'newrect') {
         s.name = 'Rectangle ' + count;
@@ -612,7 +612,7 @@ function Tool_PathEdit() {
       eh.toolhandoff = false;
       this.controlpoint = {
         type: 'h2',
-        point: sp.getSingleton(),
+        point: spsingleton,
       };
 
       this.controlpoint.point.h2.use = true;
@@ -706,7 +706,7 @@ function Tool_PathAddPoint() {
   this.addpoint = false;
 
   this.mousedown = function (ev) {
-    let singleshape = _UI.multiSelect.shapes.getSingleton();
+    let singleshape = _UI.multiSelect.shapessingleton;
     let s = getClickedShape(_UI.eventhandlers.mousex, _UI.eventhandlers.mousey);
 
     if (
@@ -740,7 +740,7 @@ function Tool_PathAddPoint() {
   };
 
   this.mousemove = function (ev) {
-    let singleshape = _UI.multiSelect.shapes.getSingleton();
+    let singleshape = _UI.multiSelect.shapessingleton;
     if (singleshape) {
       let pt = singleshape.path.getClosestPointOnCurve({
         x: cXsX(_UI.eventhandlers.mousex),

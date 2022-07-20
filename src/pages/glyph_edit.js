@@ -37,7 +37,6 @@ export default class PageGlyphEdit {
             ${makeNavButton({level: 'l3', superTitle: 'PANEL', title: 'Attributes'})}
           </div>
           <div id="glyph-edit__panel">
-            <h3>Glyph</h3>
             ${makePanel_GlyphAttributes()}
           </div>
         </div>
