@@ -68,6 +68,7 @@ export default class GlyphrStudioApp {
         panel: this.settings.dev.currentPanel
       }
     });
+    log(this.getCurrentProjectEditor());
     this.navigate();
 
     log(`GlyphrStudioApp.setUp`, 'end');

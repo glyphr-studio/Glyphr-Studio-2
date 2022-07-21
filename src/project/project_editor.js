@@ -101,10 +101,11 @@ export default class ProjectEditor {
    * @returns {object}
    */
   get selectedGlyph() {
-    // log('ProjectEditor GET selectedGlyph', 'start');
+    log('ProjectEditor GET selectedGlyph', 'start');
     const id = this.selectedGlyphID;
+    log(`selectedGlyphID ${id}`);
     const re = this.project.getGlyph(id);
-    // log('ProjectEditor GET selectedGlyph', 'end');
+    log('ProjectEditor GET selectedGlyph', 'end');
     return re || new Glyph();
   }
 
