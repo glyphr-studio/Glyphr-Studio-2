@@ -328,10 +328,10 @@ export default class Glyph extends GlyphElement {
    * @returns {string}
    */
   get name() {
-    log('Glyph GET name', 'start');
+    // log('Glyph GET name', 'start');
     let name = getUnicodeName(this.id);
-    log(`ID: ${this.id} result: ${name}`);
-    log('Glyph GET name', 'end');
+    // log(`ID: ${this.id} result: ${name}`);
+    // log('Glyph GET name', 'end');
     return name;
   }
 
@@ -998,16 +998,7 @@ export default class Glyph extends GlyphElement {
     ctx.beginPath();
     for (let j = 0; j < sl.length; j++) {
       shape = sl[j];
-      log(
-        '\t ' +
-          this.name +
-          ' drawing ' +
-          shape.objType +
-          ' ' +
-          j +
-          ' ' +
-          shape.name
-      );
+      log(`${this.name} drawing ${shape.objType} ${j} ${shape.name}`);
       drewShape = shape.drawShape(ctx, view);
       if (!drewShape) {
         console.warn(

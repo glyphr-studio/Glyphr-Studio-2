@@ -5,6 +5,7 @@ import Segment from './segment.js';
 import PolySegment from './poly_segment.js';
 import PathPoint from './path_point.js';
 import {
+  log,
   clone,
   round,
   isVal,
@@ -506,8 +507,8 @@ export default class Path extends GlyphElement {
    * @param {boolean} snap - snap values to whole numbers
    */
   drawPath(ctx, view = getView('Path.drawPath'), snap = true) {
-    // log('Path.drawPath', 'start');
-    // log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
+    log('Path.drawPath', 'start');
+    log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
 
     // let currView = getView('Path.drawPath');
     // view = view || clone(currView);
@@ -529,7 +530,7 @@ export default class Path extends GlyphElement {
     let p4y;
 
     ctx.moveTo(p1x, p1y);
-    // log(`move to ${p1x}, ${p1y}`);
+    log(`move to ${p1x}, ${p1y}`);
 
     for (let cp = 0; cp < this.pathPoints.length; cp++) {
       pp = this.pathPoints[cp];
@@ -549,13 +550,13 @@ export default class Path extends GlyphElement {
       p4x = sXcX(round(np.p.x, precision), view);
       p4y = sYcY(round(np.p.y, precision), view);
 
-      // log(`curveTo ${p2x}, ${p2y}, ${p3x}, ${p3y}, ${p4x}, ${p4y}`);
+      log(`curveTo ${p2x}, ${p2y}, ${p3x}, ${p3y}, ${p4x}, ${p4y}`);
 
       ctx.bezierCurveTo(p2x, p2y, p3x, p3y, p4x, p4y);
     }
 
     // setView(currView);
-    // log('Path.drawPath', 'end');
+    log('Path.drawPath', 'end');
   }
 
   // --------------------------------------------------------------

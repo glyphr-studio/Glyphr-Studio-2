@@ -249,12 +249,12 @@ function validateHex(str) {
  * @returns {string} - name
  */
 function getUnicodeName(ch) {
-  log('getUnicodeName', 'start');
-  log('passed ' + ch);
+  // log('getUnicodeName', 'start');
+  // log('passed ' + ch);
 
   //normalize hex format
   ch = `0x${parseInt(ch).toString(16)}`;
-  log('normalized ' + ch);
+  // log('normalized ' + ch);
 
   let re;
   const chn = ch * 1;
@@ -265,8 +265,8 @@ function getUnicodeName(ch) {
     re = unicodeNames[ch] || '[name not found]';
   }
 
-  log('returning ' + re + '\n');
-  log('getUnicodeName', 'end');
+  // log('returning ' + re + '\n');
+  // log('getUnicodeName', 'end');
   return re;
 }
 

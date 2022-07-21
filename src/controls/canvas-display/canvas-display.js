@@ -1,6 +1,9 @@
 import { makeElement } from '../controls.js';
+import { log } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
 import Glyph from '../../glyph_elements/glyph.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
+import { accentColors } from '../../common/colors.js';
 // import { getGlyphrStudioApp } from '../app/main.js';
 // import { log } from '../../common/functions.js';
 
@@ -34,10 +37,10 @@ export default class CanvasDisplay extends HTMLElement {
       content: `
             * {
                 box-sizing: border-box;
-                user-select: none;
-                -moz-user-select: none;
                 -webkit-user-select: none;
+                -moz-user-select: none;
                 -ms-user-select: none;
+                user-select: none;
             }
 
             canvas {
@@ -121,10 +124,10 @@ export default class CanvasDisplay extends HTMLElement {
    * Updates the canvas
    */
   redraw() {
-    // log('CanvasDisplay.redraw', 'start');
-    let view = { dx: 100, dy: 800, dz: 1 };
+    log('CanvasDisplay.redraw', 'start');
+    let view = { dx: 100, dy: 800, dz: 0.8 };
     // const app = getGlyphrStudioApp();
-    this.ctx.fillStyle = 'lime';
+    this.ctx.fillStyle = accentColors.gray.l85;
     this.ctx.fillRect(view.dx, 0, 1, 1000);
     this.ctx.fillRect(0, view.dy, 1000, 1);
 
@@ -132,9 +135,9 @@ export default class CanvasDisplay extends HTMLElement {
     // let sg = cp.getGlyph('0x41', true);
     // log(sg);
 
-    let sg = new Glyph(samples.glyphBox);
-    // log(sg);
+    let sg = getCurrentProjectEditor().selectedGlyph;
+    log(sg);
     sg.drawGlyph(this.ctx, view);
-    // log('CanvasDisplay.redraw', 'end');
+    log('CanvasDisplay.redraw', 'end');
   }
 }
