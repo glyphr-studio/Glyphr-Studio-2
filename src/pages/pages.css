@@ -28,7 +28,7 @@
 	border-top-left-radius: 4px;
 	background-color: var(--blue-l30);
 	border: 1px solid var(--blue-l50);
-
+	padding-right: 20px;
 }
 
 .l2,

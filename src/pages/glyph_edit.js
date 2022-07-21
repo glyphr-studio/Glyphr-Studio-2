@@ -21,6 +21,8 @@ export default class PageGlyphEdit {
    */
   pageLoader() {
     log(`PageGlyphEdit.pageLoader`, 'start');
+    log('current ProjectEditor');
+    log(getCurrentProjectEditor());
     let selectedGlyph = getCurrentProjectEditor().selectedGlyph;
     log('selected glyph');
     log(selectedGlyph);
