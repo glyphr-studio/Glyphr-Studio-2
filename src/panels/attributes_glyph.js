@@ -13,7 +13,7 @@ export default function makePanel_GlyphAttributes() {
   log('makePanel_GlyphAttributes', 'start');
   let projectEditor = getCurrentProjectEditor();
   let selectedShapes = projectEditor.multiSelect.shapes;
-  let content = '<div class="panel__section">';
+  let content = '';
   // log(projectEditor);
 
   // For debug
@@ -21,14 +21,16 @@ export default function makePanel_GlyphAttributes() {
 
   log(selectedShapes);
   log(`multiSelect length: ${selectedShapes.length}`);
-  if (selectedShapes.length === 0) {
-    // no shape selected
-    log("No shape selected");
-    content += '<h3>Glyph</h3>';
-    content += makeInputs_position(projectEditor.selectedGlyph.x, projectEditor.selectedGlyph.y);
-    content += makeInputs_size(projectEditor.selectedGlyph.width, projectEditor.selectedGlyph.height);
 
-  } else if (selectedShapes.length === 1) {
+  content += `
+    <div class="panel__section">
+      <h3>Glyph</h3>
+      ${makeInputs_position(projectEditor.selectedGlyph.x, projectEditor.selectedGlyph.y)}
+      ${makeInputs_size(projectEditor.selectedGlyph.width, projectEditor.selectedGlyph.height)}
+    </div>
+  `;
+
+  if (selectedShapes.length === 1) {
     // One shape selected
     log('One shape selected');
     if (selectedShapes.singleton.objType === 'ComponentInstance') {
@@ -51,13 +53,16 @@ export default function makePanel_GlyphAttributes() {
   } else {
     // Many shapes selected
     log('More than one shape selected');
-    content += `<h3>${selectedShapes.length} selected shapes</h3>`;
     let virtualGlyph = selectedShapes.getGlyph();
-    content += makeInputs_position(virtualGlyph.x, virtualGlyph.y);
-    content += makeInputs_size(virtualGlyph.width, virtualGlyph.height);
+    content += `
+      <div class="panel__section">
+        <h3>${selectedShapes.length} selected shapes</h3>
+        ${makeInputs_position(virtualGlyph.x, virtualGlyph.y)}
+        ${makeInputs_size(virtualGlyph.width, virtualGlyph.height)}
+      </div>
+    `;
   }
 
-  content += '</div>';
   // log(content);
   log('makePanel_GlyphAttributes', 'end');
   return content;

@@ -4,6 +4,7 @@ import { samples } from '../../samples/samples.js';
 import Glyph from '../../glyph_elements/glyph.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
+import { glyphToHex } from '../../common/unicode.js';
 // import { getGlyphrStudioApp } from '../app/main.js';
 // import { log } from '../../common/functions.js';
 
@@ -135,7 +136,9 @@ export default class CanvasDisplay extends HTMLElement {
     // let sg = cp.getGlyph('0x41', true);
     // log(sg);
 
-    let sg = getCurrentProjectEditor().selectedGlyph;
+    let glyphHex = glyphToHex(this.glyphs.charAt(0));
+
+    let sg = getCurrentProject().getGlyph(glyphHex);
     log(sg);
     sg.drawGlyph(this.ctx, view);
     log('CanvasDisplay.redraw', 'end');
