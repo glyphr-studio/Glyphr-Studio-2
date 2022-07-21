@@ -23,9 +23,10 @@ function makeAttributesGroup_shape(s) {
 	// log("makeAttributesGroup_shape - Drawing Shape Details");
 	let spinn = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
 	let content = `
-		<h3>Shape</h3>
-		<label>name</label>
-		<input type="text" value="${s.name}"/>
+		<div class="panel__section">
+			<h3>Shape</h3>
+			<label>name</label>
+			<input type="text" value="${s.name}"/>
 	`;
 
 	// let xval = 100;
@@ -164,6 +165,8 @@ function makeAttributesGroup_shape(s) {
 	// }
 
 	// log("<b>SHAPE DETAILS OUTPUT:<b><br><textarea rows=9 cols=3000>" + content + "</textarea>");
+
+	content += '</div>';
 	return content;
 }
 
