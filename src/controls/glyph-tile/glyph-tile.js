@@ -1,4 +1,4 @@
-import { makeElement } from '../controls.js';
+import { makeElement } from '../../common/dom.js';
 import { uiColors, accentColors } from '../../common/colors.js';
 import { hexToChars } from '../../common/unicode.js';
 // import { getCurrentProject } from '../../app/main.js';

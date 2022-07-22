@@ -1,4 +1,4 @@
-import { makeElement } from '../controls.js';
+import { makeElement } from '../../common/dom.js';
 import { uiColors, accentColors } from '../../common/colors.js';
 
 /**

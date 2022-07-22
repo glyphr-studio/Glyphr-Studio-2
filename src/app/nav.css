@@ -20,30 +20,30 @@
 	top: 1px;
 }
 
-.l1,
-.l1:active,
-.l1:hover,
-.l1:focus {
+#nav-button-l1,
+#nav-button-l1:active,
+#nav-button-l1:hover,
+#nav-button-l1:focus {
 	width: max-content;
 	border-top-left-radius: 4px;
-	background-color: var(--blue-l30);
+	background-color: var(--blue-l20);
 	border: 1px solid var(--blue-l50);
 	padding-right: 20px;
 }
 
-.l2,
-.l2:active,
-.l2:hover,
-.l2:focus {
+#nav-button-l2,
+#nav-button-l2:active,
+#nav-button-l2:hover,
+#nav-button-l2:focus {
 	border-top-right-radius: 4px;
 	background-color: var(--blue-l30);
 	border: 1px solid var(--blue-l50);
 }
 
-.l3,
-.l3:active,
-.l3:hover,
-.l3:focus {
+#nav-button-l3,
+#nav-button-l3:active,
+#nav-button-l3:hover,
+#nav-button-l3:focus {
 	border-bottom-left-radius: 4px;
 	border-bottom-right-radius: 4px;
 	background-color: var(--blue-l40);

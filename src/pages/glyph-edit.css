@@ -23,7 +23,7 @@
 	gap: 2px;
 }
 
-.glyph-edit__nav-area .l3 {
+.glyph-edit__nav-area #nav-button-l3 {
 	grid-column: span 2;
 }
 

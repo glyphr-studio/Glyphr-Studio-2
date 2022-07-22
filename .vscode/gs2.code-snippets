@@ -17,35 +17,35 @@
 	// }
 
 	"debug-message": {
-		"prefix": "dem",
-		"body": ["debug(`\\t ${1:message}`);\n$0"],
+		"prefix": "logm",
+		"body": ["log(`${1:message}`);\n$0"],
 		"description": "Debug message - regular message"
 	},
 
 	"debug-variable": {
-		"prefix": "dev",
-		"body": ["debug(`\\t ${1:varname}: ${${1:varname}}`);\n$0"],
+		"prefix": "logv",
+		"body": ["log(`${1:varname}: ${${1:varname}}`);\n$0"],
 		"description": "Debug message - variable"
 	},
 
 	"debug-start": {
-		"prefix": "des",
-		"body": ["debug(`\\n ${1:functionName} - START`);\n$0"],
+		"prefix": "logs",
+		"body": ["log(`${1:functionName}`, 'start');\n$0"],
 		"description": "Debug message - start of function"
 	},
 
 	"debug-end": {
-		"prefix": "dee",
-		"body": ["debug(` ${1:functionName} - END\\n\\n`);"],
+		"prefix": "loge",
+		"body": ["log(`${1:functionName}`, 'end');"],
 		"description": "Debug message - end of function"
 	},
 
 	"debug-both": {
-		"prefix": "deb",
+		"prefix": "logb",
 		"body": [
-			"debug(`\\n ${1:functionName} - START`);",
+			"log(`${1:functionName}`, 'start');",
 			"$0",
-			"debug(` ${1:functionName} - END\\n\\n`);"],
+			"log(`${1:functionName}`, 'end');"],
 		"description": "Debug message - start and end of function"
 	},
 

@@ -1,4 +1,4 @@
-import { makeElement } from '../controls.js';
+import { makeElement } from '../../common/dom.js';
 import { log } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
 import Glyph from '../../glyph_elements/glyph.js';
