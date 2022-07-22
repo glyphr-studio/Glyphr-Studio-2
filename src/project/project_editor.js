@@ -2,7 +2,7 @@ import GlyphrStudioProject from './glyphr_studio_project.js';
 // import History from './history.js';
 import PageOpenProject from '../pages/open_project.js';
 import PageGlyphEdit from '../pages/glyph_edit.js';
-import { makeElement } from '../controls/controls.js';
+import { makeElement } from '../common/dom.js';
 import {
   log,
   saveFile,

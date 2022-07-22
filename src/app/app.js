@@ -20,6 +20,7 @@ export default class GlyphrStudioApp {
 
     this.projectEditors = [];
     this.selectedProjectEditor = 0;
+    this.events = {};
 
     this.settings = {
       dev: {

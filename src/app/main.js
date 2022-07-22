@@ -20,10 +20,13 @@ export {
   getCurrentProjectEditor,
   getCurrentProject,
   glyphrStudioOnLoad,
+  addGlobalEventListener,
 };
 
-/** Here is the main app object */
-const GSApp = new GlyphrStudioApp();
+// The main app object
+GSApp = new GlyphrStudioApp();
+
+let eventsTracker = {};
 
 /**
  * First function to run when the browser starts
@@ -101,4 +104,9 @@ function getCurrentProjectEditor() {
     gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
   }
   return gs.projectEditors[gs.selectedProjectEditor];
+}
+
+function addGlobalEventListener(name, func){
+  eventsTracker[name] = func;
+  window[name] = func;
 }

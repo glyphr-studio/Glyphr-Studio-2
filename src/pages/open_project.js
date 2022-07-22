@@ -1,4 +1,4 @@
-import { makeElement } from '../controls/controls.js';
+import { makeElement } from '../common/dom.js';
 import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { makeErrorMessageBox } from '../controls/dialogs.js';
 import GlyphrStudioProject from '../project/glyphr_studio_project.js';

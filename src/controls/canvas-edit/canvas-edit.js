@@ -870,9 +870,7 @@ function drawContextGlyphExtras(char) {
     const texty = sYcY(getCurrentProject().projectSettings.descent - 60);
 
     // Draw the glyph name
-    let gname = char.glyph
-      ? char.glyph.getName()
-      : getGlyphName(charsToHexArray(char.char));
+    let gname = char.glyph? char.glyph.getName() : getGlyphName(charsToHexArray(char.char));
     gname = gname.replace(/latin /i, '');
     drawGlyphNameExtra(gname, currx, texty, advanceWidth, color, char.char);
 
@@ -1019,7 +1017,6 @@ function isHotspotHere(cx, cy) {
       cy >= v.target.yMin
     ) {
       return v;
-      break;
     }
   }
 
@@ -1117,9 +1114,7 @@ function findAndUnderlineHotspot(cx, cy) {
 
 function setView(oa) {
   const sc =
-    editor.nav.page === 'kerning'
-      ? getSelectedKernID()
-      : getSelectedWorkItemID();
+    editor.nav.page === 'kerning'? getSelectedKernID() : getSelectedWorkItemID();
   const v = _UI.views || {};
 
   // Ensure there are at least defaults
@@ -1208,14 +1203,10 @@ function calculateDefaultView() {
   const strw = ps.upm / 2;
   const strh = ps.ascent - ps.descent;
 
-  let zw;
-  let zh;
-  var nz;
+  let zw = round(canw / (strw * 1.4), 3);
+  let zh = round(canh / (strh * 1.4), 3);
+  let nz = Math.min(zh, zw);
 
-  zw = round(canw / (strw * 1.4), 3);
-  zh = round(canh / (strh * 1.4), 3);
-
-  var nz = Math.min(zh, zw);
   const nx = round((canw - nz * strw) / 2);
   const ny = round((canh - nz * strh) / 2 + ps.ascent * nz);
 
@@ -1238,7 +1229,7 @@ function fitViewToContextGlyphs(dontzoom) {
 
   let zw;
   let zh;
-  var nz;
+  let nz;
 
   if (dontzoom) {
     nz = getView('fitViewToContextGlyphs').dz;
@@ -1249,7 +1240,7 @@ function fitViewToContextGlyphs(dontzoom) {
     // log(`NZ \t ${zw} \t ${zh}`);
   }
 
-  var nz = Math.min(zh, zw);
+  nz = Math.min(zh, zw);
   const nx = round((canw - nz * strw) / 2);
   const ny = round((canh - nz * strh) / 2 + ps.ascent * nz);
   // log(`VIEW \t ${nx} \t ${ny} \t ${nz}`);

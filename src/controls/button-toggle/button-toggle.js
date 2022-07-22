@@ -1,4 +1,4 @@
-import { makeElement } from '../controls.js';
+import { makeElement } from '../../common/dom.js';
 import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
 
 /**

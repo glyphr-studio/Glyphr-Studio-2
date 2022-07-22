@@ -1,4 +1,4 @@
-import { makeElement } from '../controls.js';
+import { makeElement } from '../../common/dom.js';
 import ButtonToggle from '../button-toggle/button-toggle.js';
 import InputNumber from '../input-number/input-number.js';
 import { uiColors } from '../../common/colors.js';

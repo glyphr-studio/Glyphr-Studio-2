@@ -1,8 +1,9 @@
-import { makeElement } from '../controls/controls.js';
+import { makeElement, addEventHandler } from '../common/dom.js';
 import { log } from '../common/functions.js';
 import makePanel_GlyphAttributes from '../panels/attributes_glyph.js';
-import { getCurrentProjectEditor } from '../app/main.js';
-import { makeNavButton } from './pages.js';
+import { getCurrentProjectEditor, addGlobalEventListener } from '../app/main.js';
+import { makeNavButton } from '../app/nav.js';
+import { showNavDropdown } from '../app/nav.js';
 
 /**
  * Page > Glyph Edit
@@ -44,16 +45,23 @@ export default class PageGlyphEdit {
         </div>
         <div class="glyph-edit__tools-area">t<br>o<br>o<br>l<br>s</div>
         <div class="glyph-edit__right-area">
-          <canvas-display glyphs="A"></canvas-display>
+          <canvas-display glyphs="B"></canvas-display>
         </div>
       </div>
     `,
     });
 
     const callback = function () {
-      // let can = document.querySelector('canvas-display');
-      // if (can) can.redraw();
-      // log(`PageGlyphEdit.pageLoader.callback`, 'end');
+      addGlobalEventListener('showNavDropdown', showNavDropdown);
+      let l1 = document.getElementById('nav-button-l1');
+      l1.addEventListener('click', showNavDropdown);
+
+      let l2 = document.getElementById('nav-button-l2');
+      l2.addEventListener('click', showNavDropdown);
+
+      let l3 = document.getElementById('nav-button-l3');
+      l3.addEventListener('click', showNavDropdown);
+
     };
 
     log(`PageGlyphEdit.pageLoader`, 'end');

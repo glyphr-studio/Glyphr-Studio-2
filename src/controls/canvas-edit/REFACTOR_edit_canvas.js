@@ -1205,14 +1205,9 @@ function calculateDefaultView() {
   const strw = ps.upm / 2;
   const strh = ps.ascent - ps.descent;
 
-  let zw;
-  let zh;
-  var nz;
-
-  zw = round(canw / (strw * 1.4), 3);
-  zh = round(canh / (strh * 1.4), 3);
-
-  var nz = Math.min(zh, zw);
+  let zw = round(canw / (strw * 1.4), 3);
+  let zh = round(canh / (strh * 1.4), 3);
+  let nz = Math.min(zh, zw);
   const nx = round((canw - nz * strw) / 2);
   const ny = round((canh - nz * strh) / 2 + ps.ascent * nz);
 
@@ -1235,7 +1230,7 @@ function fitViewToContextGlyphs(dontzoom) {
 
   let zw;
   let zh;
-  var nz;
+  let nz;
 
   if (dontzoom) {
     nz = getView('fitViewToContextGlyphs').dz;
@@ -1246,7 +1241,7 @@ function fitViewToContextGlyphs(dontzoom) {
     // log(`NZ \t ${zw} \t ${zh}`);
   }
 
-  var nz = Math.min(zh, zw);
+  nz = Math.min(zh, zw);
   const nx = round((canw - nz * strw) / 2);
   const ny = round((canh - nz * strh) / 2 + ps.ascent * nz);
   // log(`VIEW \t ${nx} \t ${ny} \t ${nz}`);
