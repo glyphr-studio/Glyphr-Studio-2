@@ -1,7 +1,7 @@
 import { makeElement, addEventHandler } from '../common/dom.js';
 import { log } from '../common/functions.js';
 import makePanel_GlyphAttributes from '../panels/attributes_glyph.js';
-import { getCurrentProjectEditor, addGlobalEventListener } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton } from '../app/nav.js';
 import { showNavDropdown } from '../app/nav.js';
 
@@ -51,18 +51,16 @@ export default class PageGlyphEdit {
     `,
     });
 
-    const callback = function () {
-      addGlobalEventListener('showNavDropdown', showNavDropdown);
-      let l1 = document.getElementById('nav-button-l1');
-      l1.addEventListener('click', showNavDropdown);
+    let l1 = content.querySelector('#nav-button-l1');
+    l1.addEventListener('click', function(){ showNavDropdown(l1); });
 
-      let l2 = document.getElementById('nav-button-l2');
-      l2.addEventListener('click', showNavDropdown);
+    let l2 = content.querySelector('#nav-button-l2');
+    l2.addEventListener('click', function(){ showNavDropdown(l2); });
 
-      let l3 = document.getElementById('nav-button-l3');
-      l3.addEventListener('click', showNavDropdown);
+    let l3 = content.querySelector('#nav-button-l3');
+    l3.addEventListener('click', function(){ showNavDropdown(l3); });
 
-    };
+    const callback = function () {};
 
     log(`PageGlyphEdit.pageLoader`, 'end');
 

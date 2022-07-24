@@ -27,8 +27,9 @@
       '%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n',
       'color:rgb(0,170,225)'
       );
-    import { glyphrStudioOnLoad } from './app/main.js';
+    import { glyphrStudioOnLoad, GSApp } from './app/main.js';
     document.addEventListener('DOMContentLoaded', glyphrStudioOnLoad);
+    window._GlyphrStudioApp = GSApp;
   </script>
   <style>
     body,

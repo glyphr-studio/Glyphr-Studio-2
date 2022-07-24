@@ -11,6 +11,7 @@ export default function () {}
  * @param {string} content - If this is a text node, what text to add
  * @param {boolean} tabIndex - make this elem a tab stop
  * @param {array} attributes - collection of [attributeName, attributeValue]
+ * @param {string} innerHTML - text HTML to add as the content of this element
  * @returns {HTMLElement}
  */
 export function makeElement({
@@ -23,6 +24,13 @@ export function makeElement({
   attributes = {},
   innerHTML = false,
 } = {}) {
+
+  if(!document || !document.createElement){
+    console.warn('no document or createElement');
+    console.warn(document);
+    return '';
+  }
+
   const newElement = document.createElement(tag);
 
   if (className) newElement.setAttribute('class', className);
