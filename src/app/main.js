@@ -13,20 +13,18 @@ import InputNumber from '../controls/input-number/input-number.js';
 import InputNumberLockable from '../controls/input-number-lockable/input-number-lockable.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 
+// The main app object
+const GSApp = new GlyphrStudioApp();
+
 /** export nothing by default */
 export default function () {}
 export {
+  GSApp,
   getGlyphrStudioApp,
   getCurrentProjectEditor,
   getCurrentProject,
   glyphrStudioOnLoad,
-  addGlobalEventListener,
 };
-
-// The main app object
-GSApp = new GlyphrStudioApp();
-
-let eventsTracker = {};
 
 /**
  * First function to run when the browser starts
@@ -104,9 +102,4 @@ function getCurrentProjectEditor() {
     gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
   }
   return gs.projectEditors[gs.selectedProjectEditor];
-}
-
-function addGlobalEventListener(name, func){
-  eventsTracker[name] = func;
-  window[name] = func;
 }

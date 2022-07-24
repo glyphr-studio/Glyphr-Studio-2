@@ -2,6 +2,7 @@ import ProjectEditor from '../project/project_editor.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
 import { log } from '../common/functions.js';
 import { getGlyphrStudioApp } from './main.js';
+import { showNavDropdown, closeNavDropdown } from './nav.js';
 
 export { makeAppTopBar };
 
@@ -20,7 +21,7 @@ export default class GlyphrStudioApp {
 
     this.projectEditors = [];
     this.selectedProjectEditor = 0;
-    this.events = {};
+    this.events = [];
 
     this.settings = {
       dev: {
@@ -69,7 +70,13 @@ export default class GlyphrStudioApp {
         panel: this.settings.dev.currentPanel
       }
     });
+
+
+    this.registerFunction(showNavDropdown);
+    this.registerFunction(closeNavDropdown);
+
     log(this.getCurrentProjectEditor());
+    this.fadeOutLoadScreen();
     this.navigate();
 
     log(`GlyphrStudioApp.setUp`, 'end');
@@ -81,7 +88,7 @@ export default class GlyphrStudioApp {
    */
   navigate(pageName) {
     log(`GlyphrStudioApp.navigate`, 'start');
-    this.fadeOutLoadScreen();
+    log(`nav to ${pageName}`);
     this.getCurrentProjectEditor().navigate(pageName);
     log(`GlyphrStudioApp.navigate`, 'end');
   }
@@ -121,6 +128,10 @@ export default class GlyphrStudioApp {
     }
 
     return this.projectEditors[this.selectedProjectEditor];
+  }
+
+  registerFunction(fn) {
+    this.events.push(fn);
   }
 }
 
