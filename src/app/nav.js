@@ -1,4 +1,4 @@
-export { makeNavButton, showNavDropdown, closeNavDropdown };
+export { makeNavButton, showNavDropdown };
 import { makeElement } from '../common/dom.js';
 import { log } from '../common/functions.js';
 import { getGlyphrStudioApp } from './main.js';
@@ -19,26 +19,29 @@ function makeNavButton(properties = {}) {
 
 function showNavDropdown(parentElement) {
 	log(`showNavDropdown`, 'start');
+	log(`parentElement:`);
+	log(parentElement.getBoundingClientRect());
 	let size = 600;
-	let left = parentElement.windowLeft;
-	let top = parentElement.windowTop;
+	let rect = parentElement.getBoundingClientRect();
+	let top = rect.top + rect.height + 2;
 
-	let dropDown = makeElement({tag: 'dialog', attributes: {style: `left: ${left}px; top: ${top}px; width: ${size}px;`}});
-	log(`dropDown: ${dropDown}`);
+	let dropDown = makeElement({
+		tag: 'dialog',
+		id: 'nav-dropdown',
+		attributes: {style: `left: ${rect.left}px; top: ${top}px; width: ${size}px;`},
+		innerHTML: `
+			<div class="nav-dropdown__header-bar">title</div>
+			<button onClick="closeAllDialogs();">close</button>
+			<button>Thing 1</button>
+			<button>Thing 2</button>
+			<button>Thing 3</button>
+			<button>Thing 4</button>
+		`
+	});
 
-	dropDown.innerHTML = `
-	<div class="nav-dropdown__header-bar">title</div>
-	<button onClick="closeNavDropdown();">close</button>
-	<button>Thing 1</button>
-	<button>Thing 2</button>
-	<button>Thing 3</button>
-	<button>Thing 4</button>
-	`;
-
+	log(`dropDown:`);
+	log(dropDown);
+	closeAllDialogs();
 	document.getElementById('app__wrapper').appendChild(dropDown);
 	log(`showNavDropdown`, 'end');
-}
-
-function closeNavDropdown() {
-	document.getElementById('nav-dropdown').style.display = 'none';
 }

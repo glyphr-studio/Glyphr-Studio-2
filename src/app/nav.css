@@ -60,3 +60,13 @@
 	color: var(--blue-l90);
 	font-size: 1.1em;
 }
+
+#nav-dropdown {
+	display: block;
+	background-color: var(--offWhite);
+	box-shadow: var(--l3-shadow);
+	position: absolute;
+	z-index: 100;
+	padding: 10px;
+	border: 1px solid var(--blue-l85);
+}
