@@ -30,6 +30,12 @@
     import { glyphrStudioOnLoad, GSApp } from './app/main.js';
     document.addEventListener('DOMContentLoaded', glyphrStudioOnLoad);
     window._GlyphrStudioApp = GSApp;
+
+    window.closeAllDialogs = function(){
+      let dialogs = document.querySelectorAll('dialog');
+      console.log(dialogs);
+      dialogs.forEach(element => element.parentElement.removeChild(element));
+    }
   </script>
   <style>
     body,
