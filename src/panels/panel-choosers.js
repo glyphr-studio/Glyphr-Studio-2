@@ -25,15 +25,16 @@ function makeChooserContent_Glyphs(){
 	Object.entries(project.glyphs).map(entry => {
 		// let key = entry[0];
 		// let value = entry[1];
-		content += `
-			<div class="panel-chooser__glyph-tile">
-				<canvas-display width="100" height="100" glyphs="${entry[1].char}"></canvas-display>
-				<br>
-				${entry[1].name}
-				<br>
-				${entry[0]}
-			</div>
-		`;
+		// content += `
+		// 	<div class="panel-chooser__glyph-tile">
+		// 		<canvas-display width="100" height="100" glyphs="${entry[1].char}"></canvas-display>
+		// 		<br>
+		// 		${entry[1].name}
+		// 		<br>
+		// 		${entry[0]}
+		// 	</div>
+		// `;
+		content += `<glyph-tile glyph="${entry[0]}"></glyph-tile>`;
 	});
 	log(`makeChooserContent_Glyphs`, 'end');
 	return content;
