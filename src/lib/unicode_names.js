@@ -1,3 +1,6 @@
+import { normalizeHex } from "../common/unicode.js";
+import { log } from "../common/functions.js";
+
 export default {};
 
 /**
@@ -7,24 +10,28 @@ export default {};
 * @returns {string}
 */
 export function lookUpGlyphName(id, forceLongName = false) {
-  id = '' + id;
-  // log('lookUpGlyphName');
+  // log(`lookUpGlyphName`, 'start');
   // log('passed ' + id);
 
   // not passed an id
   if (!id) {
     // log('not passed an ID, returning false');
+    // log(`lookUpGlyphName`, 'end');
     return false;
   }
+
+  id = normalizeHex(id);
 
   // known unicode names
   const un = forceLongName ? unicodeNames[id] : shortUnicodeNames[id];
   if (un) {
     // log('got unicode name: ' + un);
+    // log(`lookUpGlyphName`, 'end');
     return un;
   }
 
-  // log('lookUpGlyphName - inexplicably fails, returning [name not found]\n');
+  // log('inexplicably fails, returning [name not found]\n');
+  // log(`lookUpGlyphName`, 'end');
   return '[name not found]';
 }
 

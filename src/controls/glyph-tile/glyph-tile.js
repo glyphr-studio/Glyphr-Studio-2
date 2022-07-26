@@ -25,11 +25,20 @@ export default class GlyphTile extends HTMLElement {
 
     this.glyphHex = this.getAttribute('glyph');
     this.glyphChar = hexToChars(this.glyphHex);
-    // this.glyphObject = getTestGlyph(this.glyphHex);
     this.glyphObject = getCurrentProject().getGlyph(this.glyphHex);
     this.selected = this.hasAttribute('selected');
     this.view = {};
-    let gutter = 2;
+
+    log(`this.glyphHex: ${this.glyphHex}`);
+    
+    let settings = getCurrentProject().projectSettings;
+    let overallSize = 50;
+    let gutterSize = 2;
+    let contentSize = overallSize - (2*gutterSize);
+    let upm = settings.upm;
+    let ascent = settings.ascent;
+    let zoom = contentSize / upm;
+    let glyphWidth;
 
     this.setAttribute(
       'title',
@@ -42,14 +51,18 @@ export default class GlyphTile extends HTMLElement {
     if (this.glyphObject) {
       this.thumbnail = makeElement({ tag: 'canvas', className: 'thumbnail' });
       this.ctx = this.thumbnail.getContext('2d');
-      this.thumbnail.width = 50;
-      this.thumbnail.height = 50;
+      this.thumbnail.width = overallSize;
+      this.thumbnail.height = overallSize;
+      glyphWidth = this.glyphObject.advanceWidth;
+
       this.view = {
-        dx: gutter,
-        dy: (50 - 2 * gutter) * (700 / 1000),
-        dz: (50 - 2 * gutter) / this.glyphObject.height,
+        dx: gutterSize + ((contentSize - (zoom * glyphWidth))/2),
+        dy: gutterSize + (zoom * (ascent)),
+        dz: zoom,
       };
+
       log(`view is ${this.view.dx}, ${this.view.dy}, ${this.view.dz}`);
+
     } else {
       this.thumbnail = makeElement({
         className: 'thumbnail',
@@ -96,21 +109,21 @@ export default class GlyphTile extends HTMLElement {
                 overflow-x: hidden;
                 overflow-y: hidden;
                 background-repeat: no-repeat;
-                background-size: auto 50px;
+                background-size: auto ${overallSize}px;
             }
 
             .wrapper:hover,
             .wrapper:focus {
                 background: linear-gradient(${uiColors.accent}, transparent);
                 background-repeat: no-repeat;
-                background-size: auto 50px;
+                background-size: auto ${overallSize}px;
                 cursor: pointer;
             }
 
             .wrapper[selected] {
                 background: linear-gradient(${uiColors.accent}, transparent);
                 background-repeat: no-repeat;
-                background-size: auto 50px;
+                background-size: auto ${overallSize}px;
             }
 
             .wrapper[selected]:hover,
@@ -121,25 +134,28 @@ export default class GlyphTile extends HTMLElement {
             .thumbnail {
                 display: block;
                 background-color: white;
+                opacity: 0.8;
                 font-size: 36px;
                 padding-top: 2px;
                 color: ${uiColors.disabled.background};
                 margin: auto;
-                width: 50px;
-                height: 50px;
+                width: ${overallSize}px;
+                height: ${overallSize}px;
                 box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.05);
                 border-radius: 1px;
             }
 
             .wrapper:hover .thumbnail,
             .wrapper:focus .thumbnail {
-                background-color: ${uiColors.enabled.active.background};
+                opacity: 1;
+                background-color: white;
                 box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.08);
                 color: ${uiColors.enabled.active.lightText};
             }
 
             .wrapper[selected] .thumbnail {
-                background-color: ${uiColors.enabled.active.background};
+                opacity: 1;
+                background-color: white;
                 box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.05);
                 color: ${uiColors.enabled.active.lightText};
             }
@@ -181,11 +197,8 @@ export default class GlyphTile extends HTMLElement {
 
     if (this.glyphObject) {
       this.glyphObject.drawGlyph(
-        this.ctx,
-        this.view,
-        1,
-        false,
-        this.selected ? accentColors.blue.l35 : accentColors.gray.l35
+        this.ctx, this.view, 1, false,
+        this.selected ? accentColors.blue.l35 : accentColors.gray.l05
       );
       // this.ctx.fillColor = (this.selected? accentColors.blue.l35 : accentColors.gray.l35);
       // this.ctx.fillRect(10, 10, 30, 30);

@@ -15,7 +15,8 @@ export {
   parseUnicodeInput,
   isInputUnicode,
   isInputHex,
-  validateHex,
+  isValidHex,
+  normalizeHex,
   getUnicodeName,
   getUnicodeShortName,
   basicLatinOrder,
@@ -224,19 +225,35 @@ function isInputHex(str) {
  * @param {string} str - input Hex
  * @returns {boolean}
  */
-function validateHex(str) {
+function isValidHex(hexInput) {
   const green = '0123456789ABCDEF';
-  str = str.toString();
-  str = str.toUpperCase();
+  str = hexInput.toString();
   if (str.startsWith('0x')) str = str.substring(2);
+  str = str.toUpperCase();
 
-  if (str.length > 4) return false;
+  if (str.length > 4){
+    // console.warn(`Invalid Hex format - Greater than 4 digits: ${hexInput}`);
+    return false;
+  }
 
   for (let c = 0; c < str.length; c++) {
-    if (green.indexOf(str.charAt(c)) === -1) return false;
+    if (green.indexOf(str.charAt(c)) === -1){
+      // console.warn(`Invalid Hex format - invalid character ${str.charAt(c)}: ${hexInput}`);
+      return false;
+    }
   }
 
   return true;
+}
+
+function normalizeHex(str){
+  if(isValidHex(str)){
+    str = `0x${parseInt(str).toString(16)}`;
+    return str;
+  }
+  // NormalizeHex called on all sorts of properties
+  // if it's not a hex value, then just return it
+  return str;
 }
 
 //  -----------------
@@ -252,8 +269,7 @@ function getUnicodeName(ch) {
   // log('getUnicodeName', 'start');
   // log('passed ' + ch);
 
-  //normalize hex format
-  ch = `0x${parseInt(ch).toString(16)}`;
+  ch = normalizeHex(ch);
   // log('normalized ' + ch);
 
   let re;
