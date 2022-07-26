@@ -126,7 +126,9 @@ export default class CanvasDisplay extends HTMLElement {
    */
   redraw() {
     log('CanvasDisplay.redraw', 'start');
-    let view = { dx: 100, dy: 800, dz: 0.8 };
+    let project = getCurrentProject();
+    let upm = project.projectSettings.upm;
+    let view = { dx: 0, dy: (upm*0.8), dz: (this.width / upm) };
     // const app = getGlyphrStudioApp();
     this.ctx.fillStyle = accentColors.gray.l85;
     this.ctx.fillRect(view.dx, 0, 1, 1000);

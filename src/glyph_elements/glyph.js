@@ -16,6 +16,7 @@ import {
   parseUnicodeInput,
   getUnicodeName,
   hexToHTML,
+  hexToChars,
 } from '../common/unicode.js';
 import { getOverallMaxes } from './maxes.js';
 // import { combineShapes } from '../panels/REFACTOR_shape.js';
@@ -340,7 +341,7 @@ export default class Glyph extends GlyphElement {
    * @returns {string}
    */
   get char() {
-    return getCurrentProject().getGlyphName(this.id);
+    return hexToChars(this.id);
   }
 
   /**
