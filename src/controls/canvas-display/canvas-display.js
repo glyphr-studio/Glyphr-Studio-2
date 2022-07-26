@@ -127,10 +127,35 @@ export default class CanvasDisplay extends HTMLElement {
   redraw() {
     log('CanvasDisplay.redraw', 'start');
     let project = getCurrentProject();
-    let upm = project.projectSettings.upm;
-    let view = { dx: 0, dy: (upm*0.8), dz: (this.width / upm) };
+    let settings = project.projectSettings;
+    let upm = settings.upm;
+    let editor = getCurrentProjectEditor();
+    let glyph = editor.selectedGlyph;
+    let zoom = this.height / (upm * 1.2);
+
+    log(`this.height: ${this.height}`);
+    log(`this.width: ${this.width}`);
+    log(`upm: ${upm}`);
+
+    log(`zoom: ${zoom}`);
+    log(`glyph.width: ${glyph.width}`);
+
+    log(`this.width - (glyph.width*zoom): ${this.width - (glyph.width*zoom)}`);
+    log(`settings.descent: ${settings.descent}`);
+    log(`settings.descent*zoom: ${settings.descent*zoom}`);
+
+    log(`(settings.descent*zoom) + this.height: ${(settings.descent*zoom) + this.height}`);
+
+
+
+    let view = {
+      dx: (this.width - (glyph.width * zoom))/2,
+      dy: (settings.descent*zoom) + (1*this.height),
+      dz: zoom
+    };
+
     // const app = getGlyphrStudioApp();
-    this.ctx.fillStyle = accentColors.gray.l85;
+    this.ctx.fillStyle = accentColors.gray.l95;
     this.ctx.fillRect(view.dx, 0, 1, 1000);
     this.ctx.fillRect(0, view.dy, 1000, 1);
 

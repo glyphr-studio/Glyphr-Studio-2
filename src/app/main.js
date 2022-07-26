@@ -8,6 +8,7 @@ import ButtonToggle from '../controls/button-toggle/button-toggle.js';
 import CanvasDisplay from '../controls/canvas-display/canvas-display.js';
 import CanvasEdit from '../controls/canvas-edit/canvas-edit.js';
 import FancyButton from '../controls/fancy-button/fancy-button.js';
+import GlyphTile from '../controls/glyph-tile/glyph-tile.js';
 import InfoBubble from '../controls/info-bubble/info-bubble.js';
 import InputNumber from '../controls/input-number/input-number.js';
 import InputNumberLockable from '../controls/input-number-lockable/input-number-lockable.js';
@@ -71,6 +72,7 @@ function registerCustomComponents() {
   customElements.define('canvas-display', CanvasDisplay);
   customElements.define('canvas-edit', CanvasEdit);
   customElements.define('fancy-button', FancyButton);
+  customElements.define('glyph-tile', GlyphTile);
   customElements.define('info-bubble', InfoBubble);
   customElements.define('input-number', InputNumber);
   customElements.define('input-number-lockable', InputNumberLockable);

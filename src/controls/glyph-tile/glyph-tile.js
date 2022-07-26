@@ -1,9 +1,10 @@
 import { makeElement } from '../../common/dom.js';
 import { uiColors, accentColors } from '../../common/colors.js';
 import { hexToChars } from '../../common/unicode.js';
-// import { getCurrentProject } from '../../app/main.js';
 import { lookUpGlyphName } from '../../lib/unicode_names.js';
 import Glyph from '../../glyph_elements/glyph.js';
+import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
+import { log } from '../../common/functions.js';
 
 /**
  * description
@@ -14,8 +15,8 @@ export default class GlyphTile extends HTMLElement {
    * @param {object} attributes - collection of key: value pairs to set as attributes
    */
   constructor(attributes = {}) {
-    console.log(`GlyphTile.constructor - START - ${attributes.glyph}`);
-    console.log(attributes);
+    log(`GlyphTile.constructor`, 'start');
+    log(attributes);
     super();
 
     Object.keys(attributes).forEach((key) =>
@@ -24,7 +25,8 @@ export default class GlyphTile extends HTMLElement {
 
     this.glyphHex = this.getAttribute('glyph');
     this.glyphChar = hexToChars(this.glyphHex);
-    this.glyphObject = getGlyph(this.glyphHex);
+    // this.glyphObject = getTestGlyph(this.glyphHex);
+    this.glyphObject = getCurrentProject().getGlyph(this.glyphHex);
     this.selected = this.hasAttribute('selected');
     this.view = {};
     let gutter = 2;
@@ -47,13 +49,13 @@ export default class GlyphTile extends HTMLElement {
         dy: (50 - 2 * gutter) * (700 / 1000),
         dz: (50 - 2 * gutter) / this.glyphObject.height,
       };
-      console.log(`view is ${this.view.dx}, ${this.view.dy}, ${this.view.dz}`);
+      log(`view is ${this.view.dx}, ${this.view.dy}, ${this.view.dz}`);
     } else {
       this.thumbnail = makeElement({
         className: 'thumbnail',
         content: this.glyphChar,
       });
-      console.log(`no glyphObject`);
+      log(`no glyphObject`);
     }
 
     this.name = makeElement({ className: 'name' });
@@ -188,6 +190,8 @@ export default class GlyphTile extends HTMLElement {
       // this.ctx.fillColor = (this.selected? accentColors.blue.l35 : accentColors.gray.l35);
       // this.ctx.fillRect(10, 10, 30, 30);
     }
+
+    log(`GlyphTile.constructor`, 'end');
   }
 }
 
@@ -197,7 +201,7 @@ export default class GlyphTile extends HTMLElement {
  * @param {string} gid - glyph id
  * @returns {Glyph}
  */
-function getGlyph(gid) {
+function getTestGlyph(gid) {
   if (gid === '0x41') {
     return new Glyph({
       id: gid,
