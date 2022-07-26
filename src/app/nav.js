@@ -21,22 +21,40 @@ function showNavDropdown(parentElement) {
 	log(`showNavDropdown`, 'start');
 	log(`parentElement:`);
 	log(parentElement.getBoundingClientRect());
-	let size = 600;
+	let size = '500px';
 	let rect = parentElement.getBoundingClientRect();
-	let top = rect.top + rect.height + 2;
+	let parentStyle = getComputedStyle(parentElement);
+	let top = rect.top + rect.height - 3;
 
 	let dropdownContent = '<h3>uninitialized</h3>';
 	let dropdownType = parentElement.getAttribute('data-nav-type');
 	log(`dropdownType: ${dropdownType}`);
 
-	if(dropdownType === 'PAGE') dropdownContent = makeChooserContent_Pages();
-	if(dropdownType === 'EDITING') dropdownContent = makeChooserContent_Glyphs();
-	if(dropdownType === 'PANEL') dropdownContent = makeChooserContent_Panels();
+	if(dropdownType === 'PAGE') {
+		dropdownContent = makeChooserContent_Pages();
+		size = `${parentElement.parentElement.getBoundingClientRect().width}px`;
+	}
+
+	if(dropdownType === 'EDITING') {
+		dropdownContent = makeChooserContent_Glyphs();
+		size = '80%';
+	}
+
+	if(dropdownType === 'PANEL') {
+		dropdownContent = makeChooserContent_Panels();
+		size = `${rect.width}px`;
+	}
 
 	let dropDown = makeElement({
 		tag: 'dialog',
 		id: 'nav-dropdown',
-		attributes: {style: `left: ${rect.left}px; top: ${top}px; width: ${size}px;`},
+		attributes: {style: `
+			left: ${rect.left}px;
+			top: ${top}px;
+			width: ${size};
+			background-color: ${parentStyle.backgroundColor};
+			border-color: ${parentStyle.backgroundColor};
+		`},
 		innerHTML: dropdownContent
 	});
 

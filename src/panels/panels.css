@@ -41,6 +41,11 @@
 	padding-top: 6px;
 }
 
+.glyph-chooser__tile-grid {
+	background-color: var(--offWhite);
+	padding: 10px;
+}
+
 .glyph-chooser__tile-grid glyph-tile {
 	display: inline-block;
 	margin: 0px 10px 10px 0px;
