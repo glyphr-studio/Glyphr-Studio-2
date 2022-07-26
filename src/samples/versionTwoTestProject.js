@@ -12,6 +12,11 @@ function getVersionTwoTestProject() {
       versionName:'Version 2 Alpha',
       version:'2.0.0',
       initialVersion:'2.0.0',
+      upm: 1000,
+      ascent: 800,
+      capHeight: 790,
+      xHeight: 580,
+      descent: -200
     },
 
     metadata:{

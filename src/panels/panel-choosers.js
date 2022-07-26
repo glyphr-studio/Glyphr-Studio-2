@@ -1,5 +1,6 @@
 import { getCurrentProject } from "../app/main.js";
 import { log } from "../common/functions.js";
+import { basicLatinOrder } from "../common/unicode.js";
 
 export {makeChooserContent_Pages, makeChooserContent_Glyphs, makeChooserContent_Panels };
 
@@ -20,22 +21,13 @@ function makeChooserContent_Pages(){
 function makeChooserContent_Glyphs(){
 	log(`makeChooserContent_Glyphs`, 'start');
 	let project = getCurrentProject();
-	let content = ``;
+	let content = `<div class="glyph-chooser__tile-grid">`;
 
-	Object.entries(project.glyphs).map(entry => {
-		// let key = entry[0];
-		// let value = entry[1];
-		// content += `
-		// 	<div class="panel-chooser__glyph-tile">
-		// 		<canvas-display width="100" height="100" glyphs="${entry[1].char}"></canvas-display>
-		// 		<br>
-		// 		${entry[1].name}
-		// 		<br>
-		// 		${entry[0]}
-		// 	</div>
-		// `;
-		content += `<glyph-tile glyph="${entry[0]}"></glyph-tile>`;
+	basicLatinOrder.forEach(glyphID => {
+		content += `<glyph-tile glyph="${glyphID}"></glyph-tile>`;
 	});
+
+	content += '</div>';
 	log(`makeChooserContent_Glyphs`, 'end');
 	return content;
 }

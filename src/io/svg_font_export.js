@@ -214,7 +214,7 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
   uni = uni.split('0x');
   uni.forEach(function (v, i, a) {
     // only export glyph if it has a valid hexadecimal unicode
-    if (!validateHex(v)) {
+    if (!isValidHex(v)) {
       console.warn('Glyph ' + uni.join('') + ' not exported: Bad hex value.');
       return '';
     }

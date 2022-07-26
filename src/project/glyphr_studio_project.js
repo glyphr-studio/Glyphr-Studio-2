@@ -2,7 +2,7 @@ import Glyph from '../glyph_elements/glyph.js';
 import HKern from '../glyph_elements/h_kern.js';
 import { log, clone, round, trim } from '../common/functions.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
-import { decToHex, hexToHTML, basicLatinOrder } from '../common/unicode.js';
+import { decToHex, hexToHTML, basicLatinOrder, normalizeHex } from '../common/unicode.js';
 import Maxes, { getOverallMaxes } from '../glyph_elements/maxes.js';
 import { getCurrentProject } from '../app/main.js';
 
@@ -233,11 +233,15 @@ export default class GlyphrStudioProject {
    * @returns {Glyph}
    */
   getGlyph(id, create = false) {
-    // log('GlyphrStudioProject.getGlyph', 'start');
-    // log('passed: ' + id + ' create: ' + create);
+    log('GlyphrStudioProject.getGlyph', 'start');
+    log('passed: ' + id + ' create: ' + create);
 
+    // --------------------------------------------------------------
+    // No ID
+    // --------------------------------------------------------------
     if (!id) {
-      // log('Not passed an ID, returning false');
+      log('Not passed an ID, returning false');
+      log('GlyphrStudioProject.getGlyph', 'end');
       return false;
     }
 
@@ -245,33 +249,55 @@ export default class GlyphrStudioProject {
     let result;
 
     if (this.ligatures && id.indexOf('0x', 2) > -1) {
+      // --------------------------------------------------------------
+      // Ligature
+      // --------------------------------------------------------------
       result = this.ligatures[id];
-      // log('retrieved ' + result + ' from ligatures.');
       if (result) {
+        log(`Returning found Ligature`);
+        log('GlyphrStudioProject.getGlyph', 'end');
         return result;
       } else if (create) {
-        // log('create was true, returning a new ligature.');
-        this.ligatures[id] = new Glyph();
+        this.ligatures[id] = new Glyph({id: id});
+        log('Create was true, returning a new Ligature.');
+        log('GlyphrStudioProject.getGlyph', 'end');
         return this.ligatures[id];
       }
+
     } else if (this.glyphs && id.indexOf('0x') > -1) {
-      result = this.glyphs[id];
-      // log('retrieved ' + result + ' from glyphs.');
+      // --------------------------------------------------------------
+      // Glyph
+      // --------------------------------------------------------------
+      let normalHex = ''+normalizeHex(id);
+      result = this.glyphs[normalHex];
       if (result) {
+        log('Returning found Glyph');
+        log('GlyphrStudioProject.getGlyph', 'end');
         return result;
       } else if (create) {
-        // log('create was true, returning a new char.');
-        this.glyphs[id] = new Glyph();
+        this.glyphs[id] = new Glyph({id: id});
+        log('Create was true, returning a new Glyph.');
+        log('GlyphrStudioProject.getGlyph', 'end');
         return this.glyphs[id];
       }
-    } else if (this.components) {
-      // log('component, retrieved');
-      // log(this.components[id]);
+
+    } else if (this.components && this.components[id]) {
+      // --------------------------------------------------------------
+      // Component
+      // --------------------------------------------------------------
+      result = this.components[id];
+      log('Returning whatever component[id] happend to be');
+      log('GlyphrStudioProject.getGlyph', 'end');
       return this.components[id] || false;
-    } else {
-      // log('getGlyph - returning FALSE\n');
-      return false;
+
     }
+
+    // --------------------------------------------------------------
+    // No Result
+    // --------------------------------------------------------------
+    log('NO RESULT FOUND');
+    log('GlyphrStudioProject.getGlyph', 'end');
+    return false;
   }
 
   /**
@@ -406,7 +432,7 @@ function hydrateGlyphrObjectList(GlyphrStudioItem, source, destination) {
   source = source || {};
   for (const key of Object.keys(source)) {
     if (source[key]) {
-      destination[key] = new GlyphrStudioItem(source[key]);
+      destination[normalizeHex(key)] = new GlyphrStudioItem(source[key]);
     }
   }
 }
