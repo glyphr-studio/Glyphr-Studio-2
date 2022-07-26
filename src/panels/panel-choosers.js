@@ -8,10 +8,11 @@ function makeChooserContent_Pages(){
 	log(`makeChooserContent_Pages`, 'start');
 
 	let content = `
-		<button>Glyph edit</button><br>
-		<button>Glyph edit</button><br>
-		<button>Glyph edit</button><br>
-		<button>Glyph edit</button><br>
+		<button>Glyph edit</button>
+		<button>Glyph edit</button>
+		<button>Glyph edit</button>
+		<button>Glyph edit</button>
+		<br>
 	`;
 
 	log(`makeChooserContent_Pages`, 'end');
@@ -36,10 +37,11 @@ function makeChooserContent_Panels(){
 	log(`makeChooserContent_Panels`, 'start');
 
 	let content = `
-		<button>Attributes</button><br>
-		<button>Layers</button><br>
-		<button>Guides</button><br>
-		<button>History</button><br>
+		<button>Attributes</button>
+		<button>Layers</button>
+		<button>Guides</button>
+		<button>History</button>
+		<br>
 	`;
 
 	log(`makeChooserContent_Panels`, 'end');
