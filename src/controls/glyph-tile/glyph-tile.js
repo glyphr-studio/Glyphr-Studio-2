@@ -30,7 +30,7 @@ export default class GlyphTile extends HTMLElement {
     this.view = {};
 
     log(`this.glyphHex: ${this.glyphHex}`);
-    
+
     let settings = getCurrentProject().projectSettings;
     let overallSize = 50;
     let gutterSize = 2;
@@ -175,7 +175,8 @@ export default class GlyphTile extends HTMLElement {
 
             .wrapper[selected] .name,
             .wrapper:hover .name {
-                color: ${uiColors.accent};
+                color: ${accentColors.blue.l40};
+                background-color: ${accentColors.blue.l90};
             }
         `,
     });
