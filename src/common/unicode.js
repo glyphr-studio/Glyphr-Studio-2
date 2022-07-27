@@ -246,9 +246,15 @@ function isValidHex(hexInput) {
   return true;
 }
 
+/**
+ * Normalizes valid long hex formats, like 0x004D
+ * to their simplified form, like 0x4D
+ * @param {string} str - input Hex
+ * @returns {string}
+ */
 function normalizeHex(str){
   if(isValidHex(str)){
-    str = `0x${parseInt(str).toString(16)}`;
+    str = `0x${parseInt(str).toString(16).toUpperCase()}`;
     return str;
   }
   // NormalizeHex called on all sorts of properties
