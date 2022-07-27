@@ -33,7 +33,7 @@
 
     window.closeAllDialogs = function(){
       let dialogs = document.querySelectorAll('dialog');
-      console.log(dialogs);
+      console.log(`CloseAllDialogs: ${dialogs.length}`);
       dialogs.forEach(element => element.parentElement.removeChild(element));
     }
   </script>
@@ -159,6 +159,8 @@
     </div>
   </div>
 
-  <div id="app__wrapper" style="height: 100%; width: 100%; min-height: 100%; min-width: 100%; position: absolute; top: 0px; left: 0px; overflow: hidden;"></div>
+  <div id="app__wrapper"
+    style="height: 100%; width: 100%; min-height: 100%; min-width: 100%; position: absolute; top: 0px; left: 0px; overflow: hidden;"
+  ></div>
 </body>
 </html>

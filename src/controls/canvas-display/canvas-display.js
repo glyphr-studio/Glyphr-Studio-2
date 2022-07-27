@@ -28,7 +28,7 @@ export default class CanvasDisplay extends HTMLElement {
     this.ctx = this.canvas.getContext('2d');
 
     this.glyphs = this.getAttribute('glyphs') || '';
-    this.width = this.getAttribute('width') || 2000;
+    this.width = this.getAttribute('width') || 1000;
     this.height = this.getAttribute('height') || 1100;
     this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
     this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
@@ -126,33 +126,47 @@ export default class CanvasDisplay extends HTMLElement {
    */
   redraw() {
     log('CanvasDisplay.redraw', 'start');
-    let project = getCurrentProject();
-    let settings = project.projectSettings;
-    let upm = settings.upm;
+    // let project = getCurrentProject();
+    // let settings = project.projectSettings;
+    // let upm = settings.upm;
     let editor = getCurrentProjectEditor();
     let glyph = editor.selectedGlyph;
-    let zoom = this.height / (upm * 1.2);
-
-    log(`this.height: ${this.height}`);
-    log(`this.width: ${this.width}`);
-    log(`upm: ${upm}`);
-
-    log(`zoom: ${zoom}`);
-    log(`glyph.width: ${glyph.width}`);
-
-    log(`this.width - (glyph.width*zoom): ${this.width - (glyph.width*zoom)}`);
-    log(`settings.descent: ${settings.descent}`);
-    log(`settings.descent*zoom: ${settings.descent*zoom}`);
-
-    log(`(settings.descent*zoom) + this.height: ${(settings.descent*zoom) + this.height}`);
-
-
+    // let zoom = this.height / (upm * 1.2);
+    let settings = getCurrentProject().projectSettings;
+    let gutterSize = 20;
+    let contentWidth = this.width - (2*gutterSize);
+    let contentHeight = this.height - (2*gutterSize);
+    let upm = settings.upm;
+    let ascent = settings.ascent;
+    let zoom = Math.min(contentWidth, contentHeight) / upm;
+    let glyphWidth = glyph.advanceWidth;
 
     let view = {
-      dx: (this.width - (glyph.width * zoom))/2,
-      dy: (settings.descent*zoom) + (1*this.height),
-      dz: zoom
+      dx: gutterSize + ((contentWidth - (zoom * glyphWidth))/2),
+      dy: gutterSize + (zoom * (ascent)),
+      dz: zoom,
     };
+
+    // log(`this.height: ${this.height}`);
+    // log(`this.width: ${this.width}`);
+    // log(`upm: ${upm}`);
+
+    // log(`zoom: ${zoom}`);
+    // log(`glyph.width: ${glyph.width}`);
+
+    // log(`this.width - (glyph.width*zoom): ${this.width - (glyph.width*zoom)}`);
+    // log(`settings.descent: ${settings.descent}`);
+    // log(`settings.descent*zoom: ${settings.descent*zoom}`);
+
+    // log(`(settings.descent*zoom) + this.height: ${(settings.descent*zoom) + this.height}`);
+
+
+
+    // let view = {
+    //   dx: (this.width - (glyph.width * zoom))/2,
+    //   dy: (settings.descent*zoom) + (1*this.height),
+    //   dz: zoom
+    // };
 
     // const app = getGlyphrStudioApp();
     this.ctx.fillStyle = accentColors.gray.l95;

@@ -13,6 +13,7 @@ import {
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import Glyph from '../glyph_elements/glyph.js';
 import { makeAppTopBar } from '../app/app.js';
+import { normalizeHex } from '../common/unicode.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -193,7 +194,7 @@ export default class ProjectEditor {
    */
   set selectedGlyphID(id) {
     // Validate ID!
-    this._selectedGlyphID = id;
+    this._selectedGlyphID = normalizeHex(id);
   }
 
   /**

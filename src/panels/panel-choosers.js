@@ -1,4 +1,4 @@
-import { getCurrentProject } from "../app/main.js";
+import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 import { log } from "../common/functions.js";
 import { basicLatinOrder } from "../common/unicode.js";
 
@@ -21,11 +21,13 @@ function makeChooserContent_Pages(){
 
 function makeChooserContent_Glyphs(){
 	log(`makeChooserContent_Glyphs`, 'start');
-	let project = getCurrentProject();
+	let selectedID = getCurrentProjectEditor().selectedGlyphID;
+	log(`selectedID: ${selectedID}`);
+	
 	let content = `<div class="glyph-chooser__tile-grid">`;
 
 	basicLatinOrder.forEach(glyphID => {
-		content += `<glyph-tile glyph="${glyphID}"></glyph-tile>`;
+		content += `<glyph-tile glyph="${glyphID}"${selectedID === glyphID? ' selected':''}></glyph-tile>`;
 	});
 
 	content += '</div>';
