@@ -5,7 +5,7 @@ import Shape from './shape.js';
 import ComponentInstance from './component_instance.js';
 import { getCurrentProject } from '../app/main.js';
 import {
-  log,
+  // log,
   json,
   clone,
   hasNonValues,
@@ -698,7 +698,7 @@ export default class Glyph extends GlyphElement {
     }
 
     // log('Afters Maxes ' + json(this.maxes, true));
-    log(this.name);
+    // log(this.name);
     // log('Glyph.updateGlyphSize', 'end');
   }
 
@@ -987,9 +987,9 @@ export default class Glyph extends GlyphElement {
     addLSB = false,
     fill = '#000'
   ) {
-    log('Glyph.drawGlyph', 'start');
-    log(this.name);
-    log('view ' + json(view, true));
+    // log('Glyph.drawGlyph', 'start');
+    // log(this.name);
+    // log('view ' + json(view, true));
     const sl = this.shapes;
     let shape;
     let drewShape;
@@ -999,7 +999,7 @@ export default class Glyph extends GlyphElement {
     ctx.beginPath();
     for (let j = 0; j < sl.length; j++) {
       shape = sl[j];
-      log(`${this.name} drawing ${shape.objType} ${j} ${shape.name}`);
+      // log(`${this.name} drawing ${shape.objType} ${j} ${shape.name}`);
       drewShape = shape.drawShape(ctx, view);
       if (!drewShape) {
         console.warn(
@@ -1024,8 +1024,8 @@ export default class Glyph extends GlyphElement {
     ctx.globalAlpha = alpha;
     ctx.fill('nonzero');
     ctx.globalAlpha = 1;
-    log(this.name);
-    log('Glyph.drawGlyph', 'end');
+    // log(this.name);
+    // log('Glyph.drawGlyph', 'end');
 
     return this.advanceWidth * view.dz;
   }

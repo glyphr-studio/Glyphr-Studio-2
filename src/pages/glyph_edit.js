@@ -45,7 +45,7 @@ export default class PageGlyphEdit {
         </div>
         <div class="glyph-edit__tools-area">t<br>o<br>o<br>l<br>s</div>
         <div class="glyph-edit__right-area">
-          <canvas-display glyphs="B"></canvas-display>
+          <canvas-display glyphs="B" width="800" height="800" onclick="closeAllDialogs();"></canvas-display>
         </div>
       </div>
     `,

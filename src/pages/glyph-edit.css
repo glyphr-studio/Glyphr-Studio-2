@@ -59,6 +59,7 @@
 
 .glyph-edit__right-area {
 	border: 1px solid var(--blue-l85);
+	background-color: var(--offWhite);
 	grid-column: 3;
 	border-radius: 4px;
 	width: 100%;
