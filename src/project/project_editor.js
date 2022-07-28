@@ -37,6 +37,10 @@ export default class ProjectEditor {
     // log('passed > newProjectEditor');
     // log(newProjectEditor);
 
+    // PubSub
+    this.subscribers = {};
+
+    // Selections
     this.project = newProjectEditor.project;
     this.selectedGlyphID = '0x0042';
     this.selectedComponentID = false;
@@ -67,6 +71,32 @@ export default class ProjectEditor {
     };
     // log(this);
     log('ProjectEditor.constructor', 'end');
+  }
+
+
+  // --------------------------------------------------------------
+  // PubSub
+  // --------------------------------------------------------------
+
+  publish(eventName, data) {
+    log(`ProjectEditor.publish`, 'start');
+    log(`eventName: ${eventName}`);
+    // log(`data: ${data}`);
+    // log(`this.subscribers[eventName]: ${this.subscribers[eventName]}`);
+
+    if (this.subscribers[eventName]) {
+      this.subscribers[eventName].forEach((callback) => {
+        callback(data);
+      });
+    }
+    log(`ProjectEditor.publish`, 'end');
+  }
+
+  subscribe(eventName, callback) {
+    if (!this.subscribers[eventName]) {
+      this.subscribers[eventName] = [];
+    }
+    this.subscribers[eventName].push(callback);
   }
 
   // --------------------------------------------------------------
@@ -193,8 +223,12 @@ export default class ProjectEditor {
    * @param {string} id - ID to select
    */
   set selectedGlyphID(id) {
+    log(`ProjectEditor SET selectedGlyphID`, 'start');
+    log(`id: ${id}`);
     // Validate ID!
     this._selectedGlyphID = normalizeHex(id);
+    this.publish('selectedGlyphID', this.selectedGlyphID);
+    log(`ProjectEditor SET selectedGlyphID`, 'end');
   }
 
   /**

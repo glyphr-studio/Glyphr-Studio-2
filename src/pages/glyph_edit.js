@@ -2,8 +2,9 @@ import { makeElement, addEventHandler } from '../common/dom.js';
 import { log } from '../common/functions.js';
 import makePanel_GlyphAttributes from '../panels/attributes_glyph.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeNavButton } from '../app/nav.js';
+import { makeNavButton, makeNavButtonContent } from '../app/nav.js';
 import { showNavDropdown } from '../app/nav.js';
+import { lookUpGlyphName } from '../lib/unicode_names.js';
 
 /**
  * Page > Glyph Edit
@@ -22,11 +23,10 @@ export default class PageGlyphEdit {
    */
   pageLoader() {
     log(`PageGlyphEdit.pageLoader`, 'start');
+    let editor = getCurrentProjectEditor();
     log('current ProjectEditor');
-    log(getCurrentProjectEditor());
-    let selectedGlyph = getCurrentProjectEditor().selectedGlyph;
-    log('selected glyph');
-    log(selectedGlyph);
+    log(editor);
+    log(editor.selectedGlyph);
 
     const content = makeElement({
       tag: 'div',
@@ -36,7 +36,7 @@ export default class PageGlyphEdit {
         <div class="glyph-edit__left-area">
           <div class="glyph-edit__nav-area">
             ${makeNavButton({level: 'l1', superTitle: 'PAGE', title: 'Glyph edit'})}
-            ${makeNavButton({level: 'l2', superTitle: 'EDITING', title: selectedGlyph.name})}
+            ${makeNavButton({level: 'l2', superTitle: 'EDITING', title: lookUpGlyphName(editor.selectedGlyphID, true)})}
             ${makeNavButton({level: 'l3', superTitle: 'PANEL', title: 'Attributes'})}
           </div>
           <div id="glyph-edit__panel">
@@ -51,12 +51,18 @@ export default class PageGlyphEdit {
     `,
     });
 
+    // Page Selector
     let l1 = content.querySelector('#nav-button-l1');
     l1.addEventListener('click', function(){ showNavDropdown(l1); });
 
+    // Glyph Selector
     let l2 = content.querySelector('#nav-button-l2');
     l2.addEventListener('click', function(){ showNavDropdown(l2); });
+    editor.subscribe('selectedGlyphID', (newGlyphID) => {
+      l2.innerHTML = makeNavButtonContent(lookUpGlyphName(newGlyphID, true), 'EDITING');
+    });
 
+    // Panel Selector
     let l3 = content.querySelector('#nav-button-l3');
     l3.addEventListener('click', function(){ showNavDropdown(l3); });
 
