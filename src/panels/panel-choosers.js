@@ -37,15 +37,19 @@ function makeChooserContent_Glyphs(){
 			editor.selectedGlyphID = glyphID;
 		});
 
-		editor.subscribe('selectedGlyphID', (newGlyphID) => {
-			// log('selectedGlyphID subscriber callback');
-			// log(`checking if ${glyph.id} === ${glyphID}`);
-			if(areHexValuesEqual(newGlyphID, glyphID)){
-				// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
-				oneTile.setAttribute('selected', '');
-			} else {
-				// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
-				oneTile.removeAttribute('selected');
+		editor.subscribe({
+			topic:'selectedGlyphID',
+			subscriberName: `Glyph tile ${glyphID}`,
+			callback: (newGlyphID) => {
+				// log('selectedGlyphID subscriber callback');
+				// log(`checking if ${glyph.id} === ${glyphID}`);
+				if(areHexValuesEqual(newGlyphID, glyphID)){
+					// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
+					oneTile.setAttribute('selected', '');
+				} else {
+					// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
+					oneTile.removeAttribute('selected');
+				}
 			}
 		});
 

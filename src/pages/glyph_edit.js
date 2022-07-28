@@ -1,10 +1,11 @@
-import { makeElement, addEventHandler } from '../common/dom.js';
+import { makeElement } from '../common/dom.js';
 import { log } from '../common/functions.js';
 import makePanel_GlyphAttributes from '../panels/attributes_glyph.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../app/nav.js';
 import { showNavDropdown } from '../app/nav.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
+import { hexToChars } from '../common/unicode.js';
 
 /**
  * Page > Glyph Edit
@@ -45,7 +46,7 @@ export default class PageGlyphEdit {
         </div>
         <div class="glyph-edit__tools-area">t<br>o<br>o<br>l<br>s</div>
         <div class="glyph-edit__right-area">
-          <canvas-display glyphs="B" width="800" height="800" onclick="closeAllDialogs();"></canvas-display>
+          <canvas-display id="glyph-edit__main-canvas" glyphs="B" width="800" height="800" onclick="closeAllDialogs();"></canvas-display>
         </div>
       </div>
     `,
@@ -58,13 +59,30 @@ export default class PageGlyphEdit {
     // Glyph Selector
     let l2 = content.querySelector('#nav-button-l2');
     l2.addEventListener('click', function(){ showNavDropdown(l2); });
-    editor.subscribe('selectedGlyphID', (newGlyphID) => {
-      l2.innerHTML = makeNavButtonContent(lookUpGlyphName(newGlyphID, true), 'EDITING');
+    editor.subscribe({
+      topic: 'selectedGlyphID',
+      subscriberName: 'EDITING nav button',
+      callback: (newGlyphID) => {
+        l2.innerHTML = makeNavButtonContent(lookUpGlyphName(newGlyphID, true), 'EDITING');
+      }
     });
 
     // Panel Selector
     let l3 = content.querySelector('#nav-button-l3');
     l3.addEventListener('click', function(){ showNavDropdown(l3); });
+
+    // Canvas
+    editor.subscribe({
+      topic: 'selectedGlyphID',
+      subscriberName: 'Main edit canvas',
+      callback: (newGlyphID) => {
+        log(`Main Canvas subscriber callback`, 'start');
+        let newChar = hexToChars(newGlyphID);
+        log(`new id ${newGlyphID} results in ${newChar} on the main canvas`);
+        document.getElementById('glyph-edit__main-canvas').setAttribute('glyphs', newChar);
+        log(`Main Canvas subscriber callback`, 'end');
+      }
+    });
 
     const callback = function () {};
 
