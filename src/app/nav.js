@@ -1,4 +1,4 @@
-export { makeNavButton, showNavDropdown };
+export { makeNavButton, makeNavButtonContent, showNavDropdown };
 import { makeElement } from '../common/dom.js';
 import { log } from '../common/functions.js';
 import { makeChooserContent_Glyphs, makeChooserContent_Pages, makeChooserContent_Panels } from '../panels/panel-choosers.js';
@@ -11,9 +11,15 @@ function makeNavButton(properties = {}) {
 
 	return `
 		<button data-nav-type="${superTitle}" class="nav-button" id="nav-button${level? `-${level}` : ''}">
-			<span class="nav-button__super-title">${superTitle}</span>
-			<span class="nav-button__title">${title}</span>
+			${makeNavButtonContent(title, superTitle)};
 		</button>
+	`;
+}
+
+function makeNavButtonContent(title, superTitle) {
+	return `
+		<span class="nav-button__super-title">${superTitle}</span>
+		<span class="nav-button__title">${title}</span>
 	`;
 }
 
@@ -54,10 +60,10 @@ function showNavDropdown(parentElement) {
 			width: ${size};
 			background-color: ${parentStyle.backgroundColor};
 			border-color: ${parentStyle.backgroundColor};
-		`},
-		innerHTML: dropdownContent
+		`}
 	});
 
+	dropDown.appendChild(dropdownContent);
 	log(`dropDown:`);
 	log(dropDown);
 	closeAllDialogs();

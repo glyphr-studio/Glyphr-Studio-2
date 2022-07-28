@@ -17,6 +17,7 @@ export {
   isInputHex,
   isValidHex,
   normalizeHex,
+  areHexValuesEqual,
   getUnicodeName,
   getUnicodeShortName,
   basicLatinOrder,
@@ -175,7 +176,7 @@ function parseUnicodeInput(str) {
     te = entries[e];
     te = te.replace(/;/g, '');
     if (te !== '') {
-      while (te.length < 4) te = '0' + te;
+      // while (te.length < 4) te = '0' + te;
       te = '0x' + te.toUpperCase();
       // log('parsed ' + e + ' as ' + te);
       results.push(te);
@@ -260,6 +261,19 @@ function normalizeHex(str){
   // NormalizeHex called on all sorts of properties
   // if it's not a hex value, then just return it
   return str;
+}
+
+/**
+ * Does a loose compare of two hex inputs to see
+ * if they are equal (ignoring zero pads)
+ * @param {any} hex1 - first hex value
+ * @param {any} hex2 - second hex value
+ * @returns {boolean}
+ */
+function areHexValuesEqual(hex1, hex2){
+  hex1 = normalizeHex(hex1);
+  hex2 = normalizeHex(hex2);
+  return (hex1 == hex2);
 }
 
 //  -----------------
