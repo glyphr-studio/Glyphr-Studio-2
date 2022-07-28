@@ -78,25 +78,35 @@ export default class ProjectEditor {
   // PubSub
   // --------------------------------------------------------------
 
-  publish(eventName, data) {
+  publish(topic, data) {
     log(`ProjectEditor.publish`, 'start');
-    log(`eventName: ${eventName}`);
+    log(`topic: ${topic}`);
     // log(`data: ${data}`);
-    // log(`this.subscribers[eventName]: ${this.subscribers[eventName]}`);
+    // log(`this.subscribers[topic]: ${this.subscribers[topic]}`);
 
-    if (this.subscribers[eventName]) {
-      this.subscribers[eventName].forEach((callback) => {
-        callback(data);
+    if (this.subscribers[topic]) {
+      log(`Publishing ${data} to ${this.subscribers[topic].length} subscribers`);
+      this.subscribers[topic].forEach((sub) => {
+        sub.callback(data);
       });
+    } else {
+      log(`Nobody subscribed to ${topic}`);
     }
     log(`ProjectEditor.publish`, 'end');
   }
 
-  subscribe(eventName, callback) {
-    if (!this.subscribers[eventName]) {
-      this.subscribers[eventName] = [];
+  subscribe({topic = false, subscriberName = '', callback = false}) {
+    if(!topic) {
+      console.warn(`Subscriber was not provided a topic`);
+      return;
     }
-    this.subscribers[eventName].push(callback);
+
+    if(!callback){
+      console.warn(`Subscriber was not provided a callback`);
+    }
+    
+    if (!this.subscribers[topic]) this.subscribers[topic] = [];
+    this.subscribers[topic].push({subscriberName: subscriberName, callback: callback});
   }
 
   // --------------------------------------------------------------

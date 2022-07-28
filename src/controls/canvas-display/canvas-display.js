@@ -14,10 +14,19 @@ import { glyphToHex } from '../../common/unicode.js';
  */
 export default class CanvasDisplay extends HTMLElement {
   /**
+   * Specify which attributes are observed and trigger attributeChangedCallback
+   */
+   static get observedAttributes() {
+    return ['glyphs', 'height', 'width', 'vertical-align', 'horizontal-align'];
+  }
+
+  /**
    * Create an CanvasDisplay
    * @param {object} attributes - collection of key: value pairs to set as attributes
    */
   constructor(attributes = {}) {
+    log(`CanvasDisplay.constructor`, 'start');
+
     super();
 
     Object.keys(attributes).forEach((key) =>
@@ -54,25 +63,13 @@ export default class CanvasDisplay extends HTMLElement {
     let shadow = this.attachShadow({ mode: 'open' });
     shadow.appendChild(style);
 
-    /*
-    this.observer = new MutationObserver(this.childAttributeChanged);
-    this.observer.elementRoot = this;
-    this.observer.observe(this.padlock, {attributes: true, attributeOldValue: true});
-    */
-
     shadow.appendChild(this.canvas);
 
     this.canvas.height = this.height;
     this.canvas.width = this.width;
 
     this.redraw();
-  }
-
-  /**
-   * Specify which attributes are observed and trigger attributeChangedCallback
-   */
-  static get observedAttributes() {
-    return ['glyphs, height, width, vertical-align, horizontal-align'];
+    log(`CanvasDisplay.constructor`, 'end');
   }
 
   /**
@@ -82,10 +79,8 @@ export default class CanvasDisplay extends HTMLElement {
    * @param {string} newValue - value after the change
    */
   attributeChangedCallback(attributeName, oldValue, newValue) {
-    console.log(`canvas-display.attributeChangeCallback`);
-    console.log(
-      `\t Attribute ${attributeName} was ${oldValue}, is now ${newValue}`
-    );
+    log(`CanvasDisplay.attributeChangeCallback`, 'start');
+    log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
     switch (attributeName) {
       case 'glyphs':
@@ -96,29 +91,31 @@ export default class CanvasDisplay extends HTMLElement {
       case 'height':
         this.height = newValue;
         this.redraw();
-        break;
+      break;
 
       case 'width':
         this.width = newValue;
         this.redraw();
-        break;
+      break;
 
       case 'vertical-align':
         this.vertical = newValue;
         this.redraw();
-        break;
+      break;
 
       case 'horizontal-align':
         this.horizontal = newValue;
         this.redraw();
-        break;
+      break;
 
       default:
         break;
     }
+
     if (attributeName === 'glyphs') {
       this.redraw();
     }
+    log(`CanvasDisplay.attributeChangeCallback`, 'end');
   }
 
   /**
@@ -169,6 +166,7 @@ export default class CanvasDisplay extends HTMLElement {
     // };
 
     // const app = getGlyphrStudioApp();
+    this.ctx.clearRect(0, 0, this.width, this.height);
     this.ctx.fillStyle = accentColors.gray.l95;
     this.ctx.fillRect(view.dx, 0, 1, 1000);
     this.ctx.fillRect(0, view.dy, 1000, 1);
