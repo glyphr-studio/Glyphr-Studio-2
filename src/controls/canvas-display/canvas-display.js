@@ -1,12 +1,8 @@
 import { makeElement } from '../../common/dom.js';
 import { log } from '../../common/functions.js';
-import { samples } from '../../samples/samples.js';
-import Glyph from '../../glyph_elements/glyph.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { glyphToHex } from '../../common/unicode.js';
-// import { getGlyphrStudioApp } from '../app/main.js';
-// import { log } from '../../common/functions.js';
 
 /**
  * CanvasDisplay takes a string of glyphs and displays them on the canvas
@@ -123,12 +119,8 @@ export default class CanvasDisplay extends HTMLElement {
    */
   redraw() {
     log('CanvasDisplay.redraw', 'start');
-    // let project = getCurrentProject();
-    // let settings = project.projectSettings;
-    // let upm = settings.upm;
     let editor = getCurrentProjectEditor();
     let glyph = editor.selectedGlyph;
-    // let zoom = this.height / (upm * 1.2);
     let settings = getCurrentProject().projectSettings;
     let gutterSize = 20;
     let contentWidth = this.width - (2*gutterSize);
@@ -144,36 +136,10 @@ export default class CanvasDisplay extends HTMLElement {
       dz: zoom,
     };
 
-    // log(`this.height: ${this.height}`);
-    // log(`this.width: ${this.width}`);
-    // log(`upm: ${upm}`);
-
-    // log(`zoom: ${zoom}`);
-    // log(`glyph.width: ${glyph.width}`);
-
-    // log(`this.width - (glyph.width*zoom): ${this.width - (glyph.width*zoom)}`);
-    // log(`settings.descent: ${settings.descent}`);
-    // log(`settings.descent*zoom: ${settings.descent*zoom}`);
-
-    // log(`(settings.descent*zoom) + this.height: ${(settings.descent*zoom) + this.height}`);
-
-
-
-    // let view = {
-    //   dx: (this.width - (glyph.width * zoom))/2,
-    //   dy: (settings.descent*zoom) + (1*this.height),
-    //   dz: zoom
-    // };
-
-    // const app = getGlyphrStudioApp();
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.ctx.fillStyle = accentColors.gray.l95;
     this.ctx.fillRect(view.dx, 0, 1, 1000);
     this.ctx.fillRect(0, view.dy, 1000, 1);
-
-    // let cp = GlyphrStudio.getCurrentProject();
-    // let sg = cp.getGlyph('0x41', true);
-    // log(sg);
 
     let glyphHex = glyphToHex(this.glyphs.charAt(0));
 

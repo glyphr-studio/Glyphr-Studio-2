@@ -4,7 +4,7 @@
 	attribute groups that are leveraged by higher
 	level attributes panels
 **/
-import { getCurrentProject } from "../app/main.js";
+import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 import { accentColors } from "../common/colors.js";
 import { log, round } from "../common/functions.js";
 export {
@@ -172,20 +172,22 @@ function makeAttributesGroup_shape(s) {
 
 function makeAttributesGroup_pathPoint(tp) {
 	let spinn = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
+	let editor = getCurrentProjectEditor();
 	let content = '';
 
 	// POINT
-	content +=
-	  '<tr><td colspan=2 class="detailtitle"><h3>path point</h3>';
+	content += '<h3>path point</h3>';
 
-	  /*
-	content +=
-	  '<tr>' +
-	  `<label> selected point </td> ${'<td><input type="number" id="pointnum" class="lockpad" value="'}
-	  _UI.multiSelect.points.getSingletonPointNumber() +
-	  '" onchange="_UI.focusElement=this.id; _UI.multiSelect.pointssingleton.parent.selectPathPoint(this.value); redraw({calledBy:\'makeAttributesGroup_pathPoint\'});"></td>' +
-	  '</tr>';
+	content += `
+		<label>selected point</label>
+		<input-number
+			id="pointNum"
+			value="${editor.multiSelect.points.getSingletonPointNumber()}"
+		>
+		</input-number>
+	`;
 
+	/*
 	content += '<tr><td> point type </td><td>';
 	content += makePointButton('symmetric', tp.type === 'symmetric');
 	content += makePointButton('flat', tp.type === 'flat');
@@ -199,25 +201,25 @@ function makeAttributesGroup_pathPoint(tp) {
 	  'y</td>' +
 	  '<td>' +
 	  '<div class="lockwrapper">' +
-	  // lockUI(UI.multiSelect.pointssingleton.p.xLock',p.p.xLock, xlock'+
+	  // lockUI(UI.multiSelect.points.singleton.p.xLock',p.p.xLock, xlock'+
 	  '<input type="number" id="pointx" step="' +
 	  spinn +
 	  '" ' +
 	  (tp.p.xLock
 		? 'disabled="disabled"'
-		: "onchange="_UI.focusElement=this.id; _UI.multiSelect.pointssingleton.setPathPointPosition('p', (this.value), 'null'); historyPut('Point X Position : '+this.value); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
+		: "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('p', (this.value), 'null'); historyPut('Point X Position : '+this.value); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
 		value="${round(tp.p.x, 3) +
 	  '" >' +
 	  '</div>' +
 	  dimSplit() +
 	  '<div class="lockwrapper">' +
-	  // lockUI(UI.multiSelect.pointssingleton.p.yLock',p.p.yLock, ylock'+
+	  // lockUI(UI.multiSelect.points.singleton.p.yLock',p.p.yLock, ylock'+
 	  '<input type="number" id="pointy" step="' +
 	  spinn +
 	  '" ' +
 	  (tp.p.yLock
 		? 'disabled="disabled"'
-		: "onchange="_UI.focusElement=this.id; _UI.multiSelect.pointssingleton.setPathPointPosition('p', 'null', (this.value)); historyPut('Point Y Position : '+this.value); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
+		: "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('p', 'null', (this.value)); historyPut('Point Y Position : '+this.value); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
 		value="${round(tp.p.y, 3) +
 	  '" >' +
 	  '</div>' +
@@ -232,7 +234,7 @@ function makeAttributesGroup_pathPoint(tp) {
 	//   (issymmetric
 	//     ? '<input type="checkbox" checked disabled>'
 	//     : checkUI(
-	//         '_UI.multiSelect.pointssingleton.h1.use',
+	//         '_UI.multiSelect.points.singleton.h1.use',
 	//         tp.h1.use,
 	//         true
 	//       )) +
@@ -246,25 +248,25 @@ function makeAttributesGroup_pathPoint(tp) {
 		'y</td>' +
 		'<td>' +
 		'<div class="lockwrapper">' +
-		// lockUI('_UI.multiSelect.pointssingleton.h1.xLock', tp.h1.xLock, 'H1xlock') +
+		// lockUI('_UI.multiSelect.points.singleton.h1.xLock', tp.h1.xLock, 'H1xlock') +
 		'<input type="number" id="handle1x" step="' +
 		spinn +
 		'" ' +
 		(tp.h1.xLock
 		  ? 'disabled="disabled"'
-		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.pointssingleton.setPathPointPosition('h1', (this.value), 'null'); historyPut('h1 X Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
+		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('h1', (this.value), 'null'); historyPut('h1 X Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
 		  value="${  round(tp.h1.x, 3) +
 		'" >' +
 		'</div>' +
 		dimSplit() +
 		'<div class="lockwrapper">' +
-		// lockUI('_UI.multiSelect.pointssingleton.h1.yLock', tp.h1.yLock, 'H1ylock') +
+		// lockUI('_UI.multiSelect.points.singleton.h1.yLock', tp.h1.yLock, 'H1ylock') +
 		'<input type="number" id="handle1y" step="' +
 		spinn +
 		'" ' +
 		(tp.h1.yLock
 		  ? 'disabled="disabled"'
-		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.pointssingleton.setPathPointPosition('h1', 'null', (this.value)); historyPut('h1 Y Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
+		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('h1', 'null', (this.value)); historyPut('h1 Y Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
 		  value="${  round(tp.h1.y, 3) +
 		'" >' +
 		'</div>' +
@@ -292,7 +294,7 @@ function makeAttributesGroup_pathPoint(tp) {
 	//   (issymmetric
 	//     ? '<input type="checkbox" checked disabled>'
 	//     : checkUI(
-	//         '_UI.multiSelect.pointssingleton.h2.use',
+	//         '_UI.multiSelect.points.singleton.h2.use',
 	//         tp.h2.use,
 	//         true
 	//       )) +
@@ -306,25 +308,25 @@ function makeAttributesGroup_pathPoint(tp) {
 		'y</td>' +
 		'<td>' +
 		'<div class="lockwrapper">' +
-		// lockUI('_UI.multiSelect.pointssingleton.h2.xLock', tp.h2.xLock, 'H2xlock') +
+		// lockUI('_UI.multiSelect.points.singleton.h2.xLock', tp.h2.xLock, 'H2xlock') +
 		'<input type="number" id="handle2x" step="' +
 		spinn +
 		'" ' +
 		(tp.h2.xLock
 		  ? 'disabled="disabled"'
-		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.pointssingleton.setPathPointPosition('h2', (this.value), 'null'); historyPut('h2 X Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
+		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('h2', (this.value), 'null'); historyPut('h2 X Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
 		  value="${  round(tp.h2.x, 3) +
 		'" >' +
 		'</div>' +
 		dimSplit() +
 		'<div class="lockwrapper">' +
-		// lockUI('_UI.multiSelect.pointssingleton.h2.yLock', tp.h2.yLock, 'H2ylock') +
+		// lockUI('_UI.multiSelect.points.singleton.h2.yLock', tp.h2.yLock, 'H2ylock') +
 		'<input type="number" id="handle2y" step="' +
 		spinn +
 		'" ' +
 		(tp.h2.yLock
 		  ? 'disabled="disabled"'
-		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.pointssingleton.setPathPointPosition('h2', 'null', (this.value)); historyPut('h2 Y Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
+		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('h2', 'null', (this.value)); historyPut('h2 Y Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
 		  value="${  round(tp.h2.y, 3) +
 		'" >' +
 		'</div>' +
@@ -355,48 +357,71 @@ function makeAttributesGroup_pathPoint(tp) {
 //	-------------------------------------------
 
 function makeInputs_position(x, y) {
+	log(`makeInputs_position`, 'start');
+	log(`x: ${x}`);
+	log(`y: ${y}`);
+
 	let spinnerValueChange = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
 	let content = '';
 
 	content +=`
-	  <label>x${dimSplit()}y</label>
-	  <div class="doubleInput">
-		<input-number-lockable id="charx" step="${spinnerValueChange}" onchange="">
-			${round(x, 3)}
-		</input-number-lockable>
-		${dimSplit()}
-		<input-number-lockable id="chary" step="${spinnerValueChange}" onchange="">
-			${round(y, 3)}
-		</input-number-lockable>
-	  </div>
+		<label>x${dimSplit()}y</label>
+		<div class="doubleInput">
+			<input-number-lockable
+				id="charx"
+				step="${spinnerValueChange}"
+				value="${round(x, 3)}"
+			>
+			</input-number-lockable>
+			${dimSplit()}
+			<input-number-lockable
+				id="chary"
+				step="${spinnerValueChange}"
+				value="${round(y, 3)}"
+			>
+			</input-number-lockable>
+		</div>
 	`;
 
+	log(`makeInputs_position`, 'end');
 	return content;
 }
 
 function makeInputs_size(width, height){
+	log(`makeInputs_size`, 'start');
+	log(`width: ${width}`);
+	log(`height: ${height}`);
+
+
 	let spinnerValueChange = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
 	let content = '';
 
 	content +=`
-	  <label>width${dimSplit()}height</label>
-	  <div class="doubleInput">
-		<input-number id="charw" step="${spinnerValueChange}" onchange="">
-			${round(width, 3)}
-		</input-number>
-		${dimSplit()}
-		<input-number id="charh" step="${spinnerValueChange}" onchange="">
-			${round(height, 3)}
-		</input-number>
-	  </div>
+		<label>width${dimSplit()}height</label>
+		<div class="doubleInput">
+			<input-number
+				id="charw"
+				step="${spinnerValueChange}"
+				value="${round(width, 3)}"
+			>
+			</input-number>
+			${dimSplit()}
+			<input-number
+				id="charh"
+				step="${spinnerValueChange}"
+				value="${round(height, 3)}"
+			>
+			</input-number>
+		</div>
 	`;
 
 	content += `
-	  <label>lock&nbsp;aspect&nbsp;ratio</label>
-	  <input type="checkbox" />
+	<label>lock&nbsp;aspect&nbsp;ratio</label>
+	<input type="checkbox" />
 	`;
 	// checkUI('_UI.multiSelect.shapes.getGlyph().ratioLock', virtualGlyph.ratioLock, true)
 
+	log(`makeInputs_size`, 'end');
 	return content;
 }
 

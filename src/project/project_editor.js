@@ -104,7 +104,7 @@ export default class ProjectEditor {
     if(!callback){
       console.warn(`Subscriber was not provided a callback`);
     }
-    
+
     if (!this.subscribers[topic]) this.subscribers[topic] = [];
     this.subscribers[topic].push({subscriberName: subscriberName, callback: callback});
   }
@@ -136,6 +136,15 @@ export default class ProjectEditor {
   // --------------------------------------------------------------
   // Get Individual Selected Work Items
   // --------------------------------------------------------------
+
+  /**
+   * Returns the appropriate Glyph, Ligature, or Component
+   * based on the current page
+   */
+  get selectedWorkItem() {
+    // check for what page we're on
+    return this.selectedGlyph;
+  }
 
   /**
    * Returns the selected glyph

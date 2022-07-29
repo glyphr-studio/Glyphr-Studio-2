@@ -13,17 +13,20 @@ export default function makePanel_GlyphAttributes() {
   log('makePanel_GlyphAttributes', 'start');
   let projectEditor = getCurrentProjectEditor();
   let selectedShapes = projectEditor.multiSelect.shapes;
+  let selectedPoints = projectEditor.multiSelect.points;
   let content = '';
   // log(projectEditor);
 
   // For debug
   selectedShapes.select(projectEditor.selectedGlyph.shapes[0]);
+  selectedPoints.select(projectEditor.selectedGlyph.shapes[0].path.pathPoints[0]);
 
   log(selectedShapes);
   log(`multiSelect length: ${selectedShapes.length}`);
 
   content += `
     <div class="panel__section">
+      <h2>${projectEditor.selectedGlyph.name}</h2>
       <h3>Glyph</h3>
       ${makeInputs_position(projectEditor.selectedGlyph.x, projectEditor.selectedGlyph.y)}
       ${makeInputs_size(projectEditor.selectedGlyph.width, projectEditor.selectedGlyph.height)}
@@ -42,13 +45,13 @@ export default function makePanel_GlyphAttributes() {
       log("...Regular shape selected");
       content += makeAttributesGroup_shape(selectedShapes.singleton);
 
-      // let isPointSelected = projectEditor.multiSelect.points.count() === 1;
+      let isPointSelected = projectEditor.multiSelect.points.count() === 1;
       // if (!(_UI.selectedTool === 'pathedit' || _UI.selectedTool === 'pathaddpoint'))
       //   isPointSelected = false;
 
-      // if (isPointSelected) {
-      //   content += makeAttributesGroup_pathPoint(projectEditor.multiSelect.pointssingleton);
-      // }
+      if (isPointSelected) {
+        content += makeAttributesGroup_pathPoint(projectEditor.multiSelect.points.singleton);
+      }
     }
   } else {
     // Many shapes selected

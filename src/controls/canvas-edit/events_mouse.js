@@ -583,7 +583,7 @@ function Tool_PathEdit() {
           _UI.multiSelect.points.select(this.controlpoint.point);
         setCursor('penSquare');
       } else {
-        _UI.multiSelect.points.handlesingleton = this.controlpoint.point;
+        _UI.multiSelect.points.handleSingleton = this.controlpoint.point;
         setCursor('penCircle');
       }
 
@@ -618,7 +618,7 @@ function Tool_PathEdit() {
       this.controlpoint.point.h2.use = true;
       this.controlpoint.point.h2.x = cXsX(eh.mousex);
       this.controlpoint.point.h2.y = cYsY(eh.mousey);
-      _UI.multiSelect.points.handlesingleton = this.controlpoint.point;
+      _UI.multiSelect.points.handleSingleton = this.controlpoint.point;
 
       this.dragging = true;
 
@@ -684,7 +684,7 @@ function Tool_PathEdit() {
     this.dragging = false;
     this.controlpoint = false;
     eh.toolhandoff = false;
-    _UI.multiSelect.points.handlesingleton = false;
+    _UI.multiSelect.points.handleSingleton = false;
     eh.lastX = -100;
     eh.lastY = -100;
 
