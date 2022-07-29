@@ -1,3 +1,4 @@
+import { getCurrentProjectEditor } from '../app/main.js';
 import Glyph from '../glyph_elements/glyph.js';
 import Shape from '../glyph_elements/shape.js';
 
@@ -18,7 +19,7 @@ import Shape from '../glyph_elements/shape.js';
 class MultiSelect {
   constructor() {
     this.members = [];
-    this.handlesingleton = false;
+    this.handleSingleton = false;
   }
 
   isSelectable(obj) {
@@ -51,7 +52,7 @@ class MultiSelect {
     this.members = [];
     if (this.glyph)
       this.glyph.ratioLock = false;
-    this.handlesingleton = false;
+    this.handleSingleton = false;
     this.selectShapesThatHaveSelectedPoints();
   }
 
@@ -73,6 +74,10 @@ class MultiSelect {
       return typeof m === 'object';
     });
     this.selectShapesThatHaveSelectedPoints();
+  }
+
+  count() {
+    return this.members.length;
   }
 
   toggle(obj) {
@@ -217,25 +222,21 @@ export class MultiSelectPoints extends MultiSelect {
     }
   }
 
-  updatePathPointPosition(
-    controlpoint,
-    dx,
-    dy
-  ) {
+  updatePathPointPosition(controlpoint, dx, dy) {
     if (controlpoint === 'p') {
       for (let m = 0; m < this.members.length; m++) {
         this.members[m].updatePathPointPosition(controlpoint, dx, dy);
       }
-    } else if (this.handlesingleton) {
-      this.handlesingleton.updatePathPointPosition(controlpoint, dx, dy);
+    } else if (this.handleSingleton) {
+      this.handleSingleton.updatePathPointPosition(controlpoint, dx, dy);
     }
   }
 
   selectShapesThatHaveSelectedPoints() {
     // log('MS.points.selectShapesThatHaveSelectedPoints', 'start');
-    clear();
-    const points = getMembers();
-    const shapes = getSelectedWorkItemShapes();
+    // this.clear();
+    const points = this.members;
+    const shapes = getCurrentProjectEditor().selectedWorkItem.shapes;
     let path;
     let count = 0;
 
@@ -319,7 +320,7 @@ export class MultiSelectShapes extends MultiSelect {
   deleteShapes() {
     // log('deleteShape', 'start');
     const wishapes = getSelectedWorkItemShapes();
-    const sels = this.getMembers();
+    const sels = this.members;
     let curs;
     let i;
 
