@@ -2,7 +2,7 @@ export { makeNavButton, makeNavButtonContent, showNavDropdown };
 import { makeElement } from '../common/dom.js';
 import { log } from '../common/functions.js';
 import { makeChooserContent_Glyphs, makeChooserContent_Pages, makeChooserContent_Panels } from '../panels/panel-choosers.js';
-import { getGlyphrStudioApp } from './main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 
 function makeNavButton(properties = {}) {
 	let title = properties.title || 't i t l e';
@@ -42,7 +42,9 @@ function showNavDropdown(parentElement) {
 	}
 
 	if(dropdownType === 'EDITING') {
-		dropdownContent = makeChooserContent_Glyphs();
+		dropdownContent = makeChooserContent_Glyphs((glyphID) => {
+			getCurrentProjectEditor().selectedGlyphID = glyphID;
+		});
 		size = '80%';
 	}
 

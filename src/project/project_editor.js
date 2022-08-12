@@ -2,6 +2,7 @@ import GlyphrStudioProject from './glyphr_studio_project.js';
 // import History from './history.js';
 import PageOpenProject from '../pages/open_project.js';
 import PageGlyphEdit from '../pages/glyph_edit.js';
+import PageOverview from '../pages/overview.js';
 import { makeElement } from '../common/dom.js';
 import {
   log,
@@ -49,7 +50,7 @@ export default class ProjectEditor {
 
     // Navigation
     this.nav = {
-      page: newProjectEditor.nav.page || 'open project',
+      page: newProjectEditor.nav.page || 'Open project',
       panel: newProjectEditor.nav.panel || false,
       projectSaved: true,
       stopPageNavigation: true,
@@ -59,7 +60,7 @@ export default class ProjectEditor {
 
     // History
     // this.history = {};
-    // this.history['glyph edit'] = new History('glyphs', this);
+    // this.history['Glyph edit'] = new History('glyphs', this);
     // this.history.components = new History('components', this);
     // this.history.ligatures = new History('ligatures', this);
     // this.history.kerning = new History('kerning', this);
@@ -288,7 +289,7 @@ export default class ProjectEditor {
   // historyPut(description) {
   //   if (this.onCanvasEditPage()) {
   //     const queue =
-  //       this.nav.page === 'import svg' ? 'glyph edit' : this.nav.page;
+  //       this.nav.page === 'import svg' ? 'Glyph edit' : this.nav.page;
   //     this.history[queue].put(description);
   //   }
   // }
@@ -319,6 +320,25 @@ export default class ProjectEditor {
   // --------------------------------------------------------------
   // Navigation
   // --------------------------------------------------------------
+
+  /**
+   * List of pages the editor supports
+   */
+  get tableOfContents() {
+    return {
+      'Open project': {name: 'Open project', pageMaker: PageOpenProject },
+      'Overview': {name: 'Overview', pageMaker: PageOverview },
+      'Glyph edit': {name: 'Glyph edit', pageMaker: PageGlyphEdit },
+      'Ligatures': {name: 'Ligatures', pageMaker: false },
+      'Components': {name: 'Components', pageMaker: false },
+      'Kerning': {name: 'Kerning', pageMaker: false },
+      'Ligatures': {name: 'Ligatures', pageMaker: false },
+      'Live preview': {name: 'Live preview', pageMaker: false },
+      'Global actions': {name: 'Global actions', pageMaker: false },
+      'Settings': {name: 'Settings', pageMaker: false },
+      'Import & export': {name: 'Import & export', pageMaker: false },
+    };
+  }
 
   /**
    * Changes the page of this Project Editor
@@ -362,26 +382,27 @@ export default class ProjectEditor {
    */
   pageLoader() {
     log(`ProjectEditor.pageLoader`, 'start');
-    const editorContent = makeElement({ tag: 'div', id: 'app__editor' });
+    const editorContent = makeElement({ tag: 'div', id: 'app__main-content' });
+
+    // Default page loader fallback
     let currentPageLoader = {
-      content: makeElement({
-        tag: 'h1',
-        innerHTML: 'Uninitialized page content',
-      }),
+      content: makeElement({tag: 'h1', innerHTML: 'Uninitialized page content'}),
       callback: false,
     };
 
-    // Collect the Page Loader for the current page
-    if (this.nav.page === 'open project') {
-      log(`page detected as open project`);
-      if (!this.pages['open project'])
-        this.pages['open project'] = new PageOpenProject();
-      currentPageLoader = this.pages['open project'].pageLoader();
-    } else if (this.nav.page === 'glyph edit') {
-      log(`page detected as glyph edit`);
-      if (!this.pages['glyph edit'])
-        this.pages['glyph edit'] = new PageGlyphEdit();
-      currentPageLoader = this.pages['glyph edit'].pageLoader();
+    let currentPage = this.nav.page;
+    let currentPageMaker = this.tableOfContents[currentPage].pageMaker;
+    log(`page detected as ${currentPage}`);
+
+    if (!currentPageMaker) {
+      console.warn(`No page maker for ${currentPage}`);
+      currentPageLoader.content.innerHTML += `<br>${currentPage}`;
+    } else {
+      if (!this.pages[currentPage]) {
+        this.pages[currentPage] = new currentPageMaker();
+      }
+      // If there is a page maker and a loader, set it
+      currentPageLoader = this.pages[currentPage].pageLoader();
     }
 
     // Append results
@@ -402,7 +423,7 @@ export default class ProjectEditor {
   onChooserPanelPage() {
     const nh = this.nav.page;
     return (
-      nh === 'glyph edit' ||
+      nh === 'Glyph edit' ||
       nh === 'components' ||
       nh === 'kerning' ||
       nh === 'import svg' ||
@@ -417,7 +438,7 @@ export default class ProjectEditor {
   onCanvasEditPage() {
     const nh = this.nav.page;
     return (
-      nh === 'glyph edit' ||
+      nh === 'Glyph edit' ||
       nh === 'components' ||
       nh === 'kerning' ||
       nh === 'ligatures'
@@ -694,7 +715,7 @@ window._UI = {
     updateCurrentGlyphWidth() {
         let sc = getSelectedWorkItem();
         if (!sc) return;
-        if (editor.nav.page === 'glyph edit') {
+        if (editor.nav.page === 'Glyph edit') {
             sc.changed();
         } else if (editor.nav.page === 'components' && sc) {
             let lsarr = sc.usedIn;
@@ -738,7 +759,7 @@ function getSelectedWorkItem() {
     let re;
 
     switch (editor.nav.page) {
-        case 'glyph edit':
+        case 'Glyph edit':
             if (!_UI.selectedGlyph) _UI.selectedGlyph = '0x0041';
             re = getGlyph(_UI.selectedGlyph, true);
             // log('case glyph edit, returning ' + re.name);
@@ -769,7 +790,7 @@ function getSelectedWorkItem() {
 
 function getSelectedWorkItemID() {
     switch (editor.nav.page) {
-        case 'glyph edit': return _UI.selectedGlyph;
+        case 'Glyph edit': return _UI.selectedGlyph;
         case 'import svg': return _UI.selectedSVGImportTarget;
         case 'ligatures': return _UI.selectedLigature;
         case 'components': return _UI.selectedComponent;

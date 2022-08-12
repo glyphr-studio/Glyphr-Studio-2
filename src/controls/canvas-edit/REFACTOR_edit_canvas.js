@@ -80,7 +80,7 @@ function redrawUnit() {
       );
 
     switch (editor.nav.page) {
-      case 'glyph edit':
+      case 'Glyph edit':
         redraw_GlyphEdit();
         break;
       case 'components':
@@ -147,7 +147,7 @@ function update_ToolsArea() {
   let pathaddpointclass = '';
   let penclickable = true;
   let penaddpointclickable = true;
-  const onglyph = editor.nav.page === 'glyph edit';
+  const onglyph = editor.nav.page === 'Glyph edit';
   const oncom = editor.nav.page === 'components';
   const onlig = editor.nav.page === 'ligatures';
   const onkern = editor.nav.page === 'kerning';
@@ -1776,7 +1776,7 @@ function drawGuides() {
 
   const ps = getCurrentProject().projectSettings;
   const onglyphedit =
-    editor.nav.page === 'glyph edit' || editor.nav.page === 'ligatures';
+    editor.nav.page === 'Glyph edit' || editor.nav.page === 'ligatures';
   const onkern = editor.nav.page === 'kerning';
   // log('ps.guides: ');
   // log(ps.guides);

@@ -1,5 +1,5 @@
 #app__wrapper,
-#app__editor,
+#app__main-content,
 #app__page {
   background-color: var(--gray-l95);
   height: 100%;
@@ -11,7 +11,7 @@
   padding-bottom: 40px;
 }
 
-#app__editor {
+#app__main-content {
   margin-bottom: 10px;
 }
 

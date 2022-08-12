@@ -81,6 +81,7 @@
 	text-align: left;
 	background-color: transparent;
 	font-size: 1.1em;
+	width: calc(100% - 10px);
 }
 
 #nav-dropdown button:hover {

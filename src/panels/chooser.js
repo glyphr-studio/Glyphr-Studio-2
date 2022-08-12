@@ -17,7 +17,7 @@ export default function makePanel_GlyphChooser() {
   const gcp = _UI.glyphChooser.panel;
   // _UI.glyphChooser.cache = false;
 
-  if (editor.nav.page === 'glyph edit') {
+  if (editor.nav.page === 'Glyph edit') {
     asyncLoadChooserPanel();
     // _UI.glyphChooser.cache = make_GlyphChooser(_UI.glyphChooser.panel);
   } else if (editor.nav.page === 'import svg') {
@@ -101,7 +101,7 @@ function make_GlyphChooser(gcdata) {
 
   if (
     gcdata.choices === 'all' ||
-    (editor.nav.page === 'glyph edit' && pluralGlyphRange()) ||
+    (editor.nav.page === 'Glyph edit' && pluralGlyphRange()) ||
     (editor.nav.page === 'import svg' &&
       (pluralGlyphRange() ||
         Object.keys(getCurrentProject().components).length ||

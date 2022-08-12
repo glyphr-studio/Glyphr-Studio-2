@@ -5,6 +5,14 @@
 	justify-items: left;
 	row-gap: 10px;
 	column-gap: 20px;
+	margin-bottom: 20px;
+	position: relative;
+	top: -8px;
+}
+
+.panel__section.full-width {
+	grid-template-columns: 1fr;
+	column-gap: 0;
 }
 
 .panel__section h1,
@@ -14,6 +22,11 @@
 .panel__section h5,
 .panel__section h6 {
 	grid-column: span 3;
+}
+
+.panel__section h3 {
+	position: relative;
+	top: 8px;
 }
 
 .panel__section label {
