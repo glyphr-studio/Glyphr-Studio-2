@@ -1,4 +1,6 @@
+import { accentColors } from '../../common/colors.js';
 import { makeElement } from '../../common/dom.js';
+import { log } from '../../common/functions.js';
 
 /**
  * A small bubble that displays information
@@ -11,21 +13,11 @@ export default class InfoBubble extends HTMLElement {
   constructor() {
     super();
 
-    let wrapper = makeElement({ className: 'wrapper', tabIndex: true });
+    this.isMouseOverBubble = false;
 
+    let wrapper = makeElement({ className: 'wrapper', tabIndex: true });
     this.entryPoint = makeElement({ className: 'entryPoint', content: '?' });
 
-    let content = makeElement({
-      className: 'content',
-      content: this.getAttribute('text'),
-    });
-
-    this.pointer = makeElement({ className: 'pointer' });
-
-    this.bubble = makeElement({ className: 'bubble' });
-
-    let bgColor = 'rgb(60,60,60)';
-    let textColor = 'white';
     let style = makeElement({
       tag: 'style',
       content: `
@@ -66,38 +58,6 @@ export default class InfoBubble extends HTMLElement {
                 transition: all 0.2s;
             }
 
-            .bubble {
-                transition: opacity 0.2s;
-                display: none;
-                opacity: 0;
-                position: absolute;
-                left: -1000px;
-                top: -1000px;
-                text-align: center;
-            }
-
-            .content {
-                padding: 12px 18px 12px 12px;
-                border-radius: 3px;
-                min-width: 100px;
-                max-width: 300px;
-                color: ${textColor};
-                background-color: ${bgColor};
-                text-align: left;
-                display: block;
-                box-shadow: 4px 4px 2px rgba(0,0,0,0.2);
-            }
-
-            .pointer {
-                width: 0px;
-                height: 0px;
-                border: 12px solid transparent;
-                border-top: 12px solid ${bgColor};
-                background-color: transparent;
-                display: block;
-                margin: 0px auto;
-            }
-
             .entryPoint:hover,
             .bubble:hover {
                 cursor: help;
@@ -105,62 +65,140 @@ export default class InfoBubble extends HTMLElement {
         `,
     });
 
-    // Put it all together
+    // Put together visible stuff
     let shadow = this.attachShadow({ mode: 'open' });
     shadow.appendChild(style);
-
-    this.bubble.appendChild(content);
-    this.bubble.appendChild(this.pointer);
-
     wrapper.appendChild(this.entryPoint);
-    wrapper.appendChild(this.bubble);
-
     shadow.appendChild(wrapper);
 
+
+
+    // Event listeners
     this.addEventListener('mouseover', this.show);
     this.addEventListener('focus', this.show);
 
-    this.addEventListener('mouseout', this.hide);
-    this.addEventListener('blur', this.hide);
+    // this.addEventListener('mouseout', this.hide);
+    // this.addEventListener('blur', this.hide);
   }
 
   /**
    * Show the bubble
    */
   show() {
-    this.bubble.style.display = 'block';
+    log(`info-bubble show`, 'start');
 
-    let left = this.entryPoint.offsetLeft - this.bubble.offsetWidth / 2 + 7;
-    let top = this.entryPoint.offsetTop - this.bubble.offsetHeight + 10;
+    // put together bubble stuff
+
+    let bgColor = accentColors.gray.l10;
+    let textColor = accentColors.gray.l95;
+
+    log(`Making bubble...`);
+    let bubble = makeElement({
+      id: 'bubble',
+      attributes: {
+        style:
+          `
+            z-index: 1000;
+            transition: opacity 0.2s;
+            display: grid;
+            align-items: center;
+            grid-template-columns: 12px 1fr;
+            opacity: 1;
+            position: absolute;
+            left: 100px;
+            top: 100px;
+            text-align: center;
+          `
+      }
+    });
+
+    log(`Making pointer...`);
+    let pointer = makeElement({
+      attributes: {
+        style:
+          `
+            width: 0px;
+            height: 0px;
+            border: 12px solid transparent;
+            border-top: 12px solid ${bgColor};
+            background-color: transparent;
+            display: block;
+            margin: 0px auto;
+          `
+        }
+      });
+
+    log(`Making content...`);
+    let content = makeElement({
+      innerHTML: this.innerHTML,
+      attributes: {
+        style:
+          `
+            padding: 20px 24px 20px 20px;
+            border-radius: 3px;
+            width: min-content;
+            min-width: 100px;
+            color: ${textColor};
+            background-color: ${bgColor};
+            text-align: left;
+            display: block;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+          `
+        }
+    });
+
+    bubble.appendChild(pointer);
+    bubble.appendChild(content);
+
+    // Event listeners
+    bubble.addEventListener('mouseover', () => this.isMouseOverBubble = true);
+    bubble.addEventListener('focus', () => this.isMouseOverBubble = true);
+
+    bubble.addEventListener('mouseout', this.hide);
+    bubble.addEventListener('blur', this.hide);
+
+    document.body.appendChild(bubble);
+    let entryPointRect = this.entryPoint.getBoundingClientRect();
+    let bubbleRect = bubble.getBoundingClientRect();
+    let left = entryPointRect.x + entryPointRect.width + 2;
+    let top = entryPointRect.y - (bubbleRect.height / 2) + 14;
 
     if (left < 0 || top < 0) this.pointer.style.display = 'none';
     left = Math.max(left, 0);
     top = Math.max(top, 0);
 
-    // console.log(`showing bubble at ${left} / ${top}`);
+    log(`showing bubble at ${left} / ${top}`);
+    bubble.style.left = `${left}px`;
+    bubble.style.top = `${top}px`;
 
-    this.bubble.style.left = `${left}px`;
-    this.bubble.style.top = `${top}px`;
-    this.bubble.style.opacity = '1';
 
     this.entryPoint.style.borderColor = 'rgb(180, 180, 180)';
     this.entryPoint.style.backgroundColor = 'rgb(180, 180, 180)';
     this.entryPoint.style.color = 'rgb(250, 250, 250)';
+
+    log(`info-bubble show`, 'end');
   }
 
   /**
    * Hide the bubble
    */
   hide() {
-    this.bubble.style.left = '-1000px';
-    this.bubble.style.top = '-1000px';
-    this.bubble.style.display = 'none';
-    this.bubble.style.opacity = '0';
+    log(`info-bubble hide`, 'start');
 
-    this.entryPoint.style.borderColor = 'rgb(180, 180, 180)';
-    this.entryPoint.style.backgroundColor = 'transparent';
-    this.entryPoint.style.color = 'rgb(180, 180, 180)';
+    if(!this.isMouseOverBubble){
+      let bubble = document.getElementById('bubble');
+      bubble.style.left = '-1000px';
+      bubble.style.top = '-1000px';
+      bubble.style.display = 'none';
+      bubble.style.opacity = '0';
 
-    this.pointer.style.display = 'block';
+      document.body.removeChild(bubble);
+
+      // this.entryPoint.style.borderColor = 'rgb(180, 180, 180)';
+      // this.entryPoint.style.backgroundColor = 'transparent';
+      // this.entryPoint.style.color = 'rgb(180, 180, 180)';
+    }
+
+    log(`info-bubble hide`, 'end');
   }
 }
