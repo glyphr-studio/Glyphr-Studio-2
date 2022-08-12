@@ -342,7 +342,7 @@ export default class PageOpenProject {
     setTimeout(function () {
       const projectEditor = app.getCurrentProjectEditor();
       projectEditor.project = new GlyphrStudioProject();
-      app.navigate('glyph edit');
+      app.navigate('Glyph edit');
     }, 5);
   }
 
@@ -359,7 +359,7 @@ export default class PageOpenProject {
       app.getCurrentProjectEditor().project = new GlyphrStudioProject(
         projects[name]
       );
-      app.navigate('glyph edit');
+      app.navigate('Glyph edit');
     }, 5);
   }
 }

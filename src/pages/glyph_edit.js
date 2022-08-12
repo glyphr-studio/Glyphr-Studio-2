@@ -29,6 +29,7 @@ export default class PageGlyphEdit {
     log(editor);
     log(editor.selectedGlyph);
 
+    let canvasGlyph = hexToChars(editor.selectedGlyphID);
     const content = makeElement({
       tag: 'div',
       id: 'app__page',
@@ -46,7 +47,7 @@ export default class PageGlyphEdit {
         </div>
         <div class="glyph-edit__tools-area">t<br>o<br>o<br>l<br>s</div>
         <div class="glyph-edit__right-area">
-          <canvas-display id="glyph-edit__main-canvas" glyphs="B" width="800" height="800" onclick="closeAllDialogs();"></canvas-display>
+          <canvas-display id="glyph-edit__main-canvas" glyphs="${canvasGlyph}" width="800" height="800" onclick="closeAllDialogs();"></canvas-display>
         </div>
       </div>
     `,
@@ -79,7 +80,7 @@ export default class PageGlyphEdit {
         log(`Main Canvas subscriber callback`, 'start');
         let newChar = hexToChars(newGlyphID);
         log(`new id ${newGlyphID} results in ${newChar} on the main canvas`);
-        document.getElementById('glyph-edit__main-canvas').setAttribute('glyphs', newChar);
+        content.querySelector('#glyph-edit__main-canvas').setAttribute('glyphs', newChar);
         log(`Main Canvas subscriber callback`, 'end');
       }
     });

@@ -10,43 +10,21 @@ function makeChooserContent_Pages(){
 	log(`makeChooserContent_Pages`, 'start');
 
 	let content = makeElement();
+	let pageButton;
 
-	content.appendChild(
-		makeElement({tag: 'button', content: 'All glyphs'})
-	);
-	content.appendChild(
-		makeElement({tag: 'button', content: 'Glyph edit'})
-	);
-	content.appendChild(
-		makeElement({tag: 'button', content: 'Ligatures'})
-	);
-	content.appendChild(
-		makeElement({tag: 'button', content: 'Components'})
-	);
-	content.appendChild(
-		makeElement({tag: 'button', content: 'Kerning'})
-	);
-	content.appendChild(
-		makeElement({tag: 'button', content: 'Ligatures'})
-	);
-	content.appendChild(
-		makeElement({tag: 'button', content: 'Live preview'})
-	);
-	content.appendChild(
-		makeElement({tag: 'button', content: 'Global actions'})
-	);
-	content.appendChild(
-		makeElement({tag: 'button', content: 'Settings'})
-	);
-	content.appendChild(
-		makeElement({tag: 'button', content: 'Import & export'})
-	);
+	Object.keys(getCurrentProjectEditor().tableOfContents).forEach((pageName) => {
+		if(pageName !== 'Open project'){
+			pageButton = makeElement({tag: 'button', content: pageName});
+			pageButton.addEventListener('click', () => getCurrentProjectEditor().navigate(pageName));
+			content.appendChild(pageButton);
+		}
+	});
 
 	log(`makeChooserContent_Pages`, 'end');
 	return content;
 }
 
-function makeChooserContent_Glyphs(){
+function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
 	log(`makeChooserContent_Glyphs`, 'start');
 	let editor = getCurrentProjectEditor();
 
@@ -58,25 +36,25 @@ function makeChooserContent_Glyphs(){
 			new GlyphTile({glyph: glyphID, selected: 'true'}) :
 			new GlyphTile({glyph: glyphID});
 
-		oneTile.addEventListener('click', () => {
-			editor.selectedGlyphID = glyphID;
-		});
+		oneTile.addEventListener('click', () => clickHandler(glyphID));
 
-		editor.subscribe({
-			topic:'selectedGlyphID',
-			subscriberName: `Glyph tile ${glyphID}`,
-			callback: (newGlyphID) => {
-				// log('selectedGlyphID subscriber callback');
-				// log(`checking if ${glyph.id} === ${glyphID}`);
-				if(areHexValuesEqual(newGlyphID, glyphID)){
-					// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
-					oneTile.setAttribute('selected', '');
-				} else {
-					// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
-					oneTile.removeAttribute('selected');
+		if(registerSubscriptions) {
+			editor.subscribe({
+				topic:'selectedGlyphID',
+				subscriberName: `Glyph tile ${glyphID}`,
+				callback: (newGlyphID) => {
+					// log('selectedGlyphID subscriber callback');
+					// log(`checking if ${glyph.id} === ${glyphID}`);
+					if(areHexValuesEqual(newGlyphID, glyphID)){
+						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
+						oneTile.setAttribute('selected', '');
+					} else {
+						// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
+						oneTile.removeAttribute('selected');
+					}
 				}
-			}
-		});
+			});
+		}
 
 		container.appendChild(oneTile);
 	});

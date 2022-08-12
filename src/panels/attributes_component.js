@@ -71,7 +71,7 @@ function goToEditGlyph(chid) {
   } else if (chid.indexOf('0x') > -1) {
     // Glyph
     _UI.selectedGlyph = chid;
-    p = 'glyph edit';
+    p = 'Glyph edit';
   } else {
     // Component
     _UI.selectedComponent = chid;

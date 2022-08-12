@@ -36,17 +36,6 @@
 	box-shadow: var(--l2-shadow);
 }
 
-.panel__section {
-	margin-bottom: 20px;
-	position: relative;
-	top: -8px;
-}
-
-.panel__section h3 {
-	position: relative;
-	top: 8px;
-}
-
 .glyph-edit__tools-area {
 	border: 1px solid var(--blue-l85);
 	border-radius: 4px;
