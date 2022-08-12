@@ -30,8 +30,8 @@ function makeAttributesGroup_shape(s) {
 	`;
 
 	content += `
-		<label>
-			overlap mode
+		<label class="info">
+			<span>overlap mode</span>
 			<info-bubble>
 				<h1>Overlap Mode</h1>
 				The Path Points that make up a shape outline have either a clockwise or counter-clockwise direction.
@@ -314,7 +314,13 @@ function makeInputs_size(width, height){
 	`;
 
 	content += `
-	<label>lock&nbsp;aspect&nbsp;ratio</label>
+	<label class="info">
+		<span>lock aspect ratio</span>
+		<info-bubble>
+			When either the width or height is adjusted,
+			the overall size will be kept proportional.
+		</info-bubble>
+	</label>
 	<input type="checkbox" />
 	`;
 	// checkUI('_UI.multiSelect.shapes.getGlyph().ratioLock', virtualGlyph.ratioLock, true)

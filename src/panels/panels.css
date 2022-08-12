@@ -1,9 +1,10 @@
 .panel__section {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
+	align-items: center;
+	justify-items: left;
 	row-gap: 10px;
 	column-gap: 20px;
-	justify-items: left;
 }
 
 .panel__section h1,
@@ -20,6 +21,14 @@
 	line-height: 20px;
 }
 
+.panel__section .info {
+	display: grid !important;
+	gap: 8px;
+	grid-template-columns: max-content min-content;
+	grid-template-rows: max-content;
+	align-items: center;
+}
+
 .panel__section input[type=checkbox] {
 	width: 20px;
 	height: 20px;
@@ -31,6 +40,7 @@
 	display: grid;
 	grid-template-columns: 1fr min-content 1fr;
 }
+
 
 .dimSplit {
 	color: var(--gray-l80);

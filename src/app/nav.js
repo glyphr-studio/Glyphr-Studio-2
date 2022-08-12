@@ -32,7 +32,7 @@ function showNavDropdown(parentElement) {
 	let parentStyle = getComputedStyle(parentElement);
 	let top = rect.top + rect.height - 3;
 
-	let dropdownContent = '<h3>uninitialized</h3>';
+	let dropdownContent = makeElement({tag: 'h3', content: 'Uninitialized'});
 	let dropdownType = parentElement.getAttribute('data-nav-type');
 	log(`dropdownType: ${dropdownType}`);
 
