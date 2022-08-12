@@ -74,7 +74,7 @@
 
 #nav-dropdown button {
 	display: block;
-	margin: 4px 10px 0px 2px;
+	margin: 4px 10px 10px 2px;
 	border-radius: 0;
 	border-right: 4px solid transparent;
 	color: var(--blue-l80);
@@ -88,4 +88,20 @@
 	border-right: 4px solid var(--blue-l90);
 	color: var(--blue-l90);
 	background-color: hsla(0, 0, 100%, 0.5);
+}
+
+#nav-dropdown .page-chooser__page-button {
+	display: grid;
+	align-items: center;
+	column-gap: 15px;
+	grid-template-columns: min-content max-content;
+}
+#nav-dropdown .page-chooser__page-button svg {
+	height: 24px;
+	width: 24px;
+}
+
+#nav-dropdown .page-chooser__page-button span {
+	font-size: 1.2em;
+	margin-top: 4px;
 }

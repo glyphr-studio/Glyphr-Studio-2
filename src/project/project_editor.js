@@ -326,17 +326,66 @@ export default class ProjectEditor {
    */
   get tableOfContents() {
     return {
-      'Open project': {name: 'Open project', pageMaker: PageOpenProject },
-      'Overview': {name: 'Overview', pageMaker: PageOverview },
-      'Glyph edit': {name: 'Glyph edit', pageMaker: PageGlyphEdit },
-      'Ligatures': {name: 'Ligatures', pageMaker: false },
-      'Components': {name: 'Components', pageMaker: false },
-      'Kerning': {name: 'Kerning', pageMaker: false },
-      'Ligatures': {name: 'Ligatures', pageMaker: false },
-      'Live preview': {name: 'Live preview', pageMaker: false },
-      'Global actions': {name: 'Global actions', pageMaker: false },
-      'Settings': {name: 'Settings', pageMaker: false },
-      'Import & export': {name: 'Import & export', pageMaker: false },
+      'Open project': {
+        name: 'Open project',
+        pageMaker: PageOpenProject,
+        iconName: false,
+      },
+      'Overview': {
+        name: 'Overview',
+        pageMaker: PageOverview,
+        iconName: 'page_glyphEdit',
+      },
+      'Glyph edit': {
+        name: 'Glyph edit',
+        pageMaker: PageGlyphEdit,
+        iconName: 'page_glyphEdit',
+      },
+      'Ligatures': {
+        name: 'Ligatures',
+        pageMaker: false,
+        iconName: 'page_ligatures',
+      },
+      'Components': {
+        name: 'Components',
+        pageMaker: false,
+        iconName: 'page_components',
+      },
+      'Kerning': {
+        name: 'Kerning',
+        pageMaker: false,
+        iconName: 'page_kerning',
+      },
+      'Live preview': {
+        name: 'Live preview',
+        pageMaker: false,
+        iconName: 'page_livePreview',
+      },
+      'Global actions': {
+        name: 'Global actions',
+        pageMaker: false,
+        iconName: 'page_globalActions',
+      },
+      'Settings': {
+        name: 'Settings',
+        pageMaker: false,
+        iconName: 'page_settings',
+      },
+      'Import & export': {
+        name: 'Import & export',
+        pageMaker: false,
+        iconName: 'page_importAndExport',
+      },
+      'Help': {
+        name: 'Help',
+        pageMaker: false,
+        iconName: 'page_help',
+      },
+      'About': {
+        name: 'About',
+        pageMaker: false,
+        iconName: 'page_about',
+      },
     };
   }
 
