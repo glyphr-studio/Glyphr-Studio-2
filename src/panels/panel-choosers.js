@@ -9,13 +9,38 @@ export {makeChooserContent_Pages, makeChooserContent_Glyphs, makeChooserContent_
 function makeChooserContent_Pages(){
 	log(`makeChooserContent_Pages`, 'start');
 
-	let content = `
-		<button>Glyph edit</button>
-		<button>Glyph edit</button>
-		<button>Glyph edit</button>
-		<button>Glyph edit</button>
-		<br>
-	`;
+	let content = makeElement();
+
+	content.appendChild(
+		makeElement({tag: 'button', content: 'All glyphs'})
+	);
+	content.appendChild(
+		makeElement({tag: 'button', content: 'Glyph edit'})
+	);
+	content.appendChild(
+		makeElement({tag: 'button', content: 'Ligatures'})
+	);
+	content.appendChild(
+		makeElement({tag: 'button', content: 'Components'})
+	);
+	content.appendChild(
+		makeElement({tag: 'button', content: 'Kerning'})
+	);
+	content.appendChild(
+		makeElement({tag: 'button', content: 'Ligatures'})
+	);
+	content.appendChild(
+		makeElement({tag: 'button', content: 'Live preview'})
+	);
+	content.appendChild(
+		makeElement({tag: 'button', content: 'Global actions'})
+	);
+	content.appendChild(
+		makeElement({tag: 'button', content: 'Settings'})
+	);
+	content.appendChild(
+		makeElement({tag: 'button', content: 'Import & export'})
+	);
 
 	log(`makeChooserContent_Pages`, 'end');
 	return content;
@@ -76,5 +101,5 @@ function makeChooserContent_Panels(){
 	`;
 
 	log(`makeChooserContent_Panels`, 'end');
-	return content;
+	return makeElement({innerHTML: content});
 }
