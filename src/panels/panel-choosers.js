@@ -1,6 +1,8 @@
 import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
+import { accentColors } from "../common/colors.js";
 import { makeElement } from "../common/dom.js";
 import { log } from "../common/functions.js";
+import { makeIcon } from "../common/graphics.js";
 import { areHexValuesEqual, basicLatinOrder } from "../common/unicode.js";
 import GlyphTile from "../controls/glyph-tile/glyph-tile.js";
 
@@ -11,17 +13,25 @@ function makeChooserContent_Pages(){
 
 	let content = makeElement();
 	let pageButton;
+	let toc = getCurrentProjectEditor().tableOfContents;
 
-	Object.keys(getCurrentProjectEditor().tableOfContents).forEach((pageName) => {
+	Object.keys(toc).forEach((pageName) => {
 		if(pageName !== 'Open project'){
-			pageButton = makeElement({tag: 'button', content: pageName});
-			pageButton.addEventListener('click', () => getCurrentProjectEditor().navigate(pageName));
+			pageButton = makePageNavButton(pageName, toc[pageName].iconName);
 			content.appendChild(pageButton);
 		}
 	});
 
 	log(`makeChooserContent_Pages`, 'end');
 	return content;
+}
+
+function makePageNavButton(pageName, iconName) {
+	let button = makeElement({tag: 'button', className: 'page-chooser__page-button'});
+	button.innerHTML += makeIcon({name: iconName, color: accentColors.blue.l90});
+	button.appendChild(makeElement({content: pageName}));
+	button.addEventListener('click', () => getCurrentProjectEditor().navigate(pageName));
+	return button;
 }
 
 function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
