@@ -510,6 +510,45 @@ export default class ProjectEditor {
     );
   }
 
+
+  // --------------------------------------------------------------
+  // Panels
+  // --------------------------------------------------------------
+
+  /**
+   * List of panels the editor supports
+   */
+   get listOfPanels() {
+    return {
+      'Chooser': {
+        name: 'Chooser',
+        panelMaker: false,
+        iconName: 'panel_chooser',
+      },
+      'Layers': {
+        name: 'Layers',
+        panelMaker: false,
+        iconName: 'panel_layers',
+      },
+      'Guides': {
+        name: 'Guides',
+        panelMaker: false,
+        iconName: 'panel_guides',
+      },
+      'History': {
+        name: 'History',
+        panelMaker: false,
+        iconName: 'panel_history',
+      },
+      'Attributes': {
+        name: 'Attributes',
+        panelMaker: false,
+        iconName: 'panel_attributes',
+      },
+    };
+   }
+
+
   // --------------------------------------------------------------
   // Save
   // --------------------------------------------------------------

@@ -8,6 +8,12 @@ import GlyphTile from "../controls/glyph-tile/glyph-tile.js";
 
 export {makeChooserContent_Pages, makeChooserContent_Glyphs, makeChooserContent_Panels };
 
+
+
+// --------------------------------------------------------------
+// Page chooser
+// --------------------------------------------------------------
+
 function makeChooserContent_Pages(){
 	log(`makeChooserContent_Pages`, 'start');
 
@@ -17,7 +23,7 @@ function makeChooserContent_Pages(){
 
 	Object.keys(toc).forEach((pageName) => {
 		if(pageName !== 'Open project'){
-			pageButton = makePageNavButton(pageName, toc[pageName].iconName);
+			pageButton = makeNavButton_Page(pageName, toc[pageName].iconName);
 			content.appendChild(pageButton);
 		}
 	});
@@ -26,13 +32,18 @@ function makeChooserContent_Pages(){
 	return content;
 }
 
-function makePageNavButton(pageName, iconName) {
-	let button = makeElement({tag: 'button', className: 'page-chooser__page-button'});
+function makeNavButton_Page(pageName, iconName) {
+	let button = makeElement({tag: 'button', className: 'nav-dropdown__button'});
 	button.innerHTML += makeIcon({name: iconName, color: accentColors.blue.l90});
 	button.appendChild(makeElement({content: pageName}));
 	button.addEventListener('click', () => getCurrentProjectEditor().navigate(pageName));
 	return button;
 }
+
+
+// --------------------------------------------------------------
+// Glyph chooser
+// --------------------------------------------------------------
 
 function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
 	log(`makeChooserContent_Glyphs`, 'start');
@@ -77,17 +88,36 @@ function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
 	return container;
 }
 
+
+// --------------------------------------------------------------
+// Panel chooser
+// --------------------------------------------------------------
+
 function makeChooserContent_Panels(){
 	log(`makeChooserContent_Panels`, 'start');
 
-	let content = `
-		<button>Attributes</button>
-		<button>Layers</button>
-		<button>Guides</button>
-		<button>History</button>
-		<br>
-	`;
+	let content = makeElement();
+	let pageButton;
+	let panels = getCurrentProjectEditor().listOfPanels;
+	let shownPanels = ['Attributes', 'Layers', 'History', 'Guides'];
+
+	shownPanels.forEach((panelName) => {
+		pageButton = makeNavButton_Panel(panelName, panels[panelName].iconName);
+		content.appendChild(pageButton);
+	});
 
 	log(`makeChooserContent_Panels`, 'end');
-	return makeElement({innerHTML: content});
+	return content;
+}
+
+function makeNavButton_Panel(panelName, iconName) {
+	let button = makeElement({tag: 'button', className: 'nav-dropdown__button'});
+	button.innerHTML += makeIcon({name: iconName, color: accentColors.blue.l90});
+	button.appendChild(makeElement({content: panelName}));
+	button.addEventListener('click', () => {
+		let editor = getCurrentProjectEditor();
+		editor.nav.panel = panelName;
+		editor.navigate();
+	});
+	return button;
 }
