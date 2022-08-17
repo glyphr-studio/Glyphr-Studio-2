@@ -11,7 +11,7 @@ function makePanel_KerningAttributes() {
   content += '<h1 class="paneltitle">Pairs</h1>';
   content += '</div>';
 
-  content += '<div class="glyph-edit__panel-section">';
+  content += '<div class="panel__section">';
   let rows = '';
   for (let k of Object.keys(getCurrentProject().kerning)) {
     rows += makeOneKernPairRow(getCurrentProject().kerning[k], k);
@@ -21,7 +21,7 @@ function makePanel_KerningAttributes() {
     'No kern pairs exist yet.  You can create a new one, or add some common kern pairs to get started.';
   content += '</div>';
 
-  content += '<div class="glyph-edit__panel-section">';
+  content += '<div class="panel__section">';
   content +=
     '<button onclick="showNewKernPairDialog();">add new kern pair</button><br>';
   if (!rows)
@@ -30,7 +30,7 @@ function makePanel_KerningAttributes() {
   content += '</div>';
 
   if (!rows) {
-    content += '<div class="glyph-edit__panel-section">';
+    content += '<div class="panel__section">';
     content += '<h2>Please note!</h2><br>';
     content +=
       'Kern information will only be exported to SVG Fonts. This is a limitation of the library we use to write OTF files.<br><br>';
