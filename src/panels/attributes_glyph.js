@@ -27,7 +27,6 @@ export default function makePanel_GlyphAttributes() {
 
   content += `
     <div class="panel__section">
-      <h2>${projectEditor.selectedGlyph.name}</h2>
       <h3>Glyph</h3>
       ${makeInputs_position(projectEditor.selectedGlyph.x, projectEditor.selectedGlyph.y)}
       ${makeInputs_size(projectEditor.selectedGlyph.width, projectEditor.selectedGlyph.height)}

@@ -11,6 +11,7 @@
 
 .glyph-edit__left-area {
 	grid-column: 1;
+	min-width: 1fr;
 	display: grid;
 	grid-template-rows: min-content max-content;
 	row-gap: 2px;

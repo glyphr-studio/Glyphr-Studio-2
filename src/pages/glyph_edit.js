@@ -39,7 +39,7 @@ export default class PageGlyphEdit {
           <div class="glyph-edit__nav-area">
             ${makeNavButton({level: 'l1', superTitle: 'PAGE', title: 'Glyph edit'})}
             ${makeNavButton({level: 'l2', superTitle: 'EDITING', title: lookUpGlyphName(editor.selectedGlyphID, true)})}
-            ${makeNavButton({level: 'l3', superTitle: 'PANEL', title: 'Attributes'})}
+            ${makeNavButton({level: 'l3', superTitle: 'PANEL', title: editor.nav.panel})}
           </div>
           <div id="glyph-edit__panel"></div>
         </div>

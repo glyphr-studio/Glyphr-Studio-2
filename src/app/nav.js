@@ -2,7 +2,7 @@ export { makeNavButton, makeNavButtonContent, showNavDropdown };
 import { makeElement } from '../common/dom.js';
 import { log } from '../common/functions.js';
 import { makeChooserContent_Glyphs, makeChooserContent_Pages, makeChooserContent_Panels } from '../panels/panel-choosers.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
+import { getCurrentProjectEditor } from './main.js';
 
 function makeNavButton(properties = {}) {
 	let title = properties.title || 't i t l e';
@@ -10,8 +10,13 @@ function makeNavButton(properties = {}) {
 	let level = properties.level || '';
 
 	return `
-		<button data-nav-type="${superTitle}" class="nav-button" id="nav-button${level? `-${level}` : ''}">
-			${makeNavButtonContent(title, superTitle)};
+		<button
+			data-nav-type="${superTitle}"
+			class="nav-button"
+			id="nav-button${level? `-${level}` : ''}"
+			title="${title}"
+		>
+			${makeNavButtonContent(title, superTitle)}
 		</button>
 	`;
 }
@@ -19,7 +24,7 @@ function makeNavButton(properties = {}) {
 function makeNavButtonContent(title, superTitle) {
 	return `
 		<span class="nav-button__super-title">${superTitle}</span>
-		<span class="nav-button__title">${title}</span>
+		<span class="nav-button__title" title="${title}">${title}</span>
 	`;
 }
 

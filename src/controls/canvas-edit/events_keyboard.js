@@ -316,7 +316,7 @@ function nudge(dx, dy, ev) {
     _UI.multiSelect.shapes.updateShapePosition(mx, my);
     redraw({ calledBy: 'Nudge shape' });
   } else if (em === 'pen') {
-    _UI.multiSelect.points.getMembers().forEach(function (o, i) {
+    _UI.multiSelect.points.members.forEach(function (o, i) {
       o.updatePathPointPosition('p', mx, my);
     });
     redraw({ calledBy: 'Nudge path point' });

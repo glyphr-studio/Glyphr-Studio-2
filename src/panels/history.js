@@ -9,7 +9,7 @@ import { makeElement } from "../common/dom.js";
 
 export function makePanel_History() {
   let projectEditor = getCurrentProjectEditor();
-  let content = '<div class="navarea_header">';
+  let content = '<div class="panel__section">';
 
   content += projectEditor.nav.page;
 

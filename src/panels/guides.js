@@ -9,7 +9,7 @@ import { makeElement } from "../common/dom.js";
 
 export function makePanel_Guides() {
   let project = getCurrentProject();
-  let content = '<div class="navarea_header">';
+  let content = '<div class="panel__section">';
   content += projectEditor.nav.page;
   content += '<h1 class="paneltitle">guides</h1>';
   content += '</div><div class="glyph-edit__panel-section">';

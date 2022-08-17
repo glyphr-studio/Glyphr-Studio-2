@@ -100,6 +100,7 @@ class MultiSelect {
   get length() {
     return this.members.length;
   }
+
   set members(arr) {
     this._members = arr;
   }

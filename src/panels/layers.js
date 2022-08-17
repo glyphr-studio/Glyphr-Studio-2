@@ -3,35 +3,37 @@
     Shows a list of all the shapes in a Glyph.
 **/
 
-import { getCurrentProjectEditor } from "../app/main.js";
-import { makeElement } from "../common/dom.js";
+import { getCurrentProjectEditor } from '../app/main.js';
+import { makeElement } from '../common/dom.js';
+import {
+    makeActionButton_AddShape,
+    makeActionButton_PasteShapesFromAnotherGlyph,
+    makeActionButton_DeleteShape,
+    makeActionButton_MoveLayerUp,
+    makeActionButton_MoveLayerDown
+} from '../common/graphics.js';
 
 export function makePanel_Layers() {
   // log(`makePanel_Layers`, 'start');
   let projectEditor = getCurrentProjectEditor();
-  let content = '<div class="navarea_header">';
+  let content = '<div class="panel__section">';
 
-  content += projectEditor.nav.page;
-
-  content += '<h1 class="paneltitle">shapes</h1>';
-
-  content += '</div><div class="glyph-edit__panel-section">';
-
-  let scs = getSelectedWorkItemShapes();
+  let selected = projectEditor.selectedWorkItem;
+  let shapes = selected.shapes;
   // log(`selectedWorkItemShapes`);
-  // log(scs);
+  // log(shapes);
 
   // log(`selectedShapes`);
-  // log(_UI.multiSelect.shapes.getMembers());
+  // log(projectEditor.multiSelect.shapes.members);
 
   let ts;
 
-  if (scs.length > 0) {
+  if (shapes.length > 0) {
     content += '<table class="layertable">';
-    for (let i = scs.length - 1; i >= 0; i--) {
-      ts = scs[i];
+    for (let i = shapes.length - 1; i >= 0; i--) {
+      ts = shapes[i];
 
-      if (_UI.multiSelect.shapes.isSelected(ts)) {
+      if (projectEditor.multiSelect.shapes.isSelected(ts)) {
         // log(`i: ${i} is selected`);
         if (ts.objType === 'ComponentInstance')
           content += '<tr class="componentlayersel"';
@@ -85,63 +87,78 @@ function selectShape(num) {
   // log('wishapes ' + wishapes);
 
   if (wishapes && wishapes[num]) {
-    if (_UI.eventhandlers.multi) _UI.multiSelect.shapes.toggle(wishapes[num]);
+    if (projectEditor.eventhandlers.multi) projectEditor.multiSelect.shapes.toggle(wishapes[num]);
     else {
-      _UI.multiSelect.points.clear();
-      _UI.multiSelect.shapes.select(wishapes[num]);
+      projectEditor.multiSelect.points.clear();
+      projectEditor.multiSelect.shapes.select(wishapes[num]);
     }
   } else {
-    _UI.multiSelect.shapes.clear();
+    projectEditor.multiSelect.shapes.clear();
   }
   // log('selectShape', 'end');
 }
 
 function updateLayerActions() {
-  let selshapes = _UI.multiSelect.shapes.getMembers().length;
-  let numshapes = getSelectedWorkItemShapes().length;
+  let projectEditor = getCurrentProjectEditor();
+  let selectedShapes = projectEditor.multiSelect.shapes.members;
 
-  let shapeactions = '';
-  shapeactions +=
-    '<button title="Add Shape\nCreates a new default shape and adds it to this glyph" onclick="addShape(); historyPut(\'Add Shape\'); redraw({calledBy:\'updateactions\'});">' +
-    makeActionButton_AddShape(false) +
-    '</button>';
-  shapeactions +=
-    '<button title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph" onclick="showDialogAddComponent();">' +
-    makeActionButton_AddShape(true) +
-    '</button>';
-  shapeactions +=
-    '<button title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one" onclick="showDialogGetShapes();">' +
-    makeActionButton_PasteShapesFromAnotherGlyph() +
-    '</button>';
-  if (selshapes > 0)
-    shapeactions +=
-      '<button title="Delete\nRemoves the currently selected shape or shapes from this glyph" onclick="_UI.multiSelect.shapes.deleteShapes(); historyPut(\'Delete Shape\'); redraw({calledBy:\'updateactions\'});">' +
-      makeActionButton_DeleteShape() +
-      '</button>';
+  let shapeActions = `
+    <button
+      title="Add Shape\nCreates a new default shape and adds it to this glyph"
+      onclick="addShape(); historyPut('Add Shape'); redraw({calledBy:'updateactions'});"
+    >
+      ${makeActionButton_AddShape(false)}
+    </button>
+    <button
+      title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph"
+      onclick="showDialogAddComponent();"
+    >
+      ${makeActionButton_AddShape(true)}
+    </button>
+    <button
+      title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one"
+      onclick="showDialogGetShapes();"
+    >
+      ${makeActionButton_PasteShapesFromAnotherGlyph()}
+    </button>
+  `;
 
-  let layeractions = '';
-  layeractions +=
-    '<button title="Move Shape Up\nMoves the shape up in the shape layer order" onclick="moveShapeUp(); historyPut(\'Move Shape Layer Up\');">' +
-    makeActionButton_MoveLayerUp() +
-    '</button>';
-  layeractions +=
-    '<button title="Move Shape Down\nMoves the shape down in the shape layer order" onclick="moveShapeDown(); historyPut(\'Move Shape Layer Down\');">' +
-    makeActionButton_MoveLayerDown() +
-    '</button>';
-
-  let content = '';
-  if (_UI.popOut) {
-    content += '<div class="actionsarea">';
-    content += '<h3>Actions</h3>';
-  } else {
-    content += '<h1 class="paneltitle">Actions</h1>';
-    content += '<div class="actionsarea">';
+  if (selectedShapes.length > 0) {
+    shapeActions += `
+      <button
+        title="Delete\nRemoves the currently selected shape or shapes from this glyph"
+        onclick="projectEditor.multiSelect.shapes.deleteShapes(); historyPut(\'Delete Shape\'); redraw({calledBy:\'updateactions\'});"
+      >
+        ${makeActionButton_DeleteShape()}
+      </button>
+    `;
   }
 
-  content += shapeactions;
-  if (numshapes > 1 && selshapes === 1) content += layeractions;
+  let layerActions = `
+    <button
+      title="Move Shape Up\nMoves the shape up in the shape layer order"
+      onclick="moveShapeUp(); historyPut(\'Move Shape Layer Up\');"
+    >
+      ${makeActionButton_MoveLayerUp()}
+    </button>
+    <button
+      title="Move Shape Down\nMoves the shape down in the shape layer order"
+      onclick="moveShapeDown(); historyPut(\'Move Shape Layer Down\');"
+    >
+      ${makeActionButton_MoveLayerDown()}
+    </button>
+  `;
 
-  content += '</div>';
+  let totalShapes = projectEditor.selectedWorkItem.shapes.length;
+  let content = `
+    <h3>Actions</h3>
+    <div class="actionsarea">
+      ${shapeActions}
+      ${
+        (totalShapes > 1 && selectedShapes.length === 1) ? layerActions : ''
+      }
+    </div>
+  `;
 
   return content;
 }
@@ -151,7 +168,7 @@ function updateLayerActions() {
 // -------------------
 function moveShapeUp() {
   let wishapes = getSelectedWorkItemShapes();
-  let si = wishapes.indexOf(_UI.multiSelect.shapessingleton);
+  let si = wishapes.indexOf(projectEditor.multiSelect.shapessingleton);
   if (si > -1 && si < wishapes.length - 1) {
     let tempshape = wishapes[si + 1];
     wishapes[si + 1] = wishapes[si];
@@ -162,7 +179,7 @@ function moveShapeUp() {
 
 function moveShapeDown() {
   let wishapes = getSelectedWorkItemShapes();
-  let si = wishapes.indexOf(_UI.multiSelect.shapessingleton);
+  let si = wishapes.indexOf(projectEditor.multiSelect.shapessingleton);
   if (si > 0 && si < wishapes.length) {
     let tempshape = wishapes[si - 1];
     wishapes[si - 1] = wishapes[si];
