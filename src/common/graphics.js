@@ -224,11 +224,11 @@ export function makeActionButtonWrapper() {
 let actionButtonIconColors = {
   darkFill: accentColors.blue.l15,
   lightFill: accentColors.gray.l60,
-  disabledFill: accentColors.gray.l90,
+  disabledFill: accentColors.gray.l95,
+  disabledOutline: accentColors.gray.l90,
   blueOutline: accentColors.blue.l65,
   greenOutline: accentColors.green.l75,
   grayOutline: accentColors.gray.l50,
-  disabledOutline: accentColors.gray.l80,
   redX: uiColors.red,
 };
 
