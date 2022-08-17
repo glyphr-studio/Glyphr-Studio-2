@@ -28,15 +28,6 @@
 	grid-column: span 2;
 }
 
-#glyph-edit__panel {
-	border: 1px solid var(--blue-l85);
-	padding: 10px;
-	background-color: var(--offWhite);
-	grid-row: 3;
-	border-radius: 4px;
-	box-shadow: var(--l2-shadow);
-}
-
 .glyph-edit__tools-area {
 	border: 1px solid var(--blue-l85);
 	border-radius: 4px;

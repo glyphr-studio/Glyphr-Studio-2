@@ -1,3 +1,12 @@
+.left-area__panel {
+	border: 1px solid var(--blue-l85);
+	padding: 10px;
+	background-color: var(--offWhite);
+	grid-row: 3;
+	border-radius: 4px;
+	box-shadow: var(--l2-shadow);
+}
+
 .panel__section {
 	display: grid;
 	grid-template-columns: 1fr 1fr;

@@ -5,250 +5,252 @@
     the Attributes panel gets its own column.
 **/
 
-const { getGlyphrStudioApp } = require("../app/main");
+import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { makeActionButton } from '../common/graphics.js';
+import { makeElement } from '../common/dom.js';
 
-function makePanel_Actions() {
-  let pop = _UI.popOut;
-  let ss = _UI.multiSelect.shapes.members;
+export function makePanel_Actions() {
 
-  let content = '<div class="glyph-edit__panel-section">';
-  if (pop) content = '<div class="panel__section">';
+  let projectEditor = getCurrentProjectEditor();
+  let ss = projectEditor.multiSelect.shapes.members;
+
+  // TODO hook these up
+  let clipBoardShape = false;
+  let historyLength = 0;
+
+  let content = '<div class="panel__section">';
   content += '<h1 class="paneltitle">actions</h1>';
 
-  if (!existingWorkItem()) {
-    return content + '</div></div>';
-  }
+  // if (!existingWorkItem()) {
+  //   return content + '</div></div>';
+  // }
 
   // UNIVERSAL ACTIONS
   let allactions = '';
   allactions +=
     '<button title="Paste\nAdds the previously-copied shape or shapes into this glyph" ' +
-    (_UI.clipboardShape ? '' : 'disabled') +
+    (clipBoardShape ? '' : 'disabled') +
     " onclick=\"pasteShape(); historyPut('Paste Shape'); redraw({calledBy:'actions panel'});\">" +
-    makeActionButton_Paste(!_UI.clipboardShape) +
+    makeActionButton.Paste(!clipBoardShape) +
     '</button>';
   allactions +=
     '<button title="Undo\nStep backwards in time one action" ' +
-    (historyLength() ? '' : 'disabled') +
+    (historyLength ? '' : 'disabled') +
     ' onclick="historyPull();">' +
-    makeActionButton_Undo(!historyLength()) +
+    makeActionButton.Undo(!historyLength) +
     '</button>';
 
-  if (!_UI.popOut)
-    allactions +=
-      '<button title="Add Shape\nCreates a new default shape and adds it to this glyph" onclick="addShape(); historyPut(\'Add Shape\'); redraw({calledBy:\'actions panel\'});">' +
-      makeActionButton_AddShape(false) +
-      '</button>';
-  if (!_UI.popOut)
-    allactions +=
-      '<button title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph" onclick="showDialogAddComponent();">' +
-      makeActionButton_AddShape(true) +
-      '</button>';
-  if (!_UI.popOut)
-    allactions +=
-      '<button title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one" onclick="showDialogGetShapes();">' +
-      makeActionButton_PasteShapesFromAnotherGlyph() +
-      '</button>';
+  allactions +=
+    '<button title="Add Shape\nCreates a new default shape and adds it to this glyph" onclick="addShape(); historyPut(\'Add Shape\'); redraw({calledBy:\'actions panel\'});">' +
+    makeActionButton.AddShape(false) +
+    '</button>';
+  allactions +=
+    '<button title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph" onclick="showDialogAddComponent();">' +
+    makeActionButton.AddShape(true) +
+    '</button>';
+  allactions +=
+    '<button title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one" onclick="showDialogGetShapes();">' +
+    makeActionButton.PasteShapesFromAnotherGlyph() +
+    '</button>';
 
-  if (editor.nav.page === 'components')
+  if (projectEditor.nav.page === 'components')
     allactions +=
       '<button title="Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance" onclick="showDialogLinkComponentToGlyph();">' +
-      makeActionButton_LinkToGlyph() +
+      makeActionButton.LinkToGlyph() +
       '</button>';
 
   // SHAPE
   let shapeactions = ss.length > 1 ? '<h3>shapes</h3>' : '<h3>shape</h3>';
   shapeactions +=
     '<button title="Copy\nAdds a copy of the currently selected shape or shapes to the clipboard" onclick="copyShape();">' +
-    makeActionButton_Copy() +
+    makeActionButton.Copy() +
     '</button>';
-  if (!_UI.popOut)
-    shapeactions +=
-      '<button title="Delete\nRemoves the currently selected shape or shapes from this glyph" onclick="_UI.multiSelect.shapes.deleteShapes(); historyPut(\'Delete Shape\'); redraw({calledBy:\'actions panel\'});">' +
-      makeActionButton_DeleteShape() +
-      '</button>';
+  shapeactions +=
+    '<button title="Delete\nRemoves the currently selected shape or shapes from this glyph" onclick="_UI.multiSelect.shapes.deleteShapes(); historyPut(\'Delete Shape\'); redraw({calledBy:\'actions panel\'});">' +
+    makeActionButton.DeleteShape() +
+    '</button>';
   shapeactions +=
     "<button title=\"Reverse Overlap Mode\nToggles the clockwise or counterclockwise winding of the shape's path\" onclick=\"_UI.multiSelect.shapes.reverseWinding(); historyPut('Reverse Path Direction'); redraw({calledBy:'makeAttributesGroup_shape - Winding'});\">" +
-    makeActionButton_ReverseWinding() +
+    makeActionButton.ReverseWinding() +
     '</button>';
   if (ss.length === 1 && ss[0].objType === 'ComponentInstance') {
     shapeactions +=
       "<button title=\"Turn Component Instance into a Shape\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's shapes as regular Shapes to this glyph\" onclick=\"turnComponentIntoShapes(); historyPut('Unlinked Component'); redraw({calledBy:'turnComponentIntoShapes'});\">" +
-      makeActionButton_SwitchShapeComponent(true) +
+      makeActionButton.SwitchShapeComponent(true) +
       '</button>';
   } else {
     shapeactions +=
       '<button title="Turn Shape into a Component Instance\nTakes the selected shape and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance" onclick="turnSelectedShapeIntoAComponent(); historyPut(\'Turned Shape into a Component\'); redraw({calledBy:\'turnSelectedShapeIntoAComponent\'});">' +
-      makeActionButton_SwitchShapeComponent(false) +
+      makeActionButton.SwitchShapeComponent(false) +
       '</button>';
   }
   shapeactions +=
     '<button title="Flip Horizontal\nReflects the currently selected shape or shapes horizontally" onclick="_UI.multiSelect.shapes.flipEW(); historyPut(\'Flip Shape Horizontal\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_FlipHorizontal() +
+    makeActionButton.FlipHorizontal() +
     '</button>';
   shapeactions +=
     '<button title="Flip Vertical\nReflects the currently selected shape or shapes vertically" onclick="_UI.multiSelect.shapes.flipNS(); historyPut(\'Flip Shape Vertical\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_FlipVertical() +
+    makeActionButton.FlipVertical() +
     '</button>';
 
   // ALIGN
   let alignactions = '<br>';
   alignactions +=
     '<button title="Align Left\nMoves all the selected shapes so they are left aligned with the leftmost shape" onclick="_UI.multiSelect.shapes.align(\'left\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_Align('left') +
+    makeActionButton.Align('left') +
     '</button>';
   alignactions +=
     '<button title="Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape" onclick="_UI.multiSelect.shapes.align(\'center\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_Align('center') +
+    makeActionButton.Align('center') +
     '</button>';
   alignactions +=
     '<button title="Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape" onclick="_UI.multiSelect.shapes.align(\'right\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_Align('right') +
+    makeActionButton.Align('right') +
     '</button>';
   alignactions +=
     '<button title="Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape" onclick="_UI.multiSelect.shapes.align(\'top\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_Align('top') +
+    makeActionButton.Align('top') +
     '</button>';
   alignactions +=
     '<button title="Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape" onclick="_UI.multiSelect.shapes.align(\'middle\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_Align('middle') +
+    makeActionButton.Align('middle') +
     '</button>';
   alignactions +=
     '<button title="Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape" onclick="_UI.multiSelect.shapes.align(\'bottom\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_Align('bottom') +
+    makeActionButton.Align('bottom') +
     '</button>';
 
   // LAYERS
   let layeractions = '';
   layeractions +=
     '<button title="Move Shape Up\nMoves the shape up in the shape layer order" onclick="moveShapeUp(); historyPut(\'Move Shape Layer Up\');">' +
-    makeActionButton_MoveLayerUp() +
+    makeActionButton.MoveLayerUp() +
     '</button>';
   layeractions +=
     '<button title="Move Shape Down\nMoves the shape down in the shape layer order" onclick="moveShapeDown(); historyPut(\'Move Shape Layer Down\');">' +
-    makeActionButton_MoveLayerDown() +
+    makeActionButton.MoveLayerDown() +
     '</button>';
 
   // COMBINE
   let boolactions = '';
   boolactions +=
     '<button title="Combine\nSelect two shapes, and combine their paths into a single shape" onclick="combineSelectedShapes();">' +
-    makeActionButton_Combine() +
+    makeActionButton.Combine() +
     '</button>';
-  // boolactions += '<button title="Subtract Using Upper\nSelect two shapes, and the upper shape will be used to cut out an area from the lower shape" onclick="">' + makeActionButton_SubtractUsingTop() + '</button>';
-  // boolactions += '<button title="Subtract Using Lower\nSelect two shapes, and the lower shape will be used to cut out an area from the upper shape" onclick="">' + makeActionButton_SubtractUsingBottom() + '</button>';
+  // boolactions += '<button title="Subtract Using Upper\nSelect two shapes, and the upper shape will be used to cut out an area from the lower shape" onclick="">' + makeActionButton.SubtractUsingTop() + '</button>';
+  // boolactions += '<button title="Subtract Using Lower\nSelect two shapes, and the lower shape will be used to cut out an area from the upper shape" onclick="">' + makeActionButton.SubtractUsingBottom() + '</button>';
 
   // PATH POINT
   let pointactions = '<h3>path point</h3>';
   pointactions +=
     '<button title="Insert Path Point\nAdds a new Path Point half way between the currently-selected point, and the next one" onclick="_UI.multiSelect.points.insertPathPoint(); historyPut(\'Insert Path Point\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_InsertPathPoint() +
+    makeActionButton.InsertPathPoint() +
     '</button>';
   pointactions +=
     '<button title="Delete Path Point\nRemoves the currently selected point or points from the path" class="' +
     (ss.length ? '' : 'buttondis') +
     "\" onclick=\"_UI.multiSelect.points.deletePathPoints(); historyPut('Delete Path Point'); redraw({calledBy:'actions panel'});\">" +
-    makeActionButton_DeletePathPoint() +
+    makeActionButton.DeletePathPoint() +
     '</button>';
   pointactions +=
     '<button title="Reset Handles\nMoves the handles of the currently selected point or points to default locations" onclick="_UI.multiSelect.points.resetHandles(); historyPut(\'Reset Path Point\'); redraw({calledBy:\'actions panel\'});">' +
-    makeActionButton_ResetPathPoint() +
+    makeActionButton.ResetPathPoint() +
     '</button>';
   pointactions += '<h3>point align</h3>';
   pointactions +=
     '<button title="Align Vertically\nAlign points vertically" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { console.log(o[0]),o[0].alignX(o[1]) }); historyPut(\'Align Points Vertically\');">' +
-    makeActionButton_AlignPointsX() +
+    makeActionButton.AlignPointsX() +
     '</button>';
   pointactions +=
     '<button title="Align Horizontally\nAlign points horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignY(o[1]) }); historyPut(\'Align Points Horizontally\');">' +
-    makeActionButton_AlignPointsY() +
+    makeActionButton.AlignPointsY() +
     '</button>';
   pointactions += '<h3>point handle align</h3>';
   pointactions +=
     '<button title="Align Handles Vertically\nAlign handles vertically" onclick="kCombinations(_UI.multiSelect.points.members, 1).forEach(function(o, i) { o[0].alignHV(); }); historyPut(\'Align Handles Vertically\');">' +
-    makeActionButton_AlignHandlesV() +
+    makeActionButton.AlignHandlesV() +
     '</button>';
   pointactions +=
     '<button title="Align Handles Horizontally\nAlign handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 1).forEach(function(o, i) { o[0].alignHH(); }); historyPut(\'Align Handles Horizontally\');">' +
-    makeActionButton_AlignHandlesH() +
+    makeActionButton.AlignHandlesH() +
     '</button>';
   pointactions += '<br>';
   pointactions +=
     '<button title="Align Handles Double-Cross Horizontally\nAlign both opposite handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignHYCross(o[1]) }); historyPut(\'Align Handles Double-Cross Horizontally\');">' +
-    makeActionButton_AlignHandlesYCross() +
+    makeActionButton.AlignHandlesYCross() +
     '</button>';
   pointactions +=
     '<button title="Align 1-Handles Cross-Horizontally\nAlign first opposite handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignH1YCross(o[1]) }); historyPut(\'Align 1-Handles Cross-Horizontally\');">' +
-    makeActionButton_AlignHandlesH1YCross() +
+    makeActionButton.AlignHandlesH1YCross() +
     '</button>';
   pointactions +=
     '<button title="Align 2-Handles Cross-Horizontally\nAlign second opposite handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignH2YCross(o[1]) }); historyPut(\'Align 1-Handles Cross-Horizontally\');">' +
-    makeActionButton_AlignHandlesH2YCross() +
+    makeActionButton.AlignHandlesH2YCross() +
     '</button>';
   pointactions +=
     '<button title="Align Handles Horizontally\nAlign handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignHY(o[1]) }); historyPut(\'Align Handles Horizontally\');">' +
-    makeActionButton_AlignHandlesHY() +
+    makeActionButton.AlignHandlesHY() +
     '</button>';
   pointactions +=
     '<button title="Align 1-Handles Horizontally\nAlign first handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignH1Y(o[1]) }); historyPut(\'Align 1-Handles Horizontally\');">' +
-    makeActionButton_AlignHandlesH1Y() +
+    makeActionButton.AlignHandlesH1Y() +
     '</button>';
   pointactions +=
     '<button title="Align 2-Handles Horizontally\nAlign second handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignH2Y(o[1]) }); historyPut(\'Align 2-Handles Horizontally\');">' +
-    makeActionButton_AlignHandlesH2Y() +
+    makeActionButton.AlignHandlesH2Y() +
     '</button>';
   pointactions += '<br>';
   pointactions +=
     '<button title="Align Handles Double-Cross Vertically\nAlign both opposite handles vertically" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignHXCross(o[1]) }); historyPut(\'Align Handles Double Cross Vertically\');">' +
-    makeActionButton_AlignHandlesXCross() +
+    makeActionButton.AlignHandlesXCross() +
     '</button>';
   pointactions +=
     '<button title="Align 1-Handles Cross-Vertically\nAlign first opposite handles vertically" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignH1XCross(o[1]) }); historyPut(\'Align 1-Handles Cross-Vertically\');">' +
-    makeActionButton_AlignHandlesH1XCross() +
+    makeActionButton.AlignHandlesH1XCross() +
     '</button>';
   pointactions +=
     '<button title="Align 2-Handles Cross-Vertically\nAlign second opposite handles vertically" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignH2XCross(o[1]) }); historyPut(\'Align 1-Handles Cross-Vertically\');">' +
-    makeActionButton_AlignHandlesH2XCross() +
+    makeActionButton.AlignHandlesH2XCross() +
     '</button>';
   pointactions +=
     '<button title="Align Handles Vertically\nAlign handles vertically" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignHX(o[1]) }); historyPut(\'Align Handles Vertically\');">' +
-    makeActionButton_AlignHandlesHX() +
+    makeActionButton.AlignHandlesHX() +
     '</button>';
   pointactions +=
     '<button title="Align 1-Handles Vertically\nAlign first handles vertically" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignH1X(o[1]) }); historyPut(\'Align 1-Handles Vertically\');">' +
-    makeActionButton_AlignHandlesH1X() +
+    makeActionButton.AlignHandlesH1X() +
     '</button>';
   pointactions +=
     '<button title="Align 2-Handles Vertically\nAlign second handles vertically" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignH2X(o[1]) }); historyPut(\'Align 2-Handles Vertically\');">' +
-    makeActionButton_AlignHandlesH2X() +
+    makeActionButton.AlignHandlesH2X() +
     '</button>';
   pointactions += '<h3>point autofit</h3>';
   pointactions +=
     '<button title="Autofit XY\nAutofit a point based on the selected points" onclick="kCombinations(_UI.multiSelect.points.members, _UI.multiSelect.points.members.length > 3 ? 4 : 3).forEach(function(o, i) { o[o[3] ? 3 : 2].alignMutualOffsetXY(o[0], o[1], o[3] ? o[2] : {p:{x:undefined}}) }); historyPut(\'Autofit XY\');">' +
-    makeActionButton_AutofitXY() +
+    makeActionButton.AutofitXY() +
     '</button>';
   pointactions +=
     '<button title="Autofit X\nAutofit a point based on the selected points" onclick="kCombinations(_UI.multiSelect.points.members, _UI.multiSelect.points.members.length > 3 ? 4 : 3).forEach(function(o, i) { o[o[3] ? 3 : 2].alignMutualOffsetX(o[0], o[1], o[3] ? o[2] : {p:{x:undefined}}) }); historyPut(\'Autofit X\');">' +
-    makeActionButton_AutofitX() +
+    makeActionButton.AutofitX() +
     '</button>';
   pointactions +=
     '<button title="Autofit Y\nAutofit a point based on the selected points" onclick="kCombinations(_UI.multiSelect.points.members, _UI.multiSelect.points.members.length > 3 ? 4 : 3).forEach(function(o, i) { o[o[3] ? 3 : 2].alignMutualOffsetY(o[0], o[1], o[3] ? o[2] : {p:{x:undefined}}) }); historyPut(\'Autofit Y\');">' +
-    makeActionButton_AutofitY() +
+    makeActionButton.AutofitY() +
     '</button>';
 
   // GLYPH
   let glyphactions = '<h3>glyph</h3>';
   glyphactions +=
     '<button title="Combine all shapes\nCombines the paths of all shapes with the same winding into as few shapes as possible" onclick="combineAllGlyphShapes();">' +
-    makeActionButton_Combine() +
+    makeActionButton.Combine() +
     '</button>';
   glyphactions +=
     '<button title="Flip Vertical\nReflects the glyph vertically" onclick="getSelectedWorkItem().flipEW(); historyPut(\'Flip Glyph : Vertical\'); redraw({calledBy:\'Glyph Details - FlipEW\'});">' +
-    makeActionButton_FlipHorizontal() +
+    makeActionButton.FlipHorizontal() +
     '</button>';
   glyphactions +=
     '<button title="Flip Horizontal\nReflects the glyph horizontally" onclick="getSelectedWorkItem().flipNS(); historyPut(\'Flip Glyph : Horizontal\'); redraw({calledBy:\'Glyph Details - FlipNS\'});">' +
-    makeActionButton_FlipVertical() +
+    makeActionButton.FlipVertical() +
     '</button>';
 
   // DEV
@@ -267,37 +269,34 @@ function makePanel_Actions() {
   }
 
   // Put it all together
-  if (pop)
-    content +=
-      '</div><div class="glyph-edit__panel-section"><div class="actionsarea" style="margin-top:0px;">';
-  else content += '<div class="actionsarea">';
+  content += '<div class="actionsarea">';
 
   content += allactions;
-  if (!pop) content += '<br>';
+  content += '<br>';
 
   if (ss.length === 0) content += glyphactions;
   if (ss.length > 0) content += shapeactions;
   if (ss.length > 1) content += boolactions;
-  if (ss.length === 1 && !pop) content += layeractions;
+  if (ss.length === 1) content += layeractions;
   if (ss.length > 1) content += alignactions;
 
-  if (!pop) content += '<br>';
+  content += '<br>';
 
   let ispointsel = false;
-  if (_UI.multiSelect.points.count() > 0) ispointsel = true;
-  if (_UI.selectedTool !== 'pathedit') ispointsel = false;
+  if (projectEditor.multiSelect.points.count() > 0) ispointsel = true;
+  // if (_UI.selectedTool !== 'pathedit') ispointsel = false;
 
   if (ispointsel) {
     content += pointactions;
   }
-  if (!pop) content += '<br>';
+  content += '<br>';
 
   content += devactions;
 
   content += '</div>';
   content += '</div>';
 
-  return content;
+  return makeElement({content: content});
 }
 
 // -------------------

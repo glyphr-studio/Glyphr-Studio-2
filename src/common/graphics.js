@@ -207,6 +207,8 @@ icons.keyboard =
 //  ---------------------
 //  Action Buttons
 //  ---------------------
+let makeActionButton = {};
+export { makeActionButton };
 
 export function makeActionButtonWrapper() {
   let re = '';
@@ -230,7 +232,7 @@ let actionButtonIconColors = {
   redX: uiColors.red,
 };
 
-export function makeActionButton_LinkToGlyph() {
+makeActionButton.LinkToGlyph = function() {
   let re = makeActionButtonWrapper();
   let green = actionButtonIconColors.greenOutline;
 
@@ -254,9 +256,9 @@ export function makeActionButton_LinkToGlyph() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_ReverseWinding() {
+makeActionButton.ReverseWinding = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let gray = actionButtonIconColors.grayOutline;
@@ -273,9 +275,9 @@ export function makeActionButton_ReverseWinding() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_ResetPathPoint() {
+makeActionButton.ResetPathPoint = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let gray = actionButtonIconColors.grayOutline;
@@ -308,148 +310,148 @@ export function makeActionButton_ResetPathPoint() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_AlignPointsY() {
+makeActionButton.AlignPointsY = function() {
   return (
     makeActionButtonWrapper() +
     '<g> <title>Layer 1</title> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0" y="14" width="30" height="2" id="svg_40" stroke="null"/> <g id="svg_46"> <rect id="svg_44" height="7" width="7" y="12" x="19" fill="#FFFFFF"/> <path id="svg_45" d="m25,12l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g id="svg_1"> <rect stroke="null" id="svg_6" height="7" width="7" y="12" x="4.4991" fill="#FFFFFF"/> <path id="svg_7" d="m11,12l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignPointsX() {
+makeActionButton.AlignPointsX = function() {
   return (
     makeActionButtonWrapper() +
     '<g transform="rotate(90 15,15.000000000000002) " id="svg_2"> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0" y="14" width="30" height="2" id="svg_40" stroke="null"/> <g id="svg_46"> <rect id="svg_44" height="7" width="7" y="12" x="19" fill="#FFFFFF"/> <path id="svg_45" d="m25,12l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g id="svg_1"> <rect stroke="null" id="svg_6" height="7" width="7" y="12" x="4.4991" fill="#FFFFFF"/> <path id="svg_7" d="m11,12l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesV() {
+makeActionButton.AlignHandlesV = function() {
   return (
     makeActionButtonWrapper() +
     '<rect id="svg_2" height="21.88405" width="1" y="4.05797" x="14.42029" stroke-width="null" fill="rgb(0,170,255)"/> <circle id="svg_9" r="3" cy="3" cx="14.85507" fill="#002b41"/> <circle id="svg_8" r="3" cy="27" cx="15" fill="rgb(0,170,255)"/></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesH() {
+makeActionButton.AlignHandlesH = function() {
   return (
     makeActionButtonWrapper() +
     '  <g transform="rotate(90 15.023782730102539,15.000000000000002) " id="svg_4"> <rect id="svg_2" height="21.88405" width="1" y="4.05797" x="14.42029" stroke-width="null" fill="rgb(0,170,255)"/> <circle id="svg_9" r="3" cy="3" cx="14.85507" fill="#002b41"/> <circle id="svg_8" r="3" cy="27" cx="15.19249" fill="rgb(0,170,255)"/> </g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesH2Y() {
+makeActionButton.AlignHandlesH2Y = function() {
   return (
     makeActionButtonWrapper() +
     '<line transform="rotate(112 23.985507965087894,18.362319946289062) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="18.98551" y1="23.36232" x2="28.98551" y2="13.36232" id="svg_5"/> <line transform="rotate(-73 6.9999999999999964,9.999999999999998) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="15" x2="11" y2="5" id="svg_2"/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="26" x2="12" y2="17" id="svg_33" transform="rotate(-9 6.999999999999964,21.999999999999993) "/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="17" y1="15" x2="27" y2="5" id="svg_35" transform="rotate(-48 22.000000000000007,9.100000381469728) "/> <rect stroke="null" id="svg_40" height="2" width="30" y="2" x="0" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="#002b41" cx="22" cy="3" r="3" id="svg_27"/> <circle fill="#002b41" cx="3" cy="3" r="3" id="svg_9"/> <circle fill="rgb(0,170,255)" cx="3" cy="27" r="3" id="svg_8"/> <circle fill="rgb(0,170,255)" cx="25.98551" cy="22.36232" r="3" id="svg_32"/> <g id="svg_46"> <rect fill="#FFFFFF" x="18.98551" y="9.36232" width="7" height="7" id="svg_44"/> <path fill="rgb(0,170,255)" d="m24.98551,9.36232l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_45"/> </g> <g id="svg_10"> <rect fill="#FFFFFF" x="8.9991" y="14" width="7" height="7" id="svg_6"/> <path fill="rgb(0,170,255)" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_7"/> </g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesH1Y() {
+makeActionButton.AlignHandlesH1Y = function() {
   // H1 lightblue by convention
   return (
     makeActionButtonWrapper() +
     '<line id="svg_5" y2="18" x2="30" y1="28" x1="20" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(112 25.000000000000004,23) "/> <line id="svg_2" y2="5" x2="11" y1="15" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(-73 6.9999999999999964,9.999999999999998) "/> <line transform="rotate(-9 6.999999999999964,21.999999999999993) " id="svg_33" y2="17" x2="12" y1="26" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <line transform="rotate(-48 22.109889984130866,12.836263656616214) " id="svg_35" y2="8.73626" x2="27.10989" y1="18.73626" x1="17.10989" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <circle id="svg_27" r="3" cy="6.73626" cx="22.10989" fill="#002b41"/> <circle id="svg_9" r="3" cy="3" cx="3" fill="#002b41"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0.14493" y="26" width="30" height="2" id="svg_42" stroke="null"/> <circle id="svg_8" r="3" cy="27" cx="3" fill="rgb(0,170,255)"/> <circle id="svg_32" r="3" cy="27" cx="27" fill="rgb(0,170,255)"/> <g id="svg_46"> <rect id="svg_44" height="7" width="7" y="14" x="20" fill="#FFFFFF"/> <path id="svg_45" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g id="svg_10"> <rect id="svg_6" height="7" width="7" y="14" x="8.9991" fill="#FFFFFF"/> <path id="svg_7" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesH1YCross() {
+makeActionButton.AlignHandlesH1YCross = function() {
   // H1 lightblue by convention
   return (
     makeActionButtonWrapper() +
     '<line transform="rotate(112 25.000000000000004,23) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="20" y1="28" x2="30" y2="18" id="svg_5"/> <line transform="rotate(-73 6.9999999999999964,9.999999999999998) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="15" x2="11" y2="5" id="svg_2"/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="26" x2="12" y2="17" id="svg_33" transform="rotate(-9 6.999999999999964,21.999999999999993) "/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="17.10989" y1="18.73626" x2="27.10989" y2="8.73626" id="svg_35" transform="rotate(-48 22.109889984130866,12.836263656616214) "/> <circle fill="rgb(0,170,255)" cx="22.10989" cy="6.73626" r="3" id="svg_27"/> <circle fill="#002b41" cx="3" cy="3" r="3" id="svg_9"/> <rect stroke="null" id="svg_42" height="2" width="30" y="26" x="0.14493" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="rgb(0,170,255)" cx="3" cy="27" r="3" id="svg_8"/> <circle fill="#002b41" cx="27" cy="27" r="3" id="svg_32"/> <g id="svg_46"> <rect fill="#FFFFFF" x="20" y="14" width="7" height="7" id="svg_44"/> <path fill="rgb(0,170,255)" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_45"/> </g> <g id="svg_10"> <rect fill="#FFFFFF" x="8.9991" y="14" width="7" height="7" id="svg_6"/> <path fill="rgb(0,170,255)" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_7"/> </g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesH2YCross() {
+makeActionButton.AlignHandlesH2YCross = function() {
   // H1 lightblue by convention
   return (
     makeActionButtonWrapper() +
     '<line id="svg_5" y2="18" x2="30" y1="28" x1="20" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(112 25.000000000000004,23) "/> <line id="svg_2" y2="5" x2="11" y1="15" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(-73 6.9999999999999964,9.999999999999998) "/> <line transform="rotate(-9 6.999999999999964,21.999999999999993) " id="svg_33" y2="17" x2="12" y1="26" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <line transform="rotate(-48 22.109889984130866,12.836263656616214) " id="svg_35" y2="8.73626" x2="27.10989" y1="18.73626" x1="17.10989" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <circle id="svg_27" r="3" cy="6.73626" cx="22.10989" fill="#002b41"/> <circle id="svg_9" r="3" cy="3" cx="3" fill="rgb(0,170,255)"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0.14493" y="26" width="30" height="2" id="svg_42" stroke="null"/> <circle id="svg_8" r="3" cy="27" cx="3" fill="#002b41"/> <circle id="svg_32" r="3" cy="27" cx="27" fill="rgb(0,170,255)"/> <g id="svg_46"> <rect id="svg_44" height="7" width="7" y="14" x="20" fill="#FFFFFF"/> <path id="svg_45" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g id="svg_10"> <rect id="svg_6" height="7" width="7" y="14" x="8.9991" fill="#FFFFFF"/> <path id="svg_7" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> </svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesHY() {
+makeActionButton.AlignHandlesHY = function() {
   return (
     makeActionButtonWrapper() +
     '<line transform="rotate(112 25.000000000000004,23) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="20" y1="28" x2="30" y2="18" id="svg_5"/> <line transform="rotate(-73 6.9999999999999964,9.999999999999998) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="15" x2="11" y2="5" id="svg_2"/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="26" x2="12" y2="17" id="svg_33" transform="rotate(-9 6.999999999999964,21.999999999999993) "/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="17" y1="15" x2="27" y2="5" id="svg_35" transform="rotate(-48 22.000000000000007,9.100000381469728) "/> <rect stroke="null" id="svg_40" height="2" width="30" y="2" x="0" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="#002b41" cx="22" cy="3" r="3" id="svg_27"/> <circle fill="#002b41" cx="3" cy="3" r="3" id="svg_9"/> <rect stroke="null" id="svg_42" height="2" width="30" y="26" x="0.14493" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="rgb(0,170,255)" cx="3" cy="27" r="3" id="svg_8"/> <circle fill="rgb(0,170,255)" cx="27" cy="27" r="3" id="svg_32"/> <g id="svg_46"> <rect fill="#FFFFFF" x="20" y="14" width="7" height="7" id="svg_44"/> <path fill="rgb(0,170,255)" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_45"/> </g> <g id="svg_10"> <rect fill="#FFFFFF" x="8.9991" y="14" width="7" height="7" id="svg_6"/> <path fill="rgb(0,170,255)" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_7"/> </g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesYCross() {
+makeActionButton.AlignHandlesYCross = function() {
   return (
     makeActionButtonWrapper() +
     '<line id="svg_5" y2="18" x2="30" y1="28" x1="20" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(112 25,23) "/> <line id="svg_2" y2="5" x2="11" y1="15" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(-73 7,10) "/> <line transform="rotate(-9 7,22) " id="svg_33" y2="17" x2="12" y1="26" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <line transform="rotate(-48 22,9.10) " id="svg_35" y2="5" x2="27" y1="15" x1="17" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0" y="2" width="30" height="2" id="svg_40" stroke="null"/> <circle id="svg_27" r="3" cy="3" cx="22" fill="rgb(0,170,255)"/> <circle id="svg_9" r="3" cy="3" cx="3" fill="#002b41"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0" y="26" width="30" height="2" id="svg_42" stroke="null"/> <circle id="svg_8" r="3" cy="27" cx="3" fill="rgb(0,170,255)"/> <circle id="svg_32" r="3" cy="27" cx="27" fill="#002b41"/> <g id="svg_46"> <rect id="svg_44" height="7" width="7" y="14" x="20" fill="#FFFFFF"/> <path id="svg_45" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g id="svg_4"> <rect id="svg_1" height="7" width="7" y="14" x="6" fill="#FFFFFF"/> <path id="svg_3" d="m12.38818,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesH2X() {
+makeActionButton.AlignHandlesH2X = function() {
   return (
     makeActionButtonWrapper() +
     '<g transform="rotate(90, 15, 15)"> <line transform="rotate(112 23.985507965087894,18.362319946289062) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="18.98551" y1="23.36232" x2="28.98551" y2="13.36232" id="svg_5"/> <line transform="rotate(-73 6.9999999999999964,9.999999999999998) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="15" x2="11" y2="5" id="svg_2"/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="26" x2="12" y2="17" id="svg_33" transform="rotate(-9 6.999999999999964,21.999999999999993) "/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="17" y1="15" x2="27" y2="5" id="svg_35" transform="rotate(-48 22.000000000000007,9.100000381469728) "/> <rect stroke="null" id="svg_40" height="2" width="30" y="2" x="0" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="#002b41" cx="22" cy="3" r="3" id="svg_27"/> <circle fill="#002b41" cx="3" cy="3" r="3" id="svg_9"/> <circle fill="rgb(0,170,255)" cx="3" cy="27" r="3" id="svg_8"/> <circle fill="rgb(0,170,255)" cx="25.98551" cy="22.36232" r="3" id="svg_32"/> <g id="svg_46"> <rect fill="#FFFFFF" x="18.98551" y="9.36232" width="7" height="7" id="svg_44"/> <path fill="rgb(0,170,255)" d="m24.98551,9.36232l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_45"/> </g> <g id="svg_10"> <rect fill="#FFFFFF" x="8.9991" y="14" width="7" height="7" id="svg_6"/> <path fill="rgb(0,170,255)" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_7"/> </g></g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesH1X() {
+makeActionButton.AlignHandlesH1X = function() {
   // H1 lightblue by convention
   return (
     makeActionButtonWrapper() +
     '<g transform="rotate(90, 15, 15)"> <title>Layer 1</title> <line id="svg_5" y2="18" x2="30" y1="28" x1="20" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(112 25.000000000000004,23) "/> <line id="svg_2" y2="5" x2="11" y1="15" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(-73 6.9999999999999964,9.999999999999998) "/> <line transform="rotate(-9 6.999999999999964,21.999999999999993) " id="svg_33" y2="17" x2="12" y1="26" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <line transform="rotate(-48 22.109889984130866,12.836263656616214) " id="svg_35" y2="8.73626" x2="27.10989" y1="18.73626" x1="17.10989" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <circle id="svg_27" r="3" cy="6.73626" cx="22.10989" fill="#002b41"/> <circle id="svg_9" r="3" cy="3" cx="3" fill="#002b41"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0.14493" y="26" width="30" height="2" id="svg_42" stroke="null"/> <circle id="svg_8" r="3" cy="27" cx="3" fill="rgb(0,170,255)"/> <circle id="svg_32" r="3" cy="27" cx="27" fill="rgb(0,170,255)"/> <g id="svg_46"> <rect id="svg_44" height="7" width="7" y="14" x="20" fill="#FFFFFF"/> <path id="svg_45" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g id="svg_10"> <rect id="svg_6" height="7" width="7" y="14" x="8.9991" fill="#FFFFFF"/> <path id="svg_7" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g></g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesH1XCross() {
+makeActionButton.AlignHandlesH1XCross = function() {
   // H1 lightblue by convention
   return (
     makeActionButtonWrapper() +
     '<g transform="rotate(90, 15, 15)"> <line transform="rotate(112 25.000000000000004,23) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="20" y1="28" x2="30" y2="18" id="svg_5"/> <line transform="rotate(-73 6.9999999999999964,9.999999999999998) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="15" x2="11" y2="5" id="svg_2"/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="26" x2="12" y2="17" id="svg_33" transform="rotate(-9 6.999999999999964,21.999999999999993) "/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="17.10989" y1="18.73626" x2="27.10989" y2="8.73626" id="svg_35" transform="rotate(-48 22.109889984130866,12.836263656616214) "/> <circle fill="rgb(0,170,255)" cx="22.10989" cy="6.73626" r="3" id="svg_27"/> <circle fill="#002b41" cx="3" cy="3" r="3" id="svg_9"/> <rect stroke="null" id="svg_42" height="2" width="30" y="26" x="0.14493" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="rgb(0,170,255)" cx="3" cy="27" r="3" id="svg_8"/> <circle fill="#002b41" cx="27" cy="27" r="3" id="svg_32"/> <g id="svg_46"> <rect fill="#FFFFFF" x="20" y="14" width="7" height="7" id="svg_44"/> <path fill="rgb(0,170,255)" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_45"/> </g> <g id="svg_10"> <rect fill="#FFFFFF" x="8.9991" y="14" width="7" height="7" id="svg_6"/> <path fill="rgb(0,170,255)" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_7"/> </g></g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesH2XCross() {
+makeActionButton.AlignHandlesH2XCross = function() {
   // H1 lightblue by convention
   return (
     makeActionButtonWrapper() +
     '<line id="svg_5" y2="20" x2="12" y1="30" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(202 6.999999999999999,25) "/> <line id="svg_2" y2="1.93637" x2="23.86659" y1="11.93637" x1="14.86659" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(17 19.720403671264645,7.41451835632324) "/> <line transform="rotate(81 8.475528717041014,6.845491409301759) " id="svg_33" y2="2.33934" x2="13.55375" y1="11.33934" x1="3.55375" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <line transform="rotate(42 17.257812499999993,23.00495529174805) " id="svg_35" y2="18.30274" x2="21.58898" y1="28.30274" x1="11.58898" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <circle transform="rotate(90 23.26374053955078,22.109889984130863) " id="svg_27" r="3" cy="22.10989" cx="23.26374" fill="#002b41"/> <circle transform="rotate(90 27,3.000000000000002) " id="svg_9" r="3" cy="3" cx="27" fill="rgb(0,170,255)"/> <rect transform="rotate(90 2.9999999999999987,15.14492988586426) " fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="-12" y="14.14493" width="30" height="2" id="svg_42" stroke="null"/> <circle transform="rotate(90 3,3.0000000000000004) " id="svg_8" r="3" cy="3" cx="3" fill="#002b41"/> <circle transform="rotate(90 2.999999999999997,27.000000000000004) " id="svg_32" r="3" cy="27" cx="3" fill="rgb(0,170,255)"/> <g transform="rotate(90 12.999999999999998,23.000000000000004) " id="svg_46"> <rect id="svg_44" height="7" width="7" y="20" x="10" fill="#FFFFFF"/> <path id="svg_45" d="m16,20l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g transform="rotate(90 13,11.999099731445314) " id="svg_10"> <rect id="svg_6" height="7" width="7" y="8.9991" x="10" fill="#FFFFFF"/> <path id="svg_7" d="m16,8.9991l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> </svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesHX() {
+makeActionButton.AlignHandlesHX = function() {
   return (
     makeActionButtonWrapper() +
     '<g transform="rotate(90, 15, 15)"> <line transform="rotate(112 25.000000000000004,23) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="20" y1="28" x2="30" y2="18" id="svg_5"/> <line transform="rotate(-73 6.9999999999999964,9.999999999999998) " stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="15" x2="11" y2="5" id="svg_2"/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="2" y1="26" x2="12" y2="17" id="svg_33" transform="rotate(-9 6.999999999999964,21.999999999999993) "/> <line stroke="rgb(0,170,255)" fill="none" stroke-miterlimit="10" x1="17" y1="15" x2="27" y2="5" id="svg_35" transform="rotate(-48 22.000000000000007,9.100000381469728) "/> <rect stroke="null" id="svg_40" height="2" width="30" y="2" x="0" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="#002b41" cx="22" cy="3" r="3" id="svg_27"/> <circle fill="#002b41" cx="3" cy="3" r="3" id="svg_9"/> <rect stroke="null" id="svg_42" height="2" width="30" y="26" x="0.14493" stroke-dasharray="2,2" stroke-width="3" fill="#999ea3"/> <circle fill="rgb(0,170,255)" cx="3" cy="27" r="3" id="svg_8"/> <circle fill="rgb(0,170,255)" cx="27" cy="27" r="3" id="svg_32"/> <g id="svg_46"> <rect fill="#FFFFFF" x="20" y="14" width="7" height="7" id="svg_44"/> <path fill="rgb(0,170,255)" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_45"/> </g> <g id="svg_10"> <rect fill="#FFFFFF" x="8.9991" y="14" width="7" height="7" id="svg_6"/> <path fill="rgb(0,170,255)" d="m14.9991,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" id="svg_7"/> </g></g></svg>'
   );
-}
+};
 
-export function makeActionButton_AlignHandlesXCross() {
+makeActionButton.AlignHandlesXCross = function() {
   return (
     makeActionButtonWrapper() +
     '<g transform="rotate(90, 15, 15)"> <line id="svg_5" y2="18" x2="30" y1="28" x1="20" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(112 25,23) "/> <line id="svg_2" y2="5" x2="11" y1="15" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)" transform="rotate(-73 7,10) "/> <line transform="rotate(-9 7,22) " id="svg_33" y2="17" x2="12" y1="26" x1="2" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <line transform="rotate(-48 22,9.10) " id="svg_35" y2="5" x2="27" y1="15" x1="17" stroke-miterlimit="10" fill="none" stroke="rgb(0,170,255)"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0" y="2" width="30" height="2" id="svg_40" stroke="null"/> <circle id="svg_27" r="3" cy="3" cx="22" fill="rgb(0,170,255)"/> <circle id="svg_9" r="3" cy="3" cx="3" fill="#002b41"/> <rect fill="#999ea3" stroke-width="3" stroke-dasharray="2,2" x="0" y="26" width="30" height="2" id="svg_42" stroke="null"/> <circle id="svg_8" r="3" cy="27" cx="3" fill="rgb(0,170,255)"/> <circle id="svg_32" r="3" cy="27" cx="27" fill="#002b41"/> <g id="svg_46"> <rect id="svg_44" height="7" width="7" y="14" x="20" fill="#FFFFFF"/> <path id="svg_45" d="m26,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g> <g id="svg_4"> <rect id="svg_1" height="7" width="7" y="14" x="6" fill="#FFFFFF"/> <path id="svg_3" d="m12.38818,14l0,6l-6,0l0,-6l6,0m1,-1l-1,0l-6,0l-1,0l0,1l0,6l0,1l1,0l6,0l1,0l0,-1l0,-6l0,-1l0,0z" fill="rgb(0,170,255)"/> </g></g></svg>'
   );
-}
+};
 
-export function makeActionButton_AutofitXY() {
+makeActionButton.AutofitXY = function() {
   return (
     makeActionButtonWrapper() +
     '<rect stroke="null" transform="rotate(-25 10.064109802246094,15.320510864257812) " id="svg_4" height="27.05125" width="3.46153" y="1.79489" x="7.3077" stroke-opacity="null" stroke-width="null" fill="#002b41"/> <rect stroke="null" transform="rotate(-25 21.24197387695312,8.920309066772457) " id="svg_7" height="13.21048" width="3.46153" y="2.31507" x="19.51121" stroke-opacity="null" stroke-width="null" fill="#ff005d"/> <rect transform="rotate(25 9.038469314575199,15.320510864257812) " stroke="null" id="svg_11" height="27.05125" width="3.46153" y="1.79489" x="7.3077" stroke-opacity="null" stroke-width="null" fill="#002b41"/> <rect stroke="null" transform="rotate(17 24.16665840148926,15.320511817932127) " id="svg_6" height="27.05125" width="3.46153" y="1.79489" x="22.43589" stroke-opacity="null" stroke-width="null" fill="#002b41"/> </svg>'
   );
-}
+};
 
-export function makeActionButton_AutofitX() {
+makeActionButton.AutofitX = function() {
   return (
     makeActionButtonWrapper() +
     '  <rect stroke="null" transform="rotate(-25 9.038469314575199,15.320510864257812) " id="svg_4" height="27.05125" width="3.46153" y="1.79489" x="7.3077" stroke-width="null" fill="#002b41"/> <rect stroke="null" transform="rotate(-25 21.24197387695312,8.920309066772457) " id="svg_7" height="13.21048" width="3.46153" y="2.31507" x="19.51121" stroke-opacity="null" stroke-width="null" fill="#9ea3a8"/> <rect stroke="null" transform="rotate(25 9.038469314575199,15.320511817932129) " id="svg_11" height="27.05125" width="3.46153" y="1.79489" x="7.3077" stroke-width="null" fill="#002b41"/> <rect stroke="null" transform="rotate(17 24.166656494140632,15.320510864257804) " id="svg_6" height="27.05125" width="3.46153" y="1.79489" x="22.43589" stroke-opacity="null" stroke-width="null" fill="#9ea3a8"/> </svg>'
   );
-}
+};
 
-export function makeActionButton_AutofitY() {
+makeActionButton.AutofitY = function() {
   return (
     makeActionButtonWrapper() +
     '  <rect stroke="null" transform="rotate(-25 9.038469314575199,15.320510864257812) " id="svg_4" height="27.05125" width="3.46153" y="1.79489" x="7.3077" stroke-opacity="null" stroke-width="null" fill="#9ea3a8"/> <rect stroke="null" transform="rotate(-25 21.24197387695312,8.920309066772457) " id="svg_7" height="13.21048" width="3.46153" y="2.31507" x="19.51121" stroke-opacity="null" stroke-width="null" fill="#ff005d"/> <rect stroke="null" transform="rotate(25 9.038469314575199,15.320511817932129) " id="svg_11" height="27.05125" width="3.46153" y="1.79489" x="7.3077" stroke-opacity="null" stroke-width="null" fill="#9ea3a8"/> <rect stroke="null" transform="rotate(17 24.16665840148926,15.320511817932127) " id="svg_6" height="27.05125" width="3.46153" y="1.79489" x="22.43589" stroke-opacity="null" stroke-width="null" fill="#002b41"/> </svg>'
   );
-}
+};
 
-export function makeActionButton_DeletePathPoint() {
+makeActionButton.DeletePathPoint = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let red = actionButtonIconColors.redX;
@@ -480,9 +482,9 @@ export function makeActionButton_DeletePathPoint() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_InsertPathPoint() {
+makeActionButton.InsertPathPoint = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
 
@@ -506,9 +508,9 @@ export function makeActionButton_InsertPathPoint() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_SubtractUsingBottom() {
+makeActionButton.SubtractUsingBottom = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let fill = actionButtonIconColors.darkFill;
@@ -524,9 +526,9 @@ export function makeActionButton_SubtractUsingBottom() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_SubtractUsingTop() {
+makeActionButton.SubtractUsingTop = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let fill = actionButtonIconColors.darkFill;
@@ -545,9 +547,9 @@ export function makeActionButton_SubtractUsingTop() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_Combine() {
+makeActionButton.Combine = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let fill = actionButtonIconColors.darkFill;
@@ -564,9 +566,9 @@ export function makeActionButton_Combine() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_SwitchShapeComponent(com) {
+makeActionButton.SwitchShapeComponent = function(com) {
   let re = makeActionButtonWrapper();
   let before = com ? actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
   let after = com ? actionButtonIconColors.blueOutline : actionButtonIconColors.greenOutline;
@@ -592,9 +594,9 @@ export function makeActionButton_SwitchShapeComponent(com) {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_MoveLayerDown() {
+makeActionButton.MoveLayerDown = function() {
   let re = makeActionButtonWrapper();
   let accent = actionButtonIconColors.blueOutline;
   let fill = actionButtonIconColors.darkFill;
@@ -611,9 +613,9 @@ export function makeActionButton_MoveLayerDown() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_MoveLayerUp() {
+makeActionButton.MoveLayerUp = function() {
   let re = makeActionButtonWrapper();
   let accent = actionButtonIconColors.blueOutline;
   let fill = actionButtonIconColors.darkFill;
@@ -630,9 +632,9 @@ export function makeActionButton_MoveLayerUp() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_DeleteShape() {
+makeActionButton.DeleteShape = function() {
   let re = makeActionButtonWrapper();
   let red = actionButtonIconColors.redX;
   let accent = actionButtonIconColors.blueOutline;
@@ -656,9 +658,9 @@ export function makeActionButton_DeleteShape() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_FlipVertical() {
+makeActionButton.FlipVertical = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let gray = actionButtonIconColors.grayOutline;
@@ -684,9 +686,9 @@ export function makeActionButton_FlipVertical() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_FlipHorizontal() {
+makeActionButton.FlipHorizontal = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let gray = actionButtonIconColors.grayOutline;
@@ -711,9 +713,9 @@ export function makeActionButton_FlipHorizontal() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_Copy() {
+makeActionButton.Copy = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let gray = actionButtonIconColors.grayOutline;
@@ -734,9 +736,9 @@ export function makeActionButton_Copy() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_PasteShapesFromAnotherGlyph() {
+makeActionButton.PasteShapesFromAnotherGlyph = function() {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let fill = actionButtonIconColors.darkFill;
@@ -759,9 +761,9 @@ export function makeActionButton_PasteShapesFromAnotherGlyph() {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_AddShape(component) {
+makeActionButton.AddShape = function(component) {
   let re = makeActionButtonWrapper();
   let accent = component?
     actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
@@ -779,9 +781,9 @@ export function makeActionButton_AddShape(component) {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_Undo(disabled) {
+makeActionButton.Undo = function(disabled) {
   let re = makeActionButtonWrapper();
   let blue = disabled ? actionButtonIconColors.disabledOutline : actionButtonIconColors.blueOutline;
   let fill = disabled ? actionButtonIconColors.disabledFill : actionButtonIconColors.darkFill;
@@ -798,9 +800,9 @@ export function makeActionButton_Undo(disabled) {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_Paste(disabled) {
+makeActionButton.Paste = function(disabled) {
   let re = makeActionButtonWrapper();
   let blue = disabled ? actionButtonIconColors.disabledOutline : actionButtonIconColors.blueOutline;
   let fill = disabled ? actionButtonIconColors.disabledFill : actionButtonIconColors.darkFill;
@@ -819,9 +821,9 @@ export function makeActionButton_Paste(disabled) {
   re += '</svg>';
 
   return re;
-}
+};
 
-export function makeActionButton_Align(edge) {
+makeActionButton.Align = function(edge) {
   let re = makeActionButtonWrapper();
   let blue = actionButtonIconColors.blueOutline;
   let fill = actionButtonIconColors.darkFill;
@@ -925,7 +927,7 @@ export function makeActionButton_Align(edge) {
   re += '</svg>';
 
   return re;
-}
+};
 
 /*
 //  ---------------------

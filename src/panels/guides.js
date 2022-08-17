@@ -12,7 +12,7 @@ export function makePanel_Guides() {
   let content = '<div class="panel__section">';
   content += projectEditor.nav.page;
   content += '<h1 class="paneltitle">guides</h1>';
-  content += '</div><div class="glyph-edit__panel-section">';
+  content += '</div><div class="panel__section">';
 
   let system = '';
   let user = '';

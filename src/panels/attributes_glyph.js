@@ -10,7 +10,7 @@ import { getCurrentProjectEditor } from "../app/main.js";
 import { makeAttributesGroup_pathPoint, makeAttributesGroup_shape, makeInputs_position, makeInputs_size } from "./attributes.js";
 
 
-export default function makePanel_GlyphAttributes() {
+export function makePanel_GlyphAttributes() {
   log('makePanel_GlyphAttributes', 'start');
   let projectEditor = getCurrentProjectEditor();
   let selectedShapes = projectEditor.multiSelect.shapes;

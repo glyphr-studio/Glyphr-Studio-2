@@ -41,7 +41,7 @@ export default class PageGlyphEdit {
             ${makeNavButton({level: 'l2', superTitle: 'EDITING', title: lookUpGlyphName(editor.selectedGlyphID, true)})}
             ${makeNavButton({level: 'l3', superTitle: 'PANEL', title: editor.nav.panel})}
           </div>
-          <div id="glyph-edit__panel"></div>
+          <div class="left-area__panel"></div>
         </div>
         <div class="glyph-edit__tools-area">t<br>o<br>o<br>l<br>s</div>
         <div class="glyph-edit__right-area">
@@ -52,7 +52,7 @@ export default class PageGlyphEdit {
     });
 
     // Panel
-    content.querySelector('#glyph-edit__panel').appendChild(makePanel());
+    content.querySelector('.left-area__panel').appendChild(makePanel());
 
     // Page Selector
     let l1 = content.querySelector('#nav-button-l1');
