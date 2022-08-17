@@ -8,7 +8,7 @@ function makePanel_KerningAttributes() {
 
   let content = '<div class="panel__section">';
   content += projectEditor.nav.page;
-  content += '<h1 class="paneltitle">Pairs</h1>';
+  content += '<h2>Pairs</h2>';
   content += '</div>';
 
   content += '<div class="panel__section">';

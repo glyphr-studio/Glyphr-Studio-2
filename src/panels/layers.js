@@ -10,7 +10,7 @@ import { makeActionButton } from '../common/graphics.js';
 export function makePanel_Layers() {
   // log(`makePanel_Layers`, 'start');
   let projectEditor = getCurrentProjectEditor();
-  let content = '<div class="panel__section">';
+  let content = makeElement({className: 'left-area__panel-section full-width'});
 
   let selected = projectEditor.selectedWorkItem;
   let shapes = selected.shapes;
@@ -20,58 +20,58 @@ export function makePanel_Layers() {
   // log(`selectedShapes`);
   // log(projectEditor.multiSelect.shapes.members);
 
-  let ts;
+  let shape, row, thumb, note, name;
 
   if (shapes.length > 0) {
-    content += '<table class="layertable">';
     for (let i = shapes.length - 1; i >= 0; i--) {
-      ts = shapes[i];
+      shape = shapes[i];
+      row = makeElement();
 
-      if (projectEditor.multiSelect.shapes.isSelected(ts)) {
-        // log(`i: ${i} is selected`);
-        if (ts.objType === 'ComponentInstance')
-          content += '<tr class="componentlayersel"';
-        else content += '<tr class="layersel"';
+      if (shape.objType === 'ComponentInstance') {
+        row.setAttribute('class', 'layer-panel__component-row');
       } else {
-        // log(`i: ${i} is NOT selected`);
-        if (ts.objType === 'ComponentInstance')
-          content += '<tr class="componentlayer"';
-        else content += '<tr class="layer"';
+        row.setAttribute('class', 'layer-panel__shape-row');
       }
 
-      content += ' onclick="selectShape(' + i + '); ';
-      if (ts.objType === 'ComponentInstance')
-        content += "clickTool('shaperesize'); ";
-      content += " redraw({calledBy:'updatelayers'});";
-      content += '">';
-
-      if (ts.objType === 'ComponentInstance') {
-        content +=
-          '<td class="layerthumb">' + ts.transformedGlyph.makeSVG() + '</td>';
-        content += '<td class="layername">' + ts.name;
-        content +=
-          '<span class="layernote">[linked to component: ' +
-          getGlyphName(ts.link) +
-          ']</span>';
-      } else {
-        content += '<td class="layerthumb">' + ts.makeSVG() + '</td>';
-        content += '<td class="layername">' + ts.name;
+      if (projectEditor.multiSelect.shapes.isSelected(shape)) {
+        row.classList.add('layer-panel__selected');
       }
 
-      content += '</td></tr>';
+      //onclick?
+
+      // if (shape.objType === 'ComponentInstance') {
+      //   content +=
+      //     '<td class="layerthumb">' + shape.transformedGlyph.makeSVG() + '</td>';
+      //   content += '<td class="layername">' + shape.name;
+      //   content +=
+      //     '<span class="layernote">[linked to component: ' +
+      //     getGlyphName(shape.link) +
+      //     ']</span>';
+      // } else {
+
+      row.appendChild(makeElement({
+        className: 'layer-panel__layer-thumb',
+        innerHTML: shape.makeSVG()
+      }));
+
+      row.appendChild(makeElement({
+        className: 'layer-panel__layer-name',
+        innerHTML: shape.name
+      }));
+
+      content.appendChild(row);
     }
-    content += '</table>';
+
   } else {
-    content +=
-      '<div>No shapes exist yet.  You can create one with the New Shape tools on the canvas, or by pressing "add new shape" below.<br><br></div>';
+    content.appendChild(makeElement({
+      content: `No shapes exist yet.  You can create one with the New Shape tools on the canvas, or by pressing "add new shape" below.`
+    }));
   }
 
-  content += '<br><br>' + updateLayerActions();
-
-  content += '</div>';
+  content.appendChild(updateLayerActions());
 
   // log(`makePanel_Layers`, 'end');
-  return makeElement({content: content});
+  return content;
 }
 
 function selectShape(num) {
@@ -146,7 +146,7 @@ function updateLayerActions() {
   let totalShapes = projectEditor.selectedWorkItem.shapes.length;
   let content = `
     <h3>Actions</h3>
-    <div class="actionsarea">
+    <div class="actionsArea">
       ${shapeActions}
       ${
         (totalShapes > 1 && selectedShapes.length === 1) ? layerActions : ''
@@ -154,7 +154,7 @@ function updateLayerActions() {
     </div>
   `;
 
-  return content;
+  return makeElement({content: content});
 }
 
 // -------------------
