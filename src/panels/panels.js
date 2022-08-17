@@ -2,6 +2,9 @@ import { getCurrentProjectEditor } from "../app/main.js";
 import { log } from "../common/functions.js";
 import { makeElement } from "../common/dom.js";
 import makePanel_GlyphAttributes from "./attributes_glyph.js";
+import { makePanel_Layers } from "./layers.js";
+import { makePanel_History } from "./history";
+import { makePanel_Guides } from "./guides.js";
 
 /**
  * Assembles the correct panel based on the current
@@ -19,11 +22,11 @@ export function makePanel() {
 	if(panel === 'Attributes') {
 		content.appendChild(makePanel_GlyphAttributes());
 	} else if (panel === 'Layers') {
-		content.innerHTML = `<h1>Layers</h1>`;
+		content.appendChild(makePanel_Layers());
 	} else if (panel === 'History') {
-		content.innerHTML = `<h1>History</h1>`;
+		content.appendChild(makePanel_History());
 	} else if (panel === 'Guides') {
-		content.innerHTML = `<h1>Guides</h1>`;
+		content.appendChild(makePanel_Guides());
 	}
 
 	log(`makePanel`, 'end');

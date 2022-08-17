@@ -3,9 +3,12 @@
     Shows a list of all the shapes in a Glyph.
 **/
 
-function makePanel_LayerChooser() {
-  // log(`makePanel_LayerChooser`, 'start');
+import { getCurrentProjectEditor } from "../app/main.js";
+import { makeElement } from "../common/dom.js";
 
+export function makePanel_Layers() {
+  // log(`makePanel_Layers`, 'start');
+  let projectEditor = getCurrentProjectEditor();
   let content = '<div class="navarea_header">';
 
   content += projectEditor.nav.page;
@@ -71,8 +74,8 @@ function makePanel_LayerChooser() {
 
   content += '</div>';
 
-  // log(`makePanel_LayerChooser`, 'end');
-  return content;
+  // log(`makePanel_Layers`, 'end');
+  return makeElement({content: content});
 }
 
 function selectShape(num) {
