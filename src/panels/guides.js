@@ -4,7 +4,11 @@
     guide lines.
 **/
 
-function makePanel_Guides() {
+import { getCurrentProjectEditor } from "../app/main.js";
+import { makeElement } from "../common/dom.js";
+
+export function makePanel_Guides() {
+  let project = getCurrentProject();
   let content = '<div class="navarea_header">';
   content += projectEditor.nav.page;
   content += '<h1 class="paneltitle">guides</h1>';
@@ -12,8 +16,8 @@ function makePanel_Guides() {
 
   let system = '';
   let user = '';
-  let guides = getCurrentProject().projectSettings.guides;
-  let ps = getCurrentProject().projectSettings;
+  let guides = project.projectSettings.guides;
+  let ps = project.projectSettings;
   let tg;
 
   for (let g of Object.keys(guides)) {
@@ -36,6 +40,7 @@ function makePanel_Guides() {
     }
   }
 
+  /*
   content += '<h3 style="margin-top:0px; margin-bottom:10px;">options</h3>';
   content +=
     '<table style="width:100%;">' +
@@ -62,7 +67,7 @@ function makePanel_Guides() {
     sliderUI('glyphTransparency', 'glyphTransparency_panel', false, true) +
     '</td></tr>' +
     '</table>';
-
+  */
   if (editor.nav.page !== 'kerning') {
     content += '<br><h3 style=" margin-bottom:0px;">system guides</h3>';
     // content += 'transparency:<input type="range" min="0" max="100" value="'+ps.colors.systemGuideTransparency+'" step="1" oninput="updateTransparency(\'systemGuideTransparency\', this.value);"/><span id="systemGuideTransparency">'+ps.colors.systemGuideTransparency+'</span>%<br><br>';
@@ -93,7 +98,7 @@ function makePanel_Guides() {
 
   content += '</div>';
 
-  return content;
+  return makeElement({content: content});
 }
 
 function makeOneGuideRow(guide, path, currviz, id) {

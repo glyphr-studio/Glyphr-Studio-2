@@ -4,7 +4,11 @@
     the current page.
 **/
 
-function makePanel_History() {
+import { getCurrentProjectEditor } from "../app/main.js";
+import { makeElement } from "../common/dom.js";
+
+export function makePanel_History() {
+  let projectEditor = getCurrentProjectEditor();
   let content = '<div class="navarea_header">';
 
   content += projectEditor.nav.page;
@@ -60,5 +64,5 @@ function makePanel_History() {
   content += '</table>';
   content += '</div>';
 
-  return content;
+  return makeElement({content: content});
 }
