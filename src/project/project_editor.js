@@ -51,7 +51,7 @@ export default class ProjectEditor {
     // Navigation
     this.nav = {
       page: newProjectEditor.nav.page || 'Open project',
-      panel: newProjectEditor.nav.panel || false,
+      panel: newProjectEditor.nav.panel || 'Attributes',
       projectSaved: true,
       stopPageNavigation: true,
     };

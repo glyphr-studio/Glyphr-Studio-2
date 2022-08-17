@@ -1,11 +1,11 @@
 import { makeElement } from '../common/dom.js';
 import { log } from '../common/functions.js';
-import makePanel_GlyphAttributes from '../panels/attributes_glyph.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../app/nav.js';
 import { showNavDropdown } from '../app/nav.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
 import { hexToChars } from '../common/unicode.js';
+import { makePanel } from '../panels/panels.js';
 
 /**
  * Page > Glyph Edit
@@ -41,9 +41,7 @@ export default class PageGlyphEdit {
             ${makeNavButton({level: 'l2', superTitle: 'EDITING', title: lookUpGlyphName(editor.selectedGlyphID, true)})}
             ${makeNavButton({level: 'l3', superTitle: 'PANEL', title: 'Attributes'})}
           </div>
-          <div id="glyph-edit__panel">
-            ${makePanel_GlyphAttributes()}
-          </div>
+          <div id="glyph-edit__panel"></div>
         </div>
         <div class="glyph-edit__tools-area">t<br>o<br>o<br>l<br>s</div>
         <div class="glyph-edit__right-area">
@@ -52,6 +50,9 @@ export default class PageGlyphEdit {
       </div>
     `,
     });
+
+    // Panel
+    content.querySelector('#glyph-edit__panel').appendChild(makePanel());
 
     // Page Selector
     let l1 = content.querySelector('#nav-button-l1');
