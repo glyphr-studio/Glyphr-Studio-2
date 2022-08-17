@@ -18,8 +18,8 @@ export function makePanel_Actions() {
   let clipBoardShape = false;
   let historyLength = 0;
 
-  let content = '<div class="panel__section">';
-  content += '<h1 class="paneltitle">actions</h1>';
+  let content = '<div class="panel__section full-width">';
+  content += '<h2>actions</h2>';
 
   // if (!existingWorkItem()) {
   //   return content + '</div></div>';
@@ -269,7 +269,7 @@ export function makePanel_Actions() {
   }
 
   // Put it all together
-  content += '<div class="actionsarea">';
+  content += '<div class="actionsArea">';
 
   content += allactions;
   content += '<br>';

@@ -13,7 +13,7 @@ export function makePanel_History() {
 
   content += projectEditor.nav.page;
 
-  content += '<h1 class="paneltitle">edit history</h1>';
+  content += '<h2>Edit history</h2>';
 
   let q = editor.history[editor.nav.page].queue;
 

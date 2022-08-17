@@ -82,3 +82,25 @@
 	display: inline-block;
 	margin: 0px 10px 10px 0px;
 }
+
+.actionsArea {
+	display: grid;
+	grid-template-columns: repeat(8, 1fr);
+	gap: 10px;
+}
+
+.actionsArea h3 {
+	grid-column-start: 1;
+	grid-column-end: 10;
+}
+
+.actionsArea button {
+	background-color: var(--gray-l90);
+	color: var(--gray-l60);
+	padding: 6px;
+	height: 42px;
+}
+
+.actionsArea button:disabled {
+	background-color: transparent;
+}
