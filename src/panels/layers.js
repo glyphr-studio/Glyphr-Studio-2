@@ -10,7 +10,7 @@ import { makeActionButton } from '../common/graphics.js';
 export function makePanel_Layers() {
   // log(`makePanel_Layers`, 'start');
   let projectEditor = getCurrentProjectEditor();
-  let content = makeElement({className: 'left-area__panel-section full-width'});
+  let rowsArea = makeElement({className: 'panel__section full-width layer-panel__rows-area'});
 
   let selected = projectEditor.selectedWorkItem;
   let shapes = selected.shapes;
@@ -28,9 +28,9 @@ export function makePanel_Layers() {
       row = makeElement();
 
       if (shape.objType === 'ComponentInstance') {
-        row.setAttribute('class', 'layer-panel__component-row');
+        row.setAttribute('class', 'layer-panel__row layer-panel__component');
       } else {
-        row.setAttribute('class', 'layer-panel__shape-row');
+        row.setAttribute('class', 'layer-panel__row layer-panel__shape');
       }
 
       if (projectEditor.multiSelect.shapes.isSelected(shape)) {
@@ -59,16 +59,18 @@ export function makePanel_Layers() {
         innerHTML: shape.name
       }));
 
-      content.appendChild(row);
+      rowsArea.appendChild(row);
     }
 
   } else {
-    content.appendChild(makeElement({
+    rowsArea.appendChild(makeElement({
       content: `No shapes exist yet.  You can create one with the New Shape tools on the canvas, or by pressing "add new shape" below.`
     }));
   }
 
-  content.appendChild(updateLayerActions());
+  let content = makeElement({className: 'panel__section full-width'});
+  content.appendChild(rowsArea);
+  content.appendChild(makeActionArea_Layers());
 
   // log(`makePanel_Layers`, 'end');
   return content;
@@ -92,7 +94,7 @@ function selectShape(num) {
   // log('selectShape', 'end');
 }
 
-function updateLayerActions() {
+function makeActionArea_Layers() {
   let projectEditor = getCurrentProjectEditor();
   let selectedShapes = projectEditor.multiSelect.shapes.members;
 
@@ -154,7 +156,7 @@ function updateLayerActions() {
     </div>
   `;
 
-  return makeElement({content: content});
+  return makeElement({className: 'panel__section full-width', content: content});
 }
 
 // -------------------

@@ -94,7 +94,7 @@ export function makePanel_Actions() {
     '</button>';
 
   // ALIGN
-  let alignactions = '<br>';
+  let alignactions = '';
   alignactions +=
     '<button title="Align Left\nMoves all the selected shapes so they are left aligned with the leftmost shape" onclick="_UI.multiSelect.shapes.align(\'left\'); redraw({calledBy:\'actions panel\'});">' +
     makeActionButton.Align('left') +
@@ -174,7 +174,6 @@ export function makePanel_Actions() {
     '<button title="Align Handles Horizontally\nAlign handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 1).forEach(function(o, i) { o[0].alignHH(); }); historyPut(\'Align Handles Horizontally\');">' +
     makeActionButton.AlignHandlesH() +
     '</button>';
-  pointactions += '<br>';
   pointactions +=
     '<button title="Align Handles Double-Cross Horizontally\nAlign both opposite handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignHYCross(o[1]) }); historyPut(\'Align Handles Double-Cross Horizontally\');">' +
     makeActionButton.AlignHandlesYCross() +
@@ -199,7 +198,6 @@ export function makePanel_Actions() {
     '<button title="Align 2-Handles Horizontally\nAlign second handles horizontally" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignH2Y(o[1]) }); historyPut(\'Align 2-Handles Horizontally\');">' +
     makeActionButton.AlignHandlesH2Y() +
     '</button>';
-  pointactions += '<br>';
   pointactions +=
     '<button title="Align Handles Double-Cross Vertically\nAlign both opposite handles vertically" onclick="kCombinations(_UI.multiSelect.points.members, 2).forEach(function(o, i) { o[0].alignHXCross(o[1]) }); historyPut(\'Align Handles Double Cross Vertically\');">' +
     makeActionButton.AlignHandlesXCross() +
@@ -272,15 +270,12 @@ export function makePanel_Actions() {
   content += '<div class="actionsArea">';
 
   content += allactions;
-  content += '<br>';
 
   if (ss.length === 0) content += glyphactions;
   if (ss.length > 0) content += shapeactions;
   if (ss.length > 1) content += boolactions;
   if (ss.length === 1) content += layeractions;
   if (ss.length > 1) content += alignactions;
-
-  content += '<br>';
 
   let ispointsel = false;
   if (projectEditor.multiSelect.points.count() > 0) ispointsel = true;
@@ -289,7 +284,6 @@ export function makePanel_Actions() {
   if (ispointsel) {
     content += pointactions;
   }
-  content += '<br>';
 
   content += devactions;
 
