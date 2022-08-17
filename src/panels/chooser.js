@@ -8,7 +8,7 @@
 export default function makePanel_GlyphChooser() {
   // log('makePanel_GlyphChooser', 'start');
 
-  let content = '<div class="navarea_header">';
+  let content = '<div class="panel__section">';
   content += projectEditor.nav.page;
   content += '<h1 class="paneltitle">chooser</h1>';
   content += '</div>';

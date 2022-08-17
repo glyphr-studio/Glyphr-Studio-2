@@ -56,6 +56,9 @@
 	margin-bottom: 4px;
 	color: var(--blue-l90);
 	font-size: 1.1em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 #nav-dropdown {
@@ -87,7 +90,8 @@
 	width: calc(100% - 10px);
 }
 
-.nav-dropdown__button:hover {
+.nav-dropdown__button:hover,
+.nav-dropdown__button:focus {
 	border-right: 4px solid var(--blue-l90);
 	border-radius: 0;
 	margin: 4px 10px 10px 2px;

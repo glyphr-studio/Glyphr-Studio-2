@@ -9,10 +9,10 @@ const { getGlyphrStudioApp } = require("../app/main");
 
 function makePanel_Actions() {
   let pop = _UI.popOut;
-  let ss = _UI.multiSelect.shapes.getMembers();
+  let ss = _UI.multiSelect.shapes.members;
 
   let content = '<div class="glyph-edit__panel-section">';
-  if (pop) content = '<div class="navarea_header">';
+  if (pop) content = '<div class="panel__section">';
   content += '<h1 class="paneltitle">actions</h1>';
 
   if (!existingWorkItem()) {
@@ -328,7 +328,7 @@ function combineAllGlyphShapes() {
 // Copy Paste
 // -------------------
 function copyShape() {
-  let ssm = _UI.multiSelect.shapes.getMembers();
+  let ssm = _UI.multiSelect.shapes.members;
   if (ssm.length) {
     _UI.clipboardShape = {
       s: clone(ssm),

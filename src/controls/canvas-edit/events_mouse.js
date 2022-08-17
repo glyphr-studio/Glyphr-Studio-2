@@ -597,7 +597,7 @@ function Tool_PathEdit() {
       findAndCallHotspot(eh.mousex, eh.mousey);
     }
 
-    if (_UI.multiSelect.shapes.getMembers().length)
+    if (_UI.multiSelect.shapes.members.length)
       _UI.currentPanel = 'npAttributes';
     redraw({ calledBy: 'Event Handler Tool_PathEdit mousedown' });
     // log('Tool_PathEdit.mousedown', 'end');
@@ -638,7 +638,7 @@ function Tool_PathEdit() {
       if (this.controlpoint.type === 'p') setCursor('penSquare');
       else setCursor('penCircle');
 
-      if (sp.getMembers().length === 1) {
+      if (sp.members.length === 1) {
         // log('this.controlpoint.point ' + this.controlpoint.point);
         // log('this.controlpoint.type ' + cpt);
         let cpx = this.controlpoint.point[cpt];
@@ -646,7 +646,7 @@ function Tool_PathEdit() {
         if (cpx && cpx.yLock) dy = 0;
       }
 
-      sp.getMembers().forEach(function (point, i) {
+      sp.members.forEach(function (point, i) {
         // log('UpdatePPP ' + cpt + '\t' + dx + '\t' + dy);
         if (ev.ctrlKey || ev.metaKey) return;
         point.updatePathPointPosition(cpt, dx, dy);
