@@ -5,6 +5,7 @@
     selection.
 **/
 import { log } from "../common/functions.js";
+import { makeElement } from "../common/dom.js";
 import { getCurrentProjectEditor } from "../app/main.js";
 import { makeAttributesGroup_pathPoint, makeAttributesGroup_shape, makeInputs_position, makeInputs_size } from "./attributes.js";
 
@@ -68,7 +69,7 @@ export default function makePanel_GlyphAttributes() {
 
   // log(content);
   log('makePanel_GlyphAttributes', 'end');
-  return content;
+  return makeElement({content: content});
 }
 
   /*
