@@ -71,6 +71,75 @@ export function makePanel_GlyphAttributes() {
   return makeElement({content: content});
 }
 
+
+export function makePointButton(type, selected) {
+  let color = _UI.colors.gray.l40;
+  let bgcolor = 'transparent';
+
+  if (selected) {
+    color = _UI.colors.blue.l65;
+    bgcolor = _UI.colors.gray.offWhite;
+  }
+
+  // log("MAKEPOINTBUTTON - " + type + " selected: " + selected + " color: " + color);
+  let re = '';
+
+  re +=
+    '<button class="pointtypebutton" style="background-color:' +
+    bgcolor +
+    ';" ';
+  re +=
+    'onclick="_UI.multiSelect.points.setPointType(\'' +
+    type +
+    "'); historyPut('Point Type: " +
+    type +
+    "'); redraw({calledBy:'pointDetails'});\" ";
+  re += 'title="point type: ' + type + '" ';
+  re += '>';
+  re += '<svg version="1.1" ';
+  re +=
+    'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
+  re += 'x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" ';
+  re += '><g fill="' + color + '">';
+  re += '<rect x="8" y="8" width="1" height="4"/>';
+  re += '<rect x="11" y="8" width="1" height="4"/>';
+  re += '<rect x="8" y="8" width="4" height="1"/>';
+  re += '<rect x="8" y="11" width="4" height="1"/>';
+  re += '<rect x="4" y="4" width="1" height="1"/>';
+  re += '<rect x="5" y="5" width="1" height="1"/>';
+  re += '<rect x="6" y="6" width="1" height="1"/>';
+  re += '<rect x="7" y="7" width="1" height="1"/>';
+  re += '<circle cx="3" cy="3" r="1.5"/>';
+
+  switch (type) {
+    case 'corner':
+      re += '<rect x="7" y="12" width="1" height="1"/>';
+      re += '<rect x="6" y="13" width="1" height="1"/>';
+      re += '<rect x="5" y="14" width="1" height="1"/>';
+      re += '<rect x="4" y="15" width="1" height="1"/>';
+      re += '<circle cx="3" cy="17" r="1.5"/>';
+      break;
+
+    case 'symmetric':
+      re += '<rect x="12" y="12" width="1" height="1"/>';
+      re += '<rect x="13" y="13" width="1" height="1"/>';
+      re += '<rect x="14" y="14" width="1" height="1"/>';
+      re += '<rect x="15" y="15" width="1" height="1"/>';
+      re += '<circle cx="17" cy="17" r="1.5"/>';
+      break;
+
+    case 'flat':
+      re += '<rect x="12" y="12" width="1" height="1"/>';
+      re += '<rect x="13" y="13" width="1" height="1"/>';
+      re += '<circle cx="15" cy="15" r="1.5"/>';
+      break;
+  }
+
+  re += '</g></svg></button>';
+
+  return re;
+}
+
   /*
 OLD GLYPH DETAILS
   if (projectEditor.nav.page === 'components') return content;
