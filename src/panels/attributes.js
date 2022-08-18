@@ -31,10 +31,10 @@ function makeAttributesGroup_shape(s) {
 
 	content += `
 		<label class="info">
-			<span>overlap mode</span>
+			<span>winding</span>
 			<info-bubble>
-				<h1>Overlap Mode</h1>
-				The Path Points that make up a shape outline have either a clockwise or counter-clockwise direction.
+				<h1>Winding</h1>
+				Ordered Path Points that make up a shape outline have either a clockwise or counter-clockwise direction.
 				This path direction is also known as a path&rsquo;s &ldquo;winding&rdquo;.
 				Shapes with the same winding will combine, opposite windings will cut-out.
 				<br><br>

@@ -70,7 +70,7 @@ export function makePanel_Actions() {
     makeActionButton.deleteShape() +
     '</button>';
   shapeactions +=
-    "<button title=\"Reverse Overlap Mode\nToggles the clockwise or counterclockwise winding of the shape's path\" onclick=\"_UI.multiSelect.shapes.reverseWinding(); historyPut('Reverse Path Direction'); redraw({calledBy:'makeAttributesGroup_shape - Winding'});\">" +
+    "<button title=\"Reverse winding\nToggles the clockwise or counterclockwise winding of the shape's path\" onclick=\"_UI.multiSelect.shapes.reverseWinding(); historyPut('Reverse Path Direction'); redraw({calledBy:'makeAttributesGroup_shape - Winding'});\">" +
     makeActionButton.reverseWinding() +
     '</button>';
   if (ss.length === 1 && ss[0].objType === 'ComponentInstance') {

@@ -123,6 +123,11 @@
 	align-items: center;
 }
 
+.layer-panel__selected {
+	border-right-width: 8px;
+	border-right-color: var(--blue-l60);
+}
+
 .layer-panel__row:hover,
 .layer-panel__row:active {
 	border-color: var(--blue-l85);
