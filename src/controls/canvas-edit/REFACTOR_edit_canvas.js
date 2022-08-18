@@ -1108,77 +1108,6 @@ function findAndUnderlineHotspot(cx, cy) {
   // log('findAndUnderlineHotspot', 'end');
 }
 
-// -------------------
-// VIEW
-// -------------------
-
-function setView(oa) {
-  const sc =
-    editor.nav.page === 'kerning'
-      ? getSelectedKernID()
-      : getSelectedWorkItemID();
-  const v = _UI.views || {};
-
-  // Ensure there are at least defaults
-  if (!isVal(v[sc])) {
-    v[sc] = getView('setView');
-  }
-
-  // Check for which to set
-  if (isVal(oa.dx)) v[sc].dx = oa.dx;
-  if (isVal(oa.dy)) v[sc].dy = oa.dy;
-  if (isVal(oa.dz)) v[sc].dz = oa.dz;
-}
-
-function getView(calledBy) {
-  // log('getView', 'start');
-  // log('calledBy: ' + calledBy);
-
-  const onkern = editor.nav.page === 'kerning';
-  const sc = onkern ? getSelectedKernID() : getSelectedWorkItemID();
-  const v = _UI.views || {};
-  let re;
-
-  if (isVal(v[sc])) {
-    re = clone(v[sc]);
-  } else {
-    re = onkern ? clone(_UI.defaultKernView) : clone(_UI.defaultView);
-  }
-
-  // log('returning ' + json(re));
-  // log('getView', 'end');
-
-  return re;
-}
-
-function getDefaultView() {}
-
-function viewZoom(zfactor, center) {
-  const v = getView('viewZoom');
-  const mx = _UI.eventhandlers.mousex;
-  const my = _UI.eventhandlers.mousey;
-
-  setView({
-    dz: round((v.dz *= zfactor), 2),
-    dx: center ? v.dx : mx - (mx - v.dx) * zfactor,
-    dy: center ? v.dy : my - (my - v.dy) * zfactor,
-  });
-
-  redraw({ calledBy: 'viewZoom', redrawPanels: false });
-}
-
-function setViewZoom(zoom) {
-  zoom /= 100;
-  const v = getView('setViewZoom');
-
-  setView({
-    dz: round(zoom, 2),
-    dx: v.dx,
-    dy: v.dy,
-  });
-
-  redraw({ calledBy: 'setViewZoom', redrawPanels: false });
-}
 
 function resetThumbView() {
   const zoom =
@@ -1267,30 +1196,6 @@ function getStringAdvanceWidth(str) {
   return aw;
 }
 
-// --------------------------------------------------------------------------
-//    Convert between Saved values and Canvas values
-// --------------------------------------------------------------------------
-// convert stored x-y point to canvas x-y
-function sXcX(sx, view = getView('sXcX')) {
-  let canvasx = view.dx;
-  canvasx += sx * view.dz;
-  return canvasx || view.dx;
-}
-
-function sYcY(sy, view = getView('sYcY')) {
-  let canvasy = view.dy;
-  canvasy -= sy * view.dz;
-  return canvasy || view.dy;
-}
-
-// convert canvas x-y inputs to saved shape x-y
-function cXsX(cx, view = getView('cXsX')) {
-  return (cx - view.dx) / view.dz;
-}
-
-function cYsY(cy, view = getView('cYsY')) {
-  return (view.dy - cy) / view.dz;
-}
 
 // ------------------------------
 // Drawing controls
