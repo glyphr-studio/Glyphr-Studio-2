@@ -6,20 +6,21 @@ import { accentColors, uiColors } from "../../common/colors";
 
 let white = uiColors.offwhite;
 let black = uiColors.enabled.resting.text;
+let icons = {};
 
 export function makeToolButton(oa) {
 	// log("MAKETOOLBUTTON - oa: " + json(oa));
 
-	let icons = {};
-	let color_outline = accentColors.blue.l75;
-	let color_fill = accentColors.gray.l40;
+	let colorOutline = accentColors.blue.l75;
+	let colorFill = accentColors.gray.l40;
+	let icon = icons[oa.name];
 
 	if (oa.selected) {
-		color_outline = black;
-		color_fill = white;
+		colorOutline = black;
+		colorFill = white;
 	} else if (oa.disabled) {
-		color_outline = accentColors.gray.l40;
-		color_fill = accentColors.gray.l30;
+		colorOutline = accentColors.gray.l40;
+		colorFill = accentColors.gray.l30;
 	}
 
 	let re = `
@@ -28,18 +29,17 @@ export function makeToolButton(oa) {
 			x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"
 		> `;
 
-	let ic = icons[oa.name];
-	if (ic.fill) {
+	if (icon.fill) {
 		re += `
-			<g pointer-events="none" fill="${color_fill}">
-			${ic.fill}
+			<g pointer-events="none" fill="${colorFill}">
+			${icon.fill}
 			</g>
 		`;
 	}
 
 	re += `
-		<g pointer-events="none" fill="${color_outline}">
-		${ic.outline}
+		<g pointer-events="none" fill="${colorOutline}">
+		${icon.outline}
 		</g>
 	</svg>
 	`;
