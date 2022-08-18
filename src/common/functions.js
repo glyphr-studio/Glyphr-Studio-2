@@ -29,7 +29,6 @@ export {
   angleToNiceAngle,
   niceAngleToAngle,
   makeEmailContent,
-  kCombinations,
 };
 
 /**
@@ -576,76 +575,4 @@ function makeEmailContent() {
   // log(con);
 
   return con;
-}
-
-// -------------------
-// COMBINATORICS
-// -------------------
-
-/**
- * K-combinations
- *
- * Get k-sized combinations of elements in a set.
- *
- * Examples:
- *
- *   kCombinations([1, 2, 3], 1)
- *   -> [[1], [2], [3]]
- *
- *   kCombinations([1, 2, 3], 2)
- *   -> [[1,2], [1,3], [2, 3]
- *
- *   kCombinations([1, 2, 3], 3)
- *   -> [[1, 2, 3]]
- *
- *   kCombinations([1, 2, 3], 4)
- *   -> []
- *
- *   kCombinations([1, 2, 3], 0)
- *   -> []
- *
- *   kCombinations([1, 2, 3], -1)
- *   -> []
- *
- *   kCombinations([], 0)
- *   -> []
- *
- * @param {number} set - Array of objects of any type. They are treated as unique.
- * @param {number} k - size of combinations to search for.
- * @returns {array} - Array of found combinations, size of a combination is k.
- */
-function kCombinations(set, k) {
-  let i;
-  let j;
-  let combs;
-  let head;
-  let tailCombinations;
-
-  if (k > set.length || k <= 0) {
-    return [];
-  }
-
-  if (k == set.length) {
-    return [set];
-  }
-
-  if (k == 1) {
-    combs = [];
-    for (i = 0; i < set.length; i++) {
-      combs.push([set[i]]);
-    }
-    return combs;
-  }
-
-  // Assert {1 < k < set.length}
-
-  combs = [];
-  for (i = 0; i < set.length - k + 1; i++) {
-    head = set.slice(i, i + 1);
-    tailCombinations = kCombinations(set.slice(i + 1), k - 1);
-    for (j = 0; j < tailCombinations.length; j++) {
-      combs.push(head.concat(tailCombinations[j]));
-    }
-  }
-  return combs;
 }
