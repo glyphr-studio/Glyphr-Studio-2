@@ -3,6 +3,7 @@ import { log } from '../../common/functions.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { glyphToHex } from '../../common/unicode.js';
+import { initEventHandlers } from './events_mouse.js';
 
 /**
  * CanvasEdit takes a string of glyphs and displays them on the canvas
@@ -13,7 +14,7 @@ export default class CanvasEdit extends HTMLElement {
    * Specify which attributes are observed and trigger attributeChangedCallback
    */
    static get observedAttributes() {
-    return ['glyphs', 'height', 'width', 'vertical-align', 'horizontal-align'];
+    return ['glyphs'];
   }
 
   /**
@@ -33,42 +34,19 @@ export default class CanvasEdit extends HTMLElement {
     this.glyphs = this.getAttribute('glyphs') || '';
     this.width = this.getAttribute('width') || 2000;
     this.height = this.getAttribute('height') || 2000;
-    this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
-    this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
 
     // internal properties
     this.canvas = makeElement({ tag: 'canvas' });
     this.ctx = this.canvas.getContext('2d');
-    this.view = {dx:0, dy:0, dz:1};
-
-
-
-    let style = makeElement({
-      tag: 'style',
-      content: `
-            * {
-                box-sizing: border-box;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
-
-            canvas {
-                background-color: white;
-            }
-        `,
-    });
 
     // Put it all together
     let shadow = this.attachShadow({ mode: 'open' });
-    shadow.appendChild(style);
-
     shadow.appendChild(this.canvas);
 
     this.canvas.height = this.height;
     this.canvas.width = this.width;
 
+    initEventHandlers(this.canvas);
     this.redraw();
     log(`CanvasEdit.constructor`, 'end');
   }
@@ -88,16 +66,6 @@ export default class CanvasEdit extends HTMLElement {
         this.glyphs = newValue;
         this.redraw();
         break;
-
-      case 'height':
-        this.height = newValue;
-        this.redraw();
-      break;
-
-      case 'width':
-        this.width = newValue;
-        this.redraw();
-      break;
     }
 
     if (attributeName === 'glyphs') {
@@ -112,25 +80,6 @@ export default class CanvasEdit extends HTMLElement {
   redraw() {
     log('CanvasEdit.redraw', 'start');
     let editor = getCurrentProjectEditor();
-    let glyph = editor.selectedGlyph;
-
-    if(!editor.viewExists(editor.selectedGlyphID)){
-      let settings = getCurrentProject().projectSettings;
-      let gutterSize = 20;
-      let contentWidth = this.width - (2*gutterSize);
-      let contentHeight = this.height - (2*gutterSize);
-      let upm = settings.upm;
-      let ascent = settings.ascent;
-      let zoom = Math.min(contentWidth, contentHeight) / upm;
-      let glyphWidth = glyph.advanceWidth;
-
-      editor.view = {
-        dx: gutterSize + ((contentWidth - (zoom * glyphWidth))/2),
-        dy: gutterSize + (zoom * (ascent)),
-        dz: zoom,
-      };
-    }
-
     this.ctx.clearRect(0, 0, this.width, this.height);
     this.ctx.fillStyle = accentColors.purple.l60;
     this.ctx.fillRect(editor.view.dx, 0, 1, 1000);
@@ -144,6 +93,13 @@ export default class CanvasEdit extends HTMLElement {
     log('CanvasEdit.redraw', 'end');
   }
 }
+
+
+
+// --------------------------------------------------------------
+// Redraw helper functions
+// --------------------------------------------------------------
+
 
 
 // --------------------------------------------------------------------------

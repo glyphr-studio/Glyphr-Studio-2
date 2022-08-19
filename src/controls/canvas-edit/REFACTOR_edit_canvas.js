@@ -398,7 +398,7 @@ function clickTool(ctool) {
 
   // log('passed: ' + ctool + ' and _UI.selectedTool now is: ' + _UI.selectedTool);
 
-  _UI.eventhandlers.eh_addpath.firstpoint = true;
+  _UI.eventhandlers.tool_addPath.firstpoint = true;
   _UI.eventhandlers.multi = false;
 
   if (ctool === 'newrect') {

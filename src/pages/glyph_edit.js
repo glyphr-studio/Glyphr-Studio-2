@@ -6,6 +6,7 @@ import { showNavDropdown } from '../app/nav.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
 import { hexToChars } from '../common/unicode.js';
 import { makePanel } from '../panels/panels.js';
+import { makeEditToolsButtons } from '../controls/canvas-edit/tools.js';
 
 /**
  * Page > Glyph Edit
@@ -45,7 +46,7 @@ export default class PageGlyphEdit {
         </div>
         <div class="glyph-edit__tools-area">t<br>o<br>o<br>l<br>s</div>
         <div class="glyph-edit__right-area">
-          <canvas-edit id="glyph-edit__main-canvas" glyphs="${canvasGlyph}" width="800" height="800" onclick="closeAllDialogs();"></canvas-edit>
+          <canvas-edit id="glyph-edit__main-canvas" glyphs="${canvasGlyph}" onclick="closeAllDialogs();"></canvas-edit>
         </div>
       </div>
     `,
@@ -72,6 +73,10 @@ export default class PageGlyphEdit {
     // Panel Selector
     let l3 = content.querySelector('#nav-button-l3');
     l3.addEventListener('click', function(){ showNavDropdown(l3); });
+
+    // Tools
+    let toolsArea = content.querySelector('.glyph-edit__tools-area');
+    toolsArea.appendChild(makeEditToolsButtons());
 
     // Canvas
     editor.subscribe({

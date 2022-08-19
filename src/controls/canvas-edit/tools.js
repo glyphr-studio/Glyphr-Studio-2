@@ -1,8 +1,324 @@
+import { getCurrentProjectEditor } from '../../app/main.js';
+import { accentColors, uiColors } from '../../common/colors.js';
+import { makeElement } from '../../common/dom.js';
+
+
+// -------------------
+// Update Tools
+// -------------------
+export function makeEditToolsButtons() {
+	// log('update_ToolsArea', 'start');
+	let editor = getCurrentProjectEditor();
+
+	if (!editor.onCanvasEditPage()) {
+		// log('returning, !onCanvasEditPage');
+		return '';
+	}
+
+	if (!editor.selectedWorkItemID) {
+		// log('returning, !selectedWorkItemID');
+		return '';
+	}
+
+	let pathEditClass = '';
+	let pathAddPointClass = '';
+	let penClickable = true;
+	let penAddPointClickable = true;
+	const hasComponentInstance = editor.multiSelect.shapes.contains('ComponentInstance');
+
+	if (editor.selectedTool === 'pathedit') {
+		pathEditClass = 'button--call-to-action';
+	} else if (hasComponentInstance) {
+		pathEditClass = 'buttondis';
+		penClickable = false;
+		penAddPointClickable = false;
+	}
+
+	if (editor.selectedTool === 'pathaddpoint') {
+		pathAddPointClass = 'button--call-to-action';
+	} else if (hasComponentInstance) {
+		pathAddPointClass = 'buttondis';
+		penClickable = false;
+		penAddPointClickable = false;
+	}
+
+	if (editor.multiSelect.shapes.count() > 1) {
+		pathAddPointClass = 'buttondis';
+		penAddPointClickable = false;
+	}
+
+	const st = editor.selectedTool;
+
+	// log(`selected glyph ${selectedWorkItem.name} selected tool ${st}`);
+
+	// New Shape
+	let newshape = '';
+	newshape += `
+		<button
+			onmouseover="mouseovercec();"
+			title="new rectangle shape"
+			class="${(st === 'newrect' ? 'button--call-to-action ' : ' ')} tool"
+			onclick="clickTool('newrect');"
+		>
+			${makeToolButton({ name: 'tool_newRect', selected: st === 'newrect' })}
+		</button>
+	`;
+
+	newshape += `
+		<button
+			onmouseover="mouseovercec();"
+			title="new oval shape"
+			class="${(st === 'newoval' ? 'button--call-to-action ' : ' ')} tool"
+			onclick="clickTool('newoval');"
+		>
+			${makeToolButton({ name: 'tool_newOval', selected: st === 'newoval' })}
+		</button>
+	`;
+
+	newshape += `
+		<button
+			onmouseover="mouseovercec();"
+			title="new path shape"
+			class="${(st === 'newpath' ? 'button--call-to-action ' : ' ')} tool"
+			onclick="clickTool('newpath');"
+		>
+			${makeToolButton({ name: 'tool_newPath', selected: st === 'newpath' })}
+		</button>
+	`;
+
+	newshape += '<br>';
+
+	// Path and Shape Edit
+	let edittools = '';
+	edittools += `
+		<button
+			onmouseover="mouseovercec();"
+			title="add path point"
+			class="${pathAddPointClass} tool"
+			${(penAddPointClickable ? `onclick="clickTool('pathaddpoint');"` : '')}
+		/>
+		${makeToolButton({name: 'tool_penPlus', selected: st === 'pathaddpoint', disabled: !penAddPointClickable})}
+		</button>
+	`;
+
+	edittools += `
+		<button
+			onmouseover="mouseovercec();"
+			title="path edit"
+			class="${pathEditClass} tool"
+			${(penClickable ? `onclick="clickTool('pathedit');"` : '')}
+		/>
+		${makeToolButton({name: 'tool_pen', selected: st === 'pathedit', disabled: !penClickable})}
+		</button>
+	`;
+
+	edittools += `
+		<button
+			onmouseover="mouseovercec();"
+			title="shape edit"
+			class="${(st === 'shaperesize' ? 'button--call-to-action ' : '')} tool"
+			onclick="clickTool('shaperesize');"
+		/>
+		${makeToolButton({name: 'tool_arrow', selected: st === 'shaperesize'})}
+		</button>
+	`;
+
+	edittools += '<br>';
+
+	let donepath = '<div style="height:5px;">&nbsp;</div>';
+	donepath += `
+		<button
+			class="button--call-to-action"
+			style="width:94px; font-size:.8em; padding:2px;"
+			title="done editing path"
+			onclick="clickTool('pathedit');"
+		>
+		done editing path
+		</button>
+	`;
+
+
+	//
+	// Put it all together
+	//
+
+	let content = '';
+
+	const onGlyphEditPage = editor.nav.page === 'Glyph edit';
+	const onComponentPage = editor.nav.page === 'Components';
+	const onLigaturesPage = editor.nav.page === 'Ligatures';
+	const selectedWorkItem = editor.selectedWorkItem;
+
+	if (onGlyphEditPage || onLigaturesPage) content += newshape;
+	if (onComponentPage && selectedWorkItem && !selectedWorkItem.shape)
+		content += newshape;
+
+	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
+		content += edittools;
+		if (editor.selectedTool === 'newpath') content += donepath;
+	}
+
+	return makeElement({content: content});
+
+	// log('update_ToolsArea', 'end');
+}
+
+export function makeKernToolsButtons() {
+	// Kern
+	const kern =
+		'<button title="kern" class="' +
+		(st === 'kern' ? 'button--call-to-action ' : ' ') +
+		'tool" onclick="clickTool(\'kern\');"/>' +
+		makeToolButton({ name: 'tool_kern', selected: st === 'kern' }) +
+		'</button>';
+}
+
+export function makeContextGlyphControls() {
+	// Context Glyphs
+	let ctxg = '<div class="contextglyphsarea">';
+	ctxg += '<div id="contextglyphsoptions">';
+	ctxg +=
+		'<b>Context Glyphs</b> are letters you can display around the glyph you are currently editing.<br><br>';
+	ctxg += checkUI(
+		'getCurrentProject().projectSettings.showContextGlyphGuides',
+		getCurrentProject().projectSettings.showContextGlyphGuides,
+		true
+	);
+	ctxg +=
+		'<label style="margin-left:10px; position:relative; top:-6px;" for="showContextGlyphGuides">show guides</label><br>';
+	ctxg +=
+		'glyph ' +
+		sliderUI(
+		'contextGlyphTransparency',
+		'contextGlyphTransparency_dropdown',
+		true,
+		false
+		);
+	ctxg += '<br/>';
+	ctxg +=
+		'guide ' +
+		sliderUI(
+		'systemGuideTransparency',
+		'systemGuideTransparency_dropdown',
+		true,
+		false
+		);
+	ctxg += '</div>';
+	ctxg +=
+		'<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
+	ctxg += 'onblur="_UI.focusElement = false;" onmouseover="mouseoutcec();" ';
+	ctxg +=
+		'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
+	ctxg += 'value="' + getContextGlyphString() + '"/>';
+	ctxg +=
+		'<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
+	ctxg += '</div>';
+}
+export function makeViewToolsButtons() {
+
+	let content = '';
+	// Pan
+	content += `
+		<button
+			title="scroll and pan"
+			class="${(st === 'pan' ? 'button--call-to-action ' : ' ')} tool"
+			onclick="clickTool('pan');"
+		/>
+		${makeToolButton({ name: 'tool_pan', selected: st === 'pan' })}
+		</button>
+	`;
+	content += '<span style="width:15px; display:inline-block;">&nbsp;</span>';
+
+	// Zoom
+	content += `
+		<button
+			title="zoom: one to one"
+			class="tool"
+			onclick="setView({dz:1});redraw({calledBy:\'updatetools\'});"
+		>
+		${makeToolButton({ name: 'tool_zoom1to1' })}
+		</button>
+	`;
+
+	content += `
+		<button
+			title="zoom: fit to screen"
+			class="tool"
+			onclick="fitViewToContextGlyphs(); redraw({calledBy:\'updatetools\'});"
+		>
+		${makeToolButton({ name: 'tool_zoomEm' })}
+		</button>
+	`;
+
+	content += `
+		<input
+			type="number"
+			title="zoom level"
+			class="zoomreadout"
+			value="${round(getView('updatetools').dz * 100, 2)}"
+			onchange="setViewZoom(this.value);"
+		/>
+	`;
+
+	content += `
+		<button
+			title="zoom: in"
+			class="tool"
+			onclick="viewZoom(1.1, true);"
+		>
+		${makeToolButton({ name: 'tool_zoomIn' })}
+		</button>
+	`;
+
+	content += `
+		<button
+			title="zoom: out"
+			class="tool"
+			onclick="viewZoom(.9, true);"
+		>
+		${makeToolButton({ name: 'tool_zoomOut' })}
+		</button>
+	`;
+
+	return makeElement({content: content});
+}
+
+export function clickTool(ctool) {
+	// log('clickTool', 'start');
+	editor.selectedTool = ctool;
+
+	// log('passed: ' + ctool + ' and editor.selectedTool now is: ' + editor.selectedTool);
+
+	_UI.eventhandlers.tool_addPath.firstpoint = true;
+	_UI.eventhandlers.multi = false;
+
+	if (ctool === 'newrect') {
+		setCursor('crosshairsSquare');
+		clickEmptySpace();
+	} else if (ctool === 'newoval') {
+		setCursor('crosshairsCircle');
+		clickEmptySpace();
+	} else if (ctool === 'newpath') {
+		setCursor('penPlus');
+		clickEmptySpace();
+	} else if (ctool === 'pathedit') {
+		setCursor('pen');
+	} else if (ctool === 'shaperesize') {
+		setCursor('arrow');
+	}
+
+	_UI.eventhandlers.hoverpoint = false;
+	closeNotation();
+	// updateCursor();
+
+	redraw({ calledBy: 'clicktool', redrawPanels: false });
+	}
+
+
 //	---------------------
-//	TOOLS
+//	TOOLS BUTTONS
 //	---------------------
 
-import { accentColors, uiColors } from "../../common/colors";
 
 let white = uiColors.offwhite;
 let black = uiColors.enabled.resting.text;
@@ -23,28 +339,28 @@ export function makeToolButton(oa) {
 		colorFill = accentColors.gray.l30;
 	}
 
-	let re = `
+	let content = `
 		<svg version="1.1"
 			xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 			x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"
 		> `;
 
 	if (icon.fill) {
-		re += `
+		content += `
 			<g pointer-events="none" fill="${colorFill}">
 			${icon.fill}
 			</g>
 		`;
 	}
 
-	re += `
+	content += `
 		<g pointer-events="none" fill="${colorOutline}">
 		${icon.outline}
 		</g>
 	</svg>
 	`;
 
-	return re;
+	return content;
 }
 
 icons.tool_arrow = {
@@ -187,25 +503,6 @@ icons.tool_pen = {
 	`
 };
 
-icons.tool_slice = {
-	fill: `<polygon points="6,15 6,19 13,19 13,1 "/>`,
-	outline:`
-		<rect x="13" width="1" height="16"/>
-		<rect x="6" y="19" width="7" height="1"/>
-		<rect x="6" y="17" width="1" height="3"/>
-		<rect x="12" y="16" width="1" height="4"/>
-		<rect x="6" y="17" width="7" height="1"/>
-		<rect x="11" y="3" width="1" height="2"/>
-		<rect x="12" y="1" width="1" height="2"/>
-		<rect x="10" y="5" width="1" height="2"/>
-		<rect x="9" y="7" width="1" height="2"/>
-		<rect x="8" y="9" width="1" height="2"/>
-		<rect x="7" y="11" width="1" height="2"/>
-		<rect x="6" y="13" width="1" height="2"/>
-		<rect x="5" y="15" width="1" height="2"/>
-	`
-};
-
 icons.tool_shapeResize = {
 	fill:`
 		<rect x="1" y="1" display="inline" fill="${white}" width="4" height="4"/>
@@ -321,29 +618,6 @@ icons.tool_newPath = {
 		<rect x="13" y="11" width="1" height="2"/>
 		<rect x="13" y="6" width="1" height="2"/>
 		<rect x="14" y="8" width="1" height="3"/>
-	`
-};
-
-icons.tool_popOut = {
-	outline:`
-		<rect x="18" y="1" width="1" height="11"/>
-		<rect x="6" y="1" width="2" height="11"/>
-		<rect x="6" y="1" width="13" height="1"/>
-		<rect x="6" y="11" width="13" height="1"/>
-		<rect x="13" y="11" width="1" height="8"/>
-		<rect x="1" y="8" width="2" height="11"/>
-		<rect x="1" y="8" width="7" height="1"/>
-		<rect x="1" y="18" width="13" height="1"/>
-	`
-};
-
-icons.tool_popIn = {
-	outline:`
-		<rect x="1" y="1" width="2" height="18"/>
-		<rect x="7" y="1" width="2" height="18"/>
-		<rect x="18" y="1" width="1" height="17"/>
-		<rect x="1" y="18" width="18" height="1"/>
-		<rect x="1" y="1" width="18" height="1"/>
 	`
 };
 
