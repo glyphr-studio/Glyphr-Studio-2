@@ -59,10 +59,16 @@ export default class ProjectEditor {
 
 		this.pages = {};
 
-		// Canvas views per work item ID
+		// Canvas
+		// Views per work item ID
 		this._views = {};
 		this.defaultView = {dx: 200, dy: 500, dz: 0.5};
 		this.defaultKernView = {dx: 500, dy: 500, dz: 0.5};
+
+		// Canvas
+		// Event handlers
+		this.eventHandlers = {};
+		this.selectedTool = false;
 
 		// History
 		// this.history = {};
@@ -743,7 +749,7 @@ window._UI = {
 		canvasHotSpotHovering: false,
 		multiSelectThickness: 2,
 		rotateHandleHeight: 40,
-		selectedTool: 'pathedit', // pathedit, pathaddpoint, slice, shaperesize, pan, newrect, newoval, newpath
+		selectedTool: 'pathedit', // pathedit, pathaddpoint, shaperesize, pan, newrect, newoval, newpath
 		focusElement: false,
 		redrawing: false,
 		redraw: {

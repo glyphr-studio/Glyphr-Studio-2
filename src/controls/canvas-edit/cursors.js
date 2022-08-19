@@ -1,5 +1,117 @@
+import { getCurrentProjectEditor } from '../../app/main.js';
+import { eventHandlerData } from './events_mouse.js';
+
+export function updateCursor(tool) {
+  // log('updateCursor', 'start');
+  let editor = getCurrentProjectEditor();
+  tool = tool || editor.selectedTool;
+
+  // log('tool = ' + tool);
+
+  if (eventHandlerData.isMouseOverCanvas) {
+    if (tool === 'newrect') {
+      // log('setting cursor to crosshairsSquare');
+      setCursor('crosshairsSquare');
+    } else if (tool === 'newoval') {
+      // log('setting cursor to crosshairsCircle');
+      setCursor('crosshairsCircle');
+    } else if (tool === 'shaperesize') {
+      // log('shaperesize :: not setting cursor');
+      // Handled by eventHandler
+    } else if (tool === 'newpath') {
+      // log('setting cursor to penPlus');
+      setCursor('penPlus');
+    } else if (tool === 'pathedit') {
+      // log('setting cursor to pen');
+      setCursor('pen');
+    } else if (tool === 'pathaddpoint') {
+      // log('setting cursor to pen');
+      setCursor('penPlus');
+    } else if (tool === 'pan') {
+      // log('setting cursor to move');
+      setCursor('move');
+    } else if (tool === 'kern') {
+      // log('setting cursor to col-resize');
+      setCursor('col-resize');
+    } else {
+      // log('defaulting cursor to pointer');
+      setCursor('arrow');
+    }
+  } else {
+    // log('NOT ON EDIT CANVS setting cursor to default');
+    setCursor('default');
+  }
+
+  // log('updateCursor', 'end');
+}
+
+export function setCursor(name) {
+  // log('setCursor', 'start');
+  // log('passed ' + name);
+  const cur = [
+    'auto',
+    'default',
+    'none',
+    'context-menu',
+    'help',
+    'pointer',
+    'progress',
+    'wait',
+    'cell',
+    'crosshair',
+    'text',
+    'vertical-text',
+    'alias',
+    'copy',
+    'move',
+    'no-drop',
+    'not-allowed',
+    'e-resize',
+    'n-resize',
+    'ne-resize',
+    'nw-resize',
+    's-resize',
+    'se-resize',
+    'sw-resize',
+    'w-resize',
+    'ew-resize',
+    'ns-resize',
+    'nesw-resize',
+    'nwse-resize',
+    'col-resize',
+    'row-resize',
+    'all-scroll',
+    'zoom-in',
+    'zoom-out',
+    'grab',
+    'grabbing',
+  ];
+
+  if (cur.indexOf(name + '-resize') > -1) {
+    if (canResize(name)) name += '-resize';
+    // log('SET -resize CURSOR');
+  }
+
+  document.body.style.cursor = 'auto';
+
+  if (cursors[name]) {
+    document.body.style.cursor = cursors[name];
+    // log('SET CUSTOM CURSOR:\t'+name);
+  } else if (cur.indexOf(name) > -1) {
+    document.body.style.cursor = name;
+    // log('SET BUILT-IN CURSOR:\t'+name);
+  } else {
+    // log('DEFAULT TO auto');
+  }
+
+  // log('setCursor', 'end');
+}
+
+
+
+
 //  ---------------------
-//  CURSORS
+//  CURSOR IMAGES
 //  ---------------------
 
 export let cursors = {};
@@ -15,8 +127,6 @@ cursors.arrowPlus =
 cursors.arrowSquare =
   'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAfCAYAAAD5h919AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUNJREFUeNpiYNB2/M9AB8AEJulgGdiiLYtm0MEyoAUPv/7/v+Xszf+0tQxqEa0tY0Lm6Gqo0SwYmdAFaGUZEzZBWljGhEuC2pYx4ZOkpmVMhBRQyzImYhRRwzImYhVSahkTKYopsYyJVA3kWsZETjCQYxkTuZFLqmVMlCRZUixjIcVgeTMnsh3FQqIl0lS1CObyh6f2oUpc3f+MXIsYwRUfkoFQS0yg3DMwucs3bjH4xGWALGNErzjx2gBVz4LFJyZAybNQQ1AiHhfA8DmWOGXCaQkQeLvY+yErJqtU0HaUAmJeJlyWgMDWiQ2b0ZMzGUASiMEWmWCzBAYKU+PTKfYVOOhAFuCwBAT6CxJmUcFXxOWj9qqiRqCv6pGETEhP3qRFrDE0yZ4lOnlDHPWckYFaAJS6IBGPDTxnYaAe+IxPDiDAAB2lmR3ulvBGAAAAAElFTkSuQmCC") 0 0, default';
 
-cursors.slice =
-  'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAfCAYAAADXwvzvAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAN1JREFUeNpiYNB2/M9ABmACk2RoZmIgE4A1blk0g2RbKbORHFspt5FUW1E06mqokR84xNqKoZFYW7EGDjG2YtVIjK04o4OQrTg1ErIVbwLAZytejfhsJZjkcNlKUCMuW4lK5NhsJUojNluJzlbotrIQo0nezAlDjIUYDQ9P7QPTl2/cYvCJy/jPcHU/IwtQUBCo4D2yk4CSGBoIp1+gPx5+/Q/GW87eRKFhbJAaokMVZCsIwFyDzUZjbLaCQxSCjYlyLi4NjDhtZWA4A+WZAEPxLPEFp7ZjGj5pgAADAHXih9fZ4xdeAAAAAElFTkSuQmCC") 0 0, default';
 cursors.rotate =
   'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAfCAYAAAD0ma06AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAZVJREFUeNrclrFOw0AMQOMqG0KCL+gWUaFMjZgpMyMzK3wSM9/ATHfUThUCuvEFICHmcG7j4DjOna8JQmCpatXz+Z3PPtuQWOV4VnrXH+dgseFVev0sD8YnZ2/4++72xmvr/PJ6u+fh/nC8B+9dBwYrKD/KvMDV87ob7GBoB9dSbTPCrCAS0qN91YGBYLQOmutcgR3CC3QetTxGj7gttAEhGIHySTZbPa0/VO8m2b5bm0swQjVb37DlS+niV3/wv/zi6tR9Tw0ZOK10GzakvTpJpGINixULUHq3WbB4pcVf3JIEjmSWsYe8jIYpySZllAwhRhhKSsoik4rYkkcPPgzsf51FzGWkva8zMtbDxPDPATeF4McEHzirDvhwg822l4ci6NZ2NHgMf+Vad4FSIwiHRVT5naFVAQ/ngvCykUCWJKr0eLfQoNCCJslCdm1LrdRmoLous8RszTTYdHFc0GYUyxDlg3WOiQTVhqOQsLml0OoseGO6lYUF3AB5ijqYngwDd14pTXWB7gFRb3XANvV/5UuAAQBCI5UEkaELxQAAAABJRU5ErkJggg==") 14 15, default';
 
