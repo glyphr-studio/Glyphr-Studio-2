@@ -76,6 +76,7 @@ export default class ProjectEditor {
 			points: new MultiSelectPoints(),
 			shapes: new MultiSelectShapes(),
 		};
+
 		// log(this);
 		log('ProjectEditor.constructor', 'end');
 	}
@@ -88,6 +89,12 @@ export default class ProjectEditor {
 	// PubSub
 	// --------------------------------------------------------------
 
+	/**
+	 * Sends a new piece of data concerning a topic area that
+	 * triggers changes for subscribers
+	 * @param {string} topic - keyword to trigger changes
+	 * @param {object} data - whatever the new state is
+	 */
 	publish(topic, data) {
 		log(`ProjectEditor.publish`, 'start');
 		log(`topic: ${topic}`);
@@ -105,6 +112,14 @@ export default class ProjectEditor {
 		log(`ProjectEditor.publish`, 'end');
 	}
 
+	/**
+	 * Sets up an intent to listen for changes based on a keyword, and
+	 * provides a callback function in case a change is published
+	 * @param {string} topic - what keyword to listen for
+	 * @param {string} subscriberName - the name of the thing listening
+	 * @param {function} callback - what to do when a change is triggered
+	 * @returns nothing
+	 */
 	subscribe({topic = false, subscriberName = '', callback = false}) {
 		if(!topic) {
 			console.warn(`Subscriber was not provided a topic`);
@@ -550,6 +565,9 @@ export default class ProjectEditor {
 	// --------------------------------------------------------------
 	// Views
 	// --------------------------------------------------------------
+	/**
+	 * Sets the view for the current work item on the current page
+	 */
 	set view(oa){
 		log(`ProjectEditor SET view`, 'start');
 		var wid = this.selectedWorkItemID;
@@ -571,6 +589,9 @@ export default class ProjectEditor {
 		return this._views[wid];
 	}
 
+	/**
+	 * Gets the current view for the current work item on the current page
+	 */
 	get view(){
 		log(`ProjectEditor GET view`, 'start');
 
@@ -591,6 +612,11 @@ export default class ProjectEditor {
 		return re;
 	}
 
+	/**
+	 * Check to see if a work item has a view set already
+	 * @param {string} id - work item id to check
+	 * @returns boolean
+	 */
 	viewExists(id){
 		return !!this._views[id];
 	}
