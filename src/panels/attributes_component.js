@@ -1,4 +1,3 @@
-export { makeUsedInThumbs };
 /**
     Panel > Attributes > Component
     Panel > Attributes > Component Instance
@@ -22,7 +21,7 @@ function makeComponentsAttributesPanel(selectedComponent) {
   return content;
 }
 
-function makeUsedInThumbs() {
+export function makeUsedInThumbs() {
   let ui = getSelectedWorkItem().usedIn;
   let unique = ui.filter(function (elem, pos) {
     return ui.indexOf(elem) === pos;

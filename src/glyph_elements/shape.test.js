@@ -199,6 +199,6 @@ turnSelectedShapeIntoAComponent
 CANVAS METHODS
 drawShape(ctx, view)
 drawSegments()
-getClickedShape
-isOverShape
+getShapeAtLocation
+getShapeAtLocation
 */

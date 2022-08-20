@@ -1,6 +1,7 @@
-import { getCurrentProjectEditor } from '../../app/main.js';
-import { accentColors, uiColors } from '../../common/colors.js';
-import { makeElement } from '../../common/dom.js';
+import { getCurrentProjectEditor } from '../../../app/main.js';
+import { accentColors, uiColors } from '../../../common/colors.js';
+import { makeElement } from '../../../common/dom.js';
+import { log } from '../../../common/functions.js';
 
 
 // -------------------
@@ -315,11 +316,127 @@ export function clickTool(ctool) {
 	}
 
 
+//	-----------------
+//	Button Functions
+//	-----------------
+export function addShape(newshape){
+	// debug('addShape - START');
+	// debug('\t name: ' + newshape.name);
+	// debug('\t objtype: ' + newshape.objtype);
+
+	if(newshape){
+		if(newshape.objtype === 'componentinstance'){
+			// debug('\t is a Component instance');
+			_UI.selectedToolName = 'shaperesize';
+		} else if(newshape.path && (_UI.selectedToolName === 'shaperesize')) {
+			// debug('\t triggered as true: newshape.path && _UI.selectedToolName == shaperesize \n\t NOT calling calcmaxes, okay?');
+			//newshape.calcMaxes();
+		}
+	} else {
+		// debug('\t passed null, creating new shape.');
+		newshape = new Shape({});
+		newshape.name = ('Rectangle ' + ((getSelectedWorkItemShapes().length*1)+1));
+	}
+
+	let sg = getSelectedWorkItem();
+
+	sg.shapes.push(newshape);
+	_UI.ms.shapes.select(newshape);
+	sg.changed();
+
+	_UI.current_panel = 'npAttributes';
+
+	// debug('\t returns: ' + newshape.name);
+	// debug('addShape - END\n');
+	return newshape;
+}
+
+export function addBasicShape(type){
+	let hd = 50;
+	let th = 500;
+	let tw = 300;
+	let newshape = new Shape({});
+	let parr = false;
+	let shapetype = 'Shape ';
+	let p1,p2,p3,p4;
+
+	if(type === 'oval'){
+		p1 = new PathPoint({'P':new Coord({'x':0,'y':(th/2)}), 'H1':new Coord({'x':0,'y':hd}), 'H2':new Coord({'x':0,'y':(th-hd)}), 'type':'symmetric'});
+		p2 = new PathPoint({'P':new Coord({'x':(tw/2),'y':th}), 'H1':new Coord({'x':hd,'y':th}), 'H2':new Coord({'x':(tw-hd),'y':th}), 'type':'symmetric'});
+		p3 = new PathPoint({'P':new Coord({'x':tw,'y':(th/2)}), 'H1':new Coord({'x':tw,'y':(th-hd)}), 'H2':new Coord({'x':tw,'y':hd}), 'type':'symmetric'});
+		p4 = new PathPoint({'P':new Coord({'x':(tw/2),'y':0}), 'H1':new Coord({'x':(tw-hd),'y':0}), 'H2':new Coord({'x':hd,'y':0}), 'type':'symmetric'});
+		parr = [p1,p2,p3,p4];
+		shapetype = 'Oval ';
+	} else {
+		p1 = new PathPoint({'P':new Coord({'x':0,'y':0}), 'H1':new Coord({'x':hd,'y':0}), 'H2':new Coord({'x':0,'y':hd})});
+		p2 = new PathPoint({'P':new Coord({'x':0,'y':th}), 'H1':new Coord({'x':0,'y':(th-hd)}), 'H2':new Coord({'x':hd,'y':th})});
+		p3 = new PathPoint({'P':new Coord({'x':tw,'y':th}), 'H1':new Coord({'x':(tw-hd),'y':th}), 'H2':new Coord({'x':tw,'y':(th-hd)})});
+		p4 = new PathPoint({'P':new Coord({'x':tw,'y':0}), 'H1':new Coord({'x':tw,'y':hd}), 'H2':new Coord({'x':(tw-hd),'y':0})});
+		parr = [p1,p2,p3,p4];
+		shapetype = 'Rectangle ';
+	}
+
+	newshape.path = new Path({'pathpoints':parr});
+	newshape.name = (shapetype + getSelectedWorkItemShapes().length+1);
+
+	getSelectedWorkItemShapes().push(newshape);
+	_UI.ms.shapes.select(newshape);
+	updateCurrentGlyphWidth();
+}
+
+export function turnSelectedShapeIntoAComponent(){
+	let s = clone(_UI.ms.shapes.getMembers(), 'turnSelectedShapeIntoAComponent');
+	let n = s.length === 1? ('Component ' + s[0].name) : ('Component ' + (getLength(_GP.components)+1));
+
+	_UI.ms.shapes.deleteShapes();
+	let newid = createNewComponent(new Glyph({'shapes':s, 'name':n}));
+	insertComponentInstance(newid);
+	_UI.selectedToolName = 'shaperesize';
+	selectShape(getSelectedWorkItemShapes().length-1);
+	redraw({calledby:'turnSelectedShapeIntoAComponent'});
+}
+
+export function getShapeAtLocation(x,y){
+	log(`getShapeAtLocation`, 'start');
+	log('checking x:' + x + ' y:' + y);
+
+	let shape;
+	let editor = getCurrentProjectEditor();
+	let sws = editor.selectedWorkItem?.shapes;
+	log(sws);
+	for(let j=(sws.length-1); j>=0; j--){
+		shape = sws[j];
+		log('Checking shape ' + j);
+
+		if(isThisShapeHere(shape, x, y)){
+			return shape;
+		}
+	}
+
+	// clickEmptySpace();
+	log(`getShapeAtLocation`, 'end');
+	return false;
+}
+
+function isThisShapeHere(shape, px, py) {
+	let editor = getCurrentProjectEditor();
+	let gctx = editor.ghostCTX;
+
+	gctx.clearRect(0,0,editor.canvasSize, editor.canvasSize);
+	gctx.fillStyle = 'rgba(0,0,255,0.2)';
+	gctx.beginPath();
+	shape.drawShape(gctx, editor.view);
+	gctx.closePath();
+	gctx.fill();
+
+	let imageData = gctx.getImageData(px, py, 1, 1);
+	// debug('ISHERE? alpha = ' + imageData.data[3] + '  returning: ' + (imageData.data[3] > 0));
+	return (imageData.data[3] > 0);
+}
+
 //	---------------------
 //	TOOLS BUTTONS
 //	---------------------
-
-
 let white = uiColors.offwhite;
 let black = uiColors.enabled.resting.text;
 let icons = {};

@@ -66,6 +66,14 @@ export default class ProjectEditor {
 		this.defaultKernView = {dx: 500, dy: 500, dz: 0.5};
 
 		// Canvas
+		// Ghost Canvas
+		this.canvasSize = 2000;
+		this.ghostCanvas = document.createElement('canvas');
+		this.ghostCanvas.width = this.canvasSize;
+		this.ghostCanvas.height = this.canvasSize;
+		this.ghostCTX = this.ghostCanvas.getContext('2d');
+
+		// Canvas
 		// Event handlers
 		this.eventHandlers = {};
 		this.selectedTool = false;
