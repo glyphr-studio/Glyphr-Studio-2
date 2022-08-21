@@ -6,6 +6,11 @@
 	width:30px;
 	padding: 5px;
 	margin: 0 0 5px 0;
+	background-color: var(--gray-l30);
+}
+
+.canvas-edit__tool-selected {
+	background-color: var(--blue-l50);
 }
 
 .canvas-edit__tool svg {
