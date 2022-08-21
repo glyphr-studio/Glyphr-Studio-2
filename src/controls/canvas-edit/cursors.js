@@ -9,22 +9,22 @@ export function updateCursor(tool) {
   // log('tool = ' + tool);
 
   if (eventHandlerData.isMouseOverCanvas) {
-    if (tool === 'newrect') {
+    if (tool === 'newRectangle') {
       // log('setting cursor to crosshairsSquare');
       setCursor('crosshairsSquare');
-    } else if (tool === 'newoval') {
+    } else if (tool === 'newOval') {
       // log('setting cursor to crosshairsCircle');
       setCursor('crosshairsCircle');
-    } else if (tool === 'shaperesize') {
-      // log('shaperesize :: not setting cursor');
+    } else if (tool === 'shapeResize') {
+      // log('shapeResize :: not setting cursor');
       // Handled by eventHandler
-    } else if (tool === 'newpath') {
+    } else if (tool === 'newPath') {
       // log('setting cursor to penPlus');
       setCursor('penPlus');
-    } else if (tool === 'pathedit') {
+    } else if (tool === 'pathEdit') {
       // log('setting cursor to pen');
       setCursor('pen');
-    } else if (tool === 'pathaddpoint') {
+    } else if (tool === 'pathAddPoint') {
       // log('setting cursor to pen');
       setCursor('penPlus');
     } else if (tool === 'pan') {

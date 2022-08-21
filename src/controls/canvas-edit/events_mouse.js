@@ -32,7 +32,7 @@ export let eventHandlerData = {
 	firstX: -100,
 	firstY: -100,
 	undoQueueHasChanged: false,
-	lastTool: 'pathedit',
+	lastTool: 'pathEdit',
 	isSpaceDown: false,
 	isShiftDown: false,
 	hoverPoint: false,
@@ -94,25 +94,25 @@ export function initEventHandlers(editCanvas) {
 		// Switch Tool function
 
 		switch (editor.selectedTool) {
-			case 'pathedit':
+			case 'pathEdit':
 				eh.currentTool = editor.eventHandlers.tool_pathEdit;
 				break;
-			case 'shaperesize':
+			case 'shapeResize':
 				eh.currentTool = editor.eventHandlers.tool_shapeEdit;
 				break;
 			case 'pan':
 				eh.currentTool = editor.eventHandlers.tool_pan;
 				break;
-			case 'pathaddpoint':
+			case 'pathAddPoint':
 				eh.currentTool = editor.eventHandlers.tool_pathAddPoint;
 				break;
-			case 'newpath':
+			case 'newPath':
 				eh.currentTool = editor.eventHandlers.tool_addPath;
 				break;
-			case 'newrect':
+			case 'newRectangle':
 				eh.currentTool = editor.eventHandlers.tool_addRectOval;
 				break;
-			case 'newoval':
+			case 'newOval':
 				eh.currentTool = editor.eventHandlers.tool_addRectOval;
 				break;
 			case 'kern':

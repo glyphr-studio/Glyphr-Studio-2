@@ -760,7 +760,7 @@ window._UI = {
 		canvasHotSpotHovering: false,
 		multiSelectThickness: 2,
 		rotateHandleHeight: 40,
-		selectedTool: 'pathedit', // pathedit, pathaddpoint, shaperesize, pan, newrect, newoval, newpath
+		selectedTool: 'pathEdit', // pathEdit, pathAddPoint, shapeResize, pan, newRectangle, newOval, newPath
 		focusElement: false,
 		redrawing: false,
 		redraw: {

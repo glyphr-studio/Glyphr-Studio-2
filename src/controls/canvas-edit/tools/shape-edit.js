@@ -89,7 +89,7 @@ export default class Tool_ShapeEdit {
 					}
 
 					if (this.clickedshape.objType === 'ComponentInstance')
-						clickTool('shaperesize');
+						clickTool('shapeResize');
 					editor.nav.panel = 'Attributes';
 				}
 
@@ -165,7 +165,7 @@ export default class Tool_ShapeEdit {
 					editor.multiSelect.shapes.select(this.clickedshape);
 
 				if (this.clickedshape.objType === 'ComponentInstance')
-					clickTool('shaperesize');
+					clickTool('shapeResize');
 				else
 					setCursor('arrowSquare');
 

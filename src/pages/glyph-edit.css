@@ -4,7 +4,7 @@
 	width: 100%;
 	min-height: 100%;
 	min-width: 100%;
-	grid-template-columns: 1fr 50px 4fr;
+	grid-template-columns: 1fr 40px 4fr;
 	column-gap: 10px;
 	padding: 0px 10px 10px 10px;
 }
@@ -29,13 +29,9 @@
 }
 
 .glyph-edit__tools-area {
-	border: 1px solid var(--blue-l85);
-	border-radius: 4px;
-	padding: 10px;
+	padding-left: 10px;
 	height: min-content;
 	grid-column: 2;
-	background-color: var(--offWhite);
-	box-shadow: var(--l2-shadow);
 }
 
 .glyph-edit__right-area {

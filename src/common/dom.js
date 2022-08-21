@@ -1,3 +1,5 @@
+import { log } from './functions.js';
+
 /**
  * Export nothing by default
  */
@@ -10,7 +12,7 @@ export default function () {}
  * @param {string} id - id to add to the element
  * @param {string} content - If this is a text node, what text to add
  * @param {boolean} tabIndex - make this elem a tab stop
- * @param {array} attributes - collection of [attributeName, attributeValue]
+ * @param {object} attributes - key/value pairs for attr/values
  * @param {string} innerHTML - text HTML to add as the content of this element
  * @returns {HTMLElement}
  */
@@ -19,6 +21,7 @@ export function makeElement({
   className,
   id,
   content,
+  title,
   elementRoot,
   tabIndex = false,
   attributes = {},
@@ -40,6 +43,8 @@ export function makeElement({
     newElement.setAttribute('id', document.getUniqueControlID());
 
   if (content) newElement.innerHTML = content;
+
+  if (title) newElement.setAttribute('title', title);
 
   if (elementRoot) newElement.elementRoot = elementRoot;
 

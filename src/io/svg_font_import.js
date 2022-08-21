@@ -451,7 +451,7 @@ function make_ImportFilter(chars, kerns, funname) {
   re += '</table>';
 
   re +=
-    '<br><br><button class="button--call-to-action" id="importfontbutton" onclick="' +
+    '<br><br><button class="button__call-to-action" id="importfontbutton" onclick="' +
     funname +
     '(true);">Import Font</button>';
 

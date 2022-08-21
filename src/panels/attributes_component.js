@@ -172,7 +172,7 @@ function makeAttributesGroup_componentInstance(s) {
     '</td>' +
     '</tr>';
 
-  if (_UI.selectedTool !== 'pathedit') {
+  if (_UI.selectedTool !== 'pathEdit') {
     content +=
       '<tr>' +
       '<td> lock aspect ratio </td>' +
