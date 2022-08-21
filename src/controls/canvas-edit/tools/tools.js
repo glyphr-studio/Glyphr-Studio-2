@@ -2,8 +2,6 @@ import { getCurrentProjectEditor } from '../../../app/main.js';
 import { accentColors, uiColors } from '../../../common/colors.js';
 import { makeElement } from '../../../common/dom.js';
 import { log } from '../../../common/functions.js';
-import { setCursor } from '../cursors.js';
-import { eventHandlerData } from '../events_mouse.js';
 
 
 // --------------------------------------------------------------
@@ -28,176 +26,74 @@ export function makeEditToolsButtons() {
 	// All the various permutations of states
 	log(`editor.selectedTool: ${editor.selectedTool}`);
 
-	let penClickable = true;
-	let penAddPointClickable = true;
-	let isSelected = false;
+	// Button data
+	let toolButtonData = {
+		newRectangle:
+			{title: 'New rectangle', disabled: false},
+		newOval:
+			{title: 'New oval', disabled: false},
+		newPath:
+			{title: 'New path', disabled: false},
+		pathAddPoint:
+			{title: 'Add path point', disabled: false},
+		pathEdit:
+			{title: 'Path edit', disabled: false},
+		shapeEdit:
+			{title: 'Shape edit', disabled: false},
+	};
+
+
+	// Disable pen and add path point buttons for certain conditions
 	const hasComponentInstance = editor.multiSelect.shapes.contains('ComponentInstance');
 
-	if (editor.selectedTool === 'pathEdit') {
-		pathEditClass = 'canvas-edit__tool-selected';
-	} else if (hasComponentInstance) {
-		pathEditClass = 'button__disabled';
-		penClickable = false;
-		penAddPointClickable = false;
+	if (editor.selectedTool !== 'pathEdit' && hasComponentInstance) {
+		toolButtonData.pathEdit.disabled = true;
 	}
 
-	if (editor.selectedTool === 'pathAddPoint') {
-		pathAddPointClass = 'canvas-edit__tool-selected';
-	} else if (hasComponentInstance) {
-		pathAddPointClass = 'button__disabled';
-		penClickable = false;
-		penAddPointClickable = false;
+	if (editor.selectedTool !== 'pathAddPoint' && hasComponentInstance) {
+		toolButtonData.pathAddPoint.disabled = true;
 	}
 
 	if (editor.multiSelect.shapes.count() > 1) {
-		pathAddPointClass = 'button__disabled';
-		penAddPointClickable = false;
+		toolButtonData.pathAddPoint.disabled = true;
 	}
 
-	// Button data
-	let toolButtonData = {
-		newRectangle: {title: 'New rectangle', svgName: 'newRectangle'},
-		newOval: {title: 'New oval', svgName: 'newOval'},
-		newPath: {title: 'New path', svgName: 'newPath'},
-		pathAddPoint: {title: 'Add path point', svgName: 'pathAddPoint'},
-		pathEdit: {title: 'New rectangle', svgName: 'pathEdit'},
-		shapeEdit: {title: 'New rectangle', svgName: 'shapeEdit'},
-	};
-
+	// Make all the new buttons
 	let toolButtonElements = {};
-	Object.keys(toolButtonData).forEach((toolButtonName) => {
-		isSelected = (editor.selectedTool === toolButtonName);
+
+	Object.keys(toolButtonData).forEach((buttonName) => {
+		log(`buttonName: ${buttonName}`);
+
+		let isSelected = (editor.selectedTool === buttonName);
+
 		let newToolButton = makeElement({
 			tag: 'button',
-			title: toolButtonData[toolButtonName].title,
+			title: toolButtonData[buttonName].title,
 			className: 'canvas-edit__tool',
-			innerHTML: makeToolButtonSVG({name: toolButtonData[toolButtonName].svgName, selected: isSelected})
+			innerHTML: makeToolButtonSVG({
+				name: buttonName,
+				selected: isSelected,
+				disabled: toolButtonData[buttonName].disabled
+			})
 		});
-		newToolButton.addEventListener('click', () => clickTool(toolButtonName));
+
+		newToolButton.addEventListener('click', () => clickTool(buttonName));
+
 		if(isSelected) newToolButton.classList.add('canvas-edit__tool-selected');
+
 		editor.subscribe({
 			topic: 'selectedTool',
-			subscriberName: toolButtonName,
+			subscriberName: buttonName,
 			callback:  (newSelectedTool) => {
-				let isSelected = (newSelectedTool === toolButtonName)
+				let isSelected = (newSelectedTool === buttonName);
 				newToolButton.classList.toggle('canvas-edit__tool-selected', isSelected);
-				newToolButton.innerHTML = makeToolButtonSVG({name: toolButtonData[toolButtonName].svgName, selected: isSelected});
+				newToolButton.innerHTML = makeToolButtonSVG({name: buttonName, selected: isSelected});
 			}
 		});
 
-		toolButtonElements[toolButtonName] = newToolButton;
+		toolButtonElements[buttonName] = newToolButton;
 	});
 
-	/*
-	// newRectangle
-	isSelected = (editor.selectedTool === 'newRectangle');
-	let newRectangle = makeElement({
-		tag: 'button',
-		title: 'New rectangle',
-		className: 'canvas-edit__tool',
-		innerHTML: makeToolButtonSVG({name: 'newRectangle', selected: isSelected})
-	});
-	newRectangle.addEventListener('click', () => clickTool('newRectangle'));
-	if(isSelected) newRectangle.classList.add('canvas-edit__tool-selected');
-	editor.subscribe({
-		topic: 'selectedTool',
-		subscriberName: 'newRectangle',
-		callback:  (newSelectedTool) => {
-			newRectangle.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'newRectangle'));
-		}
-	});
-
-	// newOval
-	isSelected = (editor.selectedTool === 'newOval');
-	let newOval = makeElement({
-		tag: 'button',
-		title: 'New oval',
-		className: 'canvas-edit__tool',
-		innerHTML: makeToolButtonSVG({name: 'newOval', selected: isSelected})
-	});
-	newOval.addEventListener('click', () => clickTool('newOval'));
-	if(isSelected) newOval.classList.add('canvas-edit__tool-selected');
-	editor.subscribe({
-		topic: 'selectedTool',
-		subscriberName: 'newOval',
-		callback:  (newSelectedTool) => {
-			newOval.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'newOval'));
-		}
-	});
-
-	// newPath
-	isSelected = (editor.selectedTool === 'newPath');
-	let newPath = makeElement({
-		tag: 'button',
-		title: 'New path',
-		className: 'canvas-edit__tool',
-		innerHTML: makeToolButtonSVG({name: 'newPath', selected: isSelected})
-	});
-	newPath.addEventListener('click', () => clickTool('newPath'));
-	if(isSelected) newPath.classList.add('canvas-edit__tool-selected');
-	editor.subscribe({
-		topic: 'selectedTool',
-		subscriberName: 'newPath',
-		callback:  (newSelectedTool) => {
-			newPath.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'newPath'));
-		}
-	});
-
-
-	// pathAddPoint
-	isSelected = (editor.selectedTool === 'pathAddPoint');
-	let pathAddPoint = makeElement({
-		tag: 'button',
-		title: 'Add path point',
-		className: 'canvas-edit__tool',
-		innerHTML: makeToolButtonSVG({name: 'pathAddPoint', selected: isSelected, disabled: !penAddPointClickable})
-	});
-	if(penAddPointClickable) pathAddPoint.addEventListener('click', () => clickTool('pathAddPoint'));
-	if(isSelected) pathAddPoint.classList.add('canvas-edit__tool-selected');
-	editor.subscribe({
-		topic: 'selectedTool',
-		subscriberName: 'pathAddPoint',
-		callback:  (newSelectedTool) => {
-			pathAddPoint.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'pathAddPoint'));
-		}
-	});
-
-	// pathEdit
-	isSelected = (editor.selectedTool === 'pathEdit');
-	let pathEdit = makeElement({
-		tag: 'button',
-		title: 'Path edit',
-		className: 'canvas-edit__tool',
-		innerHTML: makeToolButtonSVG({name: 'pathEdit', selected: isSelected, disabled: !penClickable})
-	});
-	pathEdit.addEventListener('click', () => clickTool('pathEdit'));
-	if(isSelected) pathEdit.classList.add('canvas-edit__tool-selected');
-	editor.subscribe({
-		topic: 'selectedTool',
-		subscriberName: 'pathEdit',
-		callback:  (newSelectedTool) => {
-			pathEdit.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'pathEdit'));
-		}
-	});
-
-	// shapeEdit
-	isSelected = (editor.selectedTool === 'shapeEdit');
-	let shapeEdit = makeElement({
-		tag: 'button',
-		title: 'Shape edit',
-		className: 'canvas-edit__tool',
-		innerHTML: makeToolButtonSVG({name: 'shapeEdit', selected: isSelected, disabled: !penClickable})
-	});
-	shapeEdit.addEventListener('click', () => clickTool('shapeEdit'));
-	if(isSelected) shapeEdit.classList.add('canvas-edit__tool-selected');
-	editor.subscribe({
-		topic: 'selectedTool',
-		subscriberName: 'shapeEdit',
-		callback:  (newSelectedTool) => {
-			shapeEdit.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'shapeEdit'));
-		}
-	});
-*/
 	// Done editing path
 	let finishPath = makeElement({
 		tag: 'button',
@@ -241,59 +137,55 @@ export function makeEditToolsButtons() {
 	return content;
 }
 
-export function makeKernToolsButtons() {
-	// Kern
-	const kern =
-		'<button title="kern" class="' +
-		(st === 'kern' ? 'canvas-edit__tool-selected ' : ' ') +
-		'tool" onclick="clickTool(\'kern\');"/>' +
-		makeToolButtonSVG({ name: 'kern', selected: st === 'kern' }) +
-		'</button>';
-}
-
-export function makeContextGlyphControls() {
-	// Context Glyphs
-	let ctxg = '<div class="contextglyphsarea">';
-	ctxg += '<div id="contextglyphsoptions">';
-	ctxg +=
-		'<b>Context Glyphs</b> are letters you can display around the glyph you are currently editing.<br><br>';
-	ctxg += checkUI(
-		'getCurrentProject().projectSettings.showContextGlyphGuides',
-		getCurrentProject().projectSettings.showContextGlyphGuides,
-		true
-	);
-	ctxg +=
-		'<label style="margin-left:10px; position:relative; top:-6px;" for="showContextGlyphGuides">show guides</label><br>';
-	ctxg +=
-		'glyph ' +
-		sliderUI(
-		'contextGlyphTransparency',
-		'contextGlyphTransparency_dropdown',
-		true,
-		false
-		);
-	ctxg += '<br/>';
-	ctxg +=
-		'guide ' +
-		sliderUI(
-		'systemGuideTransparency',
-		'systemGuideTransparency_dropdown',
-		true,
-		false
-		);
-	ctxg += '</div>';
-	ctxg +=
-		'<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
-	ctxg += 'onblur="_UI.focusElement = false;" onmouseover="mouseoutcec();" ';
-	ctxg +=
-		'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
-	ctxg += 'value="' + getContextGlyphString() + '"/>';
-	ctxg +=
-		'<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
-	ctxg += '</div>';
-}
 
 export function makeViewToolsButtons() {
+	log(`makeViewToolsButtons`, 'start');
+
+	// Button data
+	let viewButtonTitles = {
+		pan: 'Pan the edit canvas',
+		zoom1to1: 'Zoom so 1 pixel = 1 em',
+		zoomEm: 'Zoom to fit a full Em',
+		zoomIn: 'Zoom in 10%',
+		zoomOut: 'Zoom out 10%',
+	};
+
+	let viewButtonElements = {};
+	let editor = getCurrentProjectEditor();
+
+	Object.keys(viewButtonTitles).forEach((buttonName) => {
+		log(`buttonName: ${buttonName}`);
+
+		let isSelected = (editor.selectedTool === buttonName);
+		let newToolButton = makeElement({
+			tag: 'button',
+			className: 'canvas-edit__tool',
+			title: viewButtonTitles[buttonName],
+			innerHTML: makeToolButtonSVG({
+				name: buttonName,
+				selected: isSelected
+			})
+		});
+		newToolButton.addEventListener('click', () => clickTool(buttonName));
+
+		if(isSelected) newToolButton.classList.add('canvas-edit__tool-selected');
+
+		if(buttonName === 'pan') {
+			editor.subscribe({
+				topic: 'selectedTool',
+				subscriberName: buttonName,
+				callback:  (newSelectedTool) => {
+					let isSelected = (newSelectedTool === buttonName);
+					newToolButton.classList.toggle('canvas-edit__tool-selected', isSelected);
+					newToolButton.innerHTML = makeToolButtonSVG({name: buttonName, selected: isSelected});
+				}
+			});
+		}
+
+		viewButtonElements[buttonName] = newToolButton;
+	});
+
+	/*
 	let content = '';
 	// Pan
 	content += `
@@ -357,8 +249,18 @@ export function makeViewToolsButtons() {
 		${makeToolButtonSVG({ name: 'zoomOut' })}
 		</button>
 	`;
+	*/
 
-	return makeElement({content: content});
+	let content = makeElement();
+
+	content.appendChild(viewButtonElements.pan);
+	content.appendChild(viewButtonElements.zoom1to1);
+	content.appendChild(viewButtonElements.zoomEm);
+	content.appendChild(viewButtonElements.zoomIn);
+	content.appendChild(viewButtonElements.zoomOut);
+
+	log(`makeViewToolsButtons`, 'end');
+	return content;
 }
 
 export function clickTool(newSelectedTool) {
@@ -368,39 +270,69 @@ export function clickTool(newSelectedTool) {
 
 	log('passed: ' + newSelectedTool + ' and editor.selectedTool now is: ' + editor.selectedTool);
 	editor.publish('selectedTool', newSelectedTool);
-	log(editor.subscribers);
-	/*
-	editor.eventHandlers.tool_addPath.firstpoint = true;
-	editor.eventHandlers.multi = false;
 
-	if (newSelectedTool === 'newRectangle') {
-		setCursor('crosshairsSquare');
-		clickEmptySpace();
-	} else if (newSelectedTool === 'newOval') {
-		setCursor('crosshairsCircle');
-		clickEmptySpace();
-	} else if (newSelectedTool === 'newPath') {
-		setCursor('penPlus');
-		clickEmptySpace();
-	} else if (newSelectedTool === 'pathEdit') {
-		setCursor('pen');
-	} else if (newSelectedTool === 'shapeResize') {
-		setCursor('arrow');
-	}
-
-	eventHandlerData.hoverPoint = false;
-	// closeNotation();
-	// updateCursor();
-
-	editor.editCanvas.redraw({ calledBy: 'clicktool' });
-	*/
 	log('clickTool', 'end');
 }
 
 
-//	-----------------
-//	Button Functions
-//	-----------------
+export function makeKernToolsButtons() {
+	// Kern
+	const kern =
+		'<button title="kern" class="' +
+		(st === 'kern' ? 'canvas-edit__tool-selected ' : ' ') +
+		'tool" onclick="clickTool(\'kern\');"/>' +
+		makeToolButtonSVG({ name: 'kern', selected: st === 'kern' }) +
+		'</button>';
+}
+
+export function makeContextGlyphControls() {
+	// Context Glyphs
+	let ctxg = '<div class="contextglyphsarea">';
+	ctxg += '<div id="contextglyphsoptions">';
+	ctxg +=
+		'<b>Context Glyphs</b> are letters you can display around the glyph you are currently editing.<br><br>';
+	ctxg += checkUI(
+		'getCurrentProject().projectSettings.showContextGlyphGuides',
+		getCurrentProject().projectSettings.showContextGlyphGuides,
+		true
+	);
+	ctxg +=
+		'<label style="margin-left:10px; position:relative; top:-6px;" for="showContextGlyphGuides">show guides</label><br>';
+	ctxg +=
+		'glyph ' +
+		sliderUI(
+		'contextGlyphTransparency',
+		'contextGlyphTransparency_dropdown',
+		true,
+		false
+		);
+	ctxg += '<br/>';
+	ctxg +=
+		'guide ' +
+		sliderUI(
+		'systemGuideTransparency',
+		'systemGuideTransparency_dropdown',
+		true,
+		false
+		);
+	ctxg += '</div>';
+	ctxg +=
+		'<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
+	ctxg += 'onblur="_UI.focusElement = false;" onmouseover="mouseoutcec();" ';
+	ctxg +=
+		'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
+	ctxg += 'value="' + getContextGlyphString() + '"/>';
+	ctxg +=
+		'<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
+	ctxg += '</div>';
+}
+
+
+
+// --------------------------------------------------------------
+// Button helper functions
+// --------------------------------------------------------------
+
 export function addShape(newShape){
 	// debug('addShape - START');
 	// debug('\t name: ' + newShape.name);
@@ -517,11 +449,12 @@ function isThisShapeHere(shape, px, py) {
 }
 
 
-//	---------------------
-//	Tools buttons graphics
-//	---------------------
-let white = uiColors.offwhite;
-let black = uiColors.enabled.resting.text;
+
+
+// --------------------------------------------------------------
+// Tool button graphics
+// --------------------------------------------------------------
+
 let icons = {};
 
 export function makeToolButtonSVG(oa) {
@@ -532,8 +465,8 @@ export function makeToolButtonSVG(oa) {
 	let icon = icons[oa.name];
 
 	if (oa.selected) {
-		colorOutline = 'black';
-		colorFill = 'white';
+		colorOutline = accentColors.gray.l10;
+		colorFill = accentColors.gray.l95;
 	} else if (oa.disabled) {
 		colorOutline = accentColors.gray.l40;
 		colorFill = accentColors.gray.l30;
@@ -830,6 +763,8 @@ icons.newPath = {
 		<rect x="14" y="8" width="1" height="3"></rect>
 	`
 };
+
+// View and Zoom
 
 icons.zoomEm = {
 	outline:`
