@@ -47,6 +47,7 @@ export default class CanvasEdit extends HTMLElement {
 		this.canvas.width = this.width;
 
 		initEventHandlers(this.canvas);
+		getCurrentProjectEditor().editCanvas = this;
 		this.redraw();
 		log(`CanvasEdit.constructor`, 'end');
 	}

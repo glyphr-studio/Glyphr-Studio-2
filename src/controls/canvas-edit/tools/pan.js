@@ -2,6 +2,9 @@
 // Pan - moves the canvas view
 // ----------------------------------------------------------------
 
+import { getCurrentProjectEditor } from '../../../app/main.js';
+import { eventHandlerData } from '../events_mouse.js';
+
 export default class Tool_Pan {
 	constructor() {
 		this.dragging = false;
@@ -10,9 +13,10 @@ export default class Tool_Pan {
 
 		this.mousedown = function (ev) {
 			// log('PAN TOOL - mouse down: ' + eventHandlerData.mouseX + ':' + eventHandlerData.mouseY);
-			let v = getView('Event Handler Tool_Pan mousedown');
-			this.deltax = eventHandlerData.mouseX - v.dx;
-			this.deltay = eventHandlerData.mouseY - v.dy;
+			let editor = getCurrentProjectEditor();
+			let view = editor.view;
+			this.deltax = eventHandlerData.mouseX - view.dx;
+			this.deltay = eventHandlerData.mouseY - view.dy;
 			this.dragging = true;
 		};
 
@@ -25,12 +29,14 @@ export default class Tool_Pan {
 
 		this.mousemove = function (ev) {
 			if (this.dragging) {
+				let editor = getCurrentProjectEditor();
 				// Moving shapes if mousedown
-				setView({
+				editor.view = {
 					dx: eventHandlerData.mouseX - this.deltax,
 					dy: eventHandlerData.mouseY - this.deltay,
-				});
-				redraw({
+				};
+
+				editor.editCanvas.redraw({
 					calledBy: 'Event Handler Tool_Pan mousemove',
 					redrawPanels: false,
 				});

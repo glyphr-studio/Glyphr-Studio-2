@@ -12,7 +12,6 @@ export default class Tool_PathEdit {
 	constructor() {
 		this.dragging = false;
 		this.controlpoint = false;
-		let redraw = document.querySelector('canvas-edit').redraw;
 
 		this.mousedown = function(ev) {
 			// log('Tool_PathEdit.mousedown', 'start');
@@ -55,7 +54,7 @@ export default class Tool_PathEdit {
 			}
 
 			if (editor.multiSelect.shapes.members.length) editor.nav.panel = 'Attributes';
-			redraw({ calledBy: 'Event Handler Tool_PathEdit mousedown' });
+			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_PathEdit mousedown' });
 			// log('Tool_PathEdit.mousedown', 'end');
 		};
 
