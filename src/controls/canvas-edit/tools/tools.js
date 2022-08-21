@@ -10,20 +10,24 @@ import { eventHandlerData } from '../events_mouse.js';
 // Making tool buttons
 // --------------------------------------------------------------
 export function makeEditToolsButtons() {
-	// log('update_ToolsArea', 'start');
+	log('makeEditToolsButtons', 'start');
 	let editor = getCurrentProjectEditor();
 
 	if (!editor.onCanvasEditPage()) {
-		// log('returning, !onCanvasEditPage');
+		log('returning, !onCanvasEditPage');
+		log('makeEditToolsButtons', 'end');
 		return '';
 	}
 
 	if (!editor.selectedWorkItemID) {
-		// log('returning, !selectedWorkItemID');
+		log('returning, !selectedWorkItemID');
+		log('makeEditToolsButtons', 'end');
 		return '';
 	}
 
 	// All the various permutations of states
+	log(`editor.selectedTool: ${editor.selectedTool}`);
+
 	let penClickable = true;
 	let penAddPointClickable = true;
 	let isSelected = false;
@@ -50,16 +54,58 @@ export function makeEditToolsButtons() {
 		penAddPointClickable = false;
 	}
 
+	// Button data
+	let toolButtonData = {
+		newRectangle: {title: 'New rectangle', svgName: 'newRectangle'},
+		newOval: {title: 'New oval', svgName: 'newOval'},
+		newPath: {title: 'New path', svgName: 'newPath'},
+		pathAddPoint: {title: 'Add path point', svgName: 'pathAddPoint'},
+		pathEdit: {title: 'New rectangle', svgName: 'pathEdit'},
+		shapeEdit: {title: 'New rectangle', svgName: 'shapeEdit'},
+	};
+
+	let toolButtonElements = {};
+	Object.keys(toolButtonData).forEach((toolButtonName) => {
+		isSelected = (editor.selectedTool === toolButtonName);
+		let newToolButton = makeElement({
+			tag: 'button',
+			title: toolButtonData[toolButtonName].title,
+			className: 'canvas-edit__tool',
+			innerHTML: makeToolButtonSVG({name: toolButtonData[toolButtonName].svgName, selected: isSelected})
+		});
+		newToolButton.addEventListener('click', () => clickTool(toolButtonName));
+		if(isSelected) newToolButton.classList.add('canvas-edit__tool-selected');
+		editor.subscribe({
+			topic: 'selectedTool',
+			subscriberName: toolButtonName,
+			callback:  (newSelectedTool) => {
+				let isSelected = (newSelectedTool === toolButtonName)
+				newToolButton.classList.toggle('canvas-edit__tool-selected', isSelected);
+				newToolButton.innerHTML = makeToolButtonSVG({name: toolButtonData[toolButtonName].svgName, selected: isSelected});
+			}
+		});
+
+		toolButtonElements[toolButtonName] = newToolButton;
+	});
+
+	/*
 	// newRectangle
 	isSelected = (editor.selectedTool === 'newRectangle');
 	let newRectangle = makeElement({
 		tag: 'button',
 		title: 'New rectangle',
 		className: 'canvas-edit__tool',
-		innerHTML: makeToolButton({name: 'tool_newRectangle', selected: isSelected})
+		innerHTML: makeToolButtonSVG({name: 'newRectangle', selected: isSelected})
 	});
 	newRectangle.addEventListener('click', () => clickTool('newRectangle'));
 	if(isSelected) newRectangle.classList.add('canvas-edit__tool-selected');
+	editor.subscribe({
+		topic: 'selectedTool',
+		subscriberName: 'newRectangle',
+		callback:  (newSelectedTool) => {
+			newRectangle.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'newRectangle'));
+		}
+	});
 
 	// newOval
 	isSelected = (editor.selectedTool === 'newOval');
@@ -67,10 +113,17 @@ export function makeEditToolsButtons() {
 		tag: 'button',
 		title: 'New oval',
 		className: 'canvas-edit__tool',
-		innerHTML: makeToolButton({name: 'tool_newOval', selected: isSelected})
+		innerHTML: makeToolButtonSVG({name: 'newOval', selected: isSelected})
 	});
 	newOval.addEventListener('click', () => clickTool('newOval'));
 	if(isSelected) newOval.classList.add('canvas-edit__tool-selected');
+	editor.subscribe({
+		topic: 'selectedTool',
+		subscriberName: 'newOval',
+		callback:  (newSelectedTool) => {
+			newOval.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'newOval'));
+		}
+	});
 
 	// newPath
 	isSelected = (editor.selectedTool === 'newPath');
@@ -78,10 +131,17 @@ export function makeEditToolsButtons() {
 		tag: 'button',
 		title: 'New path',
 		className: 'canvas-edit__tool',
-		innerHTML: makeToolButton({name: 'tool_newPath', selected: isSelected})
+		innerHTML: makeToolButtonSVG({name: 'newPath', selected: isSelected})
 	});
 	newPath.addEventListener('click', () => clickTool('newPath'));
 	if(isSelected) newPath.classList.add('canvas-edit__tool-selected');
+	editor.subscribe({
+		topic: 'selectedTool',
+		subscriberName: 'newPath',
+		callback:  (newSelectedTool) => {
+			newPath.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'newPath'));
+		}
+	});
 
 
 	// pathAddPoint
@@ -90,10 +150,17 @@ export function makeEditToolsButtons() {
 		tag: 'button',
 		title: 'Add path point',
 		className: 'canvas-edit__tool',
-		innerHTML: makeToolButton({name: 'tool_penPlus', selected: isSelected, disabled: !penAddPointClickable})
+		innerHTML: makeToolButtonSVG({name: 'pathAddPoint', selected: isSelected, disabled: !penAddPointClickable})
 	});
 	if(penAddPointClickable) pathAddPoint.addEventListener('click', () => clickTool('pathAddPoint'));
 	if(isSelected) pathAddPoint.classList.add('canvas-edit__tool-selected');
+	editor.subscribe({
+		topic: 'selectedTool',
+		subscriberName: 'pathAddPoint',
+		callback:  (newSelectedTool) => {
+			pathAddPoint.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'pathAddPoint'));
+		}
+	});
 
 	// pathEdit
 	isSelected = (editor.selectedTool === 'pathEdit');
@@ -101,10 +168,17 @@ export function makeEditToolsButtons() {
 		tag: 'button',
 		title: 'Path edit',
 		className: 'canvas-edit__tool',
-		innerHTML: makeToolButton({name: 'tool_pen', selected: isSelected, disabled: !penClickable})
+		innerHTML: makeToolButtonSVG({name: 'pathEdit', selected: isSelected, disabled: !penClickable})
 	});
 	pathEdit.addEventListener('click', () => clickTool('pathEdit'));
 	if(isSelected) pathEdit.classList.add('canvas-edit__tool-selected');
+	editor.subscribe({
+		topic: 'selectedTool',
+		subscriberName: 'pathEdit',
+		callback:  (newSelectedTool) => {
+			pathEdit.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'pathEdit'));
+		}
+	});
 
 	// shapeEdit
 	isSelected = (editor.selectedTool === 'shapeEdit');
@@ -112,11 +186,18 @@ export function makeEditToolsButtons() {
 		tag: 'button',
 		title: 'Shape edit',
 		className: 'canvas-edit__tool',
-		innerHTML: makeToolButton({name: 'tool_arrow', selected: isSelected, disabled: !penClickable})
+		innerHTML: makeToolButtonSVG({name: 'shapeEdit', selected: isSelected, disabled: !penClickable})
 	});
 	shapeEdit.addEventListener('click', () => clickTool('shapeEdit'));
 	if(isSelected) shapeEdit.classList.add('canvas-edit__tool-selected');
-
+	editor.subscribe({
+		topic: 'selectedTool',
+		subscriberName: 'shapeEdit',
+		callback:  (newSelectedTool) => {
+			shapeEdit.classList.toggle('canvas-edit__tool-selected', (newSelectedTool === 'shapeEdit'));
+		}
+	});
+*/
 	// Done editing path
 	let finishPath = makeElement({
 		tag: 'button',
@@ -136,27 +217,27 @@ export function makeEditToolsButtons() {
 	const selectedWorkItem = editor.selectedWorkItem;
 
 	if (onGlyphEditPage || onLigaturesPage) {
-		content.appendChild(newRectangle);
-		content.appendChild(newOval);
-		content.appendChild(newPath);
+		content.appendChild(toolButtonElements.newRectangle);
+		content.appendChild(toolButtonElements.newOval);
+		content.appendChild(toolButtonElements.newPath);
 	}
 
 	if (onComponentPage && selectedWorkItem && !selectedWorkItem.shape) {
-		content.appendChild(newRectangle);
-		content.appendChild(newOval);
-		content.appendChild(newPath);
+		content.appendChild(toolButtonElements.newRectangle);
+		content.appendChild(toolButtonElements.newOval);
+		content.appendChild(toolButtonElements.newPath);
 	}
 
 	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
-		content.appendChild(pathAddPoint);
-		content.appendChild(pathEdit);
-		content.appendChild(shapeEdit);
+		content.appendChild(toolButtonElements.pathAddPoint);
+		content.appendChild(toolButtonElements.pathEdit);
+		content.appendChild(toolButtonElements.shapeEdit);
 		if (editor.selectedTool === 'newPath') {
 			content.appendChild(finishPath);
 		}
 	}
 
-	// log('update_ToolsArea', 'end');
+	log('makeEditToolsButtons', 'end');
 	return content;
 }
 
@@ -166,7 +247,7 @@ export function makeKernToolsButtons() {
 		'<button title="kern" class="' +
 		(st === 'kern' ? 'canvas-edit__tool-selected ' : ' ') +
 		'tool" onclick="clickTool(\'kern\');"/>' +
-		makeToolButton({ name: 'tool_kern', selected: st === 'kern' }) +
+		makeToolButtonSVG({ name: 'kern', selected: st === 'kern' }) +
 		'</button>';
 }
 
@@ -221,7 +302,7 @@ export function makeViewToolsButtons() {
 			class="${(st === 'pan' ? 'canvas-edit__tool-selected ' : ' ')} tool"
 			onclick="clickTool('pan');"
 		/>
-		${makeToolButton({ name: 'tool_pan', selected: st === 'pan' })}
+		${makeToolButtonSVG({ name: 'pan', selected: st === 'pan' })}
 		</button>
 	`;
 	content += '<span style="width:15px; display:inline-block;">&nbsp;</span>';
@@ -233,7 +314,7 @@ export function makeViewToolsButtons() {
 			class="tool"
 			onclick="setView({dz:1});redraw({calledBy:\'updatetools\'});"
 		>
-		${makeToolButton({ name: 'tool_zoom1to1' })}
+		${makeToolButtonSVG({ name: 'zoom1to1' })}
 		</button>
 	`;
 
@@ -243,7 +324,7 @@ export function makeViewToolsButtons() {
 			class="tool"
 			onclick="fitViewToContextGlyphs(); redraw({calledBy:\'updatetools\'});"
 		>
-		${makeToolButton({ name: 'tool_zoomEm' })}
+		${makeToolButtonSVG({ name: 'zoomEm' })}
 		</button>
 	`;
 
@@ -263,7 +344,7 @@ export function makeViewToolsButtons() {
 			class="tool"
 			onclick="viewZoom(1.1, true);"
 		>
-		${makeToolButton({ name: 'tool_zoomIn' })}
+		${makeToolButtonSVG({ name: 'zoomIn' })}
 		</button>
 	`;
 
@@ -273,35 +354,37 @@ export function makeViewToolsButtons() {
 			class="tool"
 			onclick="viewZoom(.9, true);"
 		>
-		${makeToolButton({ name: 'tool_zoomOut' })}
+		${makeToolButtonSVG({ name: 'zoomOut' })}
 		</button>
 	`;
 
 	return makeElement({content: content});
 }
 
-export function clickTool(ctool) {
+export function clickTool(newSelectedTool) {
 	log('clickTool', 'start');
 	let editor = getCurrentProjectEditor();
-	editor.selectedTool = ctool;
+	editor.selectedTool = newSelectedTool;
 
-	log('passed: ' + ctool + ' and editor.selectedTool now is: ' + editor.selectedTool);
-
+	log('passed: ' + newSelectedTool + ' and editor.selectedTool now is: ' + editor.selectedTool);
+	editor.publish('selectedTool', newSelectedTool);
+	log(editor.subscribers);
+	/*
 	editor.eventHandlers.tool_addPath.firstpoint = true;
 	editor.eventHandlers.multi = false;
 
-	if (ctool === 'newRectangle') {
+	if (newSelectedTool === 'newRectangle') {
 		setCursor('crosshairsSquare');
 		clickEmptySpace();
-	} else if (ctool === 'newOval') {
+	} else if (newSelectedTool === 'newOval') {
 		setCursor('crosshairsCircle');
 		clickEmptySpace();
-	} else if (ctool === 'newPath') {
+	} else if (newSelectedTool === 'newPath') {
 		setCursor('penPlus');
 		clickEmptySpace();
-	} else if (ctool === 'pathEdit') {
+	} else if (newSelectedTool === 'pathEdit') {
 		setCursor('pen');
-	} else if (ctool === 'shapeResize') {
+	} else if (newSelectedTool === 'shapeResize') {
 		setCursor('arrow');
 	}
 
@@ -309,7 +392,8 @@ export function clickTool(ctool) {
 	// closeNotation();
 	// updateCursor();
 
-	editor.editCanvas.redraw({ calledBy: 'clicktool', redrawPanels: false });
+	editor.editCanvas.redraw({ calledBy: 'clicktool' });
+	*/
 	log('clickTool', 'end');
 }
 
@@ -440,16 +524,16 @@ let white = uiColors.offwhite;
 let black = uiColors.enabled.resting.text;
 let icons = {};
 
-export function makeToolButton(oa) {
-	log(`makeToolButton`, 'start');
+export function makeToolButtonSVG(oa) {
+	log(`makeToolButtonSVG`, 'start');
 	log(`oa.name: ${oa.name}`);
 	let colorOutline = accentColors.blue.l75;
 	let colorFill = accentColors.gray.l40;
 	let icon = icons[oa.name];
 
 	if (oa.selected) {
-		colorOutline = black;
-		colorFill = white;
+		colorOutline = 'black';
+		colorFill = 'white';
 	} else if (oa.disabled) {
 		colorOutline = accentColors.gray.l40;
 		colorFill = accentColors.gray.l30;
@@ -480,11 +564,12 @@ export function makeToolButton(oa) {
 		</svg>
 	`;
 
-	log(`makeToolButton`, 'end');
+	log(`makeToolButtonSVG`, 'end');
 	return content;
 }
 
-icons.tool_arrow = {
+// Arrow
+icons.shapeEdit = {
 	fill:`
 		<rect x="11" y="14" width="1" height="4"></rect>
 		<rect x="12" y="16" width="1" height="2"></rect>
@@ -531,7 +616,8 @@ icons.tool_arrow = {
 	`
 };
 
-icons.tool_penPlus = {
+// Pen Plus
+icons.pathAddPoint = {
 	fill:`
 		<rect x="5" y="4" width="5" height="14"></rect>
 		<rect x="10" y="8" width="2" height="6"></rect>
@@ -563,7 +649,8 @@ icons.tool_penPlus = {
 	`
 };
 
-icons.tool_penMinus = {
+// Pen Minus
+icons.pathRemovePoint = {
 	fill:`
 		<rect x="5" y="4" width="5" height="14"></rect>
 		<rect x="10" y="8" width="2" height="6"></rect>
@@ -594,7 +681,8 @@ icons.tool_penMinus = {
 	`
 };
 
-icons.tool_pen = {
+// Pen
+icons.pathEdit = {
 	fill:`
 		<rect x="7" y="4" width="5" height="14"></rect>
 		<rect x="12" y="8" width="2" height="6"></rect>
@@ -624,13 +712,14 @@ icons.tool_pen = {
 	`
 };
 
-icons.tool_shapeResize = {
+// Square with handles
+icons.shapeResize = {
 	fill:`
-		<rect x="1" y="1" display="inline" fill="${white}" width="4" height="4"></rect>
-		<rect x="8" y="8" display="inline" fill="${white}" width="4" height="4"></rect>
-		<rect x="15" y="15" display="inline" fill="${white}" width="4" height="4"></rect>
-		<rect x="15" y="1" display="inline" fill="${white}" width="4" height="4"></rect>
-		<rect x="1" y="15" display="inline" fill="${white}" width="4" height="4"></rect>
+		<rect x="1" y="1" display="inline" width="4" height="4"></rect>
+		<rect x="8" y="8" display="inline" width="4" height="4"></rect>
+		<rect x="15" y="15" display="inline" width="4" height="4"></rect>
+		<rect x="15" y="1" display="inline" width="4" height="4"></rect>
+		<rect x="1" y="15" display="inline" width="4" height="4"></rect>
 	`,
 	outline:`
 		<rect x="16" y="5" width="1" height="10"></rect>
@@ -660,7 +749,7 @@ icons.tool_shapeResize = {
 	`
 };
 
-icons.tool_newRectangle = {
+icons.newRectangle = {
 	fill: `<rect x="2" y="2" width="12" height="12"></rect>
 `,
 	outline:`
@@ -673,7 +762,7 @@ icons.tool_newRectangle = {
 	`
 };
 
-icons.tool_newOval = {
+icons.newOval = {
 	fill:`
 		<rect x="6" y="2" width="4" height="1"></rect>
 		<rect x="6" y="12" width="4" height="1"></rect>
@@ -705,7 +794,7 @@ icons.tool_newOval = {
 	`
 };
 
-icons.tool_newPath = {
+icons.newPath = {
 	fill:`
 		<rect x="5" y="2" width="5" height="13"></rect>
 		<rect x="10" y="4" width="2" height="11"></rect>
@@ -742,7 +831,7 @@ icons.tool_newPath = {
 	`
 };
 
-icons.tool_zoomEm = {
+icons.zoomEm = {
 	outline:`
 		<polygon points="15,3 11,3 11,5 13,5 13,6 12,6 12,7 11,7 11,8 10,8 9,8 9,7 8,7 8,6 7,6 7,5 9,5 9,3 5,3 3,3 3,5 3,9 5,9 5,7 6,7 6,8 7,8 7,9 8,9 8,10 8,11 7,11 7,12 6,12 6,13 5,13 5,11 3,11 3,15 3,17 5,17 9,17 9,15 7,15 7,14 8,14 8,13 9,13 9,12 10,12 11,12 11,13 12,13 12,14 13,14 13,15 11,15 11,17 15,17 17,17 17,15 17,11 15,11 15,13 14,13 14,12 13,12 13,11 12,11 12,10 12,9 13,9 13,8 14,8 14,7 15,7 15,9 17,9 17,5 17,3"/>
 		<rect x="18" y="1" width="1" height="18"></rect>
@@ -752,7 +841,7 @@ icons.tool_zoomEm = {
 	`
 };
 
-icons.tool_zoom1to1 = {
+icons.zoom1to1 = {
 	outline:`
 		<rect x="5" y="4" width="2" height="12"></rect>
 		<rect x="14" y="4" width="2" height="12"></rect>
@@ -767,18 +856,18 @@ icons.tool_zoom1to1 = {
 	`
 };
 
-icons.tool_zoomIn = {
+icons.zoomIn = {
 	outline:`
 		<rect x="9" y="3" width="2" height="14"></rect>
 		<rect x="3" y="9" width="14" height="2"></rect>
 	`
 };
 
-icons.tool_zoomOut = {
+icons.zoomOut = {
 	outline: `<rect x="3" y="9" width="14" height="2"></rect>`
 };
 
-icons.tool_pan = {
+icons.pan = {
 	fill:`
 		<rect x="9" y="1" width="2" height="18"></rect>
 		<rect x="1" y="9" width="18" height="2"></rect>
@@ -835,7 +924,7 @@ icons.tool_pan = {
 	`
 };
 
-icons.tool_kern = {
+icons.kern = {
 	fill:`
 		<rect x="1" y="9" width="18" height="2"></rect>
 		<rect x="2" y="7" width="2" height="6"></rect>
