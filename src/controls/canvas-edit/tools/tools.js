@@ -30,7 +30,7 @@ export function makeEditToolsButtons() {
 	const hasComponentInstance = editor.multiSelect.shapes.contains('ComponentInstance');
 
 	if (editor.selectedTool === 'pathEdit') {
-		pathEditClass = 'button__call-to-action';
+		pathEditClass = 'canvas-edit__tool-selected';
 	} else if (hasComponentInstance) {
 		pathEditClass = 'button__disabled';
 		penClickable = false;
@@ -38,7 +38,7 @@ export function makeEditToolsButtons() {
 	}
 
 	if (editor.selectedTool === 'pathAddPoint') {
-		pathAddPointClass = 'button__call-to-action';
+		pathAddPointClass = 'canvas-edit__tool-selected';
 	} else if (hasComponentInstance) {
 		pathAddPointClass = 'button__disabled';
 		penClickable = false;
@@ -59,7 +59,7 @@ export function makeEditToolsButtons() {
 		innerHTML: makeToolButton({name: 'tool_newRectangle', selected: isSelected})
 	});
 	newRectangle.addEventListener('click', () => clickTool('newRectangle'));
-	if(isSelected) newRectangle.classList.add('button__call-to-action');
+	if(isSelected) newRectangle.classList.add('canvas-edit__tool-selected');
 
 	// newOval
 	isSelected = (editor.selectedTool === 'newOval');
@@ -70,7 +70,7 @@ export function makeEditToolsButtons() {
 		innerHTML: makeToolButton({name: 'tool_newOval', selected: isSelected})
 	});
 	newOval.addEventListener('click', () => clickTool('newOval'));
-	if(isSelected) newOval.classList.add('button__call-to-action');
+	if(isSelected) newOval.classList.add('canvas-edit__tool-selected');
 
 	// newPath
 	isSelected = (editor.selectedTool === 'newPath');
@@ -81,7 +81,7 @@ export function makeEditToolsButtons() {
 		innerHTML: makeToolButton({name: 'tool_newPath', selected: isSelected})
 	});
 	newPath.addEventListener('click', () => clickTool('newPath'));
-	if(isSelected) newPath.classList.add('button__call-to-action');
+	if(isSelected) newPath.classList.add('canvas-edit__tool-selected');
 
 
 	// pathAddPoint
@@ -93,7 +93,7 @@ export function makeEditToolsButtons() {
 		innerHTML: makeToolButton({name: 'tool_penPlus', selected: isSelected, disabled: !penAddPointClickable})
 	});
 	if(penAddPointClickable) pathAddPoint.addEventListener('click', () => clickTool('pathAddPoint'));
-	if(isSelected) pathAddPoint.classList.add('button__call-to-action');
+	if(isSelected) pathAddPoint.classList.add('canvas-edit__tool-selected');
 
 	// pathEdit
 	isSelected = (editor.selectedTool === 'pathEdit');
@@ -104,23 +104,23 @@ export function makeEditToolsButtons() {
 		innerHTML: makeToolButton({name: 'tool_pen', selected: isSelected, disabled: !penClickable})
 	});
 	pathEdit.addEventListener('click', () => clickTool('pathEdit'));
-	if(isSelected) pathEdit.classList.add('button__call-to-action');
+	if(isSelected) pathEdit.classList.add('canvas-edit__tool-selected');
 
-	// shapeResize
-	isSelected = (editor.selectedTool === 'shapeResize');
-	let shapeResize = makeElement({
+	// shapeEdit
+	isSelected = (editor.selectedTool === 'shapeEdit');
+	let shapeEdit = makeElement({
 		tag: 'button',
 		title: 'Shape edit',
 		className: 'canvas-edit__tool',
 		innerHTML: makeToolButton({name: 'tool_arrow', selected: isSelected, disabled: !penClickable})
 	});
-	shapeResize.addEventListener('click', () => clickTool('shapeResize'));
-	if(isSelected) shapeResize.classList.add('button__call-to-action');
+	shapeEdit.addEventListener('click', () => clickTool('shapeEdit'));
+	if(isSelected) shapeEdit.classList.add('canvas-edit__tool-selected');
 
 	// Done editing path
 	let finishPath = makeElement({
 		tag: 'button',
-		className: 'button__call-to-action',
+		className: 'canvas-edit__tool-selected',
 		title: 'Done editing path',
 		content: 'Done editing path'
 	});
@@ -150,7 +150,7 @@ export function makeEditToolsButtons() {
 	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
 		content.appendChild(pathAddPoint);
 		content.appendChild(pathEdit);
-		content.appendChild(shapeResize);
+		content.appendChild(shapeEdit);
 		if (editor.selectedTool === 'newPath') {
 			content.appendChild(finishPath);
 		}
@@ -164,7 +164,7 @@ export function makeKernToolsButtons() {
 	// Kern
 	const kern =
 		'<button title="kern" class="' +
-		(st === 'kern' ? 'button__call-to-action ' : ' ') +
+		(st === 'kern' ? 'canvas-edit__tool-selected ' : ' ') +
 		'tool" onclick="clickTool(\'kern\');"/>' +
 		makeToolButton({ name: 'tool_kern', selected: st === 'kern' }) +
 		'</button>';
@@ -218,7 +218,7 @@ export function makeViewToolsButtons() {
 	content += `
 		<button
 			title="scroll and pan"
-			class="${(st === 'pan' ? 'button__call-to-action ' : ' ')} tool"
+			class="${(st === 'pan' ? 'canvas-edit__tool-selected ' : ' ')} tool"
 			onclick="clickTool('pan');"
 		/>
 		${makeToolButton({ name: 'tool_pan', selected: st === 'pan' })}
