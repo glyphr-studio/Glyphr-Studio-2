@@ -138,6 +138,10 @@ export default class ProjectEditor {
 	 * @returns nothing
 	 */
 	subscribe({topic = false, subscriberName = '', callback = false}) {
+		log(`ProjectEditor.subscribe`, 'start');
+		log(`topic: ${topic}`);
+		log(`subscriberName: ${subscriberName}`);
+		
 		if(!topic) {
 			console.warn(`Subscriber was not provided a topic`);
 			return;
@@ -149,6 +153,7 @@ export default class ProjectEditor {
 
 		if (!this.subscribers[topic]) this.subscribers[topic] = [];
 		this.subscribers[topic].push({subscriberName: subscriberName, callback: callback});
+		log(`ProjectEditor.subscribe`, 'end');
 	}
 
 
