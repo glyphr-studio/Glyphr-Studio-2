@@ -148,7 +148,7 @@ export function makePanel_Actions() {
     '</button>';
   pointactions +=
     '<button title="Delete Path Point\nRemoves the currently selected point or points from the path" class="' +
-    (ss.length ? '' : 'buttondis') +
+    (ss.length ? '' : 'button__disabled') +
     "\" onclick=\"_UI.multiSelect.points.deletePathPoints(); historyPut('Delete Path Point'); redraw({calledBy:'actions panel'});\">" +
     makeActionButton.deletePathPoint() +
     '</button>';
@@ -200,7 +200,7 @@ export function makePanel_Actions() {
 
   let ispointsel = false;
   if (projectEditor.multiSelect.points.count() > 0) ispointsel = true;
-  // if (_UI.selectedTool !== 'pathedit') ispointsel = false;
+  // if (_UI.selectedTool !== 'pathEdit') ispointsel = false;
 
   if (ispointsel) {
     content += pointactions;
@@ -214,9 +214,9 @@ export function makePanel_Actions() {
   return makeElement({content: content});
 }
 
-// -------------------
+// --------------------------------------------------------------
 // Combine
-// -------------------
+// --------------------------------------------------------------
 
 function combineSelectedShapes() {
   showToast('Combining selected shapes... ', 100);
@@ -238,9 +238,9 @@ function combineAllGlyphShapes() {
   }, 200);
 }
 
-// -------------------
+// --------------------------------------------------------------
 // Copy Paste
-// -------------------
+// --------------------------------------------------------------
 function copyShape() {
   let ssm = _UI.multiSelect.shapes.members;
   if (ssm.length) {
@@ -264,12 +264,10 @@ function pasteShape() {
   if (cbs) {
     let newshapes = [];
     let sourceshapes = cbs.s;
-    var ts, newname, newsuffix, n;
+    let ts, newname, newsuffix, n;
     let offsetShapes = cbs.c === selwi;
 
     for (let s = 0; s < sourceshapes.length; s++) {
-      var ts;
-
       if (sourceshapes[s].objType === 'ComponentInstance') {
         ts = new ComponentInstance(sourceshapes[s]);
       } else {
@@ -420,7 +418,7 @@ function pasteShapesFrom(sourceGlyphID) {
         '" to  "' +
         getSelectedWorkItemName()
     );
-    if (_UI.selectedTool === 'pathaddpoint') _UI.selectedTool = 'shaperesize';
+    if (_UI.selectedTool === 'pathAddPoint') _UI.selectedTool = 'shapeResize';
     closeDialog();
   } else {
     showDialogGetShapes(
@@ -429,9 +427,9 @@ function pasteShapesFrom(sourceGlyphID) {
   }
 }
 
-// -------------------
+// --------------------------------------------------------------
 // COMPONENT Actions
-// -------------------
+// --------------------------------------------------------------
 
 function showDialogLinkComponentToGlyph(msg) {
   let sls = getSelectedWorkItem();

@@ -29,10 +29,10 @@ export default class Tool_PathAddPoint {
 					editor.multiSelect.shapes.select(s);
 
 				if (s.objType === 'ComponentInstance')
-					clickTool('shaperesize');
+					clickTool('shapeResize');
 				editor.nav.panel = 'Attributes';
 			} else {
-				editor.selectedTool = 'newpath';
+				editor.selectedTool = 'newPath';
 				eventHandlerData.currentTool = eventHandlerData.tool_addPath;
 				eventHandlerData.currentTool.dragging = true;
 				eventHandlerData.currentTool.firstpoint = true;

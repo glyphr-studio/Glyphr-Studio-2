@@ -341,7 +341,7 @@ export class MultiSelectShapes extends MultiSelect {
       select(wishapes[i] || wishapes[wishapes.length - 1]);
       const singleshape = getSingleton();
       if (singleshape && singleshape.objType === 'ComponentInstance')
-        clickTool('shaperesize');
+        clickTool('shapeResize');
     }
 
     updateCurrentGlyphWidth();

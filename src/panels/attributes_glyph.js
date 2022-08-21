@@ -46,7 +46,7 @@ export function makePanel_GlyphAttributes() {
       content += makeAttributesGroup_shape(selectedShapes.singleton);
 
       let isPointSelected = projectEditor.multiSelect.points.count() === 1;
-      // if (!(_UI.selectedTool === 'pathedit' || _UI.selectedTool === 'pathaddpoint'))
+      // if (!(_UI.selectedTool === 'pathEdit' || _UI.selectedTool === 'pathAddPoint'))
       //   isPointSelected = false;
 
       if (isPointSelected) {

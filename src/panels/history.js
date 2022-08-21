@@ -23,7 +23,7 @@ export function makePanel_History() {
 
   content +=
     '<button style="width:100px;" class="' +
-    (q.length > 0 ? 'button--call-to-action' : 'buttondis') +
+    (q.length > 0 ? 'button__call-to-action' : 'button__disabled') +
     '" onclick="historyPull();">';
   content += 'undo' + (q.length > 0 ? ' (' + q.length + ')' : '');
   content += '</button><br>';

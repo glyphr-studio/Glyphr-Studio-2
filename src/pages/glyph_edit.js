@@ -103,9 +103,9 @@ export default class PageGlyphEdit {
 /* cSpell:disable */
 /*
 
-// -------------------
+// --------------------------------------------------------------
 // Redraw
-// -------------------
+// --------------------------------------------------------------
   function redraw_GlyphEdit() {
     // log('redraw_GlyphEdit', 'start');
     _UI.redrawing = true;
@@ -148,7 +148,7 @@ export default class PageGlyphEdit {
         _UI.glyphEditCTX.fillStyle = hp.fill;
         _UI.glyphEditCTX.fillRect(hp.x, hp.y, hp.size, hp.size);
       }
-    } else if (editmode === 'newpath') {
+    } else if (editmode === 'newPath') {
       _UI.multiSelect.points.draw_PathPointHandles();
       _UI.multiSelect.shapes.draw_PathPoints();
       // _UI.multiSelect.points.draw_PathPoints();

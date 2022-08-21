@@ -159,9 +159,9 @@ function makeActionArea_Layers() {
   return makeElement({className: 'panel__section full-width', content: content});
 }
 
-// -------------------
+// --------------------------------------------------------------
 // Move up / down
-// -------------------
+// --------------------------------------------------------------
 function moveShapeUp() {
   let wishapes = getSelectedWorkItemShapes();
   let si = wishapes.indexOf(projectEditor.multiSelect.shapessingleton);

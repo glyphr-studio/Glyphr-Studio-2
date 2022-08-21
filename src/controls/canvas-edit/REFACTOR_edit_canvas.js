@@ -162,7 +162,7 @@ function update_ToolsArea() {
     penaddpointclickable = false;
   }
 
-  if (_UI.selectedTool === 'pathaddpoint') {
+  if (_UI.selectedTool === 'pathAddPoint') {
     pathaddpointclass = 'button--call-to-action';
   } else if (type === 'ComponentInstance') {
     pathaddpointclass = 'buttondis';
@@ -257,11 +257,11 @@ function update_ToolsArea() {
     '<button onmouseover="mouseovercec();" title="add path point" class="' +
     pathaddpointclass +
     ' tool" ' +
-    (penaddpointclickable ? 'onclick="clickTool(\'pathaddpoint\');"' : '') +
+    (penaddpointclickable ? 'onclick="clickTool(\'pathAddPoint\');"' : '') +
     '/>' +
     makeToolButton({
       name: 'tool_penPlus',
-      selected: st === 'pathaddpoint',
+      selected: st === 'pathAddPoint',
       disabled: !penaddpointclickable,
     }) +
     '</button>';
@@ -447,7 +447,7 @@ function updateCursor(tool) {
     } else if (tool === 'pathedit') {
       // log('setting cursor to pen');
       setCursor('pen');
-    } else if (tool === 'pathaddpoint') {
+    } else if (tool === 'pathAddPoint') {
       // log('setting cursor to pen');
       setCursor('penPlus');
     } else if (tool === 'slice') {
@@ -541,7 +541,7 @@ function getEditMode() {
   else if (tool === 'newpath') return 'newpath';
   else if (tool === 'shaperesize')
     return _UI.eventhandlers.handle === 'rotate' ? 'rotate' : 'arrow';
-  else if (tool === 'pathedit' || tool === 'pathaddpoint') return 'pen';
+  else if (tool === 'pathedit' || tool === 'pathAddPoint') return 'pen';
   else if (tool === 'kern') return 'kern';
 }
 

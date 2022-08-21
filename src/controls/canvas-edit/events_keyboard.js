@@ -254,10 +254,10 @@ function keypress(event) {
     }
 
     // v
-    if (kc === 'v') clickTool('shaperesize');
+    if (kc === 'v') clickTool('shapeResize');
 
     // b
-    if (kc === 'b') clickTool('pathedit');
+    if (kc === 'b') clickTool('pathEdit');
   }
   // log('keypress', 'end');
 }

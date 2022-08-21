@@ -7,7 +7,7 @@ export default class Tool_NewPath {
 		this.dragging = false;
 		this.firstpoint = true;
 		this.currpt = {};
-		this.newshape = false;
+		this.newShape = false;
 
 		this.mousedown = function (ev) {
 			// log('Tool_NewPath.mousedown', 'start');
@@ -30,14 +30,14 @@ export default class Tool_NewPath {
 				let count = editor.nav.page === 'components' ?
 					Object.keys(getCurrentProject().components).length :
 					getSelectedWorkItemShapes().length;
-				this.newshape = addShape(
+				this.newShape = addShape(
 					new Shape({ name: 'Shape ' + count, path: new Path() })
 				);
-				this.currpt = this.newshape.path.addPathPoint(newpoint);
-			} else if (this.newshape) {
+				this.currpt = this.newShape.path.addPathPoint(newpoint);
+			} else if (this.newShape) {
 				let targetSize = getCurrentProject().projectSettings.pointSize /
 					getView('Event Handler Tool_PathEdit.mousedown').dz;
-				if (this.newshape.path.isOverFirstPoint(
+				if (this.newShape.path.isOverFirstPoint(
 					cXsX(eh.mouseX),
 					cYsY(eh.mouseY),
 					targetSize
@@ -49,8 +49,8 @@ export default class Tool_NewPath {
 					eh.lastX = eh.mouseX;
 					eh.lastY = eh.mouseY;
 					let editor = getCurrentProjectEditor();
-					editor.multiSelect.points.select(this.newshape.path.pathPoints[0]);
-					editor.selectedTool = 'pathedit';
+					editor.multiSelect.points.select(this.newShape.path.pathPoints[0]);
+					editor.selectedTool = 'pathEdit';
 
 					this.dragging = false;
 					this.firstpoint = false;
@@ -60,7 +60,7 @@ export default class Tool_NewPath {
 					return;
 				}
 
-				this.currpt = this.newshape.path.addPathPoint(newpoint);
+				this.currpt = this.newShape.path.addPathPoint(newpoint);
 				// editor.multiSelect.points.select(this.currpt);
 			}
 
@@ -97,8 +97,8 @@ export default class Tool_NewPath {
 				eh.undoQueueHasChanged = true;
 
 				redraw({ calledBy: 'Event Handler Tool_NewPath mousemove' });
-			} else if (this.newshape &&
-				this.newshape.path.isOverFirstPoint(
+			} else if (this.newShape &&
+				this.newShape.path.isOverFirstPoint(
 					cXsX(eh.mouseX),
 					cYsY(eh.mouseY),
 					targetSize
@@ -114,7 +114,7 @@ export default class Tool_NewPath {
 			setCursor('penPlus');
 
 			if (eventHandlerData.undoQueueHasChanged) {
-				// if (this.newshape) this.newshape.path.calcMaxes();
+				// if (this.newShape) this.newShape.path.calcMaxes();
 				updateCurrentGlyphWidth();
 				// For new shape tools, mouse up always adds to the undo-queue
 				historyPut('New Path tool');

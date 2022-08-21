@@ -271,14 +271,14 @@ button[disabled]:focus{
   cursor: default;
 }
 
-.button--call-to-action,
-.button--call-to-action:hover,
-.button--call-to-action:active,
-.button--call-to-action:focus{
+.button__call-to-action,
+.button__call-to-action:hover,
+.button__call-to-action:active,
+.button__call-to-action:focus{
   background-color: var(--blue-l60);
   color: var(--gray-l95);
 }
 
-.button--call-to-action:hover {
+.button__call-to-action:hover {
   color:white;
 }

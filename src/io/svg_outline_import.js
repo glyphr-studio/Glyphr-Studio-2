@@ -441,13 +441,13 @@ function ioSVG_convertPathTag(data) {
     // log('AFTER:\nFirst Point: '+json(fp));
   }
 
-  const newpath = new Path({ pathPoints: patharr });
-  newpath.validate('IMPORTSVG');
+  const newPath = new Path({ pathPoints: patharr });
+  newPath.validate('IMPORTSVG');
 
   // log('unscaled path:');
-  // log(newpath);
+  // log(newPath);
   // log('ioSVG_convertTag', 'end');
-  return newpath;
+  return newPath;
 }
 
 function ioSVG_isPathCommand(c) {

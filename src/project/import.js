@@ -4,9 +4,9 @@ import { getGlyphrStudioApp } from '../app/main.js';
 import { log } from '../common/functions.js';
 // import { migrateGlyphrStudioProject } from './migrate.js';
 
-// -------------------------------
+// --------------------------------------------------------------------------
 // IMPORT FUNCTIONS
-// -------------------------------
+// --------------------------------------------------------------------------
 
 /**
  * Event handler for dropped project text files
@@ -57,9 +57,9 @@ function importGlyphrProjectFromText(textProject) {
   return new GlyphrStudioProject(fileContent);
 }
 
-// -----------------------------
+// ------------------------------------------------------------------------
 // HELPER FUNCTIONS
-// -----------------------------
+// ------------------------------------------------------------------------
 
 /**
  * Parse text version number to variables

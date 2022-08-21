@@ -1,0 +1,14 @@
+.canvas-edit__tool,
+.canvas-edit__tool:active,
+.canvas-edit__tool:focus,
+.canvas-edit__tool:hover {
+	height:30px;
+	width:30px;
+	padding: 5px;
+	margin: 0 0 5px 0;
+}
+
+.canvas-edit__tool svg {
+	height: 20px;
+	width: 20px;
+}

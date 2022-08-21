@@ -154,7 +154,7 @@ function showNewKernPairDialog() {
   con += makeErrorMessageBox();
   con += '<br>';
   con +=
-    '<button class="button--call-to-action" onclick="createNewKernPair();">create new kern pair</button>';
+    '<button class="button__call-to-action" onclick="createNewKernPair();">create new kern pair</button>';
   con += '</div>';
 
   openDialog(con);

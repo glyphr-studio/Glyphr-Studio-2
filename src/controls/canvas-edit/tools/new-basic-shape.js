@@ -14,11 +14,11 @@ export default class Tool_NewBasicShape {
 				yMin: cYsY(eventHandlerData.mouseY),
 			};
 
-			let newshape = new Shape({ visible: false, name: '...' });
-			newshape.path.maxes = eventHandlerData.tempNewBasicShape;
-			newshape = addShape(newshape);
+			let newShape = new Shape({ visible: false, name: '...' });
+			newShape.path.maxes = eventHandlerData.tempNewBasicShape;
+			newShape = addShape(newShape);
 			let editor = getCurrentProjectEditor();
-			editor.multiSelect.shapes.select(newshape);
+			editor.multiSelect.shapes.select(newShape);
 
 			eventHandlerData.firstX = cXsX(eventHandlerData.mouseX);
 			eventHandlerData.firstY = cYsY(eventHandlerData.mouseY);
@@ -68,7 +68,7 @@ export default class Tool_NewBasicShape {
 					getSelectedWorkItemShapes().length;
 				let s = editor.multiSelect.shapessingleton;
 
-				if (editor.selectedTool === 'newrect') {
+				if (editor.selectedTool === 'newRectangle') {
 					s.name = 'Rectangle ' + count;
 					s.path = rectPathFromMaxes(tnbs);
 				} else {
@@ -90,7 +90,7 @@ export default class Tool_NewBasicShape {
 
 			this.dragging = false;
 
-			clickTool('pathedit');
+			clickTool('pathEdit');
 		};
 	}
 }
