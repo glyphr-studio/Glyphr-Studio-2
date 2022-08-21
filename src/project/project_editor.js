@@ -60,6 +60,9 @@ export default class ProjectEditor {
 		this.pages = {};
 
 		// Canvas
+		this.editCanvas = false;
+
+		// Canvas
 		// Views per work item ID
 		this._views = {};
 		this.defaultView = {dx: 200, dy: 500, dz: 0.5};
@@ -76,7 +79,7 @@ export default class ProjectEditor {
 		// Canvas
 		// Event handlers
 		this.eventHandlers = {};
-		this.selectedTool = false;
+		this.selectedTool = 'pan';
 
 		// History
 		// this.history = {};

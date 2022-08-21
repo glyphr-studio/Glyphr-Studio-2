@@ -2,6 +2,7 @@ import { getCurrentProjectEditor } from '../../../app/main.js';
 import { accentColors, uiColors } from '../../../common/colors.js';
 import { makeElement } from '../../../common/dom.js';
 import { log } from '../../../common/functions.js';
+import { eventHandlerData } from '../events_mouse.js';
 
 
 // -------------------
@@ -285,13 +286,13 @@ export function makeViewToolsButtons() {
 }
 
 export function clickTool(ctool) {
-	// log('clickTool', 'start');
+	log('clickTool', 'start');
 	editor.selectedTool = ctool;
 
-	// log('passed: ' + ctool + ' and editor.selectedTool now is: ' + editor.selectedTool);
+	log('passed: ' + ctool + ' and editor.selectedTool now is: ' + editor.selectedTool);
 
-	_UI.eventhandlers.tool_addPath.firstpoint = true;
-	_UI.eventhandlers.multi = false;
+	editor.eventHandlers.tool_addPath.firstpoint = true;
+	editor.eventHandlers.multi = false;
 
 	if (ctool === 'newrect') {
 		setCursor('crosshairsSquare');
@@ -308,11 +309,12 @@ export function clickTool(ctool) {
 		setCursor('arrow');
 	}
 
-	_UI.eventhandlers.hoverpoint = false;
+	eventHandlerData.hoverPoint = false;
 	closeNotation();
 	// updateCursor();
 
-	redraw({ calledBy: 'clicktool', redrawPanels: false });
+	editor.editCanvas.redraw({ calledBy: 'clicktool', redrawPanels: false });
+	log('clickTool', 'end');
 	}
 
 
