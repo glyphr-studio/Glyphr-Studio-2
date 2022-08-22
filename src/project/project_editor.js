@@ -141,7 +141,7 @@ export default class ProjectEditor {
 		log(`ProjectEditor.subscribe`, 'start');
 		log(`topic: ${topic}`);
 		log(`subscriberName: ${subscriberName}`);
-		
+
 		if(!topic) {
 			console.warn(`Subscriber was not provided a topic`);
 			return;
@@ -602,9 +602,20 @@ export default class ProjectEditor {
 		// log(`\t setting ${JSON.stringify(oa)}`);
 
 		// Check for which to set
-		if(isFinite(oa.dx)){ this._views[wid].dx = oa.dx; }
-		if(isFinite(oa.dy)){ this._views[wid].dy = oa.dy; }
-		if(isFinite(oa.dz)){ this._views[wid].dz = oa.dz; }
+		if(isFinite(oa.dx)){
+			log(`oa.dx: ${oa.dx}`);
+			this._views[wid].dx = oa.dx;
+		}
+
+		if(isFinite(oa.dy)){
+			log(`oa.dy: ${oa.dy}`);
+			this._views[wid].dy = oa.dy;
+		}
+
+		if(isFinite(oa.dz)){
+			log(`oa.dz: ${oa.dz}`);
+			this._views[wid].dz = oa.dz;
+		}
 
 		log(`set as ${JSON.stringify(this._views[wid])}`);
 		log(`ProjectEditor SET view`, 'end');
@@ -643,6 +654,11 @@ export default class ProjectEditor {
 		return !!this._views[id];
 	}
 
+	setViewZoom(zoomInput) {
+		let newValue = parseFloat(zoomInput) / 100;
+		this.view = {dz: newValue};
+		this.publish('view', this.view);
+	}
 
 
 

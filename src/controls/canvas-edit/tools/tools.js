@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../../../app/main.js';
 import { accentColors, uiColors } from '../../../common/colors.js';
 import { makeElement } from '../../../common/dom.js';
-import { log } from '../../../common/functions.js';
+import { log, round } from '../../../common/functions.js';
 
 
 // --------------------------------------------------------------
@@ -185,75 +185,35 @@ export function makeViewToolsButtons() {
 		viewButtonElements[buttonName] = newToolButton;
 	});
 
-	/*
-	let content = '';
-	// Pan
-	content += `
-		<button
-			title="scroll and pan"
-			class="${(st === 'pan' ? 'canvas-edit__tool-selected ' : ' ')} tool"
-			onclick="clickTool('pan');"
-		/>
-		${makeToolButtonSVG({ name: 'pan', selected: st === 'pan' })}
-		</button>
-	`;
-	content += '<span style="width:15px; display:inline-block;">&nbsp;</span>';
+	// text zoom control
+	let zoomReadoutNumber = round(editor.view.dz * 100, 2);
+	let zoomReadout = makeElement({
+		tag: 'input-number',
+		className: 'canvas-edit__zoom-readout',
+		title: 'Zoom level',
+		innerHTML: zoomReadoutNumber
+	});
+	zoomReadout.setAttribute('value', zoomReadoutNumber);
+	zoomReadout.addEventListener('change', () => {
+		getCurrentProjectEditor().setViewZoom(this.value);
+		this.innerHTML = this.value;
+	});
 
-	// Zoom
-	content += `
-		<button
-			title="zoom: one to one"
-			class="tool"
-			onclick="setView({dz:1});redraw({calledBy:\'updatetools\'});"
-		>
-		${makeToolButtonSVG({ name: 'zoom1to1' })}
-		</button>
-	`;
+	editor.subscribe({
+		topic: 'view',
+		subscriberName: 'Zoom readout',
+		callback: (newView) => {
+			let zoomReadoutNumber = round(newView.dz * 100, 2);
+			zoomReadout.setAttribute('value', zoomReadoutNumber);
+			zoomReadout.innerHTML = zoomReadoutNumber;
+		}
+	});
 
-	content += `
-		<button
-			title="zoom: fit to screen"
-			class="tool"
-			onclick="fitViewToContextGlyphs(); redraw({calledBy:\'updatetools\'});"
-		>
-		${makeToolButtonSVG({ name: 'zoomEm' })}
-		</button>
-	`;
-
-	content += `
-		<input
-			type="number"
-			title="zoom level"
-			class="zoomreadout"
-			value="${round(getView('updatetools').dz * 100, 2)}"
-			onchange="setViewZoom(this.value);"
-		/>
-	`;
-
-	content += `
-		<button
-			title="zoom: in"
-			class="tool"
-			onclick="viewZoom(1.1, true);"
-		>
-		${makeToolButtonSVG({ name: 'zoomIn' })}
-		</button>
-	`;
-
-	content += `
-		<button
-			title="zoom: out"
-			class="tool"
-			onclick="viewZoom(.9, true);"
-		>
-		${makeToolButtonSVG({ name: 'zoomOut' })}
-		</button>
-	`;
-	*/
-
+	// Put it all together
 	let content = makeElement();
 
 	content.appendChild(viewButtonElements.pan);
+	content.appendChild(zoomReadout);
 	content.appendChild(viewButtonElements.zoom1to1);
 	content.appendChild(viewButtonElements.zoomEm);
 	content.appendChild(viewButtonElements.zoomIn);
@@ -263,13 +223,23 @@ export function makeViewToolsButtons() {
 	return content;
 }
 
-export function clickTool(newSelectedTool) {
+export function clickTool(tool) {
 	log('clickTool', 'start');
 	let editor = getCurrentProjectEditor();
-	editor.selectedTool = newSelectedTool;
+	let zoomTools = ['zoom1to1', 'zoomEm', 'zoomIn', 'zoomOut'];
 
-	log('passed: ' + newSelectedTool + ' and editor.selectedTool now is: ' + editor.selectedTool);
-	editor.publish('selectedTool', newSelectedTool);
+	if(zoomTools.includes(tool)) {
+		if(tool === 'zoom1to1') editor.view = {dz: 1};
+		// TODO make 'fitToEm' or 'fitToContextGlyphs'
+		if(tool === 'zoomEm') editor.view = {dz: 0.75};
+		if(tool === 'zoomIn') editor.view = {dz: editor.view.dz *= 1.1};
+		if(tool === 'zoomOut') editor.view = {dz: editor.view.dz *= 0.9};
+		editor.publish('view', editor.view);
+	} else {
+		editor.selectedTool = tool;
+		log('passed: ' + tool + ' and editor.selectedTool now is: ' + editor.selectedTool);
+		editor.publish('selectedTool', tool);
+	}
 
 	log('clickTool', 'end');
 }

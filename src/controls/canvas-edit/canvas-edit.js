@@ -46,8 +46,11 @@ export default class CanvasEdit extends HTMLElement {
 		this.canvas.height = this.height;
 		this.canvas.width = this.width;
 
+		let editor = getCurrentProjectEditor();
 		initEventHandlers(this.canvas);
-		getCurrentProjectEditor().editCanvas = this;
+		editor.editCanvas = this;
+		editor.subscribe({topic: 'view', name: 'Edit canvas', callback: () => this.redraw()});
+
 		this.redraw();
 		log(`CanvasEdit.constructor`, 'end');
 	}
