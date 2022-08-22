@@ -17,54 +17,54 @@ export default function () {}
  * @returns {HTMLElement}
  */
 export function makeElement({
-  tag = 'span',
-  className,
-  id,
-  content,
-  title,
-  elementRoot,
-  tabIndex = false,
-  attributes = {},
-  innerHTML = false,
+	tag = 'span',
+	className,
+	id,
+	content,
+	title,
+	elementRoot,
+	tabIndex = false,
+	attributes = {},
+	innerHTML = false,
 } = {}) {
 
-  if(!document || !document.createElement){
-    console.warn('no document or createElement');
-    console.warn(document);
-    return '';
-  }
+	if(!document || !document.createElement){
+		console.warn('no document or createElement');
+		console.warn(document);
+		return '';
+	}
 
-  const newElement = document.createElement(tag);
+	const newElement = document.createElement(tag);
 
-  if (className) newElement.setAttribute('class', className);
+	if (className) newElement.setAttribute('class', className);
 
-  if (id) newElement.setAttribute('id', id);
-  else if (window.getUniqueControlID)
-    newElement.setAttribute('id', document.getUniqueControlID());
+	if (id) newElement.setAttribute('id', id);
+	else if (window.getUniqueControlID)
+		newElement.setAttribute('id', document.getUniqueControlID());
 
-  if (content) newElement.innerHTML = content;
+	if (content) newElement.innerHTML = content;
 
-  if (title) newElement.setAttribute('title', title);
+	if (title) newElement.setAttribute('title', title);
 
-  if (elementRoot) newElement.elementRoot = elementRoot;
+	if (elementRoot) newElement.elementRoot = elementRoot;
 
-  if (tabIndex === true) newElement.setAttribute('tabIndex', '0');
-  else if (tabIndex !== false) newElement.setAttribute('tabIndex', tabIndex);
+	if (tabIndex === true) newElement.setAttribute('tabIndex', '0');
+	else if (tabIndex !== false) newElement.setAttribute('tabIndex', tabIndex);
 
-  Object.keys(attributes).forEach((key) =>
-    newElement.setAttribute(key, attributes[key])
-  );
+	Object.keys(attributes).forEach((key) =>
+		newElement.setAttribute(key, attributes[key])
+	);
 
-  if (innerHTML) {
-    const template = document.createElement('template');
-    template.innerHTML = innerHTML;
-    newElement.appendChild(template.content);
+	if (innerHTML) {
+		const template = document.createElement('template');
+		template.innerHTML = innerHTML;
+		newElement.appendChild(template.content);
 
-    // log(`makeElement - newElement:`);
-    // log(newElement);
-  }
+		// log(`makeElement - newElement:`);
+		// log(newElement);
+	}
 
-  return newElement;
+	return newElement;
 }
 
 /**
@@ -74,12 +74,12 @@ export function makeElement({
  * @param {function} eventFunction - what to do
  */
 export function addEventHandler(
-  elementID,
-  eventType = 'click',
-  eventFunction = function () {}
+	elementID,
+	eventType = 'click',
+	eventFunction = function () {}
 ) {
-  const elem = document.getElementById(elementID);
-  if (elem) {
-    elem.addEventListener(eventType, eventFunction, false);
-  }
+	const elem = document.getElementById(elementID);
+	if (elem) {
+		elem.addEventListener(eventType, eventFunction, false);
+	}
 }
