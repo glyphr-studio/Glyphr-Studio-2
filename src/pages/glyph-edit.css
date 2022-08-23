@@ -34,6 +34,23 @@
 	grid-column: 2;
 }
 
+.glyph-edit__zoom-area {
+	position: absolute;
+	right: 15px;
+	bottom: 14px;
+}
+
+.glyph-edit__zoom-area span {
+	grid-template-columns: repeat(8, min-content);
+	display: grid;
+	column-gap: 5px;
+}
+
+.canvas-edit__zoom-readout {
+	width: 4em;
+	height: 30px;
+}
+
 .glyph-edit__right-area {
 	border: 1px solid var(--blue-l85);
 	background-color: var(--offWhite);
