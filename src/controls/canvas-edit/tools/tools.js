@@ -8,23 +8,23 @@ import { log, round } from '../../../common/functions.js';
 // Making tool buttons
 // --------------------------------------------------------------
 export function makeEditToolsButtons() {
-	log('makeEditToolsButtons', 'start');
+	// log('makeEditToolsButtons', 'start');
 	let editor = getCurrentProjectEditor();
 
 	if (!editor.onCanvasEditPage()) {
-		log('returning, !onCanvasEditPage');
-		log('makeEditToolsButtons', 'end');
+		// log('returning, !onCanvasEditPage');
+		// log('makeEditToolsButtons', 'end');
 		return '';
 	}
 
 	if (!editor.selectedWorkItemID) {
-		log('returning, !selectedWorkItemID');
-		log('makeEditToolsButtons', 'end');
+		// log('returning, !selectedWorkItemID');
+		// log('makeEditToolsButtons', 'end');
 		return '';
 	}
 
 	// All the various permutations of states
-	log(`editor.selectedTool: ${editor.selectedTool}`);
+	// log(`editor.selectedTool: ${editor.selectedTool}`);
 
 	// Button data
 	let toolButtonData = {
@@ -62,7 +62,7 @@ export function makeEditToolsButtons() {
 	let toolButtonElements = {};
 
 	Object.keys(toolButtonData).forEach((buttonName) => {
-		log(`buttonName: ${buttonName}`);
+		// log(`buttonName: ${buttonName}`);
 
 		let isSelected = (editor.selectedTool === buttonName);
 
@@ -133,13 +133,13 @@ export function makeEditToolsButtons() {
 		}
 	}
 
-	log('makeEditToolsButtons', 'end');
+	// log('makeEditToolsButtons', 'end');
 	return content;
 }
 
 
 export function makeViewToolsButtons() {
-	log(`makeViewToolsButtons`, 'start');
+	// log(`makeViewToolsButtons`, 'start');
 
 	// Button data
 	let viewButtonTitles = {
@@ -154,7 +154,7 @@ export function makeViewToolsButtons() {
 	let editor = getCurrentProjectEditor();
 
 	Object.keys(viewButtonTitles).forEach((buttonName) => {
-		log(`buttonName: ${buttonName}`);
+		// log(`buttonName: ${buttonName}`);
 
 		let isSelected = (editor.selectedTool === buttonName);
 		let newToolButton = makeElement({
@@ -194,6 +194,7 @@ export function makeViewToolsButtons() {
 		innerHTML: zoomReadoutNumber
 	});
 	zoomReadout.setAttribute('value', zoomReadoutNumber);
+	zoomReadout.setAttribute('disabled', '');
 	zoomReadout.addEventListener('change', () => {
 		getCurrentProjectEditor().setViewZoom(this.value);
 		this.innerHTML = this.value;
@@ -221,12 +222,12 @@ export function makeViewToolsButtons() {
 	content.appendChild(viewButtonElements.zoom1to1);
 	content.appendChild(viewButtonElements.zoomEm);
 
-	log(`makeViewToolsButtons`, 'end');
+	// log(`makeViewToolsButtons`, 'end');
 	return content;
 }
 
 export function clickTool(tool) {
-	log('clickTool', 'start');
+	// log('clickTool', 'start');
 	let editor = getCurrentProjectEditor();
 	let zoomTools = ['zoom1to1', 'zoomEm', 'zoomIn', 'zoomOut'];
 
@@ -239,22 +240,25 @@ export function clickTool(tool) {
 		editor.publish('view', editor.view);
 	} else {
 		editor.selectedTool = tool;
-		log('passed: ' + tool + ' and editor.selectedTool now is: ' + editor.selectedTool);
+		// log('passed: ' + tool + ' and editor.selectedTool now is: ' + editor.selectedTool);
 		editor.publish('selectedTool', tool);
 	}
 
-	log('clickTool', 'end');
+	// log('clickTool', 'end');
 }
 
 
 export function makeKernToolsButtons() {
 	// Kern
-	const kern =
-		'<button title="kern" class="' +
-		(st === 'kern' ? 'canvas-edit__tool-selected ' : ' ') +
-		'tool" onclick="clickTool(\'kern\');"/>' +
-		makeToolButtonSVG({ name: 'kern', selected: st === 'kern' }) +
-		'</button>';
+	const kern = `
+		<button
+			title="kern"
+			class="${(st === 'kern' ? 'canvas-edit__tool-selected ' : ' ')} tool"
+			onclick="clickTool(\'kern\');"
+		>
+			${makeToolButtonSVG({ name: 'kern', selected: st === 'kern' })}
+		</button>
+	`;
 }
 
 export function makeContextGlyphControls() {
@@ -306,37 +310,38 @@ export function makeContextGlyphControls() {
 // --------------------------------------------------------------
 
 export function addShape(newShape){
-	// debug('addShape - START');
-	// debug('\t name: ' + newShape.name);
-	// debug('\t objtype: ' + newShape.objtype);
+	// log(`addShape`, 'start');
+	// log(`name: ${ewShape.name}`);
+	// log(`objType: ${ewShape.objType}`);
 
+	let editor = getCurrentProjectEditor();
 	if(newShape){
-		if(newShape.objtype === 'componentinstance'){
-			// debug('\t is a Component instance');
-			_UI.selectedToolName = 'shapeResize';
-		} else if(newShape.path && (_UI.selectedToolName === 'shapeResize')) {
-			// debug('\t triggered as true: newShape.path && _UI.selectedToolName == shapeResize \n\t NOT calling calcmaxes, okay?');
+		if(newShape.objType === 'ComponentInstance'){
+			// log(`is a Component instance`);
+			editor.selectedTool = 'shapeResize';
+		} else if(newShape.path && (editor.selectedTool === 'shapeResize')) {
+			// log(`triggered as true: newShape.path && editor.selectedTool == shapeResize \n\t NOT calling calcmaxes, okay?`);
 			//newShape.calcMaxes();
 		}
 	} else {
-		// debug('\t passed null, creating new shape.');
+		// log(`passed null, creating new shape.`);
 		newShape = new Shape({});
-		newShape.name = ('Rectangle ' + ((getSelectedWorkItemShapes().length*1)+1));
+		newShape.name = ('Rectangle ' + ((editor.selectedWorkItemShapes.length*1)+1));
 	}
 
-	let sg = getSelectedWorkItem();
+	let sg = editor.selectedWorkItem;
 
 	sg.shapes.push(newShape);
-	_UI.ms.shapes.select(newShape);
-	sg.changed();
+	editor.multiSelect.shapes.select(newShape);
+	// TODO history
+	// sg.changed();
 
-	_UI.current_panel = 'npAttributes';
-
-	// debug('\t returns: ' + newShape.name);
-	// debug('addShape - END\n');
+	// log(`returns: ${ewShape.name}`);
+	// log(`addShape`, 'end');
 	return newShape;
 }
 
+/*
 export function addBasicShape(type){
 	let hd = 50;
 	let th = 500;
@@ -369,6 +374,7 @@ export function addBasicShape(type){
 	_UI.ms.shapes.select(newShape);
 	updateCurrentGlyphWidth();
 }
+*/
 
 export function turnSelectedShapeIntoAComponent(){
 	let s = clone(_UI.ms.shapes.getMembers(), 'turnSelectedShapeIntoAComponent');
@@ -383,16 +389,16 @@ export function turnSelectedShapeIntoAComponent(){
 }
 
 export function getShapeAtLocation(x,y){
-	log(`getShapeAtLocation`, 'start');
-	log('checking x:' + x + ' y:' + y);
+	// log(`getShapeAtLocation`, 'start');
+	// log('checking x:' + x + ' y:' + y);
 
 	let shape;
 	let editor = getCurrentProjectEditor();
 	let sws = editor.selectedWorkItem?.shapes;
-	log(sws);
+	// log(sws);
 	for(let j=(sws.length-1); j>=0; j--){
 		shape = sws[j];
-		log('Checking shape ' + j);
+		// log('Checking shape ' + j);
 
 		if(isThisShapeHere(shape, x, y)){
 			return shape;
@@ -400,7 +406,7 @@ export function getShapeAtLocation(x,y){
 	}
 
 	// clickEmptySpace();
-	log(`getShapeAtLocation`, 'end');
+	// log(`getShapeAtLocation`, 'end');
 	return false;
 }
 
@@ -430,8 +436,8 @@ function isThisShapeHere(shape, px, py) {
 let icons = {};
 
 export function makeToolButtonSVG(oa) {
-	log(`makeToolButtonSVG`, 'start');
-	log(`oa.name: ${oa.name}`);
+	// log(`makeToolButtonSVG`, 'start');
+	// log(`oa.name: ${oa.name}`);
 	let colorOutline = accentColors.blue.l75;
 	let colorFill = accentColors.gray.l40;
 	let icon = icons[oa.name];
@@ -469,7 +475,7 @@ export function makeToolButtonSVG(oa) {
 		</svg>
 	`;
 
-	log(`makeToolButtonSVG`, 'end');
+	// log(`makeToolButtonSVG`, 'end');
 	return content;
 }
 

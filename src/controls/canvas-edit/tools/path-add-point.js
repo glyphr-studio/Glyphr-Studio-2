@@ -8,7 +8,7 @@ export default class Tool_PathAddPoint {
 
 		this.mousedown = function (ev) {
 			let editor = getCurrentProjectEditor();
-			let singleshape = editor.multiSelect.shapessingleton;
+			let singleshape = editor.multiSelect.shapes.singleton;
 			let s = getShapeAtLocation(eventHandlerData.mouseX, eventHandlerData.mouseY);
 
 			if (this.addpoint &&
@@ -45,7 +45,7 @@ export default class Tool_PathAddPoint {
 
 		this.mousemove = function (ev) {
 			let editor = getCurrentProjectEditor();
-			let singleshape = editor.multiSelect.shapessingleton;
+			let singleshape = editor.multiSelect.shapes.singleton;
 			if (singleshape) {
 				let pt = singleshape.path.getClosestPointOnCurve({
 					x: cXsX(eventHandlerData.mouseX),

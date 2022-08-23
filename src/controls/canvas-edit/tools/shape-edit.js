@@ -93,7 +93,7 @@ export default class Tool_ShapeEdit {
 					editor.nav.panel = 'Attributes';
 				}
 
-				let singleshape = editor.multiSelect.shapessingleton;
+				let singleshape = editor.multiSelect.shapes.singleton;
 
 				if (singleshape) {
 					cur = singleshape.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);

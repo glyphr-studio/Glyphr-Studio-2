@@ -59,7 +59,7 @@ export default class Tool_PathEdit {
 		};
 
 		this.mousemove = function(ev) {
-			log('Tool_PathEdit.mousemove', 'start');
+			// log('Tool_PathEdit.mousemove', 'start');
 			let ehd = eventHandlerData;
 			let editor = getCurrentProjectEditor();
 			let view = editor.view;
@@ -127,7 +127,7 @@ export default class Tool_PathEdit {
 			else if (editor.multiSelect.points.isSelected(cp.point)) setCursor('penCircle');
 			if (!cp && ehd.multi) setCursor('penPlus');
 
-			log('Tool_PathEdit.mousemove', 'end');
+			// log('Tool_PathEdit.mousemove', 'end');
 		};
 
 		this.mouseup = function() {
