@@ -188,7 +188,7 @@ export function makeViewToolsButtons() {
 	// text zoom control
 	let zoomReadoutNumber = round(editor.view.dz * 100, 2);
 	let zoomReadout = makeElement({
-		tag: 'input-number',
+		tag: 'input',
 		className: 'canvas-edit__zoom-readout',
 		title: 'Zoom level',
 		innerHTML: zoomReadoutNumber
@@ -213,11 +213,13 @@ export function makeViewToolsButtons() {
 	let content = makeElement();
 
 	content.appendChild(viewButtonElements.pan);
+	content.appendChild(makeElement({tag: 'div', content: '&emsp;'}));
+	content.appendChild(viewButtonElements.zoomOut);
 	content.appendChild(zoomReadout);
+	content.appendChild(viewButtonElements.zoomIn);
+	content.appendChild(makeElement({tag: 'div', content: '&emsp;'}));
 	content.appendChild(viewButtonElements.zoom1to1);
 	content.appendChild(viewButtonElements.zoomEm);
-	content.appendChild(viewButtonElements.zoomIn);
-	content.appendChild(viewButtonElements.zoomOut);
 
 	log(`makeViewToolsButtons`, 'end');
 	return content;
