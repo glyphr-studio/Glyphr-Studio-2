@@ -35,7 +35,7 @@ export default class ProjectEditor {
 	 * @param {object} newEditor - Glyphr Studio Project File JSON
 	 */
 	constructor(newProjectEditor = {}) {
-		log('ProjectEditor.constructor', 'start');
+		// log('ProjectEditor.constructor', 'start');
 		// log('passed > newProjectEditor');
 		// log(newProjectEditor);
 
@@ -79,7 +79,7 @@ export default class ProjectEditor {
 		// Canvas
 		// Event handlers
 		this.eventHandlers = {};
-		this.selectedTool = 'pan';
+		this.selectedTool = 'shapeEdit';
 
 		// History
 		// this.history = {};
@@ -95,7 +95,7 @@ export default class ProjectEditor {
 		};
 
 		// log(this);
-		log('ProjectEditor.constructor', 'end');
+		// log('ProjectEditor.constructor', 'end');
 	}
 
 
@@ -113,20 +113,20 @@ export default class ProjectEditor {
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
-		log(`ProjectEditor.publish`, 'start');
-		log(`topic: ${topic}`);
+		// log(`ProjectEditor.publish`, 'start');
+		// log(`topic: ${topic}`);
 		// log(`data: ${data}`);
 		// log(`this.subscribers[topic]: ${this.subscribers[topic]}`);
 
 		if (this.subscribers[topic]) {
-			log(`Publishing ${data} to ${this.subscribers[topic].length} subscribers`);
+			// log(`Publishing ${data} to ${this.subscribers[topic].length} subscribers`);
 			this.subscribers[topic].forEach((sub) => {
 				sub.callback(data);
 			});
 		} else {
-			log(`Nobody subscribed to ${topic}`);
+			// log(`Nobody subscribed to ${topic}`);
 		}
-		log(`ProjectEditor.publish`, 'end');
+		// log(`ProjectEditor.publish`, 'end');
 	}
 
 	/**
@@ -138,9 +138,9 @@ export default class ProjectEditor {
 	 * @returns nothing
 	 */
 	subscribe({topic = false, subscriberName = '', callback = false}) {
-		log(`ProjectEditor.subscribe`, 'start');
-		log(`topic: ${topic}`);
-		log(`subscriberName: ${subscriberName}`);
+		// log(`ProjectEditor.subscribe`, 'start');
+		// log(`topic: ${topic}`);
+		// log(`subscriberName: ${subscriberName}`);
 
 		if(!topic) {
 			console.warn(`Subscriber was not provided a topic`);
@@ -153,7 +153,7 @@ export default class ProjectEditor {
 
 		if (!this.subscribers[topic]) this.subscribers[topic] = [];
 		this.subscribers[topic].push({subscriberName: subscriberName, callback: callback});
-		log(`ProjectEditor.subscribe`, 'end');
+		// log(`ProjectEditor.subscribe`, 'end');
 	}
 
 
@@ -213,11 +213,11 @@ export default class ProjectEditor {
 	 * @returns {object}
 	 */
 	get selectedGlyph() {
-		log('ProjectEditor GET selectedGlyph', 'start');
+		// log('ProjectEditor GET selectedGlyph', 'start');
 		const id = this.selectedGlyphID;
-		log(`selectedGlyphID ${id}`);
+		// log(`selectedGlyphID ${id}`);
 		const re = this.project.getGlyph(id);
-		log('ProjectEditor GET selectedGlyph', 'end');
+		// log('ProjectEditor GET selectedGlyph', 'end');
 		return re || new Glyph();
 	}
 
@@ -307,12 +307,12 @@ export default class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedGlyphID(id) {
-		log(`ProjectEditor SET selectedGlyphID`, 'start');
-		log(`id: ${id}`);
+		// log(`ProjectEditor SET selectedGlyphID`, 'start');
+		// log(`id: ${id}`);
 		// Validate ID!
 		this._selectedGlyphID = normalizeHex(id);
 		this.publish('selectedGlyphID', this.selectedGlyphID);
-		log(`ProjectEditor SET selectedGlyphID`, 'end');
+		// log(`ProjectEditor SET selectedGlyphID`, 'end');
 	}
 
 	/**
@@ -464,8 +464,8 @@ export default class ProjectEditor {
 	 * @param {string} pageName - where to go
 	 */
 	navigate(pageName) {
-		log(`ProjectEditor.navigate`, 'start');
-		log(`pageName : ${pageName}`);
+		// log(`ProjectEditor.navigate`, 'start');
+		// log(`pageName : ${pageName}`);
 
 		if (pageName) this.nav.page = pageName;
 		const wrapper = document.getElementById('app__wrapper');
@@ -481,7 +481,7 @@ export default class ProjectEditor {
 			console.warn(`app__wrapper could not be found, navigation failed`);
 		}
 
-		log(`ProjectEditor.navigate`, 'end');
+		// log(`ProjectEditor.navigate`, 'end');
 	}
 
 	/**
@@ -500,7 +500,7 @@ export default class ProjectEditor {
 	 * @returns {object} Page Loader object - {string} content and {function} callback
 	 */
 	pageLoader() {
-		log(`ProjectEditor.pageLoader`, 'start');
+		// log(`ProjectEditor.pageLoader`, 'start');
 		const editorContent = makeElement({ tag: 'div', id: 'app__main-content' });
 
 		// Default page loader fallback
@@ -511,7 +511,7 @@ export default class ProjectEditor {
 
 		let currentPage = this.nav.page;
 		let currentPageMaker = this.tableOfContents[currentPage].pageMaker;
-		log(`page detected as ${currentPage}`);
+		// log(`page detected as ${currentPage}`);
 
 		if (!currentPageMaker) {
 			console.warn(`No page maker for ${currentPage}`);
@@ -530,7 +530,7 @@ export default class ProjectEditor {
 		// log(`this.pages`);
 		// log(this.pages);
 
-		log(`ProjectEditor.pageLoader`, 'end');
+		// log(`ProjectEditor.pageLoader`, 'end');
 
 		return { content: editorContent, callback: currentPageLoader.callback };
 	}
@@ -591,7 +591,7 @@ export default class ProjectEditor {
 	 * Sets the view for the current work item on the current page
 	 */
 	set view(oa){
-		log(`ProjectEditor SET view`, 'start');
+		// log(`ProjectEditor SET view`, 'start');
 		var wid = this.selectedWorkItemID;
 
 		// Ensure there are at least defaults
@@ -603,22 +603,22 @@ export default class ProjectEditor {
 
 		// Check for which to set
 		if(isFinite(oa.dx)){
-			log(`oa.dx: ${oa.dx}`);
+			// log(`oa.dx: ${oa.dx}`);
 			this._views[wid].dx = oa.dx;
 		}
 
 		if(isFinite(oa.dy)){
-			log(`oa.dy: ${oa.dy}`);
+			// log(`oa.dy: ${oa.dy}`);
 			this._views[wid].dy = oa.dy;
 		}
 
 		if(isFinite(oa.dz)){
-			log(`oa.dz: ${oa.dz}`);
+			// log(`oa.dz: ${oa.dz}`);
 			this._views[wid].dz = oa.dz;
 		}
 
-		log(`set as ${JSON.stringify(this._views[wid])}`);
-		log(`ProjectEditor SET view`, 'end');
+		// log(`set as ${JSON.stringify(this._views[wid])}`);
+		// log(`ProjectEditor SET view`, 'end');
 		return this._views[wid];
 	}
 
@@ -626,7 +626,7 @@ export default class ProjectEditor {
 	 * Gets the current view for the current work item on the current page
 	 */
 	get view(){
-		log(`ProjectEditor GET view`, 'start');
+		// log(`ProjectEditor GET view`, 'start');
 
 		var wid = this.selectedWorkItemID;
 		var re = false;
@@ -639,8 +639,8 @@ export default class ProjectEditor {
 			re = clone(this.defaultView);
 		}
 
-		log(`returning ${JSON.stringify(re)}`);
-		log(`ProjectEditor GET view`, 'end');
+		// log(`returning ${JSON.stringify(re)}`);
+		// log(`ProjectEditor GET view`, 'end');
 
 		return re;
 	}

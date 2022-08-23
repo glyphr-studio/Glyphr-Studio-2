@@ -367,7 +367,7 @@ export class MultiSelectShapes extends MultiSelect {
 
   // convert to name setter
   changeShapeName(n) {
-    thissingleton.changeShapeName(n);
+    this.singleton.changeShapeName(n);
   }
 
   updateShapePosition(dx, dy) {
@@ -393,7 +393,7 @@ export class MultiSelectShapes extends MultiSelect {
     this.getGlyph().rotate(angle, about);
   }
 
-  rotateable() {
+  isRotateable() {
     if (this.members.length === 1) return true;
     else return !this.contains('ComponentInstance');
   }

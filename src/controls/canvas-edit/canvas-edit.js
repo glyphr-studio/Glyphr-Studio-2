@@ -3,7 +3,7 @@ import { log } from '../../common/functions.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { glyphToHex } from '../../common/unicode.js';
-import { initEventHandlers } from './events_mouse.js';
+import { eventHandlerData, initEventHandlers } from './events_mouse.js';
 
 /**
  * CanvasEdit takes a string of glyphs and displays them on the canvas
@@ -87,15 +87,23 @@ export default class CanvasEdit extends HTMLElement {
 		log('CanvasEdit.redraw', 'start');
 		let editor = getCurrentProjectEditor();
 		this.ctx.clearRect(0, 0, this.width, this.height);
+
+		// Grid
 		this.ctx.fillStyle = accentColors.purple.l60;
 		this.ctx.fillRect(editor.view.dx, 0, 1, 1000);
 		this.ctx.fillRect(0, editor.view.dy, 1000, 1);
 
+		// Draw glyphs
 		let glyphHex = glyphToHex(this.glyphs.charAt(0));
-
-		let sg = getCurrentProject().getGlyph(glyphHex);
+		let sg = editor.project.getGlyph(glyphHex);
 		log(sg);
 		sg.drawGlyph(this.ctx, editor.view);
+
+		// Draw temporary new shapes
+		if(eventHandlerData.tempNewBasicShape) {
+			editor.multiSelect.shapes.drawShape(this.ctx, editor.view);
+		}
+
 		log('CanvasEdit.redraw', 'end');
 	}
 }

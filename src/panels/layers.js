@@ -164,7 +164,7 @@ function makeActionArea_Layers() {
 // --------------------------------------------------------------
 function moveShapeUp() {
   let wishapes = getSelectedWorkItemShapes();
-  let si = wishapes.indexOf(projectEditor.multiSelect.shapessingleton);
+  let si = wishapes.indexOf(projectEditor.multiSelect.shapes.singleton);
   if (si > -1 && si < wishapes.length - 1) {
     let tempshape = wishapes[si + 1];
     wishapes[si + 1] = wishapes[si];
@@ -175,7 +175,7 @@ function moveShapeUp() {
 
 function moveShapeDown() {
   let wishapes = getSelectedWorkItemShapes();
-  let si = wishapes.indexOf(projectEditor.multiSelect.shapessingleton);
+  let si = wishapes.indexOf(projectEditor.multiSelect.shapes.singleton);
   if (si > 0 && si < wishapes.length) {
     let tempshape = wishapes[si - 1];
     wishapes[si - 1] = wishapes[si];
