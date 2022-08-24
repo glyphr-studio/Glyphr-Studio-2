@@ -107,6 +107,7 @@ textarea {
 input:focus,
 textarea:focus {
 	outline-color: var(--blue-l60);
+	outline-width: 1px;
 }
 
 input[type=image]{
@@ -244,22 +245,25 @@ button:focus {
 	padding: 4px 8px;
 	margin: 2px 0px;
 	cursor:pointer;
-	border: none;
 	border-radius: 4px;
 	outline: none;
-	background-color: var(--gray-l45);
-	color: var(--gray-l85);
+	border: 1px solid var(--gray-l90);
+	background-color: var(--gray-l90);
+	color: var(--gray-l15);
+	box-shadow: 0 0 4px var(--gray-l90);
 }
 
 button:hover {
-	color:white;
-	border-radius: 6px;
+	color:var(--gray-l05);
+	border-color:var(--blue-l85);
+	box-shadow: 0 0 4px var(--blue-l85);
 }
 
 button:focus {
 	outline-style: solid;
-	outline-width: 2px;
+	outline-width: 1px;
 	outline-color: var(--blue-l75);
+	border-color: transparent;
 }
 
 button[disabled],
@@ -267,7 +271,8 @@ button[disabled]:active,
 button[disabled]:hover,
 button[disabled]:hover,
 button[disabled]:focus{
-	background-color: var(--gray-l85);
+	background-color: var(--gray-l95);
+	border-color: var(--gray-l95);
 	cursor: default;
 }
 

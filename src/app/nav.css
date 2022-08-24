@@ -48,7 +48,9 @@
 }
 
 .nav-button__super-title {
-	font-size: 0.6em;
+	color: var(--blue-l85);
+	font-size: 0.64em;
+	letter-spacing: 0.2ch;
 	opacity: 80%;
 }
 
@@ -56,6 +58,7 @@
 	margin-bottom: 4px;
 	color: var(--blue-l90);
 	font-size: 1.1em;
+	letter-spacing: 0.05ch;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
