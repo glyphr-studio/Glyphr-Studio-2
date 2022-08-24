@@ -20,32 +20,32 @@ const GSApp = new GlyphrStudioApp();
 /** export nothing by default */
 export default function () {}
 export {
-  GSApp,
-  getGlyphrStudioApp,
-  getCurrentProjectEditor,
-  getCurrentProject,
-  glyphrStudioOnLoad,
+	GSApp,
+	getGlyphrStudioApp,
+	getCurrentProjectEditor,
+	getCurrentProject,
+	glyphrStudioOnLoad,
 };
 
 /**
  * First function to run when the browser starts
  */
 function glyphrStudioOnLoad() {
-  log(`glyphrStudioOnLoad`, 'start');
+	log(`glyphrStudioOnLoad`, 'start');
 
-  if (passPreChecks()) {
-    // log(GSApp);
-    console.log(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
-    registerCustomComponents();
+	if (passPreChecks()) {
+		// log(GSApp);
+		console.log(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
+		registerCustomComponents();
 
-    // Load project
-    let sample = getVersionTwoTestProject();
-    GSApp.settings.dev.currentPage = 'Glyph edit';
-    GSApp.setUp(JSON.stringify(sample));
-  } else {
-    log('did NOT pass pre-checks');
-  }
-  log(`glyphrStudioOnLoad`, 'end');
+		// Load project
+		let sample = getVersionTwoTestProject();
+		GSApp.settings.dev.currentPage = 'Glyph edit';
+		GSApp.setUp(JSON.stringify(sample));
+	} else {
+		log('did NOT pass pre-checks');
+	}
+	log(`glyphrStudioOnLoad`, 'end');
 }
 
 /**
@@ -53,29 +53,29 @@ function glyphrStudioOnLoad() {
  * @returns {boolean}
  */
 function passPreChecks() {
-  let pass = true;
-  // Templates
-  const template = document.createElement('template');
-  if (!template.content) {
-    console.error('Browser does not support HTML Templates');
-    pass = false;
-  }
-  return pass;
+	let pass = true;
+	// Templates
+	const template = document.createElement('template');
+	if (!template.content) {
+		console.error('Browser does not support HTML Templates');
+		pass = false;
+	}
+	return pass;
 }
 
 /**
  * Registers all the custom Web Components to the current document
  */
 function registerCustomComponents() {
-  customElements.define('anchor-twelvepoint', AnchorTwelvepoint);
-  customElements.define('button-toggle', ButtonToggle);
-  customElements.define('canvas-display', CanvasDisplay);
-  customElements.define('canvas-edit', CanvasEdit);
-  customElements.define('fancy-button', FancyButton);
-  customElements.define('glyph-tile', GlyphTile);
-  customElements.define('info-bubble', InfoBubble);
-  customElements.define('input-number', InputNumber);
-  customElements.define('input-number-lockable', InputNumberLockable);
+	customElements.define('anchor-twelvepoint', AnchorTwelvepoint);
+	customElements.define('button-toggle', ButtonToggle);
+	customElements.define('canvas-display', CanvasDisplay);
+	customElements.define('canvas-edit', CanvasEdit);
+	customElements.define('fancy-button', FancyButton);
+	customElements.define('glyph-tile', GlyphTile);
+	customElements.define('info-bubble', InfoBubble);
+	customElements.define('input-number', InputNumber);
+	customElements.define('input-number-lockable', InputNumberLockable);
 }
 
 /**
@@ -83,7 +83,7 @@ function registerCustomComponents() {
  * @returns {GlyphrStudioApp}
  */
 function getGlyphrStudioApp() {
-  return GSApp;
+	return GSApp;
 }
 
 /**
@@ -91,7 +91,7 @@ function getGlyphrStudioApp() {
  * @returns {GlyphrStudioProject}
  */
 function getCurrentProject() {
-  return getGlyphrStudioApp().getCurrentProjectEditor().project;
+	return getGlyphrStudioApp().getCurrentProjectEditor().project;
 }
 
 /**
@@ -99,9 +99,9 @@ function getCurrentProject() {
  * @returns {ProjectEditor}
  */
 function getCurrentProjectEditor() {
-  const gs = getGlyphrStudioApp();
-  if (!gs.projectEditors[gs.selectedProjectEditor]) {
-    gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
-  }
-  return gs.projectEditors[gs.selectedProjectEditor];
+	const gs = getGlyphrStudioApp();
+	if (!gs.projectEditors[gs.selectedProjectEditor]) {
+		gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
+	}
+	return gs.projectEditors[gs.selectedProjectEditor];
 }

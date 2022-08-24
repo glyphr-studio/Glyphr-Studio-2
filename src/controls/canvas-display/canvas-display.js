@@ -9,143 +9,143 @@ import { glyphToHex } from '../../common/unicode.js';
  * No editing involved
  */
 export default class CanvasDisplay extends HTMLElement {
-  /**
-   * Specify which attributes are observed and trigger attributeChangedCallback
-   */
-   static get observedAttributes() {
-    return ['glyphs', 'height', 'width', 'vertical-align', 'horizontal-align'];
-  }
+	/**
+	 * Specify which attributes are observed and trigger attributeChangedCallback
+	 */
+	 static get observedAttributes() {
+		return ['glyphs', 'height', 'width', 'vertical-align', 'horizontal-align'];
+	}
 
-  /**
-   * Create an CanvasDisplay
-   * @param {object} attributes - collection of key: value pairs to set as attributes
-   */
-  constructor(attributes = {}) {
-    log(`CanvasDisplay.constructor`, 'start');
+	/**
+	 * Create an CanvasDisplay
+	 * @param {object} attributes - collection of key: value pairs to set as attributes
+	 */
+	constructor(attributes = {}) {
+		log(`CanvasDisplay.constructor`, 'start');
 
-    super();
+		super();
 
-    Object.keys(attributes).forEach((key) =>
-      this.setAttribute(key, attributes[key])
-    );
+		Object.keys(attributes).forEach((key) =>
+			this.setAttribute(key, attributes[key])
+		);
 
-    this.canvas = makeElement({ tag: 'canvas' });
-    this.ctx = this.canvas.getContext('2d');
+		this.canvas = makeElement({ tag: 'canvas' });
+		this.ctx = this.canvas.getContext('2d');
 
-    this.glyphs = this.getAttribute('glyphs') || '';
-    this.width = this.getAttribute('width') || 1000;
-    this.height = this.getAttribute('height') || 1100;
-    this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
-    this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
+		this.glyphs = this.getAttribute('glyphs') || '';
+		this.width = this.getAttribute('width') || 1000;
+		this.height = this.getAttribute('height') || 1100;
+		this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
+		this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
 
-    let style = makeElement({
-      tag: 'style',
-      content: `
-            * {
-                box-sizing: border-box;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-            }
+		let style = makeElement({
+			tag: 'style',
+			content: `
+						* {
+								box-sizing: border-box;
+								-webkit-user-select: none;
+								-moz-user-select: none;
+								-ms-user-select: none;
+								user-select: none;
+						}
 
-            canvas {
-                background-color: white;
-            }
-        `,
-    });
+						canvas {
+								background-color: white;
+						}
+				`,
+		});
 
-    // Put it all together
-    let shadow = this.attachShadow({ mode: 'open' });
-    shadow.appendChild(style);
+		// Put it all together
+		let shadow = this.attachShadow({ mode: 'open' });
+		shadow.appendChild(style);
 
-    shadow.appendChild(this.canvas);
+		shadow.appendChild(this.canvas);
 
-    this.canvas.height = this.height;
-    this.canvas.width = this.width;
+		this.canvas.height = this.height;
+		this.canvas.width = this.width;
 
-    this.redraw();
-    log(`CanvasDisplay.constructor`, 'end');
-  }
+		this.redraw();
+		log(`CanvasDisplay.constructor`, 'end');
+	}
 
-  /**
-   * Listens for attribute changes on this element
-   * @param {string} attributeName - which attribute was changed
-   * @param {string} oldValue - value before the change
-   * @param {string} newValue - value after the change
-   */
-  attributeChangedCallback(attributeName, oldValue, newValue) {
-    log(`CanvasDisplay.attributeChangeCallback`, 'start');
-    log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+	/**
+	 * Listens for attribute changes on this element
+	 * @param {string} attributeName - which attribute was changed
+	 * @param {string} oldValue - value before the change
+	 * @param {string} newValue - value after the change
+	 */
+	attributeChangedCallback(attributeName, oldValue, newValue) {
+		log(`CanvasDisplay.attributeChangeCallback`, 'start');
+		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
-    switch (attributeName) {
-      case 'glyphs':
-        this.glyphs = newValue;
-        this.redraw();
-        break;
+		switch (attributeName) {
+			case 'glyphs':
+				this.glyphs = newValue;
+				this.redraw();
+				break;
 
-      case 'height':
-        this.height = newValue;
-        this.redraw();
-      break;
+			case 'height':
+				this.height = newValue;
+				this.redraw();
+			break;
 
-      case 'width':
-        this.width = newValue;
-        this.redraw();
-      break;
+			case 'width':
+				this.width = newValue;
+				this.redraw();
+			break;
 
-      case 'vertical-align':
-        this.vertical = newValue;
-        this.redraw();
-      break;
+			case 'vertical-align':
+				this.vertical = newValue;
+				this.redraw();
+			break;
 
-      case 'horizontal-align':
-        this.horizontal = newValue;
-        this.redraw();
-      break;
+			case 'horizontal-align':
+				this.horizontal = newValue;
+				this.redraw();
+			break;
 
-      default:
-        break;
-    }
+			default:
+				break;
+		}
 
-    if (attributeName === 'glyphs') {
-      this.redraw();
-    }
-    log(`CanvasDisplay.attributeChangeCallback`, 'end');
-  }
+		if (attributeName === 'glyphs') {
+			this.redraw();
+		}
+		log(`CanvasDisplay.attributeChangeCallback`, 'end');
+	}
 
-  /**
-   * Updates the canvas
-   */
-  redraw() {
-    log('CanvasDisplay.redraw', 'start');
-    let editor = getCurrentProjectEditor();
-    let glyph = editor.selectedGlyph;
-    let settings = getCurrentProject().projectSettings;
-    let gutterSize = 20;
-    let contentWidth = this.width - (2*gutterSize);
-    let contentHeight = this.height - (2*gutterSize);
-    let upm = settings.upm;
-    let ascent = settings.ascent;
-    let zoom = Math.min(contentWidth, contentHeight) / upm;
-    let glyphWidth = glyph.advanceWidth;
+	/**
+	 * Updates the canvas
+	 */
+	redraw() {
+		log('CanvasDisplay.redraw', 'start');
+		let editor = getCurrentProjectEditor();
+		let glyph = editor.selectedGlyph;
+		let settings = getCurrentProject().projectSettings;
+		let gutterSize = 20;
+		let contentWidth = this.width - (2*gutterSize);
+		let contentHeight = this.height - (2*gutterSize);
+		let upm = settings.upm;
+		let ascent = settings.ascent;
+		let zoom = Math.min(contentWidth, contentHeight) / upm;
+		let glyphWidth = glyph.advanceWidth;
 
-    let view = {
-      dx: gutterSize + ((contentWidth - (zoom * glyphWidth))/2),
-      dy: gutterSize + (zoom * (ascent)),
-      dz: zoom,
-    };
+		let view = {
+			dx: gutterSize + ((contentWidth - (zoom * glyphWidth))/2),
+			dy: gutterSize + (zoom * (ascent)),
+			dz: zoom,
+		};
 
-    this.ctx.clearRect(0, 0, this.width, this.height);
-    this.ctx.fillStyle = accentColors.gray.l95;
-    this.ctx.fillRect(view.dx, 0, 1, 1000);
-    this.ctx.fillRect(0, view.dy, 1000, 1);
+		this.ctx.clearRect(0, 0, this.width, this.height);
+		this.ctx.fillStyle = accentColors.gray.l95;
+		this.ctx.fillRect(view.dx, 0, 1, 1000);
+		this.ctx.fillRect(0, view.dy, 1000, 1);
 
-    let glyphHex = glyphToHex(this.glyphs.charAt(0));
+		let glyphHex = glyphToHex(this.glyphs.charAt(0));
 
-    let sg = getCurrentProject().getGlyph(glyphHex);
-    log(sg);
-    sg.drawGlyph(this.ctx, view);
-    log('CanvasDisplay.redraw', 'end');
-  }
+		let sg = getCurrentProject().getGlyph(glyphHex);
+		log(sg);
+		sg.drawGlyph(this.ctx, view);
+		log('CanvasDisplay.redraw', 'end');
+	}
 }
