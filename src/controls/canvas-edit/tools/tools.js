@@ -438,13 +438,13 @@ let icons = {};
 export function makeToolButtonSVG(oa) {
 	// log(`makeToolButtonSVG`, 'start');
 	// log(`oa.name: ${oa.name}`);
-	let colorOutline = accentColors.blue.l75;
-	let colorFill = accentColors.gray.l40;
+	let colorOutline = accentColors.blue.l25;
+	let colorFill = accentColors.gray.l95;
 	let icon = icons[oa.name];
 
 	if (oa.selected) {
 		colorOutline = accentColors.gray.l10;
-		colorFill = accentColors.gray.l95;
+		colorFill = 'white';
 	} else if (oa.disabled) {
 		colorOutline = accentColors.gray.l40;
 		colorFill = accentColors.gray.l30;

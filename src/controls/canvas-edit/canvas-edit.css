@@ -6,14 +6,14 @@
 	width:30px;
 	padding: 5px;
 	margin: 0 0 5px 0;
-	background-color: var(--gray-l30);
+	background-color: var(--gray-l90);
 }
 
 .canvas-edit__tool-selected,
 .canvas-edit__tool-selected:active,
 .canvas-edit__tool-selected:focus,
 .canvas-edit__tool-selected:hover {
-	background-color: var(--blue-l70);
+	background-color: var(--blue-l75);
 }
 
 .canvas-edit__tool svg {
