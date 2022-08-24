@@ -2,36 +2,36 @@
 // Dialog Box, Error Box, Notation, toasts
 // -----------------------------------------------------------------
 export {
-  closeDialog,
-  openDialog,
-  openBigDialog,
-  isBigDialogOpen,
-  openNotation,
-  closeNotation,
-  makeErrorMessageBox,
-  showErrorMessageBox,
-  closeErrorMessageBox,
-  toggleDialogExportOptions,
-  showToast,
+	closeDialog,
+	openDialog,
+	openBigDialog,
+	isBigDialogOpen,
+	openNotation,
+	closeNotation,
+	makeErrorMessageBox,
+	showErrorMessageBox,
+	closeErrorMessageBox,
+	toggleDialogExportOptions,
+	showToast,
 };
 
 /**
  * Closes any type of dialog box that may be open
  */
 function closeDialog() {
-  if (!_UI.popOut && document.getElementById('npSave'))
-    document.getElementById('npSave').style.backgroundColor = 'transparent';
-  document.getElementById('dialog_bg').style.display = 'none';
-  document.getElementById('big_dialog_box').style.display = 'none';
-  document.getElementById('dialog_box').style.display = 'none';
-  document.getElementById('saveFormatFlyout').style.display = 'none';
+	if (!_UI.popOut && document.getElementById('npSave'))
+		document.getElementById('npSave').style.backgroundColor = 'transparent';
+	document.getElementById('dialog_bg').style.display = 'none';
+	document.getElementById('big_dialog_box').style.display = 'none';
+	document.getElementById('dialog_box').style.display = 'none';
+	document.getElementById('saveFormatFlyout').style.display = 'none';
 
-  document.getElementById('dialogRightContent').innerHTML =
-    '<b>Error: unspecified dialog box content.</b>';
-  document.getElementById('bigDialogLeftContent').innerHTML =
-    '<b>Error: unspecified dialog box content.</b>';
+	document.getElementById('dialogRightContent').innerHTML =
+		'<b>Error: unspecified dialog box content.</b>';
+	document.getElementById('bigDialogLeftContent').innerHTML =
+		'<b>Error: unspecified dialog box content.</b>';
 
-  // document.body.focus();
+	// document.body.focus();
 }
 
 /**
@@ -39,16 +39,16 @@ function closeDialog() {
  * @param {string} content - HTML content of the dialog box
  */
 function openDialog(content) {
-  closeDialog();
-  document.body.focus();
-  const dc = document.getElementById('dialogRightContent');
-  dc.innerHTML = content;
+	closeDialog();
+	document.body.focus();
+	const dc = document.getElementById('dialogRightContent');
+	dc.innerHTML = content;
 
-  if (dc.style.height > 800) dc.style.height = 800;
-  else dc.style.width = 'auto';
+	if (dc.style.height > 800) dc.style.height = 800;
+	else dc.style.width = 'auto';
 
-  document.getElementById('dialog_box').style.display = 'block';
-  document.getElementById('dialog_bg').style.display = 'block';
+	document.getElementById('dialog_box').style.display = 'block';
+	document.getElementById('dialog_bg').style.display = 'block';
 }
 
 /**
@@ -57,15 +57,15 @@ function openDialog(content) {
  * @param {string} content - HTML content of the dialog box
  */
 function openBigDialog(content) {
-  closeDialog();
-  document.body.focus();
-  document.getElementById('bigDialogLeftContent').innerHTML = content;
-  document.getElementById(
-    'bigDialogScrollContent'
-  ).innerHTML = make_GlyphChooser(_UI.glyphChooser.dialog);
+	closeDialog();
+	document.body.focus();
+	document.getElementById('bigDialogLeftContent').innerHTML = content;
+	document.getElementById(
+		'bigDialogScrollContent'
+	).innerHTML = make_GlyphChooser(_UI.glyphChooser.dialog);
 
-  document.getElementById('big_dialog_box').style.display = 'block';
-  document.getElementById('dialog_bg').style.display = 'block';
+	document.getElementById('big_dialog_box').style.display = 'block';
+	document.getElementById('dialog_bg').style.display = 'block';
 }
 
 /**
@@ -73,7 +73,7 @@ function openBigDialog(content) {
  * @returns {boolean}
  */
 function isBigDialogOpen() {
-  return document.getElementById('big_dialog_box').style.display === 'block';
+	return document.getElementById('big_dialog_box').style.display === 'block';
 }
 
 /**
@@ -84,21 +84,21 @@ function isBigDialogOpen() {
  * @param {number} y - screen y location
  */
 function openNotation(content, x, y) {
-  getEditDocument().body.focus();
-  const n = getEditDocument().getElementById('notation');
-  n.innerHTML = content;
-  n.style.top = round(y) + 'px';
-  n.style.left = round(x + 50) + 'px';
-  n.style.display = 'block';
+	getEditDocument().body.focus();
+	const n = getEditDocument().getElementById('notation');
+	n.innerHTML = content;
+	n.style.top = round(y) + 'px';
+	n.style.left = round(x + 50) + 'px';
+	n.style.display = 'block';
 }
 
 /**
  * Closes any notation dialog boxes
  */
 function closeNotation() {
-  getEditDocument().getElementById('notation').style.display = 'none';
-  getEditDocument().getElementById('notation').innerHTML = '&#x20E2;';
-  getEditDocument().body.focus();
+	getEditDocument().getElementById('notation').style.display = 'none';
+	getEditDocument().getElementById('notation').innerHTML = '&#x20E2;';
+	getEditDocument().body.focus();
 }
 
 /**
@@ -106,15 +106,15 @@ function closeNotation() {
  * asking which format to export
  */
 function toggleDialogExportOptions() {
-  const sff = document.getElementById('saveFormatFlyout');
-  const nps = document.getElementById('npSave');
+	const sff = document.getElementById('saveFormatFlyout');
+	const nps = document.getElementById('npSave');
 
-  if (sff.style.display === 'block') {
-    closeDialog();
-  } else {
-    nps.style.backgroundColor = _UI.colors.blue.l45;
-    sff.style.display = 'block';
-  }
+	if (sff.style.display === 'block') {
+		closeDialog();
+	} else {
+		nps.style.backgroundColor = _UI.colors.blue.l45;
+		sff.style.display = 'block';
+	}
 }
 
 /**
@@ -122,15 +122,15 @@ function toggleDialogExportOptions() {
  * @returns {string} - HTML content
  */
 function makeErrorMessageBox() {
-  const con =
-    '<div id="errormessagebox" style="display:none;">' +
-    '<table cellpadding=0 cellspacing=0 border=0><tr>' +
-    '<td class="errormessageleftbar">' +
-    '<button class="errormessageclosebutton" onclick="closeErrorMessageBox();">&times;</button></td>' +
-    '<td id="errormessagecontent"></td>' +
-    '</tr></table></div>';
+	const con =
+		'<div id="errormessagebox" style="display:none;">' +
+		'<table cellpadding=0 cellspacing=0 border=0><tr>' +
+		'<td class="errormessageleftbar">' +
+		'<button class="errormessageclosebutton" onclick="closeErrorMessageBox();">&times;</button></td>' +
+		'<td id="errormessagecontent"></td>' +
+		'</tr></table></div>';
 
-  return con;
+	return con;
 }
 
 /**
@@ -138,19 +138,19 @@ function makeErrorMessageBox() {
  * @param {string} msg - HTML content of the dialog box
  */
 function showErrorMessageBox(msg) {
-  const msgcon = document.getElementById('errormessagecontent');
-  const msgbox = document.getElementById('errormessagebox');
-  msgcon.innerHTML = msg;
-  msgbox.style.display = 'block';
-  console.warn(msg);
+	const msgcon = document.getElementById('errormessagecontent');
+	const msgbox = document.getElementById('errormessagebox');
+	msgcon.innerHTML = msg;
+	msgbox.style.display = 'block';
+	console.warn(msg);
 }
 
 /**
  * Closes the error message box
  */
 function closeErrorMessageBox() {
-  document.getElementById('errormessagecontent').innerHTML = '';
-  document.getElementById('errormessagebox').style.display = 'none';
+	document.getElementById('errormessagecontent').innerHTML = '';
+	document.getElementById('errormessagebox').style.display = 'none';
 }
 
 /**
@@ -161,109 +161,109 @@ function closeErrorMessageBox() {
  * @param {function} fn - function to call after message is shown
  */
 function showToast(msg, dur, fn) {
-  // log('showToast', 'start');
-  let step = -1;
-  const stepmax = 20;
-  const timestep = 10;
-  const divisor = 5;
-  const msgdiv = getEditDocument().getElementById('toast');
-  const durration = dur || 3000;
-  msgdiv.innerHTML = msg || 'Howdy!';
+	// log('showToast', 'start');
+	let step = -1;
+	const stepmax = 20;
+	const timestep = 10;
+	const divisor = 5;
+	const msgdiv = getEditDocument().getElementById('toast');
+	const durration = dur || 3000;
+	msgdiv.innerHTML = msg || 'Howdy!';
 
-  // log('Typeof fn: ' + typeof fn);
-  // console.log(fn);
+	// log('Typeof fn: ' + typeof fn);
+	// console.log(fn);
 
-  if (fn && typeof fn === 'function') {
-    // log('CALLING FUNCTION NOW');
-    setTimeout(fn, 100);
-  }
+	if (fn && typeof fn === 'function') {
+		// log('CALLING FUNCTION NOW');
+		setTimeout(fn, 100);
+	}
 
-  if (_UI.toastTimeout) {
-    msgdiv.innerHTML = msg;
-    appearFinish();
-    return;
-  }
+	if (_UI.toastTimeout) {
+		msgdiv.innerHTML = msg;
+		appearFinish();
+		return;
+	}
 
-  let currtop = -50;
-  const finaltop = 15;
-  let curropacity = 0;
-  const finalopacity = 1;
+	let currtop = -50;
+	const finaltop = 15;
+	let curropacity = 0;
+	const finalopacity = 1;
 
-  /** start to dissapear */
-  function appearFinish() {
-    // log('appearFinish');
-    currtop = finaltop;
-    curropacity = finalopacity;
-    step = stepmax;
+	/** start to dissapear */
+	function appearFinish() {
+		// log('appearFinish');
+		currtop = finaltop;
+		curropacity = finalopacity;
+		step = stepmax;
 
-    msgdiv.style.marginTop = finaltop + 'px';
-    msgdiv.style.opacity = finalopacity;
+		msgdiv.style.marginTop = finaltop + 'px';
+		msgdiv.style.opacity = finalopacity;
 
-    setToastTimeout(disappearStep, durration);
-  }
+		setToastTimeout(disappearStep, durration);
+	}
 
-  /** animate appearance */
-  function appearStep() {
-    // log('appearStep ' + step);
+	/** animate appearance */
+	function appearStep() {
+		// log('appearStep ' + step);
 
-    if (step < 0) {
-      msgdiv.style.display = 'block';
-      msgdiv.style.marginTop = '-50px;';
-      msgdiv.style.opacity = '0.0';
-      msgdiv.style.borderBottomWidth = '0px';
+		if (step < 0) {
+			msgdiv.style.display = 'block';
+			msgdiv.style.marginTop = '-50px;';
+			msgdiv.style.opacity = '0.0';
+			msgdiv.style.borderBottomWidth = '0px';
 
-      step++;
+			step++;
 
-      setToastTimeout(appearStep, timestep);
-    } else if (step < stepmax) {
-      step++;
-      currtop = currtop + (finaltop - currtop) / divisor;
-      curropacity = curropacity + (finalopacity - curropacity) / divisor;
+			setToastTimeout(appearStep, timestep);
+		} else if (step < stepmax) {
+			step++;
+			currtop = currtop + (finaltop - currtop) / divisor;
+			curropacity = curropacity + (finalopacity - curropacity) / divisor;
 
-      msgdiv.style.marginTop = currtop + 'px';
-      msgdiv.style.opacity = curropacity;
+			msgdiv.style.marginTop = currtop + 'px';
+			msgdiv.style.opacity = curropacity;
 
-      setToastTimeout(appearStep, timestep);
-    } else {
-      appearFinish();
-    }
-  }
+			setToastTimeout(appearStep, timestep);
+		} else {
+			appearFinish();
+		}
+	}
 
-  /** animate dissapearance */
-  function disappearStep() {
-    // log('appearStep ' + step);
-    if (step < 0) {
-      msgdiv.style.display = 'none';
-      msgdiv.style.marginTop = '-50px;';
-      msgdiv.style.opacity = '0.0';
-      msgdiv.innerHTML = '0_o';
-      if (_UI.toastTimeout) {
-        clearTimeout(_UI.toastTimeout);
-        _UI.toastTimeout = false;
-      }
-    } else {
-      step--;
-      currtop = currtop - currtop / divisor;
-      curropacity = curropacity - curropacity / divisor;
+	/** animate dissapearance */
+	function disappearStep() {
+		// log('appearStep ' + step);
+		if (step < 0) {
+			msgdiv.style.display = 'none';
+			msgdiv.style.marginTop = '-50px;';
+			msgdiv.style.opacity = '0.0';
+			msgdiv.innerHTML = '0_o';
+			if (_UI.toastTimeout) {
+				clearTimeout(_UI.toastTimeout);
+				_UI.toastTimeout = false;
+			}
+		} else {
+			step--;
+			currtop = currtop - currtop / divisor;
+			curropacity = curropacity - curropacity / divisor;
 
-      msgdiv.style.marginTop = currtop + 'px';
-      msgdiv.style.opacity = curropacity;
+			msgdiv.style.marginTop = currtop + 'px';
+			msgdiv.style.opacity = curropacity;
 
-      setToastTimeout(disappearStep, timestep);
-    }
-  }
+			setToastTimeout(disappearStep, timestep);
+		}
+	}
 
-  /**
-   * Common function for appear and dissapear to
-   * call while looping through animations.
-   * @param {function} fn - function to call
-   * @param {number} dur - durration (milliseconds)
-   */
-  function setToastTimeout(fn, dur) {
-    if (_UI.toastTimeout) clearTimeout(_UI.toastTimeout);
-    _UI.toastTimeout = setTimeout(fn, dur);
-  }
+	/**
+	 * Common function for appear and dissapear to
+	 * call while looping through animations.
+	 * @param {function} fn - function to call
+	 * @param {number} dur - durration (milliseconds)
+	 */
+	function setToastTimeout(fn, dur) {
+		if (_UI.toastTimeout) clearTimeout(_UI.toastTimeout);
+		_UI.toastTimeout = setTimeout(fn, dur);
+	}
 
-  setToastTimeout(appearStep, 1);
-  // log('showToast', 'end');
+	setToastTimeout(appearStep, 1);
+	// log('showToast', 'end');
 }

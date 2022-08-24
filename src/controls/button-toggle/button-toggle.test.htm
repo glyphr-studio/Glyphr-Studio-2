@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <title>button-toggle test</title>
-    <script type="module">
-        import ButtonToggle from './button-toggle.js';
-        customElements.define('button-toggle', ButtonToggle);
-    </script>
-    <style>
-        * {
-            font-family: sans-serif;
-        }
+	<meta charset="utf-8" />
+	<title>button-toggle test</title>
+	<script type="module">
+		import ButtonToggle from './button-toggle.js';
+		customElements.define('button-toggle', ButtonToggle);
+	</script>
+	<style>
+		* {
+			font-family: sans-serif;
+		}
 
-        body {
-            background-color: rgb(229, 234, 239);
-        }
+		body {
+			background-color: rgb(229, 234, 239);
+		}
 
-        button-toggle {
-            display: inline-block;
-            margin: 10px;
-        }
+		button-toggle {
+			display: inline-block;
+			margin: 10px;
+		}
 
-        label {
-            display:block;
-            margin-bottom: 12px;
-        }
-    </style>
+		label {
+			display:block;
+			margin-bottom: 12px;
+		}
+	</style>
 </head>
 <body style="padding:20px;">
-    <button-toggle icon="lock"></button-toggle>
-    <button-toggle icon="lock" selected></button-toggle>
-    <button-toggle icon="lock" disabled></button-toggle>
+	<button-toggle icon="lock"></button-toggle>
+	<button-toggle icon="lock" selected></button-toggle>
+	<button-toggle icon="lock" disabled></button-toggle>
 
-    <br><br>
+	<br><br>
 
-    <button-toggle icon="lock" size="32"></button-toggle>
-    <button-toggle icon="lock" size="32" selected></button-toggle>
-    <button-toggle icon="lock" size="32" disabled></button-toggle>
+	<button-toggle icon="lock" size="32"></button-toggle>
+	<button-toggle icon="lock" size="32" selected></button-toggle>
+	<button-toggle icon="lock" size="32" disabled></button-toggle>
 
-    <br><br>
+	<br><br>
 
-    <button-toggle icon="lock" size="48"></button-toggle>
-    <button-toggle icon="lock" size="48" selected></button-toggle>
-    <button-toggle icon="lock" size="48" disabled></button-toggle>
+	<button-toggle icon="lock" size="48"></button-toggle>
+	<button-toggle icon="lock" size="48" selected></button-toggle>
+	<button-toggle icon="lock" size="48" disabled></button-toggle>
 
 
 </body>

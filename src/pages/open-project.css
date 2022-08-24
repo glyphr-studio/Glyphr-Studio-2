@@ -1,124 +1,124 @@
 #open-project__left-area {
-    background-color: var(--gray-l05);
-    color: var(--gray-l95);
-    width: 475px;
-    vertical-align: middle;
-    padding: 0px 0px 0px 50px;
+	background-color: var(--gray-l05);
+	color: var(--gray-l95);
+	width: 475px;
+	vertical-align: middle;
+	padding: 0px 0px 0px 50px;
 }
 
 #open-project__right-area {
-    color: var(--gray-l95);
-    vertical-align: middle;
-    padding:0px 0px 0px 50px;
-    font-size: 40px;
-    background-color: var(--gray-l10);
+	color: var(--gray-l95);
+	vertical-align: middle;
+	padding:0px 0px 0px 50px;
+	font-size: 40px;
+	background-color: var(--gray-l10);
 }
 
 #open-project__logo {
-    width: 400px;
-    margin: 0px 20px 16px 0px;
+	width: 400px;
+	margin: 0px 20px 16px 0px;
 }
 
 .open-project__version-name,
 .open-project__version-number,
 .open-project__blurb {
-    color: var(--gray-l90);
-    width: 350px;
+	color: var(--gray-l90);
+	width: 350px;
 }
 
 .open-project__version-name {
-    font-size: 1em;
+	font-size: 1em;
 }
 
 .open-project__version-number {
-    font-size: 0.8em;
+	font-size: 0.8em;
 }
 
 .open-project__version-number a {
-    color: var(--gray-l90);
-    font-size: 1em;
-    text-decoration: underline;
+	color: var(--gray-l90);
+	font-size: 1em;
+	text-decoration: underline;
 }
 
 .open-project__blurb {
-    color: var(--gray-l70);
-    font-size: 0.6em;
-    margin-top: 10px;
+	color: var(--gray-l70);
+	font-size: 0.6em;
+	margin-top: 10px;
 }
 
 .open-project__blurb a {
-    color: var(--gray-l80);
-    font-size: 1em;
-    text-decoration: underline;
+	color: var(--gray-l80);
+	font-size: 1em;
+	text-decoration: underline;
 }
 
 .open-project__version-number a,
 .open-project__blurb a {
-    text-decoration-color: var(--gray-l60);
+	text-decoration-color: var(--gray-l60);
 }
 
 .open-project__version-number a:hover,
 .open-project__blurb a:hover {
-    text-decoration-color: var(--gray-l85);
-    color: var(--gray-l85);
+	text-decoration-color: var(--gray-l85);
+	color: var(--gray-l85);
 }
 
 .open-project__tab-wrapper {
-    width: 400px;
-    position: absolute;
-    top: calc(50% - 100px);
+	width: 400px;
+	position: absolute;
+	top: calc(50% - 100px);
 }
 .open-project__tab-content {
-    margin: 20px 4px 0px 10px;
-    display: inline;
-    color: var(--gray-l95);
+	margin: 20px 4px 0px 10px;
+	display: inline;
+	color: var(--gray-l95);
 }
 
 .open-project__tab-content h2 {
-    color: var(--gray-l95);
-    display: block;
-    padding-right: 0px;
-    margin-bottom: 10px;
+	color: var(--gray-l95);
+	display: block;
+	padding-right: 0px;
+	margin-bottom: 10px;
 }
 
 .open-project__tab-content #customRangeBegin,
 .open-project__tab-content #customRangeEnd {
-    width: 140px;
+	width: 140px;
 }
 
 .open-project__tabs {
-    margin-left: 10px;
+	margin-left: 10px;
 }
 
 .open-project__tabs button {
-    /*background-color: rgb(229,234,239);*/
-    background-color: transparent;
-    border-bottom: 3px solid var(--gray-l35);
-    padding: 4px 16px;
-    margin: 0px;
-    color: var(--blue-l70);
-    outline-width: 0px;
-    border-radius: 0px;
+	/*background-color: rgb(229,234,239);*/
+	background-color: transparent;
+	border-bottom: 3px solid var(--gray-l35);
+	padding: 4px 16px;
+	margin: 0px;
+	color: var(--blue-l70);
+	outline-width: 0px;
+	border-radius: 0px;
 }
 .open-project__tabs button:hover {
-    border-bottom: 3px solid var(--blue-l45) !important;
-    background-color: var(--gray-l45);
+	border-bottom: 3px solid var(--blue-l45) !important;
+	background-color: var(--gray-l45);
 }
 
 #open-project__project-name	{
-    width: 94%;
-    height: 25px;
-    margin: 10px 0px 0px 0px;
-    color: var(--gray-l30);
-    display: block;
+	width: 94%;
+	height: 25px;
+	margin: 10px 0px 0px 0px;
+	color: var(--gray-l30);
+	display: block;
 }
 
 #open-project__drop-target {
-    width: 90%;
-    margin: 10px 0px 0px 0px;
-    background-color: var(--gray-l15);
-    border:1px dashed var(--gray-l65);
-    color: var(--gray-l65);
-    padding: 18px 0px 20px 20px;
-    line-height: 2em;
+	width: 90%;
+	margin: 10px 0px 0px 0px;
+	background-color: var(--gray-l15);
+	border:1px dashed var(--gray-l65);
+	color: var(--gray-l65);
+	padding: 18px 0px 20px 20px;
+	line-height: 2em;
 }
