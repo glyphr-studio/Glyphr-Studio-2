@@ -85,21 +85,25 @@
 	grid-template-columns: min-content max-content;
 	margin: 4px 10px 10px 2px;
 	border-radius: 0;
+	border-color: transparent;
 	border-right: 4px solid transparent;
 	color: var(--blue-l80);
 	text-align: left;
 	background-color: transparent;
 	font-size: 1.1em;
 	width: calc(100% - 10px);
+	box-shadow: none;
 }
 
 .nav-dropdown__button:hover,
 .nav-dropdown__button:focus {
+	border-color: transparent;
 	border-right: 4px solid var(--blue-l90);
 	border-radius: 0;
 	margin: 4px 10px 10px 2px;
 	color: var(--blue-l90);
 	background-color: hsla(0, 0%, 100%, 0.1);
+	box-shadow: none;
 }
 
 .nav-dropdown__button svg {
