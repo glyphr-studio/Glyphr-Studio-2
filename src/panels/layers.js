@@ -5,27 +5,20 @@
 
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
+import { log } from '../common/functions.js';
 import { makeActionButton } from './action-buttons.js';
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
-	let projectEditor = getCurrentProjectEditor();
 	let rowsArea = makeElement({className: 'panel__section full-width layer-panel__rows-area'});
-
-	let selected = projectEditor.selectedWorkItem;
+	let editor = getCurrentProjectEditor();
+	let selected = editor.selectedWorkItem;
 	let shapes = selected.shapes;
-	// log(`selectedWorkItemShapes`);
-	// log(shapes);
-
-	// log(`selectedShapes`);
-	// log(projectEditor.multiSelect.shapes.members);
-
-	let shape, row, thumb, note, name;
 
 	if (shapes.length > 0) {
 		for (let i = shapes.length - 1; i >= 0; i--) {
-			shape = shapes[i];
-			row = makeElement();
+			let shape = shapes[i];
+			let row = makeElement();
 
 			if (shape.objType === 'ComponentInstance') {
 				row.setAttribute('class', 'layer-panel__row layer-panel__component');
@@ -33,11 +26,28 @@ export function makePanel_Layers() {
 				row.setAttribute('class', 'layer-panel__row layer-panel__shape');
 			}
 
-			if (projectEditor.multiSelect.shapes.isSelected(shape)) {
+			if (editor.multiSelect.shapes.isSelected(shape)) {
 				row.classList.add('layer-panel__selected');
 			}
 
-			//onclick?
+			editor.subscribe({
+				topic: 'selectedShape',
+				subscriberName: 'Layer row button',
+				callback: (newSelectedShape) => {
+					log(`Layer subscription callback for selectedShape`, 'start');
+
+					let isSelected = editor.multiSelect.shapes.isSelected(shape);
+					log(`isSelected: ${isSelected}`);
+					log(row.classList.toString());
+					row.classList.toggle('layer-panel__selected', isSelected);
+					log(`Layer subscription callback for selectedShape`, 'end');
+				}
+			});
+
+			row.addEventListener('click', () => {
+				editor.multiSelect.shapes.select(shape);
+				editor.publish('selectedShape', shape);
+			});
 
 			// if (shape.objType === 'ComponentInstance') {
 			//   content +=

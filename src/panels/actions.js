@@ -418,7 +418,7 @@ function pasteShapesFrom(sourceGlyphID) {
 				'" to  "' +
 				getSelectedWorkItemName()
 		);
-		if (_UI.selectedTool === 'pathAddPoint') _UI.selectedTool = 'shapeResize';
+		if (_UI.selectedTool === 'pathAddPoint') _UI.selectedTool = 'shapeEdit';
 		closeDialog();
 	} else {
 		showDialogGetShapes(

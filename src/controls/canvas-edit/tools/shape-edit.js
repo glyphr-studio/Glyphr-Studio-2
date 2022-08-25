@@ -2,9 +2,11 @@
 // Shape Resize - resizes whole shapes (Arrow / Pointer)
 // ----------------------------------------------------------------
 
+import { getCurrentProjectEditor } from '../../../app/main.js';
+import { log } from '../../../common/functions.js';
 import { setCursor } from '../cursors.js';
 import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData } from '../events_mouse.js';
-import { clickTool } from './tools.js';
+import { clickTool, getShapeAtLocation } from './tools.js';
 
 export default class Tool_ShapeEdit {
 	constructor() {
@@ -29,10 +31,12 @@ export default class Tool_ShapeEdit {
 
 			this.clickedshape = getShapeAtLocation(eh.mouseX, eh.mouseY);
 			let editor = getCurrentProjectEditor();
-			eh.handle = editor.multiSelect.shapes.isOverBoundingBoxHandle(
-				eh.mouseX,
-				eh.mouseY
-			);
+
+			// TODO cursor detection
+			// eh.handle = editor.multiSelect.shapes.isOverBoundingBoxHandle(
+			// 	eh.mouseX,
+			// 	eh.mouseY
+			// );
 
 			// log('clickshape: ' + this.clickedshape);
 			// log('corner: ' + eh.handle);
@@ -48,7 +52,7 @@ export default class Tool_ShapeEdit {
 					eh.rotationCenter = editor.multiSelect.shapes.center;
 					eh.rotationstarttopy =
 						editor.multiSelect.shapes.maxes.yMax +
-						editor.rotateHandleHeight / getView().dz;
+						editor.rotateHandleHeight / editor.view.dz;
 				} else {
 					// log('clicked on eh.handle: ' + eh.handle);
 					this.resizing = true;
@@ -64,16 +68,20 @@ export default class Tool_ShapeEdit {
 				findAndCallHotspot(eh.mouseX, eh.mouseY);
 			}
 
-			redraw({ calledBy: 'Event Handler Tool_ShapeEdit mousedown' });
+			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_ShapeEdit mousedown' });
 		};
 
 		this.mousemove = function (ev) {
-			let eh = eventHandlerData;
-			this.didstuff = false;
-			let corner = eh.handle ||
-				editor.multiSelect.shapes.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
+			log(`Tool_ShapeEdit.mousemove`, 'start');
 
-			let dz = getView('Event Handler Tool_ShapeEdit mousemove').dz;
+			let eh = eventHandlerData;
+			let editor = getCurrentProjectEditor();
+			this.didstuff = false;
+			// TODO cursor detection
+			// let corner = eh.handle || editor.multiSelect.shapes.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
+			let corner = eh.handle;
+
+			let dz = editor.view.dz;
 			let dx = (eh.mouseX - eh.lastX) / dz || 0;
 			let dy = (eh.lastY - eh.mouseY) / dz || 0;
 
@@ -89,16 +97,16 @@ export default class Tool_ShapeEdit {
 					}
 
 					if (this.clickedshape.objType === 'ComponentInstance')
-						clickTool('shapeResize');
+						clickTool('shapeEdit');
 					editor.nav.panel = 'Attributes';
 				}
 
 				let singleshape = editor.multiSelect.shapes.singleton;
 
 				if (singleshape) {
-					cur = singleshape.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
-					if (!cur)
-						cur = getShapeAtLocation(eh.mouseX, eh.mouseY) ? 'arrowSquare' : 'arrow';
+					// TODO cursor detection
+					// cur = singleshape.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
+					// if (!cur) cur = getShapeAtLocation(eh.mouseX, eh.mouseY) ? 'arrowSquare' : 'arrow';
 					dx = singleshape.xLock ? 0 : dx;
 					dy = singleshape.yLock ? 0 : dy;
 				}
@@ -141,13 +149,15 @@ export default class Tool_ShapeEdit {
 				eh.lastX = eh.mouseX;
 				eh.lastY = eh.mouseY;
 				eh.undoQueueHasChanged = true;
-				redraw({ calledBy: 'Event Handler Tool_ShapeEdit mousemove' });
+				editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_ShapeEdit mousemove' });
 			}
+			log(`Tool_ShapeEdit.mousemove`, 'end');
 		};
 
 		this.mouseup = function () {
 			// log('Mouse Up');
 			let eh = eventHandlerData;
+			let editor = getCurrentProjectEditor();
 
 			// New Basic Shape
 			if (eh.tempNewBasicShape) {
@@ -159,16 +169,19 @@ export default class Tool_ShapeEdit {
 
 			// Clicked a shape to select
 			if (this.clickedshape && !this.didstuff) {
-				if (eh.multi)
+				if (eh.multi) {
 					editor.multiSelect.shapes.toggle(this.clickedshape);
-				else
+				} else {
 					editor.multiSelect.shapes.select(this.clickedshape);
+				}
 
-				if (this.clickedshape.objType === 'ComponentInstance')
-					clickTool('shapeResize');
-				else
+				if (this.clickedshape.objType === 'ComponentInstance') {
+					clickTool('shapeEdit');
+				} else {
 					setCursor('arrowSquare');
+				}
 
+				editor.publish('selectedShape', this.clickedshape);
 				editor.nav.panel = 'Attributes';
 			}
 
@@ -192,7 +205,7 @@ export default class Tool_ShapeEdit {
 			if (eh.undoQueueHasChanged)
 				historyPut('Path Edit tool');
 			eh.undoQueueHasChanged = false;
-			redraw({ calledBy: 'Event Handler Tool_ShapeEdit mouseup' });
+			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_ShapeEdit mouseup' });
 			// log('EVENTHANDLER - after Tool_ShapeEdit Mouse Up REDRAW');
 		};
 	}

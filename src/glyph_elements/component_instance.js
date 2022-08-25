@@ -771,22 +771,22 @@ export default class ComponentInstance extends GlyphElement {
 	}
 
 	/* NEEDS TO BE REFACTORED
-	draw_PathOutline(accent = '#000', thickness = 1) {
-		// log('ComponentInstance.draw_PathOutline', 'start');
+	drawPathOutline(accent = '#000', thickness = 1) {
+		// log('ComponentInstance.drawPathOutline', 'start');
 		let g = this.transformedGlyph;
 		for (let s = 0; s < g.shapes.length; s++) {
-			draw_PathOutline(g.shapes[s], accent, thickness);
+			drawPathOutline(g.shapes[s], accent, thickness);
 		}
 	}
-	draw_BoundingBox(accent = '#000', thickness = 1) {
-		// log('ComponentInstance.draw_BoundingBox', 'start');
+	drawBoundingBox(accent = '#000', thickness = 1) {
+		// log('ComponentInstance.drawBoundingBox', 'start');
 		let g = this.transformedGlyph.maxes;
-		draw_BoundingBox(g, accent, thickness);
+		drawBoundingBox(g, accent, thickness);
 	}
-	draw_BoundingBoxHandles(accent = '#000', thickness = 1) {
-		// log('ComponentInstance.draw_BoundingBoxHandles', 'start');
+	drawBoundingBoxHandles(accent = '#000', thickness = 1) {
+		// log('ComponentInstance.drawBoundingBoxHandles', 'start');
 		let g = this.transformedGlyph.maxes;
-		draw_BoundingBoxHandles(g, accent, thickness);
+		drawBoundingBoxHandles(g, accent, thickness);
 	}
 	isOverBoundingBoxHandle(px, py) {
 		// log('ComponentInstance.isOverBoundingBoxHandle', 'start');

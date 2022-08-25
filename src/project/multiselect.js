@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { log } from '../common/functions.js';
 import Glyph from '../glyph_elements/glyph.js';
 import Shape from '../glyph_elements/shape.js';
 
@@ -23,43 +24,46 @@ class MultiSelect {
 	}
 
 	isSelectable(obj) {
-		if (obj &&
-			(obj.objType === 'pathpoint' ||
-				obj.objType === 'Shape' ||
-				obj.objType === 'ComponentInstance'))
-			return true;
-		else {
-			// log('MultiSelect - cannot select \n' + obj.objType);
-			return false;
-		}
+		log(`MultiSelect.isSelectable`, 'start');
+		log(obj);
+		log(`obj.objType: ${obj.objType}`);
+
+		let selectable = [
+			'Path Point', 'Shape', 'Component Instance'
+		];
+
+		log(`MultiSelect.isSelectable`, 'end');
+		return selectable.includes(obj?.objType);
 	}
 
 	select(obj) {
-		// log('MultiSelect.select', 'start');
+		log('MultiSelect.select', 'start');
 		if (this.isSelectable(obj)) {
-			// log('selecting object');
+			log('selecting object');
 			this.members = [obj];
 			this.selectShapesThatHaveSelectedPoints();
 		} else {
-			// log('this.isSelectable = false, clearing');
+			log('this.isSelectable = false, clearing');
 			this.clear();
 		}
 
-		// log('MultiSelect.select', 'end');
+		log('MultiSelect.select', 'end');
 	}
 
 	clear() {
 		this.members = [];
-		if (this.glyph)
-			this.glyph.ratioLock = false;
+		if (this.glyph) this.glyph.ratioLock = false;
 		this.handleSingleton = false;
 		this.selectShapesThatHaveSelectedPoints();
 	}
 
 	add(obj) {
-		if (this.isSelectable(obj) && this.members.indexOf(obj) < 0)
+		log(`MultiSelect.add`, 'start');
+		if (this.isSelectable(obj) && this.members.indexOf(obj) < 0) {
 			this.members.push(obj);
+		}
 		this.selectShapesThatHaveSelectedPoints();
+		log(`MultiSelect.add`, 'end');
 	}
 
 	remove(obj) {
@@ -81,10 +85,9 @@ class MultiSelect {
 	}
 
 	toggle(obj) {
-		if (this.isSelected(obj))
-			this.remove(obj);
-		else
-			this.add(obj);
+		if (this.isSelected(obj)) this.remove(obj);
+		else this.add(obj);
+
 		this.selectShapesThatHaveSelectedPoints();
 	}
 
@@ -161,7 +164,8 @@ export class MultiSelectPoints extends MultiSelect {
 			}
 		}
 
-		const wi = getSelectedWorkItem();
+		let editor = getCurrentProjectEditor();
+		const wi = editor.selectedWorkItem;
 		if (wi.objType === 'glyph') wi.removeShapesWithZeroLengthPaths();
 
 		this.clear();
@@ -320,7 +324,8 @@ export class MultiSelectShapes extends MultiSelect {
 
 	deleteShapes() {
 		// log('deleteShape', 'start');
-		const wishapes = getSelectedWorkItemShapes();
+		let editor = getCurrentProjectEditor();
+		const wishapes = editor.selectedWorkItem.shapes;
 		const sels = this.members;
 		let curs;
 		let i;
@@ -331,20 +336,17 @@ export class MultiSelectShapes extends MultiSelect {
 				curs = sels[s];
 
 				if (curs.objType === 'ComponentInstance') {
-					removeFromUsedIn(curs.link, _UI.selectedGlyph);
+					removeFromUsedIn(curs.link, editor.selectedGlyph);
 				}
 
 				i = wishapes.indexOf(curs);
 				if (i > -1) wishapes.splice(i, 1);
 			}
 
-			select(wishapes[i] || wishapes[wishapes.length - 1]);
-			const singleshape = getSingleton();
-			if (singleshape && singleshape.objType === 'ComponentInstance')
-				clickTool('shapeResize');
+			this.select(wishapes[i] || wishapes[wishapes.length - 1]);
 		}
 
-		updateCurrentGlyphWidth();
+		// TODO publish change
 		// log('deleteShape', 'end');
 	}
 
@@ -494,19 +496,20 @@ export class MultiSelectShapes extends MultiSelect {
 		}
 	}
 
-	draw_PathOutline() {
-		if (this.members.length === 1) {
-			this.members[0].draw_PathOutline();
-		} else {
-			for (let m = 0; m < this.members.length; m++) {
-				this.members[m].draw_PathOutline(false, _UI.multiSelectThickness);
-			}
-		}
-	}
+	/* this should just be drawShape */
+	// drawPathOutline() {
+	// 	if (this.members.length === 1) {
+	// 		this.members[0].drawPathOutline();
+	// 	} else {
+	// 		for (let m = 0; m < this.members.length; m++) {
+	// 			this.members[m].drawPathOutline(false, _UI.multiSelectThickness);
+	// 		}
+	// 	}
+	// }
 
-	draw_BoundingBox() {
+	drawBoundingBox() {
 		if (this.members.length === 1) {
-			this.members[0].draw_BoundingBox();
+			this.members[0].drawBoundingBox();
 		} else if (this.members.length > 1) {
 			let bmaxes = clone(_UI.mins);
 
@@ -514,7 +517,7 @@ export class MultiSelectShapes extends MultiSelect {
 				bmaxes = getOverallMaxes([bmaxes, this.members[m].maxes]);
 			}
 
-			draw_BoundingBox(bmaxes, _UI.colors.gray, _UI.multiSelectThickness);
+			drawBoundingBox(bmaxes, _UI.colors.gray, _UI.multiSelectThickness);
 		}
 	}
 
@@ -531,9 +534,9 @@ export class MultiSelectShapes extends MultiSelect {
 		}
 	}
 
-	draw_BoundingBoxHandles() {
+	drawBoundingBoxHandles() {
 		if (this.members.length === 1) {
-			this.members[0].draw_BoundingBoxHandles();
+			this.members[0].drawBoundingBoxHandles();
 		} else if (this.members.length > 1) {
 			let bmaxes = clone(_UI.mins);
 
@@ -541,7 +544,7 @@ export class MultiSelectShapes extends MultiSelect {
 				bmaxes = getOverallMaxes([bmaxes, this.members[m].maxes]);
 			}
 
-			draw_BoundingBoxHandles(bmaxes, _UI.colors.gray, _UI.multiSelectThickness);
+			drawBoundingBoxHandles(bmaxes, _UI.colors.gray, _UI.multiSelectThickness);
 		}
 	}
 }

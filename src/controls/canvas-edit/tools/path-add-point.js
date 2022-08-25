@@ -2,6 +2,8 @@
 // Path Add Point - adds points to an existing path (Pen Plus)
 // ----------------------------------------------------------------
 
+import { getCurrentProjectEditor } from '../../../app/app.js';
+
 export default class Tool_PathAddPoint {
 	constructor() {
 		this.addpoint = false;
@@ -29,14 +31,14 @@ export default class Tool_PathAddPoint {
 					editor.multiSelect.shapes.select(s);
 
 				if (s.objType === 'ComponentInstance')
-					clickTool('shapeResize');
+					clickTool('shapeEdit');
 				editor.nav.panel = 'Attributes';
 			} else {
 				editor.selectedTool = 'newPath';
-				eventHandlerData.currentTool = eventHandlerData.tool_addPath;
-				eventHandlerData.currentTool.dragging = true;
-				eventHandlerData.currentTool.firstpoint = true;
-				eventHandlerData.currentTool.mousedown(ev);
+				eventHandlerData.currentToolHandler = eventHandlerData.tool_addPath;
+				eventHandlerData.currentToolHandler.dragging = true;
+				eventHandlerData.currentToolHandler.firstpoint = true;
+				eventHandlerData.currentToolHandler.mousedown(ev);
 			}
 
 			eventHandlerData.hoverPoint = false;

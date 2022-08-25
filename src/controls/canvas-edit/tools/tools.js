@@ -318,9 +318,9 @@ export function addShape(newShape){
 	if(newShape){
 		if(newShape.objType === 'ComponentInstance'){
 			// log(`is a Component instance`);
-			editor.selectedTool = 'shapeResize';
-		} else if(newShape.path && (editor.selectedTool === 'shapeResize')) {
-			// log(`triggered as true: newShape.path && editor.selectedTool == shapeResize \n\t NOT calling calcmaxes, okay?`);
+			editor.selectedTool = 'shapeEdit';
+		} else if(newShape.path && (editor.selectedTool === 'shapeEdit')) {
+			// log(`triggered as true: newShape.path && editor.selectedTool == shapeEdit \n\t NOT calling calcmaxes, okay?`);
 			//newShape.calcMaxes();
 		}
 	} else {
@@ -383,7 +383,7 @@ export function turnSelectedShapeIntoAComponent(){
 	_UI.ms.shapes.deleteShapes();
 	let newid = createNewComponent(new Glyph({'shapes':s, 'name':n}));
 	insertComponentInstance(newid);
-	_UI.selectedToolName = 'shapeResize';
+	_UI.selectedToolName = 'shapeEdit';
 	selectShape(getSelectedWorkItemShapes().length-1);
 	redraw({calledby:'turnSelectedShapeIntoAComponent'});
 }
