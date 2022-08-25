@@ -110,21 +110,32 @@ export default class ProjectEditor {
 	 * Sends a new piece of data concerning a topic area that
 	 * triggers changes for subscribers
 	 * @param {string} topic - keyword to trigger changes
+	 * 		'selectedTool' - which edit tool is selected
+	 * 		'view' - the edit canvas view has changed
+	 * 		'selectedGlyphID' - which glyph is being edited
+	 * 		'selectedShape' - which shape is being edited
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
 		// log(`ProjectEditor.publish`, 'start');
-		// log(`topic: ${topic}`);
-		// log(`data: ${data}`);
+		// log(topic);
+		// log(data);
 		// log(`this.subscribers[topic]: ${this.subscribers[topic]}`);
 
 		if (this.subscribers[topic]) {
-			// log(`Publishing ${data} to ${this.subscribers[topic].length} subscribers`);
+			// Handle some things centrally
+			if(topic === 'selectedGlyphID') {
+				this.multiSelect.shapes.clear();
+				this.multiSelect.points.clear();
+			}
+
+			// Iterate through all the callbacks
 			this.subscribers[topic].forEach((sub) => {
 				sub.callback(data);
 			});
+
 		} else {
-			// log(`Nobody subscribed to ${topic}`);
+			console.warn(`Nobody subscribed to topic ${topic}`);
 		}
 		// log(`ProjectEditor.publish`, 'end');
 	}
@@ -132,7 +143,7 @@ export default class ProjectEditor {
 	/**
 	 * Sets up an intent to listen for changes based on a keyword, and
 	 * provides a callback function in case a change is published
-	 * @param {string} topic - what keyword to listen for
+	 * @param {string or array} topic - what keyword to listen for
 	 * @param {string} subscriberName - the name of the thing listening
 	 * @param {function} callback - what to do when a change is triggered
 	 * @returns nothing
@@ -149,11 +160,18 @@ export default class ProjectEditor {
 
 		if(!callback){
 			console.warn(`Subscriber was not provided a callback`);
+			return;
 		}
 
-		if (!this.subscribers[topic]) this.subscribers[topic] = [];
-		this.subscribers[topic].push({subscriberName: subscriberName, callback: callback});
-		// log(`ProjectEditor.subscribe`, 'end');
+		// Support string for single topic, array for multi topic
+		let topicList = (typeof topic === 'string') ? [topic] : topic;
+
+		topicList.forEach((thisTopic) => {
+			if (!this.subscribers[thisTopic]) this.subscribers[thisTopic] = [];
+			this.subscribers[thisTopic].push({subscriberName: subscriberName, callback: callback});
+		});
+
+			// log(`ProjectEditor.subscribe`, 'end');
 	}
 
 
@@ -781,7 +799,7 @@ window._UI = {
 		canvasHotSpotHovering: false,
 		multiSelectThickness: 2,
 		rotateHandleHeight: 40,
-		selectedTool: 'pathEdit', // pathEdit, pathAddPoint, shapeResize, pan, newRectangle, newOval, newPath
+		selectedTool: 'pathEdit', // pathEdit, pathAddPoint, shapeEdit, pan, newRectangle, newOval, newPath
 		focusElement: false,
 		redrawing: false,
 		redraw: {

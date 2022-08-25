@@ -86,28 +86,99 @@ export default class CanvasEdit extends HTMLElement {
 	redraw() {
 		log('CanvasEdit.redraw', 'start');
 		let editor = getCurrentProjectEditor();
-		this.ctx.clearRect(0, 0, this.width, this.height);
+		let ctx = this.ctx;
+		let view = editor.view;
+		ctx.clearRect(0, 0, this.width, this.height);
 
-		// Grid
-		this.ctx.fillStyle = accentColors.purple.l60;
-		this.ctx.fillRect(editor.view.dx, 0, 1, 1000);
-		this.ctx.fillRect(0, editor.view.dy, 1000, 1);
-
-		// Draw glyphs
+		// Current Glyph
 		let glyphHex = glyphToHex(this.glyphs.charAt(0));
 		let sg = editor.project.getGlyph(glyphHex);
 		log(sg);
-		sg.drawGlyph(this.ctx, editor.view);
+
+		// Grid
+		ctx.fillStyle = accentColors.gray.l90;
+		ctx.fillRect(view.dx, 0, 1, 1000);
+		ctx.fillRect(view.dx + (sg.width * view.dz), 0, 1, 1000);
+		ctx.fillRect(0, view.dy, 1000, 1);
+
+		// Draw glyphs
+		sg.drawGlyph(ctx, view);
+
+		// Draw selected shape / path
+		ctx.beginPath();
+		editor.multiSelect.shapes.drawShape(ctx, view);
+		ctx.closePath();
+		ctx.strokeStyle = accentColors.blue.l60;
+		ctx.lineWidth = 1.5;
+		ctx.stroke();
 
 		// Draw temporary new shapes
 		if(eventHandlerData.tempNewBasicShape) {
-			editor.multiSelect.shapes.drawShape(this.ctx, editor.view);
+			editor.multiSelect.shapes.drawShape(ctx, view);
 		}
 
 		log('CanvasEdit.redraw', 'end');
 	}
 }
 
+/* cSpell:disable */
+/*
+
+// --------------------------------------------------------------
+// Redraw
+// --------------------------------------------------------------
+	function redraw_GlyphEdit() {
+		// log('redraw_GlyphEdit', 'start');
+		_UI.redrawing = true;
+
+		let sg = getSelectedWorkItem();
+		let editmode = getEditMode();
+
+		// if (sg) sg.calcMaxes();
+		// log('Selected WI ' + sg.name);
+
+		// draw grids
+		drawGrid();
+		drawGuides();
+
+		// load glyph info
+		if (sg && sg.shapes.length) {
+			let v = getView('Redraw');
+			if (sg.contextGlyphs) drawContextGlyphs();
+			sg.drawGlyph(_UI.glyphEditCTX, v);
+		} else {
+			_UI.redrawing = false;
+			return;
+		}
+
+		_UI.multiSelect.shapes.drawPathOutline();
+
+		if (editmode === 'arrow') {
+			_UI.multiSelect.shapes.drawBoundingBox();
+			_UI.multiSelect.shapes.drawBoundingBoxHandles();
+		} else if (editmode === 'rotate') {
+			_UI.multiSelect.shapes.draw_RotationAffordance();
+		} else if (editmode === 'pen') {
+			if (_UI.eventhandlers.multi) sg.drawMultiSelectAffordances(_UI.colors.blue);
+			_UI.multiSelect.points.draw_PathPointHandles();
+			_UI.multiSelect.shapes.draw_PathPoints();
+			// _UI.multiSelect.points.draw_PathPoints();
+
+			if (_UI.eventhandlers.hoverpoint) {
+				let hp = _UI.eventhandlers.hoverpoint;
+				_UI.glyphEditCTX.fillStyle = hp.fill;
+				_UI.glyphEditCTX.fillRect(hp.x, hp.y, hp.size, hp.size);
+			}
+		} else if (editmode === 'newPath') {
+			_UI.multiSelect.points.draw_PathPointHandles();
+			_UI.multiSelect.shapes.draw_PathPoints();
+			// _UI.multiSelect.points.draw_PathPoints();
+		}
+
+		_UI.redrawing = false;
+		// log('redraw_GlyphEdit', 'end');
+	}
+*/
 
 // --------------------------------------------------------------------------
 // Convert between Saved values and Canvas values

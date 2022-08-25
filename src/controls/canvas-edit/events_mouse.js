@@ -8,6 +8,7 @@ import Tool_NewPath from './tools/new-path.js';
 import Tool_PathEdit from './tools/path-edit.js';
 import Tool_PathAddPoint from './tools/path-add-point.js';
 import Tool_Kern from './tools/kern.js';
+import { log } from '../../common/functions.js';
 
 /**
  Framework > Event Handlers > Mouse
@@ -16,7 +17,7 @@ import Tool_Kern from './tools/kern.js';
  **/
 
 export let eventHandlerData = {
-	currentTool: false,
+	currentToolHandler: false,
 	tempNewBasicShape: false,
 	dragSelectArea: false,
 	mouseX: 0,
@@ -32,7 +33,7 @@ export let eventHandlerData = {
 	firstX: -100,
 	firstY: -100,
 	undoQueueHasChanged: false,
-	lastTool: 'pathEdit',
+	lastTool: false,
 	isSpaceDown: false,
 	isShiftDown: false,
 	hoverPoint: false,
@@ -71,11 +72,13 @@ export function initEventHandlers(editCanvas) {
 
 	// The general-purpose event handler.
 	function ev_canvas(ev) {
-		// log('EVENTHANDLER - Raw mouse event x/y = ' + ev.layerX + ' / ' + ev.layerY);
+		log(`ev_canvas`, 'start');
+		log(`Raw mouse event x/y = ${ev.layerX} / ${ev.layerY}`);
+
 		let editor = getCurrentProjectEditor();
 		handleMouseOverCanvas();
-
 		let eh = eventHandlerData;
+
 
 		if (ev.offsetX || ev.offsetX) {
 			// IE, Chrome, (Opera?)
@@ -92,38 +95,40 @@ export function initEventHandlers(editCanvas) {
 		// updateCursor();
 
 		// Switch Tool function
-
+		log(`editor.selectedTool: ${editor.selectedTool}`);
 		switch (editor.selectedTool) {
 			case 'pathEdit':
-				eh.currentTool = editor.eventHandlers.tool_pathEdit;
+				eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
 				break;
-			case 'shapeResize':
-				eh.currentTool = editor.eventHandlers.tool_shapeEdit;
+			case 'shapeEdit':
+				eh.currentToolHandler = editor.eventHandlers.tool_shapeEdit;
 				break;
 			case 'pan':
-				eh.currentTool = editor.eventHandlers.tool_pan;
+				eh.currentToolHandler = editor.eventHandlers.tool_pan;
 				break;
 			case 'pathAddPoint':
-				eh.currentTool = editor.eventHandlers.tool_pathAddPoint;
+				eh.currentToolHandler = editor.eventHandlers.tool_pathAddPoint;
 				break;
 			case 'newPath':
-				eh.currentTool = editor.eventHandlers.tool_addPath;
+				eh.currentToolHandler = editor.eventHandlers.tool_addPath;
 				break;
 			case 'newRectangle':
-				eh.currentTool = editor.eventHandlers.tool_addRectOval;
+				eh.currentToolHandler = editor.eventHandlers.tool_addRectOval;
 				break;
 			case 'newOval':
-				eh.currentTool = editor.eventHandlers.tool_addRectOval;
+				eh.currentToolHandler = editor.eventHandlers.tool_addRectOval;
 				break;
 			case 'kern':
-				eh.currentTool = editor.eventHandlers.tool_kern;
+				eh.currentToolHandler = editor.eventHandlers.tool_kern;
 				break;
 			case editor.selectedTool:
-				eh.currentTool = editor.eventHandlers.tool_pathEdit;
+				eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
 		}
 
-		// Call the event handler of the eh.currentTool.
-		eh.currentTool[ev.type](ev);
+		// Call the event handler of the eh.currentToolHandler.
+		log(`eh.currentToolHandler: ${eh.currentToolHandler}`);
+		eh.currentToolHandler[ev.type](ev);
+		log(`ev_canvas`, 'end');
 	}
 }
 

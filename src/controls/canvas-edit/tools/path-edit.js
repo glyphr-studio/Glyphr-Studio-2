@@ -5,6 +5,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../../../app/main.js';
 import { log } from '../../../common/functions.js';
 import { cXsX, cYsY } from '../canvas-edit.js';
+import { setCursor } from '../cursors.js';
 import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData, findAndCallHotspot } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 
@@ -59,7 +60,7 @@ export default class Tool_PathEdit {
 		};
 
 		this.mousemove = function(ev) {
-			// log('Tool_PathEdit.mousemove', 'start');
+			log('Tool_PathEdit.mousemove', 'start');
 			let ehd = eventHandlerData;
 			let editor = getCurrentProjectEditor();
 			let view = editor.view;
@@ -127,7 +128,7 @@ export default class Tool_PathEdit {
 			else if (editor.multiSelect.points.isSelected(cp.point)) setCursor('penCircle');
 			if (!cp && ehd.multi) setCursor('penPlus');
 
-			// log('Tool_PathEdit.mousemove', 'end');
+			log('Tool_PathEdit.mousemove', 'end');
 		};
 
 		this.mouseup = function() {

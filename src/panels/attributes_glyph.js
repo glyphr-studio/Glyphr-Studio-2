@@ -19,7 +19,6 @@ export function makePanel_GlyphAttributes() {
 	// log(projectEditor);
 
 	// For debug
-	selectedShapes.select(projectEditor.selectedGlyph.shapes[0]);
 	selectedPoints.select(projectEditor.selectedGlyph.shapes[0].path.pathPoints[0]);
 
 	log(selectedShapes);
@@ -53,7 +52,7 @@ export function makePanel_GlyphAttributes() {
 				content += makeAttributesGroup_pathPoint(projectEditor.multiSelect.points.singleton);
 			}
 		}
-	} else {
+	} else if (selectedShapes.lenth > 1) {
 		// Many shapes selected
 		log('More than one shape selected');
 		let virtualGlyph = selectedShapes.getGlyph();

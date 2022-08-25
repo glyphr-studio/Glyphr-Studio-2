@@ -254,7 +254,7 @@ function keypress(event) {
 		}
 
 		// v
-		if (kc === 'v') clickTool('shapeResize');
+		if (kc === 'v') clickTool('shapeEdit');
 
 		// b
 		if (kc === 'b') clickTool('pathEdit');

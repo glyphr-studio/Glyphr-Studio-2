@@ -48,7 +48,9 @@ function showNavDropdown(parentElement) {
 
 	if(dropdownType === 'EDITING') {
 		dropdownContent = makeChooserContent_Glyphs((glyphID) => {
-			getCurrentProjectEditor().selectedGlyphID = glyphID;
+			let editor = getCurrentProjectEditor();
+			editor.selectedGlyphID = glyphID;
+			closeAllDialogs();
 		});
 		size = '80%';
 	}

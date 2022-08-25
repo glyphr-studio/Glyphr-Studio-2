@@ -563,19 +563,19 @@ export default class Shape extends GlyphElement {
 
 	/* NEEDS REFACTORING - NO NEED TO DUPLICATE THESE METHODS HERE
 
-		draw_PathOutline(accent = '#000', thickness = 1) {
-				// log('Shape.draw_PathOutline', 'start');
-				draw_PathOutline(this, accent, thickness);
+		drawPathOutline(accent = '#000', thickness = 1) {
+				// log('Shape.drawPathOutline', 'start');
+				drawPathOutline(this, accent, thickness);
 		}
 
-		draw_BoundingBox(accent = '#000', thickness = 1) {
-				// log('Shape.draw_BoundingBox', 'start');
-				draw_BoundingBox(this.path.maxes, accent, thickness);
+		drawBoundingBox(accent = '#000', thickness = 1) {
+				// log('Shape.drawBoundingBox', 'start');
+				drawBoundingBox(this.path.maxes, accent, thickness);
 		}
 
-		draw_BoundingBoxHandles(accent = '#000', thickness = 1) {
-				// log('Shape.draw_BoundingBoxHandles', 'start');
-				draw_BoundingBoxHandles(this.path.maxes, accent, thickness);
+		drawBoundingBoxHandles(accent = '#000', thickness = 1) {
+				// log('Shape.drawBoundingBoxHandles', 'start');
+				drawBoundingBoxHandles(this.path.maxes, accent, thickness);
 		}
 
 		isOverBoundingBoxHandle(px, py) {
