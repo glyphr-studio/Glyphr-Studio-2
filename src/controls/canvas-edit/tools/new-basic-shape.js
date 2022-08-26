@@ -11,7 +11,7 @@ import PathPoint from '../../../glyph_elements/path_point.js';
 import Shape from '../../../glyph_elements/shape.js';
 import { cXsX, cYsY } from '../canvas-edit.js';
 import { eventHandlerData } from '../events_mouse.js';
-import { addShape } from './tools.js';
+import { action_addShape } from './tools.js';
 
 export default class Tool_NewBasicShape {
 	constructor() {
@@ -31,7 +31,7 @@ export default class Tool_NewBasicShape {
 			// while dragging is happening
 			let newShape = new Shape({name: '...' });
 			newShape.path.maxes = eventHandlerData.tempNewBasicShape;
-			newShape = addShape(newShape);
+			newShape = action_addShape(newShape);
 			let editor = getCurrentProjectEditor();
 			editor.multiSelect.shapes.select(newShape);
 
@@ -104,7 +104,8 @@ export default class Tool_NewBasicShape {
 
 				log('shapes before');
 				log(workItem.shapes);
-				workItem.addOneShape(s);
+				let newShape = workItem.addOneShape(s);
+				editor.multiSelect.shapes.select(newShape);
 				log('shapes after');
 				log(workItem.shapes);
 				// updateCurrentGlyphWidth();

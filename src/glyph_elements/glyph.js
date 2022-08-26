@@ -442,6 +442,7 @@ export default class Glyph extends GlyphElement {
 			newShape.parent = this;
 			this._shapes.push(new Shape(newShape));
 		}
+		return this._shapes.at(-1);
 	}
 
 	/**
