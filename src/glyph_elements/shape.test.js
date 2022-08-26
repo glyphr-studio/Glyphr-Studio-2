@@ -193,7 +193,7 @@ describe('Shape', () => {
 
 /*
 OTHER METHODS
-addShape
+action_addShape
 turnSelectedShapeIntoAComponent
 
 CANVAS METHODS

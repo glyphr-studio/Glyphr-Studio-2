@@ -309,8 +309,8 @@ export function makeContextGlyphControls() {
 // Button helper functions
 // --------------------------------------------------------------
 
-export function addShape(newShape){
-	// log(`addShape`, 'start');
+export function action_addShape(newShape){
+	// log(`action_addShape`, 'start');
 	// log(`name: ${ewShape.name}`);
 	// log(`objType: ${ewShape.objType}`);
 
@@ -331,13 +331,13 @@ export function addShape(newShape){
 
 	let sg = editor.selectedWorkItem;
 
-	sg.shapes.push(newShape);
+	sg.addOneShape(newShape);
 	editor.multiSelect.shapes.select(newShape);
 	// TODO history
 	// sg.changed();
 
 	// log(`returns: ${ewShape.name}`);
-	// log(`addShape`, 'end');
+	// log(`action_addShape`, 'end');
 	return newShape;
 }
 

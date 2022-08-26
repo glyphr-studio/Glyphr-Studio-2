@@ -30,7 +30,7 @@ export default class Tool_NewPath {
 				let count = editor.nav.page === 'components' ?
 					Object.keys(getCurrentProject().components).length :
 					getSelectedWorkItemShapes().length;
-				this.newShape = addShape(
+				this.newShape = action_addShape(
 					new Shape({ name: 'Shape ' + count, path: new Path() })
 				);
 				this.currpt = this.newShape.path.addPathPoint(newpoint);

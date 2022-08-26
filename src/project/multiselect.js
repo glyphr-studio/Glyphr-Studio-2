@@ -41,7 +41,7 @@ class MultiSelect {
 		if (this.isSelectable(obj)) {
 			log('selecting object');
 			this.members = [obj];
-			this.selectShapesThatHaveSelectedPoints();
+			this.publishChanges();
 		} else {
 			log('this.isSelectable = false, clearing');
 			this.clear();
@@ -54,7 +54,7 @@ class MultiSelect {
 		this.members = [];
 		if (this.glyph) this.glyph.ratioLock = false;
 		this.handleSingleton = false;
-		this.selectShapesThatHaveSelectedPoints();
+		this.publishChanges();
 	}
 
 	add(obj) {
@@ -62,7 +62,7 @@ class MultiSelect {
 		if (this.isSelectable(obj) && this.members.indexOf(obj) < 0) {
 			this.members.push(obj);
 		}
-		this.selectShapesThatHaveSelectedPoints();
+		this.publishChanges();
 		log(`MultiSelect.add`, 'end');
 	}
 
@@ -70,14 +70,14 @@ class MultiSelect {
 		this.members = this.members.filter(function (m) {
 			return m !== obj;
 		});
-		this.selectShapesThatHaveSelectedPoints();
+		this.publishChanges();
 	}
 
 	removeMissing() {
 		this.members = this.members.filter(function (m) {
 			return typeof m === 'object';
 		});
-		this.selectShapesThatHaveSelectedPoints();
+		this.publishChanges();
 	}
 
 	count() {
@@ -88,7 +88,7 @@ class MultiSelect {
 		if (this.isSelected(obj)) this.remove(obj);
 		else this.add(obj);
 
-		this.selectShapesThatHaveSelectedPoints();
+		this.publishChanges();
 	}
 
 	get type() {
@@ -141,6 +141,12 @@ export class MultiSelectPoints extends MultiSelect {
 		this.shape.path = new Path({ pathPoints: this.members });
 		// this.shape.calcMaxes();
 		return this.shape;
+	}
+
+	publishChanges() {
+		let editor = getCurrentProjectEditor();
+		editor.publish('selectedPathPoints', this.members);
+		this.selectShapesThatHaveSelectedPoints();
 	}
 
 	updateShapePosition(dx, dy) {
@@ -256,7 +262,7 @@ export class MultiSelectPoints extends MultiSelect {
 			for (let s = 0; s < shapes.length; s++) {
 				if (shapes[s].objType !== 'ComponentInstance') {
 					if (path === shapes[s].path) {
-						add(shapes[s]);
+						shapes.add(shapes[s]);
 						count++;
 					}
 				}
@@ -299,12 +305,17 @@ export class MultiSelectShapes extends MultiSelect {
 		return false;
 	}
 
+	publishChanges() {
+		let editor = getCurrentProjectEditor();
+		editor.publish('selectedShape', this.members);
+	}
+
 	selectShapesThatHaveSelectedPoints() {}
 
 	combine() {
 		// log('multiSelect.shapes.combine', 'start');
 
-		const ns = new Glyph(clone(getGlyph()));
+		const ns = new Glyph(clone(this.getGlyph()));
 
 		ns.flattenGlyph();
 
@@ -314,7 +325,7 @@ export class MultiSelectShapes extends MultiSelect {
 		if (cs) {
 			this.deleteShapes();
 
-			for (let n = 0; n < cs.length; n++) addShape(cs[n]);
+			for (let n = 0; n < cs.length; n++) action_addShape(cs[n]);
 
 			historyPut('Combined shapes');
 		}
