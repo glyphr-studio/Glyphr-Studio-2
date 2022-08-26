@@ -135,7 +135,7 @@ export default class ProjectEditor {
 			});
 
 		} else {
-			console.warn(`Nobody subscribed to topic ${topic}`);
+			// console.warn(`Nobody subscribed to topic ${topic}`);
 		}
 		// log(`ProjectEditor.publish`, 'end');
 	}
@@ -213,8 +213,10 @@ export default class ProjectEditor {
 	 * based on the current page
 	 */
 	get selectedWorkItem() {
-		// TODO check for what page we're on
-		return this.selectedGlyph;
+		if(this.nav.page === 'Glyph edit') return this.selectedGlyph;
+		else if (this.nav.page === 'Components') return this.selectedComponent;
+		else if (this.nav.page === 'Ligatures') return this.selectedLigature;
+		else return false;
 	}
 
 	/**
@@ -222,8 +224,10 @@ export default class ProjectEditor {
 	 * ID based on the current page
 	 */
 	get selectedWorkItemID() {
-		// TODO check for what page we're on
-		return this.selectedGlyphID;
+		if(this.nav.page === 'Glyph edit') return this.selectedGlyphID;
+		else if (this.nav.page === 'Components') return this.selectedComponentID;
+		else if (this.nav.page === 'Ligatures') return this.selectedLigatureID;
+		else return false;
 	}
 
 	/**
@@ -761,183 +765,6 @@ export default class ProjectEditor {
 	}
 }
 
-/*
-
-window._UI = {
-
-
-		icons: {},
-		cursors: {},
-
-		// Shared edit pages
-		popOut: false,
-		multiSelect: {
-				shapes: false, // Selected Shapes
-				points: false, // Selected Points
-		},
-		glyphChooser: {
-				dropdown: false,
-				panel: {
-						fname: 'selectGlyph',
-						selected: 'basicLatin',
-						choices: 'glyphs',
-				},
-				dialog: {
-						fname: 'selectGlyph',
-						selected: 'basicLatin',
-						choices: 'glyphs',
-				},
-				getShapeOptions: {
-						srcAutoWidth: false,
-						srcWidth: false,
-						srcLSB: false,
-						srcRSB: false,
-				},
-				cache: false,
-		},
-		canvasHotSpots: [],
-		canvasHotSpotHovering: false,
-		multiSelectThickness: 2,
-		rotateHandleHeight: 40,
-		selectedTool: 'pathEdit', // pathEdit, pathAddPoint, shapeEdit, pan, newRectangle, newOval, newPath
-		focusElement: false,
-		redrawing: false,
-		redraw: {
-				redrawCanvas: true,
-				redrawTools: true,
-				redrawPanels: true,
-				calledBy: '',
-		},
-		thumbSize: 50,
-		thumbGutter: 5,
-		showGrid: true, // display the grid
-		showGuides: true, // display guides
-		showGuidesLabels: true, // display guide labels
-		showOvershoots: true, // display overshoot guides
-		clipboardShape: false,
-		glyphEditCanvas: false,
-		glyphEditCanvasSize: 2000, // How big the viewport canvas is
-		glyphEditCTX: false,
-		defaultView: {
-				dx: 200, // X offset for the canvas origin
-				dy: 500, // Y offset for the canvas origin
-				dz: 0.5, // Zoom or scale of the canvas
-		},
-		views: {}, // Holds the unique views per char & component
-		thumbView: {},
-		mins: {
-				xMax: -999999,
-				xMin: 999999,
-				yMax: -999999,
-				yMin: 999999,
-		},
-		maxes: {
-				xMax: 999999,
-				xMin: -999999,
-				yMax: 999999,
-				yMin: -999999,
-		},
-		contextGlyphs: {
-				string: '',
-				advancewidth: false,
-				leftseq: false,
-				rightseq: false,
-		},
-		timeout: false,
-		toastTimeout: false,
-		history: {},
-
-		// page: glyphedit
-		selectedGlyph: false, // f is 0x0066
-
-		// page: ligatures
-		selectedLigature: false,
-
-		// page: components
-		selectedComponent: false,
-
-		// page: kerning
-		selectedKern: false,
-		defaultKernView: {
-				dx: 500, // X offset for the canvas origin
-				dy: 500, // Y offset for the canvas origin
-				dz: 0.5, // Zoom or scale of the canvas
-		},
-		guides: {
-				leftGroupXMax: {type: 'vertical', location: 0, name: 'left group', color: 'rgb(255,0,255)'},
-				rightGroupXMin: {type: 'vertical', location: 0, name: 'right group', color: 'rgb(255,0,255)'},
-		},
-
-		// page: test drive
-		testDrive: {
-				glyphSequence: {},
-				ctx: false,
-				canvas: false,
-				sampleText: '',
-				fontScale: 100,
-				fontSize: 48,
-				lineGap: false,
-				padSize: 0,
-				showGlyphExtras: false,
-				showLineExtras: false,
-				showPageExtras: false,
-				flattenGlyphs: false,
-				cache: {},
-		},
-
-		// page: import svg
-		selectedSVGImportTarget: false,
-		importSVG: {
-				scale: true,
-				move: true,
-				ascender: false,
-				capHeight: false,
-				descender: false,
-				overshootTop: false,
-				overshootBottom: false,
-				svgCode: false,
-		},
-
-		// page: openproject
-		overflowCount: 326,
-		spinning: true,
-		importRange: {
-				begin: 0x0020,
-				end: 0x024F,
-		},
-
-		notDefGlyphShapes: '[]',
-
-		// page: font settings
-		metadataHelp: {
-				font_family: '',
-				font_style: 'regular, italic, oblique',
-				font_variant: 'normal, small-caps',
-				font_weight: 'normal, bold, or a number 100-900',
-				font_stretch: 'normal, ultra-condensed, extra-condensed, condensed, semi-condensed, semi-expanded, expanded, extra-expanded, ultra-expanded',
-				panose_1: 'Uses ten digits to describe the font\'s visual style.  A good overview can be found here (archived): <a href="https://web.archive.org/web/20140913211804/http://www.monotype.com/services/pan2" target="_blank">monotype.com/services/pan2</a>.',
-				stemv: 'Average measurement of vertical stems.',
-				stemh: 'Average measurement of horizontal stems.',
-				slope: 'If italic, this is the slant angle, measured counterclockwise from vertical. Or zero for non-italic fonts.',
-				underline_position: '',
-				underline_thickness: '',
-				strikethrough_position: '',
-				strikethrough_thickness: '',
-				overline_position: '',
-				overline_thickness: '',
-				designer: '',
-				designerURL: '',
-				manufacturer: '',
-				manufacturerURL: '',
-				license: '',
-				licenseURL: '',
-				version: 'Like: Version 0.1',
-				description: '',
-				copyright: '',
-				trademark: '',
-		},
-};
-*/
 
 /*
 // ---------------------------------------------------------------------

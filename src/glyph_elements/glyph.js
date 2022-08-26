@@ -412,28 +412,36 @@ export default class Glyph extends GlyphElement {
 	 * @param {array} shapes
 	 * @returns {Glyph} - reference to this Glyph
 	 */
-	set shapes(shapes = []) {
+	set shapes(newShapes = []) {
 		// log(`Glyph.shapes setter - Start`);
-		// log(`passed length ${shapes.length}`);
+		// log(`passed length ${newShapes.length}`);
 
 		this._shapes = [];
 
-		if (shapes && shapes.length) {
-			for (let i = 0; i < shapes.length; i++) {
-				if (isVal(shapes[i].link)) {
-					// log(`hydrating ci ${i} - name: ${shapes[i].name}`);
-					shapes[i].parent = this;
-					this._shapes[i] = new ComponentInstance(shapes[i]);
-				} else {
-					// log(`hydrating sh ${i} - name: ${shapes[i].name}`);
-					shapes[i].parent = this;
-					this._shapes[i] = new Shape(shapes[i]);
-				}
+		if (newShapes && newShapes.length) {
+			for (let i = 0; i < newShapes.length; i++) {
+				this.addOneShape(newShapes[i]);
 			}
 		}
 
 		// log(`Glyph.shapes is now length = ${this.shapes? this.shapes.length : 'NULL'}`);
 		// log(` Glyph.shapes setter - End\n`);
+	}
+
+	/**
+	 * Adds a new shape to this glyph, making sure linking is in place
+	 * @param {Shape} newShape - Shape to add to this glyph
+	 */
+	addOneShape(newShape) {
+		if (isVal(newShape.link)) {
+			// log(`hydrating ci ${i} - name: ${newShape.name}`);
+			newShape.parent = this;
+			this._shapes.push(new ComponentInstance(newShape));
+		} else {
+			// log(`hydrating sh ${i} - name: ${newShape.name}`);
+			newShape.parent = this;
+			this._shapes.push(new Shape(newShape));
+		}
 	}
 
 	/**
