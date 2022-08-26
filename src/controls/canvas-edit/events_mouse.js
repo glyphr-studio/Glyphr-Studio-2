@@ -72,8 +72,8 @@ export function initEventHandlers(editCanvas) {
 
 	// The general-purpose event handler.
 	function ev_canvas(ev) {
-		log(`ev_canvas`, 'start');
-		log(`Raw mouse event x/y = ${ev.layerX} / ${ev.layerY}`);
+		// log(`ev_canvas`, 'start');
+		// log(`Raw mouse event x/y = ${ev.layerX} / ${ev.layerY}`);
 
 		let editor = getCurrentProjectEditor();
 		handleMouseOverCanvas();
@@ -95,7 +95,7 @@ export function initEventHandlers(editCanvas) {
 		// updateCursor();
 
 		// Switch Tool function
-		log(`editor.selectedTool: ${editor.selectedTool}`);
+		// log(`editor.selectedTool: ${editor.selectedTool}`);
 		switch (editor.selectedTool) {
 			case 'pathEdit':
 				eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
@@ -126,9 +126,9 @@ export function initEventHandlers(editCanvas) {
 		}
 
 		// Call the event handler of the eh.currentToolHandler.
-		log(`eh.currentToolHandler: ${eh.currentToolHandler}`);
+		// log(JSON.stringify(eh.currentToolHandler));
 		eh.currentToolHandler[ev.type](ev);
-		log(`ev_canvas`, 'end');
+		// log(`ev_canvas`, 'end');
 	}
 }
 

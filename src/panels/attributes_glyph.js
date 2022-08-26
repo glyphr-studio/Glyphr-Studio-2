@@ -18,9 +18,6 @@ export function makePanel_GlyphAttributes() {
 	let content = '';
 	// log(projectEditor);
 
-	// For debug
-	selectedPoints.select(projectEditor.selectedGlyph.shapes[0].path.pathPoints[0]);
-
 	log(selectedShapes);
 	log(`multiSelect length: ${selectedShapes.length}`);
 
