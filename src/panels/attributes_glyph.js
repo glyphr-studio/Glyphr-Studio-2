@@ -32,6 +32,7 @@ export function makePanel_GlyphAttributes() {
 	if (selectedShapes.length === 1) {
 		// One shape selected
 		log('One shape selected');
+		log(selectedShapes.singleton);
 		if (selectedShapes.singleton.objType === 'ComponentInstance') {
 			// component selected
 			log("...Component selected");
@@ -62,7 +63,7 @@ export function makePanel_GlyphAttributes() {
 		`;
 	}
 
-	// log(content);
+	log(content);
 	log('makePanel_GlyphAttributes', 'end');
 	return makeElement({content: content});
 }

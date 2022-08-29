@@ -72,7 +72,7 @@ export default class Tool_ShapeEdit {
 		};
 
 		this.mousemove = function (ev) {
-			log(`Tool_ShapeEdit.mousemove`, 'start');
+			// log(`Tool_ShapeEdit.mousemove`, 'start');
 
 			let eh = eventHandlerData;
 			let editor = getCurrentProjectEditor();
@@ -151,7 +151,7 @@ export default class Tool_ShapeEdit {
 				eh.undoQueueHasChanged = true;
 				editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_ShapeEdit mousemove' });
 			}
-			log(`Tool_ShapeEdit.mousemove`, 'end');
+			// log(`Tool_ShapeEdit.mousemove`, 'end');
 		};
 
 		this.mouseup = function () {
@@ -187,7 +187,7 @@ export default class Tool_ShapeEdit {
 
 			// Resized a shape
 			// if (this.resizing || this.rotating) editor.multiSelect.shapes.calcMaxes();
-			updateCurrentGlyphWidth();
+			// updateCurrentGlyphWidth();
 
 			// Finish Up
 			this.clickedshape = false;

@@ -2,6 +2,7 @@ import { makeElement } from '../../common/dom.js';
 import ButtonToggle from '../button-toggle/button-toggle.js';
 import InputNumber from '../input-number/input-number.js';
 import { uiColors } from '../../common/colors.js';
+import { log } from '../../common/functions.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement,
@@ -14,6 +15,8 @@ export default class InputNumberLockable extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
+		// log(`InputNumberLockable.constructor`, 'start');
+		// log(JSON.stringify(attributes));
 		super();
 
 		Object.keys(attributes).forEach((key) =>
@@ -85,11 +88,34 @@ export default class InputNumberLockable extends HTMLElement {
 			attributes: true,
 			attributeOldValue: true,
 		});
+		this.observer.observe(this.inputNumber, {
+			attributes: true,
+			attributeOldValue: true,
+		});
 
 		this.wrapper.appendChild(this.inputNumber);
 		this.wrapper.appendChild(this.padlock);
 
 		shadow.appendChild(this.wrapper);
+		// log(`InputNumberLockable.constructor`, 'end');
+	}
+
+	/**
+	 * Specify which attributes are observed and trigger attributeChangedCallback
+	 */
+	 static get observedAttributes() {
+		return ['disabled', 'value'];
+	}
+
+	/**
+	 * Initialize the component once it's being used
+	 */
+	connectedCallback() {
+		// log(`InputNumberLockable.connectedCallback`, 'start');
+		let parentValue = this.getAttribute('value');
+		// log(`parentValue: ${parentValue}`);
+		this.inputNumber.setAttribute('value', parentValue);
+		// log(`InputNumberLockable.connectedCallback`, 'end');
 	}
 
 	/**
@@ -97,24 +123,30 @@ export default class InputNumberLockable extends HTMLElement {
 	 * @param {object} mutationsList - collection of changes
 	 */
 	childAttributeChanged(mutationsList) {
-		for (let mutation of mutationsList) {
-			if (
-				mutation.type == 'attributes' &&
-				mutation.attributeName === 'selected'
-			) {
-				console.log(
-					'The ' + mutation.attributeName + ' attribute was modified.'
-				);
-				console.log(mutation);
+		// log(`InputNumberLockable.chidAttributeChanged`, 'start');
 
-				if (mutation.oldValue === '') {
-					// unlock
-					this.elementRoot.inputNumber.removeAttribute('disabled');
-				} else {
-					// lock
-					this.elementRoot.inputNumber.setAttribute('disabled', '');
+		for (let mutation of mutationsList) {
+			if (mutation.type == 'attributes') {
+				// log(`The "${mutation.attributeName}" attribute was modified.`);
+				// log(mutation);
+
+				if(mutation.attributeName === 'selected') {
+					if (mutation.oldValue === '') {
+						// unlock
+						// log(`unlocking`);
+						this.elementRoot.inputNumber.removeAttribute('disabled');
+					} else {
+						// lock
+						// log(`locking`);
+						this.elementRoot.inputNumber.setAttribute('disabled', '');
+					}
+
+				} else if (mutation.attributeName === 'value') {
+					// log(`changing value`);
+					this.elementRoot.setAttribute('value', mutation.target.value);
 				}
 			}
 		}
+		// log(`InputNumberLockable.chidAttributeChanged`, 'end');
 	}
 }
