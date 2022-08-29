@@ -2,13 +2,13 @@
 // New Basic Shape - adds many points to a new path
 // ----------------------------------------------------------------
 
-import { getCurrentProjectEditor, getCurrentProject } from '../../../app/main.js';
-import { isVal, log, round } from '../../../common/functions.js';
-import ControlPoint from '../../../glyph_elements/control_point.js';
-import Coord from '../../../glyph_elements/coord.js';
-import Path from '../../../glyph_elements/path.js';
-import PathPoint from '../../../glyph_elements/path_point.js';
-import Shape from '../../../glyph_elements/shape.js';
+import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
+import { isVal, log, round } from '../../common/functions.js';
+import ControlPoint from '../../glyph_elements/control_point.js';
+import Coord from '../../glyph_elements/coord.js';
+import Path from '../../glyph_elements/path.js';
+import PathPoint from '../../glyph_elements/path_point.js';
+import Shape from '../../glyph_elements/shape.js';
 import { cXsX, cYsY } from '../canvas-edit.js';
 import { eventHandlerData } from '../events_mouse.js';
 import { action_addShape } from './tools.js';

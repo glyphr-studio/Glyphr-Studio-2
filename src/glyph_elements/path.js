@@ -16,7 +16,7 @@ import {
 // import {json} from '../common/functions.js';
 import { getOverallMaxes, maxesOverlap } from './maxes.js';
 import { findSegmentIntersections } from './poly_segment.js';
-import { sXcX, sYcY, getView } from '../controls/canvas-edit/canvas-edit.js';
+import { sXcX, sYcY, getView } from '../edit_canvas/canvas-edit.js';
 
 /**
  * Glyph Element > Path
