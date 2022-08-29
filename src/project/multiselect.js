@@ -134,13 +134,20 @@ class MultiSelect {
 export class MultiSelectPoints extends MultiSelect {
 	constructor() {
 		super();
-		this.shape = new Shape();
+		this._shape = new Shape();
 	}
 
-	getShape() {
-		this.shape.path = new Path({ pathPoints: this.members });
+	/*
+		get glyph() {
+		this._glyph.shapes = this.members;
+		this._glyph.changed();
+		return this._glyph;
+	}
+	*/
+	get shape() {
+		this._shape.path = new Path({ pathPoints: this.members });
 		// this.shape.calcMaxes();
-		return this.shape;
+		return this._shape;
 	}
 
 	publishChanges() {
@@ -150,7 +157,7 @@ export class MultiSelectPoints extends MultiSelect {
 	}
 
 	updateShapePosition(dx, dy) {
-		this.getShape().updateShapePosition(dx, dy);
+		this.shape.updateShapePosition(dx, dy);
 	}
 
 	deletePathPoints() {
@@ -183,13 +190,13 @@ export class MultiSelectPoints extends MultiSelect {
 	}
 
 	draw_PathPointHandles() {
-		const sh = this.getShape();
+		const sh = this.shape;
 		draw_PathPointHandles(sh.path.pathPoints);
 	}
 
 	draw_PathPoints() {
 		// log('MS.points.draw_PathPoints', 'start');
-		const sh = this.getShape();
+		const sh = this.shape;
 		// ('\t shape is ' + json(sh));
 
 		draw_PathPoints(sh.path.pathPoints);
@@ -315,7 +322,7 @@ export class MultiSelectShapes extends MultiSelect {
 	combine() {
 		// log('multiSelect.shapes.combine', 'start');
 
-		const ns = new Glyph(clone(this.getGlyph()));
+		const ns = new Glyph(clone(this.glyph));
 
 		ns.flattenGlyph();
 
@@ -363,7 +370,7 @@ export class MultiSelectShapes extends MultiSelect {
 
 	align(edge) {
 		// showToast('align ' + edge);
-		const g = this.getGlyph();
+		const g = this.glyph;
 		const gnum = g.shapes.length;
 		g.alignShapes(edge);
 
@@ -384,26 +391,26 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	updateShapePosition(dx, dy) {
-		this.getGlyph().updateGlyphPosition(dx, dy);
+		this.glyph.updateGlyphPosition(dx, dy);
 	}
 
 	setShapePosition(nx, ny) {
-		this.getGlyph().setGlyphPosition(nx, ny);
+		this.glyph.setGlyphPosition(nx, ny);
 	}
 
 	updateShapeSize(dw, dh, ratioLock) {
 		if (this.members.length === 1)
 			this.members[0].updateShapeSize(dw, dh, ratioLock);
 		else if (this.members.length > 1)
-			this.getGlyph().updateGlyphSize(dw, dh, ratioLock);
+			this.glyph.updateGlyphSize(dw, dh, ratioLock);
 	}
 
 	setShapeSize(nw, nh, ratioLock) {
-		this.getGlyph().setGlyphSize(nw, nh, ratioLock);
+		this.glyph.setGlyphSize(nw, nh, ratioLock);
 	}
 
 	rotate(angle, about) {
-		this.getGlyph().rotate(angle, about);
+		this.glyph.rotate(angle, about);
 	}
 
 	isRotateable() {
@@ -412,16 +419,16 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	flipNS(mid) {
-		this.getGlyph().flipNS(mid);
+		this.glyph.flipNS(mid);
 	}
 
 	flipEW(mid) {
-		this.getGlyph().flipEW(mid);
+		this.glyph.flipEW(mid);
 	}
 
 	getAttribute(attr) {
 		if (this.members.length === 1) return this.members[0][attr];
-		else if (this.members.length > 1) return this.getGlyph()[attr] || false;
+		else if (this.members.length > 1) return this.glyph[attr] || false;
 		else return false;
 	}
 
@@ -455,7 +462,7 @@ export class MultiSelectShapes extends MultiSelect {
 		const c = isOverBoundingBoxHandle(
 			px,
 			py,
-			this.getGlyph().maxes,
+			this.glyph.maxes,
 			_UI.multiSelectThickness
 		);
 		// log('SelectedShapes.isOverBoundingBoxHandle returning ' + c);
@@ -463,7 +470,7 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	getCenter() {
-		return this.getGlyph().center;
+		return this.glyph.center;
 	}
 
 	// calcMaxes = function() {
@@ -474,7 +481,7 @@ export class MultiSelectShapes extends MultiSelect {
 
 	getMaxes() {
 		if (this.members.length === 1) return this.members[0].maxes;
-		else return this.getGlyph().maxes;
+		else return this.glyph.maxes;
 	}
 
 	drawShape(lctx, view) {
@@ -540,7 +547,7 @@ export class MultiSelectShapes extends MultiSelect {
 				ss.objType === 'ComponentInstance' ? _UI.colors.green : _UI.colors.blue;
 			draw_RotationAffordance(accent, false);
 		} else if (this.members.length > 1) {
-			ss = this.getGlyph();
+			ss = this.glyph;
 			draw_RotationAffordance(_UI.colors.gray, _UI.multiSelectThickness);
 		}
 	}

@@ -1,6 +1,6 @@
 import { makeElement } from '../../common/dom.js';
 import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
-import { round } from '../../common/functions.js';
+import { round, log } from '../../common/functions.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement
@@ -11,7 +11,8 @@ export default class InputNumber extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		// console.log(`InputNumber.constructor`, 'start');
+		// log(`InputNumber.constructor`, 'start');
+		// log(JSON.stringify(attributes));
 		super();
 
 		Object.keys(attributes).forEach((key) =>
@@ -23,7 +24,6 @@ export default class InputNumber extends HTMLElement {
 
 		this.wrapper = makeElement({ className: 'wrapper' });
 		this.wrapper.elementRoot = this;
-		if (this.disabled) this.wrapper.setAttribute('disabled', '');
 
 		this.numberInput = makeElement({
 			tag: 'input',
@@ -31,10 +31,7 @@ export default class InputNumber extends HTMLElement {
 			tabIndex: !this.disabled,
 			attributes: { type: 'text' },
 		});
-		if (this.disabled) this.numberInput.setAttribute('disabled', '');
 		this.numberInput.elementRoot = this;
-
-		this.value = this.getAttribute('value');
 
 		this.arrowWrapper = makeElement({
 			className: 'arrowWrapper',
@@ -48,7 +45,6 @@ export default class InputNumber extends HTMLElement {
 			attributes: { tabIndex: -1 },
 		});
 		this.upArrow.elementRoot = this;
-		if (this.disabled) this.upArrow.setAttribute('disabled', '');
 
 		this.downArrow = makeElement({
 			className: 'downArrow',
@@ -56,10 +52,9 @@ export default class InputNumber extends HTMLElement {
 			attributes: { tabIndex: -1 },
 		});
 		this.downArrow.elementRoot = this;
-		if (this.disabled) this.downArrow.setAttribute('disabled', '');
 
-		// console.log('upArrow');
-		// console.log(this.upArrow);
+		// log('upArrow');
+		// log(this.upArrow);
 
 		let style = makeElement({
 			tag: 'style',
@@ -230,15 +225,30 @@ export default class InputNumber extends HTMLElement {
 
 		shadow.appendChild(this.wrapper);
 
-		// console.log(this);
-		// console.log(`InputNumber.constructor`, 'end');
+		// log(this);
+		// log(`InputNumber.constructor`, 'end');
 	}
 
 	/**
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['disabled'];
+		return ['disabled', 'value'];
+	}
+
+	/**
+	 * Initialize the component once it's being used
+	 */
+	 connectedCallback() {
+		// log(`InputNumber.connectedCallback`, 'start');
+		let myValue = this.getAttribute('value');
+		// log(`myValue: ${myValue}`);
+		this.value = myValue;
+		if (this.disabled) this.wrapper.setAttribute('disabled', '');
+		if (this.disabled) this.numberInput.setAttribute('disabled', '');
+		if (this.disabled) this.upArrow.setAttribute('disabled', '');
+		if (this.disabled) this.downArrow.setAttribute('disabled', '');
+		// log(`InputNumber.connectedCallback`, 'end');
 	}
 
 	/**
@@ -248,7 +258,7 @@ export default class InputNumber extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		// console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		if (attributeName === 'disabled') {
 			if (newValue === '') {
@@ -279,27 +289,39 @@ export default class InputNumber extends HTMLElement {
 	 * Add all event listeners to elements
 	 */
 	addAllEventListeners() {
-		// console.log('addAllEventListeners');
+		// log('addAllEventListeners');
 		this.upArrow.addEventListener('click', this.increment);
 		this.downArrow.addEventListener('click', this.decrement);
 		this.arrowWrapper.addEventListener('keydown', this.arrowKeyboardPressed);
 		this.numberInput.addEventListener('change', this.numberInputChanged);
 		this.numberInput.addEventListener('keydown', this.numberInputKeyboardPress);
+		this.arrowWrapper.addEventListener('mouseout', (event) => {
+			this.removeArrowStyle(this.upArrow, this.downArrow);
+		});
 	}
 
 	/**
 	 * Add all event listeners to elements
 	 */
 	removeAllEventListeners() {
-		// console.log('removeAllEventListeners');
+		// log('removeAllEventListeners');
 		this.upArrow.removeEventListener('click', this.increment);
 		this.downArrow.removeEventListener('click', this.decrement);
 		this.arrowWrapper.removeEventListener('keydown', this.arrowKeyboardPressed);
 		this.numberInput.removeEventListener('change', this.numberInputChanged);
-		this.numberInput.removeEventListener(
-			'keydown',
-			this.numberInputKeyboardPress
-		);
+		this.numberInput.removeEventListener('keydown', this.numberInputKeyboardPress);
+		this.arrowWrapper.removeEventListener('mouseout', (event) => {
+			console.log(event);
+		});
+	}
+
+	/**
+	 * Up and down arrows get CSS injected during interaction, this
+	 * removes that
+	 */
+	removeArrowStyle(upArrow, downArrow) {
+		upArrow.setAttribute('style', '');
+		downArrow.setAttribute('style', '');
 	}
 
 	/**
@@ -315,15 +337,16 @@ export default class InputNumber extends HTMLElement {
 	 * @param {number} number - new main value
 	 */
 	set value(number) {
-		// console.log(`InputNumber.set value`, 'start');
-		// console.log(`passed ${number}`);
+		// log(`InputNumber.set value`, 'start');
+		// log(`passed ${number}`);
 		this._numberValue = round(parseFloat(number), this.precision) || 0;
-		// console.log(`this._numberValue is now ${this._numberValue}`);
-		// console.log(`this.value is now ${this.value}`);
+		// log(`this._numberValue is now ${this._numberValue}`);
+		// log(`this.value is now ${this.value}`);
 
-		this.numberInput.value = this._numberValue;
-		this.setAttribute('value', this._numberValue);
-		// console.log(`InputNumber.set value`, 'end');
+		this.numberInput.value = this.value;
+		this.numberInput.setAttribute('value', this.value);
+		this.setAttribute('value', this.value);
+		// log(`InputNumber.set value`, 'end');
 	}
 
 	/**

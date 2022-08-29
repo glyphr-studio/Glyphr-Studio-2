@@ -297,19 +297,19 @@ function makeInputs_size(width, height){
 	content +=`
 		<label>width${dimSplit()}height</label>
 		<div class="doubleInput">
-			<input-number
+			<input-number-lockable
 				id="charw"
 				step="${spinnerValueChange}"
 				value="${round(width, 3)}"
 			>
-			</input-number>
+			</input-number-lockable>
 			${dimSplit()}
-			<input-number
+			<input-number-lockable
 				id="charh"
 				step="${spinnerValueChange}"
 				value="${round(height, 3)}"
 			>
-			</input-number>
+			</input-number-lockable>
 		</div>
 	`;
 
