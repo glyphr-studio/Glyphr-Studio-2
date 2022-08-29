@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { eventHandlerData } from './events_mouse.js';
 
 export function updateCursor(tool) {

@@ -9,7 +9,7 @@ import {
 	hasNonValues,
 	pointsAreEqual,
 } from '../common/functions.js';
-import { sXcX, sYcY } from '../controls/canvas-edit/canvas-edit.js';
+import { sXcX, sYcY } from '../edit_canvas/canvas-edit.js';
 import { getColorFromRGBA } from '../common/colors.js';
 
 /**

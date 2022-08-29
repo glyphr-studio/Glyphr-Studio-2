@@ -3,7 +3,7 @@
 		All keyboard handlers can be found here.
 **/
 
-const { getGlyphrStudioApp } = require("../../app/main");
+const { getGlyphrStudioApp } = require("../app/main");
 
 function keyup(event) {
 	let eh = _UI.eventhandlers;

@@ -2,8 +2,8 @@
 // Path Edit - selects points and moves points and handles (Pen)
 // ----------------------------------------------------------------
 
-import { getCurrentProject, getCurrentProjectEditor } from '../../../app/main.js';
-import { log } from '../../../common/functions.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
+import { log } from '../../common/functions.js';
 import { cXsX, cYsY } from '../canvas-edit.js';
 import { setCursor } from '../cursors.js';
 import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData, findAndCallHotspot } from '../events_mouse.js';

@@ -2,7 +2,7 @@
 // Path Add Point - adds points to an existing path (Pen Plus)
 // ----------------------------------------------------------------
 
-import { getCurrentProjectEditor } from '../../../app/app.js';
+import { getCurrentProjectEditor } from '../../app/app.js';
 
 export default class Tool_PathAddPoint {
 	constructor() {

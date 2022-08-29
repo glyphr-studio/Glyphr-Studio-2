@@ -6,7 +6,7 @@ import { log } from '../common/functions.js';
 import AnchorTwelvepoint from '../controls/anchor-twelvepoint/anchor-twelvepoint.js';
 import ButtonToggle from '../controls/button-toggle/button-toggle.js';
 import CanvasDisplay from '../controls/canvas-display/canvas-display.js';
-import CanvasEdit from '../controls/canvas-edit/canvas-edit.js';
+import CanvasEdit from '../edit_canvas/canvas-edit.js';
 import FancyButton from '../controls/fancy-button/fancy-button.js';
 import GlyphTile from '../controls/glyph-tile/glyph-tile.js';
 import InfoBubble from '../controls/info-bubble/info-bubble.js';
