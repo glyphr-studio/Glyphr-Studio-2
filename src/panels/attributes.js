@@ -6,7 +6,7 @@
 **/
 import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 import { accentColors } from "../common/colors.js";
-import { makeElement } from "../common/dom.js";
+import { addAsChildren, makeElement } from "../common/dom.js";
 import { log, round } from "../common/functions.js";
 export {
 	makeInputs_position,
@@ -23,12 +23,15 @@ export {
 function makeAttributesGroup_shape(s) {
 	// log("makeAttributesGroup_shape - Drawing Shape Details");
 
-	let content;
-
-	content.appendChild(makeElement({
+	content = makeElement({
 		tag: 'div',
 		className: 'panel__section',
 		innerHTML: '<h3>Shape</h3>'
+	});
+
+	content.appendChild(makeElement({
+		tag: 'label',
+		innerHTML: 'shape name'
 	}));
 
 	content.appendChild(makeElement({
@@ -77,10 +80,15 @@ function makeAttributesGroup_shape(s) {
 		`
 	}));
 
-
+	log('New Size and Position Elements');
 	// TODO transform origin
-	// content += makeInputs_position(s.x, (s.y - s.height));
-	// content += makeInputs_size(s.width, s.height);
+	let posElems = makeInputs_position(s.x, (s.y - s.height));
+	log(posElems);
+	addAsChildren(content, posElems);
+
+	let sizeElems = makeInputs_size(s.width, s.height);
+	log(sizeElems);
+	addAsChildren(content, sizeElems);
 
 	return content;
 }
@@ -276,27 +284,25 @@ function makeInputs_position(x, y) {
 	log(`x: ${x}`);
 	log(`y: ${y}`);
 
-	let content = '';
+	let label = makeElement({tag: 'label', innerHTML: `x${dimSplit()}y`});
+	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
+	let xInput = makeElement({
+		tag: 'input-number-lockable',
+		id: 'charx',
+		value: round(x, 3)
+	});
+	let yInput = makeElement({
+		tag: 'input-number-lockable',
+		id: 'chary',
+		value: round(y, 3)
+	});
 
-	content +=`
-		<label>x${dimSplit()}y</label>
-		<div class="doubleInput">
-			<input-number-lockable
-				id="charx"
-				value="${round(x, 3)}"
-			>
-			</input-number-lockable>
-			${dimSplit()}
-			<input-number-lockable
-				id="chary"
-				value="${round(y, 3)}"
-			>
-			</input-number-lockable>
-		</div>
-	`;
+	doubleInput.appendChild(xInput);
+	doubleInput.appendChild(dimSplitElement());
+	doubleInput.appendChild(yInput);
 
 	log(`makeInputs_position`, 'end');
-	return content;
+	return [label, doubleInput];
 }
 
 function makeInputs_size(width, height){
@@ -304,40 +310,42 @@ function makeInputs_size(width, height){
 	log(`width: ${width}`);
 	log(`height: ${height}`);
 
+	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
+	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
+	let wInput = makeElement({
+		tag: 'input-number-lockable',
+		id: 'charw',
+		value: round(width, 3)
+	});
+	let hInput = makeElement({
+		tag: 'input-number-lockable',
+		id: 'charh',
+		value: round(height, 3)
+	});
 
-	let content = '';
+	doubleInput.appendChild(wInput);
+	doubleInput.appendChild(dimSplitElement());
+	doubleInput.appendChild(hInput);
 
-	content +=`
-		<label>width${dimSplit()}height</label>
-		<div class="doubleInput">
-			<input-number-lockable
-				id="charw"
-				value="${round(width, 3)}"
-			>
-			</input-number-lockable>
-			${dimSplit()}
-			<input-number-lockable
-				id="charh"
-				value="${round(height, 3)}"
-			>
-			</input-number-lockable>
-		</div>
-	`;
-
-	content += `
-	<label class="info">
+	let ratioLockLabel = makeElement({
+		tag: 'label',
+		className: 'info',
+		innerHTML: `
 		<span>lock aspect ratio</span>
 		<info-bubble>
 			When either the width or height is adjusted,
 			the overall size will be kept proportional.
 		</info-bubble>
-	</label>
-	<input type="checkbox" />
-	`;
-	// checkUI('_UI.multiSelect.shapes.getGlyph().ratioLock', virtualGlyph.ratioLock, true)
+		`
+	});
+
+	let ratioLockCheckbox = makeElement({
+		tag: 'input',
+		attributes: {type: 'checkbox'}
+	});
 
 	log(`makeInputs_size`, 'end');
-	return content;
+	return [inputLabel, doubleInput, ratioLockLabel, ratioLockCheckbox];
 }
 
 
@@ -346,4 +354,11 @@ function makeInputs_size(width, height){
 //	-------------------------------------------
 function dimSplit() {
 	return `<span class="dimSplit">&#x2044;</span>`;
+}
+
+function dimSplitElement() {
+	return makeElement({
+		className: 'dimSplit',
+		innerHTML: '&#x2044;'
+	});
 }
