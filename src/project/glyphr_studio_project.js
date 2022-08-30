@@ -45,7 +45,6 @@ export default class GlyphrStudioProject {
 
 			// UI stuff
 			pointSize: 7,
-			spinnerValueChange: 1,
 			combineShapesOnExport: false,
 			maxCombineShapesOnExport: 30,
 			showKeyboardTipsIcon: true,

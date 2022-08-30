@@ -276,7 +276,6 @@ function makeInputs_position(x, y) {
 	log(`x: ${x}`);
 	log(`y: ${y}`);
 
-	let spinnerValueChange = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
 	let content = '';
 
 	content +=`
@@ -284,14 +283,12 @@ function makeInputs_position(x, y) {
 		<div class="doubleInput">
 			<input-number-lockable
 				id="charx"
-				step="${spinnerValueChange}"
 				value="${round(x, 3)}"
 			>
 			</input-number-lockable>
 			${dimSplit()}
 			<input-number-lockable
 				id="chary"
-				step="${spinnerValueChange}"
 				value="${round(y, 3)}"
 			>
 			</input-number-lockable>
@@ -308,7 +305,6 @@ function makeInputs_size(width, height){
 	log(`height: ${height}`);
 
 
-	let spinnerValueChange = getCurrentProject().projectSettings.spinnerValueChange * 1 || 1;
 	let content = '';
 
 	content +=`
@@ -316,14 +312,12 @@ function makeInputs_size(width, height){
 		<div class="doubleInput">
 			<input-number-lockable
 				id="charw"
-				step="${spinnerValueChange}"
 				value="${round(width, 3)}"
 			>
 			</input-number-lockable>
 			${dimSplit()}
 			<input-number-lockable
 				id="charh"
-				step="${spinnerValueChange}"
 				value="${round(height, 3)}"
 			>
 			</input-number-lockable>

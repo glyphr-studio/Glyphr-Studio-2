@@ -88,7 +88,6 @@ function goToEditGlyph(chid) {
 
 function makeAttributesGroup_componentInstance(s) {
 	// log("makeAttributesGroup_componentInstance - start of function");
-	let svc = getCurrentProject().projectSettings.spinnerValueChange || 1;
 	content =
 		'<tr><td colspan=2 class="detailtitle"><h3 style="margin:0px;">component instance</h3></td></tr>';
 
@@ -116,9 +115,7 @@ function makeAttributesGroup_componentInstance(s) {
 		'<td>' +
 		'<div class="lockwrapper">' +
 		lockUI('_UI.multiSelect.shapes.singleton.xLock', s.xLock, 'xLock') +
-		'<input type="number" id="comx" step="' +
-		svc +
-		'" value="' +
+		'<input type="number" id="comx" value="' +
 		round(s.translateX, 3) +
 		'" ' +
 		(s.xLock
@@ -128,9 +125,7 @@ function makeAttributesGroup_componentInstance(s) {
 		dimSplit() +
 		'<div class="lockwrapper">' +
 		lockUI('_UI.multiSelect.shapes.singleton.yLock', s.yLock, 'yLock') +
-		'<input type="number" id="comy" step="' +
-		svc +
-		'" value="' +
+		'<input type="number" id="comy" value="' +
 		round(s.translateY, 3) +
 		'" ' +
 		(s.yLock
@@ -148,9 +143,7 @@ function makeAttributesGroup_componentInstance(s) {
 		'<td>' +
 		'<div class="lockwrapper">' +
 		lockUI('_UI.multiSelect.shapes.singleton.wLock', s.wLock, 'wLock') +
-		'<input type="number" id="comw" step="' +
-		svc +
-		'" value="' +
+		'<input type="number" id="comw" value="' +
 		round(s.scaleW, 3) +
 		'" ' +
 		(s.wLock
@@ -160,9 +153,7 @@ function makeAttributesGroup_componentInstance(s) {
 		dimSplit() +
 		'<div class="lockwrapper">' +
 		lockUI('_UI.multiSelect.shapes.singleton.hLock', s.hLock, 'hLock') +
-		'<input type="number" id="comh" step="' +
-		svc +
-		'" value="' +
+		'<input type="number" id="comh" value="' +
 		round(s.scaleH, 3) +
 		'" ' +
 		(s.hLock
@@ -220,9 +211,7 @@ function makeAttributesGroup_componentInstance(s) {
 		'<tr>' +
 		'<td>&#916; rotation</td>' +
 		'<td>' +
-		'<input type="number" id="rot" step="' +
-		svc +
-		'" value="' +
+		'<input type="number" id="rot" value="' +
 		round(-1 * s.rotation, 1) +
 		'" onchange="updateComponentInstanceDetail(\'rotation\', this.value, this.id);">' +
 		'</td>' +
