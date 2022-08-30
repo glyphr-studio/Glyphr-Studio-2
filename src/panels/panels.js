@@ -1,6 +1,6 @@
 import { getCurrentProjectEditor } from "../app/main.js";
 import { log } from "../common/functions.js";
-import { makeElement } from "../common/dom.js";
+import { addAsChildren, makeElement } from "../common/dom.js";
 import { makePanel_Actions } from "./actions.js";
 import { makePanel_GlyphAttributes } from "./attributes_glyph.js";
 import { makePanel_Layers } from "./layers.js";
@@ -21,7 +21,7 @@ export function makePanel() {
 	let content = makeElement();
 
 	if(panel === 'Attributes') {
-		content.appendChild(makePanel_GlyphAttributes());
+		addAsChildren(content, makePanel_GlyphAttributes());
 		content.appendChild(makePanel_Actions());
 	} else if (panel === 'Layers') {
 		content.appendChild(makePanel_Layers());
