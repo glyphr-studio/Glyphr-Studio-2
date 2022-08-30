@@ -6,6 +6,7 @@
 **/
 import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 import { accentColors } from "../common/colors.js";
+import { makeElement } from "../common/dom.js";
 import { log, round } from "../common/functions.js";
 export {
 	makeInputs_position,
@@ -22,15 +23,26 @@ export {
 function makeAttributesGroup_shape(s) {
 	// log("makeAttributesGroup_shape - Drawing Shape Details");
 
-	let content = `
-		<div class="panel__section">
-			<h3>Shape</h3>
-			<label>name</label>
-			<input type="text" value="${s.name}"/>
-	`;
+	let content;
 
-	content += `
-		<label class="info">
+	content.appendChild(makeElement({
+		tag: 'div',
+		className: 'panel__section',
+		innerHTML: '<h3>Shape</h3>'
+	}));
+
+	content.appendChild(makeElement({
+		tag: 'input',
+		attributes: {
+			type: 'text',
+			value: s.name
+		}
+	}));
+
+	content.appendChild(makeElement({
+		tag: 'label',
+		className: 'info',
+		innerHTML: `
 			<span>winding</span>
 			<info-bubble>
 				<h1>Winding</h1>
@@ -55,16 +67,21 @@ function makeAttributesGroup_shape(s) {
 					>
 				</div>
 			</info-bubble>
-		</label>
-		<button>
+		`
+	}));
+
+	content.appendChild(makeElement({
+		tag: 'button',
+		innerHTML: `
 			${(s.path.winding === 0 ? 'unknown' : s.path.winding > 0 ? 'counterclockwise&ensp;&#8634' : 'clockwise&ensp;&#8635')}
-		</button>
-	`;
+		`
+	}));
 
-	content += makeInputs_position(s.x, s.y);
-	content += makeInputs_size(s.width, s.height);
 
-	content += '</div>';
+	// TODO transform origin
+	// content += makeInputs_position(s.x, (s.y - s.height));
+	// content += makeInputs_size(s.width, s.height);
+
 	return content;
 }
 
