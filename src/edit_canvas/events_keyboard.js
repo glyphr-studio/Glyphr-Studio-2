@@ -302,10 +302,8 @@ function nudge(dx, dy, ev) {
 
 	let multiplyer = _UI.eventhandlers.isShiftDown ? 10 : 1;
 
-	let mx =
-		dx * getCurrentProject().projectSettings.spinnerValueChange * multiplyer;
-	let my =
-		dy * getCurrentProject().projectSettings.spinnerValueChange * multiplyer;
+	let mx = dx * multiplyer;
+	let my = dy * multiplyer;
 	let em = getEditMode();
 
 	if (em === 'kern') {
