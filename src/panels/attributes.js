@@ -278,21 +278,23 @@ function makeAttributesGroup_pathPoint(tp) {
 
 function makeInputs_position(x, y) {
 	log(`makeInputs_position`, 'start');
-	log(`x: ${x}`);
-	log(`y: ${y}`);
+	log(`x: ${round(x, 3)}`);
+	log(`y: ${round(y, 3)}`);
 
 	let label = makeElement({tag: 'label', innerHTML: `x${dimSplit()}y`});
 	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
 	let xInput = makeElement({
 		tag: 'input-number-lockable',
-		id: 'charx',
-		value: round(x, 3)
+		id: 'charx'
 	});
+	xInput.setAttribute('value', round(x, 3));
+
 	let yInput = makeElement({
 		tag: 'input-number-lockable',
-		id: 'chary',
-		value: round(y, 3)
+		id: 'chary'
 	});
+	yInput.setAttribute('value', round(y, 3));
+
 
 	doubleInput.appendChild(xInput);
 	doubleInput.appendChild(dimSplitElement());
@@ -304,21 +306,25 @@ function makeInputs_position(x, y) {
 
 function makeInputs_size(width, height){
 	log(`makeInputs_size`, 'start');
-	log(`width: ${width}`);
-	log(`height: ${height}`);
+	log(`width: ${round(width, 3)}`);
+	log(`height: ${round(height, 3)}`);
 
 	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
 	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
 	let wInput = makeElement({
 		tag: 'input-number-lockable',
-		id: 'charw',
-		value: round(width, 3)
+		id: 'charw'
 	});
+	wInput.setAttribute('value', round(width, 3));
+
 	let hInput = makeElement({
 		tag: 'input-number-lockable',
-		id: 'charh',
-		value: round(height, 3)
+		id: 'charh'
 	});
+	hInput.setAttribute('value', round(height, 3));
+
+
+	log(wInput);
 
 	doubleInput.appendChild(wInput);
 	doubleInput.appendChild(dimSplitElement());
