@@ -158,14 +158,14 @@ uiColors = {
 			lightText: 'hsl(0, 0%, 8%)',
 			border: 'hsl(0, 0%, 63%)',
 			fill: 'hsl(200, 25%, 15%)',
-			background: getColorFromRGBA(accentColor, 0.2),
+			background: 'white',
 		},
 		active: {
 			text: 'hsl(0, 0%, 0%)',
-			lightText: getColorFromRGBA(accentColor, 0.25),
+			lightText: 'hsl(0, 0%, 8%)',
 			border: 'hsl(0, 0%, 63%)',
 			fill: accentColor,
-			background: getColorFromRGBA(accentColor, 0.1),
+			background: 'white',
 		},
 	},
 	disabled: {

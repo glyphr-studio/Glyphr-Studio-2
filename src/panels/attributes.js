@@ -80,14 +80,11 @@ function makeAttributesGroup_shape(s) {
 		`
 	}));
 
-	log('New Size and Position Elements');
 	// TODO transform origin
 	let posElems = makeInputs_position(s.x, (s.y - s.height));
-	log(posElems);
 	addAsChildren(content, posElems);
 
 	let sizeElems = makeInputs_size(s.width, s.height);
-	log(sizeElems);
 	addAsChildren(content, sizeElems);
 
 	return content;
