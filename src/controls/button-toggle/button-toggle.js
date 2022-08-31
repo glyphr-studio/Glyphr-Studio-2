@@ -84,11 +84,8 @@ export default class ButtonToggle extends HTMLElement {
 						}
 
 						.wrapper:focus {
-								outline: 1px dashed ${uiColors.accent};
-								fill: ${uiColors.enabled.active.fill};
-								outline-offset: -1px;
+							outline: var(--global-focus-style);
 						}
-
 
 						.wrapper[selected] {
 								border-color: ${uiColors.accent};
@@ -102,15 +99,12 @@ export default class ButtonToggle extends HTMLElement {
 						}
 
 						.wrapper[selected]:focus {
-								border-color: ${uiColors.enabled.resting.border};
-								outline: 1px dashed ${uiColors.accent};
-								outline-offset: -1px;
+							outline: var(--global-focus-style);
 						}
 
 						.wrapper[selected] svg {
 								fill: ${uiColors.accent};
 						}
-
 
 						.wrapper[disabled],
 						.wrapper:hover[disabled],

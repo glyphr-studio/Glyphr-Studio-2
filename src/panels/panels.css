@@ -13,9 +13,9 @@
 	grid-template-columns: 1fr 1fr;
 	align-items: center;
 	justify-items: left;
-	row-gap: 10px;
+	row-gap: 5px;
 	column-gap: 20px;
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 }
 
 .panel__section.full-width {
@@ -78,14 +78,15 @@
 }
 
 .actionsArea button {
-	background-color: var(--gray-l90);
+	background-color: var(--gray-l95);
 	color: var(--gray-l60);
-	padding: 6px;
+	padding: 5px;
 	height: 42px;
 }
 
 .actionsArea button:disabled {
 	background-color: transparent;
+	box-shadow: none;
 }
 
 /*

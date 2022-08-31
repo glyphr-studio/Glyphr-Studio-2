@@ -110,7 +110,7 @@ export default class FancyButton extends HTMLElement {
 						}
 
 						.wrapper:focus {
-								outline: 1px dashed ${uiColors.accent};
+							outline: var(--global-focus-style);
 						}
 
 						.buttonContent {

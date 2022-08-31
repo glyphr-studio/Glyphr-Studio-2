@@ -1,3 +1,7 @@
+:root {
+	--global-focus-style: 1px dashed var(--orange-l50);
+}
+
 * {
 	margin: 0;
 	padding: 0;
@@ -71,6 +75,12 @@ h3 {
 	margin-bottom: 4px;
 }
 
+h4 {
+	color: var(--gray-l45);
+	font-size: 1.2em;
+	margin-bottom: 4px;
+}
+
 table {
 	border-collapse: collapse;
 }
@@ -95,6 +105,7 @@ textarea {
 	padding: 0px 0px 0px 4px;
 	height: 24px;
 	text-align: left;
+	font-family: monospace;
 	background-color: var(--enabled-restingLight-background);
 	color: var(--enabled-restingLight-text);
 	border: 1px solid var(--enabled-restingLight-border);
@@ -114,12 +125,21 @@ textarea:hover {
 
 input:focus,
 textarea:focus {
-	outline-color: var(--blue-l60);
-	outline-width: 1px;
 	background-color: var(--enabled-focus-background);
 	color: var(--enabled-focus-text);
 	border-color: var(--enabled-focus-border);
 }
+
+
+input:focus,
+button:focus,
+textarea:focus,
+info-bubble:focus,
+glyph-tile:focus {
+	outline: var(--global-focus-style);
+	outline-offset: 2px;
+}
+
 
 input[type=image]{
 	height:auto;
@@ -164,9 +184,6 @@ input[type=range] {
 	position: relative;
 	top: 8px;
 	border: 0px;
-}
-input[type=range]:focus {
-	outline: none;
 }
 input[type=range]::-webkit-slider-runnable-track {
 	width: 100%;
@@ -262,7 +279,6 @@ button:focus {
 	margin: 2px 0px;
 	cursor:pointer;
 	border-radius: 4px;
-	outline: none;
 	border: 1px solid var(--gray-l90);
 	background-color: var(--gray-l90);
 	color: var(--gray-l15);
@@ -273,13 +289,6 @@ button:hover {
 	color:var(--gray-l05);
 	border-color:var(--blue-l85);
 	box-shadow: 0 0 4px var(--blue-l85);
-}
-
-button:focus {
-	outline-style: solid;
-	outline-width: 1px;
-	outline-color: var(--blue-l75);
-	border-color: transparent;
 }
 
 button[disabled],

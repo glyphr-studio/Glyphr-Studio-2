@@ -127,11 +127,8 @@ export default class AnchorTwelvepoint extends HTMLElement {
 						}
 
 						.anchor:focus {
-								outline: 1px dashed ${uiColors.accent};
-								border-color: ${uiColors.accent};
-								outline-offset: 0px;
+							outline: var(--global-focus-style);
 						}
-
 				`,
 		});
 

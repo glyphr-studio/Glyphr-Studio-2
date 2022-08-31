@@ -6,171 +6,203 @@
 **/
 
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { makeActionButton } from '../panels/action-buttons.js';
-import { makeElement } from '../common/dom.js';
+import { makeActionButton, makeActionButtonIcon } from '../panels/action-buttons.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 
 export function makePanel_Actions() {
 
 	let projectEditor = getCurrentProjectEditor();
-	let ss = projectEditor.multiSelect.shapes.members;
+	let selectedShapes = projectEditor.multiSelect.shapes.members;
 
 	// TODO hook these up
 	let clipBoardShape = false;
 	let historyLength = 0;
 
-	let content = '<div class="panel__section full-width">';
-	content += '<h2>actions</h2>';
+	let panelSection = makeElement({
+		tag: 'div',
+		className: 'panel__section full-width',
+		innerHTML: '<h2>actions</h2>'
+	});
 
 	// if (!existingWorkItem()) {
-	//   return content + '</div></div>';
+	//   return panelSection;
 	// }
 
+
+	/**
+	 * Data format for creating action buttons:
+	 * ----------------------------------------
+	 * iconName = 'default',
+	 * iconOptions = false,
+	 * title = '',
+	 * disabled = false,
+	 * onClick = false
+	 */
+
 	// UNIVERSAL ACTIONS
-	let allactions = '';
-	allactions +=
-		'<button title="Paste\nAdds the previously-copied shape or shapes into this glyph" ' +
-		(clipBoardShape ? '' : 'disabled') +
-		" onclick=\"pasteShape(); historyPut('Paste Shape'); redraw({calledBy:'actions panel'});\">" +
-		makeActionButton.paste(!clipBoardShape) +
-		'</button>';
-	allactions +=
-		'<button title="Undo\nStep backwards in time one action" ' +
-		(historyLength ? '' : 'disabled') +
-		' onclick="historyPull();">' +
-		makeActionButton.undo(!historyLength) +
-		'</button>';
+	let allActions = [
+		{
+			iconName: 'paste',
+			iconOptions: !clipBoardShape,
+			title: `Paste\nAdds the previously-copied shape or shapes into this glyph.`,
+			disabled: !clipBoardShape
+		},
+		{
+			iconName: 'undo',
+			iconOptions: !historyLength,
+			title: `Undo\nStep backwards in time one action.`,
+			disabled: !historyLength
+		},
+		{
+			iconName: 'addShape',
+			iconOptions: false,
+			title: `Add Shape\nCreates a new default shape and adds it to this glyph.`,
+		},
+		{
+			iconName: 'addShape',
+			iconOptions: true,
+			title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
+		},
+		{
+			iconName: 'pasteShapesFromAnotherGlyph',
+			title: `Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one.`,
+		},
+	];
 
-	allactions +=
-		'<button title="Add Shape\nCreates a new default shape and adds it to this glyph" onclick="addShape(); historyPut(\'Add Shape\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.addShape(false) +
-		'</button>';
-	allactions +=
-		'<button title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph" onclick="showDialogAddComponent();">' +
-		makeActionButton.addShape(true) +
-		'</button>';
-	allactions +=
-		'<button title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one" onclick="showDialogGetShapes();">' +
-		makeActionButton.pasteShapesFromAnotherGlyph() +
-		'</button>';
+	if (projectEditor.nav.page === 'components') {
+		allActions.push(
+			{
+				iconName: 'linToGlyph',
+				title: `Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance.`,
+			}
+		);
+	}
 
-	if (projectEditor.nav.page === 'components')
-		allactions +=
-			'<button title="Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance" onclick="showDialogLinkComponentToGlyph();">' +
-			makeActionButton.LinkToGlyph() +
-			'</button>';
+	// GLYPH
+	let glyphActions = [
+		{
+			iconName: 'combine',
+			title: `Combine all shapes\nCombines the paths of all shapes with the same winding into as few shapes as possible.`,
+		},
+		{
+			iconName: 'flipHorizontal',
+			title: `Flip Vertical\nReflects the glyph vertically.`,
+		},
+		{
+			iconName: 'flipVertical',
+			title: `Flip Horizontal\nReflects the glyph horizontally.`,
+		},
+	];
 
 	// SHAPE
-	let shapeactions = ss.length > 1 ? '<h3>shapes</h3>' : '<h3>shape</h3>';
-	shapeactions +=
-		'<button title="Copy\nAdds a copy of the currently selected shape or shapes to the clipboard" onclick="copyShape();">' +
-		makeActionButton.copy() +
-		'</button>';
-	shapeactions +=
-		'<button title="Delete\nRemoves the currently selected shape or shapes from this glyph" onclick="_UI.multiSelect.shapes.deleteShapes(); historyPut(\'Delete Shape\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.deleteShape() +
-		'</button>';
-	shapeactions +=
-		"<button title=\"Reverse winding\nToggles the clockwise or counterclockwise winding of the shape's path\" onclick=\"_UI.multiSelect.shapes.reverseWinding(); historyPut('Reverse Path Direction'); redraw({calledBy:'makeAttributesGroup_shape - Winding'});\">" +
-		makeActionButton.reverseWinding() +
-		'</button>';
-	if (ss.length === 1 && ss[0].objType === 'ComponentInstance') {
-		shapeactions +=
-			"<button title=\"Turn Component Instance into a Shape\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's shapes as regular Shapes to this glyph\" onclick=\"turnComponentIntoShapes(); historyPut('Unlinked Component'); redraw({calledBy:'turnComponentIntoShapes'});\">" +
-			makeActionButton.switchShapeComponent(true) +
-			'</button>';
-	} else {
-		shapeactions +=
-			'<button title="Turn Shape into a Component Instance\nTakes the selected shape and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance" onclick="turnSelectedShapeIntoAComponent(); historyPut(\'Turned Shape into a Component\'); redraw({calledBy:\'turnSelectedShapeIntoAComponent\'});">' +
-			makeActionButton.switchShapeComponent(false) +
-			'</button>';
-	}
-	shapeactions +=
-		'<button title="Flip Horizontal\nReflects the currently selected shape or shapes horizontally" onclick="_UI.multiSelect.shapes.flipEW(); historyPut(\'Flip Shape Horizontal\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.flipHorizontal() +
-		'</button>';
-	shapeactions +=
-		'<button title="Flip Vertical\nReflects the currently selected shape or shapes vertically" onclick="_UI.multiSelect.shapes.flipNS(); historyPut(\'Flip Shape Vertical\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.flipVertical() +
-		'</button>';
+	let shapeActions = [
+		{
+			iconName: 'copy',
+			title: 'Copy\nAdds a copy of the currently selected shape or shapes to the clipboard.',
+		},
+		{
+			iconName: 'deleteShape',
+			title: 'Delete\nRemoves the currently selected shape or shapes from this glyph.',
+		},
+		{
+			iconName: 'reverseWinding',
+			title: `Reverse winding\nToggles the clockwise or counterclockwise winding of the shape's path.`,
+		}
+	];
 
-	// ALIGN
-	let alignactions = '';
-	alignactions +=
+	if (selectedShapes.length === 1 && selectedShapes[0].objType === 'ComponentInstance') {
+		shapeActions = shapeActions.concat([
+			{
+				iconName: 'switchShapeComponent',
+				iconData: true,
+				title: `Turn Component Instance into a Shape\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's shapes as regular Shapes to this glyph.`,
+			},
+			{
+				iconName: 'switchShapeComponent',
+				iconData: false,
+				title: `Turn Shape into a Component Instance\nTakes the selected shape and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
+			},
+		]);
+	}
+
+	shapeActions = shapeActions.concat([
+		{
+			iconName: 'flipHorizontal',
+			title: 'Flip Horizontal\nReflects the currently selected shape or shapes horizontally.',
+		},
+		{
+			iconName: 'flipVertical',
+			title: 'Flip Vertical\nReflects the currently selected shape or shapes vertically',
+		},
+	]);
+
+	// LAYERS
+	let layerActions = [
+		{
+			iconName: 'moveLayerUp',
+			title: `Move Shape Up\nMoves the shape up in the shape layer order.`,
+		},
+		{
+			iconName: 'moveLayerDown',
+			title: `Move Shape Down\nMoves the shape down in the shape layer order.`,
+		},
+	];
+
+		/*
+		// ALIGN
+		let alignactions = '';
+		alignactions +=
 		'<button title="Align Left\nMoves all the selected shapes so they are left aligned with the leftmost shape" onclick="_UI.multiSelect.shapes.align(\'left\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.align('left') +
+		makeActionButtonIcon.align('left') +
 		'</button>';
-	alignactions +=
+		alignactions +=
 		'<button title="Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape" onclick="_UI.multiSelect.shapes.align(\'center\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.align('center') +
+		makeActionButtonIcon.align('center') +
 		'</button>';
 	alignactions +=
 		'<button title="Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape" onclick="_UI.multiSelect.shapes.align(\'right\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.align('right') +
+		makeActionButtonIcon.align('right') +
 		'</button>';
 	alignactions +=
 		'<button title="Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape" onclick="_UI.multiSelect.shapes.align(\'top\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.align('top') +
+		makeActionButtonIcon.align('top') +
 		'</button>';
 	alignactions +=
 		'<button title="Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape" onclick="_UI.multiSelect.shapes.align(\'middle\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.align('middle') +
+		makeActionButtonIcon.align('middle') +
 		'</button>';
 	alignactions +=
 		'<button title="Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape" onclick="_UI.multiSelect.shapes.align(\'bottom\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.align('bottom') +
-		'</button>';
-
-	// LAYERS
-	let layeractions = '';
-	layeractions +=
-		'<button title="Move Shape Up\nMoves the shape up in the shape layer order" onclick="moveShapeUp(); historyPut(\'Move Shape Layer Up\');">' +
-		makeActionButton.moveLayerUp() +
-		'</button>';
-	layeractions +=
-		'<button title="Move Shape Down\nMoves the shape down in the shape layer order" onclick="moveShapeDown(); historyPut(\'Move Shape Layer Down\');">' +
-		makeActionButton.moveLayerDown() +
+		makeActionButtonIcon.align('bottom') +
 		'</button>';
 
 	// COMBINE
 	let boolactions = '';
 	boolactions +=
 		'<button title="Combine\nSelect two shapes, and combine their paths into a single shape" onclick="combineSelectedShapes();">' +
-		makeActionButton.combine() +
+		makeActionButtonIcon.combine() +
 		'</button>';
-	// boolactions += '<button title="Subtract Using Upper\nSelect two shapes, and the upper shape will be used to cut out an area from the lower shape" onclick="">' + makeActionButton.subtractUsingTop() + '</button>';
-	// boolactions += '<button title="Subtract Using Lower\nSelect two shapes, and the lower shape will be used to cut out an area from the upper shape" onclick="">' + makeActionButton.subtractUsingBottom() + '</button>';
+	// boolactions += '<button title="Subtract Using Upper\nSelect two shapes, and the upper shape will be used to cut out an area from the lower shape" onclick="">' + makeActionButtonIcon.subtractUsingTop() + '</button>';
+	// boolactions += '<button title="Subtract Using Lower\nSelect two shapes, and the lower shape will be used to cut out an area from the upper shape" onclick="">' + makeActionButtonIcon.subtractUsingBottom() + '</button>';
 
 	// PATH POINT
 	let pointactions = '<h3>path point</h3>';
 	pointactions +=
 		'<button title="Insert Path Point\nAdds a new Path Point half way between the currently-selected point, and the next one" onclick="_UI.multiSelect.points.insertPathPoint(); historyPut(\'Insert Path Point\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.insertPathPoint() +
+		makeActionButtonIcon.insertPathPoint() +
 		'</button>';
 	pointactions +=
 		'<button title="Delete Path Point\nRemoves the currently selected point or points from the path" class="' +
-		(ss.length ? '' : 'button__disabled') +
+		(selectedShapes.length ? '' : 'button__disabled') +
 		"\" onclick=\"_UI.multiSelect.points.deletePathPoints(); historyPut('Delete Path Point'); redraw({calledBy:'actions panel'});\">" +
-		makeActionButton.deletePathPoint() +
+		makeActionButtonIcon.deletePathPoint() +
 		'</button>';
 	pointactions +=
 		'<button title="Reset Handles\nMoves the handles of the currently selected point or points to default locations" onclick="_UI.multiSelect.points.resetHandles(); historyPut(\'Reset Path Point\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButton.resetPathPoint() +
+		makeActionButtonIcon.resetPathPoint() +
 		'</button>';
 
-	// GLYPH
-	let glyphactions = '<h3>glyph</h3>';
-	glyphactions +=
-		'<button title="Combine all shapes\nCombines the paths of all shapes with the same winding into as few shapes as possible" onclick="combineAllGlyphShapes();">' +
-		makeActionButton.combine() +
-		'</button>';
-	glyphactions +=
-		'<button title="Flip Vertical\nReflects the glyph vertically" onclick="getSelectedWorkItem().flipEW(); historyPut(\'Flip Glyph : Vertical\'); redraw({calledBy:\'Glyph Details - FlipEW\'});">' +
-		makeActionButton.flipHorizontal() +
-		'</button>';
-	glyphactions +=
-		'<button title="Flip Horizontal\nReflects the glyph horizontally" onclick="getSelectedWorkItem().flipNS(); historyPut(\'Flip Glyph : Horizontal\'); redraw({calledBy:\'Glyph Details - FlipNS\'});">' +
-		makeActionButton.flipVertical() +
-		'</button>';
+
 
 	// DEV
 	let devactions = '';
@@ -187,17 +219,36 @@ export function makePanel_Actions() {
 		}
 	}
 
+*/
 	// Put it all together
-	content += '<div class="actionsArea">';
+	function addChildActions(actionsArray) {
+		addAsChildren(actionsArea, actionsArray.map((iconData) => makeActionButton(iconData)));
+	}
+	let actionsArea = makeElement({tag: 'div', className: 'actionsArea'});
 
-	content += allactions;
+	// Conditionally include actions
+	addChildActions(allActions);
 
-	if (ss.length === 0) content += glyphactions;
-	if (ss.length > 0) content += shapeactions;
-	if (ss.length > 1) content += boolactions;
-	if (ss.length === 1) content += layeractions;
-	if (ss.length > 1) content += alignactions;
+	if (selectedShapes.length === 0) {
+		actionsArea.appendChild(makeElement({tag:'h4', content:'glyph'}));
+		addChildActions(glyphActions);
+	}
 
+	if (selectedShapes.length > 0) {
+		actionsArea.appendChild(makeElement({tag:'h4', content:'shapes'}));
+		addChildActions(shapeActions);
+	}
+
+	// if (selectedShapes.length > 1) content += boolactions;
+
+	if (selectedShapes.length === 1) {
+		actionsArea.appendChild(makeElement({tag:'h4', content:'shape layers'}));
+		addChildActions(layerActions);
+	}
+
+	// if (selectedShapes.length > 1) content += alignactions;
+
+	/*
 	let ispointsel = false;
 	if (projectEditor.multiSelect.points.count() > 0) ispointsel = true;
 	// if (_UI.selectedTool !== 'pathEdit') ispointsel = false;
@@ -207,11 +258,11 @@ export function makePanel_Actions() {
 	}
 
 	content += devactions;
+*/
 
-	content += '</div>';
-	content += '</div>';
 
-	return makeElement({content: content});
+	panelSection.appendChild(actionsArea);
+	return panelSection;
 }
 
 // --------------------------------------------------------------

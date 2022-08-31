@@ -6,7 +6,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 import { log } from '../common/functions.js';
-import { makeActionButton } from './action-buttons.js';
+import { makeActionButtonIcon } from './action-buttons.js';
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
@@ -113,19 +113,19 @@ function makeActionArea_Layers() {
 			title="Add Shape\nCreates a new default shape and adds it to this glyph"
 			onclick="addShape(); historyPut('Add Shape'); redraw({calledBy:'updateactions'});"
 		>
-			${makeActionButton.addShape(false)}
+			${makeActionButtonIcon.addShape(false)}
 		</button>
 		<button
 			title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph"
 			onclick="showDialogAddComponent();"
 		>
-			${makeActionButton.addShape(true)}
+			${makeActionButtonIcon.addShape(true)}
 		</button>
 		<button
 			title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one"
 			onclick="showDialogGetShapes();"
 		>
-			${makeActionButton.pasteShapesFromAnotherGlyph()}
+			${makeActionButtonIcon.pasteShapesFromAnotherGlyph()}
 		</button>
 	`;
 
@@ -135,7 +135,7 @@ function makeActionArea_Layers() {
 				title="Delete\nRemoves the currently selected shape or shapes from this glyph"
 				onclick="projectEditor.multiSelect.shapes.deleteShapes(); historyPut(\'Delete Shape\'); redraw({calledBy:\'updateactions\'});"
 			>
-				${makeActionButton.deleteShape()}
+				${makeActionButtonIcon.deleteShape()}
 			</button>
 		`;
 	}
@@ -145,13 +145,13 @@ function makeActionArea_Layers() {
 			title="Move Shape Up\nMoves the shape up in the shape layer order"
 			onclick="moveShapeUp(); historyPut(\'Move Shape Layer Up\');"
 		>
-			${makeActionButton.moveLayerUp()}
+			${makeActionButtonIcon.moveLayerUp()}
 		</button>
 		<button
 			title="Move Shape Down\nMoves the shape down in the shape layer order"
 			onclick="moveShapeDown(); historyPut(\'Move Shape Layer Down\');"
 		>
-			${makeActionButton.moveLayerDown()}
+			${makeActionButtonIcon.moveLayerDown()}
 		</button>
 	`;
 

@@ -110,9 +110,7 @@ export default class InputNumber extends HTMLElement {
 						}
 
 						.numberInput:focus {
-							outline: 1px dashed ${uiColors.accent};
-							background-color: white;
-							outline-offset: 0px;
+							outline: var(--global-focus-style);
 						}
 
 						.numberInput[disabled],
@@ -141,8 +139,7 @@ export default class InputNumber extends HTMLElement {
 						}
 
 						.arrowWrapper:focus {
-							outline: 1px dashed ${uiColors.accent};
-							outline-offset: 0px;
+							outline: var(--global-focus-style);
 						}
 
 						.arrowWrapper[disabled],
