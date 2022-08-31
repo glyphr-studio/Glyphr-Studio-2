@@ -95,19 +95,30 @@ textarea {
 	padding: 0px 0px 0px 4px;
 	height: 24px;
 	text-align: left;
-	background-color: white;
-	color: var(--gray-l15);
-	border: 1px solid var(--gray-l90);
+	background-color: var(--enabled-restingLight-background);
+	color: var(--enabled-restingLight-text);
+	border: 1px solid var(--enabled-restingLight-border);
+	border-radius: 2px;
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	-ms-user-select: text;
 	user-select: text;
 }
 
+input:hover,
+textarea:hover {
+	background-color: var(--enabled-focus-background);
+	color: var(--enabled-focus-text);
+	border-color: var(--enabled-focus-border);
+}
+
 input:focus,
 textarea:focus {
 	outline-color: var(--blue-l60);
 	outline-width: 1px;
+	background-color: var(--enabled-focus-background);
+	color: var(--enabled-focus-text);
+	border-color: var(--enabled-focus-border);
 }
 
 input[type=image]{
@@ -130,6 +141,11 @@ input[type=number][disabled='disabled']{
 	background-color:var(--gray-l90);
 	border: 1px solid var(--gray-l90);
 	color: var(--gray-l65);
+}
+
+input[type=checkbox] {
+	accent-color: var(--accent-color);
+	opacity: 0.75;
 }
 
 
