@@ -1,10 +1,47 @@
-//	---------------------
-//	Action Buttons
-//	---------------------
-
-let makeActionButton = {};
-export { makeActionButton };
 import { accentColors, uiColors } from '../common/colors.js';
+import { makeElement } from '../common/dom.js';
+import { log } from '../common/functions.js';
+
+
+
+// --------------------------------------------------------------
+// Action Button
+// --------------------------------------------------------------
+
+export function makeActionButton({
+	iconName = 'default',
+	iconOptions = false,
+	title = '',
+	disabled = false,
+	onClick = false
+} = {}) {
+	log(`makeActionButton`, 'start');
+	log(`iconName: ${iconName}`);
+	log(`iconOptions: ${iconOptions}`);
+	log(`disabled: ${disabled}`);
+
+	let newButton = makeElement({
+		tag: 'button',
+		innerHTML: makeActionButtonIcon[iconName](iconOptions),
+		attributes: {
+			title: title
+		}
+	});
+
+	if(onClick) newButton.addEventListener('click', onClick);
+	if(disabled) newButton.setAttribute('disabled', 'true');
+
+	log(`makeActionButton`, 'end');
+	return newButton;
+}
+
+
+// --------------------------------------------------------------
+// Action button icons
+// --------------------------------------------------------------
+
+let makeActionButtonIcon = {};
+export { makeActionButtonIcon };
 
 export function svgWrap(content) {
 	let re = `
@@ -26,12 +63,17 @@ let actionButtonIconColors = {
 	disabledFill: accentColors.gray.l95,
 	disabledOutline: accentColors.gray.l90,
 	blueOutline: accentColors.blue.l65,
-	greenOutline: accentColors.green.l75,
+	greenOutline: accentColors.green.l70,
 	grayOutline: accentColors.gray.l50,
 	redX: uiColors.red,
 };
 
-makeActionButton.LinkToGlyph = function() {
+makeActionButtonIcon.default = function() {
+	let re = `<rect x="21" y="15" fill="${actionButtonIconColors.redX}" width="3" height="15"/>`;
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.linkToGlyph = function() {
 	let re = '';
 	let green = actionButtonIconColors.greenOutline;
 
@@ -46,7 +88,7 @@ makeActionButton.LinkToGlyph = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.reverseWinding = function() {
+makeActionButtonIcon.reverseWinding = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -59,7 +101,7 @@ makeActionButton.reverseWinding = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.resetPathPoint = function() {
+makeActionButtonIcon.resetPathPoint = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -84,7 +126,7 @@ makeActionButton.resetPathPoint = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.deletePathPoint = function() {
+makeActionButtonIcon.deletePathPoint = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let red = actionButtonIconColors.redX;
@@ -107,7 +149,7 @@ makeActionButton.deletePathPoint = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.insertPathPoint = function() {
+makeActionButtonIcon.insertPathPoint = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 
@@ -129,7 +171,7 @@ makeActionButton.insertPathPoint = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.subtractUsingBottom = function() {
+makeActionButtonIcon.subtractUsingBottom = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -144,7 +186,7 @@ makeActionButton.subtractUsingBottom = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.subtractUsingTop = function() {
+makeActionButtonIcon.subtractUsingTop = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -159,7 +201,7 @@ makeActionButton.subtractUsingTop = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.combine = function() {
+makeActionButtonIcon.combine = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -172,7 +214,7 @@ makeActionButton.combine = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.switchShapeComponent = function(com) {
+makeActionButtonIcon.switchShapeComponent = function(com) {
 	let re = '';
 	let before = com ? actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
 	let after = com ? actionButtonIconColors.blueOutline : actionButtonIconColors.greenOutline;
@@ -188,7 +230,7 @@ makeActionButton.switchShapeComponent = function(com) {
 	return svgWrap(re);
 };
 
-makeActionButton.moveLayerDown = function() {
+makeActionButtonIcon.moveLayerDown = function() {
 	let re = '';
 	let accent = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -203,7 +245,7 @@ makeActionButton.moveLayerDown = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.moveLayerUp = function() {
+makeActionButtonIcon.moveLayerUp = function() {
 	let re = '';
 	let accent = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -218,7 +260,7 @@ makeActionButton.moveLayerUp = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.deleteShape = function() {
+makeActionButtonIcon.deleteShape = function() {
 	let re = '';
 	let red = actionButtonIconColors.redX;
 	let accent = actionButtonIconColors.blueOutline;
@@ -239,7 +281,7 @@ makeActionButton.deleteShape = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.flipVertical = function() {
+makeActionButtonIcon.flipVertical = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -255,7 +297,7 @@ makeActionButton.flipVertical = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.flipHorizontal = function() {
+makeActionButtonIcon.flipHorizontal = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -271,7 +313,7 @@ makeActionButton.flipHorizontal = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.copy = function() {
+makeActionButtonIcon.copy = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -287,7 +329,7 @@ makeActionButton.copy = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.pasteShapesFromAnotherGlyph = function() {
+makeActionButtonIcon.pasteShapesFromAnotherGlyph = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -303,7 +345,7 @@ makeActionButton.pasteShapesFromAnotherGlyph = function() {
 	return svgWrap(re);
 };
 
-makeActionButton.addShape = function(component) {
+makeActionButtonIcon.addShape = function(component) {
 	let re = '';
 	let accent = component?
 		actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
@@ -324,7 +366,7 @@ makeActionButton.addShape = function(component) {
 	return svgWrap(re);
 };
 
-makeActionButton.undo = function(disabled) {
+makeActionButtonIcon.undo = function(disabled) {
 	let re = '';
 	let blue = disabled ? actionButtonIconColors.disabledOutline : actionButtonIconColors.blueOutline;
 	let fill = disabled ? actionButtonIconColors.disabledFill : actionButtonIconColors.darkFill;
@@ -337,7 +379,7 @@ makeActionButton.undo = function(disabled) {
 	return svgWrap(re);
 };
 
-makeActionButton.paste = function(disabled) {
+makeActionButtonIcon.paste = function(disabled) {
 	let re = '';
 	let blue = disabled ? actionButtonIconColors.disabledOutline : actionButtonIconColors.blueOutline;
 	let fill = disabled ? actionButtonIconColors.disabledFill : actionButtonIconColors.darkFill;
@@ -352,7 +394,7 @@ makeActionButton.paste = function(disabled) {
 	return svgWrap(re);
 };
 
-makeActionButton.align = function(edge) {
+makeActionButtonIcon.align = function(edge) {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
