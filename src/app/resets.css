@@ -1,7 +1,3 @@
-:root {
-	--global-focus-style: 1px dashed var(--orange-l50);
-}
-
 * {
 	margin: 0;
 	padding: 0;

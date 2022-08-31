@@ -39,6 +39,10 @@ export default class InfoBubble extends HTMLElement {
 					height: 14px;
 				}
 
+				.wrapper:focus {
+					outline: 0;
+				}
+
 				#entryPoint {
 					display: inline-block;
 					position: relative;

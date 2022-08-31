@@ -32,4 +32,5 @@
 	--l2-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
 	--l3-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
 	--l3-shadow-down: 0px 6px 6px rgba(0, 0, 0, 0.2);
+	--global-focus-style: 1px dashed var(--purple-l50);
 }
