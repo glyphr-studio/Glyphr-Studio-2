@@ -21,7 +21,7 @@ export function makePanel_Actions() {
 	let panelSection = makeElement({
 		tag: 'div',
 		className: 'panel__section full-width',
-		innerHTML: '<h2>actions</h2>'
+		innerHTML: '<h3>actions</h3>'
 	});
 
 	// if (!existingWorkItem()) {
