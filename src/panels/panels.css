@@ -69,8 +69,8 @@
 
 .actionsArea {
 	display: grid;
-	grid-template-columns: repeat(6, 42px);
-	gap: 10px;
+	grid-template-columns: repeat(8, 42px);
+	gap: 5px;
 }
 
 .actionsArea h3 {

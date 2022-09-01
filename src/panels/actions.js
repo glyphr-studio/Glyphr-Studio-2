@@ -102,6 +102,18 @@ export function makePanel_Actions() {
 			iconName: 'flipVertical',
 			title: `Flip Horizontal\nReflects the glyph horizontally.`,
 		},
+		{
+			iconName: 'round',
+			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
+		},
+		{
+			title: `Delete Glyph\nRemove this Glyph from the project. Don\'t worry, you can undo this action.`,
+			iconName: 'deleteGlyph',
+		},
+		{
+			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph shapes between projects.`,
+			iconName: 'exportGlyphSVG',
+		},
 	];
 
 	// SHAPE
@@ -117,7 +129,7 @@ export function makePanel_Actions() {
 		{
 			iconName: 'reverseWinding',
 			title: `Reverse winding\nToggles the clockwise or counterclockwise winding of the shape's path.`,
-		}
+		},
 	];
 
 	if (selectedShapes.length === 1 && selectedShapes[0].objType === 'ComponentInstance') {
@@ -127,6 +139,9 @@ export function makePanel_Actions() {
 				iconData: true,
 				title: `Turn Component Instance into a Shape\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's shapes as regular Shapes to this glyph.`,
 			},
+		]);
+	} else {
+		shapeActions = shapeActions.concat([
 			{
 				iconName: 'switchShapeComponent',
 				iconData: false,
@@ -144,6 +159,10 @@ export function makePanel_Actions() {
 			iconName: 'flipVertical',
 			title: 'Flip Vertical\nReflects the currently selected shape or shapes vertically',
 		},
+		{
+			iconName: 'round',
+			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
+		},
 	]);
 
 	// LAYERS
@@ -158,34 +177,39 @@ export function makePanel_Actions() {
 		},
 	];
 
-		/*
-		// ALIGN
-		let alignactions = '';
-		alignactions +=
-		'<button title="Align Left\nMoves all the selected shapes so they are left aligned with the leftmost shape" onclick="_UI.multiSelect.shapes.align(\'left\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButtonIcon.align('left') +
-		'</button>';
-		alignactions +=
-		'<button title="Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape" onclick="_UI.multiSelect.shapes.align(\'center\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButtonIcon.align('center') +
-		'</button>';
-	alignactions +=
-		'<button title="Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape" onclick="_UI.multiSelect.shapes.align(\'right\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButtonIcon.align('right') +
-		'</button>';
-	alignactions +=
-		'<button title="Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape" onclick="_UI.multiSelect.shapes.align(\'top\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButtonIcon.align('top') +
-		'</button>';
-	alignactions +=
-		'<button title="Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape" onclick="_UI.multiSelect.shapes.align(\'middle\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButtonIcon.align('middle') +
-		'</button>';
-	alignactions +=
-		'<button title="Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape" onclick="_UI.multiSelect.shapes.align(\'bottom\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButtonIcon.align('bottom') +
-		'</button>';
-*/
+	// ALIGN
+	let alignActions = [
+		{
+			title: `Align Left\nMoves all the selected shapes so they are left aligned with the leftmost shape.`,
+			iconName: 'align',
+			iconOptions: 'left',
+		},
+		{
+			title: `Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape.`,
+			iconName: 'align',
+			iconOptions: 'center',
+		},
+		{
+			title: `Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape.`,
+			iconName: 'align',
+			iconOptions: 'right',
+		},
+		{
+			title: `Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape.`,
+			iconName: 'align',
+			iconOptions: 'top',
+		},
+		{
+			title: `Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape.`,
+			iconName: 'align',
+			iconOptions: 'middle',
+		},
+		{
+			title: `Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape.`,
+			iconName: 'align',
+			iconOptions: 'bottom',
+		}
+	];
 
 	// COMBINE
 	let boolActions = [
@@ -243,42 +267,46 @@ export function makePanel_Actions() {
 		addAsChildren(actionsArea, actionsArray.map((iconData) => makeActionButton(iconData)));
 	}
 	let actionsArea = makeElement({tag: 'div', className: 'actionsArea'});
+	let test = false;
 
 	// Universal actions
 	addChildActions(allActions);
 
 	// Glyph actions
-	if (selectedShapes.length === 0) {
+	if (selectedShapes.length === 0 || test) {
 		actionsArea.appendChild(makeElement({tag:'h4', content:'glyph'}));
 		addChildActions(glyphActions);
 	}
 
 	// Shape actions
-	if (selectedShapes.length > 0) {
+	if (selectedShapes.length > 0 || test) {
 		actionsArea.appendChild(makeElement({tag:'h4', content:'shapes'}));
 		addChildActions(shapeActions);
 	}
 
 	// Boolean combine actions
-	if (selectedShapes.length > 1) {
+	if (selectedShapes.length > 1 || test) {
 		actionsArea.appendChild(makeElement({tag:'h4', content:'shape combine'}));
 		addChildActions(boolActions);
 	}
 
 	// Layer actions
-	if (selectedShapes.length === 1) {
+	if (selectedShapes.length === 1 || test) {
 		actionsArea.appendChild(makeElement({tag:'h4', content:'shape layers'}));
 		addChildActions(layerActions);
 	}
 
 	// Shape align actions
-	// if (selectedShapes.length > 1) content += alignactions;
+	if (selectedShapes.length > 1 || test) {
+		actionsArea.appendChild(makeElement({tag:'h4', content:'align shapes'}));
+		addChildActions(alignActions);
+	}
 
 	// Point actions
 	let isPointSelected = false;
 	if (projectEditor.multiSelect.points.count() > 0) isPointSelected = true;
 	// if (_UI.selectedTool !== 'pathEdit') isPointSelected = false;
-	if (isPointSelected) {
+	if (isPointSelected || test) {
 		actionsArea.appendChild(makeElement({tag:'h4', content:'path point'}));
 		addChildActions(pointActions);
 	}
