@@ -314,7 +314,7 @@ export class MultiSelectShapes extends MultiSelect {
 
 	publishChanges() {
 		let editor = getCurrentProjectEditor();
-		editor.publish('selectedShape', this.members);
+		editor.publish('whichShapeIsSelected', this.members);
 	}
 
 	selectShapesThatHaveSelectedPoints() {}

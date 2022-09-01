@@ -31,7 +31,7 @@ export function makePanel_Layers() {
 			}
 
 			editor.subscribe({
-				topic: 'selectedShape',
+				topic: 'whichShapeIsSelected',
 				subscriberName: 'Layer row button',
 				callback: (newSelectedShape) => {
 					log(`Layer subscription callback for selectedShape`, 'start');
@@ -46,7 +46,7 @@ export function makePanel_Layers() {
 
 			row.addEventListener('click', () => {
 				editor.multiSelect.shapes.select(shape);
-				editor.publish('selectedShape', shape);
+				editor.publish('whichShapeIsSelected', shape);
 			});
 
 			// if (shape.objType === 'ComponentInstance') {

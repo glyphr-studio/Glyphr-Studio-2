@@ -65,7 +65,8 @@ export default class Tool_ShapeEdit {
 				// log('clicked on nothing');
 				clickEmptySpace();
 				this.dragselecting = true;
-				findAndCallHotspot(eh.mouseX, eh.mouseY);
+				// TODO hotspots
+				// findAndCallHotspot(eh.mouseX, eh.mouseY);
 			}
 
 			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_ShapeEdit mousedown' });
@@ -181,8 +182,10 @@ export default class Tool_ShapeEdit {
 					setCursor('arrowSquare');
 				}
 
-				editor.publish('selectedShape', this.clickedshape);
+				editor.publish('whichShapeIsSelected', this.clickedshape);
 				editor.nav.panel = 'Attributes';
+				editor.navigate();
+				// editor.publish('selectedPanel', editor.nav.panel);
 			}
 
 			// Resized a shape
@@ -202,8 +205,8 @@ export default class Tool_ShapeEdit {
 			eh.firstY = -100;
 			eh.rotationCenter = false;
 			eh.rotationstarttopy = false;
-			if (eh.undoQueueHasChanged)
-				historyPut('Path Edit tool');
+			// TODO history
+			// if (eh.undoQueueHasChanged) historyPut('Path Edit tool');
 			eh.undoQueueHasChanged = false;
 			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_ShapeEdit mouseup' });
 			// log('EVENTHANDLER - after Tool_ShapeEdit Mouse Up REDRAW');
