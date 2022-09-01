@@ -113,7 +113,7 @@ export default class ProjectEditor {
 	 * 		'selectedTool' - which edit tool is selected
 	 * 		'view' - the edit canvas view has changed
 	 * 		'selectedGlyphID' - which glyph is being edited
-	 * 		'selectedShape' - which shape is being edited
+	 * 		'whichShapeIsSelected' - which shape is being edited
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {

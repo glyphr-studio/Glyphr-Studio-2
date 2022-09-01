@@ -82,7 +82,7 @@ export function makePanel_Actions() {
 	if (projectEditor.nav.page === 'components') {
 		allActions.push(
 			{
-				iconName: 'linToGlyph',
+				iconName: 'linkToGlyph',
 				title: `Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance.`,
 			}
 		);
@@ -251,6 +251,7 @@ export function makePanel_Actions() {
 		for (let a = 0; a < dev.testActions.length; a++) {
 			devActions.push(
 				{
+					iconName: 'test',
 					title: dev.testActions[a].name,
 					onClick: dev.testActions[a].onclick
 				}
