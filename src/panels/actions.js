@@ -24,10 +24,20 @@ export function makePanel_Actions() {
 		innerHTML: '<h3>actions</h3>'
 	});
 
-	// if (!existingWorkItem()) {
-	//   return panelSection;
-	// }
+	if (!projectEditor.selectedWorkItem) {
+	  return panelSection.appendChild(
+			makeElement({
+				tag: 'h2',
+				innerHTML: `ERROR: No selected work item`
+			})
+		);
+	}
 
+
+
+	// --------------------------------------------------------------
+	// Define action button data
+	// --------------------------------------------------------------
 
 	/**
 	 * Data format for creating action buttons:
@@ -175,92 +185,111 @@ export function makePanel_Actions() {
 		'<button title="Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape" onclick="_UI.multiSelect.shapes.align(\'bottom\'); redraw({calledBy:\'actions panel\'});">' +
 		makeActionButtonIcon.align('bottom') +
 		'</button>';
+*/
 
 	// COMBINE
-	let boolactions = '';
-	boolactions +=
-		'<button title="Combine\nSelect two shapes, and combine their paths into a single shape" onclick="combineSelectedShapes();">' +
-		makeActionButtonIcon.combine() +
-		'</button>';
-	// boolactions += '<button title="Subtract Using Upper\nSelect two shapes, and the upper shape will be used to cut out an area from the lower shape" onclick="">' + makeActionButtonIcon.subtractUsingTop() + '</button>';
-	// boolactions += '<button title="Subtract Using Lower\nSelect two shapes, and the lower shape will be used to cut out an area from the upper shape" onclick="">' + makeActionButtonIcon.subtractUsingBottom() + '</button>';
+	let boolActions = [
+		{
+			iconName: 'combine',
+			title: `Combine\nSelect two shapes, and combine their paths into a single shape.`,
+		},
+		{
+			iconName: 'subtractUsingTop',
+			title: `Subtract Using Upper\nSelect two shapes, and the upper shape will be used to cut out an area from the lower shape.`,
+		},
+		{
+			iconName: 'subtractUsingBottom',
+			title: `Subtract Using Lower\nSelect two shapes, and the lower shape will be used to cut out an area from the upper shape.`,
+		},
+	];
 
 	// PATH POINT
-	let pointactions = '<h3>path point</h3>';
-	pointactions +=
-		'<button title="Insert Path Point\nAdds a new Path Point half way between the currently-selected point, and the next one" onclick="_UI.multiSelect.points.insertPathPoint(); historyPut(\'Insert Path Point\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButtonIcon.insertPathPoint() +
-		'</button>';
-	pointactions +=
-		'<button title="Delete Path Point\nRemoves the currently selected point or points from the path" class="' +
-		(selectedShapes.length ? '' : 'button__disabled') +
-		"\" onclick=\"_UI.multiSelect.points.deletePathPoints(); historyPut('Delete Path Point'); redraw({calledBy:'actions panel'});\">" +
-		makeActionButtonIcon.deletePathPoint() +
-		'</button>';
-	pointactions +=
-		'<button title="Reset Handles\nMoves the handles of the currently selected point or points to default locations" onclick="_UI.multiSelect.points.resetHandles(); historyPut(\'Reset Path Point\'); redraw({calledBy:\'actions panel\'});">' +
-		makeActionButtonIcon.resetPathPoint() +
-		'</button>';
-
-
+	let pointActions = [
+		{
+			iconName: 'insertPathPoint',
+			title: `Insert Path Point\nAdds a new Path Point half way between the currently-selected point, and the next one.`,
+		},
+		{
+			iconName: 'deletePathPoint',
+			title: `Delete Path Point\nRemoves the currently selected point or points from the path.`,
+			disabled: !!selectedShapes.length
+		},
+		{
+			iconName: 'resetPathPoint',
+			title: `Reset Handles\nMoves the handles of the currently selected point or points to default locations.`,
+		},
+	];
 
 	// DEV
-	let devactions = '';
+	let devActions = [];
 	let dev = getGlyphrStudioApp().settings.dev;
 	if (dev.mode) {
-		if (dev.testActions.length) devactions += '<h3>test</h3>';
 		for (let a = 0; a < dev.testActions.length; a++) {
-			devactions +=
-				'<button onclick="' +
-				dev.testActions[a].onclick +
-				'">' +
-				dev.testActions[a].name +
-				'</button>';
+			devActions.push(
+				{
+					title: dev.testActions[a].name,
+					onClick: dev.testActions[a].onclick
+				}
+			);
 		}
 	}
 
-*/
+
+	// --------------------------------------------------------------
 	// Put it all together
+	// --------------------------------------------------------------
+
 	function addChildActions(actionsArray) {
 		addAsChildren(actionsArea, actionsArray.map((iconData) => makeActionButton(iconData)));
 	}
 	let actionsArea = makeElement({tag: 'div', className: 'actionsArea'});
 
-	// Conditionally include actions
+	// Universal actions
 	addChildActions(allActions);
 
+	// Glyph actions
 	if (selectedShapes.length === 0) {
 		actionsArea.appendChild(makeElement({tag:'h4', content:'glyph'}));
 		addChildActions(glyphActions);
 	}
 
+	// Shape actions
 	if (selectedShapes.length > 0) {
 		actionsArea.appendChild(makeElement({tag:'h4', content:'shapes'}));
 		addChildActions(shapeActions);
 	}
 
-	// if (selectedShapes.length > 1) content += boolactions;
+	// Boolean combine actions
+	if (selectedShapes.length > 1) {
+		actionsArea.appendChild(makeElement({tag:'h4', content:'shape combine'}));
+		addChildActions(boolActions);
+	}
 
+	// Layer actions
 	if (selectedShapes.length === 1) {
 		actionsArea.appendChild(makeElement({tag:'h4', content:'shape layers'}));
 		addChildActions(layerActions);
 	}
 
+	// Shape align actions
 	// if (selectedShapes.length > 1) content += alignactions;
 
-	/*
-	let ispointsel = false;
-	if (projectEditor.multiSelect.points.count() > 0) ispointsel = true;
-	// if (_UI.selectedTool !== 'pathEdit') ispointsel = false;
-
-	if (ispointsel) {
-		content += pointactions;
+	// Point actions
+	let isPointSelected = false;
+	if (projectEditor.multiSelect.points.count() > 0) isPointSelected = true;
+	// if (_UI.selectedTool !== 'pathEdit') isPointSelected = false;
+	if (isPointSelected) {
+		actionsArea.appendChild(makeElement({tag:'h4', content:'path point'}));
+		addChildActions(pointActions);
 	}
 
-	content += devactions;
-*/
+	// Dev actions for testing
+	if (dev.testActions.length) {
+		actionsArea.appendChild(makeElement({tag:'h4', content:'test'}));
+		addChildActions(devActions);
+	}
 
-
+	// append and return
 	panelSection.appendChild(actionsArea);
 	return panelSection;
 }
