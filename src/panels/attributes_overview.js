@@ -1,7 +1,7 @@
-import { getCurrentProjectEditor } from "../app/main.js";
-import { log } from "../common/functions.js";
+import { getCurrentProjectEditor } from '../app/main.js';
+import { log } from '../common/functions.js';
 
-export default function makePanel_OverviewAttributes() {
+export function makePanel_OverviewAttributes() {
 	log(`makePanel_OverviewAttributes`, 'start');
 
 	let projectEditor = getCurrentProjectEditor();

@@ -16,7 +16,7 @@ import {
 // import {json} from '../common/functions.js';
 import { getOverallMaxes, maxesOverlap } from './maxes.js';
 import { findSegmentIntersections } from './poly_segment.js';
-import { sXcX, sYcY, getView } from '../edit_canvas/canvas-edit.js';
+import { sXcX, sYcY } from '../edit_canvas/canvas-edit.js';
 
 /**
  * Glyph Element > Path
@@ -506,7 +506,7 @@ export class Path extends GlyphElement {
 	 * @param {object} view - View object with x / y offset and Zoom
 	 * @param {boolean} snap - snap values to whole numbers
 	 */
-	drawPath(ctx, view = getView('Path.drawPath'), snap = true) {
+	drawPath(ctx, view, snap = true) {
 		// log('Path.drawPath', 'start');
 		// log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
 

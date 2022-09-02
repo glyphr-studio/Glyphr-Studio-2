@@ -1,4 +1,4 @@
-import {ComponentInstance} from './component_instance.js';
+import { ComponentInstance } from './component_instance.js';
 
 /**
  * Create a sample Component Instance

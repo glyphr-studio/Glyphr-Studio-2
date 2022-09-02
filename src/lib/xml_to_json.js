@@ -7,7 +7,7 @@
  * @param {string} inputXML - XML data
  * @returns {string}
  */
-export default function XMLtoJSON(inputXML) {
+export function XMLtoJSON(inputXML) {
   const console_debug = false;
   let XMLdoc; let XMLerror;
   // log('convertXMLtoJSON \t PASSED\n' + inputXML);

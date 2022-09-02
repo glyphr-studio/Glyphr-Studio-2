@@ -2,6 +2,8 @@
 // Kern - moves the left kern group
 // ----------------------------------------------------------------
 
+import { getCurrentProjectEditor } from '../../app/main.js';
+
 export class Tool_Kern {
 	constructor() {
 		this.dragging = false;
@@ -9,7 +11,6 @@ export class Tool_Kern {
 
 		this.mousedown = function (ev) {
 			// log('Tool_Kern - mouse down: ' + eventHandlerData.mouseX + ':' + eventHandlerData.mouseY);
-			let v = getView('Event Handler Tool_Kern mousedown');
 			this.deltax = eventHandlerData.mouseX;
 			this.dragging = true;
 		};
@@ -25,12 +26,13 @@ export class Tool_Kern {
 		this.mousemove = function (ev) {
 			if (this.dragging) {
 				// Moving shapes if mousedown
+				let editor = getCurrentProjectEditor();
 				let sk = getSelectedKern();
 				let val = 1 * sk.value;
 				updateKernValue(
 					getSelectedKernID(),
 					round(
-						val + (1 * (eventHandlerData.mouseX - this.deltax)) / getView().dz
+						val + (1 * (eventHandlerData.mouseX - this.deltax)) / editor.view.dz
 					)
 				);
 				this.deltax = eventHandlerData.mouseX;

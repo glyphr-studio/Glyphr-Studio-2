@@ -2,6 +2,8 @@
 // New Path - adds many points to a new path (Pen Plus)
 // ----------------------------------------------------------------
 
+import { getCurrentProjectEditor } from '../../app/main.js';
+
 export class Tool_NewPath {
 	constructor() {
 		this.dragging = false;
@@ -11,6 +13,7 @@ export class Tool_NewPath {
 
 		this.mousedown = function (ev) {
 			// log('Tool_NewPath.mousedown', 'start');
+			let editor = getCurrentProjectEditor();
 			let eh = eventHandlerData;
 			let newpoint = new PathPoint({
 				p: { point: { x: cXsX(eh.mouseX), y: cYsY(eh.mouseY) } },
@@ -36,7 +39,7 @@ export class Tool_NewPath {
 				this.currpt = this.newShape.path.addPathPoint(newpoint);
 			} else if (this.newShape) {
 				let targetSize = getCurrentProject().projectSettings.pointSize /
-					getView('Event Handler Tool_PathEdit.mousedown').dz;
+					editor.view.dz;
 				if (this.newShape.path.isOverFirstPoint(
 					cXsX(eh.mouseX),
 					cYsY(eh.mouseY),
@@ -75,8 +78,9 @@ export class Tool_NewPath {
 
 		this.mousemove = function (ev) {
 			let eh = eventHandlerData;
+			let editor = getCurrentProjectEditor();
 			let targetSize = getCurrentProject().projectSettings.pointSize /
-				getView('Event Handler Tool_PathEdit.mousedown').dz;
+				editor.view.dz;
 
 			if (this.dragging) {
 				// avoid really small handles

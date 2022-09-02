@@ -399,7 +399,8 @@ export function hotspotNavigateToGlyph(gid) {
 	// log('hotspotNavigateToGlyph', 'start');
 	// log('passed ' + gid);
 
-	const v = getView('hotspotNavigateToGlyph');
+	let editor = getCurrentProjectEditor();
+	const v = editor.view;
 	const currchar = getSelectedWorkItemChar();
 	const newchar = hexToChars(gid);
 	const ctxg = getContextGlyphString();

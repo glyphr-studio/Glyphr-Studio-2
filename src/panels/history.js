@@ -4,8 +4,8 @@
 		the current page.
 **/
 
-import { getCurrentProjectEditor } from "../app/main.js";
-import { makeElement } from "../common/dom.js";
+import { getCurrentProjectEditor } from '../app/main.js';
+import { makeElement } from '../common/dom.js';
 
 export function makePanel_History() {
 	let projectEditor = getCurrentProjectEditor();

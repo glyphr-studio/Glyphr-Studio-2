@@ -1,3 +1,4 @@
+import { getCurrentProjectEditor } from '../app/main.js';
 import { makeRandomSaturatedColor } from '../common/colors.js';
 import { makeCrisp } from '../common/functions.js';
 
@@ -9,7 +10,7 @@ import { makeCrisp } from '../common/functions.js';
 **/
 export class Guide {
 	constructor(oa) {
-		this.objType = 'guide';
+		this.objType = 'Guide';
 		this.type = oa.type || 'vertical';
 		this.name = oa.name || this.type + ' guide';
 		this.location = isVal(oa.location) ? oa.location : 200;
@@ -28,7 +29,8 @@ export class Guide {
 		let ctx = _UI.glyphEditCTX;
 		let cansize = _UI.glyphEditCanvasSize;
 		let psc = getCurrentProject().projectSettings.colors;
-		let v = getView('guide');
+		let editor = getCurrentProjectEditor();
+		let v = editor.view;
 		let start = { x: 0, y: 0 };
 		let end = { x: 0, y: 0 };
 		let label = { x: 0, y: 0 };
