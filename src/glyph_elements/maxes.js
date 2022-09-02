@@ -1,11 +1,11 @@
-import GlyphElement from './glyph_element.js';
+import { GlyphElement } from './glyph_element.js';
 import { isVal, round } from '../common/functions.js';
 
 /**
  * Glyph Element > Maxes
  * Standard way of defining a bounding box
  */
-export default class Maxes extends GlyphElement {
+export class Maxes extends GlyphElement {
 	/**
 	 * Create a Maxes object
 	 * @param {number} xMin - smallest x value

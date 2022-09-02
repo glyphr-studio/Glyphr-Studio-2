@@ -4,7 +4,7 @@ import { uiColors } from '../../common/colors.js';
 /**
  * description
  */
-export default class AControlTemplate extends HTMLElement {
+export class AControlTemplate extends HTMLElement {
 	/**
 	 * Create an AControlTemplate
 	 * @param {object} attributes - collection of key: value pairs to set as attributes

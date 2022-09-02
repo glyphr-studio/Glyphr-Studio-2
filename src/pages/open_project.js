@@ -1,7 +1,7 @@
 import { makeElement } from '../common/dom.js';
 import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { makeErrorMessageBox } from '../controls/dialogs.js';
-import GlyphrStudioProject from '../project/glyphr_studio_project.js';
+import { GlyphrStudioProject } from '../project/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { log } from '../common/functions.js';
 import { uiColors, accentColors } from '../common/colors.js';
@@ -15,7 +15,7 @@ import { getGlyphrStudioApp } from '../app/main.js';
  * The first page you see when you open Glyphr Studio.
  * HTML and associated functions for this page.
  */
-export default class PageOpenProject {
+export class PageOpenProject {
   /**
    * Initialize this page
    */

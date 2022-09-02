@@ -2,7 +2,7 @@
  * XYPoint
  * A single x/y point, without the fancy GlyphElement crud (like Coord)
  */
-export default class XYPoint {
+export class XYPoint {
 	/**
 	 * Create a XYPoint
 	 * @param {number} x - The X value

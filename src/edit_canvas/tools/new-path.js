@@ -2,7 +2,7 @@
 // New Path - adds many points to a new path (Pen Plus)
 // ----------------------------------------------------------------
 
-export default class Tool_NewPath {
+export class Tool_NewPath {
 	constructor() {
 		this.dragging = false;
 		this.firstpoint = true;

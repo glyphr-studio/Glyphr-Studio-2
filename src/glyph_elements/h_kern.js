@@ -1,4 +1,4 @@
-import GlyphElement from './glyph_element.js';
+import {GlyphElement} from './glyph_element.js';
 import { hexToChars } from '../common/unicode.js';
 
 /**
@@ -6,7 +6,7 @@ import { hexToChars } from '../common/unicode.js';
  * An object for storing two groups of glyphs, and
  * the kern value that applies to them.
  */
-export default class HKern extends GlyphElement {
+export class HKern extends GlyphElement {
 	/**
 	 * Set up the HKern object
 	 * @param {array} leftGroup - Collection of Unicode values

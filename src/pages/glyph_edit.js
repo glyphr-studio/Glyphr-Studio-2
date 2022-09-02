@@ -13,7 +13,7 @@ import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools
  * The main edit surface for Glyphr Studio
  * Comprised of Panels of tools, and the Edit Canvas
  */
-export default class PageGlyphEdit {
+export class PageGlyphEdit {
 	/**
 	 * Initialize this page
 	 */
@@ -61,7 +61,7 @@ export default class PageGlyphEdit {
 		let l2 = content.querySelector('#nav-button-l2');
 		l2.addEventListener('click', function(){ showNavDropdown(l2); });
 		editor.subscribe({
-			topic: 'selectedGlyphID',
+			topic: 'whichGlyphIsSelected',
 			subscriberName: 'EDITING nav button',
 			callback: (newGlyphID) => {
 				l2.innerHTML = makeNavButtonContent(lookUpGlyphName(newGlyphID, true), 'EDITING');
@@ -75,7 +75,7 @@ export default class PageGlyphEdit {
 		// Panel
 		content.querySelector('.left-area__panel').appendChild(makePanel());
 		editor.subscribe({
-			topic: ['selectedGlyphID', 'whichShapeIsSelected'],
+			topic: ['whichGlyphIsSelected', 'whichShapeIsSelected'],
 			subscriberName: 'Attributes panel',
 			callback: (newSelection) => {
 				let panelContent = content.querySelector('.left-area__panel');
@@ -95,7 +95,7 @@ export default class PageGlyphEdit {
 
 		// Canvas
 		editor.subscribe({
-			topic: 'selectedGlyphID',
+			topic: 'whichGlyphIsSelected',
 			subscriberName: 'Main edit canvas',
 			callback: (newGlyphID) => {
 				log(`Main Canvas subscriber callback`, 'start');

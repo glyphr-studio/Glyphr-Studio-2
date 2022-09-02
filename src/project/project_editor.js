@@ -1,8 +1,8 @@
-import GlyphrStudioProject from './glyphr_studio_project.js';
-// import History from './history.js';
-import PageOpenProject from '../pages/open_project.js';
-import PageGlyphEdit from '../pages/glyph_edit.js';
-import PageOverview from '../pages/overview.js';
+import { GlyphrStudioProject } from './glyphr_studio_project.js';
+// import { History } from './history.js';
+import { PageOpenProject } from '../pages/open_project.js';
+import { PageGlyphEdit } from '../pages/glyph_edit.js';
+import { PageOverview } from '../pages/overview.js';
 import { makeElement } from '../common/dom.js';
 import {
 	log,
@@ -13,7 +13,7 @@ import {
 	clone,
 } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
-import Glyph from '../glyph_elements/glyph.js';
+import { Glyph } from '../glyph_elements/glyph.js';
 import { makeAppTopBar } from '../app/app.js';
 import { normalizeHex } from '../common/unicode.js';
 
@@ -29,7 +29,7 @@ import { normalizeHex } from '../common/unicode.js';
  * access to all the Project Editors, enabling
  * cross-project features like glyph copy/paste.
  */
-export default class ProjectEditor {
+export class ProjectEditor {
 	/**
 	 * Initialize a project editor, with defaults
 	 * @param {object} newEditor - Glyphr Studio Project File JSON
@@ -110,10 +110,12 @@ export default class ProjectEditor {
 	 * Sends a new piece of data concerning a topic area that
 	 * triggers changes for subscribers
 	 * @param {string} topic - keyword to trigger changes
-	 * 		'selectedTool' - which edit tool is selected
-	 * 		'view' - the edit canvas view has changed
-	 * 		'selectedGlyphID' - which glyph is being edited
-	 * 		'whichShapeIsSelected' - which shape is being edited
+	 * 		'whichToolIsSelected' - change to which edit tool is selected
+	 * 		'view' - change to the edit canvas view
+	 * 		'whichGlyphIsSelected' - change to which glyph is being edited
+	 * 		'whichShapeIsSelected' - change to which shape is being edited
+	 * 		'currentGlyph' - edits to the current glyph
+	 * 		'currentShape' - edits to the current shape
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
@@ -124,10 +126,15 @@ export default class ProjectEditor {
 
 		if (this.subscribers[topic]) {
 			// Handle some things centrally
-			if(topic === 'selectedGlyphID') {
+			if(topic === 'whichToolIsSelected') {}
+			if(topic === 'view') {}
+			if(topic === 'whichGlyphIsSelected') {
 				this.multiSelect.shapes.clear();
 				this.multiSelect.points.clear();
 			}
+			if(topic === 'whichShapeIsSelected') {}
+			if(topic === 'currentGlyph') {}
+			if(topic === 'currentShape') {}
 
 			// Iterate through all the callbacks
 			this.subscribers[topic].forEach((sub) => {
@@ -333,7 +340,7 @@ export default class ProjectEditor {
 		// log(`id: ${id}`);
 		// Validate ID!
 		this._selectedGlyphID = normalizeHex(id);
-		this.publish('selectedGlyphID', this.selectedGlyphID);
+		this.publish('whichGlyphIsSelected', this.selectedGlyphID);
 		// log(`ProjectEditor SET selectedGlyphID`, 'end');
 	}
 

@@ -5,7 +5,7 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { eventHandlerData } from '../events_mouse.js';
 
-export default class Tool_Pan {
+export class Tool_Pan {
 	constructor() {
 		this.dragging = false;
 		this.deltax = 0;

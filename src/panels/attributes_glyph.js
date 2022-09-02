@@ -20,14 +20,14 @@ export function makePanel_GlyphAttributes() {
 
 	log(selShapes);
 	log(`multiSelect length: ${selShapes.length}`);
-	// TODO transform origin
+
 	let glyphSection = makeElement({
 		tag: 'div',
 		className: 'panel__section',
 		innerHTML: '<h3>Glyph</h3>'
 	});
-	addAsChildren(glyphSection, makeInputs_position(selGlyph.x, (selGlyph.y - selGlyph.height)));
-	addAsChildren(glyphSection, makeInputs_size(selGlyph.width, selGlyph.height));
+	addAsChildren(glyphSection, makeInputs_position(selGlyph));
+	addAsChildren(glyphSection, makeInputs_size(selGlyph));
 
 	let shapesSection = false;
 	let componentsSection = false;
@@ -58,14 +58,14 @@ export function makePanel_GlyphAttributes() {
 			// Many shapes selected
 			log('More than one shape selected');
 			let virtualGlyph = selShapes.getGlyph();
-			// TODO transform origin
+
 			shapesSection = makeElement({
 				tag: 'div',
 				className: 'panel__section',
 				innerHTML: `<h3>${selShapes.length} selected shapes</h3>`
 			});
-			addAsChildren(shapesSection, makeInputs_position(virtualGlyph.x, (virtualGlyph.y - virtualGlyph.height)));
-			addAsChildren(shapesSection, makeInputs_size(virtualGlyph.width, virtualGlyph.height));
+			addAsChildren(shapesSection, makeInputs_position(virtualGlyph));
+			addAsChildren(shapesSection, makeInputs_size(virtualGlyph));
 		}
 	}
 

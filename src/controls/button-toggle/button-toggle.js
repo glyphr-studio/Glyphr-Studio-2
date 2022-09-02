@@ -5,7 +5,7 @@ import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
  * Shows an icon that is either selected or unselected,
  * pressing the button toggles the state
  */
-export default class ButtonToggle extends HTMLElement {
+export class ButtonToggle extends HTMLElement {
 	/**
 	 * Create an ButtonToggle
 	 * @param {object} attributes - collection of key: value pairs to set as attributes

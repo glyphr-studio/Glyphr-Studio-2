@@ -1,4 +1,4 @@
-import GlyphElement from './glyph_element.js';
+import { GlyphElement } from './glyph_element.js';
 import { getCurrentProject } from '../app/main.js';
 import { parseUnicodeInput } from '../common/unicode.js';
 import { strSan, rad, deg } from '../common/functions.js';
@@ -14,7 +14,7 @@ import { showToast } from '../controls/dialogs.js';
  * methods as a Shape, and are stored along side
  * regular Shapes in a Glyph.
  */
-export default class ComponentInstance extends GlyphElement {
+export class ComponentInstance extends GlyphElement {
 	/**
 	 * Create a ComponentInstance
 	 * @param {number} link - Root component that this instances is based on

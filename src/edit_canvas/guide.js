@@ -7,7 +7,7 @@ import { makeCrisp } from '../common/functions.js';
 		lines on the edit canvas, and for saving
 		custom guides to a Glyphr Studio Project.
 **/
-export default class Guide {
+export class Guide {
 	constructor(oa) {
 		this.objType = 'guide';
 		this.type = oa.type || 'vertical';

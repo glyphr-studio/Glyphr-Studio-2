@@ -1,8 +1,8 @@
-import GlyphElement from './glyph_element.js';
-import Maxes from './maxes.js';
-import Path from './path.js';
-import Shape from './shape.js';
-import ComponentInstance from './component_instance.js';
+import { GlyphElement } from './glyph_element.js';
+import { Maxes } from './maxes.js';
+import { Path } from './path.js';
+import { Shape } from './shape.js';
+import { ComponentInstance } from './component_instance.js';
 import { getCurrentProject } from '../app/main.js';
 import {
 	// log,
@@ -32,7 +32,7 @@ import { getOverallMaxes } from './maxes.js';
  *   Ligatures
  *   Components
  */
-export default class Glyph extends GlyphElement {
+export class Glyph extends GlyphElement {
 	/**
 	 * Create a Glyph
 	 * @param {string} id - unique identifier (Unicode code point)

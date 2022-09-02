@@ -20,29 +20,26 @@ export {
 //	-------------------------------------------
 //	Groups of attributes
 //	-------------------------------------------
-function makeAttributesGroup_shape(s) {
+function makeAttributesGroup_shape(shape) {
 	// log("makeAttributesGroup_shape - Drawing Shape Details");
 
-	content = makeElement({
-		tag: 'div',
-		className: 'panel__section',
-		innerHTML: '<h3>Shape</h3>'
-	});
-
-	content.appendChild(makeElement({
+	let nameLabel = makeElement({
 		tag: 'label',
 		innerHTML: 'shape name'
-	}));
+	});
 
-	content.appendChild(makeElement({
+	let nameInput = makeElement({
 		tag: 'input',
 		attributes: {
 			type: 'text',
-			value: s.name
+			value: shape.name
 		}
-	}));
+	});
+	nameInput.addEventListener('change', (event) => {
+		shape.name = event.target.value;
+	});
 
-	content.appendChild(makeElement({
+	let windingInfo = makeElement({
 		tag: 'label',
 		className: 'info',
 		innerHTML: `
@@ -71,21 +68,32 @@ function makeAttributesGroup_shape(s) {
 				</div>
 			</info-bubble>
 		`
-	}));
+	});
 
-	content.appendChild(makeElement({
+	let buttonText = 'unknown';
+	if(shape.path.winding > 0) buttonText = 'counterclockwise&ensp;&#8634';
+	if(shape.path.winding < 0) buttonText = 'clockwise&ensp;&#8635';
+
+	let windingButton = makeElement({
 		tag: 'button',
-		innerHTML: `
-			${(s.path.winding === 0 ? 'unknown' : s.path.winding > 0 ? 'counterclockwise&ensp;&#8634' : 'clockwise&ensp;&#8635')}
-		`
-	}));
+		innerHTML: buttonText
+	});
+	windingButton.addEventListener('click', (event) => {
+		shape.winding = shape.winding * -1;
+		getCurrentProjectEditor().publish('selectedShape', shape);
+	});
 
-	// TODO transform origin
-	let posElems = makeInputs_position(s.x, (s.y - s.height));
-	addAsChildren(content, posElems);
+	let posElems = makeInputs_position(shape);
+	let sizeElems = makeInputs_size(shape);
 
-	let sizeElems = makeInputs_size(s.width, s.height);
-	addAsChildren(content, sizeElems);
+
+	let content = makeElement({
+		tag: 'div',
+		className: 'panel__section',
+		innerHTML: '<h3>Shape</h3>'
+	});
+
+	addAsChildren(content, [nameLabel, nameInput, windingInfo, windingButton, posElems, sizeElems]);
 
 	return content;
 }
@@ -276,26 +284,37 @@ function makeAttributesGroup_pathPoint(tp) {
 //	Individual inputs
 //	-------------------------------------------
 
-function makeInputs_position(x, y) {
+function makeInputs_position(workItem) {
+	// TODO transform origin
 	log(`makeInputs_position`, 'start');
+	let x = workItem.x;
+	let y = workItem.y;
 	log(`x: ${round(x, 3)}`);
 	log(`y: ${round(y, 3)}`);
 
+	// Label
 	let label = makeElement({tag: 'label', innerHTML: `x${dimSplit()}y`});
 	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
-	let xInput = makeElement({
-		tag: 'input-number-lockable',
-		id: 'charx'
-	});
+
+	// X
+	let xInput = makeElement({tag: 'input-number-lockable'});
 	xInput.setAttribute('value', round(x, 3));
-
-	let yInput = makeElement({
-		tag: 'input-number-lockable',
-		id: 'chary'
+	xInput.addEventListener('change', (event) => {
+		let newValue = event.target.getAttribute('value');
+		workItem.x = newValue;
+		getCurrentProjectEditor().publish('currentGlyph', workItem);
 	});
+
+	// Y
+	let yInput = makeElement({tag: 'input-number-lockable'});
 	yInput.setAttribute('value', round(y, 3));
+	yInput.addEventListener('change', (event) => {
+		let newValue = event.target.getAttribute('value');
+		workItem.y = newValue;
+		getCurrentProjectEditor().publish('currentGlyph', workItem);
+	});
 
-
+	// Put double input together
 	doubleInput.appendChild(xInput);
 	doubleInput.appendChild(dimSplitElement());
 	doubleInput.appendChild(yInput);
@@ -304,32 +323,42 @@ function makeInputs_position(x, y) {
 	return [label, doubleInput];
 }
 
-function makeInputs_size(width, height){
+function makeInputs_size(workItem){
+	// TODO transform origin
 	log(`makeInputs_size`, 'start');
+	let width = workItem.width;
+	let height = workItem.height;
 	log(`width: ${round(width, 3)}`);
 	log(`height: ${round(height, 3)}`);
 
+	// Label
 	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
 	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
-	let wInput = makeElement({
-		tag: 'input-number-lockable',
-		id: 'charw'
-	});
+
+	// Width
+	let wInput = makeElement({tag: 'input-number-lockable'});
 	wInput.setAttribute('value', round(width, 3));
-
-	let hInput = makeElement({
-		tag: 'input-number-lockable',
-		id: 'charh'
+	wInput.addEventListener('change', (event) => {
+		let newValue = event.target.getAttribute('value');
+		workItem.w = newValue;
+		getCurrentProjectEditor().publish('currentGlyph', workItem);
 	});
+
+	// Height
+	let hInput = makeElement({tag: 'input-number-lockable'});
 	hInput.setAttribute('value', round(height, 3));
+	hInput.addEventListener('change', (event) => {
+		let newValue = event.target.getAttribute('value');
+		workItem.h = newValue;
+		getCurrentProjectEditor().publish('currentGlyph', workItem);
+	});
 
-
-	log(wInput);
-
+	// Put double input together
 	doubleInput.appendChild(wInput);
 	doubleInput.appendChild(dimSplitElement());
 	doubleInput.appendChild(hInput);
 
+	// Ratio lock checkbox
 	let ratioLockLabel = makeElement({
 		tag: 'label',
 		className: 'info',
@@ -344,7 +373,14 @@ function makeInputs_size(width, height){
 
 	let ratioLockCheckbox = makeElement({
 		tag: 'input',
-		attributes: {type: 'checkbox'}
+		attributes: {
+			type: 'checkbox'
+		}
+	});
+	if(workItem.ratioLock) ratioLockCheckbox.setAttribute('checked', '');
+	ratioLockCheckbox.addEventListener('change', (event) => {
+		let newValue = event.target.checked;
+		workItem.ratioLock = newValue;
 	});
 
 	log(`makeInputs_size`, 'end');

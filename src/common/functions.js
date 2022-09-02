@@ -1,6 +1,5 @@
 import { getGlyphrStudioApp } from '../app/main.js';
 
-export default {};
 export {
   log,
   saveFile,

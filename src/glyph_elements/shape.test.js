@@ -1,5 +1,5 @@
-import Shape from './shape.js';
-import Path from './path.js';
+import { Shape } from './shape.js';
+import { Path } from './path.js';
 import {clone} from '../common/functions.js';
 import {samples} from '../samples/samples.js';
 

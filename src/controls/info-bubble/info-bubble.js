@@ -6,7 +6,7 @@ import { log } from '../../common/functions.js';
  * A small bubble that displays information
  * about a target UI element
  */
-export default class InfoBubble extends HTMLElement {
+export class InfoBubble extends HTMLElement {
 	/**
 	 * Create an InfoBubble
 	 */

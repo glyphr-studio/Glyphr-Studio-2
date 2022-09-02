@@ -1,4 +1,4 @@
-import GlyphElement from './glyph_element.js';
+import {GlyphElement} from './glyph_element.js';
 import { numSan, isVal } from '../common/functions.js';
 
 /**
@@ -6,7 +6,7 @@ import { numSan, isVal } from '../common/functions.js';
  * A single x/y coordinate with fancy GlyphElement stuff, used as a child of ControlPoint
  * For simple x/y object, use XYPoint
  */
-export default class Coord extends GlyphElement {
+export class Coord extends GlyphElement {
 	/**
 	 * Create a coordinate
 	 * @param {number} x - The X value

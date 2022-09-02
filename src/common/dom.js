@@ -1,11 +1,6 @@
 import { log } from './functions.js';
 
 /**
- * Export nothing by default
- */
-export default function () {}
-
-/**
  * Nicer centralized way of creating DOM elements
  * @param {string} tag - HTML element to create
  * @param {string} className - class to add to the element
@@ -67,12 +62,30 @@ export function makeElement({
 	return newElement;
 }
 
+/**
+ * HTML elements cannot exist without a wrapper or parent element,
+ * but sometimes when we generate UI, we just want to create the children
+ * without regard for who the parent will be.
+ * This function takes a parent and recursively adds collections of
+ * children that are contained in arrays.
+ * @param {HTML node} parentNode - wrapper to add children to
+ * @param {HTML node,
+ * 				Array of HTML nodes,
+ * 				or mixed Array of HTML nodes and arrays} childNodes -
+ * 						child nodes to recursively add to the wrapper
+ */
 export function addAsChildren(parentNode, childNodes = []) {
+	// log(`addAsChildren`, 'start');
+	// log(parentNode);
+	// log(childNodes);
+
 	if(Array.isArray(childNodes)) {
-		childNodes.forEach((element) => {
-			parentNode.appendChild(element);
+		childNodes.forEach((child) => {
+			if(Array.isArray(child)) addAsChildren(parentNode, child);
+			else parentNode.appendChild(child);
 		});
 	} else {
 		parentNode.appendChild(childNodes);
 	}
+	// log(`addAsChildren`, 'end');
 }

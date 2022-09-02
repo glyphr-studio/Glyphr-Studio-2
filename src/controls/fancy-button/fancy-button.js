@@ -4,7 +4,7 @@ import { uiColors, accentColors } from '../../common/colors.js';
 /**
  * It's a button... only fancier!
  */
-export default class FancyButton extends HTMLElement {
+export class FancyButton extends HTMLElement {
 	/**
 	 * Create an FancyButton
 	 * @param {object} attributes - collection of key: value pairs to set as attributes

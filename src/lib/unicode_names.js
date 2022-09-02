@@ -1,7 +1,7 @@
 import { normalizeHex } from "../common/unicode.js";
 import { log } from "../common/functions.js";
 
-export default {};
+
 
 /**
 * Get a glyph's name based on a unicode hex ID

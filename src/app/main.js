@@ -1,36 +1,26 @@
-import ProjectEditor from '../project/project_editor.js';
-import GlyphrStudioApp from './app.js';
+import { ProjectEditor } from '../project/project_editor.js';
 import { log } from '../common/functions.js';
+import { GlyphrStudioApp } from './app.js';
 
 /* Web Components */
-import AnchorTwelvepoint from '../controls/anchor-twelvepoint/anchor-twelvepoint.js';
-import ButtonToggle from '../controls/button-toggle/button-toggle.js';
-import CanvasDisplay from '../controls/canvas-display/canvas-display.js';
-import CanvasEdit from '../edit_canvas/canvas-edit.js';
-import FancyButton from '../controls/fancy-button/fancy-button.js';
-import GlyphTile from '../controls/glyph-tile/glyph-tile.js';
-import InfoBubble from '../controls/info-bubble/info-bubble.js';
-import InputNumber from '../controls/input-number/input-number.js';
-import InputNumberLockable from '../controls/input-number-lockable/input-number-lockable.js';
+import { AnchorTwelvepoint } from '../controls/anchor-twelvepoint/anchor-twelvepoint.js';
+import { ButtonToggle } from '../controls/button-toggle/button-toggle.js';
+import { CanvasDisplay } from '../controls/canvas-display/canvas-display.js';
+import { CanvasEdit } from '../edit_canvas/canvas-edit.js';
+import { FancyButton } from '../controls/fancy-button/fancy-button.js';
+import { GlyphTile } from '../controls/glyph-tile/glyph-tile.js';
+import { InfoBubble } from '../controls/info-bubble/info-bubble.js';
+import { InputNumber } from '../controls/input-number/input-number.js';
+import { InputNumberLockable } from '../controls/input-number-lockable/input-number-lockable.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 
 // The main app object
-const GSApp = new GlyphrStudioApp();
-
-/** export nothing by default */
-export default function () {}
-export {
-	GSApp,
-	getGlyphrStudioApp,
-	getCurrentProjectEditor,
-	getCurrentProject,
-	glyphrStudioOnLoad,
-};
+export const GSApp = new GlyphrStudioApp();
 
 /**
  * First function to run when the browser starts
  */
-function glyphrStudioOnLoad() {
+export function glyphrStudioOnLoad() {
 	log(`glyphrStudioOnLoad`, 'start');
 
 	if (passPreChecks()) {
@@ -82,7 +72,7 @@ function registerCustomComponents() {
  * Returns the overall App object
  * @returns {GlyphrStudioApp}
  */
-function getGlyphrStudioApp() {
+export function getGlyphrStudioApp() {
 	return GSApp;
 }
 
@@ -90,7 +80,7 @@ function getGlyphrStudioApp() {
  * Returns the project that is currently being edited
  * @returns {GlyphrStudioProject}
  */
-function getCurrentProject() {
+export function getCurrentProject() {
 	return getGlyphrStudioApp().getCurrentProjectEditor().project;
 }
 
@@ -98,7 +88,7 @@ function getCurrentProject() {
  * Returns the current Project Editor
  * @returns {ProjectEditor}
  */
-function getCurrentProjectEditor() {
+export function getCurrentProjectEditor() {
 	const gs = getGlyphrStudioApp();
 	if (!gs.projectEditors[gs.selectedProjectEditor]) {
 		gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();

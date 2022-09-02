@@ -2,7 +2,7 @@
 // Kern - moves the left kern group
 // ----------------------------------------------------------------
 
-export default class Tool_Kern {
+export class Tool_Kern {
 	constructor() {
 		this.dragging = false;
 		this.deltax = 0;

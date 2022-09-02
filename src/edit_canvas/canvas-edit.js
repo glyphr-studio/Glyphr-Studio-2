@@ -9,7 +9,7 @@ import { eventHandlerData, initEventHandlers } from './events_mouse.js';
  * CanvasEdit takes a string of glyphs and displays them on the canvas
  * And has a bunch of controls and interactions that allow for editing
  */
-export default class CanvasEdit extends HTMLElement {
+export class CanvasEdit extends HTMLElement {
 	/**
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */

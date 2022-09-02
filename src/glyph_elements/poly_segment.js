@@ -1,8 +1,8 @@
-import GlyphElement from './glyph_element.js';
-import XYPoint from './xy_point.js';
-import Segment from './segment.js';
-// import Path from './path.js';
-// import PathPoint from './path_point.js';
+import { GlyphElement } from './glyph_element.js';
+import { XYPoint } from './xy_point.js';
+import { Segment } from './segment.js';
+// import { Path } from './path.js';
+// import { PathPoint } from './path_point.js';
 import { maxesOverlap } from './maxes.js';
 import {
 	duplicates,
@@ -28,7 +28,7 @@ import { makeRandomSaturatedColor } from '../common/colors.js';
  * This PolySegment object is basically here just
  * to make Bezier math easier for Paths.
  */
-export default class PolySegment extends GlyphElement {
+export class PolySegment extends GlyphElement {
 	/**
 	 * Make a PolySegment
 	 * @param {Array} segments

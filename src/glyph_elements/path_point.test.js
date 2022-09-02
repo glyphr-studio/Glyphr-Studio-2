@@ -1,5 +1,4 @@
-import PathPoint from './path_point.js';
-
+import {PathPoint} from './path_point.js';
 
 const testPathPoint = {
 	p: {coord: {x: 100, y: 100}},

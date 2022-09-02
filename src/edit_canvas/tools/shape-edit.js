@@ -8,7 +8,7 @@ import { setCursor } from '../cursors.js';
 import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData } from '../events_mouse.js';
 import { clickTool, getShapeAtLocation } from './tools.js';
 
-export default class Tool_ShapeEdit {
+export class Tool_ShapeEdit {
 	constructor() {
 		this.dragging = false;
 		this.resizing = false;

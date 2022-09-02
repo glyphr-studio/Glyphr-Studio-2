@@ -1,4 +1,4 @@
-import Maxes from './maxes.js';
+import {Maxes} from './maxes.js';
 import {maxesOverlap, getOverallMaxes} from './maxes.js';
 
 
