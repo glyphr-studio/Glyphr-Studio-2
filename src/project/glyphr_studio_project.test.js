@@ -1,4 +1,4 @@
-import GlyphrStudioProject from './glyphr_studio_project.js';
+import {GlyphrStudioProject} from './glyphr_studio_project.js';
 
 describe('GlyphrStudioProject', () => {
 	it('New project: UPM', () => {

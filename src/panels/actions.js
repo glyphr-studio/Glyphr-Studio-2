@@ -287,19 +287,19 @@ export function makePanel_Actions() {
 
 	// Boolean combine actions
 	if (selectedShapes.length > 1 || test) {
-		actionsArea.appendChild(makeElement({tag:'h4', content:'shape combine'}));
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'shape combine'}));
 		addChildActions(boolActions);
 	}
 
 	// Layer actions
 	if (selectedShapes.length === 1 || test) {
-		actionsArea.appendChild(makeElement({tag:'h4', content:'shape layers'}));
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'shape layers'}));
 		addChildActions(layerActions);
 	}
 
 	// Shape align actions
 	if (selectedShapes.length > 1 || test) {
-		actionsArea.appendChild(makeElement({tag:'h4', content:'align shapes'}));
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'align shapes'}));
 		addChildActions(alignActions);
 	}
 

@@ -2,14 +2,14 @@ import { makeElement } from '../../common/dom.js';
 import { uiColors, accentColors } from '../../common/colors.js';
 import { hexToChars } from '../../common/unicode.js';
 import { lookUpGlyphName } from '../../lib/unicode_names.js';
-import Glyph from '../../glyph_elements/glyph.js';
+import { Glyph } from '../../glyph_elements/glyph.js';
 import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
 import { log } from '../../common/functions.js';
 
 /**
  * description
  */
-export default class GlyphTile extends HTMLElement {
+export class GlyphTile extends HTMLElement {
 	// Specify observed attributes so that
 	// attributeChangedCallback will work
 	static get observedAttributes() { return ['selected']; }

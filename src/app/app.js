@@ -1,4 +1,4 @@
-import ProjectEditor from '../project/project_editor.js';
+import { ProjectEditor } from '../project/project_editor.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
 import { log } from '../common/functions.js';
 import { getGlyphrStudioApp } from './main.js';
@@ -9,7 +9,7 @@ export { makeAppTopBar };
 /**
  * Creates a new Glyphr Studio Application
  */
-export default class GlyphrStudioApp {
+export class GlyphrStudioApp {
 	/**
 	 * Initialize the Glyphr Studio App, with defaults
 	 */

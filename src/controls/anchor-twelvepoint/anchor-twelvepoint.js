@@ -4,7 +4,7 @@ import { uiColors } from '../../common/colors.js';
 /**
  * description
  */
-export default class AnchorTwelvepoint extends HTMLElement {
+export class AnchorTwelvepoint extends HTMLElement {
 	/**
 	 * Create an AnchorTwelvepoint
 	 * @param {object} attributes - collection of key: value pairs to set as attributes

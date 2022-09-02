@@ -9,7 +9,7 @@ import { setCursor } from '../cursors.js';
 import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData, findAndCallHotspot } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 
-export default class Tool_PathEdit {
+export class Tool_PathEdit {
 	constructor() {
 		this.dragging = false;
 		this.controlpoint = false;

@@ -1,9 +1,9 @@
-import GlyphElement from './glyph_element.js';
-import XYPoint from './xy_point.js';
-import Maxes from './maxes.js';
-import Segment from './segment.js';
-import PolySegment from './poly_segment.js';
-import PathPoint from './path_point.js';
+import { GlyphElement } from './glyph_element.js';
+import { XYPoint } from './xy_point.js';
+import { Maxes } from './maxes.js';
+import { Segment } from './segment.js';
+import { PolySegment } from './poly_segment.js';
+import { PathPoint } from './path_point.js';
 import {
 	log,
 	clone,
@@ -29,7 +29,7 @@ import { sXcX, sYcY, getView } from '../edit_canvas/canvas-edit.js';
  * interchangeably, even though Component Instance
  * objects don't have a Path.
  */
-export default class Path extends GlyphElement {
+export class Path extends GlyphElement {
 	/**
 	 * Create a Path
 	 * @param {array} pathPoints - array of Path Point objects that make up this path

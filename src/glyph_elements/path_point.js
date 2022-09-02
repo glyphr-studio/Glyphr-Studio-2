@@ -1,5 +1,5 @@
-import GlyphElement from './glyph_element.js';
-import ControlPoint from './control_point.js';
+import { GlyphElement } from './glyph_element.js';
+import { ControlPoint } from './control_point.js';
 import { round, rotate, pointsAreEqual, isVal, log } from '../common/functions.js';
 
 /**
@@ -9,7 +9,7 @@ import { round, rotate, pointsAreEqual, isVal, log } from '../common/functions.j
  * points). There are a few Path Point types, and
  * individual handles can be shown or hidden.
  */
-export default class PathPoint extends GlyphElement {
+export class PathPoint extends GlyphElement {
 	/**
 	 * Create a PathPoint
 	 * @param {ControlPoint} p - Main control point

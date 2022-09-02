@@ -1,5 +1,5 @@
-import GlyphElement from './glyph_element.js';
-import Path from './path.js';
+import { GlyphElement } from './glyph_element.js';
+import { Path } from './path.js';
 import { strSan } from '../common/functions.js';
 
 /**
@@ -10,7 +10,7 @@ import { strSan } from '../common/functions.js';
  * interchangeably - any method added to Shape
  * should also be added to Component Instance.
  */
-export default class Shape extends GlyphElement {
+export class Shape extends GlyphElement {
 	/**
 	 * Create a Shape
 	 * @param {string} name - customizable name for this shape

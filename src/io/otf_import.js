@@ -1,4 +1,4 @@
-export default {};
+
 export { importOTFFont };
 import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
 

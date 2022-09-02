@@ -1,4 +1,4 @@
-import XYPoint from './xy_point.js';
+import {XYPoint} from './xy_point.js';
 
 describe('XYPoint', () => {
 	it('Constructor - x', () => {

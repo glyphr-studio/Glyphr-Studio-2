@@ -1,14 +1,14 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { log } from '../common/functions.js';
 import { accentColors } from '../common/colors.js';
 import { updateCursor } from './cursors.js';
-import Tool_Pan from './tools/pan.js';
-import Tool_NewBasicShape from './tools/new-basic-shape.js';
-import Tool_ShapeEdit from './tools/shape-edit.js';
-import Tool_NewPath from './tools/new-path.js';
-import Tool_PathEdit from './tools/path-edit.js';
-import Tool_PathAddPoint from './tools/path-add-point.js';
-import Tool_Kern from './tools/kern.js';
-import { log } from '../common/functions.js';
+import { Tool_Pan}  from './tools/pan.js';
+import { Tool_NewBasicShape}  from './tools/new-basic-shape.js';
+import { Tool_ShapeEdit}  from './tools/shape-edit.js';
+import { Tool_NewPath}  from './tools/new-path.js';
+import { Tool_PathEdit}  from './tools/path-edit.js';
+import { Tool_PathAddPoint}  from './tools/path-add-point.js';
+import { Tool_Kern}  from './tools/kern.js';
 
 /**
  Framework > Event Handlers > Mouse

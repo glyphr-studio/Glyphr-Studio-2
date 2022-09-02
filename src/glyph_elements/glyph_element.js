@@ -3,7 +3,7 @@ import { json, clone } from '../common/functions.js';
 /**
  * Base for all Glyph Elements
  */
-export default class GlyphElement {
+export class GlyphElement {
 	/** Yay! */
 	constructor() {}
 

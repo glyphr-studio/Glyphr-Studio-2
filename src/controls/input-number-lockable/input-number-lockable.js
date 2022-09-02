@@ -1,6 +1,6 @@
 import { makeElement } from '../../common/dom.js';
-import ButtonToggle from '../button-toggle/button-toggle.js';
-import InputNumber from '../input-number/input-number.js';
+import { ButtonToggle } from '../button-toggle/button-toggle.js';
+import { InputNumber } from '../input-number/input-number.js';
 import { uiColors } from '../../common/colors.js';
 import { log } from '../../common/functions.js';
 
@@ -9,7 +9,7 @@ import { log } from '../../common/functions.js';
  * and also a lock control that toggles a locked state.
  * Primarily used for a ControlPoint x/y input.
  */
-export default class InputNumberLockable extends HTMLElement {
+export class InputNumberLockable extends HTMLElement {
 	/**
 	 * Create an InputNumberLockable
 	 * @param {object} attributes - collection of key: value pairs to set as attributes

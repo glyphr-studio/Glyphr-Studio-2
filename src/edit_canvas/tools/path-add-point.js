@@ -4,7 +4,7 @@
 
 import { getCurrentProjectEditor } from '../../app/app.js';
 
-export default class Tool_PathAddPoint {
+export class Tool_PathAddPoint {
 	constructor() {
 		this.addpoint = false;
 

@@ -1,4 +1,4 @@
-import {parseColorString, shiftColor, getColorFromRGBA, transparencyToAlpha} from './colors.js';
+import { parseColorString, shiftColor, getColorFromRGBA, transparencyToAlpha } from './colors.js';
 
 describe('Colors', () => {
 	it('parseColorString', () => {

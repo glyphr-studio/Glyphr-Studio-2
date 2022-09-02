@@ -4,7 +4,7 @@ import { makeElement } from "../common/dom.js";
 import { log } from "../common/functions.js";
 import { makeIcon } from "../common/graphics.js";
 import { areHexValuesEqual, basicLatinOrder } from "../common/unicode.js";
-import GlyphTile from "../controls/glyph-tile/glyph-tile.js";
+import { GlyphTile } from "../controls/glyph-tile/glyph-tile.js";
 
 export {makeChooserContent_Pages, makeChooserContent_Glyphs, makeChooserContent_Panels };
 
@@ -61,10 +61,10 @@ function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
 
 		if(registerSubscriptions) {
 			editor.subscribe({
-				topic:'selectedGlyphID',
+				topic:'whichGlyphIsSelected',
 				subscriberName: `Glyph tile ${glyphID}`,
 				callback: (newGlyphID) => {
-					// log('selectedGlyphID subscriber callback');
+					// log('whichGlyphIsSelected subscriber callback');
 					// log(`checking if ${glyph.id} === ${glyphID}`);
 					if(areHexValuesEqual(newGlyphID, glyphID)){
 						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);

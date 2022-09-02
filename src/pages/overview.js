@@ -4,7 +4,7 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../app/nav.js';
 import { showNavDropdown } from '../app/nav.js';
 import { makeChooserContent_Glyphs } from '../panels/panel-choosers.js';
-import makePanel_OverviewAttributes from '../panels/attributes_overview.js';
+import { makePanel_OverviewAttributes } from '../panels/attributes_overview.js';
 
 
 /**
@@ -12,7 +12,7 @@ import makePanel_OverviewAttributes from '../panels/attributes_overview.js';
  * The first page you land on, with project
  * and glyph information
  */
-export default class PageOverview {
+export class PageOverview {
 	/**
 	 * Initialize this page
 	 */

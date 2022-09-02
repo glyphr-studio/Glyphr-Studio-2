@@ -82,7 +82,7 @@ export function makeEditToolsButtons() {
 		if(isSelected) newToolButton.classList.add('canvas-edit__tool-selected');
 
 		editor.subscribe({
-			topic: 'selectedTool',
+			topic: 'whichToolIsSelected',
 			subscriberName: buttonName,
 			callback:  (newSelectedTool) => {
 				let isSelected = (newSelectedTool === buttonName);
@@ -172,7 +172,7 @@ export function makeViewToolsButtons() {
 
 		if(buttonName === 'pan') {
 			editor.subscribe({
-				topic: 'selectedTool',
+				topic: 'whichToolIsSelected',
 				subscriberName: buttonName,
 				callback:  (newSelectedTool) => {
 					let isSelected = (newSelectedTool === buttonName);
@@ -241,7 +241,7 @@ export function clickTool(tool) {
 	} else {
 		editor.selectedTool = tool;
 		// log('passed: ' + tool + ' and editor.selectedTool now is: ' + editor.selectedTool);
-		editor.publish('selectedTool', tool);
+		editor.publish('whichToolIsSelected', tool);
 	}
 
 	// log('clickTool', 'end');

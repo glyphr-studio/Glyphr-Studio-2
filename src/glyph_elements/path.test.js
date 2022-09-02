@@ -1,7 +1,7 @@
-import Path from './path.js';
+import { Path } from './path.js';
+import { PathPoint } from './path_point.js';
 import {findPathIntersections, findPathPointIntersections} from './path.js';
 import {clone} from '../common/functions.js';
-import PathPoint from './path_point.js';
 import {samples} from '../samples/samples.js';
 
 

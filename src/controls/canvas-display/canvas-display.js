@@ -8,7 +8,7 @@ import { glyphToHex } from '../../common/unicode.js';
  * CanvasDisplay takes a string of glyphs and displays them on the canvas
  * No editing involved
  */
-export default class CanvasDisplay extends HTMLElement {
+export class CanvasDisplay extends HTMLElement {
 	/**
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */

@@ -1,15 +1,15 @@
-import Glyph from '../glyph_elements/glyph.js';
-import HKern from '../glyph_elements/h_kern.js';
+import { Glyph } from '../glyph_elements/glyph.js';
+import { HKern } from '../glyph_elements/h_kern.js';
 import { log, clone, round, trim } from '../common/functions.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, hexToHTML, basicLatinOrder, normalizeHex } from '../common/unicode.js';
-import Maxes, { getOverallMaxes } from '../glyph_elements/maxes.js';
+import { Maxes, getOverallMaxes } from '../glyph_elements/maxes.js';
 import { getCurrentProject } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project
  */
-export default class GlyphrStudioProject {
+export class GlyphrStudioProject {
 	/**
 	 * Initialize a project, with defaults
 	 * @param {object} newProject - Glyphr Studio Project File JSON

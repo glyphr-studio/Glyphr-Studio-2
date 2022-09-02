@@ -1,6 +1,6 @@
-import GlyphElement from './glyph_element.js';
-import XYPoint from './xy_point.js';
-import Maxes from './maxes.js';
+import { GlyphElement } from './glyph_element.js';
+import { XYPoint } from './xy_point.js';
+import { Maxes } from './maxes.js';
 import {
 	clone,
 	numSan,
@@ -27,7 +27,7 @@ import { getColorFromRGBA } from '../common/colors.js';
  * This Segment object is basically here just to
  * make Bezier math easier for Paths.
  */
-export default class Segment extends GlyphElement {
+export class Segment extends GlyphElement {
 	/**
 	 * Create a Segment
 	 * @param {number} p1x - First point x

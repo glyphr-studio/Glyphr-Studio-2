@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { log } from '../common/functions.js';
-import Glyph from '../glyph_elements/glyph.js';
-import Shape from '../glyph_elements/shape.js';
+import { Glyph } from '../glyph_elements/glyph.js';
+import { Shape } from '../glyph_elements/shape.js';
 
 /**
 		Multi-Select

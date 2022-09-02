@@ -12,7 +12,7 @@
  * You can add to that arguments object, but by default the two
  * properties 'colorobject' and 'colorstring' will exist.
 */
-export default class SatChooser {
+export class SatChooser {
   constructor({
     pointerSize = 20,
     borderSize = 10,

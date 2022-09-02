@@ -5,7 +5,7 @@ import { round, log } from '../../common/functions.js';
 /**
  * A numeric input field, with up/down arrows for increment/decrement
  */
-export default class InputNumber extends HTMLElement {
+export class InputNumber extends HTMLElement {
 	/**
 	 * Create an InputNumber
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
@@ -351,6 +351,9 @@ export default class InputNumber extends HTMLElement {
 	 */
 	numberInputChanged() {
 		this.elementRoot.value = this.elementRoot.numberInput.value;
+		let changeEvent = new Event('change', {'bubbles':true, 'composed':true});
+		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
+		flashUIElementAsActive(this);
 	}
 
 	/**
@@ -360,6 +363,8 @@ export default class InputNumber extends HTMLElement {
 	increment(ev) {
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		this.elementRoot.value += mod ? 10 : 1;
+		let changeEvent = new Event('change', {'bubbles':true, 'composed':true});
+		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
 		flashUIElementAsActive(this);
 	}
 
@@ -370,6 +375,8 @@ export default class InputNumber extends HTMLElement {
 	decrement(ev) {
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		this.elementRoot.value -= mod ? 10 : 1;
+		let changeEvent = new Event('change', {'bubbles':true, 'composed':true});
+		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
 		flashUIElementAsActive(this);
 	}
 

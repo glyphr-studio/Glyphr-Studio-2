@@ -1,4 +1,4 @@
-export default {};
+
 export const unicodeBlocks = [
   { begin: 0x0000, end: 0x007f, name: 'Basic Latin' },
   { begin: 0x0080, end: 0x00ff, name: 'Latin-1 Supplement' },

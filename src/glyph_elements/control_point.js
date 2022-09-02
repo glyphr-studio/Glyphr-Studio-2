@@ -1,5 +1,5 @@
-import GlyphElement from './glyph_element.js';
-import Coord from './coord.js';
+import { GlyphElement } from './glyph_element.js';
+import { Coord } from './coord.js';
 import {
 	calculateAngle,
 	calculateLength,
@@ -10,7 +10,7 @@ import {
  * Glyph Element > ControlPoint
  * Either the central Point in a Path Point, or one of it's Handles
  */
-export default class ControlPoint extends GlyphElement {
+export class ControlPoint extends GlyphElement {
 	/**
 	 * Create a ControlPoint
 	 * @param {Coord} coord - position of the handle
