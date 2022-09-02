@@ -4,7 +4,7 @@ import { addAsChildren, makeElement } from "../common/dom.js";
 import { makePanel_Actions } from "./actions.js";
 import { makePanel_GlyphAttributes } from "./attributes_glyph.js";
 import { makePanel_Layers } from "./layers.js";
-import { makePanel_History } from "./history";
+import { makePanel_History } from "./history.js";
 import { makePanel_Guides } from "./guides.js";
 
 /**

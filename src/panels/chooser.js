@@ -5,7 +5,7 @@
 		the logic for creating Glyph chooser dialogs.
 **/
 
-export default function makePanel_GlyphChooser() {
+export function makePanel_GlyphChooser() {
 	// log('makePanel_GlyphChooser', 'start');
 
 	let content = '<div class="panel__section">';
