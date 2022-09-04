@@ -164,7 +164,7 @@ describe('Shape', () => {
 	});
 
 	it('getCenter', () => {
-		expect(sampleShape().center.x).toBe(327);
+		expect(sampleShape().maxes.center.x).toBe(327);
 	});
 
 	it('reverseWinding', () => {

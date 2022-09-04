@@ -457,7 +457,7 @@ export class Shape extends GlyphElement {
 	 * @param {number} mid - x value about which to flip
 	 * @returns {Shape} - reference to this shape
 	 */
-	flipEW(mid = this.center.x) {
+	flipEW(mid = this.maxes.center.x) {
 		this.path.flipEW(mid);
 		return this;
 	}
@@ -467,7 +467,7 @@ export class Shape extends GlyphElement {
 	 * @param {number} mid - y value about which to flip
 	 * @returns {Shape} - reference to this shape
 	 */
-	flipNS(mid = this.center.y) {
+	flipNS(mid = this.maxes.center.y) {
 		this.path.flipNS(mid);
 		return this;
 	}
@@ -480,7 +480,7 @@ export class Shape extends GlyphElement {
 	 */
 	rotate(angle, about) {
 		// log('Shape.rotate', 'start');
-		about = about || this.center;
+		about = about || this.maxes.center;
 		// log('first p[0].p.x ' + this.path.pathPoints[0].p.x);
 		// log('Shape.rotate', 'end');
 		this.path.rotate(angle, about);

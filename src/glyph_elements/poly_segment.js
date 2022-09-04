@@ -4,15 +4,8 @@ import { Segment } from './segment.js';
 // import { Path } from './path.js';
 // import { PathPoint } from './path_point.js';
 import { maxesOverlap } from './maxes.js';
-import {
-	duplicates,
-	clone,
-	pointsAreEqual,
-	round,
-	numSan,
-} from '../common/functions.js';
+import { duplicates, clone, pointsAreEqual, round, numSan } from '../common/functions.js';
 import { sXcX, sYcY } from '../edit_canvas/canvas-edit.js';
-import { makeRandomSaturatedColor } from '../common/colors.js';
 
 /**
  * Glyph Element > Poly Segment

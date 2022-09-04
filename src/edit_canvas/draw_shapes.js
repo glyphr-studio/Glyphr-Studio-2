@@ -1,3 +1,8 @@
+import { ComponentInstance } from '../glyph_elements/component_instance.js';
+import { sXcX, sYcY } from './canvas-edit.js';
+import { round } from '../common/functions.js';
+
+
 // --------------------------------------------------------------
 // SHARED between Glyph, Shape, ComponentInstance, and Path
 // --------------------------------------------------------------
@@ -10,14 +15,9 @@ export function isOverControlPoint(item, x, y, noHandles) {
 }
 
 
-import { round } from "../common/functions";
 // --------------------------------------------------------------
 // Glyph
 // --------------------------------------------------------------
-
-import { ComponentInstance } from "../glyph_elements/component_instance";
-import { PolySegment } from "../glyph_elements/poly_segment";
-import { sXcX, sYcY } from "./canvas-edit";
 
 /**
  * Draw a Glyph to a canvas

@@ -563,15 +563,19 @@ export function copyShapesFromTo(
 		}
 		destinationGlyph.shapes.push(tc);
 	}
-	if (copyGlyphAttributes.srcAutoWidth)
+	if (copyGlyphAttributes.srcAutoWidth){
 		destinationGlyph.isAutoWide = sourceGlyph.isAutoWide;
-	if (copyGlyphAttributes.srcWidth)
+	}
+	if (copyGlyphAttributes.srcWidth){
 		destinationGlyph.glyphWidth = sourceGlyph.glyphWidth;
-	if (copyGlyphAttributes.srcLSB)
+	}
+	if (copyGlyphAttributes.srcLSB){
 		destinationGlyph.leftSideBearing = sourceGlyph.leftSideBearing;
-	if (copyGlyphAttributes.srcRSB)
+	}
+	if (copyGlyphAttributes.srcRSB){
 		destinationGlyph.rightSideBearing = sourceGlyph.rightSideBearing;
-	destinationGlyph.changed();
+		glyphChanged(destinationGlyph);
+	}
 	// log('new shapes');
 	// log(destinationGlyph.shapes);
 	// log('copyShapesFromTo', 'end');

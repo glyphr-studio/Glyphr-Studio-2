@@ -690,7 +690,6 @@ export class ProjectEditor {
 	}
 
 
-
 	// --------------------------------------------------------------
 	// Panels
 	// --------------------------------------------------------------
@@ -727,9 +726,6 @@ export class ProjectEditor {
 			},
 		};
 	 }
-
-
-
 
 
 	// --------------------------------------------------------------
@@ -810,10 +806,12 @@ export class ProjectEditor {
 				let sc = getSelectedWorkItem();
 				if (!sc) return;
 				if (editor.nav.page === 'Glyph edit') {
-						sc.changed();
+						glyphChanged(sc);
 				} else if (editor.nav.page === 'components' && sc) {
 						let lsarr = sc.usedIn;
-						if (lsarr) for (let c=0; c<lsarr.length; c++) getGlyph(lsarr[c]).changed();
+						if (lsarr) for (let c=0; c<lsarr.length; c++) {
+							glyphChanged(getGlyph(lsarr[c]));
+						}
 				}
 		}
 

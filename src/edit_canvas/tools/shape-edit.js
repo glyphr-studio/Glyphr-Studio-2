@@ -49,7 +49,7 @@ export class Tool_ShapeEdit {
 				if (eh.handle === 'rotate') {
 					// log('mousedown - setting rotating = true');
 					this.rotating = true;
-					eh.rotationCenter = editor.multiSelect.shapes.center;
+					eh.rotationCenter = editor.multiSelect.shapes.maxes.center;
 					eh.rotationstarttopy =
 						editor.multiSelect.shapes.maxes.yMax +
 						editor.rotateHandleHeight / editor.view.dz;

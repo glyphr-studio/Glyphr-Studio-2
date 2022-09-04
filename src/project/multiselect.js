@@ -138,13 +138,6 @@ export class MultiSelectPoints extends MultiSelect {
 		this._shape = new Shape();
 	}
 
-	/*
-		get glyph() {
-		this._glyph.shapes = this.members;
-		this._glyph.changed();
-		return this._glyph;
-	}
-	*/
 	get shape() {
 		this._shape.path = new Path({ pathPoints: this.members });
 		// this.shape.calcMaxes();
@@ -298,7 +291,11 @@ export class MultiSelectShapes extends MultiSelect {
 
 	get glyph() {
 		this._glyph.shapes = this.members;
-		this._glyph.changed();
+
+		// Pretty sure calling changed on a virtual
+		// glyph makes no sense
+		// this._glyph.changed();
+
 		return this._glyph;
 	}
 
@@ -471,7 +468,7 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	getCenter() {
-		return this.glyph.center;
+		return this.glyph.maxes.center;
 	}
 
 	// calcMaxes = function() {

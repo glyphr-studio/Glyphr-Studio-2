@@ -1,5 +1,5 @@
 import { GlyphElement } from './glyph_element.js';
-import { getCurrentProject } from '../app/main.js';
+// import { getCurrentProject } from '../app/main.js';
 import { parseUnicodeInput } from '../common/unicode.js';
 import { strSan, rad, deg } from '../common/functions.js';
 
@@ -300,7 +300,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {XYPoint}
 	 */
 	get center() {
-		return this.transformedGlyph.center;
+		return this.transformedGlyph.maxes.center;
 	}
 
 	// --------------------------------------------------------------
@@ -546,13 +546,13 @@ export class ComponentInstance extends GlyphElement {
 		) {
 			// log('Modifying w ' + this.scaleW + ' h ' + this.scaleH);
 			// log('before maxes ' + json(g.maxes, true));
-			if (this.rotateFirst) g.rotate(rad(this.rotation, g.center));
+			if (this.rotateFirst) g.rotate(rad(this.rotation, g.maxes.center));
 			if (this.isFlippedEW) g.flipEW();
 			if (this.isFlippedNS) g.flipNS();
 			g.updateGlyphPosition(this.translateX, this.translateY, true);
 			g.updateGlyphSize(this.scaleW, this.scaleH, false);
 			if (this.reverseWinding) g.reverseWinding();
-			if (!this.rotateFirst) g.rotate(rad(this.rotation, g.center));
+			if (!this.rotateFirst) g.rotate(rad(this.rotation, g.maxes.center));
 			// log('afters maxes ' + json(g.maxes, true));
 		} else {
 			// log('Not changing, no deltas');
@@ -624,12 +624,15 @@ export class ComponentInstance extends GlyphElement {
 		// log('ComponentInstance.setShapePosition', 'start');
 		// log('passed nx/ny/force: ' + nx + ' / ' + ny + ' / ' + force);
 		// log('translate was: ' + this.translateX + ' / ' + this.translateY);
-		const ogm = getCurrentProject().getGlyph(this.link).maxes;
+		// TODO fix project access
+		// const linkMaxes = getCurrentProject().getGlyph(this.link).maxes;
+		const linkMaxes = {xMin: 0, yMax: 0};
+
 		nx = parseFloat(nx);
 		ny = parseFloat(ny);
-		// log('ogm ' + json(ogm, true));
-		if (!isNaN(nx)) this.translateX = nx - ogm.xMin;
-		if (!isNaN(ny)) this.translateY = ny - ogm.yMax;
+		// log('linkMaxes ' + json(linkMaxes, true));
+		if (!isNaN(nx)) this.translateX = nx - linkMaxes.xMin;
+		if (!isNaN(ny)) this.translateY = ny - linkMaxes.yMax;
 		// log('translate now: ' + this.translateX + ' / ' + this.translateY);
 		// log('ComponentInstance.setShapePosition', 'end');
 	}
@@ -670,9 +673,12 @@ export class ComponentInstance extends GlyphElement {
 	 * @param {boolean} ratioLock - maintain aspect ratio
 	 */
 	setShapeSize(nw, nh, ratioLock) {
-		const og = getCurrentProject().getGlyph(this.link).maxes;
-		const dx = nw ? nw * 1 - og.xMin : 0;
-		const dy = nh ? nh * 1 - og.yMax : 0;
+		// TODO fix project access
+		// const linkMaxes = getCurrentProject().getGlyph(this.link).maxes;
+		const linkMaxes = {xMin: 0, yMax: 0};
+
+		const dx = nw ? nw * 1 - linkMaxes.xMin : 0;
+		const dy = nh ? nh * 1 - linkMaxes.yMax : 0;
 		this.updateShapePosition(dx, dy, ratioLock);
 	}
 

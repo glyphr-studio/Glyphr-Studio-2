@@ -11,7 +11,10 @@ describe('Coord', () => {
 			Hello! IN THE BEFOREALL FOR COORD
 
 		`);
+
 	});
+	it('basic test', () => { expect(true).toBeTrue(); });
+
 	it('Constructor - x', () => {
 		expect((new Coord({x: 101})).x).toBe(101);
 	});
@@ -37,4 +40,5 @@ describe('Coord', () => {
 		co.y = 789;
 		expect(co.y).toBe(789);
 	});
+
 });
