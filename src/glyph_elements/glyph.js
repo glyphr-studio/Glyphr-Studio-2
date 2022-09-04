@@ -3,22 +3,9 @@ import { Maxes } from './maxes.js';
 import { Path } from './path.js';
 import { Shape } from './shape.js';
 import { ComponentInstance } from './component_instance.js';
-import { getCurrentProject } from '../app/main.js';
-import {
-	log,
-	json,
-	clone,
-	hasNonValues,
-	isVal,
-	trim,
-} from '../common/functions.js';
-import {
-	parseUnicodeInput,
-	getUnicodeName,
-	hexToHTML,
-	hexToChars,
-} from '../common/unicode.js';
 import { getOverallMaxes } from './maxes.js';
+import { log, json, clone, hasNonValues, isVal, trim } from '../common/functions.js';
+import { parseUnicodeInput, getUnicodeName, hexToHTML, hexToChars } from '../common/unicode.js';
 // import { combineShapes } from '../panels/REFACTOR_shape.js';
 
 /**
@@ -73,22 +60,6 @@ export class Glyph extends GlyphElement {
 	// --------------------------------------------------------------
 	// Common Glyphr Studio object methods
 	// --------------------------------------------------------------
-
-	/**
-	 * Any change that updates the shape of any part of a glyph
-	 * gets bubbled up through the GlyphElement hierarchy
-	 */
-	changed() {
-		// log(`Glyph.changed - Start`);
-		this.calcMaxes();
-		if (this.cache) this.cache = {};
-
-		// log(`calling changed on usedIn`);
-		for (let g = 0; g < this.usedIn.length; g++) {
-			getCurrentProject().getGlyph(this.usedIn[g]).changed();
-		}
-		// log(` Glyph.changed - End\n`);
-	}
 
 	/**
 	 * Export object properties that need to be saved to a project file
@@ -168,36 +139,7 @@ export class Glyph extends GlyphElement {
 		return re;
 	}
 
-	/*
-		changed(descend, ascend) {
-				this.cache = {};
-				if (ascend) {
-						for (let g = 0; g < this.usedIn.length; g++) {
-								getCurrentProject().getGlyph(this.usedIn[g]).changed(descend, ascend);
-						}
-				}
-				if (descend) {
-						for (let s = 0; s < this.shapes.length; s++)
-								this.shapes[s].changed(descend, ascend);
-				}
-				this.calcMaxes();
-		}
-		print(indents) {
-				indents = indents || '   ';
-				let re = (indents + 'GLYPH ' + this.name + '\n');
-				let ts;
-				for (let s = 0; s < this.shapes.length; s++) {
-						ts = this.shapes[s];
-						if (ts.objType === 'Shape') {
-								re += (indents + '-' + s + '-' + ts.name + ' ' + json(ts.path.maxes, true) + '\n');
-						} else if (ts.objType === 'ComponentInstance') {
-								re += (indents + '~' + s + '~' + ts.name + '\n');
-								re += getCurrentProject().getGlyph(ts.link).map(indents + '   ');
-						}
-				}
-				return re;
-		}
-*/
+
 	// --------------------------------------------------------------
 	// Getters
 	// --------------------------------------------------------------
@@ -754,7 +696,7 @@ export class Glyph extends GlyphElement {
 	 * @returns {Glyph} - reference to this glyph
 	 */
 	rotate(angle, about) {
-		about = about || this.center;
+		about = about || this.maxes.center;
 		for (let s = 0; s < this.shapes.length; s++) {
 			this.shapes[s].rotate(angle, about);
 		}
@@ -799,10 +741,10 @@ export class Glyph extends GlyphElement {
 				v.setShapePosition(false, target);
 			});
 		} else if (edge === 'middle') {
-			target = this.center.y;
+			target = this.maxes.center.y;
 			// log('found MIDDLE: ' + target);
 			this.shapes.forEach(function (v) {
-				offset = v.center.y;
+				offset = v.maxes.center.y;
 				v.updateShapePosition(false, target - offset);
 			});
 		} else if (edge === 'bottom') {
@@ -825,10 +767,10 @@ export class Glyph extends GlyphElement {
 				v.setShapePosition(target, false);
 			});
 		} else if (edge === 'center') {
-			target = this.center.x;
+			target = this.maxes.center.x;
 			// log('found CENTER: ' + target);
 			this.shapes.forEach(function (v) {
-				offset = v.center.x;
+				offset = v.maxes.center.x;
 				v.updateShapePosition(target - offset, false);
 			});
 		} else if (edge === 'right') {

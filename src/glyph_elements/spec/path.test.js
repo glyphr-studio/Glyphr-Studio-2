@@ -126,7 +126,7 @@ describe('Path', () => {
 	});
 
 	it('getCenter', () => {
-		expect(samplePath().center.x).toBe(327);
+		expect(samplePath().maxes.center.x).toBe(327);
 	});
 
 	it('makePathPostScript', () => {

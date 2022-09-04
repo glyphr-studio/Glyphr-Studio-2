@@ -4,19 +4,9 @@ import { Maxes } from './maxes.js';
 import { Segment } from './segment.js';
 import { PolySegment } from './poly_segment.js';
 import { PathPoint } from './path_point.js';
-import {
-	log,
-	clone,
-	round,
-	isVal,
-	hasNonValues,
-	duplicates,
-	pointsAreEqual,
-} from '../common/functions.js';
-// import {json} from '../common/functions.js';
 import { getOverallMaxes, maxesOverlap } from './maxes.js';
 import { findSegmentIntersections } from './poly_segment.js';
-import { sXcX, sYcY } from '../edit_canvas/canvas-edit.js';
+import { log, clone, round, isVal, hasNonValues, duplicates, pointsAreEqual } from '../common/functions.js';
 
 /**
  * Glyph Element > Path
@@ -423,7 +413,7 @@ export class Path extends GlyphElement {
 	 * @param {XYPoint} about - x/y center of rotation
 	 * @returns {Path} - reference to this path
 	 */
-	rotate(angle, about = this.center) {
+	rotate(angle, about = this.maxes.center) {
 		// log('Path.rotate', 'start');
 		for (let d = 0; d < this.pathPoints.length; d++) {
 			// log('starting point ' + d);
@@ -775,7 +765,7 @@ export class Path extends GlyphElement {
 	 * @param {number} mid - y value about which to flip
 	 * @returns {Path} - reference to this path
 	 */
-	flipNS(mid = this.center.y) {
+	flipNS(mid = this.maxes.center.y) {
 		// log(`Path.flipNS`, 'start');
 		// log(this.print());
 		const startingY = this.y;
@@ -798,7 +788,7 @@ export class Path extends GlyphElement {
 	 * @param {number} mid - x value about which to flip
 	 * @returns {Path} - reference to this path
 	 */
-	flipEW(mid = this.center.x) {
+	flipEW(mid = this.maxes.center.x) {
 		// log(`Path.flipEW`, 'start');
 		// log(this.print());
 		const startingX = this.x;

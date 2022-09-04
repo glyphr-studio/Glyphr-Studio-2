@@ -1,5 +1,5 @@
-import { GlyphElement } from './glyph_element.js';
 import { isVal, round } from '../common/functions.js';
+import { GlyphElement } from './glyph_element.js';
 
 /**
  * Glyph Element > Maxes
@@ -139,6 +139,16 @@ export class Maxes extends GlyphElement {
 			xMax: Number.MAX_SAFE_INTEGER,
 			yMin: Number.MIN_SAFE_INTEGER,
 			yMax: Number.MAX_SAFE_INTEGER,
+		};
+	}
+
+	/**
+	 * Figures out the center of the bounding box
+	 */
+	get center() {
+		return {
+			x: (this.xMax - this.xMin) / 2 + this.xMin,
+			y: (this.yMax - this.yMin) / 2 + this.yMin,
 		};
 	}
 

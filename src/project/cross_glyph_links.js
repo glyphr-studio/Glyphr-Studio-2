@@ -1,5 +1,51 @@
 import { getCurrentProject } from "../app/main";
 
+
+
+// --------------------------------------------------------------
+// Project-wide .changed()
+// --------------------------------------------------------------
+
+/**
+ * Calls .changed() on peer glyph objects to this glyph
+ * NOTE: .changed() for other glyph elements are on their respective
+ * objects. This one is centrally located because it looks across
+ * the whole project.
+ * @param {Glyph} glyph - glyph to mark as changed
+ */
+export function glyphChanged(glyph){
+		// log(`Glyph.changed - Start`);
+		glyph.calcMaxes();
+		if (glyph.cache) glyph.cache = {};
+		let project = getCurrentProject();
+
+		// log(`calling changed on usedIn`);
+		for (let g = 0; g < glyph.usedIn.length; g++) {
+			glyphChanged(project.getGlyph(glyph.usedIn[g]));
+		}
+		// log(` Glyph.changed - End\n`);
+}
+/*
+	changed(descend, ascend) {
+			this.cache = {};
+			if (ascend) {
+					for (let g = 0; g < this.usedIn.length; g++) {
+							getCurrentProject().getGlyph(this.usedIn[g]).changed(descend, ascend);
+					}
+			}
+			if (descend) {
+					for (let s = 0; s < this.shapes.length; s++)
+							this.shapes[s].changed(descend, ascend);
+			}
+			this.calcMaxes();
+	}
+*/
+
+
+// --------------------------------------------------------------
+// Component Instance links
+// --------------------------------------------------------------
+
 /**
  * Component Instances contain links to other Glyphs, or
  * other Component Instances.  Circular links cause the world
@@ -81,7 +127,7 @@ export function deleteLinks(glyph) {
 		for (let u = 0; u < upstreamGlyph.shapes.length; u++) {
 			if (
 				upstreamGlyph.shapes[u].objType === 'ComponentInstance' &&
-				upstreamGlyph.shapes[u].link === glyph.id;
+				upstreamGlyph.shapes[u].link === glyph.id
 			) {
 				upstreamGlyph.shapes.splice(u, 1);
 				u--;

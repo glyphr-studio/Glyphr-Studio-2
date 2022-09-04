@@ -335,7 +335,7 @@ export function action_addShape(newShape){
 	sg.addOneShape(newShape);
 	editor.multiSelect.shapes.select(newShape);
 	// TODO history
-	// sg.changed();
+	// glyphChanged(sg);
 
 	// log(`returns: ${ewShape.name}`);
 	// log(`action_addShape`, 'end');

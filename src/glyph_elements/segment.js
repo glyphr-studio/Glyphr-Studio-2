@@ -1,16 +1,8 @@
 import { GlyphElement } from './glyph_element.js';
 import { XYPoint } from './xy_point.js';
 import { Maxes } from './maxes.js';
-import {
-	clone,
-	numSan,
-	isVal,
-	round,
-	hasNonValues,
-	pointsAreEqual,
-} from '../common/functions.js';
-import { sXcX, sYcY } from '../edit_canvas/canvas-edit.js';
-import { getColorFromRGBA } from '../common/colors.js';
+import { clone, numSan, isVal, round, hasNonValues, pointsAreEqual } from '../common/functions.js';
+
 
 /**
  * Glyph Element > Segment
