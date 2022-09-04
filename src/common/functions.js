@@ -1,4 +1,4 @@
-import { getGlyphrStudioApp } from '../app/main.js';
+// import { getGlyphrStudioApp } from '../app/main.js';
 
 /**
  * FUNCTIONS
@@ -15,11 +15,11 @@ import { getGlyphrStudioApp } from '../app/main.js';
 let logColors = {};
 let logCount = 0;
 export function log(message, type) {
-	let dev = getGlyphrStudioApp().settings.dev;
-	// let dev = {
-	// 	mode: true,
-	// 	debugTableObjects: true
-	// };
+	// let dev = getGlyphrStudioApp().settings.dev;
+	let dev = {
+		mode: true,
+		debugTableObjects: true
+	};
 	let ch = '･ ';
 	// if (!dev.mode) return;
 
