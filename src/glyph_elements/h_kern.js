@@ -1,4 +1,4 @@
-import {GlyphElement} from './glyph_element.js';
+import { GlyphElement } from './glyph_element.js';
 import { hexToChars } from '../common/unicode.js';
 
 /**

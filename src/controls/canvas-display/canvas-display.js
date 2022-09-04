@@ -3,6 +3,8 @@ import { log } from '../../common/functions.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { glyphToHex } from '../../common/unicode.js';
+import { drawGlyph } from '../../edit_canvas/draw_shapes.js';
+
 
 /**
  * CanvasDisplay takes a string of glyphs and displays them on the canvas
@@ -145,7 +147,7 @@ export class CanvasDisplay extends HTMLElement {
 
 		let sg = getCurrentProject().getGlyph(glyphHex);
 		log(sg);
-		sg.drawGlyph(this.ctx, view);
+		drawGlyph(sg, this.ctx, view);
 		log('CanvasDisplay.redraw', 'end');
 	}
 }

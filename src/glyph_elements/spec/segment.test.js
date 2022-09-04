@@ -1,8 +1,8 @@
-import { Segment } from './segment.js';
+import { Segment } from '../segment.js';
 import { segmentsAreEqual, findSegmentIntersections,
 	findOverlappingLineSegmentIntersections, findCrossingLineSegmentIntersections,
-	findEndPointSegmentIntersections } from './poly_segment.js';
-import { round } from '../common/functions.js';
+	findEndPointSegmentIntersections } from '../poly_segment.js';
+import { round } from './_helpers.js';
 
 // basically an upper-left quadrant quarter circle
 // Test Segment at t=0.5 is {x: 62.5, y: 137.5}
@@ -162,10 +162,3 @@ describe('Segment', () => {
 		expect(findEndPointSegmentIntersections(seg1, seg2)[0]).toBe('200/200');
 	});
 });
-
-/*
-CANVAS METHODS
-
-drawSegmentOutline(color, dx, dy)
-drawSegmentPoints(color, txt)
-*/

@@ -1,4 +1,4 @@
-import { ComponentInstance } from './component_instance.js';
+import { ComponentInstance } from '../component_instance.js';
 
 /**
  * Create a sample Component Instance
@@ -7,7 +7,6 @@ import { ComponentInstance } from './component_instance.js';
 function sampleComponentInstance() {
 	return new ComponentInstance();
 }
-
 
 describe('ComponentInstance', () => {
 	it('get/set link', () => {
@@ -105,50 +104,37 @@ describe('ComponentInstance', () => {
 		ci.ratioLock = true;
 		expect(ci.ratioLock).toBe(true);
 	});
+
+	/*
+		it('get/set x', () => {
+			let ci = sampleComponentInstance();
+			ci.x = false;
+			expect(ci.x).toBe(false);
+		});
+
+		it('get/set y', () => {
+			let ci = sampleComponentInstance();
+			ci.y = false;
+			expect(ci.y).toBe(false);
+		});
+
+		it('get/set width', () => {
+			let ci = sampleComponentInstance();
+			ci.width = false;
+			expect(ci.width).toBe(false);
+		});
+
+		it('get/set height', () => {
+			let ci = sampleComponentInstance();
+			ci.height = false;
+			expect(ci.height).toBe(false);
+		});
+	*/
+
 });
 
 
 /*
-{
-category: 'ComponentInstance',
-name: 'get/set x',
-() => {
-let ci = sampleComponentInstance();
-ci.x = false;
-expect(ci.x).toBe(false);
-},
-},
-{
-category: 'ComponentInstance',
-name: 'get/set y',
-() => {
-let ci = sampleComponentInstance();
-ci.y = false;
-expect(ci.y).toBe(false);
-},
-},
-{
-category: 'ComponentInstance',
-name: 'get/set width',
-() => {
-let ci = sampleComponentInstance();
-ci.width = false;
-expect(ci.width).toBe(false);
-},
-},
-{
-category: 'ComponentInstance',
-name: 'get/set height',
-() => {
-let ci = sampleComponentInstance();
-ci.height = false;
-expect(ci.height).toBe(false);
-},
-},
-*/
-
-/*
-
 link(link)
 name(name)
 translateX(translateX)

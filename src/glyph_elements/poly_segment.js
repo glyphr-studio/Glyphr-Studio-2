@@ -119,52 +119,6 @@ export class PolySegment extends GlyphElement {
 	// --------------------------------------------------------------
 
 	/**
-	 * Draw this PolySegment with random colors for each segment
-	 * @param {number} dx - delta x
-	 * @param {number} dy - delta y
-	 */
-	drawPolySegmentOutline(dx, dy) {
-		let c;
-		for (let s = 0; s < this._segments.length; s++) {
-			c = makeRandomSaturatedColor();
-			this._segments[s].drawSegmentOutline(c, dx, dy);
-		}
-	}
-
-	/**
-	 * Draw all the control points
-	 */
-	drawPolySegmentPoints() {
-		this._segments.forEach(function (v, i) {
-			v.drawSegmentPoints(false, i);
-		});
-	}
-
-	/**
-	 * Slowly draw each segment
-	 * @param {number} delay - ms delay
-	 */
-	slowlyDrawSegments(delay = 600) {
-		// log('PolySegment.slowlyDrawSegments', 'start');
-		// log(this._segments);
-		let currentSegment = 0;
-		let segments = this._segments;
-
-		/** Draw one segment */
-		function ds() {
-			if (currentSegment < segments.length) {
-				segments[currentSegment].drawSegmentOutline();
-				segments[currentSegment].drawSegmentPoints('red', currentSegment);
-				currentSegment++;
-				setTimeout(ds, delay);
-			} else {
-				// log('PolySegment.slowlyDrawSegments', 'end');
-			}
-		}
-		setTimeout(ds, delay);
-	}
-
-	/**
 	 * Convert this PolySegment to a Path
 	 * @returns {Path}
 	 */
@@ -593,10 +547,8 @@ export class PolySegment extends GlyphElement {
 				testForHit(this._segments[s], 0.33, shape) &&
 				testForHit(this._segments[s], 0.66, shape)
 			) {
-				// this._segments[s].drawSegmentPoints('rgb(255,0,0)', s);
 				this._segments[s].objType = 'HIT';
 			} else {
-				// this._segments[s].drawSegmentPoints('rgb(0,255,0)', s);
 			}
 		}
 
@@ -665,7 +617,7 @@ export class PolySegment extends GlyphElement {
 }
 
 // --------------------------------------------------------------
-//    Curve Intersections
+// Curve Intersections
 // --------------------------------------------------------------
 
 /**
@@ -685,8 +637,6 @@ export function findSegmentIntersections(s1, s2, depth) {
 	// log('findSegmentIntersections early return');
 	//  return [];
 	// }
-	// s1.drawSegmentOutline();
-	// s2.drawSegmentOutline();
 
 	// Check for overlapping / coincident segments
 	if (depth === 0) {

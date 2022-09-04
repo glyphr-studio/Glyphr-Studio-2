@@ -1,7 +1,17 @@
-import { Coord } from './coord.js';
-import { pointsAreEqual } from '../common/functions.js';
+import { Coord } from '../coord.js';
+import { pointsAreEqual } from './_helpers.js';
 
 describe('Coord', () => {
+	beforeAll(() =>  {
+		//This makes the log visible again from the command line.
+		spyOn(console, 'log').and.callThrough();
+		console.log(`
+
+			!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			Hello! IN THE BEFOREALL FOR COORD
+
+		`);
+	});
 	it('Constructor - x', () => {
 		expect((new Coord({x: 101})).x).toBe(101);
 	});

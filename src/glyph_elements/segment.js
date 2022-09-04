@@ -186,65 +186,6 @@ export class Segment extends GlyphElement {
 	}
 
 	// --------------------------------------------------------------
-	// Drawing
-	// --------------------------------------------------------------
-
-	/**
-	 * Draws this segment to the Edit Canvas
-	 * @param {object} ctx - canvas context
-	 * @param {string} color
-	 * @param {number} dx - delta offset
-	 * @param {number} dy - delta offset
-	 */
-	drawSegmentOutline(ctx, color = '#000', dx = 0, dy = 0) {
-		ctx.strokeStyle = getColorFromRGBA(color, 0.9);
-		const p1x = sXcX(this.p1x + dx);
-		const p1y = sYcY(this.p1y + dy);
-		const p2x = sXcX(this.p2x + dx);
-		const p2y = sYcY(this.p2y + dy);
-		const p3x = sXcX(this.p3x + dx);
-		const p3y = sYcY(this.p3y + dy);
-		const p4x = sXcX(this.p4x + dx);
-		const p4y = sYcY(this.p4y + dy);
-		ctx.lineWidth = 3;
-		ctx.beginPath();
-		ctx.moveTo(p1x, p1y);
-		ctx.bezierCurveTo(p2x, p2y, p3x, p3y, p4x, p4y);
-		ctx.stroke();
-		ctx.closePath();
-	}
-
-	/**
-	 * Draws the control points for this Segment
-	 * @param {object} ctx - canvas context
-	 * @param {string} color
-	 * @param {string} txt - text to display at the first point
-	 */
-	drawSegmentPoints(ctx, color = '#000', txt = '•') {
-		const p1x = sXcX(this.p1x);
-		const p1y = sYcY(this.p1y);
-		const p2x = sXcX(this.p2x);
-		const p2y = sYcY(this.p2y);
-		const p3x = sXcX(this.p3x);
-		const p3y = sYcY(this.p3y);
-		const p4x = sXcX(this.p4x);
-		const p4y = sYcY(this.p4y);
-		color = getColorFromRGBA(color, 0.4);
-		ctx.strokeStyle = color;
-		ctx.fillStyle = color;
-		ctx.font = '48px sans-serif';
-		ctx.fillText(txt, p1x, p1y);
-		// ctx.fillText(txt, p2x, p2y);
-		// ctx.fillText(txt, p3x, p3y);
-		// ctx.fillText(txt, p4x, p4y);
-		ctx.fillRect(p1x, p1y, 5, 5);
-		ctx.strokeRect(p2x, p2y, 5, 5);
-		ctx.strokeRect(p3x, p3y, 5, 5);
-		ctx.fillRect(p4x, p4y, 5, 5);
-		// else draw_CircleHandle({'x':sXcX(this.p4x), 'y':sYcY(this.p4y)});
-	}
-
-	// --------------------------------------------------------------
 	// Splitting
 	// --------------------------------------------------------------
 

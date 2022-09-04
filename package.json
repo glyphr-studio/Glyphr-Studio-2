@@ -9,7 +9,7 @@
   "scripts": {
     "start": "parcel src/Glyphr_Studio_v2.htm",
     "build": "parcel build src/Glyphr_Studio_v2.htm",
-    "test": "jasmine --require=esm",
+    "test": "jasmine",
     "lint": "eslint src",
     "fix": "eslint src --fix"
   },
@@ -17,8 +17,8 @@
     "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "esm": "^3.2.25",
-    "jasmine": "^4.2.1",
+    "jasmine": "^4.4.0",
+    "jasmine-core": "^4.3.0",
     "jshint": "^2.13.5",
     "parcel": "^2.6.2",
     "prettier": "^2.7.1"

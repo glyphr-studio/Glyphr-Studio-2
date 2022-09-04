@@ -1,4 +1,4 @@
-import {PathPoint} from './path_point.js';
+import {PathPoint} from '../path_point.js';
 
 const testPathPoint = {
 	p: {coord: {x: 100, y: 100}},
@@ -55,11 +55,6 @@ describe('PathPoint', () => {
 	it('save', () => {
 		const pp = samplePathPoint();
 		expect(pp.save()).toEqual(JSON.parse('{"p":{"coord":{"x":100,"y":100}},"type":"corner","h1":{"coord":{"x":0,"y":0}},"h2":{"coord":{"x":200,"y":200}}}'));
-	});
-
-	it('isOverControlPoint', () => {
-		const pp = samplePathPoint();
-		expect((pp.isOverControlPoint(200, 200)).type).toBe('h2');
 	});
 
 	it('isFlat', () => {

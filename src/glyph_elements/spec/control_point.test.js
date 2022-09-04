@@ -1,4 +1,4 @@
-import {ControlPoint} from './control_point.js';
+import {ControlPoint} from '../control_point.js';
 
 describe('ControlPoint', () => {
 	it('Constructor - x', () => {

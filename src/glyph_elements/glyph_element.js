@@ -1,5 +1,4 @@
-import { json, clone } from '../common/functions.js';
-import { Maxes } from './maxes.js';
+// import { json, clone } from '../common/functions.js';
 
 /**
  * Base for all Glyph Elements
@@ -125,7 +124,6 @@ export class GlyphElement {
 	 * Figures out the center of the bounding box
 	 */
 	get center() {
-		let defaultMaxes = new Maxes();
 		if (this.maxes) {
 			return {
 				x: (this.maxes.xMax - this.maxes.xMin) / 2 + this.maxes.xMin,

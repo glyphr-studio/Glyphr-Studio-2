@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { log } from '../common/functions.js';
+import { drawShape } from '../edit_canvas/draw_shapes.js';
 import { Glyph } from '../glyph_elements/glyph.js';
 import { Shape } from '../glyph_elements/shape.js';
 
@@ -484,11 +485,11 @@ export class MultiSelectShapes extends MultiSelect {
 		else return this.glyph.maxes;
 	}
 
-	drawShape(lctx, view) {
+	drawShapes(lctx, view) {
 		let failed = false;
 		let drewshape = false;
 		for (let m = 0; m < this.members.length; m++) {
-			drewshape = this.members[m].drawShape(lctx, view);
+			drewshape = drawShape(this.members[m], lctx, view);
 			failed = failed || !drewshape;
 		}
 

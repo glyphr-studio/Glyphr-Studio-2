@@ -2,7 +2,6 @@ import { GlyphElement } from './glyph_element.js';
 import { getCurrentProject } from '../app/main.js';
 import { parseUnicodeInput } from '../common/unicode.js';
 import { strSan, rad, deg } from '../common/functions.js';
-import { showToast } from '../controls/dialogs.js';
 
 /**
  * Glyph Element > Component Instance
@@ -328,9 +327,9 @@ export class ComponentInstance extends GlyphElement {
 		if (name !== '') {
 			this._name = name;
 		} else {
-			showToast(
-				'Invalid component instance name - component instance names must only contain alphanumeric characters or spaces.'
-			);
+			// showToast(
+			// 	'Invalid component instance name - component instance names must only contain alphanumeric characters or spaces.'
+			// );
 		}
 	}
 
@@ -678,14 +677,6 @@ export class ComponentInstance extends GlyphElement {
 	}
 
 	/**
-	 * isOverControlPoint
-	 * @returns {boolean}
-	 */
-	isOverControlPoint() {
-		return false;
-	}
-
-	/**
 	 * flipEW
 	 * @param {number} mid - x value about which to flip
 	 * @returns {ComponentInstance} - reference to this component instance
@@ -740,59 +731,4 @@ export class ComponentInstance extends GlyphElement {
 		// log('ComponentInstance.rotate', 'end');
 		return this;
 	}
-
-	// --------------------------------------------------------------
-	// Drawing
-	// --------------------------------------------------------------
-
-	/**
-	 * Draw this Shape to a canvas
-	 * @param {object} ctx - canvas context
-	 * @param {view} view
-	 * @returns {boolean}
-	 */
-	drawShape(ctx, view) {
-		// log('ComponentInstance.drawShape', 'start');
-		// log('view ' + json(view, true));
-		/*
-		Have to iterate through shapes instead of using Glyph.drawGlyph
-		due to stacking shapes with appropriate winding
-		*/
-		const g = this.transformedGlyph;
-		if (!g) return false;
-		let drewShape = false;
-		let failed = false;
-		for (let s = 0; s < g.shapes.length; s++) {
-			drewShape = g.shapes[s].drawShape(ctx, view);
-			failed = failed || !drewShape;
-		}
-		// log('ComponentInstance.drawShape - returning ' + !failed + '', 'end');
-		return !failed;
-	}
-
-	/* NEEDS TO BE REFACTORED
-	drawPathOutline(accent = '#000', thickness = 1) {
-		// log('ComponentInstance.drawPathOutline', 'start');
-		let g = this.transformedGlyph;
-		for (let s = 0; s < g.shapes.length; s++) {
-			drawPathOutline(g.shapes[s], accent, thickness);
-		}
-	}
-	drawBoundingBox(accent = '#000', thickness = 1) {
-		// log('ComponentInstance.drawBoundingBox', 'start');
-		let g = this.transformedGlyph.maxes;
-		drawBoundingBox(g, accent, thickness);
-	}
-	drawBoundingBoxHandles(accent = '#000', thickness = 1) {
-		// log('ComponentInstance.drawBoundingBoxHandles', 'start');
-		let g = this.transformedGlyph.maxes;
-		drawBoundingBoxHandles(g, accent, thickness);
-	}
-	isOverBoundingBoxHandle(px, py) {
-		// log('ComponentInstance.isOverBoundingBoxHandle', 'start');
-		let c = isOverBoundingBoxHandle(px, py, this.maxes);
-		// log('ComponentInstance.isOverBoundingBoxHandle returning ' + c);
-		return c;
-	}
-*/
 }

@@ -1,35 +1,5 @@
 import { getGlyphrStudioApp } from '../app/main.js';
 
-export {
-  log,
-  saveFile,
-  makeDateStampSuffix,
-  getFirstID,
-  generateNewID,
-  clone,
-  json,
-  areEqual,
-  makeCrisp,
-  round,
-  numSan,
-  strSan,
-  trim,
-  isVal,
-  hasNonValues,
-  reqAniFrame,
-  duplicates,
-  localStorageGet,
-  localStorageSet,
-  calculateAngle,
-  calculateLength,
-  rotate,
-  rad,
-  deg,
-  angleToNiceAngle,
-  niceAngleToAngle,
-  makeEmailContent,
-};
-
 /**
  * FUNCTIONS
  * some random general-use functions
@@ -44,50 +14,54 @@ export {
 
 let logColors = {};
 let logCount = 0;
-function log(message, type) {
-  let dev = getGlyphrStudioApp().settings.dev;
-  let ch = '･ ';
-  // if (!dev.mode) return;
+export function log(message, type) {
+	let dev = getGlyphrStudioApp().settings.dev;
+	// let dev = {
+	// 	mode: true,
+	// 	debugTableObjects: true
+	// };
+	let ch = '･ ';
+	// if (!dev.mode) return;
 
-  const commonStyle = `
-    font-weight:bold;
-    border-radius: 4px;
-    padding: 6px 12px 4px 12px;
-    position: relative;
-    left: -20px;
-  `;
+	const commonStyle = `
+		font-weight:bold;
+		border-radius: 4px;
+		padding: 6px 12px 4px 12px;
+		position: relative;
+		left: -20px;
+	`;
 
-  if (dev.mode) {
-    if (typeof message === 'string') {
-      message = message.replace(/&lt;/gi, '<');
-      message = message.replace(/&gt;/gi, '>');
-      if (type === 'start' || type === 'end') {
-        if (type === 'start') {
-          if (!logColors[message])
-            logColors[message] = `hsl(${Math.floor(
-              Math.random() * 360
-            )}, 60%, 20%)`;
-          console.log(
-            `${ch.repeat(logCount)}%cSTART\t${message}`,
-            `background-color: ${logColors[message]}; margin-top: 20px; ${commonStyle}`
-          );
-          logCount++;
-        } else if (type === 'end') {
-          logCount--;
-          console.log(
-            `${ch.repeat(logCount)}%cEND  \t${message}`,
-            `background-color: ${logColors[message]}; margin-bottom: 20px; ${commonStyle}`
-          );
-          delete logColors[message];
-        }
-      } else {
-        console.log(`${ch.repeat(logCount)}${message}`);
-      }
-    } else if (typeof message === 'object') {
-      if (dev.debugTableObjects) console.table(message);
-      else console.log(message);
-    }
-  }
+	if (dev.mode) {
+		if (typeof message === 'string') {
+			message = message.replace(/&lt;/gi, '<');
+			message = message.replace(/&gt;/gi, '>');
+			if (type === 'start' || type === 'end') {
+				if (type === 'start') {
+					if (!logColors[message])
+						logColors[message] = `hsl(${Math.floor(
+							Math.random() * 360
+						)}, 60%, 20%)`;
+					console.log(
+						`${ch.repeat(logCount)}%cSTART\t${message}`,
+						`background-color: ${logColors[message]}; margin-top: 20px; ${commonStyle}`
+					);
+					logCount++;
+				} else if (type === 'end') {
+					logCount--;
+					console.log(
+						`${ch.repeat(logCount)}%cEND  \t${message}`,
+						`background-color: ${logColors[message]}; margin-bottom: 20px; ${commonStyle}`
+					);
+					delete logColors[message];
+				}
+			} else {
+				console.log(`${ch.repeat(logCount)}${message}`);
+			}
+		} else if (typeof message === 'object') {
+			if (dev.debugTableObjects) console.table(message);
+			else console.log(message);
+		}
+	}
 }
 
 // --------------------------------------------------------------
@@ -100,44 +74,44 @@ function log(message, type) {
  * @param {string} buffer - data for the file
  * @param {string} fileType - file suffix
  */
-function saveFile(fileName, buffer, fileType) {
-  fileType = fileType || 'text/plain;charset=utf-8';
-  const fileBlob = new Blob([buffer], { type: fileType, endings: 'native' });
+export function saveFile(fileName, buffer, fileType) {
+	fileType = fileType || 'text/plain;charset=utf-8';
+	const fileBlob = new Blob([buffer], { type: fileType, endings: 'native' });
 
-  try {
-    // IE
-    window.navigator.msSaveBlob(fileBlob, fileName);
-  } catch (err) {
-    // Others
-    const link = document.createElement('a');
-    window.URL = window.URL || window.webkitURL;
-    link.href = window.URL.createObjectURL(fileBlob);
-    // link.onclick = ("alert("+window.URL.createObjectURL(fileBlob)+");");
-    link.download = fileName;
+	try {
+		// IE
+		window.navigator.msSaveBlob(fileBlob, fileName);
+	} catch (err) {
+		// Others
+		const link = document.createElement('a');
+		window.URL = window.URL || window.webkitURL;
+		link.href = window.URL.createObjectURL(fileBlob);
+		// link.onclick = ("alert("+window.URL.createObjectURL(fileBlob)+");");
+		link.download = fileName;
 
-    const event = new MouseEvent('click', {
-      view: window,
-      bubbles: true,
-      cancelable: true,
-    });
-    link.dispatchEvent(event);
-  }
+		const event = new MouseEvent('click', {
+			view: window,
+			bubbles: true,
+			cancelable: true,
+		});
+		link.dispatchEvent(event);
+	}
 }
 
 /**
  * Generates a date suffix for file saves
  * @returns {string}
  */
-function makeDateStampSuffix() {
-  const d = new Date();
-  const yr = d.getFullYear();
-  const mo = d.getMonth() + 1;
-  const day = d.getDate();
-  const hr = d.getHours();
-  const min = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
-  const sec = (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
+export function makeDateStampSuffix() {
+	const d = new Date();
+	const yr = d.getFullYear();
+	const mo = d.getMonth() + 1;
+	const day = d.getDate();
+	const hr = d.getHours();
+	const min = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+	const sec = (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
 
-  return '' + yr + '.' + mo + '.' + day + '-' + hr + '.' + min + '.' + sec;
+	return '' + yr + '.' + mo + '.' + day + '-' + hr + '.' + min + '.' + sec;
 }
 
 // --------------------------------------------------------------
@@ -149,9 +123,9 @@ function makeDateStampSuffix() {
  * @param {object} obj
  * @returns {string}
  */
-function getFirstID(obj) {
-  for (const key of Object.keys(obj)) return key;
-  return false;
+export function getFirstID(obj) {
+	for (const key of Object.keys(obj)) return key;
+	return false;
 }
 
 /**
@@ -160,16 +134,16 @@ function getFirstID(obj) {
  * @param {string} base - string prefix for the new ID
  * @returns {string}
  */
-function generateNewID(obj, base) {
-  let number = 1;
-  base = base || 'id';
-  let id = '' + base + number;
-  while (obj[id]) {
-    number += 1;
-    id = '' + base + number;
-  }
+export function generateNewID(obj, base) {
+	let number = 1;
+	base = base || 'id';
+	let id = '' + base + number;
+	while (obj[id]) {
+		number += 1;
+		id = '' + base + number;
+	}
 
-  return id;
+	return id;
 }
 
 // --------------------------------------------------------------
@@ -183,19 +157,19 @@ function generateNewID(obj, base) {
  * @param {object} source - object to clone
  * @returns {object}
  */
-function clone(source) {
-  const newObj = source instanceof Array ? [] : {};
-  for (const i of Object.keys(source)) {
-    if (
-      source[i] &&
-      typeof source[i] === 'object' &&
-      i !== 'parent' &&
-      i !== 'cache'
-    ) {
-      newObj[i] = clone(source[i]);
-    } else newObj[i] = source[i];
-  }
-  return newObj;
+export function clone(source) {
+	const newObj = source instanceof Array ? [] : {};
+	for (const i of Object.keys(source)) {
+		if (
+			source[i] &&
+			typeof source[i] === 'object' &&
+			i !== 'parent' &&
+			i !== 'cache'
+		) {
+			newObj[i] = clone(source[i]);
+		} else newObj[i] = source[i];
+	}
+	return newObj;
 }
 
 /**
@@ -205,14 +179,14 @@ function clone(source) {
  * @param {boolean} raw - true = don't format
  * @returns {string}
  */
-function json(obj, raw) {
-  obj = clone(obj);
-  if (raw) return JSON.stringify(obj);
-  else {
-    const j = JSON.stringify(obj, undefined, '\t');
-    if (j) return j.replace(/\n/g, '\r\n');
-    else return '';
-  }
+export function json(obj, raw) {
+	obj = clone(obj);
+	if (raw) return JSON.stringify(obj);
+	else {
+		const j = JSON.stringify(obj, undefined, '\t');
+		if (j) return j.replace(/\n/g, '\r\n');
+		else return '';
+	}
 }
 
 /**
@@ -222,25 +196,25 @@ function json(obj, raw) {
  * @param {object} obj2 - second object to compare
  * @returns {boolean}
  */
-function areEqual(obj1, obj2) {
-  // log(`areEqual`, 'start');
-  // log(`passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
+export function areEqual(obj1, obj2) {
+	// log(`areEqual`, 'start');
+	// log(`passed ${typeof obj1} and ${typeof obj2} equality? ${obj1 === obj2}`);
 
-  if (typeof obj1 !== 'object' && typeof obj2 !== 'object') {
-    return obj1 === obj2;
-  }
+	if (typeof obj1 !== 'object' && typeof obj2 !== 'object') {
+		return obj1 === obj2;
+	}
 
-  for (const key of Object.keys(obj1)) {
-    if (obj2[key]) {
-      if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
-        if (!areEqual(obj1[key], obj2[key])) return false;
-      } else if (obj1[key] !== obj2[key]) return false;
-    } else {
-      return false;
-    }
-  }
+	for (const key of Object.keys(obj1)) {
+		if (obj2[key]) {
+			if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+				if (!areEqual(obj1[key], obj2[key])) return false;
+			} else if (obj1[key] !== obj2[key]) return false;
+		} else {
+			return false;
+		}
+	}
 
-  return true;
+	return true;
 }
 
 /**
@@ -251,30 +225,30 @@ function areEqual(obj1, obj2) {
  * @returns {boolean}
  */
 export function pointsAreEqual(c1, c2, threshold = 1) {
-  // log('pointsAreEqual', 'start');
-  // log('c1 ' + json(c1, true));
-  // log('c2 ' + json(c2, true));
-  // log('threshold ' + threshold);
+	// log('pointsAreEqual', 'start');
+	// log('c1 ' + json(c1, true));
+	// log('c2 ' + json(c2, true));
+	// log('threshold ' + threshold);
 
-  if (c1.x === c2.x && c1.y === c2.y) {
-    // log('exact match');
-    return true;
-  }
+	if (c1.x === c2.x && c1.y === c2.y) {
+		// log('exact match');
+		return true;
+	}
 
-  const dx = Math.abs(c1.x - c2.x);
-  const dy = Math.abs(c1.y - c2.y);
+	const dx = Math.abs(c1.x - c2.x);
+	const dy = Math.abs(c1.y - c2.y);
 
-  // log('dx ' + dx + '\tdy ' + dy);
+	// log('dx ' + dx + '\tdy ' + dy);
 
-  if (dx <= threshold && dy <= threshold) {
-    // log('below threshold match');
-    return true;
-  }
+	if (dx <= threshold && dy <= threshold) {
+		// log('below threshold match');
+		return true;
+	}
 
-  // log('not a match');
-  // log('pointsAreEqual', 'end');
+	// log('not a match');
+	// log('pointsAreEqual', 'end');
 
-  return false;
+	return false;
 }
 
 /**
@@ -284,9 +258,9 @@ export function pointsAreEqual(c1, c2, threshold = 1) {
  * @param {boolean} dir - direction, plus or minus, to adjust number
  * @returns {number}
  */
-function makeCrisp(num, dir) {
-  const mul = dir ? 1 : -1;
-  return round(num) + 0.5 * mul;
+export function makeCrisp(num, dir) {
+	const mul = dir ? 1 : -1;
+	return round(num) + 0.5 * mul;
 }
 
 /**
@@ -295,9 +269,9 @@ function makeCrisp(num, dir) {
  * @param {number} dec - number of decimal places
  * @returns {number}
  */
-function round(num, dec = 0) {
-  if (!num) return 0;
-  return Number(Math.round(num + 'e' + dec) + 'e-' + dec) || 0;
+export function round(num, dec = 0) {
+	if (!num) return 0;
+	return Number(Math.round(num + 'e' + dec) + 'e-' + dec) || 0;
 }
 
 /**
@@ -306,17 +280,17 @@ function round(num, dec = 0) {
  * @param {number} num - number to sanitize
  * @returns {number}
  */
-function numSan(num) {
-  num = parseFloat(num);
-  const stringNumber = '' + num;
+export function numSan(num) {
+	num = parseFloat(num);
+	const stringNumber = '' + num;
 
-  if (stringNumber.indexOf('0000') > -1 || stringNumber.indexOf('9999') > -1) {
-    num = round(num, 4);
-  }
+	if (stringNumber.indexOf('0000') > -1 || stringNumber.indexOf('9999') > -1) {
+		num = round(num, 4);
+	}
 
-  if (num < 0.0 && num > 0) num = 0;
+	if (num < 0.0 && num > 0) num = 0;
 
-  return num;
+	return num;
 }
 
 /**
@@ -324,9 +298,9 @@ function numSan(num) {
  * @param {string} val - string to sanitize
  * @returns {string}
  */
-function strSan(val = '') {
-  val = String(val);
-  return val.replace(/[<>'"\\]/g, '');
+export function strSan(val = '') {
+	val = String(val);
+	return val.replace(/[<>'"\\]/g, '');
 }
 
 /**
@@ -334,18 +308,18 @@ function strSan(val = '') {
  * @param {string} text - text to trim
  * @returns {string}
  */
-function trim(text = '') {
-  text = String(text);
+export function trim(text = '') {
+	text = String(text);
 
-  // Old school quotes stored as values bug
-  if (text === `""` || text === `''`) return '';
+	// Old school quotes stored as values bug
+	if (text === `""` || text === `''`) return '';
 
-  try {
-    text = text.replace(/^\s+|\s+$/g, '');
-    return text.replace(/(\r\n|\n|\r|\t)/gm, '');
-  } catch (e) {
-    return '';
-  }
+	try {
+		text = text.replace(/^\s+|\s+$/g, '');
+		return text.replace(/(\r\n|\n|\r|\t)/gm, '');
+	} catch (e) {
+		return '';
+	}
 }
 
 /**
@@ -353,14 +327,14 @@ function trim(text = '') {
  * @param {*} val - variable to test
  * @returns {boolean}
  */
-function isVal(val) {
-  if (val === 0) return true;
-  else if (val === false) return true;
-  else if (val === null || val === undefined) return false;
-  // else if ( typeof val === 'number' && isNaN(val)) return false;
-  else if (typeof val === 'object' && Object.keys(val).length === 0)
-    return false;
-  else return !!val;
+export function isVal(val) {
+	if (val === 0) return true;
+	else if (val === false) return true;
+	else if (val === null || val === undefined) return false;
+	// else if ( typeof val === 'number' && isNaN(val)) return false;
+	else if (typeof val === 'object' && Object.keys(val).length === 0)
+		return false;
+	else return !!val;
 }
 
 /**
@@ -368,39 +342,39 @@ function isVal(val) {
  * @param {object} obj - object to check
  * @returns {boolean}
  */
-function hasNonValues(obj) {
-  if (!obj) return true;
+export function hasNonValues(obj) {
+	if (!obj) return true;
 
-  for (const key of Object.keys(obj)) {
-    if (!isVal(obj[key])) return true;
-    if (obj[key] === Number.MAX_SAFE_INTEGER) return true;
-    if (obj[key] === Number.MIN_SAFE_INTEGER) return true;
-  }
+	for (const key of Object.keys(obj)) {
+		if (!isVal(obj[key])) return true;
+		if (obj[key] === Number.MAX_SAFE_INTEGER) return true;
+		if (obj[key] === Number.MIN_SAFE_INTEGER) return true;
+	}
 
-  return false;
+	return false;
 }
 
 /**
  * Calls the right Request Animation Frame in two screen mode
- * @param {function} fun - function to call
+ * @param {export function} fun - export function to call
  */
-function reqAniFrame(fun) {
-  if (window.requestAnimationFrame) window.requestAnimationFrame(fun);
-  else {
-    console.warn('no requestAnimationFrame');
-    fun();
-  }
+export function reqAniFrame(fun) {
+	if (window.requestAnimationFrame) window.requestAnimationFrame(fun);
+	else {
+		console.warn('no requestAnimationFrame');
+		fun();
+	}
 }
 
 /**
- * A function for filtering duplicates in an array
+ * A export function for filtering duplicates in an array
  * @param {*} v
  * @param {number} i
  * @param {array} a
  * @returns {boolean}
  */
-function duplicates(v, i, a) {
-  return a.indexOf(v) === i;
+export function duplicates(v, i, a) {
+	return a.indexOf(v) === i;
 }
 
 // ---------------------------------------------------------------------
@@ -412,13 +386,13 @@ function duplicates(v, i, a) {
  * @param {string} key - storage key
  * @param {*} value - what to save
  */
-function localStorageSet(key, value) {
-  key = 'GlyphrStudio_' + key;
+export function localStorageSet(key, value) {
+	key = 'GlyphrStudio_' + key;
 
-  if (value.save) value = JSON.stringify(value.save());
-  else if (typeof value != 'string') value = JSON.stringify(value);
+	if (value.save) value = JSON.stringify(value.save());
+	else if (typeof value != 'string') value = JSON.stringify(value);
 
-  window.localStorage.setItem(key, value);
+	window.localStorage.setItem(key, value);
 }
 
 /**
@@ -426,14 +400,14 @@ function localStorageSet(key, value) {
  * @param {string} key - key to look for
  * @returns {*}
  */
-function localStorageGet(key) {
-  if (window.localStorage[key]) {
-    return JSON.parse(window.localStorage.getItem(key));
-  } else if (window.localStorage['GlyphrStudio_' + key]) {
-    return JSON.parse(window.localStorage.getItem('GlyphrStudio_' + key));
-  } else {
-    return undefined;
-  }
+export function localStorageGet(key) {
+	if (window.localStorage[key]) {
+		return JSON.parse(window.localStorage.getItem(key));
+	} else if (window.localStorage['GlyphrStudio_' + key]) {
+		return JSON.parse(window.localStorage.getItem('GlyphrStudio_' + key));
+	} else {
+		return undefined;
+	}
 }
 
 // ---------------------------------------------------------------------
@@ -453,17 +427,17 @@ function localStorageGet(key) {
  * @param {XYPoint} point - x/y point of point
  * @returns {number}
  */
-function calculateAngle(handle, point = { x: 0, y: 0 }) {
-  let result = Math.atan2(handle.y - point.y, handle.x - point.x);
+export function calculateAngle(handle, point = { x: 0, y: 0 }) {
+	let result = Math.atan2(handle.y - point.y, handle.x - point.x);
 
-  if (isNaN(result)) {
-    console.warn(
-      'calculateAngle returned NaN\n' + json(handle) + '\n' + json(point)
-    );
-    result = 0;
-  }
+	if (isNaN(result)) {
+		console.warn(
+			'calculateAngle returned NaN\n' + json(handle) + '\n' + json(point)
+		);
+		result = 0;
+	}
 
-  return result;
+	return result;
 }
 
 /**
@@ -472,11 +446,11 @@ function calculateAngle(handle, point = { x: 0, y: 0 }) {
  * @param {XYPoint} point - x/y point of point
  * @returns {number}
  */
-function calculateLength(handle, point) {
-  const adj = point.x - handle.x;
-  const opp = point.y - handle.y;
-  const result = Math.sqrt(adj * adj + opp * opp);
-  return result;
+export function calculateLength(handle, point) {
+	const adj = point.x - handle.x;
+	const opp = point.y - handle.y;
+	const result = Math.sqrt(adj * adj + opp * opp);
+	return result;
 }
 
 /**
@@ -485,25 +459,25 @@ function calculateLength(handle, point) {
  * @param {number} angle - how much to rotate (radians)
  * @param {XYPoint} about - x/y point center of rotation
  */
-function rotate(point, angle, about = { x: 0, y: 0 }) {
-  // log('rotate', 'start');
-  // log('point ' + json(point, true));
-  // log('Math angle:\t' + angle);
-  // log('about ' + json(about, true));
+export function rotate(point, angle, about = { x: 0, y: 0 }) {
+	// log('rotate', 'start');
+	// log('point ' + json(point, true));
+	// log('Math angle:\t' + angle);
+	// log('about ' + json(about, true));
 
-  if (!angle || !point) return;
+	if (!angle || !point) return;
 
-  point.x -= about.x;
-  point.y -= about.y;
+	point.x -= about.x;
+	point.y -= about.y;
 
-  const newX = point.x * Math.cos(angle) - point.y * Math.sin(angle);
-  const newY = point.x * Math.sin(angle) + point.y * Math.cos(angle);
+	const newX = point.x * Math.cos(angle) - point.y * Math.sin(angle);
+	const newY = point.x * Math.sin(angle) + point.y * Math.cos(angle);
 
-  point.x = newX + about.x;
-  point.y = newY + about.y;
+	point.x = newX + about.x;
+	point.y = newY + about.y;
 
-  // log('new point x/y: ' + point.x + '/' + point.y);
-  // log('rotate', 'end');
+	// log('new point x/y: ' + point.x + '/' + point.y);
+	// log('rotate', 'end');
 }
 
 /**
@@ -511,8 +485,8 @@ function rotate(point, angle, about = { x: 0, y: 0 }) {
  * @param {number} deg - degrees
  * @returns {number}
  */
-function rad(deg) {
-  return ((deg * Math.PI) / 180) % Math.PI;
+export function rad(deg) {
+	return ((deg * Math.PI) / 180) % Math.PI;
 }
 
 /**
@@ -520,8 +494,8 @@ function rad(deg) {
  * @param {number} rad - radians
  * @returns {number}
  */
-function deg(rad) {
-  return ((rad * 180) / Math.PI) % 360;
+export function deg(rad) {
+	return ((rad * 180) / Math.PI) % 360;
 }
 
 /**
@@ -530,14 +504,14 @@ function deg(rad) {
  * @param {number} angle - Angle in Radians
  * @returns {number} - Angle in Degrees
  */
-function angleToNiceAngle(angle) {
-  angle = deg(angle);
-  angle = 360 - angle;
-  angle -= 270;
-  angle = angle % 360;
-  if (angle < 0) angle += 360;
+export function angleToNiceAngle(angle) {
+	angle = deg(angle);
+	angle = 360 - angle;
+	angle -= 270;
+	angle = angle % 360;
+	if (angle < 0) angle += 360;
 
-  return angle;
+	return angle;
 }
 
 /**
@@ -546,32 +520,13 @@ function angleToNiceAngle(angle) {
  * @param {number} angle - Angle in Degrees
  * @returns {number} - Angle in Radians
  */
-function niceAngleToAngle(angle) {
-  angle += 90;
-  angle = angle % 360;
-  if (angle < 180) angle = 360 - angle;
-  else angle *= -1;
+export function niceAngleToAngle(angle) {
+	angle += 90;
+	angle = angle % 360;
+	if (angle < 180) angle = 360 - angle;
+	else angle *= -1;
 
-  angle = rad(angle);
+	angle = rad(angle);
 
-  return angle;
-}
-
-// --------------------------------------------------------------
-// Issue email
-// --------------------------------------------------------------
-
-/**
- * Generates the content for the "email us" link
- * @returns {string}
- */
-function makeEmailContent() {
-  const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
-  %0A%0A%0A%0A___________________________________________%0A
-  version %09Glyphr Studio  ${getGlyphrStudioApp().version} %0A
-  user agent %09 ${encodeURIComponent(navigator.userAgentData)} %0A`;
-
-  // log(con);
-
-  return con;
+	return angle;
 }

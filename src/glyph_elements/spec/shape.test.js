@@ -1,7 +1,6 @@
-import { Shape } from './shape.js';
-import { Path } from './path.js';
-import {clone} from '../common/functions.js';
-import {samples} from '../samples/samples.js';
+import { Shape } from '../shape.js';
+import { Path } from '../path.js';
+import { clone, samples } from './_helpers.js';
 
 /**
  * A sample shape
@@ -146,11 +145,6 @@ describe('Shape', () => {
 		expect(re.height).toBe(123);
 	});
 
-	it('isOverControlPoint', () => {
-		const s = sampleShape();
-		expect(s.isOverControlPoint(326, 500).type).toBe('p');
-	});
-
 	it('flipNS', () => {
 		const s = triangleShape();
 		s.flipNS();
@@ -189,16 +183,3 @@ describe('Shape', () => {
 		expect(!s.checkForNaN()).toBeTruthy();
 	});
 });
-
-
-/*
-OTHER METHODS
-action_addShape
-turnSelectedShapeIntoAComponent
-
-CANVAS METHODS
-drawShape(ctx, view)
-drawSegments()
-getShapeAtLocation
-getShapeAtLocation
-*/

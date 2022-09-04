@@ -497,69 +497,6 @@ export class Path extends GlyphElement {
 	}
 
 	// --------------------------------------------------------------
-	//  Drawing
-	// --------------------------------------------------------------
-
-	/**
-	 * Draw a path to a canvas
-	 * @param {object} ctx - HTML Canvas Context
-	 * @param {object} view - View object with x / y offset and Zoom
-	 * @param {boolean} snap - snap values to whole numbers
-	 */
-	drawPath(ctx, view, snap = true) {
-		// log('Path.drawPath', 'start');
-		// log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
-
-		// let currView = getView('Path.drawPath');
-		// view = view || clone(currView);
-		// setView(view);
-
-		if (this.pathPoints === false || this.pathPoints.length < 2) return;
-
-		let pp;
-		let np;
-		const precision = snap ? 0 : 9;
-
-		const p1x = sXcX(round(this.pathPoints[0].p.x, precision), view);
-		const p1y = sYcY(round(this.pathPoints[0].p.y, precision), view);
-		let p2x;
-		let p2y;
-		let p3x;
-		let p3y;
-		let p4x;
-		let p4y;
-
-		ctx.moveTo(p1x, p1y);
-		// log(`move to ${p1x}, ${p1y}`);
-
-		for (let cp = 0; cp < this.pathPoints.length; cp++) {
-			pp = this.pathPoints[cp];
-			// np = this.pathPoints[(cp+1) % this.pathPoints.length];
-			np = this.pathPoints[this.getNextPointNum(cp)];
-
-			if (pp.type === 'symmetric') {
-				pp.makeSymmetric('h1');
-			} else if (pp.type === 'flat') {
-				pp.makeFlat('h1');
-			}
-
-			p2x = sXcX(round(pp.h2.x, precision), view);
-			p2y = sYcY(round(pp.h2.y, precision), view);
-			p3x = sXcX(round(np.h1.x, precision), view);
-			p3y = sYcY(round(np.h1.y, precision), view);
-			p4x = sXcX(round(np.p.x, precision), view);
-			p4y = sYcY(round(np.p.y, precision), view);
-
-			// log(`curveTo ${p2x}, ${p2y}, ${p3x}, ${p3y}, ${p4x}, ${p4y}`);
-
-			ctx.bezierCurveTo(p2x, p2y, p3x, p3y, p4x, p4y);
-		}
-
-		// setView(currView);
-		// log('Path.drawPath', 'end');
-	}
-
-	// --------------------------------------------------------------
 	//  Translate to other languages
 	// --------------------------------------------------------------
 
@@ -755,60 +692,6 @@ export class Path extends GlyphElement {
 		// log(`Path.getPolySegment`, 'end');
 
 		return re;
-	}
-
-	// --------------------------------------------------------------
-	//  Canvas helper functions
-	// --------------------------------------------------------------
-
-	/**
-	 * Looks through path points to see if there is a control point
-	 * at the designated point
-	 * @param {number} x - x value to check
-	 * @param {number} y - y value to check
-	 * @param {number} targetSize - radius around the point to return true
-	 * @param {boolean} noHandles - true = only check points
-	 * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
-	 */
-	isOverControlPoint(x, y, targetSize, noHandles) {
-		const a = this.pathPoints || [];
-		let re = false;
-		for (let k = a.length - 1; k >= 0; k--) {
-			re = a[k].isOverControlPoint(x, y, targetSize, noHandles);
-			if (re) return re;
-		}
-		return false;
-	}
-
-	/**
-	 * Checks to see if the first PathPoint in the path is at a point
-	 * @param {number} x - x value to check
-	 * @param {number} y - y value to check
-	 * @param {number} targetSize - radius around the point to return true
-	 * @returns {boolean}
-	 */
-	isOverFirstPoint(x = 0, y = 0, targetSize = 3) {
-		// log('Path.isOverFirstPoint', 'start');
-		// log('Passed ' + x + '/' + y);
-		const a = this.pathPoints[0];
-		// log('Checking ' + a.p.x + '/' + a.p.y + ' around ' + targetSize);
-
-		if (!a) return false;
-
-		if (
-			a.p.x + targetSize > x &&
-			a.p.x - targetSize < x &&
-			a.p.y + targetSize > y &&
-			a.p.y - targetSize < y
-		) {
-			// log('returning TRUE');
-			// log('Path.isOverFirstPoint', 'end');
-			return true;
-		}
-
-		// log('returning FALSE');
-		// log('Path.isOverFirstPoint', 'end');
-		return false;
 	}
 
 	/**
@@ -1195,7 +1078,7 @@ export class Path extends GlyphElement {
 // --------------------------------------------------------------
 
 /**
- * Fin overlaps between two paths
+ * Find overlaps between two paths
  * @param {Path} p1 - first path
  * @param {Path} p2 - second path
  * @returns {array}
@@ -1242,8 +1125,6 @@ export function findPathIntersections(p1, p2) {
 
 		if (maxesOverlap(bs.getFastMaxes(), ts.getFastMaxes())) {
 			// log('\t\t pushed!');
-			// bs.drawSegmentOutline();
-			// ts.drawSegmentOutline();
 			segmentOverlaps.push({ bottom: bs, top: ts });
 		}
 	}

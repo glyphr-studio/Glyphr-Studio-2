@@ -1,5 +1,5 @@
-import { Segment } from './segment.js';
-import { PolySegment } from './poly_segment.js';
+import { Segment } from '../segment.js';
+import { PolySegment } from '../poly_segment.js';
 
 const samplePolySegments = [
 	{p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 200, p3y: 300, p4x: 300, p4y: 300},
@@ -103,12 +103,3 @@ describe('PolySegment', () => {
 		expect(ps.removeNonConnectingSegments().segments.length).toBe(3);
 	});
 });
-
-/*
-CANVAS METHODS
-removeSegmentsOverlappingShape(shape)
-drawIntersections(color = 'rgb(200, 50, 60)')
-drawPolySegmentOutline(dx, dy)
-drawPolySegmentPoints()
-slowlyDrawSegments(delay = 600)
-*/

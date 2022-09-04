@@ -5,6 +5,8 @@ import { lookUpGlyphName } from '../../lib/unicode_names.js';
 import { Glyph } from '../../glyph_elements/glyph.js';
 import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
 import { log } from '../../common/functions.js';
+import { drawGlyph } from '../../edit_canvas/draw_shapes.js';
+
 
 /**
  * description
@@ -115,10 +117,7 @@ export class GlyphTile extends HTMLElement {
 function redrawGlyph(tile){
 	if (tile.glyphObject) {
 		tile.ctx.clearRect(0, 0, tile.thumbnail.width, tile.thumbnail.height);
-		tile.glyphObject.drawGlyph(
-			tile.ctx, tile.view, 1, false,
-			tile.hasAttribute('selected') ? accentColors.blue.l35 : accentColors.gray.l05
-		);
+		drawGlyph(tile.glyphObject, tile.ctx, tile.view);
 	}
 }
 
