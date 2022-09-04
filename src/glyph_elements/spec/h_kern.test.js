@@ -1,4 +1,4 @@
-import {HKern} from './h_kern.js';
+import {HKern} from '../h_kern.js';
 
 /**
  * Sample kern for testing

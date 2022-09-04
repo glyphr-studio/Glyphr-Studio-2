@@ -453,18 +453,6 @@ export class Shape extends GlyphElement {
 	}
 
 	/**
-	 * Call path.isOverControlPoint
-	 * @param {number} x - x value to check
-	 * @param {number} y - y value to check
-	 * @param {number} targetSize - radius around the point to return true
-	 * @param {boolean} noHandles - true = only check points
-	 * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
-	 */
-	isOverControlPoint(x, y, targetSize, noHandles) {
-		return this.path.isOverControlPoint(x, y, targetSize, noHandles);
-	}
-
-	/**
 	 * Call path.flipEW
 	 * @param {number} mid - x value about which to flip
 	 * @returns {Shape} - reference to this shape
@@ -522,32 +510,6 @@ export class Shape extends GlyphElement {
 		return this.path.getSegment(num);
 	}
 
-	// --------------------------------------------------------------
-	// Drawing
-	// --------------------------------------------------------------
-
-	/**
-	 * Draw this Shape to a canvas
-	 * @param {object} ctx - canvas context
-	 * @param {view} view
-	 * @returns {boolean}
-	 */
-	drawShape(ctx, view) {
-		// log('Shape.drawShape', 'start');
-		// log('view ' + json(view, true));
-		this.path.drawPath(ctx, view);
-		// log('Shape.drawShape - returning true by default', 'end');
-		return true;
-	}
-
-	/**
-	 * Draws the segment version of this shape
-	 * for debugging purposes
-	 */
-	drawSegments() {
-		const segments = this.path.getPolySegment();
-		segments.slowlyDrawSegments();
-	}
 
 	// --------------------------------------------------------------
 	// Checking

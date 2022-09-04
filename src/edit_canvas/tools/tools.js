@@ -2,6 +2,7 @@ import { getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors, uiColors } from '../../common/colors.js';
 import { makeElement } from '../../common/dom.js';
 import { log, round } from '../../common/functions.js';
+import { drawShape } from '../draw_shapes.js';
 
 
 // --------------------------------------------------------------
@@ -417,7 +418,7 @@ function isThisShapeHere(shape, px, py) {
 	gctx.clearRect(0,0,editor.canvasSize, editor.canvasSize);
 	gctx.fillStyle = 'rgba(0,0,255,0.2)';
 	gctx.beginPath();
-	shape.drawShape(gctx, editor.view);
+	drawShape(shape, gctx, editor.view);
 	gctx.closePath();
 	gctx.fill();
 

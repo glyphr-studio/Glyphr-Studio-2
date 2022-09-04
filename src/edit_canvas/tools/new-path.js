@@ -38,13 +38,7 @@ export class Tool_NewPath {
 				);
 				this.currpt = this.newShape.path.addPathPoint(newpoint);
 			} else if (this.newShape) {
-				let targetSize = getCurrentProject().projectSettings.pointSize /
-					editor.view.dz;
-				if (this.newShape.path.isOverFirstPoint(
-					cXsX(eh.mouseX),
-					cYsY(eh.mouseY),
-					targetSize
-				)) {
+				if (isOverFirstPoint(this.newShape.path, cXsX(eh.mouseX), cYsY(eh.mouseY),)) {
 					// clicked on an existing control point in this path
 					// if first point - close the path
 					eh.toolHandoff = true;
@@ -78,9 +72,6 @@ export class Tool_NewPath {
 
 		this.mousemove = function (ev) {
 			let eh = eventHandlerData;
-			let editor = getCurrentProjectEditor();
-			let targetSize = getCurrentProject().projectSettings.pointSize /
-				editor.view.dz;
 
 			if (this.dragging) {
 				// avoid really small handles
@@ -102,11 +93,7 @@ export class Tool_NewPath {
 
 				redraw({ calledBy: 'Event Handler Tool_NewPath mousemove' });
 			} else if (this.newShape &&
-				this.newShape.path.isOverFirstPoint(
-					cXsX(eh.mouseX),
-					cYsY(eh.mouseY),
-					targetSize
-				)) {
+				isOverFirstPoint(this.newShape.path, cXsX(eh.mouseX), cYsY(eh.mouseY))) {
 				setCursor('penSquare');
 			} else {
 				setCursor('penPlus');

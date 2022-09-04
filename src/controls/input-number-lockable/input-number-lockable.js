@@ -4,6 +4,7 @@ import { InputNumber } from '../input-number/input-number.js';
 import { uiColors } from '../../common/colors.js';
 import { log } from '../../common/functions.js';
 
+
 /**
  * A numeric input field, with up/down arrows for increment/decrement,
  * and also a lock control that toggles a locked state.

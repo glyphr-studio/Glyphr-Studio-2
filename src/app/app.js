@@ -129,3 +129,22 @@ function makeAppTopBar() {
 	let app = getGlyphrStudioApp();
 	return `<div id="app__top-bar">Glyphr Studio&emsp;<span style="font-size: 0.6em; opacity: 60%;">${app.versionName} - ${app.version}</span></div>`;
 }
+
+// --------------------------------------------------------------
+// Issue email
+// --------------------------------------------------------------
+
+/**
+ * Generates the content for the "email us" link
+ * @returns {string}
+ */
+ export function makeEmailContent() {
+  const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
+  %0A%0A%0A%0A___________________________________________%0A
+  version %09Glyphr Studio  ${getGlyphrStudioApp().version} %0A
+  user agent %09 ${encodeURIComponent(navigator.userAgentData)} %0A`;
+
+  // log(con);
+
+  return con;
+}

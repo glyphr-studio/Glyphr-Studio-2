@@ -1,7 +1,6 @@
-import { Glyph } from './glyph.js';
-import { Shape } from './shape.js';
-import { clone } from '../common/functions.js';
-import { samples } from '../samples/samples.js';
+import { Glyph } from '../glyph.js';
+import { Shape } from '../shape.js';
+import { clone, samples } from './_helpers.js';
 
 /**
  * Create a sample Glyph
@@ -153,10 +152,6 @@ describe('Glyph', () => {
 		expect(g.shapes[2].maxes.xMax).toBe(800);
 	});
 
-	it('isOverControlPoint', () => {
-		expect(sampleGlyph().isOverControlPoint(484, 343.5).type).toBe('p');
-	});
-
 	it('makeSVG', () => {
 		// also tests makeSVGPathData
 		expect(sampleGlyph().makeSVG()).toBe('<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"50\" height=\"50\" viewBox=\"0,0,990,990\"><g transform=\"translate(100,650) scale(0.8,-0.8)\"><path d=\"M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z\"/></g></svg>');
@@ -198,15 +193,5 @@ describe('Glyph', () => {
 });
 
 /*
-CROSS GLYPH METHODS
-canAddComponent(cid)
-collectAllDownstreamLinks(re = [], excludePeers = false)
-collectAllUpstreamLinks(re = [])
-deleteLinks(thisID)
 flattenGlyph()
-copyShapesTo(destinationID, copyGlyphAttributes =
-
-DRAW METHODS
-drawGlyph(ctx, view =x: 0, y: 0, z: 1}, alpha = 1, addLSB = false, fill = '#000')
-
 */

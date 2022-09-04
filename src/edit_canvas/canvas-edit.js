@@ -4,6 +4,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events_mouse.js';
+import { drawGlyph } from './draw_shapes.js';
 
 /**
  * CanvasEdit takes a string of glyphs and displays them on the canvas
@@ -102,11 +103,11 @@ export class CanvasEdit extends HTMLElement {
 		ctx.fillRect(0, view.dy, 1000, 1);
 
 		// Draw glyphs
-		sg.drawGlyph(ctx, view);
+		drawGlyph(sg, ctx, view);
 
 		// Draw selected shape / path
 		ctx.beginPath();
-		editor.multiSelect.shapes.drawShape(ctx, view);
+		editor.multiSelect.shapes.drawShapes(ctx, view);
 		ctx.closePath();
 		ctx.strokeStyle = accentColors.blue.l60;
 		ctx.lineWidth = 1.5;
@@ -114,7 +115,7 @@ export class CanvasEdit extends HTMLElement {
 
 		// Draw temporary new shapes
 		if(eventHandlerData.tempNewBasicShape) {
-			editor.multiSelect.shapes.drawShape(ctx, view);
+			editor.multiSelect.shapes.drawShapes(ctx, view);
 		}
 
 		log('CanvasEdit.redraw', 'end');

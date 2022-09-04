@@ -1,9 +1,7 @@
-import { Path } from './path.js';
-import { PathPoint } from './path_point.js';
-import {findPathIntersections, findPathPointIntersections} from './path.js';
-import {clone} from '../common/functions.js';
-import {samples} from '../samples/samples.js';
-
+import { Path } from '../path.js';
+import { PathPoint } from '../path_point.js';
+import { findPathIntersections, findPathPointIntersections } from '../path.js';
+import { clone, samples } from './_helpers.js';
 
 /**
  * A sample path
@@ -149,16 +147,6 @@ describe('Path', () => {
 		expect(path.pathPoints.length).toBe(8);
 	});
 
-	it('isOverControlPoint', () => {
-		const path = samplePath();
-		expect(path.isOverControlPoint(326, 500).type).toBe('p');
-	});
-
-	it('isOverFirstPoint', () => {
-		const path = samplePath();
-		expect(path.isOverFirstPoint(326, 500)).toBe(true);
-	});
-
 	it('findWinding', () => {
 		const path = samplePath();
 		expect(path.findWinding()).toBe(-5);
@@ -238,7 +226,7 @@ describe('Path', () => {
 });
 
 /*
-CANVAS METHODS
-drawPath
-findPathPointBoundaryIntersections
+findPathIntersections
+	findPathPointBoundaryIntersections
+	findPathPointIntersections
 */

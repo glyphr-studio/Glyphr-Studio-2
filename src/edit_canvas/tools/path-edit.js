@@ -6,6 +6,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { log } from '../../common/functions.js';
 import { cXsX, cYsY } from '../canvas-edit.js';
 import { setCursor } from '../cursors.js';
+import { isOverControlPoint } from '../draw_shapes.js';
 import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData, findAndCallHotspot } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 
@@ -22,7 +23,8 @@ export class Tool_PathEdit {
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
 			let targetSize = getCurrentProject().projectSettings.pointSize / view.dz;
-			this.controlpoint = editor.selectedWorkItem.isOverControlPoint(
+			this.controlpoint = isOverControlPoint(
+				editor.selectedWorkItem,
 				cXsX(ehd.mouseX, view),
 				cYsY(ehd.mouseY, view),
 				targetSize,

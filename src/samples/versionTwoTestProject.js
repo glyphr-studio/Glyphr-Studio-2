@@ -1,11 +1,7 @@
 import { log } from '../common/functions.js';
-import { samples } from './samples.js';
-export default {};
-export { getVersionTwoTestProject };
 
-function getVersionTwoTestProject() {
+export function getVersionTwoTestProject() {
   log('getVersionTwoTestProject', 'start');
-  // let testGlyphShapes = samples.glyphBox.shapes;
   const versionTwoTestProject = {
     projectSettings:{
       name:'Alpha Test Font',

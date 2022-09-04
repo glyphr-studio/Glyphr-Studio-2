@@ -512,12 +512,11 @@ function initGetShapesDialogOptions(type) {
 function pasteShapesFrom(sourceGlyphID) {
 	let destinationGlyphID = getSelectedWorkItemID();
 	let sourceGlyph = getGlyph(sourceGlyphID);
+	// TODO hook up options
+	let options = false;
 
 	if (sourceGlyphID !== destinationGlyphID && sourceGlyph) {
-		sourceGlyph.copyShapesTo(
-			destinationGlyphID,
-			_UI.glyphChooser.getShapeOptions
-		);
+		copyShapesFromTo(sourceGlyph, destinationGlyphID, options);
 
 		// showToast('Copied ' + this.shapes.length + ' shapes');
 		redraw({ calledBy: 'pasteShapesFrom' });
@@ -535,6 +534,49 @@ function pasteShapesFrom(sourceGlyphID) {
 		);
 	}
 }
+
+/**
+ * Copy shapes (and attributes) from one glyph to another
+ * @param {string} destinationID - where to copy shapes to
+ * @param {object} copyGlyphAttributes - which attributes to copy in addition to shapes
+ */
+export function copyShapesFromTo(
+	sourceGlyph,
+	destinationID,
+	copyGlyphAttributes = {
+		srcAutoWidth: false,
+		srcWidth: false,
+		srcLSB: false,
+		srcRSB: false,
+	}
+	) {
+	// log('copyShapesFromTo', 'start');
+	const destinationGlyph = getCurrentProject().getGlyph(destinationID, true);
+	let tc;
+	for (let c = 0; c < sourceGlyph.shapes.length; c++) {
+		tc = sourceGlyph.shapes[c];
+		if (tc.objType === 'ComponentInstance') {
+			getCurrentProject().getGlyph(tc.link).addToUsedIn(destinationID);
+			tc = new ComponentInstance(clone(tc));
+		} else if (tc.objType === 'Shape') {
+			tc = new Shape(clone(tc));
+		}
+		destinationGlyph.shapes.push(tc);
+	}
+	if (copyGlyphAttributes.srcAutoWidth)
+		destinationGlyph.isAutoWide = sourceGlyph.isAutoWide;
+	if (copyGlyphAttributes.srcWidth)
+		destinationGlyph.glyphWidth = sourceGlyph.glyphWidth;
+	if (copyGlyphAttributes.srcLSB)
+		destinationGlyph.leftSideBearing = sourceGlyph.leftSideBearing;
+	if (copyGlyphAttributes.srcRSB)
+		destinationGlyph.rightSideBearing = sourceGlyph.rightSideBearing;
+	destinationGlyph.changed();
+	// log('new shapes');
+	// log(destinationGlyph.shapes);
+	// log('copyShapesFromTo', 'end');
+}
+
 
 // --------------------------------------------------------------
 // COMPONENT Actions
