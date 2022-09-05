@@ -1,6 +1,7 @@
 import { Shape } from '../shape.js';
 import { Path } from '../path.js';
-import { clone, samples } from './_helpers.js';
+import { clone } from '../../common/functions.js';
+import { samples } from '../../samples/samples.js';
 
 /**
  * A sample shape

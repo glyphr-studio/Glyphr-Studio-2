@@ -1,10 +1,13 @@
-// import { getGlyphrStudioApp } from '../app/main.js';
-
 /**
  * FUNCTIONS
  * some random general-use functions
  */
 
+export function log(msg) {
+	console.log(`%c\n\nUSING WRONG LOG`, 'color:red');
+	console.log(msg);
+	console.log(`%cUSING WRONG LOG\n\n`, 'color:red');
+}
 // --------------------------------------------------------------
 // File Saver
 // --------------------------------------------------------------
