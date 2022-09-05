@@ -228,7 +228,7 @@ function isInputHex(str) {
  */
 function isValidHex(hexInput) {
 	const green = '0123456789ABCDEF';
-	str = hexInput.toString();
+	let str = hexInput.toString();
 	if (str.startsWith('0x')) str = str.substring(2);
 	str = str.toUpperCase();
 

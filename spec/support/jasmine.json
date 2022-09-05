@@ -1,19 +1,7 @@
 {
   "spec_dir": "spec",
   "spec_files": [
-    "!../src/glyph_elements/spec/glyph.test.js",
-    "../src/glyph_elements/spec/component_instance.test.js",
-    "!../src/glyph_elements/spec/shape.test.js",
-    "!../src/glyph_elements/spec/poly_segment.test.js",
-    "!../src/glyph_elements/spec/segment.test.js",
-    "!../src/glyph_elements/spec/path.test.js",
-    "../src/glyph_elements/spec/path_point.test.js",
-    "../src/glyph_elements/spec/control_point.test.js",
-    "../src/glyph_elements/spec/coord.test.js",
-    "../src/glyph_elements/spec/maxes.test.js",
-    "../src/glyph_elements/spec/xy_point.test.js",
-    "../src/glyph_elements/spec/h_kern.test.js",
-    "../src/glyph_elements/spec/glyph_element.test.js"
+    "../src/glyph_elements/spec/*.test.js"
   ],
   "env": {
     "stopSpecOnExpectationFailure": false,

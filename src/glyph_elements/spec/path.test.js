@@ -1,6 +1,6 @@
 import { Path } from '../path.js';
 import { PathPoint } from '../path_point.js';
-import { findPathIntersections, findPathPointIntersections } from '../path.js';
+// import { findPathIntersections, findPathPointIntersections } from '../path.js';
 import { clone, samples } from './_helpers.js';
 
 /**
@@ -206,6 +206,12 @@ describe('Path', () => {
 		expect(!p.checkForNaN()).toBeTruthy();
 	});
 
+	it('PathPoint: pointNumber', () => {
+		const pp = samplePath().pathPoints[3];
+		expect(pp.pointNumber).toBe(3);
+	});
+
+	/*
 	it('findPathIntersections', () => {
 		const tp2 = trianglePath();
 		tp2.x = 150;
@@ -218,11 +224,8 @@ describe('Path', () => {
 		p2.y = 814;
 		expect(findPathPointIntersections(samplePath(), p2)[0]).toBe('326.65249430318556/500');
 	});
+*/
 
-	it('PathPoint: pointNumber', () => {
-		const pp = samplePath().pathPoints[3];
-		expect(pp.pointNumber).toBe(3);
-	});
 });
 
 /*
