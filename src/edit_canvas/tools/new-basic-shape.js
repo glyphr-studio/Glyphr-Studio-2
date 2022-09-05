@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
-import { isVal, log, round } from '../../common/functions.js';
+import { isVal, round } from '../../common/functions.js';
 import { ControlPoint } from '../../glyph_elements/control_point.js';
 import { Coord } from '../../glyph_elements/coord.js';
 import { Path } from '../../glyph_elements/path.js';

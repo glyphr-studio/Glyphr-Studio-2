@@ -2,8 +2,6 @@ import { makeElement } from '../../common/dom.js';
 import { ButtonToggle } from '../button-toggle/button-toggle.js';
 import { InputNumber } from '../input-number/input-number.js';
 import { uiColors } from '../../common/colors.js';
-import { log } from '../../common/functions.js';
-
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement,

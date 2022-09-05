@@ -6,7 +6,7 @@ import { PolySegment } from './poly_segment.js';
 import { PathPoint } from './path_point.js';
 import { getOverallMaxes, maxesOverlap } from './maxes.js';
 import { findSegmentIntersections } from './poly_segment.js';
-import { log, clone, round, isVal, hasNonValues, duplicates, pointsAreEqual } from '../common/functions.js';
+import { clone, round, isVal, hasNonValues, duplicates, pointsAreEqual } from '../common/functions.js';
 
 /**
  * Glyph Element > Path

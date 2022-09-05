@@ -1,6 +1,5 @@
 export { makeNavButton, makeNavButtonContent, showNavDropdown };
 import { makeElement } from '../common/dom.js';
-import { log } from '../common/functions.js';
 import { makeChooserContent_Glyphs, makeChooserContent_Pages, makeChooserContent_Panels } from '../panels/panel-choosers.js';
 import { getCurrentProjectEditor } from './main.js';
 

@@ -1,5 +1,3 @@
-import { log } from '../common/functions.js';
-
 export function getVersionTwoTestProject() {
   log('getVersionTwoTestProject', 'start');
   const versionTwoTestProject = {

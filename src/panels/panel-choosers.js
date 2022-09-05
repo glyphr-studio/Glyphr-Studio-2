@@ -1,7 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 import { accentColors } from "../common/colors.js";
 import { makeElement } from "../common/dom.js";
-import { log } from "../common/functions.js";
 import { makeIcon } from "../common/graphics.js";
 import { areHexValuesEqual, basicLatinOrder } from "../common/unicode.js";
 import { GlyphTile } from "../controls/glyph-tile/glyph-tile.js";

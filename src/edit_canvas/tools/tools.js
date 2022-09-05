@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors, uiColors } from '../../common/colors.js';
 import { makeElement } from '../../common/dom.js';
-import { log, round } from '../../common/functions.js';
+import { round } from '../../common/functions.js';
 import { drawShape } from '../draw_shapes.js';
 
 

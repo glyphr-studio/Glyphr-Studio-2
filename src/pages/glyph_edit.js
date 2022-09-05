@@ -1,5 +1,4 @@
 import { makeElement } from '../common/dom.js';
-import { log } from '../common/functions.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../app/nav.js';
 import { showNavDropdown } from '../app/nav.js';

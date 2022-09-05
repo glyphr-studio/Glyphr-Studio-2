@@ -1,8 +1,5 @@
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeElement } from '../common/dom.js';
-import { log } from '../common/functions.js';
-
-
 
 // --------------------------------------------------------------
 // Action Button

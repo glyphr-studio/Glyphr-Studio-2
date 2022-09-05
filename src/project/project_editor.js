@@ -4,14 +4,7 @@ import { PageGlyphEdit } from '../pages/glyph_edit.js';
 import { PageOverview } from '../pages/overview.js';
 import { History } from './history.js';
 import { makeElement } from '../common/dom.js';
-import {
-	log,
-	saveFile,
-	makeDateStampSuffix,
-	json,
-	getFirstID,
-	clone,
-} from '../common/functions.js';
+import { saveFile, makeDateStampSuffix, json, getFirstID, clone } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import { Glyph } from '../glyph_elements/glyph.js';
 import { makeAppTopBar } from '../app/app.js';

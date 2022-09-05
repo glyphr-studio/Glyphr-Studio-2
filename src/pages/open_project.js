@@ -3,7 +3,6 @@ import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { makeErrorMessageBox } from '../controls/dialogs.js';
 import { GlyphrStudioProject } from '../project/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
-import { log } from '../common/functions.js';
 import { uiColors, accentColors } from '../common/colors.js';
 // import { importOTFFont } from '../io/otf_import.js';
 // import { importSVGFont } from '../io/svg_font_import.js';

@@ -3,7 +3,6 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProjectEditor } from '../../app/main.js';
-import { log } from '../../common/functions.js';
 import { setCursor } from '../cursors.js';
 import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData } from '../events_mouse.js';
 import { clickTool, getShapeAtLocation } from './tools.js';

@@ -1,6 +1,5 @@
 import { ProjectEditor } from '../project/project_editor.js';
 import { importGlyphrProjectFromText } from '../project/import.js';
-import { log } from '../common/functions.js';
 import { getGlyphrStudioApp } from './main.js';
 import { showNavDropdown } from './nav.js';
 
@@ -138,7 +137,7 @@ function makeAppTopBar() {
  * Generates the content for the "email us" link
  * @returns {string}
  */
- export function makeEmailContent() {
+export function makeEmailContent() {
   const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
   %0A%0A%0A%0A___________________________________________%0A
   version %09Glyphr Studio  ${getGlyphrStudioApp().version} %0A

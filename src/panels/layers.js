@@ -5,7 +5,6 @@
 
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
-import { log } from '../common/functions.js';
 import { makeActionButtonIcon } from './action-buttons.js';
 
 export function makePanel_Layers() {

@@ -4,7 +4,7 @@ import { Path } from './path.js';
 import { Shape } from './shape.js';
 import { ComponentInstance } from './component_instance.js';
 import { getOverallMaxes } from './maxes.js';
-import { log, json, clone, hasNonValues, isVal, trim } from '../common/functions.js';
+import { json, clone, hasNonValues, isVal, trim } from '../common/functions.js';
 import { parseUnicodeInput, getUnicodeName, hexToHTML, hexToChars } from '../common/unicode.js';
 // import { combineShapes } from '../panels/REFACTOR_shape.js';
 
