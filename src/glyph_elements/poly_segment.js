@@ -5,7 +5,6 @@ import { Segment } from './segment.js';
 // import { PathPoint } from './path_point.js';
 import { maxesOverlap } from './maxes.js';
 import { duplicates, clone, pointsAreEqual, round, numSan } from '../common/functions.js';
-import { sXcX, sYcY } from '../edit_canvas/canvas-edit.js';
 
 /**
  * Glyph Element > Poly Segment
@@ -231,25 +230,6 @@ export class PolySegment extends GlyphElement {
 		// log(ix);
 		// log('PolySegment.findIntersections', 'end');
 		return ix;
-	}
-
-	/**
-	 * Draws all the intersections between segments
-	 * @param {object} ctx - canvas context
-	 * @param {string} color
-	 */
-	drawIntersections(ctx, color = 'rgb(200, 50, 60)') {
-		// log('PolySegment.drawIntersections', 'start');
-		const ix = this.findIntersections();
-		let co;
-		ctx.fillStyle = color;
-		ix.forEach(function (v, i) {
-			ix[i] = new XYPoint(...v.split('/'));
-			co = ix[i];
-			ctx.fillRect(sXcX(co.x), sYcY(co.y), 5, 5);
-		});
-		// log(ix);
-		// log('PolySegment.drawIntersections', 'end');
 	}
 
 	/**
@@ -495,64 +475,6 @@ export class PolySegment extends GlyphElement {
 		// log('PolySegment.removeDuplicateSegments', 'end');
 
 		return this;
-	}
-
-	/**
-	 * Removes all the segments that overlap a provided shape
-	 * @param {Shape} shape
-	 * @returns {PolySegment}
-	 */
-	removeSegmentsOverlappingShape(shape) {
-		// log('PolySegment.removeSegmentsOverlappingShape', 'start');
-		// log('segments starting as ' + this._segments.length);
-		// log(this._segments);
-		const pt = 3;
-		let tx;
-		let ty;
-
-		/**
-		 * Finds out if a segment overlaps a shape
-		 * @param {Segment} seg - segment to test
-		 * @param {array} split
-		 * @param {Shape} shape - shape to test
-		 * @returns {boolean}
-		 */
-		function testForHit(seg, split, shape) {
-			split = seg.splitAtTime(split);
-			tx = split[0].p4x;
-			ty = split[0].p4y;
-
-			if (!shape.isHere(sXcX(tx), sYcY(ty + pt))) return false;
-
-			if (!shape.isHere(sXcX(tx), sYcY(ty - pt))) return false;
-
-			if (!shape.isHere(sXcX(tx + pt), sYcY(ty))) return false;
-
-			if (!shape.isHere(sXcX(tx - pt), sYcY(ty))) return false;
-
-			if (!shape.isHere(sXcX(tx), sYcY(ty))) return false;
-
-			return true;
-		}
-
-		for (let s = 0; s < this._segments.length; s++) {
-			if (
-				testForHit(this._segments[s], 0.33, shape) &&
-				testForHit(this._segments[s], 0.66, shape)
-			) {
-				this._segments[s].objType = 'HIT';
-			} else {
-			}
-		}
-
-		// log(this._segments);
-		this._segments = this._segments.filter(function (v) {
-			return v.objType === 'Segment';
-		});
-		// alert('removeSegmentsOverlappingShape - hits and misses');
-
-		return this;
-		// log('PolySegment.removeSegmentsOverlappingShape', 'end');
 	}
 
 	/**

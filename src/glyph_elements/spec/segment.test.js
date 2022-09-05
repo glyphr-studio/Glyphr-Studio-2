@@ -101,12 +101,12 @@ describe('Segment', () => {
 		expect(seg.isLineOverlappedByLine(sampleSegment().convertToLine())).toBeTruthy();
 	});
 
-	it('containsTerminalPoint', 'start', () => {
+	it('containsTerminalPoint start', () => {
 		// also tests Segment.containsStartPoint
 		expect(sampleSegment().containsTerminalPoint({x: 0, y: 0})).toBe('start');
 	});
 
-	it('containsTerminalPoint - end', () => {
+	it('containsTerminalPoint end', () => {
 		// also tests Segment.containsEndPoint
 		expect(sampleSegment().containsTerminalPoint({x: 200, y: 200})).toBe('end');
 	});
@@ -161,4 +161,5 @@ describe('Segment', () => {
 		const seg2 = new Segment({p1x: 200, p1y: 200});
 		expect(findEndPointSegmentIntersections(seg1, seg2)[0]).toBe('200/200');
 	});
+
 });
