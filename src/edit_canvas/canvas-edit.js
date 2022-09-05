@@ -1,5 +1,4 @@
 import { makeElement } from '../common/dom.js';
-import { log } from '../common/functions.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';

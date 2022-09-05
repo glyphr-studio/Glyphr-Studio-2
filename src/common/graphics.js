@@ -1,5 +1,4 @@
 import { accentColors, uiColors } from './colors.js';
-import { log } from './functions.js';
 
 // --------------------------------------------------------------
 // Logos

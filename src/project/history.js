@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { clone, log } from '../common/functions.js';
+import { clone } from '../common/functions.js';
 
 /**
 	History

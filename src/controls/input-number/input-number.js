@@ -1,7 +1,6 @@
 import { makeElement } from '../../common/dom.js';
 import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
-import { round, log } from '../../common/functions.js';
-
+import { round } from '../../common/functions.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement

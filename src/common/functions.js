@@ -5,65 +5,6 @@
  * some random general-use functions
  */
 
-/**
- * Wrapper for console.log that does some extra fancy stuff, and
- * also adheres to a global switch in settings
- * @param {string} message - message to show in the console
- * @param {boolean} type - 'start' or 'end'
- */
-
-let logColors = {};
-let logCount = 0;
-export function log(message, type) {
-	// let dev = getGlyphrStudioApp().settings.dev;
-	let dev = {
-		mode: true,
-		debugTableObjects: true
-	};
-	let ch = '･ ';
-	// if (!dev.mode) return;
-
-	const commonStyle = `
-		font-weight:bold;
-		border-radius: 4px;
-		padding: 6px 12px 4px 12px;
-		position: relative;
-		left: -20px;
-	`;
-
-	if (dev.mode) {
-		if (typeof message === 'string') {
-			message = message.replace(/&lt;/gi, '<');
-			message = message.replace(/&gt;/gi, '>');
-			if (type === 'start' || type === 'end') {
-				if (type === 'start') {
-					if (!logColors[message])
-						logColors[message] = `hsl(${Math.floor(
-							Math.random() * 360
-						)}, 60%, 20%)`;
-					console.log(
-						`${ch.repeat(logCount)}%cSTART\t${message}`,
-						`background-color: ${logColors[message]}; margin-top: 20px; ${commonStyle}`
-					);
-					logCount++;
-				} else if (type === 'end') {
-					logCount--;
-					console.log(
-						`${ch.repeat(logCount)}%cEND  \t${message}`,
-						`background-color: ${logColors[message]}; margin-bottom: 20px; ${commonStyle}`
-					);
-					delete logColors[message];
-				}
-			} else {
-				console.log(`${ch.repeat(logCount)}${message}`);
-			}
-		} else if (typeof message === 'object') {
-			if (dev.debugTableObjects) console.table(message);
-			else console.log(message);
-		}
-	}
-}
-
 // --------------------------------------------------------------
 // File Saver
 // --------------------------------------------------------------

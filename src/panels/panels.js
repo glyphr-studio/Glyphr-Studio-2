@@ -1,5 +1,4 @@
 import { getCurrentProjectEditor } from "../app/main.js";
-import { log } from "../common/functions.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
 import { makePanel_Actions } from "./actions.js";
 import { makePanel_GlyphAttributes } from "./attributes_glyph.js";

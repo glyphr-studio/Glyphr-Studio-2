@@ -1,5 +1,4 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { log } from '../common/functions.js';
 import { accentColors } from '../common/colors.js';
 import { updateCursor } from './cursors.js';
 import { Tool_Pan}  from './tools/pan.js';

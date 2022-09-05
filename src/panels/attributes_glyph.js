@@ -1,14 +1,13 @@
-/**
-		Panel > Attributes > Glyph
-		Builds a panel of attributes for a Glyph,
-		which changes based on Shape or Path Point
-		selection.
-**/
-import { log } from "../common/functions.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
 import { getCurrentProjectEditor } from "../app/main.js";
 import { makeAttributesGroup_pathPoint, makeAttributesGroup_shape, makeInputs_position, makeInputs_size } from "./attributes.js";
 
+/**
+	Panel > Attributes > Glyph
+	Builds a panel of attributes for a Glyph,
+	which changes based on Shape or Path Point
+	selection.
+**/
 
 export function makePanel_GlyphAttributes() {
 	log('makePanel_GlyphAttributes', 'start');

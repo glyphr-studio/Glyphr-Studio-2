@@ -1,5 +1,4 @@
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
-import { log } from './functions.js';
 
 let basicLatinOrder = {};
 let unicodeRanges = {};

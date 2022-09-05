@@ -7,13 +7,8 @@
 import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 import { accentColors } from "../common/colors.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
-import { log, round } from "../common/functions.js";
-export {
-	makeInputs_position,
-	makeInputs_size,
-	makeAttributesGroup_pathPoint,
-	makeAttributesGroup_shape
-};
+import { round } from "../common/functions.js";
+export { makeInputs_position, makeInputs_size, makeAttributesGroup_pathPoint, makeAttributesGroup_shape };
 
 
 

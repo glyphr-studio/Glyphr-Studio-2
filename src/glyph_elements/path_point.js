@@ -1,6 +1,6 @@
 import { GlyphElement } from './glyph_element.js';
 import { ControlPoint } from './control_point.js';
-import { round, rotate, pointsAreEqual, isVal, log } from '../common/functions.js';
+import { round, rotate, pointsAreEqual, isVal } from '../common/functions.js';
 
 /**
  * Glyph Element > Path Point

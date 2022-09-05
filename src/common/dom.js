@@ -1,5 +1,3 @@
-import { log } from './functions.js';
-
 /**
  * Nicer centralized way of creating DOM elements
  * @param {string} tag - HTML element to create
