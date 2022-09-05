@@ -1,6 +1,4 @@
 
-export { exportOTFFont };
-
 import { Glyph } from '../glyph_elements/glyph.js';
 import { getCurrentProject } from '../app/main.js';
 import { round, clone } from '../common/functions.js';
@@ -14,7 +12,7 @@ import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
 	Project into OpenType.js format for saving.
 **/
 
-function exportOTFFont() {
+export function exportOTFFont() {
 	// log('exportOTFFont', 'start');
 	// log('combineShapesOnExport = ' + getCurrentProject().projectSettings.combineShapesOnExport);
 

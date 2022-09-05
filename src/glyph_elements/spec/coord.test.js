@@ -1,5 +1,5 @@
 import { Coord } from '../coord.js';
-import { pointsAreEqual } from './_helpers.js';
+import { pointsAreEqual } from '../../common/functions.js';
 
 describe('Coord', () => {
 	it('Constructor - x', () => {

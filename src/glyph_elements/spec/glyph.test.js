@@ -1,6 +1,7 @@
 import { Glyph } from '../glyph.js';
 import { Shape } from '../shape.js';
-import { clone, samples } from './_helpers.js';
+import { clone } from '../../common/functions.js';
+import { samples } from '../../samples/samples.js';
 
 /**
  * Create a sample Glyph
