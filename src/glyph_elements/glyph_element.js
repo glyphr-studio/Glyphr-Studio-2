@@ -1,4 +1,4 @@
-// import { json, clone } from '../common/functions.js';
+import { json, clone } from '../common/functions.js';
 
 /**
  * Base for all Glyph Elements
@@ -67,9 +67,10 @@ export class GlyphElement {
 	 */
 	save(verbose = false) {
 		const re = clone(this);
-		re.objType = this.objType;
 
 		if (verbose) re.objType = this.objType;
+		else delete re.objType;
+
 		if (re.cache) delete re.cache;
 
 		return re;

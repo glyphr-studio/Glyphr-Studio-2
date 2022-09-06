@@ -23,8 +23,24 @@ describe('Segment', () => {
 			p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 100, p3y: 200, p4x: 200, p4y: 200});
 	});
 
+	it('lineType getter', () => {
+		// also tests determineLineType
+		const seg = new Segment({p1x: 0, p1y: 100, p4x: 100, p4y: 0});
+		expect(seg.lineType).toBe('diagonal');
+	});
+
 	it('length getter', () => {
 		expect(sampleSegment().length).toBe(309.8050662153215);
+	});
+
+	it('baseLength', () => {
+		//these also test getLineLength
+		expect(sampleSegment().baseLength).toBe(282.842712474619);
+	});
+
+	it('topLength', () => {
+		//these also test getLineLength
+		expect(sampleSegment().topLength).toBe(341.4213562373095);
 	});
 
 	it('quickLength getter', () => {
@@ -35,21 +51,8 @@ describe('Segment', () => {
 		expect(sampleSegment().maxes.xMax).toBe(200);
 	});
 
-	it('line getter', () => {
-		const seg = new Segment({p1x: 0, p1y: 100, p4x: 100, p4y: 0});
-		expect(seg.lineType).toBe('diagonal');
-	});
-
 	it('split', () => {
 		expect(sampleSegment().split()[1].p1x).toBe(62.5);
-	});
-
-	it('getXYPointFromSplit', () => {
-		expect(sampleSegment().getXYPointFromSplit().y).toBe(137.5);
-	});
-
-	it('getSplitFromXYPoint', () => {
-		expect(round(sampleSegment().getSplitFromXYPoint({x: 62.5, y: 137.5}).split, 2)).toBe(0.5);
 	});
 
 	it('splitAtPoint', () => {
@@ -79,8 +82,16 @@ describe('Segment', () => {
 		expect(sampleSegment().convertToLine().lineType).toBe('diagonal');
 	});
 
+	it('getXYPointFromSplit', () => {
+		expect(sampleSegment().getXYPointFromSplit().y).toBe(137.5);
+	});
+
 	it('calculateLength', () => {
 		expect(sampleSegment().calculateLength()).toBe(309.8050662153215);
+	});
+
+	it('getSplitFromXYPoint', () => {
+		expect(round(sampleSegment().getSplitFromXYPoint({x: 62.5, y: 137.5}).split, 2)).toBe(0.5);
 	});
 
 	it('getReverse', () => {
@@ -94,6 +105,8 @@ describe('Segment', () => {
 	it('getFastMaxes', () => {
 		expect(sampleSegment().getFastMaxes().xMax).toBe(200);
 	});
+
+	// calcMaxes
 
 	it('isLineOverlappedByLine', () => {
 		const seg = new Segment({p1x: 50, p1y: 50, p4x: 150, p4y: 150});

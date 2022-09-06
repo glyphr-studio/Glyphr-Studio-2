@@ -521,10 +521,13 @@ export class ComponentInstance extends GlyphElement {
 	 * and returns a Glyph object - while also updating the cache
 	 * @returns {Glyph}
 	 */
+
+	// TODO refactor
+	/*
 	makeTransformedGlyph() {
 		// log('ComponentInstance.makeTransformedGlyph - START ' + this.name);
 
-		const g = this.cloneAndFlattenGlyph(this.link);
+		const g = this.cloneAndFlattenGlyph();
 		if (!g) {
 			console.warn(
 				'Tried to get Component: ' +
@@ -564,6 +567,38 @@ export class ComponentInstance extends GlyphElement {
 
 		return g;
 	}
+
+	cloneAndFlattenGlyph() {
+		// log(`ComponentInstance.cloneAndFlatten`, 'start');
+		// log('\t gid: ' + gid);
+
+		let og = getGlyph(gid, true);
+		if(og) og = new Glyph(clone(og, 'convertComponentInstanceToGlyph'));
+
+		let newshapes = [];
+		let tempglyph;
+
+		if(og.shapes){
+			for(let s=0; s<og.shapes.length; s++){
+				if(og.shapes[s].objtype === 'componentinstance'){
+					tempglyph = og.shapes[s].makeTransformedGlyph();
+					newshapes = newshapes.concat(tempglyph.shapes);
+
+				} else {
+					newshapes.push(og.shapes[s]);
+				}
+			}
+
+			og.shapes = newshapes;
+		} else {
+			og.shapes = [];
+		}
+
+		// log(og);
+		// log(`ComponentInstance.cloneAndFlatten`, 'end');
+		return og;
+	}
+*/
 
 	// --------------------------------------------------------------
 	// Export to different languages

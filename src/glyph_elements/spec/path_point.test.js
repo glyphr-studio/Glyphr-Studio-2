@@ -29,6 +29,11 @@ describe('PathPoint', () => {
 		expect(pp.type).toBe('corner');
 	});
 
+	it('save', () => {
+		const pp = samplePathPoint();
+		expect(pp.save()).toEqual(JSON.parse('{"p":{"coord":{"x":100,"y":100}},"type":"corner","h1":{"coord":{"x":0,"y":0}},"h2":{"coord":{"x":200,"y":200}}}'));
+	});
+
 	it('ControlPoint: length', () => {
 		const pp = samplePathPoint();
 		expect(pp.h1.length).toBe(141.4213562373095);
@@ -47,19 +52,32 @@ describe('PathPoint', () => {
 	});
 
 	it('ControlPoint: use', () => {
-		const p = new PathPoint();
-		p.h1.use = false;
-		expect(p.h1.x).toBe(p.p.x);
+		const pp = new PathPoint();
+		pp.h1.use = false;
+		expect(pp.h1.x).toBe(pp.p.x);
 	});
 
-	it('save', () => {
+	it('updatePathPointPosition', () => {
 		const pp = samplePathPoint();
-		expect(pp.save()).toEqual(JSON.parse('{"p":{"coord":{"x":100,"y":100}},"type":"corner","h1":{"coord":{"x":0,"y":0}},"h2":{"coord":{"x":200,"y":200}}}'));
+		pp.updatePathPointPosition('p', 100, 100);
+		expect(pp.p.x).toBe(200);
+	});
+
+	it('makeSymmetric', () => {
+		const pp = samplePathPoint();
+		pp.h2.x = 555;
+		expect(pp.makeSymmetric('h1').h2.x).toBe(200);
 	});
 
 	it('isFlat', () => {
 		const pp = samplePathPoint();
 		expect(pp.isFlat()).toBeTruthy();
+	});
+
+	it('makeFlat', () => {
+		const pp = samplePathPoint();
+		pp.h2.x = 555;
+		expect(pp.makeFlat('h1').h2.x).toBe(429.412355566697);
 	});
 
 	it('resolvePointType', () => {
@@ -70,18 +88,6 @@ describe('PathPoint', () => {
 	it('makePointedTo', () => {
 		const pp = samplePathPoint();
 		expect(pp.makePointedTo(300, 0).h2.x).toBe(166.66666666666666);
-	});
-
-	it('makeSymmetric', () => {
-		const pp = samplePathPoint();
-		pp.h2.x = 555;
-		expect(pp.makeSymmetric('h1').h2.x).toBe(200);
-	});
-
-	it('makeFlat', () => {
-		const pp = samplePathPoint();
-		pp.h2.x = 555;
-		expect(pp.makeFlat('h1').h2.x).toBe(429.412355566697);
 	});
 
 	it('rotate', () => {
@@ -100,4 +106,10 @@ describe('PathPoint', () => {
 		pp.h1.x = 39.9999;
 		expect(pp.roundAll(3).h1.x).toBe(40);
 	});
+
+	// TODO write tests
+	//ControlPoint as part of a PathPoint
+	// angle
+	// niceAngle
+	// length
 });

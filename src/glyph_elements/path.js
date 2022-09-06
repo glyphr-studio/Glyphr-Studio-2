@@ -1177,18 +1177,18 @@ export function findPathPointBoundaryIntersections(p1, p2) {
 		let tpp;
 		for (let pp = 0; pp < chk.pathPoints.length; pp++) {
 			tpp = chk.pathPoints[pp];
-			if (
-				tpp.p.x === m.xMin ||
-				tpp.p.x === m.xMax ||
-				tpp.p.y === m.yMin ||
-				tpp.p.y === m.yMax
-			) {
-				// TODO - get rid of .isHere
-				// if (against.isHere(sXcX(tpp.p.x), sYcY(tpp.p.y))) {
-				// if (against.isHere(tpp.p.x, tpp.p.y)) {
-				//   re.push(''+tpp.p.x+'/'+tpp.p.y);
-				// }
+
+			if(tpp.p.x === m.xMin || tpp.p.x === m.xMax){
+				if(tpp.p.y <= m.yMax && tpp.p.y >= m.yMin){
+					re.push(''+tpp.p.x+'/'+tpp.p.y);
+				}
 			}
+			if(tpp.p.y === m.yMin || tpp.p.y === m.yMax){
+				if(tpp.p.x <= m.xMax && tpp.p.x >= m.xMin){
+					re.push(''+tpp.p.x+'/'+tpp.p.y);
+				}
+			}
+
 		}
 	}
 

@@ -7,6 +7,30 @@ describe('Maxes', () => {
 		expect(m1.xMax).toBe(Number.MIN_SAFE_INTEGER);
 	});
 
+	it('xMin getter/setter', () => {
+		const m1 = new Maxes();
+		m1.xMin = 500;
+		expect(m1.xMin).toBe(500);
+	});
+
+	it('xMax getter/setter', () => {
+		const m1 = new Maxes();
+		m1.xMax = 500;
+		expect(m1.xMax).toBe(500);
+	});
+
+	it('yMin getter/setter', () => {
+		const m1 = new Maxes();
+		m1.yMin = 500;
+		expect(m1.yMin).toBe(500);
+	});
+
+	it('yMax getter/setter', () => {
+		const m1 = new Maxes();
+		m1.yMax = 500;
+		expect(m1.yMax).toBe(500);
+	});
+
 	it('maxBounds', () => {
 		const m1 = new Maxes();
 		expect(m1.maxBounds.xMax).toBe(Number.MAX_SAFE_INTEGER);

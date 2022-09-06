@@ -1,9 +1,20 @@
 import { GlyphElement } from '../glyph_element.js';
 
 describe('GlyphElement', () => {
-	it('get/set objType', () => {
+	it('objType get/set', () => {
 		const ge = new GlyphElement();
-		ge.objType = 'GlyphElement';
-		expect(ge.objType).toBe('GlyphElement');
+		ge.objType = 'test';
+		expect(ge.objType).toBe('test');
+	});
+
+	it('cache get/set', () => {
+		const ge = new GlyphElement();
+		ge.cache = 'test';
+		expect(ge.cache).toBe('test');
+	});
+
+	it('save', () => {
+		const ge = new GlyphElement();
+		expect(ge.save(true)).toEqual({objType: 'GlyphElement'});
 	});
 });
