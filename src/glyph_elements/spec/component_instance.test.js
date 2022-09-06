@@ -105,54 +105,30 @@ describe('ComponentInstance', () => {
 		expect(ci.ratioLock).toBe(true);
 	});
 
+	// TODO refactor with component stuff
 	/*
-		it('get/set x', () => {
-			let ci = sampleComponentInstance();
-			ci.x = false;
-			expect(ci.x).toBe(false);
-		});
+	it('get/set x', () => {
+		let ci = sampleComponentInstance();
+		ci.x = false;
+		expect(ci.x).toBe(false);
+	});
 
-		it('get/set y', () => {
-			let ci = sampleComponentInstance();
-			ci.y = false;
-			expect(ci.y).toBe(false);
-		});
+	it('get/set y', () => {
+		let ci = sampleComponentInstance();
+		ci.y = false;
+		expect(ci.y).toBe(false);
+	});
 
-		it('get/set width', () => {
-			let ci = sampleComponentInstance();
-			ci.width = false;
-			expect(ci.width).toBe(false);
-		});
+	it('get/set width', () => {
+		let ci = sampleComponentInstance();
+		ci.width = false;
+		expect(ci.width).toBe(false);
+	});
 
-		it('get/set height', () => {
-			let ci = sampleComponentInstance();
-			ci.height = false;
-			expect(ci.height).toBe(false);
-		});
-	*/
-
-});
-
-
-/*
-link(link)
-name(name)
-translateX(translateX)
-translateY(translateY)
-scaleW(scaleW)
-scaleH(scaleH)
-isFlippedEW(isFlippedEW)
-isFlippedNS(isFlippedNS)
-reverseWinding(reverseWinding)
-rotation(rotation)
-rotateFirst(rotateFirst)
-xLock(xLock)
-yLock(yLock)
-wLock(wLock)
-hLock(hLock)
-ratioLock(ratioLock)
-x(x)
-y(y)
-width(w)
-height(h)
+	it('get/set height', () => {
+		let ci = sampleComponentInstance();
+		ci.height = false;
+		expect(ci.height).toBe(false);
+	});
 */
+});

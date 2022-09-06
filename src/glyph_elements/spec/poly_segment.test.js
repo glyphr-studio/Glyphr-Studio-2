@@ -102,4 +102,10 @@ describe('PolySegment', () => {
 		]});
 		expect(ps.removeNonConnectingSegments().segments.length).toBe(3);
 	});
+
+	// TODO write tests
+	//segmentsAreEqual
+	//findOverlappingLineSegmentIntersections
+	//findCrossingLineSegmentIntersections
+	//findEndPointSegmentIntersections
 });

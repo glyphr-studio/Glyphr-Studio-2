@@ -1,6 +1,6 @@
 import { Glyph } from '../glyph.js';
 import { Shape } from '../shape.js';
-import { clone } from '../../common/functions.js';
+import { clone, numSan } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
 
 /**
@@ -123,6 +123,12 @@ describe('Glyph', () => {
 		expect(g.maxes.save()).toEqual({xMax: 123, xMin: 123, yMax: 435, yMin: 345});
 	});
 
+	// TODO write tests
+	// setGlyphPosition
+	// updateGlyphPosition
+	// setGlyphSize
+	// updateGlyphSize
+
 	it('flipNS', () => {
 		const g = multiTriangleGlyph();
 		g.flipNS();
@@ -132,7 +138,7 @@ describe('Glyph', () => {
 	it('flipEW', () => {
 		const g = multiTriangleGlyph();
 		g.flipEW();
-		expect(g.shapes[0].path.pathPoints[0].p.x).toBe(207.49999995426862);
+		expect(g.shapes[0].path.pathPoints[0].p.x).toBe(207.5);
 	});
 
 	it('rotate', () => {
@@ -157,6 +163,13 @@ describe('Glyph', () => {
 		// also tests makeSVGPathData
 		expect(sampleGlyph().makeSVG()).toBe('<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"50\" height=\"50\" viewBox=\"0,0,990,990\"><g transform=\"translate(100,650) scale(0.8,-0.8)\"><path d=\"M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z\"/></g></svg>');
 	});
+
+	// TODO write tests
+	// calcMaxes
+	// makeSVG
+	// makeSVGPathData
+	// flattenGlyph
+
 
 	// it('combineAllShapes', () => {
 	//   const s1 = new Shape({path: {pathPoints: [
@@ -192,7 +205,3 @@ describe('Glyph', () => {
 		expect(g.usedIn[0]).toBe('0x0004');
 	});
 });
-
-/*
-flattenGlyph()
-*/

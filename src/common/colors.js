@@ -1,23 +1,11 @@
-let accentColors = {};
-let uiColors = {};
 import { round } from './functions.js';
-export {
-	uiColors,
-	accentColors,
-	parseColorString,
-	shiftColor,
-	getColorFromRGBA,
-	transparencyToAlpha,
-	makeRandomSaturatedColor,
-	flashUIElementAsActive,
-};
 
 // --------------------------------------------------------------
 // Re-usable Colors
 // --------------------------------------------------------------
 /* eslint-disable key-spacing */
 
-accentColors = {
+export const accentColors = {
 	gray: {
 		l97: 'hsl(200, 81%, 97%)',
 		l95: 'hsl(200, 81%, 94%)',
@@ -132,7 +120,7 @@ accentColors = {
 
 const accentColor = accentColors.blue.l65;
 
-uiColors = {
+export const uiColors = {
 	accent: accentColor,
 	offWhite: 'hsl(200, 81%, 97%)',
 	darkRed: 'hsl(0, 100%, 23%)',
@@ -186,7 +174,7 @@ uiColors = {
  * @param {string} c - color string
  * @returns {object}
  */
-function parseColorString(c) {
+export function parseColorString(c) {
 	const val = { r: 0, g: 0, b: 0, a: 1 };
 
 	if (typeof c !== 'string') return val;
@@ -215,7 +203,7 @@ function parseColorString(c) {
  * @param {boolean} lighter - true = lighten, false = darken
  * @returns {string}
  */
-function shiftColor(c, percent, lighter) {
+export function shiftColor(c, percent, lighter) {
 	percent = Math.max(0, Math.min(percent, 1));
 	const val = parseColorString(c);
 
@@ -242,7 +230,7 @@ function shiftColor(c, percent, lighter) {
  * @param {number} alpha - transparency
  * @returns {string}
  */
-function getColorFromRGBA(rgb, alpha) {
+export function getColorFromRGBA(rgb, alpha) {
 	const val = parseColorString(rgb);
 
 	const dr = round((255 - val.r) * (1 - alpha));
@@ -261,7 +249,7 @@ function getColorFromRGBA(rgb, alpha) {
  * @param {number} transparency - 0=opaque, 100=transparent
  * @returns {number}
  */
-function transparencyToAlpha(transparency) {
+export function transparencyToAlpha(transparency) {
 	const t = parseInt(transparency);
 	if (!t || isNaN(t)) return 1;
 
@@ -275,7 +263,7 @@ function transparencyToAlpha(transparency) {
  * Makes a random fully saturated color
  * @returns {string}
  */
-function makeRandomSaturatedColor() {
+export function makeRandomSaturatedColor() {
 	const sat = Math.floor(Math.random() * 5) * 51;
 	const arr = [];
 	const saturatedColorLocation = Math.floor(Math.random() * 3);
@@ -305,7 +293,7 @@ function makeRandomSaturatedColor() {
  * :active style for a brief moment.
  * @param {object} elem - HTML Element to flash
  */
-function flashUIElementAsActive(elem) {
+export function flashUIElementAsActive(elem) {
 	elem.style.borderColor = uiColors.enabled.active.border;
 	elem.style.backgroundColor = uiColors.enabled.active.background;
 	elem.style.color = uiColors.enabled.active.fill;

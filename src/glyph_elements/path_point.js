@@ -198,7 +198,7 @@ export class PathPoint extends GlyphElement {
 			case 'p':
 				// Should this honor xLock / yLock?
 				// Should this be _x/_y instead of x/y?
-				this.p.coord._x += dx;
+				this.p.coord.x += dx;
 				this.p.coord.y += dy;
 				// this.p.coord.changed();
 

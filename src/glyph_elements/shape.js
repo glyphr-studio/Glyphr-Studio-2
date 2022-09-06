@@ -494,13 +494,6 @@ export class Shape extends GlyphElement {
 		this.path.reverseWinding();
 	}
 
-	// /**
-	//  * Call path.calcMaxes
-	//  */
-	// calcMaxes() {
-	//     this.path.calcMaxes();
-	// }
-
 	/**
 	 * Call path.getSegment
 	 * @param {number} num - which segment to get
@@ -523,28 +516,4 @@ export class Shape extends GlyphElement {
 		return this.path.checkForNaN();
 	}
 
-	/* NEEDS REFACTORING - NO NEED TO DUPLICATE THESE METHODS HERE
-
-		drawPathOutline(accent = '#000', thickness = 1) {
-				// log('Shape.drawPathOutline', 'start');
-				drawPathOutline(this, accent, thickness);
-		}
-
-		drawBoundingBox(accent = '#000', thickness = 1) {
-				// log('Shape.drawBoundingBox', 'start');
-				drawBoundingBox(this.path.maxes, accent, thickness);
-		}
-
-		drawBoundingBoxHandles(accent = '#000', thickness = 1) {
-				// log('Shape.drawBoundingBoxHandles', 'start');
-				drawBoundingBoxHandles(this.path.maxes, accent, thickness);
-		}
-
-		isOverBoundingBoxHandle(px, py) {
-				// log('Shape.isOverBoundingBoxHandle', 'start');
-				let c = isOverBoundingBoxHandle(px, py, this.maxes);
-				// log('Shape.isOverBoundingBoxHandle returning ' + c);
-				return c;
-		}
-*/
 }

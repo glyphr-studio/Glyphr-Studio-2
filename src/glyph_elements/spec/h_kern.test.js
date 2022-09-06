@@ -13,6 +13,14 @@ function sampleHKern() {
 }
 
 describe('HKern', () => {
+	it('leftGroup', () => {
+		expect(sampleHKern().leftGroup[0]).toBe('0x0041');
+	});
+
+	it('rightGroup', () => {
+		expect(sampleHKern().rightGroup[1]).toBe('0x0076');
+	});
+
 	it('value', () => {
 		expect(sampleHKern().value).toBe(123);
 	});

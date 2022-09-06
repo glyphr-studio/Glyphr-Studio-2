@@ -1,6 +1,6 @@
 import { Path } from '../path.js';
 import { PathPoint } from '../path_point.js';
-// import { findPathIntersections, findPathPointIntersections } from '../path.js';
+import { findPathIntersections, findPathPointBoundaryIntersections, findPathPointIntersections } from '../path.js';
 import { clone } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
 
@@ -27,6 +27,7 @@ function trianglePath() {
 
 describe('Path', () => {
 	it('pathPoints', () => {
+		// also tests pathPoints setter
 		const path = samplePath();
 		expect(path.pathPoints[3].p.x).toBe(170);
 	});
@@ -40,6 +41,8 @@ describe('Path', () => {
 		const path = samplePath();
 		expect(path.print()).toBeTruthy();
 	});
+
+	// pathPoints getter is tested lots of places
 
 	it('winding getter', () => {
 		const path = samplePath();
@@ -71,9 +74,41 @@ describe('Path', () => {
 		expect(path.maxes.save()).toEqual({'xMin': 170, 'xMax': 484, 'yMin': 186, 'yMax': 500});
 	});
 
-	it('svgPathData', () => {
+	it('svgPathData getter', () => {
 		const path = samplePath();
 		expect(path.svgPathData).toBe('M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z');
+	});
+
+	it('winding setter', () => {
+		const path = samplePath();
+		path.winding = -1;
+		expect(path.winding).toBe(-1);
+	});
+
+	it('maxes setter', () => {
+		const path = samplePath();
+		path.maxes = {
+			xMin: 100,
+			yMin: 100,
+			xMax: 300,
+			yMax: 300,
+		};
+		expect(path.maxes.center.x).toBe(200);
+	});
+
+	it('y setter', () => {
+		// y setter uses setPathPosition and updatePathPosition
+		const path = samplePath();
+		path.y = 654;
+		expect(path.y).toBe(654);
+	});
+
+	it('x setter', () => {
+		// x setter uses setPathPosition and updatePathPosition
+		const path = samplePath();
+		path.x = 654;
+
+		expect(path.x).toBe(654);
 	});
 
 	it('width setter', () => {
@@ -90,19 +125,11 @@ describe('Path', () => {
 		expect(path.height).toBe(654);
 	});
 
-	it('y setter', () => {
-		// y setter uses setPathPosition and updatePathPosition
+	it('svgPathData setter', () => {
 		const path = samplePath();
-		path.y = 654;
-		expect(path.y).toBe(654);
-	});
+		path.svgPathData = '<svg>hi</svg>';
 
-	it('x setter', () => {
-		// x setter uses setPathPosition and updatePathPosition
-		const path = samplePath();
-		path.x = 654;
-
-		expect(path.x).toBe(654);
+		expect(path.svgPathData).toBe('<svg>hi</svg>');
 	});
 
 	it('getNextPointNum', () => {
@@ -212,12 +239,19 @@ describe('Path', () => {
 		expect(pp.pointNumber).toBe(3);
 	});
 
-	/*
 	it('findPathIntersections', () => {
 		const tp2 = trianglePath();
 		tp2.x = 150;
 
-		expect(findPathIntersections(trianglePath(), tp2).length).toBe(2);
+		expect(findPathIntersections(trianglePath(), tp2).length).toBe(5);
+	});
+
+	it('findPathPointBoundaryIntersections', () => {
+		const tp2 = trianglePath();
+		tp2.x = 0;
+		tp2.y = 700;
+
+		expect(findPathPointBoundaryIntersections(trianglePath(), tp2).length).toBe(1);
 	});
 
 	it('findPathPointIntersections', () => {
@@ -225,12 +259,5 @@ describe('Path', () => {
 		p2.y = 814;
 		expect(findPathPointIntersections(samplePath(), p2)[0]).toBe('326.65249430318556/500');
 	});
-*/
 
 });
-
-/*
-findPathIntersections
-	findPathPointBoundaryIntersections
-	findPathPointIntersections
-*/
