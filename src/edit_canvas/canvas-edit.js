@@ -49,7 +49,21 @@ export class CanvasEdit extends HTMLElement {
 		let editor = getCurrentProjectEditor();
 		initEventHandlers(this.canvas);
 		editor.editCanvas = this;
-		editor.subscribe({topic: 'view', name: 'Edit canvas', callback: () => this.redraw()});
+		editor.subscribe({
+			topic: 'view',
+			name: 'Edit canvas',
+			callback: () => this.redraw('CanvasEdit view subscriber')
+		});
+		editor.subscribe({
+			topic: 'currentGlyph',
+			name: 'Edit canvas',
+			callback: () => this.redraw('CanvasEdit currentGlyph subscriber')
+		});
+		editor.subscribe({
+			topic: 'currentShape',
+			name: 'Edit canvas',
+			callback: () => this.redraw('CanvasEdit currentShape subscriber')
+		});
 
 		this.redraw();
 		log(`CanvasEdit.constructor`, 'end');
@@ -68,12 +82,8 @@ export class CanvasEdit extends HTMLElement {
 		switch (attributeName) {
 			case 'glyphs':
 				this.glyphs = newValue;
-				this.redraw();
+				this.redraw('CanvasEdit.attributeChangeCallback - attribute: glyphs');
 				break;
-		}
-
-		if (attributeName === 'glyphs') {
-			this.redraw();
 		}
 		log(`CanvasEdit.attributeChangeCallback`, 'end');
 	}
@@ -83,8 +93,9 @@ export class CanvasEdit extends HTMLElement {
 	// --------------------------------------------------------------
 	// Redraw the canvas
 	// --------------------------------------------------------------
-	redraw() {
+	redraw(caller = '') {
 		log('CanvasEdit.redraw', 'start');
+		if(caller) log(`==CALLED BY ${caller}==`);
 		let editor = getCurrentProjectEditor();
 		let ctx = this.ctx;
 		let view = editor.view;
