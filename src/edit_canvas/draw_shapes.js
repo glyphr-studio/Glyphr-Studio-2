@@ -170,32 +170,6 @@ function drawComponentInstance(componentInstance, ctx, view) {
 	return !failed;
 }
 
-/* NEEDS TO BE REFACTORED
-drawComponentInstanceOutline(componentInstance, accent = '#000', thickness = 1) {
-	// log('ComponentInstance.drawPathOutline', 'start');
-	let g = componentInstance.transformedGlyph;
-	for (let s = 0; s < g.shapes.length; s++) {
-		drawPathOutline(g.shapes[s], accent, thickness);
-	}
-}
-drawComponentInstanceBoundingBox(componentInstance, accent = '#000', thickness = 1) {
-	// log('ComponentInstance.drawBoundingBox', 'start');
-	let g = componentInstance.transformedGlyph.maxes;
-	drawBoundingBox(g, accent, thickness);
-}
-drawComponentInstanceBoundingBoxHandles(componentInstance, accent = '#000', thickness = 1) {
-	// log('ComponentInstance.drawBoundingBoxHandles', 'start');
-	let g = componentInstance.transformedGlyph.maxes;
-	drawBoundingBoxHandles(g, accent, thickness);
-}
-isOverComponentInstanceBoundingBoxHandle(componentInstance, px, py) {
-	// log('ComponentInstance.isOverBoundingBoxHandle', 'start');
-	let c = isOverBoundingBoxHandle(px, py, componentInstance.maxes);
-	// log('ComponentInstance.isOverBoundingBoxHandle returning ' + c);
-	return c;
-}
-*/
-
 
 // --------------------------------------------------------------
 // Path
