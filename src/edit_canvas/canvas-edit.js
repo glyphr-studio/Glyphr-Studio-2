@@ -3,7 +3,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events_mouse.js';
-import { drawGlyph } from './draw_shapes.js';
+import { drawGlyph, drawShape } from './draw_shapes.js';
 import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles } from './draw_edit_affordances.js';
 
 /**
@@ -53,17 +53,17 @@ export class CanvasEdit extends HTMLElement {
 		editor.subscribe({
 			topic: 'view',
 			name: 'Edit canvas',
-			callback: () => this.redraw('CanvasEdit view subscriber')
+			callback: () => this.redraw({calledBy: 'CanvasEdit view subscriber'})
 		});
 		editor.subscribe({
 			topic: 'currentGlyph',
 			name: 'Edit canvas',
-			callback: () => this.redraw('CanvasEdit currentGlyph subscriber')
+			callback: () => this.redraw({calledBy: 'CanvasEdit currentGlyph subscriber'})
 		});
 		editor.subscribe({
 			topic: 'currentShape',
 			name: 'Edit canvas',
-			callback: () => this.redraw('CanvasEdit currentShape subscriber')
+			callback: () => this.redraw({calledBy: 'CanvasEdit currentShape subscriber'})
 		});
 
 		this.redraw();
@@ -83,7 +83,7 @@ export class CanvasEdit extends HTMLElement {
 		switch (attributeName) {
 			case 'glyphs':
 				this.glyphs = newValue;
-				this.redraw('CanvasEdit.attributeChangeCallback - attribute: glyphs');
+				this.redraw({calledBy: 'CanvasEdit.attributeChangeCallback - attribute: glyphs'});
 				break;
 		}
 		log(`CanvasEdit.attributeChangeCallback`, 'end');
@@ -94,9 +94,9 @@ export class CanvasEdit extends HTMLElement {
 	// --------------------------------------------------------------
 	// Redraw the canvas
 	// --------------------------------------------------------------
-	redraw(caller = '') {
+	redraw(oa = {}) {
 		log('CanvasEdit.redraw', 'start');
-		if(caller) log(`==CALLED BY ${caller}==`);
+		if(oa?.calledBy) log(`==CALLED BY ${oa.calledBy}==`);
 		let editor = getCurrentProjectEditor();
 		let ctx = this.ctx;
 		let view = editor.view;
@@ -123,28 +123,28 @@ export class CanvasEdit extends HTMLElement {
 		if (editMode === 'shapeEdit') {
 			computeAndDrawBoundingBox(ctx);
 			computeAndDrawBoundingBoxHandles(ctx);
+
 		} else if (editMode === 'rotate') {
 			computeAndDrawRotationAffordance(ctx);
+
 		} else if (editMode === 'pathEdit') {
-			if (eventHandlerData.multi) sg.drawMultiSelectAffordances(ctx);
 			computeAndDrawPathPointHandles(ctx);
 			computeAndDrawPathPoints(ctx);
-			// computeAndDrawPathPoints(ctx);
 
 			if (eventHandlerData.hoverPoint) {
 				let hp = eventHandlerData.hoverPoint;
 				ctx.fillStyle = hp.fill;
 				ctx.fillRect(hp.x, hp.y, hp.size, hp.size);
 			}
+
 		} else if (editMode === 'newPath') {
 			computeAndDrawPathPointHandles(ctx);
 			computeAndDrawPathPoints(ctx);
-			// computeAndDrawPathPoints(ctx);
 		}
 
 		// Draw temporary new shapes
 		if(eventHandlerData.tempNewBasicShape) {
-			computeAndDrawShapes(ctx);
+			drawShape(eventHandlerData.tempNewBasicShape, ctx, view);
 		}
 
 		log('CanvasEdit.redraw', 'end');

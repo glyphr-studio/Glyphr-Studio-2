@@ -1,5 +1,5 @@
-import { ProjectEditor } from '../project/project_editor.js';
-import { importGlyphrProjectFromText } from '../project/import.js';
+import { ProjectEditor } from '../project_editor/project_editor.js';
+import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from './main.js';
 import { showNavDropdown } from './nav.js';
 

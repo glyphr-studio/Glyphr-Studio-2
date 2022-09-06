@@ -56,8 +56,8 @@ export class Tool_PathAddPoint {
 				if (pt && pt.distance < 20) {
 					this.addpoint = pt;
 					let ptsize = getCurrentProject().projectSettings.pointSize;
-					let ptx = makeCrisp(sXcX(pt.x) - ptsize / 2);
-					let pty = makeCrisp(sYcY(pt.y) - ptsize / 2);
+					let ptx = (sXcX(pt.x) - ptsize / 2);
+					let pty = (sYcY(pt.y) - ptsize / 2);
 					openNotation(
 						'x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3),
 						ptx,

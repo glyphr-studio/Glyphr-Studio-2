@@ -1,4 +1,4 @@
-import { ProjectEditor } from '../project/project_editor.js';
+import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp } from './app.js';
 
 /* Web Components */
