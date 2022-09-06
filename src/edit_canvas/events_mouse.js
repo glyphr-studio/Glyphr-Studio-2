@@ -285,16 +285,16 @@ function updateDragSelectArea(dx, dy, dw, dh) {
 	eventHandlerData.dragSelectArea.yMin += dh + dy;
 }
 
-function canResize(pc) {
+export function canResize(handle) {
 	let editor = getCurrentProjectEditor();
-	let rl = editor.multiSelect.shapes.getAttribute('ratioLock');
-	let xl = editor.multiSelect.shapes.getAttribute('xLock');
-	let yl = editor.multiSelect.shapes.getAttribute('yLock');
-	let wl = editor.multiSelect.shapes.getAttribute('wLock');
-	let hl = editor.multiSelect.shapes.getAttribute('hLock');
+	let rl = editor.multiSelect.shapes.ratioLock;
+	let xl = editor.multiSelect.shapes.xLock;
+	let yl = editor.multiSelect.shapes.yLock;
+	let wl = editor.multiSelect.shapes.wLock;
+	let hl = editor.multiSelect.shapes.hLock;
 	let re = true;
 
-	switch (pc) {
+	switch (handle) {
 		case 'nw':
 			re = rl ? false : !yl && !hl && !xl && !wl;
 			break;
@@ -320,7 +320,7 @@ function canResize(pc) {
 			re = !xl && !wl;
 	}
 
-	// log('canResize ' + pc + ' returning ' + re);
+	// log('canResize ' + handle + ' returning ' + re);
 	return re;
 }
 

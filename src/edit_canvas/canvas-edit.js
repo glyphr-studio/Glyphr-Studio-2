@@ -4,6 +4,7 @@ import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events_mouse.js';
 import { drawGlyph } from './draw_shapes.js';
+import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles } from './draw_edit_affordances.js';
 
 /**
  * CanvasEdit takes a string of glyphs and displays them on the canvas
@@ -116,16 +117,34 @@ export class CanvasEdit extends HTMLElement {
 		drawGlyph(sg, ctx, view);
 
 		// Draw selected shape / path
-		ctx.beginPath();
-		editor.multiSelect.shapes.drawShapes(ctx, view);
-		ctx.closePath();
-		ctx.strokeStyle = accentColors.blue.l60;
-		ctx.lineWidth = 1.5;
-		ctx.stroke();
+		let editMode = editor.selectedTool;
+		log(`editMode: ${editMode}`);
+
+		if (editMode === 'shapeEdit') {
+			computeAndDrawBoundingBox(ctx);
+			computeAndDrawBoundingBoxHandles(ctx);
+		} else if (editMode === 'rotate') {
+			computeAndDrawRotationAffordance(ctx);
+		} else if (editMode === 'pathEdit') {
+			if (eventHandlerData.multi) sg.drawMultiSelectAffordances(ctx);
+			computeAndDrawPathPointHandles(ctx);
+			computeAndDrawPathPoints(ctx);
+			// computeAndDrawPathPoints(ctx);
+
+			if (eventHandlerData.hoverPoint) {
+				let hp = eventHandlerData.hoverPoint;
+				ctx.fillStyle = hp.fill;
+				ctx.fillRect(hp.x, hp.y, hp.size, hp.size);
+			}
+		} else if (editMode === 'newPath') {
+			computeAndDrawPathPointHandles(ctx);
+			computeAndDrawPathPoints(ctx);
+			// computeAndDrawPathPoints(ctx);
+		}
 
 		// Draw temporary new shapes
 		if(eventHandlerData.tempNewBasicShape) {
-			editor.multiSelect.shapes.drawShapes(ctx, view);
+			computeAndDrawShapes(ctx);
 		}
 
 		log('CanvasEdit.redraw', 'end');
@@ -162,18 +181,18 @@ export class CanvasEdit extends HTMLElement {
 			return;
 		}
 
-		_UI.multiSelect.shapes.drawPathOutline();
+		project.multiSelect.shapes.drawPathOutline();
 
 		if (editmode === 'arrow') {
-			_UI.multiSelect.shapes.drawBoundingBox();
-			_UI.multiSelect.shapes.drawBoundingBoxHandles();
+			project.multiSelect.shapes.drawBoundingBox();
+			project.multiSelect.shapes.drawBoundingBoxHandles();
 		} else if (editmode === 'rotate') {
-			_UI.multiSelect.shapes.draw_RotationAffordance();
+			project.multiSelect.shapes.draw_RotationAffordance();
 		} else if (editmode === 'pen') {
 			if (_UI.eventhandlers.multi) sg.drawMultiSelectAffordances(_UI.colors.blue);
-			_UI.multiSelect.points.draw_PathPointHandles();
-			_UI.multiSelect.shapes.draw_PathPoints();
-			// _UI.multiSelect.points.draw_PathPoints();
+			project.multiSelect.points.draw_PathPointHandles();
+			project.multiSelect.shapes.draw_PathPoints();
+			// project.multiSelect.points.draw_PathPoints();
 
 			if (_UI.eventhandlers.hoverpoint) {
 				let hp = _UI.eventhandlers.hoverpoint;
@@ -181,9 +200,9 @@ export class CanvasEdit extends HTMLElement {
 				_UI.glyphEditCTX.fillRect(hp.x, hp.y, hp.size, hp.size);
 			}
 		} else if (editmode === 'newPath') {
-			_UI.multiSelect.points.draw_PathPointHandles();
-			_UI.multiSelect.shapes.draw_PathPoints();
-			// _UI.multiSelect.points.draw_PathPoints();
+			project.multiSelect.points.draw_PathPointHandles();
+			project.multiSelect.shapes.draw_PathPoints();
+			// project.multiSelect.points.draw_PathPoints();
 		}
 
 		_UI.redrawing = false;

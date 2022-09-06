@@ -112,10 +112,10 @@ export class ProjectEditor {
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
-		// log(`ProjectEditor.publish`, 'start');
-		// log(topic);
-		// log(data);
-		// log(`this.subscribers[topic]: ${this.subscribers[topic]}`);
+		log(`ProjectEditor.publish`, 'start');
+		log(topic);
+		log(data);
+		log(`this.subscribers[topic]: ${this.subscribers[topic]}`);
 
 		if (this.subscribers[topic]) {
 			// Handle some things centrally
@@ -137,7 +137,7 @@ export class ProjectEditor {
 		} else {
 			// console.warn(`Nobody subscribed to topic ${topic}`);
 		}
-		// log(`ProjectEditor.publish`, 'end');
+		log(`ProjectEditor.publish`, 'end');
 	}
 
 	/**
