@@ -115,7 +115,7 @@ export class ProjectEditor {
 		log(`ProjectEditor.publish`, 'start');
 		log(topic);
 		log(data);
-		log(`this.subscribers[topic]: ${this.subscribers[topic]}`);
+		// log(`this.subscribers[topic]: ${this.subscribers[topic]}`);
 
 		if (this.subscribers[topic]) {
 			// Handle some things centrally

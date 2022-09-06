@@ -1,12 +1,12 @@
 import { makeElement } from '../common/dom.js';
 import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { makeErrorMessageBox } from '../controls/dialogs.js';
-import { GlyphrStudioProject } from '../project/glyphr_studio_project.js';
+import { GlyphrStudioProject } from '../project_editor/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { uiColors, accentColors } from '../common/colors.js';
 // import { importOTFFont } from '../io/otf_import.js';
 // import { importSVGFont } from '../io/svg_font_import.js';
-import { importGlyphrProjectFromText } from '../project/import.js';
+import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from '../app/main.js';
 
 /**

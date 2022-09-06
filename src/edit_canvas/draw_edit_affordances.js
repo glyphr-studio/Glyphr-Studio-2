@@ -1,9 +1,8 @@
-import { getCurrentProjectEditor } from '../app/main';
-import { accentColors } from '../common/colors';
+import { getCurrentProjectEditor } from '../app/main.js';
+import { accentColors } from '../common/colors.js';
+import { makeCrisp } from '../common/functions.js';
 import { sXcX, sYcY } from './canvas-edit.js';
-import { canResize } from './events_mouse';
-
-
+import { canResize } from './events_mouse.js';
 
 // --------------------------------------------------------------
 // Common size stuff
@@ -11,38 +10,46 @@ import { canResize } from './events_mouse';
 
 let pointSize = 7;
 let rotateHandleHeight = 40;
-let affordanceBorderColor = accentColors.blue.l60;
+let accentBlue = accentColors.blue.l65;
+let accentGreen = accentColors.green.l65;
+let accentGray = accentColors.gray.l65;
 let multiSelectThickness = 3;
 
 
 
 
+
+// --------------------------------------------------------------
+// Shapes
+// --------------------------------------------------------------
 // --------------------------------------------------------------
 // Canvas functions
 // --------------------------------------------------------------
 
 export function computeAndDrawBoundingBox(ctx) {
 	let editor = getCurrentProjectEditor();
+	if(editor.multiSelect.shapes.length < 1) return;
 	let maxes = editor.multiSelect.shapes.getMaxes();
 	let thickness = editor.multiSelect.shapes.length > 1? multiSelectThickness : 1;
 	drawBoundingBox(ctx, maxes, thickness);
 }
 
 export function computeAndDrawRotationAffordance(ctx) {
+	let editor = getCurrentProjectEditor();
 	let ss;
-	if (this.members.length === 1) {
-		ss = this.members[0];
-		const accent =
-			ss.objType === 'ComponentInstance' ? _UI.colors.green : _UI.colors.blue;
+	if (editor.multiSelect.shapes.length === 1) {
+		ss = editor.multiSelect.shapes.members[0];
+		const accent = ss.objType === 'ComponentInstance' ? accentGreen : accentBlue;
 		drawRotationAffordance(accent, false);
-	} else if (this.members.length > 1) {
-		ss = this.glyph;
-		drawRotationAffordance(_UI.colors.gray, _UI.multiSelectThickness);
+	} else if (editor.multiSelect.shapes.length > 1) {
+		ss = editor.multiSelect.shapes.glyph;
+		drawRotationAffordance(accentGray, multiSelectThickness);
 	}
 }
 
 export function computeAndDrawBoundingBoxHandles(ctx) {
 	let editor = getCurrentProjectEditor();
+	if(editor.multiSelect.shapes.length < 1) return;
 	let maxes = editor.multiSelect.shapes.getMaxes();
 	let thickness = editor.multiSelect.shapes.length > 1? multiSelectThickness : 1;
 	drawBoundingBoxHandles(ctx, maxes, thickness);
@@ -53,11 +60,11 @@ export function computeAndDrawBoundingBoxHandles(ctx) {
 // --------------------------------------------------------------
 
 function drawBoundingBox(ctx, maxes, thickness) {
-	log(`drawBoundingBox`, 'start');
-	log(`thickness: ${thickness}`);
-	log(maxes);
+	// log(`drawBoundingBox`, 'start');
+	// log(`thickness: ${thickness}`);
+	// log(maxes);
 
-	let accent = thickness === 1?  affordanceBorderColor : accentColors.gray.l60;
+	let accent = thickness === 1?  accentBlue : accentGray;
 	let lx = sXcX(maxes.xMin);
 	let rx = sXcX(maxes.xMax);
 	let ty = sYcY(maxes.yMax);
@@ -77,11 +84,11 @@ function drawBoundingBox(ctx, maxes, thickness) {
 	ctx.strokeStyle = accent.l65;
 	ctx.lineWidth = thickness;
 	ctx.strokeRect(lx,ty,w,h);
-	log(`drawBoundingBox`, 'end');
+	// log(`drawBoundingBox`, 'end');
 }
 
 function drawBoundingBoxHandles(ctx, maxes, thickness) {
-	let accent = thickness === 1?  affordanceBorderColor : accentColors.gray.l60;
+	let accent = thickness === 1?  accentBlue : accentGray;
 	let bb = getBoundingBoxHandleDimensions(maxes, thickness);
 
 	ctx.fillStyle = 'white';
@@ -90,7 +97,7 @@ function drawBoundingBoxHandles(ctx, maxes, thickness) {
 
 	// TODO rotate handle
 /*
-	if(_UI.ms.shapes.rotatable()){
+	if(getCurrentProjectEditor().multiSelect.shapes.isRotateable()){
 		let h = rotateHandleHeight;
 		ctx.lineWidth = thickness;
 		drawLine({x:bb.midX + bb.hp, y:bb.topY}, {x:bb.midX + bb.hp, y:bb.topY - h});
@@ -130,7 +137,7 @@ function drawBoundingBoxHandles(ctx, maxes, thickness) {
 
 function drawRotationAffordance(ctx, accent, thickness) {
 	let editor = getCurrentProjectEditor();
-	accent = accent || _UI.colors.blue;
+	accent = accent || accentBlue;
 	thickness = thickness || 1;
 	let center = clone(editor.eventHandlerData.rotationcenter, 'drawRotationAffordance');
 	let starttopY = editor.eventHandlerData.rotationstartpoint.y;
@@ -197,8 +204,6 @@ function drawRotationAffordance(ctx, accent, thickness) {
 }
 
 
-
-
 // --------------------------------------------------------------
 // Simple drawings
 // --------------------------------------------------------------
@@ -224,84 +229,89 @@ function drawCircleHandle(ctx, center) {
 	ctx.stroke();
 }
 
-
-
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
 
-
 function isOverBoundingBoxHandle(px, py, maxes, thickness) {
-	// debug('\n isOverBoundingBoxHandle - START');
-	// debug('\t px/py - ' + px + ' / ' + py);
-	// debug('\t maxes - ' + json(maxes, true));
+	// log(`isOverBoundingBoxHandle`, 'start');
+	// log('\t px/py - ' + px + ' / ' + py);
+	// log('\t maxes - ' + json(maxes, true));
 
-	if(!maxes) return false;
-	let ps = _GP.projectsettings.pointsize;
+	if(!maxes) {
+		// log(`no maxes, returning false`);
+		// log(`isOverBoundingBoxHandle`, 'end');
+		return false;
+	}
+
+	let re = false;
+	let ps = pointSize;
 	let bb = getBoundingBoxHandleDimensions(maxes, thickness);
 
-	// debug('\t point size - ' + ps);
-	// debug('\t l/m/r x: ' + bb.leftX + ' / ' + bb.midX + ' / ' + bb.rightX);
-	// debug('\t t/m/b y: ' + bb.topY + ' / ' + bb.midY + ' / ' + bb.bottomY);
+	// log('\t point size - ' + ps);
+	// log('\t l/m/r x: ' + bb.leftX + ' / ' + bb.midX + ' / ' + bb.rightX);
+	// log('\t t/m/b y: ' + bb.topY + ' / ' + bb.midY + ' / ' + bb.bottomY);
 
 	// rotation handle
-	if(_UI.ms.shapes.rotatable()){
+	if(editor.multiSelect.shapes.isRotateable()){
 		if( ((px > bb.midX) && (px < bb.midX+ps)) &&
-			((py > bb.topY-_UI.rotatehandleheight) && (py < bb.topY-_UI.rotatehandleheight+ps)) ){
-			return 'rotate';
+			((py > bb.topY-rotateHandleHeight) && (py < bb.topY-rotateHandleHeight+ps)) ){
+			re = 'rotate';
 		}
 	}
 
 	// upper left
 	if( ((px > bb.leftX) && (px < bb.leftX+ps)) &&
 		((py > bb.topY) && (py < bb.topY+ps)) ){
-		return 'nw';
+		re = 'nw';
 	}
 
 	// top
 	if( ((px > bb.midX) && (px < bb.midX+ps)) &&
 		((py > bb.topY) && (py < bb.topY+ps)) ){
-		return 'n';
+		re = 'n';
 	}
 
 	// upper right
 	if( ((px > bb.rightX) && (px < bb.rightX+ps)) &&
 		((py > bb.topY) && (py < bb.topY+ps)) ){
-		return 'ne';
+		re = 'ne';
 	}
 
 	// right
 	if( ((px > bb.rightX) && (px < bb.rightX+ps)) &&
 		((py > bb.midY) && (py < bb.midY+ps)) ){
-		return 'e';
+		re = 'e';
 	}
 
 	// lower right
 	if( ((px > bb.rightX) && (px < bb.rightX+ps)) &&
 		((py > bb.bottomY) && (py < bb.bottomY+ps)) ){
-		return 'se';
+		re = 'se';
 	}
 
 	// bottom
 	if( ((px > bb.midX) && (px < bb.midX+ps)) &&
 		((py > bb.bottomY) && (py < bb.bottomY+ps)) ){
-		return 's';
+		re = 's';
 	}
 
 	// lower left
 	if( ((px > bb.leftX) && (px < bb.leftX+ps)) &&
 		((py > bb.bottomY) && (py < bb.bottomY+ps)) ){
-		return 'sw';
+		re = 'sw';
 	}
 
 	// left
 	if( ((px > bb.leftX) && (px < bb.leftX+ps)) &&
 		((py > bb.midY) && (py < bb.midY+ps)) ){
-		return 'w';
+		re = 'w';
 	}
 
-	// debug(' isOverBoundingBoxHandle - returning FALSE - END\n');
-	return false;
+	// log(`re: ${re}`);
+
+	// log(`isOverBoundingBoxHandle`, 'end');
+	return re;
 }
 
 function getBoundingBoxHandleDimensions(maxes, thickness) {
@@ -310,14 +320,12 @@ function getBoundingBoxHandleDimensions(maxes, thickness) {
 	thickness = thickness || 1;
 
 	// Translation Fidelity - converting passed canvas values to saved value system
-	dimensions.leftX = (sXcX(maxes.xMin) - hp); //.makeCrisp(false);
+	dimensions.leftX = (sXcX(maxes.xMin) - hp);
 	dimensions.midX = Math.floor(sXcX(maxes.xMin)+((sXcX(maxes.xMax)-sXcX(maxes.xMin))/2)-hp);
-	dimensions.rightX = (sXcX(maxes.xMax) - hp); //.makeCrisp(true);
-
-	dimensions.topY = (sYcY(maxes.yMax) - hp); //.makeCrisp(true);
+	dimensions.rightX = (sXcX(maxes.xMax) - hp);
+	dimensions.topY = (sYcY(maxes.yMax) - hp);
 	dimensions.midY = Math.floor(sYcY(maxes.yMax)+((sYcY(maxes.yMin)-sYcY(maxes.yMax))/2)-hp);
-	dimensions.bottomY = (sYcY(maxes.yMin) - hp); //.makeCrisp(false);
-
+	dimensions.bottomY = (sYcY(maxes.yMin) - hp);
 
 	if(thickness > 1){
 		dimensions.leftX -= thickness;
@@ -326,12 +334,17 @@ function getBoundingBoxHandleDimensions(maxes, thickness) {
 		dimensions.bottomY += thickness;
 	}
 
+	dimensions.leftX = makeCrisp(dimensions.leftX, -1);
+	dimensions.midX = makeCrisp(dimensions.midX, -1);
+	dimensions.rightX = makeCrisp(dimensions.rightX, 1);
+	dimensions.topY = makeCrisp(dimensions.topY, -1);
+	dimensions.midY = makeCrisp(dimensions.midY, -1);
+	dimensions.bottomY = makeCrisp(dimensions.bottomY, 1);
+
 	dimensions.hp = hp;
 
 	return dimensions;
 }
-
-
 
 /* NEEDS TO BE REFACTORED
 drawComponentInstanceOutline(componentInstance, accent = '#000', thickness = 1) {
@@ -360,8 +373,27 @@ isOverComponentInstanceBoundingBoxHandle(componentInstance, px, py) {
 */
 
 
+
+
+
 // --------------------------------------------------------------
 // Paths and PathPoints
+// --------------------------------------------------------------
+// --------------------------------------------------------------
+// Canvas Stuff
+// --------------------------------------------------------------
+
+export function computeAndDrawPathPointHandles(ctx) {
+
+}
+
+export function computeAndDrawPathPoints(ctx) {
+
+}
+
+
+// --------------------------------------------------------------
+// Points and handles
 // --------------------------------------------------------------
 
 /**
@@ -372,7 +404,7 @@ isOverComponentInstanceBoundingBoxHandle(componentInstance, px, py) {
  * @param {string} accent - accent color
  * @param {number} pointSize - how big to draw the point
  */
-export function drawPoint(point, ctx, isSelected, accent = '#000', pointSize = 7) {
+export function drawPoint(point, ctx, isSelected) {
 	// log('PathPoint.drawPoint', 'start');
 	// log('sel = ' + isSelected);
 
@@ -409,7 +441,7 @@ export function drawPoint(point, ctx, isSelected, accent = '#000', pointSize = 7
  * @param {Point} next - next Point in the path sequence
  * @param {number} pointSize - how big to draw the point
  */
-export function drawDirectionalityPoint(point, ctx, isSelected, accent = '#000', next, pointSize = 7) {
+export function drawDirectionalityPoint(point, ctx, isSelected) {
 	// ctx.fillStyle = sel? 'white' : accent;
 	ctx.fillStyle = isSelected ? 'white' : accent;
 	ctx.strokeStyle = accent;
@@ -482,7 +514,7 @@ export function drawDirectionalityPoint(point, ctx, isSelected, accent = '#000',
  * @param {string} accent - accent color
  * @param {number} pointSize - how big to draw the point
  */
-export function drawHandles(point, ctx, drawH1, drawH2, accent = '#000', pointSize = 7) {
+export function drawHandles(point, ctx, drawH1, drawH2) {
 	ctx.fillStyle = accent;
 	ctx.strokeStyle = accent;
 	ctx.lineWidth = 1;
@@ -541,7 +573,7 @@ export function drawHandles(point, ctx, drawH1, drawH2, accent = '#000', pointSi
  * @param {Point} prevP - Previous point in the path sequence
  * @param {number} pointSize - how big to draw the point
  */
-export function drawQuadraticHandle(ctx, accent = '#000', prevP, pointSize = 7) {
+export function drawQuadraticHandle(ctx) {
 	// Draw Quadratic handle point from imported SVG
 	ctx.fillStyle = accent;
 	ctx.strokeStyle = accent;
