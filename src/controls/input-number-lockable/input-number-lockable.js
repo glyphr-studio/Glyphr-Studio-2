@@ -18,14 +18,10 @@ export class InputNumberLockable extends HTMLElement {
 		// log(JSON.stringify(attributes));
 		super();
 
-		Object.keys(attributes).forEach((key) =>
-			this.setAttribute(key, attributes[key])
-		);
-
+		if(attributes.hideBorder) this.setAttribute('hideBorder', attributes.hideBorder);
 		this.locked = this.hasAttribute('locked');
-
+		this.respondToChanges = true;
 		this.wrapper = makeElement({ className: 'wrapper' });
-
 		this.inputNumber = new InputNumber({ hideBorder: true });
 
 		this.padlock = new ButtonToggle({
@@ -100,10 +96,19 @@ export class InputNumberLockable extends HTMLElement {
 	}
 
 	/**
-	 * Specify which attributes are observed and trigger attributeChangedCallback
+	 * Get the main value
+	 * @returns {number}
 	 */
-	 static get observedAttributes() {
-		return ['disabled', 'value'];
+	 get value() {
+		return this.inputNumber.value;
+	}
+
+	/**
+	 * Set the main numberValue
+	 * @param {number} number - new main value
+	 */
+	set value(number) {
+		this.inputNumber.value = number;
 	}
 
 	/**
@@ -113,7 +118,7 @@ export class InputNumberLockable extends HTMLElement {
 		// log(`InputNumberLockable.connectedCallback`, 'start');
 		let parentValue = this.getAttribute('value');
 		// log(`parentValue: ${parentValue}`);
-		this.inputNumber.setAttribute('value', parentValue);
+		this.value = parentValue;
 		// log(`InputNumberLockable.connectedCallback`, 'end');
 	}
 
@@ -147,5 +152,40 @@ export class InputNumberLockable extends HTMLElement {
 			}
 		}
 		// log(`InputNumberLockable.chidAttributeChanged`, 'end');
+	}
+
+	/**
+	 * Specify which attributes are observed and trigger attributeChangedCallback
+	 */
+	 static get observedAttributes() {
+		return ['disabled', 'selected'];
+	}
+
+	/**
+	 * Listens for attribute changes on this element
+	 * @param {string} attributeName - which attribute was changed
+	 * @param {string} oldValue - value before the change
+	 * @param {string} newValue - value after the change
+	 */
+	attributeChangedCallback(attributeName, oldValue, newValue) {
+		// log(`InputNumberLockable.attributeChangeCallback`, 'start');
+		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+
+		switch (attributeName) {
+			// case 'disabled':
+			// 	this.glyphs = newValue;
+			// 	this.redraw();
+			// 	break;
+
+			// case 'selected':
+			// 	this.height = newValue;
+			// 	this.redraw();
+			// break;
+
+			default:
+				break;
+		}
+
+		// log(`InputNumberLockable.attributeChangeCallback`, 'end');
 	}
 }
