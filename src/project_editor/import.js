@@ -1,5 +1,5 @@
 export { importGlyphrProjectFromText };
-import { GlyphrStudioProject } from './glyphr_studio_project.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { getGlyphrStudioApp } from '../app/main.js';
 // import { migrateGlyphrStudioProject } from './migrate.js';
 

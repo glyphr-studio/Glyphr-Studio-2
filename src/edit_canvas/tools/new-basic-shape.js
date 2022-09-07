@@ -4,11 +4,11 @@
 
 import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
 import { isVal, round } from '../../common/functions.js';
-import { ControlPoint } from '../../glyph_elements/control_point.js';
-import { Coord } from '../../glyph_elements/coord.js';
-import { Path } from '../../glyph_elements/path.js';
-import { PathPoint } from '../../glyph_elements/path_point.js';
-import { Shape } from '../../glyph_elements/shape.js';
+import { ControlPoint } from '../../project_data/control_point.js';
+import { Coord } from '../../project_data/coord.js';
+import { Path } from '../../project_data/path.js';
+import { PathPoint } from '../../project_data/path_point.js';
+import { Shape } from '../../project_data/shape.js';
 import { cXsX, cYsY } from '../canvas-edit.js';
 import { eventHandlerData } from '../events_mouse.js';
 import { action_addShape } from './tools.js';
