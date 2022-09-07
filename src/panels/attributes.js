@@ -379,6 +379,9 @@ function makeInputs_size(workItem){
 		<info-bubble>
 			When either the width or height is adjusted,
 			the overall size will be kept proportional.
+			<br><br>
+			Maintaining aspect ratio will override value
+			locks if need be.
 		</info-bubble>
 		`
 	});
