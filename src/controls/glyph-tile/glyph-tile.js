@@ -2,7 +2,7 @@ import { makeElement } from '../../common/dom.js';
 import { uiColors, accentColors } from '../../common/colors.js';
 import { hexToChars } from '../../common/unicode.js';
 import { lookUpGlyphName } from '../../lib/unicode_names.js';
-import { Glyph } from '../../glyph_elements/glyph.js';
+import { Glyph } from '../../project_data/glyph.js';
 import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
 import { drawGlyph } from '../../edit_canvas/draw_shapes.js';
 

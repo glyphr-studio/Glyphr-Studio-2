@@ -1,10 +1,9 @@
-import { Glyph } from '../glyph_elements/glyph.js';
-import { HKern } from '../glyph_elements/h_kern.js';
+import { Glyph } from '../project_data/glyph.js';
+import { HKern } from '../project_data/h_kern.js';
 import { clone, round, trim } from '../common/functions.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, hexToHTML, basicLatinOrder, normalizeHex } from '../common/unicode.js';
-import { Maxes, getOverallMaxes } from '../glyph_elements/maxes.js';
-import { getCurrentProject } from '../app/main.js';
+import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -334,7 +333,7 @@ export class GlyphrStudioProject {
 			return un;
 		}
 
-		const cobj = getCurrentProject().getGlyph(id);
+		const cobj = this.getGlyph(id);
 		if (id.indexOf('0x', 2) > -1) {
 			// ligature
 			// log('ligature - returning ' + hexToHTML(id));

@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { drawShape } from '../edit_canvas/draw_shapes.js';
-import { Glyph } from '../glyph_elements/glyph.js';
-import { Shape } from '../glyph_elements/shape.js';
+import { Glyph } from '../project_data/glyph.js';
+import { Shape } from '../project_data/shape.js';
 
 /**
 		Multi-Select

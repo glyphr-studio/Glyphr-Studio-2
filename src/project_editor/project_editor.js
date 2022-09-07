@@ -1,12 +1,13 @@
-import { GlyphrStudioProject } from './glyphr_studio_project.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { PageOpenProject } from '../pages/open_project.js';
 import { PageGlyphEdit } from '../pages/glyph_edit.js';
 import { PageOverview } from '../pages/overview.js';
 import { History } from './history.js';
 import { makeElement } from '../common/dom.js';
-import { saveFile, makeDateStampSuffix, json, getFirstID, clone } from '../common/functions.js';
+import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
+import { json, getFirstID, clone } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
-import { Glyph } from '../glyph_elements/glyph.js';
+import { Glyph } from '../project_data/glyph.js';
 import { makeAppTopBar } from '../app/app.js';
 import { normalizeHex } from '../common/unicode.js';
 

@@ -1,7 +1,7 @@
 import { makeElement } from '../common/dom.js';
 import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { makeErrorMessageBox } from '../controls/dialogs.js';
-import { GlyphrStudioProject } from '../project_editor/glyphr_studio_project.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { uiColors, accentColors } from '../common/colors.js';
 // import { importOTFFont } from '../io/otf_import.js';

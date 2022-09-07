@@ -1,4 +1,4 @@
-import { ComponentInstance } from '../glyph_elements/component_instance.js';
+import { ComponentInstance } from '../project_data/component_instance.js';
 import { sXcX, sYcY } from './canvas-edit.js';
 import { round } from '../common/functions.js';
 
