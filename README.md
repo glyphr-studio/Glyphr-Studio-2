@@ -2,14 +2,14 @@
 V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010,
 so it's time to do an all-up scrub.
 
-While most features and functionality will be the same as V1, the one main functionality improvement will
+While most user scenarios and functionality will be the same as V1, the one main functionality improvement will
 be **multi-project editing** that will allow for cross-project copy/paste and merging fonts.
 
 ## What's changing
 My rough road-map is to start refactoring the Glyph Element objects (the underlying data structures
 that describe glyphs), ensure we have good separation between data and the UI, then start working on
 the new UI layer.
-| | **Glyph Elements / data structure stuff** |
+| | **Glyph Elements / Project Data stuff** |
 |:---:|:--- |
 | :white_check_mark: | Modules (native) |
 | :white_check_mark: | Change prototypes to classes |
@@ -23,12 +23,12 @@ the new UI layer.
 | | **UI Layer stuff** |
 |:---:|:--- |
 | :white_check_mark: | Use Web Components to define atomic controls |
-| :soon: | New top-level navigation / page view switching |
-| :soon: | CSS3, mostly for Variables and Layout |
-| :soon: | Let / Const instead of Var |
-| :soon: | Template strings instead of string concatenation |
-| :soon: | Lint everything with Prettier |
-| :soon: | JSDoc *all the things* |
+| :white_check_mark: | New top-level navigation / page view switching |
+| :white_check_mark: | CSS3, mostly for Variables and Layout |
+| :white_check_mark: | Let / Const instead of Var |
+| :white_check_mark: | Template strings instead of string concatenation |
+| :white_check_mark: | Lint everything with Prettier |
+| :white_check_mark: | JSDoc *all the things* |
 | :black_square_button: | Jasmine tests for everything (basic coverage) |
 | :black_square_button: | Investigation - Language switching for localization |
 
@@ -48,9 +48,10 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
   * Build process using Parcel for modules
 
 ## Timeline
-Preliminary investigations started in 2019... but Covid slowed things way down. Progress will be very
-slow, and bug fixes for V1 will still take precidence over V2. Merging new ideas with old functionality
-is also time consuming :-)
+Preliminary investigations started in 2019... but Covid slowed things way down.
+Things have picked back up in 2021/2022. Bug fixes for V1 will still take precidence over V2.
+
+Merging new ideas with old functionality is also time consuming :-)
 
 
 ## License
