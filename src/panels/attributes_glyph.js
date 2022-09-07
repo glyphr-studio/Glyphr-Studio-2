@@ -1,24 +1,24 @@
 import { addAsChildren, makeElement } from "../common/dom.js";
 import { getCurrentProjectEditor } from "../app/main.js";
-import { makeAttributesGroup_pathPoint, makeAttributesGroup_shape, makeInputs_position, makeInputs_size } from "./attributes.js";
+import { makeAttributesGroup_pathPoint, makeAttributesGroup_path, makeInputs_position, makeInputs_size } from "./attributes.js";
 
 /**
 	Panel > Attributes > Glyph
 	Builds a panel of attributes for a Glyph,
-	which changes based on Shape or Path Point
+	which changes based on Path or Path Point
 	selection.
 **/
 
 export function makePanel_GlyphAttributes() {
 	log('makePanel_GlyphAttributes', 'start');
 	let projectEditor = getCurrentProjectEditor();
-	let selShapes = projectEditor.multiSelect.shapes;
+	let selPaths = projectEditor.multiSelect.paths;
 	// let selPoints = projectEditor.multiSelect.points;
 	let selGlyph = projectEditor.selectedGlyph;
 	// log(projectEditor);
 
-	log(selShapes);
-	log(`multiSelect length: ${selShapes.length}`);
+	log(selPaths);
+	log(`multiSelect length: ${selPaths.length}`);
 
 	let glyphSection = makeElement({
 		tag: 'div',
@@ -28,22 +28,22 @@ export function makePanel_GlyphAttributes() {
 	addAsChildren(glyphSection, makeInputs_position(selGlyph));
 	addAsChildren(glyphSection, makeInputs_size(selGlyph));
 
-	let shapesSection = false;
+	let pathsSection = false;
 	let componentsSection = false;
 	let pathPointSection = false;
-	if(selShapes.length > 0) {
-		if (selShapes.length === 1) {
-			// One shape selected
-			log('One shape selected');
-			log(selShapes.singleton);
-			if (selShapes.singleton.objType === 'ComponentInstance') {
+	if(selPaths.length > 0) {
+		if (selPaths.length === 1) {
+			// One path selected
+			log('One path selected');
+			log(selPaths.singleton);
+			if (selPaths.singleton.objType === 'ComponentInstance') {
 				// component selected
 				log("...Component selected");
-				componentsSection = makeAttributesGroup_componentInstance(selShapes.singleton);
+				componentsSection = makeAttributesGroup_componentInstance(selPaths.singleton);
 			} else {
-				// regular shape selected
-				log("...Regular shape selected");
-				shapesSection = makeAttributesGroup_shape(selShapes.singleton);
+				// regular path selected
+				log("...Regular path selected");
+				pathsSection = makeAttributesGroup_path(selPaths.singleton);
 
 				let isPointSelected = projectEditor.multiSelect.points.count() === 1;
 				// if (!(_UI.selectedTool === 'pathEdit' || _UI.selectedTool === 'pathAddPoint'))
@@ -54,24 +54,24 @@ export function makePanel_GlyphAttributes() {
 				}
 			}
 		} else {
-			// Many shapes selected
-			log('More than one shape selected');
-			let virtualGlyph = selShapes.getGlyph();
+			// Many paths selected
+			log('More than one path selected');
+			let virtualGlyph = selPaths.getGlyph();
 
-			shapesSection = makeElement({
+			pathsSection = makeElement({
 				tag: 'div',
 				className: 'panel__section',
-				innerHTML: `<h3>${selShapes.length} selected shapes</h3>`
+				innerHTML: `<h3>${selPaths.length} selected paths</h3>`
 			});
-			addAsChildren(shapesSection, makeInputs_position(virtualGlyph));
-			addAsChildren(shapesSection, makeInputs_size(virtualGlyph));
+			addAsChildren(pathsSection, makeInputs_position(virtualGlyph));
+			addAsChildren(pathsSection, makeInputs_size(virtualGlyph));
 		}
 	}
 
 	// Put it all together
 	let content = [];
 	content.push(glyphSection);
-	if (shapesSection) content.push(shapesSection);
+	if (pathsSection) content.push(pathsSection);
 	if (componentsSection) content.push(componentsSection);
 	if (pathPointSection) content.push(pathPointSection);
 

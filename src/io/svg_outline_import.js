@@ -2,69 +2,69 @@ import { XYPoint } from './xy_point.js';
 /**
 	IO > Import > SVG Outlines
 	Takes a set of XML and pulls out any path or
-	shape data that could be converted into a
-	Glyphr Studio shape.  Ignores lots of XML tags
+	path data that could be converted into a
+	Glyphr Studio path.  Ignores lots of XML tags
 	and attributes.
 **/
 
-function ioSVG_convertTagsToGlyph(svgdata) {
+function ioSVG_convertTagsToGlyph(svgData) {
 	// log('ioSVG_convertTagsToGlyph', 'start');
 
-	const newshapes = [];
+	const newPaths = [];
 	let data = {};
-	let shapecounter = 0;
+	let pathCounter = 0;
 	const error = false;
-	const grabtags = ['path', 'rect', 'polyline', 'polygon', 'ellipse', 'circle'];
-	let jsondata;
+	const grabTags = ['path', 'rect', 'polyline', 'polygon', 'ellipse', 'circle'];
+	let jsonData;
 
 	try {
-		jsondata = convertXMLtoJSON(svgdata);
+		jsonData = convertXMLtoJSON(svgData);
 	} catch (e) {
 		if (e.message === 'XMLdoc.getElementsByTagName(...)[0] is undefined') {
 			e.message =
-				'No SVG Shape or Path Tags could be found.  Make sure the SVG code is in proper XML format.';
+				'No SVG Path or Path Tags could be found.  Make sure the SVG code is in proper XML format.';
 		}
 		showErrorMessageBox(e.message);
 		return;
 	}
 
-	const unsortedshapetags = ioSVG_getTags(jsondata, grabtags);
-	const shapetags = {};
+	const unsortedPathTags = ioSVG_getTags(jsonData, grabTags);
+	const pathTags = {};
 
-	// log('unsorted shapetags from imported XML: ');
-	// log(unsortedshapetags);
+	// log('unsorted pathTags from imported XML: ');
+	// log(unsortedPathTags);
 
-	// get a sorted shapetags object
-	for (let g = 0; g < grabtags.length; g++) shapetags[grabtags[g]] = [];
-	for (let s = 0; s < unsortedshapetags.length; s++)
-		shapetags[unsortedshapetags[s].name].push(unsortedshapetags[s]);
+	// get a sorted pathTags object
+	for (let g = 0; g < grabTags.length; g++) pathTags[grabTags[g]] = [];
+	for (let s = 0; s < unsortedPathTags.length; s++)
+		pathTags[unsortedPathTags[s].name].push(unsortedPathTags[s]);
 
-	// log('shapetags from imported XML: ');
-	// log(shapetags);
+	// log('pathTags from imported XML: ');
+	// log(pathTags);
 
-	function pushShape(p, n) {
-		shapecounter++;
-		n = n + ' ' + shapecounter;
-		newshapes.push(new Shape({ path: p, name: n }));
+	function pushPath(p, n) {
+		pathCounter++;
+		n = n + ' ' + pathCounter;
+		newPaths.push(new Path({ path: p, name: n }));
 	}
 
 	/*
-			GET PATH TAGS
-		*/
-	if (shapetags.path.length) {
+		GET PATH TAGS
+	*/
+	if (pathTags.path.length) {
 		data = '';
-		ppath = {};
+		tag = {};
 
-		for (let p = 0; p < shapetags.path.length; p++) {
-			// Compound Paths are treated as different Glyphr Shapes
-			data = shapetags.path[p].attributes.d;
+		for (let p = 0; p < pathTags.path.length; p++) {
+			// Compound Paths are treated as different Glyphr Paths
+			data = pathTags.path[p].attributes.d;
 			data = cleanAndFormatPathPointData(data);
 
 			for (let d = 0; d < data.length; d++) {
 				if (data[d].length) {
-					ppath = ioSVG_convertPathTag(data[d]);
-					if (ppath.pathPoints.length) {
-						pushShape(ppath, 'Path');
+					tag = ioSVG_convertPathTag(data[d]);
+					if (tag.pathPoints.length) {
+						pushPath(tag, 'Path');
 					}
 				}
 			}
@@ -74,30 +74,30 @@ function ioSVG_convertTagsToGlyph(svgdata) {
 	/*
 			GET RECT TAGS
 		*/
-	if (shapetags.rect.length) {
+	if (pathTags.rect.length) {
 		data = {};
-		let rectmaxes;
+		let maxes;
 		let x;
 		let y;
 		let w;
 		let h;
 
-		for (let r = 0; r < shapetags.rect.length; r++) {
-			data = shapetags.rect[r].attributes || {};
+		for (let r = 0; r < pathTags.rect.length; r++) {
+			data = pathTags.rect[r].attributes || {};
 			x = data.x * 1 || 0;
 			y = data.y * 1 || 0;
 			w = data.width * 1 || 0;
 			h = data.height * 1 || 0;
 
 			if (!(w === 0 && h === 0)) {
-				rectmaxes = {
+				maxes = {
 					xMax: x + w,
 					xMin: x,
 					yMax: y + h,
 					yMin: y,
 				};
 
-				pushShape(rectPathFromMaxes(rectmaxes), 'Rectangle');
+				pushPath(rectPathFromMaxes(maxes), 'Rectangle');
 			}
 		}
 	}
@@ -105,13 +105,13 @@ function ioSVG_convertTagsToGlyph(svgdata) {
 	/*
 			GET POLYLINE OR POLYGON TAGS
 		*/
-	let poly = shapetags.polygon;
-	poly = poly.concat(shapetags.polyline);
+	let poly = pathTags.polygon;
+	poly = poly.concat(pathTags.polyline);
 
 	if (poly.length) {
 		data = {};
-		let pparr;
-		let tcoord;
+		let pathPoints;
+		let point;
 		let px;
 		let py;
 
@@ -124,28 +124,28 @@ function ioSVG_convertTagsToGlyph(svgdata) {
 			// log(data);
 
 			if (data.length) {
-				pparr = [];
+				pathPoints = [];
 
 				for (let co = 0; co < data.length; co += 2) {
 					px = data[co] || 0;
 					py = data[co + 1] || 0;
 
-					tcoord = new XYPoint(px, py);
+					point = new XYPoint(px, py);
 					/*
 					 *
 					 * REFACTOR
 					 *
 					 */
-					pparr.push({
-						p: { coord: tcoord },
-						h1: { coord: tcoord },
-						h2: { coord: tcoord },
+					pathPoints.push({
+						p: { coord: point },
+						h1: { coord: point },
+						h2: { coord: point },
 						useH1: false,
 						useH2: false,
 					});
 				}
 
-				pushShape(new Path({ pathPoints: pparr }), 'Polygon');
+				pushPath(new Path({ pathPoints: pathPoints }), 'Polygon');
 			}
 		}
 	}
@@ -153,8 +153,8 @@ function ioSVG_convertTagsToGlyph(svgdata) {
 	/*
 			GET ELLIPSE OR CIRCLE TAGS
 		*/
-	let elli = shapetags.circle;
-	elli = elli.concat(shapetags.ellipse);
+	let elli = pathTags.circle;
+	elli = elli.concat(pathTags.ellipse);
 
 	if (elli.length) {
 		data = {};
@@ -181,12 +181,12 @@ function ioSVG_convertTagsToGlyph(svgdata) {
 					yMax: cy + ry,
 				};
 
-				pushShape(ovalPathFromMaxes(ellipsemaxes), 'Oval');
+				pushPath(ovalPathFromMaxes(ellipsemaxes), 'Oval');
 			}
 		}
 	}
 
-	if (shapecounter === 0) {
+	if (pathCounter === 0) {
 		showErrorMessageBox(
 			'Could not find any SVG tags to import.  Supported tagas are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.'
 		);
@@ -195,11 +195,11 @@ function ioSVG_convertTagsToGlyph(svgdata) {
 
 	if (error) {
 		showErrorMessageBox(
-			'A transform attribute was found.  It will be ignored, probably resulting in unexpected shape outlines.  Check the Import SVG section of the Help page.'
+			'A transform attribute was found.  It will be ignored, probably resulting in unexpected path outlines.  Check the Import SVG section of the Help page.'
 		);
 	}
 
-	const reglyph = new Glyph({ shapes: newshapes });
+	const reglyph = new Glyph({ paths: newPaths });
 	reglyph.changed(true);
 
 	// log(reglyph);
@@ -214,7 +214,7 @@ function cleanAndFormatPathPointData(data) {
 						'd' attribute.
 
 						Returns an array of strings.  Each array element
-						representing one Glyphr Studio shape.  String will be
+						representing one Glyphr Studio path.  String will be
 						comma separated Path Commands and Values
 
 				*/
@@ -223,7 +223,7 @@ function cleanAndFormatPathPointData(data) {
 	// log('cleanAndFormatPathPointData', 'start');
 	// log('dirty data\n\t ' + data);
 
-	// Move commands for a path are treated as different Glyphr Shapes
+	// Move commands for a path are treated as different Glyphr Paths
 	data = data.replace(/M/g, ',z,M');
 	data = data.replace(/m/g, ',z,m');
 
@@ -330,21 +330,21 @@ function cleanAndFormatPathPointData(data) {
 	return returndata;
 }
 
-function ioSVG_getTags(obj, grabtags) {
+function ioSVG_getTags(obj, grabTags) {
 	// log('ioSVG_getTags \t Start');
-	// log('grabtags: ' + JSON.stringify(grabtags));
+	// log('grabTags: ' + JSON.stringify(grabTags));
 	// log('passed obj: ');
 	// log(obj);
 
-	if (typeof grabtags === 'string') grabtags = [grabtags];
+	if (typeof grabTags === 'string') grabTags = [grabTags];
 	let result = [];
 
 	if (obj.content) {
 		for (let c = 0; c < obj.content.length; c++) {
-			result = result.concat(ioSVG_getTags(obj.content[c], grabtags));
+			result = result.concat(ioSVG_getTags(obj.content[c], grabTags));
 		}
 	} else {
-		if (grabtags.indexOf(obj.name) > -1) {
+		if (grabTags.indexOf(obj.name) > -1) {
 			result = [obj];
 		}
 	}

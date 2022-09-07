@@ -1,6 +1,6 @@
 /**
 		Panel > Layers
-		Shows a list of all the shapes in a Glyph.
+		Shows a list of all the paths in a Glyph.
 **/
 
 import { getCurrentProjectEditor } from '../app/main.js';
@@ -12,60 +12,60 @@ export function makePanel_Layers() {
 	let rowsArea = makeElement({className: 'panel__section full-width layer-panel__rows-area'});
 	let editor = getCurrentProjectEditor();
 	let selected = editor.selectedWorkItem;
-	let shapes = selected.shapes;
+	let paths = selected.paths;
 
-	if (shapes.length > 0) {
-		for (let i = shapes.length - 1; i >= 0; i--) {
-			let shape = shapes[i];
+	if (paths.length > 0) {
+		for (let i = paths.length - 1; i >= 0; i--) {
+			let path = paths[i];
 			let row = makeElement();
 
-			if (shape.objType === 'ComponentInstance') {
+			if (path.objType === 'ComponentInstance') {
 				row.setAttribute('class', 'layer-panel__row layer-panel__component');
 			} else {
-				row.setAttribute('class', 'layer-panel__row layer-panel__shape');
+				row.setAttribute('class', 'layer-panel__row layer-panel__path');
 			}
 
-			if (editor.multiSelect.shapes.isSelected(shape)) {
+			if (editor.multiSelect.paths.isSelected(path)) {
 				row.classList.add('layer-panel__selected');
 			}
 
 			editor.subscribe({
-				topic: 'whichShapeIsSelected',
+				topic: 'whichPathIsSelected',
 				subscriberName: 'Layer row button',
-				callback: (newSelectedShape) => {
-					log(`Layer subscription callback for selectedShape`, 'start');
+				callback: (newSelectedPath) => {
+					log(`Layer subscription callback for selectedPath`, 'start');
 
-					let isSelected = editor.multiSelect.shapes.isSelected(shape);
+					let isSelected = editor.multiSelect.paths.isSelected(path);
 					log(`isSelected: ${isSelected}`);
 					log(row.classList.toString());
 					row.classList.toggle('layer-panel__selected', isSelected);
-					log(`Layer subscription callback for selectedShape`, 'end');
+					log(`Layer subscription callback for selectedPath`, 'end');
 				}
 			});
 
 			row.addEventListener('click', () => {
-				editor.multiSelect.shapes.select(shape);
-				editor.publish('whichShapeIsSelected', shape);
+				editor.multiSelect.paths.select(path);
+				editor.publish('whichPathIsSelected', path);
 			});
 
-			// if (shape.objType === 'ComponentInstance') {
+			// if (path.objType === 'ComponentInstance') {
 			//   content +=
-			//     '<td class="layerthumb">' + shape.transformedGlyph.makeSVG() + '</td>';
-			//   content += '<td class="layername">' + shape.name;
+			//     '<td class="layerthumb">' + path.transformedGlyph.makeSVG() + '</td>';
+			//   content += '<td class="layername">' + path.name;
 			//   content +=
 			//     '<span class="layernote">[linked to component: ' +
-			//     getGlyphName(shape.link) +
+			//     getGlyphName(path.link) +
 			//     ']</span>';
 			// } else {
 
 			row.appendChild(makeElement({
 				className: 'layer-panel__layer-thumb',
-				innerHTML: shape.makeSVG()
+				innerHTML: path.makeSVG()
 			}));
 
 			row.appendChild(makeElement({
 				className: 'layer-panel__layer-name',
-				innerHTML: shape.name
+				innerHTML: path.name
 			}));
 
 			rowsArea.appendChild(row);
@@ -73,7 +73,7 @@ export function makePanel_Layers() {
 
 	} else {
 		rowsArea.appendChild(makeElement({
-			content: `No shapes exist yet.  You can create one with the New Shape tools on the canvas, or by pressing "add new shape" below.`
+			content: `No paths exist yet.  You can create one with the New Path tools on the canvas, or by pressing "add new path" below.`
 		}));
 	}
 
@@ -85,82 +85,82 @@ export function makePanel_Layers() {
 	return content;
 }
 
-function selectShape(num) {
-	// log('selectShape', 'start');
+function selectPath(num) {
+	// log('selectPath', 'start');
 	// log('passed ' + num);
-	let wishapes = getSelectedWorkItemShapes();
-	// log('wishapes ' + wishapes);
+	let wipaths = getSelectedWorkItemPaths();
+	// log('wipaths ' + wipaths);
 
-	if (wishapes && wishapes[num]) {
-		if (projectEditor.eventhandlers.multi) projectEditor.multiSelect.shapes.toggle(wishapes[num]);
+	if (wipaths && wipaths[num]) {
+		if (projectEditor.eventhandlers.multi) projectEditor.multiSelect.paths.toggle(wipaths[num]);
 		else {
 			projectEditor.multiSelect.points.clear();
-			projectEditor.multiSelect.shapes.select(wishapes[num]);
+			projectEditor.multiSelect.paths.select(wipaths[num]);
 		}
 	} else {
-		projectEditor.multiSelect.shapes.clear();
+		projectEditor.multiSelect.paths.clear();
 	}
-	// log('selectShape', 'end');
+	// log('selectPath', 'end');
 }
 
 function makeActionArea_Layers() {
 	let projectEditor = getCurrentProjectEditor();
-	let selectedShapes = projectEditor.multiSelect.shapes.members;
+	let selectedPaths = projectEditor.multiSelect.paths.members;
 
-	let shapeActions = `
+	let pathActions = `
 		<button
-			title="Add Shape\nCreates a new default shape and adds it to this glyph"
-			onclick="addShape(); historyPut('Add Shape'); redraw({calledBy:'updateactions'});"
+			title="Add Path\nCreates a new default path and adds it to this glyph"
+			onclick="addPath(); historyPut('Add Path'); redraw({calledBy:'updateactions'});"
 		>
-			${makeActionButtonIcon.addShape(false)}
+			${makeActionButtonIcon.addPath(false)}
 		</button>
 		<button
 			title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph"
 			onclick="showDialogAddComponent();"
 		>
-			${makeActionButtonIcon.addShape(true)}
+			${makeActionButtonIcon.addPath(true)}
 		</button>
 		<button
-			title="Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one"
-			onclick="showDialogGetShapes();"
+			title="Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one"
+			onclick="showDialogGetPaths();"
 		>
-			${makeActionButtonIcon.pasteShapesFromAnotherGlyph()}
+			${makeActionButtonIcon.pastePathsFromAnotherGlyph()}
 		</button>
 	`;
 
-	if (selectedShapes.length > 0) {
-		shapeActions += `
+	if (selectedPaths.length > 0) {
+		pathActions += `
 			<button
-				title="Delete\nRemoves the currently selected shape or shapes from this glyph"
-				onclick="projectEditor.multiSelect.shapes.deleteShapes(); historyPut(\'Delete Shape\'); redraw({calledBy:\'updateactions\'});"
+				title="Delete\nRemoves the currently selected path or paths from this glyph"
+				onclick="projectEditor.multiSelect.paths.deletePaths(); historyPut(\'Delete Path\'); redraw({calledBy:\'updateactions\'});"
 			>
-				${makeActionButtonIcon.deleteShape()}
+				${makeActionButtonIcon.deletePath()}
 			</button>
 		`;
 	}
 
 	let layerActions = `
 		<button
-			title="Move Shape Up\nMoves the shape up in the shape layer order"
-			onclick="moveShapeUp(); historyPut(\'Move Shape Layer Up\');"
+			title="Move Path Up\nMoves the path up in the path layer order"
+			onclick="movePathUp(); historyPut(\'Move Path Layer Up\');"
 		>
 			${makeActionButtonIcon.moveLayerUp()}
 		</button>
 		<button
-			title="Move Shape Down\nMoves the shape down in the shape layer order"
-			onclick="moveShapeDown(); historyPut(\'Move Shape Layer Down\');"
+			title="Move Path Down\nMoves the path down in the path layer order"
+			onclick="movePathDown(); historyPut(\'Move Path Layer Down\');"
 		>
 			${makeActionButtonIcon.moveLayerDown()}
 		</button>
 	`;
 
-	let totalShapes = projectEditor.selectedWorkItem.shapes.length;
+	let totalPaths = projectEditor.selectedWorkItem.paths.length;
 	let content = `
 		<h3>Actions</h3>
 		<div class="actionsArea">
-			${shapeActions}
+			${pathActions}
 			${
-				(totalShapes > 1 && selectedShapes.length === 1) ? layerActions : ''
+				(totalPaths > 1 && selectedPaths.length === 1) ? layerActions : ''
 			}
 		</div>
 	`;
@@ -171,24 +171,24 @@ function makeActionArea_Layers() {
 // --------------------------------------------------------------
 // Move up / down
 // --------------------------------------------------------------
-function moveShapeUp() {
-	let wishapes = getSelectedWorkItemShapes();
-	let si = wishapes.indexOf(projectEditor.multiSelect.shapes.singleton);
-	if (si > -1 && si < wishapes.length - 1) {
-		let tempshape = wishapes[si + 1];
-		wishapes[si + 1] = wishapes[si];
-		wishapes[si] = tempshape;
-		redraw({ calledBy: 'moveShapeUp' });
+function movePathUp() {
+	let wipaths = getSelectedWorkItemPaths();
+	let si = wipaths.indexOf(projectEditor.multiSelect.paths.singleton);
+	if (si > -1 && si < wipaths.length - 1) {
+		let temppath = wipaths[si + 1];
+		wipaths[si + 1] = wipaths[si];
+		wipaths[si] = temppath;
+		redraw({ calledBy: 'movePathUp' });
 	}
 }
 
-function moveShapeDown() {
-	let wishapes = getSelectedWorkItemShapes();
-	let si = wishapes.indexOf(projectEditor.multiSelect.shapes.singleton);
-	if (si > 0 && si < wishapes.length) {
-		let tempshape = wishapes[si - 1];
-		wishapes[si - 1] = wishapes[si];
-		wishapes[si] = tempshape;
-		redraw({ calledBy: 'moveShapeDown' });
+function movePathDown() {
+	let wipaths = getSelectedWorkItemPaths();
+	let si = wipaths.indexOf(projectEditor.multiSelect.paths.singleton);
+	if (si > 0 && si < wipaths.length) {
+		let temppath = wipaths[si - 1];
+		wipaths[si - 1] = wipaths[si];
+		wipaths[si] = temppath;
+		redraw({ calledBy: 'movePathDown' });
 	}
 }

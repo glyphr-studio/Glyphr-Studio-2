@@ -9,7 +9,7 @@ export class Tool_NewPath {
 		this.dragging = false;
 		this.firstpoint = true;
 		this.currpt = {};
-		this.newShape = false;
+		this.newPath = false;
 
 		this.mousedown = function (ev) {
 			// log('Tool_NewPath.mousedown', 'start');
@@ -29,16 +29,16 @@ export class Tool_NewPath {
 			});
 
 			if (this.firstpoint) {
-				// make a new shape with the new pathpoint
+				// make a new path with the new pathpoint
 				let count = editor.nav.page === 'components' ?
 					Object.keys(getCurrentProject().components).length :
-					getSelectedWorkItemShapes().length;
-				this.newShape = action_addShape(
-					new Shape({ name: 'Shape ' + count, path: new Path() })
+					getSelectedWorkItemPaths().length;
+				this.newPath = action_addPath(
+					new Path({ name: 'Path ' + count, path: new Path() })
 				);
-				this.currpt = this.newShape.path.addPathPoint(newpoint);
-			} else if (this.newShape) {
-				if (isOverFirstPoint(this.newShape.path, cXsX(eh.mouseX), cYsY(eh.mouseY),)) {
+				this.currpt = this.newPath.path.addPathPoint(newpoint);
+			} else if (this.newPath) {
+				if (isOverFirstPoint(this.newPath.path, cXsX(eh.mouseX), cYsY(eh.mouseY),)) {
 					// clicked on an existing control point in this path
 					// if first point - close the path
 					eh.toolHandoff = true;
@@ -46,7 +46,7 @@ export class Tool_NewPath {
 					eh.lastX = eh.mouseX;
 					eh.lastY = eh.mouseY;
 					let editor = getCurrentProjectEditor();
-					editor.multiSelect.points.select(this.newShape.path.pathPoints[0]);
+					editor.multiSelect.points.select(this.newPath.path.pathPoints[0]);
 					editor.selectedTool = 'pathEdit';
 
 					this.dragging = false;
@@ -57,7 +57,7 @@ export class Tool_NewPath {
 					return;
 				}
 
-				this.currpt = this.newShape.path.addPathPoint(newpoint);
+				this.currpt = this.newPath.path.addPathPoint(newpoint);
 				// editor.multiSelect.points.select(this.currpt);
 			}
 
@@ -92,8 +92,8 @@ export class Tool_NewPath {
 				eh.undoQueueHasChanged = true;
 
 				redraw({ calledBy: 'Event Handler Tool_NewPath mousemove' });
-			} else if (this.newShape &&
-				isOverFirstPoint(this.newShape.path, cXsX(eh.mouseX), cYsY(eh.mouseY))) {
+			} else if (this.newPath &&
+				isOverFirstPoint(this.newPath.path, cXsX(eh.mouseX), cYsY(eh.mouseY))) {
 				setCursor('penSquare');
 			} else {
 				setCursor('penPlus');
@@ -105,9 +105,9 @@ export class Tool_NewPath {
 			setCursor('penPlus');
 
 			if (eventHandlerData.undoQueueHasChanged) {
-				// if (this.newShape) this.newShape.path.calcMaxes();
+				// if (this.newPath) this.newPath.path.calcMaxes();
 				updateCurrentGlyphWidth();
-				// For new shape tools, mouse up always adds to the undo-queue
+				// For new path tools, mouse up always adds to the undo-queue
 				historyPut('New Path tool');
 				eventHandlerData.undoQueueHasChanged = false;
 				redraw({ calledBy: 'Event Handler Tool_NewPath mouseup' });

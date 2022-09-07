@@ -128,16 +128,16 @@ function keypress(event) {
 
 	if (isCtrlDown && kc === 'a') {
 		for (let i of Object.keys(getCurrentProject().s)) {
-			if (!getCurrentProject().glyphs[i].getShapes) return;
+			if (!getCurrentProject().glyphs[i].getPaths) return;
 
 			getCurrentProject()
-				.glyphs[i].getShapes()
-				.forEach(function (shape, i) {
-					_UI.multiSelect.shapes.members.push(shape);
-					console.log(_UI.multiSelect.shapes.members);
+				.glyphs[i].getPaths()
+				.forEach(function (path, i) {
+					_UI.multiSelect.paths.members.push(path);
+					console.log(_UI.multiSelect.paths.members);
 				});
 		}
-		_UI.multiSelect.points.selectShapesThatHaveSelectedPoints();
+		_UI.multiSelect.points.selectPathsThatHaveSelectedPoints();
 		redraw({
 			calledBy: 'Event Handler - Select all path points',
 			redrawPanels: false,
@@ -233,8 +233,8 @@ function keypress(event) {
 				historyPut('Delete Path Point');
 				redraw({ calledBy: 'Keypress DEL or BACKSPACE' });
 			} else if (em === 'arrow') {
-				_UI.multiSelect.shapes.deleteShapes();
-				historyPut('Delete Shape');
+				_UI.multiSelect.paths.deletePaths();
+				historyPut('Delete Path');
 				redraw({ calledBy: 'Keypress DEL or BACKSPACE' });
 			}
 		}
@@ -242,19 +242,19 @@ function keypress(event) {
 		// ctrl + c
 		if ((eh.multi || event.metaKey) && kc === 'c') {
 			event.preventDefault();
-			copyShape();
+			copyPath();
 		}
 
 		// ctrl + v
 		if ((eh.multi || event.metaKey) && kc === 'v') {
 			event.preventDefault();
-			pasteShape();
-			historyPut('Paste Shape');
-			redraw({ calledBy: 'Paste Shape' });
+			pastePath();
+			historyPut('Paste Path');
+			redraw({ calledBy: 'Paste Path' });
 		}
 
 		// v
-		if (kc === 'v') clickTool('shapeEdit');
+		if (kc === 'v') clickTool('pathEdit');
 
 		// b
 		if (kc === 'b') clickTool('pathEdit');
@@ -311,8 +311,8 @@ function nudge(dx, dy, ev) {
 		updateKernValue(getSelectedKernID(), nv);
 		redraw({ calledBy: 'Nudge kern value', redrawPanels: false });
 	} else if (em === 'arrow') {
-		_UI.multiSelect.shapes.updateShapePosition(mx, my);
-		redraw({ calledBy: 'Nudge shape' });
+		_UI.multiSelect.paths.updatePathPosition(mx, my);
+		redraw({ calledBy: 'Nudge path' });
 	} else if (em === 'pen') {
 		_UI.multiSelect.points.members.forEach(function (o, i) {
 			o.updatePathPointPosition('p', mx, my);

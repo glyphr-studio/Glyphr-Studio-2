@@ -4,7 +4,7 @@ import { hexToChars } from '../../common/unicode.js';
 import { lookUpGlyphName } from '../../lib/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
-import { drawGlyph } from '../../edit_canvas/draw_shapes.js';
+import { drawGlyph } from '../../edit_canvas/draw_paths.js';
 
 
 /**
@@ -238,7 +238,7 @@ function getTestGlyph(gid) {
 	if (gid === '0x41') {
 		return new Glyph({
 			id: gid,
-			shapes: [
+			paths: [
 				{
 					path: {
 						pathPoints: [

@@ -97,8 +97,8 @@ function importOTFFont(filter) {
 	let maxGlyph = 0;
 	let minChar = 0xffff;
 	let customGlyphRange = [];
-	let shapeCounter = 0;
-	let newShapes = [];
+	let pathCounter = 0;
+	let newPaths = [];
 	const fc = {};
 	let fl = {};
 
@@ -137,8 +137,8 @@ function importOTFFont(filter) {
 			 *  GLYPH IMPORT
 			 *
 			 */
-			newShapes = [];
-			shapeCounter = 0;
+			newPaths = [];
+			pathCounter = 0;
 
 			// Import Path Data
 			data = flattenDataArray(thisGlyph.path.commands);
@@ -147,19 +147,19 @@ function importOTFFont(filter) {
 			if (data && data !== 'z') {
 				data = cleanAndFormatPathPointData(data);
 
-				// log('split data into ' + data.length + ' Glyphr Studio shapes.');
+				// log('split data into ' + data.length + ' Glyphr Studio paths.');
 				// log(data);
 
 				for (let d = 0; d < data.length; d++) {
 					if (data[d].length) {
 						// log('starting convertPathTag');
 						np = ioSVG_convertPathTag(data[d]);
-						// log('created shape from PathTag');
+						// log('created path from PathTag');
 						// log(np);
 						if (np.pathPoints.length) {
-							shapeCounter++;
-							newShapes.push(
-								new Shape({ path: np, name: 'Shape ' + shapeCounter })
+							pathCounter++;
+							newPaths.push(
+								new Path({ path: np, name: 'Path ' + pathCounter })
 							);
 						} else {
 							// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
@@ -185,7 +185,7 @@ function importOTFFont(filter) {
 				customGlyphRange.push(uni);
 
 			fc[uni] = new Glyph({
-				shapes: newShapes,
+				paths: newPaths,
 				glyphWidth: adv,
 				isAutoWide: isAutoWide,
 			});

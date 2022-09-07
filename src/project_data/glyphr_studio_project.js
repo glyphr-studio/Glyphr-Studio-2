@@ -44,8 +44,8 @@ export class GlyphrStudioProject {
 
 			// UI stuff
 			pointSize: 7,
-			combineShapesOnExport: false,
-			maxCombineShapesOnExport: 30,
+			combinePathsOnExport: false,
+			maxCombinePathsOnExport: 30,
 			showKeyboardTipsIcon: true,
 			stopPageNavigation: true,
 			formatSaveFile: true,

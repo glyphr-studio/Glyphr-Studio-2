@@ -6,7 +6,7 @@ import { History } from './history.js';
 import { makeElement } from '../common/dom.js';
 import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
 import { json, getFirstID, clone } from '../common/functions.js';
-import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
+import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
 import { makeAppTopBar } from '../app/app.js';
 import { normalizeHex } from '../common/unicode.js';
@@ -73,7 +73,7 @@ export class ProjectEditor {
 		// Canvas
 		// Event handlers
 		this.eventHandlers = {};
-		this.selectedTool = 'shapeEdit';
+		this.selectedTool = 'pathEdit';
 
 		// History
 		// this.history = {};
@@ -85,7 +85,7 @@ export class ProjectEditor {
 		// MultiSelect
 		this.multiSelect = {
 			points: new MultiSelectPoints(),
-			shapes: new MultiSelectShapes(),
+			paths: new MultiSelectPaths(),
 		};
 
 		// log(this);
@@ -107,9 +107,9 @@ export class ProjectEditor {
 	 * 		'whichToolIsSelected' - change to which edit tool is selected
 	 * 		'view' - change to the edit canvas view
 	 * 		'whichGlyphIsSelected' - change to which glyph is being edited
-	 * 		'whichShapeIsSelected' - change to which shape is being edited
+	 * 		'whichPathIsSelected' - change to which path is being edited
 	 * 		'currentGlyph' - edits to the current glyph
-	 * 		'currentShape' - edits to the current shape
+	 * 		'currentPath' - edits to the current path
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
@@ -123,12 +123,12 @@ export class ProjectEditor {
 			if(topic === 'whichToolIsSelected') {}
 			if(topic === 'view') {}
 			if(topic === 'whichGlyphIsSelected') {
-				this.multiSelect.shapes.clear();
+				this.multiSelect.paths.clear();
 				this.multiSelect.points.clear();
 			}
-			if(topic === 'whichShapeIsSelected') {}
+			if(topic === 'whichPathIsSelected') {}
 			if(topic === 'currentGlyph') {}
-			if(topic === 'currentShape') {}
+			if(topic === 'currentPath') {}
 
 			// Iterate through all the callbacks
 			this.subscribers[topic].forEach((sub) => {
@@ -765,7 +765,7 @@ export class ProjectEditor {
 
 /*
 // ---------------------------------------------------------------------
-//    Global Get Selected Glyph and Shape
+//    Global Get Selected Glyph and Path
 // ---------------------------------------------------------------------
 		/**
 		 * Get the selected glyph's left side bearing
@@ -898,10 +898,10 @@ function getSelectedWorkItemName() {
 		return wi.name || wi.getName() || '[name not found]';
 }
 
-function getSelectedWorkItemShapes() {
+function getSelectedWorkItemPaths() {
 		// log('GETSELECTEDGLYPHSHAPES');
 		let rechar = getSelectedWorkItem();
-		return rechar? rechar.shapes : [];
+		return rechar? rechar.paths : [];
 }
 
 function markSelectedWorkItemAsChanged() {

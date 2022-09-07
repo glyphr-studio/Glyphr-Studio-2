@@ -38,9 +38,6 @@ window._DEV.path = path;
 import * as polySegment from '../glyph_elements/poly_segment.js';
 window._DEV.polySegment = polySegment;
 
-import * as shape from '../glyph_elements/shape.js';
-window._DEV.shape = shape;
-
 import * as componentInstance from '../glyph_elements/component_instance.js';
 window._DEV.componentInstance = componentInstance;
 

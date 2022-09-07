@@ -334,7 +334,7 @@ function make_GlyphChooser_Button(index, fname, selid) {
 
 	const issel = index === selid;
 
-	if (wi && wi.hasShapes()) {
+	if (wi && wi.hasPaths()) {
 		let extra = '';
 		if (issel) {
 			extra = ' glyphselectthumbsel';

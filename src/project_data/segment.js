@@ -378,7 +378,7 @@ export class Segment extends GlyphElement {
 		let d;
 
 		for (let t = 0; t < 1; t += 1 / grains) {
-			check = this.getXYPointFromSplit(t);
+			check = this.findXYPointFromSplit(t);
 			// log(`checking x:${check.x}\ty:${check.y}\tt${t}`);
 
 			d = Math.sqrt(
@@ -429,7 +429,7 @@ export class Segment extends GlyphElement {
 	 * @param {number} t - between 0 and 1
 	 * @returns {XYPoint}
 	 */
-	getXYPointFromSplit(t = 0.5) {
+	findXYPointFromSplit(t = 0.5) {
 		const rs = 1 - t;
 		// Do some math
 		const x12 = this.p1x * rs + this.p2x * t;

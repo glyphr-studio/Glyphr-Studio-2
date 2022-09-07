@@ -95,7 +95,7 @@ makeActionButtonIcon.paste = function(disabled) {
 
 	return svgWrap(re);
 };
-makeActionButtonIcon.pasteShapesFromAnotherGlyph = function() {
+makeActionButtonIcon.pastePathsFromAnotherGlyph = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -110,13 +110,13 @@ makeActionButtonIcon.pasteShapesFromAnotherGlyph = function() {
 
 	return svgWrap(re);
 };
-makeActionButtonIcon.addShape = function(component) {
+makeActionButtonIcon.addPath = function(component) {
 	let re = '';
 	let accent = component?
 		actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
 
-	// shape
+	// path
 	re += `
 		<rect fill="${fill}" x="1" y="1"	width="16" height="16"/>
 		<path fill="${accent}" d="M16,2v14H2V2H16 M18,0H0v18h18V0L18,0z"/>
@@ -158,7 +158,7 @@ makeActionButtonIcon.linkToGlyph = function() {
 };
 
 
-// (shared icons, Glyph and Shape)
+// (shared icons, Glyph and Path)
 makeActionButtonIcon.round = function(){
 	let red = actionButtonIconColors.redX;
 	let fill = actionButtonIconColors.darkFill;
@@ -232,7 +232,7 @@ makeActionButtonIcon.deleteGlyph = function(){
 	return svgWrap(re);
 };
 
-// Shape actions
+// Path actions
 makeActionButtonIcon.reverseWinding = function() {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
@@ -245,7 +245,7 @@ makeActionButtonIcon.reverseWinding = function() {
 
 	return svgWrap(re);
 };
-makeActionButtonIcon.switchShapeComponent = function(com) {
+makeActionButtonIcon.switchPathComponent = function(com) {
 	let re = '';
 	let before = com ? actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
 	let after = com ? actionButtonIconColors.blueOutline : actionButtonIconColors.greenOutline;
@@ -304,13 +304,13 @@ makeActionButtonIcon.combine = function() {
 
 	return svgWrap(re);
 };
-makeActionButtonIcon.deleteShape = function() {
+makeActionButtonIcon.deletePath = function() {
 	let re = '';
 	let red = actionButtonIconColors.redX;
 	let accent = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
 
-	// shape
+	// path
 	re += `
 		<rect fill="${fill}" x="1" y="1"	width="16" height="16"/>
 		<path fill="${accent}" d="M16,2v14H2V2H16 M18,0H0v18h18V0L18,0z"/>
@@ -355,7 +355,7 @@ makeActionButtonIcon.moveLayerUp = function() {
 	return svgWrap(re);
 };
 
-// Shape align actions
+// Path align actions
 makeActionButtonIcon.align = function(edge) {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;

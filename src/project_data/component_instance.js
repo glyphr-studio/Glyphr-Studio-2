@@ -10,8 +10,8 @@ import { strSan, rad, deg } from '../common/functions.js';
  * Additionally they hold transformation info about
  * how they differ from their root component.
  * Component Instances surface *all* the same
- * methods as a Shape, and are stored along side
- * regular Shapes in a Glyph.
+ * methods as a Path, and are stored along side
+ * regular Paths in a Glyph.
  */
 export class ComponentInstance extends GlyphElement {
 	/**
@@ -27,10 +27,10 @@ export class ComponentInstance extends GlyphElement {
 	 * @param {boolean} reverseWinding - paths have opposite winding
 	 * @param {number} rotation - rotation difference
 	 * @param {boolean} rotateFirst - rotate/resize is different than resize/rotate
-	 * @param {boolean} xLock - can the shape be moved horizontally
-	 * @param {boolean} yLock - can the shape be moved vertically
-	 * @param {boolean} wLock - can the shape be resized horizontally
-	 * @param {boolean} hLock - can the shape be resized vertically
+	 * @param {boolean} xLock - can the path be moved horizontally
+	 * @param {boolean} yLock - can the path be moved vertically
+	 * @param {boolean} wLock - can the path be resized horizontally
+	 * @param {boolean} hLock - can the path be resized vertically
 	 * @param {boolean} ratioLock - while resizing, maintain aspect ratio
 	 * @param {object} parent - link to the parent Glyph object
 	 */
@@ -478,10 +478,10 @@ export class ComponentInstance extends GlyphElement {
 	/**
 	 * Set X position
 	 * @param {number} x
-	 * @returns {ComponentInstance} - reference to this ComponentInstanceShape
+	 * @returns {ComponentInstance} - reference to this ComponentInstancePath
 	 */
 	set x(x) {
-		this.setShapePosition(x, false);
+		this.setPathPosition(x, false);
 	}
 
 	/**
@@ -490,7 +490,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set y(y) {
-		this.setShapePosition(false, y);
+		this.setPathPosition(false, y);
 	}
 
 	/**
@@ -499,7 +499,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set width(w) {
-		this.setShapeSize(w, false);
+		this.setPathSize(w, false);
 	}
 
 	/**
@@ -508,7 +508,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set height(h) {
-		this.setShapeSize(false, h);
+		this.setPathSize(false, h);
 	}
 
 	// --------------------------------------------------------------
@@ -575,23 +575,23 @@ export class ComponentInstance extends GlyphElement {
 		let og = getGlyph(gid, true);
 		if(og) og = new Glyph(clone(og, 'convertComponentInstanceToGlyph'));
 
-		let newshapes = [];
+		let newPaths = [];
 		let tempglyph;
 
-		if(og.shapes){
-			for(let s=0; s<og.shapes.length; s++){
-				if(og.shapes[s].objtype === 'componentinstance'){
-					tempglyph = og.shapes[s].makeTransformedGlyph();
-					newshapes = newshapes.concat(tempglyph.shapes);
+		if(og.paths){
+			for(let s=0; s<og.paths.length; s++){
+				if(og.paths[s].objtype === 'componentinstance'){
+					tempglyph = og.paths[s].makeTransformedGlyph();
+					newPaths = newPaths.concat(tempglyph.paths);
 
 				} else {
-					newshapes.push(og.shapes[s]);
+					newPaths.push(og.paths[s]);
 				}
 			}
 
-			og.shapes = newshapes;
+			og.paths = newPaths;
 		} else {
-			og.shapes = [];
+			og.paths = [];
 		}
 
 		// log(og);
@@ -605,9 +605,9 @@ export class ComponentInstance extends GlyphElement {
 	// --------------------------------------------------------------
 
 	/**
-	 * Make a PostScript path from this shape
+	 * Make a PostScript path from this path
 	 * PostScript paths use relative MoveTo commands, so
-	 * this shape must know about where the last shape left off
+	 * this path must know about where the last path left off
 	 * @param {number} lastX - x from previous path
 	 * @param {number} lastY - y from previous path
 	 * @returns {string} - PostScript path data
@@ -616,8 +616,8 @@ export class ComponentInstance extends GlyphElement {
 		const g = this.transformedGlyph;
 		let re;
 		let part;
-		for (let s = 0; s < g.shapes.length; s++) {
-			part = g.shapes[s].makePostScript(lastX, lastY);
+		for (let s = 0; s < g.paths.length; s++) {
+			part = g.paths[s].makePostScript(lastX, lastY);
 			lastX = part.lastX;
 			lastY = part.lastY;
 			re += part.re;
@@ -630,7 +630,7 @@ export class ComponentInstance extends GlyphElement {
 	}
 
 	// --------------------------------------------------------------
-	// Parity methods, shared between Shapes and ComponentInstances
+	// Parity methods, shared between Paths and ComponentInstances
 	// --------------------------------------------------------------
 
 	/**
@@ -638,8 +638,8 @@ export class ComponentInstance extends GlyphElement {
 	 * @param {number} dx - delta x
 	 * @param {number} dy - delta y
 	 */
-	updateShapePosition(dx, dy) {
-		// log('ComponentInstance.updateShapePosition', 'start');
+	updatePathPosition(dx, dy) {
+		// log('ComponentInstance.updatePathPosition', 'start');
 		// log('passed dx/dy/force: ' + dx + ' / ' + dy + ' / ' + force);
 		// log('translate was: ' + this.translateX + ' / ' + this.translateY);
 		dx = parseFloat(dx) || 0;
@@ -647,16 +647,16 @@ export class ComponentInstance extends GlyphElement {
 		this.translateX = 1 * this.translateX + dx;
 		this.translateY = 1 * this.translateY + dy;
 		// log('translate now: ' + this.translateX + ' / ' + this.translateY);
-		// log('ComponentInstance.updateShapePosition', 'end');
+		// log('ComponentInstance.updatePathPosition', 'end');
 	}
 
 	/**
-	 * setShapePosition
+	 * setPathPosition
 	 * @param {number} nx - new x value
 	 * @param {number} ny - new y value
 	 */
-	setShapePosition(nx, ny) {
-		// log('ComponentInstance.setShapePosition', 'start');
+	setPathPosition(nx, ny) {
+		// log('ComponentInstance.setPathPosition', 'start');
 		// log('passed nx/ny/force: ' + nx + ' / ' + ny + ' / ' + force);
 		// log('translate was: ' + this.translateX + ' / ' + this.translateY);
 		// TODO fix project access
@@ -669,7 +669,7 @@ export class ComponentInstance extends GlyphElement {
 		if (!isNaN(nx)) this.translateX = nx - linkMaxes.xMin;
 		if (!isNaN(ny)) this.translateY = ny - linkMaxes.yMax;
 		// log('translate now: ' + this.translateX + ' / ' + this.translateY);
-		// log('ComponentInstance.setShapePosition', 'end');
+		// log('ComponentInstance.setPathPosition', 'end');
 	}
 
 	/**
@@ -678,8 +678,8 @@ export class ComponentInstance extends GlyphElement {
 	 * @param {number} dh - delta height
 	 * @param {boolean} ratioLock - maintain aspect ratio
 	 */
-	updateShapeSize(dw, dh, ratioLock) {
-		// log('ComponentInstance.updateShapeSize', 'start');
+	updatePathSize(dw, dh, ratioLock) {
+		// log('ComponentInstance.updatePathSize', 'start');
 		// log('passed dw/dh/ratioLock: ' + dw + ' / ' + dh + ' / ' + ratioLock);
 		if (dw !== false) dw = parseFloat(dw) || 0;
 		if (dh !== false) dh = parseFloat(dh) || 0;
@@ -698,23 +698,23 @@ export class ComponentInstance extends GlyphElement {
 		this.scaleH = 1 * this.scaleH + dh;
 		if (this.rotation === 0) this.rotateFirst = false;
 		// log('translate now: ' + this.scaleW + ' / ' + this.scaleH);
-		// log('ComponentInstance.updateShapeSize', 'end');
+		// log('ComponentInstance.updatePathSize', 'end');
 	}
 
 	/**
-	 * setShapeSize
+	 * setPathSize
 	 * @param {number} nw - new width
 	 * @param {number} nh - new height
 	 * @param {boolean} ratioLock - maintain aspect ratio
 	 */
-	setShapeSize(nw, nh, ratioLock) {
+	setPathSize(nw, nh, ratioLock) {
 		// TODO fix project access
 		// const linkMaxes = getCurrentProject().getGlyph(this.link).maxes;
 		const linkMaxes = {xMin: 0, yMax: 0};
 
 		const dx = nw ? nw * 1 - linkMaxes.xMin : 0;
 		const dy = nh ? nh * 1 - linkMaxes.yMax : 0;
-		this.updateShapePosition(dx, dy, ratioLock);
+		this.updatePathPosition(dx, dy, ratioLock);
 	}
 
 	/**

@@ -82,8 +82,8 @@ describe('Segment', () => {
 		expect(sampleSegment().convertToLine().lineType).toBe('diagonal');
 	});
 
-	it('getXYPointFromSplit', () => {
-		expect(sampleSegment().getXYPointFromSplit().y).toBe(137.5);
+	it('findXYPointFromSplit', () => {
+		expect(sampleSegment().findXYPointFromSplit().y).toBe(137.5);
 	});
 
 	it('calculateLength', () => {

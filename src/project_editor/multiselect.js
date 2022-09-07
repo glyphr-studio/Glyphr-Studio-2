@@ -1,17 +1,17 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { drawShape } from '../edit_canvas/draw_shapes.js';
+import { drawPath } from '../edit_canvas/draw_paths.js';
 import { Glyph } from '../project_data/glyph.js';
-import { Shape } from '../project_data/shape.js';
+import { Path } from '../project_data/path.js';
 
 /**
 		Multi-Select
 		An object that contains pieces of other things (Path Points
-		or Shapes) and then can use virtual containers (Shapes and Glyphs)
-		to treat the collections as if they were regular (Shapes or Glyphs).
+		or Paths) and then can use virtual containers (Paths and Glyphs)
+		to treat the collections as if they were regular (Paths or Glyphs).
 
 		So:
-		 - A random collection of Path Points can be treated like a single Shape
-		 - A random collection of Shapes can be treated like a Glyph
+		 - A random collection of Path Points can be treated like a single Path
+		 - A random collection of Paths can be treated like a Glyph
 **/
 
 // --------------------------------------------------------------
@@ -29,7 +29,7 @@ class MultiSelect {
 		log(`obj.objType: ${obj.objType}`);
 
 		let selectable = [
-			'Path Point', 'Shape', 'Component Instance'
+			'Path Point', 'Path', 'Component Instance'
 		];
 
 		log(`MultiSelect.isSelectable`, 'end');
@@ -134,23 +134,23 @@ class MultiSelect {
 export class MultiSelectPoints extends MultiSelect {
 	constructor() {
 		super();
-		this._shape = new Shape();
+		this._path = new Path();
 	}
 
-	get shape() {
-		this._shape.path = new Path({ pathPoints: this.members });
-		// this.shape.calcMaxes();
-		return this._shape;
+	get path() {
+		this._path.path = new Path({ pathPoints: this.members });
+		// this.path.calcMaxes();
+		return this._path;
 	}
 
 	publishChanges() {
 		let editor = getCurrentProjectEditor();
 		editor.publish('currentPathPoint', this.members);
-		this.selectShapesThatHaveSelectedPoints();
+		this.selectPathsThatHaveSelectedPoints();
 	}
 
-	updateShapePosition(dx, dy) {
-		this.shape.updateShapePosition(dx, dy);
+	updatePathPosition(dx, dy) {
+		this.path.updatePathPosition(dx, dy);
 	}
 
 	deletePathPoints() {
@@ -172,7 +172,6 @@ export class MultiSelectPoints extends MultiSelect {
 
 		let editor = getCurrentProjectEditor();
 		const wi = editor.selectedWorkItem;
-		if (wi.objType === 'glyph') wi.removeShapesWithZeroLengthPaths();
 
 		this.clear();
 	}
@@ -183,14 +182,14 @@ export class MultiSelectPoints extends MultiSelect {
 	}
 
 	draw_PathPointHandles() {
-		const sh = this.shape;
+		const sh = this.path;
 		draw_PathPointHandles(sh.path.pathPoints);
 	}
 
 	draw_PathPoints() {
 		// log('MS.points.draw_PathPoints', 'start');
-		const sh = this.shape;
-		// ('\t shape is ' + json(sh));
+		const sh = this.path;
+		// ('\t path is ' + json(sh));
 
 		draw_PathPoints(sh.path.pathPoints);
 
@@ -243,42 +242,42 @@ export class MultiSelectPoints extends MultiSelect {
 		}
 	}
 
-	selectShapesThatHaveSelectedPoints() {
-		// log('MS.points.selectShapesThatHaveSelectedPoints', 'start');
+	selectPathsThatHaveSelectedPoints() {
+		// log('MS.points.selectPathsThatHaveSelectedPoints', 'start');
 		// this.clear();
 		const points = this.members;
-		const shapes = getCurrentProjectEditor().selectedWorkItem.shapes;
+		const paths = getCurrentProjectEditor().selectedWorkItem.paths;
 		let path;
 		let count = 0;
 
 		if (points.length === 0) return;
 
 		// log('selected points ' + points);
-		// log('WI shapes ' + shapes);
+		// log('WI paths ' + paths);
 
 		for (let p = 0; p < points.length; p++) {
 			path = points[p].parent;
 
-			for (let s = 0; s < shapes.length; s++) {
-				if (shapes[s].objType !== 'ComponentInstance') {
-					if (path === shapes[s].path) {
-						shapes.add(shapes[s]);
+			for (let s = 0; s < paths.length; s++) {
+				if (paths[s].objType !== 'ComponentInstance') {
+					if (path === paths[s].path) {
+						paths.add(paths[s]);
 						count++;
 					}
 				}
 			}
 		}
 
-		// log('MS.points.selectShapesThatHaveSelectedPoints - Selected ' + count + '', 'end');
+		// log('MS.points.selectPathsThatHaveSelectedPoints - Selected ' + count + '', 'end');
 	}
 }
 
 
 // --------------------------------------------------------------
-// SELECTED SHAPES
+// SELECTED PATHS
 // --------------------------------------------------------------
 
-export class MultiSelectShapes extends MultiSelect {
+export class MultiSelectPaths extends MultiSelect {
 	constructor() {
 		super();
 		this.glyph = new Glyph();
@@ -289,7 +288,7 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	get glyph() {
-		this._glyph.shapes = this.members;
+		this._glyph.paths = this.members;
 
 		// Pretty sure calling changed on a virtual
 		// glyph makes no sense
@@ -311,36 +310,36 @@ export class MultiSelectShapes extends MultiSelect {
 
 	publishChanges() {
 		let editor = getCurrentProjectEditor();
-		editor.publish('currentShape', this.members);
+		editor.publish('currentPath', this.members);
 	}
 
-	selectShapesThatHaveSelectedPoints() {}
+	selectPathsThatHaveSelectedPoints() {}
 
 	combine() {
-		// log('multiSelect.shapes.combine', 'start');
+		// log('multiSelect.paths.combine', 'start');
 
 		const ns = new Glyph(clone(this.glyph));
 
 		ns.flattenGlyph();
 
-		const cs = combineShapes(ns.shapes);
+		const cs = combinePaths(ns.paths);
 
-		// If everything worked, delete original shapes and add new ones
+		// If everything worked, delete original paths and add new ones
 		if (cs) {
-			this.deleteShapes();
+			this.deletePaths();
 
-			for (let n = 0; n < cs.length; n++) action_addShape(cs[n]);
+			for (let n = 0; n < cs.length; n++) action_addPath(cs[n]);
 
-			historyPut('Combined shapes');
+			historyPut('Combined paths');
 		}
 
-		// log('multiSelect.shapes.combine', 'end');
+		// log('multiSelect.paths.combine', 'end');
 	}
 
-	deleteShapes() {
-		// log('deleteShape', 'start');
+	deletePaths() {
+		// log('deletePath', 'start');
 		let editor = getCurrentProjectEditor();
-		const wishapes = editor.selectedWorkItem.shapes;
+		const wipaths = editor.selectedWorkItem.paths;
 		const sels = this.members;
 		let curs;
 		let i;
@@ -354,24 +353,24 @@ export class MultiSelectShapes extends MultiSelect {
 					removeFromUsedIn(curs.link, editor.selectedGlyph);
 				}
 
-				i = wishapes.indexOf(curs);
-				if (i > -1) wishapes.splice(i, 1);
+				i = wipaths.indexOf(curs);
+				if (i > -1) wipaths.splice(i, 1);
 			}
 
-			this.select(wishapes[i] || wishapes[wishapes.length - 1]);
+			this.select(wipaths[i] || wipaths[wipaths.length - 1]);
 		}
 
 		// TODO publish change
-		// log('deleteShape', 'end');
+		// log('deletePath', 'end');
 	}
 
 	align(edge) {
 		// showToast('align ' + edge);
 		const g = this.glyph;
-		const gnum = g.shapes.length;
-		g.alignShapes(edge);
+		const gnum = g.paths.length;
+		g.alignPaths(edge);
 
-		historyPut('Aligned ' + gnum + ' shapes ' + edge);
+		historyPut('Aligned ' + gnum + ' paths ' + edge);
 	}
 
 	// Wrapper functions
@@ -383,26 +382,26 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	// convert to name setter
-	changeShapeName(n) {
-		this.singleton.changeShapeName(n);
+	changePathName(n) {
+		this.singleton.changePathName(n);
 	}
 
-	updateShapePosition(dx, dy) {
+	updatePathPosition(dx, dy) {
 		this.glyph.updateGlyphPosition(dx, dy);
 	}
 
-	setShapePosition(nx, ny) {
+	setPathPosition(nx, ny) {
 		this.glyph.setGlyphPosition(nx, ny);
 	}
 
-	updateShapeSize(dw, dh, ratioLock) {
+	updatePathSize(dw, dh, ratioLock) {
 		if (this.members.length === 1)
-			this.members[0].updateShapeSize(dw, dh, ratioLock);
+			this.members[0].updatePathSize(dw, dh, ratioLock);
 		else if (this.members.length > 1)
 			this.glyph.updateGlyphSize(dw, dh, ratioLock);
 	}
 
-	setShapeSize(nw, nh, ratioLock) {
+	setPathSize(nw, nh, ratioLock) {
 		this.glyph.setGlyphSize(nw, nh, ratioLock);
 	}
 
@@ -446,7 +445,7 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	isOverBoundingBoxHandle(px, py) {
-		// log('SelectedShapes.isOverBoundingBoxHandle', 'start');
+		// log('SelectedPaths.isOverBoundingBoxHandle', 'start');
 		// log('passed x/y: ' + px + '/' + py);
 
 		if (this.members.length === 0) {
@@ -462,7 +461,7 @@ export class MultiSelectShapes extends MultiSelect {
 			this.glyph.maxes,
 			_UI.multiSelectThickness
 		);
-		// log('SelectedShapes.isOverBoundingBoxHandle returning ' + c);
+		// log('SelectedPaths.isOverBoundingBoxHandle returning ' + c);
 		return c;
 	}
 
@@ -481,28 +480,28 @@ export class MultiSelectShapes extends MultiSelect {
 		else return this.glyph.maxes;
 	}
 
-	drawShapes(lctx, view) {
+	drawPaths(lctx, view) {
 		let failed = false;
-		let drewshape = false;
+		let drewpath = false;
 		for (let m = 0; m < this.members.length; m++) {
-			drewshape = drawShape(this.members[m], lctx, view);
-			failed = failed || !drewshape;
+			drewpath = drawPath(this.members[m], lctx, view);
+			failed = failed || !drewpath;
 		}
 
 		return !failed;
 	}
 
 	draw_PathPoints() {
-		// log('MS.shapes.draw_PathPoints', 'start');
+		// log('MS.paths.draw_PathPoints', 'start');
 		let s;
 		for (let m = 0; m < this.members.length; m++) {
 			s = this.members[m];
-			// log('drawing points on shape ' + m + ' as ' + s.path.pathPoints);
+			// log('drawing points on path ' + m + ' as ' + s.path.pathPoints);
 			if (s.objType !== 'ComponentInstance')
 				draw_PathPoints(this.members[m].path.pathPoints);
 		}
 
-		// log('MS.shapes.draw_PathPoints', 'end');
+		// log('MS.paths.draw_PathPoints', 'end');
 	}
 
 	reverseWinding() {
