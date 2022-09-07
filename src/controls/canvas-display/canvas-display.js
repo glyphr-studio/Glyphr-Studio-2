@@ -11,13 +11,6 @@ import { drawGlyph } from '../../edit_canvas/draw_shapes.js';
  */
 export class CanvasDisplay extends HTMLElement {
 	/**
-	 * Specify which attributes are observed and trigger attributeChangedCallback
-	 */
-	 static get observedAttributes() {
-		return ['glyphs', 'height', 'width', 'vertical-align', 'horizontal-align'];
-	}
-
-	/**
 	 * Create an CanvasDisplay
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
@@ -67,6 +60,13 @@ export class CanvasDisplay extends HTMLElement {
 
 		this.redraw();
 		log(`CanvasDisplay.constructor`, 'end');
+	}
+
+	/**
+	 * Specify which attributes are observed and trigger attributeChangedCallback
+	 */
+	 static get observedAttributes() {
+		return ['glyphs', 'height', 'width', 'vertical-align', 'horizontal-align'];
 	}
 
 	/**

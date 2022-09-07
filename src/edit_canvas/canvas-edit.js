@@ -151,79 +151,20 @@ export class CanvasEdit extends HTMLElement {
 	}
 }
 
-/* cSpell:disable */
-/*
-
-// --------------------------------------------------------------
-// Redraw
-// --------------------------------------------------------------
-	function redraw_GlyphEdit() {
-		// log('redraw_GlyphEdit', 'start');
-		_UI.redrawing = true;
-
-		let sg = getSelectedWorkItem();
-		let editmode = getEditMode();
-
-		// if (sg) sg.calcMaxes();
-		// log('Selected WI ' + sg.name);
-
-		// draw grids
-		drawGrid();
-		drawGuides();
-
-		// load glyph info
-		if (sg && sg.shapes.length) {
-			let v = getView('Redraw');
-			if (sg.contextGlyphs) drawContextGlyphs();
-			sg.drawGlyph(_UI.glyphEditCTX, v);
-		} else {
-			_UI.redrawing = false;
-			return;
-		}
-
-		project.multiSelect.shapes.drawPathOutline();
-
-		if (editmode === 'arrow') {
-			project.multiSelect.shapes.drawBoundingBox();
-			project.multiSelect.shapes.drawBoundingBoxHandles();
-		} else if (editmode === 'rotate') {
-			project.multiSelect.shapes.draw_RotationAffordance();
-		} else if (editmode === 'pen') {
-			if (_UI.eventhandlers.multi) sg.drawMultiSelectAffordances(_UI.colors.blue);
-			project.multiSelect.points.draw_PathPointHandles();
-			project.multiSelect.shapes.draw_PathPoints();
-			// project.multiSelect.points.draw_PathPoints();
-
-			if (_UI.eventhandlers.hoverpoint) {
-				let hp = _UI.eventhandlers.hoverpoint;
-				_UI.glyphEditCTX.fillStyle = hp.fill;
-				_UI.glyphEditCTX.fillRect(hp.x, hp.y, hp.size, hp.size);
-			}
-		} else if (editmode === 'newPath') {
-			project.multiSelect.points.draw_PathPointHandles();
-			project.multiSelect.shapes.draw_PathPoints();
-			// project.multiSelect.points.draw_PathPoints();
-		}
-
-		_UI.redrawing = false;
-		// log('redraw_GlyphEdit', 'end');
-	}
-*/
-
 // --------------------------------------------------------------------------
 // Convert between Saved values and Canvas values
 // --------------------------------------------------------------------------
 // convert stored x-y point to canvas x-y
 export function sXcX(sx, view = getCurrentProjectEditor().view) {
-	let canvasx = view.dx;
-	canvasx += sx * view.dz;
-	return canvasx || view.dx;
+	let canvasX = view.dx;
+	canvasX += sx * view.dz;
+	return canvasX || view.dx;
 }
 
 export function sYcY(sy, view = getCurrentProjectEditor().view) {
-	let canvasy = view.dy;
-	canvasy -= sy * view.dz;
-	return canvasy || view.dy;
+	let canvasY = view.dy;
+	canvasY -= sy * view.dz;
+	return canvasY || view.dy;
 }
 
 // convert canvas x-y inputs to saved shape x-y

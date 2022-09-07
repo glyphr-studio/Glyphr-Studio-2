@@ -325,6 +325,7 @@ function makeInputs_size(workItem){
 	let height = workItem.height;
 	log(`width: ${round(width, 3)}`);
 	log(`height: ${round(height, 3)}`);
+	let editor = getCurrentProjectEditor();
 
 	// Label
 	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
@@ -335,18 +336,34 @@ function makeInputs_size(workItem){
 	wInput.setAttribute('value', round(width, 3));
 	wInput.addEventListener('change', (event) => {
 		let newValue = event.target.getAttribute('value');
-		workItem.w = newValue;
+		setSize(workItem, newValue, false, workItem.ratioLock);
 		getCurrentProjectEditor().publish('currentGlyph', workItem);
 	});
+	editor.subscribe({
+		topic: ['currentGlyph', 'currentShape'],
+		callback: (changedItem) => {
+			log(`wInput CALLBACK setting value to ${changedItem.width}`);
+			wInput.value = round(changedItem.width, 3);
+		}
+	});
+
 
 	// Height
 	let hInput = makeElement({tag: 'input-number-lockable'});
 	hInput.setAttribute('value', round(height, 3));
 	hInput.addEventListener('change', (event) => {
 		let newValue = event.target.getAttribute('value');
-		workItem.h = newValue;
+		setSize(workItem, false, newValue, workItem.ratioLock);
 		getCurrentProjectEditor().publish('currentGlyph', workItem);
 	});
+	editor.subscribe({
+		topic: ['currentGlyph', 'currentShape'],
+		callback: (changedItem) => {
+			log(`hInput CALLBACK setting value to ${changedItem.height}`);
+			hInput.value = round(changedItem.height, 3);
+		}
+	});
+
 
 	// Put double input together
 	doubleInput.appendChild(wInput);
@@ -382,6 +399,11 @@ function makeInputs_size(workItem){
 	return [inputLabel, doubleInput, ratioLockLabel, ratioLockCheckbox];
 }
 
+
+function setSize(workItem, newW, newH, ratioLock){
+	if(workItem.objType === 'Shape') workItem.setShapeSize(newW, newH, ratioLock);
+	else workItem.setGlyphSize(newW, newH, ratioLock);
+}
 
 //	-------------------------------------------
 //	Helpers

@@ -145,7 +145,7 @@ export class MultiSelectPoints extends MultiSelect {
 
 	publishChanges() {
 		let editor = getCurrentProjectEditor();
-		editor.publish('selectedPathPoints', this.members);
+		editor.publish('currentPathPoint', this.members);
 		this.selectShapesThatHaveSelectedPoints();
 	}
 
@@ -298,11 +298,11 @@ export class MultiSelectShapes extends MultiSelect {
 		return this._glyph;
 	}
 
-	contains(objtypename) {
+	contains(objTypeName) {
 		if (this.members.length === 0) return false;
 		let re = false;
 		for (let m = 0; m < this.members.length; m++) {
-			re = this.members[m].objType === objtypename;
+			re = this.members[m].objType === objTypeName;
 			if (re) return true;
 		}
 
@@ -311,7 +311,7 @@ export class MultiSelectShapes extends MultiSelect {
 
 	publishChanges() {
 		let editor = getCurrentProjectEditor();
-		editor.publish('whichShapeIsSelected', this.members);
+		editor.publish('currentShape', this.members);
 	}
 
 	selectShapesThatHaveSelectedPoints() {}

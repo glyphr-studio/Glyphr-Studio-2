@@ -15,9 +15,11 @@ export class InputNumber extends HTMLElement {
 		// log(JSON.stringify(attributes));
 		super();
 
-		Object.keys(attributes).forEach((key) =>
-			this.setAttribute(key, attributes[key])
-		);
+		// Object.keys(attributes).forEach((key) =>
+		// 	this.setAttribute(key, attributes[key])
+		// );
+
+		this._value = 99999999;
 
 		this.precision = this.getAttribute('precision') || 3;
 		this.disabled = this.hasAttribute('disabled');
@@ -230,7 +232,7 @@ export class InputNumber extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['disabled', 'value'];
+		return ['disabled'];
 	}
 
 	/**
@@ -255,6 +257,7 @@ export class InputNumber extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
+		// log(`InputNumber.attributeChangedCallback`, 'start');
 		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		if (attributeName === 'disabled') {
@@ -280,6 +283,8 @@ export class InputNumber extends HTMLElement {
 				this.addAllEventListeners();
 			}
 		}
+
+		// log(`InputNumber.attributeChangedCallback`, 'end');
 	}
 
 	/**
@@ -326,7 +331,10 @@ export class InputNumber extends HTMLElement {
 	 * @returns {number}
 	 */
 	get value() {
-		return this._numberValue;
+		// log(`InputNumber.get value`, 'start');
+		// log(`this._value: ${this._value}`);
+		// log(`InputNumber.get value`, 'end');
+		return this._value;
 	}
 
 	/**
@@ -336,20 +344,18 @@ export class InputNumber extends HTMLElement {
 	set value(number) {
 		// log(`InputNumber.set value`, 'start');
 		// log(`passed ${number}`);
-		this._numberValue = round(parseFloat(number), this.precision) || 0;
-		// log(`this._numberValue is now ${this._numberValue}`);
+		this._value = round(parseFloat(number), this.precision) || 0;
+		// log(`this._value is now ${this._value}`);
 		// log(`this.value is now ${this.value}`);
-
-		this.numberInput.value = this.value;
-		this.numberInput.setAttribute('value', this.value);
-		this.setAttribute('value', this.value);
+		this.numberInput.setAttribute('value', this._value);
+		this.setAttribute('value', this._value);
 		// log(`InputNumber.set value`, 'end');
 	}
 
 	/**
 	 * Handle onChange event
 	 */
-	numberInputChanged() {
+	numberInputChanged(ev) {
 		this.elementRoot.value = this.elementRoot.numberInput.value;
 		let changeEvent = new Event('change', {'bubbles':true, 'composed':true});
 		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
@@ -361,11 +367,15 @@ export class InputNumber extends HTMLElement {
 	 * @param {object} ev - event
 	 */
 	increment(ev) {
+		// log(`InputNumber.increment`, 'start');
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
+		// log(`this.elementRoot.value BEFORE: ${this.elementRoot.value}`);
 		this.elementRoot.value += mod ? 10 : 1;
+		// log(`this.elementRoot.value AFTERS: ${this.elementRoot.value}`);
 		let changeEvent = new Event('change', {'bubbles':true, 'composed':true});
 		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
 		flashUIElementAsActive(this);
+		// log(`InputNumber.increment`, 'end');
 	}
 
 	/**
@@ -373,11 +383,15 @@ export class InputNumber extends HTMLElement {
 	 * @param {object} ev - event
 	 */
 	decrement(ev) {
+		// log(`InputNumber.decrement`, 'start');
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
+		// log(`this.elementRoot.value BEFORE: ${this.elementRoot.value}`);
 		this.elementRoot.value -= mod ? 10 : 1;
+		// log(`this.elementRoot.value AFTERS: ${this.elementRoot.value}`);
 		let changeEvent = new Event('change', {'bubbles':true, 'composed':true});
 		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
 		flashUIElementAsActive(this);
+		// log(`InputNumber.decrement`, 'end');
 	}
 
 	/**
