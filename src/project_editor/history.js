@@ -83,7 +83,7 @@ export class History {
 			}
 		}
 
-		_UI.ms.shapes.clear();
+		_UI.ms.paths.clear();
 		_UI.ms.points.clear();
 		// update_NavPanels();
 		redraw({ calledby: 'history_pull', redrawpanels: true });

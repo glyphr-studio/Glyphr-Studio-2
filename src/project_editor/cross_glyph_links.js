@@ -34,8 +34,8 @@ export function glyphChanged(glyph){
 					}
 			}
 			if (descend) {
-					for (let s = 0; s < this.shapes.length; s++)
-							this.shapes[s].changed(descend, ascend);
+					for (let s = 0; s < this.paths.length; s++)
+							this.paths[s].changed(descend, ascend);
 			}
 			this.calcMaxes();
 	}
@@ -81,14 +81,14 @@ export function canAddComponent(destinationGlyph, componentID) {
  * @returns {array}
  */
 function collectAllDownstreamLinks(glyph, re = [], excludePeers = false) {
-	for (let s = 0; s < glyph.shapes.length; s++) {
-		if (glyph.shapes[s].objType === 'ComponentInstance') {
+	for (let s = 0; s < glyph.paths.length; s++) {
+		if (glyph.paths[s].objType === 'ComponentInstance') {
 			re = re.concat(
 				getCurrentProject()
-					.getGlyph(glyph.shapes[s].link)
+					.getGlyph(glyph.paths[s].link)
 					.collectAllDownstreamLinks(re)
 			);
-			if (!excludePeers) re.push(glyph.shapes[s].link);
+			if (!excludePeers) re.push(glyph.paths[s].link);
 		}
 	}
 	return re;
@@ -123,22 +123,22 @@ export function deleteLinks(glyph) {
 	for (let c = 0; c < glyph.usedIn.length; c++) {
 		upstreamGlyph = project.getGlyph(glyph.usedIn[c]);
 		// log('removing from ' + upstreamGlyph.name);
-		// log(upstreamGlyph.shapes);
-		for (let u = 0; u < upstreamGlyph.shapes.length; u++) {
+		// log(upstreamGlyph.paths);
+		for (let u = 0; u < upstreamGlyph.paths.length; u++) {
 			if (
-				upstreamGlyph.shapes[u].objType === 'ComponentInstance' &&
-				upstreamGlyph.shapes[u].link === glyph.id
+				upstreamGlyph.paths[u].objType === 'ComponentInstance' &&
+				upstreamGlyph.paths[u].link === glyph.id
 			) {
-				upstreamGlyph.shapes.splice(u, 1);
+				upstreamGlyph.paths.splice(u, 1);
 				u--;
 			}
 		}
-		// log(upstreamGlyph.shapes);
+		// log(upstreamGlyph.paths);
 	}
 	// Delete downstream usedIn array values
-	for (let s = 0; s < glyph.shapes.length; s++) {
-		if (glyph.shapes[s].objType === 'ComponentInstance') {
-			glyph.removeFromUsedIn(glyph.shapes[s].link, glyph.id);
+	for (let s = 0; s < glyph.paths.length; s++) {
+		if (glyph.paths[s].objType === 'ComponentInstance') {
+			glyph.removeFromUsedIn(glyph.paths[s].link, glyph.id);
 		}
 	}
 }

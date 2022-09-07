@@ -204,10 +204,10 @@ function ioSVG_makeAllGlyphsAndLigatures() {
 }
 
 function ioSVG_makeOneGlyphOrLigature(gl, uni) {
-	// if(!gl.shapes.length && !gl.getAdvanceWidth()) return '';
-	// Results in lots of special unicoded glyphs with no shapes
-	if (!gl.shapes.length && uni != 0x0020) {
-		console.warn('Glyph ' + uni + ' not exported: No shapes.');
+	// if(!gl.paths.length && !gl.getAdvanceWidth()) return '';
+	// Results in lots of special unicoded glyphs with no paths
+	if (!gl.paths.length && uni != 0x0020) {
+		console.warn('Glyph ' + uni + ' not exported: No paths.');
 		return '';
 	}
 
@@ -223,8 +223,8 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 	});
 	uni = uni.join('');
 
-	if (getCurrentProject().projectSettings.combineShapesOnExport) {
-		gl = new Glyph(gl).flattenGlyph().combineAllShapes(true);
+	if (getCurrentProject().projectSettings.combinePathsOnExport) {
+		gl = new Glyph(gl).flattenGlyph().combineAllPaths(true);
 	}
 
 	let pathdata = gl.svgPathData;

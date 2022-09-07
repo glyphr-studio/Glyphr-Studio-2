@@ -186,16 +186,16 @@ describe('Path', () => {
 		expect(path.winding).toBe(5);
 	});
 
-	it('getSegment', () => {
-		expect(samplePath().getSegment(1).p1x).toBe(484);
+	it('makeSegment', () => {
+		expect(samplePath().makeSegment(1).p1x).toBe(484);
 	});
 
-	it('getQuickSegmentLength', () => {
-		expect(samplePath().getQuickSegmentLength()).toBe(272.4319839826901);
+	it('calculateQuickSegmentLength', () => {
+		expect(samplePath().calculateQuickSegmentLength()).toBe(272.4319839826901);
 	});
 
-	it('getPolySegment', () => {
-		const ps = samplePath().getPolySegment();
+	it('makePolySegment', () => {
+		const ps = samplePath().makePolySegment();
 		expect(ps.segments[3].p1x).toBe(170);
 	});
 
@@ -220,12 +220,12 @@ describe('Path', () => {
 		expect(samplePath().insertPathPoint().p.x).toBe(437.879040081);
 	});
 
-	it('getClosestPointOnCurve', () => {
-		expect(samplePath().getClosestPointOnCurve({x: 100, y: 100}).x).toBe(219.88358613439445);
+	it('findClosestPointOnCurve', () => {
+		expect(samplePath().findClosestPointOnCurve({x: 100, y: 100}).x).toBe(219.88358613439445);
 	});
 
-	it('getXYPointFromSplit', () => {
-		expect(samplePath().getXYPointFromSplit().x).toBe(437.879040080653);
+	it('findXYPointFromSplit', () => {
+		expect(samplePath().findXYPointFromSplit().x).toBe(437.879040080653);
 	});
 
 	it('checkForNaN', () => {

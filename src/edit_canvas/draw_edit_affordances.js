@@ -20,7 +20,7 @@ let multiSelectThickness = 3;
 
 
 // --------------------------------------------------------------
-// Shapes
+// Paths
 // --------------------------------------------------------------
 // --------------------------------------------------------------
 // Canvas functions
@@ -28,30 +28,30 @@ let multiSelectThickness = 3;
 
 export function computeAndDrawBoundingBox(ctx) {
 	let editor = getCurrentProjectEditor();
-	if(editor.multiSelect.shapes.length < 1) return;
-	let maxes = editor.multiSelect.shapes.getMaxes();
-	let thickness = editor.multiSelect.shapes.length > 1? multiSelectThickness : 1;
+	if(editor.multiSelect.paths.length < 1) return;
+	let maxes = editor.multiSelect.paths.getMaxes();
+	let thickness = editor.multiSelect.paths.length > 1? multiSelectThickness : 1;
 	drawBoundingBox(ctx, maxes, thickness);
 }
 
 export function computeAndDrawRotationAffordance(ctx) {
 	let editor = getCurrentProjectEditor();
 	let ss;
-	if (editor.multiSelect.shapes.length === 1) {
-		ss = editor.multiSelect.shapes.members[0];
+	if (editor.multiSelect.paths.length === 1) {
+		ss = editor.multiSelect.paths.members[0];
 		const accent = ss.objType === 'ComponentInstance' ? accentGreen : accentBlue;
 		drawRotationAffordance(accent, false);
-	} else if (editor.multiSelect.shapes.length > 1) {
-		ss = editor.multiSelect.shapes.glyph;
+	} else if (editor.multiSelect.paths.length > 1) {
+		ss = editor.multiSelect.paths.glyph;
 		drawRotationAffordance(accentGray, multiSelectThickness);
 	}
 }
 
 export function computeAndDrawBoundingBoxHandles(ctx) {
 	let editor = getCurrentProjectEditor();
-	if(editor.multiSelect.shapes.length < 1) return;
-	let maxes = editor.multiSelect.shapes.getMaxes();
-	let thickness = editor.multiSelect.shapes.length > 1? multiSelectThickness : 1;
+	if(editor.multiSelect.paths.length < 1) return;
+	let maxes = editor.multiSelect.paths.getMaxes();
+	let thickness = editor.multiSelect.paths.length > 1? multiSelectThickness : 1;
 	drawBoundingBoxHandles(ctx, maxes, thickness);
 }
 
@@ -97,7 +97,7 @@ function drawBoundingBoxHandles(ctx, maxes, thickness) {
 
 	// TODO rotate handle
 /*
-	if(getCurrentProjectEditor().multiSelect.shapes.isRotateable()){
+	if(getCurrentProjectEditor().multiSelect.paths.isRotateable()){
 		let h = rotateHandleHeight;
 		ctx.lineWidth = thickness;
 		drawLine({x:bb.midX + bb.hp, y:bb.topY}, {x:bb.midX + bb.hp, y:bb.topY - h});
@@ -253,7 +253,7 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
 	// log('\t t/m/b y: ' + bb.topY + ' / ' + bb.midY + ' / ' + bb.bottomY);
 
 	// rotation handle
-	if(editor.multiSelect.shapes.isRotateable()){
+	if(editor.multiSelect.paths.isRotateable()){
 		if( ((px > bb.midX) && (px < bb.midX+ps)) &&
 			((py > bb.topY-rotateHandleHeight) && (py < bb.topY-rotateHandleHeight+ps)) ){
 			re = 'rotate';
@@ -350,8 +350,8 @@ function getBoundingBoxHandleDimensions(maxes, thickness) {
 drawComponentInstanceOutline(componentInstance, accent = '#000', thickness = 1) {
 	// log('ComponentInstance.drawPathOutline', 'start');
 	let g = componentInstance.transformedGlyph;
-	for (let s = 0; s < g.shapes.length; s++) {
-		drawPathOutline(g.shapes[s], accent, thickness);
+	for (let s = 0; s < g.paths.length; s++) {
+		drawPathOutline(g.paths[s], accent, thickness);
 	}
 }
 drawComponentInstanceBoundingBox(componentInstance, accent = '#000', thickness = 1) {

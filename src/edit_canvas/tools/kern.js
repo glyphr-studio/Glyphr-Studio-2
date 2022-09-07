@@ -25,7 +25,7 @@ export class Tool_Kern {
 
 		this.mousemove = function (ev) {
 			if (this.dragging) {
-				// Moving shapes if mousedown
+				// Moving paths if mousedown
 				let editor = getCurrentProjectEditor();
 				let sk = getSelectedKern();
 				let val = 1 * sk.value;

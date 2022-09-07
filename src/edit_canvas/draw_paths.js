@@ -4,11 +4,10 @@ import { round } from '../common/functions.js';
 
 
 // --------------------------------------------------------------
-// SHARED between Glyph, Shape, ComponentInstance, and Path
+// SHARED between Glyph, ComponentInstance, and Path
 // --------------------------------------------------------------
 export function isOverControlPoint(item, x, y, noHandles) {
 	if(item.objType === 'Glyph') return isOverGlyphControlPoint(item, x, y, noHandles);
-	if(item.objType === 'Shape') return isOverShapeControlPoint(item, x, y, noHandles);
 	if(item.objType === 'Path') return isOverPathControlPoint(item, x, y, noHandles);
 	if(item.objType === 'PathPoint') return isOverPathPointControlPoint(item, x, y, noHandles);
 	return false;
@@ -40,27 +39,27 @@ export function drawGlyph(
 	// log('drawGlyph', 'start');
 	// log(glyph.name);
 	// log('view ' + json(view, true));
-	const sl = glyph.shapes;
-	let shape;
-	let drewShape;
+	const sl = glyph.paths;
+	let path;
+	let drewPath;
 
 	if (addLSB && glyph.isAutoWide) view.dx += glyph.lsb * view.dz;
 
 	ctx.beginPath();
 	for (let j = 0; j < sl.length; j++) {
-		shape = sl[j];
-		// log(`${glyph.name} drawing ${shape.objType} ${j} ${shape.name}`);
-		drewShape = drawShape(shape, ctx, view);
-		if (!drewShape) {
-			console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + glyph.name);
+		path = sl[j];
+		// log(`${glyph.name} drawing ${path.objType} ${j} ${path.name}`);
+		drewPath = drawPath(path, ctx, view);
+		if (!drewPath) {
+			console.warn('Could not draw path ' + path.name + ' in Glyph ' + glyph.name);
 			if (
-				shape.objType === 'ComponentInstance' &&
-				!getCurrentProject().getGlyph(shape.link)
+				path.objType === 'ComponentInstance' &&
+				!getCurrentProject().getGlyph(path.link)
 			) {
-				console.warn('>>> Component Instance has bad link: ' + shape.link);
-				const i = glyph.shapes.indexOf(shape);
+				console.warn('>>> Component Instance has bad link: ' + path.link);
+				const i = glyph.paths.indexOf(path);
 				if (i > -1) {
-					glyph.shapes.splice(i, 1);
+					glyph.paths.splice(i, 1);
 					console.warn('>>> Deleted the Instance');
 				}
 			}
@@ -88,9 +87,9 @@ export function drawGlyph(
  */
 function isOverGlyphControlPoint(glyph, x, y, noHandles) {
 	let re = false;
-	for (let s = 0; s < glyph.shapes.length; s++) {
-		if (glyph.shapes[s].objType !== 'ComponentInstance') {
-			re = isOverPathControlPoint(glyph.shapes[s].path,
+	for (let s = 0; s < glyph.paths.length; s++) {
+		if (glyph.paths[s].objType !== 'ComponentInstance') {
+			re = isOverPathControlPoint(glyph.paths[s].path,
 				x, y, noHandles);
 			if (re) return re;
 		}
@@ -100,44 +99,44 @@ function isOverGlyphControlPoint(glyph, x, y, noHandles) {
 
 
 // --------------------------------------------------------------
-// SHARED shape and component instance
+// SHARED path and component instance
 // --------------------------------------------------------------
 /**
  *
- * @param {Shape or ComponentInstance} shape - what thing to draw
+ * @param {Path or ComponentInstance} path - what thing to draw
  * @param {object} ctx - canvas context
  * @param {object} view - view
  */
-export function drawShape(shape, ctx, view) {
-	if(shape.objType === 'ComponentInstance') {
-		return drawComponentInstance(shape, ctx, view);
-	} else if(shape.objType === 'Shape') {
-		return drawShapeShape(shape, ctx, view);
+export function drawPath(path, ctx, view) {
+	if(path.objType === 'ComponentInstance') {
+		return drawComponentInstance(path, ctx, view);
+	} else if(path.objType === 'Path') {
+		return drawPathPath(path, ctx, view);
 	}
 }
 
 
 // --------------------------------------------------------------
-// Shape
+// Path
 // --------------------------------------------------------------
 
 /**
- * Draw this Shape to a canvas
- * @param {Shape} shape - shape to draw
+ * Draw this Path to a canvas
+ * @param {Path} path - path to draw
  * @param {object} ctx - canvas context
  * @param {view} view - view
  * @returns {boolean}
  */
-function drawShapeShape(shape, ctx, view) {
-	// log('drawShape', 'start');
+function drawPathPath(path, ctx, view) {
+	// log('drawPath', 'start');
 	// log('view ' + json(view, true));
-	drawPath(shape.path, ctx, view);
-	// log('drawShape - returning true by default', 'end');
+	drawPath(path.path, ctx, view);
+	// log('drawPath - returning true by default', 'end');
 	return true;
 }
 
-function isOverShapeControlPoint(shape, x, y, noHandles) {
-	return isOverPathControlPoint(shape.path, x, y, noHandles);
+function isOverPathControlPoint(path, x, y, noHandles) {
+	return isOverPathControlPoint(path.path, x, y, noHandles);
 }
 
 // --------------------------------------------------------------
@@ -145,7 +144,7 @@ function isOverShapeControlPoint(shape, x, y, noHandles) {
 // --------------------------------------------------------------
 
 /**
- * Draw this Shape to a canvas
+ * Draw this Path to a canvas
  * @param {ComponentInstance} componentInstance - what to draw
  * @param {object} ctx - canvas context
  * @param {view} view
@@ -155,16 +154,16 @@ function drawComponentInstance(componentInstance, ctx, view) {
 	// log('drawComponentInstance', 'start');
 	// log('view ' + json(view, true));
 
-	// Have to iterate through shapes instead of using drawGlyph
-	// due to stacking shapes with appropriate winding
+	// Have to iterate through paths instead of using drawGlyph
+	// due to stacking paths with appropriate winding
 
 	const g = componentInstance.transformedGlyph;
 	if (!g) return false;
-	let drewShape = false;
+	let drewPath = false;
 	let failed = false;
-	for (let s = 0; s < g.shapes.length; s++) {
-		drewShape = drawShape(g.shapes[s], ctx, view);
-		failed = failed || !drewShape;
+	for (let s = 0; s < g.paths.length; s++) {
+		drewPath = drawPath(g.paths[s], ctx, view);
+		failed = failed || !drewPath;
 	}
 	// log('drawComponentInstance', 'end');
 	return !failed;

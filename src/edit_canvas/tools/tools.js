@@ -2,7 +2,7 @@ import { getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors, uiColors } from '../../common/colors.js';
 import { makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
-import { drawShape } from '../draw_shapes.js';
+import { drawPath } from '../draw_paths.js';
 
 
 // --------------------------------------------------------------
@@ -39,13 +39,13 @@ export function makeEditToolsButtons() {
 			{title: 'Add path point', disabled: false},
 		pathEdit:
 			{title: 'Path edit', disabled: false},
-		shapeEdit:
-			{title: 'Shape edit', disabled: false},
+		pathEdit:
+			{title: 'Resize', disabled: false},
 	};
 
 
 	// Disable pen and add path point buttons for certain conditions
-	const hasComponentInstance = editor.multiSelect.shapes.contains('ComponentInstance');
+	const hasComponentInstance = editor.multiSelect.paths.contains('ComponentInstance');
 
 	if (editor.selectedTool !== 'pathEdit' && hasComponentInstance) {
 		toolButtonData.pathEdit.disabled = true;
@@ -55,7 +55,7 @@ export function makeEditToolsButtons() {
 		toolButtonData.pathAddPoint.disabled = true;
 	}
 
-	if (editor.multiSelect.shapes.count() > 1) {
+	if (editor.multiSelect.paths.count() > 1) {
 		toolButtonData.pathAddPoint.disabled = true;
 	}
 
@@ -119,7 +119,7 @@ export function makeEditToolsButtons() {
 		content.appendChild(toolButtonElements.newPath);
 	}
 
-	if (onComponentPage && selectedWorkItem && !selectedWorkItem.shape) {
+	if (onComponentPage && selectedWorkItem && !selectedWorkItem.path) {
 		content.appendChild(toolButtonElements.newRectangle);
 		content.appendChild(toolButtonElements.newOval);
 		content.appendChild(toolButtonElements.newPath);
@@ -128,7 +128,7 @@ export function makeEditToolsButtons() {
 	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
 		content.appendChild(toolButtonElements.pathAddPoint);
 		content.appendChild(toolButtonElements.pathEdit);
-		content.appendChild(toolButtonElements.shapeEdit);
+		content.appendChild(toolButtonElements.pathEdit);
 		if (editor.selectedTool === 'newPath') {
 			content.appendChild(finishPath);
 		}
@@ -310,46 +310,46 @@ export function makeContextGlyphControls() {
 // Button helper functions
 // --------------------------------------------------------------
 
-export function action_addShape(newShape){
-	// log(`action_addShape`, 'start');
-	// log(`name: ${ewShape.name}`);
-	// log(`objType: ${ewShape.objType}`);
+export function action_addPath(newPath){
+	// log(`action_addPath`, 'start');
+	// log(`name: ${ewPath.name}`);
+	// log(`objType: ${ewPath.objType}`);
 
 	let editor = getCurrentProjectEditor();
-	if(newShape){
-		if(newShape.objType === 'ComponentInstance'){
+	if(newPath){
+		if(newPath.objType === 'ComponentInstance'){
 			// log(`is a Component instance`);
-			editor.selectedTool = 'shapeEdit';
-		} else if(newShape.path && (editor.selectedTool === 'shapeEdit')) {
-			// log(`triggered as true: newShape.path && editor.selectedTool == shapeEdit \n\t NOT calling calcmaxes, okay?`);
-			//newShape.calcMaxes();
+			editor.selectedTool = 'pathEdit';
+		} else if(newPath.path && (editor.selectedTool === 'pathEdit')) {
+			// log(`triggered as true: newPath.path && editor.selectedTool == pathEdit \n\t NOT calling calcmaxes, okay?`);
+			//newPath.calcMaxes();
 		}
 	} else {
-		// log(`passed null, creating new shape.`);
-		newShape = new Shape({});
-		newShape.name = ('Rectangle ' + ((editor.selectedWorkItemShapes.length*1)+1));
+		// log(`passed null, creating new path.`);
+		newPath = new Path({});
+		newPath.name = ('Rectangle ' + ((editor.selectedWorkItemPaths.length*1)+1));
 	}
 
 	let sg = editor.selectedWorkItem;
 
-	sg.addOneShape(newShape);
-	editor.multiSelect.shapes.select(newShape);
+	sg.addOnePath(newPath);
+	editor.multiSelect.paths.select(newPath);
 	// TODO history
 	// glyphChanged(sg);
 
-	// log(`returns: ${ewShape.name}`);
-	// log(`action_addShape`, 'end');
-	return newShape;
+	// log(`returns: ${ewPath.name}`);
+	// log(`action_addPath`, 'end');
+	return newPath;
 }
 
 /*
-export function addBasicShape(type){
+export function addBasicPath(type){
 	let hd = 50;
 	let th = 500;
 	let tw = 300;
-	let newShape = new Shape({});
+	let newPath = new Path({});
 	let parr = false;
-	let shapetype = 'Shape ';
+	let pathtype = 'Path ';
 	let p1,p2,p3,p4;
 
 	if(type === 'oval'){
@@ -358,67 +358,67 @@ export function addBasicShape(type){
 		p3 = new PathPoint({'P':new Coord({'x':tw,'y':(th/2)}), 'H1':new Coord({'x':tw,'y':(th-hd)}), 'H2':new Coord({'x':tw,'y':hd}), 'type':'symmetric'});
 		p4 = new PathPoint({'P':new Coord({'x':(tw/2),'y':0}), 'H1':new Coord({'x':(tw-hd),'y':0}), 'H2':new Coord({'x':hd,'y':0}), 'type':'symmetric'});
 		parr = [p1,p2,p3,p4];
-		shapetype = 'Oval ';
+		pathtype = 'Oval ';
 	} else {
 		p1 = new PathPoint({'P':new Coord({'x':0,'y':0}), 'H1':new Coord({'x':hd,'y':0}), 'H2':new Coord({'x':0,'y':hd})});
 		p2 = new PathPoint({'P':new Coord({'x':0,'y':th}), 'H1':new Coord({'x':0,'y':(th-hd)}), 'H2':new Coord({'x':hd,'y':th})});
 		p3 = new PathPoint({'P':new Coord({'x':tw,'y':th}), 'H1':new Coord({'x':(tw-hd),'y':th}), 'H2':new Coord({'x':tw,'y':(th-hd)})});
 		p4 = new PathPoint({'P':new Coord({'x':tw,'y':0}), 'H1':new Coord({'x':tw,'y':hd}), 'H2':new Coord({'x':(tw-hd),'y':0})});
 		parr = [p1,p2,p3,p4];
-		shapetype = 'Rectangle ';
+		pathtype = 'Rectangle ';
 	}
 
-	newShape.path = new Path({'pathpoints':parr});
-	newShape.name = (shapetype + getSelectedWorkItemShapes().length+1);
+	newPath.path = new Path({'pathpoints':parr});
+	newPath.name = (pathtype + getSelectedWorkItemPaths().length+1);
 
-	getSelectedWorkItemShapes().push(newShape);
-	_UI.ms.shapes.select(newShape);
+	getSelectedWorkItemPaths().push(newPath);
+	_UI.ms.paths.select(newPath);
 	updateCurrentGlyphWidth();
 }
 */
 
-export function turnSelectedShapeIntoAComponent(){
-	let s = clone(_UI.ms.shapes.getMembers(), 'turnSelectedShapeIntoAComponent');
+export function turnSelectedPathIntoAComponent(){
+	let s = clone(_UI.ms.paths.getMembers(), 'turnSelectedPathIntoAComponent');
 	let n = s.length === 1? ('Component ' + s[0].name) : ('Component ' + (getLength(_GP.components)+1));
 
-	_UI.ms.shapes.deleteShapes();
-	let newid = createNewComponent(new Glyph({'shapes':s, 'name':n}));
+	_UI.ms.paths.deletePaths();
+	let newid = createNewComponent(new Glyph({'paths':s, 'name':n}));
 	insertComponentInstance(newid);
-	_UI.selectedToolName = 'shapeEdit';
-	selectShape(getSelectedWorkItemShapes().length-1);
-	redraw({calledby:'turnSelectedShapeIntoAComponent'});
+	_UI.selectedToolName = 'pathEdit';
+	selectPath(getSelectedWorkItemPaths().length-1);
+	redraw({calledby:'turnSelectedPathIntoAComponent'});
 }
 
-export function getShapeAtLocation(x,y){
-	// log(`getShapeAtLocation`, 'start');
+export function getPathAtLocation(x,y){
+	// log(`getPathAtLocation`, 'start');
 	// log('checking x:' + x + ' y:' + y);
 
-	let shape;
+	let path;
 	let editor = getCurrentProjectEditor();
-	let sws = editor.selectedWorkItem?.shapes;
+	let sws = editor.selectedWorkItem?.paths;
 	// log(sws);
 	for(let j=(sws.length-1); j>=0; j--){
-		shape = sws[j];
-		// log('Checking shape ' + j);
+		path = sws[j];
+		// log('Checking path ' + j);
 
-		if(isThisShapeHere(shape, x, y)){
-			return shape;
+		if(isThisPathHere(path, x, y)){
+			return path;
 		}
 	}
 
 	// clickEmptySpace();
-	// log(`getShapeAtLocation`, 'end');
+	// log(`getPathAtLocation`, 'end');
 	return false;
 }
 
-function isThisShapeHere(shape, px, py) {
+function isThisPathHere(path, px, py) {
 	let editor = getCurrentProjectEditor();
 	let gctx = editor.ghostCTX;
 
 	gctx.clearRect(0,0,editor.canvasSize, editor.canvasSize);
 	gctx.fillStyle = 'rgba(0,0,255,0.2)';
 	gctx.beginPath();
-	drawShape(shape, gctx, editor.view);
+	drawPath(path, gctx, editor.view);
 	gctx.closePath();
 	gctx.fill();
 
@@ -481,7 +481,7 @@ export function makeToolButtonSVG(oa) {
 }
 
 // Arrow
-icons.shapeEdit = {
+icons.pathEdit = {
 	fill:`
 		<rect x="11" y="14" width="1" height="4"></rect>
 		<rect x="12" y="16" width="1" height="2"></rect>
@@ -625,7 +625,7 @@ icons.pathEdit = {
 };
 
 // Square with handles
-icons.shapeResize = {
+icons.pathResize = {
 	fill:`
 		<rect x="1" y="1" display="inline" width="4" height="4"></rect>
 		<rect x="8" y="8" display="inline" width="4" height="4"></rect>

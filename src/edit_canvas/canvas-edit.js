@@ -3,7 +3,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events_mouse.js';
-import { drawGlyph, drawShape } from './draw_shapes.js';
+import { drawGlyph, drawPath } from './draw_paths.js';
 import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles } from './draw_edit_affordances.js';
 
 /**
@@ -61,9 +61,9 @@ export class CanvasEdit extends HTMLElement {
 			callback: () => this.redraw({calledBy: 'CanvasEdit currentGlyph subscriber'})
 		});
 		editor.subscribe({
-			topic: 'currentShape',
+			topic: 'currentPath',
 			name: 'Edit canvas',
-			callback: () => this.redraw({calledBy: 'CanvasEdit currentShape subscriber'})
+			callback: () => this.redraw({calledBy: 'CanvasEdit currentPath subscriber'})
 		});
 
 		this.redraw();
@@ -116,11 +116,11 @@ export class CanvasEdit extends HTMLElement {
 		// Draw glyphs
 		drawGlyph(sg, ctx, view);
 
-		// Draw selected shape / path
+		// Draw selected path / path
 		let editMode = editor.selectedTool;
 		log(`editMode: ${editMode}`);
 
-		if (editMode === 'shapeEdit') {
+		if (editMode === 'pathEdit') {
 			computeAndDrawBoundingBox(ctx);
 			computeAndDrawBoundingBoxHandles(ctx);
 
@@ -142,9 +142,9 @@ export class CanvasEdit extends HTMLElement {
 			computeAndDrawPathPoints(ctx);
 		}
 
-		// Draw temporary new shapes
-		if(eventHandlerData.tempNewBasicShape) {
-			drawShape(eventHandlerData.tempNewBasicShape, ctx, view);
+		// Draw temporary new paths
+		if(eventHandlerData.tempNewBasicPath) {
+			drawPath(eventHandlerData.tempNewBasicPath, ctx, view);
 		}
 
 		log('CanvasEdit.redraw', 'end');
@@ -167,7 +167,7 @@ export function sYcY(sy, view = getCurrentProjectEditor().view) {
 	return canvasY || view.dy;
 }
 
-// convert canvas x-y inputs to saved shape x-y
+// convert canvas x-y inputs to saved path x-y
 export function cXsX(cx, view = getCurrentProjectEditor().view) {
 	return (cx - view.dx) / view.dz;
 }

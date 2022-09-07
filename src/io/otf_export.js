@@ -14,7 +14,7 @@ import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
 
 export function exportOTFFont() {
 	// log('exportOTFFont', 'start');
-	// log('combineShapesOnExport = ' + getCurrentProject().projectSettings.combineShapesOnExport);
+	// log('combinePathsOnExport = ' + getCurrentProject().projectSettings.combinePathsOnExport);
 
 	function firstExportStep() {
 		// log('firstExportStep', 'start');
@@ -95,7 +95,7 @@ export function exportOTFFont() {
 		// export this glyph
 		const glyph = currentExportGlyph.xg;
 		const num = currentExportGlyph.xc;
-		const comb = getCurrentProject().projectSettings.combineShapesOnExport;
+		const comb = getCurrentProject().projectSettings.combinePathsOnExport;
 		const maxes = glyph.maxes;
 
 		// log('' + glyph.name);
@@ -104,10 +104,10 @@ export function exportOTFFont() {
 
 		if (
 			comb &&
-			glyph.shapes.length <=
-				getCurrentProject().projectSettings.maxCombineShapesOnExport
+			glyph.paths.length <=
+				getCurrentProject().projectSettings.maxCombinePathsOnExport
 		) {
-			glyph.combineAllShapes(true);
+			glyph.combineAllPaths(true);
 		}
 
 		if (glyph.isAutoWide) glyph.updateGlyphPosition(glyph.lsb, 0);
@@ -187,12 +187,12 @@ export function exportOTFFont() {
 function generateNotdefGlyph() {
 	// log(`generateNotdefGlyph`, 'start');
 	const capHeight = getCurrentProject().projectSettings.capHeight;
-	const notDefGlyphShapes =
-		'[{"objtype":"shape","name":"Outer Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":-4,"maxes":{"xmax":432,"xmin":0,"ymax":700,"ymin":0}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false},{"objtype":"shape","name":"Inner Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":4,"maxes":{"xmax":382,"xmin":50,"ymax":650,"ymin":50}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false}]';
+	const notDefGlyphPaths =
+		'[{"objtype":"path","name":"Outer Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":-4,"maxes":{"xmax":432,"xmin":0,"ymax":700,"ymin":0}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false},{"objtype":"path","name":"Inner Phi Rectangle","path":{"objtype":"path","pathpoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":4,"maxes":{"xmax":382,"xmin":50,"ymax":650,"ymin":50}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false}]';
 
 	var notdef = new Glyph({
 		name: 'notdef',
-		shapes: JSON.parse(notDefGlyphShapes),
+		paths: JSON.parse(notDefGlyphPaths),
 	});
 	// log(`capHeight ${capHeight}`);
 	// log(`notdef.maxes.ymax ${notdef.maxes.ymax}`);

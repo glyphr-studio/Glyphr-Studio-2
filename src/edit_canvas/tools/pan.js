@@ -30,7 +30,7 @@ export class Tool_Pan {
 		this.mousemove = function (ev) {
 			if (this.dragging) {
 				let editor = getCurrentProjectEditor();
-				// Moving shapes if mousedown
+				// Moving paths if mousedown
 				editor.view = {
 					dx: eventHandlerData.mouseX - this.deltax,
 					dy: eventHandlerData.mouseY - this.deltay,

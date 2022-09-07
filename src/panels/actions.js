@@ -12,10 +12,10 @@ import { addAsChildren, makeElement } from '../common/dom.js';
 export function makePanel_Actions() {
 
 	let projectEditor = getCurrentProjectEditor();
-	let selectedShapes = projectEditor.multiSelect.shapes.members;
+	let selectedPaths = projectEditor.multiSelect.paths.members;
 
 	// TODO hook these up
-	let clipBoardShape = false;
+	let clipBoardPath = false;
 	let historyLength = 0;
 
 	let panelSection = makeElement({
@@ -53,9 +53,9 @@ export function makePanel_Actions() {
 	let allActions = [
 		{
 			iconName: 'paste',
-			iconOptions: !clipBoardShape,
-			title: `Paste\nAdds the previously-copied shape or shapes into this glyph.`,
-			disabled: !clipBoardShape
+			iconOptions: !clipBoardPath,
+			title: `Paste\nAdds the previously-copied path or paths into this glyph.`,
+			disabled: !clipBoardPath
 		},
 		{
 			iconName: 'undo',
@@ -64,18 +64,18 @@ export function makePanel_Actions() {
 			disabled: !historyLength
 		},
 		{
-			iconName: 'addShape',
+			iconName: 'addPath',
 			iconOptions: false,
-			title: `Add Shape\nCreates a new default shape and adds it to this glyph.`,
+			title: `Add Path\nCreates a new default path and adds it to this glyph.`,
 		},
 		{
-			iconName: 'addShape',
+			iconName: 'addPath',
 			iconOptions: true,
 			title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
 		},
 		{
-			iconName: 'pasteShapesFromAnotherGlyph',
-			title: `Get Shapes\nChoose another Glyph, and copy all the shapes from that glyph to this one.`,
+			iconName: 'pastePathsFromAnotherGlyph',
+			title: `Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one.`,
 		},
 	];
 
@@ -92,7 +92,7 @@ export function makePanel_Actions() {
 	let glyphActions = [
 		{
 			iconName: 'combine',
-			title: `Combine all shapes\nCombines the paths of all shapes with the same winding into as few shapes as possible.`,
+			title: `Combine all paths\nCombines the paths of all paths with the same winding into as few paths as possible.`,
 		},
 		{
 			iconName: 'flipHorizontal',
@@ -111,53 +111,53 @@ export function makePanel_Actions() {
 			iconName: 'deleteGlyph',
 		},
 		{
-			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph shapes between projects.`,
+			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
 			iconName: 'exportGlyphSVG',
 		},
 	];
 
 	// SHAPE
-	let shapeActions = [
+	let pathActions = [
 		{
 			iconName: 'copy',
-			title: 'Copy\nAdds a copy of the currently selected shape or shapes to the clipboard.',
+			title: 'Copy\nAdds a copy of the currently selected path or paths to the clipboard.',
 		},
 		{
-			iconName: 'deleteShape',
-			title: 'Delete\nRemoves the currently selected shape or shapes from this glyph.',
+			iconName: 'deletePath',
+			title: 'Delete\nRemoves the currently selected path or paths from this glyph.',
 		},
 		{
 			iconName: 'reverseWinding',
-			title: `Reverse winding\nToggles the clockwise or counterclockwise winding of the shape's path.`,
+			title: `Reverse winding\nToggles the clockwise or counterclockwise winding of the path's path.`,
 		},
 	];
 
-	if (selectedShapes.length === 1 && selectedShapes[0].objType === 'ComponentInstance') {
-		shapeActions = shapeActions.concat([
+	if (selectedPaths.length === 1 && selectedPaths[0].objType === 'ComponentInstance') {
+		pathActions = pathActions.concat([
 			{
-				iconName: 'switchShapeComponent',
+				iconName: 'switchPathComponent',
 				iconData: true,
-				title: `Turn Component Instance into a Shape\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's shapes as regular Shapes to this glyph.`,
+				title: `Turn Component Instance into a Path\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's paths as regular Paths to this glyph.`,
 			},
 		]);
 	} else {
-		shapeActions = shapeActions.concat([
+		pathActions = pathActions.concat([
 			{
-				iconName: 'switchShapeComponent',
+				iconName: 'switchPathComponent',
 				iconData: false,
-				title: `Turn Shape into a Component Instance\nTakes the selected shape and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
+				title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
 			},
 		]);
 	}
 
-	shapeActions = shapeActions.concat([
+	pathActions = pathActions.concat([
 		{
 			iconName: 'flipHorizontal',
-			title: 'Flip Horizontal\nReflects the currently selected shape or shapes horizontally.',
+			title: 'Flip Horizontal\nReflects the currently selected path or paths horizontally.',
 		},
 		{
 			iconName: 'flipVertical',
-			title: 'Flip Vertical\nReflects the currently selected shape or shapes vertically',
+			title: 'Flip Vertical\nReflects the currently selected path or paths vertically',
 		},
 		{
 			iconName: 'round',
@@ -169,43 +169,43 @@ export function makePanel_Actions() {
 	let layerActions = [
 		{
 			iconName: 'moveLayerUp',
-			title: `Move Shape Up\nMoves the shape up in the shape layer order.`,
+			title: `Move Path Up\nMoves the path up in the path layer order.`,
 		},
 		{
 			iconName: 'moveLayerDown',
-			title: `Move Shape Down\nMoves the shape down in the shape layer order.`,
+			title: `Move Path Down\nMoves the path down in the path layer order.`,
 		},
 	];
 
 	// ALIGN
 	let alignActions = [
 		{
-			title: `Align Left\nMoves all the selected shapes so they are left aligned with the leftmost shape.`,
+			title: `Align Left\nMoves all the selected paths so they are left aligned with the leftmost path.`,
 			iconName: 'align',
 			iconOptions: 'left',
 		},
 		{
-			title: `Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape.`,
+			title: `Align Center\nMoves all the selected paths so they are center aligned between the leftmost and rightmost path.`,
 			iconName: 'align',
 			iconOptions: 'center',
 		},
 		{
-			title: `Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape.`,
+			title: `Align Right\nMoves all the selected paths so they are right aligned with the rightmost path.`,
 			iconName: 'align',
 			iconOptions: 'right',
 		},
 		{
-			title: `Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape.`,
+			title: `Align Top\nMoves all the selected paths so they are top aligned with the topmost path.`,
 			iconName: 'align',
 			iconOptions: 'top',
 		},
 		{
-			title: `Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape.`,
+			title: `Align Middle\nMoves all the selected paths so they are middle aligned between the topmost and bottommost path.`,
 			iconName: 'align',
 			iconOptions: 'middle',
 		},
 		{
-			title: `Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape.`,
+			title: `Align Bottom\nMoves all the selected paths so they are bottom aligned with the bottommost path.`,
 			iconName: 'align',
 			iconOptions: 'bottom',
 		}
@@ -215,15 +215,15 @@ export function makePanel_Actions() {
 	let boolActions = [
 		{
 			iconName: 'combine',
-			title: `Combine\nSelect two shapes, and combine their paths into a single shape.`,
+			title: `Combine\nSelect two paths, and combine their paths into a single path.`,
 		},
 		{
 			iconName: 'subtractUsingTop',
-			title: `Subtract Using Upper\nSelect two shapes, and the upper shape will be used to cut out an area from the lower shape.`,
+			title: `Subtract Using Upper\nSelect two paths, and the upper path will be used to cut out an area from the lower path.`,
 		},
 		{
 			iconName: 'subtractUsingBottom',
-			title: `Subtract Using Lower\nSelect two shapes, and the lower shape will be used to cut out an area from the upper shape.`,
+			title: `Subtract Using Lower\nSelect two paths, and the lower path will be used to cut out an area from the upper path.`,
 		},
 	];
 
@@ -236,7 +236,7 @@ export function makePanel_Actions() {
 		{
 			iconName: 'deletePathPoint',
 			title: `Delete Path Point\nRemoves the currently selected point or points from the path.`,
-			disabled: !!selectedShapes.length
+			disabled: !!selectedPaths.length
 		},
 		{
 			iconName: 'resetPathPoint',
@@ -274,32 +274,32 @@ export function makePanel_Actions() {
 	addChildActions(allActions);
 
 	// Glyph actions
-	if (selectedShapes.length === 0 || test) {
+	if (selectedPaths.length === 0 || test) {
 		actionsArea.appendChild(makeElement({tag:'h4', content:'glyph'}));
 		addChildActions(glyphActions);
 	}
 
-	// Shape actions
-	if (selectedShapes.length > 0 || test) {
-		actionsArea.appendChild(makeElement({tag:'h4', content:'shapes'}));
-		addChildActions(shapeActions);
+	// Path actions
+	if (selectedPaths.length > 0 || test) {
+		actionsArea.appendChild(makeElement({tag:'h4', content:'paths'}));
+		addChildActions(pathActions);
 	}
 
 	// Boolean combine actions
-	if (selectedShapes.length > 1 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'shape combine'}));
+	if (selectedPaths.length > 1 || test) {
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'path combine'}));
 		addChildActions(boolActions);
 	}
 
 	// Layer actions
-	if (selectedShapes.length === 1 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'shape layers'}));
+	if (selectedPaths.length === 1 || test) {
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'path layers'}));
 		addChildActions(layerActions);
 	}
 
-	// Shape align actions
-	if (selectedShapes.length > 1 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'align shapes'}));
+	// Path align actions
+	if (selectedPaths.length > 1 || test) {
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
 		addChildActions(alignActions);
 	}
 
@@ -327,22 +327,22 @@ export function makePanel_Actions() {
 // Combine
 // --------------------------------------------------------------
 
-function combineSelectedShapes() {
-	showToast('Combining selected shapes... ', 100);
+function combineSelectedPaths() {
+	showToast('Combining selected paths... ', 100);
 
 	setTimeout(function () {
-		_UI.multiSelect.shapes.combine();
-		historyPut('combine selected shapes');
+		_UI.multiSelect.paths.combine();
+		historyPut('combine selected paths');
 		redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
 
-function combineAllGlyphShapes() {
-	showToast('Combining all glyph shapes... ', 100);
+function combineAllGlyphPaths() {
+	showToast('Combining all glyph paths... ', 100);
 
 	setTimeout(function () {
-		getSelectedWorkItem().combineAllShapes(true);
-		historyPut('combine all glyph shapes');
+		getSelectedWorkItem().combineAllPaths(true);
+		historyPut('combine all glyph paths');
 		redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
@@ -350,50 +350,50 @@ function combineAllGlyphShapes() {
 // --------------------------------------------------------------
 // Copy Paste
 // --------------------------------------------------------------
-function copyShape() {
-	let ssm = _UI.multiSelect.shapes.members;
+function copyPath() {
+	let ssm = _UI.multiSelect.paths.members;
 	if (ssm.length) {
-		_UI.clipboardShape = {
+		_UI.clipboardPath = {
 			s: clone(ssm),
 			c: _UI.selectedGlyph,
 			dx: 0,
 			dy: 0,
 		};
-		// log("COPYShape() - new clipboard shape: " + _UI.clipboardShape._UI.multiSelect.shapes.name);
+		// log("COPYPath() - new clipboard path: " + _UI.clipboardPath._UI.multiSelect.paths.name);
 	}
-	redraw({ calledBy: 'copyShape', redrawCanvas: false });
+	redraw({ calledBy: 'copyPath', redrawCanvas: false });
 }
 
-function pasteShape() {
-	// log('pasteShape', 'start');
-	let cbs = _UI.clipboardShape;
+function pastePath() {
+	// log('pastePath', 'start');
+	let cbs = _UI.clipboardPath;
 	// log(cbs);
 	let selwi = getSelectedWorkItemID();
 
 	if (cbs) {
-		let newshapes = [];
-		let sourceshapes = cbs.s;
+		let newPaths = [];
+		let sourcepaths = cbs.s;
 		let ts, newname, newsuffix, n;
-		let offsetShapes = cbs.c === selwi;
+		let offsetPaths = cbs.c === selwi;
 
-		for (let s = 0; s < sourceshapes.length; s++) {
-			if (sourceshapes[s].objType === 'ComponentInstance') {
-				ts = new ComponentInstance(sourceshapes[s]);
+		for (let s = 0; s < sourcepaths.length; s++) {
+			if (sourcepaths[s].objType === 'ComponentInstance') {
+				ts = new ComponentInstance(sourcepaths[s]);
 			} else {
-				ts = new Shape(sourceshapes[s]);
+				ts = new Path(sourcepaths[s]);
 			}
 
-			// log('shape ' + s);
+			// log('path ' + s);
 			// log('objType: ' + ts.objType);
 			// log('checking for moved glyphs: ' + cbs.c + ' to ' + selwi);
-			// log('offsetShapes: ' + offsetShapes);
+			// log('offsetPaths: ' + offsetPaths);
 
-			if (offsetShapes) {
+			if (offsetPaths) {
 				if (s === 0) {
 					cbs.dx += 20;
 					cbs.dy -= 20;
 				}
-				ts.updateShapePosition(cbs.dx, cbs.dy, true);
+				ts.updatePathPosition(cbs.dx, cbs.dy, true);
 			} else {
 				cbs.dx = 0;
 				cbs.dy = 0;
@@ -426,30 +426,30 @@ function pasteShape() {
 				// log("PASTESHAPE - pasted a component, added " + _UI.selectedGlyph + " to usedIn array.");
 			}
 
-			newshapes.push(addShape(ts));
+			newPaths.push(addPath(ts));
 		}
 
-		_UI.multiSelect.shapes.clear();
+		_UI.multiSelect.paths.clear();
 		_UI.multiSelect.points.clear();
 
-		for (let t = 0; t < newshapes.length; t++)
-			_UI.multiSelect.shapes.add(newshapes[t]);
+		for (let t = 0; t < newPaths.length; t++)
+			_UI.multiSelect.paths.add(newPaths[t]);
 
 		cbs.c = selwi;
 
-		// log('pasteShapes', 'end');
+		// log('pastePaths', 'end');
 	}
 }
 
-function showDialogGetShapes(msg) {
-	let content = '<h1>Get Shapes</h1>';
+function showDialogGetPaths(msg) {
+	let content = '<h1>Get Paths</h1>';
 	content +=
-		'Clicking a glyph will copy all the shapes in that glyph, and paste them into this glyph.<br><br>';
+		'Clicking a glyph will copy all the paths in that glyph, and paste them into this glyph.<br><br>';
 	content += msg ? msg : '';
-	content += initGetShapesDialogOptions();
+	content += initGetPathsDialogOptions();
 
 	_UI.glyphChooser.dialog = {
-		fname: 'pasteShapesFrom',
+		fname: 'pastePathsFrom',
 		choices: 'all',
 		selected: 'glyphs',
 	};
@@ -457,23 +457,23 @@ function showDialogGetShapes(msg) {
 	openBigDialog(content);
 }
 
-function initGetShapesDialogOptions(type) {
+function initGetPathsDialogOptions(type) {
 	/*
-				_UI.glyphChooser.getShapeOptions = {
+				_UI.glyphChooser.getPathOptions = {
 						srcAutoWidth: false,
 						srcWidth: false,
 						srcLSB: false,
 						srcRSB: false
 				};
 				*/
-	type = type || 'shapes';
-	let gso = _UI.glyphChooser.getShapeOptions;
+	type = type || 'paths';
+	let gso = _UI.glyphChooser.getPathOptions;
 
 	let content = '<br><br><br><br><h3>Copy options</h3>';
 
-	if (type === 'shapes')
+	if (type === 'paths')
 		content +=
-			'When copying the shapes from the other glyph, also copy these attributes to this glyph:';
+			'When copying the paths from the other glyph, also copy these attributes to this glyph:';
 	else
 		content +=
 			'When inserting the Component Instance, also copy these attributes from the Root Component to this glyph:';
@@ -482,25 +482,25 @@ function initGetShapesDialogOptions(type) {
 
 	content +=
 		'<tr><td style="text-align:right; vertical-align:top;">' +
-		checkUI('_UI.glyphChooser.getShapeOptions.srcAutoWidth', gso.srcAutoWidth) +
+		checkUI('_UI.glyphChooser.getPathOptions.srcAutoWidth', gso.srcAutoWidth) +
 		'</td>' +
 		'<td style="vertical-align:top;"><label for="srcAutoWidth">Auto-calculate Width</label><br><br></td></tr>';
 
 	content +=
 		'<tr><td style="text-align:right; vertical-align:top;">' +
-		checkUI('_UI.glyphChooser.getShapeOptions.srcWidth', gso.srcWidth) +
+		checkUI('_UI.glyphChooser.getPathOptions.srcWidth', gso.srcWidth) +
 		'</td>' +
 		'<td style="vertical-align:top;"><label for="srcWidth">Glyph Width</label><br><br></td></tr>';
 
 	content +=
 		'<tr><td style="text-align:right; vertical-align:top;">' +
-		checkUI('_UI.glyphChooser.getShapeOptions.srcLSB', gso.srcLSB) +
+		checkUI('_UI.glyphChooser.getPathOptions.srcLSB', gso.srcLSB) +
 		'</td>' +
 		'<td style="vertical-align:top;"><label for="srcLSB">Left Side Bearing</label><br><br></td></tr>';
 
 	content +=
 		'<tr><td style="text-align:right; vertical-align:top;">' +
-		checkUI('_UI.glyphChooser.getShapeOptions.srcRSB', gso.srcRSB) +
+		checkUI('_UI.glyphChooser.getPathOptions.srcRSB', gso.srcRSB) +
 		'</td>' +
 		'<td style="vertical-align:top;"><label for="srcRSB">Right Side Bearing</label><br><br></td></tr>';
 
@@ -509,38 +509,38 @@ function initGetShapesDialogOptions(type) {
 	return content;
 }
 
-function pasteShapesFrom(sourceGlyphID) {
+function pastePathsFrom(sourceGlyphID) {
 	let destinationGlyphID = getSelectedWorkItemID();
 	let sourceGlyph = getGlyph(sourceGlyphID);
 	// TODO hook up options
 	let options = false;
 
 	if (sourceGlyphID !== destinationGlyphID && sourceGlyph) {
-		copyShapesFromTo(sourceGlyph, destinationGlyphID, options);
+		copyPathsFromTo(sourceGlyph, destinationGlyphID, options);
 
-		// showToast('Copied ' + this.shapes.length + ' shapes');
-		redraw({ calledBy: 'pasteShapesFrom' });
+		// showToast('Copied ' + this.paths.length + ' paths');
+		redraw({ calledBy: 'pastePathsFrom' });
 		historyPut(
-			'Copied shapes from "' +
+			'Copied paths from "' +
 				getGlyphName(sourceGlyphID) +
 				'" to  "' +
 				getSelectedWorkItemName()
 		);
-		if (_UI.selectedTool === 'pathAddPoint') _UI.selectedTool = 'shapeEdit';
+		if (_UI.selectedTool === 'pathAddPoint') _UI.selectedTool = 'pathEdit';
 		closeDialog();
 	} else {
-		showDialogGetShapes(
-			"Sorry, you can't paste shapes from the glyph you selected.<br>"
+		showDialogGetPaths(
+			"Sorry, you can't paste paths from the glyph you selected.<br>"
 		);
 	}
 }
 
 /**
- * Copy shapes (and attributes) from one glyph to another
- * @param {string} destinationID - where to copy shapes to
- * @param {object} copyGlyphAttributes - which attributes to copy in addition to shapes
+ * Copy paths (and attributes) from one glyph to another
+ * @param {string} destinationID - where to copy paths to
+ * @param {object} copyGlyphAttributes - which attributes to copy in addition to paths
  */
-export function copyShapesFromTo(
+export function copyPathsFromTo(
 	sourceGlyph,
 	destinationID,
 	copyGlyphAttributes = {
@@ -550,18 +550,18 @@ export function copyShapesFromTo(
 		srcRSB: false,
 	}
 	) {
-	// log('copyShapesFromTo', 'start');
+	// log('copyPathsFromTo', 'start');
 	const destinationGlyph = getCurrentProject().getGlyph(destinationID, true);
 	let tc;
-	for (let c = 0; c < sourceGlyph.shapes.length; c++) {
-		tc = sourceGlyph.shapes[c];
+	for (let c = 0; c < sourceGlyph.paths.length; c++) {
+		tc = sourceGlyph.paths[c];
 		if (tc.objType === 'ComponentInstance') {
 			getCurrentProject().getGlyph(tc.link).addToUsedIn(destinationID);
 			tc = new ComponentInstance(clone(tc));
-		} else if (tc.objType === 'Shape') {
-			tc = new Shape(clone(tc));
+		} else if (tc.objType === 'Path') {
+			tc = new Path(clone(tc));
 		}
-		destinationGlyph.shapes.push(tc);
+		destinationGlyph.paths.push(tc);
 	}
 	if (copyGlyphAttributes.srcAutoWidth){
 		destinationGlyph.isAutoWide = sourceGlyph.isAutoWide;
@@ -576,9 +576,9 @@ export function copyShapesFromTo(
 		destinationGlyph.rightSideBearing = sourceGlyph.rightSideBearing;
 		glyphChanged(destinationGlyph);
 	}
-	// log('new shapes');
-	// log(destinationGlyph.shapes);
-	// log('copyShapesFromTo', 'end');
+	// log('new paths');
+	// log(destinationGlyph.paths);
+	// log('copyPathsFromTo', 'end');
 }
 
 

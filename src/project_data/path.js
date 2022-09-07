@@ -6,32 +6,44 @@ import { PolySegment } from './poly_segment.js';
 import { PathPoint } from './path_point.js';
 import { getOverallMaxes, maxesOverlap } from './maxes.js';
 import { findSegmentIntersections } from './poly_segment.js';
-import { clone, round, isVal, hasNonValues, duplicates, pointsAreEqual } from '../common/functions.js';
+import { clone, round, isVal, hasNonValues, duplicates, pointsAreEqual, strSan } from '../common/functions.js';
 
 /**
  * Glyph Element > Path
  * A Path is a collection of PathPoints, plus
  * a few properties like winding, and maxes.
- * Higher level objects should only have access to
- * a Shape object, not direct access to a Shape's
- * Path object. This is to enable Shape objects and
- * Component Instance objects to be used
- * interchangeably, even though Component Instance
- * objects don't have a Path.
+ * Path now also includes other properties,
+ * like Locks.
  */
 export class Path extends GlyphElement {
 	/**
 	 * Create a Path
 	 * @param {array} pathPoints - array of Path Point objects that make up this path
 	 * @param {number} winding - number representing winding direction
-	 * @param {object} parent - link to the parent Shape object
+	 * @param {object} parent - link to the parent Glyph object
 	 */
-	constructor({ pathPoints = [], winding, parent = false } = {}) {
+	constructor({
+		name = 'Path',
+		pathPoints = [],
+		winding,
+		xLock = false,
+		yLock = false,
+		wLock = false,
+		hLock = false,
+		ratioLock = false,
+		parent = false
+	} = {}) {
 		// log(`Path.constructor`, 'start');
 		super();
-		this.parent = parent;
+		this.name = name;
 		this.pathPoints = pathPoints;
 		this.winding = winding;
+		this.xLock = xLock;
+		this.yLock = yLock;
+		this.wLock = wLock;
+		this.hLock = hLock;
+		this.ratioLock = ratioLock;
+		this.parent = parent;
 
 		this.objType = 'Path';
 
@@ -49,8 +61,14 @@ export class Path extends GlyphElement {
 	 */
 	save(verbose = false) {
 		const re = {
-			winding: this.winding,
+			name: this.name,
 			pathPoints: [],
+			winding: this.winding,
+			xLock: this.xLock,
+			yLock: this.yLock,
+			wLock: this.wLock,
+			hLock: this.hLock,
+			ratioLock: this.ratioLock,
 		};
 
 		this._pathPoints.forEach((pp) => {
@@ -75,6 +93,12 @@ export class Path extends GlyphElement {
 		ind += '  ';
 
 		re += `${ind}winding: ${this.winding}\n`;
+		if (this.name !== 'Path') re += `${ind}name: ${this.name}\n`;
+		if (this.xLock) re += `${ind}xLock: ${this.xLock}\n`;
+		if (this.yLock) re += `${ind}yLock: ${this.yLock}\n`;
+		if (this.wLock) re += `${ind}wLock: ${this.wLock}\n`;
+		if (this.hLock) re += `${ind}hLock: ${this.hLock}\n`;
+		if (this.ratioLock) re += `${ind}ratioLock: ${this.ratioLock}\n`;
 
 		re += `${ind}pathPoints: [\n`;
 		this._pathPoints.forEach((pp, i) => {
@@ -93,6 +117,14 @@ export class Path extends GlyphElement {
 	// --------------------------------------------------------------
 	// Getters
 	// --------------------------------------------------------------
+
+	/**
+	 * get name
+	 * @returns {string}
+	 */
+	get name() {
+		return this._name;
+	}
 
 	/**
 	 * Get PathPoints
@@ -155,6 +187,46 @@ export class Path extends GlyphElement {
 	}
 
 	/**
+	 * get xLock
+	 * @returns {boolean}
+	 */
+	 get xLock() {
+		return this._xLock;
+	}
+
+	/**
+	 * get yLock
+	 * @returns {boolean}
+	 */
+	get yLock() {
+		return this._yLock;
+	}
+
+	/**
+	 * get wLock
+	 * @returns {boolean}
+	 */
+	get wLock() {
+		return this._wLock;
+	}
+
+	/**
+	 * get hLock
+	 * @returns {boolean}
+	 */
+	get hLock() {
+		return this._hLock;
+	}
+
+	/**
+	 * get ratioLock
+	 * @returns {boolean}
+	 */
+	get ratioLock() {
+		return this._ratioLock;
+	}
+
+	/**
 	 * Get Maxes
 	 * @returns {Maxes}
 	 */
@@ -187,6 +259,23 @@ export class Path extends GlyphElement {
 	// --------------------------------------------------------------
 
 	/**
+	 * set name
+	 * @param {string} name
+	 * @returns {Path} - reference to this Path
+	 */
+	set name(name) {
+		name = strSan(name);
+		// log('sanitized: ' + name);
+		if (name !== '') {
+			this._name = name;
+		} else {
+			return false;
+		}
+
+		return this;
+	}
+
+	/**
 	 * Set PathPoints
 	 * @param {array} pathPoints - array of Path Points
 	 * @returns {Path} - reference to this Path
@@ -214,16 +303,6 @@ export class Path extends GlyphElement {
 	set winding(winding) {
 		if (isVal(winding)) this._winding = winding;
 		else this.findWinding();
-	}
-
-	/**
-	 * Set Maxes
-	 * @param {Maxes} maxes
-	 * @returns {Path} - reference to this Path
-	 */
-	set maxes(maxes) {
-		this.cache.maxes = {};
-		this.cache.maxes = new Maxes(maxes);
 	}
 
 	/**
@@ -260,6 +339,66 @@ export class Path extends GlyphElement {
 	 */
 	set width(w) {
 		this.setPathSize(w, false);
+	}
+
+	/**
+	 * set xLock
+	 * @param {boolean} xLock
+	 * @returns {Path} - reference to this Path
+	 */
+	 set xLock(xLock) {
+		this._xLock = !!xLock;
+		return this;
+	}
+
+	/**
+	 * set yLock
+	 * @param {boolean} yLock
+	 * @returns {Path} - reference to this Path
+	 */
+	set yLock(yLock) {
+		this._yLock = !!yLock;
+		return this;
+	}
+
+	/**
+	 * set wLock
+	 * @param {boolean} wLock
+	 * @returns {Path} - reference to this Path
+	 */
+	set wLock(wLock) {
+		this._wLock = !!wLock;
+		return this;
+	}
+
+	/**
+	 * set hLock
+	 * @param {boolean} hLock
+	 * @returns {Path} - reference to this Path
+	 */
+	set hLock(hLock) {
+		this._hLock = !!hLock;
+		return this;
+	}
+
+	/**
+	 * set ratioLock
+	 * @param {boolean} ratioLock
+	 * @returns {Path} - reference to this Path
+	 */
+	set ratioLock(ratioLock) {
+		this._ratioLock = !!ratioLock;
+		return this;
+	}
+
+	/**
+	 * Set Maxes
+	 * @param {Maxes} maxes
+	 * @returns {Path} - reference to this Path
+	 */
+	 set maxes(maxes) {
+		this.cache.maxes = {};
+		this.cache.maxes = new Maxes(maxes);
 	}
 
 	/**
@@ -463,7 +602,7 @@ export class Path extends GlyphElement {
 	 * where it overlaps
 	 */
 	addPointsAtPathIntersections() {
-		const polySegment = this.getPolySegment();
+		const polySegment = this.makePolySegment();
 		polySegment.splitSegmentsAtIntersections();
 		const newPath = polySegment.getPath();
 		// this._pathPoints = clone(newPath.pathPoints);
@@ -489,6 +628,103 @@ export class Path extends GlyphElement {
 	// --------------------------------------------------------------
 	//  Translate to other languages
 	// --------------------------------------------------------------
+	/**
+	 * Make SVG from this Path
+	 * @param {number} size - how big
+	 * @param {number} gutter - margin
+	 * @param {number} upm - project UPM size
+	 * @param {number} descender - project descender size
+	 * @returns {string} - svg
+	 */
+	 makeSVG(size = 50, gutter = 5, upm = 1000, descender = 300) {
+		const charScale = (size - gutter * 2) / size;
+		const gutterScale = (gutter / size) * upm;
+		const vbSize = upm - gutter * 2;
+		let re = `<svg version="1.1" ';
+			xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+			width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}">
+			<g transform="
+				translate(${gutterScale},${(upm - descender - gutterScale / 2)})
+				scale(${charScale}, -${charScale})
+			">
+				<path d="${this.svgPathData}"/>
+			</g>
+		</svg>`;
+		return re;
+	}
+
+	/**
+	 * Create SVG data
+	 * @param {string} glyphName - Name of the glyph this path belongs to
+	 * @param {number} roundValue - how many decimal places
+	 * @returns {string}
+	 */
+	 makeSVGPathData(glyphName = 'not specified', roundValue = 8) {
+		// log('Path.makeSVGPathData', 'start');
+		// log('Glyph ' + glyphName);
+		// log('this.pathPoints: ' + json(this.pathPoints, true));
+
+		if (!this.pathPoints || !this.pathPoints.length) {
+			return '';
+		}
+
+		let p1;
+		let p2;
+		let trr = '';
+		let re =
+			'M' +
+			round(this.pathPoints[0].p.x, roundValue) +
+			',' +
+			round(this.pathPoints[0].p.y, roundValue);
+
+		// log('makePathPostScript:\n\t ' + re);
+		if (re.indexOf('NaN') > -1) {
+			console.warn(glyphName + ' PathPoint 0 MOVE has NaN: ' + re);
+			// log(this.pathPoints[0]);
+		}
+
+		for (let cp = 0; cp < this.pathPoints.length; cp++) {
+			p1 = this.pathPoints[cp];
+			// p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
+			p2 = this.pathPoints[this.getNextPointNum(cp)];
+			trr =
+				' C' +
+				round(p1.h2.x, roundValue) +
+				',' +
+				round(p1.h2.y, roundValue) +
+				',' +
+				round(p2.h1.x, roundValue) +
+				',' +
+				round(p2.h1.y, roundValue) +
+				',' +
+				round(p2.p.x, roundValue) +
+				',' +
+				round(p2.p.y, roundValue);
+			// log('' + trr);
+			if (trr.indexOf('NaN') > -1) {
+				console.warn(glyphName + ' PathPoint ' + cp + ' has NaN: ' + trr);
+			}
+			re += trr;
+		}
+
+		re += 'Z';
+
+		// log('returning: ' + re);
+		// log('Path.makeSVGPathData', 'end');
+		return re;
+	}
+
+	/**
+	 * Make a PostScript path from this path
+	 * PostScript paths use relative MoveTo commands, so
+	 * this path must know about where the last path left off
+	 * @param {number} lastX - x from previous path
+	 * @param {number} lastY - y from previous path
+	 * @returns {string} - PostScript path data
+	 */
+	makePostScript(lastX = 0, lastY = 0) {
+		return this.makePathPostScript(lastX, lastY)
+	}
 
 	/**
 	 * Converts this path to Post Script
@@ -554,73 +790,12 @@ export class Path extends GlyphElement {
 	}
 
 	/**
-	 * Create SVG data
-	 * @param {string} glyphName - Name of the glyph this path belongs to
-	 * @param {number} roundValue - how many decimal places
-	 * @returns {string}
-	 */
-	makeSVGPathData(glyphName = 'not specified', roundValue = 8) {
-		// log('Path.makeSVGPathData', 'start');
-		// log('Glyph ' + glyphName);
-		// log('this.pathPoints: ' + json(this.pathPoints, true));
-
-		if (!this.pathPoints || !this.pathPoints.length) {
-			return '';
-		}
-
-		let p1;
-		let p2;
-		let trr = '';
-		let re =
-			'M' +
-			round(this.pathPoints[0].p.x, roundValue) +
-			',' +
-			round(this.pathPoints[0].p.y, roundValue);
-
-		// log('makePathPostScript:\n\t ' + re);
-		if (re.indexOf('NaN') > -1) {
-			console.warn(glyphName + ' PathPoint 0 MOVE has NaN: ' + re);
-			// log(this.pathPoints[0]);
-		}
-
-		for (let cp = 0; cp < this.pathPoints.length; cp++) {
-			p1 = this.pathPoints[cp];
-			// p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
-			p2 = this.pathPoints[this.getNextPointNum(cp)];
-			trr =
-				' C' +
-				round(p1.h2.x, roundValue) +
-				',' +
-				round(p1.h2.y, roundValue) +
-				',' +
-				round(p2.h1.x, roundValue) +
-				',' +
-				round(p2.h1.y, roundValue) +
-				',' +
-				round(p2.p.x, roundValue) +
-				',' +
-				round(p2.p.y, roundValue);
-			// log('' + trr);
-			if (trr.indexOf('NaN') > -1) {
-				console.warn(glyphName + ' PathPoint ' + cp + ' has NaN: ' + trr);
-			}
-			re += trr;
-		}
-
-		re += 'Z';
-
-		// log('returning: ' + re);
-		// log('Path.makeSVGPathData', 'end');
-		return re;
-	}
-
-	/**
 	 * Get a part of the path in Segment format
 	 * @param {number} num - segment number
 	 * @returns {Segment}
 	 */
-	getSegment(num = 0) {
-		// log('Path.getSegment', 'start');
+	makeSegment(num = 0) {
+		// log('Path.makeSegment', 'start');
 		// log('passed ' + num);
 		// make a segment
 
@@ -647,7 +822,7 @@ export class Path extends GlyphElement {
 		});
 		this.cache.segments[num] = re;
 		// log(re.print());
-		// log('Path.getSegment', 'end');
+		// log('Path.makeSegment', 'end');
 
 		return re;
 	}
@@ -657,8 +832,8 @@ export class Path extends GlyphElement {
 	 * @param {number} num - segment number
 	 * @returns {number}
 	 */
-	getQuickSegmentLength(num = 0) {
-		let re = this.getSegment(num);
+	calculateQuickSegmentLength(num = 0) {
+		let re = this.makeSegment(num);
 		re = re.quickLength;
 		return re;
 	}
@@ -667,19 +842,19 @@ export class Path extends GlyphElement {
 	 * PolySegment is an industry-standard way of describing Bezier paths
 	 * @returns {PolySegment}
 	 */
-	getPolySegment() {
-		// log(`Path.getPolySegment`, 'start');
+	makePolySegment() {
+		// log(`Path.makePolySegment`, 'start');
 
 		const seg = [];
 		for (let pp = 0; pp < this.pathPoints.length; pp++) {
-			seg.push(this.getSegment(pp));
+			seg.push(this.makeSegment(pp));
 		}
 
 		const re = new PolySegment({ segments: seg });
 
 		// log(`returning`);
 		// log(re);
-		// log(`Path.getPolySegment`, 'end');
+		// log(`Path.makePolySegment`, 'end');
 
 		return re;
 	}
@@ -845,7 +1020,7 @@ export class Path extends GlyphElement {
 		let ppn;
 
 		if (this.pathPoints.length > 1) {
-			const splits = this.getSegment(pp1i).split(t);
+			const splits = this.makeSegment(pp1i).split(t);
 			const s1 = splits[0];
 			const s2 = splits[1];
 
@@ -890,7 +1065,7 @@ export class Path extends GlyphElement {
 	 * @param {boolean} wantSecond - return the second result
 	 * @returns {object}
 	 */
-	getClosestPointOnCurve(point = new XYPoint(), wantSecond = false) {
+	findClosestPointOnCurve(point = new XYPoint(), wantSecond = false) {
 		let grains = 10000;
 		let first = false;
 		let second = false;
@@ -899,10 +1074,10 @@ export class Path extends GlyphElement {
 		let d;
 
 		for (let pp = 0; pp < this.pathPoints.length; pp++) {
-			grains = this.getSegment(pp).quickLength * 100;
+			grains = this.makeSegment(pp).quickLength * 100;
 
 			for (let t = 0; t < 1; t += 1 / grains) {
-				check = this.getXYPointFromSplit(t, pp);
+				check = this.findXYPointFromSplit(t, pp);
 				d = Math.sqrt(
 					(check.x - point.x) * (check.x - point.x) +
 						(check.y - point.y) * (check.y - point.y)
@@ -931,10 +1106,10 @@ export class Path extends GlyphElement {
 	 * @param {number} pointNumber - after which point to split
 	 * @returns {XYPoint}
 	 */
-	getXYPointFromSplit(t, pointNumber = 0) {
+	findXYPointFromSplit(t, pointNumber = 0) {
 		if (this.pathPoints.length > 1) {
-			const seg = this.getSegment(pointNumber);
-			return seg.getXYPointFromSplit(t);
+			const seg = this.makeSegment(pointNumber);
+			return seg.findXYPointFromSplit(t);
 		} else {
 			return this.pathPoints[0].p;
 		}
@@ -991,7 +1166,7 @@ export class Path extends GlyphElement {
 
 		for (let s = 0; s < this.pathPoints.length; s++) {
 			// log('++++++ starting seg ' + s);
-			seg = this.getSegment(s);
+			seg = this.makeSegment(s);
 			// log(`this seg maxes ${seg.maxes.print()}`);
 			// log(`this maxes ${this.cache.maxes.print()}`);
 
@@ -1110,8 +1285,8 @@ export function findPathIntersections(p1, p2) {
 	 */
 	function pushSegOverlaps(p1, p1p, p2, p2p) {
 		// log('pushSegOverlaps - p1p ' + p1p + ' - p2p ' + p2p);
-		bs = p1.getSegment(p1p);
-		ts = p2.getSegment(p2p);
+		bs = p1.makeSegment(p1p);
+		ts = p2.makeSegment(p2p);
 
 		if (maxesOverlap(bs.getFastMaxes(), ts.getFastMaxes())) {
 			// log('\t\t pushed!');

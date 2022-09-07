@@ -26,7 +26,7 @@ export class GlyphrStudioApp {
 				mode: true, // global switch for all the stuff below
 				currentPage: false, // navigate straight to a page
 				currentPanel: false, // navigate straight to a panel
-				selectedShape: false, // automatically select a shape
+				selectedPath: false, // automatically select a path
 				debugAutoGroup: false, // try to console.group based on text strings
 				debugTableObjects: false, // Show objects in tables in the console
 				testActions: [],

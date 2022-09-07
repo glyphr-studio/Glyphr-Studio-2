@@ -8,7 +8,7 @@ export class GlyphElement {
 	constructor() {}
 
 	/**
-	 * Any change that updates the shape of any part of a glyph
+	 * Any change that updates the path of any part of a glyph
 	 * gets bubbled up through the GlyphElement hierarchy
 	 */
 	changed() {

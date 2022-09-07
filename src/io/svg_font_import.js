@@ -36,13 +36,13 @@ function ioSVG_importSVGFont(filter) {
 
 		try {
 			// Get Font
-			let svgdata = getGlyphrStudioApp().temp.droppedFileContent;
+			let svgData = getGlyphrStudioApp().temp.droppedFileContent;
 			// Convert unicode glyphs to decimal values
 			// DOM Parser does not return unicode values as text strings
 			// Kern groups containing '&#x' will get fuck'd
-			svgdata = svgdata.replace(/&#x/g, '0x');
-			const jsondata = convertXMLtoJSON(svgdata);
-			font = ioSVG_getFirstTagInstance(jsondata, 'font');
+			svgData = svgData.replace(/&#x/g, '0x');
+			const jsonData = convertXMLtoJSON(svgData);
+			font = ioSVG_getFirstTagInstance(jsonData, 'font');
 		} catch (e) {
 			loadPage_openproject();
 			openproject_changeTab('load');
@@ -72,7 +72,7 @@ function ioSVG_importSVGFont(filter) {
 		if (chars.length < _UI.overflowCount || filter) {
 			setTimeout(startFontImport, 1);
 			// Dump JSON
-			// saveFile('Parsed JSON', json(jsondata));
+			// saveFile('Parsed JSON', json(jsonData));
 		} else {
 			document.getElementById(
 				'openprojecttableright'
@@ -107,8 +107,8 @@ function ioSVG_importSVGFont(filter) {
 	let maxGlyph = 0;
 	let minchar = 0xffff;
 	let customglyphrange = [];
-	let shapecounter = 0;
-	let newshapes = [];
+	let pathCounter = 0;
+	let newPaths = [];
 	const fc = {};
 	const fl = {};
 
@@ -146,8 +146,8 @@ function ioSVG_importSVGFont(filter) {
 			 *  GLYPH OR LIGATURE IMPORT
 			 *
 			 */
-			newshapes = [];
-			shapecounter = 0;
+			newPaths = [];
+			pathCounter = 0;
 
 			// Import Path Data
 			data = tca.d;
@@ -155,19 +155,19 @@ function ioSVG_importSVGFont(filter) {
 			if (data && data !== 'z') {
 				data = cleanAndFormatPathPointData(data);
 
-				// log('split z, data into ' + data.length + ' Glyphr Studio shapes.');
+				// log('split z, data into ' + data.length + ' Glyphr Studio paths.');
 				// log(data);
 
 				for (let d = 0; d < data.length; d++) {
 					if (data[d].length) {
 						// log('starting convertPathTag');
 						np = ioSVG_convertPathTag(data[d]);
-						// log('created shape from PathTag');
+						// log('created path from PathTag');
 						// log(np);
 						if (np.pathPoints.length) {
-							shapecounter++;
-							newshapes.push(
-								new Shape({ path: np, name: 'Shape ' + shapecounter })
+							pathCounter++;
+							newPaths.push(
+								new Path({ path: np, name: 'Path ' + pathCounter })
 							);
 						} else {
 							// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
@@ -195,7 +195,7 @@ function ioSVG_importSVGFont(filter) {
 					customglyphrange.push(uni);
 
 				fc[uni] = new Glyph({
-					shapes: newshapes,
+					paths: newPaths,
 					glyphWidth: adv,
 					isAutoWide: isAutoWide,
 				});
@@ -205,7 +205,7 @@ function ioSVG_importSVGFont(filter) {
 				// It's a LIGATURE
 				uni = uni.join('');
 				fl[uni] = new Glyph({
-					shapes: newshapes,
+					paths: newPaths,
 					glyphWidth: adv,
 					isAutoWide: isAutoWide,
 				});

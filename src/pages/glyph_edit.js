@@ -74,7 +74,7 @@ export class PageGlyphEdit {
 		// Panel
 		content.querySelector('.left-area__panel').appendChild(makePanel());
 		editor.subscribe({
-			topic: ['whichGlyphIsSelected', 'whichShapeIsSelected'],
+			topic: ['whichGlyphIsSelected', 'whichPathIsSelected'],
 			subscriberName: 'Attributes panel',
 			callback: (newSelection) => {
 				let panelContent = content.querySelector('.left-area__panel');
@@ -106,10 +106,10 @@ export class PageGlyphEdit {
 		});
 
 		editor.subscribe({
-			topic: 'whichShapeIsSelected',
+			topic: 'whichPathIsSelected',
 			subscriberName: 'Main edit canvas',
 			callback: () => {
-				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedShape'});
+				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath'});
 			}
 		});
 

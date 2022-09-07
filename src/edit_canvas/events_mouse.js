@@ -2,8 +2,8 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { updateCursor } from './cursors.js';
 import { Tool_Pan}  from './tools/pan.js';
-import { Tool_NewBasicShape}  from './tools/new-basic-shape.js';
-import { Tool_ShapeEdit}  from './tools/shape-edit.js';
+import { Tool_NewBasicPath}  from './tools/new-basic-path.js';
+import { Tool_Resize}  from './tools/resize.js';
 import { Tool_NewPath}  from './tools/new-path.js';
 import { Tool_PathEdit}  from './tools/path-edit.js';
 import { Tool_PathAddPoint}  from './tools/path-add-point.js';
@@ -17,7 +17,7 @@ import { Tool_Kern}  from './tools/kern.js';
 
 export let eventHandlerData = {
 	currentToolHandler: false,
-	tempNewBasicShape: false,
+	tempNewBasicPath: false,
 	dragSelectArea: false,
 	mouseX: 0,
 	mouseY: 0,
@@ -48,8 +48,8 @@ export function initEventHandlers(editCanvas) {
 	let editor = getCurrentProjectEditor();
 
 	editor.eventHandlers.tool_pan = new Tool_Pan();
-	editor.eventHandlers.tool_addRectOval = new Tool_NewBasicShape();
-	editor.eventHandlers.tool_shapeEdit = new Tool_ShapeEdit();
+	editor.eventHandlers.tool_addRectOval = new Tool_NewBasicPath();
+	editor.eventHandlers.tool_pathEdit = new Tool_Resize();
 	editor.eventHandlers.tool_addPath = new Tool_NewPath();
 	editor.eventHandlers.tool_pathEdit = new Tool_PathEdit();
 	editor.eventHandlers.tool_pathAddPoint = new Tool_PathAddPoint();
@@ -99,8 +99,8 @@ export function initEventHandlers(editCanvas) {
 			case 'pathEdit':
 				eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
 				break;
-			case 'shapeEdit':
-				eh.currentToolHandler = editor.eventHandlers.tool_shapeEdit;
+			case 'pathEdit':
+				eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
 				break;
 			case 'pan':
 				eh.currentToolHandler = editor.eventHandlers.tool_pan;
@@ -152,13 +152,13 @@ function handleMouseLeaveCanvas() {
 export function clickEmptySpace() {
 	let editor = getCurrentProjectEditor();
 	editor.multiSelect.points.clear();
-	editor.multiSelect.shapes.clear();
+	editor.multiSelect.paths.clear();
 }
 
-function eventHandler_ShapeResize() {
-	// log('eventHandler_ShapeResize', 'start');
+function eventHandler_PathResize() {
+	// log('eventHandler_PathResize', 'start');
 	let editor = getCurrentProjectEditor();
-	let s = editor.multiSelect.shapes;
+	let s = editor.multiSelect.paths;
 	let pcorner = eventHandlerData.handle;
 	// log('handle ' + pcorner);
 
@@ -171,79 +171,79 @@ function eventHandler_ShapeResize() {
 	let dw = lx - mx;
 	let rl = s.getAttribute('ratioLock');
 
-	// log('eventHandler_ShapeResize dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
+	// log('eventHandler_PathResize dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
 
-	// Check that the shape won't have negative dimensions
+	// Check that the path won't have negative dimensions
 	if (mx >= maxes.xMax && maxes.xMax - maxes.xMin + dw < 2) dw = 0;
 	if (my >= maxes.yMax && maxes.yMax - maxes.yMin + dh < 2) dh = 0;
 
-	// Resize the shape
+	// Resize the path
 	switch (pcorner) {
 		case 'n':
 			if (canResize('n')) {
 				setCursor('n-resize');
-				s.updateShapeSize(0, dh * -1, rl);
+				s.updatePathSize(0, dh * -1, rl);
 			}
 			break;
 
 		case 'ne':
 			if (canResize('ne')) {
 				setCursor('ne-resize');
-				s.updateShapeSize(dw * -1, dh * -1, rl);
+				s.updatePathSize(dw * -1, dh * -1, rl);
 			}
 			break;
 
 		case 'e':
 			if (canResize('e')) {
 				setCursor('e-resize');
-				s.updateShapeSize(dw * -1, 0, rl);
+				s.updatePathSize(dw * -1, 0, rl);
 			}
 			break;
 
 		case 'se':
 			if (canResize('se')) {
 				setCursor('se-resize');
-				s.updateShapeSize(dw * -1, dh, rl);
-				s.updateShapePosition(0, dh * -1);
+				s.updatePathSize(dw * -1, dh, rl);
+				s.updatePathPosition(0, dh * -1);
 			}
 			break;
 
 		case 's':
 			if (canResize('s')) {
 				setCursor('s-resize');
-				s.updateShapePosition(0, dh * -1);
-				s.updateShapeSize(0, dh, rl);
+				s.updatePathPosition(0, dh * -1);
+				s.updatePathSize(0, dh, rl);
 			}
 			break;
 
 		case 'sw':
 			if (canResize('sw')) {
 				setCursor('sw-resize');
-				s.updateShapeSize(dw, dh, rl);
-				s.updateShapePosition(dw * -1, dh * -1);
+				s.updatePathSize(dw, dh, rl);
+				s.updatePathPosition(dw * -1, dh * -1);
 			}
 			break;
 
 		case 'w':
 			if (canResize('w')) {
 				setCursor('w-resize');
-				s.updateShapeSize(dw, 0, rl);
-				s.updateShapePosition(dw * -1, 0);
+				s.updatePathSize(dw, 0, rl);
+				s.updatePathPosition(dw * -1, 0);
 			}
 			break;
 
 		case 'nw':
 			if (canResize('nw')) {
 				setCursor('nw-resize');
-				s.updateShapeSize(dw, dh * -1, rl);
-				s.updateShapePosition(dw * -1, 0);
+				s.updatePathSize(dw, dh * -1, rl);
+				s.updatePathPosition(dw * -1, 0);
 			}
 			break;
 	}
 
-	// if(!eventHandlerData.tempNewBasicShape) s.calcMaxes();
+	// if(!eventHandlerData.tempNewBasicPath) s.calcMaxes();
 
-	// log('eventHandler_ShapeResize - Done lx/rx/ty/by: ' + s.path.maxes.xMin + ',' + s.path.maxes.xMax + ',' + s.path.maxes.yMax + ',' + s.path.maxes.yMin);
+	// log('eventHandler_PathResize - Done lx/rx/ty/by: ' + s.maxes.xMin + ',' + s.maxes.xMax + ',' + s.maxes.yMax + ',' + s.maxes.yMin);
 }
 
 export function checkForMouseOverHotspot(x, y) {
@@ -271,10 +271,10 @@ export function checkForMouseOverHotspot(x, y) {
 
 function updateTNBS(dx, dy, dw, dh) {
 	// log('updateTNBS dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
-	eventHandlerData.tempNewBasicShape.xMin += dx;
-	eventHandlerData.tempNewBasicShape.yMax += dy;
-	eventHandlerData.tempNewBasicShape.xMax += dw + dx;
-	eventHandlerData.tempNewBasicShape.yMin += dh + dy;
+	eventHandlerData.tempNewBasicPath.xMin += dx;
+	eventHandlerData.tempNewBasicPath.yMax += dy;
+	eventHandlerData.tempNewBasicPath.xMax += dw + dx;
+	eventHandlerData.tempNewBasicPath.yMin += dh + dy;
 }
 
 function updateDragSelectArea(dx, dy, dw, dh) {
@@ -287,11 +287,11 @@ function updateDragSelectArea(dx, dy, dw, dh) {
 
 export function canResize(handle) {
 	let editor = getCurrentProjectEditor();
-	let rl = editor.multiSelect.shapes.ratioLock;
-	let xl = editor.multiSelect.shapes.xLock;
-	let yl = editor.multiSelect.shapes.yLock;
-	let wl = editor.multiSelect.shapes.wLock;
-	let hl = editor.multiSelect.shapes.hLock;
+	let rl = editor.multiSelect.paths.ratioLock;
+	let xl = editor.multiSelect.paths.xLock;
+	let yl = editor.multiSelect.paths.yLock;
+	let wl = editor.multiSelect.paths.wLock;
+	let hl = editor.multiSelect.paths.hLock;
 	let re = true;
 
 	switch (handle) {

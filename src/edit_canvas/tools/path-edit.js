@@ -5,9 +5,9 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { cXsX, cYsY } from '../canvas-edit.js';
 import { setCursor } from '../cursors.js';
-import { isOverControlPoint } from '../draw_shapes.js';
+import { isOverControlPoint } from '../draw_paths.js';
 import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData, findAndCallHotspot } from '../events_mouse.js';
-import { getShapeAtLocation } from './tools.js';
+import { getPathAtLocation } from './tools.js';
 
 export class Tool_PathEdit {
 	constructor() {
@@ -29,7 +29,7 @@ export class Tool_PathEdit {
 				targetSize,
 				ehd.multi
 			);
-			let clickedShape = getShapeAtLocation(ehd.mouseX, ehd.mouseY);
+			let clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
 
 			// log(this.controlpoint);
 			if (this.controlpoint) {
@@ -45,17 +45,17 @@ export class Tool_PathEdit {
 					setCursor('penCircle');
 				}
 
-				// selectShapesThatHaveSelectedPoints();
-			} else if (clickedShape) {
+				// selectPathsThatHaveSelectedPoints();
+			} else if (clickedPath) {
 				clickEmptySpace();
-				editor.multiSelect.shapes.select(clickedShape);
+				editor.multiSelect.paths.select(clickedPath);
 			} else {
-				// editor.multiSelect.shapes.calcMaxes();
+				// editor.multiSelect.paths.calcMaxes();
 				clickEmptySpace();
 				findAndCallHotspot(ehd.mouseX, ehd.mouseY);
 			}
 
-			if (editor.multiSelect.shapes.members.length) editor.nav.panel = 'Attributes';
+			if (editor.multiSelect.paths.members.length) editor.nav.panel = 'Attributes';
 			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_PathEdit mousedown' });
 			// log('Tool_PathEdit.mousedown', 'end');
 		};
@@ -109,18 +109,18 @@ export class Tool_PathEdit {
 					if (ev.ctrlKey || ev.metaKey) return;
 					point.updatePathPointPosition(cpt, dx, dy);
 				});
-				// editor.multiSelect.shapes.calcMaxes();
+				// editor.multiSelect.paths.calcMaxes();
 				ehd.lastX = ehd.mouseX;
 				ehd.lastY = ehd.mouseY;
 				ehd.undoQueueHasChanged = true;
-				// selectShapesThatHaveSelectedPoints();
+				// selectPathsThatHaveSelectedPoints();
 				redraw({ calledBy: 'Event Handler Tool_PathEdit mousemove' });
 			}
 
 			checkForMouseOverHotspot(ehd.mouseX, ehd.mouseY);
 
 			let targetSize = getCurrentProject().projectSettings.pointSize / view.dz;
-			let cp = editor.multiSelect.shapes.isOverControlPoint(
+			let cp = editor.multiSelect.paths.isOverControlPoint(
 				cXsX(ehd.mouseX, view),
 				cYsY(ehd.mouseY, view),
 				targetSize
@@ -144,7 +144,7 @@ export class Tool_PathEdit {
 			ehd.lastY = -100;
 
 			if (ehd.undoQueueHasChanged) {
-				// editor.multiSelect.shapes.calcMaxes();
+				// editor.multiSelect.paths.calcMaxes();
 				updateCurrentGlyphWidth();
 				historyPut('Path Edit tool');
 				ehd.undoQueueHasChanged = false;

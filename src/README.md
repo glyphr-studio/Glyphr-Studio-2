@@ -47,13 +47,12 @@ will be included in the test pass.
       ┗━ Glyphs
           ┗━ Glyph
               ┣━ Component Instance
-              ┗━ Shape
-                  ┣━ Poly Segment
-                  ┃   ┗━ Segment
-                  ┗━ Path
-                      ┗━ Path Point
-                          ┗━ Control Point
-                              ┗━ Coord
+              ┗━ Path
+                  ┣━ Path Point
+                  ┃   ┗━ Control Point
+                  ┃       ┗━ Coord
+                  ┗━ Poly Segment
+                      ┗━ Segment
 
 **`Glyph`** objects are used to represent Glyphs, Components, and Ligatures.
 Though there is also **`XY Point`** type for simple coordinates.  Additionally,
@@ -62,7 +61,7 @@ there is also the **`HKern`** type, used to represent class-based kern informati
 
 Besides this, the most common hierarchy is:
 
-  `Glyph` ⟩ `Shape` ⟩ `Path` ⟩ `Path Point` ⟩ `Control Point` ⟩ `Coord`
+  `Glyph` ⟩ `Path` ⟩ `Path Point` ⟩ `Control Point` ⟩ `Coord`
 
 The classes in this main hierarchy all extend the **`Glyph Element`** class,
 which implements some common concepts - the main one being caching
@@ -70,9 +69,9 @@ and cache clearing whenever a change is made.
 
 The **`Glyph`** type is used for Glyphs, Components, and Ligatures.
 
-**`Shape`** and **`Component Instance`** surface the same API, essentially,
+**`Path`** and **`Component Instance`** surface the same API, essentially,
 and can be treated interchangeably from a **`Glyph`**'s point of view.
-Under the covers, though, a **`Shape`** relies on a **`Path`** to draw
+Under the covers, though, a **`Path`** relies on a **`Path Point`**s to draw
 itself, where a **`Component Instance`** relies on a link to another
 **`Glyph`**, plus some transforms, to draw itself.
 
