@@ -1,7 +1,11 @@
-import { Maxes } from '../maxes.js';
+import { Maxes, maxesMaxBounds } from '../maxes.js';
 import { maxesOverlap, getOverallMaxes } from '../maxes.js';
 
 describe('Maxes', () => {
+	// beforeAll(() => {
+	// 	spyOn(console, 'log').and.callThrough();;
+	// });
+
 	it('constructor', () => {
 		const m1 = new Maxes();
 		expect(m1.xMax).toBe(Number.MIN_SAFE_INTEGER);
@@ -32,8 +36,8 @@ describe('Maxes', () => {
 	});
 
 	it('maxBounds', () => {
-		const m1 = new Maxes();
-		expect(m1.maxBounds.xMax).toBe(Number.MAX_SAFE_INTEGER);
+		const m1 = maxesMaxBounds();
+		expect(m1.xMax).toBe(Number.MAX_SAFE_INTEGER);
 	});
 
 	it('save', () => {

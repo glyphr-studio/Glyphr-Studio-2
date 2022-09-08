@@ -7,7 +7,7 @@ import { getCurrentProjectEditor } from '../../app/main.js';
 export class Tool_NewPath {
 	constructor() {
 		this.dragging = false;
-		this.firstpoint = true;
+		this.firstPoint = true;
 		this.currpt = {};
 		this.newPath = false;
 
@@ -28,7 +28,7 @@ export class Tool_NewPath {
 				type: 'flat',
 			});
 
-			if (this.firstpoint) {
+			if (this.firstPoint) {
 				// make a new path with the new pathpoint
 				let count = editor.nav.page === 'components' ?
 					Object.keys(getCurrentProject().components).length :
@@ -36,7 +36,7 @@ export class Tool_NewPath {
 				this.newPath = action_addPath(
 					new Path({ name: 'Path ' + count, path: new Path() })
 				);
-				this.currpt = this.newPath.path.addPathPoint(newpoint);
+				this.currpt = this.newPath.addPathPoint(newpoint);
 			} else if (this.newPath) {
 				if (isOverFirstPoint(this.newPath.path, cXsX(eh.mouseX), cYsY(eh.mouseY),)) {
 					// clicked on an existing control point in this path
@@ -46,22 +46,22 @@ export class Tool_NewPath {
 					eh.lastX = eh.mouseX;
 					eh.lastY = eh.mouseY;
 					let editor = getCurrentProjectEditor();
-					editor.multiSelect.points.select(this.newPath.path.pathPoints[0]);
+					editor.multiSelect.points.select(this.newPath.pathPoints[0]);
 					editor.selectedTool = 'pathEdit';
 
 					this.dragging = false;
-					this.firstpoint = false;
+					this.firstPoint = false;
 					this.currpt = {};
 
 					redraw({ calledBy: 'Event Handler Tool_NewPath mousedown' });
 					return;
 				}
 
-				this.currpt = this.newPath.path.addPathPoint(newpoint);
+				this.currpt = this.newPath.addPathPoint(newpoint);
 				// editor.multiSelect.points.select(this.currpt);
 			}
 
-			this.firstpoint = false;
+			this.firstPoint = false;
 			this.dragging = true;
 			eh.lastX = eh.mouseX;
 			eh.lastY = eh.mouseY;
@@ -105,7 +105,7 @@ export class Tool_NewPath {
 			setCursor('penPlus');
 
 			if (eventHandlerData.undoQueueHasChanged) {
-				// if (this.newPath) this.newPath.path.calcMaxes();
+				// if (this.newPath) this.newPath.recalculateMaxes();
 				updateCurrentGlyphWidth();
 				// For new path tools, mouse up always adds to the undo-queue
 				historyPut('New Path tool');
@@ -114,7 +114,7 @@ export class Tool_NewPath {
 			}
 
 			this.dragging = false;
-			this.firstpoint = false;
+			this.firstPoint = false;
 			this.currpt = {};
 			eventHandlerData.lastX = -100;
 			eventHandlerData.lastY = -100;

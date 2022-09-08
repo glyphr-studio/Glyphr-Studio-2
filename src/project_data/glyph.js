@@ -255,7 +255,7 @@ export class Glyph extends GlyphElement {
 	get maxes() {
 		// log('Glyph.getMaxes', 'start');
 		if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
-			this.calcMaxes();
+			this.recalculateMaxes();
 		}
 		// log('returning ' + json(this.maxes));
 		// log(this.name);
@@ -360,9 +360,9 @@ export class Glyph extends GlyphElement {
 		this._paths = [];
 
 		if (newPaths && newPaths.length) {
-			for (let i = 0; i < newPaths.length; i++) {
-				this.addOnePath(newPaths[i]);
-			}
+			newPaths.forEach((path) => {
+				this.addOnePath(path);
+			});
 		}
 
 		// log(`Glyph.paths is now length = ${this.paths? this.paths.length : 'NULL'}`);
@@ -459,6 +459,8 @@ export class Glyph extends GlyphElement {
 	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set x(x) {
+		console.log(`Glyph SET x`);
+		console.log(x);
 		this.setGlyphPosition(x, false);
 	}
 
@@ -509,15 +511,19 @@ export class Glyph extends GlyphElement {
 	 * @param {number} ny - new y
 	 */
 	setGlyphPosition(nx, ny) {
-		// log('Glyph.setGlyphPosition', 'start');
-		// log('nx/ny: ' + nx + ' ' + ny);
+		console.log('Glyph.setGlyphPosition', 'start');
+		console.log(`nx/ny: ${nx} ${ny}`);
 		const m = this.maxes;
+		console.log(this.maxes.print());
+
 		if (nx !== false) nx = parseFloat(nx);
 		if (ny !== false) ny = parseFloat(ny);
+		console.log(`nx/ny: ${nx} ${ny}`);
 		const dx = nx !== false ? nx - m.xMin : 0;
 		const dy = ny !== false ? ny - m.yMax : 0;
+		console.log(`dx/dy: ${dx} ${dy}`);
 		this.updateGlyphPosition(dx, dy);
-		// log('Glyph.setGlyphPosition', 'end');
+		console.log('Glyph.setGlyphPosition', 'end');
 	}
 
 	/**
@@ -795,27 +801,18 @@ export class Glyph extends GlyphElement {
 	 * Calculate the overall maxes for this Glyph
 	 * @returns {Maxes}
 	 */
-	calcMaxes() {
-		// log(`Glyph.calcMaxes - START `);
-		this.cache.maxes = {};
-		let tm;
+	recalculateMaxes() {
+		console.log(`Glyph.recalculateMaxes - START `);
+
+		let temp = { xMax: 0, xMin: 0, yMax: 0, yMin: 0 };
 		if (this.paths && this.paths.length > 0) {
-			for (let jj = 0; jj < this.paths.length; jj++) {
-				// log(`++++++ START path ${jj}`);
-				tm = this.paths[jj].maxes;
-				// log(`before ${this.maxes.print()}`);
-				this.cache.maxes = getOverallMaxes([tm, this.maxes]);
-				// log(`afters ${this.maxes.print()}`);
-				// log(`++++++ end path ${jj}`);
-			}
-		} else {
-			// log(`No paths, returning zeros`);
-			this.cache.maxes = { xMax: 0, xMin: 0, yMax: 0, yMin: 0 };
+			temp = getOverallMaxes(this.paths.map((path) => path.maxes));
 		}
 
-		// log(`result: ${this.maxes.print()}`);
-		// log(`Glyph.calcMaxes`, 'end');
-		return this.maxes;
+		this.cache.maxes = new Maxes(temp);
+		console.log(`result: ${this.cache.maxes.print()}`);
+		console.log(`Glyph.recalculateMaxes`, 'end');
+		return this.cache.maxes;
 	}
 
 
@@ -837,37 +834,19 @@ export class Glyph extends GlyphElement {
 		const charScale = (size - gutter * 2) / size;
 		const gutterScale = (gutter / size) * emSquare;
 		const vbSize = emSquare - gutter * 2;
-		const pathData = this.svgPathData;
+		const svgPathData = this.makeSVGPathData();
 
-		// Assemble SVG
-		let re = '<svg version="1.1" ';
-		re +=
-			'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
-		re +=
-			'width="' +
-			size +
-			'" height="' +
-			size +
-			'" viewBox="0,0,' +
-			vbSize +
-			',' +
-			vbSize +
-			'">';
-		re +=
-			'<g transform="translate(' +
-			gutterScale +
-			',' +
-			(emSquare - desc - gutterScale / 2) +
-			') scale(' +
-			charScale +
-			',-' +
-			charScale +
-			')">';
-		// re += '<rect x="0" y="-'+desc+'" height="'+desc+'" width="1000" fill="lime"/>';
-		// re += '<rect x="0" y="0" height="'+(emSquare-desc)+'" width="1000" fill="cyan"/>';
-		re += '<path d="' + pathData + '"/>';
-		re += '</g>';
-		re += '</svg>';
+		let re = `<svg version="1.1" ';
+			xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+			width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}"
+		>
+			<g transform="
+				translate(${gutterScale},${(emSquare - desc - gutterScale / 2)})
+				scale(${charScale}, -${charScale})"
+			>
+				<path d="${svgPathData}"/>
+			</g>
+		</svg>`;
 		// log('Glyph.makeSVG', 'end');
 		return re;
 	}

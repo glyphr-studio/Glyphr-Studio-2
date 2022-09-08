@@ -85,8 +85,17 @@ export class Maxes extends GlyphElement {
 	 * @returns {number} value
 	 */
 	get xMin() {
-		if (isVal(this._xMin)) return this._xMin;
-		else return Number.MAX_SAFE_INTEGER;
+		// console.log(`Maxes GET xMin`, 'start');
+
+		if (isVal(this._xMin))  {
+			// console.log(`returning ${this._xMin}`);
+			// console.log(`Maxes GET xMin`, 'end');
+			return this._xMin;
+		} else {
+			// console.log(`returning MAX_SAFE_INTEGER`);
+			// console.log(`Maxes GET xMin`, 'end');
+			return Number.MAX_SAFE_INTEGER;
+		}
 	}
 
 	/**
@@ -117,32 +126,6 @@ export class Maxes extends GlyphElement {
 	}
 
 	/**
-	 * Generic smallest box
-	 * @returns {object}
-	 */
-	get minBounds() {
-		return {
-			xMin: Number.MAX_SAFE_INTEGER,
-			xMax: Number.MIN_SAFE_INTEGER,
-			yMin: Number.MAX_SAFE_INTEGER,
-			yMax: Number.MIN_SAFE_INTEGER,
-		};
-	}
-
-	/**
-	 * Generic largest box
-	 * @returns {object}
-	 */
-	get maxBounds() {
-		return {
-			xMin: Number.MIN_SAFE_INTEGER,
-			xMax: Number.MAX_SAFE_INTEGER,
-			yMin: Number.MIN_SAFE_INTEGER,
-			yMax: Number.MAX_SAFE_INTEGER,
-		};
-	}
-
-	/**
 	 * Figures out the center of the bounding box
 	 */
 	get center() {
@@ -162,9 +145,19 @@ export class Maxes extends GlyphElement {
 	 * @returns {Maxes}
 	 */
 	set xMin(x) {
+		// console.log(`Maxes SET xMin`, 'start');
+		// console.log(`x: ${x}`);
+
 		x = parseFloat(x);
+		// console.log(`x: ${x}`);
+
+		// console.log(`this._xMin: ${this._xMin}`);
+
 		if (!isNaN(x)) this._xMin = x;
-		else delete this._xMin;
+		// else delete this._xMin;
+		// console.log(`this._xMin: ${this._xMin}`);
+
+		// console.log(`Maxes SET xMin`, 'end');
 	}
 
 	/**
@@ -260,26 +253,52 @@ export function maxesOverlap(m1, m2, exclusive = true) {
  * @returns {Maxes}
  */
 export function getOverallMaxes(maxesArray) {
-	// log('getOverallMaxes', 'start');
-	// log('start');
-	// log(maxesArray);
+	console.log('getOverallMaxes', 'start');
+	console.log(maxesArray);
 
-	const re = new Maxes();
+	const re = maxesMinBounds();
 	let tm;
 
 	for (let m = 0; m < maxesArray.length; m++) {
-		// log('pass ' + m);
-		tm = new Maxes(maxesArray[m]);
+		console.log('pass ' + m);
+		// tm = new Maxes(maxesArray[m]);
+		tm = maxesArray[m];
 
 		// find
 		re.xMin = Math.min(re.xMin, tm.xMin);
 		re.xMax = Math.max(re.xMax, tm.xMax);
 		re.yMin = Math.min(re.yMin, tm.yMin);
 		re.yMax = Math.max(re.yMax, tm.yMax);
-		// log([re]);
+		console.log([re]);
 	}
 
-	// log('getOverallMaxes', 'end');
+	console.log('getOverallMaxes', 'end');
 
 	return re;
+}
+
+/**
+ * Generic smallest box
+ * @returns {object}
+ */
+	export function maxesMinBounds() {
+	return {
+		xMin: Number.MAX_SAFE_INTEGER,
+		xMax: Number.MIN_SAFE_INTEGER,
+		yMin: Number.MAX_SAFE_INTEGER,
+		yMax: Number.MIN_SAFE_INTEGER,
+	};
+}
+
+/**
+ * Generic largest box
+ * @returns {object}
+ */
+export function maxesMaxBounds() {
+	return {
+		xMin: Number.MIN_SAFE_INTEGER,
+		xMax: Number.MAX_SAFE_INTEGER,
+		yMin: Number.MIN_SAFE_INTEGER,
+		yMax: Number.MAX_SAFE_INTEGER,
+	};
 }

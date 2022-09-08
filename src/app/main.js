@@ -5,7 +5,7 @@ import { GlyphrStudioApp } from './app.js';
 import { AnchorTwelvepoint } from '../controls/anchor-twelvepoint/anchor-twelvepoint.js';
 import { ButtonToggle } from '../controls/button-toggle/button-toggle.js';
 import { CanvasDisplay } from '../controls/canvas-display/canvas-display.js';
-import { CanvasEdit } from '../edit_canvas/canvas-edit.js';
+import { EditCanvas } from '../edit_canvas/edit-canvas.js';
 import { FancyButton } from '../controls/fancy-button/fancy-button.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph-tile.js';
 import { InfoBubble } from '../controls/info-bubble/info-bubble.js';
@@ -59,7 +59,7 @@ function registerCustomComponents() {
 	customElements.define('anchor-twelvepoint', AnchorTwelvepoint);
 	customElements.define('button-toggle', ButtonToggle);
 	customElements.define('canvas-display', CanvasDisplay);
-	customElements.define('canvas-edit', CanvasEdit);
+	customElements.define('edit-canvas', EditCanvas);
 	customElements.define('fancy-button', FancyButton);
 	customElements.define('glyph-tile', GlyphTile);
 	customElements.define('info-bubble', InfoBubble);

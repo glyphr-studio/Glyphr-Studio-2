@@ -8,7 +8,7 @@ import { ControlPoint } from '../../project_data/control_point.js';
 import { Coord } from '../../project_data/coord.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
-import { cXsX, cYsY } from '../canvas-edit.js';
+import { cXsX, cYsY } from '../edit-canvas.js';
 import { eventHandlerData } from '../events_mouse.js';
 import { action_addPath } from './tools.js';
 
@@ -29,7 +29,7 @@ export class Tool_NewBasicPath {
 			// This is the fake path that shows up in the layers panel
 			// while dragging is happening
 			let newPath = new Path({name: '...' });
-			newPath.path.maxes = eventHandlerData.tempNewBasicPath;
+			newPath.maxes = eventHandlerData.tempNewBasicPath;
 			newPath = action_addPath(newPath);
 			let editor = getCurrentProjectEditor();
 			editor.multiSelect.paths.select(newPath);

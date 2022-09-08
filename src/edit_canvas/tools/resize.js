@@ -101,14 +101,14 @@ export class Tool_Resize {
 					editor.nav.panel = 'Attributes';
 				}
 
-				let singlepath = editor.multiSelect.paths.singleton;
+				let singlePath = editor.multiSelect.paths.singleton;
 
-				if (singlepath) {
+				if (singlePath) {
 					// TODO cursor detection
-					// cur = singlepath.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
+					// cur = singlePath.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
 					// if (!cur) cur = getPathAtLocation(eh.mouseX, eh.mouseY) ? 'arrowSquare' : 'arrow';
-					dx = singlepath.xLock ? 0 : dx;
-					dy = singlepath.yLock ? 0 : dy;
+					dx = singlePath.xLock ? 0 : dx;
+					dy = singlePath.yLock ? 0 : dy;
 				}
 
 				editor.multiSelect.paths.updatePathPosition(dx, dy);
@@ -188,7 +188,7 @@ export class Tool_Resize {
 			}
 
 			// Resized a path
-			// if (this.resizing || this.rotating) editor.multiSelect.paths.calcMaxes();
+			// if (this.resizing || this.rotating) editor.multiSelect.paths.recalculateMaxes();
 			// updateCurrentGlyphWidth();
 
 			// Finish Up

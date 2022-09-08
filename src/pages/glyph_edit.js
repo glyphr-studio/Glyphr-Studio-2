@@ -45,7 +45,7 @@ export class PageGlyphEdit {
 				</div>
 				<div class="glyph-edit__tools-area"></div>
 				<div class="glyph-edit__right-area">
-					<canvas-edit id="glyph-edit__main-canvas" glyphs="${canvasGlyph}"></canvas-edit>
+					<edit-canvas id="glyph-edit__main-canvas" glyphs="${canvasGlyph}"></edit-canvas>
 				</div>
 				<div class="glyph-edit__zoom-area"></div>
 			</div>

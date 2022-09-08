@@ -1,5 +1,5 @@
 import { ComponentInstance } from '../project_data/component_instance.js';
-import { sXcX, sYcY } from './canvas-edit.js';
+import { sXcX, sYcY } from './edit-canvas.js';
 import { round } from '../common/functions.js';
 
 
@@ -109,35 +109,12 @@ function isOverGlyphControlPoint(glyph, x, y, noHandles) {
  */
 export function drawPath(path, ctx, view) {
 	if(path.objType === 'ComponentInstance') {
-		return drawComponentInstance(path, ctx, view);
-	} else if(path.objType === 'Path') {
-		return drawPathPath(path, ctx, view);
+		return drawComponentInstanceToCanvas(path, ctx, view);
+	} else {
+		return drawPathToCanvas(path, ctx, view);
 	}
 }
 
-
-// --------------------------------------------------------------
-// Path
-// --------------------------------------------------------------
-
-/**
- * Draw this Path to a canvas
- * @param {Path} path - path to draw
- * @param {object} ctx - canvas context
- * @param {view} view - view
- * @returns {boolean}
- */
-function drawPathPath(path, ctx, view) {
-	// log('drawPath', 'start');
-	// log('view ' + json(view, true));
-	drawPath(path.path, ctx, view);
-	// log('drawPath - returning true by default', 'end');
-	return true;
-}
-
-function isOverPathControlPoint(path, x, y, noHandles) {
-	return isOverPathControlPoint(path.path, x, y, noHandles);
-}
 
 // --------------------------------------------------------------
 // Component Instance
@@ -150,8 +127,8 @@ function isOverPathControlPoint(path, x, y, noHandles) {
  * @param {view} view
  * @returns {boolean}
  */
-function drawComponentInstance(componentInstance, ctx, view) {
-	// log('drawComponentInstance', 'start');
+function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
+	// log('drawComponentInstanceToCanvas', 'start');
 	// log('view ' + json(view, true));
 
 	// Have to iterate through paths instead of using drawGlyph
@@ -165,7 +142,7 @@ function drawComponentInstance(componentInstance, ctx, view) {
 		drewPath = drawPath(g.paths[s], ctx, view);
 		failed = failed || !drewPath;
 	}
-	// log('drawComponentInstance', 'end');
+	// log('drawComponentInstanceToCanvas', 'end');
 	return !failed;
 }
 
@@ -181,7 +158,7 @@ function drawComponentInstance(componentInstance, ctx, view) {
  * @param {object} view - View object with x / y offset and Zoom
  * @param {boolean} snap - snap values to whole numbers
  */
-function drawPath(path, ctx, view, snap = true) {
+function drawPathToCanvas(path, ctx, view, snap = true) {
 	// log('drawPath', 'start');
 	// log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
 
@@ -231,24 +208,32 @@ function drawPath(path, ctx, view, snap = true) {
 
 	// setView(currView);
 	// log('drawPath', 'end');
+	return true;
 }
 
-function isOverPathControlPoint(path, x, y, nohandles){
-	let pp = path.pathpoints || [];
+function isOverPathControlPoint(path, x, y, noHandles){
+	log(`isOverPathControlPoint`, 'start');
+	log(path);
+	let pp = path.pathPoints || [];
 	let re = false;
 
 	for(let k=pp.length-1; k>=0; k--){
-		re = pp[k].isOverControlPoint(x, y, nohandles);
+		re = pp[k].isOverControlPoint(x, y, noHandles);
+		log(`returning`);
+		log(re);
+		log(`isOverPathControlPoint`, 'end');
 		if(re) return re;
 	}
 
+	log(`returning false`);
+	log(`isOverPathControlPoint`, 'end');
 	return false;
 }
 
 export function isOverFirstPoint(path, x, y) {
 	// log('\n isOverFirstPoint - START');
 	// log('\t Passed ' + x + '/' + y);
-	let pp = path.pathpoints[0];
+	let pp = path.pathPoints[0];
 	let pointSize = 7;
 	let hp = pointSize / getView('isOverFirstPoint').dz;
 	// log('\t Checking ' + pp.P.x + '/' + pp.P.y + ' around ' + hp);

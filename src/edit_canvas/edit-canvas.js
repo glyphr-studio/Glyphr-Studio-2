@@ -7,10 +7,10 @@ import { drawGlyph, drawPath } from './draw_paths.js';
 import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles } from './draw_edit_affordances.js';
 
 /**
- * CanvasEdit takes a string of glyphs and displays them on the canvas
+ * EditCanvas takes a string of glyphs and displays them on the canvas
  * And has a bunch of controls and interactions that allow for editing
  */
-export class CanvasEdit extends HTMLElement {
+export class EditCanvas extends HTMLElement {
 	/**
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
@@ -19,11 +19,11 @@ export class CanvasEdit extends HTMLElement {
 	}
 
 	/**
-	 * Create an CanvasEdit
+	 * Create an EditCanvas
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		log(`CanvasEdit.constructor`, 'start');
+		log(`EditCanvas.constructor`, 'start');
 
 		super();
 
@@ -53,21 +53,21 @@ export class CanvasEdit extends HTMLElement {
 		editor.subscribe({
 			topic: 'view',
 			name: 'Edit canvas',
-			callback: () => this.redraw({calledBy: 'CanvasEdit view subscriber'})
+			callback: () => this.redraw({calledBy: 'EditCanvas view subscriber'})
 		});
 		editor.subscribe({
 			topic: 'currentGlyph',
 			name: 'Edit canvas',
-			callback: () => this.redraw({calledBy: 'CanvasEdit currentGlyph subscriber'})
+			callback: () => this.redraw({calledBy: 'EditCanvas currentGlyph subscriber'})
 		});
 		editor.subscribe({
 			topic: 'currentPath',
 			name: 'Edit canvas',
-			callback: () => this.redraw({calledBy: 'CanvasEdit currentPath subscriber'})
+			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
 		});
 
-		this.redraw();
-		log(`CanvasEdit.constructor`, 'end');
+		// this.redraw();
+		log(`EditCanvas.constructor`, 'end');
 	}
 
 	/**
@@ -77,16 +77,16 @@ export class CanvasEdit extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		log(`CanvasEdit.attributeChangeCallback`, 'start');
+		log(`EditCanvas.attributeChangeCallback`, 'start');
 		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		switch (attributeName) {
 			case 'glyphs':
 				this.glyphs = newValue;
-				this.redraw({calledBy: 'CanvasEdit.attributeChangeCallback - attribute: glyphs'});
+				this.redraw({calledBy: 'EditCanvas.attributeChangeCallback - attribute: glyphs'});
 				break;
 		}
-		log(`CanvasEdit.attributeChangeCallback`, 'end');
+		log(`EditCanvas.attributeChangeCallback`, 'end');
 	}
 
 
@@ -95,7 +95,7 @@ export class CanvasEdit extends HTMLElement {
 	// Redraw the canvas
 	// --------------------------------------------------------------
 	redraw(oa = {}) {
-		log('CanvasEdit.redraw', 'start');
+		log('EditCanvas.redraw', 'start');
 		if(oa?.calledBy) log(`==CALLED BY ${oa.calledBy}==`);
 		let editor = getCurrentProjectEditor();
 		let ctx = this.ctx;
@@ -120,7 +120,7 @@ export class CanvasEdit extends HTMLElement {
 		let editMode = editor.selectedTool;
 		log(`editMode: ${editMode}`);
 
-		if (editMode === 'pathEdit') {
+		if (editMode === 'resize') {
 			computeAndDrawBoundingBox(ctx);
 			computeAndDrawBoundingBoxHandles(ctx);
 
@@ -147,7 +147,7 @@ export class CanvasEdit extends HTMLElement {
 			drawPath(eventHandlerData.tempNewBasicPath, ctx, view);
 		}
 
-		log('CanvasEdit.redraw', 'end');
+		log('EditCanvas.redraw', 'end');
 	}
 }
 

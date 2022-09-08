@@ -12,8 +12,8 @@ export function makeEditToolsButtons() {
 	// log('makeEditToolsButtons', 'start');
 	let editor = getCurrentProjectEditor();
 
-	if (!editor.onCanvasEditPage()) {
-		// log('returning, !onCanvasEditPage');
+	if (!editor.onEditCanvasPage()) {
+		// log('returning, !onEditCanvasPage');
 		// log('makeEditToolsButtons', 'end');
 		return '';
 	}
@@ -39,7 +39,7 @@ export function makeEditToolsButtons() {
 			{title: 'Add path point', disabled: false},
 		pathEdit:
 			{title: 'Path edit', disabled: false},
-		pathEdit:
+		resize:
 			{title: 'Resize', disabled: false},
 	};
 
@@ -70,7 +70,7 @@ export function makeEditToolsButtons() {
 		let newToolButton = makeElement({
 			tag: 'button',
 			title: toolButtonData[buttonName].title,
-			className: 'canvas-edit__tool',
+			className: 'edit-canvas__tool',
 			innerHTML: makeToolButtonSVG({
 				name: buttonName,
 				selected: isSelected,
@@ -80,14 +80,14 @@ export function makeEditToolsButtons() {
 
 		newToolButton.addEventListener('click', () => clickTool(buttonName));
 
-		if(isSelected) newToolButton.classList.add('canvas-edit__tool-selected');
+		if(isSelected) newToolButton.classList.add('edit-canvas__tool-selected');
 
 		editor.subscribe({
 			topic: 'whichToolIsSelected',
 			subscriberName: buttonName,
 			callback:  (newSelectedTool) => {
 				let isSelected = (newSelectedTool === buttonName);
-				newToolButton.classList.toggle('canvas-edit__tool-selected', isSelected);
+				newToolButton.classList.toggle('edit-canvas__tool-selected', isSelected);
 				newToolButton.innerHTML = makeToolButtonSVG({name: buttonName, selected: isSelected});
 			}
 		});
@@ -98,7 +98,7 @@ export function makeEditToolsButtons() {
 	// Done editing path
 	let finishPath = makeElement({
 		tag: 'button',
-		className: 'canvas-edit__tool-selected',
+		className: 'edit-canvas__tool-selected',
 		title: 'Done editing path',
 		content: 'Done editing path'
 	});
@@ -128,7 +128,7 @@ export function makeEditToolsButtons() {
 	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
 		content.appendChild(toolButtonElements.pathAddPoint);
 		content.appendChild(toolButtonElements.pathEdit);
-		content.appendChild(toolButtonElements.pathEdit);
+		content.appendChild(toolButtonElements.resize);
 		if (editor.selectedTool === 'newPath') {
 			content.appendChild(finishPath);
 		}
@@ -160,7 +160,7 @@ export function makeViewToolsButtons() {
 		let isSelected = (editor.selectedTool === buttonName);
 		let newToolButton = makeElement({
 			tag: 'button',
-			className: 'canvas-edit__tool',
+			className: 'edit-canvas__tool',
 			title: viewButtonTitles[buttonName],
 			innerHTML: makeToolButtonSVG({
 				name: buttonName,
@@ -169,7 +169,7 @@ export function makeViewToolsButtons() {
 		});
 		newToolButton.addEventListener('click', () => clickTool(buttonName));
 
-		if(isSelected) newToolButton.classList.add('canvas-edit__tool-selected');
+		if(isSelected) newToolButton.classList.add('edit-canvas__tool-selected');
 
 		if(buttonName === 'pan') {
 			editor.subscribe({
@@ -177,7 +177,7 @@ export function makeViewToolsButtons() {
 				subscriberName: buttonName,
 				callback:  (newSelectedTool) => {
 					let isSelected = (newSelectedTool === buttonName);
-					newToolButton.classList.toggle('canvas-edit__tool-selected', isSelected);
+					newToolButton.classList.toggle('edit-canvas__tool-selected', isSelected);
 					newToolButton.innerHTML = makeToolButtonSVG({name: buttonName, selected: isSelected});
 				}
 			});
@@ -190,7 +190,7 @@ export function makeViewToolsButtons() {
 	let zoomReadoutNumber = round(editor.view.dz * 100, 2);
 	let zoomReadout = makeElement({
 		tag: 'input',
-		className: 'canvas-edit__zoom-readout',
+		className: 'edit-canvas__zoom-readout',
 		title: 'Zoom level',
 		innerHTML: zoomReadoutNumber
 	});
@@ -254,7 +254,7 @@ export function makeKernToolsButtons() {
 	const kern = `
 		<button
 			title="kern"
-			class="${(st === 'kern' ? 'canvas-edit__tool-selected ' : ' ')} tool"
+			class="${(st === 'kern' ? 'edit-canvas__tool-selected ' : ' ')} tool"
 			onclick="clickTool(\'kern\');"
 		>
 			${makeToolButtonSVG({ name: 'kern', selected: st === 'kern' })}
@@ -322,7 +322,7 @@ export function action_addPath(newPath){
 			editor.selectedTool = 'pathEdit';
 		} else if(newPath.path && (editor.selectedTool === 'pathEdit')) {
 			// log(`triggered as true: newPath.path && editor.selectedTool == pathEdit \n\t NOT calling calcmaxes, okay?`);
-			//newPath.calcMaxes();
+			//newPath.recalculateMaxes();
 		}
 	} else {
 		// log(`passed null, creating new path.`);
@@ -368,7 +368,7 @@ export function addBasicPath(type){
 		pathtype = 'Rectangle ';
 	}
 
-	newPath.path = new Path({'pathpoints':parr});
+	newPath.path = new Path({'pathPoints':parr});
 	newPath.name = (pathtype + getSelectedWorkItemPaths().length+1);
 
 	getSelectedWorkItemPaths().push(newPath);
@@ -481,7 +481,7 @@ export function makeToolButtonSVG(oa) {
 }
 
 // Arrow
-icons.pathEdit = {
+icons.resize = {
 	fill:`
 		<rect x="11" y="14" width="1" height="4"></rect>
 		<rect x="12" y="16" width="1" height="2"></rect>

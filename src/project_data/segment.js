@@ -45,7 +45,7 @@ export class Segment extends GlyphElement {
 
 		this.objType = 'Segment';
 
-		this.calcMaxes();
+		this.recalculateMaxes();
 	}
 
 	// --------------------------------------------------------------
@@ -157,7 +157,7 @@ export class Segment extends GlyphElement {
 	 */
 	get maxes() {
 		if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
-			this.calcMaxes();
+			this.recalculateMaxes();
 		}
 
 		return new Maxes(this.cache.maxes);
@@ -518,8 +518,8 @@ export class Segment extends GlyphElement {
 	 * Calculate the bounding box for this Segment
 	 * @returns {Maxes}
 	 */
-	calcMaxes() {
-		// log('Segment.calcMaxes', 'start');
+	recalculateMaxes() {
+		// log('Segment.recalculateMaxes', 'start');
 		// log(this);
 
 		/**
@@ -577,7 +577,7 @@ export class Segment extends GlyphElement {
 		if (this.lineType) {
 			this.maxes = bounds;
 			// log(this.maxes.print());
-			// log('Segment.calcMaxes - returning fast maxes for line', 'end');
+			// log('Segment.recalculateMaxes - returning fast maxes for line', 'end');
 			return this.maxes;
 		}
 
@@ -656,7 +656,7 @@ export class Segment extends GlyphElement {
 			}
 		}
 		// log([this.getFastMaxes(), bounds]);
-		// log('Segment.calcMaxes', 'end');
+		// log('Segment.recalculateMaxes', 'end');
 		this.maxes = bounds;
 		return this.maxes;
 	}

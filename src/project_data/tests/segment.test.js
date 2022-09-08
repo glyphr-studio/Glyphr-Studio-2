@@ -106,7 +106,7 @@ describe('Segment', () => {
 		expect(sampleSegment().getFastMaxes().xMax).toBe(200);
 	});
 
-	// calcMaxes
+	// recalculateMaxes
 
 	it('isLineOverlappedByLine', () => {
 		const seg = new Segment({p1x: 50, p1y: 50, p4x: 150, p4y: 150});

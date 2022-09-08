@@ -1,6 +1,6 @@
 import { GlyphElement } from './glyph_element.js';
 import { Coord } from './coord.js';
-import { calculateAngle, calculateLength, angleToNiceAngle } from '../common/functions.js';
+import { calculateAngle, calculateLength, angleToNiceAngle, rotate } from '../common/functions.js';
 
 /**
  * Glyph Element > ControlPoint
@@ -204,5 +204,9 @@ export class ControlPoint extends GlyphElement {
 	 */
 	set yLock(lock) {
 		this._yLock = !!lock;
+	}
+
+	rotate(angle, about) {
+		rotate(this.coord, angle, about);
 	}
 }
