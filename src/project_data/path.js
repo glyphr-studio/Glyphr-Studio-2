@@ -64,12 +64,13 @@ export class Path extends GlyphElement {
 			name: this.name,
 			pathPoints: [],
 			winding: this.winding,
-			xLock: this.xLock,
-			yLock: this.yLock,
-			wLock: this.wLock,
-			hLock: this.hLock,
-			ratioLock: this.ratioLock,
 		};
+
+		if(this.xLock) re.xLock = true;
+		if(this.yLock) re.yLock = true;
+		if(this.wLock) re.wLock = true;
+		if(this.hLock) re.hLock = true;
+		if(this.ratioLock) re.ratioLock = true;
 
 		this._pathPoints.forEach((pp) => {
 			re.pathPoints.push(pp.save(verbose));
@@ -107,7 +108,7 @@ export class Path extends GlyphElement {
 		});
 		re += `${ind}]\n`;
 
-		re += `${ind}maxes: ${this.maxes.print(level + 1)}\n`;
+		// re += `${ind}maxes: ${this.maxes.print(level + 1)}\n`;
 
 		re += `${ind.substring(2)}}/Path`;
 
@@ -231,13 +232,15 @@ export class Path extends GlyphElement {
 	 * @returns {Maxes}
 	 */
 	get maxes() {
-		// log('Path.maxes', 'start');
+		// log('Path GET maxes', 'start');
 		if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
-			// log('no cache, calcMaxes');
-			this.calcMaxes();
+			// log('no cache, recalculateMaxes');
+			this.recalculateMaxes();
+			// log('Path GET maxes', 'end');
 		}
+
 		// log('returning ' + json(this.maxes, true));
-		// log('Path.maxes', 'end');
+		// log('Path GET maxes', 'end');
 		return new Maxes(this.cache.maxes);
 	}
 
@@ -280,14 +283,14 @@ export class Path extends GlyphElement {
 	 * @param {array} pathPoints - array of Path Points
 	 * @returns {Path} - reference to this Path
 	 */
-	set pathPoints(pathPoints) {
+	set pathPoints(newPathPoints) {
 		this._pathPoints = [];
 
-		if (pathPoints && pathPoints.length) {
+		if (newPathPoints && newPathPoints.length) {
 			// log('NEW PATH : Hydrating Path Points, length ' + pathPoints.length);
-			for (let i = 0; i < pathPoints.length; i++) {
-				pathPoints[i].parent = this;
-				this._pathPoints[i] = new PathPoint(pathPoints[i]);
+			for (let i = 0; i < newPathPoints.length; i++) {
+				newPathPoints[i].parent = this;
+				this._pathPoints[i] = new PathPoint(newPathPoints[i]);
 			}
 		}
 	}
@@ -397,8 +400,10 @@ export class Path extends GlyphElement {
 	 * @returns {Path} - reference to this Path
 	 */
 	 set maxes(maxes) {
+		console.log(`Path SET maxes`, 'start');
 		this.cache.maxes = {};
 		this.cache.maxes = new Maxes(maxes);
+		console.log(`Path SET maxes`, 'end');
 	}
 
 	/**
@@ -636,17 +641,18 @@ export class Path extends GlyphElement {
 	 * @param {number} descender - project descender size
 	 * @returns {string} - svg
 	 */
-	 makeSVG(size = 50, gutter = 5, upm = 1000, descender = 300) {
+	makeSVG(size = 50, gutter = 5, upm = 1000, descender = 300) {
 		const charScale = (size - gutter * 2) / size;
 		const gutterScale = (gutter / size) * upm;
 		const vbSize = upm - gutter * 2;
 		let re = `<svg version="1.1" ';
 			xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-			width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}">
+			width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}"
+		>
 			<g transform="
 				translate(${gutterScale},${(upm - descender - gutterScale / 2)})
-				scale(${charScale}, -${charScale})
-			">
+				scale(${charScale}, -${charScale})"
+			>
 				<path d="${this.svgPathData}"/>
 			</g>
 		</svg>`;
@@ -1156,28 +1162,38 @@ export class Path extends GlyphElement {
 	/**
 	 * Find the bounding box for this path
 	 */
-	calcMaxes() {
-		// log('Path.calcMaxes', 'start');
-		// log(`before ${this.cache.maxes.print()}`);
+	recalculateMaxes() {
+		console.log('Path.recalculateMaxes', 'start');
+		// console.log(`before ${this.cache.maxes.print()}`);
 		this.cache.maxes = new Maxes();
-		let seg;
 
 		if (!this.cache.segments) this.cache.segments = [];
 
-		for (let s = 0; s < this.pathPoints.length; s++) {
-			// log('++++++ starting seg ' + s);
-			seg = this.makeSegment(s);
-			// log(`this seg maxes ${seg.maxes.print()}`);
-			// log(`this maxes ${this.cache.maxes.print()}`);
+		console.log('this');
+		console.log(this);
 
-			this.cache.maxes = getOverallMaxes([this.cache.maxes, seg.maxes]);
-			// log(`path maxes is now ${this.cache.maxes.print()}`);
-			// log('++++++ ending seg ' + s);
-		}
+		let maxesArray = this.pathPoints.map((point, index) => {
+			let seg = this.makeSegment(index);
+			return seg.maxes;
+		});
+		console.log('maxesArray');
+		console.log(maxesArray);
 
-		this.maxes.roundAll(4);
-		// log(`after> ${this.cache.maxes.print()}`);
-		// log('Path.calcMaxes', 'end');
+		this.cache.maxes = getOverallMaxes(maxesArray);
+		// for (let s = 0; s < this.pathPoints.length; s++) {
+		// 	// log('++++++ starting seg ' + s);
+		// 	seg = this.makeSegment(s);
+		// 	// log(`this seg maxes ${seg.maxes.print()}`);
+		// 	// log(`this maxes ${this.cache.maxes.print()}`);
+
+		// 	this.cache.maxes = getOverallMaxes([this.cache.maxes, seg.maxes]);
+		// 	// log(`path maxes is now ${this.cache.maxes.print()}`);
+		// 	// log('++++++ ending seg ' + s);
+		// }
+
+		// this.maxes.roundAll(4);
+		// console.log(`after> ${this.cache.maxes.print()}`);
+		console.log('Path.recalculateMaxes', 'end');
 	}
 
 	/**

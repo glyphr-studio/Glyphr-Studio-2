@@ -15,7 +15,7 @@ function keyup(event) {
 	// log('CTRL ' + event.ctrlKey + ' META ' + event.metaKey);
 	// log(event);
 
-	if (!onCanvasEditPage()) return;
+	if (!onEditCanvasPage()) return;
 
 	let isCtrlDown = event.ctrlKey || event.metaKey || event.which == 17;
 
@@ -103,7 +103,7 @@ function keypress(event) {
 	}
 
 	// Only allow the following stuff for canvas edit pages
-	if (!onCanvasEditPage()) return;
+	if (!onEditCanvasPage()) return;
 	var em = getEditMode();
 
 	// Ctrl

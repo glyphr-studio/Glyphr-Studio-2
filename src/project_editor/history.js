@@ -109,7 +109,7 @@ export class History {
 
 // Global Accessor Functions
 function history_put(dsc){
-	if(onCanvasEditPage()){
+	if(onEditCanvasPage()){
 		let queue = _UI.current_page === 'import svg'? 'glyph edit' : _UI.current_page;
 		window.setTimeout(function(){
 			_UI.history[queue].put(dsc);
@@ -118,7 +118,7 @@ function history_put(dsc){
 }
 
 function history_pull(){
-	if(onCanvasEditPage()){
+	if(onEditCanvasPage()){
 		closeDialog();
 		closeNotation();
 		window.setTimeout(function(){
@@ -128,7 +128,7 @@ function history_pull(){
 }
 
 function history_length() {
-	if(onCanvasEditPage()){
+	if(onEditCanvasPage()){
 		return _UI.history[_UI.current_page].queue.length || 0;
 	}
 

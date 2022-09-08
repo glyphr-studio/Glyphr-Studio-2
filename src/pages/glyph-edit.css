@@ -46,7 +46,7 @@
 	column-gap: 5px;
 }
 
-.canvas-edit__zoom-readout {
+.edit-canvas__zoom-readout {
 	width: 4em;
 	height: 30px;
 }

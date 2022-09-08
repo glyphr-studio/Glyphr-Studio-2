@@ -15,7 +15,7 @@ import { getCurrentProject } from "../app/main";
  */
 export function glyphChanged(glyph){
 		// log(`Glyph.changed - Start`);
-		glyph.calcMaxes();
+		glyph.recalculateMaxes();
 		if (glyph.cache) glyph.cache = {};
 		let project = getCurrentProject();
 
@@ -37,7 +37,7 @@ export function glyphChanged(glyph){
 					for (let s = 0; s < this.paths.length; s++)
 							this.paths[s].changed(descend, ascend);
 			}
-			this.calcMaxes();
+			this.recalculateMaxes();
 	}
 */
 

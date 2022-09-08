@@ -1,6 +1,6 @@
 import { GlyphElement } from './glyph_element.js';
 import { ControlPoint } from './control_point.js';
-import { round, rotate, pointsAreEqual, isVal } from '../common/functions.js';
+import { round, pointsAreEqual, isVal } from '../common/functions.js';
 
 /**
  * Glyph Element > Path Point
@@ -447,9 +447,9 @@ export class PathPoint extends GlyphElement {
 	 */
 	rotate(angle, about) {
 		// log('PathPoint.rotate', 'start');
-		rotate(this.p, angle, about);
-		rotate(this.h1, angle, about);
-		rotate(this.h2, angle, about);
+		this.p.rotate(angle, about);
+		this.h1.rotate(angle, about);
+		this.h2.rotate(angle, about);
 		// log('this.p ' + json(this.p, true));
 		// log('PathPoint.rotate', 'end');
 

@@ -49,7 +49,7 @@ export function initEventHandlers(editCanvas) {
 
 	editor.eventHandlers.tool_pan = new Tool_Pan();
 	editor.eventHandlers.tool_addRectOval = new Tool_NewBasicPath();
-	editor.eventHandlers.tool_pathEdit = new Tool_Resize();
+	editor.eventHandlers.tool_resize = new Tool_Resize();
 	editor.eventHandlers.tool_addPath = new Tool_NewPath();
 	editor.eventHandlers.tool_pathEdit = new Tool_PathEdit();
 	editor.eventHandlers.tool_pathAddPoint = new Tool_PathAddPoint();
@@ -96,8 +96,8 @@ export function initEventHandlers(editCanvas) {
 		// Switch Tool function
 		// log(`editor.selectedTool: ${editor.selectedTool}`);
 		switch (editor.selectedTool) {
-			case 'pathEdit':
-				eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
+			case 'resize':
+				eh.currentToolHandler = editor.eventHandlers.tool_resize;
 				break;
 			case 'pathEdit':
 				eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
@@ -121,7 +121,7 @@ export function initEventHandlers(editCanvas) {
 				eh.currentToolHandler = editor.eventHandlers.tool_kern;
 				break;
 			case editor.selectedTool:
-				eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
+				eh.currentToolHandler = editor.eventHandlers.tool_resize;
 		}
 
 		// Call the event handler of the eh.currentToolHandler.
@@ -241,7 +241,7 @@ function eventHandler_PathResize() {
 			break;
 	}
 
-	// if(!eventHandlerData.tempNewBasicPath) s.calcMaxes();
+	// if(!eventHandlerData.tempNewBasicPath) s.recalculateMaxes();
 
 	// log('eventHandler_PathResize - Done lx/rx/ty/by: ' + s.maxes.xMin + ',' + s.maxes.xMax + ',' + s.maxes.yMax + ',' + s.maxes.yMin);
 }
@@ -329,7 +329,7 @@ function mousewheel(event) {
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
 	let canzoom =
-		onCanvasEditPage() &&
+		onEditCanvasPage() &&
 		document.getElementById('dialog_box').style.display !== 'block';
 
 	if (canzoom) {

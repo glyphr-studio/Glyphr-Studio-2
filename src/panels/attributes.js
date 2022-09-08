@@ -66,8 +66,8 @@ function makeAttributesGroup_path(path) {
 	});
 
 	let buttonText = 'unknown';
-	if(path.path.winding > 0) buttonText = 'counterclockwise&ensp;&#8634';
-	if(path.path.winding < 0) buttonText = 'clockwise&ensp;&#8635';
+	if(path.winding > 0) buttonText = 'counterclockwise&ensp;&#8634';
+	if(path.winding < 0) buttonText = 'clockwise&ensp;&#8635';
 
 	let windingButton = makeElement({
 		tag: 'button',

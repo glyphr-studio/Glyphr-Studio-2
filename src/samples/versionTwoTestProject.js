@@ -23,8 +23,7 @@ export function getVersionTwoTestProject() {
         objType:'Glyph',
         name:'Latin Capital Letter A',
         glyphWidth:530, leftSideBearing:10, rightSideBearing:10,
-        shapes:[
-          {objType:'Shape', name:'Path 1', 'path':
+        paths:[
             {objType:'Path',
               pathPoints:[
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:363.2, y:145}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:363.2, y:145}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:363.2, y:145}}, 'type':'corner'},
@@ -37,8 +36,6 @@ export function getVersionTwoTestProject() {
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:400, y:0}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:400, y:0}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:400, y:0}}, 'type':'symmetric'}
               ]
             },
-          },
-          {objType:'Shape', name:'Path 2', 'path':
             {objType:'Path',
               pathPoints:[
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:332.9, y:265}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:332.9, y:265}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:332.9, y:265}}, 'type':'corner'},
@@ -46,7 +43,6 @@ export function getVersionTwoTestProject() {
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:197.1, y:265}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:197.1, y:265}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:197.1, y:265}}, 'type':'symmetric'}
               ]
             },
-          }
         ]
       },
       '0x0042':{
@@ -54,8 +50,7 @@ export function getVersionTwoTestProject() {
         objType:'Glyph',
         name:'Latin Capital Letter B',
         glyphWidth:385, leftSideBearing:false, rightSideBearing:false,
-        shapes:[
-          {objType:'Shape', name:'Path 1', 'path':
+        paths:[
             {objType:'Path',
               pathPoints:[
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:339.9, y:397}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:366.6, y:410}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:366.6, y:384}}, 'type':'corner'},
@@ -75,8 +70,6 @@ export function getVersionTwoTestProject() {
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:385, y:469}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:385, y:469}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:385, y:437.3}}, 'type':'flat'}
               ],
             },
-          },
-          {objType:'Shape', name:'Path 2', 'path':
             {objType:'Path',
               pathPoints:[
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:460}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:460}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:460}}, 'type':'corner'},
@@ -87,8 +80,6 @@ export function getVersionTwoTestProject() {
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:645}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:645}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:645}}, 'type':'symmetric'}
               ]
             },
-          },
-          {objType:'Shape', name:'Path 3', 'path':
             {objType:'Path',
               pathPoints:[
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:133}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:133}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:133}}, 'type':'corner'},
@@ -99,7 +90,6 @@ export function getVersionTwoTestProject() {
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:327}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:327}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:327}}, 'type':'symmetric'}
               ]
             },
-          }
         ]
       },
       '0x0043':{
@@ -107,8 +97,7 @@ export function getVersionTwoTestProject() {
         objType:'Glyph',
         name:'Latin Capital Letter C',
         glyphWidth:400, leftSideBearing:false, rightSideBearing:false,
-        shapes:[
-          {objType:'Shape', name:'Path 1', 'path':
+        paths:[
             {objType:'Path',
               pathPoints:[
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:260, y:540}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:260, y:540}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:260, y:540}}, 'type':'corner'},
@@ -129,7 +118,6 @@ export function getVersionTwoTestProject() {
                 {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:400, y:540}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:400, y:540}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:400, y:540}}, 'type':'symmetric'}
               ]
             }
-          }
         ]
       }
     }

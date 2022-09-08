@@ -73,7 +73,7 @@ export class ProjectEditor {
 		// Canvas
 		// Event handlers
 		this.eventHandlers = {};
-		this.selectedTool = 'pathEdit';
+		this.selectedTool = 'resize';
 
 		// History
 		// this.history = {};
@@ -377,7 +377,7 @@ export class ProjectEditor {
 	//  * @param {string} description
 	//  */
 	// historyPut(description) {
-	//   if (this.onCanvasEditPage()) {
+	//   if (this.onEditCanvasPage()) {
 	//     const queue =
 	//       this.nav.page === 'import svg' ? 'Glyph edit' : this.nav.page;
 	//     this.history[queue].put(description);
@@ -388,7 +388,7 @@ export class ProjectEditor {
 	//  * Moves backwards in time in the history queue
 	//  */
 	// historyPull() {
-	//   if (this.onCanvasEditPage()) {
+	//   if (this.onEditCanvasPage()) {
 	//     this.closeDialog();
 	//     this.closeNotation();
 	//     this.history[this.nav.page].pull();
@@ -400,7 +400,7 @@ export class ProjectEditor {
 	//  * @returns {number}
 	//  */
 	// historyLength() {
-	//   if (this.onCanvasEditPage()) {
+	//   if (this.onEditCanvasPage()) {
 	//     return this.history[this.nav.page].queue.length || 0;
 	//   }
 
@@ -577,7 +577,7 @@ export class ProjectEditor {
 	 * Returns true if the current page has an Edit Canvas
 	 * @returns {boolean}
 	 */
-	onCanvasEditPage() {
+	onEditCanvasPage() {
 		const nh = this.nav.page;
 		return (
 			nh === 'Glyph edit' ||

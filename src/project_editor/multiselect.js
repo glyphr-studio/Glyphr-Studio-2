@@ -139,7 +139,7 @@ export class MultiSelectPoints extends MultiSelect {
 
 	get path() {
 		this._path.path = new Path({ pathPoints: this.members });
-		// this.path.calcMaxes();
+		// this.path.recalculateMaxes();
 		return this._path;
 	}
 
@@ -165,7 +165,7 @@ export class MultiSelectPoints extends MultiSelect {
 
 			if (pindex > -1) {
 				path.pathPoints.splice(pindex, 1);
-				// path.calcMaxes();
+				// path.recalculateMaxes();
 				path.changed();
 			}
 		}
@@ -232,13 +232,13 @@ export class MultiSelectPoints extends MultiSelect {
 		}
 	}
 
-	updatePathPointPosition(controlpoint, dx, dy) {
-		if (controlpoint === 'p') {
+	updatePathPointPosition(controlPoint, dx, dy) {
+		if (controlPoint === 'p') {
 			for (let m = 0; m < this.members.length; m++) {
-				this.members[m].updatePathPointPosition(controlpoint, dx, dy);
+				this.members[m].updatePathPointPosition(controlPoint, dx, dy);
 			}
 		} else if (this.handleSingleton) {
-			this.handleSingleton.updatePathPointPosition(controlpoint, dx, dy);
+			this.handleSingleton.updatePathPointPosition(controlPoint, dx, dy);
 		}
 	}
 
@@ -469,9 +469,9 @@ export class MultiSelectPaths extends MultiSelect {
 		return this.glyph.maxes.center;
 	}
 
-	// calcMaxes = function() {
+	// recalculateMaxes = function() {
 	//     for (let m=0; m<this.members.length; m++) {
-	//         this.members[m].calcMaxes();
+	//         this.members[m].recalculateMaxes();
 	//     }
 	// }
 

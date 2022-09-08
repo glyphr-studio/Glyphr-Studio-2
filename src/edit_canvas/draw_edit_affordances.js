@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { makeCrisp } from '../common/functions.js';
-import { sXcX, sYcY } from './canvas-edit.js';
+import { sXcX, sYcY } from './edit-canvas.js';
 import { canResize } from './events_mouse.js';
 
 // --------------------------------------------------------------

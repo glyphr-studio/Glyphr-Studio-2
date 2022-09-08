@@ -1,10 +1,10 @@
 {
   "spec_dir": "spec",
   "spec_files": [
-    "../src/project_data/tests/*.test.js"
+    "../src/project_data/tests/glyph.test.js"
   ],
   "env": {
     "stopSpecOnExpectationFailure": false,
-    "random": true
+    "random": false
   }
 }
