@@ -7,14 +7,14 @@ import { samples } from '../../samples/samples.js';
  * @returns {Glyph}
  */
 function sampleGlyph() {
-	console.log('SAMPLE PATH POINTS');
+	// console.log('SAMPLE PATH POINTS');
 	// console.log(samples.pathPoints);
 	let re = new Glyph();
 	re.pathPoints = clone(samples.pathPoints);
 
 	// re.recalculateMaxes();
-	console.log('SAMPLE GLYPH');
-	console.log(re);
+	// console.log('SAMPLE GLYPH');
+	// console.log(re);
 	return re;
 }
 
@@ -42,7 +42,7 @@ function multiTriangleGlyph() {
 	]});
 
 	re.recalculateMaxes();
-	console.log(re);
+	// console.log(re);
 	return re;
 }
 

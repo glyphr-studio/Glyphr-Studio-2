@@ -33,8 +33,10 @@ describe('Path', () => {
 	});
 
 	it('save', () => {
-		const path = samplePath();
-		expect(path.save()).toEqual(JSON.parse('{"winding":-5,"pathPoints":[{"p":{"coord":{"x":326.65249430318556,"y":500}},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500}},"h2":{"coord":{"x":413.45994211401285,"y":500}}},{"p":{"coord":{"x":484,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709}},"h2":{"coord":{"x":484,"y":257.92406046386174}}},{"p":{"coord":{"x":326.65249430318556,"y":186}},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186}},"h2":{"coord":{"x":239.15010236167052,"y":186}}},{"p":{"coord":{"x":170,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707}},"h2":{"coord":{"x":170,"y":429.9040095221619}}}]}'));
+		const path = trianglePath();
+		let saved = path.save();
+		// console.log(saved);
+		expect(saved).toEqual({name:"Path",pathPoints:[{p:{coord:{x:100,y:200}},type:"corner"},{p:{coord:{x:300,y:600}},type:"corner"},{p:{coord:{x:400,y:500}},type:"corner"}],winding:-4});
 	});
 
 	it('print', () => {

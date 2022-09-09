@@ -193,7 +193,7 @@ export class AnchorTwelvepoint extends HTMLElement {
 	 * @param {string} newAnchor - name of the anchor to select
 	 */
 	setValue(newAnchor) {
-		console.log(`setValue ${newAnchor}`);
+		// console.log(`setValue ${newAnchor}`);
 
 		this.anchorNames.forEach((anchor) =>
 			this[anchor.id].removeAttribute('checked', '')

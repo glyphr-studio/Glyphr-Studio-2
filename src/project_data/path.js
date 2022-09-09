@@ -400,10 +400,10 @@ export class Path extends GlyphElement {
 	 * @returns {Path} - reference to this Path
 	 */
 	 set maxes(maxes) {
-		console.log(`Path SET maxes`, 'start');
+		// console.log(`Path SET maxes`, 'start');
 		this.cache.maxes = {};
 		this.cache.maxes = new Maxes(maxes);
-		console.log(`Path SET maxes`, 'end');
+		// console.log(`Path SET maxes`, 'end');
 	}
 
 	/**
@@ -1163,21 +1163,21 @@ export class Path extends GlyphElement {
 	 * Find the bounding box for this path
 	 */
 	recalculateMaxes() {
-		console.log('Path.recalculateMaxes', 'start');
+		// console.log('Path.recalculateMaxes', 'start');
 		// console.log(`before ${this.cache.maxes.print()}`);
 		this.cache.maxes = new Maxes();
 
 		if (!this.cache.segments) this.cache.segments = [];
 
-		console.log('this');
-		console.log(this);
+		// console.log('this');
+		// console.log(this);
 
 		let maxesArray = this.pathPoints.map((point, index) => {
 			let seg = this.makeSegment(index);
 			return seg.maxes;
 		});
-		console.log('maxesArray');
-		console.log(maxesArray);
+		// console.log('maxesArray');
+		// console.log(maxesArray);
 
 		this.cache.maxes = getOverallMaxes(maxesArray);
 		// for (let s = 0; s < this.pathPoints.length; s++) {
@@ -1193,7 +1193,7 @@ export class Path extends GlyphElement {
 
 		// this.maxes.roundAll(4);
 		// console.log(`after> ${this.cache.maxes.print()}`);
-		console.log('Path.recalculateMaxes', 'end');
+		// console.log('Path.recalculateMaxes', 'end');
 	}
 
 	/**
