@@ -459,8 +459,8 @@ export class Glyph extends GlyphElement {
 	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set x(x) {
-		console.log(`Glyph SET x`);
-		console.log(x);
+		// console.log(`Glyph SET x`);
+		// console.log(x);
 		this.setGlyphPosition(x, false);
 	}
 
@@ -511,19 +511,19 @@ export class Glyph extends GlyphElement {
 	 * @param {number} ny - new y
 	 */
 	setGlyphPosition(nx, ny) {
-		console.log('Glyph.setGlyphPosition', 'start');
-		console.log(`nx/ny: ${nx} ${ny}`);
+		// console.log('Glyph.setGlyphPosition', 'start');
+		// console.log(`nx/ny: ${nx} ${ny}`);
 		const m = this.maxes;
-		console.log(this.maxes.print());
+		// console.log(this.maxes.print());
 
 		if (nx !== false) nx = parseFloat(nx);
 		if (ny !== false) ny = parseFloat(ny);
-		console.log(`nx/ny: ${nx} ${ny}`);
+		// console.log(`nx/ny: ${nx} ${ny}`);
 		const dx = nx !== false ? nx - m.xMin : 0;
 		const dy = ny !== false ? ny - m.yMax : 0;
-		console.log(`dx/dy: ${dx} ${dy}`);
+		// console.log(`dx/dy: ${dx} ${dy}`);
 		this.updateGlyphPosition(dx, dy);
-		console.log('Glyph.setGlyphPosition', 'end');
+		// console.log('Glyph.setGlyphPosition', 'end');
 	}
 
 	/**
@@ -802,7 +802,7 @@ export class Glyph extends GlyphElement {
 	 * @returns {Maxes}
 	 */
 	recalculateMaxes() {
-		console.log(`Glyph.recalculateMaxes - START `);
+		// console.log(`Glyph.recalculateMaxes - START `);
 
 		let temp = { xMax: 0, xMin: 0, yMax: 0, yMin: 0 };
 		if (this.paths && this.paths.length > 0) {
@@ -810,8 +810,8 @@ export class Glyph extends GlyphElement {
 		}
 
 		this.cache.maxes = new Maxes(temp);
-		console.log(`result: ${this.cache.maxes.print()}`);
-		console.log(`Glyph.recalculateMaxes`, 'end');
+		// console.log(`result: ${this.cache.maxes.print()}`);
+		// console.log(`Glyph.recalculateMaxes`, 'end');
 		return this.cache.maxes;
 	}
 

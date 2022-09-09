@@ -303,7 +303,7 @@ function debugWidths() {
 		return `${char.width}, ${char.kern}, ${char.aggregate}\n`;
 	});
 
-	console.log(re);
+	// console.log(re);
 }
 
 /*

@@ -253,14 +253,14 @@ export function maxesOverlap(m1, m2, exclusive = true) {
  * @returns {Maxes}
  */
 export function getOverallMaxes(maxesArray) {
-	console.log('getOverallMaxes', 'start');
-	console.log(maxesArray);
+	// console.log('getOverallMaxes', 'start');
+	// console.log(maxesArray);
 
 	const re = maxesMinBounds();
 	let tm;
 
 	for (let m = 0; m < maxesArray.length; m++) {
-		console.log('pass ' + m);
+		// console.log('pass ' + m);
 		// tm = new Maxes(maxesArray[m]);
 		tm = maxesArray[m];
 
@@ -269,12 +269,12 @@ export function getOverallMaxes(maxesArray) {
 		re.xMax = Math.max(re.xMax, tm.xMax);
 		re.yMin = Math.min(re.yMin, tm.yMin);
 		re.yMax = Math.max(re.yMax, tm.yMax);
-		console.log([re]);
+		// console.log([re]);
 	}
 
-	console.log('getOverallMaxes', 'end');
+	// console.log('getOverallMaxes', 'end');
 
-	return re;
+	return new Maxes(re);
 }
 
 /**
