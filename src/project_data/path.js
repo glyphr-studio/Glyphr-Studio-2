@@ -667,8 +667,8 @@ export class Path extends GlyphElement {
 	 */
 	 makeSVGPathData(glyphName = 'not specified', roundValue = 8) {
 		// log('Path.makeSVGPathData', 'start');
-		// log('Glyph ' + glyphName);
-		// log('this.pathPoints: ' + json(this.pathPoints, true));
+		// log('Glyph name: ' + glyphName);
+		// log(this.pathPoints);
 
 		if (!this.pathPoints || !this.pathPoints.length) {
 			return '';

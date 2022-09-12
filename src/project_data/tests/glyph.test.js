@@ -207,10 +207,9 @@ describe('Glyph', () => {
 		expect(g.paths[2].maxes.xMax).toBe(800);
 	});
 
-	// TODO fix svg stuff
 	it('makeSVG', () => {
 		// also tests makeSVGPathData
-		expect(sampleGlyph().makeSVG()).toBe('<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"50\" height=\"50\" viewBox=\"0,0,990,990\"><g transform=\"translate(100,650) scale(0.8,-0.8)\"><path d=\"M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z\"/></g></svg>');
+		expect(sampleGlyph().makeSVG()).toBe('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0,0,990,990"><g transform="translate(100,650) scale(0.8, -0.8)"><path d="M0,500 C0,500,0,428.9899571,0,343.45700878 C0,257.92406046,0,186,0,186 C0,186,0,257.01000804,0,343.45700878 C0,429.90400952,0,500,0,500Z"/></g></svg>');
 	});
 
 	// TODO write tests
