@@ -90,7 +90,6 @@ export class Glyph extends GlyphElement {
 			delete re.name;
 		}
 
-		log(re);
 		return re;
 	}
 
@@ -843,25 +842,23 @@ export class Glyph extends GlyphElement {
 	 */
 	makeSVG(size = 50, gutter = 5, emSquare = 1000, desc = 300) {
 		// log('Glyph.makeSVG', 'start');
+		// log(this);
 
 		const charScale = (size - gutter * 2) / size;
 		const gutterScale = (gutter / size) * emSquare;
 		const vbSize = emSquare - gutter * 2;
 		const svgPathData = this.makeSVGPathData();
 
-		let re = `<svg version="1.1" ';
-			xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-			width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}"
-		>
-			<g transform="
-				translate(${gutterScale},${(emSquare - desc - gutterScale / 2)})
-				scale(${charScale}, -${charScale})"
-			>
-				<path d="${svgPathData}"/>
-			</g>
-		</svg>`;
+		let re = `
+			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}">
+					<g transform="translate(${gutterScale},${(emSquare - desc - gutterScale / 2)}) scale(${charScale}, -${charScale})">
+						<path d="${svgPathData}"/>
+					</g>
+			</svg>
+		`;
 		// log('Glyph.makeSVG', 'end');
-		log(re);
+		re = re.replace(/\n/gi, '');
+		re = re.replace(/\t/gi, '');
 		return re;
 	}
 
@@ -879,11 +876,16 @@ export class Glyph extends GlyphElement {
 		// Make Path Data
 		for (let j = 0; j < this.paths.length; j++) {
 			item = this.paths[j];
+			// log(`item ${j} of ${this.paths.length}`);
+			// log(item);
 			if (item.objType === 'ComponentInstance') {
 				workingItem = item.transformedGlyph;
 				if (workingItem) pathData += workingItem.svgPathData;
 			} else {
-				workingItem = new Path(clone(item));
+				// Do we need clone here? or is new Path enough?
+				workingItem = new Path(item);
+				// log('working item path');
+				// log(workingItem);
 				workingItem.updatePathPosition(this.lsb, 0, true);
 				pathData += workingItem.svgPathData;
 				if (j < this.paths.length - 1) pathData += ' ';
