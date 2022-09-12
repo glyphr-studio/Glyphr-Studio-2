@@ -171,7 +171,6 @@ function showToast(msg, dur, fn) {
 	msgdiv.innerHTML = msg || 'Howdy!';
 
 	// log('Typeof fn: ' + typeof fn);
-	// console.log(fn);
 
 	if (fn && typeof fn === 'function') {
 		// log('CALLING FUNCTION NOW');

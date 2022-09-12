@@ -85,15 +85,15 @@ export class Maxes extends GlyphElement {
 	 * @returns {number} value
 	 */
 	get xMin() {
-		// console.log(`Maxes GET xMin`, 'start');
+		// log(`Maxes GET xMin`, 'start');
 
-		if (isVal(this._xMin))  {
-			// console.log(`returning ${this._xMin}`);
-			// console.log(`Maxes GET xMin`, 'end');
+		if (isVal(this._xMin)) {
+			// log(`returning ${this._xMin}`);
+			// log(`Maxes GET xMin`, 'end');
 			return this._xMin;
 		} else {
-			// console.log(`returning MAX_SAFE_INTEGER`);
-			// console.log(`Maxes GET xMin`, 'end');
+			// log(`returning MAX_SAFE_INTEGER`);
+			// log(`Maxes GET xMin`, 'end');
 			return Number.MAX_SAFE_INTEGER;
 		}
 	}
@@ -145,19 +145,19 @@ export class Maxes extends GlyphElement {
 	 * @returns {Maxes}
 	 */
 	set xMin(x) {
-		// console.log(`Maxes SET xMin`, 'start');
-		// console.log(`x: ${x}`);
+		// log(`Maxes SET xMin`, 'start');
+		// log(`x: ${x}`);
 
 		x = parseFloat(x);
-		// console.log(`x: ${x}`);
+		// log(`x: ${x}`);
 
-		// console.log(`this._xMin: ${this._xMin}`);
+		// log(`this._xMin: ${this._xMin}`);
 
 		if (!isNaN(x)) this._xMin = x;
 		// else delete this._xMin;
-		// console.log(`this._xMin: ${this._xMin}`);
+		// log(`this._xMin: ${this._xMin}`);
 
-		// console.log(`Maxes SET xMin`, 'end');
+		// log(`Maxes SET xMin`, 'end');
 	}
 
 	/**
@@ -253,15 +253,15 @@ export function maxesOverlap(m1, m2, exclusive = true) {
  * @returns {Maxes}
  */
 export function getOverallMaxes(maxesArray) {
-	// console.log('getOverallMaxes', 'start');
-	// console.log(maxesArray);
+	// log('getOverallMaxes', 'start');
+	// log(maxesArray);
 
 	const re = maxesMinBounds();
 	let tm;
 
 	for (let m = 0; m < maxesArray.length; m++) {
-		// console.log('pass ' + m);
-		// tm = new Maxes(maxesArray[m]);
+		// log('iteration number ' + m);
+		tm = new Maxes(maxesArray[m]);
 		tm = maxesArray[m];
 
 		// find
@@ -269,10 +269,12 @@ export function getOverallMaxes(maxesArray) {
 		re.xMax = Math.max(re.xMax, tm.xMax);
 		re.yMin = Math.min(re.yMin, tm.yMin);
 		re.yMax = Math.max(re.yMax, tm.yMax);
-		// console.log([re]);
+		// log([re]);
 	}
 
-	// console.log('getOverallMaxes', 'end');
+	// log('returning');
+	// log(re);
+	// log('getOverallMaxes', 'end');
 
 	return new Maxes(re);
 }

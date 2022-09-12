@@ -69,14 +69,13 @@ export class Glyph extends GlyphElement {
 		const re = {
 			name: this.name,
 			id: this._id,
+			objType: this.objType
 		};
 
 		if (this.isAutoWide !== true) re.isAutoWide = this.isAutoWide;
 		if (this.glyphWidth !== 0) re.glyphWidth = this.glyphWidth;
-		if (this.leftSideBearing !== false)
-			re.leftSideBearing = this.leftSideBearing;
-		if (this.rightSideBearing !== false)
-			re.rightSideBearing = this.rightSideBearing;
+		if (this.leftSideBearing !== false) re.leftSideBearing = this.leftSideBearing;
+		if (this.rightSideBearing !== false) re.rightSideBearing = this.rightSideBearing;
 		if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
 		if (this.usedIn.length) re.usedIn = this.usedIn;
 
@@ -91,6 +90,7 @@ export class Glyph extends GlyphElement {
 			delete re.name;
 		}
 
+		log(re);
 		return re;
 	}
 
@@ -254,11 +254,16 @@ export class Glyph extends GlyphElement {
 	 */
 	get maxes() {
 		// log('Glyph.getMaxes', 'start');
+		// log('cache before');
+		// log(this.cache);
 		if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
+			// log('detected need to recalculate');
 			this.recalculateMaxes();
+		} else {
+			// log('NO DETECTION to recalculate');
 		}
-		// log('returning ' + json(this.maxes));
-		// log(this.name);
+		// log('cache after');
+		// log(this.cache);
 		// log('Glyph.getMaxes', 'end');
 		return new Maxes(this.cache.maxes);
 	}
@@ -365,8 +370,9 @@ export class Glyph extends GlyphElement {
 			});
 		}
 
+		this.changed();
 		// log(`Glyph.paths is now length = ${this.paths? this.paths.length : 'NULL'}`);
-		// log(` Glyph.paths setter - End\n`);
+		// log(`Glyph.paths setter - End\n`);
 	}
 
 	/**
@@ -374,15 +380,19 @@ export class Glyph extends GlyphElement {
 	 * @param {Path} newPath - Path to add to this glyph
 	 */
 	addOnePath(newPath) {
+		// log(`Glyph.addOnePath`, 'start');
+		// log(newPath);
+
 		if (isVal(newPath.link)) {
-			// log(`hydrating ci ${i} - name: ${newPath.name}`);
+			// log(`hydrating ci - name: ${newPath.name}`);
 			newPath.parent = this;
 			this._paths.push(new ComponentInstance(newPath));
 		} else {
-			// log(`hydrating sh ${i} - name: ${newPath.name}`);
+			// log(`hydrating path - name: ${newPath.name}`);
 			newPath.parent = this;
 			this._paths.push(new Path(newPath));
 		}
+		// log(`Glyph.addOnePath`, 'end');
 		return this._paths.at(-1);
 	}
 
@@ -459,8 +469,8 @@ export class Glyph extends GlyphElement {
 	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set x(x) {
-		// console.log(`Glyph SET x`);
-		// console.log(x);
+		// log(`Glyph SET x`);
+		// log(x);
 		this.setGlyphPosition(x, false);
 	}
 
@@ -511,19 +521,19 @@ export class Glyph extends GlyphElement {
 	 * @param {number} ny - new y
 	 */
 	setGlyphPosition(nx, ny) {
-		// console.log('Glyph.setGlyphPosition', 'start');
-		// console.log(`nx/ny: ${nx} ${ny}`);
+		// log('Glyph.setGlyphPosition', 'start');
+		// log(`nx/ny: ${nx} ${ny}`);
 		const m = this.maxes;
-		// console.log(this.maxes.print());
+		// log(this.maxes.print());
 
 		if (nx !== false) nx = parseFloat(nx);
 		if (ny !== false) ny = parseFloat(ny);
-		// console.log(`nx/ny: ${nx} ${ny}`);
+		// log(`nx/ny: ${nx} ${ny}`);
 		const dx = nx !== false ? nx - m.xMin : 0;
 		const dy = ny !== false ? ny - m.yMax : 0;
-		// console.log(`dx/dy: ${dx} ${dy}`);
+		// log(`dx/dy: ${dx} ${dy}`);
 		this.updateGlyphPosition(dx, dy);
-		// console.log('Glyph.setGlyphPosition', 'end');
+		// log('Glyph.setGlyphPosition', 'end');
 	}
 
 	/**
@@ -802,16 +812,19 @@ export class Glyph extends GlyphElement {
 	 * @returns {Maxes}
 	 */
 	recalculateMaxes() {
-		// console.log(`Glyph.recalculateMaxes - START `);
+		// log(`Glyph.recalculateMaxes - START `);
 
 		let temp = { xMax: 0, xMin: 0, yMax: 0, yMin: 0 };
+		// log(this.paths);
 		if (this.paths && this.paths.length > 0) {
+			// log('... has paths, calling getOverallMaxes');
 			temp = getOverallMaxes(this.paths.map((path) => path.maxes));
 		}
 
 		this.cache.maxes = new Maxes(temp);
-		// console.log(`result: ${this.cache.maxes.print()}`);
-		// console.log(`Glyph.recalculateMaxes`, 'end');
+		// log(`result`);
+		// log(this.cache);
+		// log(`Glyph.recalculateMaxes`, 'end');
 		return this.cache.maxes;
 	}
 
@@ -848,6 +861,7 @@ export class Glyph extends GlyphElement {
 			</g>
 		</svg>`;
 		// log('Glyph.makeSVG', 'end');
+		log(re);
 		return re;
 	}
 
@@ -858,23 +872,21 @@ export class Glyph extends GlyphElement {
 	makeSVGPathData() {
 		if (this.cache.svg) return this.cache.svg;
 
-		const sl = this.paths;
 		let pathData = '';
-		let path;
 		let item;
-		let tg;
+		let workingItem;
 
 		// Make Path Data
-		for (let j = 0; j < sl.length; j++) {
-			item = sl[j];
+		for (let j = 0; j < this.paths.length; j++) {
+			item = this.paths[j];
 			if (item.objType === 'ComponentInstance') {
-				tg = item.transformedGlyph;
-				if (tg) pathData += tg.svgPathData;
+				workingItem = item.transformedGlyph;
+				if (workingItem) pathData += workingItem.svgPathData;
 			} else {
-				path = new Path(clone(path));
-				path.updatePathPosition(this.lsb, 0, true);
-				pathData += path.svgPathData;
-				if (j < sl.length - 1) pathData += ' ';
+				workingItem = new Path(clone(item));
+				workingItem.updatePathPosition(this.lsb, 0, true);
+				pathData += workingItem.svgPathData;
+				if (j < this.paths.length - 1) pathData += ' ';
 			}
 		}
 		if (trim(pathData) === '') pathData = 'M0,0Z';

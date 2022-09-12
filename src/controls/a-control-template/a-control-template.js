@@ -84,7 +84,7 @@ export class AControlTemplate extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		// console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		if (attributeName === 'disabled') {
 			if (newValue === '') {
@@ -105,10 +105,10 @@ export class AControlTemplate extends HTMLElement {
 				mutation.type == 'attributes' &&
 				mutation.attributeName === 'disabled'
 			) {
-				console.log(
+				log(
 					'The ' + mutation.attributeName + ' attribute was modified.'
 				);
-				console.log(mutation);
+				log(mutation);
 
 				if (mutation.oldValue === '') {
 					// enabled

@@ -12,7 +12,7 @@ export class ButtonToggle extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		// console.log(`ButtonToggle.constructor()`, 'start');
+		// log(`ButtonToggle.constructor()`, 'start');
 		super();
 
 		Object.keys(attributes).forEach((key) =>
@@ -151,7 +151,7 @@ export class ButtonToggle extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		// console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		if (attributeName === 'disabled') {
 			if (newValue === '') {
@@ -224,7 +224,7 @@ export class ButtonToggle extends HTMLElement {
 	 * @returns {string} - full SVG
 	 */
 	getIcon(id, size = '24') {
-		// console.log(`getIcon - passed ${id} at size ${size}`);
+		// log(`getIcon - passed ${id} at size ${size}`);
 		let header = ` version="1.1" xmlns="http://www.w3.org/2000/svg"
 						xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
 						x="0px" y="0px" width="${size}px" height="${size}px"`;

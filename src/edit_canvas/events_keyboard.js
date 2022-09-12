@@ -134,7 +134,7 @@ function keypress(event) {
 				.glyphs[i].getPaths()
 				.forEach(function (path, i) {
 					_UI.multiSelect.paths.members.push(path);
-					// console.log(_UI.multiSelect.paths.members);
+					// log(_UI.multiSelect.paths.members);
 				});
 		}
 		_UI.multiSelect.points.selectPathsThatHaveSelectedPoints();

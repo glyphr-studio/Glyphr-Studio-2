@@ -167,7 +167,7 @@ export class AnchorTwelvepoint extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		// console.log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		if (attributeName === 'disabled') {
 			if (newValue === '') {
@@ -193,7 +193,7 @@ export class AnchorTwelvepoint extends HTMLElement {
 	 * @param {string} newAnchor - name of the anchor to select
 	 */
 	setValue(newAnchor) {
-		// console.log(`setValue ${newAnchor}`);
+		// log(`setValue ${newAnchor}`);
 
 		this.anchorNames.forEach((anchor) =>
 			this[anchor.id].removeAttribute('checked', '')
