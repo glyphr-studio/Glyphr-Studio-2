@@ -313,7 +313,7 @@ export class InputNumber extends HTMLElement {
 		this.numberInput.removeEventListener('change', this.numberInputChanged);
 		this.numberInput.removeEventListener('keydown', this.numberInputKeyboardPress);
 		this.arrowWrapper.removeEventListener('mouseout', (event) => {
-			// console.log(event);
+			// log(event);
 		});
 	}
 

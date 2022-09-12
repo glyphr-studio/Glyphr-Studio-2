@@ -24,7 +24,7 @@ export function glyphrStudioOnLoad() {
 
 	if (passPreChecks()) {
 		// log(GSApp);
-		console.log(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
+		console.info(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
 		registerCustomComponents();
 
 		// Load project
