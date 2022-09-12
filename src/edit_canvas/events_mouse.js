@@ -63,7 +63,7 @@ export function initEventHandlers(editCanvas) {
 	editCanvas.onmouseout = handleMouseLeaveCanvas;
 	editCanvas.addEventListener('wheel', mousewheel, false);
 
-	// TODO
+	// TODO Key Listeners
 	// Document Key Listeners
 	// getEditDocument().addEventListener('keypress', keypress, false);
 	// getEditDocument().addEventListener('keydown', keypress, false);

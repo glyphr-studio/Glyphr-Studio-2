@@ -1,6 +1,7 @@
 import { Glyph } from '../glyph.js';
 import { clone, numSan } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
+import { Path } from '../path.js';
 
 /**
  * Create a sample Glyph
@@ -171,11 +172,29 @@ describe('Glyph', () => {
 		expect(g.maxes.save()).toEqual({xMax: 123, xMin: 123, yMax: 435, yMin: 345});
 	});
 
-	// TODO write tests
-	// setGlyphPosition
-	// updateGlyphPosition
-	// setGlyphSize
-	// updateGlyphSize
+	it('setGlyphPosition', () => {
+		const g = sampleGlyph();
+		g.setGlyphPosition(1000);
+		expect(g.maxes.xMin).toBe(1000);
+	});
+
+	it('updateGlyphPosition', () => {
+		const g = sampleGlyph();
+		g.updateGlyphPosition(0, 100);
+		expect(g.maxes.yMax).toBe(600);
+	});
+
+	it('setGlyphSize', () => {
+		const g = sampleGlyph();
+		g.setGlyphSize(10);
+		expect(g.width).toBe(10);
+	});
+
+	it('updateGlyphSize', () => {
+		const g = sampleGlyph();
+		g.updateGlyphSize(500);
+		expect(g.width).toBe(814);
+	});
 
 	it('flipNS', () => {
 		const g = multiTriangleGlyph();
@@ -212,26 +231,29 @@ describe('Glyph', () => {
 		expect(sampleGlyph().makeSVG()).toBe('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0,0,990,990"><g transform="translate(100,650) scale(0.8, -0.8)"><path d="M0,500 C0,500,0,428.9899571,0,343.45700878 C0,257.92406046,0,186,0,186 C0,186,0,257.01000804,0,343.45700878 C0,429.90400952,0,500,0,500Z"/></g></svg>');
 	});
 
-	// TODO write tests
-	// recalculateMaxes
-	// makeSVG
-	// makeSVGPathData
+	// TODO Boolean Combine write tests
 	// flattenGlyph
 
-
 	// it('combineAllPaths', () => {
-	//   const s1 = new Path({'path': {pathPoints: [
-	//     {p: {coord: {x: 100, y: 200}}},
-	//     {p: {coord: {x: 300, y: 600}}},
-	//     {p: {coord: {x: 400, y: 500}}},
-	//   ]}});
-	//   const s2 = new Path(s1);
-	//   s2.y = 500;
+	// 	const s1 = new Path({
+	// 		name: 's1',
+	// 		pathPoints: [
+	// 			{p: {coord: {x: 100, y: 200}}},
+	// 			{p: {coord: {x: 300, y: 600}}},
+	// 			{p: {coord: {x: 400, y: 500}}},
+	// 		]
+	// 	});
 
-	//   const g = new Glyph({paths: [s1, s2]});
+	// 	console.log(s1);
+	// 	const s2 = new Path(s1);
+	// 	s2.name = 's2';
+	// 	s2.y = 500;
+	// 	console.log(s2);
 
-	//   const re = g.combineAllPaths(true, true);
-	//   expect(re.paths.length).toBe(1);
+	// 	const g = new Glyph({paths: [s1, s2]});
+	// 	const re = g.combineAllPaths(true, true);
+	// 	console.log(re.paths);
+	// 	expect(re.paths.length).toBe(1);
 	// });
 
 	it('hasPaths', () => {
