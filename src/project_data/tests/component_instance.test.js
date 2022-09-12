@@ -106,29 +106,29 @@ describe('ComponentInstance', () => {
 	});
 
 	// TODO refactor with component stuff
-	/*
+/*
 	it('get/set x', () => {
 		let ci = sampleComponentInstance();
-		ci.x = false;
-		expect(ci.x).toBe(false);
+		ci.x = 600;
+		expect(ci.x).toBe(600);
 	});
 
 	it('get/set y', () => {
 		let ci = sampleComponentInstance();
-		ci.y = false;
-		expect(ci.y).toBe(false);
+		ci.y = 600;
+		expect(ci.y).toBe(600);
 	});
 
 	it('get/set width', () => {
 		let ci = sampleComponentInstance();
-		ci.width = false;
-		expect(ci.width).toBe(false);
+		ci.width = 500;
+		expect(ci.width).toBe(500);
 	});
 
 	it('get/set height', () => {
 		let ci = sampleComponentInstance();
-		ci.height = false;
-		expect(ci.height).toBe(false);
+		ci.height = 500;
+		expect(ci.height).toBe(500);
 	});
-*/
+	*/
 });

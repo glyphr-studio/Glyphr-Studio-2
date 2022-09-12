@@ -943,7 +943,7 @@ export class Glyph extends GlyphElement {
 		this.flattenGlyph();
 		/*
 
-			TODO get functionality from V1
+			TODO Boolean Combine get functionality from V1
 
 		const paths = combinePaths(this.paths, doNotToast);
 		if (paths) {

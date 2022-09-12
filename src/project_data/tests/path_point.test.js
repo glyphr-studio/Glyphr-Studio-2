@@ -106,10 +106,4 @@ describe('PathPoint', () => {
 		pp.h1.x = 39.9999;
 		expect(pp.roundAll(3).h1.x).toBe(40);
 	});
-
-	// TODO write tests
-	//ControlPoint as part of a PathPoint
-	// angle
-	// niceAngle
-	// length
 });

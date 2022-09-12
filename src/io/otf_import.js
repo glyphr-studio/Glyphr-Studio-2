@@ -1,6 +1,4 @@
-
-export { importOTFFont };
-import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
+import { OpenTypeJS } from '../lib/opentypejs_1-3-1.js';
 
 /**
 	IO > Import > OpenType
@@ -8,7 +6,7 @@ import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
 	and convert it to a Glyphr Studio Project.
 **/
 
-function importOTFFont(filter) {
+export function importOTFFont(filter) {
 	// log('importOTFFont', 'start');
 
 	/*
