@@ -213,7 +213,7 @@ export class ProjectEditor {
 	 * Returns the appropriate Glyph, Ligature, or Component
 	 * based on the current page
 	 */
-	get selectedWorkItem() {
+	get selectedItem() {
 		if(this.nav.page === 'Glyph edit') return this.selectedGlyph;
 		else if (this.nav.page === 'Components') return this.selectedComponent;
 		else if (this.nav.page === 'Ligatures') return this.selectedLigature;
@@ -224,7 +224,7 @@ export class ProjectEditor {
 	 * Returns the appropriate Glyph, Ligature or Component
 	 * ID based on the current page
 	 */
-	get selectedWorkItemID() {
+	get selectedItemID() {
 		if(this.nav.page === 'Glyph edit') return this.selectedGlyphID;
 		else if (this.nav.page === 'Components') return this.selectedComponentID;
 		else if (this.nav.page === 'Ligatures') return this.selectedLigatureID;
@@ -615,7 +615,7 @@ export class ProjectEditor {
 	 */
 	set view(oa){
 		// log(`ProjectEditor SET view`, 'start');
-		var wid = this.selectedWorkItemID;
+		var wid = this.selectedItemID;
 
 		// Ensure there are at least defaults
 		if(!this._views[wid]){
@@ -651,7 +651,7 @@ export class ProjectEditor {
 	get view(){
 		// log(`ProjectEditor GET view`, 'start');
 
-		var wid = this.selectedWorkItemID;
+		var wid = this.selectedItemID;
 		var re = false;
 
 		if(this._views[wid]){
@@ -773,7 +773,7 @@ export class ProjectEditor {
 		 *
 		getSelectedGlyphLeftSideBearing() {
 				// log('getSelectedGlyphLeftSideBearing');
-				let sc = getSelectedWorkItem();
+				let sc = getSelectedItem();
 				if (!sc) return 0;
 				if (sc.objType === 'component') return 0;
 				if (!sc.isAutoWide) return 0;
@@ -786,7 +786,7 @@ export class ProjectEditor {
 		 *
 		getSelectedGlyphRightSideBearing() {
 				// log('getSelectedGlyphLeftSideBearing');
-				let sc = getSelectedWorkItem();
+				let sc = getSelectedItem();
 				if (!sc) return 0;
 				if (sc.objType === 'component') return 0;
 				if (!sc.isAutoWide) return 0;
@@ -797,7 +797,7 @@ export class ProjectEditor {
 		 * Updates the selected glyphs width
 		 *
 		updateCurrentGlyphWidth() {
-				let sc = getSelectedWorkItem();
+				let sc = getSelectedItem();
 				if (!sc) return;
 				if (editor.nav.page === 'Glyph edit') {
 						glyphChanged(sc);
@@ -809,7 +809,7 @@ export class ProjectEditor {
 				}
 		}
 
-function existingWorkItem() {
+function existingItem() {
 		let len = 0;
 		let nph = _UI.currentPanel;
 
@@ -839,8 +839,8 @@ function existingWorkItem() {
 		return true;
 }
 
-function getSelectedWorkItem() {
-		// log('getSelectedWorkItem', 'start');
+function getSelectedItem() {
+		// log('getSelectedItem', 'start');
 		// log('currentPage: ' + editor.nav.page);
 		let re;
 
@@ -874,7 +874,7 @@ function getSelectedWorkItem() {
 		return false;
 }
 
-function getSelectedWorkItemID() {
+function getSelectedItemID() {
 		switch (editor.nav.page) {
 				case 'Glyph edit': return _UI.selectedGlyph;
 				case 'import svg': return _UI.selectedSVGImportTarget;
@@ -886,34 +886,34 @@ function getSelectedWorkItemID() {
 		return false;
 }
 
-function getSelectedWorkItemChar() {
-		let swiid = getSelectedWorkItemID();
+function getSelectedItemChar() {
+		let swiid = getSelectedItemID();
 		return hexToChars(swiid);
 }
 
-function getSelectedWorkItemName() {
-		// log('getSelectedWorkItemName', 'start');
-		let wi = getSelectedWorkItem();
+function getSelectedItemName() {
+		// log('getSelectedItemName', 'start');
+		let wi = getSelectedItem();
 		// log('wi = '+wi);
 		return wi.name || wi.getName() || '[name not found]';
 }
 
-function getSelectedWorkItemPaths() {
+function getSelectedItemPaths() {
 		// log('GETSELECTEDGLYPHSHAPES');
-		let rechar = getSelectedWorkItem();
+		let rechar = getSelectedItem();
 		return rechar? rechar.paths : [];
 }
 
-function markSelectedWorkItemAsChanged() {
-		// log('markSelectedWorkItemAsChanged', 'start');
-		let wi = getSelectedWorkItem();
+function markSelectedItemAsChanged() {
+		// log('markSelectedItemAsChanged', 'start');
+		let wi = getSelectedItem();
 
 		if (wi && wi.changed) {
 				// log('marking as changed');
 				wi.changed(true, true);
 		}
 
-		// log('markSelectedWorkItemAsChanged', 'end');
+		// log('markSelectedItemAsChanged', 'end');
 }
 
 function selectGlyph(c, dontnavigate) {
@@ -922,7 +922,7 @@ function selectGlyph(c, dontnavigate) {
 
 		_UI.selectedGlyph = c;
 		clickEmptySpace();
-		markSelectedWorkItemAsChanged();
+		markSelectedItemAsChanged();
 
 		if (!dontnavigate) {
 				// log('selecting ' + getCurrentProject().glyphs[c].glyphhtml + ' and navigating.');
@@ -937,7 +937,7 @@ function selectComponent(c, dontnavigate) {
 
 		_UI.selectedComponent = c;
 		clickEmptySpace();
-		markSelectedWorkItemAsChanged();
+		markSelectedItemAsChanged();
 
 		if (!dontnavigate) {
 				// log('SELECTCOMPONENT: selecting ' + getCurrentProject().components[c].name + ' and navigating.');
@@ -950,7 +950,7 @@ function selectLigature(c, dontnavigate) {
 
 		_UI.selectedLigature = c;
 		clickEmptySpace();
-		markSelectedWorkItemAsChanged();
+		markSelectedItemAsChanged();
 
 		if (!dontnavigate) {
 				// log('SELECTLIGATURE: selecting ' + getCurrentProject().ligatures[c].glyphhtml + ' and navigating.');

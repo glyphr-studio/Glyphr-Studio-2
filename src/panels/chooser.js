@@ -270,7 +270,7 @@ function make_GlyphChooser_Content(gcdata) {
 
 	const fname = gcdata.fname || 'selectGlyph';
 	const sel = isVal(gcdata.selected) ? gcdata.selected : 'glyphs';
-	const selwi = getSelectedWorkItemID();
+	const selwi = getSelectedItemID();
 	let re = '<div class="glyphChooser-content">';
 
 	const cr = getCurrentProject().projectSettings.glyphRanges;

@@ -21,7 +21,7 @@ export class History {
 
 	put(des) {
 		// log('\n History.put - START');
-		let selected = getSelectedWorkItem();
+		let selected = getSelectedItem();
 		this.queue = this.queue || [];
 		this.queue.push({
 			'name': selected.name,
@@ -34,7 +34,7 @@ export class History {
 		this.currstate = clone(editor.project[this.parentName], 'History.put');
 
 		setProjectAsUnsaved();
-		markSelectedWorkItemAsChanged();
+		markSelectedItemAsChanged();
 
 		// log(' History.put - END\n');
 	}
@@ -45,7 +45,7 @@ export class History {
 		if (this.queue.length === 0)
 			return;
 
-		let currentID = getSelectedWorkItemID();
+		let currentID = getSelectedItemID();
 		let nextID = this.queue[this.queue.length - 1].id;
 
 		if (currentID === nextID) {
@@ -58,7 +58,7 @@ export class History {
 
 			this.currstate = clone(top, 'History.pull');
 
-			let selwi = getSelectedWorkItem();
+			let selwi = getSelectedItem();
 			if (selwi && selwi.changed)
 				selwi.changed(true, true);
 

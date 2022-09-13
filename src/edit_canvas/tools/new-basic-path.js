@@ -10,7 +10,7 @@ import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
 import { cXsX, cYsY } from '../edit-canvas.js';
 import { eventHandlerData } from '../events_mouse.js';
-import { action_addPath } from './tools.js';
+import { addPathToCurrentItem } from './tools.js';
 
 export class Tool_NewBasicPath {
 	constructor() {
@@ -19,7 +19,7 @@ export class Tool_NewBasicPath {
 		this.mousedown = function (ev) {
 			log(`Tool_NewBasicPath.mousedown`, 'start');
 
-			eventHandlerData.tempNewBasicPath = {
+			eventHandlerData.newBasicPathMaxes = {
 				xMax: cXsX(eventHandlerData.mouseX),
 				xMin: cXsX(eventHandlerData.mouseX),
 				yMax: cYsY(eventHandlerData.mouseY),
@@ -28,11 +28,16 @@ export class Tool_NewBasicPath {
 
 			// This is the fake path that shows up in the layers panel
 			// while dragging is happening
-			let newPath = new Path({name: '...' });
-			newPath.maxes = eventHandlerData.tempNewBasicPath;
-			newPath = action_addPath(newPath);
+			let newPath = rectPathFromMaxes(eventHandlerData.newBasicPathMaxes);
+			newPath.name = '...';
+			log(newPath);
+			newPath = addPathToCurrentItem(newPath);
 			let editor = getCurrentProjectEditor();
 			editor.multiSelect.paths.select(newPath);
+			editor.publish({
+				topic: ['whichPathIsSelected', 'currentPath'],
+				data: editor.multiSelect.paths.singleton
+			});
 
 			eventHandlerData.firstX = cXsX(eventHandlerData.mouseX);
 			eventHandlerData.firstY = cYsY(eventHandlerData.mouseY);
@@ -46,14 +51,14 @@ export class Tool_NewBasicPath {
 
 		this.mousemove = function (ev) {
 			// log(`Tool_NewBasicPath.mousemove`, 'start');
-			let ehd = eventHandlerData;
-			let tnbs = eventHandlerData.tempNewBasicPath;
-			if (tnbs) {
-				tnbs.xMax = Math.max(ehd.firstX, cXsX(ehd.mouseX));
-				tnbs.xMin = Math.min(ehd.firstX, cXsX(ehd.mouseX));
-				tnbs.yMax = Math.max(ehd.firstY, cYsY(ehd.mouseY));
-				tnbs.yMin = Math.min(ehd.firstY, cYsY(ehd.mouseY));
-				// log(`tnbs is now ${JSON.stringify(tnbs)}`);
+			let data = eventHandlerData;
+			let temp = eventHandlerData.newBasicPathMaxes;
+			if (temp) {
+				temp.xMax = Math.max(data.firstX, cXsX(data.mouseX));
+				temp.xMin = Math.min(data.firstX, cXsX(data.mouseX));
+				temp.yMax = Math.max(data.firstY, cYsY(data.mouseY));
+				temp.yMin = Math.min(data.firstY, cYsY(data.mouseY));
+				// log(`temp is now ${JSON.stringify(temp)}`);
 
 				let editor = getCurrentProjectEditor();
 				// TODO history
@@ -66,14 +71,14 @@ export class Tool_NewBasicPath {
 		this.mouseup = function () {
 			log(`Tool_NewBasicPath.mouseup`, 'start');
 
-			let tnbs = eventHandlerData.tempNewBasicPath;
+			let temp = eventHandlerData.newBasicPathMaxes;
 			let editor = getCurrentProjectEditor();
-			let workItem = editor.selectedWorkItem;
+			let workItem = editor.selectedItem;
 			let ps = editor.project.projectSettings;
 
 			// Only make the new path if it's not really small
-			let xSize = Math.abs(tnbs.xMax - tnbs.xMin);
-			let ySize = Math.abs(tnbs.yMax - tnbs.yMin);
+			let xSize = Math.abs(temp.xMax - temp.xMin);
+			let ySize = Math.abs(temp.yMax - temp.yMin);
 			log(`xSize: ${xSize}`);
 			log(`ySize: ${ySize}`);
 			log(`ps.pointSize: ${ps.pointSize}`);
@@ -87,23 +92,21 @@ export class Tool_NewBasicPath {
 				}
 
 				// Update the fake ... path with new data
-				let s = editor.multiSelect.paths.singleton;
+				let path = editor.multiSelect.paths.singleton;
 
 				if (editor.selectedTool === 'newRectangle') {
 					log(`making Rectangle path`);
-
-					s.name = 'Rectangle ' + count;
-					s.path = rectPathFromMaxes(tnbs);
+					path = rectPathFromMaxes(temp);
+					path.name = 'Rectangle ' + count;
 				} else {
 					log(`making Oval path`);
-
-					s.name = 'Oval ' + count;
-					s.path = ovalPathFromMaxes(tnbs);
+					path = ovalPathFromMaxes(temp);
+					path.name = 'Oval ' + count;
 				}
 
 				log('paths before');
 				log(workItem.paths);
-				let newPath = workItem.addOnePath(s);
+				let newPath = workItem.addOnePath(path);
 				editor.multiSelect.paths.select(newPath);
 				log('paths after');
 				log(workItem.paths);
@@ -117,7 +120,7 @@ export class Tool_NewBasicPath {
 
 			eventHandlerData.firstX = -100;
 			eventHandlerData.firstY = -100;
-			eventHandlerData.tempNewBasicPath = false;
+			eventHandlerData.newBasicPathMaxes = false;
 			// TODO history
 			// historyPut('New Basic Path tool');
 			// eventHandlerData.undoQueueHasChanged = false;
@@ -132,8 +135,8 @@ export class Tool_NewBasicPath {
 }
 
 export function rectPathFromMaxes(maxes){
-	log(`rectPathFromMaxes`, 'start');
-	log(JSON.stringify(maxes));
+	// log(`rectPathFromMaxes`, 'start');
+	// log(JSON.stringify(maxes));
 	let ps = getCurrentProject().projectSettings;
 
 	//Default Path size
@@ -142,31 +145,31 @@ export function rectPathFromMaxes(maxes){
 	let rx = isVal(maxes.xMax)? maxes.xMax : 100;
 	let by = isVal(maxes.yMin)? maxes.yMin : 0;
 
-	log(`lx: ${lx}, ty: ${ty}, rx: ${rx}, by: ${by}`);
+	// log(`lx: ${lx}, ty: ${ty}, rx: ${rx}, by: ${by}`);
 	// let qw = round((rx-lx)/4);
 	// let qh = round((ty-by)/4);
 
 	// First Point
 	let Pul = new ControlPoint({coord:{x:lx, y:ty}});
-	log(Pul);
+	// log(Pul);
 	// let H1ul = new ControlPoint({coord:{x:lx, y:(ty-qh)}});
 	// let H2ul = new ControlPoint({coord:{x:(lx+qw), y:ty}});
 
 	// Second Point
 	let Pur = new ControlPoint({coord:{x:rx, y:ty}});
-	log(Pur);
+	// log(Pur);
 	// let H1ur = new ControlPoint({coord:{x:(rx-qw), y:ty}});
 	// let H2ur = new ControlPoint({coord:{x:rx, y:(ty-qh)}});
 
 	// Third Point
 	let Plr = new ControlPoint({coord:{x:rx, y:by}});
-	log(Plr);
+	// log(Plr);
 	// let H1lr = new ControlPoint({coord:{x:rx, y:(by+qh)}});
 	// let H2lr = new ControlPoint({coord:{x:(rx-qw), y:by}});
 
 	// Fourth Point
 	let Pll = new ControlPoint({coord:{x:lx, y:by}});
-	log(Pll);
+	// log(Pll);
 	// let H1ll = new ControlPoint({coord:{x:(lx+qw), y:by}});
 	// let H2ll = new ControlPoint({coord:{x:lx, y:(by+qh)}});
 
@@ -179,11 +182,11 @@ export function rectPathFromMaxes(maxes){
 	newPoints[1] = new PathPoint({p:Pur});
 	newPoints[2] = new PathPoint({p:Plr});
 	newPoints[3] = new PathPoint({p:Pll});
-	log(newPoints);
+	// log(newPoints);
 
 	let newPath = new Path({pathPoints: newPoints});
-	log(newPath.print());
-	log(`rectPathFromMaxes`, 'end');
+	// log(newPath.print());
+	// log(`rectPathFromMaxes`, 'end');
 
 	return newPath;
 }

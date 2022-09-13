@@ -23,7 +23,7 @@ export class Tool_PathEdit {
 			ehd.lastY = ehd.mouseY;
 			let targetSize = getCurrentProject().projectSettings.pointSize / view.dz;
 			this.controlPoint = isOverControlPoint(
-				editor.selectedWorkItem,
+				editor.selectedItem,
 				cXsX(ehd.mouseX, view),
 				cYsY(ehd.mouseY, view),
 				targetSize,
@@ -145,7 +145,7 @@ export class Tool_PathEdit {
 
 			if (ehd.undoQueueHasChanged) {
 				// editor.multiSelect.paths.recalculateMaxes();
-				updateCurrentGlyphWidth();
+				// updateCurrentGlyphWidth();
 				historyPut('Path Edit tool');
 				ehd.undoQueueHasChanged = false;
 				redraw({ calledBy: 'Event Handler Tool_PathEdit mouseup' });
