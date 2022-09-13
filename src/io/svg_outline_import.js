@@ -1,3 +1,5 @@
+import { ovalPathFromMaxes, rectPathFromMaxes } from '../edit_canvas/tools/new-basic-path.js';
+import { Path } from '../project_data/path.js';
 import { XYPoint } from './xy_point.js';
 /**
 	IO > Import > SVG Outlines
@@ -42,10 +44,10 @@ function ioSVG_convertTagsToGlyph(svgData) {
 	// log('pathTags from imported XML: ');
 	// log(pathTags);
 
-	function pushPath(p, n) {
+	function pushPath(path) {
 		pathCounter++;
 		n = n + ' ' + pathCounter;
-		newPaths.push(new Path({ path: p, name: n }));
+		newPaths.push(new Path(path));
 	}
 
 	/*
@@ -64,7 +66,8 @@ function ioSVG_convertTagsToGlyph(svgData) {
 				if (data[d].length) {
 					tag = ioSVG_convertPathTag(data[d]);
 					if (tag.pathPoints.length) {
-						pushPath(tag, 'Path');
+						tag.name = 'Path';
+						pushPath(tag);
 					}
 				}
 			}
@@ -81,6 +84,7 @@ function ioSVG_convertTagsToGlyph(svgData) {
 		let y;
 		let w;
 		let h;
+		let rect;
 
 		for (let r = 0; r < pathTags.rect.length; r++) {
 			data = pathTags.rect[r].attributes || {};
@@ -97,7 +101,9 @@ function ioSVG_convertTagsToGlyph(svgData) {
 					yMin: y,
 				};
 
-				pushPath(rectPathFromMaxes(maxes), 'Rectangle');
+				rect = rectPathFromMaxes(maxes);
+				rect.name = 'Rectangle';
+				pushPath(rect);
 			}
 		}
 	}
@@ -145,7 +151,7 @@ function ioSVG_convertTagsToGlyph(svgData) {
 					});
 				}
 
-				pushPath(new Path({ pathPoints: pathPoints }), 'Polygon');
+				pushPath(new Path({name: 'Polygon', pathPoints: pathPoints }));
 			}
 		}
 	}
@@ -158,11 +164,12 @@ function ioSVG_convertTagsToGlyph(svgData) {
 
 	if (elli.length) {
 		data = {};
-		let ellipsemaxes;
+		let ellipseMaxes;
 		let rx;
 		let ry;
 		let cx;
 		let cy;
+		let ellipse;
 
 		for (let c = 0; c < elli.length; c++) {
 			data = elli[c].attributes;
@@ -174,14 +181,16 @@ function ioSVG_convertTagsToGlyph(svgData) {
 			cy = data.cy * 1 || 0;
 
 			if (!(rx === 0 && ry === 0)) {
-				ellipsemaxes = {
+				ellipseMaxes = {
 					xMin: cx - rx,
 					xMax: cx + rx,
 					yMin: cy - ry,
 					yMax: cy + ry,
 				};
 
-				pushPath(ovalPathFromMaxes(ellipsemaxes), 'Oval');
+				ellipse = ovalPathFromMaxes(ellipseMaxes);
+				ellipse.name = 'Oval';
+				pushPath(ellipse);
 			}
 		}
 	}

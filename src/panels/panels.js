@@ -33,3 +33,12 @@ export function makePanel() {
 	log(`makePanel`, 'end');
 	return content;
 }
+
+/**
+ * Refreshes the panel area in the current document
+ */
+export function refreshPanel() {
+	let panelArea = document.getElementById('left-area__panel');
+	panelArea.innerHTML = '';
+	panelArea.appendChild(makePanel());
+}

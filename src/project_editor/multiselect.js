@@ -138,8 +138,7 @@ export class MultiSelectPoints extends MultiSelect {
 	}
 
 	get path() {
-		this._path.path = new Path({ pathPoints: this.members });
-		// this.path.recalculateMaxes();
+		this._path = new Path({ pathPoints: this.members });
 		return this._path;
 	}
 
@@ -155,23 +154,23 @@ export class MultiSelectPoints extends MultiSelect {
 
 	deletePathPoints() {
 		let point;
-		let path;
-		let pindex;
+		let parentPath;
+		let pointIndex;
 
 		for (let m = 0; m < this.members.length; m++) {
 			point = this.members[m];
-			path = point.parent;
-			pindex = point.pointNumber;
+			parentPath = point.parent;
+			pointIndex = point.pointNumber;
 
-			if (pindex > -1) {
-				path.pathPoints.splice(pindex, 1);
-				// path.recalculateMaxes();
-				path.changed();
+			if (pointIndex > -1) {
+				parentPath.pathPoints.splice(pointIndex, 1);
+				// parentPath.recalculateMaxes();
+				parentPath.changed();
 			}
 		}
 
 		let editor = getCurrentProjectEditor();
-		const wi = editor.selectedWorkItem;
+		const wi = editor.selectedItem;
 
 		this.clear();
 	}
@@ -183,7 +182,7 @@ export class MultiSelectPoints extends MultiSelect {
 
 	draw_PathPointHandles() {
 		const sh = this.path;
-		draw_PathPointHandles(sh.path.pathPoints);
+		draw_PathPointHandles(sh.pathPoints);
 	}
 
 	draw_PathPoints() {
@@ -191,7 +190,7 @@ export class MultiSelectPoints extends MultiSelect {
 		const sh = this.path;
 		// ('\t path is ' + json(sh));
 
-		draw_PathPoints(sh.path.pathPoints);
+		draw_PathPoints(sh.pathPoints);
 
 		// log('MS.points.draw_PathPoints', 'end');
 	}
@@ -246,7 +245,7 @@ export class MultiSelectPoints extends MultiSelect {
 		// log('MS.points.selectPathsThatHaveSelectedPoints', 'start');
 		// this.clear();
 		const points = this.members;
-		const paths = getCurrentProjectEditor().selectedWorkItem.paths;
+		const paths = getCurrentProjectEditor().selectedItem.paths;
 		let path;
 		let count = 0;
 
@@ -260,7 +259,7 @@ export class MultiSelectPoints extends MultiSelect {
 
 			for (let s = 0; s < paths.length; s++) {
 				if (paths[s].objType !== 'ComponentInstance') {
-					if (path === paths[s].path) {
+					if (path === paths[s]) {
 						paths.add(paths[s]);
 						count++;
 					}
@@ -328,7 +327,7 @@ export class MultiSelectPaths extends MultiSelect {
 		if (cs) {
 			this.deletePaths();
 
-			for (let n = 0; n < cs.length; n++) action_addPath(cs[n]);
+			for (let n = 0; n < cs.length; n++) addPathToCurrentItem(cs[n]);
 
 			historyPut('Combined paths');
 		}
@@ -339,7 +338,7 @@ export class MultiSelectPaths extends MultiSelect {
 	deletePaths() {
 		// log('deletePath', 'start');
 		let editor = getCurrentProjectEditor();
-		const wipaths = editor.selectedWorkItem.paths;
+		const itemPaths = editor.selectedItem.paths;
 		const sels = this.members;
 		let curs;
 		let i;
@@ -353,11 +352,11 @@ export class MultiSelectPaths extends MultiSelect {
 					removeFromUsedIn(curs.link, editor.selectedGlyph);
 				}
 
-				i = wipaths.indexOf(curs);
-				if (i > -1) wipaths.splice(i, 1);
+				i = itemPaths.indexOf(curs);
+				if (i > -1) itemPaths.splice(i, 1);
 			}
 
-			this.select(wipaths[i] || wipaths[wipaths.length - 1]);
+			this.select(itemPaths[i] || itemPaths[itemPaths.length - 1]);
 		}
 
 		// TODO publish change
@@ -496,9 +495,9 @@ export class MultiSelectPaths extends MultiSelect {
 		let s;
 		for (let m = 0; m < this.members.length; m++) {
 			s = this.members[m];
-			// log('drawing points on path ' + m + ' as ' + s.path.pathPoints);
+			// log('drawing points on path ' + m + ' as ' + s.pathPoints);
 			if (s.objType !== 'ComponentInstance')
-				draw_PathPoints(this.members[m].path.pathPoints);
+				draw_PathPoints(this.members[m].pathPoints);
 		}
 
 		// log('MS.paths.draw_PathPoints', 'end');

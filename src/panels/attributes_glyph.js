@@ -158,7 +158,7 @@ OLD GLYPH DETAILS
 
 	content +=`
 		<label>auto calculate <span class="unit">(em units)</span></label>
-		<input type="checkbox" checked="getSelectedWorkItem().isAutoWide"/>
+		<input type="checkbox" checked="getSelectedItem().isAutoWide"/>
 	`;
 
 	if (!glyph.isAutoWide) {
@@ -169,7 +169,7 @@ OLD GLYPH DETAILS
 			'value="' +
 			round(glyph.glyphWidth, 3) +
 			'" ' +
-			'onchange="_UI.focusElement=this.id; getSelectedWorkItem().glyphWidth = (this.value*1); redraw({calledBy:{calledBy:\'glyphDetails\'}});">';
+			'onchange="_UI.focusElement=this.id; getSelectedItem().glyphWidth = (this.value*1); redraw({calledBy:{calledBy:\'glyphDetails\'}});">';
 	} else {
 		content +=
 			'<input type="number" disabled="disabled" ' +
@@ -189,7 +189,7 @@ OLD GLYPH DETAILS
 			'<tr>' +
 			'<td> use default <span class="unit">(em units)</span> </td>' +
 			'<td>' +
-			// checkUI(  'getSelectedWorkItem().leftSideBearing',  glyph.leftSideBearing,  true,  true) +
+			// checkUI(  'getSelectedItem().leftSideBearing',  glyph.leftSideBearing,  true,  true) +
 			'&emsp;';
 
 		if (glyph.leftSideBearing) {
@@ -202,7 +202,7 @@ OLD GLYPH DETAILS
 				'value="' +
 				glyph.leftSideBearing +
 				'" ' +
-				'onchange="_UI.focusElement=this.id; getSelectedWorkItem().leftSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
+				'onchange="_UI.focusElement=this.id; getSelectedItem().leftSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
 		} else {
 			content +=
 				'<input type="number" disabled="disabled" ' +
@@ -222,7 +222,7 @@ OLD GLYPH DETAILS
 			'<tr>' +
 			'<td> use default <span class="unit">(em units)</span> </td>' +
 			'<td>' +
-			// checkUI(  'getSelectedWorkItem().rightSideBearing',  glyph.rightSideBearing,  true,  true) +
+			// checkUI(  'getSelectedItem().rightSideBearing',  glyph.rightSideBearing,  true,  true) +
 			'&emsp;';
 
 		if (glyph.rightSideBearing) {
@@ -235,7 +235,7 @@ OLD GLYPH DETAILS
 				'value="' +
 				glyph.rightSideBearing +
 				'" ' +
-				'onchange="_UI.focusElement=this.id; getSelectedWorkItem().rightSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
+				'onchange="_UI.focusElement=this.id; getSelectedItem().rightSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
 		} else {
 			content +=
 				'<input type="number" disabled="disabled" ' +

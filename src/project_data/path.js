@@ -995,14 +995,10 @@ export class Path extends GlyphElement {
 	addPathPoint(newPoint) {
 		// log('Path.addPathPoint', 'start');
 		// log('newPoint = ' + newPoint);
-
 		newPoint.parent = this;
 		this.pathPoints.push(newPoint);
-
-		// TODO remove UI stuff from glyph elements
-		// const re = this.selectPathPoint(this.pathPoints.length - 1);
-
 		this.findWinding();
+		this.changed();
 		// log('Path.addPathPoint', 'end');
 
 		return newPoint;
@@ -1120,40 +1116,6 @@ export class Path extends GlyphElement {
 			return this.pathPoints[0].p;
 		}
 	}
-
-	/*
-
-
-		TODO
-		UI stuff shouldn't be in glyph elements
-
-
-	*/
-	/**
-	 * Selects a point on this curve
-	 * @param {number} index - point to select
-	 * @returns {PathPoint} - reference to the selected point
-		 selectPathPoint(index) {
-			 index = parseInt(index);
-
-			 if (index === false) return false;
-
-			 if (index === -1) {
-				 index = this.pathPoints.length - 1;
-				} else {
-					index = Math.abs(index);
-				}
-
-				index = index % this.pathPoints.length;
-
-
-				if (getCurrentProjectEditor()) {
-					getCurrentProjectEditor().multiSelect.points.select(this.pathPoints[index]);
-				}
-
-				return this.pathPoints[index];
-			}
-		*/
 
 	// -----------------------------------------------------------------------------
 	// Calc Maxes

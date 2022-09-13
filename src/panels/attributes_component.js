@@ -11,7 +11,7 @@ function makeComponentsAttributesPanel(selectedComponent) {
 	<div class="panel__section">
 		<h3>component</h3>
 		<label>name</label>
-		<input type="text" value="${selectedComponent.name}" onchange="getSelectedWorkItem().name = this.value;"/>
+		<input type="text" value="${selectedComponent.name}" onchange="getSelectedItem().name = this.value;"/>
 
 		<h3>glyphs that use this component</h3>
 		${makeUsedInThumbs()}
@@ -22,7 +22,7 @@ function makeComponentsAttributesPanel(selectedComponent) {
 }
 
 export function makeUsedInThumbs() {
-	let ui = getSelectedWorkItem().usedIn;
+	let ui = getSelectedItem().usedIn;
 	let unique = ui.filter(function (elem, pos) {
 		return ui.indexOf(elem) === pos;
 	});

@@ -48,6 +48,11 @@ export function updateCursor(tool) {
 export function setCursor(name) {
 	// log('setCursor', 'start');
 	// log('passed ' + name);
+	if (document.body.style.cursor === name) {
+		// log('setCursor', 'end');
+		return;
+	}
+
 	const cur = [
 		'auto',
 		'default',

@@ -6,12 +6,13 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 import { makeActionButtonIcon } from './action-buttons.js';
+import { refreshPanel } from './panels.js';
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
 	let rowsArea = makeElement({className: 'panel__section full-width layer-panel__rows-area'});
 	let editor = getCurrentProjectEditor();
-	let selected = editor.selectedWorkItem;
+	let selected = editor.selectedItem;
 	let paths = selected.paths;
 
 	if (paths.length > 0) {
@@ -77,6 +78,13 @@ export function makePanel_Layers() {
 		}));
 	}
 
+	// Overall, watch for changes:
+	editor.subscribe({
+		topic: 'currentPath',
+		subscriberName: 'Layer panel',
+		callback: () => refreshPanel
+	});
+
 	let content = makeElement({className: 'panel__section full-width'});
 	content.appendChild(rowsArea);
 	content.appendChild(makeActionArea_Layers());
@@ -88,14 +96,14 @@ export function makePanel_Layers() {
 function selectPath(num) {
 	// log('selectPath', 'start');
 	// log('passed ' + num);
-	let wipaths = getSelectedWorkItemPaths();
-	// log('wipaths ' + wipaths);
+	let itemPaths = getSelectedItem.paths;
+	// log('itemPaths ' + itemPaths);
 
-	if (wipaths && wipaths[num]) {
-		if (projectEditor.eventhandlers.multi) projectEditor.multiSelect.paths.toggle(wipaths[num]);
+	if (itemPaths && itemPaths[num]) {
+		if (projectEditor.eventhandlers.multi) projectEditor.multiSelect.paths.toggle(itemPaths[num]);
 		else {
 			projectEditor.multiSelect.points.clear();
-			projectEditor.multiSelect.paths.select(wipaths[num]);
+			projectEditor.multiSelect.paths.select(itemPaths[num]);
 		}
 	} else {
 		projectEditor.multiSelect.paths.clear();
@@ -154,7 +162,7 @@ function makeActionArea_Layers() {
 		</button>
 	`;
 
-	let totalPaths = projectEditor.selectedWorkItem.paths.length;
+	let totalPaths = projectEditor.selectedItem.paths.length;
 	let content = `
 		<h3>Actions</h3>
 		<div class="actionsArea">
@@ -172,23 +180,23 @@ function makeActionArea_Layers() {
 // Move up / down
 // --------------------------------------------------------------
 function movePathUp() {
-	let wipaths = getSelectedWorkItemPaths();
-	let si = wipaths.indexOf(projectEditor.multiSelect.paths.singleton);
-	if (si > -1 && si < wipaths.length - 1) {
-		let temppath = wipaths[si + 1];
-		wipaths[si + 1] = wipaths[si];
-		wipaths[si] = temppath;
+	let itemPaths = getSelectedItem.paths;
+	let si = itemPaths.indexOf(projectEditor.multiSelect.paths.singleton);
+	if (si > -1 && si < itemPaths.length - 1) {
+		let temppath = itemPaths[si + 1];
+		itemPaths[si + 1] = itemPaths[si];
+		itemPaths[si] = temppath;
 		redraw({ calledBy: 'movePathUp' });
 	}
 }
 
 function movePathDown() {
-	let wipaths = getSelectedWorkItemPaths();
-	let si = wipaths.indexOf(projectEditor.multiSelect.paths.singleton);
-	if (si > 0 && si < wipaths.length) {
-		let temppath = wipaths[si - 1];
-		wipaths[si - 1] = wipaths[si];
-		wipaths[si] = temppath;
+	let itemPaths = getSelectedItem.paths;
+	let si = itemPaths.indexOf(projectEditor.multiSelect.paths.singleton);
+	if (si > 0 && si < itemPaths.length) {
+		let temppath = itemPaths[si - 1];
+		itemPaths[si - 1] = itemPaths[si];
+		itemPaths[si] = temppath;
 		redraw({ calledBy: 'movePathDown' });
 	}
 }

@@ -18,8 +18,8 @@ export function makeEditToolsButtons() {
 		return '';
 	}
 
-	if (!editor.selectedWorkItemID) {
-		// log('returning, !selectedWorkItemID');
+	if (!editor.selectedItemID) {
+		// log('returning, !selectedItemID');
 		// log('makeEditToolsButtons', 'end');
 		return '';
 	}
@@ -111,7 +111,7 @@ export function makeEditToolsButtons() {
 	const onGlyphEditPage = editor.nav.page === 'Glyph edit';
 	const onComponentPage = editor.nav.page === 'Components';
 	const onLigaturesPage = editor.nav.page === 'Ligatures';
-	const selectedWorkItem = editor.selectedWorkItem;
+	const selectedItem = editor.selectedItem;
 
 	if (onGlyphEditPage || onLigaturesPage) {
 		content.appendChild(toolButtonElements.newRectangle);
@@ -119,7 +119,7 @@ export function makeEditToolsButtons() {
 		content.appendChild(toolButtonElements.newPath);
 	}
 
-	if (onComponentPage && selectedWorkItem && !selectedWorkItem.path) {
+	if (onComponentPage && selectedItem && !selectedItem.pathPoints) {
 		content.appendChild(toolButtonElements.newRectangle);
 		content.appendChild(toolButtonElements.newOval);
 		content.appendChild(toolButtonElements.newPath);
@@ -310,8 +310,8 @@ export function makeContextGlyphControls() {
 // Button helper functions
 // --------------------------------------------------------------
 
-export function action_addPath(newPath){
-	// log(`action_addPath`, 'start');
+export function addPathToCurrentItem(newPath){
+	// log(`addPathToCurrentItem`, 'start');
 	// log(`name: ${ewPath.name}`);
 	// log(`objType: ${ewPath.objType}`);
 
@@ -320,25 +320,24 @@ export function action_addPath(newPath){
 		if(newPath.objType === 'ComponentInstance'){
 			// log(`is a Component instance`);
 			editor.selectedTool = 'pathEdit';
-		} else if(newPath.path && (editor.selectedTool === 'pathEdit')) {
-			// log(`triggered as true: newPath.path && editor.selectedTool == pathEdit \n\t NOT calling calcmaxes, okay?`);
+		} else if(newPath && (editor.selectedTool === 'pathEdit')) {
+			// log(`triggered as true: newPath && editor.selectedTool == pathEdit \n\t NOT calling calcmaxes, okay?`);
 			//newPath.recalculateMaxes();
 		}
 	} else {
 		// log(`passed null, creating new path.`);
 		newPath = new Path({});
-		newPath.name = ('Rectangle ' + ((editor.selectedWorkItemPaths.length*1)+1));
+		newPath.name = ('Rectangle ' + ((editor.selectedItemPaths.length*1)+1));
 	}
 
-	let sg = editor.selectedWorkItem;
+	let sg = editor.selectedItem;
 
 	sg.addOnePath(newPath);
-	editor.multiSelect.paths.select(newPath);
+
 	// TODO history
-	// glyphChanged(sg);
 
 	// log(`returns: ${ewPath.name}`);
-	// log(`action_addPath`, 'end');
+	// log(`addPathToCurrentItem`, 'end');
 	return newPath;
 }
 
@@ -368,12 +367,12 @@ export function addBasicPath(type){
 		pathtype = 'Rectangle ';
 	}
 
-	newPath.path = new Path({'pathPoints':parr});
-	newPath.name = (pathtype + getSelectedWorkItemPaths().length+1);
+	newPath = new Path({'pathPoints':parr});
+	newPath.name = (pathtype + getSelectedItem.paths.length+1);
 
-	getSelectedWorkItemPaths().push(newPath);
+	getSelectedItem.paths.push(newPath);
 	_UI.ms.paths.select(newPath);
-	updateCurrentGlyphWidth();
+	// updateCurrentGlyphWidth();
 }
 */
 
@@ -385,7 +384,7 @@ export function turnSelectedPathIntoAComponent(){
 	let newid = createNewComponent(new Glyph({'paths':s, 'name':n}));
 	insertComponentInstance(newid);
 	_UI.selectedToolName = 'pathEdit';
-	selectPath(getSelectedWorkItemPaths().length-1);
+	selectPath(getSelectedItem.paths.length-1);
 	redraw({calledby:'turnSelectedPathIntoAComponent'});
 }
 
@@ -395,7 +394,7 @@ export function getPathAtLocation(x,y){
 
 	let path;
 	let editor = getCurrentProjectEditor();
-	let sws = editor.selectedWorkItem?.paths;
+	let sws = editor.selectedItem?.paths;
 	// log(sws);
 	for(let j=(sws.length-1); j>=0; j--){
 		path = sws[j];

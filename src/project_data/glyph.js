@@ -391,6 +391,7 @@ export class Glyph extends GlyphElement {
 			newPath.parent = this;
 			this._paths.push(new Path(newPath));
 		}
+		this.changed();
 		// log(`Glyph.addOnePath`, 'end');
 		return this._paths.at(-1);
 	}

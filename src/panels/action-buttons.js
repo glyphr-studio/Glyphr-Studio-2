@@ -12,10 +12,10 @@ export function makeActionButton({
 	disabled = false,
 	onClick = false
 } = {}) {
-	log(`makeActionButton`, 'start');
-	log(`iconName: ${iconName}`);
-	log(`iconOptions: ${iconOptions}`);
-	log(`disabled: ${disabled}`);
+	// log(`makeActionButton`, 'start');
+	// log(`iconName: ${iconName}`);
+	// log(`iconOptions: ${iconOptions}`);
+	// log(`disabled: ${disabled}`);
 
 	let newButton = makeElement({
 		tag: 'button',
@@ -28,7 +28,7 @@ export function makeActionButton({
 	if(onClick) newButton.addEventListener('click', onClick);
 	if(disabled) newButton.setAttribute('disabled', 'true');
 
-	log(`makeActionButton`, 'end');
+	// log(`makeActionButton`, 'end');
 	return newButton;
 }
 

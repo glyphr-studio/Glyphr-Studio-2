@@ -89,8 +89,7 @@ function isOverGlyphControlPoint(glyph, x, y, noHandles) {
 	let re = false;
 	for (let s = 0; s < glyph.paths.length; s++) {
 		if (glyph.paths[s].objType !== 'ComponentInstance') {
-			re = isOverPathControlPoint(glyph.paths[s].path,
-				x, y, noHandles);
+			re = isOverPathControlPoint(glyph.paths[s], x, y, noHandles);
 			if (re) return re;
 		}
 	}
@@ -160,13 +159,26 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
  */
 function drawPathToCanvas(path, ctx, view, snap = true) {
 	// log('drawPath', 'start');
+	// log(ctx);
+
 	// log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
+	// log(path);
 
 	// let currView = getView('drawPath');
 	// view = view || clone(currView);
 	// setView(view);
 
-	if (path.pathPoints === false || path.pathPoints.length < 2) return;
+	if (!path?.pathPoints || path.pathPoints === false) {
+		// log(`path.pathPoints does not exist`);
+		// log('drawPath', 'end');
+		return;
+	}
+
+	if (path.pathPoints.length < 2) {
+		// log(`only one point in the path`);
+		// log('drawPath', 'end');
+		return;
+	}
 
 	let pp;
 	let np;

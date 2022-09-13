@@ -143,8 +143,8 @@ export class EditCanvas extends HTMLElement {
 		}
 
 		// Draw temporary new paths
-		if(eventHandlerData.tempNewBasicPath) {
-			drawPath(eventHandlerData.tempNewBasicPath, ctx, view);
+		if(eventHandlerData.newBasicPathMaxes) {
+			drawPath(eventHandlerData.newBasicPathMaxes, ctx, view);
 		}
 
 		log('EditCanvas.redraw', 'end');

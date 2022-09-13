@@ -24,7 +24,7 @@ export function makePanel_Actions() {
 		innerHTML: '<h3>actions</h3>'
 	});
 
-	if (!projectEditor.selectedWorkItem) {
+	if (!projectEditor.selectedItem) {
 	  return panelSection.appendChild(
 			makeElement({
 				tag: 'h2',
@@ -341,7 +341,7 @@ function combineAllGlyphPaths() {
 	showToast('Combining all glyph paths... ', 100);
 
 	setTimeout(function () {
-		getSelectedWorkItem().combineAllPaths(true);
+		getSelectedItem().combineAllPaths(true);
 		historyPut('combine all glyph paths');
 		redraw({ calledBy: 'actions panel' });
 	}, 200);
@@ -368,7 +368,7 @@ function pastePath() {
 	// log('pastePath', 'start');
 	let cbs = _UI.clipboardPath;
 	// log(cbs);
-	let selwi = getSelectedWorkItemID();
+	let selwi = getSelectedItemID();
 
 	if (cbs) {
 		let newPaths = [];
@@ -421,7 +421,7 @@ function pastePath() {
 			ts.name = newname + newsuffix;
 
 			if (ts.objType === 'ComponentInstance') {
-				getGlyph(ts.link).addToUsedIn(getSelectedWorkItemID);
+				getGlyph(ts.link).addToUsedIn(getSelectedItemID);
 				// _UI.selectedGlyph.addToUsedIn(ts.link);
 				// log("PASTESHAPE - pasted a component, added " + _UI.selectedGlyph + " to usedIn array.");
 			}
@@ -510,7 +510,7 @@ function initGetPathsDialogOptions(type) {
 }
 
 function pastePathsFrom(sourceGlyphID) {
-	let destinationGlyphID = getSelectedWorkItemID();
+	let destinationGlyphID = getSelectedItemID();
 	let sourceGlyph = getGlyph(sourceGlyphID);
 	// TODO hook up options
 	let options = false;
@@ -524,7 +524,7 @@ function pastePathsFrom(sourceGlyphID) {
 			'Copied paths from "' +
 				getGlyphName(sourceGlyphID) +
 				'" to  "' +
-				getSelectedWorkItemName()
+				getSelectedItemName()
 		);
 		if (_UI.selectedTool === 'pathAddPoint') _UI.selectedTool = 'pathEdit';
 		closeDialog();
@@ -587,7 +587,7 @@ export function copyPathsFromTo(
 // --------------------------------------------------------------
 
 function showDialogLinkComponentToGlyph(msg) {
-	let sls = getSelectedWorkItem();
+	let sls = getSelectedItem();
 	let content = '<h1>Link to Glyph</h1>';
 	content += 'Select a Glyph you would like to link to this Component.<br><br>';
 	content += msg
@@ -611,7 +611,7 @@ function linkComponentToGlyph(id) {
 	if (insertComponentInstance(_UI.selectedComponent, id)) {
 		showDialogLinkComponentToGlyph(
 			'The Component "' +
-				getSelectedWorkItem().name +
+				getSelectedItem().name +
 				'" was successfully linked to Glyph "' +
 				getGlyphName(id) +
 				'".<br><br>'

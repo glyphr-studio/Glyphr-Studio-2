@@ -72,7 +72,7 @@ export class Tool_Resize {
 		};
 
 		this.mousemove = function (ev) {
-			// log(`Tool_Resize.mousemove`, 'start');
+			log(`Tool_Resize.mousemove`, 'start');
 
 			let eh = eventHandlerData;
 			let editor = getCurrentProjectEditor();
@@ -86,7 +86,7 @@ export class Tool_Resize {
 			let dy = (eh.lastY - eh.mouseY) / dz || 0;
 
 			if (this.dragging) {
-				// log('Tool_Resize.mousemove - dragging');
+				log('detected DRAGGING');
 				let cur = 'arrowSquare';
 
 				if (this.clickedPath) {
@@ -114,44 +114,51 @@ export class Tool_Resize {
 				editor.multiSelect.paths.updatePathPosition(dx, dy);
 				this.didStuff = true;
 				setCursor(cur);
+
 			} else if (this.resizing) {
-				// log('Tool_Resize.mousemove - resizing');
+				log('detected RESIZING');
 				eventHandler_PathResize();
 				this.didStuff = true;
-			} else if (this.rotating) {
-				let a1 = calculateAngle(
-					{ x: cXsX(eh.mouseX), y: cYsY(eh.mouseY) },
-					eh.rotationCenter
-				), a2 = calculateAngle(
-					{ x: cXsX(eh.lastX), y: cYsY(eh.lastY) },
-					eh.rotationCenter
-				);
 
+			} else if (this.rotating) {
+				log(`detected ROTATING`);
+				let a1 = calculateAngle({ x: cXsX(eh.mouseX), y: cYsY(eh.mouseY) }, eh.rotationCenter);
+				let a2 = calculateAngle({ x: cXsX(eh.lastX), y: cYsY(eh.lastY) }, eh.rotationCenter);
 				editor.multiSelect.paths.rotate(a1 - a2, eh.rotationCenter);
 				this.didStuff = true;
 				setCursor('rotate');
+
 			} else if (corner) {
-				// log('Tool_Resize.mousemove - corner ' + corner);
+				log(`detected CORNER HOVER ${corner}`);
 				// hovering over a corner
 				setCursor(corner);
+
 			} else if (eh.multi) {
+				log(`detected MULTI-SELECT`);
 				setCursor('arrowPlus');
+
 			} else if (getPathAtLocation(eh.mouseX, eh.mouseY)) {
+				log(`detected PATH HOVER`);
 				setCursor('arrowSquare');
+
 			} else {
-				// log('Tool_Resize.mousemove - fallthrough else');
+				log('detected NOTHING');
 				setCursor('arrow');
 			}
 
-			checkForMouseOverHotspot(eh.mouseX, eh.mouseY);
+			// checkForMouseOverHotspot(eh.mouseX, eh.mouseY);
 
 			if (this.didStuff) {
+				log('did stuff');
 				eh.lastX = eh.mouseX;
 				eh.lastY = eh.mouseY;
 				eh.undoQueueHasChanged = true;
 				editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_Resize mousemove' });
+			} else {
+				log(`did NOT do stuff`);
 			}
-			// log(`Tool_Resize.mousemove`, 'end');
+
+			log(`Tool_Resize.mousemove`, 'end');
 		};
 
 		this.mouseup = function () {
@@ -160,8 +167,8 @@ export class Tool_Resize {
 			let editor = getCurrentProjectEditor();
 
 			// New Basic Path
-			if (eh.tempNewBasicPath) {
-				eh.tempNewBasicPath = false;
+			if (eh.newBasicPathMaxes) {
+				eh.newBasicPathMaxes = false;
 				eh.lastX = eh.firstX;
 				eh.lastY = eh.firstY;
 				eventHandler_PathResize();
