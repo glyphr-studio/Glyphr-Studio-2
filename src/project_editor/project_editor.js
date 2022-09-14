@@ -104,12 +104,12 @@ export class ProjectEditor {
 	 * Sends a new piece of data concerning a topic area that
 	 * triggers changes for subscribers
 	 * @param {string} topic - keyword to trigger changes
-	 * 		'whichToolIsSelected' - change to which edit tool is selected
-	 * 		'view' - change to the edit canvas view
-	 * 		'whichGlyphIsSelected' - change to which glyph is being edited
-	 * 		'whichPathIsSelected' - change to which path is being edited
-	 * 		'currentGlyph' - edits to the current glyph
-	 * 		'currentPath' - edits to the current path
+	 * 		'view' - change to the edit canvas view.
+	 * 		'whichToolIsSelected' - change to which edit tool is selected.
+	 * 		'whichGlyphIsSelected' - change to which glyph is being edited.
+	 * 		'whichPathIsSelected' - change to which path is being edited.
+	 * 		'currentGlyph' - edits to the current glyph.
+	 * 		'currentPath' - edits to the current path.
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
@@ -145,6 +145,12 @@ export class ProjectEditor {
 	 * Sets up an intent to listen for changes based on a keyword, and
 	 * provides a callback function in case a change is published
 	 * @param {string or array} topic - what keyword to listen for
+	 * 		'view' - change to the edit canvas view.
+	 * 		'whichToolIsSelected' - change to which edit tool is selected.
+	 * 		'whichGlyphIsSelected' - change to which glyph is being edited.
+	 * 		'whichPathIsSelected' - change to which path is being edited.
+	 * 		'currentGlyph' - edits to the current glyph.
+	 * 		'currentPath' - edits to the current path.
 	 * @param {string} subscriberName - the name of the thing listening
 	 * @param {function} callback - what to do when a change is triggered
 	 * @returns nothing

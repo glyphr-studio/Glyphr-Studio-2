@@ -48,7 +48,7 @@ export function drawGlyph(
 	ctx.beginPath();
 	for (let j = 0; j < sl.length; j++) {
 		path = sl[j];
-		// log(`${glyph.name} drawing ${path.objType} ${j} ${path.name}`);
+		// log(`${glyph.name} drawing ${path.objType} #${j} "${path.name}"`);
 		drewPath = drawPath(path, ctx, view);
 		if (!drewPath) {
 			console.warn('Could not draw path ' + path.name + ' in Glyph ' + glyph.name);
@@ -169,15 +169,15 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 	// setView(view);
 
 	if (!path?.pathPoints || path.pathPoints === false) {
-		// log(`path.pathPoints does not exist`);
+		// log(`RETURNING FALSE: path.pathPoints does not exist`);
 		// log('drawPath', 'end');
-		return;
+		return false;
 	}
 
 	if (path.pathPoints.length < 2) {
-		// log(`only one point in the path`);
+		// log(`RETURNING FALSE: ${path.pathPoints.length} points in the path`);
 		// log('drawPath', 'end');
-		return;
+		return false;
 	}
 
 	let pp;
@@ -224,21 +224,21 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 }
 
 function isOverPathControlPoint(path, x, y, noHandles){
-	log(`isOverPathControlPoint`, 'start');
-	log(path);
+	// log(`isOverPathControlPoint`, 'start');
+	// log(path);
 	let pp = path.pathPoints || [];
 	let re = false;
 
 	for(let k=pp.length-1; k>=0; k--){
 		re = pp[k].isOverControlPoint(x, y, noHandles);
-		log(`returning`);
-		log(re);
-		log(`isOverPathControlPoint`, 'end');
+		// log(`returning`);
+		// log(re);
+		// log(`isOverPathControlPoint`, 'end');
 		if(re) return re;
 	}
 
-	log(`returning false`);
-	log(`isOverPathControlPoint`, 'end');
+	// log(`returning false`);
+	// log(`isOverPathControlPoint`, 'end');
 	return false;
 }
 

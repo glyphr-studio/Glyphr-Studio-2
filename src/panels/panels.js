@@ -38,7 +38,11 @@ export function makePanel() {
  * Refreshes the panel area in the current document
  */
 export function refreshPanel() {
-	let panelArea = document.getElementById('left-area__panel');
+	log(`refreshPanel`, 'start');
+	let panelArea = document.querySelector('.left-area__panel');
 	panelArea.innerHTML = '';
-	panelArea.appendChild(makePanel());
+	let newContent = makePanel();
+	log(newContent);
+	panelArea.appendChild(newContent);
+	log(`refreshPanel`, 'end');
 }
