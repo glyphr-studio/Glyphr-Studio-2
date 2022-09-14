@@ -1,10 +1,11 @@
 import { makeElement } from '../common/dom.js';
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events_mouse.js';
 import { drawGlyph, drawPath } from './draw_paths.js';
-import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles } from './draw_edit_affordances.js';
+import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, drawBoundingBox } from './draw_edit_affordances.js';
+import { rectPathFromMaxes } from './tools/new-basic-path.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -144,7 +145,15 @@ export class EditCanvas extends HTMLElement {
 
 		// Draw temporary new paths
 		if(eventHandlerData.newBasicPathMaxes) {
-			drawPath(eventHandlerData.newBasicPathMaxes, ctx, view);
+			log(`Drawing new temporary basic path`);
+			let newMaxes = eventHandlerData.newBasicPathMaxes;
+			let tempPath = rectPathFromMaxes(newMaxes, 'DRAGGING NEW PATH');
+			ctx.beginPath();
+			drawPath(tempPath, ctx, view);
+			ctx.closePath();
+			ctx.fillStyle = '#000';
+			ctx.fill();
+			drawBoundingBox(ctx, newMaxes, 1);
 		}
 
 		log('EditCanvas.redraw', 'end');

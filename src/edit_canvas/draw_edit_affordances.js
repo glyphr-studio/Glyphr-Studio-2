@@ -59,7 +59,7 @@ export function computeAndDrawBoundingBoxHandles(ctx) {
 // Bounding Box
 // --------------------------------------------------------------
 
-function drawBoundingBox(ctx, maxes, thickness) {
+export function drawBoundingBox(ctx, maxes, thickness) {
 	// log(`drawBoundingBox`, 'start');
 	// log(`thickness: ${thickness}`);
 	// log(maxes);
@@ -81,7 +81,7 @@ function drawBoundingBox(ctx, maxes, thickness) {
 	let h = (by-ty);
 
 	ctx.fillStyle = 'transparent';
-	ctx.strokeStyle = accent.l65;
+	ctx.strokeStyle = accent;
 	ctx.lineWidth = thickness;
 	ctx.strokeRect(lx,ty,w,h);
 	// log(`drawBoundingBox`, 'end');

@@ -339,24 +339,23 @@ export class MultiSelectPaths extends MultiSelect {
 		// log('deletePath', 'start');
 		let editor = getCurrentProjectEditor();
 		const itemPaths = editor.selectedItem.paths;
-		const sels = this.members;
-		let curs;
-		let i;
+		let path;
+		let index;
 
-		if (sels.length === 0) clear();
+		if (this.members.length === 0) clear();
 		else {
-			for (let s = 0; s < sels.length; s++) {
-				curs = sels[s];
+			for (let s = 0; s < this.members.length; s++) {
+				path = this.members[s];
 
-				if (curs.objType === 'ComponentInstance') {
-					removeFromUsedIn(curs.link, editor.selectedGlyph);
+				if (path.objType === 'ComponentInstance') {
+					removeFromUsedIn(path.link, editor.selectedGlyph);
 				}
 
-				i = itemPaths.indexOf(curs);
-				if (i > -1) itemPaths.splice(i, 1);
+				index = itemPaths.indexOf(path);
+				if (index > -1) itemPaths.splice(index, 1);
 			}
 
-			this.select(itemPaths[i] || itemPaths[itemPaths.length - 1]);
+			this.select(itemPaths.at(-1));
 		}
 
 		// TODO publish change
