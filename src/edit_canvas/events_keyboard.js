@@ -6,7 +6,7 @@
 const { getGlyphrStudioApp } = require("../app/main");
 
 function keyup(event) {
-	let eh = _UI.eventhandlers;
+	let eh = _UI.eventHandlers;
 	// log('eh.lastTool = ' + eh.lastTool);
 
 	eh.isShiftDown = false;
@@ -47,7 +47,7 @@ function keypress(event) {
 	if (editor.nav.page === 'openproject') return;
 	if (getEditDocument().activeElement.id === 'contextglyphsinput') return;
 
-	let eh = _UI.eventhandlers;
+	let eh = _UI.eventHandlers;
 	let overcanvas = eh.ismouseovercec;
 	let kc = getKeyFromEvent(event);
 	let isCtrlDown = event.ctrlKey || event.metaKey || event.which == 17;
@@ -300,7 +300,7 @@ function getKeyFromEvent(event) {
 function nudge(dx, dy, ev) {
 	if (ev.ctrlKey) return;
 
-	let multiplyer = _UI.eventhandlers.isShiftDown ? 10 : 1;
+	let multiplyer = _UI.eventHandlers.isShiftDown ? 10 : 1;
 
 	let mx = dx * multiplyer;
 	let my = dy * multiplyer;

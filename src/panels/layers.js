@@ -5,6 +5,7 @@
 
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
+import { eventHandlerData } from '../edit_canvas/events_mouse.js';
 import { makeActionButtonIcon } from './action-buttons.js';
 import { refreshPanel } from './panels.js';
 
@@ -14,6 +15,24 @@ export function makePanel_Layers() {
 	let editor = getCurrentProjectEditor();
 	let selected = editor.selectedItem;
 	let paths = selected.paths;
+
+	if(eventHandlerData.newBasicPath) {
+		let path = eventHandlerData.newBasicPath;
+		let row = makeElement();
+		row.setAttribute('class', 'layer-panel__row layer-panel__path');
+		row.classList.add('layer-panel__selected');
+		row.appendChild(makeElement({
+			className: 'layer-panel__layer-thumb',
+			innerHTML: path.makeSVG()
+		}));
+
+		row.appendChild(makeElement({
+			className: 'layer-panel__layer-name',
+			innerHTML: path.name
+		}));
+
+		rowsArea.appendChild(row);
+	}
 
 	if (paths.length > 0) {
 		for (let i = paths.length - 1; i >= 0; i--) {
@@ -80,9 +99,9 @@ export function makePanel_Layers() {
 
 	// Overall, watch for changes:
 	editor.subscribe({
-		topic: 'currentPath',
+		topic: ['currentPath', 'currentGlyph'],
 		subscriberName: 'Layer panel',
-		callback: () => refreshPanel
+		callback: () => { refreshPanel(); }
 	});
 
 	let content = makeElement({className: 'panel__section full-width'});
@@ -100,7 +119,7 @@ function selectPath(num) {
 	// log('itemPaths ' + itemPaths);
 
 	if (itemPaths && itemPaths[num]) {
-		if (projectEditor.eventhandlers.multi) projectEditor.multiSelect.paths.toggle(itemPaths[num]);
+		if (projectEditor.eventHandlers.multi) projectEditor.multiSelect.paths.toggle(itemPaths[num]);
 		else {
 			projectEditor.multiSelect.points.clear();
 			projectEditor.multiSelect.paths.select(itemPaths[num]);
@@ -183,9 +202,9 @@ function movePathUp() {
 	let itemPaths = getSelectedItem.paths;
 	let si = itemPaths.indexOf(projectEditor.multiSelect.paths.singleton);
 	if (si > -1 && si < itemPaths.length - 1) {
-		let temppath = itemPaths[si + 1];
+		let tempPath = itemPaths[si + 1];
 		itemPaths[si + 1] = itemPaths[si];
-		itemPaths[si] = temppath;
+		itemPaths[si] = tempPath;
 		redraw({ calledBy: 'movePathUp' });
 	}
 }
@@ -194,9 +213,9 @@ function movePathDown() {
 	let itemPaths = getSelectedItem.paths;
 	let si = itemPaths.indexOf(projectEditor.multiSelect.paths.singleton);
 	if (si > 0 && si < itemPaths.length) {
-		let temppath = itemPaths[si - 1];
+		let tempPath = itemPaths[si - 1];
 		itemPaths[si - 1] = itemPaths[si];
-		itemPaths[si] = temppath;
+		itemPaths[si] = tempPath;
 		redraw({ calledBy: 'movePathDown' });
 	}
 }

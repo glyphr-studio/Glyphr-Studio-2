@@ -18,6 +18,7 @@ import { Tool_Kern}  from './tools/kern.js';
 export let eventHandlerData = {
 	currentToolHandler: false,
 	newBasicPathMaxes: false,
+	newBasicPath: false,
 	dragSelectArea: false,
 	mouseX: 0,
 	mouseY: 0,
@@ -241,8 +242,6 @@ function eventHandler_PathResize() {
 			break;
 	}
 
-	// if(!eventHandlerData.newBasicPathMaxes) s.recalculateMaxes();
-
 	// log('eventHandler_PathResize - Done lx/rx/ty/by: ' + s.maxes.xMin + ',' + s.maxes.xMax + ',' + s.maxes.yMax + ',' + s.maxes.yMin);
 }
 
@@ -267,14 +266,6 @@ export function checkForMouseOverHotspot(x, y) {
 			});
 		eventHandlerData.canvasHotSpotHovering = false;
 	}
-}
-
-function updateTNBS(dx, dy, dw, dh) {
-	// log('updateTNBS dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
-	eventHandlerData.newBasicPathMaxes.xMin += dx;
-	eventHandlerData.newBasicPathMaxes.yMax += dy;
-	eventHandlerData.newBasicPathMaxes.xMax += dw + dx;
-	eventHandlerData.newBasicPathMaxes.yMin += dh + dy;
 }
 
 function updateDragSelectArea(dx, dy, dw, dh) {

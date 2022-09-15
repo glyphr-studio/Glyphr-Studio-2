@@ -4,8 +4,8 @@ import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events_mouse.js';
 import { drawGlyph, drawPath } from './draw_paths.js';
-import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, drawBoundingBox } from './draw_edit_affordances.js';
-import { rectPathFromMaxes } from './tools/new-basic-path.js';
+import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, drawBoundingBox, drawNewBasicPath, drawPathPointHover, drawSelectedPathOutline } from './draw_edit_affordances.js';
+import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new-basic-path.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -24,7 +24,7 @@ export class EditCanvas extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		log(`EditCanvas.constructor`, 'start');
+		// log(`EditCanvas.constructor`, 'start');
 
 		super();
 
@@ -68,7 +68,7 @@ export class EditCanvas extends HTMLElement {
 		});
 
 		// this.redraw();
-		log(`EditCanvas.constructor`, 'end');
+		// log(`EditCanvas.constructor`, 'end');
 	}
 
 	/**
@@ -78,8 +78,8 @@ export class EditCanvas extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		log(`EditCanvas.attributeChangeCallback`, 'start');
-		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		// log(`EditCanvas.attributeChangeCallback`, 'start');
+		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		switch (attributeName) {
 			case 'glyphs':
@@ -87,7 +87,7 @@ export class EditCanvas extends HTMLElement {
 				this.redraw({calledBy: 'EditCanvas.attributeChangeCallback - attribute: glyphs'});
 				break;
 		}
-		log(`EditCanvas.attributeChangeCallback`, 'end');
+		// log(`EditCanvas.attributeChangeCallback`, 'end');
 	}
 
 
@@ -96,7 +96,7 @@ export class EditCanvas extends HTMLElement {
 	// Redraw the canvas
 	// --------------------------------------------------------------
 	redraw(oa = {}) {
-		log('EditCanvas.redraw', 'start');
+		// log('EditCanvas.redraw', 'start');
 		if(oa?.calledBy) log(`==CALLED BY ${oa.calledBy}==`);
 		let editor = getCurrentProjectEditor();
 		let ctx = this.ctx;
@@ -106,12 +106,16 @@ export class EditCanvas extends HTMLElement {
 		// Current Glyph
 		let glyphHex = glyphToHex(this.glyphs.charAt(0));
 		let sg = editor.project.getGlyph(glyphHex);
-		log(sg);
+		// log(sg);
 
 		// Grid
+		let width = sg.width;
+		if(eventHandlerData.newBasicPathMaxes){
+			width = Math.max(width, eventHandlerData.newBasicPathMaxes.xMax);
+		}
 		ctx.fillStyle = accentColors.gray.l90;
 		ctx.fillRect(view.dx, 0, 1, 1000);
-		ctx.fillRect(view.dx + (sg.width * view.dz), 0, 1, 1000);
+		ctx.fillRect(view.dx + (width * view.dz), 0, 1, 1000);
 		ctx.fillRect(0, view.dy, 1000, 1);
 
 		// Draw glyphs
@@ -119,9 +123,10 @@ export class EditCanvas extends HTMLElement {
 
 		// Draw selected path / path
 		let editMode = editor.selectedTool;
-		log(`editMode: ${editMode}`);
+		// log(`editMode: ${editMode}`);
 
 		if (editMode === 'resize') {
+			drawSelectedPathOutline(ctx, view);
 			computeAndDrawBoundingBox(ctx);
 			computeAndDrawBoundingBoxHandles(ctx);
 
@@ -131,12 +136,7 @@ export class EditCanvas extends HTMLElement {
 		} else if (editMode === 'pathEdit') {
 			computeAndDrawPathPointHandles(ctx);
 			computeAndDrawPathPoints(ctx);
-
-			if (eventHandlerData.hoverPoint) {
-				let hp = eventHandlerData.hoverPoint;
-				ctx.fillStyle = hp.fill;
-				ctx.fillRect(hp.x, hp.y, hp.size, hp.size);
-			}
+			drawPathPointHover(ctx, eventHandlerData.hoverPoint);
 
 		} else if (editMode === 'newPath') {
 			computeAndDrawPathPointHandles(ctx);
@@ -144,19 +144,11 @@ export class EditCanvas extends HTMLElement {
 		}
 
 		// Draw temporary new paths
-		if(eventHandlerData.newBasicPathMaxes) {
-			log(`Drawing new temporary basic path`);
-			let newMaxes = eventHandlerData.newBasicPathMaxes;
-			let tempPath = rectPathFromMaxes(newMaxes, 'DRAGGING NEW PATH');
-			ctx.beginPath();
-			drawPath(tempPath, ctx, view);
-			ctx.closePath();
-			ctx.fillStyle = '#000';
-			ctx.fill();
-			drawBoundingBox(ctx, newMaxes, 1);
+		if(eventHandlerData.newBasicPath) {
+			drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
 		}
 
-		log('EditCanvas.redraw', 'end');
+		// log('EditCanvas.redraw', 'end');
 	}
 }
 
