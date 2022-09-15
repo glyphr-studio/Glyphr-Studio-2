@@ -72,7 +72,7 @@
 	padding: 0px;
 	border-radius: 0px 0px 4px 4px;
 	border-width: 4px 0px 0px 0px;
-	max-height: 90%;
+	max-height: calc(100% - 95px);
 	overflow-x: hidden;
 	overflow-y: auto;
 }

@@ -1,19 +1,9 @@
-.overview__page {
-	display: grid;
-	height: calc(100% - 10px);
-	width: 100%;
-	min-height: 100%;
-	min-width: 100%;
-	grid-template-columns: 460px 1fr;
-	column-gap: 10px;
-	padding: 0px 10px 10px 10px;
-}
-
 .overview__left-area {
 	grid-column: 1;
 	display: grid;
 	grid-template-rows: min-content max-content;
 	row-gap: 2px;
+	width: 100%;
 }
 
 .overview__nav-area {

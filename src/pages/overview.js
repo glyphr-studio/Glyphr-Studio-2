@@ -27,7 +27,7 @@ export class PageOverview {
 			tag: 'div',
 			id: 'app__page',
 			innerHTML: `
-			<div class="overview__page">
+			<div class="editor__page">
 				<div class="overview__left-area">
 					<div class="overview__nav-area">
 						${makeNavButton({level: 'l1', superTitle: 'PAGE', title: 'Overview'})}

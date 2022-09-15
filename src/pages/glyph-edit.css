@@ -1,18 +1,8 @@
-.glyph-edit__page {
-	display: grid;
-	height: calc(100% - 10px);
-	width: 100%;
-	min-height: 100%;
-	min-width: 100%;
-	grid-template-columns: 1fr 40px 4fr;
-	column-gap: 10px;
-	padding: 0px 10px 10px 10px;
-}
-
 .glyph-edit__left-area {
 	grid-column: 1;
 	min-width: 1fr;
 	display: grid;
+	height: 100%;
 	grid-template-rows: min-content max-content;
 	row-gap: 2px;
 }
@@ -35,9 +25,16 @@
 }
 
 .glyph-edit__zoom-area {
-	position: absolute;
-	right: 15px;
-	bottom: 14px;
+	display: none;
+}
+
+@media (min-width: 810px) {
+	.glyph-edit__zoom-area {
+		display: block;
+		position: absolute;
+		right: 15px;
+		bottom: 14px;
+	}
 }
 
 .glyph-edit__zoom-area span {
@@ -57,6 +54,7 @@
 	grid-column: 3;
 	border-radius: 4px;
 	width: 100%;
+	height: 100%;
 	overflow: hidden;
 	box-shadow: var(--l3-shadow);
 }
