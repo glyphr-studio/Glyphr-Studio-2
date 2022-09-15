@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeChooserContent_Glyphs, makeChooserContent_Pages, makeChooserContent_Panels } from '../panels/panel-choosers.js';
 
 
@@ -71,7 +71,7 @@ export function showNavDropdown(parentElement) {
 		`}
 	});
 
-	dropDown.appendChild(dropdownContent);
+	addAsChildren(dropDown, dropdownContent);
 	log(`dropDown:`);
 	log(dropDown);
 	closeAllDialogs();

@@ -34,7 +34,7 @@ export class PageGlyphEdit {
 			tag: 'div',
 			id: 'app__page',
 			innerHTML: `
-			<div class="glyph-edit__page">
+			<div class="editor__page">
 				<div class="glyph-edit__left-area">
 					<div class="glyph-edit__nav-area">
 						${makeNavButton({level: 'l1', superTitle: 'PAGE', title: 'Glyph edit'})}

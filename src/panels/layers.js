@@ -104,12 +104,8 @@ export function makePanel_Layers() {
 		callback: () => { refreshPanel(); }
 	});
 
-	let content = makeElement({className: 'panel__card full-width'});
-	content.appendChild(rowsArea);
-	content.appendChild(makeActionArea_Layers());
-
 	// log(`makePanel_Layers`, 'end');
-	return content;
+	return [rowsArea, makeActionArea_Layers()];
 }
 
 function selectPath(num) {

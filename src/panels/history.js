@@ -8,27 +8,23 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 
 export function makePanel_History() {
-	let projectEditor = getCurrentProjectEditor();
-	let content = '<div class="panel__card">';
+	let editor = getCurrentProjectEditor();
+	let historyArea = makeElement({className: 'panel__card'});
 
-	content += projectEditor.nav.page;
+	// TODO history
+	// let q = editor.history[editor.nav.page].queue;
+	let q = {length: 0};
 
-	content += '<h2>Edit history</h2>';
+	let undoButton = makeElement({
+		tag: 'button',
+		className: (q.length > 0 ? 'button__call-to-action' : 'button__disabled'),
+		innerHTML: `undo ${q.length}`
+	});
+	undoButton.addEventListener('click', () => {});
 
-	let q = editor.history[editor.nav.page].queue;
+	historyArea.appendChild(undoButton);
 
-	content += '</div><div class="panel__card">';
-
-	// log("MAKEPANEL_HISTORY - rolling out queue\n" + json(q));
-
-	content +=
-		'<button style="width:100px;" class="' +
-		(q.length > 0 ? 'button__call-to-action' : 'button__disabled') +
-		'" onclick="historyPull();">';
-	content += 'undo' + (q.length > 0 ? ' (' + q.length + ')' : '');
-	content += '</button><br>';
-	content += '<table class="detail">';
-
+	/*
 	let te;
 	let currname = '';
 	for (let e = q.length - 1; e >= 0; e--) {
@@ -63,6 +59,7 @@ export function makePanel_History() {
 
 	content += '</table>';
 	content += '</div>';
+	*/
 
-	return makeElement({content: content});
+	return historyArea;
 }

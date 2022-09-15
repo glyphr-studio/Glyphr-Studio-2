@@ -22,11 +22,11 @@ export function makePanel() {
 	if(panel === 'Attributes') {
 		addAsChildren(content, makePanel_GlyphAttributes());
 	} else if (panel === 'Layers') {
-		content.appendChild(makePanel_Layers());
+		addAsChildren(content, makePanel_Layers());
 	} else if (panel === 'History') {
-		content.appendChild(makePanel_History());
+		addAsChildren(content, makePanel_History());
 	} else if (panel === 'Guides') {
-		content.appendChild(makePanel_Guides());
+		addAsChildren(content, makePanel_Guides());
 	}
 
 	log(`makePanel`, 'end');

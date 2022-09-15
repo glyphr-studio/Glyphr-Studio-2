@@ -1,8 +1,9 @@
 .left-area__panel {
 	grid-row: 3;
 	width: 450px;
+	height: 100%;
 	overflow-y: auto;
-	overflow-x: visible;
+	overflow-x: hidden;
 }
 
 .panel__card {
@@ -15,7 +16,7 @@
 	margin-bottom: 5px;
 
 	border: 1px solid var(--blue-l85);
-	padding: 10px;
+	padding: 10px 10px 15px 10px;
 	background-color: var(--offWhite);
 	border-radius: 4px;
 	box-shadow: var(--l2-shadow);
@@ -70,10 +71,15 @@
 	padding-top: 6px;
 }
 
+:root {
+	--action-icon-size: 36px;
+}
+
 .panel__actions-area {
 	grid-column: 1 / -1;
 	display: grid;
-	grid-template-columns: repeat(8, 42px);
+	grid-template-columns: repeat(10, var(--action-icon-size));
+	grid-template-rows: var(--action-icon-size);
 	gap: 5px;
 }
 
@@ -84,8 +90,8 @@
 .panel__actions-area button {
 	background-color: var(--gray-l95);
 	color: var(--gray-l60);
-	padding: 5px;
-	height: 42px;
+	padding: 4px;
+	height: 100%;
 }
 
 .panel__actions-area button:disabled {
