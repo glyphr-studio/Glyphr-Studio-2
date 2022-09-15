@@ -19,7 +19,7 @@ export function makePanel_Layers() {
 	if(eventHandlerData.newBasicPath) {
 		let path = eventHandlerData.newBasicPath;
 		let row = makeElement();
-		row.setAttribute('class', 'layer-panel__row layer-panel__path');
+		row.setAttribute('class', 'layer-panel__row layer-panel__path layer-panel__new-path');
 		row.classList.add('layer-panel__selected');
 		row.appendChild(makeElement({
 			className: 'layer-panel__layer-thumb',
