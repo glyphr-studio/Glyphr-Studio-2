@@ -124,6 +124,19 @@
 	align-items: center;
 }
 
+.layer-panel__new-path {
+	opacity: 0.4;
+	font-style: italic;
+}
+/*
+.layer-panel__path {
+
+}
+
+.layer-panel__component {
+
+}
+*/
 .layer-panel__selected {
 	border-right-width: 8px;
 	border-right-color: var(--blue-l60);

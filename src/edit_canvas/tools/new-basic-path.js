@@ -30,10 +30,10 @@ export class Tool_NewBasicPath {
 			// while dragging is happening
 			if (editor.selectedTool === 'newOval') {
 				// log(`making Oval path`);
-				ehd.newBasicPath = ovalPathFromMaxes(ehd.newBasicPathMaxes, `New Oval`);
+				ehd.newBasicPath = ovalPathFromMaxes(ehd.newBasicPathMaxes, `New oval`);
 			} else {
 				// log(`making Rectangle path`);
-				ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New Rectangle`);
+				ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New rectangle`);
 			}
 
 			this.dragging = true;
@@ -65,10 +65,10 @@ export class Tool_NewBasicPath {
 
 				if (editor.selectedTool === 'newOval') {
 					// log(`making Oval path`);
-					ehd.newBasicPath = ovalPathFromMaxes(ehd.newBasicPathMaxes, `New Oval`);
+					ehd.newBasicPath = ovalPathFromMaxes(ehd.newBasicPathMaxes, `New oval`);
 				} else {
 					// log(`making Rectangle path`);
-					ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New Rectangle`);
+					ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New rectangle`);
 				}
 
 				// TODO history
