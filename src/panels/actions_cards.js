@@ -6,22 +6,16 @@
 **/
 
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { makeActionButton, makeActionButtonIcon } from '../panels/action-buttons.js';
+import { makeActionButton, makeActionButtonIcon } from './action-buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 
-export function makePanel_Actions() {
-
+export function makeCard_projectActions() {
 	let projectEditor = getCurrentProjectEditor();
-	let selectedPaths = projectEditor.multiSelect.paths.members;
-
-	// TODO hook these up
-	let clipBoardPath = false;
-	let historyLength = 0;
 
 	let panelSection = makeElement({
 		tag: 'div',
-		className: 'panel__section full-width',
-		innerHTML: '<h3>actions</h3>'
+		className: 'panel__card full-width',
+		innerHTML: '<h3>Project actions</h3>'
 	});
 
 	if (!projectEditor.selectedItem) {
@@ -33,24 +27,39 @@ export function makePanel_Actions() {
 		);
 	}
 
+	addAsChildren(panelSection, makeActionsArea_Universal());
+
+	return panelSection;
+}
 
 
-	// --------------------------------------------------------------
-	// Define action button data
-	// --------------------------------------------------------------
 
-	/**
-	 * Data format for creating action buttons:
-	 * ----------------------------------------
-	 * iconName = 'default',
-	 * iconOptions = false,
-	 * title = '',
-	 * disabled = false,
-	 * onClick = false
-	 */
+// --------------------------------------------------------------
+// Define action button data
+// --------------------------------------------------------------
+
+/**
+ * Data format for creating action buttons:
+ * ----------------------------------------
+ * iconName = 'default',
+ * iconOptions = false,
+ * title = '',
+ * disabled = false,
+ * onClick = false
+ */
+
+function getActionData(name){
+	let projectEditor = getCurrentProjectEditor();
+	let selectedPaths = projectEditor.multiSelect.paths.members;
+	let data = {};
+
+	// TODO hook these up
+	let clipBoardPath = false;
+	let historyLength = 0;
+
 
 	// UNIVERSAL ACTIONS
-	let allActions = [
+	data.allActions = [
 		{
 			iconName: 'paste',
 			iconOptions: !clipBoardPath,
@@ -80,7 +89,7 @@ export function makePanel_Actions() {
 	];
 
 	if (projectEditor.nav.page === 'components') {
-		allActions.push(
+		data.allActions.push(
 			{
 				iconName: 'linkToGlyph',
 				title: `Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance.`,
@@ -89,7 +98,7 @@ export function makePanel_Actions() {
 	}
 
 	// GLYPH
-	let glyphActions = [
+	data.glyphActions = [
 		{
 			iconName: 'combine',
 			title: `Combine all paths\nCombines the paths of all paths with the same winding into as few paths as possible.`,
@@ -117,7 +126,7 @@ export function makePanel_Actions() {
 	];
 
 	// SHAPE
-	let pathActions = [
+	data.pathActions = [
 		{
 			iconName: 'copy',
 			title: 'Copy\nAdds a copy of the currently selected path or paths to the clipboard.',
@@ -133,7 +142,7 @@ export function makePanel_Actions() {
 	];
 
 	if (selectedPaths.length === 1 && selectedPaths[0].objType === 'ComponentInstance') {
-		pathActions = pathActions.concat([
+		data.pathActions = data.pathActions.concat([
 			{
 				iconName: 'switchPathComponent',
 				iconData: true,
@@ -141,7 +150,7 @@ export function makePanel_Actions() {
 			},
 		]);
 	} else {
-		pathActions = pathActions.concat([
+		data.pathActions = data.pathActions.concat([
 			{
 				iconName: 'switchPathComponent',
 				iconData: false,
@@ -150,7 +159,7 @@ export function makePanel_Actions() {
 		]);
 	}
 
-	pathActions = pathActions.concat([
+	data.pathActions = data.pathActions.concat([
 		{
 			iconName: 'flipHorizontal',
 			title: 'Flip Horizontal\nReflects the currently selected path or paths horizontally.',
@@ -166,7 +175,7 @@ export function makePanel_Actions() {
 	]);
 
 	// LAYERS
-	let layerActions = [
+	data.layerActions = [
 		{
 			iconName: 'moveLayerUp',
 			title: `Move Path Up\nMoves the path up in the path layer order.`,
@@ -178,7 +187,7 @@ export function makePanel_Actions() {
 	];
 
 	// ALIGN
-	let alignActions = [
+	data.alignActions = [
 		{
 			title: `Align Left\nMoves all the selected paths so they are left aligned with the leftmost path.`,
 			iconName: 'align',
@@ -212,7 +221,7 @@ export function makePanel_Actions() {
 	];
 
 	// COMBINE
-	let boolActions = [
+	data.boolActions = [
 		{
 			iconName: 'combine',
 			title: `Combine\nSelect two paths, and combine their paths into a single path.`,
@@ -228,7 +237,7 @@ export function makePanel_Actions() {
 	];
 
 	// PATH POINT
-	let pointActions = [
+	data.pointActions = [
 		{
 			iconName: 'insertPathPoint',
 			title: `Insert Path Point\nAdds a new Path Point half way between the currently-selected point, and the next one.`,
@@ -244,84 +253,124 @@ export function makePanel_Actions() {
 		},
 	];
 
-	// DEV
-	let devActions = [];
+
+	return data[name];
+}
+
+
+
+// --------------------------------------------------------------
+// Individual actions areas
+// --------------------------------------------------------------
+
+// Universal actions
+export function makeActionsArea_Universal(test = false){
+	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
+
+	addChildActions(actionsArea, getActionData('allActions'));
+
+	// Dev actions for testing
 	let dev = getGlyphrStudioApp().settings.dev;
-	if (dev.mode) {
-		for (let a = 0; a < dev.testActions.length; a++) {
-			devActions.push(
-				{
-					iconName: 'test',
-					title: dev.testActions[a].name,
-					onClick: dev.testActions[a].onclick
-				}
-			);
+	if (dev.testActions.length) {
+		// DEV
+		let devActions = [];
+		if (dev.mode) {
+			for (let a = 0; a < dev.testActions.length; a++) {
+				devActions.push(
+					{
+						iconName: 'test',
+						title: dev.testActions[a].name,
+						onClick: dev.testActions[a].onclick
+					}
+				);
+			}
 		}
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'test'}));
+		addChildActions(actionsArea, getActionData('devActions'));
 	}
 
+	return actionsArea;
+}
 
-	// --------------------------------------------------------------
-	// Put it all together
-	// --------------------------------------------------------------
+// Glyph actions
+export function makeActionsArea_Glyph(test = false){
+	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
+	addChildActions(actionsArea, getActionData('glyphActions'));
+	return actionsArea;
+}
 
-	function addChildActions(actionsArray) {
-		addAsChildren(actionsArea, actionsArray.map((iconData) => makeActionButton(iconData)));
-	}
-	let actionsArea = makeElement({tag: 'div', className: 'actionsArea'});
-	let test = false;
+// Path actions
+export function makeActionsArea_Path(test = false){
+	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
+	let selectedPaths = getCurrentProjectEditor().multiSelect.paths.members;
 
-	// Universal actions
-	addChildActions(allActions);
-
-	// Glyph actions
-	if (selectedPaths.length === 0 || test) {
-		actionsArea.appendChild(makeElement({tag:'h4', content:'glyph'}));
-		addChildActions(glyphActions);
-	}
-
-	// Path actions
 	if (selectedPaths.length > 0 || test) {
-		actionsArea.appendChild(makeElement({tag:'h4', content:'paths'}));
-		addChildActions(pathActions);
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'paths'}));
+		addChildActions(actionsArea, getActionData('pathActions'));
 	}
 
 	// Boolean combine actions
 	if (selectedPaths.length > 1 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'path combine'}));
-		addChildActions(boolActions);
+		addChildActions(actionsArea, getActionData('boolActions'));
 	}
 
 	// Layer actions
 	if (selectedPaths.length === 1 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'path layers'}));
-		addChildActions(layerActions);
+		addChildActions(actionsArea, getActionData('layerActions'));
 	}
 
 	// Path align actions
 	if (selectedPaths.length > 1 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
-		addChildActions(alignActions);
+		addChildActions(actionsArea, getActionData('alignActions'));
 	}
 
-	// Point actions
+	return actionsArea;
+}
+
+// Point actions
+export function makeActionsArea_Point(test = false){
+	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
+	let selectedPoints = getCurrentProjectEditor().multiSelect.points;
 	let isPointSelected = false;
-	if (projectEditor.multiSelect.points.count() > 0) isPointSelected = true;
+	if (selectedPoints.length > 0) isPointSelected = true;
 	// if (_UI.selectedTool !== 'pathEdit') isPointSelected = false;
 	if (isPointSelected || test) {
-		actionsArea.appendChild(makeElement({tag:'h4', content:'path point'}));
-		addChildActions(pointActions);
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'path point'}));
+		addChildActions(actionsArea, getActionData('pointActions'));
 	}
 
-	// Dev actions for testing
-	if (dev.testActions.length) {
-		actionsArea.appendChild(makeElement({tag:'h4', content:'test'}));
-		addChildActions(devActions);
-	}
-
-	// append and return
-	panelSection.appendChild(actionsArea);
-	return panelSection;
+	return actionsArea;
 }
+
+function addChildActions(parent, actionsArray) {
+	addAsChildren(parent, actionsArray.map((iconData) => makeActionButton(iconData)));
+	return parent;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // --------------------------------------------------------------
 // Combine

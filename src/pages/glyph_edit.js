@@ -1,7 +1,7 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeNavButton, makeNavButtonContent } from '../app/nav.js';
-import { showNavDropdown } from '../app/nav.js';
+import { makeNavButton, makeNavButtonContent } from '../project_editor/nav.js';
+import { showNavDropdown } from '../project_editor/nav.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
 import { hexToChars } from '../common/unicode.js';
 import { makePanel } from '../panels/panels.js';

@@ -5,7 +5,7 @@ export function makePanel_OverviewAttributes() {
 
 	let projectEditor = getCurrentProjectEditor();
 	let content = `
-		<div class="panel__section full-width">
+		<div class="panel__card full-width">
 			<h3>${projectEditor.project.projectSettings.name}</h3>
 			<span>More settings can be found on the Settings page</span>
 		</div>

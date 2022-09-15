@@ -8,7 +8,7 @@
 export function makePanel_GlyphChooser() {
 	// log('makePanel_GlyphChooser', 'start');
 
-	let content = '<div class="panel__section">';
+	let content = '<div class="panel__card">';
 	content += projectEditor.nav.page;
 	content += '<h2>chooser</h2>';
 	content += '</div>';

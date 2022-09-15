@@ -1,7 +1,6 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from './main.js';
-import { showNavDropdown } from './nav.js';
 
 export { makeAppTopBar };
 
@@ -33,7 +32,7 @@ export class GlyphrStudioApp {
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
-			telemetry: true, // Load google analytics
+			telemetry: false, // Load google analytics
 		};
 	}
 
@@ -138,12 +137,12 @@ function makeAppTopBar() {
  * @returns {string}
  */
 export function makeEmailContent() {
-  const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
-  %0A%0A%0A%0A___________________________________________%0A
-  version %09Glyphr Studio  ${getGlyphrStudioApp().version} %0A
-  user agent %09 ${encodeURIComponent(navigator.userAgentData)} %0A`;
+	const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!
+	%0A%0A%0A%0A___________________________________________%0A
+	version %09Glyphr Studio  ${getGlyphrStudioApp().version} %0A
+	user agent %09 ${encodeURIComponent(navigator.userAgentData)} %0A`;
 
-  // log(con);
+	// log(con);
 
-  return con;
+	return con;
 }

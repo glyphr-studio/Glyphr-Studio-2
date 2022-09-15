@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from "../app/main.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
-import { makePanel_Actions } from "./actions.js";
-import { makePanel_GlyphAttributes } from "./attributes_glyph.js";
+import { makeCard_projectActions } from "./actions_cards.js";
+import { makePanel_GlyphAttributes } from "./attributes_panel_glyph.js";
 import { makePanel_Layers } from "./layers.js";
 import { makePanel_History } from "./history.js";
 import { makePanel_Guides } from "./guides.js";
@@ -21,7 +21,6 @@ export function makePanel() {
 
 	if(panel === 'Attributes') {
 		addAsChildren(content, makePanel_GlyphAttributes());
-		content.appendChild(makePanel_Actions());
 	} else if (panel === 'Layers') {
 		content.appendChild(makePanel_Layers());
 	} else if (panel === 'History') {

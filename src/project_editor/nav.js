@@ -1,9 +1,9 @@
-export { makeNavButton, makeNavButtonContent, showNavDropdown };
+import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 import { makeChooserContent_Glyphs, makeChooserContent_Pages, makeChooserContent_Panels } from '../panels/panel-choosers.js';
-import { getCurrentProjectEditor } from './main.js';
 
-function makeNavButton(properties = {}) {
+
+export function makeNavButton(properties = {}) {
 	let title = properties.title || 't i t l e';
 	let superTitle = properties.superTitle || 's u p e r t i t l e';
 	let level = properties.level || '';
@@ -20,14 +20,14 @@ function makeNavButton(properties = {}) {
 	`;
 }
 
-function makeNavButtonContent(title, superTitle) {
+export function makeNavButtonContent(title, superTitle) {
 	return `
 		<span class="nav-button__super-title">${superTitle}</span>
 		<span class="nav-button__title" title="${title}">${title}</span>
 	`;
 }
 
-function showNavDropdown(parentElement) {
+export function showNavDropdown(parentElement) {
 	log(`showNavDropdown`, 'start');
 	log(`parentElement:`);
 	log(parentElement.getBoundingClientRect());

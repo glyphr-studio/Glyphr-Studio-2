@@ -1,44 +1,47 @@
 .left-area__panel {
-	border: 1px solid var(--blue-l85);
-	padding: 10px;
-	background-color: var(--offWhite);
 	grid-row: 3;
-	border-radius: 4px;
-	box-shadow: var(--l2-shadow);
 	width: 450px;
+	overflow-y: auto;
+	overflow-x: visible;
 }
 
-.panel__section {
+.panel__card {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	align-items: center;
 	justify-items: left;
 	row-gap: 5px;
 	column-gap: 20px;
-	margin-bottom: 30px;
+	margin-bottom: 5px;
+
+	border: 1px solid var(--blue-l85);
+	padding: 10px;
+	background-color: var(--offWhite);
+	border-radius: 4px;
+	box-shadow: var(--l2-shadow);
 }
 
-.panel__section.full-width {
+.panel__card.full-width {
 	grid-template-columns: 1fr;
 	column-gap: 0;
 }
 
-.panel__section h1,
-.panel__section h2,
-.panel__section h3,
-.panel__section h4,
-.panel__section h5,
-.panel__section h6 {
+.panel__card h1,
+.panel__card h2,
+.panel__card h3,
+.panel__card h4,
+.panel__card h5,
+.panel__card h6 {
 	grid-column: 1 / -1;
 	margin-bottom: 0;
 }
 
-.panel__section label {
+.panel__card label {
 	grid-column: 1;
 	line-height: 20px;
 }
 
-.panel__section .info {
+.panel__card .info {
 	display: grid !important;
 	gap: 8px;
 	grid-template-columns: max-content min-content;
@@ -46,13 +49,13 @@
 	align-items: center;
 }
 
-.panel__section input[type=checkbox] {
+.panel__card input[type=checkbox] {
 	width: 20px;
 	height: 20px;
 	margin-bottom: 4px;
 }
 
-.panel__section .doubleInput {
+.panel__card .doubleInput {
 	grid-column: 2;
 	display: grid;
 	grid-template-columns: 1fr min-content 1fr;
@@ -67,24 +70,25 @@
 	padding-top: 6px;
 }
 
-.actionsArea {
+.panel__actions-area {
+	grid-column: 1 / -1;
 	display: grid;
 	grid-template-columns: repeat(8, 42px);
 	gap: 5px;
 }
 
-.actionsArea h3 {
+.panel__actions-area h3 {
 	grid-column: 1 / -1;
 }
 
-.actionsArea button {
+.panel__actions-area button {
 	background-color: var(--gray-l95);
 	color: var(--gray-l60);
 	padding: 5px;
 	height: 42px;
 }
 
-.actionsArea button:disabled {
+.panel__actions-area button:disabled {
 	background-color: transparent;
 	box-shadow: none;
 }

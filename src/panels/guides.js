@@ -9,10 +9,10 @@ import { makeElement } from "../common/dom.js";
 
 export function makePanel_Guides() {
   let project = getCurrentProject();
-  let content = '<div class="panel__section">';
+  let content = '<div class="panel__card">';
   content += projectEditor.nav.page;
   content += '<h2>guides</h2>';
-  content += '</div><div class="panel__section">';
+  content += '</div><div class="panel__card">';
 
   let system = '';
   let user = '';
