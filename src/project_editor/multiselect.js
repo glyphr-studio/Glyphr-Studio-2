@@ -342,7 +342,7 @@ export class MultiSelectPaths extends MultiSelect {
 		let path;
 		let index;
 
-		if (this.members.length === 0) clear();
+		if (this.members.length === 0) this.clear();
 		else {
 			for (let s = 0; s < this.members.length; s++) {
 				path = this.members[s];
@@ -407,7 +407,7 @@ export class MultiSelectPaths extends MultiSelect {
 		this.glyph.rotate(angle, about);
 	}
 
-	isRotateable() {
+	isRotatable() {
 		if (this.members.length === 1) return true;
 		else return !this.contains('ComponentInstance');
 	}
@@ -478,12 +478,12 @@ export class MultiSelectPaths extends MultiSelect {
 		else return this.glyph.maxes;
 	}
 
-	drawPaths(lctx, view) {
+	drawPaths(ctx, view) {
 		let failed = false;
-		let drewpath = false;
+		let drewPath = false;
 		for (let m = 0; m < this.members.length; m++) {
-			drewpath = drawPath(this.members[m], lctx, view);
-			failed = failed || !drewpath;
+			drewPath = drawPath(this.members[m], ctx, view);
+			failed = failed || !drewPath;
 		}
 
 		return !failed;

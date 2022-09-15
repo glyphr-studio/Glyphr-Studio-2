@@ -1,8 +1,10 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { makeCrisp } from '../common/functions.js';
+import { drawPath } from './draw_paths.js';
 import { sXcX, sYcY } from './edit-canvas.js';
 import { canResize } from './events_mouse.js';
+import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new-basic-path.js';
 
 // --------------------------------------------------------------
 // Common size stuff
@@ -13,6 +15,8 @@ let rotateHandleHeight = 40;
 let accentBlue = accentColors.blue.l65;
 let accentGreen = accentColors.green.l65;
 let accentGray = accentColors.gray.l65;
+let pathFill = '#000';
+let pointFill = '#FFF';
 let multiSelectThickness = 3;
 
 
@@ -23,7 +27,7 @@ let multiSelectThickness = 3;
 // Paths
 // --------------------------------------------------------------
 // --------------------------------------------------------------
-// Canvas functions
+// Compute and Draw functions
 // --------------------------------------------------------------
 
 export function computeAndDrawBoundingBox(ctx) {
@@ -53,6 +57,42 @@ export function computeAndDrawBoundingBoxHandles(ctx) {
 	let maxes = editor.multiSelect.paths.getMaxes();
 	let thickness = editor.multiSelect.paths.length > 1? multiSelectThickness : 1;
 	drawBoundingBoxHandles(ctx, maxes, thickness);
+}
+
+
+
+// --------------------------------------------------------------
+// Paths
+// --------------------------------------------------------------
+export function drawSelectedPathOutline(ctx, view) {
+	// log(`drawSelectedPathOutline`, 'start');
+	let editor = getCurrentProjectEditor();
+	let selected = editor.multiSelect.paths.members.length;
+	// log(`selected: ${selected}`);
+
+	if(selected > 0) {
+		ctx.beginPath();
+		editor.multiSelect.paths.drawPaths(ctx, view);
+		ctx.closePath();
+
+		ctx.strokeStyle = accentBlue;
+		ctx.stroke();
+	}
+
+	// log(`drawSelectedPathOutline`, 'end');
+}
+
+export function drawNewBasicPath(ctx, path, view) {
+	ctx.beginPath();
+	drawPath(path, ctx, view);
+	ctx.closePath();
+
+	ctx.fillStyle = pathFill;
+	ctx.fill();
+	ctx.strokeStyle = accentBlue;
+	ctx.stroke();
+
+	drawBoundingBox(ctx, path.maxes, 1);
 }
 
 // --------------------------------------------------------------
@@ -91,13 +131,13 @@ function drawBoundingBoxHandles(ctx, maxes, thickness) {
 	let accent = thickness === 1?  accentBlue : accentGray;
 	let bb = getBoundingBoxHandleDimensions(maxes, thickness);
 
-	ctx.fillStyle = 'white';
+	ctx.fillStyle = pointFill;
 	ctx.lineWidth = 1;
 	ctx.strokeStyle = accent;
 
 	// TODO rotate handle
 /*
-	if(getCurrentProjectEditor().multiSelect.paths.isRotateable()){
+	if(getCurrentProjectEditor().multiSelect.paths.isRotatable()){
 		let h = rotateHandleHeight;
 		ctx.lineWidth = thickness;
 		drawLine({x:bb.midX + bb.hp, y:bb.topY}, {x:bb.midX + bb.hp, y:bb.topY - h});
@@ -139,18 +179,18 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	let editor = getCurrentProjectEditor();
 	accent = accent || accentBlue;
 	thickness = thickness || 1;
-	let center = clone(editor.eventHandlerData.rotationcenter, 'drawRotationAffordance');
-	let starttopY = editor.eventHandlerData.rotationstartpoint.y;
-	let mx = editor.eventHandlerData.mousex;
-	let my = editor.eventHandlerData.mousey;
+	let center = clone(editor.eventHandlerData.rotationCenter, 'drawRotationAffordance');
+	let startTopY = editor.eventHandlerData.rotationStartPoint.y;
+	let mx = editor.eventHandlerData.mouseX;
+	let my = editor.eventHandlerData.mouseY;
 	let radians = calculateAngle({x:cx_sx(mx), y:cy_sy(my)}, center);
 
 	// log('\t Init radians:\t' + radians);
 	let snap = editor.eventHandlerData.isShiftDown;
 	if(snap) radians = snapRadiansToDegrees(radians);
-	let rotatehandle = {x:center.x, y:starttopY};
-	rotate(rotatehandle, radians, center, snap);
-	rotate(rotatehandle, (Math.PI/-2), center, snap);
+	let rotateHandle = {x:center.x, y:startTopY};
+	rotate(rotateHandle, radians, center, snap);
+	rotate(rotateHandle, (Math.PI/-2), center, snap);
 
 	// log('\t Drag Angle:\t' + round(radians, 2));
 
@@ -161,12 +201,12 @@ function drawRotationAffordance(ctx, accent, thickness) {
 
 
 	// Convert things to Canvas System
-	rotatehandle.x = sXcX(rotatehandle.x);
-	rotatehandle.y = sYcY(rotatehandle.y);
+	rotateHandle.x = sXcX(rotateHandle.x);
+	rotateHandle.y = sYcY(rotateHandle.y);
 	center.x = sXcX(center.x);
 	center.y = sYcY(center.y);
-	starttopY = sYcY(starttopY);
-	let radius = calculateLength(center, rotatehandle);
+	startTopY = sYcY(startTopY);
+	let radius = calculateLength(center, rotateHandle);
 
 
 	// Pizza Pie Sweep
@@ -182,11 +222,11 @@ function drawRotationAffordance(ctx, accent, thickness) {
 
 	// rotate Handle
 	ctx.strokeStyle = accent.l65;
-	ctx.fillStyle = 'white';
+	ctx.fillStyle = pointFill;
 	ctx.lineWidth = thickness;
-	drawLine({x:rotatehandle.x, y:rotatehandle.y}, {x:center.x, y:center.y});
+	drawLine({x:rotateHandle.x, y:rotateHandle.y}, {x:center.x, y:center.y});
 	ctx.lineWidth = 1;
-	drawCircleHandle(rotatehandle);
+	drawCircleHandle(rotateHandle);
 
 	// readout
 	let readout = round(radiansToNiceAngle(radians),1);
@@ -198,7 +238,7 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	ctx.font = '24px OpenSans';
 	ctx.fillStyle = accent.l65;
 	ctx.globalAlpha = 0.8;
-	ctx.fillText((''+readout+'°'), center.x, starttopY-24);
+	ctx.fillText((''+readout+'°'), center.x, startTopY-24);
 
 	ctx.globalAlpha = 1;
 }
@@ -253,7 +293,7 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
 	// log('\t t/m/b y: ' + bb.topY + ' / ' + bb.midY + ' / ' + bb.bottomY);
 
 	// rotation handle
-	if(editor.multiSelect.paths.isRotateable()){
+	if(editor.multiSelect.paths.isRotatable()){
 		if( ((px > bb.midX) && (px < bb.midX+ps)) &&
 			((py > bb.topY-rotateHandleHeight) && (py < bb.topY-rotateHandleHeight+ps)) ){
 			re = 'rotate';
@@ -391,6 +431,12 @@ export function computeAndDrawPathPoints(ctx) {
 
 }
 
+export function drawPathPointHover(ctx, point) {
+	if (point) {
+		ctx.fillStyle = pointFill;
+		ctx.fillRect(point.x, point.y, point.size, point.size);
+	}
+}
 
 // --------------------------------------------------------------
 // Points and handles
@@ -410,7 +456,7 @@ export function drawPoint(point, ctx, isSelected) {
 
 	const halfPointSize = pointSize / 2;
 	// ctx.fillStyle = sel? 'white' : accent;
-	ctx.fillStyle = isSelected ? 'white' : accent;
+	ctx.fillStyle = isSelected ? pointFill : accent;
 	ctx.strokeStyle = accent;
 	ctx.font = '10px Consolas';
 
@@ -443,7 +489,7 @@ export function drawPoint(point, ctx, isSelected) {
  */
 export function drawDirectionalityPoint(point, ctx, isSelected) {
 	// ctx.fillStyle = sel? 'white' : accent;
-	ctx.fillStyle = isSelected ? 'white' : accent;
+	ctx.fillStyle = isSelected ? pointFill : accent;
 	ctx.strokeStyle = accent;
 	ctx.lineWidth = 1;
 	const begin = { x: point.p.x, y: point.p.y };

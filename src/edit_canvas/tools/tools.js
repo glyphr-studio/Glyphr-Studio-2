@@ -240,14 +240,17 @@ export function clickTool(tool) {
 		if(tool === 'zoomOut') editor.view = {dz: editor.view.dz *= 0.9};
 		editor.publish('view', editor.view);
 	} else {
-		editor.selectedTool = tool;
-		// log('passed: ' + tool + ' and editor.selectedTool now is: ' + editor.selectedTool);
-		editor.publish('whichToolIsSelected', tool);
+		switchToolTo(tool);
 	}
 
 	// log('clickTool', 'end');
 }
 
+export function switchToolTo(newTool) {
+	let editor = getCurrentProjectEditor();
+	editor.selectedTool = newTool;
+	editor.publish('whichToolIsSelected', newTool);
+}
 
 export function makeKernToolsButtons() {
 	// Kern
@@ -332,7 +335,7 @@ export function addPathToCurrentItem(newPath){
 
 	let sg = editor.selectedItem;
 
-	sg.addOnePath(newPath);
+	newPath = sg.addOnePath(newPath);
 
 	// TODO history
 
@@ -412,17 +415,19 @@ export function getPathAtLocation(x,y){
 
 function isThisPathHere(path, px, py) {
 	let editor = getCurrentProjectEditor();
-	let gctx = editor.ghostCTX;
+	let ctx = editor.ghostCTX;
 
-	gctx.clearRect(0,0,editor.canvasSize, editor.canvasSize);
-	gctx.fillStyle = 'rgba(0,0,255,0.2)';
-	gctx.beginPath();
-	drawPath(path, gctx, editor.view);
-	gctx.closePath();
-	gctx.fill();
+	ctx.clearRect(0,0,editor.canvasSize, editor.canvasSize);
 
-	let imageData = gctx.getImageData(px, py, 1, 1);
-	// debug('ISHERE? alpha = ' + imageData.data[3] + '  returning: ' + (imageData.data[3] > 0));
+	ctx.beginPath();
+	drawPath(path, ctx, editor.view);
+	ctx.closePath();
+
+	ctx.fillStyle = 'rgba(0,0,255,0.2)';
+	ctx.fill();
+
+	let imageData = ctx.getImageData(px, py, 1, 1);
+	// log('ISHERE? alpha = ' + imageData.data[3] + '  returning: ' + (imageData.data[3] > 0));
 	return (imageData.data[3] > 0);
 }
 

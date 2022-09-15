@@ -49,7 +49,7 @@ export class Tool_Resize {
 					// log('mousedown - setting rotating = true');
 					this.rotating = true;
 					eh.rotationCenter = editor.multiSelect.paths.maxes.center;
-					eh.rotationstarttopy =
+					eh.rotationStartTopY =
 						editor.multiSelect.paths.maxes.yMax +
 						editor.rotateHandleHeight / editor.view.dz;
 				} else {
@@ -72,7 +72,7 @@ export class Tool_Resize {
 		};
 
 		this.mousemove = function (ev) {
-			log(`Tool_Resize.mousemove`, 'start');
+			// log(`Tool_Resize.mousemove`, 'start');
 
 			let eh = eventHandlerData;
 			let editor = getCurrentProjectEditor();
@@ -86,7 +86,7 @@ export class Tool_Resize {
 			let dy = (eh.lastY - eh.mouseY) / dz || 0;
 
 			if (this.dragging) {
-				log('detected DRAGGING');
+				// log('detected DRAGGING');
 				let cur = 'arrowSquare';
 
 				if (this.clickedPath) {
@@ -116,12 +116,12 @@ export class Tool_Resize {
 				setCursor(cur);
 
 			} else if (this.resizing) {
-				log('detected RESIZING');
+				// log('detected RESIZING');
 				eventHandler_PathResize();
 				this.didStuff = true;
 
 			} else if (this.rotating) {
-				log(`detected ROTATING`);
+				// log(`detected ROTATING`);
 				let a1 = calculateAngle({ x: cXsX(eh.mouseX), y: cYsY(eh.mouseY) }, eh.rotationCenter);
 				let a2 = calculateAngle({ x: cXsX(eh.lastX), y: cYsY(eh.lastY) }, eh.rotationCenter);
 				editor.multiSelect.paths.rotate(a1 - a2, eh.rotationCenter);
@@ -129,36 +129,36 @@ export class Tool_Resize {
 				setCursor('rotate');
 
 			} else if (corner) {
-				log(`detected CORNER HOVER ${corner}`);
+				// log(`detected CORNER HOVER ${corner}`);
 				// hovering over a corner
 				setCursor(corner);
 
 			} else if (eh.multi) {
-				log(`detected MULTI-SELECT`);
+				// log(`detected MULTI-SELECT`);
 				setCursor('arrowPlus');
 
 			} else if (getPathAtLocation(eh.mouseX, eh.mouseY)) {
-				log(`detected PATH HOVER`);
+				// log(`detected PATH HOVER`);
 				setCursor('arrowSquare');
 
 			} else {
-				log('detected NOTHING');
+				// log('detected NOTHING');
 				setCursor('arrow');
 			}
 
 			// checkForMouseOverHotspot(eh.mouseX, eh.mouseY);
 
 			if (this.didStuff) {
-				log('did stuff');
+				// log('did stuff');
 				eh.lastX = eh.mouseX;
 				eh.lastY = eh.mouseY;
 				eh.undoQueueHasChanged = true;
 				editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_Resize mousemove' });
 			} else {
-				log(`did NOT do stuff`);
+				// log(`did NOT do stuff`);
 			}
 
-			log(`Tool_Resize.mousemove`, 'end');
+			// log(`Tool_Resize.mousemove`, 'end');
 		};
 
 		this.mouseup = function () {
@@ -210,7 +210,7 @@ export class Tool_Resize {
 			eh.firstX = -100;
 			eh.firstY = -100;
 			eh.rotationCenter = false;
-			eh.rotationstarttopy = false;
+			eh.rotationStartTopY = false;
 			// TODO history
 			// if (eh.undoQueueHasChanged) historyPut('Path Edit tool');
 			eh.undoQueueHasChanged = false;

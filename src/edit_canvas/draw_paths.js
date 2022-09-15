@@ -65,12 +65,13 @@ export function drawGlyph(
 			}
 		}
 	}
-
 	ctx.closePath();
+
 	ctx.fillStyle = fill;
 	ctx.globalAlpha = alpha;
 	ctx.fill('nonzero');
 	ctx.globalAlpha = 1;
+
 	// log(glyph.name);
 	// log('drawGlyph', 'end');
 
@@ -137,10 +138,14 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
 	if (!g) return false;
 	let drewPath = false;
 	let failed = false;
+
+	ctx.beginPath();
 	for (let s = 0; s < g.paths.length; s++) {
 		drewPath = drawPath(g.paths[s], ctx, view);
 		failed = failed || !drewPath;
 	}
+	ctx.closePath();
+
 	// log('drawComponentInstanceToCanvas', 'end');
 	return !failed;
 }
@@ -158,25 +163,25 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
  * @param {boolean} snap - snap values to whole numbers
  */
 function drawPathToCanvas(path, ctx, view, snap = true) {
-	// log('drawPath', 'start');
+	// log('drawPathToCanvas', 'start');
 	// log(ctx);
 
 	// log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
 	// log(path);
 
-	// let currView = getView('drawPath');
+	// let currView = getView('drawPathToCanvas');
 	// view = view || clone(currView);
 	// setView(view);
 
 	if (!path?.pathPoints || path.pathPoints === false) {
 		// log(`RETURNING FALSE: path.pathPoints does not exist`);
-		// log('drawPath', 'end');
+		// log('drawPathToCanvas', 'end');
 		return false;
 	}
 
 	if (path.pathPoints.length < 2) {
 		// log(`RETURNING FALSE: ${path.pathPoints.length} points in the path`);
-		// log('drawPath', 'end');
+		// log('drawPathToCanvas', 'end');
 		return false;
 	}
 
@@ -219,7 +224,7 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 	}
 
 	// setView(currView);
-	// log('drawPath', 'end');
+	// log('drawPathToCanvas', 'end');
 	return true;
 }
 
