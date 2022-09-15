@@ -8,7 +8,7 @@
 
 function makeComponentsAttributesPanel(selectedComponent) {
 	let content = `
-	<div class="panel__section">
+	<div class="panel__card">
 		<h3>component</h3>
 		<label>name</label>
 		<input type="text" value="${selectedComponent.name}" onchange="getSelectedItem().name = this.value;"/>
@@ -86,8 +86,8 @@ function goToEditGlyph(chid) {
 //    COMPONENT INSTANCE ATTRIBUTES
 //    ---------------------------------
 
-function makeAttributesGroup_componentInstance(s) {
-	// log("makeAttributesGroup_componentInstance - start of function");
+function makeCard_componentInstanceAttributes(s) {
+	// log("makeCard_componentInstanceAttributes - start of function");
 	content =
 		'<tr><td colspan=2 class="detailtitle"><h3 style="margin:0px;">component instance</h3></td></tr>';
 
@@ -286,5 +286,5 @@ function updateComponentInstanceDetail(key, value, id) {
 
 	historyPut('component ' + key);
 	_UI.focusElement = id;
-	redraw({ calledBy: 'makeAttributesGroup_componentInstance' });
+	redraw({ calledBy: 'makeCard_componentInstanceAttributes' });
 }

@@ -9,7 +9,7 @@ import { makeElement } from '../common/dom.js';
 
 export function makePanel_History() {
 	let projectEditor = getCurrentProjectEditor();
-	let content = '<div class="panel__section">';
+	let content = '<div class="panel__card">';
 
 	content += projectEditor.nav.page;
 
@@ -17,7 +17,7 @@ export function makePanel_History() {
 
 	let q = editor.history[editor.nav.page].queue;
 
-	content += '</div><div class="panel__section">';
+	content += '</div><div class="panel__card">';
 
 	// log("MAKEPANEL_HISTORY - rolling out queue\n" + json(q));
 

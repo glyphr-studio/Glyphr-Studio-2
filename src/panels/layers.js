@@ -11,7 +11,7 @@ import { refreshPanel } from './panels.js';
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
-	let rowsArea = makeElement({className: 'panel__section full-width layer-panel__rows-area'});
+	let rowsArea = makeElement({className: 'panel__card full-width layer-panel__rows-area'});
 	let editor = getCurrentProjectEditor();
 	let selected = editor.selectedItem;
 	let paths = selected.paths;
@@ -104,7 +104,7 @@ export function makePanel_Layers() {
 		callback: () => { refreshPanel(); }
 	});
 
-	let content = makeElement({className: 'panel__section full-width'});
+	let content = makeElement({className: 'panel__card full-width'});
 	content.appendChild(rowsArea);
 	content.appendChild(makeActionArea_Layers());
 
@@ -184,7 +184,7 @@ function makeActionArea_Layers() {
 	let totalPaths = projectEditor.selectedItem.paths.length;
 	let content = `
 		<h3>Actions</h3>
-		<div class="actionsArea">
+		<div class="panel__actions-area">
 			${pathActions}
 			${
 				(totalPaths > 1 && selectedPaths.length === 1) ? layerActions : ''
@@ -192,7 +192,7 @@ function makeActionArea_Layers() {
 		</div>
 	`;
 
-	return makeElement({className: 'panel__section full-width', content: content});
+	return makeElement({className: 'panel__card full-width', content: content});
 }
 
 // --------------------------------------------------------------
