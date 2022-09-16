@@ -1,7 +1,7 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeNavButton, makeNavButtonContent } from '../project_editor/nav.js';
-import { showNavDropdown } from '../project_editor/nav.js';
+import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
+import { showNavDropdown } from '../project_editor/navigator.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
 import { hexToChars } from '../common/unicode.js';
 import { makePanel } from '../panels/panels.js';
@@ -27,6 +27,7 @@ export class PageGlyphEdit {
 		let editor = getCurrentProjectEditor();
 		log('current ProjectEditor');
 		log(editor);
+		log(editor.nav);
 		log(editor.selectedGlyph);
 
 		let canvasGlyph = hexToChars(editor.selectedGlyphID);
@@ -86,11 +87,15 @@ export class PageGlyphEdit {
 		// Tools
 		let toolsArea = content.querySelector('.glyph-edit__tools-area');
 		toolsArea.innerHTML = '';
-		toolsArea.appendChild(makeEditToolsButtons());
+		let toolsButtons = makeEditToolsButtons();
+		if (toolsButtons) toolsArea.appendChild(toolsButtons);
+
 
 		let zoomArea = content.querySelector('.glyph-edit__zoom-area');
 		zoomArea.innerHTML = '';
-		zoomArea.appendChild(makeViewToolsButtons());
+		let viewButtons = makeViewToolsButtons();
+		if (viewButtons) zoomArea.appendChild(viewButtons);
+
 
 		// Canvas
 		editor.subscribe({
@@ -113,10 +118,8 @@ export class PageGlyphEdit {
 			}
 		});
 
-		const callback = function () {};
 
 		log(`PageGlyphEdit.pageLoader`, 'end');
-
-		return { content: content, callback: callback };
+		return content;
 	}
 }

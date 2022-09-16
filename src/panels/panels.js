@@ -14,6 +14,7 @@ export function makePanel() {
 	log(`makePanel`, 'start');
 
 	let editor = getCurrentProjectEditor();
+	log(editor.nav);
 	let panel = editor.nav.panel;
 	log(`panel: ${panel}`);
 

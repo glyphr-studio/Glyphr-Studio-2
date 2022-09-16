@@ -1,14 +1,12 @@
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
-import { PageOpenProject } from '../pages/open_project.js';
-import { PageGlyphEdit } from '../pages/glyph_edit.js';
-import { PageOverview } from '../pages/overview.js';
+
 import { History } from './history.js';
+import { Navigator } from './navigator.js';
 import { makeElement } from '../common/dom.js';
 import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
 import { json, getFirstID, clone } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
-import { makeAppTopBar } from '../app/app.js';
 import { normalizeHex } from '../common/unicode.js';
 
 /**
@@ -33,6 +31,10 @@ export class ProjectEditor {
 		// log('passed > newProjectEditor');
 		// log(newProjectEditor);
 
+		// Saving
+		this.projectSaved = true;
+		this.stopPageNavigation = true;
+
 		// PubSub
 		this.subscribers = {};
 
@@ -44,14 +46,7 @@ export class ProjectEditor {
 		this.selectedKernID = false;
 
 		// Navigation
-		this.nav = {
-			page: newProjectEditor.nav.page || 'Open project',
-			panel: newProjectEditor.nav.panel || 'Attributes',
-			projectSaved: true,
-			stopPageNavigation: true,
-		};
-
-		this.pages = {};
+		this.nav = new Navigator();
 
 		// Canvas
 		this.editCanvas = false;
@@ -412,7 +407,7 @@ export class ProjectEditor {
 	//  * @param {string} description
 	//  */
 	// historyPut(description) {
-	//   if (this.onEditCanvasPage()) {
+	//   if (this.nav.isOnEditCanvasPage) {
 	//     const queue =
 	//       this.nav.page === 'import svg' ? 'Glyph edit' : this.nav.page;
 	//     this.history[queue].put(description);
@@ -423,7 +418,7 @@ export class ProjectEditor {
 	//  * Moves backwards in time in the history queue
 	//  */
 	// historyPull() {
-	//   if (this.onEditCanvasPage()) {
+	//   if (this.nav.isOnEditCanvasPage) {
 	//     this.closeDialog();
 	//     this.closeNotation();
 	//     this.history[this.nav.page].pull();
@@ -435,211 +430,12 @@ export class ProjectEditor {
 	//  * @returns {number}
 	//  */
 	// historyLength() {
-	//   if (this.onEditCanvasPage()) {
+	//   if (this.nav.isOnEditCanvasPage) {
 	//     return this.history[this.nav.page].queue.length || 0;
 	//   }
 
 	//   return 0;
 	// }
-
-
-
-
-	// --------------------------------------------------------------
-	// Navigation
-	// --------------------------------------------------------------
-
-	/**
-	 * List of pages the editor supports
-	 */
-	get tableOfContents() {
-		return {
-			'Open project': {
-				name: 'Open project',
-				pageMaker: PageOpenProject,
-				iconName: false,
-			},
-			'Overview': {
-				name: 'Overview',
-				pageMaker: PageOverview,
-				iconName: 'page_glyphEdit',
-			},
-			'Glyph edit': {
-				name: 'Glyph edit',
-				pageMaker: PageGlyphEdit,
-				iconName: 'page_glyphEdit',
-			},
-			'Ligatures': {
-				name: 'Ligatures',
-				pageMaker: false,
-				iconName: 'page_ligatures',
-			},
-			'Components': {
-				name: 'Components',
-				pageMaker: false,
-				iconName: 'page_components',
-			},
-			'Kerning': {
-				name: 'Kerning',
-				pageMaker: false,
-				iconName: 'page_kerning',
-			},
-			'Live preview': {
-				name: 'Live preview',
-				pageMaker: false,
-				iconName: 'page_livePreview',
-			},
-			'Global actions': {
-				name: 'Global actions',
-				pageMaker: false,
-				iconName: 'page_globalActions',
-			},
-			'Settings': {
-				name: 'Settings',
-				pageMaker: false,
-				iconName: 'page_settings',
-			},
-			'Import & export': {
-				name: 'Import & export',
-				pageMaker: false,
-				iconName: 'page_importAndExport',
-			},
-			'Help': {
-				name: 'Help',
-				pageMaker: false,
-				iconName: 'page_help',
-			},
-			'About': {
-				name: 'About',
-				pageMaker: false,
-				iconName: 'page_about',
-			},
-		};
-	}
-
-	/**
-	 * Changes the page of this Project Editor
-	 * @param {string} pageName - where to go
-	 */
-	navigate(pageName) {
-		// log(`ProjectEditor.navigate`, 'start');
-		// log(`pageName : ${pageName}`);
-
-		if (pageName) this.nav.page = pageName;
-		const wrapper = document.getElementById('app__wrapper');
-		// log(`wrapper is:`);
-		// log(wrapper);
-
-		if (wrapper) {
-			const loader = this.pageLoader();
-			wrapper.innerHTML = makeAppTopBar();
-			wrapper.appendChild(loader.content);
-			if (loader.callback) loader.callback(this.getCurrentPage());
-		} else {
-			console.warn(`app__wrapper could not be found, navigation failed`);
-		}
-
-		// log(`ProjectEditor.navigate`, 'end');
-	}
-
-	/**
-	 * Returns the currently selected page
-	 * @returns {object}
-	 */
-	getCurrentPage() {
-		// log(`ProjectEditor.getCurrentPage`, 'start');
-		// log(this.pages);
-		// log(`ProjectEditor.getCurrentPage`, 'end');
-		return this.pages[this.nav.page];
-	}
-
-	/**
-	 * Sets the current view to the appropriate Page
-	 * @returns {object} Page Loader object - {string} content and {function} callback
-	 */
-	pageLoader() {
-		// log(`ProjectEditor.pageLoader`, 'start');
-		const editorContent = makeElement({ tag: 'div', id: 'app__main-content' });
-
-		// Default page loader fallback
-		let currentPageLoader = {
-			content: makeElement({tag: 'h1', innerHTML: 'Uninitialized page content'}),
-			callback: false,
-		};
-
-		let currentPage = this.nav.page;
-		let currentPageMaker = this.tableOfContents[currentPage].pageMaker;
-		// log(`page detected as ${currentPage}`);
-
-		if (!currentPageMaker) {
-			console.warn(`No page maker for ${currentPage}`);
-			currentPageLoader.content.innerHTML += `<br>${currentPage}`;
-		} else {
-			if (!this.pages[currentPage]) {
-				this.pages[currentPage] = new currentPageMaker();
-			}
-			// If there is a page maker and a loader, set it
-			currentPageLoader = this.pages[currentPage].pageLoader();
-		}
-
-		// Append results
-		editorContent.appendChild(currentPageLoader.content);
-
-		// log(`this.pages`);
-		// log(this.pages);
-
-		// log(`ProjectEditor.pageLoader`, 'end');
-
-		return { content: editorContent, callback: currentPageLoader.callback };
-	}
-
-	/**
-	 * Returns True if the current page has a glyph chooser panel
-	 * @returns {boolean}
-	 */
-	onChooserPanelPage() {
-		const nh = this.nav.page;
-		return (
-			nh === 'Glyph edit' ||
-			nh === 'components' ||
-			nh === 'kerning' ||
-			nh === 'import svg' ||
-			nh === 'ligatures'
-		);
-	}
-
-	/**
-	 * Returns true if the current page has an Edit Canvas
-	 * @returns {boolean}
-	 */
-	onEditCanvasPage() {
-		const nh = this.nav.page;
-		return (
-			nh === 'Glyph edit' ||
-			nh === 'components' ||
-			nh === 'kerning' ||
-			nh === 'ligatures'
-		);
-	}
-
-	/**
-	 * Returns true if the current page has no panels
-	 * @returns {boolean}
-	 */
-	onNoNavPage() {
-		const nh = this.nav.page;
-		return (
-			nh === 'font settings' ||
-			nh === 'project settings' ||
-			nh === 'global actions' ||
-			nh === 'export font' ||
-			nh === 'help' ||
-			nh === 'about'
-		);
-	}
-
-
-
 
 
 	// --------------------------------------------------------------

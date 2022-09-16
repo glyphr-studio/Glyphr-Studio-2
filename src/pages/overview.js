@@ -1,6 +1,6 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeNavButton, makeNavButtonContent, showNavDropdown} from '../project_editor/nav.js';
+import { makeNavButton, makeNavButtonContent, showNavDropdown} from '../project_editor/navigator.js';
 import { makeChooserContent_Glyphs } from '../panels/panel-choosers.js';
 import { makePanel_OverviewAttributes } from '../panels/attributes_panel_overview.js';
 
@@ -54,10 +54,8 @@ export class PageOverview {
 		let l1 = content.querySelector('#nav-button-l1');
 		l1.addEventListener('click', function(){ showNavDropdown(l1); });
 
-		const callback = function () {};
-
 		log(`PageOverview.pageLoader`, 'end');
 
-		return { content: content, callback: callback };
+		return content;
 	}
 }

@@ -317,10 +317,11 @@ export function canResize(handle) {
 
 function mousewheel(event) {
 	let delta = event.deltaY * -1;
+	let editor = getCurrentProjectEditor();
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
 	let canzoom =
-		onEditCanvasPage() &&
+		editor.nav.isOnEditCanvasPage &&
 		document.getElementById('dialog_box').style.display !== 'block';
 
 	if (canzoom) {

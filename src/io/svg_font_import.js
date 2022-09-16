@@ -372,7 +372,7 @@ function ioSVG_importSVGFont(filter) {
 		closeDialog();
 
 		// log('ioSVG_importSVGFont', 'end');
-		navigate();
+		// navigate();
 	}
 	// log('ioSVG_importSVGFont', 'end');
 }

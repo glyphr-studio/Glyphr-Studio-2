@@ -18,7 +18,7 @@ function makeChooserContent_Pages(){
 
 	let content = makeElement();
 	let pageButton;
-	let toc = getCurrentProjectEditor().tableOfContents;
+	let toc = getCurrentProjectEditor().nav.tableOfContents;
 
 	Object.keys(toc).forEach((pageName) => {
 		if(pageName !== 'Open project'){
@@ -116,7 +116,7 @@ function makeNavButton_Panel(panelName, iconName) {
 	button.addEventListener('click', () => {
 		let editor = getCurrentProjectEditor();
 		editor.nav.panel = panelName;
-		editor.navigate();
+		editor.nav.navigate();
 	});
 	return button;
 }
