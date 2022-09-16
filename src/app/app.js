@@ -42,47 +42,35 @@ export class GlyphrStudioApp {
 	setUp(sampleProject = false) {
 		log(`GlyphrStudioApp.setUp`, 'start');
 
-		let gsProject = {};
+		this.projectEditors[0] = new ProjectEditor();
+		let editor = this.getCurrentProjectEditor();
 
 		// Dev mode stuff
-		if (this.settings.dev.mode) {
-			log('DEV NAV - to ' + this.settings.dev.currentPage);
+		let dev = this.settings.dev;
+		if (dev.mode) {
+			log('DEV NAV - to ' + dev.currentPage);
 			document.title = '⡄⡆⡇ ⃨G⃨S⃨2⃨D⃨E⃨V⃨M⃨O⃨D⃨E⃨ ⡇⡆⡄';
 
 			// Sample Project
 			if (sampleProject) {
 				log('Using sample project');
-				gsProject = importGlyphrProjectFromText(sampleProject);
+				editor.project = importGlyphrProjectFromText(sampleProject);
 			}
 
 			// Test Function
-			if (this.settings.dev.testOnLoad) this.settings.dev.testOnLoad();
+			if (dev.testOnLoad) dev.testOnLoad();
+
+			// Navigation
+			if(dev.currentPage) editor.nav.page = dev.currentPage;
+			if(dev.currentPanel) editor.nav.panel = dev.currentPanel;
 		}
 
-		this.projectEditors[0] = new ProjectEditor({
-			project: gsProject,
-			nav: {
-				page: this.settings.dev.currentPage,
-				panel: this.settings.dev.currentPanel
-			}
-		});
-
-		log(this.getCurrentProjectEditor());
+		log(editor);
+		log(editor.nav);
 		this.fadeOutLoadScreen();
-		this.navigate();
+		editor.nav.navigate();
 
 		log(`GlyphrStudioApp.setUp`, 'end');
-	}
-
-	/**
-	 * Draws the current Project Editor to the document
-	 * @param {string} pageName - what page to navigate to
-	 */
-	navigate(pageName) {
-		log(`GlyphrStudioApp.navigate`, 'start');
-		log(`nav to ${pageName}`);
-		this.getCurrentProjectEditor().navigate(pageName);
-		log(`GlyphrStudioApp.navigate`, 'end');
 	}
 
 	/**

@@ -357,7 +357,7 @@ export function importOTFFont(filter) {
 		finalizeUI();
 		closeDialog();
 		// log('finalizeFontImport', 'end');
-		navigate();
+		// navigate();
 	}
 
 	// log('importOTFFont', 'end');

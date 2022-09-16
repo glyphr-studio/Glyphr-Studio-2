@@ -3,9 +3,10 @@
 		All keyboard handlers can be found here.
 **/
 
-const { getGlyphrStudioApp } = require("../app/main");
+const { getGlyphrStudioApp, getCurrentProjectEditor } = require("../app/main");
 
 function keyup(event) {
+	let editor = getCurrentProjectEditor();
 	let eh = _UI.eventHandlers;
 	// log('eh.lastTool = ' + eh.lastTool);
 
@@ -15,7 +16,7 @@ function keyup(event) {
 	// log('CTRL ' + event.ctrlKey + ' META ' + event.metaKey);
 	// log(event);
 
-	if (!onEditCanvasPage()) return;
+	if (!editor.nav.isOnEditCanvasPage) return;
 
 	let isCtrlDown = event.ctrlKey || event.metaKey || event.which == 17;
 
@@ -103,7 +104,7 @@ function keypress(event) {
 	}
 
 	// Only allow the following stuff for canvas edit pages
-	if (!onEditCanvasPage()) return;
+	if (!editor.nav.isOnEditCanvasPage) return;
 	var em = getEditMode();
 
 	// Ctrl

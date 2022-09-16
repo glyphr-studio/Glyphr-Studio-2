@@ -9,23 +9,23 @@ import { drawPath } from '../draw_paths.js';
 // Making tool buttons
 // --------------------------------------------------------------
 export function makeEditToolsButtons() {
-	// log('makeEditToolsButtons', 'start');
+	log('makeEditToolsButtons', 'start');
 	let editor = getCurrentProjectEditor();
 
-	if (!editor.onEditCanvasPage()) {
-		// log('returning, !onEditCanvasPage');
-		// log('makeEditToolsButtons', 'end');
+	if (!editor.nav.isOnEditCanvasPage) {
+		log('returning, !isOnEditCanvasPage');
+		log('makeEditToolsButtons', 'end');
 		return '';
 	}
 
 	if (!editor.selectedItemID) {
-		// log('returning, !selectedItemID');
-		// log('makeEditToolsButtons', 'end');
+		log('returning, !selectedItemID');
+		log('makeEditToolsButtons', 'end');
 		return '';
 	}
 
 	// All the various permutations of states
-	// log(`editor.selectedTool: ${editor.selectedTool}`);
+	log(`editor.selectedTool: ${editor.selectedTool}`);
 
 	// Button data
 	let toolButtonData = {
@@ -134,7 +134,7 @@ export function makeEditToolsButtons() {
 		}
 	}
 
-	// log('makeEditToolsButtons', 'end');
+	log('makeEditToolsButtons', 'end');
 	return content;
 }
 
