@@ -61,7 +61,7 @@ export class PageGlyphEdit {
 		l2.addEventListener('click', function(){ showNavDropdown(l2); });
 		editor.subscribe({
 			topic: 'whichGlyphIsSelected',
-			subscriberName: 'EDITING nav button',
+			subscriberID: 'nav.glyphChooserButton',
 			callback: (newGlyphID) => {
 				l2.innerHTML = makeNavButtonContent(lookUpGlyphName(newGlyphID, true), 'EDITING');
 			}
@@ -75,7 +75,7 @@ export class PageGlyphEdit {
 		content.querySelector('.left-area__panel').appendChild(makePanel());
 		editor.subscribe({
 			topic: ['whichGlyphIsSelected', 'whichPathIsSelected'],
-			subscriberName: 'Attributes panel',
+			subscriberID: 'nav.panelChooserButton',
 			callback: (newSelection) => {
 				let panelContent = content.querySelector('.left-area__panel');
 				panelContent.innerHTML = '';
@@ -95,7 +95,7 @@ export class PageGlyphEdit {
 		// Canvas
 		editor.subscribe({
 			topic: 'whichGlyphIsSelected',
-			subscriberName: 'Main edit canvas',
+			subscriberID: 'editCanvas.selectedGlyph',
 			callback: (newGlyphID) => {
 				log(`Main Canvas subscriber callback`, 'start');
 				let newChar = hexToChars(newGlyphID);
@@ -107,7 +107,7 @@ export class PageGlyphEdit {
 
 		editor.subscribe({
 			topic: 'whichPathIsSelected',
-			subscriberName: 'Main edit canvas',
+			subscriberID: 'editCanvas.selectedPath',
 			callback: () => {
 				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath'});
 			}

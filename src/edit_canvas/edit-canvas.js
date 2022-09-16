@@ -53,17 +53,17 @@ export class EditCanvas extends HTMLElement {
 		editor.editCanvas = this;
 		editor.subscribe({
 			topic: 'view',
-			name: 'Edit canvas',
+			subscriberID: 'editCanvas.view',
 			callback: () => this.redraw({calledBy: 'EditCanvas view subscriber'})
 		});
 		editor.subscribe({
 			topic: 'currentGlyph',
-			name: 'Edit canvas',
+			subscriberID: 'editCanvas.glyph',
 			callback: () => this.redraw({calledBy: 'EditCanvas currentGlyph subscriber'})
 		});
 		editor.subscribe({
 			topic: 'currentPath',
-			name: 'Edit canvas',
+			subscriberID: 'editCanvas.path',
 			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
 		});
 

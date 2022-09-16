@@ -51,7 +51,7 @@ export function makePanel_Layers() {
 
 			editor.subscribe({
 				topic: 'whichPathIsSelected',
-				subscriberName: 'Layer row button',
+				subscriberID: 'layersPanel.rowButton',
 				callback: (newSelectedPath) => {
 					log(`Layer subscription callback for selectedPath`, 'start');
 
@@ -100,7 +100,7 @@ export function makePanel_Layers() {
 	// Overall, watch for changes:
 	editor.subscribe({
 		topic: ['currentPath', 'currentGlyph'],
-		subscriberName: 'Layer panel',
+		subscriberID: 'layersPanel',
 		callback: () => { refreshPanel(); }
 	});
 

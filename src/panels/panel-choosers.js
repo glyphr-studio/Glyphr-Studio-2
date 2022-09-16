@@ -61,7 +61,7 @@ function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
 		if(registerSubscriptions) {
 			editor.subscribe({
 				topic:'whichGlyphIsSelected',
-				subscriberName: `Glyph tile ${glyphID}`,
+				subscriberID: `glyphTile.${glyphID}`,
 				callback: (newGlyphID) => {
 					// log('whichGlyphIsSelected subscriber callback');
 					// log(`checking if ${glyph.id} === ${glyphID}`);

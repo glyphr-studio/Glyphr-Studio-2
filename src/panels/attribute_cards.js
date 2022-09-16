@@ -407,6 +407,7 @@ function makeInputs_position(workItem) {
 	let y = workItem.y;
 	log(`x: ${round(x, 3)}`);
 	log(`y: ${round(y, 3)}`);
+	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
 
 	// Label
 	let label = makeElement({tag: 'label', innerHTML: `x${dimSplit()}y`});
@@ -418,7 +419,7 @@ function makeInputs_position(workItem) {
 	xInput.addEventListener('change', (event) => {
 		let newValue = event.target.getAttribute('value');
 		workItem.x = newValue;
-		getCurrentProjectEditor().publish('currentGlyph', workItem);
+		getCurrentProjectEditor().publish(thisTopic, workItem);
 	});
 
 	// Y
@@ -427,7 +428,7 @@ function makeInputs_position(workItem) {
 	yInput.addEventListener('change', (event) => {
 		let newValue = event.target.getAttribute('value');
 		workItem.y = newValue;
-		getCurrentProjectEditor().publish('currentGlyph', workItem);
+		getCurrentProjectEditor().publish(thisTopic, workItem);
 	});
 
 	// Put double input together
@@ -447,6 +448,7 @@ function makeInputs_size(workItem){
 	log(`width: ${round(width, 3)}`);
 	log(`height: ${round(height, 3)}`);
 	let editor = getCurrentProjectEditor();
+	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
 
 	// Label
 	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
@@ -458,13 +460,21 @@ function makeInputs_size(workItem){
 	wInput.addEventListener('change', (event) => {
 		let newValue = event.target.getAttribute('value');
 		setSize(workItem, newValue, false, workItem.ratioLock);
-		getCurrentProjectEditor().publish('currentGlyph', workItem);
+		getCurrentProjectEditor().publish(thisTopic, workItem);
 	});
 	editor.subscribe({
-		topic: ['currentGlyph', 'currentPath'],
+		topic: thisTopic,
+		subscriberID: `attributesPanel.${thisTopic}.width`,
 		callback: (changedItem) => {
-			log(`wInput CALLBACK setting value to ${changedItem.width}`);
-			wInput.value = round(changedItem.width, 3);
+			// log(`Width input CALLBACK`, 'start');
+			// log(changedItem);
+			if(changedItem.width) {
+				// log(`wInput CALLBACK setting value to ${changedItem.width}`);
+				wInput.value = round(changedItem.width, 3);
+			} else {
+				// log('changed item is UNDEFINED');
+			}
+			// log(`Width input CALLBACK`, 'end');
 		}
 	});
 
@@ -475,13 +485,21 @@ function makeInputs_size(workItem){
 	hInput.addEventListener('change', (event) => {
 		let newValue = event.target.getAttribute('value');
 		setSize(workItem, false, newValue, workItem.ratioLock);
-		getCurrentProjectEditor().publish('currentGlyph', workItem);
+		getCurrentProjectEditor().publish(thisTopic, workItem);
 	});
 	editor.subscribe({
-		topic: ['currentGlyph', 'currentPath'],
+		topic: thisTopic,
+		subscriberID: `attributesPanel.${thisTopic}.height`,
 		callback: (changedItem) => {
-			log(`hInput CALLBACK setting value to ${changedItem.height}`);
-			hInput.value = round(changedItem.height, 3);
+			// log(`Height input CALLBACK`, 'start');
+			// log(changedItem);
+			if(changedItem.height) {
+				// log(`hInput CALLBACK setting value to ${changedItem.height}`);
+				hInput.value = round(changedItem.height, 3);
+			} else {
+				// log('changed item is UNDEFINED');
+			}
+			// log(`Height input CALLBACK`, 'end');
 		}
 	});
 

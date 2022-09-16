@@ -20,12 +20,27 @@ export function makePanel() {
 	let content = makeElement();
 
 	if(panel === 'Attributes') {
+		editor.unsubscribe({idToRemove: 'layersPanel'});
+		editor.unsubscribe({idToRemove: 'historyPanel'});
+		editor.unsubscribe({idToRemove: 'guidesPanel'});
 		addAsChildren(content, makePanel_GlyphAttributes());
+
 	} else if (panel === 'Layers') {
+		editor.unsubscribe({idToRemove: 'attributesPanel'});
+		editor.unsubscribe({idToRemove: 'historyPanel'});
+		editor.unsubscribe({idToRemove: 'guidesPanel'});
 		addAsChildren(content, makePanel_Layers());
+
 	} else if (panel === 'History') {
+		editor.unsubscribe({idToRemove: 'attributesPanel'});
+		editor.unsubscribe({idToRemove: 'layersPanel'});
+		editor.unsubscribe({idToRemove: 'guidesPanel'});
 		addAsChildren(content, makePanel_History());
+
 	} else if (panel === 'Guides') {
+		editor.unsubscribe({idToRemove: 'attributesPanel'});
+		editor.unsubscribe({idToRemove: 'layersPanel'});
+		editor.unsubscribe({idToRemove: 'historyPanel'});
 		addAsChildren(content, makePanel_Guides());
 	}
 

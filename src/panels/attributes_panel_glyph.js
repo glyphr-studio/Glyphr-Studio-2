@@ -6,6 +6,7 @@ import {
 	makeCard_multiSelectPathAttributes,
 	makeCard_pathPointAttributes
 } from "./attribute_cards.js";
+import { refreshPanel } from "./panels.js";
 
 /**
 	Panel > Attributes > Glyph
@@ -16,15 +17,15 @@ import {
 
 export function makePanel_GlyphAttributes() {
 	log('makePanel_GlyphAttributes', 'start');
-	let projectEditor = getCurrentProjectEditor();
+	let editor = getCurrentProjectEditor();
 	let content = [];
-	// log(projectEditor);
+	// log(editor);
 
 	// Glyph
-	content.push(makeCard_glyphAttributes(projectEditor.selectedGlyph));
+	content.push(makeCard_glyphAttributes(editor.selectedGlyph));
 
 	// Paths
-	let selPaths = projectEditor.multiSelect.paths;
+	let selPaths = editor.multiSelect.paths;
 	if (selPaths.length === 1) {
 		// One path selected
 		log('One path selected');
@@ -46,13 +47,20 @@ export function makePanel_GlyphAttributes() {
 	}
 
 	// Path Points
-	let selPoints = projectEditor.multiSelect.points;
+	let selPoints = editor.multiSelect.points;
 	if(selPoints.length === 1) {
 		content.push(makeCard_pathPointAttributes(selPoints.singleton));
 	}
 
 	// Actions
 	content.push(makeCard_projectActions());
+
+	// Subscriber
+	editor.subscribe({
+		topic: 'whichPathIsSelected',
+		subscriberID: 'attributesPanel',
+		callback: () => { refreshPanel(); }
+	});
 
 	log(content);
 	log('makePanel_GlyphAttributes', 'end');
