@@ -12,8 +12,7 @@ export class GlyphElement {
 	 * gets bubbled up through the GlyphElement hierarchy
 	 */
 	changed() {
-		// let status = 'changed ' + this.objType;
-
+		// log(`~~ ${this.objType} changed`);
 		if (this.cache) {
 			this.cache = {};
 		}

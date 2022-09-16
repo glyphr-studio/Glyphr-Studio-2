@@ -114,9 +114,9 @@ export class ProjectEditor {
 	 */
 	publish(topic, data) {
 		log(`ProjectEditor.publish`, 'start');
-		log(topic);
+		log(`topic: ${topic}`);
 		log(data);
-		// log(`this.subscribers[topic]: ${this.subscribers[topic]}`);
+		log(this.subscribers[topic]);
 
 		if (this.subscribers[topic]) {
 			// Handle some things centrally
@@ -131,8 +131,9 @@ export class ProjectEditor {
 			if(topic === 'currentPath') {}
 
 			// Iterate through all the callbacks
-			this.subscribers[topic].forEach((sub) => {
-				sub.callback(data);
+			Object.keys(this.subscribers[topic]).forEach((subscriberID) => {
+				log(`Calling callback for ${subscriberID}`);
+				this.subscribers[topic][subscriberID](data);
 			});
 
 		} else {
@@ -151,14 +152,14 @@ export class ProjectEditor {
 	 * 		'whichPathIsSelected' - change to which path is being edited.
 	 * 		'currentGlyph' - edits to the current glyph.
 	 * 		'currentPath' - edits to the current path.
-	 * @param {string} subscriberName - the name of the thing listening
+	 * @param {string} subscriberID - the name of the thing listening
 	 * @param {function} callback - what to do when a change is triggered
 	 * @returns nothing
 	 */
-	subscribe({topic = false, subscriberName = '', callback = false}) {
+	subscribe({topic = false, subscriberID = '', callback = false}) {
 		// log(`ProjectEditor.subscribe`, 'start');
 		// log(`topic: ${topic}`);
-		// log(`subscriberName: ${subscriberName}`);
+		// log(`subscriberID: ${subscriberID}`);
 
 		if(!topic) {
 			console.warn(`Subscriber was not provided a topic`);
@@ -170,17 +171,45 @@ export class ProjectEditor {
 			return;
 		}
 
+		if(!subscriberID){
+			console.warn(`Subscriber was not provided a subscriberID`);
+			return;
+		}
+
 		// Support string for single topic, array for multi topic
 		let topicList = (typeof topic === 'string') ? [topic] : topic;
 
 		topicList.forEach((thisTopic) => {
-			if (!this.subscribers[thisTopic]) this.subscribers[thisTopic] = [];
-			this.subscribers[thisTopic].push({subscriberName: subscriberName, callback: callback});
+			if (!this.subscribers[thisTopic]) this.subscribers[thisTopic] = {};
+			this.subscribers[thisTopic][subscriberID] = callback;
 		});
 
 			// log(`ProjectEditor.subscribe`, 'end');
 	}
 
+	unsubscribe({topicToRemove = false, idToRemove = false}) {
+		log(`ProjectEditor.unsubscribe`, 'start');
+		log(`topicToRemove: ${topicToRemove}`);
+		log(`idToRemove: ${idToRemove}`);
+
+		if(topicToRemove && this.subscribers[topicToRemove]) {
+			log(`removing topic: ${topicToRemove}`);
+			delete this.subscribers[topicToRemove];
+		}
+
+		if(idToRemove) {
+			Object.keys(this.subscribers).forEach((topic) => {
+				Object.keys(this.subscribers[topic]).forEach((subscriberID) => {
+					if(subscriberID.indexOf(idToRemove) > -1) {
+						log(`removing subscriber: ${subscriberID} (matched to ${idToRemove})`);
+						delete this.subscribers[topic][subscriberID];
+					}
+				});
+			});
+		}
+
+		log(`ProjectEditor.unsubscribe`, 'end');
+	}
 
 
 

@@ -142,10 +142,10 @@ export class MultiSelectPoints extends MultiSelect {
 		return this._path;
 	}
 
-	publishChanges() {
+	publishChanges(topic = 'whichPathPointIsSelected') {
 		let editor = getCurrentProjectEditor();
-		editor.publish('currentPathPoint', this.members);
-		this.selectPathsThatHaveSelectedPoints();
+		editor.publish(topic, this.members);
+		// this.selectPathsThatHaveSelectedPoints();
 	}
 
 	updatePathPosition(dx, dy) {
@@ -307,9 +307,9 @@ export class MultiSelectPaths extends MultiSelect {
 		return false;
 	}
 
-	publishChanges() {
+	publishChanges(topic = 'whichPathIsSelected') {
 		let editor = getCurrentProjectEditor();
-		editor.publish('currentPath', this.members);
+		editor.publish(topic, this.members);
 	}
 
 	selectPathsThatHaveSelectedPoints() {}

@@ -84,7 +84,7 @@ export function makeEditToolsButtons() {
 
 		editor.subscribe({
 			topic: 'whichToolIsSelected',
-			subscriberName: buttonName,
+			subscriberID: `tools.${buttonName}`,
 			callback:  (newSelectedTool) => {
 				let isSelected = (newSelectedTool === buttonName);
 				newToolButton.classList.toggle('edit-canvas__tool-selected', isSelected);
@@ -174,7 +174,7 @@ export function makeViewToolsButtons() {
 		if(buttonName === 'pan') {
 			editor.subscribe({
 				topic: 'whichToolIsSelected',
-				subscriberName: buttonName,
+				subscriberID: `tools.${buttonName}`,
 				callback:  (newSelectedTool) => {
 					let isSelected = (newSelectedTool === buttonName);
 					newToolButton.classList.toggle('edit-canvas__tool-selected', isSelected);
@@ -203,7 +203,7 @@ export function makeViewToolsButtons() {
 
 	editor.subscribe({
 		topic: 'view',
-		subscriberName: 'Zoom readout',
+		subscriberID: 'tools.zoomReadout',
 		callback: (newView) => {
 			let zoomReadoutNumber = round(newView.dz * 100, 2);
 			zoomReadout.setAttribute('value', zoomReadoutNumber);
