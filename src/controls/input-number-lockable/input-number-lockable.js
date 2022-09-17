@@ -39,38 +39,38 @@ export class InputNumberLockable extends HTMLElement {
 		let style = makeElement({
 			tag: 'style',
 			content: `
-						* {
-							box-sizing: border-box;
-							transition: all 100ms easeOutExpo;
-						}
+				* {
+					box-sizing: border-box;
+					transition: all 100ms easeOutExpo;
+				}
 
-						.wrapper {
-							margin: 0px;
-							padding: 0px;
-							display: grid;
-							grid-template-columns: 1fr 24px;
-							border-style: solid;
-							border-width: 1px;
-							border-color: ${uiColors.enabled.restingLight.border};
-							background-color: ${uiColors.enabled.restingLight.background};
-							border-radius: 4px;
-						}
+				.wrapper {
+					margin: 0px;
+					padding: 0px;
+					display: grid;
+					grid-template-columns: 1fr 24px;
+					border-style: solid;
+					border-width: 1px;
+					border-color: ${uiColors.enabled.restingLight.border};
+					background-color: ${uiColors.enabled.restingLight.background};
+					border-radius: 4px;
+				}
 
-						.wrapper:hover,
-						.wrapper *:hover,
-						.wrapper:focus,
-						.wrapper *:focus {
-							border-color: ${uiColors.enabled.focus.border};
-						}
+				.wrapper:hover,
+				.wrapper *:hover,
+				.wrapper:focus,
+				.wrapper *:focus {
+					border-color: ${uiColors.enabled.focus.border};
+				}
 
-						.wrapper[disabled],
-						.wrapper:hover[disabled],
-						.wrapper:focus[disabled],
-						.wrapper:active[disabled] {
-							background-color: ${uiColors.disabled.background};
-							border-color: ${uiColors.disabled.border};
-						}
-				`,
+				.wrapper[disabled],
+				.wrapper:hover[disabled],
+				.wrapper:focus[disabled],
+				.wrapper:active[disabled] {
+					background-color: ${uiColors.disabled.background};
+					border-color: ${uiColors.disabled.border};
+				}
+		`,
 		});
 
 		// Put it all together

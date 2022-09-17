@@ -62,6 +62,10 @@
 	grid-template-columns: 122px 16px 122px;
 }
 
+.panel__card input-number {
+	width: 98px;
+}
+
 .dimSplit {
 	color: var(--gray-l80);
 	width:16px;
