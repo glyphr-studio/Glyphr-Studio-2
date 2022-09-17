@@ -96,7 +96,9 @@ export class InputNumber extends HTMLElement {
 						.numberInput {
 							background-color: transparent;
 							border: 0;
+							border-radius: 4px 0px 0px 4px;
 							margin: 0;
+							margin-right: 0px;
 							color: ${uiColors.enabled.resting.text};
 							grid-column-start: 1;
 							min-width: 50px;
@@ -113,6 +115,8 @@ export class InputNumber extends HTMLElement {
 
 						.numberInput:focus {
 							outline: var(--global-focus-style);
+							outline-offset: -1px;
+							border-radius: 3px;
 						}
 
 						.numberInput[disabled],
@@ -148,7 +152,8 @@ export class InputNumber extends HTMLElement {
 						.arrowWrapper:hover[disabled],
 						.arrowWrapper:focus[disabled],
 						.arrowWrapper:active[disabled] {
-							border-color: ${uiColors.disabled.border};
+							border-color: ${uiColors.disabled.background};
+							background-color: ${uiColors.disabled.background};
 						}
 
 						.wrapper .upArrow,
@@ -168,17 +173,30 @@ export class InputNumber extends HTMLElement {
 							font-size: 0.9em;
 							cursor: pointer;
 							color: ${uiColors.enabled.restingLight.fill};
-							outline: 0;
 						}
 
 						.upArrow {
+							border-radius: 4px 4px 0px 0px;
 							grid-row-start: 1;
 							vertical-align: bottom;
 						}
 
 						.downArrow {
+							border-radius: 0px 0px 4px 4px;
 							grid-row-start: 2;
 							vertical-align: top;
+						}
+
+						.upArrow:hover,
+						.downArrow:hover {
+							background-color: ${uiColors.enabled.focus.background} !important;
+						}
+
+						.upArrow:focus,
+						.downArrow:focus {
+							outline: var(--global-focus-style);
+							outline-offset: -1px;
+							border-radius: 3px;
 						}
 
 						.wrapper:hover .upArrow,
@@ -204,8 +222,9 @@ export class InputNumber extends HTMLElement {
 						.upArrow:active[disabled],
 						.downArrow:active[disabled] {
 							cursor: default;
-							color: ${uiColors.disabled.fill};
-							background-color: ${uiColors.disabled.background};
+							color: ${uiColors.disabled.fill} !important;
+							background-color: ${uiColors.disabled.background} !important;
+							outline: none;
 						}
 				`,
 		});
