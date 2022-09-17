@@ -21,8 +21,11 @@ export function makePanel_GlyphAttributes() {
 	let content = [];
 	// log(editor);
 
-	// Glyph
-	content.push(makeCard_glyphAttributes(editor.selectedGlyph));
+	// Path Points
+	let selPoints = editor.multiSelect.points;
+	if(selPoints.length === 1) {
+		content.push(makeCard_pathPointAttributes(selPoints.singleton));
+	}
 
 	// Paths
 	let selPaths = editor.multiSelect.paths;
@@ -46,11 +49,8 @@ export function makePanel_GlyphAttributes() {
 		content.push(makeCard_multiSelectPathAttributes(virtualGlyph));
 	}
 
-	// Path Points
-	let selPoints = editor.multiSelect.points;
-	if(selPoints.length === 1) {
-		content.push(makeCard_pathPointAttributes(selPoints.singleton));
-	}
+	// Glyph
+	content.push(makeCard_glyphAttributes(editor.selectedGlyph));
 
 	// Actions
 	content.push(makeCard_projectActions());
