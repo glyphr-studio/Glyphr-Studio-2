@@ -22,20 +22,8 @@ export function makeCard_glyphAttributes(glyph) {
 		innerHTML: '<h3>Glyph</h3>'
 	});
 
-	let advanceWidthLabel = makeElement({
-		tag: 'label',
-		innerHTML: 'advance width'
-	});
-
-	let advanceWidthInput = makeElement({
-		tag: 'input-number',
-		attributes: {
-			value: glyph.advanceWidth
-		}
-	});
-	advanceWidthInput.addEventListener('change', (event) => {
-		glyph.advanceWidth = event.target.value;
-	});
+	let advanceWidthLabel = makeSingleLabel('advance width');
+	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentGlyph', 'input-number');
 
 	addAsChildren(glyphCard, [advanceWidthLabel, advanceWidthInput]);
 	addAsChildren(glyphCard, makeInputs_position(glyph));
@@ -50,23 +38,19 @@ export function makeCard_glyphAttributes(glyph) {
 // Path attributes
 // --------------------------------------------------------------
 export function makeCard_pathAttributes(path) {
-	// log("makeCard_pathAttributes - Drawing Path Details");
+	log(`makeCard_pathAttributes`, 'start');
+	log(path);
 
-	let nameLabel = makeElement({
-		tag: 'label',
-		innerHTML: 'path name'
+	let pathCard = makeElement({
+		tag: 'div',
+		className: 'panel__card',
+		innerHTML: '<h3>Path</h3>'
 	});
 
-	let nameInput = makeElement({
-		tag: 'input',
-		attributes: {
-			type: 'text',
-			value: path.name
-		}
-	});
-	nameInput.addEventListener('change', (event) => {
-		path.name = event.target.value;
-	});
+	log(`path['name']: ${path['name']}`);
+
+	let nameLabel = makeSingleLabel('path name');
+	let nameInput = makeSingleInput(path, 'name', 'currentPath', 'input');
 
 	let windingInfo = makeElement({
 		tag: 'label',
@@ -115,15 +99,10 @@ export function makeCard_pathAttributes(path) {
 	let posElems = makeInputs_position(path);
 	let sizeElems = makeInputs_size(path);
 
-
-	let pathCard = makeElement({
-		tag: 'div',
-		className: 'panel__card',
-		innerHTML: '<h3>Path</h3>'
-	});
-
 	addAsChildren(pathCard, [nameLabel, nameInput, windingInfo, windingButton, posElems, sizeElems]);
 	addAsChildren(pathCard, makeActionsArea_Path());
+
+	log(`makeCard_pathAttributes`, 'end');
 	return pathCard;
 }
 
@@ -136,6 +115,7 @@ export function makeCard_multiSelectPathAttributes(glyph) {
 	addAsChildren(multiPathCard, makeInputs_position(glyph));
 	addAsChildren(multiPathCard, makeInputs_size(glyph));
 	addAsChildren(multiPathCard, makeActionsArea_Path());
+
 	return multiPathCard;
 }
 
@@ -160,6 +140,223 @@ export function makeCard_pathPointAttributes(tp) {
 		>
 		</input-number>
 	`;
+
+	return content;
+}
+
+export function makePointButton(type, selected) {
+	let color = accentColors.gray.l40;
+	let bgcolor = 'transparent';
+
+	if (selected) {
+		color = accentColors.blue.l65;
+		bgcolor = accentColors.gray.offWhite;
+	}
+
+	let re = `<button
+		class="pointtypebutton"
+		style="background-color:${bgcolor};"
+		title="point type: ${type}"
+	>
+	<svg version="1.1"
+		xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+		x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"
+	>
+		<g fill="${color}">
+		<rect x="8" y="8" width="1" height="4"/>
+		<rect x="11" y="8" width="1" height="4"/>
+		<rect x="8" y="8" width="4" height="1"/>
+		<rect x="8" y="11" width="4" height="1"/>
+		<rect x="4" y="4" width="1" height="1"/>
+		<rect x="5" y="5" width="1" height="1"/>
+		<rect x="6" y="6" width="1" height="1"/>
+		<rect x="7" y="7" width="1" height="1"/>
+		<circle cx="3" cy="3" r="1.5"/>
+	`;
+
+	switch (type) {
+		case 'corner':
+			re += `
+			<rect x="7" y="12" width="1" height="1"/>
+			<rect x="6" y="13" width="1" height="1"/>
+			<rect x="5" y="14" width="1" height="1"/>
+			<rect x="4" y="15" width="1" height="1"/>
+			<circle cx="3" cy="17" r="1.5"/>
+			`;
+			break;
+
+		case 'symmetric':
+			re += `
+			<rect x="12" y="12" width="1" height="1"/>
+			<rect x="13" y="13" width="1" height="1"/>
+			<rect x="14" y="14" width="1" height="1"/>
+			<rect x="15" y="15" width="1" height="1"/>
+			<circle cx="17" cy="17" r="1.5"/>
+			`;
+			break;
+
+		case 'flat':
+			re += `
+			<rect x="12" y="12" width="1" height="1"/>
+			<rect x="13" y="13" width="1" height="1"/>
+			<circle cx="15" cy="15" r="1.5"/>
+			`;
+			break;
+	}
+
+	re += `</g></svg></button>`;
+	return re;
+}
+
+
+
+
+// --------------------------------------------------------------
+// Common attributes stuff
+// --------------------------------------------------------------
+
+function makeInputs_position(workItem) {
+	// TODO transform origin
+	// log(`makeInputs_position`, 'start');
+	let x = workItem.x;
+	let y = workItem.y;
+	// log(`x: ${round(x, 3)}`);
+	// log(`y: ${round(y, 3)}`);
+	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
+
+	// Label + inputs
+	let label = makeElement({tag: 'label', innerHTML: `x${dimSplit()}y`});
+	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
+	let xInput = makeSingleInput(workItem, 'x', thisTopic, 'input-number-lockable');
+	let yInput = makeSingleInput(workItem, 'y', thisTopic, 'input-number-lockable');
+
+	// Put double input together
+	doubleInput.appendChild(xInput);
+	doubleInput.appendChild(dimSplitElement());
+	doubleInput.appendChild(yInput);
+
+	// log(`makeInputs_position`, 'end');
+	return [label, doubleInput];
+}
+
+function makeInputs_size(workItem){
+	// TODO transform origin
+	// log(`makeInputs_size`, 'start');
+	let width = workItem.width;
+	let height = workItem.height;
+	// log(`width: ${round(width, 3)}`);
+	// log(`height: ${round(height, 3)}`);
+	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
+
+	// Label + Inputs
+	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
+	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
+	let wInput = makeSingleInput(workItem, 'width', thisTopic, 'input-number-lockable');
+	let hInput = makeSingleInput(workItem, 'height', thisTopic, 'input-number-lockable');
+
+	// Put double input together
+	doubleInput.appendChild(wInput);
+	doubleInput.appendChild(dimSplitElement());
+	doubleInput.appendChild(hInput);
+
+	// Ratio lock checkbox
+	let ratioLockLabel = makeElement({
+		tag: 'label',
+		className: 'info',
+		innerHTML: `
+		<span>lock aspect ratio</span>
+		<info-bubble>
+			When either the width or height is adjusted,
+			the overall size will be kept proportional.
+			<br><br>
+			Maintaining aspect ratio will override value
+			locks if need be.
+		</info-bubble>
+		`
+	});
+
+	let ratioLockCheckbox = makeElement({
+		tag: 'input',
+		attributes: {
+			type: 'checkbox'
+		}
+	});
+	if(workItem.ratioLock) ratioLockCheckbox.setAttribute('checked', '');
+	ratioLockCheckbox.addEventListener('change', (event) => {
+		let newValue = event.target.checked;
+		workItem.ratioLock = newValue;
+	});
+
+	// log(`makeInputs_size`, 'end');
+	return [inputLabel, doubleInput, ratioLockLabel, ratioLockCheckbox];
+}
+
+function makeSingleInput(workItem, property, thisTopic, tagName) {
+	let newInput = makeElement({tag: tagName});
+	let value = tagName === 'input'? workItem[property] : round(workItem[property], 3);
+	newInput.setAttribute('value', value);
+	newInput.addEventListener('change', (event) => {
+		let newValue = event.target.value;
+		workItem[property] = newValue;
+		getCurrentProjectEditor().publish(thisTopic, workItem);
+	});
+	getCurrentProjectEditor().subscribe({
+		topic: thisTopic,
+		subscriberID: `attributesPanel.${thisTopic}.${property}`,
+		callback: (changedItem) => {
+			if(changedItem[property]) {
+				let newValue = tagName === 'input'? changedItem[property] : round(changedItem[property], 3);
+				newInput.value = newValue;
+			}
+		}
+	});
+
+	return newInput;
+}
+
+function makeSingleLabel(text, info = false) {
+	let newLabel = makeElement({
+		tag: 'label',
+		innerHTML: text
+	});
+
+	return newLabel;
+}
+
+function setSize(workItem, newW, newH, ratioLock){
+	if(workItem.objType === 'Path') workItem.setPathSize(newW, newH, ratioLock);
+	else workItem.setGlyphSize(newW, newH, ratioLock);
+}
+
+function dimSplit() {
+	return `<span class="dimSplit">&#x2044;</span>`;
+}
+
+function dimSplitElement() {
+	return makeElement({
+		className: 'dimSplit',
+		innerHTML: '&#x2044;'
+	});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/*
 	content += '<tr><td> point type </td><td>';
@@ -322,365 +519,3 @@ export function makeCard_pathPointAttributes(tp) {
 		'</tr>';
 	}
   */
-	return content;
-}
-
-export function makePointButton(type, selected) {
-	let color = _UI.colors.gray.l40;
-	let bgcolor = 'transparent';
-
-	if (selected) {
-		color = _UI.colors.blue.l65;
-		bgcolor = _UI.colors.gray.offWhite;
-	}
-
-	// log("MAKEPOINTBUTTON - " + type + " selected: " + selected + " color: " + color);
-	let re = '';
-
-	re +=
-		'<button class="pointtypebutton" style="background-color:' +
-		bgcolor +
-		';" ';
-	re +=
-		'onclick="_UI.multiSelect.points.setPointType(\'' +
-		type +
-		"'); historyPut('Point Type: " +
-		type +
-		"'); redraw({calledBy:'pointDetails'});\" ";
-	re += 'title="point type: ' + type + '" ';
-	re += '>';
-	re += '<svg version="1.1" ';
-	re +=
-		'xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ';
-	re += 'x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20" ';
-	re += '><g fill="' + color + '">';
-	re += '<rect x="8" y="8" width="1" height="4"/>';
-	re += '<rect x="11" y="8" width="1" height="4"/>';
-	re += '<rect x="8" y="8" width="4" height="1"/>';
-	re += '<rect x="8" y="11" width="4" height="1"/>';
-	re += '<rect x="4" y="4" width="1" height="1"/>';
-	re += '<rect x="5" y="5" width="1" height="1"/>';
-	re += '<rect x="6" y="6" width="1" height="1"/>';
-	re += '<rect x="7" y="7" width="1" height="1"/>';
-	re += '<circle cx="3" cy="3" r="1.5"/>';
-
-	switch (type) {
-		case 'corner':
-			re += '<rect x="7" y="12" width="1" height="1"/>';
-			re += '<rect x="6" y="13" width="1" height="1"/>';
-			re += '<rect x="5" y="14" width="1" height="1"/>';
-			re += '<rect x="4" y="15" width="1" height="1"/>';
-			re += '<circle cx="3" cy="17" r="1.5"/>';
-			break;
-
-		case 'symmetric':
-			re += '<rect x="12" y="12" width="1" height="1"/>';
-			re += '<rect x="13" y="13" width="1" height="1"/>';
-			re += '<rect x="14" y="14" width="1" height="1"/>';
-			re += '<rect x="15" y="15" width="1" height="1"/>';
-			re += '<circle cx="17" cy="17" r="1.5"/>';
-			break;
-
-		case 'flat':
-			re += '<rect x="12" y="12" width="1" height="1"/>';
-			re += '<rect x="13" y="13" width="1" height="1"/>';
-			re += '<circle cx="15" cy="15" r="1.5"/>';
-			break;
-	}
-
-	re += '</g></svg></button>';
-
-	return re;
-}
-
-
-
-
-// --------------------------------------------------------------
-// Common attributes stuff
-// --------------------------------------------------------------
-
-function makeInputs_position(workItem) {
-	// TODO transform origin
-	log(`makeInputs_position`, 'start');
-	let x = workItem.x;
-	let y = workItem.y;
-	log(`x: ${round(x, 3)}`);
-	log(`y: ${round(y, 3)}`);
-	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
-
-	// Label
-	let label = makeElement({tag: 'label', innerHTML: `x${dimSplit()}y`});
-	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
-
-	// X
-	let xInput = makeElement({tag: 'input-number-lockable'});
-	xInput.setAttribute('value', round(x, 3));
-	xInput.addEventListener('change', (event) => {
-		let newValue = event.target.getAttribute('value');
-		workItem.x = newValue;
-		getCurrentProjectEditor().publish(thisTopic, workItem);
-	});
-
-	// Y
-	let yInput = makeElement({tag: 'input-number-lockable'});
-	yInput.setAttribute('value', round(y, 3));
-	yInput.addEventListener('change', (event) => {
-		let newValue = event.target.getAttribute('value');
-		workItem.y = newValue;
-		getCurrentProjectEditor().publish(thisTopic, workItem);
-	});
-
-	// Put double input together
-	doubleInput.appendChild(xInput);
-	doubleInput.appendChild(dimSplitElement());
-	doubleInput.appendChild(yInput);
-
-	log(`makeInputs_position`, 'end');
-	return [label, doubleInput];
-}
-
-function makeInputs_size(workItem){
-	// TODO transform origin
-	log(`makeInputs_size`, 'start');
-	let width = workItem.width;
-	let height = workItem.height;
-	log(`width: ${round(width, 3)}`);
-	log(`height: ${round(height, 3)}`);
-	let editor = getCurrentProjectEditor();
-	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
-
-	// Label
-	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
-	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
-
-	// Width
-	let wInput = makeElement({tag: 'input-number-lockable'});
-	wInput.setAttribute('value', round(width, 3));
-	wInput.addEventListener('change', (event) => {
-		let newValue = event.target.getAttribute('value');
-		setSize(workItem, newValue, false, workItem.ratioLock);
-		getCurrentProjectEditor().publish(thisTopic, workItem);
-	});
-	editor.subscribe({
-		topic: thisTopic,
-		subscriberID: `attributesPanel.${thisTopic}.width`,
-		callback: (changedItem) => {
-			// log(`Width input CALLBACK`, 'start');
-			// log(changedItem);
-			if(changedItem.width) {
-				// log(`wInput CALLBACK setting value to ${changedItem.width}`);
-				wInput.value = round(changedItem.width, 3);
-			} else {
-				// log('changed item is UNDEFINED');
-			}
-			// log(`Width input CALLBACK`, 'end');
-		}
-	});
-
-
-	// Height
-	let hInput = makeElement({tag: 'input-number-lockable'});
-	hInput.setAttribute('value', round(height, 3));
-	hInput.addEventListener('change', (event) => {
-		let newValue = event.target.getAttribute('value');
-		setSize(workItem, false, newValue, workItem.ratioLock);
-		getCurrentProjectEditor().publish(thisTopic, workItem);
-	});
-	editor.subscribe({
-		topic: thisTopic,
-		subscriberID: `attributesPanel.${thisTopic}.height`,
-		callback: (changedItem) => {
-			// log(`Height input CALLBACK`, 'start');
-			// log(changedItem);
-			if(changedItem.height) {
-				// log(`hInput CALLBACK setting value to ${changedItem.height}`);
-				hInput.value = round(changedItem.height, 3);
-			} else {
-				// log('changed item is UNDEFINED');
-			}
-			// log(`Height input CALLBACK`, 'end');
-		}
-	});
-
-
-	// Put double input together
-	doubleInput.appendChild(wInput);
-	doubleInput.appendChild(dimSplitElement());
-	doubleInput.appendChild(hInput);
-
-	// Ratio lock checkbox
-	let ratioLockLabel = makeElement({
-		tag: 'label',
-		className: 'info',
-		innerHTML: `
-		<span>lock aspect ratio</span>
-		<info-bubble>
-			When either the width or height is adjusted,
-			the overall size will be kept proportional.
-			<br><br>
-			Maintaining aspect ratio will override value
-			locks if need be.
-		</info-bubble>
-		`
-	});
-
-	let ratioLockCheckbox = makeElement({
-		tag: 'input',
-		attributes: {
-			type: 'checkbox'
-		}
-	});
-	if(workItem.ratioLock) ratioLockCheckbox.setAttribute('checked', '');
-	ratioLockCheckbox.addEventListener('change', (event) => {
-		let newValue = event.target.checked;
-		workItem.ratioLock = newValue;
-	});
-
-	log(`makeInputs_size`, 'end');
-	return [inputLabel, doubleInput, ratioLockLabel, ratioLockCheckbox];
-}
-
-function setSize(workItem, newW, newH, ratioLock){
-	if(workItem.objType === 'Path') workItem.setPathSize(newW, newH, ratioLock);
-	else workItem.setGlyphSize(newW, newH, ratioLock);
-}
-
-function dimSplit() {
-	return `<span class="dimSplit">&#x2044;</span>`;
-}
-
-function dimSplitElement() {
-	return makeElement({
-		className: 'dimSplit',
-		innerHTML: '&#x2044;'
-	});
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-OLD GLYPH DETAILS
-	if (projectEditor.nav.page === 'components') return content;
-
-	// AUTO GLYPH WIDTH
-	content += '<h3> glyph width </h3>';
-
-	content +=`
-		<label>auto calculate <span class="unit">(em units)</span></label>
-		<input type="checkbox" checked="getSelectedItem().isAutoWide"/>
-	`;
-
-	if (!glyph.isAutoWide) {
-		content +=
-			'<input type="number" id="charaw" step="' +
-			spinn +
-			'" ' +
-			'value="' +
-			round(glyph.glyphWidth, 3) +
-			'" ' +
-			'onchange="_UI.focusElement=this.id; getSelectedItem().glyphWidth = (this.value*1); redraw({calledBy:{calledBy:\'glyphDetails\'}});">';
-	} else {
-		content +=
-			'<input type="number" disabled="disabled" ' +
-			'value="' +
-			round(glyph.glyphWidth, 3) +
-			'"/>';
-	}
-
-	content += '</td>' + '</tr>';
-
-	// LEFT SIDE BEARING
-	if (glyph.isAutoWide) {
-		content +=
-			'<tr><td colspan=2 class="detailtitle"><h3> left side bearing </h3>';
-
-		content +=
-			'<tr>' +
-			'<td> use default <span class="unit">(em units)</span> </td>' +
-			'<td>' +
-			// checkUI(  'getSelectedItem().leftSideBearing',  glyph.leftSideBearing,  true,  true) +
-			'&emsp;';
-
-		if (glyph.leftSideBearing) {
-			if (glyph.leftSideBearing === true)
-				glyph.leftSideBearing = getCurrentProject().projectSettings.defaultLSB;
-			content +=
-				'<input type="number" id="charlsb" step="' +
-				spinn +
-				'" ' +
-				'value="' +
-				glyph.leftSideBearing +
-				'" ' +
-				'onchange="_UI.focusElement=this.id; getSelectedItem().leftSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
-		} else {
-			content +=
-				'<input type="number" disabled="disabled" ' +
-				'value="' +
-				round(getCurrentProject().projectSettings.defaultLSB, 3) +
-				'"/>';
-		}
-		content += '</td>' + '</tr>';
-	}
-
-	// RIGHT SIDE BEARING
-	if (glyph.isAutoWide) {
-		content +=
-			'<tr><td colspan=2 class="detailtitle"><h3> right side bearing </h3>';
-
-		content +=
-			'<tr>' +
-			'<td> use default <span class="unit">(em units)</span> </td>' +
-			'<td>' +
-			// checkUI(  'getSelectedItem().rightSideBearing',  glyph.rightSideBearing,  true,  true) +
-			'&emsp;';
-
-		if (glyph.rightSideBearing) {
-			if (glyph.rightSideBearing === true)
-				glyph.rightSideBearing = getCurrentProject().projectSettings.defaultRSB;
-			content +=
-				'<input type="number" id="charrsb" step="' +
-				spinn +
-				'" ' +
-				'value="' +
-				glyph.rightSideBearing +
-				'" ' +
-				'onchange="_UI.focusElement=this.id; getSelectedItem().rightSideBearing = (this.value*1); redraw({calledBy:\'glyphDetails\'});">';
-		} else {
-			content +=
-				'<input type="number" disabled="disabled" ' +
-				'value="' +
-				round(getCurrentProject().projectSettings.defaultRSB, 3) +
-				'"/>';
-		}
-		content += '</td>' + '</tr>';
-	}
-
-	// USED IN
-	if (glyph.usedIn.length > 0) {
-		content +=
-			'<tr><td colspan=2><br class="detailtitle"><h3>glyphs that use this component</h3>';
-		content += '<tr><td colspan=2>';
-		content += makeUsedInThumbs();
-		content += '';
-	}
-
-	return content;
-}
-
-*/

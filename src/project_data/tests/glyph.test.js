@@ -106,10 +106,10 @@ describe('Glyph', () => {
 		expect(g.isAutoWide).toBe(false);
 	});
 
-	it('get/set glyphWidth', () => {
+	it('get/set advanceWidth', () => {
 		const g = sampleGlyph();
-		g.glyphWidth = 123;
-		expect(g.glyphWidth).toBe(123);
+		g.advanceWidth = 123;
+		expect(g.advanceWidth).toBe(123);
 	});
 
 	it('get/set leftSideBearing', () => {

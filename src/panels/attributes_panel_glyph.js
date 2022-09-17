@@ -55,6 +55,8 @@ export function makePanel_GlyphAttributes() {
 	// Actions
 	content.push(makeCard_projectActions());
 
+	// TODO used-in glyph card
+
 	// Subscriber
 	editor.subscribe({
 		topic: 'whichPathIsSelected',

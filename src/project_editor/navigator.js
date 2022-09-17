@@ -15,7 +15,7 @@ export class Navigator {
 	constructor() {
 		this.page = 'Open project';
 		this.panel = 'Attributes';
-		this.pages = {};
+		this.pageMakers = {};
 	}
 
 	/**
@@ -100,7 +100,7 @@ export class Navigator {
 		// log(wrapper);
 
 		if (wrapper) {
-			const pageContent = this.pageLoader();
+			const pageContent = this.makePageContent();
 			wrapper.innerHTML = makeAppTopBar();
 			wrapper.appendChild(pageContent);
 		} else {
@@ -114,8 +114,8 @@ export class Navigator {
 	 * Sets the current view to the appropriate Page
 	 * @returns {object} Page Loader object - {string} content and {function} callback
 	 */
-	pageLoader() {
-		// log(`ProjectEditor.pageLoader`, 'start');
+	makePageContent() {
+		// log(`ProjectEditor.makePageContent`, 'start');
 		const editorContent = makeElement({ tag: 'div', id: 'app__main-content' });
 
 		// Default page loader fallback
@@ -127,20 +127,20 @@ export class Navigator {
 			console.warn(`No page maker for ${this.page}`);
 			pageContent.innerHTML += `<br>${this.page}`;
 		} else {
-			if (!this.pages[this.page]) {
-				this.pages[this.page] = new currentPageMaker();
+			if (!this.pageMakers[this.page]) {
+				this.pageMakers[this.page] = new currentPageMaker();
 			}
 			// If there is a page maker and a loader, set it
-			pageContent = this.pages[this.page].pageLoader();
+			pageContent = this.pageMakers[this.page].makePageContent();
 		}
 
 		// Append results
 		editorContent.appendChild(pageContent);
 
-		// log(`this.pages`);
-		// log(this.pages);
+		// log(`this.pageMakers`);
+		// log(this.pageMakers);
 
-		// log(`ProjectEditor.pageLoader`, 'end');
+		// log(`ProjectEditor.makePageContent`, 'end');
 
 		return editorContent;
 	}

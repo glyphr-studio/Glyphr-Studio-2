@@ -8,7 +8,7 @@
 
 .panel__card {
 	display: grid;
-	grid-template-columns: 1fr 1fr;
+	grid-template-columns: 141px 1fr;
 	align-items: center;
 	justify-items: left;
 	row-gap: 5px;
@@ -59,7 +59,7 @@
 .panel__card .doubleInput {
 	grid-column: 2;
 	display: grid;
-	grid-template-columns: 1fr min-content 1fr;
+	grid-template-columns: 122px 16px 122px;
 }
 
 .dimSplit {
@@ -72,7 +72,7 @@
 }
 
 :root {
-	--action-icon-size: 36px;
+	--action-icon-size: 30px;
 }
 
 .panel__actions-area {
@@ -80,7 +80,7 @@
 	display: grid;
 	grid-template-columns: repeat(10, var(--action-icon-size));
 	grid-template-rows: var(--action-icon-size);
-	gap: 5px;
+	gap: 10px;
 }
 
 .panel__actions-area h3 {

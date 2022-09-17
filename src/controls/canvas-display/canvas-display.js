@@ -129,10 +129,10 @@ export class CanvasDisplay extends HTMLElement {
 		let upm = settings.upm;
 		let ascent = settings.ascent;
 		let zoom = Math.min(contentWidth, contentHeight) / upm;
-		let glyphWidth = glyph.advanceWidth;
+		let advanceWidth = glyph.advanceWidth;
 
 		let view = {
-			dx: gutterSize + ((contentWidth - (zoom * glyphWidth))/2),
+			dx: gutterSize + ((contentWidth - (zoom * advanceWidth))/2),
 			dy: gutterSize + (zoom * (ascent)),
 			dz: zoom,
 		};

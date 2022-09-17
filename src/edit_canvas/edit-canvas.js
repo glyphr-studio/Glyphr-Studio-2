@@ -109,13 +109,9 @@ export class EditCanvas extends HTMLElement {
 		// log(sg);
 
 		// Grid
-		let width = sg.width;
-		if(eventHandlerData.newBasicPathMaxes){
-			width = Math.max(width, eventHandlerData.newBasicPathMaxes.xMax);
-		}
 		ctx.fillStyle = accentColors.gray.l90;
 		ctx.fillRect(view.dx, 0, 1, 1000);
-		ctx.fillRect(view.dx + (width * view.dz), 0, 1, 1000);
+		ctx.fillRect(view.dx + (sg.advanceWidth * view.dz), 0, 1, 1000);
 		ctx.fillRect(0, view.dy, 1000, 1);
 
 		// Draw glyphs

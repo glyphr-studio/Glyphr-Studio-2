@@ -42,7 +42,7 @@ export class GlyphTile extends HTMLElement {
 		let upm = settings.upm;
 		let ascent = settings.ascent;
 		let zoom = contentSize / upm;
-		let glyphWidth;
+		let advanceWidth;
 
 		this.setAttribute(
 			'title',
@@ -57,10 +57,10 @@ export class GlyphTile extends HTMLElement {
 			this.ctx = this.thumbnail.getContext('2d');
 			this.thumbnail.width = overallSize;
 			this.thumbnail.height = overallSize;
-			glyphWidth = this.glyphObject.advanceWidth;
+			advanceWidth = this.glyphObject.advanceWidth;
 
 			this.view = {
-				dx: gutterSize + ((contentSize - (zoom * glyphWidth))/2),
+				dx: gutterSize + ((contentSize - (zoom * advanceWidth))/2),
 				dy: gutterSize + (zoom * (ascent)),
 				dz: zoom,
 			};
