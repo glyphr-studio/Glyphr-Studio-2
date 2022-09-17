@@ -22,8 +22,8 @@ export class PageGlyphEdit {
 	 * Load the Open Project page
 	 * @returns {object} HTML Element + callback function
 	 */
-	pageLoader() {
-		log(`PageGlyphEdit.pageLoader`, 'start');
+	makePageContent() {
+		log(`PageGlyphEdit.makePageContent`, 'start');
 		let editor = getCurrentProjectEditor();
 		log('current ProjectEditor');
 		log(editor);
@@ -119,7 +119,7 @@ export class PageGlyphEdit {
 		});
 
 
-		log(`PageGlyphEdit.pageLoader`, 'end');
+		log(`PageGlyphEdit.makePageContent`, 'end');
 		return content;
 	}
 }

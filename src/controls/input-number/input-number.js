@@ -99,7 +99,7 @@ export class InputNumber extends HTMLElement {
 							margin: 0;
 							color: ${uiColors.enabled.resting.text};
 							grid-column-start: 1;
-							min-width: 80px;
+							min-width: 50px;
 							height: 24px;
 							padding: 0px 8px 0px 2px;
 							text-align: right;

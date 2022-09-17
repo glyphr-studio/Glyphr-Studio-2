@@ -22,7 +22,7 @@ export function getVersionTwoTestProject() {
         id:'0x0041',
         objType:'Glyph',
         name:'Latin Capital Letter A',
-        glyphWidth:530, leftSideBearing:10, rightSideBearing:10,
+        advanceWidth:530, leftSideBearing:10, rightSideBearing:10,
         paths:[
             {objType:'Path',
               pathPoints:[
@@ -49,7 +49,7 @@ export function getVersionTwoTestProject() {
         id:'0x0042',
         objType:'Glyph',
         name:'Latin Capital Letter B',
-        glyphWidth:385, leftSideBearing:false, rightSideBearing:false,
+        advanceWidth:385, leftSideBearing:false, rightSideBearing:false,
         paths:[
             {objType:'Path',
               pathPoints:[
@@ -96,7 +96,7 @@ export function getVersionTwoTestProject() {
         id:'0x0043',
         objType:'Glyph',
         name:'Latin Capital Letter C',
-        glyphWidth:400, leftSideBearing:false, rightSideBearing:false,
+        advanceWidth:400, leftSideBearing:false, rightSideBearing:false,
         paths:[
             {objType:'Path',
               pathPoints:[

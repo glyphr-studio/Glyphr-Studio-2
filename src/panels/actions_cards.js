@@ -616,7 +616,7 @@ export function copyPathsFromTo(
 		destinationGlyph.isAutoWide = sourceGlyph.isAutoWide;
 	}
 	if (copyGlyphAttributes.srcWidth){
-		destinationGlyph.glyphWidth = sourceGlyph.glyphWidth;
+		destinationGlyph.advanceWidth = sourceGlyph.advanceWidth;
 	}
 	if (copyGlyphAttributes.srcLSB){
 		destinationGlyph.leftSideBearing = sourceGlyph.leftSideBearing;

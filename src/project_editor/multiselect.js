@@ -24,30 +24,30 @@ class MultiSelect {
 	}
 
 	isSelectable(obj) {
-		log(`MultiSelect.isSelectable`, 'start');
-		log(obj);
-		log(`obj.objType: ${obj.objType}`);
+		// log(`MultiSelect.isSelectable`, 'start');
+		// log(obj);
+		// log(`obj.objType: ${obj.objType}`);
 
 		let selectable = [
 			'Path Point', 'Path', 'Component Instance'
 		];
 
-		log(`MultiSelect.isSelectable`, 'end');
+		// log(`MultiSelect.isSelectable`, 'end');
 		return selectable.includes(obj?.objType);
 	}
 
 	select(obj) {
-		log('MultiSelect.select', 'start');
+		// log('MultiSelect.select', 'start');
 		if (this.isSelectable(obj)) {
-			log('selecting object');
+			// log('selecting object');
 			this.members = [obj];
 			this.publishChanges();
 		} else {
-			log('this.isSelectable = false, clearing');
+			// log('this.isSelectable = false, clearing');
 			this.clear();
 		}
 
-		log('MultiSelect.select', 'end');
+		// log('MultiSelect.select', 'end');
 	}
 
 	clear() {
@@ -58,12 +58,12 @@ class MultiSelect {
 	}
 
 	add(obj) {
-		log(`MultiSelect.add`, 'start');
+		// log(`MultiSelect.add`, 'start');
 		if (this.isSelectable(obj) && this.members.indexOf(obj) < 0) {
 			this.members.push(obj);
 		}
 		this.publishChanges();
-		log(`MultiSelect.add`, 'end');
+		// log(`MultiSelect.add`, 'end');
 	}
 
 	remove(obj) {

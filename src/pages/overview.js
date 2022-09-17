@@ -20,8 +20,8 @@ export class PageOverview {
 	 * Load the Open Project page
 	 * @returns {object} HTML Element + callback function
 	 */
-	pageLoader() {
-		log(`PageOverview.pageLoader`, 'start');
+	makePageContent() {
+		log(`PageOverview.makePageContent`, 'start');
 
 		const content = makeElement({
 			tag: 'div',
@@ -54,7 +54,7 @@ export class PageOverview {
 		let l1 = content.querySelector('#nav-button-l1');
 		l1.addEventListener('click', function(){ showNavDropdown(l1); });
 
-		log(`PageOverview.pageLoader`, 'end');
+		log(`PageOverview.makePageContent`, 'end');
 
 		return content;
 	}
