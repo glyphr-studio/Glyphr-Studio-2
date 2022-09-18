@@ -64,7 +64,7 @@ export function makePanel_GlyphAttributes() {
 		callback: () => { refreshPanel(); }
 	});
 
-	log(content);
+	// log(content);
 	log('makePanel_GlyphAttributes', 'end');
 	return content;
 }
