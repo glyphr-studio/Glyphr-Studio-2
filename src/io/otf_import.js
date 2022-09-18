@@ -1,4 +1,4 @@
-import { OpenTypeJS } from '../lib/opentypejs_1-3-1.js';
+import OpenTypeJS from '../lib/opentypejs_1-3-1.js';
 
 /**
 	IO > Import > OpenType
