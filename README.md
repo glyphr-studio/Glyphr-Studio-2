@@ -45,11 +45,11 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
   * This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js
 * The whole app will still concat down to HTML, CSS, and JavaScript files:
   * Continuing the ability to run locally (or online) without a back-end
-  * Build process using Parcel for modules
+  * Build process using Vite for modules
 
 ## Timeline
 Preliminary investigations started in 2019... but Covid slowed things way down.
-Things have picked back up in 2021/2022. Bug fixes for V1 will still take precidence over V2.
+Things have picked back up in 2021/2022. Bug fixes for V1 will still take precedence over V2.
 
 Merging new ideas with old functionality is also time consuming :-)
 
