@@ -75,6 +75,9 @@ Under the covers, though, a **`Path`** relies on a **`Path Point`**s to draw
 itself, where a **`Component Instance`** relies on a link to another
 **`Glyph`**, plus some transforms, to draw itself.
 
+(Note: removal of the concept of `Shape` from v2. `Shape` functionality has
+been merged into `Path`.)
+
 **All Glyph Elements should have 100% test coverage**
 
 ## Paths, Path Points, and Bézier Curves
