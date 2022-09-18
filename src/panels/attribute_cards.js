@@ -127,88 +127,52 @@ export function makeCard_multiSelectPathAttributes(glyph) {
 
 export function makeCard_pathPointAttributes(tp) {
 	let editor = getCurrentProjectEditor();
-	let content = '';
+	let selectedPath = editor.selectedPath;
+	let selectedPathPoint = editor.selectedPathPoint;
 
 	// POINT
-	content += '<h3>path point</h3>';
+	let pathCard = makeElement({
+		tag: 'div',
+		className: 'panel__card',
+		innerHTML: '<h3>Path point</h3>'
+	});
 
-	content += `
-		<label>selected point</label>
-		<input-number
-			id="pointNum"
-			value="${editor.multiSelect.points.getSingletonPointNumber()}"
-		>
-		</input-number>
-	`;
+	let pointNumLabel = makeSingleLabel('Selected path point');
+	let pointNumInput = makeSingleInput(selectedPath, 'selectedPathPoint', 'whichPathPointIsSelected', 'input-number');
 
-	return content;
+	// -- Point -- //
+	let pointHeader = makeElement({tag: 'h4', content: 'Point'});
+	// Point x/y
+	let pointPosition = makeInputs_position(selectedPathPoint.p);
+
+	// -- Handle 1 -- //
+	let h1Header = makeElement({tag: 'h4', content: 'Handle 1'});
+	// Handle 1 use
+	// Handle 1 x/y
+	let h1Position = makeInputs_position(selectedPathPoint.h1);
+	// Handle 1 type
+
+	// -- Handle 2 -- //
+	let h2Header = makeElement({tag: 'h4', content: 'Handle 2'});
+	// Handle 2 use
+	// Handle 2 x/y
+	let h2Position = makeInputs_position(selectedPathPoint.h2);
+
+	// Handle 2 type
+
+	// Put it all together
+	addAsChildren(pathCard, [
+		pointNumLabel, pointNumInput,
+		pointHeader,
+		pointPosition,
+		h1Header,
+		h1Position,
+		h2Header,
+		h2Position,
+	]);
+
+	return pathCard;
 }
-
-export function makePointButton(type, selected) {
-	let color = accentColors.gray.l40;
-	let bgcolor = 'transparent';
-
-	if (selected) {
-		color = accentColors.blue.l65;
-		bgcolor = accentColors.gray.offWhite;
-	}
-
-	let re = `<button
-		class="pointtypebutton"
-		style="background-color:${bgcolor};"
-		title="point type: ${type}"
-	>
-	<svg version="1.1"
-		xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-		x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"
-	>
-		<g fill="${color}">
-		<rect x="8" y="8" width="1" height="4"/>
-		<rect x="11" y="8" width="1" height="4"/>
-		<rect x="8" y="8" width="4" height="1"/>
-		<rect x="8" y="11" width="4" height="1"/>
-		<rect x="4" y="4" width="1" height="1"/>
-		<rect x="5" y="5" width="1" height="1"/>
-		<rect x="6" y="6" width="1" height="1"/>
-		<rect x="7" y="7" width="1" height="1"/>
-		<circle cx="3" cy="3" r="1.5"/>
-	`;
-
-	switch (type) {
-		case 'corner':
-			re += `
-			<rect x="7" y="12" width="1" height="1"/>
-			<rect x="6" y="13" width="1" height="1"/>
-			<rect x="5" y="14" width="1" height="1"/>
-			<rect x="4" y="15" width="1" height="1"/>
-			<circle cx="3" cy="17" r="1.5"/>
-			`;
-			break;
-
-		case 'symmetric':
-			re += `
-			<rect x="12" y="12" width="1" height="1"/>
-			<rect x="13" y="13" width="1" height="1"/>
-			<rect x="14" y="14" width="1" height="1"/>
-			<rect x="15" y="15" width="1" height="1"/>
-			<circle cx="17" cy="17" r="1.5"/>
-			`;
-			break;
-
-		case 'flat':
-			re += `
-			<rect x="12" y="12" width="1" height="1"/>
-			<rect x="13" y="13" width="1" height="1"/>
-			<circle cx="15" cy="15" r="1.5"/>
-			`;
-			break;
-	}
-
-	re += `</g></svg></button>`;
-	return re;
-}
-
-
 
 
 // --------------------------------------------------------------
@@ -340,7 +304,74 @@ function dimSplitElement() {
 }
 
 
+// --------------------------------------------------------------
+// Drawing stuff
+// --------------------------------------------------------------
 
+
+export function makePointTypeButton(type, selected) {
+	let color = accentColors.gray.l40;
+	let bgcolor = 'transparent';
+
+	if (selected) {
+		color = accentColors.blue.l65;
+		bgcolor = accentColors.gray.offWhite;
+	}
+
+	let re = `<button
+		class="pointtypebutton"
+		style="background-color:${bgcolor};"
+		title="point type: ${type}"
+	>
+	<svg version="1.1"
+		xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+		x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"
+	>
+		<g fill="${color}">
+		<rect x="8" y="8" width="1" height="4"/>
+		<rect x="11" y="8" width="1" height="4"/>
+		<rect x="8" y="8" width="4" height="1"/>
+		<rect x="8" y="11" width="4" height="1"/>
+		<rect x="4" y="4" width="1" height="1"/>
+		<rect x="5" y="5" width="1" height="1"/>
+		<rect x="6" y="6" width="1" height="1"/>
+		<rect x="7" y="7" width="1" height="1"/>
+		<circle cx="3" cy="3" r="1.5"/>
+	`;
+
+	switch (type) {
+		case 'corner':
+			re += `
+			<rect x="7" y="12" width="1" height="1"/>
+			<rect x="6" y="13" width="1" height="1"/>
+			<rect x="5" y="14" width="1" height="1"/>
+			<rect x="4" y="15" width="1" height="1"/>
+			<circle cx="3" cy="17" r="1.5"/>
+			`;
+			break;
+
+		case 'symmetric':
+			re += `
+			<rect x="12" y="12" width="1" height="1"/>
+			<rect x="13" y="13" width="1" height="1"/>
+			<rect x="14" y="14" width="1" height="1"/>
+			<rect x="15" y="15" width="1" height="1"/>
+			<circle cx="17" cy="17" r="1.5"/>
+			`;
+			break;
+
+		case 'flat':
+			re += `
+			<rect x="12" y="12" width="1" height="1"/>
+			<rect x="13" y="13" width="1" height="1"/>
+			<circle cx="15" cy="15" r="1.5"/>
+			`;
+			break;
+	}
+
+	re += `</g></svg></button>`;
+	return re;
+}
 
 
 
@@ -360,9 +391,9 @@ function dimSplitElement() {
 
 	/*
 	content += '<tr><td> point type </td><td>';
-	content += makePointButton('symmetric', tp.type === 'symmetric');
-	content += makePointButton('flat', tp.type === 'flat');
-	content += makePointButton('corner', tp.type === 'corner');
+	content += makePointTypeButton('symmetric', tp.type === 'symmetric');
+	content += makePointTypeButton('flat', tp.type === 'flat');
+	content += makePointTypeButton('corner', tp.type === 'corner');
 	content += '';
 
 	content +=
