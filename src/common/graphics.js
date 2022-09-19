@@ -74,11 +74,7 @@ export function makeIcon(oa) {
 			x="0px" y="0px" width="${width}px" height="${height}px" viewBox="0 0 ${size} ${size}"
 		>
 			<defs></defs>
-			<rect
-				fill="transparent" width="${width}" height="${height}"
-				customGuideTransparency="mouseOverIcon('${hoverColor}', this);"
-				onmouseout="mouseOutIcon('${color}', this);"
-			/>
+			<rect fill="transparent" width="${width}" height="${height}"/>
 			<g pointer-events="none" fill="${color}">
 				${con}
 			</g>

@@ -12,6 +12,8 @@ import { InfoBubble } from '../controls/info-bubble/info-bubble.js';
 import { InputNumber } from '../controls/input-number/input-number.js';
 import { InputNumberLockable } from '../controls/input-number-lockable/input-number-lockable.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
+import { linkCSS } from '../controls/controls.js';
+import { makeElement } from '../common/dom.js';
 
 // The main app object
 export const GSApp = new GlyphrStudioApp();
@@ -54,17 +56,35 @@ function passPreChecks() {
 
 /**
  * Registers all the custom Web Components to the current document
+ * Also adds the CSS file for each component to avoid FOUC.
  */
 function registerCustomComponents() {
-	customElements.define('anchor-twelvepoint', AnchorTwelvepoint);
-	customElements.define('button-toggle', ButtonToggle);
-	customElements.define('canvas-display', CanvasDisplay);
+	const data = [
+		{fileName: 'anchor-twelvepoint', className: AnchorTwelvepoint},
+		{fileName: 'button-toggle', className: ButtonToggle},
+		{fileName: 'canvas-display', className: CanvasDisplay},
+		{fileName: 'fancy-button', className: FancyButton},
+		{fileName: 'glyph-tile', className: GlyphTile},
+		{fileName: 'info-bubble', className: InfoBubble},
+		{fileName: 'input-number', className: InputNumber},
+		{fileName: 'input-number-lockable', className: InputNumberLockable},
+	];
+
+	data.forEach((control) => {
+		customElements.define(control.fileName, control.className);
+		document.head.appendChild(linkCSS(control.fileName));
+	});
+
+	// Special case EditCanvas
 	customElements.define('edit-canvas', EditCanvas);
-	customElements.define('fancy-button', FancyButton);
-	customElements.define('glyph-tile', GlyphTile);
-	customElements.define('info-bubble', InfoBubble);
-	customElements.define('input-number', InputNumber);
-	customElements.define('input-number-lockable', InputNumberLockable);
+	document.head.appendChild(makeElement({
+		tag: 'link',
+		attributes: {
+			href: `./edit_canvas/edit-canvas.css`,
+			rel: 'stylesheet',
+			type: 'text/css'
+		}
+	}));
 }
 
 /**

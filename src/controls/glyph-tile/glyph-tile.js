@@ -53,7 +53,6 @@ export class GlyphTile extends HTMLElement {
 		this.wrapper = makeElement({ className: 'wrapper' });
 		this.wrapper.style.backgroundSize =  `auto ${overallSize}px`;
 
-
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
 
 		if (this.glyphObject) {
@@ -100,10 +99,7 @@ export class GlyphTile extends HTMLElement {
 		this.wrapper.appendChild(this.name);
 
 		shadow.appendChild(this.wrapper);
-
-		updateStyle(this, overallSize);
 		redrawGlyph(this);
-
 
 		log(`GlyphTile.constructor`, 'end');
 	}
