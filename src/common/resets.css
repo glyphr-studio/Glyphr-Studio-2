@@ -165,12 +165,59 @@ input[type=checkbox] {
 }
 
 
+/* --------------------------------------------------------------
+// Button
+// ------------------------------------------------------------*/
 
-/*
----------------------------------------
-	Range Input
----------------------------------------
-*/
+button,
+button:active,
+button:hover,
+button:focus {
+	text-align: center;
+	padding: 4px 8px;
+	margin: 2px 0px;
+	cursor:pointer;
+	border-radius: 4px;
+	border: 1px solid var(--gray-l90);
+	background-color: var(--gray-l90);
+	color: var(--gray-l15);
+	box-shadow:var(--l1-shadow)
+}
+
+button:hover {
+	color:var(--gray-l05);
+	border-color:var(--blue-l85);
+	box-shadow:var(--l1-shadow)
+}
+
+button[disabled],
+button[disabled]:active,
+button[disabled]:hover,
+button[disabled]:hover,
+button[disabled]:focus{
+	background-color: var(--gray-l95);
+	border-color: var(--gray-l95);
+	cursor: default;
+}
+
+.button__call-to-action,
+.button__call-to-action:hover,
+.button__call-to-action:active,
+.button__call-to-action:focus{
+	background-color: var(--blue-l60);
+	color: var(--gray-l95);
+}
+
+.button__call-to-action:hover {
+	color:white;
+}
+
+
+
+/* --------------------------------------------------------------
+// Range Input
+// ------------------------------------------------------------*/
+
 input[type=range] {
 	-webkit-appearance: none;
 	width: 190px;
@@ -257,54 +304,4 @@ input[type=range]:focus::-ms-fill-lower {
 }
 input[type=range]:focus::-ms-fill-upper {
 	background: rgba(166, 171, 175, 0.5);
-}
-
-
-/*
----------------------------------------
-	Button
----------------------------------------
-*/
-
-button,
-button:active,
-button:hover,
-button:focus {
-	text-align: center;
-	padding: 4px 8px;
-	margin: 2px 0px;
-	cursor:pointer;
-	border-radius: 4px;
-	border: 1px solid var(--gray-l90);
-	background-color: var(--gray-l90);
-	color: var(--gray-l15);
-	box-shadow:var(--l2-shadow)
-}
-
-button:hover {
-	color:var(--gray-l05);
-	border-color:var(--blue-l85);
-	box-shadow:var(--l2-shadow)
-}
-
-button[disabled],
-button[disabled]:active,
-button[disabled]:hover,
-button[disabled]:hover,
-button[disabled]:focus{
-	background-color: var(--gray-l95);
-	border-color: var(--gray-l95);
-	cursor: default;
-}
-
-.button__call-to-action,
-.button__call-to-action:hover,
-.button__call-to-action:active,
-.button__call-to-action:focus{
-	background-color: var(--blue-l60);
-	color: var(--gray-l95);
-}
-
-.button__call-to-action:hover {
-	color:white;
 }

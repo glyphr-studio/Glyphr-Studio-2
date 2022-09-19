@@ -1,6 +1,5 @@
 * {
 	box-sizing: border-box;
-	transition: all 100ms easeOutExpo;
 }
 
 .wrapper {
@@ -87,6 +86,7 @@
 
 .arrowWrapper:focus {
 	outline: var(--global-focus-style);
+	outline-offset: -1px;
 }
 
 .arrowWrapper[disabled],

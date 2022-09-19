@@ -237,7 +237,7 @@ export function showNavDropdown(parentElement) {
 
 	if(dropdownType === 'PAGE') {
 		dropdownContent = makeChooserContent_Pages();
-		size = `${parentElement.parentElement.getBoundingClientRect().width}px`;
+		size = `${parentElement.parentElement.getBoundingClientRect().width-2}px`;
 	}
 
 	if(dropdownType === 'EDITING') {
@@ -251,14 +251,14 @@ export function showNavDropdown(parentElement) {
 
 	if(dropdownType === 'PANEL') {
 		dropdownContent = makeChooserContent_Panels();
-		size = `${rect.width}px`;
+		size = `${rect.width-2}px`;
 	}
 
 	let dropDown = makeElement({
 		tag: 'dialog',
 		id: 'nav-dropdown',
 		attributes: {style: `
-			left: ${rect.left}px;
+			left: ${rect.left+1}px;
 			top: ${top}px;
 			width: ${size};
 			background-color: ${parentStyle.backgroundColor};

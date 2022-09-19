@@ -19,6 +19,10 @@
 	top: 1px;
 }
 
+.nav-button:focus {
+	outline-offset: -1px;
+}
+
 #nav-button-l1,
 #nav-button-l1:active,
 #nav-button-l1:hover,

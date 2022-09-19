@@ -50,7 +50,6 @@ export class InfoBubble extends HTMLElement {
 			style:
 			`
 				z-index: 1000;
-				transition: opacity 0.2s;
 				display: grid;
 				align-items: center;
 				grid-template-columns: 12px 1fr;
