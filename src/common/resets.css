@@ -278,13 +278,13 @@ button:focus {
 	border: 1px solid var(--gray-l90);
 	background-color: var(--gray-l90);
 	color: var(--gray-l15);
-	box-shadow: 0 0 4px var(--gray-l90);
+	box-shadow:var(--l2-shadow)
 }
 
 button:hover {
 	color:var(--gray-l05);
 	border-color:var(--blue-l85);
-	box-shadow: 0 0 4px var(--blue-l85);
+	box-shadow:var(--l2-shadow)
 }
 
 button[disabled],

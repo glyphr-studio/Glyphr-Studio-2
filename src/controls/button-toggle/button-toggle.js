@@ -1,5 +1,6 @@
 import { makeElement } from '../../common/dom.js';
 import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
+import { linkCSS } from '../controls.js';
 
 
 /**
@@ -50,14 +51,7 @@ export class ButtonToggle extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(makeElement({
-			tag: 'link',
-			attributes: {
-				href: './controls/button-toggle/button-toggle.css',
-				rel: 'stylesheet',
-				type: 'text/css'
-			}
-		}));
+		shadow.appendChild(linkCSS('button-toggle'));
 		shadow.appendChild(this.wrapper);
 
 		if (!this.disabled) {

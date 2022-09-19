@@ -2,6 +2,7 @@ import { makeElement } from '../../common/dom.js';
 import { ButtonToggle } from '../button-toggle/button-toggle.js';
 import { InputNumber } from '../input-number/input-number.js';
 import { uiColors } from '../../common/colors.js';
+import { linkCSS } from '../controls.js';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement,
@@ -36,48 +37,9 @@ export class InputNumberLockable extends HTMLElement {
 			this.padlock.setAttribute('selected', '');
 		}
 
-		let style = makeElement({
-			tag: 'style',
-			content: `
-				* {
-					box-sizing: border-box;
-					transition: all 100ms easeOutExpo;
-				}
-
-				.wrapper {
-					margin: 0px;
-					padding: 0px;
-					display: grid;
-					grid-template-columns: 1fr 24px;
-					border-style: solid;
-					border-width: 1px;
-					border-color: ${uiColors.enabled.restingLight.border};
-					background-color: ${uiColors.enabled.restingLight.background};
-					border-radius: 4px;
-				}
-
-				.wrapper:hover,
-				.wrapper:focus,
-				.wrapper *:hover,
-				.wrapper *:focus {
-					border-color: ${uiColors.enabled.focus.border};
-				}
-
-				.wrapper[disabled],
-				.wrapper[disabled]:hover,
-				.wrapper[disabled]:focus,
-				.wrapper[disabled]:active,
-				.wrapper[disabled] *:hover,
-				.wrapper[disabled] *:focus {
-					background-color: ${uiColors.disabled.background};
-					border-color: ${uiColors.disabled.background};
-				}
-		`,
-		});
-
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(style);
+		shadow.appendChild(linkCSS('input-number-lockable'));
 
 		this.observer = new MutationObserver(this.childAttributeChanged);
 		this.observer.elementRoot = this;

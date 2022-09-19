@@ -1,24 +1,11 @@
 // -----------------------------------------------------------------
 // Dialog Box, Error Box, Notation, toasts
 // -----------------------------------------------------------------
-export {
-	closeDialog,
-	openDialog,
-	openBigDialog,
-	isBigDialogOpen,
-	openNotation,
-	closeNotation,
-	makeErrorMessageBox,
-	showErrorMessageBox,
-	closeErrorMessageBox,
-	toggleDialogExportOptions,
-	showToast,
-};
 
 /**
  * Closes any type of dialog box that may be open
  */
-function closeDialog() {
+export function closeDialog() {
 	if (!_UI.popOut && document.getElementById('npSave'))
 		document.getElementById('npSave').style.backgroundColor = 'transparent';
 	document.getElementById('dialog_bg').style.display = 'none';
@@ -38,7 +25,7 @@ function closeDialog() {
  * Creates and shows a standard dialog box
  * @param {string} content - HTML content of the dialog box
  */
-function openDialog(content) {
+export function openDialog(content) {
 	closeDialog();
 	document.body.focus();
 	const dc = document.getElementById('dialogRightContent');
@@ -56,7 +43,7 @@ function openDialog(content) {
  * side of the screen
  * @param {string} content - HTML content of the dialog box
  */
-function openBigDialog(content) {
+export function openBigDialog(content) {
 	closeDialog();
 	document.body.focus();
 	document.getElementById('bigDialogLeftContent').innerHTML = content;
@@ -72,7 +59,7 @@ function openBigDialog(content) {
  * Returns true if the big dialog box is open
  * @returns {boolean}
  */
-function isBigDialogOpen() {
+export function isBigDialogOpen() {
 	return document.getElementById('big_dialog_box').style.display === 'block';
 }
 
@@ -83,7 +70,7 @@ function isBigDialogOpen() {
  * @param {number} x - screen x location
  * @param {number} y - screen y location
  */
-function openNotation(content, x, y) {
+export function openNotation(content, x, y) {
 	getEditDocument().body.focus();
 	const n = getEditDocument().getElementById('notation');
 	n.innerHTML = content;
@@ -95,7 +82,7 @@ function openNotation(content, x, y) {
 /**
  * Closes any notation dialog boxes
  */
-function closeNotation() {
+export function closeNotation() {
 	getEditDocument().getElementById('notation').style.display = 'none';
 	getEditDocument().getElementById('notation').innerHTML = '&#x20E2;';
 	getEditDocument().body.focus();
@@ -105,7 +92,7 @@ function closeNotation() {
  * Toggles open/closed the small flyout off the save button
  * asking which format to export
  */
-function toggleDialogExportOptions() {
+export function toggleDialogExportOptions() {
 	const sff = document.getElementById('saveFormatFlyout');
 	const nps = document.getElementById('npSave');
 
@@ -121,7 +108,7 @@ function toggleDialogExportOptions() {
  * Creates (but does not show) a small error message box
  * @returns {string} - HTML content
  */
-function makeErrorMessageBox() {
+export function makeErrorMessageBox() {
 	const con =
 		'<div id="errormessagebox" style="display:none;">' +
 		'<table cellpadding=0 cellspacing=0 border=0><tr>' +
@@ -137,7 +124,7 @@ function makeErrorMessageBox() {
  * Shows the error message box
  * @param {string} msg - HTML content of the dialog box
  */
-function showErrorMessageBox(msg) {
+export function showErrorMessageBox(msg) {
 	const msgcon = document.getElementById('errormessagecontent');
 	const msgbox = document.getElementById('errormessagebox');
 	msgcon.innerHTML = msg;
@@ -148,7 +135,7 @@ function showErrorMessageBox(msg) {
 /**
  * Closes the error message box
  */
-function closeErrorMessageBox() {
+export function closeErrorMessageBox() {
 	document.getElementById('errormessagecontent').innerHTML = '';
 	document.getElementById('errormessagebox').style.display = 'none';
 }
@@ -160,7 +147,7 @@ function closeErrorMessageBox() {
  * @param {number} dur - how long to show the message (milliseconds)
  * @param {function} fn - function to call after message is shown
  */
-function showToast(msg, dur, fn) {
+export function showToast(msg, dur, fn) {
 	// log('showToast', 'start');
 	let step = -1;
 	const stepmax = 20;

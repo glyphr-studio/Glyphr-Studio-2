@@ -3,6 +3,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { glyphToHex } from '../../common/unicode.js';
 import { drawGlyph } from '../../edit_canvas/draw_paths.js';
+import { linkCSS } from '../controls.js';
 
 
 /**
@@ -32,26 +33,9 @@ export class CanvasDisplay extends HTMLElement {
 		this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
 
-		let style = makeElement({
-			tag: 'style',
-			content: `
-						* {
-								box-sizing: border-box;
-								-webkit-user-select: none;
-								-moz-user-select: none;
-								-ms-user-select: none;
-								user-select: none;
-						}
-
-						canvas {
-								background-color: white;
-						}
-				`,
-		});
-
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(style);
+		shadow.appendChild(linkCSS('canvas-display'));
 
 		shadow.appendChild(this.canvas);
 
