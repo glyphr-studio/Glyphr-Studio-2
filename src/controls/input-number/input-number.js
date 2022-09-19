@@ -79,8 +79,8 @@ export class InputNumber extends HTMLElement {
 						}
 
 						.wrapper:hover,
-						.wrapper *:hover,
 						.wrapper:focus,
+						.wrapper *:hover,
 						.wrapper *:focus {
 							border-color: ${uiColors.enabled.focus.border};
 						}
@@ -90,7 +90,7 @@ export class InputNumber extends HTMLElement {
 						.wrapper:focus[disabled],
 						.wrapper:active[disabled] {
 							background-color: ${uiColors.disabled.background};
-							border-color: ${uiColors.disabled.border};
+							border-color: ${uiColors.disabled.background};
 						}
 
 						.numberInput {
@@ -116,7 +116,7 @@ export class InputNumber extends HTMLElement {
 						.numberInput:focus {
 							outline: var(--global-focus-style);
 							outline-offset: -1px;
-							border-radius: 3px;
+							border-radius: 3px 0px 0px 3px;
 						}
 
 						.numberInput[disabled],
@@ -142,6 +142,11 @@ export class InputNumber extends HTMLElement {
 						.wrapper:hover .arrowWrapper,
 						.arrowWrapper:hover {
 							border-left-color: ${uiColors.enabled.focus.border};
+						}
+
+						.wrapper:hover[disabled] .arrowWrapper,
+						.arrowWrapper:hover[disabled] {
+							border-left-color:${uiColors.disabled.background};
 						}
 
 						.arrowWrapper:focus {
@@ -176,13 +181,13 @@ export class InputNumber extends HTMLElement {
 						}
 
 						.upArrow {
-							border-radius: 4px 4px 0px 0px;
+							border-radius: 0px 3px 0px 0px;
 							grid-row-start: 1;
 							vertical-align: bottom;
 						}
 
 						.downArrow {
-							border-radius: 0px 0px 4px 4px;
+							border-radius: 0px 0px 3px 0px;
 							grid-row-start: 2;
 							vertical-align: top;
 						}
@@ -196,7 +201,6 @@ export class InputNumber extends HTMLElement {
 						.downArrow:focus {
 							outline: var(--global-focus-style);
 							outline-offset: -1px;
-							border-radius: 3px;
 						}
 
 						.wrapper:hover .upArrow,

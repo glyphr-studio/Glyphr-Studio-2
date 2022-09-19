@@ -20,6 +20,9 @@ export class ButtonToggle extends HTMLElement {
 		);
 
 		this.size = this.getAttribute('size') || 24;
+		this.style.width = `${this.size}px`;
+		this.style.height = `${this.size}px`;
+
 		this.gutterSize = Math.round(this.size * 0.05);
 		this.iconSize = this.size - (this.gutterSize * 2);
 		this.selected = this.hasAttribute('selected');
@@ -29,6 +32,14 @@ export class ButtonToggle extends HTMLElement {
 			tag: 'div',
 			className: 'wrapper',
 			tabIndex: !this.disabled,
+			attributes: {
+				style: `
+					border-width: ${attributes.hideBorder? '0px' : '1px'};
+					padding: ${this.gutterSize}px;
+					width: ${this.size}px;
+					height: ${this.size}px;
+				`
+			}
 		});
 		if (this.disabled) this.wrapper.setAttribute('disabled', '');
 		if (this.selected) this.wrapper.setAttribute('selected', '');
@@ -37,99 +48,16 @@ export class ButtonToggle extends HTMLElement {
 			this.iconSize
 		);
 
-		let style = makeElement({
-			tag: 'style',
-			content: `
-				:host {
-					box-sizing: border-box;
-					margin: 0;
-					border: 0;
-					border-radius: 4px;
-					width: ${this.size}px;
-					height: ${this.size}px;
-				}
-
-				* {
-					user-select: none;
-					-moz-user-select: none;
-					-webkit-user-select: none;
-					-ms-user-select: none;
-				}
-
-				.wrapper {
-					box-sizing: border-box;
-					margin: 0;
-					border-width: ${attributes.hideBorder? '0px' : '1px'};
-					border-radius: 4px;
-					border-style: solid;
-					padding: ${this.gutterSize}px;
-					width: ${this.size}px;
-					height: ${this.size}px;
-					vertical-align: top;
-					text-align: left;
-					overflow: hidden;
-					border-color: ${uiColors.enabled.restingLight.border};
-					background-color: ${uiColors.enabled.restingLight.background};
-				}
-
-				.wrapper svg {
-					fill: ${uiColors.enabled.restingLight.fill};
-				}
-
-				.wrapper:hover {
-					cursor: pointer;
-					border-color: ${uiColors.enabled.focus.border};
-					background-color: ${uiColors.enabled.focus.background};
-				}
-
-				.wrapper:hover svg {
-					fill: ${uiColors.enabled.focus.fill};
-				}
-
-				.wrapper:focus {
-					outline: var(--global-focus-style);
-				}
-
-				.wrapper[selected] {
-					border-color: ${uiColors.accent};
-					background-color: ${uiColors.enabled.active.background};
-				}
-
-				.wrapper[selected]:hover {
-					cursor: pointer;
-					border-color: ${uiColors.enabled.active.border};
-					background-color: ${uiColors.enabled.resting.background};
-				}
-
-				.wrapper[selected]:focus {
-					outline: var(--global-focus-style);
-				}
-
-				.wrapper[selected] svg {
-					fill: ${uiColors.accent};
-				}
-
-				.wrapper[disabled],
-				.wrapper:hover[disabled],
-				.wrapper:focus[disabled],
-				.wrapper:active[disabled] {
-					cursor: default;
-					border-color: ${uiColors.disabled.border};
-					background-color: ${uiColors.disabled.background};
-				}
-
-				.wrapper[disabled] svg,
-				.wrapper:hover[disabled] svg,
-				.wrapper:focus[disabled] svg,
-				.wrapper:active[disabled] svg {
-					fill: ${uiColors.disabled.fill};
-				}
-			`,
-		});
-
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(style);
+		shadow.appendChild(makeElement({
+			tag: 'link',
+			attributes: {
+				href: './controls/button-toggle/button-toggle.css',
+				rel: 'stylesheet',
+				type: 'text/css'
+			}
+		}));
 		shadow.appendChild(this.wrapper);
 
 		if (!this.disabled) {

@@ -57,18 +57,20 @@ export class InputNumberLockable extends HTMLElement {
 				}
 
 				.wrapper:hover,
-				.wrapper *:hover,
 				.wrapper:focus,
+				.wrapper *:hover,
 				.wrapper *:focus {
 					border-color: ${uiColors.enabled.focus.border};
 				}
 
 				.wrapper[disabled],
-				.wrapper:hover[disabled],
-				.wrapper:focus[disabled],
-				.wrapper:active[disabled] {
+				.wrapper[disabled]:hover,
+				.wrapper[disabled]:focus,
+				.wrapper[disabled]:active,
+				.wrapper[disabled] *:hover,
+				.wrapper[disabled] *:focus {
 					background-color: ${uiColors.disabled.background};
-					border-color: ${uiColors.disabled.border};
+					border-color: ${uiColors.disabled.background};
 				}
 		`,
 		});
