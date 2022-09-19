@@ -5,6 +5,7 @@ import { lookUpGlyphName } from '../../lib/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
 import { drawGlyph } from '../../edit_canvas/draw_paths.js';
+import { linkCSS } from '../controls.js';
 
 
 /**
@@ -50,10 +51,22 @@ export class GlyphTile extends HTMLElement {
 		);
 
 		this.wrapper = makeElement({ className: 'wrapper' });
+		this.wrapper.style.backgroundSize =  `auto ${overallSize}px`;
+
+
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
 
 		if (this.glyphObject) {
-			this.thumbnail = makeElement({ tag: 'canvas', className: 'thumbnail' });
+			this.thumbnail = makeElement({
+				tag: 'canvas',
+				className: 'thumbnail',
+				attributes: {
+					style: `
+						width: ${overallSize}px;
+						height: ${overallSize}px;
+					`
+				}
+			});
 			this.ctx = this.thumbnail.getContext('2d');
 			this.thumbnail.width = overallSize;
 			this.thumbnail.height = overallSize;
@@ -81,7 +94,7 @@ export class GlyphTile extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(style);
+		shadow.appendChild(linkCSS('glyph-tile'));
 
 		this.wrapper.appendChild(this.thumbnail);
 		this.wrapper.appendChild(this.name);
@@ -119,114 +132,6 @@ function redrawGlyph(tile){
 		drawGlyph(tile.glyphObject, tile.ctx, tile.view);
 	}
 }
-
-function updateStyle(tile, overallSize){
-	const shadow = tile.shadowRoot;
-	shadow.querySelector('style').textContent = `
-		* {
-				box-sizing: border-box;
-				user-select: none;
-				-moz-user-select: none;
-				-webkit-user-select: none;
-				-ms-user-select: none;
-		}
-
-		:host {
-				box-sizing: border-box;
-				width: 52px;
-				height: 75px;
-				overflow-y: hidden;
-				overflow-x: hidden;
-				margin: 0px;
-				padding: 0px;
-				background-color: rgba(255, 255, 255, 0.4);
-				box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.04);
-				border-radius: 2px;
-		}
-
-		.wrapper {
-				transition: border-color 2s easeOutExpo;
-				display: inline-block;
-				margin: 0px;
-				padding: 1px;
-				height: 100%;
-				width: 52px;
-				text-align: center;
-				overflow-x: hidden;
-				overflow-y: hidden;
-				background-repeat: no-repeat;
-				background-size: auto ${overallSize}px;
-		}
-
-		.wrapper:hover,
-		.wrapper:focus {
-				background: linear-gradient(${uiColors.accent}, transparent);
-				background-repeat: no-repeat;
-				background-size: auto ${overallSize}px;
-				cursor: pointer;
-		}
-
-		.wrapper[selected] {
-				background: linear-gradient(${uiColors.accent}, transparent);
-				background-repeat: no-repeat;
-				background-size: auto ${overallSize}px;
-		}
-
-		.wrapper[selected]:hover,
-		.wrapper[selected]:focus {
-				cursor: default;
-		}
-
-		.thumbnail {
-				display: block;
-				background-color: white;
-				opacity: 0.8;
-				font-size: 36px;
-				padding-top: 2px;
-				color: ${uiColors.disabled.background};
-				margin: auto;
-				width: ${overallSize}px;
-				height: ${overallSize}px;
-				box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.05);
-				border-radius: 1px;
-		}
-
-		.wrapper:hover .thumbnail,
-		.wrapper:focus .thumbnail {
-				opacity: 1;
-				background-color: white;
-				box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.08);
-				color: ${uiColors.enabled.active.lightText};
-		}
-
-		.wrapper[selected] .thumbnail {
-				opacity: 1;
-				background-color: white;
-				box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.05);
-				color: ${uiColors.enabled.active.lightText};
-		}
-
-		.wrapper[selected]:hover .thumbnail {
-				cursor: default;
-		}
-
-		.name {
-				display: block;
-				text-align: left;
-				width: 300px;
-				height: 28px;
-				padding: 2px 0px 0px 4px;
-				color: #6D6D6D;
-		}
-
-		.wrapper[selected] .name,
-		.wrapper:hover .name {
-				color: ${accentColors.blue.l40};
-				background-color: ${accentColors.blue.l90};
-		}
-	`;
-}
-
 
 /**
  * This is just for testing, in real life this will call

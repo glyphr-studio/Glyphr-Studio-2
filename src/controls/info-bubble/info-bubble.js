@@ -1,5 +1,6 @@
 import { accentColors } from '../../common/colors.js';
 import { makeElement } from '../../common/dom.js';
+import { linkCSS } from '../controls.js';
 
 /**
  * A small bubble that displays information
@@ -15,65 +16,9 @@ export class InfoBubble extends HTMLElement {
 		let wrapper = makeElement({ className: 'wrapper', tabIndex: true });
 		this.entryPoint = makeElement({ id: 'entryPoint', content: '?' });
 
-		let style = makeElement({
-			tag: 'style',
-			content: `
-				:root {
-					width: 14px;
-					height: 14px;
-				}
-
-				* {
-					user-select: none;
-					-moz-user-select: none;
-					-webkit-user-select: none;
-					-ms-user-select: none;
-				}
-
-				.wrapper {
-					margin: 0px;
-					padding: 0px;
-					display: block;
-					width: 14px;
-					height: 14px;
-				}
-
-				.wrapper:focus {
-					outline: 0;
-				}
-
-				#entryPoint {
-					display: inline-block;
-					position: relative;
-					top: -5px;
-					border-style: solid;
-					border-width: 1px;
-					border-color: rgb(180, 180, 180);
-					background-color: transparent;
-					color: rgb(180, 180, 180);
-					border-radius: 50%;
-					font-family: monospace, verdana, sans-serif;
-					font-size: 8px;
-					font-weight: bold;
-					width: 12px;
-					height: 12px;
-					line-height: 10px;
-					text-align: center;
-					box-sizing: border-box;
-					padding: 0px 0px 1px 0px;
-					transition: all 0.2s;
-				}
-
-				#entryPoint:hover,
-				.bubble:hover {
-					cursor: help;
-				}
-			`,
-		});
-
 		// Put together visible stuff
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(style);
+		shadow.appendChild(linkCSS('info-bubble'));
 		wrapper.appendChild(this.entryPoint);
 		shadow.appendChild(wrapper);
 

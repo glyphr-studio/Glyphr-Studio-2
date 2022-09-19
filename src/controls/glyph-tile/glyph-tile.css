@@ -1,0 +1,101 @@
+* {
+	box-sizing: border-box;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+:host {
+	box-sizing: border-box;
+	width: 52px;
+	height: 75px;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	margin: 0px;
+	padding: 0px;
+	background-color: rgba(255, 255, 255, 0.4);
+	box-shadow: var(--l1-shadow);
+	border-radius: 2px;
+}
+
+.wrapper {
+	transition: border-color 2s easeOutExpo;
+	display: inline-block;
+	margin: 0px;
+	padding: 1px;
+	height: 100%;
+	width: 52px;
+	text-align: center;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	background-repeat: no-repeat;
+	/* background-size: auto ${overallSize}px; */
+}
+
+.wrapper:hover,
+.wrapper:focus {
+	background: linear-gradient(var(--accent-color), transparent);
+	background-repeat: no-repeat;
+	/* background-size: auto ${overallSize}px; */
+	cursor: pointer;
+}
+
+.wrapper[selected] {
+	background: linear-gradient(var(--accent-color), transparent);
+	background-repeat: no-repeat;
+	/* background-size: auto ${overallSize}px; */
+}
+
+.wrapper[selected]:hover,
+.wrapper[selected]:focus {
+	cursor: default;
+}
+
+.thumbnail {
+	display: block;
+	background-color: white;
+	opacity: 0.8;
+	font-size: 36px;
+	padding-top: 2px;
+	color: var(--disabled-background);
+	margin: auto;
+	/* width: ${overallSize}px; */
+	/* height: ${overallSize}px; */
+	box-shadow: var(--l1-shadow);
+	border-radius: 1px;
+}
+
+.wrapper:hover .thumbnail,
+.wrapper:focus .thumbnail {
+	opacity: 1;
+	background-color: white;
+	box-shadow: var(--l1-shadow);
+	color: var(--enabled-active-lightText);
+}
+
+.wrapper[selected] .thumbnail {
+	opacity: 1;
+	background-color: white;
+	box-shadow: var(--l1-shadow);
+	color: var(--enabled-active-lightText);
+}
+
+.wrapper[selected]:hover .thumbnail {
+	cursor: default;
+}
+
+.name {
+	display: block;
+	text-align: left;
+	width: 300px;
+	height: 28px;
+	padding: 2px 0px 0px 4px;
+	color: var(--gray-45);
+}
+
+.wrapper[selected] .name,
+.wrapper:hover .name {
+	color: var(--blue-l40);
+	background-color: var(--blue-l90);
+}
