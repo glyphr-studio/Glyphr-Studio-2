@@ -85,8 +85,8 @@ export class InfoBubble extends HTMLElement {
 			style:
 			`
 				padding: 20px 24px 20px 20px;
-				border-radius: 3px;
-				width: min-content;
+				border-radius: 10px;
+				width: clamp(300px, 400px, 600px);
 				min-width: 300px;
 				color: ${textColor};
 				background-color: ${bgColor};
