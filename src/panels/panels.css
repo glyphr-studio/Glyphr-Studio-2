@@ -8,7 +8,8 @@
 
 .panel__card {
 	display: grid;
-	grid-template-columns: 141px 1fr;
+	/* align with buttons at the bottom of cards */
+	grid-template-columns: clamp(141px, 181px, 201px) 1fr;
 	align-items: center;
 	justify-items: left;
 	row-gap: 5px;
@@ -59,11 +60,21 @@
 .panel__card .doubleInput {
 	grid-column: 2;
 	display: grid;
-	grid-template-columns: 122px 16px 122px;
+	grid-template-columns: min-content 16px min-content;
+}
+
+.panel__card input {
+	width: calc(100% - 15px);
 }
 
 .panel__card input-number {
 	width: 98px;
+}
+
+.rowPad {
+	display: block;
+	height: 10px;
+	grid-column: 1 / -1;
 }
 
 .dimSplit {
