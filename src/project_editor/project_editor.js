@@ -599,32 +599,6 @@ export class ProjectEditor {
 //    Global Get Selected Glyph and Path
 // ---------------------------------------------------------------------
 		/**
-		 * Get the selected glyph's left side bearing
-		 * @returns {number}
-		 *
-		getSelectedGlyphLeftSideBearing() {
-				// log('getSelectedGlyphLeftSideBearing');
-				let sc = getSelectedItem();
-				if (!sc) return 0;
-				if (sc.objType === 'component') return 0;
-				if (!sc.isAutoWide) return 0;
-				return sc.leftSideBearing || this.project.projectSettings.defaultLSB;
-		}
-
-		/**
-		 * Get the selected glyph's right side bearing
-		 * @returns {number}
-		 *
-		getSelectedGlyphRightSideBearing() {
-				// log('getSelectedGlyphLeftSideBearing');
-				let sc = getSelectedItem();
-				if (!sc) return 0;
-				if (sc.objType === 'component') return 0;
-				if (!sc.isAutoWide) return 0;
-				return sc.rightSideBearing || this.project.projectSettings.defaultRSB;
-		}
-
-		/**
 		 * Updates the selected glyphs width
 		 *
 		updateCurrentGlyphWidth() {

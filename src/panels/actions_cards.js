@@ -511,8 +511,6 @@ function initGetPathsDialogOptions(type) {
 				_UI.glyphChooser.getPathOptions = {
 						srcAutoWidth: false,
 						srcWidth: false,
-						srcLSB: false,
-						srcRSB: false
 				};
 				*/
 	type = type || 'paths';
@@ -540,18 +538,6 @@ function initGetPathsDialogOptions(type) {
 		checkUI('_UI.glyphChooser.getPathOptions.srcWidth', gso.srcWidth) +
 		'</td>' +
 		'<td style="vertical-align:top;"><label for="srcWidth">Glyph Width</label><br><br></td></tr>';
-
-	content +=
-		'<tr><td style="text-align:right; vertical-align:top;">' +
-		checkUI('_UI.glyphChooser.getPathOptions.srcLSB', gso.srcLSB) +
-		'</td>' +
-		'<td style="vertical-align:top;"><label for="srcLSB">Left Side Bearing</label><br><br></td></tr>';
-
-	content +=
-		'<tr><td style="text-align:right; vertical-align:top;">' +
-		checkUI('_UI.glyphChooser.getPathOptions.srcRSB', gso.srcRSB) +
-		'</td>' +
-		'<td style="vertical-align:top;"><label for="srcRSB">Right Side Bearing</label><br><br></td></tr>';
 
 	content += '</table>';
 
@@ -595,8 +581,6 @@ export function copyPathsFromTo(
 	copyGlyphAttributes = {
 		srcAutoWidth: false,
 		srcWidth: false,
-		srcLSB: false,
-		srcRSB: false,
 	}
 	) {
 	// log('copyPathsFromTo', 'start');
@@ -612,18 +596,8 @@ export function copyPathsFromTo(
 		}
 		destinationGlyph.paths.push(tc);
 	}
-	if (copyGlyphAttributes.srcAutoWidth){
-		destinationGlyph.isAutoWide = sourceGlyph.isAutoWide;
-	}
 	if (copyGlyphAttributes.srcWidth){
 		destinationGlyph.advanceWidth = sourceGlyph.advanceWidth;
-	}
-	if (copyGlyphAttributes.srcLSB){
-		destinationGlyph.leftSideBearing = sourceGlyph.leftSideBearing;
-	}
-	if (copyGlyphAttributes.srcRSB){
-		destinationGlyph.rightSideBearing = sourceGlyph.rightSideBearing;
-		glyphChanged(destinationGlyph);
 	}
 	// log('new paths');
 	// log(destinationGlyph.paths);

@@ -24,7 +24,6 @@ export function isOverControlPoint(item, x, y, noHandles) {
  * @param {object} ctx - canvas context
  * @param {object} view - x/y/z view object
  * @param {number} alpha - transparency between 0 and 1
- * @param {boolean} addLSB - optionally move everything to account for LSB
  * @param {string} fill - glyph fill color
  * @returns {number} - Advance Width, according to view.z
  */
@@ -33,7 +32,6 @@ export function drawGlyph(
 	ctx,
 	view = { x: 0, y: 0, z: 1 },
 	alpha = 1,
-	addLSB = false,
 	fill = '#000'
 ) {
 	// log('drawGlyph', 'start');
@@ -42,8 +40,6 @@ export function drawGlyph(
 	const sl = glyph.paths;
 	let path;
 	let drewPath;
-
-	if (addLSB && glyph.isAutoWide) view.dx += glyph.lsb * view.dz;
 
 	ctx.beginPath();
 	for (let j = 0; j < sl.length; j++) {

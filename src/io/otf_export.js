@@ -110,8 +110,6 @@ export function exportOTFFont() {
 			glyph.combineAllPaths(true);
 		}
 
-		if (glyph.isAutoWide) glyph.updateGlyphPosition(glyph.lsb, 0);
-
 		const thisPath = glyph.makeOpenTypeJSPath(new OpenTypeJS.Path());
 
 		const thisGlyph = new OpenTypeJS.Glyph({
@@ -203,9 +201,6 @@ function generateNotdefGlyph() {
 		notdef.updateGlyphSize(false, delta, true);
 		// log(`notdef.maxes.height ${notdef.maxes.ymax}`);
 	}
-
-	notdef.updateGlyphPosition(notdef.getLSB(), 0, true);
-	notdef.leftSideBearing = 0;
 
 	// log(`generateNotdefGlyph`, 'end');
 	return notdef;
