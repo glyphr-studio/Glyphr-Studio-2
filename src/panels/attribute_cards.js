@@ -26,7 +26,32 @@ export function makeCard_glyphAttributes(glyph) {
 	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentGlyph', 'input-number');
 
 	// Side bearings
-	let bearingLabel = makeSingleLabel(`side bearings: left${dimSplit()}right`);
+	let bearingLabel = makeElement({
+		tag: 'label',
+		className: 'info',
+		innerHTML: `
+			<span>side bearings: left${dimSplit()}right</span>
+			<info-bubble>
+				<h1>Side Bearings</h1>
+				Side bearings are the blank space to the left and right
+				of paths in a glyph. The open space between
+				characters is very important for ledgibility.
+				<br><br>
+				These are calculated values based on path positions and the
+				Advance Width. They are not properties that are saved with the
+				glyph, but it's helpful to think about them as if they were.
+				<br>
+				<h2>Left side bearing</h2>
+				Distance from x=0 and the leftmost side of paths in the glyph.
+				Editing this will move all the shapes in the glyph, and update
+				the Advance Width.
+				<br>
+				<h2>Right side bearing</h2>
+				Distance from the rightmost side of paths in the glyph to the
+				Advance Width.
+			</info-bubble>
+		`
+	});
 	let doubleBearingInput = makeElement({tag: 'div', className: 'doubleInput',});
 	let lsbInput = makeSingleInput(glyph, 'leftSideBearing', 'currentGlyph', 'input-number');
 	let rsbInput = makeSingleInput(glyph, 'rightSideBearing', 'currentGlyph', 'input-number');

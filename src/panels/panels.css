@@ -51,6 +51,20 @@
 	align-items: center;
 }
 
+#bubble h1,
+#bubble h2,
+#bubble h3,
+#bubble h4,
+#bubble h5,
+#bubble h6 {
+	color: var(--gray-l70) !important;
+	margin: 20px 0px 5px 0px;
+}
+
+#bubble h1 {
+	margin-top: 0px;
+}
+
 .panel__card input[type=checkbox] {
 	width: 20px;
 	height: 20px;
