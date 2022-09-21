@@ -91,7 +91,6 @@ export function importOTFFont(filter) {
 	let uni;
 	let np;
 	let adv;
-	let isAutoWide;
 	let maxGlyph = 0;
 	let minChar = 0xffff;
 	let customGlyphRange = [];
@@ -167,13 +166,7 @@ export function importOTFFont(filter) {
 			}
 
 			// Get Advance Width
-			isAutoWide = true;
 			adv = parseInt(thisGlyph.advanceWidth);
-			if (adv) {
-				if (!isNaN(adv) && adv > 0) {
-					isAutoWide = false;
-				}
-			} else adv = false;
 
 			// Get some range data
 			// uni = uni[0];
@@ -185,7 +178,6 @@ export function importOTFFont(filter) {
 			fc[uni] = new Glyph({
 				paths: newPaths,
 				glyphWidth: adv,
-				isAutoWide: isAutoWide,
 			});
 			if (getUnicodeName(uni) === '[name not found]')
 				getCurrentProject().projectSettings.filterNonCharPoints = false;

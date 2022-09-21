@@ -22,10 +22,7 @@ export class Glyph extends GlyphElement {
 	/**
 	 * Create a Glyph
 	 * @param {string} id - unique identifier (Unicode code point)
-	 * @param {boolean} isAutoWide - is advance width automatically calculated
 	 * @param {number} advanceWidth - manual setting for advance width
-	 * @param {number} leftSideBearing - left side bearing distance
-	 * @param {number} rightSideBearing - right side bearing distance
 	 * @param {boolean} ratioLock - maintain aspect ratio while resizing
 	 * @param {boolean} paths - collection of Paths and Component Instances in this Glyph
 	 * @param {array} usedIn - array of IDs where this Glyph is used as a component instance
@@ -33,10 +30,7 @@ export class Glyph extends GlyphElement {
 	constructor({
 		id = false,
 		paths = [],
-		isAutoWide = true,
 		advanceWidth = 0,
-		leftSideBearing = false,
-		rightSideBearing = false,
 		ratioLock = false,
 		usedIn = [],
 	} = {}) {
@@ -44,10 +38,7 @@ export class Glyph extends GlyphElement {
 		super();
 		this.id = id;
 		this.paths = paths;
-		this.isAutoWide = isAutoWide;
 		this.advanceWidth = advanceWidth;
-		this.leftSideBearing = leftSideBearing;
-		this.rightSideBearing = rightSideBearing;
 		this.ratioLock = ratioLock;
 		this.usedIn = usedIn;
 
@@ -72,10 +63,7 @@ export class Glyph extends GlyphElement {
 			objType: this.objType
 		};
 
-		if (this.isAutoWide !== true) re.isAutoWide = this.isAutoWide;
 		if (this.advanceWidth !== 0) re.advanceWidth = this.advanceWidth;
-		if (this.leftSideBearing !== false) re.leftSideBearing = this.leftSideBearing;
-		if (this.rightSideBearing !== false) re.rightSideBearing = this.rightSideBearing;
 		if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
 		if (this.usedIn.length) re.usedIn = this.usedIn;
 
@@ -108,13 +96,7 @@ export class Glyph extends GlyphElement {
 		re += `${ind}id: ${this.id}\n`;
 		re += `${ind}name: ${this.name}\n`;
 
-		if (this.isAutoWide !== true)
-			re += `${ind}isAutoWide: ${this.isAutoWide}\n`;
 		if (this.advanceWidth !== 0) re += `${ind}advanceWidth: ${this.advanceWidth}\n`;
-		if (this.leftSideBearing !== false)
-			re += `${ind}leftSideBearing: ${this.leftSideBearing}\n`;
-		if (this.rightSideBearing !== false)
-			re += `${ind}rightSideBearing: ${this.rightSideBearing}\n`;
 		if (this.ratioLock !== false) re += `${ind}ratioLock: ${this.ratioLock}\n`;
 		if (this.usedIn.length)
 			re += `${ind}usedIn: ${JSON.stringify(this.usedIn)}\n`;
@@ -159,35 +141,11 @@ export class Glyph extends GlyphElement {
 	}
 
 	/**
-	 * get isAutoWide
-	 * @returns {boolean}
-	 */
-	get isAutoWide() {
-		return this._isAutoWide;
-	}
-
-	/**
 	 * get advanceWidth
 	 * @returns {number}
 	 */
 	get advanceWidth() {
 		return this._advanceWidth;
-	}
-
-	/**
-	 * get leftSideBearing
-	 * @returns {number}
-	 */
-	get leftSideBearing() {
-		return this._leftSideBearing;
-	}
-
-	/**
-	 * get rightSideBearing
-	 * @returns {number}
-	 */
-	get rightSideBearing() {
-		return this._rightSideBearing;
 	}
 
 	/**
@@ -230,12 +188,7 @@ export class Glyph extends GlyphElement {
 	 * @returns {number}
 	 */
 	get width() {
-		if (this.isAutoWide) {
-			const w = this.maxes.xMax - this.maxes.xMin;
-			return Math.max(w, 0);
-		} else {
-			return this.advanceWidth;
-		}
+		return this.advanceWidth;
 	}
 
 	/**
@@ -296,26 +249,6 @@ export class Glyph extends GlyphElement {
 	get charCode() {
 		const code = hexToHTML(this.id);
 		return code || '';
-	}
-
-	/**
-	 * get Left Side Bearing
-	 * @returns {number}
-	 */
-	get lsb() {
-		// Nullish coalescing would be great here
-		if (this._leftSideBearing === 0) return this._leftSideBearing;
-		else return this._leftSideBearing || false;
-	}
-
-	/**
-	 * get Right Side Bearing
-	 * @returns {number}
-	 */
-	get rsb() {
-		// Nullish coalescing would be great here
-		if (this._rightSideBearing === 0) return this._rightSideBearing;
-		else return this._rightSideBearing || false;
 	}
 
 	/**
@@ -388,15 +321,6 @@ export class Glyph extends GlyphElement {
 	}
 
 	/**
-	 * set isAutoWide
-	 * @param {boolean} isAutoWide
-	 * @returns {Glyph} - reference to this Glyph
-	 */
-	set isAutoWide(isAutoWide) {
-		this._isAutoWide = !!isAutoWide;
-	}
-
-	/**
 	 * set advanceWidth
 	 * @param {number} advanceWidth
 	 * @returns {Glyph} - reference to this Glyph
@@ -404,34 +328,6 @@ export class Glyph extends GlyphElement {
 	set advanceWidth(advanceWidth) {
 		this._advanceWidth = parseFloat(advanceWidth);
 		if (isNaN(this._advanceWidth)) this._advanceWidth = 0;
-	}
-
-	/**
-	 * set leftSideBearing
-	 * @param {number} leftSideBearing
-	 * @returns {Glyph} - reference to this Glyph
-	 */
-	set leftSideBearing(leftSideBearing) {
-		if (leftSideBearing === false) {
-			this._leftSideBearing = false;
-		} else {
-			this._leftSideBearing = parseFloat(leftSideBearing);
-			if (isNaN(this._leftSideBearing)) this._leftSideBearing = 0;
-		}
-	}
-
-	/**
-	 * set rightSideBearing
-	 * @param {number} rightSideBearing
-	 * @returns {Glyph} - reference to this Glyph
-	 */
-	set rightSideBearing(rightSideBearing) {
-		if (rightSideBearing === false) {
-			this._rightSideBearing = false;
-		} else {
-			this._rightSideBearing = parseFloat(rightSideBearing);
-			if (isNaN(this._rightSideBearing)) this._rightSideBearing = 0;
-		}
 	}
 
 	/**
@@ -878,7 +774,6 @@ export class Glyph extends GlyphElement {
 				workingItem = new Path(item);
 				// log('working item path');
 				// log(workingItem);
-				workingItem.updatePathPosition(this.lsb, 0, true);
 				pathData += workingItem.svgPathData;
 				if (j < this.paths.length - 1) pathData += ' ';
 			}

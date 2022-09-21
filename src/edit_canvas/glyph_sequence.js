@@ -307,12 +307,11 @@ function debugWidths() {
 }
 
 /*
-				calculateKernOffset
-				Takes two glyphs as arguments, and determines the number of Em units of
-				offset between them.  First checks to see if there are custom kern values
-				for the pair, and if not, returns 0. Left Side Bearing and Right Side Bearing
-				are not returned, only kern values.
-		*/
+	calculateKernOffset
+	Takes two glyphs as arguments, and determines the number of Em units of
+	offset between them.  First checks to see if there are custom kern values
+	for the pair, and if not, returns 0. 
+*/
 function calculateKernOffset(c1, c2) {
 	// log('calculateKernOffset', 'start');
 	// log('passed: ' + c1 + ' and ' + c2);

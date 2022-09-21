@@ -100,28 +100,10 @@ describe('Glyph', () => {
 		expect(g.paths.length).toBe(1);
 	});
 
-	it('get/set isAutoWide', () => {
-		const g = sampleGlyph();
-		g.isAutoWide = false;
-		expect(g.isAutoWide).toBe(false);
-	});
-
 	it('get/set advanceWidth', () => {
 		const g = sampleGlyph();
 		g.advanceWidth = 123;
 		expect(g.advanceWidth).toBe(123);
-	});
-
-	it('get/set leftSideBearing', () => {
-		const g = sampleGlyph();
-		g.leftSideBearing = 456;
-		expect(g.leftSideBearing).toBe(456);
-	});
-
-	it('get/set rightSideBearing', () => {
-		const g = sampleGlyph();
-		g.rightSideBearing = 456;
-		expect(g.rightSideBearing).toBe(456);
 	});
 
 	it('get/set ratioLock', () => {

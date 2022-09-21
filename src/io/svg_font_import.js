@@ -103,7 +103,6 @@ function ioSVG_importSVGFont(filter) {
 	let uni;
 	let np;
 	let adv;
-	let isAutoWide;
 	let maxGlyph = 0;
 	let minchar = 0xffff;
 	let customglyphrange = [];
@@ -177,13 +176,7 @@ function ioSVG_importSVGFont(filter) {
 			}
 
 			// Get Advance Width
-			isAutoWide = true;
 			adv = parseInt(tca['horiz-adv-x']);
-			if (adv) {
-				if (!isNaN(adv) && adv > 0) {
-					isAutoWide = false;
-				}
-			} else adv = false;
 
 			if (uni.length === 1) {
 				// It's a GLYPH
@@ -197,7 +190,6 @@ function ioSVG_importSVGFont(filter) {
 				fc[uni] = new Glyph({
 					paths: newPaths,
 					glyphWidth: adv,
-					isAutoWide: isAutoWide,
 				});
 				if (getUnicodeName(uni) === '[name not found]')
 					getCurrentProject().projectSettings.filterNonCharPoints = false;
@@ -207,7 +199,6 @@ function ioSVG_importSVGFont(filter) {
 				fl[uni] = new Glyph({
 					paths: newPaths,
 					glyphWidth: adv,
-					isAutoWide: isAutoWide,
 				});
 			}
 

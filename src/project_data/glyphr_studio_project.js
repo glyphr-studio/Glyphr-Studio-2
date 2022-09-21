@@ -37,8 +37,6 @@ export class GlyphrStudioProject {
 			italicAngle: 0,
 			gridDivisions: 10,
 			overshoot: 10,
-			defaultLSB: 20,
-			defaultRSB: 20,
 			glyphRanges: [{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' }],
 			filterNonCharPoints: true,
 
