@@ -123,7 +123,7 @@ GlyphSequence.prototype.generateData = function () {
 				kern: thisKern,
 				aggregate: aggregateWidth,
 				islinebreaker: this.linebreakers.indexOf(currblock[tg]) > -1,
-				isvisible: false,
+				isVisible: false,
 				view: false,
 				linenumber: false,
 				lineaggregate: false,
@@ -167,7 +167,7 @@ GlyphSequence.prototype.generateData = function () {
 
 						if (!canNextLineFit(curry, area, this.lineGap)) {
 							// text takes up too much vertical space
-							// returning early will leave unconputed chars.isvisible = false
+							// returning early will leave unconputed chars.isVisible = false
 							// log('GlyphSequence.generateData - Vertical Max Reached', 'end');
 							return;
 						} else {
@@ -179,7 +179,7 @@ GlyphSequence.prototype.generateData = function () {
 					checkforbreak = false;
 				}
 
-				currchar.isvisible = true;
+				currchar.isVisible = true;
 				currchar.linenumber = currline;
 				currchar.view = clone({ dx: currx, dy: curry, dz: this.scale });
 				currx += currchar.width + currchar.kern;
@@ -200,7 +200,7 @@ GlyphSequence.prototype.generateData = function () {
 
 		if (!canNextLineFit(curry, area, this.lineGap)) {
 			// text takes up too much vertical space
-			// returning early will leave unconputed chars.isvisible = false
+			// returning early will leave unconputed chars.isVisible = false
 			// log('GlyphSequence.generateData - Vertical Max Reached', 'end');
 			return;
 		}
@@ -251,7 +251,7 @@ GlyphSequence.prototype.draw = function () {
 	// log('DRAW GLYPH EXTRAS');
 	if (this.drawGlyphExtras) {
 		this.iterator(function (char, gs) {
-			if (char.isvisible) gs.drawGlyphExtras(char);
+			if (char.isVisible) gs.drawGlyphExtras(char);
 		});
 	}
 
@@ -259,7 +259,7 @@ GlyphSequence.prototype.draw = function () {
 	// log('DRAW GLYPHS');
 	if (this.drawGlyph) {
 		this.iterator(function (char, gs) {
-			if (char.isvisible) gs.drawGlyph(char);
+			if (char.isVisible) gs.drawGlyph(char);
 		});
 	}
 
@@ -310,7 +310,7 @@ function debugWidths() {
 	calculateKernOffset
 	Takes two glyphs as arguments, and determines the number of Em units of
 	offset between them.  First checks to see if there are custom kern values
-	for the pair, and if not, returns 0. 
+	for the pair, and if not, returns 0.
 */
 function calculateKernOffset(c1, c2) {
 	// log('calculateKernOffset', 'start');

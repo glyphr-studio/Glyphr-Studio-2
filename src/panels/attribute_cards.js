@@ -25,9 +25,23 @@ export function makeCard_glyphAttributes(glyph) {
 	let advanceWidthLabel = makeSingleLabel('advance width');
 	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentGlyph', 'input-number');
 
+	// Side bearings
+	let bearingLabel = makeSingleLabel(`side bearings: left${dimSplit()}right`);
+	let doubleBearingInput = makeElement({tag: 'div', className: 'doubleInput',});
+	let lsbInput = makeSingleInput(glyph, 'leftSideBearing', 'currentGlyph', 'input-number');
+	let rsbInput = makeSingleInput(glyph, 'rightSideBearing', 'currentGlyph', 'input-number');
+	doubleBearingInput.appendChild(lsbInput);
+	doubleBearingInput.appendChild(dimSplitElement());
+	doubleBearingInput.appendChild(rsbInput);
+
+	// Put it all together
 	addAsChildren(glyphCard, [advanceWidthLabel, advanceWidthInput]);
+	addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
+	addAsChildren(glyphCard, makeElement({tag: 'div', className: 'rowPad'}));
+	addAsChildren(glyphCard, makeElement({tag: 'h4', content: 'Bulk-edit paths'}));
 	addAsChildren(glyphCard, makeInputs_position(glyph));
 	addAsChildren(glyphCard, makeInputs_size(glyph));
+	addAsChildren(glyphCard, makeElement({tag: 'div', className: 'rowPad'}));
 	addAsChildren(glyphCard, makeActionsArea_Glyph());
 
 	return glyphCard;
@@ -47,7 +61,7 @@ export function makeCard_pathAttributes(path) {
 		innerHTML: '<h3>Path</h3>'
 	});
 
-	log(`path['name']: ${path['name']}`);
+	log(`path.name: ${path.name}`);
 
 	let nameLabel = makeSingleLabel('path name');
 	let nameInput = makeSingleInput(path, 'name', 'currentPath', 'input');
@@ -191,8 +205,8 @@ function makeInputs_position(workItem) {
 	// Label + inputs
 	let label = makeElement({tag: 'label', innerHTML: `x${dimSplit()}y`});
 	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
-	let xInput = makeSingleInput(workItem, 'x', thisTopic, 'input-number-lockable');
-	let yInput = makeSingleInput(workItem, 'y', thisTopic, 'input-number-lockable');
+	let xInput = makeSingleInput(workItem, 'x', thisTopic, 'input-number');
+	let yInput = makeSingleInput(workItem, 'y', thisTopic, 'input-number');
 
 	// Put double input together
 	doubleInput.appendChild(xInput);
@@ -215,8 +229,8 @@ function makeInputs_size(workItem){
 	// Label + Inputs
 	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
 	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
-	let wInput = makeSingleInput(workItem, 'width', thisTopic, 'input-number-lockable');
-	let hInput = makeSingleInput(workItem, 'height', thisTopic, 'input-number-lockable');
+	let wInput = makeSingleInput(workItem, 'width', thisTopic, 'input-number');
+	let hInput = makeSingleInput(workItem, 'height', thisTopic, 'input-number');
 
 	// Put double input together
 	doubleInput.appendChild(wInput);

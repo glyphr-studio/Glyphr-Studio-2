@@ -165,10 +165,13 @@ export class Glyph extends GlyphElement {
 		return this._usedIn || [];
 	}
 
+
 	// computed properties
 
 	/**
 	 * Get X position
+	 * This is a calculated property
+	 * based on all the Paths in this Glyph
 	 * @returns {number}
 	 */
 	get x() {
@@ -177,6 +180,8 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Get Y position
+	 * This is a calculated property
+	 * based on all the Paths in this Glyph
 	 * @returns {number}
 	 */
 	get y() {
@@ -185,14 +190,19 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Get Width
+	 * This is a calculated property
+	 * based on all the Paths in this Glyph
 	 * @returns {number}
 	 */
 	get width() {
-		return this.advanceWidth;
+		const w = this.maxes.xMax - this.maxes.xMin;
+		return Math.max(w, 0);
 	}
 
 	/**
 	 * Get Height
+	 * This is a calculated property
+	 * based on all the Paths in this Glyph
 	 * @returns {number}
 	 */
 	get height() {
@@ -201,8 +211,28 @@ export class Glyph extends GlyphElement {
 	}
 
 	/**
+	 * get leftSideBearing
+	 * This is a calculated-on-the-fly property
+	 * @returns {number}
+	 */
+	get leftSideBearing() {
+		return this.maxes.xMin;
+	}
+
+	/**
+	 * get rightSideBearing
+	 * This is a calculated-on-the-fly property
+	 * @returns {number}
+	 */
+	get rightSideBearing() {
+		let rightMax = this.maxes.xMax;
+		let advance = this.advanceWidth;
+		return advance - rightMax;
+	}
+
+	/**
 	 * get maxes
-	 * @returns {boolean}
+	 * @returns {Maxes}
 	 */
 	get maxes() {
 		// log('Glyph.getMaxes', 'start');
@@ -261,6 +291,7 @@ export class Glyph extends GlyphElement {
 		return this.cache.svgPathData;
 	}
 
+
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------
@@ -268,7 +299,6 @@ export class Glyph extends GlyphElement {
 	/**
 	 * set id
 	 * @param {string} newID
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set id(newID) {
 		newID = parseUnicodeInput(newID);
@@ -279,7 +309,6 @@ export class Glyph extends GlyphElement {
 	/**
 	 * set paths
 	 * @param {array} paths
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set paths(newPaths = []) {
 		// log(`Glyph.paths setter - Start`);
@@ -323,7 +352,6 @@ export class Glyph extends GlyphElement {
 	/**
 	 * set advanceWidth
 	 * @param {number} advanceWidth
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set advanceWidth(advanceWidth) {
 		this._advanceWidth = parseFloat(advanceWidth);
@@ -333,7 +361,6 @@ export class Glyph extends GlyphElement {
 	/**
 	 * set ratioLock
 	 * @param {boolean} ratioLock
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set ratioLock(ratioLock) {
 		this._ratioLock = !!ratioLock;
@@ -342,18 +369,17 @@ export class Glyph extends GlyphElement {
 	/**
 	 * set usedIn
 	 * @param {array} usedIn
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set usedIn(usedIn) {
 		this._usedIn = usedIn || [];
 	}
+
 
 	// computed properties
 
 	/**
 	 * Set X position
 	 * @param {number} x
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set x(x) {
 		// log(`Glyph SET x`);
@@ -364,7 +390,6 @@ export class Glyph extends GlyphElement {
 	/**
 	 * Set Y position
 	 * @param {number} y
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set y(y) {
 		this.setGlyphPosition(false, y);
@@ -373,7 +398,6 @@ export class Glyph extends GlyphElement {
 	/**
 	 * Set Width
 	 * @param {number} w
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set width(w) {
 		this.setGlyphSize(w, false);
@@ -382,16 +406,35 @@ export class Glyph extends GlyphElement {
 	/**
 	 * Set Height
 	 * @param {number} h
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set height(h) {
 		this.setGlyphSize(false, h);
 	}
 
 	/**
+	 * set leftSideBearing
+	 * This is a convenience method, not a glyph property
+	 * @param {number} newLSB - what to set LSB to
+	 */
+	set leftSideBearing(newLSB) {
+		let delta = newLSB - this.leftSideBearing;
+		this.setGlyphPosition(newLSB);
+		this.advanceWidth += delta;
+	}
+
+	/**
+	 * set rightSideBearing
+	 * This is a convenience method, not a glyph property
+	 * @param {number} newRSB - what to set RSB to
+	 */
+	set rightSideBearing(newRSB) {
+		let delta = newRSB - this.rightSideBearing;
+		this.advanceWidth += delta;
+	}
+	
+	/**
 	 * Set Maxes
 	 * @param {Maxes} maxes
-	 * @returns {Glyph} - reference to this Glyph
 	 */
 	set maxes(maxes) {
 		this.cache.maxes = {};
