@@ -68,7 +68,7 @@ export class GlyphrStudioApp {
 		// log(editor);
 		// log(editor.nav);
 		this.fadeOutLoadScreen();
-		editor.nav.navigate();
+		editor.navigate();
 
 		log(`GlyphrStudioApp.setUp`, 'end');
 	}

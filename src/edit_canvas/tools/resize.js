@@ -195,7 +195,7 @@ export class Tool_Resize {
 
 				editor.publish('whichPathIsSelected', this.clickedPath);
 				editor.nav.panel = 'Attributes';
-				editor.nav.navigate();
+				editor.navigate();
 				// editor.publish('selectedPanel', editor.nav.panel);
 			}
 
