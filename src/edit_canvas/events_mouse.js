@@ -156,12 +156,12 @@ export function clickEmptySpace() {
 	editor.multiSelect.paths.clear();
 }
 
-function eventHandler_PathResize() {
+export function eventHandler_PathResize() {
 	// log('eventHandler_PathResize', 'start');
 	let editor = getCurrentProjectEditor();
 	let s = editor.multiSelect.paths;
-	let pcorner = eventHandlerData.handle;
-	// log('handle ' + pcorner);
+	let resizeCorner = eventHandlerData.handle;
+	// log('handle ' + resizeCorner);
 
 	let maxes = s.maxes;
 	let mx = cXsX(eventHandlerData.mouseX);
@@ -179,7 +179,7 @@ function eventHandler_PathResize() {
 	if (my >= maxes.yMax && maxes.yMax - maxes.yMin + dh < 2) dh = 0;
 
 	// Resize the path
-	switch (pcorner) {
+	switch (resizeCorner) {
 		case 'n':
 			if (canResize('n')) {
 				setCursor('n-resize');
@@ -320,14 +320,14 @@ function mousewheel(event) {
 	let editor = getCurrentProjectEditor();
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
-	let canzoom =
+	let canZoom =
 		editor.nav.isOnEditCanvasPage &&
 		document.getElementById('dialog_box').style.display !== 'block';
 
-	if (canzoom) {
+	if (canZoom) {
 		if (event.ctrlKey || event.metaKey) {
 			event.preventDefault();
-			// log('MOUSEWHEEL: canzoom=true and delta=' + delta );
+			// log('MOUSEWHEEL: canZoom=true and delta=' + delta );
 			if (delta > 0) {
 				viewZoom(1.1);
 			} else {

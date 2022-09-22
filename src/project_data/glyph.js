@@ -261,7 +261,7 @@ export class Glyph extends GlyphElement {
 		let name = getUnicodeName(this.id);
 		// log(`ID: ${this.id} result: ${name}`);
 		// log('Glyph GET name', 'end');
-		return name;
+		return this._name || name;
 	}
 
 	/**
@@ -378,6 +378,16 @@ export class Glyph extends GlyphElement {
 	// computed properties
 
 	/**
+	 * Set name
+	 * This usually is not necessary, Glyph.name (getter)
+	 * does a lookup of unicode names.
+	 * @param {string} newName
+	 */
+	set name(newName) {
+		this._name = newName;
+	}
+
+	/**
 	 * Set X position
 	 * @param {number} x
 	 */
@@ -431,7 +441,7 @@ export class Glyph extends GlyphElement {
 		let delta = newRSB - this.rightSideBearing;
 		this.advanceWidth += delta;
 	}
-	
+
 	/**
 	 * Set Maxes
 	 * @param {Maxes} maxes
@@ -475,11 +485,13 @@ export class Glyph extends GlyphElement {
 		// log('Glyph.updateGlyphPosition', 'start');
 		// log('dx/dy: ' + dx + ' ' + dy);
 		// log('number of paths: ' + this.paths.length);
+
 		dx = parseFloat(dx) || 0;
 		dy = parseFloat(dy) || 0;
-		const cs = this.paths;
-		for (let i = 0; i < cs.length; i++) {
-			cs[i].updatePathPosition(dx, dy);
+		for (let i = 0; i < this.paths.length; i++) {
+			const path = this.paths[i];
+			// log(`moving path #${i} - ${path.name}`);
+			path.updatePathPosition(dx, dy);
 		}
 		// log(this.name);
 		// log('Glyph.updateGlyphPosition', 'end');
