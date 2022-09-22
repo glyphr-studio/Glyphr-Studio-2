@@ -26,7 +26,7 @@ export function makeActionButton({
 	});
 
 	if(onClick) newButton.addEventListener('click', onClick);
-	if(disabled) newButton.setAttribute('disabled', 'true');
+	if(disabled) newButton.setAttribute('disabled', 'disabled');
 
 	// log(`makeActionButton`, 'end');
 	return newButton;
@@ -56,8 +56,6 @@ export function svgWrap(content) {
 let actionButtonIconColors = {
 	darkFill: accentColors.blue.l15,
 	lightFill: accentColors.gray.l85,
-	disabledFill: accentColors.gray.l95,
-	disabledOutline: accentColors.gray.l90,
 	blueOutline: accentColors.blue.l65,
 	greenOutline: accentColors.green.l70,
 	grayOutline: accentColors.gray.l50,
@@ -80,10 +78,10 @@ makeActionButtonIcon.copy = function() {
 
 	return svgWrap(re);
 };
-makeActionButtonIcon.paste = function(disabled) {
+makeActionButtonIcon.paste = function() {
 	let re = '';
-	let blue = disabled ? actionButtonIconColors.disabledOutline : actionButtonIconColors.blueOutline;
-	let fill = disabled ? actionButtonIconColors.disabledFill : actionButtonIconColors.darkFill;
+	let blue = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
 
 	re += `
 		<rect fill="${fill}" x="5" y="7"	width="20" height="22"/>
@@ -129,10 +127,10 @@ makeActionButtonIcon.addPath = function(component) {
 
 	return svgWrap(re);
 };
-makeActionButtonIcon.undo = function(disabled) {
+makeActionButtonIcon.undo = function() {
 	let re = '';
-	let blue = disabled ? actionButtonIconColors.disabledOutline : actionButtonIconColors.blueOutline;
-	let fill = disabled ? actionButtonIconColors.disabledFill : actionButtonIconColors.darkFill;
+	let blue = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
 
 	re += `
 		<path fill="${fill}" d="M20.1,23c4.6-5,6.6-9.6,5.5-12.8C24.9,8.2,22.9,7,20,7c-5.9,0-8.8,5.3-8.9,5.5L10.9,13l2.4,4.1l-12,0.8l4-14.4l2.5,4.2l0.9-1.1c0,0,4-4.6,11.2-4.6c4.1,0,7.9,2.8,8.8,6.5C29.4,10.8,29.3,16.3,20.1,23z"/>

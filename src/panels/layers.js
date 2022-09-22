@@ -4,9 +4,10 @@
 **/
 
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import { eventHandlerData } from '../edit_canvas/events_mouse.js';
 import { makeActionButtonIcon } from './action-buttons.js';
+import { addChildActions, getActionData } from './actions_cards.js';
 import { refreshPanel } from './panels.js';
 
 export function makePanel_Layers() {
@@ -128,67 +129,26 @@ function selectPath(num) {
 
 function makeActionArea_Layers() {
 	let projectEditor = getCurrentProjectEditor();
+
+	let actionsCard = makeElement({
+		className: 'panel__card full-width',
+		content:'<h3>Actions</h3>'
+	});
+
+	let actionsArea = makeElement({
+		tag: 'div',
+		className: 'panel__actions-area',
+	});
+	addChildActions(actionsArea, getActionData('addPathActions'));
+
 	let selectedPaths = projectEditor.multiSelect.paths.members;
-
-	let pathActions = `
-		<button
-			title="Add Path\nCreates a new default path and adds it to this glyph"
-			onclick="addPath(); historyPut('Add Path'); redraw({calledBy:'updateactions'});"
-		>
-			${makeActionButtonIcon.addPath(false)}
-		</button>
-		<button
-			title="Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph"
-			onclick="showDialogAddComponent();"
-		>
-			${makeActionButtonIcon.addPath(true)}
-		</button>
-		<button
-			title="Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one"
-			onclick="showDialogGetPaths();"
-		>
-			${makeActionButtonIcon.pastePathsFromAnotherGlyph()}
-		</button>
-	`;
-
-	if (selectedPaths.length > 0) {
-		pathActions += `
-			<button
-				title="Delete\nRemoves the currently selected path or paths from this glyph"
-				onclick="projectEditor.multiSelect.paths.deletePaths(); historyPut(\'Delete Path\'); redraw({calledBy:\'updateactions\'});"
-			>
-				${makeActionButtonIcon.deletePath()}
-			</button>
-		`;
+	let totalPaths = projectEditor.selectedItem.paths.length;
+	if(totalPaths > 1 && selectedPaths.length === 1) {
+		addChildActions(actionsArea, getActionData('layerActions'));
 	}
 
-	let layerActions = `
-		<button
-			title="Move Path Up\nMoves the path up in the path layer order"
-			onclick="movePathUp(); historyPut(\'Move Path Layer Up\');"
-		>
-			${makeActionButtonIcon.moveLayerUp()}
-		</button>
-		<button
-			title="Move Path Down\nMoves the path down in the path layer order"
-			onclick="movePathDown(); historyPut(\'Move Path Layer Down\');"
-		>
-			${makeActionButtonIcon.moveLayerDown()}
-		</button>
-	`;
-
-	let totalPaths = projectEditor.selectedItem.paths.length;
-	let content = `
-		<h3>Actions</h3>
-		<div class="panel__actions-area">
-			${pathActions}
-			${
-				(totalPaths > 1 && selectedPaths.length === 1) ? layerActions : ''
-			}
-		</div>
-	`;
-
-	return makeElement({className: 'panel__card full-width', content: content});
+	addAsChildren(actionsCard, actionsArea);
+	return actionsCard;
 }
 
 // --------------------------------------------------------------

@@ -647,6 +647,18 @@ export class Glyph extends GlyphElement {
 	}
 
 	/**
+	 * Round all point x/y values to a certain precision
+	 * @param {number} precision - how many decimal places to round to
+	 * @returns {Glyph} - reference to this glyph
+	 */
+	roundAll(precision = 0) {
+		for (let p=0; p<this.paths.length; p++) {
+			this.paths[p].roundAll(precision);
+		}
+		return this;
+	}
+
+	/**
 	 * Rotate about a point
 	 * @param {number} angle - how much to rotate (radians)
 	 * @param {XYPoint} about - x/y center of rotation
@@ -783,7 +795,7 @@ export class Glyph extends GlyphElement {
 	 * @param {number} desc - descender value of the font (positive integer)
 	 * @returns {string} - svg
 	 */
-	makeSVG(size = 50, gutter = 5, emSquare = 1000, desc = 300) {
+	makeSVG(size = 1000, gutter = 5, emSquare = 1000, desc = 300) {
 		// log('Glyph.makeSVG', 'start');
 		// log(this);
 
@@ -794,13 +806,13 @@ export class Glyph extends GlyphElement {
 
 		let re = `
 			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}">
-					<g transform="translate(${gutterScale},${(emSquare - desc - gutterScale / 2)}) scale(${charScale}, -${charScale})">
-						<path d="${svgPathData}"/>
-					</g>
+			    <g transform="translate(${gutterScale},${(emSquare - desc - gutterScale / 2)}) scale(${charScale}, -${charScale})">
+			      <path d="${svgPathData}"/>
+			    </g>
 			</svg>
 		`;
 		// log('Glyph.makeSVG', 'end');
-		re = re.replace(/\n/gi, '');
+		// re = re.replace(/\n/gi, '');
 		re = re.replace(/\t/gi, '');
 		return re;
 	}

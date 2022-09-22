@@ -988,6 +988,19 @@ export class Path extends GlyphElement {
 	}
 
 	/**
+	 * Round all point x/y values to a certain precision
+	 * @param {number} precision - how many decimal places to round to
+	 * @returns {Path} - reference to this path
+	 */
+	roundAll(precision = 0) {
+		for (let e = 0; e < this.pathPoints.length; e++) {
+			const pp = this.pathPoints[e];
+			pp.roundAll(precision);
+		}
+		return this;
+	}
+
+	/**
 	 * Adds a Path Point to the end of this path
 	 * @param {PathPoint} newPoint - Path Point to add
 	 * @returns {PathPoint} - reference to the added point

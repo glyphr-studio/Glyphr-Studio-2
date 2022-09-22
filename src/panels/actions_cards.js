@@ -8,6 +8,8 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { makeActionButton, makeActionButtonIcon } from './action-buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
+import { saveFile } from '../project_editor/saving.js';
+import { rectPathFromMaxes } from '../edit_canvas/tools/new-basic-path.js';
 
 export function makeCard_projectActions() {
 	let projectEditor = getCurrentProjectEditor();
@@ -48,7 +50,7 @@ export function makeCard_projectActions() {
  * onClick = false
  */
 
-function getActionData(name){
+export function getActionData(name){
 	let projectEditor = getCurrentProjectEditor();
 	let selectedPaths = projectEditor.multiSelect.paths.members;
 	let data = {};
@@ -72,20 +74,6 @@ function getActionData(name){
 			title: `Undo\nStep backwards in time one action.`,
 			disabled: !historyLength
 		},
-		{
-			iconName: 'addPath',
-			iconOptions: false,
-			title: `Add Path\nCreates a new default path and adds it to this glyph.`,
-		},
-		{
-			iconName: 'addPath',
-			iconOptions: true,
-			title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
-		},
-		{
-			iconName: 'pastePathsFromAnotherGlyph',
-			title: `Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one.`,
-		},
 	];
 
 	if (projectEditor.nav.page === 'components') {
@@ -97,47 +85,95 @@ function getActionData(name){
 		);
 	}
 
+	// ADDING PATH STUFF
+	data.addPathActions = [
+		{
+			iconName: 'addPath',
+			iconOptions: false,
+			title: `Add Path\nCreates a new default path and adds it to this glyph.`,
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				let newPath = editor.selectedItem.addOnePath(rectPathFromMaxes());
+				editor.multiSelect.paths.select(newPath);
+				editor.publish('whichPathIsSelected', newPath);
+				editor.publish('currentGlyph', editor.selectedItem);
+			}
+		},
+		{
+			iconName: 'addPath',
+			iconOptions: true,
+			title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
+			disabled: true
+		},
+		{
+			iconName: 'pastePathsFromAnotherGlyph',
+			title: `Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one.`,
+			disabled: true
+		},
+	];
+
 	// GLYPH
 	data.glyphActions = [
 		{
 			iconName: 'combine',
 			title: `Combine all paths\nCombines the paths of all paths with the same winding into as few paths as possible.`,
+			disabled: true
 		},
 		{
 			iconName: 'flipHorizontal',
 			title: `Flip Vertical\nReflects the glyph vertically.`,
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				editor.selectedItem.flipEW();
+				editor.publish('currentGlyph', editor.selectedItem);
+			}
 		},
 		{
 			iconName: 'flipVertical',
 			title: `Flip Horizontal\nReflects the glyph horizontally.`,
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				editor.selectedItem.flipNS();
+				editor.publish('currentGlyph', editor.selectedItem);
+			}
 		},
 		{
 			iconName: 'round',
 			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				editor.selectedItem.roundAll();
+				editor.publish('currentGlyph', editor.selectedItem);
+			}
 		},
 		{
 			title: `Delete Glyph\nRemove this Glyph from the project. Don\'t worry, you can undo this action.`,
 			iconName: 'deleteGlyph',
+			disabled: true
 		},
 		{
 			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
 			iconName: 'exportGlyphSVG',
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				let content = editor.selectedItem.makeSVG(1000, 0);
+				let name = editor.selectedItem.name;
+				saveFile(name+'.svg', content);
+			}
 		},
 	];
 
-	// SHAPE
+	// PATH
 	data.pathActions = [
 		{
 			iconName: 'copy',
 			title: 'Copy\nAdds a copy of the currently selected path or paths to the clipboard.',
+			disabled: true
 		},
 		{
 			iconName: 'deletePath',
 			title: 'Delete\nRemoves the currently selected path or paths from this glyph.',
-		},
-		{
-			iconName: 'reverseWinding',
-			title: `Reverse winding\nToggles the clockwise or counterclockwise winding of the path's path.`,
+			disabled: true
 		},
 	];
 
@@ -155,6 +191,7 @@ function getActionData(name){
 				iconName: 'switchPathComponent',
 				iconData: false,
 				title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
+				disabled: true
 			},
 		]);
 	}
@@ -163,14 +200,32 @@ function getActionData(name){
 		{
 			iconName: 'flipHorizontal',
 			title: 'Flip Horizontal\nReflects the currently selected path or paths horizontally.',
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				let path = editor.multiSelect.paths.singleton;
+				path.flipEW();
+				editor.publish('currentPath', path);
+			}
 		},
 		{
 			iconName: 'flipVertical',
 			title: 'Flip Vertical\nReflects the currently selected path or paths vertically',
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				let path = editor.multiSelect.paths.singleton;
+				path.flipNS();
+				editor.publish('currentPath', path);
+			}
 		},
 		{
 			iconName: 'round',
 			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
+			onClick: () => {
+				let editor = getCurrentProjectEditor();
+				let path = editor.multiSelect.paths.singleton;
+				path.roundAll();
+				editor.publish('currentPath', path);
+			}
 		},
 	]);
 
@@ -179,10 +234,12 @@ function getActionData(name){
 		{
 			iconName: 'moveLayerUp',
 			title: `Move Path Up\nMoves the path up in the path layer order.`,
+			disabled: true
 		},
 		{
 			iconName: 'moveLayerDown',
 			title: `Move Path Down\nMoves the path down in the path layer order.`,
+			disabled: true
 		},
 	];
 
@@ -268,6 +325,7 @@ export function makeActionsArea_Universal(test = false){
 	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
 
 	addChildActions(actionsArea, getActionData('allActions'));
+	addChildActions(actionsArea, getActionData('addPathActions'));
 
 	// Dev actions for testing
 	let dev = getGlyphrStudioApp().settings.dev;
@@ -345,7 +403,7 @@ export function makeActionsArea_Point(test = false){
 	return actionsArea;
 }
 
-function addChildActions(parent, actionsArray) {
+export function addChildActions(parent, actionsArray) {
 	addAsChildren(parent, actionsArray.map((iconData) => makeActionButton(iconData)));
 	return parent;
 }

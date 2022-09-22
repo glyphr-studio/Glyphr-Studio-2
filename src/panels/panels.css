@@ -126,6 +126,8 @@
 .panel__actions-area button:disabled {
 	background-color: transparent;
 	box-shadow: none;
+	opacity: 0.2;
+	filter: contrast(60%);
 }
 
 /*
