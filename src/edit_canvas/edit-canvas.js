@@ -1,11 +1,12 @@
 import { makeElement } from '../common/dom.js';
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events_mouse.js';
 import { drawGlyph, drawPath } from './draw_paths.js';
 import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, drawBoundingBox, drawNewBasicPath, drawPathPointHover, drawSelectedPathOutline } from './draw_edit_affordances.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new-basic-path.js';
+import { makeCrisp, round } from '../common/functions.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -100,6 +101,7 @@ export class EditCanvas extends HTMLElement {
 		if(oa?.calledBy) log(`==REDRAW BY ${oa.calledBy}==`);
 
 		let editor = getCurrentProjectEditor();
+		let ps = getCurrentProject().projectSettings;
 		let ctx = this.ctx;
 		let view = editor.view;
 		let width = this.width;
@@ -117,10 +119,7 @@ export class EditCanvas extends HTMLElement {
 			ctx.clearRect(0, 0, width, height);
 
 			// Grid
-			ctx.fillStyle = accentColors.gray.l90;
-			ctx.fillRect(view.dx, 0, 1, 1000);
-			ctx.fillRect(view.dx + (sg.advanceWidth * view.dz), 0, 1, 1000);
-			ctx.fillRect(0, view.dy, 1000, 1);
+			drawGrid();
 
 			// Draw glyphs
 			drawGlyph(sg, ctx, view);
@@ -151,6 +150,18 @@ export class EditCanvas extends HTMLElement {
 			if(eventHandlerData.newBasicPath) {
 				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
 			}
+		}
+
+		function drawGrid() {
+			ctx.fillStyle = accentColors.gray.l90;
+			let gridTop = sYcY(ps.ascent, view);
+			let gridHeight = ps.upm * view.dz;
+			let gridPad = 100 * view.dz;
+			let gridWidth = sg.advanceWidth * view.dz;
+
+			ctx.fillRect(view.dx, gridTop, 1, gridHeight);
+			ctx.fillRect(round(view.dx+gridWidth), gridTop, 1, gridHeight);
+			ctx.fillRect((view.dx-gridPad), view.dy, (gridWidth+(gridPad*2)), 1);
 		}
 
 		// log('EditCanvas.redraw', 'end');

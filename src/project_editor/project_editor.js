@@ -223,6 +223,18 @@ export class ProjectEditor {
 
 
 
+
+	// --------------------------------------------------------------
+	// Navigate
+	// --------------------------------------------------------------
+	navigate(pageName) {
+		this.nav.navigate(pageName);
+		if(this.nav.isOnEditCanvasPage) {
+			let rect = document.getElementsByClassName('glyph-edit__right-area')[0].getBoundingClientRect();
+			// TODO calculate view to center visible stuff
+		}
+	}
+
 	// --------------------------------------------------------------
 	// Project
 	// --------------------------------------------------------------

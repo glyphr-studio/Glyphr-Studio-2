@@ -116,7 +116,7 @@ function makeNavButton_Panel(panelName, iconName) {
 	button.addEventListener('click', () => {
 		let editor = getCurrentProjectEditor();
 		editor.nav.panel = panelName;
-		editor.nav.navigate();
+		editor.navigate();
 	});
 	return button;
 }
