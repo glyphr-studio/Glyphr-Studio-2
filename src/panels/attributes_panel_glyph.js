@@ -53,7 +53,7 @@ export function makePanel_GlyphAttributes() {
 	content.push(makeCard_glyphAttributes(editor.selectedGlyph));
 
 	// Actions
-	content.push(makeCard_projectActions());
+	// content.push(makeCard_projectActions());
 
 	// TODO used-in glyph card
 

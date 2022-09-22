@@ -8,7 +8,7 @@ import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 import { accentColors } from "../common/colors.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
 import { round } from "../common/functions.js";
-import { makeActionsArea_Glyph, makeActionsArea_Path } from "./actions_cards.js";
+import { makeActionsArea_Glyph, makeActionsArea_Path, makeActionsArea_Universal } from "./actions_cards.js";
 
 
 // --------------------------------------------------------------
@@ -68,6 +68,7 @@ export function makeCard_glyphAttributes(glyph) {
 	addAsChildren(glyphCard, makeInputs_size(glyph));
 	addAsChildren(glyphCard, makeElement({tag: 'div', className: 'rowPad'}));
 	addAsChildren(glyphCard, makeActionsArea_Glyph());
+	addAsChildren(glyphCard, makeActionsArea_Universal());
 
 	return glyphCard;
 }
