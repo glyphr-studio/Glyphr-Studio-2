@@ -97,53 +97,62 @@ export class EditCanvas extends HTMLElement {
 	// --------------------------------------------------------------
 	redraw(oa = {}) {
 		// log('EditCanvas.redraw', 'start');
-		if(oa?.calledBy) log(`==CALLED BY ${oa.calledBy}==`);
+		// if(oa?.calledBy) log(`==CALLED BY ${oa.calledBy}==`);
+
 		let editor = getCurrentProjectEditor();
 		let ctx = this.ctx;
 		let view = editor.view;
-		ctx.clearRect(0, 0, this.width, this.height);
+		let width = this.width;
+		let height = this.height;
 
 		// Current Glyph
 		let glyphHex = glyphToHex(this.glyphs.charAt(0));
 		let sg = editor.project.getGlyph(glyphHex);
 		// log(sg);
 
-		// Grid
-		ctx.fillStyle = accentColors.gray.l90;
-		ctx.fillRect(view.dx, 0, 1, 1000);
-		ctx.fillRect(view.dx + (sg.advanceWidth * view.dz), 0, 1, 1000);
-		ctx.fillRect(0, view.dy, 1000, 1);
+		if(requestAnimationFrame) requestAnimationFrame(redrawAnimationFrame);
+		else this.redrawAnimationFrame();
 
-		// Draw glyphs
-		drawGlyph(sg, ctx, view);
+		function redrawAnimationFrame() {
+			ctx.clearRect(0, 0, width, height);
 
-		// Draw selected path / path
-		let editMode = editor.selectedTool;
-		// log(`editMode: ${editMode}`);
+			// Grid
+			ctx.fillStyle = accentColors.gray.l90;
+			ctx.fillRect(view.dx, 0, 1, 1000);
+			ctx.fillRect(view.dx + (sg.advanceWidth * view.dz), 0, 1, 1000);
+			ctx.fillRect(0, view.dy, 1000, 1);
 
-		if (editMode === 'resize') {
-			drawSelectedPathOutline(ctx, view);
-			computeAndDrawBoundingBox(ctx);
-			computeAndDrawBoundingBoxHandles(ctx);
+			// Draw glyphs
+			drawGlyph(sg, ctx, view);
 
-		} else if (editMode === 'rotate') {
-			computeAndDrawRotationAffordance(ctx);
+			// Draw selected path / path
+			let editMode = editor.selectedTool;
+			// log(`editMode: ${editMode}`);
 
-		} else if (editMode === 'pathEdit') {
-			computeAndDrawPathPointHandles(ctx);
-			computeAndDrawPathPoints(ctx);
-			drawPathPointHover(ctx, eventHandlerData.hoverPoint);
+			if (editMode === 'resize') {
+				drawSelectedPathOutline(ctx, view);
+				computeAndDrawBoundingBox(ctx);
+				computeAndDrawBoundingBoxHandles(ctx);
 
-		} else if (editMode === 'newPath') {
-			computeAndDrawPathPointHandles(ctx);
-			computeAndDrawPathPoints(ctx);
+			} else if (editMode === 'rotate') {
+				computeAndDrawRotationAffordance(ctx);
+
+			} else if (editMode === 'pathEdit') {
+				computeAndDrawPathPointHandles(ctx);
+				computeAndDrawPathPoints(ctx);
+				drawPathPointHover(ctx, eventHandlerData.hoverPoint);
+
+			} else if (editMode === 'newPath') {
+				computeAndDrawPathPointHandles(ctx);
+				computeAndDrawPathPoints(ctx);
+			}
+
+			// Draw temporary new paths
+			if(eventHandlerData.newBasicPath) {
+				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
+			}
 		}
-
-		// Draw temporary new paths
-		if(eventHandlerData.newBasicPath) {
-			drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
-		}
-
+		
 		// log('EditCanvas.redraw', 'end');
 	}
 }
