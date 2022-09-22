@@ -510,17 +510,17 @@ export class PathPoint extends GlyphElement {
 	}
 
 	/**
-	 * Rounds all the Point and Handle data to a precision
-	 * @param {number} i - precision
-	 * @returns {PathPoint}
+	 * Round all point x/y values to a certain precision
+	 * @param {number} precision - how many decimal places to round to
+	 * @returns {PathPoint} - reference to this path point
 	 */
-	roundAll(i = 9) {
-		this.p.x = round(this.p.x, i);
-		this.p.y = round(this.p.y, i);
-		this.h1.x = round(this.h1.x, i);
-		this.h1.y = round(this.h1.y, i);
-		this.h2.x = round(this.h2.x, i);
-		this.h2.y = round(this.h2.y, i);
+	roundAll(precision = 9) {
+		this.p.x = round(this.p.x, precision);
+		this.p.y = round(this.p.y, precision);
+		this.h1.x = round(this.h1.x, precision);
+		this.h1.y = round(this.h1.y, precision);
+		this.h2.x = round(this.h2.x, precision);
+		this.h2.y = round(this.h2.y, precision);
 
 		return this;
 	}

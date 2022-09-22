@@ -85,6 +85,7 @@ export class Tool_Resize {
 			let dy = (eh.lastY - eh.mouseY) / dz || 0;
 			// log('after view stuff');
 
+// TODO rapidly shaking new basic paths makes straight sides curved
 			if (this.dragging) {
 				// log('detected DRAGGING');
 				let cur = 'arrowSquare';

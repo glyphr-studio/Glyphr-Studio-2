@@ -108,33 +108,48 @@ export class ProjectEditor {
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
-		// log(`ProjectEditor.publish`, 'start');
-		// log(`topic: ${topic}`);
-		// log(data);
-		// log(this.subscribers[topic]);
+		log(`ProjectEditor.publish`, 'start');
+		log(`topic: ${topic}`);
+		log(data);
+		log(this.subscribers[topic]);
 
 		if (this.subscribers[topic]) {
-			// Handle some things centrally
-			if(topic === 'whichToolIsSelected') {}
-			if(topic === 'view') {}
-			if(topic === 'whichGlyphIsSelected') {
-				this.multiSelect.paths.clear();
-				this.multiSelect.points.clear();
-			}
-			if(topic === 'whichPathIsSelected') {}
-			if(topic === 'currentGlyph') {}
-			if(topic === 'currentPath') {}
-
 			// Iterate through all the callbacks
 			Object.keys(this.subscribers[topic]).forEach((subscriberID) => {
 				// log(`Calling callback for ${subscriberID}`);
 				this.subscribers[topic][subscriberID](data);
 			});
 
+			// Handle some things centrally
+			if(topic === 'whichToolIsSelected') {}
+			if(topic === 'view') {}
+			if(topic === 'whichPathIsSelected') {
+				this.multiSelect.points.clear();
+			}
+			if(topic === 'whichGlyphIsSelected') {
+				this.multiSelect.paths.clear();
+				this.multiSelect.points.clear();
+			}
+			if(topic === 'currentGlyph') {
+				let singlePath = this.multiSelect.paths.singleton;
+				if(singlePath) {
+					// It's possible to make updates to a Glyph while a single path is selected
+					Object.keys(this.subscribers.currentPath).forEach((subscriberID) => {
+						this.subscribers.currentPath[subscriberID](singlePath);
+					});
+				}
+			}
+			if(topic === 'currentPath') {
+				// if a path changes, then so must its' Glyph also
+				Object.keys(this.subscribers.currentGlyph).forEach((subscriberID) => {
+					this.subscribers.currentGlyph[subscriberID](this.selectedItem);
+				});
+			}
+
 		} else {
 			// console.warn(`Nobody subscribed to topic ${topic}`);
 		}
-		// log(`ProjectEditor.publish`, 'end');
+		log(`ProjectEditor.publish`, 'end');
 	}
 
 	/**

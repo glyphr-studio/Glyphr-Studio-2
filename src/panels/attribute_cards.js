@@ -134,8 +134,8 @@ export function makeCard_pathAttributes(path) {
 		topic: 'currentPath',
 		subscriberID: `attributesPanel.currentPath.winding`,
 		callback: (changedItem) => {
-			if(changedItem.winding) {
-				windingButton.innerHTML = makeWindingButtonText(changedItem.winding);
+			if(changedItem.length === 1) {
+				windingButton.innerHTML = makeWindingButtonText(changedItem[0].winding);
 			}
 		}
 	});
@@ -259,10 +259,6 @@ function makeInputs_position(workItem) {
 function makeInputs_size(workItem){
 	// TODO transform origin
 	// log(`makeInputs_size`, 'start');
-	let width = workItem.width;
-	let height = workItem.height;
-	// log(`width: ${round(width, 3)}`);
-	// log(`height: ${round(height, 3)}`);
 	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
 
 	// Label + Inputs
@@ -322,10 +318,17 @@ function makeSingleInput(workItem, property, thisTopic, tagName) {
 		topic: thisTopic,
 		subscriberID: `attributesPanel.${thisTopic}.${property}`,
 		callback: (changedItem) => {
+			log(`SINGLE INPUT CALLBACK`, 'start');
+			log(`attributesPanel.${thisTopic}.${property}`);
+			log(changedItem);
+			log(`changedItem[property]: ${changedItem[property]}`);
+
 			if(changedItem[property]) {
 				let newValue = tagName === 'input'? changedItem[property] : round(changedItem[property], 3);
 				newInput.value = newValue;
+				log(`new value: ${newValue}`);
 			}
+			log(`SINGLE INPUT CALLBACK`, 'end');
 		}
 	});
 

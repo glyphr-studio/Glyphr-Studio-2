@@ -97,7 +97,7 @@ export class EditCanvas extends HTMLElement {
 	// --------------------------------------------------------------
 	redraw(oa = {}) {
 		// log('EditCanvas.redraw', 'start');
-		// if(oa?.calledBy) log(`==CALLED BY ${oa.calledBy}==`);
+		if(oa?.calledBy) log(`==REDRAW BY ${oa.calledBy}==`);
 
 		let editor = getCurrentProjectEditor();
 		let ctx = this.ctx;
@@ -152,7 +152,7 @@ export class EditCanvas extends HTMLElement {
 				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
 			}
 		}
-		
+
 		// log('EditCanvas.redraw', 'end');
 	}
 }
