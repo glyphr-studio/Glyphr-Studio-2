@@ -30,12 +30,10 @@ export class Tool_Resize {
 
 			this.clickedPath = getPathAtLocation(eh.mouseX, eh.mouseY);
 			let editor = getCurrentProjectEditor();
+			let selectedPaths = editor.multiSelect.paths;
 
 			// TODO cursor detection
-			// eh.handle = editor.multiSelect.paths.isOverBoundingBoxHandle(
-			// 	eh.mouseX,
-			// 	eh.mouseY
-			// );
+			eh.handle = selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
 
 			// log('clickedPath: ' + this.clickedPath);
 			// log('corner: ' + eh.handle);
@@ -48,9 +46,9 @@ export class Tool_Resize {
 				if (eh.handle === 'rotate') {
 					// log('mousedown - setting rotating = true');
 					this.rotating = true;
-					eh.rotationCenter = editor.multiSelect.paths.maxes.center;
+					eh.rotationCenter = selectedPaths.maxes.center;
 					eh.rotationStartTopY =
-						editor.multiSelect.paths.maxes.yMax +
+						selectedPaths.maxes.yMax +
 						editor.rotateHandleHeight / editor.view.dz;
 				} else {
 					// log('clicked on eh.handle: ' + eh.handle);

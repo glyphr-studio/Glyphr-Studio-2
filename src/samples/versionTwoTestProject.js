@@ -1,5 +1,5 @@
 export function getVersionTwoTestProject() {
-  log('getVersionTwoTestProject', 'start');
+  // log('getVersionTwoTestProject', 'start');
   const versionTwoTestProject = {
     projectSettings:{
       name:'Alpha Test Font',
@@ -123,7 +123,7 @@ export function getVersionTwoTestProject() {
     }
   };
 
-  log(versionTwoTestProject);
-  log('getVersionTwoTestProject', 'end');
+  // log(versionTwoTestProject);
+  // log('getVersionTwoTestProject', 'end');
   return versionTwoTestProject;
 }

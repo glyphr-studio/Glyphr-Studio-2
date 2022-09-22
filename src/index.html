@@ -23,10 +23,19 @@
 	<link rel="icon" type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAUhJREFUeNpiZACBVQ8NgGQ9EDsAsQADfvABiA8AcSNDmPwFRqjm/egaDQTYgJgVzL7w4TcQ/8JmkCML1GYBZI3zTYXANDIAGZB4+h2yQSA99SAXvIcZoMDNwnDeVQIsW3jhPcOGp9/B7ABpToZ+A0Ew23D3C4YHX//AXcGEbHu9Fj9c0YIHXxk+/P4HxiA2SAxZDcwVTMg8kE0gxUg2wAFIDCQHUoMMUAwQYGVi+Ai0ERcAyYHU4DQA5Fx9fjacBmCTQzFg4u3PYCeutxIF0yDbQBhZDB2wIHMarn4E0/mqvBiKQa4DRSF69KIY8D9UDkwzrn7E4CDKgaLwwOsfDA3a/PgNANkCiwGQBmxh8AEtkJmgSRIeBiAbQP5FdgGIDQsDkBpkO1mgGSOAmDBovPYRrgbmM5yZCWQrcmbC4iVwZmKkNDsDBBgAPeaW5sdU9+kAAAAASUVORK5CYII=" />
 	<script src="app/main.js" type="module"></script>
 	<script type="module">
-		console.info(
-			'%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n',
-			'color:rgb(0,170,225)'
-			);
+		// console.info(
+		// 	'%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n',
+		// 	'color:rgb(0,170,225)'
+		// 	);
+console.info(`%c
+ ░░░░░░    ░░░░░░   ░░░░░░
+▒▒        ▒▒             ▒▒
+▒▒   ▒▒▒   ▒▒▒▒▒     ▒▒▒▒▒
+▓▓    ▓▓       ▓▓   ▓▓
+ ██████   ██████    ███████
+G L Y P H R  S T U D I O  2
+`, 'color: hsl(199, 100%, 64%)');
+
 		import { glyphrStudioOnLoad, GSApp, log } from './app/main.js';
 		window.log = log;
 		document.addEventListener('DOMContentLoaded', glyphrStudioOnLoad);
