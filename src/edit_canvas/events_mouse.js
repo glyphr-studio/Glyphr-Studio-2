@@ -1,6 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
-import { updateCursor } from './cursors.js';
+import { setCursor, updateCursor } from './cursors.js';
 import { Tool_Pan}  from './tools/pan.js';
 import { Tool_NewBasicPath}  from './tools/new-basic-path.js';
 import { Tool_Resize}  from './tools/resize.js';
@@ -8,6 +8,7 @@ import { Tool_NewPath}  from './tools/new-path.js';
 import { Tool_PathEdit}  from './tools/path-edit.js';
 import { Tool_PathAddPoint}  from './tools/path-add-point.js';
 import { Tool_Kern}  from './tools/kern.js';
+import { cXsX, cYsY } from './edit-canvas.js';
 
 /**
  Framework > Event Handlers > Mouse
@@ -157,92 +158,96 @@ export function clickEmptySpace() {
 }
 
 export function eventHandler_PathResize() {
-	// log('eventHandler_PathResize', 'start');
+	log('eventHandler_PathResize', 'start');
 	let editor = getCurrentProjectEditor();
-	let s = editor.multiSelect.paths;
+	let paths = editor.multiSelect.paths;
+	log(paths);
 	let resizeCorner = eventHandlerData.handle;
-	// log('handle ' + resizeCorner);
+	log('handle ' + resizeCorner);
 
-	let maxes = s.maxes;
 	let mx = cXsX(eventHandlerData.mouseX);
 	let my = cYsY(eventHandlerData.mouseY);
 	let lx = cXsX(eventHandlerData.lastX);
 	let ly = cYsY(eventHandlerData.lastY);
 	let dh = ly - my;
 	let dw = lx - mx;
-	let rl = s.getAttribute('ratioLock');
-
-	// log('eventHandler_PathResize dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
+	// TODO multi-select path ratioLock?
+	let rl = paths.ratioLock || false;
 
 	// Check that the path won't have negative dimensions
-	if (mx >= maxes.xMax && maxes.xMax - maxes.xMin + dw < 2) dw = 0;
-	if (my >= maxes.yMax && maxes.yMax - maxes.yMin + dh < 2) dh = 0;
+	let maxes = paths.maxes;
+	// TODO if resizing handle goes past the opposite side,
+	// flip the shape and selected handle to keep going
+	if ((mx >= maxes.xMax) && (maxes.xMax - maxes.xMin + dw < 2)) dw = 0;
+	if ((my >= maxes.yMax) && (maxes.yMax - maxes.yMin + dh < 2)) dh = 0;
+	log('dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
 
 	// Resize the path
 	switch (resizeCorner) {
 		case 'n':
 			if (canResize('n')) {
 				setCursor('n-resize');
-				s.updatePathSize(0, dh * -1, rl);
+				paths.updatePathSize(0, dh * -1, rl);
 			}
 			break;
 
 		case 'ne':
 			if (canResize('ne')) {
 				setCursor('ne-resize');
-				s.updatePathSize(dw * -1, dh * -1, rl);
+				paths.updatePathSize(dw * -1, dh * -1, rl);
 			}
 			break;
 
 		case 'e':
 			if (canResize('e')) {
 				setCursor('e-resize');
-				s.updatePathSize(dw * -1, 0, rl);
+				paths.updatePathSize(dw * -1, 0, rl);
 			}
 			break;
 
 		case 'se':
 			if (canResize('se')) {
 				setCursor('se-resize');
-				s.updatePathSize(dw * -1, dh, rl);
-				s.updatePathPosition(0, dh * -1);
+				paths.updatePathSize(dw * -1, dh, rl);
+				paths.updatePathPosition(0, dh * -1);
 			}
 			break;
 
 		case 's':
 			if (canResize('s')) {
 				setCursor('s-resize');
-				s.updatePathPosition(0, dh * -1);
-				s.updatePathSize(0, dh, rl);
+				paths.updatePathPosition(0, dh * -1);
+				paths.updatePathSize(0, dh, rl);
 			}
 			break;
 
 		case 'sw':
 			if (canResize('sw')) {
 				setCursor('sw-resize');
-				s.updatePathSize(dw, dh, rl);
-				s.updatePathPosition(dw * -1, dh * -1);
+				paths.updatePathSize(dw, dh, rl);
+				paths.updatePathPosition(dw * -1, dh * -1);
 			}
 			break;
 
 		case 'w':
 			if (canResize('w')) {
 				setCursor('w-resize');
-				s.updatePathSize(dw, 0, rl);
-				s.updatePathPosition(dw * -1, 0);
+				paths.updatePathSize(dw, 0, rl);
+				paths.updatePathPosition(dw * -1, 0);
 			}
 			break;
 
 		case 'nw':
 			if (canResize('nw')) {
 				setCursor('nw-resize');
-				s.updatePathSize(dw, dh * -1, rl);
-				s.updatePathPosition(dw * -1, 0);
+				paths.updatePathSize(dw, dh * -1, rl);
+				paths.updatePathPosition(dw * -1, 0);
 			}
 			break;
 	}
 
-	// log('eventHandler_PathResize - Done lx/rx/ty/by: ' + s.maxes.xMin + ',' + s.maxes.xMax + ',' + s.maxes.yMax + ',' + s.maxes.yMin);
+	log('Done lx/rx/ty/by: ' + paths.maxes.print());
+	log(`eventHandler_PathResize`, 'end');
 }
 
 export function checkForMouseOverHotspot(x, y) {
@@ -278,11 +283,12 @@ function updateDragSelectArea(dx, dy, dw, dh) {
 
 export function canResize(handle) {
 	let editor = getCurrentProjectEditor();
-	let rl = editor.multiSelect.paths.ratioLock;
-	let xl = editor.multiSelect.paths.xLock;
-	let yl = editor.multiSelect.paths.yLock;
-	let wl = editor.multiSelect.paths.wLock;
-	let hl = editor.multiSelect.paths.hLock;
+	let selectedPaths = editor.multiSelect.paths;
+	let rl = selectedPaths.ratioLock;
+	let xl = selectedPaths.xLock;
+	let yl = selectedPaths.yLock;
+	let wl = selectedPaths.wLock;
+	let hl = selectedPaths.hLock;
 	let re = true;
 
 	switch (handle) {

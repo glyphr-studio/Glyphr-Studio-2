@@ -35,7 +35,7 @@ export function makeCard_glyphAttributes(glyph) {
 				<h1>Side Bearings</h1>
 				Side bearings are the blank space to the left and right
 				of paths in a glyph. The open space between
-				characters is very important for ledgibility.
+				characters is very important for legibility.
 				<br><br>
 				These are calculated values based on path positions and the
 				Advance Width. They are not properties that are saved with the
@@ -86,11 +86,12 @@ export function makeCard_pathAttributes(path) {
 		innerHTML: '<h3>Path</h3>'
 	});
 
+	// Path name
 	log(`path.name: ${path.name}`);
-
 	let nameLabel = makeSingleLabel('path name');
 	let nameInput = makeSingleInput(path, 'name', 'currentPath', 'input');
 
+	// Winding
 	let windingInfo = makeElement({
 		tag: 'label',
 		className: 'info',
@@ -121,28 +122,41 @@ export function makeCard_pathAttributes(path) {
 			</info-bubble>
 		`
 	});
-
-	let buttonText = 'unknown';
-	if(path.winding > 0) buttonText = 'counterclockwise&ensp;&#8634';
-	if(path.winding < 0) buttonText = 'clockwise&ensp;&#8635';
-
 	let windingButton = makeElement({
 		tag: 'button',
-		innerHTML: buttonText
+		innerHTML: makeWindingButtonText(path.winding)
 	});
 	windingButton.addEventListener('click', (event) => {
-		path.winding = path.winding * -1;
-		getCurrentProjectEditor().publish('selectedPath', path);
+		path.reverseWinding();
+		getCurrentProjectEditor().publish('currentPath', path);
+	});
+	getCurrentProjectEditor().subscribe({
+		topic: 'currentPath',
+		subscriberID: `attributesPanel.currentPath.winding`,
+		callback: (changedItem) => {
+			if(changedItem.winding) {
+				windingButton.innerHTML = makeWindingButtonText(changedItem.winding);
+			}
+		}
 	});
 
-	let posElems = makeInputs_position(path);
-	let sizeElems = makeInputs_size(path);
+	// Position and Size
+	let positionInputs = makeInputs_position(path);
+	let sizeInputs = makeInputs_size(path);
 
-	addAsChildren(pathCard, [nameLabel, nameInput, windingInfo, windingButton, posElems, sizeElems]);
+	// Put it all together
+	addAsChildren(pathCard, [nameLabel, nameInput, windingInfo, windingButton, positionInputs, sizeInputs]);
 	addAsChildren(pathCard, makeActionsArea_Path());
 
 	log(`makeCard_pathAttributes`, 'end');
 	return pathCard;
+}
+
+function makeWindingButtonText(winding) {
+	let buttonText = 'unknown';
+	if(winding > 0) buttonText = 'counterclockwise&ensp;&#8634';
+	if(winding < 0) buttonText = 'clockwise&ensp;&#8635';
+	return buttonText;
 }
 
 export function makeCard_multiSelectPathAttributes(glyph) {
@@ -288,6 +302,7 @@ function makeInputs_size(workItem){
 	ratioLockCheckbox.addEventListener('change', (event) => {
 		let newValue = event.target.checked;
 		workItem.ratioLock = newValue;
+		getCurrentProjectEditor().publish(thisTopic, workItem);
 	});
 
 	// log(`makeInputs_size`, 'end');

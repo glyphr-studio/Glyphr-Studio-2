@@ -33,7 +33,7 @@ let multiSelectThickness = 3;
 export function computeAndDrawBoundingBox(ctx) {
 	let editor = getCurrentProjectEditor();
 	if(editor.multiSelect.paths.length < 1) return;
-	let maxes = editor.multiSelect.paths.getMaxes();
+	let maxes = editor.multiSelect.paths.maxes;
 	let thickness = editor.multiSelect.paths.length > 1? multiSelectThickness : 1;
 	drawBoundingBox(ctx, maxes, thickness);
 }
@@ -54,7 +54,7 @@ export function computeAndDrawRotationAffordance(ctx) {
 export function computeAndDrawBoundingBoxHandles(ctx) {
 	let editor = getCurrentProjectEditor();
 	if(editor.multiSelect.paths.length < 1) return;
-	let maxes = editor.multiSelect.paths.getMaxes();
+	let maxes = editor.multiSelect.paths.maxes;
 	let thickness = editor.multiSelect.paths.length > 1? multiSelectThickness : 1;
 	drawBoundingBoxHandles(ctx, maxes, thickness);
 }
@@ -273,7 +273,7 @@ function drawCircleHandle(ctx, center) {
 // Helpers
 // --------------------------------------------------------------
 
-function isOverBoundingBoxHandle(px, py, maxes, thickness) {
+export function isOverBoundingBoxHandle(px, py, maxes) {
 	// log(`isOverBoundingBoxHandle`, 'start');
 	// log('\t px/py - ' + px + ' / ' + py);
 	// log('\t maxes - ' + json(maxes, true));
@@ -284,9 +284,10 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
 		return false;
 	}
 
+	let editor = getCurrentProjectEditor();
 	let re = false;
 	let ps = pointSize;
-	let bb = getBoundingBoxHandleDimensions(maxes, thickness);
+	let bb = getBoundingBoxHandleDimensions(maxes);
 
 	// log('\t point size - ' + ps);
 	// log('\t l/m/r x: ' + bb.leftX + ' / ' + bb.midX + ' / ' + bb.rightX);
@@ -357,7 +358,7 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
 function getBoundingBoxHandleDimensions(maxes, thickness) {
 	let dimensions = {};
 	let hp = pointSize/2;
-	thickness = thickness || 1;
+	thickness = 1;
 
 	// Translation Fidelity - converting passed canvas values to saved value system
 	dimensions.leftX = (sXcX(maxes.xMin) - hp);
