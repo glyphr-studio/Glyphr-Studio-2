@@ -32,7 +32,6 @@ export class Tool_Resize {
 			let editor = getCurrentProjectEditor();
 			let selectedPaths = editor.multiSelect.paths;
 
-			// TODO cursor detection
 			eh.handle = selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
 
 			// log('clickedPath: ' + this.clickedPath);
@@ -69,15 +68,16 @@ export class Tool_Resize {
 			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_Resize mousedown' });
 		};
 
+
 		this.mousemove = function (ev) {
 			// log(`Tool_Resize.mousemove`, 'start');
 
 			let eh = eventHandlerData;
 			let editor = getCurrentProjectEditor();
+			let selectedPaths = editor.multiSelect.paths;
 			this.didStuff = false;
-			// TODO cursor detection
-			// let corner = eh.handle || editor.multiSelect.paths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
-			let corner = eh.handle;
+
+			let corner = eh.handle || selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
 			// log('before view stuff');
 
 			let dz = editor.view.dz;
@@ -91,9 +91,9 @@ export class Tool_Resize {
 
 				if (this.clickedPath) {
 					if (eh.multi)
-						editor.multiSelect.paths.add(this.clickedPath);
-					else if (!editor.multiSelect.paths.isSelected(this.clickedPath)) {
-						editor.multiSelect.paths.select(this.clickedPath);
+						selectedPaths.add(this.clickedPath);
+					else if (!selectedPaths.isSelected(this.clickedPath)) {
+						selectedPaths.select(this.clickedPath);
 					}
 
 					if (this.clickedPath.objType === 'ComponentInstance')
@@ -101,12 +101,11 @@ export class Tool_Resize {
 					editor.nav.panel = 'Attributes';
 				}
 
-				let singlePath = editor.multiSelect.paths.singleton;
+				let singlePath = selectedPaths.singleton;
 
 				if (singlePath) {
-					// TODO cursor detection
-					// cur = singlePath.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
-					// if (!cur) cur = getPathAtLocation(eh.mouseX, eh.mouseY) ? 'arrowSquare' : 'arrow';
+					cur = selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
+					if (!cur) cur = getPathAtLocation(eh.mouseX, eh.mouseY) ? 'arrowSquare' : 'arrow';
 					// log(`singleton`);
 					dx = singlePath.xLock ? 0 : dx;
 					dy = singlePath.yLock ? 0 : dy;
@@ -115,7 +114,7 @@ export class Tool_Resize {
 				// log(`dx: ${dx}`);
 				// log(`dy: ${dy}`);
 
-				editor.multiSelect.paths.updatePathPosition(dx, dy);
+				selectedPaths.updatePathPosition(dx, dy);
 				this.didStuff = true;
 				setCursor(cur);
 
@@ -128,7 +127,7 @@ export class Tool_Resize {
 				// log(`detected ROTATING`);
 				let a1 = calculateAngle({ x: cXsX(eh.mouseX), y: cYsY(eh.mouseY) }, eh.rotationCenter);
 				let a2 = calculateAngle({ x: cXsX(eh.lastX), y: cYsY(eh.lastY) }, eh.rotationCenter);
-				editor.multiSelect.paths.rotate(a1 - a2, eh.rotationCenter);
+				selectedPaths.rotate(a1 - a2, eh.rotationCenter);
 				this.didStuff = true;
 				setCursor('rotate');
 
@@ -164,6 +163,7 @@ export class Tool_Resize {
 
 			// log(`Tool_Resize.mousemove`, 'end');
 		};
+
 
 		this.mouseup = function () {
 			// log('Mouse Up');

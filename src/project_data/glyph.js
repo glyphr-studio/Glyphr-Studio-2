@@ -235,7 +235,7 @@ export class Glyph extends GlyphElement {
 	 * @returns {Maxes}
 	 */
 	get maxes() {
-		// log('Glyph.getMaxes', 'start');
+		// log('Glyph GET maxes', 'start');
 		// log('cache before');
 		// log(this.cache);
 		if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
@@ -246,7 +246,7 @@ export class Glyph extends GlyphElement {
 		}
 		// log('cache after');
 		// log(this.cache);
-		// log('Glyph.getMaxes', 'end');
+		// log('Glyph GET maxes', 'end');
 		return new Maxes(this.cache.maxes);
 	}
 

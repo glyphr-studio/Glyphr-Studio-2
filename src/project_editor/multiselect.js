@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { drawPath } from '../edit_canvas/draw_paths.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -296,6 +297,16 @@ export class MultiSelectPaths extends MultiSelect {
 		return this._glyph;
 	}
 
+	get maxes() {
+		if (this.members.length === 1) return this.members[0].maxes;
+		else return this.glyph.maxes;
+	}
+
+	get ratioLock() {
+		if (this.members.length === 1) return this.members[0].ratioLock;
+		else return false;
+	}
+
 	contains(objTypeName) {
 		if (this.members.length === 0) return false;
 		let re = false;
@@ -445,21 +456,21 @@ export class MultiSelectPaths extends MultiSelect {
 		// log('SelectedPaths.isOverBoundingBoxHandle', 'start');
 		// log('passed x/y: ' + px + '/' + py);
 
+		let re = false;
 		if (this.members.length === 0) {
-			return false;
+			// log('no members, returning false');
+			re = false;
 		} else if (this.members.length === 1) {
-			// log('calling singleton method');
-			return this.members[0].isOverBoundingBoxHandle(px, py);
+			// log('calling singleton for size');
+			re = isOverBoundingBoxHandle(px, py, this.members[0].maxes);
+		} else {
+			// log('calling virtual glyph for size');
+			re = isOverBoundingBoxHandle(px, py, this.glyph.maxes);
 		}
 
-		const c = isOverBoundingBoxHandle(
-			px,
-			py,
-			this.glyph.maxes,
-			_UI.multiSelectThickness
-		);
-		// log('SelectedPaths.isOverBoundingBoxHandle returning ' + c);
-		return c;
+		// log(`returning: ${re}`);
+		// log('SelectedPaths.isOverBoundingBoxHandle', 'end');
+		return re;
 	}
 
 	getCenter() {
@@ -471,11 +482,6 @@ export class MultiSelectPaths extends MultiSelect {
 	//         this.members[m].recalculateMaxes();
 	//     }
 	// }
-
-	getMaxes() {
-		if (this.members.length === 1) return this.members[0].maxes;
-		else return this.glyph.maxes;
-	}
 
 	drawPaths(ctx, view) {
 		let failed = false;

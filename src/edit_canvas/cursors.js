@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { eventHandlerData } from './events_mouse.js';
+import { canResize, eventHandlerData } from './events_mouse.js';
 
 export function updateCursor(tool) {
 	// log('updateCursor', 'start');
