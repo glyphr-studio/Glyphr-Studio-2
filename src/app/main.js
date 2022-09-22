@@ -22,17 +22,23 @@ export const GSApp = new GlyphrStudioApp();
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
+	if(GSApp.version) {
+		console.info(
+			`%cApp Version ${GSApp.version}%c\n`,
+			'color:hsl(199, 100%, 64%); background-color:hsla(200, 100%, 49%, 10%); padding: 4px 8px; border-radius: 12px;',
+			'background-color: transparent;'
+			);
+	}
 	log(`glyphrStudioOnLoad`, 'start');
 
 	if (passPreChecks()) {
-		// log(GSApp);
-		console.info(`%cApp Version ${GSApp.version} \n\n`, 'color:rgb(0,170,225)');
 		registerCustomComponents();
 
 		// Load project
 		let sample = getVersionTwoTestProject();
 		GSApp.settings.dev.currentPage = 'Glyph edit';
 		GSApp.setUp(JSON.stringify(sample));
+		log(GSApp);
 	} else {
 		log('did NOT pass pre-checks');
 	}
@@ -135,7 +141,9 @@ export function log(message, type) {
 		padding: 6px 12px 4px 12px;
 		position: relative;
 		left: -20px;
+		color: white;
 	`;
+	let dotStyle = 'color: rgba(127, 127, 127, 0.5)';
 
 	if (dev.mode) {
 		if (typeof message === 'string') {
@@ -144,24 +152,28 @@ export function log(message, type) {
 			if (type === 'start' || type === 'end') {
 				if (type === 'start') {
 					if (!logColors[message])
-						logColors[message] = `hsl(${Math.floor(
-							Math.random() * 360
-						)}, 60%, 20%)`;
+						logColors[message] = `hsl(${Math.floor((Math.random() * (210)) + 150)}, 90%, 20%)`;
 					console.log(
-						`${ch.repeat(logCount)}%cSTART\t${message}`,
-						`background-color: ${logColors[message]}; margin-top: 20px; ${commonStyle}`
+						`%c${ch.repeat(logCount)}%cSTART\t${message}`,
+						dotStyle,
+						`background-color: ${logColors[message]}; margin-top: 10px; ${commonStyle}`
 					);
 					logCount++;
 				} else if (type === 'end') {
 					logCount--;
 					console.log(
-						`${ch.repeat(logCount)}%cEND  \t${message}`,
+						`%c${ch.repeat(logCount)}%cEND  \t${message}`,
+						dotStyle,
 						`background-color: ${logColors[message]}; margin-bottom: 20px; ${commonStyle}`
 					);
 					delete logColors[message];
 				}
 			} else {
-				console.log(`${ch.repeat(logCount)}${message}`);
+				console.log(
+					`%c${ch.repeat(logCount)}%c${message}`,
+					dotStyle,
+					'color: default'
+				);
 			}
 		} else if (typeof message === 'object') {
 			if (dev.debugTableObjects) console.table(message);

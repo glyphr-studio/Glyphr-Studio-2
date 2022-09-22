@@ -62,7 +62,7 @@ export function initEventHandlers(editCanvas) {
 	editCanvas.addEventListener('mouseup', ev_canvas, false);
 	editCanvas.customGuideTransparency = handleMouseOverCanvas;
 	editCanvas.onmouseout = handleMouseLeaveCanvas;
-	editCanvas.addEventListener('wheel', mousewheel, false);
+	editCanvas.addEventListener('wheel', mousewheel, {passive: false, capture: false});
 
 	// TODO Key Listeners
 	// Document Key Listeners

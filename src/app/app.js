@@ -14,7 +14,7 @@ export class GlyphrStudioApp {
 	constructor() {
 		// Version
 		this.versionName = 'Version 2 alpha';
-		this.version = '2.0.0';
+		this.version = '2.0.0-alpha';
 		this.versionDate = 0;
 		this.projectEditors = [];
 		this.selectedProjectEditor = 0;
@@ -65,8 +65,8 @@ export class GlyphrStudioApp {
 			if(dev.currentPanel) editor.nav.panel = dev.currentPanel;
 		}
 
-		log(editor);
-		log(editor.nav);
+		// log(editor);
+		// log(editor.nav);
 		this.fadeOutLoadScreen();
 		editor.nav.navigate();
 
