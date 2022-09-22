@@ -108,10 +108,10 @@ export class ProjectEditor {
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
-		log(`ProjectEditor.publish`, 'start');
-		log(`topic: ${topic}`);
-		log(data);
-		log(this.subscribers[topic]);
+		// log(`ProjectEditor.publish`, 'start');
+		// log(`topic: ${topic}`);
+		// log(data);
+		// log(this.subscribers[topic]);
 
 		if (this.subscribers[topic]) {
 			// Handle some things centrally
@@ -127,14 +127,14 @@ export class ProjectEditor {
 
 			// Iterate through all the callbacks
 			Object.keys(this.subscribers[topic]).forEach((subscriberID) => {
-				log(`Calling callback for ${subscriberID}`);
+				// log(`Calling callback for ${subscriberID}`);
 				this.subscribers[topic][subscriberID](data);
 			});
 
 		} else {
 			// console.warn(`Nobody subscribed to topic ${topic}`);
 		}
-		log(`ProjectEditor.publish`, 'end');
+		// log(`ProjectEditor.publish`, 'end');
 	}
 
 	/**
@@ -183,12 +183,12 @@ export class ProjectEditor {
 	}
 
 	unsubscribe({topicToRemove = false, idToRemove = false}) {
-		log(`ProjectEditor.unsubscribe`, 'start');
-		log(`topicToRemove: ${topicToRemove}`);
-		log(`idToRemove: ${idToRemove}`);
+		// log(`ProjectEditor.unsubscribe`, 'start');
+		// log(`topicToRemove: ${topicToRemove}`);
+		// log(`idToRemove: ${idToRemove}`);
 
 		if(topicToRemove && this.subscribers[topicToRemove]) {
-			log(`removing topic: ${topicToRemove}`);
+			// log(`removing topic: ${topicToRemove}`);
 			delete this.subscribers[topicToRemove];
 		}
 
@@ -196,14 +196,14 @@ export class ProjectEditor {
 			Object.keys(this.subscribers).forEach((topic) => {
 				Object.keys(this.subscribers[topic]).forEach((subscriberID) => {
 					if(subscriberID.indexOf(idToRemove) > -1) {
-						log(`removing subscriber: ${subscriberID} (matched to ${idToRemove})`);
+						// log(`removing subscriber: ${subscriberID} (matched to ${idToRemove})`);
 						delete this.subscribers[topic][subscriberID];
 					}
 				});
 			});
 		}
 
-		log(`ProjectEditor.unsubscribe`, 'end');
+		// log(`ProjectEditor.unsubscribe`, 'end');
 	}
 
 
