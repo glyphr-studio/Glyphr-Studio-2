@@ -110,6 +110,7 @@
 	grid-template-columns: repeat(10, var(--action-icon-size));
 	grid-template-rows: var(--action-icon-size);
 	gap: 10px;
+	margin-bottom: 6px;
 }
 
 .panel__actions-area h3 {
