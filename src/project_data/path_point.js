@@ -196,6 +196,7 @@ export class PathPoint extends GlyphElement {
 
 		switch (controlPoint) {
 			case 'p':
+				// log('moving p');
 				// Should this honor xLock / yLock?
 				// Should this be _x/_y instead of x/y?
 				this.p.coord.x += dx;
@@ -212,6 +213,7 @@ export class PathPoint extends GlyphElement {
 				break;
 
 			case 'h1':
+				// log('moving h1');
 				// Should this honor xLock / yLock?
 				// Should this be _x/_y instead of x/y?
 				this.h1.coord.x += dx;
@@ -222,6 +224,7 @@ export class PathPoint extends GlyphElement {
 				break;
 
 			case 'h2':
+				// log('moving h2');
 				// Should this honor xLock / yLock?
 				// Should this be _x/_y instead of x/y?
 				this.h2.coord.x += dx;
@@ -241,6 +244,8 @@ export class PathPoint extends GlyphElement {
 	 * @returns {PathPoint}
 	 */
 	makeSymmetric(hold) {
+		// log(`PathPoint.makeSymmetric`, 'start');
+
 		// log('PathPoint.makeSymmetric - hold ' + hold + ' starts as ' + JSON.stringify(this));
 
 		if (!hold) {
@@ -260,24 +265,48 @@ export class PathPoint extends GlyphElement {
 			}
 		}
 
+		let newX, newY;
+		let changed = false;
 		switch (hold) {
 			case 'h1':
-				this.h2.x = this.p.x - this.h1.x + this.p.x;
-				this.h2.y = this.p.y - this.h1.y + this.p.y;
+				newX = this.p.x - this.h1.x + this.p.x;
+				if(this.h2.x !== newX) {
+					this.h2.x = newX;
+					changed = true;
+				}
+
+				newY = this.p.y - this.h1.y + this.p.y;
+				if (this.h2.y !== newY) {
+					this.h2.y = newY;
+					changed = true;
+				}
 				break;
+
 			case 'h2':
-				this.h1.x = this.p.x - this.h2.x + this.p.x;
-				this.h1.y = this.p.y - this.h2.y + this.p.y;
+				newX = this.p.x - this.h2.x + this.p.x;
+				if(this.h1.x !== newX) {
+					this.h1.x = newX;
+					changed = true;
+				}
+
+				newY = this.p.y - this.h2.y + this.p.y;
+				if (this.h1.y !== newY) {
+					this.h1.y = newY;
+					changed = true;
+				}
 				break;
 		}
 
 		this._type = 'symmetric';
-		this.h1.use = true;
-		this.h2.use = true;
+		if(changed) {
+			this.h1.use = true;
+			this.h2.use = true;
+		}
 
 		// this.roundAll();
 		// log('PathPoint.makeSymmetric - returns ' + JSON.stringify(this));
 
+		// log(`PathPoint.makeSymmetric`, 'end');
 		return this;
 	}
 
@@ -333,8 +362,12 @@ export class PathPoint extends GlyphElement {
 			newHy = this.p.y + newOpp * -1;
 
 			if (!isNaN(newHx) && !isNaN(newHy)) {
-				this.h2.x = newHx;
-				this.h2.y = newHy;
+				if(this.h2.x !== newHx){
+					this.h2.x = newHx;
+				}
+				if(this.h2.y !== newHy){
+					this.h2.y = newHy;
+				}
 			}
 		} else if (hold === 'h2') {
 			// get new x and y for h2
@@ -346,8 +379,12 @@ export class PathPoint extends GlyphElement {
 			newHy = this.p.y + newOpp * -1;
 
 			if (!isNaN(newHx) && !isNaN(newHy)) {
-				this.h1.x = newHx;
-				this.h1.y = newHy;
+				if(this.h1.x !== newHx){
+					this.h1.x = newHx;
+				}
+				if(this.h1.y !== newHy){
+					this.h1.y = newHy;
+				}
 			}
 		}
 

@@ -204,17 +204,17 @@ export class MultiSelectPoints extends MultiSelect {
 	insertPathPoint() {
 		let path;
 		let pp;
-		const newpoints = [];
+		const newPoints = [];
 
 		for (let m = 0; m < this.members.length; m++) {
 			path = this.members[m].parent;
 			pp = this.members[m].pointNumber;
-			newpoints.push(path.insertPathPoint(false, pp));
+			newPoints.push(path.insertPathPoint(false, pp));
 		}
 
 		this.clear();
 
-		for (let n = 0; n < newpoints.length; n++) this.add(newpoints[n]);
+		for (let n = 0; n < newPoints.length; n++) this.add(newPoints[n]);
 	}
 
 	resetHandles() {
@@ -280,6 +280,7 @@ export class MultiSelectPaths extends MultiSelect {
 	constructor() {
 		super();
 		this.glyph = new Glyph();
+		this.glyph.name = 'MultiSelect-ed Paths';
 	}
 
 	set glyph(newGlyph) {
@@ -287,11 +288,10 @@ export class MultiSelectPaths extends MultiSelect {
 	}
 
 	get glyph() {
-		this._glyph.paths = this.members;
-
-		// Pretty sure calling changed on a virtual
-		// glyph makes no sense
-		// this._glyph.changed();
+		// needs to be _paths, otherwise Glyph.paths setter
+		// imports copies of the new array values.
+		this._glyph._paths = this.members;
+		this._glyph.changed();
 
 		return this._glyph;
 	}
@@ -316,19 +316,14 @@ export class MultiSelectPaths extends MultiSelect {
 
 	combine() {
 		// log('multiSelect.paths.combine', 'start');
-
 		const ns = new Glyph(clone(this.glyph));
-
 		ns.flattenGlyph();
-
 		const cs = combinePaths(ns.paths);
 
 		// If everything worked, delete original paths and add new ones
 		if (cs) {
 			this.deletePaths();
-
 			for (let n = 0; n < cs.length; n++) addPathToCurrentItem(cs[n]);
-
 			historyPut('Combined paths');
 		}
 
@@ -385,7 +380,11 @@ export class MultiSelectPaths extends MultiSelect {
 	}
 
 	updatePathPosition(dx, dy) {
+		// log(`MultiSelect.path.updatePathPosition`, 'start');
+		// log(`dx: ${dx}`);
+		// log(`dy: ${dy}`);
 		this.glyph.updateGlyphPosition(dx, dy);
+		// log(`MultiSelect.path.updatePathPosition`, 'end');
 	}
 
 	setPathPosition(nx, ny) {

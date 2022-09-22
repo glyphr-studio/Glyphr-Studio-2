@@ -541,7 +541,7 @@ export class Path extends GlyphElement {
 		if (dx !== false) dx = parseFloat(dx);
 		if (dy !== false) dy = parseFloat(dy);
 
-		// log('dx, dy, f\t'+dx+'\t'+dy+'\t'+force);
+		// log(`dx, dy,\t${dx}\t${dy}`);
 		for (let d = 0; d < this.pathPoints.length; d++) {
 			const pp = this.pathPoints[d];
 			// log('-------------------- pathPoint #' + d);

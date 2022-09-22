@@ -9,23 +9,23 @@ import { drawPath } from '../draw_paths.js';
 // Making tool buttons
 // --------------------------------------------------------------
 export function makeEditToolsButtons() {
-	log('makeEditToolsButtons', 'start');
+	// log('makeEditToolsButtons', 'start');
 	let editor = getCurrentProjectEditor();
 
 	if (!editor.nav.isOnEditCanvasPage) {
-		log('returning, !isOnEditCanvasPage');
-		log('makeEditToolsButtons', 'end');
+		// log('returning, !isOnEditCanvasPage');
+		// log('makeEditToolsButtons', 'end');
 		return '';
 	}
 
 	if (!editor.selectedItemID) {
-		log('returning, !selectedItemID');
-		log('makeEditToolsButtons', 'end');
+		// log('returning, !selectedItemID');
+		// log('makeEditToolsButtons', 'end');
 		return '';
 	}
 
 	// All the various permutations of states
-	log(`editor.selectedTool: ${editor.selectedTool}`);
+	// log(`editor.selectedTool: ${editor.selectedTool}`);
 
 	// Button data
 	let toolButtonData = {
@@ -134,7 +134,7 @@ export function makeEditToolsButtons() {
 		}
 	}
 
-	log('makeEditToolsButtons', 'end');
+	// log('makeEditToolsButtons', 'end');
 	return content;
 }
 
@@ -384,8 +384,8 @@ export function turnSelectedPathIntoAComponent(){
 	let n = s.length === 1? ('Component ' + s[0].name) : ('Component ' + (getLength(_GP.components)+1));
 
 	_UI.ms.paths.deletePaths();
-	let newid = createNewComponent(new Glyph({'paths':s, 'name':n}));
-	insertComponentInstance(newid);
+	let newID = createNewComponent(new Glyph({'paths':s, 'name':n}));
+	insertComponentInstance(newID);
 	_UI.selectedToolName = 'pathEdit';
 	selectPath(getSelectedItem.paths.length-1);
 	redraw({calledby:'turnSelectedPathIntoAComponent'});
@@ -402,8 +402,8 @@ export function getPathAtLocation(x,y){
 	for(let j=(sws.length-1); j>=0; j--){
 		path = sws[j];
 		// log('Checking path ' + j);
-
 		if(isThisPathHere(path, x, y)){
+			// log(`getPathAtLocation`, 'end');
 			return path;
 		}
 	}
@@ -414,6 +414,8 @@ export function getPathAtLocation(x,y){
 }
 
 function isThisPathHere(path, px, py) {
+	// log(`isThisPathHere`, 'start');
+
 	let editor = getCurrentProjectEditor();
 	let ctx = editor.ghostCTX;
 
@@ -428,6 +430,7 @@ function isThisPathHere(path, px, py) {
 
 	let imageData = ctx.getImageData(px, py, 1, 1);
 	// log('ISHERE? alpha = ' + imageData.data[3] + '  returning: ' + (imageData.data[3] > 0));
+	// log(`isThisPathHere`, 'end');
 	return (imageData.data[3] > 0);
 }
 

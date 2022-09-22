@@ -4,7 +4,7 @@
 
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { setCursor } from '../cursors.js';
-import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData } from '../events_mouse.js';
+import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData, eventHandler_PathResize } from '../events_mouse.js';
 import { clickTool, getPathAtLocation } from './tools.js';
 
 export class Tool_Resize {
@@ -80,10 +80,12 @@ export class Tool_Resize {
 			// TODO cursor detection
 			// let corner = eh.handle || editor.multiSelect.paths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
 			let corner = eh.handle;
+			// log('before view stuff');
 
 			let dz = editor.view.dz;
 			let dx = (eh.mouseX - eh.lastX) / dz || 0;
 			let dy = (eh.lastY - eh.mouseY) / dz || 0;
+			// log('after view stuff');
 
 			if (this.dragging) {
 				// log('detected DRAGGING');
@@ -107,9 +109,13 @@ export class Tool_Resize {
 					// TODO cursor detection
 					// cur = singlePath.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
 					// if (!cur) cur = getPathAtLocation(eh.mouseX, eh.mouseY) ? 'arrowSquare' : 'arrow';
+					// log(`singleton`);
 					dx = singlePath.xLock ? 0 : dx;
 					dy = singlePath.yLock ? 0 : dy;
 				}
+
+				// log(`dx: ${dx}`);
+				// log(`dy: ${dy}`);
 
 				editor.multiSelect.paths.updatePathPosition(dx, dy);
 				this.didStuff = true;
@@ -153,7 +159,7 @@ export class Tool_Resize {
 				eh.lastX = eh.mouseX;
 				eh.lastY = eh.mouseY;
 				eh.undoQueueHasChanged = true;
-				editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_Resize mousemove' });
+				editor.publish('currentGlyph', editor.selectedItem);
 			} else {
 				// log(`did NOT do stuff`);
 			}

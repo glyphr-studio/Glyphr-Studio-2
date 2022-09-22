@@ -193,6 +193,8 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 	let p4x;
 	let p4y;
 
+	// log('end of top section');
+
 	ctx.moveTo(p1x, p1y);
 	// log(`move to ${p1x}, ${p1y}`);
 
@@ -202,8 +204,10 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 		np = path.pathPoints[path.getNextPointNum(cp)];
 
 		if (pp.type === 'symmetric') {
+			// log(`calling makeSymmetric`);
 			pp.makeSymmetric('h1');
 		} else if (pp.type === 'flat') {
+			// log(`calling makeFlat`);
 			pp.makeFlat('h1');
 		}
 
@@ -215,7 +219,6 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 		p4y = sYcY(round(np.p.y, precision), view);
 
 		// log(`curveTo ${p2x}, ${p2y}, ${p3x}, ${p3y}, ${p4x}, ${p4y}`);
-
 		ctx.bezierCurveTo(p2x, p2y, p3x, p3y, p4x, p4y);
 	}
 
