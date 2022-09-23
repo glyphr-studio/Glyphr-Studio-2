@@ -191,7 +191,7 @@ export class Path extends GlyphElement {
 	 * get xLock
 	 * @returns {boolean}
 	 */
-	 get xLock() {
+	get xLock() {
 		return this._xLock;
 	}
 

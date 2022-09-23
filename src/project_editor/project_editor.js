@@ -88,9 +88,6 @@ export class ProjectEditor {
 	}
 
 
-
-
-
 	// --------------------------------------------------------------
 	// PubSub
 	// --------------------------------------------------------------
@@ -98,13 +95,13 @@ export class ProjectEditor {
 	/**
 	 * Sends a new piece of data concerning a topic area that
 	 * triggers changes for subscribers
-	 * @param {string} topic - keyword to trigger changes
-	 * 		'view' - change to the edit canvas view.
-	 * 		'whichToolIsSelected' - change to which edit tool is selected.
-	 * 		'whichGlyphIsSelected' - change to which glyph is being edited.
-	 * 		'whichPathIsSelected' - change to which path is being edited.
-	 * 		'currentGlyph' - edits to the current glyph.
-	 * 		'currentPath' - edits to the current path.
+	 * @param {string} topic keyword to trigger changes
+	 * - 'view' - change to the edit canvas view.
+	 * - 'whichToolIsSelected' - change to which edit tool is selected.
+	 * - 'whichGlyphIsSelected' - change to which glyph is being edited.
+	 * - 'whichPathIsSelected' - change to which path is being edited.
+	 * - 'currentGlyph' - edits to the current glyph.
+	 * - 'currentPath' - edits to the current path.
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
@@ -222,18 +219,16 @@ export class ProjectEditor {
 	}
 
 
-
-
 	// --------------------------------------------------------------
 	// Navigate
 	// --------------------------------------------------------------
 	navigate(pageName) {
+		log(`ProjectEditor.navigate`, 'start');
+		log(`pageName: ${pageName}`);
 		this.nav.navigate(pageName);
-		if(this.nav.isOnEditCanvasPage) {
-			let rect = document.getElementsByClassName('glyph-edit__right-area')[0].getBoundingClientRect();
-			// TODO calculate view to center visible stuff
-		}
+		log(`ProjectEditor.navigate`, 'end');
 	}
+
 
 	// --------------------------------------------------------------
 	// Project
@@ -258,8 +253,6 @@ export class ProjectEditor {
 	set project(gsp) {
 		this._project = new GlyphrStudioProject(gsp);
 	}
-
-
 
 
 	// --------------------------------------------------------------
@@ -376,8 +369,6 @@ export class ProjectEditor {
 	}
 
 
-
-
 	// --------------------------------------------------------------
 	// Set Selected Work Items
 	// --------------------------------------------------------------
@@ -421,8 +412,6 @@ export class ProjectEditor {
 		// Validate ID!
 		this._selectedComponentID = id;
 	}
-
-
 
 
 	// --------------------------------------------------------------
@@ -509,15 +498,16 @@ export class ProjectEditor {
 	get view(){
 		// log(`ProjectEditor GET view`, 'start');
 
-		var wid = this.selectedItemID;
+		var id = this.selectedItemID;
 		var re = false;
 
-		if(this._views[wid]){
-			re = this._views[wid];
+		if(this._views[id]){
+			re = this._views[id];
 		} else if(this.nav.page === 'Kerning') {
 			re = clone(this.defaultKernView);
 		} else {
-			re = clone(this.defaultView);
+			re = this.makeAutoFitView();
+			// re = clone(this.defaultView);
 		}
 
 		// log(`returning ${JSON.stringify(re)}`);
@@ -541,43 +531,48 @@ export class ProjectEditor {
 		this.publish('view', this.view);
 	}
 
+	makeAutoFitView() {
+		log(`ProjectEditor.makeAutoFitView`, 'start');
+		let newView = clone(this.defaultView);
+		let rect = document.getElementsByClassName('glyph-edit__right-area')[0];
+		if(rect) {
+			rect = rect.getBoundingClientRect();
+			let ps = this.project.projectSettings;
+			log(ps);
+			log(rect);
+
+			//Zoom
+			let newZ = Math.min(
+				(rect.height / (ps.upm * 1.2)),
+				(rect.width / (this.selectedItem.advanceWidth * 1.5))
+				);
+
+				// Vertical
+			let visibleGlyphHeight = ps.upm * newZ;
+			let topSpace = (rect.height - visibleGlyphHeight) / 2;
+			let newY = topSpace + (ps.ascent * newZ);
+
+			// Horizontal
+			let visibleGlyphWidth = this.selectedItem.advanceWidth * newZ;
+			let newX = (rect.width - visibleGlyphWidth) / 2;
+
+			newView = {dx: newX, dy: newY, dz: newZ};
+		}
+
+		log(`newView: ${JSON.stringify(newView)}`);
+		log(`ProjectEditor.makeAutoFitView`, 'end');
+		return newView;
+	}
+
+	autoFitView() {
+		this.view = this.makeAutoFitView();
+		this.publish('view', this.view);
+	}
 
 	// --------------------------------------------------------------
 	// Panels
 	// --------------------------------------------------------------
 
-	/**
-	 * List of panels the editor supports
-	 */
-	 get listOfPanels() {
-		return {
-			'Chooser': {
-				name: 'Chooser',
-				panelMaker: false,
-				iconName: 'panel_chooser',
-			},
-			'Layers': {
-				name: 'Layers',
-				panelMaker: false,
-				iconName: 'panel_layers',
-			},
-			'Guides': {
-				name: 'Guides',
-				panelMaker: false,
-				iconName: 'panel_guides',
-			},
-			'History': {
-				name: 'History',
-				panelMaker: false,
-				iconName: 'panel_history',
-			},
-			'Attributes': {
-				name: 'Attributes',
-				panelMaker: false,
-				iconName: 'panel_attributes',
-			},
-		};
-	 }
 
 
 	// --------------------------------------------------------------
@@ -619,185 +614,3 @@ export class ProjectEditor {
 		this.setProjectAsSaved();
 	}
 }
-
-
-/*
-// ---------------------------------------------------------------------
-//    Global Get Selected Glyph and Path
-// ---------------------------------------------------------------------
-		/**
-		 * Updates the selected glyphs width
-		 *
-		updateCurrentGlyphWidth() {
-				let sc = getSelectedItem();
-				if (!sc) return;
-				if (editor.nav.page === 'Glyph edit') {
-						glyphChanged(sc);
-				} else if (editor.nav.page === 'components' && sc) {
-						let lsarr = sc.usedIn;
-						if (lsarr) for (let c=0; c<lsarr.length; c++) {
-							glyphChanged(getGlyph(lsarr[c]));
-						}
-				}
-		}
-
-function existingItem() {
-		let len = 0;
-		let nph = _UI.currentPanel;
-
-		if (editor.nav.page === 'ligatures') {
-				len = Object.keys(getCurrentProject().ligatures).length;
-				if (!len) {
-						_UI.selectedLigature = false;
-						if (nph !== 'npNav') nph = 'npChooser';
-						return false;
-				}
-		} else if (editor.nav.page === 'components') {
-				len = Object.keys(getCurrentProject().components).length;
-				if (!len) {
-						_UI.selectedComponent = false;
-						if (nph !== 'npNav') nph = 'npChooser';
-						return false;
-				}
-		} else if (editor.nav.page === 'kerning') {
-				len = Object.keys(getCurrentProject().kerning).length;
-				if (!len) {
-						_UI.selectedKern = false;
-						if (nph !== 'npNav') nph = 'npAttributes';
-						return false;
-				}
-		}
-
-		return true;
-}
-
-function getSelectedItem() {
-		// log('getSelectedItem', 'start');
-		// log('currentPage: ' + editor.nav.page);
-		let re;
-
-		switch (editor.nav.page) {
-				case 'Glyph edit':
-						if (!_UI.selectedGlyph) _UI.selectedGlyph = '0x0041';
-						re = getGlyph(_UI.selectedGlyph, true);
-						// log('case glyph edit, returning ' + re.name);
-						return re;
-				case 'import svg':
-						if (!_UI.selectedSVGImportTarget) _UI.selectedSVGImportTarget = '0x0041';
-						re = getGlyph(_UI.selectedSVGImportTarget, true);
-						// log('case import svg, returning ' + re.name);
-						return re;
-				case 'ligatures':
-						re = getGlyph(_UI.selectedLigature, true);
-						// log('case glyph edit, returning ' + re.name);
-						return re;
-				case 'components':
-						re = getGlyph(_UI.selectedComponent, false);
-						// log('case components, returning ' + re.name);
-						return re;
-				case 'kerning':
-						// log('case KERN - selkern = ' + _UI.selectedKern);
-						if (!_UI.selectedKern) _UI.selectedKern = getFirstID(getCurrentProject().kerning);
-						re = getCurrentProject().kerning[_UI.selectedKern] || false;
-						// log('case kerning, returning ' + re);
-						return re;
-		}
-
-		return false;
-}
-
-function getSelectedItemID() {
-		switch (editor.nav.page) {
-				case 'Glyph edit': return _UI.selectedGlyph;
-				case 'import svg': return _UI.selectedSVGImportTarget;
-				case 'ligatures': return _UI.selectedLigature;
-				case 'components': return _UI.selectedComponent;
-				case 'kerning': return _UI.selectedKern;
-		}
-
-		return false;
-}
-
-function getSelectedItemChar() {
-		let swiid = getSelectedItemID();
-		return hexToChars(swiid);
-}
-
-function getSelectedItemName() {
-		// log('getSelectedItemName', 'start');
-		let wi = getSelectedItem();
-		// log('wi = '+wi);
-		return wi.name || wi.getName() || '[name not found]';
-}
-
-function getSelectedItemPaths() {
-		// log('GETSELECTEDGLYPHSHAPES');
-		let rechar = getSelectedItem();
-		return rechar? rechar.paths : [];
-}
-
-function markSelectedItemAsChanged() {
-		// log('markSelectedItemAsChanged', 'start');
-		let wi = getSelectedItem();
-
-		if (wi && wi.changed) {
-				// log('marking as changed');
-				wi.changed(true, true);
-		}
-
-		// log('markSelectedItemAsChanged', 'end');
-}
-
-function selectGlyph(c, dontnavigate) {
-		// log('selectGlyph', 'start');
-		// log('selecting ' + getGlyph(c, true).name + ' from value ' + c);
-
-		_UI.selectedGlyph = c;
-		clickEmptySpace();
-		markSelectedItemAsChanged();
-
-		if (!dontnavigate) {
-				// log('selecting ' + getCurrentProject().glyphs[c].glyphhtml + ' and navigating.');
-				navigate({panel: 'npAttributes'});
-		}
-
-		// log('selectGlyph', 'end');
-}
-
-function selectComponent(c, dontnavigate) {
-		// log('SELECTCOMPONENT - selecting ' + getGlyph(c, true).name + ' from value ' + c);
-
-		_UI.selectedComponent = c;
-		clickEmptySpace();
-		markSelectedItemAsChanged();
-
-		if (!dontnavigate) {
-				// log('SELECTCOMPONENT: selecting ' + getCurrentProject().components[c].name + ' and navigating.');
-				navigate({panel: 'npAttributes'});
-		}
-}
-
-function selectLigature(c, dontnavigate) {
-		// log('SELECTLIGATURE - selecting ' + getGlyph(c, true).name + ' from value ' + c);
-
-		_UI.selectedLigature = c;
-		clickEmptySpace();
-		markSelectedItemAsChanged();
-
-		if (!dontnavigate) {
-				// log('SELECTLIGATURE: selecting ' + getCurrentProject().ligatures[c].glyphhtml + ' and navigating.');
-				navigate({panel: 'npAttributes'});
-		}
-}
-
-function selectSVGImportTarget(c, dontnavigate) {
-		// log('SELECTSVGIMPORTTARGET - selecting ' + getGlyph(c, true).name + ' from value ' + c);
-
-		_UI.selectedSVGImportTarget = c;
-
-		if (!dontnavigate) {
-				// log('SELECTSVGIMPORTTARGET: selecting ' + c + ' and navigating.');
-				navigate({panel: 'npAttributes'});
-		}
-}
-*/

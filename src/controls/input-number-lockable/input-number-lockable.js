@@ -63,7 +63,7 @@ export class InputNumberLockable extends HTMLElement {
 	 * Get the main value
 	 * @returns {number}
 	 */
-	 get value() {
+	get value() {
 		return this.inputNumber.value;
 	}
 

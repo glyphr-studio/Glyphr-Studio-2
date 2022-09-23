@@ -21,7 +21,7 @@ export class Navigator {
 	/**
 	 * List of pages the editor supports
 	 */
-	 get tableOfContents() {
+	get tableOfContents() {
 		return {
 			'Open project': {
 				name: 'Open project',
@@ -223,9 +223,7 @@ export function makeNavButtonContent(title, superTitle) {
 }
 
 export function showNavDropdown(parentElement) {
-	log(`showNavDropdown`, 'start');
-	log(`parentElement:`);
-	log(parentElement.getBoundingClientRect());
+	// log(`showNavDropdown`, 'start');
 	let size = '500px';
 	let rect = parentElement.getBoundingClientRect();
 	let parentStyle = getComputedStyle(parentElement);
@@ -233,7 +231,7 @@ export function showNavDropdown(parentElement) {
 
 	let dropdownContent = makeElement({tag: 'h3', content: 'Uninitialized'});
 	let dropdownType = parentElement.getAttribute('data-nav-type');
-	log(`dropdownType: ${dropdownType}`);
+	// log(`dropdownType: ${dropdownType}`);
 
 	if(dropdownType === 'PAGE') {
 		dropdownContent = makeChooserContent_Pages();
@@ -267,9 +265,9 @@ export function showNavDropdown(parentElement) {
 	});
 
 	addAsChildren(dropDown, dropdownContent);
-	log(`dropDown:`);
-	log(dropDown);
+	// log(`dropDown:`);
+	// log(dropDown);
 	closeAllDialogs();
 	document.getElementById('app__wrapper').appendChild(dropDown);
-	log(`showNavDropdown`, 'end');
+	// log(`showNavDropdown`, 'end');
 }
