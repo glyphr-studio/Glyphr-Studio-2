@@ -1,4 +1,4 @@
-import { makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
 import { showNavDropdown } from '../project_editor/navigator.js';
@@ -36,19 +36,19 @@ export class PageGlyphEdit {
 			id: 'app__page',
 			innerHTML: `
 			<div class="editor__page">
-				<div class="glyph-edit__left-area">
-					<div class="glyph-edit__nav-area">
+				<div class="editor-page__left-area">
+					<div class="left-area__navigation">
 						${makeNavButton({level: 'l1', superTitle: 'PAGE', title: 'Glyph edit'})}
 						${makeNavButton({level: 'l2', superTitle: 'EDITING', title: lookUpGlyphName(editor.selectedGlyphID, true)})}
 						${makeNavButton({level: 'l3', superTitle: 'PANEL', title: editor.nav.panel})}
 					</div>
 					<div class="left-area__panel"></div>
 				</div>
-				<div class="glyph-edit__tools-area"></div>
-				<div class="glyph-edit__right-area">
-					<edit-canvas id="glyph-edit__main-canvas" glyphs="${canvasGlyph}"></edit-canvas>
+				<div class="editor-page__tools-area"></div>
+				<div class="editor-page__edit-canvas-wrapper">
+					<edit-canvas id="editor-page__edit-canvas" glyphs="${canvasGlyph}"></edit-canvas>
 				</div>
-				<div class="glyph-edit__zoom-area"></div>
+				<div class="editor-page__zoom-area"></div>
 			</div>
 		`,
 		});
@@ -85,16 +85,16 @@ export class PageGlyphEdit {
 		});
 
 		// Tools
-		let toolsArea = content.querySelector('.glyph-edit__tools-area');
+		let toolsArea = content.querySelector('.editor-page__tools-area');
 		toolsArea.innerHTML = '';
 		let toolsButtons = makeEditToolsButtons();
 		if (toolsButtons) toolsArea.appendChild(toolsButtons);
 
 
-		let zoomArea = content.querySelector('.glyph-edit__zoom-area');
+		let zoomArea = content.querySelector('.editor-page__zoom-area');
 		zoomArea.innerHTML = '';
 		let viewButtons = makeViewToolsButtons();
-		if (viewButtons) zoomArea.appendChild(viewButtons);
+		if (viewButtons) addAsChildren(zoomArea, viewButtons);
 
 
 		// Canvas
@@ -105,7 +105,7 @@ export class PageGlyphEdit {
 				log(`Main Canvas subscriber callback`, 'start');
 				let newChar = hexToChars(newGlyphID);
 				log(`new id ${newGlyphID} results in ${newChar} on the main canvas`);
-				content.querySelector('#glyph-edit__main-canvas').setAttribute('glyphs', newChar);
+				content.querySelector('#editor-page__edit-canvas').setAttribute('glyphs', newChar);
 				log(`Main Canvas subscriber callback`, 'end');
 			}
 		});

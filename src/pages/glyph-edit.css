@@ -1,4 +1,4 @@
-.glyph-edit__left-area {
+.editor-page__left-area {
 	grid-column: 1;
 	min-width: 1fr;
 	display: grid;
@@ -7,40 +7,42 @@
 	row-gap: 2px;
 }
 
-.glyph-edit__nav-area {
+.left-area__navigation {
 	display: grid;
 	grid-template-columns: min-content 1fr;
 	grid-template-rows: 1fr 1fr;
 	gap: 2px;
 }
 
-.glyph-edit__nav-area #nav-button-l3 {
+.left-area__navigation #nav-button-l3 {
 	grid-column: span 2;
 }
 
-.glyph-edit__tools-area {
+.editor-page__tools-area {
 	padding-left: 10px;
 	height: min-content;
 	grid-column: 2;
 }
 
-.glyph-edit__zoom-area {
+.editor-page__zoom-area {
+	grid-template-columns: min-content 1fr min-content;
+	display: grid;
+	column-gap: 5px;
+	position: absolute;
+	right: 15px;
+	bottom: 14px;
+}
+
+.edit-canvas__responsive-group {
 	display: none;
 }
 
 @media (min-width: 810px) {
-	.glyph-edit__zoom-area {
-		display: block;
-		position: absolute;
-		right: 15px;
-		bottom: 14px;
+	.edit-canvas__responsive-group {
+		display: grid;
+		grid-template-columns: repeat(6, min-content);
+		column-gap: 5px;
 	}
-}
-
-.glyph-edit__zoom-area span {
-	grid-template-columns: repeat(8, min-content);
-	display: grid;
-	column-gap: 5px;
 }
 
 .edit-canvas__zoom-readout {
@@ -48,12 +50,13 @@
 	height: 30px;
 }
 
-.glyph-edit__right-area {
+.editor-page__edit-canvas-wrapper {
 	border: 1px solid var(--blue-l85);
 	background-color: var(--offWhite);
 	grid-column: 3;
 	border-radius: 4px;
 	width: 100%;
+	min-width: 80px;
 	height: 100%;
 	overflow: hidden;
 	box-shadow: var(--l3-shadow);

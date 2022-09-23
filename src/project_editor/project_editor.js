@@ -54,8 +54,8 @@ export class ProjectEditor {
 		// Canvas
 		// Views per work item ID
 		this._views = {};
-		this.defaultView = {dx: 200, dy: 500, dz: 0.5};
-		this.defaultKernView = {dx: 500, dy: 500, dz: 0.5};
+		this.defaultView = {dx: 200, dy: 500, dz: 0.5, default: true};
+		this.defaultKernView = {dx: 500, dy: 500, dz: 0.5, default: true};
 
 		// Canvas
 		// Ghost Canvas
@@ -223,10 +223,11 @@ export class ProjectEditor {
 	// Navigate
 	// --------------------------------------------------------------
 	navigate(pageName) {
-		// log(`ProjectEditor.navigate`, 'start');
-		// log(`pageName: ${pageName}`);
+		log(`ProjectEditor.navigate`, 'start');
+		log(`pageName: ${pageName}`);
 		this.nav.navigate(pageName);
-		// log(`ProjectEditor.navigate`, 'end');
+		this.autoFitIfViewIsDefault();
+		log(`ProjectEditor.navigate`, 'end');
 	}
 
 
@@ -487,6 +488,7 @@ export class ProjectEditor {
 			this._views[wid].dz = oa.dz;
 		}
 
+		if(this._views[wid].default) delete this._views[wid].default;
 		// log(`set as ${JSON.stringify(this._views[wid])}`);
 		// log(`ProjectEditor SET view`, 'end');
 		return this._views[wid];
@@ -506,8 +508,7 @@ export class ProjectEditor {
 		} else if(this.nav.page === 'Kerning') {
 			re = clone(this.defaultKernView);
 		} else {
-			this._views[id] = this.makeAutoFitView();
-			re = this._views[id];
+			re = clone(this.defaultView);
 		}
 
 		// log(`returning ${JSON.stringify(re)}`);
@@ -531,33 +532,29 @@ export class ProjectEditor {
 		this.publish('view', this.view);
 	}
 
-	makeAutoFitView() {
+	makeAutoFitView(rect = false) {
 		// log(`ProjectEditor.makeAutoFitView`, 'start');
-		let newView = clone(this.defaultView);
-		let rect = document.getElementsByClassName('glyph-edit__right-area')[0];
-		if(rect) {
-			rect = rect.getBoundingClientRect();
-			let ps = this.project.projectSettings;
-			// log(ps);
-			// log(rect);
+		// log(`rect: ${rect}`);
 
-			//Zoom
-			let newZ = Math.min(
-				(rect.height / (ps.upm * 1.2)),
-				(rect.width / (this.selectedItem.advanceWidth * 1.5))
-				);
 
-				// Vertical
-			let visibleGlyphHeight = ps.upm * newZ;
-			let topSpace = (rect.height - visibleGlyphHeight) / 2;
-			let newY = topSpace + (ps.ascent * newZ);
+		let ps = this.project.projectSettings;
 
-			// Horizontal
-			let visibleGlyphWidth = this.selectedItem.advanceWidth * newZ;
-			let newX = (rect.width - visibleGlyphWidth) / 2;
+		//Zoom
+		let newZ = Math.min(
+			(rect.height / (ps.upm * 1.2)),
+			(rect.width / (this.selectedItem.advanceWidth * 1.5))
+			);
 
-			newView = {dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3)};
-		}
+			// Vertical
+		let visibleGlyphHeight = ps.upm * newZ;
+		let topSpace = (rect.height - visibleGlyphHeight) / 2;
+		let newY = topSpace + (ps.ascent * newZ);
+
+		// Horizontal
+		let visibleGlyphWidth = this.selectedItem.advanceWidth * newZ;
+		let newX = (rect.width - visibleGlyphWidth) / 2;
+
+		let newView = {dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3)};
 
 		// log(`newView: ${JSON.stringify(newView)}`);
 		// log(`ProjectEditor.makeAutoFitView`, 'end');
@@ -566,17 +563,40 @@ export class ProjectEditor {
 
 	autoFitView() {
 		// log(`ProjectEditor.autoFitView`, 'start');
-		this.view = this.makeAutoFitView();
-		this.publish('view', this.view);
+		let bounds = this.getEditCanvasWrapperBounds();
+		if(bounds) {
+			this.view = this.makeAutoFitView(bounds);
+			this.publish('view', this.view);
+		} else {
+			console.warn('autoFitView called before DOM was ready');
+			this.view = clone(this.defaultView);
+		}
 		// log(`ProjectEditor.autoFitView`, 'end');
 		return this.view;
 	}
 
-	// --------------------------------------------------------------
-	// Panels
-	// --------------------------------------------------------------
+	autoFitIfViewIsDefault() {
+		if(this.nav.isOnEditCanvasPage) {
+			if(this.view.default) {
+					this.autoFitView();
+					this.publish('view', this.view);
+			}
+		}
+	}
 
+	getEditCanvasWrapperBounds() {
+		// log(`getEditCanvasWrapperBounds`, 'start');
 
+		let wrapper = document.getElementsByClassName('editor-page__edit-canvas-wrapper');
+		if(wrapper && wrapper[0]) {
+			// log(`wrapper[0]: ${wrapper[0]}`);
+			// log(`getEditCanvasWrapperBounds`, 'end');
+			return wrapper[0].getBoundingClientRect();
+		}
+
+		// log(`getEditCanvasWrapperBounds`, 'end');
+		return false;
+	}
 
 	// --------------------------------------------------------------
 	// Save
