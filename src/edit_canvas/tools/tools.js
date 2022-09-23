@@ -29,18 +29,12 @@ export function makeEditToolsButtons() {
 
 	// Button data
 	let toolButtonData = {
-		newRectangle:
-			{title: 'New rectangle', disabled: false},
-		newOval:
-			{title: 'New oval', disabled: false},
-		newPath:
-			{title: 'New path', disabled: false},
-		pathAddPoint:
-			{title: 'Add path point', disabled: false},
-		pathEdit:
-			{title: 'Path edit', disabled: false},
-		resize:
-			{title: 'Resize', disabled: false},
+		newRectangle: {title: 'New rectangle', disabled: false},
+		newOval: {title: 'New oval', disabled: false},
+		newPath: {title: 'New path', disabled: false},
+		pathAddPoint: {title: 'Add path point', disabled: false},
+		pathEdit: {title: 'Path edit', disabled: false},
+		resize: {title: 'Resize', disabled: false},
 	};
 
 
@@ -106,7 +100,7 @@ export function makeEditToolsButtons() {
 
 
 	// Put it all together
-	let content = makeElement();
+	let content = [];
 
 	const onGlyphEditPage = editor.nav.page === 'Glyph edit';
 	const onComponentPage = editor.nav.page === 'Components';
@@ -114,23 +108,24 @@ export function makeEditToolsButtons() {
 	const selectedItem = editor.selectedItem;
 
 	if (onGlyphEditPage || onLigaturesPage) {
-		content.appendChild(toolButtonElements.newRectangle);
-		content.appendChild(toolButtonElements.newOval);
-		content.appendChild(toolButtonElements.newPath);
+		content.push(toolButtonElements.newRectangle);
+		content.push(toolButtonElements.newOval);
+		content.push(toolButtonElements.newPath);
 	}
 
 	if (onComponentPage && selectedItem && !selectedItem.pathPoints) {
-		content.appendChild(toolButtonElements.newRectangle);
-		content.appendChild(toolButtonElements.newOval);
-		content.appendChild(toolButtonElements.newPath);
+		content.push(toolButtonElements.newRectangle);
+		content.push(toolButtonElements.newOval);
+		content.push(toolButtonElements.newPath);
 	}
 
 	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
-		content.appendChild(toolButtonElements.pathAddPoint);
-		content.appendChild(toolButtonElements.pathEdit);
-		content.appendChild(toolButtonElements.resize);
+		// content.push(toolButtonElements.pathAddPoint);
+		content.push(makeElement({tag: 'div', attributes: { style: 'height: 20px;'}}));
+		content.push(toolButtonElements.pathEdit);
+		content.push(toolButtonElements.resize);
 		if (editor.selectedTool === 'newPath') {
-			content.appendChild(finishPath);
+			content.push(finishPath);
 		}
 	}
 

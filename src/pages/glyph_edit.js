@@ -88,7 +88,7 @@ export class PageGlyphEdit {
 		let toolsArea = content.querySelector('.editor-page__tools-area');
 		toolsArea.innerHTML = '';
 		let toolsButtons = makeEditToolsButtons();
-		if (toolsButtons) toolsArea.appendChild(toolsButtons);
+		if (toolsButtons) addAsChildren(toolsArea, toolsButtons);
 
 
 		let zoomArea = content.querySelector('.editor-page__zoom-area');

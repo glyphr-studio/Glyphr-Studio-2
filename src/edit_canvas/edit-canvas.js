@@ -4,7 +4,7 @@ import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events_mouse.js';
 import { drawGlyph, drawPath } from './draw_paths.js';
-import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, drawBoundingBox, drawNewBasicPath, drawPathPointHover, drawSelectedPathOutline } from './draw_edit_affordances.js';
+import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, computeAndDrawPathPointHandles, computeAndDrawPathPoints, drawBoundingBox, drawNewBasicPath, drawPathPointHover, drawSelectedPathOutline } from './draw_edit_affordances.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new-basic-path.js';
 import { makeCrisp, round } from '../common/functions.js';
 
@@ -137,9 +137,10 @@ export class EditCanvas extends HTMLElement {
 				computeAndDrawRotationAffordance(ctx);
 
 			} else if (editMode === 'pathEdit') {
+				drawSelectedPathOutline(ctx, view);
 				computeAndDrawPathPointHandles(ctx);
 				computeAndDrawPathPoints(ctx);
-				drawPathPointHover(ctx, eventHandlerData.hoverPoint);
+				// drawPathPointHover(ctx, eventHandlerData.hoverPoint);
 
 			} else if (editMode === 'newPath') {
 				computeAndDrawPathPointHandles(ctx);

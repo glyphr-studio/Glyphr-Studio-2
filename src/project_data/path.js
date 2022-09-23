@@ -630,6 +630,23 @@ export class Path extends GlyphElement {
 		return false;
 	}
 
+	/**
+	 * Checks to see if there is a control point of some type here,
+	 * and if so, returns it.
+	 * @param {number} x coordinate to check
+	 * @param {number} y coordinate to check
+	 * @param {Boolean} noHandles can we skip checking the handles?
+	 * @returns {ControlPoint}
+	 */
+	isOverControlPoint(x, y, noHandles) {
+		let re;
+		for (let pp = 0; pp < this.pathPoints.length; pp++) {
+			re = this.pathPoints[pp].isOverControlPoint(x, y, noHandles);
+			if(re) return re;
+		}
+		return false;
+	}
+
 	// --------------------------------------------------------------
 	//  Translate to other languages
 	// --------------------------------------------------------------

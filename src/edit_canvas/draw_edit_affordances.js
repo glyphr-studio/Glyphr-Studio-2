@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { accentColors } from '../common/colors.js';
+import { accentColors, uiColors } from '../common/colors.js';
 import { makeCrisp } from '../common/functions.js';
 import { drawPath } from './draw_paths.js';
 import { sXcX, sYcY } from './edit-canvas.js';
@@ -425,11 +425,35 @@ isOverComponentInstanceBoundingBoxHandle(componentInstance, px, py) {
 // --------------------------------------------------------------
 
 export function computeAndDrawPathPointHandles(ctx) {
+	let editor = getCurrentProjectEditor();
+	// let points = editor.multiSelect.points;
+	let paths = editor.multiSelect.paths.glyph.paths;
 
+	paths.forEach((path) => {
+		path.pathPoints.forEach((point) => {
+			if(editor.multiSelect.points.isSelected(point)){
+				drawHandles(point, ctx);
+			}
+		});
+	});
 }
 
 export function computeAndDrawPathPoints(ctx) {
+	let editor = getCurrentProjectEditor();
+	// let points = editor.multiSelect.points;
+	let paths = editor.multiSelect.paths.glyph.paths;
 
+	paths.forEach((path) => {
+		path.pathPoints.forEach((point, index) => {
+			if(index === 0) {
+				// This could just be '1' but whatever
+				let nextPoint = path.pathPoints[path.getNextPointNum(0)];
+				drawDirectionalityPoint(point, ctx, editor.multiSelect.points.isSelected(point), nextPoint);
+			} else {
+				drawPoint(point, ctx, editor.multiSelect.points.isSelected(point));
+			}
+		});
+	});
 }
 
 export function drawPathPointHover(ctx, point) {
@@ -448,13 +472,14 @@ export function drawPathPointHover(ctx, point) {
  * @param {PathPoint} point - point to draw
  * @param {object} ctx - canvas context
  * @param {boolean} isSelected - draw this as selected
- * @param {string} accent - accent color
- * @param {number} pointSize - how big to draw the point
  */
 export function drawPoint(point, ctx, isSelected) {
 	// log('PathPoint.drawPoint', 'start');
 	// log('sel = ' + isSelected);
 
+	let pointSize = 7;
+	let pointFill = uiColors.offWhite;
+	let accent = uiColors.accent;
 	const halfPointSize = pointSize / 2;
 	// ctx.fillStyle = sel? 'white' : accent;
 	ctx.fillStyle = isSelected ? pointFill : accent;
@@ -484,15 +509,18 @@ export function drawPoint(point, ctx, isSelected) {
  * @param {PathPoint} point - point to draw
  * @param {object} ctx - canvas context
  * @param {boolean} isSelected - draw this as selected
- * @param {string} accent - accent color
  * @param {Point} next - next Point in the path sequence
- * @param {number} pointSize - how big to draw the point
  */
-export function drawDirectionalityPoint(point, ctx, isSelected) {
+export function drawDirectionalityPoint(point, ctx, isSelected, next) {
 	// ctx.fillStyle = sel? 'white' : accent;
+	let pointSize = 7;
+	let pointFill = uiColors.offWhite;
+	let accent = uiColors.accent;
+
 	ctx.fillStyle = isSelected ? pointFill : accent;
 	ctx.strokeStyle = accent;
 	ctx.lineWidth = 1;
+
 	const begin = { x: point.p.x, y: point.p.y };
 	let end = { x: point.h2.x, y: point.h2.y };
 
@@ -558,10 +586,11 @@ export function drawDirectionalityPoint(point, ctx, isSelected) {
  * @param {object} ctx - canvas context
  * @param {boolean} drawH1 - draw the first handle
  * @param {boolean} drawH2 - draw the second handle
- * @param {string} accent - accent color
- * @param {number} pointSize - how big to draw the point
  */
-export function drawHandles(point, ctx, drawH1, drawH2) {
+export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
+	let pointSize = 7;
+	let pointFill = uiColors.offWhite;
+	let accent = uiColors.accent;
 	ctx.fillStyle = accent;
 	ctx.strokeStyle = accent;
 	ctx.lineWidth = 1;
