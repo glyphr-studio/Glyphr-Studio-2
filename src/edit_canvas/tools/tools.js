@@ -187,8 +187,8 @@ export function makeViewToolsButtons() {
 	});
 
 	// text zoom control
-	// let zoomReadoutNumber = round((editor?.view?.dz || 0.5) * 100, 2);
-	let zoomReadoutNumber = 50;
+	// let zoomReadoutNumber = round((editor?.view?.dz) * 100, 2);
+	let zoomReadoutNumber = '--';
 	let zoomReadout = makeElement({
 		tag: 'input',
 		className: 'edit-canvas__zoom-readout',

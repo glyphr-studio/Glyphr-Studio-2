@@ -65,7 +65,7 @@ export class Tool_Resize {
 				// findAndCallHotspot(eh.mouseX, eh.mouseY);
 			}
 
-			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_Resize mousedown' });
+			// editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_Resize mousedown' });
 		};
 
 
@@ -76,18 +76,14 @@ export class Tool_Resize {
 			let editor = getCurrentProjectEditor();
 			let selectedPaths = editor.multiSelect.paths;
 			this.didStuff = false;
-
 			let corner = eh.handle || selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
-			// log('before view stuff');
-
-			let dz = editor.view.dz;
-			let dx = (eh.mouseX - eh.lastX) / dz || 0;
-			let dy = (eh.lastY - eh.mouseY) / dz || 0;
-			// log('after view stuff');
-
-// TODO rapidly shaking new basic paths makes straight sides curved
+			// TODO rapidly shaking new basic paths makes straight sides curved
 			if (this.dragging) {
 				// log('detected DRAGGING');
+
+				let dz = editor.view.dz;
+				let dx = (eh.mouseX - eh.lastX) / dz || 0;
+				let dy = (eh.lastY - eh.mouseY) / dz || 0;
 				let cur = 'arrowSquare';
 
 				if (this.clickedPath) {
