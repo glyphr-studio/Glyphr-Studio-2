@@ -132,47 +132,105 @@ let logColors = {};
 let logCount = 0;
 export function log(message, type) {
 	let dev = GSApp.settings.dev;
-	let ch = '･ ';
 	// if (!dev.mode) return;
-
-	const commonStyle = `
-		font-weight:bold;
-		border-radius: 4px;
-		padding: 6px 12px 4px 12px;
-		position: relative;
-		left: -20px;
-		color: white;
-	`;
-	let dotStyle = 'color: rgba(127, 127, 127, 0.5)';
 
 	if (dev.mode) {
 		if (typeof message === 'string') {
 			message = message.replace(/&lt;/gi, '<');
 			message = message.replace(/&gt;/gi, '>');
+
+			if (type === 'start') {
+				if (!logColors[message])
+					logColors[message] = `hsl(${Math.floor((Math.random() * (210)) + 150)}, 90%, 20%)`;
+			}
+
+			const common = `
+				font-weight:bold;
+				position: relative;
+				left: -20px;
+				color: white;
+				background-color: ${logColors[message]};
+				padding: 6px 0px 6px 0px;
+				margin: 0px;
+			`;
+
+			const startCommon = `padding-bottom: 4px; margin-top: 10px; margin-bottom: -2px;`;
+			const endCommon = ` margin-bottom: 20px; margin-top: -3px`;
+
+			const startLeft = `
+				${common}
+				color: #FFFFFF66;
+				padding-left: 12px;
+				border-radius: 12px 0px 0px 2px;
+				${startCommon}
+			`;
+			const startMid = `
+				${common}
+				padding-left: 0px;
+				color: #FFFFFF99;
+				${startCommon}
+			`;
+			const startRight = `
+				${common}
+				padding-right: 12px;
+				border-radius: 0px 12px 2px 0px;
+				${startCommon}
+			`;
+
+			const endLeft = `
+				${common}
+				color: #FFFFFF66;
+				padding-left: 12px;
+				border-radius: 2px 0px 0px 12px;
+				${endCommon}
+			`;
+			const endMid = `
+				${common}
+				padding-left: 0px;
+				color: #FFFFFF99;
+				${endCommon}
+			`;
+			const endRight = `
+				${common}
+				padding-right: 12px;
+				border-radius: 0px 2px 12px 0px;
+				${endCommon}
+			`;
+
+			const indent = `
+				color: rgba(127, 127, 127, 0.5);
+				font-size: 1.2em;
+			`;
+			let ch = '･ ';
+
 			if (type === 'start' || type === 'end') {
+				let message1 = '';
+				let message2 = message;
+				if(message.split('.').length > 1) {
+					message1 = message.split('.')[0] + '.';
+					message2 = message.split('.')[1];
+				}
+
 				if (type === 'start') {
-					if (!logColors[message])
-						logColors[message] = `hsl(${Math.floor((Math.random() * (210)) + 150)}, 90%, 20%)`;
 					console.log(
-						`%c${ch.repeat(logCount)}%cSTART\t${message}`,
-						dotStyle,
-						`background-color: ${logColors[message]}; margin-top: 10px; ${commonStyle}`
+						`%c${ch.repeat(logCount)}%cSTART %c${message1}%c${message2}`,
+						indent, startLeft, startMid, startRight
 					);
 					logCount++;
+
 				} else if (type === 'end') {
 					logCount--;
 					console.log(
-						`%c${ch.repeat(logCount)}%cEND  \t${message}`,
-						dotStyle,
-						`background-color: ${logColors[message]}; margin-bottom: 20px; ${commonStyle}`
+						`%c${ch.repeat(logCount)}%cEND   %c${message1}%c${message2}`,
+						indent, endLeft, endMid, endRight
 					);
 					delete logColors[message];
 				}
+
 			} else {
 				console.log(
 					`%c${ch.repeat(logCount)}%c${message}`,
-					dotStyle,
-					'color: default'
+					indent, 'color: default; border-radius: 4px;'
 				);
 			}
 		} else if (typeof message === 'object') {
