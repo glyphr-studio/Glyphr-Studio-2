@@ -436,16 +436,11 @@ export class MultiSelectPaths extends MultiSelect {
 		else return false;
 	}
 
-	isOverControlPoint(
-		x,
-		y,
-		targetSize,
-		noHandles
-	) {
+	isOverControlPoint(x, y, noHandles) {
 		if (this.members.length === 0) return false;
 		let re = false;
 		for (let m = 0; m < this.members.length; m++) {
-			re = this.members[m].isOverControlPoint(x, y, targetSize, noHandles);
+			re = this.members[m].isOverControlPoint(x, y, noHandles);
 			if (re) return re;
 		}
 
