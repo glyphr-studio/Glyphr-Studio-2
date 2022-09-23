@@ -11,12 +11,12 @@ import { makePanel_Guides } from "./guides.js";
  * project editor and page.
  */
 export function makePanel() {
-	log(`makePanel`, 'start');
+	// log(`makePanel`, 'start');
 
 	let editor = getCurrentProjectEditor();
-	log(editor.nav);
+	// log(editor.nav);
 	let panel = editor.nav.panel;
-	log(`panel: ${panel}`);
+	// log(`panel: ${panel}`);
 
 	let content = makeElement();
 
@@ -45,7 +45,7 @@ export function makePanel() {
 		addAsChildren(content, makePanel_Guides());
 	}
 
-	log(`makePanel`, 'end');
+	// log(`makePanel`, 'end');
 	return content;
 }
 
@@ -53,11 +53,11 @@ export function makePanel() {
  * Refreshes the panel area in the current document
  */
 export function refreshPanel() {
-	log(`refreshPanel`, 'start');
+	// log(`refreshPanel`, 'start');
 	let panelArea = document.querySelector('.left-area__panel');
 	panelArea.innerHTML = '';
 	let newContent = makePanel();
-	log(newContent);
+	// log(newContent);
 	panelArea.appendChild(newContent);
-	log(`refreshPanel`, 'end');
+	// log(`refreshPanel`, 'end');
 }

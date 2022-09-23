@@ -4,7 +4,7 @@ import { History } from './history.js';
 import { Navigator } from './navigator.js';
 import { makeElement } from '../common/dom.js';
 import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
-import { json, getFirstID, clone } from '../common/functions.js';
+import { json, getFirstID, clone, round } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
 import { normalizeHex } from '../common/unicode.js';
@@ -105,10 +105,10 @@ export class ProjectEditor {
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
-		log(`ProjectEditor.publish`, 'start');
-		log(`topic: ${topic}`);
-		log(data);
-		log(this.subscribers[topic]);
+		// log(`ProjectEditor.publish`, 'start');
+		// log(`topic: ${topic}`);
+		// log(data);
+		// log(this.subscribers[topic]);
 
 		if (this.subscribers[topic]) {
 			// Iterate through all the callbacks
@@ -146,7 +146,7 @@ export class ProjectEditor {
 		} else {
 			// console.warn(`Nobody subscribed to topic ${topic}`);
 		}
-		log(`ProjectEditor.publish`, 'end');
+		// log(`ProjectEditor.publish`, 'end');
 	}
 
 	/**
@@ -223,10 +223,10 @@ export class ProjectEditor {
 	// Navigate
 	// --------------------------------------------------------------
 	navigate(pageName) {
-		log(`ProjectEditor.navigate`, 'start');
-		log(`pageName: ${pageName}`);
+		// log(`ProjectEditor.navigate`, 'start');
+		// log(`pageName: ${pageName}`);
 		this.nav.navigate(pageName);
-		log(`ProjectEditor.navigate`, 'end');
+		// log(`ProjectEditor.navigate`, 'end');
 	}
 
 
@@ -506,8 +506,8 @@ export class ProjectEditor {
 		} else if(this.nav.page === 'Kerning') {
 			re = clone(this.defaultKernView);
 		} else {
-			re = this.makeAutoFitView();
-			// re = clone(this.defaultView);
+			this._views[id] = this.makeAutoFitView();
+			re = this._views[id];
 		}
 
 		// log(`returning ${JSON.stringify(re)}`);
@@ -532,14 +532,14 @@ export class ProjectEditor {
 	}
 
 	makeAutoFitView() {
-		log(`ProjectEditor.makeAutoFitView`, 'start');
+		// log(`ProjectEditor.makeAutoFitView`, 'start');
 		let newView = clone(this.defaultView);
 		let rect = document.getElementsByClassName('glyph-edit__right-area')[0];
 		if(rect) {
 			rect = rect.getBoundingClientRect();
 			let ps = this.project.projectSettings;
-			log(ps);
-			log(rect);
+			// log(ps);
+			// log(rect);
 
 			//Zoom
 			let newZ = Math.min(
@@ -556,17 +556,20 @@ export class ProjectEditor {
 			let visibleGlyphWidth = this.selectedItem.advanceWidth * newZ;
 			let newX = (rect.width - visibleGlyphWidth) / 2;
 
-			newView = {dx: newX, dy: newY, dz: newZ};
+			newView = {dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3)};
 		}
 
-		log(`newView: ${JSON.stringify(newView)}`);
-		log(`ProjectEditor.makeAutoFitView`, 'end');
+		// log(`newView: ${JSON.stringify(newView)}`);
+		// log(`ProjectEditor.makeAutoFitView`, 'end');
 		return newView;
 	}
 
 	autoFitView() {
+		// log(`ProjectEditor.autoFitView`, 'start');
 		this.view = this.makeAutoFitView();
 		this.publish('view', this.view);
+		// log(`ProjectEditor.autoFitView`, 'end');
+		return this.view;
 	}
 
 	// --------------------------------------------------------------
