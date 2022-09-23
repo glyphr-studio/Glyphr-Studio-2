@@ -138,6 +138,7 @@ export class PathPoint extends GlyphElement {
 	 */
 	set p(newPoint = {}) {
 		newPoint.parent = this;
+		newPoint.type = 'p';
 		this._p = new ControlPoint(newPoint);
 	}
 
@@ -151,6 +152,7 @@ export class PathPoint extends GlyphElement {
 			newPoint.use = false;
 		}
 		newPoint.parent = this;
+		newPoint.type = 'h1';
 		this._h1 = new ControlPoint(newPoint);
 	}
 
@@ -164,6 +166,7 @@ export class PathPoint extends GlyphElement {
 			newPoint.use = false;
 		}
 		newPoint.parent = this;
+		newPoint.type = 'h2';
 		this._h2 = new ControlPoint(newPoint);
 	}
 

@@ -19,6 +19,7 @@ export class ControlPoint extends GlyphElement {
 		xLock = false,
 		yLock = false,
 		parent = false,
+		type = false,
 	} = {}) {
 		super();
 		this.parent = parent;
@@ -26,6 +27,7 @@ export class ControlPoint extends GlyphElement {
 		this.use = use;
 		this.xLock = xLock;
 		this.yLock = yLock;
+		this.type = type;
 
 		this.objType = 'ControlPoint';
 	}
@@ -126,6 +128,14 @@ export class ControlPoint extends GlyphElement {
 	}
 
 	/**
+	 * Gets the point type: p, h1, h2
+	 * @returns {string}
+	 */
+	get type() {
+		return this._type;
+	}
+
+	/**
 	 * Handle angle relative to Root Point
 	 * @returns {number}
 	 */
@@ -204,6 +214,14 @@ export class ControlPoint extends GlyphElement {
 	 */
 	set yLock(lock) {
 		this._yLock = !!lock;
+	}
+
+	/**
+	 * Sets the point type: p, h1, h2
+	 * @param {string} type
+	 */
+	set type(t) {
+		this._type = t;
 	}
 
 	rotate(angle, about) {
