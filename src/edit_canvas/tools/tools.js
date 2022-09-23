@@ -187,7 +187,8 @@ export function makeViewToolsButtons() {
 	});
 
 	// text zoom control
-	let zoomReadoutNumber = round(editor.view.dz * 100, 2);
+	// let zoomReadoutNumber = round((editor?.view?.dz || 0.5) * 100, 2);
+	let zoomReadoutNumber = 50;
 	let zoomReadout = makeElement({
 		tag: 'input',
 		className: 'edit-canvas__zoom-readout',
@@ -234,8 +235,7 @@ export function clickTool(tool) {
 
 	if(zoomTools.includes(tool)) {
 		if(tool === 'zoom1to1') editor.view = {dz: 1};
-		// TODO make 'fitToEm' or 'fitToContextGlyphs'
-		if(tool === 'zoomEm') editor.view = {dz: 0.75};
+		if(tool === 'zoomEm') editor.autoFitView();
 		if(tool === 'zoomIn') editor.view = {dz: editor.view.dz *= 1.1};
 		if(tool === 'zoomOut') editor.view = {dz: editor.view.dz *= 0.9};
 		editor.publish('view', editor.view);
