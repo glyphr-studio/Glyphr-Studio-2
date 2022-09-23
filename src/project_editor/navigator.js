@@ -91,13 +91,14 @@ export class Navigator {
 	 * @param {string} pageName - where to go
 	 */
 	navigate(pageName) {
-		// log(`ProjectEditor.navigate`, 'start');
-		// log(`pageName : ${pageName}`);
+		log(`Navigator.navigate`, 'start');
+		log(`pageName : ${pageName}`);
 
 		if (pageName) this.page = pageName;
 		const wrapper = document.getElementById('app__wrapper');
-		// log(`wrapper is:`);
-		// log(wrapper);
+
+		log(`wrapper before:`);
+		log(wrapper);
 
 		if (wrapper) {
 			const pageContent = this.makePageContent();
@@ -107,7 +108,7 @@ export class Navigator {
 			console.warn(`app__wrapper could not be found, navigation failed`);
 		}
 
-		// log(`ProjectEditor.navigate`, 'end');
+		log(`Navigator.navigate`, 'end');
 	}
 
 	/**
@@ -115,7 +116,7 @@ export class Navigator {
 	 * @returns {object} Page Loader object - {string} content and {function} callback
 	 */
 	makePageContent() {
-		// log(`ProjectEditor.makePageContent`, 'start');
+		// log(`Navigator.makePageContent`, 'start');
 		const editorContent = makeElement({ tag: 'div', id: 'app__main-content' });
 
 		// Default page loader fallback
@@ -140,7 +141,7 @@ export class Navigator {
 		// log(`this.pageMakers`);
 		// log(this.pageMakers);
 
-		// log(`ProjectEditor.makePageContent`, 'end');
+		// log(`Navigator.makePageContent`, 'end');
 
 		return editorContent;
 	}

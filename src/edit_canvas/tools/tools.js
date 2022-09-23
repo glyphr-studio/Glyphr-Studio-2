@@ -1,6 +1,6 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors, uiColors } from '../../common/colors.js';
-import { makeElement } from '../../common/dom.js';
+import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawPath } from '../draw_paths.js';
 
@@ -187,8 +187,10 @@ export function makeViewToolsButtons() {
 	});
 
 	// text zoom control
-	// let zoomReadoutNumber = round((editor?.view?.dz) * 100, 2);
 	let zoomReadoutNumber = '--';
+	let view = editor.view;
+	if(view) zoomReadoutNumber = round((editor.view.dz) * 100, 2);
+
 	let zoomReadout = makeElement({
 		tag: 'input',
 		className: 'edit-canvas__zoom-readout',
@@ -213,19 +215,23 @@ export function makeViewToolsButtons() {
 	});
 
 	// Put it all together
-	let content = makeElement();
+	let responsiveGroup = makeElement({className: 'edit-canvas__responsive-group'});
 
-	content.appendChild(viewButtonElements.pan);
-	content.appendChild(makeElement({tag: 'div', content: '&emsp;'}));
-	content.appendChild(viewButtonElements.zoomOut);
-	content.appendChild(zoomReadout);
-	content.appendChild(viewButtonElements.zoomIn);
-	content.appendChild(makeElement({tag: 'div', content: '&emsp;'}));
-	content.appendChild(viewButtonElements.zoom1to1);
-	content.appendChild(viewButtonElements.zoomEm);
+	addAsChildren(responsiveGroup, [
+		makeElement({tag: 'div', content: '&emsp;'}),
+		viewButtonElements.zoomOut,
+		zoomReadout,
+		viewButtonElements.zoomIn,
+		makeElement({tag: 'div', content: '&emsp;'}),
+		viewButtonElements.zoom1to1
+	]);
 
 	// log(`makeViewToolsButtons`, 'end');
-	return content;
+	return [
+		viewButtonElements.pan,
+		responsiveGroup,
+		viewButtonElements.zoomEm,
+	];
 }
 
 export function clickTool(tool) {

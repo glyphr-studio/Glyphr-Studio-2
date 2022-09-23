@@ -85,6 +85,7 @@ export class EditCanvas extends HTMLElement {
 		switch (attributeName) {
 			case 'glyphs':
 				this.glyphs = newValue;
+				getCurrentProjectEditor().autoFitIfViewIsDefault();
 				this.redraw({calledBy: 'EditCanvas.attributeChangeCallback - attribute: glyphs'});
 				break;
 		}
@@ -99,11 +100,10 @@ export class EditCanvas extends HTMLElement {
 	redraw(oa = {}) {
 		// log('EditCanvas.redraw', 'start');
 		if(oa?.calledBy) log(`==REDRAW BY ${oa.calledBy}==`);
-
 		let editor = getCurrentProjectEditor();
+		let view = editor.view;
 		let ps = getCurrentProject().projectSettings;
 		let ctx = this.ctx;
-		let view = editor.view;
 		let width = this.width;
 		let height = this.height;
 
