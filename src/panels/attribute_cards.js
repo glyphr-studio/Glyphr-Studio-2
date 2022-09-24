@@ -206,6 +206,13 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	// -- Point -- //
 	// Point x/y
 	let pointPosition = makeInputs_position(selectedPoint.p, 'point:&ensp;', true);
+	let pointTypeLabel = makeSingleLabel('point type');
+	let pointTypeWrapper = makeElement();
+	addAsChildren(pointTypeWrapper, [
+		makePointTypeButton('symmetric', selectedPoint.type === 'symmetric'),
+		makePointTypeButton('flat', selectedPoint.type === 'flat'),
+		makePointTypeButton('corner', selectedPoint.type === 'corner'),
+	]);
 
 	// -- Handle 1 -- //
 	let useH1Checkbox = makeSingleCheckbox(selectedPoint.h1, 'use', 'currentPathPoint');
@@ -223,6 +230,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 
 	// Put it all together
 	addAsChildren(pathPointCard, pointPosition);
+	addAsChildren(pathPointCard, [pointTypeLabel, pointTypeWrapper]);
 
 	addAsChildren(pathPointCard, useH1Label);
 	if(selectedPoint.h1.use) {
@@ -418,11 +426,16 @@ export function makePointTypeButton(type, selected) {
 		bgcolor = accentColors.gray.offWhite;
 	}
 
-	let re = `<button
-		class="pointtypebutton"
-		style="background-color:${bgcolor};"
-		title="point type: ${type}"
-	>
+	let button = makeElement(
+		{tag: 'button',
+		attributes: {
+			class: `pointtypebutton`,
+			style: `background-color:${bgcolor};`,
+			title: `point type: ${type}`,
+		}
+	});
+
+	let svg = `
 	<svg version="1.1"
 		xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 		x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"
@@ -441,7 +454,7 @@ export function makePointTypeButton(type, selected) {
 
 	switch (type) {
 		case 'corner':
-			re += `
+			svg += `
 			<rect x="7" y="12" width="1" height="1"/>
 			<rect x="6" y="13" width="1" height="1"/>
 			<rect x="5" y="14" width="1" height="1"/>
@@ -451,7 +464,7 @@ export function makePointTypeButton(type, selected) {
 			break;
 
 		case 'symmetric':
-			re += `
+			svg += `
 			<rect x="12" y="12" width="1" height="1"/>
 			<rect x="13" y="13" width="1" height="1"/>
 			<rect x="14" y="14" width="1" height="1"/>
@@ -461,7 +474,7 @@ export function makePointTypeButton(type, selected) {
 			break;
 
 		case 'flat':
-			re += `
+			svg += `
 			<rect x="12" y="12" width="1" height="1"/>
 			<rect x="13" y="13" width="1" height="1"/>
 			<circle cx="15" cy="15" r="1.5"/>
@@ -469,8 +482,11 @@ export function makePointTypeButton(type, selected) {
 			break;
 	}
 
-	re += `</g></svg></button>`;
-	return re;
+	svg += `</g></svg>`;
+
+	button.innerHTML = svg;
+
+	return button;
 }
 
 
