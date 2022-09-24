@@ -18,6 +18,34 @@ html,body {
 	min-width: 100%;
 	overflow: hidden;
 }
+::-webkit-scrollbar {
+	width: 10px;
+	padding: 1px;
+	border-radius: 4px;
+	border: 1px solid var(--gray-l90);
+	background-color: var(--offWhite);
+}
+::-webkit-scrollbar-button {
+	height: 0px;
+	background-color: transparent;
+}
+::-webkit-scrollbar-track {
+	width: 8px;
+}
+::-webkit-scrollbar-track-piece {
+	background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+	margin: 2px;
+	background-color: var(--gray-l80);
+	border-radius: 4px;
+}
+::-webkit-scrollbar-corner {
+	display: none;
+}
+::-webkit-resizer {
+	display: none;
+}
 
 div,p,h1,h2,h3,table,td,label,button {
 	-webkit-user-select: none;

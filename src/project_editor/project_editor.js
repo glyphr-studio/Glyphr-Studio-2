@@ -100,8 +100,10 @@ export class ProjectEditor {
 	 * - 'whichToolIsSelected' - change to which edit tool is selected.
 	 * - 'whichGlyphIsSelected' - change to which glyph is being edited.
 	 * - 'whichPathIsSelected' - change to which path is being edited.
+	 * - 'whichPathPointIsSelected' - change to which point is being edited.
 	 * - 'currentGlyph' - edits to the current glyph.
 	 * - 'currentPath' - edits to the current path.
+	 * - 'currentPathPoint' - edits to the current point.
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
@@ -120,13 +122,14 @@ export class ProjectEditor {
 			// Handle some things centrally
 			if(topic === 'whichToolIsSelected') {}
 			if(topic === 'view') {}
-			if(topic === 'whichPathIsSelected') {
-				this.multiSelect.points.clear();
-			}
 			if(topic === 'whichGlyphIsSelected') {
 				this.multiSelect.paths.clear();
 				this.multiSelect.points.clear();
 			}
+			if(topic === 'whichPathIsSelected') {
+				this.multiSelect.points.clear();
+			}
+			if(topic === 'whichPathPointIsSelected') {}
 			if(topic === 'currentGlyph') {
 				let singlePath = this.multiSelect.paths.singleton;
 				if(singlePath) {
@@ -142,6 +145,7 @@ export class ProjectEditor {
 					this.subscribers.currentGlyph[subscriberID](this.selectedItem);
 				});
 			}
+			if(topic === 'currentPathPoint') {}
 
 		} else {
 			// console.warn(`Nobody subscribed to topic ${topic}`);
@@ -157,8 +161,10 @@ export class ProjectEditor {
 	 * - 'whichToolIsSelected' - change to which edit tool is selected.
 	 * - 'whichGlyphIsSelected' - change to which glyph is being edited.
 	 * - 'whichPathIsSelected' - change to which path is being edited.
+	 * - 'whichPathPointIsSelected' - change to which point is being edited.
 	 * - 'currentGlyph' - edits to the current glyph.
 	 * - 'currentPath' - edits to the current path.
+	 * - 'currentPathPoint' - edits to the current point.
 	 * @param {string} subscriberID - the name of the thing listening
 	 * @param {function} callback - what to do when a change is triggered
 	 * @returns nothing
