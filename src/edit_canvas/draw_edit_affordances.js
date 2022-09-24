@@ -474,8 +474,8 @@ export function drawPathPointHover(ctx, point) {
  * @param {boolean} isSelected - draw this as selected
  */
 export function drawPoint(point, ctx, isSelected) {
-	log('PathPoint.drawPoint', 'start');
-	log('sel = ' + isSelected);
+	// log('PathPoint.drawPoint', 'start');
+	// log('sel = ' + isSelected);
 
 	let pointSize = 7;
 	let pointFill = uiColors.offWhite;
@@ -500,8 +500,8 @@ export function drawPoint(point, ctx, isSelected) {
 	);
 
 	ctx.fillStyle = accent;
-	ctx.fillText(point.pointNumber, sXcX(point.p.x + 12), sYcY(point.p.y));
-	log('PathPoint.drawPoint', 'end');
+	// ctx.fillText(point.pointNumber, sXcX(point.p.x + 12), sYcY(point.p.y));
+	// log('PathPoint.drawPoint', 'end');
 }
 
 /**

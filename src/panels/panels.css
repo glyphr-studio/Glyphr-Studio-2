@@ -9,12 +9,13 @@
 .panel__card {
 	display: grid;
 	/* align with buttons at the bottom of cards */
-	grid-template-columns: clamp(141px, 181px, 201px) 1fr;
+	grid-template-columns: clamp(110px, 150px, 190px) 1fr;
 	align-items: center;
 	justify-items: left;
 	row-gap: 5px;
-	column-gap: 20px;
+	column-gap: 11px;
 	margin-bottom: 5px;
+	margin-right: 5px;
 
 	border: 1px solid var(--blue-l85);
 	padding: 10px 10px 15px 10px;
@@ -23,9 +24,19 @@
 	box-shadow: var(--l2-shadow);
 }
 
-.panel__card.full-width {
+.panel__card.full-width,
+.pre-checkbox {
 	grid-template-columns: 1fr;
 	column-gap: 0;
+}
+
+.pre-checkbox input[type='checkbox'] {
+	margin: 20px 10px 0px 0px;
+}
+
+.pre-checkbox h4 {
+	position: relative;
+	top: -3px;
 }
 
 .panel__card h1,
@@ -34,6 +45,7 @@
 .panel__card h4,
 .panel__card h5,
 .panel__card h6 {
+	display: inline;
 	grid-column: 1 / -1;
 	margin-bottom: 0;
 }
@@ -72,17 +84,25 @@
 }
 
 .panel__card .doubleInput {
+	width: 100%;
 	grid-column: 2;
 	display: grid;
-	grid-template-columns: min-content 16px min-content;
+	grid-template-columns: 1fr 16px 1fr;
 }
 
 .panel__card input {
-	width: calc(100% - 15px);
+	width: 100%;
 }
 
-.panel__card input-number {
-	width: 98px;
+
+.panel__card input-number,
+.panel__card input-number-lockable {
+	width: 120px;
+}
+
+.panel__card .doubleInput input-number,
+.panel__card .doubleInput input-number-lockable {
+	width: 100%;
 }
 
 .rowPad {

@@ -23,14 +23,20 @@ export function makeCard_glyphAttributes(glyph) {
 	});
 
 	let advanceWidthLabel = makeSingleLabel('advance width');
+	let halfSizeAdvanceWidthInput = makeElement({tag: 'div', className: 'doubleInput',});
 	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentGlyph', 'input-number');
+	addAsChildren(halfSizeAdvanceWidthInput, [
+		advanceWidthInput,
+		makeElement(),
+		makeElement(),
+	]);
 
 	// Side bearings
 	let bearingLabel = makeElement({
 		tag: 'label',
 		className: 'info',
 		innerHTML: `
-			<span>side bearings: left${dimSplit()}right</span>
+			<span>bearings: left${dimSplit()}right</span>
 			<info-bubble>
 				<h1>Side Bearings</h1>
 				Side bearings are the blank space to the left and right
@@ -60,7 +66,7 @@ export function makeCard_glyphAttributes(glyph) {
 	doubleBearingInput.appendChild(rsbInput);
 
 	// Put it all together
-	addAsChildren(glyphCard, [advanceWidthLabel, advanceWidthInput]);
+	addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
 	addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
 	addAsChildren(glyphCard, makeElement({tag: 'div', className: 'rowPad'}));
 	addAsChildren(glyphCard, makeElement({tag: 'h4', content: 'Bulk-edit paths'}));
@@ -147,6 +153,7 @@ export function makeCard_pathAttributes(path) {
 
 	// Put it all together
 	addAsChildren(pathCard, [nameLabel, nameInput, windingInfo, windingButton, positionInputs, sizeInputs]);
+	addAsChildren(pathCard, makeElement({tag: 'div', className: 'rowPad'}));
 	addAsChildren(pathCard, makeActionsArea_Path());
 
 	log(`makeCard_pathAttributes`, 'end');
@@ -197,35 +204,37 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	// let pointNumInput = makeSingleInput(selectedPath, 'selectedPathPoint', 'whichPathPointIsSelected', 'input-number');
 
 	// -- Point -- //
-	let pointHeader = makeElement({tag: 'h4', content: 'Point'});
 	// Point x/y
-	let pointPosition = makeInputs_position(selectedPoint.p, true);
+	let pointPosition = makeInputs_position(selectedPoint.p, 'point:&ensp;', true);
 
 	// -- Handle 1 -- //
-	let h1Header = makeElement({tag: 'h4', content: 'Handle 1'});
-	// Handle 1 use
-	// Handle 1 x/y
-	let h1Position = makeInputs_position(selectedPoint.h1, true);
+	let useH1Checkbox = makeSingleCheckbox(selectedPoint.h1, 'use', 'currentPathPoint');
+	let useH1Label = makeElement({className: 'pre-checkbox'});
+	addAsChildren(useH1Label, [useH1Checkbox, makeElement({tag: 'h4', content: 'Use handle 1'})]);
+	let h1Position = makeInputs_position(selectedPoint.h1, 'h1:&ensp;', true);
 	// Handle 1 type
 
 	// -- Handle 2 -- //
-	let h2Header = makeElement({tag: 'h4', content: 'Handle 2'});
-	// Handle 2 use
-	// Handle 2 x/y
-	let h2Position = makeInputs_position(selectedPoint.h2, true);
-
+	let useH2Checkbox = makeSingleCheckbox(selectedPoint.h2, 'use', 'currentPathPoint');
+	let useH2Label = makeElement({className: 'pre-checkbox'});
+	addAsChildren(useH2Label, [useH2Checkbox, makeElement({tag: 'h4', content: 'Use handle 2'})]);
+	let h2Position = makeInputs_position(selectedPoint.h2, 'h2:&ensp;', true);
 	// Handle 2 type
 
 	// Put it all together
-	addAsChildren(pathPointCard, [
-		pointHeader,
-		pointPosition,
-		h1Header,
-		h1Position,
-		h2Header,
-		h2Position,
-	]);
-	
+	addAsChildren(pathPointCard, pointPosition);
+
+	addAsChildren(pathPointCard, useH1Label);
+	if(selectedPoint.h1.use) {
+		addAsChildren(pathPointCard, h1Position);
+	}
+
+	addAsChildren(pathPointCard, useH2Label);
+	if(selectedPoint.h2.use) {
+		addAsChildren(pathPointCard, h2Position);
+	}
+
+	addAsChildren(pathPointCard, makeElement({tag: 'div', className: 'rowPad'}));
 	addAsChildren(pathPointCard, makeActionsArea_PathPoint());
 
 	log(`makeCard_pathPointAttributes`, 'end');
@@ -237,7 +246,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 // Common attributes stuff
 // --------------------------------------------------------------
 
-function makeInputs_position(workItem, lockable = false) {
+function makeInputs_position(workItem, labelPrefix = '', lockable = false) {
 	// TODO transform origin
 	// log(`makeInputs_position`, 'start');
 	let x = workItem.x;
@@ -247,7 +256,7 @@ function makeInputs_position(workItem, lockable = false) {
 	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
 
 	// Label + inputs
-	let label = makeElement({tag: 'label', innerHTML: `x${dimSplit()}y`});
+	let label = makeElement({tag: 'label', innerHTML: `${labelPrefix}x${dimSplit()}y`});
 	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
 	let xInput = makeSingleInput(workItem, 'x', thisTopic, `input-number${lockable? '-lockable':''}`);
 	let yInput = makeSingleInput(workItem, 'y', thisTopic, `input-number${lockable? '-lockable':''}`);
@@ -293,18 +302,7 @@ function makeInputs_size(workItem){
 		`
 	});
 
-	let ratioLockCheckbox = makeElement({
-		tag: 'input',
-		attributes: {
-			type: 'checkbox'
-		}
-	});
-	if(workItem.ratioLock) ratioLockCheckbox.setAttribute('checked', '');
-	ratioLockCheckbox.addEventListener('change', (event) => {
-		let newValue = event.target.checked;
-		workItem.ratioLock = newValue;
-		getCurrentProjectEditor().publish(thisTopic, workItem);
-	});
+	let ratioLockCheckbox = makeSingleCheckbox(workItem, 'ratioLock', thisTopic);
 
 	// log(`makeInputs_size`, 'end');
 	return [inputLabel, doubleInput, ratioLockLabel, ratioLockCheckbox];
@@ -320,11 +318,13 @@ function makeSingleInput(workItem, property, thisTopic, tagName) {
 	let newInput = makeElement({tag: tagName});
 	let value = tagName === 'input'? workItem[property] : round(workItem[property], 3);
 	newInput.setAttribute('value', value);
+
 	newInput.addEventListener('change', (event) => {
 		let newValue = event.target.value;
 		workItem[property] = newValue;
 		getCurrentProjectEditor().publish(thisTopic, workItem);
 	});
+
 	getCurrentProjectEditor().subscribe({
 		topic: thisTopic,
 		subscriberID: `attributesPanel.${thisTopic}.${property}`,
@@ -345,6 +345,37 @@ function makeSingleInput(workItem, property, thisTopic, tagName) {
 
 	log(`makeSingleInput`, 'end');
 	return newInput;
+}
+
+function makeSingleCheckbox(workItem, property, thisTopic) {
+
+	let newCheckbox = makeElement({
+		tag: 'input',
+		attributes: {
+			type: 'checkbox'
+		}
+	});
+	if(workItem[property]) newCheckbox.setAttribute('checked', '');
+
+	newCheckbox.addEventListener('change', (event) => {
+		let newValue = event.target.checked;
+		workItem.ratioLock = !!newValue;
+		getCurrentProjectEditor().publish(thisTopic, workItem);
+	});
+
+	getCurrentProjectEditor().subscribe({
+		topic: thisTopic,
+		subscriberID: `attributesPanel.${thisTopic}.${property}`,
+		callback: (changedItem) => {
+			if(!!changedItem[property]) {
+				newCheckbox.setAttribute('checked', '');
+			} else {
+				newCheckbox.removeAttribute('checked');
+			}
+		}
+	});
+
+	return newCheckbox;
 }
 
 function makeSingleLabel(text, info = false) {
