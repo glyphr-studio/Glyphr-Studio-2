@@ -5,7 +5,7 @@
 	level attributes panels
 **/
 import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
-import { accentColors } from "../common/colors.js";
+import { accentColors, uiColors } from "../common/colors.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
 import { round } from "../common/functions.js";
 import { makeActionsArea_Glyph, makeActionsArea_Path, makeActionsArea_PathPoint, makeActionsArea_Universal } from "./actions_cards.js";
@@ -416,21 +416,20 @@ function dimSplitElement() {
 // Drawing stuff
 // --------------------------------------------------------------
 
-
 export function makePointTypeButton(type, selected) {
 	let color = accentColors.gray.l40;
-	let bgcolor = 'transparent';
+	let bgColor = 'transparent';
 
 	if (selected) {
 		color = accentColors.blue.l65;
-		bgcolor = accentColors.gray.offWhite;
+		bgColor = uiColors.offWhite;
 	}
 
-	let button = makeElement(
-		{tag: 'button',
+	let button = makeElement({
+		tag: 'button',
+		className: 'pointTypeButton',
 		attributes: {
-			class: `pointtypebutton`,
-			style: `background-color:${bgcolor};`,
+			style: `background-color:${bgColor};`,
 			title: `point type: ${type}`,
 		}
 	});
@@ -438,8 +437,7 @@ export function makePointTypeButton(type, selected) {
 	let svg = `
 	<svg version="1.1"
 		xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-		x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"
-	>
+		x="0" y="0" width="20" height="20" viewBox="0 0 20 20" enable-background="new 0 0 20 20">
 		<g fill="${color}">
 		<rect x="8" y="8" width="1" height="4"/>
 		<rect x="11" y="8" width="1" height="4"/>

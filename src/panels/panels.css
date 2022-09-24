@@ -120,6 +120,18 @@
 	padding-top: 6px;
 }
 
+.pointTypeButton,
+.pointTypeButton:hover,
+.pointTypeButton:focus {
+	display: inline-block;
+	width: 28px;
+	height: 28px;
+	background-color: var(--gray-l95);
+	color: var(--gray-l60);
+	padding: 3px 5px 5px 3px;
+	margin-right: 5px;
+}
+
 :root {
 	--action-icon-size: 30px;
 }
