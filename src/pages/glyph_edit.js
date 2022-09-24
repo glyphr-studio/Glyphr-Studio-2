@@ -118,6 +118,14 @@ export class PageGlyphEdit {
 			}
 		});
 
+		editor.subscribe({
+			topic: 'whichPathPointIsSelected',
+			subscriberID: 'editCanvas.selectedPathPoint',
+			callback: () => {
+				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPathPoint'});
+			}
+		});
+
 
 		log(`PageGlyphEdit.makePageContent`, 'end');
 		return content;

@@ -23,7 +23,9 @@ export function makePanel_GlyphAttributes() {
 
 	// Path Points
 	let selPoints = editor.multiSelect.points;
+	log(selPoints);
 	if(selPoints.length === 1) {
+		log(`pushing point card`);
 		content.push(makeCard_pathPointAttributes(selPoints.singleton));
 	}
 
@@ -60,6 +62,11 @@ export function makePanel_GlyphAttributes() {
 	// Subscriber
 	editor.subscribe({
 		topic: 'whichPathIsSelected',
+		subscriberID: 'attributesPanel',
+		callback: () => { refreshPanel(); }
+	});
+	editor.subscribe({
+		topic: 'whichPathPointIsSelected',
 		subscriberID: 'attributesPanel',
 		callback: () => { refreshPanel(); }
 	});

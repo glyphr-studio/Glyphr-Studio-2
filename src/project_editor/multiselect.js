@@ -122,10 +122,10 @@ class MultiSelect {
 	}
 
 	isSelected(obj) {
-		log(`Multiselect.isSelected`, 'start');
-		log(`obj: ${obj}`);
-		log(`returning ${this.members.indexOf(obj) > -1}`);
-		log(`Multiselect.isSelected`, 'end');
+		// log(`Multiselect.isSelected`, 'start');
+		// log(`obj: ${obj}`);
+		// log(`returning ${this.members.indexOf(obj) > -1}`);
+		// log(`Multiselect.isSelected`, 'end');
 		return this.members.indexOf(obj) > -1;
 	}
 }
