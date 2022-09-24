@@ -26,6 +26,7 @@
 
 .panel__card.full-width,
 .pre-checkbox {
+	grid-column: 1 / -1;
 	grid-template-columns: 1fr;
 	column-gap: 0;
 }
@@ -45,7 +46,7 @@
 .panel__card h4,
 .panel__card h5,
 .panel__card h6 {
-	display: inline;
+	display: inline-block;
 	grid-column: 1 / -1;
 	margin-bottom: 0;
 }
@@ -93,7 +94,6 @@
 .panel__card input {
 	width: 100%;
 }
-
 
 .panel__card input-number,
 .panel__card input-number-lockable {
