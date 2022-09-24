@@ -8,7 +8,7 @@ import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 import { accentColors } from "../common/colors.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
 import { round } from "../common/functions.js";
-import { makeActionsArea_Glyph, makeActionsArea_Path, makeActionsArea_Universal } from "./actions_cards.js";
+import { makeActionsArea_Glyph, makeActionsArea_Path, makeActionsArea_PathPoint, makeActionsArea_Universal } from "./actions_cards.js";
 
 
 // --------------------------------------------------------------
@@ -179,44 +179,45 @@ export function makeCard_multiSelectPathAttributes(glyph) {
 // Path Point attributes
 // --------------------------------------------------------------
 
-export function makeCard_pathPointAttributes(tp) {
+export function makeCard_pathPointAttributes(selectedPoint) {
+	log(`makeCard_pathPointAttributes`, 'start');
+
 	let editor = getCurrentProjectEditor();
 	let selectedPath = editor.selectedPath;
-	let selectedPathPoint = editor.selectedPathPoint;
+	// let selectedPathPoint = editor.selectedPathPoint;
 
 	// POINT
-	let pathCard = makeElement({
+	let pathPointCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
 		innerHTML: '<h3>Path point</h3>'
 	});
 
-	let pointNumLabel = makeSingleLabel('Selected path point');
-	let pointNumInput = makeSingleInput(selectedPath, 'selectedPathPoint', 'whichPathPointIsSelected', 'input-number');
+	// let pointNumLabel = makeSingleLabel('Selected path point');
+	// let pointNumInput = makeSingleInput(selectedPath, 'selectedPathPoint', 'whichPathPointIsSelected', 'input-number');
 
 	// -- Point -- //
 	let pointHeader = makeElement({tag: 'h4', content: 'Point'});
 	// Point x/y
-	let pointPosition = makeInputs_position(selectedPathPoint.p);
+	let pointPosition = makeInputs_position(selectedPoint.p, true);
 
 	// -- Handle 1 -- //
 	let h1Header = makeElement({tag: 'h4', content: 'Handle 1'});
 	// Handle 1 use
 	// Handle 1 x/y
-	let h1Position = makeInputs_position(selectedPathPoint.h1);
+	let h1Position = makeInputs_position(selectedPoint.h1, true);
 	// Handle 1 type
 
 	// -- Handle 2 -- //
 	let h2Header = makeElement({tag: 'h4', content: 'Handle 2'});
 	// Handle 2 use
 	// Handle 2 x/y
-	let h2Position = makeInputs_position(selectedPathPoint.h2);
+	let h2Position = makeInputs_position(selectedPoint.h2, true);
 
 	// Handle 2 type
 
 	// Put it all together
-	addAsChildren(pathCard, [
-		pointNumLabel, pointNumInput,
+	addAsChildren(pathPointCard, [
 		pointHeader,
 		pointPosition,
 		h1Header,
@@ -224,8 +225,11 @@ export function makeCard_pathPointAttributes(tp) {
 		h2Header,
 		h2Position,
 	]);
+	
+	addAsChildren(pathPointCard, makeActionsArea_PathPoint());
 
-	return pathCard;
+	log(`makeCard_pathPointAttributes`, 'end');
+	return pathPointCard;
 }
 
 
@@ -233,7 +237,7 @@ export function makeCard_pathPointAttributes(tp) {
 // Common attributes stuff
 // --------------------------------------------------------------
 
-function makeInputs_position(workItem) {
+function makeInputs_position(workItem, lockable = false) {
 	// TODO transform origin
 	// log(`makeInputs_position`, 'start');
 	let x = workItem.x;
@@ -245,8 +249,8 @@ function makeInputs_position(workItem) {
 	// Label + inputs
 	let label = makeElement({tag: 'label', innerHTML: `x${dimSplit()}y`});
 	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
-	let xInput = makeSingleInput(workItem, 'x', thisTopic, 'input-number');
-	let yInput = makeSingleInput(workItem, 'y', thisTopic, 'input-number');
+	let xInput = makeSingleInput(workItem, 'x', thisTopic, `input-number${lockable? '-lockable':''}`);
+	let yInput = makeSingleInput(workItem, 'y', thisTopic, `input-number${lockable? '-lockable':''}`);
 
 	// Put double input together
 	doubleInput.appendChild(xInput);
@@ -307,6 +311,12 @@ function makeInputs_size(workItem){
 }
 
 function makeSingleInput(workItem, property, thisTopic, tagName) {
+	log(`makeSingleInput`, 'start');
+	log(`workItem.objType: ${workItem.objType}`);
+	log(`property: ${property}`);
+	log(`thisTopic: ${thisTopic}`);
+	log(`tagName: ${tagName}`);
+
 	let newInput = makeElement({tag: tagName});
 	let value = tagName === 'input'? workItem[property] : round(workItem[property], 3);
 	newInput.setAttribute('value', value);
@@ -319,20 +329,21 @@ function makeSingleInput(workItem, property, thisTopic, tagName) {
 		topic: thisTopic,
 		subscriberID: `attributesPanel.${thisTopic}.${property}`,
 		callback: (changedItem) => {
-			log(`SINGLE INPUT CALLBACK`, 'start');
-			log(`attributesPanel.${thisTopic}.${property}`);
-			log(changedItem);
-			log(`changedItem[property]: ${changedItem[property]}`);
+			// log(`SINGLE INPUT CALLBACK`, 'start');
+			// log(`attributesPanel.${thisTopic}.${property}`);
+			// log(changedItem);
+			// log(`changedItem[property]: ${changedItem[property]}`);
 
 			if(changedItem[property]) {
 				let newValue = tagName === 'input'? changedItem[property] : round(changedItem[property], 3);
 				newInput.value = newValue;
-				log(`new value: ${newValue}`);
+				// log(`new value: ${newValue}`);
 			}
-			log(`SINGLE INPUT CALLBACK`, 'end');
+			// log(`SINGLE INPUT CALLBACK`, 'end');
 		}
 	});
 
+	log(`makeSingleInput`, 'end');
 	return newInput;
 }
 

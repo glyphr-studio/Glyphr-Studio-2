@@ -389,7 +389,7 @@ export function makeActionsArea_Path(test = false){
 }
 
 // Point actions
-export function makeActionsArea_Point(test = false){
+export function makeActionsArea_PathPoint(test = false){
 	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
 	let selectedPoints = getCurrentProjectEditor().multiSelect.points;
 	let isPointSelected = false;

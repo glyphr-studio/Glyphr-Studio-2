@@ -67,6 +67,11 @@ export class EditCanvas extends HTMLElement {
 			subscriberID: 'editCanvas.path',
 			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
 		});
+		editor.subscribe({
+			topic: 'whichToolIsSelected',
+			subscriberID: 'editCanvas.tool',
+			callback: () => this.redraw({calledBy: 'EditCanvas selectedTool subscriber'})
+		});
 
 		// this.redraw();
 		// log(`EditCanvas.constructor`, 'end');

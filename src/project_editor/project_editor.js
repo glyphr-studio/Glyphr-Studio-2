@@ -152,13 +152,13 @@ export class ProjectEditor {
 	/**
 	 * Sets up an intent to listen for changes based on a keyword, and
 	 * provides a callback function in case a change is published
-	 * @param {string or array} topic - what keyword to listen for
-	 * 		'view' - change to the edit canvas view.
-	 * 		'whichToolIsSelected' - change to which edit tool is selected.
-	 * 		'whichGlyphIsSelected' - change to which glyph is being edited.
-	 * 		'whichPathIsSelected' - change to which path is being edited.
-	 * 		'currentGlyph' - edits to the current glyph.
-	 * 		'currentPath' - edits to the current path.
+	 * @param {string or array} topic what keyword to listen for
+	 * - 'view' - change to the edit canvas view.
+	 * - 'whichToolIsSelected' - change to which edit tool is selected.
+	 * - 'whichGlyphIsSelected' - change to which glyph is being edited.
+	 * - 'whichPathIsSelected' - change to which path is being edited.
+	 * - 'currentGlyph' - edits to the current glyph.
+	 * - 'currentPath' - edits to the current path.
 	 * @param {string} subscriberID - the name of the thing listening
 	 * @param {function} callback - what to do when a change is triggered
 	 * @returns nothing
