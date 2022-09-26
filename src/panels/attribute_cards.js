@@ -8,6 +8,7 @@ import { getCurrentProject, getCurrentProjectEditor } from "../app/main.js";
 import { accentColors, uiColors } from "../common/colors.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
 import { round } from "../common/functions.js";
+import { refreshPanel } from "./panels.js";
 import { makeActionsArea_Glyph, makeActionsArea_Path, makeActionsArea_PathPoint, makeActionsArea_Universal } from "./actions_cards.js";
 
 
@@ -84,8 +85,8 @@ export function makeCard_glyphAttributes(glyph) {
 // Path attributes
 // --------------------------------------------------------------
 export function makeCard_pathAttributes(path) {
-	log(`makeCard_pathAttributes`, 'start');
-	log(path);
+	// log(`makeCard_pathAttributes`, 'start');
+	// log(path);
 
 	let pathCard = makeElement({
 		tag: 'div',
@@ -94,7 +95,7 @@ export function makeCard_pathAttributes(path) {
 	});
 
 	// Path name
-	log(`path.name: ${path.name}`);
+	// log(`path.name: ${path.name}`);
 	let nameLabel = makeSingleLabel('path name');
 	let nameInput = makeSingleInput(path, 'name', 'currentPath', 'input');
 
@@ -157,7 +158,7 @@ export function makeCard_pathAttributes(path) {
 	addAsChildren(pathCard, makeElement({tag: 'div', className: 'rowPad'}));
 	addAsChildren(pathCard, makeActionsArea_Path());
 
-	log(`makeCard_pathAttributes`, 'end');
+	// log(`makeCard_pathAttributes`, 'end');
 	return pathCard;
 }
 
@@ -188,7 +189,7 @@ export function makeCard_multiSelectPathAttributes(glyph) {
 // --------------------------------------------------------------
 
 export function makeCard_pathPointAttributes(selectedPoint) {
-	log(`makeCard_pathPointAttributes`, 'start');
+	// log(`makeCard_pathPointAttributes`, 'start');
 
 	let editor = getCurrentProjectEditor();
 	let selectedPath = editor.selectedPath;
@@ -206,7 +207,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 
 	// -- Point -- //
 	// Point x/y
-	let pointPosition = makeInputs_position(selectedPoint.p, 'point:&ensp;', true);
+	let pointPosition = makeInputs_position(selectedPoint.p, 'point', true);
 	let pointTypeLabel = makeSingleLabel('point type');
 	let pointTypeWrapper = makeElement();
 	addAsChildren(pointTypeWrapper, [
@@ -219,14 +220,14 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	let useH1Checkbox = makeSingleCheckbox(selectedPoint.h1, 'use', 'currentPathPoint');
 	let useH1Label = makeElement({className: 'pre-checkbox'});
 	addAsChildren(useH1Label, [useH1Checkbox, makeElement({tag: 'h4', content: 'Use handle 1'})]);
-	let h1Position = makeInputs_position(selectedPoint.h1, 'h1:&ensp;', true);
+	let h1Position = makeInputs_position(selectedPoint.h1, 'h1', true);
 	// Handle 1 type
 
 	// -- Handle 2 -- //
 	let useH2Checkbox = makeSingleCheckbox(selectedPoint.h2, 'use', 'currentPathPoint');
 	let useH2Label = makeElement({className: 'pre-checkbox'});
 	addAsChildren(useH2Label, [useH2Checkbox, makeElement({tag: 'h4', content: 'Use handle 2'})]);
-	let h2Position = makeInputs_position(selectedPoint.h2, 'h2:&ensp;', true);
+	let h2Position = makeInputs_position(selectedPoint.h2, 'h2', true);
 	// Handle 2 type
 
 	// Put it all together
@@ -246,7 +247,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	addAsChildren(pathPointCard, makeElement({tag: 'div', className: 'rowPad'}));
 	addAsChildren(pathPointCard, makeActionsArea_PathPoint());
 
-	log(`makeCard_pathPointAttributes`, 'end');
+	// log(`makeCard_pathPointAttributes`, 'end');
 	return pathPointCard;
 }
 
@@ -262,8 +263,10 @@ function makeInputs_position(workItem, labelPrefix = '', lockable = false) {
 	let y = workItem.y;
 	// log(`x: ${round(x, 3)}`);
 	// log(`y: ${round(y, 3)}`);
-	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
+	let thisTopic = `current${workItem.objType}`;
+	if(workItem.type) thisTopic += `.${workItem.type}`;
 
+	if(labelPrefix) labelPrefix += ':&ensp;';
 	// Label + inputs
 	let label = makeElement({tag: 'label', innerHTML: `${labelPrefix}x${dimSplit()}y`});
 	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
@@ -282,7 +285,7 @@ function makeInputs_position(workItem, labelPrefix = '', lockable = false) {
 function makeInputs_size(workItem){
 	// TODO transform origin
 	// log(`makeInputs_size`, 'start');
-	let thisTopic = workItem.objType === 'Path'? 'currentPath' : 'currentGlyph';
+	let thisTopic = `current${workItem.objType}`;
 
 	// Label + Inputs
 	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
@@ -318,13 +321,14 @@ function makeInputs_size(workItem){
 }
 
 function makeSingleInput(workItem, property, thisTopic, tagName) {
-	log(`makeSingleInput`, 'start');
-	log(`workItem.objType: ${workItem.objType}`);
-	log(`property: ${property}`);
-	log(`thisTopic: ${thisTopic}`);
-	log(`tagName: ${tagName}`);
+	// log(`makeSingleInput`, 'start');
+	// log(`workItem.objType: ${workItem.objType}`);
+	// log(`workItem.type: ${workItem.type}`);
+	// log(`property: ${property}`);
+	// log(`thisTopic: ${thisTopic}`);
+	// log(`tagName: ${tagName}`);
 
-	let newInput = makeElement({tag: tagName});
+	let newInput = makeElement({tag: tagName, className: `singleInput-${property}`});
 	let value = tagName === 'input'? workItem[property] : round(workItem[property], 3);
 	newInput.setAttribute('value', value);
 
@@ -340,7 +344,10 @@ function makeSingleInput(workItem, property, thisTopic, tagName) {
 		callback: (changedItem) => {
 			// log(`SINGLE INPUT CALLBACK`, 'start');
 			// log(`attributesPanel.${thisTopic}.${property}`);
-			// log(changedItem);
+
+			log(changedItem);
+			// log(`property: ${property}`);
+
 			// log(`changedItem[property]: ${changedItem[property]}`);
 
 			if(changedItem[property]) {
@@ -352,7 +359,7 @@ function makeSingleInput(workItem, property, thisTopic, tagName) {
 		}
 	});
 
-	log(`makeSingleInput`, 'end');
+	// log(`makeSingleInput`, 'end');
 	return newInput;
 }
 

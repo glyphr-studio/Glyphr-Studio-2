@@ -236,6 +236,8 @@ export function log(message, type) {
 		} else if (typeof message === 'object') {
 			if (dev.debugTableObjects) console.table(message);
 			else console.log(message);
+		} else {
+			console.log(message);
 		}
 	}
  }
