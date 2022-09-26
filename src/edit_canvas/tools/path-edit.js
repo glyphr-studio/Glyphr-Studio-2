@@ -29,10 +29,10 @@ export class Tool_PathEdit {
 				targetSize,
 				ehd.multi
 			);
+			log(`controlPoint CLICKED`);
 			log(this.controlPoint);
 			let clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
 
-			log(this.controlPoint);
 			if (this.controlPoint) {
 				log('detected CONTROL POINT');
 				this.dragging = true;
@@ -81,7 +81,7 @@ export class Tool_PathEdit {
 			let ehd = eventHandlerData;
 			let editor = getCurrentProjectEditor();
 			let view = editor.view;
-			let sp = editor.multiSelect.points;
+			let selectedPoints = editor.multiSelect.points;
 
 			setCursor('pen');
 
@@ -89,7 +89,7 @@ export class Tool_PathEdit {
 				ehd.toolHandoff = false;
 				this.controlPoint = {
 					type: 'h2',
-					point: spsingleton,
+					point: selectedPoints.singleton,
 				};
 
 				this.controlPoint.point.h2.use = true;
@@ -106,23 +106,19 @@ export class Tool_PathEdit {
 			if (this.dragging) {
 				// log('Dragging');
 				// Moving points if mousedown
-				let dz = view.dz;
-				let dx = (ehd.mouseX - ehd.lastX) / dz;
-				let dy = (ehd.lastY - ehd.mouseY) / dz;
+				let dx = (ehd.mouseX - ehd.lastX) / view.dz;
+				let dy = (ehd.lastY - ehd.mouseY) / view.dz;
 				let cpt = this.controlPoint.type;
 
 				if (this.controlPoint.type === 'p') setCursor('penSquare');
 				else setCursor('penCircle');
 
-				if (sp.members.length === 1) {
-					// log('this.controlPoint.point ' + this.controlPoint.point);
-					// log('this.controlPoint.type ' + cpt);
-					let cpx = this.controlPoint.point[cpt];
-					if (cpx && cpx.xLock) dx = 0;
-					if (cpx && cpx.yLock) dy = 0;
+				if (selectedPoints.members.length === 1) {
+					if (this.controlPoint && this.controlPoint.xLock) dx = 0;
+					if (this.controlPoint && this.controlPoint.yLock) dy = 0;
 				}
 
-				sp.members.forEach(function (point, i) {
+				selectedPoints.members.forEach(function (point, i) {
 					// log('UpdatePPP ' + cpt + '\t' + dx + '\t' + dy);
 					if (ev.ctrlKey || ev.metaKey) return;
 					point.updatePathPointPosition(cpt, dx, dy);
@@ -131,11 +127,12 @@ export class Tool_PathEdit {
 				ehd.lastX = ehd.mouseX;
 				ehd.lastY = ehd.mouseY;
 				ehd.undoQueueHasChanged = true;
+				editor.publish(`currentControlPoint.${cpt}`, this.controlPoint);
 				// selectPathsThatHaveSelectedPoints();
-				redraw({ calledBy: 'Event Handler Tool_PathEdit mousemove' });
+				// redraw({ calledBy: 'Event Handler Tool_PathEdit mousemove' });
 			}
 
-			checkForMouseOverHotspot(ehd.mouseX, ehd.mouseY);
+			// checkForMouseOverHotspot(ehd.mouseX, ehd.mouseY);
 
 			let targetSize = getCurrentProject().projectSettings.pointSize / view.dz;
 			let cp = editor.multiSelect.paths.isOverControlPoint(
@@ -165,9 +162,10 @@ export class Tool_PathEdit {
 			if (ehd.undoQueueHasChanged) {
 				// editor.multiSelect.paths.recalculateMaxes();
 				// updateCurrentGlyphWidth();
-				historyPut('Path Edit tool');
-				ehd.undoQueueHasChanged = false;
-				redraw({ calledBy: 'Event Handler Tool_PathEdit mouseup' });
+				// TODO history
+				// historyPut('Path Edit tool');
+				// ehd.undoQueueHasChanged = false;
+				// redraw({ calledBy: 'Event Handler Tool_PathEdit mouseup' });
 			}
 			log('Tool_PathEdit.mouseup', 'end');
 		};

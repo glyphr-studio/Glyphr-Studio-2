@@ -68,6 +68,34 @@ export class EditCanvas extends HTMLElement {
 			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
 		});
 		editor.subscribe({
+			topic: 'currentPathPoint',
+			subscriberID: 'editCanvas.pathPoint',
+			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
+		});
+		editor.subscribe({
+			topic: 'currentPathPoint',
+			subscriberID: 'editCanvas.ControlPoint',
+			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
+		});
+		editor.subscribe({
+			topic: 'currentPathPoint.p',
+			subscriberID: 'editCanvas.ControlPoint.p',
+			callback: () => {
+				log('CALLBACK editCanvas.controlPoint.p');
+				this.redraw({calledBy: 'EditCanvas currentPath subscriber'});
+			}
+		});
+		editor.subscribe({
+			topic: 'currentPathPoint.h1',
+			subscriberID: 'editCanvas.ControlPoint.h1',
+			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
+		});
+		editor.subscribe({
+			topic: 'currentPathPoint.h2',
+			subscriberID: 'editCanvas.ControlPoint.h2',
+			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
+		});
+		editor.subscribe({
 			topic: 'whichToolIsSelected',
 			subscriberID: 'editCanvas.tool',
 			callback: () => this.redraw({calledBy: 'EditCanvas selectedTool subscriber'})

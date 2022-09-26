@@ -165,20 +165,42 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Set the X position
+	 * If this is not a handle, move the point and the handles
 	 * @param {number} position
 	 */
 	set x(position) {
-		this.coord.x = position;
-		this.use = true;
+		// log(`ControlPoint SET x`, 'start');
+		// log(`this.type: ${this.type}`);
+		// log(`position: ${position}`);
+
+		if(this.type === 'p') {
+			// log(`this is a P control point`);
+
+			let dx = position - this.x;
+			// log(`dx: ${dx}`);
+
+			this.parent.updatePathPointPosition('p', dx, 0);
+		} else {
+			// log(`this is a H control point`);
+			this.coord.x = position;
+			this.use = true;
+		}
+		// log(`ControlPoint SET x`, 'end');
 	}
 
 	/**
 	 * Set the Y position
+	 * If this is not a handle, move the point and the handles
 	 * @param {number} position
 	 */
 	set y(position) {
-		this.coord.y = position;
-		this.use = true;
+		if(this.type === 'p') {
+			let dy = position - this.y;
+			this.parent.updatePathPointPosition('p', 0, dy);
+		} else {
+			this.coord.y = position;
+			this.use = true;
+		}
 	}
 
 	/**

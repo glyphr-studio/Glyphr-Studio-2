@@ -107,17 +107,15 @@ export class ProjectEditor {
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
-		// log(`ProjectEditor.publish`, 'start');
-		// log(`topic: ${topic}`);
-		// log(data);
-		// log(this.subscribers[topic]);
+		log(`ProjectEditor.publish`, 'start');
+		log(`topic: ${topic}`);
+		log(data);
+		log(this.subscribers[topic]);
 
+		let subscribers = this.subscribers;
 		if (this.subscribers[topic]) {
 			// Iterate through all the callbacks
-			Object.keys(this.subscribers[topic]).forEach((subscriberID) => {
-				// log(`Calling callback for ${subscriberID}`);
-				this.subscribers[topic][subscriberID](data);
-			});
+			callCallbacksByTopic(topic, data);
 
 			// Handle some things centrally
 			if(topic === 'whichToolIsSelected') {}
@@ -132,25 +130,49 @@ export class ProjectEditor {
 			if(topic === 'whichPathPointIsSelected') {}
 			if(topic === 'currentGlyph') {
 				let singlePath = this.multiSelect.paths.singleton;
+				let singlePoint = this.multiSelect.points.singleton;
 				if(singlePath) {
 					// It's possible to make updates to a Glyph while a single path is selected
-					Object.keys(this.subscribers.currentPath).forEach((subscriberID) => {
-						this.subscribers.currentPath[subscriberID](singlePath);
-					});
+					callCallbacksByTopic('currentPath', singlePath);
+				}
+				if(singlePoint) {
+					// It's possible to make updates to a Glyph while a single path point is selected
+					callCallbacksByTopic('currentPathPoint', this.selectedItem);
 				}
 			}
 			if(topic === 'currentPath') {
 				// if a path changes, then so must its' Glyph also
-				Object.keys(this.subscribers.currentGlyph).forEach((subscriberID) => {
-					this.subscribers.currentGlyph[subscriberID](this.selectedItem);
-				});
+					callCallbacksByTopic('currentGlyph', data.parent);
 			}
-			if(topic === 'currentPathPoint') {}
+			if(topic === 'currentPathPoint') {
+				// if a PathPoint changes, then so must its' Path and Glyph also
+				callCallbacksByTopic('currentPath', data.parent);
+				callCallbacksByTopic('currentGlyph', data.parent.parent);
+			}
+			if(topic.includes('currentControlPoint')) {
+				// if a PathPoint changes, then so must its' Path and Glyph also
+				callCallbacksByTopic('currentPathPoint', data.parent);
+				callCallbacksByTopic('currentPath', data.parent.parent);
+				callCallbacksByTopic('currentGlyph', data.parent.parent.parent);
+
+				if(topic === 'currentControlPoint.p') {
+					callCallbacksByTopic('currentControlPoint.h1', data.parent.h1);
+					callCallbacksByTopic('currentControlPoint.h2', data.parent.h2);
+				}
+			}
 
 		} else {
 			// console.warn(`Nobody subscribed to topic ${topic}`);
 		}
-		// log(`ProjectEditor.publish`, 'end');
+
+		function callCallbacksByTopic(topic, data) {
+			log(`== calling callbacks for ${topic}`);
+			Object.keys(subscribers[topic]).forEach((subscriberID) => {
+				subscribers[topic][subscriberID](data);
+			});
+		}
+
+		log(`ProjectEditor.publish`, 'end');
 	}
 
 	/**
