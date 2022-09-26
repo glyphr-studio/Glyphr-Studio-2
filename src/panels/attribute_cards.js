@@ -141,8 +141,9 @@ export function makeCard_pathAttributes(path) {
 		topic: 'currentPath',
 		subscriberID: `attributesPanel.currentPath.winding`,
 		callback: (changedItem) => {
-			if(changedItem.length === 1) {
-				windingButton.innerHTML = makeWindingButtonText(changedItem[0].winding);
+			if(isFinite(changedItem.winding)) {
+				let newWinding = makeWindingButtonText(changedItem.winding);
+				windingButton.innerHTML = newWinding;
 			}
 		}
 	});
