@@ -16,16 +16,16 @@ import { refreshPanel } from "./panels.js";
 **/
 
 export function makePanel_GlyphAttributes() {
-	log('makePanel_GlyphAttributes', 'start');
+	// log('makePanel_GlyphAttributes', 'start');
 	let editor = getCurrentProjectEditor();
 	let content = [];
 	// log(editor);
 
 	// Path Points
 	let selPoints = editor.multiSelect.points;
-	log(selPoints);
+	// log(selPoints);
 	if(selPoints.length === 1) {
-		log(`pushing point card`);
+		// log(`pushing point card`);
 		content.push(makeCard_pathPointAttributes(selPoints.singleton));
 	}
 
@@ -33,20 +33,20 @@ export function makePanel_GlyphAttributes() {
 	let selPaths = editor.multiSelect.paths;
 	if (selPaths.length === 1) {
 		// One path selected
-		log('One path selected');
-		log(selPaths.singleton);
+		// log('One path selected');
+		// log(selPaths.singleton);
 		if (selPaths.singleton.objType === 'ComponentInstance') {
 			// component selected
-			log("...Component selected");
+			// log("...Component selected");
 			content.push(makeCard_componentInstanceAttributes(selPaths.singleton));
 		} else {
 			// regular path selected
-			log("...Regular path selected");
+			// log("...Regular path selected");
 			content.push(makeCard_pathAttributes(selPaths.singleton));
 		}
 	} else if (selPaths.length > 1) {
 		// Many paths selected
-		log('More than one path selected');
+		// log('More than one path selected');
 		let virtualGlyph = selPaths.getGlyph();
 		content.push(makeCard_multiSelectPathAttributes(virtualGlyph));
 	}
@@ -72,6 +72,6 @@ export function makePanel_GlyphAttributes() {
 	});
 
 	// log(content);
-	log('makePanel_GlyphAttributes', 'end');
+	// log('makePanel_GlyphAttributes', 'end');
 	return content;
 }

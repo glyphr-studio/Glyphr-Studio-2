@@ -15,56 +15,54 @@ export class Tool_PathEdit {
 		this.controlPoint = false;
 
 		this.mousedown = function(ev) {
-			log('Tool_PathEdit.mousedown', 'start');
+			// log('Tool_PathEdit.mousedown', 'start');
 			let ehd = eventHandlerData;
 			let editor = getCurrentProjectEditor();
 			let view = editor.view;
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
-			let targetSize = getCurrentProject().projectSettings.pointSize / view.dz;
 			this.controlPoint = isOverControlPoint(
-				editor.selectedItem,
+				editor.multiSelect.paths.glyph,
 				cXsX(ehd.mouseX, view),
-				cYsY(ehd.mouseY, view),
-				targetSize,
-				ehd.multi
+				cYsY(ehd.mouseY, view)
 			);
-			log(`controlPoint CLICKED`);
-			log(this.controlPoint);
+			// log(`controlPoint CLICKED`);
+			// log(this.controlPoint);
 			let clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
 
 			if (this.controlPoint) {
-				log('detected CONTROL POINT');
+				// log('detected CONTROL POINT');
 				this.dragging = true;
 
 				if (this.controlPoint.type === 'p') {
-					log('detected P');
+					// log('detected P');
 
 					if (ehd.multi) {
-						log('Multi Select Mode');
+						// log('Multi Select Mode');
 						editor.multiSelect.points.toggle(this.controlPoint.parent);
 
 					} else if (!editor.multiSelect.points.isSelected(this.controlPoint.parent)){
 					// } else {
-						log('Single Select Mode');
+						// log('Single Select Mode');
 						editor.multiSelect.points.select(this.controlPoint.parent);
 						setCursor('penSquare');
 					}
 
 				} else {
-					log('detected HANDLE');
-					editor.multiSelect.points.handleSingleton = this.controlPoint.point;
+					// log('detected HANDLE');
+					editor.multiSelect.points.singleHandle = this.controlPoint.type;
+					// log(`set ms.singleHandle: ${editor.multiSelect.points.singleHandle}`);
 					setCursor('penCircle');
 				}
 
 				// selectPathsThatHaveSelectedPoints();
 			} else if (clickedPath) {
-				log('detected PATH');
+				// log('detected PATH');
 				clickEmptySpace();
 				editor.multiSelect.paths.select(clickedPath);
 
 			} else {
-				log('detected NOTHING');
+				// log('detected NOTHING');
 				// editor.multiSelect.paths.recalculateMaxes();
 				clickEmptySpace();
 				findAndCallHotspot(ehd.mouseX, ehd.mouseY);
@@ -72,7 +70,7 @@ export class Tool_PathEdit {
 
 			if (editor.multiSelect.paths.members.length) editor.nav.panel = 'Attributes';
 			// editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_PathEdit mousedown' });
-			log('Tool_PathEdit.mousedown', 'end');
+			// log('Tool_PathEdit.mousedown', 'end');
 		};
 
 
@@ -92,10 +90,10 @@ export class Tool_PathEdit {
 					point: selectedPoints.singleton,
 				};
 
-				this.controlPoint.point.h2.use = true;
-				this.controlPoint.point.h2.x = cXsX(ehd.mouseX, view);
-				this.controlPoint.point.h2.y = cYsY(ehd.mouseY, view);
-				editor.multiSelect.points.handleSingleton = this.controlPoint.point;
+				this.controlPoint.parent.h2.use = true;
+				this.controlPoint.parent.h2.x = cXsX(ehd.mouseX, view);
+				this.controlPoint.parent.h2.y = cYsY(ehd.mouseY, view);
+				editor.multiSelect.points.singleHandle = this.controlPoint.type;
 
 				this.dragging = true;
 
@@ -118,12 +116,14 @@ export class Tool_PathEdit {
 					if (this.controlPoint && this.controlPoint.yLock) dy = 0;
 				}
 
-				selectedPoints.members.forEach(function (point, i) {
-					// log('UpdatePPP ' + cpt + '\t' + dx + '\t' + dy);
-					if (ev.ctrlKey || ev.metaKey) return;
-					point.updatePathPointPosition(cpt, dx, dy);
-				});
-				// editor.multiSelect.paths.recalculateMaxes();
+				// log(`dragging with ms.singleHandle: ${editor.multiSelect.points.singleHandle}`);
+				selectedPoints.updatePathPointPosition(dx, dy);
+				// selectedPoints.members.forEach(function (point, i) {
+				// 	// log('UpdatePPP ' + cpt + '\t' + dx + '\t' + dy);
+				// 	if (ev.ctrlKey || ev.metaKey) return;
+				// 	point.updatePathPointPosition(cpt, dx, dy);
+				// });
+
 				ehd.lastX = ehd.mouseX;
 				ehd.lastY = ehd.mouseY;
 				ehd.undoQueueHasChanged = true;
@@ -133,15 +133,12 @@ export class Tool_PathEdit {
 			}
 
 			// checkForMouseOverHotspot(ehd.mouseX, ehd.mouseY);
-
-			let targetSize = getCurrentProject().projectSettings.pointSize / view.dz;
 			let cp = editor.multiSelect.paths.isOverControlPoint(
 				cXsX(ehd.mouseX, view),
-				cYsY(ehd.mouseY, view),
-				targetSize
+				cYsY(ehd.mouseY, view)
 			);
 			if (cp.type === 'p') setCursor('penSquare');
-			else if (editor.multiSelect.points.isSelected(cp.point)) setCursor('penCircle');
+			else if (editor.multiSelect.points.isSelected(cp.parent)) setCursor('penCircle');
 			if (!cp && ehd.multi) setCursor('penPlus');
 
 			// log('Tool_PathEdit.mousemove', 'end');
@@ -149,13 +146,13 @@ export class Tool_PathEdit {
 
 
 		this.mouseup = function() {
-			log('Tool_PathEdit.mouseup', 'start');
+			// log('Tool_PathEdit.mouseup', 'start');
 			let ehd = eventHandlerData;
 			this.dragging = false;
 			this.controlPoint = false;
 			ehd.toolHandoff = false;
 			let editor = getCurrentProjectEditor();
-			editor.multiSelect.points.handleSingleton = false;
+			editor.multiSelect.points.singleHandle = false;
 			ehd.lastX = -100;
 			ehd.lastY = -100;
 
@@ -167,7 +164,7 @@ export class Tool_PathEdit {
 				// ehd.undoQueueHasChanged = false;
 				// redraw({ calledBy: 'Event Handler Tool_PathEdit mouseup' });
 			}
-			log('Tool_PathEdit.mouseup', 'end');
+			// log('Tool_PathEdit.mouseup', 'end');
 		};
 	}
 }

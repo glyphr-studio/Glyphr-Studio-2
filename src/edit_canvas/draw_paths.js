@@ -235,10 +235,12 @@ function isOverPathControlPoint(path, x, y, noHandles){
 
 	for(let k=pp.length-1; k>=0; k--){
 		re = pp[k].isOverControlPoint(x, y, noHandles);
-		// log(`returning`);
-		// log(re);
-		// log(`isOverPathControlPoint`, 'end');
-		if(re) return re;
+		if(re) {
+			// log(`returning`);
+			// log(re);
+			// log(`isOverPathControlPoint`, 'end');
+			return re;
+		}
 	}
 
 	// log(`returning false`);
