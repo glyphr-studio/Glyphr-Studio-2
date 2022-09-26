@@ -52,56 +52,28 @@ export class EditCanvas extends HTMLElement {
 		let editor = getCurrentProjectEditor();
 		initEventHandlers(this.canvas);
 		editor.editCanvas = this;
-		editor.subscribe({
-			topic: 'view',
-			subscriberID: 'editCanvas.view',
-			callback: () => this.redraw({calledBy: 'EditCanvas view subscriber'})
-		});
-		editor.subscribe({
-			topic: 'currentGlyph',
-			subscriberID: 'editCanvas.glyph',
-			callback: () => this.redraw({calledBy: 'EditCanvas currentGlyph subscriber'})
-		});
-		editor.subscribe({
-			topic: 'currentPath',
-			subscriberID: 'editCanvas.path',
-			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
-		});
-		editor.subscribe({
-			topic: 'currentPathPoint',
-			subscriberID: 'editCanvas.pathPoint',
-			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
-		});
-		editor.subscribe({
-			topic: 'currentPathPoint',
-			subscriberID: 'editCanvas.ControlPoint',
-			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
-		});
-		editor.subscribe({
-			topic: 'currentPathPoint.p',
-			subscriberID: 'editCanvas.ControlPoint.p',
-			callback: () => {
-				log('CALLBACK editCanvas.controlPoint.p');
-				this.redraw({calledBy: 'EditCanvas currentPath subscriber'});
-			}
-		});
-		editor.subscribe({
-			topic: 'currentPathPoint.h1',
-			subscriberID: 'editCanvas.ControlPoint.h1',
-			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
-		});
-		editor.subscribe({
-			topic: 'currentPathPoint.h2',
-			subscriberID: 'editCanvas.ControlPoint.h2',
-			callback: () => this.redraw({calledBy: 'EditCanvas currentPath subscriber'})
-		});
-		editor.subscribe({
-			topic: 'whichToolIsSelected',
-			subscriberID: 'editCanvas.tool',
-			callback: () => this.redraw({calledBy: 'EditCanvas selectedTool subscriber'})
+
+		// Set up Subscriptions
+		let canvasSubscriptions = [
+			'whichToolIsSelected',
+			'view',
+			'currentGlyph',
+			'currentPath',
+			'currentPathPoint',
+			'currentControlPoint',
+			'currentControlPoint.p',
+			'currentControlPoint.h1',
+			'currentControlPoint.h2',
+		];
+
+		canvasSubscriptions.forEach((topic) => {
+			editor.subscribe({
+				topic: topic,
+				subscriberID: `editCanvas-${topic}`,
+				callback: () => this.redraw({calledBy: `editCanvas-${topic}`})
+			});
 		});
 
-		// this.redraw();
 		// log(`EditCanvas.constructor`, 'end');
 	}
 
@@ -132,7 +104,7 @@ export class EditCanvas extends HTMLElement {
 	// --------------------------------------------------------------
 	redraw(oa = {}) {
 		// log('EditCanvas.redraw', 'start');
-		if(oa?.calledBy) log(`==REDRAW BY ${oa.calledBy}==`);
+		// if(oa?.calledBy) log(`==REDRAW BY ${oa.calledBy}==`);
 		let editor = getCurrentProjectEditor();
 		let view = editor.view;
 		let ps = getCurrentProject().projectSettings;

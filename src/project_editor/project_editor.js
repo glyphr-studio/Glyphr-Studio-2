@@ -107,10 +107,10 @@ export class ProjectEditor {
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
-		log(`ProjectEditor.publish`, 'start');
-		log(`topic: ${topic}`);
-		log(data);
-		log(this.subscribers[topic]);
+		// log(`ProjectEditor.publish`, 'start');
+		// log(`topic: ${topic}`);
+		// log(data);
+		// log(this.subscribers[topic]);
 
 		let subscribers = this.subscribers;
 		if (this.subscribers[topic]) {
@@ -119,15 +119,25 @@ export class ProjectEditor {
 
 			// Handle some things centrally
 			if(topic === 'whichToolIsSelected') {}
+
+			
 			if(topic === 'view') {}
+
+
 			if(topic === 'whichGlyphIsSelected') {
 				this.multiSelect.paths.clear();
 				this.multiSelect.points.clear();
 			}
+
+
 			if(topic === 'whichPathIsSelected') {
 				this.multiSelect.points.clear();
 			}
+
+
 			if(topic === 'whichPathPointIsSelected') {}
+
+
 			if(topic === 'currentGlyph') {
 				let singlePath = this.multiSelect.paths.singleton;
 				let singlePoint = this.multiSelect.points.singleton;
@@ -140,15 +150,21 @@ export class ProjectEditor {
 					callCallbacksByTopic('currentPathPoint', this.selectedItem);
 				}
 			}
+
+
 			if(topic === 'currentPath') {
 				// if a path changes, then so must its' Glyph also
 					callCallbacksByTopic('currentGlyph', data.parent);
 			}
+
+
 			if(topic === 'currentPathPoint') {
 				// if a PathPoint changes, then so must its' Path and Glyph also
 				callCallbacksByTopic('currentPath', data.parent);
 				callCallbacksByTopic('currentGlyph', data.parent.parent);
 			}
+
+
 			if(topic.includes('currentControlPoint')) {
 				// if a PathPoint changes, then so must its' Path and Glyph also
 				callCallbacksByTopic('currentPathPoint', data.parent);
@@ -166,13 +182,13 @@ export class ProjectEditor {
 		}
 
 		function callCallbacksByTopic(topic, data) {
-			log(`== calling callbacks for ${topic}`);
+			// log(`== calling callbacks for ${topic}`);
 			Object.keys(subscribers[topic]).forEach((subscriberID) => {
 				subscribers[topic][subscriberID](data);
 			});
 		}
 
-		log(`ProjectEditor.publish`, 'end');
+		// log(`ProjectEditor.publish`, 'end');
 	}
 
 	/**

@@ -191,10 +191,6 @@ export function makeCard_multiSelectPathAttributes(glyph) {
 export function makeCard_pathPointAttributes(selectedPoint) {
 	// log(`makeCard_pathPointAttributes`, 'start');
 
-	let editor = getCurrentProjectEditor();
-	let selectedPath = editor.selectedPath;
-	// let selectedPathPoint = editor.selectedPathPoint;
-
 	// POINT
 	let pathPointCard = makeElement({
 		tag: 'div',
@@ -210,6 +206,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	let pointPosition = makeInputs_position(selectedPoint.p, 'point', true);
 	let pointTypeLabel = makeSingleLabel('point type');
 	let pointTypeWrapper = makeElement();
+	
 	addAsChildren(pointTypeWrapper, [
 		makePointTypeButton('symmetric', selectedPoint.type === 'symmetric'),
 		makePointTypeButton('flat', selectedPoint.type === 'flat'),
@@ -217,18 +214,18 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	]);
 
 	// -- Handle 1 -- //
-	let useH1Checkbox = makeSingleCheckbox(selectedPoint.h1, 'use', 'currentPathPoint');
+	// disable checkbox if not corner
+	let useH1Checkbox = makeSingleCheckbox(selectedPoint.h1, 'use', 'currentControlPoint.h1');
 	let useH1Label = makeElement({className: 'pre-checkbox'});
 	addAsChildren(useH1Label, [useH1Checkbox, makeElement({tag: 'h4', content: 'Use handle 1'})]);
 	let h1Position = makeInputs_position(selectedPoint.h1, 'h1', true);
-	// Handle 1 type
 
 	// -- Handle 2 -- //
-	let useH2Checkbox = makeSingleCheckbox(selectedPoint.h2, 'use', 'currentPathPoint');
+	// disable checkbox if not corner
+	let useH2Checkbox = makeSingleCheckbox(selectedPoint.h2, 'use', 'currentControlPoint.h2');
 	let useH2Label = makeElement({className: 'pre-checkbox'});
 	addAsChildren(useH2Label, [useH2Checkbox, makeElement({tag: 'h4', content: 'Use handle 2'})]);
 	let h2Position = makeInputs_position(selectedPoint.h2, 'h2', true);
-	// Handle 2 type
 
 	// Put it all together
 	addAsChildren(pathPointCard, pointPosition);
@@ -344,10 +341,8 @@ function makeSingleInput(workItem, property, thisTopic, tagName) {
 		callback: (changedItem) => {
 			// log(`SINGLE INPUT CALLBACK`, 'start');
 			// log(`attributesPanel.${thisTopic}.${property}`);
-
-			log(changedItem);
+			// log(changedItem);
 			// log(`property: ${property}`);
-
 			// log(`changedItem[property]: ${changedItem[property]}`);
 
 			if(changedItem[property]) {
@@ -375,7 +370,7 @@ function makeSingleCheckbox(workItem, property, thisTopic) {
 
 	newCheckbox.addEventListener('change', (event) => {
 		let newValue = event.target.checked;
-		workItem.ratioLock = !!newValue;
+		workItem[property] = !!newValue;
 		getCurrentProjectEditor().publish(thisTopic, workItem);
 	});
 
@@ -388,6 +383,8 @@ function makeSingleCheckbox(workItem, property, thisTopic) {
 			} else {
 				newCheckbox.removeAttribute('checked');
 			}
+
+			if(property === 'use') refreshPanel();
 		}
 	});
 
@@ -494,181 +491,3 @@ export function makePointTypeButton(type, selected) {
 
 	return button;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*
-	content += '<tr><td> point type </td><td>';
-	content += makePointTypeButton('symmetric', tp.type === 'symmetric');
-	content += makePointTypeButton('flat', tp.type === 'flat');
-	content += makePointTypeButton('corner', tp.type === 'corner');
-	content += '';
-
-	content +=
-	  '<tr>' +
-	  '<td>x' +
-	  dimSplit() +
-	  'y</td>' +
-	  '<td>' +
-	  '<div class="lockwrapper">' +
-	  // lockUI(UI.multiSelect.points.singleton.p.xLock',p.p.xLock, xlock'+
-	  '<input type="number" id="pointx" step="' +
-	  spinn +
-	  '" ' +
-	  (tp.p.xLock
-		? 'disabled="disabled"'
-		: "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('p', (this.value), 'null'); historyPut('Point X Position : '+this.value); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
-		value="${round(tp.p.x, 3) +
-	  '" >' +
-	  '</div>' +
-	  dimSplit() +
-	  '<div class="lockwrapper">' +
-	  // lockUI(UI.multiSelect.points.singleton.p.yLock',p.p.yLock, ylock'+
-	  '<input type="number" id="pointy" step="' +
-	  spinn +
-	  '" ' +
-	  (tp.p.yLock
-		? 'disabled="disabled"'
-		: "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('p', 'null', (this.value)); historyPut('Point Y Position : '+this.value); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
-		value="${round(tp.p.y, 3) +
-	  '" >' +
-	  '</div>' +
-	  '</td>' +
-	  '</tr>';
-
-	let issymmetric = tp.type === 'symmetric';
-
-	// HANDLE 1
-	// content +=
-	//   '<tr><td colspan=2 class="detailtitle"><h3>' +
-	//   (issymmetric
-	//     ? '<input type="checkbox" checked disabled>'
-	//     : checkUI(
-	//         '_UI.multiSelect.points.singleton.h1.use',
-	//         tp.h1.use,
-	//         true
-	//       )) +
-	//   ' handle 1 <span class="unit">(before the point)</span></h3>';
-
-	if (tp.h1.use) {
-	  content +=
-		'<tr>' +
-		'<td>x' +
-		dimSplit() +
-		'y</td>' +
-		'<td>' +
-		'<div class="lockwrapper">' +
-		// lockUI('_UI.multiSelect.points.singleton.h1.xLock', tp.h1.xLock, 'H1xlock') +
-		'<input type="number" id="handle1x" step="' +
-		spinn +
-		'" ' +
-		(tp.h1.xLock
-		  ? 'disabled="disabled"'
-		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('h1', (this.value), 'null'); historyPut('h1 X Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
-		  value="${  round(tp.h1.x, 3) +
-		'" >' +
-		'</div>' +
-		dimSplit() +
-		'<div class="lockwrapper">' +
-		// lockUI('_UI.multiSelect.points.singleton.h1.yLock', tp.h1.yLock, 'H1ylock') +
-		'<input type="number" id="handle1y" step="' +
-		spinn +
-		'" ' +
-		(tp.h1.yLock
-		  ? 'disabled="disabled"'
-		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('h1', 'null', (this.value)); historyPut('h1 Y Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
-		  value="${  round(tp.h1.y, 3) +
-		'" >' +
-		'</div>' +
-		'</td>' +
-		'</tr>';
-
-	  content +=
-		'<tr>' +
-		'<td> angle' +
-		dimSplit() +
-		'length </span></td>' +
-		'<td><input type="number" class="lockpad" disabled="disabled" value="' +
-		(round(tp.h1.niceAngle, 1) || 0) +
-		'">' +
-		dimSplit() +
-		'<input type="number" class="lockpad" disabled="disabled" value="' +
-		(round(tp.h1.length, 3) || 0) +
-		'"></td>' +
-		'</tr>';
-	}
-
-	// HANDLE 2
-	// content +=
-	//   '<tr><td colspan=2 class="detailtitle"><h3>' +
-	//   (issymmetric
-	//     ? '<input type="checkbox" checked disabled>'
-	//     : checkUI(
-	//         '_UI.multiSelect.points.singleton.h2.use',
-	//         tp.h2.use,
-	//         true
-	//       )) +
-	//   ' handle 2 <span class="unit">(after the point)</span></h3>';
-
-	if (tp.h2.use) {
-	  content +=
-		'<tr>' +
-		'<td>x' +
-		dimSplit() +
-		'y</td>' +
-		'<td>' +
-		'<div class="lockwrapper">' +
-		// lockUI('_UI.multiSelect.points.singleton.h2.xLock', tp.h2.xLock, 'H2xlock') +
-		'<input type="number" id="handle2x" step="' +
-		spinn +
-		'" ' +
-		(tp.h2.xLock
-		  ? 'disabled="disabled"'
-		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('h2', (this.value), 'null'); historyPut('h2 X Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
-		  value="${  round(tp.h2.x, 3) +
-		'" >' +
-		'</div>' +
-		dimSplit() +
-		'<div class="lockwrapper">' +
-		// lockUI('_UI.multiSelect.points.singleton.h2.yLock', tp.h2.yLock, 'H2ylock') +
-		'<input type="number" id="handle2y" step="' +
-		spinn +
-		'" ' +
-		(tp.h2.yLock
-		  ? 'disabled="disabled"'
-		  : "onchange="_UI.focusElement=this.id; _UI.multiSelect.points.singleton.setPathPointPosition('h2', 'null', (this.value)); historyPut('h2 Y Position : '+round(this.value)); redraw({calledBy:'makeAttributesGroup_pathPoint'});\"
-		  value="${  round(tp.h2.y, 3) +
-		'" >' +
-		'</div>' +
-		'</td>' +
-		'</tr>';
-
-	  content +=
-		'<tr>' +
-		'<td> angle' +
-		dimSplit() +
-		'length </span></td>' +
-		'<td><input type="number" class="lockpad" disabled="disabled" value="' +
-		(round(tp.h2.niceAngle, 1) || 0) +
-		'">' +
-		dimSplit() +
-		'<input type="number" class="lockpad" disabled="disabled" value="' +
-		(round(tp.h2.length, 3) || 0) +
-		'"></td>' +
-		'</tr>';
-	}
-  */

@@ -25,8 +25,10 @@ export class PathPoint extends GlyphElement {
 		this.h1 = h1;
 		this.h2 = h2;
 		this.type = type;
-
 		this.objType = 'PathPoint';
+
+		if(pointsAreEqual(this.p.coord, this.h1.coord)) this.h1.use = false;
+		if(pointsAreEqual(this.p.coord, this.h2.coord)) this.h2.use = false;
 	}
 
 	// --------------------------------------------------------------
@@ -175,9 +177,12 @@ export class PathPoint extends GlyphElement {
 	 * @param {string} type - symmetric / flat / corner
 	 */
 	set type(type) {
+		// log(`PathPoint SET type`, 'start');
+		// log(`type: ${type}`);
 		if (type === 'symmetric') this.makeSymmetric();
 		else if (type === 'flat') this.makeFlat();
 		else this._type = 'corner';
+		// log(`PathPoint SET type`, 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -536,10 +541,10 @@ export class PathPoint extends GlyphElement {
 	 * @param {Boolean} noHandles can we skip checking the handles?
 	 * @returns {ControlPoint}
 	 */
-	isOverControlPoint(x, y, noHandles) {
+	isOverControlPoint(x, y, noHandles = false) {
 		if(!noHandles) {
-			if(hitCheck({x:x, y:y}, this.h1.coord)) return this.h1;
-			if(hitCheck({x:x, y:y}, this.h2.coord)) return this.h2;
+			if(this.h1.use && hitCheck({x:x, y:y}, this.h1.coord)) return this.h1;
+			if(this.h2.use && hitCheck({x:x, y:y}, this.h2.coord)) return this.h2;
 		}
 		if(hitCheck({x:x, y:y}, this.p.coord)) return this.p;
 

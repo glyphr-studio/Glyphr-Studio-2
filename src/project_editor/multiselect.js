@@ -21,41 +21,41 @@ import { Path } from '../project_data/path.js';
 class MultiSelect {
 	constructor() {
 		this.members = [];
-		this.handleSingleton = false;
+		this.singleHandle = false;
 	}
 
 	isSelectable(obj) {
-		log(`MultiSelect.isSelectable`, 'start');
-		log(`obj.objType: ${obj.objType}`);
-		log(obj);
+		// log(`MultiSelect.isSelectable`, 'start');
+		// log(`obj.objType: ${obj.objType}`);
+		// log(obj);
 
 		let selectable = [
 			'PathPoint', 'Path', 'ComponentInstance'
 		];
 
-		log(`returning ${selectable.includes(obj?.objType)}`);
-		log(`MultiSelect.isSelectable`, 'end');
+		// log(`returning ${selectable.includes(obj?.objType)}`);
+		// log(`MultiSelect.isSelectable`, 'end');
 		return selectable.includes(obj?.objType);
 	}
 
 	select(obj) {
-		log('MultiSelect.select', 'start');
+		// log('MultiSelect.select', 'start');
 		if (this.isSelectable(obj)) {
-			log('selecting object');
+			// log('selecting object');
 			this.members = [obj];
 			this.publishChanges();
 		} else {
-			log('this.isSelectable = false, clearing');
+			// log('this.isSelectable = false, clearing');
 			this.clear();
 		}
 
-		log('MultiSelect.select', 'end');
+		// log('MultiSelect.select', 'end');
 	}
 
 	clear() {
 		this.members = [];
 		if (this.glyph) this.glyph.ratioLock = false;
-		this.handleSingleton = false;
+		this.singleHandle = false;
 		this.publishChanges();
 	}
 
@@ -237,14 +237,19 @@ export class MultiSelectPoints extends MultiSelect {
 		}
 	}
 
-	updatePathPointPosition(controlPoint, dx, dy) {
-		if (controlPoint === 'p') {
+	updatePathPointPosition(dx, dy) {
+		// log(`MultiSelect.points.updatePathPointPosition`, 'start');
+		// log(`dx, dy: ${dx}, ${dy}`);
+		// log(`this.singleHandle: ${this.singleHandle}`);
+
+		if (this.singleHandle) {
+			this.singleton.updatePathPointPosition(this.singleHandle, dx, dy);
+		} else {
 			for (let m = 0; m < this.members.length; m++) {
-				this.members[m].updatePathPointPosition(controlPoint, dx, dy);
+				this.members[m].updatePathPointPosition('p', dx, dy);
 			}
-		} else if (this.handleSingleton) {
-			this.handleSingleton.updatePathPointPosition(controlPoint, dx, dy);
 		}
+		// log(`MultiSelect.points.updatePathPointPosition`, 'end');
 	}
 
 	selectPathsThatHaveSelectedPoints() {
