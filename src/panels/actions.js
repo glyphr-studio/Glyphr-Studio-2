@@ -1,40 +1,8 @@
-/**
-		Panel > Actions
-		Usually this is attached to the bottom of the
-		Glyph Attributes panel screen mode,
-		the Attributes panel gets its own column.
-**/
-
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { makeActionButton, makeActionButtonIcon } from './action-buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { saveFile } from '../project_editor/saving.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new-basic-path.js';
-
-export function makeCard_projectActions() {
-	const editor = getCurrentProjectEditor();
-
-	let panelSection = makeElement({
-		tag: 'div',
-		className: 'panel__card full-width',
-		innerHTML: '<h3>Project actions</h3>'
-	});
-
-	if (!editor.selectedItem) {
-	  return panelSection.appendChild(
-			makeElement({
-				tag: 'h2',
-				innerHTML: `ERROR: No selected work item`
-			})
-		);
-	}
-
-	addAsChildren(panelSection, makeActionsArea_Universal());
-
-	return panelSection;
-}
-
-
 
 // --------------------------------------------------------------
 // Define action button data

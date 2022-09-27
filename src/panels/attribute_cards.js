@@ -9,7 +9,7 @@ import { accentColors, uiColors } from "../common/colors.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
 import { round } from "../common/functions.js";
 import { refreshPanel } from "./panels.js";
-import { makeActionsArea_Glyph, makeActionsArea_Path, makeActionsArea_PathPoint, makeActionsArea_Universal } from "./actions_cards.js";
+import { makeActionsArea_Glyph, makeActionsArea_Path, makeActionsArea_PathPoint, makeActionsArea_Universal } from "./actions.js";
 import { ProjectEditor } from "../project_editor/project_editor.js";
 
 

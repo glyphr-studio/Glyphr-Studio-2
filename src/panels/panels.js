@@ -1,6 +1,5 @@
 import { getCurrentProjectEditor } from "../app/main.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
-import { makeCard_projectActions } from "./actions_cards.js";
 import { makePanel_GlyphAttributes } from "./attributes_panel_glyph.js";
 import { makePanel_Layers } from "./layers.js";
 import { makePanel_History } from "./history.js";
