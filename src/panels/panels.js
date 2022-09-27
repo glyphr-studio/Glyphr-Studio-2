@@ -55,9 +55,13 @@ export function makePanel() {
 export function refreshPanel() {
 	// log(`refreshPanel`, 'start');
 	let panelArea = document.querySelector('.left-area__panel');
-	panelArea.innerHTML = '';
+	// panelArea.style.opacity = '0';
 	let newContent = makePanel();
 	// log(newContent);
+	panelArea.innerHTML = '';
 	panelArea.appendChild(newContent);
+	// window.setTimeout(() => {
+	// 	panelArea.style.opacity = '1';
+	// }, 50);
 	// log(`refreshPanel`, 'end');
 }

@@ -67,6 +67,7 @@ export function makeCard_glyphAttributes(glyph) {
 	doubleBearingInput.appendChild(rsbInput);
 
 	// Put it all together
+	// TODO bulk-edit paths bug, handles move differently than points
 	addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
 	addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
 	addAsChildren(glyphCard, makeElement({tag: 'div', className: 'rowPad'}));
@@ -206,7 +207,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	let pointPosition = makeInputs_position(selectedPoint.p, 'point', true);
 	let pointTypeLabel = makeSingleLabel('point type');
 	let pointTypeWrapper = makeElement();
-	
+
 	addAsChildren(pointTypeWrapper, [
 		makePointTypeButton('symmetric', selectedPoint.type === 'symmetric'),
 		makePointTypeButton('flat', selectedPoint.type === 'flat'),
@@ -218,29 +219,31 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	let useH1Checkbox = makeSingleCheckbox(selectedPoint.h1, 'use', 'currentControlPoint.h1');
 	let useH1Label = makeElement({className: 'pre-checkbox'});
 	addAsChildren(useH1Label, [useH1Checkbox, makeElement({tag: 'h4', content: 'Use handle 1'})]);
+
+	let h1Group = makeElement({
+		id: 'h1InputGroup',
+		attributes: { style: `display: ${selectedPoint.h1.use? 'grid': 'none'}` }
+	});
 	let h1Position = makeInputs_position(selectedPoint.h1, 'h1', true);
+	addAsChildren(h1Group, h1Position);
 
 	// -- Handle 2 -- //
 	// disable checkbox if not corner
 	let useH2Checkbox = makeSingleCheckbox(selectedPoint.h2, 'use', 'currentControlPoint.h2');
 	let useH2Label = makeElement({className: 'pre-checkbox'});
 	addAsChildren(useH2Label, [useH2Checkbox, makeElement({tag: 'h4', content: 'Use handle 2'})]);
+
+	let h2Group = makeElement({
+		id: 'h2InputGroup',
+		attributes: { style: `display: ${selectedPoint.h2.use? 'grid': 'none'}` }
+	});
 	let h2Position = makeInputs_position(selectedPoint.h2, 'h2', true);
+	addAsChildren(h2Group, h2Position);
 
 	// Put it all together
 	addAsChildren(pathPointCard, pointPosition);
 	addAsChildren(pathPointCard, [pointTypeLabel, pointTypeWrapper]);
-
-	addAsChildren(pathPointCard, useH1Label);
-	if(selectedPoint.h1.use) {
-		addAsChildren(pathPointCard, h1Position);
-	}
-
-	addAsChildren(pathPointCard, useH2Label);
-	if(selectedPoint.h2.use) {
-		addAsChildren(pathPointCard, h2Position);
-	}
-
+	addAsChildren(pathPointCard, [useH1Label, h1Group, useH2Label, h2Group]);
 	addAsChildren(pathPointCard, makeElement({tag: 'div', className: 'rowPad'}));
 	addAsChildren(pathPointCard, makeActionsArea_PathPoint());
 
@@ -248,6 +251,10 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	return pathPointCard;
 }
 
+function toggleHandleInputs(handle, show) {
+	let group = document.getElementById(`${handle}InputGroup`);
+	group.style.display = show? 'grid' : 'none';
+}
 
 // --------------------------------------------------------------
 // Common attributes stuff
@@ -372,6 +379,7 @@ function makeSingleCheckbox(workItem, property, thisTopic) {
 		let newValue = event.target.checked;
 		workItem[property] = !!newValue;
 		getCurrentProjectEditor().publish(thisTopic, workItem);
+		if(property === 'use') toggleHandleInputs(workItem.type, !!newValue);
 	});
 
 	getCurrentProjectEditor().subscribe({
@@ -383,8 +391,6 @@ function makeSingleCheckbox(workItem, property, thisTopic) {
 			} else {
 				newCheckbox.removeAttribute('checked');
 			}
-
-			if(property === 'use') refreshPanel();
 		}
 	});
 
@@ -398,11 +404,6 @@ function makeSingleLabel(text, info = false) {
 	});
 
 	return newLabel;
-}
-
-function setSize(workItem, newW, newH, ratioLock){
-	if(workItem.objType === 'Path') workItem.setPathSize(newW, newH, ratioLock);
-	else workItem.setGlyphSize(newW, newH, ratioLock);
 }
 
 function dimSplit() {

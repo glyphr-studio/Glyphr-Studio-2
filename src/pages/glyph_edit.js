@@ -4,7 +4,7 @@ import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator
 import { showNavDropdown } from '../project_editor/navigator.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
 import { hexToChars } from '../common/unicode.js';
-import { makePanel } from '../panels/panels.js';
+import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 
 /**
@@ -80,7 +80,8 @@ export class PageGlyphEdit {
 			callback: (newSelection) => {
 				let panelContent = content.querySelector('.left-area__panel');
 				panelContent.innerHTML = '';
-				panelContent.appendChild(makePanel());
+				// panelContent.appendChild(makePanel());
+				refreshPanel();
 			}
 		});
 

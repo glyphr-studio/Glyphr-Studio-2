@@ -148,27 +148,6 @@ export function pointsAreEqual(c1, c2, threshold = 1) {
 }
 
 /**
- * Takes a test point and checks to see if it's within a target area.
- * @param {XYPoint} test a coordinate / click to test
- * @param {XYPoint} target the center of the target area
- * @param {number} radius how big the target area is
- */
-export function hitCheck(test, target, radius = 4) {
-	let testX = parseFloat(test.x);
-	let testY = parseFloat(test.y);
-	let targetX = parseFloat(target.x);
-	let targetY = parseFloat(target.y);
-
-	// return false if any of these are NaN or Infinity
-	if(!Number.isFinite(testX + testY + targetX + targetY)) return false;
-
-	return (
-		((testX > (targetX-radius)) && (testX < (targetX+radius))) &&
-		((testY > (targetY-radius)) && (testY < (targetY+radius)))
-	);
-}
-
-/**
  * Rounds a number to include a .5 so it draws nicely on canvas
  * true = +0.5, false = -0.5
  * @param {number} num - number to crisp

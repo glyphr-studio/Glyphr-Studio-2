@@ -1,6 +1,6 @@
 import { GlyphElement } from './glyph_element.js';
 import { ControlPoint } from './control_point.js';
-import { round, pointsAreEqual, isVal, hitCheck } from '../common/functions.js';
+import { round, pointsAreEqual, isVal } from '../common/functions.js';
 
 /**
  * Glyph Element > Path Point
@@ -532,23 +532,4 @@ export class PathPoint extends GlyphElement {
 
 		return this;
 	}
-
-	/**
-	 * Checks to see if there is a control point of some type here,
-	 * and if so, returns it.
-	 * @param {number} x coordinate to check
-	 * @param {number} y coordinate to check
-	 * @param {Boolean} noHandles can we skip checking the handles?
-	 * @returns {ControlPoint}
-	 */
-	isOverControlPoint(x, y, noHandles = false) {
-		if(!noHandles) {
-			if(this.h1.use && hitCheck({x:x, y:y}, this.h1.coord)) return this.h1;
-			if(this.h2.use && hitCheck({x:x, y:y}, this.h2.coord)) return this.h2;
-		}
-		if(hitCheck({x:x, y:y}, this.p.coord)) return this.p;
-
-		return false;
-	}
-
 }
