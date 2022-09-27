@@ -120,7 +120,7 @@ export class ProjectEditor {
 			// Handle some things centrally
 			if(topic === 'whichToolIsSelected') {}
 
-			
+
 			if(topic === 'view') {}
 
 
@@ -172,9 +172,12 @@ export class ProjectEditor {
 				callCallbacksByTopic('currentGlyph', data.parent.parent.parent);
 
 				if(topic === 'currentControlPoint.p') {
+					callCallbacksByTopic('currentControlPoint.p', data.parent.p);
 					callCallbacksByTopic('currentControlPoint.h1', data.parent.h1);
 					callCallbacksByTopic('currentControlPoint.h2', data.parent.h2);
 				}
+				if(topic === 'currentControlPoint.h1') callCallbacksByTopic('currentControlPoint.h1', data.parent.h1);
+				if(topic === 'currentControlPoint.h2') callCallbacksByTopic('currentControlPoint.h2', data.parent.h2);
 			}
 
 		} else {

@@ -328,6 +328,17 @@ export function getActionData(name){
 				editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
 			}
 		},
+		{
+			iconName: 'round',
+			title: `Round point position values\nIf a x or y value for the point or a handle has decimals, it will be rounded to the nearest whole number.`,
+			disabled: selectedPoints.length !== 1,
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				let point = editor.multiSelect.points.singleton;
+				point.roundAll(0);
+				editor.publish('currentControlPoint.p', point.p);
+			}
+		},
 	];
 
 
