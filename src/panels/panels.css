@@ -149,10 +149,31 @@
 	display: inline-block;
 	width: 28px;
 	height: 28px;
-	background-color: var(--gray-l95);
+	background-color: var(--enabled-restingLight-background);
 	color: var(--gray-l60);
 	padding: 3px 5px 5px 3px;
 	margin-right: 5px;
+	box-shadow: none;
+	border-style: solid;
+	border-color: var(--enabled-restingLight-border);
+	border-radius: 4px;
+}
+
+.pointTypeButton[selected] {
+	border-color: var(--blue-l65);
+}
+
+.pointTypeButton[selected] svg g {
+	fill: var(--blue-l65);
+}
+
+.pointTypeButton[selected]:hover {
+	cursor: default;
+	border-color: var(--blue-l65);
+}
+
+.pointTypeButton:hover {
+	border-color: var(--enabled-focus-border);
 }
 
 :root {
