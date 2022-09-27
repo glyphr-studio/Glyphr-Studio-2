@@ -12,7 +12,7 @@ import { saveFile } from '../project_editor/saving.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new-basic-path.js';
 
 export function makeCard_projectActions() {
-	let projectEditor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 
 	let panelSection = makeElement({
 		tag: 'div',
@@ -20,7 +20,7 @@ export function makeCard_projectActions() {
 		innerHTML: '<h3>Project actions</h3>'
 	});
 
-	if (!projectEditor.selectedItem) {
+	if (!editor.selectedItem) {
 	  return panelSection.appendChild(
 			makeElement({
 				tag: 'h2',
@@ -51,8 +51,9 @@ export function makeCard_projectActions() {
  */
 
 export function getActionData(name){
-	let projectEditor = getCurrentProjectEditor();
-	let selectedPaths = projectEditor.multiSelect.paths.members;
+	const editor = getCurrentProjectEditor();
+	let selectedPaths = editor.multiSelect.paths.members;
+	let selectedPoints = editor.multiSelect.points.members;
 	let data = {};
 
 	// TODO hook these up
@@ -76,7 +77,7 @@ export function getActionData(name){
 		},
 	];
 
-	if (projectEditor.nav.page === 'components') {
+	if (editor.nav.page === 'components') {
 		data.allActions.push(
 			{
 				iconName: 'linkToGlyph',
@@ -92,7 +93,7 @@ export function getActionData(name){
 			iconOptions: false,
 			title: `Add Path\nCreates a new default path and adds it to this glyph.`,
 			onClick: () => {
-				let editor = getCurrentProjectEditor();
+				const editor = getCurrentProjectEditor();
 				let newPath = editor.selectedItem.addOnePath(rectPathFromMaxes());
 				editor.multiSelect.paths.select(newPath);
 				editor.publish('whichPathIsSelected', newPath);
@@ -123,7 +124,7 @@ export function getActionData(name){
 			iconName: 'flipHorizontal',
 			title: `Flip Vertical\nReflects the glyph vertically.`,
 			onClick: () => {
-				let editor = getCurrentProjectEditor();
+				const editor = getCurrentProjectEditor();
 				editor.selectedItem.flipEW();
 				editor.publish('currentGlyph', editor.selectedItem);
 			}
@@ -132,7 +133,7 @@ export function getActionData(name){
 			iconName: 'flipVertical',
 			title: `Flip Horizontal\nReflects the glyph horizontally.`,
 			onClick: () => {
-				let editor = getCurrentProjectEditor();
+				const editor = getCurrentProjectEditor();
 				editor.selectedItem.flipNS();
 				editor.publish('currentGlyph', editor.selectedItem);
 			}
@@ -141,7 +142,7 @@ export function getActionData(name){
 			iconName: 'round',
 			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
 			onClick: () => {
-				let editor = getCurrentProjectEditor();
+				const editor = getCurrentProjectEditor();
 				editor.selectedItem.roundAll();
 				editor.publish('currentGlyph', editor.selectedItem);
 			}
@@ -155,7 +156,7 @@ export function getActionData(name){
 			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
 			iconName: 'exportGlyphSVG',
 			onClick: () => {
-				let editor = getCurrentProjectEditor();
+				const editor = getCurrentProjectEditor();
 				let content = editor.selectedItem.makeSVG(1000, 0);
 				let name = editor.selectedItem.name;
 				saveFile(name+'.svg', content);
@@ -201,7 +202,7 @@ export function getActionData(name){
 			iconName: 'flipHorizontal',
 			title: 'Flip Horizontal\nReflects the currently selected path or paths horizontally.',
 			onClick: () => {
-				let editor = getCurrentProjectEditor();
+				const editor = getCurrentProjectEditor();
 				let path = editor.multiSelect.paths.singleton;
 				path.flipEW();
 				editor.publish('currentPath', path);
@@ -211,7 +212,7 @@ export function getActionData(name){
 			iconName: 'flipVertical',
 			title: 'Flip Vertical\nReflects the currently selected path or paths vertically',
 			onClick: () => {
-				let editor = getCurrentProjectEditor();
+				const editor = getCurrentProjectEditor();
 				let path = editor.multiSelect.paths.singleton;
 				path.flipNS();
 				editor.publish('currentPath', path);
@@ -221,7 +222,7 @@ export function getActionData(name){
 			iconName: 'round',
 			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
 			onClick: () => {
-				let editor = getCurrentProjectEditor();
+				const editor = getCurrentProjectEditor();
 				let path = editor.multiSelect.paths.singleton;
 				path.roundAll();
 				editor.publish('currentPath', path);
@@ -298,15 +299,34 @@ export function getActionData(name){
 		{
 			iconName: 'insertPathPoint',
 			title: `Insert Path Point\nAdds a new Path Point half way between the currently-selected point, and the next one.`,
+			disabled: selectedPoints.length !== 1,
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				editor.multiSelect.paths.singleton.insertPathPoint(selectedPoints[0].pointNumber);
+				// TODO select the next point
+				editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
+			}
 		},
 		{
 			iconName: 'deletePathPoint',
 			title: `Delete Path Point\nRemoves the currently selected point or points from the path.`,
-			disabled: !!selectedPaths.length
+			disabled: selectedPaths.length === 0,
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				// TODO select the next point
+				editor.multiSelect.points.deletePathPoints();
+				editor.publish('whichPathPointIsSelected', editor.multiSelect.paths);
+			}
 		},
 		{
 			iconName: 'resetPathPoint',
 			title: `Reset Handles\nMoves the handles of the currently selected point or points to default locations.`,
+			disabled: selectedPoints.length !== 1,
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				editor.multiSelect.points.resetHandles();
+				editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
+			}
 		},
 	];
 

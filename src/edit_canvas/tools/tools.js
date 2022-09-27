@@ -10,7 +10,7 @@ import { drawPath } from '../draw_paths.js';
 // --------------------------------------------------------------
 export function makeEditToolsButtons() {
 	// log('makeEditToolsButtons', 'start');
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 
 	if (!editor.nav.isOnEditCanvasPage) {
 		// log('returning, !isOnEditCanvasPage');
@@ -147,7 +147,7 @@ export function makeViewToolsButtons() {
 	};
 
 	let viewButtonElements = {};
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 
 	Object.keys(viewButtonTitles).forEach((buttonName) => {
 		// log(`buttonName: ${buttonName}`);
@@ -231,7 +231,7 @@ export function makeViewToolsButtons() {
 
 export function clickTool(tool) {
 	// log('clickTool', 'start');
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let zoomTools = ['zoom1to1', 'zoomEm', 'zoomIn', 'zoomOut'];
 
 	if(zoomTools.includes(tool)) {
@@ -248,7 +248,7 @@ export function clickTool(tool) {
 }
 
 export function switchToolTo(newTool) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	editor.selectedTool = newTool;
 	editor.publish('whichToolIsSelected', newTool);
 }
@@ -319,7 +319,7 @@ export function addPathToCurrentItem(newPath){
 	// log(`name: ${ewPath.name}`);
 	// log(`objType: ${ewPath.objType}`);
 
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	if(newPath){
 		if(newPath.objType === 'ComponentInstance'){
 			// log(`is a Component instance`);
@@ -397,7 +397,7 @@ export function getPathAtLocation(x,y){
 	// log('checking x:' + x + ' y:' + y);
 
 	let path;
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let sws = editor.selectedItem?.paths;
 	// log(sws);
 	for(let j=(sws.length-1); j>=0; j--){
@@ -417,7 +417,7 @@ export function getPathAtLocation(x,y){
 function isThisPathHere(path, px, py) {
 	// log(`isThisPathHere`, 'start');
 
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let ctx = editor.ghostCTX;
 
 	ctx.clearRect(0,0,editor.canvasSize, editor.canvasSize);

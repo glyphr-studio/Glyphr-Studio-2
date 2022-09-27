@@ -17,7 +17,7 @@ export function glyphChanged(glyph){
 		// log(`Glyph.changed - Start`);
 		glyph.recalculateMaxes();
 		if (glyph.cache) glyph.cache = {};
-		let project = getCurrentProject();
+		const project = getCurrentProject();
 
 		// log(`calling changed on usedIn`);
 		for (let g = 0; g < glyph.usedIn.length; g++) {
@@ -119,7 +119,7 @@ export function deleteLinks(glyph) {
 	// log('passed this as id: ' + glyph.id);
 	// Delete upstream Component Instances
 	let upstreamGlyph;
-	let project = getCurrentProject();
+	const project = getCurrentProject();
 	for (let c = 0; c < glyph.usedIn.length; c++) {
 		upstreamGlyph = project.getGlyph(glyph.usedIn[c]);
 		// log('removing from ' + upstreamGlyph.name);

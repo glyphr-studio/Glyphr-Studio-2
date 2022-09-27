@@ -8,7 +8,7 @@ import { getCurrentProjectEditor } from "../app/main.js";
 import { makeElement } from "../common/dom.js";
 
 export function makePanel_Guides() {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 
 	let system = makeElement({className: 'panel__card', innerHTML: '<h4>System guides</h4>'});
 	let user = makeElement({className: 'panel__card', innerHTML: '<h4>User guides</h4>'});

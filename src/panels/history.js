@@ -8,7 +8,7 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 
 export function makePanel_History() {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let historyArea = makeElement({className: 'panel__card'});
 
 	// TODO history

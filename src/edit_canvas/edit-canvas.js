@@ -49,7 +49,7 @@ export class EditCanvas extends HTMLElement {
 		this.canvas.height = this.height;
 		this.canvas.width = this.width;
 
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		initEventHandlers(this.canvas);
 		editor.editCanvas = this;
 
@@ -105,7 +105,7 @@ export class EditCanvas extends HTMLElement {
 	redraw(oa = {}) {
 		// log('EditCanvas.redraw', 'start');
 		// if(oa?.calledBy) log(`==REDRAW BY ${oa.calledBy}==`);
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		let view = editor.view;
 		let ps = getCurrentProject().projectSettings;
 		let ctx = this.ctx;

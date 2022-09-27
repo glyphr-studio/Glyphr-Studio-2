@@ -13,7 +13,7 @@ import { refreshPanel } from './panels.js';
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
 	let rowsArea = makeElement({className: 'panel__card full-width layer-panel__rows-area'});
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let selected = editor.selectedItem;
 	let paths = selected.paths;
 
@@ -112,23 +112,24 @@ export function makePanel_Layers() {
 function selectPath(num) {
 	// log('selectPath', 'start');
 	// log('passed ' + num);
+	const editor = getCurrentProjectEditor();
 	let itemPaths = getSelectedItem.paths;
 	// log('itemPaths ' + itemPaths);
 
 	if (itemPaths && itemPaths[num]) {
-		if (projectEditor.eventHandlers.multi) projectEditor.multiSelect.paths.toggle(itemPaths[num]);
+		if (editor.eventHandlers.multi) editor.multiSelect.paths.toggle(itemPaths[num]);
 		else {
-			projectEditor.multiSelect.points.clear();
-			projectEditor.multiSelect.paths.select(itemPaths[num]);
+			editor.multiSelect.points.clear();
+			editor.multiSelect.paths.select(itemPaths[num]);
 		}
 	} else {
-		projectEditor.multiSelect.paths.clear();
+		editor.multiSelect.paths.clear();
 	}
 	// log('selectPath', 'end');
 }
 
 function makeActionArea_Layers() {
-	let projectEditor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 
 	let actionsCard = makeElement({
 		className: 'panel__card full-width',
@@ -141,8 +142,8 @@ function makeActionArea_Layers() {
 	});
 	addChildActions(actionsArea, getActionData('addPathActions'));
 
-	let selectedPaths = projectEditor.multiSelect.paths.members;
-	let totalPaths = projectEditor.selectedItem.paths.length;
+	let selectedPaths = editor.multiSelect.paths.members;
+	let totalPaths = editor.selectedItem.paths.length;
 	if(totalPaths > 1 && selectedPaths.length === 1) {
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}
@@ -156,7 +157,7 @@ function makeActionArea_Layers() {
 // --------------------------------------------------------------
 function movePathUp() {
 	let itemPaths = getSelectedItem.paths;
-	let si = itemPaths.indexOf(projectEditor.multiSelect.paths.singleton);
+	let si = itemPaths.indexOf(editor.multiSelect.paths.singleton);
 	if (si > -1 && si < itemPaths.length - 1) {
 		let tempPath = itemPaths[si + 1];
 		itemPaths[si + 1] = itemPaths[si];
@@ -167,7 +168,7 @@ function movePathUp() {
 
 function movePathDown() {
 	let itemPaths = getSelectedItem.paths;
-	let si = itemPaths.indexOf(projectEditor.multiSelect.paths.singleton);
+	let si = itemPaths.indexOf(editor.multiSelect.paths.singleton);
 	if (si > 0 && si < itemPaths.length) {
 		let tempPath = itemPaths[si - 1];
 		itemPaths[si - 1] = itemPaths[si];

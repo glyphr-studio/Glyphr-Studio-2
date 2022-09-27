@@ -7,7 +7,7 @@ function makePanel_KerningAttributes() {
 	// log('makePanel_KerningAttributes', 'start');
 
 	let content = '<div class="panel__card">';
-	content += projectEditor.nav.page;
+	content += editor.nav.page;
 	content += '<h2>Pairs</h2>';
 	content += '</div>';
 

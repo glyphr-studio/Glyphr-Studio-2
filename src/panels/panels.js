@@ -13,7 +13,7 @@ import { makePanel_Guides } from "./guides.js";
 export function makePanel() {
 	// log(`makePanel`, 'start');
 
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	// log(editor.nav);
 	let panel = editor.nav.panel;
 	// log(`panel: ${panel}`);

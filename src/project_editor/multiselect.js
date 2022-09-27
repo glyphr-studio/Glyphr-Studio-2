@@ -149,7 +149,7 @@ export class MultiSelectPoints extends MultiSelect {
 	}
 
 	publishChanges(topic = 'whichPathPointIsSelected') {
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		editor.publish(topic, this.members);
 		// this.selectPathsThatHaveSelectedPoints();
 	}
@@ -175,7 +175,7 @@ export class MultiSelectPoints extends MultiSelect {
 			}
 		}
 
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		const wi = editor.selectedItem;
 
 		this.clear();
@@ -215,7 +215,7 @@ export class MultiSelectPoints extends MultiSelect {
 		for (let m = 0; m < this.members.length; m++) {
 			path = this.members[m].parent;
 			pp = this.members[m].pointNumber;
-			newPoints.push(path.insertPathPoint(false, pp));
+			newPoints.push(path.insertPathPoint(pp));
 		}
 
 		this.clear();
@@ -329,7 +329,7 @@ export class MultiSelectPaths extends MultiSelect {
 	}
 
 	publishChanges(topic = 'whichPathIsSelected') {
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		editor.publish(topic, this.members);
 	}
 
@@ -353,7 +353,7 @@ export class MultiSelectPaths extends MultiSelect {
 
 	deletePaths() {
 		// log('deletePath', 'start');
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		const itemPaths = editor.selectedItem.paths;
 		let path;
 		let index;

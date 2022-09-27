@@ -11,7 +11,7 @@ import { clone } from '../common/functions.js';
 
 export class History {
 	constructor({queue = [], parentName = 'undefined'}) {
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		this.queue = queue;
 		this.parentName = parentName;
 		this.currstate = clone(editor.project[this.parentName], 'History');
@@ -41,7 +41,7 @@ export class History {
 	pull() {
 		// log('\n History.pull - START');
 		// log('\t queue.length ' + this.queue.length);
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		if (this.queue.length === 0)
 			return;
 

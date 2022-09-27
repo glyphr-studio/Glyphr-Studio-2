@@ -6,7 +6,7 @@
 const { getGlyphrStudioApp, getCurrentProjectEditor } = require("../app/main");
 
 function keyup(event) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let eh = _UI.eventHandlers;
 	// log('eh.lastTool = ' + eh.lastTool);
 
