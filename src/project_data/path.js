@@ -925,11 +925,6 @@ export class Path extends GlyphElement {
 				ht = pp.h1;
 				pp.h1 = pp.h2;
 				pp.h2 = ht;
-
-				if (pp.h1.use !== pp.h2.use) {
-					pp.h1.use = !pp.h1.use;
-					pp.h2.use = !pp.h2.use;
-				}
 			}
 
 			this.pathPoints.reverse();
@@ -954,9 +949,9 @@ export class Path extends GlyphElement {
 
 		for (let e = 0; e < this.pathPoints.length; e++) {
 			const pp = this.pathPoints[e];
-			pp.p.y += (mid - pp.p.y) * 2;
-			pp.h1.y += (mid - pp.h1.y) * 2;
-			pp.h2.y += (mid - pp.h2.y) * 2;
+			pp.p.coord.y += (mid - pp.p.coord.y) * 2;
+			pp.h1.coord.y += (mid - pp.h1.coord.y) * 2;
+			pp.h2.coord.y += (mid - pp.h2.coord.y) * 2;
 		}
 		this.y = startingY;
 		this.reverseWinding();
@@ -978,9 +973,9 @@ export class Path extends GlyphElement {
 
 		for (let e = 0; e < this.pathPoints.length; e++) {
 			const pp = this.pathPoints[e];
-			pp.p.x += (mid - pp.p.x) * 2;
-			pp.h1.x += (mid - pp.h1.x) * 2;
-			pp.h2.x += (mid - pp.h2.x) * 2;
+			pp.p.coord.x += (mid - pp.p.coord.x) * 2;
+			pp.h1.coord.x += (mid - pp.h1.coord.x) * 2;
+			pp.h2.coord.x += (mid - pp.h2.coord.x) * 2;
 		}
 		this.x = startingX;
 		this.reverseWinding();

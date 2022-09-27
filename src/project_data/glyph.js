@@ -630,14 +630,10 @@ export class Glyph extends GlyphElement {
 	 * @param {number} mid - y value about which to flip
 	 * @returns {Glyph} - reference to this glyph
 	 */
-	flipEW(mid) {
+	flipEW(mid = this.maxes.center.x) {
 		// log('Glyph.flipEW', 'start');
 		// log('' + this.name);
 		// log('passed mid = ' + mid);
-		const m = this.maxes;
-		mid = isVal(mid) ? mid : (m.xMax - m.xMin) / 2 + m.xMin;
-		// log('mid = ' + mid);
-		// log('maxes = ' + json(m, true));
 		for (let s = 0; s < this.paths.length; s++) {
 			this.paths[s].flipEW(mid);
 		}
