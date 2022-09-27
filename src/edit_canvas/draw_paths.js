@@ -1,6 +1,7 @@
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { sXcX, sYcY } from './edit-canvas.js';
-import { round } from '../common/functions.js';
+import { pointsAreEqual, round } from '../common/functions.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 
 
 // --------------------------------------------------------------
@@ -234,7 +235,7 @@ function isOverPathControlPoint(path, x, y, noHandles){
 	let re = false;
 
 	for(let k=pp.length-1; k>=0; k--){
-		re = pp[k].isOverControlPoint(x, y, noHandles);
+		re = isOverPathPointControlPoint(pp[k], x, y, noHandles);
 		if(re) {
 			// log(`returning`);
 			// log(re);
@@ -280,25 +281,26 @@ export function isOverFirstPoint(path, x, y) {
  * @param {boolean} noHandles - Eliminates checking for handles in multi-select situations
  * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
  */
-	function isOverPathPointControlPoint(x = 0, y = 0, noHandles = false) {
-		let targetSize = 3;
+	function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
+		//TODO browser zoom messes with visible handle size
+		const targetSize = getCurrentProject().projectSettings.pointSize;
 		const test = { x: x, y: y };
-		if (pointsAreEqual(this.p, test, targetSize)) {
+		if (pointsAreEqual(pathPoint.p, test, targetSize)) {
 			// log('PathPoint.isOverControlPoint - Returning P1');
-			return { point: this, type: 'p' };
+			return pathPoint.p;
 		}
 
-		if (this.h1.use && !noHandles) {
-			if (pointsAreEqual(this.h1, test, targetSize)) {
+		if (pathPoint.h1.use && !noHandles) {
+			if (pointsAreEqual(pathPoint.h1, test, targetSize)) {
 				// log('PathPoint.isOverControlPoint - Returning h1');
-				return { point: this, type: 'h1' };
+				return pathPoint.h1;
 			}
 		}
 
-		if (this.h2.use && !noHandles) {
-			if (pointsAreEqual(this.h2, test, targetSize)) {
+		if (pathPoint.h2.use && !noHandles) {
+			if (pointsAreEqual(pathPoint.h2, test, targetSize)) {
 				// log('PathPoint.isOverControlPoint - Returning h2');
-				return { point: this, type: 'h2' };
+				return pathPoint.h2;
 			}
 		}
 

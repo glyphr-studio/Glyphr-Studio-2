@@ -1,6 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
-import { drawPath } from '../edit_canvas/draw_paths.js';
+import { drawPath, isOverControlPoint } from '../edit_canvas/draw_paths.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 
@@ -450,7 +450,7 @@ export class MultiSelectPaths extends MultiSelect {
 		if (this.members.length === 0) return false;
 		let re = false;
 		for (let m = 0; m < this.members.length; m++) {
-			re = this.members[m].isOverControlPoint(x, y, noHandles);
+			re = isOverControlPoint(this.members[m], x, y, noHandles);
 			if (re) return re;
 		}
 

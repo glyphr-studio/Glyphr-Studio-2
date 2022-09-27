@@ -4,6 +4,13 @@
 	height: 100%;
 	overflow-y: auto;
 	overflow-x: hidden;
+	opacity: 1;
+	animation: fade 400ms linear;
+}
+
+@keyframes fade {
+	0%, 100% { opacity: 0 }
+	50% { opacity: 1 }
 }
 
 .panel__card {
@@ -15,7 +22,7 @@
 	row-gap: 5px;
 	column-gap: 11px;
 	margin-bottom: 5px;
-	margin-right: 5px;
+	margin-right: 0px;
 
 	border: 1px solid var(--blue-l85);
 	padding: 10px 10px 15px 10px;
@@ -32,12 +39,27 @@
 }
 
 .pre-checkbox input[type='checkbox'] {
-	margin: 20px 10px 0px 0px;
+	margin: 10px 10px 0px 0px;
 }
 
 .pre-checkbox h4 {
 	position: relative;
 	top: -3px;
+}
+
+#h1InputGroup,
+#h2InputGroup {
+	grid-column: 1 / -1;
+	display: grid;
+	width: 100%;
+	/* align with buttons at the bottom of cards */
+	grid-template-columns: clamp(110px, 150px, 190px) 1fr;
+	align-items: center;
+	justify-items: left;
+	row-gap: 5px;
+	column-gap: 11px;
+	margin-bottom: 5px;
+	margin-right: 5px;
 }
 
 .panel__card h1,
@@ -82,6 +104,7 @@
 	width: 20px;
 	height: 20px;
 	margin-bottom: 4px;
+	cursor: pointer;
 }
 
 .panel__card .doubleInput {
