@@ -56,6 +56,9 @@ export class GlyphrStudioApp {
 				log('Using sample project');
 				editor.project = importGlyphrProjectFromText(sampleProject);
 			}
+			editor.selectedTool = 'pathEdit';
+			editor.multiSelect.paths.select(editor.selectedGlyph.paths[0]);
+			editor.multiSelect.points.select(editor.selectedGlyph.paths[0].pathPoints[0]);
 
 			// Test Function
 			if (dev.testOnLoad) dev.testOnLoad();

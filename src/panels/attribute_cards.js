@@ -10,6 +10,7 @@ import { addAsChildren, makeElement } from "../common/dom.js";
 import { round } from "../common/functions.js";
 import { refreshPanel } from "./panels.js";
 import { makeActionsArea_Glyph, makeActionsArea_Path, makeActionsArea_PathPoint, makeActionsArea_Universal } from "./actions_cards.js";
+import { ProjectEditor } from "../project_editor/project_editor.js";
 
 
 // --------------------------------------------------------------
@@ -191,7 +192,7 @@ export function makeCard_multiSelectPathAttributes(glyph) {
 
 export function makeCard_pathPointAttributes(selectedPoint) {
 	// log(`makeCard_pathPointAttributes`, 'start');
-
+	let editor = getCurrentProjectEditor();
 	// POINT
 	let pathPointCard = makeElement({
 		tag: 'div',
@@ -209,10 +210,29 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	let pointTypeWrapper = makeElement();
 
 	addAsChildren(pointTypeWrapper, [
-		makePointTypeButton('symmetric', selectedPoint.type === 'symmetric'),
-		makePointTypeButton('flat', selectedPoint.type === 'flat'),
-		makePointTypeButton('corner', selectedPoint.type === 'corner'),
+		makePointTypeButton('symmetric', selectedPoint.type === 'symmetric', () => {
+			selectedPoint.type = 'symmetric';
+			editor.publish('currentPathPoint', selectedPoint);
+		}),
+		makePointTypeButton('flat', selectedPoint.type === 'flat', () => {
+			selectedPoint.type = 'flat';
+			editor.publish('currentPathPoint', selectedPoint);
+		}),
+		makePointTypeButton('corner', selectedPoint.type === 'corner', () => {
+			selectedPoint.type = 'corner';
+			editor.publish('currentPathPoint', selectedPoint);
+		}),
 	]);
+	editor.subscribe({
+		topic: 'currentPathPoint',
+		subscriberID: 'pointTypeButtons',
+		callback: (changedItem) => {
+			document.getElementById(`pointTypeButton-symmetric`).removeAttribute('selected');
+			document.getElementById(`pointTypeButton-flat`).removeAttribute('selected');
+			document.getElementById(`pointTypeButton-corner`).removeAttribute('selected');
+			document.getElementById(`pointTypeButton-${changedItem.type}`).setAttribute('selected', '');
+		}
+	});
 
 	// -- Handle 1 -- //
 	// disable checkbox if not corner
@@ -422,23 +442,23 @@ function dimSplitElement() {
 // Drawing stuff
 // --------------------------------------------------------------
 
-export function makePointTypeButton(type, selected) {
+export function makePointTypeButton(type, selected, clickHandler) {
 	let color = accentColors.gray.l40;
-	let bgColor = 'transparent';
-
-	if (selected) {
-		color = accentColors.blue.l65;
-		bgColor = uiColors.offWhite;
-	}
-
+	
 	let button = makeElement({
 		tag: 'button',
 		className: 'pointTypeButton',
+		id: `pointTypeButton-${type}`,
 		attributes: {
-			style: `background-color:${bgColor};`,
 			title: `point type: ${type}`,
 		}
 	});
+
+	button.addEventListener('click', clickHandler);
+
+	if (selected) {
+		button.setAttribute('selected', '');
+	}
 
 	let svg = `
 	<svg version="1.1"
