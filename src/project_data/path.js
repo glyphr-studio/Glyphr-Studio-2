@@ -1019,7 +1019,7 @@ export class Path extends GlyphElement {
 	 * @param {number} pointNumber - point number before the new split
 	 * @returns {PathPoint} - reference to the added path point
 	 */
-	insertPathPoint(t = 0.5, pointNumber = 0) {
+	insertPathPoint(pointNumber = 0, t = 0.5) {
 		const pp1i = pointNumber;
 		const pp1 = pp1i === false ? this.pathPoints[0] : this.pathPoints[pp1i];
 		// var pp2i = (pp1i+1)%this.pathPoints.length;

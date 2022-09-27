@@ -17,7 +17,7 @@ import { refreshPanel } from "./panels.js";
 
 export function makePanel_GlyphAttributes() {
 	// log('makePanel_GlyphAttributes', 'start');
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let content = [];
 	// log(editor);
 

@@ -44,9 +44,9 @@ export class PageOverview {
 		log(content);
 
 		let glyphsContent = makeChooserContent_Glyphs((glyphID) => {
-			let projectEditor = getCurrentProjectEditor();
-			projectEditor.selectedGlyphID = glyphID;
-			projectEditor.navigate('Glyph edit');
+			const editor = getCurrentProjectEditor();
+			editor.selectedGlyphID = glyphID;
+			editor.navigate('Glyph edit');
 		}, false);
 
 		content.querySelector('.overview__right-area').appendChild(glyphsContent);

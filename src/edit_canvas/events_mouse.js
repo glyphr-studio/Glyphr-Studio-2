@@ -47,7 +47,7 @@ export let eventHandlerData = {
 export function initEventHandlers(editCanvas) {
 	// log('initEventHandlers', 'start');
 
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 
 	editor.eventHandlers.tool_pan = new Tool_Pan();
 	editor.eventHandlers.tool_addRectOval = new Tool_NewBasicPath();
@@ -76,7 +76,7 @@ export function initEventHandlers(editCanvas) {
 		// log(`ev_canvas`, 'start');
 		// log(`Raw mouse event x/y = ${ev.layerX} / ${ev.layerY}`);
 
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		handleMouseOverCanvas();
 		let eh = eventHandlerData;
 
@@ -152,14 +152,14 @@ function handleMouseLeaveCanvas() {
 
 // Helper Functions
 export function clickEmptySpace() {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	editor.multiSelect.points.clear();
 	editor.multiSelect.paths.clear();
 }
 
 export function eventHandler_PathResize() {
 	log('eventHandler_PathResize', 'start');
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let paths = editor.multiSelect.paths;
 	log(paths);
 	let resizeCorner = eventHandlerData.handle;
@@ -251,7 +251,7 @@ export function eventHandler_PathResize() {
 }
 
 export function checkForMouseOverHotspot(x, y) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	if (isHotspotHere(x, y)) {
 		let hs = findAndUnderlineHotspot(x, y);
 		setCursor('pointer');
@@ -282,7 +282,7 @@ function updateDragSelectArea(dx, dy, dw, dh) {
 }
 
 export function canResize(handle) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let selectedPaths = editor.multiSelect.paths;
 	let rl = selectedPaths.ratioLock;
 	let xl = selectedPaths.xLock;
@@ -323,7 +323,7 @@ export function canResize(handle) {
 
 function mousewheel(event) {
 	let delta = event.deltaY * -1;
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
 	let canZoom =
@@ -396,7 +396,7 @@ export function hotspotNavigateToGlyph(gid) {
 	// log('hotspotNavigateToGlyph', 'start');
 	// log('passed ' + gid);
 
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	const v = editor.view;
 	const currchar = getSelectedItemChar();
 	const newchar = hexToChars(gid);

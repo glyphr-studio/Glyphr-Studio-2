@@ -104,7 +104,7 @@ export class CanvasDisplay extends HTMLElement {
 	 */
 	redraw() {
 		log('CanvasDisplay.redraw', 'start');
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		let glyph = editor.selectedGlyph;
 		let settings = getCurrentProject().projectSettings;
 		let gutterSize = 20;

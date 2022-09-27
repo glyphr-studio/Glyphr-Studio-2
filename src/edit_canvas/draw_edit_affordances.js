@@ -31,7 +31,7 @@ let multiSelectThickness = 3;
 // --------------------------------------------------------------
 
 export function computeAndDrawBoundingBox(ctx) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	if(editor.multiSelect.paths.length < 1) return;
 	let maxes = editor.multiSelect.paths.maxes;
 	let thickness = editor.multiSelect.paths.length > 1? multiSelectThickness : 1;
@@ -39,7 +39,7 @@ export function computeAndDrawBoundingBox(ctx) {
 }
 
 export function computeAndDrawRotationAffordance(ctx) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let ss;
 	if (editor.multiSelect.paths.length === 1) {
 		ss = editor.multiSelect.paths.members[0];
@@ -52,7 +52,7 @@ export function computeAndDrawRotationAffordance(ctx) {
 }
 
 export function computeAndDrawBoundingBoxHandles(ctx) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	if(editor.multiSelect.paths.length < 1) return;
 	let maxes = editor.multiSelect.paths.maxes;
 	let thickness = editor.multiSelect.paths.length > 1? multiSelectThickness : 1;
@@ -66,7 +66,7 @@ export function computeAndDrawBoundingBoxHandles(ctx) {
 // --------------------------------------------------------------
 export function drawSelectedPathOutline(ctx, view) {
 	// log(`drawSelectedPathOutline`, 'start');
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let selected = editor.multiSelect.paths.members.length;
 	// log(`selected: ${selected}`);
 
@@ -176,7 +176,7 @@ function drawBoundingBoxHandles(ctx, maxes, thickness) {
 }
 
 function drawRotationAffordance(ctx, accent, thickness) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	accent = accent || accentBlue;
 	thickness = thickness || 1;
 	let center = clone(editor.eventHandlerData.rotationCenter, 'drawRotationAffordance');
@@ -284,7 +284,7 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 		return false;
 	}
 
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let re = false;
 	let ps = pointSize;
 	let bb = getBoundingBoxHandleDimensions(maxes);
@@ -425,7 +425,7 @@ isOverComponentInstanceBoundingBoxHandle(componentInstance, px, py) {
 // --------------------------------------------------------------
 
 export function computeAndDrawPathPointHandles(ctx) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
 	let paths = editor.multiSelect.paths.glyph.paths;
 
@@ -439,7 +439,7 @@ export function computeAndDrawPathPointHandles(ctx) {
 }
 
 export function computeAndDrawPathPoints(ctx) {
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
 	let paths = editor.multiSelect.paths.glyph.paths;
 

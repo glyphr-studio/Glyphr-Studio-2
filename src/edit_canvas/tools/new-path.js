@@ -13,7 +13,7 @@ export class Tool_NewPath {
 
 		this.mousedown = function (ev) {
 			// log('Tool_NewPath.mousedown', 'start');
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let ehd = eventHandlerData;
 			let newPoint = new PathPoint({
 				p: { point: { x: cXsX(ehd.mouseX), y: cYsY(ehd.mouseY) } },

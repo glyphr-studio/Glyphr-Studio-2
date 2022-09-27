@@ -24,7 +24,7 @@ export class PageGlyphEdit {
 	 */
 	makePageContent() {
 		log(`PageGlyphEdit.makePageContent`, 'start');
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		log('current ProjectEditor');
 		log(editor);
 		log(editor.nav);

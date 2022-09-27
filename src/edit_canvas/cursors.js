@@ -3,7 +3,7 @@ import { canResize, eventHandlerData } from './events_mouse.js';
 
 export function updateCursor(tool) {
 	// log('updateCursor', 'start');
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	tool = tool || editor.selectedTool;
 
 	// log('tool = ' + tool);

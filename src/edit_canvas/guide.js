@@ -29,7 +29,7 @@ export class Guide {
 		let ctx = _UI.glyphEditCTX;
 		let cansize = _UI.glyphEditCanvasSize;
 		let psc = getCurrentProject().projectSettings.colors;
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		let v = editor.view;
 		let start = { x: 0, y: 0 };
 		let end = { x: 0, y: 0 };

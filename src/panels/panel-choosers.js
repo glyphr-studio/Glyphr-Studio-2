@@ -46,7 +46,7 @@ function makeNavButton_Page(pageName, iconName) {
 
 function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
 	log(`makeChooserContent_Glyphs`, 'start');
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 
 	// let content = `<div class="glyph-chooser__tile-grid">`;
 	let container = makeElement({tag: 'div', className: 'glyph-chooser__tile-grid'});
@@ -114,7 +114,7 @@ function makeNavButton_Panel(panelName, iconName) {
 	button.innerHTML += makeIcon({name: iconName, color: accentColors.blue.l90});
 	button.appendChild(makeElement({content: panelName}));
 	button.addEventListener('click', () => {
-		let editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
 		editor.nav.panel = panelName;
 		editor.navigate();
 	});

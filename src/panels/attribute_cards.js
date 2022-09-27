@@ -192,7 +192,7 @@ export function makeCard_multiSelectPathAttributes(glyph) {
 
 export function makeCard_pathPointAttributes(selectedPoint) {
 	// log(`makeCard_pathPointAttributes`, 'start');
-	let editor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	// POINT
 	let pathPointCard = makeElement({
 		tag: 'div',
@@ -227,10 +227,13 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 		topic: 'currentPathPoint',
 		subscriberID: 'pointTypeButtons',
 		callback: (changedItem) => {
+			// log(`pointTypeButton subscriber callback`, 'start');
+			// log(changedItem);
 			document.getElementById(`pointTypeButton-symmetric`).removeAttribute('selected');
 			document.getElementById(`pointTypeButton-flat`).removeAttribute('selected');
 			document.getElementById(`pointTypeButton-corner`).removeAttribute('selected');
 			document.getElementById(`pointTypeButton-${changedItem.type}`).setAttribute('selected', '');
+			// log(`pointTypeButton subscriber callback`, 'end');
 		}
 	});
 
@@ -444,7 +447,7 @@ function dimSplitElement() {
 
 export function makePointTypeButton(type, selected, clickHandler) {
 	let color = accentColors.gray.l40;
-	
+
 	let button = makeElement({
 		tag: 'button',
 		className: 'pointTypeButton',

@@ -29,7 +29,7 @@ export class Tool_Resize {
 			eh.firstY = eh.mouseY;
 
 			this.clickedPath = getPathAtLocation(eh.mouseX, eh.mouseY);
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let selectedPaths = editor.multiSelect.paths;
 
 			eh.handle = selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
@@ -73,7 +73,7 @@ export class Tool_Resize {
 			// log(`Tool_Resize.mousemove`, 'start');
 
 			let eh = eventHandlerData;
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let selectedPaths = editor.multiSelect.paths;
 			this.didStuff = false;
 			let corner = eh.handle || selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
@@ -165,7 +165,7 @@ export class Tool_Resize {
 		this.mouseup = function () {
 			// log('Mouse Up');
 			let eh = eventHandlerData;
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 
 			// New Basic Path
 			if (eh.newBasicPathMaxes) {

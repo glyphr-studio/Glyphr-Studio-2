@@ -17,7 +17,7 @@ export class Tool_NewBasicPath {
 
 		this.mousedown = function (ev) {
 			// log(`Tool_NewBasicPath.mousedown`, 'start');
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let ehd = eventHandlerData;
 			ehd.newBasicPathMaxes = {
 				xMax: cXsX(ehd.mouseX),
@@ -51,7 +51,7 @@ export class Tool_NewBasicPath {
 
 		this.mousemove = function (ev) {
 			// log(`Tool_NewBasicPath.mousemove`, 'start');
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let ehd = eventHandlerData;
 			// log(`EHFirst: x ${(ehd.firstX)}, y ${(ehd.firstY)}`);
 			// log(`Mouse:   x ${cXsX(ehd.mouseX)}, y ${cYsY(ehd.mouseY)}`);
@@ -81,7 +81,7 @@ export class Tool_NewBasicPath {
 
 		this.mouseup = function () {
 			// log(`Tool_NewBasicPath.mouseup`, 'start');
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let ehd = eventHandlerData;
 			let workItem = editor.selectedItem;
 			let ps = editor.project.projectSettings;

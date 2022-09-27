@@ -17,7 +17,7 @@ export class Tool_PathEdit {
 		this.mousedown = function(ev) {
 			// log('Tool_PathEdit.mousedown', 'start');
 			let ehd = eventHandlerData;
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let view = editor.view;
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
@@ -77,7 +77,7 @@ export class Tool_PathEdit {
 		this.mousemove = function(ev) {
 			// log('Tool_PathEdit.mousemove', 'start');
 			let ehd = eventHandlerData;
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let view = editor.view;
 			let selectedPoints = editor.multiSelect.points;
 
@@ -151,7 +151,7 @@ export class Tool_PathEdit {
 			this.dragging = false;
 			this.controlPoint = false;
 			ehd.toolHandoff = false;
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			editor.multiSelect.points.singleHandle = false;
 			ehd.lastX = -100;
 			ehd.lastY = -100;

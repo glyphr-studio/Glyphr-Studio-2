@@ -3,10 +3,10 @@ import { getCurrentProjectEditor } from '../app/main.js';
 export function makePanel_OverviewAttributes() {
 	log(`makePanel_OverviewAttributes`, 'start');
 
-	let projectEditor = getCurrentProjectEditor();
+	const editor = getCurrentProjectEditor();
 	let content = `
 		<div class="panel__card full-width">
-			<h3>${projectEditor.project.projectSettings.name}</h3>
+			<h3>${editor.project.projectSettings.name}</h3>
 			<span>More settings can be found on the Settings page</span>
 		</div>
 	`;

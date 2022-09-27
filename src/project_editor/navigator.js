@@ -241,7 +241,7 @@ export function showNavDropdown(parentElement) {
 
 	if(dropdownType === 'EDITING') {
 		dropdownContent = makeChooserContent_Glyphs((glyphID) => {
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			editor.selectedGlyphID = glyphID;
 			closeAllDialogs();
 		});

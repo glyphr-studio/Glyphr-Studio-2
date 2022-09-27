@@ -9,7 +9,7 @@ export function makePanel_GlyphChooser() {
 	// log('makePanel_GlyphChooser', 'start');
 
 	let content = '<div class="panel__card">';
-	content += projectEditor.nav.page;
+	content += editor.nav.page;
 	content += '<h2>chooser</h2>';
 	content += '</div>';
 	content += '<div class="panel_section" id="glyphChooser">';

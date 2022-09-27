@@ -337,8 +337,8 @@ export class PageOpenProject {
 	handleNewProject() {
 		const app = getGlyphrStudioApp();
 		setTimeout(function () {
-			const projectEditor = app.getCurrentProjectEditor();
-			projectEditor.project = new GlyphrStudioProject();
+			const editor = app.getCurrentProjectEditor();
+			editor.project = new GlyphrStudioProject();
 			app.navigate('Glyph edit');
 		}, 5);
 	}

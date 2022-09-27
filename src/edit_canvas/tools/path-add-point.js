@@ -9,7 +9,7 @@ export class Tool_PathAddPoint {
 		this.addPoint = false;
 
 		this.mousedown = function (ev) {
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let singlePath = editor.multiSelect.paths.singleton;
 			let s = getPathAtLocation(eventHandlerData.mouseX, eventHandlerData.mouseY);
 
@@ -17,8 +17,8 @@ export class Tool_PathAddPoint {
 				singlePath &&
 				singlePath.objType !== 'ComponentInstance') {
 				let p = singlePath.insertPathPoint(
-					this.addPoint.split,
-					this.addPoint.point
+					this.addPoint.point,
+					this.addPoint.split
 				);
 				if (p)
 					editor.multiSelect.points.select(p);
@@ -46,7 +46,7 @@ export class Tool_PathAddPoint {
 		};
 
 		this.mousemove = function (ev) {
-			let editor = getCurrentProjectEditor();
+			const editor = getCurrentProjectEditor();
 			let singlePath = editor.multiSelect.paths.singleton;
 			if (singlePath) {
 				let pt = singlePath.findClosestPointOnCurve({
