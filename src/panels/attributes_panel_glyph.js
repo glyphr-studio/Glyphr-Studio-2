@@ -1,5 +1,4 @@
 import { getCurrentProjectEditor } from "../app/main.js";
-import { makeCard_projectActions } from "./actions_cards.js";
 import {
 	makeCard_glyphAttributes,
 	makeCard_pathAttributes,
@@ -53,9 +52,6 @@ export function makePanel_GlyphAttributes() {
 
 	// Glyph
 	content.push(makeCard_glyphAttributes(editor.selectedGlyph));
-
-	// Actions
-	// content.push(makeCard_projectActions());
 
 	// TODO used-in glyph card
 

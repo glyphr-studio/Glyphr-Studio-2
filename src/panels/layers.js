@@ -7,7 +7,7 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { eventHandlerData } from '../edit_canvas/events_mouse.js';
 import { makeActionButtonIcon } from './action-buttons.js';
-import { addChildActions, getActionData } from './actions_cards.js';
+import { addChildActions, getActionData } from './actions.js';
 import { refreshPanel } from './panels.js';
 
 export function makePanel_Layers() {
