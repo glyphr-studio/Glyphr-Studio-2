@@ -166,7 +166,7 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 	// log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
 	// log(path);
 
-	// let currView = getView('drawPathToCanvas');
+	// let currView = ProjectEditor.('drawPathToCanvas');
 	// view = view || clone(currView);
 	// setView(view);
 
@@ -176,11 +176,11 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 		return false;
 	}
 
-	if (path.pathPoints.length < 2) {
-		// log(`RETURNING FALSE: ${path.pathPoints.length} points in the path`);
-		// log('drawPathToCanvas', 'end');
-		return false;
-	}
+	// if (path.pathPoints.length < 2) {
+	// 	// log(`RETURNING FALSE: ${path.pathPoints.length} points in the path`);
+	// 	// log('drawPathToCanvas', 'end');
+	// 	return false;
+	// }
 
 	let pp;
 	let np;
@@ -252,20 +252,21 @@ function isOverPathControlPoint(path, x, y, noHandles){
 export function isOverFirstPoint(path, x, y) {
 	// log('\n isOverFirstPoint - START');
 	// log('\t Passed ' + x + '/' + y);
+	// const editor = getCurrentProjectEditor();
 	let pp = path.pathPoints[0];
-	let pointSize = 7;
-	let hp = pointSize / getView('isOverFirstPoint').dz;
+	// let pointSize = 7;
+	// let hp = pointSize / editor.view.dz;
 	// log('\t Checking ' + pp.P.x + '/' + pp.P.y + ' around ' + hp);
 
 	if(!pp) return false;
 
-	if( ((pp.P.x+hp) > x) && ((pp.P.x-hp) < x) && ((pp.P.y+hp) > y) && ((pp.P.y-hp) < y) ){
-		// log(' isOverFirstPoint - END - return TRUE\n');
-		return true;
-	}
+	// if( ((pp.P.x+hp) > x) && ((pp.P.x-hp) < x) && ((pp.P.y+hp) > y) && ((pp.P.y-hp) < y) ){
+	// 	// log(' isOverFirstPoint - END - return TRUE\n');
+	// 	return true;
+	// }
 
 	// log(' isOverFirstPoint - END - return FALSE\n');
-	return false;
+	return pointsAreEqual({x:x, y:y}, pp.p.coord, getCurrentProject().projectSettings.pointSize);
 }
 
 

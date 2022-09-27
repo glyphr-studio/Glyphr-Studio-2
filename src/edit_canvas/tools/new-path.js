@@ -2,7 +2,13 @@
 // New Path - adds many points to a new path (Pen Plus)
 // ----------------------------------------------------------------
 
-import { getCurrentProjectEditor } from '../../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
+import { Path } from '../../project_data/path.js';
+import { PathPoint } from '../../project_data/path_point.js';
+import { setCursor } from '../cursors.js';
+import { isOverFirstPoint } from '../draw_paths.js';
+import { cXsX, cYsY } from '../edit-canvas.js';
+import { eventHandlerData } from '../events_mouse.js';
 
 export class Tool_NewPath {
 	constructor() {
@@ -15,28 +21,25 @@ export class Tool_NewPath {
 			// log('Tool_NewPath.mousedown', 'start');
 			const editor = getCurrentProjectEditor();
 			let ehd = eventHandlerData;
-			let newPoint = new PathPoint({
-				p: { point: { x: cXsX(ehd.mouseX), y: cYsY(ehd.mouseY) } },
-				h1: {
-					point: { x: cXsX(ehd.mouseX - 100), y: cYsY(ehd.mouseY) },
-					use: false,
-				},
-				h2: {
-					point: { x: cXsX(ehd.mouseX + 100), y: cYsY(ehd.mouseY) },
-					use: false,
-				},
-				type: 'flat',
-			});
+
+			// New point
+			let newPoint = new PathPoint();
+			newPoint.p.x = cXsX(ehd.mouseX);
+			newPoint.p.y = cYsY(ehd.mouseY);
 
 			if (this.firstPoint) {
 				// make a new path with the new PathPoint
 				let count = editor.nav.page === 'components' ?
 					Object.keys(getCurrentProject().components).length :
-					getSelectedItem.paths.length;
-				this.newPath = addPathToCurrentItem(
-					new Path({ name: 'Path ' + count, path: new Path() })
-				);
+					editor.selectedItem.paths.length;
+
+				count += 1;
+				this.newPath = editor.selectedItem.addOnePath(new Path({ name: 'Path ' + count }));
 				this.currentPoint = this.newPath.addPathPoint(newPoint);
+				editor.multiSelect.paths.select(this.newPath);
+				editor.multiSelect.points.select(this.currentPoint);
+				editor.publish('whichPathPointIsSelected', this.currentPoint);
+
 			} else if (this.newPath) {
 				if (isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY),)) {
 					// clicked on an existing control point in this path
@@ -65,19 +68,18 @@ export class Tool_NewPath {
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
 
-			redraw({ calledBy: 'Event Handler Tool_NewPath mousedown' });
 			// log('Tool_NewPath.mousedown', 'end');
 		};
 
 		this.mousemove = function (ev) {
 			let ehd = eventHandlerData;
+			const editor = getCurrentProjectEditor();
 
 			if (this.dragging) {
 				// avoid really small handles
-				if (Math.abs(this.currentPoint.p.x - cXsX(ehd.mouseX)) >
-					getCurrentProject().projectSettings.pointSize * 2 ||
-					Math.abs(this.currentPoint.p.y - cYsY(ehd.mouseY)) >
-					getCurrentProject().projectSettings.pointSize * 2) {
+				let ps2 = getCurrentProject().projectSettings.pointSize * 2;
+				if (Math.abs(this.currentPoint.p.x - cXsX(ehd.mouseX)) > ps2 ||
+					Math.abs(this.currentPoint.p.y - cYsY(ehd.mouseY)) > ps2) {
 					this.currentPoint.h1.use = true;
 					this.currentPoint.h2.use = true;
 					this.currentPoint.h2.x = cXsX(ehd.mouseX);
@@ -90,10 +92,11 @@ export class Tool_NewPath {
 				ehd.lastY = ehd.mouseY;
 				ehd.undoQueueHasChanged = true;
 
-				redraw({ calledBy: 'Event Handler Tool_NewPath mousemove' });
-			} else if (this.newPath &&
-				isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY))) {
+				editor.publish('currentPathPoint', this.currentPoint);
+
+			} else if (this.newPath && isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY))) {
 				setCursor('penSquare');
+
 			} else {
 				setCursor('penPlus');
 			}
@@ -104,12 +107,13 @@ export class Tool_NewPath {
 			setCursor('penPlus');
 
 			if (eventHandlerData.undoQueueHasChanged) {
+				// TODO history
 				// if (this.newPath) this.newPath.recalculateMaxes();
 				// updateCurrentGlyphWidth();
 				// For new path tools, mouse up always adds to the undo-queue
-				historyPut('New Path tool');
-				eventHandlerData.undoQueueHasChanged = false;
-				redraw({ calledBy: 'Event Handler Tool_NewPath mouseup' });
+				// historyPut('New Path tool');
+				// eventHandlerData.undoQueueHasChanged = false;
+				// redraw({ calledBy: 'Event Handler Tool_NewPath mouseup' });
 			}
 
 			this.dragging = false;

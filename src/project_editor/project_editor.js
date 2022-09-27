@@ -104,6 +104,7 @@ export class ProjectEditor {
 	 * - 'currentGlyph' - edits to the current glyph.
 	 * - 'currentPath' - edits to the current path.
 	 * - 'currentPathPoint' - edits to the current point.
+	 * - 'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
 	 * @param {object} data - whatever the new state is
 	 */
 	publish(topic, data) {
