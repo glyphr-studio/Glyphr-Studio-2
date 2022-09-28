@@ -223,6 +223,16 @@ export function makeNavButtonContent(title, superTitle) {
 	`;
 }
 
+export function toggleNavDropdown(parentElement) {
+	let dropdown = document.getElementById('nav-dropdown');
+
+	if(dropdown) {
+		closeAllDialogs();
+	} else {
+		showNavDropdown(parentElement);
+	}
+}
+
 export function showNavDropdown(parentElement) {
 	// log(`showNavDropdown`, 'start');
 	let size = '500px';

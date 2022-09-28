@@ -24,15 +24,15 @@ export function makePanel_GlyphChooser() {
 		asyncLoadChooserPanel();
 		// _UI.glyphChooser.cache = make_GlyphChooser(_UI.glyphChooser.panel);
 	} else if (editor.nav.page === 'ligatures') {
-		const emptyligs = Object.keys(getCurrentProject().ligatures).length === 0;
-		if (!emptyligs) {
+		const hasNoLigatures = Object.keys(getCurrentProject().ligatures).length === 0;
+		if (!hasNoLigatures) {
 			content += make_GlyphChooser(gcp);
 		}
 		content += '<div class="panel_section" ';
-		content += emptyligs ? 'style="padding-top:-10px;">' : '>';
+		content += hasNoLigatures ? 'style="padding-top:-10px;">' : '>';
 		content +=
 			'<button onclick="showNewLigatureDialog();">create new ligature</button><br>';
-		if (!emptyligs)
+		if (!hasNoLigatures)
 			content +=
 				'<button onclick="deleteLigatureConfirm();">delete selected ligature</button><br>';
 		else
@@ -40,7 +40,7 @@ export function makePanel_GlyphChooser() {
 				'<button onclick="addCommonLigatures();">add some common ligatures</button>';
 		content += '</div>';
 
-		if (emptyligs) {
+		if (hasNoLigatures) {
 			content += '<div class="panel_section">';
 			content += '<h2>Please note!</h2><br>';
 			content +=
@@ -51,15 +51,15 @@ export function makePanel_GlyphChooser() {
 			content += '</div>';
 		}
 	} else if (editor.nav.page === 'components') {
-		const emptycoms = Object.keys(getCurrentProject().components).length === 0;
-		if (!emptycoms) {
+		const hasNoComponents = Object.keys(getCurrentProject().components).length === 0;
+		if (!hasNoComponents) {
 			content += make_GlyphChooser(gcp);
 		}
 		content += '<div class="panel_section" ';
-		content += emptycoms ? 'style="padding-top:-10px;">' : '>';
+		content += hasNoComponents ? 'style="padding-top:-10px;">' : '>';
 		content +=
 			"<button onclick=\"createNewComponent();historyPut('Create New Component');navigate({panel:'npAttributes'});\">create new component</button><br>";
-		if (!emptycoms)
+		if (!hasNoComponents)
 			content +=
 				'<button onclick="deleteComponentConfirm();">delete selected component</button><br>';
 		content += '</div>';
