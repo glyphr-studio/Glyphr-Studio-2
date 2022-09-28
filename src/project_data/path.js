@@ -484,14 +484,16 @@ export class Path extends GlyphElement {
 			}
 		}
 
+		// ControlPoint.x and ControlPoint.y for type === 'p' also moves h1 / h2
+		// Directly access .coord to avoid this
 		for (let e = 0; e < this.pathPoints.length; e++) {
 			const pp = this.pathPoints[e];
-			pp.p.x = (pp.p.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
-			pp.h1.x = (pp.h1.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
-			pp.h2.x = (pp.h2.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
-			pp.p.y = (pp.p.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
-			pp.h1.y = (pp.h1.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
-			pp.h2.y = (pp.h2.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
+			pp.p.coord.x = (pp.p.coord.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
+			pp.h1.coord.x = (pp.h1.coord.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
+			pp.h2.coord.x = (pp.h2.coord.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
+			pp.p.coord.y = (pp.p.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
+			pp.h1.coord.y = (pp.h1.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
+			pp.h2.coord.y = (pp.h2.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
 		}
 
 		if (this.checkForNaN()) {
