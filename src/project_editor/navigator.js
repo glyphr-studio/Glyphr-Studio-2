@@ -275,6 +275,8 @@ export function showNavDropdown(parentElement) {
 		`}
 	});
 
+	dropDown.addEventListener('mouseleave', closeAllDialogs);
+	
 	addAsChildren(dropDown, dropdownContent);
 	// log(`dropDown:`);
 	// log(dropDown);
