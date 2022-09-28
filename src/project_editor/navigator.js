@@ -31,7 +31,7 @@ export class Navigator {
 			'Overview': {
 				name: 'Overview',
 				pageMaker: PageOverview,
-				iconName: 'page_glyphEdit',
+				iconName: 'page_overview',
 			},
 			'Glyph edit': {
 				name: 'Glyph edit',
