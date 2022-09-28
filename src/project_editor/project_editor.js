@@ -55,13 +55,11 @@ export class ProjectEditor {
 		// Canvas
 		this.editCanvas = false;
 
-		// Canvas
-		// Views per work item ID
+		// Views
 		this._views = {};
 		this.defaultView = {dx: 200, dy: 500, dz: 0.5, default: true};
 		this.defaultKernView = {dx: 500, dy: 500, dz: 0.5, default: true};
 
-		// Canvas
 		// Ghost Canvas
 		this.canvasSize = 2000;
 		this.ghostCanvas = document.createElement('canvas');
@@ -69,8 +67,7 @@ export class ProjectEditor {
 		this.ghostCanvas.height = this.canvasSize;
 		this.ghostCTX = this.ghostCanvas.getContext('2d');
 
-		// Canvas
-		// Event handlers
+		// Canvas Event handlers
 		this.eventHandlers = {};
 		this.selectedTool = 'resize';
 
@@ -289,46 +286,6 @@ export class ProjectEditor {
 
 
 	// --------------------------------------------------------------
-	// History
-	// --------------------------------------------------------------
-
-	// /**
-	//  * Adds to the history queue
-	//  * @param {string} description
-	//  */
-	// historyPut(description) {
-	//   if (this.nav.isOnEditCanvasPage) {
-	//     const queue =
-	//       this.nav.page === 'import svg' ? 'Glyph edit' : this.nav.page;
-	//     this.history[queue].put(description);
-	//   }
-	// }
-
-	// /**
-	//  * Moves backwards in time in the history queue
-	//  */
-	// historyPull() {
-	//   if (this.nav.isOnEditCanvasPage) {
-	//     this.closeDialog();
-	//     this.closeNotation();
-	//     this.history[this.nav.page].pull();
-	//   }
-	// }
-
-	// /**
-	//  * Get the length of the current history queue
-	//  * @returns {number}
-	//  */
-	// historyLength() {
-	//   if (this.nav.isOnEditCanvasPage) {
-	//     return this.history[this.nav.page].queue.length || 0;
-	//   }
-
-	//   return 0;
-	// }
-
-
-	// --------------------------------------------------------------
 	// Views
 	// --------------------------------------------------------------
 	/**
@@ -470,6 +427,7 @@ export class ProjectEditor {
 		// log(`getEditCanvasWrapperBounds`, 'end');
 		return false;
 	}
+
 
 	// --------------------------------------------------------------
 	// Save

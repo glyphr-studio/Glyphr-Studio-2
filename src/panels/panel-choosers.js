@@ -21,7 +21,8 @@ function makeChooserContent_Pages(){
 	let toc = getCurrentProjectEditor().nav.tableOfContents;
 
 	Object.keys(toc).forEach((pageName) => {
-		if(pageName !== 'Open project'){
+		if(pageName !== 'Open project' && toc[pageName].pageMaker){
+		// if(pageName !== 'Open project'){
 			pageButton = makeNavButton_Page(pageName, toc[pageName].iconName);
 			content.appendChild(pageButton);
 		}

@@ -107,30 +107,37 @@ export class History {
 
 
 
-// Global Accessor Functions
-function history_put(dsc){
-	if(getCurrentProjectEditor().nav.isOnEditCanvasPage){
-		let queue = _UI.current_page === 'import svg'? 'glyph edit' : _UI.current_page;
-		window.setTimeout(function(){
-			_UI.history[queue].put(dsc);
-		}, 10);
-	}
-}
+	// /**
+	//  * Adds to the history queue
+	//  * @param {string} description
+	//  */
+	// historyPut(description) {
+	//   if (this.nav.isOnEditCanvasPage) {
+	//     const queue =
+	//       this.nav.page === 'import svg' ? 'Glyph edit' : this.nav.page;
+	//     this.history[queue].put(description);
+	//   }
+	// }
 
-function history_pull(){
-	if(getCurrentProjectEditor().nav.isOnEditCanvasPage){
-		closeDialog();
-		closeNotation();
-		window.setTimeout(function(){
-			_UI.history[_UI.current_page].pull();
-		}, 10);
-	}
-}
+	// /**
+	//  * Moves backwards in time in the history queue
+	//  */
+	// historyPull() {
+	//   if (this.nav.isOnEditCanvasPage) {
+	//     this.closeDialog();
+	//     this.closeNotation();
+	//     this.history[this.nav.page].pull();
+	//   }
+	// }
 
-function history_length() {
-	if(getCurrentProjectEditor().nav.isOnEditCanvasPage){
-		return _UI.history[_UI.current_page].queue.length || 0;
-	}
+	// /**
+	//  * Get the length of the current history queue
+	//  * @returns {number}
+	//  */
+	// historyLength() {
+	//   if (this.nav.isOnEditCanvasPage) {
+	//     return this.history[this.nav.page].queue.length || 0;
+	//   }
 
-	return 0;
-}
+	//   return 0;
+	// }
