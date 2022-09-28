@@ -5,15 +5,12 @@ import { makeIcon } from "../common/graphics.js";
 import { areHexValuesEqual, basicLatinOrder } from "../common/unicode.js";
 import { GlyphTile } from "../controls/glyph-tile/glyph-tile.js";
 
-export {makeChooserContent_Pages, makeChooserContent_Glyphs, makeChooserContent_Panels };
-
-
 
 // --------------------------------------------------------------
 // Page chooser
 // --------------------------------------------------------------
 
-function makeChooserContent_Pages(){
+export function makeChooserContent_Pages(){
 	log(`makeChooserContent_Pages`, 'start');
 
 	let content = makeElement();
@@ -45,7 +42,7 @@ function makeNavButton_Page(pageName, iconName) {
 // Glyph chooser
 // --------------------------------------------------------------
 
-function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
+export function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
 	log(`makeChooserContent_Glyphs`, 'start');
 	const editor = getCurrentProjectEditor();
 
@@ -93,7 +90,7 @@ function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
 // Panel chooser
 // --------------------------------------------------------------
 
-function makeChooserContent_Panels(){
+export function makeChooserContent_Panels(){
 	log(`makeChooserContent_Panels`, 'start');
 
 	let content = makeElement();

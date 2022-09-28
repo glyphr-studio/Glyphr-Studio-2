@@ -1,7 +1,7 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
-import { showNavDropdown } from '../project_editor/navigator.js';
+import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
 import { hexToChars } from '../common/unicode.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
@@ -55,11 +55,11 @@ export class PageGlyphEdit {
 
 		// Page Selector
 		let l1 = content.querySelector('#nav-button-l1');
-		l1.addEventListener('click', function(){ showNavDropdown(l1); });
+		l1.addEventListener('click', function(){ toggleNavDropdown(l1); });
 
 		// Glyph Selector
 		let l2 = content.querySelector('#nav-button-l2');
-		l2.addEventListener('click', function(){ showNavDropdown(l2); });
+		l2.addEventListener('click', function(){ toggleNavDropdown(l2); });
 		editor.subscribe({
 			topic: 'whichGlyphIsSelected',
 			subscriberID: 'nav.glyphChooserButton',
@@ -70,7 +70,7 @@ export class PageGlyphEdit {
 
 		// Panel Selector
 		let l3 = content.querySelector('#nav-button-l3');
-		l3.addEventListener('click', function(){ showNavDropdown(l3); });
+		l3.addEventListener('click', function(){ toggleNavDropdown(l3); });
 
 		// Panel
 		content.querySelector('.left-area__panel').appendChild(makePanel());
