@@ -361,9 +361,19 @@ function makeSingleInput(workItem, property, thisTopic, tagName) {
 
 	newInput.addEventListener('change', (event) => {
 		let newValue = event.target.value;
-		workItem[property] = newValue;
-		getCurrentProjectEditor().publish(thisTopic, workItem);
+		if(!workItem.isLocked(property)) {
+			workItem[property] = newValue;
+			getCurrentProjectEditor().publish(thisTopic, workItem);
+		}
 	});
+
+	if(tagName.includes('-lockable')) {
+		addAttributeListener(newInput, 'disabled', (element) => {
+			let disabled = element.getAttribute('disabled');
+			if(disabled === null) workItem.unlock(property);
+			else workItem.lock(property);
+		});
+	}
 
 	getCurrentProjectEditor().subscribe({
 		topic: thisTopic,
@@ -386,6 +396,18 @@ function makeSingleInput(workItem, property, thisTopic, tagName) {
 
 	// log(`makeSingleInput`, 'end');
 	return newInput;
+}
+
+function addAttributeListener(element, listenFor = [], callback = false) {
+	listenFor = (typeof listenFor === 'string') ? [listenFor] : listenFor;
+
+	const mutationCallback = function (mutationsList, observer) {
+		if(callback) callback(element);
+	};
+	const observer = new MutationObserver(mutationCallback);
+	// observer.node = element;
+	observer.observe(element, { attributeFilter: listenFor });
+	// observer.observe(element, { attributes: true, subtree: true });
 }
 
 function makeSingleCheckbox(workItem, property, thisTopic) {

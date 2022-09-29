@@ -246,6 +246,46 @@ export class ControlPoint extends GlyphElement {
 		this._type = t;
 	}
 
+	/**
+	 * Check to see if x or y are locked
+	 * @param {string} propertyName - property to check if locked
+	 * @returns {Boolean}
+	 */
+	isLocked(propertyName) {
+		if(propertyName === 'x') return this.xLock;
+		if(propertyName === 'y') return this.yLock;
+		return false;
+	}
+
+	/**
+	 * Sets xLock/yLock based on x or y input
+	 * @param {string} propertyName - property to lock
+	 */
+	lock(propertyName) {
+		// log(`ControlPoint.lock`, 'start');
+		// log(`propertyName: ${propertyName}`);
+		if(propertyName === 'x') this.xLock = true;
+		if(propertyName === 'y') this.yLock = true;
+		// log(`ControlPoint.lock`, 'end');
+	}
+
+	/**
+	 * Sets xLock/yLock based on x or y input
+	 * @param {string} propertyName - property to unlock
+	 */
+	unlock(propertyName) {
+		// log(`ControlPoint.unlock`, 'start');
+		// log(`propertyName: ${propertyName}`);
+		if(propertyName === 'x') this.xLock = false;
+		if(propertyName === 'y') this.yLock = false;
+		// log(`ControlPoint.unlock`, 'end');
+	}
+
+	/**
+	 * Rotate this point around another point
+	 * @param {Number} angle - angle to rotate (radians)
+	 * @param {XYPoint} about - center point for rotation
+	 */
 	rotate(angle, about) {
 		rotate(this.coord, angle, about);
 	}
