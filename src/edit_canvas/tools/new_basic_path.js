@@ -7,7 +7,7 @@ import { isVal, round } from '../../common/functions.js';
 import { ControlPoint } from '../../project_data/control_point.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
-import { cXsX, cYsY } from '../edit-canvas.js';
+import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events_mouse.js';
 import { addPathToCurrentItem, switchToolTo } from './tools.js';
 

@@ -4,7 +4,7 @@ import { PageOverview } from '../pages/overview.js';
 
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { makeChooserContent_Glyphs, makeChooserContent_Pages, makeChooserContent_Panels } from '../panels/panel-choosers.js';
+import { makeChooserContent_Glyphs, makeChooserContent_Pages, makeChooserContent_Panels } from '../panels/panel_choosers.js';
 import { makeAppTopBar } from '../app/app.js';
 
 	// --------------------------------------------------------------

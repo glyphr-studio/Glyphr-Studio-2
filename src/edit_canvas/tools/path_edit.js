@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
-import { cXsX, cYsY } from '../edit-canvas.js';
+import { cXsX, cYsY } from '../edit_canvas.js';
 import { setCursor } from '../cursors.js';
 import { isOverControlPoint } from '../draw_paths.js';
 import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData, findAndCallHotspot } from '../events_mouse.js';
@@ -86,7 +86,7 @@ export class Tool_PathEdit {
 			if (ehd.toolHandoff) {
 				ehd.toolHandoff = false;
 				this.controlPoint = selectedPoints.singleton.h2;
-				
+
 				this.controlPoint.parent.h2.use = true;
 				this.controlPoint.parent.h2.x = cXsX(ehd.mouseX, view);
 				this.controlPoint.parent.h2.y = cYsY(ehd.mouseY, view);

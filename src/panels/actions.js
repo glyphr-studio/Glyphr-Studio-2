@@ -1,8 +1,8 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { makeActionButton, makeActionButtonIcon } from './action-buttons.js';
+import { makeActionButton, makeActionButtonIcon } from './action_buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { saveFile } from '../project_editor/saving.js';
-import { rectPathFromMaxes } from '../edit_canvas/tools/new-basic-path.js';
+import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 
 // --------------------------------------------------------------
 // Define action button data

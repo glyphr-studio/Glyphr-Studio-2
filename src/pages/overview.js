@@ -1,7 +1,7 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent, showNavDropdown} from '../project_editor/navigator.js';
-import { makeChooserContent_Glyphs } from '../panels/panel-choosers.js';
+import { makeChooserContent_Glyphs } from '../panels/panel_choosers.js';
 import { makePanel_OverviewAttributes } from '../panels/attributes_panel_overview.js';
 
 
