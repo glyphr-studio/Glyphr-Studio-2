@@ -60,8 +60,8 @@
 	padding-top: 2px;
 	color: var(--disabled-background);
 	margin: auto;
-	/* width: ${overallSize}px; */
-	/* height: ${overallSize}px; */
+	width: 50px;
+	height: 50px;
 	box-shadow: var(--l1-shadow);
 	border-radius: 1px;
 }
@@ -92,6 +92,8 @@
 	height: 28px;
 	padding: 2px 0px 0px 4px;
 	color: var(--gray-45);
+	position: relative;
+	left: -1px;
 }
 
 .wrapper[selected] .name,

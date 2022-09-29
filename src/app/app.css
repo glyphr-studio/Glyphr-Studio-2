@@ -43,13 +43,16 @@
 
 .alphaBugContact {
 	position: absolute;
+	opacity: 80%;
 	right: 10px;
 	padding: 2px 4px;
 	margin: 5px 0px 0px 0px;
 	font-size: 12px;
 	background-color: var(--purple-l40);
-	color: var(--purple-l90);
+	border: 1px solid var(--purple-l30);
+	color: var(--purple-l80);
 	border-radius: 3px;
+	box-shadow: var(--l3-shadow);
 }
 
 .alphaBugContact a {
