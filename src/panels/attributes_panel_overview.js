@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 
 export function makePanel_OverviewAttributes() {
-	log(`makePanel_OverviewAttributes`, 'start');
+	// log(`makePanel_OverviewAttributes`, 'start');
 
 	const editor = getCurrentProjectEditor();
 	let content = `
@@ -11,6 +11,6 @@ export function makePanel_OverviewAttributes() {
 		</div>
 	`;
 
-	log(`makePanel_OverviewAttributes`, 'end');
+	// log(`makePanel_OverviewAttributes`, 'end');
 	return content;
 }

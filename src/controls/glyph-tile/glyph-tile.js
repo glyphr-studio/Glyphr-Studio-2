@@ -21,8 +21,8 @@ export class GlyphTile extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		log(`GlyphTile.constructor`, 'start');
-		log(attributes);
+		// log(`GlyphTile.constructor`, 'start');
+		// log(attributes);
 		super();
 
 		Object.keys(attributes).forEach((key) =>
@@ -34,7 +34,7 @@ export class GlyphTile extends HTMLElement {
 		this.glyphObject = getCurrentProject().getGlyph(this.glyphHex);
 		this.view = {};
 
-		log(`this.glyphHex: ${this.glyphHex}`);
+		// log(`this.glyphHex: ${this.glyphHex}`);
 
 		let settings = getCurrentProject().projectSettings;
 		let overallSize = 50;
@@ -77,14 +77,14 @@ export class GlyphTile extends HTMLElement {
 				dz: zoom,
 			};
 
-			log(`view is ${this.view.dx}, ${this.view.dy}, ${this.view.dz}`);
+			// log(`view is ${this.view.dx}, ${this.view.dy}, ${this.view.dz}`);
 
 		} else {
 			this.thumbnail = makeElement({
 				className: 'thumbnail',
 				content: this.glyphChar,
 			});
-			log(`no glyphObject`);
+			// log(`no glyphObject`);
 		}
 
 		this.name = makeElement({ className: 'name' });
@@ -101,14 +101,14 @@ export class GlyphTile extends HTMLElement {
 		shadow.appendChild(this.wrapper);
 		redrawGlyph(this);
 
-		log(`GlyphTile.constructor`, 'end');
+		// log(`GlyphTile.constructor`, 'end');
 	}
 
 	attributeChangedCallback(name, oldValue, newValue) {
-		log(`GlyphTile.attributeChangedCallback`, 'start');
-		log(`name: ${name}`);
-		log(`oldValue: ${oldValue}`);
-		log(`newValue: ${newValue}`);
+		// log(`GlyphTile.attributeChangedCallback`, 'start');
+		// log(`name: ${name}`);
+		// log(`oldValue: ${oldValue}`);
+		// log(`newValue: ${newValue}`);
 
 		let wrapper = this.shadowRoot? this.shadowRoot.querySelector('.wrapper') : false;
 
@@ -118,7 +118,7 @@ export class GlyphTile extends HTMLElement {
 		}
 
 		redrawGlyph(this);
-		log(`GlyphTile.attributeChangedCallback`, 'end');
+		// log(`GlyphTile.attributeChangedCallback`, 'end');
 	}
 }
 

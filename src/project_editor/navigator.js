@@ -97,8 +97,8 @@ export class Navigator {
 		if (pageName) this.page = pageName;
 		const wrapper = document.getElementById('app__wrapper');
 
-		log(`wrapper before:`);
-		log(wrapper);
+		// log(`wrapper before:`);
+		// log(wrapper);
 
 		if (wrapper) {
 			const pageContent = this.makePageContent();
@@ -276,7 +276,7 @@ export function showNavDropdown(parentElement) {
 	});
 
 	dropDown.addEventListener('mouseleave', closeAllDialogs);
-	
+
 	addAsChildren(dropDown, dropdownContent);
 	// log(`dropDown:`);
 	// log(dropDown);

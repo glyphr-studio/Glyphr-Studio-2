@@ -158,12 +158,12 @@ export function clickEmptySpace() {
 }
 
 export function eventHandler_PathResize() {
-	log('eventHandler_PathResize', 'start');
+	// log('eventHandler_PathResize', 'start');
 	const editor = getCurrentProjectEditor();
 	let paths = editor.multiSelect.paths;
-	log(paths);
+	// log(paths);
 	let resizeCorner = eventHandlerData.handle;
-	log('handle ' + resizeCorner);
+	// log('handle ' + resizeCorner);
 
 	let mx = cXsX(eventHandlerData.mouseX);
 	let my = cYsY(eventHandlerData.mouseY);
@@ -180,7 +180,7 @@ export function eventHandler_PathResize() {
 	// flip the shape and selected handle to keep going
 	if ((mx >= maxes.xMax) && (maxes.xMax - maxes.xMin + dw < 2)) dw = 0;
 	if ((my >= maxes.yMax) && (maxes.yMax - maxes.yMin + dh < 2)) dh = 0;
-	log('dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
+	// log('dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
 
 	// Resize the path
 	switch (resizeCorner) {
@@ -246,8 +246,8 @@ export function eventHandler_PathResize() {
 			break;
 	}
 
-	log('Done lx/rx/ty/by: ' + paths.maxes.print());
-	log(`eventHandler_PathResize`, 'end');
+	// log('Done lx/rx/ty/by: ' + paths.maxes.print());
+	// log(`eventHandler_PathResize`, 'end');
 }
 
 export function checkForMouseOverHotspot(x, y) {

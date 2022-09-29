@@ -23,12 +23,12 @@ export class PageGlyphEdit {
 	 * @returns {object} HTML Element + callback function
 	 */
 	makePageContent() {
-		log(`PageGlyphEdit.makePageContent`, 'start');
+		// log(`PageGlyphEdit.makePageContent`, 'start');
 		const editor = getCurrentProjectEditor();
-		log('current ProjectEditor');
-		log(editor);
-		log(editor.nav);
-		log(editor.selectedGlyph);
+		// log('current ProjectEditor');
+		// log(editor);
+		// log(editor.nav);
+		// log(editor.selectedGlyph);
 
 		let canvasGlyph = hexToChars(editor.selectedGlyphID);
 		const content = makeElement({
@@ -103,11 +103,11 @@ export class PageGlyphEdit {
 			topic: 'whichGlyphIsSelected',
 			subscriberID: 'editCanvas.selectedGlyph',
 			callback: (newGlyphID) => {
-				log(`Main Canvas subscriber callback`, 'start');
+				// log(`Main Canvas subscriber callback`, 'start');
 				let newChar = hexToChars(newGlyphID);
-				log(`new id ${newGlyphID} results in ${newChar} on the main canvas`);
+				// log(`new id ${newGlyphID} results in ${newChar} on the main canvas`);
 				content.querySelector('#editor-page__edit-canvas').setAttribute('glyphs', newChar);
-				log(`Main Canvas subscriber callback`, 'end');
+				// log(`Main Canvas subscriber callback`, 'end');
 			}
 		});
 
@@ -128,7 +128,7 @@ export class PageGlyphEdit {
 		});
 
 
-		log(`PageGlyphEdit.makePageContent`, 'end');
+		// log(`PageGlyphEdit.makePageContent`, 'end');
 		return content;
 	}
 }

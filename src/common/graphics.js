@@ -35,8 +35,8 @@ export function makeGlyphrStudioLogo(oa) {
 let icons = {};
 
 export function makeIcon(oa) {
-	log(`makeIcon`, 'start');
-	log(oa);
+	// log(`makeIcon`, 'start');
+	// log(oa);
 
 	let size = oa.size || 50;
 	let width = oa.width || size;
@@ -68,7 +68,7 @@ export function makeIcon(oa) {
 		</svg>
 	`;
 
-	log(`makeIcon`, 'end');
+	// log(`makeIcon`, 'end');
 
 	return re;
 }
