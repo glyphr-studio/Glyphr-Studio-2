@@ -1,3 +1,8 @@
+import { getCurrentProjectEditor } from '../app/main.js';
+import { makeElement } from '../common/dom.js';
+import { areHexValuesEqual, basicLatinOrder } from '../common/unicode.js';
+import { GlyphTile } from '../controls/glyph-tile/glyph-tile.js';
+
 /**
 		Panel > Chooser
 		Shows a list of all the Glyphs to choose from
@@ -5,8 +10,55 @@
 		the logic for creating Glyph chooser dialogs.
 **/
 
+// --------------------------------------------------------------
+// Glyph chooser
+// --------------------------------------------------------------
+
+export function makeGlyphChooserContent(clickHandler, registerSubscriptions = true){
+	// log(`makeGlyphChooserContent`, 'start');
+	const editor = getCurrentProjectEditor();
+	// let content = `<div class="glyph-chooser__tile-grid">`;
+	let container = makeElement({tag: 'div', className: 'glyph-chooser__tile-grid'});
+
+	basicLatinOrder.forEach(glyphID => {
+		let oneTile = (editor.selectedGlyphID === glyphID)?
+			new GlyphTile({glyph: glyphID, selected: 'true'}) :
+			new GlyphTile({glyph: glyphID});
+
+		oneTile.addEventListener('click', () => clickHandler(glyphID));
+
+		if(registerSubscriptions) {
+			editor.subscribe({
+				topic:'whichGlyphIsSelected',
+				subscriberID: `glyphTile.${glyphID}`,
+				callback: (newGlyphID) => {
+					// log('whichGlyphIsSelected subscriber callback');
+					// log(`checking if ${glyph.id} === ${glyphID}`);
+					if(areHexValuesEqual(newGlyphID, glyphID)){
+						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
+						oneTile.setAttribute('selected', '');
+					} else {
+						// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
+						oneTile.removeAttribute('selected');
+					}
+				}
+			});
+		}
+
+		container.appendChild(oneTile);
+	});
+
+	// log('Project Editor PubSub:');
+	// log(editor.subscribers);
+
+	// log(container);
+	// log(`makeGlyphChooserContent`, 'end');
+	return container;
+}
+
 export function makePanel_GlyphChooser() {
 	// log('makePanel_GlyphChooser', 'start');
+	const editor = getCurrentProjectEditor();
 
 	let content = '<div class="panel__card">';
 	content += editor.nav.page;

@@ -37,12 +37,12 @@ export class PageGlyphEdit {
 			innerHTML: `
 			<div class="editor__page">
 				<div class="editor-page__left-area">
-					<div class="left-area__navigation">
+					<div class="editor-page__nav-area">
 						${makeNavButton({level: 'l1', superTitle: 'PAGE', title: 'Glyph edit'})}
 						${makeNavButton({level: 'l2', superTitle: 'EDITING', title: lookUpGlyphName(editor.selectedGlyphID, true)})}
 						${makeNavButton({level: 'l3', superTitle: 'PANEL', title: editor.nav.panel})}
 					</div>
-					<div class="left-area__panel"></div>
+					<div class="editor-page__panel"></div>
 				</div>
 				<div class="editor-page__tools-area"></div>
 				<div class="editor-page__edit-canvas-wrapper">
@@ -73,12 +73,12 @@ export class PageGlyphEdit {
 		l3.addEventListener('click', function(){ toggleNavDropdown(l3); });
 
 		// Panel
-		content.querySelector('.left-area__panel').appendChild(makePanel());
+		content.querySelector('.editor-page__panel').appendChild(makePanel());
 		editor.subscribe({
 			topic: ['whichGlyphIsSelected', 'whichPathIsSelected'],
 			subscriberID: 'nav.panelChooserButton',
 			callback: (newSelection) => {
-				let panelContent = content.querySelector('.left-area__panel');
+				let panelContent = content.querySelector('.editor-page__panel');
 				panelContent.innerHTML = '';
 				// panelContent.appendChild(makePanel());
 				refreshPanel();

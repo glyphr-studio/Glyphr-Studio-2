@@ -1,3 +1,15 @@
+.editor__page {
+	height: calc(100% - 10px);
+	min-height: 100%;
+	width: 100%;
+	min-width: 100%;
+	display: grid;
+	grid-template-columns: 450px 1fr;
+	grid-template-rows: 100%;
+	column-gap: 10px;
+	padding: 0px 10px 10px 10px;
+}
+
 .editor-page__left-area {
 	grid-column: 1;
 	min-width: 1fr;
@@ -7,14 +19,14 @@
 	row-gap: 2px;
 }
 
-.left-area__navigation {
+.editor-page__nav-area {
 	display: grid;
 	grid-template-columns: min-content 1fr;
 	grid-template-rows: 1fr 1fr;
 	gap: 2px;
 }
 
-.left-area__navigation #nav-button-l3 {
+.editor-page__nav-area #nav-button-l3 {
 	grid-column: span 2;
 }
 
