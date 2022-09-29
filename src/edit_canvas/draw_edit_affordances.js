@@ -2,9 +2,9 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeCrisp } from '../common/functions.js';
 import { drawPath } from './draw_paths.js';
-import { sXcX, sYcY } from './edit-canvas.js';
+import { sXcX, sYcY } from './edit_canvas.js';
 import { canResize } from './events_mouse.js';
-import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new-basic-path.js';
+import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js';
 
 // --------------------------------------------------------------
 // Common size stuff

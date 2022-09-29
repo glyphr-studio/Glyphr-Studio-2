@@ -1,5 +1,5 @@
 import { ComponentInstance } from '../project_data/component_instance.js';
-import { sXcX, sYcY } from './edit-canvas.js';
+import { sXcX, sYcY } from './edit_canvas.js';
 import { pointsAreEqual, round } from '../common/functions.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 
