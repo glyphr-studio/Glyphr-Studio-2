@@ -11,7 +11,7 @@ import { GlyphTile } from "../controls/glyph-tile/glyph-tile.js";
 // --------------------------------------------------------------
 
 export function makeChooserContent_Pages(){
-	log(`makeChooserContent_Pages`, 'start');
+	// log(`makeChooserContent_Pages`, 'start');
 
 	let content = makeElement();
 	let pageButton;
@@ -25,7 +25,7 @@ export function makeChooserContent_Pages(){
 		}
 	});
 
-	log(`makeChooserContent_Pages`, 'end');
+	// log(`makeChooserContent_Pages`, 'end');
 	return content;
 }
 
@@ -43,7 +43,7 @@ function makeNavButton_Page(pageName, iconName) {
 // --------------------------------------------------------------
 
 export function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = true){
-	log(`makeChooserContent_Glyphs`, 'start');
+	// log(`makeChooserContent_Glyphs`, 'start');
 	const editor = getCurrentProjectEditor();
 
 	// let content = `<div class="glyph-chooser__tile-grid">`;
@@ -77,11 +77,11 @@ export function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = 
 		container.appendChild(oneTile);
 	});
 
-	log('Project Editor PubSub:');
-	log(editor.subscribers);
+	// log('Project Editor PubSub:');
+	// log(editor.subscribers);
 
-	log(container);
-	log(`makeChooserContent_Glyphs`, 'end');
+	// log(container);
+	// log(`makeChooserContent_Glyphs`, 'end');
 	return container;
 }
 
@@ -91,7 +91,7 @@ export function makeChooserContent_Glyphs(clickHandler, registerSubscriptions = 
 // --------------------------------------------------------------
 
 export function makeChooserContent_Panels(){
-	log(`makeChooserContent_Panels`, 'start');
+	// log(`makeChooserContent_Panels`, 'start');
 
 	let content = makeElement();
 	let pageButton;
@@ -103,7 +103,7 @@ export function makeChooserContent_Panels(){
 		content.appendChild(pageButton);
 	});
 
-	log(`makeChooserContent_Panels`, 'end');
+	// log(`makeChooserContent_Panels`, 'end');
 	return content;
 }
 

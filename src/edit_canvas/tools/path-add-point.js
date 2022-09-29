@@ -16,22 +16,15 @@ export class Tool_PathAddPoint {
 			if (this.addPoint &&
 				singlePath &&
 				singlePath.objType !== 'ComponentInstance') {
-				let p = singlePath.insertPathPoint(
-					this.addPoint.point,
-					this.addPoint.split
-				);
-				if (p)
-					editor.multiSelect.points.select(p);
-				historyPut('Added point to path');
+				let p = singlePath.insertPathPoint( this.addPoint.point, this.addPoint.split );
+				if (p) editor.multiSelect.points.select(p);
+				// historyPut('Added point to path');
 			} else if (s) {
 				editor.multiSelect.points.clear();
-				if (eventHandlerData.multi)
-					editor.multiSelect.paths.add(s);
-				else
-					editor.multiSelect.paths.select(s);
+				if (eventHandlerData.multi) editor.multiSelect.paths.add(s);
+				else editor.multiSelect.paths.select(s);
 
-				if (s.objType === 'ComponentInstance')
-					clickTool('pathEdit');
+				if (s.objType === 'ComponentInstance') clickTool('pathEdit');
 				editor.nav.panel = 'Attributes';
 			} else {
 				editor.selectedTool = 'newPath';
@@ -44,6 +37,7 @@ export class Tool_PathAddPoint {
 			eventHandlerData.hoverPoint = false;
 			redraw({ calledBy: 'Tool_PathAddPoint.mousedown' });
 		};
+
 
 		this.mousemove = function (ev) {
 			const editor = getCurrentProjectEditor();
@@ -82,6 +76,7 @@ export class Tool_PathAddPoint {
 
 			redraw({ calledBy: 'Tool_PathAddPoint.mousemove', redrawPanels: false });
 		};
+
 
 		this.mouseup = function () { };
 	}

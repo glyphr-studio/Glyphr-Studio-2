@@ -1,10 +1,7 @@
 import { getCurrentProjectEditor } from "../app/main.js";
-import {
-	makeCard_glyphAttributes,
-	makeCard_pathAttributes,
-	makeCard_multiSelectPathAttributes,
-	makeCard_pathPointAttributes
-} from "./attribute_cards.js";
+import { makeCard_glyphAttributes } from "./card_glyph.js";
+import { makeCard_pathAttributes } from "./card_path.js";
+import { makeCard_pathPointAttributes } from "./card_path_point.js";
 import { refreshPanel } from "./panels.js";
 
 /**

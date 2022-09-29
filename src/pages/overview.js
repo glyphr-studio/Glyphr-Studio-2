@@ -21,7 +21,7 @@ export class PageOverview {
 	 * @returns {object} HTML Element + callback function
 	 */
 	makePageContent() {
-		log(`PageOverview.makePageContent`, 'start');
+		// log(`PageOverview.makePageContent`, 'start');
 
 		const content = makeElement({
 			tag: 'div',
@@ -41,7 +41,7 @@ export class PageOverview {
 		`,
 		});
 
-		log(content);
+		// log(content);
 
 		let glyphsContent = makeChooserContent_Glyphs((glyphID) => {
 			const editor = getCurrentProjectEditor();
@@ -54,7 +54,7 @@ export class PageOverview {
 		let l1 = content.querySelector('#nav-button-l1');
 		l1.addEventListener('click', function(){ showNavDropdown(l1); });
 
-		log(`PageOverview.makePageContent`, 'end');
+		// log(`PageOverview.makePageContent`, 'end');
 
 		return content;
 	}

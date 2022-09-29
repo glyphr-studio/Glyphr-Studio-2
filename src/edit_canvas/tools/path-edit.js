@@ -85,11 +85,8 @@ export class Tool_PathEdit {
 
 			if (ehd.toolHandoff) {
 				ehd.toolHandoff = false;
-				this.controlPoint = {
-					type: 'h2',
-					point: selectedPoints.singleton,
-				};
-
+				this.controlPoint = selectedPoints.singleton.h2;
+				
 				this.controlPoint.parent.h2.use = true;
 				this.controlPoint.parent.h2.x = cXsX(ehd.mouseX, view);
 				this.controlPoint.parent.h2.y = cYsY(ehd.mouseY, view);

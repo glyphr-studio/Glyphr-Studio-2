@@ -54,13 +54,13 @@ export function makePanel_Layers() {
 				topic: 'whichPathIsSelected',
 				subscriberID: 'layersPanel.rowButton',
 				callback: (newSelectedPath) => {
-					log(`Layer subscription callback for selectedPath`, 'start');
+					// log(`Layer subscription callback for selectedPath`, 'start');
 
 					let isSelected = editor.multiSelect.paths.isSelected(path);
-					log(`isSelected: ${isSelected}`);
-					log(row.classList.toString());
+					// log(`isSelected: ${isSelected}`);
+					// log(row.classList.toString());
 					row.classList.toggle('layer-panel__selected', isSelected);
-					log(`Layer subscription callback for selectedPath`, 'end');
+					// log(`Layer subscription callback for selectedPath`, 'end');
 				}
 			});
 

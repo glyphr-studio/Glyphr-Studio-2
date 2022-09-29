@@ -16,7 +16,7 @@ export class CanvasDisplay extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		log(`CanvasDisplay.constructor`, 'start');
+		// log(`CanvasDisplay.constructor`, 'start');
 
 		super();
 
@@ -43,7 +43,7 @@ export class CanvasDisplay extends HTMLElement {
 		this.canvas.width = this.width;
 
 		this.redraw();
-		log(`CanvasDisplay.constructor`, 'end');
+		// log(`CanvasDisplay.constructor`, 'end');
 	}
 
 	/**
@@ -60,8 +60,8 @@ export class CanvasDisplay extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		log(`CanvasDisplay.attributeChangeCallback`, 'start');
-		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		// log(`CanvasDisplay.attributeChangeCallback`, 'start');
+		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		switch (attributeName) {
 			case 'glyphs':
@@ -96,14 +96,14 @@ export class CanvasDisplay extends HTMLElement {
 		if (attributeName === 'glyphs') {
 			this.redraw();
 		}
-		log(`CanvasDisplay.attributeChangeCallback`, 'end');
+		// log(`CanvasDisplay.attributeChangeCallback`, 'end');
 	}
 
 	/**
 	 * Updates the canvas
 	 */
 	redraw() {
-		log('CanvasDisplay.redraw', 'start');
+		// log('CanvasDisplay.redraw', 'start');
 		const editor = getCurrentProjectEditor();
 		let glyph = editor.selectedGlyph;
 		let settings = getCurrentProject().projectSettings;
@@ -129,8 +129,8 @@ export class CanvasDisplay extends HTMLElement {
 		let glyphHex = glyphToHex(this.glyphs.charAt(0));
 
 		let sg = getCurrentProject().getGlyph(glyphHex);
-		log(sg);
+		// log(sg);
 		drawGlyph(sg, this.ctx, view);
-		log('CanvasDisplay.redraw', 'end');
+		// log('CanvasDisplay.redraw', 'end');
 	}
 }

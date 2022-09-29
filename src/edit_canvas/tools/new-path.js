@@ -45,22 +45,23 @@ export class Tool_NewPath {
 					// clicked on an existing control point in this path
 					// if first point - close the path
 					ehd.toolHandoff = true;
-					ehd.tool_pathEdit.dragging = true;
+					editor.eventHandlers.tool_pathEdit.dragging = true;
 					ehd.lastX = ehd.mouseX;
 					ehd.lastY = ehd.mouseY;
 					editor.multiSelect.points.select(this.newPath.pathPoints[0]);
 					editor.selectedTool = 'pathEdit';
+					editor.publish('whichToolIsSelected', editor.selectedTool);
 
 					this.dragging = false;
-					this.firstPoint = false;
+					this.firstPoint = true;
 					this.currentPoint = {};
+					this.newPath = false;
 
-					redraw({ calledBy: 'Event Handler Tool_NewPath mousedown' });
 					return;
 				}
 
 				this.currentPoint = this.newPath.addPathPoint(newPoint);
-				// editor.multiSelect.points.select(this.currentPoint);
+				editor.multiSelect.points.select(this.currentPoint);
 			}
 
 			this.firstPoint = false;
