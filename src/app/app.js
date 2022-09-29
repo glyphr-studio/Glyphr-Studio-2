@@ -116,7 +116,20 @@ export class GlyphrStudioApp {
 
 function makeAppTopBar() {
 	let app = getGlyphrStudioApp();
-	return `<div id="app__top-bar">Glyphr Studio&emsp;<span style="font-size: 0.6em; opacity: 60%;">${app.versionName} - ${app.version}</span></div>`;
+	return `
+		<div id="app__top-bar">
+			Glyphr Studio&emsp;
+			<span class="versionInfo">
+				${app.versionName} - ${app.version}
+			</span>
+			<span class='alphaBugContact'>
+				Found a bug? Have some feedback?
+				<a href="mailto:mail@glyphrstudio.com?subject=[${app.version}] Feedback">
+					mail@glyphrstudio.com
+				</a>
+			</span>
+		</div>
+	`;
 }
 
 // --------------------------------------------------------------
