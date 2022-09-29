@@ -415,6 +415,43 @@ export class Path extends GlyphElement {
 		this.cache.svgPathData = data;
 	}
 
+	/**
+	 * For glyph elements with lockable parameters, this function
+	 * will be overwritten to return a boolean.
+	 * By default, properties are all unlocked.
+	 * @param {string} propertyName - property to check if locked
+	 * @returns {Boolean}
+	 */
+	isLocked(propertyName) {
+		if(propertyName === 'x') return this.xLock;
+		if(propertyName === 'y') return this.yLock;
+		if(propertyName === 'width') return this.wLock;
+		if(propertyName === 'height') return this.hLock;
+		return false;
+	}
+
+	/**
+	 * Sets locks based on property name
+	 * @param {string} propertyName - property to lock
+	 */
+	 lock(propertyName) {
+		if(propertyName === 'x') this.xLock = true;
+		if(propertyName === 'y') this.yLock = true;
+		if(propertyName === 'width') this.wLock = true;
+		if(propertyName === 'height') this.hLock = true;
+	}
+
+	/**
+	 * Sets locks based on property name
+	 * @param {string} propertyName - property to unlock
+	 */
+	unlock(propertyName) {
+		if(propertyName === 'x') this.xLock = false;
+		if(propertyName === 'y') this.yLock = false;
+		if(propertyName === 'width') this.wLock = false;
+		if(propertyName === 'height') this.hLock = false;
+	}
+
 	// --------------------------------------------------------------
 	//  SIZE AND POSITION
 	// --------------------------------------------------------------
@@ -867,6 +904,12 @@ export class Path extends GlyphElement {
 
 		return re;
 	}
+
+
+
+// --------------------------------------------------------------
+// methods for Actions
+// --------------------------------------------------------------
 
 	/**
 	 * Finds either the clockwise or counterclockwise winding of a path

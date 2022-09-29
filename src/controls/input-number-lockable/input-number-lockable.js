@@ -103,10 +103,12 @@ export class InputNumberLockable extends HTMLElement {
 						// unlock
 						// log(`unlocking`);
 						this.elementRoot.inputNumber.removeAttribute('disabled');
+						this.elementRoot.removeAttribute('disabled');
 					} else {
 						// lock
 						// log(`locking`);
 						this.elementRoot.inputNumber.setAttribute('disabled', '');
+						this.elementRoot.setAttribute('disabled', '');
 					}
 
 				} else if (mutation.attributeName === 'value') {
