@@ -1,3 +1,12 @@
+
+:root {
+	--l1-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
+	--l2-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+	--l3-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+	--l3-shadow-down: 0px 6px 6px rgba(0, 0, 0, 0.3);
+	--global-focus-style: 1px dashed var(--purple-l50);
+}
+
 #app__wrapper,
 #app__main-content,
 #app__page {
@@ -27,10 +36,24 @@
 	font-size: 1.4em;
 }
 
-:root {
-	--l1-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
-	--l2-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
-	--l3-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
-	--l3-shadow-down: 0px 6px 6px rgba(0, 0, 0, 0.3);
-	--global-focus-style: 1px dashed var(--purple-l50);
+.versionInfo {
+	font-size: 0.6em;
+	opacity: 60%;
+}
+
+.alphaBugContact {
+	position: absolute;
+	right: 10px;
+	padding: 2px 4px;
+	margin: 5px 0px 0px 0px;
+	font-size: 12px;
+	background-color: var(--purple-l40);
+	color: var(--purple-l90);
+	border-radius: 3px;
+}
+
+.alphaBugContact a {
+	font-size: 12px;
+	color: var(--purple-l90);
+	margin-left: 4px;
 }
