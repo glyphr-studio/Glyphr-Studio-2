@@ -38,13 +38,17 @@ export function drawGlyph(
 	// log('drawGlyph', 'start');
 	// log(glyph.name);
 	// log('view ' + json(view, true));
-	const sl = glyph.paths;
+	if(!glyph.paths) {
+		console.warn(`Glyph ${glyph.name} has no paths to draw`);
+		return false;
+	}
+
 	let path;
 	let drewPath;
 
 	ctx.beginPath();
-	for (let j = 0; j < sl.length; j++) {
-		path = sl[j];
+	for (let j = 0; j < glyph.paths.length; j++) {
+		path = glyph.paths[j];
 		// log(`${glyph.name} drawing ${path.objType} #${j} "${path.name}"`);
 		drewPath = drawPath(path, ctx, view);
 		if (!drewPath) {

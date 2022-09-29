@@ -1,6 +1,6 @@
 import { getCurrentProjectEditor } from "../app/main.js";
 import { addAsChildren, makeElement } from "../common/dom.js";
-import { makePanel_GlyphAttributes } from "./attributes_panel_glyph.js";
+import { makePanel_GlyphAttributes } from "./attributes_glyph_edit.js";
 import { makePanel_Layers } from "./layers.js";
 import { makePanel_History } from "./history.js";
 import { makePanel_Guides } from "./guides.js";
@@ -53,14 +53,16 @@ export function makePanel() {
  */
 export function refreshPanel() {
 	// log(`refreshPanel`, 'start');
-	let panelArea = document.querySelector('.left-area__panel');
-	// panelArea.style.opacity = '0';
-	let newContent = makePanel();
-	// log(newContent);
-	panelArea.innerHTML = '';
-	panelArea.appendChild(newContent);
-	// window.setTimeout(() => {
-	// 	panelArea.style.opacity = '1';
-	// }, 50);
+	let panelArea = document.querySelector('.editor-page__panel');
+	if(panelArea) {
+		// panelArea.style.opacity = '0';
+		let newContent = makePanel();
+		// log(newContent);
+		panelArea.innerHTML = '';
+		panelArea.appendChild(newContent);
+		// window.setTimeout(() => {
+		// 	panelArea.style.opacity = '1';
+		// }, 50);
+	}
 	// log(`refreshPanel`, 'end');
 }

@@ -1,15 +1,18 @@
 import { PageOpenProject } from '../pages/open_project.js';
 import { PageGlyphEdit } from '../pages/glyph_edit.js';
 import { PageOverview } from '../pages/overview.js';
+import { PageAbout } from '../pages/about.js';
 
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { makeChooserContent_Glyphs, makeChooserContent_Pages, makeChooserContent_Panels } from '../panels/panel_choosers.js';
+import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
 import { makeAppTopBar } from '../app/app.js';
+import { makeIcon } from '../common/graphics.js';
+import { accentColors } from '../common/colors.js';
 
-	// --------------------------------------------------------------
-	// Navigation
-	// --------------------------------------------------------------
+// --------------------------------------------------------------
+// Navigation
+// --------------------------------------------------------------
 export class Navigator {
 
 	constructor() {
@@ -80,7 +83,7 @@ export class Navigator {
 			},
 			'About': {
 				name: 'About',
-				pageMaker: false,
+				pageMaker: PageAbout,
 				iconName: 'page_about',
 			},
 		};
@@ -245,12 +248,12 @@ export function showNavDropdown(parentElement) {
 	// log(`dropdownType: ${dropdownType}`);
 
 	if(dropdownType === 'PAGE') {
-		dropdownContent = makeChooserContent_Pages();
+		dropdownContent = makePageChooserContent();
 		size = `${parentElement.parentElement.getBoundingClientRect().width-2}px`;
 	}
 
 	if(dropdownType === 'EDITING') {
-		dropdownContent = makeChooserContent_Glyphs((glyphID) => {
+		dropdownContent = makeGlyphChooserContent((glyphID) => {
 			const editor = getCurrentProjectEditor();
 			editor.selectedGlyphID = glyphID;
 			closeAllDialogs();
@@ -259,7 +262,7 @@ export function showNavDropdown(parentElement) {
 	}
 
 	if(dropdownType === 'PANEL') {
-		dropdownContent = makeChooserContent_Panels();
+		dropdownContent = makePanelChooserContent();
 		size = `${rect.width-2}px`;
 	}
 
@@ -283,4 +286,93 @@ export function showNavDropdown(parentElement) {
 	closeAllDialogs();
 	document.getElementById('app__wrapper').appendChild(dropDown);
 	// log(`showNavDropdown`, 'end');
+}
+
+function makePageChooserContent(){
+	// log(`makePageChooserContent`, 'start');
+
+	let content = makeElement();
+	let pageButton;
+	let toc = getCurrentProjectEditor().nav.tableOfContents;
+
+	Object.keys(toc).forEach((pageName) => {
+		if(pageName !== 'Open project' && toc[pageName].pageMaker){
+		// if(pageName !== 'Open project'){
+			pageButton = makeNavButton_Page(pageName, toc[pageName].iconName);
+			content.appendChild(pageButton);
+		}
+	});
+
+	// log(`makePageChooserContent`, 'end');
+	return content;
+}
+
+function makeNavButton_Page(pageName, iconName) {
+	let button = makeElement({tag: 'button', className: 'nav-dropdown__button'});
+	button.innerHTML += makeIcon({name: iconName, color: accentColors.blue.l90});
+	button.appendChild(makeElement({content: pageName}));
+	button.addEventListener('click', () => getCurrentProjectEditor().navigate(pageName));
+	return button;
+}
+
+function makePanelChooserContent(){
+	// log(`makePanelChooserContent`, 'start');
+
+	let content = makeElement();
+	let pageButton;
+	let panels = listOfPanels();
+	let shownPanels = ['Attributes', 'Layers', 'History', 'Guides'];
+
+	shownPanels.forEach((panelName) => {
+		pageButton = makeNavButton_Panel(panelName, panels[panelName].iconName);
+		content.appendChild(pageButton);
+	});
+
+	// log(`makePanelChooserContent`, 'end');
+	return content;
+}
+
+function makeNavButton_Panel(panelName, iconName) {
+	let button = makeElement({tag: 'button', className: 'nav-dropdown__button'});
+	button.innerHTML += makeIcon({name: iconName, color: accentColors.blue.l90});
+	button.appendChild(makeElement({content: panelName}));
+	button.addEventListener('click', () => {
+		const editor = getCurrentProjectEditor();
+		editor.nav.panel = panelName;
+		editor.navigate();
+	});
+	return button;
+}
+
+/**
+ * List of panels the editor supports
+ */
+function listOfPanels() {
+	return {
+		'Chooser': {
+			name: 'Chooser',
+			panelMaker: false,
+			iconName: 'panel_chooser',
+		},
+		'Layers': {
+			name: 'Layers',
+			panelMaker: false,
+			iconName: 'panel_layers',
+		},
+		'Guides': {
+			name: 'Guides',
+			panelMaker: false,
+			iconName: 'panel_guides',
+		},
+		'History': {
+			name: 'History',
+			panelMaker: false,
+			iconName: 'panel_history',
+		},
+		'Attributes': {
+			name: 'Attributes',
+			panelMaker: false,
+			iconName: 'panel_attributes',
+		},
+	};
 }
