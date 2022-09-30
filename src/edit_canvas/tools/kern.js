@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProjectEditor } from '../../app/main.js';
+import { eventHandlerData } from '../events.js';
 
 export class Tool_Kern {
 	constructor() {

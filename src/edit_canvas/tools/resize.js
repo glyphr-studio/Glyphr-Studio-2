@@ -4,7 +4,8 @@
 
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { setCursor } from '../cursors.js';
-import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData, eventHandler_PathResize } from '../events_mouse.js';
+import { eventHandlerData } from '../events.js';
+import { checkForMouseOverHotspot, clickEmptySpace, eventHandler_PathResize } from '../events_mouse.js';
 import { clickTool, getPathAtLocation } from './tools.js';
 
 export class Tool_Resize {

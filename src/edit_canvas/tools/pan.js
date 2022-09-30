@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProjectEditor } from '../../app/main.js';
-import { eventHandlerData } from '../events_mouse.js';
+import { eventHandlerData } from '../events.js';
 
 export class Tool_Pan {
 	constructor() {

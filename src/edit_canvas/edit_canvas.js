@@ -2,7 +2,7 @@ import { makeElement } from '../common/dom.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
-import { eventHandlerData, initEventHandlers } from './events_mouse.js';
+import { eventHandlerData, initEventHandlers } from './events.js';
 import { drawGlyph, drawPath } from './draw_paths.js';
 import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, computeAndDrawPathPointHandles, computeAndDrawPathPoints, drawBoundingBox, drawNewBasicPath, drawPathPointHover, drawSelectedPathOutline } from './draw_edit_affordances.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js';

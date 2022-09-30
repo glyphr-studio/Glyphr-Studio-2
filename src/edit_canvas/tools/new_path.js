@@ -8,7 +8,7 @@ import { PathPoint } from '../../project_data/path_point.js';
 import { setCursor } from '../cursors.js';
 import { isOverFirstPoint } from '../draw_paths.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
-import { eventHandlerData } from '../events_mouse.js';
+import { eventHandlerData } from '../events.js';
 
 export class Tool_NewPath {
 	constructor() {

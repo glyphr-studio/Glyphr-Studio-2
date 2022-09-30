@@ -6,8 +6,9 @@ import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { setCursor } from '../cursors.js';
 import { isOverControlPoint } from '../draw_paths.js';
-import { checkForMouseOverHotspot, clickEmptySpace, eventHandlerData, findAndCallHotspot } from '../events_mouse.js';
+import { checkForMouseOverHotspot, clickEmptySpace, findAndCallHotspot } from '../events_mouse.js';
 import { getPathAtLocation } from './tools.js';
+import { eventHandlerData } from '../events.js';
 
 export class Tool_PathEdit {
 	constructor() {
