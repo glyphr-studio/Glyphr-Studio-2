@@ -356,6 +356,12 @@ export class ProjectEditor {
 		return !!this._views[id];
 	}
 
+	updateViewZoom(zoomInput) {
+		let newValue = parseFloat(zoomInput) * this.view.dz;
+		this.view = {dz: newValue};
+		this.publish('view', this.view);
+	}
+
 	setViewZoom(zoomInput) {
 		let newValue = parseFloat(zoomInput) / 100;
 		this.view = {dz: newValue};

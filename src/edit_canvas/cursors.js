@@ -11,11 +11,11 @@ export function updateCursor(tool) {
 
 	if (eventHandlerData.isMouseOverCanvas) {
 		if (tool === 'newRectangle') {
-			// log('setting cursor to crosshairsSquare');
-			setCursor('crosshairsSquare');
+			// log('setting cursor to crosshairSquare');
+			setCursor('crosshairSquare');
 		} else if (tool === 'newOval') {
-			// log('setting cursor to crosshairsCircle');
-			setCursor('crosshairsCircle');
+			// log('setting cursor to crosshairCircle');
+			setCursor('crosshairCircle');
 		} else if (tool === 'pathEdit') {
 			// log('pathEdit :: not setting cursor');
 			// Handled by eventHandler
@@ -47,12 +47,12 @@ export function updateCursor(tool) {
 }
 
 export function setCursor(name) {
-	// log('setCursor', 'start');
-	// log('passed ' + name);
 	if (document.body.style.cursor === name) {
 		// log('setCursor', 'end');
 		return;
 	}
+	// log('setCursor', 'start');
+	// log('passed ' + name);
 
 	const cur = [
 		'auto',
@@ -98,15 +98,16 @@ export function setCursor(name) {
 		// log('SET -resize CURSOR');
 	}
 
-	document.body.style.cursor = 'auto';
-
 	if (cursors[name]) {
 		document.body.style.cursor = cursors[name];
 		// log('SET CUSTOM CURSOR:\t'+name);
+
 	} else if (cur.indexOf(name) > -1) {
 		document.body.style.cursor = name;
 		// log('SET BUILT-IN CURSOR:\t'+name);
+
 	} else {
+		document.body.style.cursor = 'auto';
 		// log('DEFAULT TO auto');
 	}
 
@@ -147,9 +148,9 @@ cursors.penPlus =
 cursors.penSquare =
 	'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAWZJREFUeNpiYNB2/M8wAIAJTA6A5WCLcxKj6W452GJpCXGGLYtm0NlykGVA/PDr//9bzt78Ty/LmZA5uhpqdPQ50BKYT0G+ppfPmWA+pb/P0eIX5mta+5wJ2ZfogLY+xxK3yL6mlc8xUjU2QBuf44pXaGqnlc+Z0AV84jKwsqntcyZCCi7fuMVATHRQbHF7ZREKm1oWoQMWdIGoQB+IzzTVaGYpVouRLadbJUHv+thE3syJ7hYzQvOyMZA88/DUPryKYQ4EZSlwVru6nxGlXscHkNWiFSTG2IpLEMZWoEDVGuAqiDD0EyjFUCzHVYJhLcUIWaztKAXEvNhT9dX9Z4GSoDg/A+LiC3oyspoklP6MPVWDLMcZH5jxTfXsBCxAHLEZDhKDipsQ40CSChBwGb1m5gFgsGPzoQk4VGhRcsHL6qqiRqCF9cRaSErwM1K9ZAClXkRCQgfPgY5/RtDHZILPxMgBBBgA4nlavXX9OPwAAAAASUVORK5CYII=") 0 0, default';
 
-cursors.crosshairs =
+cursors.crosshair =
 	'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAAZCAYAAADE6YVjAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHdJREFUeNpiYCAFaDvOB+L/YJpmAGjBw6///4MtIgEwMdABjFoyasngsWSBvJkTmGYYbIARWkQkEPIBw9X9iViLGSL0MoKLilP78KoCB9HV/YywogWZTYxeFmg4E/YJDMAsQMQR8XoHDxgt6kctGbVkaBf1AAEGAMBRMaRlDAehAAAAAElFTkSuQmCC") 12 12, crosshair';
-cursors.crosshairsCircle =
+cursors.crosshairCircle =
 	'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASdJREFUeNpiYCAFaDvOB+L/YJquAGjpw6///4MtpxAwMQwQGLV41OJRixfImzmBaYahChihxV8CIZ8yXN2fiLUIJVcvrBjEh1GKSDQ2SXqRAAs03gi7Ggau7mdEi3Pi9Q49MFotjlpMAmChUVoIAJL9QKwAFXkAxIXArLiBdokLaCmfhe//3pU74IVI/dw1/0FiUAfRzOL7yJbCMEgMJEebONZ2FAAFb4iPO4YUVEwBqEZhoKpFYaDlwqRZDKplQGU11toGLP8BlJDWbNmJITVvxVoQ9RzKZWemeooWU3x44tzFCA52NgZDHS2wEMghHVNnM/z89asRmsK/MNIpO4F82gvEB2DZi5GmpQQkIQmjib4FRgmNLYZYDrKYHcr7CbT0LYgBEGAANUzSIEqdxeYAAAAASUVORK5CYII=") 12 12, crosshair';
-cursors.crosshairsSquare =
+cursors.crosshairSquare =
 	'url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAK9JREFUeNpiYCAFaDvOB+L/YJquAGjpw6///4MtpxAwMQwQGLV41OJRixfImzmBaYahChihxV8CIZ8yXN2fiLUIJVcvrBjEh1GKSDQ2SXqRAAs03gi7Ggau7mdEi3Pi9Q49MFotjlpMAmChRTrAKw/Njiy08M3DU/uwikPLeQaaWUwgRKSA5GeWAYheyQGtFknzMaSWSRzNTvhSL+6GAG1TryQO2ee0TNWf8ckBBBgA6OV4hjhWgkEAAAAASUVORK5CYII=") 12 12, crosshair';

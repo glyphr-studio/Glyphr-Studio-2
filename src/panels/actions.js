@@ -437,7 +437,7 @@ function combineSelectedPaths() {
 	showToast('Combining selected paths... ', 100);
 
 	setTimeout(function () {
-		_UI.multiSelect.paths.combine();
+		editor.multiSelect.paths.combine();
 		historyPut('combine selected paths');
 		redraw({ calledBy: 'actions panel' });
 	}, 200);
@@ -456,8 +456,9 @@ function combineAllGlyphPaths() {
 // --------------------------------------------------------------
 // Copy Paste
 // --------------------------------------------------------------
-function copyPath() {
-	let ssm = _UI.multiSelect.paths.members;
+export function copyPath() {
+	const editor = getCurrentProjectEditor();
+	let ssm = editor.multiSelect.paths.members;
 	if (ssm.length) {
 		_UI.clipboardPath = {
 			s: clone(ssm),
@@ -465,12 +466,12 @@ function copyPath() {
 			dx: 0,
 			dy: 0,
 		};
-		// log("COPYPath() - new clipboard path: " + _UI.clipboardPath._UI.multiSelect.paths.name);
+		// log("COPYPath() - new clipboard path: " + _UI.clipboardPath.editor.multiSelect.paths.name);
 	}
 	redraw({ calledBy: 'copyPath', redrawCanvas: false });
 }
 
-function pastePath() {
+export function pastePath() {
 	// log('pastePath', 'start');
 	let cbs = _UI.clipboardPath;
 	// log(cbs);
@@ -535,11 +536,11 @@ function pastePath() {
 			newPaths.push(addPath(ts));
 		}
 
-		_UI.multiSelect.paths.clear();
-		_UI.multiSelect.points.clear();
+		editor.multiSelect.paths.clear();
+		editor.multiSelect.points.clear();
 
 		for (let t = 0; t < newPaths.length; t++)
-			_UI.multiSelect.paths.add(newPaths[t]);
+			editor.multiSelect.paths.add(newPaths[t]);
 
 		cbs.c = selwi;
 

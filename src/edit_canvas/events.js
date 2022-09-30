@@ -6,7 +6,7 @@ import { Tool_PathEdit }  from './tools/path_edit.js';
 import { Tool_PathAddPoint }  from './tools/path_add_point.js';
 import { Tool_Kern }  from './tools/kern.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { updateCursor } from './cursors.js';
+import { setCursor, updateCursor } from './cursors.js';
 import { handleMouseEvents, handleMouseWheel } from './events_mouse.js';
 import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
 
@@ -34,6 +34,7 @@ export let eventHandlerData = {
 	undoQueueHasChanged: false,
 	lastTool: false,
 	isSpaceDown: false,
+	isPanning: false,
 	isShiftDown: false,
 	isCtrlDown: false,
 	hoverPoint: false,
@@ -82,4 +83,24 @@ export function handleMouseLeaveCanvas() {
 	document.onselectstart = function () {};
 	updateCursor();
 	// log('handleMouseLeaveCanvas', 'end');
+}
+
+export function togglePanOn(event) {
+	const editor = getCurrentProjectEditor();
+	editor.eventHandlers.tool_pan.mousedown(event);
+	eventHandlerData.lastTool = editor.selectedTool;
+	editor.selectedTool = 'pan';
+	eventHandlerData.isPanning = true;
+	editor.publish('whichToolIsSelected', editor.selectedTool);
+	setCursor('move');
+}
+
+export function togglePanOff(event) {
+	const editor = getCurrentProjectEditor();
+	editor.eventHandlers.tool_pan.mouseup(event);
+	editor.selectedTool = eventHandlerData.lastTool;
+	eventHandlerData.lastTool = false;
+	eventHandlerData.isPanning = false;
+	updateCursor();
+	editor.publish('whichToolIsSelected', editor.selectedTool);
 }

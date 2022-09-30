@@ -1,65 +1,92 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';
-import { eventHandlerData, handleMouseLeaveCanvas, handleMouseOverCanvas } from './events.js';
+import { eventHandlerData, handleMouseLeaveCanvas, handleMouseOverCanvas, togglePanOff, togglePanOn } from './events.js';
 
 // --------------------------------------------------------------
 // Mouse Events
 // --------------------------------------------------------------
 
+
 export function handleMouseEvents(event) {
 	// log(`handleMouseEvents`, 'start');
 	// log(`Raw mouse event x/y = ${event.layerX} / ${event.layerY}`);
-
+	// log(event);
+	let ehd = eventHandlerData;
 	const editor = getCurrentProjectEditor();
-	handleMouseOverCanvas();
-	let eh = eventHandlerData;
 
-	if (event.offsetX || event.offsetX) {
+	if (event.offsetX || event.offsetY) {
 		// IE, Chrome, (Opera?)
-		eh.mouseX = event.offsetX;
-		eh.mouseY = event.offsetY;
-	} else if (event.layerX || event.layerX) {
+		ehd.mouseX = event.offsetX;
+		ehd.mouseY = event.offsetY;
+	} else if (event.layerX || event.layerY) {
 		// Firefox
-		eh.mouseX = event.layerX;
-		eh.mouseY = event.layerY;
+		ehd.mouseX = event.layerX;
+		ehd.mouseY = event.layerY;
 	}
-	// updateCursor();
+	// log(`ehd.mouse: ${ehd.mouseX}, ${ehd.mouseY}`);
 
-	// Switch Tool function
-	// log(`editor.selectedTool: ${editor.selectedTool}`);
-	switch (editor.selectedTool) {
-		case 'resize':
-			eh.currentToolHandler = editor.eventHandlers.tool_resize;
-			break;
-		case 'pathEdit':
-			eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
-			break;
-		case 'pan':
-			eh.currentToolHandler = editor.eventHandlers.tool_pan;
-			break;
-		case 'pathAddPoint':
-			eh.currentToolHandler = editor.eventHandlers.tool_pathAddPoint;
-			break;
-		case 'newPath':
-			eh.currentToolHandler = editor.eventHandlers.tool_addPath;
-			break;
-		case 'newRectangle':
-			eh.currentToolHandler = editor.eventHandlers.tool_addRectOval;
-			break;
-		case 'newOval':
-			eh.currentToolHandler = editor.eventHandlers.tool_addRectOval;
-			break;
-		case 'kern':
-			eh.currentToolHandler = editor.eventHandlers.tool_kern;
-			break;
-		case editor.selectedTool:
-			eh.currentToolHandler = editor.eventHandlers.tool_resize;
+	// Mouse back & forward buttons
+	if(event.button === 3 || event.button === 4) {
+		// Don't navigate
+		event.preventDefault();
+		return;
 	}
 
-	// Call the event handler of the eh.currentToolHandler.
-	// log(JSON.stringify(eh.currentToolHandler));
-	eh.currentToolHandler[event.type](event);
+	// Mouse right-click
+	if(event.button === 2) {
+		// Right-click handler
+	}
+
+	// Mouse wheel-click
+	if(event.button === 1) {
+		if(event.type === 'mousedown') {
+			togglePanOn(event);
+		}
+		if(event.type === 'mouseup') {
+			togglePanOff(event);
+		}
+		// return;
+	}
+
+	// Mouse left-click
+	if(event.button === 0) {
+
+		// Switch Tool function
+		// log(`editor.selectedTool: ${editor.selectedTool}`);
+		switch (editor.selectedTool) {
+			case 'resize':
+				ehd.currentToolHandler = editor.eventHandlers.tool_resize;
+				break;
+			case 'pathEdit':
+				ehd.currentToolHandler = editor.eventHandlers.tool_pathEdit;
+				break;
+			case 'pan':
+				ehd.currentToolHandler = editor.eventHandlers.tool_pan;
+				break;
+			case 'pathAddPoint':
+				ehd.currentToolHandler = editor.eventHandlers.tool_pathAddPoint;
+				break;
+			case 'newPath':
+				ehd.currentToolHandler = editor.eventHandlers.tool_addPath;
+				break;
+			case 'newRectangle':
+				ehd.currentToolHandler = editor.eventHandlers.tool_addRectOval;
+				break;
+			case 'newOval':
+				ehd.currentToolHandler = editor.eventHandlers.tool_addRectOval;
+				break;
+			case 'kern':
+				ehd.currentToolHandler = editor.eventHandlers.tool_kern;
+				break;
+			case editor.selectedTool:
+				ehd.currentToolHandler = editor.eventHandlers.tool_resize;
+		}
+
+		// Call the event handler of the ehd.currentToolHandler.
+		// log(JSON.stringify(ehd.currentToolHandler));
+		ehd.currentToolHandler[event.type](event);
+	}
 	// log(`handleMouseEvents`, 'end');
 }
 
@@ -239,22 +266,22 @@ export function canResize(handle) {
 }
 
 export function handleMouseWheel(event) {
+	// log(event);
 	let delta = event.deltaY * -1;
 	const editor = getCurrentProjectEditor();
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
-	let canZoom =
-		editor.nav.isOnEditCanvasPage &&
-		document.getElementById('dialog_box').style.display !== 'block';
+	let canZoom = editor.nav.isOnEditCanvasPage;
+		// && document.getElementById('dialog_box').style.display !== 'block';
 
 	if (canZoom) {
 		if (event.ctrlKey || event.metaKey) {
 			event.preventDefault();
 			// log('MOUSEWHEEL: canZoom=true and delta=' + delta );
 			if (delta > 0) {
-				viewZoom(1.1);
+				editor.updateViewZoom(1.1);
 			} else {
-				viewZoom(0.9);
+				editor.updateViewZoom(0.9);
 			}
 		}
 	}

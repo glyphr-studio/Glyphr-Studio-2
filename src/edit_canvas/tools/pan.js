@@ -7,40 +7,42 @@ import { eventHandlerData } from '../events.js';
 
 export class Tool_Pan {
 	constructor() {
-		this.dragging = false;
-		this.deltax = 0;
-		this.deltay = 0;
+		this.deltaX = 0;
+		this.deltaY = 0;
 
 		this.mousedown = function (ev) {
 			// log('PAN TOOL - mouse down: ' + eventHandlerData.mouseX + ':' + eventHandlerData.mouseY);
 			const editor = getCurrentProjectEditor();
 			let view = editor.view;
-			this.deltax = eventHandlerData.mouseX - view.dx;
-			this.deltay = eventHandlerData.mouseY - view.dy;
-			this.dragging = true;
+			this.deltaX = eventHandlerData.mouseX - view.dx;
+			this.deltaY = eventHandlerData.mouseY - view.dy;
+			// log(`this.delta: ${this.deltaX}, ${this.deltaY}`);
+			eventHandlerData.isPanning = true;
+		};
+
+		this.mousemove = function (ev) {
+			if (eventHandlerData.isPanning) {
+				// Moving paths if mousedown
+				const editor = getCurrentProjectEditor();
+				// log(`ehd.mouse: ${eventHandlerData.mouseX}, ${eventHandlerData.mouseY}`);
+				// log(`this.delta: ${this.deltaX}, ${this.deltaY}`);
+
+				let update = {
+					dx: eventHandlerData.mouseX - this.deltaX,
+					dy: eventHandlerData.mouseY - this.deltaY,
+				};
+				// log(update);
+				editor.view = update;
+				editor.publish('view', editor.view);
+			}
 		};
 
 		this.mouseup = function () {
 			// log('PAN TOOL - Mouse Up');
-			this.dragging = false;
-			this.deltax = 0;
-			this.deltay = 0;
+			eventHandlerData.isPanning = false;
+			this.deltaX = 0;
+			this.deltaY = 0;
 		};
 
-		this.mousemove = function (ev) {
-			if (this.dragging) {
-				const editor = getCurrentProjectEditor();
-				// Moving paths if mousedown
-				editor.view = {
-					dx: eventHandlerData.mouseX - this.deltax,
-					dy: eventHandlerData.mouseY - this.deltay,
-				};
-
-				editor.editCanvas.redraw({
-					calledBy: 'Event Handler Tool_Pan mousemove',
-					redrawPanels: false,
-				});
-			}
-		};
 	}
 }
