@@ -2,7 +2,6 @@ import { PageOpenProject } from '../pages/open_project.js';
 import { PageGlyphEdit } from '../pages/glyph_edit.js';
 import { PageOverview } from '../pages/overview.js';
 import { PageAbout } from '../pages/about.js';
-
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
@@ -13,6 +12,7 @@ import { accentColors } from '../common/colors.js';
 // --------------------------------------------------------------
 // Navigation
 // --------------------------------------------------------------
+
 export class Navigator {
 
 	constructor() {

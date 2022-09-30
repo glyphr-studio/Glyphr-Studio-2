@@ -1,26 +1,20 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { accentColors } from '../common/colors.js';
-import { setCursor, updateCursor } from './cursors.js';
-
+import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';
 import { eventHandlerData } from './events.js';
 
-/**
- Framework > Event Handlers > Mouse
- All the canvas mouse interaction and tool
- events for all pages can be found here.
- **/
+// --------------------------------------------------------------
+// Mouse Events
+// --------------------------------------------------------------
 
-
-// Helper Functions
 export function clickEmptySpace() {
 	const editor = getCurrentProjectEditor();
 	editor.multiSelect.points.clear();
 	editor.multiSelect.paths.clear();
 }
 
-export function eventHandler_PathResize() {
-	// log('eventHandler_PathResize', 'start');
+export function resizePath() {
+	// log('resizePath', 'start');
 	const editor = getCurrentProjectEditor();
 	let paths = editor.multiSelect.paths;
 	// log(paths);
@@ -109,7 +103,7 @@ export function eventHandler_PathResize() {
 	}
 
 	// log('Done lx/rx/ty/by: ' + paths.maxes.print());
-	// log(`eventHandler_PathResize`, 'end');
+	// log(`resizePath`, 'end');
 }
 
 export function checkForMouseOverHotspot(x, y) {
@@ -183,7 +177,7 @@ export function canResize(handle) {
 	return re;
 }
 
-export function mousewheel(event) {
+export function handleMouseWheel(event) {
 	let delta = event.deltaY * -1;
 	const editor = getCurrentProjectEditor();
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
@@ -204,8 +198,6 @@ export function mousewheel(event) {
 		}
 	}
 }
-
-
 
 
 // --------------------------------------------------------------

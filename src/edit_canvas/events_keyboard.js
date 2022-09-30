@@ -1,8 +1,11 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { eventHandlerData } from './events.js';
 
+// --------------------------------------------------------------
+// Keyboard events
+// --------------------------------------------------------------
 
-export function keyup(event) {
+export function handleKeyUp(event) {
 	const editor = getCurrentProjectEditor();
 	const ehd = eventHandlerData;
 	// log('ehd.lastTool = ' + ehd.lastTool);
@@ -39,8 +42,8 @@ export function keyup(event) {
 	}
 }
 
-export function keypress(event) {
-	log('keypress', 'start');
+export function handleKeyPress(event) {
+	log('handleKeyPress', 'start');
 	if (event.type !== 'keydown') return;
 	if (editor.nav.page === 'Open project') return;
 	if (getEditDocument().activeElement.id === 'contextglyphsinput') return;
@@ -254,7 +257,7 @@ export function keypress(event) {
 		// b
 		if (kc === 'b') clickTool('pathEdit');
 	}
-	log('keypress', 'end');
+	log('handleKeyPress', 'end');
 }
 
 function getKeyFromEvent(event) {
