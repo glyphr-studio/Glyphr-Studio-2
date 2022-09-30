@@ -2,6 +2,7 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeCrisp } from '../common/functions.js';
 import { drawPath } from './draw_paths.js';
+import { eventHandlerData } from './events.js';
 import { sXcX, sYcY } from './edit_canvas.js';
 import { canResize } from './events_mouse.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js';
@@ -179,14 +180,14 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	const editor = getCurrentProjectEditor();
 	accent = accent || accentBlue;
 	thickness = thickness || 1;
-	let center = clone(editor.eventHandlerData.rotationCenter, 'drawRotationAffordance');
-	let startTopY = editor.eventHandlerData.rotationStartPoint.y;
-	let mx = editor.eventHandlerData.mouseX;
-	let my = editor.eventHandlerData.mouseY;
+	let center = clone(eventHandlerData.rotationCenter, 'drawRotationAffordance');
+	let startTopY = eventHandlerData.rotationStartPoint.y;
+	let mx = eventHandlerData.mouseX;
+	let my = eventHandlerData.mouseY;
 	let radians = calculateAngle({x:cx_sx(mx), y:cy_sy(my)}, center);
 
 	// log('\t Init radians:\t' + radians);
-	let snap = editor.eventHandlerData.isShiftDown;
+	let snap = eventHandlerData.isShiftDown;
 	if(snap) radians = snapRadiansToDegrees(radians);
 	let rotateHandle = {x:center.x, y:startTopY};
 	rotate(rotateHandle, radians, center, snap);

@@ -1,16 +1,13 @@
-/**
-		Framework > Event Handlers > Keyboard
-		All keyboard handlers can be found here.
-**/
+import { getCurrentProjectEditor } from '../app/main.js';
+import { eventHandlerData } from './events.js';
 
-const { getGlyphrStudioApp, getCurrentProjectEditor } = require("../app/main");
 
-function keyup(event) {
+export function keyup(event) {
 	const editor = getCurrentProjectEditor();
-	let eh = _UI.eventHandlers;
-	// log('eh.lastTool = ' + eh.lastTool);
+	const ehd = eventHandlerData;
+	// log('ehd.lastTool = ' + ehd.lastTool);
 
-	eh.isShiftDown = false;
+	ehd.isShiftDown = false;
 	let kc = getKeyFromEvent(event);
 	// log('Key Up:\t\t' + kc + ' from ' + event.which);
 	// log('CTRL ' + event.ctrlKey + ' META ' + event.metaKey);
@@ -23,7 +20,7 @@ function keyup(event) {
 	// Ctrl
 	if (isCtrlDown) {
 		updateCursor();
-		eh.multi = false;
+		ehd.multi = false;
 		redraw({
 			calledBy: 'Event Handler - Keyup Ctrl for multi select',
 			redrawPanels: false,
@@ -31,9 +28,9 @@ function keyup(event) {
 	}
 
 	// Space
-	if (kc === 'space' && eh.ismouseovercec) {
-		_UI.selectedTool = eh.lastTool;
-		eh.isSpaceDown = false;
+	if (kc === 'space' && ehd.isMouseOverCanvas) {
+		editor.selectedTool = ehd.lastTool;
+		ehd.isSpaceDown = false;
 		updateCursor();
 		redraw({
 			calledBy: 'Event Handler - Keyup Spacebar for pan toggle',
@@ -42,23 +39,23 @@ function keyup(event) {
 	}
 }
 
-function keypress(event) {
-	// log('keypress', 'start');
+export function keypress(event) {
+	log('keypress', 'start');
 	if (event.type !== 'keydown') return;
-	if (editor.nav.page === 'openproject') return;
+	if (editor.nav.page === 'Open project') return;
 	if (getEditDocument().activeElement.id === 'contextglyphsinput') return;
 
-	let eh = _UI.eventHandlers;
-	let overcanvas = eh.ismouseovercec;
+	let eh = editor.eventHandlers;
+	let overCanvas = eh.isMouseOverCanvas;
 	let kc = getKeyFromEvent(event);
 	let isCtrlDown = event.ctrlKey || event.metaKey || event.which == 17;
 	if (event.which === 16) {
 		eh.isShiftDown = true;
 	}
 
-	// log('Key Press:\t' + kc + ' from ' + event.which);
-	// log('CTRL ' + event.ctrlKey + ' META ' + event.metaKey);
-	// log(event);
+	log('Key Press:\t' + kc + ' from ' + event.which);
+	log('CTRL ' + event.ctrlKey + ' META ' + event.metaKey);
+	log(event);
 
 	// shift s (save as)
 	if (isCtrlDown && eh.isShiftDown && kc === 's') {
@@ -90,7 +87,7 @@ function keypress(event) {
 
 	// o
 	if (isCtrlDown && kc === 'o') {
-		// log('pressed Ctrl + O');
+		log('pressed Ctrl + O');
 		event.preventDefault();
 
 		window.open('http://glyphrstudio.com/online', '_blank');
@@ -109,17 +106,17 @@ function keypress(event) {
 
 	// Ctrl
 	if ((isCtrlDown || kc === 'ctrl') && !eh.multi) {
-		// log('event.ctrlKey = true');
-		// log('selectedTool = ' + _UI.selectedTool);
+		log('event.ctrlKey = true');
+		log('selectedTool = ' + editor.selectedTool);
 		event.preventDefault();
 		eh.multi = true;
 
-		if (overcanvas) {
+		if (overCanvas) {
 			if (em === 'arrow') setCursor('arrowPlus');
 			if (em === 'pen') setCursor('penPlus');
 		}
 
-		// log('eh.lastTool = ' + eh.lastTool);
+		log('eh.lastTool = ' + eh.lastTool);
 		redraw({
 			calledBy: 'Event Handler - Keydown Ctrl for multi select',
 			redrawPanels: false,
@@ -131,14 +128,12 @@ function keypress(event) {
 		for (let i of Object.keys(getCurrentProject().s)) {
 			if (!getCurrentProject().glyphs[i].getPaths) return;
 
-			getCurrentProject()
-				.glyphs[i].getPaths()
-				.forEach(function (path, i) {
-					_UI.multiSelect.paths.members.push(path);
-					// log(_UI.multiSelect.paths.members);
-				});
+			getCurrentProject().glyphs[i].getPaths().forEach(function (path, i) {
+				editor.multiSelect.paths.members.push(path);
+				log(editor.multiSelect.paths.members);
+			});
 		}
-		_UI.multiSelect.points.selectPathsThatHaveSelectedPoints();
+		editor.multiSelect.points.selectPathsThatHaveSelectedPoints();
 		redraw({
 			calledBy: 'Event Handler - Select all path points',
 			redrawPanels: false,
@@ -147,11 +142,11 @@ function keypress(event) {
 	}
 
 	// Space
-	if (kc === 'space' && overcanvas) {
+	if (kc === 'space' && overCanvas) {
 		event.preventDefault();
 		if (!eh.isSpaceDown) {
-			eh.lastTool = _UI.selectedTool;
-			_UI.selectedTool = 'pan';
+			eh.lastTool = editor.selectedTool;
+			editor.selectedTool = 'pan';
 			eh.isSpaceDown = true;
 			setCursor('move');
 		}
@@ -190,30 +185,30 @@ function keypress(event) {
 	// 0
 	if ((eh.multi || event.metaKey) && kc === '0') {
 		event.preventDefault();
-		setView(clone(_UI.defaultView));
+		setView(clone(editor.defaultView));
 		redraw({ calledBy: 'Zoom Keyboard Shortcut', redrawCanvas: false });
 	}
 
 	// left
-	if (kc === 'left' && overcanvas) {
+	if (kc === 'left' && overCanvas) {
 		event.preventDefault();
 		nudge(-1, 0, event);
 	}
 
 	// right
-	if (kc === 'right' && overcanvas) {
+	if (kc === 'right' && overCanvas) {
 		event.preventDefault();
 		nudge(1, 0, event);
 	}
 
 	// up
-	if (kc === 'up' && overcanvas) {
+	if (kc === 'up' && overCanvas) {
 		event.preventDefault();
 		nudge(0, 1, event);
 	}
 
 	// down
-	if (kc === 'down' && overcanvas) {
+	if (kc === 'down' && overCanvas) {
 		event.preventDefault();
 		nudge(0, -1, event);
 	}
@@ -223,18 +218,17 @@ function keypress(event) {
 
 	// Only do the below stuff if the canvas has focus
 
-	if (overcanvas) {
+	if (overCanvas) {
 		// del
 		if (kc === 'del' || kc === 'backspace') {
 			event.preventDefault();
-			var em = getEditMode();
 
 			if (em === 'pen') {
-				_UI.multiSelect.points.deletePathPoints();
+				editor.multiSelect.points.deletePathPoints();
 				historyPut('Delete Path Point');
 				redraw({ calledBy: 'Keypress DEL or BACKSPACE' });
 			} else if (em === 'arrow') {
-				_UI.multiSelect.paths.deletePaths();
+				editor.multiSelect.paths.deletePaths();
 				historyPut('Delete Path');
 				redraw({ calledBy: 'Keypress DEL or BACKSPACE' });
 			}
@@ -260,7 +254,7 @@ function keypress(event) {
 		// b
 		if (kc === 'b') clickTool('pathEdit');
 	}
-	// log('keypress', 'end');
+	log('keypress', 'end');
 }
 
 function getKeyFromEvent(event) {
@@ -301,10 +295,10 @@ function getKeyFromEvent(event) {
 function nudge(dx, dy, ev) {
 	if (ev.ctrlKey) return;
 
-	let multiplyer = _UI.eventHandlers.isShiftDown ? 10 : 1;
+	let multiplier = editor.eventHandlers.isShiftDown ? 10 : 1;
 
-	let mx = dx * multiplyer;
-	let my = dy * multiplyer;
+	let mx = dx * multiplier;
+	let my = dy * multiplier;
 	let em = getEditMode();
 
 	if (em === 'kern') {
@@ -312,12 +306,19 @@ function nudge(dx, dy, ev) {
 		updateKernValue(getSelectedKernID(), nv);
 		redraw({ calledBy: 'Nudge kern value', redrawPanels: false });
 	} else if (em === 'arrow') {
-		_UI.multiSelect.paths.updatePathPosition(mx, my);
+		editor.multiSelect.paths.updatePathPosition(mx, my);
 		redraw({ calledBy: 'Nudge path' });
 	} else if (em === 'pen') {
-		_UI.multiSelect.points.members.forEach(function (o, i) {
+		editor.multiSelect.points.members.forEach(function (o, i) {
 			o.updatePathPointPosition('p', mx, my);
 		});
 		redraw({ calledBy: 'Nudge path point' });
 	}
+}
+
+function getEditMode() {
+	const editor = getCurrentProjectEditor();
+	if(editor.nav.page === 'kern') return 'kern';
+	if(editor.selectedTool === 'pathResize') return 'arrow';
+	if(editor.selectedTool === 'pathEdit') return 'pen';
 }

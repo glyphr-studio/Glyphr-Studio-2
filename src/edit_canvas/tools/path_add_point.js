@@ -3,11 +3,11 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProjectEditor } from '../../app/main.js';
+import { eventHandlerData } from '../events.js';
 
 export class Tool_PathAddPoint {
 	constructor() {
 		this.addPoint = false;
-
 		this.mousedown = function (ev) {
 			const editor = getCurrentProjectEditor();
 			let singlePath = editor.multiSelect.paths.singleton;

@@ -5,10 +5,10 @@
 
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { eventHandlerData } from '../edit_canvas/events_mouse.js';
 import { makeActionButtonIcon } from './action_buttons.js';
 import { addChildActions, getActionData } from './actions.js';
 import { refreshPanel } from './panels.js';
+import { eventHandlerData } from '../edit_canvas/events.js';
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
