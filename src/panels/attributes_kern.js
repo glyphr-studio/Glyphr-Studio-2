@@ -118,7 +118,7 @@ function updateKernValue(id, val) {
 	let k = getCurrentProject().kerning[id];
 	k.value = val;
 	// selectKern(id);
-	getEditDocument().getElementById(id).value = val;
+	document.getElementById(id).value = val;
 	historyPut(k.getName() + ' value: ' + val);
 }
 

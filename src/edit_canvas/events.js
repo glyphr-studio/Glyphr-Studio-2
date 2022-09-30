@@ -7,7 +7,7 @@ import { Tool_PathAddPoint }  from './tools/path_add_point.js';
 import { Tool_Kern }  from './tools/kern.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { updateCursor } from './cursors.js';
-import { handleMouseWheel } from './events_mouse.js';
+import { handleMouseEvents, handleMouseWheel } from './events_mouse.js';
 import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
 
 // --------------------------------------------------------------
@@ -35,6 +35,7 @@ export let eventHandlerData = {
 	lastTool: false,
 	isSpaceDown: false,
 	isShiftDown: false,
+	isCtrlDown: false,
 	hoverPoint: false,
 	multi: false,
 	canvasHotSpots: []
@@ -57,81 +58,24 @@ export function initEventHandlers(editCanvas) {
 	editCanvas.addEventListener('mousedown', handleMouseEvents, false);
 	editCanvas.addEventListener('mousemove', handleMouseEvents, false);
 	editCanvas.addEventListener('mouseup', handleMouseEvents, false);
-	editCanvas.customGuideTransparency = handleMouseOverCanvas;
-	editCanvas.onmouseout = handleMouseLeaveCanvas;
+	editCanvas.addEventListener('mouseover', handleMouseOverCanvas);
+	editCanvas.addEventListener('mouseout', handleMouseLeaveCanvas);
 	editCanvas.addEventListener('wheel', handleMouseWheel, {passive: false, capture: false});
 
 	// Document Key Listeners
-	editCanvas.addEventListener('keypress', handleKeyPress, false);
-	editCanvas.addEventListener('keydown', handleKeyPress, false);
-	editCanvas.addEventListener('keyup', handleKeyUp, false);
-
-	// The general-purpose event handler.
-	function handleMouseEvents(event) {
-		// log(`handleMouseEvents`, 'start');
-		// log(`Raw mouse event x/y = ${event.layerX} / ${event.layerY}`);
-
-		const editor = getCurrentProjectEditor();
-		handleMouseOverCanvas();
-		let eh = eventHandlerData;
-
-		if (event.offsetX || event.offsetX) {
-			// IE, Chrome, (Opera?)
-			eh.mouseX = event.offsetX;
-			eh.mouseY = event.offsetY;
-		} else if (event.layerX || event.layerX) {
-			// Firefox
-			eh.mouseX = event.layerX;
-			eh.mouseY = event.layerY;
-		}
-		// updateCursor();
-
-		// Switch Tool function
-		// log(`editor.selectedTool: ${editor.selectedTool}`);
-		switch (editor.selectedTool) {
-			case 'resize':
-				eh.currentToolHandler = editor.eventHandlers.tool_resize;
-				break;
-			case 'pathEdit':
-				eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
-				break;
-			case 'pan':
-				eh.currentToolHandler = editor.eventHandlers.tool_pan;
-				break;
-			case 'pathAddPoint':
-				eh.currentToolHandler = editor.eventHandlers.tool_pathAddPoint;
-				break;
-			case 'newPath':
-				eh.currentToolHandler = editor.eventHandlers.tool_addPath;
-				break;
-			case 'newRectangle':
-				eh.currentToolHandler = editor.eventHandlers.tool_addRectOval;
-				break;
-			case 'newOval':
-				eh.currentToolHandler = editor.eventHandlers.tool_addRectOval;
-				break;
-			case 'kern':
-				eh.currentToolHandler = editor.eventHandlers.tool_kern;
-				break;
-			case editor.selectedTool:
-				eh.currentToolHandler = editor.eventHandlers.tool_resize;
-		}
-
-		// Call the event handler of the eh.currentToolHandler.
-		// log(JSON.stringify(eh.currentToolHandler));
-		eh.currentToolHandler[event.type](event);
-		// log(`handleMouseEvents`, 'end');
-	}
+	// document.addEventListener('keypress', handleKeyPress, false);
+	document.addEventListener('keydown', handleKeyPress, false);
+	document.addEventListener('keyup', handleKeyUp, false);
 }
 
-function handleMouseOverCanvas() {
+export function handleMouseOverCanvas() {
 	// log('handleMouseOverCanvas', 'start');
 	eventHandlerData.isMouseOverCanvas = true;
 	updateCursor();
 	// log('handleMouseOverCanvas', 'end');
 }
 
-function handleMouseLeaveCanvas() {
+export function handleMouseLeaveCanvas() {
 	// log('handleMouseLeaveCanvas', 'start');
 	eventHandlerData.isMouseOverCanvas = false;
 	// Fixes a Chrome cursor problem
