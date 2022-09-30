@@ -43,7 +43,7 @@ export function makePanel_GlyphAttributes() {
 	} else if (selPaths.length > 1) {
 		// Many paths selected
 		// log('More than one path selected');
-		let virtualGlyph = selPaths.getGlyph();
+		let virtualGlyph = selPaths.glyph;
 		content.push(makeCard_multiSelectPathAttributes(virtualGlyph));
 	}
 

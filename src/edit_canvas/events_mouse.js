@@ -1,10 +1,71 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';
-import { eventHandlerData } from './events.js';
+import { eventHandlerData, handleMouseLeaveCanvas, handleMouseOverCanvas } from './events.js';
 
 // --------------------------------------------------------------
 // Mouse Events
+// --------------------------------------------------------------
+
+export function handleMouseEvents(event) {
+	// log(`handleMouseEvents`, 'start');
+	// log(`Raw mouse event x/y = ${event.layerX} / ${event.layerY}`);
+
+	const editor = getCurrentProjectEditor();
+	handleMouseOverCanvas();
+	let eh = eventHandlerData;
+
+	if (event.offsetX || event.offsetX) {
+		// IE, Chrome, (Opera?)
+		eh.mouseX = event.offsetX;
+		eh.mouseY = event.offsetY;
+	} else if (event.layerX || event.layerX) {
+		// Firefox
+		eh.mouseX = event.layerX;
+		eh.mouseY = event.layerY;
+	}
+	// updateCursor();
+
+	// Switch Tool function
+	// log(`editor.selectedTool: ${editor.selectedTool}`);
+	switch (editor.selectedTool) {
+		case 'resize':
+			eh.currentToolHandler = editor.eventHandlers.tool_resize;
+			break;
+		case 'pathEdit':
+			eh.currentToolHandler = editor.eventHandlers.tool_pathEdit;
+			break;
+		case 'pan':
+			eh.currentToolHandler = editor.eventHandlers.tool_pan;
+			break;
+		case 'pathAddPoint':
+			eh.currentToolHandler = editor.eventHandlers.tool_pathAddPoint;
+			break;
+		case 'newPath':
+			eh.currentToolHandler = editor.eventHandlers.tool_addPath;
+			break;
+		case 'newRectangle':
+			eh.currentToolHandler = editor.eventHandlers.tool_addRectOval;
+			break;
+		case 'newOval':
+			eh.currentToolHandler = editor.eventHandlers.tool_addRectOval;
+			break;
+		case 'kern':
+			eh.currentToolHandler = editor.eventHandlers.tool_kern;
+			break;
+		case editor.selectedTool:
+			eh.currentToolHandler = editor.eventHandlers.tool_resize;
+	}
+
+	// Call the event handler of the eh.currentToolHandler.
+	// log(JSON.stringify(eh.currentToolHandler));
+	eh.currentToolHandler[event.type](event);
+	// log(`handleMouseEvents`, 'end');
+}
+
+
+// --------------------------------------------------------------
+// Helpers
 // --------------------------------------------------------------
 
 export function clickEmptySpace() {

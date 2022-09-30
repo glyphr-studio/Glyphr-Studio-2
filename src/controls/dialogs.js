@@ -71,8 +71,8 @@ export function isBigDialogOpen() {
  * @param {number} y - screen y location
  */
 export function openNotation(content, x, y) {
-	getEditDocument().body.focus();
-	const n = getEditDocument().getElementById('notation');
+	document.body.focus();
+	const n = document.getElementById('notation');
 	n.innerHTML = content;
 	n.style.top = round(y) + 'px';
 	n.style.left = round(x + 50) + 'px';
@@ -83,9 +83,9 @@ export function openNotation(content, x, y) {
  * Closes any notation dialog boxes
  */
 export function closeNotation() {
-	getEditDocument().getElementById('notation').style.display = 'none';
-	getEditDocument().getElementById('notation').innerHTML = '&#x20E2;';
-	getEditDocument().body.focus();
+	document.getElementById('notation').style.display = 'none';
+	document.getElementById('notation').innerHTML = '&#x20E2;';
+	document.body.focus();
 }
 
 /**
@@ -153,7 +153,7 @@ export function showToast(msg, dur, fn) {
 	const stepmax = 20;
 	const timestep = 10;
 	const divisor = 5;
-	const msgdiv = getEditDocument().getElementById('toast');
+	const msgdiv = document.getElementById('toast');
 	const durration = dur || 3000;
 	msgdiv.innerHTML = msg || 'Howdy!';
 
