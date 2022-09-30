@@ -1,6 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { drawPath, isOverControlPoint } from '../edit_canvas/draw_paths.js';
+import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 
@@ -315,6 +316,15 @@ export class MultiSelectPaths extends MultiSelect {
 	get ratioLock() {
 		if (this.members.length === 1) return this.members[0].ratioLock;
 		else return false;
+	}
+
+	selectAll() {
+		let currItem = getCurrentProjectEditor().currItem;
+		if(currItem.paths) {
+			currItem.paths.forEach((path) => {
+				this.add(path);
+			});
+		}
 	}
 
 	contains(objTypeName) {
