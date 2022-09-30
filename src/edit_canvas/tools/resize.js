@@ -1,12 +1,12 @@
-// ----------------------------------------------------------------
-// Resize - resizes whole paths (Arrow / Pointer)
-// ----------------------------------------------------------------
-
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { setCursor } from '../cursors.js';
 import { eventHandlerData } from '../events.js';
-import { checkForMouseOverHotspot, clickEmptySpace, eventHandler_PathResize } from '../events_mouse.js';
+import { checkForMouseOverHotspot, clickEmptySpace, resizePath } from '../events_mouse.js';
 import { clickTool, getPathAtLocation } from './tools.js';
+
+// ----------------------------------------------------------------
+// Resize - resizes whole paths (Arrow / Pointer)
+// ----------------------------------------------------------------
 
 export class Tool_Resize {
 	constructor() {
@@ -118,7 +118,7 @@ export class Tool_Resize {
 
 			} else if (this.resizing) {
 				// log('detected RESIZING');
-				eventHandler_PathResize();
+				resizePath();
 				this.didStuff = true;
 
 			} else if (this.rotating) {
@@ -173,7 +173,7 @@ export class Tool_Resize {
 				eh.newBasicPathMaxes = false;
 				eh.lastX = eh.firstX;
 				eh.lastY = eh.firstY;
-				eventHandler_PathResize();
+				resizePath();
 			}
 
 			// Clicked a path to select

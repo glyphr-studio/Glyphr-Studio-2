@@ -7,8 +7,12 @@ import { Tool_PathAddPoint }  from './tools/path_add_point.js';
 import { Tool_Kern }  from './tools/kern.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { updateCursor } from './cursors.js';
-import { mousewheel } from './events_mouse.js';
-import { keypress, keyup } from './events_keyboard.js';
+import { handleMouseWheel } from './events_mouse.js';
+import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
+
+// --------------------------------------------------------------
+// Events - shared between Mouse and Keyboard
+// --------------------------------------------------------------
 
 export let eventHandlerData = {
 	currentToolHandler: false,
@@ -50,21 +54,21 @@ export function initEventHandlers(editCanvas) {
 	editor.eventHandlers.tool_kern = new Tool_Kern();
 
 	// Mouse Event Listeners
-	editCanvas.addEventListener('mousedown', ev_canvas, false);
-	editCanvas.addEventListener('mousemove', ev_canvas, false);
-	editCanvas.addEventListener('mouseup', ev_canvas, false);
+	editCanvas.addEventListener('mousedown', handleMouseEvents, false);
+	editCanvas.addEventListener('mousemove', handleMouseEvents, false);
+	editCanvas.addEventListener('mouseup', handleMouseEvents, false);
 	editCanvas.customGuideTransparency = handleMouseOverCanvas;
 	editCanvas.onmouseout = handleMouseLeaveCanvas;
-	editCanvas.addEventListener('wheel', mousewheel, {passive: false, capture: false});
+	editCanvas.addEventListener('wheel', handleMouseWheel, {passive: false, capture: false});
 
 	// Document Key Listeners
-	editCanvas.addEventListener('keypress', keypress, false);
-	editCanvas.addEventListener('keydown', keypress, false);
-	editCanvas.addEventListener('keyup', keyup, false);
+	editCanvas.addEventListener('keypress', handleKeyPress, false);
+	editCanvas.addEventListener('keydown', handleKeyPress, false);
+	editCanvas.addEventListener('keyup', handleKeyUp, false);
 
 	// The general-purpose event handler.
-	function ev_canvas(event) {
-		// log(`ev_canvas`, 'start');
+	function handleMouseEvents(event) {
+		// log(`handleMouseEvents`, 'start');
 		// log(`Raw mouse event x/y = ${event.layerX} / ${event.layerY}`);
 
 		const editor = getCurrentProjectEditor();
@@ -116,7 +120,7 @@ export function initEventHandlers(editCanvas) {
 		// Call the event handler of the eh.currentToolHandler.
 		// log(JSON.stringify(eh.currentToolHandler));
 		eh.currentToolHandler[event.type](event);
-		// log(`ev_canvas`, 'end');
+		// log(`handleMouseEvents`, 'end');
 	}
 }
 

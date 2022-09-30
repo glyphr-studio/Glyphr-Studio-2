@@ -1,5 +1,5 @@
 /**
-		Framework > Glyph Sequence
+		Glyph Sequence
 		Drawing multiple lines of text.
 **/
 
@@ -109,9 +109,7 @@ GlyphSequence.prototype.generateData = function () {
 
 		for (tg = 0; tg < currblock.length; tg++) {
 			thisGlyph = getGlyph(charsToHexArray(currblock[tg]).join(''));
-			thisWidth = thisGlyph
-				? thisGlyph.getAdvanceWidth()
-				: getCurrentProject().projectSettings.upm / 2;
+			thisWidth = thisGlyph ? thisGlyph.advanceWidth : getCurrentProject().projectSettings.upm / 2;
 			thisKern = calculateKernOffset(currblock[tg], currblock[tg + 1]);
 			aggregateWidth += thisWidth + thisKern;
 
