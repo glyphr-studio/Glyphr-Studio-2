@@ -183,13 +183,13 @@ export function handleKeyPress(event) {
 				editor.multiSelect.points.deletePathPoints();
 				// TODO history
 				// historyPut('Delete Path Point');
-				editor.publish('currentPath', editor.multiSelect.points.path);
+				editor.publish('currentPath', editor.multiSelect.points.virtualPath);
 
 			} else if (editMode === 'arrow') {
 				editor.multiSelect.paths.deletePaths();
 				// TODO history
 				// historyPut('Delete Path');
-				editor.publish('currentGlyph', editor.multiSelect.paths.glyph);
+				editor.publish('currentGlyph', editor.multiSelect.paths.virtualGlyph);
 			}
 		}
 

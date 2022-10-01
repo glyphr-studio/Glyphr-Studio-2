@@ -7,6 +7,7 @@ import { drawGlyph, drawPath } from './draw_paths.js';
 import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, computeAndDrawPathPointHandles, computeAndDrawPathPoints, drawBoundingBox, drawNewBasicPath, drawPathPointHover, drawSelectedPathOutline } from './draw_edit_affordances.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js';
 import { makeCrisp, round } from '../common/functions.js';
+import { setCursor, updateCursor } from './cursors.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -70,7 +71,10 @@ export class EditCanvas extends HTMLElement {
 			editor.subscribe({
 				topic: topic,
 				subscriberID: `editCanvas-${topic}`,
-				callback: () => this.redraw({calledBy: `editCanvas-${topic}`})
+				callback: () => {
+					this.redraw({calledBy: `editCanvas-${topic}`});
+					updateCursor();
+				}
 			});
 		});
 

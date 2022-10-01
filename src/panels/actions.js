@@ -218,31 +218,61 @@ export function getActionData(name){
 			title: `Align Left\nMoves all the selected paths so they are left aligned with the leftmost path.`,
 			iconName: 'align',
 			iconOptions: 'left',
+			onClick: () => {
+				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				vGlyph.align('left');
+				editor.publish('currentGlyph', vGlyph);
+			}
 		},
 		{
 			title: `Align Center\nMoves all the selected paths so they are center aligned between the leftmost and rightmost path.`,
 			iconName: 'align',
 			iconOptions: 'center',
+			onClick: () => {
+				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				vGlyph.align('center');
+				editor.publish('currentGlyph', vGlyph);
+			}
 		},
 		{
 			title: `Align Right\nMoves all the selected paths so they are right aligned with the rightmost path.`,
 			iconName: 'align',
 			iconOptions: 'right',
+			onClick: () => {
+				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				vGlyph.align('right');
+				editor.publish('currentGlyph', vGlyph);
+			}
 		},
 		{
 			title: `Align Top\nMoves all the selected paths so they are top aligned with the topmost path.`,
 			iconName: 'align',
 			iconOptions: 'top',
+			onClick: () => {
+				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				vGlyph.align('top');
+				editor.publish('currentGlyph', vGlyph);
+			}
 		},
 		{
 			title: `Align Middle\nMoves all the selected paths so they are middle aligned between the topmost and bottommost path.`,
 			iconName: 'align',
 			iconOptions: 'middle',
+			onClick: () => {
+				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				vGlyph.align('middle');
+				editor.publish('currentGlyph', vGlyph);
+			}
 		},
 		{
 			title: `Align Bottom\nMoves all the selected paths so they are bottom aligned with the bottommost path.`,
 			iconName: 'align',
 			iconOptions: 'bottom',
+			onClick: () => {
+				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				vGlyph.align('bottom');
+				editor.publish('currentGlyph', vGlyph);
+			}
 		}
 	];
 
@@ -250,14 +280,17 @@ export function getActionData(name){
 	data.boolActions = [
 		{
 			iconName: 'combine',
+			disabled: true,
 			title: `Combine\nSelect two paths, and combine their paths into a single path.`,
 		},
 		{
 			iconName: 'subtractUsingTop',
+			disabled: true,
 			title: `Subtract Using Upper\nSelect two paths, and the upper path will be used to cut out an area from the lower path.`,
 		},
 		{
 			iconName: 'subtractUsingBottom',
+			disabled: true,
 			title: `Subtract Using Lower\nSelect two paths, and the lower path will be used to cut out an area from the upper path.`,
 		},
 	];
