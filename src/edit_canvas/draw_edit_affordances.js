@@ -47,7 +47,7 @@ export function computeAndDrawRotationAffordance(ctx) {
 		const accent = ss.objType === 'ComponentInstance' ? accentGreen : accentBlue;
 		drawRotationAffordance(accent, false);
 	} else if (editor.multiSelect.paths.length > 1) {
-		ss = editor.multiSelect.paths.glyph;
+		ss = editor.multiSelect.paths.virtualGlyph;
 		drawRotationAffordance(accentGray, multiSelectThickness);
 	}
 }
@@ -428,7 +428,7 @@ isOverComponentInstanceBoundingBoxHandle(componentInstance, px, py) {
 export function computeAndDrawPathPointHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
-	let paths = editor.multiSelect.paths.glyph.paths;
+	let paths = editor.multiSelect.paths.virtualGlyph.paths;
 
 	paths.forEach((path) => {
 		path.pathPoints.forEach((point) => {
@@ -442,7 +442,7 @@ export function computeAndDrawPathPointHandles(ctx) {
 export function computeAndDrawPathPoints(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
-	let paths = editor.multiSelect.paths.glyph.paths;
+	let paths = editor.multiSelect.paths.virtualGlyph.paths;
 
 	paths.forEach((path) => {
 		path.pathPoints.forEach((point, index) => {

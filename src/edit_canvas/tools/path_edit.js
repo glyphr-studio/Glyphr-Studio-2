@@ -23,7 +23,7 @@ export class Tool_PathEdit {
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
 			this.controlPoint = isOverControlPoint(
-				editor.multiSelect.paths.glyph,
+				editor.multiSelect.paths.virtualGlyph,
 				cXsX(ehd.mouseX, view),
 				cYsY(ehd.mouseY, view)
 			);

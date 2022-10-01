@@ -92,6 +92,20 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	return pathPointCard;
 }
 
+export function makeCard_multiSelectPathPointAttributes(path) {
+	let multiPathPointCard = makeElement({
+		tag: 'div',
+		className: 'panel__card',
+		innerHTML: `<h3>${path.pathPoints.length} selected path points</h3>`
+	});
+	addAsChildren(multiPathPointCard, makeInputs_position(path));
+	addAsChildren(multiPathPointCard, makeInputs_size(path));
+	addAsChildren(multiPathPointCard, makeActionsArea_PathPoint());
+
+	return multiPathPointCard;
+}
+
+
 // --------------------------------------------------------------
 // Drawing stuff
 // --------------------------------------------------------------

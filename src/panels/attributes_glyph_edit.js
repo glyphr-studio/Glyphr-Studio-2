@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from "../app/main.js";
 import { makeCard_glyphAttributes } from "./card_glyph.js";
-import { makeCard_pathAttributes } from "./card_path.js";
-import { makeCard_pathPointAttributes } from "./card_path_point.js";
+import { makeCard_multiSelectPathAttributes, makeCard_pathAttributes } from "./card_path.js";
+import { makeCard_multiSelectPathPointAttributes, makeCard_pathPointAttributes } from "./card_path_point.js";
 import { refreshPanel } from "./panels.js";
 
 /**
@@ -23,6 +23,9 @@ export function makePanel_GlyphAttributes() {
 	if(selPoints.length === 1) {
 		// log(`pushing point card`);
 		content.push(makeCard_pathPointAttributes(selPoints.singleton));
+	} else if (selPoints.length > 1) {
+		let virtualPath = selPoints.virtualPath;
+		content.push(makeCard_multiSelectPathPointAttributes(virtualPath));
 	}
 
 	// Paths
@@ -43,8 +46,7 @@ export function makePanel_GlyphAttributes() {
 	} else if (selPaths.length > 1) {
 		// Many paths selected
 		// log('More than one path selected');
-		let virtualGlyph = selPaths.glyph;
-		content.push(makeCard_multiSelectPathAttributes(virtualGlyph));
+		content.push(makeCard_multiSelectPathAttributes(selPaths.virtualGlyph));
 	}
 
 	// Glyph
