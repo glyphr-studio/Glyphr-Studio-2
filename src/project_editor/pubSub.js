@@ -29,7 +29,9 @@ export function publish(topic, data) {
 		callCallbacksByTopic(topic, data);
 
 		// Handle some things centrally
-		if(topic === 'whichToolIsSelected') {}
+		if(topic === 'whichToolIsSelected') {
+			log(`PubSub publish whichToolIsSelected: ${data}`);
+		}
 
 
 		if(topic === 'view') {}
@@ -42,7 +44,7 @@ export function publish(topic, data) {
 
 
 		if(topic === 'whichPathIsSelected') {
-			this.multiSelect.points.clear();
+			// this.multiSelect.points.clear();
 		}
 
 
@@ -96,7 +98,7 @@ export function publish(topic, data) {
 	}
 
 	function callCallbacksByTopic(callTopic, data) {
-		log(`== calling callbacks ${topic} to ${callTopic}`);
+		// log(`== calling callbacks ${topic} to ${callTopic}`);
 		Object.keys(subscribers[callTopic]).forEach((subscriberID) => {
 			subscribers[callTopic][subscriberID](data);
 		});

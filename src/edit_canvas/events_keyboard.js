@@ -27,7 +27,7 @@ export function handleKeyPress(event) {
 	// log(`CTRL ${event.ctrlKey} META ${event.metaKey}`);
 	// log(event);
 
-	handleSpecialKeys(event, 'down');
+	handleSpecialKeys(key, 'down');
 	let ehd = eventHandlerData;
 
 	// shift s (save as)
@@ -76,11 +76,10 @@ export function handleKeyPress(event) {
 	var editMode = getEditMode();
 
 	// Ctrl
-	if (ehd.isCtrlDown && !ehd.multi) {
+	if (ehd.isCtrlDown) {
 		// log('event.ctrlKey = true');
 		// log('selectedTool = ' + editor.selectedTool);
 		event.preventDefault();
-		ehd.multi = true;
 
 		if (ehd.isMouseOverCanvas) {
 			if (editMode === 'arrow') setCursor('arrowPlus');
@@ -122,25 +121,25 @@ export function handleKeyPress(event) {
 
 	// TODO history
 	// z
-	// if (key === 'undo' || ((ehd.multi || event.metaKey) && key === 'z')) {
+	// if (key === 'undo' || (ehd.isCtrlDown && key === 'z')) {
 	// 	event.preventDefault();
 	// 	historyPull();
 	// }
 
 	// plus
-	if ((ehd.multi || event.metaKey) && key === 'plus') {
+	if (ehd.isCtrlDown && key === 'plus') {
 		event.preventDefault();
 		editor.updateViewZoom(1.1);
 	}
 
 	// minus
-	if ((ehd.multi || event.metaKey) && key === 'minus') {
+	if (ehd.isCtrlDown && key === 'minus') {
 		event.preventDefault();
 		editor.updateViewZoom(0.9);
 	}
 
 	// 0
-	if ((ehd.multi || event.metaKey) && key === '0') {
+	if (ehd.isCtrlDown && key === '0') {
 		event.preventDefault();
 		editor.autoFitView();
 	}
@@ -196,13 +195,13 @@ export function handleKeyPress(event) {
 		// TODO copy/paste
 		/*
 		// ctrl + c
-		if ((ehd.multi || event.metaKey) && key === 'c') {
+		if (ehd.isCtrlDown && key === 'c') {
 			event.preventDefault();
 			copyPath();
 		}
 
 		// ctrl + v
-		if ((ehd.multi || event.metaKey) && key === 'v') {
+		if (ehd.isCtrlDown && key === 'v') {
 			event.preventDefault();
 			pastePath();
 			// TODO history
@@ -221,6 +220,7 @@ export function handleKeyPress(event) {
 
 function getKeyFromEvent(event) {
 	// log('GETKEYFROMEVENT - keyCode:' + event.keyCode + '\twhich:' + event.which);
+	// for 91, 93, 224 'meta' keys, return 'ctrl'
 	let specialGlyphs = {
 		8: 'backspace',
 		9: 'tab',
@@ -243,14 +243,14 @@ function getKeyFromEvent(event) {
 		45: 'ins',
 		46: 'del',
 		48: '0',
-		91: 'meta',
-		93: 'meta',
+		91: 'ctrl',
+		93: 'ctrl',
 		96: '0',
 		107: 'plus',
 		187: 'plus',
 		109: 'minus',
 		189: 'minus',
-		224: 'meta',
+		224: 'ctrl',
 	};
 	return (
 		specialGlyphs[parseInt(event.which)] ||
@@ -259,9 +259,10 @@ function getKeyFromEvent(event) {
 }
 
 function nudge(dx, dy, ev) {
-	if (ev.ctrlKey) return;
+	let ehd = eventHandlerData;
+	if (ehd.isCtrlDown) return;
 
-	let multiplier = editor.eventHandlers.isShiftDown ? 10 : 1;
+	let multiplier = ehd.isShiftDown ? 10 : 1;
 
 	let mx = dx * multiplier;
 	let my = dy * multiplier;
@@ -298,51 +299,67 @@ export function handleKeyUp(event) {
 	// log(`handleKeyup`, 'start');
 	let key = getKeyFromEvent(event);
 	// log(`KEY ${key} from ${event.which}`);
-	// log(`CTRL ${event.ctrlKey} META ${event.metaKey}`);
 	// log(event);
 
 
 	const editor = getCurrentProjectEditor();
 	const ehd = eventHandlerData;
-	// log('ehd.lastTool = ' + ehd.lastTool);
+	// log('ehd.lastTool: ' + ehd.lastTool);
 
-	handleSpecialKeys(event, 'up');
-
+	handleSpecialKeys(key, 'up');
 	if (!editor.nav.isOnEditCanvasPage) return;
 
 	// Ctrl
-	if (!ehd.isCtrlDown) {
+	if (key === 'ctrl' && !ehd.isCtrlDown) {
 		updateCursor();
-		ehd.multi = false;
 		editor.editCanvas.redraw({calledBy: 'Event Handler - Keyup Ctrl for multi select'});
 	}
 
 	// Space
-	if (!ehd.isSpaceDown && ehd.isMouseOverCanvas) {
+	if (key === 'space' && !ehd.isSpaceDown && ehd.isMouseOverCanvas) {
 		togglePanOff(event);
 	}
 
 	// log(`handleKeyup`, 'end');
 }
 
-function handleSpecialKeys(event, keyDirection) {
+function handleSpecialKeys(key, keyDirection) {
+	// log(`handleSpecialKeys`, 'start');
+	// log(`key: ${key}`);
+	// log(`keyDirection: ${keyDirection}`);
+
 	let ehd = eventHandlerData;
-	let key = getKeyFromEvent(event);
 
 	// Maybe not strong equals here?
 	if (keyDirection === 'down') {
-		if (event.ctrlKey || event.metaKey || event.which === 17) {
+		if (key === 'ctrl') {
 			ehd.isCtrlDown = true;
+			// log(`setting isCtrlDown to true`);
 		}
-		if (key === 'space') ehd.isSpaceDown = true;
-		if (event.which === 16) ehd.isShiftDown = true;
+		if (key === 'space') {
+			ehd.isSpaceDown = true;
+			// log(`setting isSpaceDown to true`);
+		}
+		if (key === 'shift') {
+			ehd.isShiftDown = true;
+			// log(`setting isShiftDown to true`);
+		}
 	}
 
 	if (keyDirection === 'up') {
-		if (!event.ctrlKey && !event.metaKey && event.which !== 17) {
+		if (key === 'ctrl') {
 			ehd.isCtrlDown = false;
+			// log(`setting isCtrlDown to false`);
 		}
-		if (key === 'space') ehd.isSpaceDown = false;
-		if (event.which === 16) ehd.isShiftDown = false;
+		if (key === 'space') {
+			ehd.isSpaceDown = false;
+			// log(`setting isSpaceDown to false`);
+		}
+		if (key === 'shift') {
+			ehd.isShiftDown = false;
+			// log(`setting isShiftDown to false`);
+		}
 	}
+
+	// log(`handleSpecialKeys`, 'end');
 }

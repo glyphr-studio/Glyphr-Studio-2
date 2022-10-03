@@ -22,48 +22,48 @@ export class Tool_Resize {
 			// log('Tool_Resize.mousedown', 'start');
 			// log('x:y ' + eventHandlerData.mouseX + ':' + eventHandlerData.mouseY);
 			this.didStuff = false;
-			let eh = eventHandlerData;
-			eh.handle = false;
-			eh.lastX = eh.mouseX;
-			eh.firstX = eh.mouseX;
-			eh.lastY = eh.mouseY;
-			eh.firstY = eh.mouseY;
+			let ehd = eventHandlerData;
+			ehd.handle = false;
+			ehd.lastX = ehd.mouseX;
+			ehd.firstX = ehd.mouseX;
+			ehd.lastY = ehd.mouseY;
+			ehd.firstY = ehd.mouseY;
 
-			this.clickedPath = getPathAtLocation(eh.mouseX, eh.mouseY);
+			this.clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
 			const editor = getCurrentProjectEditor();
 			let selectedPaths = editor.multiSelect.paths;
 
-			eh.handle = selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
+			ehd.handle = selectedPaths.isOverBoundingBoxHandle(ehd.mouseX, ehd.mouseY);
 
 			// log('clickedPath: ' + this.clickedPath);
-			// log('corner: ' + eh.handle);
+			// log('corner: ' + ehd.handle);
 			this.resizing = false;
 			this.dragging = false;
 			this.rotating = false;
 			this.dragSelecting = false;
 
-			if (eh.handle) {
-				if (eh.handle === 'rotate') {
+			if (ehd.handle) {
+				if (ehd.handle === 'rotate') {
 					// log('mousedown - setting rotating = true');
 					this.rotating = true;
-					eh.rotationCenter = selectedPaths.maxes.center;
-					eh.rotationStartTopY =
+					ehd.rotationCenter = selectedPaths.maxes.center;
+					ehd.rotationStartTopY =
 						selectedPaths.maxes.yMax +
 						editor.rotateHandleHeight / editor.view.dz;
 				} else {
-					// log('clicked on eh.handle: ' + eh.handle);
+					// log('clicked on ehd.handle: ' + ehd.handle);
 					this.resizing = true;
 				}
-				setCursor(eh.handle);
+				setCursor(ehd.handle);
 			} else if (this.clickedPath) {
 				// log('clicked on path = true');
 				this.dragging = true;
-			} else if (!eh.multi) {
+			} else if (!ehd.isCtrlDown) {
 				// log('clicked on nothing');
 				clickEmptySpace();
 				this.dragSelecting = true;
 				// TODO hotspots
-				// findAndCallHotspot(eh.mouseX, eh.mouseY);
+				// findAndCallHotspot(ehd.mouseX, ehd.mouseY);
 			}
 
 			// editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_Resize mousedown' });
@@ -73,22 +73,22 @@ export class Tool_Resize {
 		this.mousemove = function (ev) {
 			// log(`Tool_Resize.mousemove`, 'start');
 
-			let eh = eventHandlerData;
+			let ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			let selectedPaths = editor.multiSelect.paths;
 			this.didStuff = false;
-			let corner = eh.handle || selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
+			let corner = ehd.handle || selectedPaths.isOverBoundingBoxHandle(ehd.mouseX, ehd.mouseY);
 			// TODO rapidly shaking new basic paths makes straight sides curved
 			if (this.dragging) {
 				// log('detected DRAGGING');
 
 				let dz = editor.view.dz;
-				let dx = (eh.mouseX - eh.lastX) / dz || 0;
-				let dy = (eh.lastY - eh.mouseY) / dz || 0;
+				let dx = (ehd.mouseX - ehd.lastX) / dz || 0;
+				let dy = (ehd.lastY - ehd.mouseY) / dz || 0;
 				let cur = 'arrowSquare';
 
 				if (this.clickedPath) {
-					if (eh.multi)
+					if (ehd.isCtrlDown)
 						selectedPaths.add(this.clickedPath);
 					else if (!selectedPaths.isSelected(this.clickedPath)) {
 						selectedPaths.select(this.clickedPath);
@@ -102,8 +102,8 @@ export class Tool_Resize {
 				let singlePath = selectedPaths.singleton;
 
 				if (singlePath) {
-					cur = selectedPaths.isOverBoundingBoxHandle(eh.mouseX, eh.mouseY);
-					if (!cur) cur = getPathAtLocation(eh.mouseX, eh.mouseY) ? 'arrowSquare' : 'arrow';
+					cur = selectedPaths.isOverBoundingBoxHandle(ehd.mouseX, ehd.mouseY);
+					if (!cur) cur = getPathAtLocation(ehd.mouseX, ehd.mouseY) ? 'arrowSquare' : 'arrow';
 					// log(`singleton`);
 					dx = singlePath.xLock ? 0 : dx;
 					dy = singlePath.yLock ? 0 : dy;
@@ -123,9 +123,9 @@ export class Tool_Resize {
 
 			} else if (this.rotating) {
 				// log(`detected ROTATING`);
-				let a1 = calculateAngle({ x: cXsX(eh.mouseX), y: cYsY(eh.mouseY) }, eh.rotationCenter);
-				let a2 = calculateAngle({ x: cXsX(eh.lastX), y: cYsY(eh.lastY) }, eh.rotationCenter);
-				selectedPaths.rotate(a1 - a2, eh.rotationCenter);
+				let a1 = calculateAngle({ x: cXsX(ehd.mouseX), y: cYsY(ehd.mouseY) }, ehd.rotationCenter);
+				let a2 = calculateAngle({ x: cXsX(ehd.lastX), y: cYsY(ehd.lastY) }, ehd.rotationCenter);
+				selectedPaths.rotate(a1 - a2, ehd.rotationCenter);
 				this.didStuff = true;
 				setCursor('rotate');
 
@@ -134,11 +134,11 @@ export class Tool_Resize {
 				// hovering over a corner
 				setCursor(corner);
 
-			} else if (eh.multi) {
+			} else if (ehd.isCtrlDown) {
 				// log(`detected MULTI-SELECT`);
 				setCursor('arrowPlus');
 
-			} else if (getPathAtLocation(eh.mouseX, eh.mouseY)) {
+			} else if (getPathAtLocation(ehd.mouseX, ehd.mouseY)) {
 				// log(`detected PATH HOVER`);
 				setCursor('arrowSquare');
 
@@ -147,13 +147,13 @@ export class Tool_Resize {
 				setCursor('arrow');
 			}
 
-			// checkForMouseOverHotspot(eh.mouseX, eh.mouseY);
+			// checkForMouseOverHotspot(ehd.mouseX, ehd.mouseY);
 
 			if (this.didStuff) {
 				// log('did stuff');
-				eh.lastX = eh.mouseX;
-				eh.lastY = eh.mouseY;
-				eh.undoQueueHasChanged = true;
+				ehd.lastX = ehd.mouseX;
+				ehd.lastY = ehd.mouseY;
+				ehd.undoQueueHasChanged = true;
 				editor.publish('currentGlyph', editor.selectedItem);
 			} else {
 				// log(`did NOT do stuff`);
@@ -165,20 +165,20 @@ export class Tool_Resize {
 
 		this.mouseup = function () {
 			// log('Mouse Up');
-			let eh = eventHandlerData;
+			let ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 
 			// New Basic Path
-			if (eh.newBasicPathMaxes) {
-				eh.newBasicPathMaxes = false;
-				eh.lastX = eh.firstX;
-				eh.lastY = eh.firstY;
+			if (ehd.newBasicPathMaxes) {
+				ehd.newBasicPathMaxes = false;
+				ehd.lastX = ehd.firstX;
+				ehd.lastY = ehd.firstY;
 				resizePath();
 			}
 
 			// Clicked a path to select
 			if (this.clickedPath && !this.didStuff) {
-				if (eh.multi) {
+				if (ehd.isCtrlDown) {
 					editor.multiSelect.paths.toggle(this.clickedPath);
 				} else {
 					editor.multiSelect.paths.select(this.clickedPath);
@@ -206,16 +206,16 @@ export class Tool_Resize {
 			this.dragging = false;
 			this.resizing = false;
 			this.rotating = false;
-			eh.handle = false;
-			eh.lastX = -100;
-			eh.lastY = -100;
-			eh.firstX = -100;
-			eh.firstY = -100;
-			eh.rotationCenter = false;
-			eh.rotationStartTopY = false;
+			ehd.handle = false;
+			ehd.lastX = -100;
+			ehd.lastY = -100;
+			ehd.firstX = -100;
+			ehd.firstY = -100;
+			ehd.rotationCenter = false;
+			ehd.rotationStartTopY = false;
 			// TODO history
-			// if (eh.undoQueueHasChanged) historyPut('Path Edit tool');
-			eh.undoQueueHasChanged = false;
+			// if (ehd.undoQueueHasChanged) historyPut('Path Edit tool');
+			ehd.undoQueueHasChanged = false;
 			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_Resize mouseup' });
 			// log('EVENTHANDLER - after Tool_Resize Mouse Up REDRAW');
 		};

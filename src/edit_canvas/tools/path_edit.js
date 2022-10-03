@@ -16,54 +16,55 @@ export class Tool_PathEdit {
 		this.controlPoint = false;
 
 		this.mousedown = function(ev) {
-			// log('Tool_PathEdit.mousedown', 'start');
+			log('Tool_PathEdit.mousedown', 'start');
 			let ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			let view = editor.view;
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
 			this.controlPoint = isOverControlPoint(
-				editor.multiSelect.paths.virtualGlyph,
+				editor.selectedItem,
 				cXsX(ehd.mouseX, view),
 				cYsY(ehd.mouseY, view)
 			);
-			// log(`controlPoint CLICKED`);
-			// log(this.controlPoint);
+			log(`controlPoint CLICKED`);
+			log(this.controlPoint);
 			let clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
 
 			if (this.controlPoint) {
-				// log('detected CONTROL POINT');
+				log('detected CONTROL POINT');
 				this.dragging = true;
 
 				if (this.controlPoint.type === 'p') {
-					// log('detected P');
+					log('detected P');
 
-					if (ehd.multi) {
-						// log('Multi Select Mode');
+					if (ehd.isCtrlDown) {
+						log('Multi Select Mode');
 						editor.multiSelect.points.toggle(this.controlPoint.parent);
-
-					} else if (!editor.multiSelect.points.isSelected(this.controlPoint.parent)){
+						editor.selectPathsThatHaveSelectedPoints();
 					// } else {
-						// log('Single Select Mode');
+					} else if (!editor.multiSelect.points.isSelected(this.controlPoint.parent)){
+						log('Single Select Mode');
 						editor.multiSelect.points.select(this.controlPoint.parent);
+						editor.selectPathsThatHaveSelectedPoints();
 						setCursor('penSquare');
 					}
 
 				} else {
-					// log('detected HANDLE');
+					log('detected HANDLE');
 					editor.multiSelect.points.singleHandle = this.controlPoint.type;
-					// log(`set ms.singleHandle: ${editor.multiSelect.points.singleHandle}`);
+					log(`set ms.singleHandle: ${editor.multiSelect.points.singleHandle}`);
 					setCursor('penCircle');
 				}
 
 				// selectPathsThatHaveSelectedPoints();
 			} else if (clickedPath) {
-				// log('detected PATH');
+				log('detected PATH');
 				clickEmptySpace();
 				editor.multiSelect.paths.select(clickedPath);
 
 			} else {
-				// log('detected NOTHING');
+				log('detected NOTHING');
 				// editor.multiSelect.paths.recalculateMaxes();
 				clickEmptySpace();
 				findAndCallHotspot(ehd.mouseX, ehd.mouseY);
@@ -71,7 +72,7 @@ export class Tool_PathEdit {
 
 			if (editor.multiSelect.paths.members.length) editor.nav.panel = 'Attributes';
 			// editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_PathEdit mousedown' });
-			// log('Tool_PathEdit.mousedown', 'end');
+			log('Tool_PathEdit.mousedown', 'end');
 		};
 
 
@@ -137,7 +138,7 @@ export class Tool_PathEdit {
 			);
 			if (cp.type === 'p') setCursor('penSquare');
 			else if (editor.multiSelect.points.isSelected(cp.parent)) setCursor('penCircle');
-			if (!cp && ehd.multi) setCursor('penPlus');
+			if (!cp && ehd.isCtrlDown) setCursor('penPlus');
 
 			// log('Tool_PathEdit.mousemove', 'end');
 		};
