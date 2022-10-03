@@ -96,6 +96,7 @@ export function drawNewBasicPath(ctx, path, view) {
 	drawBoundingBox(ctx, path.maxes, 1);
 }
 
+
 // --------------------------------------------------------------
 // Bounding Box
 // --------------------------------------------------------------
@@ -270,6 +271,7 @@ function drawCircleHandle(ctx, center) {
 	ctx.stroke();
 }
 
+
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
@@ -428,7 +430,7 @@ isOverComponentInstanceBoundingBoxHandle(componentInstance, px, py) {
 export function computeAndDrawPathPointHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
-	let paths = editor.multiSelect.paths.virtualGlyph.paths;
+	let paths = editor.multiSelect.paths.members;
 
 	paths.forEach((path) => {
 		path.pathPoints.forEach((point) => {
@@ -439,10 +441,10 @@ export function computeAndDrawPathPointHandles(ctx) {
 	});
 }
 
-export function computeAndDrawPathPoints(ctx) {
+export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 	const editor = getCurrentProjectEditor();
-	// let points = editor.multiSelect.points;
-	let paths = editor.multiSelect.paths.virtualGlyph.paths;
+	let paths = editor.multiSelect.paths.members;
+	if(drawAllPathPoints) paths = editor.selectedItem.paths;
 
 	paths.forEach((path) => {
 		path.pathPoints.forEach((point, index) => {

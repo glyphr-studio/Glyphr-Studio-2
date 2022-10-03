@@ -21,7 +21,7 @@ export class Tool_PathAddPoint {
 				// historyPut('Added point to path');
 			} else if (s) {
 				editor.multiSelect.points.clear();
-				if (eventHandlerData.multi) editor.multiSelect.paths.add(s);
+				if (eventHandlerData.isCtrlDown) editor.multiSelect.paths.add(s);
 				else editor.multiSelect.paths.select(s);
 
 				if (s.objType === 'ComponentInstance') clickTool('pathEdit');

@@ -56,8 +56,11 @@ export class EditCanvas extends HTMLElement {
 
 		// Set up Subscriptions
 		let canvasSubscriptions = [
-			'whichToolIsSelected',
 			'view',
+			'whichToolIsSelected',
+			'whichGlyphIsSelected',
+			'whichPathIsSelected',
+			'whichPathPointIsSelected',
 			'currentGlyph',
 			'currentPath',
 			'currentPathPoint',
@@ -147,10 +150,13 @@ export class EditCanvas extends HTMLElement {
 
 			} else if (editMode === 'pathEdit') {
 				drawSelectedPathOutline(ctx, view);
-				computeAndDrawPathPointHandles(ctx);
-				computeAndDrawPathPoints(ctx);
-				// drawPathPointHover(ctx, eventHandlerData.hoverPoint);
-
+				if(eventHandlerData.isCtrlDown) {
+					computeAndDrawPathPoints(ctx, true);
+				} else {
+					computeAndDrawPathPointHandles(ctx);
+					computeAndDrawPathPoints(ctx);
+					// drawPathPointHover(ctx, eventHandlerData.hoverPoint);
+				}
 			} else if (editMode === 'newPath') {
 				computeAndDrawPathPointHandles(ctx);
 				computeAndDrawPathPoints(ctx);

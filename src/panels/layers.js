@@ -117,7 +117,7 @@ function selectPath(num) {
 	// log('itemPaths ' + itemPaths);
 
 	if (itemPaths && itemPaths[num]) {
-		if (editor.eventHandlers.multi) editor.multiSelect.paths.toggle(itemPaths[num]);
+		if (eventHandlerData.isCtrlDown) editor.multiSelect.paths.toggle(itemPaths[num]);
 		else {
 			editor.multiSelect.points.clear();
 			editor.multiSelect.paths.select(itemPaths[num]);

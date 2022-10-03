@@ -25,6 +25,7 @@ export function getVersionTwoTestProject() {
         advanceWidth:530, leftSideBearing:10, rightSideBearing:10,
         paths:[
           {objType:'Path',
+            name: 'Large outline',
             pathPoints:[
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:363.2, y:145}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:363.2, y:145}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:363.2, y:145}}, 'type':'corner'},
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:166.7, y:145}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:166.7, y:145}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:166.7, y:145}}, 'type':'corner'},
@@ -37,6 +38,7 @@ export function getVersionTwoTestProject() {
             ]
           },
           {objType:'Path',
+            name: 'Interior triangle',
             pathPoints:[
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:332.9, y:265}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:332.9, y:265}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:332.9, y:265}}, 'type':'corner'},
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:265, y:533}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:265, y:533}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:265, y:533}}, 'type':'corner'},
@@ -52,6 +54,7 @@ export function getVersionTwoTestProject() {
         advanceWidth:385, leftSideBearing:false, rightSideBearing:false,
         paths:[
           {objType:'Path',
+            name: 'Large outline',
             pathPoints:[
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:339.9, y:397}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:366.6, y:410}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:366.6, y:384}}, 'type':'corner'},
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:385, y:325}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:385, y:356.7}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:385, y:325}}, 'type':'corner'},
@@ -65,6 +68,7 @@ export function getVersionTwoTestProject() {
             ],
           },
           {objType:'Path',
+            name: 'Top interior square',
             pathPoints:[
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:460}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:460}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:460}}, 'type':'corner'},
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:250, y:460}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:250, y:460}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:250, y:460}}, 'type':'corner'},
@@ -73,6 +77,7 @@ export function getVersionTwoTestProject() {
             ]
           },
           {objType:'Path',
+            name: 'Bottom interior square',
             pathPoints:[
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:133}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:133}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:140, y:133}}, 'type':'corner'},
               {objType:'PathPoint', 'p':{objType: 'ControlPoint', coord:{objType:'Coord', x:250, y:133}}, 'h1':{objType: 'ControlPoint', coord:{objType:'Coord', x:250, y:133}}, 'h2':{objType: 'ControlPoint', coord:{objType:'Coord', x:250, y:133}}, 'type':'corner'},

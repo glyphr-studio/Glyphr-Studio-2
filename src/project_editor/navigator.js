@@ -94,8 +94,8 @@ export class Navigator {
 	 * @param {string} pageName - where to go
 	 */
 	navigate(pageName) {
-		log(`Navigator.navigate`, 'start');
-		log(`pageName : ${pageName}`);
+		// log(`Navigator.navigate`, 'start');
+		// log(`pageName : ${pageName}`);
 
 		if (pageName) this.page = pageName;
 		const wrapper = document.getElementById('app__wrapper');
@@ -111,7 +111,7 @@ export class Navigator {
 			console.warn(`app__wrapper could not be found, navigation failed`);
 		}
 
-		log(`Navigator.navigate`, 'end');
+		// log(`Navigator.navigate`, 'end');
 	}
 
 	/**

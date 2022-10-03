@@ -240,6 +240,7 @@ export class ProjectEditor {
 	}
 
 
+
 	// --------------------------------------------------------------
 	// Set Selected Work Items
 	// --------------------------------------------------------------
@@ -283,6 +284,59 @@ export class ProjectEditor {
 		// Validate ID!
 		this._selectedComponentID = id;
 	}
+
+	/**
+	 * Syncs changes to multiselected paths from path point selections
+	 * @returns nothing
+	 */
+	selectPathsThatHaveSelectedPoints() {
+		log('ProjectEditor.selectPathsThatHaveSelectedPoints', 'start');
+		const msPoints = this.multiSelect.points;
+		const selectedPoints = msPoints.members;
+		if (selectedPoints.length === 0) return;
+
+		const msPaths = this.multiSelect.paths;
+		const selectedItemPaths = this.selectedItem.paths;
+
+		let parentPath;
+		let changed = false;
+
+		for (let p = 0; p < selectedPoints.length; p++) {
+			parentPath = selectedPoints[p].parent;
+			// if(!msPaths.isSelected(parentPath)) {
+			// 	log(`selecting path`);
+			// 	msPaths.add(parentPath);
+			// 	changed = true;
+			// }
+			for (let p = 0; p < selectedItemPaths.length; p++) {
+				if (selectedItemPaths[p].objType !== 'ComponentInstance') {
+					if (parentPath === selectedItemPaths[p]) {
+						log(`selecting path!`);
+						msPaths.add(selectedItemPaths[p]);
+						changed = true;
+					}
+				}
+			}
+		}
+
+		if(changed) msPaths.publishChanges();
+		log('ProjectEditor.selectPathsThatHaveSelectedPoints', 'end');
+	}
+
+
+	// --------------------------------------------------------------
+	// Tool
+	// --------------------------------------------------------------
+
+	set selectedTool(newTool) {
+		log(`ProjectEditor.selectedTool SET to ${newTool}`);
+		this._selectedTool = newTool;
+	}
+
+	get selectedTool() {
+		return this._selectedTool;
+	}
+
 
 
 	// --------------------------------------------------------------
@@ -433,6 +487,7 @@ export class ProjectEditor {
 		// log(`getEditCanvasWrapperBounds`, 'end');
 		return false;
 	}
+
 
 
 	// --------------------------------------------------------------

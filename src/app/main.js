@@ -220,6 +220,7 @@ export function log(message, type) {
 
 				} else if (type === 'end') {
 					logCount--;
+					logCount = Math.max(logCount, 0);
 					console.log(
 						`%c${ch.repeat(logCount)}%cEND   %c${message1}%c${message2}`,
 						indent, endLeft, endMid, endRight
