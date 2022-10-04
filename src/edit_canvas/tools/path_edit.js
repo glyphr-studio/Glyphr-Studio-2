@@ -83,8 +83,6 @@ export class Tool_PathEdit {
 			let view = editor.view;
 			let selectedPoints = editor.multiSelect.points;
 
-			setCursor('pen');
-
 			if (ehd.toolHandoff) {
 				ehd.toolHandoff = false;
 				this.controlPoint = selectedPoints.singleton.h2;
@@ -106,9 +104,6 @@ export class Tool_PathEdit {
 				let dx = (ehd.mouseX - ehd.lastX) / view.dz;
 				let dy = (ehd.lastY - ehd.mouseY) / view.dz;
 				let cpt = this.controlPoint.type;
-
-				if (this.controlPoint.type === 'p') setCursor('penSquare');
-				else setCursor('penCircle');
 
 				if (selectedPoints.members.length === 1) {
 					if (this.controlPoint && this.controlPoint.xLock) dx = 0;
@@ -132,13 +127,58 @@ export class Tool_PathEdit {
 			}
 
 			// checkForMouseOverHotspot(ehd.mouseX, ehd.mouseY);
-			let cp = editor.multiSelect.paths.isOverControlPoint(
-				cXsX(ehd.mouseX, view),
-				cYsY(ehd.mouseY, view)
-			);
-			if (cp.type === 'p') setCursor('penSquare');
-			else if (editor.multiSelect.points.isSelected(cp.parent)) setCursor('penCircle');
-			if (!cp && ehd.isCtrlDown) setCursor('penPlus');
+
+			// Figure out cursor
+			let hoveredControlPoint;
+			let msPoints = editor.multiSelect.points;
+			let singlePoint = msPoints.singleton;
+			let hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
+
+			if(ehd.isCtrlDown) {
+				hoveredControlPoint = isOverControlPoint(
+					editor.selectedItem,
+					cXsX(ehd.mouseX, view),
+					cYsY(ehd.mouseY, view)
+				);
+
+				// Multi-selection
+				if (hoveredControlPoint.type === 'p') {
+					// Hovered over a Point
+					if(hcpIsSelected) {
+						// Point is selected
+						setCursor('penSquareMinus');
+					} else {
+						// Point is not selected
+						setCursor('penSquarePlus');
+					}
+				} else {
+					// Not hovering over anything
+					setCursor('penPlus');
+				}
+			} else {
+				 hoveredControlPoint = editor.multiSelect.paths.isOverControlPoint(
+					cXsX(ehd.mouseX, view),
+					cYsY(ehd.mouseY, view)
+				);
+
+				// Single selection
+				if (hoveredControlPoint.type === 'p') {
+					// Hovered over a Point
+					if(hcpIsSelected) {
+						// Point is selected
+						setCursor('penSquareMinus');
+					} else {
+						// Point is not selected
+						setCursor('penSquarePlus');
+					}
+				} else if (singlePoint && hcpIsSelected) {
+					// Hovered over a handle
+					setCursor('penCircle');
+				} else {
+					// Not hovering over anything
+					setCursor('pen');
+				}
+			}
 
 			// log('Tool_PathEdit.mousemove', 'end');
 		};
