@@ -1,6 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
-import { drawPath, isOverControlPoint } from '../edit_canvas/draw_paths.js';
+import { drawPath } from '../edit_canvas/draw_paths.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -91,7 +91,7 @@ class MultiSelect {
 		this.publishChanges();
 	}
 
-	count() {
+	get count() {
 		return this.members.length;
 	}
 
@@ -443,17 +443,6 @@ export class MultiSelectPaths extends MultiSelect {
 		else return false;
 	}
 
-	isOverControlPoint(x, y, noHandles) {
-		if (this.members.length === 0) return false;
-		let re = false;
-		for (let m = 0; m < this.members.length; m++) {
-			re = isOverControlPoint(this.members[m], x, y, noHandles);
-			if (re) return re;
-		}
-
-		return false;
-	}
-
 	isOverBoundingBoxHandle(px, py) {
 		// log('SelectedPaths.isOverBoundingBoxHandle', 'start');
 		// log('passed x/y: ' + px + '/' + py);
@@ -478,12 +467,6 @@ export class MultiSelectPaths extends MultiSelect {
 	getCenter() {
 		return this.virtualGlyph.maxes.center;
 	}
-
-	// recalculateMaxes = function() {
-	//     for (let m=0; m<this.members.length; m++) {
-	//         this.members[m].recalculateMaxes();
-	//     }
-	// }
 
 	drawPaths(ctx, view) {
 		let failed = false;

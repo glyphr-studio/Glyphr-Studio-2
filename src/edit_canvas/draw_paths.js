@@ -208,23 +208,26 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 		// np = path.pathPoints[(cp+1) % path.pathPoints.length];
 		np = path.pathPoints[path.getNextPointNum(cp)];
 
-		if (pp.type === 'symmetric') {
-			// log(`calling makeSymmetric`);
-			pp.makeSymmetric('h1');
-		} else if (pp.type === 'flat') {
-			// log(`calling makeFlat`);
-			pp.makeFlat('h1');
+		if(!pp.h2.use && !np.h1.use) {
+			// straight line
+			p4x = sXcX(round(np.p.x, precision), view);
+			p4y = sYcY(round(np.p.y, precision), view);
+
+			// log(`lineTo ${p4x}, ${p4y}`);
+			ctx.lineTo(p4x, p4y);
+
+		} else {
+			// curved line
+			p2x = sXcX(round(pp.h2.x, precision), view);
+			p2y = sYcY(round(pp.h2.y, precision), view);
+			p3x = sXcX(round(np.h1.x, precision), view);
+			p3y = sYcY(round(np.h1.y, precision), view);
+			p4x = sXcX(round(np.p.x, precision), view);
+			p4y = sYcY(round(np.p.y, precision), view);
+
+			// log(`curveTo ${p2x}, ${p2y}, ${p3x}, ${p3y}, ${p4x}, ${p4y}`);
+			ctx.bezierCurveTo(p2x, p2y, p3x, p3y, p4x, p4y);
 		}
-
-		p2x = sXcX(round(pp.h2.x, precision), view);
-		p2y = sYcY(round(pp.h2.y, precision), view);
-		p3x = sXcX(round(np.h1.x, precision), view);
-		p3y = sYcY(round(np.h1.y, precision), view);
-		p4x = sXcX(round(np.p.x, precision), view);
-		p4y = sYcY(round(np.p.y, precision), view);
-
-		// log(`curveTo ${p2x}, ${p2y}, ${p3x}, ${p3y}, ${p4x}, ${p4y}`);
-		ctx.bezierCurveTo(p2x, p2y, p3x, p3y, p4x, p4y);
 	}
 
 	// setView(currView);

@@ -196,54 +196,47 @@ export class PathPoint extends GlyphElement {
 	 * @param {number} dy - delta y
 	 */
 	updatePathPointPosition(controlPoint = 'p', dx = 0, dy = 0) {
-		// log(`PathPoint.updatePathPointPosition`, 'start');
-		// log(`control point ${controlPoint} dx ${dx} dy ${dy}`);
+		log(`PathPoint.updatePathPointPosition`, 'start');
+		log(`control point ${controlPoint} dx ${dx} dy ${dy}`);
 
 		dx = parseFloat(dx);
 		dy = parseFloat(dy);
 
 		switch (controlPoint) {
 			case 'p':
-				// log('moving p');
-				// Should this honor xLock / yLock?
-				// Should this be _x/_y instead of x/y?
+				log('moving p / h1 / h2');
 				this.p.coord.x += dx;
 				this.p.coord.y += dy;
-				// this.p.coord.changed();
 
 				this.h1.coord.x += dx;
 				this.h1.coord.y += dy;
-				// this.h1.coord.changed();
 
 				this.h2.coord.x += dx;
 				this.h2.coord.y += dy;
-				// this.h2.coord.changed();
 				break;
 
 			case 'h1':
-				// log('moving h1');
-				// Should this honor xLock / yLock?
-				// Should this be _x/_y instead of x/y?
+				log('moving h1');
 				this.h1.coord.x += dx;
 				this.h1.coord.y += dy;
-				if (this.type === 'symmetric') this.makeSymmetric('h1');
-				else if (this.type === 'flat') this.makeFlat('h1');
-				// this.h1.coord.changed();
+				if(this.h1.use) {
+					if (this.type === 'symmetric') this.makeSymmetric('h1');
+					else if (this.type === 'flat') this.makeFlat('h1');
+				}
 				break;
 
 			case 'h2':
-				// log('moving h2');
-				// Should this honor xLock / yLock?
-				// Should this be _x/_y instead of x/y?
+				log('moving h2');
 				this.h2.coord.x += dx;
 				this.h2.coord.y += dy;
-				if (this.type === 'symmetric') this.makeSymmetric('h2');
-				else if (this.type === 'flat') this.makeFlat('h2');
-				// this.h2.coord.changed();
+				if(this.h2.use) {
+					if (this.type === 'symmetric') this.makeSymmetric('h2');
+					else if (this.type === 'flat') this.makeFlat('h2');
+				}
 				break;
 		}
 
-		// log(`PathPoint.updatePathPointPosition`, 'end');
+		log(`PathPoint.updatePathPointPosition`, 'end');
 	}
 
 	/**

@@ -81,10 +81,10 @@ export function handleKeyPress(event) {
 		// log('selectedTool = ' + editor.selectedTool);
 		event.preventDefault();
 
-		if (ehd.isMouseOverCanvas) {
-			if (editMode === 'arrow') setCursor('arrowPlus');
-			if (editMode === 'pen') setCursor('penPlus');
-		}
+		// if (ehd.isMouseOverCanvas) {
+		// 	if (editMode === 'arrow') setCursor('arrowPlus');
+		// 	if (editMode === 'pen') setCursor('penPlus');
+		// }
 
 		// log('ehd.lastTool = ' + ehd.lastTool);
 		editor.editCanvas.redraw({calledBy: 'Event Handler - Keydown Ctrl for multi select'});
@@ -311,7 +311,7 @@ export function handleKeyUp(event) {
 
 	// Ctrl
 	if (key === 'ctrl' && !ehd.isCtrlDown) {
-		updateCursor();
+		// updateCursor();
 		editor.editCanvas.redraw({calledBy: 'Event Handler - Keyup Ctrl for multi select'});
 	}
 

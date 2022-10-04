@@ -183,6 +183,7 @@ export class ControlPoint extends GlyphElement {
 		} else {
 			// log(`this is a H control point`);
 			this.coord.x = position;
+			// Maybe we can move it without using it?
 			this.use = true;
 		}
 		// log(`ControlPoint SET x`, 'end');
@@ -199,6 +200,7 @@ export class ControlPoint extends GlyphElement {
 			this.parent.updatePathPointPosition('p', 0, dy);
 		} else {
 			this.coord.y = position;
+			// Maybe we can move it without using it?
 			this.use = true;
 		}
 	}

@@ -4,7 +4,7 @@ import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events.js';
 import { drawGlyph, drawPath } from './draw_paths.js';
-import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, computeAndDrawPathPointHandles, computeAndDrawPathPoints, drawBoundingBox, drawNewBasicPath, drawPathPointHover, drawSelectedPathOutline } from './draw_edit_affordances.js';
+import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, computeAndDrawPathPointHandles, computeAndDrawPathPoints, drawBoundingBox, drawNewBasicPath, drawPathPointHover, drawSelectedPathOutline, testDrawAllPathPointHandles } from './draw_edit_affordances.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js';
 import { makeCrisp, round } from '../common/functions.js';
 import { setCursor, updateCursor } from './cursors.js';
@@ -76,7 +76,7 @@ export class EditCanvas extends HTMLElement {
 				subscriberID: `editCanvas-${topic}`,
 				callback: () => {
 					this.redraw({calledBy: `editCanvas-${topic}`});
-					updateCursor();
+					// updateCursor();
 				}
 			});
 		});
@@ -138,7 +138,7 @@ export class EditCanvas extends HTMLElement {
 
 			// Draw selected path / path
 			let editMode = editor.selectedTool;
-			// log(`editMode: ${editMode}`);
+			log(`editMode: ${editMode}`);
 
 			if (editMode === 'resize') {
 				drawSelectedPathOutline(ctx, view);
@@ -150,13 +150,15 @@ export class EditCanvas extends HTMLElement {
 
 			} else if (editMode === 'pathEdit') {
 				drawSelectedPathOutline(ctx, view);
-				if(eventHandlerData.isCtrlDown) {
+				if(eventHandlerData.isCtrlDown || editor.multiSelect.points.count > 1) {
 					computeAndDrawPathPoints(ctx, true);
+					testDrawAllPathPointHandles(ctx);
 				} else {
 					computeAndDrawPathPointHandles(ctx);
 					computeAndDrawPathPoints(ctx);
 					// drawPathPointHover(ctx, eventHandlerData.hoverPoint);
 				}
+
 			} else if (editMode === 'newPath') {
 				computeAndDrawPathPointHandles(ctx);
 				computeAndDrawPathPoints(ctx);

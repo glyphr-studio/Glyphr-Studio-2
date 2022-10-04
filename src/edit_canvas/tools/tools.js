@@ -49,7 +49,7 @@ export function makeEditToolsButtons() {
 		toolButtonData.pathAddPoint.disabled = true;
 	}
 
-	if (editor.multiSelect.paths.count() > 1) {
+	if (editor.multiSelect.paths.count > 1) {
 		toolButtonData.pathAddPoint.disabled = true;
 	}
 
