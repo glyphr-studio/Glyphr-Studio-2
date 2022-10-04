@@ -441,6 +441,35 @@ export function computeAndDrawPathPointHandles(ctx) {
 	});
 }
 
+export function testDrawAllPathPointHandles(ctx) {
+	const editor = getCurrentProjectEditor();
+	// let points = editor.multiSelect.points;
+	let paths = editor.selectedItem.paths;
+
+	ctx.strokeStyle = 'purple';
+	paths.forEach((path) => {
+		path.pathPoints.forEach((point) => {
+			ctx.beginPath();
+			ctx.arc(
+				sXcX(point.h1.x),
+				sYcY(point.h1.y),
+				3, 0, Math.PI * 2, true
+			);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.arc(
+				sXcX(point.h2.x),
+				sYcY(point.h2.y),
+				3, 0, Math.PI * 2, true
+			);
+			ctx.closePath();
+			ctx.stroke();
+		});
+	});
+}
+
+
 export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 	const editor = getCurrentProjectEditor();
 	let paths = editor.multiSelect.paths.members;
@@ -602,45 +631,25 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
 	const halfPointSize = pointSize / 2;
 
 	if (drawH1 && point.h1.use) {
-		ctx.beginPath();
-		ctx.arc(
-			sXcX(point.h1.x),
-			sYcY(point.h1.y),
-			halfPointSize,
-			0,
-			Math.PI * 2,
-			true
-		);
-		ctx.closePath();
-		ctx.fill();
-
-		ctx.beginPath();
-		ctx.moveTo(sXcX(point.p.x), sYcY(point.p.y));
-		ctx.lineTo(sXcX(point.h1.x), sYcY(point.h1.y));
-		ctx.closePath();
-		ctx.stroke();
-		ctx.fillText('1', sXcX(point.h1.x + 12), sYcY(point.h1.y));
+		drawOneHandle(point.h1, '1');
 	}
 
 	if (drawH2 && point.h2.use) {
-		ctx.beginPath();
-		ctx.arc(
-			sXcX(point.h2.x),
-			sYcY(point.h2.y),
-			halfPointSize,
-			0,
-			Math.PI * 2,
-			true
-		);
-		ctx.closePath();
-		ctx.fill();
+		drawOneHandle(point.h2, '2');
+	}
+
+	function drawOneHandle(handle, label) {
+		const hx = sXcX(handle.x);
+		const hy = sYcY(handle.y);
+		drawCircleHandle(ctx, {x: hx, y: hy});
 
 		ctx.beginPath();
 		ctx.moveTo(sXcX(point.p.x), sYcY(point.p.y));
-		ctx.lineTo(sXcX(point.h2.x), sYcY(point.h2.y));
+		ctx.lineTo(hx, hy);
 		ctx.closePath();
 		ctx.stroke();
-		ctx.fillText('2', sXcX(point.h2.x + 12), sYcY(point.h2.y));
+
+		ctx.fillText(label, (hx + 12), hy);
 	}
 }
 

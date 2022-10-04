@@ -28,7 +28,7 @@ export class Coord extends GlyphElement {
 
 	/**
 	 * Export object properties that need to be saved to a project file
-	 * @returns {*}
+	 * @returns {Object}
 	 */
 	save() {
 		const re = {

@@ -16,7 +16,7 @@ export class Tool_PathEdit {
 		this.controlPoint = false;
 
 		this.mousedown = function(ev) {
-			log('Tool_PathEdit.mousedown', 'start');
+			// log('Tool_PathEdit.mousedown', 'start');
 			let ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			let view = editor.view;
@@ -27,52 +27,52 @@ export class Tool_PathEdit {
 				cXsX(ehd.mouseX, view),
 				cYsY(ehd.mouseY, view)
 			);
-			log(`controlPoint CLICKED`);
-			log(this.controlPoint);
+			// log(`controlPoint CLICKED`);
+			// log(this.controlPoint);
 			let clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
 
 			if (this.controlPoint) {
-				log('detected CONTROL POINT');
+				// log('detected CONTROL POINT');
 				this.dragging = true;
 
 				if (this.controlPoint.type === 'p') {
-					log('detected P');
+					// log('detected P');
 
 					if (ehd.isCtrlDown) {
-						log('Multi Select Mode');
+						// log('Multi Select Mode');
 						editor.multiSelect.points.toggle(this.controlPoint.parent);
 						editor.selectPathsThatHaveSelectedPoints();
 					// } else {
 					} else if (!editor.multiSelect.points.isSelected(this.controlPoint.parent)){
-						log('Single Select Mode');
+						// log('Single Select Mode');
 						editor.multiSelect.points.select(this.controlPoint.parent);
 						editor.selectPathsThatHaveSelectedPoints();
-						setCursor('penSquare');
+						// setCursor('penSquare');
 					}
 
 				} else {
-					log('detected HANDLE');
+					// log('detected HANDLE');
 					editor.multiSelect.points.singleHandle = this.controlPoint.type;
-					log(`set ms.singleHandle: ${editor.multiSelect.points.singleHandle}`);
-					setCursor('penCircle');
+					// log(`set ms.singleHandle: ${editor.multiSelect.points.singleHandle}`);
+					// setCursor('penCircle');
 				}
 
 				// selectPathsThatHaveSelectedPoints();
 			} else if (clickedPath) {
-				log('detected PATH');
+				// log('detected PATH');
 				clickEmptySpace();
 				editor.multiSelect.paths.select(clickedPath);
 
 			} else {
-				log('detected NOTHING');
+				// log('detected NOTHING');
 				// editor.multiSelect.paths.recalculateMaxes();
 				clickEmptySpace();
-				findAndCallHotspot(ehd.mouseX, ehd.mouseY);
+				// findAndCallHotspot(ehd.mouseX, ehd.mouseY);
 			}
 
 			if (editor.multiSelect.paths.members.length) editor.nav.panel = 'Attributes';
 			// editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_PathEdit mousedown' });
-			log('Tool_PathEdit.mousedown', 'end');
+			// log('Tool_PathEdit.mousedown', 'end');
 		};
 
 
@@ -111,6 +111,7 @@ export class Tool_PathEdit {
 				}
 
 				// log(`dragging with ms.singleHandle: ${editor.multiSelect.points.singleHandle}`);
+				// log(`dx: ${dx}, dy: ${dy}`);
 				selectedPoints.updatePathPointPosition(dx, dy);
 				// selectedPoints.members.forEach(function (point, i) {
 				// 	// log('UpdatePPP ' + cpt + '\t' + dx + '\t' + dy);
@@ -130,46 +131,54 @@ export class Tool_PathEdit {
 
 			// Figure out cursor
 			let hoveredControlPoint;
+			let hcpIsSelected;
 			let msPoints = editor.multiSelect.points;
 			let singlePoint = msPoints.singleton;
-			let hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
 
 			if(ehd.isCtrlDown) {
+				// Multi-selection
+
 				hoveredControlPoint = isOverControlPoint(
 					editor.selectedItem,
 					cXsX(ehd.mouseX, view),
 					cYsY(ehd.mouseY, view)
 				);
+				hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
 
-				// Multi-selection
 				if (hoveredControlPoint.type === 'p') {
 					// Hovered over a Point
 					if(hcpIsSelected) {
 						// Point is selected
+						// log(`CTRL DOWN > Selected P`);
 						setCursor('penSquareMinus');
 					} else {
 						// Point is not selected
+						// log(`CTRL DOWN > Not selected P`);
 						setCursor('penSquarePlus');
 					}
 				} else {
 					// Not hovering over anything
+					// log(`CTRL DOWN > Not P`);
 					setCursor('penPlus');
 				}
+
 			} else {
-				 hoveredControlPoint = editor.multiSelect.paths.isOverControlPoint(
+				// Single selection
+				hoveredControlPoint = isOverControlPoint(
+					editor.multiSelect.paths.virtualGlyph,
 					cXsX(ehd.mouseX, view),
 					cYsY(ehd.mouseY, view)
 				);
+				hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
 
-				// Single selection
 				if (hoveredControlPoint.type === 'p') {
 					// Hovered over a Point
 					if(hcpIsSelected) {
 						// Point is selected
-						setCursor('penSquareMinus');
+						setCursor('penSquare');
 					} else {
 						// Point is not selected
-						setCursor('penSquarePlus');
+						setCursor('penSquare');
 					}
 				} else if (singlePoint && hcpIsSelected) {
 					// Hovered over a handle
