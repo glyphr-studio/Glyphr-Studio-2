@@ -38,9 +38,7 @@ export function importOTFFont(filter) {
 			// Get Font
 			font = OpenTypeJS.parse(getGlyphrStudioApp().temp.droppedFileContent);
 		} catch (err) {
-			console.error(
-				'Something went wrong with opening the font file:<br><br>' + err
-			);
+			console.error('Something went wrong with opening the font file:<br><br>' + err);
 			return;
 		}
 
@@ -50,9 +48,7 @@ export function importOTFFont(filter) {
 				// importStatus('Importing Glyph 1 of ' + font.glyphs.length);
 				setTimeout(startFontImport, 1);
 			} else {
-				document.getElementById(
-					'openprojecttableright'
-				).innerHTML = make_ImportFilter(
+				document.getElementById('openprojecttableright').innerHTML = make_ImportFilter(
 					font.glyphs.length,
 					0,
 					'importOTFFont'
@@ -65,9 +61,7 @@ export function importOTFFont(filter) {
 		} else {
 			loadPage_openproject();
 			openproject_changeTab('load');
-			showErrorMessageBox(
-				'Something went wrong with opening the font file:<br><br>' + err
-			);
+			showErrorMessageBox('Something went wrong with opening the font file:<br><br>' + err);
 			return;
 		}
 
@@ -155,9 +149,7 @@ export function importOTFFont(filter) {
 						// log(np);
 						if (np.pathPoints.length) {
 							pathCounter++;
-							newPaths.push(
-								new Path({ path: np, name: 'Path ' + pathCounter })
-							);
+							newPaths.push(new Path({ path: np, name: 'Path ' + pathCounter }));
 						} else {
 							// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
 						}
@@ -172,8 +164,7 @@ export function importOTFFont(filter) {
 			// uni = uni[0];
 			minChar = Math.min(minChar, uni);
 			maxGlyph = Math.max(maxGlyph, uni);
-			if (1 * uni > _UI.glyphRange.latinExtendedB.end)
-				customGlyphRange.push(uni);
+			if (1 * uni > _UI.glyphRange.latinExtendedB.end) customGlyphRange.push(uni);
 
 			fc[uni] = new Glyph({
 				paths: newPaths,
@@ -316,8 +307,7 @@ export function importOTFFont(filter) {
 		ps.overshoot = round(ps.upm / 100);
 
 		md.font_family = fname.substr(0, 31);
-		md.panose_1 =
-			getTableValue(font.tables.os2.panose) || '0 0 0 0 0 0 0 0 0 0';
+		md.panose_1 = getTableValue(font.tables.os2.panose) || '0 0 0 0 0 0 0 0 0 0';
 		md.version =
 			getTableValue(font.tables.head.fontRevision) ||
 			getTableValue(font.version) ||

@@ -2,8 +2,8 @@
 .edit-canvas__tool:active,
 .edit-canvas__tool:focus,
 .edit-canvas__tool:hover {
-	height:30px;
-	width:30px;
+	height: 30px;
+	width: 30px;
 	padding: 5px;
 	margin: 0 0 5px 0;
 	background-color: var(--gray-l90);

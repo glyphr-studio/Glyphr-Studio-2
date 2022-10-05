@@ -1,7 +1,7 @@
 * {
 	margin: 0;
 	padding: 0;
-	font-family:FiraGO, tahoma, verdana, sans-serif;
+	font-family: FiraGO, tahoma, verdana, sans-serif;
 	font-size: 14px;
 	font-weight: normal;
 	z-index: 0;
@@ -10,7 +10,8 @@
 	box-sizing: border-box;
 }
 
-html,body {
+html,
+body {
 	background-color: var(--gray-l97);
 	height: 100%;
 	width: 100%;
@@ -47,7 +48,15 @@ html,body {
 	display: none;
 }
 
-div,p,h1,h2,h3,table,td,label,button {
+div,
+p,
+h1,
+h2,
+h3,
+table,
+td,
+label,
+button {
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -109,7 +118,7 @@ table {
 }
 
 td {
-	 vertical-align: top;
+	vertical-align: top;
 }
 
 label,
@@ -153,7 +162,6 @@ textarea:focus {
 	border-color: var(--enabled-focus-border);
 }
 
-
 input:focus,
 button:focus,
 textarea:focus,
@@ -163,15 +171,14 @@ glyph-tile:focus {
 	outline-offset: 2px;
 }
 
-
-input[type=image]{
-	height:auto;
-	width:auto;
+input[type='image'] {
+	height: auto;
+	width: auto;
 	background-color: transparent;
 	border-width: 0px;
 }
 
-input[type=number]{
+input[type='number'] {
 	text-align: right;
 	width: 70px;
 	border: 1px solid white;
@@ -179,18 +186,17 @@ input[type=number]{
 	cursor: default;
 }
 
-input[type=text][disabled='disabled'],
-input[type=number][disabled='disabled']{
-	background-color:var(--gray-l90);
+input[type='text'][disabled='disabled'],
+input[type='number'][disabled='disabled'] {
+	background-color: var(--gray-l90);
 	border: 1px solid var(--gray-l90);
 	color: var(--gray-l65);
 }
 
-input[type=checkbox] {
+input[type='checkbox'] {
 	accent-color: var(--accent-color);
 	opacity: 0.75;
 }
-
 
 /* --------------------------------------------------------------
 // Button
@@ -203,25 +209,25 @@ button:focus {
 	text-align: center;
 	padding: 4px 8px;
 	margin: 2px 0px;
-	cursor:pointer;
+	cursor: pointer;
 	border-radius: 4px;
 	border: 1px solid var(--gray-l90);
 	background-color: var(--gray-l90);
 	color: var(--gray-l15);
-	box-shadow:var(--l1-shadow)
+	box-shadow: var(--l1-shadow);
 }
 
 button:hover {
-	color:var(--gray-l05);
-	border-color:var(--blue-l85);
-	box-shadow:var(--l1-shadow)
+	color: var(--gray-l05);
+	border-color: var(--blue-l85);
+	box-shadow: var(--l1-shadow);
 }
 
 button[disabled],
 button[disabled]:active,
 button[disabled]:hover,
 button[disabled]:hover,
-button[disabled]:focus{
+button[disabled]:focus {
 	background-color: var(--gray-l95);
 	border-color: var(--gray-l95);
 	cursor: default;
@@ -230,22 +236,20 @@ button[disabled]:focus{
 .button__call-to-action,
 .button__call-to-action:hover,
 .button__call-to-action:active,
-.button__call-to-action:focus{
+.button__call-to-action:focus {
 	background-color: var(--blue-l60);
 	color: var(--gray-l95);
 }
 
 .button__call-to-action:hover {
-	color:white;
+	color: white;
 }
-
-
 
 /* --------------------------------------------------------------
 // Range Input
 // ------------------------------------------------------------*/
 
-input[type=range] {
+input[type='range'] {
 	-webkit-appearance: none;
 	width: 190px;
 	margin: 0px 8px;
@@ -255,7 +259,7 @@ input[type=range] {
 	top: 8px;
 	border: 0px;
 }
-input[type=range]::-webkit-slider-runnable-track {
+input[type='range']::-webkit-slider-runnable-track {
 	width: 100%;
 	height: 5px;
 	cursor: pointer;
@@ -264,7 +268,7 @@ input[type=range]::-webkit-slider-runnable-track {
 	border-radius: 25px;
 	border: 0px solid transparent;
 }
-input[type=range]::-webkit-slider-thumb {
+input[type='range']::-webkit-slider-thumb {
 	box-shadow: 1px 1px 1px var(--blue-l20), 0px 0px 1px var(--blue-l35);
 	border: 1.5px solid white;
 	height: 16px;
@@ -275,10 +279,10 @@ input[type=range]::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	margin-top: -6px;
 }
-input[type=range]:focus::-webkit-slider-runnable-track {
+input[type='range']:focus::-webkit-slider-runnable-track {
 	background: rgba(166, 171, 175, 0.5);
 }
-input[type=range]::-moz-range-track {
+input[type='range']::-moz-range-track {
 	width: 100%;
 	height: 5px;
 	cursor: pointer;
@@ -287,7 +291,7 @@ input[type=range]::-moz-range-track {
 	border-radius: 25px;
 	border: 0px solid transparent;
 }
-input[type=range]::-moz-range-thumb {
+input[type='range']::-moz-range-thumb {
 	box-shadow: 1px 1px 1px var(--blue-l20), 0px 0px 1px var(--blue-l35);
 	border: 1.5px solid white;
 	height: 16px;
@@ -296,7 +300,7 @@ input[type=range]::-moz-range-thumb {
 	background: var(--blue-l55);
 	cursor: pointer;
 }
-input[type=range]::-ms-track {
+input[type='range']::-ms-track {
 	width: 100%;
 	height: 5px;
 	cursor: pointer;
@@ -304,19 +308,19 @@ input[type=range]::-ms-track {
 	border-color: transparent;
 	color: transparent;
 }
-input[type=range]::-ms-fill-lower {
+input[type='range']::-ms-fill-lower {
 	background: rgba(140, 145, 151, 0.5);
 	border: 0px solid transparent;
 	border-radius: 50px;
 	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
 }
-input[type=range]::-ms-fill-upper {
+input[type='range']::-ms-fill-upper {
 	background: rgba(153, 158, 163, 0.5);
 	border: 0px solid transparent;
 	border-radius: 50px;
 	box-shadow: 1px 1px 1px rgba(0, 0, 0, 0), 0px 0px 1px rgba(13, 13, 13, 0);
 }
-input[type=range]::-ms-thumb {
+input[type='range']::-ms-thumb {
 	box-shadow: 1px 1px 1px var(--blue-l20), 0px 0px 1px var(--blue-l35);
 	border: 2px solid white;
 	height: 14px;
@@ -326,9 +330,9 @@ input[type=range]::-ms-thumb {
 	background: var(--blue-l55);
 	cursor: pointer;
 }
-input[type=range]:focus::-ms-fill-lower {
+input[type='range']:focus::-ms-fill-lower {
 	background: rgba(153, 158, 163, 0.5);
 }
-input[type=range]:focus::-ms-fill-upper {
+input[type='range']:focus::-ms-fill-upper {
 	background: rgba(166, 171, 175, 0.5);
 }

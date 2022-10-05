@@ -22,7 +22,6 @@
 	overflow: hidden;
 	border-color: var(--enabled-restingLight-border);
 	background-color: var(--enabled-restingLight-background);
-
 }
 
 .wrapper svg {

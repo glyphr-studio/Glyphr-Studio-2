@@ -75,16 +75,14 @@ export class GlyphElement {
 	 * will be overwritten to lock properties.
 	 * @param {string} propertyName - property to lock
 	 */
-	 lock(propertyName) {
-	}
+	lock(propertyName) {}
 
 	/**
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to lock properties.
 	 * @param {string} propertyName - property to unlock
 	 */
-	unlock(propertyName) {
-	}
+	unlock(propertyName) {}
 
 	/**
 	 * Export object properties that need to be saved to a project file

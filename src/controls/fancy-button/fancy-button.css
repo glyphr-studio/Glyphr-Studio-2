@@ -39,7 +39,8 @@
 	border-radius: 5px;
 	box-shadow: var(--l2-shadow);
 
-	background: linear-gradient(135deg,
+	background: linear-gradient(
+		135deg,
 		var(--blue-l55),
 		var(--purple-l45),
 		var(--orange-l55),
@@ -51,8 +52,12 @@
 }
 
 @keyframes gradFade {
-	0%  {background-position:0% 0%}
-	100% {background-position:100% 100%}
+	0% {
+		background-position: 0% 0%;
+	}
+	100% {
+		background-position: 100% 100%;
+	}
 }
 
 .wrapper:hover,
@@ -63,7 +68,7 @@
 }
 
 .wrapper:focus {
-outline: var(--global-focus-style);
+	outline: var(--global-focus-style);
 }
 
 .buttonContent {
@@ -94,7 +99,8 @@ outline: var(--global-focus-style);
 }
 
 .wrapper[secondary] .buttonText {
-	background: linear-gradient(135deg,
+	background: linear-gradient(
+		135deg,
 		var(--blue-l45),
 		var(--purple-l45),
 		var(--orange-l45),

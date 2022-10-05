@@ -173,7 +173,7 @@ export class ControlPoint extends GlyphElement {
 		// log(`this.type: ${this.type}`);
 		// log(`position: ${position}`);
 
-		if(this.type === 'p') {
+		if (this.type === 'p') {
 			// log(`this is a P control point`);
 
 			let dx = position - this.x;
@@ -195,7 +195,7 @@ export class ControlPoint extends GlyphElement {
 	 * @param {number} position
 	 */
 	set y(position) {
-		if(this.type === 'p') {
+		if (this.type === 'p') {
 			let dy = position - this.y;
 			this.parent.updatePathPointPosition('p', 0, dy);
 		} else {
@@ -254,8 +254,8 @@ export class ControlPoint extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	isLocked(propertyName) {
-		if(propertyName === 'x') return this.xLock;
-		if(propertyName === 'y') return this.yLock;
+		if (propertyName === 'x') return this.xLock;
+		if (propertyName === 'y') return this.yLock;
 		return false;
 	}
 
@@ -266,8 +266,8 @@ export class ControlPoint extends GlyphElement {
 	lock(propertyName) {
 		// log(`ControlPoint.lock`, 'start');
 		// log(`propertyName: ${propertyName}`);
-		if(propertyName === 'x') this.xLock = true;
-		if(propertyName === 'y') this.yLock = true;
+		if (propertyName === 'x') this.xLock = true;
+		if (propertyName === 'y') this.yLock = true;
 		// log(`ControlPoint.lock`, 'end');
 	}
 
@@ -278,8 +278,8 @@ export class ControlPoint extends GlyphElement {
 	unlock(propertyName) {
 		// log(`ControlPoint.unlock`, 'start');
 		// log(`propertyName: ${propertyName}`);
-		if(propertyName === 'x') this.xLock = false;
-		if(propertyName === 'y') this.yLock = false;
+		if (propertyName === 'x') this.xLock = false;
+		if (propertyName === 'y') this.yLock = false;
 		// log(`ControlPoint.unlock`, 'end');
 	}
 

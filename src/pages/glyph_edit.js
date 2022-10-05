@@ -38,9 +38,13 @@ export class PageGlyphEdit {
 			<div class="editor__page">
 				<div class="editor-page__left-area">
 					<div class="editor-page__nav-area">
-						${makeNavButton({level: 'l1', superTitle: 'PAGE', title: 'Glyph edit'})}
-						${makeNavButton({level: 'l2', superTitle: 'EDITING', title: lookUpGlyphName(editor.selectedGlyphID, true)})}
-						${makeNavButton({level: 'l3', superTitle: 'PANEL', title: editor.nav.panel})}
+						${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Glyph edit' })}
+						${makeNavButton({
+							level: 'l2',
+							superTitle: 'EDITING',
+							title: lookUpGlyphName(editor.selectedGlyphID, true),
+						})}
+						${makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel })}
 					</div>
 					<div class="editor-page__panel"></div>
 				</div>
@@ -55,22 +59,28 @@ export class PageGlyphEdit {
 
 		// Page Selector
 		let l1 = content.querySelector('#nav-button-l1');
-		l1.addEventListener('click', function(){ toggleNavDropdown(l1); });
+		l1.addEventListener('click', function () {
+			toggleNavDropdown(l1);
+		});
 
 		// Glyph Selector
 		let l2 = content.querySelector('#nav-button-l2');
-		l2.addEventListener('click', function(){ toggleNavDropdown(l2); });
+		l2.addEventListener('click', function () {
+			toggleNavDropdown(l2);
+		});
 		editor.subscribe({
 			topic: 'whichGlyphIsSelected',
 			subscriberID: 'nav.glyphChooserButton',
 			callback: (newGlyphID) => {
 				l2.innerHTML = makeNavButtonContent(lookUpGlyphName(newGlyphID, true), 'EDITING');
-			}
+			},
 		});
 
 		// Panel Selector
 		let l3 = content.querySelector('#nav-button-l3');
-		l3.addEventListener('click', function(){ toggleNavDropdown(l3); });
+		l3.addEventListener('click', function () {
+			toggleNavDropdown(l3);
+		});
 
 		// Panel
 		content.querySelector('.editor-page__panel').appendChild(makePanel());
@@ -82,7 +92,7 @@ export class PageGlyphEdit {
 				panelContent.innerHTML = '';
 				// panelContent.appendChild(makePanel());
 				refreshPanel();
-			}
+			},
 		});
 
 		// Tools
@@ -91,12 +101,10 @@ export class PageGlyphEdit {
 		let toolsButtons = makeEditToolsButtons();
 		if (toolsButtons) addAsChildren(toolsArea, toolsButtons);
 
-
 		let zoomArea = content.querySelector('.editor-page__zoom-area');
 		zoomArea.innerHTML = '';
 		let viewButtons = makeViewToolsButtons();
 		if (viewButtons) addAsChildren(zoomArea, viewButtons);
-
 
 		// Canvas
 		editor.subscribe({
@@ -108,25 +116,24 @@ export class PageGlyphEdit {
 				// log(`new id ${newGlyphID} results in ${newChar} on the main canvas`);
 				content.querySelector('#editor-page__edit-canvas').setAttribute('glyphs', newChar);
 				// log(`Main Canvas subscriber callback`, 'end');
-			}
+			},
 		});
 
 		editor.subscribe({
 			topic: 'whichPathIsSelected',
 			subscriberID: 'editCanvas.selectedPath',
 			callback: () => {
-				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath'});
-			}
+				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath' });
+			},
 		});
 
 		editor.subscribe({
 			topic: 'whichPathPointIsSelected',
 			subscriberID: 'editCanvas.selectedPathPoint',
 			callback: () => {
-				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPathPoint'});
-			}
+				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPathPoint' });
+			},
 		});
-
 
 		// log(`PageGlyphEdit.makePageContent`, 'end');
 		return content;

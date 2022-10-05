@@ -9,7 +9,7 @@
 #open-project__right-area {
 	color: var(--gray-l95);
 	vertical-align: middle;
-	padding:0px 0px 0px 50px;
+	padding: 0px 0px 0px 50px;
 	font-size: 40px;
 	background-color: var(--gray-l10);
 }
@@ -105,7 +105,7 @@
 	background-color: var(--gray-l45);
 }
 
-#open-project__project-name	{
+#open-project__project-name {
 	width: 94%;
 	height: 25px;
 	margin: 10px 0px 0px 0px;
@@ -117,7 +117,7 @@
 	width: 90%;
 	margin: 10px 0px 0px 0px;
 	background-color: var(--gray-l15);
-	border:1px dashed var(--gray-l65);
+	border: 1px dashed var(--gray-l65);
 	color: var(--gray-l65);
 	padding: 18px 0px 20px 20px;
 	line-height: 2em;

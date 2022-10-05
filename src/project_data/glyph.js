@@ -27,13 +27,7 @@ export class Glyph extends GlyphElement {
 	 * @param {boolean} paths - collection of Paths and Component Instances in this Glyph
 	 * @param {array} usedIn - array of IDs where this Glyph is used as a component instance
 	 */
-	constructor({
-		id = false,
-		paths = [],
-		advanceWidth = 0,
-		ratioLock = false,
-		usedIn = [],
-	} = {}) {
+	constructor({ id = false, paths = [], advanceWidth = 0, ratioLock = false, usedIn = [] } = {}) {
 		// log(`Glyph.constructor`, 'start');
 		super();
 		this.id = id;
@@ -60,7 +54,7 @@ export class Glyph extends GlyphElement {
 		const re = {
 			name: this.name,
 			id: this._id,
-			objType: this.objType
+			objType: this.objType,
 		};
 
 		if (this.advanceWidth !== 0) re.advanceWidth = this.advanceWidth;
@@ -69,8 +63,7 @@ export class Glyph extends GlyphElement {
 
 		if (this.paths && this.paths.length) {
 			re.paths = [];
-			for (let s = 0; s < this.paths.length; s++)
-				re.paths.push(this.paths[s].save(verbose));
+			for (let s = 0; s < this.paths.length; s++) re.paths.push(this.paths[s].save(verbose));
 		}
 
 		if (!verbose) {
@@ -98,8 +91,7 @@ export class Glyph extends GlyphElement {
 
 		if (this.advanceWidth !== 0) re += `${ind}advanceWidth: ${this.advanceWidth}\n`;
 		if (this.ratioLock !== false) re += `${ind}ratioLock: ${this.ratioLock}\n`;
-		if (this.usedIn.length)
-			re += `${ind}usedIn: ${JSON.stringify(this.usedIn)}\n`;
+		if (this.usedIn.length) re += `${ind}usedIn: ${JSON.stringify(this.usedIn)}\n`;
 
 		if (this.paths && this.paths.length) {
 			re += `${ind}paths: [\n`;
@@ -118,7 +110,6 @@ export class Glyph extends GlyphElement {
 
 		return re;
 	}
-
 
 	// --------------------------------------------------------------
 	// Getters
@@ -164,7 +155,6 @@ export class Glyph extends GlyphElement {
 		// log(`Glyph.usedIn Getter - is array? ${Array.isArray(this._usedIn)}`);
 		return this._usedIn || [];
 	}
-
 
 	// computed properties
 
@@ -291,7 +281,6 @@ export class Glyph extends GlyphElement {
 		return this.cache.svgPathData;
 	}
 
-
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------
@@ -373,7 +362,6 @@ export class Glyph extends GlyphElement {
 	set usedIn(usedIn) {
 		this._usedIn = usedIn || [];
 	}
-
 
 	// computed properties
 
@@ -648,7 +636,7 @@ export class Glyph extends GlyphElement {
 	 * @returns {Glyph} - reference to this glyph
 	 */
 	roundAll(precision = 0) {
-		for (let p=0; p<this.paths.length; p++) {
+		for (let p = 0; p < this.paths.length; p++) {
 			this.paths[p].roundAll(precision);
 		}
 		return this;
@@ -778,7 +766,6 @@ export class Glyph extends GlyphElement {
 		return this.cache.maxes;
 	}
 
-
 	// --------------------------------------------------------------
 	// Export to different languages
 	// --------------------------------------------------------------
@@ -802,7 +789,9 @@ export class Glyph extends GlyphElement {
 
 		let re = `
 			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}">
-			    <g transform="translate(${gutterScale},${(emSquare - desc - gutterScale / 2)}) scale(${charScale}, -${charScale})">
+			    <g transform="translate(${gutterScale},${
+			emSquare - desc - gutterScale / 2
+		}) scale(${charScale}, -${charScale})">
 			      <path d="${svgPathData}"/>
 			    </g>
 			</svg>

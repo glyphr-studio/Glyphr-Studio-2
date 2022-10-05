@@ -32,9 +32,7 @@ export class Tool_Kern {
 				let val = 1 * sk.value;
 				updateKernValue(
 					getSelectedKernID(),
-					round(
-						val + (1 * (eventHandlerData.mouseX - this.deltax)) / editor.view.dz
-					)
+					round(val + (1 * (eventHandlerData.mouseX - this.deltax)) / editor.view.dz)
 				);
 				this.deltax = eventHandlerData.mouseX;
 				redraw({ calledBy: 'Kern.mousemove', redrawPanels: false });

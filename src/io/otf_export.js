@@ -1,4 +1,3 @@
-
 import { Glyph } from '../glyph_elements/glyph.js';
 import { getCurrentProject } from '../app/main.js';
 import { round, clone } from '../common/functions.js';
@@ -77,9 +76,7 @@ export function exportOTFFont() {
 					thisGlyph = new Glyph(clone(getCurrentProject().glyphs[key]));
 					exportArray.push({ xg: thisGlyph, xc: key });
 				} else {
-					console.warn(
-						'Skipped exporting Glyph ' + key + ' - non-numeric key value.'
-					);
+					console.warn('Skipped exporting Glyph ' + key + ' - non-numeric key value.');
 				}
 			}
 		}
@@ -102,11 +99,7 @@ export function exportOTFFont() {
 
 		showToast('Exporting<br>' + glyph.name, 999999);
 
-		if (
-			comb &&
-			glyph.paths.length <=
-				getCurrentProject().projectSettings.maxCombinePathsOnExport
-		) {
+		if (comb && glyph.paths.length <= getCurrentProject().projectSettings.maxCombinePathsOnExport) {
 			glyph.combineAllPaths(true);
 		}
 

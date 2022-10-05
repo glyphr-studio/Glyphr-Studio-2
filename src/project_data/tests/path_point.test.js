@@ -1,9 +1,9 @@
 import { PathPoint } from '../path_point.js';
 
 const testPathPoint = {
-	p: {coord: {x: 100, y: 100}},
-	h1: {coord: {x: 0, y: 0}},
-	h2: {coord: {x: 200, y: 200}},
+	p: { coord: { x: 100, y: 100 } },
+	h1: { coord: { x: 0, y: 0 } },
+	h2: { coord: { x: 200, y: 200 } },
 	type: 'corner',
 	q: false,
 	parent: false,
@@ -16,7 +16,6 @@ const testPathPoint = {
 function samplePathPoint() {
 	return new PathPoint(testPathPoint);
 }
-
 
 describe('PathPoint', () => {
 	it('Constructor - p.x', () => {
@@ -31,7 +30,11 @@ describe('PathPoint', () => {
 
 	it('save', () => {
 		const pp = samplePathPoint();
-		expect(pp.save()).toEqual(JSON.parse('{"p":{"coord":{"x":100,"y":100}},"type":"corner","h1":{"coord":{"x":0,"y":0}},"h2":{"coord":{"x":200,"y":200}}}'));
+		expect(pp.save()).toEqual(
+			JSON.parse(
+				'{"p":{"coord":{"x":100,"y":100}},"type":"corner","h1":{"coord":{"x":0,"y":0}},"h2":{"coord":{"x":200,"y":200}}}'
+			)
+		);
 	});
 
 	it('ControlPoint: length', () => {
@@ -92,7 +95,7 @@ describe('PathPoint', () => {
 
 	it('rotate', () => {
 		const pp = samplePathPoint();
-		expect(pp.rotate(90, {x: 0, y: 0}).p.x).toBe(-134.2070279729728);
+		expect(pp.rotate(90, { x: 0, y: 0 }).p.x).toBe(-134.2070279729728);
 	});
 
 	it('resetHandles', () => {

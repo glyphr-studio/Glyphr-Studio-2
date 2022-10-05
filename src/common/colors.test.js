@@ -2,7 +2,7 @@ import { parseColorString, shiftColor, getColorFromRGBA, transparencyToAlpha } f
 
 describe('Colors', () => {
 	it('parseColorString', () => {
-		expect(parseColorString('rgb(123,45,67')).toEqual({r: 123, g: 45, b: 67, a: 1});
+		expect(parseColorString('rgb(123,45,67')).toEqual({ r: 123, g: 45, b: 67, a: 1 });
 	});
 
 	it('shiftColor', () => {

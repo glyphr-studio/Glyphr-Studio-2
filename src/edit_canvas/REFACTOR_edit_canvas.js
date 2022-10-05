@@ -72,12 +72,7 @@ function redrawUnit() {
 
 	if (_UI.redraw.redrawCanvas) {
 		if (_UI.glyphEditCTX)
-			_UI.glyphEditCTX.clearRect(
-				0,
-				0,
-				_UI.glyphEditCanvasSize,
-				_UI.glyphEditCanvasSize
-			);
+			_UI.glyphEditCTX.clearRect(0, 0, _UI.glyphEditCanvasSize, _UI.glyphEditCanvasSize);
 
 		switch (editor.nav.page) {
 			case 'Glyph edit':
@@ -116,8 +111,7 @@ function redrawUnit() {
 
 	if (!_UI.contextGlyphs.string) updateContextGlyphs();
 
-	if (getGlyphrStudioApp().settings.dev.mode && _UI.testOnRedraw)
-		_UI.testOnRedraw();
+	if (getGlyphrStudioApp().settings.dev.mode && _UI.testOnRedraw) _UI.testOnRedraw();
 	// log('redrawUnit', 'end');
 }
 
@@ -314,27 +308,14 @@ function update_ToolsArea() {
 		'<label style="margin-left:10px; position:relative; top:-6px;" for="showContextGlyphGuides">show guides</label><br>';
 	ctxg +=
 		'glyph ' +
-		sliderUI(
-			'contextGlyphTransparency',
-			'contextGlyphTransparency_dropdown',
-			true,
-			false
-		);
+		sliderUI('contextGlyphTransparency', 'contextGlyphTransparency_dropdown', true, false);
 	ctxg += '<br/>';
 	ctxg +=
-		'guide ' +
-		sliderUI(
-			'systemGuideTransparency',
-			'systemGuideTransparency_dropdown',
-			true,
-			false
-		);
+		'guide ' + sliderUI('systemGuideTransparency', 'systemGuideTransparency_dropdown', true, false);
 	ctxg += '</div>';
-	ctxg +=
-		'<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
+	ctxg += '<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
 	ctxg += 'onblur="_UI.focusElement = false;" onmouseover="mouseoutcec();" ';
-	ctxg +=
-		'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
+	ctxg += 'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
 	ctxg += 'value="' + getContextGlyphString() + '"/>';
 	ctxg +=
 		'<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
@@ -365,8 +346,7 @@ function update_ToolsArea() {
 	viewcontent += pop;
 
 	if (onglyph || onlig) toolcontent += newshape;
-	if (oncom && selectedWorkItem && !selectedWorkItem.shape)
-		toolcontent += newshape;
+	if (oncom && selectedWorkItem && !selectedWorkItem.shape) toolcontent += newshape;
 
 	if (onglyph || oncom || onlig) {
 		toolcontent += edittools;
@@ -376,18 +356,11 @@ function update_ToolsArea() {
 	if (onkern) toolcontent += kern;
 	if (onglyph || onlig) toolcontent += ctxg;
 
-	if (getCurrentProject().projectSettings.showKeyboardTipsIcon)
-		utilitiescontent += kbt;
+	if (getCurrentProject().projectSettings.showKeyboardTipsIcon) utilitiescontent += kbt;
 
-	getEditDocument().getElementById(
-		'toolsarea_upperleft'
-	).innerHTML = toolcontent;
-	getEditDocument().getElementById(
-		'toolsarea_upperright'
-	).innerHTML = viewcontent;
-	getEditDocument().getElementById(
-		'toolsarea_lowerleft'
-	).innerHTML = utilitiescontent;
+	getEditDocument().getElementById('toolsarea_upperleft').innerHTML = toolcontent;
+	getEditDocument().getElementById('toolsarea_upperright').innerHTML = viewcontent;
+	getEditDocument().getElementById('toolsarea_lowerleft').innerHTML = utilitiescontent;
 
 	// log('update_ToolsArea', 'end');
 }
@@ -549,8 +522,7 @@ function mouseovercec() {
 	// log('mouseovercec', 'start');
 	_UI.eventhandlers.ismouseovercec = true;
 	updateCursor();
-	if (_UI.hamburger.state !== 0 && _UI.currentPanel !== 'npNav')
-		goHamburger(false);
+	if (_UI.hamburger.state !== 0 && _UI.currentPanel !== 'npNav') goHamburger(false);
 	// log('mouseovercec', 'end');
 }
 
@@ -560,8 +532,7 @@ function mouseoutcec() {
 	// Fixes a Chrome cursor problem
 	document.onselectstart = function () {};
 	updateCursor();
-	if (_UI.hamburger.state !== 11 && _UI.currentPanel !== 'npNav')
-		goHamburger(true);
+	if (_UI.hamburger.state !== 11 && _UI.currentPanel !== 'npNav') goHamburger(true);
 	// log('mouseoutcec', 'end');
 }
 
@@ -585,29 +556,19 @@ function updateContextGlyphs() {
 }
 
 function getContextGlyphString() {
-	return (
-		getSelectedWorkItem().contextGlyphs || hexToChars(getSelectedWorkItemID())
-	);
+	return getSelectedWorkItem().contextGlyphs || hexToChars(getSelectedWorkItemID());
 }
 
 function showCtxGlyphsOptions() {
-	getEditDocument().getElementById('contextglyphsoptions').style.display =
-		'block';
-	getEditDocument().getElementById(
-		'contextglyphsoptionsbutton'
-	).onclick = hideCtxGlyphsOptions;
-	getEditDocument().getElementById('contextglyphsoptionsbutton').innerHTML =
-		'&#x23F6;';
+	getEditDocument().getElementById('contextglyphsoptions').style.display = 'block';
+	getEditDocument().getElementById('contextglyphsoptionsbutton').onclick = hideCtxGlyphsOptions;
+	getEditDocument().getElementById('contextglyphsoptionsbutton').innerHTML = '&#x23F6;';
 }
 
 function hideCtxGlyphsOptions() {
-	getEditDocument().getElementById('contextglyphsoptions').style.display =
-		'none';
-	getEditDocument().getElementById(
-		'contextglyphsoptionsbutton'
-	).onclick = showCtxGlyphsOptions;
-	getEditDocument().getElementById('contextglyphsoptionsbutton').innerHTML =
-		'&#x23F7;';
+	getEditDocument().getElementById('contextglyphsoptions').style.display = 'none';
+	getEditDocument().getElementById('contextglyphsoptionsbutton').onclick = showCtxGlyphsOptions;
+	getEditDocument().getElementById('contextglyphsoptionsbutton').innerHTML = '&#x23F7;';
 	getEditDocument().getElementById('contextglyphsinput').focus();
 }
 
@@ -720,10 +681,7 @@ function drawContextGlyphs() {
 	if (split.left) {
 		let leftdistance = getGlyphSequenceAdvanceWidth(split.left);
 		if (currGlyphObject.isAutoWide) leftdistance += currGlyphObject.lsb;
-		leftdistance += calculateKernOffset(
-			split.left.charAt(split.left.length - 1),
-			currGlyphChar
-		);
+		leftdistance += calculateKernOffset(split.left.charAt(split.left.length - 1), currGlyphChar);
 
 		// log(`leftdistance: ${leftdistance}`);
 
@@ -868,9 +826,7 @@ function drawContextGlyphExtras(char) {
 		const texty = sYcY(getCurrentProject().projectSettings.descent - 60);
 
 		// Draw the glyph name
-		let gname = char.glyph
-			? char.glyph.getName()
-			: getGlyphName(charsToHexArray(char.char));
+		let gname = char.glyph ? char.glyph.getName() : getGlyphName(charsToHexArray(char.char));
 		gname = gname.replace(/latin /i, '');
 		drawGlyphNameExtra(gname, currx, texty, advanceWidth, color, char.char);
 
@@ -884,14 +840,7 @@ function drawContextGlyphExtras(char) {
 	// log('drawContextGlyphExtras', 'end');
 }
 
-function drawGlyphNameExtra(
-	text,
-	currx,
-	topy,
-	advanceWidth,
-	color,
-	regHotspot
-) {
+function drawGlyphNameExtra(text, currx, topy, advanceWidth, color, regHotspot) {
 	// log('drawGlyphNameExtra', 'start');
 	// log(`${text} passed regHotspot ${regHotspot}`);
 
@@ -936,9 +885,7 @@ function drawGlyphKernExtra(kern, rightx, topy, scale) {
 	const offset = 40;
 	const color = getColorFromRGBA(
 		'rgb(255,0,255)',
-		transparencyToAlpha(
-			getCurrentProject().projectSettings.colors.systemGuideTransparency
-		)
+		transparencyToAlpha(getCurrentProject().projectSettings.colors.systemGuideTransparency)
 	);
 	const barheight = Math.max(scale * 10, 1);
 
@@ -981,9 +928,7 @@ function drawContextGlyph(char) {
 	char.glyph.drawGlyph(
 		_UI.glyphEditCTX,
 		{ dx: c.dx * c.dz, dy: v.dy, dz: c.dz },
-		transparencyToAlpha(
-			getCurrentProject().projectSettings.colors.contextGlyphTransparency
-		),
+		transparencyToAlpha(getCurrentProject().projectSettings.colors.contextGlyphTransparency),
 		true
 	);
 
@@ -1010,12 +955,7 @@ function isHotspotHere(cx, cy) {
 		v = chs[i];
 		// log(`isHotspotHere - checking ${v.target.xMin} - ${v.target.xMax} - ${v.target.yMin} - ${v.target.yMax}`);
 		// log(`results ${(cx <= v.target.xMax)} - ${(cx >= v.target.xMin)} - ${(cy <= v.target.yMax)} - ${(cy >= v.target.yMin)}`);
-		if (
-			cx <= v.target.xMax &&
-			cx >= v.target.xMin &&
-			cy <= v.target.yMax &&
-			cy >= v.target.yMin
-		) {
+		if (cx <= v.target.xMax && cx >= v.target.xMin && cy <= v.target.yMax && cy >= v.target.yMin) {
 			return v;
 		}
 	}
@@ -1025,12 +965,7 @@ function isHotspotHere(cx, cy) {
 
 function findAndCallHotspot(cx, cy) {
 	_UI.canvasHotSpots.forEach(function (v, i, a) {
-		if (
-			cx <= v.target.xMax &&
-			cx >= v.target.xMin &&
-			cy <= v.target.yMax &&
-			cy >= v.target.yMin
-		) {
+		if (cx <= v.target.xMax && cx >= v.target.xMin && cy <= v.target.yMax && cy >= v.target.yMin) {
 			v.onclick();
 		}
 	});
@@ -1090,8 +1025,7 @@ function findAndUnderlineHotspot(cx, cy) {
 	const ctx = _UI.glyphEditCTX;
 	// log(`${hs}`);
 	if (hs) {
-		const t = getCurrentProject().projectSettings.colors
-			.systemGuideTransparency;
+		const t = getCurrentProject().projectSettings.colors.systemGuideTransparency;
 		// var t2 = (((100 - t) / 2) + t);
 		const alpha = transparencyToAlpha(t);
 		const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);
@@ -1108,11 +1042,8 @@ function findAndUnderlineHotspot(cx, cy) {
 	// log('findAndUnderlineHotspot', 'end');
 }
 
-
 function resetThumbView() {
-	const zoom =
-		(_UI.thumbSize - 2 * _UI.thumbGutter) /
-		getCurrentProject().projectSettings.upm;
+	const zoom = (_UI.thumbSize - 2 * _UI.thumbGutter) / getCurrentProject().projectSettings.upm;
 
 	_UI.thumbView = {
 		dx: _UI.thumbGutter,
@@ -1195,7 +1126,6 @@ function getStringAdvanceWidth(str) {
 
 	return aw;
 }
-
 
 // ------------------------------
 // Drawing controls
@@ -1312,10 +1242,7 @@ function draw_BoundingBoxHandles(maxes, accent, thickness) {
 	if (_UI.multiSelect.shapes.rotateable()) {
 		const h = _UI.rotateHandleHeight;
 		_UI.glyphEditCTX.lineWidth = thickness;
-		draw_Line(
-			{ x: bb.midx + bb.hp, y: bb.topy },
-			{ x: bb.midx + bb.hp, y: bb.topy - h }
-		);
+		draw_Line({ x: bb.midx + bb.hp, y: bb.topy }, { x: bb.midx + bb.hp, y: bb.topy - h });
 		_UI.glyphEditCTX.lineWidth = 1;
 		draw_CircleHandle({ x: bb.midx + bb.hp, y: bb.topy - h + bb.hp });
 	}
@@ -1388,14 +1315,7 @@ function draw_RotationAffordance(accent, thickness) {
 	ctx.globalAlpha = 0.3;
 	ctx.beginPath();
 	ctx.moveTo(center.x, center.y);
-	ctx.arc(
-		center.x,
-		center.y,
-		radius,
-		Math.PI / -2,
-		angle * -1,
-		counterclockwise
-	);
+	ctx.arc(center.x, center.y, radius, Math.PI / -2, angle * -1, counterclockwise);
 	ctx.closePath();
 	ctx.stroke();
 	ctx.fill();
@@ -1404,10 +1324,7 @@ function draw_RotationAffordance(accent, thickness) {
 	ctx.strokeStyle = accent.l65;
 	ctx.fillStyle = 'white';
 	ctx.lineWidth = thickness;
-	draw_Line(
-		{ x: rotatehandle.x, y: rotatehandle.y },
-		{ x: center.x, y: center.y }
-	);
+	draw_Line({ x: rotatehandle.x, y: rotatehandle.y }, { x: center.x, y: center.y });
 	ctx.lineWidth = 1;
 	draw_CircleHandle(rotatehandle);
 
@@ -1481,12 +1398,7 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
 	}
 
 	// upper left
-	if (
-		px > bb.leftx &&
-		px < bb.leftx + ps &&
-		py > bb.topy &&
-		py < bb.topy + ps
-	) {
+	if (px > bb.leftx && px < bb.leftx + ps && py > bb.topy && py < bb.topy + ps) {
 		return 'nw';
 	}
 
@@ -1496,62 +1408,32 @@ function isOverBoundingBoxHandle(px, py, maxes, thickness) {
 	}
 
 	// upper right
-	if (
-		px > bb.rightx &&
-		px < bb.rightx + ps &&
-		py > bb.topy &&
-		py < bb.topy + ps
-	) {
+	if (px > bb.rightx && px < bb.rightx + ps && py > bb.topy && py < bb.topy + ps) {
 		return 'ne';
 	}
 
 	// right
-	if (
-		px > bb.rightx &&
-		px < bb.rightx + ps &&
-		py > bb.midy &&
-		py < bb.midy + ps
-	) {
+	if (px > bb.rightx && px < bb.rightx + ps && py > bb.midy && py < bb.midy + ps) {
 		return 'e';
 	}
 
 	// lower right
-	if (
-		px > bb.rightx &&
-		px < bb.rightx + ps &&
-		py > bb.bottomy &&
-		py < bb.bottomy + ps
-	) {
+	if (px > bb.rightx && px < bb.rightx + ps && py > bb.bottomy && py < bb.bottomy + ps) {
 		return 'se';
 	}
 
 	// bottom
-	if (
-		px > bb.midx &&
-		px < bb.midx + ps &&
-		py > bb.bottomy &&
-		py < bb.bottomy + ps
-	) {
+	if (px > bb.midx && px < bb.midx + ps && py > bb.bottomy && py < bb.bottomy + ps) {
 		return 's';
 	}
 
 	// lower left
-	if (
-		px > bb.leftx &&
-		px < bb.leftx + ps &&
-		py > bb.bottomy &&
-		py < bb.bottomy + ps
-	) {
+	if (px > bb.leftx && px < bb.leftx + ps && py > bb.bottomy && py < bb.bottomy + ps) {
 		return 'sw';
 	}
 
 	// left
-	if (
-		px > bb.leftx &&
-		px < bb.leftx + ps &&
-		py > bb.midy &&
-		py < bb.midy + ps
-	) {
+	if (px > bb.leftx && px < bb.leftx + ps && py > bb.midy && py < bb.midy + ps) {
 		return 'w';
 	}
 
@@ -1566,15 +1448,11 @@ function getBoundingBoxHandleDimensions(maxes, thickness) {
 
 	// Translation Fidelity - converting passed canvas values to saved value system
 	dimensions.leftx = sXcX(maxes.xMin) - hp;
-	dimensions.midx = Math.floor(
-		sXcX(maxes.xMin) + (sXcX(maxes.xMax) - sXcX(maxes.xMin)) / 2 - hp
-	);
+	dimensions.midx = Math.floor(sXcX(maxes.xMin) + (sXcX(maxes.xMax) - sXcX(maxes.xMin)) / 2 - hp);
 	dimensions.rightx = sXcX(maxes.xMax) - hp;
 
 	dimensions.topy = sYcY(maxes.yMax) - hp;
-	dimensions.midy = Math.floor(
-		sYcY(maxes.yMax) + (sYcY(maxes.yMin) - sYcY(maxes.yMax)) / 2 - hp
-	);
+	dimensions.midy = Math.floor(sYcY(maxes.yMax) + (sYcY(maxes.yMin) - sYcY(maxes.yMax)) / 2 - hp);
 	dimensions.bottomy = sYcY(maxes.yMin) - hp;
 
 	if (thickness > 1) {
@@ -1605,12 +1483,7 @@ function drawGrid() {
 
 	// background white square
 	_UI.glyphEditCTX.fillStyle = 'white';
-	_UI.glyphEditCTX.fillRect(
-		xs.xMin,
-		xs.yMin,
-		xs.xMax - xs.xMin,
-		xs.yMax - xs.yMin
-	);
+	_UI.glyphEditCTX.fillRect(xs.xMin, xs.yMin, xs.xMax - xs.xMin, xs.yMax - xs.yMin);
 
 	if (_UI.showGrid) {
 		const ps = getCurrentProject().projectSettings;
@@ -1618,9 +1491,7 @@ function drawGrid() {
 		const gsize = (ps.upm / ps.gridDivisions) * v.dz;
 		const gridcolor = getColorFromRGBA(
 			'rgb(170,170,170)',
-			transparencyToAlpha(
-				getCurrentProject().projectSettings.colors.glyphTransparency
-			)
+			transparencyToAlpha(getCurrentProject().projectSettings.colors.glyphTransparency)
 		);
 		_UI.glyphEditCTX.lineWidth = 1;
 
@@ -1680,8 +1551,7 @@ function drawGuides() {
 	if (!getSelectedWorkItemID()) return;
 
 	const ps = getCurrentProject().projectSettings;
-	const onglyphedit =
-		editor.nav.page === 'Glyph edit' || editor.nav.page === 'ligatures';
+	const onglyphedit = editor.nav.page === 'Glyph edit' || editor.nav.page === 'ligatures';
 	const onkern = editor.nav.page === 'kerning';
 	// log('ps.guides: ');
 	// log(ps.guides);

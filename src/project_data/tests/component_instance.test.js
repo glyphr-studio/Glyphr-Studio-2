@@ -106,7 +106,7 @@ describe('ComponentInstance', () => {
 	});
 
 	// TODO refactor with component stuff
-/*
+	/*
 	it('get/set x', () => {
 		let ci = sampleComponentInstance();
 		ci.x = 600;

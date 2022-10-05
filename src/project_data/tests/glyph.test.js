@@ -11,7 +11,7 @@ function sampleGlyph() {
 	// console.log('SAMPLE PATH POINTS');
 	// console.log(samples.pathPoints);
 	let re = new Glyph();
-	re.paths = [{pathPoints: clone(samples.pathPoints)}];
+	re.paths = [{ pathPoints: clone(samples.pathPoints) }];
 
 	// re.recalculateMaxes();
 	// console.log('SAMPLE GLYPH');
@@ -29,28 +29,28 @@ function multiTriangleGlyph() {
 			{
 				name: 'Path One',
 				pathPoints: [
-					{p: {coord: {x: 100, y: 200}}},
-					{p: {coord: {x: 300, y: 600}}},
-					{p: {coord: {x: 400, y: 500}}},
-				]
+					{ p: { coord: { x: 100, y: 200 } } },
+					{ p: { coord: { x: 300, y: 600 } } },
+					{ p: { coord: { x: 400, y: 500 } } },
+				],
 			},
 			{
 				name: 'Path Two',
 				pathPoints: [
-					{p: {coord: {x: 500, y: 600}}},
-					{p: {coord: {x: 700, y: 950}}},
-					{p: {coord: {x: 800, y: 900}}},
-				]
+					{ p: { coord: { x: 500, y: 600 } } },
+					{ p: { coord: { x: 700, y: 950 } } },
+					{ p: { coord: { x: 800, y: 900 } } },
+				],
 			},
 			{
 				name: 'Path Three',
 				pathPoints: [
-					{p: {coord: {x: 10, y: 20}}},
-					{p: {coord: {x: 30, y: 60}}},
-					{p: {coord: {x: 40, y: 50}}},
-				]
+					{ p: { coord: { x: 10, y: 20 } } },
+					{ p: { coord: { x: 30, y: 60 } } },
+					{ p: { coord: { x: 40, y: 50 } } },
+				],
 			},
-		]
+		],
 	});
 
 	// re.recalculateMaxes();
@@ -58,14 +58,14 @@ function multiTriangleGlyph() {
 	return re;
 }
 
-
 describe('Glyph', () => {
 	beforeAll(() => {
 		spyOn(console, 'log').and.callThrough();
 	});
 
 	it('save', () => {
-		expect(sampleGlyph().save()).toEqual(JSON.parse(`
+		expect(sampleGlyph().save()).toEqual(
+			JSON.parse(`
 			{
 				"id":"0x0000",
 				"paths":[
@@ -81,7 +81,8 @@ describe('Glyph', () => {
 					}
 				]
 			}
-		`));
+		`)
+		);
 	});
 
 	it('print', () => {
@@ -96,7 +97,7 @@ describe('Glyph', () => {
 
 	it('get/set paths', () => {
 		const g = new Glyph();
-		g.paths = [{'path': {pathPoints: clone(samples.pathPoints)}}];
+		g.paths = [{ path: { pathPoints: clone(samples.pathPoints) } }];
 		expect(g.paths.length).toBe(1);
 	});
 
@@ -159,11 +160,10 @@ describe('Glyph', () => {
 		expect(g.maxes.xMin).toEqual(10);
 	});
 
-
 	it('get/set maxes', () => {
 		const g = sampleGlyph();
-		g.maxes = {xMax: 123, xMin: 123, yMax: 435, yMin: 345};
-		expect(g.maxes.save()).toEqual({xMax: 123, xMin: 123, yMax: 435, yMin: 345});
+		g.maxes = { xMax: 123, xMin: 123, yMax: 435, yMin: 345 };
+		expect(g.maxes.save()).toEqual({ xMax: 123, xMin: 123, yMax: 435, yMin: 345 });
 	});
 
 	it('setGlyphPosition', () => {
@@ -204,7 +204,7 @@ describe('Glyph', () => {
 
 	it('rotate', () => {
 		const g = multiTriangleGlyph();
-		g.rotate(2, {x: 123, y: 123});
+		g.rotate(2, { x: 123, y: 123 });
 		expect(g.paths[0].pathPoints[0].p.coord.x).toBe(62.555475375006786);
 	});
 
@@ -222,7 +222,9 @@ describe('Glyph', () => {
 
 	it('makeSVG', () => {
 		// also tests makeSVGPathData
-		expect(sampleGlyph().makeSVG()).toBe('<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0,0,990,990"><g transform="translate(100,650) scale(0.8, -0.8)"><path d="M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z"/></g></svg>');
+		expect(sampleGlyph().makeSVG()).toBe(
+			'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0,0,990,990"><g transform="translate(100,650) scale(0.8, -0.8)"><path d="M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z"/></g></svg>'
+		);
 	});
 
 	// TODO Boolean Combine write tests
@@ -262,5 +264,4 @@ describe('Glyph', () => {
 		g.removeFromUsedIn('0x0012');
 		expect(g.usedIn[0]).toBe('0x0004');
 	});
-
 });

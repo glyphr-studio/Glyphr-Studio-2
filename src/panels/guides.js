@@ -4,14 +4,14 @@
 		guide lines.
 **/
 
-import { getCurrentProjectEditor } from "../app/main.js";
-import { makeElement } from "../common/dom.js";
+import { getCurrentProjectEditor } from '../app/main.js';
+import { makeElement } from '../common/dom.js';
 
 export function makePanel_Guides() {
 	const editor = getCurrentProjectEditor();
 
-	let system = makeElement({className: 'panel__card', innerHTML: '<h4>System guides</h4>'});
-	let user = makeElement({className: 'panel__card', innerHTML: '<h4>User guides</h4>'});
+	let system = makeElement({ className: 'panel__card', innerHTML: '<h4>System guides</h4>' });
+	let user = makeElement({ className: 'panel__card', innerHTML: '<h4>User guides</h4>' });
 	let guides = editor.project.projectSettings.guides;
 	let ps = editor.project.projectSettings;
 	let tg;
@@ -20,19 +20,13 @@ export function makePanel_Guides() {
 		tg = guides[g];
 
 		if (tg.editable) {
-			user.appendChild(makeOneGuideRow(
-				tg,
-				'getCurrentProject().projectSettings.guides.' + g,
-				tg.visible,
-				g
-			));
+			user.appendChild(
+				makeOneGuideRow(tg, 'getCurrentProject().projectSettings.guides.' + g, tg.visible, g)
+			);
 		} else if (tg.showname) {
-			system.appendChild(makeOneGuideRow(
-				tg,
-				'getCurrentProject().projectSettings.guides.' + g,
-				tg.visible,
-				g
-			));
+			system.appendChild(
+				makeOneGuideRow(tg, 'getCurrentProject().projectSettings.guides.' + g, tg.visible, g)
+			);
 		}
 	}
 
@@ -101,7 +95,7 @@ export function makePanel_Guides() {
 
 function makeOneGuideRow(guide, path, currviz, id) {
 	return makeElement({
-		content: `color: ${guide.color} / type: ${guide.type}`
+		content: `color: ${guide.color} / type: ${guide.type}`,
 	});
 	/*
 	let sys = !guide.editable;

@@ -1,7 +1,6 @@
 import { makeElement } from '../../common/dom.js';
 import { linkCSS } from '../controls.js';
 
-
 /**
  * description
  */
@@ -30,9 +29,7 @@ export class AnchorTwelvepoint extends HTMLElement {
 
 		this.defaultAnchor = 'baselineLeft';
 
-		Object.keys(attributes).forEach((key) =>
-			this.setAttribute(key, attributes[key])
-		);
+		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		// Create radio button HTML for each anchor
 		this.anchorNames.forEach((anchor) => {
@@ -50,10 +47,7 @@ export class AnchorTwelvepoint extends HTMLElement {
 
 		// Append to wrapper
 		this.wrapper = makeElement({ className: 'wrapper' });
-		this.anchorNames.forEach((anchor) =>
-			this.wrapper.appendChild(this[anchor.id])
-		);
-
+		this.anchorNames.forEach((anchor) => this.wrapper.appendChild(this[anchor.id]));
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
@@ -94,14 +88,10 @@ export class AnchorTwelvepoint extends HTMLElement {
 		if (attributeName === 'disabled') {
 			if (newValue === '') {
 				// disabled
-				this.anchorNames.forEach((anchor) =>
-					this[anchor.id].setAttribute('disabled', '')
-				);
+				this.anchorNames.forEach((anchor) => this[anchor.id].setAttribute('disabled', ''));
 			} else if (oldValue === '') {
 				// enabled
-				this.anchorNames.forEach((anchor) =>
-					this[anchor.id].removeAttribute('disabled', '')
-				);
+				this.anchorNames.forEach((anchor) => this[anchor.id].removeAttribute('disabled', ''));
 			}
 		}
 
@@ -117,9 +107,7 @@ export class AnchorTwelvepoint extends HTMLElement {
 	setValue(newAnchor) {
 		// log(`setValue ${newAnchor}`);
 
-		this.anchorNames.forEach((anchor) =>
-			this[anchor.id].removeAttribute('checked', '')
-		);
+		this.anchorNames.forEach((anchor) => this[anchor.id].removeAttribute('checked', ''));
 
 		if (newAnchor) {
 			this[newAnchor].setAttribute('checked', '');

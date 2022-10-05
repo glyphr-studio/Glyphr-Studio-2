@@ -48,8 +48,7 @@ export class Tool_Resize {
 					this.rotating = true;
 					ehd.rotationCenter = selectedPaths.maxes.center;
 					ehd.rotationStartTopY =
-						selectedPaths.maxes.yMax +
-						editor.rotateHandleHeight / editor.view.dz;
+						selectedPaths.maxes.yMax + editor.rotateHandleHeight / editor.view.dz;
 				} else {
 					// log('clicked on ehd.handle: ' + ehd.handle);
 					this.resizing = true;
@@ -69,7 +68,6 @@ export class Tool_Resize {
 			// editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_Resize mousedown' });
 		};
 
-
 		this.mousemove = function (ev) {
 			// log(`Tool_Resize.mousemove`, 'start');
 
@@ -88,14 +86,12 @@ export class Tool_Resize {
 				let cur = 'arrowSquare';
 
 				if (this.clickedPath) {
-					if (ehd.isCtrlDown)
-						selectedPaths.add(this.clickedPath);
+					if (ehd.isCtrlDown) selectedPaths.add(this.clickedPath);
 					else if (!selectedPaths.isSelected(this.clickedPath)) {
 						selectedPaths.select(this.clickedPath);
 					}
 
-					if (this.clickedPath.objType === 'ComponentInstance')
-						clickTool('pathEdit');
+					if (this.clickedPath.objType === 'ComponentInstance') clickTool('pathEdit');
 					editor.nav.panel = 'Attributes';
 				}
 
@@ -115,12 +111,10 @@ export class Tool_Resize {
 				selectedPaths.updatePathPosition(dx, dy);
 				this.didStuff = true;
 				setCursor(cur);
-
 			} else if (this.resizing) {
 				// log('detected RESIZING');
 				resizePath();
 				this.didStuff = true;
-
 			} else if (this.rotating) {
 				// log(`detected ROTATING`);
 				let a1 = calculateAngle({ x: cXsX(ehd.mouseX), y: cYsY(ehd.mouseY) }, ehd.rotationCenter);
@@ -128,20 +122,16 @@ export class Tool_Resize {
 				selectedPaths.rotate(a1 - a2, ehd.rotationCenter);
 				this.didStuff = true;
 				setCursor('rotate');
-
 			} else if (corner) {
 				// log(`detected CORNER HOVER ${corner}`);
 				// hovering over a corner
 				setCursor(corner);
-
 			} else if (ehd.isCtrlDown) {
 				// log(`detected MULTI-SELECT`);
 				setCursor('arrowPlus');
-
 			} else if (getPathAtLocation(ehd.mouseX, ehd.mouseY)) {
 				// log(`detected PATH HOVER`);
 				setCursor('arrowSquare');
-
 			} else {
 				// log('detected NOTHING');
 				setCursor('arrow');
@@ -161,7 +151,6 @@ export class Tool_Resize {
 
 			// log(`Tool_Resize.mousemove`, 'end');
 		};
-
 
 		this.mouseup = function () {
 			// log('Mouse Up');

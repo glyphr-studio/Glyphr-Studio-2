@@ -1,8 +1,15 @@
-import { getCurrentProjectEditor } from "../app/main.js";
-import { addAsChildren, makeElement } from "../common/dom.js";
-import { makeActionsArea_Glyph, makeActionsArea_Universal } from "./actions.js";
-import { dimSplit, dimSplitElement, makeInputs_position, makeInputs_size, makeSingleCheckbox, makeSingleInput, makeSingleLabel } from "./cards.js";
-
+import { getCurrentProjectEditor } from '../app/main.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
+import { makeActionsArea_Glyph, makeActionsArea_Universal } from './actions.js';
+import {
+	dimSplit,
+	dimSplitElement,
+	makeInputs_position,
+	makeInputs_size,
+	makeSingleCheckbox,
+	makeSingleInput,
+	makeSingleLabel,
+} from './cards.js';
 
 // --------------------------------------------------------------
 // Glyph attributes
@@ -12,17 +19,13 @@ export function makeCard_glyphAttributes(glyph) {
 	let glyphCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: '<h3>Glyph</h3>'
+		innerHTML: '<h3>Glyph</h3>',
 	});
 
 	let advanceWidthLabel = makeSingleLabel('advance width');
-	let halfSizeAdvanceWidthInput = makeElement({tag: 'div', className: 'doubleInput',});
+	let halfSizeAdvanceWidthInput = makeElement({ tag: 'div', className: 'doubleInput' });
 	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentGlyph', 'input-number');
-	addAsChildren(halfSizeAdvanceWidthInput, [
-		advanceWidthInput,
-		makeElement(),
-		makeElement(),
-	]);
+	addAsChildren(halfSizeAdvanceWidthInput, [advanceWidthInput, makeElement(), makeElement()]);
 
 	// Side bearings
 	let bearingLabel = makeElement({
@@ -49,9 +52,9 @@ export function makeCard_glyphAttributes(glyph) {
 				Distance from the rightmost side of paths in the glyph to the
 				Advance Width.
 			</info-bubble>
-		`
+		`,
 	});
-	let doubleBearingInput = makeElement({tag: 'div', className: 'doubleInput',});
+	let doubleBearingInput = makeElement({ tag: 'div', className: 'doubleInput' });
 	let lsbInput = makeSingleInput(glyph, 'leftSideBearing', 'currentGlyph', 'input-number');
 	let rsbInput = makeSingleInput(glyph, 'rightSideBearing', 'currentGlyph', 'input-number');
 	doubleBearingInput.appendChild(lsbInput);
@@ -62,11 +65,11 @@ export function makeCard_glyphAttributes(glyph) {
 	// TODO bulk-edit paths bug, handles move differently than points
 	addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
 	addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
-	addAsChildren(glyphCard, makeElement({tag: 'div', className: 'rowPad'}));
-	addAsChildren(glyphCard, makeElement({tag: 'h4', content: 'Bulk-edit paths'}));
+	addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
 	addAsChildren(glyphCard, makeInputs_position(glyph));
 	addAsChildren(glyphCard, makeInputs_size(glyph));
-	addAsChildren(glyphCard, makeElement({tag: 'div', className: 'rowPad'}));
+	addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
 	addAsChildren(glyphCard, makeActionsArea_Glyph());
 	addAsChildren(glyphCard, makeActionsArea_Universal());
 

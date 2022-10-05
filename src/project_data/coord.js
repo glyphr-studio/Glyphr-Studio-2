@@ -101,7 +101,6 @@ export class Coord extends GlyphElement {
 		// position = round(position, 4);
 		if (isNaN(position)) {
 			this._x = 0;
-
 		} else {
 			// log(`COORD changing _x from ${this._x} to ${position}`);
 			this._x = position;
@@ -119,7 +118,6 @@ export class Coord extends GlyphElement {
 		// position = round(position, 4);
 		if (isNaN(position)) {
 			this._y = 0;
-
 		} else {
 			// log(`COORD changing _y from ${this._y} to ${position}`);
 			this._y = position;

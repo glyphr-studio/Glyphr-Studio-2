@@ -20,10 +20,6 @@ let pathFill = '#000';
 let pointFill = '#FFF';
 let multiSelectThickness = 3;
 
-
-
-
-
 // --------------------------------------------------------------
 // Paths
 // --------------------------------------------------------------
@@ -33,9 +29,9 @@ let multiSelectThickness = 3;
 
 export function computeAndDrawBoundingBox(ctx) {
 	const editor = getCurrentProjectEditor();
-	if(editor.multiSelect.paths.length < 1) return;
+	if (editor.multiSelect.paths.length < 1) return;
 	let maxes = editor.multiSelect.paths.maxes;
-	let thickness = editor.multiSelect.paths.length > 1? multiSelectThickness : 1;
+	let thickness = editor.multiSelect.paths.length > 1 ? multiSelectThickness : 1;
 	drawBoundingBox(ctx, maxes, thickness);
 }
 
@@ -54,13 +50,11 @@ export function computeAndDrawRotationAffordance(ctx) {
 
 export function computeAndDrawBoundingBoxHandles(ctx) {
 	const editor = getCurrentProjectEditor();
-	if(editor.multiSelect.paths.length < 1) return;
+	if (editor.multiSelect.paths.length < 1) return;
 	let maxes = editor.multiSelect.paths.maxes;
-	let thickness = editor.multiSelect.paths.length > 1? multiSelectThickness : 1;
+	let thickness = editor.multiSelect.paths.length > 1 ? multiSelectThickness : 1;
 	drawBoundingBoxHandles(ctx, maxes, thickness);
 }
-
-
 
 // --------------------------------------------------------------
 // Paths
@@ -71,7 +65,7 @@ export function drawSelectedPathOutline(ctx, view) {
 	let selected = editor.multiSelect.paths.members.length;
 	// log(`selected: ${selected}`);
 
-	if(selected > 0) {
+	if (selected > 0) {
 		ctx.beginPath();
 		editor.multiSelect.paths.drawPaths(ctx, view);
 		ctx.closePath();
@@ -96,7 +90,6 @@ export function drawNewBasicPath(ctx, path, view) {
 	drawBoundingBox(ctx, path.maxes, 1);
 }
 
-
 // --------------------------------------------------------------
 // Bounding Box
 // --------------------------------------------------------------
@@ -106,31 +99,31 @@ export function drawBoundingBox(ctx, maxes, thickness) {
 	// log(`thickness: ${thickness}`);
 	// log(maxes);
 
-	let accent = thickness === 1?  accentBlue : accentGray;
+	let accent = thickness === 1 ? accentBlue : accentGray;
 	let lx = sXcX(maxes.xMin);
 	let rx = sXcX(maxes.xMax);
 	let ty = sYcY(maxes.yMax);
 	let by = sYcY(maxes.yMin);
 
-	if(thickness > 1){
+	if (thickness > 1) {
 		lx -= thickness;
 		rx += thickness;
 		ty -= thickness;
 		by += thickness;
 	}
 
-	let w = (rx-lx);
-	let h = (by-ty);
+	let w = rx - lx;
+	let h = by - ty;
 
 	ctx.fillStyle = 'transparent';
 	ctx.strokeStyle = accent;
 	ctx.lineWidth = thickness;
-	ctx.strokeRect(lx,ty,w,h);
+	ctx.strokeRect(lx, ty, w, h);
 	// log(`drawBoundingBox`, 'end');
 }
 
 function drawBoundingBoxHandles(ctx, maxes, thickness) {
-	let accent = thickness === 1?  accentBlue : accentGray;
+	let accent = thickness === 1 ? accentBlue : accentGray;
 	let bb = getBoundingBoxHandleDimensions(maxes, thickness);
 
 	ctx.fillStyle = pointFill;
@@ -138,7 +131,7 @@ function drawBoundingBoxHandles(ctx, maxes, thickness) {
 	ctx.strokeStyle = accent;
 
 	// TODO rotate handle
-/*
+	/*
 	if(getCurrentProjectEditor().multiSelect.paths.isRotatable()){
 		let h = rotateHandleHeight;
 		ctx.lineWidth = thickness;
@@ -149,28 +142,28 @@ function drawBoundingBoxHandles(ctx, maxes, thickness) {
 */
 
 	//upper left
-	if(canResize('nw')) drawSquareHandle(ctx, {x:bb.leftX, y:bb.topY});
+	if (canResize('nw')) drawSquareHandle(ctx, { x: bb.leftX, y: bb.topY });
 
 	//top
-	if(canResize('n')) drawSquareHandle(ctx, {x:bb.midX, y:bb.topY});
+	if (canResize('n')) drawSquareHandle(ctx, { x: bb.midX, y: bb.topY });
 
 	//upper right
-	if(canResize('ne')) drawSquareHandle(ctx, {x:bb.rightX, y:bb.topY});
+	if (canResize('ne')) drawSquareHandle(ctx, { x: bb.rightX, y: bb.topY });
 
 	// right
-	if(canResize('e')) drawSquareHandle(ctx, {x:bb.rightX, y:bb.midY});
+	if (canResize('e')) drawSquareHandle(ctx, { x: bb.rightX, y: bb.midY });
 
 	//lower right
-	if(canResize('se')) drawSquareHandle(ctx, {x:bb.rightX, y:bb.bottomY});
+	if (canResize('se')) drawSquareHandle(ctx, { x: bb.rightX, y: bb.bottomY });
 
 	//bottom
-	if(canResize('s')) drawSquareHandle(ctx, {x:bb.midX, y:bb.bottomY});
+	if (canResize('s')) drawSquareHandle(ctx, { x: bb.midX, y: bb.bottomY });
 
 	//lower left
-	if(canResize('sw')) drawSquareHandle(ctx, {x:bb.leftX, y:bb.bottomY});
+	if (canResize('sw')) drawSquareHandle(ctx, { x: bb.leftX, y: bb.bottomY });
 
 	//left
-	if(canResize('w')) drawSquareHandle(ctx, {x:bb.leftX, y:bb.midY});
+	if (canResize('w')) drawSquareHandle(ctx, { x: bb.leftX, y: bb.midY });
 
 	// //Center Dot
 	// ctx.fillRect(bb.midX, bb.midY, ps, ps);
@@ -185,22 +178,21 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	let startTopY = eventHandlerData.rotationStartPoint.y;
 	let mx = eventHandlerData.mouseX;
 	let my = eventHandlerData.mouseY;
-	let radians = calculateAngle({x:cx_sx(mx), y:cy_sy(my)}, center);
+	let radians = calculateAngle({ x: cx_sx(mx), y: cy_sy(my) }, center);
 
 	// log('\t Init radians:\t' + radians);
 	let snap = eventHandlerData.isShiftDown;
-	if(snap) radians = snapRadiansToDegrees(radians);
-	let rotateHandle = {x:center.x, y:startTopY};
+	if (snap) radians = snapRadiansToDegrees(radians);
+	let rotateHandle = { x: center.x, y: startTopY };
 	rotate(rotateHandle, radians, center, snap);
-	rotate(rotateHandle, (Math.PI/-2), center, snap);
+	rotate(rotateHandle, Math.PI / -2, center, snap);
 
 	// log('\t Drag Angle:\t' + round(radians, 2));
 
 	let counterclockwise = false;
-	if(Math.abs(radians) > (Math.PI/2)) {
+	if (Math.abs(radians) > Math.PI / 2) {
 		counterclockwise = true;
 	}
-
 
 	// Convert things to Canvas System
 	rotateHandle.x = sXcX(rotateHandle.x);
@@ -210,14 +202,13 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	startTopY = sYcY(startTopY);
 	let radius = calculateLength(center, rotateHandle);
 
-
 	// Pizza Pie Sweep
 	ctx.fillStyle = accent.l65;
 	ctx.strokeStyle = accent.l65;
 	ctx.globalAlpha = 0.3;
 	ctx.beginPath();
 	ctx.moveTo(center.x, center.y);
-	ctx.arc(center.x, center.y, radius, (Math.PI/-2), (radians*-1), counterclockwise);
+	ctx.arc(center.x, center.y, radius, Math.PI / -2, radians * -1, counterclockwise);
 	ctx.closePath();
 	ctx.stroke();
 	ctx.fill();
@@ -226,13 +217,13 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	ctx.strokeStyle = accent.l65;
 	ctx.fillStyle = pointFill;
 	ctx.lineWidth = thickness;
-	drawLine({x:rotateHandle.x, y:rotateHandle.y}, {x:center.x, y:center.y});
+	drawLine({ x: rotateHandle.x, y: rotateHandle.y }, { x: center.x, y: center.y });
 	ctx.lineWidth = 1;
 	drawCircleHandle(rotateHandle);
 
 	// readout
-	let readout = round(radiansToNiceAngle(radians),1);
-	if(counterclockwise) readout -= 360;
+	let readout = round(radiansToNiceAngle(radians), 1);
+	if (counterclockwise) readout -= 360;
 	readout = round(readout, 1);
 
 	// log('\t Readout angle:\t' + readout);
@@ -240,11 +231,10 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	ctx.font = '24px OpenSans';
 	ctx.fillStyle = accent.l65;
 	ctx.globalAlpha = 0.8;
-	ctx.fillText((''+readout+'°'), center.x, startTopY-24);
+	ctx.fillText('' + readout + '°', center.x, startTopY - 24);
 
 	ctx.globalAlpha = 1;
 }
-
 
 // --------------------------------------------------------------
 // Simple drawings
@@ -265,12 +255,11 @@ function drawSquareHandle(ctx, ul) {
 
 function drawCircleHandle(ctx, center) {
 	ctx.beginPath();
-	ctx.arc(center.x, center.y, (pointSize/2), 0, Math.PI*2, true);
+	ctx.arc(center.x, center.y, pointSize / 2, 0, Math.PI * 2, true);
 	ctx.closePath();
 	ctx.fill();
 	ctx.stroke();
 }
-
 
 // --------------------------------------------------------------
 // Helpers
@@ -281,7 +270,7 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	// log('\t px/py - ' + px + ' / ' + py);
 	// log('\t maxes - ' + json(maxes, true));
 
-	if(!maxes) {
+	if (!maxes) {
 		// log(`no maxes, returning false`);
 		// log(`isOverBoundingBoxHandle`, 'end');
 		return false;
@@ -297,58 +286,54 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	// log('\t t/m/b y: ' + bb.topY + ' / ' + bb.midY + ' / ' + bb.bottomY);
 
 	// rotation handle
-	if(editor.multiSelect.paths.isRotatable()){
-		if( ((px > bb.midX) && (px < bb.midX+ps)) &&
-			((py > bb.topY-rotateHandleHeight) && (py < bb.topY-rotateHandleHeight+ps)) ){
+	if (editor.multiSelect.paths.isRotatable()) {
+		if (
+			px > bb.midX &&
+			px < bb.midX + ps &&
+			py > bb.topY - rotateHandleHeight &&
+			py < bb.topY - rotateHandleHeight + ps
+		) {
 			re = 'rotate';
 		}
 	}
 
 	// upper left
-	if( ((px > bb.leftX) && (px < bb.leftX+ps)) &&
-		((py > bb.topY) && (py < bb.topY+ps)) ){
+	if (px > bb.leftX && px < bb.leftX + ps && py > bb.topY && py < bb.topY + ps) {
 		re = 'nw';
 	}
 
 	// top
-	if( ((px > bb.midX) && (px < bb.midX+ps)) &&
-		((py > bb.topY) && (py < bb.topY+ps)) ){
+	if (px > bb.midX && px < bb.midX + ps && py > bb.topY && py < bb.topY + ps) {
 		re = 'n';
 	}
 
 	// upper right
-	if( ((px > bb.rightX) && (px < bb.rightX+ps)) &&
-		((py > bb.topY) && (py < bb.topY+ps)) ){
+	if (px > bb.rightX && px < bb.rightX + ps && py > bb.topY && py < bb.topY + ps) {
 		re = 'ne';
 	}
 
 	// right
-	if( ((px > bb.rightX) && (px < bb.rightX+ps)) &&
-		((py > bb.midY) && (py < bb.midY+ps)) ){
+	if (px > bb.rightX && px < bb.rightX + ps && py > bb.midY && py < bb.midY + ps) {
 		re = 'e';
 	}
 
 	// lower right
-	if( ((px > bb.rightX) && (px < bb.rightX+ps)) &&
-		((py > bb.bottomY) && (py < bb.bottomY+ps)) ){
+	if (px > bb.rightX && px < bb.rightX + ps && py > bb.bottomY && py < bb.bottomY + ps) {
 		re = 'se';
 	}
 
 	// bottom
-	if( ((px > bb.midX) && (px < bb.midX+ps)) &&
-		((py > bb.bottomY) && (py < bb.bottomY+ps)) ){
+	if (px > bb.midX && px < bb.midX + ps && py > bb.bottomY && py < bb.bottomY + ps) {
 		re = 's';
 	}
 
 	// lower left
-	if( ((px > bb.leftX) && (px < bb.leftX+ps)) &&
-		((py > bb.bottomY) && (py < bb.bottomY+ps)) ){
+	if (px > bb.leftX && px < bb.leftX + ps && py > bb.bottomY && py < bb.bottomY + ps) {
 		re = 'sw';
 	}
 
 	// left
-	if( ((px > bb.leftX) && (px < bb.leftX+ps)) &&
-		((py > bb.midY) && (py < bb.midY+ps)) ){
+	if (px > bb.leftX && px < bb.leftX + ps && py > bb.midY && py < bb.midY + ps) {
 		re = 'w';
 	}
 
@@ -360,18 +345,18 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 
 function getBoundingBoxHandleDimensions(maxes, thickness) {
 	let dimensions = {};
-	let hp = pointSize/2;
+	let hp = pointSize / 2;
 	thickness = 1;
 
 	// Translation Fidelity - converting passed canvas values to saved value system
-	dimensions.leftX = (sXcX(maxes.xMin) - hp);
-	dimensions.midX = Math.floor(sXcX(maxes.xMin)+((sXcX(maxes.xMax)-sXcX(maxes.xMin))/2)-hp);
-	dimensions.rightX = (sXcX(maxes.xMax) - hp);
-	dimensions.topY = (sYcY(maxes.yMax) - hp);
-	dimensions.midY = Math.floor(sYcY(maxes.yMax)+((sYcY(maxes.yMin)-sYcY(maxes.yMax))/2)-hp);
-	dimensions.bottomY = (sYcY(maxes.yMin) - hp);
+	dimensions.leftX = sXcX(maxes.xMin) - hp;
+	dimensions.midX = Math.floor(sXcX(maxes.xMin) + (sXcX(maxes.xMax) - sXcX(maxes.xMin)) / 2 - hp);
+	dimensions.rightX = sXcX(maxes.xMax) - hp;
+	dimensions.topY = sYcY(maxes.yMax) - hp;
+	dimensions.midY = Math.floor(sYcY(maxes.yMax) + (sYcY(maxes.yMin) - sYcY(maxes.yMax)) / 2 - hp);
+	dimensions.bottomY = sYcY(maxes.yMin) - hp;
 
-	if(thickness > 1){
+	if (thickness > 1) {
 		dimensions.leftX -= thickness;
 		dimensions.rightX += thickness;
 		dimensions.topY -= thickness;
@@ -416,10 +401,6 @@ isOverComponentInstanceBoundingBoxHandle(componentInstance, px, py) {
 }
 */
 
-
-
-
-
 // --------------------------------------------------------------
 // Paths and PathPoints
 // --------------------------------------------------------------
@@ -434,7 +415,7 @@ export function computeAndDrawPathPointHandles(ctx) {
 
 	paths.forEach((path) => {
 		path.pathPoints.forEach((point) => {
-			if(editor.multiSelect.points.isSelected(point)){
+			if (editor.multiSelect.points.isSelected(point)) {
 				drawHandles(point, ctx);
 			}
 		});
@@ -450,34 +431,25 @@ export function testDrawAllPathPointHandles(ctx) {
 	paths.forEach((path) => {
 		path.pathPoints.forEach((point) => {
 			ctx.beginPath();
-			ctx.arc(
-				sXcX(point.h1.x),
-				sYcY(point.h1.y),
-				3, 0, Math.PI * 2, true
-			);
+			ctx.arc(sXcX(point.h1.x), sYcY(point.h1.y), 3, 0, Math.PI * 2, true);
 			ctx.closePath();
 			ctx.stroke();
 			ctx.beginPath();
-			ctx.arc(
-				sXcX(point.h2.x),
-				sYcY(point.h2.y),
-				3, 0, Math.PI * 2, true
-			);
+			ctx.arc(sXcX(point.h2.x), sYcY(point.h2.y), 3, 0, Math.PI * 2, true);
 			ctx.closePath();
 			ctx.stroke();
 		});
 	});
 }
 
-
 export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 	const editor = getCurrentProjectEditor();
 	let paths = editor.multiSelect.paths.members;
-	if(drawAllPathPoints) paths = editor.selectedItem.paths;
+	if (drawAllPathPoints) paths = editor.selectedItem.paths;
 
 	paths.forEach((path) => {
 		path.pathPoints.forEach((point, index) => {
-			if(index === 0) {
+			if (index === 0) {
 				// This could just be '1' but whatever
 				let nextPoint = path.pathPoints[path.getNextPointNum(0)];
 				drawDirectionalityPoint(point, ctx, editor.multiSelect.points.isSelected(point), nextPoint);
@@ -586,24 +558,15 @@ export function drawDirectionalityPoint(point, ctx, isSelected, next) {
 	// log('PathPoint.drawPoint arrow = ' + JSON.stringify(arrow) + '  - rotatedArrow = ' + JSON.stringify(rotatedArrow));
 
 	ctx.beginPath();
-	ctx.moveTo(
-		rotatedArrow[0][0] + sXcX(point.p.x),
-		rotatedArrow[0][1] + sYcY(point.p.y)
-	);
+	ctx.moveTo(rotatedArrow[0][0] + sXcX(point.p.x), rotatedArrow[0][1] + sYcY(point.p.y));
 
 	for (const p of Object.keys(rotatedArrow)) {
 		if (p > 0) {
-			ctx.lineTo(
-				rotatedArrow[p][0] + sXcX(point.p.x),
-				rotatedArrow[p][1] + sYcY(point.p.y)
-			);
+			ctx.lineTo(rotatedArrow[p][0] + sXcX(point.p.x), rotatedArrow[p][1] + sYcY(point.p.y));
 		}
 	}
 
-	ctx.lineTo(
-		rotatedArrow[0][0] + sXcX(point.p.x),
-		rotatedArrow[0][1] + sYcY(point.p.y)
-	);
+	ctx.lineTo(rotatedArrow[0][0] + sXcX(point.p.x), rotatedArrow[0][1] + sYcY(point.p.y));
 	ctx.fill();
 	ctx.stroke();
 
@@ -641,7 +604,7 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
 	function drawOneHandle(handle, label) {
 		const hx = sXcX(handle.x);
 		const hy = sYcY(handle.y);
-		drawCircleHandle(ctx, {x: hx, y: hy});
+		drawCircleHandle(ctx, { x: hx, y: hy });
 
 		ctx.beginPath();
 		ctx.moveTo(sXcX(point.p.x), sYcY(point.p.y));
@@ -649,7 +612,7 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
 		ctx.closePath();
 		ctx.stroke();
 
-		ctx.fillText(label, (hx + 12), hy);
+		ctx.fillText(label, hx + 12, hy);
 	}
 }
 
@@ -670,14 +633,7 @@ export function drawQuadraticHandle(ctx) {
 
 	if (point.q) {
 		ctx.beginPath();
-		ctx.arc(
-			sXcX(point.q.x),
-			sYcY(point.q.y),
-			halfPointSize,
-			0,
-			Math.PI * 2,
-			true
-		);
+		ctx.arc(sXcX(point.q.x), sYcY(point.q.y), halfPointSize, 0, Math.PI * 2, true);
 		ctx.closePath();
 		ctx.fill();
 

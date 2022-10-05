@@ -29,9 +29,10 @@ export class Tool_NewPath {
 
 			if (this.firstPoint) {
 				// make a new path with the new PathPoint
-				let count = editor.nav.page === 'components' ?
-					Object.keys(getCurrentProject().components).length :
-					editor.selectedItem.paths.length;
+				let count =
+					editor.nav.page === 'components'
+						? Object.keys(getCurrentProject().components).length
+						: editor.selectedItem.paths.length;
 
 				count += 1;
 				this.newPath = editor.selectedItem.addOnePath(new Path({ name: 'Path ' + count }));
@@ -39,9 +40,8 @@ export class Tool_NewPath {
 				editor.multiSelect.paths.select(this.newPath);
 				editor.multiSelect.points.select(this.currentPoint);
 				editor.publish('whichPathPointIsSelected', this.currentPoint);
-
 			} else if (this.newPath) {
-				if (isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY),)) {
+				if (isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY))) {
 					// clicked on an existing control point in this path
 					// if first point - close the path
 					ehd.toolHandoff = true;
@@ -79,8 +79,10 @@ export class Tool_NewPath {
 			if (this.dragging) {
 				// avoid really small handles
 				let ps2 = getCurrentProject().projectSettings.pointSize * 2;
-				if (Math.abs(this.currentPoint.p.x - cXsX(ehd.mouseX)) > ps2 ||
-					Math.abs(this.currentPoint.p.y - cYsY(ehd.mouseY)) > ps2) {
+				if (
+					Math.abs(this.currentPoint.p.x - cXsX(ehd.mouseX)) > ps2 ||
+					Math.abs(this.currentPoint.p.y - cYsY(ehd.mouseY)) > ps2
+				) {
 					this.currentPoint.h1.use = true;
 					this.currentPoint.h2.use = true;
 					this.currentPoint.h2.x = cXsX(ehd.mouseX);
@@ -94,10 +96,11 @@ export class Tool_NewPath {
 				ehd.undoQueueHasChanged = true;
 
 				editor.publish('currentPathPoint', this.currentPoint);
-
-			} else if (this.newPath && isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY))) {
+			} else if (
+				this.newPath &&
+				isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY))
+			) {
 				setCursor('penSquare');
-
 			} else {
 				setCursor('penPlus');
 			}

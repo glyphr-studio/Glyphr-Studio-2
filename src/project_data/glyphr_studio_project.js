@@ -254,29 +254,27 @@ export class GlyphrStudioProject {
 				// log('GlyphrStudioProject.getGlyph', 'end');
 				return result;
 			} else if (create) {
-				this.ligatures[id] = new Glyph({id: id});
+				this.ligatures[id] = new Glyph({ id: id });
 				// log('Create was true, returning a new Ligature.');
 				// log('GlyphrStudioProject.getGlyph', 'end');
 				return this.ligatures[id];
 			}
-
 		} else if (this.glyphs && id.indexOf('0x') > -1) {
 			// --------------------------------------------------------------
 			// Glyph
 			// --------------------------------------------------------------
-			let normalHex = ''+normalizeHex(id);
+			let normalHex = '' + normalizeHex(id);
 			result = this.glyphs[normalHex];
 			if (result) {
 				// log('Returning found Glyph');
 				// log('GlyphrStudioProject.getGlyph', 'end');
 				return result;
 			} else if (create) {
-				this.glyphs[id] = new Glyph({id: id});
+				this.glyphs[id] = new Glyph({ id: id });
 				// log('Create was true, returning a new Glyph.');
 				// log('GlyphrStudioProject.getGlyph', 'end');
 				return this.glyphs[id];
 			}
-
 		} else if (this.components && this.components[id]) {
 			// --------------------------------------------------------------
 			// Component
@@ -285,7 +283,6 @@ export class GlyphrStudioProject {
 			// log('Returning whatever component[id] happend to be');
 			// log('GlyphrStudioProject.getGlyph', 'end');
 			return this.components[id] || false;
-
 		}
 
 		// --------------------------------------------------------------
@@ -373,10 +370,7 @@ export class GlyphrStudioProject {
 				for (let char = cr[c].begin; char < cr[c].end; char++) {
 					thisGlyph = this.getGlyph(decToHex(char));
 					fm.numberOfGlyphs++;
-					fm.maxGlyph = Math.max(
-						fm.maxGlyph,
-						basicLatinOrder[basicLatinOrder.length]
-					);
+					fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[basicLatinOrder.length]);
 					fm.maxes = getOverallMaxes(fm.maxes, thisGlyph.maxes);
 					// count++;
 				}
@@ -408,8 +402,7 @@ function merge(template = {}, importing = {}, trimStrings = false) {
 			if (importing[a]) template[a] = merge(template[a], importing[a]);
 		} else {
 			if (importing[a]) {
-				if (typeof importing[a] === 'string' && trimStrings)
-					template[a] = trim(importing[a]);
+				if (typeof importing[a] === 'string' && trimStrings) template[a] = trim(importing[a]);
 				else template[a] = importing[a];
 			}
 		}

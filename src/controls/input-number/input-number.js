@@ -27,7 +27,7 @@ export class InputNumber extends HTMLElement {
 
 		this.wrapper = makeElement({ className: 'wrapper' });
 		this.wrapper.elementRoot = this;
-		this.wrapper.style.borderWidth = attributes.hideBorder? '0px' : '1px';
+		this.wrapper.style.borderWidth = attributes.hideBorder ? '0px' : '1px';
 
 		this.numberInput = makeElement({
 			tag: 'input',
@@ -88,7 +88,7 @@ export class InputNumber extends HTMLElement {
 	/**
 	 * Initialize the component once it's being used
 	 */
-	 connectedCallback() {
+	connectedCallback() {
 		// log(`InputNumber.connectedCallback`, 'start');
 		let myValue = this.getAttribute('value');
 		// log(`myValue: ${myValue}`);
@@ -207,7 +207,7 @@ export class InputNumber extends HTMLElement {
 	 */
 	numberInputChanged(ev) {
 		this.elementRoot.value = this.elementRoot.numberInput.value;
-		let changeEvent = new Event('change', {'bubbles':true, 'composed':true});
+		let changeEvent = new Event('change', { bubbles: true, composed: true });
 		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
 		flashUIElementAsActive(this);
 	}
@@ -222,7 +222,7 @@ export class InputNumber extends HTMLElement {
 		// log(`this.elementRoot.value BEFORE: ${this.elementRoot.value}`);
 		this.elementRoot.value += mod ? 10 : 1;
 		// log(`this.elementRoot.value AFTERS: ${this.elementRoot.value}`);
-		let changeEvent = new Event('change', {'bubbles':true, 'composed':true});
+		let changeEvent = new Event('change', { bubbles: true, composed: true });
 		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
 		flashUIElementAsActive(this);
 		// log(`InputNumber.increment`, 'end');
@@ -238,7 +238,7 @@ export class InputNumber extends HTMLElement {
 		// log(`this.elementRoot.value BEFORE: ${this.elementRoot.value}`);
 		this.elementRoot.value -= mod ? 10 : 1;
 		// log(`this.elementRoot.value AFTERS: ${this.elementRoot.value}`);
-		let changeEvent = new Event('change', {'bubbles':true, 'composed':true});
+		let changeEvent = new Event('change', { bubbles: true, composed: true });
 		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
 		flashUIElementAsActive(this);
 		// log(`InputNumber.decrement`, 'end');

@@ -33,8 +33,10 @@
     "url": "git+https://github.com/glyphr-studio/Glyphr-Studio-2.git"
   },
   "prettier": {
+    "printWidth": 100,
     "trailingComma": "es5",
     "singleQuote": true,
+    "useTabs": true,
     "arrowParens": "always"
   },
   "jshintConfig": {

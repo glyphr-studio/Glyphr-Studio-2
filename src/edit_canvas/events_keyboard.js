@@ -16,10 +16,9 @@ export function handleKeyPress(event) {
 	}
 	// TODO context glyphs
 	// if (document.activeElement.id === 'contextglyphsinput') {
-		// log('handleKeyPress', 'end');
+	// log('handleKeyPress', 'end');
 	// 	return;
 	// }
-
 
 	// log('handleKeyPress', 'start');
 	let key = getKeyFromEvent(event);
@@ -87,14 +86,14 @@ export function handleKeyPress(event) {
 		// }
 
 		// log('ehd.lastTool = ' + ehd.lastTool);
-		editor.editCanvas.redraw({calledBy: 'Event Handler - Keydown Ctrl for multi select'});
+		editor.editCanvas.redraw({ calledBy: 'Event Handler - Keydown Ctrl for multi select' });
 		return;
 	}
 
 	// Ctrl+A - Select All
 	if (ehd.isCtrlDown && key === 'a') {
 		if (ehd.isMouseOverCanvas) {
-			if (editMode === 'arrow'){
+			if (editMode === 'arrow') {
 				event.preventDefault();
 				editor.multiSelect.points.members = [];
 				editor.multiSelect.paths.selectAll();
@@ -183,7 +182,6 @@ export function handleKeyPress(event) {
 				// TODO history
 				// historyPut('Delete Path Point');
 				editor.publish('currentPath', editor.multiSelect.points.virtualPath);
-
 			} else if (editMode === 'arrow') {
 				editor.multiSelect.paths.deletePaths();
 				// TODO history
@@ -252,10 +250,7 @@ function getKeyFromEvent(event) {
 		189: 'minus',
 		224: 'ctrl',
 	};
-	return (
-		specialGlyphs[parseInt(event.which)] ||
-		String.fromCharCode(event.which).toLowerCase()
-	);
+	return specialGlyphs[parseInt(event.which)] || String.fromCharCode(event.which).toLowerCase();
 }
 
 function nudge(dx, dy, ev) {
@@ -285,11 +280,10 @@ function nudge(dx, dy, ev) {
 
 function getEditMode() {
 	const editor = getCurrentProjectEditor();
-	if(editor.nav.page === 'kern') return 'kern';
-	if(editor.selectedTool === 'pathResize') return 'arrow';
-	if(editor.selectedTool === 'pathEdit') return 'pen';
+	if (editor.nav.page === 'kern') return 'kern';
+	if (editor.selectedTool === 'pathResize') return 'arrow';
+	if (editor.selectedTool === 'pathEdit') return 'pen';
 }
-
 
 // --------------------------------------------------------------
 // Key Up
@@ -301,7 +295,6 @@ export function handleKeyUp(event) {
 	// log(`KEY ${key} from ${event.which}`);
 	// log(event);
 
-
 	const editor = getCurrentProjectEditor();
 	const ehd = eventHandlerData;
 	// log('ehd.lastTool: ' + ehd.lastTool);
@@ -312,7 +305,7 @@ export function handleKeyUp(event) {
 	// Ctrl
 	if (key === 'ctrl' && !ehd.isCtrlDown) {
 		// updateCursor();
-		editor.editCanvas.redraw({calledBy: 'Event Handler - Keyup Ctrl for multi select'});
+		editor.editCanvas.redraw({ calledBy: 'Event Handler - Keyup Ctrl for multi select' });
 	}
 
 	// Space

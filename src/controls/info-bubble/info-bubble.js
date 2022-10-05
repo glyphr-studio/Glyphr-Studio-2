@@ -22,8 +22,6 @@ export class InfoBubble extends HTMLElement {
 		wrapper.appendChild(this.entryPoint);
 		shadow.appendChild(wrapper);
 
-
-
 		// Event listeners
 		this.addEventListener('mouseover', this.show);
 		this.addEventListener('focus', this.show);
@@ -45,10 +43,9 @@ export class InfoBubble extends HTMLElement {
 
 		// log(`Making bubble...`);
 		let bubble = makeElement({
-		id: 'bubble',
-		attributes: {
-			style:
-			`
+			id: 'bubble',
+			attributes: {
+				style: `
 				z-index: 1000;
 				display: grid;
 				align-items: center;
@@ -58,15 +55,14 @@ export class InfoBubble extends HTMLElement {
 				left: 100px;
 				top: 100px;
 				text-align: center;
-			`
-		}
+			`,
+			},
 		});
 
 		// log(`Making pointer...`);
 		let pointer = makeElement({
-		attributes: {
-			style:
-			`
+			attributes: {
+				style: `
 				width: 0px;
 				height: 0px;
 				border: 12px solid transparent;
@@ -74,16 +70,15 @@ export class InfoBubble extends HTMLElement {
 				background-color: transparent;
 				display: block;
 				margin: 0px auto;
-			`
-			}
+			`,
+			},
 		});
 
 		// log(`Making content...`);
 		let content = makeElement({
-		innerHTML: this.innerHTML,
-		attributes: {
-			style:
-			`
+			innerHTML: this.innerHTML,
+			attributes: {
+				style: `
 				padding: 20px 24px 20px 20px;
 				border-radius: 10px;
 				width: clamp(300px, 400px, 600px);
@@ -93,8 +88,8 @@ export class InfoBubble extends HTMLElement {
 				text-align: left;
 				display: block;
 				box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
-			`
-			}
+			`,
+			},
 		});
 
 		bubble.appendChild(pointer);
@@ -111,7 +106,7 @@ export class InfoBubble extends HTMLElement {
 		let entryPointRect = this.entryPoint.getBoundingClientRect();
 		let bubbleRect = bubble.getBoundingClientRect();
 		let left = entryPointRect.x + entryPointRect.width + 2;
-		let top = entryPointRect.y - (bubbleRect.height / 2) + 18;
+		let top = entryPointRect.y - bubbleRect.height / 2 + 18;
 
 		if (left < 0 || top < 0) this.pointer.style.display = 'none';
 		left = Math.max(left, 0);
@@ -121,7 +116,6 @@ export class InfoBubble extends HTMLElement {
 		// log(this.entryPoint);
 		bubble.style.left = `${left}px`;
 		bubble.style.top = `${top}px`;
-
 
 		this.entryPoint.style.borderColor = 'rgb(180, 180, 180)';
 		this.entryPoint.style.backgroundColor = 'rgb(180, 180, 180)';

@@ -3,17 +3,15 @@ import { sXcX, sYcY } from './edit_canvas.js';
 import { pointsAreEqual, round } from '../common/functions.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 
-
 // --------------------------------------------------------------
 // SHARED between Glyph, ComponentInstance, and Path
 // --------------------------------------------------------------
 export function isOverControlPoint(item, x, y, noHandles) {
-	if(item.objType === 'Glyph') return isOverGlyphControlPoint(item, x, y, noHandles);
-	if(item.objType === 'Path') return isOverPathControlPoint(item, x, y, noHandles);
-	if(item.objType === 'PathPoint') return isOverPathPointControlPoint(item, x, y, noHandles);
+	if (item.objType === 'Glyph') return isOverGlyphControlPoint(item, x, y, noHandles);
+	if (item.objType === 'Path') return isOverPathControlPoint(item, x, y, noHandles);
+	if (item.objType === 'PathPoint') return isOverPathPointControlPoint(item, x, y, noHandles);
 	return false;
 }
-
 
 // --------------------------------------------------------------
 // Glyph
@@ -28,17 +26,11 @@ export function isOverControlPoint(item, x, y, noHandles) {
  * @param {string} fill - glyph fill color
  * @returns {number} - Advance Width, according to view.z
  */
-export function drawGlyph(
-	glyph,
-	ctx,
-	view = { x: 0, y: 0, z: 1 },
-	alpha = 1,
-	fill = '#000'
-) {
+export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fill = '#000') {
 	// log('drawGlyph', 'start');
 	// log(glyph.name);
 	// log('view ' + json(view, true));
-	if(!glyph.paths) {
+	if (!glyph.paths) {
 		console.warn(`Glyph ${glyph.name} has no paths to draw`);
 		return false;
 	}
@@ -53,10 +45,7 @@ export function drawGlyph(
 		drewPath = drawPath(path, ctx, view);
 		if (!drewPath) {
 			console.warn('Could not draw path ' + path.name + ' in Glyph ' + glyph.name);
-			if (
-				path.objType === 'ComponentInstance' &&
-				!getCurrentProject().getGlyph(path.link)
-			) {
+			if (path.objType === 'ComponentInstance' && !getCurrentProject().getGlyph(path.link)) {
 				console.warn('>>> Component Instance has bad link: ' + path.link);
 				const i = glyph.paths.indexOf(path);
 				if (i > -1) {
@@ -98,7 +87,6 @@ function isOverGlyphControlPoint(glyph, x, y, noHandles) {
 	return false;
 }
 
-
 // --------------------------------------------------------------
 // SHARED path and component instance
 // --------------------------------------------------------------
@@ -109,13 +97,12 @@ function isOverGlyphControlPoint(glyph, x, y, noHandles) {
  * @param {object} view - view
  */
 export function drawPath(path, ctx, view) {
-	if(path.objType === 'ComponentInstance') {
+	if (path.objType === 'ComponentInstance') {
 		return drawComponentInstanceToCanvas(path, ctx, view);
 	} else {
 		return drawPathToCanvas(path, ctx, view);
 	}
 }
-
 
 // --------------------------------------------------------------
 // Component Instance
@@ -150,7 +137,6 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
 	// log('drawComponentInstanceToCanvas', 'end');
 	return !failed;
 }
-
 
 // --------------------------------------------------------------
 // Path
@@ -208,14 +194,13 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 		// np = path.pathPoints[(cp+1) % path.pathPoints.length];
 		np = path.pathPoints[path.getNextPointNum(cp)];
 
-		if(!pp.h2.use && !np.h1.use) {
+		if (!pp.h2.use && !np.h1.use) {
 			// straight line
 			p4x = sXcX(round(np.p.x, precision), view);
 			p4y = sYcY(round(np.p.y, precision), view);
 
 			// log(`lineTo ${p4x}, ${p4y}`);
 			ctx.lineTo(p4x, p4y);
-
 		} else {
 			// curved line
 			p2x = sXcX(round(pp.h2.x, precision), view);
@@ -235,15 +220,15 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 	return true;
 }
 
-function isOverPathControlPoint(path, x, y, noHandles){
+function isOverPathControlPoint(path, x, y, noHandles) {
 	// log(`isOverPathControlPoint`, 'start');
 	// log(path);
 	let pp = path.pathPoints || [];
 	let re = false;
 
-	for(let k=pp.length-1; k>=0; k--){
+	for (let k = pp.length - 1; k >= 0; k--) {
 		re = isOverPathPointControlPoint(pp[k], x, y, noHandles);
-		if(re) {
+		if (re) {
 			// log(`returning`);
 			// log(re);
 			// log(`isOverPathControlPoint`, 'end');
@@ -265,7 +250,7 @@ export function isOverFirstPoint(path, x, y) {
 	// let hp = pointSize / editor.view.dz;
 	// log('\t Checking ' + pp.P.x + '/' + pp.P.y + ' around ' + hp);
 
-	if(!pp) return false;
+	if (!pp) return false;
 
 	// if( ((pp.P.x+hp) > x) && ((pp.P.x-hp) < x) && ((pp.P.y+hp) > y) && ((pp.P.y-hp) < y) ){
 	// 	// log(' isOverFirstPoint - END - return TRUE\n');
@@ -273,10 +258,8 @@ export function isOverFirstPoint(path, x, y) {
 	// }
 
 	// log(' isOverFirstPoint - END - return FALSE\n');
-	return pointsAreEqual({x:x, y:y}, pp.p.coord, getCurrentProject().projectSettings.pointSize);
+	return pointsAreEqual({ x: x, y: y }, pp.p.coord, getCurrentProject().projectSettings.pointSize);
 }
-
-
 
 // --------------------------------------------------------------
 // Path Point
@@ -289,28 +272,28 @@ export function isOverFirstPoint(path, x, y) {
  * @param {boolean} noHandles - Eliminates checking for handles in multi-select situations
  * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
  */
-	function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
-		//TODO browser zoom messes with visible handle size
-		const targetSize = getCurrentProject().projectSettings.pointSize;
-		const test = { x: x, y: y };
-		if (pointsAreEqual(pathPoint.p, test, targetSize)) {
-			// log('PathPoint.isOverControlPoint - Returning P1');
-			return pathPoint.p;
-		}
-
-		if (pathPoint.h1.use && !noHandles) {
-			if (pointsAreEqual(pathPoint.h1, test, targetSize)) {
-				// log('PathPoint.isOverControlPoint - Returning h1');
-				return pathPoint.h1;
-			}
-		}
-
-		if (pathPoint.h2.use && !noHandles) {
-			if (pointsAreEqual(pathPoint.h2, test, targetSize)) {
-				// log('PathPoint.isOverControlPoint - Returning h2');
-				return pathPoint.h2;
-			}
-		}
-
-		return false;
+function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
+	//TODO browser zoom messes with visible handle size
+	const targetSize = getCurrentProject().projectSettings.pointSize;
+	const test = { x: x, y: y };
+	if (pointsAreEqual(pathPoint.p, test, targetSize)) {
+		// log('PathPoint.isOverControlPoint - Returning P1');
+		return pathPoint.p;
 	}
+
+	if (pathPoint.h1.use && !noHandles) {
+		if (pointsAreEqual(pathPoint.h1, test, targetSize)) {
+			// log('PathPoint.isOverControlPoint - Returning h1');
+			return pathPoint.h1;
+		}
+	}
+
+	if (pathPoint.h2.use && !noHandles) {
+		if (pointsAreEqual(pathPoint.h2, test, targetSize)) {
+			// log('PathPoint.isOverControlPoint - Returning h2');
+			return pathPoint.h2;
+		}
+	}
+
+	return false;
+}

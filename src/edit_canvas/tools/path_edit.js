@@ -30,7 +30,11 @@ export class Tool_PathEdit {
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
 
-			this.controlPoint = isOverControlPoint(ehd.isCtrlDown ? editor.selectedItem : msPaths.virtualGlyph, cXsX(ehd.mouseX, view), cYsY(ehd.mouseY, view));
+			this.controlPoint = isOverControlPoint(
+				ehd.isCtrlDown ? editor.selectedItem : msPaths.virtualGlyph,
+				cXsX(ehd.mouseX, view),
+				cYsY(ehd.mouseY, view)
+			);
 			log(`isOverControlPoint:`);
 			log(this.controlPoint);
 
@@ -153,7 +157,11 @@ export class Tool_PathEdit {
 			if (ehd.isCtrlDown) {
 				// Multi-selection
 
-				hoveredControlPoint = isOverControlPoint(editor.selectedItem, cXsX(ehd.mouseX, view), cYsY(ehd.mouseY, view));
+				hoveredControlPoint = isOverControlPoint(
+					editor.selectedItem,
+					cXsX(ehd.mouseX, view),
+					cYsY(ehd.mouseY, view)
+				);
 				hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
 
 				if (hoveredControlPoint.type === 'p') {
@@ -174,7 +182,11 @@ export class Tool_PathEdit {
 				}
 			} else {
 				// Single selection
-				hoveredControlPoint = isOverControlPoint(editor.multiSelect.paths.virtualGlyph, cXsX(ehd.mouseX, view), cYsY(ehd.mouseY, view));
+				hoveredControlPoint = isOverControlPoint(
+					editor.multiSelect.paths.virtualGlyph,
+					cXsX(ehd.mouseX, view),
+					cYsY(ehd.mouseY, view)
+				);
 				hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
 
 				if (hoveredControlPoint.type === 'p') {

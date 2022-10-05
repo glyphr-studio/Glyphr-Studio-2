@@ -9,16 +9,16 @@ import { makeElement } from '../common/dom.js';
 
 export function makePanel_History() {
 	const editor = getCurrentProjectEditor();
-	let historyArea = makeElement({className: 'panel__card'});
+	let historyArea = makeElement({ className: 'panel__card' });
 
 	// TODO history
 	// let q = editor.history[editor.nav.page].queue;
-	let q = {length: 0};
+	let q = { length: 0 };
 
 	let undoButton = makeElement({
 		tag: 'button',
-		className: (q.length > 0 ? 'button__call-to-action' : 'button__disabled'),
-		innerHTML: `undo ${q.length}`
+		className: q.length > 0 ? 'button__call-to-action' : 'button__disabled',
+		innerHTML: `undo ${q.length}`,
 	});
 	undoButton.addEventListener('click', () => {});
 

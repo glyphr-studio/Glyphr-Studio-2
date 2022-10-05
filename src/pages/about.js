@@ -26,7 +26,7 @@ export class PageAbout {
 			<div class="content__page">
 				<div class="content-page__left-area">
 					<div class="content-page__nav-area">
-						${makeNavButton({level: 'l1', superTitle: 'PAGE', title: 'About'})}
+						${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'About' })}
 					</div>
 					<div id="content-page__panel">
 						<div class="panel__card full-width">
@@ -45,10 +45,12 @@ export class PageAbout {
 			</div>
 		`,
 		});
-		
+
 		// Page Selector
 		let l1 = content.querySelector('#nav-button-l1');
-		l1.addEventListener('click', function(){ toggleNavDropdown(l1); });
+		l1.addEventListener('click', function () {
+			toggleNavDropdown(l1);
+		});
 
 		return content;
 	}

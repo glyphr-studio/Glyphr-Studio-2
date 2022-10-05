@@ -1,8 +1,15 @@
-import { getCurrentProjectEditor } from "../app/main.js";
-import { accentColors } from "../common/colors.js";
-import { addAsChildren, makeElement } from "../common/dom.js";
-import { makeActionsArea_PathPoint } from "./actions.js";
-import { dimSplit, makeInputs_position, makeInputs_size, makeSingleCheckbox, makeSingleInput, makeSingleLabel } from "./cards.js";
+import { getCurrentProjectEditor } from '../app/main.js';
+import { accentColors } from '../common/colors.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
+import { makeActionsArea_PathPoint } from './actions.js';
+import {
+	dimSplit,
+	makeInputs_position,
+	makeInputs_size,
+	makeSingleCheckbox,
+	makeSingleInput,
+	makeSingleLabel,
+} from './cards.js';
 
 // --------------------------------------------------------------
 // Path Point attributes
@@ -15,7 +22,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	let pathPointCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: '<h3>Path point</h3>'
+		innerHTML: '<h3>Path point</h3>',
 	});
 
 	// let pointNumLabel = makeSingleLabel('Selected path point');
@@ -47,25 +54,25 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 		callback: (changedItem) => {
 			// log(`pointTypeButton subscriber callback`, 'start');
 			// log(changedItem);
-			if(document.getElementById(`pointTypeButton-${changedItem.type}`)) {
+			if (document.getElementById(`pointTypeButton-${changedItem.type}`)) {
 				document.getElementById(`pointTypeButton-symmetric`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-flat`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-corner`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-${changedItem.type}`).setAttribute('selected', '');
 			}
 			// log(`pointTypeButton subscriber callback`, 'end');
-		}
+		},
 	});
 
 	// -- Handle 1 -- //
 	// disable checkbox if not corner
 	let useH1Checkbox = makeSingleCheckbox(selectedPoint.h1, 'use', 'currentControlPoint.h1');
-	let useH1Label = makeElement({className: 'pre-checkbox'});
-	addAsChildren(useH1Label, [useH1Checkbox, makeElement({tag: 'h4', content: 'Use handle 1'})]);
+	let useH1Label = makeElement({ className: 'pre-checkbox' });
+	addAsChildren(useH1Label, [useH1Checkbox, makeElement({ tag: 'h4', content: 'Use handle 1' })]);
 
 	let h1Group = makeElement({
 		id: 'h1InputGroup',
-		attributes: { style: `display: ${selectedPoint.h1.use? 'grid': 'none'}` }
+		attributes: { style: `display: ${selectedPoint.h1.use ? 'grid' : 'none'}` },
 	});
 	let h1Position = makeInputs_position(selectedPoint.h1, 'h1', true);
 	addAsChildren(h1Group, h1Position);
@@ -73,12 +80,12 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	// -- Handle 2 -- //
 	// disable checkbox if not corner
 	let useH2Checkbox = makeSingleCheckbox(selectedPoint.h2, 'use', 'currentControlPoint.h2');
-	let useH2Label = makeElement({className: 'pre-checkbox'});
-	addAsChildren(useH2Label, [useH2Checkbox, makeElement({tag: 'h4', content: 'Use handle 2'})]);
+	let useH2Label = makeElement({ className: 'pre-checkbox' });
+	addAsChildren(useH2Label, [useH2Checkbox, makeElement({ tag: 'h4', content: 'Use handle 2' })]);
 
 	let h2Group = makeElement({
 		id: 'h2InputGroup',
-		attributes: { style: `display: ${selectedPoint.h2.use? 'grid': 'none'}` }
+		attributes: { style: `display: ${selectedPoint.h2.use ? 'grid' : 'none'}` },
 	});
 	let h2Position = makeInputs_position(selectedPoint.h2, 'h2', true);
 	addAsChildren(h2Group, h2Position);
@@ -87,7 +94,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	addAsChildren(pathPointCard, pointPosition);
 	addAsChildren(pathPointCard, [pointTypeLabel, pointTypeWrapper]);
 	addAsChildren(pathPointCard, [useH1Label, h1Group, useH2Label, h2Group]);
-	addAsChildren(pathPointCard, makeElement({tag: 'div', className: 'rowPad'}));
+	addAsChildren(pathPointCard, makeElement({ tag: 'div', className: 'rowPad' }));
 	addAsChildren(pathPointCard, makeActionsArea_PathPoint());
 
 	// log(`makeCard_pathPointAttributes`, 'end');
@@ -98,7 +105,7 @@ export function makeCard_multiSelectPathPointAttributes(path) {
 	let multiPathPointCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>${path.pathPoints.length} selected path points</h3>`
+		innerHTML: `<h3>${path.pathPoints.length} selected path points</h3>`,
 	});
 	addAsChildren(multiPathPointCard, makeInputs_position(path));
 	addAsChildren(multiPathPointCard, makeInputs_size(path));
@@ -106,7 +113,6 @@ export function makeCard_multiSelectPathPointAttributes(path) {
 
 	return multiPathPointCard;
 }
-
 
 // --------------------------------------------------------------
 // Drawing stuff
@@ -121,7 +127,7 @@ export function makePointTypeButton(type, selected, clickHandler) {
 		id: `pointTypeButton-${type}`,
 		attributes: {
 			title: `point type: ${type}`,
-		}
+		},
 	});
 
 	button.addEventListener('click', clickHandler);

@@ -1,6 +1,10 @@
 import { Path } from '../path.js';
 import { PathPoint } from '../path_point.js';
-import { findPathIntersections, findPathPointBoundaryIntersections, findPathPointIntersections } from '../path.js';
+import {
+	findPathIntersections,
+	findPathPointBoundaryIntersections,
+	findPathPointIntersections,
+} from '../path.js';
 import { clone } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
 
@@ -9,7 +13,7 @@ import { samples } from '../../samples/samples.js';
  * @returns {Path}
  */
 function samplePath() {
-	return new Path({pathPoints: clone(samples.pathPoints)});
+	return new Path({ pathPoints: clone(samples.pathPoints) });
 }
 
 /**
@@ -17,13 +21,14 @@ function samplePath() {
  * @returns {Path}
  */
 function trianglePath() {
-	return new Path({pathPoints: [
-		{p: {coord: {x: 100, y: 200}}},
-		{p: {coord: {x: 300, y: 600}}},
-		{p: {coord: {x: 400, y: 500}}},
-	]});
+	return new Path({
+		pathPoints: [
+			{ p: { coord: { x: 100, y: 200 } } },
+			{ p: { coord: { x: 300, y: 600 } } },
+			{ p: { coord: { x: 400, y: 500 } } },
+		],
+	});
 }
-
 
 describe('Path', () => {
 	it('pathPoints', () => {
@@ -36,7 +41,15 @@ describe('Path', () => {
 		const path = trianglePath();
 		let saved = path.save();
 		// console.log(saved);
-		expect(saved).toEqual({name:"Path",pathPoints:[{p:{coord:{x:100,y:200}},type:"corner"},{p:{coord:{x:300,y:600}},type:"corner"},{p:{coord:{x:400,y:500}},type:"corner"}],winding:-4});
+		expect(saved).toEqual({
+			name: 'Path',
+			pathPoints: [
+				{ p: { coord: { x: 100, y: 200 } }, type: 'corner' },
+				{ p: { coord: { x: 300, y: 600 } }, type: 'corner' },
+				{ p: { coord: { x: 400, y: 500 } }, type: 'corner' },
+			],
+			winding: -4,
+		});
 	});
 
 	it('print', () => {
@@ -73,12 +86,14 @@ describe('Path', () => {
 
 	it('maxes getter', () => {
 		const path = samplePath();
-		expect(path.maxes.save()).toEqual({'xMin': 170, 'xMax': 484, 'yMin': 186, 'yMax': 500});
+		expect(path.maxes.save()).toEqual({ xMin: 170, xMax: 484, yMin: 186, yMax: 500 });
 	});
 
 	it('svgPathData getter', () => {
 		const path = samplePath();
-		expect(path.svgPathData).toBe('M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z');
+		expect(path.svgPathData).toBe(
+			'M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z'
+		);
 	});
 
 	it('winding setter', () => {
@@ -146,12 +161,12 @@ describe('Path', () => {
 
 	it('containsPoint', () => {
 		const path = samplePath();
-		expect(path.containsPoint({x: 326.65249430318556, y: 500})).toBeTruthy();
+		expect(path.containsPoint({ x: 326.65249430318556, y: 500 })).toBeTruthy();
 	});
 
 	it('rotate', () => {
 		const path = samplePath();
-		path.rotate(45, {x: 100, y: 100});
+		path.rotate(45, { x: 100, y: 100 });
 		expect(path.pathPoints[0].p.x).toBe(-121.29587073579876);
 	});
 
@@ -161,12 +176,16 @@ describe('Path', () => {
 
 	it('makePathPostScript', () => {
 		const path = samplePath();
-		expect(path.makePathPostScript().re).toBe('\t\t\t\t326.65249430318556 500 rmoveto \n\t\t\t\t86.80744781082728 0 70.54005788598715 -71.01004289702911 0 -85.53294831955458 rrcurveto \n\t\t\t\t0 -85.53294831955458 -69.8451137552994 -71.92406046386174 -87.50239194151504 0 rrcurveto \n\t\t\t\t-87.50239194151504 0 -69.15010236167052 71.01000804467071 0 86.4470007387456 rrcurveto \n\t\t\t\t0 86.4470007387456 69.84504649235828 70.09599047783809 86.80744781082728 0 rrcurveto \n');
+		expect(path.makePathPostScript().re).toBe(
+			'\t\t\t\t326.65249430318556 500 rmoveto \n\t\t\t\t86.80744781082728 0 70.54005788598715 -71.01004289702911 0 -85.53294831955458 rrcurveto \n\t\t\t\t0 -85.53294831955458 -69.8451137552994 -71.92406046386174 -87.50239194151504 0 rrcurveto \n\t\t\t\t-87.50239194151504 0 -69.15010236167052 71.01000804467071 0 86.4470007387456 rrcurveto \n\t\t\t\t0 86.4470007387456 69.84504649235828 70.09599047783809 86.80744781082728 0 rrcurveto \n'
+		);
 	});
 
 	it('makeSVGPathData', () => {
 		const path = samplePath();
-		expect(path.makeSVGPathData()).toBe('M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z');
+		expect(path.makeSVGPathData()).toBe(
+			'M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z'
+		);
 	});
 
 	it('addPointsAtPathIntersections', () => {
@@ -223,7 +242,7 @@ describe('Path', () => {
 	});
 
 	it('findClosestPointOnCurve', () => {
-		expect(samplePath().findClosestPointOnCurve({x: 100, y: 100}).x).toBe(219.88358613439445);
+		expect(samplePath().findClosestPointOnCurve({ x: 100, y: 100 }).x).toBe(219.88358613439445);
 	});
 
 	it('findXYPointFromSplit', () => {
@@ -261,5 +280,4 @@ describe('Path', () => {
 		p2.y = 814;
 		expect(findPathPointIntersections(samplePath(), p2)[0]).toBe('326.65249430318556/500');
 	});
-
 });

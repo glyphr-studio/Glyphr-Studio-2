@@ -151,7 +151,7 @@ function ioSVG_convertTagsToGlyph(svgData) {
 					});
 				}
 
-				pushPath(new Path({name: 'Polygon', pathPoints: pathPoints }));
+				pushPath(new Path({ name: 'Polygon', pathPoints: pathPoints }));
 			}
 		}
 	}
@@ -246,18 +246,11 @@ function cleanAndFormatPathPointData(data) {
 	let curr = 0;
 	while (curr < data.length) {
 		if (ioSVG_isPathCommand(data.charAt(curr))) {
-			data =
-				data.slice(0, curr) +
-				',' +
-				data.charAt(curr) +
-				',' +
-				data.slice(curr + 1);
+			data = data.slice(0, curr) + ',' + data.charAt(curr) + ',' + data.slice(curr + 1);
 			curr++;
 		}
 		if (curr > 1000000) {
-			showErrorMessageBox(
-				'SVG path data longer than a million points is super uncool.'
-			);
+			showErrorMessageBox('SVG path data longer than a million points is super uncool.');
 			return;
 		} else {
 			curr++;
@@ -429,11 +422,7 @@ function ioSVG_convertPathTag(data) {
 		// log('\n\t Path Chunk ' + c);
 		// log('' + chunkarr[c].command + ' : ' + chunkarr[c].data);
 		if (chunkarr[c].command) {
-			patharr = ioSVG_handlePathChunk(
-				chunkarr[c],
-				patharr,
-				c === chunkarr.length - 1
-			);
+			patharr = ioSVG_handlePathChunk(chunkarr[c], patharr, c === chunkarr.length - 1);
 		}
 	}
 
@@ -914,9 +903,7 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 	} else if (iscmd('Zz')) {
 		// End Path
 	} else {
-		showErrorMessageBox(
-			'Unrecognized path command ' + cmd + ', ignoring and moving on...'
-		);
+		showErrorMessageBox('Unrecognized path command ' + cmd + ', ignoring and moving on...');
 	}
 
 	// Finish up last point

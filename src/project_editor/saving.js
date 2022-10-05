@@ -8,7 +8,7 @@
  * @param {string} buffer - data for the file
  * @param {string} fileType - file suffix
  */
- export function saveFile(fileName, buffer, fileType) {
+export function saveFile(fileName, buffer, fileType) {
 	fileType = fileType || 'text/plain;charset=utf-8';
 	const fileBlob = new Blob([buffer], { type: fileType, endings: 'native' });
 
@@ -57,7 +57,7 @@ export function makeDateStampSuffix() {
  * @param {string} key - storage key
  * @param {*} value - what to save
  */
- export function localStorageSet(key, value) {
+export function localStorageSet(key, value) {
 	key = 'GlyphrStudio_' + key;
 
 	if (value.save) value = JSON.stringify(value.save());

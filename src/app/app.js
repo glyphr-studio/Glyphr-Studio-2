@@ -64,8 +64,8 @@ export class GlyphrStudioApp {
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation
-			if(dev.currentPage) editor.nav.page = dev.currentPage;
-			if(dev.currentPanel) editor.nav.panel = dev.currentPanel;
+			if (dev.currentPage) editor.nav.page = dev.currentPage;
+			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
 		}
 
 		// log(editor);

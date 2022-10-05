@@ -10,7 +10,7 @@ import { clone } from '../common/functions.js';
 **/
 
 export class History {
-	constructor({queue = [], parentName = 'undefined'}) {
+	constructor({ queue = [], parentName = 'undefined' }) {
 		const editor = getCurrentProjectEditor();
 		this.queue = queue;
 		this.parentName = parentName;
@@ -24,11 +24,11 @@ export class History {
 		let selected = getSelectedItem();
 		this.queue = this.queue || [];
 		this.queue.push({
-			'name': selected.name,
-			'id': selected.id,
-			'description': des,
-			'date': new Date().getTime(),
-			'state': clone(this.currstate, 'History.put')
+			name: selected.name,
+			id: selected.id,
+			description: des,
+			date: new Date().getTime(),
+			state: clone(this.currstate, 'History.put'),
 		});
 
 		this.currstate = clone(editor.project[this.parentName], 'History.put');
@@ -42,8 +42,7 @@ export class History {
 		// log('\n History.pull - START');
 		// log('\t queue.length ' + this.queue.length);
 		const editor = getCurrentProjectEditor();
-		if (this.queue.length === 0)
-			return;
+		if (this.queue.length === 0) return;
 
 		let currentID = getSelectedItemID();
 		let nextID = this.queue[this.queue.length - 1].id;
@@ -59,20 +58,19 @@ export class History {
 			this.currstate = clone(top, 'History.pull');
 
 			let selwi = getSelectedItem();
-			if (selwi && selwi.changed)
-				selwi.changed(true, true);
-
+			if (selwi && selwi.changed) selwi.changed(true, true);
 		} else {
 			// If the next undo item is a different glyph,
 			// navigate to that glyph before undo-ing
-			showToast('Navigated without undo-ing.<br>Undo again to roll back changes for this glyph.', 2000);
+			showToast(
+				'Navigated without undo-ing.<br>Undo again to roll back changes for this glyph.',
+				2000
+			);
 			selectGlyph(nextID);
 		}
 
-
 		if (_UI.current_page === 'import svg') {
 			update_NavPanels();
-
 		} else if (_UI.current_page === 'components') {
 			if (!editor.project.components[_UI.selectedcomponent]) {
 				_UI.selectedcomponent = getFirstID(editor.project.components);
@@ -88,7 +86,6 @@ export class History {
 		// update_NavPanels();
 		redraw({ calledby: 'history_pull', redrawpanels: true });
 
-
 		// log('\t after redraw');
 		let empty = true;
 		for (let q in _UI.history) {
@@ -97,47 +94,43 @@ export class History {
 				break;
 			}
 		}
-		if (empty)
-			setProjectAsSaved();
-
+		if (empty) setProjectAsSaved();
 
 		// log(' History.pull - END\n');
 	}
 }
 
+// /**
+//  * Adds to the history queue
+//  * @param {string} description
+//  */
+// historyPut(description) {
+//   if (this.nav.isOnEditCanvasPage) {
+//     const queue =
+//       this.nav.page === 'import svg' ? 'Glyph edit' : this.nav.page;
+//     this.history[queue].put(description);
+//   }
+// }
 
+// /**
+//  * Moves backwards in time in the history queue
+//  */
+// historyPull() {
+//   if (this.nav.isOnEditCanvasPage) {
+//     this.closeDialog();
+//     this.closeNotation();
+//     this.history[this.nav.page].pull();
+//   }
+// }
 
-	// /**
-	//  * Adds to the history queue
-	//  * @param {string} description
-	//  */
-	// historyPut(description) {
-	//   if (this.nav.isOnEditCanvasPage) {
-	//     const queue =
-	//       this.nav.page === 'import svg' ? 'Glyph edit' : this.nav.page;
-	//     this.history[queue].put(description);
-	//   }
-	// }
+// /**
+//  * Get the length of the current history queue
+//  * @returns {number}
+//  */
+// historyLength() {
+//   if (this.nav.isOnEditCanvasPage) {
+//     return this.history[this.nav.page].queue.length || 0;
+//   }
 
-	// /**
-	//  * Moves backwards in time in the history queue
-	//  */
-	// historyPull() {
-	//   if (this.nav.isOnEditCanvasPage) {
-	//     this.closeDialog();
-	//     this.closeNotation();
-	//     this.history[this.nav.page].pull();
-	//   }
-	// }
-
-	// /**
-	//  * Get the length of the current history queue
-	//  * @returns {number}
-	//  */
-	// historyLength() {
-	//   if (this.nav.isOnEditCanvasPage) {
-	//     return this.history[this.nav.page].queue.length || 0;
-	//   }
-
-	//   return 0;
-	// }
+//   return 0;
+// }

@@ -12,25 +12,29 @@ import { eventHandlerData } from '../edit_canvas/events.js';
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
-	let rowsArea = makeElement({className: 'panel__card full-width layer-panel__rows-area'});
+	let rowsArea = makeElement({ className: 'panel__card full-width layer-panel__rows-area' });
 	const editor = getCurrentProjectEditor();
 	let selected = editor.selectedItem;
 	let paths = selected.paths;
 
-	if(eventHandlerData.newBasicPath) {
+	if (eventHandlerData.newBasicPath) {
 		let path = eventHandlerData.newBasicPath;
 		let row = makeElement();
 		row.setAttribute('class', 'layer-panel__row layer-panel__path layer-panel__new-path');
 		row.classList.add('layer-panel__selected');
-		row.appendChild(makeElement({
-			className: 'layer-panel__layer-thumb',
-			innerHTML: path.makeSVG()
-		}));
+		row.appendChild(
+			makeElement({
+				className: 'layer-panel__layer-thumb',
+				innerHTML: path.makeSVG(),
+			})
+		);
 
-		row.appendChild(makeElement({
-			className: 'layer-panel__layer-name',
-			innerHTML: path.name
-		}));
+		row.appendChild(
+			makeElement({
+				className: 'layer-panel__layer-name',
+				innerHTML: path.name,
+			})
+		);
 
 		rowsArea.appendChild(row);
 	}
@@ -61,7 +65,7 @@ export function makePanel_Layers() {
 					// log(row.classList.toString());
 					row.classList.toggle('layer-panel__selected', isSelected);
 					// log(`Layer subscription callback for selectedPath`, 'end');
-				}
+				},
 			});
 
 			row.addEventListener('click', () => {
@@ -79,30 +83,37 @@ export function makePanel_Layers() {
 			//     ']</span>';
 			// } else {
 
-			row.appendChild(makeElement({
-				className: 'layer-panel__layer-thumb',
-				innerHTML: path.makeSVG()
-			}));
+			row.appendChild(
+				makeElement({
+					className: 'layer-panel__layer-thumb',
+					innerHTML: path.makeSVG(),
+				})
+			);
 
-			row.appendChild(makeElement({
-				className: 'layer-panel__layer-name',
-				innerHTML: path.name
-			}));
+			row.appendChild(
+				makeElement({
+					className: 'layer-panel__layer-name',
+					innerHTML: path.name,
+				})
+			);
 
 			rowsArea.appendChild(row);
 		}
-
 	} else {
-		rowsArea.appendChild(makeElement({
-			content: `No paths exist yet.  You can create one with the New Path tools on the canvas, or by pressing "add new path" below.`
-		}));
+		rowsArea.appendChild(
+			makeElement({
+				content: `No paths exist yet.  You can create one with the New Path tools on the canvas, or by pressing "add new path" below.`,
+			})
+		);
 	}
 
 	// Overall, watch for changes:
 	editor.subscribe({
 		topic: ['currentPath', 'currentGlyph'],
 		subscriberID: 'layersPanel',
-		callback: () => { refreshPanel(); }
+		callback: () => {
+			refreshPanel();
+		},
 	});
 
 	// log(`makePanel_Layers`, 'end');
@@ -133,7 +144,7 @@ function makeActionArea_Layers() {
 
 	let actionsCard = makeElement({
 		className: 'panel__card full-width',
-		content:'<h3>Actions</h3>'
+		content: '<h3>Actions</h3>',
 	});
 
 	let actionsArea = makeElement({
@@ -144,7 +155,7 @@ function makeActionArea_Layers() {
 
 	let selectedPaths = editor.multiSelect.paths.members;
 	let totalPaths = editor.selectedItem.paths.length;
-	if(totalPaths > 1 && selectedPaths.length === 1) {
+	if (totalPaths > 1 && selectedPaths.length === 1) {
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}
 
