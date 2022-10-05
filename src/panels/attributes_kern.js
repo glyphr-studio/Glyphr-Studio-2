@@ -22,11 +22,9 @@ function makePanel_KerningAttributes() {
 	content += '</div>';
 
 	content += '<div class="panel__card">';
-	content +=
-		'<button onclick="showNewKernPairDialog();">add new kern pair</button><br>';
+	content += '<button onclick="showNewKernPairDialog();">add new kern pair</button><br>';
 	if (!rows)
-		content +=
-			'<button onclick="addCommonKernPairs();">add some common kern pairs</button>';
+		content += '<button onclick="addCommonKernPairs();">add some common kern pairs</button>';
 	content += '</div>';
 
 	if (!rows) {
@@ -50,12 +48,7 @@ function makeOneKernPairRow(k, id) {
 		selstyle = 'style="background-color:' + _UI.colors.blue.l55 + '; ';
 
 	let re = '<table class="kernrow"><tr>';
-	re +=
-		'<td class="selkern" ' +
-		selstyle +
-		'onclick="selectKern(\'' +
-		id +
-		'\');"></td>';
+	re += '<td class="selkern" ' + selstyle + 'onclick="selectKern(\'' + id + '\');"></td>';
 	re +=
 		'<td><input class="rowleftgroup" type="text" onchange="updateKernGroup(\'' +
 		id +
@@ -86,20 +79,7 @@ function makeOneKernPairRow(k, id) {
 }
 
 function addCommonKernPairs() {
-	let add = [
-		'A',
-		'VWY',
-		'A',
-		'CO',
-		'VWY',
-		'A',
-		'FP',
-		'A',
-		'O',
-		'A',
-		'L',
-		'TVW',
-	];
+	let add = ['A', 'VWY', 'A', 'CO', 'VWY', 'A', 'FP', 'A', 'O', 'A', 'L', 'TVW'];
 	let nid;
 
 	for (let k = 0; k < add.length; k += 2) {
@@ -138,8 +118,7 @@ function selectKern(id) {
 function showNewKernPairDialog() {
 	let con = '<h1>New Kern Pair</h1>';
 	con += '<div style="width:500px;">';
-	con +=
-		'Create a new kern pair by specifying a glyph for the left and right sides. ';
+	con += 'Create a new kern pair by specifying a glyph for the left and right sides. ';
 	con +=
 		'Each side of the kern pair can also be a group of glyphs.  When any glyph from the left side is displayed before any glyph in the right side, the pair will be kerned.<br><br>';
 	con +=
@@ -149,8 +128,7 @@ function showNewKernPairDialog() {
 	con += '<h3>Kern Pair Glyphs</h3>';
 	con +=
 		'<input type="text" id="leftgroup" style="font-size:24px; width:45%; padding:8px; text-align:right;"/>';
-	con +=
-		'<input type="text" id="rightgroup" style="font-size:24px; width:45%; padding:8px;"/><br>';
+	con += '<input type="text" id="rightgroup" style="font-size:24px; width:45%; padding:8px;"/><br>';
 	con += makeErrorMessageBox();
 	con += '<br>';
 	con +=
@@ -164,10 +142,8 @@ function createNewKernPair() {
 	let l = parseKernGroupInput(document.getElementById('leftgroup').value);
 	let r = parseKernGroupInput(document.getElementById('rightgroup').value);
 
-	if (!l || !l.length)
-		showErrorMessageBox('The left kern group cannot be empty.');
-	else if (!r || !r.length)
-		showErrorMessageBox('The right kern group cannot be empty.');
+	if (!l || !l.length) showErrorMessageBox('The left kern group cannot be empty.');
+	else if (!r || !r.length) showErrorMessageBox('The right kern group cannot be empty.');
 	else {
 		let id = generateNewID(getCurrentProject().kerning, 'kern');
 

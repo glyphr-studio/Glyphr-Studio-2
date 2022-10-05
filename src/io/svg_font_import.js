@@ -9,9 +9,7 @@ function ioSVG_importSVGFont(filter) {
 	// log('ioSVG_importSVGFont', 'start');
 
 	// Spinner Animation
-	document.getElementById(
-		'openprojecttableright'
-	).innerHTML = make_LoadingAnimation(false);
+	document.getElementById('openprojecttableright').innerHTML = make_LoadingAnimation(false);
 	const fis = document.getElementById('fontimportstatus');
 	const sweep = document.getElementById('sweep');
 	let degrees = 0;
@@ -46,9 +44,7 @@ function ioSVG_importSVGFont(filter) {
 		} catch (e) {
 			loadPage_openproject();
 			openproject_changeTab('load');
-			showErrorMessageBox(
-				'There was a problem reading the SVG file:<br>' + e.message
-			);
+			showErrorMessageBox('There was a problem reading the SVG file:<br>' + e.message);
 			return;
 		}
 
@@ -74,9 +70,7 @@ function ioSVG_importSVGFont(filter) {
 			// Dump JSON
 			// saveFile('Parsed JSON', json(jsonData));
 		} else {
-			document.getElementById(
-				'openprojecttableright'
-			).innerHTML = make_ImportFilter(
+			document.getElementById('openprojecttableright').innerHTML = make_ImportFilter(
 				chars.length,
 				kerns.length,
 				'ioSVG_importSVGFont'
@@ -165,9 +159,7 @@ function ioSVG_importSVGFont(filter) {
 						// log(np);
 						if (np.pathPoints.length) {
 							pathCounter++;
-							newPaths.push(
-								new Path({ path: np, name: 'Path ' + pathCounter })
-							);
+							newPaths.push(new Path({ path: np, name: 'Path ' + pathCounter }));
 						} else {
 							// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
 						}
@@ -184,8 +176,7 @@ function ioSVG_importSVGFont(filter) {
 				uni = uni[0];
 				minchar = Math.min(minchar, uni);
 				maxGlyph = Math.max(maxGlyph, uni);
-				if (1 * uni > _UI.glyphRange.latinExtendedB.end)
-					customglyphrange.push(uni);
+				if (1 * uni > _UI.glyphRange.latinExtendedB.end) customglyphrange.push(uni);
 
 				fc[uni] = new Glyph({
 					paths: newPaths,
@@ -435,8 +426,7 @@ function make_ImportFilter(chars, kerns, funname) {
 
 	re +=
 		'<tr><td class="checkcol"><input type="checkbox" onclick="checkFilter(\'everything\');" id="everything"/></td><td>';
-	re +=
-		'<h3>Import all the glyphs</h3>' + "Don't say we did't try to warn you.";
+	re += '<h3>Import all the glyphs</h3>' + "Don't say we did't try to warn you.";
 	re += '</td></tr>';
 
 	re += '</table>';
@@ -462,10 +452,7 @@ function isOutOfBounds(uni) {
 	if (!uni.length) return true;
 
 	for (let u = 0; u < uni.length; u++) {
-		if (
-			parseInt(uni[u]) > _UI.importRange.end ||
-			parseInt(uni[u]) < _UI.importRange.begin
-		)
+		if (parseInt(uni[u]) > _UI.importRange.end || parseInt(uni[u]) < _UI.importRange.begin)
 			return true;
 	}
 

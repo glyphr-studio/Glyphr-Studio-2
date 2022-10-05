@@ -6,7 +6,15 @@ import { PolySegment } from './poly_segment.js';
 import { PathPoint } from './path_point.js';
 import { getOverallMaxes, maxesOverlap } from './maxes.js';
 import { findSegmentIntersections } from './poly_segment.js';
-import { clone, round, isVal, hasNonValues, duplicates, pointsAreEqual, strSan } from '../common/functions.js';
+import {
+	clone,
+	round,
+	isVal,
+	hasNonValues,
+	duplicates,
+	pointsAreEqual,
+	strSan,
+} from '../common/functions.js';
 
 /**
  * Glyph Element > Path
@@ -31,7 +39,7 @@ export class Path extends GlyphElement {
 		wLock = false,
 		hLock = false,
 		ratioLock = false,
-		parent = false
+		parent = false,
 	} = {}) {
 		// log(`Path.constructor`, 'start');
 		super();
@@ -66,11 +74,11 @@ export class Path extends GlyphElement {
 			winding: this.winding,
 		};
 
-		if(this.xLock) re.xLock = true;
-		if(this.yLock) re.yLock = true;
-		if(this.wLock) re.wLock = true;
-		if(this.hLock) re.hLock = true;
-		if(this.ratioLock) re.ratioLock = true;
+		if (this.xLock) re.xLock = true;
+		if (this.yLock) re.yLock = true;
+		if (this.wLock) re.wLock = true;
+		if (this.hLock) re.hLock = true;
+		if (this.ratioLock) re.ratioLock = true;
 
 		this._pathPoints.forEach((pp) => {
 			re.pathPoints.push(pp.save(verbose));
@@ -349,7 +357,7 @@ export class Path extends GlyphElement {
 	 * @param {boolean} xLock
 	 * @returns {Path} - reference to this Path
 	 */
-	 set xLock(xLock) {
+	set xLock(xLock) {
 		this._xLock = !!xLock;
 		return this;
 	}
@@ -399,7 +407,7 @@ export class Path extends GlyphElement {
 	 * @param {Maxes} maxes
 	 * @returns {Path} - reference to this Path
 	 */
-	 set maxes(maxes) {
+	set maxes(maxes) {
 		// log(`Path SET maxes`, 'start');
 		this.cache.maxes = {};
 		this.cache.maxes = new Maxes(maxes);
@@ -423,10 +431,10 @@ export class Path extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	isLocked(propertyName) {
-		if(propertyName === 'x') return this.xLock;
-		if(propertyName === 'y') return this.yLock;
-		if(propertyName === 'width') return this.wLock;
-		if(propertyName === 'height') return this.hLock;
+		if (propertyName === 'x') return this.xLock;
+		if (propertyName === 'y') return this.yLock;
+		if (propertyName === 'width') return this.wLock;
+		if (propertyName === 'height') return this.hLock;
 		return false;
 	}
 
@@ -434,11 +442,11 @@ export class Path extends GlyphElement {
 	 * Sets locks based on property name
 	 * @param {string} propertyName - property to lock
 	 */
-	 lock(propertyName) {
-		if(propertyName === 'x') this.xLock = true;
-		if(propertyName === 'y') this.yLock = true;
-		if(propertyName === 'width') this.wLock = true;
-		if(propertyName === 'height') this.hLock = true;
+	lock(propertyName) {
+		if (propertyName === 'x') this.xLock = true;
+		if (propertyName === 'y') this.yLock = true;
+		if (propertyName === 'width') this.wLock = true;
+		if (propertyName === 'height') this.hLock = true;
 	}
 
 	/**
@@ -446,10 +454,10 @@ export class Path extends GlyphElement {
 	 * @param {string} propertyName - property to unlock
 	 */
 	unlock(propertyName) {
-		if(propertyName === 'x') this.xLock = false;
-		if(propertyName === 'y') this.yLock = false;
-		if(propertyName === 'width') this.wLock = false;
-		if(propertyName === 'height') this.hLock = false;
+		if (propertyName === 'x') this.xLock = false;
+		if (propertyName === 'y') this.yLock = false;
+		if (propertyName === 'width') this.wLock = false;
+		if (propertyName === 'height') this.hLock = false;
 	}
 
 	// --------------------------------------------------------------
@@ -669,7 +677,6 @@ export class Path extends GlyphElement {
 		return false;
 	}
 
-
 	// --------------------------------------------------------------
 	//  Translate to other languages
 	// --------------------------------------------------------------
@@ -690,7 +697,7 @@ export class Path extends GlyphElement {
 			width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}"
 		>
 			<g transform="
-				translate(${gutterScale},${(upm - descender - gutterScale / 2)})
+				translate(${gutterScale},${upm - descender - gutterScale / 2})
 				scale(${charScale}, -${charScale})"
 			>
 				<path d="${this.svgPathData}"/>
@@ -705,7 +712,7 @@ export class Path extends GlyphElement {
 	 * @param {number} roundValue - how many decimal places
 	 * @returns {string}
 	 */
-	 makeSVGPathData(glyphName = 'not specified', roundValue = 8) {
+	makeSVGPathData(glyphName = 'not specified', roundValue = 8) {
 		// log('Path.makeSVGPathData', 'start');
 		// log('Glyph name: ' + glyphName);
 		// log(this.pathPoints);
@@ -769,7 +776,7 @@ export class Path extends GlyphElement {
 	 * @returns {string} - PostScript path data
 	 */
 	makePostScript(lastX = 0, lastY = 0) {
-		return this.makePathPostScript(lastX, lastY)
+		return this.makePathPostScript(lastX, lastY);
 	}
 
 	/**
@@ -905,11 +912,9 @@ export class Path extends GlyphElement {
 		return re;
 	}
 
-
-
-// --------------------------------------------------------------
-// methods for Actions
-// --------------------------------------------------------------
+	// --------------------------------------------------------------
+	// methods for Actions
+	// --------------------------------------------------------------
 
 	/**
 	 * Finds either the clockwise or counterclockwise winding of a path
@@ -1135,8 +1140,7 @@ export class Path extends GlyphElement {
 			for (let t = 0; t < 1; t += 1 / grains) {
 				check = this.findXYPointFromSplit(t, pp);
 				d = Math.sqrt(
-					(check.x - point.x) * (check.x - point.x) +
-						(check.y - point.y) * (check.y - point.y)
+					(check.x - point.x) * (check.x - point.x) + (check.y - point.y) * (check.y - point.y)
 				);
 
 				if (d < minDistance) {
@@ -1344,11 +1348,7 @@ export function findPathIntersections(p1, p2) {
 	// Use overlaps to find intersections
 	let re = [];
 	for (let v = 0; v < segmentOverlaps.length; v++) {
-		re = findSegmentIntersections(
-			segmentOverlaps[v].bottom,
-			segmentOverlaps[v].top,
-			0
-		);
+		re = findSegmentIntersections(segmentOverlaps[v].bottom, segmentOverlaps[v].top, 0);
 		if (re.length > 0) {
 			intersects = intersects.concat(re);
 		}
@@ -1385,17 +1385,16 @@ export function findPathPointBoundaryIntersections(p1, p2) {
 		for (let pp = 0; pp < chk.pathPoints.length; pp++) {
 			tpp = chk.pathPoints[pp];
 
-			if(tpp.p.x === m.xMin || tpp.p.x === m.xMax){
-				if(tpp.p.y <= m.yMax && tpp.p.y >= m.yMin){
-					re.push(''+tpp.p.x+'/'+tpp.p.y);
+			if (tpp.p.x === m.xMin || tpp.p.x === m.xMax) {
+				if (tpp.p.y <= m.yMax && tpp.p.y >= m.yMin) {
+					re.push('' + tpp.p.x + '/' + tpp.p.y);
 				}
 			}
-			if(tpp.p.y === m.yMin || tpp.p.y === m.yMax){
-				if(tpp.p.x <= m.xMax && tpp.p.x >= m.xMin){
-					re.push(''+tpp.p.x+'/'+tpp.p.y);
+			if (tpp.p.y === m.yMin || tpp.p.y === m.yMax) {
+				if (tpp.p.x <= m.xMax && tpp.p.x >= m.xMin) {
+					re.push('' + tpp.p.x + '/' + tpp.p.y);
 				}
 			}
-
 		}
 	}
 

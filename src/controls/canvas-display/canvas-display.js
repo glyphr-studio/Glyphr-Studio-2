@@ -5,7 +5,6 @@ import { glyphToHex } from '../../common/unicode.js';
 import { drawGlyph } from '../../edit_canvas/draw_paths.js';
 import { linkCSS } from '../controls.js';
 
-
 /**
  * CanvasDisplay takes a string of glyphs and displays them on the canvas
  * No editing involved
@@ -20,9 +19,7 @@ export class CanvasDisplay extends HTMLElement {
 
 		super();
 
-		Object.keys(attributes).forEach((key) =>
-			this.setAttribute(key, attributes[key])
-		);
+		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		this.canvas = makeElement({ tag: 'canvas' });
 		this.ctx = this.canvas.getContext('2d');
@@ -49,7 +46,7 @@ export class CanvasDisplay extends HTMLElement {
 	/**
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
-	 static get observedAttributes() {
+	static get observedAttributes() {
 		return ['glyphs', 'height', 'width', 'vertical-align', 'horizontal-align'];
 	}
 
@@ -72,22 +69,22 @@ export class CanvasDisplay extends HTMLElement {
 			case 'height':
 				this.height = newValue;
 				this.redraw();
-			break;
+				break;
 
 			case 'width':
 				this.width = newValue;
 				this.redraw();
-			break;
+				break;
 
 			case 'vertical-align':
 				this.vertical = newValue;
 				this.redraw();
-			break;
+				break;
 
 			case 'horizontal-align':
 				this.horizontal = newValue;
 				this.redraw();
-			break;
+				break;
 
 			default:
 				break;
@@ -108,16 +105,16 @@ export class CanvasDisplay extends HTMLElement {
 		let glyph = editor.selectedGlyph;
 		let settings = getCurrentProject().projectSettings;
 		let gutterSize = 20;
-		let contentWidth = this.width - (2*gutterSize);
-		let contentHeight = this.height - (2*gutterSize);
+		let contentWidth = this.width - 2 * gutterSize;
+		let contentHeight = this.height - 2 * gutterSize;
 		let upm = settings.upm;
 		let ascent = settings.ascent;
 		let zoom = Math.min(contentWidth, contentHeight) / upm;
 		let advanceWidth = glyph.advanceWidth;
 
 		let view = {
-			dx: gutterSize + ((contentWidth - (zoom * advanceWidth))/2),
-			dy: gutterSize + (zoom * (ascent)),
+			dx: gutterSize + (contentWidth - zoom * advanceWidth) / 2,
+			dy: gutterSize + zoom * ascent,
 			dz: zoom,
 		};
 

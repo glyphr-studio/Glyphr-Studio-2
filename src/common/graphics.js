@@ -15,8 +15,7 @@ export function makeGlyphrStudioLogo(oa) {
 	const width = oa.width || 184;
 	const height = width * (55 / 184); // dimensions of the native logo
 
-	const re =
-		`<svg
+	const re = `<svg
 			version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
 			viewBox="0 0 ${width} ${height}" enable-background="new 0 0 ${width} ${height}">
 			<g id="LOGO" fill="${fill}" transform="scale(${width / 184})" >
@@ -26,8 +25,6 @@ export function makeGlyphrStudioLogo(oa) {
 	`;
 	return re;
 }
-
-
 
 // --------------------------------------------------------------
 // Icons
@@ -47,7 +44,7 @@ export function makeIcon(oa) {
 
 	let con = '';
 
-	if (icons[oa.name]){
+	if (icons[oa.name]) {
 		if (icons[oa.name].outline) {
 			con = icons[oa.name].outline;
 		} else {

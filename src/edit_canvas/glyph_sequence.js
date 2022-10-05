@@ -12,8 +12,7 @@ function GlyphSequence(oa) {
 	this.scale = oa.scale || 1;
 	this.glyphstring = oa.glyphstring || '';
 	this.textblocks = this.glyphstring.split('\n');
-	this.lineGap =
-		oa.lineGap || round(getCurrentProject().projectSettings.upm / 4);
+	this.lineGap = oa.lineGap || round(getCurrentProject().projectSettings.upm / 4);
 
 	this.drawPageExtras = oa.drawPageExtras || false;
 	this.drawLineExtras = oa.drawLineExtras || false;

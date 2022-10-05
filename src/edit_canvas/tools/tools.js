@@ -4,7 +4,6 @@ import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawPath } from '../draw_paths.js';
 
-
 // --------------------------------------------------------------
 // Making tool buttons
 // --------------------------------------------------------------
@@ -29,14 +28,13 @@ export function makeEditToolsButtons() {
 
 	// Button data
 	let toolButtonData = {
-		newRectangle: {title: 'New rectangle', disabled: false},
-		newOval: {title: 'New oval', disabled: false},
-		newPath: {title: 'New path', disabled: false},
-		pathAddPoint: {title: 'Add path point', disabled: false},
-		pathEdit: {title: 'Path edit', disabled: false},
-		resize: {title: 'Resize', disabled: false},
+		newRectangle: { title: 'New rectangle', disabled: false },
+		newOval: { title: 'New oval', disabled: false },
+		newPath: { title: 'New path', disabled: false },
+		pathAddPoint: { title: 'Add path point', disabled: false },
+		pathEdit: { title: 'Path edit', disabled: false },
+		resize: { title: 'Resize', disabled: false },
 	};
-
 
 	// Disable pen and add path point buttons for certain conditions
 	const hasComponentInstance = editor.multiSelect.paths.contains('ComponentInstance');
@@ -59,7 +57,7 @@ export function makeEditToolsButtons() {
 	Object.keys(toolButtonData).forEach((buttonName) => {
 		// log(`buttonName: ${buttonName}`);
 
-		let isSelected = (editor.selectedTool === buttonName);
+		let isSelected = editor.selectedTool === buttonName;
 
 		let newToolButton = makeElement({
 			tag: 'button',
@@ -68,22 +66,22 @@ export function makeEditToolsButtons() {
 			innerHTML: makeToolButtonSVG({
 				name: buttonName,
 				selected: isSelected,
-				disabled: toolButtonData[buttonName].disabled
-			})
+				disabled: toolButtonData[buttonName].disabled,
+			}),
 		});
 
 		newToolButton.addEventListener('click', () => clickTool(buttonName));
 
-		if(isSelected) newToolButton.classList.add('edit-canvas__tool-selected');
+		if (isSelected) newToolButton.classList.add('edit-canvas__tool-selected');
 
 		editor.subscribe({
 			topic: 'whichToolIsSelected',
 			subscriberID: `tools.${buttonName}`,
-			callback:  (newSelectedTool) => {
-				let isSelected = (newSelectedTool === buttonName);
+			callback: (newSelectedTool) => {
+				let isSelected = newSelectedTool === buttonName;
 				newToolButton.classList.toggle('edit-canvas__tool-selected', isSelected);
-				newToolButton.innerHTML = makeToolButtonSVG({name: buttonName, selected: isSelected});
-			}
+				newToolButton.innerHTML = makeToolButtonSVG({ name: buttonName, selected: isSelected });
+			},
 		});
 
 		toolButtonElements[buttonName] = newToolButton;
@@ -94,10 +92,9 @@ export function makeEditToolsButtons() {
 		tag: 'button',
 		className: 'edit-canvas__tool-selected',
 		title: 'Done editing path',
-		content: 'Done editing path'
+		content: 'Done editing path',
 	});
 	finishPath.addEventListener('click', () => clickTool('pathEdit'));
-
 
 	// Put it all together
 	let content = [];
@@ -121,7 +118,7 @@ export function makeEditToolsButtons() {
 
 	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
 		// content.push(toolButtonElements.pathAddPoint);
-		content.push(makeElement({tag: 'div', attributes: { style: 'height: 20px;'}}));
+		content.push(makeElement({ tag: 'div', attributes: { style: 'height: 20px;' } }));
 		content.push(toolButtonElements.pathEdit);
 		content.push(toolButtonElements.resize);
 		if (editor.selectedTool === 'newPath') {
@@ -132,7 +129,6 @@ export function makeEditToolsButtons() {
 	// log('makeEditToolsButtons', 'end');
 	return content;
 }
-
 
 export function makeViewToolsButtons() {
 	// log(`makeViewToolsButtons`, 'start');
@@ -152,29 +148,29 @@ export function makeViewToolsButtons() {
 	Object.keys(viewButtonTitles).forEach((buttonName) => {
 		// log(`buttonName: ${buttonName}`);
 
-		let isSelected = (editor.selectedTool === buttonName);
+		let isSelected = editor.selectedTool === buttonName;
 		let newToolButton = makeElement({
 			tag: 'button',
 			className: 'edit-canvas__tool',
 			title: viewButtonTitles[buttonName],
 			innerHTML: makeToolButtonSVG({
 				name: buttonName,
-				selected: isSelected
-			})
+				selected: isSelected,
+			}),
 		});
 		newToolButton.addEventListener('click', () => clickTool(buttonName));
 
-		if(isSelected) newToolButton.classList.add('edit-canvas__tool-selected');
+		if (isSelected) newToolButton.classList.add('edit-canvas__tool-selected');
 
-		if(buttonName === 'pan') {
+		if (buttonName === 'pan') {
 			editor.subscribe({
 				topic: 'whichToolIsSelected',
 				subscriberID: `tools.${buttonName}`,
-				callback:  (newSelectedTool) => {
-					let isSelected = (newSelectedTool === buttonName);
+				callback: (newSelectedTool) => {
+					let isSelected = newSelectedTool === buttonName;
 					newToolButton.classList.toggle('edit-canvas__tool-selected', isSelected);
-					newToolButton.innerHTML = makeToolButtonSVG({name: buttonName, selected: isSelected});
-				}
+					newToolButton.innerHTML = makeToolButtonSVG({ name: buttonName, selected: isSelected });
+				},
 			});
 		}
 
@@ -184,13 +180,13 @@ export function makeViewToolsButtons() {
 	// text zoom control
 	let zoomReadoutNumber = '--';
 	let view = editor.view;
-	if(view) zoomReadoutNumber = round((editor.view.dz) * 100, 2);
+	if (view) zoomReadoutNumber = round(editor.view.dz * 100, 2);
 
 	let zoomReadout = makeElement({
 		tag: 'input',
 		className: 'edit-canvas__zoom-readout',
 		title: 'Zoom level',
-		innerHTML: zoomReadoutNumber
+		innerHTML: zoomReadoutNumber,
 	});
 	zoomReadout.setAttribute('value', zoomReadoutNumber);
 	zoomReadout.setAttribute('disabled', '');
@@ -206,27 +202,23 @@ export function makeViewToolsButtons() {
 			let zoomReadoutNumber = round(newView.dz * 100, 2);
 			zoomReadout.setAttribute('value', zoomReadoutNumber);
 			zoomReadout.innerHTML = zoomReadoutNumber;
-		}
+		},
 	});
 
 	// Put it all together
-	let responsiveGroup = makeElement({className: 'edit-canvas__responsive-group'});
+	let responsiveGroup = makeElement({ className: 'edit-canvas__responsive-group' });
 
 	addAsChildren(responsiveGroup, [
-		makeElement({tag: 'div', content: '&emsp;'}),
+		makeElement({ tag: 'div', content: '&emsp;' }),
 		viewButtonElements.zoomOut,
 		zoomReadout,
 		viewButtonElements.zoomIn,
-		makeElement({tag: 'div', content: '&emsp;'}),
-		viewButtonElements.zoom1to1
+		makeElement({ tag: 'div', content: '&emsp;' }),
+		viewButtonElements.zoom1to1,
 	]);
 
 	// log(`makeViewToolsButtons`, 'end');
-	return [
-		viewButtonElements.pan,
-		responsiveGroup,
-		viewButtonElements.zoomEm,
-	];
+	return [viewButtonElements.pan, responsiveGroup, viewButtonElements.zoomEm];
 }
 
 export function clickTool(tool) {
@@ -234,11 +226,11 @@ export function clickTool(tool) {
 	const editor = getCurrentProjectEditor();
 	let zoomTools = ['zoom1to1', 'zoomEm', 'zoomIn', 'zoomOut'];
 
-	if(zoomTools.includes(tool)) {
-		if(tool === 'zoom1to1') editor.view = {dz: 1};
-		if(tool === 'zoomEm') editor.autoFitView();
-		if(tool === 'zoomIn') editor.view = {dz: editor.view.dz *= 1.1};
-		if(tool === 'zoomOut') editor.view = {dz: editor.view.dz *= 0.9};
+	if (zoomTools.includes(tool)) {
+		if (tool === 'zoom1to1') editor.view = { dz: 1 };
+		if (tool === 'zoomEm') editor.autoFitView();
+		if (tool === 'zoomIn') editor.view = { dz: (editor.view.dz *= 1.1) };
+		if (tool === 'zoomOut') editor.view = { dz: (editor.view.dz *= 0.9) };
 		editor.publish('view', editor.view);
 	} else {
 		switchToolTo(tool);
@@ -262,7 +254,7 @@ export function makeKernToolsButtons() {
 	const kern = `
 		<button
 			title="kern"
-			class="${(st === 'kern' ? 'edit-canvas__tool-selected ' : ' ')} tool"
+			class="${st === 'kern' ? 'edit-canvas__tool-selected ' : ' '} tool"
 			onclick="clickTool(\'kern\');"
 		>
 			${makeToolButtonSVG({ name: 'kern', selected: st === 'kern' })}
@@ -285,57 +277,42 @@ export function makeContextGlyphControls() {
 		'<label style="margin-left:10px; position:relative; top:-6px;" for="showContextGlyphGuides">show guides</label><br>';
 	ctxg +=
 		'glyph ' +
-		sliderUI(
-		'contextGlyphTransparency',
-		'contextGlyphTransparency_dropdown',
-		true,
-		false
-		);
+		sliderUI('contextGlyphTransparency', 'contextGlyphTransparency_dropdown', true, false);
 	ctxg += '<br/>';
 	ctxg +=
-		'guide ' +
-		sliderUI(
-		'systemGuideTransparency',
-		'systemGuideTransparency_dropdown',
-		true,
-		false
-		);
+		'guide ' + sliderUI('systemGuideTransparency', 'systemGuideTransparency_dropdown', true, false);
 	ctxg += '</div>';
-	ctxg +=
-		'<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
+	ctxg += '<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
 	ctxg += 'onblur="_UI.focusElement = false;" onmouseover="mouseoutcec();" ';
-	ctxg +=
-		'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
+	ctxg += 'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
 	ctxg += 'value="' + getContextGlyphString() + '"/>';
 	ctxg +=
 		'<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
 	ctxg += '</div>';
 }
 
-
-
 // --------------------------------------------------------------
 // Button helper functions
 // --------------------------------------------------------------
 
-export function addPathToCurrentItem(newPath){
+export function addPathToCurrentItem(newPath) {
 	// log(`addPathToCurrentItem`, 'start');
 	// log(`name: ${ewPath.name}`);
 	// log(`objType: ${ewPath.objType}`);
 
 	const editor = getCurrentProjectEditor();
-	if(newPath){
-		if(newPath.objType === 'ComponentInstance'){
+	if (newPath) {
+		if (newPath.objType === 'ComponentInstance') {
 			// log(`is a Component instance`);
 			editor.selectedTool = 'pathEdit';
-		} else if(newPath && (editor.selectedTool === 'pathEdit')) {
+		} else if (newPath && editor.selectedTool === 'pathEdit') {
 			// log(`triggered as true: newPath && editor.selectedTool == pathEdit \n\t NOT calling calcmaxes, okay?`);
 			//newPath.recalculateMaxes();
 		}
 	} else {
 		// log(`passed null, creating new path.`);
 		newPath = new Path({});
-		newPath.name = ('Rectangle ' + ((editor.selectedItemPaths.length*1)+1));
+		newPath.name = 'Rectangle ' + (editor.selectedItemPaths.length * 1 + 1);
 	}
 
 	let sg = editor.selectedItem;
@@ -384,19 +361,20 @@ export function addBasicPath(type){
 }
 */
 
-export function turnSelectedPathIntoAComponent(){
+export function turnSelectedPathIntoAComponent() {
 	let s = clone(_UI.ms.paths.getMembers(), 'turnSelectedPathIntoAComponent');
-	let n = s.length === 1? ('Component ' + s[0].name) : ('Component ' + (getLength(_GP.components)+1));
+	let n =
+		s.length === 1 ? 'Component ' + s[0].name : 'Component ' + (getLength(_GP.components) + 1);
 
 	_UI.ms.paths.deletePaths();
-	let newID = createNewComponent(new Glyph({'paths':s, 'name':n}));
+	let newID = createNewComponent(new Glyph({ paths: s, name: n }));
 	insertComponentInstance(newID);
 	_UI.selectedToolName = 'pathEdit';
-	selectPath(getSelectedItem.paths.length-1);
-	redraw({calledby:'turnSelectedPathIntoAComponent'});
+	selectPath(getSelectedItem.paths.length - 1);
+	redraw({ calledby: 'turnSelectedPathIntoAComponent' });
 }
 
-export function getPathAtLocation(x,y){
+export function getPathAtLocation(x, y) {
 	// log(`getPathAtLocation`, 'start');
 	// log('checking x:' + x + ' y:' + y);
 
@@ -404,10 +382,10 @@ export function getPathAtLocation(x,y){
 	const editor = getCurrentProjectEditor();
 	let sws = editor.selectedItem?.paths;
 	// log(sws);
-	for(let j=(sws.length-1); j>=0; j--){
+	for (let j = sws.length - 1; j >= 0; j--) {
 		path = sws[j];
 		// log('Checking path ' + j);
-		if(isThisPathHere(path, x, y)){
+		if (isThisPathHere(path, x, y)) {
 			// log(`getPathAtLocation`, 'end');
 			return path;
 		}
@@ -425,7 +403,7 @@ function isThisPathHere(path, px, py) {
 	let ctx = editor.ghostCTX;
 
 	ctx.fillStyle = 'rgb(255, 255, 255)';
-	ctx.fillRect(0,0,editor.canvasSize, editor.canvasSize);
+	ctx.fillRect(0, 0, editor.canvasSize, editor.canvasSize);
 
 	ctx.beginPath();
 	drawPath(path, ctx, editor.view);
@@ -437,11 +415,8 @@ function isThisPathHere(path, px, py) {
 	let imageData = ctx.getImageData(px, py, 1, 1);
 	// log('ISHERE? red = ' + imageData.data[0] + '  returning: ' + (imageData.data[0] < 255));
 	// log(`isThisPathHere`, 'end');
-	return (imageData.data[0] < 255);
+	return imageData.data[0] < 255;
 }
-
-
-
 
 // --------------------------------------------------------------
 // Tool button graphics
@@ -495,7 +470,7 @@ export function makeToolButtonSVG(oa) {
 
 // Arrow
 icons.resize = {
-	fill:`
+	fill: `
 		<rect x="11" y="14" width="1" height="4"></rect>
 		<rect x="12" y="16" width="1" height="2"></rect>
 		<rect x="9" y="12" width="1" height="2"></rect>
@@ -514,7 +489,7 @@ icons.resize = {
 		<rect x="5" y="12" width="4" height="1"></rect>
 		<rect x="5" y="5" width="4" height="1"></rect>
 	`,
-	outline:`
+	outline: `
 		<rect x="4" width="1" height="17"></rect>
 		<rect x="5" y="1" width="1" height="1"></rect>
 		<rect x="7" y="3" width="1" height="1"></rect>
@@ -538,17 +513,17 @@ icons.resize = {
 		<rect x="11" y="12" width="1" height="2"></rect>
 		<rect x="12" y="14" width="1" height="2"></rect>
 		<rect x="13" y="16" width="1" height="2"></rect>
-	`
+	`,
 };
 
 // Pen Plus
 icons.pathAddPoint = {
-	fill:`
+	fill: `
 		<rect x="5" y="4" width="5" height="14"></rect>
 		<rect x="10" y="8" width="2" height="6"></rect>
 		<rect x="3" y="8" width="2" height="6"></rect>
 	`,
-	outline:`
+	outline: `
 		<rect id="MINUS_SHAPE" x="14" y="16" width="5" height="1"></rect>
 		<rect id="PLUS_SHAPE" x="16" y="14" width="1" height="5"></rect>
 		<rect x="4" y="16" width="1" height="3"></rect>
@@ -571,17 +546,17 @@ icons.pathAddPoint = {
 		<rect x="11" y="8" width="1" height="2"></rect>
 		<rect x="11" y="12" width="1" height="2"></rect>
 		<rect x="10" y="14" width="1" height="2"></rect>
-	`
+	`,
 };
 
 // Pen Minus
 icons.pathRemovePoint = {
-	fill:`
+	fill: `
 		<rect x="5" y="4" width="5" height="14"></rect>
 		<rect x="10" y="8" width="2" height="6"></rect>
 		<rect x="3" y="8" width="2" height="6"></rect>
 	`,
-	outline:`
+	outline: `
 		<rect id="MINUS_SHAPE" x="14" y="16" width="5" height="1"></rect>
 		<rect x="4" y="16" width="1" height="3"></rect>
 		<rect x="10" y="16" width="1" height="3"></rect>
@@ -603,17 +578,17 @@ icons.pathRemovePoint = {
 		<rect x="11" y="8" width="1" height="2"></rect>
 		<rect x="11" y="12" width="1" height="2"></rect>
 		<rect x="10" y="14" width="1" height="2"></rect>
-	`
+	`,
 };
 
 // Pen
 icons.pathEdit = {
-	fill:`
+	fill: `
 		<rect x="7" y="4" width="5" height="14"></rect>
 		<rect x="12" y="8" width="2" height="6"></rect>
 		<rect x="5" y="8" width="2" height="6"></rect>
 	`,
-	outline:`
+	outline: `
 		<rect x="6" y="16" width="1" height="3"></rect>
 		<rect x="12" y="16" width="1" height="3"></rect>
 		<rect x="9" y="1" width="1" height="12"></rect>
@@ -634,19 +609,19 @@ icons.pathEdit = {
 		<rect x="13" y="8" width="1" height="2"></rect>
 		<rect x="13" y="12" width="1" height="2"></rect>
 		<rect x="12" y="14" width="1" height="2"></rect>
-	`
+	`,
 };
 
 // Square with handles
 icons.pathResize = {
-	fill:`
+	fill: `
 		<rect x="1" y="1" display="inline" width="4" height="4"></rect>
 		<rect x="8" y="8" display="inline" width="4" height="4"></rect>
 		<rect x="15" y="15" display="inline" width="4" height="4"></rect>
 		<rect x="15" y="1" display="inline" width="4" height="4"></rect>
 		<rect x="1" y="15" display="inline" width="4" height="4"></rect>
 	`,
-	outline:`
+	outline: `
 		<rect x="16" y="5" width="1" height="10"></rect>
 		<rect x="5" y="16" width="10" height="1"></rect>
 		<rect x="5" y="3" width="10" height="1"></rect>
@@ -671,24 +646,24 @@ icons.pathResize = {
 		<rect x="8" y="11" width="4" height="1"></rect>
 		<rect x="8" y="8" width="1" height="4"></rect>
 		<rect x="11" y="8" width="1" height="4"></rect>
-	`
+	`,
 };
 
 icons.newRectangle = {
 	fill: `<rect x="2" y="2" width="12" height="12"></rect>
 `,
-	outline:`
+	outline: `
 		<rect x="1" y="1" width="13" height="1"></rect>
 		<rect x="1" y="13" width="13" height="1"></rect>
 		<rect x="14" y="16" width="5" height="1"></rect>
 		<rect x="1" y="2" width="1" height="12"></rect>
 		<rect x="13" y="2" width="1" height="12"></rect>
 		<rect x="16" y="14" width="1" height="5"></rect>
-	`
+	`,
 };
 
 icons.newOval = {
-	fill:`
+	fill: `
 		<rect x="6" y="2" width="4" height="1"></rect>
 		<rect x="6" y="12" width="4" height="1"></rect>
 		<rect x="5" y="10.1" width="4" height="1"></rect>
@@ -697,7 +672,7 @@ icons.newOval = {
 		<rect x="11" y="5.1" width="1" height="3"></rect>
 		<rect x="3" y="3" width="10" height="9"></rect>
 	`,
-	outline:`
+	outline: `
 		<rect x="6" y="1" width="4" height="1"></rect>
 		<rect x="4" y="2" width="2" height="1"></rect>
 		<rect x="6" y="13" width="4" height="1"></rect>
@@ -716,11 +691,11 @@ icons.newOval = {
 		<rect x="12" y="11" width="1" height="1"></rect>
 		<rect x="3" y="11" width="1" height="1"></rect>
 		<rect x="3" y="3" width="1" height="1"></rect>
-	`
+	`,
 };
 
 icons.newPath = {
-	fill:`
+	fill: `
 		<rect x="5" y="2" width="5" height="13"></rect>
 		<rect x="10" y="4" width="2" height="11"></rect>
 		<rect x="3" y="9" width="2" height="6"></rect>
@@ -729,7 +704,7 @@ icons.newPath = {
 		<rect x="2" y="2" width="3" height="1"></rect>
 		<rect x="4" y="3" width="3" height="1"></rect>
 	`,
-	outline:`
+	outline: `
 		<rect x="14" y="16" width="5" height="1"></rect>
 		<rect x="16" y="14" width="1" height="5"></rect>
 		<rect x="8" y="2" width="2" height="1"></rect>
@@ -753,23 +728,23 @@ icons.newPath = {
 		<rect x="13" y="11" width="1" height="2"></rect>
 		<rect x="13" y="6" width="1" height="2"></rect>
 		<rect x="14" y="8" width="1" height="3"></rect>
-	`
+	`,
 };
 
 // View and Zoom
 
 icons.zoomEm = {
-	outline:`
+	outline: `
 		<polygon points="15,3 11,3 11,5 13,5 13,6 12,6 12,7 11,7 11,8 10,8 9,8 9,7 8,7 8,6 7,6 7,5 9,5 9,3 5,3 3,3 3,5 3,9 5,9 5,7 6,7 6,8 7,8 7,9 8,9 8,10 8,11 7,11 7,12 6,12 6,13 5,13 5,11 3,11 3,15 3,17 5,17 9,17 9,15 7,15 7,14 8,14 8,13 9,13 9,12 10,12 11,12 11,13 12,13 12,14 13,14 13,15 11,15 11,17 15,17 17,17 17,15 17,11 15,11 15,13 14,13 14,12 13,12 13,11 12,11 12,10 12,9 13,9 13,8 14,8 14,7 15,7 15,9 17,9 17,5 17,3"/>
 		<rect x="18" y="1" width="1" height="18"></rect>
 		<rect x="1" y="18" width="18" height="1"></rect>
 		<rect x="1" y="1" width="18" height="1"></rect>
 		<rect x="1" y="1" width="1" height="18"></rect>
-	`
+	`,
 };
 
 icons.zoom1to1 = {
-	outline:`
+	outline: `
 		<rect x="5" y="4" width="2" height="12"></rect>
 		<rect x="14" y="4" width="2" height="12"></rect>
 		<rect x="18" y="1" width="1" height="18"></rect>
@@ -780,22 +755,22 @@ icons.zoom1to1 = {
 		<rect x="9" y="7" width="2" height="2"></rect>
 		<rect x="1" y="1" width="18" height="1"></rect>
 		<rect x="1" y="18" width="18" height="1"></rect>
-	`
+	`,
 };
 
 icons.zoomIn = {
-	outline:`
+	outline: `
 		<rect x="9" y="3" width="2" height="14"></rect>
 		<rect x="3" y="9" width="14" height="2"></rect>
-	`
+	`,
 };
 
 icons.zoomOut = {
-	outline: `<rect x="3" y="9" width="14" height="2"></rect>`
+	outline: `<rect x="3" y="9" width="14" height="2"></rect>`,
 };
 
 icons.pan = {
-	fill:`
+	fill: `
 		<rect x="9" y="1" width="2" height="18"></rect>
 		<rect x="1" y="9" width="18" height="2"></rect>
 		<rect x="2" y="7" width="2" height="6"></rect>
@@ -803,7 +778,7 @@ icons.pan = {
 		<rect x="16" y="7" width="2" height="6"></rect>
 		<rect x="7" y="2" width="6" height="2"></rect>
 	`,
-	outline:`
+	outline: `
 		<rect x="8" y="4" width="1" height="5"></rect>
 		<rect x="8" y="11" width="1" height="5"></rect>
 		<rect x="11" y="4" width="1" height="5"></rect>
@@ -848,16 +823,16 @@ icons.pan = {
 		<rect x="11" y="1" width="1" height="1"></rect>
 		<rect x="12" y="2" width="1" height="1"></rect>
 		<rect x="13" y="3" width="1" height="1"></rect>
-	`
+	`,
 };
 
 icons.kern = {
-	fill:`
+	fill: `
 		<rect x="1" y="9" width="18" height="2"></rect>
 		<rect x="2" y="7" width="2" height="6"></rect>
 		<rect x="16" y="7" width="2" height="6"></rect>
 	`,
-	outline:`
+	outline: `
 		<rect x="4" y="8" width="12" height="1"></rect>
 		<rect x="4" y="11" width="12" height="1"></rect>
 		<rect x="4" y="12" width="1" height="2"></rect>
@@ -879,5 +854,5 @@ icons.kern = {
 		<rect x="17" y="12" width="1" height="1"></rect>
 		<rect x="16" y="13" width="1" height="1"></rect>
 		<rect x="9" y="2" width="2" height="16"></rect>
-	`
+	`,
 };

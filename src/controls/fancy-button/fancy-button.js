@@ -2,7 +2,6 @@ import { makeElement } from '../../common/dom.js';
 import { uiColors, accentColors } from '../../common/colors.js';
 import { linkCSS } from '../controls.js';
 
-
 /**
  * It's a button... only fancier!
  */
@@ -14,14 +13,12 @@ export class FancyButton extends HTMLElement {
 	constructor(attributes = {}) {
 		super();
 
-		Object.keys(attributes).forEach((key) =>
-			this.setAttribute(key, attributes[key])
-		);
+		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		let fast = this.hasAttribute('fast');
 		let fastSpeed = '18s';
 		let slowSpeed = '90s';
-		let speed = fast? fastSpeed : slowSpeed;
+		let speed = fast ? fastSpeed : slowSpeed;
 
 		this.wrapper = makeElement({ className: 'wrapper' });
 		this.wrapper.style.animation = `gradFade ${speed} linear infinite;`;
@@ -29,9 +26,8 @@ export class FancyButton extends HTMLElement {
 		this.buttonContent = makeElement({ className: 'buttonContent' });
 		this.buttonText = makeElement({ tag: 'slot', className: 'buttonText' });
 
-		if (this.hasAttribute('secondary'))
-			this.wrapper.setAttribute('secondary', '');
-			this.buttonText.style.animation = `gradFade ${speed} linear infinite;`;
+		if (this.hasAttribute('secondary')) this.wrapper.setAttribute('secondary', '');
+		this.buttonText.style.animation = `gradFade ${speed} linear infinite;`;
 
 		if (this.hasAttribute('dark')) {
 			this.wrapper.setAttribute('dark', '');
@@ -44,7 +40,6 @@ export class FancyButton extends HTMLElement {
 			this.wrapper.setAttribute('tabIndex', '0');
 			this.disabled = false;
 		}
-
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });

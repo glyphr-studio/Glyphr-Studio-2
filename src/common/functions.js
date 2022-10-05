@@ -9,7 +9,6 @@ export function log(msg) {
 	console.log(`%cUSING WRONG LOG\n\n`, 'color:red');
 }
 
-
 // --------------------------------------------------------------
 // Object Functions
 // --------------------------------------------------------------
@@ -56,12 +55,7 @@ export function generateNewID(obj, base) {
 export function clone(source) {
 	const newObj = source instanceof Array ? [] : {};
 	for (const i of Object.keys(source)) {
-		if (
-			source[i] &&
-			typeof source[i] === 'object' &&
-			i !== 'parent' &&
-			i !== 'cache'
-		) {
+		if (source[i] && typeof source[i] === 'object' && i !== 'parent' && i !== 'cache') {
 			newObj[i] = clone(source[i]);
 		} else newObj[i] = source[i];
 	}
@@ -228,8 +222,7 @@ export function isVal(val) {
 	else if (val === false) return true;
 	else if (val === null || val === undefined) return false;
 	// else if ( typeof val === 'number' && isNaN(val)) return false;
-	else if (typeof val === 'object' && Object.keys(val).length === 0)
-		return false;
+	else if (typeof val === 'object' && Object.keys(val).length === 0) return false;
 	else return !!val;
 }
 
@@ -282,9 +275,7 @@ export function calculateAngle(handle, point = { x: 0, y: 0 }) {
 	let result = Math.atan2(handle.y - point.y, handle.x - point.x);
 
 	if (isNaN(result)) {
-		console.warn(
-			'calculateAngle returned NaN\n' + json(handle) + '\n' + json(point)
-		);
+		console.warn('calculateAngle returned NaN\n' + json(handle) + '\n' + json(point));
 		result = 0;
 	}
 

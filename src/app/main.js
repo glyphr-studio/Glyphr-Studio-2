@@ -22,12 +22,12 @@ export const GSApp = new GlyphrStudioApp();
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
-	if(GSApp.version) {
+	if (GSApp.version) {
 		console.info(
 			`%cApp Version ${GSApp.version}%c\n`,
 			'color:hsl(199, 100%, 64%); background-color:hsla(200, 100%, 49%, 10%); padding: 4px 8px; border-radius: 12px;',
 			'background-color: transparent;'
-			);
+		);
 	}
 	log(`glyphrStudioOnLoad`, 'start');
 
@@ -66,14 +66,14 @@ function passPreChecks() {
  */
 function registerCustomComponents() {
 	const data = [
-		{fileName: 'anchor-twelvepoint', className: AnchorTwelvepoint},
-		{fileName: 'button-toggle', className: ButtonToggle},
-		{fileName: 'canvas-display', className: CanvasDisplay},
-		{fileName: 'fancy-button', className: FancyButton},
-		{fileName: 'glyph-tile', className: GlyphTile},
-		{fileName: 'info-bubble', className: InfoBubble},
-		{fileName: 'input-number', className: InputNumber},
-		{fileName: 'input-number-lockable', className: InputNumberLockable},
+		{ fileName: 'anchor-twelvepoint', className: AnchorTwelvepoint },
+		{ fileName: 'button-toggle', className: ButtonToggle },
+		{ fileName: 'canvas-display', className: CanvasDisplay },
+		{ fileName: 'fancy-button', className: FancyButton },
+		{ fileName: 'glyph-tile', className: GlyphTile },
+		{ fileName: 'info-bubble', className: InfoBubble },
+		{ fileName: 'input-number', className: InputNumber },
+		{ fileName: 'input-number-lockable', className: InputNumberLockable },
 	];
 
 	data.forEach((control) => {
@@ -83,14 +83,16 @@ function registerCustomComponents() {
 
 	// Special case EditCanvas
 	customElements.define('edit-canvas', EditCanvas);
-	document.head.appendChild(makeElement({
-		tag: 'link',
-		attributes: {
-			href: `./edit_canvas/edit-canvas.css`,
-			rel: 'stylesheet',
-			type: 'text/css'
-		}
-	}));
+	document.head.appendChild(
+		makeElement({
+			tag: 'link',
+			attributes: {
+				href: `./edit_canvas/edit-canvas.css`,
+				rel: 'stylesheet',
+				type: 'text/css',
+			},
+		})
+	);
 }
 
 /**
@@ -141,7 +143,7 @@ export function log(message, type) {
 
 			if (type === 'start') {
 				if (!logColors[message])
-					logColors[message] = `hsl(${Math.floor((Math.random() * (210)) + 150)}, 90%, 20%)`;
+					logColors[message] = `hsl(${Math.floor(Math.random() * 210 + 150)}, 90%, 20%)`;
 			}
 
 			const common = `
@@ -206,7 +208,7 @@ export function log(message, type) {
 			if (type === 'start' || type === 'end') {
 				let message1 = '';
 				let message2 = message;
-				if(message.split('.').length > 1) {
+				if (message.split('.').length > 1) {
 					message1 = message.split('.')[0] + '.';
 					message2 = message.split('.')[1];
 				}
@@ -214,24 +216,29 @@ export function log(message, type) {
 				if (type === 'start') {
 					console.log(
 						`%c${ch.repeat(logCount)}%cSTART %c${message1}%c${message2}`,
-						indent, startLeft, startMid, startRight
+						indent,
+						startLeft,
+						startMid,
+						startRight
 					);
 					logCount++;
-
 				} else if (type === 'end') {
 					logCount--;
 					logCount = Math.max(logCount, 0);
 					console.log(
 						`%c${ch.repeat(logCount)}%cEND   %c${message1}%c${message2}`,
-						indent, endLeft, endMid, endRight
+						indent,
+						endLeft,
+						endMid,
+						endRight
 					);
 					delete logColors[message];
 				}
-
 			} else {
 				console.log(
 					`%c${ch.repeat(logCount)}%c${message}`,
-					indent, 'color: default; border-radius: 4px;'
+					indent,
+					'color: default; border-radius: 4px;'
 				);
 			}
 		} else if (typeof message === 'object') {
@@ -241,4 +248,4 @@ export function log(message, type) {
 			console.log(message);
 		}
 	}
- }
+}

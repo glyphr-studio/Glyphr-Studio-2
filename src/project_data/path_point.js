@@ -27,8 +27,8 @@ export class PathPoint extends GlyphElement {
 		this.type = type;
 		this.objType = 'PathPoint';
 
-		if(pointsAreEqual(this.p.coord, this.h1.coord)) this.h1.use = false;
-		if(pointsAreEqual(this.p.coord, this.h2.coord)) this.h2.use = false;
+		if (pointsAreEqual(this.p.coord, this.h1.coord)) this.h1.use = false;
+		if (pointsAreEqual(this.p.coord, this.h2.coord)) this.h2.use = false;
 	}
 
 	// --------------------------------------------------------------
@@ -219,7 +219,7 @@ export class PathPoint extends GlyphElement {
 				// log('moving h1');
 				this.h1.coord.x += dx;
 				this.h1.coord.y += dy;
-				if(this.h1.use) {
+				if (this.h1.use) {
 					if (this.type === 'symmetric') this.makeSymmetric('h1');
 					else if (this.type === 'flat') this.makeFlat('h1');
 				}
@@ -229,7 +229,7 @@ export class PathPoint extends GlyphElement {
 				// log('moving h2');
 				this.h2.coord.x += dx;
 				this.h2.coord.y += dy;
-				if(this.h2.use) {
+				if (this.h2.use) {
 					if (this.type === 'symmetric') this.makeSymmetric('h2');
 					else if (this.type === 'flat') this.makeFlat('h2');
 				}
@@ -271,7 +271,7 @@ export class PathPoint extends GlyphElement {
 		switch (hold) {
 			case 'h1':
 				newX = this.p.x - this.h1.x + this.p.x;
-				if(this.h2.x !== newX) {
+				if (this.h2.x !== newX) {
 					this.h2.x = newX;
 					changed = true;
 				}
@@ -285,7 +285,7 @@ export class PathPoint extends GlyphElement {
 
 			case 'h2':
 				newX = this.p.x - this.h2.x + this.p.x;
-				if(this.h1.x !== newX) {
+				if (this.h1.x !== newX) {
 					this.h1.x = newX;
 					changed = true;
 				}
@@ -299,7 +299,7 @@ export class PathPoint extends GlyphElement {
 		}
 
 		this._type = 'symmetric';
-		if(changed) {
+		if (changed) {
 			this.h1.use = true;
 			this.h2.use = true;
 		}
@@ -363,10 +363,10 @@ export class PathPoint extends GlyphElement {
 			newHy = this.p.y + newOpp * -1;
 
 			if (!isNaN(newHx) && !isNaN(newHy)) {
-				if(this.h2.x !== newHx){
+				if (this.h2.x !== newHx) {
 					this.h2.x = newHx;
 				}
-				if(this.h2.y !== newHy){
+				if (this.h2.y !== newHy) {
 					this.h2.y = newHy;
 				}
 			}
@@ -380,10 +380,10 @@ export class PathPoint extends GlyphElement {
 			newHy = this.p.y + newOpp * -1;
 
 			if (!isNaN(newHx) && !isNaN(newHy)) {
-				if(this.h1.x !== newHx){
+				if (this.h1.x !== newHx) {
 					this.h1.x = newHx;
 				}
-				if(this.h1.y !== newHy){
+				if (this.h1.y !== newHy) {
 					this.h1.y = newHy;
 				}
 			}
@@ -444,13 +444,7 @@ export class PathPoint extends GlyphElement {
 	 * @param {boolean} doNotResolvePointType - After updating, skip auto-resolving the point type
 	 * @returns {PathPoint}
 	 */
-	makePointedTo(
-		px,
-		py,
-		length = false,
-		handle = 'h2',
-		doNotResolvePointType = false
-	) {
+	makePointedTo(px, py, length = false, handle = 'h2', doNotResolvePointType = false) {
 		// figure out angle
 		const adj1 = this.p.x - px;
 		const opp1 = this.p.y - py;

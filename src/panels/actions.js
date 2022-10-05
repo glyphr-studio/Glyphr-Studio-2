@@ -18,7 +18,7 @@ import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
  * onClick = false
  */
 
-export function getActionData(name){
+export function getActionData(name) {
 	const editor = getCurrentProjectEditor();
 	let selectedPaths = editor.multiSelect.paths.members;
 	let selectedPoints = editor.multiSelect.points.members;
@@ -28,30 +28,27 @@ export function getActionData(name){
 	let clipBoardPath = false;
 	let historyLength = 0;
 
-
 	// UNIVERSAL ACTIONS
 	data.allActions = [
 		{
 			iconName: 'paste',
 			iconOptions: !clipBoardPath,
 			title: `Paste\nAdds the previously-copied path or paths into this glyph.`,
-			disabled: !clipBoardPath
+			disabled: !clipBoardPath,
 		},
 		{
 			iconName: 'undo',
 			iconOptions: !historyLength,
 			title: `Undo\nStep backwards in time one action.`,
-			disabled: !historyLength
+			disabled: !historyLength,
 		},
 	];
 
 	if (editor.nav.page === 'components') {
-		data.allActions.push(
-			{
-				iconName: 'linkToGlyph',
-				title: `Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance.`,
-			}
-		);
+		data.allActions.push({
+			iconName: 'linkToGlyph',
+			title: `Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance.`,
+		});
 	}
 
 	// ADDING PATH STUFF
@@ -66,18 +63,18 @@ export function getActionData(name){
 				editor.multiSelect.paths.select(newPath);
 				editor.publish('whichPathIsSelected', newPath);
 				editor.publish('currentGlyph', editor.selectedItem);
-			}
+			},
 		},
 		{
 			iconName: 'addPath',
 			iconOptions: true,
 			title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
-			disabled: true
+			disabled: true,
 		},
 		{
 			iconName: 'pastePathsFromAnotherGlyph',
 			title: `Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one.`,
-			disabled: true
+			disabled: true,
 		},
 	];
 
@@ -86,7 +83,7 @@ export function getActionData(name){
 		{
 			iconName: 'combine',
 			title: `Combine all paths\nCombines the paths of all paths with the same winding into as few paths as possible.`,
-			disabled: true
+			disabled: true,
 		},
 		{
 			iconName: 'flipHorizontal',
@@ -95,7 +92,7 @@ export function getActionData(name){
 				const editor = getCurrentProjectEditor();
 				editor.selectedItem.flipEW();
 				editor.publish('currentGlyph', editor.selectedItem);
-			}
+			},
 		},
 		{
 			iconName: 'flipVertical',
@@ -104,7 +101,7 @@ export function getActionData(name){
 				const editor = getCurrentProjectEditor();
 				editor.selectedItem.flipNS();
 				editor.publish('currentGlyph', editor.selectedItem);
-			}
+			},
 		},
 		{
 			iconName: 'round',
@@ -113,12 +110,12 @@ export function getActionData(name){
 				const editor = getCurrentProjectEditor();
 				editor.selectedItem.roundAll();
 				editor.publish('currentGlyph', editor.selectedItem);
-			}
+			},
 		},
 		{
 			title: `Delete Glyph\nRemove this Glyph from the project. Don\'t worry, you can undo this action.`,
 			iconName: 'deleteGlyph',
-			disabled: true
+			disabled: true,
 		},
 		{
 			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
@@ -127,8 +124,8 @@ export function getActionData(name){
 				const editor = getCurrentProjectEditor();
 				let content = editor.selectedItem.makeSVG(1000, 0);
 				let name = editor.selectedItem.name;
-				saveFile(name+'.svg', content);
-			}
+				saveFile(name + '.svg', content);
+			},
 		},
 	];
 
@@ -137,12 +134,12 @@ export function getActionData(name){
 		{
 			iconName: 'copy',
 			title: 'Copy\nAdds a copy of the currently selected path or paths to the clipboard.',
-			disabled: true
+			disabled: true,
 		},
 		{
 			iconName: 'deletePath',
 			title: 'Delete\nRemoves the currently selected path or paths from this glyph.',
-			disabled: true
+			disabled: true,
 		},
 	];
 
@@ -160,7 +157,7 @@ export function getActionData(name){
 				iconName: 'switchPathComponent',
 				iconData: false,
 				title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
-				disabled: true
+				disabled: true,
 			},
 		]);
 	}
@@ -174,7 +171,7 @@ export function getActionData(name){
 				let path = editor.multiSelect.paths.singleton;
 				path.flipEW();
 				editor.publish('currentPath', path);
-			}
+			},
 		},
 		{
 			iconName: 'flipVertical',
@@ -184,7 +181,7 @@ export function getActionData(name){
 				let path = editor.multiSelect.paths.singleton;
 				path.flipNS();
 				editor.publish('currentPath', path);
-			}
+			},
 		},
 		{
 			iconName: 'round',
@@ -194,7 +191,7 @@ export function getActionData(name){
 				let path = editor.multiSelect.paths.singleton;
 				path.roundAll();
 				editor.publish('currentPath', path);
-			}
+			},
 		},
 	]);
 
@@ -203,12 +200,12 @@ export function getActionData(name){
 		{
 			iconName: 'moveLayerUp',
 			title: `Move Path Up\nMoves the path up in the path layer order.`,
-			disabled: true
+			disabled: true,
 		},
 		{
 			iconName: 'moveLayerDown',
 			title: `Move Path Down\nMoves the path down in the path layer order.`,
-			disabled: true
+			disabled: true,
 		},
 	];
 
@@ -222,7 +219,7 @@ export function getActionData(name){
 				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
 				vGlyph.align('left');
 				editor.publish('currentGlyph', vGlyph);
-			}
+			},
 		},
 		{
 			title: `Align Center\nMoves all the selected paths so they are center aligned between the leftmost and rightmost path.`,
@@ -232,7 +229,7 @@ export function getActionData(name){
 				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
 				vGlyph.align('center');
 				editor.publish('currentGlyph', vGlyph);
-			}
+			},
 		},
 		{
 			title: `Align Right\nMoves all the selected paths so they are right aligned with the rightmost path.`,
@@ -242,7 +239,7 @@ export function getActionData(name){
 				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
 				vGlyph.align('right');
 				editor.publish('currentGlyph', vGlyph);
-			}
+			},
 		},
 		{
 			title: `Align Top\nMoves all the selected paths so they are top aligned with the topmost path.`,
@@ -252,7 +249,7 @@ export function getActionData(name){
 				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
 				vGlyph.align('top');
 				editor.publish('currentGlyph', vGlyph);
-			}
+			},
 		},
 		{
 			title: `Align Middle\nMoves all the selected paths so they are middle aligned between the topmost and bottommost path.`,
@@ -262,7 +259,7 @@ export function getActionData(name){
 				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
 				vGlyph.align('middle');
 				editor.publish('currentGlyph', vGlyph);
-			}
+			},
 		},
 		{
 			title: `Align Bottom\nMoves all the selected paths so they are bottom aligned with the bottommost path.`,
@@ -272,8 +269,8 @@ export function getActionData(name){
 				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
 				vGlyph.align('bottom');
 				editor.publish('currentGlyph', vGlyph);
-			}
-		}
+			},
+		},
 	];
 
 	// COMBINE
@@ -306,7 +303,7 @@ export function getActionData(name){
 				editor.multiSelect.paths.singleton.insertPathPoint(selectedPoints[0].pointNumber);
 				// TODO select the next point
 				editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
-			}
+			},
 		},
 		{
 			iconName: 'deletePathPoint',
@@ -317,7 +314,7 @@ export function getActionData(name){
 				// TODO select the next point
 				editor.multiSelect.points.deletePathPoints();
 				editor.publish('whichPathPointIsSelected', editor.multiSelect.paths);
-			}
+			},
 		},
 		{
 			iconName: 'resetPathPoint',
@@ -327,7 +324,7 @@ export function getActionData(name){
 				const editor = getCurrentProjectEditor();
 				editor.multiSelect.points.resetHandles();
 				editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
-			}
+			},
 		},
 		{
 			iconName: 'round',
@@ -338,23 +335,20 @@ export function getActionData(name){
 				let point = editor.multiSelect.points.singleton;
 				point.roundAll(0);
 				editor.publish('currentControlPoint.p', point.p);
-			}
+			},
 		},
 	];
 
-
 	return data[name];
 }
-
-
 
 // --------------------------------------------------------------
 // Individual actions areas
 // --------------------------------------------------------------
 
 // Universal actions
-export function makeActionsArea_Universal(test = false){
-	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
+export function makeActionsArea_Universal(test = false) {
+	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 
 	addChildActions(actionsArea, getActionData('allActions'));
 	addChildActions(actionsArea, getActionData('addPathActions'));
@@ -366,13 +360,11 @@ export function makeActionsArea_Universal(test = false){
 		let devActions = [];
 		if (dev.mode) {
 			for (let a = 0; a < dev.testActions.length; a++) {
-				devActions.push(
-					{
-						iconName: 'test',
-						title: dev.testActions[a].name,
-						onClick: dev.testActions[a].onclick
-					}
-				);
+				devActions.push({
+					iconName: 'test',
+					title: dev.testActions[a].name,
+					onClick: dev.testActions[a].onclick,
+				});
 			}
 		}
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'test'}));
@@ -383,15 +375,15 @@ export function makeActionsArea_Universal(test = false){
 }
 
 // Glyph actions
-export function makeActionsArea_Glyph(test = false){
-	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
+export function makeActionsArea_Glyph(test = false) {
+	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	addChildActions(actionsArea, getActionData('glyphActions'));
 	return actionsArea;
 }
 
 // Path actions
-export function makeActionsArea_Path(test = false){
-	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
+export function makeActionsArea_Path(test = false) {
+	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	let selectedPaths = getCurrentProjectEditor().multiSelect.paths.members;
 
 	if (selectedPaths.length > 0 || test) {
@@ -421,8 +413,8 @@ export function makeActionsArea_Path(test = false){
 }
 
 // Point actions
-export function makeActionsArea_PathPoint(test = false){
-	let actionsArea = makeElement({tag: 'div', className: 'panel__actions-area'});
+export function makeActionsArea_PathPoint(test = false) {
+	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	let selectedPoints = getCurrentProjectEditor().multiSelect.points;
 	let isPointSelected = false;
 	if (selectedPoints.length > 0) isPointSelected = true;
@@ -436,31 +428,12 @@ export function makeActionsArea_PathPoint(test = false){
 }
 
 export function addChildActions(parent, actionsArray) {
-	addAsChildren(parent, actionsArray.map((iconData) => makeActionButton(iconData)));
+	addAsChildren(
+		parent,
+		actionsArray.map((iconData) => makeActionButton(iconData))
+	);
 	return parent;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // --------------------------------------------------------------
 // Combine
@@ -572,8 +545,7 @@ export function pastePath() {
 		editor.multiSelect.paths.clear();
 		editor.multiSelect.points.clear();
 
-		for (let t = 0; t < newPaths.length; t++)
-			editor.multiSelect.paths.add(newPaths[t]);
+		for (let t = 0; t < newPaths.length; t++) editor.multiSelect.paths.add(newPaths[t]);
 
 		cbs.c = selwi;
 
@@ -647,17 +619,12 @@ function pastePathsFrom(sourceGlyphID) {
 		// showToast('Copied ' + this.paths.length + ' paths');
 		redraw({ calledBy: 'pastePathsFrom' });
 		historyPut(
-			'Copied paths from "' +
-				getGlyphName(sourceGlyphID) +
-				'" to  "' +
-				getSelectedItemName()
+			'Copied paths from "' + getGlyphName(sourceGlyphID) + '" to  "' + getSelectedItemName()
 		);
 		if (_UI.selectedTool === 'pathAddPoint') _UI.selectedTool = 'pathEdit';
 		closeDialog();
 	} else {
-		showDialogGetPaths(
-			"Sorry, you can't paste paths from the glyph you selected.<br>"
-		);
+		showDialogGetPaths("Sorry, you can't paste paths from the glyph you selected.<br>");
 	}
 }
 
@@ -673,7 +640,7 @@ export function copyPathsFromTo(
 		srcAutoWidth: false,
 		srcWidth: false,
 	}
-	) {
+) {
 	// log('copyPathsFromTo', 'start');
 	const destinationGlyph = getCurrentProject().getGlyph(destinationID, true);
 	let tc;
@@ -687,14 +654,13 @@ export function copyPathsFromTo(
 		}
 		destinationGlyph.paths.push(tc);
 	}
-	if (copyGlyphAttributes.srcWidth){
+	if (copyGlyphAttributes.srcWidth) {
 		destinationGlyph.advanceWidth = sourceGlyph.advanceWidth;
 	}
 	// log('new paths');
 	// log(destinationGlyph.paths);
 	// log('copyPathsFromTo', 'end');
 }
-
 
 // --------------------------------------------------------------
 // COMPONENT Actions
@@ -707,10 +673,10 @@ function showDialogLinkComponentToGlyph(msg) {
 	content += msg
 		? msg
 		: 'There are currently ' +
-			sls.usedIn.length +
-			' instances of "' +
-			sls.name +
-			'" being used in various Glyphs.<br><br>';
+		  sls.usedIn.length +
+		  ' instances of "' +
+		  sls.name +
+		  '" being used in various Glyphs.<br><br>';
 
 	_UI.glyphChooser.dialog = {
 		fname: 'linkComponentToGlyph',

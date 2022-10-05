@@ -1,9 +1,9 @@
-import { getCurrentProjectEditor } from "../app/main.js";
-import { addAsChildren, makeElement } from "../common/dom.js";
-import { makePanel_GlyphAttributes } from "./attributes_glyph_edit.js";
-import { makePanel_Layers } from "./layers.js";
-import { makePanel_History } from "./history.js";
-import { makePanel_Guides } from "./guides.js";
+import { getCurrentProjectEditor } from '../app/main.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
+import { makePanel_GlyphAttributes } from './attributes_glyph_edit.js';
+import { makePanel_Layers } from './layers.js';
+import { makePanel_History } from './history.js';
+import { makePanel_Guides } from './guides.js';
 
 /**
  * Assembles the correct panel based on the current
@@ -19,28 +19,25 @@ export function makePanel() {
 
 	let content = makeElement();
 
-	if(panel === 'Attributes') {
-		editor.unsubscribe({idToRemove: 'layersPanel'});
-		editor.unsubscribe({idToRemove: 'historyPanel'});
-		editor.unsubscribe({idToRemove: 'guidesPanel'});
+	if (panel === 'Attributes') {
+		editor.unsubscribe({ idToRemove: 'layersPanel' });
+		editor.unsubscribe({ idToRemove: 'historyPanel' });
+		editor.unsubscribe({ idToRemove: 'guidesPanel' });
 		addAsChildren(content, makePanel_GlyphAttributes());
-
 	} else if (panel === 'Layers') {
-		editor.unsubscribe({idToRemove: 'attributesPanel'});
-		editor.unsubscribe({idToRemove: 'historyPanel'});
-		editor.unsubscribe({idToRemove: 'guidesPanel'});
+		editor.unsubscribe({ idToRemove: 'attributesPanel' });
+		editor.unsubscribe({ idToRemove: 'historyPanel' });
+		editor.unsubscribe({ idToRemove: 'guidesPanel' });
 		addAsChildren(content, makePanel_Layers());
-
 	} else if (panel === 'History') {
-		editor.unsubscribe({idToRemove: 'attributesPanel'});
-		editor.unsubscribe({idToRemove: 'layersPanel'});
-		editor.unsubscribe({idToRemove: 'guidesPanel'});
+		editor.unsubscribe({ idToRemove: 'attributesPanel' });
+		editor.unsubscribe({ idToRemove: 'layersPanel' });
+		editor.unsubscribe({ idToRemove: 'guidesPanel' });
 		addAsChildren(content, makePanel_History());
-
 	} else if (panel === 'Guides') {
-		editor.unsubscribe({idToRemove: 'attributesPanel'});
-		editor.unsubscribe({idToRemove: 'layersPanel'});
-		editor.unsubscribe({idToRemove: 'historyPanel'});
+		editor.unsubscribe({ idToRemove: 'attributesPanel' });
+		editor.unsubscribe({ idToRemove: 'layersPanel' });
+		editor.unsubscribe({ idToRemove: 'historyPanel' });
 		addAsChildren(content, makePanel_Guides());
 	}
 
@@ -54,7 +51,7 @@ export function makePanel() {
 export function refreshPanel() {
 	// log(`refreshPanel`, 'start');
 	let panelArea = document.querySelector('.editor-page__panel');
-	if(panelArea) {
+	if (panelArea) {
 		// panelArea.style.opacity = '0';
 		let newContent = makePanel();
 		// log(newContent);

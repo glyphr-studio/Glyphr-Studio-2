@@ -43,9 +43,7 @@ export class PageOpenProject {
 
 				<span class="open-project__version-name">${app.versionName}</span>
 
-				<span class="open-project__version-number">${
-					app.version.split('.')[2]
-				}${recentMessage}</span>
+				<span class="open-project__version-number">${app.version.split('.')[2]}${recentMessage}</span>
 
 				<div class="open-project__blurb">
 					For more information visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>
@@ -60,12 +58,8 @@ export class PageOpenProject {
 		});
 
 		// Tab click
-		content
-			.querySelector('#newTab')
-			.addEventListener('click', () => this.changeTab('new'));
-		content
-			.querySelector('#loadTab')
-			.addEventListener('click', () => this.changeTab('load'));
+		content.querySelector('#newTab').addEventListener('click', () => this.changeTab('new'));
+		content.querySelector('#loadTab').addEventListener('click', () => this.changeTab('load'));
 		content
 			.querySelector('#examplesTab')
 			.addEventListener('click', () => this.changeTab('examples'));
@@ -81,9 +75,7 @@ export class PageOpenProject {
 		tableLeft.addEventListener('drop', this.handleDrop);
 		tableLeft.addEventListener('dragleave', this.handleDragLeave);
 
-		content
-			.querySelector('#openProjectFileChooser')
-			.addEventListener('change', this.handleDrop);
+		content.querySelector('#openProjectFileChooser').addEventListener('change', this.handleDrop);
 
 		// Sample Projects click
 		content
@@ -91,14 +83,10 @@ export class PageOpenProject {
 			.addEventListener('click', () => this.handleLoadSample('modegg'));
 		content
 			.querySelector('#loadCaliforniaGothic')
-			.addEventListener('click', () =>
-				this.handleLoadSample('californiaGothic')
-			);
+			.addEventListener('click', () => this.handleLoadSample('californiaGothic'));
 		content
 			.querySelector('#loadMerriweatherSans')
-			.addEventListener('click', () =>
-				this.handleLoadSample('merriweatherSans')
-			);
+			.addEventListener('click', () => this.handleLoadSample('merriweatherSans'));
 
 		// Starting a project
 		content
@@ -114,14 +102,15 @@ export class PageOpenProject {
 
 			// Finish up populating UI
 			page.changeTab();
-			document.getElementById('open-project__logo').innerHTML =
-				makeGlyphrStudioLogo({ fill: '#BAD9E9', width: 400 });
+			document.getElementById('open-project__logo').innerHTML = makeGlyphrStudioLogo({
+				fill: '#BAD9E9',
+				width: 400,
+			});
 
 			setTimeout(app.fadeOutLoadScreen, 2000);
 
 			// log(`PageOpenProject.makePageContent.callback`, 'end');
 		};
-
 
 		// log(`PageOpenProject.makePageContent`, 'end');
 		return content;
@@ -186,9 +175,7 @@ export class PageOpenProject {
 	changeTab(tab) {
 		const contentNew = document.getElementById('openProjectNewContent');
 		const contentLoad = document.getElementById('openProjectLoadContent');
-		const contentExamples = document.getElementById(
-			'openProjectExampleProjects'
-		);
+		const contentExamples = document.getElementById('openProjectExampleProjects');
 		// var contentRecent = document.getElementById('recent_content');
 
 		const tabNew = document.getElementById('newTab');
@@ -226,16 +213,13 @@ export class PageOpenProject {
 	handleDrop(evt) {
 		const app = getGlyphrStudioApp();
 		// log('handleDrop', 'start');
-		document.getElementById('open-project__right-area').innerHTML =
-			'Loading File...';
-		document.getElementById('open-project__right-area').style.backgroundColor =
-			uiColors.offWhite;
+		document.getElementById('open-project__right-area').innerHTML = 'Loading File...';
+		document.getElementById('open-project__right-area').style.backgroundColor = uiColors.offWhite;
 
 		evt.stopPropagation();
 		evt.preventDefault();
 
-		let f =
-			evt.dataTransfer || document.getElementById('openProjectFileChooser');
+		let f = evt.dataTransfer || document.getElementById('openProjectFileChooser');
 		f = f.files[0];
 		// log('filename: ' + f.name);
 		let fname = f.name.split('.');
@@ -353,9 +337,7 @@ export class PageOpenProject {
 			'<h2>Load an Example project</h2>Loading example project...';
 
 		setTimeout(function () {
-			app.getCurrentProjectEditor().project = new GlyphrStudioProject(
-				projects[name]
-			);
+			app.getCurrentProjectEditor().project = new GlyphrStudioProject(projects[name]);
 			app.navigate('Glyph edit');
 		}, 5);
 	}

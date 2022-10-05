@@ -3,7 +3,6 @@ import { XYPoint } from './xy_point.js';
 import { Maxes } from './maxes.js';
 import { clone, numSan, isVal, round, hasNonValues, pointsAreEqual } from '../common/functions.js';
 
-
 /**
  * Glyph Element > Segment
  * A Segment stores and acts on a piece of a Path
@@ -211,10 +210,7 @@ export class Segment extends GlyphElement {
 			let online = false;
 			if (this.lineType === 'horizontal') {
 				if (round(co.y, 2) === round(this.p1y, 2)) {
-					if (
-						co.x > Math.min(this.p1x, this.p4x) &&
-						co.x < Math.max(this.p1x, this.p4x)
-					) {
+					if (co.x > Math.min(this.p1x, this.p4x) && co.x < Math.max(this.p1x, this.p4x)) {
 						newX = co.x;
 						newY = this.p1y;
 						online = true;
@@ -222,10 +218,7 @@ export class Segment extends GlyphElement {
 				}
 			} else if (this.lineType === 'vertical') {
 				if (round(co.x, 2) === round(this.p1x, 2)) {
-					if (
-						co.y > Math.min(this.p1y, this.p4y) &&
-						co.y < Math.max(this.p1y, this.p4y)
-					) {
+					if (co.y > Math.min(this.p1y, this.p4y) && co.y < Math.max(this.p1y, this.p4y)) {
 						newX = this.p1x;
 						newY = co.y;
 						online = true;
@@ -344,8 +337,7 @@ export class Segment extends GlyphElement {
 	 */
 	pointIsWithinMaxes(co) {
 		const m = this.maxes;
-		const re =
-			co.x <= m.xMax && co.x >= m.xMin && co.y <= m.yMax && co.y >= m.yMin;
+		const re = co.x <= m.xMax && co.x >= m.xMin && co.y <= m.yMax && co.y >= m.yMin;
 		return re;
 	}
 
@@ -382,8 +374,7 @@ export class Segment extends GlyphElement {
 			// log(`checking x:${check.x}\ty:${check.y}\tt${t}`);
 
 			d = Math.sqrt(
-				(check.x - point.x) * (check.x - point.x) +
-					(check.y - point.y) * (check.y - point.y)
+				(check.x - point.x) * (check.x - point.x) + (check.y - point.y) * (check.y - point.y)
 			);
 
 			if (d < minDistance) {
@@ -491,22 +482,10 @@ export class Segment extends GlyphElement {
 	 */
 	getFastMaxes() {
 		const bounds = {
-			xMin: Math.min(
-				this.p1x,
-				Math.min(this.p2x, Math.min(this.p3x, this.p4x))
-			),
-			yMin: Math.min(
-				this.p1y,
-				Math.min(this.p2y, Math.min(this.p3y, this.p4y))
-			),
-			xMax: Math.max(
-				this.p1x,
-				Math.max(this.p2x, Math.max(this.p3x, this.p4x))
-			),
-			yMax: Math.max(
-				this.p1y,
-				Math.max(this.p2y, Math.max(this.p3y, this.p4y))
-			),
+			xMin: Math.min(this.p1x, Math.min(this.p2x, Math.min(this.p3x, this.p4x))),
+			yMin: Math.min(this.p1y, Math.min(this.p2y, Math.min(this.p3y, this.p4y))),
+			xMax: Math.max(this.p1x, Math.max(this.p2x, Math.max(this.p3x, this.p4x))),
+			yMax: Math.max(this.p1y, Math.max(this.p2y, Math.max(this.p3y, this.p4y))),
 		};
 		// log(`Segment.getFastMaxes - returning`);
 		// log(bounds);
@@ -559,12 +538,7 @@ export class Segment extends GlyphElement {
 		 */
 		function getBezierValue(t, p0, p1, p2, p3) {
 			const mt = 1 - t;
-			return (
-				mt * mt * mt * p0 +
-				3 * mt * mt * t * p1 +
-				3 * mt * t * t * p2 +
-				t * t * t * p3
-			);
+			return mt * mt * mt * p0 + 3 * mt * mt * t * p1 + 3 * mt * t * t * p2 + t * t * t * p3;
 		}
 
 		const bounds = {
@@ -606,22 +580,15 @@ export class Segment extends GlyphElement {
 			}
 			numerator = 2 * (d1x - d2x);
 			denominator = 2 * (d1x - 2 * d2x + d3x);
-			quadRoot =
-				(2 * d2x - 2 * d1x) * (2 * d2x - 2 * d1x) - 2 * d1x * denominator;
+			quadRoot = (2 * d2x - 2 * d1x) * (2 * d2x - 2 * d1x) - 2 * d1x * denominator;
 			root = Math.sqrt(quadRoot);
 			t1 = (numerator + root) / denominator;
 			t2 = (numerator - root) / denominator;
 			if (0 < t1 && t1 < 1) {
-				checkXBounds(
-					bounds,
-					getBezierValue(t1, this.p1x, this.p2x, this.p3x, this.p4x)
-				);
+				checkXBounds(bounds, getBezierValue(t1, this.p1x, this.p2x, this.p3x, this.p4x));
 			}
 			if (0 < t2 && t2 < 1) {
-				checkXBounds(
-					bounds,
-					getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x)
-				);
+				checkXBounds(bounds, getBezierValue(t2, this.p1x, this.p2x, this.p3x, this.p4x));
 			}
 		}
 
@@ -637,22 +604,15 @@ export class Segment extends GlyphElement {
 			}
 			numerator = 2 * (d1y - d2y);
 			denominator = 2 * (d1y - 2 * d2y + d3y);
-			quadRoot =
-				(2 * d2y - 2 * d1y) * (2 * d2y - 2 * d1y) - 2 * d1y * denominator;
+			quadRoot = (2 * d2y - 2 * d1y) * (2 * d2y - 2 * d1y) - 2 * d1y * denominator;
 			root = Math.sqrt(quadRoot);
 			t1 = (numerator + root) / denominator;
 			t2 = (numerator - root) / denominator;
 			if (0 < t1 && t1 < 1) {
-				checkYBounds(
-					bounds,
-					getBezierValue(t1, this.p1y, this.p2y, this.p3y, this.p4y)
-				);
+				checkYBounds(bounds, getBezierValue(t1, this.p1y, this.p2y, this.p3y, this.p4y));
 			}
 			if (0 < t2 && t2 < 1) {
-				checkYBounds(
-					bounds,
-					getBezierValue(t2, this.p1y, this.p2y, this.p3y, this.p4y)
-				);
+				checkYBounds(bounds, getBezierValue(t2, this.p1y, this.p2y, this.p3y, this.p4y));
 			}
 		}
 		// log([this.getFastMaxes(), bounds]);
@@ -818,16 +778,8 @@ export class Segment extends GlyphElement {
 		if (rey) type = 'horizontal';
 
 		const red =
-			pointsAreCollinear(
-				this.getXYPoint(1),
-				this.getXYPoint(4),
-				this.getXYPoint(2)
-			) &&
-			pointsAreCollinear(
-				this.getXYPoint(1),
-				this.getXYPoint(4),
-				this.getXYPoint(3)
-			);
+			pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), this.getXYPoint(2)) &&
+			pointsAreCollinear(this.getXYPoint(1), this.getXYPoint(4), this.getXYPoint(3));
 		if (red) type = 'diagonal';
 
 		this._lineType = type;

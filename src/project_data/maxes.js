@@ -229,17 +229,8 @@ export function maxesOverlap(m1, m2, exclusive = true) {
 	let re;
 
 	if (exclusive)
-		re =
-			m1.xMin < m2.xMax &&
-			m1.xMax > m2.xMin &&
-			m1.yMin < m2.yMax &&
-			m1.yMax > m2.yMin;
-	else
-		re =
-			m1.xMin <= m2.xMax &&
-			m1.xMax >= m2.xMin &&
-			m1.yMin <= m2.yMax &&
-			m1.yMax >= m2.yMin;
+		re = m1.xMin < m2.xMax && m1.xMax > m2.xMin && m1.yMin < m2.yMax && m1.yMax > m2.yMin;
+	else re = m1.xMin <= m2.xMax && m1.xMax >= m2.xMin && m1.yMin <= m2.yMax && m1.yMax >= m2.yMin;
 
 	// log(re);
 	// log(`maxesOverlap`, 'end');
@@ -283,7 +274,7 @@ export function getOverallMaxes(maxesArray) {
  * Generic smallest box
  * @returns {object}
  */
-	export function maxesMinBounds() {
+export function maxesMinBounds() {
 	return {
 		xMin: Number.MAX_SAFE_INTEGER,
 		xMax: Number.MIN_SAFE_INTEGER,

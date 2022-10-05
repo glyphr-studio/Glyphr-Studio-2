@@ -1,4 +1,4 @@
-import { makeElement } from "../common/dom";
+import { makeElement } from '../common/dom';
 
 /**
  * Set up a pattern so web components can link to their
@@ -13,7 +13,7 @@ export function linkCSS(id) {
 		attributes: {
 			href: `./controls/${id}/${id}.css`,
 			rel: 'stylesheet',
-			type: 'text/css'
-		}
+			type: 'text/css',
+		},
 	});
 }

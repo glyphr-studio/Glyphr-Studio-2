@@ -1,12 +1,17 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';
-import { eventHandlerData, handleMouseLeaveCanvas, handleMouseOverCanvas, togglePanOff, togglePanOn } from './events.js';
+import {
+	eventHandlerData,
+	handleMouseLeaveCanvas,
+	handleMouseOverCanvas,
+	togglePanOff,
+	togglePanOn,
+} from './events.js';
 
 // --------------------------------------------------------------
 // Mouse Events
 // --------------------------------------------------------------
-
 
 export function handleMouseEvents(event) {
 	// log(`handleMouseEvents`, 'start');
@@ -27,31 +32,30 @@ export function handleMouseEvents(event) {
 	// log(`ehd.mouse: ${ehd.mouseX}, ${ehd.mouseY}`);
 
 	// Mouse back & forward buttons
-	if(event.button === 3 || event.button === 4) {
+	if (event.button === 3 || event.button === 4) {
 		// Don't navigate
 		event.preventDefault();
 		return;
 	}
 
 	// Mouse right-click
-	if(event.button === 2) {
+	if (event.button === 2) {
 		// Right-click handler
 	}
 
 	// Mouse wheel-click
-	if(event.button === 1) {
-		if(event.type === 'mousedown') {
+	if (event.button === 1) {
+		if (event.type === 'mousedown') {
 			togglePanOn(event);
 		}
-		if(event.type === 'mouseup') {
+		if (event.type === 'mouseup') {
 			togglePanOff(event);
 		}
 		// return;
 	}
 
 	// Mouse left-click
-	if(event.button === 0) {
-
+	if (event.button === 0) {
 		// Switch Tool function
 		// log(`editor.selectedTool: ${editor.selectedTool}`);
 		switch (editor.selectedTool) {
@@ -90,7 +94,6 @@ export function handleMouseEvents(event) {
 	// log(`handleMouseEvents`, 'end');
 }
 
-
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
@@ -122,8 +125,8 @@ export function resizePath() {
 	let maxes = paths.maxes;
 	// TODO if resizing handle goes past the opposite side,
 	// flip the shape and selected handle to keep going
-	if ((mx >= maxes.xMax) && (maxes.xMax - maxes.xMin + dw < 2)) dw = 0;
-	if ((my >= maxes.yMax) && (maxes.yMax - maxes.yMin + dh < 2)) dh = 0;
+	if (mx >= maxes.xMax && maxes.xMax - maxes.xMin + dw < 2) dw = 0;
+	if (my >= maxes.yMax && maxes.yMax - maxes.yMin + dh < 2) dh = 0;
 	// log('dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
 
 	// Resize the path
@@ -272,7 +275,7 @@ export function handleMouseWheel(event) {
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
 	let canZoom = editor.nav.isOnEditCanvasPage;
-		// && document.getElementById('dialog_box').style.display !== 'block';
+	// && document.getElementById('dialog_box').style.display !== 'block';
 
 	if (canZoom) {
 		if (event.ctrlKey || event.metaKey) {
@@ -286,7 +289,6 @@ export function handleMouseWheel(event) {
 		}
 	}
 }
-
 
 // --------------------------------------------------------------
 // Canvas hotspots
@@ -308,12 +310,7 @@ export function isHotspotHere(cx, cy) {
 		v = chs[i];
 		// log(`isHotspotHere - checking ${v.target.xMin} - ${v.target.xMax} - ${v.target.yMin} - ${v.target.yMax}`);
 		// log(`results ${(cx <= v.target.xMax)} - ${(cx >= v.target.xMin)} - ${(cy <= v.target.yMax)} - ${(cy >= v.target.yMin)}`);
-		if (
-			cx <= v.target.xMax &&
-			cx >= v.target.xMin &&
-			cy <= v.target.yMax &&
-			cy >= v.target.yMin
-		) {
+		if (cx <= v.target.xMax && cx >= v.target.xMin && cy <= v.target.yMax && cy >= v.target.yMin) {
 			return v;
 		}
 	}
@@ -323,12 +320,7 @@ export function isHotspotHere(cx, cy) {
 
 export function findAndCallHotspot(cx, cy) {
 	eventHandlerData.canvasHotSpots.forEach(function (v, i, a) {
-		if (
-			cx <= v.target.xMax &&
-			cx >= v.target.xMin &&
-			cy <= v.target.yMax &&
-			cy >= v.target.yMin
-		) {
+		if (cx <= v.target.xMax && cx >= v.target.xMin && cy <= v.target.yMax && cy >= v.target.yMin) {
 			v.onclick();
 		}
 	});
@@ -389,8 +381,7 @@ export function findAndUnderlineHotspot(cx, cy) {
 	const ctx = _UI.glyphEditCTX;
 	// log(`${hs}`);
 	if (hs) {
-		const t = getCurrentProject().projectSettings.colors
-			.systemGuideTransparency;
+		const t = getCurrentProject().projectSettings.colors.systemGuideTransparency;
 		// var t2 = (((100 - t) / 2) + t);
 		const alpha = transparencyToAlpha(t);
 		const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);

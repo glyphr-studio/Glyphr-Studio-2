@@ -13,10 +13,8 @@ export class Tool_PathAddPoint {
 			let singlePath = editor.multiSelect.paths.singleton;
 			let s = getPathAtLocation(eventHandlerData.mouseX, eventHandlerData.mouseY);
 
-			if (this.addPoint &&
-				singlePath &&
-				singlePath.objType !== 'ComponentInstance') {
-				let p = singlePath.insertPathPoint( this.addPoint.point, this.addPoint.split );
+			if (this.addPoint && singlePath && singlePath.objType !== 'ComponentInstance') {
+				let p = singlePath.insertPathPoint(this.addPoint.point, this.addPoint.split);
 				if (p) editor.multiSelect.points.select(p);
 				// historyPut('Added point to path');
 			} else if (s) {
@@ -38,7 +36,6 @@ export class Tool_PathAddPoint {
 			redraw({ calledBy: 'Tool_PathAddPoint.mousedown' });
 		};
 
-
 		this.mousemove = function (ev) {
 			const editor = getCurrentProjectEditor();
 			let singlePath = editor.multiSelect.paths.singleton;
@@ -50,13 +47,9 @@ export class Tool_PathAddPoint {
 				if (pt && pt.distance < 20) {
 					this.addPoint = pt;
 					let ptsize = getCurrentProject().projectSettings.pointSize;
-					let ptx = (sXcX(pt.x) - ptsize / 2);
-					let pty = (sYcY(pt.y) - ptsize / 2);
-					openNotation(
-						'x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3),
-						ptx,
-						pty
-					);
+					let ptx = sXcX(pt.x) - ptsize / 2;
+					let pty = sYcY(pt.y) - ptsize / 2;
+					openNotation('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3), ptx, pty);
 					eventHandlerData.hoverPoint = {
 						fill: accentColors.blue.l75,
 						x: ptx,
@@ -77,7 +70,6 @@ export class Tool_PathAddPoint {
 			redraw({ calledBy: 'Tool_PathAddPoint.mousemove', redrawPanels: false });
 		};
 
-
-		this.mouseup = function () { };
+		this.mouseup = function () {};
 	}
 }

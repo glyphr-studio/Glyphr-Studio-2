@@ -19,7 +19,7 @@ export class InputNumberLockable extends HTMLElement {
 		// log(JSON.stringify(attributes));
 		super();
 
-		if(attributes.hideBorder) this.setAttribute('hideBorder', attributes.hideBorder);
+		if (attributes.hideBorder) this.setAttribute('hideBorder', attributes.hideBorder);
 		this.locked = this.hasAttribute('locked');
 		this.respondToChanges = true;
 		this.wrapper = makeElement({ className: 'wrapper' });
@@ -29,7 +29,7 @@ export class InputNumberLockable extends HTMLElement {
 			class: 'padlock',
 			icon: 'lock',
 			size: '24',
-			hideBorder: true
+			hideBorder: true,
 		});
 
 		if (this.locked) {
@@ -98,7 +98,7 @@ export class InputNumberLockable extends HTMLElement {
 				// log(`The "${mutation.attributeName}" attribute was modified.`);
 				// log(mutation);
 
-				if(mutation.attributeName === 'selected') {
+				if (mutation.attributeName === 'selected') {
 					if (mutation.oldValue === '') {
 						// unlock
 						// log(`unlocking`);
@@ -110,7 +110,6 @@ export class InputNumberLockable extends HTMLElement {
 						this.elementRoot.inputNumber.setAttribute('disabled', '');
 						this.elementRoot.setAttribute('disabled', '');
 					}
-
 				} else if (mutation.attributeName === 'value') {
 					// log(`changing value`);
 					this.elementRoot.setAttribute('value', mutation.target.value);
@@ -123,7 +122,7 @@ export class InputNumberLockable extends HTMLElement {
 	/**
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
-	 static get observedAttributes() {
+	static get observedAttributes() {
 		return ['disabled', 'selected'];
 	}
 

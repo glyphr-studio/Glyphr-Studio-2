@@ -661,7 +661,7 @@ export class ComponentInstance extends GlyphElement {
 		// log('translate was: ' + this.translateX + ' / ' + this.translateY);
 		// TODO fix project access
 		// const linkMaxes = getCurrentProject().getGlyph(this.link).maxes;
-		const linkMaxes = {xMin: 0, yMax: 0};
+		const linkMaxes = { xMin: 0, yMax: 0 };
 
 		nx = parseFloat(nx);
 		ny = parseFloat(ny);
@@ -710,7 +710,7 @@ export class ComponentInstance extends GlyphElement {
 	setPathSize(nw, nh, ratioLock) {
 		// TODO fix project access
 		// const linkMaxes = getCurrentProject().getGlyph(this.link).maxes;
-		const linkMaxes = {xMin: 0, yMax: 0};
+		const linkMaxes = { xMin: 0, yMax: 0 };
 
 		const dx = nw ? nw * 1 - linkMaxes.xMin : 0;
 		const dy = nh ? nh * 1 - linkMaxes.yMax : 0;
@@ -760,12 +760,7 @@ export class ComponentInstance extends GlyphElement {
 		// log('was ' + this.rotation);
 		// if(this.isFlippedEW || this.isFlippedNS) degrees *= -1;
 		this.rotation = (this.rotation + degrees) % 360;
-		if (
-			this.scaleH === 0 &&
-			this.scaleW === 0 &&
-			!this.isFlippedEW &&
-			!this.isFlippedNS
-		) {
+		if (this.scaleH === 0 && this.scaleW === 0 && !this.isFlippedEW && !this.isFlippedNS) {
 			this.rotateFirst = true;
 		}
 		// log('is now ' + this.rotation);

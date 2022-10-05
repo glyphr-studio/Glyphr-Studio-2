@@ -47,9 +47,9 @@ export function openBigDialog(content) {
 	closeDialog();
 	document.body.focus();
 	document.getElementById('bigDialogLeftContent').innerHTML = content;
-	document.getElementById(
-		'bigDialogScrollContent'
-	).innerHTML = make_GlyphChooser(_UI.glyphChooser.dialog);
+	document.getElementById('bigDialogScrollContent').innerHTML = make_GlyphChooser(
+		_UI.glyphChooser.dialog
+	);
 
 	document.getElementById('big_dialog_box').style.display = 'block';
 	document.getElementById('dialog_bg').style.display = 'block';

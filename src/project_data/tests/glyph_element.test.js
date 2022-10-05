@@ -15,6 +15,6 @@ describe('GlyphElement', () => {
 
 	it('save', () => {
 		const ge = new GlyphElement();
-		expect(ge.save(true)).toEqual({objType: 'GlyphElement'});
+		expect(ge.save(true)).toEqual({ objType: 'GlyphElement' });
 	});
 });

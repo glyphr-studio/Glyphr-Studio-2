@@ -11,7 +11,9 @@ function makeComponentsAttributesPanel(selectedComponent) {
 	<div class="panel__card">
 		<h3>component</h3>
 		<label>name</label>
-		<input type="text" value="${selectedComponent.name}" onchange="getSelectedItem().name = this.value;"/>
+		<input type="text" value="${
+			selectedComponent.name
+		}" onchange="getSelectedItem().name = this.value;"/>
 
 		<h3>glyphs that use this component</h3>
 		${makeUsedInThumbs()}
@@ -29,7 +31,7 @@ export function makeUsedInThumbs() {
 	let cname;
 
 	let content = '<div class="ssthumbcontainer">';
-	if(unique.length > 0) {
+	if (unique.length > 0) {
 		for (let k = 0; k < unique.length; k++) {
 			cname = getGlyphName(unique[k]);
 			content += `
@@ -168,11 +170,7 @@ function makeCard_componentInstanceAttributes(s) {
 			'<tr>' +
 			'<td> lock aspect ratio </td>' +
 			'<td>' +
-			checkUI(
-				'_UI.multiSelect.paths.singleton.ratioLock',
-				s.ratioLock,
-				true
-			) +
+			checkUI('_UI.multiSelect.paths.singleton.ratioLock', s.ratioLock, true) +
 			'</td>' +
 			'</tr>';
 	}
@@ -198,11 +196,7 @@ function makeCard_componentInstanceAttributes(s) {
 		'<tr>' +
 		'<td> reverse winding </td>' +
 		'<td>' +
-		checkUI(
-			'_UI.multiSelect.paths.singleton.reverseWinding',
-			s.reverseWinding,
-			true
-		) +
+		checkUI('_UI.multiSelect.paths.singleton.reverseWinding', s.reverseWinding, true) +
 		'</td>' +
 		'</tr>';
 
@@ -217,8 +211,7 @@ function makeCard_componentInstanceAttributes(s) {
 		'</td>' +
 		'</tr>';
 
-	let rotationhelp =
-		'<h1>Rotate First - Resize First</h1><div style=\\&apos;width:500px;\\&apos;>';
+	let rotationhelp = '<h1>Rotate First - Resize First</h1><div style=\\&apos;width:500px;\\&apos;>';
 	rotationhelp +=
 		'Component Instances are rotated around their center point.  But if they are re-sized, their center point changes.  When Component Instances are rendered, the Root Component is adjusted according to the delta values stored by the Component Instance.';
 	rotationhelp +=
@@ -233,11 +226,7 @@ function makeCard_componentInstanceAttributes(s) {
 		'<tr>' +
 		'<td> rotate first </td>' +
 		'<td>' +
-		checkUI(
-			'_UI.multiSelect.paths.singleton.rotateFirst',
-			s.rotateFirst,
-			true
-		) +
+		checkUI('_UI.multiSelect.paths.singleton.rotateFirst', s.rotateFirst, true) +
 		'</td>' +
 		'</tr>';
 
@@ -245,8 +234,7 @@ function makeCard_componentInstanceAttributes(s) {
 	let cr = getGlyph(s.link);
 	content += '<tr><td colspan=2><h3>root component</h3></td></tr></table>';
 	content += '<table class="layertable">';
-	content +=
-		'<tr class="componentlayer" onclick="goToEditGlyph(\'' + s.link + '\');">';
+	content += '<tr class="componentlayer" onclick="goToEditGlyph(\'' + s.link + '\');">';
 	content += '<td class="layerthumb">' + cr.makeSVG() + '</td>';
 	content += '<td class="layername">' + cr.name;
 	content += '<span class="layernote">edit this component</span>';

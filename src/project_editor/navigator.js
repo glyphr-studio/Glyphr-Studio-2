@@ -14,7 +14,6 @@ import { accentColors } from '../common/colors.js';
 // --------------------------------------------------------------
 
 export class Navigator {
-
 	constructor() {
 		this.page = 'Open project';
 		this.panel = 'Attributes';
@@ -31,7 +30,7 @@ export class Navigator {
 				pageMaker: PageOpenProject,
 				iconName: false,
 			},
-			'Overview': {
+			Overview: {
 				name: 'Overview',
 				pageMaker: PageOverview,
 				iconName: 'page_overview',
@@ -41,17 +40,17 @@ export class Navigator {
 				pageMaker: PageGlyphEdit,
 				iconName: 'page_glyphEdit',
 			},
-			'Ligatures': {
+			Ligatures: {
 				name: 'Ligatures',
 				pageMaker: false,
 				iconName: 'page_ligatures',
 			},
-			'Components': {
+			Components: {
 				name: 'Components',
 				pageMaker: false,
 				iconName: 'page_components',
 			},
-			'Kerning': {
+			Kerning: {
 				name: 'Kerning',
 				pageMaker: false,
 				iconName: 'page_kerning',
@@ -66,7 +65,7 @@ export class Navigator {
 				pageMaker: false,
 				iconName: 'page_globalActions',
 			},
-			'Settings': {
+			Settings: {
 				name: 'Settings',
 				pageMaker: false,
 				iconName: 'page_settings',
@@ -76,12 +75,12 @@ export class Navigator {
 				pageMaker: false,
 				iconName: 'page_importAndExport',
 			},
-			'Help': {
+			Help: {
 				name: 'Help',
 				pageMaker: false,
 				iconName: 'page_help',
 			},
-			'About': {
+			About: {
 				name: 'About',
 				pageMaker: PageAbout,
 				iconName: 'page_about',
@@ -123,7 +122,7 @@ export class Navigator {
 		const editorContent = makeElement({ tag: 'div', id: 'app__main-content' });
 
 		// Default page loader fallback
-		let pageContent = makeElement({tag: 'h1', innerHTML: 'Uninitialized page content'});
+		let pageContent = makeElement({ tag: 'h1', innerHTML: 'Uninitialized page content' });
 		let currentPageMaker = this.tableOfContents[this.page].pageMaker;
 		// log(`page detected as ${this.page}`);
 
@@ -170,12 +169,7 @@ export class Navigator {
 	 */
 	get isOnEditCanvasPage() {
 		const nh = this.page;
-		return (
-			nh === 'Glyph edit' ||
-			nh === 'components' ||
-			nh === 'kerning' ||
-			nh === 'ligatures'
-		);
+		return nh === 'Glyph edit' || nh === 'components' || nh === 'kerning' || nh === 'ligatures';
 	}
 
 	/**
@@ -195,9 +189,6 @@ export class Navigator {
 	}
 }
 
-
-
-
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
@@ -211,7 +202,7 @@ export function makeNavButton(properties = {}) {
 		<button
 			data-nav-type="${superTitle}"
 			class="nav-button"
-			id="nav-button${level? `-${level}` : ''}"
+			id="nav-button${level ? `-${level}` : ''}"
 			title="${title}"
 		>
 			${makeNavButtonContent(title, superTitle)}
@@ -229,7 +220,7 @@ export function makeNavButtonContent(title, superTitle) {
 export function toggleNavDropdown(parentElement) {
 	let dropdown = document.getElementById('nav-dropdown');
 
-	if(dropdown) {
+	if (dropdown) {
 		closeAllDialogs();
 	} else {
 		showNavDropdown(parentElement);
@@ -243,16 +234,16 @@ export function showNavDropdown(parentElement) {
 	let parentStyle = getComputedStyle(parentElement);
 	let top = rect.top + rect.height - 3;
 
-	let dropdownContent = makeElement({tag: 'h3', content: 'Uninitialized'});
+	let dropdownContent = makeElement({ tag: 'h3', content: 'Uninitialized' });
 	let dropdownType = parentElement.getAttribute('data-nav-type');
 	// log(`dropdownType: ${dropdownType}`);
 
-	if(dropdownType === 'PAGE') {
+	if (dropdownType === 'PAGE') {
 		dropdownContent = makePageChooserContent();
-		size = `${parentElement.parentElement.getBoundingClientRect().width-2}px`;
+		size = `${parentElement.parentElement.getBoundingClientRect().width - 2}px`;
 	}
 
-	if(dropdownType === 'EDITING') {
+	if (dropdownType === 'EDITING') {
 		dropdownContent = makeGlyphChooserContent((glyphID) => {
 			const editor = getCurrentProjectEditor();
 			editor.selectedGlyphID = glyphID;
@@ -261,21 +252,23 @@ export function showNavDropdown(parentElement) {
 		size = '80%';
 	}
 
-	if(dropdownType === 'PANEL') {
+	if (dropdownType === 'PANEL') {
 		dropdownContent = makePanelChooserContent();
-		size = `${rect.width-2}px`;
+		size = `${rect.width - 2}px`;
 	}
 
 	let dropDown = makeElement({
 		tag: 'dialog',
 		id: 'nav-dropdown',
-		attributes: {style: `
-			left: ${rect.left+1}px;
+		attributes: {
+			style: `
+			left: ${rect.left + 1}px;
 			top: ${top}px;
 			width: ${size};
 			background-color: ${parentStyle.backgroundColor};
 			border-color: ${parentStyle.backgroundColor};
-		`}
+		`,
+		},
 	});
 
 	dropDown.addEventListener('mouseleave', closeAllDialogs);
@@ -288,7 +281,7 @@ export function showNavDropdown(parentElement) {
 	// log(`showNavDropdown`, 'end');
 }
 
-function makePageChooserContent(){
+function makePageChooserContent() {
 	// log(`makePageChooserContent`, 'start');
 
 	let content = makeElement();
@@ -296,8 +289,8 @@ function makePageChooserContent(){
 	let toc = getCurrentProjectEditor().nav.tableOfContents;
 
 	Object.keys(toc).forEach((pageName) => {
-		if(pageName !== 'Open project' && toc[pageName].pageMaker){
-		// if(pageName !== 'Open project'){
+		if (pageName !== 'Open project' && toc[pageName].pageMaker) {
+			// if(pageName !== 'Open project'){
 			pageButton = makeNavButton_Page(pageName, toc[pageName].iconName);
 			content.appendChild(pageButton);
 		}
@@ -308,14 +301,14 @@ function makePageChooserContent(){
 }
 
 function makeNavButton_Page(pageName, iconName) {
-	let button = makeElement({tag: 'button', className: 'nav-dropdown__button'});
-	button.innerHTML += makeIcon({name: iconName, color: accentColors.blue.l90});
-	button.appendChild(makeElement({content: pageName}));
+	let button = makeElement({ tag: 'button', className: 'nav-dropdown__button' });
+	button.innerHTML += makeIcon({ name: iconName, color: accentColors.blue.l90 });
+	button.appendChild(makeElement({ content: pageName }));
 	button.addEventListener('click', () => getCurrentProjectEditor().navigate(pageName));
 	return button;
 }
 
-function makePanelChooserContent(){
+function makePanelChooserContent() {
 	// log(`makePanelChooserContent`, 'start');
 
 	let content = makeElement();
@@ -333,9 +326,9 @@ function makePanelChooserContent(){
 }
 
 function makeNavButton_Panel(panelName, iconName) {
-	let button = makeElement({tag: 'button', className: 'nav-dropdown__button'});
-	button.innerHTML += makeIcon({name: iconName, color: accentColors.blue.l90});
-	button.appendChild(makeElement({content: panelName}));
+	let button = makeElement({ tag: 'button', className: 'nav-dropdown__button' });
+	button.innerHTML += makeIcon({ name: iconName, color: accentColors.blue.l90 });
+	button.appendChild(makeElement({ content: panelName }));
 	button.addEventListener('click', () => {
 		const editor = getCurrentProjectEditor();
 		editor.nav.panel = panelName;
@@ -349,27 +342,27 @@ function makeNavButton_Panel(panelName, iconName) {
  */
 function listOfPanels() {
 	return {
-		'Chooser': {
+		Chooser: {
 			name: 'Chooser',
 			panelMaker: false,
 			iconName: 'panel_chooser',
 		},
-		'Layers': {
+		Layers: {
 			name: 'Layers',
 			panelMaker: false,
 			iconName: 'panel_layers',
 		},
-		'Guides': {
+		Guides: {
 			name: 'Guides',
 			panelMaker: false,
 			iconName: 'panel_guides',
 		},
-		'History': {
+		History: {
 			name: 'History',
 			panelMaker: false,
 			iconName: 'panel_history',
 		},
-		'Attributes': {
+		Attributes: {
 			name: 'Attributes',
 			panelMaker: false,
 			iconName: 'panel_attributes',

@@ -14,34 +14,35 @@ import { GlyphTile } from '../controls/glyph-tile/glyph-tile.js';
 // Glyph chooser
 // --------------------------------------------------------------
 
-export function makeGlyphChooserContent(clickHandler, registerSubscriptions = true){
+export function makeGlyphChooserContent(clickHandler, registerSubscriptions = true) {
 	// log(`makeGlyphChooserContent`, 'start');
 	const editor = getCurrentProjectEditor();
 	// let content = `<div class="glyph-chooser__tile-grid">`;
-	let container = makeElement({tag: 'div', className: 'glyph-chooser__tile-grid'});
+	let container = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
 
-	basicLatinOrder.forEach(glyphID => {
-		let oneTile = (editor.selectedGlyphID === glyphID)?
-			new GlyphTile({glyph: glyphID, selected: 'true'}) :
-			new GlyphTile({glyph: glyphID});
+	basicLatinOrder.forEach((glyphID) => {
+		let oneTile =
+			editor.selectedGlyphID === glyphID
+				? new GlyphTile({ glyph: glyphID, selected: 'true' })
+				: new GlyphTile({ glyph: glyphID });
 
 		oneTile.addEventListener('click', () => clickHandler(glyphID));
 
-		if(registerSubscriptions) {
+		if (registerSubscriptions) {
 			editor.subscribe({
-				topic:'whichGlyphIsSelected',
+				topic: 'whichGlyphIsSelected',
 				subscriberID: `glyphTile.${glyphID}`,
 				callback: (newGlyphID) => {
 					// log('whichGlyphIsSelected subscriber callback');
 					// log(`checking if ${glyph.id} === ${glyphID}`);
-					if(areHexValuesEqual(newGlyphID, glyphID)){
+					if (areHexValuesEqual(newGlyphID, glyphID)) {
 						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
 						oneTile.setAttribute('selected', '');
 					} else {
 						// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
 						oneTile.removeAttribute('selected');
 					}
-				}
+				},
 			});
 		}
 
@@ -82,14 +83,10 @@ export function makePanel_GlyphChooser() {
 		}
 		content += '<div class="panel_section" ';
 		content += hasNoLigatures ? 'style="padding-top:-10px;">' : '>';
-		content +=
-			'<button onclick="showNewLigatureDialog();">create new ligature</button><br>';
+		content += '<button onclick="showNewLigatureDialog();">create new ligature</button><br>';
 		if (!hasNoLigatures)
-			content +=
-				'<button onclick="deleteLigatureConfirm();">delete selected ligature</button><br>';
-		else
-			content +=
-				'<button onclick="addCommonLigatures();">add some common ligatures</button>';
+			content += '<button onclick="deleteLigatureConfirm();">delete selected ligature</button><br>';
+		else content += '<button onclick="addCommonLigatures();">add some common ligatures</button>';
 		content += '</div>';
 
 		if (hasNoLigatures) {
@@ -162,8 +159,7 @@ function make_GlyphChooser(gcdata) {
 		con += make_GlyphChooser_Header(gcdata.selected);
 	}
 
-	if (_UI.glyphChooser.dropdown)
-		con += make_GlyphChooser_DropDown(gcdata.choices);
+	if (_UI.glyphChooser.dropdown) con += make_GlyphChooser_DropDown(gcdata.choices);
 	else con += make_GlyphChooser_Content(gcdata);
 
 	// log('make_GlyphChooser', 'end');
@@ -174,9 +170,9 @@ function toggle_GlyphChooser() {
 	_UI.glyphChooser.dropdown = !_UI.glyphChooser.dropdown;
 
 	if (isBigDialogOpen()) {
-		document.getElementById(
-			'bigDialogScrollContent'
-		).innerHTML = make_GlyphChooser(_UI.glyphChooser.dialog);
+		document.getElementById('bigDialogScrollContent').innerHTML = make_GlyphChooser(
+			_UI.glyphChooser.dialog
+		);
 	} else {
 		redraw({ calledBy: 'toggle_GlyphChooser', redrawCanvas: false });
 	}
@@ -196,10 +192,7 @@ function update_GlyphChooser(selrange) {
 		// if (selrange === 'glyphs') selrange = 'basicLatin';
 
 		if (!isNaN(parseInt(selrange))) {
-			selectGlyph(
-				getCurrentProject().projectSettings.glyphRanges[selrange].begin,
-				true
-			);
+			selectGlyph(getCurrentProject().projectSettings.glyphRanges[selrange].begin, true);
 		} else {
 			switch (selrange) {
 				case 'components':
@@ -222,8 +215,7 @@ function make_GlyphChooser_Header(selrange) {
 	// log('make_GlyphChooser_Header', 'start');
 	// log('passed selrange ' + selrange);
 
-	let content =
-		'<div class="glyphChooser-header" onclick="toggle_GlyphChooser();">';
+	let content = '<div class="glyphChooser-header" onclick="toggle_GlyphChooser();">';
 
 	if (_UI.glyphChooser.dropdown) {
 		content += 'choose a glyph range';
@@ -267,12 +259,7 @@ function make_GlyphChooser_DropDown(ch) {
 				c +
 				');">';
 			content += 'Custom Range ' + (c + 1) + '&emsp;';
-			content +=
-				'<span class="units">' +
-				gr[c].begin +
-				' to ' +
-				gr[c].end +
-				'</span>';
+			content += '<span class="units">' + gr[c].begin + ' to ' + gr[c].end + '</span>';
 			content += '</button>';
 		}
 	}
@@ -283,9 +270,7 @@ function make_GlyphChooser_DropDown(ch) {
 				'<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'components\');">';
 			content += 'Components&emsp;';
 			content +=
-				'<span class="units">(' +
-				Object.keys(getCurrentProject().components).length +
-				')</span>';
+				'<span class="units">(' + Object.keys(getCurrentProject().components).length + ')</span>';
 			content += '</button>';
 		}
 	}
@@ -296,9 +281,7 @@ function make_GlyphChooser_DropDown(ch) {
 				'<button class="navtargetbutton glyphChooser-dropdownbutton" onclick="update_GlyphChooser(\'ligatures\');">';
 			content += 'Ligatures&emsp;';
 			content +=
-				'<span class="units">(' +
-				Object.keys(getCurrentProject().ligatures).length +
-				')</span>';
+				'<span class="units">(' + Object.keys(getCurrentProject().ligatures).length + ')</span>';
 			content += '</button>';
 		}
 	}
@@ -376,13 +359,7 @@ function make_GlyphChooser_Button(index, fname, selid) {
 	if (gname === '[name not found]' || !gname) gname = getGlyphName(index);
 
 	let rv =
-		'<div class="glyphselect" onclick="' +
-		onc +
-		'" title="' +
-		gname +
-		'&#13;' +
-		index +
-		'">';
+		'<div class="glyphselect" onclick="' + onc + '" title="' + gname + '&#13;' + index + '">';
 
 	const issel = index === selid;
 
@@ -391,8 +368,7 @@ function make_GlyphChooser_Button(index, fname, selid) {
 		if (issel) {
 			extra = ' glyphselectthumbsel';
 		}
-		rv +=
-			'<div class="glyphselectthumb' + extra + '">' + wi.makeSVG() + '</div>';
+		rv += '<div class="glyphselectthumb' + extra + '">' + wi.makeSVG() + '</div>';
 	} else {
 		if (issel) {
 			rv += '<div class="glyphselectbuttonsel"';
@@ -413,10 +389,7 @@ function make_GlyphChooser_Button(index, fname, selid) {
 		rv += '</div>';
 	}
 
-	rv +=
-		'<div class="glyphselectname">' +
-		(hexToHTML(index) || gname || '[no name])') +
-		'</div>';
+	rv += '<div class="glyphselectname">' + (hexToHTML(index) || gname || '[no name])') + '</div>';
 	rv += '</div>';
 
 	// log('make_GlyphChooser_Button', 'end');

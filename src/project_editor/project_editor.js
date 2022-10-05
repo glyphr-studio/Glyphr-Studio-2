@@ -57,8 +57,8 @@ export class ProjectEditor {
 
 		// Views
 		this._views = {};
-		this.defaultView = {dx: 200, dy: 500, dz: 0.5, default: true};
-		this.defaultKernView = {dx: 500, dy: 500, dz: 0.5, default: true};
+		this.defaultView = { dx: 200, dy: 500, dz: 0.5, default: true };
+		this.defaultKernView = { dx: 500, dy: 500, dz: 0.5, default: true };
 
 		// Ghost Canvas
 		this.canvasSize = 2000;
@@ -67,7 +67,7 @@ export class ProjectEditor {
 		this.ghostCanvas.height = this.canvasSize;
 		this.ghostCTX = this.ghostCanvas.getContext('2d', {
 			alpha: false,
-			willReadFrequently: true
+			willReadFrequently: true,
 		});
 
 		// Canvas Event handlers
@@ -91,7 +91,6 @@ export class ProjectEditor {
 		// log('ProjectEditor.constructor', 'end');
 	}
 
-
 	// --------------------------------------------------------------
 	// Navigate
 	// --------------------------------------------------------------
@@ -102,7 +101,6 @@ export class ProjectEditor {
 		this.autoFitIfViewIsDefault();
 		log(`ProjectEditor.navigate`, 'end');
 	}
-
 
 	// --------------------------------------------------------------
 	// Project
@@ -128,7 +126,6 @@ export class ProjectEditor {
 		this._project = new GlyphrStudioProject(gsp);
 	}
 
-
 	// --------------------------------------------------------------
 	// Get Individual Selected Work Items
 	// --------------------------------------------------------------
@@ -138,7 +135,7 @@ export class ProjectEditor {
 	 * based on the current page
 	 */
 	get selectedItem() {
-		if(this.nav.page === 'Glyph edit') return this.selectedGlyph;
+		if (this.nav.page === 'Glyph edit') return this.selectedGlyph;
 		else if (this.nav.page === 'Components') return this.selectedComponent;
 		else if (this.nav.page === 'Ligatures') return this.selectedLigature;
 		else return false;
@@ -149,7 +146,7 @@ export class ProjectEditor {
 	 * ID based on the current page
 	 */
 	get selectedItemID() {
-		if(this.nav.page === 'Glyph edit') return this.selectedGlyphID;
+		if (this.nav.page === 'Glyph edit') return this.selectedGlyphID;
 		else if (this.nav.page === 'Components') return this.selectedComponentID;
 		else if (this.nav.page === 'Ligatures') return this.selectedLigatureID;
 		else return false;
@@ -242,8 +239,6 @@ export class ProjectEditor {
 		return this._selectedComponentID;
 	}
 
-
-
 	// --------------------------------------------------------------
 	// Set Selected Work Items
 	// --------------------------------------------------------------
@@ -322,10 +317,9 @@ export class ProjectEditor {
 			}
 		}
 
-		if(changed) msPaths.publishChanges();
+		if (changed) msPaths.publishChanges();
 		log('ProjectEditor.selectPathsThatHaveSelectedPoints', 'end');
 	}
-
 
 	// --------------------------------------------------------------
 	// Tool
@@ -340,42 +334,40 @@ export class ProjectEditor {
 		return this._selectedTool;
 	}
 
-
-
 	// --------------------------------------------------------------
 	// Views
 	// --------------------------------------------------------------
 	/**
 	 * Sets the view for the current work item on the current page
 	 */
-	set view(oa){
+	set view(oa) {
 		// log(`ProjectEditor SET view`, 'start');
 		var wid = this.selectedItemID;
 
 		// Ensure there are at least defaults
-		if(!this._views[wid]){
+		if (!this._views[wid]) {
 			// log(`\t no view, getting default`);
 			this._views[wid] = this.view;
 		}
 		// log(`\t setting ${JSON.stringify(oa)}`);
 
 		// Check for which to set
-		if(isFinite(oa.dx)){
+		if (isFinite(oa.dx)) {
 			// log(`oa.dx: ${oa.dx}`);
 			this._views[wid].dx = oa.dx;
 		}
 
-		if(isFinite(oa.dy)){
+		if (isFinite(oa.dy)) {
 			// log(`oa.dy: ${oa.dy}`);
 			this._views[wid].dy = oa.dy;
 		}
 
-		if(isFinite(oa.dz)){
+		if (isFinite(oa.dz)) {
 			// log(`oa.dz: ${oa.dz}`);
 			this._views[wid].dz = oa.dz;
 		}
 
-		if(this._views[wid].default) delete this._views[wid].default;
+		if (this._views[wid].default) delete this._views[wid].default;
 		// log(`set as ${JSON.stringify(this._views[wid])}`);
 		// log(`ProjectEditor SET view`, 'end');
 		return this._views[wid];
@@ -384,15 +376,15 @@ export class ProjectEditor {
 	/**
 	 * Gets the current view for the current work item on the current page
 	 */
-	get view(){
+	get view() {
 		// log(`ProjectEditor GET view`, 'start');
 
 		var id = this.selectedItemID;
 		var re = false;
 
-		if(this._views[id]){
+		if (this._views[id]) {
 			re = this._views[id];
-		} else if(this.nav.page === 'Kerning') {
+		} else if (this.nav.page === 'Kerning') {
 			re = clone(this.defaultKernView);
 		} else {
 			re = clone(this.defaultView);
@@ -409,19 +401,19 @@ export class ProjectEditor {
 	 * @param {string} id - work item id to check
 	 * @returns boolean
 	 */
-	viewExists(id){
+	viewExists(id) {
 		return !!this._views[id];
 	}
 
 	updateViewZoom(zoomInput) {
 		let newValue = parseFloat(zoomInput) * this.view.dz;
-		this.view = {dz: newValue};
+		this.view = { dz: newValue };
 		this.publish('view', this.view);
 	}
 
 	setViewZoom(zoomInput) {
 		let newValue = parseFloat(zoomInput) / 100;
-		this.view = {dz: newValue};
+		this.view = { dz: newValue };
 		this.publish('view', this.view);
 	}
 
@@ -429,25 +421,24 @@ export class ProjectEditor {
 		// log(`ProjectEditor.makeAutoFitView`, 'start');
 		// log(`rect: ${rect}`);
 
-
 		let ps = this.project.projectSettings;
 
 		//Zoom
 		let newZ = Math.min(
-			(rect.height / (ps.upm * 1.2)),
-			(rect.width / (this.selectedItem.advanceWidth * 1.5))
-			);
+			rect.height / (ps.upm * 1.2),
+			rect.width / (this.selectedItem.advanceWidth * 1.5)
+		);
 
-			// Vertical
+		// Vertical
 		let visibleGlyphHeight = ps.upm * newZ;
 		let topSpace = (rect.height - visibleGlyphHeight) / 2;
-		let newY = topSpace + (ps.ascent * newZ);
+		let newY = topSpace + ps.ascent * newZ;
 
 		// Horizontal
 		let visibleGlyphWidth = this.selectedItem.advanceWidth * newZ;
 		let newX = (rect.width - visibleGlyphWidth) / 2;
 
-		let newView = {dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3)};
+		let newView = { dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3) };
 
 		// log(`newView: ${JSON.stringify(newView)}`);
 		// log(`ProjectEditor.makeAutoFitView`, 'end');
@@ -457,7 +448,7 @@ export class ProjectEditor {
 	autoFitView() {
 		// log(`ProjectEditor.autoFitView`, 'start');
 		let bounds = this.getEditCanvasWrapperBounds();
-		if(bounds) {
+		if (bounds) {
 			this.view = this.makeAutoFitView(bounds);
 			this.publish('view', this.view);
 		} else {
@@ -469,10 +460,10 @@ export class ProjectEditor {
 	}
 
 	autoFitIfViewIsDefault() {
-		if(this.nav.isOnEditCanvasPage) {
-			if(this.view.default) {
-					this.autoFitView();
-					this.publish('view', this.view);
+		if (this.nav.isOnEditCanvasPage) {
+			if (this.view.default) {
+				this.autoFitView();
+				this.publish('view', this.view);
 			}
 		}
 	}
@@ -481,7 +472,7 @@ export class ProjectEditor {
 		// log(`getEditCanvasWrapperBounds`, 'start');
 
 		let wrapper = document.getElementsByClassName('editor-page__edit-canvas-wrapper');
-		if(wrapper && wrapper[0]) {
+		if (wrapper && wrapper[0]) {
 			// log(`wrapper[0]: ${wrapper[0]}`);
 			// log(`getEditCanvasWrapperBounds`, 'end');
 			return wrapper[0].getBoundingClientRect();
@@ -490,8 +481,6 @@ export class ProjectEditor {
 		// log(`getEditCanvasWrapperBounds`, 'end');
 		return false;
 	}
-
-
 
 	// --------------------------------------------------------------
 	// Save
@@ -521,10 +510,7 @@ export class ProjectEditor {
 
 		// log('saveGlyphrProjectFile - \n'+saveData);
 		const fileName =
-			this.project.projectSettings.name +
-			' - Glyphr Project - ' +
-			makeDateStampSuffix() +
-			'.txt';
+			this.project.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
 
 		saveFile(fileName, saveData);
 

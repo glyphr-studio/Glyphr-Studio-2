@@ -1,4 +1,4 @@
-import {GlyphrStudioProject} from '../glyphr_studio_project.js';
+import { GlyphrStudioProject } from '../glyphr_studio_project.js';
 
 describe('GlyphrStudioProject', () => {
 	it('New project: UPM', () => {
@@ -14,10 +14,14 @@ describe('GlyphrStudioProject', () => {
 	});
 
 	it('Partial New project: Dark Guideline', () => {
-		const projectPartial = new GlyphrStudioProject({projectSettings: {colors: {guide_light: 'it-works'}}});
+		const projectPartial = new GlyphrStudioProject({
+			projectSettings: { colors: { guide_light: 'it-works' } },
+		});
 
-		expect(projectPartial.projectSettings.colors.guide_light === 'it-works' &&
-		projectPartial.projectSettings.colors.guide_dark === 'rgb(204,81,0)').toBeTruthy();
+		expect(
+			projectPartial.projectSettings.colors.guide_light === 'it-works' &&
+				projectPartial.projectSettings.colors.guide_dark === 'rgb(204,81,0)'
+		).toBeTruthy();
 	});
 
 	it('New project: Font Variant', () => {

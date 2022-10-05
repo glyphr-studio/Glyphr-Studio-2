@@ -7,14 +7,15 @@ import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
 import { drawGlyph } from '../../edit_canvas/draw_paths.js';
 import { linkCSS } from '../controls.js';
 
-
 /**
  * description
  */
 export class GlyphTile extends HTMLElement {
 	// Specify observed attributes so that
 	// attributeChangedCallback will work
-	static get observedAttributes() { return ['selected']; }
+	static get observedAttributes() {
+		return ['selected'];
+	}
 
 	/**
 	 * Create an GlyphTile
@@ -25,9 +26,7 @@ export class GlyphTile extends HTMLElement {
 		// log(attributes);
 		super();
 
-		Object.keys(attributes).forEach((key) =>
-			this.setAttribute(key, attributes[key])
-		);
+		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		this.glyphHex = this.getAttribute('glyph');
 		this.glyphChar = hexToChars(this.glyphHex);
@@ -39,19 +38,16 @@ export class GlyphTile extends HTMLElement {
 		let settings = getCurrentProject().projectSettings;
 		let overallSize = 50;
 		let gutterSize = 2;
-		let contentSize = overallSize - (2*gutterSize);
+		let contentSize = overallSize - 2 * gutterSize;
 		let upm = settings.upm;
 		let ascent = settings.ascent;
 		let zoom = contentSize / upm;
 		let advanceWidth;
 
-		this.setAttribute(
-			'title',
-			`${lookUpGlyphName(this.glyphHex, true)}\n${this.glyphHex}`
-		);
+		this.setAttribute('title', `${lookUpGlyphName(this.glyphHex, true)}\n${this.glyphHex}`);
 
 		this.wrapper = makeElement({ className: 'wrapper' });
-		this.wrapper.style.backgroundSize =  `auto ${overallSize}px`;
+		this.wrapper.style.backgroundSize = `auto ${overallSize}px`;
 
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
 
@@ -63,8 +59,8 @@ export class GlyphTile extends HTMLElement {
 					style: `
 						width: ${overallSize}px;
 						height: ${overallSize}px;
-					`
-				}
+					`,
+				},
 			});
 			this.ctx = this.thumbnail.getContext('2d');
 			this.thumbnail.width = overallSize;
@@ -72,13 +68,12 @@ export class GlyphTile extends HTMLElement {
 			advanceWidth = this.glyphObject.advanceWidth;
 
 			this.view = {
-				dx: gutterSize + ((contentSize - (zoom * advanceWidth))/2),
-				dy: gutterSize + (zoom * (ascent)),
+				dx: gutterSize + (contentSize - zoom * advanceWidth) / 2,
+				dy: gutterSize + zoom * ascent,
 				dz: zoom,
 			};
 
 			// log(`view is ${this.view.dx}, ${this.view.dy}, ${this.view.dz}`);
-
 		} else {
 			this.thumbnail = makeElement({
 				className: 'thumbnail',
@@ -88,8 +83,8 @@ export class GlyphTile extends HTMLElement {
 		}
 
 		this.name = makeElement({ className: 'name' });
-		this.name.innerHTML = this.glyphHex === '0x20'? 'Space' : this.glyphChar;
-		let style = makeElement({ tag: 'style'});
+		this.name.innerHTML = this.glyphHex === '0x20' ? 'Space' : this.glyphChar;
+		let style = makeElement({ tag: 'style' });
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
@@ -110,10 +105,10 @@ export class GlyphTile extends HTMLElement {
 		// log(`oldValue: ${oldValue}`);
 		// log(`newValue: ${newValue}`);
 
-		let wrapper = this.shadowRoot? this.shadowRoot.querySelector('.wrapper') : false;
+		let wrapper = this.shadowRoot ? this.shadowRoot.querySelector('.wrapper') : false;
 
-		if(wrapper){
-			if(this.hasAttribute('selected')) wrapper.setAttribute('selected', '');
+		if (wrapper) {
+			if (this.hasAttribute('selected')) wrapper.setAttribute('selected', '');
 			else wrapper.removeAttribute('selected');
 		}
 
@@ -122,7 +117,7 @@ export class GlyphTile extends HTMLElement {
 	}
 }
 
-function redrawGlyph(tile){
+function redrawGlyph(tile) {
 	if (tile.glyphObject) {
 		tile.ctx.clearRect(0, 0, tile.thumbnail.width, tile.thumbnail.height);
 		drawGlyph(tile.glyphObject, tile.ctx, tile.view);

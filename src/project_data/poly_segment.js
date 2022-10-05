@@ -144,10 +144,7 @@ export class PolySegment extends GlyphElement {
 
 		// Connect the first / last point if not already
 		const firstP = new XYPoint(segments[0].p1x, segments[0].p1y);
-		const lastP = new XYPoint(
-			segments[segments.length - 1].p4x,
-			segments[segments.length - 1].p4y
-		);
+		const lastP = new XYPoint(segments[segments.length - 1].p4x, segments[segments.length - 1].p4y);
 		if (!pointsAreEqual(firstP, lastP)) {
 			segments.push(
 				new Segment({
@@ -160,9 +157,7 @@ export class PolySegment extends GlyphElement {
 		}
 
 		// Fencepost make the first PathPoint
-		pp.push(
-			makePathPointFromSegments(segments[segments.length - 1], segments[0])
-		);
+		pp.push(makePathPointFromSegments(segments[segments.length - 1], segments[0]));
 
 		// Loop through Segments and create PathPoints
 		let ns;
@@ -239,10 +234,7 @@ export class PolySegment extends GlyphElement {
 	 * @param {number} threshold - how closely to look and split
 	 * @returns {PolySegment}
 	 */
-	splitSegmentsAtIntersections(
-		ixArray = this.findIntersections(),
-		threshold = 1
-	) {
+	splitSegmentsAtIntersections(ixArray = this.findIntersections(), threshold = 1) {
 		// log('PolySegment.splitSegmentsAtIntersections', 'start');
 		// log('before length ' + this._segments.length);
 		// log(this.print());
@@ -260,9 +252,7 @@ export class PolySegment extends GlyphElement {
 
 		let result = [];
 		for (let s = 0; s < this._segments.length; s++) {
-			result = result.concat(
-				this._segments[s].splitAtManyPoints(ixArray, threshold)
-			);
+			result = result.concat(this._segments[s].splitAtManyPoints(ixArray, threshold));
 		}
 		this._segments = result;
 		this.cache.splits = ixArray;
@@ -344,9 +334,7 @@ export class PolySegment extends GlyphElement {
 				// log('LOOP ' + i + ' NO NEXT SEGMENT FOUND');
 				if (sorted.length) {
 					result.push(new PolySegment({ segments: sorted }));
-					if (
-						sorted[sorted.length - 1].containsEndPoint(sorted[0].getXYPoint(1))
-					) {
+					if (sorted[sorted.length - 1].containsEndPoint(sorted[0].getXYPoint(1))) {
 						// log('\t\t Pushed sorted PolySegment, connected nicely');
 					} else {
 						// log('\t\t Pushed sorted PolySegment, OPEN LOOP');
@@ -459,9 +447,7 @@ export class PolySegment extends GlyphElement {
 						this._segments[y].objType = 'DUPE';
 					}
 
-					if (
-						segmentsAreEqual(this._segments[x], this._segments[y].getReverse())
-					) {
+					if (segmentsAreEqual(this._segments[x], this._segments[y].getReverse())) {
 						this._segments[y].objType = 'REVERSE';
 					}
 				}
@@ -603,12 +589,7 @@ export function findSegmentIntersections(s1, s2, depth) {
 	// log('s1 w/h: ' + s1w + ' / ' + s1h);
 	// log('s2 w/h: ' + s2w + ' / ' + s2h);
 
-	if (
-		s1w < threshold &&
-		s1h < threshold &&
-		s2w < threshold &&
-		s2h < threshold
-	) {
+	if (s1w < threshold && s1h < threshold && s2w < threshold && s2h < threshold) {
 		s1w *= 0.5;
 		s1h *= 0.5;
 		s2w *= 0.5;
@@ -701,15 +682,11 @@ export function findOverlappingLineSegmentIntersections(s1, s2) {
 	// log(`findOverlappingLineSegmentIntersections`, 'start');
 	const re = [];
 
-	if (s1.containsPointOnLine(s2.getXYPoint(1)))
-		re.push('' + s2.p1x + '/' + s2.p1y);
-	if (s1.containsPointOnLine(s2.getXYPoint(4)))
-		re.push('' + s2.p4x + '/' + s2.p4y);
+	if (s1.containsPointOnLine(s2.getXYPoint(1))) re.push('' + s2.p1x + '/' + s2.p1y);
+	if (s1.containsPointOnLine(s2.getXYPoint(4))) re.push('' + s2.p4x + '/' + s2.p4y);
 
-	if (s2.containsPointOnLine(s1.getXYPoint(1)))
-		re.push('' + s1.p1x + '/' + s1.p1y);
-	if (s2.containsPointOnLine(s1.getXYPoint(4)))
-		re.push('' + s1.p4x + '/' + s1.p4y);
+	if (s2.containsPointOnLine(s1.getXYPoint(1))) re.push('' + s1.p1x + '/' + s1.p1y);
+	if (s2.containsPointOnLine(s1.getXYPoint(4))) re.push('' + s1.p4x + '/' + s1.p4y);
 
 	if (re.length) {
 		// log('findOverlappingLineSegmentIntersections', 'start');
@@ -738,22 +715,15 @@ export function findCrossingLineSegmentIntersections(s1, s2) {
 	const d2x = s2.p4x - s2.p1x;
 	const d2y = s2.p4y - s2.p1y;
 
-	const s =
-		(-1 * d1y * (s1.p1x - s2.p1x) + d1x * (s1.p1y - s2.p1y)) /
-		(-1 * d2x * d1y + d1x * d2y);
-	const t =
-		(d2x * (s1.p1y - s2.p1y) - d2y * (s1.p1x - s2.p1x)) /
-		(-1 * d2x * d1y + d1x * d2y);
+	const s = (-1 * d1y * (s1.p1x - s2.p1x) + d1x * (s1.p1y - s2.p1y)) / (-1 * d2x * d1y + d1x * d2y);
+	const t = (d2x * (s1.p1y - s2.p1y) - d2y * (s1.p1x - s2.p1x)) / (-1 * d2x * d1y + d1x * d2y);
 
 	if (s >= 0 && s <= 1 && t >= 0 && t <= 1) {
 		const rx = numSan(s1.p1x + t * d1x);
 		const ry = numSan(s1.p1y + t * d1y);
 
 		// log('found ' + rx + ', ' + ry);
-		if (
-			s1.containsTerminalPoint({ x: rx, y: ry }) &&
-			s2.containsTerminalPoint({ x: rx, y: ry })
-		) {
+		if (s1.containsTerminalPoint({ x: rx, y: ry }) && s2.containsTerminalPoint({ x: rx, y: ry })) {
 			// log('its an end point');
 			// log('findCrossingLineSegmentIntersections', 'end');
 			return [];

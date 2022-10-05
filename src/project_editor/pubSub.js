@@ -29,70 +29,65 @@ export function publish(topic, data) {
 		callCallbacksByTopic(topic, data);
 
 		// Handle some things centrally
-		if(topic === 'whichToolIsSelected') {
+		if (topic === 'whichToolIsSelected') {
 			log(`PubSub publish whichToolIsSelected: ${data}`);
 		}
 
+		if (topic === 'view') {
+		}
 
-		if(topic === 'view') {}
-
-
-		if(topic === 'whichGlyphIsSelected') {
+		if (topic === 'whichGlyphIsSelected') {
 			this.multiSelect.paths.clear();
 			this.multiSelect.points.clear();
 		}
 
-
-		if(topic === 'whichPathIsSelected') {
+		if (topic === 'whichPathIsSelected') {
 			// this.multiSelect.points.clear();
 		}
 
+		if (topic === 'whichPathPointIsSelected') {
+		}
 
-		if(topic === 'whichPathPointIsSelected') {}
-
-
-		if(topic === 'currentGlyph') {
+		if (topic === 'currentGlyph') {
 			let singlePath = this.multiSelect.paths.singleton;
 			let singlePoint = this.multiSelect.points.singleton;
-			if(singlePath) {
+			if (singlePath) {
 				// It's possible to make updates to a Glyph while a single path is selected
 				callCallbacksByTopic('currentPath', singlePath);
 			}
-			if(singlePoint) {
+			if (singlePoint) {
 				// It's possible to make updates to a Glyph while a single path point is selected
 				callCallbacksByTopic('currentPathPoint', singlePoint);
 			}
 		}
 
-
-		if(topic === 'currentPath') {
+		if (topic === 'currentPath') {
 			// if a path changes, then so must its' Glyph also
-				callCallbacksByTopic('currentGlyph', data.parent);
+			callCallbacksByTopic('currentGlyph', data.parent);
 		}
 
-
-		if(topic === 'currentPathPoint') {
+		if (topic === 'currentPathPoint') {
 			// if a PathPoint changes, then so must its' Path and Glyph also
 			callCallbacksByTopic('currentPath', data.parent);
 			callCallbacksByTopic('currentGlyph', data.parent.parent);
 		}
 
-
-		if(topic.includes('currentControlPoint')) {
+		if (topic.includes('currentControlPoint')) {
 			// if a PathPoint changes, then so must its' Path and Glyph also
 			callCallbacksByTopic('currentPathPoint', data.parent);
 			callCallbacksByTopic('currentPath', data.parent.parent);
 			callCallbacksByTopic('currentGlyph', data.parent.parent.parent);
 
-			if(topic === 'currentControlPoint.p') {
+			if (topic === 'currentControlPoint.p') {
 				callCallbacksByTopic('currentControlPoint.p', data.parent.p);
 				callCallbacksByTopic('currentControlPoint.h1', data.parent.h1);
 				callCallbacksByTopic('currentControlPoint.h2', data.parent.h2);
 			}
-			if(topic === 'currentControlPoint.h1') callCallbacksByTopic('currentControlPoint.h1', data.parent.h1);
-			if(topic === 'currentControlPoint.h2') callCallbacksByTopic('currentControlPoint.h2', data.parent.h2);
+			if (topic === 'currentControlPoint.h1')
+				callCallbacksByTopic('currentControlPoint.h1', data.parent.h1);
+			if (topic === 'currentControlPoint.h2')
+				callCallbacksByTopic('currentControlPoint.h2', data.parent.h2);
 		}
-
 	} else {
 		// console.warn(`Nobody subscribed to topic ${topic}`);
 	}
@@ -123,51 +118,51 @@ export function publish(topic, data) {
  * @param {function} callback - what to do when a change is triggered
  * @returns nothing
  */
-export function subscribe({topic = false, subscriberID = '', callback = false}) {
+export function subscribe({ topic = false, subscriberID = '', callback = false }) {
 	// log(`ProjectEditor.subscribe`, 'start');
 	// log(`topic: ${topic}`);
 	// log(`subscriberID: ${subscriberID}`);
 
-	if(!topic) {
+	if (!topic) {
 		console.warn(`Subscriber was not provided a topic`);
 		return;
 	}
 
-	if(!callback){
+	if (!callback) {
 		console.warn(`Subscriber was not provided a callback`);
 		return;
 	}
 
-	if(!subscriberID){
+	if (!subscriberID) {
 		console.warn(`Subscriber was not provided a subscriberID`);
 		return;
 	}
 
 	// Support string for single topic, array for multi topic
-	let topicList = (typeof topic === 'string') ? [topic] : topic;
+	let topicList = typeof topic === 'string' ? [topic] : topic;
 
 	topicList.forEach((thisTopic) => {
 		if (!this.subscribers[thisTopic]) this.subscribers[thisTopic] = {};
 		this.subscribers[thisTopic][subscriberID] = callback;
 	});
 
-		// log(`ProjectEditor.subscribe`, 'end');
+	// log(`ProjectEditor.subscribe`, 'end');
 }
 
-export function unsubscribe({topicToRemove = false, idToRemove = false}) {
+export function unsubscribe({ topicToRemove = false, idToRemove = false }) {
 	// log(`ProjectEditor.unsubscribe`, 'start');
 	// log(`topicToRemove: ${topicToRemove}`);
 	// log(`idToRemove: ${idToRemove}`);
 
-	if(topicToRemove && this.subscribers[topicToRemove]) {
+	if (topicToRemove && this.subscribers[topicToRemove]) {
 		// log(`removing topic: ${topicToRemove}`);
 		delete this.subscribers[topicToRemove];
 	}
 
-	if(idToRemove) {
+	if (idToRemove) {
 		Object.keys(this.subscribers).forEach((topic) => {
 			Object.keys(this.subscribers[topic]).forEach((subscriberID) => {
-				if(subscriberID.indexOf(idToRemove) > -1) {
+				if (subscriberID.indexOf(idToRemove) > -1) {
 					// log(`removing subscriber: ${subscriberID} (matched to ${idToRemove})`);
 					delete this.subscribers[topic][subscriberID];
 				}

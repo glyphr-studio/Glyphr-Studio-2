@@ -2,7 +2,6 @@ import { makeElement } from '../../common/dom.js';
 import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
 import { linkCSS } from '../controls.js';
 
-
 /**
  * Shows an icon that is either selected or unselected,
  * pressing the button toggles the state
@@ -16,16 +15,14 @@ export class ButtonToggle extends HTMLElement {
 		// log(`ButtonToggle.constructor()`, 'start');
 		super();
 
-		Object.keys(attributes).forEach((key) =>
-			this.setAttribute(key, attributes[key])
-		);
+		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		this.size = this.getAttribute('size') || 24;
 		this.style.width = `${this.size}px`;
 		this.style.height = `${this.size}px`;
 
 		this.gutterSize = Math.round(this.size * 0.05);
-		this.iconSize = this.size - (this.gutterSize * 2);
+		this.iconSize = this.size - this.gutterSize * 2;
 		this.selected = this.hasAttribute('selected');
 		this.disabled = this.hasAttribute('disabled');
 
@@ -35,19 +32,16 @@ export class ButtonToggle extends HTMLElement {
 			tabIndex: !this.disabled,
 			attributes: {
 				style: `
-					border-width: ${attributes.hideBorder? '0px' : '1px'};
+					border-width: ${attributes.hideBorder ? '0px' : '1px'};
 					padding: ${this.gutterSize}px;
 					width: ${this.size}px;
 					height: ${this.size}px;
-				`
-			}
+				`,
+			},
 		});
 		if (this.disabled) this.wrapper.setAttribute('disabled', '');
 		if (this.selected) this.wrapper.setAttribute('selected', '');
-		this.wrapper.innerHTML = this.getIcon(
-			this.getAttribute('icon'),
-			this.iconSize
-		);
+		this.wrapper.innerHTML = this.getIcon(this.getAttribute('icon'), this.iconSize);
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });

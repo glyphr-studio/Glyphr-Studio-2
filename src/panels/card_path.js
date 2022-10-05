@@ -1,7 +1,14 @@
-import { getCurrentProjectEditor } from "../app/main.js";
-import { addAsChildren, makeElement } from "../common/dom.js";
-import { makeActionsArea_Path } from "./actions.js";
-import { dimSplit, makeInputs_position, makeInputs_size, makeSingleCheckbox, makeSingleInput, makeSingleLabel } from "./cards.js";
+import { getCurrentProjectEditor } from '../app/main.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
+import { makeActionsArea_Path } from './actions.js';
+import {
+	dimSplit,
+	makeInputs_position,
+	makeInputs_size,
+	makeSingleCheckbox,
+	makeSingleInput,
+	makeSingleLabel,
+} from './cards.js';
 
 // --------------------------------------------------------------
 // Path attributes
@@ -14,7 +21,7 @@ export function makeCard_pathAttributes(path) {
 	let pathCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: '<h3>Path</h3>'
+		innerHTML: '<h3>Path</h3>',
 	});
 
 	// Path name
@@ -51,11 +58,11 @@ export function makeCard_pathAttributes(path) {
 					>
 				</div>
 			</info-bubble>
-		`
+		`,
 	});
 	let windingButton = makeElement({
 		tag: 'button',
-		innerHTML: makeWindingButtonText(path.winding)
+		innerHTML: makeWindingButtonText(path.winding),
 	});
 	windingButton.addEventListener('click', (event) => {
 		path.reverseWinding();
@@ -65,11 +72,11 @@ export function makeCard_pathAttributes(path) {
 		topic: 'currentPath',
 		subscriberID: `attributesPanel.currentPath.winding`,
 		callback: (changedItem) => {
-			if(isFinite(changedItem.winding)) {
+			if (isFinite(changedItem.winding)) {
 				let newWinding = makeWindingButtonText(changedItem.winding);
 				windingButton.innerHTML = newWinding;
 			}
-		}
+		},
 	});
 
 	// Position and Size
@@ -77,8 +84,15 @@ export function makeCard_pathAttributes(path) {
 	let sizeInputs = makeInputs_size(path);
 
 	// Put it all together
-	addAsChildren(pathCard, [nameLabel, nameInput, windingInfo, windingButton, positionInputs, sizeInputs]);
-	addAsChildren(pathCard, makeElement({tag: 'div', className: 'rowPad'}));
+	addAsChildren(pathCard, [
+		nameLabel,
+		nameInput,
+		windingInfo,
+		windingButton,
+		positionInputs,
+		sizeInputs,
+	]);
+	addAsChildren(pathCard, makeElement({ tag: 'div', className: 'rowPad' }));
 	addAsChildren(pathCard, makeActionsArea_Path());
 
 	// log(`makeCard_pathAttributes`, 'end');
@@ -87,8 +101,8 @@ export function makeCard_pathAttributes(path) {
 
 function makeWindingButtonText(winding) {
 	let buttonText = 'unknown';
-	if(winding > 0) buttonText = 'counterclockwise&ensp;&#8634';
-	if(winding < 0) buttonText = 'clockwise&ensp;&#8635';
+	if (winding > 0) buttonText = 'counterclockwise&ensp;&#8634';
+	if (winding < 0) buttonText = 'clockwise&ensp;&#8635';
 	return buttonText;
 }
 
@@ -96,7 +110,7 @@ export function makeCard_multiSelectPathAttributes(glyph) {
 	let multiPathCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>${glyph.paths.length} selected paths</h3>`
+		innerHTML: `<h3>${glyph.paths.length} selected paths</h3>`,
 	});
 	addAsChildren(multiPathCard, makeInputs_position(glyph));
 	addAsChildren(multiPathCard, makeInputs_size(glyph));

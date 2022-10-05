@@ -1,7 +1,6 @@
-import { getCurrentProjectEditor } from "../app/main.js";
-import { makeElement } from "../common/dom.js";
-import { round } from "../common/functions.js";
-
+import { getCurrentProjectEditor } from '../app/main.js';
+import { makeElement } from '../common/dom.js';
+import { round } from '../common/functions.js';
 
 // --------------------------------------------------------------
 // Common attributes stuff
@@ -15,14 +14,24 @@ export function makeInputs_position(workItem, labelPrefix = '', lockable = false
 	// log(`x: ${round(x, 3)}`);
 	// log(`y: ${round(y, 3)}`);
 	let thisTopic = `current${workItem.objType}`;
-	if(workItem.type) thisTopic += `.${workItem.type}`;
+	if (workItem.type) thisTopic += `.${workItem.type}`;
 
-	if(labelPrefix) labelPrefix += ':&ensp;';
+	if (labelPrefix) labelPrefix += ':&ensp;';
 	// Label + inputs
-	let label = makeElement({tag: 'label', innerHTML: `${labelPrefix}x${dimSplit()}y`});
-	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
-	let xInput = makeSingleInput(workItem, 'x', thisTopic, `input-number${lockable? '-lockable':''}`);
-	let yInput = makeSingleInput(workItem, 'y', thisTopic, `input-number${lockable? '-lockable':''}`);
+	let label = makeElement({ tag: 'label', innerHTML: `${labelPrefix}x${dimSplit()}y` });
+	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
+	let xInput = makeSingleInput(
+		workItem,
+		'x',
+		thisTopic,
+		`input-number${lockable ? '-lockable' : ''}`
+	);
+	let yInput = makeSingleInput(
+		workItem,
+		'y',
+		thisTopic,
+		`input-number${lockable ? '-lockable' : ''}`
+	);
 
 	// Put double input together
 	doubleInput.appendChild(xInput);
@@ -33,14 +42,14 @@ export function makeInputs_position(workItem, labelPrefix = '', lockable = false
 	return [label, doubleInput];
 }
 
-export function makeInputs_size(workItem){
+export function makeInputs_size(workItem) {
 	// TODO transform origin
 	// log(`makeInputs_size`, 'start');
 	let thisTopic = `current${workItem.objType}`;
 
 	// Label + Inputs
-	let inputLabel = makeElement({tag: 'label', innerHTML: `width${dimSplit()}height`});
-	let doubleInput = makeElement({tag: 'div', className: 'doubleInput',});
+	let inputLabel = makeElement({ tag: 'label', innerHTML: `width${dimSplit()}height` });
+	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
 	let wInput = makeSingleInput(workItem, 'width', thisTopic, 'input-number');
 	let hInput = makeSingleInput(workItem, 'height', thisTopic, 'input-number');
 
@@ -62,7 +71,7 @@ export function makeInputs_size(workItem){
 			Maintaining aspect ratio will override value
 			locks if need be.
 		</info-bubble>
-		`
+		`,
 	});
 
 	let ratioLockCheckbox = makeSingleCheckbox(workItem, 'ratioLock', thisTopic);
@@ -79,22 +88,22 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 	// log(`thisTopic: ${thisTopic}`);
 	// log(`tagName: ${tagName}`);
 
-	let newInput = makeElement({tag: tagName, className: `singleInput-${property}`});
-	let value = tagName === 'input'? workItem[property] : round(workItem[property], 3);
+	let newInput = makeElement({ tag: tagName, className: `singleInput-${property}` });
+	let value = tagName === 'input' ? workItem[property] : round(workItem[property], 3);
 	newInput.setAttribute('value', value);
 
 	newInput.addEventListener('change', (event) => {
 		let newValue = event.target.value;
-		if(!workItem.isLocked(property)) {
+		if (!workItem.isLocked(property)) {
 			workItem[property] = newValue;
 			getCurrentProjectEditor().publish(thisTopic, workItem);
 		}
 	});
 
-	if(tagName.includes('-lockable')) {
+	if (tagName.includes('-lockable')) {
 		addAttributeListener(newInput, 'disabled', (element) => {
 			let disabled = element.getAttribute('disabled');
-			if(disabled === null) workItem.unlock(property);
+			if (disabled === null) workItem.unlock(property);
 			else workItem.lock(property);
 		});
 	}
@@ -109,13 +118,14 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 			// log(`property: ${property}`);
 			// log(`changedItem[property]: ${changedItem[property]}`);
 
-			if(changedItem[property]) {
-				let newValue = tagName === 'input'? changedItem[property] : round(changedItem[property], 3);
+			if (changedItem[property]) {
+				let newValue =
+					tagName === 'input' ? changedItem[property] : round(changedItem[property], 3);
 				newInput.value = newValue;
 				// log(`new value: ${newValue}`);
 			}
 			// log(`SINGLE INPUT CALLBACK`, 'end');
-		}
+		},
 	});
 
 	// log(`makeSingleInput`, 'end');
@@ -123,10 +133,10 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 }
 
 export function addAttributeListener(element, listenFor = [], callback = false) {
-	listenFor = (typeof listenFor === 'string') ? [listenFor] : listenFor;
+	listenFor = typeof listenFor === 'string' ? [listenFor] : listenFor;
 
 	const mutationCallback = function (mutationsList, observer) {
-		if(callback) callback(element);
+		if (callback) callback(element);
 	};
 	const observer = new MutationObserver(mutationCallback);
 	// observer.node = element;
@@ -138,28 +148,28 @@ export function makeSingleCheckbox(workItem, property, thisTopic) {
 	let newCheckbox = makeElement({
 		tag: 'input',
 		attributes: {
-			type: 'checkbox'
-		}
+			type: 'checkbox',
+		},
 	});
-	if(workItem[property]) newCheckbox.setAttribute('checked', '');
+	if (workItem[property]) newCheckbox.setAttribute('checked', '');
 
 	newCheckbox.addEventListener('change', (event) => {
 		let newValue = event.target.checked;
 		workItem[property] = !!newValue;
 		getCurrentProjectEditor().publish(thisTopic, workItem);
-		if(property === 'use') toggleHandleInputs(workItem.type, !!newValue);
+		if (property === 'use') toggleHandleInputs(workItem.type, !!newValue);
 	});
 
 	getCurrentProjectEditor().subscribe({
 		topic: thisTopic,
 		subscriberID: `attributesPanel.${thisTopic}.${property}`,
 		callback: (changedItem) => {
-			if(!!changedItem[property]) {
+			if (!!changedItem[property]) {
 				newCheckbox.setAttribute('checked', '');
 			} else {
 				newCheckbox.removeAttribute('checked');
 			}
-		}
+		},
 	});
 
 	return newCheckbox;
@@ -167,13 +177,13 @@ export function makeSingleCheckbox(workItem, property, thisTopic) {
 
 function toggleHandleInputs(handle, show) {
 	let group = document.getElementById(`${handle}InputGroup`);
-	group.style.display = show? 'grid' : 'none';
+	group.style.display = show ? 'grid' : 'none';
 }
 
 export function makeSingleLabel(text, info = false) {
 	let newLabel = makeElement({
 		tag: 'label',
-		innerHTML: text
+		innerHTML: text,
 	});
 
 	return newLabel;
@@ -186,6 +196,6 @@ export function dimSplit() {
 export function dimSplitElement() {
 	return makeElement({
 		className: 'dimSplit',
-		innerHTML: '&#x2044;'
+		innerHTML: '&#x2044;',
 	});
 }

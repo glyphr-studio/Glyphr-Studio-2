@@ -9,8 +9,13 @@
 }
 
 @keyframes fade {
-	0%, 100% { opacity: 0 }
-	50% { opacity: 1 }
+	0%,
+	100% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
 }
 
 .panel__card {
@@ -100,7 +105,7 @@
 	margin-top: 0px;
 }
 
-.panel__card input[type=checkbox] {
+.panel__card input[type='checkbox'] {
 	width: 20px;
 	height: 20px;
 	margin-bottom: 4px;
@@ -136,10 +141,10 @@
 
 .dimSplit {
 	color: var(--gray-l80);
-	width:16px;
-	text-align:center;
-	display:inline-block;
-	font-size:0.8em;
+	width: 16px;
+	text-align: center;
+	display: inline-block;
+	font-size: 0.8em;
 	padding-top: 6px;
 }
 

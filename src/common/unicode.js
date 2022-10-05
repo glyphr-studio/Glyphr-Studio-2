@@ -66,8 +66,7 @@ function decToHTML(d) {
  */
 function glyphToHex(s) {
 	let result = '';
-	for (let i = 0; i < s.length; i++)
-		result += decToHex(String(s).charCodeAt(i));
+	for (let i = 0; i < s.length; i++) result += decToHex(String(s).charCodeAt(i));
 	return result;
 }
 
@@ -78,8 +77,7 @@ function glyphToHex(s) {
  */
 function charsToHexArray(s) {
 	const result = [];
-	for (let i = 0; i < s.length; i++)
-		result.push(decToHex(String(s).charCodeAt(i)));
+	for (let i = 0; i < s.length; i++) result.push(decToHex(String(s).charCodeAt(i)));
 	return result;
 }
 
@@ -231,13 +229,13 @@ function isValidHex(hexInput) {
 	if (str.startsWith('0x')) str = str.substring(2);
 	str = str.toUpperCase();
 
-	if (str.length > 4){
+	if (str.length > 4) {
 		// console.warn(`Invalid Hex format - Greater than 4 digits: ${hexInput}`);
 		return false;
 	}
 
 	for (let c = 0; c < str.length; c++) {
-		if (green.indexOf(str.charAt(c)) === -1){
+		if (green.indexOf(str.charAt(c)) === -1) {
 			// console.warn(`Invalid Hex format - invalid character ${str.charAt(c)}: ${hexInput}`);
 			return false;
 		}
@@ -252,8 +250,8 @@ function isValidHex(hexInput) {
  * @param {string} str - input Hex
  * @returns {string}
  */
-function normalizeHex(str){
-	if(isValidHex(str)){
+function normalizeHex(str) {
+	if (isValidHex(str)) {
 		str = `0x${parseInt(str).toString(16).toUpperCase()}`;
 		return str;
 	}
@@ -269,10 +267,10 @@ function normalizeHex(str){
  * @param {any} hex2 - second hex value
  * @returns {boolean}
  */
-function areHexValuesEqual(hex1, hex2){
+function areHexValuesEqual(hex1, hex2) {
 	hex1 = normalizeHex(hex1);
 	hex2 = normalizeHex(hex2);
-	return (hex1 == hex2);
+	return hex1 == hex2;
 }
 
 //  -----------------

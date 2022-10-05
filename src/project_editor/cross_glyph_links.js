@@ -1,6 +1,4 @@
-import { getCurrentProject } from "../app/main";
-
-
+import { getCurrentProject } from '../app/main';
 
 // --------------------------------------------------------------
 // Project-wide .changed()
@@ -13,17 +11,17 @@ import { getCurrentProject } from "../app/main";
  * the whole project.
  * @param {Glyph} glyph - glyph to mark as changed
  */
-export function glyphChanged(glyph){
-		// log(`Glyph.changed - Start`);
-		glyph.recalculateMaxes();
-		if (glyph.cache) glyph.cache = {};
-		const project = getCurrentProject();
+export function glyphChanged(glyph) {
+	// log(`Glyph.changed - Start`);
+	glyph.recalculateMaxes();
+	if (glyph.cache) glyph.cache = {};
+	const project = getCurrentProject();
 
-		// log(`calling changed on usedIn`);
-		for (let g = 0; g < glyph.usedIn.length; g++) {
-			glyphChanged(project.getGlyph(glyph.usedIn[g]));
-		}
-		// log(` Glyph.changed - End\n`);
+	// log(`calling changed on usedIn`);
+	for (let g = 0; g < glyph.usedIn.length; g++) {
+		glyphChanged(project.getGlyph(glyph.usedIn[g]));
+	}
+	// log(` Glyph.changed - End\n`);
 }
 /*
 	changed(descend, ascend) {
@@ -40,7 +38,6 @@ export function glyphChanged(glyph){
 			this.recalculateMaxes();
 	}
 */
-
 
 // --------------------------------------------------------------
 // Component Instance links
@@ -84,9 +81,7 @@ function collectAllDownstreamLinks(glyph, re = [], excludePeers = false) {
 	for (let s = 0; s < glyph.paths.length; s++) {
 		if (glyph.paths[s].objType === 'ComponentInstance') {
 			re = re.concat(
-				getCurrentProject()
-					.getGlyph(glyph.paths[s].link)
-					.collectAllDownstreamLinks(re)
+				getCurrentProject().getGlyph(glyph.paths[s].link).collectAllDownstreamLinks(re)
 			);
 			if (!excludePeers) re.push(glyph.paths[s].link);
 		}
@@ -101,9 +96,7 @@ function collectAllDownstreamLinks(glyph, re = [], excludePeers = false) {
  */
 function collectAllUpstreamLinks(glyph, re = []) {
 	for (let g = 0; g < glyph.usedIn.length; g++) {
-		re = re.concat(
-			getCurrentProject().getGlyph(glyph.usedIn[g]).collectAllUpstreamLinks(re)
-		);
+		re = re.concat(getCurrentProject().getGlyph(glyph.usedIn[g]).collectAllUpstreamLinks(re));
 		re.push(glyph.usedIn[g]);
 	}
 	return re;

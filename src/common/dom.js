@@ -20,8 +20,7 @@ export function makeElement({
 	attributes = {},
 	innerHTML = false,
 } = {}) {
-
-	if(!document || !document.createElement){
+	if (!document || !document.createElement) {
 		console.warn('no document or createElement');
 		console.warn(document);
 		return '';
@@ -32,8 +31,7 @@ export function makeElement({
 	if (className) newElement.setAttribute('class', className);
 
 	if (id) newElement.setAttribute('id', id);
-	else if (window.getUniqueControlID)
-		newElement.setAttribute('id', document.getUniqueControlID());
+	else if (window.getUniqueControlID) newElement.setAttribute('id', document.getUniqueControlID());
 
 	if (content) newElement.innerHTML = content;
 
@@ -44,9 +42,7 @@ export function makeElement({
 	if (tabIndex === true) newElement.setAttribute('tabIndex', '0');
 	else if (tabIndex !== false) newElement.setAttribute('tabIndex', tabIndex);
 
-	Object.keys(attributes).forEach((key) =>
-		newElement.setAttribute(key, attributes[key])
-	);
+	Object.keys(attributes).forEach((key) => newElement.setAttribute(key, attributes[key]));
 
 	if (innerHTML) {
 		const template = document.createElement('template');
@@ -77,9 +73,9 @@ export function addAsChildren(parentNode, childNodes = []) {
 	// log(parentNode);
 	// log(childNodes);
 
-	if(Array.isArray(childNodes)) {
+	if (Array.isArray(childNodes)) {
 		childNodes.forEach((child) => {
-			if(Array.isArray(child)) addAsChildren(parentNode, child);
+			if (Array.isArray(child)) addAsChildren(parentNode, child);
 			else parentNode.appendChild(child);
 		});
 	} else {

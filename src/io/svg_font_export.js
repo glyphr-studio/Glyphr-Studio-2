@@ -136,10 +136,7 @@ function ioSVG_makeFontFace() {
 			con += d.replace(/_/g, '-');
 			con += '=';
 			// con += md[d] === '""'? '' : md[d];
-			con +=
-				typeof md[d] === 'string'
-					? JSON.stringify(trim(md[d]))
-					: '"' + md[d] + '"';
+			con += typeof md[d] === 'string' ? JSON.stringify(trim(md[d])) : '"' + md[d] + '"';
 			con += '\n';
 		}
 	}

@@ -1,8 +1,11 @@
-import { getCurrentProjectEditor } from "../app/main.js";
-import { makeCard_glyphAttributes } from "./card_glyph.js";
-import { makeCard_multiSelectPathAttributes, makeCard_pathAttributes } from "./card_path.js";
-import { makeCard_multiSelectPathPointAttributes, makeCard_pathPointAttributes } from "./card_path_point.js";
-import { refreshPanel } from "./panels.js";
+import { getCurrentProjectEditor } from '../app/main.js';
+import { makeCard_glyphAttributes } from './card_glyph.js';
+import { makeCard_multiSelectPathAttributes, makeCard_pathAttributes } from './card_path.js';
+import {
+	makeCard_multiSelectPathPointAttributes,
+	makeCard_pathPointAttributes,
+} from './card_path_point.js';
+import { refreshPanel } from './panels.js';
 
 /**
 	Panel > Attributes > Glyph
@@ -20,7 +23,7 @@ export function makePanel_GlyphAttributes() {
 	// Path Points
 	let selPoints = editor.multiSelect.points;
 	// log(selPoints);
-	if(selPoints.length === 1) {
+	if (selPoints.length === 1) {
 		// log(`pushing point card`);
 		content.push(makeCard_pathPointAttributes(selPoints.singleton));
 	} else if (selPoints.length > 1) {
@@ -58,12 +61,16 @@ export function makePanel_GlyphAttributes() {
 	editor.subscribe({
 		topic: 'whichPathIsSelected',
 		subscriberID: 'attributesPanel',
-		callback: () => { refreshPanel(); }
+		callback: () => {
+			refreshPanel();
+		},
 	});
 	editor.subscribe({
 		topic: 'whichPathPointIsSelected',
 		subscriberID: 'attributesPanel',
-		callback: () => { refreshPanel(); }
+		callback: () => {
+			refreshPanel();
+		},
 	});
 
 	// log(content);

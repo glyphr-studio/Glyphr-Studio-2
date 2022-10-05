@@ -44,6 +44,5 @@ export class Tool_Pan {
 			this.deltaX = 0;
 			this.deltaY = 0;
 		};
-
 	}
 }
