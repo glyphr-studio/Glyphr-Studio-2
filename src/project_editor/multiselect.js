@@ -30,9 +30,7 @@ class MultiSelect {
 		// log(`obj.objType: ${obj.objType}`);
 		// log(obj);
 
-		let selectable = [
-			'PathPoint', 'Path', 'ComponentInstance'
-		];
+		let selectable = ['PathPoint', 'Path', 'ComponentInstance'];
 
 		// log(`returning ${selectable.includes(obj?.objType)}`);
 		// log(`MultiSelect.isSelectable`, 'end');
@@ -46,7 +44,6 @@ class MultiSelect {
 		if (this.isSelectable(obj)) {
 			log(`selecting ${obj.objType}`);
 			this.members = [obj];
-			// this.selectPathsThatHaveSelectedPoints();
 			this.publishChanges();
 		} else {
 			log('this.isSelectable = false, clearing');
@@ -58,12 +55,13 @@ class MultiSelect {
 
 	add(obj) {
 		log(`MultiSelect.add`, 'start');
+		log(obj);
 		log(`this.members.length: ${this.members.length}`);
 
+		log(this.members.indexOf(obj));
 		if (this.isSelectable(obj) && this.members.indexOf(obj) < 0) {
-			log(`adding ${obj.objType} "${obj.type? obj.type : obj.name}"`);
+			log(`adding ${obj.objType} "${obj.type ? obj.type : obj.name}"`);
 			this.members.push(obj);
-			// this.selectPathsThatHaveSelectedPoints();
 			this.publishChanges();
 		}
 		log(this.members);
@@ -101,18 +99,14 @@ class MultiSelect {
 		if (this.isSelected(obj)) this.remove(obj);
 		else this.add(obj);
 
-		// this.selectPathsThatHaveSelectedPoints();
 		this.publishChanges();
 		log(`MultiSelectPoints.toggle`, 'end');
 	}
 
 	get type() {
-		if (this.members.length === 0)
-			return false;
-		else if (this.members.length === 1)
-			return this.members[0].objType;
-		else
-			return 'multi';
+		if (this.members.length === 0) return false;
+		else if (this.members.length === 1) return this.members[0].objType;
+		else return 'multi';
 	}
 
 	get length() {
@@ -128,10 +122,8 @@ class MultiSelect {
 	}
 
 	get singleton() {
-		if (this.members.length === 1)
-			return this.members[0];
-		else
-			return false;
+		if (this.members.length === 1) return this.members[0];
+		else return false;
 	}
 
 	isSelected(obj) {
@@ -142,9 +134,6 @@ class MultiSelect {
 		return this.members.indexOf(obj) > -1;
 	}
 }
-
-
-
 
 // --------------------------------------------------------------
 // SELECTED POINTS
@@ -267,7 +256,6 @@ export class MultiSelectPoints extends MultiSelect {
 	}
 }
 
-
 // --------------------------------------------------------------
 // SELECTED PATHS
 // --------------------------------------------------------------
@@ -305,7 +293,7 @@ export class MultiSelectPaths extends MultiSelect {
 
 	selectAll() {
 		let currItem = getCurrentProjectEditor().currItem;
-		if(currItem.paths) {
+		if (currItem.paths) {
 			currItem.paths.forEach((path) => {
 				this.add(path);
 			});
@@ -406,10 +394,8 @@ export class MultiSelectPaths extends MultiSelect {
 	}
 
 	updatePathSize(dw, dh, ratioLock) {
-		if (this.members.length === 1)
-			this.members[0].updatePathSize(dw, dh, ratioLock);
-		else if (this.members.length > 1)
-			this.virtualGlyph.updateGlyphSize(dw, dh, ratioLock);
+		if (this.members.length === 1) this.members[0].updatePathSize(dw, dh, ratioLock);
+		else if (this.members.length > 1) this.virtualGlyph.updateGlyphSize(dw, dh, ratioLock);
 	}
 
 	setPathSize(nw, nh, ratioLock) {
@@ -481,8 +467,7 @@ export class MultiSelectPaths extends MultiSelect {
 		for (let m = 0; m < this.members.length; m++) {
 			s = this.members[m];
 			// log('drawing points on path ' + m + ' as ' + s.pathPoints);
-			if (s.objType !== 'ComponentInstance')
-				draw_PathPoints(this.members[m].pathPoints);
+			if (s.objType !== 'ComponentInstance') draw_PathPoints(this.members[m].pathPoints);
 		}
 
 		// log('MultiSelectPaths.draw_PathPoints', 'end');
