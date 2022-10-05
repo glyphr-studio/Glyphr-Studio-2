@@ -424,19 +424,20 @@ function isThisPathHere(path, px, py) {
 	const editor = getCurrentProjectEditor();
 	let ctx = editor.ghostCTX;
 
-	ctx.clearRect(0,0,editor.canvasSize, editor.canvasSize);
+	ctx.fillStyle = 'rgb(255, 255, 255)';
+	ctx.fillRect(0,0,editor.canvasSize, editor.canvasSize);
 
 	ctx.beginPath();
 	drawPath(path, ctx, editor.view);
 	ctx.closePath();
 
-	ctx.fillStyle = 'rgba(0,0,255,0.2)';
+	ctx.fillStyle = 'rgb(0,0,0)';
 	ctx.fill();
 
 	let imageData = ctx.getImageData(px, py, 1, 1);
-	// log('ISHERE? alpha = ' + imageData.data[3] + '  returning: ' + (imageData.data[3] > 0));
+	// log('ISHERE? red = ' + imageData.data[0] + '  returning: ' + (imageData.data[0] < 255));
 	// log(`isThisPathHere`, 'end');
-	return (imageData.data[3] > 0);
+	return (imageData.data[0] < 255);
 }
 
 
