@@ -4,7 +4,17 @@ import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events.js';
 import { drawGlyph, drawPath } from './draw_paths.js';
-import { computeAndDrawBoundingBox, computeAndDrawBoundingBoxHandles, computeAndDrawPathPointHandles, computeAndDrawPathPoints, drawBoundingBox, drawNewBasicPath, drawPathPointHover, drawSelectedPathOutline, testDrawAllPathPointHandles } from './draw_edit_affordances.js';
+import {
+	computeAndDrawBoundingBox,
+	computeAndDrawBoundingBoxHandles,
+	computeAndDrawPathPointHandles,
+	computeAndDrawPathPoints,
+	drawBoundingBox,
+	drawNewBasicPath,
+	drawPathPointHover,
+	drawSelectedPathOutline,
+	testDrawAllPathPointHandles,
+} from './draw_edit_affordances.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js';
 import { makeCrisp, round } from '../common/functions.js';
 import { setCursor, updateCursor } from './cursors.js';
@@ -17,7 +27,7 @@ export class EditCanvas extends HTMLElement {
 	/**
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
-	 static get observedAttributes() {
+	static get observedAttributes() {
 		return ['glyphs'];
 	}
 
@@ -30,9 +40,7 @@ export class EditCanvas extends HTMLElement {
 
 		super();
 
-		Object.keys(attributes).forEach((key) =>
-			this.setAttribute(key, attributes[key])
-		);
+		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		// element attributes
 		this.glyphs = this.getAttribute('glyphs') || '';
@@ -75,9 +83,9 @@ export class EditCanvas extends HTMLElement {
 				topic: topic,
 				subscriberID: `editCanvas-${topic}`,
 				callback: () => {
-					this.redraw({calledBy: `editCanvas-${topic}`});
+					this.redraw({ calledBy: `editCanvas-${topic}` });
 					// updateCursor();
-				}
+				},
 			});
 		});
 
@@ -98,13 +106,11 @@ export class EditCanvas extends HTMLElement {
 			case 'glyphs':
 				this.glyphs = newValue;
 				getCurrentProjectEditor().autoFitIfViewIsDefault();
-				this.redraw({calledBy: 'EditCanvas.attributeChangeCallback - attribute: glyphs'});
+				this.redraw({ calledBy: 'EditCanvas.attributeChangeCallback - attribute: glyphs' });
 				break;
 		}
 		// log(`EditCanvas.attributeChangeCallback`, 'end');
 	}
-
-
 
 	// --------------------------------------------------------------
 	// Redraw the canvas
@@ -124,7 +130,7 @@ export class EditCanvas extends HTMLElement {
 		let sg = editor.project.getGlyph(glyphHex);
 		// log(sg);
 
-		if(requestAnimationFrame) requestAnimationFrame(redrawAnimationFrame);
+		if (requestAnimationFrame) requestAnimationFrame(redrawAnimationFrame);
 		else this.redrawAnimationFrame();
 
 		function redrawAnimationFrame() {
@@ -144,13 +150,11 @@ export class EditCanvas extends HTMLElement {
 				drawSelectedPathOutline(ctx, view);
 				computeAndDrawBoundingBox(ctx);
 				computeAndDrawBoundingBoxHandles(ctx);
-
 			} else if (editMode === 'rotate') {
 				computeAndDrawRotationAffordance(ctx);
-
 			} else if (editMode === 'pathEdit') {
 				drawSelectedPathOutline(ctx, view);
-				if(eventHandlerData.isCtrlDown || editor.multiSelect.points.count > 1) {
+				if (eventHandlerData.isCtrlDown || editor.multiSelect.points.count > 1) {
 					computeAndDrawPathPoints(ctx, true);
 					testDrawAllPathPointHandles(ctx);
 				} else {
@@ -158,14 +162,13 @@ export class EditCanvas extends HTMLElement {
 					computeAndDrawPathPoints(ctx);
 					// drawPathPointHover(ctx, eventHandlerData.hoverPoint);
 				}
-
 			} else if (editMode === 'newPath') {
 				computeAndDrawPathPointHandles(ctx);
 				computeAndDrawPathPoints(ctx);
 			}
 
 			// Draw temporary new paths
-			if(eventHandlerData.newBasicPath) {
+			if (eventHandlerData.newBasicPath) {
 				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
 			}
 		}
@@ -178,8 +181,8 @@ export class EditCanvas extends HTMLElement {
 			let gridWidth = sg.advanceWidth * view.dz;
 
 			ctx.fillRect(view.dx, gridTop, 1, gridHeight);
-			ctx.fillRect(round(view.dx+gridWidth), gridTop, 1, gridHeight);
-			ctx.fillRect((view.dx-gridPad), view.dy, (gridWidth+(gridPad*2)), 1);
+			ctx.fillRect(round(view.dx + gridWidth), gridTop, 1, gridHeight);
+			ctx.fillRect(view.dx - gridPad, view.dy, gridWidth + gridPad * 2, 1);
 		}
 
 		// log('EditCanvas.redraw', 'end');

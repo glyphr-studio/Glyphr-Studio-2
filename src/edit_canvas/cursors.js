@@ -39,7 +39,7 @@ export function updateCursor(tool) {
 			setCursor('arrow');
 		}
 	} else {
-		// log('NOT ON EDIT CANVS setting cursor to default');
+		// log('NOT ON EDIT CANVAS setting cursor to default');
 		setCursor('default');
 	}
 
