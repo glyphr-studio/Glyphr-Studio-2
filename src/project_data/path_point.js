@@ -196,15 +196,15 @@ export class PathPoint extends GlyphElement {
 	 * @param {number} dy - delta y
 	 */
 	updatePathPointPosition(controlPoint = 'p', dx = 0, dy = 0) {
-		log(`PathPoint.updatePathPointPosition`, 'start');
-		log(`control point ${controlPoint} dx ${dx} dy ${dy}`);
+		// log(`PathPoint.updatePathPointPosition`, 'start');
+		// log(`control point ${controlPoint} dx ${dx} dy ${dy}`);
 
 		dx = parseFloat(dx);
 		dy = parseFloat(dy);
 
 		switch (controlPoint) {
 			case 'p':
-				log('moving p / h1 / h2');
+				// log('moving p / h1 / h2');
 				this.p.coord.x += dx;
 				this.p.coord.y += dy;
 
@@ -216,7 +216,7 @@ export class PathPoint extends GlyphElement {
 				break;
 
 			case 'h1':
-				log('moving h1');
+				// log('moving h1');
 				this.h1.coord.x += dx;
 				this.h1.coord.y += dy;
 				if(this.h1.use) {
@@ -226,7 +226,7 @@ export class PathPoint extends GlyphElement {
 				break;
 
 			case 'h2':
-				log('moving h2');
+				// log('moving h2');
 				this.h2.coord.x += dx;
 				this.h2.coord.y += dy;
 				if(this.h2.use) {
@@ -236,7 +236,7 @@ export class PathPoint extends GlyphElement {
 				break;
 		}
 
-		log(`PathPoint.updatePathPointPosition`, 'end');
+		// log(`PathPoint.updatePathPointPosition`, 'end');
 	}
 
 	/**

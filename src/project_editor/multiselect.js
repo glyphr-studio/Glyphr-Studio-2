@@ -289,12 +289,8 @@ export class MultiSelectPaths extends MultiSelect {
 	}
 
 	publishChanges(topic = 'whichPathIsSelected') {
-		log(`MultiSelectPaths.publishChanges`, 'start');
 		const editor = getCurrentProjectEditor();
-		log(`between`);
-
 		editor.publish(topic, this.members);
-		log(`MultiSelectPaths.publishChanges`, 'end');
 	}
 
 	get maxes() {

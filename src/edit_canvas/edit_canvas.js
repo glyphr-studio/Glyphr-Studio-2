@@ -138,7 +138,7 @@ export class EditCanvas extends HTMLElement {
 
 			// Draw selected path / path
 			let editMode = editor.selectedTool;
-			log(`editMode: ${editMode}`);
+			// log(`editMode: ${editMode}`);
 
 			if (editMode === 'resize') {
 				drawSelectedPathOutline(ctx, view);
