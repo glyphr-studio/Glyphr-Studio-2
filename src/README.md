@@ -54,7 +54,6 @@ Our data structure is roughly hierarchical:
                   ┗━ Poly Segment
                       ┗━ Segment
 
-**`Glyph`** objects are used to represent Glyphs, Components, and Ligatures.
 Though there is also **`XY Point`** type for simple coordinates. Additionally,
 there is also the **`HKern`** type, used to represent class-based kern information.
 
@@ -70,7 +69,7 @@ The **`Glyph`** type is used for Glyphs, Components, and Ligatures.
 
 **`Path`** and **`Component Instance`** surface the same API, essentially,
 and can be treated interchangeably from a **`Glyph`**'s point of view.
-Under the covers, though, a **`Path`** relies on a **`Path Point`**s to draw
+Under the covers, though, a **`Path`** relies on **`Path Points`** to draw
 itself, where a **`Component Instance`** relies on a link to another
 **`Glyph`**, plus some transforms, to draw itself.
 
@@ -87,7 +86,7 @@ typeface design programs was stored as a series of "on curve"
 or "off curve" points. Or they were stored as if they were Bézier Curves, basically
 as 4 sets of coordinates (e.g. PostScript) . Glyphr Studio's **`Path`** differs
 from both of these - namely, a **`Path`** is essentially a collection of
-**`Path Point`**s, where each **`Path Point`** has a base point, plus two "handles".
+**`Path Points`**, where each **`Path Point`** has a base point, plus two "handles".
 For any graphic designer, this should be a very familiar representation of a path.
 
 Classic Bézier Curve Segment notation starts with a base point, then has two "handle"
@@ -105,12 +104,12 @@ about "on curve" points to draw a curve... so separating them seems odd.
 In the end, Glyphr Studio's **`Path Point`** has a base point and two handles.
 Handles can be hidden for corner points. **`Path Point`** has types like
 symmetrical, flat, or corner, to make things easier for the designer.
-Glyphr Studio **`Path`**s are implicitly closed, there is no danger of strange
+Glyphr Studio **`Paths`** are implicitly closed, there is no danger of strange
 situations with multiple "off curve" handle points, and it only stores
 the base point data one time per point.
 
 Great, so what's with the **`Poly Segment`** and **`Segment`** classes? These
-actually convert Glyphr Studio **`Path`**s to and from Bézier curve format.
+actually convert Glyphr Studio **`Paths`** to and from Bézier curve format.
 As it turns out, there is a wealth of Math concepts around Bézier curves.
 Namely, we use it to find the bounding boxes of complex paths, and also
 split paths into multiple sub-paths when adding a path point. Since the
@@ -150,7 +149,7 @@ cross-project-editor scenarios (like glyph copy/paste) will be enabled.
 The **App**, **Controls**, **IO**, **Pages**, **Panels**, and **Project Editor**
 folders all support this overall App model.
 
-**App files should have as many tests as is feasable**
+**App files should have as many tests as is feasible**
 (right now, it's not many)
 
 # Other Stuff
