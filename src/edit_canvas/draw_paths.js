@@ -81,7 +81,10 @@ function isOverGlyphControlPoint(glyph, x, y, noHandles) {
 	for (let s = 0; s < glyph.paths.length; s++) {
 		if (glyph.paths[s].objType !== 'ComponentInstance') {
 			re = isOverPathControlPoint(glyph.paths[s], x, y, noHandles);
-			if (re) return re;
+			if (re) {
+				// log(`isOverGlyphControlPoint - returning path#${s}`);
+				return re;
+			}
 		}
 	}
 	return false;
@@ -229,9 +232,6 @@ function isOverPathControlPoint(path, x, y, noHandles) {
 	for (let k = pp.length - 1; k >= 0; k--) {
 		re = isOverPathPointControlPoint(pp[k], x, y, noHandles);
 		if (re) {
-			// log(`returning`);
-			// log(re);
-			// log(`isOverPathControlPoint`, 'end');
 			return re;
 		}
 	}
@@ -277,20 +277,20 @@ function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false)
 	const targetSize = getCurrentProject().projectSettings.pointSize;
 	const test = { x: x, y: y };
 	if (pointsAreEqual(pathPoint.p, test, targetSize)) {
-		// log('PathPoint.isOverControlPoint - Returning P1');
+		// log(`isOverPathPointControlPoint - Returning p`);
 		return pathPoint.p;
 	}
 
 	if (pathPoint.h1.use && !noHandles) {
 		if (pointsAreEqual(pathPoint.h1, test, targetSize)) {
-			// log('PathPoint.isOverControlPoint - Returning h1');
+			// log(`isOverPathPointControlPoint - Returning h1`);
 			return pathPoint.h1;
 		}
 	}
 
 	if (pathPoint.h2.use && !noHandles) {
 		if (pointsAreEqual(pathPoint.h2, test, targetSize)) {
-			// log('PathPoint.isOverControlPoint - Returning h2');
+			// log(`isOverPathPointControlPoint - Returning h2`);
 			return pathPoint.h2;
 		}
 	}

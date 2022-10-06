@@ -25,7 +25,7 @@ export class Tool_PathEdit {
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			const msPoints = editor.multiSelect.points;
-			const msPaths = editor.multiSelect.points;
+			const msPaths = editor.multiSelect.paths;
 			let view = editor.view;
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
@@ -220,7 +220,7 @@ export class Tool_PathEdit {
 			const msPoints = editor.multiSelect.points;
 
 			if (this.monitorForDeselect) {
-				msPoints.deselect(this.pathPoint);
+				msPoints.remove(this.pathPoint);
 			}
 
 			// set to defaults
