@@ -25,46 +25,58 @@ class MultiSelect {
 		this.singleHandle = false;
 	}
 
-	isSelectable(obj) {
-		// log(`MultiSelect.isSelectable`, 'start');
-		// log(`obj.objType: ${obj.objType}`);
+	isSelected(obj) {
+		// log(`MultiSelect.isSelected`, 'start');
+		// log(this.members);
 		// log(obj);
+		// log(`returning ${this.members.indexOf(obj) > -1}`);
+		// log(`MultiSelect.isSelected`, 'end');
+		return this.members.indexOf(obj) > -1;
+	}
 
-		let selectable = ['PathPoint', 'Path', 'ComponentInstance'];
-
-		// log(`returning ${selectable.includes(obj?.objType)}`);
-		// log(`MultiSelect.isSelectable`, 'end');
-		return selectable.includes(obj?.objType);
+	isSelectable(obj) {
+		log(`MultiSelect.isSelectable`, 'start');
+		let types = ['PathPoint', 'Path', 'ComponentInstance'];
+		let selectableType = types.includes(obj?.objType);
+		log(`MultiSelect.isSelectable`, 'end');
+		return selectableType && !this.isSelected(obj);
 	}
 
 	select(obj) {
 		log('MultiSelect.select', 'start');
-		log(`this.members.length: ${this.members.length}`);
+		// log(`this.members.length: ${this.members.length}`);
+
+		log(`obj.__ID: ${obj.__ID}`);
 
 		if (this.isSelectable(obj)) {
 			log(`selecting ${obj.objType}`);
 			this.members = [obj];
+			log(`JUST SELECTED obj.__ID: ${this.members.at(0).__ID}`);
 			this.publishChanges();
 		} else {
 			log('this.isSelectable = false, clearing');
 			this.clear();
 		}
-		log(this.members);
+		// log(this.members);
 		log('MultiSelect.select', 'end');
 	}
 
 	add(obj) {
 		log(`MultiSelect.add`, 'start');
-		log(obj);
-		log(`this.members.length: ${this.members.length}`);
+		// log(obj);
+		// log(`this.members.length: ${this.members.length}`);
+		// log(this.members.indexOf(obj));
 
-		log(this.members.indexOf(obj));
-		if (this.isSelectable(obj) && this.members.indexOf(obj) < 0) {
+		log(`obj.__ID: ${obj.__ID}`);
+
+		if (this.isSelectable(obj)) {
 			log(`adding ${obj.objType} "${obj.type ? obj.type : obj.name}"`);
 			this.members.push(obj);
+			log(`JUST ADDED obj.__ID: ${this.members.at(-1).__ID}`);
 			this.publishChanges();
 		}
-		log(this.members);
+
+		// log(this.members);
 		log(`MultiSelect.add`, 'end');
 	}
 
@@ -125,14 +137,6 @@ class MultiSelect {
 		if (this.members.length === 1) return this.members[0];
 		else return false;
 	}
-
-	isSelected(obj) {
-		// log(`MultiSelect.isSelected`, 'start');
-		// log(`obj: ${obj}`);
-		// log(`returning ${this.members.indexOf(obj) > -1}`);
-		// log(`MultiSelect.isSelected`, 'end');
-		return this.members.indexOf(obj) > -1;
-	}
 }
 
 // --------------------------------------------------------------
@@ -143,10 +147,12 @@ export class MultiSelectPoints extends MultiSelect {
 	constructor() {
 		super();
 		this._virtualPath = new Path();
+		this._virtualPath.name = 'Multi-selected Points';
 	}
 
 	get virtualPath() {
-		this._virtualPath = new Path({ pathPoints: this.members });
+		this._virtualPath._pathPoints = this.members;
+		this._virtualPath.changed();
 		return this._virtualPath;
 	}
 
@@ -264,7 +270,7 @@ export class MultiSelectPaths extends MultiSelect {
 	constructor() {
 		super();
 		this._virtualGlyph = new Glyph();
-		this._virtualGlyph.name = 'MultiSelect-ed Paths';
+		this._virtualGlyph.name = 'Multi-Selected Paths';
 	}
 
 	get virtualGlyph() {

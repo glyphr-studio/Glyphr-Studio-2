@@ -1,11 +1,13 @@
-import { json, clone } from '../common/functions.js';
+import { json, clone, makeRandomID } from '../common/functions.js';
 
 /**
  * Base for all Glyph Elements
  */
 export class GlyphElement {
 	/** Yay! */
-	constructor() {}
+	constructor() {
+		// this.__ID = makeRandomID();
+	}
 
 	/**
 	 * Any change that updates the path of any part of a glyph

@@ -41,6 +41,16 @@ export function generateNewID(obj, base) {
 	return id;
 }
 
+export function makeRandomID() {
+	let glyphs = 'ABCDEFGHJKLMPQSTUVWXYZ';
+	let result = '';
+	for (let i = 0; i < 3; i++) {
+		result += glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+	}
+
+	return result;
+}
+
 // --------------------------------------------------------------
 // Common Functions
 // --------------------------------------------------------------

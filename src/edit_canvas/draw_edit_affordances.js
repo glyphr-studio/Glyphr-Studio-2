@@ -490,18 +490,13 @@ export function drawPoint(point, ctx, isSelected) {
 	ctx.strokeStyle = accent;
 	ctx.font = '10px Consolas';
 
-	ctx.fillRect(
-		sXcX(point.p.x) - halfPointSize,
-		sYcY(point.p.y) - halfPointSize,
-		pointSize,
-		pointSize
-	);
-	ctx.strokeRect(
-		sXcX(point.p.x) - halfPointSize,
-		sYcY(point.p.y) - halfPointSize,
-		pointSize,
-		pointSize
-	);
+	let px = sXcX(point.p.x) - halfPointSize;
+	let py = sYcY(point.p.y) - halfPointSize;
+	ctx.fillRect(px, py, pointSize, pointSize);
+	ctx.strokeRect(px, py, pointSize, pointSize);
+
+	// ctx.fillStyle = 'orange';
+	// ctx.fillText(point.__ID, px + 12, py);
 
 	ctx.fillStyle = accent;
 	// ctx.fillText(point.pointNumber, sXcX(point.p.x + 12), sYcY(point.p.y));
