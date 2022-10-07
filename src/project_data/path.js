@@ -993,9 +993,11 @@ export class Path extends GlyphElement {
 	 * @returns {Path} - reference to this path
 	 */
 	flipNS(mid = this.maxes.center.y) {
-		// log(`Path.flipNS`, 'start');
+		log(`Path.flipNS`, 'start');
+		log(`mid: ${mid}`);
+
 		// log(this.print());
-		const startingY = this.y;
+		// const startingY = this.y;
 
 		for (let e = 0; e < this.pathPoints.length; e++) {
 			const pp = this.pathPoints[e];
@@ -1003,11 +1005,11 @@ export class Path extends GlyphElement {
 			pp.h1.coord.y += (mid - pp.h1.coord.y) * 2;
 			pp.h2.coord.y += (mid - pp.h2.coord.y) * 2;
 		}
-		this.y = startingY;
+		// this.y = startingY;
 		this.reverseWinding();
 
 		// log(this.print());
-		// log(`Path.flipNS`, 'end');
+		log(`Path.flipNS`, 'end');
 	}
 
 	/**
@@ -1018,7 +1020,7 @@ export class Path extends GlyphElement {
 	flipEW(mid = this.maxes.center.x) {
 		// log(`Path.flipEW`, 'start');
 		// log(this.print());
-		const startingX = this.x;
+		// const startingX = this.x;
 		// log(`calculating mid: (width)/2 + x = mid: ${this.width}/2 + ${this.x} = ${mid}`);
 
 		for (let e = 0; e < this.pathPoints.length; e++) {
@@ -1027,7 +1029,7 @@ export class Path extends GlyphElement {
 			pp.h1.coord.x += (mid - pp.h1.coord.x) * 2;
 			pp.h2.coord.x += (mid - pp.h2.coord.x) * 2;
 		}
-		this.x = startingX;
+		// this.x = startingX;
 		this.reverseWinding();
 
 		// log(`Path.flipEW`, 'end');

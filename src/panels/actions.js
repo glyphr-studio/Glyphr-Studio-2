@@ -168,9 +168,9 @@ export function getActionData(name) {
 			title: 'Flip Horizontal\nReflects the currently selected path or paths horizontally.',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let path = editor.multiSelect.paths.singleton;
+				let path = editor.multiSelect.paths.virtualGlyph;
 				path.flipEW();
-				editor.publish('currentPath', path);
+				editor.publish('currentGlyph', editor.selectedItem);
 			},
 		},
 		{
@@ -178,9 +178,9 @@ export function getActionData(name) {
 			title: 'Flip Vertical\nReflects the currently selected path or paths vertically',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let path = editor.multiSelect.paths.singleton;
+				let path = editor.multiSelect.paths.virtualGlyph;
 				path.flipNS();
-				editor.publish('currentPath', path);
+				editor.publish('currentGlyph', editor.selectedItem);
 			},
 		},
 		{
@@ -188,9 +188,9 @@ export function getActionData(name) {
 			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let path = editor.multiSelect.paths.singleton;
+				let path = editor.multiSelect.paths.virtualGlyph;
 				path.roundAll();
-				editor.publish('currentPath', path);
+				editor.publish('currentGlyph', editor.selectedItem);
 			},
 		},
 	]);
@@ -384,6 +384,7 @@ export function makeActionsArea_Glyph(test = false) {
 // Path actions
 export function makeActionsArea_Path(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
+	let alignActions = false;
 	let selectedPaths = getCurrentProjectEditor().multiSelect.paths.members;
 
 	if (selectedPaths.length > 0 || test) {
@@ -406,10 +407,11 @@ export function makeActionsArea_Path(test = false) {
 	// Path align actions
 	if (selectedPaths.length > 1 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
-		addChildActions(actionsArea, getActionData('alignActions'));
+		alignActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
+		addChildActions(alignActions, getActionData('alignActions'));
 	}
 
-	return actionsArea;
+	return alignActions? [actionsArea, alignActions] : actionsArea;
 }
 
 // Point actions

@@ -20,7 +20,7 @@ export class Tool_NewPath {
 		this.mousedown = function (ev) {
 			// log('Tool_NewPath.mousedown', 'start');
 			const editor = getCurrentProjectEditor();
-			let ehd = eventHandlerData;
+			const ehd = eventHandlerData;
 
 			// New point
 			let newPoint = new PathPoint();
@@ -73,7 +73,7 @@ export class Tool_NewPath {
 		};
 
 		this.mousemove = function (ev) {
-			let ehd = eventHandlerData;
+			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 
 			if (this.dragging) {

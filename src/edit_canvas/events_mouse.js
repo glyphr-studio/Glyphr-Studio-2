@@ -17,7 +17,7 @@ export function handleMouseEvents(event) {
 	// log(`handleMouseEvents`, 'start');
 	// log(`Raw mouse event x/y = ${event.layerX} / ${event.layerY}`);
 	// log(event);
-	let ehd = eventHandlerData;
+	const ehd = eventHandlerData;
 	const editor = getCurrentProjectEditor();
 
 	if (event.offsetX || event.offsetY) {
