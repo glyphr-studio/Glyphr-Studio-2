@@ -1,7 +1,7 @@
-import { PageOpenProject } from '../pages/open_project.js';
-import { PageGlyphEdit } from '../pages/glyph_edit.js';
-import { PageOverview } from '../pages/overview.js';
-import { PageAbout } from '../pages/about.js';
+import { makePage_OpenProject } from '../pages/open_project.js';
+import { makePage_GlyphEdit } from '../pages/glyph_edit.js';
+import { makePage_Overview } from '../pages/overview.js';
+import { makePage_About } from '../pages/about.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
@@ -17,7 +17,7 @@ export class Navigator {
 	constructor() {
 		this.page = 'Open project';
 		this.panel = 'Attributes';
-		this.pageMakers = {};
+		this.pageContents = {};
 	}
 
 	/**
@@ -27,17 +27,17 @@ export class Navigator {
 		return {
 			'Open project': {
 				name: 'Open project',
-				pageMaker: PageOpenProject,
+				pageMaker: makePage_OpenProject,
 				iconName: false,
 			},
 			Overview: {
 				name: 'Overview',
-				pageMaker: PageOverview,
+				pageMaker: makePage_Overview,
 				iconName: 'page_overview',
 			},
 			'Glyph edit': {
 				name: 'Glyph edit',
-				pageMaker: PageGlyphEdit,
+				pageMaker: makePage_GlyphEdit,
 				iconName: 'page_glyphEdit',
 			},
 			Ligatures: {
@@ -82,7 +82,7 @@ export class Navigator {
 			},
 			About: {
 				name: 'About',
-				pageMaker: PageAbout,
+				pageMaker: makePage_About,
 				iconName: 'page_about',
 			},
 		};
@@ -130,18 +130,18 @@ export class Navigator {
 			console.warn(`No page maker for ${this.page}`);
 			pageContent.innerHTML += `<br>${this.page}`;
 		} else {
-			if (!this.pageMakers[this.page]) {
-				this.pageMakers[this.page] = new currentPageMaker();
+			if (!this.pageContents[this.page]) {
+				this.pageContents[this.page] = this.tableOfContents[this.page].pageMaker();
 			}
-			// If there is a page maker and a loader, set it
-			pageContent = this.pageMakers[this.page].makePageContent();
+			// If there is page content, set it
+			pageContent = this.pageContents[this.page];
 		}
 
 		// Append results
 		editorContent.appendChild(pageContent);
 
-		// log(`this.pageMakers`);
-		// log(this.pageMakers);
+		// log(`this.pageContents`);
+		// log(this.pageContents);
 
 		// log(`Navigator.makePageContent`, 'end');
 
