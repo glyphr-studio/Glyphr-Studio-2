@@ -43,10 +43,10 @@ export class GlyphrStudioApp {
 		log(`GlyphrStudioApp.setUp`, 'start');
 
 		this.projectEditors[0] = new ProjectEditor();
-		let editor = this.getCurrentProjectEditor();
+		const editor = this.getCurrentProjectEditor();
 
 		// Dev mode stuff
-		let dev = this.settings.dev;
+		const dev = this.settings.dev;
 		if (dev.mode) {
 			log('DEV NAV - to ' + dev.currentPage);
 			document.title = '⡄⡆⡇ ⃨G⃨S⃨2⃨D⃨E⃨V⃨M⃨O⃨D⃨E⃨ ⡇⡆⡄';
