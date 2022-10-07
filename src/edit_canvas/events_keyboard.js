@@ -21,13 +21,13 @@ export function handleKeyPress(event) {
 	// }
 
 	// log('handleKeyPress', 'start');
-	let key = getKeyFromEvent(event);
+	const key = getKeyFromEvent(event);
 	// log(`KEY ${key} from ${event.which}`);
-	// log(`CTRL ${event.ctrlKey} META ${event.metaKey}`);
 	// log(event);
 
 	handleSpecialKeys(key, 'down');
-	let ehd = eventHandlerData;
+	const ehd = eventHandlerData;
+	// log(`ehd.isCtrlDown: ${ehd.isCtrlDown}`);
 
 	// shift s (save as)
 	// if (ehd.isCtrlDown && ehd.isShiftDown && key === 's') {
@@ -73,24 +73,16 @@ export function handleKeyPress(event) {
 	// Only allow the following stuff for canvas edit pages
 	if (!editor.nav.isOnEditCanvasPage) return;
 	var editMode = getEditMode();
+	// log(`editMode: ${editMode}`);
 
 	// Ctrl
 	if (ehd.isCtrlDown) {
-		// log('event.ctrlKey = true');
-		// log('selectedTool = ' + editor.selectedTool);
-		event.preventDefault();
-
-		// if (ehd.isMouseOverCanvas) {
-		// 	if (editMode === 'arrow') setCursor('arrowPlus');
-		// 	if (editMode === 'pen') setCursor('penPlus');
-		// }
-
-		// log('ehd.lastTool = ' + ehd.lastTool);
+		// Show multi-selectable stuff on the canvas
 		editor.editCanvas.redraw({ calledBy: 'Event Handler - Keydown Ctrl for multi select' });
-		return;
 	}
 
 	// Ctrl+A - Select All
+
 	if (ehd.isCtrlDown && key === 'a') {
 		if (ehd.isMouseOverCanvas) {
 			if (editMode === 'arrow') {
@@ -208,7 +200,7 @@ export function handleKeyPress(event) {
 		}
 */
 		// v
-		if (key === 'v') clickTool('pathEdit');
+		if (key === 'v') clickTool('resize');
 
 		// b
 		if (key === 'b') clickTool('pathEdit');
@@ -254,7 +246,8 @@ function getKeyFromEvent(event) {
 }
 
 function nudge(dx, dy, ev) {
-	let ehd = eventHandlerData;
+	const editor = getCurrentProjectEditor();
+	const ehd = eventHandlerData;
 	if (ehd.isCtrlDown) return;
 
 	let multiplier = ehd.isShiftDown ? 10 : 1;
@@ -281,7 +274,7 @@ function nudge(dx, dy, ev) {
 function getEditMode() {
 	const editor = getCurrentProjectEditor();
 	if (editor.nav.page === 'kern') return 'kern';
-	if (editor.selectedTool === 'pathResize') return 'arrow';
+	if (editor.selectedTool === 'resize') return 'arrow';
 	if (editor.selectedTool === 'pathEdit') return 'pen';
 }
 
@@ -321,7 +314,7 @@ function handleSpecialKeys(key, keyDirection) {
 	// log(`key: ${key}`);
 	// log(`keyDirection: ${keyDirection}`);
 
-	let ehd = eventHandlerData;
+	const ehd = eventHandlerData;
 
 	// Maybe not strong equals here?
 	if (keyDirection === 'down') {

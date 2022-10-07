@@ -21,12 +21,12 @@ export class Tool_PathEdit {
 		// Mouse Down
 		// --------------------------------------------------------------
 		this.mousedown = function (ev) {
-			log('Tool_PathEdit.mousedown', 'start');
+			// log('Tool_PathEdit.mousedown', 'start');
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			const msPoints = editor.multiSelect.points;
 			const msPaths = editor.multiSelect.paths;
-			let view = editor.view;
+			const view = editor.view;
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
 
@@ -35,24 +35,24 @@ export class Tool_PathEdit {
 				cXsX(ehd.mouseX, view),
 				cYsY(ehd.mouseY, view)
 			);
-			log(`isOverControlPoint:`);
-			log(this.controlPoint);
+			// log(`isOverControlPoint:`);
+			// log(this.controlPoint);
 
-			let clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
-			log(`getPathAtLocation:`);
-			log(clickedPath);
+			const clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
+			// log(`getPathAtLocation:`);
+			// log(clickedPath);
 
 			if (this.controlPoint) {
-				log('detected CONTROL POINT');
+				// log('detected CONTROL POINT');
 				this.dragging = true;
 				this.pathPoint = this.controlPoint.parent;
-				let isPathPointSelected = msPoints.isSelected(this.pathPoint);
+				const isPathPointSelected = msPoints.isSelected(this.pathPoint);
 
 				if (this.controlPoint.type === 'p') {
-					log('detected P');
+					// log('detected P');
 
 					if (ehd.isCtrlDown) {
-						log('Multi Select Mode');
+						// log('Multi Select Mode');
 						if (isPathPointSelected) {
 							// If we don't drag the points, deselect on mouseup
 							this.monitorForDeselect = true;
@@ -61,7 +61,7 @@ export class Tool_PathEdit {
 							editor.selectPathsThatHaveSelectedPoints();
 						}
 					} else {
-						log('Single Select Mode');
+						// log('Single Select Mode');
 						if (isPathPointSelected) {
 							// If we don't drag the point, deselect on mouseup
 							this.monitorForDeselect = true;
@@ -71,26 +71,26 @@ export class Tool_PathEdit {
 						}
 					}
 				} else {
-					log('detected HANDLE');
+					// log('detected HANDLE');
 					msPoints.singleHandle = this.controlPoint.type;
-					log(`set ms.singleHandle: ${msPoints.singleHandle}`);
+					// log(`set ms.singleHandle: ${msPoints.singleHandle}`);
 					// setCursor('penCircle');
 				}
 
 				// selectPathsThatHaveSelectedPoints();
 			} else if (clickedPath) {
-				log('detected PATH');
+				// log('detected PATH');
 				clickEmptySpace();
 				msPaths.select(clickedPath);
 			} else {
-				log('detected NOTHING');
+				// log('detected NOTHING');
 				// msPaths.recalculateMaxes();
 				clickEmptySpace();
 				// findAndCallHotspot(ehd.mouseX, ehd.mouseY);
 			}
 
 			if (msPaths.members.length) editor.nav.panel = 'Attributes';
-			log('Tool_PathEdit.mousedown', 'end');
+			// log('Tool_PathEdit.mousedown', 'end');
 		};
 
 		// --------------------------------------------------------------
@@ -101,7 +101,7 @@ export class Tool_PathEdit {
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			const msPoints = editor.multiSelect.points;
-			let view = editor.view;
+			const view = editor.view;
 
 			if (ehd.toolHandoff) {
 				ehd.toolHandoff = false;
@@ -124,7 +124,7 @@ export class Tool_PathEdit {
 				this.monitorForDeselect = false;
 				let dx = (ehd.mouseX - ehd.lastX) / view.dz;
 				let dy = (ehd.lastY - ehd.mouseY) / view.dz;
-				let cpt = this.controlPoint.type;
+				const cpt = this.controlPoint.type;
 
 				if (msPoints.members.length === 1) {
 					if (this.controlPoint && this.controlPoint.xLock) dx = 0;
@@ -134,18 +134,11 @@ export class Tool_PathEdit {
 				// log(`dragging with ms.singleHandle: ${msPoints.singleHandle}`);
 				// log(`dx: ${dx}, dy: ${dy}`);
 				msPoints.updatePathPointPosition(dx, dy);
-				// msPoints.members.forEach(function (point, i) {
-				// 	// log('UpdatePPP ' + cpt + '\t' + dx + '\t' + dy);
-				// 	if (ev.ctrlKey || ev.metaKey) return;
-				// 	point.updatePathPointPosition(cpt, dx, dy);
-				// });
 
 				ehd.lastX = ehd.mouseX;
 				ehd.lastY = ehd.mouseY;
 				ehd.undoQueueHasChanged = true;
 				editor.publish(`currentControlPoint.${cpt}`, this.controlPoint);
-				// selectPathsThatHaveSelectedPoints();
-				// redraw({ calledBy: 'Event Handler Tool_PathEdit mousemove' });
 			}
 
 			// checkForMouseOverHotspot(ehd.mouseX, ehd.mouseY);

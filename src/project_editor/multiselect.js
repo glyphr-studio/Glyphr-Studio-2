@@ -298,7 +298,7 @@ export class MultiSelectPaths extends MultiSelect {
 	}
 
 	selectAll() {
-		let currItem = getCurrentProjectEditor().currItem;
+		const currItem = getCurrentProjectEditor().selectedItem;
 		if (currItem.paths) {
 			currItem.paths.forEach((path) => {
 				this.add(path);

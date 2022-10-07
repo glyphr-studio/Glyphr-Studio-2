@@ -71,6 +71,7 @@ export function drawSelectedPathOutline(ctx, view) {
 		ctx.closePath();
 
 		ctx.strokeStyle = accentBlue;
+		ctx.lineWidth = selected > 1 ? 2 : 1;
 		ctx.stroke();
 	}
 
