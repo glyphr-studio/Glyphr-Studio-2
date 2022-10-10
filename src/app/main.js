@@ -36,7 +36,6 @@ export function glyphrStudioOnLoad() {
 
 		// Load project
 		let sample = getVersionTwoTestProject();
-		GSApp.settings.dev.currentPage = 'Glyph edit';
 		GSApp.setUp(JSON.stringify(sample));
 		log(GSApp);
 	} else {

@@ -2,7 +2,6 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from './main.js';
 
-export { makeAppTopBar };
 
 /**
  * Creates a new Glyphr Studio Application
@@ -13,8 +12,8 @@ export class GlyphrStudioApp {
 	 */
 	constructor() {
 		// Version
-		this.versionName = 'Version 2 alpha';
-		this.version = '2.0.0-alpha';
+		this.versionName = 'Version 2: Alpha 1';
+		this.version = '2.0.0-alpha1';
 		this.versionDate = 0;
 		this.projectEditors = [];
 		this.selectedProjectEditor = 0;
@@ -23,7 +22,7 @@ export class GlyphrStudioApp {
 			dev: {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
-				currentPage: false, // navigate straight to a page
+				currentPage: 'About', // navigate straight to a page
 				currentPanel: false, // navigate straight to a panel
 				selectedPath: false, // automatically select a path
 				debugAutoGroup: false, // try to console.group based on text strings
@@ -48,12 +47,11 @@ export class GlyphrStudioApp {
 		// Dev mode stuff
 		const dev = this.settings.dev;
 		if (dev.mode) {
-			log('DEV NAV - to ' + dev.currentPage);
 			document.title = '⡄⡆⡇ ⃨G⃨S⃨2⃨D⃨E⃨V⃨M⃨O⃨D⃨E⃨ ⡇⡆⡄';
 
 			// Sample Project
 			if (sampleProject) {
-				log('Using sample project');
+				// log('Using sample project');
 				editor.project = importGlyphrProjectFromText(sampleProject);
 			}
 			editor.selectedTool = 'pathEdit';
@@ -64,12 +62,14 @@ export class GlyphrStudioApp {
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation
+			// log(`dev.currentPage: ${dev.currentPage}`);
+
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
 		}
 
 		// log(editor);
-		// log(editor.nav);
+		// log(editor.nav.page);
 		this.fadeOutLoadScreen();
 		editor.navigate();
 
@@ -114,7 +114,7 @@ export class GlyphrStudioApp {
 	}
 }
 
-function makeAppTopBar() {
+export function makeAppTopBar() {
 	let app = getGlyphrStudioApp();
 	return `
 		<div id="app__top-bar">

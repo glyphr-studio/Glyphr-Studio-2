@@ -90,7 +90,7 @@ hr {
 
 h1 {
 	margin-left: 0px;
-	color: var(--gray-l85);
+	color: var(--gray-l55);
 	font-size: 2em;
 	margin-bottom: 8px;
 	clear: right;
@@ -196,6 +196,11 @@ input[type='number'][disabled='disabled'] {
 input[type='checkbox'] {
 	accent-color: var(--accent-color);
 	opacity: 0.75;
+}
+
+ul li {
+	margin-left: 20px;
+	margin-top: 5px;
 }
 
 /* --------------------------------------------------------------
