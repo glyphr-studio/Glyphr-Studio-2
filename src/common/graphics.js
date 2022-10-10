@@ -9,18 +9,11 @@ import { accentColors, uiColors } from './colors.js';
  * @param {object} oa - object argument
  * @returns {string}
  */
-export function makeGlyphrStudioLogo(oa) {
-	oa = oa || {};
-	const fill = oa.fill || accentColors.blue.l65;
-	const width = oa.width || 184;
-	const height = width * (55 / 184); // dimensions of the native logo
-
+export function makeGlyphrStudioLogo() {
 	const re = `<svg
 			version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
-			viewBox="0 0 ${width} ${height}" enable-background="new 0 0 ${width} ${height}">
-			<g id="LOGO" fill="${fill}" transform="scale(${width / 184})" >
+			viewBox="0 0 200 128" enable-background="new 0 0 200 128">
 				${alphaLogoSVG}
-			</g>
 		</svg>
 	`;
 	return re;

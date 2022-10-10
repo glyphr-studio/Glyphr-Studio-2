@@ -95,11 +95,10 @@ export class ProjectEditor {
 	// Navigate
 	// --------------------------------------------------------------
 	navigate(pageName) {
-		log(`ProjectEditor.navigate`, 'start');
-		log(`pageName: ${pageName}`);
+		// log(`ProjectEditor.navigate`, 'start');
 		this.nav.navigate(pageName);
 		this.autoFitIfViewIsDefault();
-		log(`ProjectEditor.navigate`, 'end');
+		// log(`ProjectEditor.navigate`, 'end');
 	}
 
 	// --------------------------------------------------------------

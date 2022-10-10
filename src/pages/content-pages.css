@@ -48,4 +48,15 @@
 	overflow-x: hidden;
 	overflow-y: auto;
 	box-shadow: var(--l3-shadow);
+	padding: 20px;
+}
+
+.content-page__right-area p {
+	margin-bottom: 20px;
+	max-width: 800px;
+}
+
+.content-page__right-area label {
+	color: var(--enabled-restingLight-lightText);
+	margin-right: 4px;
 }
