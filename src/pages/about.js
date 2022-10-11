@@ -42,7 +42,7 @@ export function makePage_About() {
 					<br><br>
 					<br><br>
 
-					${make_ContributeHTML()}
+					${makeContributeMessage()}
 
 
 				</div>
@@ -52,31 +52,9 @@ export function makePage_About() {
 					${makeGlyphrStudioLogo(false)}
 				</div>
 				<p class="logoNote">*not the final logo!</p>
-				
-				<br>
-				<h1>Welcome to Alpha 1!</h1>
-				<p>
-					What is an alpha? Currently, Glyphr Studio v2 does not
-					have enough features to be considered a usable product (mainly, it's missing
-					importing/exporting font files, and opening/saving project files). But, there
-					are still some features that we'd love to get feedback on, and probably some
-					bugs that we still haven't found.
-				</p>
-
-				For Alpha 1, please try the following scenarios:
-				<ul>
-					<li>Create new shapes on the edit canvas</li>
-					<li>Resize shapes with the arrow tool</li>
-					<li>Edit paths with the pen tool</li>
-					<li>Edit glyph, path, and path point details from the Attributes panel</li>
-				</ul>
 
 				<br>
-				<p>
-					If you find any bugs, or have an suggestions about functionality, please email us!
-					<a href="mailto:mail@glyphrstudio.com?subject=[${app.version}] Feedback">mail@glyphrstudio.com</a>
-				</p>
-
+				${makeAlpha1Message()}
 				<br>
 
 				<h1>Version information</h1>
@@ -120,8 +98,38 @@ export function makePage_About() {
 	return content;
 }
 
-export function make_ContributeHTML() {
-	var content = `
+export function makeAlpha1Message() {
+	const app = window._GlyphrStudioApp;
+	let content = `
+		<h1>Welcome to Alpha 1!</h1>
+		<p>
+			What is an alpha? Currently, Glyphr Studio v2 does not
+			have enough features to be considered a usable product (mainly, it's missing
+			importing/exporting font files, and opening/saving project files). But, there
+			are still some features that we'd love to get feedback on, and probably some
+			bugs that we still haven't found.
+		</p>
+		<br>
+		<b>For Alpha 1, please try the following scenarios:</b>
+		<ul>
+			<li>Navigate around using the upper-left Page button, and the Glyph Chooser</li>
+			<li>Create new shapes on the edit canvas</li>
+			<li>Resize shapes with the arrow tool</li>
+			<li>Edit paths with the pen tool</li>
+			<li>Edit glyph, path, and path point details from the Attributes panel</li>
+		</ul>
+
+		<br>
+		<p>
+			If you find any bugs, or have an suggestions about functionality, please email us!
+			<a href="mailto:mail@glyphrstudio.com?subject=[${app.version}] Feedback">mail@glyphrstudio.com</a>
+		</p>
+	`;
+	return content;
+}
+
+export function makeContributeMessage() {
+	let content = `
 	<h3>Contribute!</h3>
 	If you think Glyphr Studio is pretty cool, there are two huge ways you can make it better!
 	<br>
