@@ -51,6 +51,37 @@
 	padding: 20px;
 }
 
+.GS2Logo {
+	width: 400px;
+	fill: var(--purple-l30);
+}
+
+.logoNote {
+	margin-top: 10px;
+	font-size: 0.8em;
+	color: var(--purple-l65);
+	font-style: italic;
+}
+
+.page__card {
+	/* display: grid;
+	grid-template-columns: clamp(110px, 150px, 190px) 1fr;
+	align-items: center;
+	justify-items: left;
+	row-gap: 5px;
+	column-gap: 11px; */
+	width: 400px;
+	display: inline-block;
+	margin-bottom: 5px;
+	margin-right: 0px;
+
+	border: 1px solid var(--gray-l85);
+	padding: 10px 10px 15px 10px;
+	background-color: white;
+	border-radius: 4px;
+	box-shadow: var(--l2-shadow);
+}
+
 .content-page__right-area p {
 	margin-bottom: 20px;
 	max-width: 800px;
