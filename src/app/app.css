@@ -54,8 +54,15 @@
 	box-shadow: var(--l3-shadow);
 }
 
-.alphaBugContact a {
+.alphaBugContact a,
+.alphaBugContact a:hover,
+.alphaBugContact a:focus,
+.alphaBugContact a:visited {
 	font-size: 12px;
 	color: var(--purple-l90);
 	margin-left: 4px;
+}
+
+.alphaBugContact a:active {
+	color: white;
 }

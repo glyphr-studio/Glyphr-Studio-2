@@ -68,14 +68,21 @@ b {
 }
 
 a,
-a:focus,
-a:visited,
-a:active {
-	color: var(--blue-l60);
+a:visited {
+	background-color: transparent;
+	border-radius: 4px;
+	color: var(--blue-l55);
 	text-decoration: none;
 }
 
+a:active {
+	color: var(--blue-l40);
+	background-color: hsla(200, 100%, 45%, 0.1);
+}
+
+a:focus,
 a:hover {
+	color: var(--blue-l65);
 	text-decoration: underline;
 }
 

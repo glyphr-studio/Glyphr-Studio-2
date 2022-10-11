@@ -8,6 +8,7 @@ import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
 import { makeAppTopBar } from '../app/app.js';
 import { makeIcon } from '../common/graphics.js';
 import { accentColors } from '../common/colors.js';
+import { makePage_Help } from '../pages/help.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -77,7 +78,7 @@ export class Navigator {
 			},
 			Help: {
 				name: 'Help',
-				pageMaker: false,
+				pageMaker: makePage_Help,
 				iconName: 'page_help',
 			},
 			About: {
