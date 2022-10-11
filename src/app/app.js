@@ -22,7 +22,7 @@ export class GlyphrStudioApp {
 			dev: {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
-				currentPage: 'About', // navigate straight to a page
+				currentPage: 'Overview', // navigate straight to a page
 				currentPanel: false, // navigate straight to a panel
 				selectedPath: false, // automatically select a path
 				debugAutoGroup: false, // try to console.group based on text strings
@@ -54,9 +54,9 @@ export class GlyphrStudioApp {
 				// log('Using sample project');
 				editor.project = importGlyphrProjectFromText(sampleProject);
 			}
-			editor.selectedTool = 'pathEdit';
-			editor.multiSelect.paths.select(editor.selectedGlyph.paths[0]);
-			editor.multiSelect.points.select(editor.selectedGlyph.paths[0].pathPoints[0]);
+			// editor.selectedTool = 'pathEdit';
+			// editor.multiSelect.paths.select(editor.selectedGlyph.paths[0]);
+			// editor.multiSelect.points.select(editor.selectedGlyph.paths[0].pathPoints[0]);
 
 			// Test Function
 			if (dev.testOnLoad) dev.testOnLoad();

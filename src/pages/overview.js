@@ -2,6 +2,7 @@ import { makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, showNavDropdown } from '../project_editor/navigator.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
+import { makeAlpha1Message, makeContributeMessage } from './about.js';
 
 /**
  * Page > Overview
@@ -20,10 +21,8 @@ export function makePage_Overview() {
 					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Overview' })}
 				</div>
 				<div id="content-page__panel">
-					<div class="panel__card full-width">
-						<h3>${editor.project.projectSettings.name}</h3>
-						<span>More settings can be found on the Settings page</span>
-					</div>
+					${makeAlpha1Message()}
+					<br>
 				</div>
 			</div>
 			<div class="content-page__right-area"></div>

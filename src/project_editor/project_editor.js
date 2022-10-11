@@ -250,7 +250,11 @@ export class ProjectEditor {
 		// log(`ProjectEditor SET selectedGlyphID`, 'start');
 		// log(`id: ${id}`);
 		// Validate ID!
-		this._selectedGlyphID = normalizeHex(id);
+		const newID = normalizeHex(id);
+		this._selectedGlyphID = newID;
+		if (!this.project.glyphs[newID]) {
+			this.project.glyphs[newID] = new Glyph({id: newID});
+		}
 		this.publish('whichGlyphIsSelected', this.selectedGlyphID);
 		// log(`ProjectEditor SET selectedGlyphID`, 'end');
 	}
@@ -435,6 +439,7 @@ export class ProjectEditor {
 
 		// Horizontal
 		let visibleGlyphWidth = this.selectedItem.advanceWidth * newZ;
+		if (visibleGlyphWidth === 0) visibleGlyphWidth = rect.width / 3;
 		let newX = (rect.width - visibleGlyphWidth) / 2;
 
 		let newView = { dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3) };

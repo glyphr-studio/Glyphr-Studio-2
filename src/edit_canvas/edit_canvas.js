@@ -180,8 +180,13 @@ export class EditCanvas extends HTMLElement {
 			let gridPad = 100 * view.dz;
 			let gridWidth = sg.advanceWidth * view.dz;
 
+			// Verticals
 			ctx.fillRect(view.dx, gridTop, 1, gridHeight);
-			ctx.fillRect(round(view.dx + gridWidth), gridTop, 1, gridHeight);
+			if (sg.advanceWidth) {
+				ctx.fillRect(round(view.dx + gridWidth), gridTop, 1, gridHeight);
+			}
+
+			// Baseline
 			ctx.fillRect(view.dx - gridPad, view.dy, gridWidth + gridPad * 2, 1);
 		}
 
