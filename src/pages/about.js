@@ -2,6 +2,7 @@ import { makeElement } from '../common/dom.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { getCurrentProjectEditor } from '../app/main.js';
+import { emailLink } from '../app/app.js';
 
 /**
  * Page > About
@@ -30,7 +31,7 @@ export function makePage_About() {
 					<br><br>
 
 					Email:<br>
-					<a href="mailto:mail@glyphrstudio.com?subject=[${app.version}] Feedback">mail@glyphrstudio.com</a>
+					${emailLink()}
 					<br><br>
 
 					Twitter:<br>
@@ -122,7 +123,7 @@ export function makeAlpha1Message() {
 		<br>
 		<p>
 			If you find any bugs, or have an suggestions about functionality, please email us!
-			<a href="mailto:mail@glyphrstudio.com?subject=[${app.version}] Feedback">mail@glyphrstudio.com</a>
+			${emailLink()}
 		</p>
 	`;
 	return content;

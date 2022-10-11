@@ -124,9 +124,7 @@ export function makeAppTopBar() {
 			</span>
 			<span class='alphaBugContact'>
 				Found a bug? Have some feedback?
-				<a href="mailto:mail@glyphrstudio.com?subject=[${app.version}] Feedback">
-					mail@glyphrstudio.com
-				</a>
+				${emailLink()}
 			</span>
 		</div>
 	`;
@@ -136,6 +134,12 @@ export function makeAppTopBar() {
 // Issue email
 // --------------------------------------------------------------
 
+export function emailLink() {
+	let app = getGlyphrStudioApp();
+	return `
+		<a class="mailto" href="mailto:mail@glyphrstudio.com?subject=[${app.version}] Feedback">mail@glyphrstudio.com</a>
+	`;
+}
 /**
  * Generates the content for the "email us" link
  * @returns {string}
