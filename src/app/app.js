@@ -22,7 +22,7 @@ export class GlyphrStudioApp {
 			dev: {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
-				currentPage: 'Overview', // navigate straight to a page
+				currentPage: 'Help', // navigate straight to a page
 				currentPanel: false, // navigate straight to a panel
 				selectedPath: false, // automatically select a path
 				debugAutoGroup: false, // try to console.group based on text strings

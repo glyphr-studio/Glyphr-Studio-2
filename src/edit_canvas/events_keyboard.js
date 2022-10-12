@@ -58,10 +58,10 @@ export function handleKeyPress(event) {
 	// }
 
 	// o
-	if (ehd.isCtrlDown && key === 'o') {
-		event.preventDefault();
-		window.open('http://glyphrstudio.com/online', '_blank');
-	}
+	// if (ehd.isCtrlDown && key === 'o') {
+	// 	event.preventDefault();
+	// 	window.open('http://glyphrstudio.com/online', '_blank');
+	// }
 
 	// q
 	// for dev mode clear console

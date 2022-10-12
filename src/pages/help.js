@@ -20,7 +20,9 @@ export function makePage_Help() {
 					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Help' })}
 				</div>
 				<div id="content-page__panel">
-
+				<p>
+					At any time, you can reach out to ${emailLink()} for any help you need.
+				</p>
 				</div>
 			</div>
 			<div class="content-page__right-area">
@@ -29,9 +31,6 @@ export function makePage_Help() {
 					Help articles for Glyphr Studio v2 will be at
 					<a href="https://www.glyphrstudio.com/help/v2" target="_new">glyphrstudio.com/help/v2</a>,
 					though during the Alpha/Beta stages content may be sparse.
-				</p>
-				<p>
-					At any time, you can reach out to ${emailLink()} for any help you need.
 				</p>
 
 				<br><br>
@@ -56,6 +55,80 @@ export function makePage_Help() {
 export function makeKeyboardShortcutReference() {
 	let content = `
 		<div class="keyboardShortcutTable">
+			<h3>View</h3>
+			<span>
+				<code>ctrl</code><code>scroll wheel</code>
+			</span>
+			<label>
+				Zoom in and out
+			</label>
+
+			<span>
+				<code>ctrl</code><code>+</code>
+			</span>
+			<label>
+				Zoom in
+			</label>
+
+			<span>
+				<code>ctrl</code><code>-</code>
+			</span>
+			<label>
+				Zoom out
+			</label>
+
+			<span>
+				<code>ctrl</code><code>0</code>
+			</span>
+			<label>
+				Auto-fit glyph on the screen
+			</label>
+
+			<h3>Paths and Path Points</h3>
+			<span>
+				<code>ctrl</code><code>a</code>
+			</span>
+			<label>
+				Select all paths
+			</label>
+
+			<span>
+				<code>del</code> or<br>
+				<code>backspace</code>
+			</span>
+			<label>
+				Delete the selected paths or path points
+			</label>
+
+			<span>
+				<code>⇦</code>
+				<code>⇧</code>
+				<code>⇨</code>
+				<code>⇩</code>
+			</span>
+			<label>
+				Nudge the selected path or path point 1em<br>
+				Press <code>shift</code> to nudge 10em
+			</label>
+
+			<h3>Tools</h3>
+			<span>
+				<code>v</code>
+			</span>
+			<label>Switch to the arrow tool</label>
+
+			<span>
+				<code>b</code>
+			</span>
+			<label>Switch to the pen tool</label>
+
+			<span>
+				<code>space</code> or<br>
+				<code>scroll wheel click</code>
+			</span>
+			<label>
+				Toggle the pan tool
+			</label>
 
 		</div>
 	`;
