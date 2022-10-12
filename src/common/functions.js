@@ -57,8 +57,9 @@ export function makeRandomID() {
 
 /**
  * Returns a full new copy of any object
- * 'parent' and 'parent' are pointers up to parent objects, they
+ * 'parent' is a pointer up to parent object, they
  * cause infinite loops when cloning objects.  Kind of a hack.
+ * 'cache' is also left out by default.
  * @param {object} source - object to clone
  * @returns {object}
  */
