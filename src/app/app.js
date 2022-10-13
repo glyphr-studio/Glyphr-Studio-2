@@ -2,7 +2,6 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from './main.js';
 
-
 /**
  * Creates a new Glyphr Studio Application
  */
@@ -22,11 +21,10 @@ export class GlyphrStudioApp {
 			dev: {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
-				currentPage: 'Help', // navigate straight to a page
+				currentPage: 'Glyph edit', // navigate straight to a page
+				currentItemID: '0x0042', // select a glyph
 				currentPanel: false, // navigate straight to a panel
-				selectedPath: false, // automatically select a path
-				debugAutoGroup: false, // try to console.group based on text strings
-				debugTableObjects: false, // Show objects in tables in the console
+				currentTool: 'pathEdit', // select a tool
 				testActions: [],
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
@@ -54,7 +52,8 @@ export class GlyphrStudioApp {
 				// log('Using sample project');
 				editor.project = importGlyphrProjectFromText(sampleProject);
 			}
-			// editor.selectedTool = 'pathEdit';
+
+			// Selected canvas stuff
 			// editor.multiSelect.paths.select(editor.selectedGlyph.paths[0]);
 			// editor.multiSelect.points.select(editor.selectedGlyph.paths[0].pathPoints[0]);
 
@@ -62,10 +61,10 @@ export class GlyphrStudioApp {
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation
-			// log(`dev.currentPage: ${dev.currentPage}`);
-
+			if (dev.selectedItemID) editor.selectedItemID = dev.selectedItemID;
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
+			if (dev.currentTool) editor.selectedTool = dev.currentTool;
 		}
 
 		// log(editor);

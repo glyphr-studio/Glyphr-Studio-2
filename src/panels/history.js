@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
+import { refreshPanel } from './panels.js';
 
 /**
 		Panel > History
@@ -8,7 +9,7 @@ import { makeElement } from '../common/dom.js';
 
 export function makePanel_History() {
 	const editor = getCurrentProjectEditor();
-	let historyArea = makeElement({ className: 'historyList' });
+	let historyArea = makeElement({ className: 'history-list' });
 
 	let q = editor.history.queue;
 
@@ -22,6 +23,8 @@ export function makePanel_History() {
 	historyArea.appendChild(undoButton);
 	let currentItemID = false;
 
+	historyArea.innerHTML += '<br>';
+
 	q.forEach((entry) => {
 		if (entry.itemID !== currentItemID) {
 			historyArea.innerHTML += `
@@ -30,16 +33,26 @@ export function makePanel_History() {
 			currentItemID = entry.itemID;
 		}
 		historyArea.innerHTML += `
-			<span>${entry.title}</span>
-			<span>${entry.timeStamp}</span>
+			<span class="history-list__title">
+				${entry.title}
+			</span>
+			<span class="history-list__date number">
+				${new Date(entry.timeStamp).toLocaleString()}
+			</span>
 		`;
 	});
 
 	historyArea.innerHTML += `
 		<hr>
-		<span><i>Initial state</i></span>
-		<span>${editor.history.baseTimeStamp}</span>
+		<span class="history-list__title">
+			<i>Initial state</i>
+		</span>
+		<span class="history-list__date number">
+			${new Date(editor.history.baseTimeStamp).toLocaleString()}
+		</span>
 	`;
+
+	// History object calls to refresh the panel - no subscribers here
 
 	return historyArea;
 }

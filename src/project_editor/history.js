@@ -1,5 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { clone } from '../common/functions.js';
+import { refreshPanel } from '../panels/panels.js';
 
 /**
 	History
@@ -40,9 +41,12 @@ export class History {
 			//fill
 		}
 
-		this.queue.push(entry);
-
+		this.queue.unshift(entry);
 		editor.setProjectAsUnsaved();
+		if (editor.nav.panel === 'History') {
+			refreshPanel();
+		}
+
 		// log(`History.addState`, 'end');
 	}
 
@@ -79,6 +83,9 @@ export class History {
 		}
 
 		if (this.queue.length === 0) editor.setProjectAsSaved();
+		if (editor.nav.panel === 'History') {
+			refreshPanel();
+		}
 
 		log(`History.restoreState`, 'end');
 	}

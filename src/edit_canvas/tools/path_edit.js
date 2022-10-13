@@ -16,6 +16,7 @@ export class Tool_PathEdit {
 		this.monitorForDeselect = false;
 		this.controlPoint = false;
 		this.pathPoint = false;
+		this.historyTitle = 'Path edit tool';
 
 		// --------------------------------------------------------------
 		// Mouse Down
@@ -29,6 +30,7 @@ export class Tool_PathEdit {
 			const view = editor.view;
 			ehd.lastX = ehd.mouseX;
 			ehd.lastY = ehd.mouseY;
+			this.historyTitle = 'Path edit tool';
 
 			this.controlPoint = isOverControlPoint(
 				ehd.isCtrlDown ? editor.selectedItem : msPaths.virtualGlyph,
@@ -59,6 +61,7 @@ export class Tool_PathEdit {
 						} else {
 							msPoints.add(this.pathPoint);
 							editor.selectPathsThatHaveSelectedPoints();
+							this.historyTitle = `Moved ${msPoints.length} path points`;
 						}
 					} else {
 						// log('Single Select Mode');
@@ -68,11 +71,13 @@ export class Tool_PathEdit {
 						} else {
 							msPoints.select(this.pathPoint);
 							editor.selectPathsThatHaveSelectedPoints();
+							this.historyTitle = `Moved path point ${this.pathPoint.pointNumber}`;
 						}
 					}
 				} else {
 					// log('detected HANDLE');
 					msPoints.singleHandle = this.controlPoint.type;
+					this.historyTitle = `Moved path point ${this.pathPoint.pointNumber} handle ${this.controlPoint.type}`;
 					// log(`set ms.singleHandle: ${msPoints.singleHandle}`);
 					// setCursor('penCircle');
 				}
@@ -89,7 +94,7 @@ export class Tool_PathEdit {
 				// findAndCallHotspot(ehd.mouseX, ehd.mouseY);
 			}
 
-			if (msPaths.members.length) editor.nav.panel = 'Attributes';
+			// if (msPaths.members.length) editor.nav.panel = 'Attributes';
 			// log('Tool_PathEdit.mousedown', 'end');
 		};
 
@@ -129,6 +134,13 @@ export class Tool_PathEdit {
 				if (msPoints.members.length === 1) {
 					if (this.controlPoint && this.controlPoint.xLock) dx = 0;
 					if (this.controlPoint && this.controlPoint.yLock) dy = 0;
+					if(cpt === 'p') {
+						this.historyTitle = `Moved path point ${this.pathPoint.pointNumber}`;
+					}
+				} else {
+					if(cpt === 'p') {
+						this.historyTitle = `Moved ${msPoints.members.length} path points`;
+					}
 				}
 
 				// log(`dragging with ms.singleHandle: ${msPoints.singleHandle}`);
@@ -217,10 +229,10 @@ export class Tool_PathEdit {
 			}
 
 			if (ehd.undoQueueHasChanged) {
-				editor.history.addState('Path Edit tool');
+				editor.history.addState(this.historyTitle);
 				ehd.undoQueueHasChanged = false;
 			}
-			
+
 			// set to defaults
 			this.dragging = false;
 			this.controlPoint = false;

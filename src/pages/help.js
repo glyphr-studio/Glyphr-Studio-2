@@ -107,8 +107,8 @@ export function makeKeyboardShortcutReference() {
 				<code>⇩</code>
 			</span>
 			<label>
-				Nudge the selected path or path point 1em<br>
-				Press <code>shift</code> to nudge 10em
+				Nudge the selected path or path point <span class="number">1em</span><br>
+				Press <code>shift</code> to nudge <span class="number">10em</span>
 			</label>
 
 			<h3>Tools</h3>
