@@ -13,12 +13,14 @@ import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools
  * Comprised of Panels of tools, and the Edit Canvas
  */
 export function makePage_GlyphEdit() {
-	// log(`makePage_GlyphEdit`, 'start');
+	log(`makePage_GlyphEdit`, 'start');
 	const editor = getCurrentProjectEditor();
 	// log('current ProjectEditor');
 	// log(editor);
 	// log(editor.nav);
 	// log(editor.selectedGlyph);
+	log(`editor.nav.panel: ${editor.nav.panel}`);
+
 
 	let canvasGlyph = hexToChars(editor.selectedGlyphID);
 	const content = makeElement({
@@ -125,6 +127,6 @@ export function makePage_GlyphEdit() {
 		},
 	});
 
-	// log(`makePage_GlyphEdit`, 'end');
+	log(`makePage_GlyphEdit`, 'end');
 	return content;
 }
