@@ -71,8 +71,7 @@ export class Tool_NewBasicPath {
 					ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New rectangle`);
 				}
 
-				// ehd.undoQueueHasChanged = true;
-				editor.history.addState('Add new basic shape');
+				ehd.undoQueueHasChanged = true;
 				editor.publish('currentPath');
 				editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_NewBasicPath mousemove' });
 			}
@@ -93,6 +92,7 @@ export class Tool_NewBasicPath {
 			// log(`ySize: ${ySize}`);
 			// log(`ps.pointSize: ${ps.pointSize}`);
 
+			let path;
 			if (xSize > ps.pointSize && ySize > ps.pointSize) {
 				// log(`New path is large enough`);
 				let count = workItem.paths.length;
@@ -102,7 +102,6 @@ export class Tool_NewBasicPath {
 				}
 
 				// Update the fake ... path with new data
-				let path;
 				if (editor.selectedTool === 'newOval') {
 					// log(`making Oval path`);
 					path = ovalPathFromMaxes(ehd.newBasicPathMaxes, `Oval ${count}`);
@@ -126,8 +125,10 @@ export class Tool_NewBasicPath {
 			ehd.firstX = -100;
 			ehd.firstY = -100;
 
-			editor.history.addState('New Basic Path tool');
-			ehd.undoQueueHasChanged = false;
+			if (ehd.undoQueueHasChanged) {
+				editor.history.addState(`Added path: ${path.name}`);
+				ehd.undoQueueHasChanged = false;
+			}
 
 			// clickTool('pathEdit');
 			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_NewBasicPath mouseup' });

@@ -319,8 +319,6 @@ export function addPathToCurrentItem(newPath) {
 
 	newPath = sg.addOnePath(newPath);
 
-	editor.history.addState('Added path');
-
 	// log(`returns: ${ewPath.name}`);
 	// log(`addPathToCurrentItem`, 'end');
 	return newPath;

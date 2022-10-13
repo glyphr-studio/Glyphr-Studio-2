@@ -71,13 +71,13 @@ export class Tool_PathEdit {
 						} else {
 							msPoints.select(this.pathPoint);
 							editor.selectPathsThatHaveSelectedPoints();
-							this.historyTitle = `Moved path point ${this.pathPoint.pointNumber}`;
+							this.historyTitle = `Moved path point: ${this.pathPoint.pointNumber}`;
 						}
 					}
 				} else {
 					// log('detected HANDLE');
 					msPoints.singleHandle = this.controlPoint.type;
-					this.historyTitle = `Moved path point ${this.pathPoint.pointNumber} handle ${this.controlPoint.type}`;
+					this.historyTitle = `Moved path point: ${this.pathPoint.pointNumber} ${this.controlPoint.type}`;
 					// log(`set ms.singleHandle: ${msPoints.singleHandle}`);
 					// setCursor('penCircle');
 				}
@@ -135,7 +135,7 @@ export class Tool_PathEdit {
 					if (this.controlPoint && this.controlPoint.xLock) dx = 0;
 					if (this.controlPoint && this.controlPoint.yLock) dy = 0;
 					if(cpt === 'p') {
-						this.historyTitle = `Moved path point ${this.pathPoint.pointNumber}`;
+						this.historyTitle = `Moved path point: ${this.pathPoint.pointNumber}`;
 					}
 				} else {
 					if(cpt === 'p') {
