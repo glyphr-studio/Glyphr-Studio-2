@@ -15,15 +15,14 @@ export function makePanel_History() {
 
 	let undoButton = makeElement({
 		tag: 'button',
-		className: q.length > 0 ? 'button__call-to-action' : 'button__disabled',
+		className: q.length > 0 ? 'button__call-to-action number' : 'button__disabled number',
 		innerHTML: `undo ${q.length}`,
 	});
-	undoButton.addEventListener('click', () => {});
+	undoButton.addEventListener('click', () => { });
+	undoButton.style = 'max-width: 30%; grid-column: 1 / -1;';
 
 	historyArea.appendChild(undoButton);
 	let currentItemID = false;
-
-	historyArea.innerHTML += '<br>';
 
 	q.forEach((entry) => {
 		if (entry.itemID !== currentItemID) {

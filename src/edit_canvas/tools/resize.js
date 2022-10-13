@@ -16,6 +16,7 @@ export class Tool_Resize {
 		this.monitorForDeselect = false;
 		this.didStuff = false;
 		this.clickedPath = false;
+		this.historyTitle = 'Path resize tool';
 		eventHandlerData.handle = false;
 
 		// --------------------------------------------------------------
@@ -49,6 +50,7 @@ export class Tool_Resize {
 					this.rotating = true;
 					ehd.rotationCenter = msPaths.maxes.center;
 					ehd.rotationStartTopY = msPaths.maxes.yMax + editor.rotateHandleHeight / editor.view.dz;
+					this.historyTitle = 'Rotated path';
 				} else {
 					// log('clicked on ehd.handle: ' + ehd.handle);
 					this.resizing = true;
@@ -97,6 +99,7 @@ export class Tool_Resize {
 			const msPaths = editor.multiSelect.paths;
 			this.didStuff = false;
 			const corner = ehd.handle || msPaths.isOverBoundingBoxHandle(ehd.mouseX, ehd.mouseY);
+			const singlePath = msPaths.singleton;
 
 			if (this.dragging) {
 				// log('Dragging');
@@ -104,10 +107,12 @@ export class Tool_Resize {
 				let dx = (ehd.mouseX - ehd.lastX) / view.dz;
 				let dy = (ehd.lastY - ehd.mouseY) / view.dz;
 
-				const singlePath = msPaths.singleton;
 				if (singlePath) {
 					if (singlePath.xLock) dx = 0;
 					if (singlePath.yLock) dy = 0;
+					this.historyTitle = `Moved path: ${singlePath.name}`;
+				} else {
+					this.historyTitle = `Moved ${msPaths.members.length} paths`;
 				}
 
 				msPaths.updatePathPosition(dx, dy);
@@ -116,12 +121,22 @@ export class Tool_Resize {
 			} else if (this.resizing) {
 				// log('detected RESIZING');
 				resizePath();
+				if (singlePath) {
+					this.historyTitle = `Resized path: ${singlePath.name}`;
+				} else {
+					this.historyTitle = `Resized ${msPaths.members.length} paths`;
+				}
 				this.didStuff = true;
 			} else if (this.rotating) {
 				// log(`detected ROTATING`);
 				let a1 = calculateAngle({ x: cXsX(ehd.mouseX), y: cYsY(ehd.mouseY) }, ehd.rotationCenter);
 				let a2 = calculateAngle({ x: cXsX(ehd.lastX), y: cYsY(ehd.lastY) }, ehd.rotationCenter);
 				msPaths.rotate(a1 - a2, ehd.rotationCenter);
+				if (singlePath) {
+					this.historyTitle = `Rotated path: ${singlePath.name}`;
+				} else {
+					this.historyTitle = `Rotated ${msPaths.members.length} paths`;
+				}
 				this.didStuff = true;
 			}
 
@@ -200,7 +215,7 @@ export class Tool_Resize {
 			ehd.firstY = -100;
 			ehd.rotationCenter = false;
 			ehd.rotationStartTopY = false;
-			if (ehd.undoQueueHasChanged) editor.history.addState('Path Edit tool');
+			if (ehd.undoQueueHasChanged) editor.history.addState(this.historyTitle);
 			ehd.undoQueueHasChanged = false;
 		};
 	}
