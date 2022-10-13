@@ -99,7 +99,7 @@ function updateKernValue(id, val) {
 	k.value = val;
 	// selectKern(id);
 	document.getElementById(id).value = val;
-	historyPut(k.getName() + ' value: ' + val);
+	editor.history.addState(k.getName() + ' value: ' + val);
 }
 
 function updateKernGroup(id, side, val) {
@@ -107,7 +107,7 @@ function updateKernGroup(id, side, val) {
 	if (side === 'left') k.leftgroup = parseKernGroupInput(val);
 	else if (side === 'right') k.rightgroup = parseKernGroupInput(val);
 	selectKern(id);
-	historyPut('Updated Members: ' + k.getName());
+	editor.history.addState('Updated Members: ' + k.getName());
 }
 
 function selectKern(id) {

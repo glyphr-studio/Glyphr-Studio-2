@@ -171,7 +171,6 @@ export class Tool_Resize {
 		// Mouse Up
 		// --------------------------------------------------------------
 		this.mouseup = function () {
-			// log('Mouse Up');
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 
@@ -201,10 +200,8 @@ export class Tool_Resize {
 			ehd.firstY = -100;
 			ehd.rotationCenter = false;
 			ehd.rotationStartTopY = false;
-			// TODO history
-			// if (ehd.undoQueueHasChanged) historyPut('Path Edit tool');
+			if (ehd.undoQueueHasChanged) editor.history.addState('Path Edit tool');
 			ehd.undoQueueHasChanged = false;
-			// log('EVENTHANDLER - after Tool_Resize Mouse Up REDRAW');
 		};
 	}
 }

@@ -216,6 +216,11 @@ export class Tool_PathEdit {
 				msPoints.remove(this.pathPoint);
 			}
 
+			if (ehd.undoQueueHasChanged) {
+				editor.history.addState('Path Edit tool');
+				ehd.undoQueueHasChanged = false;
+			}
+			
 			// set to defaults
 			this.dragging = false;
 			this.controlPoint = false;
@@ -226,14 +231,6 @@ export class Tool_PathEdit {
 			ehd.lastX = -100;
 			ehd.lastY = -100;
 
-			if (ehd.undoQueueHasChanged) {
-				// editor.multiSelect.paths.recalculateMaxes();
-				// updateCurrentGlyphWidth();
-				// TODO history
-				// historyPut('Path Edit tool');
-				// ehd.undoQueueHasChanged = false;
-				// redraw({ calledBy: 'Event Handler Tool_PathEdit mouseup' });
-			}
 			// log('Tool_PathEdit.mouseup', 'end');
 		};
 	}

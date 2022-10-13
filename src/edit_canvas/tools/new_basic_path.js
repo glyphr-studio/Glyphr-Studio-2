@@ -71,9 +71,9 @@ export class Tool_NewBasicPath {
 					ehd.newBasicPath = rectPathFromMaxes(ehd.newBasicPathMaxes, `New rectangle`);
 				}
 
-				// TODO history
 				// ehd.undoQueueHasChanged = true;
-				editor.publish({ topic: 'currentPath' });
+				editor.history.addState('Add new basic shape');
+				editor.publish('currentPath');
 				editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_NewBasicPath mousemove' });
 			}
 			// log(`Tool_NewBasicPath.mousemove`, 'end');
@@ -126,9 +126,8 @@ export class Tool_NewBasicPath {
 			ehd.firstX = -100;
 			ehd.firstY = -100;
 
-			// TODO history
-			// historyPut('New Basic Path tool');
-			// ehd.undoQueueHasChanged = false;
+			editor.history.addState('New Basic Path tool');
+			ehd.undoQueueHasChanged = false;
 
 			// clickTool('pathEdit');
 			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_NewBasicPath mouseup' });

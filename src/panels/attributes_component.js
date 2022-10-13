@@ -272,7 +272,7 @@ function updateComponentInstanceDetail(key, value, id) {
 		}
 	}
 
-	historyPut('component ' + key);
+	editor.history.addState('component ' + key);
 	_UI.focusElement = id;
 	redraw({ calledBy: 'makeCard_componentInstanceAttributes' });
 }

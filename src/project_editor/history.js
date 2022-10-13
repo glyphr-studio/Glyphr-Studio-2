@@ -9,28 +9,30 @@ import { clone } from '../common/functions.js';
 **/
 
 export class History {
-	constructor() {
-		const editor = getCurrentProjectEditor();
+	constructor(project) {
+		// const project = getCurrentProject();
 		this.queue = [];
-		this.baseState = clone(editor.project);
+		this.baseState = clone(project);
 		this.baseTimeStamp = new Date().getTime();
 	}
 
 	/**
 	 * Capture the current state of an Item (and related Items) and put
 	 * it into the History queue.
-	 * @param {String} changedItemID - ID of the Glyph, Component, Ligature, or Kern
-	 * @param {*} otherChanges - Array of IDs for other items that are changed
+	 * @param {String} changeTitle - What to call this change in the History panel
+	 * @param {Array} otherChanges - Array of IDs for other items that are changed
 	 * (for example, changing a Component also changes Glyphs it's linked to)
 	 */
-	put(changedItemID, otherChanges = false) {
-		// log(`History.put`, 'start');
-		const project = getCurrentProject();
-		const changedItem = project.getItem(changedItemID);
+	addState(title = '', otherChanges = false) {
+		// log(`History.addState`, 'start');
+		const editor = getCurrentProjectEditor();
+		const changedItem = editor.selectedItem;
+		title = title || `Change to ${changedItem.name}`;
 
 		let entry = {
 			timeStamp: new Date().getTime(),
-			itemID: changedItemID,
+			itemID: editor.selectedItemID,
+			title: title,
 			itemState: clone(changedItem),
 		};
 
@@ -40,12 +42,12 @@ export class History {
 
 		this.queue.push(entry);
 
-		// setProjectAsUnsaved();
-		// log(`History.put`, 'end');
+		editor.setProjectAsUnsaved();
+		// log(`History.addState`, 'end');
 	}
 
-	pull() {
-		log(`History.pull`, 'start');
+	restoreState() {
+		log(`History.restoreState`, 'start');
 
 		// log('\t queue.length ' + this.queue.length);
 		const editor = getCurrentProjectEditor();
@@ -76,8 +78,8 @@ export class History {
 			*/
 		}
 
-		if (this.queue.length === 0) setProjectAsSaved();
+		if (this.queue.length === 0) editor.setProjectAsSaved();
 
-		log(`History.pull`, 'end');
+		log(`History.restoreState`, 'end');
 	}
 }

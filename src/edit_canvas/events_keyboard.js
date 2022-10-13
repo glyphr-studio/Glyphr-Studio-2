@@ -104,12 +104,6 @@ export function handleKeyPress(event) {
 		closeDialog();
 	}
 
-	// ?
-	// if (key === '?' || key === '¿') {
-	// 	event.preventDefault();
-	// 	toggleKeyboardTips();
-	// }
-
 	// TODO history
 	// z
 	// if (key === 'undo' || (ehd.isCtrlDown && key === 'z')) {
@@ -171,13 +165,11 @@ export function handleKeyPress(event) {
 
 			if (editMode === 'pen') {
 				editor.multiSelect.points.deletePathPoints();
-				// TODO history
-				// historyPut('Delete Path Point');
+				editor.history.addState('Delete path point');
 				editor.publish('currentPath', editor.multiSelect.points.virtualPath);
 			} else if (editMode === 'arrow') {
 				editor.multiSelect.paths.deletePaths();
-				// TODO history
-				// historyPut('Delete Path');
+				editor.history.addState('Delete path');
 				editor.publish('currentGlyph', editor.multiSelect.paths.virtualGlyph);
 			}
 		}
@@ -195,7 +187,7 @@ export function handleKeyPress(event) {
 			event.preventDefault();
 			pastePath();
 			// TODO history
-			// historyPut('Paste Path');
+			// editor.history.addState('Paste Path');
 			editor.editCanvas.redraw({ calledBy: 'Paste Path' });
 		}
 */

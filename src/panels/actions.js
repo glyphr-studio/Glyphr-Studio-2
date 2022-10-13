@@ -411,7 +411,7 @@ export function makeActionsArea_Path(test = false) {
 		addChildActions(alignActions, getActionData('alignActions'));
 	}
 
-	return alignActions? [actionsArea, alignActions] : actionsArea;
+	return alignActions ? [actionsArea, alignActions] : actionsArea;
 }
 
 // Point actions
@@ -446,7 +446,7 @@ function combineSelectedPaths() {
 
 	setTimeout(function () {
 		editor.multiSelect.paths.combine();
-		historyPut('combine selected paths');
+		editor.history.addState('combine selected paths');
 		redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
@@ -456,7 +456,7 @@ function combineAllGlyphPaths() {
 
 	setTimeout(function () {
 		getSelectedItem().combineAllPaths(true);
-		historyPut('combine all glyph paths');
+		editor.history.addState('combine all glyph paths');
 		redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
@@ -620,7 +620,7 @@ function pastePathsFrom(sourceGlyphID) {
 
 		// showToast('Copied ' + this.paths.length + ' paths');
 		redraw({ calledBy: 'pastePathsFrom' });
-		historyPut(
+		editor.history.addState(
 			'Copied paths from "' + getGlyphName(sourceGlyphID) + '" to  "' + getSelectedItemName()
 		);
 		if (_UI.selectedTool === 'pathAddPoint') _UI.selectedTool = 'pathEdit';
