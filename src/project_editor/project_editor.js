@@ -75,11 +75,7 @@ export class ProjectEditor {
 		this.selectedTool = 'resize';
 
 		// History
-		// this.history = {};
-		// this.history['Glyph edit'] = new History('glyphs', this);
-		// this.history.components = new History('components', this);
-		// this.history.ligatures = new History('ligatures', this);
-		// this.history.kerning = new History('kerning', this);
+		this.history = new History(this.project);
 
 		// MultiSelect
 		this.multiSelect = {

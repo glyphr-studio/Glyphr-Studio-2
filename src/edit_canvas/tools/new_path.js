@@ -111,13 +111,10 @@ export class Tool_NewPath {
 			setCursor('penPlus');
 
 			if (eventHandlerData.undoQueueHasChanged) {
-				// TODO history
-				// if (this.newPath) this.newPath.recalculateMaxes();
-				// updateCurrentGlyphWidth();
 				// For new path tools, mouse up always adds to the undo-queue
-				// historyPut('New Path tool');
-				// eventHandlerData.undoQueueHasChanged = false;
-				// redraw({ calledBy: 'Event Handler Tool_NewPath mouseup' });
+				const editor = getCurrentProjectEditor();
+				editor.history.addState('New Path tool');
+				eventHandlerData.undoQueueHasChanged = false;
 			}
 
 			this.dragging = false;

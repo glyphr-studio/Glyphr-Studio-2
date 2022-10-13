@@ -330,8 +330,7 @@ export class MultiSelectPaths extends MultiSelect {
 		if (cs) {
 			this.deletePaths();
 			for (let n = 0; n < cs.length; n++) addPathToCurrentItem(cs[n]);
-			// TODO history
-			// historyPut('Combined paths');
+			editor.history.addState('Combined paths');
 		}
 
 		// log('MultiSelectPaths.combine', 'end');
@@ -367,11 +366,8 @@ export class MultiSelectPaths extends MultiSelect {
 	align(edge) {
 		// showToast('align ' + edge);
 		const g = this.virtualGlyph;
-		// const gnum = g.paths.length;
 		g.alignPaths(edge);
-
-		// TODO history
-		// historyPut('Aligned ' + gnum + ' paths ' + edge);
+		editor.history.addState('Aligned paths ' + edge);
 	}
 
 	// Wrapper functions

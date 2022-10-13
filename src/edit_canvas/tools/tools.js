@@ -319,7 +319,7 @@ export function addPathToCurrentItem(newPath) {
 
 	newPath = sg.addOnePath(newPath);
 
-	// TODO history
+	editor.history.addState('Added path');
 
 	// log(`returns: ${ewPath.name}`);
 	// log(`addPathToCurrentItem`, 'end');

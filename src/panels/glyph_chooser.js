@@ -107,7 +107,7 @@ export function makePanel_GlyphChooser() {
 		content += '<div class="panel_section" ';
 		content += hasNoComponents ? 'style="padding-top:-10px;">' : '>';
 		content +=
-			"<button onclick=\"createNewComponent();historyPut('Create New Component');navigate({panel:'npAttributes'});\">create new component</button><br>";
+			"<button onclick=\"createNewComponent();editor.history.addState('Create New Component');navigate({panel:'npAttributes'});\">create new component</button><br>";
 		if (!hasNoComponents)
 			content +=
 				'<button onclick="deleteComponentConfirm();">delete selected component</button><br>';

@@ -20,7 +20,7 @@ export class Tool_Kern {
 			// log('Tool_Kern - Mouse Up');
 			this.dragging = false;
 			this.deltax = 0;
-			historyPut('Kern Adjustment: ' + getSelectedKern().value);
+			editor.history.addState('Kern Adjustment: ' + getSelectedKern().value);
 			// redraw({calledBy:'Kern.mouseup'});
 		};
 

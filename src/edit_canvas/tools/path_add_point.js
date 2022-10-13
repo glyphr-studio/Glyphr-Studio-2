@@ -16,7 +16,7 @@ export class Tool_PathAddPoint {
 			if (this.addPoint && singlePath && singlePath.objType !== 'ComponentInstance') {
 				let p = singlePath.insertPathPoint(this.addPoint.point, this.addPoint.split);
 				if (p) editor.multiSelect.points.select(p);
-				// historyPut('Added point to path');
+				// editor.history.addState('Added point to path');
 			} else if (s) {
 				editor.multiSelect.points.clear();
 				if (eventHandlerData.isCtrlDown) editor.multiSelect.paths.add(s);
