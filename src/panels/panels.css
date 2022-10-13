@@ -295,7 +295,14 @@
 	grid-column: 1 / -1;
 }
 
+.history-list hr {
+	width: 100%;
+	border-width: 0px 0px 1px 0px;
+	border-color: var(--gray-l80);
+}
+
 .history-list__date {
+	width: 100%;
 	text-align: right;
 	color: var(--enabled-restingLight-lightText);
 }

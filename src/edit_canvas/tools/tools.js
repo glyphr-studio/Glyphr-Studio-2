@@ -3,6 +3,7 @@ import { accentColors, uiColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawPath } from '../draw_paths.js';
+import { stopCreatingNewPathPoints } from './new_path.js';
 
 // --------------------------------------------------------------
 // Making tool buttons
@@ -87,15 +88,6 @@ export function makeEditToolsButtons() {
 		toolButtonElements[buttonName] = newToolButton;
 	});
 
-	// Done editing path
-	let finishPath = makeElement({
-		tag: 'button',
-		className: 'edit-canvas__tool-selected',
-		title: 'Done editing path',
-		content: 'Done editing path',
-	});
-	finishPath.addEventListener('click', () => clickTool('pathEdit'));
-
 	// Put it all together
 	let content = [];
 
@@ -121,9 +113,6 @@ export function makeEditToolsButtons() {
 		content.push(makeElement({ tag: 'div', attributes: { style: 'height: 20px;' } }));
 		content.push(toolButtonElements.pathEdit);
 		content.push(toolButtonElements.resize);
-		if (editor.selectedTool === 'newPath') {
-			content.push(finishPath);
-		}
 	}
 
 	// log('makeEditToolsButtons', 'end');
@@ -234,6 +223,13 @@ export function clickTool(tool) {
 		editor.publish('view', editor.view);
 	} else {
 		switchToolTo(tool);
+	}
+
+	if (tool === 'newPath') {
+		editor.multiSelect.points.clear();
+		editor.multiSelect.paths.clear();
+	} else {
+		stopCreatingNewPathPoints();
 	}
 
 	log('clickTool', 'end');

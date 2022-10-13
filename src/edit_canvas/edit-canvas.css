@@ -23,3 +23,19 @@
 	left: -1px;
 	top: -1px;
 }
+
+#done-editing-path-button {
+	position: absolute;
+	color: var(--blue-l30);
+	opacity: 0.9;
+	left: 530px;
+	top: 102px;
+	height: 32px;
+	padding: 5px 8px;
+	z-index: 100;
+}
+
+#done-editing-path-button:hover,
+#done-editing-path-button:focus {
+	opacity: 1;
+}
