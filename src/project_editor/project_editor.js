@@ -44,7 +44,7 @@ export class ProjectEditor {
 
 		// Selections
 		this.project = newProjectEditor.project;
-		this.selectedGlyphID = '0x0042';
+		this.selectedGlyphID = '0x41';
 		this.selectedComponentID = false;
 		this.selectedLigatureID = false;
 		this.selectedKernID = false;
@@ -287,7 +287,7 @@ export class ProjectEditor {
 	 * @returns nothing
 	 */
 	selectPathsThatHaveSelectedPoints() {
-		log('ProjectEditor.selectPathsThatHaveSelectedPoints', 'start');
+		// log('ProjectEditor.selectPathsThatHaveSelectedPoints', 'start');
 		const msPoints = this.multiSelect.points;
 		const selectedPoints = msPoints.members;
 		if (selectedPoints.length === 0) return;
@@ -308,7 +308,7 @@ export class ProjectEditor {
 			for (let p = 0; p < selectedItemPaths.length; p++) {
 				if (selectedItemPaths[p].objType !== 'ComponentInstance') {
 					if (parentPath === selectedItemPaths[p]) {
-						log(`selecting path!`);
+						// log(`selecting path!`);
 						msPaths.add(selectedItemPaths[p]);
 						changed = true;
 					}
@@ -317,7 +317,7 @@ export class ProjectEditor {
 		}
 
 		if (changed) msPaths.publishChanges();
-		log('ProjectEditor.selectPathsThatHaveSelectedPoints', 'end');
+		// log('ProjectEditor.selectPathsThatHaveSelectedPoints', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -325,7 +325,7 @@ export class ProjectEditor {
 	// --------------------------------------------------------------
 
 	set selectedTool(newTool) {
-		log(`ProjectEditor.selectedTool SET to ${newTool}`);
+		// log(`ProjectEditor.selectedTool SET to ${newTool}`);
 		this._selectedTool = newTool;
 	}
 

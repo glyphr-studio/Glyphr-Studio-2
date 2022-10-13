@@ -281,3 +281,20 @@
 	height: min-content;
 	grid-column: 2;
 }
+
+.history-list {
+	width: 100%;
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	gap: 10px;
+}
+
+.history-list h3,
+.history-list hr {
+	grid-column: 1 / -1;
+}
+
+.history-list__date {
+	text-align: right;
+	color: var(--enabled-restingLight-lightText);
+}
