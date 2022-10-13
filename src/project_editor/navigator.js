@@ -9,6 +9,7 @@ import { makeAppTopBar } from '../app/app.js';
 import { makeIcon } from '../common/graphics.js';
 import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
+import { refreshPanel } from '../panels/panels.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -94,11 +95,13 @@ export class Navigator {
 	 * @param {string} pageName - where to go
 	 */
 	navigate(pageName) {
-		log(`Navigator.navigate`, 'start');
+		// log(`Navigator.navigate`, 'start');
 
-		if (pageName) this.page = pageName;
 		// log(`pageName : ${pageName}`);
-		log(`this.page: ${this.page}`);
+		if (pageName) this.page = pageName;
+
+		// log(`this.page: ${this.page}`);
+		// log(`this.panel: ${this.panel}`);
 
 		const wrapper = document.getElementById('app__wrapper');
 
@@ -113,7 +116,7 @@ export class Navigator {
 			console.warn(`app__wrapper could not be found, navigation failed`);
 		}
 
-		log(`Navigator.navigate`, 'end');
+		// log(`Navigator.navigate`, 'end');
 	}
 
 	/**
@@ -133,11 +136,12 @@ export class Navigator {
 			console.warn(`No page maker for ${this.page}`);
 			pageContent.innerHTML += `<br>${this.page}`;
 		} else {
-			if (!this.pageContents[this.page]) {
-				this.pageContents[this.page] = this.tableOfContents[this.page].pageMaker();
-			}
+			// if (!this.pageContents[this.page]) {
+			// 	this.pageContents[this.page] = this.tableOfContents[this.page].pageMaker();
+			// }
 			// If there is page content, set it
-			pageContent = this.pageContents[this.page];
+			// pageContent = this.pageContents[this.page];
+			pageContent = this.tableOfContents[this.page].pageMaker();
 		}
 
 		// Append results
@@ -333,9 +337,12 @@ function makeNavButton_Panel(panelName, iconName) {
 	button.innerHTML += makeIcon({ name: iconName, color: accentColors.blue.l90 });
 	button.appendChild(makeElement({ content: panelName }));
 	button.addEventListener('click', () => {
+		// log(`navButton.click`, 'start');
+		// log(`panelName: ${panelName}`);
 		const editor = getCurrentProjectEditor();
 		editor.nav.panel = panelName;
 		editor.navigate();
+		// log(`navButton.click`, 'end');
 	});
 	return button;
 }

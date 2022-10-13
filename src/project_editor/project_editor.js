@@ -517,4 +517,7 @@ export class ProjectEditor {
 		this.closeDialog();
 		this.setProjectAsSaved();
 	}
+
+	setProjectAsSaved() { }
+	setProjectAsUnsaved() { }
 }
