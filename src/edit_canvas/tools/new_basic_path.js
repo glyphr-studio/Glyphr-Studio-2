@@ -72,7 +72,7 @@ export class Tool_NewBasicPath {
 				}
 
 				ehd.undoQueueHasChanged = true;
-				editor.publish('currentPath');
+				editor.publish('currentPath', ehd.newBasicPath);
 				editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_NewBasicPath mousemove' });
 			}
 			// log(`Tool_NewBasicPath.mousemove`, 'end');

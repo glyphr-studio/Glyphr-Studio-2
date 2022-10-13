@@ -9,7 +9,7 @@ import { refreshPanel } from './panels.js';
 
 export function makePanel_History() {
 	const editor = getCurrentProjectEditor();
-	let historyArea = makeElement({ className: 'history-list' });
+	let historyArea = makeElement({ className: 'panel__card history-list' });
 
 	let q = editor.history.queue;
 

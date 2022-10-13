@@ -3,12 +3,14 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
+import { makeElement } from '../../common/dom.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
 import { setCursor } from '../cursors.js';
 import { isOverFirstPoint } from '../draw_paths.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
+import { clickTool } from './tools.js';
 
 export class Tool_NewPath {
 	constructor() {
@@ -30,9 +32,9 @@ export class Tool_NewPath {
 			if (this.firstPoint) {
 				// make a new path with the new PathPoint
 				let count =
-					editor.nav.page === 'components'
-						? Object.keys(getCurrentProject().components).length
-						: editor.selectedItem.paths.length;
+					editor.nav.page === 'components'?
+						Object.keys(getCurrentProject().components).length :
+						editor.selectedItem.paths.length;
 
 				count += 1;
 				this.newPath = editor.selectedItem.addOnePath(new Path({ name: 'Path ' + count }));
@@ -40,6 +42,7 @@ export class Tool_NewPath {
 				editor.multiSelect.paths.select(this.newPath);
 				editor.multiSelect.points.select(this.currentPoint);
 				editor.publish('whichPathPointIsSelected', this.currentPoint);
+				this.showDoneEditingPathButton();
 			} else if (this.newPath) {
 				if (isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY))) {
 					// clicked on an existing control point in this path
@@ -113,7 +116,7 @@ export class Tool_NewPath {
 			if (eventHandlerData.undoQueueHasChanged) {
 				// For new path tools, mouse up always adds to the undo-queue
 				const editor = getCurrentProjectEditor();
-				editor.history.addState('New Path tool');
+				editor.history.addState(`New path: added point ${this.currentPoint.pointNumber}`);
 				eventHandlerData.undoQueueHasChanged = false;
 			}
 
@@ -125,4 +128,28 @@ export class Tool_NewPath {
 			// log('Tool_NewPath.mouseup', 'end');
 		};
 	}
+
+	showDoneEditingPathButton() {
+		let finishPath = makeElement({
+			tag: 'button',
+			className: 'edit-canvas__tool-selected',
+			id: 'done-editing-path-button',
+			title: 'Done editing path',
+			content: 'Done editing path',
+		});
+		finishPath.addEventListener('click', () => {
+			stopCreatingNewPathPoints();
+			clickTool('pathEdit');
+		});
+
+		document.body.appendChild(finishPath);
+	}
+
+}
+export function stopCreatingNewPathPoints() {
+	let newPathTool = getCurrentProjectEditor().eventHandlers.tool_addPath;
+	newPathTool.newPath = false;
+	newPathTool.firstPoint = true;
+	let doneButton = document.getElementById('done-editing-path-button');
+	if (doneButton) doneButton.remove();
 }

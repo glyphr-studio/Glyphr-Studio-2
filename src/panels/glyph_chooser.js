@@ -124,9 +124,9 @@ function asyncLoadChooserPanel() {
 	// log('asyncLoadChooserPanel', 'start');
 
 	function tryLoadChooserPanel() {
-		const np = _UI.popOut
-			? document.getElementById('popOut_glyphchooser')
-			: document.getElementById('navarea_panel');
+		const np = _UI.popOut?
+			document.getElementById('popOut_glyphchooser') :
+			document.getElementById('navarea_panel');
 		const gc = document.getElementById('glyphChooser');
 
 		if (_UI.glyphChooser.cache && np && gc && gc.innerHTML === '') {

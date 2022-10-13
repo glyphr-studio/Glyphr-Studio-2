@@ -117,6 +117,7 @@ export class Tool_PathEdit {
 				this.controlPoint.parent.h2.y = cYsY(ehd.mouseY, view);
 				msPoints.singleHandle = this.controlPoint.type;
 
+				this.historyTitle = `Added new path: ${this.pathPoint.parent.name}`;
 				this.dragging = true;
 
 				// log('toolHandoff this.controlPoint = ');

@@ -93,7 +93,7 @@ export function makePanel_Layers() {
 			row.appendChild(
 				makeElement({
 					className: 'layer-panel__layer-name',
-					innerHTML: `${path.name} - ${path.__ID}`,
+					innerHTML: `${path.name}`,
 				})
 			);
 
