@@ -26,7 +26,7 @@ export function getActionData(name) {
 
 	// TODO hook these up
 	let clipBoardPath = false;
-	let historyLength = 0;
+	let historyLength = editor.history.queue.length;
 
 	// UNIVERSAL ACTIONS
 	data.allActions = [
@@ -139,7 +139,12 @@ export function getActionData(name) {
 		{
 			iconName: 'deletePath',
 			title: 'Delete\nRemoves the currently selected path or paths from this glyph.',
-			disabled: true,
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				editor.multiSelect.paths.deletePaths();
+				editor.history.addState('Delete path');
+				editor.publish('currentGlyph', editor.multiSelect.paths.virtualGlyph);
+			},
 		},
 	];
 
