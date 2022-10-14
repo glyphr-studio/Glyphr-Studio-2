@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { deleteSelectedPaths, deleteSelectedPoints } from '../panels/actions.js';
 import { setCursor, updateCursor } from './cursors.js';
 import { eventHandlerData, togglePanOff, togglePanOn } from './events.js';
 import { clickTool } from './tools/tools.js';
@@ -164,13 +165,9 @@ export function handleKeyPress(event) {
 			event.preventDefault();
 
 			if (editMode === 'pen') {
-				editor.multiSelect.points.deletePathPoints();
-				editor.history.addState('Delete path point');
-				editor.publish('currentPath', editor.multiSelect.points.virtualPath);
+				deleteSelectedPoints();
 			} else if (editMode === 'arrow') {
-				editor.multiSelect.paths.deletePaths();
-				editor.history.addState('Delete path');
-				editor.publish('currentGlyph', editor.multiSelect.paths.virtualGlyph);
+				deleteSelectedPaths();
 			}
 		}
 
@@ -186,7 +183,6 @@ export function handleKeyPress(event) {
 		if (ehd.isCtrlDown && key === 'v') {
 			event.preventDefault();
 			pastePath();
-			// TODO history
 			// editor.history.addState('Paste Path');
 			editor.editCanvas.redraw({ calledBy: 'Paste Path' });
 		}
