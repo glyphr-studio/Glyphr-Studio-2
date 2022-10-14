@@ -98,7 +98,8 @@ export class Tool_NewPath {
 				ehd.lastY = ehd.mouseY;
 				ehd.undoQueueHasChanged = true;
 
-				editor.publish('currentPathPoint', this.currentPoint);
+				editor.publish('currentControlPoint.h1', this.currentPoint.h1);
+				editor.publish('currentControlPoint.h2', this.currentPoint.h2);
 			} else if (
 				this.newPath &&
 				isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY))

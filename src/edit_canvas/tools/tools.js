@@ -225,6 +225,8 @@ export function clickTool(tool) {
 		switchToolTo(tool);
 	}
 
+	if (tool === 'resize') editor.multiSelect.points.clear();
+	
 	if (tool === 'newPath') {
 		editor.multiSelect.points.clear();
 		editor.multiSelect.paths.clear();
