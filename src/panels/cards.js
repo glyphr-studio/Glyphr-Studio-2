@@ -166,8 +166,10 @@ export function makeSingleCheckbox(workItem, property, thisTopic) {
 		callback: (changedItem) => {
 			if (!!changedItem[property]) {
 				newCheckbox.setAttribute('checked', '');
+				if (property === 'use') toggleHandleInputs(workItem.type, true);
 			} else {
 				newCheckbox.removeAttribute('checked');
+				if (property === 'use') toggleHandleInputs(workItem.type, false);
 			}
 		},
 	});
