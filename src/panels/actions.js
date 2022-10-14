@@ -139,12 +139,7 @@ export function getActionData(name) {
 		{
 			iconName: 'deletePath',
 			title: 'Delete\nRemoves the currently selected path or paths from this glyph.',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				editor.multiSelect.paths.deletePaths();
-				editor.history.addState('Delete path');
-				editor.publish('currentGlyph', editor.multiSelect.paths.virtualGlyph);
-			},
+			onClick: deleteSelectedPaths,
 		},
 	];
 
@@ -314,12 +309,7 @@ export function getActionData(name) {
 			iconName: 'deletePathPoint',
 			title: `Delete Path Point\nRemoves the currently selected point or points from the path.`,
 			disabled: selectedPaths.length === 0,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				// TODO select the next point
-				editor.multiSelect.points.deletePathPoints();
-				editor.publish('whichPathPointIsSelected', editor.multiSelect.paths);
-			},
+			onClick: deleteSelectedPoints,
 		},
 		{
 			iconName: 'resetPathPoint',
@@ -440,6 +430,45 @@ export function addChildActions(parent, actionsArray) {
 		actionsArray.map((iconData) => makeActionButton(iconData))
 	);
 	return parent;
+}
+
+
+// --------------------------------------------------------------
+// Delete selected path / point
+// --------------------------------------------------------------
+
+export function deleteSelectedPaths() {
+	const editor = getCurrentProjectEditor();
+	let msPaths = editor.multiSelect.paths;
+
+	let historyTitle;
+	if (msPaths.length > 1) {
+		historyTitle = `Deleted ${msPaths.length} paths`;
+	} else {
+		historyTitle = `Deleted path: ${msPaths.singleton.name}`;
+	}
+
+	msPaths.deletePaths();
+	editor.history.addState(historyTitle);
+	editor.publish('currentGlyph', editor.multiSelect.paths.virtualGlyph);
+}
+
+export function deleteSelectedPoints() {
+	const editor = getCurrentProjectEditor();
+	let msPoints = editor.multiSelect.points;
+
+	let historyTitle;
+	if (msPoints.length > 1) {
+		historyTitle = `Deleted ${msPoints.length} path points`;
+	} else {
+		historyTitle = `Deleted path point: ${msPoints.singleton.pointNumber}`;
+	}
+
+	msPoints.deletePathPoints();
+	// TODO select the next point
+	editor.history.addState(historyTitle);
+	editor.publish('whichPathPointIsSelected', editor.multiSelect.paths);
+
 }
 
 // --------------------------------------------------------------
@@ -677,9 +706,7 @@ function showDialogLinkComponentToGlyph(msg) {
 	let sls = getSelectedItem();
 	let content = '<h1>Link to Glyph</h1>';
 	content += 'Select a Glyph you would like to link to this Component.<br><br>';
-	content += msg
-		? msg
-		: 'There are currently ' +
+	content += msg?  msg : 'There are currently ' +
 		  sls.usedIn.length +
 		  ' instances of "' +
 		  sls.name +
