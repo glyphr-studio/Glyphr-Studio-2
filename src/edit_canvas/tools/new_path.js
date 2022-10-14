@@ -23,11 +23,20 @@ export class Tool_NewPath {
 			// log('Tool_NewPath.mousedown', 'start');
 			const editor = getCurrentProjectEditor();
 			const ehd = eventHandlerData;
+			const msPaths = editor.multiSelect.paths;
+			const msPoints = editor.multiSelect.points;
 
 			// New point
 			let newPoint = new PathPoint();
 			newPoint.p.x = cXsX(ehd.mouseX);
 			newPoint.p.y = cYsY(ehd.mouseY);
+
+			// Ensure selection
+			if (this.newPath) {
+				if (!msPaths.isSelected(this.newPath)) {
+					msPaths.select(this.newPath);
+				}
+			}
 
 			if (this.firstPoint) {
 				// make a new path with the new PathPoint
@@ -39,10 +48,10 @@ export class Tool_NewPath {
 				count += 1;
 				this.newPath = editor.selectedItem.addOnePath(new Path({ name: 'Path ' + count }));
 				this.currentPoint = this.newPath.addPathPoint(newPoint);
-				editor.multiSelect.paths.select(this.newPath);
-				editor.multiSelect.points.select(this.currentPoint);
+				msPaths.select(this.newPath);
+				msPoints.select(this.currentPoint);
 				editor.publish('whichPathPointIsSelected', this.currentPoint);
-				this.showDoneEditingPathButton();
+				this.showDoneCreatingPathButton();
 			} else if (this.newPath) {
 				if (isOverFirstPoint(this.newPath, cXsX(ehd.mouseX), cYsY(ehd.mouseY))) {
 					// clicked on an existing control point in this path
@@ -51,7 +60,7 @@ export class Tool_NewPath {
 					editor.eventHandlers.tool_pathEdit.dragging = true;
 					ehd.lastX = ehd.mouseX;
 					ehd.lastY = ehd.mouseY;
-					editor.multiSelect.points.select(this.newPath.pathPoints[0]);
+					msPoints.select(this.newPath.pathPoints[0]);
 					editor.selectedTool = 'pathEdit';
 					editor.publish('whichToolIsSelected', editor.selectedTool);
 
@@ -64,7 +73,7 @@ export class Tool_NewPath {
 				}
 
 				this.currentPoint = this.newPath.addPathPoint(newPoint);
-				editor.multiSelect.points.select(this.currentPoint);
+				msPoints.select(this.currentPoint);
 			}
 
 			this.firstPoint = false;
@@ -130,13 +139,13 @@ export class Tool_NewPath {
 		};
 	}
 
-	showDoneEditingPathButton() {
+	showDoneCreatingPathButton() {
 		let finishPath = makeElement({
 			tag: 'button',
 			className: 'edit-canvas__tool-selected',
-			id: 'done-editing-path-button',
-			title: 'Done editing path',
-			content: 'Done editing path',
+			id: 'done-creating-path-button',
+			title: 'Done creating path',
+			content: 'Done creating path',
 		});
 		finishPath.addEventListener('click', () => {
 			stopCreatingNewPathPoints();
@@ -145,12 +154,11 @@ export class Tool_NewPath {
 
 		document.body.appendChild(finishPath);
 	}
-
 }
 export function stopCreatingNewPathPoints() {
 	let newPathTool = getCurrentProjectEditor().eventHandlers.tool_addPath;
 	newPathTool.newPath = false;
 	newPathTool.firstPoint = true;
-	let doneButton = document.getElementById('done-editing-path-button');
+	let doneButton = document.getElementById('done-creating-path-button');
 	if (doneButton) doneButton.remove();
 }

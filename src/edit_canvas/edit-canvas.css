@@ -24,7 +24,7 @@
 	top: -1px;
 }
 
-#done-editing-path-button {
+#done-creating-path-button {
 	position: absolute;
 	color: var(--blue-l30);
 	opacity: 0.9;
@@ -35,7 +35,7 @@
 	z-index: 100;
 }
 
-#done-editing-path-button:hover,
-#done-editing-path-button:focus {
+#done-creating-path-button:hover,
+#done-creating-path-button:focus {
 	opacity: 1;
 }
