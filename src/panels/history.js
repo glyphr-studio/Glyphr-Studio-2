@@ -18,7 +18,11 @@ export function makePanel_History() {
 		className: q.length > 0 ? 'button__call-to-action number' : 'button__disabled number',
 		innerHTML: `undo ${q.length}`,
 	});
-	undoButton.addEventListener('click', () => { });
+	undoButton.addEventListener('click', () => {
+		log(`History Panel: Undo Button`, 'start');
+		editor.history.restoreState();
+		log(`History Panel: Undo Button`, 'end');
+	});
 	undoButton.style = 'max-width: 30%; grid-column: 1 / -1;';
 
 	historyArea.appendChild(undoButton);
@@ -26,30 +30,32 @@ export function makePanel_History() {
 
 	q.forEach((entry) => {
 		if (entry.itemID !== currentItemID) {
-			historyArea.innerHTML += `
-				<h3>${editor.project.getGlyphName(entry.itemID, true)}</h3>
-			`;
+			historyArea.appendChild(makeElement({
+				tag: 'h3',
+				innerHTML: editor.project.getGlyphName(entry.itemID, true),
+			}));
 			currentItemID = entry.itemID;
 		}
-		historyArea.innerHTML += `
-			<span class="history-list__title">
-				${entry.title}
-			</span>
-			<span class="history-list__date number">
-				${new Date(entry.timeStamp).toLocaleString()}
-			</span>
-		`;
+		historyArea.appendChild(makeElement({
+			className: 'history-list__title',
+			innerHTML: entry.title,
+		}));
+
+		historyArea.appendChild(makeElement({
+			className: 'history-list__date number',
+			innerHTML: new Date(entry.timeStamp).toLocaleString(),
+		}));
 	});
 
-	historyArea.innerHTML += `
-		<hr>
-		<span class="history-list__title">
-			<i>Initial state</i>
-		</span>
-		<span class="history-list__date number">
-			${new Date(editor.history.baseTimeStamp).toLocaleString()}
-		</span>
-	`;
+	historyArea.appendChild(makeElement({
+		className: 'history-list__title',
+		innerHTML: '<i>Initial state</i>',
+	}));
+
+	historyArea.appendChild(makeElement({
+		className: 'history-list__date number',
+		innerHTML: new Date(editor.history.baseTimeStamp).toLocaleString(),
+	}));
 
 	// History object calls to refresh the panel - no subscribers here
 
