@@ -41,6 +41,9 @@ export function getActionData(name) {
 			iconOptions: !historyLength,
 			title: `Undo\nStep backwards in time one action.`,
 			disabled: !historyLength,
+			onClick: () => {
+				editor.history.restoreState();
+			}
 		},
 	];
 

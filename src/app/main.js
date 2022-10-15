@@ -241,7 +241,8 @@ export function log(message, type) {
 				);
 			}
 		} else if (typeof message === 'object') {
-			console.table(message);
+			// console.table(message);
+			console.log(message);
 		} else {
 			console.log(message);
 		}

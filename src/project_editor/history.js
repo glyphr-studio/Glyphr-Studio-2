@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { clone } from '../common/functions.js';
 import { refreshPanel } from '../panels/panels.js';
+import { Glyph } from '../project_data/glyph.js';
 
 /**
 	History
@@ -34,7 +35,7 @@ export class History {
 			timeStamp: new Date().getTime(),
 			itemID: editor.selectedItemID,
 			title: title,
-			itemState: clone(changedItem),
+			itemState: changedItem.save(),
 		};
 
 		if (otherChanges.length) {
@@ -55,18 +56,18 @@ export class History {
 
 		// log('\t queue.length ' + this.queue.length);
 		const editor = getCurrentProjectEditor();
-		if (this.queue.length === 0) return;
 
 		let currentID = editor.selectedItemID;
-		let nextEntry = this.queue[this.queue.length - 1];
+		let nextEntry = this.queue[0];
 
 		if (currentID === nextEntry.itemID) {
-			if (this.queue.length > 0) {
-				if (this.parentName === 'kerning') {
-					hydrateGlyphrObjectList(HKern, clone(nextEntry.itemState));
-				} else {
-					hydrateGlyphrObjectList(Glyph, clone(nextEntry.itemState));
-				}
+			if (this.queue.length > 1) {
+				console.log(`Undoing: ${nextEntry.title}`);
+				log(`Replacing current glyph with:`);
+				log(nextEntry.itemState);
+
+				editor.project.glyphs[editor.selectedGlyphID] = new Glyph(nextEntry.itemState);
+				this.queue.splice(0, 1);
 			} else {
 				// refer to the base project in the History object
 			}
@@ -82,6 +83,7 @@ export class History {
 			*/
 		}
 
+		editor.publish('currentGlyph', editor.selectedItem);
 		if (this.queue.length === 0) editor.setProjectAsSaved();
 		if (editor.nav.panel === 'History') {
 			refreshPanel();
