@@ -46,10 +46,10 @@ export class PathPoint extends GlyphElement {
 			type: this.type,
 		};
 
-		if (!this.hasOverlappingHandle('h1')) {
+		if (this.h1.use || (!this.h1.use && !this.hasOverlappingHandle('h1'))) {
 			re.h1 = this.h1.save(verbose);
 		}
-		if (!this.hasOverlappingHandle('h2')) {
+		if (this.h2.use || (!this.h2.use && !this.hasOverlappingHandle('h2'))) {
 			re.h2 = this.h2.save(verbose);
 		}
 
@@ -73,8 +73,9 @@ export class PathPoint extends GlyphElement {
 
 		re += `${ind}type: ${this.type}\n`;
 		re += `${ind}p: ${this.p.print(level + 1)}\n`;
-		re += `${ind}h1: ${this.h1.print(level + 1)}\n`;
-		re += `${ind}h2: ${this.h2.print(level + 1)}\n`;
+
+		if (this.h1.use) re += `${ind}h1: ${this.h1.print(level + 1)}\n`;
+		if (this.h2.use) re += `${ind}h2: ${this.h2.print(level + 1)}\n`;
 
 		re += `${ind.substring(2)}}/PathPoint ${isVal(num) ? num : ''}`;
 
@@ -323,7 +324,6 @@ export class PathPoint extends GlyphElement {
 		// log('PathPoint.makeFlat', 'start');
 		// log(`hold: ${hold}`);
 
-
 		if (this.isFlat()) {
 			this._type = 'flat';
 			return;
@@ -426,7 +426,7 @@ export class PathPoint extends GlyphElement {
 		// log(`moveHandle: ${moveHandle}`);
 		// log(`this.type: ${this.type}`);
 
-		let holdHandle = (moveHandle === 'h1' ? 'h2' : 'h1');
+		let holdHandle = moveHandle === 'h1' ? 'h2' : 'h1';
 
 		if (this.type === 'symmetric') {
 			this.makeSymmetric(holdHandle);
