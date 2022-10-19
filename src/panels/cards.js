@@ -157,7 +157,10 @@ export function makeSingleCheckbox(workItem, property, thisTopic) {
 		let newValue = event.target.checked;
 		workItem[property] = !!newValue;
 		getCurrentProjectEditor().publish(thisTopic, workItem);
-		if (property === 'use') toggleHandleInputs(workItem.type, !!newValue);
+		if (property === 'use') {
+			toggleHandleInputs(workItem.type, !!newValue);
+			workItem.parent.reconcileHandle(workItem.type);
+		}
 	});
 
 	getCurrentProjectEditor().subscribe({

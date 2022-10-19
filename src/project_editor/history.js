@@ -66,8 +66,20 @@ export class History {
 				log(`Replacing current glyph with:`);
 				log(nextEntry.itemState);
 
+				log(`PRE RESTORE`);
+				log(editor.project.glyphs[editor.selectedGlyphID].paths[0].pathPoints[4].print());
+
 				editor.project.glyphs[editor.selectedGlyphID] = new Glyph(nextEntry.itemState);
 				this.queue.splice(0, 1);
+
+				log(`POST RESTORE`);
+				log(editor.project.glyphs[editor.selectedGlyphID].paths[0].pathPoints[4].print());
+
+				editor.publish('currentGlyph', editor.selectedItem);
+				if (this.queue.length === 0) editor.setProjectAsSaved();
+				if (editor.nav.panel === 'History') {
+					refreshPanel();
+				}
 			} else {
 				// refer to the base project in the History object
 			}
@@ -81,12 +93,6 @@ export class History {
 			);
 			selectGlyph(nextID);
 			*/
-		}
-
-		editor.publish('currentGlyph', editor.selectedItem);
-		if (this.queue.length === 0) editor.setProjectAsSaved();
-		if (editor.nav.panel === 'History') {
-			refreshPanel();
 		}
 
 		log(`History.restoreState`, 'end');
