@@ -26,7 +26,7 @@ export class History {
 	 * (for example, changing a Component also changes Glyphs it's linked to)
 	 */
 	addState(title = '', otherChanges = false) {
-		// log(`History.addState`, 'start');
+		log(`History.addState`, 'start');
 		const editor = getCurrentProjectEditor();
 		const changedItem = editor.selectedItem;
 		title = title || `Change to ${changedItem.name}`;
@@ -42,13 +42,14 @@ export class History {
 			//fill
 		}
 
+		log(entry);
 		this.queue.unshift(entry);
 		editor.setProjectAsUnsaved();
 		if (editor.nav.panel === 'History') {
 			refreshPanel();
 		}
 
-		// log(`History.addState`, 'end');
+		log(`History.addState`, 'end');
 	}
 
 	restoreState() {
@@ -69,7 +70,7 @@ export class History {
 				log(`PRE RESTORE`);
 				log(editor.project.glyphs[editor.selectedGlyphID].paths[0].pathPoints[4].print());
 
-				editor.project.glyphs[editor.selectedGlyphID] = new Glyph(nextEntry.itemState);
+				editor.project.selectedGlyph = nextEntry.itemState;
 				this.queue.splice(0, 1);
 
 				log(`POST RESTORE`);

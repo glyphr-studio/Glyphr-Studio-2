@@ -195,26 +195,6 @@ export class ProjectEditor {
 	}
 
 	/**
-	 * Returns the selected kern
-	 * @returns {object}
-	 */
-	get selectedKern() {
-		const re = this.kerns[this.selectedKernID];
-		return re;
-	}
-
-	/**
-	 * Returns the selected kern ID
-	 * @returns {string}
-	 */
-	get selectedKernID() {
-		if (!this._selectedKernID) {
-			this._selectedKernID = getFirstID(this.project.kerning);
-		}
-		return this._selectedKernID;
-	}
-
-	/**
 	 * Returns the selected component
 	 * @returns {object}
 	 */
@@ -234,9 +214,39 @@ export class ProjectEditor {
 		return this._selectedComponentID;
 	}
 
+	/**
+	 * Returns the selected kern
+	 * @returns {object}
+	 */
+	get selectedKern() {
+		const re = this.kerns[this.selectedKernID];
+		return re;
+	}
+
+	/**
+	 * Returns the selected kern ID
+	 * @returns {string}
+	 */
+	get selectedKernID() {
+		if (!this._selectedKernID) {
+			this._selectedKernID = getFirstID(this.project.kerning);
+		}
+		return this._selectedKernID;
+	}
+
 	// --------------------------------------------------------------
 	// Set Selected Work Items
 	// --------------------------------------------------------------
+
+	/**
+	 * Replaces the current Glyph
+	 * @param {Glyph} newGlyph - new glyph to set
+	 */
+	set selectedGlyph(newGlyph = {}) {
+		let id = this.selectedGlyphID;
+		newGlyph = new Glyph(newGlyph);
+		this.project.glyphs[id] = newGlyph;
+	}
 
 	/**
 	 * Sets the selected glyph
@@ -245,14 +255,24 @@ export class ProjectEditor {
 	set selectedGlyphID(id) {
 		// log(`ProjectEditor SET selectedGlyphID`, 'start');
 		// log(`id: ${id}`);
-		// Validate ID!
+		// TODO Validate ID!
 		const newID = normalizeHex(id);
 		this._selectedGlyphID = newID;
 		if (!this.project.glyphs[newID]) {
-			this.project.glyphs[newID] = new Glyph({id: newID});
+			this.project.glyphs[newID] = new Glyph({ id: newID });
 		}
 		this.publish('whichGlyphIsSelected', this.selectedGlyphID);
 		// log(`ProjectEditor SET selectedGlyphID`, 'end');
+	}
+
+	/**
+	 * Replaces the current Ligature
+	 * @param {Glyph} newLigature - new ligature to set
+	 */
+	set selectedLigature(newLigature = {}) {
+		let id = this.selectedLigatureID;
+		newLigature = new Glyph(newLigature);
+		this.project.glyphs[id] = newLigature;
 	}
 
 	/**
@@ -260,17 +280,18 @@ export class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedLigatureID(id) {
-		// Validate ID!
+		// TODO Validate ID!
 		this._selectedLigatureID = id;
 	}
 
 	/**
-	 * Sets the selected kern
-	 * @param {string} id - ID to select
+	 * Replaces the current Component
+	 * @param {Glyph} newComponent - new component to set
 	 */
-	set selectedKernID(id) {
-		// Validate ID!
-		this._selectedKernID = id;
+	set selectedComponent(newComponent = {}) {
+		let id = this.selectedComponentID;
+		newComponent = new Glyph(newComponent);
+		this.project.glyphs[id] = newComponent;
 	}
 
 	/**
@@ -278,8 +299,27 @@ export class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedComponentID(id) {
-		// Validate ID!
+		// TODO Validate ID!
 		this._selectedComponentID = id;
+	}
+
+	/**
+	 * Replaces the current Kern
+	 * @param {HKern} newKern - new kern to set
+	 */
+	set selectedKern(newKern = {}) {
+		let id = this.selectedKernID;
+		newKern = new HKern(newKern);
+		this.project.glyphs[id] = newKern;
+	}
+
+	/**
+	 * Sets the selected kern
+	 * @param {string} id - ID to select
+	 */
+	set selectedKernID(id) {
+		// TODO Validate ID!
+		this._selectedKernID = id;
 	}
 
 	/**
@@ -518,6 +558,6 @@ export class ProjectEditor {
 		this.setProjectAsSaved();
 	}
 
-	setProjectAsSaved() { }
-	setProjectAsUnsaved() { }
+	setProjectAsSaved() {}
+	setProjectAsUnsaved() {}
 }
