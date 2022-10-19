@@ -27,8 +27,8 @@ export class PathPoint extends GlyphElement {
 		this.type = type;
 		this.objType = 'PathPoint';
 
-		if (pointsAreEqual(this.p.coord, this.h1.coord)) this.h1.use = false;
-		if (pointsAreEqual(this.p.coord, this.h2.coord)) this.h2.use = false;
+		if (this.hasOverlappingHandle('h1')) this.h1.use = false;
+		if (this.hasOverlappingHandle('h2')) this.h2.use = false;
 	}
 
 	// --------------------------------------------------------------
@@ -46,8 +46,12 @@ export class PathPoint extends GlyphElement {
 			type: this.type,
 		};
 
-		if (this.h1.use) re.h1 = this.h1.save(verbose);
-		if (this.h2.use) re.h2 = this.h2.save(verbose);
+		if (!this.hasOverlappingHandle('h1')) {
+			re.h1 = this.h1.save(verbose);
+		}
+		if (!this.hasOverlappingHandle('h2')) {
+			re.h2 = this.h2.save(verbose);
+		}
 
 		if (verbose) re.objType = this.objType;
 
@@ -150,7 +154,7 @@ export class PathPoint extends GlyphElement {
 	 */
 	set h1(newPoint = {}) {
 		if (!newPoint.coord) {
-			newPoint.coord = { x: this.p.x - 100, y: this.p.y };
+			newPoint.coord = { x: this.p.x - 50, y: this.p.y };
 			newPoint.use = false;
 		}
 		newPoint.parent = this;
@@ -164,7 +168,7 @@ export class PathPoint extends GlyphElement {
 	 */
 	set h2(newPoint = {}) {
 		if (!newPoint.coord) {
-			newPoint.coord = { x: this.p.x + 100, y: this.p.y };
+			newPoint.coord = { x: this.p.x + 50, y: this.p.y };
 			newPoint.use = false;
 		}
 		newPoint.parent = this;
@@ -246,8 +250,7 @@ export class PathPoint extends GlyphElement {
 	 */
 	makeSymmetric(hold) {
 		// log(`PathPoint.makeSymmetric`, 'start');
-
-		// log('PathPoint.makeSymmetric - hold ' + hold + ' starts as ' + JSON.stringify(this));
+		// log(`hold: ${hold}`);
 
 		if (!hold) {
 			hold = this.h1.use ? 'h1' : 'h2';
@@ -257,8 +260,8 @@ export class PathPoint extends GlyphElement {
 					(this.h2.y + this.p.y + this.h1.y) / 3 === this.p.y
 				) {
 					// Handles and points are all in the same place
-					this.h2.x -= 200;
-					this.h1.x += 200;
+					this.h2.x -= 100;
+					this.h1.x += 100;
 					this.h1.use = true;
 					this.h2.use = true;
 					return;
@@ -318,7 +321,8 @@ export class PathPoint extends GlyphElement {
 	 */
 	makeFlat(hold) {
 		// log('PathPoint.makeFlat', 'start');
-		// log('hold passed ' + hold);
+		// log(`hold: ${hold}`);
+
 
 		if (this.isFlat()) {
 			this._type = 'flat';
@@ -412,6 +416,27 @@ export class PathPoint extends GlyphElement {
 	}
 
 	/**
+	 * When a handle's 'use' flag is toggled, make sure the
+	 * handles coord is in the right place with regards to
+	 * the overall point's type.
+	 * @param {String} moveHandle - which handle to move
+	 */
+	reconcileHandle(moveHandle = 'h1') {
+		// log(`PathPoint.reconcileHandle`, 'start');
+		// log(`moveHandle: ${moveHandle}`);
+		// log(`this.type: ${this.type}`);
+
+		let holdHandle = (moveHandle === 'h1' ? 'h2' : 'h1');
+
+		if (this.type === 'symmetric') {
+			this.makeSymmetric(holdHandle);
+		} else if (this.type === 'flat') {
+			this.makeFlat(holdHandle);
+		}
+		// log(`PathPoint.reconcileHandle`, 'end');
+	}
+
+	/**
 	 * Figures out what type a point is based on handle positions
 	 * @returns {string}
 	 */
@@ -469,6 +494,17 @@ export class PathPoint extends GlyphElement {
 		}
 
 		return this;
+	}
+
+	/**
+	 * Checks to see if the p and a handle share the same coordinate.
+	 * Happens sometimes as a bug, handle should be treated as not existing.
+	 * @param {String} hNumber h1 or h2
+	 * @returns {Boolean}
+	 */
+	hasOverlappingHandle(hNumber) {
+		if (!this[hNumber] || !this[hNumber].coord) return false;
+		return pointsAreEqual(this[hNumber].coord, this.p.coord);
 	}
 
 	/**
