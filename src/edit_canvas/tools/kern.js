@@ -11,8 +11,8 @@ export class Tool_Kern {
 		this.deltax = 0;
 
 		this.mousedown = function (ev) {
-			// log('Tool_Kern - mouse down: ' + eventHandlerData.mouseX + ':' + eventHandlerData.mouseY);
-			this.deltax = eventHandlerData.mouseX;
+			// log('Tool_Kern - mouse down: ' + eventHandlerData.mousePosition.x + ':' + eventHandlerData.mousePosition.y);
+			this.deltax = eventHandlerData.mousePosition.x;
 			this.dragging = true;
 		};
 
@@ -32,9 +32,9 @@ export class Tool_Kern {
 				let val = 1 * sk.value;
 				updateKernValue(
 					getSelectedKernID(),
-					round(val + (1 * (eventHandlerData.mouseX - this.deltax)) / editor.view.dz)
+					round(val + (1 * (eventHandlerData.mousePosition.x - this.deltax)) / editor.view.dz)
 				);
-				this.deltax = eventHandlerData.mouseX;
+				this.deltax = eventHandlerData.mousePosition.x;
 				redraw({ calledBy: 'Kern.mousemove', redrawPanels: false });
 			}
 		};

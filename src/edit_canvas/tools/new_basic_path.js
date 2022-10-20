@@ -20,10 +20,10 @@ export class Tool_NewBasicPath {
 			const editor = getCurrentProjectEditor();
 			const ehd = eventHandlerData;
 			ehd.newBasicPathMaxes = {
-				xMax: cXsX(ehd.mouseX),
-				xMin: cXsX(ehd.mouseX),
-				yMax: cYsY(ehd.mouseY),
-				yMin: cYsY(ehd.mouseY),
+				xMax: cXsX(ehd.mousePosition.x),
+				xMin: cXsX(ehd.mousePosition.x),
+				yMax: cYsY(ehd.mousePosition.y),
+				yMin: cYsY(ehd.mousePosition.y),
 			};
 
 			// This is the fake path that shows up in the layers panel
@@ -37,8 +37,8 @@ export class Tool_NewBasicPath {
 			}
 
 			this.dragging = true;
-			ehd.firstX = cXsX(ehd.mouseX);
-			ehd.firstY = cYsY(ehd.mouseY);
+			ehd.firstX = cXsX(ehd.mousePosition.x);
+			ehd.firstY = cYsY(ehd.mousePosition.y);
 			// log(`ehd.firstX: ${ehd.firstX}`);
 			// log(`ehd.firstY: ${ehd.firstY}`);
 
@@ -54,13 +54,13 @@ export class Tool_NewBasicPath {
 			const editor = getCurrentProjectEditor();
 			const ehd = eventHandlerData;
 			// log(`EHFirst: x ${(ehd.firstX)}, y ${(ehd.firstY)}`);
-			// log(`Mouse:   x ${cXsX(ehd.mouseX)}, y ${cYsY(ehd.mouseY)}`);
+			// log(`Mouse:   x ${cXsX(ehd.mousePosition.x)}, y ${cYsY(ehd.mousePosition.y)}`);
 			// log(`ehd.newBasicPathMaxes before ${JSON.stringify(ehd.newBasicPathMaxes)}`);
 			if (ehd.newBasicPathMaxes) {
-				ehd.newBasicPathMaxes.xMax = Math.max(ehd.firstX, cXsX(ehd.mouseX));
-				ehd.newBasicPathMaxes.xMin = Math.min(ehd.firstX, cXsX(ehd.mouseX));
-				ehd.newBasicPathMaxes.yMax = Math.max(ehd.firstY, cYsY(ehd.mouseY));
-				ehd.newBasicPathMaxes.yMin = Math.min(ehd.firstY, cYsY(ehd.mouseY));
+				ehd.newBasicPathMaxes.xMax = Math.max(ehd.firstX, cXsX(ehd.mousePosition.x));
+				ehd.newBasicPathMaxes.xMin = Math.min(ehd.firstX, cXsX(ehd.mousePosition.x));
+				ehd.newBasicPathMaxes.yMax = Math.max(ehd.firstY, cYsY(ehd.mousePosition.y));
+				ehd.newBasicPathMaxes.yMin = Math.min(ehd.firstY, cYsY(ehd.mousePosition.y));
 				// log(`ehd.newBasicPathMaxes afters ${JSON.stringify(ehd.newBasicPathMaxes)}`);
 
 				if (editor.selectedTool === 'newOval') {

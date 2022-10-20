@@ -28,19 +28,19 @@ export class Tool_PathEdit {
 			const msPoints = editor.multiSelect.points;
 			const msPaths = editor.multiSelect.paths;
 			const view = editor.view;
-			ehd.lastX = ehd.mouseX;
-			ehd.lastY = ehd.mouseY;
+			ehd.lastX = ehd.mousePosition.x;
+			ehd.lastY = ehd.mousePosition.y;
 			this.historyTitle = 'Path edit tool';
 
 			this.controlPoint = isOverControlPoint(
 				ehd.isCtrlDown ? editor.selectedItem : msPaths.virtualGlyph,
-				cXsX(ehd.mouseX, view),
-				cYsY(ehd.mouseY, view)
+				cXsX(ehd.mousePosition.x, view),
+				cYsY(ehd.mousePosition.y, view)
 			);
 			// log(`isOverControlPoint:`);
 			// log(this.controlPoint);
 
-			const clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
+			const clickedPath = getPathAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
 			// log(`getPathAtLocation:`);
 			// log(clickedPath);
 
@@ -91,7 +91,7 @@ export class Tool_PathEdit {
 				// log('detected NOTHING');
 				// msPaths.recalculateMaxes();
 				clickEmptySpace();
-				// findAndCallHotspot(ehd.mouseX, ehd.mouseY);
+				// findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			}
 
 			// if (msPaths.members.length) editor.nav.panel = 'Attributes';
@@ -113,8 +113,8 @@ export class Tool_PathEdit {
 				this.controlPoint = msPoints.singleton.h2;
 
 				this.controlPoint.parent.h2.use = true;
-				this.controlPoint.parent.h2.x = cXsX(ehd.mouseX, view);
-				this.controlPoint.parent.h2.y = cYsY(ehd.mouseY, view);
+				this.controlPoint.parent.h2.x = cXsX(ehd.mousePosition.x, view);
+				this.controlPoint.parent.h2.y = cYsY(ehd.mousePosition.y, view);
 				msPoints.singleHandle = this.controlPoint.type;
 
 				this.historyTitle = `Added new path: ${this.pathPoint.parent.name}`;
@@ -128,18 +128,18 @@ export class Tool_PathEdit {
 				// log('Dragging');
 				// Moving points if mousedown
 				this.monitorForDeselect = false;
-				let dx = (ehd.mouseX - ehd.lastX) / view.dz;
-				let dy = (ehd.lastY - ehd.mouseY) / view.dz;
+				let dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
+				let dy = (ehd.lastY - ehd.mousePosition.y) / view.dz;
 				const cpt = this.controlPoint.type;
 
 				if (msPoints.members.length === 1) {
 					if (this.controlPoint && this.controlPoint.xLock) dx = 0;
 					if (this.controlPoint && this.controlPoint.yLock) dy = 0;
-					if(cpt === 'p') {
+					if (cpt === 'p') {
 						this.historyTitle = `Moved path point: ${this.pathPoint.pointNumber}`;
 					}
 				} else {
-					if(cpt === 'p') {
+					if (cpt === 'p') {
 						this.historyTitle = `Moved ${msPoints.members.length} path points`;
 					}
 				}
@@ -148,13 +148,13 @@ export class Tool_PathEdit {
 				// log(`dx: ${dx}, dy: ${dy}`);
 				msPoints.updatePathPointPosition(dx, dy);
 
-				ehd.lastX = ehd.mouseX;
-				ehd.lastY = ehd.mouseY;
+				ehd.lastX = ehd.mousePosition.x;
+				ehd.lastY = ehd.mousePosition.y;
 				ehd.undoQueueHasChanged = true;
 				editor.publish(`currentControlPoint.${cpt}`, this.controlPoint);
 			}
 
-			// checkForMouseOverHotspot(ehd.mouseX, ehd.mouseY);
+			// checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 
 			// Figure out cursor
 			let hoveredControlPoint;
@@ -165,8 +165,8 @@ export class Tool_PathEdit {
 
 				hoveredControlPoint = isOverControlPoint(
 					editor.selectedItem,
-					cXsX(ehd.mouseX, view),
-					cYsY(ehd.mouseY, view)
+					cXsX(ehd.mousePosition.x, view),
+					cYsY(ehd.mousePosition.y, view)
 				);
 				hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
 
@@ -190,8 +190,8 @@ export class Tool_PathEdit {
 				// Single selection
 				hoveredControlPoint = isOverControlPoint(
 					editor.multiSelect.paths.virtualGlyph,
-					cXsX(ehd.mouseX, view),
-					cYsY(ehd.mouseY, view)
+					cXsX(ehd.mousePosition.x, view),
+					cYsY(ehd.mousePosition.y, view)
 				);
 				hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
 

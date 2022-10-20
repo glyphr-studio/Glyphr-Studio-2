@@ -444,14 +444,28 @@ export class ProjectEditor {
 		return !!this._views[id];
 	}
 
-	updateViewZoom(zoomInput) {
-		let newValue = parseFloat(zoomInput) * this.view.dz;
-		this.view = { dz: newValue };
+	updateViewZoom(zoomInput, center = {}) {
+		// log(`updateViewZoom`, 'start');
+		// log(`zoomInput: ${zoomInput}`);
+		// log(`center: ${center.x}, ${center.y}`);
+
+		zoomInput = parseFloat(zoomInput);
+		const v = this.view;
+		const cx = center.x;
+		const cy = center.y;
+
+		this.view = {
+			dz: zoomInput * v.dz,
+			dx: cx ? (cx - (cx - v.dx) * zoomInput) : v.dx,
+			dy: cy ? (cy - (cy - v.dy) * zoomInput) : v.dy,
+		};
+
 		this.publish('view', this.view);
+		// log(`updateViewZoom`, 'end');
 	}
 
 	setViewZoom(zoomInput) {
-		let newValue = parseFloat(zoomInput) / 100;
+		const newValue = parseFloat(zoomInput) / 100;
 		this.view = { dz: newValue };
 		this.publish('view', this.view);
 	}

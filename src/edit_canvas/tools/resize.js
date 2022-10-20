@@ -24,19 +24,19 @@ export class Tool_Resize {
 		// --------------------------------------------------------------
 		this.mousedown = function (ev) {
 			// log('Tool_Resize.mousedown', 'start');
-			// log('x:y ' + eventHandlerData.mouseX + ':' + eventHandlerData.mouseY);
+			// log('x:y ' + eventHandlerData.mousePosition.x + ':' + eventHandlerData.mousePosition.y);
 			const editor = getCurrentProjectEditor();
 			const msPaths = editor.multiSelect.paths;
 			const ehd = eventHandlerData;
 			ehd.handle = false;
-			ehd.lastX = ehd.mouseX;
-			ehd.firstX = ehd.mouseX;
-			ehd.lastY = ehd.mouseY;
-			ehd.firstY = ehd.mouseY;
-			ehd.handle = msPaths.isOverBoundingBoxHandle(ehd.mouseX, ehd.mouseY);
+			ehd.lastX = ehd.mousePosition.x;
+			ehd.firstX = ehd.mousePosition.x;
+			ehd.lastY = ehd.mousePosition.y;
+			ehd.firstY = ehd.mousePosition.y;
+			ehd.handle = msPaths.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y);
 
 			this.didStuff = false;
-			this.clickedPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
+			this.clickedPath = getPathAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
 			this.resizing = false;
 			this.dragging = false;
 			this.rotating = false;
@@ -83,7 +83,7 @@ export class Tool_Resize {
 				clickEmptySpace();
 
 				// TODO hotspots
-				// findAndCallHotspot(ehd.mouseX, ehd.mouseY);
+				// findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			}
 		};
 
@@ -98,14 +98,15 @@ export class Tool_Resize {
 			const view = editor.view;
 			const msPaths = editor.multiSelect.paths;
 			this.didStuff = false;
-			const corner = ehd.handle || msPaths.isOverBoundingBoxHandle(ehd.mouseX, ehd.mouseY);
+			const corner =
+				ehd.handle || msPaths.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y);
 			const singlePath = msPaths.singleton;
 
 			if (this.dragging) {
 				// log('Dragging');
 				this.monitorForDeselect = false;
-				let dx = (ehd.mouseX - ehd.lastX) / view.dz;
-				let dy = (ehd.lastY - ehd.mouseY) / view.dz;
+				let dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
+				let dy = (ehd.lastY - ehd.mousePosition.y) / view.dz;
 
 				if (singlePath) {
 					if (singlePath.xLock) dx = 0;
@@ -129,7 +130,10 @@ export class Tool_Resize {
 				this.didStuff = true;
 			} else if (this.rotating) {
 				// log(`detected ROTATING`);
-				let a1 = calculateAngle({ x: cXsX(ehd.mouseX), y: cYsY(ehd.mouseY) }, ehd.rotationCenter);
+				let a1 = calculateAngle(
+					{ x: cXsX(ehd.mousePosition.x), y: cYsY(ehd.mousePosition.y) },
+					ehd.rotationCenter
+				);
 				let a2 = calculateAngle({ x: cXsX(ehd.lastX), y: cYsY(ehd.lastY) }, ehd.rotationCenter);
 				msPaths.rotate(a1 - a2, ehd.rotationCenter);
 				if (singlePath) {
@@ -141,7 +145,7 @@ export class Tool_Resize {
 			}
 
 			// Figure out cursor
-			let hoveredPath = getPathAtLocation(ehd.mouseX, ehd.mouseY);
+			let hoveredPath = getPathAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
 
 			if (corner) {
 				setCursor(corner);
@@ -167,12 +171,12 @@ export class Tool_Resize {
 				}
 			}
 
-			// checkForMouseOverHotspot(ehd.mouseX, ehd.mouseY);
+			// checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 
 			if (this.didStuff) {
 				// log('did stuff');
-				ehd.lastX = ehd.mouseX;
-				ehd.lastY = ehd.mouseY;
+				ehd.lastX = ehd.mousePosition.x;
+				ehd.lastY = ehd.mousePosition.y;
 				ehd.undoQueueHasChanged = true;
 				editor.publish('currentGlyph', editor.selectedItem);
 			} else {
