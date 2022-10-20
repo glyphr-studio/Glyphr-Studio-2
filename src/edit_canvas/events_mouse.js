@@ -20,16 +20,7 @@ export function handleMouseEvents(event) {
 	const ehd = eventHandlerData;
 	const editor = getCurrentProjectEditor();
 
-	if (event.offsetX || event.offsetY) {
-		// IE, Chrome, (Opera?)
-		ehd.mouseX = event.offsetX;
-		ehd.mouseY = event.offsetY;
-	} else if (event.layerX || event.layerY) {
-		// Firefox
-		ehd.mouseX = event.layerX;
-		ehd.mouseY = event.layerY;
-	}
-	// log(`ehd.mouse: ${ehd.mouseX}, ${ehd.mouseY}`);
+	ehd.mousePosition = getMousePositionData(event);
 
 	// Mouse back & forward buttons
 	if (event.button === 3 || event.button === 4) {
@@ -98,6 +89,22 @@ export function handleMouseEvents(event) {
 // Helpers
 // --------------------------------------------------------------
 
+export function getMousePositionData(event) {
+	let mouse = { x: false, y: false };
+
+	if (event.offsetX || event.offsetY) {
+		// IE, Chrome, (Opera?)
+		mouse.x = event.offsetX;
+		mouse.y = event.offsetY;
+	} else if (event.layerX || event.layerY) {
+		// Firefox
+		mouse.x = event.layerX;
+		mouse.y = event.layerY;
+	}
+	// log(`mouse: ${mouse.x}, ${mouse.y}`);
+	return mouse;
+}
+
 export function clickEmptySpace() {
 	const editor = getCurrentProjectEditor();
 	editor.multiSelect.points.clear();
@@ -112,8 +119,8 @@ export function resizePath() {
 	let resizeCorner = eventHandlerData.handle;
 	// log('handle ' + resizeCorner);
 
-	let mx = cXsX(eventHandlerData.mouseX);
-	let my = cYsY(eventHandlerData.mouseY);
+	let mx = cXsX(eventHandlerData.mousePosition.x);
+	let my = cYsY(eventHandlerData.mousePosition.y);
 	let lx = cXsX(eventHandlerData.lastX);
 	let ly = cYsY(eventHandlerData.lastY);
 	let dh = ly - my;
@@ -272,6 +279,7 @@ export function handleMouseWheel(event) {
 	// log(event);
 	let delta = event.deltaY * -1;
 	const editor = getCurrentProjectEditor();
+	const mouse = getMousePositionData(event);
 	// log('MOUSEWHEEL - deltaY: ' + event.deltaY);
 
 	let canZoom = editor.nav.isOnEditCanvasPage;
@@ -282,9 +290,9 @@ export function handleMouseWheel(event) {
 			event.preventDefault();
 			// log('MOUSEWHEEL: canZoom=true and delta=' + delta );
 			if (delta > 0) {
-				editor.updateViewZoom(1.1);
+				editor.updateViewZoom(1.1, mouse);
 			} else {
-				editor.updateViewZoom(0.9);
+				editor.updateViewZoom(0.9, mouse);
 			}
 		}
 	}

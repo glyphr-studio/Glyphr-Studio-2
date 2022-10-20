@@ -177,8 +177,8 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	thickness = thickness || 1;
 	let center = clone(eventHandlerData.rotationCenter, 'drawRotationAffordance');
 	let startTopY = eventHandlerData.rotationStartPoint.y;
-	let mx = eventHandlerData.mouseX;
-	let my = eventHandlerData.mouseY;
+	let mx = eventHandlerData.mousePosition.x;
+	let my = eventHandlerData.mousePosition.y;
 	let radians = calculateAngle({ x: cx_sx(mx), y: cy_sy(my) }, center);
 
 	// log('\t Init radians:\t' + radians);
