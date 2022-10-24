@@ -2,9 +2,6 @@
 ## Node
 #############
 node_modules/
-.parcel-cache
-dev/
-dist/
 
 #################
 ## Eclipse
