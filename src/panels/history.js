@@ -26,7 +26,7 @@ export function makePanel_History() {
 	undoButton.style = 'max-width: 30%; grid-column: 1 / -1;';
 
 	historyArea.appendChild(undoButton);
-	let currentItemID = false;
+	let currentItemID = 'initial';
 
 	q.forEach((entry) => {
 		if (entry.itemID !== currentItemID) {
@@ -47,6 +47,7 @@ export function makePanel_History() {
 		}));
 	});
 
+	/*
 	historyArea.appendChild(makeElement({
 		className: 'history-list__title',
 		innerHTML: '<i>Initial state</i>',
@@ -56,7 +57,7 @@ export function makePanel_History() {
 		className: 'history-list__date number',
 		innerHTML: new Date(editor.history.baseTimeStamp).toLocaleString(),
 	}));
-
+*/
 	// History object calls to refresh the panel - no subscribers here
 
 	return historyArea;

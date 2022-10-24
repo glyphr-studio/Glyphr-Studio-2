@@ -54,6 +54,7 @@ export class PathPoint extends GlyphElement {
 		}
 
 		if (verbose) re.objType = this.objType;
+		if (this.__ID) re.__ID = this.__ID;
 
 		return re;
 	}

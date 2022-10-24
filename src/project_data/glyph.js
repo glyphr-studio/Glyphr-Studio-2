@@ -70,6 +70,7 @@ export class Glyph extends GlyphElement {
 			delete re.objType;
 			delete re.name;
 		}
+		if (this.__ID) re.__ID = this.__ID;
 
 		return re;
 	}

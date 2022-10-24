@@ -28,7 +28,7 @@ export class ProjectEditor {
 	 * @param {object} newEditor - Glyphr Studio Project File JSON
 	 */
 	constructor(newProjectEditor = {}) {
-		// log('ProjectEditor.constructor', 'start');
+		log('ProjectEditor.constructor', 'start');
 		// log('passed > newProjectEditor');
 		// log(newProjectEditor);
 
@@ -75,7 +75,7 @@ export class ProjectEditor {
 		this.selectedTool = 'resize';
 
 		// History
-		this.history = new History(this.project);
+		this.history = new History(this);
 
 		// MultiSelect
 		this.multiSelect = {
@@ -83,8 +83,8 @@ export class ProjectEditor {
 			paths: new MultiSelectPaths(),
 		};
 
-		// log(this);
-		// log('ProjectEditor.constructor', 'end');
+		log(this);
+		log('ProjectEditor.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -156,6 +156,7 @@ export class ProjectEditor {
 		const id = this.selectedGlyphID;
 		// log(`selectedGlyphID ${id}`);
 		const re = this.project.getGlyph(id);
+		// log(re);
 		// log('ProjectEditor GET selectedGlyph', 'end');
 		return re || new Glyph();
 	}
@@ -170,6 +171,7 @@ export class ProjectEditor {
 			this._selectedGlyphID = getFirstID(this.project.glyphs);
 		}
 
+		// log(`returning ${this._selectedGlyphID}`);
 		// log('ProjectEditor GET selectedGlyphID', 'end');
 		return this._selectedGlyphID;
 	}
