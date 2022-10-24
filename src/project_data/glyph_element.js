@@ -6,7 +6,7 @@ import { json, clone, makeRandomID } from '../common/functions.js';
 export class GlyphElement {
 	/** Yay! */
 	constructor() {
-		// this.__ID = makeRandomID();
+		this.__ID = makeRandomID();
 	}
 
 	/**

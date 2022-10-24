@@ -41,11 +41,16 @@ export function generateNewID(obj, base) {
 	return id;
 }
 
+/**
+ * A quick visual way to see if two objects are actually the
+ * same object from the console.
+ * @returns String of emojis
+ */
 export function makeRandomID() {
-	let glyphs = 'ABCDEFGHJKLMPQSTUVWXYZ';
+	let glyphs = ['💖', '🦧','🐆','✅','🐋','😈','🦑'];
 	let result = '';
-	for (let i = 0; i < 3; i++) {
-		result += glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+	for (let i = 0; i < 4; i++) {
+		result += glyphs[(Math.floor(Math.random() * glyphs.length))];
 	}
 
 	return result;

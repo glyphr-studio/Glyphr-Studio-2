@@ -11,11 +11,10 @@ import { Glyph } from '../project_data/glyph.js';
 **/
 
 export class History {
-	constructor(project) {
-		// const project = getCurrentProject();
+	constructor(editor) {
 		this.queue = [];
-		this.baseState = clone(project);
-		this.baseTimeStamp = new Date().getTime();
+		const initial = makeHistoryEntry(editor, 'Initial state', editor.selectedGlyph);
+		this.currentState = initial;
 	}
 
 	/**
@@ -28,61 +27,61 @@ export class History {
 	addState(title = '', otherChanges = false) {
 		log(`History.addState`, 'start');
 		const editor = getCurrentProjectEditor();
+		this.queue.unshift(this.currentState);
+
 		const changedItem = editor.selectedItem;
 		title = title || `Change to ${changedItem.name}`;
-
-		let entry = {
-			timeStamp: new Date().getTime(),
-			itemID: editor.selectedItemID,
-			title: title,
-			itemState: changedItem.save(),
-		};
+		this.currentState = makeHistoryEntry(editor, title, changedItem);
 
 		if (otherChanges.length) {
 			//fill
 		}
 
-		log(entry);
-		this.queue.unshift(entry);
 		editor.setProjectAsUnsaved();
 		if (editor.nav.panel === 'History') {
 			refreshPanel();
 		}
 
+		log(this);
 		log(`History.addState`, 'end');
 	}
 
+	/**
+	 * Get the latest change, and restore it to the currently selected item
+	 */
 	restoreState() {
 		log(`History.restoreState`, 'start');
-
-		// log('\t queue.length ' + this.queue.length);
+		log(this.queue);
 		const editor = getCurrentProjectEditor();
+
+		if (this.queue.length === 0) {
+			log(`Queue is 0, returning`);
+			log(`History.restoreState`, 'end');
+			editor.setProjectAsSaved();
+			return;
+		}
 
 		let currentID = editor.selectedItemID;
 		let nextEntry = this.queue[0];
 
 		if (currentID === nextEntry.itemID) {
-			if (this.queue.length > 1) {
-				console.log(`Undoing: ${nextEntry.title}`);
-				log(`Replacing current glyph with:`);
-				log(nextEntry.itemState);
+			// Changes exist in the queue
+			// make sure the next one is a change for the current glyph
+			log(`Undoing: ${nextEntry.title}`);
+			log(`Replacing current glyph with:`);
+			log(nextEntry.itemState);
 
-				log(`PRE RESTORE`);
-				log(editor.project.glyphs[editor.selectedGlyphID].paths[0].pathPoints[4].print());
+			// Clear selections
+			editor.multiSelect.points.clear();
+			editor.multiSelect.paths.clear();
 
-				editor.project.selectedGlyph = nextEntry.itemState;
-				this.queue.splice(0, 1);
+			// Overwrite the current item with the redo state
+			editor.selectedGlyph = nextEntry.itemState;
+			this.queue.splice(0, 1);
 
-				log(`POST RESTORE`);
-				log(editor.project.glyphs[editor.selectedGlyphID].paths[0].pathPoints[4].print());
-
-				editor.publish('currentGlyph', editor.selectedItem);
-				if (this.queue.length === 0) editor.setProjectAsSaved();
-				if (editor.nav.panel === 'History') {
-					refreshPanel();
-				}
-			} else {
-				// refer to the base project in the History object
+			editor.publish('currentGlyph', editor.selectedItem);
+			if (editor.nav.panel === 'History') {
+				refreshPanel();
 			}
 		} else {
 			// If the next undo item is a different glyph,
@@ -92,10 +91,22 @@ export class History {
 				'Navigated without undo-ing.<br>Undo again to roll back changes for this glyph.',
 				2000
 			);
-			selectGlyph(nextID);
 			*/
+			editor.navigate(nextEntry.itemID);
 		}
 
+		log(this.queue);
 		log(`History.restoreState`, 'end');
 	}
+}
+
+function makeHistoryEntry(editor, title, changedItem) {
+	let newEntry = {
+		timeStamp: new Date().getTime(),
+		itemID: editor.selectedGlyphID,
+		title: title,
+		itemState: new Glyph(changedItem.save()),
+	};
+
+	return newEntry;
 }
