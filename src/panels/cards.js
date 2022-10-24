@@ -94,9 +94,19 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 
 	newInput.addEventListener('change', (event) => {
 		let newValue = event.target.value;
+		let editor = getCurrentProjectEditor();
 		if (!workItem.isLocked(property)) {
+
+			// Update the view so that the glyph stays put
+			// and the LSB moves to the left or right
+			if (property === 'leftSideBearing') {
+				let view = editor.view;
+				editor.view.dx -= ((newValue - workItem.leftSideBearing) * view.dz);
+				editor.publish('view', workItem);
+			}
+
 			workItem[property] = newValue;
-			getCurrentProjectEditor().publish(thisTopic, workItem);
+			editor.publish(thisTopic, workItem);
 		}
 	});
 
