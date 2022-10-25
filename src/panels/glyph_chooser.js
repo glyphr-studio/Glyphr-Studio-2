@@ -21,10 +21,9 @@ export function makeGlyphChooserContent(clickHandler, registerSubscriptions = tr
 	let container = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
 
 	basicLatinOrder.forEach((glyphID) => {
-		let oneTile =
-			editor.selectedGlyphID === glyphID
-				? new GlyphTile({ glyph: glyphID, selected: 'true' })
-				: new GlyphTile({ glyph: glyphID });
+		let oneTile = (editor.selectedGlyphID === glyphID) ?
+			new GlyphTile({ glyph: glyphID, selected: 'true' }) :
+			new GlyphTile({ glyph: glyphID });
 
 		oneTile.addEventListener('click', () => clickHandler(glyphID));
 
@@ -57,6 +56,7 @@ export function makeGlyphChooserContent(clickHandler, registerSubscriptions = tr
 	return container;
 }
 
+/*
 export function makePanel_GlyphChooser() {
 	// log('makePanel_GlyphChooser', 'start');
 	const editor = getCurrentProjectEditor();
@@ -124,9 +124,7 @@ function asyncLoadChooserPanel() {
 	// log('asyncLoadChooserPanel', 'start');
 
 	function tryLoadChooserPanel() {
-		const np = _UI.popOut?
-			document.getElementById('popOut_glyphchooser') :
-			document.getElementById('navarea_panel');
+		const np = document.getElementById('navarea_panel');
 		const gc = document.getElementById('glyphChooser');
 
 		if (_UI.glyphChooser.cache && np && gc && gc.innerHTML === '') {
@@ -395,3 +393,5 @@ function make_GlyphChooser_Button(index, fname, selid) {
 	// log('make_GlyphChooser_Button', 'end');
 	return rv;
 }
+
+*/

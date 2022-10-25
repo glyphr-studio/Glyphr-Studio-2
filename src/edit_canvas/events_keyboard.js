@@ -105,12 +105,11 @@ export function handleKeyPress(event) {
 		closeDialog();
 	}
 
-	// TODO history
 	// z
-	// if (key === 'undo' || (ehd.isCtrlDown && key === 'z')) {
-	// 	event.preventDefault();
-	// 	historyPull();
-	// }
+	if (key === 'undo' || (ehd.isCtrlDown && key === 'z')) {
+		event.preventDefault();
+		editor.history.restoreState();
+	}
 
 	// plus
 	if (ehd.isCtrlDown && key === 'plus') {

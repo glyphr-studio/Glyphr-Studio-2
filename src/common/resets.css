@@ -229,12 +229,12 @@ button:focus {
 	border-radius: 4px;
 	border: 1px solid var(--gray-l90);
 	background-color: var(--gray-l90);
-	color: var(--gray-l15);
+	color: var(--enabled-text);
 	box-shadow: var(--l1-shadow);
 }
 
 button:hover {
-	color: var(--gray-l05);
+	color: var(--enabled-focus-text);
 	border-color: var(--blue-l85);
 	box-shadow: var(--l1-shadow);
 }
@@ -246,6 +246,7 @@ button[disabled]:hover,
 button[disabled]:focus {
 	background-color: var(--gray-l95);
 	border-color: var(--gray-l95);
+	color: var(--disabled-text);
 	cursor: default;
 }
 

@@ -29,8 +29,14 @@ export class ProjectEditor {
 	 */
 	constructor(newProjectEditor = {}) {
 		log('ProjectEditor.constructor', 'start');
-		// log('passed > newProjectEditor');
-		// log(newProjectEditor);
+		log('passed > newProjectEditor');
+		log(newProjectEditor);
+
+		// History
+		this.history = new History();
+
+		// Project
+		this.project = newProjectEditor.project;
 
 		// Saving
 		this.projectSaved = true;
@@ -43,7 +49,6 @@ export class ProjectEditor {
 		this.unsubscribe = unsubscribe;
 
 		// Selections
-		this.project = newProjectEditor.project;
 		this.selectedGlyphID = '0x41';
 		this.selectedComponentID = false;
 		this.selectedLigatureID = false;
@@ -73,9 +78,6 @@ export class ProjectEditor {
 		// Canvas Event handlers
 		this.eventHandlers = {};
 		this.selectedTool = 'resize';
-
-		// History
-		this.history = new History(this);
 
 		// MultiSelect
 		this.multiSelect = {
@@ -119,6 +121,14 @@ export class ProjectEditor {
 	 */
 	set project(gsp) {
 		this._project = new GlyphrStudioProject(gsp);
+		this.initializeHistory(gsp);
+	}
+
+	initializeHistory(project) {
+		this.history = new History();
+		this.history.queue = [];
+		this.history.initialTimeStamp = new Date().getTime();
+		this.history.initialProject = new GlyphrStudioProject(project);
 	}
 
 	// --------------------------------------------------------------
