@@ -36,6 +36,8 @@ export function makePage_Overview() {
 		const editor = getCurrentProjectEditor();
 		editor.selectedGlyphID = glyphID;
 		editor.navigate('Glyph edit');
+		editor.history.addState(`Navigated to ${editor.project.getGlyphName(glyphID, true)}`);
+
 	}, false);
 
 	content.querySelector('.content-page__right-area').appendChild(glyphsContent);

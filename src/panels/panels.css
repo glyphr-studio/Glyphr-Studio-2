@@ -299,10 +299,15 @@
 	width: 100%;
 	border-width: 0px 0px 1px 0px;
 	border-color: var(--gray-l80);
+	margin-top: 20px;
 }
 
 .history-list__date {
 	width: 100%;
 	text-align: right;
 	color: var(--enabled-restingLight-lightText);
+}
+
+.history-list__initial-entry {
+	opacity: 0.6;
 }

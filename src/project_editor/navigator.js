@@ -254,6 +254,7 @@ export function showNavDropdown(parentElement) {
 		dropdownContent = makeGlyphChooserContent((glyphID) => {
 			const editor = getCurrentProjectEditor();
 			editor.selectedGlyphID = glyphID;
+			editor.history.addState(`Navigated to ${editor.project.getGlyphName(glyphID, true)}`);
 			closeAllDialogs();
 		});
 		size = '80%';

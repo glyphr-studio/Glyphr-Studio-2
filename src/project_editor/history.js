@@ -2,6 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { clone } from '../common/functions.js';
 import { refreshPanel } from '../panels/panels.js';
 import { Glyph } from '../project_data/glyph.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 
 /**
 	History
@@ -10,11 +11,13 @@ import { Glyph } from '../project_data/glyph.js';
 	item (Glyph, Component, Ligature, Kern)
 **/
 
+// TODO History assumes Glyph only, extend to Item
+
 export class History {
-	constructor(editor) {
+	constructor() {
 		this.queue = [];
-		const initial = makeHistoryEntry(editor, 'Initial state', editor.selectedGlyph);
-		this.currentState = initial;
+		this.initialTimeStamp = false;
+		this.initialProject = false;
 	}
 
 	/**
@@ -25,16 +28,15 @@ export class History {
 	 * (for example, changing a Component also changes Glyphs it's linked to)
 	 */
 	addState(title = '', otherChanges = false) {
-		log(`History.addState`, 'start');
+		// log(`History.addState`, 'start');
 		const editor = getCurrentProjectEditor();
-		this.queue.unshift(this.currentState);
-
 		const changedItem = editor.selectedItem;
 		title = title || `Change to ${changedItem.name}`;
-		this.currentState = makeHistoryEntry(editor, title, changedItem);
+		const entry = makeHistoryEntry(editor, title, changedItem);
+		this.queue.unshift(entry);
 
 		if (otherChanges.length) {
-			//fill
+			//TODO implement other change saves
 		}
 
 		editor.setProjectAsUnsaved();
@@ -42,61 +44,78 @@ export class History {
 			refreshPanel();
 		}
 
-		log(this);
-		log(`History.addState`, 'end');
+		// log(this);
+		// log(`History.addState`, 'end');
 	}
 
 	/**
-	 * Get the latest change, and restore it to the currently selected item
+	 * Get the latest change, and restore it to the currently selected item.
+	 * The current state is at queue index 0, so to undo we need to take two
+	 * steps back and restore queue index 1.
 	 */
 	restoreState() {
-		log(`History.restoreState`, 'start');
-		log(this.queue);
+		// log(`History.restoreState`, 'start');
+		// log(this.queue);
 		const editor = getCurrentProjectEditor();
 
-		if (this.queue.length === 0) {
-			log(`Queue is 0, returning`);
-			log(`History.restoreState`, 'end');
+		let q = this.queue;
+
+		if (q.length === 0) {
 			editor.setProjectAsSaved();
+			// log(`Queue is 0, returning`);
+			// log(`History.restoreState`, 'end');
 			return;
 		}
 
-		let currentID = editor.selectedItemID;
-		let nextEntry = this.queue[0];
-
-		if (currentID === nextEntry.itemID) {
-			// Changes exist in the queue
-			// make sure the next one is a change for the current glyph
-			log(`Undoing: ${nextEntry.title}`);
-			log(`Replacing current glyph with:`);
-			log(nextEntry.itemState);
-
-			// Clear selections
-			editor.multiSelect.points.clear();
-			editor.multiSelect.paths.clear();
-
-			// Overwrite the current item with the redo state
-			editor.selectedGlyph = nextEntry.itemState;
-			this.queue.splice(0, 1);
-
-			editor.publish('currentGlyph', editor.selectedItem);
-			if (editor.nav.panel === 'History') {
-				refreshPanel();
-			}
-		} else {
-			// If the next undo item is a different glyph,
-			// navigate to that glyph before undo-ing
-			/*
-			showToast(
-				'Navigated without undo-ing.<br>Undo again to roll back changes for this glyph.',
-				2000
-			);
-			*/
-			editor.navigate(nextEntry.itemID);
+		if (q.length > 1 && q[0].itemID !== q[1].itemID) {
+			// Assumes navigate adds an entry to the queue
+			editor.selectedGlyphID = q[1].itemID;
+			q.shift();
+			editor.navigate('Glyph edit');
+			// log(`Need to navigate to next changed glyph`);
+			// log(`History.restoreState`, 'end');
+			return;
 		}
 
-		log(this.queue);
-		log(`History.restoreState`, 'end');
+		let nextEntry;
+		if (q.length === 1) {
+			// With only one change in the queue, undo falls back to the initial project state
+			nextEntry = {
+				itemState: this.initialProject.glyphs[editor.selectedGlyphID].save(),
+				itemID: editor.selectedGlyphID,
+				title: 'Initial state',
+			};
+			// log(`Queue length was 1, setting 'nextEntry' to base project`);
+			// log(nextEntry);
+		} else {
+			nextEntry = q[1];
+		}
+
+		// --------------------------------------------------------------
+		// Everything checks out, proceed with the undo
+		// --------------------------------------------------------------
+
+		// log(`Undoing: ${nextEntry.title}`);
+		// log(`Replacing current glyph with:`);
+		// log(nextEntry.itemState);
+
+		// Clear selections
+		editor.multiSelect.points.clear();
+		editor.multiSelect.paths.clear();
+
+		// Overwrite the current item with the redo state
+		editor.selectedGlyph = nextEntry.itemState;
+
+		// Index 0 is the previous current state, so remove it
+		q.shift();
+
+		editor.publish('currentGlyph', editor.selectedItem);
+		if (editor.nav.panel === 'History') {
+			refreshPanel();
+		}
+
+		// log(q);
+		// log(`History.restoreState`, 'end');
 	}
 }
 
