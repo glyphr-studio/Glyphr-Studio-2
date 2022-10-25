@@ -2,6 +2,7 @@ import { ComponentInstance } from '../project_data/component_instance.js';
 import { sXcX, sYcY } from './edit_canvas.js';
 import { pointsAreEqual, round } from '../common/functions.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { canvasUIPointSize } from './draw_edit_affordances.js';
 
 // --------------------------------------------------------------
 // SHARED between Glyph, ComponentInstance, and Path
@@ -242,23 +243,9 @@ function isOverPathControlPoint(path, x, y, noHandles) {
 }
 
 export function isOverFirstPoint(path, x, y) {
-	// log('\n isOverFirstPoint - START');
-	// log('\t Passed ' + x + '/' + y);
-	// const editor = getCurrentProjectEditor();
 	let pp = path.pathPoints[0];
-	// let pointSize = 7;
-	// let hp = pointSize / editor.view.dz;
-	// log('\t Checking ' + pp.P.x + '/' + pp.P.y + ' around ' + hp);
-
 	if (!pp) return false;
-
-	// if( ((pp.P.x+hp) > x) && ((pp.P.x-hp) < x) && ((pp.P.y+hp) > y) && ((pp.P.y-hp) < y) ){
-	// 	// log(' isOverFirstPoint - END - return TRUE\n');
-	// 	return true;
-	// }
-
-	// log(' isOverFirstPoint - END - return FALSE\n');
-	return pointsAreEqual({ x: x, y: y }, pp.p.coord, getCurrentProject().projectSettings.pointSize);
+	return pointsAreEqual({ x: x, y: y }, pp.p.coord, canvasUIPointSize);
 }
 
 // --------------------------------------------------------------
@@ -274,7 +261,7 @@ export function isOverFirstPoint(path, x, y) {
  */
 function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
 	//TODO browser zoom messes with visible handle size
-	const targetSize = getCurrentProject().projectSettings.pointSize;
+	const targetSize = canvasUIPointSize;
 	const test = { x: x, y: y };
 	if (pointsAreEqual(pathPoint.p, test, targetSize)) {
 		// log(`isOverPathPointControlPoint - Returning p`);

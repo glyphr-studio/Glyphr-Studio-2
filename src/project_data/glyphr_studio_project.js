@@ -41,10 +41,8 @@ export class GlyphrStudioProject {
 			filterNonCharPoints: true,
 
 			// UI stuff
-			pointSize: 7,
 			combinePathsOnExport: false,
 			maxCombinePathsOnExport: 30,
-			showKeyboardTipsIcon: true,
 			stopPageNavigation: true,
 			formatSaveFile: true,
 			guides: {},

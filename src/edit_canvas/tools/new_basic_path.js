@@ -7,6 +7,7 @@ import { isVal, round } from '../../common/functions.js';
 import { ControlPoint } from '../../project_data/control_point.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
+import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { addPathToCurrentItem, switchToolTo } from './tools.js';
@@ -83,17 +84,15 @@ export class Tool_NewBasicPath {
 			const editor = getCurrentProjectEditor();
 			const ehd = eventHandlerData;
 			let workItem = editor.selectedItem;
-			let ps = editor.project.projectSettings;
 
 			// Only make the new path if it's not really small
 			let xSize = Math.abs(ehd.newBasicPathMaxes.xMax - ehd.newBasicPathMaxes.xMin);
 			let ySize = Math.abs(ehd.newBasicPathMaxes.yMax - ehd.newBasicPathMaxes.yMin);
 			// log(`xSize: ${xSize}`);
 			// log(`ySize: ${ySize}`);
-			// log(`ps.pointSize: ${ps.pointSize}`);
 
 			let path;
-			if (xSize > ps.pointSize && ySize > ps.pointSize) {
+			if (xSize > canvasUIPointSize && ySize > canvasUIPointSize) {
 				// log(`New path is large enough`);
 				let count = workItem.paths.length;
 

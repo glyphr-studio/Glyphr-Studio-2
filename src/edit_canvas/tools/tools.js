@@ -211,7 +211,7 @@ export function makeViewToolsButtons() {
 }
 
 export function clickTool(tool) {
-	log('clickTool', 'start');
+	// log('clickTool', 'start');
 	const editor = getCurrentProjectEditor();
 	let zoomTools = ['zoom1to1', 'zoomEm', 'zoomIn', 'zoomOut'];
 
@@ -226,7 +226,7 @@ export function clickTool(tool) {
 	}
 
 	if (tool === 'resize') editor.multiSelect.points.clear();
-	
+
 	if (tool === 'newPath') {
 		editor.multiSelect.points.clear();
 		editor.multiSelect.paths.clear();
@@ -234,17 +234,17 @@ export function clickTool(tool) {
 		stopCreatingNewPathPoints();
 	}
 
-	log('clickTool', 'end');
+	// log('clickTool', 'end');
 }
 
 export function switchToolTo(newTool) {
-	log(`switchToolTo`, 'start');
-	log(`newTool: ${newTool}`);
+	// log(`switchToolTo`, 'start');
+	// log(`newTool: ${newTool}`);
 
 	const editor = getCurrentProjectEditor();
 	editor.selectedTool = newTool;
 	editor.publish('whichToolIsSelected', newTool);
-	log(`switchToolTo`, 'end');
+	// log(`switchToolTo`, 'end');
 }
 
 export function makeKernToolsButtons() {
