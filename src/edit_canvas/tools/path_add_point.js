@@ -3,6 +3,7 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProjectEditor } from '../../app/main.js';
+import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { eventHandlerData } from '../events.js';
 
 export class Tool_PathAddPoint {
@@ -46,15 +47,14 @@ export class Tool_PathAddPoint {
 				});
 				if (pt && pt.distance < 20) {
 					this.addPoint = pt;
-					let ptsize = getCurrentProject().projectSettings.pointSize;
-					let ptx = sXcX(pt.x) - ptsize / 2;
-					let pty = sYcY(pt.y) - ptsize / 2;
+					let ptx = sXcX(pt.x) - canvasUIPointSize / 2;
+					let pty = sYcY(pt.y) - canvasUIPointSize / 2;
 					openNotation('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3), ptx, pty);
 					eventHandlerData.hoverPoint = {
 						fill: accentColors.blue.l75,
 						x: ptx,
 						y: pty,
-						size: ptsize,
+						size: canvasUIPointSize,
 					};
 				} else {
 					this.addPoint = false;

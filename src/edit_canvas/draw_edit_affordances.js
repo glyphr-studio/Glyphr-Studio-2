@@ -11,7 +11,7 @@ import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js'
 // Common size stuff
 // --------------------------------------------------------------
 
-let pointSize = 7;
+export let canvasUIPointSize = 7;
 let rotateHandleHeight = 40;
 let accentBlue = accentColors.blue.l65;
 let accentGreen = accentColors.green.l65;
@@ -250,13 +250,13 @@ function drawLine(ctx, p1, p2) {
 }
 
 function drawSquareHandle(ctx, ul) {
-	ctx.fillRect(ul.x, ul.y, pointSize, pointSize);
-	ctx.strokeRect(ul.x, ul.y, pointSize, pointSize);
+	ctx.fillRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
+	ctx.strokeRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
 }
 
 function drawCircleHandle(ctx, center) {
 	ctx.beginPath();
-	ctx.arc(center.x, center.y, pointSize / 2, 0, Math.PI * 2, true);
+	ctx.arc(center.x, center.y, canvasUIPointSize / 2, 0, Math.PI * 2, true);
 	ctx.closePath();
 	ctx.fill();
 	ctx.stroke();
@@ -279,7 +279,7 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 
 	const editor = getCurrentProjectEditor();
 	let re = false;
-	let ps = pointSize;
+	let ps = canvasUIPointSize;
 	let bb = getBoundingBoxHandleDimensions(maxes);
 
 	// log('\t point size - ' + ps);
@@ -346,7 +346,7 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 
 function getBoundingBoxHandleDimensions(maxes, thickness) {
 	let dimensions = {};
-	let hp = pointSize / 2;
+	let hp = canvasUIPointSize / 2;
 	thickness = 1;
 
 	// Translation Fidelity - converting passed canvas values to saved value system
@@ -482,10 +482,10 @@ export function drawPoint(point, ctx, isSelected) {
 	// log('PathPoint.drawPoint', 'start');
 	// log('sel = ' + isSelected);
 
-	let pointSize = 7;
+	let canvasUIPointSize = 7;
 	let pointFill = uiColors.offWhite;
 	let accent = uiColors.accent;
-	const halfPointSize = pointSize / 2;
+	const halfPointSize = canvasUIPointSize / 2;
 	// ctx.fillStyle = sel? 'white' : accent;
 	ctx.fillStyle = isSelected ? pointFill : accent;
 	ctx.strokeStyle = accent;
@@ -493,8 +493,8 @@ export function drawPoint(point, ctx, isSelected) {
 
 	let px = sXcX(point.p.x) - halfPointSize;
 	let py = sYcY(point.p.y) - halfPointSize;
-	ctx.fillRect(px, py, pointSize, pointSize);
-	ctx.strokeRect(px, py, pointSize, pointSize);
+	ctx.fillRect(px, py, canvasUIPointSize, canvasUIPointSize);
+	ctx.strokeRect(px, py, canvasUIPointSize, canvasUIPointSize);
 
 	// ctx.fillStyle = 'orange';
 	// ctx.fillText(point.__ID, px + 12, py);
@@ -513,7 +513,7 @@ export function drawPoint(point, ctx, isSelected) {
  */
 export function drawDirectionalityPoint(point, ctx, isSelected, next) {
 	// ctx.fillStyle = sel? 'white' : accent;
-	let pointSize = 7;
+	// let canvasUIPointSize = 7;
 	let pointFill = uiColors.offWhite;
 	let accent = uiColors.accent;
 
@@ -528,7 +528,7 @@ export function drawDirectionalityPoint(point, ctx, isSelected, next) {
 		end = { x: next.p.x, y: next.p.y };
 	}
 
-	const halfPointSize = pointSize / 2;
+	const halfPointSize = canvasUIPointSize / 2;
 	const arrow = [
 		[halfPointSize * 3, 0],
 		[halfPointSize, halfPointSize],
@@ -579,7 +579,7 @@ export function drawDirectionalityPoint(point, ctx, isSelected, next) {
  * @param {boolean} drawH2 - draw the second handle
  */
 export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
-	let pointSize = 7;
+	// let canvasUIPointSize = 7;
 	let pointFill = uiColors.offWhite;
 	let accent = uiColors.accent;
 	ctx.fillStyle = accent;
@@ -587,7 +587,7 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
 	ctx.lineWidth = 1;
 	ctx.font = '10px Consolas';
 
-	const halfPointSize = pointSize / 2;
+	const halfPointSize = canvasUIPointSize / 2;
 
 	if (drawH1 && point.h1.use) {
 		drawOneHandle(point.h1, '1');
@@ -618,14 +618,14 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
  * @param {object} ctx - canvas context
  * @param {string} accent - accent color
  * @param {Point} prevP - Previous point in the path sequence
- * @param {number} pointSize - how big to draw the point
+ * @param {number} canvasUIPointSize - how big to draw the point
  */
 export function drawQuadraticHandle(ctx) {
 	// Draw Quadratic handle point from imported SVG
 	ctx.fillStyle = accent;
 	ctx.strokeStyle = accent;
 	ctx.lineWidth = 1;
-	const halfPointSize = pointSize / 2;
+	const halfPointSize = canvasUIPointSize / 2;
 
 	if (point.q) {
 		ctx.beginPath();

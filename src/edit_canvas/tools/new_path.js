@@ -7,6 +7,7 @@ import { makeElement } from '../../common/dom.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
 import { setCursor } from '../cursors.js';
+import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { isOverFirstPoint } from '../draw_paths.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
@@ -90,7 +91,7 @@ export class Tool_NewPath {
 
 			if (this.dragging) {
 				// avoid really small handles
-				let ps2 = getCurrentProject().projectSettings.pointSize * 2;
+				let ps2 = canvasUIPointSize * 2;
 				if (
 					Math.abs(this.currentPoint.p.x - cXsX(ehd.mousePosition.x)) > ps2 ||
 					Math.abs(this.currentPoint.p.y - cYsY(ehd.mousePosition.y)) > ps2
