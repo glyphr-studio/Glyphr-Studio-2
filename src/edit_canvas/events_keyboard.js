@@ -1,5 +1,10 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { copyPath, deleteSelectedPaths, deleteSelectedPoints, pastePath } from '../panels/actions.js';
+import {
+	clipboardCopy,
+	deleteSelectedPaths,
+	deleteSelectedPoints,
+	clipboardPaste,
+} from '../panels/actions.js';
 import { setCursor, updateCursor } from './cursors.js';
 import { eventHandlerData, togglePanOff, togglePanOn } from './events.js';
 import { clickTool } from './tools/tools.js';
@@ -173,13 +178,13 @@ export function handleKeyPress(event) {
 		// ctrl + c
 		if (ehd.isCtrlDown && key === 'c') {
 			event.preventDefault();
-			copyPath();
+			clipboardCopy();
 		}
 
 		// ctrl + v
 		if (ehd.isCtrlDown && key === 'v') {
 			event.preventDefault();
-			pastePath();
+			clipboardPaste();
 		}
 
 		// v

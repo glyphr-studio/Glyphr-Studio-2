@@ -367,7 +367,7 @@ export class MultiSelectPaths extends MultiSelect {
 		// showToast('align ' + edge);
 		const g = this.virtualGlyph;
 		g.alignPaths(edge);
-		editor.history.addState('Aligned paths ' + edge);
+		getCurrentProjectEditor().history.addState('Aligned paths ' + edge);
 	}
 
 	// Wrapper functions

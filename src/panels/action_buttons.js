@@ -11,6 +11,7 @@ export function makeActionButton({
 	title = '',
 	disabled = false,
 	onClick = false,
+	id = false,
 } = {}) {
 	// log(`makeActionButton`, 'start');
 	// log(`iconName: ${iconName}`);
@@ -27,6 +28,7 @@ export function makeActionButton({
 
 	if (onClick) newButton.addEventListener('click', onClick);
 	if (disabled) newButton.setAttribute('disabled', 'disabled');
+	if (id) newButton.setAttribute('id', id);
 
 	// log(`makeActionButton`, 'end');
 	return newButton;
@@ -36,8 +38,7 @@ export function makeActionButton({
 // Action button icons
 // --------------------------------------------------------------
 
-let makeActionButtonIcon = {};
-export { makeActionButtonIcon };
+export let makeActionButtonIcon = {};
 
 export function svgWrap(content) {
 	let re = `
@@ -77,6 +78,7 @@ makeActionButtonIcon.copy = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.paste = function () {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
@@ -91,6 +93,7 @@ makeActionButtonIcon.paste = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.pastePathsFromAnotherGlyph = function () {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
@@ -106,6 +109,7 @@ makeActionButtonIcon.pastePathsFromAnotherGlyph = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.addPath = function (component) {
 	let re = '';
 	let accent = component ? actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
@@ -125,6 +129,7 @@ makeActionButtonIcon.addPath = function (component) {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.undo = function () {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
@@ -137,6 +142,7 @@ makeActionButtonIcon.undo = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.linkToGlyph = function () {
 	let re = '';
 	let green = actionButtonIconColors.greenOutline;
@@ -168,6 +174,7 @@ makeActionButtonIcon.round = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.flipVertical = function () {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
@@ -183,6 +190,7 @@ makeActionButtonIcon.flipVertical = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.flipHorizontal = function () {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
@@ -213,6 +221,7 @@ makeActionButtonIcon.exportGlyphSVG = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.deleteGlyph = function () {
 	let red = actionButtonIconColors.redX;
 	let fill = actionButtonIconColors.lightFill;
@@ -239,6 +248,7 @@ makeActionButtonIcon.reverseWinding = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.switchPathComponent = function (com) {
 	let re = '';
 	let before = com ? actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
@@ -298,6 +308,7 @@ makeActionButtonIcon.combine = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.deletePath = function () {
 	let re = '';
 	let red = actionButtonIconColors.redX;
@@ -334,6 +345,7 @@ makeActionButtonIcon.moveLayerDown = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.moveLayerUp = function () {
 	let re = '';
 	let accent = actionButtonIconColors.blueOutline;
@@ -451,6 +463,7 @@ makeActionButtonIcon.resetPathPoint = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.deletePathPoint = function () {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
@@ -473,6 +486,7 @@ makeActionButtonIcon.deletePathPoint = function () {
 
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.insertPathPoint = function () {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
@@ -500,6 +514,7 @@ makeActionButtonIcon.default = function () {
 	let re = `<rect width="30" height="30" fill="${actionButtonIconColors.greenOutline}"/>`;
 	return svgWrap(re);
 };
+
 makeActionButtonIcon.test = function () {
 	let re = `
 		<path d="M28.05,23.82c-1.65-1.79-9.55-13.02-9.55-17.82V3h1c.28,0,.5-.72,.5-1s-.22-1-.5-1H10.5c-.28,0-.5,.72-.5,1s.22,1,.5,1h1v3c0,4.8-7.9,16.03-9.55,17.82-.58,.55-.95,1.32-.95,2.18,0,1.66,1.34,3,3,3H26c1.66,0,3-1.34,3-3,0-.86-.37-1.63-.95-2.18ZM13.5,6V3h3v3c0,2.76,2.01,6.95,4.25,10.72-3.27,1.69-5.6-.72-7.75-.72-.34,0-1.86-.31-4,1.15,2.34-3.88,4.5-8.28,4.5-11.15Zm3.5,20c-1.66,0-3-1.34-3-3s1.34-3,3-3,3,1.34,3,3-1.34,3-3,3Zm-6-7.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5-.67,1.5-1.5,1.5-1.5-.67-1.5-1.5Z" fill=${actionButtonIconColors.redX}/>
