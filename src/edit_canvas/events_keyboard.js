@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { deleteSelectedPaths, deleteSelectedPoints } from '../panels/actions.js';
+import { copyPath, deleteSelectedPaths, deleteSelectedPoints, pastePath } from '../panels/actions.js';
 import { setCursor, updateCursor } from './cursors.js';
 import { eventHandlerData, togglePanOff, togglePanOn } from './events.js';
 import { clickTool } from './tools/tools.js';
@@ -170,8 +170,6 @@ export function handleKeyPress(event) {
 			}
 		}
 
-		// TODO copy/paste
-		/*
 		// ctrl + c
 		if (ehd.isCtrlDown && key === 'c') {
 			event.preventDefault();
@@ -182,10 +180,8 @@ export function handleKeyPress(event) {
 		if (ehd.isCtrlDown && key === 'v') {
 			event.preventDefault();
 			pastePath();
-			// editor.history.addState('Paste Path');
-			editor.editCanvas.redraw({ calledBy: 'Paste Path' });
 		}
-*/
+
 		// v
 		if (key === 'v') clickTool('resize');
 

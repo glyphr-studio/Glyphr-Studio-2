@@ -85,6 +85,9 @@ export class ProjectEditor {
 			paths: new MultiSelectPaths(),
 		};
 
+		// Clipboard
+		this.clipboard = false;
+
 		log(this);
 		log('ProjectEditor.constructor', 'end');
 	}
@@ -468,8 +471,8 @@ export class ProjectEditor {
 
 		this.view = {
 			dz: zoomInput * v.dz,
-			dx: cx ? (cx - (cx - v.dx) * zoomInput) : v.dx,
-			dy: cy ? (cy - (cy - v.dy) * zoomInput) : v.dy,
+			dx: cx ? cx - (cx - v.dx) * zoomInput : v.dx,
+			dy: cy ? cy - (cy - v.dy) * zoomInput : v.dy,
 		};
 
 		this.publish('view', this.view);
