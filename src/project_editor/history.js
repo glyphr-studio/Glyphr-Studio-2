@@ -44,6 +44,7 @@ export class History {
 			refreshPanel();
 		}
 
+		document.getElementById('actionButtonUndo').removeAttribute('disabled');
 		// log(this);
 		// log(`History.addState`, 'end');
 	}
@@ -62,6 +63,7 @@ export class History {
 
 		if (q.length === 0) {
 			editor.setProjectAsSaved();
+			document.getElementById('actionButtonUndo').setAttribute('disabled', 'disabled');
 			// log(`Queue is 0, returning`);
 			// log(`History.restoreState`, 'end');
 			return;
@@ -114,6 +116,10 @@ export class History {
 			refreshPanel();
 		}
 
+		if (q.length === 0) {
+			editor.setProjectAsSaved();
+			document.getElementById('actionButtonUndo').setAttribute('disabled', 'disabled');
+		}
 		// log(q);
 		// log(`History.restoreState`, 'end');
 	}

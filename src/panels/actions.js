@@ -28,25 +28,37 @@ export function getActionData(name) {
 	let data = {};
 
 	// TODO hook these up
-	let clipBoardPath = false;
+	let clipBoardPaths = editor.clipboard.paths;
+	let pathCount = clipBoardPaths ? clipBoardPaths.length : 0;
 	let historyLength = editor.history.queue.length;
 
 	// UNIVERSAL ACTIONS
 	data.allActions = [
 		{
+			iconName: 'copy',
+			iconOptions: !clipBoardPaths,
+			title: `Copy\nAdds the selected path or paths to the clipboard.`,
+			disabled: !editor.multiSelect.paths.length,
+			id: 'actionButtonCopy',
+			onClick: clipboardCopy,
+		},
+		{
 			iconName: 'paste',
-			iconOptions: !clipBoardPath,
-			title: `Paste\nAdds the previously-copied path or paths into this glyph.`,
-			disabled: !clipBoardPath,
+			iconOptions: !clipBoardPaths,
+			title: makeActionButtonPasteTooltip(pathCount),
+			disabled: !clipBoardPaths,
+			id: 'actionButtonPaste',
+			onClick: clipboardPaste,
 		},
 		{
 			iconName: 'undo',
 			iconOptions: !historyLength,
 			title: `Undo\nStep backwards in time one action.`,
 			disabled: !historyLength,
+			id: 'actionButtonUndo',
 			onClick: () => {
 				editor.history.restoreState();
-			}
+			},
 		},
 	];
 
@@ -222,7 +234,8 @@ export function getActionData(name) {
 			iconName: 'align',
 			iconOptions: 'left',
 			onClick: () => {
-				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				const editor = getCurrentProjectEditor();
+				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('left');
 				editor.publish('currentGlyph', vGlyph);
 			},
@@ -232,7 +245,8 @@ export function getActionData(name) {
 			iconName: 'align',
 			iconOptions: 'center',
 			onClick: () => {
-				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				const editor = getCurrentProjectEditor();
+				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('center');
 				editor.publish('currentGlyph', vGlyph);
 			},
@@ -242,7 +256,8 @@ export function getActionData(name) {
 			iconName: 'align',
 			iconOptions: 'right',
 			onClick: () => {
-				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				const editor = getCurrentProjectEditor();
+				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('right');
 				editor.publish('currentGlyph', vGlyph);
 			},
@@ -252,7 +267,8 @@ export function getActionData(name) {
 			iconName: 'align',
 			iconOptions: 'top',
 			onClick: () => {
-				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				const editor = getCurrentProjectEditor();
+				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('top');
 				editor.publish('currentGlyph', vGlyph);
 			},
@@ -262,7 +278,8 @@ export function getActionData(name) {
 			iconName: 'align',
 			iconOptions: 'middle',
 			onClick: () => {
-				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				const editor = getCurrentProjectEditor();
+				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('middle');
 				editor.publish('currentGlyph', vGlyph);
 			},
@@ -272,7 +289,8 @@ export function getActionData(name) {
 			iconName: 'align',
 			iconOptions: 'bottom',
 			onClick: () => {
-				let vGlyph = getCurrentProjectEditor().multiSelect.paths;
+				const editor = getCurrentProjectEditor();
+				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('bottom');
 				editor.publish('currentGlyph', vGlyph);
 			},
@@ -438,7 +456,6 @@ export function addChildActions(parent, actionsArray) {
 	return parent;
 }
 
-
 // --------------------------------------------------------------
 // Delete selected path / point
 // --------------------------------------------------------------
@@ -474,7 +491,6 @@ export function deleteSelectedPoints() {
 	// TODO select the next point
 	editor.history.addState(historyTitle);
 	editor.publish('whichPathPointIsSelected', editor.multiSelect.paths);
-
 }
 
 // --------------------------------------------------------------
@@ -504,11 +520,12 @@ function combineAllGlyphPaths() {
 // --------------------------------------------------------------
 // Copy Paste
 // --------------------------------------------------------------
-export function copyPath() {
-	log(`copyPath`, 'start');
+export function clipboardCopy() {
+	log(`clipboardCopy`, 'start');
 
 	const editor = getCurrentProjectEditor();
 	let selPaths = [];
+	let button = document.getElementById('actionButtonPaste');
 
 	editor.multiSelect.paths.members.forEach((path) => {
 		selPaths.push(path.save(true));
@@ -521,16 +538,19 @@ export function copyPath() {
 			dx: 0,
 			dy: 0,
 		};
+		button.removeAttribute('disabled');
 	} else {
 		editor.clipboard = false;
+		button.setAttribute('disabled', 'disabled');
 	}
 
+	button.setAttribute('title', makeActionButtonPasteTooltip(selPaths.length));
 	log(editor.clipboard);
-	log(`copyPath`, 'end');
+	log(`clipboardCopy`, 'end');
 }
 
-export function pastePath() {
-	log('pastePath', 'start');
+export function clipboardPaste() {
+	log('clipboardPaste', 'start');
 	const editor = getCurrentProjectEditor();
 	let clipboard = editor.clipboard;
 	let offsetPaths = clipboard.sourceID === editor.selectedItemID;
@@ -596,10 +616,16 @@ export function pastePath() {
 		clipboard.sourceID = editor.selectedItemID;
 
 		let len = newPaths.length;
-		editor.history.addState(len === 1? 'Pasted Path' : `Pasted ${len} Paths`);
+		editor.history.addState(len === 1 ? 'Pasted Path' : `Pasted ${len} Paths`);
 		editor.publish('currentGlyph', editor.selectedItem);
 	}
-	log('pastePath', 'end');
+	log('clipboardPaste', 'end');
+}
+
+export function makeActionButtonPasteTooltip(pathCount) {
+	let re = `Paste\nAdds the previously-copied path or paths into this glyph.\n\n`;
+	re += `Currently ${pathCount} Path${pathCount === 1 ? '' : 's'} on the clipboard.`;
+	return re;
 }
 
 function showDialogGetPaths(msg) {
@@ -719,7 +745,9 @@ function showDialogLinkComponentToGlyph(msg) {
 	let sls = getSelectedItem();
 	let content = '<h1>Link to Glyph</h1>';
 	content += 'Select a Glyph you would like to link to this Component.<br><br>';
-	content += msg?  msg : 'There are currently ' +
+	content += msg
+		? msg
+		: 'There are currently ' +
 		  sls.usedIn.length +
 		  ' instances of "' +
 		  sls.name +
