@@ -3,6 +3,9 @@ import { makeActionButton, makeActionButtonIcon } from './action_buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { saveFile } from '../project_editor/saving.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
+import { clone } from '../common/functions.js';
+import { Path } from '../project_data/path.js';
+import { ComponentInstance } from '../project_data/component_instance.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -502,94 +505,101 @@ function combineAllGlyphPaths() {
 // Copy Paste
 // --------------------------------------------------------------
 export function copyPath() {
+	log(`copyPath`, 'start');
+
 	const editor = getCurrentProjectEditor();
-	let ssm = editor.multiSelect.paths.members;
-	if (ssm.length) {
-		_UI.clipboardPath = {
-			s: clone(ssm),
-			c: _UI.selectedGlyph,
+	let selPaths = [];
+
+	editor.multiSelect.paths.members.forEach((path) => {
+		selPaths.push(path.save(true));
+	});
+
+	if (selPaths.length) {
+		editor.clipboard = {
+			paths: selPaths,
+			sourceID: editor.selectedItemID,
 			dx: 0,
 			dy: 0,
 		};
-		// log("COPYPath() - new clipboard path: " + _UI.clipboardPath.editor.multiSelect.paths.name);
+	} else {
+		editor.clipboard = false;
 	}
-	redraw({ calledBy: 'copyPath', redrawCanvas: false });
+
+	log(editor.clipboard);
+	log(`copyPath`, 'end');
 }
 
 export function pastePath() {
-	// log('pastePath', 'start');
-	let cbs = _UI.clipboardPath;
-	// log(cbs);
-	let selwi = getSelectedItemID();
+	log('pastePath', 'start');
+	const editor = getCurrentProjectEditor();
+	let clipboard = editor.clipboard;
+	let offsetPaths = clipboard.sourceID === editor.selectedItemID;
 
-	if (cbs) {
+	if (clipboard && offsetPaths) {
+		clipboard.dx += 20;
+		clipboard.dy -= 20;
+	}
+
+	if (clipboard && clipboard.paths.length) {
 		let newPaths = [];
-		let sourcepaths = cbs.s;
-		let ts, newname, newsuffix, n;
-		let offsetPaths = cbs.c === selwi;
 
-		for (let s = 0; s < sourcepaths.length; s++) {
-			if (sourcepaths[s].objType === 'ComponentInstance') {
-				ts = new ComponentInstance(sourcepaths[s]);
+		let newPath, newName, newSuffix, caret, suffix;
+		clipboard.paths.forEach((path) => {
+			if (path.objType === 'ComponentInstance') {
+				newPath = new ComponentInstance(path);
 			} else {
-				ts = new Path(sourcepaths[s]);
+				newPath = new Path(path);
 			}
-
-			// log('path ' + s);
-			// log('objType: ' + ts.objType);
-			// log('checking for moved glyphs: ' + cbs.c + ' to ' + selwi);
-			// log('offsetPaths: ' + offsetPaths);
 
 			if (offsetPaths) {
-				if (s === 0) {
-					cbs.dx += 20;
-					cbs.dy -= 20;
-				}
-				ts.updatePathPosition(cbs.dx, cbs.dy, true);
-			} else {
-				cbs.dx = 0;
-				cbs.dy = 0;
+				newPath.updatePathPosition(clipboard.dx, clipboard.dy, true);
 			}
 
-			newname = ts.name;
-			newsuffix = ' (copy)';
-			n = ts.name.lastIndexOf('(copy');
+			newName = newPath.name;
+			newSuffix = ' (copy)';
+			caret = newPath.name.lastIndexOf('(copy');
 
-			if (n > 0) {
-				let suffix = newname.substring(n + 5);
-				newname = newname.substring(0, n);
+			if (caret > 0) {
+				suffix = newName.substring(caret + 5);
+				newName = newName.substring(0, caret);
 				if (suffix === ')') {
-					newsuffix = '(copy 2)';
+					newSuffix = '(copy 2)';
 				} else {
 					// log("\t - suffix " + suffix);
 					suffix = suffix.substring(1);
 					// log("\t - suffix " + suffix);
 					suffix = suffix.substring(0, suffix.length - 1);
 					// log("\t - suffix " + suffix);
-					newsuffix = '(copy ' + (parseInt(suffix) + 1) + ')';
-					// log("\t - newsuffix " + newsuffix);
+					newSuffix = '(copy ' + (parseInt(suffix) + 1) + ')';
+					// log("\t - newSuffix " + newSuffix);
 				}
 			}
-			ts.name = newname + newsuffix;
+			newPath.name = newName + newSuffix;
 
-			if (ts.objType === 'ComponentInstance') {
-				getGlyph(ts.link).addToUsedIn(getSelectedItemID);
-				// _UI.selectedGlyph.addToUsedIn(ts.link);
-				// log("PASTESHAPE - pasted a component, added " + _UI.selectedGlyph + " to usedIn array.");
+			if (newPath.objType === 'ComponentInstance') {
+				getGlyph(newPath.link).addToUsedIn(getSelectedItemID);
+				// TODO add to used in
 			}
 
-			newPaths.push(addPath(ts));
-		}
+			newPaths.push(newPath);
+		});
+
+		log(`New paths that have been copied`);
+		log(newPaths);
 
 		editor.multiSelect.paths.clear();
 		editor.multiSelect.points.clear();
 
-		for (let t = 0; t < newPaths.length; t++) editor.multiSelect.paths.add(newPaths[t]);
+		editor.selectedItem.paths = editor.selectedItem.paths.concat(newPaths);
+		newPaths.forEach((path) => editor.multiSelect.paths.add(path));
 
-		cbs.c = selwi;
+		clipboard.sourceID = editor.selectedItemID;
 
-		// log('pastePaths', 'end');
+		let len = newPaths.length;
+		editor.history.addState(len === 1? 'Pasted Path' : `Pasted ${len} Paths`);
+		editor.publish('currentGlyph', editor.selectedItem);
 	}
+	log('pastePath', 'end');
 }
 
 function showDialogGetPaths(msg) {
