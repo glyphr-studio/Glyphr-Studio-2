@@ -256,8 +256,6 @@ export class PathPoint extends GlyphElement {
 	makeSymmetric(hold) {
 		// log(`PathPoint.makeSymmetric`, 'start');
 		// log(`hold: ${hold}`);
-		this.h1.use = true;
-		this.h2.use = true;
 		this._type = 'symmetric';
 
 		if (!hold) {
@@ -277,6 +275,8 @@ export class PathPoint extends GlyphElement {
 			}
 		}
 
+		this.h1.use = true;
+		this.h2.use = true;
 		let newX, newY;
 		let changed = false;
 		switch (hold) {
@@ -329,9 +329,7 @@ export class PathPoint extends GlyphElement {
 	makeFlat(hold) {
 		// log('PathPoint.makeFlat', 'start');
 		// log(`hold: ${hold}`);
-		this.h1.use = true;
-		this.h2.use = true;
-					this._type = 'flat';
+		this._type = 'flat';
 
 		if (this.isFlat()) {
 			// log(`This path point is already flat.`);
@@ -355,6 +353,9 @@ export class PathPoint extends GlyphElement {
 				}
 			}
 		}
+
+		this.h1.use = true;
+		this.h2.use = true;
 
 		const angle1 = this.h1.angle;
 		const angle2 = this.h2.angle;

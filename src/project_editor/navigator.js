@@ -17,7 +17,7 @@ import { refreshPanel } from '../panels/panels.js';
 
 export class Navigator {
 	constructor() {
-		this.page = 'Open project';
+		this.page = 'Overview';
 		this.panel = 'Attributes';
 		this.pageContents = {};
 	}
@@ -28,62 +28,50 @@ export class Navigator {
 	get tableOfContents() {
 		return {
 			'Open project': {
-				name: 'Open project',
 				pageMaker: makePage_OpenProject,
 				iconName: false,
 			},
-			Overview: {
-				name: 'Overview',
+			'Overview': {
 				pageMaker: makePage_Overview,
 				iconName: 'page_overview',
 			},
 			'Glyph edit': {
-				name: 'Glyph edit',
 				pageMaker: makePage_GlyphEdit,
 				iconName: 'page_glyphEdit',
 			},
-			Ligatures: {
-				name: 'Ligatures',
+			'Ligatures': {
 				pageMaker: false,
 				iconName: 'page_ligatures',
 			},
-			Components: {
-				name: 'Components',
+			'Components': {
 				pageMaker: false,
 				iconName: 'page_components',
 			},
-			Kerning: {
-				name: 'Kerning',
+			'Kerning': {
 				pageMaker: false,
 				iconName: 'page_kerning',
 			},
 			'Live preview': {
-				name: 'Live preview',
 				pageMaker: false,
 				iconName: 'page_livePreview',
 			},
 			'Global actions': {
-				name: 'Global actions',
 				pageMaker: false,
 				iconName: 'page_globalActions',
 			},
-			Settings: {
-				name: 'Settings',
+			'Settings': {
 				pageMaker: false,
 				iconName: 'page_settings',
 			},
 			'Import & export': {
-				name: 'Import & export',
 				pageMaker: false,
 				iconName: 'page_importAndExport',
 			},
-			Help: {
-				name: 'Help',
+			'Help': {
 				pageMaker: makePage_Help,
 				iconName: 'page_help',
 			},
-			About: {
-				name: 'About',
+			'About': {
 				pageMaker: makePage_About,
 				iconName: 'page_about',
 			},

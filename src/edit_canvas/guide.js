@@ -17,7 +17,7 @@ export class Guide {
 		this.angle = oa.angle || false;
 		this.color = oa.color || makeRandomSaturatedColor();
 		this.visible = isVal(oa.visible) ? oa.visible : true;
-		this.showname = isVal(oa.showname) ? oa.showname : true;
+		this.displayName = isVal(oa.displayName) ? oa.displayName : true;
 		this.editable = isVal(oa.editable) ? oa.editable : true;
 	}
 	draw(delta) {
@@ -74,7 +74,7 @@ export class Guide {
 			ctx.stroke();
 			ctx.closePath();
 			// Draw Label
-			if (this.showname && _UI.showGuidesLabels && !delta) {
+			if (this.displayName && _UI.showGuidesLabels && !delta) {
 				_UI.glyphEditCTX.fillStyle = color;
 				_UI.glyphEditCTX.font = '10px tahoma, verdana, sans-serif';
 				_UI.glyphEditCTX.fillText(this.name, label.x, label.y);

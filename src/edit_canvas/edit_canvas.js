@@ -180,14 +180,19 @@ export class EditCanvas extends HTMLElement {
 			let gridPad = 100 * view.dz;
 			let gridWidth = sg.advanceWidth * view.dz;
 
+			let gridLines = ps.guides.system;
 			// Verticals
-			ctx.fillRect(view.dx, gridTop, 1, gridHeight);
-			if (sg.advanceWidth) {
+			if (gridLines.showLeftSide) {
+				ctx.fillRect(view.dx, gridTop, 1, gridHeight);
+			}
+			if (gridLines.showRightSide && sg.advanceWidth) {
 				ctx.fillRect(round(view.dx + gridWidth), gridTop, 1, gridHeight);
 			}
 
 			// Baseline
-			ctx.fillRect(view.dx - gridPad, view.dy, gridWidth + gridPad * 2, 1);
+			if (gridLines.showBaseline) {
+				ctx.fillRect(view.dx - gridPad, view.dy, gridWidth + gridPad * 2, 1);
+			}
 		}
 
 		// log('EditCanvas.redraw', 'end');
