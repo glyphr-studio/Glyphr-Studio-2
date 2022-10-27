@@ -151,8 +151,10 @@ export function getActionData(name) {
 	data.pathActions = [
 		{
 			iconName: 'copy',
-			title: 'Copy\nAdds a copy of the currently selected path or paths to the clipboard.',
-			disabled: true,
+			iconOptions: !clipBoardPaths,
+			title: `Copy\nAdds the selected path or paths to the clipboard.`,
+			id: 'actionButtonCopyPath',
+			onClick: clipboardCopy,
 		},
 		{
 			iconName: 'deletePath',

@@ -605,17 +605,17 @@ export class Glyph extends GlyphElement {
 	 * @returns {Glyph} - reference to this glyph
 	 */
 	flipNS(mid = this.maxes.center.y) {
-		log(`Glyph.flipNS`, 'start');
+		// log(`Glyph.flipNS`, 'start');
 
 		// const m = this.maxes;
 		// mid = isVal(mid) ? mid : (m.yMax - m.yMin) / 2 + m.yMin;
-		log(`mid: ${mid}`);
+		// log(`mid: ${mid}`);
 
 		for (let s = 0; s < this.paths.length; s++) {
 			this.paths[s].flipNS(mid);
 		}
 
-		log(`Glyph.flipNS`, 'end');
+		// log(`Glyph.flipNS`, 'end');
 		return this;
 	}
 
