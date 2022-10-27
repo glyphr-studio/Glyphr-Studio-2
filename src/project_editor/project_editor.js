@@ -406,17 +406,17 @@ export class ProjectEditor {
 		// log(`\t setting ${JSON.stringify(oa)}`);
 
 		// Check for which to set
-		if (isFinite(oa.dx)) {
+		if (Number.isFinite(oa.dx)) {
 			// log(`oa.dx: ${oa.dx}`);
 			this._views[wid].dx = oa.dx;
 		}
 
-		if (isFinite(oa.dy)) {
+		if (Number.isFinite(oa.dy)) {
 			// log(`oa.dy: ${oa.dy}`);
 			this._views[wid].dy = oa.dy;
 		}
 
-		if (isFinite(oa.dz)) {
+		if (Number.isFinite(oa.dz)) {
 			// log(`oa.dz: ${oa.dz}`);
 			this._views[wid].dz = oa.dz;
 		}

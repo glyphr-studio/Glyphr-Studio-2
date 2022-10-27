@@ -208,6 +208,9 @@ export class PathPoint extends GlyphElement {
 		dx = parseFloat(dx);
 		dy = parseFloat(dy);
 
+		dx = Number.isFinite(dx) ? dx : 0;
+		dy = Number.isFinite(dy) ? dy : 0;
+
 		switch (controlPoint) {
 			case 'p':
 				// log('moving p / h1 / h2');
