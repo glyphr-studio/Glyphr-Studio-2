@@ -96,16 +96,33 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 		let newValue = event.target.value;
 		let editor = getCurrentProjectEditor();
 		if (!workItem.isLocked(property)) {
-
 			// Update the view so that the glyph stays put
 			// and the LSB moves to the left or right
 			if (property === 'leftSideBearing') {
 				let view = editor.view;
-				editor.view.dx -= ((newValue - workItem.leftSideBearing) * view.dz);
+				editor.view.dx -= (newValue - workItem.leftSideBearing) * view.dz;
 				editor.publish('view', workItem);
 			}
 
-			workItem[property] = newValue;
+			// Code Smell
+			if (
+				(workItem.objType === 'Glyph') &&
+				(property === 'width' || property === 'height') &&
+				workItem.ratioLock
+			) {
+				if (property === 'width') workItem.setGlyphSize(newValue, false, true);
+				if (property === 'height') workItem.setGlyphSize(false, newValue, true);
+			} else if (
+				(workItem.objType === 'Path') &&
+				(property === 'width' || property === 'height') &&
+				workItem.ratioLock
+			) {
+				if (property === 'width') workItem.setPathSize(newValue, false, true);
+				if (property === 'height') workItem.setPathSize(false, newValue, true);
+			} else {
+				workItem[property] = newValue;
+			}
+
 			editor.publish(thisTopic, workItem);
 		}
 	});

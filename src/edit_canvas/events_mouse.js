@@ -125,8 +125,7 @@ export function resizePath() {
 	let ly = cYsY(eventHandlerData.lastY);
 	let dh = ly - my;
 	let dw = lx - mx;
-	// TODO multi-select path ratioLock?
-	let rl = paths.ratioLock || false;
+	let rl = paths.virtualGlyph.ratioLock || false;
 
 	// Check that the path won't have negative dimensions
 	let maxes = paths.maxes;

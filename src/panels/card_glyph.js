@@ -62,7 +62,6 @@ export function makeCard_glyphAttributes(glyph) {
 	doubleBearingInput.appendChild(rsbInput);
 
 	// Put it all together
-	// TODO bulk-edit paths bug, handles move differently than points
 	addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
 	addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
 	addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
