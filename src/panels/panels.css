@@ -72,6 +72,14 @@
 	line-height: 20px;
 }
 
+.panel__card.full-width label {
+	height: 20px;
+	line-height: 20px;
+	padding: 0px 0px 10px 10px;
+	position: relative;
+	top: -5px;
+}
+
 .panel__card .info {
 	display: grid !important;
 	gap: 8px;

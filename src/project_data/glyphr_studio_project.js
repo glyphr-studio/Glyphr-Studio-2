@@ -35,7 +35,6 @@ export class GlyphrStudioProject {
 			xHeight: 400,
 			lineGap: 250,
 			italicAngle: 0,
-			gridDivisions: 10,
 			overshoot: 10,
 			glyphRanges: [{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' }],
 			filterNonCharPoints: true,
@@ -45,17 +44,14 @@ export class GlyphrStudioProject {
 			maxCombinePathsOnExport: 30,
 			stopPageNavigation: true,
 			formatSaveFile: true,
-			guides: {},
-			showContextGlyphGuides: true,
-			colors: {
-				glyphTransparency: 85,
-				systemGuideTransparency: 75,
-				customGuideTransparency: 50,
-				contextGlyphTransparency: 40,
-				guide_dark: 'rgb(204,81,0)',
-				guide_med: 'rgb(255,132,51)',
-				guide_light: 'rgb(255,193,153)',
+			guides: {
+				system: {
+					showBaseline: true,
+					showLeftSide: true,
+					showRightSide: true
+				}
 			},
+			showContextGlyphGuides: true,
 		};
 
 		this.metadata = {

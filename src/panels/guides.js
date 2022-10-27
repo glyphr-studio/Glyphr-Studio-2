@@ -5,15 +5,45 @@
 **/
 
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
+import { makeSingleCheckbox } from './cards.js';
 
 export function makePanel_Guides() {
 	const editor = getCurrentProjectEditor();
+	const systemGuides = editor.project.projectSettings.guides.system;
+	let systemCard = makeElement({ className: 'panel__card full-width', innerHTML: '<h4>System guides</h4>' });
+	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showBaseline', 'Baseline'));
+	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showLeftSide', 'Left side'));
+	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showRightSide', 'Right side'));
 
-	let system = makeElement({ className: 'panel__card', innerHTML: '<h4>System guides</h4>' });
+	return [systemCard];
+}
+
+export function makeGuideCheckbox(workItem, property, label) {
+	let newCheckbox = makeElement({
+		tag: 'input',
+		attributes: {
+			type: 'checkbox',
+		},
+	});
+	if (workItem[property]) newCheckbox.setAttribute('checked', '');
+
+	newCheckbox.addEventListener('change', (event) => {
+		let newValue = event.target.checked;
+		workItem[property] = !!newValue;
+		getCurrentProjectEditor().editCanvas.redraw();
+	});
+
+	let newLabel = makeElement({ tag: 'label', innerHTML: label });
+	let newRow = makeElement();
+	addAsChildren(newRow, [newCheckbox, newLabel]);
+	return newRow;
+}
+
+	/*
+function makeGuidePanel() {
 	let user = makeElement({ className: 'panel__card', innerHTML: '<h4>User guides</h4>' });
 	let guides = editor.project.projectSettings.guides;
-	let ps = editor.project.projectSettings;
 	let tg;
 
 	for (let g of Object.keys(guides)) {
@@ -23,13 +53,13 @@ export function makePanel_Guides() {
 			user.appendChild(
 				makeOneGuideRow(tg, 'getCurrentProject().projectSettings.guides.' + g, tg.visible, g)
 			);
-		} else if (tg.showname) {
+		} else if (tg.displayName) {
 			system.appendChild(
 				makeOneGuideRow(tg, 'getCurrentProject().projectSettings.guides.' + g, tg.visible, g)
 			);
 		}
 	}
-
+	*/
 	/*
 	content += '<h3 style="margin-top:0px; margin-bottom:10px;">options</h3>';
 	content +=
@@ -88,20 +118,18 @@ export function makePanel_Guides() {
 	}
 
 	content += '</div>';
+}
 	*/
 
-	return [user, system];
-}
-
-function makeOneGuideRow(guide, path, currviz, id) {
+/*
+function makeOneGuideRow(guide, path, currViz, id) {
 	return makeElement({
 		content: `color: ${guide.color} / type: ${guide.type}`,
 	});
-	/*
 	let sys = !guide.editable;
-	let re = '<table class="guiderow"><tr>';
+	let re = '<table class="guideRow"><tr>';
 
-	re += '<td class="guidecolor" style="background-color:' + guide.color + ';"';
+	re += '<td class="guideColor" style="background-color:' + guide.color + ';"';
 	if (!sys) {
 		re +=
 			" customGuideTransparency=\"hideAllSatChoosers(); this.style.cursor='pointer'; this.style.borderColor='" +
@@ -117,7 +145,7 @@ function makeOneGuideRow(guide, path, currviz, id) {
 	re += '</td>';
 
 	re += '<td>';
-	re += checkUI(path + '.visible', currviz, true);
+	re += checkUI(path + '.visible', currViz, true);
 	re += '</td>';
 
 	re += '<td>';
@@ -173,7 +201,6 @@ function makeOneGuideRow(guide, path, currviz, id) {
 
 	re += '</tr></table>';
 	return re;
-	*/
 }
 
 function updateGuide(id, key, value) {
@@ -220,3 +247,5 @@ function newGuide() {
 
 	redraw({ calledBy: 'newGuide' });
 }
+
+*/

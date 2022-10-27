@@ -21,8 +21,8 @@ export class GlyphrStudioApp {
 			dev: {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
-				currentPage: 'Glyph edit', // navigate straight to a page
-				currentItemID: '0x0042', // select a glyph
+				currentPage: false, // navigate straight to a page
+				currentItemID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel
 				currentTool: false, // select a tool
 				testActions: [],
