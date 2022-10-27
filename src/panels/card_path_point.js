@@ -38,29 +38,32 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 		makePointTypeButton('symmetric', selectedPoint.type === 'symmetric', () => {
 			selectedPoint.type = 'symmetric';
 			editor.publish('currentPathPoint', selectedPoint);
+			editor.publish('currentControlPoint.p', selectedPoint.p);
 		}),
 		makePointTypeButton('flat', selectedPoint.type === 'flat', () => {
 			selectedPoint.type = 'flat';
 			editor.publish('currentPathPoint', selectedPoint);
+			editor.publish('currentControlPoint.p', selectedPoint.p);
 		}),
 		makePointTypeButton('corner', selectedPoint.type === 'corner', () => {
 			selectedPoint.type = 'corner';
 			editor.publish('currentPathPoint', selectedPoint);
+			editor.publish('currentControlPoint.p', selectedPoint.p);
 		}),
 	]);
 	editor.subscribe({
 		topic: 'currentPathPoint',
 		subscriberID: 'pointTypeButtons',
 		callback: (changedItem) => {
-			// log(`pointTypeButton subscriber callback`, 'start');
-			// log(changedItem);
+			log(`pointTypeButton subscriber callback`, 'start');
+			log(changedItem);
 			if (document.getElementById(`pointTypeButton-${changedItem.type}`)) {
 				document.getElementById(`pointTypeButton-symmetric`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-flat`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-corner`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-${changedItem.type}`).setAttribute('selected', '');
 			}
-			// log(`pointTypeButton subscriber callback`, 'end');
+			log(`pointTypeButton subscriber callback`, 'end');
 		},
 	});
 

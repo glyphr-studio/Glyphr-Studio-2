@@ -256,6 +256,9 @@ export class PathPoint extends GlyphElement {
 	makeSymmetric(hold) {
 		// log(`PathPoint.makeSymmetric`, 'start');
 		// log(`hold: ${hold}`);
+		this.h1.use = true;
+		this.h2.use = true;
+		this._type = 'symmetric';
 
 		if (!hold) {
 			hold = this.h1.use ? 'h1' : 'h2';
@@ -267,8 +270,8 @@ export class PathPoint extends GlyphElement {
 					// Handles and points are all in the same place
 					this.h2.x -= 100;
 					this.h1.x += 100;
-					this.h1.use = true;
-					this.h2.use = true;
+					// log(`Handles and points are all in the same place`);
+					// log('PathPoint.makeSymmetric', 'end');
 					return;
 				}
 			}
@@ -313,8 +316,7 @@ export class PathPoint extends GlyphElement {
 		}
 
 		// this.roundAll();
-		// log('PathPoint.makeSymmetric - returns ' + JSON.stringify(this));
-
+		// log(this);
 		// log(`PathPoint.makeSymmetric`, 'end');
 		return this;
 	}
@@ -327,9 +329,13 @@ export class PathPoint extends GlyphElement {
 	makeFlat(hold) {
 		// log('PathPoint.makeFlat', 'start');
 		// log(`hold: ${hold}`);
+		this.h1.use = true;
+		this.h2.use = true;
+					this._type = 'flat';
 
 		if (this.isFlat()) {
-			this._type = 'flat';
+			// log(`This path point is already flat.`);
+			// log('PathPoint.makeFlat', 'end');
 			return;
 		}
 
@@ -343,8 +349,8 @@ export class PathPoint extends GlyphElement {
 					// Handles and points are all in the same place
 					this.h2.x -= 300;
 					this.h1.x += 100;
-					this.h1.use = true;
-					this.h2.use = true;
+					// log(`Handles and points are all in the same place`);
+					// log('PathPoint.makeFlat', 'end');
 					return;
 				}
 			}
@@ -397,8 +403,7 @@ export class PathPoint extends GlyphElement {
 			}
 		}
 
-		this._type = 'flat';
-
+		// log(this);
 		// log('PathPoint.makeFlat', 'end');
 
 		return this;
