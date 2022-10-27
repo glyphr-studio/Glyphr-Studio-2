@@ -37,10 +37,10 @@
 	font-weight: bold;
 	width: 12px;
 	height: 12px;
-	line-height: 10px;
+	line-height: 11px;
 	text-align: center;
 	box-sizing: border-box;
-	padding: 0px 0px 1px 0px;
+	padding: 0px 0px 1px 0.5px;
 }
 
 #entryPoint:hover,
