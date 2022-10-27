@@ -993,8 +993,8 @@ export class Path extends GlyphElement {
 	 * @returns {Path} - reference to this path
 	 */
 	flipNS(mid = this.maxes.center.y) {
-		log(`Path.flipNS`, 'start');
-		log(`mid: ${mid}`);
+		// log(`Path.flipNS`, 'start');
+		// log(`mid: ${mid}`);
 
 		// log(this.print());
 		// const startingY = this.y;
@@ -1009,7 +1009,7 @@ export class Path extends GlyphElement {
 		this.reverseWinding();
 
 		// log(this.print());
-		log(`Path.flipNS`, 'end');
+		// log(`Path.flipNS`, 'end');
 	}
 
 	/**
