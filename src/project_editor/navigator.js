@@ -98,7 +98,11 @@ export class Navigator {
 		// log(`Navigator.navigate`, 'start');
 
 		// log(`pageName : ${pageName}`);
-		if (pageName) this.page = pageName;
+		let fadePageIn = false;
+		if (pageName) {
+			fadePageIn = this.page !== pageName;
+			this.page = pageName;
+		}
 
 		// log(`this.page: ${this.page}`);
 		// log(`this.panel: ${this.panel}`);
@@ -109,7 +113,7 @@ export class Navigator {
 		// log(wrapper);
 
 		if (wrapper) {
-			const pageContent = this.makePageContent();
+			const pageContent = this.makePageContent(fadePageIn);
 			wrapper.innerHTML = makeAppTopBar();
 			wrapper.appendChild(pageContent);
 		} else {
@@ -123,9 +127,9 @@ export class Navigator {
 	 * Sets the current view to the appropriate Page
 	 * @returns {object} Page Loader object - {string} content and {function} callback
 	 */
-	makePageContent() {
+	makePageContent(fadePageIn = false) {
 		// log(`Navigator.makePageContent`, 'start');
-		const editorContent = makeElement({ tag: 'div', id: 'app__main-content' });
+		const editorContent = makeElement({ tag: 'div', id: 'app__main-content', className: fadePageIn? 'page-fade-in' : ''});
 
 		// Default page loader fallback
 		let pageContent = makeElement({ tag: 'h1', innerHTML: 'Uninitialized page content' });

@@ -84,7 +84,21 @@ export function makeKeyboardShortcutReference() {
 				Auto-fit glyph on the screen
 			</label>
 
-			<h3>Paths and Path Points</h3>
+			<h3>Editing</h3>
+			<span>
+				<code>ctrl</code><code>c</code>
+			</span>
+			<label>
+				Copy the selected paths
+			</label>
+
+			<span>
+				<code>ctrl</code><code>v</code>
+			</span>
+			<label>
+				Paste the selected paths
+			</label>
+
 			<span>
 				<code>ctrl</code><code>a</code>
 			</span>

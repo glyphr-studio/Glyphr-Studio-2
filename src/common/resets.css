@@ -214,6 +214,44 @@ ul li {
 	margin-top: 5px;
 }
 
+
+/* --------------------------------------------------------------
+// Common variables
+// ------------------------------------------------------------*/
+:root {
+	--slide-down-animate-in: fade-slide-in 100ms ease-in;
+	--fade-animate-in: fade-in 200ms ease-in;
+	--l1-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
+	--l2-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+	--l3-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+	--l3-shadow-down: 0px 6px 6px rgba(0, 0, 0, 0.3);
+	--global-focus-style: 1px dashed var(--purple-l50);
+}
+
+@keyframes fade-slide-in {
+	from {
+		opacity: 0;
+		transform: translateY(-2px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+}
+
+@keyframes fade-in {
+	from {
+		opacity: 0;
+		transform: scale(1.01, 1.01);
+	}
+
+	to {
+		opacity: 1;
+		transform: scale(1,1);
+	}
+}
+
 /* --------------------------------------------------------------
 // Button
 // ------------------------------------------------------------*/
