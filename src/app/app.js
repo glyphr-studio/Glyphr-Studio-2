@@ -24,7 +24,7 @@ export class GlyphrStudioApp {
 				currentPage: 'Glyph edit', // navigate straight to a page
 				currentItemID: '0x0042', // select a glyph
 				currentPanel: false, // navigate straight to a panel
-				currentTool: 'pathEdit', // select a tool
+				currentTool: false, // select a tool
 				testActions: [],
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
@@ -45,7 +45,7 @@ export class GlyphrStudioApp {
 		// Dev mode stuff
 		const dev = this.settings.dev;
 		if (dev.mode) {
-			document.title = '⡄⡆⡇ ⃨G⃨S⃨2⃨D⃨E⃨V⃨M⃨O⃨D⃨E⃨ ⡇⡆⡄';
+			document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
 
 			// Sample Project
 			if (sampleProject) {

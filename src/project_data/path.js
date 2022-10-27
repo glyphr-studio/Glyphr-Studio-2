@@ -585,10 +585,10 @@ export class Path extends GlyphElement {
 	updatePathPosition(dx = 0, dy = 0) {
 		// log('Path.updatePathPosition', 'start');
 
-		if (dx !== false) dx = parseFloat(dx);
-		if (dy !== false) dy = parseFloat(dy);
+		dx = parseFloat(dx);
+		dy = parseFloat(dy);
 
-		// log(`dx, dy,\t${dx}\t${dy}`);
+		// log(`dx:${dx}\tdy:${dy}`);
 		for (let d = 0; d < this.pathPoints.length; d++) {
 			const pp = this.pathPoints[d];
 			// log('-------------------- pathPoint #' + d);

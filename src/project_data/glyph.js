@@ -687,60 +687,51 @@ export class Glyph extends GlyphElement {
 	alignPaths(edge) {
 		// log('Glyph.alignPaths', 'start');
 		// log('edge: ' + edge);
-		let target;
-		let offset;
+		const glyphMaxes = this.maxes;
 
 		if (edge === 'top') {
-			target = -999999;
-			this.paths.forEach(function (v) {
-				target = Math.max(target, v.maxes.yMax);
+			this.paths.forEach((path) => {
+				// log(`just setting to glyph.yMax: ${glyphMaxes.yMax}`);
+				path.setPathPosition(false, glyphMaxes.yMax);
 			});
-			// log('found TOP: ' + target);
-			this.paths.forEach(function (v) {
-				v.setPathPosition(false, target);
+		}
+
+		if (edge === 'middle') {
+			this.paths.forEach((path) => {
+				let delta = glyphMaxes.center.y - path.maxes.center.y;
+				// log(`delta: ${delta}`);
+				path.updatePathPosition(0, delta);
 			});
-		} else if (edge === 'middle') {
-			target = this.maxes.center.y;
-			// log('found MIDDLE: ' + target);
-			this.paths.forEach(function (v) {
-				offset = v.maxes.center.y;
-				v.updatePathPosition(false, target - offset);
+		}
+
+		if (edge === 'bottom') {
+			this.paths.forEach((path) => {
+				let delta = glyphMaxes.yMin - path.maxes.yMin;
+				// log(`delta: ${delta}`);
+				path.updatePathPosition(0, delta);
 			});
-		} else if (edge === 'bottom') {
-			target = 999999;
-			this.paths.forEach(function (v) {
-				target = Math.min(target, v.maxes.yMin);
+		}
+
+		if (edge === 'left') {
+			this.paths.forEach((path) => {
+				// log(`just setting to glyph.xMin: ${glyphMaxes.xMin}`);
+				path.setPathPosition(glyphMaxes.xMin, false);
 			});
-			// log('found BOTTOM: ' + target);
-			this.paths.forEach(function (v) {
-				offset = v.maxes.yMin;
-				v.updatePathPosition(false, target - offset);
+		}
+
+		if (edge === 'center') {
+			this.paths.forEach((path) => {
+				let delta = glyphMaxes.center.x - path.maxes.center.x;
+				// log(`delta: ${delta}`);
+				path.updatePathPosition(delta, 0);
 			});
-		} else if (edge === 'left') {
-			target = 999999;
-			this.paths.forEach(function (v) {
-				target = Math.min(target, v.maxes.xMin);
-			});
-			// log('found LEFT: ' + target);
-			this.paths.forEach(function (v) {
-				v.setPathPosition(target, false);
-			});
-		} else if (edge === 'center') {
-			target = this.maxes.center.x;
-			// log('found CENTER: ' + target);
-			this.paths.forEach(function (v) {
-				offset = v.maxes.center.x;
-				v.updatePathPosition(target - offset, false);
-			});
-		} else if (edge === 'right') {
-			target = -999999;
-			this.paths.forEach(function (v) {
-				target = Math.max(target, v.maxes.xMax);
-			});
-			// log('found RIGHT: ' + target);
-			this.paths.forEach(function (v) {
-				offset = v.maxes.xMax;
-				v.updatePathPosition(target - offset, false);
+		}
+
+		if (edge === 'right') {
+			this.paths.forEach((path) => {
+				let delta = glyphMaxes.xMax - path.maxes.xMax;
+				// log(`delta: ${delta}`);
+				path.updatePathPosition(delta, 0);
 			});
 		}
 
