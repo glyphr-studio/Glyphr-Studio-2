@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite serve ./src/",
-    "build": "vite build",
+    "build": "vite build ./src/ --emptyOutDir",
     "preview": "vite preview",
     "test": "jasmine",
     "lint": "eslint src",

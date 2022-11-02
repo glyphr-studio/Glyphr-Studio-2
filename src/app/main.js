@@ -77,21 +77,22 @@ function registerCustomComponents() {
 
 	data.forEach((control) => {
 		customElements.define(control.fileName, control.className);
-		document.head.appendChild(linkCSS(control.fileName));
+		// document.head.appendChild(linkCSS(control.fileName));
 	});
 
 	// Special case EditCanvas
 	customElements.define('edit-canvas', EditCanvas);
-	document.head.appendChild(
-		makeElement({
-			tag: 'link',
-			attributes: {
-				href: `./edit_canvas/edit-canvas.css`,
-				rel: 'stylesheet',
-				type: 'text/css',
-			},
-		})
-	);
+
+	// document.head.appendChild(
+	// 	makeElement({
+	// 		tag: 'link',
+	// 		attributes: {
+	// 			href: `./edit_canvas/edit-canvas.css`,
+	// 			rel: 'stylesheet',
+	// 			type: 'text/css',
+	// 		},
+	// 	})
+	// );
 }
 
 /**

@@ -25,35 +25,8 @@
 			type="image/x-icon"
 			href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACQAAAAkCAYAAADhAJiYAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAABBRJREFUeNq8WG1LVEEUPjO7vYtp0QtIJBUEBdKblRiZKdkr+FP6ByLRl/oN/YXoS2WI2TtRlIqIhRQRfojIWjREa3emOWfm3jl39u5et1qVy7nnvsx95pznOWd2BLi/UdCtxgyYo18LaFJCg7FgrTbWnivpLJ1rKOF1af2SjK45a57156lHwRx3zDF4fXLnJ8QhHJhDZACaPAhr710BuHuZHoO++wq0sQ8uSrrfM1QyvoaR8znyzwwXyX90Lk/PdY78ouvPe9aSPfFoCY49WaoATHXfHGsZly4yqWAoMlEI8ZoxeE9bfHSf+wiX3nOvaOmfAfBRLD9Uk7GjV9tnW/MuTelgoo+hjcHYz+noPwJHAPwE+Hj2aaB0p4CJzhHUQN5xBipxhkDYzNrZxsPbD2gHBqIJMJBKsHfceBXA0FGUuj+fRWCfHog/CCx15LuPKh4xUZ5StFXAUJTyWWrSQiQ5A0nO6JAzkORMckJVwdAhhnNK11naWWnyfk5DPgRz30h86JKkWfWSrAGGL1gfZd01/LtuYNDP18qZeoLBZ2Q5ZzLqTB3BUITKOJNRZ+oJxnIoIHBWnaknGB8hriZRvc7UEwzJ/vamZb3a0q4EpphTmLIkGOzcD/tstz5tujX2pqe9ayhaHaPLpmMvVwUzdmoDjHduJEEcePmT3ps62UBR3/dmniI+095I4+8eL8CuiUIMBm2+LDKiem/KikxU13wv84r1vdH7HIzlUJAmGqxKb8pKE44RqdKO51tO3GyZz8HElTrBmYzelMUZxZYqvNsD65fR+IpzjLhkOBQSWIm/Xs84QCzFUjuVJiPGx+dg4pRxNWnxT+sZNqF0zvByogIweC5ubV/Qqy3tME3JwhiAedazxizK11Ga2h8v0Wxeda0ne/jZIrS9WKwJzIejjfDxyGaKWsvkD4rUbFszRW3b9Bxsnf4Wv0N1KIyMkknO+AVZROraImPH8ylPkl4nwLg6lEyTCjhTjdQrSZPnkRcN9zmYonlHhpwJ18CqAqlXyhmutPiHA/M5mFj2oWyTsueqq53ANJ5LUykuvN7nYNCmAIIKi3Tt60YNaioFnNGBz8Hgu+LG3jm92tIO0xSBKeVSUhaCmTCde7JjE81q/+sFmtm74w3k73k7T5FDaaOPnRtXlZ/bmigtO6a+UxS+HNxCfvP7b9A487UiGKpD/7s36Ro5w8GQytyWyIp7EyepkuV1JuSMyuAMB2OuF6Tbn1lxb/LF0v8oSNQZmfRLfPdDVgWD37yDgAbd/kwqgaM0ROsXFaxnsuqMXR/pOOWVwBhbMJMdlLhzhZtFPHXFlMoNwv864ZwJ6wwB4D6TuldeChihu9W1s59EtB+Fm0Xm5gBuibi9mrpJm3MG04SRQTCI448AAwAuPFCV5CY/qwAAAABJRU5ErkJggg=="
 		/>
-		<script src="app/main.js" type="module"></script>
-		<script type="module">
-			// console.info(
-			// 	'%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n',
-			// 	'color:rgb(0,170,225)'
-			// 	);
-			console.info(
-				`%c
- ░░░░░░    ░░░░░░   ░░░░░░
-▒▒        ▒▒             ▒▒
-▒▒   ▒▒▒   ▒▒▒▒▒     ▒▒▒▒▒
-▓▓    ▓▓       ▓▓   ▓▓
- ▓▓▓▓▓▓   ▓▓▓▓▓▓    ▓▓▓▓▓▓▓
-G L Y P H R  S T U D I O  2
-`,
-				'color: hsl(199, 100%, 64%)'
-			);
-
-			import { glyphrStudioOnLoad, GSApp, log } from './app/main.js';
-			window.log = log;
-			document.addEventListener('DOMContentLoaded', glyphrStudioOnLoad);
-			window._GlyphrStudioApp = GSApp;
-
-			window.closeAllDialogs = function () {
-				let dialogs = document.querySelectorAll('dialog');
-				// console.info(`CloseAllDialogs: ${dialogs.length}`);
-				dialogs.forEach((element) => element.parentElement.removeChild(element));
-			};
-		</script>
+		
+		
 		<style>
 			body,
 			#app__wrapper,
@@ -113,16 +86,18 @@ G L Y P H R  S T U D I O  2
 				100% { opacity: 1; }
 			}
 		</style>
-		<link rel="stylesheet" type="text/css" href="./app/app.css" />
-		<link rel="stylesheet" type="text/css" href="./common/fonts.css" />
-		<link rel="stylesheet" type="text/css" href="./common/resets.css" />
-		<link rel="stylesheet" type="text/css" href="./common/colors.css" />
-		<link rel="stylesheet" type="text/css" href="./project_editor/nav.css" />
-		<link rel="stylesheet" type="text/css" href="./edit_canvas/edit-canvas.css" />
-		<link rel="stylesheet" type="text/css" href="./pages/editor-pages.css" />
-		<link rel="stylesheet" type="text/css" href="./pages/content-pages.css" />
-		<link rel="stylesheet" type="text/css" href="./pages/open-project.css" />
-		<link rel="stylesheet" type="text/css" href="./panels/panels.css" />
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		<script type="module" crossorigin src="/v2/app/assets/index.6c1f40f5.js"></script>
+		<link rel="stylesheet" href="/v2/app/assets/index.c5ba56a4.css">
 	</head>
 
 	<body style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; margin: 0; padding: 0">

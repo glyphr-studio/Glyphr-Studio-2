@@ -88,7 +88,8 @@ export class GlyphTile extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(linkCSS('glyph-tile'));
+		// shadow.appendChild(linkCSS('glyph-tile'));
+		shadow.appendChild(makeCSS());
 
 		this.wrapper.appendChild(this.thumbnail);
 		this.wrapper.appendChild(this.name);
@@ -181,4 +182,118 @@ function getTestGlyph(gid) {
 	} else {
 		return false;
 	}
+}
+
+/**
+ * In-lines CSS
+ */
+
+function makeCSS() {
+	let cssElement = makeElement({ tag: 'style' });
+
+	cssElement.innerHTML = `
+* {
+	box-sizing: border-box;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+:host {
+	box-sizing: border-box;
+	width: 52px;
+	height: 75px;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	margin: 0px;
+	padding: 0px;
+	background-color: rgba(255, 255, 255, 0.4);
+	box-shadow: var(--l1-shadow);
+	border-radius: 2px;
+	transition: opacity 500ms ease-in;
+}
+
+.wrapper {
+	display: inline-block;
+	margin: 0px;
+	padding: 1px;
+	height: 100%;
+	width: 52px;
+	text-align: center;
+	overflow-x: hidden;
+	overflow-y: hidden;
+	background-repeat: no-repeat;
+}
+
+.wrapper:hover,
+.wrapper:focus {
+	background: linear-gradient(var(--accent-color), transparent);
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+.wrapper[selected] {
+	background: linear-gradient(var(--accent-color), transparent);
+	background-repeat: no-repeat;
+}
+
+.wrapper[selected]:hover,
+.wrapper[selected]:focus {
+	cursor: default;
+}
+
+.thumbnail {
+	display: block;
+	background-color: white;
+	opacity: 0.8;
+	font-size: 36px;
+	padding-top: 2px;
+	color: var(--disabled-background);
+	margin: auto;
+	width: 50px;
+	height: 50px;
+	box-shadow: var(--l1-shadow);
+	border-radius: 1px;
+}
+
+.wrapper:hover .thumbnail,
+.wrapper:focus .thumbnail {
+	opacity: 1;
+	background-color: white;
+	box-shadow: var(--l1-shadow);
+	color: var(--enabled-active-lightText);
+}
+
+.wrapper[selected] .thumbnail {
+	opacity: 1;
+	background-color: white;
+	box-shadow: var(--l1-shadow);
+	color: var(--enabled-active-lightText);
+}
+
+.wrapper[selected]:hover .thumbnail {
+	cursor: default;
+}
+
+.name {
+	display: block;
+	text-align: left;
+	width: 300px;
+	height: 28px;
+	padding: 2px 0px 0px 4px;
+	color: var(--gray-45);
+	position: relative;
+	left: -1px;
+}
+
+.wrapper[selected] .name,
+.wrapper:hover .name {
+	color: var(--blue-l40);
+	background-color: var(--blue-l90);
+}
+
+	`;
+
+	return cssElement;
 }
