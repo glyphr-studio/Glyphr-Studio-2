@@ -55,15 +55,15 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 		topic: 'currentPathPoint',
 		subscriberID: 'pointTypeButtons',
 		callback: (changedItem) => {
-			log(`pointTypeButton subscriber callback`, 'start');
-			log(changedItem);
+			// log(`pointTypeButton subscriber callback`, 'start');
+			// log(changedItem);
 			if (document.getElementById(`pointTypeButton-${changedItem.type}`)) {
 				document.getElementById(`pointTypeButton-symmetric`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-flat`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-corner`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-${changedItem.type}`).setAttribute('selected', '');
 			}
-			log(`pointTypeButton subscriber callback`, 'end');
+			// log(`pointTypeButton subscriber callback`, 'end');
 		},
 	});
 

@@ -43,7 +43,9 @@ export class FancyButton extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(linkCSS('fancy-button'));
+		// shadow.appendChild(linkCSS('fancy-button'));
+		shadow.appendChild(makeCSS());
+		
 		this.buttonContent.appendChild(this.buttonText);
 		this.wrapper.appendChild(this.buttonContent);
 		shadow.appendChild(this.wrapper);
@@ -113,4 +115,172 @@ export class FancyButton extends HTMLElement {
 			elem.wrapper.style.boxShadow = '2px 2px 2px rgba(0, 0, 0, 0.3)';
 		}, 100);
 	}
+}
+
+/**
+ * In-lines CSS
+ */
+
+function makeCSS() {
+	let cssElement = makeElement({ tag: 'style' });
+
+	cssElement.innerHTML = `
+* {
+	box-sizing: border-box;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+:host {
+	margin-right: 8px;
+	display: inline-block;
+	width: max-content;
+	min-width: 40px;
+}
+
+:host(:active) .wrapper {
+	top: 1px;
+	left: 1px;
+	box-shadow: none;
+}
+
+:host([disabled]:active) .wrapper {
+	top: 0px;
+	left: 0px;
+}
+
+.wrapper {
+	display: inline-block;
+	position: relative;
+	top: 0px;
+	left: 0px;
+	margin: 0px;
+	padding: 2px;
+	height: 100%;
+	width: 100%;
+	border-style: solid;
+	border-width: 0px;
+	border-radius: 5px;
+	box-shadow: var(--l2-shadow);
+
+	background: linear-gradient(
+		135deg,
+		var(--blue-l55),
+		var(--purple-l45),
+		var(--orange-l55),
+		var(--purple-l45),
+		var(--blue-l55),
+		var(--purple-l45)
+	);
+	background-size: 500% 500%;
+}
+
+@keyframes gradFade {
+	0% {
+		background-position: 0% 0%;
+	}
+	100% {
+		background-position: 100% 100%;
+	}
+}
+
+.wrapper:hover,
+.wrapper *:hover,
+.wrapper:focus,
+.wrapper *:focus {
+	cursor: pointer;
+}
+
+.wrapper:focus {
+	outline: var(--global-focus-style);
+}
+
+.buttonContent {
+	display: flex;
+	align-items: center;
+	padding: 0px;
+	border-radius: 3px;
+	background-color: transparent;
+	width: 100%;
+	height: 100%;
+}
+
+.buttonText {
+	display: inline-block;
+	width: max-content;
+	height: max-content;
+	margin: 5px 10px;
+	color: white;
+	background-color: transparent;
+}
+
+.wrapper[secondary] .buttonContent {
+	background-color: rgba(255, 255, 255, 0.95);
+}
+
+.wrapper[dark] .buttonContent {
+	background-color: var(--gray-l05);
+}
+
+.wrapper[secondary] .buttonText {
+	background: linear-gradient(
+		135deg,
+		var(--blue-l45),
+		var(--purple-l45),
+		var(--orange-l45),
+		var(--purple-l45),
+		var(--blue-l45),
+		var(--purple-l45)
+	);
+	background-size: 500% 500%;
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.wrapper:hover .buttonContent,
+.wrapper:active .buttonContent {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+.wrapper[secondary]:hover .buttonContent,
+.wrapper[secondary]:active .buttonContent {
+	background-color: white;
+}
+
+.wrapper[disabled],
+.wrapper[disabled]:hover,
+.wrapper[disabled]:focus,
+.wrapper[disabled]:active {
+	background-image: none;
+	background-color: var(--disabled-border);
+	cursor: default;
+	box-shadow: none;
+}
+
+.wrapper[disabled] .buttonContent,
+.wrapper[disabled]:hover .buttonContent,
+.wrapper[disabled]:focus .buttonContent,
+.wrapper[disabled]:active .buttonContent {
+	background-color: var(--disabled-background);
+	cursor: default;
+}
+
+.wrapper[disabled] .buttonText,
+.wrapper[disabled]:hover .buttonText,
+.wrapper[disabled]:focus .buttonText,
+.wrapper[disabled]:active .buttonText {
+	background-color: var(--disabled-background);
+	background-clip: none;
+	-webkit-text-fill-color: var(--disabled-border);
+	color: var(--disabled-border);
+	cursor: default;
+}
+
+	`;
+
+	return cssElement;
 }

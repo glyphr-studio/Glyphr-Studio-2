@@ -27,7 +27,7 @@ export function makePage_About() {
 					<br><br>
 
 					Help for Glyphr Studio v2:<br>
-					<a href="https://www.glyphrstudio.com/help/v2" target="_blank">glyphrstudio.com/help/v2</a>
+					<a href="https://www.glyphrstudio.com/v2/help" target="_blank">glyphrstudio.com/v2/help</a>
 					<br><br>
 
 					Email:<br>
@@ -102,7 +102,7 @@ export function makePage_About() {
 export function makeAlpha1Message() {
 	const app = window._GlyphrStudioApp;
 	let content = `
-		<h1>Welcome to Alpha 1!</h1>
+		<h1>Welcome to Alpha-1!</h1>
 		<p>
 			What is an alpha? Currently, Glyphr Studio v2 does not
 			have enough features to be considered a usable product (mainly, it's missing
@@ -111,13 +111,19 @@ export function makeAlpha1Message() {
 			bugs that we still haven't found.
 		</p>
 		<br>
-		<b>For Alpha 1, please try the following scenarios:</b>
+		<h3>
+			There is a ton of information over on the blog:<br>
+			<a href="https://www.glyphrstudio.com/blog/?p=288" target="_blank">V2 Alpha-1 MEGA POST</a>
+		</h3>
+		<br>
+		<b>For Alpha-1, please try the following scenarios:</b>
 		<ul>
-			<li>Navigate around using the upper-left Page button, and the Glyph Chooser</li>
+			<li>Navigate around using the upper-left Page Chooser, Glyph Chooser, and Panel Chooser</li>
+			<li>Resize paths with the arrow tool and edit paths with the pen tool</li>
 			<li>Create new shapes on the edit canvas</li>
-			<li>Resize shapes with the arrow tool</li>
-			<li>Edit paths with the pen tool</li>
 			<li>Edit glyph, path, and path point details from the Attributes panel</li>
+			<li>Copy and paste paths</li>
+			<li>Undo edits</li>
 		</ul>
 
 		<br>

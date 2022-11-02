@@ -21,9 +21,9 @@ export class GlyphrStudioProject {
 		// Set up all internal default values first
 		this.projectSettings = {
 			// Internal Stuff
-			versionName: 'Version 2 Alpha',
-			version: '2.0.0',
-			initialVersion: '2.0.0',
+			versionName: 'Version 2 Alpha-1',
+			version: '2.0.0-alpha.1',
+			initialVersion: '2.0.0-alpha.1',
 			projectID: false,
 
 			// Font Metrics

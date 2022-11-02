@@ -30,7 +30,7 @@ export function publish(topic, data) {
 
 		// Handle some things centrally
 		if (topic === 'whichToolIsSelected') {
-			log(`PubSub publish whichToolIsSelected: ${data}`);
+			// log(`PubSub publish whichToolIsSelected: ${data}`);
 		}
 
 		if (topic === 'view') {

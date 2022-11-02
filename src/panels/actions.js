@@ -523,7 +523,7 @@ function combineAllGlyphPaths() {
 // Copy Paste
 // --------------------------------------------------------------
 export function clipboardCopy() {
-	log(`clipboardCopy`, 'start');
+	// log(`clipboardCopy`, 'start');
 
 	const editor = getCurrentProjectEditor();
 	let selPaths = [];
@@ -547,12 +547,12 @@ export function clipboardCopy() {
 	}
 
 	button.setAttribute('title', makeActionButtonPasteTooltip(selPaths.length));
-	log(editor.clipboard);
-	log(`clipboardCopy`, 'end');
+	// log(editor.clipboard);
+	// log(`clipboardCopy`, 'end');
 }
 
 export function clipboardPaste() {
-	log('clipboardPaste', 'start');
+	// log('clipboardPaste', 'start');
 	const editor = getCurrentProjectEditor();
 	let clipboard = editor.clipboard;
 	let offsetPaths = clipboard.sourceID === editor.selectedItemID;
@@ -606,8 +606,8 @@ export function clipboardPaste() {
 			newPaths.push(newPath);
 		});
 
-		log(`New paths that have been copied`);
-		log(newPaths);
+		// log(`New paths that have been copied`);
+		// log(newPaths);
 
 		editor.multiSelect.paths.clear();
 		editor.multiSelect.points.clear();
@@ -621,7 +621,7 @@ export function clipboardPaste() {
 		editor.history.addState(len === 1 ? 'Pasted Path' : `Pasted ${len} Paths`);
 		editor.publish('currentGlyph', editor.selectedItem);
 	}
-	log('clipboardPaste', 'end');
+	// log('clipboardPaste', 'end');
 }
 
 export function makeActionButtonPasteTooltip(pathCount) {

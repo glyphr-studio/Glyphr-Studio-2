@@ -51,7 +51,8 @@ export class AnchorTwelvepoint extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(linkCSS('anchor-twelvepoint'));
+		// shadow.appendChild(linkCSS('anchor-twelvepoint'));
+		shadow.appendChild(makeCSS());
 
 		/*
 		this.observer = new MutationObserver(this.childAttributeChanged);
@@ -119,4 +120,127 @@ export class AnchorTwelvepoint extends HTMLElement {
 			this.setAttribute('value', 'baselineLeft');
 		}
 	}
+}
+
+/**
+ * In-lines CSS
+ */
+
+function makeCSS() {
+	let cssElement = makeElement({ tag: 'style' });
+
+	cssElement.innerHTML = `
+* {
+	box-sizing: border-box;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.wrapper {
+	margin: 0px;
+	padding: 0px;
+	border-style: solid;
+	border-width: 0px;
+	border-color: var(--enabled-resting-border);
+	background-color: var(--enabled-resting-background);
+
+	display: grid;
+	grid-template-columns: 3;
+	grid-template-rows: 4;
+	grid-gap: 3px;
+	padding: 3px;
+}
+
+.wrapper:hover,
+.wrapper *:hover,
+.wrapper:focus,
+.wrapper *:focus {
+	border-color: var(--enabled-focus-border);
+}
+
+.wrapper[disabled],
+.wrapper:hover[disabled],
+.wrapper:focus[disabled],
+.wrapper:active[disabled] {
+	background-color: var(--disabled-background);
+	border-color: var(--disabled-border);
+}
+
+#topLeft {
+	grid-row: 1;
+	grid-column: 1;
+}
+#topCenter {
+	grid-row: 1;
+	grid-column: 2;
+}
+#topRight {
+	grid-row: 1;
+	grid-column: 3;
+}
+#middleLeft {
+	grid-row: 2;
+	grid-column: 1;
+}
+#middleCenter {
+	grid-row: 2;
+	grid-column: 2;
+}
+#middleRight {
+	grid-row: 2;
+	grid-column: 3;
+}
+#baselineLeft {
+	grid-row: 3;
+	grid-column: 1;
+}
+#baselineCenter {
+	grid-row: 3;
+	grid-column: 2;
+}
+#baselineRight {
+	grid-row: 3;
+	grid-column: 3;
+}
+#bottomLeft {
+	grid-row: 4;
+	grid-column: 1;
+}
+#bottomCenter {
+	grid-row: 4;
+	grid-column: 2;
+}
+#bottomRight {
+	grid-row: 4;
+	grid-column: 3;
+}
+
+.anchor {
+	height: 5px;
+	width: 5px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: var(--disabled-background);
+	background-color: var(--disabled-background);
+	cursor: pointer;
+}
+
+.anchor[checked] {
+	background-color: var(--accent-color);
+	border-color: var(--accent-color);
+}
+
+.anchor:hover {
+	border-color: var(--accent-color);
+}
+
+.anchor:focus {
+	outline: var(--global-focus-style);
+}
+
+	`;
+
+	return cssElement;
 }

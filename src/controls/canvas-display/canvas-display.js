@@ -32,7 +32,8 @@ export class CanvasDisplay extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		shadow.appendChild(linkCSS('canvas-display'));
+		// shadow.appendChild(linkCSS'canvas-display'));
+		shadow.appendChild(makeCSS());
 
 		shadow.appendChild(this.canvas);
 
@@ -130,4 +131,29 @@ export class CanvasDisplay extends HTMLElement {
 		drawGlyph(sg, this.ctx, view);
 		// log('CanvasDisplay.redraw', 'end');
 	}
+}
+
+/**
+ * In-lines CSS
+ */
+
+function makeCSS() {
+	let cssElement = makeElement({ tag: 'style' });
+
+	cssElement.innerHTML = `
+* {
+	box-sizing: border-box;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+canvas {
+	background-color: white;
+}
+
+	`;
+
+	return cssElement;
 }

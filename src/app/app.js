@@ -11,9 +11,9 @@ export class GlyphrStudioApp {
 	 */
 	constructor() {
 		// Version
-		this.versionName = 'Version 2: Alpha 1';
+		this.versionName = 'Version 2: Alpha-1';
 		this.version = '2.0.0-alpha.1';
-		this.versionDate = 0;
+		this.versionDate = 1667350000000;
 		this.projectEditors = [];
 		this.selectedProjectEditor = 0;
 
@@ -21,6 +21,7 @@ export class GlyphrStudioApp {
 			dev: {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
+				overwriteTitle: false, // Use a 'Dev Mode' window title
 				currentPage: false, // navigate straight to a page
 				currentItemID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel
@@ -29,7 +30,7 @@ export class GlyphrStudioApp {
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
-			telemetry: false, // Load google analytics
+			telemetry: true, // Load google analytics
 		};
 	}
 
@@ -45,7 +46,7 @@ export class GlyphrStudioApp {
 		// Dev mode stuff
 		const dev = this.settings.dev;
 		if (dev.mode) {
-			document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
+			if (dev.overwriteTitle) document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
 
 			// Sample Project
 			if (sampleProject) {
@@ -65,6 +66,10 @@ export class GlyphrStudioApp {
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
 			if (dev.currentTool) editor.selectedTool = dev.currentTool;
+		}
+
+		if (this.settings.telemetry) {
+			addTelemetry();
 		}
 
 		// log(editor);
@@ -111,6 +116,31 @@ export class GlyphrStudioApp {
 
 		return this.projectEditors[this.selectedProjectEditor];
 	}
+}
+
+function addTelemetry() {
+	/*
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-L8S3D8WCC9"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag(){dataLayer.push(arguments);}
+		gtag('js', new Date());
+		gtag('config', 'G-L8S3D8WCC9');
+	</script>
+	*/
+
+	let gScript = document.createElement('script');
+	gScript.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=G-L8S3D8WCC9');
+	gScript.setAttribute('async', '');
+	document.head.appendChild(gScript);
+
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+	gtag('config', 'G-L8S3D8WCC9');
 }
 
 export function makeAppTopBar() {

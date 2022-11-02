@@ -29,7 +29,7 @@ export function makePage_Help() {
 				<h1>Help</h1>
 				<p>
 					Help articles for Glyphr Studio v2 will be at
-					<a href="https://www.glyphrstudio.com/help/v2" target="_new">glyphrstudio.com/help/v2</a>,
+					<a href="https://www.glyphrstudio.com/v2/help" target="_blank">glyphrstudio.com/v2/help</a>,
 					though during the Alpha/Beta stages content may be sparse.
 				</p>
 
