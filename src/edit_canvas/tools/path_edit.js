@@ -5,7 +5,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { setCursor } from '../cursors.js';
-import { isOverControlPoint } from '../draw_paths.js';
+import { isOverControlPoint } from '../detect_edit_affordances.js';
 import { checkForMouseOverHotspot, clickEmptySpace, findAndCallHotspot } from '../events_mouse.js';
 import { getPathAtLocation } from './tools.js';
 import { eventHandlerData } from '../events.js';

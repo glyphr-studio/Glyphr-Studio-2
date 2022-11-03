@@ -4,7 +4,7 @@ import { GlyphrStudioApp } from './app.js';
 /* Web Components */
 import { AnchorTwelvepoint } from '../controls/anchor-twelvepoint/anchor-twelvepoint.js';
 import { ButtonToggle } from '../controls/button-toggle/button-toggle.js';
-import { CanvasDisplay } from '../controls/canvas-display/canvas-display.js';
+import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 import { FancyButton } from '../controls/fancy-button/fancy-button.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph-tile.js';
@@ -67,7 +67,7 @@ function registerCustomComponents() {
 	const data = [
 		{ fileName: 'anchor-twelvepoint', className: AnchorTwelvepoint },
 		{ fileName: 'button-toggle', className: ButtonToggle },
-		{ fileName: 'canvas-display', className: CanvasDisplay },
+		{ fileName: 'display-canvas', className: DisplayCanvas },
 		{ fileName: 'fancy-button', className: FancyButton },
 		{ fileName: 'glyph-tile', className: GlyphTile },
 		{ fileName: 'info-bubble', className: InfoBubble },

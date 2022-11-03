@@ -62,7 +62,8 @@
 	height: 30px;
 }
 
-.editor-page__edit-canvas-wrapper {
+.editor-page__edit-canvas-wrapper,
+.content-page__preview-canvas-wrapper {
 	border: 1px solid var(--blue-l85);
 	background-color: var(--offWhite);
 	grid-column: 3;
@@ -74,9 +75,6 @@
 	box-shadow: var(--l3-shadow);
 }
 
-canvas-display {
-	grid-column: 1;
-	grid-row: 1;
-	width: 100vw;
-	height: 100vh;
+.content-page__preview-canvas-wrapper {
+	grid-column: 2;
 }

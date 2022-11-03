@@ -62,7 +62,7 @@
 	color: var(--blue-l90);
 	font-size: 1.1em;
 	letter-spacing: 0.05ch;
-	overflow: hidden;
+	overflow: visible;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }

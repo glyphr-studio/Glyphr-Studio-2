@@ -2,7 +2,7 @@ import { getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors, uiColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
-import { drawPath } from '../draw_paths.js';
+import { drawPath } from '../../display_canvas/draw_paths.js';
 import { stopCreatingNewPathPoints } from './new_path.js';
 
 // --------------------------------------------------------------

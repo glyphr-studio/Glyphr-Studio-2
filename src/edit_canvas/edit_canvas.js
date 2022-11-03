@@ -3,7 +3,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events.js';
-import { drawGlyph, drawPath } from './draw_paths.js';
+import { drawGlyph, drawPath } from '../display_canvas/draw_paths.js';
 import {
 	computeAndDrawBoundingBox,
 	computeAndDrawBoundingBoxHandles,

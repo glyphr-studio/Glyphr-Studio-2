@@ -59,6 +59,7 @@ export class ProjectEditor {
 
 		// Canvas
 		this.editCanvas = false;
+		this.previewCanvas = false;
 
 		// Views
 		this._views = {};
