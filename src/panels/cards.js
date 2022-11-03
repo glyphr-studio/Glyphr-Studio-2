@@ -106,14 +106,14 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 
 			// Code Smell
 			if (
-				(workItem.objType === 'Glyph') &&
+				workItem.objType === 'Glyph' &&
 				(property === 'width' || property === 'height') &&
 				workItem.ratioLock
 			) {
 				if (property === 'width') workItem.setGlyphSize(newValue, false, true);
 				if (property === 'height') workItem.setGlyphSize(false, newValue, true);
 			} else if (
-				(workItem.objType === 'Path') &&
+				workItem.objType === 'Path' &&
 				(property === 'width' || property === 'height') &&
 				workItem.ratioLock
 			) {
@@ -209,7 +209,7 @@ export function makeSingleCheckbox(workItem, property, thisTopic) {
 
 function toggleHandleInputs(handle, show) {
 	let group = document.getElementById(`${handle}InputGroup`);
-	group.style.display = show ? 'grid' : 'none';
+	if (group) group.style.display = show ? 'grid' : 'none';
 }
 
 export function makeSingleLabel(text, info = false) {

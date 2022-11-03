@@ -10,6 +10,7 @@ import { makeIcon } from '../common/graphics.js';
 import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { refreshPanel } from '../panels/panels.js';
+import { makePage_LivePreview } from '../pages/live_preview.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -52,7 +53,7 @@ export class Navigator {
 				iconName: 'page_kerning',
 			},
 			'Live preview': {
-				pageMaker: false,
+				pageMaker: makePage_LivePreview,
 				iconName: 'page_livePreview',
 			},
 			'Global actions': {

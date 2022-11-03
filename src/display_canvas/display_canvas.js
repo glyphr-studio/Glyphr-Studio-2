@@ -1,21 +1,21 @@
-import { makeElement } from '../../common/dom.js';
-import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
-import { accentColors } from '../../common/colors.js';
-import { glyphToHex } from '../../common/unicode.js';
-import { drawGlyph } from '../../edit_canvas/draw_paths.js';
-import { linkCSS } from '../controls.js';
+import { makeElement } from '../common/dom.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { accentColors } from '../common/colors.js';
+import { glyphToHex } from '../common/unicode.js';
+import { drawGlyph } from './draw_paths.js';
+import { linkCSS } from '../controls/controls.js';
 
 /**
- * CanvasDisplay takes a string of glyphs and displays them on the canvas
+ * DisplayCanvas takes a string of glyphs and displays them on the canvas
  * No editing involved
  */
-export class CanvasDisplay extends HTMLElement {
+export class DisplayCanvas extends HTMLElement {
 	/**
-	 * Create an CanvasDisplay
+	 * Create an DisplayCanvas
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		// log(`CanvasDisplay.constructor`, 'start');
+		// log(`DisplayCanvas.constructor`, 'start');
 
 		super();
 
@@ -32,7 +32,7 @@ export class CanvasDisplay extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		// shadow.appendChild(linkCSS'canvas-display'));
+		// shadow.appendChild(linkCSS('display-canvas'));
 		shadow.appendChild(makeCSS());
 
 		shadow.appendChild(this.canvas);
@@ -40,8 +40,8 @@ export class CanvasDisplay extends HTMLElement {
 		this.canvas.height = this.height;
 		this.canvas.width = this.width;
 
-		this.redraw();
-		// log(`CanvasDisplay.constructor`, 'end');
+		// this.redraw();
+		// log(`DisplayCanvas.constructor`, 'end');
 	}
 
 	/**
@@ -52,13 +52,22 @@ export class CanvasDisplay extends HTMLElement {
 	}
 
 	/**
+	 * Draw the canvas when it's loaded
+	 */
+	connectedCallback() {
+		log(`DisplayCanvas.connectedCallback`, 'start');
+		this.redraw();
+		log(`DisplayCanvas.connectedCallback`, 'end');
+	}
+
+	/**
 	 * Listens for attribute changes on this element
 	 * @param {string} attributeName - which attribute was changed
 	 * @param {string} oldValue - value before the change
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		// log(`CanvasDisplay.attributeChangeCallback`, 'start');
+		// log(`DisplayCanvas.attributeChangeCallback`, 'start');
 		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		switch (attributeName) {
@@ -94,14 +103,14 @@ export class CanvasDisplay extends HTMLElement {
 		if (attributeName === 'glyphs') {
 			this.redraw();
 		}
-		// log(`CanvasDisplay.attributeChangeCallback`, 'end');
+		// log(`DisplayCanvas.attributeChangeCallback`, 'end');
 	}
 
 	/**
 	 * Updates the canvas
 	 */
 	redraw() {
-		// log('CanvasDisplay.redraw', 'start');
+		log('DisplayCanvas.redraw', 'start');
 		const editor = getCurrentProjectEditor();
 		let glyph = editor.selectedGlyph;
 		let settings = getCurrentProject().projectSettings;
@@ -127,9 +136,9 @@ export class CanvasDisplay extends HTMLElement {
 		let glyphHex = glyphToHex(this.glyphs.charAt(0));
 
 		let sg = getCurrentProject().getGlyph(glyphHex);
-		// log(sg);
+		log(sg);
 		drawGlyph(sg, this.ctx, view);
-		// log('CanvasDisplay.redraw', 'end');
+		log('DisplayCanvas.redraw', 'end');
 	}
 }
 

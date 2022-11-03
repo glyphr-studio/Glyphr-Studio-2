@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeCrisp } from '../common/functions.js';
-import { drawPath } from './draw_paths.js';
+import { drawPath } from '../display_canvas/draw_paths.js';
 import { eventHandlerData } from './events.js';
 import { sXcX, sYcY } from './edit_canvas.js';
 import { canResize } from './events_mouse.js';

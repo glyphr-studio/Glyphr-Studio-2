@@ -4,7 +4,7 @@ import { hexToChars } from '../../common/unicode.js';
 import { lookUpGlyphName } from '../../lib/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
-import { drawGlyph } from '../../edit_canvas/draw_paths.js';
+import { drawGlyph } from '../../display_canvas/draw_paths.js';
 import { linkCSS } from '../controls.js';
 
 /**
