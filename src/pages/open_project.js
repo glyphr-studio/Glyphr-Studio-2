@@ -50,9 +50,7 @@ export function makePage_OpenProject() {
 	// Tab click
 	content.querySelector('#newTab').addEventListener('click', () => changeTab('new'));
 	content.querySelector('#loadTab').addEventListener('click', () => changeTab('load'));
-	content
-		.querySelector('#examplesTab')
-		.addEventListener('click', () => changeTab('examples'));
+	content.querySelector('#examplesTab').addEventListener('click', () => changeTab('examples'));
 
 	// Dragging and dropping to load
 	const tableRight = content.querySelector('#open-project__right-area');
@@ -68,9 +66,7 @@ export function makePage_OpenProject() {
 	content.querySelector('#openProjectFileChooser').addEventListener('change', handleDrop);
 
 	// Sample Projects click
-	content
-		.querySelector('#loadModegg')
-		.addEventListener('click', () => handleLoadSample('modegg'));
+	content.querySelector('#loadModegg').addEventListener('click', () => handleLoadSample('modegg'));
 	content
 		.querySelector('#loadCaliforniaGothic')
 		.addEventListener('click', () => handleLoadSample('californiaGothic'));
@@ -79,9 +75,7 @@ export function makePage_OpenProject() {
 		.addEventListener('click', () => handleLoadSample('merriweatherSans'));
 
 	// Starting a project
-	content
-		.querySelector('#openProjectCreateNewProject')
-		.addEventListener('click', handleNewProject);
+	content.querySelector('#openProjectCreateNewProject').addEventListener('click', handleNewProject);
 
 	// log(`makePage_OpenProject`, 'end');
 	return content;
@@ -147,12 +141,12 @@ function changeTab(tab) {
 	const contentNew = document.getElementById('openProjectNewContent');
 	const contentLoad = document.getElementById('openProjectLoadContent');
 	const contentExamples = document.getElementById('openProjectExampleProjects');
-	// var contentRecent = document.getElementById('recent_content');
+	// let contentRecent = document.getElementById('recent_content');
 
 	const tabNew = document.getElementById('newTab');
 	const tabLoad = document.getElementById('loadTab');
 	const tabExamples = document.getElementById('examplesTab');
-	// var tabRecent = document.getElementById('recent_tab');
+	// let tabRecent = document.getElementById('recent_tab');
 
 	contentNew.style.display = 'none';
 	contentLoad.style.display = 'none';

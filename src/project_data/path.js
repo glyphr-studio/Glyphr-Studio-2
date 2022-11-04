@@ -860,7 +860,7 @@ export class Path extends GlyphElement {
 
 		// log('validated as ' + num);
 		const pp1 = this.pathPoints[num];
-		// var pp2 = this.pathPoints[(num+1)%this.pathPoints.length];
+		// let pp2 = this.pathPoints[(num+1)%this.pathPoints.length];
 		const pp2 = this.pathPoints[this.getNextPointNum(num)];
 
 		const re = new Segment({
@@ -1074,7 +1074,7 @@ export class Path extends GlyphElement {
 	insertPathPoint(pointNumber = 0, t = 0.5) {
 		const pp1i = pointNumber;
 		const pp1 = pp1i === false ? this.pathPoints[0] : this.pathPoints[pp1i];
-		// var pp2i = (pp1i+1)%this.pathPoints.length;
+		// let pp2i = (pp1i+1)%this.pathPoints.length;
 		const pp2i = this.getNextPointNum(pp1i);
 		const pp2 = this.pathPoints[pp2i];
 		let nP;

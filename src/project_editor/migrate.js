@@ -36,9 +36,9 @@ export function migrateGlyphrStudioProject(project = {}) {
 	if (project.projectSettings && project.projectSettings.version) {
 		// Glyphr Studio V2
 		semanticVersion = project.projectSettings.version;
-	} else if (project.projectsettings && project.projectsettings.versionnum) {
+	} else if (project.projectSettings && project.projectSettings.versionnum) {
 		// Glyphr Studio V1
-		semanticVersion = project.projectsettings.versionnum;
+		semanticVersion = project.projectSettings.versionnum;
 	} else {
 		return noVersionFound;
 	}
@@ -73,9 +73,9 @@ export function migrateGlyphrStudioProject(project = {}) {
 	// Roll upgrades through v1 then to V2
 	if (semanticVersion.major === 1) {
 		if (semanticVersion.minor < 10) {
-			project.projectsettings.glyphrange.latinSupplement =
-				project.projectsettings.glyphrange.latinsuppliment;
-			delete project.projectsettings.glyphrange.latinsuppliment;
+			project.projectSettings.glyphrange.latinSupplement =
+				project.projectSettings.glyphrange.latinsuppliment;
+			delete project.projectSettings.glyphrange.latinsuppliment;
 		}
 		semanticVersion.major = 1;
 		semanticVersion.minor = 99;

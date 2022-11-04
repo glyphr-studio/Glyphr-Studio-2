@@ -366,7 +366,7 @@ function findAndMergeLigatures(glyphCollection) {
 
 	let ligatureCharacters, carrot;
 	for (let c = 0; c < glyphCollection.length; c++) {
-		// for(var g=ligatures.length-1; g>-1; g--){
+		// for(let g=ligatures.length-1; g>-1; g--){
 		for (let g = 0; g < ligatures.length; g++) {
 			ligatureCharacters = hexToChars(ligatures[g].id);
 			// log('checking ' + ligatureCharacters);

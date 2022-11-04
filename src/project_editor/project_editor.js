@@ -397,7 +397,7 @@ export class ProjectEditor {
 	 */
 	set view(oa) {
 		// log(`ProjectEditor SET view`, 'start');
-		var wid = this.selectedItemID;
+		let wid = this.selectedItemID;
 
 		// Ensure there are at least defaults
 		if (!this._views[wid]) {
@@ -434,8 +434,8 @@ export class ProjectEditor {
 	get view() {
 		// log(`ProjectEditor GET view`, 'start');
 
-		var id = this.selectedItemID;
-		var re = false;
+		let id = this.selectedItemID;
+		let re = false;
 
 		if (this._views[id]) {
 			re = this._views[id];

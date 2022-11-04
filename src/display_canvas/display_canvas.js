@@ -139,6 +139,25 @@ export class DisplayCanvas extends HTMLElement {
 		log(sg);
 		drawGlyph(sg, this.ctx, view);
 		log('DisplayCanvas.redraw', 'end');
+
+		/*
+			_UI.redrawing = true;
+	let td = this.settings;
+
+	if (_UI.current_panel === 'npAttributes') changeFontScale(td.fontsize);
+	document.getElementById('livePreviewTextArea').value = td.sampleText;
+
+	td.glyphSequence.setString(td.sampleText);
+	td.ctx.clearRect(0, 0, 10000, 10000);
+
+	let lastChar = td.glyphSequence.getLastChar();
+	let tdHeight = Math.max(580, lastChar.view ? lastChar.view.dy * lastChar.view.dz : 0);
+	td.canvas.height = tdHeight + 20;
+
+	td.glyphSequence.draw();
+
+	_UI.redrawing = false;
+	*/
 	}
 }
 
@@ -165,4 +184,43 @@ canvas {
 	`;
 
 	return cssElement;
+}
+
+function changeFontScale(newValue) {
+	let td = this.settings;
+
+	td.fontsize = newValue * 1;
+	td.fontScale = newValue / _GP.projectSettings.upm;
+	td.glyphSequence.setScale(td.fontScale);
+	td.glyphSequence.setMaxes({
+		xMin: 10,
+		xMax: 790,
+		yMin: 10 + _GP.projectSettings.ascent * td.fontScale,
+		yMax: false,
+	});
+	document.getElementById('roughPointSize').value = newValue * 0.75;
+	document.getElementById('livePreviewTextArea').style.fontSize = newValue * 0.75 + 'pt';
+}
+
+function changeLineGap(newValue) {
+	let td = this.settings;
+
+	td.lineGap = newValue * 1;
+	td.glyphSequence.setLineGap(td.lineGap);
+}
+
+function createImage() {
+	let imageData = this.canvas.toDataURL();
+
+	let win = window.open(document.location.href, 'Glyphr Test Drive');
+
+	win.document.write(
+		'<!DOCTYPE html><html>' +
+			'<head><title>Glyphr - Test Drive Image</title></head>' +
+			'<body style="padding:40px; text-align:center;">' +
+			'<img src="' +
+			imageData +
+			'" title="Glyphr Test Drive" style="border:1px solid #f6f6f6;">' +
+			'</html>'
+	);
 }

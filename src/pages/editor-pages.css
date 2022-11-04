@@ -63,7 +63,7 @@
 }
 
 .editor-page__edit-canvas-wrapper,
-.content-page__preview-canvas-wrapper {
+.live-preview-page__canvas-wrapper {
 	border: 1px solid var(--blue-l85);
 	background-color: var(--offWhite);
 	grid-column: 3;
@@ -75,6 +75,6 @@
 	box-shadow: var(--l3-shadow);
 }
 
-.content-page__preview-canvas-wrapper {
+.live-preview-page__canvas-wrapper {
 	grid-column: 2;
 }

@@ -389,7 +389,7 @@ export function findAndUnderlineHotspot(cx, cy) {
 	// log(`${hs}`);
 	if (hs) {
 		const t = getCurrentProject().projectSettings.colors.systemGuideTransparency;
-		// var t2 = (((100 - t) / 2) + t);
+		// let t2 = (((100 - t) / 2) + t);
 		const alpha = transparencyToAlpha(t);
 		const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);
 
