@@ -179,20 +179,20 @@ function generateNotdefGlyph() {
 	// log(`generateNotdefGlyph`, 'start');
 	const capHeight = getCurrentProject().projectSettings.capHeight;
 	const notDefGlyphPaths =
-		'[{"objtype":"path","name":"Outer Phi Rectangle","path":{"objtype":"path","pathPoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":-4,"maxes":{"xmax":432,"xmin":0,"ymax":700,"ymin":0}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false},{"objtype":"path","name":"Inner Phi Rectangle","path":{"objtype":"path","pathPoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":4,"maxes":{"xmax":382,"xmin":50,"ymax":650,"ymin":50}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false}]';
+		'[{"objtype":"path","name":"Outer Phi Rectangle","path":{"objtype":"path","pathPoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":-4,"maxes":{"xMax":432,"xMin":0,"yMax":700,"yMin":0}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false},{"objtype":"path","name":"Inner Phi Rectangle","path":{"objtype":"path","pathPoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":4,"maxes":{"xMax":382,"xMin":50,"yMax":650,"yMin":50}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false}]';
 
-	var notdef = new Glyph({
+	let notdef = new Glyph({
 		name: 'notdef',
 		paths: JSON.parse(notDefGlyphPaths),
 	});
 	// log(`capHeight ${capHeight}`);
-	// log(`notdef.maxes.ymax ${notdef.maxes.ymax}`);
+	// log(`notdef.maxes.yMax ${notdef.maxes.yMax}`);
 
 	if (capHeight !== 700) {
-		var delta = capHeight - 700;
+		let delta = capHeight - 700;
 		// log(`delta is ${delta}`);
 		notdef.updateGlyphSize(false, delta, true);
-		// log(`notdef.maxes.height ${notdef.maxes.ymax}`);
+		// log(`notdef.maxes.height ${notdef.maxes.yMax}`);
 	}
 
 	// log(`generateNotdefGlyph`, 'end');

@@ -78,7 +78,7 @@ export function handleKeyPress(event) {
 
 	// Only allow the following stuff for canvas edit pages
 	if (!editor.nav.isOnEditCanvasPage) return;
-	var editMode = getEditMode();
+	let editMode = getEditMode();
 	// log(`editMode: ${editMode}`);
 
 	// Ctrl
