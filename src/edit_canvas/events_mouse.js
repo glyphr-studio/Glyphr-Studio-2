@@ -339,10 +339,10 @@ export function hotspotNavigateToGlyph(gid) {
 
 	const editor = getCurrentProjectEditor();
 	const v = editor.view;
-	const currchar = getSelectedItemChar();
+	const currentChar = getSelectedItemChar();
 	const newchar = hexToChars(gid);
 	const ctxg = getContextGlyphString();
-	const p1 = ctxg.indexOf(currchar);
+	const p1 = ctxg.indexOf(currentChar);
 	const p2 = ctxg.indexOf(newchar);
 	let flipper;
 	let leftchar;
@@ -350,12 +350,12 @@ export function hotspotNavigateToGlyph(gid) {
 
 	if (p1 < p2) {
 		flipper = 1;
-		leftchar = currchar;
+		leftchar = currentChar;
 		rightchar = newchar;
 	} else {
 		flipper = -1;
 		leftchar = newchar;
-		rightchar = currchar;
+		rightchar = currentChar;
 	}
 
 	const str = ctxg.substring(p1, p2);

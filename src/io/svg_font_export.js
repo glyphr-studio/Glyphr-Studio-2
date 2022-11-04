@@ -241,11 +241,11 @@ function ioSVG_makeAllKernPairs() {
 	let con = '\t\t\t<!-- Kern Pairs -->\n';
 
 	for (const k of Object.keys(kp)) {
-		for (let lg = 0; lg < kp[k].leftgroup.length; lg++) {
-			for (let rg = 0; rg < kp[k].rightgroup.length; rg++) {
+		for (let lg = 0; lg < kp[k].leftGroup.length; lg++) {
+			for (let rg = 0; rg < kp[k].rightGroup.length; rg++) {
 				con += '\t\t\t<hkern ';
-				con += 'u1="' + hexToUnicodeHex(kp[k].leftgroup[lg]) + '" ';
-				con += 'u2="' + hexToUnicodeHex(kp[k].rightgroup[rg]) + '" ';
+				con += 'u1="' + hexToUnicodeHex(kp[k].leftGroup[lg]) + '" ';
+				con += 'u2="' + hexToUnicodeHex(kp[k].rightGroup[rg]) + '" ';
 				con += 'k="' + kp[k].value + '" />\n';
 			}
 		}
