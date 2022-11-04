@@ -53,13 +53,13 @@ function makeOneKernPairRow(k, id) {
 		'<td><input class="rowleftgroup" type="text" onchange="updateKernGroup(\'' +
 		id +
 		"', 'left', this.value);\" value=\"" +
-		hexToChars(k.leftgroup.join('')) +
+		hexToChars(k.leftGroup.join('')) +
 		'"></td>';
 	re +=
 		'<td><input class="rowrightgroup" type="text" onchange="updateKernGroup(\'' +
 		id +
 		"', 'right', this.value);\" value=\"" +
-		hexToChars(k.rightgroup.join('')) +
+		hexToChars(k.rightGroup.join('')) +
 		'"></td>';
 	re +=
 		'<td><input class="kernvalue" type="number" id="' +
@@ -85,8 +85,8 @@ function addCommonKernPairs() {
 	for (let k = 0; k < add.length; k += 2) {
 		nid = generateNewID(getCurrentProject().kerning);
 		getCurrentProject().kerning[nid] = new HKern({
-			leftgroup: parseKernGroupInput(add[k]),
-			rightgroup: parseKernGroupInput(add[k + 1]),
+			leftGroup: parseKernGroupInput(add[k]),
+			rightGroup: parseKernGroupInput(add[k + 1]),
 		});
 	}
 
@@ -104,8 +104,8 @@ function updateKernValue(id, val) {
 
 function updateKernGroup(id, side, val) {
 	let k = getCurrentProject().kerning[id];
-	if (side === 'left') k.leftgroup = parseKernGroupInput(val);
-	else if (side === 'right') k.rightgroup = parseKernGroupInput(val);
+	if (side === 'left') k.leftGroup = parseKernGroupInput(val);
+	else if (side === 'right') k.rightGroup = parseKernGroupInput(val);
 	selectKern(id);
 	editor.history.addState('Updated Members: ' + k.getName());
 }
@@ -127,8 +127,8 @@ function showNewKernPairDialog() {
 		'Hexadecimal, Unicode, and regular glyph formats cannot be mixed - choose one type!<br><br>';
 	con += '<h3>Kern Pair Glyphs</h3>';
 	con +=
-		'<input type="text" id="leftgroup" style="font-size:24px; width:45%; padding:8px; text-align:right;"/>';
-	con += '<input type="text" id="rightgroup" style="font-size:24px; width:45%; padding:8px;"/><br>';
+		'<input type="text" id="leftGroup" style="font-size:24px; width:45%; padding:8px; text-align:right;"/>';
+	con += '<input type="text" id="rightGroup" style="font-size:24px; width:45%; padding:8px;"/><br>';
 	con += makeErrorMessageBox();
 	con += '<br>';
 	con +=
@@ -139,8 +139,8 @@ function showNewKernPairDialog() {
 }
 
 function createNewKernPair() {
-	let l = parseKernGroupInput(document.getElementById('leftgroup').value);
-	let r = parseKernGroupInput(document.getElementById('rightgroup').value);
+	let l = parseKernGroupInput(document.getElementById('leftGroup').value);
+	let r = parseKernGroupInput(document.getElementById('rightGroup').value);
 
 	if (!l || !l.length) showErrorMessageBox('The left kern group cannot be empty.');
 	else if (!r || !r.length) showErrorMessageBox('The right kern group cannot be empty.');
@@ -148,8 +148,8 @@ function createNewKernPair() {
 		let id = generateNewID(getCurrentProject().kerning, 'kern');
 
 		getCurrentProject().kerning[id] = new HKern({
-			leftgroup: l,
-			rightgroup: r,
+			leftGroup: l,
+			rightGroup: r,
 		});
 
 		closeDialog();

@@ -47,10 +47,10 @@ export function generateNewID(obj, base) {
  * @returns String of emojis
  */
 export function makeRandomID() {
-	let glyphs = ['💖', '🦧','🐆','✅','🐋','😈','🦑'];
+	let glyphs = ['💖', '🦧', '🐆', '✅', '🐋', '😈', '🦑'];
 	let result = '';
 	for (let i = 0; i < 4; i++) {
-		result += glyphs[(Math.floor(Math.random() * glyphs.length))];
+		result += glyphs[Math.floor(Math.random() * glyphs.length)];
 	}
 
 	return result;

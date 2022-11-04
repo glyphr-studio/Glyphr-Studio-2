@@ -209,8 +209,8 @@ function ioSVG_importSVGFont(filter) {
 	 *
 	 */
 	let tk;
-	let leftgroup;
-	let rightgroup;
+	let leftGroup;
+	let rightGroup;
 	let newid;
 	const fk = {};
 
@@ -225,50 +225,50 @@ function ioSVG_importSVGFont(filter) {
 		importStatus('Importing Kern Pair ' + k + ' of ' + kerns.length);
 
 		// log('Kern Import - START ' + k + '/' + kerns.length);
-		leftgroup = [];
-		rightgroup = [];
+		leftGroup = [];
+		rightGroup = [];
 		tk = kerns[k];
 		// log('Kern Attributes: ' + json(tk.attributes, true));
 
 		// Get members by name
-		leftgroup = getKernMembersByName(
+		leftGroup = getKernMembersByName(
 			tk.attributes.g1,
 			chars,
-			leftgroup,
+			leftGroup,
 			_UI.glyphRange.latinExtendedB.end
 		);
-		rightgroup = getKernMembersByName(
+		rightGroup = getKernMembersByName(
 			tk.attributes.g2,
 			chars,
-			rightgroup,
+			rightGroup,
 			_UI.glyphRange.latinExtendedB.end
 		);
 
-		// log('kern groups by name ' + json(leftgroup, true) + ' ' + json(rightgroup, true));
+		// log('kern groups by name ' + json(leftGroup, true) + ' ' + json(rightGroup, true));
 
 		// Get members by Unicode
-		leftgroup = getKernMembersByUnicodeID(
+		leftGroup = getKernMembersByUnicodeID(
 			tk.attributes.u1,
 			chars,
-			leftgroup,
+			leftGroup,
 			_UI.glyphRange.latinExtendedB.end
 		);
-		rightgroup = getKernMembersByUnicodeID(
+		rightGroup = getKernMembersByUnicodeID(
 			tk.attributes.u2,
 			chars,
-			rightgroup,
+			rightGroup,
 			_UI.glyphRange.latinExtendedB.end
 		);
 
-		// log('kern groups parsed as ' + json(leftgroup, true) + ' ' + json(rightgroup, true));
+		// log('kern groups parsed as ' + json(leftGroup, true) + ' ' + json(rightGroup, true));
 
-		if (leftgroup.length && rightgroup.length) {
+		if (leftGroup.length && rightGroup.length) {
 			newid = generateNewID(fk, 'kern');
 			kernval = tk.attributes.k || 0;
 			// log('Making a kern pair with k = ' + kernval);
 			fk[newid] = new HKern({
-				leftgroup: leftgroup,
-				rightgroup: rightgroup,
+				leftGroup: leftGroup,
+				rightGroup: rightGroup,
 				value: kernval,
 			});
 			// log('Made the new kern successfully.');
