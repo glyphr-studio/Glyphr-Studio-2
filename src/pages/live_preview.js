@@ -33,7 +33,7 @@ export function makePage_LivePreview() {
 	// log(editor.nav);
 	// log(editor.selectedGlyph);
 
-	let previewString = 'A Pack my box with five dozen liquor jugs!';
+	let previewString = 'ABC';
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
@@ -53,26 +53,26 @@ export function makePage_LivePreview() {
 	});
 
 	let lp = livePreviewData;
-	lp.canvas = content.querySelector('#live-preview-page__canvas');
-	lp.canvas.width = 800;
-	lp.canvas.height = 600;
-	lp.ctx = lp.canvas.getContext('2d');
+	// lp.canvas = content.querySelector('#live-preview-page__canvas');
+	// lp.canvas.width = 800;
+	// lp.canvas.height = 600;
+	// lp.ctx = lp.canvas.getContext('2d');
 
-	lp.glyphSequence = new GlyphSequence({
-		glyphString: lp.sampleText,
-		lineGap: lp.lineGap,
-		maxes: {
-			xMin: 10,
-			xMax: 790,
-			yMin: 10 + _GP.projectSettings.ascent * lp.fontScale,
-			yMax: false,
-		},
-		scale: lp.fontScale,
-		drawPageExtras: draw_LivePreviewPageExtras,
-		drawLineExtras: draw_LivePreviewLineExtras,
-		drawGlyphExtras: draw_LivePreviewGlyphExtras,
-		drawGlyph: draw_LivePreviewGlyph,
-	});
+	// lp.glyphSequence = new GlyphSequence({
+	// 	glyphString: lp.sampleText,
+	// 	lineGap: lp.lineGap,
+	// 	maxes: {
+	// 		xMin: 10,
+	// 		xMax: 790,
+	// 		yMin: 10 + _GP.projectSettings.ascent * lp.fontScale,
+	// 		yMax: false,
+	// 	},
+	// 	scale: lp.fontScale,
+	// 	drawPageExtras: draw_LivePreviewPageExtras,
+	// 	drawLineExtras: draw_LivePreviewLineExtras,
+	// 	drawGlyphExtras: draw_LivePreviewGlyphExtras,
+	// 	drawGlyph: draw_LivePreviewGlyph,
+	// });
 
 	lp.cache = {};
 
@@ -122,108 +122,6 @@ function makePanel_TestDriveAttributes() {
 	content += '</td></tr></table></div>';
 
 	return content;
-}
-
-function draw_LivePreviewPageExtras(maxes, scale) {
-	// debug('\n draw_LivePreviewPageExtras - START');
-	let tdc = livePreviewData.canvas;
-
-	// let top = (maxes.yMin - (_GP.projectSettings.ascent * scale)) || 0;
-	let top = maxes.yMin || 0;
-	let bottom = maxes.yMax === Infinity ? tdc.height : maxes.yMax || tdc.height;
-	let left = maxes.xMin || 0;
-	let right = maxes.xMax === Infinity ? tdc.width : maxes.xMax || tdc.width;
-	let width = right - left;
-	let height = bottom - top;
-	let ctx = livePreviewData.ctx;
-
-	// debug(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
-
-	if (livePreviewData.showPageExtras) {
-		ctx.fillStyle = 'transparent';
-		ctx.strokeStyle = _UI.colors.green.l85;
-		ctx.lineWidth = 1;
-
-		ctx.strokeRect(left.makeCrisp(), top.makeCrisp(), round(width), round(height));
-	}
-
-	// debug(' draw_LivePreviewPageExtras - END\n');
-}
-
-function draw_LivePreviewLineExtras(charData) {
-	// debug('\n draw_LivePreviewLineExtras - START');
-	// debug('\t at ' + (charData.view.dy * charData.view.dz));
-	if (livePreviewData.showLineExtras) {
-		drawHorizontalLine(
-			charData.view.dy * charData.view.dz,
-			livePreviewData.ctx,
-			_UI.colors.green.l85
-		);
-	}
-	// debug(' draw_LivePreviewLineExtras - END\n');
-}
-
-function draw_LivePreviewGlyphExtras(charData) {
-	// debug('\n draw_LivePreviewGlyphExtras - START');
-	if (livePreviewData.showGlyphExtras) {
-		let ctx = livePreviewData.ctx;
-		let drawWidth = charData.width * charData.view.dz;
-		let drawHeight = _GP.projectSettings.upm * charData.view.dz;
-		let drawY = (charData.view.dy - _GP.projectSettings.ascent) * charData.view.dz;
-		let drawW = charData.view.dx * charData.view.dz;
-		let drawK = charData.kern * charData.view.dz * -1;
-
-		// debug(`\t drawing ${charData.char}`);
-		// debug(`\t scaled view \t ${json(scaledView, true)}`);
-
-		if (charData.kern) {
-			ctx.fillStyle = 'orange';
-			ctx.globalAlpha = 0.3;
-			ctx.fillRect(drawW + drawWidth - drawK, drawY, drawK, drawHeight);
-			ctx.globalAlpha = 1;
-		}
-
-		ctx.fillStyle = 'transparent';
-		ctx.strokeStyle = _UI.colors.blue.l85;
-		ctx.lineWidth = 1;
-
-		ctx.strokeRect(drawW.makeCrisp(), drawY.makeCrisp(), round(drawWidth), round(drawHeight));
-	}
-
-	// debug(' draw_LivePreviewGlyphExtras - END\n');
-}
-
-function draw_LivePreviewGlyph(charData) {
-	// debug('\n draw_LivePreviewGlyph - START');
-
-	let td = livePreviewData;
-	let glyph = charData.glyph;
-	let flattenGlyphs = td.flattenGlyphs || false;
-	let ctx = livePreviewData.ctx;
-	let view = clone(charData.view, 'draw_LivePreviewGlyph');
-	view.dx *= view.dz;
-	view.dy *= view.dz;
-
-	// debug(`\t drawing ${charData.char}`);
-	// debug(`\t view \t ${json(view, true)}`);
-
-	setTimeout(function () {
-		if (glyph) {
-			if (flattenGlyphs) {
-				if (!livePreviewData.cache.hasOwnProperty(charData.char)) {
-					livePreviewData.cache[charData.char] = new Glyph(
-						clone(glyph, 'draw_LivePreviewGlyph')
-					).combineAllShapes(true);
-				}
-
-				livePreviewData.cache[charData.char].drawGlyph(ctx, view, 1, true);
-			} else {
-				glyph.drawGlyph(ctx, view, 1, true);
-			}
-		}
-	}, 10);
-
-	// debug(' draw_LivePreviewGlyph - END\n');
 }
 
 function drawSampleTextButtons() {

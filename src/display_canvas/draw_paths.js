@@ -1,6 +1,6 @@
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
-import { round } from '../common/functions.js';
+import { json, round } from '../common/functions.js';
 import { getCurrentProject } from '../app/main.js';
 
 // --------------------------------------------------------------
@@ -17,9 +17,10 @@ import { getCurrentProject } from '../app/main.js';
  * @returns {number} - Advance Width, according to view.z
  */
 export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fill = '#000') {
-	// log('drawGlyph', 'start');
-	// log(glyph.name);
-	// log('view ' + json(view, true));
+	log('drawGlyph', 'start');
+	log(glyph.name);
+	log('view ' + json(view, true));
+	log(ctx);
 	if (!glyph.paths) {
 		console.warn(`Glyph ${glyph.name} has no paths to draw`);
 		return false;
@@ -52,8 +53,8 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 	ctx.fill('nonzero');
 	ctx.globalAlpha = 1;
 
-	// log(glyph.name);
-	// log('drawGlyph', 'end');
+	log(glyph.name);
+	log('drawGlyph', 'end');
 
 	return glyph.advanceWidth * view.dz;
 }
