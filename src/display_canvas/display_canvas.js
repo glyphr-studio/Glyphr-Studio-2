@@ -1,9 +1,11 @@
 import { makeElement } from '../common/dom.js';
+import { GlyphSequence } from './glyph_sequence.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { accentColors } from '../common/colors.js';
+import { accentColors, uiColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { drawGlyph } from './draw_paths.js';
 import { linkCSS } from '../controls/controls.js';
+import { clone } from '../common/functions.js';
 
 /**
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
@@ -15,20 +17,24 @@ export class DisplayCanvas extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		// log(`DisplayCanvas.constructor`, 'start');
+		log(`DisplayCanvas.constructor`, 'start');
 
 		super();
 
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
-		this.canvas = makeElement({ tag: 'canvas' });
-		this.ctx = this.canvas.getContext('2d');
+		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 
 		this.glyphs = this.getAttribute('glyphs') || '';
 		this.width = this.getAttribute('width') || 1000;
 		this.height = this.getAttribute('height') || 1100;
+		this.gutterSize = 20;
 		this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
+
+		this.showPageExtras = false;
+		this.showLineExtras = false;
+		this.showGlyphExtras = false;
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
@@ -36,12 +42,51 @@ export class DisplayCanvas extends HTMLElement {
 		shadow.appendChild(makeCSS());
 
 		shadow.appendChild(this.canvas);
-
+		this.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
+		log(`THIS CONTEXT`);
+		log(this.ctx);
 		this.canvas.height = this.height;
 		this.canvas.width = this.width;
 
+		this.glyphSequence = new GlyphSequence({
+			glyphString: this.glyphs,
+			maxes: this.calculatePageMaxes(),
+		});
+
 		// this.redraw();
-		// log(`DisplayCanvas.constructor`, 'end');
+		log(`DisplayCanvas.constructor`, 'end');
+	}
+
+	calculateView() {
+		let settings = getCurrentProject().projectSettings;
+		let contentWidth = this.width - 2 * this.gutterSize;
+		let contentHeight = this.height - 2 * this.gutterSize;
+		let upm = settings.upm;
+		let ascent = settings.ascent;
+		let zoom = Math.min(contentWidth, contentHeight) / upm;
+
+		let view = {
+			dx: this.gutterSize,
+			dy: this.gutterSize + zoom * ascent,
+			dz: zoom,
+		};
+
+		return view;
+	}
+
+	calculatePageMaxes() {
+		let contentWidth = this.width - 2 * this.gutterSize;
+		let contentHeight = this.height - 2 * this.gutterSize;
+		let settings = getCurrentProject().projectSettings;
+
+		let maxes = {
+			xMin: this.gutterSize,
+			xMax: this.gutterSize + contentWidth,
+			yMin: this.gutterSize + settings.ascent,
+			yMax: this.gutterSize + contentHeight,
+		};
+
+		return maxes;
 	}
 
 	/**
@@ -111,53 +156,158 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	redraw() {
 		log('DisplayCanvas.redraw', 'start');
-		const editor = getCurrentProjectEditor();
-		let glyph = editor.selectedGlyph;
-		let settings = getCurrentProject().projectSettings;
-		let gutterSize = 20;
-		let contentWidth = this.width - 2 * gutterSize;
-		let contentHeight = this.height - 2 * gutterSize;
-		let upm = settings.upm;
-		let ascent = settings.ascent;
-		let zoom = Math.min(contentWidth, contentHeight) / upm;
-		let advanceWidth = glyph.advanceWidth;
-
-		let view = {
-			dx: gutterSize + (contentWidth - zoom * advanceWidth) / 2,
-			dy: gutterSize + zoom * ascent,
-			dz: zoom,
-		};
+		log(`THIS CONTEXT`);
+		log(this.ctx);
 
 		this.ctx.clearRect(0, 0, this.width, this.height);
-		this.ctx.fillStyle = accentColors.gray.l95;
-		this.ctx.fillRect(view.dx, 0, 1, 1000);
-		this.ctx.fillRect(0, view.dy, 1000, 1);
 
-		let glyphHex = glyphToHex(this.glyphs.charAt(0));
+		// let glyphHex = glyphToHex(this.glyphs.charAt(0));
+		// let sg = getCurrentProject().getGlyph(glyphHex);
+		// log(sg);
+		// // drawGlyph(sg, this.ctx, view);
 
-		let sg = getCurrentProject().getGlyph(glyphHex);
-		log(sg);
-		drawGlyph(sg, this.ctx, view);
+		if (this.showPageExtras) {
+			// log(`DRAW PAGE EXTRAS`);
+			this.drawPageExtras(this.maxes, this.scale);
+		}
+
+		if (this.glyphString === '') return;
+
+		let currentLine = -1;
+		if (this.showLineExtras) {
+			// log('DRAW LINE EXTRAS');
+			this.iterator((char) => {
+				if (char.lineNumber !== currentLine) {
+					this.drawLineExtras(char);
+					currentLine = char.lineNumber;
+				}
+			});
+		}
+
+		if (this.showGlyphExtras) {
+			// log('DRAW GLYPH EXTRAS');
+			this.iterator((char) => {
+				if (char.isVisible) this.drawGlyphExtras(char);
+			});
+		}
+
+		// log('DRAW GLYPHS');
+		this.iterator((char) => {
+			if (char.isVisible) this.drawGlyph(char);
+		});
+
 		log('DisplayCanvas.redraw', 'end');
+	}
 
-		/*
-			_UI.redrawing = true;
-	let td = this.settings;
+	iterator(drawFunction) {
+		let data = this.glyphSequence.data;
+		for (let block = 0; block < data.length; block++) {
+			for (let glyph = 0; glyph < data[block].length; glyph++) {
+				drawFunction(data[block][glyph], this);
+			}
+		}
+	}
 
-	if (_UI.current_panel === 'npAttributes') changeFontScale(td.fontsize);
-	document.getElementById('livePreviewTextArea').value = td.sampleText;
+	// --------------------------------------------------------------
+	// Draw functions for individual pieces
+	// --------------------------------------------------------------
 
-	td.glyphSequence.setString(td.sampleText);
-	td.ctx.clearRect(0, 0, 10000, 10000);
+	drawPageExtras(maxes, scale) {
+		// log(`displayCanvas.drawPageExtras`, 'start');
+		let tdc = livePreviewData.canvas;
 
-	let lastChar = td.glyphSequence.getLastChar();
-	let tdHeight = Math.max(580, lastChar.view ? lastChar.view.dy * lastChar.view.dz : 0);
-	td.canvas.height = tdHeight + 20;
+		// let top = (maxes.yMin - (_GP.projectSettings.ascent * scale)) || 0;
+		let top = maxes.yMin || 0;
+		let bottom = maxes.yMax === Infinity ? tdc.height : maxes.yMax || tdc.height;
+		let left = maxes.xMin || 0;
+		let right = maxes.xMax === Infinity ? tdc.width : maxes.xMax || tdc.width;
+		let width = right - left;
+		let height = bottom - top;
 
-	td.glyphSequence.draw();
+		// debug(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
 
-	_UI.redrawing = false;
-	*/
+		this.ctx.fillStyle = 'transparent';
+		this.ctx.strokeStyle = _UI.colors.green.l85;
+		this.ctx.lineWidth = 1;
+
+		this.ctx.strokeRect(left.makeCrisp(), top.makeCrisp(), round(width), round(height));
+
+		// log(`displayCanvas.drawPageExtras`, 'end');
+	}
+
+	drawLineExtras(charData) {
+		// log(`displayCanvas.drawLineExtras`, 'start');
+		// log(`\t at ' + (charData.view.dy * charData.view.dz));
+		drawHorizontalLine(
+			charData.view.dy * charData.view.dz,
+			livePreviewData.ctx,
+			_UI.colors.green.l85
+		);
+		// log(`displayCanvas.drawLineExtras`, 'end');
+	}
+
+	drawGlyphExtras(charData) {
+		// log(`displayCanvas.drawGlyphExtras`, 'start');
+		let drawWidth = charData.width * charData.view.dz;
+		let drawHeight = _GP.projectSettings.upm * charData.view.dz;
+		let drawY = (charData.view.dy - _GP.projectSettings.ascent) * charData.view.dz;
+		let drawW = charData.view.dx * charData.view.dz;
+		let drawK = charData.kern * charData.view.dz * -1;
+
+		// debug(`\t drawing ${charData.char}`);
+		// debug(`\t scaled view \t ${json(scaledView, true)}`);
+
+		if (charData.kern) {
+			this.ctx.fillStyle = 'orange';
+			this.ctx.globalAlpha = 0.3;
+			this.ctx.fillRect(drawW + drawWidth - drawK, drawY, drawK, drawHeight);
+			this.ctx.globalAlpha = 1;
+		}
+
+		this.ctx.fillStyle = 'transparent';
+		this.ctx.strokeStyle = _UI.colors.blue.l85;
+		this.ctx.lineWidth = 1;
+
+		this.ctx.strokeRect(drawW.makeCrisp(), drawY.makeCrisp(), round(drawWidth), round(drawHeight));
+
+		// log(`displayCanvas.drawGlyphExtras`, 'end');
+	}
+
+	drawGlyph(charData) {
+		log(`displayCanvas.drawGlyph`, 'start');
+		log(charData);
+		log(`THIS CONTEXT`);
+		log(this.ctx);
+		let glyph = charData.glyph;
+		// TODO flattenGlyphs
+		// let flattenGlyphs = td.flattenGlyphs || false;
+		let flattenGlyphs = false;
+		let view = clone(charData.view, 'displayCanvas.drawGlyph');
+		view.dx *= view.dz;
+		view.dy *= view.dz;
+
+		// debug(`\t drawing ${charData.char}`);
+		// debug(`\t view \t ${json(view, true)}`);
+
+		// setTimeout(function () {
+		if (glyph) {
+			this.ctx.fillStyle = uiColors.enabled.resting.text;
+			this.ctx.strokeStyle = 'transparent';
+			if (flattenGlyphs) {
+				if (!livePreviewData.cache.hasOwnProperty(charData.char)) {
+					livePreviewData.cache[charData.char] = new Glyph(
+						clone(glyph, 'displayCanvas.drawGlyph')
+					).combineAllShapes(true);
+				}
+
+				livePreviewData.cache[charData.char].drawGlyph(this.ctx, view, 1, true);
+			} else {
+				drawGlyph(glyph, this.ctx, view, 1, true);
+			}
+		}
+		// }, 10);
+
+		log(`displayCanvas.drawGlyph`, 'end');
 	}
 }
 

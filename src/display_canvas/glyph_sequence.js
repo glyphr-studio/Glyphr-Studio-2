@@ -1,9 +1,16 @@
+import { getCurrentProject } from '../app/main.js';
+import { clone, round } from '../common/functions.js';
+import { charsToHexArray, parseUnicodeInput } from '../common/unicode';
+
 /**
 	Glyph Sequence
 	Drawing multiple lines of text.
+	Draw functions are passed in, so this can be used on different types of
+	canvases (Glyph Edit, Live Preview, or other).
 **/
 
-class GlyphSequence {
+
+export class GlyphSequence {
 	constructor(oa) {
 		// log('GlyphSequence', 'start');
 		oa = oa || {};
@@ -14,11 +21,6 @@ class GlyphSequence {
 		this.glyphString = oa.glyphString || '';
 		this.textBlocks = this.glyphString.split('\n');
 		this.lineGap = oa.lineGap || round(getCurrentProject().projectSettings.upm / 4);
-
-		this.drawPageExtras = oa.drawPageExtras || false;
-		this.drawLineExtras = oa.drawLineExtras || false;
-		this.drawGlyphExtras = oa.drawGlyphExtras || false;
-		this.drawGlyph = oa.drawGlyph || false;
 
 		this.lineBreakers = oa.lineBreakers || ['\u0020', '\u2002', '\u2003'];
 		this.data = [];
@@ -74,7 +76,8 @@ class GlyphSequence {
 
 		let currentBlock;
 		let currentChar;
-		let tb, tg;
+		let textBlockNumber;
+		let glyphNumber;
 		let nlb, wordAggregate;
 		let currentLine = 0;
 		let checkForBreak = false;
@@ -96,36 +99,39 @@ class GlyphSequence {
 			----------------------------------------
 		*/
 		this.data = [];
+		let project = getCurrentProject();
 		let ps = getCurrentProject().projectSettings;
 
-		for (tb = 0; tb < this.textBlocks.length; tb++) {
-			currentBlock = findAndMergeLigatures(this.textBlocks[tb].split(''));
-			this.data[tb] = [];
+		for (textBlockNumber = 0; textBlockNumber < this.textBlocks.length; textBlockNumber++) {
+			// TODO Ligatures
+			// currentBlock = findAndMergeLigatures(this.textBlocks[textBlockNumber].split(''));
+			currentBlock = this.textBlocks[textBlockNumber].split('');
+			this.data[textBlockNumber] = [];
 
-			for (tg = 0; tg < currentBlock.length; tg++) {
-				thisGlyph = getGlyph(charsToHexArray(currentBlock[tg]).join(''));
+			for (glyphNumber = 0; glyphNumber < currentBlock.length; glyphNumber++) {
+				thisGlyph = project.getGlyph(charsToHexArray(currentBlock[glyphNumber]).join(''));
 				if (thisGlyph) {
 					thisWidth = thisGlyph.advanceWidth;
 				} else {
 					thisWidth = ps.upm / 2;
 				}
-				thisKern = calculateKernOffset(currentBlock[tg], currentBlock[tg + 1]);
+				thisKern = calculateKernOffset(currentBlock[glyphNumber], currentBlock[glyphNumber + 1]);
 				aggregateWidth += thisWidth + thisKern;
 
 				// Each glyph gets this data to draw it
-				this.data[tb][tg] = {
-					char: currentBlock[tg],
+				this.data[textBlockNumber][glyphNumber] = {
+					char: currentBlock[glyphNumber],
 					glyph: thisGlyph,
 					width: thisWidth,
 					kern: thisKern,
 					aggregate: aggregateWidth,
-					isLineBreaker: this.lineBreakers.indexOf(currentBlock[tg]) > -1,
+					isLineBreaker: this.lineBreakers.indexOf(currentBlock[glyphNumber]) > -1,
 					isVisible: false,
 					view: false,
 					lineNumber: false,
 				};
 
-				currentChar = this.data[tb][tg];
+				currentChar = this.data[textBlockNumber][glyphNumber];
 			}
 		}
 
@@ -138,17 +144,17 @@ class GlyphSequence {
 			----------------------------------------
 		*/
 		// log('CALCULATING DATA PER CHAR');
-		for (tb = 0; tb < this.data.length; tb++) {
-			currentBlock = this.data[tb];
-			// log(`block ${tb}`);
+		for (textBlockNumber = 0; textBlockNumber < this.data.length; textBlockNumber++) {
+			currentBlock = this.data[textBlockNumber];
+			// log(`block ${textBlockNumber}`);
 			// char data units and width units are all in glyph em (not pixel) units
-			for (tg = 0; tg < currentBlock.length; tg++) {
-				currentChar = currentBlock[tg];
-				// log(`${currentChar.char} num ${tg}`);
+			for (glyphNumber = 0; glyphNumber < currentBlock.length; glyphNumber++) {
+				currentChar = currentBlock[glyphNumber];
+				// log(`${currentChar.char} num ${glyphNumber}`);
 				if (currentChar.view === false) {
 					// pos for this currentChar hasn't been calculated
 					if (checkForBreak && this.maxwidth !== Infinity) {
-						nlb = getNextLineBreaker(currentBlock, tg);
+						nlb = getNextLineBreaker(currentBlock, glyphNumber);
 						wordAggregate = nlb.aggregate - currentChar.aggregate;
 
 						// log(`currentX - area.x + wordAggregate > area.width`);
@@ -204,56 +210,6 @@ class GlyphSequence {
 		// log('after view calc this.data');
 		// log(this.data)
 		// log('GlyphSequence.generateData', 'end');
-	}
-
-	iterator(fn) {
-		let re = '';
-		for (let tb = 0; tb < this.data.length; tb++) {
-			for (let tg = 0; tg < this.data[tb].length; tg++) {
-				re += fn(this.data[tb][tg], this);
-			}
-		}
-		return re;
-	}
-
-	draw() {
-		// log('GlyphSequence.draw', 'start');
-		// Draw Page Extras
-		if (this.drawPageExtras) {
-			this.drawPageExtras(this.maxes, this.scale);
-		}
-
-		if (this.glyphString === '') return;
-
-		// Draw Line Extras
-		let currentLine = -1;
-		// log('DRAW LINE EXTRAS');
-		if (this.drawLineExtras) {
-			this.iterator(function (char, gs) {
-				if (char.lineNumber !== currentLine) {
-					gs.drawLineExtras(char, gs);
-					currentLine = char.lineNumber;
-				}
-			});
-		}
-
-		// Draw Glyph Extras
-		// log('DRAW GLYPH EXTRAS');
-		if (this.drawGlyphExtras) {
-			this.iterator(function (char, gs) {
-				if (char.isVisible) gs.drawGlyphExtras(char);
-			});
-		}
-
-		// Draw Glyphs
-		// log('DRAW GLYPHS');
-		if (this.drawGlyph) {
-			this.iterator(function (char, gs) {
-				if (char.isVisible) gs.drawGlyph(char);
-			});
-		}
-
-		// log('GlyphSequence.draw', 'end');
 	}
 }
 
