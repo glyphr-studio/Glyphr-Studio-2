@@ -18,16 +18,14 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	constructor(attributes = {}) {
 		log(`DisplayCanvas.constructor`, 'start');
-
 		super();
-
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
-
-		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 
 		this.glyphs = this.getAttribute('glyphs') || '';
 		this.width = this.getAttribute('width') || 1000;
 		this.height = this.getAttribute('height') || 1100;
+		this.fontSize = 48;
+		this.fontScale = this.fontSize / getCurrentProject().projectSettings.upm;
 		this.gutterSize = 20;
 		this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
@@ -41,6 +39,7 @@ export class DisplayCanvas extends HTMLElement {
 		// shadow.appendChild(linkCSS('display-canvas'));
 		shadow.appendChild(makeCSS());
 
+		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(this.canvas);
 		this.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
 		log(`THIS CONTEXT`);
@@ -50,6 +49,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		this.glyphSequence = new GlyphSequence({
 			glyphString: this.glyphs,
+			scale: this.fontScale,
 			maxes: this.calculatePageMaxes(),
 		});
 
@@ -82,7 +82,7 @@ export class DisplayCanvas extends HTMLElement {
 		let maxes = {
 			xMin: this.gutterSize,
 			xMax: this.gutterSize + contentWidth,
-			yMin: this.gutterSize + settings.ascent,
+			yMin: this.gutterSize + settings.ascent * this.fontScale,
 			yMax: this.gutterSize + contentHeight,
 		};
 
@@ -282,7 +282,7 @@ export class DisplayCanvas extends HTMLElement {
 		// TODO flattenGlyphs
 		// let flattenGlyphs = td.flattenGlyphs || false;
 		let flattenGlyphs = false;
-		let view = clone(charData.view, 'displayCanvas.drawGlyph');
+		let view = clone(charData.view);
 		view.dx *= view.dz;
 		view.dy *= view.dz;
 
@@ -296,7 +296,7 @@ export class DisplayCanvas extends HTMLElement {
 			if (flattenGlyphs) {
 				if (!livePreviewData.cache.hasOwnProperty(charData.char)) {
 					livePreviewData.cache[charData.char] = new Glyph(
-						clone(glyph, 'displayCanvas.drawGlyph')
+						clone(glyph)
 					).combineAllShapes(true);
 				}
 
@@ -308,6 +308,40 @@ export class DisplayCanvas extends HTMLElement {
 		// }, 10);
 
 		log(`displayCanvas.drawGlyph`, 'end');
+	}
+
+	// --------------------------------------------------------------
+	// Update options
+	// --------------------------------------------------------------
+	updateFontSize(newValue) {
+		let settings = getCurrentProject().projectSettings;
+		this.fontSize = newValue * 1;
+		this.fontScale = newValue / settings.upm;
+		this.glyphSequence.setScale(this.fontScale);
+		this.glyphSequence.setMaxes(this.calculatePageMaxes());
+		// document.getElementById('roughPointSize').value = newValue * 0.75;
+		// document.getElementById('livePreviewTextArea').style.fontSize = newValue * 0.75 + 'pt';
+	}
+
+	updateLineGap(newValue) {
+		this.lineGap = newValue * 1;
+		this.glyphSequence.setLineGap(this.lineGap);
+	}
+
+	createImage() {
+		let imageData = this.canvas.toDataURL();
+
+		let win = window.open(document.location.href, 'Glyphr Test Drive');
+
+		win.document.write(
+			'<!DOCTYPE html><html>' +
+				'<head><title>Glyphr - Test Drive Image</title></head>' +
+				'<body style="padding:40px; text-align:center;">' +
+				'<img src="' +
+				imageData +
+				'" title="Glyphr Test Drive" style="border:1px solid #f6f6f6;">' +
+				'</html>'
+		);
 	}
 }
 
@@ -334,43 +368,4 @@ canvas {
 	`;
 
 	return cssElement;
-}
-
-function changeFontScale(newValue) {
-	let td = this.settings;
-
-	td.fontsize = newValue * 1;
-	td.fontScale = newValue / _GP.projectSettings.upm;
-	td.glyphSequence.setScale(td.fontScale);
-	td.glyphSequence.setMaxes({
-		xMin: 10,
-		xMax: 790,
-		yMin: 10 + _GP.projectSettings.ascent * td.fontScale,
-		yMax: false,
-	});
-	document.getElementById('roughPointSize').value = newValue * 0.75;
-	document.getElementById('livePreviewTextArea').style.fontSize = newValue * 0.75 + 'pt';
-}
-
-function changeLineGap(newValue) {
-	let td = this.settings;
-
-	td.lineGap = newValue * 1;
-	td.glyphSequence.setLineGap(td.lineGap);
-}
-
-function createImage() {
-	let imageData = this.canvas.toDataURL();
-
-	let win = window.open(document.location.href, 'Glyphr Test Drive');
-
-	win.document.write(
-		'<!DOCTYPE html><html>' +
-			'<head><title>Glyphr - Test Drive Image</title></head>' +
-			'<body style="padding:40px; text-align:center;">' +
-			'<img src="' +
-			imageData +
-			'" title="Glyphr Test Drive" style="border:1px solid #f6f6f6;">' +
-			'</html>'
-	);
 }
