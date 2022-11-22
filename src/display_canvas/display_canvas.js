@@ -26,13 +26,14 @@ export class DisplayCanvas extends HTMLElement {
 		this.height = this.getAttribute('height') || 500;
 		this.fontSize = 48;
 		this.pageMargin = 5;
+		this.lineGap = 12;
 		this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
 		this.glyphSequence = this.updateGlyphSequence();
 
 		this.showPageExtras = true;
-		this.showLineExtras = false;
-		this.showGlyphExtras = false;
+		this.showLineExtras = true;
+		this.showGlyphExtras = true;
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
@@ -54,6 +55,7 @@ export class DisplayCanvas extends HTMLElement {
 			glyphString: this.glyphs,
 			fontSize: this.fontSize,
 			areaMaxes: this.calculatePageMaxes(),
+			lineGap: this.lineGap,
 		});
 	}
 
@@ -232,7 +234,7 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
 
 		this.ctx.fillStyle = 'transparent';
-		this.ctx.strokeStyle = accentColors.green.l85;
+		this.ctx.strokeStyle = accentColors.gray.l90;
 		this.ctx.lineWidth = 1;
 
 		this.ctx.strokeRect(makeCrisp(left), makeCrisp(top), round(width), round(height));
@@ -242,26 +244,32 @@ export class DisplayCanvas extends HTMLElement {
 
 	drawLineExtras(charData) {
 		// log(`displayCanvas.drawLineExtras`, 'start');
-		// log(`\t at ' + (charData.view.dy * charData.view.dz));
-		drawHorizontalLine(charData.view.dy * charData.view.dz, this.ctx, accentColors.green.l85);
+		this.ctx.strokeStyle = accentColors.gray.l85;
+		this.ctx.beginPath();
+		this.ctx.moveTo(this.glyphSequence.areaMaxes.xMin, charData.view.dy + this.pageMargin);
+		this.ctx.lineTo(this.glyphSequence.areaMaxes.xMax, charData.view.dy + this.pageMargin);
+		this.ctx.closePath();
+		this.ctx.stroke();
 		// log(`displayCanvas.drawLineExtras`, 'end');
 	}
 
 	drawGlyphExtras(charData) {
 		// log(`displayCanvas.drawGlyphExtras`, 'start');
-		let drawWidth = charData.width * charData.view.dz;
-		let drawHeight = _GP.projectSettings.upm * charData.view.dz;
-		let drawY = (charData.view.dy - _GP.projectSettings.ascent) * charData.view.dz;
-		let drawW = charData.view.dx * charData.view.dz;
-		let drawK = charData.kern * charData.view.dz * -1;
+		const projectSettings = getCurrentProject().projectSettings;
+		const scale = charData.view.dz;
+		let drawWidth = charData.widths.advance * scale;
+		let drawHeight = projectSettings.upm * scale;
+		let drawY = charData.view.dy + this.pageMargin - projectSettings.ascent * scale;
+		let drawX = charData.view.dx + this.pageMargin;
+		let drawK = charData.widths.kern * scale * -1;
 
 		// log(`\t drawing ${charData.char}`);
 		// log(`\t scaled view \t ${json(scaledView, true)}`);
 
-		if (charData.kern) {
+		if (charData.widths.kern) {
 			this.ctx.fillStyle = 'orange';
 			this.ctx.globalAlpha = 0.3;
-			this.ctx.fillRect(drawW + drawWidth - drawK, drawY, drawK, drawHeight);
+			this.ctx.fillRect(drawX + drawWidth - drawK, drawY, drawK, drawHeight);
 			this.ctx.globalAlpha = 1;
 		}
 
@@ -269,7 +277,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.ctx.strokeStyle = accentColors.blue.l85;
 		this.ctx.lineWidth = 1;
 
-		this.ctx.strokeRect(makeCrisp(drawW), makeCrisp(drawY), round(drawWidth), round(drawHeight));
+		this.ctx.strokeRect(makeCrisp(drawX), makeCrisp(drawY), round(drawWidth), round(drawHeight));
 
 		// log(`displayCanvas.drawGlyphExtras`, 'end');
 	}
