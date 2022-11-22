@@ -5,7 +5,7 @@ import { accentColors, uiColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { drawGlyph } from './draw_paths.js';
 import { linkCSS } from '../controls/controls.js';
-import { clone } from '../common/functions.js';
+import { clone, makeCrisp, round } from '../common/functions.js';
 
 /**
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
@@ -22,15 +22,15 @@ export class DisplayCanvas extends HTMLElement {
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		this.glyphs = this.getAttribute('glyphs') || '';
-		this.width = this.getAttribute('width') || 1000;
-		this.height = this.getAttribute('height') || 1100;
+		this.width = this.getAttribute('width') || 200;
+		this.height = this.getAttribute('height') || 500;
 		this.fontSize = 48;
-		this.fontScale = this.fontSize / getCurrentProject().projectSettings.upm;
-		this.gutterSize = 20;
+		this.pageMargin = 5;
 		this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
+		this.glyphSequence = this.updateGlyphSequence();
 
-		this.showPageExtras = false;
+		this.showPageExtras = true;
 		this.showLineExtras = false;
 		this.showGlyphExtras = false;
 
@@ -42,48 +42,49 @@ export class DisplayCanvas extends HTMLElement {
 		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(this.canvas);
 		this.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
-		log(`THIS CONTEXT`);
-		log(this.ctx);
 		this.canvas.height = this.height;
 		this.canvas.width = this.width;
-
-		this.glyphSequence = new GlyphSequence({
-			glyphString: this.glyphs,
-			scale: this.fontScale,
-			maxes: this.calculatePageMaxes(),
-		});
 
 		// this.redraw();
 		log(`DisplayCanvas.constructor`, 'end');
 	}
 
-	calculateView() {
-		let settings = getCurrentProject().projectSettings;
-		let contentWidth = this.width - 2 * this.gutterSize;
-		let contentHeight = this.height - 2 * this.gutterSize;
-		let upm = settings.upm;
-		let ascent = settings.ascent;
-		let zoom = Math.min(contentWidth, contentHeight) / upm;
-
-		let view = {
-			dx: this.gutterSize,
-			dy: this.gutterSize + zoom * ascent,
-			dz: zoom,
-		};
-
-		return view;
+	updateGlyphSequence() {
+		return new GlyphSequence({
+			glyphString: this.glyphs,
+			fontSize: this.fontSize,
+			areaMaxes: this.calculatePageMaxes(),
+		});
 	}
 
+	// calculateView() {
+	// 	let settings = getCurrentProject().projectSettings;
+	// 	let contentWidth = this.width - 2 * this.pageMargin;
+	// 	let contentHeight = this.height - 2 * this.pageMargin;
+	// 	let upm = settings.upm;
+	// 	let ascent = settings.ascent;
+	// 	let zoom = Math.min(contentWidth, contentHeight) / upm;
+
+	// 	let view = {
+	// 		dx: this.pageMargin,
+	// 		dy: this.pageMargin + zoom * ascent,
+	// 		dz: zoom,
+	// 	};
+
+	// 	return view;
+	// }
+
 	calculatePageMaxes() {
-		let contentWidth = this.width - 2 * this.gutterSize;
-		let contentHeight = this.height - 2 * this.gutterSize;
+		let contentWidth = this.width - 2 * this.pageMargin;
+		let contentHeight = this.height - 2 * this.pageMargin;
 		let settings = getCurrentProject().projectSettings;
+		const scale = this.fontSize / settings.upm;
 
 		let maxes = {
-			xMin: this.gutterSize,
-			xMax: this.gutterSize + contentWidth,
-			yMin: this.gutterSize + settings.ascent * this.fontScale,
-			yMax: this.gutterSize + contentHeight,
+			xMin: this.pageMargin,
+			xMax: this.pageMargin + contentWidth,
+			yMin: this.pageMargin,
+			yMax: this.pageMargin + contentHeight,
 		};
 
 		return maxes;
@@ -118,26 +119,31 @@ export class DisplayCanvas extends HTMLElement {
 		switch (attributeName) {
 			case 'glyphs':
 				this.glyphs = newValue;
+				this.glyphSequence = this.updateGlyphSequence();
 				this.redraw();
 				break;
 
 			case 'height':
 				this.height = newValue;
+				this.glyphSequence = this.updateGlyphSequence();
 				this.redraw();
 				break;
 
 			case 'width':
 				this.width = newValue;
+				this.glyphSequence = this.updateGlyphSequence();
 				this.redraw();
 				break;
 
 			case 'vertical-align':
 				this.vertical = newValue;
+				this.glyphSequence = this.updateGlyphSequence();
 				this.redraw();
 				break;
 
 			case 'horizontal-align':
 				this.horizontal = newValue;
+				this.glyphSequence = this.updateGlyphSequence();
 				this.redraw();
 				break;
 
@@ -155,9 +161,9 @@ export class DisplayCanvas extends HTMLElement {
 	 * Updates the canvas
 	 */
 	redraw() {
-		log('DisplayCanvas.redraw', 'start');
-		log(`THIS CONTEXT`);
-		log(this.ctx);
+		// log('DisplayCanvas.redraw', 'start');
+		// log(`THIS CONTEXT`);
+		// log(this.ctx);
 
 		this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -168,7 +174,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		if (this.showPageExtras) {
 			// log(`DRAW PAGE EXTRAS`);
-			this.drawPageExtras(this.maxes, this.scale);
+			this.drawPageExtras(this.calculatePageMaxes());
 		}
 
 		if (this.glyphString === '') return;
@@ -196,7 +202,7 @@ export class DisplayCanvas extends HTMLElement {
 			if (char.isVisible) this.drawGlyph(char);
 		});
 
-		log('DisplayCanvas.redraw', 'end');
+		// log('DisplayCanvas.redraw', 'end');
 	}
 
 	iterator(drawFunction) {
@@ -212,25 +218,24 @@ export class DisplayCanvas extends HTMLElement {
 	// Draw functions for individual pieces
 	// --------------------------------------------------------------
 
-	drawPageExtras(maxes, scale) {
+	drawPageExtras(maxes) {
 		// log(`displayCanvas.drawPageExtras`, 'start');
-		let tdc = livePreviewData.canvas;
+		// log(maxes);
 
-		// let top = (maxes.yMin - (_GP.projectSettings.ascent * scale)) || 0;
 		let top = maxes.yMin || 0;
-		let bottom = maxes.yMax === Infinity ? tdc.height : maxes.yMax || tdc.height;
+		let bottom = maxes.yMax === Infinity ? this.canvas.height : maxes.yMax || this.canvas.height;
 		let left = maxes.xMin || 0;
-		let right = maxes.xMax === Infinity ? tdc.width : maxes.xMax || tdc.width;
+		let right = maxes.xMax === Infinity ? this.canvas.width : maxes.xMax || this.canvas.width;
 		let width = right - left;
 		let height = bottom - top;
 
-		// debug(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
+		// log(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
 
 		this.ctx.fillStyle = 'transparent';
-		this.ctx.strokeStyle = _UI.colors.green.l85;
+		this.ctx.strokeStyle = accentColors.green.l85;
 		this.ctx.lineWidth = 1;
 
-		this.ctx.strokeRect(left.makeCrisp(), top.makeCrisp(), round(width), round(height));
+		this.ctx.strokeRect(makeCrisp(left), makeCrisp(top), round(width), round(height));
 
 		// log(`displayCanvas.drawPageExtras`, 'end');
 	}
@@ -238,11 +243,7 @@ export class DisplayCanvas extends HTMLElement {
 	drawLineExtras(charData) {
 		// log(`displayCanvas.drawLineExtras`, 'start');
 		// log(`\t at ' + (charData.view.dy * charData.view.dz));
-		drawHorizontalLine(
-			charData.view.dy * charData.view.dz,
-			livePreviewData.ctx,
-			_UI.colors.green.l85
-		);
+		drawHorizontalLine(charData.view.dy * charData.view.dz, this.ctx, accentColors.green.l85);
 		// log(`displayCanvas.drawLineExtras`, 'end');
 	}
 
@@ -254,8 +255,8 @@ export class DisplayCanvas extends HTMLElement {
 		let drawW = charData.view.dx * charData.view.dz;
 		let drawK = charData.kern * charData.view.dz * -1;
 
-		// debug(`\t drawing ${charData.char}`);
-		// debug(`\t scaled view \t ${json(scaledView, true)}`);
+		// log(`\t drawing ${charData.char}`);
+		// log(`\t scaled view \t ${json(scaledView, true)}`);
 
 		if (charData.kern) {
 			this.ctx.fillStyle = 'orange';
@@ -265,59 +266,60 @@ export class DisplayCanvas extends HTMLElement {
 		}
 
 		this.ctx.fillStyle = 'transparent';
-		this.ctx.strokeStyle = _UI.colors.blue.l85;
+		this.ctx.strokeStyle = accentColors.blue.l85;
 		this.ctx.lineWidth = 1;
 
-		this.ctx.strokeRect(drawW.makeCrisp(), drawY.makeCrisp(), round(drawWidth), round(drawHeight));
+		this.ctx.strokeRect(makeCrisp(drawW), makeCrisp(drawY), round(drawWidth), round(drawHeight));
 
 		// log(`displayCanvas.drawGlyphExtras`, 'end');
 	}
 
 	drawGlyph(charData) {
-		log(`displayCanvas.drawGlyph`, 'start');
-		log(charData);
-		log(`THIS CONTEXT`);
-		log(this.ctx);
+		// log(`displayCanvas.drawGlyph`, 'start');
+		// log(charData);
+		// log(`THIS CONTEXT`);
+		// log(this.ctx);
+		const settings = getCurrentProject().projectSettings;
 		let glyph = charData.glyph;
 		// TODO flattenGlyphs
 		// let flattenGlyphs = td.flattenGlyphs || false;
 		let flattenGlyphs = false;
 		let view = clone(charData.view);
-		view.dx *= view.dz;
-		view.dy *= view.dz;
+		// view.dx *= view.dz;
+		view.dx += this.pageMargin;
+		// view.dy += settings.ascent + this.pageMargin;
+		// view.dy *= view.dz;
+		view.dy += this.pageMargin;
 
-		// debug(`\t drawing ${charData.char}`);
-		// debug(`\t view \t ${json(view, true)}`);
+		// log(`\t drawing ${charData.char}`);
+		// log(view);
 
-		// setTimeout(function () {
 		if (glyph) {
 			this.ctx.fillStyle = uiColors.enabled.resting.text;
 			this.ctx.strokeStyle = 'transparent';
-			if (flattenGlyphs) {
-				if (!livePreviewData.cache.hasOwnProperty(charData.char)) {
-					livePreviewData.cache[charData.char] = new Glyph(
-						clone(glyph)
-					).combineAllShapes(true);
-				}
 
-				livePreviewData.cache[charData.char].drawGlyph(this.ctx, view, 1, true);
-			} else {
-				drawGlyph(glyph, this.ctx, view, 1, true);
-			}
+			// TODO flattenGlyphs
+			// if (flattenGlyphs) {
+			// 	if (!this.cache.hasOwnProperty(charData.char)) {
+			// 		this.cache[charData.char] = new Glyph(clone(glyph)).combineAllShapes(true);
+			// 	}
+
+			// 	this.cache[charData.char].drawGlyph(this.ctx, view, 1, true);
+			// } else {
+			// 	drawGlyph(glyph, this.ctx, view, 1, true);
+			// }
+
+			drawGlyph(glyph, this.ctx, view, 1, true);
 		}
-		// }, 10);
 
-		log(`displayCanvas.drawGlyph`, 'end');
+		// log(`displayCanvas.drawGlyph`, 'end');
 	}
 
 	// --------------------------------------------------------------
 	// Update options
 	// --------------------------------------------------------------
 	updateFontSize(newValue) {
-		let settings = getCurrentProject().projectSettings;
 		this.fontSize = newValue * 1;
-		this.fontScale = newValue / settings.upm;
-		this.glyphSequence.setScale(this.fontScale);
 		this.glyphSequence.setMaxes(this.calculatePageMaxes());
 		// document.getElementById('roughPointSize').value = newValue * 0.75;
 		// document.getElementById('livePreviewTextArea').style.fontSize = newValue * 0.75 + 'pt';
@@ -363,9 +365,9 @@ function makeCSS() {
 
 canvas {
 	background-color: white;
+	z-index: 100;
 }
-
-	`;
+`;
 
 	return cssElement;
 }

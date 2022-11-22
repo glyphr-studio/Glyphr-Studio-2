@@ -127,12 +127,29 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Figures out the center of the bounding box
+	 * @returns {object} x/y point
 	 */
 	get center() {
 		return {
-			x: (this.xMax - this.xMin) / 2 + this.xMin,
-			y: (this.yMax - this.yMin) / 2 + this.yMin,
+			x: (this.width / 2) + this.xMin,
+			y: (this.height / 2) + this.yMin,
 		};
+	}
+
+	/**
+	 * Figures out the width of the area
+	 * @returns {number} value
+	 */
+	get width() {
+		return this.xMax - this.xMin;
+	}
+
+	/**
+	 * Figures out the height of the area
+	 * @returns {number} value
+	 */
+	get height() {
+		return this.yMax - this.yMin;
 	}
 
 	// --------------------------------------------------------------

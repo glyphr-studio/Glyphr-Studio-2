@@ -11,9 +11,9 @@ export class GlyphrStudioApp {
 	 */
 	constructor() {
 		// Version
-		this.versionName = 'Version 2: Alpha-1';
-		this.version = '2.0.0-alpha.1';
-		this.versionDate = 1667350000000;
+		this.versionName = 'Version 2: Alpha-2';
+		this.version = '2.0.0-alpha.2';
+		this.versionDate = false;
 		this.projectEditors = [];
 		this.selectedProjectEditor = 0;
 
@@ -30,7 +30,7 @@ export class GlyphrStudioApp {
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
-			telemetry: true, // Load google analytics
+			telemetry: false, // Load google analytics
 		};
 	}
 
