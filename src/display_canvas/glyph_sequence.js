@@ -148,8 +148,6 @@ export class GlyphSequence {
 				};
 			}
 		}
-		// log('this.data');
-		// log(this.data);
 
 		/*
 		 *
@@ -197,9 +195,6 @@ export class GlyphSequence {
 				log(charData);
 
 				if (charData.view === false) {
-					log(`checkForBreak: ${checkForBreak}`);
-					log(`Number.isFinite(scaleAreaWidth): ${Number.isFinite(scaleAreaWidth)}`);
-
 					// position for this charData hasn't been calculated
 					if (checkForBreak && Number.isFinite(scaleAreaWidth)) {
 						nextLineBreak = getNextLineBreaker(currentBlock, charNumber);
@@ -212,7 +207,9 @@ export class GlyphSequence {
 						log(`scaleAreaWidth: ${scaleAreaWidth}`);
 
 						if (currentX + wordAggregate > scaleAreaWidth) {
-							log(`Yes`);
+							// word takes up too much horizontal space
+							// increment the line, and do a vertical space check
+							log(`word does not fit on the current line...`);
 
 							currentLine++;
 
@@ -222,7 +219,6 @@ export class GlyphSequence {
 							log(`... is larger than...`);
 							log(`scaleAreaHeight: ${scaleAreaHeight}`);
 
-
 							if (currentY + singleLineHeight > scaleAreaHeight) {
 								// text takes up too much vertical space
 								// returning early will leave non-computed chars.isVisible = false
@@ -230,11 +226,11 @@ export class GlyphSequence {
 								log('GlyphSequence.generateData', 'end');
 								return;
 							} else {
+								// more vertical space exists for the next line
+								log(`more vertical space for next line`);
 								currentX = 0;
 								currentY = currentLine * singleLineHeight;
-								log(`...no, more vertical space`);
 								log(`currentY: ${currentY}`);
-
 							}
 						}
 
@@ -279,7 +275,7 @@ export class GlyphSequence {
  * Looks ahead through a block to return the next line break character
  * @param {Array} block - collection of chars to check
  * @param {Number} start - what index to start at
- * @returns - line break character
+ * @returns - line break charData
  */
 function getNextLineBreaker(block, start) {
 	log('getNextLineBreaker', 'start');
@@ -293,9 +289,10 @@ function getNextLineBreaker(block, start) {
 		}
 	}
 
-	log(`NOTHING found, returning ${block[block.length-1].char} value ${block[block.length-1].widths.aggregate}`);
+	const lastData = block[block.length - 1];
+	log(`NOTHING found, returning ${lastData.char} value ${lastData.widths.aggregate}`);
 	log('getNextLineBreaker', 'end');
-	return block[block.length - 1];
+	return lastData;
 }
 
 /**
