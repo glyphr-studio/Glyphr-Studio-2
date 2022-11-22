@@ -19,6 +19,10 @@ export function getVersionTwoTestProject() {
 		},
 
 		glyphs: {
+			'0x20': {
+				id: '0x20',
+				advanceWidth: 200,
+			},
 			'0x0041': {
 				id: '0x0041',
 				objType: 'Glyph',
