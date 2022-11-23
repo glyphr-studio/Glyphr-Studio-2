@@ -11,7 +11,7 @@ import { livePreviewOptions, makePanel_LivePreview } from '../panels/live_previe
  */
 
 export function makePage_LivePreview() {
-	log(`makePage_LivePreview`, 'start');
+	// log(`makePage_LivePreview`, 'start');
 	const editor = getCurrentProjectEditor();
 	// log('current ProjectEditor');
 	// log(editor);
@@ -63,18 +63,18 @@ export function makePage_LivePreview() {
 	let panelArea = content.querySelector('.content-page__panel');
 	addAsChildren(panelArea, makePanel_LivePreview());
 
-	log(`makePage_LivePreview`, 'end');
+	// log(`makePage_LivePreview`, 'end');
 	return content;
 }
 
 export function livePreviewPageWindowResize() {
-	log(`livePreviewPageWindowResize`, 'start');
+	// log(`livePreviewPageWindowResize`, 'start');
 
 	const wrapper = document.querySelector('.live-preview-page__canvas-wrapper');
 	const displayCanvas = document.querySelector('#live-preview-page__canvas');
 	const clientRect = wrapper.getClientRects()[0];
-	log(`clientRect.width: ${clientRect.width}`);
-	log(`clientRect.height: ${clientRect.height}`);
+	// log(`clientRect.width: ${clientRect.width}`);
+	// log(`clientRect.height: ${clientRect.height}`);
 
 	// displayCanvas.width = clientRect.width;
 	// displayCanvas.height = clientRect.height;
@@ -82,5 +82,5 @@ export function livePreviewPageWindowResize() {
 	displayCanvas.setAttribute('height', clientRect.height);
 	displayCanvas.updateGlyphSequence();
 	displayCanvas.redraw();
-	log(`livePreviewPageWindowResize`, 'end');
+	// log(`livePreviewPageWindowResize`, 'end');
 }

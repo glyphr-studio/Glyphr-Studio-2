@@ -7,6 +7,7 @@ import { drawGlyph } from './draw_paths.js';
 import { linkCSS } from '../controls/controls.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
 import { livePreviewPageWindowResize } from '../pages/live_preview.js';
+import { livePreviewOptions } from '../panels/live_preview.js';
 
 /**
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
@@ -18,7 +19,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		log(`DisplayCanvas.constructor`, 'start');
+		// log(`DisplayCanvas.constructor`, 'start');
 		super();
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
@@ -36,9 +37,9 @@ export class DisplayCanvas extends HTMLElement {
 
 		this.glyphSequence = false;
 
-		this.showPageExtras = true;
-		this.showLineExtras = true;
-		this.showGlyphExtras = true;
+		this.showPageExtras = attributes.showPageExtras || livePreviewOptions.showPageExtras;
+		this.showLineExtras = attributes.showLineExtras || livePreviewOptions.showLineExtras;
+		this.showGlyphExtras = attributes.showGlyphExtras || livePreviewOptions.showGlyphExtras;
 		this.drawCrisp = false;
 
 		// Put it all together
@@ -55,31 +56,31 @@ export class DisplayCanvas extends HTMLElement {
 		this.canvas.width = this.width;
 
 		// this.redraw();
-		log(`DisplayCanvas.constructor`, 'end');
+		// log(`DisplayCanvas.constructor`, 'end');
 	}
 
 	updateGlyphSequence() {
-		log(`DisplayCanvas.updateGlyphSequence`, 'start');
-		log(`this.width: ${this.width}`);
-		log(`this.height: ${this.height}`);
+		// log(`DisplayCanvas.updateGlyphSequence`, 'start');
+		// log(`this.width: ${this.width}`);
+		// log(`this.height: ${this.height}`);
 		this.glyphSequence = new GlyphSequence({
 			glyphString: this.glyphs,
 			fontSize: this.fontSize,
 			areaMaxes: this.calculatePageMaxes(),
 			lineGap: this.lineGap,
 		});
-		log(`DisplayCanvas.updateGlyphSequence`, 'end');
+		// log(`DisplayCanvas.updateGlyphSequence`, 'end');
 	}
 
 	calculatePageMaxes() {
-		log(`DisplayCanvas.calculatePageMaxes`, 'start');
-		log(`this.width: ${this.width}`);
-		log(`this.height: ${this.height}`);
+		// log(`DisplayCanvas.calculatePageMaxes`, 'start');
+		// log(`this.width: ${this.width}`);
+		// log(`this.height: ${this.height}`);
 
 		let contentWidth = this.width - 2 * this.pagePadding;
 		let contentHeight = this.height - 2 * this.pagePadding;
-		log(`contentWidth: ${contentWidth}`);
-		log(`contentHeight: ${contentHeight}`);
+		// log(`contentWidth: ${contentWidth}`);
+		// log(`contentHeight: ${contentHeight}`);
 
 		let maxes = {
 			xMin: this.pagePadding,
@@ -88,7 +89,7 @@ export class DisplayCanvas extends HTMLElement {
 			yMax: this.pagePadding + contentHeight,
 		};
 
-		log(`DisplayCanvas.calculatePageMaxes`, 'end');
+		// log(`DisplayCanvas.calculatePageMaxes`, 'end');
 		return maxes;
 	}
 
@@ -112,9 +113,9 @@ export class DisplayCanvas extends HTMLElement {
 	 * Draw the canvas when it's loaded
 	 */
 	connectedCallback() {
-		log(`DisplayCanvas.connectedCallback`, 'start');
+		// log(`DisplayCanvas.connectedCallback`, 'start');
 		this.redraw();
-		log(`DisplayCanvas.connectedCallback`, 'end');
+		// log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
 	/**
@@ -124,8 +125,8 @@ export class DisplayCanvas extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		log(`DisplayCanvas.attributeChangeCallback`, 'start');
-		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		// log(`DisplayCanvas.attributeChangeCallback`, 'start');
+		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		switch (attributeName) {
 			case 'glyphs':
@@ -171,19 +172,19 @@ export class DisplayCanvas extends HTMLElement {
 		this.updateGlyphSequence();
 		this.redraw();
 
-		log(`DisplayCanvas.attributeChangeCallback`, 'end');
+		// log(`DisplayCanvas.attributeChangeCallback`, 'end');
 	}
 
 	/**
 	 * Updates the canvas
 	 */
 	redraw() {
-		log('DisplayCanvas.redraw', 'start');
+		// log('DisplayCanvas.redraw', 'start');
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
 
-		log(`this.width: ${this.width}`);
-		log(`this.height: ${this.height}`);
+		// log(`this.width: ${this.width}`);
+		// log(`this.height: ${this.height}`);
 
 		this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -222,7 +223,7 @@ export class DisplayCanvas extends HTMLElement {
 			if (char.isVisible) this.drawGlyph(char);
 		});
 
-		log('DisplayCanvas.redraw', 'end');
+		// log('DisplayCanvas.redraw', 'end');
 	}
 
 	iterator(drawFunction) {

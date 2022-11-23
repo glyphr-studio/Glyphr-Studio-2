@@ -6,13 +6,16 @@
 
 import { getCurrentProject } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
-import { makeSingleInput, makeSingleLabel } from './cards';
+import { makeDirectCheckbox, makeSingleCheckbox, makeSingleInput, makeSingleLabel } from './cards';
 
 export let livePreviewOptions = {
 	glyphString: 'A B C',
 	fontSize: 48,
 	lineGap: 12,
 	pagePadding: 10,
+	showGlyphExtras: false,
+	showLineExtras: false,
+	showPageExtras: false,
 };
 
 export function makePanel_LivePreview() {
@@ -24,6 +27,15 @@ export function makePanel_LivePreview() {
 	});
 
 	addAsChildren(optionsCard, makeLivePreviewOptions());
+
+	// Show
+	let showCard = makeElement({
+		tag: 'div',
+		className: 'panel__card',
+		innerHTML: '<h3>Show</h3>',
+	});
+
+	addAsChildren(showCard, makeShowOptions());
 
 	// Pangrams
 	let pangramCard = makeElement({
@@ -56,7 +68,7 @@ export function makePanel_LivePreview() {
 		makeButton('All lower case letter permutations', makePermutations(false)),
 	]);
 
-	return [optionsCard, pangramCard, glyphSetsCard];
+	return [optionsCard, showCard, pangramCard, glyphSetsCard];
 }
 
 function makeButton(text, chars = false) {
@@ -160,7 +172,7 @@ function makePermutations(upper) {
 function makeLivePreviewOptions() {
 
 	let glyphsLabel = makeSingleLabel('Preview glyphs:');
-	let glyphsInput = makeElement({ tag: 'textarea', id: 'livePreviewGlyphsInput', innerHTML: livePreviewOptions.glyphString});
+	let glyphsInput = makeElement({ tag: 'textarea', id: 'livePreviewGlyphsInput', innerHTML: livePreviewOptions.glyphString });
 	// glyphsInput.setAttribute('value', livePreviewOptions.glyphString);
 	glyphsInput.addEventListener('keyup', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
@@ -189,6 +201,39 @@ function makeLivePreviewOptions() {
 		fontSizeInput,
 		lineGapLabel,
 		lineGapInput,
+	];
+}
+
+function makeShowOptions() {
+
+	let glyphOutlineLabel = makeSingleLabel('Glyph bounding box:');
+	let glyphOutlineToggle = makeDirectCheckbox(livePreviewOptions, 'showGlyphExtras', (newValue) => {
+		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		displayCanvas.showGlyphExtras = newValue;
+		displayCanvas.redraw();
+	} );
+
+	let baselineLabel = makeSingleLabel('Baselines:');
+	let baselineToggle = makeDirectCheckbox(livePreviewOptions, 'showLineExtras', (newValue) => {
+		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		displayCanvas.showLineExtras = newValue;
+		displayCanvas.redraw();
+	});
+
+	let pageOutlineLabel = makeSingleLabel('Page outline:');
+	let pageOutlineToggle = makeDirectCheckbox(livePreviewOptions, 'showPageExtras', (newValue) => {
+		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		displayCanvas.showPageExtras = newValue;
+		displayCanvas.redraw();
+	});
+
+	return [
+		glyphOutlineLabel,
+		glyphOutlineToggle,
+		baselineLabel,
+		baselineToggle,
+		pageOutlineLabel,
+		pageOutlineToggle,
 	];
 
 	/*
