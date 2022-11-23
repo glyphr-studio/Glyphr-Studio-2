@@ -95,7 +95,7 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 	newInput.addEventListener('change', (event) => {
 		let newValue = event.target.value;
 		let editor = getCurrentProjectEditor();
-		if (!workItem.isLocked(property)) {
+		if (!workItem.hasOwnProperty('isLocked') || !workItem.isLocked(property)) {
 			// Update the view so that the glyph stays put
 			// and the LSB moves to the left or right
 			if (property === 'leftSideBearing') {
