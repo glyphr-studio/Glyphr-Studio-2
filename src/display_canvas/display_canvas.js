@@ -6,6 +6,7 @@ import { glyphToHex } from '../common/unicode.js';
 import { drawGlyph } from './draw_paths.js';
 import { linkCSS } from '../controls/controls.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
+import { livePreviewPageWindowResize } from '../pages/live_preview.js';
 
 /**
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
@@ -21,15 +22,19 @@ export class DisplayCanvas extends HTMLElement {
 		super();
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
+		const clientRect = this.parentElement.getClientRects()[0];
+		this.width = clientRect.width;
+		this.height = clientRect.height;
+
 		this.glyphs = this.getAttribute('glyphs') || '';
-		this.width = parseInt(this.getAttribute('width')) || 200;
-		this.height = parseInt(this.getAttribute('height')) || 500;
+
 		this.fontSize = parseInt(this.getAttribute('font-size')) || 48;
 		this.pagePadding = parseInt(this.getAttribute('page-padding')) || 5;
 		this.lineGap = parseInt(this.getAttribute('line-gap')) || 12;
 		this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
-		this.glyphSequence = this.updateGlyphSequence();
+
+		this.glyphSequence = false;
 
 		this.showPageExtras = true;
 		this.showLineExtras = true;
@@ -43,6 +48,8 @@ export class DisplayCanvas extends HTMLElement {
 
 		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(this.canvas);
+		// livePreviewPageWindowResize();
+		this.updateGlyphSequence();
 		this.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
 		this.canvas.height = this.height;
 		this.canvas.width = this.width;
@@ -52,34 +59,27 @@ export class DisplayCanvas extends HTMLElement {
 	}
 
 	updateGlyphSequence() {
-		return new GlyphSequence({
+		log(`DisplayCanvas.updateGlyphSequence`, 'start');
+		log(`this.width: ${this.width}`);
+		log(`this.height: ${this.height}`);
+		this.glyphSequence = new GlyphSequence({
 			glyphString: this.glyphs,
 			fontSize: this.fontSize,
 			areaMaxes: this.calculatePageMaxes(),
 			lineGap: this.lineGap,
 		});
+		log(`DisplayCanvas.updateGlyphSequence`, 'end');
 	}
 
-	// calculateView() {
-	// 	let settings = getCurrentProject().projectSettings;
-	// 	let contentWidth = this.width - 2 * this.pagePadding;
-	// 	let contentHeight = this.height - 2 * this.pagePadding;
-	// 	let upm = settings.upm;
-	// 	let ascent = settings.ascent;
-	// 	let zoom = Math.min(contentWidth, contentHeight) / upm;
-
-	// 	let view = {
-	// 		dx: this.pagePadding,
-	// 		dy: this.pagePadding + zoom * ascent,
-	// 		dz: zoom,
-	// 	};
-
-	// 	return view;
-	// }
-
 	calculatePageMaxes() {
+		log(`DisplayCanvas.calculatePageMaxes`, 'start');
+		log(`this.width: ${this.width}`);
+		log(`this.height: ${this.height}`);
+
 		let contentWidth = this.width - 2 * this.pagePadding;
 		let contentHeight = this.height - 2 * this.pagePadding;
+		log(`contentWidth: ${contentWidth}`);
+		log(`contentHeight: ${contentHeight}`);
 
 		let maxes = {
 			xMin: this.pagePadding,
@@ -88,6 +88,7 @@ export class DisplayCanvas extends HTMLElement {
 			yMax: this.pagePadding + contentHeight,
 		};
 
+		log(`DisplayCanvas.calculatePageMaxes`, 'end');
 		return maxes;
 	}
 
@@ -123,8 +124,8 @@ export class DisplayCanvas extends HTMLElement {
 	 * @param {string} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		// log(`DisplayCanvas.attributeChangeCallback`, 'start');
-		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		log(`DisplayCanvas.attributeChangeCallback`, 'start');
+		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		switch (attributeName) {
 			case 'glyphs':
@@ -145,10 +146,14 @@ export class DisplayCanvas extends HTMLElement {
 
 			case 'height':
 				this.height = parseInt(newValue);
+				// this.setAttribute('height', parseInt(newValue));
+				this.canvas.height = parseInt(newValue);
 				break;
 
 			case 'width':
 				this.width = parseInt(newValue);
+				// this.setAttribute('width', parseInt(newValue));
+				this.canvas.width = parseInt(newValue);
 				break;
 
 			case 'vertical-align':
@@ -163,10 +168,10 @@ export class DisplayCanvas extends HTMLElement {
 				break;
 		}
 
-		this.glyphSequence = this.updateGlyphSequence();
+		this.updateGlyphSequence();
 		this.redraw();
 
-		// log(`DisplayCanvas.attributeChangeCallback`, 'end');
+		log(`DisplayCanvas.attributeChangeCallback`, 'end');
 	}
 
 	/**
@@ -177,6 +182,9 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
 
+		log(`this.width: ${this.width}`);
+		log(`this.height: ${this.height}`);
+
 		this.ctx.clearRect(0, 0, this.width, this.height);
 
 		// let glyphHex = glyphToHex(this.glyphs.charAt(0));
@@ -186,7 +194,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		if (this.showPageExtras) {
 			// log(`DRAW PAGE EXTRAS`);
-			this.drawPageExtras(this.calculatePageMaxes());
+			this.drawPageExtras();
 		}
 
 		if (this.glyphString === '') return;
@@ -230,10 +238,10 @@ export class DisplayCanvas extends HTMLElement {
 	// Draw functions for individual pieces
 	// --------------------------------------------------------------
 
-	drawPageExtras(maxes) {
+	drawPageExtras() {
 		// log(`displayCanvas.drawPageExtras`, 'start');
 		// log(maxes);
-
+		const maxes = this.calculatePageMaxes();
 		let top = maxes.yMin || 0;
 		let bottom = maxes.yMax === Infinity ? this.canvas.height : maxes.yMax || this.canvas.height;
 		let left = maxes.xMin || 0;
@@ -343,17 +351,6 @@ export class DisplayCanvas extends HTMLElement {
 	// --------------------------------------------------------------
 	// Update options
 	// --------------------------------------------------------------
-	updateFontSize(newValue) {
-		this.fontSize = newValue * 1;
-		this.glyphSequence.setMaxes(this.calculatePageMaxes());
-		// document.getElementById('roughPointSize').value = newValue * 0.75;
-		// document.getElementById('livePreviewTextArea').style.fontSize = newValue * 0.75 + 'pt';
-	}
-
-	updateLineGap(newValue) {
-		this.lineGap = newValue * 1;
-		this.glyphSequence.setLineGap(this.lineGap);
-	}
 
 	createImage() {
 		let imageData = this.canvas.toDataURL();

@@ -77,4 +77,12 @@
 
 .live-preview-page__canvas-wrapper {
 	grid-column: 2;
+	display: grid;
+	grid-template-columns: 1fr;
+	grid-template-rows: 1fr;
+}
+
+display-canvas {
+	width: 100%;
+	height: 100%;
 }

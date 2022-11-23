@@ -49,6 +49,8 @@ export class GlyphSequence {
 			yMin: newMaxes.yMin || 0,
 			yMax: newMaxes.yMax || Infinity,
 		});
+		log(`SET areaMaxes\n ${this.areaMaxes.print()}`);
+		
 	}
 
 	get fontSize() {
@@ -198,7 +200,7 @@ export class GlyphSequence {
 					if (checkForBreak && Number.isFinite(scaleAreaWidth)) {
 						nextLineBreak = getNextLineBreaker(currentBlock, charNumber);
 						wordAggregate =
-							nextLineBreak.widths.aggregate + 
+							nextLineBreak.widths.aggregate +
 							nextLineBreak.widths.advance -
 							charData.widths.aggregate;
 

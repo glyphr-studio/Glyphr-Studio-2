@@ -309,3 +309,12 @@
 .history-list__initial-entry {
 	opacity: 0.6;
 }
+
+#livePreviewGlyphsInput {
+	height: 70px;
+	min-height: 24px;
+	width: 260px;
+	max-width: 260px;
+	min-width: 260px;
+	resize: vertical;
+}

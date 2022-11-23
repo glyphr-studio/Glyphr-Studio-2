@@ -45,7 +45,8 @@ body {
 	display: none;
 }
 ::-webkit-resizer {
-	display: none;
+	display: block;
+	border: 2px outset white;
 }
 
 div,

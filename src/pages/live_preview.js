@@ -35,8 +35,7 @@ export function makePage_LivePreview() {
 					font-size="${livePreviewOptions.fontSize}"
 					line-gap="${livePreviewOptions.lineGap}"
 					page-padding="${livePreviewOptions.pagePadding}"
-					width="500"
-				"></display-canvas>
+				></display-canvas>
 			</div>
 		</div>
 	`,
@@ -53,6 +52,8 @@ export function makePage_LivePreview() {
 	// 	}
 	// });
 
+	window.addEventListener('resize', livePreviewPageWindowResize);
+
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
@@ -64,4 +65,22 @@ export function makePage_LivePreview() {
 
 	log(`makePage_LivePreview`, 'end');
 	return content;
+}
+
+export function livePreviewPageWindowResize() {
+	log(`livePreviewPageWindowResize`, 'start');
+
+	const wrapper = document.querySelector('.live-preview-page__canvas-wrapper');
+	const displayCanvas = document.querySelector('#live-preview-page__canvas');
+	const clientRect = wrapper.getClientRects()[0];
+	log(`clientRect.width: ${clientRect.width}`);
+	log(`clientRect.height: ${clientRect.height}`);
+
+	// displayCanvas.width = clientRect.width;
+	// displayCanvas.height = clientRect.height;
+	displayCanvas.setAttribute('width', clientRect.width);
+	displayCanvas.setAttribute('height', clientRect.height);
+	displayCanvas.updateGlyphSequence();
+	displayCanvas.redraw();
+	log(`livePreviewPageWindowResize`, 'end');
 }

@@ -12,7 +12,7 @@ export let livePreviewOptions = {
 	glyphString: 'A B C',
 	fontSize: 48,
 	lineGap: 12,
-	pagePadding: 24,
+	pagePadding: 10,
 };
 
 export function makePanel_LivePreview() {
@@ -74,9 +74,13 @@ function makeButton(text, chars = false) {
 }
 
 function updateDisplayCanvasGlyphs(glyphString) {
-	let displayCanvases = document.getElementsByTagName('display-canvas')[0];
-	if (displayCanvases[0]) {
-		displayCanvases[0].setAttribute('glyphs', chars);
+	const glyphsInput = document.getElementById('livePreviewGlyphsInput');
+	if (glyphsInput) {
+		glyphsInput.innerHTML = glyphString;
+	}
+	let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+	if (displayCanvas) {
+		displayCanvas.setAttribute('glyphs', glyphString);
 	}
 }
 
@@ -156,8 +160,8 @@ function makePermutations(upper) {
 function makeLivePreviewOptions() {
 
 	let glyphsLabel = makeSingleLabel('Preview glyphs:');
-	let glyphsInput = makeElement({ tag: 'input' });
-	glyphsInput.setAttribute('value', livePreviewOptions.glyphString);
+	let glyphsInput = makeElement({ tag: 'textarea', id: 'livePreviewGlyphsInput', innerHTML: livePreviewOptions.glyphString});
+	// glyphsInput.setAttribute('value', livePreviewOptions.glyphString);
 	glyphsInput.addEventListener('keyup', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
