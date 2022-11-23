@@ -6,6 +6,14 @@
 
 import { getCurrentProject } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
+import { makeSingleInput, makeSingleLabel } from './cards';
+
+export let livePreviewOptions = {
+	glyphString: 'A B C',
+	fontSize: 48,
+	lineGap: 12,
+	pagePadding: 24,
+};
 
 export function makePanel_LivePreview() {
 	// Options
@@ -146,6 +154,39 @@ function makePermutations(upper) {
 }
 
 function makeLivePreviewOptions() {
+
+	let glyphsLabel = makeSingleLabel('Preview glyphs:');
+	let glyphsInput = makeElement({ tag: 'input' });
+	glyphsInput.setAttribute('value', livePreviewOptions.glyphString);
+	glyphsInput.addEventListener('keyup', (event) => {
+		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		let newValue = event.target.value;
+		displayCanvas.setAttribute('glyphs', newValue);
+	});
+
+	let fontSizeLabel = makeSingleLabel('Font size:');
+	let fontSizeInput = makeElement({ tag: 'input-number', attributes: { value: livePreviewOptions.fontSize } });
+	fontSizeInput.addEventListener('change', (event) => {
+		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		displayCanvas.setAttribute('font-size', event.target.value);
+	});
+
+	let lineGapLabel = makeSingleLabel('Line gap:');
+	let lineGapInput = makeElement({ tag: 'input-number', attributes: { value: livePreviewOptions.lineGap } });
+	lineGapInput.addEventListener('change', (event) => {
+		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		displayCanvas.setAttribute('line-gap', event.target.value);
+	});
+
+	return [
+		glyphsLabel,
+		glyphsInput,
+		fontSizeLabel,
+		fontSizeInput,
+		lineGapLabel,
+		lineGapInput,
+	];
+
 	/*
 	const projectSettings = getCurrentProject().projectSettings;
 	const lineGap = projectSettings.lineGap;
@@ -193,7 +234,6 @@ function makeLivePreviewOptions() {
 	content += '</table>';
 	return content;
 	*/
-	return makeElement({ innerHTML: 'stuff' });
 }
 
 let flattenMessage = `

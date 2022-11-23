@@ -22,11 +22,11 @@ export class DisplayCanvas extends HTMLElement {
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		this.glyphs = this.getAttribute('glyphs') || '';
-		this.width = this.getAttribute('width') || 200;
-		this.height = this.getAttribute('height') || 500;
-		this.fontSize = 48;
-		this.pageMargin = 5;
-		this.lineGap = 12;
+		this.width = parseInt(this.getAttribute('width')) || 200;
+		this.height = parseInt(this.getAttribute('height')) || 500;
+		this.fontSize = parseInt(this.getAttribute('font-size')) || 48;
+		this.pagePadding = parseInt(this.getAttribute('page-padding')) || 5;
+		this.lineGap = parseInt(this.getAttribute('line-gap')) || 12;
 		this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
 		this.glyphSequence = this.updateGlyphSequence();
@@ -34,6 +34,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.showPageExtras = true;
 		this.showLineExtras = true;
 		this.showGlyphExtras = true;
+		this.drawCrisp = false;
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
@@ -61,15 +62,15 @@ export class DisplayCanvas extends HTMLElement {
 
 	// calculateView() {
 	// 	let settings = getCurrentProject().projectSettings;
-	// 	let contentWidth = this.width - 2 * this.pageMargin;
-	// 	let contentHeight = this.height - 2 * this.pageMargin;
+	// 	let contentWidth = this.width - 2 * this.pagePadding;
+	// 	let contentHeight = this.height - 2 * this.pagePadding;
 	// 	let upm = settings.upm;
 	// 	let ascent = settings.ascent;
 	// 	let zoom = Math.min(contentWidth, contentHeight) / upm;
 
 	// 	let view = {
-	// 		dx: this.pageMargin,
-	// 		dy: this.pageMargin + zoom * ascent,
+	// 		dx: this.pagePadding,
+	// 		dy: this.pagePadding + zoom * ascent,
 	// 		dz: zoom,
 	// 	};
 
@@ -77,16 +78,14 @@ export class DisplayCanvas extends HTMLElement {
 	// }
 
 	calculatePageMaxes() {
-		let contentWidth = this.width - 2 * this.pageMargin;
-		let contentHeight = this.height - 2 * this.pageMargin;
-		let settings = getCurrentProject().projectSettings;
-		const scale = this.fontSize / settings.upm;
+		let contentWidth = this.width - 2 * this.pagePadding;
+		let contentHeight = this.height - 2 * this.pagePadding;
 
 		let maxes = {
-			xMin: this.pageMargin,
-			xMax: this.pageMargin + contentWidth,
-			yMin: this.pageMargin,
-			yMax: this.pageMargin + contentHeight,
+			xMin: this.pagePadding,
+			xMax: this.pagePadding + contentWidth,
+			yMin: this.pagePadding,
+			yMax: this.pagePadding + contentHeight,
 		};
 
 		return maxes;
@@ -96,7 +95,16 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['glyphs', 'height', 'width', 'vertical-align', 'horizontal-align'];
+		return [
+			'glyphs',
+			'font-size',
+			'line-gap',
+			'page-padding',
+			'height',
+			'width',
+			'vertical-align',
+			'horizontal-align',
+		];
 	}
 
 	/**
@@ -121,41 +129,43 @@ export class DisplayCanvas extends HTMLElement {
 		switch (attributeName) {
 			case 'glyphs':
 				this.glyphs = newValue;
-				this.glyphSequence = this.updateGlyphSequence();
-				this.redraw();
+				break;
+
+			case 'font-size':
+				this.fontSize = Math.max(parseInt(newValue), 1);
+				break;
+
+			case 'line-gap':
+				this.lineGap = Math.max(parseInt(newValue), 0);
+				break;
+
+			case 'page-padding':
+				this.pagePadding = Math.max(parseInt(newValue), 0);
 				break;
 
 			case 'height':
-				this.height = newValue;
-				this.glyphSequence = this.updateGlyphSequence();
-				this.redraw();
+				this.height = parseInt(newValue);
 				break;
 
 			case 'width':
-				this.width = newValue;
-				this.glyphSequence = this.updateGlyphSequence();
-				this.redraw();
+				this.width = parseInt(newValue);
 				break;
 
 			case 'vertical-align':
 				this.vertical = newValue;
-				this.glyphSequence = this.updateGlyphSequence();
-				this.redraw();
 				break;
 
 			case 'horizontal-align':
 				this.horizontal = newValue;
-				this.glyphSequence = this.updateGlyphSequence();
-				this.redraw();
 				break;
 
 			default:
 				break;
 		}
 
-		if (attributeName === 'glyphs') {
-			this.redraw();
-		}
+		this.glyphSequence = this.updateGlyphSequence();
+		this.redraw();
+
 		// log(`DisplayCanvas.attributeChangeCallback`, 'end');
 	}
 
@@ -163,7 +173,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * Updates the canvas
 	 */
 	redraw() {
-		// log('DisplayCanvas.redraw', 'start');
+		log('DisplayCanvas.redraw', 'start');
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
 
@@ -204,7 +214,7 @@ export class DisplayCanvas extends HTMLElement {
 			if (char.isVisible) this.drawGlyph(char);
 		});
 
-		// log('DisplayCanvas.redraw', 'end');
+		log('DisplayCanvas.redraw', 'end');
 	}
 
 	iterator(drawFunction) {
@@ -246,8 +256,8 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`displayCanvas.drawLineExtras`, 'start');
 		this.ctx.strokeStyle = accentColors.gray.l85;
 		this.ctx.beginPath();
-		this.ctx.moveTo(this.glyphSequence.areaMaxes.xMin, charData.view.dy + this.pageMargin);
-		this.ctx.lineTo(this.glyphSequence.areaMaxes.xMax, charData.view.dy + this.pageMargin);
+		this.ctx.moveTo(this.glyphSequence.areaMaxes.xMin, charData.view.dy + this.pagePadding);
+		this.ctx.lineTo(this.glyphSequence.areaMaxes.xMax, charData.view.dy + this.pagePadding);
 		this.ctx.closePath();
 		this.ctx.stroke();
 		// log(`displayCanvas.drawLineExtras`, 'end');
@@ -259,8 +269,8 @@ export class DisplayCanvas extends HTMLElement {
 		const scale = charData.view.dz;
 		let drawWidth = charData.widths.advance * scale;
 		let drawHeight = projectSettings.upm * scale;
-		let drawY = charData.view.dy + this.pageMargin - projectSettings.ascent * scale;
-		let drawX = charData.view.dx + this.pageMargin;
+		let drawY = charData.view.dy + this.pagePadding - projectSettings.ascent * scale;
+		let drawX = charData.view.dx + this.pagePadding;
 		let drawK = charData.widths.kern * scale * -1;
 
 		// log(`\t drawing ${charData.char}`);
@@ -277,7 +287,14 @@ export class DisplayCanvas extends HTMLElement {
 		this.ctx.strokeStyle = accentColors.blue.l85;
 		this.ctx.lineWidth = 1;
 
-		this.ctx.strokeRect(makeCrisp(drawX), makeCrisp(drawY), round(drawWidth), round(drawHeight));
+		if (this.drawCrisp) {
+			drawX = makeCrisp(drawX);
+			drawY = makeCrisp(drawY);
+			drawWidth = round(drawWidth);
+			drawHeight = round(drawHeight);
+		}
+
+		this.ctx.strokeRect(drawX, drawY, drawWidth, drawHeight);
 
 		// log(`displayCanvas.drawGlyphExtras`, 'end');
 	}
@@ -294,10 +311,10 @@ export class DisplayCanvas extends HTMLElement {
 		let flattenGlyphs = false;
 		let view = clone(charData.view);
 		// view.dx *= view.dz;
-		view.dx += this.pageMargin;
-		// view.dy += settings.ascent + this.pageMargin;
+		view.dx += this.pagePadding;
+		// view.dy += settings.ascent + this.pagePadding;
 		// view.dy *= view.dz;
-		view.dy += this.pageMargin;
+		view.dy += this.pagePadding;
 
 		// log(`\t drawing ${charData.char}`);
 		// log(view);

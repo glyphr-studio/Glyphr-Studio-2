@@ -112,6 +112,7 @@ export class GlyphSequence {
 		let thisKern;
 		let thisGlyph;
 
+		const upm = project.projectSettings.upm;
 		this.data = [];
 		this.textBlocks = this.glyphString.split('\n');
 
@@ -126,7 +127,7 @@ export class GlyphSequence {
 				thisGlyph = project.getGlyph(charsToHexArray(currentBlock[charNumber]).join(''));
 
 				// Calculate width
-				thisWidth = thisGlyph ? thisGlyph.advanceWidth : project.settings.upm / 2;
+				thisWidth = thisGlyph ? thisGlyph.advanceWidth : upm / 2;
 
 				// Kern distance
 				thisKern = calculateKernOffset(currentBlock[charNumber], currentBlock[charNumber + 1]);
@@ -167,8 +168,6 @@ export class GlyphSequence {
 		let currentY = 0;
 		let checkForBreak = false;
 
-		const upm = project.projectSettings.upm;
-
 		const scale = this.fontSize / upm;
 		log(`scale: ${scale}`);
 
@@ -198,7 +197,10 @@ export class GlyphSequence {
 					// position for this charData hasn't been calculated
 					if (checkForBreak && Number.isFinite(scaleAreaWidth)) {
 						nextLineBreak = getNextLineBreaker(currentBlock, charNumber);
-						wordAggregate = nextLineBreak.widths.aggregate - charData.widths.aggregate;
+						wordAggregate =
+							nextLineBreak.widths.aggregate + 
+							nextLineBreak.widths.advance -
+							charData.widths.aggregate;
 
 						log(`Checking for word length and right side of area`);
 						log(`currentX: ${currentX}`);

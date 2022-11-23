@@ -2,7 +2,7 @@ import { addAsChildren, makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
-import { makePanel_LivePreview } from '../panels/live_preview.js';
+import { livePreviewOptions, makePanel_LivePreview } from '../panels/live_preview.js';
 
 /**
  * Page > Live preview
@@ -18,7 +18,6 @@ export function makePage_LivePreview() {
 	// log(editor.nav);
 	// log(editor.selectedGlyph);
 
-	let previewString = 'A B C ABC ABCABC';
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
@@ -31,11 +30,28 @@ export function makePage_LivePreview() {
 				<div class="content-page__panel"></div>
 			</div>
 			<div class="live-preview-page__canvas-wrapper">
-				<display-canvas id="live-preview-page__canvas" glyphs="${previewString}"></display-canvas>
+				<display-canvas id="live-preview-page__canvas"
+					glyphs="${livePreviewOptions.glyphString}"
+					font-size="${livePreviewOptions.fontSize}"
+					line-gap="${livePreviewOptions.lineGap}"
+					page-padding="${livePreviewOptions.pagePadding}"
+					width="500"
+				"></display-canvas>
 			</div>
 		</div>
 	`,
 	});
+
+	// Subscriber
+	// editor.subscribe({
+	// 	topic: 'livePreview',
+	// 	subscriberID: 'livePreviewPage',
+	// 	callback: () => {
+	// 		let displayCanvas = document.getElementById('live-preview-page__canvas');
+	// 		displayCanvas.glyphSequence = displayCanvas.updateGlyphSequence();
+	// 		displayCanvas.redraw();
+	// 	}
+	// });
 
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
