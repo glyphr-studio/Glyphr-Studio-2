@@ -183,26 +183,30 @@ export function makeSingleCheckbox(workItem, property, thisTopic) {
 	newCheckbox.addEventListener('change', (event) => {
 		let newValue = event.target.checked;
 		workItem[property] = !!newValue;
-		getCurrentProjectEditor().publish(thisTopic, workItem);
-		if (property === 'use') {
-			toggleHandleInputs(workItem.type, !!newValue);
-			workItem.parent.reconcileHandle(workItem.type);
+		if (thisTopic) {
+			getCurrentProjectEditor().publish(thisTopic, workItem);
+			if (property === 'use') {
+				toggleHandleInputs(workItem.type, !!newValue);
+				workItem.parent.reconcileHandle(workItem.type);
+			}
 		}
 	});
 
-	getCurrentProjectEditor().subscribe({
-		topic: thisTopic,
-		subscriberID: `attributesPanel.${thisTopic}.${property}`,
-		callback: (changedItem) => {
-			if (!!changedItem[property]) {
-				newCheckbox.setAttribute('checked', '');
-				if (property === 'use') toggleHandleInputs(workItem.type, true);
-			} else {
-				newCheckbox.removeAttribute('checked');
-				if (property === 'use') toggleHandleInputs(workItem.type, false);
-			}
-		},
-	});
+	if (thisTopic) {
+		getCurrentProjectEditor().subscribe({
+			topic: thisTopic,
+			subscriberID: `attributesPanel.${thisTopic}.${property}`,
+			callback: (changedItem) => {
+				if (!!changedItem[property]) {
+					newCheckbox.setAttribute('checked', '');
+					if (property === 'use') toggleHandleInputs(workItem.type, true);
+				} else {
+					newCheckbox.removeAttribute('checked');
+					if (property === 'use') toggleHandleInputs(workItem.type, false);
+				}
+			},
+		});
+	}
 
 	return newCheckbox;
 }
@@ -230,4 +234,26 @@ export function dimSplitElement() {
 		className: 'dimSplit',
 		innerHTML: '&#x2044;',
 	});
+}
+
+// --------------------------------------------------------------
+// 'direct' controls that don't use pub/sub
+// --------------------------------------------------------------
+
+export function makeDirectCheckbox(workItem, property, callback) {
+	let newCheckbox = makeElement({
+		tag: 'input',
+		attributes: {
+			type: 'checkbox',
+		},
+	});
+	if (workItem[property]) newCheckbox.setAttribute('checked', '');
+
+	newCheckbox.addEventListener('change', (event) => {
+		let newValue = event.target.checked;
+		workItem[property] = !!newValue;
+		if (callback) callback(newValue);
+	});
+
+	return newCheckbox;
 }

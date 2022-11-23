@@ -49,8 +49,8 @@ export class GlyphSequence {
 			yMin: newMaxes.yMin || 0,
 			yMax: newMaxes.yMax || Infinity,
 		});
-		log(`SET areaMaxes\n ${this.areaMaxes.print()}`);
-		
+		// log(`SET areaMaxes\n ${this.areaMaxes.print()}`);
+
 	}
 
 	get fontSize() {
@@ -79,7 +79,7 @@ export class GlyphSequence {
 		if (typeof newString === 'string') this._glyphString = newString;
 		else this._glyphString = '';
 
-		log(`this.glyphString ${this.glyphString}`);
+		// log(`this.glyphString ${this.glyphString}`);
 	}
 
 	/**
@@ -89,7 +89,7 @@ export class GlyphSequence {
 	 * @returns nothing
 	 */
 	generateData() {
-		log('GlyphSequence.generateData', 'start');
+		// log('GlyphSequence.generateData', 'start');
 		const project = getCurrentProject();
 
 		/*
@@ -118,7 +118,7 @@ export class GlyphSequence {
 		this.data = [];
 		this.textBlocks = this.glyphString.split('\n');
 
-		log('==========================\nLOOP 1: CALCULATING WIDTHS');
+		// log('==========================\nLOOP 1: CALCULATING WIDTHS');
 		for (textBlockNumber = 0; textBlockNumber < this.textBlocks.length; textBlockNumber++) {
 			// TODO Ligatures
 			// currentBlock = findAndMergeLigatures(this.textBlocks[textBlockNumber].split(''));
@@ -171,29 +171,29 @@ export class GlyphSequence {
 		let checkForBreak = false;
 
 		const scale = this.fontSize / upm;
-		log(`scale: ${scale}`);
+		// log(`scale: ${scale}`);
 
 		const ascent = project.projectSettings.ascent;
-		log(`ascent: ${ascent}`);
+		// log(`ascent: ${ascent}`);
 
 		//Convert area properties to project / UPM scales
 		const singleLineHeight = upm + this.lineGap / scale;
-		log(`singleLineHeight: ${singleLineHeight}`);
+		// log(`singleLineHeight: ${singleLineHeight}`);
 
 		const scaleAreaWidth = this.areaMaxes.width / scale;
-		log(`scaleAreaWidth: ${scaleAreaWidth}`);
+		// log(`scaleAreaWidth: ${scaleAreaWidth}`);
 
 		const scaleAreaHeight = this.areaMaxes.height / scale;
 
-		log('==========================\nLOOP 2: CALCULATING DATA PER CHAR');
+		// log('==========================\nLOOP 2: CALCULATING DATA PER CHAR');
 		for (textBlockNumber = 0; textBlockNumber < this.data.length; textBlockNumber++) {
 			currentBlock = this.data[textBlockNumber];
-			log(`textBlockNumber: ${textBlockNumber}`);
+			// log(`textBlockNumber: ${textBlockNumber}`);
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
 				charData = currentBlock[charNumber];
-				log(`charNumber: ${charNumber} - |${charData.char}|`);
-				log(charData);
+				// log(`charNumber: ${charNumber} - |${charData.char}|`);
+				// log(charData);
 
 				if (charData.view === false) {
 					// position for this charData hasn't been calculated
@@ -204,37 +204,37 @@ export class GlyphSequence {
 							nextLineBreak.widths.advance -
 							charData.widths.aggregate;
 
-						log(`Checking for word length and right side of area`);
-						log(`currentX: ${currentX}`);
-						log(`wordAggregate: ${wordAggregate}`);
-						log(`... is it larger than ...`);
-						log(`scaleAreaWidth: ${scaleAreaWidth}`);
+						// log(`Checking for word length and right side of area`);
+						// log(`currentX: ${currentX}`);
+						// log(`wordAggregate: ${wordAggregate}`);
+						// log(`... is it larger than ...`);
+						// log(`scaleAreaWidth: ${scaleAreaWidth}`);
 
 						if (currentX + wordAggregate > scaleAreaWidth) {
 							// word takes up too much horizontal space
 							// increment the line, and do a vertical space check
-							log(`word does not fit on the current line...`);
+							// log(`word does not fit on the current line...`);
 
 							currentLine++;
 
-							log(`Checking for next line height against height of area`);
-							log(`currentY: ${currentY}`);
-							log(`singleLineHeight: ${singleLineHeight}`);
-							log(`... is larger than...`);
-							log(`scaleAreaHeight: ${scaleAreaHeight}`);
+							// log(`Checking for next line height against height of area`);
+							// log(`currentY: ${currentY}`);
+							// log(`singleLineHeight: ${singleLineHeight}`);
+							// log(`... is larger than...`);
+							// log(`scaleAreaHeight: ${scaleAreaHeight}`);
 
 							if (currentY + singleLineHeight > scaleAreaHeight) {
 								// text takes up too much vertical space
 								// returning early will leave non-computed chars.isVisible = false
-								log('Vertical Max Reached');
-								log('GlyphSequence.generateData', 'end');
+								// log('Vertical Max Reached');
+								// log('GlyphSequence.generateData', 'end');
 								return;
 							} else {
 								// more vertical space exists for the next line
-								log(`more vertical space for next line`);
+								// log(`more vertical space for next line`);
 								currentX = 0;
 								currentY = currentLine * singleLineHeight;
-								log(`currentY: ${currentY}`);
+								// log(`currentY: ${currentY}`);
 							}
 						}
 
@@ -260,8 +260,8 @@ export class GlyphSequence {
 			if (currentY + singleLineHeight > this.areaMaxes.yMax) {
 				// text takes up too much vertical space
 				// returning early will leave non-computed chars.isVisible = false
-				log('Vertical Max Reached 2');
-				log('GlyphSequence.generateData', 'end');
+				// log('Vertical Max Reached 2');
+				// log('GlyphSequence.generateData', 'end');
 				return;
 			}
 
@@ -269,9 +269,9 @@ export class GlyphSequence {
 			currentY = currentLine * singleLineHeight;
 		}
 
-		log('after view calc this.data');
-		log(this.data);
-		log('GlyphSequence.generateData', 'end');
+		// log('after view calc this.data');
+		// log(this.data);
+		// log('GlyphSequence.generateData', 'end');
 	}
 }
 
@@ -282,20 +282,20 @@ export class GlyphSequence {
  * @returns - line break charData
  */
 function getNextLineBreaker(block, start) {
-	log('getNextLineBreaker', 'start');
-	log(`starting at pos ${start}`);
+	// log('getNextLineBreaker', 'start');
+	// log(`starting at pos ${start}`);
 
 	for (let i = start; i < block.length; i++) {
 		if (block[i].isLineBreaker) {
-			log(`found ${i} returning |${block[i].char}| value ${block[i].widths.aggregate}`);
-			log('getNextLineBreaker', 'end');
+			// log(`found ${i} returning |${block[i].char}| value ${block[i].widths.aggregate}`);
+			// log('getNextLineBreaker', 'end');
 			return block[i];
 		}
 	}
 
 	const lastData = block[block.length - 1];
-	log(`NOTHING found, returning ${lastData.char} value ${lastData.widths.aggregate}`);
-	log('getNextLineBreaker', 'end');
+	// log(`NOTHING found, returning ${lastData.char} value ${lastData.widths.aggregate}`);
+	// log('getNextLineBreaker', 'end');
 	return lastData;
 }
 
