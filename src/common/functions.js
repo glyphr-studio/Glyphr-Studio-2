@@ -89,7 +89,7 @@ export function json(obj, raw) {
 	obj = clone(obj);
 	if (raw) return JSON.stringify(obj);
 	else {
-		const j = JSON.stringify(obj, undefined, '\t');
+		const j = JSON.stringify(obj, undefined, 2);
 		if (j) return j.replace(/\n/g, '\r\n');
 		else return '';
 	}

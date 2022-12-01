@@ -46,7 +46,7 @@ body {
 }
 ::-webkit-resizer {
 	display: block;
-	border: 2px outset white;
+	border: 2px outset var(--enabled-restingLight-background);
 }
 
 div,
@@ -172,6 +172,12 @@ textarea:focus {
 	background-color: var(--enabled-focus-background);
 	color: var(--enabled-focus-text);
 	border-color: var(--enabled-focus-border);
+}
+
+textarea:hover::-webkit-resizer,
+textarea:focus::-webkit-resizer {
+	display: block;
+	border: 2px outset var(--enabled-focus-background);
 }
 
 input:focus,

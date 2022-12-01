@@ -9,6 +9,7 @@ import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
 import { normalizeHex } from '../common/unicode.js';
 import { publish, subscribe, unsubscribe } from './pubSub.js';
+import { showToast } from '../controls/dialogs.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -560,7 +561,8 @@ export class ProjectEditor {
 	 * @param {boolean} overwrite - for Electron app, overwrite current working file
 	 */
 	saveGlyphrProjectFile(overwrite) {
-		// log('SAVEGLYPHRPROJECTVILE');
+		log(`ProjectEditor.saveGlyphrProjectFile`, 'start');
+
 		// log('' + this.project.projectSettings.formatSaveFile);
 
 		// desktop overwrite / save as logic
@@ -579,12 +581,12 @@ export class ProjectEditor {
 
 		// log('saveGlyphrProjectFile - \n'+saveData);
 		const fileName =
-			this.project.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
+		this.project.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
 
 		saveFile(fileName, saveData);
-
-		this.closeDialog();
+		showToast('Saved Glyphr Studio Project File');
 		this.setProjectAsSaved();
+		log(`ProjectEditor.saveGlyphrProjectFile`, 'end');
 	}
 
 	setProjectAsSaved() {}

@@ -2,6 +2,8 @@
 // Dialog Box, Error Box, Notation, toasts
 // -----------------------------------------------------------------
 
+import { makeElement } from "../common/dom";
+
 /**
  * Closes any type of dialog box that may be open
  */
@@ -142,20 +144,25 @@ export function closeErrorMessageBox() {
 
 /**
  * Creates and shows a little message at the top/center
- * of the screen, which dissapears after a set time
+ * of the screen, which disappears after a set time
  * @param {string} msg - message to show
  * @param {number} dur - how long to show the message (milliseconds)
  * @param {function} fn - function to call after message is shown
  */
 export function showToast(msg, dur, fn) {
 	// log('showToast', 'start');
+	let toastTimeout = false;
 	let step = -1;
-	const stepmax = 20;
-	const timestep = 10;
+	const stepMax = 20;
+	const stepTime = 10;
 	const divisor = 5;
-	const msgdiv = document.getElementById('toast');
-	const durration = dur || 3000;
-	msgdiv.innerHTML = msg || 'Howdy!';
+	const duration = dur || 3000;
+	const messageContainer = makeElement({
+		tag: 'dialog',
+		id: 'toast',
+		innerHTML: (msg || 'Howdy!')
+	});
+	document.body.appendChild(messageContainer);
 
 	// log('Typeof fn: ' + typeof fn);
 
@@ -164,28 +171,28 @@ export function showToast(msg, dur, fn) {
 		setTimeout(fn, 100);
 	}
 
-	if (_UI.toastTimeout) {
-		msgdiv.innerHTML = msg;
+	if (toastTimeout) {
+		messageContainer.innerHTML = msg;
 		appearFinish();
 		return;
 	}
 
-	let currtop = -50;
-	const finaltop = 15;
-	let curropacity = 0;
-	const finalopacity = 1;
+	let currentTop = -50;
+	const finalTop = 15;
+	let currentOpacity = 0;
+	const finalOpacity = 1;
 
-	/** start to dissapear */
+	/** start to disappear */
 	function appearFinish() {
 		// log('appearFinish');
-		currtop = finaltop;
-		curropacity = finalopacity;
-		step = stepmax;
+		currentTop = finalTop;
+		currentOpacity = finalOpacity;
+		step = stepMax;
 
-		msgdiv.style.marginTop = finaltop + 'px';
-		msgdiv.style.opacity = finalopacity;
+		messageContainer.style.marginTop = finalTop + 'px';
+		messageContainer.style.opacity = finalOpacity;
 
-		setToastTimeout(disappearStep, durration);
+		setToastTimeout(disappearStep, duration);
 	}
 
 	/** animate appearance */
@@ -193,61 +200,61 @@ export function showToast(msg, dur, fn) {
 		// log('appearStep ' + step);
 
 		if (step < 0) {
-			msgdiv.style.display = 'block';
-			msgdiv.style.marginTop = '-50px;';
-			msgdiv.style.opacity = '0.0';
-			msgdiv.style.borderBottomWidth = '0px';
+			messageContainer.style.display = 'block';
+			messageContainer.style.marginTop = '-50px;';
+			messageContainer.style.opacity = '0.0';
+			messageContainer.style.borderBottomWidth = '0px';
 
 			step++;
 
-			setToastTimeout(appearStep, timestep);
-		} else if (step < stepmax) {
+			setToastTimeout(appearStep, stepTime);
+		} else if (step < stepMax) {
 			step++;
-			currtop = currtop + (finaltop - currtop) / divisor;
-			curropacity = curropacity + (finalopacity - curropacity) / divisor;
+			currentTop = currentTop + (finalTop - currentTop) / divisor;
+			currentOpacity = currentOpacity + (finalOpacity - currentOpacity) / divisor;
 
-			msgdiv.style.marginTop = currtop + 'px';
-			msgdiv.style.opacity = curropacity;
+			messageContainer.style.marginTop = currentTop + 'px';
+			messageContainer.style.opacity = currentOpacity;
 
-			setToastTimeout(appearStep, timestep);
+			setToastTimeout(appearStep, stepTime);
 		} else {
 			appearFinish();
 		}
 	}
 
-	/** animate dissapearance */
+	/** animate disappearance */
 	function disappearStep() {
 		// log('appearStep ' + step);
 		if (step < 0) {
-			msgdiv.style.display = 'none';
-			msgdiv.style.marginTop = '-50px;';
-			msgdiv.style.opacity = '0.0';
-			msgdiv.innerHTML = '0_o';
-			if (_UI.toastTimeout) {
-				clearTimeout(_UI.toastTimeout);
-				_UI.toastTimeout = false;
+			messageContainer.style.display = 'none';
+			messageContainer.style.marginTop = '-50px;';
+			messageContainer.style.opacity = '0.0';
+			messageContainer.innerHTML = '0_o';
+			if (toastTimeout) {
+				clearTimeout(toastTimeout);
+				toastTimeout = false;
 			}
 		} else {
 			step--;
-			currtop = currtop - currtop / divisor;
-			curropacity = curropacity - curropacity / divisor;
+			currentTop = currentTop - currentTop / divisor;
+			currentOpacity = currentOpacity - currentOpacity / divisor;
 
-			msgdiv.style.marginTop = currtop + 'px';
-			msgdiv.style.opacity = curropacity;
+			messageContainer.style.marginTop = currentTop + 'px';
+			messageContainer.style.opacity = currentOpacity;
 
-			setToastTimeout(disappearStep, timestep);
+			setToastTimeout(disappearStep, stepTime);
 		}
 	}
 
 	/**
-	 * Common function for appear and dissapear to
+	 * Common function for appear and disappear to
 	 * call while looping through animations.
 	 * @param {function} fn - function to call
-	 * @param {number} dur - durration (milliseconds)
+	 * @param {number} dur - duration (milliseconds)
 	 */
 	function setToastTimeout(fn, dur) {
-		if (_UI.toastTimeout) clearTimeout(_UI.toastTimeout);
-		_UI.toastTimeout = setTimeout(fn, dur);
+		if (toastTimeout) clearTimeout(toastTimeout);
+		toastTimeout = setTimeout(fn, dur);
 	}
 
 	setToastTimeout(appearStep, 1);

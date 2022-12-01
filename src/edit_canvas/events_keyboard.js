@@ -43,11 +43,12 @@ export function handleKeyPress(event) {
 	// }
 
 	// s
-	// if (ehd.isCtrlDown && key === 's') {
-	// 	event.preventDefault();
-	// 	// ehd.isShiftDown = false;
-	// 	saveGlyphrProjectFile(true);
-	// }
+	if (ehd.isCtrlDown && key === 's') {
+		event.preventDefault();
+		// ehd.isShiftDown = false;
+		getCurrentProjectEditor().saveGlyphrProjectFile(true);
+
+	}
 
 	// g
 	// if (ehd.isCtrlDown && key === 'g') {
