@@ -10,7 +10,7 @@ import { makeIcon } from '../common/graphics.js';
 import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { refreshPanel } from '../panels/panels.js';
-import { makePage_LivePreview } from '../pages/live_preview.js';
+import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -134,6 +134,8 @@ export class Navigator {
 			// }
 			// If there is page content, set it
 			// pageContent = this.pageContents[this.page];
+
+			window.removeEventListener('resize', livePreviewPageWindowResize);
 			pageContent = this.tableOfContents[this.page].pageMaker();
 		}
 
