@@ -50,7 +50,6 @@ export class GlyphSequence {
 			yMax: newMaxes.yMax || Infinity,
 		});
 		// log(`SET areaMaxes\n ${this.areaMaxes.print()}`);
-
 	}
 
 	get fontSize() {
@@ -118,14 +117,19 @@ export class GlyphSequence {
 		this.data = [];
 		this.textBlocks = this.glyphString.split('\n');
 
-		// log('==========================\nLOOP 1: CALCULATING WIDTHS');
+		// log('========================== LOOP 1: CALCULATING WIDTHS');
+		// log(`this.textBlocks.length: ${this.textBlocks.length}`);
+
 		for (textBlockNumber = 0; textBlockNumber < this.textBlocks.length; textBlockNumber++) {
+			// log(`================ START textBlockNumber: ${textBlockNumber}`);
+
 			// TODO Ligatures
 			// currentBlock = findAndMergeLigatures(this.textBlocks[textBlockNumber].split(''));
 			currentBlock = this.textBlocks[textBlockNumber].split('');
 			this.data[textBlockNumber] = [];
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
+				// log(`==== charNumber: ${charNumber}`);
 				thisGlyph = project.getGlyph(charsToHexArray(currentBlock[charNumber]).join(''));
 
 				// Calculate width
@@ -150,6 +154,7 @@ export class GlyphSequence {
 					lineNumber: false,
 				};
 			}
+			// log(`================ END textBlockNumber ${textBlockNumber}`);
 		}
 
 		/*
@@ -183,12 +188,12 @@ export class GlyphSequence {
 		const scaleAreaWidth = this.areaMaxes.width / scale;
 		// log(`scaleAreaWidth: ${scaleAreaWidth}`);
 
-		const scaleAreaHeight = this.areaMaxes.height / scale;
+		const scaleAreaYMax = this.areaMaxes.yMax / scale;
 
-		// log('==========================\nLOOP 2: CALCULATING DATA PER CHAR');
+		// log('========================== LOOP 2: CALCULATING DATA PER CHAR');
 		for (textBlockNumber = 0; textBlockNumber < this.data.length; textBlockNumber++) {
 			currentBlock = this.data[textBlockNumber];
-			// log(`textBlockNumber: ${textBlockNumber}`);
+			// log(`================ START textBlockNumber: ${textBlockNumber}`);
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
 				charData = currentBlock[charNumber];
@@ -221,9 +226,9 @@ export class GlyphSequence {
 							// log(`currentY: ${currentY}`);
 							// log(`singleLineHeight: ${singleLineHeight}`);
 							// log(`... is larger than...`);
-							// log(`scaleAreaHeight: ${scaleAreaHeight}`);
+							// log(`scaleAreaYMax: ${scaleAreaYMax}`);
 
-							if (currentY + singleLineHeight > scaleAreaHeight) {
+							if (currentY + singleLineHeight > scaleAreaYMax) {
 								// text takes up too much vertical space
 								// returning early will leave non-computed chars.isVisible = false
 								// log('Vertical Max Reached');
@@ -257,16 +262,25 @@ export class GlyphSequence {
 			// End of one block
 			currentLine++;
 
-			if (currentY + singleLineHeight > this.areaMaxes.yMax) {
+			// log(`== Checking at end of block to see if there is room for the next line`);
+
+			// log(`currentY: ${currentY}`);
+			// log(`singleLineHeight: ${singleLineHeight}`);
+			// log(`scaleAreaYMax: ${scaleAreaYMax}`);
+
+
+			if (currentY + singleLineHeight > scaleAreaYMax) {
 				// text takes up too much vertical space
 				// returning early will leave non-computed chars.isVisible = false
-				// log('Vertical Max Reached 2');
+				// log(`Vertical Max Reached @ End Of Block ${textBlockNumber}`);
 				// log('GlyphSequence.generateData', 'end');
 				return;
 			}
 
 			currentX = 0;
 			currentY = currentLine * singleLineHeight;
+			// log(`================ END textBlockNumber: ${textBlockNumber}`);
+
 		}
 
 		// log('after view calc this.data');
