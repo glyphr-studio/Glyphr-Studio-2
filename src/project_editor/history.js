@@ -1,5 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { clone } from '../common/functions.js';
+import { showToast } from '../controls/dialogs.js';
 import { refreshPanel } from '../panels/panels.js';
 import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
@@ -77,6 +78,7 @@ export class History {
 			q.shift();
 			editor.navigate('Glyph edit');
 			// log(`Need to navigate to next changed glyph`);
+			showToast('Navigated without undo-ing');
 			// log(`History.restoreState`, 'end');
 			return;
 		}
