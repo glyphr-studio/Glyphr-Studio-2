@@ -1,0 +1,22 @@
+#toast {
+	display: none;
+	width: 300px;
+	position: absolute;
+	left: 520px;
+	margin: -50px 0px 0px 0px;
+	/* background-color: rgb(0, 63, 95); */
+	background-color: var(--green-l90);
+	/* color: rgb(155, 221, 255); */
+	color: var(--green-l10);
+	padding: 4px 8px;
+	z-index: 1010;
+	text-align: center;
+	border: 1px solid var(--green-l60);
+	border-radius: 4px;
+	box-shadow: var(--l3-shadow-down);
+}
+
+#toast a {
+	/* color: rgb(155, 221, 255); */
+	color: var(--green-l10);
+}

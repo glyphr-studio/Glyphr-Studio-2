@@ -26,9 +26,9 @@ export function handleKeyPress(event) {
 	// 	return;
 	// }
 
-	// log('handleKeyPress', 'start');
+	log('handleKeyPress', 'start');
 	const key = getKeyFromEvent(event);
-	// log(`KEY ${key} from ${event.which}`);
+	log(`KEY ${key} from ${event.which}`);
 	// log(event);
 
 	handleSpecialKeys(key, 'down');
@@ -47,7 +47,6 @@ export function handleKeyPress(event) {
 		event.preventDefault();
 		// ehd.isShiftDown = false;
 		getCurrentProjectEditor().saveGlyphrProjectFile(true);
-
 	}
 
 	// g
@@ -98,6 +97,8 @@ export function handleKeyPress(event) {
 				editor.multiSelect.paths.selectAll();
 			}
 		}
+
+		log('handleKeyPress', 'end');
 		return;
 	}
 
@@ -194,7 +195,7 @@ export function handleKeyPress(event) {
 		// b
 		if (key === 'b') clickTool('pathEdit');
 	}
-	// log('handleKeyPress', 'end');
+	log('handleKeyPress', 'end');
 }
 
 function getKeyFromEvent(event) {

@@ -693,7 +693,7 @@ function pastePathsFrom(sourceGlyphID) {
 	if (sourceGlyphID !== destinationGlyphID && sourceGlyph) {
 		copyPathsFromTo(sourceGlyph, destinationGlyphID, options);
 
-		// showToast('Copied ' + this.paths.length + ' paths');
+		showToast('Copied ' + this.paths.length + ' paths');
 		redraw({ calledBy: 'pastePathsFrom' });
 		editor.history.addState(
 			'Copied paths from "' + getGlyphName(sourceGlyphID) + '" to  "' + getSelectedItemName()
