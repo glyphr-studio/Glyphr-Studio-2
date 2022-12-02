@@ -103,7 +103,7 @@ export class Navigator {
 
 		if (wrapper) {
 			const pageContent = this.makePageContent(fadePageIn);
-			wrapper.innerHTML = makeAppTopBar();
+			wrapper.appendChild(makeAppTopBar());
 			wrapper.appendChild(pageContent);
 		} else {
 			console.warn(`app__wrapper could not be found, navigation failed`);

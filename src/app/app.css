@@ -23,23 +23,38 @@
 }
 
 #app__top-bar {
-	color: var(--blue-l50);
 	padding: 6px 0px 6px 11px;
+}
+
+.top-bar__logo {
+	color: var(--blue-l50);
 	font-size: 1.4em;
 }
 
-.versionInfo {
-	font-size: 0.6em;
-	opacity: 60%;
+.top-bar__menus {
+	margin-left: 20px;
 }
 
-.alphaBugContact {
+.menu-entry-point,
+.menu-entry-point:hover,
+.menu-entry-point:active,
+.menu-entry-point:focus {
+	font-size: 0.8em;
+	padding: 2px 4px;
+	margin: 0px 10px 0px 0px;
+	position: relative;
+	top: -2px;
+	background-color: transparent;
+	border: 0;
+}
+
+.top-bar__bug-contact {
 	position: absolute;
 	opacity: 80%;
 	right: 10px;
 	padding: 2px 4px;
 	margin: 5px 0px 0px 0px;
-	font-size: 12px;
+	font-size: 0.8em;
 	background-color: var(--purple-l40);
 	border: 1px solid var(--purple-l30);
 	color: var(--purple-l80);
@@ -47,15 +62,15 @@
 	box-shadow: var(--l3-shadow);
 }
 
-.alphaBugContact a,
-.alphaBugContact a:hover,
-.alphaBugContact a:focus,
-.alphaBugContact a:visited {
-	font-size: 12px;
+.top-bar__bug-contact a,
+.top-bar__bug-contact a:hover,
+.top-bar__bug-contact a:focus,
+.top-bar__bug-contact a:visited {
+	font-size: 1em;
 	color: var(--purple-l90);
 	margin-left: 4px;
 }
 
-.alphaBugContact a:active {
+.top-bar__bug-contact a:active {
 	color: white;
 }

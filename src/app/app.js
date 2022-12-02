@@ -1,6 +1,7 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from './main.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -144,19 +145,42 @@ function addTelemetry() {
 }
 
 export function makeAppTopBar() {
-	let app = getGlyphrStudioApp();
-	return `
-		<div id="app__top-bar">
-			Glyphr Studio&emsp;
-			<span class="versionInfo">
-				${app.versionName} - ${app.version}
-			</span>
-			<span class='alphaBugContact'>
-				Found a bug? Have some feedback?
-				${emailLink()}
-			</span>
-		</div>
-	`;
+	let topBar = makeElement({ tag: 'div', id: 'app__top-bar' });
+
+	let logo = makeElement({ innerHTML: 'Glyphr Studio', className: 'top-bar__logo' });
+
+	let menus = makeElement({ className: 'top-bar__menus' });
+	menus.appendChild(makeMenu('File'));
+	menus.appendChild(makeMenu('Project'));
+	menus.appendChild(makeMenu('Help'));
+
+	let bugContact = makeElement({
+		className: 'top-bar__bug-contact',
+		innerHTML: `Found a bug? Have some feedback? ${emailLink()}`,
+	});
+
+	addAsChildren(topBar, [logo, menus, bugContact]);
+
+	return topBar;
+}
+
+function makeMenu(menuName) {
+	let entryPoint = makeElement({
+		tag: 'button',
+		innerHTML: menuName,
+		className: 'menu-entry-point',
+	});
+
+	if (menuName === 'File') {
+	}
+
+	if (menuName === 'Project') {
+	}
+
+	if (menuName === 'Help') {
+	}
+
+	return entryPoint;
 }
 
 // --------------------------------------------------------------
