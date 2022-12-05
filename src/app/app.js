@@ -2,6 +2,7 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from './main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
+import { showContextMenu } from '../controls/dialogs.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -171,13 +172,39 @@ function makeMenu(menuName) {
 		className: 'menu-entry-point',
 	});
 
+	entryPoint.addEventListener('mouseover', closeAllDialogs);
+	
 	if (menuName === 'File') {
+		entryPoint.addEventListener('click', (event) => {
+			let rect = event.target.getBoundingClientRect();
+			showContextMenu(
+				[
+					{ name: 'Save Glyphr Studio Project File' },
+					{ name: 'Export OTF File' },
+					{ name: 'Export SVG Font File' },
+				],
+				rect.x,
+				rect.y + rect.height
+			);
+		});
 	}
 
 	if (menuName === 'Project') {
+		entryPoint.addEventListener('click', (event) => {
+			let rect = event.target.getBoundingClientRect();
+			showContextMenu([{ name: 'Open another project' }], rect.x, rect.y + rect.height);
+		});
 	}
 
 	if (menuName === 'Help') {
+		entryPoint.addEventListener('click', (event) => {
+			let rect = event.target.getBoundingClientRect();
+			showContextMenu(
+				[{ name: 'Help and Documentation' }, { name: 'About' }],
+				rect.x,
+				rect.y + rect.height
+			);
+		});
 	}
 
 	return entryPoint;

@@ -20,3 +20,35 @@
 	/* color: rgb(155, 221, 255); */
 	color: var(--green-l10);
 }
+
+#context-menu {
+	display: grid;
+	padding: 10px;
+	background-color: var(--enabled-resting-background);
+	z-index: 1 !important;
+	border: 1px solid var(--enabled-resting-border);
+	border-radius: 0px 4px 4px 4px;
+	box-shadow: var(--l3-shadow-down);
+	animation: var(--slide-down-animate-in);
+}
+
+#context-menu:focus {
+	outline: 0;
+}
+
+.context-menu-row {
+	display: grid;
+	grid-template-columns: 20px 1fr;
+	column-gap: 5px;
+	padding: 5px 10px 5px 5px;
+}
+
+.context-menu-row:hover {
+	background-color: var(--enabled-focus-background);
+	color: var(--blue-l35);
+	cursor: pointer;
+}
+
+.context-menu-row:focus {
+	outline: var(--global-focus-style);
+}

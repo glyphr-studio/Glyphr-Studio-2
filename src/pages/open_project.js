@@ -288,7 +288,8 @@ function handleNewProject() {
 	setTimeout(function () {
 		const editor = app.getCurrentProjectEditor();
 		editor.project = new GlyphrStudioProject();
-		app.navigate('Glyph edit');
+		editor.nav.page = 'Glyph edit';
+		app.navigate();
 	}, 5);
 }
 
@@ -302,7 +303,9 @@ function handleLoadSample(name) {
 		'<h2>Load an Example project</h2>Loading example project...';
 
 	setTimeout(function () {
-		app.getCurrentProjectEditor().project = new GlyphrStudioProject(projects[name]);
-		app.navigate('Glyph edit');
+		let editor = app.getCurrentProjectEditor();
+		editor.project = new GlyphrStudioProject(projects[name]);
+		editor.nav.page = 'Glyph edit';
+		app.navigate();
 	}, 5);
 }

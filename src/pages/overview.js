@@ -35,7 +35,8 @@ export function makePage_Overview() {
 	let glyphsContent = makeGlyphChooserContent((glyphID) => {
 		const editor = getCurrentProjectEditor();
 		editor.selectedGlyphID = glyphID;
-		editor.navigate('Glyph edit');
+		editor.nav.page = 'Glyph edit';
+		editor.navigate();
 		editor.history.addState(`Navigated to ${editor.project.getGlyphName(glyphID, true)}`);
 
 	}, false);

@@ -76,7 +76,8 @@ export class History {
 			// Assumes navigate adds an entry to the queue
 			editor.selectedGlyphID = q[1].itemID;
 			q.shift();
-			editor.navigate('Glyph edit');
+			editor.nav.page = 'Glyph edit';
+			editor.navigate();
 			// log(`Need to navigate to next changed glyph`);
 			showToast('Navigated without undo-ing');
 			// log(`History.restoreState`, 'end');

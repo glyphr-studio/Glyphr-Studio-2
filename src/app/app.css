@@ -40,12 +40,21 @@
 .menu-entry-point:active,
 .menu-entry-point:focus {
 	font-size: 0.8em;
-	padding: 2px 4px;
-	margin: 0px 10px 0px 0px;
+	padding: 2px 5px;
+	margin: 0px 5px 0px 0px;
 	position: relative;
 	top: -2px;
 	background-color: transparent;
-	border: 0;
+	border: 1px solid transparent;
+	border-radius: 2px;
+	box-shadow: none;
+	color: var(--enabled-resting-lightText);
+	z-index: 1000 !important;
+}
+
+.menu-entry-point:hover {
+	color: var(--enabled-active-lightText);
+	background-color: var(--enabled-active-background);
 }
 
 .top-bar__bug-contact {

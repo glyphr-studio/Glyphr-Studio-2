@@ -137,14 +137,18 @@ export function showToast(msg, dur, fn) {
  * @param {Number} y - Y position for the menu
  */
 export function showContextMenu(rows = [], x = false, y = false) {
-	let element = document.getElementById('contextMenu');
+	let element = document.getElementById('context-menu');
 
 	// remove any current context menu, or create one if it doesn't exist
 	if (element) {
 		element.style.display = 'none';
 		element.innerHTML = '';
 	} else {
-		element = makeElement({ tag: 'dialog', id: 'contextMenu' });
+		element = makeElement({
+			tag: 'dialog',
+			id: 'context-menu',
+			attributes: { tabindex: '-1' },
+		});
 		element.style.display = 'none';
 		document.body.appendChild(element);
 	}
@@ -158,14 +162,20 @@ export function showContextMenu(rows = [], x = false, y = false) {
 	if (isFinite(x) && isFinite(y)) {
 		element.style.left = `${x}px`;
 		element.style.top = `${y}px`;
-		element.style.display = 'block';
+		element.style.display = 'grid';
+		setDialogHideListeners(element);
+		element.focus();
 	} else {
 		console.warn(`Context menu not supplied with a screen position.`);
 	}
 }
 
 function makeOneContextMenuRow(data = {}) {
-	let row = makeElement({ tag: 'div' });
+	let row = makeElement({
+		tag: 'div',
+		className: 'context-menu-row',
+		attributes: { tabindex: '0' },
+	});
 
 	// Icon
 	if (data.icon) {
@@ -179,12 +189,25 @@ function makeOneContextMenuRow(data = {}) {
 	row.appendChild(makeElement({ innerHTML: data.name }));
 
 	// Click function
-	data.onClick = data.onClick || '';
-	row.addEventListener('click', data.onClick);
+	if (data.onClick) row.addEventListener('click', data.onClick);
 
 	return row;
 }
 
+export function setDialogHideListeners(element) {
+	element.addEventListener('mouseleave', closeAllDialogs);
+
+	// window.setTimeout(() => {
+	// 	let focusedElem = document.activeElement;
+	// 	if (focusedElem === element) {
+	// 		console.log('dialog is focused');
+	// 	} else {
+	// 		console.log('dialog is NOT focused');
+	// 		closeAllDialogs();
+	// 	}
+	// }, 3000);
+	// element.addEventListener('blur', closeAllDialogs);
+}
 
 // --------------------------------------------------------------
 // Error Message Box
