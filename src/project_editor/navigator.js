@@ -11,6 +11,7 @@ import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { refreshPanel } from '../panels/panels.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
+import { setDialogHideListeners } from '../controls/dialogs.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -32,7 +33,7 @@ export class Navigator {
 				pageMaker: makePage_OpenProject,
 				iconName: false,
 			},
-			'Overview': {
+			Overview: {
 				pageMaker: makePage_Overview,
 				iconName: 'page_overview',
 			},
@@ -40,15 +41,15 @@ export class Navigator {
 				pageMaker: makePage_GlyphEdit,
 				iconName: 'page_glyphEdit',
 			},
-			'Ligatures': {
+			Ligatures: {
 				pageMaker: false,
 				iconName: 'page_ligatures',
 			},
-			'Components': {
+			Components: {
 				pageMaker: false,
 				iconName: 'page_components',
 			},
-			'Kerning': {
+			Kerning: {
 				pageMaker: false,
 				iconName: 'page_kerning',
 			},
@@ -60,7 +61,7 @@ export class Navigator {
 				pageMaker: false,
 				iconName: 'page_globalActions',
 			},
-			'Settings': {
+			Settings: {
 				pageMaker: false,
 				iconName: 'page_settings',
 			},
@@ -68,11 +69,11 @@ export class Navigator {
 				pageMaker: false,
 				iconName: 'page_importAndExport',
 			},
-			'Help': {
+			Help: {
 				pageMaker: makePage_Help,
 				iconName: 'page_help',
 			},
-			'About': {
+			About: {
 				pageMaker: makePage_About,
 				iconName: 'page_about',
 			},
@@ -81,20 +82,14 @@ export class Navigator {
 
 	/**
 	 * Changes the page of this Project Editor
-	 * @param {string} pageName - where to go
 	 */
-	navigate(pageName) {
-		// log(`Navigator.navigate`, 'start');
+	navigate() {
+		log(`Navigator.navigate`, 'start');
 
-		// log(`pageName : ${pageName}`);
 		let fadePageIn = false;
-		if (pageName) {
-			fadePageIn = this.page !== pageName;
-			this.page = pageName;
-		}
 
-		// log(`this.page: ${this.page}`);
-		// log(`this.panel: ${this.panel}`);
+		log(`this.page: ${this.page}`);
+		log(`this.panel: ${this.panel}`);
 
 		const wrapper = document.getElementById('app__wrapper');
 
@@ -103,13 +98,14 @@ export class Navigator {
 
 		if (wrapper) {
 			const pageContent = this.makePageContent(fadePageIn);
+			wrapper.innerHTML = '';
 			wrapper.appendChild(makeAppTopBar());
 			wrapper.appendChild(pageContent);
 		} else {
 			console.warn(`app__wrapper could not be found, navigation failed`);
 		}
 
-		// log(`Navigator.navigate`, 'end');
+		log(`Navigator.navigate`, 'end');
 	}
 
 	/**
@@ -118,7 +114,11 @@ export class Navigator {
 	 */
 	makePageContent(fadePageIn = false) {
 		// log(`Navigator.makePageContent`, 'start');
-		const editorContent = makeElement({ tag: 'div', id: 'app__main-content', className: fadePageIn? 'page-fade-in' : ''});
+		const editorContent = makeElement({
+			tag: 'div',
+			id: 'app__main-content',
+			className: fadePageIn ? 'page-fade-in' : '',
+		});
 
 		// Default page loader fallback
 		let pageContent = makeElement({ tag: 'h1', innerHTML: 'Uninitialized page content' });
@@ -271,16 +271,17 @@ export function showNavDropdown(parentElement) {
 			background-color: ${parentStyle.backgroundColor};
 			border-color: ${parentStyle.backgroundColor};
 		`,
+			tabindex: '-1',
 		},
 	});
 
-	dropDown.addEventListener('mouseleave', closeAllDialogs);
+	setDialogHideListeners(dropDown);
 
 	addAsChildren(dropDown, dropdownContent);
 	// log(`dropDown:`);
 	// log(dropDown);
 	closeAllDialogs();
-	document.getElementById('app__wrapper').appendChild(dropDown);
+	document.getElementById('app__wrapper').appendChild(dropDown).focus();
 	// log(`showNavDropdown`, 'end');
 }
 
@@ -304,10 +305,18 @@ function makePageChooserContent() {
 }
 
 function makeNavButton_Page(pageName, iconName) {
-	let button = makeElement({ tag: 'button', className: 'nav-dropdown__button' });
+	let button = makeElement({
+		tag: 'button',
+		className: 'nav-dropdown__button',
+		attributes: { tabindex: '0' },
+	});
 	button.innerHTML += makeIcon({ name: iconName, color: accentColors.blue.l90 });
 	button.appendChild(makeElement({ content: pageName }));
-	button.addEventListener('click', () => getCurrentProjectEditor().navigate(pageName));
+	button.addEventListener('click', () => {
+		let editor = getCurrentProjectEditor();
+		editor.nav.page = pageName;
+		editor.navigate();
+	});
 	return button;
 }
 
@@ -329,7 +338,11 @@ function makePanelChooserContent() {
 }
 
 function makeNavButton_Panel(panelName, iconName) {
-	let button = makeElement({ tag: 'button', className: 'nav-dropdown__button' });
+	let button = makeElement({
+		tag: 'button',
+		className: 'nav-dropdown__button',
+		attributes: { tabindex: '0' },
+	});
 	button.innerHTML += makeIcon({ name: iconName, color: accentColors.blue.l90 });
 	button.appendChild(makeElement({ content: panelName }));
 	button.addEventListener('click', () => {

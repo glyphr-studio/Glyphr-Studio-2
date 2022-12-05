@@ -96,11 +96,13 @@ export class ProjectEditor {
 	// --------------------------------------------------------------
 	// Navigate
 	// --------------------------------------------------------------
-	navigate(pageName) {
-		// log(`ProjectEditor.navigate`, 'start');
-		this.nav.navigate(pageName);
+	navigate() {
+		log(`ProjectEditor.navigate`, 'start');
+
+		this.nav.navigate();
 		this.autoFitIfViewIsDefault();
-		// log(`ProjectEditor.navigate`, 'end');
+
+		log(`ProjectEditor.navigate`, 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -581,7 +583,7 @@ export class ProjectEditor {
 
 		// log('saveGlyphrProjectFile - \n'+saveData);
 		const fileName =
-		this.project.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
+			this.project.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
 
 		saveFile(fileName, saveData);
 		showToast('Saved Glyphr Studio Project File');

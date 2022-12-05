@@ -49,9 +49,16 @@ G L Y P H R  S T U D I O  2
 			window._GlyphrStudioApp = GSApp;
 
 			window.closeAllDialogs = function () {
+				let animationLength = 150;
 				let dialogs = document.querySelectorAll('dialog');
 				// console.info(`CloseAllDialogs: ${dialogs.length}`);
-				dialogs.forEach((element) => element.parentElement.removeChild(element));
+				dialogs.forEach((element) => {
+					element.animate({opacity: 0, transform: 'scale(0.99) translateY(-4px)'}, {duration: animationLength});
+					window.setTimeout(() => {
+						element.style.display = 'none';
+						element.remove()
+					}, animationLength-10);
+				});
 			};
 		</script>
 		<style>

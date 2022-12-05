@@ -377,6 +377,7 @@ export function getPathAtLocation(x, y) {
 	let path;
 	const editor = getCurrentProjectEditor();
 	let sws = editor.selectedItem?.paths;
+	if (!sws) return false;
 	// log(sws);
 	for (let j = sws.length - 1; j >= 0; j--) {
 		path = sws[j];

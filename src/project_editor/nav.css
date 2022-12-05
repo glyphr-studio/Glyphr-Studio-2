@@ -82,6 +82,10 @@
 	animation: var(--slide-down-animate-in);
 }
 
+#nav-dropdown:focus {
+	outline: 0;
+}
+
 .nav-dropdown__button {
 	display: grid;
 	align-items: center;
