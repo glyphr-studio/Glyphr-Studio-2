@@ -15,7 +15,7 @@ export function makeGlyphrStudioLogo(wordmark = true) {
 			version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
 			viewBox="0 0 200 ${height}" enable-background="new 0 0 200 ${height}">
 				${logoChunk1}
-				${wordmark? logoChunk2 : ''}
+				${wordmark ? logoChunk2 : ''}
 		</svg>
 	`;
 	return re;
@@ -125,6 +125,18 @@ icons.panel_save = `
 	<rect x="6" y="19" width="11" height="1"/>
 	<polygon points="5,22 2,19 2,2 24,2 24,0 0,0 0,19.8 4.2,24 24,24 24,22"/>
 	<polygon points="24,0 22,0 22,2 22,22 22,24 24,24"/>
+`;
+
+// Commands
+icons.command_save = `
+	<path d="M20,18H9v5h12v-5h-1Zm-8,4h-2v-3h2v3Zm7-1h-5v-1h5v1Z"/>
+	<polygon points="4 4 26 4 10 4 10 14 10 4 4 4 4 22.41 4 4"/>
+	<path d="M27,3H3V22.83l4.17,4.17H27V3h0ZM9,15h12V5h4v2h-2v2h2V25H8l-3-3V5h4V15h0Zm2-2V5h8V13H11Z"/>
+`;
+
+icons.command_export = `
+	<polygon points="16 28 16 9 23.5 16.5 25 15 15 5 5 15 6.5 16.5 14 9 14 28 16 28"/>
+	<rect x="1" y="1" width="28" height="2"/>
 `;
 
 // Pages

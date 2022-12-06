@@ -173,15 +173,15 @@ function makeMenu(menuName) {
 	});
 
 	entryPoint.addEventListener('mouseover', closeAllDialogs);
-	
+
 	if (menuName === 'File') {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
 			showContextMenu(
 				[
-					{ name: 'Save Glyphr Studio Project File' },
-					{ name: 'Export OTF File' },
-					{ name: 'Export SVG Font File' },
+					{ name: 'Save Glyphr Studio Project File', icon: 'command_save' },
+					{ name: 'Export OTF File', icon: 'command_export' },
+					{ name: 'Export SVG Font File', icon: 'command_export' },
 				],
 				rect.x,
 				rect.y + rect.height
