@@ -568,13 +568,16 @@ export class ProjectEditor {
 		// log('' + this.project.projectSettings.formatSaveFile);
 
 		let saveData = this.project.save();
+		const defaultValues = new GlyphrStudioProject();
+		// saveData = removeDefaultValues(saveData, defaultValues, 'projectSettings');
+		saveData = removeDefaultValues(saveData, defaultValues, 'metadata');
 
 		if (this.project.projectSettings.formatSaveFile) saveData = json(saveData);
 		else saveData = JSON.stringify(saveData);
 
 		// log('saveGlyphrProjectFile - \n'+saveData);
 		const fileName =
-			this.project.projectSettings.name + ' - Glyphr Project - ' + makeDateStampSuffix() + '.txt';
+			this.project.projectSettings.name + ' - Glyphr Studio Project - ' + makeDateStampSuffix() + '.gs2';
 
 		saveFile(fileName, saveData);
 		showToast('Saved Glyphr Studio Project File');
@@ -584,4 +587,14 @@ export class ProjectEditor {
 
 	setProjectAsSaved() {}
 	setProjectAsUnsaved() {}
+}
+
+function removeDefaultValues(target, defaults, filterName) {
+	Object.keys(target[filterName]).forEach((key) => {
+		if (target[filterName][key] === defaults[filterName][key]) {
+			delete target[filterName][key];
+		}
+	});
+
+	return target;
 }

@@ -139,6 +139,8 @@ export function showToast(msg, dur, fn) {
  * @param {Number} y - Y position for the menu
  */
 export function showContextMenu(rows = [], x = false, y = false) {
+	log(`showContextMenu`, 'start');
+
 	let element = document.getElementById('context-menu');
 
 	// remove any current context menu, or create one if it doesn't exist
@@ -157,6 +159,7 @@ export function showContextMenu(rows = [], x = false, y = false) {
 
 	// Create and add each row
 	rows.forEach((item) => {
+		log(`item.name: ${item.name}`);
 		element.appendChild(makeOneContextMenuRow(item));
 	});
 
@@ -170,17 +173,21 @@ export function showContextMenu(rows = [], x = false, y = false) {
 	} else {
 		console.warn(`Context menu not supplied with a screen position.`);
 	}
+
+	log(`showContextMenu`, 'end');
 }
 
 function makeOneContextMenuRow(data = {}) {
 	let row = makeElement({
 		tag: 'div',
-		className: 'context-menu-row',
+		className: data.name === 'hr' ? 'context-menu-hr' : 'context-menu-row',
 		attributes: { tabindex: '0' },
 	});
 
-	let size = 30;
-	if (data.icon.indexOf('page_') === 0) size = 50;
+	if (data.name === 'hr') {
+		row.appendChild(makeElement({ tag: 'hr' }));
+		return row;
+	}
 
 	// Icon
 	if (data.icon) {
@@ -188,7 +195,6 @@ function makeOneContextMenuRow(data = {}) {
 			textToNode(
 				makeIcon({
 					name: data.icon,
-					size: size,
 					color: accentColors.blue.l55,
 					hoverColor: 'blue',
 				})
@@ -201,6 +207,15 @@ function makeOneContextMenuRow(data = {}) {
 	// Command name
 	data.name = data.name || 'NAME';
 	row.appendChild(makeElement({ innerHTML: data.name }));
+
+	// Keyboard Shortcut
+	if (data.shortcut) {
+		let shortcutWrapper = makeElement({tag: 'div', className: 'shortcut-wrapper'});
+		data.shortcut.forEach((key) =>
+			shortcutWrapper.appendChild(makeElement({ tag: 'code', innerHTML: key }))
+		);
+		row.appendChild(shortcutWrapper);
+	}
 
 	// Click function
 	if (data.onClick) row.addEventListener('click', data.onClick);

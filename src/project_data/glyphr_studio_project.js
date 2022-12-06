@@ -21,8 +21,7 @@ export class GlyphrStudioProject {
 		// Set up all internal default values first
 		this.projectSettings = {
 			// Internal Stuff
-			versionName: 'Version 2 Alpha-1',
-			version: '2.0.0-alpha.1',
+			version: '2.0.0-alpha.2',
 			initialVersion: '2.0.0-alpha.1',
 			projectID: false,
 
@@ -56,13 +55,11 @@ export class GlyphrStudioProject {
 
 		this.metadata = {
 			// Shared Properties
-			shared: '{{sectionbreak}}',
 			font_family: 'My Font',
 			font_style: 'normal',
 			panose_1: '2 0 0 0 0 0 0 0 0 0',
 
 			// OTF Properties
-			otf: '{{sectionbreak}}',
 			designer: '',
 			designerURL: '',
 			manufacturer: '',
@@ -75,31 +72,12 @@ export class GlyphrStudioProject {
 			trademark: '',
 
 			// SVG Properties
-			svg: '{{sectionbreak}}',
-			// 'units_per_em': 0,
-			// 'accent_height': 0,
-			// 'ascent': 0,
-			// 'cap_height': 0,
-			// 'x_height': 0,
-			// 'descent': 0,
-			// 'bbox': 0,
-			// 'unicode_range': 0,
 			font_variant: 'normal',
 			font_weight: 400,
 			font_stretch: 'normal',
 			stemv: 0,
 			stemh: 0,
 			slope: 0,
-			// 'font_size': 'all',
-			// 'widths': 0,
-			// 'ideographic': 0,
-			// 'alphabetic': 0,
-			// 'mathematical': 0,
-			// 'hanging': 0,
-			// 'v_ideographic': 0,
-			// 'v_alphabetic': 0,
-			// 'v_mathematical': 0,
-			// 'v_hanging': 0,
 			underline_position: -50,
 			underline_thickness: 10,
 			strikethrough_position: 300,

@@ -38,6 +38,7 @@
 		"opentype",
 		"pageview",
 		"pangrams",
+		"panose",
 		"rmoveto",
 		"rrcurveto",
 		"tabindex",

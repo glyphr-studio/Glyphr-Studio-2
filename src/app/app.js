@@ -182,10 +182,12 @@ function makeMenu(menuName) {
 					{
 						name: 'Save Glyphr Studio Project File',
 						icon: 'command_save',
+						shortcut: ['Ctrl', 's'],
 						onClick: () => {
 							getCurrentProjectEditor().saveGlyphrProjectFile();
 						},
 					},
+					{ name: 'hr' },
 					{ name: 'Export OTF File', icon: 'command_export' },
 					{ name: 'Export SVG Font File', icon: 'command_export' },
 				],
@@ -203,6 +205,7 @@ function makeMenu(menuName) {
 					{
 						name: 'Open another project',
 						icon: 'command_newTab',
+						shortcut: ['Ctrl', 'o'],
 						onClick: () => {
 							window.open('https://glyphrstudio.com/v2/app/', '_blank');
 						},
@@ -226,9 +229,10 @@ function makeMenu(menuName) {
 							window.open('https://glyphrstudio.com/v2/help/', '_blank');
 						},
 					},
+					{name: 'hr'},
 					{
 						name: 'In-app help',
-						icon: 'page_help',
+						icon: 'command_help',
 						onClick: () => {
 							let editor = getCurrentProjectEditor();
 							editor.nav.page = 'Help';
@@ -237,7 +241,7 @@ function makeMenu(menuName) {
 					},
 					{
 						name: 'About Glyphr Studio',
-						icon: 'page_about',
+						icon: 'command_info',
 						onClick: () => {
 							let editor = getCurrentProjectEditor();
 							editor.nav.page = 'About';
