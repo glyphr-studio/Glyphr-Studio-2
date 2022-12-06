@@ -39,8 +39,18 @@
 .context-menu-row {
 	display: grid;
 	grid-template-columns: 20px 1fr;
-	column-gap: 5px;
+	column-gap: 10px;
 	padding: 5px 10px 5px 5px;
+}
+
+.context-menu-row svg {
+	height: 20px;
+	width: 20px;
+}
+
+.context-menu-row span {
+	line-height: 22px;
+	height: 20px;
 }
 
 .context-menu-row:hover {

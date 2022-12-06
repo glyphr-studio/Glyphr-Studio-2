@@ -1,4 +1,6 @@
-import { makeElement } from '../common/dom.js';
+import { accentColors, uiColors } from '../common/colors.js';
+import { makeElement, textToNode } from '../common/dom.js';
+import { makeIcon } from '../common/graphics.js';
 
 // -----------------------------------------------------------------
 // Toast
@@ -179,7 +181,16 @@ function makeOneContextMenuRow(data = {}) {
 
 	// Icon
 	if (data.icon) {
-		row.appendChild(getIcon(data.icon));
+		row.appendChild(
+			textToNode(
+				makeIcon({
+					name: data.icon,
+					size: 30,
+					color: accentColors.blue.l55,
+					hoverColor: 'blue',
+				})
+			)
+		);
 	} else {
 		row.appendChild(makeElement({ innerHTML: '[?]' }));
 	}
@@ -196,17 +207,6 @@ function makeOneContextMenuRow(data = {}) {
 
 export function setDialogHideListeners(element) {
 	element.addEventListener('mouseleave', closeAllDialogs);
-
-	// window.setTimeout(() => {
-	// 	let focusedElem = document.activeElement;
-	// 	if (focusedElem === element) {
-	// 		console.log('dialog is focused');
-	// 	} else {
-	// 		console.log('dialog is NOT focused');
-	// 		closeAllDialogs();
-	// 	}
-	// }, 3000);
-	// element.addEventListener('blur', closeAllDialogs);
 }
 
 // --------------------------------------------------------------

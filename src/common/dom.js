@@ -83,3 +83,13 @@ export function addAsChildren(parentNode, childNodes = []) {
 	}
 	// log(`addAsChildren`, 'end');
 }
+
+/**
+ * Takes a string and reads it as an HTML Node
+ * @param {String} textHTML - string representation of HTML
+ * @returns {HTMLElement}
+ */
+export function textToNode(textHTML) {
+	let result = makeElement({ innerHTML: textHTML });
+	return result.firstElementChild;
+}
