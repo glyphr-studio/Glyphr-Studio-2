@@ -192,7 +192,11 @@ function makeMenu(menuName) {
 	if (menuName === 'Project') {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
-			showContextMenu([{ name: 'Open another project' }], rect.x, rect.y + rect.height);
+			showContextMenu(
+				[{ name: 'Open another project', icon: 'command_newTab' }],
+				rect.x,
+				rect.y + rect.height
+			);
 		});
 	}
 
@@ -200,7 +204,11 @@ function makeMenu(menuName) {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
 			showContextMenu(
-				[{ name: 'Help and Documentation' }, { name: 'About' }],
+				[
+					{ name: 'External Help & Documentation site', icon: 'command_newTab' },
+					{ name: 'In-app help', icon: 'page_help' },
+					{ name: 'About Glyphr Studio', icon: 'page_about' },
+				],
 				rect.x,
 				rect.y + rect.height
 			);

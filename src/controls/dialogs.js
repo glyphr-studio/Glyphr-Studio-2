@@ -179,13 +179,16 @@ function makeOneContextMenuRow(data = {}) {
 		attributes: { tabindex: '0' },
 	});
 
+	let size = 30;
+	if (data.icon.indexOf('page_') === 0) size = 50;
+
 	// Icon
 	if (data.icon) {
 		row.appendChild(
 			textToNode(
 				makeIcon({
 					name: data.icon,
-					size: 30,
+					size: size,
 					color: accentColors.blue.l55,
 					hoverColor: 'blue',
 				})
