@@ -41,7 +41,7 @@
 .menu-entry-point:focus {
 	font-size: 0.8em;
 	padding: 2px 5px;
-	margin: 0px 5px 0px 0px;
+	margin: 0px;
 	position: relative;
 	top: -2px;
 	background-color: transparent;

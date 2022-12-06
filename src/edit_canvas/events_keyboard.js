@@ -58,7 +58,7 @@ export function handleKeyPress(event) {
 	// o
 	if (ehd.isCtrlDown && key === 'o') {
 		event.preventDefault();
-		window.open('http://glyphrstudio.com/online', '_blank');
+		window.open('http://glyphrstudio.com/v2/app', '_blank');
 	}
 
 	// q

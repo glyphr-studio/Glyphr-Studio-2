@@ -36,11 +36,32 @@
 	outline: 0;
 }
 
+.context-menu-hr hr,
+.context-menu-hr hr:hover,
+.context-menu-hr hr:active,
+.context-menu-hr hr:focus {
+	margin: 5px 0px 5px 0px;
+	grid-column: 1 / -1;
+	border-width: 0px 0px 1px 0px;
+	border-color: var(--gray-l90);
+}
+
 .context-menu-row {
 	display: grid;
-	grid-template-columns: 20px 1fr;
+	grid-template-columns: 20px 1fr min-content;
 	column-gap: 10px;
 	padding: 5px 10px 5px 5px;
+}
+
+.context-menu-row .shortcut-wrapper {
+	width: max-content;
+	height: 20px;
+	opacity: 0.8;
+}
+
+.context-menu-row .shortcut-wrapper code {
+	margin: 0px 2px;
+	font-size: 0.8em;
 }
 
 .context-menu-row svg {
