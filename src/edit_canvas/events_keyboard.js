@@ -35,18 +35,10 @@ export function handleKeyPress(event) {
 	const ehd = eventHandlerData;
 	// log(`ehd.isCtrlDown: ${ehd.isCtrlDown}`);
 
-	// shift s (save as)
-	// if (ehd.isCtrlDown && ehd.isShiftDown && key === 's') {
-	// 	event.preventDefault();
-	// 	// ehd.isShiftDown = false;
-	// 	saveGlyphrProjectFile(false); // save as always
-	// }
-
 	// s
 	if (ehd.isCtrlDown && key === 's') {
 		event.preventDefault();
-		// ehd.isShiftDown = false;
-		getCurrentProjectEditor().saveGlyphrProjectFile(true);
+		getCurrentProjectEditor().saveGlyphrProjectFile();
 	}
 
 	// g
@@ -64,10 +56,10 @@ export function handleKeyPress(event) {
 	// }
 
 	// o
-	// if (ehd.isCtrlDown && key === 'o') {
-	// 	event.preventDefault();
-	// 	window.open('http://glyphrstudio.com/online', '_blank');
-	// }
+	if (ehd.isCtrlDown && key === 'o') {
+		event.preventDefault();
+		window.open('http://glyphrstudio.com/online', '_blank');
+	}
 
 	// q
 	// for dev mode clear console

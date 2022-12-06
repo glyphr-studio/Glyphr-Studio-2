@@ -562,19 +562,10 @@ export class ProjectEditor {
 	 * Save a Glyphr Project Text File
 	 * @param {boolean} overwrite - for Electron app, overwrite current working file
 	 */
-	saveGlyphrProjectFile(overwrite) {
+	saveGlyphrProjectFile() {
 		log(`ProjectEditor.saveGlyphrProjectFile`, 'start');
 
 		// log('' + this.project.projectSettings.formatSaveFile);
-
-		// desktop overwrite / save as logic
-		if (window && window.process && window.process.type) {
-			if (overwrite) {
-				window.saveFileOverwrite = true;
-			} else {
-				window.saveFileOverwrite = false;
-			}
-		}
 
 		let saveData = this.project.save();
 

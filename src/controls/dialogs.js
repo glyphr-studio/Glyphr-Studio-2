@@ -14,7 +14,7 @@ import { makeIcon } from '../common/graphics.js';
  * @param {function} fn - function to call after message is shown
  */
 export function showToast(msg, dur, fn) {
-	log('showToast', 'start');
+	// log('showToast', 'start');
 	let toastTimeout = false;
 	let step = -1;
 	const stepMax = 20;
@@ -22,16 +22,16 @@ export function showToast(msg, dur, fn) {
 	const divisor = 5;
 	const duration = dur || 3000;
 	const messageContainer = makeElement({
-		tag: 'dialog',
+		tag: 'div',
 		id: 'toast',
 		innerHTML: msg || 'Howdy!',
 	});
 	document.body.appendChild(messageContainer);
 
-	log('Typeof fn: ' + typeof fn);
+	// log('Typeof fn: ' + typeof fn);
 
 	if (fn && typeof fn === 'function') {
-		log('CALLING FUNCTION NOW');
+		// log('CALLING FUNCTION NOW');
 		setTimeout(fn, 100);
 	}
 
@@ -48,7 +48,7 @@ export function showToast(msg, dur, fn) {
 
 	/** start to disappear */
 	function appearFinish() {
-		log('appearFinish');
+		// log('appearFinish');
 		currentTop = finalTop;
 		currentOpacity = finalOpacity;
 		step = stepMax;
@@ -61,7 +61,7 @@ export function showToast(msg, dur, fn) {
 
 	/** animate appearance */
 	function appearStep() {
-		log('appearStep ' + step);
+		// log('appearStep ' + step);
 
 		if (step < 0) {
 			messageContainer.style.display = 'block';
@@ -88,7 +88,7 @@ export function showToast(msg, dur, fn) {
 
 	/** animate disappearance */
 	function disappearStep() {
-		log('appearStep ' + step);
+		// log('appearStep ' + step);
 		if (step < 0) {
 			messageContainer.style.display = 'none';
 			messageContainer.style.marginTop = '-50px;';
@@ -122,7 +122,7 @@ export function showToast(msg, dur, fn) {
 	}
 
 	setToastTimeout(appearStep, 1);
-	log('showToast', 'end');
+	// log('showToast', 'end');
 }
 
 // --------------------------------------------------------------

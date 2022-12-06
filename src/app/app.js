@@ -1,6 +1,6 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
-import { getGlyphrStudioApp } from './main.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { showContextMenu } from '../controls/dialogs.js';
 
@@ -179,7 +179,13 @@ function makeMenu(menuName) {
 			let rect = event.target.getBoundingClientRect();
 			showContextMenu(
 				[
-					{ name: 'Save Glyphr Studio Project File', icon: 'command_save' },
+					{
+						name: 'Save Glyphr Studio Project File',
+						icon: 'command_save',
+						onClick: () => {
+							getCurrentProjectEditor().saveGlyphrProjectFile();
+						},
+					},
 					{ name: 'Export OTF File', icon: 'command_export' },
 					{ name: 'Export SVG Font File', icon: 'command_export' },
 				],
@@ -193,7 +199,15 @@ function makeMenu(menuName) {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
 			showContextMenu(
-				[{ name: 'Open another project', icon: 'command_newTab' }],
+				[
+					{
+						name: 'Open another project',
+						icon: 'command_newTab',
+						onClick: () => {
+							window.open('https://glyphrstudio.com/v2/app/', '_blank');
+						},
+					},
+				],
 				rect.x,
 				rect.y + rect.height
 			);
@@ -205,9 +219,31 @@ function makeMenu(menuName) {
 			let rect = event.target.getBoundingClientRect();
 			showContextMenu(
 				[
-					{ name: 'External Help & Documentation site', icon: 'command_newTab' },
-					{ name: 'In-app help', icon: 'page_help' },
-					{ name: 'About Glyphr Studio', icon: 'page_about' },
+					{
+						name: 'External Help & Documentation site',
+						icon: 'command_newTab',
+						onClick: () => {
+							window.open('https://glyphrstudio.com/v2/help/', '_blank');
+						},
+					},
+					{
+						name: 'In-app help',
+						icon: 'page_help',
+						onClick: () => {
+							let editor = getCurrentProjectEditor();
+							editor.nav.page = 'Help';
+							editor.navigate();
+						},
+					},
+					{
+						name: 'About Glyphr Studio',
+						icon: 'page_about',
+						onClick: () => {
+							let editor = getCurrentProjectEditor();
+							editor.nav.page = 'About';
+							editor.navigate();
+						},
+					},
 				],
 				rect.x,
 				rect.y + rect.height
