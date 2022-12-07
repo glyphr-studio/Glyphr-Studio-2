@@ -49,23 +49,7 @@ ${ioSVG_makeAllKernPairs()}
 	<text x="100" y="150" style="font-size:48px;" font-family="${family}">
 		${family}
 	</text>
-	<text x="100" y="220" style="font-size:48px;" font-family="${family}">
-		ABCDEFGHIJKLMNOPQRSTUVWXYZ
-	</text>
-
-	<text x="100" y="290" style="font-size:48px;" font-family="${family}">
-		abcdefghijklmnopqrstuvwxyz
-	</text>
-
-	<text x="100" y="360" style="font-size:48px;" font-family="${family}">
-		1234567890
-	</text>
-
-	<text x="100" y="430" style="font-size:48px;" font-family="${family}">
-		!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_\`{|}~
-	</text>
-
-</svg >
+</svg>
 `;
 
 	const filename = ps.name + ' - SVG Font - ' + timestamp + '.svg';
@@ -94,8 +78,7 @@ function ioSVG_makeFontFace() {
 		${t}ascent="${ps.ascent}"
 		${t}descent="${ps.descent}"
 		${t}bbox="${fm.maxes.xMin}, ${fm.maxes.yMin}, ${fm.maxes.xMax}, ${fm.maxes.yMax}"
-		${t}unicode-range="U+20-${fm.maxGlyph}"
-	`;
+		${t}unicode-range="U+20-${fm.maxGlyph}"`;
 
 	// Metadata properties
 	con += `
@@ -113,10 +96,7 @@ function ioSVG_makeFontFace() {
 		${t}strikethrough-position=${getProperty('strikethrough_position')}
 		${t}strikethrough-thickness=${getProperty('strikethrough_thickness')}
 		${t}overline-position=${getProperty('overline_position')}
-		${t}overline-thickness=${getProperty('overline_thickness')}
-	`;
-
-	con = con.substring(0, con.length - 1);
+		${t}overline-thickness=${getProperty('overline_thickness')}`;
 
 	function getProperty(prop) {
 		if (md[prop]) return JSON.stringify(trim(md[prop]));
@@ -134,15 +114,11 @@ function ioSVG_makeMissingGlyph() {
 	const gt = round(gh / 100);
 
 	let con = `
-			<missing-glyph
-				horiz-adv-x="${gw}"
-				d="
-					M0,0 v${gh} h${gw} v-${gh} h-${gw}z
-					M${gt},${gt} v${gh - gt * 2} h${gw - gt * 2}
-					v-${gh - gt * 2} h-${gw - gt * 2}z
-				"
-			/>
-	`;
+			<missing-glyph horiz-adv-x="${gw}" `;
+	con += `d="M0,0 v${gh} h${gw} v-${gh} h-${gw}z `;
+	con += `M${gt},${gt} v${gh - gt * 2} h${gw - gt * 2} `;
+	con += `v - ${gh - gt * 2} h - ${gw - gt * 2} z"/>
+`;
 
 	// log('ioSVG_makeMissingGlyph', 'end');
 	return con;
@@ -211,9 +187,13 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 function ioSVG_makeAllKernPairs() {
 	// log('ioSVG_makeAllKernPairs', 'start');
 	const kp = getCurrentProject().kerning;
+	let keys = Object.keys(kp);
+
+	if (!keys.length) return '';
+
 	let con = '\t\t\t<!-- Kern Pairs -->\n';
 
-	for (const k of Object.keys(kp)) {
+	for (const k of keys) {
 		for (let lg = 0; lg < kp[k].leftGroup.length; lg++) {
 			for (let rg = 0; rg < kp[k].rightGroup.length; rg++) {
 				con += '\t\t\t<hkern ';
