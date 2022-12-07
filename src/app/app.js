@@ -3,6 +3,7 @@ import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { showContextMenu } from '../controls/dialogs.js';
+import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -189,7 +190,12 @@ function makeMenu(menuName) {
 					},
 					{ name: 'hr' },
 					{ name: 'Export OTF File', icon: 'command_export' },
-					{ name: 'Export SVG Font File', icon: 'command_export' },
+					{
+						name: 'Export SVG Font File',
+						icon: 'command_export',
+						shortcut: ['Ctrl', 'g'],
+						onClick: ioSVG_exportSVGfont,
+					},
 				],
 				rect.x,
 				rect.y + rect.height
