@@ -34,7 +34,8 @@ export function ioSVG_exportSVGfont() {
 	</metadata>
 	<defs>
 		<font id="${familyID}" horiz-adv-x="${ps.upm}">
-			<font-face ${ioSVG_makeFontFace()}>
+			<font-face ${ioSVG_makeFontFace()}
+			>
 				<font-face-src>
 					<font-face-name name="${family}" />
 				</font-face-src>
@@ -98,28 +99,28 @@ function ioSVG_makeFontFace() {
 
 	// Metadata properties
 	con += `
-		${t}font-family="${getProperty('font_family')}"
-		${t}font-style="${getProperty('font_style')}"
-		${t}panose-1="${getProperty('panose_1')}"
-		${t}font-variant="${getProperty('font_variant')}"
-		${t}font-weight="${getProperty('font_weight')}"
-		${t}font-stretch="${getProperty('font_stretch')}"
-		${t}stemv="${getProperty('stemv')}"
-		${t}stemh="${getProperty('stemh')}"
-		${t}slope="${getProperty('slope')}"
-		${t}underline-position="${getProperty('underline_position')}"
-		${t}underline-thickness="${getProperty('underline_thickness')}"
-		${t}strikethrough-position="${getProperty('strikethrough_position')}"
-		${t}strikethrough-thickness="${getProperty('strikethrough_thickness')}"
-		${t}overline-position="${getProperty('overline_position')}"
-		${t}overline-thickness="${getProperty('overline_thickness')}"
+		${t}font-family=${getProperty('font_family')}
+		${t}font-style=${getProperty('font_style')}
+		${t}panose-1=${getProperty('panose_1')}
+		${t}font-variant=${getProperty('font_variant')}
+		${t}font-weight=${getProperty('font_weight')}
+		${t}font-stretch=${getProperty('font_stretch')}
+		${t}stemv=${getProperty('stemv')}
+		${t}stemh=${getProperty('stemh')}
+		${t}slope=${getProperty('slope')}
+		${t}underline-position=${getProperty('underline_position')}
+		${t}underline-thickness=${getProperty('underline_thickness')}
+		${t}strikethrough-position=${getProperty('strikethrough_position')}
+		${t}strikethrough-thickness=${getProperty('strikethrough_thickness')}
+		${t}overline-position=${getProperty('overline_position')}
+		${t}overline-thickness=${getProperty('overline_thickness')}
 	`;
 
 	con = con.substring(0, con.length - 1);
 
 	function getProperty(prop) {
 		if (md[prop]) return JSON.stringify(trim(md[prop]));
-		else return '';
+		else return '""';
 	}
 
 	// log('ioSVG_makeFontFace', 'end');
