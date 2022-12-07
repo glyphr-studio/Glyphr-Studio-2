@@ -139,7 +139,7 @@ function ioSVG_convertTagsToGlyph(svgData) {
 					point = new XYPoint(px, py);
 					/*
 					 *
-					 * REFACTOR
+					 * // TODO REFACTOR
 					 *
 					 */
 					pathPoints.push({
@@ -159,10 +159,10 @@ function ioSVG_convertTagsToGlyph(svgData) {
 	/*
 			GET ELLIPSE OR CIRCLE TAGS
 		*/
-	let elli = pathTags.circle;
-	elli = elli.concat(pathTags.ellipse);
+	let ellipsoids = pathTags.circle;
+	ellipsoids = ellipsoids.concat(pathTags.ellipse);
 
-	if (elli.length) {
+	if (ellipsoids.length) {
 		data = {};
 		let ellipseMaxes;
 		let rx;
@@ -171,8 +171,8 @@ function ioSVG_convertTagsToGlyph(svgData) {
 		let cy;
 		let ellipse;
 
-		for (let c = 0; c < elli.length; c++) {
-			data = elli[c].attributes;
+		for (let c = 0; c < ellipsoids.length; c++) {
+			data = ellipsoids[c].attributes;
 			rx = data.r * 1 || data.rx * 1 || 0;
 			rx = Math.abs(rx);
 			ry = data.r * 1 || data.ry * 1 || 0;
@@ -197,7 +197,7 @@ function ioSVG_convertTagsToGlyph(svgData) {
 
 	if (pathCounter === 0) {
 		showErrorMessageBox(
-			'Could not find any SVG tags to import.  Supported tagas are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.'
+			'Could not find any SVG tags to import.  Supported tags are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.'
 		);
 		return;
 	}
@@ -208,26 +208,26 @@ function ioSVG_convertTagsToGlyph(svgData) {
 		);
 	}
 
-	const reglyph = new Glyph({ paths: newPaths });
-	reglyph.changed(true);
+	const resultGlyph = new Glyph({ paths: newPaths });
+	resultGlyph.changed(true);
 
-	// log(reglyph);
+	// log(resultGlyph);
 
 	// log('ioSVG_convertTagsToGlyph', 'end');
-	return reglyph;
+	return resultGlyph;
 }
 
 function cleanAndFormatPathPointData(data) {
 	/*
-						Takes a string representing input from a <path> tag's
-						'd' attribute.
+			Takes a string representing input from a <path> tag's
+			'd' attribute.
 
-						Returns an array of strings.  Each array element
-						representing one Glyphr Studio path.  String will be
-						comma separated Path Commands and Values
+			Returns an array of strings.  Each array element
+			representing one Glyphr Studio path.  String will be
+			comma separated Path Commands and Values
 
-				*/
-	let returndata = [];
+	*/
+	let returnData = [];
 
 	// log('cleanAndFormatPathPointData', 'start');
 	// log('dirty data\n\t ' + data);
@@ -242,7 +242,7 @@ function cleanAndFormatPathPointData(data) {
 	// Normalize Z end path command
 	data = data.replace(/Z/gi, 'z');
 
-	// Put commas between Path Commands and preceeding numbers
+	// Put commas between Path Commands and preceding numbers
 	let curr = 0;
 	while (curr < data.length) {
 		if (ioSVG_isPathCommand(data.charAt(curr))) {
@@ -299,7 +299,7 @@ function cleanAndFormatPathPointData(data) {
 			second = v.indexOf('.', first + 1);
 			// log('second: ' + second);
 			if (second > -1) {
-				returndata.push(v.slice(0, second));
+				returnData.push(v.slice(0, second));
 				subsequence = v.slice(second);
 				// log('just the tail: ' + subsequence);
 				subsequence = subsequence.replace(/\./g, ',0.');
@@ -307,14 +307,14 @@ function cleanAndFormatPathPointData(data) {
 				// log('added zeros: ' + subsequence);
 				subsequence = subsequence.split(',');
 				// log('subsequence: ' + subsequence);
-				returndata = returndata.concat(subsequence);
+				returnData = returnData.concat(subsequence);
 			} else {
 				// no two instances of '.'
-				returndata.push(v);
+				returnData.push(v);
 			}
 		} else {
 			// no two instances of '.'
-			returndata.push(v);
+			returnData.push(v);
 		}
 
 		first = -1;
@@ -323,13 +323,13 @@ function cleanAndFormatPathPointData(data) {
 	});
 
 	// Make into an array
-	returndata = returndata.join(',');
-	returndata = returndata.split(',z');
+	returnData = returnData.join(',');
+	returnData = returnData.split(',z');
 
-	// log('clean data\n\t ' + returndata);
+	// log('clean data\n\t ' + returnData);
 	// log('cleanAndFormatPathPointData', 'end');
 
-	return returndata;
+	return returnData;
 }
 
 function ioSVG_getTags(obj, grabTags) {
@@ -383,64 +383,64 @@ function ioSVG_convertPathTag(data) {
 
 	// Parse comma separated data into commands / data chunks
 	data = data.split(',');
-	const chunkarr = [];
-	let commandpos = 0;
+	const chunks = [];
+	let commandPosition = 0;
 	let command;
-	let dataarr = [];
+	let dataChunk = [];
 	curr = 1;
 
 	while (curr <= data.length) {
 		if (ioSVG_isPathCommand(data[curr])) {
-			dataarr = data.slice(commandpos + 1, curr);
-			command = data[commandpos];
+			dataChunk = data.slice(commandPosition + 1, curr);
+			command = data[commandPosition];
 
-			for (let i = 0; i < dataarr.length; i++) dataarr[i] = Number(dataarr[i]);
+			for (let i = 0; i < dataChunk.length; i++) dataChunk[i] = Number(dataChunk[i]);
 
 			// log('Handling command ' + command);
-			// log('With data ' + dataarr);
+			// log('With data ' + dataChunk);
 
-			chunkarr.push({ command: command, data: dataarr });
-			commandpos = curr;
+			chunks.push({ command: command, data: dataChunk });
+			commandPosition = curr;
 		}
 		curr++;
 	}
 
 	// Fencepost
-	dataarr = data.slice(commandpos + 1, curr);
-	command = data[commandpos];
-	for (let j = 0; j < dataarr.length; j++) dataarr[j] = Number(dataarr[j]);
+	dataChunk = data.slice(commandPosition + 1, curr);
+	command = data[commandPosition];
+	for (let j = 0; j < dataChunk.length; j++) dataChunk[j] = Number(dataChunk[j]);
 	// log('FENCEPOST');
 	// log('Handling command ' + command);
-	// log('With data ' + dataarr);
-	chunkarr.push({ command: command, data: dataarr });
+	// log('With data ' + dataChunk);
+	chunks.push({ command: command, data: dataChunk });
 
-	// log('chunkarr data is \n' + json(chunkarr, true));
+	// log('chunks data is \n' + json(chunks, true));
 
 	// Turn the commands and data into Glyphr objects
-	let patharr = [];
-	for (let c = 0; c < chunkarr.length; c++) {
+	let paths = [];
+	for (let c = 0; c < chunks.length; c++) {
 		// log('\n\t Path Chunk ' + c);
-		// log('' + chunkarr[c].command + ' : ' + chunkarr[c].data);
-		if (chunkarr[c].command) {
-			patharr = ioSVG_handlePathChunk(chunkarr[c], patharr, c === chunkarr.length - 1);
+		// log('' + chunks[c].command + ' : ' + chunks[c].data);
+		if (chunks[c].command) {
+			paths = ioSVG_handlePathChunk(chunks[c], paths, c === chunks.length - 1);
 		}
 	}
 
 	// Combine 1st and last point
-	const fp = patharr[0];
-	const lp = patharr[patharr.length - 1];
+	const fp = paths[0];
+	const lp = paths[paths.length - 1];
 	if (fp.p.x === lp.p.x && fp.p.y === lp.p.y) {
 		// log('fp/lp same:\nFirst Point: '+json(fp)+'\nLast Point:  '+json(lp));
 		fp.h1.x = lp.h1.x;
 		fp.h1.y = lp.h1.y;
 		fp.h1.use = lp.h1.use;
-		patharr.pop();
+		paths.pop();
 		fp.resolvePointType();
 		// log('AFTER:\nFirst Point: '+json(fp));
 	}
 
-	const newPath = new Path({ pathPoints: patharr });
-	newPath.validate('IMPORTSVG');
+	const newPath = new Path({ pathPoints: paths });
+	newPath.validate('Import SVG');
 
 	// log('unscaled path:');
 	// log(newPath);
@@ -453,13 +453,13 @@ function ioSVG_isPathCommand(c) {
 	return false;
 }
 
-function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
+function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 	// log('ioSVG_handlePathChunk', 'start');
 	// log('chunk: ' + json(chunk, true));
 
 	const cmd = chunk.command;
-	let currdata = [];
-	const iscmd = function (str) {
+	let currentData = [];
+	const isCommand = function (str) {
 		return str.indexOf(cmd) > -1;
 	};
 	let p;
@@ -468,92 +468,92 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 	let h1;
 	/*
 	 *
-	 * REFACTOR
+	 * // TODO REFACTOR
 	 *
 	 */
-	let lastpoint = patharr[patharr.length - 1] || new PathPoint();
-	let prevx;
-	let prevy;
+	let lastPoint = paths[paths.length - 1] || new PathPoint();
+	let previousX;
+	let previousY;
 
-	// log('previous point: \t'+lastpoint.p.x+','+lastpoint.p.y);
+	// log('previous point: \t'+lastPoint.p.x+','+lastPoint.p.y);
 
 	/*
-						Path Instructions: Capital is absolute, lowercase is relative
-						M m        MoveTo
-						L l        LineTo
-						H h        Horizontal Line
-						V v        Vertical Line
-						C c        Bezier (can be chained)
-						S s        Smooth Bezier
-						Q q        Quadratic Bezier (can be chained)
-						T t        Smooth Quadratic
-						Z z        Close Path
+			Path Instructions: Capital is absolute, lowercase is relative
+			M m        MoveTo
+			L l        LineTo
+			H h        Horizontal Line
+			V v        Vertical Line
+			C c        Bezier (can be chained)
+			S s        Smooth Bezier
+			Q q        Quadratic Bezier (can be chained)
+			T t        Smooth Quadratic
+			Z z        Close Path
 
-						Partially supported, just draw a line to the end point
-						A a        ArcTo
-				*/
+			Partially supported, just draw a line to the end point
+			A a        ArcTo
+	*/
 
-	if (iscmd('MmLlHhVv')) {
+	if (isCommand('MmLlHhVv')) {
 		// ABSOLUTE line methods
 		// relative line methods
 
-		nx = lastpoint.p.x;
-		ny = lastpoint.p.y;
+		nx = lastPoint.p.x;
+		ny = lastPoint.p.y;
 
 		while (chunk.data.length) {
 			// Grab the next chunk of data and make sure it's length=2
-			currdata = [];
-			currdata = chunk.data.splice(0, 2);
+			currentData = [];
+			currentData = chunk.data.splice(0, 2);
 
-			if (currdata.length % 2 !== 0 && iscmd('MmLl')) {
+			if (currentData.length % 2 !== 0 && isCommand('MmLl')) {
 				showErrorMessageBox(
 					'Move or Line path command (M, m, L, l) was expecting 2 arguments, was passed [' +
-						currdata +
+						currentData +
 						']\n<br>Failing "gracefully" by filling in default data.'
 				);
-				while (currdata.length < 2) {
-					currdata.push(currdata[currdata.length - 1] + 100);
+				while (currentData.length < 2) {
+					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\t command ' + cmd + ' while loop data ' + currdata);
+			// log('\n\t command ' + cmd + ' while loop data ' + currentData);
 
-			prevx = lastpoint.p.x;
-			prevy = lastpoint.p.y;
+			previousX = lastPoint.p.x;
+			previousY = lastPoint.p.y;
 
 			switch (cmd) {
 				case 'L':
 				case 'M':
 					// ABSOLUTE line to
 					// ABSOLUTE move to
-					nx = currdata[0];
-					ny = currdata[1];
+					nx = currentData[0];
+					ny = currentData[1];
 					break;
 				case 'l':
 				case 'm':
 					// relative line to
 					// relative move to
-					nx = currdata[0] + prevx;
-					ny = currdata[1] + prevy;
+					nx = currentData[0] + previousX;
+					ny = currentData[1] + previousY;
 					break;
 				case 'H':
 					// ABSOLUTE horizontal line to
-					nx = currdata[0];
-					// chunk.data.unshift(currdata[1]);
+					nx = currentData[0];
+					// chunk.data.unshift(currentData[1]);
 					break;
 				case 'h':
 					// relative horizontal line to
-					nx = currdata[0] + prevx;
-					// chunk.data.unshift(currdata[1]);
+					nx = currentData[0] + previousX;
+					// chunk.data.unshift(currentData[1]);
 					break;
 				case 'V':
 					// ABSOLUTE vertical line to
-					ny = currdata[0];
-					// chunk.data.unshift(currdata[1]);
+					ny = currentData[0];
+					// chunk.data.unshift(currentData[1]);
 					break;
 				case 'v':
 					// relative vertical line to
-					ny = currdata[0] + prevy;
-					// chunk.data.unshift(currdata[1]);
+					ny = currentData[0] + previousY;
+					// chunk.data.unshift(currentData[1]);
 					break;
 			}
 
@@ -561,13 +561,13 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 			p = new XYPoint(nx, ny);
 			// log('new point ' + p.x + '\t' + p.y);
 
-			lastpoint.h2.use = false;
+			lastPoint.h2.use = false;
 			/*
 			 *
-			 * REFACTOR
+			 * // TODO REFACTOR
 			 *
 			 */
-			patharr.push(
+			paths.push(
 				new PathPoint({
 					p: clone(p),
 					h1: clone(p),
@@ -577,19 +577,19 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 					useH2: true,
 				})
 			);
-			lastpoint = patharr[patharr.length - 1];
+			lastPoint = paths[paths.length - 1];
 		}
 
 		// log('completed while loop');
-	} else if (iscmd('Aa')) {
+	} else if (isCommand('Aa')) {
 		// ABSOLUTE arc to
 		// relative arc to
 
 		showErrorMessageBox(
-			'Arc To path commands (A or a) are not directly supported.  A straight line will be drawn from the begining to the end of the arc.'
+			'Arc To path commands (A or a) are not directly supported.  A straight line will be drawn from the beginning to the end of the arc.'
 		);
-		nx = lastpoint.p.x;
-		ny = lastpoint.p.y;
+		nx = lastPoint.p.x;
+		ny = lastPoint.p.y;
 
 		if (chunk.data.length % 7 !== 0) {
 			showErrorMessageBox(
@@ -601,33 +601,33 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 		}
 
 		while (chunk.data.length) {
-			currdata = [];
-			currdata = chunk.data.splice(0, 7);
-			currdata = currdata.splice(5, 2);
-			// log('\n\t command ' + cmd + ' while loop data ' + currdata);
+			currentData = [];
+			currentData = chunk.data.splice(0, 7);
+			currentData = currentData.splice(5, 2);
+			// log('\n\t command ' + cmd + ' while loop data ' + currentData);
 
-			prevx = lastpoint.p.x;
-			prevy = lastpoint.p.y;
+			previousX = lastPoint.p.x;
+			previousY = lastPoint.p.y;
 
-			nx = currdata[0];
-			ny = currdata[1];
+			nx = currentData[0];
+			ny = currentData[1];
 
 			if (cmd === 'a') {
-				nx += prevx;
-				ny += prevy;
+				nx += previousX;
+				ny += previousY;
 			}
 
 			// log('linear end nx ny\t' + nx + ' ' + ny);
 			p = new Coord({ x: nx, y: ny });
 			// log('new point ' + p.x + '\t' + p.y);
 
-			lastpoint.type = 'corner';
-			lastpoint.h2.use = true;
-			lastpoint.makePointedTo(p.x, p.y, false, 'h2', true);
+			lastPoint.type = 'corner';
+			lastPoint.h2.use = true;
+			lastPoint.makePointedTo(p.x, p.y, false, 'h2', true);
 
 			/*
 			 *
-			 * REFACTOR
+			 * // TODO REFACTOR
 			 *
 			 */
 			const pp = new PathPoint({
@@ -638,63 +638,63 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 				useH1: true,
 				useH2: true,
 			});
-			pp.makePointedTo(prevx, prevy, false, 'h1', true);
-			patharr.push(pp);
+			pp.makePointedTo(previousX, previousY, false, 'h1', true);
+			paths.push(pp);
 
-			lastpoint = patharr[patharr.length - 1];
+			lastPoint = paths[paths.length - 1];
 		}
 
 		// log('completed while loop');
-	} else if (iscmd('Qq')) {
+	} else if (isCommand('Qq')) {
 		// ABSOLUTE quadratic bezier curve to
 		// relative quadratic bezier curve to
 
-		currdata = [];
+		currentData = [];
 		while (chunk.data.length) {
 			// Grab the next chunk of data and make sure it's length=4
-			currdata = chunk.data.splice(0, 4);
-			if (currdata.length % 4 !== 0) {
+			currentData = chunk.data.splice(0, 4);
+			if (currentData.length % 4 !== 0) {
 				showErrorMessageBox(
 					'Quadratic Bezier path command (Q or q) was expecting 4 arguments, was passed [' +
-						currdata +
+						currentData +
 						']\n<br>Failing "gracefully" by filling in default data.'
 				);
-				while (currdata.length < 4) {
-					currdata.push(currdata[currdata.length - 1] + 100);
+				while (currentData.length < 4) {
+					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\n\t command ' + cmd + ' while loop data ' + currdata);
+			// log('\n\n\t command ' + cmd + ' while loop data ' + currentData);
 
-			if (iscmd('q')) {
+			if (isCommand('q')) {
 				// Relative offset for q
-				prevx = lastpoint.p.x;
-				prevy = lastpoint.p.y;
-				currdata[0] += prevx;
-				currdata[1] += prevy;
-				currdata[2] += prevx;
-				currdata[3] += prevy;
+				previousX = lastPoint.p.x;
+				previousY = lastPoint.p.y;
+				currentData[0] += previousX;
+				currentData[1] += previousY;
+				currentData[2] += previousX;
+				currentData[3] += previousY;
 			}
 
-			q = new Coord({ x: currdata[0], y: currdata[1] });
-			currdata = [lastpoint.p.x, lastpoint.p.y].concat(currdata);
-			currdata = convertQuadraticToCubic(currdata);
-			// log('command ' + cmd + ' after Q>C cnvrt ' + currdata);
+			q = new Coord({ x: currentData[0], y: currentData[1] });
+			currentData = [lastPoint.p.x, lastPoint.p.y].concat(currentData);
+			currentData = convertQuadraticToCubic(currentData);
+			// log('command ' + cmd + ' after Q>C convert ' + currentData);
 
-			lastpoint.h2 = new Coord({ x: currdata[0], y: currdata[1] });
-			lastpoint.h2.use = true;
-			lastpoint.resolvePointType();
+			lastPoint.h2 = new Coord({ x: currentData[0], y: currentData[1] });
+			lastPoint.h2.use = true;
+			lastPoint.resolvePointType();
 
-			h1 = new Coord({ x: currdata[2], y: currdata[3] });
-			p = new Coord({ x: currdata[4], y: currdata[5] });
+			h1 = new Coord({ x: currentData[2], y: currentData[3] });
+			p = new Coord({ x: currentData[4], y: currentData[5] });
 
 			// log('bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
 
 			/*
 			 *
-			 * REFACTOR
+			 * // TODO REFACTOR
 			 *
 			 */
-			patharr.push(
+			paths.push(
 				new PathPoint({
 					p: clone(p),
 					h1: clone(h1),
@@ -705,62 +705,62 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 					type: 'corner',
 				})
 			);
-			lastpoint = patharr[patharr.length - 1];
+			lastPoint = paths[paths.length - 1];
 		}
 
 		// log('completed while loop');
-	} else if (iscmd('Tt')) {
+	} else if (isCommand('Tt')) {
 		// ABSOLUTE quadratic symmetric bezier curve to
 		// relative quadratic symmetric bezier curve to
 
-		currdata = [];
+		currentData = [];
 		// Loop through (potentially) PolyBeziers
 		while (chunk.data.length) {
 			// Grab the next chunk of data and make sure it's length=2
-			currdata = [];
-			currdata = chunk.data.splice(0, 2);
-			if (currdata.length % 2 !== 0) {
+			currentData = [];
+			currentData = chunk.data.splice(0, 2);
+			if (currentData.length % 2 !== 0) {
 				showErrorMessageBox(
 					'Symmetric Bezier path command (T or t) was expecting 2 arguments, was passed [' +
-						currdata +
+						currentData +
 						']\n<br>Failing "gracefully" by filling in default data.'
 				);
-				while (currdata.length < 2) {
-					currdata.push(currdata[currdata.length - 1] + 100);
+				while (currentData.length < 2) {
+					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\t command ' + cmd + ' while loop datas ' + currdata);
+			// log('\n\t command ' + cmd + ' while loop data ' + currentData);
 
-			if (iscmd('t')) {
+			if (isCommand('t')) {
 				// Relative offset for t
-				prevx = lastpoint.p.x;
-				prevy = lastpoint.p.y;
-				currdata[0] += prevx;
-				currdata[1] += prevy;
+				previousX = lastPoint.p.x;
+				previousY = lastPoint.p.y;
+				currentData[0] += previousX;
+				currentData[1] += previousY;
 			}
 
-			q = new Coord(findSymmetricPoint(lastpoint.p, lastpoint.Q));
-			currdata = [lastpoint.p.x, lastpoint.p.y, q.x, q.y].concat(currdata);
+			q = new Coord(findSymmetricPoint(lastPoint.p, lastPoint.Q));
+			currentData = [lastPoint.p.x, lastPoint.p.y, q.x, q.y].concat(currentData);
 
-			// log('command ' + cmd + ' before Q>C cnvrt ' + currdata);
-			currdata = convertQuadraticToCubic(currdata);
-			// log('command ' + cmd + ' afters Q>C cnvrt ' + currdata);
+			// log('command ' + cmd + ' before Q>C convert ' + currentData);
+			currentData = convertQuadraticToCubic(currentData);
+			// log('command ' + cmd + ' afters Q>C convert ' + currentData);
 
-			lastpoint.h2 = new Coord({ x: currdata[0], y: currdata[1] });
-			lastpoint.h2.use = true;
-			lastpoint.resolvePointType();
+			lastPoint.h2 = new Coord({ x: currentData[0], y: currentData[1] });
+			lastPoint.h2.use = true;
+			lastPoint.resolvePointType();
 
-			h1 = new Coord({ x: currdata[2], y: currdata[3] });
-			p = new Coord({ x: currdata[4], y: currdata[5] });
+			h1 = new Coord({ x: currentData[2], y: currentData[3] });
+			p = new Coord({ x: currentData[4], y: currentData[5] });
 
 			// log('bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
 
 			/*
 			 *
-			 * REFACTOR
+			 * // TODO REFACTOR
 			 *
 			 */
-			patharr.push(
+			paths.push(
 				new PathPoint({
 					p: clone(p),
 					h1: clone(h1),
@@ -771,60 +771,60 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 					type: 'corner',
 				})
 			);
-			lastpoint = patharr[patharr.length - 1];
+			lastPoint = paths[paths.length - 1];
 		}
 
 		// log('completed while loop');
-	} else if (iscmd('Cc')) {
+	} else if (isCommand('Cc')) {
 		// ABSOLUTE bezier curve to
 		// relative bezier curve to
-		// The three subsiquent x/y points are relative to the last command's x/y point
+		// The three subsequent x/y points are relative to the last command's x/y point
 		// relative x/y point (n) is NOT relative to (n-1)
 
-		currdata = [];
+		currentData = [];
 		// Loop through (potentially) PolyBeziers
 		while (chunk.data.length) {
 			// Grab the next chunk of data and make sure it's length=6
-			currdata = [];
-			currdata = chunk.data.splice(0, 6);
-			if (currdata.length % 6 !== 0) {
+			currentData = [];
+			currentData = chunk.data.splice(0, 6);
+			if (currentData.length % 6 !== 0) {
 				showErrorMessageBox(
 					'Bezier path command (C or c) was expecting 6 arguments, was passed [' +
-						currdata +
+						currentData +
 						']\n<br>Failing "gracefully" by filling in default data.'
 				);
-				while (currdata.length < 6) {
-					currdata.push(currdata[currdata.length - 1] + 100);
+				while (currentData.length < 6) {
+					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\n\t command ' + cmd + ' while loop data ' + currdata);
+			// log('\n\n\t command ' + cmd + ' while loop data ' + currentData);
 
-			lastpoint.h2 = new Coord({ x: currdata[0], y: currdata[1] });
-			lastpoint.h2.use = true;
-			lastpoint.resolvePointType();
+			lastPoint.h2 = new Coord({ x: currentData[0], y: currentData[1] });
+			lastPoint.h2.use = true;
+			lastPoint.resolvePointType();
 
-			h1 = new Coord({ x: currdata[2], y: currdata[3] });
-			p = new Coord({ x: currdata[4], y: currdata[5] });
+			h1 = new Coord({ x: currentData[2], y: currentData[3] });
+			p = new Coord({ x: currentData[4], y: currentData[5] });
 
-			if (iscmd('c')) {
+			if (isCommand('c')) {
 				// Relative offset for c
-				prevx = lastpoint.p.x;
-				prevy = lastpoint.p.y;
-				lastpoint.h2.x += prevx;
-				lastpoint.h2.y += prevy;
-				h1.x += prevx;
-				h1.y += prevy;
-				p.x += prevx;
-				p.y += prevy;
+				previousX = lastPoint.p.x;
+				previousY = lastPoint.p.y;
+				lastPoint.h2.x += previousX;
+				lastPoint.h2.y += previousY;
+				h1.x += previousX;
+				h1.y += previousY;
+				p.x += previousX;
+				p.y += previousY;
 			}
 
 			// log('bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
 			/*
 			 *
-			 * REFACTOR
+			 * // TODO REFACTOR
 			 *
 			 */
-			patharr.push(
+			paths.push(
 				new PathPoint({
 					p: clone(p),
 					h1: clone(h1),
@@ -834,48 +834,48 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 					type: 'corner',
 				})
 			);
-			lastpoint = patharr[patharr.length - 1];
+			lastPoint = paths[paths.length - 1];
 		}
 
 		// log('completed while loop');
-	} else if (iscmd('Ss')) {
+	} else if (isCommand('Ss')) {
 		// ABSOLUTE symmetric bezier curve to
 		// relative symmetric bezier curve to
 
-		currdata = [];
+		currentData = [];
 		// Loop through (potentially) PolyBeziers
 		while (chunk.data.length) {
 			// Grab the next chunk of data and make sure it's length=4
-			currdata = [];
-			currdata = chunk.data.splice(0, 4);
-			if (currdata.length % 4 !== 0) {
+			currentData = [];
+			currentData = chunk.data.splice(0, 4);
+			if (currentData.length % 4 !== 0) {
 				showErrorMessageBox(
 					'Symmetric Bezier path command (S or s) was expecting 4 arguments, was passed [' +
-						currdata +
+						currentData +
 						']\n<br>Failing "gracefully" by filling in default data.'
 				);
-				while (currdata.length < 4) {
-					currdata.push(currdata[currdata.length - 1] + 100);
+				while (currentData.length < 4) {
+					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\t command ' + cmd + ' while loop data ' + currdata);
+			// log('\n\t command ' + cmd + ' while loop data ' + currentData);
 
-			lastpoint.makeSymmetric('h1');
-			lastpoint.h2.use = true;
+			lastPoint.makeSymmetric('h1');
+			lastPoint.h2.use = true;
 
-			h1 = new Coord({ x: currdata[0], y: currdata[1] });
-			p = new Coord({ x: currdata[2], y: currdata[3] });
+			h1 = new Coord({ x: currentData[0], y: currentData[1] });
+			p = new Coord({ x: currentData[2], y: currentData[3] });
 
 			// log('p before: ' + json(p, true));
 
-			if (iscmd('s')) {
+			if (isCommand('s')) {
 				// Relative offset for st
-				prevx = lastpoint.p.x;
-				prevy = lastpoint.p.y;
-				h1.x += prevx;
-				h1.y += prevy;
-				p.x += prevx;
-				p.y += prevy;
+				previousX = lastPoint.p.x;
+				previousY = lastPoint.p.y;
+				h1.x += previousX;
+				h1.y += previousY;
+				p.x += previousX;
+				p.y += previousY;
 			}
 
 			// log('p afters: ' + json(p, true));
@@ -883,10 +883,10 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 
 			/*
 			 *
-			 * REFACTOR
+			 * // TODO REFACTOR
 			 *
 			 */
-			patharr.push(
+			paths.push(
 				new PathPoint({
 					p: clone(p),
 					h1: clone(h1),
@@ -896,28 +896,28 @@ function ioSVG_handlePathChunk(chunk, patharr, islastpoint) {
 					useH2: true,
 				})
 			);
-			lastpoint = patharr[patharr.length - 1];
+			lastPoint = paths[paths.length - 1];
 		}
 
 		// log('completed while loop');
-	} else if (iscmd('Zz')) {
+	} else if (isCommand('Zz')) {
 		// End Path
 	} else {
 		showErrorMessageBox('Unrecognized path command ' + cmd + ', ignoring and moving on...');
 	}
 
 	// Finish up last point
-	if (islastpoint) {
-		const added = patharr[patharr.length - 1];
+	if (isLastPoint) {
+		const added = paths[paths.length - 1];
 		added.resolvePointType();
 	}
 
 	// log('Resulting Path Chunk');
-	// log(patharr);
+	// log(paths);
 
 	// log('ioSVG_handlePathChunk', 'end');
 
-	return patharr;
+	return paths;
 }
 
 function findSymmetricPoint(p, h) {

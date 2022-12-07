@@ -242,12 +242,12 @@ export function importOTFFont(filter) {
 
 		/*
 		REFACTOR
-		let rstart;
+		let rangeStart;
 		let rend;
 		for (const r of Object.keys(_UI.glyphRange)) {
-			rstart = 1 * _UI.glyphRange[r].begin;
+			rangeStart = 1 * _UI.glyphRange[r].begin;
 			rend = 1 * _UI.glyphRange[r].end + 1;
-			for (let t = rstart; t < rend; t++) {
+			for (let t = rangeStart; t < rend; t++) {
 				if (getGlyph('' + decToHex(t))) {
 					getCurrentProject().projectSettings.glyphRanges[r] = true;
 					break;

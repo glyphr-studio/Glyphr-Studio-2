@@ -98,8 +98,8 @@ function ioSVG_importSVGFont(filter) {
 	let np;
 	let adv;
 	let maxGlyph = 0;
-	let minchar = 0xffff;
-	let customglyphrange = [];
+	let minChar = 0xffff;
+	let customGlyphRange = [];
 	let pathCounter = 0;
 	let newPaths = [];
 	const fc = {};
@@ -174,9 +174,9 @@ function ioSVG_importSVGFont(filter) {
 				// It's a GLYPH
 				// Get some range data
 				uni = uni[0];
-				minchar = Math.min(minchar, uni);
+				minChar = Math.min(minChar, uni);
 				maxGlyph = Math.max(maxGlyph, uni);
-				if (1 * uni > _UI.glyphRange.latinExtendedB.end) customglyphrange.push(uni);
+				if (1 * uni > _UI.glyphRange.latinExtendedB.end) customGlyphRange.push(uni);
 
 				fc[uni] = new Glyph({
 					paths: newPaths,
@@ -193,7 +193,7 @@ function ioSVG_importSVGFont(filter) {
 				});
 			}
 
-			// Successfull loop, advance c
+			// Successful loop, advance c
 			c++;
 		}
 
@@ -211,7 +211,8 @@ function ioSVG_importSVGFont(filter) {
 	let tk;
 	let leftGroup;
 	let rightGroup;
-	let newid;
+	let newID;
+	let kernValue;
 	const fk = {};
 
 	let k = 0;
@@ -263,13 +264,13 @@ function ioSVG_importSVGFont(filter) {
 		// log('kern groups parsed as ' + json(leftGroup, true) + ' ' + json(rightGroup, true));
 
 		if (leftGroup.length && rightGroup.length) {
-			newid = generateNewID(fk, 'kern');
-			kernval = tk.attributes.k || 0;
-			// log('Making a kern pair with k = ' + kernval);
-			fk[newid] = new HKern({
+			newID = generateNewID(fk, 'kern');
+			kernValue = tk.attributes.k || 0;
+			// log('Making a kern pair with k = ' + kernValue);
+			fk[newID] = new HKern({
 				leftGroup: leftGroup,
 				rightGroup: rightGroup,
-				value: kernval,
+				value: kernValue,
 			});
 			// log('Made the new kern successfully.');
 			k++;
@@ -299,12 +300,12 @@ function ioSVG_importSVGFont(filter) {
 
 		/*
 		REFACTOR
-		let rstart;
+		let rangeStart;
 		let rend;
 		for (const r of Object.keys(_UI.glyphRange)) {
-			rstart = 1 * _UI.glyphRange[r].begin;
+			rangeStart = 1 * _UI.glyphRange[r].begin;
 			rend = 1 * _UI.glyphRange[r].end + 1;
-			for (let t = rstart; t < rend; t++) {
+			for (let t = rangeStart; t < rend; t++) {
 				if (getGlyph(t)) {
 					getCurrentProject().projectSettings.glyphRanges[r] = true;
 					break;
@@ -314,11 +315,11 @@ function ioSVG_importSVGFont(filter) {
 		*/
 
 		// Make a custom range for the rest
-		if (customglyphrange.length) {
-			customglyphrange = customglyphrange.sort();
+		if (customGlyphRange.length) {
+			customGlyphRange = customGlyphRange.sort();
 			getCurrentProject().projectSettings.glyphRanges.push({
-				begin: customglyphrange[0],
-				end: customglyphrange[customglyphrange.length - 1],
+				begin: customGlyphRange[0],
+				end: customGlyphRange[customGlyphRange.length - 1],
 			});
 		}
 
@@ -327,27 +328,27 @@ function ioSVG_importSVGFont(filter) {
 		// space has horiz-adv-x
 
 		// Font Settings
-		const fatt = ioSVG_getFirstTagInstance(font, 'font-face').attributes;
+		const fontAttributes = ioSVG_getFirstTagInstance(font, 'font-face').attributes;
 		const ps = getCurrentProject().projectSettings;
 		const md = getCurrentProject().metadata;
-		const fname = fatt['font-family'] || 'My Font';
+		const fname = fontAttributes['font-family'] || 'My Font';
 
-		ps.upm = 1 * fatt['units-per-em'] || 1000;
+		ps.upm = 1 * fontAttributes['units-per-em'] || 1000;
 		ps.name = fname;
-		ps.ascent = 1 * fatt.ascent || 700;
-		ps.capHeight = 1 * fatt['cap-height'] || 675;
-		ps.xHeight = 1 * fatt['x-height'] || 400;
+		ps.ascent = 1 * fontAttributes.ascent || 700;
+		ps.capHeight = 1 * fontAttributes['cap-height'] || 675;
+		ps.xHeight = 1 * fontAttributes['x-height'] || 400;
 		ps.overshoot = round(ps.upm / 100);
 		md.font_family = fname;
-		md.panose_1 = fatt['panose-1'] || '0 0 0 0 0 0 0 0 0 0';
-		md.font_weight = 1 * fatt['font-weight'] || 400;
-		md.font_stretch = fatt['font-stretch'] || 'normal';
-		md.underline_position = 1 * fatt['underline-position'] || -50;
-		md.underline_thickness = 1 * fatt['underline-thickness'] || 10;
-		md.strikethrough_position = 1 * fatt['strikethrough-position'] || 300;
-		md.strikethrough_thickness = 1 * fatt['strikethrough-thickness'] || 10;
-		md.overline_position = 1 * fatt['overline-position'] || 750;
-		md.overline_thickness = 1 * fatt['overline-thickness'] || 10;
+		md.panose_1 = fontAttributes['panose-1'] || '0 0 0 0 0 0 0 0 0 0';
+		md.font_weight = 1 * fontAttributes['font-weight'] || 400;
+		md.font_stretch = fontAttributes['font-stretch'] || 'normal';
+		md.underline_position = 1 * fontAttributes['underline-position'] || -50;
+		md.underline_thickness = 1 * fontAttributes['underline-thickness'] || 10;
+		md.strikethrough_position = 1 * fontAttributes['strikethrough-position'] || 300;
+		md.strikethrough_thickness = 1 * fontAttributes['strikethrough-thickness'] || 10;
+		md.overline_position = 1 * fontAttributes['overline-position'] || 750;
+		md.overline_thickness = 1 * fontAttributes['overline-thickness'] || 10;
 
 		// Finish Up
 		finalizeUI();
@@ -383,7 +384,7 @@ function make_LoadingAnimation() {
 	return re;
 }
 
-function make_ImportFilter(chars, kerns, funname) {
+function make_ImportFilter(chars, kerns, functionName) {
 	let re =
 		'<div class="openproject_tile" style="width:500px; height:auto;">' +
 		'<h2>Whoa, there...</h2><br>' +
@@ -411,16 +412,16 @@ function make_ImportFilter(chars, kerns, funname) {
 		'<h3>Import a custom range of glyphs</h3>' +
 		'A nice overview of glyph ranges can be found at<br><a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia\'s Unicode Block page</a>.<br>' +
 		'<table class="settingstable"><tr>' +
-		"<td>begin:<br><input type=\"text\" onchange=\"checkFilter('custom');document.getElementById('importfontbutton').disabled = 'disabled';\" value=\"" +
+		"<td>begin:<br><input type=\"text\" onchange=\"checkFilter('custom');document.getElementById('import-font-button').disabled = 'disabled';\" value=\"" +
 		decToHex(_UI.importRange.begin) +
-		'" id="customrangebegin"></td>' +
-		"<td>end:<br><input type=\"text\" onchange=\"checkFilter('custom');document.getElementById('importfontbutton').disabled = 'disabled';\" value=\"" +
+		'" id="custom-range-begin"></td>' +
+		"<td>end:<br><input type=\"text\" onchange=\"checkFilter('custom');document.getElementById('import-font-button').disabled = 'disabled';\" value=\"" +
 		decToHex(_UI.importRange.end) +
-		'" id="customrangeend"></td>' +
+		'" id="custom-range-end"></td>' +
 		'<td><br><button onclick="checkFilter(\'custom\');">Set Range</button></td>' +
 		'<td style="padding-top:20px;">' +
 		'</td>' +
-		'<td><br><div id="customrangeerror">bad range input</div></td>' +
+		'<td><br><div id="custom-range-error">bad range input</div></td>' +
 		'</tr></table><br>';
 	re += '</td></tr>';
 
@@ -432,8 +433,8 @@ function make_ImportFilter(chars, kerns, funname) {
 	re += '</table>';
 
 	re +=
-		'<br><br><button class="button__call-to-action" id="importfontbutton" onclick="' +
-		funname +
+		'<br><br><button class="button__call-to-action" id="import-font-button" onclick="' +
+		functionName +
 		'(true);">Import Font</button>';
 
 	return re;
@@ -443,8 +444,8 @@ function setFontImportRange() {
 	const range = getCustomRange(false);
 	if (range) {
 		_UI.importRange = range;
-		document.getElementById('customrangebegin').value = range.begin;
-		document.getElementById('customrangeend').value = range.end;
+		document.getElementById('custom-range-begin').value = range.begin;
+		document.getElementById('custom-range-end').value = range.end;
 	}
 }
 
@@ -479,7 +480,7 @@ function checkFilter(id) {
 		_UI.importRange.end = 0xffff;
 	}
 
-	document.getElementById('importfontbutton').disabled = false;
+	document.getElementById('import-font-button').disabled = false;
 }
 
 function getKernMembersByName(names, chars, arr, limit) {

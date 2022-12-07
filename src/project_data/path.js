@@ -15,6 +15,7 @@ import {
 	pointsAreEqual,
 	strSan,
 } from '../common/functions.js';
+import { getCurrentProject } from '../app/main.js';
 
 /**
  * Glyph Element > Path
@@ -688,21 +689,17 @@ export class Path extends GlyphElement {
 	 * @param {number} descender - project descender size
 	 * @returns {string} - svg
 	 */
-	makeSVG(size = 50, gutter = 5, upm = 1000, descender = 300) {
-		const charScale = (size - gutter * 2) / size;
-		const gutterScale = (gutter / size) * upm;
-		const vbSize = upm - gutter * 2;
-		let re = `<svg version="1.1" ';
-			xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-			width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}"
-		>
-			<g transform="
-				translate(${gutterScale},${upm - descender - gutterScale / 2})
-				scale(${charScale}, -${charScale})"
-			>
-				<path d="${this.svgPathData}"/>
-			</g>
-		</svg>`;
+	makeSVG(size = 50, padding = 5) {
+		const ps = getCurrentProject().projectSettings;
+		const scale = (size - padding * 2) / ps.upm;
+		const scaledUPM = size / ps.upm;
+		const translateY = ps.ascent * scale + padding * 2;
+
+		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
+		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
+		re += `\t<g transform="translate(${padding},${translateY}) scale(${scaledUPM}, -${scaledUPM})">\n`;
+		re += `\t\t<path d="${this.svgPathData}"/>\n`;
+		re += `\t</g>\n</svg>`;
 		return re;
 	}
 

@@ -5,6 +5,7 @@ import { ComponentInstance } from './component_instance.js';
 import { getOverallMaxes } from './maxes.js';
 import { json, clone, hasNonValues, isVal, trim } from '../common/functions.js';
 import { parseUnicodeInput, getUnicodeName, hexToHTML, hexToChars } from '../common/unicode.js';
+import { getCurrentProject } from '../app/main.js';
 // import { combinePaths } from '../panels/REFACTOR_path.js';
 
 /**
@@ -769,33 +770,25 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Make SVG from this Path
-	 * @param {number} size - how big
-	 * @param {number} gutter - margin
-	 * @param {number} emSquare - em square of the font
-	 * @param {number} desc - descender value of the font (positive integer)
+	 * @param {number} size - how big the resulting SVG should be
+	 * @param {number} padding - interior space around the glyph
 	 * @returns {string} - svg
 	 */
-	makeSVG(size = 1000, gutter = 5, emSquare = 1000, desc = 300) {
+	makeSVG(size = 500, padding = 10) {
 		// log('Glyph.makeSVG', 'start');
 		// log(this);
+		const ps = getCurrentProject().projectSettings;
+		const scale = (size - padding * 2) / ps.upm;
+		const scaledUPM = size / ps.upm;
+		const translateY = ps.ascent * scale + padding * 2;
 
-		const charScale = (size - gutter * 2) / size;
-		const gutterScale = (gutter / size) * emSquare;
-		const vbSize = emSquare - gutter * 2;
-		const svgPathData = this.makeSVGPathData();
+		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
+		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
+		re += `\t<g transform="translate(${padding},${translateY}) scale(${scaledUPM}, -${scaledUPM})">\n`;
+		re += `\t\t<path d="${this.svgPathData}"/>\n`;
+		re += `\t</g>\n</svg>`;
 
-		let re = `
-			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}" height="${size}" viewBox="0,0,${vbSize},${vbSize}">
-			    <g transform="translate(${gutterScale},${
-			emSquare - desc - gutterScale / 2
-		}) scale(${charScale}, -${charScale})">
-			      <path d="${svgPathData}"/>
-			    </g>
-			</svg>
-		`;
 		// log('Glyph.makeSVG', 'end');
-		// re = re.replace(/\n/gi, '');
-		re = re.replace(/\t/gi, '');
 		return re;
 	}
 
