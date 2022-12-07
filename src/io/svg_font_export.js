@@ -1,147 +1,126 @@
+import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
+import { round, trim } from '../common/functions.js';
+import { isValidHex } from '../common/unicode.js';
+import { showToast } from '../controls/dialogs.js';
+import { makeDateStampSuffix, saveFile } from '../project_editor/saving.js';
 /**
 	IO > Export > SVG Font
 	Converting a Glyphr Studio Project to XML in
 	a SVG Font format.
 **/
 
-function ioSVG_exportSVGfont() {
+export function ioSVG_exportSVGfont() {
 	// log('ioSVG_exportSVGfont', 'start');
-	const ps = getCurrentProject().projectSettings;
-	const md = getCurrentProject().metadata;
+	const project = getCurrentProject();
+	const app = getGlyphrStudioApp();
+	const ps = project.projectSettings;
+	const md = project.metadata;
 	const family = md.font_family;
-	const familyid = family.replace(/ /g, '_');
+	const familyID = family.replace(/ /g, '_');
 	const timestamp = makeDateStampSuffix();
-	let timeoutput = timestamp.split('-');
-	timeoutput[0] = timeoutput[0].replace(/\./g, '-');
-	timeoutput[1] = timeoutput[1].replace(/\./g, ':');
-	timeoutput = timeoutput.join(' at ');
+	let timeOutput = timestamp.split('-');
+	timeOutput[0] = timeOutput[0].replace(/\./g, '-');
+	timeOutput[1] = timeOutput[1].replace(/\./g, ':');
+	timeOutput = timeOutput.join(' at ');
 
-	let con =
-		'<?xml version="1.0"?>\n' +
-		// '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >\n'+
-		'<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">\n' +
-		'\t<metadata>\n\n' +
-		'\t\tProject: ' +
-		ps.name +
-		'\n' +
-		'\t\tFont exported on ' +
-		timeoutput +
-		'\n\n' +
-		'\t\tCreated with Glyphr Studio - the free, web-based font editor\n' +
-		'\t\t' +
-		_UI.thisGlyphrStudioVersion +
-		'\n' +
-		'\t\t' +
-		_UI.thisGlyphrStudioVersionNum +
-		'\n\n' +
-		'\t\tFind out more at www.glyphrstudio.com\n\n' +
-		'\t</metadata>\n' +
-		'\t<defs>\n' +
-		'\t\t<font id="' +
-		familyid +
-		'" horiz-adv-x="' +
-		ps.upm +
-		'">\n' +
-		'\t\t\t<font-face\n' +
-		ioSVG_makeFontFace() +
-		'\n' +
-		'\t\t\t\t<font-face-src>\n' +
-		'\t\t\t\t\t<font-face-name name="' +
-		family +
-		'" />\n' +
-		'\t\t\t\t</font-face-src>\n' +
-		'\t\t\t</font-face>\n';
+	let con = `<?xml version="1.0"?>
+<svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<metadata>
+		Project: ${ps.name}
+		Font exported on ${timeOutput}
+		Created with Glyphr Studio - the free, web-based font editor
+		Version: ${app.version}
+		Find out more at www.glyphrstudio.com
+	</metadata>
+	<defs>
+		<font id="${familyID}" horiz-adv-x="${ps.upm}">
+			<font-face ${ioSVG_makeFontFace()}>
+				<font-face-src>
+					<font-face-name name="${family}" />
+				</font-face-src>
+			</font-face>
+${ioSVG_makeMissingGlyph()}
+${ioSVG_makeAllGlyphsAndLigatures()}
+${ioSVG_makeAllKernPairs()}
+		</font>
+	</defs>
 
-	con += '\n';
-	con += ioSVG_makeMissingGlyph();
-	con += '\n\n';
-	con += ioSVG_makeAllGlyphsAndLigatures();
-	con += '\n';
-	con += ioSVG_makeAllKernPairs();
-	con += '\n';
+	<text x="100" y="150" style="font-size:48px;" font-family="${family}">
+		${family}
+	</text>
+	<text x="100" y="220" style="font-size:48px;" font-family="${family}">
+		ABCDEFGHIJKLMNOPQRSTUVWXYZ
+	</text>
 
-	con += '\t\t</font>\n' + '\t</defs>\n\n';
+	<text x="100" y="290" style="font-size:48px;" font-family="${family}">
+		abcdefghijklmnopqrstuvwxyz
+	</text>
 
-	// con += '\t<style type="text/css">\n';
-	// con += '\t\t@font-face {\n';
-	// con += '\t\t\tfont-family: "'+family+'", monospace;\n';
-	// con += '\t\t\tsrc: url(#'+familyid+');\n';
-	// con += '\t\t}\n';
-	// con += '\t</style>\n\n';
+	<text x="100" y="360" style="font-size:48px;" font-family="${family}">
+		1234567890
+	</text>
 
-	con +=
-		'\t<text x="100" y="150" style="font-size:48px;" font-family="' +
-		family +
-		'">' +
-		family +
-		'</text>\n';
-	con +=
-		'\t<text x="100" y="220" style="font-size:48px;" font-family="' +
-		family +
-		'">ABCDEFGHIJKLMNOPQRSTUVWXYZ</text>\n';
-	con +=
-		'\t<text x="100" y="290" style="font-size:48px;" font-family="' +
-		family +
-		'">abcdefghijklmnopqrstuvwxyz</text>\n';
-	con +=
-		'\t<text x="100" y="360" style="font-size:48px;" font-family="' +
-		family +
-		'">1234567890</text>\n';
-	con +=
-		'\t<text x="100" y="430" style="font-size:48px;" font-family="' +
-		family +
-		'">!"#$%&amp;\'()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~</text>\n';
+	<text x="100" y="430" style="font-size:48px;" font-family="${family}">
+		!"#$%&amp;'()*+,-./:;&lt;=&gt;?@[\\]^_\`{|}~
+	</text>
 
-	con += '</svg>';
+</svg >
+`;
 
 	const filename = ps.name + ' - SVG Font - ' + timestamp + '.svg';
 
 	saveFile(filename, con);
+	showToast('Exported SVG Font File');
 
 	// log('ioSVG_exportSVGfont', 'end');
 }
 
 function ioSVG_makeFontFace() {
 	// log('ioSVG_makeFontFace', 'start');
-	calcFontMaxes();
-	const t = '\t\t\t\t';
-	const md = getCurrentProject().metadata;
-	const ps = getCurrentProject().projectSettings;
-	const fm = _UI.fontMetrics;
+	const project = getCurrentProject();
+	// const app = getGlyphrStudioApp();
+	const ps = project.projectSettings;
+	const md = project.metadata;
+	const fm = project.calcFontMaxes();
+	const t = '\t\t';
 	let con = '';
 
 	// Project properties
-	con += t + 'units-per-em="' + ps.upm + '"\n';
-	con += t + 'cap-height="' + ps.capHeight + '"\n';
-	con += t + 'x-height="' + ps.xHeight + '"\n';
-	con += t + 'ascent="' + ps.ascent + '"\n';
-	con += t + 'descent="' + ps.descent + '"\n';
-	con +=
-		t +
-		'bbox="' +
-		fm.maxes.xMin +
-		', ' +
-		fm.maxes.yMin +
-		', ' +
-		fm.maxes.xMax +
-		', ' +
-		fm.maxes.yMax +
-		'"\n';
-	con += t + 'unicode-range="U+20-' + fm.maxGlyph + '"\n';
+	con += `
+		${t}units-per-em="${ps.upm}"
+		${t}cap-height="${ps.capHeight}"
+		${t}x-height="${ps.xHeight}"
+		${t}ascent="${ps.ascent}"
+		${t}descent="${ps.descent}"
+		${t}bbox="${fm.maxes.xMin}, ${fm.maxes.yMin}, ${fm.maxes.xMax}, ${fm.maxes.yMax}"
+		${t}unicode-range="U+20-${fm.maxGlyph}"
+	`;
 
 	// Metadata properties
-	for (const d of Object.keys(md)) {
-		if (md[d] !== '{{sectionbreak}}') {
-			con += t;
-			con += d.replace(/_/g, '-');
-			con += '=';
-			// con += md[d] === '""'? '' : md[d];
-			con += typeof md[d] === 'string' ? JSON.stringify(trim(md[d])) : '"' + md[d] + '"';
-			con += '\n';
-		}
-	}
+	con += `
+		${t}font-family="${getProperty('font_family')}"
+		${t}font-style="${getProperty('font_style')}"
+		${t}panose-1="${getProperty('panose_1')}"
+		${t}font-variant="${getProperty('font_variant')}"
+		${t}font-weight="${getProperty('font_weight')}"
+		${t}font-stretch="${getProperty('font_stretch')}"
+		${t}stemv="${getProperty('stemv')}"
+		${t}stemh="${getProperty('stemh')}"
+		${t}slope="${getProperty('slope')}"
+		${t}underline-position="${getProperty('underline_position')}"
+		${t}underline-thickness="${getProperty('underline_thickness')}"
+		${t}strikethrough-position="${getProperty('strikethrough_position')}"
+		${t}strikethrough-thickness="${getProperty('strikethrough_thickness')}"
+		${t}overline-position="${getProperty('overline_position')}"
+		${t}overline-thickness="${getProperty('overline_thickness')}"
+	`;
+
 	con = con.substring(0, con.length - 1);
-	con += '>';
+
+	function getProperty(prop) {
+		if (md[prop]) return JSON.stringify(trim(md[prop]));
+		else return '';
+	}
 
 	// log('ioSVG_makeFontFace', 'end');
 	return con;
@@ -149,28 +128,20 @@ function ioSVG_makeFontFace() {
 
 function ioSVG_makeMissingGlyph() {
 	// log('ioSVG_makeMissingGlyph', 'start');
-	let con = '     ';
 	const gh = getCurrentProject().projectSettings.ascent;
 	const gw = round(gh * 0.618);
 	const gt = round(gh / 100);
 
-	con += '\t<missing-glyph horiz-adv-x="' + gw + '" ';
-	con += 'd="M0,0 v' + gh + ' h' + gw + ' v-' + gh + ' h-' + gw + 'z ';
-	con +=
-		'M' +
-		gt +
-		',' +
-		gt +
-		' v' +
-		(gh - gt * 2) +
-		' h' +
-		(gw - gt * 2) +
-		' v-' +
-		(gh - gt * 2) +
-		' h-' +
-		(gw - gt * 2) +
-		'z';
-	con += '" />';
+	let con = `
+			<missing-glyph
+				horiz-adv-x="${gw}"
+				d="
+					M0,0 v${gh} h${gw} v-${gh} h-${gw}z
+					M${gt},${gt} v${gh - gt * 2} h${gw - gt * 2}
+					v-${gh - gt * 2} h-${gw - gt * 2}z
+				"
+			/>
+	`;
 
 	// log('ioSVG_makeMissingGlyph', 'end');
 	return con;
@@ -182,14 +153,15 @@ function ioSVG_makeAllGlyphsAndLigatures() {
 	const fc = getCurrentProject().glyphs;
 	let con = '';
 
-	sortLigatures();
-	const li = getCurrentProject().ligatures;
-	con += '\t\t\t<!-- Ligatures -->\n';
-	for (const l of Object.keys(li)) {
-		con += ioSVG_makeOneGlyphOrLigature(li[l], l);
-	}
+	// TODO Ligatures
+	// sortLigatures();
+	// const li = getCurrentProject().ligatures;
+	// con += '\t\t\t<!-- Ligatures -->\n';
+	// for (const l of Object.keys(li)) {
+	// 	con += ioSVG_makeOneGlyphOrLigature(li[l], l);
+	// }
 
-	con += '\n';
+	// con += '\n';
 
 	con += '\t\t\t<!-- Glyphs -->\n';
 	for (const c of Object.keys(fc)) {
@@ -201,8 +173,8 @@ function ioSVG_makeAllGlyphsAndLigatures() {
 }
 
 function ioSVG_makeOneGlyphOrLigature(gl, uni) {
-	// if(!gl.paths.length && !gl.getAdvanceWidth()) return '';
-	// Results in lots of special unicoded glyphs with no paths
+	// if(!gl.paths.length && !gl.advanceWidth) return '';
+	// Results in lots of special unicode glyphs with no paths
 	if (!gl.paths.length && uni != 0x0020) {
 		console.warn('Glyph ' + uni + ' not exported: No paths.');
 		return '';
@@ -224,14 +196,14 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 		gl = new Glyph(gl).flattenGlyph().combineAllPaths(true);
 	}
 
-	let pathdata = gl.svgPathData;
-	pathdata = pathdata || 'M0,0Z';
+	let pathData = gl.svgPathData;
+	pathData = pathData || 'M0,0Z';
 
 	let con = '\t\t\t';
 	con += '<glyph glyph-name="' + gl.name.replace(/ /g, '_') + '" ';
 	con += 'unicode="' + uni + '" ';
-	con += 'horiz-adv-x="' + gl.getAdvanceWidth() + '" ';
-	con += 'd="' + pathdata + '" />\n';
+	con += 'horiz-adv-x="' + gl.advanceWidth + '" ';
+	con += 'd="' + pathData + '" />\n';
 	return con;
 }
 

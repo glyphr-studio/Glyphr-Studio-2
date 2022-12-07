@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import {
 	clipboardCopy,
 	deleteSelectedPaths,
@@ -42,11 +43,10 @@ export function handleKeyPress(event) {
 	}
 
 	// g
-	// if (ehd.isCtrlDown && key === 'g') {
-	// 	event.preventDefault();
-	// 	showToast('Exporting SVG font file...');
-	// 	setTimeout(ioSVG_exportSVGfont, 500);
-	// }
+	if (ehd.isCtrlDown && key === 'g') {
+		event.preventDefault();
+		setTimeout(ioSVG_exportSVGfont, 10);
+	}
 
 	// e
 	// if (ehd.isCtrlDown && key === 'e') {

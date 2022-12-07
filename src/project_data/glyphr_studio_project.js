@@ -349,7 +349,7 @@ export class GlyphrStudioProject {
 			}
 		}
 
-		// Ligatures!
+		// TODO Ligatures!
 
 		return fm;
 	}
