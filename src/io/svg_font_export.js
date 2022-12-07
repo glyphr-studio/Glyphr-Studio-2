@@ -113,8 +113,7 @@ function ioSVG_makeMissingGlyph() {
 	const gw = round(gh * 0.618);
 	const gt = round(gh / 100);
 
-	let con = `
-			<missing-glyph horiz-adv-x="${gw}" `;
+	let con = `\t\t\t<missing-glyph horiz-adv-x="${gw}" `;
 	con += `d="M0,0 v${gh} h${gw} v-${gh} h-${gw}z `;
 	con += `M${gt},${gt} v${gh - gt * 2} h${gw - gt * 2} `;
 	con += `v - ${gh - gt * 2} h - ${gw - gt * 2} z"/>
@@ -177,10 +176,10 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 	pathData = pathData || 'M0,0Z';
 
 	let con = '\t\t\t';
-	con += '<glyph glyph-name="' + gl.name.replace(/ /g, '_') + '" ';
-	con += 'unicode="' + uni + '" ';
-	con += 'horiz-adv-x="' + gl.advanceWidth + '" ';
-	con += 'd="' + pathData + '" />\n';
+	con += `<glyph glyph-name="${gl.name.replace(/ /g, '_')}" `;
+	con += `unicode="${uni}" `;
+	con += `horiz-adv-x="${gl.advanceWidth}" `;
+	con += `d="${pathData}" />\n`;
 	return con;
 }
 
@@ -196,10 +195,10 @@ function ioSVG_makeAllKernPairs() {
 	for (const k of keys) {
 		for (let lg = 0; lg < kp[k].leftGroup.length; lg++) {
 			for (let rg = 0; rg < kp[k].rightGroup.length; rg++) {
-				con += '\t\t\t<hkern ';
-				con += 'u1="' + hexToUnicodeHex(kp[k].leftGroup[lg]) + '" ';
-				con += 'u2="' + hexToUnicodeHex(kp[k].rightGroup[rg]) + '" ';
-				con += 'k="' + kp[k].value + '" />\n';
+				con += `\t\t\t<hkern `;
+				con += `u1="${hexToUnicodeHex(kp[k].leftGroup[lg])}" `;
+				con += `u2="${hexToUnicodeHex(kp[k].rightGroup[rg])}" `;
+				con += `k="${kp[k].value}" />\n`;
 			}
 		}
 	}

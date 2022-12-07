@@ -140,7 +140,7 @@ export function getActionData(name) {
 			iconName: 'exportGlyphSVG',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let content = editor.selectedItem.makeSVG(1000, 0);
+				let content = editor.selectedItem.makeSVG();
 				let name = editor.selectedItem.name;
 				saveFile(name + '.svg', content);
 			},
