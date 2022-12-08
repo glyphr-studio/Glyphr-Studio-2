@@ -1,7 +1,14 @@
+@font-face {
+	font-family: 'FiraGo';
+	font-style: normal;
+	font-weight: 400;
+	src: url('./FiraGO-Regular.woff2');
+}
+
 * {
 	margin: 0;
 	padding: 0;
-	font-family: FiraGO, tahoma, verdana, sans-serif;
+	font-family: FiraGo, tahoma, verdana, sans-serif;
 	font-size: 14px;
 	font-weight: normal;
 	z-index: 0;
