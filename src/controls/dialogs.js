@@ -21,13 +21,17 @@ export function showToast(msg, dur, fn) {
 	const stepTime = 10;
 	const divisor = 5;
 	const duration = dur || 3000;
-	const messageContainer = makeElement({
-		tag: 'div',
-		id: 'toast',
-		innerHTML: msg || 'Howdy!',
-	});
-	document.body.appendChild(messageContainer);
+	let messageContainer = document.getElementById('toast');
 
+	if (!messageContainer) {
+		messageContainer = makeElement({
+			tag: 'div',
+			id: 'toast',
+			innerHTML: msg || 'Howdy!',
+		});
+		document.body.appendChild(messageContainer);
+	}
+	
 	// log('Typeof fn: ' + typeof fn);
 
 	if (fn && typeof fn === 'function') {

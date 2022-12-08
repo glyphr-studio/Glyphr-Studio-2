@@ -8,6 +8,7 @@ import { importOTFFont } from '../io/otf_import.js';
 // import { importSVGFont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from '../app/main.js';
+import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 
 /**
  * Page > Open Project
@@ -181,18 +182,17 @@ function changeTab(tab) {
 
 /**
  * Handle file drop
- * @param {object} evt - drop event
+ * @param {object} event - drop event
  */
-function handleDrop(evt) {
+function handleDrop(event) {
 	const app = getGlyphrStudioApp();
 	// log('handleDrop', 'start');
 	document.getElementById('open-project__right-area').innerHTML = 'Loading File...';
 	document.getElementById('open-project__right-area').style.backgroundColor = uiColors.offWhite;
 
-	evt.stopPropagation();
-	evt.preventDefault();
+	cancelDefaultEventActions(event);
 
-	let f = evt.dataTransfer || document.getElementById('openProjectFileChooser');
+	let f = event.dataTransfer || document.getElementById('openProjectFileChooser');
 	f = f.files[0];
 	// log('filename: ' + f.name);
 	let fname = f.name.split('.');
@@ -245,29 +245,28 @@ function handleDrop(evt) {
 
 /**
  * Handle Message event
- * @param {object} evt - event
+ * @param {object} event - event
  */
-function handleMessage(evt) {
+function handleMessage(event) {
 	const app = getGlyphrStudioApp();
 	// assume strings are SVG fonts
-	app.temp.droppedFileContent = evt.data;
+	app.temp.droppedFileContent = event.data;
 
-	if (typeof evt.data === 'string') {
+	if (typeof event.data === 'string') {
 		// importSVGFont(false);
 		// assume array buffers are otf fonts
-	} else if (evt.data instanceof ArrayBuffer) {
+	} else if (event.data instanceof ArrayBuffer) {
 		// importOTFFont(false);
 	}
 }
 
 /**
  * Handle DragOver event
- * @param {object} evt - event
+ * @param {object} event - event
  */
-function handleDragOver(evt) {
-	evt.stopPropagation();
-	evt.preventDefault();
-	evt.dataTransfer.dropEffect = 'copy';
+function handleDragOver(event) {
+	cancelDefaultEventActions(event);
+	event.dataTransfer.dropEffect = 'copy';
 
 	const dropZone = document.getElementById('open-project__right-area');
 	dropZone.style.backgroundColor = accentColors.blue.l95;
@@ -276,11 +275,10 @@ function handleDragOver(evt) {
 
 /**
  * Handle DragLeave event
- * @param {object} evt - event
+ * @param {object} event - event
  */
-function handleDragLeave(evt) {
-	evt.stopPropagation();
-	evt.preventDefault();
+function handleDragLeave(event) {
+	cancelDefaultEventActions(event);
 
 	const dropZone = document.getElementById('open-project__right-area');
 	dropZone.style.backgroundColor = accentColors.gray.offWhite;
@@ -318,9 +316,6 @@ function handleLoadSample(name) {
 	}, 5);
 }
 
-
-
-
 // --------------------------------------------------------------
 // OLD IMPORT STUFF
 // --------------------------------------------------------------
@@ -328,13 +323,11 @@ function isOutOfBounds(uni) {
 	if (!uni.length) return true;
 
 	for (let u = 0; u < uni.length; u++) {
-		if (parseInt(uni[u]) > importRange.end || parseInt(uni[u]) < importRange.begin)
-			return true;
+		if (parseInt(uni[u]) > importRange.end || parseInt(uni[u]) < importRange.begin) return true;
 	}
 
 	return false;
 }
-
 
 function make_ImportFilter(chars, kerns, functionName) {
 	let re =
