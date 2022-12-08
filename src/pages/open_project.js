@@ -14,6 +14,14 @@ import { getGlyphrStudioApp } from '../app/main.js';
  * The first page you see when you open Glyphr Studio.
  * HTML and associated functions for this page.
  */
+
+let importRange = {
+	begin: 0x0020,
+	end: 0x024f,
+};
+
+export const importOverflowCount = 326;
+
 export function makePage_OpenProject() {
 	// log(`makePage_OpenProject`, 'start');
 	const recent = 1000 * 60 * 60 * 24 * 7; // seven days in milliseconds
@@ -308,4 +316,110 @@ function handleLoadSample(name) {
 		editor.nav.page = 'Glyph edit';
 		app.navigate();
 	}, 5);
+}
+
+
+
+
+// --------------------------------------------------------------
+// OLD IMPORT STUFF
+// --------------------------------------------------------------
+function isOutOfBounds(uni) {
+	if (!uni.length) return true;
+
+	for (let u = 0; u < uni.length; u++) {
+		if (parseInt(uni[u]) > importRange.end || parseInt(uni[u]) < importRange.begin)
+			return true;
+	}
+
+	return false;
+}
+
+
+function make_ImportFilter(chars, kerns, functionName) {
+	let re =
+		'<div class="openproject_tile" style="width:500px; height:auto;">' +
+		'<h2>Whoa, there...</h2><br>' +
+		"The font you're trying to import has <b>" +
+		chars +
+		' glyphs</b>';
+	if (kerns) re += ' and <b>' + kerns + ' kern pairs</b>.  ';
+	else re += '.  ';
+	re +=
+		'Glyphr Studio has a hard time with super-large fonts like this.  ' +
+		'We recommend pairing it down a little:<br><br>';
+
+	re += '<table>';
+
+	re +=
+		'<tr><td class="checkcol"><input type="checkbox" onclick="checkFilter(\'basic\');" id="basic" checked/></td><td>';
+	re +=
+		'<h3>Only import Latin glyphs</h3>' +
+		'This includes Latin and Latin Extended Unicode ranges<br>(0x0020 - 0x024F).<br><br>';
+	re += '</td></tr>';
+
+	re +=
+		'<tr><td class="checkcol"><input type="checkbox" onclick="checkFilter(\'custom\');" id="custom"/></td><td>';
+	re +=
+		'<h3>Import a custom range of glyphs</h3>' +
+		'A nice overview of glyph ranges can be found at<br><a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia\'s Unicode Block page</a>.<br>' +
+		'<table class="settingstable"><tr>' +
+		"<td>begin:<br><input type=\"text\" onchange=\"checkFilter('custom');document.getElementById('import-font-button').disabled = 'disabled';\" value=\"" +
+		decToHex(importRange.begin) +
+		'" id="custom-range-begin"></td>' +
+		"<td>end:<br><input type=\"text\" onchange=\"checkFilter('custom');document.getElementById('import-font-button').disabled = 'disabled';\" value=\"" +
+		decToHex(importRange.end) +
+		'" id="custom-range-end"></td>' +
+		'<td><br><button onclick="checkFilter(\'custom\');">Set Range</button></td>' +
+		'<td style="padding-top:20px;">' +
+		'</td>' +
+		'<td><br><div id="custom-range-error">bad range input</div></td>' +
+		'</tr></table><br>';
+	re += '</td></tr>';
+
+	re +=
+		'<tr><td class="checkcol"><input type="checkbox" onclick="checkFilter(\'everything\');" id="everything"/></td><td>';
+	re += '<h3>Import all the glyphs</h3>' + "Don't say we did't try to warn you.";
+	re += '</td></tr>';
+
+	re += '</table>';
+
+	re +=
+		'<br><br><button class="button__call-to-action" id="import-font-button" onclick="' +
+		functionName +
+		'(true);">Import Font</button>';
+
+	return re;
+}
+
+function setFontImportRange() {
+	const range = getCustomRange(false);
+	if (range) {
+		importRange = range;
+		document.getElementById('custom-range-begin').value = range.begin;
+		document.getElementById('custom-range-end').value = range.end;
+	}
+}
+
+function checkFilter(id) {
+	if (id === 'basic') {
+		document.getElementById('basic').checked = true;
+		document.getElementById('custom').checked = false;
+		document.getElementById('everything').checked = false;
+		importRange.begin = 0x0020;
+		importRange.end = 0x024f;
+	} else if (id === 'custom') {
+		document.getElementById('basic').checked = false;
+		document.getElementById('custom').checked = true;
+		document.getElementById('everything').checked = false;
+		setFontImportRange();
+	} else if (id === 'everything') {
+		document.getElementById('basic').checked = false;
+		document.getElementById('custom').checked = false;
+		document.getElementById('everything').checked = true;
+		importRange.begin = 0x0000;
+		importRange.end = 0xffff;
+	}
+
+	document.getElementById('import-font-button').disabled = false;
 }

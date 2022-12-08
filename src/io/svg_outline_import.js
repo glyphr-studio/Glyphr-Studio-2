@@ -1,6 +1,9 @@
+import { showErrorMessageBox } from '../controls/dialogs.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from '../edit_canvas/tools/new-basic-path.js';
+import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-import { XYPoint } from './xy_point.js';
+import { PathPoint } from '../project_data/path_point.js';
+import { XMLtoJSON } from '../io/xml_to_json.js';
 /**
 	IO > Import > SVG Outlines
 	Takes a set of XML and pulls out any path or
@@ -9,7 +12,7 @@ import { XYPoint } from './xy_point.js';
 	and attributes.
 **/
 
-function ioSVG_convertTagsToGlyph(svgData) {
+export function ioSVG_convertTagsToGlyph(svgData) {
 	// log('ioSVG_convertTagsToGlyph', 'start');
 
 	const newPaths = [];
@@ -18,13 +21,15 @@ function ioSVG_convertTagsToGlyph(svgData) {
 	const error = false;
 	const grabTags = ['path', 'rect', 'polyline', 'polygon', 'ellipse', 'circle'];
 	let jsonData;
+	let newPoint;
 
 	try {
-		jsonData = convertXMLtoJSON(svgData);
+		jsonData = XMLtoJSON(svgData);
 	} catch (e) {
 		if (e.message === 'XMLdoc.getElementsByTagName(...)[0] is undefined') {
-			e.message =
-				'No SVG Path or Path Tags could be found.  Make sure the SVG code is in proper XML format.';
+			e.message = `
+			No SVG Path or Path Tags could be found.
+			Make sure the SVG code is in proper XML format.`;
 		}
 		showErrorMessageBox(e.message);
 		return;
@@ -60,7 +65,7 @@ function ioSVG_convertTagsToGlyph(svgData) {
 		for (let p = 0; p < pathTags.path.length; p++) {
 			// Compound Paths are treated as different Glyphr Paths
 			data = pathTags.path[p].attributes.d;
-			data = cleanAndFormatPathPointData(data);
+			data = ioSVG_cleanAndFormatPathData(data);
 
 			for (let d = 0; d < data.length; d++) {
 				if (data[d].length) {
@@ -75,8 +80,8 @@ function ioSVG_convertTagsToGlyph(svgData) {
 	}
 
 	/*
-			GET RECT TAGS
-		*/
+		GET RECT TAGS
+	*/
 	if (pathTags.rect.length) {
 		data = {};
 		let maxes;
@@ -109,56 +114,49 @@ function ioSVG_convertTagsToGlyph(svgData) {
 	}
 
 	/*
-			GET POLYLINE OR POLYGON TAGS
-		*/
+		GET POLYLINE OR POLYGON TAGS
+	*/
 	let poly = pathTags.polygon;
 	poly = poly.concat(pathTags.polyline);
 
 	if (poly.length) {
 		data = {};
-		let pathPoints;
-		let point;
+		let newPathPoints;
 		let px;
 		let py;
 
 		for (let po = 0; po < poly.length; po++) {
 			data = poly[po].attributes.points;
-			data = cleanAndFormatPathPointData(data);
+			data = ioSVG_cleanAndFormatPathData(data);
 			data = data[0].split(',');
 
 			// log('Polyline or Polygon data, cleaned & formatted:');
 			// log(data);
 
 			if (data.length) {
-				pathPoints = [];
+				newPathPoints = [];
 
 				for (let co = 0; co < data.length; co += 2) {
 					px = data[co] || 0;
 					py = data[co + 1] || 0;
 
-					point = new XYPoint(px, py);
-					/*
-					 *
-					 * // TODO REFACTOR
-					 *
-					 */
-					pathPoints.push({
-						p: { coord: point },
-						h1: { coord: point },
-						h2: { coord: point },
-						useH1: false,
-						useH2: false,
+					newPoint = new PathPoint({
+						p: { coord: { x: px, y: py } },
+						h1: { coord: { x: px, y: py }, use: true },
+						h2: { coord: { x: px, y: py }, use: true },
 					});
+
+					newPathPoints.push(newPoint);
 				}
 
-				pushPath(new Path({ name: 'Polygon', pathPoints: pathPoints }));
+				pushPath(new Path({ name: 'Polygon', pathPoints: newPathPoints }));
 			}
 		}
 	}
 
 	/*
-			GET ELLIPSE OR CIRCLE TAGS
-		*/
+		GET ELLIPSE OR CIRCLE TAGS
+	*/
 	let ellipsoids = pathTags.circle;
 	ellipsoids = ellipsoids.concat(pathTags.ellipse);
 
@@ -196,16 +194,17 @@ function ioSVG_convertTagsToGlyph(svgData) {
 	}
 
 	if (pathCounter === 0) {
-		showErrorMessageBox(
-			'Could not find any SVG tags to import.  Supported tags are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.'
-		);
+		showErrorMessageBox(`
+			Could not find any SVG tags to import.
+			Supported tags are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.`);
 		return;
 	}
 
 	if (error) {
-		showErrorMessageBox(
-			'A transform attribute was found.  It will be ignored, probably resulting in unexpected path outlines.  Check the Import SVG section of the Help page.'
-		);
+		showErrorMessageBox(`
+			A transform attribute was found.
+			It will be ignored, probably resulting in unexpected path outlines.
+			Check the Import SVG section of the Help page.`);
 	}
 
 	const resultGlyph = new Glyph({ paths: newPaths });
@@ -217,19 +216,18 @@ function ioSVG_convertTagsToGlyph(svgData) {
 	return resultGlyph;
 }
 
-function cleanAndFormatPathPointData(data) {
-	/*
-			Takes a string representing input from a <path> tag's
-			'd' attribute.
-
-			Returns an array of strings.  Each array element
-			representing one Glyphr Studio path.  String will be
-			comma separated Path Commands and Values
-
-	*/
+/**
+ * Prepares raw text input from SVG path d attributes, and converts
+ * it into text that can easily be converted to Glyphr Studio Paths.
+ * The returned array, each array element representing one Glyphr
+ * Studio path. Strings will be comma separated Path Commands and Values.
+ * @param {String} data - text input from a <path>'s 'd' attribute
+ * @returns - Array of strings.
+ */
+export function ioSVG_cleanAndFormatPathData(data) {
 	let returnData = [];
 
-	// log('cleanAndFormatPathPointData', 'start');
+	// log('ioSVG_cleanAndFormatPathData', 'start');
 	// log('dirty data\n\t ' + data);
 
 	// Move commands for a path are treated as different Glyphr Paths
@@ -245,7 +243,7 @@ function cleanAndFormatPathPointData(data) {
 	// Put commas between Path Commands and preceding numbers
 	let curr = 0;
 	while (curr < data.length) {
-		if (ioSVG_isPathCommand(data.charAt(curr))) {
+		if (isPathCommand(data.charAt(curr))) {
 			data = data.slice(0, curr) + ',' + data.charAt(curr) + ',' + data.slice(curr + 1);
 			curr++;
 		}
@@ -327,12 +325,12 @@ function cleanAndFormatPathPointData(data) {
 	returnData = returnData.split(',z');
 
 	// log('clean data\n\t ' + returnData);
-	// log('cleanAndFormatPathPointData', 'end');
+	// log('ioSVG_cleanAndFormatPathData', 'end');
 
 	return returnData;
 }
 
-function ioSVG_getTags(obj, grabTags) {
+export function ioSVG_getTags(obj, grabTags) {
 	// log('ioSVG_getTags \t Start');
 	// log('grabTags: ' + JSON.stringify(grabTags));
 	// log('passed obj: ');
@@ -355,29 +353,7 @@ function ioSVG_getTags(obj, grabTags) {
 	return result;
 }
 
-function ioSVG_getFirstTagInstance(obj, tagname) {
-	// log('ioSVG_getFirstTagInstance', 'start');
-	// log('finding ' + tagname + ' in:');
-	// log(obj);
-
-	if (tagname === obj.name) {
-		// log('ioSVG_getFirstTagInstance - tagname === obj.name', 'end');
-		return obj;
-	} else if (obj.content) {
-		for (let c = 0; c < obj.content.length; c++) {
-			const sub = ioSVG_getFirstTagInstance(obj.content[c], tagname);
-			if (sub) {
-				// log('ioSVG_getFirstTagInstance - looked through obj and found it', 'end');
-				return sub;
-			}
-		}
-	} else {
-		// log('ioSVG_getFirstTagInstance - NO obj.content FOUND', 'end');
-		return false;
-	}
-}
-
-function ioSVG_convertPathTag(data) {
+export function ioSVG_convertPathTag(data) {
 	// log('ioSVG_convertPathTag', 'start');
 	// log('passed data ' + data);
 
@@ -390,7 +366,7 @@ function ioSVG_convertPathTag(data) {
 	curr = 1;
 
 	while (curr <= data.length) {
-		if (ioSVG_isPathCommand(data[curr])) {
+		if (isPathCommand(data[curr])) {
 			dataChunk = data.slice(commandPosition + 1, curr);
 			command = data[commandPosition];
 
@@ -417,29 +393,29 @@ function ioSVG_convertPathTag(data) {
 	// log('chunks data is \n' + json(chunks, true));
 
 	// Turn the commands and data into Glyphr objects
-	let paths = [];
+	let newPathPoints = [];
 	for (let c = 0; c < chunks.length; c++) {
 		// log('\n\t Path Chunk ' + c);
 		// log('' + chunks[c].command + ' : ' + chunks[c].data);
 		if (chunks[c].command) {
-			paths = ioSVG_handlePathChunk(chunks[c], paths, c === chunks.length - 1);
+			newPathPoints = handlePathChunk(chunks[c], newPathPoints, c === chunks.length - 1);
 		}
 	}
 
 	// Combine 1st and last point
-	const fp = paths[0];
-	const lp = paths[paths.length - 1];
+	const fp = newPathPoints[0];
+	const lp = newPathPoints[newPathPoints.length - 1];
 	if (fp.p.x === lp.p.x && fp.p.y === lp.p.y) {
 		// log('fp/lp same:\nFirst Point: '+json(fp)+'\nLast Point:  '+json(lp));
 		fp.h1.x = lp.h1.x;
 		fp.h1.y = lp.h1.y;
 		fp.h1.use = lp.h1.use;
-		paths.pop();
+		newPathPoints.pop();
 		fp.resolvePointType();
 		// log('AFTER:\nFirst Point: '+json(fp));
 	}
 
-	const newPath = new Path({ pathPoints: paths });
+	const newPath = new Path({ pathPoints: newPathPoints });
 	newPath.validate('Import SVG');
 
 	// log('unscaled path:');
@@ -448,13 +424,13 @@ function ioSVG_convertPathTag(data) {
 	return newPath;
 }
 
-function ioSVG_isPathCommand(c) {
+function isPathCommand(c) {
 	if ('MmLlCcSsZzHhVvAaQqTt'.indexOf(c) > -1) return c;
 	return false;
 }
 
-function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
-	// log('ioSVG_handlePathChunk', 'start');
+function handlePathChunk(chunk, paths, isLastPoint) {
+	// log('handlePathChunk', 'start');
 	// log('chunk: ' + json(chunk, true));
 
 	const cmd = chunk.command;
@@ -466,12 +442,8 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 	let nx;
 	let ny;
 	let h1;
-	/*
-	 *
-	 * // TODO REFACTOR
-	 *
-	 */
 	let lastPoint = paths[paths.length - 1] || new PathPoint();
+	let newPoint;
 	let previousX;
 	let previousY;
 
@@ -506,11 +478,10 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 			currentData = chunk.data.splice(0, 2);
 
 			if (currentData.length % 2 !== 0 && isCommand('MmLl')) {
-				showErrorMessageBox(
-					'Move or Line path command (M, m, L, l) was expecting 2 arguments, was passed [' +
-						currentData +
-						']\n<br>Failing "gracefully" by filling in default data.'
-				);
+				showErrorMessageBox(`
+					Move or Line path command (M, m, L, l) was expecting 2 arguments,
+					was passed [${currentData}]
+					<br>Failing "gracefully" by filling in default data.`);
 				while (currentData.length < 2) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
@@ -558,25 +529,16 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 			}
 
 			// log('linear end nx ny\t' + nx + ' ' + ny);
-			p = new XYPoint(nx, ny);
-			// log('new point ' + p.x + '\t' + p.y);
 
 			lastPoint.h2.use = false;
-			/*
-			 *
-			 * // TODO REFACTOR
-			 *
-			 */
-			paths.push(
-				new PathPoint({
-					p: clone(p),
-					h1: clone(p),
-					h2: clone(p),
-					type: 'corner',
-					useH1: false,
-					useH2: true,
-				})
-			);
+			newPoint = new PathPoint({
+				p: { coord: { x: nx, y: ny } },
+				h1: { coord: { x: nx, y: ny }, use: true },
+				h2: { coord: { x: nx, y: ny }, use: true },
+				type: 'corner',
+			});
+			paths.push(newPoint);
+
 			lastPoint = paths[paths.length - 1];
 		}
 
@@ -585,18 +547,17 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 		// ABSOLUTE arc to
 		// relative arc to
 
-		showErrorMessageBox(
-			'Arc To path commands (A or a) are not directly supported.  A straight line will be drawn from the beginning to the end of the arc.'
-		);
+		showErrorMessageBox(`
+			Arc To path commands (A or a) are not directly supported.
+			A straight line will be drawn from the beginning to the end of the arc.`);
 		nx = lastPoint.p.x;
 		ny = lastPoint.p.y;
 
 		if (chunk.data.length % 7 !== 0) {
-			showErrorMessageBox(
-				'Arc To path command (A or a) was expecting 7 arguments, was passed [' +
-					chunk.data +
-					']\n<br>Failing "gracefully" by just drawing a line to the last two data points as if they were a x/y point.'
-			);
+			showErrorMessageBox(`
+				Arc To path command (A or a) was expecting 7 arguments,
+				was passed [${chunk.data}]
+				<br>Failing "gracefully" by just drawing a line to the last two data points as if they were a x/y point.`);
 			chunk.data.splice(0, chunk.data.length - 2, 0, 0, 0, 0, 0);
 		}
 
@@ -618,28 +579,18 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 			}
 
 			// log('linear end nx ny\t' + nx + ' ' + ny);
-			p = new Coord({ x: nx, y: ny });
-			// log('new point ' + p.x + '\t' + p.y);
-
 			lastPoint.type = 'corner';
 			lastPoint.h2.use = true;
 			lastPoint.makePointedTo(p.x, p.y, false, 'h2', true);
 
-			/*
-			 *
-			 * // TODO REFACTOR
-			 *
-			 */
-			const pp = new PathPoint({
-				p: p,
-				h1: clone(p),
-				h2: clone(p),
+			newPoint = new PathPoint({
+				p: { coord: { x: nx, y: ny } },
+				h1: { coord: { x: nx, y: ny }, use: true },
+				h2: { coord: { x: nx, y: ny }, use: true },
 				type: 'corner',
-				useH1: true,
-				useH2: true,
 			});
-			pp.makePointedTo(previousX, previousY, false, 'h1', true);
-			paths.push(pp);
+			newPoint.makePointedTo(previousX, previousY, false, 'h1', true);
+			paths.push(newPoint);
 
 			lastPoint = paths[paths.length - 1];
 		}
@@ -654,11 +605,10 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 			// Grab the next chunk of data and make sure it's length=4
 			currentData = chunk.data.splice(0, 4);
 			if (currentData.length % 4 !== 0) {
-				showErrorMessageBox(
-					'Quadratic Bezier path command (Q or q) was expecting 4 arguments, was passed [' +
-						currentData +
-						']\n<br>Failing "gracefully" by filling in default data.'
-				);
+				showErrorMessageBox(`
+					Quadratic Bezier path command (Q or q) was expecting 4 arguments,
+					was passed [${currentData}]
+					<br>Failing "gracefully" by filling in default data.`);
 				while (currentData.length < 4) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
@@ -689,22 +639,14 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 
 			// log('bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
 
-			/*
-			 *
-			 * // TODO REFACTOR
-			 *
-			 */
-			paths.push(
-				new PathPoint({
-					p: clone(p),
-					h1: clone(h1),
-					h2: clone(p),
-					q: clone(q),
-					useH1: true,
-					useH2: true,
-					type: 'corner',
-				})
-			);
+			newPoint = new PathPoint({
+				p: { coord: p },
+				h1: { coord: h1, use: true },
+				h2: { coord: p, use: true },
+				q: { coord: q },
+				type: 'corner',
+			});
+			paths.push(newPoint);
 			lastPoint = paths[paths.length - 1];
 		}
 
@@ -720,11 +662,10 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 			currentData = [];
 			currentData = chunk.data.splice(0, 2);
 			if (currentData.length % 2 !== 0) {
-				showErrorMessageBox(
-					'Symmetric Bezier path command (T or t) was expecting 2 arguments, was passed [' +
-						currentData +
-						']\n<br>Failing "gracefully" by filling in default data.'
-				);
+				showErrorMessageBox(`
+					Symmetric Bezier path command (T or t) was expecting 2 arguments,
+					was passed[${currentData}]
+					<br>Failing "gracefully" by filling in default data.`);
 				while (currentData.length < 2) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
@@ -755,22 +696,15 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 
 			// log('bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
 
-			/*
-			 *
-			 * // TODO REFACTOR
-			 *
-			 */
-			paths.push(
-				new PathPoint({
-					p: clone(p),
-					h1: clone(h1),
-					h2: clone(p),
-					q: clone(q),
-					useH1: true,
-					useH2: true,
-					type: 'corner',
-				})
-			);
+			newPoint = new PathPoint({
+				p: { coord: p },
+				h1: { coord: h1, use: true },
+				h2: { coord: p, use: true },
+				q: { coord: q },
+				type: 'corner',
+			});
+
+			paths.push(newPoint);
 			lastPoint = paths[paths.length - 1];
 		}
 
@@ -788,11 +722,10 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 			currentData = [];
 			currentData = chunk.data.splice(0, 6);
 			if (currentData.length % 6 !== 0) {
-				showErrorMessageBox(
-					'Bezier path command (C or c) was expecting 6 arguments, was passed [' +
-						currentData +
-						']\n<br>Failing "gracefully" by filling in default data.'
-				);
+				showErrorMessageBox(`
+					Bezier path command (C or c) was expecting 6 arguments,
+					was passed [${currentData}]
+					<br>Failing "gracefully" by filling in default data.`);
 				while (currentData.length < 6) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
@@ -819,21 +752,15 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 			}
 
 			// log('bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
-			/*
-			 *
-			 * // TODO REFACTOR
-			 *
-			 */
-			paths.push(
-				new PathPoint({
-					p: clone(p),
-					h1: clone(h1),
-					h2: clone(p),
-					useH1: true,
-					useH2: true,
-					type: 'corner',
-				})
-			);
+
+			newPoint = new PathPoint({
+				p: { coord: p },
+				h1: { coord: h1, use: true },
+				h2: { coord: p, use: true },
+				type: 'corner',
+			});
+
+			paths.push(newPoint);
 			lastPoint = paths[paths.length - 1];
 		}
 
@@ -849,11 +776,10 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 			currentData = [];
 			currentData = chunk.data.splice(0, 4);
 			if (currentData.length % 4 !== 0) {
-				showErrorMessageBox(
-					'Symmetric Bezier path command (S or s) was expecting 4 arguments, was passed [' +
-						currentData +
-						']\n<br>Failing "gracefully" by filling in default data.'
-				);
+				showErrorMessageBox(`
+					Symmetric Bezier path command (S or s) was expecting 4 arguments,
+					was passed [${currentData}]
+					<br>Failing "gracefully" by filling in default data.`);
 				while (currentData.length < 4) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
@@ -881,21 +807,13 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 			// log('p afters: ' + json(p, true));
 			// log('h1 after: ' + json(h1, true));
 
-			/*
-			 *
-			 * // TODO REFACTOR
-			 *
-			 */
-			paths.push(
-				new PathPoint({
-					p: clone(p),
-					h1: clone(h1),
-					h2: clone(p),
-					type: 'symmetric',
-					useH1: true,
-					useH2: true,
-				})
-			);
+			newPoint = new PathPoint({
+				p: { coord: p },
+				h1: { coord: h1, use: true },
+				h2: { coord: p, use: true },
+				type: 'symmetric',
+			});
+			paths.push(newPoint);
 			lastPoint = paths[paths.length - 1];
 		}
 
@@ -903,7 +821,7 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 	} else if (isCommand('Zz')) {
 		// End Path
 	} else {
-		showErrorMessageBox('Unrecognized path command ' + cmd + ', ignoring and moving on...');
+		showErrorMessageBox(`Unrecognized path command ${cmd}, ignoring and moving on...`);
 	}
 
 	// Finish up last point
@@ -915,7 +833,7 @@ function ioSVG_handlePathChunk(chunk, paths, isLastPoint) {
 	// log('Resulting Path Chunk');
 	// log(paths);
 
-	// log('ioSVG_handlePathChunk', 'end');
+	// log('handlePathChunk', 'end');
 
 	return paths;
 }

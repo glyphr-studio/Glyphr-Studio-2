@@ -1,3 +1,7 @@
+import { XMLtoJSON } from '../io/xml_to_json.js';
+import { importOverflowCount } from '../pages/open_project.js';
+import { ioSVG_getTags } from './svg_outline_import.js';
+
 /**
 	IO > Import > SVG Font
 	Reading XML Text and parsing it into Glyphr
@@ -5,20 +9,8 @@
 	IO > Import > SVG Outline
 **/
 
-function ioSVG_importSVGFont(filter) {
+export function ioSVG_importSVGFont() {
 	// log('ioSVG_importSVGFont', 'start');
-
-	// Spinner Animation
-	document.getElementById('openprojecttableright').innerHTML = make_LoadingAnimation(false);
-	const fis = document.getElementById('fontimportstatus');
-	const sweep = document.getElementById('sweep');
-	let degrees = 0;
-
-	function importStatus(msg) {
-		degrees = (degrees + 2) % 360;
-		sweep.style.transform = 'rotate(' + degrees + 'deg)';
-		fis.innerHTML = msg;
-	}
 
 	// Font Stuff
 	let font;
@@ -29,8 +21,8 @@ function ioSVG_importSVGFont(filter) {
 
 	function setupFontImport() {
 		// log('setupFontImport', 'start');
-		importStatus('Reading font data...');
-		_GP = new GlyphrStudioProject();
+		updateImportStatus('Reading font data...');
+		newProject = new GlyphrStudioProject();
 
 		try {
 			// Get Font
@@ -39,22 +31,20 @@ function ioSVG_importSVGFont(filter) {
 			// DOM Parser does not return unicode values as text strings
 			// Kern groups containing '&#x' will get fuck'd
 			svgData = svgData.replace(/&#x/g, '0x');
-			const jsonData = convertXMLtoJSON(svgData);
-			font = ioSVG_getFirstTagInstance(jsonData, 'font');
+			const jsonData = XMLtoJSON(svgData);
+			font = getFirstTagInstance(jsonData, 'font');
 		} catch (e) {
-			loadPage_openproject();
-			openproject_changeTab('load');
 			showErrorMessageBox('There was a problem reading the SVG file:<br>' + e.message);
+			// log('setupFontImport', 'end');
 			return;
 		}
 
 		// Check to see if it's actually a SVG Font
 		if (!font) {
-			loadPage_openproject();
-			openproject_changeTab('load');
 			showErrorMessageBox(
 				'The SVG file you tried to load was not a SVG Font file. See Glyphr Studio help for more information.'
 			);
+			// log('setupFontImport', 'end');
 			return;
 		}
 
@@ -65,16 +55,14 @@ function ioSVG_importSVGFont(filter) {
 		chars = ioSVG_getTags(font, 'glyph');
 
 		// test for range
-		if (chars.length < _UI.overflowCount || filter) {
+		if (chars.length < importOverflowCount) {
 			setTimeout(startFontImport, 1);
 			// Dump JSON
 			// saveFile('Parsed JSON', json(jsonData));
 		} else {
-			document.getElementById('openprojecttableright').innerHTML = make_ImportFilter(
-				chars.length,
-				kerns.length,
-				'ioSVG_importSVGFont'
-			);
+			showErrorMessageBox(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
+			// log('setupFontImport', 'end');
+			return;
 		}
 
 		// log('setupFontImport', 'end');
@@ -82,7 +70,7 @@ function ioSVG_importSVGFont(filter) {
 
 	function startFontImport() {
 		// log('startFontImport', 'start');
-		importStatus('Importing Glyph 1 of ' + chars.length);
+		updateImportStatus('Importing Glyph 1 of ' + chars.length);
 		setTimeout(importOneGlyph, 4);
 		// log('startFontImport', 'end');
 	}
@@ -102,20 +90,20 @@ function ioSVG_importSVGFont(filter) {
 	let customGlyphRange = [];
 	let pathCounter = 0;
 	let newPaths = [];
-	const fc = {};
-	const fl = {};
+	let finalGlyphs = {};
+	let finalLigatures = {};
+	let charCounter = 0;
 
-	let c = 0;
 	function importOneGlyph() {
-		importStatus('Importing Glyph ' + c + ' of ' + chars.length);
+		updateImportStatus('Importing Glyph ' + charCounter + ' of ' + chars.length);
 
-		if (c >= chars.length) {
+		if (charCounter >= chars.length) {
 			setTimeout(importOneKern, 1);
 			return;
 		}
 
 		// One Glyph or Ligature in the font
-		tca = chars[c].attributes;
+		tca = chars[charCounter].attributes;
 
 		// Get the appropriate unicode decimal for this char
 		// log('importOneGlyph', 'start');
@@ -128,12 +116,12 @@ function ioSVG_importSVGFont(filter) {
 		if (uni === false) {
 			// Check for .notdef
 			// log('!!! Skipping '+tca['glyph-name']+' NO UNICODE !!!');
-			chars.splice(c, 1);
+			chars.splice(charCounter, 1);
 		} else if (filter && isOutOfBounds(uni)) {
 			// log('!!! Skipping '+tca['glyph-name']+' OUT OF BOUNDS !!!');
-			chars.splice(c, 1);
+			chars.splice(charCounter, 1);
 		} else {
-			// log('GLYPH ' + c + '/'+chars.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(tca));
+			// log('GLYPH ' + charCounter + '/'+chars.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(tca));
 			/*
 			 *
 			 *  GLYPH OR LIGATURE IMPORT
@@ -146,7 +134,7 @@ function ioSVG_importSVGFont(filter) {
 			data = tca.d;
 			// log('Glyph has path data ' + data);
 			if (data && data !== 'z') {
-				data = cleanAndFormatPathPointData(data);
+				data = ioSVG_cleanAndFormatPathData(data);
 
 				// log('split z, data into ' + data.length + ' Glyphr Studio paths.');
 				// log(data);
@@ -178,7 +166,7 @@ function ioSVG_importSVGFont(filter) {
 				maxGlyph = Math.max(maxGlyph, uni);
 				if (1 * uni > _UI.glyphRange.latinExtendedB.end) customGlyphRange.push(uni);
 
-				fc[uni] = new Glyph({
+				finalGlyphs[uni] = new Glyph({
 					paths: newPaths,
 					glyphWidth: adv,
 				});
@@ -187,14 +175,14 @@ function ioSVG_importSVGFont(filter) {
 			} else {
 				// It's a LIGATURE
 				uni = uni.join('');
-				fl[uni] = new Glyph({
+				finalLigatures[uni] = new Glyph({
 					paths: newPaths,
 					glyphWidth: adv,
 				});
 			}
 
-			// Successful loop, advance c
-			c++;
+			// Successful loop, advance charCounter
+			charCounter++;
 		}
 
 		// finish loop
@@ -208,38 +196,38 @@ function ioSVG_importSVGFont(filter) {
 	 *  KERN IMPORT
 	 *
 	 */
-	let tk;
+	let thisKern;
 	let leftGroup;
 	let rightGroup;
 	let newID;
 	let kernValue;
-	const fk = {};
+	let finalKerns = {};
 
-	let k = 0;
+	let kernCount = 0;
 	function importOneKern() {
-		if (k >= kerns.length) {
-			importStatus('Finalizing the imported font...');
+		if (kernCount >= kerns.length) {
+			updateImportStatus('Finalizing the imported font...');
 			setTimeout(startFinalizeFontImport, 1);
 			return;
 		}
 
-		importStatus('Importing Kern Pair ' + k + ' of ' + kerns.length);
+		updateImportStatus('Importing Kern Pair ' + kernCount + ' of ' + kerns.length);
 
-		// log('Kern Import - START ' + k + '/' + kerns.length);
+		// log('Kern Import - START ' + kernCount + '/' + kerns.length);
 		leftGroup = [];
 		rightGroup = [];
-		tk = kerns[k];
-		// log('Kern Attributes: ' + json(tk.attributes, true));
+		thisKern = kerns[kernCount];
+		// log('Kern Attributes: ' + json(thisKern.attributes, true));
 
 		// Get members by name
 		leftGroup = getKernMembersByName(
-			tk.attributes.g1,
+			thisKern.attributes.g1,
 			chars,
 			leftGroup,
 			_UI.glyphRange.latinExtendedB.end
 		);
 		rightGroup = getKernMembersByName(
-			tk.attributes.g2,
+			thisKern.attributes.g2,
 			chars,
 			rightGroup,
 			_UI.glyphRange.latinExtendedB.end
@@ -249,13 +237,13 @@ function ioSVG_importSVGFont(filter) {
 
 		// Get members by Unicode
 		leftGroup = getKernMembersByUnicodeID(
-			tk.attributes.u1,
+			thisKern.attributes.u1,
 			chars,
 			leftGroup,
 			_UI.glyphRange.latinExtendedB.end
 		);
 		rightGroup = getKernMembersByUnicodeID(
-			tk.attributes.u2,
+			thisKern.attributes.u2,
 			chars,
 			rightGroup,
 			_UI.glyphRange.latinExtendedB.end
@@ -264,19 +252,19 @@ function ioSVG_importSVGFont(filter) {
 		// log('kern groups parsed as ' + json(leftGroup, true) + ' ' + json(rightGroup, true));
 
 		if (leftGroup.length && rightGroup.length) {
-			newID = generateNewID(fk, 'kern');
-			kernValue = tk.attributes.k || 0;
+			newID = generateNewID(finalKerns, 'kern');
+			kernValue = thisKern.attributes.k || 0;
 			// log('Making a kern pair with k = ' + kernValue);
-			fk[newID] = new HKern({
+			finalKerns[newID] = new HKern({
 				leftGroup: leftGroup,
 				rightGroup: rightGroup,
 				value: kernValue,
 			});
 			// log('Made the new kern successfully.');
-			k++;
+			kernCount++;
 		} else {
-			kerns.splice(k, 1);
-			// log('Kern ' + json(tk.attributes, true) + ' returned an empty group.');
+			kerns.splice(kernCount, 1);
+			// log('Kern ' + json(thisKern.attributes, true) + ' returned an empty group.');
 		}
 
 		// log('Kern Import', 'end');
@@ -289,14 +277,14 @@ function ioSVG_importSVGFont(filter) {
 	 *
 	 */
 	function startFinalizeFontImport() {
-		importStatus('Finalizing the imported font...');
+		updateImportStatus('Finalizing the imported font...');
 		setTimeout(finalizeFontImport, 4);
 	}
 
 	function finalizeFontImport() {
-		getCurrentProject().glyphs = fc;
-		getCurrentProject().ligatures = fl;
-		getCurrentProject().kerning = fk;
+		getCurrentProject().glyphs = finalGlyphs;
+		getCurrentProject().ligatures = finalLigatures;
+		getCurrentProject().kerning = finalKerns;
 
 		/*
 		REFACTOR
@@ -328,7 +316,7 @@ function ioSVG_importSVGFont(filter) {
 		// space has horiz-adv-x
 
 		// Font Settings
-		const fontAttributes = ioSVG_getFirstTagInstance(font, 'font-face').attributes;
+		const fontAttributes = getFirstTagInstance(font, 'font-face').attributes;
 		const ps = getCurrentProject().projectSettings;
 		const md = getCurrentProject().metadata;
 		const fname = fontAttributes['font-family'] || 'My Font';
@@ -350,137 +338,32 @@ function ioSVG_importSVGFont(filter) {
 		md.overline_position = 1 * fontAttributes['overline-position'] || 750;
 		md.overline_thickness = 1 * fontAttributes['overline-thickness'] || 10;
 
-		// Finish Up
-		finalizeUI();
-		closeDialog();
-
 		// log('ioSVG_importSVGFont', 'end');
 		// navigate();
 	}
 	// log('ioSVG_importSVGFont', 'end');
 }
 
-function make_LoadingAnimation() {
-	// log('make_LoadingAnimation', 'start');
-	let re = '';
-	re += '<div class="openproject_tile">';
-	re += '<h2>Importing Font</h2>';
-	re += '<div id="fontimportstatus">Reading font data...</div>';
-	re +=
-		'<br><div style="margin:0px; width:50px; height:50px; padding:0px; background-color:' +
-		_UI.colors.blue.l65 +
-		';';
-	re +=
-		'background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAwFJREFUeNrsWd2N2kAQNtYpr/F1wFUQUgG4gnAVABXEVwFHBXepwEkFx1UAVHBOBXYHOK9RJDJzGkerZWZ3bYy9QYw0Qgh2dr6d2dn5Gfz+czgEF0BhcCF0BeIb3bQsryDe0fet9vuEPsfAQ+JWaNDCZc+AfwCvP9wMijoLYW8EMgWeAY/6AFKi4sCruspbQC0JWNQFkO/ADwCgPIevgz4I4gl4fi4gePILALDt4vKCXnifUtd75AqkthVIkSOqcxB1rOMC5Bk2f3DYFH37C13akUOAQH4F2WsH2Qgmsf3pYODEdmLAj8B7ixwT70lGZNkrMckxAUkdBJ8CgANkO7hUWi+51hZMHhv89kV53NomvEP30n2E/Tfc3qHwRiwEIej7b2cEUb3+b7QXRwvS0QqEfeTowdq0mVYY6H0v2lOPeqjbyha1CvjjneBOm1PTiIbpT8y5GeiUq4eqW2QlCFz2ACKgPZfCbyvJIiUgvzXciz7pTnD3fZWXhdrrLVmjb3oyZBxHFvkMqDPmguee1E5HVlG9JVTcKmMWTz0qAqdMBMuqUBwq0YGjmUdAZobI9g/IzhA1fCFJl50KpHBNw/skQafCCKRJudkBRTYgvruVVadrg+5/AlJ6qG/ZBEjmIZDMBmQidDt8skopdGAmKpCxsPibR0AkXcZ60nirFzBUUOUevCklJY2cfnv9jiSMe+HC2ANrxEIzImELKw41IcfMM+3BMu+NEK6Jp3tLqD3/bBFFguKOI1lVr68NBV+kItObXXNL4vbYcmOO7TxadJi7NOhKOonMICiiQudrizlZRpFpbWqWU1W40d1c6jSioHuXzrkydfoUuDWwVcWRfwaO0y5K41+4u2rrxuMo4blB3TAM5EZe0WTKRX1hqQnhNFbYUuQo+oi7dChpYGnTumS/KCCnTviwSwA0EcgDh15z0xmi04CmIYBqYDSvs+6U8XQ12X3FS9vU9cjKI1K+0UT3VCBc7VxQJPqlfFepCgIfSXlTUOgNyLXUvQK5RCB/BRgA7GD39jF9VXsAAAAASUVORK5CYII=); ';
-	re += 'rgb(0,140,210) no-repeat fixed;">';
-	re += '<img id="sweep" style="margin:0px; padding:0px;" ';
-	re +=
-		'src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAu9JREFUeNrsWMtu00AU9TNOkyakjxSXlj4gIPESYsdjg8SGDSyRWCCxgQ9gh9Qt38LX8AHtCj4AKE1aEzuOuSOdka4uTqxCbHcxRzoa2+PEc+bce30T21ow4knWpKFHdNjlHWKC45S4TPxJ/K7Y8Ozkf5/rWYtHJkRIuMRt4grxGsTHNBySoK8XSUjR7io3YnHtLnGXBA1p/EKCjs77ULsEIWqHwzmhtUYM2NwGsYGQs9g9n8/jkGOVg0lBaHG0hIgruPaWNuQ5cq42IeM5c4EIbX7uo1BoYQ+J70jMRl1C0jlzPjteJ56w8y3isbj/CfEjibl60YTwvOyKEPPFvfvEEeY+zBNTihBK0lmh1WNhtyRyaZN4Ks4dtilaTFilI7PKsNrxKY77xIhVKelUh3gm8ukB8YDEtKsUkhbkR4Md99miW3BjyOY7eHmeoJS/rtsRly0sYeX2lAndFwWgkyPsJblyr04hAatWMRa+yty7TvzB7g/BYU5H8qkuIR76MB5iW2zhN1GhNHYRZiPxPeoze8pJcuVF6UKocqU5PVaEluQMiwxYhRrDGSX4Bo4jUfEGKAo6n95X4YglmsOmaEl2EDJruBajJA/gQso+p0LuEgRMeYkmV55WIWQiQku3JGrxv1Fm17FAldTqhfeL3b+NUIpyQtWFS2/KauNnlWCbtSS3Uak2ca4Sus2Suo/fKyMRXvod0wSVONVYdr2KQ6uLKjVEch8jxDy40oNbY5HkS3CsgdDKhEOPyxaSsER32KJChNYAY4YXHk9wF3nRYu7O6uHulCqEKteUbJ/CjRWETBu7uofwCjEfseqkQ2dc0IC6cPNZ2Y7ohHewwBDjKt4lujVxUZabuD/L+U0TsILhY9QuP6pCSIIF3yJeRg74SP5liNKhk2DOxRjg2C14Rq8qIfchpIsc8VjFbLCF+//6ELtsFZQjale/sf+6MhEWC0EVQtRL7pVlYGBgYGBgYGBgYGBgYGBgYGBg8Bf+CDAAUF2+ry6GVycAAAAASUVORK5CYII=">';
-	re += '</div>';
-	re += makeErrorMessageBox();
-	re += '</div>';
+function getFirstTagInstance(obj, tagname) {
+	// log('getFirstTagInstance', 'start');
+	// log('finding ' + tagname + ' in:');
+	// log(obj);
 
-	// log('make_LoadingAnimation', 'end');
-	return re;
-}
-
-function make_ImportFilter(chars, kerns, functionName) {
-	let re =
-		'<div class="openproject_tile" style="width:500px; height:auto;">' +
-		'<h2>Whoa, there...</h2><br>' +
-		"The font you're trying to import has <b>" +
-		chars +
-		' glyphs</b>';
-	if (kerns) re += ' and <b>' + kerns + ' kern pairs</b>.  ';
-	else re += '.  ';
-	re +=
-		'Glyphr Studio has a hard time with super-large fonts like this.  ' +
-		'We recommend pairing it down a little:<br><br>';
-
-	re += '<table>';
-
-	re +=
-		'<tr><td class="checkcol"><input type="checkbox" onclick="checkFilter(\'basic\');" id="basic" checked/></td><td>';
-	re +=
-		'<h3>Only import Latin glyphs</h3>' +
-		'This includes Latin and Latin Extended Unicode ranges<br>(0x0020 - 0x024F).<br><br>';
-	re += '</td></tr>';
-
-	re +=
-		'<tr><td class="checkcol"><input type="checkbox" onclick="checkFilter(\'custom\');" id="custom"/></td><td>';
-	re +=
-		'<h3>Import a custom range of glyphs</h3>' +
-		'A nice overview of glyph ranges can be found at<br><a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia\'s Unicode Block page</a>.<br>' +
-		'<table class="settingstable"><tr>' +
-		"<td>begin:<br><input type=\"text\" onchange=\"checkFilter('custom');document.getElementById('import-font-button').disabled = 'disabled';\" value=\"" +
-		decToHex(_UI.importRange.begin) +
-		'" id="custom-range-begin"></td>' +
-		"<td>end:<br><input type=\"text\" onchange=\"checkFilter('custom');document.getElementById('import-font-button').disabled = 'disabled';\" value=\"" +
-		decToHex(_UI.importRange.end) +
-		'" id="custom-range-end"></td>' +
-		'<td><br><button onclick="checkFilter(\'custom\');">Set Range</button></td>' +
-		'<td style="padding-top:20px;">' +
-		'</td>' +
-		'<td><br><div id="custom-range-error">bad range input</div></td>' +
-		'</tr></table><br>';
-	re += '</td></tr>';
-
-	re +=
-		'<tr><td class="checkcol"><input type="checkbox" onclick="checkFilter(\'everything\');" id="everything"/></td><td>';
-	re += '<h3>Import all the glyphs</h3>' + "Don't say we did't try to warn you.";
-	re += '</td></tr>';
-
-	re += '</table>';
-
-	re +=
-		'<br><br><button class="button__call-to-action" id="import-font-button" onclick="' +
-		functionName +
-		'(true);">Import Font</button>';
-
-	return re;
-}
-
-function setFontImportRange() {
-	const range = getCustomRange(false);
-	if (range) {
-		_UI.importRange = range;
-		document.getElementById('custom-range-begin').value = range.begin;
-		document.getElementById('custom-range-end').value = range.end;
+	if (tagname === obj.name) {
+		// log('getFirstTagInstance - tagname === obj.name', 'end');
+		return obj;
+	} else if (obj.content) {
+		for (let c = 0; c < obj.content.length; c++) {
+			const sub = getFirstTagInstance(obj.content[c], tagname);
+			if (sub) {
+				// log('getFirstTagInstance - looked through obj and found it', 'end');
+				return sub;
+			}
+		}
+	} else {
+		// log('getFirstTagInstance - NO obj.content FOUND', 'end');
+		return false;
 	}
-}
-
-function isOutOfBounds(uni) {
-	if (!uni.length) return true;
-
-	for (let u = 0; u < uni.length; u++) {
-		if (parseInt(uni[u]) > _UI.importRange.end || parseInt(uni[u]) < _UI.importRange.begin)
-			return true;
-	}
-
-	return false;
-}
-
-function checkFilter(id) {
-	if (id === 'basic') {
-		document.getElementById('basic').checked = true;
-		document.getElementById('custom').checked = false;
-		document.getElementById('everything').checked = false;
-		_UI.importRange.begin = 0x0020;
-		_UI.importRange.end = 0x024f;
-	} else if (id === 'custom') {
-		document.getElementById('basic').checked = false;
-		document.getElementById('custom').checked = true;
-		document.getElementById('everything').checked = false;
-		setFontImportRange();
-	} else if (id === 'everything') {
-		document.getElementById('basic').checked = false;
-		document.getElementById('custom').checked = false;
-		document.getElementById('everything').checked = true;
-		_UI.importRange.begin = 0x0000;
-		_UI.importRange.end = 0xffff;
-	}
-
-	document.getElementById('import-font-button').disabled = false;
 }
 
 function getKernMembersByName(names, chars, arr, limit) {
