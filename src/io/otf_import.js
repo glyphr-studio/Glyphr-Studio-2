@@ -9,22 +9,6 @@ import OpenTypeJS from '../lib/opentypejs_1-3-1.js';
 export function importOTFFont(filter) {
 	// log('importOTFFont', 'start');
 
-	/*
-	// Spinner Animation
-	document.getElementById(
-		'openprojecttableright'
-	).innerHTML = make_LoadingAnimation(false);
-	const fis = document.getElementById('fontimportstatus');
-	const sweep = document.getElementById('sweep');
-	let degrees = 0;
-
-	function importStatus(msg) {
-		degrees = (degrees + 2) % 360;
-		sweep.style.transform = 'rotate(' + degrees + 'deg)';
-		if (msg) fis.innerHTML = msg;
-	}
-	*/
-
 	// Font Stuff
 	let font = false;
 	const importGlyphs = [];
@@ -32,7 +16,7 @@ export function importOTFFont(filter) {
 	setTimeout(setupFontImport, 10);
 
 	function setupFontImport() {
-		// importStatus('Reading font data...');
+		// updateImportStatus('Reading font data...');
 
 		try {
 			// Get Font
@@ -44,8 +28,8 @@ export function importOTFFont(filter) {
 
 		if (font && font.glyphs && font.glyphs.length) {
 			// test for range
-			if (font.glyphs.length < _UI.overflowCount || filter) {
-				// importStatus('Importing Glyph 1 of ' + font.glyphs.length);
+			if (font.glyphs.length < importOverflowCount || filter) {
+				// updateImportStatus('Importing Glyph 1 of ' + font.glyphs.length);
 				setTimeout(startFontImport, 1);
 			} else {
 				document.getElementById('openprojecttableright').innerHTML = make_ImportFilter(
@@ -90,14 +74,14 @@ export function importOTFFont(filter) {
 	let customGlyphRange = [];
 	let pathCounter = 0;
 	let newPaths = [];
-	const fc = {};
-	let fl = {};
+	const finalGlyphs = {};
+	let finalLigatures = {};
 
 	let c = 0;
 	function importOneGlyph() {
 		// log('\n\n=============================\n');
 		// log('importOneGlyph', 'start');
-		// importStatus('Importing Glyph ' + c + ' of ' + importGlyphs.length);
+		// updateImportStatus('Importing Glyph ' + c + ' of ' + importGlyphs.length);
 
 		if (c >= importGlyphs.length) {
 			// setTimeout(importOneKern, 1);
@@ -136,7 +120,7 @@ export function importOTFFont(filter) {
 			// log('Glyph has path data \n' + data);
 
 			if (data && data !== 'z') {
-				data = cleanAndFormatPathPointData(data);
+				data = ioSVG_cleanAndFormatPathData(data);
 
 				// log('split data into ' + data.length + ' Glyphr Studio paths.');
 				// log(data);
@@ -166,7 +150,7 @@ export function importOTFFont(filter) {
 			maxGlyph = Math.max(maxGlyph, uni);
 			if (1 * uni > _UI.glyphRange.latinExtendedB.end) customGlyphRange.push(uni);
 
-			fc[uni] = new Glyph({
+			finalGlyphs[uni] = new Glyph({
 				paths: newPaths,
 				glyphWidth: adv,
 			});
@@ -215,14 +199,14 @@ export function importOTFFont(filter) {
 	 *  IMPORT LIGATURES?
 	 *
 	 */
-	fl = {};
+	finalLigatures = {};
 
 	/*
 	 *
 	 *  IMPORT KERNS?
 	 *
 	 */
-	fk = {};
+	finalKerns = {};
 
 	/*
 	 *
@@ -230,15 +214,15 @@ export function importOTFFont(filter) {
 	 *
 	 */
 	function startFinalizeFontImport() {
-		// importStatus('Finalizing the imported font...');
+		// updateImportStatus('Finalizing the imported font...');
 		setTimeout(finalizeFontImport, 20);
 	}
 
 	function finalizeFontImport() {
 		// log('finalizeFontImport', 'start');
-		getCurrentProject().glyphs = fc;
-		getCurrentProject().ligatures = fl;
-		getCurrentProject().kerning = fk;
+		getCurrentProject().glyphs = finalGlyphs;
+		getCurrentProject().ligatures = finalLigatures;
+		getCurrentProject().kerning = finalKerns;
 
 		/*
 		REFACTOR

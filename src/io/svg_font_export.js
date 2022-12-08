@@ -126,7 +126,7 @@ function ioSVG_makeMissingGlyph() {
 function ioSVG_makeAllGlyphsAndLigatures() {
 	// log('ioSVG_makeAllGlyphsAndLigatures', 'start');
 
-	const fc = getCurrentProject().glyphs;
+	const finalGlyphs = getCurrentProject().glyphs;
 	let con = '';
 
 	// TODO Ligatures
@@ -140,8 +140,8 @@ function ioSVG_makeAllGlyphsAndLigatures() {
 	// con += '\n';
 
 	con += '\t\t\t<!-- Glyphs -->\n';
-	for (const c of Object.keys(fc)) {
-		con += ioSVG_makeOneGlyphOrLigature(fc[c], c);
+	for (const c of Object.keys(finalGlyphs)) {
+		con += ioSVG_makeOneGlyphOrLigature(finalGlyphs[c], c);
 	}
 
 	// log('ioSVG_makeAllGlyphsAndLigatures', 'end');
