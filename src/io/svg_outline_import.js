@@ -1,9 +1,10 @@
 import { showErrorMessageBox } from '../controls/dialogs.js';
-import { ovalPathFromMaxes, rectPathFromMaxes } from '../edit_canvas/tools/new-basic-path.js';
+import { ovalPathFromMaxes, rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
-import { XMLtoJSON } from '../io/xml_to_json.js';
+import { XMLtoJSON } from '../lib/xml_to_json.js';
+import { Coord } from '../project_data/coord.js';
 /**
 	IO > Import > SVG Outlines
 	Takes a set of XML and pulls out any path or
@@ -49,9 +50,10 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 	// log('pathTags from imported XML: ');
 	// log(pathTags);
 
-	function pushPath(path) {
+	function pushPath(path, name) {
 		pathCounter++;
-		n = n + ' ' + pathCounter;
+		name = name + ' ' + pathCounter;
+		path.name = name;
 		newPaths.push(new Path(path));
 	}
 
@@ -60,7 +62,7 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 	*/
 	if (pathTags.path.length) {
 		data = '';
-		tag = {};
+		let tag = {};
 
 		for (let p = 0; p < pathTags.path.length; p++) {
 			// Compound Paths are treated as different Glyphr Paths
@@ -363,7 +365,7 @@ export function ioSVG_convertPathTag(data) {
 	let commandPosition = 0;
 	let command;
 	let dataChunk = [];
-	curr = 1;
+	let curr = 1;
 
 	while (curr <= data.length) {
 		if (isPathCommand(data[curr])) {

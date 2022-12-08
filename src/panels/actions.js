@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { makeActionButton, makeActionButtonIcon } from './action_buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { saveFile } from '../project_editor/saving.js';
@@ -707,36 +707,37 @@ function pastePathsFrom(sourceGlyphID) {
 
 /**
  * Copy paths (and attributes) from one glyph to another
+ * @param {Glyph} - source to copy paths from
  * @param {string} destinationID - where to copy paths to
- * @param {object} copyGlyphAttributes - which attributes to copy in addition to paths
+ * @param {object} updateWidth - should advance width copy as well
  */
-export function copyPathsFromTo(
-	sourceGlyph,
-	destinationID,
-	copyGlyphAttributes = {
-		srcAutoWidth: false,
-		srcWidth: false,
-	}
-) {
-	// log('copyPathsFromTo', 'start');
-	const destinationGlyph = getCurrentProject().getGlyph(destinationID, true);
+export function copyPathsFromTo(sourceGlyph, destinationID, updateWidth = false) {
+	log('copyPathsFromTo', 'start');
+	log(`Source Glyph`);
+	log(sourceGlyph);
+	log(`destinationID: ${destinationID}`);
+	
+	const project = getCurrentProject();
+	const destinationGlyph = project.getGlyph(destinationID, true);
+	log(`Destination Glyph`);
+	log(destinationGlyph);
 	let tc;
 	for (let c = 0; c < sourceGlyph.paths.length; c++) {
 		tc = sourceGlyph.paths[c];
 		if (tc.objType === 'ComponentInstance') {
-			getCurrentProject().getGlyph(tc.link).addToUsedIn(destinationID);
+			project.getGlyph(tc.link).addToUsedIn(destinationID);
 			tc = new ComponentInstance(clone(tc));
 		} else if (tc.objType === 'Path') {
 			tc = new Path(clone(tc));
 		}
 		destinationGlyph.paths.push(tc);
 	}
-	if (copyGlyphAttributes.srcWidth) {
+	if (updateWidth) {
 		destinationGlyph.advanceWidth = sourceGlyph.advanceWidth;
 	}
-	// log('new paths');
-	// log(destinationGlyph.paths);
-	// log('copyPathsFromTo', 'end');
+	log('new paths');
+	log(destinationGlyph.paths);
+	log('copyPathsFromTo', 'end');
 }
 
 // --------------------------------------------------------------

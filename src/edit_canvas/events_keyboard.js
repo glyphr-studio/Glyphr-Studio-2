@@ -7,7 +7,7 @@ import {
 	clipboardPaste,
 } from '../panels/actions.js';
 import { setCursor, updateCursor } from './cursors.js';
-import { eventHandlerData, togglePanOff, togglePanOn } from './events.js';
+import { cancelDefaultEventActions, eventHandlerData, togglePanOff, togglePanOn } from './events.js';
 import { clickTool } from './tools/tools.js';
 
 // --------------------------------------------------------------
@@ -38,33 +38,33 @@ export function handleKeyPress(event) {
 
 	// s
 	if (ehd.isCtrlDown && key === 's') {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		getCurrentProjectEditor().saveGlyphrProjectFile();
 	}
 
 	// g
 	if (ehd.isCtrlDown && key === 'g') {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		setTimeout(ioSVG_exportSVGfont, 10);
 	}
 
 	// e
 	// if (ehd.isCtrlDown && key === 'e') {
-	// 	event.preventDefault();
+	// 	cancelDefaultEventActions(event);
 	// 	showToast('Exporting OTF font file...');
 	// 	setTimeout(ioOTF_exportOTFfont, 500);
 	// }
 
 	// o
 	if (ehd.isCtrlDown && key === 'o') {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		window.open('http://glyphrstudio.com/v2/app', '_blank');
 	}
 
 	// q
 	// for dev mode clear console
 	if (getGlyphrStudioApp().settings.dev.mode && ehd.isCtrlDown && key === 'q') {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		console.clear();
 	}
 
@@ -84,7 +84,7 @@ export function handleKeyPress(event) {
 	if (ehd.isCtrlDown && key === 'a') {
 		if (ehd.isMouseOverCanvas) {
 			if (editMode === 'arrow') {
-				event.preventDefault();
+				cancelDefaultEventActions(event);
 				editor.multiSelect.points.members = [];
 				editor.multiSelect.paths.selectAll();
 			}
@@ -96,7 +96,7 @@ export function handleKeyPress(event) {
 
 	// Space
 	if (ehd.isSpaceDown && ehd.isMouseOverCanvas) {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		if (!ehd.isPanning) togglePanOn(event);
 	}
 
@@ -106,49 +106,49 @@ export function handleKeyPress(event) {
 
 	// z
 	if (key === 'undo' || (ehd.isCtrlDown && key === 'z')) {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		editor.history.restoreState();
 	}
 
 	// plus
 	if (ehd.isCtrlDown && key === 'plus') {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		editor.updateViewZoom(1.1);
 	}
 
 	// minus
 	if (ehd.isCtrlDown && key === 'minus') {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		editor.updateViewZoom(0.9);
 	}
 
 	// 0
 	if (ehd.isCtrlDown && key === '0') {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		editor.autoFitView();
 	}
 
 	// left
 	if (key === 'left' && ehd.isMouseOverCanvas) {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		nudge(-1, 0, event);
 	}
 
 	// right
 	if (key === 'right' && ehd.isMouseOverCanvas) {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		nudge(1, 0, event);
 	}
 
 	// up
 	if (key === 'up' && ehd.isMouseOverCanvas) {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		nudge(0, 1, event);
 	}
 
 	// down
 	if (key === 'down' && ehd.isMouseOverCanvas) {
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		nudge(0, -1, event);
 	}
 
@@ -160,7 +160,7 @@ export function handleKeyPress(event) {
 	if (ehd.isMouseOverCanvas) {
 		// del
 		if (key === 'del' || key === 'backspace') {
-			event.preventDefault();
+			cancelDefaultEventActions(event);
 
 			if (editMode === 'pen') {
 				deleteSelectedPoints();
@@ -171,13 +171,13 @@ export function handleKeyPress(event) {
 
 		// ctrl + c
 		if (ehd.isCtrlDown && key === 'c') {
-			event.preventDefault();
+			cancelDefaultEventActions(event);
 			clipboardCopy();
 		}
 
 		// ctrl + v
 		if (ehd.isCtrlDown && key === 'v') {
-			event.preventDefault();
+			cancelDefaultEventActions(event);
 			clipboardPaste();
 		}
 

@@ -2,9 +2,8 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';
 import {
+	cancelDefaultEventActions,
 	eventHandlerData,
-	handleMouseLeaveCanvas,
-	handleMouseOverCanvas,
 	togglePanOff,
 	togglePanOn,
 } from './events.js';
@@ -25,10 +24,10 @@ export function handleMouseEvents(event) {
 	// Mouse back & forward buttons
 	if (event.button === 3 || event.button === 4) {
 		// Don't navigate
-		event.preventDefault();
+		cancelDefaultEventActions(event);
 		return;
 	}
-
+	
 	// Mouse right-click
 	if (event.button === 2) {
 		// Right-click handler
@@ -286,7 +285,7 @@ export function handleMouseWheel(event) {
 
 	if (canZoom) {
 		if (event.ctrlKey || event.metaKey) {
-			event.preventDefault();
+			cancelDefaultEventActions(event);
 			// log('MOUSEWHEEL: canZoom=true and delta=' + delta );
 			if (delta > 0) {
 				editor.updateViewZoom(1.1, mouse);

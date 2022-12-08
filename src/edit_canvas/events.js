@@ -9,6 +9,8 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { setCursor, updateCursor } from './cursors.js';
 import { handleMouseEvents, handleMouseWheel } from './events_mouse.js';
 import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
+import { handleDropSVGonEditCanvas, handlePasteSVGonEditCanvas } from './events_import.js';
+import { showToast } from '../controls/dialogs.js';
 
 // --------------------------------------------------------------
 // Events - shared between Mouse and Keyboard
@@ -41,8 +43,9 @@ export let eventHandlerData = {
 	canvasHotSpots: [],
 };
 
-export function initEventHandlers(editCanvas) {
+export function initEventHandlers(canvas) {
 	// log('initEventHandlers', 'start');
+	// log(canvas);
 	const editor = getCurrentProjectEditor();
 
 	editor.eventHandlers.tool_pan = new Tool_Pan();
@@ -54,33 +57,49 @@ export function initEventHandlers(editCanvas) {
 	editor.eventHandlers.tool_kern = new Tool_Kern();
 
 	// Mouse Event Listeners
-	editCanvas.addEventListener('mousedown', handleMouseEvents, false);
-	editCanvas.addEventListener('mousemove', handleMouseEvents, false);
-	editCanvas.addEventListener('mouseup', handleMouseEvents, false);
-	editCanvas.addEventListener('mouseover', handleMouseOverCanvas);
-	editCanvas.addEventListener('mouseout', handleMouseLeaveCanvas);
-	editCanvas.addEventListener('wheel', handleMouseWheel, { passive: false, capture: false });
+	canvas.addEventListener('mousedown', handleMouseEvents, false);
+	canvas.addEventListener('mousemove', handleMouseEvents, false);
+	canvas.addEventListener('mouseup', handleMouseEvents, false);
+	canvas.addEventListener('mouseover', handleMouseOverCanvas);
+	canvas.addEventListener('mouseout', handleMouseLeaveCanvas);
+	canvas.addEventListener('wheel', handleMouseWheel, { passive: false, capture: false });
+	canvas.addEventListener('drop', handleDropSVGonEditCanvas, false);
+	canvas.addEventListener('dragenter', handleDragOverCanvas, false);
+	canvas.addEventListener('dragover', cancelDefaultEventActions, false);
 
 	// Document Key Listeners
-	// document.addEventListener('keypress', handleKeyPress, false);
+	document.addEventListener('paste', handlePasteSVGonEditCanvas, false);
 	document.addEventListener('keydown', handleKeyPress, false);
 	document.addEventListener('keyup', handleKeyUp, false);
+	// log(`initEventHandlers`, 'end');
 }
 
-export function handleMouseOverCanvas() {
+export function cancelDefaultEventActions(event) {
+	event.preventDefault();
+	event.stopPropagation();
+	return false;
+}
+
+function handleMouseOverCanvas() {
 	// log('handleMouseOverCanvas', 'start');
 	eventHandlerData.isMouseOverCanvas = true;
 	updateCursor();
 	// log('handleMouseOverCanvas', 'end');
 }
 
-export function handleMouseLeaveCanvas() {
+function handleMouseLeaveCanvas() {
 	// log('handleMouseLeaveCanvas', 'start');
 	eventHandlerData.isMouseOverCanvas = false;
 	// Fixes a Chrome cursor problem
 	document.onselectstart = function () {};
 	updateCursor();
 	// log('handleMouseLeaveCanvas', 'end');
+}
+
+function handleDragOverCanvas(event) {
+	event.preventDefault();
+	event.stopPropagation();
+	showToast('Drop a SVG file to import it');
 }
 
 export function togglePanOn(event) {
