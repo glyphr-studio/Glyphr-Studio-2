@@ -716,7 +716,7 @@ export function copyPathsFromTo(sourceGlyph, destinationID, updateWidth = false)
 	log(`Source Glyph`);
 	log(sourceGlyph);
 	log(`destinationID: ${destinationID}`);
-	
+
 	const project = getCurrentProject();
 	const destinationGlyph = project.getGlyph(destinationID, true);
 	log(`Destination Glyph`);
@@ -726,17 +726,19 @@ export function copyPathsFromTo(sourceGlyph, destinationID, updateWidth = false)
 		tc = sourceGlyph.paths[c];
 		if (tc.objType === 'ComponentInstance') {
 			project.getGlyph(tc.link).addToUsedIn(destinationID);
-			tc = new ComponentInstance(clone(tc));
+			tc = new ComponentInstance(tc);
 		} else if (tc.objType === 'Path') {
-			tc = new Path(clone(tc));
+			tc = new Path(tc);
 		}
 		destinationGlyph.paths.push(tc);
 	}
+
 	if (updateWidth) {
 		destinationGlyph.advanceWidth = sourceGlyph.advanceWidth;
 	}
-	log('new paths');
-	log(destinationGlyph.paths);
+
+	log('Result for destination glyph:');
+	log(destinationGlyph);
 	log('copyPathsFromTo', 'end');
 }
 

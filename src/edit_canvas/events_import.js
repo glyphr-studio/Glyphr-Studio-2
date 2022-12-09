@@ -52,16 +52,16 @@ export function handlePasteSVGonEditCanvas(event) {
 }
 
 export function handleDropSVGonEditCanvas(event) {
-	log(`handleDropSVGonEditCanvas`, 'start');
+	// log(`handleDropSVGonEditCanvas`, 'start');
 
 	cancelDefaultEventActions(event);
 
 	let f = event.dataTransfer;
 	f = f.files[0] || '';
-	log('\t filename: ' + f.name);
+	// log('\t filename: ' + f.name);
 	let fname = f.name.split('.');
 	fname = fname[fname.length - 1].toLowerCase();
-	log('\t fname = ' + fname);
+	// log('\t fname = ' + fname);
 
 	const reader = new FileReader();
 
@@ -74,5 +74,5 @@ export function handleDropSVGonEditCanvas(event) {
 	} else {
 		showToast('Only SVG files can be dropped on the canvas');
 	}
-	log(`handleDropSVGonEditCanvas`, 'end');
+	// log(`handleDropSVGonEditCanvas`, 'end');
 }

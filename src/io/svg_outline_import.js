@@ -5,6 +5,7 @@ import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { Coord } from '../project_data/coord.js';
+import { json } from '../common/functions.js';
 /**
 	IO > Import > SVG Outlines
 	Takes a set of XML and pulls out any path or
@@ -14,7 +15,9 @@ import { Coord } from '../project_data/coord.js';
 **/
 
 export function ioSVG_convertTagsToGlyph(svgData) {
-	// log('ioSVG_convertTagsToGlyph', 'start');
+	log('ioSVG_convertTagsToGlyph', 'start');
+	log(`Passed svgData`);
+	log(svgData);
 
 	const newPaths = [];
 	let data = {};
@@ -26,6 +29,8 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 
 	try {
 		jsonData = XMLtoJSON(svgData);
+		log(`Resulting JSON`);
+		log(jsonData);
 	} catch (e) {
 		if (e.message === 'XMLdoc.getElementsByTagName(...)[0] is undefined') {
 			e.message = `
@@ -39,21 +44,20 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 	const unsortedPathTags = ioSVG_getTags(jsonData, grabTags);
 	const pathTags = {};
 
-	// log('unsorted pathTags from imported XML: ');
-	// log(unsortedPathTags);
+	log('UNSORTED pathTags from imported XML: ');
+	log(unsortedPathTags);
 
 	// get a sorted pathTags object
 	for (let g = 0; g < grabTags.length; g++) pathTags[grabTags[g]] = [];
 	for (let s = 0; s < unsortedPathTags.length; s++)
 		pathTags[unsortedPathTags[s].name].push(unsortedPathTags[s]);
 
-	// log('pathTags from imported XML: ');
-	// log(pathTags);
+	log('SORTED pathTags from imported XML: ');
+	log(pathTags);
 
 	function pushPath(path, name) {
 		pathCounter++;
-		name = name + ' ' + pathCounter;
-		path.name = name;
+		path.name = `${name} ${pathCounter}`;
 		newPaths.push(new Path(path));
 	}
 
@@ -73,8 +77,8 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 				if (data[d].length) {
 					tag = ioSVG_convertPathTag(data[d]);
 					if (tag.pathPoints.length) {
-						tag.name = 'Path';
-						pushPath(tag);
+						// tag.name = 'Path';
+						pushPath(tag, 'Path');
 					}
 				}
 			}
@@ -109,8 +113,8 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 				};
 
 				rect = rectPathFromMaxes(maxes);
-				rect.name = 'Rectangle';
-				pushPath(rect);
+				// rect.name = 'Rectangle';
+				pushPath(rect, 'Rectangle');
 			}
 		}
 	}
@@ -132,8 +136,8 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 			data = ioSVG_cleanAndFormatPathData(data);
 			data = data[0].split(',');
 
-			// log('Polyline or Polygon data, cleaned & formatted:');
-			// log(data);
+			log('Polyline or Polygon data, cleaned & formatted:');
+			log(data);
 
 			if (data.length) {
 				newPathPoints = [];
@@ -151,7 +155,7 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 					newPathPoints.push(newPoint);
 				}
 
-				pushPath(new Path({ name: 'Polygon', pathPoints: newPathPoints }));
+				pushPath(new Path({pathPoints: newPathPoints }), 'Polygon');
 			}
 		}
 	}
@@ -189,8 +193,8 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 				};
 
 				ellipse = ovalPathFromMaxes(ellipseMaxes);
-				ellipse.name = 'Oval';
-				pushPath(ellipse);
+				// ellipse.name = 'Oval';
+				pushPath(ellipse, 'Oval');
 			}
 		}
 	}
@@ -212,9 +216,10 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 	const resultGlyph = new Glyph({ paths: newPaths });
 	resultGlyph.changed(true);
 
-	// log(resultGlyph);
+	log(`RESULTING paths in a glyph`);
+	log(resultGlyph);
 
-	// log('ioSVG_convertTagsToGlyph', 'end');
+	log('ioSVG_convertTagsToGlyph', 'end');
 	return resultGlyph;
 }
 
@@ -229,8 +234,8 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 export function ioSVG_cleanAndFormatPathData(data) {
 	let returnData = [];
 
-	// log('ioSVG_cleanAndFormatPathData', 'start');
-	// log('dirty data\n\t ' + data);
+	log('ioSVG_cleanAndFormatPathData', 'start');
+	log('dirty data\n\t ' + data);
 
 	// Move commands for a path are treated as different Glyphr Paths
 	data = data.replace(/M/g, ',z,M');
@@ -271,11 +276,11 @@ export function ioSVG_cleanAndFormatPathData(data) {
 	if (data.charAt(0) === ',') data = data.slice(1);
 
 	// Remove extra Z commands
-	// log('2nd to last char ' + data.charAt(data.length-2));
+	log('2nd to last char ' + data.charAt(data.length - 2));
 	if (data.charAt(data.length - 2) === 'z') data = data.slice(0, -2);
 	// if(data.substr(-2) === ',z') data = data.slice(0, -2);
 	// if(data.substr(0, 3) === ',z,') data = data.slice(3);
-	// log('first two chars are |' + data.substr(0,2) + '|');
+	log('first two chars are |' + data.substr(0, 2) + '|');
 	if (data.substring(0, 2) === 'z,') data = data.slice(2);
 
 	// Clean up commas again
@@ -291,22 +296,22 @@ export function ioSVG_cleanAndFormatPathData(data) {
 
 	data.forEach(function (v, i, a) {
 		// Search for two instances of '.'
-		// log('v: ' + v);
+		log('v: ' + v);
 		first = v.indexOf('.');
-		// log('first: ' + first);
+		log('first: ' + first);
 
 		if (first > -1) {
 			second = v.indexOf('.', first + 1);
-			// log('second: ' + second);
+			log('second: ' + second);
 			if (second > -1) {
 				returnData.push(v.slice(0, second));
 				subsequence = v.slice(second);
-				// log('just the tail: ' + subsequence);
+				log('just the tail: ' + subsequence);
 				subsequence = subsequence.replace(/\./g, ',0.');
 				if (subsequence.charAt(0) === ',') subsequence = subsequence.slice(1);
-				// log('added zeros: ' + subsequence);
+				log('added zeros: ' + subsequence);
 				subsequence = subsequence.split(',');
-				// log('subsequence: ' + subsequence);
+				log('subsequence: ' + subsequence);
 				returnData = returnData.concat(subsequence);
 			} else {
 				// no two instances of '.'
@@ -326,17 +331,17 @@ export function ioSVG_cleanAndFormatPathData(data) {
 	returnData = returnData.join(',');
 	returnData = returnData.split(',z');
 
-	// log('clean data\n\t ' + returnData);
-	// log('ioSVG_cleanAndFormatPathData', 'end');
+	log('clean data\n\t ' + returnData);
+	log('ioSVG_cleanAndFormatPathData', 'end');
 
 	return returnData;
 }
 
 export function ioSVG_getTags(obj, grabTags) {
-	// log('ioSVG_getTags \t Start');
-	// log('grabTags: ' + JSON.stringify(grabTags));
-	// log('passed obj: ');
-	// log(obj);
+	log('ioSVG_getTags', 'start');
+	log('grabTags: ' + JSON.stringify(grabTags));
+	log('passed obj: ');
+	log(obj);
 
 	if (typeof grabTags === 'string') grabTags = [grabTags];
 	let result = [];
@@ -351,13 +356,13 @@ export function ioSVG_getTags(obj, grabTags) {
 		}
 	}
 
-	// log('ioSVG_getTags \t End \n');
+	log('ioSVG_getTags', 'end');
 	return result;
 }
 
 export function ioSVG_convertPathTag(data) {
-	// log('ioSVG_convertPathTag', 'start');
-	// log('passed data ' + data);
+	log('ioSVG_convertPathTag', 'start');
+	log('passed data ' + data);
 
 	// Parse comma separated data into commands / data chunks
 	data = data.split(',');
@@ -374,8 +379,8 @@ export function ioSVG_convertPathTag(data) {
 
 			for (let i = 0; i < dataChunk.length; i++) dataChunk[i] = Number(dataChunk[i]);
 
-			// log('Handling command ' + command);
-			// log('With data ' + dataChunk);
+			log('Handling command ' + command);
+			log('With data ' + dataChunk);
 
 			chunks.push({ command: command, data: dataChunk });
 			commandPosition = curr;
@@ -387,18 +392,18 @@ export function ioSVG_convertPathTag(data) {
 	dataChunk = data.slice(commandPosition + 1, curr);
 	command = data[commandPosition];
 	for (let j = 0; j < dataChunk.length; j++) dataChunk[j] = Number(dataChunk[j]);
-	// log('FENCEPOST');
-	// log('Handling command ' + command);
-	// log('With data ' + dataChunk);
+	log('FENCEPOST');
+	log('Handling command ' + command);
+	log('With data ' + dataChunk);
 	chunks.push({ command: command, data: dataChunk });
 
-	// log('chunks data is \n' + json(chunks, true));
+	log('chunks data is \n' + json(chunks, true));
 
 	// Turn the commands and data into Glyphr objects
 	let newPathPoints = [];
 	for (let c = 0; c < chunks.length; c++) {
-		// log('\n\t Path Chunk ' + c);
-		// log('' + chunks[c].command + ' : ' + chunks[c].data);
+		log('\n\t Path Chunk ' + c);
+		log('' + chunks[c].command + ' : ' + chunks[c].data);
 		if (chunks[c].command) {
 			newPathPoints = handlePathChunk(chunks[c], newPathPoints, c === chunks.length - 1);
 		}
@@ -408,21 +413,21 @@ export function ioSVG_convertPathTag(data) {
 	const fp = newPathPoints[0];
 	const lp = newPathPoints[newPathPoints.length - 1];
 	if (fp.p.x === lp.p.x && fp.p.y === lp.p.y) {
-		// log('fp/lp same:\nFirst Point: '+json(fp)+'\nLast Point:  '+json(lp));
+		log('fp/lp same:\nFirst Point: ' + fp.print() + '\nLast Point:  ' + lp.print());
 		fp.h1.x = lp.h1.x;
 		fp.h1.y = lp.h1.y;
 		fp.h1.use = lp.h1.use;
 		newPathPoints.pop();
 		fp.resolvePointType();
-		// log('AFTER:\nFirst Point: '+json(fp));
+		log('AFTER:\nFirst Point: ' + fp.print());
 	}
 
 	const newPath = new Path({ pathPoints: newPathPoints });
 	newPath.validate('Import SVG');
 
-	// log('unscaled path:');
-	// log(newPath);
-	// log('ioSVG_convertTag', 'end');
+	log('unscaled path:');
+	log(newPath);
+	log('ioSVG_convertTag', 'end');
 	return newPath;
 }
 
@@ -432,8 +437,8 @@ function isPathCommand(c) {
 }
 
 function handlePathChunk(chunk, paths, isLastPoint) {
-	// log('handlePathChunk', 'start');
-	// log('chunk: ' + json(chunk, true));
+	log('handlePathChunk', 'start');
+	log('chunk: ' + json(chunk, true));
 
 	const cmd = chunk.command;
 	let currentData = [];
@@ -449,7 +454,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 	let previousX;
 	let previousY;
 
-	// log('previous point: \t'+lastPoint.p.x+','+lastPoint.p.y);
+	log('previous point: \t' + lastPoint.p.x + ',' + lastPoint.p.y);
 
 	/*
 			Path Instructions: Capital is absolute, lowercase is relative
@@ -488,7 +493,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\t command ' + cmd + ' while loop data ' + currentData);
+			log('\n\t command ' + cmd + ' while loop data ' + currentData);
 
 			previousX = lastPoint.p.x;
 			previousY = lastPoint.p.y;
@@ -530,7 +535,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 					break;
 			}
 
-			// log('linear end nx ny\t' + nx + ' ' + ny);
+			log('linear end nx ny\t' + nx + ' ' + ny);
 
 			lastPoint.h2.use = false;
 			newPoint = new PathPoint({
@@ -544,7 +549,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint = paths[paths.length - 1];
 		}
 
-		// log('completed while loop');
+		log('completed while loop');
 	} else if (isCommand('Aa')) {
 		// ABSOLUTE arc to
 		// relative arc to
@@ -567,7 +572,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			currentData = [];
 			currentData = chunk.data.splice(0, 7);
 			currentData = currentData.splice(5, 2);
-			// log('\n\t command ' + cmd + ' while loop data ' + currentData);
+			log('\n\t command ' + cmd + ' while loop data ' + currentData);
 
 			previousX = lastPoint.p.x;
 			previousY = lastPoint.p.y;
@@ -580,7 +585,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 				ny += previousY;
 			}
 
-			// log('linear end nx ny\t' + nx + ' ' + ny);
+			log('linear end nx ny\t' + nx + ' ' + ny);
 			lastPoint.type = 'corner';
 			lastPoint.h2.use = true;
 			lastPoint.makePointedTo(p.x, p.y, false, 'h2', true);
@@ -597,7 +602,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint = paths[paths.length - 1];
 		}
 
-		// log('completed while loop');
+		log('completed while loop');
 	} else if (isCommand('Qq')) {
 		// ABSOLUTE quadratic bezier curve to
 		// relative quadratic bezier curve to
@@ -615,7 +620,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\n\t command ' + cmd + ' while loop data ' + currentData);
+			log('\n\n\t command ' + cmd + ' while loop data ' + currentData);
 
 			if (isCommand('q')) {
 				// Relative offset for q
@@ -630,7 +635,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			q = new Coord({ x: currentData[0], y: currentData[1] });
 			currentData = [lastPoint.p.x, lastPoint.p.y].concat(currentData);
 			currentData = convertQuadraticToCubic(currentData);
-			// log('command ' + cmd + ' after Q>C convert ' + currentData);
+			log('command ' + cmd + ' after Q>C convert ' + currentData);
 
 			lastPoint.h2 = new Coord({ x: currentData[0], y: currentData[1] });
 			lastPoint.h2.use = true;
@@ -639,7 +644,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			h1 = new Coord({ x: currentData[2], y: currentData[3] });
 			p = new Coord({ x: currentData[4], y: currentData[5] });
 
-			// log('bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
+			log('bezier end Px Py\t' + p.x + ' ' + p.y + '\tH1x H1y:' + h1.x + ' ' + h1.y);
 
 			newPoint = new PathPoint({
 				p: { coord: p },
@@ -652,7 +657,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint = paths[paths.length - 1];
 		}
 
-		// log('completed while loop');
+		log('completed while loop');
 	} else if (isCommand('Tt')) {
 		// ABSOLUTE quadratic symmetric bezier curve to
 		// relative quadratic symmetric bezier curve to
@@ -672,7 +677,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\t command ' + cmd + ' while loop data ' + currentData);
+			log('\n\t command ' + cmd + ' while loop data ' + currentData);
 
 			if (isCommand('t')) {
 				// Relative offset for t
@@ -685,9 +690,9 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			q = new Coord(findSymmetricPoint(lastPoint.p, lastPoint.Q));
 			currentData = [lastPoint.p.x, lastPoint.p.y, q.x, q.y].concat(currentData);
 
-			// log('command ' + cmd + ' before Q>C convert ' + currentData);
+			log('command ' + cmd + ' before Q>C convert ' + currentData);
 			currentData = convertQuadraticToCubic(currentData);
-			// log('command ' + cmd + ' afters Q>C convert ' + currentData);
+			log('command ' + cmd + ' afters Q>C convert ' + currentData);
 
 			lastPoint.h2 = new Coord({ x: currentData[0], y: currentData[1] });
 			lastPoint.h2.use = true;
@@ -696,7 +701,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			h1 = new Coord({ x: currentData[2], y: currentData[3] });
 			p = new Coord({ x: currentData[4], y: currentData[5] });
 
-			// log('bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
+			log('bezier end Px Py\t' + p.x + ' ' + p.y + '\tH1x H1y:' + h1.x + ' ' + h1.y);
 
 			newPoint = new PathPoint({
 				p: { coord: p },
@@ -710,7 +715,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint = paths[paths.length - 1];
 		}
 
-		// log('completed while loop');
+		log('completed while loop');
 	} else if (isCommand('Cc')) {
 		// ABSOLUTE bezier curve to
 		// relative bezier curve to
@@ -732,7 +737,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\n\t command ' + cmd + ' while loop data ' + currentData);
+			log('\n\n\t command ' + cmd + ' while loop data ' + currentData);
 
 			lastPoint.h2 = new Coord({ x: currentData[0], y: currentData[1] });
 			lastPoint.h2.use = true;
@@ -753,7 +758,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 				p.y += previousY;
 			}
 
-			// log('bezier end Px Py\t'+p.x+' '+p.y+'\tH1x H1y:'+h1.x+' '+h1.y);
+			log('bezier end Px Py\t' + p.x + ' ' + p.y + '\tH1x H1y:' + h1.x + ' ' + h1.y);
 
 			newPoint = new PathPoint({
 				p: { coord: p },
@@ -766,7 +771,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint = paths[paths.length - 1];
 		}
 
-		// log('completed while loop');
+		log('completed while loop');
 	} else if (isCommand('Ss')) {
 		// ABSOLUTE symmetric bezier curve to
 		// relative symmetric bezier curve to
@@ -786,7 +791,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			// log('\n\t command ' + cmd + ' while loop data ' + currentData);
+			log('\n\t command ' + cmd + ' while loop data ' + currentData);
 
 			lastPoint.makeSymmetric('h1');
 			lastPoint.h2.use = true;
@@ -794,7 +799,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			h1 = new Coord({ x: currentData[0], y: currentData[1] });
 			p = new Coord({ x: currentData[2], y: currentData[3] });
 
-			// log('p before: ' + json(p, true));
+			log('p before: ' + p.print());
 
 			if (isCommand('s')) {
 				// Relative offset for st
@@ -806,8 +811,8 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 				p.y += previousY;
 			}
 
-			// log('p afters: ' + json(p, true));
-			// log('h1 after: ' + json(h1, true));
+			log('p afters: ' + p.print());
+			log('h1 after: ' + h1.print());
 
 			newPoint = new PathPoint({
 				p: { coord: p },
@@ -819,7 +824,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint = paths[paths.length - 1];
 		}
 
-		// log('completed while loop');
+		log('completed while loop');
 	} else if (isCommand('Zz')) {
 		// End Path
 	} else {
@@ -832,36 +837,36 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 		added.resolvePointType();
 	}
 
-	// log('Resulting Path Chunk');
-	// log(paths);
+	log('Resulting Path Chunk');
+	log(paths);
 
-	// log('handlePathChunk', 'end');
+	log('handlePathChunk', 'end');
 
 	return paths;
 }
 
 function findSymmetricPoint(p, h) {
-	// log('findSymmetricPoint', 'start');
+	log('findSymmetricPoint', 'start');
 	p = p || { x: 0, y: 0 };
 	h = h || { x: 0, y: 0 };
 
-	// log('p: ' + json(p, true));
-	// log('h: ' + json(h, true));
+	log('p: ' + json(p, true));
+	log('h: ' + json(h, true));
 
 	const re = {
 		x: p.x - h.x + p.x,
 		y: p.y - h.y + p.y,
 	};
 
-	// log('returning ' + json(re, true));
-	// log('findSymmetricPoint', 'end');
+	log('returning ' + json(re, true));
+	log('findSymmetricPoint', 'end');
 
 	return re;
 }
 
 function convertQuadraticToCubic(data) {
-	// log('convertQuadraticToCubic', 'start');
-	// log('data: ' + json(data, true));
+	log('convertQuadraticToCubic', 'start');
+	log('data: ' + json(data, true));
 	const re = [];
 
 	const q0x = data[0];

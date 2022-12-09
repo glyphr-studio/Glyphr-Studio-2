@@ -43,6 +43,7 @@
 		"pageview",
 		"pangrams",
 		"panose",
+		"parsererror",
 		"rmoveto",
 		"rrcurveto",
 		"stemh",
