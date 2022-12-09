@@ -1,9 +1,10 @@
-#toast {
+#toast,
+#error {
 	display: none;
 	width: 300px;
 	position: absolute;
 	left: 520px;
-	margin: -50px 0px 0px 0px;
+	margin: 5px 0px 5px 0px;
 	/* background-color: rgb(0, 63, 95); */
 	background-color: var(--green-l90);
 	/* color: rgb(155, 221, 255); */
@@ -14,11 +15,48 @@
 	border: 1px solid var(--green-l60);
 	border-radius: 4px;
 	box-shadow: var(--l3-shadow-down);
+	animation: var(--slide-down-animate-in);
 }
 
 #toast a {
 	/* color: rgb(155, 221, 255); */
 	color: var(--green-l10);
+}
+
+#error {
+	margin-top: 10px;
+	border-color: var(--red);
+	color: var(--darkRed);
+	background-color: var(--lightRed);
+	display: grid;
+	grid-template-rows: 20px 1fr;
+	padding:10px 12px 12px 12px;
+	row-gap: 10px;
+}
+
+.error__header {
+	display: grid;
+	grid-template-columns: 1fr 20px;
+}
+
+.error__header h3 {
+	color: var(--darkRed);
+}
+
+.error__header button {
+	background-color: var(--darkRed);
+	border-color: var(--darkRed);
+	color: var(--lightRed);
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	padding: 0px;
+	margin: 0px;
+}
+
+.error__header button:hover {
+	color: white;
+	border-color: var(--red);
 }
 
 #context-menu {

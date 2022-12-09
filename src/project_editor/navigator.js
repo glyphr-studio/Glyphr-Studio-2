@@ -11,7 +11,7 @@ import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { refreshPanel } from '../panels/panels.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { setDialogHideListeners } from '../controls/dialogs.js';
+import { closeAllDialogs, setDialogHideListeners } from '../controls/dialogs.js';
 
 // --------------------------------------------------------------
 // Navigation

@@ -34,14 +34,14 @@ export function ioSVG_importSVGFont() {
 			const jsonData = XMLtoJSON(svgData);
 			font = getFirstTagInstance(jsonData, 'font');
 		} catch (e) {
-			showErrorMessageBox('There was a problem reading the SVG file:<br>' + e.message);
+			showError('There was a problem reading the SVG file:<br>' + e.message);
 			// log('setupFontImport', 'end');
 			return;
 		}
 
 		// Check to see if it's actually a SVG Font
 		if (!font) {
-			showErrorMessageBox(
+			showError(
 				'The SVG file you tried to load was not a SVG Font file. See Glyphr Studio help for more information.'
 			);
 			// log('setupFontImport', 'end');
@@ -60,7 +60,7 @@ export function ioSVG_importSVGFont() {
 			// Dump JSON
 			// saveFile('Parsed JSON', json(jsonData));
 		} else {
-			showErrorMessageBox(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
+			showError(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
 			// log('setupFontImport', 'end');
 			return;
 		}

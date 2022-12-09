@@ -45,7 +45,7 @@ export function importOTFFont(filter) {
 		} else {
 			loadPage_openproject();
 			openproject_changeTab('load');
-			showErrorMessageBox('Something went wrong with opening the font file:<br><br>' + err);
+			showError('Something went wrong with opening the font file:<br><br>' + err);
 			return;
 		}
 

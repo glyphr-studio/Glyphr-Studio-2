@@ -2,7 +2,7 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { showContextMenu } from '../controls/dialogs.js';
+import { closeAllDialogs, showContextMenu } from '../controls/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 
 /**
@@ -172,7 +172,7 @@ function makeMenu(menuName) {
 		innerHTML: menuName,
 		className: 'menu-entry-point',
 	});
-
+	
 	entryPoint.addEventListener('mouseover', closeAllDialogs);
 
 	if (menuName === 'File') {

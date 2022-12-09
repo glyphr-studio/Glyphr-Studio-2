@@ -1,4 +1,4 @@
-import { showErrorMessageBox } from '../controls/dialogs.js';
+import { showError } from '../controls/dialogs.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -32,7 +32,7 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 			No SVG Path or Path Tags could be found.
 			Make sure the SVG code is in proper XML format.`;
 		}
-		showErrorMessageBox(e.message);
+		showError(e.message);
 		return;
 	}
 
@@ -196,14 +196,14 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 	}
 
 	if (pathCounter === 0) {
-		showErrorMessageBox(`
+		showError(`
 			Could not find any SVG tags to import.
 			Supported tags are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.`);
 		return;
 	}
 
 	if (error) {
-		showErrorMessageBox(`
+		showError(`
 			A transform attribute was found.
 			It will be ignored, probably resulting in unexpected path outlines.
 			Check the Import SVG section of the Help page.`);
@@ -250,7 +250,7 @@ export function ioSVG_cleanAndFormatPathData(data) {
 			curr++;
 		}
 		if (curr > 1000000) {
-			showErrorMessageBox('SVG path data longer than a million points is super uncool.');
+			showError('SVG path data longer than a million points is super uncool.');
 			return;
 		} else {
 			curr++;
@@ -480,7 +480,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			currentData = chunk.data.splice(0, 2);
 
 			if (currentData.length % 2 !== 0 && isCommand('MmLl')) {
-				showErrorMessageBox(`
+				showError(`
 					Move or Line path command (M, m, L, l) was expecting 2 arguments,
 					was passed [${currentData}]
 					<br>Failing "gracefully" by filling in default data.`);
@@ -549,14 +549,14 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 		// ABSOLUTE arc to
 		// relative arc to
 
-		showErrorMessageBox(`
+		showError(`
 			Arc To path commands (A or a) are not directly supported.
 			A straight line will be drawn from the beginning to the end of the arc.`);
 		nx = lastPoint.p.x;
 		ny = lastPoint.p.y;
 
 		if (chunk.data.length % 7 !== 0) {
-			showErrorMessageBox(`
+			showError(`
 				Arc To path command (A or a) was expecting 7 arguments,
 				was passed [${chunk.data}]
 				<br>Failing "gracefully" by just drawing a line to the last two data points as if they were a x/y point.`);
@@ -607,7 +607,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			// Grab the next chunk of data and make sure it's length=4
 			currentData = chunk.data.splice(0, 4);
 			if (currentData.length % 4 !== 0) {
-				showErrorMessageBox(`
+				showError(`
 					Quadratic Bezier path command (Q or q) was expecting 4 arguments,
 					was passed [${currentData}]
 					<br>Failing "gracefully" by filling in default data.`);
@@ -664,7 +664,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			currentData = [];
 			currentData = chunk.data.splice(0, 2);
 			if (currentData.length % 2 !== 0) {
-				showErrorMessageBox(`
+				showError(`
 					Symmetric Bezier path command (T or t) was expecting 2 arguments,
 					was passed[${currentData}]
 					<br>Failing "gracefully" by filling in default data.`);
@@ -724,7 +724,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			currentData = [];
 			currentData = chunk.data.splice(0, 6);
 			if (currentData.length % 6 !== 0) {
-				showErrorMessageBox(`
+				showError(`
 					Bezier path command (C or c) was expecting 6 arguments,
 					was passed [${currentData}]
 					<br>Failing "gracefully" by filling in default data.`);
@@ -778,7 +778,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			currentData = [];
 			currentData = chunk.data.splice(0, 4);
 			if (currentData.length % 4 !== 0) {
-				showErrorMessageBox(`
+				showError(`
 					Symmetric Bezier path command (S or s) was expecting 4 arguments,
 					was passed [${currentData}]
 					<br>Failing "gracefully" by filling in default data.`);
@@ -823,7 +823,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 	} else if (isCommand('Zz')) {
 		// End Path
 	} else {
-		showErrorMessageBox(`Unrecognized path command ${cmd}, ignoring and moving on...`);
+		showError(`Unrecognized path command ${cmd}, ignoring and moving on...`);
 	}
 
 	// Finish up last point

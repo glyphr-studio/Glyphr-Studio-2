@@ -1,6 +1,32 @@
 import { accentColors, uiColors } from '../common/colors.js';
-import { makeElement, textToNode } from '../common/dom.js';
+import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { makeIcon } from '../common/graphics.js';
+
+// --------------------------------------------------------------
+// Generic dialog stuff
+// --------------------------------------------------------------
+export function closeAllDialogs(hideToasts = false) {
+	let dialogs = document.querySelectorAll('dialog');
+	dialogs.forEach((elem) => animateRemove(elem));
+
+	if (hideToasts) {
+		let toasts = document.querySelectorAll('#toast');
+		toasts.forEach((elem) => animateRemove(elem));
+	}
+
+}
+
+function animateRemove(element) {
+	let animationLength = 120;
+	element.animate(
+		{ opacity: 0, transform: 'scale(0.98) translateY(-5px)' },
+		{ duration: animationLength }
+	);
+	window.setTimeout(() => {
+		element.style.display = 'none';
+		element.remove();
+	}, animationLength - 10);
+}
 
 // -----------------------------------------------------------------
 // Toast
@@ -9,124 +35,32 @@ import { makeIcon } from '../common/graphics.js';
 /**
  * Creates and shows a little message at the top/center
  * of the screen, which disappears after a set time
- * @param {string} msg - message to show
- * @param {number} dur - how long to show the message (milliseconds)
- * @param {function} fn - function to call after message is shown
+ * @param {string} message - message to show
+ * @param {number} duration - how long to show the message (milliseconds)
  */
-export function showToast(msg, dur, fn) {
-	// log('showToast', 'start');
-	let toastTimeout = false;
-	let step = -1;
-	const stepMax = 20;
-	const stepTime = 10;
-	const divisor = 5;
-	const duration = dur || 3000;
-	let messageContainer = document.getElementById('toast');
+export function showToast(message = '0_o', duration = 3000) {
+	log(`showToast`, 'start');
 
-	if (!messageContainer) {
-		messageContainer = makeElement({
-			tag: 'div',
+	let element = document.getElementById('toast');
+
+	// remove any current context menu, or create one if it doesn't exist
+	if (element) {
+		element.style.display = 'none';
+		element.innerHTML = '';
+	} else {
+		element = makeElement({
+			tag: 'dialog',
 			id: 'toast',
-			innerHTML: msg || 'Howdy!',
+			attributes: { tabindex: '-1' },
 		});
-		document.body.appendChild(messageContainer);
-	}
-	
-	// log('Typeof fn: ' + typeof fn);
-
-	if (fn && typeof fn === 'function') {
-		// log('CALLING FUNCTION NOW');
-		setTimeout(fn, 100);
+		element.style.display = 'none';
+		document.body.appendChild(element);
 	}
 
-	if (toastTimeout) {
-		messageContainer.innerHTML = msg;
-		appearFinish();
-		return;
-	}
-
-	let currentTop = -50;
-	const finalTop = 5;
-	let currentOpacity = 0;
-	const finalOpacity = 1;
-
-	/** start to disappear */
-	function appearFinish() {
-		// log('appearFinish');
-		currentTop = finalTop;
-		currentOpacity = finalOpacity;
-		step = stepMax;
-
-		messageContainer.style.marginTop = finalTop + 'px';
-		messageContainer.style.opacity = finalOpacity;
-
-		setToastTimeout(disappearStep, duration);
-	}
-
-	/** animate appearance */
-	function appearStep() {
-		// log('appearStep ' + step);
-
-		if (step < 0) {
-			messageContainer.style.display = 'block';
-			messageContainer.style.marginTop = '-50px;';
-			messageContainer.style.opacity = '0.0';
-			// messageContainer.style.borderBottomWidth = '0px';
-
-			step++;
-
-			setToastTimeout(appearStep, stepTime);
-		} else if (step < stepMax) {
-			step++;
-			currentTop = currentTop + (finalTop - currentTop) / divisor;
-			currentOpacity = currentOpacity + (finalOpacity - currentOpacity) / divisor;
-
-			messageContainer.style.marginTop = currentTop + 'px';
-			messageContainer.style.opacity = currentOpacity;
-
-			setToastTimeout(appearStep, stepTime);
-		} else {
-			appearFinish();
-		}
-	}
-
-	/** animate disappearance */
-	function disappearStep() {
-		// log('appearStep ' + step);
-		if (step < 0) {
-			messageContainer.style.display = 'none';
-			messageContainer.style.marginTop = '-50px;';
-			messageContainer.style.opacity = '0.0';
-			messageContainer.innerHTML = '0_o';
-			if (toastTimeout) {
-				clearTimeout(toastTimeout);
-				toastTimeout = false;
-			}
-		} else {
-			step--;
-			currentTop = currentTop - currentTop / divisor;
-			currentOpacity = currentOpacity - currentOpacity / divisor;
-
-			messageContainer.style.marginTop = currentTop + 'px';
-			messageContainer.style.opacity = currentOpacity;
-
-			setToastTimeout(disappearStep, stepTime);
-		}
-	}
-
-	/**
-	 * Common function for appear and disappear to
-	 * call while looping through animations.
-	 * @param {function} fn - function to call
-	 * @param {number} dur - duration (milliseconds)
-	 */
-	function setToastTimeout(fn, dur) {
-		if (toastTimeout) clearTimeout(toastTimeout);
-		toastTimeout = setTimeout(fn, dur);
-	}
-
-	setToastTimeout(appearStep, 1);
-	// log('showToast', 'end');
+	element.innerHTML = message;
+	element.style.display = 'block';
+	window.setTimeout(() => animateRemove(element), duration);
+	log(`showToast`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -214,7 +148,7 @@ function makeOneContextMenuRow(data = {}) {
 
 	// Keyboard Shortcut
 	if (data.shortcut) {
-		let shortcutWrapper = makeElement({tag: 'div', className: 'shortcut-wrapper'});
+		let shortcutWrapper = makeElement({ tag: 'div', className: 'shortcut-wrapper' });
 		data.shortcut.forEach((key) =>
 			shortcutWrapper.appendChild(makeElement({ tag: 'code', innerHTML: key }))
 		);
@@ -232,67 +166,31 @@ export function setDialogHideListeners(element) {
 }
 
 // --------------------------------------------------------------
-// Error Message Box
+// Error
 // --------------------------------------------------------------
-/**
- * Creates (but does not show) a small error message box
- * @returns {string} - HTML content
- */
-export function makeErrorMessageBox() {
-	let element = makeElement({ tag: 'dialog', id: 'errorMessageBox' });
-	element.innerHTML = `
-		<table border=0><tr>
-		<td class="errorMessageLeftBar">
-		<button class="errorMessageCloseButton" onclick="closeErrorMessageBox();">&times;</button></td>
-		<td id="errorMessageContent"></td>
-		</tr></table>
-	`;
-
-	return element;
-}
 
 /**
  * Shows the error message box
- * @param {string} msg - HTML content of the dialog box
+ * @param {string} message - HTML content of the dialog box
  */
-export function showErrorMessageBox(msg) {
-	const content = document.getElementById('errorMessageContent');
-	const element = document.getElementById('errorMessageBox');
-	content.innerHTML = msg;
-	element.style.display = 'block';
-	console.warn(msg);
-}
+export function showError(message) {
+	let element = makeElement({ tag: 'dialog', id: 'error' });
+	let header = makeElement({ className: 'error__header', innerHTML: '<h3>Error</h3>' });
+	let close = makeElement({ tag: 'button', innerHTML: '&times;' });
+	close.addEventListener('click', () => {
+		animateRemove(element);
+	});
+	header.appendChild(close);
+	let body = makeElement({ className: 'error__body', innerHTML: message });
+	addAsChildren(element, [header, body]);
 
-/**
- * Closes the error message box
- */
-export function closeErrorMessageBox() {
-	document.getElementById('errorMessageContent').innerHTML = '';
-	document.getElementById('errorMessageBox').style.display = 'none';
+	closeAllDialogs(true);
+	document.body.appendChild(element);
 }
 
 // --------------------------------------------------------------
 // OLD STUFF
 // --------------------------------------------------------------
-
-// /**
-//  * Closes any type of dialog box that may be open
-//  */
-// export function closeDialog() {
-// 	if (!_UI.popOut && document.getElementById('npSave'))
-// 		document.getElementById('npSave').style.backgroundColor = 'transparent';
-// 	document.getElementById('dialog_bg').style.display = 'none';
-// 	document.getElementById('big_dialog_box').style.display = 'none';
-// 	document.getElementById('dialog_box').style.display = 'none';
-// 	document.getElementById('saveFormatFlyout').style.display = 'none';
-
-// 	document.getElementById('dialogRightContent').innerHTML =
-// 		'<b>Error: unspecified dialog box content.</b>';
-// 	document.getElementById('bigDialogLeftContent').innerHTML =
-// 		'<b>Error: unspecified dialog box content.</b>';
-
-// 	// document.body.focus();
-// }
 
 // /**
 //  * Creates and shows a standard dialog box
