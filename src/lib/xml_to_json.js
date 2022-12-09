@@ -1,17 +1,15 @@
-/* exported XMLtoJSON */
-/* eslint-disable no-console */
 /**
  * XML to JSON does exactly what it sounds like.
  * Feed it an XML string, and it converts the data
  * to JSON format.
- * @param {string} inputXML - XML data
- * @returns {string}
+ * @param {String} inputXML - XML data
+ * @return {Object} - Javascript object
  */
 export function XMLtoJSON(inputXML) {
-	const console_debug = false;
+	// log('XMLtoJSON', 'start');
+	// log(inputXML);
 	let XMLdoc;
 	let XMLerror;
-	// log('convertXMLtoJSON \t PASSED\n' + inputXML);
 
 	if (typeof window.DOMParser !== 'undefined') {
 		XMLdoc = new window.DOMParser().parseFromString(inputXML, 'text/xml');
@@ -28,71 +26,73 @@ export function XMLtoJSON(inputXML) {
 		throw XMLerror;
 	}
 
-	const parsererror = XMLdoc.getElementsByTagName('parsererror');
-	if (parsererror.length) {
-		const msgcon = XMLdoc.getElementsByTagName('div')[0].innerHTML;
-		XMLerror = new SyntaxError(trim(msgcon));
+	const error = XMLdoc.getElementsByTagName('parsererror');
+	if (error.length) {
+		const message = XMLdoc.getElementsByTagName('div')[0].innerHTML;
+		XMLerror = new SyntaxError(trim(message));
 		throw XMLerror;
 	}
 
-	return {
+	const result = {
 		name: XMLdoc.documentElement.nodeName,
 		attributes: tag_getAttributes(XMLdoc.documentElement.attributes),
 		content: tag_getContent(XMLdoc.documentElement),
 	};
+	// log(result);
+	// log(`XMLtoJSON`, 'end');
+	return result;
 
 	function tag_getContent(parent) {
 		const kids = parent.childNodes;
-		// log('\nTAG: ' + parent.nodeName + '\t' + parent.childNodes.length);
+		// log(`tag_getContent - ${parent.nodeName}`, 'start');
+		// log(kids);
 
-		if (kids.length === 0) return trim(parent.nodeValue);
-
-		const result = [];
-		let node;
-		let tagresult;
-		let tagcontent;
-		let tagattributes;
-
-		for (let k = 0; k < kids.length; k++) {
-			tagresult = {};
-			node = kids[k];
-			// log('\n\t>>start kid ' + k + ' ' + node.nodeName);
-			if (node.nodeName === '#comment') break;
-
-			tagcontent = tag_getContent(node);
-			tagattributes = tag_getAttributes(node.attributes);
-
-			if (node.nodeName === '#text' && JSON.stringify(tagattributes) === '{}') {
-				tagresult = trim(tagcontent);
-			} else {
-				tagresult.name = node.nodeName;
-				tagresult.attributes = tagattributes;
-				tagresult.content = tagcontent;
-			}
-
-			if (tagresult !== '') result.push(tagresult);
-
-			// log('\t>>end kid ' + k);
+		if (kids.length === 0) {
+			// log(`tag_getContent - ${parent.nodeName}`, 'end');
+			return trim(parent.nodeValue);
 		}
 
+		const result = [];
+		let tagResult;
+		let tagContent;
+		let tagAttributes;
+
+		for (const node of kids) {
+			tagResult = {};
+			if (node.nodeName === '#comment') continue;
+
+			tagContent = tag_getContent(node);
+			tagAttributes = tag_getAttributes(node.attributes);
+
+			if (node.nodeName === '#text' && JSON.stringify(tagAttributes) === '{}') {
+				tagResult = trim(tagContent);
+			} else {
+				tagResult.name = node.nodeName;
+				tagResult.attributes = tagAttributes;
+				tagResult.content = tagContent;
+			}
+
+			if (tagResult !== '') result.push(tagResult);
+		}
+
+		// log(`tag_getContent - ${parent.nodeName}`, 'end');
 		return result;
 	}
 
 	function tag_getAttributes(attributes) {
 		if (!attributes || !attributes.length) return {};
 
-		// log('\t\t tag_getAttributes:');
+		// log('tag_getAttributes', 'start');
 		// log(attributes);
 
 		const result = {};
-		let attr;
 
-		for (let a = 0; a < attributes.length; a++) {
-			attr = attributes[a];
-			// log('\t\t'+attr.name+' : '+attr.value);
-			result[attr.name] = trim(attr.value);
+		for (const attribute of attributes) {
+			// log(`${attribute.name} : ${attribute.value}`);
+			result[attribute.name] = trim(attribute.value);
 		}
 
+		// log('tag_getAttributes', 'end');
 		return result;
 	}
 
@@ -103,10 +103,5 @@ export function XMLtoJSON(inputXML) {
 		} catch (e) {
 			return '';
 		}
-	}
-
-	// eslint-disable-next-line no-unused-vars
-	function log(text) {
-		if (console_debug) console.log(text);
 	}
 }
