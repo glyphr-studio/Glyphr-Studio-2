@@ -21,7 +21,7 @@ export class Guide {
 		this.editable = isVal(oa.editable) ? oa.editable : true;
 	}
 	draw(delta) {
-		// log('\nGuide.draw \t START');
+		// log('\nGuide.draw', 'start');
 		// log('name: ' + this.name);
 		// log('delta: ' + delta);
 		if (!this.visible) return;

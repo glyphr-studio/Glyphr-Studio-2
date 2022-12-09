@@ -39,7 +39,7 @@ function animateRemove(element) {
  * @param {number} duration - how long to show the message (milliseconds)
  */
 export function showToast(message = '0_o', duration = 3000) {
-	log(`showToast`, 'start');
+	// log(`showToast`, 'start');
 
 	let element = document.getElementById('toast');
 
@@ -60,7 +60,7 @@ export function showToast(message = '0_o', duration = 3000) {
 	element.innerHTML = message;
 	element.style.display = 'block';
 	window.setTimeout(() => animateRemove(element), duration);
-	log(`showToast`, 'end');
+	// log(`showToast`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -77,7 +77,7 @@ export function showToast(message = '0_o', duration = 3000) {
  * @param {Number} y - Y position for the menu
  */
 export function showContextMenu(rows = [], x = false, y = false) {
-	log(`showContextMenu`, 'start');
+	// log(`showContextMenu`, 'start');
 
 	let element = document.getElementById('context-menu');
 
@@ -97,7 +97,7 @@ export function showContextMenu(rows = [], x = false, y = false) {
 
 	// Create and add each row
 	rows.forEach((item) => {
-		log(`item.name: ${item.name}`);
+		// log(`item.name: ${item.name}`);
 		element.appendChild(makeOneContextMenuRow(item));
 	});
 
@@ -112,7 +112,7 @@ export function showContextMenu(rows = [], x = false, y = false) {
 		console.warn(`Context menu not supplied with a screen position.`);
 	}
 
-	log(`showContextMenu`, 'end');
+	// log(`showContextMenu`, 'end');
 }
 
 function makeOneContextMenuRow(data = {}) {
