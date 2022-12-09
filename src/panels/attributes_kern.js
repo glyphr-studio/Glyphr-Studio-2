@@ -129,8 +129,6 @@ function showNewKernPairDialog() {
 	con +=
 		'<input type="text" id="leftGroup" style="font-size:24px; width:45%; padding:8px; text-align:right;"/>';
 	con += '<input type="text" id="rightGroup" style="font-size:24px; width:45%; padding:8px;"/><br>';
-	con += makeErrorMessageBox();
-	con += '<br>';
 	con +=
 		'<button class="button__call-to-action" onclick="createNewKernPair();">create new kern pair</button>';
 	con += '</div>';
@@ -142,8 +140,8 @@ function createNewKernPair() {
 	let l = parseKernGroupInput(document.getElementById('leftGroup').value);
 	let r = parseKernGroupInput(document.getElementById('rightGroup').value);
 
-	if (!l || !l.length) showErrorMessageBox('The left kern group cannot be empty.');
-	else if (!r || !r.length) showErrorMessageBox('The right kern group cannot be empty.');
+	if (!l || !l.length) showError('The left kern group cannot be empty.');
+	else if (!r || !r.length) showError('The right kern group cannot be empty.');
 	else {
 		let id = generateNewID(getCurrentProject().kerning, 'kern');
 

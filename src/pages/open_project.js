@@ -1,6 +1,5 @@
 import { makeElement } from '../common/dom.js';
 import { makeGlyphrStudioLogo } from '../common/graphics.js';
-import { makeErrorMessageBox } from '../controls/dialogs.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { uiColors, accentColors } from '../common/colors.js';
@@ -113,7 +112,6 @@ function makeTabs() {
 			Open Type or True Type Font &ensp;(.otf or .ttf)<br>
 			SVG Font &ensp;(.svg)
 		</div>
-		<div style="width:335px;">${makeErrorMessageBox()}</div>
 	</div>`;
 
 	// NEW
@@ -234,7 +232,7 @@ function handleDrop(event) {
 		//   'open-project__right-area'
 		// ).innerHTML = makeTabs();
 		// changeTab('load');
-		// showErrorMessageBox(con);
+		// showError(con);
 		// document.getElementById(
 		//   'open-project__right-area'
 		// ).style.backgroundColor = _UI.colors.gray.offWhite;

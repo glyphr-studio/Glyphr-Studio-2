@@ -47,19 +47,6 @@ G L Y P H R  S T U D I O  2
 			window.log = log;
 			document.addEventListener('DOMContentLoaded', glyphrStudioOnLoad);
 			window._GlyphrStudioApp = GSApp;
-
-			window.closeAllDialogs = function () {
-				let animationLength = 150;
-				let dialogs = document.querySelectorAll('dialog');
-				// console.info(`CloseAllDialogs: ${dialogs.length}`);
-				dialogs.forEach((element) => {
-					element.animate({opacity: 0, transform: 'scale(0.99) translateY(-4px)'}, {duration: animationLength});
-					window.setTimeout(() => {
-						element.style.display = 'none';
-						element.remove()
-					}, animationLength-10);
-				});
-			};
 		</script>
 		<style>
 			body,
@@ -135,21 +122,10 @@ G L Y P H R  S T U D I O  2
 
 	<body style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; margin: 0; padding: 0">
 		<div id="loadScreen">
-			<svg
-				version="1.1"
-				xmlns="http://www.w3.org/2000/svg"
-				xmlns:xlink="http://www.w3.org/1999/xlink"
-				xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-				xml:space="preserve"
-				x="0px"
-				y="0px"
-				width="400px"
-				height="400px"
-				viewBox="-2 -2 258 258"
-				style="overflow: scroll; enable-background: new -2 -2 258 258"
-				fill="#00344E"
-				id="loadLogo"
-			>
+			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+				xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" xml:space="preserve" x="0px" y="0px" width="400px"
+				height="400px" viewBox="-2 -2 258 258" style="overflow: scroll; enable-background: new -2 -2 258 258" fill="#00344E"
+				id="loadLogo">
 				<defs>
 					<linearGradient id="logoGradient">
 						<stop offset="0%" stop-color="var(--blue-l60)" />
@@ -344,7 +320,6 @@ G L Y P H R  S T U D I O  2
 						points="153.36 122.56 152.37 116.91 150.75 116.91 149.69 122.56 148.9 115.94 147.34 115.94 148.63 123.57 150.61 123.57 151.53 118.15 152.39 123.57 154.42 123.57 155.66 115.94 154.15 115.94 153.36 122.56" />
 				</g>
 			</svg>
-
 			<script>
 				setTimeout(function () {
 					let errorDiv = document.getElementById('errorMessage');

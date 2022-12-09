@@ -6,7 +6,7 @@ import { cancelDefaultEventActions } from './events';
 
 
 export function importSVGtoCurrentWorkItem(svgData) {
-	log(`importSVGtoCurrentWorkItem`, 'start');
+	// log(`importSVGtoCurrentWorkItem`, 'start');
 
 	const tempGlyph = ioSVG_convertTagsToGlyph(svgData);
 
@@ -19,11 +19,11 @@ export function importSVGtoCurrentWorkItem(svgData) {
 		const editor = getCurrentProjectEditor();
 		copyPathsFromTo(tempGlyph, editor.selectedItemID);
 
-		log('tempGlyph');
-		log(tempGlyph);
+		// log('tempGlyph');
+		// log(tempGlyph);
 
-		log(`updated item glyph`);
-		log(editor.selectedItem);
+		// log(`updated item glyph`);
+		// log(editor.selectedItem);
 
 		editor.publish('currentGlyph', editor.selectedItem);
 		editor.history.addState('Pasted SVG to glyph ' + editor.selectedItem.name);
@@ -31,7 +31,7 @@ export function importSVGtoCurrentWorkItem(svgData) {
 	} else {
 		// showToast('Could not import pasted SVG code.');
 	}
-	log(`importSVGtoCurrentWorkItem`, 'end');
+	// log(`importSVGtoCurrentWorkItem`, 'end');
 }
 
 export function handlePasteSVGonEditCanvas(event) {

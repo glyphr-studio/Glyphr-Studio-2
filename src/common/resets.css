@@ -234,8 +234,8 @@ ul li {
 // Common variables
 // ------------------------------------------------------------*/
 :root {
-	--slide-down-animate-in: fade-slide-in 100ms ease-in;
-	--fade-animate-in: fade-in 200ms ease-in;
+	--slide-down-animate-in: fade-slide-in 180ms ease-in;
+	--fade-animate-in: fade-in 180ms ease-in;
 	--l1-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
 	--l2-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
 	--l3-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
@@ -246,7 +246,7 @@ ul li {
 @keyframes fade-slide-in {
 	from {
 		opacity: 0;
-		transform: translateY(-2px);
+		transform: translateY(-5px);
 	}
 
 	to {
