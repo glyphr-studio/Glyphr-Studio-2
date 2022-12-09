@@ -415,6 +415,7 @@ export class PathPoint extends GlyphElement {
 	 * @returns {boolean}
 	 * */
 	isFlat() {
+		if (!this.h1.use || !this.h2.use) return false;
 		if (this.p.x === this.h1.x && this.p.x === this.h2.x) return true;
 		if (this.p.y === this.h1.y && this.p.y === this.h2.y) return true;
 
@@ -466,8 +467,8 @@ export class PathPoint extends GlyphElement {
 			this._type = 'corner';
 		}
 
+		// log('PathPoint.resolvePointType', 'end');
 		return this.type;
-		// log('pathPoint.resolvePointType', 'end');
 	}
 
 	/**

@@ -155,7 +155,7 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 					newPathPoints.push(newPoint);
 				}
 
-				pushPath(new Path({pathPoints: newPathPoints }), 'Polygon');
+				pushPath(new Path({ pathPoints: newPathPoints }), 'Polygon');
 			}
 		}
 	}
@@ -337,6 +337,13 @@ export function ioSVG_cleanAndFormatPathData(data) {
 	return returnData;
 }
 
+/**
+ * Recursively looks through data and returns any data that matches
+ * a specified list of tag names.
+ * @param {Object} obj - object to look through
+ * @param {Array or String} grabTags - list of tags to collect
+ * @returns {Array} - collection of objects representing tags
+ */
 export function ioSVG_getTags(obj, grabTags) {
 	log('ioSVG_getTags', 'start');
 	log('grabTags: ' + JSON.stringify(grabTags));
@@ -360,6 +367,11 @@ export function ioSVG_getTags(obj, grabTags) {
 	return result;
 }
 
+/**
+ * Takes input data from SVG object and returns a Glyphr Studio Path
+ * @param {Object} data - input data from SVG
+ * @returns {Path} - Glyphr Studio Path object
+ */
 export function ioSVG_convertPathTag(data) {
 	log('ioSVG_convertPathTag', 'start');
 	log('passed data ' + data);
@@ -427,16 +439,44 @@ export function ioSVG_convertPathTag(data) {
 
 	log('unscaled path:');
 	log(newPath);
-	log('ioSVG_convertTag', 'end');
+	log('ioSVG_convertPathTag', 'end');
 	return newPath;
 }
 
+/**
+ * Confirms a command is a valid SVG path command
+ * @param {String} c - command to check
+ * @returns {Boolean}
+ */
 function isPathCommand(c) {
 	if ('MmLlCcSsZzHhVvAaQqTt'.indexOf(c) > -1) return c;
 	return false;
 }
 
-function handlePathChunk(chunk, paths, isLastPoint) {
+/**
+ * The big one, all the logic to convert specific Commands and
+ * Path Data from SVG into the appropriate Glyphr Studio objects.
+ *
+ * Path Commands: Capital is absolute, lowercase is relative
+ * 		M m		MoveTo
+ * 		L l		LineTo
+ * 		H h		Horizontal Line
+ * 		V v		Vertical Line
+ * 		C c		Bezier (can be chained)
+ * 		S s		Smooth Bezier
+ * 		Q q		Quadratic Bezier (can be chained)
+ * 		T t		Smooth Quadratic
+ * 		Z z		Close Path
+
+ * 	Partially supported, just draw a line to the end point
+ * 		A a		ArcTo
+ *
+ * @param {String} chunk - Command + Data chunk to process
+ * @param {Array} pathPoints - Collection of points for recursive iteration
+ * @param {Boolean} isLastPoint - if it's the last point
+ * @returns
+ */
+function handlePathChunk(chunk, pathPoints, isLastPoint) {
 	log('handlePathChunk', 'start');
 	log('chunk: ' + json(chunk, true));
 
@@ -445,32 +485,17 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 	const isCommand = function (str) {
 		return str.indexOf(cmd) > -1;
 	};
-	let p;
+	let pCoord;
+	let h1Coord;
+	let qCoord;
 	let nx;
 	let ny;
-	let h1;
-	let lastPoint = paths[paths.length - 1] || new PathPoint();
+	let lastPoint = pathPoints[pathPoints.length - 1] || new PathPoint();
 	let newPoint;
 	let previousX;
 	let previousY;
 
 	log('previous point: \t' + lastPoint.p.x + ',' + lastPoint.p.y);
-
-	/*
-			Path Instructions: Capital is absolute, lowercase is relative
-			M m        MoveTo
-			L l        LineTo
-			H h        Horizontal Line
-			V v        Vertical Line
-			C c        Bezier (can be chained)
-			S s        Smooth Bezier
-			Q q        Quadratic Bezier (can be chained)
-			T t        Smooth Quadratic
-			Z z        Close Path
-
-			Partially supported, just draw a line to the end point
-			A a        ArcTo
-	*/
 
 	if (isCommand('MmLlHhVv')) {
 		// ABSOLUTE line methods
@@ -539,14 +564,11 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 
 			lastPoint.h2.use = false;
 			newPoint = new PathPoint({
-				p: { coord: { x: nx, y: ny } },
-				h1: { coord: { x: nx, y: ny }, use: true },
-				h2: { coord: { x: nx, y: ny }, use: true },
-				type: 'corner',
+				p: { coord: { x: nx, y: ny } }
 			});
-			paths.push(newPoint);
+			pathPoints.push(newPoint);
 
-			lastPoint = paths[paths.length - 1];
+			lastPoint = pathPoints[pathPoints.length - 1];
 		}
 
 		log('completed while loop');
@@ -588,7 +610,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			log('linear end nx ny\t' + nx + ' ' + ny);
 			lastPoint.type = 'corner';
 			lastPoint.h2.use = true;
-			lastPoint.makePointedTo(p.x, p.y, false, 'h2', true);
+			lastPoint.makePointedTo(nx, ny, false, 'h2', true);
 
 			newPoint = new PathPoint({
 				p: { coord: { x: nx, y: ny } },
@@ -597,9 +619,9 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 				type: 'corner',
 			});
 			newPoint.makePointedTo(previousX, previousY, false, 'h1', true);
-			paths.push(newPoint);
+			pathPoints.push(newPoint);
 
-			lastPoint = paths[paths.length - 1];
+			lastPoint = pathPoints[pathPoints.length - 1];
 		}
 
 		log('completed while loop');
@@ -632,7 +654,7 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 				currentData[3] += previousY;
 			}
 
-			q = new Coord({ x: currentData[0], y: currentData[1] });
+			qCoord = new Coord({ x: currentData[0], y: currentData[1] });
 			currentData = [lastPoint.p.x, lastPoint.p.y].concat(currentData);
 			currentData = convertQuadraticToCubic(currentData);
 			log('command ' + cmd + ' after Q>C convert ' + currentData);
@@ -641,20 +663,29 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint.h2.use = true;
 			lastPoint.resolvePointType();
 
-			h1 = new Coord({ x: currentData[2], y: currentData[3] });
-			p = new Coord({ x: currentData[4], y: currentData[5] });
+			h1Coord = new Coord({ x: currentData[2], y: currentData[3] });
+			pCoord = new Coord({ x: currentData[4], y: currentData[5] });
 
-			log('bezier end Px Py\t' + p.x + ' ' + p.y + '\tH1x H1y:' + h1.x + ' ' + h1.y);
+			log(
+				'bezier end Px Py\t' +
+					pCoord.x +
+					' ' +
+					pCoord.y +
+					'\tH1x H1y:' +
+					h1Coord.x +
+					' ' +
+					h1Coord.y
+			);
 
 			newPoint = new PathPoint({
-				p: { coord: p },
-				h1: { coord: h1, use: true },
-				h2: { coord: p, use: true },
-				q: { coord: q },
+				p: { coord: pCoord },
+				h1: { coord: h1Coord, use: true },
+				h2: { coord: pCoord, use: true },
+				q: { coord: qCoord },
 				type: 'corner',
 			});
-			paths.push(newPoint);
-			lastPoint = paths[paths.length - 1];
+			pathPoints.push(newPoint);
+			lastPoint = pathPoints[pathPoints.length - 1];
 		}
 
 		log('completed while loop');
@@ -687,8 +718,8 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 				currentData[1] += previousY;
 			}
 
-			q = new Coord(findSymmetricPoint(lastPoint.p, lastPoint.Q));
-			currentData = [lastPoint.p.x, lastPoint.p.y, q.x, q.y].concat(currentData);
+			qCoord = new Coord(findSymmetricPoint(lastPoint.p, lastPoint.q));
+			currentData = [lastPoint.p.x, lastPoint.p.y, qCoord.x, qCoord.y].concat(currentData);
 
 			log('command ' + cmd + ' before Q>C convert ' + currentData);
 			currentData = convertQuadraticToCubic(currentData);
@@ -698,21 +729,30 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint.h2.use = true;
 			lastPoint.resolvePointType();
 
-			h1 = new Coord({ x: currentData[2], y: currentData[3] });
-			p = new Coord({ x: currentData[4], y: currentData[5] });
+			h1Coord = new Coord({ x: currentData[2], y: currentData[3] });
+			pCoord = new Coord({ x: currentData[4], y: currentData[5] });
 
-			log('bezier end Px Py\t' + p.x + ' ' + p.y + '\tH1x H1y:' + h1.x + ' ' + h1.y);
+			log(
+				'bezier end Px Py\t' +
+					pCoord.x +
+					' ' +
+					pCoord.y +
+					'\tH1x H1y:' +
+					h1Coord.x +
+					' ' +
+					h1Coord.y
+			);
 
 			newPoint = new PathPoint({
-				p: { coord: p },
-				h1: { coord: h1, use: true },
-				h2: { coord: p, use: true },
-				q: { coord: q },
+				p: { coord: pCoord },
+				h1: { coord: h1Coord, use: true },
+				h2: { coord: pCoord, use: true },
+				q: { coord: qCoord },
 				type: 'corner',
 			});
 
-			paths.push(newPoint);
-			lastPoint = paths[paths.length - 1];
+			pathPoints.push(newPoint);
+			lastPoint = pathPoints[pathPoints.length - 1];
 		}
 
 		log('completed while loop');
@@ -743,8 +783,8 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint.h2.use = true;
 			lastPoint.resolvePointType();
 
-			h1 = new Coord({ x: currentData[2], y: currentData[3] });
-			p = new Coord({ x: currentData[4], y: currentData[5] });
+			h1Coord = new Coord({ x: currentData[2], y: currentData[3] });
+			pCoord = new Coord({ x: currentData[4], y: currentData[5] });
 
 			if (isCommand('c')) {
 				// Relative offset for c
@@ -752,23 +792,32 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 				previousY = lastPoint.p.y;
 				lastPoint.h2.x += previousX;
 				lastPoint.h2.y += previousY;
-				h1.x += previousX;
-				h1.y += previousY;
-				p.x += previousX;
-				p.y += previousY;
+				h1Coord.x += previousX;
+				h1Coord.y += previousY;
+				pCoord.x += previousX;
+				pCoord.y += previousY;
 			}
 
-			log('bezier end Px Py\t' + p.x + ' ' + p.y + '\tH1x H1y:' + h1.x + ' ' + h1.y);
+			log(
+				'bezier end Px Py\t' +
+					pCoord.x +
+					' ' +
+					pCoord.y +
+					'\tH1x H1y:' +
+					h1Coord.x +
+					' ' +
+					h1Coord.y
+			);
 
 			newPoint = new PathPoint({
-				p: { coord: p },
-				h1: { coord: h1, use: true },
-				h2: { coord: p, use: true },
+				p: { coord: pCoord },
+				h1: { coord: h1Coord, use: true },
+				h2: { coord: pCoord, use: true },
 				type: 'corner',
 			});
 
-			paths.push(newPoint);
-			lastPoint = paths[paths.length - 1];
+			pathPoints.push(newPoint);
+			lastPoint = pathPoints[pathPoints.length - 1];
 		}
 
 		log('completed while loop');
@@ -796,32 +845,32 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 			lastPoint.makeSymmetric('h1');
 			lastPoint.h2.use = true;
 
-			h1 = new Coord({ x: currentData[0], y: currentData[1] });
-			p = new Coord({ x: currentData[2], y: currentData[3] });
+			h1Coord = new Coord({ x: currentData[0], y: currentData[1] });
+			pCoord = new Coord({ x: currentData[2], y: currentData[3] });
 
-			log('p before: ' + p.print());
+			log('p before: ' + pCoord.print());
 
 			if (isCommand('s')) {
 				// Relative offset for st
 				previousX = lastPoint.p.x;
 				previousY = lastPoint.p.y;
-				h1.x += previousX;
-				h1.y += previousY;
-				p.x += previousX;
-				p.y += previousY;
+				h1Coord.x += previousX;
+				h1Coord.y += previousY;
+				pCoord.x += previousX;
+				pCoord.y += previousY;
 			}
 
-			log('p afters: ' + p.print());
-			log('h1 after: ' + h1.print());
+			log('p afters: ' + pCoord.print());
+			log('h1 after: ' + h1Coord.print());
 
 			newPoint = new PathPoint({
-				p: { coord: p },
-				h1: { coord: h1, use: true },
-				h2: { coord: p, use: true },
+				p: { coord: pCoord },
+				h1: { coord: h1Coord, use: true },
+				h2: { coord: pCoord, use: true },
 				type: 'symmetric',
 			});
-			paths.push(newPoint);
-			lastPoint = paths[paths.length - 1];
+			pathPoints.push(newPoint);
+			lastPoint = pathPoints[pathPoints.length - 1];
 		}
 
 		log('completed while loop');
@@ -833,25 +882,35 @@ function handlePathChunk(chunk, paths, isLastPoint) {
 
 	// Finish up last point
 	if (isLastPoint) {
-		const added = paths[paths.length - 1];
+		const added = pathPoints[pathPoints.length - 1];
+		log(`last point was`);
+		log(added.type);
 		added.resolvePointType();
+		log(`after resolvePointType`);
+		log(added.type);
 	}
 
 	log('Resulting Path Chunk');
-	log(paths);
+	log(pathPoints);
 
 	log('handlePathChunk', 'end');
 
-	return paths;
+	return pathPoints;
 }
 
+/**
+ * Finds the symmetric point for a point + handle
+ * @param {Object} p - Base Point
+ * @param {Object} h - Handle Point
+ * @returns {Object} - X/Y point for the other handle
+ */
 function findSymmetricPoint(p, h) {
 	log('findSymmetricPoint', 'start');
 	p = p || { x: 0, y: 0 };
 	h = h || { x: 0, y: 0 };
 
-	log('p: ' + json(p, true));
-	log('h: ' + json(h, true));
+	log(`p: ${p.x} / ${p.y}`);
+	log(`h: ${h.x} / ${h.y}`);
 
 	const re = {
 		x: p.x - h.x + p.x,
@@ -864,6 +923,11 @@ function findSymmetricPoint(p, h) {
 	return re;
 }
 
+/**
+ * Mathematical!
+ * @param {Array} data - Quadratic data
+ * @returns {Array} - Cubic data
+ */
 function convertQuadraticToCubic(data) {
 	log('convertQuadraticToCubic', 'start');
 	log('data: ' + json(data, true));
