@@ -1,29 +1,35 @@
-#app__wrapper,
-#app__main-content,
-#app__page {
+#app__wrapper {
 	background-color: var(--gray-l95);
 	height: 100%;
 	width: 100%;
-	/* overflow: hidden; */
-}
-
-#app__wrapper {
-	padding-bottom: 40px;
+	min-height: 100%;
+	min-width: 100%;
 	position: absolute;
 	top: 0px;
 	left: 0px;
+	overflow: hidden;
+	display: grid;
+	grid-template-rows: 40px calc(100vh - 40px);
+}
+
+#app__top-bar {
+	grid-row: 1;
+	padding: 6px 0px 6px 11px;
 }
 
 #app__main-content {
-	margin-bottom: 10px;
+	grid-row: 2;
+}
+
+#app__page {
+	height: 100%;
+	width: 100%;
+	min-height: 100%;
+	min-width: 100%;
 }
 
 .page-fade-in {
 	animation: var(--fade-animate-in);
-}
-
-#app__top-bar {
-	padding: 6px 0px 6px 11px;
 }
 
 .top-bar__logo {

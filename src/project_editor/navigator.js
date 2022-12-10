@@ -19,7 +19,7 @@ import { closeAllDialogs, setDialogHideListeners } from '../controls/dialogs.js'
 
 export class Navigator {
 	constructor() {
-		this.page = 'Overview';
+		this.page = 'Open project';
 		this.panel = 'Attributes';
 		this.pageContents = {};
 	}
@@ -100,7 +100,7 @@ export class Navigator {
 		if (wrapper) {
 			const pageContent = this.makePageContent(fadePageIn);
 			wrapper.innerHTML = '';
-			wrapper.appendChild(makeAppTopBar());
+			if(this.page !== 'Open project') wrapper.appendChild(makeAppTopBar());
 			wrapper.appendChild(pageContent);
 		} else {
 			console.warn(`app__wrapper could not be found, navigation failed`);

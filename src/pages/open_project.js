@@ -35,24 +35,21 @@ export function makePage_OpenProject() {
 		tag: 'div',
 		id: 'app__page',
 		innerHTML: `
-		<table style="height:100%; width:100%;"><tr>
-		<td id="open-project__left-area" vertical-align="middle">
-		<div id="open-project__logo"></div>
-
-			<span class="open-project__version-name">${app.versionName}</span>
-
-			<span class="open-project__version-number">${app.version.split('.')[2]}${recentMessage}</span>
-
-			<div class="open-project__blurb">
-				For more information visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>
-				Glyphr Studio is licensed under a <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a>,
-				which is a free / open source "copyleft" license. You are free to use, distribute, and modify Glyphr Studio as long as
-				this license and its freeness stays intact.
+			<div id="open-project__page">
+				<div id="open-project__left-area" vertical-align="middle">
+					<div id="open-project__logo">${makeGlyphrStudioLogo()}</div>
+					<span class="open-project__version-name">${app.versionName}</span>
+					<span class="open-project__version-number">${app.version}${recentMessage}</span>
+					<div class="open-project__blurb">
+						For more information visit <a href="http://www.glyphrstudio.com" target="_blank">www.glyphrstudio.com</a><br>
+						Glyphr Studio is licensed under a <a href="https://www.gnu.org/licenses/gpl.html" target="_blank">GNU General Public License</a>,
+						which is a free / open source "copyleft" license. You are free to use, distribute, and modify Glyphr Studio as long as
+						this license and its freeness stays intact.
+					</div>
+				</div>
+				<div id="open-project__right-area" vertical-align="middle">${makeTabs()}</div>
 			</div>
-		</td>
-		<td id="open-project__right-area" vertical-align="middle">${makeTabs()}</td>
-		</tr></table>
-		<input type="file" style="display:none" id="openProjectFileChooser"/>`,
+		`,
 	});
 
 	// Tab click
@@ -71,7 +68,7 @@ export function makePage_OpenProject() {
 	tableLeft.addEventListener('drop', handleDrop);
 	tableLeft.addEventListener('dragleave', handleDragLeave);
 
-	content.querySelector('#openProjectFileChooser').addEventListener('change', handleDrop);
+	// content.querySelector('#openProjectFileChooser').addEventListener('change', handleDrop);
 
 	// Sample Projects click
 	content.querySelector('#loadModegg').addEventListener('click', () => handleLoadSample('modegg'));
@@ -293,7 +290,7 @@ function handleNewProject() {
 		const editor = app.getCurrentProjectEditor();
 		editor.project = new GlyphrStudioProject();
 		editor.nav.page = 'Glyph edit';
-		app.navigate();
+		editor.navigate();
 	}, 5);
 }
 
@@ -310,7 +307,7 @@ function handleLoadSample(name) {
 		let editor = app.getCurrentProjectEditor();
 		editor.project = new GlyphrStudioProject(projects[name]);
 		editor.nav.page = 'Glyph edit';
-		app.navigate();
+		editor.navigate();
 	}, 5);
 }
 
