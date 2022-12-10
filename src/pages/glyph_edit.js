@@ -18,8 +18,9 @@ export function makePage_GlyphEdit() {
 	// log('current ProjectEditor');
 	// log(editor);
 	// log(editor.nav);
-	// log(editor.selectedGlyph);
-	log(`editor.nav.panel: ${editor.nav.panel}`);
+	// log(`editor.selectedGlyphID: ${editor.selectedGlyphID}`);
+	// log(`editor.selectedItemID: ${editor.selectedItemID}`);
+	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
 
 	let canvasGlyph = hexToChars(editor.selectedGlyphID);

@@ -30,8 +30,6 @@ export class ProjectEditor {
 	 */
 	constructor(newProjectEditor = {}) {
 		log('ProjectEditor.constructor', 'start');
-		log('passed > newProjectEditor');
-		log(newProjectEditor);
 
 		// History
 		this.history = new History();
