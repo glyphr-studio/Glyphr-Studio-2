@@ -38,6 +38,7 @@ export let eventHandlerData = {
 	isPanning: false,
 	isShiftDown: false,
 	isCtrlDown: false,
+	isAltDown: false,
 	hoverPoint: false,
 	multi: false,
 	canvasHotSpots: [],

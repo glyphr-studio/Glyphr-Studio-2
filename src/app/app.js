@@ -26,7 +26,7 @@ export class GlyphrStudioApp {
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: false, // Use a 'Dev Mode' window title
 				currentPage: 'Glyph edit', // navigate straight to a page
-				currentItemID: false, // select a glyph
+				currentItemID: '0x44', // select a glyph
 				currentPanel: false, // navigate straight to a panel
 				currentTool: false, // select a tool
 				testActions: [],
@@ -172,7 +172,7 @@ function makeMenu(menuName) {
 		innerHTML: menuName,
 		className: 'menu-entry-point',
 	});
-	
+
 	entryPoint.addEventListener('mouseover', closeAllDialogs);
 
 	if (menuName === 'File') {
