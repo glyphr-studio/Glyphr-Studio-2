@@ -26,7 +26,7 @@ export class GlyphrStudioApp {
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: false, // Use a 'Dev Mode' window title
 				currentPage: 'Glyph edit', // navigate straight to a page
-				currentItemID: '0x44', // select a glyph
+				currentGlyphID: '0x44', // select a glyph
 				currentPanel: false, // navigate straight to a panel
 				currentTool: false, // select a tool
 				testActions: [],
@@ -65,7 +65,7 @@ export class GlyphrStudioApp {
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation
-			if (dev.selectedItemID) editor.selectedItemID = dev.selectedItemID;
+			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
 			if (dev.currentTool) editor.selectedTool = dev.currentTool;
@@ -235,7 +235,7 @@ function makeMenu(menuName) {
 							window.open('https://glyphrstudio.com/v2/help/', '_blank');
 						},
 					},
-					{name: 'hr'},
+					{ name: 'hr' },
 					{
 						name: 'In-app help',
 						icon: 'command_help',

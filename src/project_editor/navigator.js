@@ -90,6 +90,7 @@ export class Navigator {
 
 		log(`this.page: ${this.page}`);
 		log(`this.panel: ${this.panel}`);
+		log(`editor.selectedItemID: ${getCurrentProjectEditor().selectedItemID}`);
 
 		const wrapper = document.getElementById('app__wrapper');
 

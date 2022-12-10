@@ -120,7 +120,7 @@ export function importOTFFont(filter) {
 			// log('Glyph has path data \n' + data);
 
 			if (data && data !== 'z') {
-				data = ioSVG_cleanAndFormatPathData(data);
+				data = ioSVG_cleanAndFormatPathDefinition(data);
 
 				// log('split data into ' + data.length + ' Glyphr Studio paths.');
 				// log(data);
@@ -128,7 +128,7 @@ export function importOTFFont(filter) {
 				for (let d = 0; d < data.length; d++) {
 					if (data[d].length) {
 						// log('starting convertPathTag');
-						np = ioSVG_convertPathTag(data[d]);
+						np = ioSVG_convertSVGTagToPath(data[d]);
 						// log('created path from PathTag');
 						// log(np);
 						if (np.pathPoints.length) {

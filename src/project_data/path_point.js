@@ -15,15 +15,17 @@ export class PathPoint extends GlyphElement {
 	 * @param {ControlPoint} p - Main control point
 	 * @param {ControlPoint} h1 - First handle
 	 * @param {ControlPoint} h2 - Second handle
+	 * @param {ControlPoint} q - Quadratic handle
 	 * @param {string} type - corner, flat, or symmetric
 	 * @param {object} parent - link to the parent Path object
 	 */
-	constructor({ p, h1, h2, type = 'corner', parent = false } = {}) {
+	constructor({ p, h1, h2, q, type = 'corner', parent = false } = {}) {
 		super();
 		this.parent = parent;
 		this.p = p;
 		this.h1 = h1;
 		this.h2 = h2;
+		this.q = q;
 		this.type = type;
 		this.objType = 'PathPoint';
 
@@ -112,6 +114,14 @@ export class PathPoint extends GlyphElement {
 	}
 
 	/**
+	 * Get the single quadratic handle
+	 * @returns {ControlPoint}
+	 */
+	get q() {
+		return this._q;
+	}
+
+	/**
 	 * Get a point's type
 	 * @returns {string} type - symmetric / flat / corner
 	 */
@@ -176,6 +186,19 @@ export class PathPoint extends GlyphElement {
 		newPoint.parent = this;
 		newPoint.type = 'h2';
 		this._h2 = new ControlPoint(newPoint);
+	}
+	/**
+	 * set the single quadratic handle
+	 * @param {ControlPoint} newPoint
+	 */
+	set q(newPoint = {}) {
+		if (!newPoint.coord) {
+			newPoint.coord = { x: this.p.x + 50, y: this.p.y };
+			newPoint.use = false;
+		}
+		newPoint.parent = this;
+		newPoint.type = 'q';
+		this._q = new ControlPoint(newPoint);
 	}
 
 	/**

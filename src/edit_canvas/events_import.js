@@ -1,14 +1,13 @@
 import { getCurrentProjectEditor } from '../app/main';
 import { showToast } from '../controls/dialogs';
-import { ioSVG_convertTagsToGlyph } from '../io/svg_outline_import';
+import { ioSVG_convertSVGTagsToGlyph } from '../io/svg_outline_import';
 import { copyPathsFromTo } from '../panels/actions';
 import { cancelDefaultEventActions } from './events';
-
 
 export function importSVGtoCurrentWorkItem(svgData) {
 	// log(`importSVGtoCurrentWorkItem`, 'start');
 
-	const tempGlyph = ioSVG_convertTagsToGlyph(svgData);
+	const tempGlyph = ioSVG_convertSVGTagsToGlyph(svgData);
 
 	if (tempGlyph) {
 		// Flip
