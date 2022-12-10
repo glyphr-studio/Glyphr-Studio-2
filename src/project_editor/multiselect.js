@@ -171,6 +171,7 @@ export class MultiSelectPoints extends MultiSelect {
 		let point;
 		let parentPath;
 		let pointIndex;
+		let minPointIndex = Number.MAX_SAFE_INTEGER;
 
 		for (let m = 0; m < this.members.length; m++) {
 			point = this.members[m];
@@ -181,13 +182,12 @@ export class MultiSelectPoints extends MultiSelect {
 				parentPath.pathPoints.splice(pointIndex, 1);
 				// parentPath.recalculateMaxes();
 				parentPath.changed();
+				minPointIndex = Math.min(pointIndex, minPointIndex);
 			}
 		}
 
-		const editor = getCurrentProjectEditor();
-		const wi = editor.selectedItem;
-
 		this.clear();
+		return minPointIndex;
 	}
 
 	getSingletonPointNumber() {
@@ -214,22 +214,6 @@ export class MultiSelectPoints extends MultiSelect {
 		for (let m = 0; m < this.members.length; m++) {
 			this.members[m].setPointType(t);
 		}
-	}
-
-	insertPathPoint() {
-		let path;
-		let pp;
-		const newPoints = [];
-
-		for (let m = 0; m < this.members.length; m++) {
-			path = this.members[m].parent;
-			pp = this.members[m].pointNumber;
-			newPoints.push(path.insertPathPoint(pp));
-		}
-
-		this.clear();
-
-		for (let n = 0; n < newPoints.length; n++) this.add(newPoints[n]);
 	}
 
 	resetHandles() {

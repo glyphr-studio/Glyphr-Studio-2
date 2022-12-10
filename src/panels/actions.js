@@ -326,9 +326,11 @@ export function getActionData(name) {
 			disabled: selectedPoints.length !== 1,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				editor.multiSelect.paths.singleton.insertPathPoint(selectedPoints[0].pointNumber);
-				// TODO select the next point
-				editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
+				let newPoint = editor.multiSelect.paths.singleton.insertPathPoint(
+					selectedPoints[0].pointNumber
+				);
+				editor.multiSelect.points.select(newPoint);
+				// editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
 			},
 		},
 		{
@@ -489,10 +491,15 @@ export function deleteSelectedPoints() {
 		historyTitle = `Deleted path point: ${msPoints.singleton.pointNumber}`;
 	}
 
-	msPoints.deletePathPoints();
-	// TODO select the next point
+	
+	let minDeletedPoint = msPoints.deletePathPoints();
 	editor.history.addState(historyTitle);
-	editor.publish('whichPathPointIsSelected', editor.multiSelect.paths);
+	let pathSingleton = editor.multiSelect.paths.singleton;
+	if (pathSingleton) {
+		msPoints.select(pathSingleton.pathPoints[pathSingleton.getPreviousPointNum(minDeletedPoint)]);
+	} else {
+		editor.publish('whichPathPointIsSelected', editor.multiSelect.paths);
+	}
 }
 
 // --------------------------------------------------------------
@@ -730,7 +737,8 @@ export function copyPathsFromTo(sourceGlyph, destinationID, updateWidth = false)
 		} else if (tc.objType === 'Path') {
 			tc = new Path(tc);
 		}
-		destinationGlyph.paths.push(tc);
+
+		destinationGlyph.paths = destinationGlyph.paths.concat(tc);
 	}
 
 	if (updateWidth) {
