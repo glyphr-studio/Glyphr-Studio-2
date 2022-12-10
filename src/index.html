@@ -76,15 +76,19 @@ G L Y P H R  S T U D I O  2
 				background-color: #0e1214;
 				background: linear-gradient(135deg, var(--blue-l15), var(--purple-l05));
 				padding: auto;
-				text-align: center;
-				vertical-align: middle;
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
 			}
 
 			#loadScreen svg,
 			#loadScreen #errorMessage {
-				margin: auto;
-				position: relative;
-				top: calc(50% - 128px);
+				margin: 90px 0px 0px 50px;
+			}
+
+			#loadScreen svg {
+				width: 385px;
 			}
 
 			#loadLogo {
@@ -350,18 +354,6 @@ G L Y P H R  S T U D I O  2
 			</div>
 		</div>
 
-		<div
-			id="app__wrapper"
-			style="
-				height: 100%;
-				width: 100%;
-				min-height: 100%;
-				min-width: 100%;
-				position: absolute;
-				top: 0px;
-				left: 0px;
-				overflow: hidden;
-			"
-		></div>
+		<div id="app__wrapper"></div>
 	</body>
 </html>

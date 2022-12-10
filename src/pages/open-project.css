@@ -1,8 +1,21 @@
+#open-project__page {
+	display: grid;
+	grid-template-columns: 475px 1fr;
+	background: linear-gradient(135deg, var(--blue-l15), var(--purple-l05));
+	position: relative;
+	top: -40px;
+	width: 100%;
+	height: 100vh;
+	column-gap: 0;
+}
+
 #open-project__left-area {
-	background-color: var(--gray-l05);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	background-color: rgba(255,255,255, 0.01);
 	color: var(--gray-l95);
 	width: 475px;
-	vertical-align: middle;
 	padding: 0px 0px 0px 50px;
 }
 
@@ -11,12 +24,15 @@
 	vertical-align: middle;
 	padding: 0px 0px 0px 50px;
 	font-size: 40px;
-	background-color: var(--gray-l10);
 }
 
 #open-project__logo {
-	width: 400px;
+	width: 300px;
 	margin: 0px 20px 16px 0px;
+}
+
+#open-project__logo svg {
+	fill: var(--purple-l60);
 }
 
 .open-project__version-name,
