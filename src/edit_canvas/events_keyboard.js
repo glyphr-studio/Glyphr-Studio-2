@@ -7,7 +7,12 @@ import {
 	clipboardPaste,
 } from '../panels/actions.js';
 import { setCursor, updateCursor } from './cursors.js';
-import { cancelDefaultEventActions, eventHandlerData, togglePanOff, togglePanOn } from './events.js';
+import {
+	cancelDefaultEventActions,
+	eventHandlerData,
+	togglePanOff,
+	togglePanOn,
+} from './events.js';
 import { clickTool } from './tools/tools.js';
 
 // --------------------------------------------------------------
@@ -63,9 +68,11 @@ export function handleKeyPress(event) {
 
 	// q
 	// for dev mode clear console
-	if (getGlyphrStudioApp().settings.dev.mode && ehd.isCtrlDown && key === 'q') {
-		cancelDefaultEventActions(event);
-		console.clear();
+	if (key === 'q' && getGlyphrStudioApp().settings.dev.mode) {
+		if (ehd.isCtrlDown || ehd.isAltDown) {
+			cancelDefaultEventActions(event);
+			console.clear();
+		}
 	}
 
 	// Only allow the following stuff for canvas edit pages
@@ -312,6 +319,10 @@ function handleSpecialKeys(key, keyDirection) {
 			ehd.isShiftDown = true;
 			// log(`setting isShiftDown to true`);
 		}
+		if (key === 'alt') {
+			ehd.isAltDown = true;
+			// log(`setting isAltDown to true`);
+		}
 	}
 
 	if (keyDirection === 'up') {
@@ -326,6 +337,10 @@ function handleSpecialKeys(key, keyDirection) {
 		if (key === 'shift') {
 			ehd.isShiftDown = false;
 			// log(`setting isShiftDown to false`);
+		}
+		if (key === 'alt') {
+			ehd.isAltDown = false;
+			// log(`setting isAltDown to false`);
 		}
 	}
 

@@ -6,6 +6,7 @@ import { PathPoint } from '../project_data/path_point.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { Coord } from '../project_data/coord.js';
 import { json } from '../common/functions.js';
+import { ControlPoint } from '../project_data/control_point.js';
 /**
 	IO > Import > SVG Outlines
 	Takes a set of XML and pulls out any path or
@@ -234,8 +235,8 @@ export function ioSVG_convertTagsToGlyph(svgData) {
 export function ioSVG_cleanAndFormatPathData(data) {
 	let returnData = [];
 
-	log('ioSVG_cleanAndFormatPathData', 'start');
-	log('dirty data\n\t ' + data);
+	// log('ioSVG_cleanAndFormatPathData', 'start');
+	// log('dirty data\n\t ' + data);
 
 	// Move commands for a path are treated as different Glyphr Paths
 	data = data.replace(/M/g, ',z,M');
@@ -276,11 +277,11 @@ export function ioSVG_cleanAndFormatPathData(data) {
 	if (data.charAt(0) === ',') data = data.slice(1);
 
 	// Remove extra Z commands
-	log('2nd to last char ' + data.charAt(data.length - 2));
+	// log('2nd to last char ' + data.charAt(data.length - 2));
 	if (data.charAt(data.length - 2) === 'z') data = data.slice(0, -2);
 	// if(data.substr(-2) === ',z') data = data.slice(0, -2);
 	// if(data.substr(0, 3) === ',z,') data = data.slice(3);
-	log('first two chars are |' + data.substr(0, 2) + '|');
+	// log('first two chars are |' + data.substr(0, 2) + '|');
 	if (data.substring(0, 2) === 'z,') data = data.slice(2);
 
 	// Clean up commas again
@@ -296,22 +297,22 @@ export function ioSVG_cleanAndFormatPathData(data) {
 
 	data.forEach(function (v, i, a) {
 		// Search for two instances of '.'
-		log('v: ' + v);
+		// log('v: ' + v);
 		first = v.indexOf('.');
-		log('first: ' + first);
+		// log('first: ' + first);
 
 		if (first > -1) {
 			second = v.indexOf('.', first + 1);
-			log('second: ' + second);
+			// log('second: ' + second);
 			if (second > -1) {
 				returnData.push(v.slice(0, second));
 				subsequence = v.slice(second);
-				log('just the tail: ' + subsequence);
+				// log('just the tail: ' + subsequence);
 				subsequence = subsequence.replace(/\./g, ',0.');
 				if (subsequence.charAt(0) === ',') subsequence = subsequence.slice(1);
-				log('added zeros: ' + subsequence);
+				// log('added zeros: ' + subsequence);
 				subsequence = subsequence.split(',');
-				log('subsequence: ' + subsequence);
+				// log('subsequence: ' + subsequence);
 				returnData = returnData.concat(subsequence);
 			} else {
 				// no two instances of '.'
@@ -331,8 +332,8 @@ export function ioSVG_cleanAndFormatPathData(data) {
 	returnData = returnData.join(',');
 	returnData = returnData.split(',z');
 
-	log('clean data\n\t ' + returnData);
-	log('ioSVG_cleanAndFormatPathData', 'end');
+	// log('clean data\n\t ' + returnData);
+	// log('ioSVG_cleanAndFormatPathData', 'end');
 
 	return returnData;
 }
@@ -345,10 +346,10 @@ export function ioSVG_cleanAndFormatPathData(data) {
  * @returns {Array} - collection of objects representing tags
  */
 export function ioSVG_getTags(obj, grabTags) {
-	log('ioSVG_getTags', 'start');
-	log('grabTags: ' + JSON.stringify(grabTags));
-	log('passed obj: ');
-	log(obj);
+	// log('ioSVG_getTags', 'start');
+	// log('grabTags: ' + JSON.stringify(grabTags));
+	// log('passed obj: ');
+	// log(obj);
 
 	if (typeof grabTags === 'string') grabTags = [grabTags];
 	let result = [];
@@ -363,7 +364,7 @@ export function ioSVG_getTags(obj, grabTags) {
 		}
 	}
 
-	log('ioSVG_getTags', 'end');
+	// log('ioSVG_getTags', 'end');
 	return result;
 }
 
@@ -495,7 +496,7 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 	let previousX;
 	let previousY;
 
-	log('previous point: \t' + lastPoint.p.x + ',' + lastPoint.p.y);
+	log(`previous point: ${lastPoint.p.x} ${lastPoint.p.y}`);
 
 	if (isCommand('MmLlHhVv')) {
 		// ABSOLUTE line methods
@@ -518,7 +519,7 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			log('\n\t command ' + cmd + ' while loop data ' + currentData);
+			log(`command ${cmd} while loop data ${currentData}`);
 
 			previousX = lastPoint.p.x;
 			previousY = lastPoint.p.y;
@@ -560,11 +561,11 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 					break;
 			}
 
-			log('linear end nx ny\t' + nx + ' ' + ny);
+			log(`linear end nx ny: ${nx} ${ny}`);
 
 			lastPoint.h2.use = false;
 			newPoint = new PathPoint({
-				p: { coord: { x: nx, y: ny } }
+				p: { coord: { x: nx, y: ny } },
 			});
 			pathPoints.push(newPoint);
 
@@ -594,7 +595,7 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 			currentData = [];
 			currentData = chunk.data.splice(0, 7);
 			currentData = currentData.splice(5, 2);
-			log('\n\t command ' + cmd + ' while loop data ' + currentData);
+			log(`command ${cmd} while loop data ${currentData}`);
 
 			previousX = lastPoint.p.x;
 			previousY = lastPoint.p.y;
@@ -607,7 +608,7 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 				ny += previousY;
 			}
 
-			log('linear end nx ny\t' + nx + ' ' + ny);
+			log(`linear end nx ny: ${nx} ${ny}`);
 			lastPoint.type = 'corner';
 			lastPoint.h2.use = true;
 			lastPoint.makePointedTo(nx, ny, false, 'h2', true);
@@ -642,7 +643,7 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			log('\n\n\t command ' + cmd + ' while loop data ' + currentData);
+			log(`command ${cmd} while loop data ${currentData}`);
 
 			if (isCommand('q')) {
 				// Relative offset for q
@@ -657,25 +658,19 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 			qCoord = new Coord({ x: currentData[0], y: currentData[1] });
 			currentData = [lastPoint.p.x, lastPoint.p.y].concat(currentData);
 			currentData = convertQuadraticToCubic(currentData);
-			log('command ' + cmd + ' after Q>C convert ' + currentData);
+			log(`command ${cmd} after Q>C convert ${currentData}`);
 
-			lastPoint.h2 = new Coord({ x: currentData[0], y: currentData[1] });
-			lastPoint.h2.use = true;
+			lastPoint.h2 = new ControlPoint({
+				coord: { x: currentData[0], y: currentData[1] },
+				use: true,
+			});
 			lastPoint.resolvePointType();
 
 			h1Coord = new Coord({ x: currentData[2], y: currentData[3] });
 			pCoord = new Coord({ x: currentData[4], y: currentData[5] });
 
-			log(
-				'bezier end Px Py\t' +
-					pCoord.x +
-					' ' +
-					pCoord.y +
-					'\tH1x H1y:' +
-					h1Coord.x +
-					' ' +
-					h1Coord.y
-			);
+			log(`H1: ${h1Coord.x} ${h1Coord.y}`);
+			log(`End P: ${pCoord.x} ${pCoord.y}`);
 
 			newPoint = new PathPoint({
 				p: { coord: pCoord },
@@ -708,7 +703,7 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			log('\n\t command ' + cmd + ' while loop data ' + currentData);
+			log(`command ${cmd} while loop data ${currentData}`);
 
 			if (isCommand('t')) {
 				// Relative offset for t
@@ -721,27 +716,21 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 			qCoord = new Coord(findSymmetricPoint(lastPoint.p, lastPoint.q));
 			currentData = [lastPoint.p.x, lastPoint.p.y, qCoord.x, qCoord.y].concat(currentData);
 
-			log('command ' + cmd + ' before Q>C convert ' + currentData);
+			log(`command ${cmd} before Q>C convert ${currentData}`);
 			currentData = convertQuadraticToCubic(currentData);
-			log('command ' + cmd + ' afters Q>C convert ' + currentData);
+			log(`command ${cmd} afters Q>C convert ${currentData}`);
 
-			lastPoint.h2 = new Coord({ x: currentData[0], y: currentData[1] });
-			lastPoint.h2.use = true;
+			lastPoint.h2 = new ControlPoint({
+				coord: { x: currentData[0], y: currentData[1] },
+				use: true,
+			});
 			lastPoint.resolvePointType();
 
 			h1Coord = new Coord({ x: currentData[2], y: currentData[3] });
 			pCoord = new Coord({ x: currentData[4], y: currentData[5] });
 
-			log(
-				'bezier end Px Py\t' +
-					pCoord.x +
-					' ' +
-					pCoord.y +
-					'\tH1x H1y:' +
-					h1Coord.x +
-					' ' +
-					h1Coord.y
-			);
+			log(`H1: ${h1Coord.x} ${h1Coord.y}`);
+			log(`End P: ${pCoord.x} ${pCoord.y}`);
 
 			newPoint = new PathPoint({
 				p: { coord: pCoord },
@@ -777,10 +766,12 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			log('\n\n\t command ' + cmd + ' while loop data ' + currentData);
+			log(`command ${cmd} while loop data ${currentData}`);
 
-			lastPoint.h2 = new Coord({ x: currentData[0], y: currentData[1] });
-			lastPoint.h2.use = true;
+			lastPoint.h2 = new ControlPoint({
+				coord: { x: currentData[0], y: currentData[1] },
+				use: true,
+			});
 			lastPoint.resolvePointType();
 
 			h1Coord = new Coord({ x: currentData[2], y: currentData[3] });
@@ -798,16 +789,8 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 				pCoord.y += previousY;
 			}
 
-			log(
-				'bezier end Px Py\t' +
-					pCoord.x +
-					' ' +
-					pCoord.y +
-					'\tH1x H1y:' +
-					h1Coord.x +
-					' ' +
-					h1Coord.y
-			);
+			log(`H1: ${h1Coord.x} ${h1Coord.y}`);
+			log(`End P: ${pCoord.x} ${pCoord.y}`);
 
 			newPoint = new PathPoint({
 				p: { coord: pCoord },
@@ -840,7 +823,7 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 					currentData.push(currentData[currentData.length - 1] + 100);
 				}
 			}
-			log('\n\t command ' + cmd + ' while loop data ' + currentData);
+			log(`command ${cmd} while loop data ${currentData}`);
 
 			lastPoint.makeSymmetric('h1');
 			lastPoint.h2.use = true;
@@ -860,8 +843,8 @@ function handlePathChunk(chunk, pathPoints, isLastPoint) {
 				pCoord.y += previousY;
 			}
 
-			log('p afters: ' + pCoord.print());
-			log('h1 after: ' + h1Coord.print());
+			log(`H1: ${h1Coord.x} ${h1Coord.y}`);
+			log(`End P: ${pCoord.x} ${pCoord.y}`);
 
 			newPoint = new PathPoint({
 				p: { coord: pCoord },
@@ -953,5 +936,6 @@ function convertQuadraticToCubic(data) {
 	re.push(q2x);
 	re.push(q2y);
 
+	log(`convertQuadraticToCubic`, 'end');
 	return re;
 }
