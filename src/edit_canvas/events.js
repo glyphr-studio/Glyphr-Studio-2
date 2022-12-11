@@ -9,7 +9,7 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { setCursor, updateCursor } from './cursors.js';
 import { handleMouseEvents, handleMouseWheel } from './events_mouse.js';
 import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
-import { handleDropSVGonEditCanvas, handlePasteSVGonEditCanvas } from './events_import.js';
+import { handleDropSVGonEditCanvas, handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
 import { showToast } from '../controls/dialogs.js';
 
 // --------------------------------------------------------------
