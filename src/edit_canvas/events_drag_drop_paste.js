@@ -1,8 +1,8 @@
-import { getCurrentProjectEditor } from '../app/main';
-import { showToast } from '../controls/dialogs';
-import { ioSVG_convertSVGTagsToGlyph } from '../io/svg_outline_import';
-import { copyPathsFromTo } from '../panels/actions';
-import { cancelDefaultEventActions } from './events';
+import { getCurrentProjectEditor } from '../app/main.js';
+import { showToast } from '../controls/dialogs.js';
+import { ioSVG_convertSVGTagsToGlyph } from '../io/svg_outline_import.js';
+import { copyPathsFromTo } from '../panels/actions.js';
+import { cancelDefaultEventActions } from './events.js';
 
 export function importSVGtoCurrentWorkItem(svgData) {
 	// log(`importSVGtoCurrentWorkItem`, 'start');
@@ -17,7 +17,6 @@ export function importSVGtoCurrentWorkItem(svgData) {
 		// Add new Glyph Shapes
 		const editor = getCurrentProjectEditor();
 		copyPathsFromTo(tempGlyph, editor.selectedItemID);
-
 		// log('tempGlyph');
 		// log(tempGlyph);
 

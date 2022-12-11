@@ -491,7 +491,7 @@ export function deleteSelectedPoints() {
 		historyTitle = `Deleted path point: ${msPoints.singleton.pointNumber}`;
 	}
 
-	
+
 	let minDeletedPoint = msPoints.deletePathPoints();
 	editor.history.addState(historyTitle);
 	let pathSingleton = editor.multiSelect.paths.singleton;
@@ -725,6 +725,8 @@ export function copyPathsFromTo(sourceGlyph, destinationID, updateWidth = false)
 	log(`destinationID: ${destinationID}`);
 
 	const project = getCurrentProject();
+	const editor = getCurrentProjectEditor();
+	const msPaths = editor.multiSelect.paths;
 	const destinationGlyph = project.getGlyph(destinationID, true);
 	log(`Destination Glyph`);
 	log(destinationGlyph);
@@ -738,6 +740,7 @@ export function copyPathsFromTo(sourceGlyph, destinationID, updateWidth = false)
 			tc = new Path(tc);
 		}
 
+		msPaths.add(tc);
 		destinationGlyph.paths = destinationGlyph.paths.concat(tc);
 	}
 

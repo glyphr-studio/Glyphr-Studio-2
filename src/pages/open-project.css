@@ -31,10 +31,6 @@
 	margin: 0px 20px 16px 0px;
 }
 
-#open-project__logo svg {
-	fill: var(--purple-l60);
-}
-
 .open-project__version-name,
 .open-project__version-number,
 .open-project__blurb {
@@ -109,7 +105,8 @@
 .open-project__tabs button {
 	/*background-color: rgb(229,234,239);*/
 	background-color: transparent;
-	border-bottom: 3px solid var(--gray-l35);
+	border-color: transparent;
+	border-bottom: 3px solid transparent;
 	padding: 4px 16px;
 	margin: 0px;
 	color: var(--blue-l70);
@@ -117,8 +114,9 @@
 	border-radius: 0px;
 }
 .open-project__tabs button:hover {
-	border-bottom: 3px solid var(--blue-l45) !important;
-	background-color: var(--gray-l45);
+	border-bottom: 3px solid var(--blue-l75) !important;
+	color: var(--blue-l75);
+	background-color: var(--blue-l05);
 }
 
 #open-project__project-name {

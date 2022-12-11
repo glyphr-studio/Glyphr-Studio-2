@@ -27,19 +27,15 @@
 		/>
 		<script src="app/main.js" type="module"></script>
 		<script type="module">
-			// console.info(
-			// 	'%c\n       GG              GG\n       G               G\n GGGG  G GG   G  GGGG  GGGGG   GGGGG\nG    G G G    G G    G G    G G     G\nG    G G G    G G    G G    G G\n GGGGG G  GGGGG GGGGG  GG   G GG\nGG   G   GG   G G             STUDIO\n GGGG     GGGG  GG\n\n',
-			// 	'color:rgb(0,170,225)'
-			// 	);
 			console.info(
 				`%c
- ░░░░░░    ░░░░░░   ░░░░░░
-▒▒        ▒▒             ▒▒
-▒▒   ▒▒▒   ▒▒▒▒▒     ▒▒▒▒▒
-▓▓    ▓▓       ▓▓   ▓▓
- ▓▓▓▓▓▓   ▓▓▓▓▓▓    ▓▓▓▓▓▓▓
-G L Y P H R  S T U D I O  2
-`,
+				 ░░░░░░    ░░░░░░   ░░░░░░
+				▒▒        ▒▒             ▒▒
+				▒▒   ▒▒▒   ▒▒▒▒▒     ▒▒▒▒▒
+				▓▓    ▓▓       ▓▓   ▓▓
+				 ▓▓▓▓▓▓   ▓▓▓▓▓▓    ▓▓▓▓▓▓▓
+				G L Y P H R  S T U D I O  2
+			`.replace(/\t/gi, ''),
 				'color: hsl(199, 100%, 64%)'
 			);
 
@@ -80,6 +76,7 @@ G L Y P H R  S T U D I O  2
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
+				padding-bottom: 189px;
 			}
 
 			#loadScreen svg,
@@ -87,28 +84,15 @@ G L Y P H R  S T U D I O  2
 				margin: 90px 0px 0px 50px;
 			}
 
-			#loadScreen svg {
-				width: 385px;
-			}
-
-			#loadLogo {
+			.mainLogo {
 				fill: url(#logoGradient);
-				animation-name: fill-pulse;
-				animation-duration: 2000ms;
-				animation-iteration-count: infinite;
+				width: 300px;
 			}
 
-			#loadLogo .logoWords {
+			.mainLogo .logoWords {
 				fill: transparent;
 				stroke-width: 0.4px;
 				stroke: var(--blue-l50);
-			}
-
-			@keyframes fill-pulse {
-				0% { opacity: 1; }
-				40% { opacity: 0.5; }
-				50% { opacity: 0.9; }
-				100% { opacity: 1; }
 			}
 		</style>
 		<link rel="stylesheet" type="text/css" href="./app/app.css" />
@@ -126,10 +110,8 @@ G L Y P H R  S T U D I O  2
 
 	<body style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; margin: 0; padding: 0">
 		<div id="loadScreen">
-			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-				xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/" xml:space="preserve" x="0px" y="0px" width="400px"
-				height="400px" viewBox="-2 -2 258 258" style="overflow: scroll; enable-background: new -2 -2 258 258" fill="#00344E"
-				id="loadLogo">
+			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+				viewBox="0 0 200 128" enable-background="new 0 0 200 128" class="mainLogo">
 				<defs>
 					<linearGradient id="logoGradient">
 						<stop offset="0%" stop-color="var(--blue-l60)" />
@@ -329,9 +311,9 @@ G L Y P H R  S T U D I O  2
 					let errorDiv = document.getElementById('errorMessage');
 					if (errorDiv) {
 						errorDiv.style.display = 'block';
-						document.getElementById('loadLogo').style.display = 'none';
+						document.querySelector('.mainLogo').style.display = 'none';
 					}
-				}, 10000);
+				}, 5000);
 			</script>
 
 			<div id="errorMessage" style="display: none; width: 400px">

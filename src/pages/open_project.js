@@ -53,9 +53,13 @@ export function makePage_OpenProject() {
 	});
 
 	// Tab click
-	content.querySelector('#newTab').addEventListener('click', () => changeTab('new'));
-	content.querySelector('#loadTab').addEventListener('click', () => changeTab('load'));
-	content.querySelector('#examplesTab').addEventListener('click', () => changeTab('examples'));
+	content.querySelector('#open-project__tab-new').addEventListener('click', () => changeTab('new'));
+	content
+		.querySelector('#open-project__tab-load')
+		.addEventListener('click', () => changeTab('load'));
+	content
+		.querySelector('#open-project__tab-examples')
+		.addEventListener('click', () => changeTab('examples'));
 
 	// Dragging and dropping to load
 	const tableRight = content.querySelector('#open-project__right-area');
@@ -68,19 +72,17 @@ export function makePage_OpenProject() {
 	tableLeft.addEventListener('drop', handleDrop);
 	tableLeft.addEventListener('dragleave', handleDragLeave);
 
-	// content.querySelector('#openProjectFileChooser').addEventListener('change', handleDrop);
+	// content.querySelector('#open-project__file-chooser').addEventListener('change', handleDrop);
 
 	// Sample Projects click
-	content.querySelector('#loadModegg').addEventListener('click', () => handleLoadSample('modegg'));
-	content
-		.querySelector('#loadCaliforniaGothic')
-		.addEventListener('click', () => handleLoadSample('californiaGothic'));
-	content
-		.querySelector('#loadMerriweatherSans')
-		.addEventListener('click', () => handleLoadSample('merriweatherSans'));
+	content.querySelector('#loadV2Sample').addEventListener('click', () => handleLoadSample('v2Sample'));
 
 	// Starting a project
 	content.querySelector('#openProjectCreateNewProject').addEventListener('click', handleNewProject);
+
+	// Showing default tab
+	content.querySelector('#open-project__new-project').style.display = 'block';
+	content.querySelector('#open-project__tab-new').style.borderBottomColor = accentColors.blue.l65;
 
 	// log(`makePage_OpenProject`, 'end');
 	return content;
@@ -94,14 +96,14 @@ function makeTabs() {
 	// TABS
 	let con = `
 	<div class="open-project__tabs">
-		<button id="newTab">new</button><button id="loadTab">load</button><button id="examplesTab">examples</button>
+		<button id="open-project__tab-new">new</button><button id="open-project__tab-load">load</button><button id="open-project__tab-examples">examples</button>
 	</div>`;
 
 	// LOAD
 	con += `
-	<div class="open-project__tab-content" id="openProjectLoadContent" style="display: none;">
+	<div class="open-project__tab-content" id="open-project__load-content" style="display: none;">
 		<h2>Load a file</h2>
-		<fancy-button dark onclick="document.getElementById('openProjectFileChooser').click();">
+		<fancy-button dark onclick="document.getElementById('open-project__file-chooser').click();">
 			Browse for a File
 		</fancy-button>&ensp; or Drag and Drop:
 		<div id="open-project__drop-target">
@@ -113,7 +115,7 @@ function makeTabs() {
 
 	// NEW
 	con += `
-	<div class="open-project__tab-content" id="openProjectNewContent" style="display: none;">
+	<div class="open-project__tab-content" id="open-project__new-project" style="display: none;">
 		<h2>Start a new Glyphr Studio Project</h2>
 		Project name: &nbsp; <input id="open-project__project-name" type="text" value="My Font" autofocus/><br>
 		<fancy-button id="openProjectCreateNewProject">Start a new font from scratch</fancy-button>
@@ -121,17 +123,11 @@ function makeTabs() {
 
 	// EXAMPLES
 	con += `
-	<div class="open-project__tab-content" id="openProjectExampleProjects" style="display: none;">
+	<div class="open-project__tab-content" id="open-project__example-projects" style="display: none;">
 		<h2>Load an example project</h2>
 
-		Modegg is a project that utilizes Glyphr Studio features, like Components:<br><br>
-		<fancy-button dark id="loadModegg">Modegg</fancy-button><br><br>
-
-		California Gothic is an all-caps display font:<br><br>
-		<fancy-button dark id="loadCaliforniaGothic">California Gothic</fancy-button><br><br>
-
-		Merriweather Sans is an open-source font imported from an Open Type file:<br><br>
-		<fancy-button dark id="loadMerriweatherSans">Merriweather Sans</fancy-button><br><br>
+		Version 2 Sample is a project that shows off some basic and new features:<br><br>
+		<fancy-button dark id="loadV2Sample">v2 Sample Project</fancy-button><br><br>
 	</div>`;
 
 	return '<div class="open-project__tab-wrapper">' + con + '</div>';
@@ -142,14 +138,14 @@ function makeTabs() {
  * @param {string} tab - which tab to select
  */
 function changeTab(tab) {
-	const contentNew = document.getElementById('openProjectNewContent');
-	const contentLoad = document.getElementById('openProjectLoadContent');
-	const contentExamples = document.getElementById('openProjectExampleProjects');
+	const contentNew = document.getElementById('open-project__new-project');
+	const contentLoad = document.getElementById('open-project__load-content');
+	const contentExamples = document.getElementById('open-project__example-projects');
 	// let contentRecent = document.getElementById('recent_content');
 
-	const tabNew = document.getElementById('newTab');
-	const tabLoad = document.getElementById('loadTab');
-	const tabExamples = document.getElementById('examplesTab');
+	const tabNew = document.getElementById('open-project__tab-new');
+	const tabLoad = document.getElementById('open-project__tab-load');
+	const tabExamples = document.getElementById('open-project__tab-examples');
 	// let tabRecent = document.getElementById('recent_tab');
 
 	contentNew.style.display = 'none';
@@ -157,21 +153,21 @@ function changeTab(tab) {
 	contentExamples.style.display = 'none';
 	// contentRecent.style.display = 'none';
 
-	tabNew.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
-	tabLoad.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
-	tabExamples.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
-	// tabRecent.style.borderBottomColor = 'rgba(127, 127, 127, 0.5)';
+	tabNew.style.borderBottomColor = 'transparent';
+	tabLoad.style.borderBottomColor = 'transparent';
+	tabExamples.style.borderBottomColor = 'transparent';
+	// tabRecent.style.borderBottomColor = 'transparent';
 
 	if (tab === 'load') {
 		contentLoad.style.display = 'block';
-		tabLoad.style.borderBottomColor = '#2EB5FA';
+		tabLoad.style.borderBottomColor = accentColors.blue.l65;
 	} else if (tab === 'examples') {
 		contentExamples.style.display = 'block';
-		tabExamples.style.borderBottomColor = '#2EB5FA';
+		tabExamples.style.borderBottomColor = accentColors.blue.l65;
 	} else {
 		// default to new
 		contentNew.style.display = 'block';
-		tabNew.style.borderBottomColor = '#2EB5FA';
+		tabNew.style.borderBottomColor = accentColors.blue.l65;
 	}
 }
 
@@ -187,7 +183,7 @@ function handleDrop(event) {
 
 	cancelDefaultEventActions(event);
 
-	let f = event.dataTransfer || document.getElementById('openProjectFileChooser');
+	let f = event.dataTransfer || document.getElementById('open-project__file-chooser');
 	f = f.files[0];
 	// log('filename: ' + f.name);
 	let fname = f.name.split('.');
@@ -300,7 +296,7 @@ function handleNewProject() {
  */
 function handleLoadSample(name) {
 	const app = getGlyphrStudioApp();
-	document.getElementById('openProjectExampleProjects').innerHTML =
+	document.getElementById('open-project__example-projects').innerHTML =
 		'<h2>Load an Example project</h2>Loading example project...';
 
 	setTimeout(function () {
