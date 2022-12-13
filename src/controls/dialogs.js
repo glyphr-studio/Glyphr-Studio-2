@@ -6,6 +6,9 @@ import { makeIcon } from '../common/graphics.js';
 // Generic dialog stuff
 // --------------------------------------------------------------
 export function closeAllDialogs(hideToasts = false) {
+	// log(`closeAllDialogs`, 'start');
+	// log(`hideToasts: ${hideToasts}`);
+
 	let dialogs = document.querySelectorAll('dialog');
 	dialogs.forEach((elem) => animateRemove(elem));
 
@@ -13,7 +16,7 @@ export function closeAllDialogs(hideToasts = false) {
 		let toasts = document.querySelectorAll('#toast');
 		toasts.forEach((elem) => animateRemove(elem));
 	}
-
+	// log(`closeAllDialogs`, 'end');
 }
 
 function animateRemove(element) {
@@ -49,7 +52,7 @@ export function showToast(message = '0_o', duration = 3000) {
 		element.innerHTML = '';
 	} else {
 		element = makeElement({
-			tag: 'dialog',
+			tag: 'div',
 			id: 'toast',
 			attributes: { tabindex: '-1' },
 		});
@@ -162,7 +165,9 @@ function makeOneContextMenuRow(data = {}) {
 }
 
 export function setDialogHideListeners(element) {
-	element.addEventListener('mouseleave', closeAllDialogs);
+	element.addEventListener('mouseleave', () => {
+		closeAllDialogs();
+	});
 }
 
 // --------------------------------------------------------------
