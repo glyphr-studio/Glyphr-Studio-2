@@ -18,7 +18,9 @@ export function makeElement({
 	elementRoot,
 	tabIndex = false,
 	attributes = {},
+	style = false,
 	innerHTML = false,
+	onClick = false,
 } = {}) {
 	if (!document || !document.createElement) {
 		console.warn('no document or createElement');
@@ -44,6 +46,10 @@ export function makeElement({
 
 	Object.keys(attributes).forEach((key) => newElement.setAttribute(key, attributes[key]));
 
+	if (style) {
+		newElement.setAttribute('style', style);
+	}
+
 	if (innerHTML) {
 		const template = document.createElement('template');
 		template.innerHTML = innerHTML;
@@ -51,6 +57,10 @@ export function makeElement({
 
 		// log(`makeElement - newElement:`);
 		// log(newElement);
+	}
+
+	if (onClick) {
+		newElement.addEventListener('click', onClick);
 	}
 
 	return newElement;

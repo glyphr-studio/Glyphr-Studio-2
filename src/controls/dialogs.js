@@ -55,8 +55,8 @@ export function showToast(message = '0_o', duration = 3000) {
 			tag: 'div',
 			id: 'toast',
 			attributes: { tabindex: '-1' },
+			style: 'display: none;',
 		});
-		element.style.display = 'none';
 		document.body.appendChild(element);
 	}
 
@@ -93,8 +93,8 @@ export function showContextMenu(rows = [], x = false, y = false) {
 			tag: 'dialog',
 			id: 'context-menu',
 			attributes: { tabindex: '-1' },
+			style: 'display: none;',
 		});
-		element.style.display = 'none';
 		document.body.appendChild(element);
 	}
 

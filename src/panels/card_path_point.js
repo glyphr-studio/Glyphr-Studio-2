@@ -75,7 +75,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 
 	let h1Group = makeElement({
 		id: 'h1InputGroup',
-		attributes: { style: `display: ${selectedPoint.h1.use ? 'grid' : 'none'}` },
+		style: `display: ${selectedPoint.h1.use ? 'grid' : 'none'}`,
 	});
 	let h1Position = makeInputs_position(selectedPoint.h1, 'h1', true);
 	addAsChildren(h1Group, h1Position);
@@ -88,7 +88,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 
 	let h2Group = makeElement({
 		id: 'h2InputGroup',
-		attributes: { style: `display: ${selectedPoint.h2.use ? 'grid' : 'none'}` },
+		style: `display: ${selectedPoint.h2.use ? 'grid' : 'none'}`,
 	});
 	let h2Position = makeInputs_position(selectedPoint.h2, 'h2', true);
 	addAsChildren(h2Group, h2Position);

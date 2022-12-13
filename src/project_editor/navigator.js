@@ -264,16 +264,14 @@ export function showNavDropdown(parentElement) {
 	let dropDown = makeElement({
 		tag: 'dialog',
 		id: 'nav-dropdown',
-		attributes: {
-			style: `
+		attributes: { tabindex: '-1' },
+		style: `
 			left: ${rect.left + 1}px;
 			top: ${top}px;
 			width: ${size};
 			background-color: ${parentStyle.backgroundColor};
 			border-color: ${parentStyle.backgroundColor};
 		`,
-			tabindex: '-1',
-		},
 	});
 
 	setDialogHideListeners(dropDown);

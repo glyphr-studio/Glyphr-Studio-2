@@ -30,14 +30,12 @@ export class ButtonToggle extends HTMLElement {
 			tag: 'div',
 			className: 'wrapper',
 			tabIndex: !this.disabled,
-			attributes: {
-				style: `
-					border-width: ${attributes.hideBorder ? '0px' : '1px'};
-					padding: ${this.gutterSize}px;
-					width: ${this.size}px;
-					height: ${this.size}px;
-				`,
-			},
+			style: `
+				border-width: ${attributes.hideBorder ? '0px' : '1px'};
+				padding: ${this.gutterSize}px;
+				width: ${this.size}px;
+				height: ${this.size}px;
+			`,
 		});
 		if (this.disabled) this.wrapper.setAttribute('disabled', '');
 		if (this.selected) this.wrapper.setAttribute('selected', '');

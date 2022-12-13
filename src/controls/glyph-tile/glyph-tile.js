@@ -55,12 +55,10 @@ export class GlyphTile extends HTMLElement {
 			this.thumbnail = makeElement({
 				tag: 'canvas',
 				className: 'thumbnail',
-				attributes: {
-					style: `
-						width: ${overallSize}px;
-						height: ${overallSize}px;
-					`,
-				},
+				style: `
+					width: ${overallSize}px;
+					height: ${overallSize}px;
+				`,
 			});
 			this.ctx = this.thumbnail.getContext('2d');
 			this.thumbnail.width = overallSize;
