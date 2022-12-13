@@ -59,28 +59,20 @@ export function makePage_OpenProject() {
 	// Dragging and dropping to load
 	const tableRight = content.querySelector('#open-project__right-area');
 	tableRight.appendChild(makeTabs());
-	tableRight.addEventListener('dragover', handleDragOver);
+	tableRight.addEventListener('dragenter', handleDragEnter);
+	tableRight.addEventListener('dragover', cancelDefaultEventActions);
 	tableRight.addEventListener('drop', handleDrop);
 	tableRight.addEventListener('dragleave', handleDragLeave);
 
 	const tableLeft = content.querySelector('#open-project__left-area');
-	tableLeft.addEventListener('dragover', handleDragOver);
+	tableLeft.addEventListener('dragenter', handleDragEnter);
+	tableLeft.addEventListener('dragover', cancelDefaultEventActions);
 	tableLeft.addEventListener('drop', handleDrop);
 	tableLeft.addEventListener('dragleave', handleDragLeave);
 
-	// content.querySelector('#open-project__file-chooser').addEventListener('change', handleDrop);
-
-	// Sample Projects click
-	content
-		.querySelector('#loadV2Sample')
-		.addEventListener('click', () => handleLoadSample('v2Sample'));
-
-	// Starting a project
-	content.querySelector('#openProjectCreateNewProject').addEventListener('click', handleNewProject);
-
 	// Showing default tab
 	content.querySelector('#tab-content__new').style.display = 'block';
-	content.querySelector('#open-project__tab-new').style.borderBottomColor = accentColors.blue.l65;
+	content.querySelector('#open-project__tab-new').setAttribute('selected', '');
 
 	// log(`makePage_OpenProject`, 'end');
 	return content;
@@ -91,7 +83,7 @@ export function makePage_OpenProject() {
  * @returns {string} html content
  */
 function makeTabs() {
-	// TABS
+	// Tabs
 	const tabNew = makeElement({ tag: 'button', id: 'open-project__tab-new', innerHTML: 'New' });
 	const tabLoad = makeElement({ tag: 'button', id: 'open-project__tab-load', innerHTML: 'Load' });
 	const tabExamples = makeElement({
@@ -106,40 +98,67 @@ function makeTabs() {
 	const tabs = makeElement({ className: 'open-project__tabs' });
 	addAsChildren(tabs, [tabNew, tabLoad, tabExamples]);
 
-	// LOAD
-	const tabContentLoad = makeElement({ id: 'tab-content__load', className: 'open-project__tab-content' });
+	// Content for New Project tab
+	const br = makeElement({ tag: 'br' });
+	const tabContentNew = makeElement({
+		id: 'tab-content__new',
+		className: 'open-project__tab-content',
+		innerHTML: '<h2>Start a new Glyphr Studio project</h2>\nProject name: &nbsp;',
+	});
+	tabContentNew.style.display = 'none';
+	const inputProjectName = makeElement({
+		tag: 'input',
+		id: 'input__new-project-name',
+		attributes: { type: 'text', value: 'My Font', autofocus: 'true' },
+	});
+	const buttonStartNewProject = makeElement({
+		tag: 'fancy-button',
+		id: 'button__create-new-project',
+		innerHTML: 'Create a new font from scratch',
+	});
+	buttonStartNewProject.addEventListener('click', handleNewProject);
+	addAsChildren(tabContentNew, [inputProjectName, br, br, buttonStartNewProject]);
+
+	// Content for Load tab
+	const tabContentLoad = makeElement({
+		id: 'tab-content__load',
+		className: 'open-project__tab-content',
+		innerHTML: '<h2>Load a file</h2>\nDrag and drop one of the following:<br>',
+	});
 	tabContentLoad.style.display = 'none';
-	tabContentLoad.innerHTML = `
-		<h2>Load a file</h2>
-		<fancy-button dark onclick="document.getElementById('open-project__file-chooser').click();">
-		Browse for a File
-		</fancy-button>&ensp; or Drag and Drop:
-		<div id="open-project__drop-target">
-			Glyphr Studio Project &ensp;(.txt)<br>
+	const dropTarget = makeElement({
+		id: 'open-project__drop-target',
+		innerHTML: `
+			Glyphr Studio Project &ensp;(.gs2)<br>
 			Open Type or True Type Font &ensp;(.otf or .ttf)<br>
 			SVG Font &ensp;(.svg)
-	</div>`;
+		`,
+	});
 
-	// NEW
-	const tabContentNew = makeElement({ id: 'tab-content__new', className: 'open-project__tab-content' });
-	tabContentNew.style.display = 'none';
-	tabContentNew.innerHTML = `
-		<h2>Start a new Glyphr Studio Project</h2>
-		Project name: &nbsp; <input id="open-project__project-name" type="text" value="My Font" autofocus/><br>
-		<fancy-button id="openProjectCreateNewProject">Start a new font from scratch</fancy-button>
-	`;
+	const openFileChooser = makeElement({ tag: 'fancy-button', innerHTML: 'Open file chooser...' });
+	openFileChooser.addEventListener('click', () => {
+		document.getElementById('open-project__file-chooser').click();
+	});
+	const fileChooser = makeElement({
+		tag: 'input',
+		id: 'open-project__file-chooser',
+		attributes: { type: 'file', style: 'display: none;' },
+	});
+	fileChooser.addEventListener('change', handleDrop);
 
-	// EXAMPLES
+	addAsChildren(tabContentLoad, [dropTarget, openFileChooser, fileChooser]);
+
+	// Content for Examples tab
 	const tabContentExamples = makeElement({
 		id: 'tab-content__examples',
 		className: 'open-project__tab-content',
+		innerHTML:
+			'<h2>Load an example project</h2>\nVersion 2 Sample is a project that shows off some basic and new features:\n<br><br>',
 	});
 	tabContentExamples.style.display = 'none';
-	tabContentExamples.innerHTML = `
-		<h2>Load an example project</h2>
-		Version 2 Sample is a project that shows off some basic and new features:<br><br>
-		<fancy-button dark id="loadV2Sample">v2 Sample Project</fancy-button><br><br>
-	`;
+	const buttonLoadExample = makeElement({ tag: 'fancy-button', innerHTML: 'v2 sample project' });
+	buttonLoadExample.addEventListener('click', () => handleLoadSample('v2Sample'));
+	addAsChildren(tabContentExamples, buttonLoadExample);
 
 	// Overall wrapper
 	const tabWrapper = makeElement({ className: 'open-project__tab-wrapper' });
@@ -167,21 +186,21 @@ function changeTab(tab) {
 	contentExamples.style.display = 'none';
 	// contentRecent.style.display = 'none';
 
-	tabNew.style.borderBottomColor = 'transparent';
-	tabLoad.style.borderBottomColor = 'transparent';
-	tabExamples.style.borderBottomColor = 'transparent';
-	// tabRecent.style.borderBottomColor = 'transparent';
+	tabNew.removeAttribute('selected');
+	tabLoad.removeAttribute('selected');
+	tabExamples.removeAttribute('selected');
+	// tabRecent.removeAttribute('selected');
 
 	if (tab === 'load') {
 		contentLoad.style.display = 'block';
-		tabLoad.style.borderBottomColor = accentColors.blue.l65;
+		tabLoad.setAttribute('selected', '');
 	} else if (tab === 'examples') {
 		contentExamples.style.display = 'block';
-		tabExamples.style.borderBottomColor = accentColors.blue.l65;
+		tabExamples.setAttribute('selected', '');
 	} else {
 		// default to new
 		contentNew.style.display = 'block';
-		tabNew.style.borderBottomColor = accentColors.blue.l65;
+		tabNew.setAttribute('selected', '');
 	}
 }
 
@@ -193,8 +212,6 @@ function handleDrop(event) {
 	const app = getGlyphrStudioApp();
 	// log('handleDrop', 'start');
 	document.getElementById('open-project__right-area').innerHTML = 'Loading File...';
-	document.getElementById('open-project__right-area').style.backgroundColor = uiColors.offWhite;
-
 	cancelDefaultEventActions(event);
 
 	let f = event.dataTransfer || document.getElementById('open-project__file-chooser');
@@ -269,13 +286,12 @@ function handleMessage(event) {
  * Handle DragOver event
  * @param {object} event - event
  */
-function handleDragOver(event) {
+function handleDragEnter(event) {
 	cancelDefaultEventActions(event);
 	event.dataTransfer.dropEffect = 'copy';
 
 	const dropZone = document.getElementById('open-project__right-area');
-	dropZone.style.backgroundColor = accentColors.blue.l95;
-	dropZone.innerHTML = 'Drop it!';
+	dropZone.innerHTML = '<span id="open-project__drop-it">Drop it!</span>';
 }
 
 /**
@@ -286,8 +302,8 @@ function handleDragLeave(event) {
 	cancelDefaultEventActions(event);
 
 	const dropZone = document.getElementById('open-project__right-area');
-	dropZone.style.backgroundColor = accentColors.gray.offWhite;
-	dropZone.innerHTML = makeTabs();
+	dropZone.innerHTML = '';
+	dropZone.appendChild(makeTabs());
 	changeTab('load');
 }
 
