@@ -46,8 +46,7 @@ export class InfoBubble extends HTMLElement {
 		// log(`Making bubble...`);
 		let bubble = makeElement({
 			id: 'bubble',
-			attributes: {
-				style: `
+			style: `
 				z-index: 1000;
 				display: grid;
 				align-items: center;
@@ -58,13 +57,11 @@ export class InfoBubble extends HTMLElement {
 				top: 100px;
 				text-align: center;
 			`,
-			},
 		});
 
 		// log(`Making pointer...`);
 		let pointer = makeElement({
-			attributes: {
-				style: `
+			style: `
 				width: 0px;
 				height: 0px;
 				border: 12px solid transparent;
@@ -73,14 +70,12 @@ export class InfoBubble extends HTMLElement {
 				display: block;
 				margin: 0px auto;
 			`,
-			},
 		});
 
 		// log(`Making content...`);
 		let content = makeElement({
 			innerHTML: this.innerHTML,
-			attributes: {
-				style: `
+			style: `
 				padding: 20px 24px 20px 20px;
 				border-radius: 10px;
 				width: clamp(300px, 400px, 600px);
@@ -91,7 +86,6 @@ export class InfoBubble extends HTMLElement {
 				display: block;
 				box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
 			`,
-			},
 		});
 
 		bubble.appendChild(pointer);

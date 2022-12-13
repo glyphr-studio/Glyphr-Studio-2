@@ -17,9 +17,7 @@ export function makePanel_History() {
 		tag: 'button',
 		className: q.length > 0 ? 'button__call-to-action number' : 'number',
 		innerHTML: `undo ${q.length}`,
-		attributes: {
-			style: 'max-width: 30%; grid-column: 1 / -1;'
-		}
+		style: 'max-width: 30%; grid-column: 1 / -1;'
 	});
 	historyArea.appendChild(undoButton);
 

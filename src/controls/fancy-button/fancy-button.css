@@ -95,7 +95,7 @@
 }
 
 .wrapper[dark] .buttonContent {
-	background-color: var(--gray-l05);
+	background-color: var(--gray-l05) !important;
 }
 
 .wrapper[secondary] .buttonText {
