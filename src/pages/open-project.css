@@ -13,7 +13,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
-	background-color: rgba(255,255,255, 0.01);
+	background-color: rgba(255, 255, 255, 0.01);
 	color: var(--gray-l95);
 	width: 475px;
 	padding: 0px 0px 0px 50px;
@@ -84,6 +84,7 @@
 	margin: 20px 4px 0px 10px;
 	display: inline;
 	color: var(--gray-l95);
+	animation: var(--fade-animate-in);
 }
 
 .open-project__tab-content h2 {
@@ -105,21 +106,29 @@
 .open-project__tabs button {
 	/*background-color: rgb(229,234,239);*/
 	background-color: transparent;
+	border-style: solid;
+	border-width: 1px;
 	border-color: transparent;
-	border-bottom: 3px solid transparent;
+	border-bottom-color: var(--blue-l15) !important;
 	padding: 4px 16px;
-	margin: 0px;
+	margin: 0px -2px 0px 0px;
 	color: var(--blue-l70);
 	outline-width: 0px;
 	border-radius: 0px;
 }
-.open-project__tabs button:hover {
-	border-bottom: 3px solid var(--blue-l75) !important;
+
+.open-project__tabs button:hover,
+.open-project__tabs button[selected] {
+	border-bottom-color: var(--blue-l65) !important;
 	color: var(--blue-l75);
 	background-color: var(--blue-l05);
 }
 
-#open-project__project-name {
+.open-project__tabs button[selected] {
+	background-color: transparent;
+}
+
+#input__new-project-name {
 	width: 94%;
 	height: 25px;
 	margin: 10px 0px 0px 0px;
@@ -128,11 +137,21 @@
 }
 
 #open-project__drop-target {
+	display: block;
 	width: 90%;
-	margin: 10px 0px 0px 0px;
+	margin: 10px 0px 10px 0px;
 	background-color: var(--gray-l15);
 	border: 1px dashed var(--gray-l65);
 	color: var(--gray-l65);
 	padding: 18px 0px 20px 20px;
 	line-height: 2em;
+}
+
+#open-project__drop-it {
+	position: absolute;
+	top: calc(50% - 50px);
+	font-size: 1.5em;
+	color: var(--blue-l80);
+	opacity: 80%;
+	animation: var(--fade-animate-in);
 }

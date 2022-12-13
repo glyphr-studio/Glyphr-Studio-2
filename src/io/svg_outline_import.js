@@ -50,8 +50,10 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 
 	// get a sorted pathTags object
 	for (let g = 0; g < grabTags.length; g++) pathTags[grabTags[g]] = [];
-	for (let s = 0; s < unsortedPathTags.length; s++)
+
+	for (let s = 0; s < unsortedPathTags.length; s++) {
 		pathTags[unsortedPathTags[s].name].push(unsortedPathTags[s]);
+	}
 
 	// log('SORTED pathTags from imported XML: ');
 	// log(pathTags);
@@ -389,7 +391,7 @@ export function ioSVG_convertSVGTagToPath(data) {
 		if (isPathCommand(data[curr])) {
 			dataChunk = data.slice(commandPosition + 1, curr);
 			command = data[commandPosition];
-			for (let i = 0; i < dataChunk.length; i++) dataChunk[i] = Number(dataChunk[i]);
+			dataChunk = dataChunk.map(value => Number(value));
 			// log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
 			chunks.push({ command: command, data: dataChunk });
 			commandPosition = curr;
@@ -400,7 +402,7 @@ export function ioSVG_convertSVGTagToPath(data) {
 	// Fencepost
 	dataChunk = data.slice(commandPosition + 1, curr);
 	command = data[commandPosition];
-	for (let j = 0; j < dataChunk.length; j++) dataChunk[j] = Number(dataChunk[j]);
+	dataChunk = dataChunk.map(value => Number(value));
 	// log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
 	chunks.push({ command: command, data: dataChunk });
 

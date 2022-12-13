@@ -65,7 +65,7 @@ export function initEventHandlers(canvas) {
 	canvas.addEventListener('mouseout', handleMouseLeaveCanvas);
 	canvas.addEventListener('wheel', handleMouseWheel, { passive: false, capture: false });
 	canvas.addEventListener('drop', handleDropSVGonEditCanvas, false);
-	canvas.addEventListener('dragenter', handleDragOverCanvas, false);
+	canvas.addEventListener('dragenter', handleDragEnterCanvas, false);
 	canvas.addEventListener('dragover', cancelDefaultEventActions, false);
 
 	// Document Key Listeners
@@ -97,7 +97,7 @@ function handleMouseLeaveCanvas() {
 	// log('handleMouseLeaveCanvas', 'end');
 }
 
-function handleDragOverCanvas(event) {
+function handleDragEnterCanvas(event) {
 	event.preventDefault();
 	event.stopPropagation();
 	showToast('Drop a SVG file to import it');
