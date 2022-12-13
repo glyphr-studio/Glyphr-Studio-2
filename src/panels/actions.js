@@ -26,10 +26,8 @@ export function getActionData(name) {
 	let selectedPaths = editor.multiSelect.paths.members;
 	let selectedPoints = editor.multiSelect.points.members;
 	let data = {};
-
-	// TODO hook these up
 	let clipBoardPaths = editor.clipboard.paths;
-	let pathCount = clipBoardPaths ? clipBoardPaths.length : 0;
+	let clipBoardPathCount = clipBoardPaths ? clipBoardPaths.length : 0;
 	let historyLength = editor.history.queue.length;
 
 	// UNIVERSAL ACTIONS
@@ -45,7 +43,7 @@ export function getActionData(name) {
 		{
 			iconName: 'paste',
 			iconOptions: !clipBoardPaths,
-			title: makeActionButtonPasteTooltip(pathCount),
+			title: makeActionButtonPasteTooltip(clipBoardPathCount),
 			disabled: !clipBoardPaths,
 			id: 'actionButtonPaste',
 			onClick: clipboardPaste,
@@ -220,12 +218,22 @@ export function getActionData(name) {
 		{
 			iconName: 'moveLayerUp',
 			title: `Move Path Up\nMoves the path up in the path layer order.`,
-			disabled: true,
+			disabled: selectedPaths.length !== 1,
+			onClick: () => {
+				moveLayer('up');
+				const editor = getCurrentProjectEditor();
+				editor.publish('currentGlyph', editor.selectedItem);
+			},
 		},
 		{
 			iconName: 'moveLayerDown',
 			title: `Move Path Down\nMoves the path down in the path layer order.`,
-			disabled: true,
+			disabled: selectedPaths.length !== 1,
+			onClick: () => {
+				moveLayer('down');
+				const editor = getCurrentProjectEditor();
+				editor.publish('currentGlyph', editor.selectedItem);
+			},
 		},
 	];
 
@@ -491,7 +499,6 @@ export function deleteSelectedPoints() {
 		historyTitle = `Deleted path point: ${msPoints.singleton.pointNumber}`;
 	}
 
-
 	let minDeletedPoint = msPoints.deletePathPoints();
 	editor.history.addState(historyTitle);
 	let pathSingleton = editor.multiSelect.paths.singleton;
@@ -499,6 +506,32 @@ export function deleteSelectedPoints() {
 		msPoints.select(pathSingleton.pathPoints[pathSingleton.getPreviousPointNum(minDeletedPoint)]);
 	} else {
 		editor.publish('whichPathPointIsSelected', editor.multiSelect.paths);
+	}
+}
+
+// --------------------------------------------------------------
+// Layers
+// --------------------------------------------------------------
+
+function moveLayer(direction = 'up') {
+	const editor = getCurrentProjectEditor();
+	const selectedPath = editor.multiSelect.paths.singleton;
+	const itemPaths = editor.selectedItem.paths;
+	const currentIndex = itemPaths.indexOf(selectedPath);
+	let tempPath;
+
+	if (direction === 'down') {
+		if (currentIndex > 0 && currentIndex < itemPaths.length) {
+			tempPath = itemPaths[currentIndex - 1];
+			itemPaths[currentIndex - 1] = itemPaths[currentIndex];
+			itemPaths[currentIndex] = tempPath;
+		}
+	} else {
+		if (currentIndex > -1 && currentIndex < itemPaths.length - 1) {
+			tempPath = itemPaths[currentIndex + 1];
+			itemPaths[currentIndex + 1] = itemPaths[currentIndex];
+			itemPaths[currentIndex] = tempPath;
+		}
 	}
 }
 
@@ -631,9 +664,11 @@ export function clipboardPaste() {
 	// log('clipboardPaste', 'end');
 }
 
-export function makeActionButtonPasteTooltip(pathCount) {
+export function makeActionButtonPasteTooltip(clipBoardPathCount) {
 	let re = `Paste\nAdds the previously-copied path or paths into this glyph.\n\n`;
-	re += `Currently ${pathCount} Path${pathCount === 1 ? '' : 's'} on the clipboard.`;
+	re += `Currently ${clipBoardPathCount} Path${
+		clipBoardPathCount === 1 ? '' : 's'
+	} on the clipboard.`;
 	return re;
 }
 
@@ -655,11 +690,11 @@ function showDialogGetPaths(msg) {
 
 function initGetPathsDialogOptions(type) {
 	/*
-				_UI.glyphChooser.getPathOptions = {
-						srcAutoWidth: false,
-						srcWidth: false,
-				};
-				*/
+		_UI.glyphChooser.getPathOptions = {
+				srcAutoWidth: false,
+				srcWidth: false,
+		};
+	*/
 	type = type || 'paths';
 	let gso = _UI.glyphChooser.getPathOptions;
 
