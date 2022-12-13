@@ -1,4 +1,4 @@
-import { makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
@@ -8,6 +8,8 @@ import { importOTFFont } from '../io/otf_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from '../app/main.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
+import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
+import { json } from '../common/functions.js';
 
 /**
  * Page > Open Project
@@ -47,22 +49,16 @@ export function makePage_OpenProject() {
 						this license and its freeness stays intact.
 					</div>
 				</div>
-				<div id="open-project__right-area" vertical-align="middle">${makeTabs()}</div>
+				<div id="open-project__right-area" vertical-align="middle"></div>
 			</div>
 		`,
 	});
 
 	// Tab click
-	content.querySelector('#open-project__tab-new').addEventListener('click', () => changeTab('new'));
-	content
-		.querySelector('#open-project__tab-load')
-		.addEventListener('click', () => changeTab('load'));
-	content
-		.querySelector('#open-project__tab-examples')
-		.addEventListener('click', () => changeTab('examples'));
 
 	// Dragging and dropping to load
 	const tableRight = content.querySelector('#open-project__right-area');
+	tableRight.appendChild(makeTabs());
 	tableRight.addEventListener('dragover', handleDragOver);
 	tableRight.addEventListener('drop', handleDrop);
 	tableRight.addEventListener('dragleave', handleDragLeave);
@@ -75,13 +71,15 @@ export function makePage_OpenProject() {
 	// content.querySelector('#open-project__file-chooser').addEventListener('change', handleDrop);
 
 	// Sample Projects click
-	content.querySelector('#loadV2Sample').addEventListener('click', () => handleLoadSample('v2Sample'));
+	content
+		.querySelector('#loadV2Sample')
+		.addEventListener('click', () => handleLoadSample('v2Sample'));
 
 	// Starting a project
 	content.querySelector('#openProjectCreateNewProject').addEventListener('click', handleNewProject);
 
 	// Showing default tab
-	content.querySelector('#open-project__new-project').style.display = 'block';
+	content.querySelector('#tab-content__new').style.display = 'block';
 	content.querySelector('#open-project__tab-new').style.borderBottomColor = accentColors.blue.l65;
 
 	// log(`makePage_OpenProject`, 'end');
@@ -94,43 +92,59 @@ export function makePage_OpenProject() {
  */
 function makeTabs() {
 	// TABS
-	let con = `
-	<div class="open-project__tabs">
-		<button id="open-project__tab-new">new</button><button id="open-project__tab-load">load</button><button id="open-project__tab-examples">examples</button>
-	</div>`;
+	const tabNew = makeElement({ tag: 'button', id: 'open-project__tab-new', innerHTML: 'New' });
+	const tabLoad = makeElement({ tag: 'button', id: 'open-project__tab-load', innerHTML: 'Load' });
+	const tabExamples = makeElement({
+		tag: 'button',
+		id: 'open-project__tab-examples',
+		innerHTML: 'Examples',
+	});
+	tabNew.addEventListener('click', () => changeTab('new'));
+	tabLoad.addEventListener('click', () => changeTab('load'));
+	tabExamples.addEventListener('click', () => changeTab('examples'));
+
+	const tabs = makeElement({ className: 'open-project__tabs' });
+	addAsChildren(tabs, [tabNew, tabLoad, tabExamples]);
 
 	// LOAD
-	con += `
-	<div class="open-project__tab-content" id="open-project__load-content" style="display: none;">
+	const tabContentLoad = makeElement({ id: 'tab-content__load', className: 'open-project__tab-content' });
+	tabContentLoad.style.display = 'none';
+	tabContentLoad.innerHTML = `
 		<h2>Load a file</h2>
 		<fancy-button dark onclick="document.getElementById('open-project__file-chooser').click();">
-			Browse for a File
+		Browse for a File
 		</fancy-button>&ensp; or Drag and Drop:
 		<div id="open-project__drop-target">
 			Glyphr Studio Project &ensp;(.txt)<br>
 			Open Type or True Type Font &ensp;(.otf or .ttf)<br>
 			SVG Font &ensp;(.svg)
-		</div>
 	</div>`;
 
 	// NEW
-	con += `
-	<div class="open-project__tab-content" id="open-project__new-project" style="display: none;">
+	const tabContentNew = makeElement({ id: 'tab-content__new', className: 'open-project__tab-content' });
+	tabContentNew.style.display = 'none';
+	tabContentNew.innerHTML = `
 		<h2>Start a new Glyphr Studio Project</h2>
 		Project name: &nbsp; <input id="open-project__project-name" type="text" value="My Font" autofocus/><br>
 		<fancy-button id="openProjectCreateNewProject">Start a new font from scratch</fancy-button>
-	</div>`;
+	`;
 
 	// EXAMPLES
-	con += `
-	<div class="open-project__tab-content" id="open-project__example-projects" style="display: none;">
+	const tabContentExamples = makeElement({
+		id: 'tab-content__examples',
+		className: 'open-project__tab-content',
+	});
+	tabContentExamples.style.display = 'none';
+	tabContentExamples.innerHTML = `
 		<h2>Load an example project</h2>
-
 		Version 2 Sample is a project that shows off some basic and new features:<br><br>
 		<fancy-button dark id="loadV2Sample">v2 Sample Project</fancy-button><br><br>
-	</div>`;
+	`;
 
-	return '<div class="open-project__tab-wrapper">' + con + '</div>';
+	// Overall wrapper
+	const tabWrapper = makeElement({ className: 'open-project__tab-wrapper' });
+	addAsChildren(tabWrapper, [tabs, tabContentNew, tabContentLoad, tabContentExamples]);
+	return tabWrapper;
 }
 
 /**
@@ -138,9 +152,9 @@ function makeTabs() {
  * @param {string} tab - which tab to select
  */
 function changeTab(tab) {
-	const contentNew = document.getElementById('open-project__new-project');
-	const contentLoad = document.getElementById('open-project__load-content');
-	const contentExamples = document.getElementById('open-project__example-projects');
+	const contentNew = document.getElementById('tab-content__new');
+	const contentLoad = document.getElementById('tab-content__load');
+	const contentExamples = document.getElementById('tab-content__examples');
 	// let contentRecent = document.getElementById('recent_content');
 
 	const tabNew = document.getElementById('open-project__tab-new');
@@ -296,15 +310,15 @@ function handleNewProject() {
  */
 function handleLoadSample(name) {
 	const app = getGlyphrStudioApp();
-	document.getElementById('open-project__example-projects').innerHTML =
+	document.getElementById('tab-content__examples').innerHTML =
 		'<h2>Load an Example project</h2>Loading example project...';
 
 	setTimeout(function () {
 		let editor = app.getCurrentProjectEditor();
-		editor.project = new GlyphrStudioProject(projects[name]);
+		editor.project = importGlyphrProjectFromText(json(getVersionTwoTestProject(), true));
 		editor.nav.page = 'Glyph edit';
 		editor.navigate();
-	}, 5);
+	}, 100);
 }
 
 // --------------------------------------------------------------
