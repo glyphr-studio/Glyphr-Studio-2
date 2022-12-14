@@ -1,6 +1,18 @@
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { round } from '../common/functions.js';
+import { getUnicodeName, parseUnicodeInput } from '../common/unicode.js';
+import { updateImportStatus } from '../controls/loading-spinner.js';
+import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
-import { importOverflowCount } from '../pages/open_project.js';
-import { ioSVG_getTags } from './svg_outline_import.js';
+import { importOverflowCount, isOutOfBounds } from '../pages/open_project.js';
+import { Glyph } from '../project_data/glyph.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
+import { Path } from '../project_data/path.js';
+import {
+	ioSVG_cleanAndFormatPathDefinition,
+	ioSVG_convertSVGTagToPath,
+	ioSVG_getTags,
+} from './svg_outline_import.js';
 
 /**
 	IO > Import > SVG Font
@@ -15,14 +27,18 @@ export function ioSVG_importSVGFont() {
 	// Font Stuff
 	let font;
 	let chars;
-	let kerns;
+
+	// TODO kerning
+	// let kerns;
+
+	const latinExtendedB = getUnicodeBlockByName('Latin Extended-B');
 
 	setTimeout(setupFontImport, 10);
 
 	function setupFontImport() {
 		// log('setupFontImport', 'start');
 		updateImportStatus('Reading font data...');
-		newProject = new GlyphrStudioProject();
+		const newProject = new GlyphrStudioProject();
 
 		try {
 			// Get Font
@@ -49,7 +65,8 @@ export function ioSVG_importSVGFont() {
 		}
 
 		// Get Kerns
-		kerns = ioSVG_getTags(font, 'hkern');
+		// TODO kerning
+		// kerns = ioSVG_getTags(font, 'hkern');
 
 		// Get Glyphs
 		chars = ioSVG_getTags(font, 'glyph');
@@ -98,7 +115,11 @@ export function ioSVG_importSVGFont() {
 		updateImportStatus('Importing Glyph ' + charCounter + ' of ' + chars.length);
 
 		if (charCounter >= chars.length) {
-			setTimeout(importOneKern, 1);
+			// TODO Kerning
+			// setTimeout(importOneKern, 1);
+			updateImportStatus('Finalizing the imported font...');
+			setTimeout(startFinalizeFontImport, 1);
+
 			return;
 		}
 
@@ -117,7 +138,7 @@ export function ioSVG_importSVGFont() {
 			// Check for .notdef
 			// log('!!! Skipping '+tca['glyph-name']+' NO UNICODE !!!');
 			chars.splice(charCounter, 1);
-		} else if (filter && isOutOfBounds(uni)) {
+		} else if (isOutOfBounds(uni)) {
 			// log('!!! Skipping '+tca['glyph-name']+' OUT OF BOUNDS !!!');
 			chars.splice(charCounter, 1);
 		} else {
@@ -147,7 +168,8 @@ export function ioSVG_importSVGFont() {
 						// log(np);
 						if (np.pathPoints.length) {
 							pathCounter++;
-							newPaths.push(new Path({ path: np, name: 'Path ' + pathCounter }));
+							np.name = `Path ${pathCounter}`;
+							newPaths.push(np);
 						} else {
 							// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
 						}
@@ -164,11 +186,11 @@ export function ioSVG_importSVGFont() {
 				uni = uni[0];
 				minChar = Math.min(minChar, uni);
 				maxGlyph = Math.max(maxGlyph, uni);
-				if (1 * uni > _UI.glyphRange.latinExtendedB.end) customGlyphRange.push(uni);
+				if (1 * uni > latinExtendedB.end) customGlyphRange.push(uni);
 
 				finalGlyphs[uni] = new Glyph({
 					paths: newPaths,
-					glyphWidth: adv,
+					advanceWidth: adv,
 				});
 				if (getUnicodeName(uni) === '[name not found]')
 					getCurrentProject().projectSettings.filterNonCharPoints = false;
@@ -177,7 +199,7 @@ export function ioSVG_importSVGFont() {
 				uni = uni.join('');
 				finalLigatures[uni] = new Glyph({
 					paths: newPaths,
-					glyphWidth: adv,
+					advanceWidth: adv,
 				});
 			}
 
@@ -220,17 +242,12 @@ export function ioSVG_importSVGFont() {
 		// log('Kern Attributes: ' + json(thisKern.attributes, true));
 
 		// Get members by name
-		leftGroup = getKernMembersByName(
-			thisKern.attributes.g1,
-			chars,
-			leftGroup,
-			_UI.glyphRange.latinExtendedB.end
-		);
+		leftGroup = getKernMembersByName(thisKern.attributes.g1, chars, leftGroup, latinExtendedB.end);
 		rightGroup = getKernMembersByName(
 			thisKern.attributes.g2,
 			chars,
 			rightGroup,
-			_UI.glyphRange.latinExtendedB.end
+			latinExtendedB.end
 		);
 
 		// log('kern groups by name ' + json(leftGroup, true) + ' ' + json(rightGroup, true));
@@ -240,13 +257,13 @@ export function ioSVG_importSVGFont() {
 			thisKern.attributes.u1,
 			chars,
 			leftGroup,
-			_UI.glyphRange.latinExtendedB.end
+			latinExtendedB.end
 		);
 		rightGroup = getKernMembersByUnicodeID(
 			thisKern.attributes.u2,
 			chars,
 			rightGroup,
-			_UI.glyphRange.latinExtendedB.end
+			latinExtendedB.end
 		);
 
 		// log('kern groups parsed as ' + json(leftGroup, true) + ' ' + json(rightGroup, true));
@@ -282,9 +299,13 @@ export function ioSVG_importSVGFont() {
 	}
 
 	function finalizeFontImport() {
-		getCurrentProject().glyphs = finalGlyphs;
-		getCurrentProject().ligatures = finalLigatures;
-		getCurrentProject().kerning = finalKerns;
+		const project = getCurrentProject();
+		const editor = getCurrentProjectEditor();
+		project.glyphs = finalGlyphs;
+		// TODO Ligatures
+		// project.ligatures = finalLigatures;
+		// TODO Kerning
+		// project.kerning = finalKerns;
 
 		/*
 		REFACTOR
@@ -295,7 +316,7 @@ export function ioSVG_importSVGFont() {
 			rend = 1 * _UI.glyphRange[r].end + 1;
 			for (let t = rangeStart; t < rend; t++) {
 				if (getGlyph(t)) {
-					getCurrentProject().projectSettings.glyphRanges[r] = true;
+					project.projectSettings.glyphRanges[r] = true;
 					break;
 				}
 			}
@@ -305,7 +326,7 @@ export function ioSVG_importSVGFont() {
 		// Make a custom range for the rest
 		if (customGlyphRange.length) {
 			customGlyphRange = customGlyphRange.sort();
-			getCurrentProject().projectSettings.glyphRanges.push({
+			project.projectSettings.glyphRanges.push({
 				begin: customGlyphRange[0],
 				end: customGlyphRange[customGlyphRange.length - 1],
 			});
@@ -317,8 +338,8 @@ export function ioSVG_importSVGFont() {
 
 		// Font Settings
 		const fontAttributes = getFirstTagInstance(font, 'font-face').attributes;
-		const ps = getCurrentProject().projectSettings;
-		const md = getCurrentProject().metadata;
+		const ps = project.projectSettings;
+		const md = project.metadata;
 		const fname = fontAttributes['font-family'] || 'My Font';
 
 		ps.upm = 1 * fontAttributes['units-per-em'] || 1000;
@@ -338,8 +359,9 @@ export function ioSVG_importSVGFont() {
 		md.overline_position = 1 * fontAttributes['overline-position'] || 750;
 		md.overline_thickness = 1 * fontAttributes['overline-thickness'] || 10;
 
+		editor.nav.page = 'Glyph edit';
+		editor.navigate();
 		// log('ioSVG_importSVGFont', 'end');
-		// navigate();
 	}
 	// log('ioSVG_importSVGFont', 'end');
 }
