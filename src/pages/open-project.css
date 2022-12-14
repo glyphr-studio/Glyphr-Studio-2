@@ -147,10 +147,10 @@
 	line-height: 2em;
 }
 
-#open-project__drop-it {
+#open-project__drop-note {
 	position: absolute;
 	top: calc(50% - 50px);
-	font-size: 1.5em;
+	font-size: 1em;
 	color: var(--blue-l80);
 	opacity: 80%;
 	animation: var(--fade-animate-in);

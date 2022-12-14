@@ -4,12 +4,12 @@ import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { uiColors, accentColors } from '../common/colors.js';
 import { importOTFFont } from '../io/otf_import.js';
-// import { importSVGFont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from '../app/main.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { json } from '../common/functions.js';
+import { ioSVG_importSVGFont } from '../io/svg_font_import.js';
 
 /**
  * Page > Open Project
@@ -227,41 +227,42 @@ function deselectAllTabs() {
  */
 function handleDrop(event) {
 	const app = getGlyphrStudioApp();
-	// log('handleDrop', 'start');
-	document.getElementById('open-project__right-area').innerHTML = 'Loading File...';
+	log('handleDrop', 'start');
+	document.getElementById('open-project__right-area').innerHTML =
+		'<span id="open-project__drop-note">Loading file...</span>';
 	cancelDefaultEventActions(event);
 
 	let f = event.dataTransfer || document.getElementById('open-project__file-chooser');
 	f = f.files[0];
-	// log('filename: ' + f.name);
+	log('filename: ' + f.name);
 	let fname = f.name.split('.');
 	fname = fname[fname.length - 1].toLowerCase();
-	// log('fname = ' + fname);
+	log('fname = ' + fname);
 
 	const reader = new FileReader();
 
 	if (fname === 'otf' || fname === 'ttf') {
 		reader.onload = function () {
-			// log('reader.onload::OTF or TTF', 'start');
+			log('reader.onload::OTF or TTF', 'start');
 			app.temp.droppedFileContent = reader.result;
 			importOTFFont();
-			// log('reader.onload:: OTF or TTF', 'end');
+			log('reader.onload:: OTF or TTF', 'end');
 		};
 
 		reader.readAsArrayBuffer(f);
 	} else if (fname === 'svg' || fname === 'txt') {
 		reader.onload = function () {
-			// log('reader.onload::SVG or TXT', 'start');
+			log('reader.onload::SVG or TXT', 'start');
 			app.temp.droppedFileContent = reader.result;
 			if (fname === 'svg') {
-				// log('File = .svg');
-				// importSVGFont();
+				log('File = .svg');
+				ioSVG_importSVGFont();
 			} else if (fname === 'txt') {
-				// log('File = .txt');
+				log('File = .txt');
 				importGlyphrProjectFromText();
 				// navigate();
 			}
-			// log('reader.onload::SVG OR TXT', 'end');
+			log('reader.onload::SVG or TXT', 'end');
 		};
 
 		reader.readAsText(f);
@@ -279,7 +280,7 @@ function handleDrop(event) {
 		// ).style.backgroundColor = _UI.colors.gray.offWhite;
 	}
 
-	// log('handleDrop', 'end');
+	log('handleDrop', 'end');
 }
 
 /**
@@ -292,7 +293,7 @@ function handleMessage(event) {
 	app.temp.droppedFileContent = event.data;
 
 	if (typeof event.data === 'string') {
-		// importSVGFont(false);
+		// ioSVG_importSVGFont(false);
 		// assume array buffers are otf fonts
 	} else if (event.data instanceof ArrayBuffer) {
 		// importOTFFont(false);
@@ -308,7 +309,7 @@ function handleDragEnter(event) {
 	event.dataTransfer.dropEffect = 'copy';
 
 	const dropZone = document.getElementById('open-project__right-area');
-	dropZone.innerHTML = '<span id="open-project__drop-it">Drop it!</span>';
+	dropZone.innerHTML = '<span id="open-project__drop-note">Drop it!</span>';
 }
 
 /**

@@ -35,6 +35,8 @@ export class GlyphrStudioApp {
 			},
 			telemetry: false, // Load google analytics
 		};
+
+		this.temp = {};
 	}
 
 	/**

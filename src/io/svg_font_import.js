@@ -1,4 +1,4 @@
-import { XMLtoJSON } from '../io/xml_to_json.js';
+import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { importOverflowCount } from '../pages/open_project.js';
 import { ioSVG_getTags } from './svg_outline_import.js';
 
