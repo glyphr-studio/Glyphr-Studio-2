@@ -1,3 +1,11 @@
+export function getUnicodeBlockByName(name) {
+	unicodeBlocks.forEach(block => {
+		if (block.name === name) return block;
+	});
+
+	return false;
+}
+
 export const unicodeBlocks = [
 	{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' },
 	{ begin: 0x0080, end: 0x00ff, name: 'Latin-1 Supplement' },

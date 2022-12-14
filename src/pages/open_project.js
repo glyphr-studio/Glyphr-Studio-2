@@ -10,6 +10,7 @@ import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { json } from '../common/functions.js';
 import { ioSVG_importSVGFont } from '../io/svg_font_import.js';
+import { makeLoadingSpinner } from '../controls/loading-spinner.js';
 
 /**
  * Page > Open Project
@@ -228,8 +229,8 @@ function deselectAllTabs() {
 function handleDrop(event) {
 	const app = getGlyphrStudioApp();
 	log('handleDrop', 'start');
-	document.getElementById('open-project__right-area').innerHTML =
-		'<span id="open-project__drop-note">Loading file...</span>';
+	document.getElementById('open-project__right-area').appendChild(makeLoadingSpinner());
+	// '<span id="open-project__drop-note">Loading file...</span>';
 	cancelDefaultEventActions(event);
 
 	let f = event.dataTransfer || document.getElementById('open-project__file-chooser');
@@ -358,7 +359,7 @@ function handleLoadSample(name) {
 // --------------------------------------------------------------
 // OLD IMPORT STUFF
 // --------------------------------------------------------------
-function isOutOfBounds(uni) {
+export function isOutOfBounds(uni) {
 	if (!uni.length) return true;
 
 	for (let u = 0; u < uni.length; u++) {
