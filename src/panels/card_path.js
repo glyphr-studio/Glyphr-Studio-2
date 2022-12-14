@@ -62,11 +62,13 @@ export function makeCard_pathAttributes(path) {
 	});
 	let windingButton = makeElement({
 		tag: 'button',
+		className: 'panel-card__action-button',
+		style: 'padding-left: 8px; padding-right: 8px;',
 		innerHTML: makeWindingButtonText(path.winding),
-	});
-	windingButton.addEventListener('click', (event) => {
-		path.reverseWinding();
-		getCurrentProjectEditor().publish('currentPath', path);
+		onClick: () => {
+			path.reverseWinding();
+			getCurrentProjectEditor().publish('currentPath', path);
+		},
 	});
 	getCurrentProjectEditor().subscribe({
 		topic: 'currentPath',
@@ -101,8 +103,8 @@ export function makeCard_pathAttributes(path) {
 
 function makeWindingButtonText(winding) {
 	let buttonText = 'unknown';
-	if (winding > 0) buttonText = 'counterclockwise&ensp;&#8634';
-	if (winding < 0) buttonText = 'clockwise&ensp;&#8635';
+	if (winding > 0) buttonText = 'counterclockwise&nbsp;&#8634';
+	if (winding < 0) buttonText = 'clockwise&nbsp;&#8635';
 	return buttonText;
 }
 

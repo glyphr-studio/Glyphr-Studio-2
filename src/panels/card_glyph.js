@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
+import { makeIcon } from '../common/graphics.js';
 import { makeActionsArea_Glyph, makeActionsArea_Universal } from './actions.js';
 import {
 	dimSplit,
@@ -25,7 +26,18 @@ export function makeCard_glyphAttributes(glyph) {
 	let advanceWidthLabel = makeSingleLabel('advance width');
 	let halfSizeAdvanceWidthInput = makeElement({ tag: 'div', className: 'doubleInput' });
 	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentGlyph', 'input-number');
-	addAsChildren(halfSizeAdvanceWidthInput, [advanceWidthInput, makeElement(), makeElement()]);
+	let autoFitAdvanceWidth = makeElement({
+		tag: 'button',
+		className: 'panel-card__action-button',
+		title: 'Auto-fit advance width\nThe advance width will be set to the x-max of the paths in this glyph.',
+		innerHTML: makeIcon({ name: 'command_autoFit' }),
+		onClick: () => {
+			let editor = getCurrentProjectEditor();
+			editor.selectedItem.advanceWidth = editor.selectedItem.maxes.xMax;
+			editor.publish('currentGlyph', editor.selectedItem);
+		},
+	});
+	addAsChildren(halfSizeAdvanceWidthInput, [advanceWidthInput, makeElement(), autoFitAdvanceWidth]);
 
 	// Side bearings
 	let bearingLabel = makeElement({

@@ -131,6 +131,26 @@
 	width: 100%;
 }
 
+.panel-card__action-button,
+.panel-card__action-button:hover,
+.panel-card__action-button:focus,
+.panel-card__action-button:active {
+	width: min-content;
+	height: 26px;
+	padding: 2px;
+	margin: 0px 0px 0px 2px;
+}
+
+.panel-card__action-button {
+	background-color: var(--blue-l95);
+}
+
+.panel-card__action-button:hover,
+.panel-card__action-button:focus,
+.panel-card__action-button:active {
+	background-color: var(--blue-l95);
+}
+
 .rowPad {
 	display: block;
 	height: 10px;
