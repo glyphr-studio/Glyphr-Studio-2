@@ -145,9 +145,10 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 			// log(`property: ${property}`);
 			// log(`changedItem[property]: ${changedItem[property]}`);
 
-			if (changedItem[property]) {
-				let newValue =
-					tagName === 'input' ? changedItem[property] : round(changedItem[property], 3);
+			if (changedItem[property] || changedItem[property] === 0) {
+				let newValue;
+				if (tagName === 'input') newValue = changedItem[property];
+				else newValue = round(changedItem[property], 3);
 				newInput.value = newValue;
 				// log(`new value: ${newValue}`);
 			}
