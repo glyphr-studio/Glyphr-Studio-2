@@ -727,7 +727,6 @@ export class Path extends GlyphElement {
 			',' +
 			round(this.pathPoints[0].p.y, roundValue);
 
-		// log('makePathPostScript:\n\t ' + re);
 		if (re.indexOf('NaN') > -1) {
 			console.warn(glyphName + ' PathPoint 0 MOVE has NaN: ' + re);
 			// log(this.pathPoints[0]);
@@ -764,16 +763,43 @@ export class Path extends GlyphElement {
 		return re;
 	}
 
-	/**
-	 * Make a PostScript path from this path
-	 * PostScript paths use relative MoveTo commands, so
-	 * this path must know about where the last path left off
-	 * @param {number} lastX - x from previous path
-	 * @param {number} lastY - y from previous path
-	 * @returns {string} - PostScript path data
-	 */
-	makePostScript(lastX = 0, lastY = 0) {
-		return this.makePathPostScript(lastX, lastY);
+	makeOpenTypeJSpath(openTypePath) {
+		log('Path.makeOpenTypeJSpath', 'start');
+		log('openTypePath:');
+		log(openTypePath);
+
+		if (!this.pathPoints) {
+			if (this.pathPoints.length === 0) {
+				log('!!!Path has zero points!');
+			}
+
+			openTypePath.close();
+			return openTypePath;
+		}
+
+		this.reverseWinding(); // OTF.js reverses the winding for some reason
+
+		openTypePath.moveTo(round(this.pathPoints[0].p.x), round(this.pathPoints[0].p.y));
+
+		this.pathPoints.forEach((point) => {
+			nextPoint = this.pathPoints[this.getNextPointNum(point.pointNumber)];
+			openTypePath.curveTo(
+				round(point.h1.x),
+				round(point.h2.y),
+				round(nextPoint.h1.x),
+				round(nextPoint.h1.y),
+				round(nextPoint.p.x),
+				round(nextPoint.p.y)
+			);
+		});
+
+		openTypePath.close();
+		this.reverseWinding(); // Put it back
+
+		log('returning path');
+		log(openTypePath);
+		log('Path.makeOpenTypeJSpath', 'end');
+		return openTypePath;
 	}
 
 	/**
@@ -782,7 +808,9 @@ export class Path extends GlyphElement {
 	 * @param {number} lastY - Last y value in the sequence
 	 * @returns {string}
 	 */
-	makePathPostScript(lastX = 0, lastY = 0) {
+	makePostScript(lastX = 0, lastY = 0) {
+		log(`Path.makePostScript`, 'start');
+
 		if (!this.pathPoints) {
 			return { re: '', lastX: lastX, lastY: lastY };
 		}
@@ -803,7 +831,7 @@ export class Path extends GlyphElement {
 			(this.pathPoints[0].p.y - lastY) +
 			' rmoveto \n';
 
-		// log('makePathPostScript:\n\t ' + re);
+		// log('\n\t ' + re);
 		for (let cp = 0; cp < this.pathPoints.length; cp++) {
 			p1 = this.pathPoints[cp];
 			// p2 = this.pathPoints[(cp+1) % this.pathPoints.length];
@@ -832,6 +860,7 @@ export class Path extends GlyphElement {
 			re += trr;
 		}
 
+		log(`Path.makePostScript`, 'end');
 		return {
 			re: re,
 			lastX: p2.p.x,

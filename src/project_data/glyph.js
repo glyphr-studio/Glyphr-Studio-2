@@ -825,6 +825,13 @@ export class Glyph extends GlyphElement {
 		return pathData;
 	}
 
+	makeOpenTypeJSpath(openTypePath) {
+		this.paths.forEach((path) => {
+			openTypePath = path.makeOpenTypeJSpath(openTypePath);
+		});
+		return openTypePath;
+	}
+
 	// --------------------------------------------------------------
 	// Boolean Combine
 	// --------------------------------------------------------------

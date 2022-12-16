@@ -616,12 +616,12 @@ export class ComponentInstance extends GlyphElement {
 		const g = this.transformedGlyph;
 		let re;
 		let part;
-		for (let s = 0; s < g.paths.length; s++) {
-			part = g.paths[s].makePostScript(lastX, lastY);
+		g.paths.forEach((path) => {
+			part = path.makePostScript(lastX, lastY);
 			lastX = part.lastX;
 			lastY = part.lastY;
 			re += part.re;
-		}
+		});
 		return {
 			re: re,
 			lastX: lastX,
