@@ -1,9 +1,9 @@
-import { Glyph } from '../glyph_elements/glyph.js';
 import { getCurrentProject } from '../app/main.js';
 import { round, clone } from '../common/functions.js';
 import { showToast } from '../controls/dialogs.js';
 import { decToHex, getUnicodeShortName } from '../common/unicode.js';
-import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
+import openTypeJS from '../lib/opentypejs_1-3-1.js';
+import { Glyph } from '../project_data/glyph.js';
 
 /**
 	IO > Export > OpenType
@@ -11,9 +11,10 @@ import { OpenTypeJS } from '../lib/opentypejs_0-9-0.js';
 	Project into OpenType.js format for saving.
 **/
 
-export function exportOTFFont() {
-	// log('exportOTFFont', 'start');
+export function ioOTF_exportOTFfont() {
+	// log('ioOTF_exportOTFfont', 'start');
 	// log('combinePathsOnExport = ' + getCurrentProject().projectSettings.combinePathsOnExport);
+	// const openTypeJS = opentype;
 
 	function firstExportStep() {
 		// log('firstExportStep', 'start');
@@ -46,10 +47,10 @@ export function exportOTFFont() {
 		// Add Notdef
 		const notdef = generateNotdefGlyph();
 
-		const notdefPath = notdef.makeOpenTypeJSPath();
+		const notdefPath = notdef.makeOpenTypeJSpath(new openTypeJS.Path());
 
 		options.glyphs.push(
-			new OpenTypeJS.Glyph({
+			new openTypeJS.Glyph({
 				name: '.notdef',
 				unicode: 0,
 				index: 0,
@@ -103,9 +104,9 @@ export function exportOTFFont() {
 			glyph.combineAllPaths(true);
 		}
 
-		const thisPath = glyph.makeOpenTypeJSPath(new OpenTypeJS.Path());
+		const thisPath = glyph.makeOpenTypeJSpath(new openTypeJS.Path());
 
-		const thisGlyph = new OpenTypeJS.Glyph({
+		const thisGlyph = new openTypeJS.Glyph({
 			name: getUnicodeShortName('' + decToHex(num)),
 			unicode: parseInt(num),
 			index: parseInt(num),
@@ -145,7 +146,7 @@ export function exportOTFFont() {
 		// Create Font
 		// log('NEW options ARG TO FONT');
 		// log(options);
-		const font = new OpenTypeJS.Font(options);
+		const font = new openTypeJS.Font(options);
 
 		// log('Font object:');
 		// log(font.toTables());
@@ -172,18 +173,38 @@ export function exportOTFFont() {
 	currentExportGlyph = exportArray[0];
 	generateOneGlyph();
 
-	// log('exportOTFFont', 'end');
+	// log('ioOTF_exportOTFfont', 'end');
 }
 
 function generateNotdefGlyph() {
-	// log(`generateNotdefGlyph`, 'start');
+	log(`generateNotdefGlyph`, 'start');
 	const capHeight = getCurrentProject().projectSettings.capHeight;
-	const notDefGlyphPaths =
-		'[{"objtype":"path","name":"Outer Phi Rectangle","path":{"objtype":"path","pathPoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":700,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":432,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":0,"y":0,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":-4,"maxes":{"xMax":432,"xMin":0,"yMax":700,"yMin":0}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false},{"objtype":"path","name":"Inner Phi Rectangle","path":{"objtype":"path","pathPoints":[{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":50,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":382,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false},{"objtype":"pathpoint","P":{"objtype":"coord","x":50,"y":650,"xlock":false,"ylock":false},"type":"corner","useh1":false,"useh2":false}],"winding":4,"maxes":{"xMax":382,"xMin":50,"yMax":650,"yMin":50}},"visible":true,"xlock":false,"ylock":false,"wlock":false,"hlock":false,"ratiolock":false}]';
+	const notDefGlyphPaths = [
+		{
+			name: 'Outer Phi Rectangle',
+			pathPoints: [
+				{ p: { x: 0, y: 700 } },
+				{ p: { x: 432, y: 700 } },
+				{ p: { x: 432, y: 0 } },
+				{ p: { x: 0, y: 0 } },
+			],
+			winding: -4,
+		},
+		{
+			name: 'Inner Phi Rectangle',
+			pathPoints: [
+				{ p: { x: 50, y: 50 } },
+				{ p: { x: 382, y: 50 } },
+				{ p: { x: 382, y: 650 } },
+				{ p: { x: 50, y: 650 } },
+			],
+			winding: 4,
+		},
+	];
 
 	let notdef = new Glyph({
 		name: 'notdef',
-		paths: JSON.parse(notDefGlyphPaths),
+		paths: notDefGlyphPaths,
 	});
 	// log(`capHeight ${capHeight}`);
 	// log(`notdef.maxes.yMax ${notdef.maxes.yMax}`);
@@ -195,6 +216,7 @@ function generateNotdefGlyph() {
 		// log(`notdef.maxes.height ${notdef.maxes.yMax}`);
 	}
 
-	// log(`generateNotdefGlyph`, 'end');
+	log(notdef);
+	log(`generateNotdefGlyph`, 'end');
 	return notdef;
 }

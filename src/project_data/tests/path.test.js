@@ -174,9 +174,9 @@ describe('Path', () => {
 		expect(samplePath().maxes.center.x).toBe(327);
 	});
 
-	it('makePathPostScript', () => {
+	it('makePostScript', () => {
 		const path = samplePath();
-		expect(path.makePathPostScript().re).toBe(
+		expect(path.makePostScript().re).toBe(
 			'\t\t\t\t326.65249430318556 500 rmoveto \n\t\t\t\t86.80744781082728 0 70.54005788598715 -71.01004289702911 0 -85.53294831955458 rrcurveto \n\t\t\t\t0 -85.53294831955458 -69.8451137552994 -71.92406046386174 -87.50239194151504 0 rrcurveto \n\t\t\t\t-87.50239194151504 0 -69.15010236167052 71.01000804467071 0 86.4470007387456 rrcurveto \n\t\t\t\t0 86.4470007387456 69.84504649235828 70.09599047783809 86.80744781082728 0 rrcurveto \n'
 		);
 	});

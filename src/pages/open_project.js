@@ -72,8 +72,8 @@ export function makePage_OpenProject() {
 	tableLeft.addEventListener('dragleave', handleDragLeave);
 
 	// Showing default tab
-	content.querySelector('#tab-content__new').style.display = 'block';
-	content.querySelector('#open-project__tab-new').setAttribute('selected', '');
+	content.querySelector('#tab-content__examples').style.display = 'block';
+	content.querySelector('#open-project__tab-examples').setAttribute('selected', '');
 
 	// log(`makePage_OpenProject`, 'end');
 	return content;

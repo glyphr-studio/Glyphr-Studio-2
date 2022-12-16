@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { ioOTF_exportOTFfont } from '../io/otf_export.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import {
 	clipboardCopy,
@@ -54,11 +55,11 @@ export function handleKeyPress(event) {
 	}
 
 	// e
-	// if (ehd.isCtrlDown && key === 'e') {
-	// 	cancelDefaultEventActions(event);
-	// 	showToast('Exporting OTF font file...');
-	// 	setTimeout(ioOTF_exportOTFfont, 500);
-	// }
+	if (ehd.isCtrlDown && key === 'e') {
+		cancelDefaultEventActions(event);
+		showToast('Exporting OTF font file...');
+		setTimeout(ioOTF_exportOTFfont, 500);
+	}
 
 	// o
 	if (ehd.isCtrlDown && key === 'o') {
