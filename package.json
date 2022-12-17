@@ -23,7 +23,7 @@
     "jasmine-core": "^4.3.0",
     "jshint": "^2.13.5",
     "prettier": "^2.7.1",
-    "vite": "^3.1.2"
+    "vite": "^4.0.1"
   },
   "bugs": {
     "url": "https://github.com/glyphr-studio/Glyphr-Studio-2/issues"
