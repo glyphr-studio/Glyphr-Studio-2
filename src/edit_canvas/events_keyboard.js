@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { showToast } from '../controls/dialogs.js';
 import { ioOTF_exportOTFfont } from '../io/otf_export.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import {
@@ -66,7 +67,7 @@ export function handleKeyPress(event) {
 		cancelDefaultEventActions(event);
 		window.open('http://glyphrstudio.com/v2/app', '_blank');
 	}
-
+	
 	// q
 	// for dev mode clear console
 	if (key === 'q' && getGlyphrStudioApp().settings.dev.mode) {

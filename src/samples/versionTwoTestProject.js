@@ -28,8 +28,6 @@ export function getVersionTwoTestProject() {
 				objType: 'Glyph',
 				name: 'Latin Capital Letter A',
 				advanceWidth: 530,
-				leftSideBearing: 10,
-				rightSideBearing: 10,
 				paths: [
 					{
 						objType: 'Path',
@@ -94,8 +92,6 @@ export function getVersionTwoTestProject() {
 				objType: 'Glyph',
 				name: 'Latin Capital Letter B',
 				advanceWidth: 385,
-				leftSideBearing: false,
-				rightSideBearing: false,
 				paths: [
 					{
 						objType: 'Path',
@@ -199,8 +195,6 @@ export function getVersionTwoTestProject() {
 				objType: 'Glyph',
 				name: 'Latin Capital Letter C',
 				advanceWidth: 400,
-				leftSideBearing: false,
-				rightSideBearing: false,
 				paths: [
 					{
 						objType: 'Path',

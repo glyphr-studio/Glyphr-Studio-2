@@ -6,8 +6,6 @@
 		Common functions around this can be found here.
 **/
 
-
-
 // -------------------
 // CONTEXT GLYPHS
 // -------------------
@@ -48,7 +46,7 @@ function drawContextGlyphs() {
 	}
 
 	if (split.right) {
-		let rightdistance = currGlyphObject.getAdvanceWidth();
+		let rightdistance = currGlyphObject.advanceWidth;
 		if (currGlyphObject.isAutoWide) rightdistance -= currGlyphObject.lsb;
 		rightdistance += calculateKernOffset(currGlyphChar, split.right.charAt(0));
 
@@ -99,7 +97,7 @@ function getGlyphSequenceAdvanceWidth(sequence) {
 	sequence.forEach(function (v, i, a) {
 		g = getGlyph(glyphToHex(v));
 		if (g) {
-			advanceWidth += g.getAdvanceWidth();
+			advanceWidth += g.advanceWidth;
 			if (a[i + 1]) advanceWidth += calculateKernOffset(v, a[i + 1]);
 		} else {
 			advanceWidth += (getCurrentProject().projectSettings.upm * 1) / 2;
@@ -139,7 +137,7 @@ function drawContextGlyphRightLineExtras(char, seq) {
 	if (kern) {
 		const v = getView('drawContextGlyphRightLineExtras');
 		const selwi = getSelectedWorkItem();
-		let rightx = selwi.getAdvanceWidth();
+		let rightx = selwi.advanceWidth;
 		if (selwi.isAutoWide) rightx -= selwi.lsb;
 		rightx = v.dx + rightx * v.dz;
 		const texty = sYcY(getCurrentProject().projectSettings.descent - 60);
@@ -452,7 +450,7 @@ function getStringAdvanceWidth(str) {
 	for (let c = 0; c < carr.length; c++) {
 		g = getGlyph(charsToHexArray(carr[c])[0]);
 
-		aw += g.getAdvanceWidth();
+		aw += g.advanceWidth;
 
 		if (c < carr.length - 2) {
 			aw += calculateKernOffset(carr[c], carr[c + 1]);
@@ -461,7 +459,6 @@ function getStringAdvanceWidth(str) {
 
 	return aw;
 }
-
 
 // -------------------
 // Drawing Grid

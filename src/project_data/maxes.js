@@ -1,4 +1,4 @@
-import { isVal, round } from '../common/functions.js';
+import { isVal, json, round } from '../common/functions.js';
 import { GlyphElement } from './glyph_element.js';
 
 /**
@@ -262,7 +262,7 @@ export function maxesOverlap(m1, m2, exclusive = true) {
  */
 export function getOverallMaxes(maxesArray) {
 	// log('getOverallMaxes', 'start');
-	// log(maxesArray);
+	// log(JSON.stringify(maxesArray));
 
 	const re = maxesMinBounds();
 	let tm;
@@ -285,6 +285,20 @@ export function getOverallMaxes(maxesArray) {
 	// log('getOverallMaxes', 'end');
 
 	return new Maxes(re);
+}
+
+/**
+ * Helper that checks if everything is zero
+ * @param {Object} maxes - object to check
+ * @returns {Boolean}
+ */
+export function isAllZeros(maxes) {
+	return (
+		maxes.xMax === 0 &&
+		maxes.xMin === 0 &&
+		maxes.yMax === 0 &&
+		maxes.yMin === 0
+	);
 }
 
 /**
