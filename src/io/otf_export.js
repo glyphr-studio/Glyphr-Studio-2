@@ -17,7 +17,7 @@ export function ioOTF_exportOTFfont() {
 	// const openTypeJS = opentype;
 
 	function firstExportStep() {
-		// log('firstExportStep', 'start');
+		log('firstExportStep', 'start');
 
 		// Add metadata
 		const md = getCurrentProject().metadata;
@@ -46,6 +46,7 @@ export function ioOTF_exportOTFfont() {
 
 		// Add Notdef
 		const notdef = generateNotdefGlyph();
+		log(`notdef.advanceWidth: ${notdef.advanceWidth}`);
 
 		const notdefPath = notdef.makeOpenTypeJSpath(new openTypeJS.Path());
 
@@ -54,7 +55,7 @@ export function ioOTF_exportOTFfont() {
 				name: '.notdef',
 				unicode: 0,
 				index: 0,
-				advanceWidth: round(notdef.getAdvanceWidth()),
+				advanceWidth: round(notdef.advanceWidth),
 				xMin: round(notdef.maxes.xMin),
 				xMax: round(notdef.maxes.xMax),
 				yMin: round(notdef.maxes.yMin),
@@ -63,7 +64,7 @@ export function ioOTF_exportOTFfont() {
 			})
 		);
 
-		// log('firstExportStep', 'end');
+		log('firstExportStep', 'end');
 	}
 
 	function populateExportList() {
@@ -110,7 +111,7 @@ export function ioOTF_exportOTFfont() {
 			name: getUnicodeShortName('' + decToHex(num)),
 			unicode: parseInt(num),
 			index: parseInt(num),
-			advanceWidth: round(glyph.getAdvanceWidth() || 1), // has to be non-zero
+			advanceWidth: round(glyph.advanceWidth || 1), // has to be non-zero
 			xMin: round(maxes.xMin),
 			xMax: round(maxes.xMax),
 			yMin: round(maxes.yMin),
@@ -183,20 +184,44 @@ function generateNotdefGlyph() {
 		{
 			name: 'Outer Phi Rectangle',
 			pathPoints: [
-				{ p: { x: 0, y: 700 } },
-				{ p: { x: 432, y: 700 } },
-				{ p: { x: 432, y: 0 } },
-				{ p: { x: 0, y: 0 } },
+				{
+					objType: 'PathPoint',
+					p: { objType: 'ControlPoint', coord: { objType: 'Coord', x: 0, y: 700 } },
+				},
+				{
+					objType: 'PathPoint',
+					p: { objType: 'ControlPoint', coord: { objType: 'Coord', x: 432, y: 700 } },
+				},
+				{
+					objType: 'PathPoint',
+					p: { objType: 'ControlPoint', coord: { objType: 'Coord', x: 432, y: 0 } },
+				},
+				{
+					objType: 'PathPoint',
+					p: { objType: 'ControlPoint', coord: { objType: 'Coord', x: 0, y: 0 } },
+				},
 			],
 			winding: -4,
 		},
 		{
 			name: 'Inner Phi Rectangle',
 			pathPoints: [
-				{ p: { x: 50, y: 50 } },
-				{ p: { x: 382, y: 50 } },
-				{ p: { x: 382, y: 650 } },
-				{ p: { x: 50, y: 650 } },
+				{
+					objType: 'PathPoint',
+					p: { objType: 'ControlPoint', coord: { objType: 'Coord', x: 50, y: 50 } },
+				},
+				{
+					objType: 'PathPoint',
+					p: { objType: 'ControlPoint', coord: { objType: 'Coord', x: 382, y: 50 } },
+				},
+				{
+					objType: 'PathPoint',
+					p: { objType: 'ControlPoint', coord: { objType: 'Coord', x: 382, y: 650 } },
+				},
+				{
+					objType: 'PathPoint',
+					p: { objType: 'ControlPoint', coord: { objType: 'Coord', x: 50, y: 650 } },
+				},
 			],
 			winding: 4,
 		},
@@ -204,8 +229,10 @@ function generateNotdefGlyph() {
 
 	let notdef = new Glyph({
 		name: 'notdef',
+		advanceWidth: 432,
 		paths: notDefGlyphPaths,
 	});
+	log(`notdef.maxes: ${notdef.maxes}`);
 	// log(`capHeight ${capHeight}`);
 	// log(`notdef.maxes.yMax ${notdef.maxes.yMax}`);
 
@@ -213,6 +240,9 @@ function generateNotdefGlyph() {
 		let delta = capHeight - 700;
 		// log(`delta is ${delta}`);
 		notdef.updateGlyphSize(false, delta, true);
+		log(notdef);
+
+		notdef.advanceWidth = notdef.maxes.xMax;
 		// log(`notdef.maxes.height ${notdef.maxes.yMax}`);
 	}
 

@@ -195,6 +195,7 @@ function makeMenu(menuName) {
 					{
 						name: 'Export OTF File',
 						icon: 'command_export',
+						shortcut: ['Ctrl', 'e'],
 						onClick: ioOTF_exportOTFfont,
 					},
 					{

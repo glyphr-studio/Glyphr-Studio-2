@@ -1,6 +1,6 @@
 import { GlyphElement } from './glyph_element.js';
 import { XYPoint } from './xy_point.js';
-import { Maxes } from './maxes.js';
+import { isAllZeros, Maxes } from './maxes.js';
 import { Segment } from './segment.js';
 import { PolySegment } from './poly_segment.js';
 import { PathPoint } from './path_point.js';
@@ -14,6 +14,7 @@ import {
 	duplicates,
 	pointsAreEqual,
 	strSan,
+	json,
 } from '../common/functions.js';
 import { getCurrentProject } from '../app/main.js';
 
@@ -242,13 +243,24 @@ export class Path extends GlyphElement {
 	 */
 	get maxes() {
 		// log('Path GET maxes', 'start');
-		if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
-			// log('no cache, recalculateMaxes');
+		// log('cache before');
+		// log(json(this.cache, true));
+
+		if (!this.cache.maxes) {
+			// log('detected no maxes cache');
 			this.recalculateMaxes();
-			// log('Path GET maxes', 'end');
+		} else if (hasNonValues(this.cache.maxes)) {
+			// log('detected hasNonValues');
+			this.recalculateMaxes();
+		} else if (isAllZeros(this.cache.maxes)) {
+			// log('detected all values zero');
+			this.recalculateMaxes();
+		} else {
+			// log('NO DETECTION to recalculate');
 		}
 
-		// log('returning ' + json(this.maxes, true));
+		// log('cache after');
+		// log(json(this.cache, true));
 		// log('Path GET maxes', 'end');
 		return new Maxes(this.cache.maxes);
 	}
@@ -764,13 +776,13 @@ export class Path extends GlyphElement {
 	}
 
 	makeOpenTypeJSpath(openTypePath) {
-		log('Path.makeOpenTypeJSpath', 'start');
-		log('openTypePath:');
-		log(openTypePath);
+		// log('Path.makeOpenTypeJSpath', 'start');
+		// log('openTypePath:');
+		// log(openTypePath);
 
 		if (!this.pathPoints) {
 			if (this.pathPoints.length === 0) {
-				log('!!!Path has zero points!');
+				// log('!!!Path has zero points!');
 			}
 
 			openTypePath.close();
@@ -782,7 +794,7 @@ export class Path extends GlyphElement {
 		openTypePath.moveTo(round(this.pathPoints[0].p.x), round(this.pathPoints[0].p.y));
 
 		this.pathPoints.forEach((point) => {
-			nextPoint = this.pathPoints[this.getNextPointNum(point.pointNumber)];
+			const nextPoint = this.pathPoints[this.getNextPointNum(point.pointNumber)];
 			openTypePath.curveTo(
 				round(point.h1.x),
 				round(point.h2.y),
@@ -796,9 +808,9 @@ export class Path extends GlyphElement {
 		openTypePath.close();
 		this.reverseWinding(); // Put it back
 
-		log('returning path');
-		log(openTypePath);
-		log('Path.makeOpenTypeJSpath', 'end');
+		// log('returning path');
+		// log(openTypePath);
+		// log('Path.makeOpenTypeJSpath', 'end');
 		return openTypePath;
 	}
 
@@ -809,7 +821,7 @@ export class Path extends GlyphElement {
 	 * @returns {string}
 	 */
 	makePostScript(lastX = 0, lastY = 0) {
-		log(`Path.makePostScript`, 'start');
+		// log(`Path.makePostScript`, 'start');
 
 		if (!this.pathPoints) {
 			return { re: '', lastX: lastX, lastY: lastY };
@@ -860,7 +872,7 @@ export class Path extends GlyphElement {
 			re += trr;
 		}
 
-		log(`Path.makePostScript`, 'end');
+		// log(`Path.makePostScript`, 'end');
 		return {
 			re: re,
 			lastX: p2.p.x,

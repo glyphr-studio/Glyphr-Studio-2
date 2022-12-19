@@ -1,5 +1,5 @@
 import { GlyphElement } from './glyph_element.js';
-import { Maxes } from './maxes.js';
+import { isAllZeros, Maxes } from './maxes.js';
 import { Path } from './path.js';
 import { ComponentInstance } from './component_instance.js';
 import { getOverallMaxes } from './maxes.js';
@@ -229,15 +229,23 @@ export class Glyph extends GlyphElement {
 	get maxes() {
 		// log('Glyph GET maxes', 'start');
 		// log('cache before');
-		// log(this.cache);
-		if (!this.cache.maxes || hasNonValues(this.cache.maxes)) {
-			// log('detected need to recalculate');
+		// log(json(this.cache, true));
+
+		if (!this.cache.maxes) {
+			// log('detected no maxes cache');
+			this.recalculateMaxes();
+		} else if (hasNonValues(this.cache.maxes)) {
+			// log('detected hasNonValues');
+			this.recalculateMaxes();
+		} else if (isAllZeros(this.cache.maxes)) {
+			// log('detected all values zero');
 			this.recalculateMaxes();
 		} else {
 			// log('NO DETECTION to recalculate');
 		}
+
 		// log('cache after');
-		// log(this.cache);
+		// log(json(this.cache, true));
 		// log('Glyph GET maxes', 'end');
 		return new Maxes(this.cache.maxes);
 	}
