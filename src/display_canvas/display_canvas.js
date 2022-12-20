@@ -335,7 +335,7 @@ export class DisplayCanvas extends HTMLElement {
 			// TODO flattenGlyphs
 			// if (flattenGlyphs) {
 			// 	if (!this.cache.hasOwnProperty(charData.char)) {
-			// 		this.cache[charData.char] = new Glyph(clone(glyph)).combineAllShapes(true);
+			// 		this.cache[charData.char] = glyph.clone().combineAllShapes(true);
 			// 	}
 
 			// 	this.cache[charData.char].drawGlyph(this.ctx, view, 1, true);

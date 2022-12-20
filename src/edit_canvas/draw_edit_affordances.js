@@ -175,7 +175,7 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	const editor = getCurrentProjectEditor();
 	accent = accent || accentBlue;
 	thickness = thickness || 1;
-	let center = clone(eventHandlerData.rotationCenter, 'drawRotationAffordance');
+	let center = clone(eventHandlerData.rotationCenter);
 	let startTopY = eventHandlerData.rotationStartPoint.y;
 	let mx = eventHandlerData.mousePosition.x;
 	let my = eventHandlerData.mousePosition.y;

@@ -103,6 +103,15 @@ export class GlyphElement {
 	}
 
 	/**
+	 * Returns a totally new Glyph Element object that
+	 * matches this one.
+	 * @returns {Object}
+	 */
+	clone() {
+		return new this.constructor(this.save(true));
+	}
+
+	/**
 	 * String representation of this object
 	 * Uses .save() to only get defaults
 	 * @returns {string}
