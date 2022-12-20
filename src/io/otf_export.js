@@ -1,5 +1,5 @@
 import { getCurrentProject } from '../app/main.js';
-import { round, clone } from '../common/functions.js';
+import { round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs.js';
 import { decToHex, getUnicodeShortName } from '../common/unicode.js';
 import openTypeJS from '../lib/opentypejs_1-3-1.js';
@@ -13,15 +13,15 @@ import { Glyph } from '../project_data/glyph.js';
 
 export function ioOTF_exportOTFfont() {
 	// log('ioOTF_exportOTFfont', 'start');
-	// log('combinePathsOnExport = ' + getCurrentProject().projectSettings.combinePathsOnExport);
-	// const openTypeJS = opentype;
+	const project = getCurrentProject();
+	// log('combinePathsOnExport = ' + project.projectSettings.combinePathsOnExport);
 
 	function firstExportStep() {
 		log('firstExportStep', 'start');
 
 		// Add metadata
-		const md = getCurrentProject().metadata;
-		const ps = getCurrentProject().projectSettings;
+		const md = project.metadata;
+		const ps = project.projectSettings;
 
 		options.unitsPerEm = ps.upm || 1000;
 		options.ascender = ps.ascent || 0.00001;
@@ -68,14 +68,14 @@ export function ioOTF_exportOTFfont() {
 	}
 
 	function populateExportList() {
-		// log('populateExportList', 'start');
-
+		log('populateExportList', 'start');
 		// Add Glyphs and Ligatures
 		let thisGlyph;
-		for (const key of Object.keys(getCurrentProject().glyphs)) {
-			if (getCurrentProject().glyphs[key]) {
+		for (const key of Object.keys(project.glyphs)) {
+			if (project.glyphs[key]) {
 				if (parseInt(key)) {
-					thisGlyph = new Glyph(clone(getCurrentProject().glyphs[key]));
+					// thisGlyph = new Glyph(clone(project.glyphs[key]));
+					thisGlyph = project.glyphs[key].clone();
 					exportArray.push({ xg: thisGlyph, xc: key });
 				} else {
 					console.warn('Skipped exporting Glyph ' + key + ' - non-numeric key value.');
@@ -86,26 +86,30 @@ export function ioOTF_exportOTFfont() {
 		exportArray.sort(function (a, b) {
 			return a.xc - b.xc;
 		});
-		// log('populateExportList', 'end');
+		log('exportArray');
+		log(exportArray);
+		log('populateExportList', 'end');
 	}
 
 	function generateOneGlyph() {
-		// log('generateOneGlyph', 'start');
+		log('generateOneGlyph', 'start');
 		// export this glyph
 		const glyph = currentExportGlyph.xg;
 		const num = currentExportGlyph.xc;
-		const comb = getCurrentProject().projectSettings.combinePathsOnExport;
+		const comb = project.projectSettings.combinePathsOnExport;
 		const maxes = glyph.maxes;
 
-		// log('' + glyph.name);
+		log('' + glyph.name);
 
 		showToast('Exporting<br>' + glyph.name, 999999);
 
-		if (comb && glyph.paths.length <= getCurrentProject().projectSettings.maxCombinePathsOnExport) {
+		if (comb && glyph.paths.length <= project.projectSettings.maxCombinePathsOnExport) {
 			glyph.combineAllPaths(true);
 		}
 
 		const thisPath = glyph.makeOpenTypeJSpath(new openTypeJS.Path());
+		log('openTypeJS thisPath');
+		log(thisPath);
 
 		const thisGlyph = new openTypeJS.Glyph({
 			name: getUnicodeShortName('' + decToHex(num)),
@@ -119,7 +123,7 @@ export function ioOTF_exportOTFfont() {
 			path: thisPath,
 		});
 
-		// log(thisGlyph);
+		log(thisGlyph);
 
 		// Add this finished glyph
 		options.glyphs.push(thisGlyph);
@@ -135,7 +139,7 @@ export function ioOTF_exportOTFfont() {
 			setTimeout(lastExportStep, 10);
 		}
 
-		// log('generateOneGlyph', 'end');
+		log('generateOneGlyph', 'end');
 	}
 
 	function lastExportStep() {

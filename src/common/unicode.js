@@ -1,29 +1,5 @@
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 
-let basicLatinOrder = {};
-let unicodeRanges = {};
-let ligatureToUnicode = {};
-export {
-	decToHex,
-	decToHTML,
-	glyphToHex,
-	charsToHexArray,
-	hexToChars,
-	hexToHTML,
-	hexToUnicodeHex,
-	parseUnicodeInput,
-	isInputUnicode,
-	isInputHex,
-	isValidHex,
-	normalizeHex,
-	areHexValuesEqual,
-	getUnicodeName,
-	getUnicodeShortName,
-	basicLatinOrder,
-	unicodeRanges,
-	ligatureToUnicode,
-};
-
 /**
 	Unicode
 	Anything having to do with / working with
@@ -40,7 +16,7 @@ export {
  * @param {number} d - decimal
  * @returns {string} - hexadecimal
  */
-function decToHex(d) {
+export function decToHex(d) {
 	let dr = Number(d).toString(16);
 
 	while (dr.length < 4) {
@@ -55,7 +31,7 @@ function decToHex(d) {
  * @param {number} d - decimal
  * @returns {string} - HTML
  */
-function decToHTML(d) {
+export function decToHTML(d) {
 	return hexToHTML(decToHex(d));
 }
 
@@ -64,7 +40,7 @@ function decToHTML(d) {
  * @param {string} s - unicode
  * @returns {string} - hexadecimal
  */
-function glyphToHex(s) {
+export function glyphToHex(s) {
 	let result = '';
 	for (let i = 0; i < s.length; i++) result += decToHex(String(s).charCodeAt(i));
 	return result;
@@ -75,7 +51,7 @@ function glyphToHex(s) {
  * @param {number} s - string
  * @returns {array} - hexadecimal
  */
-function charsToHexArray(s) {
+export function charsToHexArray(s) {
 	const result = [];
 	for (let i = 0; i < s.length; i++) result.push(decToHex(String(s).charCodeAt(i)));
 	return result;
@@ -86,7 +62,7 @@ function charsToHexArray(s) {
  * @param {string} u - hexadecimal
  * @returns {string} - string
  */
-function hexToChars(u) {
+export function hexToChars(u) {
 	// log('hexToChars', 'start');
 	// log(`passed ${u} which is a ${typeof u}`);
 
@@ -113,7 +89,7 @@ function hexToChars(u) {
  * @param {string} h - hexadecimal
  * @returns {string} - HTML
  */
-function hexToHTML(h) {
+export function hexToHTML(h) {
 	// log('hexToHTML', 'start');
 	// log('passed ' + h);
 	if (!h || h.indexOf('0x') < 0) return false;
@@ -136,7 +112,7 @@ function hexToHTML(h) {
  * @param {number} h - hexadecimal
  * @returns {string} - Unicode
  */
-function hexToUnicodeHex(h) {
+export function hexToUnicodeHex(h) {
 	return h.replace(/0x/, '&#x') + ';';
 }
 
@@ -145,7 +121,7 @@ function hexToUnicodeHex(h) {
  * @param {string} str - input string
  * @returns {array} - sanitized array of strings
  */
-function parseUnicodeInput(str) {
+export function parseUnicodeInput(str) {
 	// takes any kind or number of input
 	// Unicode, Hex, or glyph
 	// and returns an array of padded hex values
@@ -191,7 +167,7 @@ function parseUnicodeInput(str) {
  * @param {string} str - input Unicode
  * @returns {number} - count of chars
  */
-function isInputUnicode(str) {
+export function isInputUnicode(str) {
 	str = str.replace(/u\+/g, 'U+');
 	let count = 0;
 	let pos = str.indexOf('U+');
@@ -207,7 +183,7 @@ function isInputUnicode(str) {
  * @param {string} str - input Hex
  * @returns {number} - count of chars
  */
-function isInputHex(str) {
+export function isInputHex(str) {
 	str = str.replace(/0X/g, '0x');
 	let count = 0;
 	let pos = str.indexOf('0x');
@@ -223,7 +199,7 @@ function isInputHex(str) {
  * @param {string} str - input Hex
  * @returns {boolean}
  */
-function isValidHex(hexInput) {
+export function isValidHex(hexInput) {
 	const green = '0123456789ABCDEF';
 	let str = hexInput.toString();
 	if (str.startsWith('0x')) str = str.substring(2);
@@ -250,7 +226,7 @@ function isValidHex(hexInput) {
  * @param {string} str - input Hex
  * @returns {string}
  */
-function normalizeHex(str) {
+export function normalizeHex(str) {
 	if (isValidHex(str)) {
 		str = `0x${parseInt(str).toString(16).toUpperCase()}`;
 		return str;
@@ -267,55 +243,56 @@ function normalizeHex(str) {
  * @param {any} hex2 - second hex value
  * @returns {boolean}
  */
-function areHexValuesEqual(hex1, hex2) {
+export function areHexValuesEqual(hex1, hex2) {
 	hex1 = normalizeHex(hex1);
 	hex2 = normalizeHex(hex2);
 	return hex1 == hex2;
 }
 
-//  -----------------
-//  Glyph Name Wrapper
-//  -----------------
+// --------------------------------------------------------------
+// Unicode names
+// --------------------------------------------------------------
 
 /**
  * Gets the name of a Unicode character
- * @param {number} ch - Unicode code point
+ * @param {number} codePoint - Unicode code point
  * @returns {string} - name
  */
-function getUnicodeName(ch) {
+export function getUnicodeName(codePoint) {
 	// log('getUnicodeName', 'start');
-	// log('passed ' + ch);
+	// log('passed ' + codePoint);
 
-	ch = normalizeHex(ch);
-	// log('normalized ' + ch);
+	codePoint = normalizeHex(codePoint);
+	// log('normalized ' + codePoint);
 
-	let re;
-	const chn = ch * 1;
+	let name;
+	const chn = codePoint * 1;
 
 	if (chn >= 0x4e00 && chn < 0xa000) {
-		re = 'CJK Unified Ideograph ' + ch.substr(2);
+		name = 'CJK Unified Ideograph ' + codePoint.substr(2);
 	} else {
-		re = unicodeNames[ch] || '[name not found]';
+		name = unicodeNames[codePoint] || '[name not found]';
 	}
 
-	// log('returning ' + re + '\n');
+	// log(`name: ${name}`);
+
 	// log('getUnicodeName', 'end');
-	return re;
+	return name;
 }
 
 /**
  * Gets a short name for a Unicode character, and if not,
  * returns the regular long name
- * @param {number} ch - Unicode code point
+ * @param {number} codePoint - Unicode code point
  * @returns {string} - name
  */
-function getUnicodeShortName(ch) {
+export function getUnicodeShortName(codePoint) {
 	// log('getUnicodeShortName', 'start');
-	// log('passed ' + ch);
-	ch = '' + ch;
-	let name = shortUnicodeNames[ch];
+	// log('passed ' + codePoint);
+	codePoint = '' + codePoint;
+	let name = shortUnicodeNames[codePoint];
 	if (!name) {
-		name = getUnicodeName(ch);
+		name = getUnicodeName(codePoint);
 		if (name)
 			name = name
 				.replace(/latin /gi, '')
@@ -324,15 +301,17 @@ function getUnicodeShortName(ch) {
 		else name = 'none';
 	}
 
-	// log('getUnicodeShortName - returning ' + name + '', 'end');
+	// log(`name: ${name}`);
+
+	// log('getUnicodeShortName', 'end');
 	return name;
 }
 
-//  -----------------
-//  Global Vars
-//  -----------------
+// --------------------------------------------------------------
+// Global variables
+// --------------------------------------------------------------
 
-basicLatinOrder = [
+export const basicLatinOrder = [
 	'0x41',
 	'0x42',
 	'0x43',
@@ -430,7 +409,7 @@ basicLatinOrder = [
 	'0x20',
 ];
 
-unicodeRanges = {
+export const unicodeRanges = {
 	basicLatin: { begin: 0x20, end: 0x7e },
 	latinSupplementControls: { begin: 0x80, end: 0x9f },
 	latinSupplement: { begin: 0xa0, end: 0xff },
@@ -439,7 +418,7 @@ unicodeRanges = {
 };
 
 // https://en.wikipedia.org/wiki/Typographic_ligature
-ligatureToUnicode = {
+export const ligatureToUnicode = {
 	ff: '0xFB00',
 	fi: '0xFB01',
 	fl: '0xFB02',
