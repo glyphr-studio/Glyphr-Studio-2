@@ -3,13 +3,13 @@ import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { uiColors, accentColors } from '../common/colors.js';
-import { importOTFFont } from '../io/otf_import.js';
+import { ioOTF_importOTFfont } from '../io/otf_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from '../app/main.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { json } from '../common/functions.js';
-import { ioSVG_importSVGFont } from '../io/svg_font_import.js';
+import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { makeLoadingSpinner } from '../controls/loading-spinner.js';
 
 /**
@@ -246,7 +246,7 @@ function handleDrop(event) {
 		reader.onload = function () {
 			log('reader.onload::OTF or TTF', 'start');
 			app.temp.droppedFileContent = reader.result;
-			importOTFFont();
+			ioOTF_importOTFfont();
 			log('reader.onload:: OTF or TTF', 'end');
 		};
 
@@ -257,7 +257,7 @@ function handleDrop(event) {
 			app.temp.droppedFileContent = reader.result;
 			if (fname === 'svg') {
 				log('File = .svg');
-				ioSVG_importSVGFont();
+				ioSVG_importSVGfont();
 			} else if (fname === 'txt') {
 				log('File = .txt');
 				importGlyphrProjectFromText();
@@ -294,10 +294,10 @@ function handleMessage(event) {
 	app.temp.droppedFileContent = event.data;
 
 	if (typeof event.data === 'string') {
-		// ioSVG_importSVGFont(false);
+		// ioSVG_importSVGfont(false);
 		// assume array buffers are otf fonts
 	} else if (event.data instanceof ArrayBuffer) {
-		// importOTFFont(false);
+		// ioOTF_importOTFfont(false);
 	}
 }
 
