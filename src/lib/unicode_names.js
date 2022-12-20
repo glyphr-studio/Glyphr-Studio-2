@@ -626,6 +626,8 @@ export const shortUnicodeNames = {
 };
 
 export const unicodeNames = {
+	'0x0': 'Notdef',
+
 	// Basic Latin
 	'0x20': 'Space',
 	'0x21': 'Exclamation mark',

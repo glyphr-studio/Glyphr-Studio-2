@@ -250,8 +250,6 @@ export class Glyph extends GlyphElement {
 		return new Maxes(this.cache.maxes);
 	}
 
-	// Computed properties
-
 	/**
 	 * get name
 	 * @returns {string}
@@ -300,9 +298,15 @@ export class Glyph extends GlyphElement {
 	 * @param {string} newID
 	 */
 	set id(newID) {
+		// log(`Glyph SET id`, 'start');
+		// log(`passed newID: ${newID}`);
+
 		newID = parseUnicodeInput(newID);
 		newID = newID.join ? newID.join('') : '0x0000';
 		this._id = newID;
+		// log(`this._id: ${this._id}`);
+
+		// log(`Glyph SET id`, 'end');
 	}
 
 	/**
@@ -809,25 +813,21 @@ export class Glyph extends GlyphElement {
 
 		let pathData = '';
 		let item;
-		let workingItem;
 
 		// Make Path Data
-		for (let j = 0; j < this.paths.length; j++) {
-			item = this.paths[j];
+		this.paths.forEach((path) => {
+			item = path.clone();
 			// log(`item ${j} of ${this.paths.length}`);
 			// log(item);
 			if (item.objType === 'ComponentInstance') {
-				workingItem = item.transformedGlyph;
+				const workingItem = item.transformedGlyph;
 				if (workingItem) pathData += workingItem.svgPathData;
 			} else {
-				// Do we need clone here? or is new Path enough?
-				workingItem = new Path(item);
-				// log('working item path');
-				// log(workingItem);
-				pathData += workingItem.svgPathData;
+				pathData += item.svgPathData;
 				if (j < this.paths.length - 1) pathData += ' ';
 			}
-		}
+		});
+
 		if (trim(pathData) === '') pathData = 'M0,0Z';
 		this.cache.svg = pathData;
 		return pathData;
