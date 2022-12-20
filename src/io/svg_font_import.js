@@ -21,9 +21,10 @@ import {
 	IO > Import > SVG Outline
 **/
 
-export function ioSVG_importSVGFont() {
-	// log('ioSVG_importSVGFont', 'start');
+export function ioSVG_importSVGfont() {
+	// log('ioSVG_importSVGfont', 'start');
 
+	const project = getCurrentProject();
 	// Font Stuff
 	let font;
 	let chars;
@@ -38,7 +39,6 @@ export function ioSVG_importSVGFont() {
 	function setupFontImport() {
 		// log('setupFontImport', 'start');
 		updateImportStatus('Reading font data...');
-		const newProject = new GlyphrStudioProject();
 
 		try {
 			// Get Font
@@ -193,7 +193,7 @@ export function ioSVG_importSVGFont() {
 					advanceWidth: adv,
 				});
 				if (getUnicodeName(uni) === '[name not found]')
-					getCurrentProject().projectSettings.filterNonCharPoints = false;
+					project.projectSettings.filterNonCharPoints = false;
 			} else {
 				// It's a LIGATURE
 				uni = uni.join('');
@@ -299,7 +299,6 @@ export function ioSVG_importSVGFont() {
 	}
 
 	function finalizeFontImport() {
-		const project = getCurrentProject();
 		const editor = getCurrentProjectEditor();
 		project.glyphs = finalGlyphs;
 		// TODO Ligatures
@@ -361,9 +360,9 @@ export function ioSVG_importSVGFont() {
 
 		editor.nav.page = 'Glyph edit';
 		editor.navigate();
-		// log('ioSVG_importSVGFont', 'end');
+		// log('ioSVG_importSVGfont', 'end');
 	}
-	// log('ioSVG_importSVGFont', 'end');
+	// log('ioSVG_importSVGfont', 'end');
 }
 
 function getFirstTagInstance(obj, tagname) {
