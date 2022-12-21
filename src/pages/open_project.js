@@ -84,6 +84,17 @@ function showDefaultTab(node) {
 }
 
 /**
+ * Import OTF/SVG/Project functions can call this if import fails and
+ * the user needs a second try to specify how to start their project.
+ */
+export function resetOpenProjectTabs() {
+	const tableRight = document.querySelector('#open-project__right-area');
+	tableRight.innerHTML = '';
+	tableRight.appendChild(makeTabs());
+	showDefaultTab(document);
+}
+
+/**
  * Create the tabs for the load project page
  * @returns {Object} DOM node
  */

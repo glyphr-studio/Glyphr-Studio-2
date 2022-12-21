@@ -5,7 +5,7 @@ import { showError } from '../controls/dialogs.js';
 import { updateImportStatus } from '../controls/loading-spinner.js';
 import OpenTypeJS from '../lib/opentypejs_1-3-1.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
-import { importOverflowCount, isOutOfBounds } from '../pages/open_project.js';
+import { importOverflowCount, isOutOfBounds, resetOpenProjectTabs } from '../pages/open_project.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import {
@@ -31,36 +31,46 @@ export function ioOTF_importOTFfont() {
 
 	function setupFontImport() {
 		updateImportStatus('Reading font data...');
+		let failure = false;
 
 		try {
 			// Get Font
 			font = OpenTypeJS.parse(getGlyphrStudioApp().temp.droppedFileContent);
 			log(font);
 		} catch (err) {
-			console.error('Something went wrong with opening the font file:<br><br>' + err);
-			return;
+			let message = `Something went wrong with opening the font file. <br><br>` + err;
+			console.warn(message.replace('<br><br>', ''));
+			showError(message);
+			failure = true;
 		}
 
 		if (font && font.glyphs && font.glyphs.length) {
 			// test for range
 			// if (font.glyphs.length < importOverflowCount) {
-			if(true){
-				updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
-				setTimeout(startFontImport, 1);
-			} else {
-				showError(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
-				// log('setupFontImport', 'end');
-			}
+			// 	updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
+			// 	setTimeout(startFontImport, 1);
+			// } else {
+			// 	showError(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
+			// 	// log('setupFontImport', 'end');
+			// }
 
+			updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
 			Object.keys(font.glyphs.glyphs).forEach(function (key) {
 				importOTFglyphs.push(font.glyphs.glyphs[key]);
 			});
 		} else {
-			showError('Something went wrong with opening the font file:<br><br>' + err);
+			showError(`
+				Something went wrong with opening the font file:<br><br>
+				Font object from OpenTypeJS does not have any glyphs.`);
 			// log('setupFontImport', 'end');
-			return;
+			failure = true;
 		}
 
+		if (failure) {
+			resetOpenProjectTabs();
+		} else {
+			setTimeout(startFontImport, 1);
+		}
 		// log('setupFontImport', 'end');
 	}
 
@@ -99,7 +109,9 @@ export function ioOTF_importOTFfont() {
 		const thisOTFglyph = importOTFglyphs[importGlyphCounter];
 
 		// Get the appropriate unicode decimal for this glyph
-		log(`starting  unicode \t${thisOTFglyph.unicode}\t${thisOTFglyph.name}\t${thisOTFglyph.advanceWidth}`);
+		log(
+			`starting  unicode \t${thisOTFglyph.unicode}\t${thisOTFglyph.name}\t${thisOTFglyph.advanceWidth}`
+		);
 		log(thisOTFglyph);
 
 		const uni = decToHex(thisOTFglyph.unicode || 0);
@@ -158,7 +170,6 @@ export function ioOTF_importOTFfont() {
 
 			const latinExtendedB = getUnicodeBlockByName('Latin Extended-B');
 			if (1 * uni > latinExtendedB.end) customGlyphRange.push(uni);
-
 
 			finalGlyphs[uni] = new Glyph({
 				id: uni,
