@@ -148,9 +148,11 @@
 }
 
 #open-project__drop-note {
+	display: none;
 	position: absolute;
-	top: calc(50% - 50px);
-	font-size: 1em;
+	top: calc(50% - 200px);
+	left: 530px;
+	font-size: 2em;
 	color: var(--blue-l80);
 	opacity: 80%;
 	animation: var(--fade-animate-in);

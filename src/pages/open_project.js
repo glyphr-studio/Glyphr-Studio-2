@@ -51,6 +51,7 @@ export function makePage_OpenProject() {
 					</div>
 				</div>
 				<div id="open-project__right-area" vertical-align="middle"></div>
+				<div id="open-project__drop-note"></div>
 			</div>
 		`,
 	});
@@ -60,23 +61,26 @@ export function makePage_OpenProject() {
 	// Dragging and dropping to load
 	const tableRight = content.querySelector('#open-project__right-area');
 	tableRight.appendChild(makeTabs());
-	tableRight.addEventListener('dragenter', handleDragEnter);
-	tableRight.addEventListener('dragover', cancelDefaultEventActions);
-	tableRight.addEventListener('drop', handleDrop);
-	tableRight.addEventListener('dragleave', handleDragLeave);
+	showDefaultTab(content);
 
-	const tableLeft = content.querySelector('#open-project__left-area');
-	tableLeft.addEventListener('dragenter', handleDragEnter);
-	tableLeft.addEventListener('dragover', cancelDefaultEventActions);
-	tableLeft.addEventListener('drop', handleDrop);
-	tableLeft.addEventListener('dragleave', handleDragLeave);
-
-	// Showing default tab
-	content.querySelector('#tab-content__examples').style.display = 'block';
-	content.querySelector('#open-project__tab-examples').setAttribute('selected', '');
+	const page = content.querySelector('#open-project__page');
+	const options = { capture: true, useCapture: true };
+	page.addEventListener('dragenter', handleDragEnter, options);
+	page.addEventListener('dragover', cancelDefaultEventActions);
+	page.addEventListener('drop', handleDrop, options);
+	page.addEventListener('dragleave', handleDragLeave, options);
 
 	// log(`makePage_OpenProject`, 'end');
 	return content;
+}
+
+/**
+ * makeTabs creates all tab content as display:hidden
+ * this function selects the default tab and content
+ */
+function showDefaultTab(node) {
+	node.querySelector('#tab-content__examples').style.display = 'block';
+	node.querySelector('#open-project__tab-examples').setAttribute('selected', '');
 }
 
 /**
@@ -227,11 +231,16 @@ function deselectAllTabs() {
  * @param {object} event - drop event
  */
 function handleDrop(event) {
-	const app = getGlyphrStudioApp();
 	log('handleDrop', 'start');
-	document.getElementById('open-project__right-area').appendChild(makeLoadingSpinner());
-	// '<span id="open-project__drop-note">Loading file...</span>';
+	const app = getGlyphrStudioApp();
 	cancelDefaultEventActions(event);
+
+	const dropNote = document.getElementById('open-project__drop-note');
+	dropNote.style.display = 'none';
+	const rightArea = document.getElementById('open-project__right-area');
+	rightArea.innerHTML = '';
+	rightArea.appendChild(makeLoadingSpinner());
+
 
 	let f = event.dataTransfer || document.getElementById('open-project__file-chooser');
 	f = f.files[0];
@@ -244,16 +253,16 @@ function handleDrop(event) {
 
 	if (fname === 'otf' || fname === 'ttf') {
 		reader.onload = function () {
-			log('reader.onload::OTF or TTF', 'start');
+			log('reader.onload OTF or TTF', 'start');
 			app.temp.droppedFileContent = reader.result;
 			ioOTF_importOTFfont();
-			log('reader.onload:: OTF or TTF', 'end');
+			log('reader.onload OTF or TTF', 'end');
 		};
 
 		reader.readAsArrayBuffer(f);
 	} else if (fname === 'svg' || fname === 'txt') {
 		reader.onload = function () {
-			log('reader.onload::SVG or TXT', 'start');
+			log('reader.onload SVG or TXT', 'start');
 			app.temp.droppedFileContent = reader.result;
 			if (fname === 'svg') {
 				log('File = .svg');
@@ -263,7 +272,7 @@ function handleDrop(event) {
 				importGlyphrProjectFromText();
 				// navigate();
 			}
-			log('reader.onload::SVG or TXT', 'end');
+			log('reader.onload SVG or TXT', 'end');
 		};
 
 		reader.readAsText(f);
@@ -301,16 +310,21 @@ function handleMessage(event) {
 	}
 }
 
+// --------------------------------------------------------------
+// Drag Events
+// --------------------------------------------------------------
+
 /**
  * Handle DragOver event
  * @param {object} event - event
  */
 function handleDragEnter(event) {
 	cancelDefaultEventActions(event);
-	event.dataTransfer.dropEffect = 'copy';
 
-	const dropZone = document.getElementById('open-project__right-area');
-	dropZone.innerHTML = '<span id="open-project__drop-note">Drop it!</span>';
+	event.dataTransfer.dropEffect = 'copy';
+	const dropNote = document.getElementById('open-project__drop-note');
+	dropNote.innerHTML = 'Drop it!';
+	dropNote.style.display = 'block';
 }
 
 /**
@@ -320,11 +334,14 @@ function handleDragEnter(event) {
 function handleDragLeave(event) {
 	cancelDefaultEventActions(event);
 
-	const dropZone = document.getElementById('open-project__right-area');
-	dropZone.innerHTML = '';
-	dropZone.appendChild(makeTabs());
-	changeTab('load');
+	const dropNote = document.getElementById('open-project__drop-note');
+	dropNote.style.display = 'none';
+	// changeTab('load');
 }
+
+// --------------------------------------------------------------
+// Loading projects
+// --------------------------------------------------------------
 
 /**
  * Create a new project from scratch

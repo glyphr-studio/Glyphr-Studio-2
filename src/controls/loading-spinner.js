@@ -15,9 +15,8 @@ export function updateImportStatus(message) {
 export function makeLoadingSpinner() {
 	// log('makeLoadingSpinner', 'start');
 
-	let wrapper = makeElement({ className: 'loading-spinner__wrapper' });
+	let wrapper = makeElement({ id: 'loading-spinner__wrapper' });
 	let message = makeElement({ id: 'loading-spinner__message', innerHTML: 'Reading font data...' });
-	let spinner = makeElement({ id: 'loading-spinner__spinner' });
 	let sweep = makeElement({
 		tag: 'img',
 		id: 'loading-spinner__sweep',
@@ -26,7 +25,7 @@ export function makeLoadingSpinner() {
 		},
 	});
 
-	addAsChildren(wrapper, [message, spinner, sweep]);
+	addAsChildren(wrapper, [message, sweep]);
 
 	// log('makeLoadingSpinner', 'end');
 	return wrapper;
