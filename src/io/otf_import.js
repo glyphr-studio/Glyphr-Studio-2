@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { round } from '../common/functions.js';
+import { isVal, json, round } from '../common/functions.js';
 import { decToHex, getUnicodeName } from '../common/unicode.js';
+import { showError } from '../controls/dialogs.js';
 import { updateImportStatus } from '../controls/loading-spinner.js';
 import OpenTypeJS from '../lib/opentypejs_1-3-1.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
@@ -34,6 +35,7 @@ export function ioOTF_importOTFfont() {
 		try {
 			// Get Font
 			font = OpenTypeJS.parse(getGlyphrStudioApp().temp.droppedFileContent);
+			log(font);
 		} catch (err) {
 			console.error('Something went wrong with opening the font file:<br><br>' + err);
 			return;
@@ -41,8 +43,9 @@ export function ioOTF_importOTFfont() {
 
 		if (font && font.glyphs && font.glyphs.length) {
 			// test for range
-			if (font.glyphs.length < importOverflowCount) {
-				updateImportStatus('Importing Glyph 1 of ' + font.glyphs.length);
+			// if (font.glyphs.length < importOverflowCount) {
+			if(true){
+				updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
 				setTimeout(startFontImport, 1);
 			} else {
 				showError(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
@@ -73,101 +76,101 @@ export function ioOTF_importOTFfont() {
 	 *  GLYPH IMPORT
 	 *
 	 */
-	let thisOTFglyph;
-	let data;
-	let uni;
-	let newPath;
-	let advanceWidth;
-	let maxGlyph = 0;
+	let maxChar = 0;
 	let minChar = 0xffff;
 	let customGlyphRange = [];
-	let pathCounter = 0;
-	let newPaths = [];
 	let importGlyphCounter = 0;
 	const finalGlyphs = {};
 
 	function importOneGlyph() {
-		// log('\n\n=============================\n');
-		// log('importOneGlyph', 'start');
-		updateImportStatus('Importing Glyph ' + importGlyphCounter + ' of ' + importOTFglyphs.length);
+		log('importOneGlyph', 'start');
+		updateImportStatus(`Importing glyph ${importGlyphCounter} of ${importOTFglyphs.length}`);
 
 		if (importGlyphCounter >= importOTFglyphs.length) {
 			// TODO Kerning
 			// setTimeout(importOneKern, 1);
+			log(`No more glyphs to import, moving to startFinalize...`);
+			log('importOneGlyph', 'end');
 			startFinalizeFontImport();
 			return;
 		}
 
 		// One Glyph in the font
-		thisOTFglyph = importOTFglyphs[importGlyphCounter];
+		const thisOTFglyph = importOTFglyphs[importGlyphCounter];
 
 		// Get the appropriate unicode decimal for this glyph
-		// log('starting  unicode \t' + thisOTFglyph.unicode + ' \t ' + thisOTFglyph.name);
-		// log(thisOTFglyph);
+		log(`starting  unicode \t${thisOTFglyph.unicode}\t${thisOTFglyph.name}\t${thisOTFglyph.advanceWidth}`);
+		log(thisOTFglyph);
 
-		uni = decToHex(thisOTFglyph.unicode || 0);
+		const uni = decToHex(thisOTFglyph.unicode || 0);
+		const advanceWidth = thisOTFglyph.advanceWidth;
 
 		if (uni === false || uni === '0x0000') {
 			// Check for .notdef
-			// log('!!! Skipping '+thisOTFglyph.name+' NO UNICODE !!!');
+			log(`!!! Skipping ${thisOTFglyph.name} NO UNICODE !!!`);
 			importOTFglyphs.splice(importGlyphCounter, 1);
 		} else if (isOutOfBounds([uni])) {
-			// log('!!! Skipping '+thisOTFglyph.name+' OUT OF BOUNDS !!!');
+			log(`!!! Skipping ${thisOTFglyph.name} OUT OF BOUNDS !!!`);
 			importOTFglyphs.splice(importGlyphCounter, 1);
 		} else {
-			// log('GLYPH ' + importGlyphCounter + '/'+importOTFglyphs.length+'\t"'+thisOTFglyph.name + '" unicode: ' + uni);
+			log(`GLYPH ${importGlyphCounter}/${importOTFglyphs.length}`);
+			log(`${thisOTFglyph.name} unicode: ${uni}`);
+
 			/*
 			 *
 			 *  GLYPH IMPORT
 			 *
 			 */
-			newPaths = [];
-			pathCounter = 0;
+			const newPaths = [];
+			let pathCounter = 0;
 
 			// Import Path Data
-			data = flattenDataArray(thisOTFglyph.path.commands);
+			let data = flattenDataArray(thisOTFglyph.path.commands);
 			// log('Glyph has path data \n' + data);
 
 			if (data && data !== 'z') {
 				data = ioSVG_cleanAndFormatPathDefinition(data);
 
-				// log('split data into ' + data.length + ' Glyphr Studio paths.');
+				log('split data into ' + data.length + ' Glyphr Studio paths.');
 				// log(data);
 
-				for (let d = 0; d < data.length; d++) {
-					if (data[d].length) {
-						// log('starting convertPathTag');
-						newPath = ioSVG_convertSVGTagToPath(data[d]);
-						// log('created path from PathTag');
-						// log(newPath);
+				data.forEach((pathData) => {
+					if (pathData.length) {
+						log('starting convertPathTag');
+						const newPath = ioSVG_convertSVGTagToPath(pathData);
+						log('created path from PathTag');
+						log(newPath);
 						if (newPath.pathPoints.length) {
 							pathCounter++;
 							newPath.name = `Path ${pathCounter}`;
 							newPaths.push(newPath);
 						} else {
-							// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
+							log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + pathData);
 						}
 					}
-				}
+				});
 			}
-
-			// Get Advance Width
-			advanceWidth = parseInt(thisOTFglyph.advanceWidth);
 
 			// Get some range data
 			// uni = uni[0];
 			minChar = Math.min(minChar, uni);
-			maxGlyph = Math.max(maxGlyph, uni);
+			maxChar = Math.max(maxChar, uni);
 
 			const latinExtendedB = getUnicodeBlockByName('Latin Extended-B');
 			if (1 * uni > latinExtendedB.end) customGlyphRange.push(uni);
 
+
 			finalGlyphs[uni] = new Glyph({
+				id: uni,
 				paths: newPaths,
 				advanceWidth: advanceWidth,
 			});
-			if (getUnicodeName(uni) === '[name not found]')
+			log(`Pushing new glyph to finalGlyphs as:`);
+			log(finalGlyphs[uni]);
+
+			if (getUnicodeName(uni) === '[name not found]') {
 				project.projectSettings.filterNonCharPoints = false;
+			}
 
 			// Successful loop, advance importGlyphCounter
 			importGlyphCounter++;
@@ -176,34 +179,29 @@ export function ioOTF_importOTFfont() {
 		// finish loop
 		setTimeout(importOneGlyph, 1);
 
-		// log('importOneGlyph', 'end');
+		log('importOneGlyph', 'end');
 	}
 
-	function flattenDataArray(da) {
+	function flattenDataArray(data) {
 		// log('flattenDataArray', 'start');
-		// log(json(da, true));
+		// log(json(data, true));
 
-		let re = '';
-		let tc;
-		for (let i = 0; i < da.length; i++) {
-			tc = da[i];
-
-			re += tc.type;
-
-			if (isVal(tc.x1) && isVal(tc.y1)) {
-				re += tc.x1 + ',' + tc.y1 + ',';
-				if (isVal(tc.x2) && isVal(tc.y2)) {
-					re += tc.x2 + ',' + tc.y2 + ',';
+		let result = '';
+		data.forEach((entry) => {
+			result += entry.type;
+			if (isVal(entry.x1) && isVal(entry.y1)) {
+				result += `${entry.x1},${entry.y1},`;
+				if (isVal(entry.x2) && isVal(entry.y2)) {
+					result += `${entry.x2},${entry.y2},`;
 				}
 			}
+			if (isVal(entry.x) && isVal(entry.y)) result += `${entry.x},${entry.y},`;
+		});
 
-			if (isVal(tc.x) && isVal(tc.y)) re += tc.x + ',' + tc.y + ',';
-		}
-
-		// log(re);
+		// log(result);
 		// log('flattenDataArray', 'end');
 
-		return re;
+		return result;
 	}
 
 	/*
@@ -305,7 +303,7 @@ export function ioOTF_importOTFfont() {
 		md.version =
 			getTableValue(font.tables.head.fontRevision) ||
 			getTableValue(font.version) ||
-			getTableValue('Version 0.001');
+			getTableValue('Version 0.1');
 
 		// These can be read in but not saved using OpenType.js
 		md.font_style = getTableValue(font.tables.name.fontSubfamily) || 'Regular';
