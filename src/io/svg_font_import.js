@@ -97,18 +97,10 @@ export function ioSVG_importSVGfont() {
 	 *  GLYPH IMPORT
 	 *
 	 */
-	let tca;
-	let data;
-	let uni;
-	let np;
-	let adv;
-	let maxGlyph = 0;
+	let maxChar = 0;
 	let minChar = 0xffff;
 	let customGlyphRange = [];
-	let pathCounter = 0;
-	let newPaths = [];
-	let finalGlyphs = {};
-	let finalLigatures = {};
+	const finalGlyphs = {};
 	let charCounter = 0;
 
 	function importOneGlyph() {
@@ -124,35 +116,34 @@ export function ioSVG_importSVGfont() {
 		}
 
 		// One Glyph or Ligature in the font
-		tca = chars[charCounter].attributes;
+		const attributes = chars[charCounter].attributes;
 
 		// Get the appropriate unicode decimal for this char
 		// log('importOneGlyph', 'start');
-		// log('starting  unicode \t' + tca.unicode + ' \t ' + tca['glyph-name']);
+		// log('starting  unicode \t' + attributes.unicode + ' \t ' + attributes['glyph-name']);
 
-		uni = parseUnicodeInput(tca.unicode);
-
-		if (tca.unicode === ' ') uni = ['0x0020'];
+		let uni = parseUnicodeInput(attributes.unicode);
+		if (attributes.unicode === ' ') uni = ['0x0020'];
 
 		if (uni === false) {
 			// Check for .notdef
-			// log('!!! Skipping '+tca['glyph-name']+' NO UNICODE !!!');
+			// log('!!! Skipping '+attributes['glyph-name']+' NO UNICODE !!!');
 			chars.splice(charCounter, 1);
 		} else if (isOutOfBounds(uni)) {
-			// log('!!! Skipping '+tca['glyph-name']+' OUT OF BOUNDS !!!');
+			// log('!!! Skipping '+attributes['glyph-name']+' OUT OF BOUNDS !!!');
 			chars.splice(charCounter, 1);
 		} else {
-			// log('GLYPH ' + charCounter + '/'+chars.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(tca));
+			// log('GLYPH ' + charCounter + '/'+chars.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(attributes));
 			/*
 			 *
 			 *  GLYPH OR LIGATURE IMPORT
 			 *
 			 */
-			newPaths = [];
-			pathCounter = 0;
+			const newPaths = [];
+			let pathCounter = 0;
 
 			// Import Path Data
-			data = tca.d;
+			let data = attributes.d;
 			// log('Glyph has path data ' + data);
 			if (data && data !== 'z') {
 				data = ioSVG_cleanAndFormatPathDefinition(data);
@@ -160,37 +151,37 @@ export function ioSVG_importSVGfont() {
 				// log('split z, data into ' + data.length + ' Glyphr Studio paths.');
 				// log(data);
 
-				for (let d = 0; d < data.length; d++) {
-					if (data[d].length) {
+				data.forEach((pathData) => {
+					if (pathData.length) {
 						// log('starting convertPathTag');
-						np = ioSVG_convertSVGTagToPath(data[d]);
+						let newPath = ioSVG_convertSVGTagToPath(pathData);
 						// log('created path from PathTag');
-						// log(np);
-						if (np.pathPoints.length) {
+						// log(newPath);
+						if (newPath.pathPoints.length) {
 							pathCounter++;
-							np.name = `Path ${pathCounter}`;
-							newPaths.push(np);
+							newPath.name = `Path ${pathCounter}`;
+							newPaths.push(newPath);
 						} else {
-							// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + data[d]);
+							// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + pathData);
 						}
 					}
-				}
+				});
 			}
 
 			// Get Advance Width
-			adv = parseInt(tca['horiz-adv-x']);
+			const advanceWidth = parseInt(attributes['horiz-adv-x']);
 
 			if (uni.length === 1) {
 				// It's a GLYPH
 				// Get some range data
 				uni = uni[0];
 				minChar = Math.min(minChar, uni);
-				maxGlyph = Math.max(maxGlyph, uni);
+				maxChar = Math.max(maxChar, uni);
 				if (1 * uni > latinExtendedB.end) customGlyphRange.push(uni);
 
 				finalGlyphs[uni] = new Glyph({
 					paths: newPaths,
-					advanceWidth: adv,
+					advanceWidth: advanceWidth,
 				});
 				if (getUnicodeName(uni) === '[name not found]')
 					project.projectSettings.filterNonCharPoints = false;
@@ -199,7 +190,7 @@ export function ioSVG_importSVGfont() {
 				uni = uni.join('');
 				finalLigatures[uni] = new Glyph({
 					paths: newPaths,
-					advanceWidth: adv,
+					advanceWidth: advanceWidth,
 				});
 			}
 
@@ -223,9 +214,9 @@ export function ioSVG_importSVGfont() {
 	let rightGroup;
 	let newID;
 	let kernValue;
-	let finalKerns = {};
-
+	const finalKerns = {};
 	let kernCount = 0;
+
 	function importOneKern() {
 		if (kernCount >= kerns.length) {
 			updateImportStatus('Finalizing the imported font...');
