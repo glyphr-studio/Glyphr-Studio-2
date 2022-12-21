@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { round } from '../common/functions.js';
 import { getUnicodeName, parseUnicodeInput } from '../common/unicode.js';
+import { showError } from '../controls/dialogs.js';
 import { updateImportStatus } from '../controls/loading-spinner.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
@@ -58,7 +59,8 @@ export function ioSVG_importSVGfont() {
 		// Check to see if it's actually a SVG Font
 		if (!font) {
 			showError(
-				'The SVG file you tried to load was not a SVG Font file. See Glyphr Studio help for more information.'
+				`The SVG file you tried to load was not a SVG Font file.
+				See Glyphr Studio help for more information.`
 			);
 			// log('setupFontImport', 'end');
 			return;
@@ -72,16 +74,17 @@ export function ioSVG_importSVGfont() {
 		chars = ioSVG_getTags(font, 'glyph');
 
 		// test for range
-		if (chars.length < importOverflowCount) {
-			setTimeout(startFontImport, 1);
-			// Dump JSON
-			// saveFile('Parsed JSON', json(jsonData));
-		} else {
-			showError(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
-			// log('setupFontImport', 'end');
-			return;
-		}
+		// if (chars.length < importOverflowCount) {
+		// 	setTimeout(startFontImport, 1);
+		// 	// Dump JSON
+		// 	// saveFile('Parsed JSON', json(jsonData));
+		// } else {
+		// 	showError(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
+		// 	// log('setupFontImport', 'end');
+		// 	return;
+		// }
 
+		setTimeout(startFontImport, 1);
 		// log('setupFontImport', 'end');
 	}
 
