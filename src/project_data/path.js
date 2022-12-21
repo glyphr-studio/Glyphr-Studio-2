@@ -796,7 +796,7 @@ export class Path extends GlyphElement {
 		this.pathPoints.forEach((point) => {
 			const nextPoint = this.pathPoints[this.getNextPointNum(point.pointNumber)];
 			openTypePath.curveTo(
-				round(point.h1.x),
+				round(point.h2.x),
 				round(point.h2.y),
 				round(nextPoint.h1.x),
 				round(nextPoint.h1.y),
@@ -836,12 +836,9 @@ export class Path extends GlyphElement {
 		let p2ppx;
 		let p2ppy;
 		let trr = '';
-		let re =
-			'\t\t\t\t' +
-			(this.pathPoints[0].p.x - lastX) +
-			' ' +
-			(this.pathPoints[0].p.y - lastY) +
-			' rmoveto \n';
+		let re = `
+				${(this.pathPoints[0].p.x - lastX)} ${(this.pathPoints[0].p.y - lastY)} rmoveto
+		`;
 
 		// log('\n\t ' + re);
 		for (let cp = 0; cp < this.pathPoints.length; cp++) {
@@ -854,20 +851,9 @@ export class Path extends GlyphElement {
 			p2h1y = p2.h1.y - p1.h2.y;
 			p2ppx = p2.p.x - p2.h1.x;
 			p2ppy = p2.p.y - p2.h1.y;
-			trr =
-				'\t\t\t\t' +
-				p1h2x +
-				' ' +
-				p1h2y +
-				' ' +
-				p2h1x +
-				' ' +
-				p2h1y +
-				' ' +
-				p2ppx +
-				' ' +
-				p2ppy +
-				' rrcurveto \n';
+			trr = `
+					${p1h2x} ${p1h2y} ${p2h1x} ${p2h1y} ${p2ppx} ${p2ppy} rrcurveto
+			`;
 			// log('' + trr);
 			re += trr;
 		}
