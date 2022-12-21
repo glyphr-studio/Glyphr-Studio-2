@@ -16,10 +16,10 @@ import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
  * @param {number} d - decimal
  * @returns {string} - hexadecimal
  */
-export function decToHex(d) {
+export function decToHex(d, pad = 0) {
 	let dr = Number(d).toString(16);
 
-	while (dr.length < 4) {
+	while (dr.length < pad) {
 		dr = '0' + dr;
 	}
 

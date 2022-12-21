@@ -357,8 +357,16 @@ export class Glyph extends GlyphElement {
 	 * @param {number} advanceWidth
 	 */
 	set advanceWidth(advanceWidth) {
+		// log(`Glyph SET advanceWidth`, 'start');
+		// log(`advanceWidth: ${advanceWidth}`);
+
 		this._advanceWidth = parseFloat(advanceWidth);
+		// log(`parseFloat(advanceWidth): ${parseFloat(advanceWidth)}`);
+
 		if (isNaN(this._advanceWidth)) this._advanceWidth = 0;
+		// log(`this._advanceWidth: ${this._advanceWidth}`);
+
+		// log(`Glyph SET advanceWidth`, 'end');
 	}
 
 	/**
