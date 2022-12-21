@@ -11,6 +11,7 @@ import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { json } from '../common/functions.js';
 import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { makeLoadingSpinner } from '../controls/loading-spinner.js';
+import { showError } from '../controls/dialogs.js';
 
 /**
  * Page > Open Project
@@ -52,6 +53,7 @@ export function makePage_OpenProject() {
 				</div>
 				<div id="open-project__right-area" vertical-align="middle"></div>
 				<div id="open-project__drop-note"></div>
+				<input id="open-project__file-chooser" type="file" style="display: none;"/>
 			</div>
 		`,
 	});
@@ -70,6 +72,7 @@ export function makePage_OpenProject() {
 	page.addEventListener('drop', handleDrop, options);
 	page.addEventListener('dragleave', handleDragLeave, options);
 
+	content.querySelector('#open-project__file-chooser').addEventListener('change', handleDrop, false);
 	// log(`makePage_OpenProject`, 'end');
 	return content;
 }
@@ -153,14 +156,7 @@ function makeTabs() {
 		},
 	});
 
-	const fileChooser = makeElement({
-		tag: 'input',
-		id: 'open-project__file-chooser',
-		attributes: { type: 'file', style: 'display: none;' },
-		onClick: handleDrop,
-	});
-
-	addAsChildren(tabContentLoad, [dropTarget, openFileChooser, fileChooser]);
+	addAsChildren(tabContentLoad, [dropTarget, openFileChooser]);
 
 	// Content for Examples tab
 	const tabContentExamples = makeElement({
@@ -245,6 +241,7 @@ function handleDrop(event) {
 	log('handleDrop', 'start');
 	const app = getGlyphrStudioApp();
 	cancelDefaultEventActions(event);
+	log(event);
 
 	const dropNote = document.getElementById('open-project__drop-note');
 	dropNote.style.display = 'none';
@@ -252,9 +249,10 @@ function handleDrop(event) {
 	rightArea.innerHTML = '';
 	rightArea.appendChild(makeLoadingSpinner());
 
-
-	let f = event.dataTransfer || document.getElementById('open-project__file-chooser');
-	f = f.files[0];
+	const fileChooser = document.getElementById('open-project__file-chooser');
+	const filesData = event.dataTransfer || fileChooser;
+	log(filesData);
+	const f = filesData.files[0];
 	log('filename: ' + f.name);
 	let fname = f.name.split('.');
 	fname = fname[fname.length - 1].toLowerCase();
@@ -288,17 +286,11 @@ function handleDrop(event) {
 
 		reader.readAsText(f);
 	} else {
-		// let con = '<h3>Unsupported file type</h3>';
-		// con += "Glyphr Studio can't import ." + fname + ' files.<br>';
-		// con += 'Try loading another file.';
-		// document.getElementById(
-		//   'open-project__right-area'
-		// ).innerHTML = makeTabs();
-		// changeTab('load');
-		// showError(con);
-		// document.getElementById(
-		//   'open-project__right-area'
-		// ).style.backgroundColor = _UI.colors.gray.offWhite;
+		let con = 'Unsupported file type<br><br>';
+		con += "Glyphr Studio can't import ." + fname + ' files.<br>';
+		con += 'Try loading another file.';
+		resetOpenProjectTabs();
+		showError(con);
 	}
 
 	log('handleDrop', 'end');
