@@ -12,6 +12,7 @@ import { json } from '../common/functions.js';
 import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { makeLoadingSpinner } from '../controls/loading-spinner.js';
 import { showError } from '../controls/dialogs.js';
+import { validateFileInput } from '../io/validate_file_input.js';
 
 /**
  * Page > Open Project
@@ -72,7 +73,9 @@ export function makePage_OpenProject() {
 	page.addEventListener('drop', handleDrop, options);
 	page.addEventListener('dragleave', handleDragLeave, options);
 
-	content.querySelector('#open-project__file-chooser').addEventListener('change', handleDrop, false);
+	content
+		.querySelector('#open-project__file-chooser')
+		.addEventListener('change', handleDrop, false);
 	// log(`makePage_OpenProject`, 'end');
 	return content;
 }
@@ -252,48 +255,20 @@ function handleDrop(event) {
 	const fileChooser = document.getElementById('open-project__file-chooser');
 	const filesData = event.dataTransfer || fileChooser;
 	log(filesData);
-	const f = filesData.files[0];
-	log('filename: ' + f.name);
-	let fname = f.name.split('.');
-	fname = fname[fname.length - 1].toLowerCase();
-	log('fname = ' + fname);
 
-	const reader = new FileReader();
-
-	if (fname === 'otf' || fname === 'ttf') {
-		reader.onload = function () {
-			log('reader.onload OTF or TTF', 'start');
-			app.temp.droppedFileContent = reader.result;
-			ioOTF_importOTFfont();
-			log('reader.onload OTF or TTF', 'end');
-		};
-
-		reader.readAsArrayBuffer(f);
-	} else if (fname === 'svg' || fname === 'txt') {
-		reader.onload = function () {
-			log('reader.onload SVG or TXT', 'start');
-			app.temp.droppedFileContent = reader.result;
-			if (fname === 'svg') {
-				log('File = .svg');
-				ioSVG_importSVGfont();
-			} else if (fname === 'txt') {
-				log('File = .txt');
-				importGlyphrProjectFromText();
-				// navigate();
-			}
-			log('reader.onload SVG or TXT', 'end');
-		};
-
-		reader.readAsText(f);
-	} else {
-		let con = 'Unsupported file type<br><br>';
-		con += "Glyphr Studio can't import ." + fname + ' files.<br>';
-		con += 'Try loading another file.';
-		resetOpenProjectTabs();
-		showError(con);
-	}
+	validateFileInput(filesData, postValidationCallback);
 
 	log('handleDrop', 'end');
+}
+
+function postValidationCallback(results) {
+	if (results.validatedContent) {
+		if (results.fileType === 'font') {
+			ioOTF_importOTFfont(results.validatedContent);
+		} else if (results.fileType === 'svg') {
+		} else if (results.fileType === 'project') {
+		}
+	}
 }
 
 /**

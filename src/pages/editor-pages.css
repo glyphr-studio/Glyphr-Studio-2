@@ -43,6 +43,7 @@
 	position: absolute;
 	right: 15px;
 	bottom: 14px;
+	margin-bottom: -4px;
 }
 
 .edit-canvas__responsive-group {

@@ -3,7 +3,6 @@ import { isVal, json, round } from '../common/functions.js';
 import { decToHex, getUnicodeName } from '../common/unicode.js';
 import { showError } from '../controls/dialogs.js';
 import { updateImportStatus } from '../controls/loading-spinner.js';
-import OpenTypeJS from '../lib/opentypejs_1-3-1.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { importOverflowCount, isOutOfBounds, resetOpenProjectTabs } from '../pages/open_project.js';
 import { Glyph } from '../project_data/glyph.js';
@@ -19,11 +18,11 @@ import {
 	and convert it to a Glyphr Studio Project.
 **/
 
-export function ioOTF_importOTFfont() {
+export function ioOTF_importOTFfont(font) {
 	// log('ioOTF_importOTFfont', 'start');
 
 	// Font Stuff
-	let font = false;
+	// let font = false;
 	const importOTFglyphs = [];
 	const project = getCurrentProject();
 
@@ -31,57 +30,23 @@ export function ioOTF_importOTFfont() {
 
 	function setupFontImport() {
 		updateImportStatus('Reading font data...');
-		let failure = false;
 
-		try {
-			// Get Font
-			font = OpenTypeJS.parse(getGlyphrStudioApp().temp.droppedFileContent);
-			log(font);
-		} catch (err) {
-			let message = `Something went wrong with opening the font file. <br><br>` + err;
-			// console.warn(message.replace('<br><br>', ''));
-			console.error(err);
-			showError(message);
-			failure = true;
-		}
+		// test for range
+		// if (font.glyphs.length < importOverflowCount) {
+		// 	updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
+		// 	setTimeout(importOneGlyph, 10);
+		// } else {
+		// 	showError(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
+		// 	// log('setupFontImport', 'end');
+		// }
 
-		if (!failure) {
-			if (font && font.glyphs && font.glyphs.length) {
-				// test for range
-				// if (font.glyphs.length < importOverflowCount) {
-				// 	updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
-				// 	setTimeout(startFontImport, 1);
-				// } else {
-				// 	showError(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
-				// 	// log('setupFontImport', 'end');
-				// }
+		updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
+		Object.keys(font.glyphs.glyphs).forEach(function (key) {
+			importOTFglyphs.push(font.glyphs.glyphs[key]);
+		});
 
-				updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
-				Object.keys(font.glyphs.glyphs).forEach(function (key) {
-					importOTFglyphs.push(font.glyphs.glyphs[key]);
-				});
-			} else {
-				showError(`
-				Something went wrong with opening the font file:<br><br>
-				Font object from OpenTypeJS does not have any glyphs.`);
-				// log('setupFontImport', 'end');
-				failure = true;
-			}
-		}
-
-		if (failure) {
-			resetOpenProjectTabs();
-		} else {
-			setTimeout(startFontImport, 1);
-		}
+		setTimeout(importOneGlyph, 10);
 		// log('setupFontImport', 'end');
-	}
-
-	function startFontImport() {
-		// log('startFontImport', 'start');
-		// log(font);
-		setTimeout(importOneGlyph, 4);
-		// log('startFontImport', 'end');
 	}
 
 	/*
@@ -101,7 +66,7 @@ export function ioOTF_importOTFfont() {
 
 		if (importGlyphCounter >= importOTFglyphs.length) {
 			// TODO Kerning
-			// setTimeout(importOneKern, 1);
+			// setTimeout(importOneKern, 10);
 			// log(`No more glyphs to import, moving to startFinalize...`);
 			// log('importOneGlyph', 'end');
 			startFinalizeFontImport();
@@ -191,7 +156,7 @@ export function ioOTF_importOTFfont() {
 		}
 
 		// finish loop
-		setTimeout(importOneGlyph, 1);
+		setTimeout(importOneGlyph, 10);
 
 		// log('importOneGlyph', 'end');
 	}
@@ -239,7 +204,7 @@ export function ioOTF_importOTFfont() {
 	 */
 	function startFinalizeFontImport() {
 		updateImportStatus('Finalizing the imported font...');
-		setTimeout(finalizeFontImport, 20);
+		setTimeout(finalizeFontImport, 10);
 	}
 
 	function finalizeFontImport() {

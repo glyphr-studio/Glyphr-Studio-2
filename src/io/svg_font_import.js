@@ -22,12 +22,10 @@ import {
 	IO > Import > SVG Outline
 **/
 
-export function ioSVG_importSVGfont() {
+export function ioSVG_importSVGfont(font) {
 	// log('ioSVG_importSVGfont', 'start');
 
 	const project = getCurrentProject();
-	// Font Stuff
-	let font;
 	let chars;
 
 	// TODO kerning
@@ -41,31 +39,6 @@ export function ioSVG_importSVGfont() {
 		// log('setupFontImport', 'start');
 		updateImportStatus('Reading font data...');
 
-		try {
-			// Get Font
-			let svgData = getGlyphrStudioApp().temp.droppedFileContent;
-			// Convert unicode glyphs to decimal values
-			// DOM Parser does not return unicode values as text strings
-			// Kern groups containing '&#x' will get fuck'd
-			svgData = svgData.replace(/&#x/g, '0x');
-			const jsonData = XMLtoJSON(svgData);
-			font = getFirstTagInstance(jsonData, 'font');
-		} catch (e) {
-			showError('There was a problem reading the SVG file:<br>' + e.message);
-			// log('setupFontImport', 'end');
-			return;
-		}
-
-		// Check to see if it's actually a SVG Font
-		if (!font) {
-			showError(
-				`The SVG file you tried to load was not a SVG Font file.
-				See Glyphr Studio help for more information.`
-			);
-			// log('setupFontImport', 'end');
-			return;
-		}
-
 		// Get Kerns
 		// TODO kerning
 		// kerns = ioSVG_getTags(font, 'hkern');
@@ -75,7 +48,7 @@ export function ioSVG_importSVGfont() {
 
 		// test for range
 		// if (chars.length < importOverflowCount) {
-		// 	setTimeout(startFontImport, 1);
+		// 	setTimeout(startFontImport, 10);
 		// 	// Dump JSON
 		// 	// saveFile('Parsed JSON', json(jsonData));
 		// } else {
@@ -84,15 +57,9 @@ export function ioSVG_importSVGfont() {
 		// 	return;
 		// }
 
-		setTimeout(startFontImport, 1);
-		// log('setupFontImport', 'end');
-	}
-
-	function startFontImport() {
-		// log('startFontImport', 'start');
 		updateImportStatus('Importing Glyph 1 of ' + chars.length);
-		setTimeout(importOneGlyph, 4);
-		// log('startFontImport', 'end');
+		setTimeout(importOneGlyph, 10);
+		// log('setupFontImport', 'end');
 	}
 
 	/*
@@ -111,9 +78,9 @@ export function ioSVG_importSVGfont() {
 
 		if (charCounter >= chars.length) {
 			// TODO Kerning
-			// setTimeout(importOneKern, 1);
+			// setTimeout(importOneKern, 10);
 			updateImportStatus('Finalizing the imported font...');
-			setTimeout(startFinalizeFontImport, 1);
+			setTimeout(startFinalizeFontImport, 10);
 
 			return;
 		}
@@ -202,7 +169,7 @@ export function ioSVG_importSVGfont() {
 		}
 
 		// finish loop
-		setTimeout(importOneGlyph, 1);
+		setTimeout(importOneGlyph, 10);
 
 		// log('importOneGlyph', 'end');
 	}
@@ -223,7 +190,7 @@ export function ioSVG_importSVGfont() {
 	function importOneKern() {
 		if (kernCount >= kerns.length) {
 			updateImportStatus('Finalizing the imported font...');
-			setTimeout(startFinalizeFontImport, 1);
+			setTimeout(startFinalizeFontImport, 10);
 			return;
 		}
 
@@ -279,7 +246,7 @@ export function ioSVG_importSVGfont() {
 		}
 
 		// log('Kern Import', 'end');
-		setTimeout(importOneKern, 1);
+		setTimeout(importOneKern, 10);
 	}
 
 	/*
@@ -289,7 +256,7 @@ export function ioSVG_importSVGfont() {
 	 */
 	function startFinalizeFontImport() {
 		updateImportStatus('Finalizing the imported font...');
-		setTimeout(finalizeFontImport, 4);
+		setTimeout(finalizeFontImport, 10);
 	}
 
 	function finalizeFontImport() {
@@ -359,7 +326,7 @@ export function ioSVG_importSVGfont() {
 	// log('ioSVG_importSVGfont', 'end');
 }
 
-function getFirstTagInstance(obj, tagname) {
+export function getFirstTagInstance(obj, tagname) {
 	// log('getFirstTagInstance', 'start');
 	// log('finding ' + tagname + ' in:');
 	// log(obj);
