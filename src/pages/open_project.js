@@ -59,20 +59,22 @@ export function makePage_OpenProject() {
 		`,
 	});
 
-	// Tab click
-
-	// Dragging and dropping to load
+	// Tabs
 	const tableRight = content.querySelector('#open-project__right-area');
 	tableRight.appendChild(makeTabs());
 	showDefaultTab(content);
 
+	// Drag over handlers
 	const page = content.querySelector('#open-project__page');
-	const options = { capture: true, useCapture: true };
-	page.addEventListener('dragenter', handleDragEnter, options);
+	page.addEventListener('dragenter', handleDragEnter);
 	page.addEventListener('dragover', cancelDefaultEventActions);
-	page.addEventListener('drop', handleDrop, options);
-	page.addEventListener('dragleave', handleDragLeave, options);
 
+	// Drop and Drag Leave handlers
+	const dropNote = content.querySelector('#open-project__drop-note');
+	dropNote.addEventListener('drop', handleDrop);
+	dropNote.addEventListener('dragleave', handleDragLeave);
+
+	// File chooser handler
 	content
 		.querySelector('#open-project__file-chooser')
 		.addEventListener('change', handleDrop, false);
@@ -241,10 +243,10 @@ function deselectAllTabs() {
  * @param {object} event - drop event
  */
 function handleDrop(event) {
-	log('handleDrop', 'start');
+	// log('handleDrop', 'start');
 	const app = getGlyphrStudioApp();
 	cancelDefaultEventActions(event);
-	log(event);
+	// log(event);
 
 	const dropNote = document.getElementById('open-project__drop-note');
 	dropNote.style.display = 'none';
@@ -254,11 +256,11 @@ function handleDrop(event) {
 
 	const fileChooser = document.getElementById('open-project__file-chooser');
 	const filesData = event.dataTransfer || fileChooser;
-	log(filesData);
+	// log(filesData);
 
 	validateFileInput(filesData, postValidationCallback);
 
-	log('handleDrop', 'end');
+	// log('handleDrop', 'end');
 }
 
 function postValidationCallback(results) {
@@ -297,12 +299,13 @@ function handleMessage(event) {
  * @param {object} event - event
  */
 function handleDragEnter(event) {
-	cancelDefaultEventActions(event);
-
+	// log(`handleDragEnter`, 'start');
+	// cancelDefaultEventActions(event);
 	event.dataTransfer.dropEffect = 'copy';
 	const dropNote = document.getElementById('open-project__drop-note');
-	dropNote.innerHTML = 'Drop it!';
+	dropNote.innerHTML = `Drop it!`;
 	dropNote.style.display = 'block';
+	// log(`handleDragEnter`, 'end');
 }
 
 /**
@@ -310,11 +313,11 @@ function handleDragEnter(event) {
  * @param {object} event - event
  */
 function handleDragLeave(event) {
-	cancelDefaultEventActions(event);
-
+	// log(`handleDragLeave`, 'start');
+	// cancelDefaultEventActions(event);
 	const dropNote = document.getElementById('open-project__drop-note');
 	dropNote.style.display = 'none';
-	// changeTab('load');
+	// log(`handleDragLeave`, 'end');
 }
 
 // --------------------------------------------------------------
