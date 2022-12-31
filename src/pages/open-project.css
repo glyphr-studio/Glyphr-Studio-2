@@ -150,10 +150,18 @@
 #open-project__drop-note {
 	display: none;
 	position: absolute;
-	top: calc(50% - 200px);
-	left: 530px;
+	left: 0;
+	top: 0;
+	height: calc(100vh - 20px);
+	width: calc(100vw - 20px);
+	padding-left: 530px;
+	padding-top: 100px;
 	font-size: 2em;
-	color: var(--blue-l80);
-	opacity: 80%;
+	color: var(--blue-l70);
 	animation: var(--fade-animate-in);
+	backdrop-filter: blur(2px);
+	background-color:hsla(285, 100%, 17%, 0.2); /* purple l15 */
+	border: var(--global-focus-style);
+	border-radius: 10px;
+	margin: 10px;
 }
