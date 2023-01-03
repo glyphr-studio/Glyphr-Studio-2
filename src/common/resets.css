@@ -234,13 +234,16 @@ ul li {
 // Common variables
 // ------------------------------------------------------------*/
 :root {
-	--slide-down-animate-in: fade-slide-in 180ms ease-in;
-	--fade-animate-in: fade-in 180ms ease-in;
+	--global-focus-style: 1px dashed var(--purple-l50);
+
+	--animate-fade-in-slide-down: fade-slide-in 180ms ease-in;
+	--animate-fade-in: fade-in 180ms ease-in;
+	--animate-fade-out: fade-out 180ms ease-out;
+
 	--l1-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
 	--l2-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
 	--l3-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
 	--l3-shadow-down: 0px 6px 6px rgba(0, 0, 0, 0.3);
-	--global-focus-style: 1px dashed var(--purple-l50);
 }
 
 @keyframes fade-slide-in {
@@ -275,7 +278,7 @@ ul li {
 
 	to {
 		opacity: 0;
-		transform: scale(0.9, 0.9);
+		transform: scale(0.99, 0.99);
 	}
 }
 

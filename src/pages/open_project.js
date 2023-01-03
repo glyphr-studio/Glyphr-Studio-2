@@ -10,7 +10,7 @@ import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { json } from '../common/functions.js';
 import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
-import { makeLoadingSpinner } from '../controls/loading-spinner.js';
+import { makeProgressIndicator } from '../controls/progress-indicator/progress-indicator.js';
 import { showError } from '../controls/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
 
@@ -252,7 +252,7 @@ function handleDrop(event) {
 	dropNote.style.display = 'none';
 	const rightArea = document.getElementById('open-project__right-area');
 	rightArea.innerHTML = '';
-	rightArea.appendChild(makeLoadingSpinner());
+	rightArea.appendChild(makeProgressIndicator());
 
 	const fileChooser = document.getElementById('open-project__file-chooser');
 	const filesData = event.dataTransfer || fileChooser;
@@ -303,6 +303,8 @@ function handleDragEnter(event) {
 	// cancelDefaultEventActions(event);
 	event.dataTransfer.dropEffect = 'copy';
 	const dropNote = document.getElementById('open-project__drop-note');
+	dropNote.style.animation = 'var(--animate-fade-in)';
+	dropNote.style.opacity = '1';
 	dropNote.innerHTML = `Drop it!`;
 	dropNote.style.display = 'block';
 	// log(`handleDragEnter`, 'end');
@@ -316,7 +318,11 @@ function handleDragLeave(event) {
 	// log(`handleDragLeave`, 'start');
 	// cancelDefaultEventActions(event);
 	const dropNote = document.getElementById('open-project__drop-note');
-	dropNote.style.display = 'none';
+	dropNote.style.animation = 'var(--animate-fade-out)';
+	window.setTimeout(() => {
+		dropNote.style.display = 'none';
+		dropNote.style.opacity = '0';
+	}, 170);
 	// log(`handleDragLeave`, 'end');
 }
 

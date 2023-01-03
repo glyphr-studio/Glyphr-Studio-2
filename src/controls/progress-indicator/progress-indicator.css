@@ -1,0 +1,36 @@
+#progress-indicator__wrapper {
+	display: block;
+	position: relative;
+	top: calc(50% - 100px);
+}
+
+#progress-indicator__message {
+	display: block;
+	font-size: 1.5em;
+	color: var(--blue-l80);
+	opacity: 80%;
+	animation: var(--animate-fade-in);
+}
+
+.progress-indicator__counter {
+	font-family: monospace;
+	font-size: inherit;
+}
+
+#progress-indicator__bar{
+	margin:20px 0px 0px 0px;
+	width:400px;
+	height:4px;
+	border-radius: 2px;
+	padding:0px;
+	background: linear-gradient(135deg,
+		var(--blue-l55),
+		var(--purple-l45),
+		var(--orange-l55),
+		var(--purple-l45),
+		var(--blue-l55),
+		var(--purple-l45)
+	);
+	background-position: 0%;
+	background-size: 500% 500%;
+}

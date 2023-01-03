@@ -29,7 +29,7 @@
 }
 
 .page-fade-in {
-	animation: var(--fade-animate-in);
+	animation: var(--animate-fade-in);
 }
 
 .top-bar__logo {

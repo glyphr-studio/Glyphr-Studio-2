@@ -2,7 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '
 import { isVal, json, round } from '../common/functions.js';
 import { decToHex, getUnicodeName } from '../common/unicode.js';
 import { showError } from '../controls/dialogs.js';
-import { updateImportStatus } from '../controls/loading-spinner.js';
+import { updateProgressIndicator } from '../controls/progress-indicator/progress-indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { importOverflowCount, isOutOfBounds, resetOpenProjectTabs } from '../pages/open_project.js';
 import { Glyph } from '../project_data/glyph.js';
@@ -29,18 +29,26 @@ export function ioOTF_importOTFfont(font) {
 	setTimeout(setupFontImport, 10);
 
 	function setupFontImport() {
-		updateImportStatus('Reading font data...');
+		updateProgressIndicator('Reading font data...');
 
 		// test for range
 		// if (font.glyphs.length < importOverflowCount) {
-		// 	updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
+		// updateProgressIndicator(`
+		// 	Importing glyph:
+		// 	<span class="progress-indicator__counter">1 of ${font.glyphs.length}</span>
+		// `);
 		// 	setTimeout(importOneGlyph, 10);
 		// } else {
 		// 	showError(`Number of glyphs exceeded maximum of ${importOverflowCount}`);
 		// 	// log('setupFontImport', 'end');
 		// }
 
-		updateImportStatus('Importing glyph 1 of ' + font.glyphs.length);
+		updateProgressIndicator(`
+			Importing glyph:
+			<span class="progress-indicator__counter">1</span>
+			 of
+			<span class="progress-indicator__counter">${font.glyphs.length}</span>
+		`);
 		Object.keys(font.glyphs.glyphs).forEach(function (key) {
 			importOTFglyphs.push(font.glyphs.glyphs[key]);
 		});
@@ -62,7 +70,12 @@ export function ioOTF_importOTFfont(font) {
 
 	function importOneGlyph() {
 		// log('importOneGlyph', 'start');
-		updateImportStatus(`Importing glyph ${importGlyphCounter} of ${importOTFglyphs.length}`);
+		updateProgressIndicator(`
+			Importing glyph:
+			<span class="progress-indicator__counter">${importGlyphCounter}</span>
+			 of
+			<span class="progress-indicator__counter">${importOTFglyphs.length}</span>
+		`);
 
 		if (importGlyphCounter >= importOTFglyphs.length) {
 			// TODO Kerning
@@ -203,7 +216,7 @@ export function ioOTF_importOTFfont(font) {
 	 *
 	 */
 	function startFinalizeFontImport() {
-		updateImportStatus('Finalizing the imported font...');
+		updateProgressIndicator('Finalizing the imported font...');
 		setTimeout(finalizeFontImport, 10);
 	}
 

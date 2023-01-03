@@ -15,7 +15,7 @@
 	border: 1px solid var(--green-l60);
 	border-radius: 4px;
 	box-shadow: var(--l3-shadow-down);
-	animation: var(--slide-down-animate-in);
+	animation: var(--animate-fade-in-slide-down);
 }
 
 #toast a {
@@ -67,7 +67,7 @@
 	border: 1px solid var(--enabled-resting-border);
 	border-radius: 0px 4px 4px 4px;
 	box-shadow: var(--l3-shadow-down);
-	animation: var(--slide-down-animate-in);
+	animation: var(--animate-fade-in-slide-down);
 }
 
 #context-menu:focus {
