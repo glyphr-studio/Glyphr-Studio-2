@@ -79,7 +79,7 @@
 	max-height: calc(100% - 95px);
 	overflow-x: hidden;
 	overflow-y: auto;
-	animation: var(--slide-down-animate-in);
+	animation: var(--animate-fade-in-slide-down);
 }
 
 #nav-dropdown:focus {

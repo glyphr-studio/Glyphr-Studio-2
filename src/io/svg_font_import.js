@@ -2,7 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '
 import { round } from '../common/functions.js';
 import { getUnicodeName, parseUnicodeInput } from '../common/unicode.js';
 import { showError } from '../controls/dialogs.js';
-import { updateImportStatus } from '../controls/loading-spinner.js';
+import { updateProgressIndicator } from '../controls/progress-indicator/progress-indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { importOverflowCount, isOutOfBounds } from '../pages/open_project.js';
@@ -37,7 +37,7 @@ export function ioSVG_importSVGfont(font) {
 
 	function setupFontImport() {
 		// log('setupFontImport', 'start');
-		updateImportStatus('Reading font data...');
+		updateProgressIndicator('Reading font data...');
 
 		// Get Kerns
 		// TODO kerning
@@ -57,7 +57,12 @@ export function ioSVG_importSVGfont(font) {
 		// 	return;
 		// }
 
-		updateImportStatus('Importing Glyph 1 of ' + chars.length);
+		updateProgressIndicator(`
+			Importing glyph:
+			<span class="progress-indicator__counter">1</span>
+			 of
+			<span class="progress-indicator__counter">${chars.length}</span>
+		`);
 		setTimeout(importOneGlyph, 10);
 		// log('setupFontImport', 'end');
 	}
@@ -74,12 +79,17 @@ export function ioSVG_importSVGfont(font) {
 	let charCounter = 0;
 
 	function importOneGlyph() {
-		updateImportStatus('Importing Glyph ' + charCounter + ' of ' + chars.length);
+		updateProgressIndicator(`
+			Importing glyph:
+			<span class="progress-indicator__counter">${charCounter}</span>
+			 of
+			<span class="progress-indicator__counter">${chars.length}</span>
+		`);
 
 		if (charCounter >= chars.length) {
 			// TODO Kerning
 			// setTimeout(importOneKern, 10);
-			updateImportStatus('Finalizing the imported font...');
+			updateProgressIndicator('Finalizing the imported font...');
 			setTimeout(startFinalizeFontImport, 10);
 
 			return;
@@ -189,12 +199,12 @@ export function ioSVG_importSVGfont(font) {
 
 	function importOneKern() {
 		if (kernCount >= kerns.length) {
-			updateImportStatus('Finalizing the imported font...');
+			updateProgressIndicator('Finalizing the imported font...');
 			setTimeout(startFinalizeFontImport, 10);
 			return;
 		}
 
-		updateImportStatus('Importing Kern Pair ' + kernCount + ' of ' + kerns.length);
+		updateProgressIndicator('Importing Kern Pair ' + kernCount + ' of ' + kerns.length);
 
 		// log('Kern Import - START ' + kernCount + '/' + kerns.length);
 		leftGroup = [];
@@ -255,7 +265,7 @@ export function ioSVG_importSVGfont(font) {
 	 *
 	 */
 	function startFinalizeFontImport() {
-		updateImportStatus('Finalizing the imported font...');
+		updateProgressIndicator('Finalizing the imported font...');
 		setTimeout(finalizeFontImport, 10);
 	}
 

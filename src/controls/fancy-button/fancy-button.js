@@ -15,19 +15,14 @@ export class FancyButton extends HTMLElement {
 
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
-		let fast = this.hasAttribute('fast');
-		let fastSpeed = '18s';
-		let slowSpeed = '90s';
-		let speed = fast ? fastSpeed : slowSpeed;
-
 		this.wrapper = makeElement({ className: 'wrapper' });
-		this.wrapper.style.animation = `gradFade ${speed} linear infinite;`;
 
 		this.buttonContent = makeElement({ className: 'buttonContent' });
+		// this.wrapper.style.animation = `gradFade ${speed} linear infinite;`;
 		this.buttonText = makeElement({ tag: 'slot', className: 'buttonText' });
 
 		if (this.hasAttribute('secondary')) this.wrapper.setAttribute('secondary', '');
-		this.buttonText.style.animation = `gradFade ${speed} linear infinite;`;
+		// this.buttonText.style.animation = `gradFade ${speed} linear infinite;`;
 
 		if (this.hasAttribute('dark')) {
 			this.wrapper.setAttribute('dark', '');
@@ -45,7 +40,7 @@ export class FancyButton extends HTMLElement {
 		let shadow = this.attachShadow({ mode: 'open' });
 		// shadow.appendChild(linkCSS('fancy-button'));
 		shadow.appendChild(makeCSS());
-		
+
 		this.buttonContent.appendChild(this.buttonText);
 		this.wrapper.appendChild(this.buttonContent);
 		shadow.appendChild(this.wrapper);
@@ -123,7 +118,7 @@ export class FancyButton extends HTMLElement {
 
 function makeCSS() {
 	let cssElement = makeElement({ tag: 'style' });
-
+	let animationSpeed = '120s';
 	cssElement.innerHTML = `
 * {
 	box-sizing: border-box;
@@ -161,6 +156,7 @@ function makeCSS() {
 	padding: 2px;
 	height: 100%;
 	width: 100%;
+	animation: gradFade ${animationSpeed} linear infinite;
 	border-style: solid;
 	border-width: 0px;
 	border-radius: 5px;
@@ -214,6 +210,7 @@ function makeCSS() {
 	height: max-content;
 	margin: 5px 10px;
 	color: white;
+	animation: gradFade ${animationSpeed} linear infinite;
 	background-color: transparent;
 }
 

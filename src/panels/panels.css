@@ -23,7 +23,7 @@
 	background-color: var(--offWhite);
 	border-radius: 4px;
 	box-shadow: var(--l2-shadow);
-	animation: var(--slide-down-animate-in);
+	animation: var(--animate-fade-in-slide-down);
 }
 
 .panel__card.full-width,
@@ -236,7 +236,7 @@
 .glyph-chooser__tile-grid {
 	background-color: var(--offWhite);
 	padding: 10px;
-	animation: var(--slide-down-animate-in);
+	animation: var(--animate-fade-in-slide-down);
 }
 
 .glyph-chooser__tile-grid glyph-tile {

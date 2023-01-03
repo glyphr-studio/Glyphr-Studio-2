@@ -8,7 +8,7 @@ import { json, getFirstID, clone, round } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
 import { normalizeHex } from '../common/unicode.js';
-import { publish, subscribe, unsubscribe } from './pubSub.js';
+import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs.js';
 
 /**
