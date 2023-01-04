@@ -7,7 +7,7 @@ export function updateProgressIndicator(message) {
 	const container = document.getElementById('progress-indicator__message');
 	const bar = document.getElementById('progress-indicator__bar');
 
-	degrees = (degrees+0.5) % 100;
+	degrees = (degrees+0.95) % 100;
 	bar.style.backgroundPosition = `${degrees}%`;
 	if (message) container.innerHTML = message;
 }

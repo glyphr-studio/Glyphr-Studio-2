@@ -4,12 +4,12 @@ import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { uiColors, accentColors } from '../common/colors.js';
 import { ioOTF_importOTFfont } from '../io/otf_import.js';
+import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import.js';
 import { getGlyphrStudioApp } from '../app/main.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { json } from '../common/functions.js';
-import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress-indicator.js';
 import { showError } from '../controls/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
@@ -244,7 +244,6 @@ function deselectAllTabs() {
  */
 function handleDrop(event) {
 	// log('handleDrop', 'start');
-	const app = getGlyphrStudioApp();
 	cancelDefaultEventActions(event);
 	// log(event);
 
@@ -268,6 +267,7 @@ function postValidationCallback(results) {
 		if (results.fileType === 'font') {
 			ioOTF_importOTFfont(results.validatedContent);
 		} else if (results.fileType === 'svg') {
+			ioSVG_importSVGfont(results.validatedContent);
 		} else if (results.fileType === 'project') {
 		}
 	}
@@ -338,7 +338,7 @@ function handleNewProject() {
 	setTimeout(function () {
 		const editor = app.getCurrentProjectEditor();
 		editor.project = new GlyphrStudioProject();
-		editor.nav.page = 'Glyph edit';
+		editor.nav.page = 'Overview';
 		editor.navigate();
 	}, 5);
 }
@@ -355,7 +355,7 @@ function handleLoadSample(name) {
 	setTimeout(function () {
 		let editor = app.getCurrentProjectEditor();
 		editor.project = importGlyphrProjectFromText(json(getVersionTwoTestProject(), true));
-		editor.nav.page = 'Glyph edit';
+		editor.nav.page = 'Overview';
 		editor.navigate();
 	}, 100);
 }
