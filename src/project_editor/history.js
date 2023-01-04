@@ -76,6 +76,8 @@ export class History {
 			// Assumes navigate adds an entry to the queue
 			editor.selectedGlyphID = q[1].itemID;
 			q.shift();
+			// TODO Kern Undo - go to kern page
+			// TODO Ligature Undo - go to Ligature page
 			editor.nav.page = 'Glyph edit';
 			editor.navigate();
 			// log(`Need to navigate to next changed glyph`);

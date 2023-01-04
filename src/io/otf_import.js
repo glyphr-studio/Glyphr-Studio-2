@@ -319,7 +319,7 @@ export function ioOTF_importOTFfont(font) {
 		// md.overline_thickness = 1*font.overlinethickness || 10;
 
 		const editor = getCurrentProjectEditor();
-		editor.nav.page = 'Glyph edit';
+		editor.nav.page = 'Overview';
 		editor.navigate();
 		// log('finalizeFontImport', 'end');
 	}

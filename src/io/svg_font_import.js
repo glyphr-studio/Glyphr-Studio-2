@@ -329,7 +329,7 @@ export function ioSVG_importSVGfont(font) {
 		md.overline_position = 1 * fontAttributes['overline-position'] || 750;
 		md.overline_thickness = 1 * fontAttributes['overline-thickness'] || 10;
 
-		editor.nav.page = 'Glyph edit';
+		editor.nav.page = 'Overview';
 		editor.navigate();
 		// log('ioSVG_importSVGfont', 'end');
 	}
