@@ -35,8 +35,7 @@ export function glyphrStudioOnLoad() {
 		registerCustomComponents();
 
 		// Load project
-		let sample = getVersionTwoTestProject();
-		GSApp.setUp(JSON.stringify(sample));
+		GSApp.setUp();
 		log(GSApp);
 	} else {
 		log('did NOT pass pre-checks');
