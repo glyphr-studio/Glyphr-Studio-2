@@ -49,13 +49,16 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
 
 ## Timeline
 Preliminary investigations started in 2019... but Covid slowed things way down.
-Things have picked back up in 2021/2022. Bug fixes for V1 will still take precedence over V2.
+Things have picked back up in 2021/2022. Alphas are being released in late 2022 / early 2023,
+with a goal of finishing in (the first half?) of 2023.
 
-Merging new ideas with old functionality is also time consuming :-)
+Bug fixes for V1 will still take precedence over V2.
+
+Merging new ideas with old functionality is time consuming :-)
 
 
 ## License
- Copyright (C) 2010 - 2022 Matthew LaGrandeur, released under
+ Copyright (C) 2010 - 2023 Matthew LaGrandeur, released under
  [GPL 3.0](https://github.com/mattlag/Glyphr-Studio/blob/master/LICENSE-gpl-3.0.txt)
 
 ## Author
