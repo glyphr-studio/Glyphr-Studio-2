@@ -1,4 +1,5 @@
 import { getGlyphrStudioApp } from '../app/main.js';
+import { json } from '../common/functions.js';
 import OpenTypeJS from '../lib/opentypejs_1-3-1.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { getFirstTagInstance } from './svg_font_import.js';
@@ -11,7 +12,7 @@ const validationResult = {
 	fileSuffix: false,
 	fileType: false,
 	errorMessage: false,
-	validatedContent: false,
+	content: false,
 };
 
 let postValidationCallback;
@@ -65,6 +66,11 @@ export async function validateFileInput(input, callback) {
 		validationResult.fileType = 'project';
 		reader.onload = readerValidateTXTandGS2;
 		reader.readAsText(file);
+	} else {
+		return failWithError(`
+			Unrecognized file type (.${validationResult.fileSuffix}).
+			Try loading a Glyphr Studio Project file, or a font file.
+		`);
 	}
 
 	log(`validateFileInput`, 'end');
@@ -94,7 +100,7 @@ function readerValidateOTF() {
 		if (!(font.glyphs && font.glyphs.length)) {
 			return failWithError('Font file does not have any glyph data.');
 		} else {
-			validationResult.validatedContent = font;
+			validationResult.content = font;
 		}
 	}
 
@@ -128,7 +134,7 @@ function readerValidateSVG() {
 			The SVG file you tried to load was not a SVG Font file.
 			See Glyphr Studio help for more information.`);
 	} else {
-		validationResult.validatedContent = font;
+		validationResult.content = font;
 	}
 	postValidationCallback(validationResult);
 	log(`readerValidateSVG`, 'end');
@@ -140,12 +146,12 @@ function readerValidateSVG() {
  * @returns Validated data object
  */
 function readerValidateTXTandGS2() {
-	log(`readerValidateTXTandGS2`, 'start');
+	// log(`readerValidateTXTandGS2`, 'start');
 	const file = this.result;
-	let project;
+	let projectData;
 
 	try {
-		project = JSON.parse(file);
+		projectData = JSON.parse(file);
 	} catch (error) {
 		return failWithError(`
 			The provided text file does not appear to be a Glyphr Studio project file.
@@ -154,18 +160,32 @@ function readerValidateTXTandGS2() {
 		`);
 	}
 
-	if (!project.version) {
+	if (projectData.projectsettings) projectData.projectSettings = projectData.projectsettings;
+
+
+	if (!projectData.projectSettings) {
+		return failWithError(`
+		The provided text file is missing project metadata.
+		It may not be a Glyphr Studio Project file.
+		`);
+	}
+
+	log(!projectData.projectSettings);
+	if (!projectData?.projectSettings?.version && !projectData.projectSettings.versionnum) {
 		return failWithError(`
 			The provided text file has no version information associated with it.
 			It may not be a Glyphr Studio Project file.
 		`);
 	}
 
-	let version = parseSemVer(project.version);
+	let version = parseSemVer(projectData?.projectsettings?.versionnum);
+	if (!version) version = parseSemVer(projectData?.projectSettings?.version);
+
+	log(`version: ${json(version)}`);
 
 	if (!version) {
 		return failWithError(`
-			The provided project file has no version information associated with it.
+			The version information could not be read for the provided project file.
 		`);
 	}
 
@@ -173,7 +193,7 @@ function readerValidateTXTandGS2() {
 	if (isSemVerLessThan(thisGlyphrStudioVersion, version)) {
 		return failWithError(`
 			This Glyphr Studio project file was created with a future version of
-			Glyphr Studio 0_o Glyphr Studio is not forwards-compatible.
+			Glyphr Studio (0_o) As with most software, Glyphr Studio is not forwards-compatible.
 		`);
 	}
 
@@ -185,18 +205,19 @@ function readerValidateTXTandGS2() {
 			return failWithError(`
 				Only Glyphr Studio Project files with version 1.13.2 and above can be
 				imported into Glyphr Studio v2. For versions 1.13.1 and below, open and re-save
-				the project file with Glyphr Studio v1 (which will update it).
+				the project file with Glyphr Studio v1 App (which will update it).
 			`);
 		} else {
 			// TODO update v1 to v2
-			return failWithError(`Glyphr Studio v1 project files cannot be imported (for now)`);
+			// validationResult.content = project;
+			return failWithError(`Glyphr Studio v1 project files cannot be imported (for now).`);
 		}
 	} else if (version.major === 2) {
-		validationResult.validatedContent = project;
+		validationResult.content = projectData;
 	}
 
 	postValidationCallback(validationResult);
-	log(`readerValidateTXTandGS2`, 'end');
+	// log(`readerValidateTXTandGS2`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -205,23 +226,37 @@ function readerValidateTXTandGS2() {
 
 function failWithError(message) {
 	validationResult.errorMessage = message;
-	console.error(message);
+	console.error(message.replace(/[\t\n\r]/gm, ''));
 	postValidationCallback(validationResult);
 	return false;
 }
 
-function isSemVerLessThan(test, threshold) {
-	if (test[0] < threshold[0]) return true;
-	else if (test[0] === threshold[0]) {
-		if (test[1] < threshold[1]) return true;
-		else if (test[1] === threshold[1]) {
-			if (test[2] < threshold[2]) return true;
+/**
+ * Tests a semantic version against a threshold
+ * @param {Object} test - semVer object to test
+ * @param {Array} threshold - semVer array as a threshold
+ * @returns {Boolean}
+ */
+export function isSemVerLessThan(test, threshold) {
+	// log(`isSemVerLessThan`, 'start');
+
+	let result = false;
+	if (test.major < threshold[0]) result = 'major';
+	else if (test.major === threshold[0]) {
+		if (test.minor < threshold[1]) result = 'minor';
+		else if (test.minor === threshold[1]) {
+			if (test.patch < threshold[2]) result = 'patch';
 		}
 	}
-	return false;
+
+	// log(`result: ${result}`);
+
+	// log(`isSemVerLessThan`, 'end');
+	return result;
 }
 
-function parseSemVer(versionString) {
+export function parseSemVer(versionString) {
+	if (!versionString) return false;
 	const prePostDash = versionString.split('-');
 	const versions = prePostDash[0].split('.');
 

@@ -1,5 +1,5 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
-import { importGlyphrProjectFromText } from '../project_editor/import.js';
+import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { closeAllDialogs, showContextMenu } from '../controls/dialogs.js';
@@ -43,7 +43,7 @@ export class GlyphrStudioApp {
 	/**
 	 * Starts up the app
 	 */
-	setUp(sampleProject = false) {
+	setUp() {
 		log(`GlyphrStudioApp.setUp`, 'start');
 
 		this.projectEditors[0] = new ProjectEditor();
@@ -54,11 +54,7 @@ export class GlyphrStudioApp {
 		if (dev.mode) {
 			if (dev.overwriteTitle) document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
 
-			// Sample Project
-			if (sampleProject) {
-				// log('Using sample project');
-				editor.project = importGlyphrProjectFromText(sampleProject);
-			}
+			// Sample project?
 
 			// Selected canvas stuff
 			// editor.multiSelect.paths.select(editor.selectedGlyph.paths[0]);
@@ -80,7 +76,7 @@ export class GlyphrStudioApp {
 
 		// log(editor);
 		// log(editor.nav.page);
-		this.fadeOutLoadScreen();
+		this.fadeOutLandingPage();
 		editor.navigate();
 
 		log(`GlyphrStudioApp.setUp`, 'end');
@@ -90,15 +86,15 @@ export class GlyphrStudioApp {
 	 * Fades out the initial load screen to show the App
 	 * @param {number} delay - override default fadeout time
 	 */
-	fadeOutLoadScreen(delay = 700) {
-		const loadScreen = document.getElementById('loadScreen');
-		if (loadScreen) {
-			loadScreen.style.opacity = 0;
+	fadeOutLandingPage(delay = 700) {
+		const landingPage = document.getElementById('app__landing-page');
+		if (landingPage) {
+			landingPage.style.opacity = 0;
 
 			setTimeout(function () {
-				// loadScreen.style.visibility = 'hidden';
-				// loadScreen.style.display = 'none';
-				document.body.removeChild(loadScreen);
+				// landingPage.style.visibility = 'hidden';
+				// landingPage.style.display = 'none';
+				document.body.removeChild(landingPage);
 			}, delay);
 		}
 	}
