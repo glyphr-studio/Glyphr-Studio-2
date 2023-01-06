@@ -25,7 +25,7 @@ export function ioSVG_exportSVGfont() {
 	let con = `<?xml version="1.0"?>
 <svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<metadata>
-		Project: ${fmd.name}
+		Project: ${project.metadata.name}
 		Font exported on ${timeOutput}
 		Created with Glyphr Studio - the free, web-based font editor
 		Version: ${app.version}
@@ -51,7 +51,7 @@ ${ioSVG_makeAllKernPairs()}
 </svg>
 `;
 
-	const filename = fmd.name + ' - SVG Font - ' + timestamp + '.svg';
+	const filename = project.metadata.name + ' - SVG Font - ' + timestamp + '.svg';
 
 	saveFile(filename, con);
 	showToast('Exported SVG Font File');
@@ -73,9 +73,9 @@ function ioSVG_makeFontFace() {
 		${t}font-style="${fmd.style}"
 		${t}panose-1="${fmd.panose}"
 		${t}units-per-em="${fmd.upm}"
+		${t}ascent="${fmd.ascent}"
 		${t}cap-height="${fmd.capHeight}"
 		${t}x-height="${fmd.xHeight}"
-		${t}ascent="${fmd.ascent}"
 		${t}descent="${fmd.descent}"
 		${t}bbox="${fm.maxes.xMin}, ${fm.maxes.yMin}, ${fm.maxes.xMax}, ${fm.maxes.yMax}"
 		${t}unicode-range="U+20-${fm.maxGlyph}"
