@@ -68,10 +68,10 @@ export function makePage_About() {
 
 				<div class="page__card">
 					<h3>This Glyphr Studio Project</h3>
-					<label>Project name:</label> ${editor.project.projectSettings.name}<br>
-					<label>Unique project ID:</label> ${editor.project.projectSettings.projectID}<br>
+					<label>Project name:</label> ${editor.project.metadata.name}<br>
+					<label>Unique project ID:</label> ${editor.project.metadata.id}<br>
 					<label>Initially created with:</label> Version ${
-						editor.project.projectSettings.initialVersion
+						editor.project.metadata.initialVersion
 					}</span>
 				</div>
 

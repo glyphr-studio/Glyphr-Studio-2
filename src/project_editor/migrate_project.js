@@ -12,7 +12,7 @@ import { parseSemVer } from '../io/validate_file_input.js';
 export function migrateGlyphrStudioProject(project) {
 	// log('migrateGlyphrStudioProject', 'start');
 
-	const version = parseSemVer(project.projectSettings.version);
+	const version = parseSemVer(project.metadata.latestVersion);
 	const appVersion = parseSemVer(getGlyphrStudioApp().version);
 
 	// versions 1.13.1 and below are not supported

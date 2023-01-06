@@ -113,7 +113,7 @@ export class GlyphSequence {
 		let thisKern;
 		let thisGlyph;
 
-		const upm = project.projectSettings.upm;
+		const upm = project.metadata.font.upm;
 		this.data = [];
 		this.textBlocks = this.glyphString.split('\n');
 
@@ -178,7 +178,7 @@ export class GlyphSequence {
 		const scale = this.fontSize / upm;
 		// log(`scale: ${scale}`);
 
-		const ascent = project.projectSettings.ascent;
+		const ascent = project.metadata.font.ascent;
 		// log(`ascent: ${ascent}`);
 
 		//Convert area properties to project / UPM scales

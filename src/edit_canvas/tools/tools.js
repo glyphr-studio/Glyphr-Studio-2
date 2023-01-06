@@ -267,12 +267,12 @@ export function makeContextGlyphControls() {
 	ctxg +=
 		'<b>Context Glyphs</b> are letters you can display around the glyph you are currently editing.<br><br>';
 	ctxg += checkUI(
-		'getCurrentProject().projectSettings.showContextGlyphGuides',
-		getCurrentProject().projectSettings.showContextGlyphGuides,
+		'getCurrentProject().projectSettings.contextGlyphs.showGuides',
+		getCurrentProject().projectSettings.contextGlyphs.showGuides,
 		true
 	);
 	ctxg +=
-		'<label style="margin-left:10px; position:relative; top:-6px;" for="showContextGlyphGuides">show guides</label><br>';
+		'<label style="margin-left:10px; position:relative; top:-6px;" for="contextGlyphs.showGuides">show guides</label><br>';
 	ctxg +=
 		'glyph ' +
 		sliderUI('contextGlyphTransparency', 'contextGlyphTransparency_dropdown', true, false);

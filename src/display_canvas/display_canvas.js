@@ -274,11 +274,11 @@ export class DisplayCanvas extends HTMLElement {
 
 	drawGlyphExtras(charData) {
 		// log(`displayCanvas.drawGlyphExtras`, 'start');
-		const projectSettings = getCurrentProject().projectSettings;
+		const settings = getCurrentProject().metadata.font;
 		const scale = charData.view.dz;
 		let drawWidth = charData.widths.advance * scale;
-		let drawHeight = projectSettings.upm * scale;
-		let drawY = charData.view.dy + this.pagePadding - projectSettings.ascent * scale;
+		let drawHeight = settings.upm * scale;
+		let drawY = charData.view.dy + this.pagePadding - settings.ascent * scale;
 		let drawX = charData.view.dx + this.pagePadding;
 		let drawK = charData.widths.kern * scale * -1;
 
@@ -313,7 +313,7 @@ export class DisplayCanvas extends HTMLElement {
 		// log(charData);
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
-		const settings = getCurrentProject().projectSettings;
+		// const settings = getCurrentProject().metadata.font;
 		let glyph = charData.glyph;
 		// TODO flattenGlyphs
 		// let flattenGlyphs = td.flattenGlyphs || false;

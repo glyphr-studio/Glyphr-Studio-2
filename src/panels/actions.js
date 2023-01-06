@@ -707,7 +707,7 @@ function initGetPathsDialogOptions(type) {
 		content +=
 			'When inserting the Component Instance, also copy these attributes from the Root Component to this glyph:';
 
-	content += '<table class="settingstable projectSettings">';
+	content += '<table class="settingstable">';
 
 	content +=
 		'<tr><td style="text-align:right; vertical-align:top;">' +

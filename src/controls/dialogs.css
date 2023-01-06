@@ -34,6 +34,11 @@
 	row-gap: 10px;
 }
 
+#error hr {
+	border-color: var(--red);
+	margin: 10px 0px;
+}
+
 .error__header {
 	display: grid;
 	grid-template-columns: 1fr 20px;

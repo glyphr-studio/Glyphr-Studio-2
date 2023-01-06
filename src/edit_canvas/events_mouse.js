@@ -27,7 +27,7 @@ export function handleMouseEvents(event) {
 		cancelDefaultEventActions(event);
 		return;
 	}
-	
+
 	// Mouse right-click
 	if (event.button === 2) {
 		// Right-click handler
@@ -387,7 +387,7 @@ export function findAndUnderlineHotspot(cx, cy) {
 	const ctx = _UI.glyphEditCTX;
 	// log(`${hs}`);
 	if (hs) {
-		const t = getCurrentProject().projectSettings.colors.systemGuideTransparency;
+		const t = getCurrentProject().metadata.preferences.guides.system.transparency;
 		// let t2 = (((100 - t) / 2) + t);
 		const alpha = transparencyToAlpha(t);
 		const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);

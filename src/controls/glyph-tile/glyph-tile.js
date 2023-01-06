@@ -35,7 +35,7 @@ export class GlyphTile extends HTMLElement {
 
 		// log(`this.glyphHex: ${this.glyphHex}`);
 
-		let settings = getCurrentProject().projectSettings;
+		let settings = getCurrentProject().metadata.font;
 		let overallSize = 50;
 		let gutterSize = 2;
 		let contentSize = overallSize - 2 * gutterSize;
