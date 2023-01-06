@@ -164,7 +164,7 @@ export function ioSVG_importSVGfont(font) {
 					advanceWidth: advanceWidth,
 				});
 				if (getUnicodeName(uni) === '[name not found]')
-					project.projectSettings.filterNonCharPoints = false;
+					project.metadata.preferences.filterNonCharPoints = false;
 			} else {
 				// It's a LIGATURE
 				uni = uni.join('');
@@ -296,7 +296,7 @@ export function ioSVG_importSVGfont(font) {
 		// Make a custom range for the rest
 		if (customGlyphRange.length) {
 			customGlyphRange = customGlyphRange.sort();
-			project.projectSettings.glyphRanges.push({
+			project.metadata.glyphRanges.push({
 				begin: customGlyphRange[0],
 				end: customGlyphRange[customGlyphRange.length - 1],
 			});
@@ -308,26 +308,25 @@ export function ioSVG_importSVGfont(font) {
 
 		// Font Settings
 		const fontAttributes = getFirstTagInstance(font, 'font-face').attributes;
-		const ps = project.projectSettings;
-		const md = project.metadata;
+		const fmd = project.metadata.font;
 		const fname = fontAttributes['font-family'] || 'My Font';
 
-		ps.upm = 1 * fontAttributes['units-per-em'] || 1000;
-		ps.name = fname;
-		ps.ascent = 1 * fontAttributes.ascent || 700;
-		ps.capHeight = 1 * fontAttributes['cap-height'] || 675;
-		ps.xHeight = 1 * fontAttributes['x-height'] || 400;
-		ps.overshoot = round(ps.upm / 100);
-		md.font_family = fname;
-		md.panose_1 = fontAttributes['panose-1'] || '0 0 0 0 0 0 0 0 0 0';
-		md.font_weight = 1 * fontAttributes['font-weight'] || 400;
-		md.font_stretch = fontAttributes['font-stretch'] || 'normal';
-		md.underline_position = 1 * fontAttributes['underline-position'] || -50;
-		md.underline_thickness = 1 * fontAttributes['underline-thickness'] || 10;
-		md.strikethrough_position = 1 * fontAttributes['strikethrough-position'] || 300;
-		md.strikethrough_thickness = 1 * fontAttributes['strikethrough-thickness'] || 10;
-		md.overline_position = 1 * fontAttributes['overline-position'] || 750;
-		md.overline_thickness = 1 * fontAttributes['overline-thickness'] || 10;
+		fmd.upm = 1 * fontAttributes['units-per-em'] || 1000;
+		fmd.name = fname;
+		fmd.ascent = 1 * fontAttributes.ascent || 700;
+		fmd.capHeight = 1 * fontAttributes['cap-height'] || 675;
+		fmd.xHeight = 1 * fontAttributes['x-height'] || 400;
+		fmd.overshoot = round(fmd.upm / 100);
+		fmd.fontFamily = fname;
+		fmd.panose = fontAttributes['panose-1'] || '0 0 0 0 0 0 0 0 0 0';
+		fmd.weight = 1 * fontAttributes['font-weight'] || 400;
+		fmd.stretch = fontAttributes['font-stretch'] || 'normal';
+		fmd.underlinePosition = 1 * fontAttributes['underline-position'] || -50;
+		fmd.underlineThickness = 1 * fontAttributes['underline-thickness'] || 10;
+		fmd.strikethroughPosition = 1 * fontAttributes['strikethrough-position'] || 300;
+		fmd.strikethroughThickness = 1 * fontAttributes['strikethrough-thickness'] || 10;
+		fmd.overlinePosition = 1 * fontAttributes['overline-position'] || 750;
+		fmd.overlineThickness = 1 * fontAttributes['overline-thickness'] || 10;
 
 		editor.nav.page = 'Overview';
 		editor.navigate();

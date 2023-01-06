@@ -797,10 +797,10 @@ export class Glyph extends GlyphElement {
 	makeSVG(size = 500, padding = 10) {
 		// log('Glyph.makeSVG', 'start');
 		// log(this);
-		const ps = getCurrentProject().projectSettings;
-		const scale = (size - padding * 2) / ps.upm;
-		const scaledUPM = size / ps.upm;
-		const translateY = ps.ascent * scale + padding * 2;
+		const fmd = getCurrentProject().metadata.font;
+		const scale = (size - padding * 2) / fmd.upm;
+		const scaledUPM = size / fmd.upm;
+		const translateY = fmd.ascent * scale + padding * 2;
 
 		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
 		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
@@ -832,7 +832,7 @@ export class Glyph extends GlyphElement {
 				if (workingItem) pathData += workingItem.svgPathData;
 			} else {
 				pathData += item.svgPathData;
-				if (j < this.paths.length - 1) pathData += ' ';
+				pathData += ' ';
 			}
 		});
 

@@ -237,8 +237,8 @@ function makeShowOptions() {
 	];
 
 	/*
-	const projectSettings = getCurrentProject().projectSettings;
-	const lineGap = projectSettings.lineGap;
+	const fmd = getCurrentProject().metadata.font;
+	const lineGap = fmd.lineGap;
 	let padSize = 20;
 	let showGlyphExtras = false;
 	let showLineExtras = false;

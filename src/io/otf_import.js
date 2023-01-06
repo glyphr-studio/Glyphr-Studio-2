@@ -161,7 +161,7 @@ export function ioOTF_importOTFfont(font) {
 			// log(finalGlyphs[uni]);
 
 			if (getUnicodeName(uni) === '[name not found]') {
-				project.projectSettings.filterNonCharPoints = false;
+				project.metadata.preferences.filterNonCharPoints = false;
 			}
 
 			// Successful loop, advance importGlyphCounter
@@ -235,7 +235,7 @@ export function ioOTF_importOTFfont(font) {
 			rend = 1 * _UI.glyphRange[r].end + 1;
 			for (let t = rangeStart; t < rend; t++) {
 				if (getGlyph('' + decToHex(t))) {
-					project.projectSettings.glyphRanges[r] = true;
+					project.metadata.glyphRanges[r] = true;
 					break;
 				}
 			}
@@ -246,7 +246,7 @@ export function ioOTF_importOTFfont(font) {
 		// log('customGlyphRange.length ' + customGlyphRange.length);
 
 		if (customGlyphRange.length) {
-			const ranges = project.projectSettings.glyphRanges;
+			const ranges = project.metadata.glyphRanges;
 			const maxValley = 50;
 			const maxRange = 100;
 			customGlyphRange = customGlyphRange.sort();
@@ -278,45 +278,35 @@ export function ioOTF_importOTFfont(font) {
 		// Check to make sure certain stuff is there
 		// space has horiz-adv-x
 		// log('Custom range stuff done');
-		const ps = project.projectSettings;
-		const md = project.metadata;
+		const fmd = project.metadata.font;
 		const fname = font.familyName || 'My Font';
 
-		ps.name = fname;
-		ps.upm = 1 * font.unitsPerEm || 1000;
-		ps.ascent = 1 * font.ascender || 700;
-		ps.descent = -1 * Math.abs(font.descender) || 300;
-		ps.capHeight = 1 * getTableValue(font.tables.os2.sCapHeight) || 675;
-		ps.xHeight = 1 * getTableValue(font.tables.os2.sxHeight) || 400;
-		ps.overshoot = round(ps.upm / 100);
+		fmd.name = fname;
+		fmd.upm = 1 * font.unitsPerEm || 1000;
+		fmd.ascent = 1 * font.ascender || 700;
+		fmd.descent = -1 * Math.abs(font.descender) || 300;
+		fmd.capHeight = 1 * getTableValue(font.tables.os2.sCapHeight) || 675;
+		fmd.xHeight = 1 * getTableValue(font.tables.os2.sxHeight) || 400;
+		fmd.overshoot = round(fmd.upm / 100);
 
-		md.font_family = fname.substr(0, 31);
-		md.panose_1 = getTableValue(font.tables.os2.panose) || '0 0 0 0 0 0 0 0 0 0';
-		md.version =
+		fmd.family = fname.substr(0, 31);
+		fmd.panose = getTableValue(font.tables.os2.panose) || '0 0 0 0 0 0 0 0 0 0';
+		fmd.version =
 			getTableValue(font.tables.head.fontRevision) ||
 			getTableValue(font.version) ||
 			getTableValue('Version 0.1');
 
 		// These can be read in but not saved using OpenType.js
-		md.font_style = getTableValue(font.tables.name.fontSubfamily) || 'Regular';
-		md.copyright = getTableValue(font.tables.name.copyright) || '';
-		md.trademark = getTableValue(font.tables.name.trademark) || '';
-		md.designer = getTableValue(font.tables.name.designer) || '';
-		md.designerURL = getTableValue(font.tables.name.designerURL) || '';
-		md.manufacturer = getTableValue(font.tables.name.manufacturer) || '';
-		md.manufacturerURL = getTableValue(font.tables.name.manufacturerURL) || '';
-		md.license = getTableValue(font.tables.name.license) || '';
-		md.licenseURL = getTableValue(font.tables.name.licenseURL) || '';
-		md.description = getTableValue(font.tables.name.description) || '';
-
-		// md.font_weight = 1*font.fontweight || 400;
-		// md.font_stretch = font.fontstretch || 'normal';
-		// md.underline_position = 1*font.underlineposition || -50;
-		// md.underline_thickness = 1*font.underlinethickness || 10;
-		// md.strikethrough_position = 1*font.strikethroughposition || 300;
-		// md.strikethrough_thickness = 1*font.strikethroughthickness || 10;
-		// md.overline_position = 1*font.overlineposition || 750;
-		// md.overline_thickness = 1*font.overlinethickness || 10;
+		fmd.style = getTableValue(font.tables.name.fontSubfamily) || 'Regular';
+		fmd.copyright = getTableValue(font.tables.name.copyright) || '';
+		fmd.trademark = getTableValue(font.tables.name.trademark) || '';
+		fmd.designer = getTableValue(font.tables.name.designer) || '';
+		fmd.designerURL = getTableValue(font.tables.name.designerURL) || '';
+		fmd.manufacturer = getTableValue(font.tables.name.manufacturer) || '';
+		fmd.manufacturerURL = getTableValue(font.tables.name.manufacturerURL) || '';
+		fmd.license = getTableValue(font.tables.name.license) || '';
+		fmd.licenseURL = getTableValue(font.tables.name.licenseURL) || '';
+		fmd.description = getTableValue(font.tables.name.description) || '';
 
 		const editor = getCurrentProjectEditor();
 		editor.nav.page = 'Overview';

@@ -19,71 +19,67 @@ export class GlyphrStudioProject {
 		// log(newProject);
 
 		// Set up all internal default values first
-		this.projectSettings = {
-			// Internal Stuff
-			version: '2.0.0-alpha.2',
-			initialVersion: '2.0.0-alpha.1',
-			projectID: false,
-
-			// Font Metrics
-			name: 'My Font',
-			upm: 1000,
-			ascent: 700,
-			descent: -300,
-			capHeight: 675,
-			xHeight: 400,
-			lineGap: 250,
-			italicAngle: 0,
-			overshoot: 10,
-			glyphRanges: [{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' }],
-			filterNonCharPoints: true,
-
-			// UI stuff
-			combinePathsOnExport: false,
-			maxCombinePathsOnExport: 30,
-			stopPageNavigation: true,
-			formatSaveFile: true,
-			guides: {
-				system: {
-					showBaseline: true,
-					showLeftSide: true,
-					showRightSide: true
-				}
-			},
-			showContextGlyphGuides: true,
-		};
-
 		this.metadata = {
-			// Shared Properties
-			font_family: 'My Font',
-			font_style: 'normal',
-			panose_1: '2 0 0 0 0 0 0 0 0 0',
-
-			// OTF Properties
-			designer: '',
-			designerURL: '',
-			manufacturer: '',
-			manufacturerURL: '',
-			license: '',
-			licenseURL: '',
-			version: '',
-			description: '',
-			copyright: '',
-			trademark: '',
-
-			// SVG Properties
-			font_variant: 'normal',
-			font_weight: 400,
-			font_stretch: 'normal',
-			stemv: 0,
-			stemh: 0,
-			slope: 0,
-			underline_position: -50,
-			underline_thickness: 10,
-			strikethrough_position: 300,
-			strikethrough_thickness: 10,
-			overline_position: 750,
-			overline_thickness: 10,
+			name: 'My Font',
+			latestVersion: '2.0.0-alpha.2',
+			initialVersion: '2.0.0-alpha.1',
+			id: false,
+			glyphRanges: [{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' }],
+			preferences: {
+				filterNonCharPoints: true,
+				combinePathsOnExport: false,
+				maxCombinePathsOnExport: 30,
+				stopPageNavigation: true,
+				formatSaveFile: true,
+				guides: {
+					system: {
+						transparency: 0,
+						showBaseline: true,
+						showLeftSide: true,
+						showRightSide: true,
+					},
+				},
+				contextGlyphs: {
+					showGuides: true,
+					transparency: 0,
+				},
+			},
+			font: {
+				family: 'My Font',
+				style: 'normal',
+				panose: '2 0 0 0 0 0 0 0 0 0',
+				upm: 1000,
+				ascent: 700,
+				descent: -300,
+				capHeight: 675,
+				xHeight: 400,
+				lineGap: 250,
+				italicAngle: 0,
+				overshoot: 10,
+				designer: '',
+				designerURL: '',
+				manufacturer: '',
+				manufacturerURL: '',
+				license: '',
+				licenseURL: '',
+				version: '',
+				description: '',
+				copyright: '',
+				trademark: '',
+				// SVG Font properties
+				variant: 'normal',
+				weight: 400,
+				stretch: 'normal',
+				stemv: 0,
+				stemh: 0,
+				slope: 0,
+				underlinePosition: -50,
+				underlineThickness: 10,
+				strikethroughPosition: 300,
+				strikethroughThickness: 10,
+				overlinePosition: 750,
+				overlineThickness: 10,
+			},
 		};
 
 		this.glyphs = {};
@@ -97,34 +93,13 @@ export class GlyphrStudioProject {
 		// log("\t passed: ");
 		// log(newProject);
 
-		// Project Settings
-		newProject.projectSettings = newProject.projectSettings || {};
-		newProject.projectSettings.guides = newProject.projectSettings.guides || {};
-		newProject.projectSettings.glyphRanges = newProject.projectSettings.glyphRanges || [];
-
-		// Guides can be custom, so save a copy before merging with templates
-		// let dataGuides = clone(newProject.projectSettings.guides || {});
-
 		// Merge with templates
-		if (newProject.projectSettings) {
-			// log('merging projectSettings from newProject');
-			this.projectSettings = merge(this.projectSettings, newProject.projectSettings);
-			this.projectSettings.glyphRanges = newProject.projectSettings.glyphRanges || [];
-		}
-		this.projectSettings.projectID = this.projectSettings.projectID || makeProjectID();
-		this.projectSettings.descent = -1 * Math.abs(this.projectSettings.descent);
-		// log('finished merging projectSettings');
-		// log(this.projectSettings);
-
-		// Guides
-		// hydrateGlyphrObjectList(Guide, dataGuides, this.projectSettings.guides);
-		// log('finished hydrating guides');
-
-		// Metadata
 		if (newProject.metadata) {
 			// log('merging metadata from newProject');
-			this.metadata = merge(this.metadata, newProject.metadata, true);
+			this.metadata = merge(this.metadata, newProject.metadata);
 		}
+		this.metadata.id = this.metadata.id || makeProjectID();
+		this.metadata.font.descent = -1 * Math.abs(this.metadata.font.descent);
 		// log('finished merging metadata');
 		// log(this.metadata);
 
@@ -161,7 +136,6 @@ export class GlyphrStudioProject {
 	 */
 	save(verbose = false) {
 		const savedProject = {
-			projectSettings: clone(this.projectSettings),
 			metadata: clone(this.metadata),
 			glyphs: {},
 			ligatures: {},
@@ -252,7 +226,7 @@ export class GlyphrStudioProject {
 			// Component
 			// --------------------------------------------------------------
 			result = this.components[id];
-			// log('Returning whatever component[id] happend to be');
+			// log('Returning whatever component[id] happened to be');
 			// log('GlyphrStudioProject.getGlyph', 'end');
 			return this.components[id] || false;
 		}
@@ -300,15 +274,15 @@ export class GlyphrStudioProject {
 			return un;
 		}
 
-		const cobj = this.getGlyph(id);
+		const item = this.getGlyph(id);
 		if (id.indexOf('0x', 2) > -1) {
 			// ligature
 			// log('ligature - returning ' + hexToHTML(id));
-			return cobj.name || hexToHTML(id);
+			return item.name || hexToHTML(id);
 		} else {
 			// Component
 			// log('getGlyphName - inexplicably fails, returning [name not found]\n');
-			return cobj.name || '[name not found]';
+			return item.name || '[name not found]';
 		}
 
 		// log('getGlyphName - returning nothing', 'end');
@@ -326,7 +300,7 @@ export class GlyphrStudioProject {
 		};
 
 		let thisGlyph;
-		const cr = this.projectSettings.glyphRanges;
+		const cr = this.metadata.glyphRanges;
 
 		// if (cr.basicLatin) {
 		//   for (let i = 0; i < basicLatinOrder.length; i++) {

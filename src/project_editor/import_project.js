@@ -14,8 +14,8 @@ export function importGlyphrProjectFromText(importedProject) {
 	log('passed:');
 	log(importedProject);
 
-	const version = parseSemVer(importedProject.projectSettings.version);
-	log('version found ' + importedProject.projectSettings.version);
+	const version = parseSemVer(importedProject.metadata.latestVersion);
+	log('version found ' + importedProject.metadata.latestVersion);
 
 	if (version.major === 1) {
 		importedProject = migrateGlyphrStudioProject(importedProject);
@@ -23,7 +23,7 @@ export function importGlyphrProjectFromText(importedProject) {
 
 	// Update the version
 	const app = getGlyphrStudioApp();
-	importedProject.projectSettings.version = app.version;
+	importedProject.metadata.latestVersion = app.version;
 
 	// Hydrate after all updates
 	log('importGlyphrProjectFromText', 'end');

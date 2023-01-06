@@ -139,11 +139,11 @@ export class Tool_NewBasicPath {
 export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
 	// log(`rectPathFromMaxes`, 'start');
 	// log(JSON.stringify(maxes));
-	let ps = getCurrentProject().projectSettings;
+	let fmd = getCurrentProject().metadata.font;
 
 	//Default Path size
 	let lx = isVal(maxes.xMin) ? maxes.xMin : 0;
-	let ty = isVal(maxes.yMax) ? maxes.yMax : ps.ascent;
+	let ty = isVal(maxes.yMax) ? maxes.yMax : fmd.ascent;
 	let rx = isVal(maxes.xMax) ? maxes.xMax : 100;
 	let by = isVal(maxes.yMin) ? maxes.yMin : 0;
 
@@ -194,12 +194,12 @@ export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
 }
 
 export function ovalPathFromMaxes(maxes = {}, name = 'Oval') {
-	let ps = getCurrentProject().projectSettings;
+	let fmd = getCurrentProject().metadata.font;
 
 	//Default Circle size
 	let lx = isVal(maxes.xMin) ? maxes.xMin : 0;
-	let ty = isVal(maxes.yMax) ? maxes.yMax : ps.xheight || 500;
-	let rx = isVal(maxes.xMax) ? maxes.xMax : ps.xheight || 500;
+	let ty = isVal(maxes.yMax) ? maxes.yMax : fmd.xHeight || 500;
+	let rx = isVal(maxes.xMax) ? maxes.xMax : fmd.xHeight || 500;
 	let by = isVal(maxes.yMin) ? maxes.yMin : 0;
 
 	let hw = round((rx - lx) / 2);

@@ -155,23 +155,20 @@ function readerValidateTXTandGS2() {
 	} catch (error) {
 		return failWithError(`
 			The provided text file does not appear to be a Glyphr Studio project file.
-			It may not be a Glyphr Studio Project file. <br>
+			It may not be a Glyphr Studio Project file.
+			<hr>
 			${error.message}
 		`);
 	}
 
-	if (projectData.projectsettings) projectData.projectSettings = projectData.projectsettings;
-
-
-	if (!projectData.projectSettings) {
+	if (!projectData.metadata && !projectData.projectsettings) {
 		return failWithError(`
 		The provided text file is missing project metadata.
 		It may not be a Glyphr Studio Project file.
 		`);
 	}
 
-	log(!projectData.projectSettings);
-	if (!projectData?.projectSettings?.version && !projectData.projectSettings.versionnum) {
+	if (!projectData?.metadata?.latestVersion && !projectData?.projectsettings?.versionnum) {
 		return failWithError(`
 			The provided text file has no version information associated with it.
 			It may not be a Glyphr Studio Project file.
@@ -179,7 +176,7 @@ function readerValidateTXTandGS2() {
 	}
 
 	let version = parseSemVer(projectData?.projectsettings?.versionnum);
-	if (!version) version = parseSemVer(projectData?.projectSettings?.version);
+	if (!version) version = parseSemVer(projectData?.metadata?.latestVersion);
 
 	log(`version: ${json(version)}`);
 
@@ -226,7 +223,7 @@ function readerValidateTXTandGS2() {
 
 function failWithError(message) {
 	validationResult.errorMessage = message;
-	console.error(message.replace(/[\t\n\r]/gm, ''));
+	console.warn(message.replace(/[\t\n\r]/gm, ''));
 	postValidationCallback(validationResult);
 	return false;
 }
