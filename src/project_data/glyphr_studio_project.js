@@ -293,38 +293,34 @@ export class GlyphrStudioProject {
 	 * @returns {object} - font maxes
 	 */
 	calcFontMaxes() {
+		// log(`GSProject.calcFontMaxes`, 'start');
+
 		const fm = {
-			numberOfGlyphs: 0,
 			maxGlyph: 0x20,
 			maxes: new Maxes(),
 		};
 
+		// log(`fm starts as`);
+		// log(fm);
+
 		let thisGlyph;
-		const cr = this.metadata.glyphRanges;
+		const ranges = this.metadata.glyphRanges;
+		// log(`ranges`);
+		// log(ranges);
 
-		// if (cr.basicLatin) {
-		//   for (let i = 0; i < basicLatinOrder.length; i++) {
-		//     thisGlyph = this.getGlyph(basicLatinOrder[i]);
-		//     fm.numberOfGlyphs++;
-		//     fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[i]);
-		//     fm.maxes = getOverallMaxes(fm.maxes, thisGlyph.maxes);
-		//   }
-		// }
-
-		if (cr.length) {
-			for (let c = 0; c < cr.length; c++) {
-				for (let char = cr[c].begin; char < cr[c].end; char++) {
-					thisGlyph = this.getGlyph(decToHex(char));
-					fm.numberOfGlyphs++;
-					fm.maxGlyph = Math.max(fm.maxGlyph, basicLatinOrder[basicLatinOrder.length]);
-					fm.maxes = getOverallMaxes(fm.maxes, thisGlyph.maxes);
-					// count++;
-				}
+		ranges.forEach((range) => {
+			for (let char = range.begin; char < range.end; char++) {
+				thisGlyph = this.getGlyph(decToHex(char));
+				fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
 			}
-		}
+			fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
+		});
 
 		// TODO Ligatures!
 
+		// log(`returning fm`);
+		// log(fm);
+		// log(`GSProject.calcFontMaxes`, 'end');
 		return fm;
 	}
 }
