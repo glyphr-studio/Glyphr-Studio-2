@@ -290,7 +290,7 @@ export function ioOTF_importOTFfont(font) {
 		fmd.overshoot = round(fmd.upm / 100);
 
 		fmd.family = fname.substr(0, 31);
-		fmd.panose = getTableValue(font.tables.os2.panose) || '0 0 0 0 0 0 0 0 0 0';
+		fmd.panose = getTableValue(font.tables.os2.panose) || '2 0 0 0 0 0 0 0 0 0';
 		fmd.version =
 			getTableValue(font.tables.head.fontRevision) ||
 			getTableValue(font.version) ||

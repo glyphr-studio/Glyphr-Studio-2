@@ -93,6 +93,11 @@ export class GlyphrStudioProject {
 		// log("\t passed: ");
 		// log(newProject);
 
+		// Keep glyph ranges of passed project
+		if (newProject?.metadata?.glyphRanges) {
+			this.metadata.glyphRanges = newProject.metadata.glyphRanges;
+		}
+
 		// Merge with templates
 		if (newProject.metadata) {
 			// log('merging metadata from newProject');
@@ -311,7 +316,7 @@ export class GlyphrStudioProject {
 		ranges.forEach((range) => {
 			for (let char = range.begin; char < range.end; char++) {
 				thisGlyph = this.getGlyph(decToHex(char));
-				fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
+				if (thisGlyph) fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
 			}
 			fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
 		});

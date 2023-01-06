@@ -311,14 +311,15 @@ export function ioSVG_importSVGfont(font) {
 		const fmd = project.metadata.font;
 		const fname = fontAttributes['font-family'] || 'My Font';
 
+		fmd.family = fname;
+		fmd.style = fontAttributes['font-style'] || 'Regular';
+		fmd.panose = fontAttributes['panose-1'] || '2 0 0 0 0 0 0 0 0 0';
 		fmd.upm = 1 * fontAttributes['units-per-em'] || 1000;
-		fmd.name = fname;
 		fmd.ascent = 1 * fontAttributes.ascent || 700;
 		fmd.capHeight = 1 * fontAttributes['cap-height'] || 675;
 		fmd.xHeight = 1 * fontAttributes['x-height'] || 400;
-		fmd.overshoot = round(fmd.upm / 100);
-		fmd.fontFamily = fname;
-		fmd.panose = fontAttributes['panose-1'] || '0 0 0 0 0 0 0 0 0 0';
+		fmd.descent = 1 * fontAttributes.descent || -300;
+		fmd.variant = fontAttributes['font-variant'] || 'normal';
 		fmd.weight = 1 * fontAttributes['font-weight'] || 400;
 		fmd.stretch = fontAttributes['font-stretch'] || 'normal';
 		fmd.underlinePosition = 1 * fontAttributes['underline-position'] || -50;
@@ -327,6 +328,9 @@ export function ioSVG_importSVGfont(font) {
 		fmd.strikethroughThickness = 1 * fontAttributes['strikethrough-thickness'] || 10;
 		fmd.overlinePosition = 1 * fontAttributes['overline-position'] || 750;
 		fmd.overlineThickness = 1 * fontAttributes['overline-thickness'] || 10;
+
+		fmd.overshoot = round(fmd.upm / 100);
+		project.metadata.name = fname;
 
 		editor.nav.page = 'Overview';
 		editor.navigate();
