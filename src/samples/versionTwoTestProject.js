@@ -1,21 +1,20 @@
 export function getVersionTwoTestProject() {
 	// log('getVersionTwoTestProject', 'start');
 	const versionTwoTestProject = {
-		projectSettings: {
+		metadata: {
 			name: 'Alpha Test Font',
 			versionName: 'Version 2 Alpha',
-			version: '2.0.0',
+			latestVersion: '2.0.0-alpha2',
 			initialVersion: '2.0.0-alpha1',
-			projectID: 'g2_ALPHATESTPROJECT1',
-			upm: 1000,
-			ascent: 800,
-			capHeight: 790,
-			xHeight: 580,
-			descent: -200,
-		},
-
-		metadata: {
-			font_family: 'Alpha Test',
+			projectID: 'g2_AlphaTestProject1',
+			font: {
+				fontFamily: 'Alpha Test',
+				upm: 1000,
+				ascent: 800,
+				capHeight: 790,
+				xHeight: 580,
+				descent: -200,
+			},
 		},
 
 		glyphs: {
