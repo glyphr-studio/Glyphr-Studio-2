@@ -35,14 +35,15 @@ export class GlyphTile extends HTMLElement {
 
 		// log(`this.glyphHex: ${this.glyphHex}`);
 
-		let settings = getCurrentProject().metadata.font;
+		let fmd = getCurrentProject().metadata.font;
 		let overallSize = 50;
 		let gutterSize = 2;
 		let contentSize = overallSize - 2 * gutterSize;
-		let upm = settings.upm;
-		let ascent = settings.ascent;
-		let zoom = contentSize / upm;
+		let zoom = contentSize / fmd.upm;
 		let advanceWidth;
+
+		// log(`contentSize: ${contentSize}`);
+		// log(`zoom: ${zoom}`);
 
 		this.setAttribute('title', `${lookUpGlyphName(this.glyphHex, true)}\n${this.glyphHex}`);
 
@@ -51,7 +52,7 @@ export class GlyphTile extends HTMLElement {
 
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
 
-		if (this.glyphObject) {
+		if (this.glyphObject && this.glyphObject.paths.length) {
 			this.thumbnail = makeElement({
 				tag: 'canvas',
 				className: 'thumbnail',
@@ -67,7 +68,7 @@ export class GlyphTile extends HTMLElement {
 
 			this.view = {
 				dx: gutterSize + (contentSize - zoom * advanceWidth) / 2,
-				dy: gutterSize + zoom * ascent,
+				dy: gutterSize + zoom * fmd.ascent,
 				dz: zoom,
 			};
 
@@ -82,7 +83,6 @@ export class GlyphTile extends HTMLElement {
 
 		this.name = makeElement({ className: 'name' });
 		this.name.innerHTML = this.glyphHex === '0x20' ? 'Space' : this.glyphChar;
-		let style = makeElement({ tag: 'style' });
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
@@ -117,7 +117,7 @@ export class GlyphTile extends HTMLElement {
 }
 
 function redrawGlyph(tile) {
-	if (tile.glyphObject) {
+	if (tile.glyphObject && tile.ctx) {
 		tile.ctx.clearRect(0, 0, tile.thumbnail.width, tile.thumbnail.height);
 		drawGlyph(tile.glyphObject, tile.ctx, tile.view);
 	}
@@ -226,13 +226,13 @@ function makeCSS() {
 
 .wrapper:hover,
 .wrapper:focus {
-	background: linear-gradient(var(--accent-color), transparent);
+	background: linear-gradient(var(--blue-l70), transparent);
 	background-repeat: no-repeat;
 	cursor: pointer;
 }
 
 .wrapper[selected] {
-	background: linear-gradient(var(--accent-color), transparent);
+	background: linear-gradient(var(--blue-l70), transparent);
 	background-repeat: no-repeat;
 }
 
@@ -247,7 +247,7 @@ function makeCSS() {
 	opacity: 0.8;
 	font-size: 36px;
 	padding-top: 2px;
-	color: var(--disabled-background);
+	color: var(--disabled-border);
 	margin: auto;
 	width: 50px;
 	height: 50px;
@@ -260,14 +260,14 @@ function makeCSS() {
 	opacity: 1;
 	background-color: white;
 	box-shadow: var(--l1-shadow);
-	color: var(--enabled-active-lightText);
+	color: var(--blue-l40);
 }
 
 .wrapper[selected] .thumbnail {
 	opacity: 1;
 	background-color: white;
 	box-shadow: var(--l1-shadow);
-	color: var(--enabled-active-lightText);
+	color: var(--blue-l85);
 }
 
 .wrapper[selected]:hover .thumbnail {
@@ -291,7 +291,7 @@ function makeCSS() {
 	background-color: var(--blue-l90);
 }
 
-	`;
+`;
 
 	return cssElement;
 }
