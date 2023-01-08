@@ -18,12 +18,12 @@ import {
 	and convert it to a Glyphr Studio Project.
 **/
 
-export function ioOTF_importOTFfont(font) {
-	// log('ioOTF_importOTFfont', 'start');
+export function ioFont_importFont(font) {
+	// log('ioFont_importFont', 'start');
 
 	// Font Stuff
 	// let font = false;
-	const importOTFglyphs = [];
+	const importFontGlyphs = [];
 	const project = getCurrentProject();
 
 	setTimeout(setupFontImport, 10);
@@ -50,7 +50,7 @@ export function ioOTF_importOTFfont(font) {
 			<span class="progress-indicator__counter">${font.glyphs.length}</span>
 		`);
 		Object.keys(font.glyphs.glyphs).forEach(function (key) {
-			importOTFglyphs.push(font.glyphs.glyphs[key]);
+			importFontGlyphs.push(font.glyphs.glyphs[key]);
 		});
 
 		setTimeout(importOneGlyph, 10);
@@ -74,10 +74,10 @@ export function ioOTF_importOTFfont(font) {
 			Importing glyph:
 			<span class="progress-indicator__counter">${importGlyphCounter}</span>
 			 of
-			<span class="progress-indicator__counter">${importOTFglyphs.length}</span>
+			<span class="progress-indicator__counter">${importFontGlyphs.length}</span>
 		`);
 
-		if (importGlyphCounter >= importOTFglyphs.length) {
+		if (importGlyphCounter >= importFontGlyphs.length) {
 			// TODO Kerning
 			// setTimeout(importOneKern, 10);
 			// log(`No more glyphs to import, moving to startFinalize...`);
@@ -87,7 +87,7 @@ export function ioOTF_importOTFfont(font) {
 		}
 
 		// One Glyph in the font
-		const thisOTFglyph = importOTFglyphs[importGlyphCounter];
+		const thisOTFglyph = importFontGlyphs[importGlyphCounter];
 
 		// Get the appropriate unicode decimal for this glyph
 		// log(`thisOTFglyph.unicode: ${thisOTFglyph.unicode}`);
@@ -101,12 +101,12 @@ export function ioOTF_importOTFfont(font) {
 		if (uni === false || uni === '0x0000') {
 			// Check for .notdef
 			// log(`!!! Skipping ${thisOTFglyph.name} NO UNICODE !!!`);
-			importOTFglyphs.splice(importGlyphCounter, 1);
+			importFontGlyphs.splice(importGlyphCounter, 1);
 		} else if (isOutOfBounds([uni])) {
 			// log(`!!! Skipping ${thisOTFglyph.name} OUT OF BOUNDS !!!`);
-			importOTFglyphs.splice(importGlyphCounter, 1);
+			importFontGlyphs.splice(importGlyphCounter, 1);
 		} else {
-			// log(`GLYPH ${importGlyphCounter}/${importOTFglyphs.length}`);
+			// log(`GLYPH ${importGlyphCounter}/${importFontGlyphs.length}`);
 			// log(`${thisOTFglyph.name} unicode: ${uni}`);
 
 			/*
@@ -314,7 +314,7 @@ export function ioOTF_importOTFfont(font) {
 		// log('finalizeFontImport', 'end');
 	}
 
-	// log('ioOTF_importOTFfont', 'end');
+	// log('ioFont_importFont', 'end');
 }
 
 function getTableValue(val) {

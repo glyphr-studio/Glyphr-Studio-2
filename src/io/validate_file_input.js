@@ -50,9 +50,13 @@ export async function validateFileInput(input, callback) {
 		failWithError('A file reader error occurred.');
 	};
 
-	if (validationResult.fileSuffix === 'otf' || validationResult.fileSuffix === 'ttf') {
+	if (
+		validationResult.fileSuffix === 'otf' ||
+		validationResult.fileSuffix === 'ttf' ||
+		validationResult.fileSuffix === 'woff'
+	) {
 		validationResult.fileType = 'font';
-		reader.onload = readerValidateOTF;
+		reader.onload = readerValidateFont;
 		reader.readAsArrayBuffer(file);
 	} else if (validationResult.fileSuffix === 'svg') {
 		validationResult.fileType = 'svg';
@@ -81,11 +85,11 @@ export async function validateFileInput(input, callback) {
 // --------------------------------------------------------------
 
 /**
- * Validate the file as OTF (or TTF)
+ * Validate the file as OTF, TTF, or WOFF
  * @returns Validated data object
  */
-function readerValidateOTF() {
-	log(`readerValidateOTF`, 'start');
+function readerValidateFont() {
+	log(`readerValidateFont`, 'start');
 	const file = this.result;
 	let font = false;
 
@@ -105,7 +109,7 @@ function readerValidateOTF() {
 	}
 
 	postValidationCallback(validationResult);
-	log(`readerValidateOTF`, 'end');
+	log(`readerValidateFont`, 'end');
 }
 
 /**
