@@ -3,7 +3,7 @@ import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { uiColors, accentColors } from '../common/colors.js';
-import { ioOTF_importOTFfont } from '../io/otf_import.js';
+import { ioFont_importFont } from '../io/font_import.js';
 import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
@@ -146,8 +146,8 @@ function makeTabs() {
 	const dropTarget = makeElement({
 		id: 'open-project__drop-target',
 		innerHTML: `
-			Glyphr Studio Project &ensp;(.gs2)<br>
-			Open Type or True Type Font &ensp;(.otf or .ttf)<br>
+			Glyphr Studio Project &ensp;(.gs2, .txt)<br>
+			Open Type, True Type, or WOFF&ensp;(.otf, .ttf, .woff)<br>
 			SVG Font &ensp;(.svg)
 		`,
 	});
@@ -265,7 +265,7 @@ function handleDrop(event) {
 function postValidationCallback(validationResult) {
 	if (validationResult.content) {
 		if (validationResult.fileType === 'font') {
-			ioOTF_importOTFfont(validationResult.content);
+			ioFont_importFont(validationResult.content);
 		} else if (validationResult.fileType === 'svg') {
 			ioSVG_importSVGfont(validationResult.content);
 		} else if (validationResult.fileType === 'project') {
@@ -303,7 +303,7 @@ function handleMessage(event) {
 		// ioSVG_importSVGfont(false);
 		// assume array buffers are otf fonts
 	} else if (event.data instanceof ArrayBuffer) {
-		// ioOTF_importOTFfont(false);
+		// ioFont_importFont(false);
 	}
 }
 

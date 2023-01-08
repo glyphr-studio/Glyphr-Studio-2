@@ -4,7 +4,7 @@ import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { closeAllDialogs, showContextMenu } from '../controls/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
-import { ioOTF_exportOTFfont } from '../io/otf_export.js';
+import { ioFont_exportFont } from '../io/font_export.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -192,7 +192,7 @@ function makeMenu(menuName) {
 						name: 'Export OTF File',
 						icon: 'command_export',
 						shortcut: ['Ctrl', 'e'],
-						onClick: ioOTF_exportOTFfont,
+						onClick: ioFont_exportFont,
 					},
 					{
 						name: 'Export SVG Font File',

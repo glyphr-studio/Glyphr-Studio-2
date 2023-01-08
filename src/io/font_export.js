@@ -11,8 +11,8 @@ import { Glyph } from '../project_data/glyph.js';
 	Project into OpenType.js format for saving.
 **/
 
-export function ioOTF_exportOTFfont() {
-	// log('ioOTF_exportOTFfont', 'start');
+export function ioFont_exportFont() {
+	// log('ioFont_exportFont', 'start');
 	const project = getCurrentProject();
 	// log('combinePathsOnExport = ' + project.metadata.preferences.combinePathsOnExport);
 
@@ -177,7 +177,7 @@ export function ioOTF_exportOTFfont() {
 	currentExportGlyph = exportArray[0];
 	generateOneGlyph();
 
-	// log('ioOTF_exportOTFfont', 'end');
+	// log('ioFont_exportFont', 'end');
 }
 
 function generateNotdefGlyph() {
