@@ -147,6 +147,7 @@ function migrate_Glyph(oldGlyph, glyphID) {
 	newGlyph.advanceWidth = oldGlyph.glyphwidth;
 	newGlyph.ratioLock = oldGlyph.ratiolock;
 	newGlyph.usedIn = oldGlyph.usedin;
+	newGlyph.contextGlyphs = oldGlyph.contextglyphs;
 
 	oldGlyph.shapes.forEach(shape => {
 		newGlyph.paths.push(migrate_Path(shape, newGlyph));
