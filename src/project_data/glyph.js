@@ -28,7 +28,7 @@ export class Glyph extends GlyphElement {
 	 * @param {boolean} paths - collection of Paths and Component Instances in this Glyph
 	 * @param {array} usedIn - array of IDs where this Glyph is used as a component instance
 	 */
-	constructor({ id = false, paths = [], advanceWidth = 0, ratioLock = false, usedIn = [] } = {}) {
+	constructor({ id = false, paths = [], advanceWidth = 0, ratioLock = false, usedIn = [], contextGlyphs = '' } = {}) {
 		// log(`Glyph.constructor`, 'start');
 		super();
 		this.id = id;
@@ -36,6 +36,7 @@ export class Glyph extends GlyphElement {
 		this.advanceWidth = advanceWidth;
 		this.ratioLock = ratioLock;
 		this.usedIn = usedIn;
+		this.contextGlyphs = contextGlyphs;
 
 		this.objType = 'Glyph';
 		// log(this.print());
