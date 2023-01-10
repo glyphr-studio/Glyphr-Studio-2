@@ -33,7 +33,7 @@ export class GlyphrStudioProject {
 				formatSaveFile: true,
 				guides: {
 					system: {
-						transparency: 0,
+						transparency: 90,
 						showBaseline: true,
 						showLeftSide: true,
 						showRightSide: true,
@@ -41,7 +41,7 @@ export class GlyphrStudioProject {
 				},
 				contextGlyphs: {
 					showGuides: true,
-					transparency: 0,
+					transparency: 90,
 				},
 			},
 			font: {

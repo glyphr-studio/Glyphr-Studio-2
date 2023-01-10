@@ -136,8 +136,8 @@ export class EditCanvas extends HTMLElement {
 		function redrawAnimationFrame() {
 			ctx.clearRect(0, 0, width, height);
 
-			// Grid
-			drawGrid();
+			// Guides
+			drawGuides();
 
 			// Draw glyphs
 			drawGlyph(sg, ctx, view);
@@ -173,7 +173,7 @@ export class EditCanvas extends HTMLElement {
 			}
 		}
 
-		function drawGrid() {
+		function drawGuides() {
 			ctx.fillStyle = accentColors.gray.l90;
 			let gridTop = sYcY(md.font.ascent, view);
 			let gridHeight = md.font.upm * view.dz;

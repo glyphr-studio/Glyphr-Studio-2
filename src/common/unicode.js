@@ -410,11 +410,11 @@ export const basicLatinOrder = [
 ];
 
 export const unicodeRanges = {
-	basicLatin: { begin: 0x20, end: 0x7e },
-	latinSupplementControls: { begin: 0x80, end: 0x9f },
-	latinSupplement: { begin: 0xa0, end: 0xff },
-	latinExtendedA: { begin: 0x100, end: 0x17f },
-	latinExtendedB: { begin: 0x180, end: 0x24f },
+	basicLatin: { begin: 0x20, end: 0x7e, name: 'Basic Latin' },
+	latinSupplementControls: { begin: 0x80, end: 0x9f, name: 'Latin Supplement Controls' },
+	latinSupplement: { begin: 0xa0, end: 0xff, name: 'Latin Supplement' },
+	latinExtendedA: { begin: 0x100, end: 0x17f, name: 'Latin Extended A' },
+	latinExtendedB: { begin: 0x180, end: 0x24f, name: 'Latin Extended B' },
 };
 
 // https://en.wikipedia.org/wiki/Typographic_ligature

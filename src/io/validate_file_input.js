@@ -154,17 +154,19 @@ function readerValidateTXTandGS2() {
 	const file = this.result;
 	let projectData;
 
+	// Can't read JSON file
 	try {
 		projectData = JSON.parse(file);
 	} catch (error) {
 		return failWithError(`
-			The provided text file does not appear to be a Glyphr Studio project file.
-			It may not be a Glyphr Studio Project file.
+			The file could not be read. Expecting a Glyphr Studio Project file
+			in JSON format.
 			<hr>
 			${error.message}
 		`);
 	}
 
+	// Missing metadata / settings property
 	if (!projectData.metadata && !projectData.projectsettings) {
 		return failWithError(`
 		The provided text file is missing project metadata.
@@ -172,6 +174,7 @@ function readerValidateTXTandGS2() {
 		`);
 	}
 
+	// Missing version information
 	if (!projectData?.metadata?.latestVersion && !projectData?.projectsettings?.versionnum) {
 		return failWithError(`
 			The provided text file has no version information associated with it.
@@ -184,12 +187,14 @@ function readerValidateTXTandGS2() {
 
 	log(`version: ${json(version)}`);
 
+	// Version information could not be parsed as SemVer
 	if (!version) {
 		return failWithError(`
 			The version information could not be read for the provided project file.
 		`);
 	}
 
+	// Project file created with a future version of Glyphr Studio
 	let thisGlyphrStudioVersion = parseSemVer(getGlyphrStudioApp().version);
 	if (isSemVerLessThan(thisGlyphrStudioVersion, version)) {
 		return failWithError(`
@@ -201,21 +206,16 @@ function readerValidateTXTandGS2() {
 	// Only upgrade recent v1 projects,
 	// versions 1.13.1 and below are not supported
 	// versions 1.13.2 and above are supported
-	if (version.major === 1) {
-		if (isSemVerLessThan(version, [1, 13, 2])) {
-			return failWithError(`
-				Only Glyphr Studio Project files with version 1.13.2 and above can be
-				imported into Glyphr Studio v2. For versions 1.13.1 and below, open and re-save
-				the project file with Glyphr Studio v1 App (which will update it).
-			`);
-		} else {
-			// TODO update v1 to v2
-			// validationResult.content = project;
-			return failWithError(`Glyphr Studio v1 project files cannot be imported (for now).`);
-		}
-	} else if (version.major === 2) {
-		validationResult.content = projectData;
+	if (isSemVerLessThan(version, [1, 13, 2])) {
+		return failWithError(`
+			Only Glyphr Studio Project files with version 1.13.2 and above can be
+			imported into Glyphr Studio v2. For versions 1.13.1 and below, open and re-save
+			the project file with Glyphr Studio v1 App (which will update it).
+		`);
 	}
+
+	// Success fallthrough!
+	validationResult.content = projectData;
 
 	postValidationCallback(validationResult);
 	// log(`readerValidateTXTandGS2`, 'end');

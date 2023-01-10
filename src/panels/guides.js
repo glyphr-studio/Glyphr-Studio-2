@@ -10,7 +10,7 @@ import { makeSingleCheckbox } from './cards.js';
 
 export function makePanel_Guides() {
 	const editor = getCurrentProjectEditor();
-	const systemGuides = editor.project.metadata.guides.system;
+	const systemGuides = editor.project.metadata.preferences.guides.system;
 	let systemCard = makeElement({ className: 'panel__card full-width', innerHTML: '<h4>System guides</h4>' });
 	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showBaseline', 'Baseline'));
 	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showLeftSide', 'Left side'));
