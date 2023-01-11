@@ -1,7 +1,7 @@
 import { makeElement } from '../../common/dom.js';
 import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
 import { round } from '../../common/functions.js';
-import { linkCSS } from '../controls.js';
+import style from './input-number.css?inline';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement
@@ -62,8 +62,8 @@ export class InputNumber extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		// shadow.appendChild(linkCSS('input-number'));
-		shadow.appendChild(makeCSS());
+		let styles = makeElement({ tag: 'style', innerHTML: style });
+		shadow.appendChild(styles);
 
 		this.arrowWrapper.appendChild(this.upArrow);
 		this.arrowWrapper.appendChild(this.downArrow);
@@ -308,186 +308,4 @@ export class InputNumber extends HTMLElement {
 				break;
 		}
 	}
-}
-
-/**
- * In-lines CSS
- */
-
-function makeCSS() {
-	let cssElement = makeElement({ tag: 'style' });
-
-	cssElement.innerHTML = `
-* {
-	box-sizing: border-box;
-}
-
-.wrapper {
-	margin: 0px;
-	padding: 0px;
-	display: grid;
-	grid-template-columns: 1fr 24px;
-	border-style: solid;
-	border-color: var(--enabled-restingLight-border);
-	background-color: var(--enabled-restingLight-background);
-	border-radius: 4px;
-}
-
-.wrapper:hover,
-.wrapper:focus,
-.wrapper *:hover,
-.wrapper *:focus {
-	border-color: var(--enabled-focus-border);
-}
-
-.wrapper[disabled],
-.wrapper:hover[disabled],
-.wrapper:focus[disabled],
-.wrapper:active[disabled] {
-	background-color: var(--disabled-background);
-	border-color: var(--disabled-background);
-}
-
-.numberInput {
-	background-color: transparent;
-	border: 0;
-	border-radius: 4px 0px 0px 4px;
-	margin: 0;
-	margin-right: 0px;
-	color: var(--enabled-resting-text);
-	grid-column-start: 1;
-	min-width: 50px;
-	height: 24px;
-	padding: 0px 8px 0px 2px;
-	text-align: right;
-	font-family: monospace;
-}
-
-.numberInput:hover,
-.numberInput:active {
-	background-color: white;
-}
-
-.numberInput:focus {
-	outline: var(--global-focus-style);
-	outline-offset: -1px;
-	border-radius: 3px 0px 0px 3px;
-}
-
-.numberInput[disabled],
-.numberInput:hover[disabled],
-.numberInput:focus[disabled],
-.numberInput:active[disabled] {
-	background-color: var(--disabled-background);
-	border-color: var(--disabled-border);
-	color: var(--disabled-text);
-	text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
-}
-
-.arrowWrapper {
-	grid-column-start: 2;
-	display: grid;
-	grid-template-rows: 1fr 1fr;
-	border-left: 1px solid var(--enabled-restingLight-border);
-	width: 24px;
-	height: 24px;
-	margin: 0;
-}
-
-.wrapper:hover .arrowWrapper,
-.arrowWrapper:hover {
-	border-left-color: var(--enabled-focus-border);
-}
-
-.wrapper:hover[disabled] .arrowWrapper,
-.arrowWrapper:hover[disabled] {
-	border-left-color: var(--disabled-background);
-}
-
-.arrowWrapper:focus {
-	outline: var(--global-focus-style);
-	outline-offset: -1px;
-}
-
-.arrowWrapper[disabled],
-.arrowWrapper:hover[disabled],
-.arrowWrapper:focus[disabled],
-.arrowWrapper:active[disabled] {
-	border-color: var(--disabled-background);
-	background-color: var(--disabled-background);
-}
-
-.wrapper .upArrow,
-.wrapper .downArrow,
-.upArrow,
-.downArrow {
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-	padding: 0;
-	margin: 0;
-	border-width: 1px;
-	text-align: center;
-	line-height: 10px;
-	height: 12px;
-	font-size: 0.9em;
-	cursor: pointer;
-	color: var(--enabled-restingLight-fill);
-}
-
-.upArrow {
-	border-radius: 0px 3px 0px 0px;
-	grid-row-start: 1;
-	vertical-align: bottom;
-}
-
-.downArrow {
-	border-radius: 0px 0px 3px 0px;
-	grid-row-start: 2;
-	vertical-align: top;
-}
-
-.upArrow:hover,
-.downArrow:hover {
-	background-color: var(--enabled-focus-background) !important;
-}
-
-.upArrow:focus,
-.downArrow:focus {
-	outline: var(--global-focus-style);
-	outline-offset: -1px;
-}
-
-.wrapper:hover .upArrow,
-.wrapper:hover .downArrow,
-.upArrow:hover,
-.downArrow:hover {
-	color: var(--enabled-focus-fill);
-	background-color: var(--enabled-resting-background);
-}
-
-.upArrow:active,
-.downArrow:active {
-	color: var(--enabled-active-fill);
-	background-color: var(--enabled-active-background);
-}
-
-.upArrow[disabled],
-.downArrow[disabled],
-.upArrow:hover[disabled],
-.downArrow:hover[disabled],
-.upArrow:focus[disabled],
-.downArrow:focus[disabled],
-.upArrow:active[disabled],
-.downArrow:active[disabled] {
-	cursor: default;
-	color: var(--disabled-fill) !important;
-	background-color: var(--disabled-background) !important;
-	outline: none;
-}
-
-	`;
-
-	return cssElement;
 }

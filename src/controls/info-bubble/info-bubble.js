@@ -1,6 +1,6 @@
 import { accentColors } from '../../common/colors.js';
 import { makeElement } from '../../common/dom.js';
-import { linkCSS } from '../controls.js';
+import style from './info-bubble.css?inline';
 
 /**
  * A small bubble that displays information
@@ -18,8 +18,8 @@ export class InfoBubble extends HTMLElement {
 
 		// Put together visible stuff
 		let shadow = this.attachShadow({ mode: 'open' });
-		// shadow.appendChild(linkCSS('info-bubble'));
-		shadow.appendChild(makeCSS());
+		let styles = makeElement({ tag: 'style', innerHTML: style });
+		shadow.appendChild(styles);
 
 		wrapper.appendChild(this.entryPoint);
 		shadow.appendChild(wrapper);
@@ -143,67 +143,4 @@ export class InfoBubble extends HTMLElement {
 
 		// log(`info-bubble hide`, 'end');
 	}
-}
-
-/**
- * In-lines CSS
- */
-
-function makeCSS() {
-	let cssElement = makeElement({ tag: 'style' });
-
-	cssElement.innerHTML = `
-:root {
-	width: 14px;
-	height: 14px;
-}
-
-* {
-	user-select: none;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-}
-
-.wrapper {
-	margin: 0px;
-	padding: 0px;
-	display: block;
-	width: 14px;
-	height: 14px;
-}
-
-.wrapper:focus {
-	outline: 0;
-}
-
-#entryPoint {
-	display: inline-block;
-	position: relative;
-	top: -5px;
-	border-style: solid;
-	border-width: 1px;
-	border-color: rgb(180, 180, 180);
-	background-color: transparent;
-	color: rgb(180, 180, 180);
-	border-radius: 50%;
-	font-family: monospace, verdana, sans-serif;
-	font-size: 8px;
-	font-weight: bold;
-	width: 12px;
-	height: 12px;
-	line-height: 11px;
-	text-align: center;
-	box-sizing: border-box;
-	padding: 0px 0px 1px 0.5px;
-}
-
-#entryPoint:hover,
-.bubble:hover {
-	cursor: help;
-}
-
-	`;
-
-	return cssElement;
 }

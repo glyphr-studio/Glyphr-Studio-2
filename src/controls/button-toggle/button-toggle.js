@@ -1,6 +1,6 @@
 import { makeElement } from '../../common/dom.js';
 import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
-import { linkCSS } from '../controls.js';
+import style from './button-toggle.css?inline';
 
 /**
  * Shows an icon that is either selected or unselected,
@@ -43,8 +43,9 @@ export class ButtonToggle extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		// shadow.appendChild(linkCSS('button-toggle'));
-		shadow.appendChild(makeCSS());
+		let styles = makeElement({ tag: 'style', innerHTML: style });
+		shadow.appendChild(styles);
+		
 		shadow.appendChild(this.wrapper);
 
 		if (!this.disabled) {
@@ -159,97 +160,4 @@ export class ButtonToggle extends HTMLElement {
 								</svg>`;
 		}
 	}
-}
-
-/**
- * In-lines CSS
- */
-
-function makeCSS() {
-	let cssElement = makeElement({ tag: 'style' });
-
-	cssElement.innerHTML = `
-:host {
-	box-sizing: border-box;
-	margin: 0;
-	border: 0;
-	border-radius: 4px;
-}
-
-* {
-	user-select: none;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-}
-
-.wrapper {
-	box-sizing: border-box;
-	margin: 0;
-	border-radius: 4px;
-	border-style: solid;
-	vertical-align: top;
-	text-align: left;
-	overflow: hidden;
-	border-color: var(--enabled-restingLight-border);
-	background-color: var(--enabled-restingLight-background);
-}
-
-.wrapper svg {
-	fill: var(--enabled-restingLight-fill);
-}
-
-.wrapper:hover {
-	cursor: pointer;
-	border-color: var(--enabled-focus-border);
-	background-color: var(--enabled-focus-background);
-}
-
-.wrapper:hover svg {
-	fill: var(--enabled-focus-fill);
-}
-
-.wrapper:focus {
-	outline: var(--global-focus-style);
-	outline-offset: -1px;
-}
-
-.wrapper[selected] {
-	border-color: var(--accent-color);
-	background-color: var(--enabled-active-background);
-}
-
-.wrapper[selected]:hover {
-	cursor: pointer;
-	border-color: var(--enabled-active-border);
-	background-color: var(--enabled-resting-background);
-}
-
-.wrapper[selected]:focus {
-	outline: var(--global-focus-style);
-}
-
-.wrapper[selected] svg {
-	fill: var(--accent-color);
-}
-
-.wrapper[disabled],
-.wrapper:hover[disabled],
-.wrapper:focus[disabled],
-.wrapper:active[disabled] {
-	cursor: default;
-	border-color: var(--disabled-border);
-	background-color: var(--disabled-background);
-}
-
-.wrapper[disabled] svg,
-.wrapper:hover[disabled] svg,
-.wrapper:focus[disabled] svg,
-.wrapper:active[disabled] svg {
-	fill: var(--disabled-fill);
-}
-
-	`;
-
-	return cssElement;
 }
