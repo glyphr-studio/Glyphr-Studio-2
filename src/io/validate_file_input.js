@@ -150,7 +150,7 @@ function readerValidateSVG() {
  * @returns Validated data object
  */
 function readerValidateTXTandGS2() {
-	// log(`readerValidateTXTandGS2`, 'start');
+	log(`readerValidateTXTandGS2`, 'start');
 	const file = this.result;
 	let projectData;
 
@@ -206,6 +206,8 @@ function readerValidateTXTandGS2() {
 	// Only upgrade recent v1 projects,
 	// versions 1.13.1 and below are not supported
 	// versions 1.13.2 and above are supported
+	log(`version: ${json(version)}`);
+
 	if (isSemVerLessThan(version, [1, 13, 2])) {
 		return failWithError(`
 			Only Glyphr Studio Project files with version 1.13.2 and above can be
@@ -218,7 +220,7 @@ function readerValidateTXTandGS2() {
 	validationResult.content = projectData;
 
 	postValidationCallback(validationResult);
-	// log(`readerValidateTXTandGS2`, 'end');
+	log(`readerValidateTXTandGS2`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -227,7 +229,8 @@ function readerValidateTXTandGS2() {
 
 function failWithError(message) {
 	validationResult.errorMessage = message;
-	console.warn(message.replace(/[\t\n\r]/gm, ''));
+	// console.warn(message.replace(/[\t\n\r]/gm, ' '));
+	console.warn(message.replace(/\s\s+/g, ' '));
 	postValidationCallback(validationResult);
 	return false;
 }
@@ -235,18 +238,26 @@ function failWithError(message) {
 /**
  * Tests a semantic version against a threshold
  * @param {Object} test - semVer object to test
- * @param {Array} threshold - semVer array as a threshold
+ * @param {Object or Array} threshold - semVer as a threshold
  * @returns {Boolean}
  */
 export function isSemVerLessThan(test, threshold) {
 	// log(`isSemVerLessThan`, 'start');
 
+	if (Array.isArray(threshold)) {
+		threshold = {
+			major: threshold[0],
+			minor: threshold[1],
+			patch: threshold[2],
+		};
+	}
+
 	let result = false;
-	if (test.major < threshold[0]) result = 'major';
-	else if (test.major === threshold[0]) {
-		if (test.minor < threshold[1]) result = 'minor';
-		else if (test.minor === threshold[1]) {
-			if (test.patch < threshold[2]) result = 'patch';
+	if (test.major < threshold.major) result = 'major';
+	else if (test.major === threshold.major) {
+		if (test.minor < threshold.minor) result = 'minor';
+		else if (test.minor === threshold.minor) {
+			if (test.patch < threshold.patch) result = 'patch';
 		}
 	}
 
@@ -257,6 +268,9 @@ export function isSemVerLessThan(test, threshold) {
 }
 
 export function parseSemVer(versionString) {
+	// log(`parseSemVer`, 'start');
+	// log(`versionString: ${versionString}`);
+
 	if (!versionString) return false;
 	const prePostDash = versionString.split('-');
 	const versions = prePostDash[0].split('.');
@@ -265,12 +279,14 @@ export function parseSemVer(versionString) {
 
 	const result = {
 		preRelease: false,
-		major: versions[0] * 1,
-		minor: versions[1] * 1,
-		patch: versions[2] * 1,
+		major: parseInt(versions[0]),
+		minor: parseInt(versions[1]),
+		patch: parseInt(versions[2]),
 	};
 
 	if (prePostDash[1]) result.preRelease = prePostDash[1];
-
+	// log(`Result:`);
+	// log(json(result));
+	// log(`parseSemVer`, 'end');
 	return result;
 }
