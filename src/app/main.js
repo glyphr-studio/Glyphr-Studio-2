@@ -12,7 +12,6 @@ import { InfoBubble } from '../controls/info-bubble/info-bubble.js';
 import { InputNumber } from '../controls/input-number/input-number.js';
 import { InputNumberLockable } from '../controls/input-number-lockable/input-number-lockable.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
-import { linkCSS } from '../controls/controls.js';
 import { makeElement } from '../common/dom.js';
 
 // The main app object
@@ -76,22 +75,10 @@ function registerCustomComponents() {
 
 	data.forEach((control) => {
 		customElements.define(control.fileName, control.className);
-		// document.head.appendChild(linkCSS(control.fileName));
 	});
 
 	// Special case EditCanvas
 	customElements.define('edit-canvas', EditCanvas);
-
-	// document.head.appendChild(
-	// 	makeElement({
-	// 		tag: 'link',
-	// 		attributes: {
-	// 			href: `./edit_canvas/edit-canvas.css`,
-	// 			rel: 'stylesheet',
-	// 			type: 'text/css',
-	// 		},
-	// 	})
-	// );
 }
 
 /**

@@ -1,8 +1,7 @@
 import { makeElement } from '../../common/dom.js';
 import { ButtonToggle } from '../button-toggle/button-toggle.js';
 import { InputNumber } from '../input-number/input-number.js';
-import { uiColors } from '../../common/colors.js';
-import { linkCSS } from '../controls.js';
+import style from './input-number-lockable.css?inline';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement,
@@ -39,8 +38,8 @@ export class InputNumberLockable extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		// shadow.appendChild(linkCSS('input-number-lockable'));
-		shadow.appendChild(makeCSS());
+		let styles = makeElement({ tag: 'style', innerHTML: style });
+		shadow.appendChild(styles);
 
 		this.observer = new MutationObserver(this.childAttributeChanged);
 		this.observer.elementRoot = this;
@@ -154,50 +153,4 @@ export class InputNumberLockable extends HTMLElement {
 
 		// log(`InputNumberLockable.attributeChangeCallback`, 'end');
 	}
-}
-
-/**
- * In-lines CSS
- */
-
-function makeCSS() {
-	let cssElement = makeElement({ tag: 'style' });
-
-	cssElement.innerHTML = `
-* {
-	box-sizing: border-box;
-}
-
-.wrapper {
-	margin: 0px;
-	padding: 0px;
-	display: grid;
-	grid-template-columns: 1fr 24px;
-	border-style: solid;
-	border-width: 1px;
-	border-color: var(--enabled-restingLight-border);
-	background-color: var(--enabled-restingLight-background);
-	border-radius: 4px;
-}
-
-.wrapper:hover,
-.wrapper:focus,
-.wrapper *:hover,
-.wrapper *:focus {
-	border-color: var(--enabled-focus-border);
-}
-
-.wrapper[disabled],
-.wrapper[disabled]:hover,
-.wrapper[disabled]:focus,
-.wrapper[disabled]:active,
-.wrapper[disabled] *:hover,
-.wrapper[disabled] *:focus {
-	background-color: var(--disabled-background);
-	border-color: var(--disabled-background);
-}
-
-	`;
-
-	return cssElement;
 }

@@ -4,10 +4,10 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { glyphToHex } from '../common/unicode.js';
 import { drawGlyph } from './draw_paths.js';
-import { linkCSS } from '../controls/controls.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
 import { livePreviewPageWindowResize } from '../pages/live_preview.js';
 import { livePreviewOptions } from '../panels/live_preview.js';
+import style from './display-canvas.css?inline';
 
 /**
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
@@ -44,8 +44,8 @@ export class DisplayCanvas extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		// shadow.appendChild(linkCSS('display-canvas'));
-		shadow.appendChild(makeCSS());
+		let styles = makeElement({ tag: 'style', innerHTML: style });
+		shadow.appendChild(styles);
 
 		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(this.canvas);
@@ -368,29 +368,4 @@ export class DisplayCanvas extends HTMLElement {
 				'</html>'
 		);
 	}
-}
-
-/**
- * In-lines CSS
- */
-
-function makeCSS() {
-	let cssElement = makeElement({ tag: 'style' });
-
-	cssElement.innerHTML = `
-* {
-	box-sizing: border-box;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
-}
-
-canvas {
-	background-color: white;
-	z-index: 100;
-}
-`;
-
-	return cssElement;
 }
