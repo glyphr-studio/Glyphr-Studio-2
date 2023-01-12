@@ -261,8 +261,8 @@ export function maxesOverlap(m1, m2, exclusive = true) {
  * @returns {Maxes}
  */
 export function getOverallMaxes(maxesArray) {
-	log('getOverallMaxes', 'start');
-	log(JSON.stringify(maxesArray));
+	// log('getOverallMaxes', 'start');
+	// log(JSON.stringify(maxesArray));
 
 	const re = maxesMinBounds();
 	let tm;
@@ -270,7 +270,7 @@ export function getOverallMaxes(maxesArray) {
 	for (let m = 0; m < maxesArray.length; m++) {
 		// log('iteration number ' + m);
 		tm = maxesArray[m];
-		log(tm);
+		// log(tm);
 
 		// find
 		re.xMin = Math.min(re.xMin, tm.xMin);
@@ -280,9 +280,9 @@ export function getOverallMaxes(maxesArray) {
 		// log([re]);
 	}
 
-	log('returning');
-	log(re);
-	log('getOverallMaxes', 'end');
+	// log('returning');
+	// log(re);
+	// log('getOverallMaxes', 'end');
 
 	return new Maxes(re);
 }
