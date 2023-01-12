@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 	<!--
-	Copyright (C) 2010 - 2022 Matthew LaGrandeur
+	Copyright (C) 2010 - 2023 Matthew LaGrandeur
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 		<style>
 			body,
 			#app__wrapper,
-			#loadScreen {
+			#app__landing-page {
 				height: 100%;
 				width: 100%;
 				min-height: 100%;
@@ -46,7 +46,7 @@
 				background-color: #161d20;
 			}
 
-			#loadScreen {
+			#app__landing-page {
 				z-index: 10;
 				font-family: sans-serif;
 				opacity: 1;
@@ -55,35 +55,27 @@
 				background-color: #0e1214;
 				background: linear-gradient(135deg, var(--blue-l15), var(--purple-l05));
 				padding: auto;
-				text-align: center;
-				vertical-align: middle;
+				text-align: left;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				padding-bottom: 189px;
 			}
 
-			#loadScreen svg,
-			#loadScreen #errorMessage {
-				margin: auto;
-				position: relative;
-				top: calc(50% - 128px);
+			#app__landing-page svg,
+			#app__landing-page #errorMessage {
+				margin: 90px 0px 0px 50px;
 			}
 
-			#loadLogo {
+			.mainLogo {
 				fill: url(#logoGradient);
-				animation-name: fill-pulse;
-				animation-duration: 2000ms;
-				animation-iteration-count: infinite;
+				width: 300px;
 			}
 
-			#loadLogo .logoWords {
+			.mainLogo .logoWords {
 				fill: transparent;
 				stroke-width: 0.4px;
 				stroke: var(--blue-l50);
-			}
-
-			@keyframes fill-pulse {
-				0% { opacity: 1; }
-				40% { opacity: 0.5; }
-				50% { opacity: 0.9; }
-				100% { opacity: 1; }
 			}
 		</style>
 		
@@ -96,29 +88,14 @@
 		
 		
 		
-		
-		
-		<script type="module" crossorigin src="/v2/app/assets/index.9790738f.js"></script>
-		<link rel="stylesheet" href="/v2/app/assets/index.7a77336c.css">
+		<script type="module" crossorigin src="/v2/app/assets/index-a18e8bd7.js"></script>
+		<link rel="stylesheet" href="/v2/app/assets/index-08e039cf.css">
 	</head>
 
 	<body style="width: 100%; height: 100%; min-width: 100%; min-height: 100%; margin: 0; padding: 0">
-		<div id="loadScreen">
-			<svg
-				version="1.1"
-				xmlns="http://www.w3.org/2000/svg"
-				xmlns:xlink="http://www.w3.org/1999/xlink"
-				xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
-				xml:space="preserve"
-				x="0px"
-				y="0px"
-				width="400px"
-				height="400px"
-				viewBox="-2 -2 258 258"
-				style="overflow: scroll; enable-background: new -2 -2 258 258"
-				fill="#00344E"
-				id="loadLogo"
-			>
+		<div id="app__landing-page">
+			<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+				viewBox="0 0 200 128" enable-background="new 0 0 200 128" class="mainLogo">
 				<defs>
 					<linearGradient id="logoGradient">
 						<stop offset="0%" stop-color="var(--blue-l60)" />
@@ -313,15 +290,14 @@
 						points="153.36 122.56 152.37 116.91 150.75 116.91 149.69 122.56 148.9 115.94 147.34 115.94 148.63 123.57 150.61 123.57 151.53 118.15 152.39 123.57 154.42 123.57 155.66 115.94 154.15 115.94 153.36 122.56" />
 				</g>
 			</svg>
-
 			<script>
 				setTimeout(function () {
 					let errorDiv = document.getElementById('errorMessage');
 					if (errorDiv) {
 						errorDiv.style.display = 'block';
-						document.getElementById('loadLogo').style.display = 'none';
+						document.querySelector('.mainLogo').style.display = 'none';
 					}
-				}, 10000);
+				}, 5000);
 			</script>
 
 			<div id="errorMessage" style="display: none; width: 400px">
@@ -344,18 +320,6 @@
 			</div>
 		</div>
 
-		<div
-			id="app__wrapper"
-			style="
-				height: 100%;
-				width: 100%;
-				min-height: 100%;
-				min-width: 100%;
-				position: absolute;
-				top: 0px;
-				left: 0px;
-				overflow: hidden;
-			"
-		></div>
+		<div id="app__wrapper"></div>
 	</body>
 </html>
