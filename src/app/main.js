@@ -59,7 +59,6 @@ function passPreChecks() {
 
 /**
  * Registers all the custom Web Components to the current document
- * Also adds the CSS file for each component to avoid FOUC.
  */
 function registerCustomComponents() {
 	const data = [
@@ -71,14 +70,12 @@ function registerCustomComponents() {
 		{ fileName: 'info-bubble', className: InfoBubble },
 		{ fileName: 'input-number', className: InputNumber },
 		{ fileName: 'input-number-lockable', className: InputNumberLockable },
+		{ fileName: 'edit-canvas', className: EditCanvas },
 	];
 
 	data.forEach((control) => {
 		customElements.define(control.fileName, control.className);
 	});
-
-	// Special case EditCanvas
-	customElements.define('edit-canvas', EditCanvas);
 }
 
 /**

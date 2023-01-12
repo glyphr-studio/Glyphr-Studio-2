@@ -34,6 +34,7 @@
 	padding: 2px;
 	height: 100%;
 	width: 100%;
+	animation: gradFade 120s linear infinite;
 	border-style: solid;
 	border-width: 0px;
 	border-radius: 5px;
@@ -46,8 +47,7 @@
 		var(--orange-l55),
 		var(--purple-l45),
 		var(--blue-l55),
-		var(--purple-l45)
-	);
+		var(--purple-l45));
 	background-size: 500% 500%;
 }
 
@@ -55,6 +55,7 @@
 	0% {
 		background-position: 0% 0%;
 	}
+
 	100% {
 		background-position: 100% 100%;
 	}
@@ -87,6 +88,7 @@
 	height: max-content;
 	margin: 5px 10px;
 	color: white;
+	animation: gradFade 120s linear infinite;
 	background-color: transparent;
 }
 
@@ -95,7 +97,7 @@
 }
 
 .wrapper[dark] .buttonContent {
-	background-color: var(--gray-l05) !important;
+	background-color: var(--gray-l05);
 }
 
 .wrapper[secondary] .buttonText {
@@ -106,8 +108,7 @@
 		var(--orange-l45),
 		var(--purple-l45),
 		var(--blue-l45),
-		var(--purple-l45)
-	);
+		var(--purple-l45));
 	background-size: 500% 500%;
 	-webkit-background-clip: text;
 	background-clip: text;
