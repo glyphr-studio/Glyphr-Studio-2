@@ -4,5 +4,6 @@ export default {
 		outDir: '../dist/',
 		manifest: false,
 		emptyOutDir: true,
+		chunkSizeWarningLimit: 2000,
 	},
 };

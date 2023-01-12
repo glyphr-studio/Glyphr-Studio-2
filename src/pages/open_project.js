@@ -1,5 +1,4 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { projects } from '../samples/samples.js';
 import { uiColors, accentColors } from '../common/colors.js';
@@ -13,6 +12,7 @@ import { json } from '../common/functions.js';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress-indicator.js';
 import { closeAllDialogs, showError } from '../controls/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
+import alphaLogo from '../common/graphics/alpha-logo-wordmark.svg?raw';
 
 /**
  * Page > Open Project
@@ -42,7 +42,7 @@ export function makePage_OpenProject() {
 		innerHTML: `
 			<div id="open-project__page">
 				<div id="open-project__left-area" vertical-align="middle">
-					<div id="open-project__logo">${makeGlyphrStudioLogo()}</div>
+					<div id="open-project__logo">${alphaLogo}</div>
 					<span class="open-project__version-name">${app.versionName}</span>
 					<span class="open-project__version-number">${app.version}${recentMessage}</span>
 					<div class="open-project__blurb">

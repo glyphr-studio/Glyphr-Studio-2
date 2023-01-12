@@ -1,8 +1,8 @@
 import { makeElement } from '../common/dom.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
-import { makeGlyphrStudioLogo } from '../common/graphics.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { emailLink } from '../app/app.js';
+import alphaLogo from '../common/graphics/alpha-logo.svg?raw';
 
 /**
  * Page > About
@@ -50,7 +50,7 @@ export function makePage_About() {
 			</div>
 			<div class="content-page__right-area">
 				<div class="GS2Logo">
-					${makeGlyphrStudioLogo(false)}
+					${alphaLogo}
 				</div>
 				<p class="logoNote">*not the final logo!</p>
 
@@ -70,9 +70,7 @@ export function makePage_About() {
 					<h3>This Glyphr Studio Project</h3>
 					<label>Project name:</label> ${editor.project.metadata.name}<br>
 					<label>Unique project ID:</label> ${editor.project.metadata.id}<br>
-					<label>Initially created with:</label> Version ${
-						editor.project.metadata.initialVersion
-					}</span>
+					<label>Initially created with:</label> Version ${editor.project.metadata.initialVersion}</span>
 				</div>
 
 				<br><br>
