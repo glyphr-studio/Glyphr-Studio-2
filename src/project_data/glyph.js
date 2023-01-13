@@ -28,7 +28,14 @@ export class Glyph extends GlyphElement {
 	 * @param {boolean} paths - collection of Paths and Component Instances in this Glyph
 	 * @param {array} usedIn - array of IDs where this Glyph is used as a component instance
 	 */
-	constructor({ id = false, paths = [], advanceWidth = 0, ratioLock = false, usedIn = [], contextGlyphs = '' } = {}) {
+	constructor({
+		id = false,
+		paths = [],
+		advanceWidth = 0,
+		ratioLock = false,
+		usedIn = [],
+		contextGlyphs = '',
+	} = {}) {
 		// log(`Glyph.constructor`, 'start');
 		super();
 		this.id = id;
@@ -798,10 +805,10 @@ export class Glyph extends GlyphElement {
 	makeSVG(size = 500, padding = 10) {
 		// log('Glyph.makeSVG', 'start');
 		// log(this);
-		const fmd = getCurrentProject().metadata.font;
-		const scale = (size - padding * 2) / fmd.upm;
-		const scaledUPM = size / fmd.upm;
-		const translateY = fmd.ascent * scale + padding * 2;
+		const fontSettings = getCurrentProject().settings.font;
+		const scale = (size - padding * 2) / fontSettings.upm;
+		const scaledUPM = size / fontSettings.upm;
+		const translateY = fontSettings.ascent * scale + padding * 2;
 
 		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
 		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;

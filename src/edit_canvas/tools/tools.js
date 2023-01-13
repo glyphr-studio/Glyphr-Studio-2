@@ -265,7 +265,7 @@ export function makeContextGlyphControls() {
 	let ctxg = '<div class="contextglyphsarea">';
 	ctxg += '<div id="contextglyphsoptions">';
 	ctxg +=
-		'<b>Context Glyphs</b> are letters you can display around the glyph you are currently editing.<br><br>';
+		'<strong>Context Glyphs</strong> are letters you can display around the glyph you are currently editing.<br><br>';
 	ctxg += checkUI(
 		'getCurrentProject().projectSettings.contextGlyphs.showGuides',
 		getCurrentProject().projectSettings.contextGlyphs.showGuides,

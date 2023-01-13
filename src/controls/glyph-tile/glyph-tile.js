@@ -35,11 +35,11 @@ export class GlyphTile extends HTMLElement {
 
 		// log(`this.glyphHex: ${this.glyphHex}`);
 
-		let fmd = getCurrentProject().metadata.font;
+		let fontSettings = getCurrentProject().settings.font;
 		let overallSize = 50;
 		let gutterSize = 2;
 		let contentSize = overallSize - 2 * gutterSize;
-		let zoom = contentSize / fmd.upm;
+		let zoom = contentSize / fontSettings.upm;
 		let advanceWidth;
 
 		// log(`contentSize: ${contentSize}`);
@@ -68,7 +68,7 @@ export class GlyphTile extends HTMLElement {
 
 			this.view = {
 				dx: gutterSize + (contentSize - zoom * advanceWidth) / 2,
-				dy: gutterSize + zoom * fmd.ascent,
+				dy: gutterSize + zoom * fontSettings.ascent,
 				dz: zoom,
 			};
 

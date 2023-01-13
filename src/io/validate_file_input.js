@@ -166,16 +166,16 @@ function readerValidateTXTandGS2() {
 		`);
 	}
 
-	// Missing metadata / settings property
-	if (!projectData.metadata && !projectData.projectsettings) {
+	// Missing settings property
+	if (!projectData.settings && !projectData.projectsettings) {
 		return failWithError(`
-		The provided text file is missing project metadata.
+		The provided text file is missing project settings.
 		It may not be a Glyphr Studio Project file.
 		`);
 	}
 
 	// Missing version information
-	if (!projectData?.metadata?.latestVersion && !projectData?.projectsettings?.versionnum) {
+	if (!projectData?.settings?.project?.latestVersion && !projectData?.projectsettings?.versionnum) {
 		return failWithError(`
 			The provided text file has no version information associated with it.
 			It may not be a Glyphr Studio Project file.
@@ -183,7 +183,7 @@ function readerValidateTXTandGS2() {
 	}
 
 	let version = parseSemVer(projectData?.projectsettings?.versionnum);
-	if (!version) version = parseSemVer(projectData?.metadata?.latestVersion);
+	if (!version) version = parseSemVer(projectData?.settings?.project?.latestVersion);
 
 	log(`version: ${json(version)}`);
 

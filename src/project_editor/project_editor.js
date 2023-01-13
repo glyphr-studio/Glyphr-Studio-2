@@ -490,18 +490,18 @@ export class ProjectEditor {
 		// log(`ProjectEditor.makeAutoFitView`, 'start');
 		// log(`rect: ${rect}`);
 
-		const fmd = this.project.metadata.font;
+		const fontSettings = this.project.settings.font;
 
 		//Zoom
 		let newZ = Math.min(
-			rect.height / (fmd.upm * 1.2),
+			rect.height / (fontSettings.upm * 1.2),
 			rect.width / (this.selectedItem.advanceWidth * 1.5)
 		);
 
 		// Vertical
-		let visibleGlyphHeight = fmd.upm * newZ;
+		let visibleGlyphHeight = fontSettings.upm * newZ;
 		let topSpace = (rect.height - visibleGlyphHeight) / 2;
-		let newY = topSpace + fmd.ascent * newZ;
+		let newY = topSpace + fontSettings.ascent * newZ;
 
 		// Horizontal
 		let visibleGlyphWidth = this.selectedItem.advanceWidth * newZ;
@@ -563,18 +563,21 @@ export class ProjectEditor {
 	saveGlyphrProjectFile() {
 		log(`ProjectEditor.saveGlyphrProjectFile`, 'start');
 
-		// log('' + this.project.metadata.preferences.formatSaveFile);
+		// log('' + this.project.settings.app.formatSaveFile);
 
 		let saveData = this.project.save();
 		const defaultValues = new GlyphrStudioProject();
-		saveData = removeDefaultValues(saveData, defaultValues, 'metadata');
+		saveData = removeDefaultValues(saveData, defaultValues, 'settings');
 
-		if (this.project.metadata.preferences.formatSaveFile) saveData = json(saveData);
+		if (this.project.settings.app.formatSaveFile) saveData = json(saveData);
 		else saveData = JSON.stringify(saveData);
 
 		// log('saveGlyphrProjectFile - \n'+saveData);
 		const fileName =
-			this.project.metadata.name + ' - Glyphr Studio Project - ' + makeDateStampSuffix() + '.gs2';
+			this.project.settings.project.name +
+			' - Glyphr Studio Project - ' +
+			makeDateStampSuffix() +
+			'.gs2';
 
 		saveFile(fileName, saveData);
 		showToast('Saved Glyphr Studio Project File');

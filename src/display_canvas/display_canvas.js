@@ -274,7 +274,7 @@ export class DisplayCanvas extends HTMLElement {
 
 	drawGlyphExtras(charData) {
 		// log(`displayCanvas.drawGlyphExtras`, 'start');
-		const settings = getCurrentProject().metadata.font;
+		const settings = getCurrentProject().settings.font;
 		const scale = charData.view.dz;
 		let drawWidth = charData.widths.advance * scale;
 		let drawHeight = settings.upm * scale;
@@ -313,7 +313,7 @@ export class DisplayCanvas extends HTMLElement {
 		// log(charData);
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
-		// const settings = getCurrentProject().metadata.font;
+		// const settings = getCurrentProject().settings.font;
 		let glyph = charData.glyph;
 		// TODO flattenGlyphs
 		// let flattenGlyphs = td.flattenGlyphs || false;

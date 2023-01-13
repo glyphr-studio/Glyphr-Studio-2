@@ -68,9 +68,11 @@ export function makePage_About() {
 
 				<div class="page__card">
 					<h3>This Glyphr Studio Project</h3>
-					<label>Project name:</label> ${editor.project.metadata.name}<br>
-					<label>Unique project ID:</label> ${editor.project.metadata.id}<br>
-					<label>Initially created with:</label> Version ${editor.project.metadata.initialVersion}</span>
+					<label>Project name:</label> ${editor.project.settings.project.name}<br>
+					<label>Unique project ID:</label> ${editor.project.settings.project.id}<br>
+					<label>Initially created with:</label> Version ${
+						editor.project.settings.project.initialVersion
+					}</span>
 				</div>
 
 				<br><br>
@@ -114,7 +116,7 @@ export function makeAlpha1Message() {
 			<a href="https://www.glyphrstudio.com/blog/?p=288" target="_blank">V2 Alpha-1 MEGA POST</a>
 		</h3>
 		<br>
-		<b>For Alpha-1, please try the following scenarios:</b>
+		<strong>For Alpha-1, please try the following scenarios:</strong>
 		<ul>
 			<li>Navigate around using the upper-left Page Chooser, Glyph Chooser, and Panel Chooser</li>
 			<li>Resize paths with the arrow tool and edit paths with the pen tool</li>
@@ -140,13 +142,13 @@ export function makeContributeMessage() {
 	<br>
 	<ul>
 		<li>
-			<b>Send Feedback</b> -
+			<strong>Send Feedback</strong> -
 			Use new features and let us know if you run into issues.  Follow us on Twitter and read the Blog,
 			and participate in discussions.	Be vocal, and let us know what we should do next!
 			<br>
 		</li>
 		<li>
-			<b>Make a Monetary Contribution</b> -
+			<strong>Make a Monetary Contribution</strong> -
 			Glyphr Studio will always be free, and we think that is very important.  But, it does take some
 			money to keep it going.	Contributions of even small amounts of money help keep the Glyphr Studio
 			effort going strong!

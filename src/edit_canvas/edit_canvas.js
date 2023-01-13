@@ -123,7 +123,7 @@ export class EditCanvas extends HTMLElement {
 		// if(oa?.calledBy) log(`==REDRAW BY ${oa.calledBy}==`);
 		const editor = getCurrentProjectEditor();
 		let view = editor.view;
-		let md = getCurrentProject().metadata;
+		let settings = getCurrentProject().settings;
 		let ctx = this.ctx;
 		let width = this.width;
 		let height = this.height;
@@ -178,12 +178,12 @@ export class EditCanvas extends HTMLElement {
 
 		function drawGuides() {
 			ctx.fillStyle = accentColors.gray.l90;
-			let gridTop = sYcY(md.font.ascent, view);
-			let gridHeight = md.font.upm * view.dz;
+			let gridTop = sYcY(settings.font.ascent, view);
+			let gridHeight = settings.font.upm * view.dz;
 			let gridPad = 100 * view.dz;
 			let gridWidth = sg.advanceWidth * view.dz;
 
-			let gridLines = md.preferences.guides.system;
+			let gridLines = settings.app.guides.system;
 			// Verticals
 			if (gridLines.showLeftSide) {
 				ctx.fillRect(view.dx, gridTop, 1, gridHeight);

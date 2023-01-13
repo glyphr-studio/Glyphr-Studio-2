@@ -387,7 +387,7 @@ export function findAndUnderlineHotspot(cx, cy) {
 	const ctx = _UI.glyphEditCTX;
 	// log(`${hs}`);
 	if (hs) {
-		const t = getCurrentProject().metadata.preferences.guides.system.transparency;
+		const t = getCurrentProject().settings.app.guides.system.transparency;
 		// let t2 = (((100 - t) / 2) + t);
 		const alpha = transparencyToAlpha(t);
 		const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);

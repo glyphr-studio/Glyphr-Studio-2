@@ -145,6 +145,7 @@ code,
 	width: clamp(300px 500px max-content);
 	display: grid;
 	grid-template-columns: min-content min-content minmax(min-content, 300px) min-content;
+	grid-template-rows: 24px;
 	row-gap: 10px;
 	column-gap: 10px;
 }
@@ -157,28 +158,46 @@ code,
 	grid-column: 1 / -1 ;
 }
 
-.settings-page__tab-content h2,
-.settings-page__tab-content h3,
-.settings-page__tab-content h4 {
-	margin-top: 20px;
+.settings-page__tab-content p {
+	color: var(--enabled-restingLight-lightText);
+}
+
+.settings-page__tab-content p,
+.settings-page__tab-content h2 {
+	margin-top: 10px;
 }
 
 .settings-page__tab-content .settings__label {
 	padding-top: 2px;
-	line-height: 22px;
+	line-height: 24px;
 }
 
 .settings-page__tab-content info-bubble {
 	position: relative;
 	top: 7px;
 }
+
+.settings-page__tab-content input[type=checkbox]{
+	width: 24px;
+}
+
+.settings-page__tab-content span {
+	height: 24px;
+	line-height: 24px;
+}
+
 .settings-page__tab-content pre {
+	height: 24px;
 	font-size: 0.8em;
-	line-height: 22px;
+	line-height: 24px;
 	width: min-content;
 	color: var(--disabled-text);
 	border: 1px solid var(--disabled-border);
 	opacity: 0.4;
 	border-radius: 4px;
 	padding: 0px 5px;
+}
+
+.settings-page__tab-content pre:hover {
+	opacity: 1;
 }

@@ -36,8 +36,10 @@ will be included in the test pass.
 Our data structure is roughly hierarchical:
 
     Glyphr Studio Project
-      ┣━ Metadata
       ┣━ Settings
+      ┃   ┣━ Project
+      ┃   ┣━ Preferences
+      ┃   ┗━ Font
       ┣━ Kerning
       ┃   ┗━ HKern
       ┣━ Components
