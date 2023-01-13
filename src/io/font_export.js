@@ -14,29 +14,29 @@ import { Glyph } from '../project_data/glyph.js';
 export function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'start');
 	const project = getCurrentProject();
-	// log('combinePathsOnExport = ' + project.metadata.preferences.combinePathsOnExport);
+	// log('combinePathsOnExport = ' + project.settings.app.combinePathsOnExport);
 
 	function firstExportStep() {
 		log('firstExportStep', 'start');
 
-		// Add metadata
-		const fmd = project.metadata.font;
+		// Add settings
+		const fontSettings = project.settings.font;
 
-		options.unitsPerEm = fmd.upm || 1000;
-		options.ascender = fmd.ascent || 0.00001;
-		options.descender = -1 * Math.abs(fmd.descent) || -0.00001;
-		options.familyName = fmd.family || ' ';
-		options.styleName = fmd.style || ' ';
-		options.designer = fmd.designer || ' ';
-		options.designerURL = fmd.designerURL || ' ';
-		options.manufacturer = fmd.manufacturer || ' ';
-		options.manufacturerURL = fmd.manufacturerURL || ' ';
-		options.license = fmd.license || ' ';
-		options.licenseURL = fmd.licenseURL || ' ';
-		options.version = fmd.version || 'Version 0.001';
-		options.description = fmd.description || ' ';
-		options.copyright = fmd.copyright || ' ';
-		options.trademark = fmd.trademark || ' ';
+		options.unitsPerEm = fontSettings.upm || 1000;
+		options.ascender = fontSettings.ascent || 0.00001;
+		options.descender = -1 * Math.abs(fontSettings.descent) || -0.00001;
+		options.familyName = fontSettings.family || ' ';
+		options.styleName = fontSettings.style || ' ';
+		options.designer = fontSettings.designer || ' ';
+		options.designerURL = fontSettings.designerURL || ' ';
+		options.manufacturer = fontSettings.manufacturer || ' ';
+		options.manufacturerURL = fontSettings.manufacturerURL || ' ';
+		options.license = fontSettings.license || ' ';
+		options.licenseURL = fontSettings.licenseURL || ' ';
+		options.version = fontSettings.version || 'Version 0.001';
+		options.description = fontSettings.description || ' ';
+		options.copyright = fontSettings.copyright || ' ';
+		options.trademark = fontSettings.trademark || ' ';
 		options.glyphs = [];
 
 		// log('NEW options ARG BEFORE GLYPHS');
@@ -95,14 +95,14 @@ export function ioFont_exportFont() {
 		// export this glyph
 		const glyph = currentExportGlyph.xg;
 		const num = currentExportGlyph.xc;
-		const comb = project.metadata.preferences.combinePathsOnExport;
+		const comb = project.settings.app.combinePathsOnExport;
 		const maxes = glyph.maxes;
 
 		log('' + glyph.name);
 
 		showToast('Exporting<br>' + glyph.name, 999999);
 
-		if (comb && glyph.paths.length <= project.metadata.preferences.maxCombinePathsOnExport) {
+		if (comb && glyph.paths.length <= project.settings.app.maxCombinePathsOnExport) {
 			glyph.combineAllPaths(true);
 		}
 
@@ -182,7 +182,7 @@ export function ioFont_exportFont() {
 
 function generateNotdefGlyph() {
 	log(`generateNotdefGlyph`, 'start');
-	const capHeight = getCurrentProject().metadata.font.capHeight;
+	const capHeight = getCurrentProject().settings.font.capHeight;
 	const notDefGlyphPaths = [
 		{
 			name: 'Outer Phi Rectangle',

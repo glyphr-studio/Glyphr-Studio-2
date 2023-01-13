@@ -100,7 +100,7 @@ function getGlyphSequenceAdvanceWidth(sequence) {
 			advanceWidth += g.advanceWidth;
 			if (a[i + 1]) advanceWidth += calculateKernOffset(v, a[i + 1]);
 		} else {
-			advanceWidth += (getCurrentProject().metadata.font.upm * 1) / 2;
+			advanceWidth += (getCurrentProject().settings.font.upm * 1) / 2;
 		}
 	});
 
@@ -108,9 +108,7 @@ function getGlyphSequenceAdvanceWidth(sequence) {
 }
 
 function drawContextGlyphLeftLineExtras(char, seq) {
-	const alpha = transparencyToAlpha(
-		getCurrentProject().metadata.preferences.guides.system.transparency
-	);
+	const alpha = transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency);
 	const color = getColorFromRGBA('rgb(204,81,0)', alpha);
 	drawVerticalLine(char.view.dx * char.view.dz, false, color);
 
@@ -125,7 +123,7 @@ function drawContextGlyphLeftLineExtras(char, seq) {
 		kern *= -1;
 		let rightx = selwi.isAutoWide ? kern - selwi.lsb : kern;
 		rightx = v.dx + rightx * v.dz;
-		const texty = sYcY(getCurrentProject().metadata.font.descent - 60);
+		const texty = sYcY(getCurrentProject().settings.font.descent - 60);
 
 		drawGlyphKernExtra(-kern, rightx, texty, v.dz);
 	}
@@ -140,7 +138,7 @@ function drawContextGlyphRightLineExtras(char, seq) {
 		let rightx = selwi.advanceWidth;
 		if (selwi.isAutoWide) rightx -= selwi.lsb;
 		rightx = v.dx + rightx * v.dz;
-		const texty = sYcY(getCurrentProject().metadata.font.descent - 60);
+		const texty = sYcY(getCurrentProject().settings.font.descent - 60);
 
 		drawGlyphKernExtra(kern, rightx, texty, v.dz);
 	}
@@ -158,7 +156,7 @@ function drawContextGlyphExtras(char) {
 	// \n`);
 	// log(char.glyph);
 
-	const ps = getCurrentProject().metadata.font;
+	const ps = getCurrentProject().settings.font;
 	const alpha = transparencyToAlpha(ps.colors.systemGuideTransparency);
 
 	if (ps.contextGlyphs.showGuides && alpha) {
@@ -168,7 +166,7 @@ function drawContextGlyphExtras(char) {
 		const currx = char.view.dx * view.dz;
 		const rightx = currx + advanceWidth;
 		const color = getColorFromRGBA('rgb(204,81,0)', alpha);
-		const texty = sYcY(getCurrentProject().metadata.font.descent - 60);
+		const texty = sYcY(getCurrentProject().settings.font.descent - 60);
 
 		// Draw the glyph name
 		let gname = char.glyph ? char.glyph.getName() : getGlyphName(charsToHexArray(char.char));
@@ -225,12 +223,12 @@ function drawGlyphNameExtra(text, currx, topy, advanceWidth, color, regHotspot) 
 }
 
 function drawGlyphKernExtra(kern, rightx, topy, scale) {
-	const desc = getCurrentProject().metadata.font.descent;
+	const desc = getCurrentProject().settings.font.descent;
 	const ctx = _UI.glyphEditCTX;
 	const offset = 40;
 	const color = getColorFromRGBA(
 		'rgb(255,0,255)',
-		transparencyToAlpha(getCurrentProject().metadata.preferences.guides.system.transparency)
+		transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency)
 	);
 	const barheight = Math.max(scale * 10, 1);
 
@@ -273,7 +271,7 @@ function drawContextGlyph(char) {
 	char.glyph.drawGlyph(
 		_UI.glyphEditCTX,
 		{ dx: c.dx * c.dz, dy: v.dy, dz: c.dz },
-		transparencyToAlpha(getCurrentProject().metadata.preferences.contextGlyphTransparency),
+		transparencyToAlpha(getCurrentProject().settings.app.contextGlyphTransparency),
 		true
 	);
 
@@ -370,7 +368,7 @@ function findAndUnderlineHotspot(cx, cy) {
 	const ctx = _UI.glyphEditCTX;
 	// log(`${hs}`);
 	if (hs) {
-		const t = getCurrentProject().metadata.preferences.guides.system.transparency;
+		const t = getCurrentProject().settings.app.guides.system.transparency;
 		// var t2 = (((100 - t) / 2) + t);
 		const alpha = transparencyToAlpha(t);
 		const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);
@@ -388,7 +386,7 @@ function findAndUnderlineHotspot(cx, cy) {
 }
 
 function calculateDefaultView() {
-	const ps = getCurrentProject().metadata.font;
+	const ps = getCurrentProject().settings.font;
 
 	const xpadding = 80;
 	const ypadding = 80; // Height of the UI across the top
@@ -409,7 +407,7 @@ function calculateDefaultView() {
 
 function fitViewToContextGlyphs(dontzoom) {
 	// log('fitViewToContextGlyphs', 'start');
-	const ps = getCurrentProject().metadata.font;
+	const ps = getCurrentProject().settings.font;
 
 	const xpadding = 80;
 	const ypadding = 80; // Height of the UI across the top
@@ -479,12 +477,12 @@ function drawGrid() {
 	_UI.glyphEditCTX.fillRect(xs.xMin, xs.yMin, xs.xMax - xs.xMin, xs.yMax - xs.yMin);
 
 	if (_UI.showGrid) {
-		const ps = getCurrentProject().metadata.font;
+		const ps = getCurrentProject().settings.font;
 		const v = getView('grid');
 		const gsize = (ps.upm / ps.gridDivisions) * v.dz;
 		const gridcolor = getColorFromRGBA(
 			'rgb(170,170,170)',
-			transparencyToAlpha(getCurrentProject().metadata.preferences.contextGlyphs.transparency)
+			transparencyToAlpha(getCurrentProject().settings.app.contextGlyphs.transparency)
 		);
 		_UI.glyphEditCTX.lineWidth = 1;
 

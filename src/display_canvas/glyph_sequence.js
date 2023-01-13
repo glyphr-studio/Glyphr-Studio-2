@@ -113,7 +113,7 @@ export class GlyphSequence {
 		let thisKern;
 		let thisGlyph;
 
-		const upm = project.metadata.font.upm;
+		const upm = project.settings.font.upm;
 		this.data = [];
 		this.textBlocks = this.glyphString.split('\n');
 
@@ -178,7 +178,7 @@ export class GlyphSequence {
 		const scale = this.fontSize / upm;
 		// log(`scale: ${scale}`);
 
-		const ascent = project.metadata.font.ascent;
+		const ascent = project.settings.font.ascent;
 		// log(`ascent: ${ascent}`);
 
 		//Convert area properties to project / UPM scales
@@ -268,7 +268,6 @@ export class GlyphSequence {
 			// log(`singleLineHeight: ${singleLineHeight}`);
 			// log(`scaleAreaYMax: ${scaleAreaYMax}`);
 
-
 			if (currentY + singleLineHeight > scaleAreaYMax) {
 				// text takes up too much vertical space
 				// returning early will leave non-computed chars.isVisible = false
@@ -280,7 +279,6 @@ export class GlyphSequence {
 			currentX = 0;
 			currentY = currentLine * singleLineHeight;
 			// log(`================ END textBlockNumber: ${textBlockNumber}`);
-
 		}
 
 		// log('after view calc this.data');

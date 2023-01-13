@@ -19,19 +19,21 @@ export class GlyphrStudioProject {
 		// log(newProject);
 
 		// Set up all internal default values first
-		this.metadata = {
-			name: 'My Font',
-			latestVersion: '2.0.0-alpha.2',
-			initialVersion: '2.0.0-alpha.1',
-			id: false,
-			glyphRanges: [{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' }],
-			preferences: {
+		this.settings = {
+			project: {
+				name: 'My Font',
+				latestVersion: '2.0.0-alpha.2',
+				initialVersion: '2.0.0-alpha.1',
+				id: false,
+				glyphRanges: [{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' }],
+			},
+			app: {
 				savePreferences: false,
+				stopPageNavigation: true,
 				showNonCharPoints: false,
+				formatSaveFile: false,
 				combinePathsOnExport: false,
 				maxCombinePathsOnExport: 30,
-				stopPageNavigation: true,
-				formatSaveFile: true,
 				guides: {
 					system: {
 						transparency: 90,
@@ -47,10 +49,10 @@ export class GlyphrStudioProject {
 			},
 			font: {
 				family: 'My Font',
-				style: 'normal',
-				version: '',
+				style: 'Regular',
+				version: '1.0.0',
 				description: '',
-				panose: '2 0 0 0 0 0 0 0 0 0',
+				panose: '0 0 0 0 0 0 0 0 0 0',
 				upm: 1000,
 				ascent: 700,
 				descent: -300,
@@ -95,19 +97,19 @@ export class GlyphrStudioProject {
 		// log(newProject);
 
 		// Keep glyph ranges of passed project
-		if (newProject?.metadata?.glyphRanges) {
-			this.metadata.glyphRanges = newProject.metadata.glyphRanges;
+		if (newProject?.settings?.project?.glyphRanges) {
+			this.settings.project.glyphRanges = newProject.settings.project.glyphRanges;
 		}
 
 		// Merge with templates
-		if (newProject.metadata) {
-			// log('merging metadata from newProject');
-			this.metadata = merge(this.metadata, newProject.metadata);
+		if (newProject.settings) {
+			// log('merging settings from newProject');
+			this.settings = merge(this.settings, newProject.settings);
 		}
-		this.metadata.id = this.metadata.id || makeProjectID();
-		this.metadata.font.descent = -1 * Math.abs(this.metadata.font.descent);
-		// log('finished merging metadata');
-		// log(this.metadata);
+		this.settings.project.id = this.settings.project.id || makeProjectID();
+		this.settings.font.descent = -1 * Math.abs(this.settings.font.descent);
+		// log('finished merging settings');
+		// log(this.settings);
 
 		// Components
 		hydrateGlyphrObjectList(Glyph, newProject.components, this.components);
@@ -142,7 +144,7 @@ export class GlyphrStudioProject {
 	 */
 	save(verbose = false) {
 		const savedProject = {
-			metadata: clone(this.metadata),
+			settings: clone(this.settings),
 			glyphs: {},
 			ligatures: {},
 			components: {},
@@ -310,7 +312,7 @@ export class GlyphrStudioProject {
 		// log(fm);
 
 		let thisGlyph;
-		const ranges = this.metadata.glyphRanges;
+		const ranges = this.settings.project.glyphRanges;
 		// log(`ranges`);
 		// log(ranges);
 

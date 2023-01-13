@@ -18,8 +18,8 @@ export function importGlyphrProjectFromText(importedProject) {
 	log('passed:');
 	log(importedProject);
 
-	const version = parseSemVer(importedProject.metadata.latestVersion);
-	log('version found ' + importedProject.metadata.latestVersion);
+	const version = parseSemVer(importedProject.settings.project.latestVersion);
+	log('version found ' + importedProject.settings.project.latestVersion);
 
 	if (version.major === 1) {
 		importedProject = migrate_Project(importedProject);
@@ -27,7 +27,7 @@ export function importGlyphrProjectFromText(importedProject) {
 
 	// Update the version
 	const app = getGlyphrStudioApp();
-	importedProject.metadata.latestVersion = app.version;
+	importedProject.settings.project.latestVersion = app.version;
 
 	// Hydrate after all updates
 	log('importGlyphrProjectFromText', 'end');
@@ -60,17 +60,17 @@ function migrate_Project(oldProject) {
 	// TODO Kerns
 
 	// Metadata
-	const newPreferences = newProject.metadata.preferences;
-	const newRanges = newProject.metadata.glyphRanges;
+	const newPreferences = newProject.settings.app;
+	const newRanges = newProject.settings.project.glyphRanges;
 	const newSysGuides = newProject.guides.system;
-	const newFont = newProject.metadata.font;
+	const newFont = newProject.settings.font;
 	const oldSettings = oldProject.projectsettings;
 	const oldRanges = oldProject.projectsettings.glyphrange;
 	const oldGuides = oldProject.projectsettings.guides;
 	const oldColors = oldProject.projectsettings.colors;
-	const oldMeta = oldProject.metadata;
+	const oldMeta = oldProject.settings;
 
-	newProject.metadata.name = oldSettings.name || 'My Font';
+	newProject.settings.project.name = oldSettings.name || 'My Font';
 
 	// Glyph ranges
 	if (oldRanges.basiclatin) newRanges.push(unicodeRanges.basicLatin);

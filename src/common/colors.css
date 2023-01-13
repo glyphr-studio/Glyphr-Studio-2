@@ -106,31 +106,31 @@
 	--lightRed: hsl(0, 100%, 90%);
 	--accent-color: hsl(200, 100%, 37%);
 
-	--enabled-resting-text: hsl(0, 0%, 4%);
-	--enabled-resting-lightText: hsl(0, 0%, 12%);
+	--enabled-resting-text: hsl(0, 0%, 5%);
+	--enabled-resting-lightText: hsl(0, 0%, 10%);
 	--enabled-resting-border: hsl(0, 0%, 75%);
 	--enabled-resting-fill: hsl(0, 0%, 39%);
 	--enabled-resting-background: hsl(0, 0%, 98%);
 
 	--enabled-restingLight-text: hsl(0, 0%, 20%);
-	--enabled-restingLight-lightText: hsl(0, 0%, 43%);
+	--enabled-restingLight-lightText: hsl(0, 0%, 30%);
 	--enabled-restingLight-border: hsla(0, 0%, 75%, 0.2);
 	--enabled-restingLight-fill: hsl(0, 0%, 39%, 0.4);
 	--enabled-restingLight-background: hsl(0, 0%, 98%);
 
 	--enabled-focus-text: hsl(0, 0%, 0%);
-	--enabled-focus-lightText: hsl(0, 0%, 8%);
+	--enabled-focus-lightText: hsl(0, 0%, 10%);
 	--enabled-focus-border: hsl(0, 0%, 63%);
 	--enabled-focus-fill: hsl(200, 25%, 15%);
 	--enabled-focus-background: white;
 
 	--enabled-active-text: hsl(0, 0%, 0%);
-	--enabled-active-lightText: hsl(0, 0%, 8%);
+	--enabled-active-lightText: hsl(0, 0%, 10%);
 	--enabled-active-border: hsl(0, 0%, 63%);
 	--enabled-active-fill: var(--accent-color);
 	--enabled-active-background: white;
 
-	--disabled-text: hsl(0, 0%, 16%);
+	--disabled-text: hsl(0, 0%, 40%);
 	--disabled-border: hsl(0, 0%, 82%);
 	--disabled-fill: hsl(0, 0%, 82%);
 	--disabled-background: hsl(0, 0%, 94%);

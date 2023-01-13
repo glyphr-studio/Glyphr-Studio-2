@@ -702,10 +702,10 @@ export class Path extends GlyphElement {
 	 * @returns {string} - svg
 	 */
 	makeSVG(size = 50, padding = 5) {
-		const fmd = getCurrentProject().metadata.font;
-		const scale = (size - padding * 2) / fmd.upm;
-		const scaledUPM = size / fmd.upm;
-		const translateY = fmd.ascent * scale + padding * 2;
+		const fontSettings = getCurrentProject().settings.font;
+		const scale = (size - padding * 2) / fontSettings.upm;
+		const scaledUPM = size / fontSettings.upm;
+		const translateY = fontSettings.ascent * scale + padding * 2;
 
 		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
 		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
@@ -837,7 +837,7 @@ export class Path extends GlyphElement {
 		let p2ppy;
 		let trr = '';
 		let re = `
-				${(this.pathPoints[0].p.x - lastX)} ${(this.pathPoints[0].p.y - lastY)} rmoveto
+				${this.pathPoints[0].p.x - lastX} ${this.pathPoints[0].p.y - lastY} rmoveto
 		`;
 
 		// log('\n\t ' + re);

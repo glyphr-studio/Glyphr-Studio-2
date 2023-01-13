@@ -170,9 +170,12 @@ function makePermutations(upper) {
 }
 
 function makeLivePreviewOptions() {
-
 	let glyphsLabel = makeSingleLabel('Preview glyphs:');
-	let glyphsInput = makeElement({ tag: 'textarea', id: 'livePreviewGlyphsInput', innerHTML: livePreviewOptions.glyphString });
+	let glyphsInput = makeElement({
+		tag: 'textarea',
+		id: 'livePreviewGlyphsInput',
+		innerHTML: livePreviewOptions.glyphString,
+	});
 	// glyphsInput.setAttribute('value', livePreviewOptions.glyphString);
 	glyphsInput.addEventListener('keyup', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
@@ -181,37 +184,35 @@ function makeLivePreviewOptions() {
 	});
 
 	let fontSizeLabel = makeSingleLabel('Font size:');
-	let fontSizeInput = makeElement({ tag: 'input-number', attributes: { value: livePreviewOptions.fontSize } });
+	let fontSizeInput = makeElement({
+		tag: 'input-number',
+		attributes: { value: livePreviewOptions.fontSize },
+	});
 	fontSizeInput.addEventListener('change', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		displayCanvas.setAttribute('font-size', event.target.value);
 	});
 
 	let lineGapLabel = makeSingleLabel('Line gap:');
-	let lineGapInput = makeElement({ tag: 'input-number', attributes: { value: livePreviewOptions.lineGap } });
+	let lineGapInput = makeElement({
+		tag: 'input-number',
+		attributes: { value: livePreviewOptions.lineGap },
+	});
 	lineGapInput.addEventListener('change', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		displayCanvas.setAttribute('line-gap', event.target.value);
 	});
 
-	return [
-		glyphsLabel,
-		glyphsInput,
-		fontSizeLabel,
-		fontSizeInput,
-		lineGapLabel,
-		lineGapInput,
-	];
+	return [glyphsLabel, glyphsInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
 }
 
 function makeShowOptions() {
-
 	let glyphOutlineLabel = makeSingleLabel('Glyph bounding box:');
 	let glyphOutlineToggle = makeDirectCheckbox(livePreviewOptions, 'showGlyphExtras', (newValue) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		displayCanvas.showGlyphExtras = newValue;
 		displayCanvas.redraw();
-	} );
+	});
 
 	let baselineLabel = makeSingleLabel('Baselines:');
 	let baselineToggle = makeDirectCheckbox(livePreviewOptions, 'showLineExtras', (newValue) => {
@@ -237,8 +238,8 @@ function makeShowOptions() {
 	];
 
 	/*
-	const fmd = getCurrentProject().metadata.font;
-	const lineGap = fmd.lineGap;
+	const fontSettings = getCurrentProject().settings.font;
+	const lineGap = fontSettings.lineGap;
 	let padSize = 20;
 	let showGlyphExtras = false;
 	let showLineExtras = false;

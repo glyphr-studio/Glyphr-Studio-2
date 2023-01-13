@@ -402,10 +402,10 @@ function make_ImportFilter(chars, kerns, functionName) {
 	let re =
 		'<div class="openproject_tile" style="width:500px; height:auto;">' +
 		'<h2>Whoa, there...</h2><br>' +
-		"The font you're trying to import has <b>" +
+		"The font you're trying to import has <strong>" +
 		chars +
-		' glyphs</b>';
-	if (kerns) re += ' and <b>' + kerns + ' kern pairs</b>.  ';
+		' glyphs</strong>';
+	if (kerns) re += ' and <strong>' + kerns + ' kern pairs</strong>.  ';
 	else re += '.  ';
 	re +=
 		'Glyphr Studio has a hard time with super-large fonts like this.  ' +

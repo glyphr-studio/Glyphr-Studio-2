@@ -10,8 +10,11 @@ import { makeSingleCheckbox } from './cards.js';
 
 export function makePanel_Guides() {
 	const editor = getCurrentProjectEditor();
-	const systemGuides = editor.project.metadata.preferences.guides.system;
-	let systemCard = makeElement({ className: 'panel__card full-width', innerHTML: '<h4>System guides</h4>' });
+	const systemGuides = editor.project.settings.app.guides.system;
+	let systemCard = makeElement({
+		className: 'panel__card full-width',
+		innerHTML: '<h4>System guides</h4>',
+	});
 	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showBaseline', 'Baseline'));
 	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showLeftSide', 'Left side'));
 	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showRightSide', 'Right side'));
@@ -40,7 +43,7 @@ export function makeGuideCheckbox(workItem, property, label) {
 	return newRow;
 }
 
-	/*
+/*
 function makeGuidePanel() {
 	let user = makeElement({ className: 'panel__card', innerHTML: '<h4>User guides</h4>' });
 	let guides = editor.project.projectSettings.guides;
@@ -60,7 +63,7 @@ function makeGuidePanel() {
 		}
 	}
 	*/
-	/*
+/*
 	content += '<h3 style="margin-top:0px; margin-bottom:10px;">options</h3>';
 	content +=
 		'<table style="width:100%;">' +
@@ -88,7 +91,7 @@ function makeGuidePanel() {
 		'</td></tr>' +
 		'</table>';
 	*/
-	/*
+/*
 	if (editor.nav.page !== 'kerning') {
 		content += '<br><h3 style=" margin-bottom:0px;">system guides</h3>';
 		// content += 'transparency:<input type="range" min="0" max="100" value="'+ps.colors.systemGuideTransparency+'" step="1" oninput="updateTransparency(\'systemGuideTransparency\', this.value);"/><span id="systemGuideTransparency">'+ps.colors.systemGuideTransparency+'</span>%<br><br>';

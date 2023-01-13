@@ -161,7 +161,7 @@ export function ioFont_importFont(font) {
 			// log(finalGlyphs[uni]);
 
 			if (getUnicodeName(uni) === '[name not found]') {
-				project.metadata.preferences.showNonCharPoints = true;
+				project.settings.app.showNonCharPoints = true;
 			}
 
 			// Successful loop, advance importGlyphCounter
@@ -235,7 +235,7 @@ export function ioFont_importFont(font) {
 			rend = 1 * _UI.glyphRange[r].end + 1;
 			for (let t = rangeStart; t < rend; t++) {
 				if (getGlyph('' + decToHex(t))) {
-					project.metadata.glyphRanges[r] = true;
+					project.settings.glyphRanges[r] = true;
 					break;
 				}
 			}
@@ -246,7 +246,7 @@ export function ioFont_importFont(font) {
 		// log('customGlyphRange.length ' + customGlyphRange.length);
 
 		if (customGlyphRange.length) {
-			const ranges = project.metadata.glyphRanges;
+			const ranges = project.settings.project.glyphRanges;
 			const maxValley = 50;
 			const maxRange = 100;
 			customGlyphRange = customGlyphRange.sort();
@@ -278,35 +278,35 @@ export function ioFont_importFont(font) {
 		// Check to make sure certain stuff is there
 		// space has horiz-adv-x
 		// log('Custom range stuff done');
-		const fmd = project.metadata.font;
+		const fontSettings = project.settings.font;
 		const fname = font.familyName || 'My Font';
 
-		fmd.name = fname;
-		fmd.upm = 1 * font.unitsPerEm || 1000;
-		fmd.ascent = 1 * font.ascender || 700;
-		fmd.descent = -1 * Math.abs(font.descender) || 300;
-		fmd.capHeight = 1 * getTableValue(font.tables.os2.sCapHeight) || 675;
-		fmd.xHeight = 1 * getTableValue(font.tables.os2.sxHeight) || 400;
-		fmd.overshoot = round(fmd.upm / 100);
+		fontSettings.name = fname;
+		fontSettings.upm = 1 * font.unitsPerEm || 1000;
+		fontSettings.ascent = 1 * font.ascender || 700;
+		fontSettings.descent = -1 * Math.abs(font.descender) || 300;
+		fontSettings.capHeight = 1 * getTableValue(font.tables.os2.sCapHeight) || 675;
+		fontSettings.xHeight = 1 * getTableValue(font.tables.os2.sxHeight) || 400;
+		fontSettings.overshoot = round(fontSettings.upm / 100);
 
-		fmd.family = fname.substr(0, 31);
-		fmd.panose = getTableValue(font.tables.os2.panose) || '2 0 0 0 0 0 0 0 0 0';
-		fmd.version =
+		fontSettings.family = fname.substr(0, 31);
+		fontSettings.panose = getTableValue(font.tables.os2.panose) || '2 0 0 0 0 0 0 0 0 0';
+		fontSettings.version =
 			getTableValue(font.tables.head.fontRevision) ||
 			getTableValue(font.version) ||
 			getTableValue('Version 0.1');
 
 		// These can be read in but not saved using OpenType.js
-		fmd.style = getTableValue(font.tables.name.fontSubfamily) || 'Regular';
-		fmd.copyright = getTableValue(font.tables.name.copyright) || '';
-		fmd.trademark = getTableValue(font.tables.name.trademark) || '';
-		fmd.designer = getTableValue(font.tables.name.designer) || '';
-		fmd.designerURL = getTableValue(font.tables.name.designerURL) || '';
-		fmd.manufacturer = getTableValue(font.tables.name.manufacturer) || '';
-		fmd.manufacturerURL = getTableValue(font.tables.name.manufacturerURL) || '';
-		fmd.license = getTableValue(font.tables.name.license) || '';
-		fmd.licenseURL = getTableValue(font.tables.name.licenseURL) || '';
-		fmd.description = getTableValue(font.tables.name.description) || '';
+		fontSettings.style = getTableValue(font.tables.name.fontSubfamily) || 'Regular';
+		fontSettings.copyright = getTableValue(font.tables.name.copyright) || '';
+		fontSettings.trademark = getTableValue(font.tables.name.trademark) || '';
+		fontSettings.designer = getTableValue(font.tables.name.designer) || '';
+		fontSettings.designerURL = getTableValue(font.tables.name.designerURL) || '';
+		fontSettings.manufacturer = getTableValue(font.tables.name.manufacturer) || '';
+		fontSettings.manufacturerURL = getTableValue(font.tables.name.manufacturerURL) || '';
+		fontSettings.license = getTableValue(font.tables.name.license) || '';
+		fontSettings.licenseURL = getTableValue(font.tables.name.licenseURL) || '';
+		fontSettings.description = getTableValue(font.tables.name.description) || '';
 
 		const editor = getCurrentProjectEditor();
 		editor.nav.page = 'Overview';

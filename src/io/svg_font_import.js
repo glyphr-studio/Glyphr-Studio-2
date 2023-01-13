@@ -164,7 +164,7 @@ export function ioSVG_importSVGfont(font) {
 					advanceWidth: advanceWidth,
 				});
 				if (getUnicodeName(uni) === '[name not found]')
-					project.metadata.preferences.showNonCharPoints = true;
+					project.settings.app.showNonCharPoints = true;
 			} else {
 				// It's a LIGATURE
 				uni = uni.join('');
@@ -296,7 +296,7 @@ export function ioSVG_importSVGfont(font) {
 		// Make a custom range for the rest
 		if (customGlyphRange.length) {
 			customGlyphRange = customGlyphRange.sort();
-			project.metadata.glyphRanges.push({
+			project.settings.project.glyphRanges.push({
 				begin: customGlyphRange[0],
 				end: customGlyphRange[customGlyphRange.length - 1],
 			});
@@ -308,29 +308,29 @@ export function ioSVG_importSVGfont(font) {
 
 		// Font Settings
 		const fontAttributes = getFirstTagInstance(font, 'font-face').attributes;
-		const fmd = project.metadata.font;
+		const fontSettings = project.settings.font;
 		const fname = fontAttributes['font-family'] || 'My Font';
 
-		fmd.family = fname;
-		fmd.style = fontAttributes['font-style'] || 'Regular';
-		fmd.panose = fontAttributes['panose-1'] || '2 0 0 0 0 0 0 0 0 0';
-		fmd.upm = 1 * fontAttributes['units-per-em'] || 1000;
-		fmd.ascent = 1 * fontAttributes.ascent || 700;
-		fmd.capHeight = 1 * fontAttributes['cap-height'] || 675;
-		fmd.xHeight = 1 * fontAttributes['x-height'] || 400;
-		fmd.descent = 1 * fontAttributes.descent || -300;
-		fmd.variant = fontAttributes['font-variant'] || 'normal';
-		fmd.weight = 1 * fontAttributes['font-weight'] || 400;
-		fmd.stretch = fontAttributes['font-stretch'] || 'normal';
-		fmd.underlinePosition = 1 * fontAttributes['underline-position'] || -50;
-		fmd.underlineThickness = 1 * fontAttributes['underline-thickness'] || 10;
-		fmd.strikethroughPosition = 1 * fontAttributes['strikethrough-position'] || 300;
-		fmd.strikethroughThickness = 1 * fontAttributes['strikethrough-thickness'] || 10;
-		fmd.overlinePosition = 1 * fontAttributes['overline-position'] || 750;
-		fmd.overlineThickness = 1 * fontAttributes['overline-thickness'] || 10;
+		fontSettings.family = fname;
+		fontSettings.style = fontAttributes['font-style'] || 'Regular';
+		fontSettings.panose = fontAttributes['panose-1'] || '2 0 0 0 0 0 0 0 0 0';
+		fontSettings.upm = 1 * fontAttributes['units-per-em'] || 1000;
+		fontSettings.ascent = 1 * fontAttributes.ascent || 700;
+		fontSettings.capHeight = 1 * fontAttributes['cap-height'] || 675;
+		fontSettings.xHeight = 1 * fontAttributes['x-height'] || 400;
+		fontSettings.descent = 1 * fontAttributes.descent || -300;
+		fontSettings.variant = fontAttributes['font-variant'] || 'normal';
+		fontSettings.weight = 1 * fontAttributes['font-weight'] || 400;
+		fontSettings.stretch = fontAttributes['font-stretch'] || 'normal';
+		fontSettings.underlinePosition = 1 * fontAttributes['underline-position'] || -50;
+		fontSettings.underlineThickness = 1 * fontAttributes['underline-thickness'] || 10;
+		fontSettings.strikethroughPosition = 1 * fontAttributes['strikethrough-position'] || 300;
+		fontSettings.strikethroughThickness = 1 * fontAttributes['strikethrough-thickness'] || 10;
+		fontSettings.overlinePosition = 1 * fontAttributes['overline-position'] || 750;
+		fontSettings.overlineThickness = 1 * fontAttributes['overline-thickness'] || 10;
 
-		fmd.overshoot = round(fmd.upm / 100);
-		project.metadata.name = fname;
+		fontSettings.overshoot = round(fontSettings.upm / 100);
+		project.settings.project.name = fname;
 
 		editor.nav.page = 'Overview';
 		editor.navigate();

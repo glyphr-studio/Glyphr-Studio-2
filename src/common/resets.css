@@ -72,7 +72,7 @@ button {
 	user-select: none;
 }
 
-b {
+b, strong {
 	font-weight: bold;
 }
 

@@ -13,8 +13,8 @@ export function ioSVG_exportSVGfont() {
 	// log('ioSVG_exportSVGfont', 'start');
 	const project = getCurrentProject();
 	const app = getGlyphrStudioApp();
-	const fmd = project.metadata.font;
-	const family = fmd.family;
+	const fontSettings = project.settings.font;
+	const family = fontSettings.family;
 	const familyID = family.replace(/ /g, '_');
 	const timestamp = makeDateStampSuffix();
 	let timeOutput = timestamp.split('-');
@@ -25,14 +25,14 @@ export function ioSVG_exportSVGfont() {
 	let con = `<?xml version="1.0"?>
 <svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<metadata>
-		Project: ${project.metadata.name}
+		Project: ${project.settings.project.name}
 		Font exported on ${timeOutput}
 		Created with Glyphr Studio - the free, web-based font editor
 		Version: ${app.version}
 		Find out more at www.glyphrstudio.com
 	</metadata>
 	<defs>
-		<font id="${familyID}" horiz-adv-x="${fmd.upm}">
+		<font id="${familyID}" horiz-adv-x="${fontSettings.upm}">
 			<font-face ${ioSVG_makeFontFace()}
 			>
 				<font-face-src>
@@ -51,7 +51,7 @@ ${ioSVG_makeAllKernPairs()}
 </svg>
 `;
 
-	const filename = project.metadata.name + ' - SVG Font - ' + timestamp + '.svg';
+	const filename = project.settings.project.name + ' - SVG Font - ' + timestamp + '.svg';
 
 	saveFile(filename, con);
 	showToast('Exported SVG Font File');
@@ -63,38 +63,38 @@ function ioSVG_makeFontFace() {
 	// log('ioSVG_makeFontFace', 'start');
 	const project = getCurrentProject();
 	// const app = getGlyphrStudioApp();
-	const fmd = project.metadata.font;
+	const fontSettings = project.settings.font;
 	const fm = project.calcFontMaxes();
 	const t = '\t\t';
 	let con = '';
 
 	con += `
-		${t}font-family="${fmd.family}"
-		${t}font-style="${fmd.style}"
-		${t}panose-1="${fmd.panose}"
-		${t}units-per-em="${fmd.upm}"
-		${t}ascent="${fmd.ascent}"
-		${t}cap-height="${fmd.capHeight}"
-		${t}x-height="${fmd.xHeight}"
-		${t}descent="${fmd.descent}"
+		${t}font-family="${fontSettings.family}"
+		${t}font-style="${fontSettings.style}"
+		${t}panose-1="${fontSettings.panose}"
+		${t}units-per-em="${fontSettings.upm}"
+		${t}ascent="${fontSettings.ascent}"
+		${t}cap-height="${fontSettings.capHeight}"
+		${t}x-height="${fontSettings.xHeight}"
+		${t}descent="${fontSettings.descent}"
 		${t}bbox="${fm.maxes.xMin}, ${fm.maxes.yMin}, ${fm.maxes.xMax}, ${fm.maxes.yMax}"
 		${t}unicode-range="U+20-${fm.maxGlyph}"
-		${t}font-variant="${fmd.variant}"
-		${t}font-weight="${fmd.weight}"
-		${t}font-stretch="${fmd.stretch}"
-		${t}stemv="${fmd.stemv}"
-		${t}stemh="${fmd.stemh}"
-		${t}slope="${fmd.slope}"
-		${t}underline-position="${fmd.underlinePosition}"
-		${t}underline-thickness="${fmd.underlineThickness}"
-		${t}strikethrough-position="${fmd.strikethroughPosition}"
-		${t}strikethrough-thickness="${fmd.strikethroughThickness}"
-		${t}overline-position="${fmd.overlinePosition}"
-		${t}overline-thickness="${fmd.overlineThickness}"
+		${t}font-variant="${fontSettings.variant}"
+		${t}font-weight="${fontSettings.weight}"
+		${t}font-stretch="${fontSettings.stretch}"
+		${t}stemv="${fontSettings.stemv}"
+		${t}stemh="${fontSettings.stemh}"
+		${t}slope="${fontSettings.slope}"
+		${t}underline-position="${fontSettings.underlinePosition}"
+		${t}underline-thickness="${fontSettings.underlineThickness}"
+		${t}strikethrough-position="${fontSettings.strikethroughPosition}"
+		${t}strikethrough-thickness="${fontSettings.strikethroughThickness}"
+		${t}overline-position="${fontSettings.overlinePosition}"
+		${t}overline-thickness="${fontSettings.overlineThickness}"
 	`;
 
 	// function getSVGproperty(prop) {
-	// 	if (fmd[prop]) return JSON.stringify(trim(fmd[prop]));
+	// 	if (fontSettings[prop]) return JSON.stringify(trim(fontSettings[prop]));
 	// 	else return '';
 	// }
 
@@ -104,7 +104,7 @@ function ioSVG_makeFontFace() {
 
 function ioSVG_makeMissingGlyph() {
 	// log('ioSVG_makeMissingGlyph', 'start');
-	const gh = getCurrentProject().metadata.font.ascent;
+	const gh = getCurrentProject().settings.font.ascent;
 	const gw = round(gh * 0.618);
 	const gt = round(gh / 100);
 
@@ -163,7 +163,7 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 	});
 	uni = uni.join('');
 
-	if (getCurrentProject().metadata.preferences.combinePathsOnExport) {
+	if (getCurrentProject().settings.app.combinePathsOnExport) {
 		gl = new Glyph(gl).flattenGlyph().combineAllPaths(true);
 	}
 
