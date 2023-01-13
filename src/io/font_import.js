@@ -161,7 +161,7 @@ export function ioFont_importFont(font) {
 			// log(finalGlyphs[uni]);
 
 			if (getUnicodeName(uni) === '[name not found]') {
-				project.metadata.preferences.filterNonCharPoints = false;
+				project.metadata.preferences.showNonCharPoints = true;
 			}
 
 			// Successful loop, advance importGlyphCounter

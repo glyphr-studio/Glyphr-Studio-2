@@ -164,7 +164,7 @@ export function ioSVG_importSVGfont(font) {
 					advanceWidth: advanceWidth,
 				});
 				if (getUnicodeName(uni) === '[name not found]')
-					project.metadata.preferences.filterNonCharPoints = false;
+					project.metadata.preferences.showNonCharPoints = true;
 			} else {
 				// It's a LIGATURE
 				uni = uni.join('');

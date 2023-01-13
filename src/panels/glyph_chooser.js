@@ -21,9 +21,10 @@ export function makeGlyphChooserContent(clickHandler, registerSubscriptions = tr
 	let container = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
 
 	basicLatinOrder.forEach((glyphID) => {
-		let oneTile = (editor.selectedGlyphID === glyphID) ?
-			new GlyphTile({ glyph: glyphID, selected: 'true' }) :
-			new GlyphTile({ glyph: glyphID });
+		let oneTile =
+			editor.selectedGlyphID === glyphID
+				? new GlyphTile({ glyph: glyphID, selected: 'true' })
+				: new GlyphTile({ glyph: glyphID });
 
 		oneTile.addEventListener('click', () => clickHandler(glyphID));
 
@@ -312,7 +313,7 @@ function make_GlyphChooser_Content(gcdata) {
 		// log('triggered custom range');
 		for (let range = cr[c].begin; range <= cr[c].end; range++) {
 			cn = decToHex(range);
-			if (getCurrentProject().projectSettings.filterNonCharPoints) {
+			if (getCurrentProject().projectSettings.showNonCharPoints) {
 				if (getUnicodeName(cn) !== '[name not found]')
 					re += make_GlyphChooser_Button(cn, fname, selwi);
 			} else {
