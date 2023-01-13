@@ -1,6 +1,6 @@
 import { getCurrentProject } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { makeNavButton } from '../project_editor/navigator.js';
+import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
  * Page > Settings
@@ -37,6 +37,12 @@ export function makePage_Settings() {
 	]);
 
 	selectTab(content, 'Font');
+
+	// Page Selector
+	let l1 = content.querySelector('#nav-button-l1');
+	l1.addEventListener('click', function () {
+		toggleNavDropdown(l1);
+	});
 
 	return content;
 }
@@ -124,11 +130,14 @@ function makeSettingsTabContentFont() {
 		innerHTML: `These properties will be exported with any font you save, and will be used around Glyphr Studio while you are making edits.`,
 	});
 
-	const fontFamily = makeOneSettingsRow('font', 'family');
-
 	const headerKeyMetrics = makeElement({
 		tag: 'h2',
 		innerHTML: 'Key metrics',
+	});
+
+	const headerOtherLinks = makeElement({
+		tag: 'h2',
+		innerHTML: 'Other links',
 	});
 
 	const headerSVG = makeElement({
@@ -136,7 +145,45 @@ function makeSettingsTabContentFont() {
 		innerHTML: 'Properties for SVG Fonts',
 	});
 
-	addAsChildren(tabContent, [description, headerKeyMetrics, fontFamily, headerSVG]);
+	addAsChildren(tabContent, [
+		description,
+		makeOneSettingsRow('font', 'family'),
+		makeOneSettingsRow('font', 'style'),
+		makeOneSettingsRow('font', 'version'),
+		makeOneSettingsRow('font', 'description'),
+		makeOneSettingsRow('font', 'panose'),
+		headerKeyMetrics,
+		makeOneSettingsRow('font', 'upm'),
+		makeOneSettingsRow('font', 'ascent'),
+		makeOneSettingsRow('font', 'descent'),
+		makeOneSettingsRow('font', 'capHeight'),
+		makeOneSettingsRow('font', 'xHeight'),
+		makeOneSettingsRow('font', 'overshoot'),
+		makeOneSettingsRow('font', 'lineGap'),
+		makeOneSettingsRow('font', 'italicAngle'),
+		headerOtherLinks,
+		makeOneSettingsRow('font', 'designer'),
+		makeOneSettingsRow('font', 'designerURL'),
+		makeOneSettingsRow('font', 'manufacturer'),
+		makeOneSettingsRow('font', 'manufacturerURL'),
+		makeOneSettingsRow('font', 'license'),
+		makeOneSettingsRow('font', 'licenseURL'),
+		makeOneSettingsRow('font', 'copyright'),
+		makeOneSettingsRow('font', 'trademark'),
+		headerSVG,
+		makeOneSettingsRow('font', 'variant'),
+		makeOneSettingsRow('font', 'weight'),
+		makeOneSettingsRow('font', 'stretch'),
+		makeOneSettingsRow('font', 'stemv'),
+		makeOneSettingsRow('font', 'stemh'),
+		makeOneSettingsRow('font', 'slope'),
+		makeOneSettingsRow('font', 'underlinePosition'),
+		makeOneSettingsRow('font', 'underlineThickness'),
+		makeOneSettingsRow('font', 'strikethroughPosition'),
+		makeOneSettingsRow('font', 'strikethroughThickness'),
+		makeOneSettingsRow('font', 'overlinePosition'),
+		makeOneSettingsRow('font', 'overlineThickness'),
+	]);
 
 	return tabContent;
 }
@@ -180,25 +227,35 @@ function makeSettingsTabContentApp() {
 // --------------------------------------------------------------
 function makeOneSettingsRow(groupName, propertyName) {
 	const md = getCurrentProject().metadata;
+	const setting = settingsMap[groupName][propertyName];
 
 	const label = makeElement({
 		className: 'settings__label',
-		innerHTML: `${settingsMap[groupName][propertyName].label.replaceAll(' ', '&nbsp;')}: `,
+		innerHTML: `${setting.label.replaceAll(' ', '&nbsp;')}: `,
 	});
 
-	const input = makeElement({
-		tag: 'input',
-		attributes: { type: 'text', value: md[groupName][propertyName] },
-	});
+	let input;
+	if (setting?.unit === 'Degree' || setting?.unit === 'Em') {
+		input = makeElement({
+			tag: 'input-number',
+			attributes: { value: md[groupName][propertyName] },
+		});
+	} else {
+		input = makeElement({
+			tag: 'input',
+			attributes: { type: 'text', value: md[groupName][propertyName] },
+		});
+	}
+
 
 	const unit = makeElement({
 		tag: 'pre',
-		innerHTML: settingsMap[groupName][propertyName]?.unit || 'text',
+		innerHTML: setting?.unit || 'Text',
 	});
 
 	const info = makeElement({
 		tag: 'info-bubble',
-		innerHTML: settingsMap[groupName][propertyName]?.description || `${groupName}.${propertyName}`,
+		innerHTML: setting?.description || `${groupName}.${propertyName}`,
 	});
 
 	return [label, info, input, unit,];
@@ -253,6 +310,7 @@ const settingsMap = {
 			label: `Font version`,
 			description: `If this font gets updates regularly, keep track of what version this iteration is.`,
 			example: `Version 1.0`,
+			unit: 'semantic version',
 		},
 		description: {
 			label: `Font description`,
