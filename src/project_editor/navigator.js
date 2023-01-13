@@ -2,6 +2,7 @@ import { makePage_OpenProject } from '../pages/open_project.js';
 import { makePage_GlyphEdit } from '../pages/glyph_edit.js';
 import { makePage_Overview } from '../pages/overview.js';
 import { makePage_About } from '../pages/about.js';
+import { makePage_Settings } from '../pages/settings.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
@@ -62,7 +63,7 @@ export class Navigator {
 				iconName: 'page_globalActions',
 			},
 			Settings: {
-				pageMaker: false,
+				pageMaker: makePage_Settings,
 				iconName: 'page_settings',
 			},
 			'Import & export': {

@@ -80,7 +80,7 @@ function migrate_Project(oldProject) {
 	if (oldRanges.custom.length) oldRanges.custom.forEach((range) => newRanges.push(range));
 
 	// Preferences
-	newPreferences.filterNonCharPoints = oldSettings.glyphrange.filternoncharpoints || true;
+	// newPreferences.showNonCharPoints = oldSettings.glyphrange.filternoncharpoints || true;
 	newPreferences.combinePathsOnExport = oldSettings.combineshapesonexport || false;
 	newPreferences.maxCombinePathsOnExport = oldSettings.maxcombineshapesonexport || 30;
 	newPreferences.stopPageNavigation = oldSettings.stoppagenavigation || true;
@@ -149,7 +149,7 @@ function migrate_Glyph(oldGlyph, glyphID) {
 	newGlyph.usedIn = oldGlyph.usedin;
 	newGlyph.contextGlyphs = oldGlyph.contextglyphs;
 
-	oldGlyph.shapes.forEach(shape => {
+	oldGlyph.shapes.forEach((shape) => {
 		newGlyph.paths.push(migrate_Path(shape, newGlyph));
 	});
 

@@ -2,7 +2,8 @@ import { makeElement } from '../../common/dom.js';
 import style from './anchor-twelvepoint.css?inline';
 
 /**
- * description
+ * Anchor Twelvepoint
+ * Choose between twelve anchor points from which to do transforms
  */
 export class AnchorTwelvepoint extends HTMLElement {
 	/**

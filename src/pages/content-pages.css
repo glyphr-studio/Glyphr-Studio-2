@@ -118,3 +118,60 @@ code,
 	border-radius: 4px;
 	display: inline-block;
 }
+
+/* Settings page */
+.settings-page__tab {
+	display: block;
+	font-size: 1.2em;
+	cursor: pointer;
+	padding: 10px;
+	border-radius: 2px;
+}
+
+.settings-page__tab:hover {
+	background-color: var(--blue-l95);
+}
+
+.settings-page__tab:focus {
+	outline: var(--global-outline-style);
+}
+
+.settings-page__tab[selected] {
+	color: var(--blue-l40);
+	background-color: var(--blue-l90);
+}
+
+.settings-page__tab-content {
+	width:500px;
+	display: grid;
+	grid-template-columns: min-content min-content min-content min-content;
+	row-gap: 10px;
+	column-gap: 5px;
+}
+
+.settings-page__tab-content h1,
+.settings-page__tab-content h2,
+.settings-page__tab-content h3,
+.settings-page__tab-content h4,
+.settings-page__tab-content p {
+	grid-column: 1 / -1 ;
+}
+
+.settings-page__tab-content .settings__label {
+	padding-top: 2px;
+	line-height: 22px;
+}
+
+.settings-page__tab-content info-bubble {
+	position: relative;
+	top: 7px;
+}
+.settings-page__tab-content pre {
+	font-size: 0.8em;
+	line-height: 22px;
+	color: var(--disabled-text);
+	border: 1px solid var(--disabled-border);
+	opacity: 0.4;
+	border-radius: 4px;
+	padding: 0px 5px;
+}
