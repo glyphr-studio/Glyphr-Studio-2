@@ -1,5 +1,7 @@
 import { getCurrentProject } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
+import { showToast } from '../controls/dialogs.js';
+import { makeDirectCheckbox } from '../panels/cards.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
@@ -211,7 +213,9 @@ function makeSettingsTabContentProject() {
 		makeOneSettingsRow('project', 'initialVersion'),
 		makeOneSettingsRow('project', 'id'),
 		textToNode('<h2>Glyph ranges</h2>'),
-		textToNode(`<p>This is where you can add or remove Unicode glyph ranges to this project. This list affects what glyph ranges are visible on edit pages, and what glyphs get exported to fonts.<br><br>Removing a glyph range <strong>will not</strong> delete individual glyphs from the project.</p>`),
+		textToNode(
+			`<p>This is where you can add or remove Unicode glyph ranges to this project. This list affects what glyph ranges are visible on edit pages, and what glyphs get exported to fonts.<br><br>Removing a glyph range <strong>will not</strong> delete individual glyphs from the project.</p>`
+		),
 	]);
 	return tabContent;
 }
@@ -221,58 +225,77 @@ function makeSettingsTabContentProject() {
 // --------------------------------------------------------------
 function makeOneSettingsRow(groupName, propertyName) {
 	const settings = getCurrentProject().settings;
-	const setting = settingsMap[groupName][propertyName];
+	const thisSetting = settingsMap[groupName][propertyName];
+	const settingType = thisSetting?.type;
+	const settingValue = settings[groupName][propertyName];
 
 	const label = makeElement({
 		className: 'settings__label',
-		innerHTML: `${setting.label.replaceAll(' ', '&nbsp;')}: `,
+		innerHTML: `${thisSetting.label.replaceAll(' ', '&nbsp;')}: `,
 	});
 
+	let type = textToNode('<span></span>');
 	let input;
-	if (setting?.type === 'Degree' || setting?.type === 'Em' || setting?.type === 'Number') {
+
+	if (settingType === 'Degree' || settingType === 'Em' || settingType === 'Number') {
 		input = makeElement({
 			tag: 'input-number',
-			attributes: { value: settings[groupName][propertyName] },
+			attributes: { value: parseInt(settingValue) },
 		});
-	} else if (setting?.type === 'Boolean') {
-		input = makeElement({
-			tag: 'input',
-			attributes: { type: 'checkbox' },
-		});
-		if (settings[groupName][propertyName]) input.setAttribute('checked', '');
-	} else if (setting?.type === 'Read only') {
-		input = makeElement({
-			innerHTML: settings[groupName][propertyName],
-		});
-	} else {
-		input = makeElement({
-			tag: 'input',
-			attributes: { type: 'text', value: settings[groupName][propertyName] },
+
+		input.addEventListener('change', (event) => {
+			let newValue = parseInt(event.target.value);
+			if (isNaN(newValue)) {
+				showToast(`Could not save value - needs to be a number.`);
+			} else {
+				settings[groupName][propertyName] = newValue;
+			}
 		});
 	}
 
-	let type = textToNode('<span></span>');
-	if (setting?.type !== 'Boolean') {
+	if (!settingType) {
+		input = makeElement({
+			tag: 'input',
+			attributes: { type: 'text', value: JSON.parse(settingValue) },
+		});
+
+		input.addEventListener('change', (event) => {
+			let newValue = JSON.parse(JSON.stringify(event.target.value));
+			settings[groupName][propertyName] = newValue;
+		});
+	}
+
+	if (settingType === 'Boolean') {
+		input = makeDirectCheckbox(settings[groupName], propertyName);
+	} else {
 		type = makeElement({
 			tag: 'pre',
-			innerHTML: setting?.type || 'Text',
+			innerHTML: settingType || 'Text',
 			title: `Expected value type`,
 		});
 	}
 
-	let info = textToNode('<span></span>');
-	if (setting?.description) {
+	if (settingType === 'Read only') {
+		input = makeElement({
+			innerHTML: settingValue,
+		});
+	}
+
+	let info;
+	if (thisSetting?.description) {
 		info = makeElement({
 			tag: 'info-bubble',
-			innerHTML: setting?.description || `${groupName}.${propertyName}`,
+			innerHTML: thisSetting?.description || `${groupName}.${propertyName}`,
 		});
 
-		if (setting?.example) {
+		if (thisSetting?.example) {
 			info.innerHTML += `
-				<h4>Example</h4>
-				${setting.example}
+			<h4>Example</h4>
+			${thisSetting.example}
 			`;
 		}
+	} else {
+		info = textToNode('<span></span>');
 	}
 
 	return [label, info, input, type];

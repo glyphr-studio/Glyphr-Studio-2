@@ -244,9 +244,7 @@ export function dimSplitElement() {
 export function makeDirectCheckbox(workItem, property, callback) {
 	let newCheckbox = makeElement({
 		tag: 'input',
-		attributes: {
-			type: 'checkbox',
-		},
+		attributes: { type: 'checkbox' },
 	});
 	if (workItem[property]) newCheckbox.setAttribute('checked', '');
 
