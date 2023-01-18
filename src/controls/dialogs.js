@@ -182,9 +182,7 @@ export function showError(message) {
 	let element = makeElement({ tag: 'dialog', id: 'error' });
 	let header = makeElement({ className: 'error__header', innerHTML: '<h3>Error</h3>' });
 	let close = makeElement({ tag: 'button', innerHTML: '&times;' });
-	close.addEventListener('click', () => {
-		animateRemove(element);
-	});
+	close.addEventListener('click', closeAllDialogs);
 	header.appendChild(close);
 	let body = makeElement({ className: 'error__body', innerHTML: message });
 	addAsChildren(element, [header, body]);
@@ -192,6 +190,41 @@ export function showError(message) {
 	closeAllDialogs(true);
 	document.body.appendChild(element);
 }
+
+
+
+// --------------------------------------------------------------
+// Big dialog
+// --------------------------------------------------------------
+
+/**
+ * Shows a big dialog that blurs the UI behind it.
+ * @param {DOM Node} contentNode - HTML to show in the dialog
+ */
+export function showModalDialog(contentNode) {
+	let modal = makeElement({
+		tag: 'dialog',
+		id: 'modal-dialog',
+		innerHTML: `
+		<div class="modal-dialog__content">
+			<div class="modal-dialog__header">
+				<span></span>
+				<button class="modal-dialog__close-button">&times;</button>
+			</div>
+			<div class="modal-dialog__body"></div>
+		</div>
+		`,
+	});
+
+	modal.querySelector('.modal-dialog__close-button').addEventListener('click', closeAllDialogs);
+
+	addAsChildren(modal.querySelector('.modal-dialog__body'), contentNode);
+	closeAllDialogs(true);
+	document.body.appendChild(modal);
+}
+
+
+
 
 // --------------------------------------------------------------
 // OLD STUFF

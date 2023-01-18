@@ -96,10 +96,6 @@
 	background-color: rgba(255, 255, 255, 0.95);
 }
 
-.wrapper[dark] .buttonContent {
-	background-color: var(--gray-l05);
-}
-
 .wrapper[secondary] .buttonText {
 	background: linear-gradient(
 		135deg,

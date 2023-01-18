@@ -11,22 +11,16 @@ export class FancyButton extends HTMLElement {
 	 */
 	constructor(attributes = {}) {
 		super();
-
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		this.wrapper = makeElement({ className: 'wrapper' });
-
 		this.buttonContent = makeElement({ className: 'buttonContent' });
-		// this.wrapper.style.animation = `gradFade ${speed} linear infinite;`;
 		this.buttonText = makeElement({ tag: 'slot', className: 'buttonText' });
 
-		if (this.hasAttribute('secondary')) this.wrapper.setAttribute('secondary', '');
-		// this.buttonText.style.animation = `gradFade ${speed} linear infinite;`;
-
-		if (this.hasAttribute('dark')) {
-			this.wrapper.setAttribute('dark', '');
-			this.dark = true;
+		if (this.hasAttribute('secondary')) {
+			this.wrapper.setAttribute('secondary', '');
 		}
+
 		if (this.hasAttribute('disabled')) {
 			this.wrapper.setAttribute('disabled', '');
 			this.disabled = true;
@@ -54,7 +48,7 @@ export class FancyButton extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['disabled'];
+		return ['disabled', 'secondary'];
 	}
 
 	/**
@@ -73,6 +67,15 @@ export class FancyButton extends HTMLElement {
 			} else if (oldValue === '') {
 				// enabled
 				this.wrapper.removeAttribute('disabled');
+			}
+		}
+		if (attributeName === 'secondary') {
+			if (newValue === '') {
+				// secondary
+				this.wrapper.setAttribute('secondary', '');
+			} else if (oldValue === '') {
+				// primary
+				this.wrapper.removeAttribute('secondary');
 			}
 		}
 	}

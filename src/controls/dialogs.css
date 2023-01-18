@@ -126,3 +126,69 @@
 .context-menu-row:focus {
 	outline: var(--global-focus-style);
 }
+
+/* Modal dialog */
+#modal-dialog {
+	display: block;
+	position: absolute;
+	text-align: center;
+	border-width: 0px;
+	padding: 0px auto;
+	left: 0px;
+	top: 0px;
+	width: 100vw;
+	height: 100vh;
+	z-index: 100;
+	backdrop-filter: blur(2px);
+	background-color: rgba(255, 255, 255, 0.75);
+	animation: var(--animate-fade-in);
+}
+
+.modal-dialog__content {
+	display: grid;
+	grid-template-rows: 20px 1fr;
+	width: clamp(500px, 66vw, 1000px);
+	max-height: calc(100vh - 80px);
+	overflow-y: hidden;
+	margin: 40px auto;
+	text-align: left;
+	background-color: var(--enabled-focus-background);
+	border: 1px solid var(--blue-l60);
+	border-radius: 8px;
+	box-shadow: var(--l3-shadow-down);
+	animation: var(--animate-fade-in-slide-down);
+	z-index: 1000 !important;
+}
+
+.modal-dialog__header {
+	margin: 4px;
+	display: grid;
+	grid-template-columns: 1fr 20px;
+}
+
+.modal-dialog__body {
+	display: block;
+	padding: 0px;
+}
+
+.modal-dialog__close-button {
+	background-color: var(--blue-l95);
+	border-color: var(--blue-l85);
+	color: var(--blue-l50);
+	text-align: center;
+	width: 20px;
+	height: 20px;
+	line-height: 16px;
+	font-size: 1.2em;
+	padding: 0px;
+	margin: 0px;
+}
+
+.modal-dialog__close-button:hover {
+	background-color: var(--blue-l90);
+	color: var(--blue-l20);
+	border-color: var(--blue-l20);
+	cursor: pointer;
+		padding: 0px;
+			margin: 0px;
+}
