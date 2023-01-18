@@ -1,6 +1,8 @@
 import { getCurrentProject } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
-import { showToast } from '../controls/dialogs.js';
+import { decToHex, getUnicodeName, hexToChars } from '../common/unicode.js';
+import { showModalDialog, showToast } from '../controls/dialogs.js';
+import { unicodeBlocks } from '../lib/unicode_blocks.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
@@ -38,7 +40,7 @@ export function makePage_Settings() {
 		makeSettingsTabContentApp(),
 	]);
 
-	selectTab(content, 'Font');
+	selectTab(content, 'Project');
 
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
@@ -124,16 +126,18 @@ function makeSettingsTabs() {
 function makeSettingsTabContentFont() {
 	const tabContent = makeElement({
 		tag: 'div',
-		className: 'settings-page__tab-content',
+		className: 'settings-page__tab-content settings-table',
 		id: 'tab-content__font',
-		innerHTML: '<h1>Font metadata</h1>',
+		innerHTML: `
+			<h1>Font metadata</h1>
+			<p>
+				These settings will be exported with any font you save,
+				and will be used around Glyphr Studio while you are making edits.
+			</p>
+		`,
 	});
 
 	addAsChildren(tabContent, [
-		textToNode(`
-		<p>
-			These settings will be exported with any font you save, and will be used around Glyphr Studio while you are making edits.
-		</p>`),
 		makeOneSettingsRow('font', 'family'),
 		makeOneSettingsRow('font', 'style'),
 		makeOneSettingsRow('font', 'version'),
@@ -180,13 +184,15 @@ function makeSettingsTabContentFont() {
 function makeSettingsTabContentApp() {
 	const tabContent = makeElement({
 		tag: 'div',
-		className: 'settings-page__tab-content',
+		className: 'settings-page__tab-content settings-table',
 		id: 'tab-content__app',
-		innerHTML: '<h1>App preferences</h1>',
+		innerHTML: `
+			<h1>App preferences</h1>
+			<p>These settings adjust how the Glyphr Studio App behaves.</p>
+		`,
 	});
 
 	addAsChildren(tabContent, [
-		textToNode(`<p>These settings adjust how the Glyphr Studio App behaves.</p>`),
 		makeOneSettingsRow('app', 'savePreferences'),
 		makeOneSettingsRow('app', 'stopPageNavigation'),
 		makeOneSettingsRow('app', 'showNonCharPoints'),
@@ -195,6 +201,7 @@ function makeSettingsTabContentApp() {
 		makeOneSettingsRow('app', 'combinePathsOnExport'),
 		makeOneSettingsRow('app', 'maxCombinePathsOnExport'),
 	]);
+
 	return tabContent;
 }
 
@@ -203,21 +210,180 @@ function makeSettingsTabContentProject() {
 		tag: 'div',
 		className: 'settings-page__tab-content',
 		id: 'tab-content__project',
-		innerHTML: '<h1>Project settings</h1>',
+		innerHTML: `
+			<h1>Project settings</h1>
+			<p>These settings affect how this Glyphr Studio Project behaves.</p>
+		`,
 	});
 
-	addAsChildren(tabContent, [
-		textToNode(`<p>These settings affect how this Glyphr Studio Project behaves.</p>`),
+	const gridArea = makeElement({
+		tag: 'div',
+		className: 'settings-table',
+	});
+
+	addAsChildren(gridArea, [
 		makeOneSettingsRow('project', 'name'),
 		makeOneSettingsRow('project', 'latestVersion'),
 		makeOneSettingsRow('project', 'initialVersion'),
 		makeOneSettingsRow('project', 'id'),
-		textToNode('<h2>Glyph ranges</h2>'),
-		textToNode(
-			`<p>This is where you can add or remove Unicode glyph ranges to this project. This list affects what glyph ranges are visible on edit pages, and what glyphs get exported to fonts.<br><br>Removing a glyph range <strong>will not</strong> delete individual glyphs from the project.</p>`
-		),
+		textToNode('<br>'),
 	]);
+
+	const rangesArea = makeElement({
+		tag: 'div',
+		innerHTML: `
+			<h2>Glyph ranges</h2>
+			<p>
+				Glyph ranges are based on the <a href="https://en.wikipedia.org/wiki/Unicode" target="_blank">Unicode Standard</a>,
+				which assigns a <a href="https://en.wikipedia.org/wiki/Hexadecimal" target="_blank">hexadecimal number</a>
+				to all possible glyphs in a font.
+				<a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia's Unicode Block page</a>
+				is a good place to get familiar with all the different glyphs it's possible to have in a font.
+				<br>
+				Removing a glyph range <strong>will not</strong> delete individual glyphs from the project.
+			</p>
+		`,
+	});
+
+	const addStandardRangeButton = makeElement({
+		tag: 'fancy-button',
+		innerHTML: 'Add glyph ranges from standard Unicode blocks',
+		onClick: showUnicodeGlyphRangeDialog,
+	});
+	// Have to add attribute after the button is created
+	addStandardRangeButton.setAttribute('secondary', '');
+
+	const addCustomRangeButton = makeElement({
+		tag: 'fancy-button',
+		innerHTML: 'Add a custom glyph range',
+		onClick: () => {
+			showModalDialog(
+				textToNode(`
+				<h1>Add custom glyph range</h1>
+				`)
+			);
+		},
+	});
+	// Have to add attribute after the button is created
+	addCustomRangeButton.setAttribute('secondary', '');
+
+	addAsChildren(rangesArea, [
+		addStandardRangeButton,
+		textToNode('<span>&emsp;</span>'),
+		addCustomRangeButton,
+		textToNode('<br>'),
+		textToNode('<br>'),
+		textToNode('<h3>Current ranges</h3>'),
+		makeCurrentRangesTable(),
+	]);
+
+	addAsChildren(tabContent, [gridArea, rangesArea]);
+
 	return tabContent;
+}
+
+function makeCurrentRangesTable() {
+	const rangeTable = makeElement({
+		tag: 'div',
+		className: 'glyph-range-table',
+	});
+
+	addAsChildren(rangeTable, [
+		textToNode('<span class="header">Range name</span>'),
+		textToNode('<span class="header">Start</span>'),
+		textToNode('<span class="header">End</span>'),
+		textToNode('<span class="header">&nbsp;</span>'),
+	]);
+
+	getCurrentProject().settings.project.glyphRanges.forEach((range) => {
+		addAsChildren(rangeTable, [
+			textToNode(`<span>${range.name}</span>`),
+			textToNode(`<code>${decToHex(range.begin)}</code>`),
+			textToNode(`<code>${decToHex(range.end)}</code>`),
+			textToNode(`<a>Edit</a>`),
+		]);
+	});
+
+	return rangeTable;
+}
+
+function showUnicodeGlyphRangeDialog() {
+	const content = makeElement({
+		innerHTML: `
+		<div class="glyph-range-chooser__wrapper">
+			<h1>Add glyph ranges from Unicode</h1>
+			<h3>Preview</h3>
+			<h3>Blocks</h3>
+			<div class="glyph-range-chooser__preview-area">
+				<div class="glyph-range-chooser__preview">
+					Select a glyph range from the right to preview it here.
+				</div>
+				<fancy-button>Save</fancy-button>
+			</div>
+			<div class="glyph-range-chooser__list-area">
+				<div class="header">Range&nbsp;name</div>
+				<div class="header">Begin</div>
+				<div class="header">End</div>
+				<div class="header">&nbsp;</div>
+				<div class="header">&nbsp;</div>
+			</div>
+		</div>
+	`,
+	});
+
+	const listArea = content.querySelector('.glyph-range-chooser__list-area');
+
+	let previewLink;
+	let addLink;
+	unicodeBlocks.forEach((block) => {
+		previewLink = makeElement({
+			tag: 'a',
+			innerHTML: 'Preview',
+			onClick: () => {
+				previewGlyphRange(block);
+			},
+		});
+
+		addLink = makeElement({
+			tag: 'a',
+			innerHTML: 'Add',
+			onClick: () => {
+				addGlyphRange(block);
+			},
+		});
+
+		addAsChildren(listArea, [
+			textToNode(`<span>${block.name}</span>`),
+			textToNode(`<code>${decToHex(block.begin)}</code>`),
+			textToNode(`<code>${decToHex(block.end)}</code>`),
+			previewLink,
+			addLink,
+		]);
+	});
+
+	showModalDialog(content);
+}
+
+function previewGlyphRange(range) {
+	const previewArea = document.querySelector('.glyph-range-chooser__preview');
+	previewArea.innerHTML = '';
+
+	let hexString;
+	let name;
+	for (let g = range.begin; g <= range.end; g++) {
+		hexString = decToHex(g);
+		name = getUnicodeName(hexString);
+		previewArea.appendChild(makeElement({
+			className: 'glyph-range-chooser__preview-tile',
+			title: `${hexString}\n${name}`,
+			innerHTML: hexToChars(g)
+		}));
+	}
+}
+
+function addGlyphRange(range) {
+	getCurrentProject().settings.project.glyphRanges.push(range);
+	showToast(`Added ${range.name} to this project.`);
 }
 
 // --------------------------------------------------------------
@@ -256,7 +422,7 @@ function makeOneSettingsRow(groupName, propertyName) {
 	if (!settingType) {
 		input = makeElement({
 			tag: 'input',
-			attributes: { type: 'text', value: JSON.parse(settingValue) },
+			attributes: { type: 'text', value: JSON.parse(JSON.stringify(settingValue)) },
 		});
 
 		input.addEventListener('change', (event) => {

@@ -79,9 +79,9 @@ export function makeElement({
  * 						child nodes to recursively add to the wrapper
  */
 export function addAsChildren(parentNode, childNodes = []) {
-	log(`addAsChildren`, 'start');
-	log(parentNode);
-	log(childNodes);
+	// log(`addAsChildren`, 'start');
+	// log(parentNode);
+	// log(childNodes);
 
 	if (Array.isArray(childNodes)) {
 		childNodes.forEach((child) => {
@@ -91,7 +91,7 @@ export function addAsChildren(parentNode, childNodes = []) {
 	} else {
 		parentNode.appendChild(childNodes);
 	}
-	log(`addAsChildren`, 'end');
+	// log(`addAsChildren`, 'end');
 }
 
 /**

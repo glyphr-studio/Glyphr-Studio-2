@@ -143,6 +143,9 @@ code,
 
 .settings-page__tab-content {
 	width: clamp(300px 500px max-content);
+}
+
+.settings-table {
 	display: grid;
 	grid-template-columns: min-content min-content minmax(min-content, 300px) min-content;
 	grid-template-rows: 24px;
@@ -155,14 +158,14 @@ code,
 .settings-page__tab-content h3,
 .settings-page__tab-content h4,
 .settings-page__tab-content p {
-	grid-column: 1 / -1 ;
+	grid-column: 1 / -1;
 }
 
 .settings-page__tab-content p {
 	color: var(--enabled-restingLight-lightText);
+	margin-top: 5px;
 }
 
-.settings-page__tab-content p,
 .settings-page__tab-content h2 {
 	margin-top: 10px;
 }
@@ -200,4 +203,91 @@ code,
 
 .settings-page__tab-content pre:hover {
 	opacity: 1;
+}
+
+.glyph-range-table {
+	display: grid;
+	width: 100%;
+	max-width: 500px;
+	grid-template-columns: 5fr 1fr 1fr min-content;
+	column-gap: 5px;
+	row-gap: 10px;
+}
+
+.glyph-range-table .header,
+.glyph-range-chooser__list-area .header {
+	font-size: 0.9em;
+	padding: 0px 10px 0px 5px;
+	color: var(--enabled-restingLight-lightText);
+	font-style: italic;
+	position: relative;
+	top: 5px;
+	border-bottom: 1px solid var(--disabled-background);
+}
+
+.glyph-range-table code,
+.glyph-range-chooser__list-area code {
+	width: min-content;
+	max-width: 100px;
+	height: 24px;
+}
+
+.glyph-range-table a,
+.glyph-range-table span {
+	height: 24px;
+	line-height: 20px;
+	padding-top: 4px;
+	padding-left: 2px;
+}
+
+.glyph-range-chooser__wrapper {
+	display: grid;
+	grid-template-columns: 1fr 2fr;
+	grid-template-rows: min-content min-content max-content;
+	margin: 0px 0px 0px 20px;
+}
+.glyph-range-chooser__wrapper h1 {
+	grid-column: -1 / 1;
+}
+
+.glyph-range-chooser__preview {
+	max-height: calc(100vh - 250px);
+	min-height: 200px;
+	overflow-y: auto;
+	border: 1px solid var(--disabled-border);
+	margin: 10px 20px 20px 0px;
+	border-radius: 4px;
+	padding: 5px;
+	color: var(--enabled-restingLight-lightText);
+}
+
+.glyph-range-chooser__list-area {
+	display: grid;
+	grid-template-columns: 5fr 1fr 1fr min-content min-content;
+	column-gap: 5px;
+	row-gap: 10px;
+	height: calc(100vh - 190px);
+	overflow-y: auto;
+	padding-right: 20px;
+	margin-bottom: 10px;
+}
+
+.glyph-range-chooser__list-area h3 {
+	grid-column: 1 / -1;
+}
+
+.glyph-range-chooser__list-area span,
+.glyph-range-chooser__list-area a {
+	line-height: 28px;
+	margin-right: 10px;
+}
+
+.glyph-range-chooser__preview-tile {
+	display: inline-block;
+	color: var(--enabled-restingLight-lightText);
+	margin: 1px 1px 0px 0px;
+}
+
+.glyph-range-chooser__preview-tile:hover {
+	color: var(--blue-l60);
 }
