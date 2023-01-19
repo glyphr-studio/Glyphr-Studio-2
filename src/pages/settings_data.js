@@ -2,7 +2,7 @@ export default {
 	project: {
 		name: {
 			label: `Project name`,
-			description: `Name for this project. Can be different than the Font or Font Family name.`,
+			description: `Name for this project. Can be different than the Font or Font Family name. Also, this will be used as the name of the saved Glyphr Studio Project (.gs2) file.`,
 		},
 		latestVersion: {
 			label: `Version`,
@@ -55,7 +55,7 @@ export default {
 	font: {
 		family: {
 			label: `Font family`,
-			description: `Base font family name, that will be shared across font styles.`,
+			description: `Base font family name, that will be shared across font styles. This will also be used as the base name for exported font files.`,
 		},
 		style: {
 			label: `Font style`,
@@ -119,14 +119,14 @@ export default {
 			description: `Most common degree of slant for glyphs in an italic font.`,
 			type: `Degree`,
 		},
-		designer: { label: `Designer`, description: "Person or team who created this font." },
-		designerURL: { label: `Designer's URL`, description: "" },
-		manufacturer: { label: `Manufacturer`, description: "Company who created this font." },
-		manufacturerURL: { label: `Manufacturer's URL`, description: "" },
-		license: { label: `License`, description: "License under which this font is released." },
-		licenseURL: { label: `License URL`, description: "" },
-		copyright: { label: `Copyright`, description: "" },
-		trademark: { label: `Trademark`, description: "" },
+		designer: { label: `Designer`, description: 'Person or team who created this font.' },
+		designerURL: { label: `Designer's URL`, description: '' },
+		manufacturer: { label: `Manufacturer`, description: 'Company who created this font.' },
+		manufacturerURL: { label: `Manufacturer's URL`, description: '' },
+		license: { label: `License`, description: 'License under which this font is released.' },
+		licenseURL: { label: `License URL`, description: '' },
+		copyright: { label: `Copyright`, description: '' },
+		trademark: { label: `Trademark`, description: '' },
 		variant: { label: `Font variant`, description: "Either 'normal' or 'small-caps'." },
 		weight: {
 			label: `Font weight`,

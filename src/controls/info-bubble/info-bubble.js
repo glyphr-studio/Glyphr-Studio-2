@@ -1,6 +1,7 @@
 import { accentColors } from '../../common/colors.js';
 import { makeElement } from '../../common/dom.js';
 import style from './info-bubble.css?inline';
+import bubbleStyle from './info-bubble-popup.css?inline';
 
 /**
  * A small bubble that displays information
@@ -39,53 +40,22 @@ export class InfoBubble extends HTMLElement {
 		// log(`info-bubble show`, 'start');
 
 		// put together bubble stuff
-
-		let bgColor = accentColors.gray.l10;
-		let textColor = accentColors.gray.l95;
-
 		// log(`Making bubble...`);
 		let bubble = makeElement({
 			id: 'bubble',
-			style: `
-				z-index: 1000;
-				display: grid;
-				align-items: center;
-				grid-template-columns: 12px 1fr;
-				opacity: 1;
-				position: absolute;
-				left: 100px;
-				top: 100px;
-				text-align: center;
-			`,
 		});
+		let bubbleStyles = makeElement({ tag: 'style', innerHTML: bubbleStyle });
+		bubble.appendChild(bubbleStyles);
 
 		// log(`Making pointer...`);
 		let pointer = makeElement({
-			style: `
-				width: 0px;
-				height: 0px;
-				border: 12px solid transparent;
-				border-top: 12px solid ${bgColor};
-				background-color: transparent;
-				display: block;
-				margin: 0px auto;
-			`,
+			className: 'pointer',
 		});
 
 		// log(`Making content...`);
 		let content = makeElement({
 			innerHTML: this.innerHTML,
-			style: `
-				padding: 20px 24px 20px 20px;
-				border-radius: 10px;
-				width: clamp(300px, 400px, 600px);
-				min-width: 300px;
-				color: ${textColor};
-				background-color: ${bgColor};
-				text-align: left;
-				display: block;
-				box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
-			`,
+			className: 'content',
 		});
 
 		bubble.appendChild(pointer);
