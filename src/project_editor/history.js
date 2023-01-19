@@ -1,6 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { clone } from '../common/functions.js';
-import { showToast } from '../controls/dialogs.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { refreshPanel } from '../panels/panels.js';
 import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
@@ -46,7 +46,7 @@ export class History {
 		}
 
 		const undoButton = document.getElementById('actionButtonUndo');
-		if(undoButton) undoButton.removeAttribute('disabled');
+		if (undoButton) undoButton.removeAttribute('disabled');
 		// log(this);
 		// log(`History.addState`, 'end');
 	}
@@ -66,7 +66,7 @@ export class History {
 		if (q.length === 0) {
 			editor.setProjectAsSaved();
 			const undoButton = document.getElementById('actionButtonUndo');
-			if(undoButton) undoButton.setAttribute('disabled', 'disabled');
+			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
 			// log(`Queue is 0, returning`);
 			// log(`History.restoreState`, 'end');
 			return;
@@ -126,7 +126,7 @@ export class History {
 		if (q.length === 0) {
 			editor.setProjectAsSaved();
 			const undoButton = document.getElementById('actionButtonUndo');
-			if(undoButton) undoButton.setAttribute('disabled', 'disabled');
+			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
 		}
 		// log(q);
 		// log(`History.restoreState`, 'end');

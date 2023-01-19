@@ -1,6 +1,6 @@
 import { getCurrentProject } from '../app/main.js';
 import { round } from '../common/functions.js';
-import { showToast } from '../controls/dialogs.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { decToHex, getUnicodeShortName } from '../common/unicode.js';
 import openTypeJS from '../lib/opentypejs_1-3-1.js';
 import { Glyph } from '../project_data/glyph.js';

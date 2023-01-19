@@ -1,7 +1,12 @@
 import { getCurrentProject } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { decToHex, getUnicodeName, hexToChars } from '../common/unicode.js';
-import { closeAllDialogs, showError, showModalDialog, showToast } from '../controls/dialogs.js';
+import {
+	closeAllDialogs,
+	showError,
+	showModalDialog,
+	showToast,
+} from '../controls/dialogs/dialogs.js';
 import { unicodeBlocks } from '../lib/unicode_blocks.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
@@ -134,6 +139,12 @@ function makeSettingsTabContentFont() {
 			<p>
 				These settings will be exported with any font you save,
 				and will be used around Glyphr Studio while you are making edits.
+				<br><br>
+				<option-chooser selected="first">
+					<option>first</option>
+					<option>second</option>
+					<option>3rd</option>
+				</option-chooser>
 			</p>
 		`,
 	});
@@ -379,7 +390,7 @@ function makeCurrentRangesTable() {
 		textToNode('<span class="list__column-header">&nbsp;</span>'),
 	]);
 
-	const ranges = getCurrentProject().settings.project.glyphRanges
+	const ranges = getCurrentProject().settings.project.glyphRanges;
 
 	if (ranges.length) {
 		ranges.forEach((range, index) => {
@@ -390,14 +401,19 @@ function makeCurrentRangesTable() {
 				makeElement({
 					tag: 'a',
 					innerHTML: 'Edit',
-					onClick: () => { showCustomGlyphRangeDialog(index); }
-				})
+					onClick: () => {
+						showCustomGlyphRangeDialog(index);
+					},
+				}),
 			]);
 		});
 	} else {
-		addAsChildren(rangeTable, textToNode(`
+		addAsChildren(
+			rangeTable,
+			textToNode(`
 			<em>No rages are visible in this project.</em>
-		`));
+		`)
+		);
 	}
 
 	return rangeTable;
@@ -487,7 +503,9 @@ function showCustomGlyphRangeDialog(rangeIndex) {
 			tag: 'fancy-button',
 			attributes: { secondary: '', danger: '' },
 			innerHTML: 'Remove range',
-			onClick: () => { removeGlyphRange(rangeIndex); }
+			onClick: () => {
+				removeGlyphRange(rangeIndex);
+			},
 		});
 
 	addAsChildren(buttonBar, [buttonSave, buttonCancel, textToNode('<span></span>'), buttonRemove]);

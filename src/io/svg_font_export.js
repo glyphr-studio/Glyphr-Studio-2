@@ -1,7 +1,7 @@
 import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { round, trim } from '../common/functions.js';
 import { isValidHex } from '../common/unicode.js';
-import { showToast } from '../controls/dialogs.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { makeDateStampSuffix, saveFile } from '../project_editor/saving.js';
 /**
 	IO > Export > SVG Font

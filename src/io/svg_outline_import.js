@@ -1,4 +1,4 @@
-import { showError } from '../controls/dialogs.js';
+import { showError } from '../controls/dialogs/dialogs.js';
 import { ovalPathFromMaxes, rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -391,7 +391,7 @@ export function ioSVG_convertSVGTagToPath(data) {
 		if (isPathCommand(data[curr])) {
 			dataChunk = data.slice(commandPosition + 1, curr);
 			command = data[commandPosition];
-			dataChunk = dataChunk.map(value => Number(value));
+			dataChunk = dataChunk.map((value) => Number(value));
 			// log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
 			chunks.push({ command: command, data: dataChunk });
 			commandPosition = curr;
@@ -402,7 +402,7 @@ export function ioSVG_convertSVGTagToPath(data) {
 	// Fencepost
 	dataChunk = data.slice(commandPosition + 1, curr);
 	command = data[commandPosition];
-	dataChunk = dataChunk.map(value => Number(value));
+	dataChunk = dataChunk.map((value) => Number(value));
 	// log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
 	chunks.push({ command: command, data: dataChunk });
 

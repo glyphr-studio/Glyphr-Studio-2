@@ -9,7 +9,7 @@ import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
 import { normalizeHex } from '../common/unicode.js';
 import { publish, subscribe, unsubscribe } from './pub-sub.js';
-import { showToast } from '../controls/dialogs.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
