@@ -1,0 +1,43 @@
+:root {
+	--bgColor: var(--gray-l10);
+	--textColor: var(--gray-l95);
+}
+
+#bubble {
+	z-index: 1000;
+	display: grid;
+	align-items: center;
+	grid-template-columns: 12px 1fr;
+	opacity: 1;
+	position: absolute;
+	left: 100px;
+	top: 100px;
+	text-align: center;
+}
+
+.pointer {
+	width: 0px;
+	height: 0px;
+	border: 12px solid transparent;
+	border-top: 12px solid var(--bgColor);
+	background-color: transparent;
+	display: block;
+	margin: 0px auto;
+}
+
+.content {
+	padding: 20px 24px 20px 20px;
+	border-radius: 10px;
+	width: clamp(300px, 400px, 600px);
+	min-width: 300px;
+	color: var(--textColor);
+	background-color: var(--bgColor);
+	text-align: left;
+	display: block;
+	box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.content code {
+	background-color: var(--gray-l20);
+	border-color: var(--gray-l30);
+}

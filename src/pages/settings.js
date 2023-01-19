@@ -1,7 +1,7 @@
 import { getCurrentProject } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { decToHex, getUnicodeName, hexToChars } from '../common/unicode.js';
-import { closeAllDialogs, showModalDialog, showToast } from '../controls/dialogs.js';
+import { closeAllDialogs, showError, showModalDialog, showToast } from '../controls/dialogs.js';
 import { unicodeBlocks } from '../lib/unicode_blocks.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
@@ -41,7 +41,7 @@ export function makePage_Settings() {
 		makeSettingsTabContentApp(),
 	]);
 
-	selectTab(content, 'Project');
+	selectTab(content, 'Font');
 
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
@@ -379,14 +379,26 @@ function makeCurrentRangesTable() {
 		textToNode('<span class="list__column-header">&nbsp;</span>'),
 	]);
 
-	getCurrentProject().settings.project.glyphRanges.forEach((range) => {
-		addAsChildren(rangeTable, [
-			textToNode(`<span>${range.name}</span>`),
-			textToNode(`<code>${decToHex(range.begin)}</code>`),
-			textToNode(`<code>${decToHex(range.end)}</code>`),
-			textToNode(`<a>Edit</a>`),
-		]);
-	});
+	const ranges = getCurrentProject().settings.project.glyphRanges
+
+	if (ranges.length) {
+		ranges.forEach((range, index) => {
+			addAsChildren(rangeTable, [
+				textToNode(`<span>${range.name}</span>`),
+				textToNode(`<code>${decToHex(range.begin)}</code>`),
+				textToNode(`<code>${decToHex(range.end)}</code>`),
+				makeElement({
+					tag: 'a',
+					innerHTML: 'Edit',
+					onClick: () => { showCustomGlyphRangeDialog(index); }
+				})
+			]);
+		});
+	} else {
+		addAsChildren(rangeTable, textToNode(`
+			<em>No rages are visible in this project.</em>
+		`));
+	}
 
 	return rangeTable;
 }
@@ -403,15 +415,48 @@ function updateCurrentRangesTable() {
 function showCustomGlyphRangeDialog(rangeIndex) {
 	rangeIndex = parseInt(rangeIndex);
 	const isNew = isNaN(rangeIndex);
+	const unicodeHelp = `
+		Start and End inputs are Unicode or number IDs for the characters on each end of the range. Glyphr Studio accepts three flavors of this ID number:<br>
+		<ul>
+			<li><b>Unicode Number</b> - a base-16 number with a U+&nbsp;prefix. For example, <code>U+4E</code> corresponds to Capital&nbsp;N.</li>
+			<li><b>Hexadecimal Number</b> - a base-16 number with a 0x&nbsp;prefix. For example, <code>0x4E</code> corresponds to Capital&nbsp;N.</li>
+			<li><b>Decimal Number</b> - a base-10 number. For example, <code>78</code> corresponds to Capital&nbsp;N.</li>
+		</ul>
+	`;
 
 	const content = makeElement({
 		className: 'glyph-range-editor__wrapper',
-		innerHTML: `<h1>${isNew ? 'Add' : 'Edit'} glyph range</h1>`,
+		innerHTML: `
+			<h1>${isNew ? 'Add' : 'Edit'} glyph range</h1>
+		`,
 	});
 
-	const inputName = makeElement({ tag: 'input', attributes: { type: 'text' } });
-	const inputBegin = makeElement({ tag: 'input', attributes: { type: 'text' } });
-	const inputEnd = makeElement({ tag: 'input', attributes: { type: 'text' } });
+	const inputName = makeElement({
+		tag: 'input',
+		id: 'glyph-range-editor__name',
+		attributes: { type: 'text' },
+	});
+	inputName.addEventListener('change', (event) => {
+		event.target.value = sanitizeUnicodeInput(event.target.value);
+	});
+
+	const inputBegin = makeElement({
+		tag: 'input',
+		id: 'glyph-range-editor__begin',
+		attributes: { type: 'text' },
+	});
+	inputBegin.addEventListener('change', (event) => {
+		event.target.value = sanitizeUnicodeInput(event.target.value);
+	});
+
+	const inputEnd = makeElement({
+		tag: 'input',
+		id: 'glyph-range-editor__end',
+		attributes: { type: 'text' },
+	});
+	inputEnd.addEventListener('change', (event) => {
+		event.target.value = sanitizeUnicodeInput(event.target.value);
+	});
 
 	if (!isNew) {
 		let range = getCurrentProject().settings.project.glyphRanges[rangeIndex];
@@ -425,6 +470,7 @@ function showCustomGlyphRangeDialog(rangeIndex) {
 	const buttonSave = makeElement({
 		tag: 'fancy-button',
 		innerHTML: 'Save',
+		onClick: saveGlyphRange,
 	});
 
 	const buttonCancel = makeElement({
@@ -434,25 +480,91 @@ function showCustomGlyphRangeDialog(rangeIndex) {
 		onClick: closeAllDialogs,
 	});
 
-	const buttonRemove = makeElement({
-		tag: 'fancy-button',
-		attributes: { secondary: '', danger: '' },
-		innerHTML: 'Remove range',
-	});
+	let buttonRemove;
+	if (isNew) buttonRemove = textToNode('<span></span>');
+	else
+		buttonRemove = makeElement({
+			tag: 'fancy-button',
+			attributes: { secondary: '', danger: '' },
+			innerHTML: 'Remove range',
+			onClick: () => { removeGlyphRange(rangeIndex); }
+		});
 
 	addAsChildren(buttonBar, [buttonSave, buttonCancel, textToNode('<span></span>'), buttonRemove]);
 
 	addAsChildren(content, [
 		textToNode('<label>Range name</label>'),
+		textToNode('<span></span>'),
 		inputName,
 		textToNode('<label>Start</label>'),
+		makeElement({ tag: 'info-bubble', innerHTML: unicodeHelp }),
 		inputBegin,
 		textToNode('<label>End</label>'),
+		makeElement({ tag: 'info-bubble', innerHTML: unicodeHelp }),
 		inputEnd,
 		buttonBar,
 	]);
 
 	showModalDialog(content, 500);
+}
+
+function saveGlyphRange(index = false) {
+	let newName = document.getElementById('glyph-range-editor__name').value;
+	let newBegin = parseInt(document.getElementById('glyph-range-editor__begin').value);
+	let newEnd = parseInt(document.getElementById('glyph-range-editor__end').value);
+
+	if (isNaN(newBegin)) {
+		showError(`Start must be a number, a Unicode code point, or a Hexadecimal number.`);
+		return;
+	} else if (isNaN(newEnd)) {
+		showError(`End must be a number, a Unicode code point, or a Hexadecimal number.`);
+		return;
+	} else if (newName === '') {
+		showError(`Name must not be blank.`);
+		return;
+	}
+
+	if (newBegin > newEnd) {
+		let temp = newEnd;
+		newEnd = newBegin;
+		newBegin = temp;
+	}
+
+	let newRange = {
+		begin: newBegin,
+		end: newEnd,
+		name: newName,
+	};
+
+	const ranges = getCurrentProject().settings.project.glyphRanges;
+	if (ranges[index]) {
+		ranges[index] = newRange;
+		ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
+		updateCurrentRangesTable();
+		showToast(`Saved changes to ${newRange.name}.`);
+	} else {
+		addGlyphRange(newRange, closeAllDialogs);
+	}
+}
+
+function removeGlyphRange(index) {
+	const ranges = getCurrentProject().settings.project.glyphRanges;
+	if (ranges[index]) {
+		let oldRangeName = ranges[index].name;
+		ranges.splice(index, 1);
+		ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
+		updateCurrentRangesTable();
+		closeAllDialogs();
+		showToast(`Removed ${oldRangeName}.`);
+	}
+}
+
+function sanitizeUnicodeInput(inputString) {
+	let sanString = inputString.replace(/U\+/gi, '0x');
+	let sanInt = parseInt(sanString);
+
+	if (!isNaN(sanInt)) return decToHex(Math.abs(sanInt));
+	else return inputString;
 }
 
 // --------------------------------------------------------------
@@ -471,7 +583,7 @@ function showUnicodeGlyphRangeDialog() {
 					Select a glyph range from the right to preview it here.
 				</div>
 				<h4 id="glyph-range-chooser__preview-selected"></h4>
-				<fancy-button id="glyph-range-chooser__add-button">Add range to project</fancy-button>
+				<fancy-button disabled id="glyph-range-chooser__add-button">Add range to project</fancy-button>
 			</div>
 			<div class="glyph-range-chooser__list-area"></div>
 		`,
@@ -507,11 +619,15 @@ function showUnicodeGlyphRangeDialog() {
 }
 
 function previewGlyphRange(range) {
-	const previewArea = document.querySelector('.glyph-range-chooser__preview');
 	document.querySelector('#glyph-range-chooser__preview-selected').innerHTML = range.name;
-	document.querySelector('#glyph-range-chooser__add-button').addEventListener('click', () => {
+
+	const addButton = document.querySelector('#glyph-range-chooser__add-button');
+	addButton.addEventListener('click', () => {
 		addGlyphRange(range);
 	});
+	addButton.removeAttribute('disabled');
+
+	const previewArea = document.querySelector('.glyph-range-chooser__preview');
 	previewArea.innerHTML = '';
 
 	let hexString;
@@ -529,11 +645,14 @@ function previewGlyphRange(range) {
 	}
 }
 
-function addGlyphRange(range) {
+function addGlyphRange(range, successCallback) {
 	if (isGlyphRangeUnique(range)) {
-		getCurrentProject().settings.project.glyphRanges.push(range);
+		let ranges = getCurrentProject().settings.project.glyphRanges;
+		ranges.push(range);
+		ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
 		updateCurrentRangesTable();
 		showToast(`Added ${range.name} to your project.`);
+		if (successCallback) successCallback();
 	} else {
 		showToast(`Glyph range is already added to your project.`);
 	}

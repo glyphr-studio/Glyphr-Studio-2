@@ -175,11 +175,6 @@ code,
 	line-height: 24px;
 }
 
-.settings-page__tab-content info-bubble {
-	position: relative;
-	top: 7px;
-}
-
 .settings-page__tab-content input[type=checkbox]{
 	width: 24px;
 }
@@ -327,12 +322,19 @@ code,
 /* Custom range chooser */
 .glyph-range-editor__wrapper {
 	display: grid;
-	grid-template-columns: 1fr 2fr;
+	grid-template-columns: 1fr 24px 2fr;
 	row-gap: 10px;
 	margin: 0px 20px 20px 20px;
 }
 
+.glyph-range-editor__wrapper label {
+	height: 24px;
+	line-height: 24px;
+}
+
 .glyph-range-editor__wrapper h1,
+.glyph-range-editor__wrapper p,
+.glyph-range-editor__wrapper ul,
 .glyph-range-editor__footer {
 	grid-column: -1 / 1;
 }

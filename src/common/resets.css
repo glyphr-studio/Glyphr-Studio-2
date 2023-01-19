@@ -93,6 +93,7 @@ a:focus,
 a:hover {
 	color: var(--blue-l65);
 	text-decoration: underline;
+	cursor: pointer;
 }
 
 p {
@@ -226,7 +227,7 @@ input[type='checkbox'] {
 
 ul li {
 	margin-left: 20px;
-	margin-top: 5px;
+	margin-top: 10px;
 }
 
 
