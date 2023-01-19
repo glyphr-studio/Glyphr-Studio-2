@@ -191,8 +191,6 @@ export function showError(message) {
 	document.body.appendChild(element);
 }
 
-
-
 // --------------------------------------------------------------
 // Big dialog
 // --------------------------------------------------------------
@@ -201,7 +199,7 @@ export function showError(message) {
  * Shows a big dialog that blurs the UI behind it.
  * @param {DOM Node} contentNode - HTML to show in the dialog
  */
-export function showModalDialog(contentNode) {
+export function showModalDialog(contentNode, maxWidth) {
 	let modal = makeElement({
 		tag: 'dialog',
 		id: 'modal-dialog',
@@ -219,12 +217,13 @@ export function showModalDialog(contentNode) {
 	modal.querySelector('.modal-dialog__close-button').addEventListener('click', closeAllDialogs);
 
 	addAsChildren(modal.querySelector('.modal-dialog__body'), contentNode);
+	if (maxWidth) {
+		modal.querySelector('.modal-dialog__content').style.maxWidth = `${maxWidth}px`;
+	}
+
 	closeAllDialogs(true);
 	document.body.appendChild(modal);
 }
-
-
-
 
 // --------------------------------------------------------------
 // OLD STUFF

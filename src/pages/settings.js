@@ -1,10 +1,11 @@
 import { getCurrentProject } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { decToHex, getUnicodeName, hexToChars } from '../common/unicode.js';
-import { showModalDialog, showToast } from '../controls/dialogs.js';
+import { closeAllDialogs, showModalDialog, showToast } from '../controls/dialogs.js';
 import { unicodeBlocks } from '../lib/unicode_blocks.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
+import settingsMap from './settings_data.js';
 
 /**
  * Page > Settings
@@ -216,12 +217,12 @@ function makeSettingsTabContentProject() {
 		`,
 	});
 
-	const gridArea = makeElement({
+	const settingsArea = makeElement({
 		tag: 'div',
 		className: 'settings-table',
 	});
 
-	addAsChildren(gridArea, [
+	addAsChildren(settingsArea, [
 		makeOneSettingsRow('project', 'name'),
 		makeOneSettingsRow('project', 'latestVersion'),
 		makeOneSettingsRow('project', 'initialVersion'),
@@ -239,7 +240,9 @@ function makeSettingsTabContentProject() {
 				to all possible glyphs in a font.
 				<a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia's Unicode Block page</a>
 				is a good place to get familiar with all the different glyphs it's possible to have in a font.
-				<br>
+				<br><br>
+				The glyph ranges below will be visible on the Glyph Edit page, and they will be exported to fonts.
+				<br><br>
 				Removing a glyph range <strong>will not</strong> delete individual glyphs from the project.
 			</p>
 		`,
@@ -256,13 +259,7 @@ function makeSettingsTabContentProject() {
 	const addCustomRangeButton = makeElement({
 		tag: 'fancy-button',
 		innerHTML: 'Add a custom glyph range',
-		onClick: () => {
-			showModalDialog(
-				textToNode(`
-				<h1>Add custom glyph range</h1>
-				`)
-			);
-		},
+		onClick: showCustomGlyphRangeDialog,
 	});
 	// Have to add attribute after the button is created
 	addCustomRangeButton.setAttribute('secondary', '');
@@ -274,116 +271,14 @@ function makeSettingsTabContentProject() {
 		textToNode('<br>'),
 		textToNode('<br>'),
 		textToNode('<h3>Current ranges</h3>'),
-		makeCurrentRangesTable(),
+		textToNode('<div class="glyph-range-table__wrapper"></div>'),
 	]);
 
-	addAsChildren(tabContent, [gridArea, rangesArea]);
+	addAsChildren(rangesArea.querySelector('.glyph-range-table__wrapper'), makeCurrentRangesTable());
+
+	addAsChildren(tabContent, [settingsArea, rangesArea]);
 
 	return tabContent;
-}
-
-function makeCurrentRangesTable() {
-	const rangeTable = makeElement({
-		tag: 'div',
-		className: 'glyph-range-table',
-	});
-
-	addAsChildren(rangeTable, [
-		textToNode('<span class="header">Range name</span>'),
-		textToNode('<span class="header">Start</span>'),
-		textToNode('<span class="header">End</span>'),
-		textToNode('<span class="header">&nbsp;</span>'),
-	]);
-
-	getCurrentProject().settings.project.glyphRanges.forEach((range) => {
-		addAsChildren(rangeTable, [
-			textToNode(`<span>${range.name}</span>`),
-			textToNode(`<code>${decToHex(range.begin)}</code>`),
-			textToNode(`<code>${decToHex(range.end)}</code>`),
-			textToNode(`<a>Edit</a>`),
-		]);
-	});
-
-	return rangeTable;
-}
-
-function showUnicodeGlyphRangeDialog() {
-	const content = makeElement({
-		innerHTML: `
-		<div class="glyph-range-chooser__wrapper">
-			<h1>Add glyph ranges from Unicode</h1>
-			<h3>Preview</h3>
-			<h3>Blocks</h3>
-			<div class="glyph-range-chooser__preview-area">
-				<div class="glyph-range-chooser__preview">
-					Select a glyph range from the right to preview it here.
-				</div>
-				<fancy-button>Save</fancy-button>
-			</div>
-			<div class="glyph-range-chooser__list-area">
-				<div class="header">Range&nbsp;name</div>
-				<div class="header">Begin</div>
-				<div class="header">End</div>
-				<div class="header">&nbsp;</div>
-				<div class="header">&nbsp;</div>
-			</div>
-		</div>
-	`,
-	});
-
-	const listArea = content.querySelector('.glyph-range-chooser__list-area');
-
-	let previewLink;
-	let addLink;
-	unicodeBlocks.forEach((block) => {
-		previewLink = makeElement({
-			tag: 'a',
-			innerHTML: 'Preview',
-			onClick: () => {
-				previewGlyphRange(block);
-			},
-		});
-
-		addLink = makeElement({
-			tag: 'a',
-			innerHTML: 'Add',
-			onClick: () => {
-				addGlyphRange(block);
-			},
-		});
-
-		addAsChildren(listArea, [
-			textToNode(`<span>${block.name}</span>`),
-			textToNode(`<code>${decToHex(block.begin)}</code>`),
-			textToNode(`<code>${decToHex(block.end)}</code>`),
-			previewLink,
-			addLink,
-		]);
-	});
-
-	showModalDialog(content);
-}
-
-function previewGlyphRange(range) {
-	const previewArea = document.querySelector('.glyph-range-chooser__preview');
-	previewArea.innerHTML = '';
-
-	let hexString;
-	let name;
-	for (let g = range.begin; g <= range.end; g++) {
-		hexString = decToHex(g);
-		name = getUnicodeName(hexString);
-		previewArea.appendChild(makeElement({
-			className: 'glyph-range-chooser__preview-tile',
-			title: `${hexString}\n${name}`,
-			innerHTML: hexToChars(g)
-		}));
-	}
-}
-
-function addGlyphRange(range) {
-	getCurrentProject().settings.project.glyphRanges.push(range);
-	showToast(`Added ${range.name} to this project.`);
 }
 
 // --------------------------------------------------------------
@@ -468,195 +363,188 @@ function makeOneSettingsRow(groupName, propertyName) {
 }
 
 // --------------------------------------------------------------
-// Data for each setting
+// Current Ranges
 // --------------------------------------------------------------
 
-const settingsMap = {
-	project: {
-		name: {
-			label: `Project name`,
-			description: `Name for this project. Can be different than the Font or Font Family name.`,
-		},
-		latestVersion: {
-			label: 'Version',
-			description: 'The latest app version that edited this project file.',
-			type: 'Read only',
-		},
-		initialVersion: {
-			label: 'Initial version',
-			description: 'The app version this project file was first created with.',
-			type: 'Read only',
-		},
-		id: {
-			label: 'Project ID',
-			description: 'A unique ID used to identify this project.',
-			type: 'Read only',
-		},
-	},
-	app: {
-		savePreferences: {
-			label: `Save app preferences locally`,
-			description: `App preferences can be saved locally to your computer, then loaded automatically when you come back to this project.`,
-			type: 'Boolean',
-		},
-		stopPageNavigation: {
-			label: `Warn about unsaved changes on window close`,
-			description: `This will stop closing the window or tab with an "Are you sure?" message if you have unsaved changes.`,
-			type: 'Boolean',
-		},
-		showNonCharPoints: {
-			label: `Show non-glyph characters`,
-			description: `Show the Unicode code points represent things that aren't letters. These are characters that have no visible shapes and no advance width. They can probably be safely ignored.`,
-			type: 'Boolean',
-		},
-		formatSaveFile: {
-			label: `Format project file for reading`,
-			description: `Glyphr Studio Project files (.gs2) are text files in JSON format. By default, this file is saved to optimize for smaller file size. Setting this option to true formats the file to be more easily read by a human, but could increase the file size by 2x or more.`,
-			type: 'Boolean',
-		},
-		combinePathsOnExport: {
-			label: `Combine paths on export`,
-			description: `This will boolean-combine all paths before a font is exported. This may make the exported font perform better, but it will drastically increase export time.`,
-			type: 'Boolean',
-		},
-		maxCombinePathsOnExport: {
-			label: `Max paths to combine on export`,
-			description: `Limit the total number of paths in a glyph to combine on export. This will only take effect if the "Combine paths on export" setting is true.`,
-			type: 'Number',
-		},
-	},
-	font: {
-		family: {
-			label: `Font family`,
-			description: `Base font family name, that will be shared across font styles.`,
-		},
-		style: {
-			label: `Font style`,
-			description: `Describes this font within the overall font family. Usually a combination of how bold this font is and if it is italic.`,
-			example: `Thin, ExtraLight, Light, <strong>Regular</strong>, Medium, SemiBold, <strong>Bold</strong>, ExtraBold, Black <br><br>Thin&nbsp;Italic, ExtraLight&nbsp;Italic, Light&nbsp;Italic, <strong>Italic</strong>, Medium&nbsp;Italic, SemiBold&nbsp;Italic, Bold&nbsp;Italic, ExtraBold&nbsp;Italic, Black&nbsp;Italic`,
-		},
-		version: {
-			label: `Font version`,
-			description: `If this font gets updates regularly, keep track of what version this iteration is. This is recommended to be in Semantic Versioning format, you can learn more at <a href="https://semver.org/">semver.org</a>.`,
-			example: `Version 1.0.0`,
-		},
-		description: {
-			label: `Font description`,
-			description: `Open-ended text to describe your font.`,
-		},
-		panose: {
-			label: `Panose-1`,
-			description: `Uses ten digits to describe the font's visual style.  A good overview can be found on Monotype's GitHub page: <a href="https://monotype.github.io/panose/pan2.htm" target="_blank">monotype.github.io/panose/pan2.htm</a><br>Each digit of the ten digits is separated by a space, and has a special meaning based on its position.`,
-			example: `<strong>0 0 0 0 0 0 0 0 0 0</strong><br>All zeros describe this font as 'any', which basically leaves it undefined.
-			<br><br>
-			<strong>2 0 0 0 0 0 0 0 0 0</strong><br>The first digit is the major designator, where digit 2 represents Latin typefaces.`,
-		},
-		// Key metrics
-		upm: {
-			label: `Units per Em (UPM)`,
-			description: `UPM is the measure of the overall design space for a character in this font. Think of UPM like how many pixels of height you have to work with for each character. UPM can be any number, but traditionally it is either 1000 or 2048.`,
-			example: `1000, 2048`,
-			type: 'Em',
-		},
-		ascent: {
-			label: `Ascent`,
-			description: `Distance from the baseline to the top of square and tall lowercase letters (Like: b d h k l).`,
-			type: 'Em',
-		},
-		descent: {
-			label: `Descent`,
-			description: `Distance from the baseline to the bottom of letters that have square descenders (Like: p q y depending on style). This is expressed as a negative number.`,
-			type: 'Em',
-		},
-		capHeight: {
-			label: `Capital letter height`,
-			description: `Distance from the baseline to the top of square capital letters (Like: A B D E F H I K L M N P R T U V W X Y Z). Usually this is slightly smaller than the ascent.`,
-			type: 'Em',
-		},
-		xHeight: {
-			label: `X height`,
-			description: `Distance from the baseline to the top of square lowercase letters (Like: v w x z).`,
-			type: 'Em',
-		},
-		overshoot: {
-			label: `Overshoot`,
-			description: `Rounded characters are usually slightly larger than square characters to compensate for visual weight. For example, a lowercase 'o' will extend slightly above and below a lowercase 'x'. Overshoot is the measure of this distance.`,
-			type: 'Em',
-		},
-		lineGap: {
-			label: `Line gap`,
-			description: `When text wraps onto multiple lines, this is the distance between the bottom of one Em Square to the top of the next line's Em Square.`,
-			type: 'Em',
-		},
-		italicAngle: {
-			label: `Italic angle`,
-			description: `Most common degree of slant for glyphs in an italic font.`,
-			type: 'Degree',
-		},
-		// Links
-		designer: { label: `Designer`, description: `Person or team who created this font.` },
-		designerURL: { label: `Designer's URL`, description: `` },
-		manufacturer: { label: `Manufacturer`, description: `Company who created this font.` },
-		manufacturerURL: { label: `Manufacturer's URL`, description: `` },
-		license: { label: `License`, description: `License under which this font is released.` },
-		licenseURL: { label: `License URL`, description: `` },
-		copyright: { label: `Copyright`, description: `` },
-		trademark: { label: `Trademark`, description: `` },
-		// SVG Font properties
-		variant: { label: `Font variant`, description: `Either 'normal' or 'small-caps'.` },
-		weight: {
-			label: `Font weight`,
-			description: `How bold this font is. Can be 'normal', 'bold', or a number between 100 and 900.`,
-		},
-		stretch: {
-			label: `Font stretch`,
-			description: `How condensed or expanded this font is.`,
-			example: `normal, ultra-condensed, extra-condensed, condensed, semi-condensed, semi-expanded, expanded, extra-expanded, ultra-expanded`,
-		},
-		stemv: {
-			label: `Vertical stem`,
-			description: `Most common width measurement of vertical stems in this font.`,
-			type: 'Em',
-		},
-		stemh: {
-			label: `Horizontal stem`,
-			description: `Most common height measurement of horizontal stems in this font.`,
-			type: 'Em',
-		},
-		slope: {
-			label: `Slope`,
-			description: `The angle, in degrees counterclockwise from the vertical, of the dominant vertical strokes of the font. The value is negative for fonts that slope to the right.`,
-			type: 'Degree',
-		},
-		underlinePosition: {
-			label: `Underline position`,
-			description: `The ideal position of an underline with relation to the baseline (probably should be negative).`,
-			type: 'Em',
-		},
-		underlineThickness: {
-			label: `Underline thickness`,
-			description: `The ideal height of an underline.`,
-			type: 'Em',
-		},
-		strikethroughPosition: {
-			label: `Strikethrough position`,
-			description: `The ideal position of a strikethrough with relation to the baseline.`,
-			type: 'Em',
-		},
-		strikethroughThickness: {
-			label: `Strikethrough thickness`,
-			description: `The ideal height of a strikethrough.`,
-			type: 'Em',
-		},
-		overlinePosition: {
-			label: `Overline position`,
-			description: `The ideal position of an overline with relation to the baseline.`,
-			type: 'Em',
-		},
-		overlineThickness: {
-			label: `Overline thickness`,
-			description: `The ideal height of an overline.`,
-			type: 'Em',
-		},
-	},
-};
+function makeCurrentRangesTable() {
+	const rangeTable = makeElement({
+		tag: 'div',
+		className: 'glyph-range-table__list-area',
+	});
+
+	addAsChildren(rangeTable, [
+		textToNode('<span class="list__column-header">Range name</span>'),
+		textToNode('<span class="list__column-header">Start</span>'),
+		textToNode('<span class="list__column-header">End</span>'),
+		textToNode('<span class="list__column-header">&nbsp;</span>'),
+	]);
+
+	getCurrentProject().settings.project.glyphRanges.forEach((range) => {
+		addAsChildren(rangeTable, [
+			textToNode(`<span>${range.name}</span>`),
+			textToNode(`<code>${decToHex(range.begin)}</code>`),
+			textToNode(`<code>${decToHex(range.end)}</code>`),
+			textToNode(`<a>Edit</a>`),
+		]);
+	});
+
+	return rangeTable;
+}
+
+function updateCurrentRangesTable() {
+	const wrapper = document.querySelector('.glyph-range-table__wrapper');
+	wrapper.innerHTML = '';
+	addAsChildren(wrapper, makeCurrentRangesTable());
+}
+
+// --------------------------------------------------------------
+// Edit Range or Add Custom Range
+// --------------------------------------------------------------
+function showCustomGlyphRangeDialog(rangeIndex) {
+	rangeIndex = parseInt(rangeIndex);
+	const isNew = isNaN(rangeIndex);
+
+	const content = makeElement({
+		className: 'glyph-range-editor__wrapper',
+		innerHTML: `<h1>${isNew ? 'Add' : 'Edit'} glyph range</h1>`,
+	});
+
+	const inputName = makeElement({ tag: 'input', attributes: { type: 'text' } });
+	const inputBegin = makeElement({ tag: 'input', attributes: { type: 'text' } });
+	const inputEnd = makeElement({ tag: 'input', attributes: { type: 'text' } });
+
+	if (!isNew) {
+		let range = getCurrentProject().settings.project.glyphRanges[rangeIndex];
+		inputName.value = range.name;
+		inputBegin.value = '' + decToHex(range.begin);
+		inputEnd.value = '' + decToHex(range.end);
+	}
+
+	const buttonBar = makeElement({ className: 'glyph-range-editor__footer' });
+
+	const buttonSave = makeElement({
+		tag: 'fancy-button',
+		innerHTML: 'Save',
+	});
+
+	const buttonCancel = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		innerHTML: 'Cancel',
+		onClick: closeAllDialogs,
+	});
+
+	const buttonRemove = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '', danger: '' },
+		innerHTML: 'Remove range',
+	});
+
+	addAsChildren(buttonBar, [buttonSave, buttonCancel, textToNode('<span></span>'), buttonRemove]);
+
+	addAsChildren(content, [
+		textToNode('<label>Range name</label>'),
+		inputName,
+		textToNode('<label>Start</label>'),
+		inputBegin,
+		textToNode('<label>End</label>'),
+		inputEnd,
+		buttonBar,
+	]);
+
+	showModalDialog(content, 500);
+}
+
+// --------------------------------------------------------------
+// Range Chooser
+// --------------------------------------------------------------
+
+function showUnicodeGlyphRangeDialog() {
+	const content = makeElement({
+		className: 'glyph-range-chooser__wrapper',
+		innerHTML: `
+			<h1>Add glyph ranges from Unicode</h1>
+			<h3>Preview</h3>
+			<h3>Blocks</h3>
+			<div class="glyph-range-chooser__preview-area">
+				<div class="glyph-range-chooser__preview">
+					Select a glyph range from the right to preview it here.
+				</div>
+				<h4 id="glyph-range-chooser__preview-selected"></h4>
+				<fancy-button id="glyph-range-chooser__add-button">Add range to project</fancy-button>
+			</div>
+			<div class="glyph-range-chooser__list-area"></div>
+		`,
+	});
+
+	const listArea = content.querySelector('.glyph-range-chooser__list-area');
+
+	addAsChildren(listArea, [
+		textToNode('<span class="list__column-header">Range name</span>'),
+		textToNode('<span class="list__column-header">Start</span>'),
+		textToNode('<span class="list__column-header">End</span>'),
+	]);
+
+	let rowWrapper;
+	unicodeBlocks.forEach((block) => {
+		rowWrapper = makeElement({
+			className: 'list__row-wrapper',
+			onClick: () => {
+				previewGlyphRange(block);
+			},
+		});
+
+		addAsChildren(rowWrapper, [
+			textToNode(`<span>${block.name}</span>`),
+			textToNode(`<code>${decToHex(block.begin)}</code>`),
+			textToNode(`<code>${decToHex(block.end)}</code>`),
+		]);
+
+		addAsChildren(listArea, rowWrapper);
+	});
+
+	showModalDialog(content);
+}
+
+function previewGlyphRange(range) {
+	const previewArea = document.querySelector('.glyph-range-chooser__preview');
+	document.querySelector('#glyph-range-chooser__preview-selected').innerHTML = range.name;
+	document.querySelector('#glyph-range-chooser__add-button').addEventListener('click', () => {
+		addGlyphRange(range);
+	});
+	previewArea.innerHTML = '';
+
+	let hexString;
+	let name;
+	for (let g = range.begin; g <= range.end; g++) {
+		hexString = decToHex(g);
+		name = getUnicodeName(hexString);
+		previewArea.appendChild(
+			makeElement({
+				className: 'glyph-range-chooser__preview-tile',
+				title: `${hexString}\n${name}`,
+				innerHTML: hexToChars(g),
+			})
+		);
+	}
+}
+
+function addGlyphRange(range) {
+	if (isGlyphRangeUnique(range)) {
+		getCurrentProject().settings.project.glyphRanges.push(range);
+		updateCurrentRangesTable();
+		showToast(`Added ${range.name} to your project.`);
+	} else {
+		showToast(`Glyph range is already added to your project.`);
+	}
+}
+
+function isGlyphRangeUnique(range) {
+	const ranges = getCurrentProject().settings.project.glyphRanges;
+
+	for (let r = 0; r < ranges.length; r++) {
+		if (ranges[r].begin === range.begin && ranges[r].end === range.end) return false;
+	}
+
+	return true;
+}

@@ -12,6 +12,27 @@
 	display: inline-block;
 	width: max-content;
 	min-width: 40px;
+	--fancy-gradient: linear-gradient(
+		135deg,
+		var(--blue-l55),
+		var(--purple-l45),
+		var(--orange-l50),
+		var(--purple-l45),
+		var(--blue-l55),
+		var(--purple-l45)
+	);
+	--fancy-animation: gradFade 120s linear infinite;
+	--fancy-background-size: 500% 500%;
+}
+
+@keyframes gradFade {
+	0% {
+		background-position: 0% 0%;
+	}
+
+	100% {
+		background-position: 100% 100%;
+	}
 }
 
 :host(:active) .wrapper {
@@ -34,31 +55,13 @@
 	padding: 2px;
 	height: 100%;
 	width: 100%;
-	animation: gradFade 120s linear infinite;
 	border-style: solid;
 	border-width: 0px;
 	border-radius: 5px;
+	animation: var(--fancy-animation);
 	box-shadow: var(--l2-shadow);
-
-	background: linear-gradient(
-		135deg,
-		var(--blue-l55),
-		var(--purple-l45),
-		var(--orange-l55),
-		var(--purple-l45),
-		var(--blue-l55),
-		var(--purple-l45));
-	background-size: 500% 500%;
-}
-
-@keyframes gradFade {
-	0% {
-		background-position: 0% 0%;
-	}
-
-	100% {
-		background-position: 100% 100%;
-	}
+	background: var(--fancy-gradient);
+	background-size: var(--fancy-background-size);
 }
 
 .wrapper:hover,
@@ -88,7 +91,7 @@
 	height: max-content;
 	margin: 5px 10px;
 	color: white;
-	animation: gradFade 120s linear infinite;
+	animation: var(--fancy-animation);
 	background-color: transparent;
 }
 
@@ -97,15 +100,8 @@
 }
 
 .wrapper[secondary] .buttonText {
-	background: linear-gradient(
-		135deg,
-		var(--blue-l45),
-		var(--purple-l45),
-		var(--orange-l45),
-		var(--purple-l45),
-		var(--blue-l45),
-		var(--purple-l45));
-	background-size: 500% 500%;
+	background: var(--fancy-gradient);
+	background-size: var(--fancy-background-size);
 	-webkit-background-clip: text;
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
@@ -119,6 +115,28 @@
 .wrapper[secondary]:hover .buttonContent,
 .wrapper[secondary]:active .buttonContent {
 	background-color: white;
+}
+
+.wrapper[danger] {
+	background: linear-gradient(135deg,
+		var(--orange-l50),
+		var(--red)
+	);
+	animation: var(--fancy-animation);
+}
+
+.wrapper[danger] .buttonText {
+	background: white;
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.wrapper[secondary][danger] .buttonText {
+	background: var(--red);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 .wrapper[disabled],
