@@ -7,7 +7,8 @@ export function getUnicodeBlockByName(name) {
 }
 
 export const unicodeBlocks = [
-	{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' },
+	{ begin: 0x0000, end: 0x0020, name: 'Basic Latin Controls' },
+	{ begin: 0x0021, end: 0x007f, name: 'Basic Latin' },
 	{ begin: 0x0080, end: 0x00ff, name: 'Latin-1 Supplement' },
 	{ begin: 0x0100, end: 0x017f, name: 'Latin Extended-A' },
 	{ begin: 0x0180, end: 0x024f, name: 'Latin Extended-B' },

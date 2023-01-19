@@ -25,7 +25,7 @@ export class GlyphrStudioProject {
 				latestVersion: '2.0.0-alpha.2',
 				initialVersion: '2.0.0-alpha.1',
 				id: false,
-				glyphRanges: [{ begin: 0x0000, end: 0x007f, name: 'Basic Latin' }],
+				glyphRanges: [{ begin: 0x0021, end: 0x007f, name: 'Basic Latin' }],
 			},
 			app: {
 				savePreferences: false,
