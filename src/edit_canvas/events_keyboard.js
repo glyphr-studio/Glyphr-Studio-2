@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { showToast } from '../controls/dialogs.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { ioFont_exportFont } from '../io/font_export.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import {

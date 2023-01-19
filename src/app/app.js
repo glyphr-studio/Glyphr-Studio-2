@@ -2,7 +2,7 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { closeAllDialogs, showContextMenu } from '../controls/dialogs.js';
+import { closeAllDialogs, showContextMenu } from '../controls/dialogs/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { ioFont_exportFont } from '../io/font_export.js';
 

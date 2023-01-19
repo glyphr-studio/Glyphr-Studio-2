@@ -10,7 +10,7 @@ import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { json } from '../common/functions.js';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress-indicator.js';
-import { closeAllDialogs, showError } from '../controls/dialogs.js';
+import { closeAllDialogs, showError } from '../controls/dialogs/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
 import alphaLogo from '../common/graphics/alpha-logo-wordmark.svg?raw';
 

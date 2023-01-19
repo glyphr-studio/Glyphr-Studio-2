@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { showToast } from '../controls/dialogs.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../io/svg_outline_import.js';
 import { copyPathsFromTo } from '../panels/actions.js';
 import { cancelDefaultEventActions } from './events.js';

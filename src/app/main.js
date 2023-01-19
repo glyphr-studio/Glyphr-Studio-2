@@ -2,7 +2,7 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp } from './app.js';
 
 /* Web Components */
-import { AnchorTwelvepoint } from '../controls/anchor-twelvepoint/anchor-twelvepoint.js';
+import { OptionChooser } from '../controls/option-chooser/option-chooser.js';
 import { ButtonToggle } from '../controls/button-toggle/button-toggle.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { EditCanvas } from '../edit_canvas/edit_canvas.js';
@@ -62,7 +62,7 @@ function passPreChecks() {
  */
 function registerCustomComponents() {
 	const data = [
-		{ fileName: 'anchor-twelvepoint', className: AnchorTwelvepoint },
+		{ fileName: 'option-chooser', className: OptionChooser },
 		{ fileName: 'button-toggle', className: ButtonToggle },
 		{ fileName: 'display-canvas', className: DisplayCanvas },
 		{ fileName: 'fancy-button', className: FancyButton },

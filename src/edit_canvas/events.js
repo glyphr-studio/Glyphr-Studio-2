@@ -10,7 +10,7 @@ import { setCursor, updateCursor } from './cursors.js';
 import { handleMouseEvents, handleMouseWheel } from './events_mouse.js';
 import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
 import { handleDropSVGonEditCanvas, handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
-import { showToast } from '../controls/dialogs.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 
 // --------------------------------------------------------------
 // Events - shared between Mouse and Keyboard

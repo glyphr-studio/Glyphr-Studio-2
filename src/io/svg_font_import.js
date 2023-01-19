@@ -1,7 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { round } from '../common/functions.js';
 import { getUnicodeName, parseUnicodeInput } from '../common/unicode.js';
-import { showError } from '../controls/dialogs.js';
+import { showError } from '../controls/dialogs/dialogs.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress-indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';

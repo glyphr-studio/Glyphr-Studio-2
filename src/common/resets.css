@@ -162,7 +162,7 @@ textarea {
 	background-color: var(--enabled-restingLight-background);
 	color: var(--enabled-restingLight-text);
 	border: 1px solid var(--enabled-restingLight-border);
-	border-radius: 2px;
+	border-radius: 4px;
 	-webkit-user-select: text;
 	-moz-user-select: text;
 	-ms-user-select: text;

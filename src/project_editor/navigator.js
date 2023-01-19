@@ -12,7 +12,7 @@ import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { refreshPanel } from '../panels/panels.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { closeAllDialogs, setDialogHideListeners } from '../controls/dialogs.js';
+import { closeAllDialogs, setDialogHideListeners } from '../controls/dialogs/dialogs.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -101,7 +101,7 @@ export class Navigator {
 		if (wrapper) {
 			const pageContent = this.makePageContent(fadePageIn);
 			wrapper.innerHTML = '';
-			if(this.page !== 'Open project') wrapper.appendChild(makeAppTopBar());
+			if (this.page !== 'Open project') wrapper.appendChild(makeAppTopBar());
 			wrapper.appendChild(pageContent);
 		} else {
 			console.warn(`app__wrapper could not be found, navigation failed`);
