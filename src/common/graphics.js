@@ -242,6 +242,10 @@ icons.back = `<polygon points="37,23 20,23 25,18 22,15 12,25 22,35 25,32 20,27 3
 
 icons.more = `<polygon points="0,0 0,10 5,5"/>`;
 
+icons.selected = `<polygon points="6,6 6,14 14,10"/>`;
+
+icons.notSelected = `<rect x="5" y="9.75" width="10" height="0.5"/>`;
+
 icons.keyboard = `
 	<rect x="12" y="29" width="26" height="7"/>
 	<rect y="29" width="10" height="7"/>
