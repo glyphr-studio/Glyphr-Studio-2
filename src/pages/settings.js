@@ -139,12 +139,6 @@ function makeSettingsTabContentFont() {
 			<p>
 				These settings will be exported with any font you save,
 				and will be used around Glyphr Studio while you are making edits.
-				<br><br>
-				<option-chooser selected="first">
-					<option>first</option>
-					<option>second</option>
-					<option>3rd</option>
-				</option-chooser>
 			</p>
 		`,
 	});

@@ -46,6 +46,11 @@
 	font-family: monospace;
 }
 
+.selectionDisplay .prefix {
+	color: var(--disabled-text);
+	font-size: 0.9em;
+}
+
 .downArrow {
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -64,6 +69,5 @@
 }
 
 .wrapper:hover .downArrow {
-	background-color: var(--enabled-focus-background);
 	color: var(--enabled-focus-fill);
 }

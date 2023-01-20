@@ -1,21 +1,24 @@
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import style from './option-chooser.css?inline';
-import { showContextMenu } from '../dialogs/dialogs.js';
+import { closeAllDialogs, showContextMenu } from '../dialogs/dialogs.js';
 
 /**
  * An options group / dropdown control
+ * HTML like this:
+ *
+ * <option-chooser selected="first" selected-prefix="Category:">
+ * 		<option note="[123, 456]">first</option>
+ * 		<option note="[123, 456]">second</option>
+ * 		<option note="[123, 456]">3rd</option>
+ * </option-chooser>
  */
 export class OptionChooser extends HTMLElement {
 	/**
 	 * Create an OptionChooser
-	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
-	constructor(attributes = {}) {
+	constructor() {
 		// log(`OptionChooser.constructor`, 'start');
-		// log(JSON.stringify(attributes));
 		super();
-
-		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		this.wrapper = makeElement({
 			className: 'wrapper',
@@ -24,13 +27,14 @@ export class OptionChooser extends HTMLElement {
 		this.wrapper.elementRoot = this;
 
 		// this.options = makeElement({ tag: 'slot', className: 'options' });
+		// this.selectionDisplay.innerHTML = displayText;
 
 		this.selectionDisplay = makeElement({
 			className: 'selectionDisplay',
 			attributes: { tabIndex: -1 },
+			innerHTML: this.getDisplayName(),
 		});
 		this.selectionDisplay.elementRoot = this;
-		this.selectionDisplay.innerHTML = this.getAttribute('selected');
 
 		this.downArrow = makeElement({
 			className: 'downArrow',
@@ -96,24 +100,39 @@ export class OptionChooser extends HTMLElement {
 		}
 
 		if (attributeName === 'selected') {
-			this.selectionDisplay.innerHTML = this.getAttribute('selected');
+			this.selectionDisplay.innerHTML = this.getDisplayName();
+			this.dispatchEvent('changed');
 		}
 
 		// log(`OptionChooser.attributeChangedCallback`, 'end');
 	}
 
-	showOptions() {
-		log(`OptionsChooser.showOptions`, 'start');
+	getDisplayName() {
+		let displayText = this.getAttribute('selected');
+		let prefix = this.getAttribute('selected-prefix');
+		// log(`prefix: ${prefix}`);
 
+		if (prefix) displayText = `<span class="prefix">${prefix}</span> ${displayText}`;
+		// log(`displayText: ${displayText}`);
+
+		return displayText;
+	}
+
+	showOptions() {
+		// log(`OptionsChooser.showOptions`, 'start');
+
+		const currentSelection = this.getAttribute('selected');
 		let optionRows = [];
 		[...this.children].forEach((child) => {
-			log(child);
+			// log(child);
 			if (child.tagName.toLowerCase() === 'option') {
 				optionRows.push({
 					name: child.innerText,
-					icon: 'command_save',
+					icon: currentSelection === child.innerText ? 'selected' : 'notSelected',
+					shortcut: JSON.parse(child.getAttribute('note')),
 					onClick: () => {
 						this.setAttribute('selected', child.innerText);
+						closeAllDialogs();
 					},
 				});
 			}
@@ -127,12 +146,12 @@ export class OptionChooser extends HTMLElement {
 		left = Math.max(left, 0);
 		top = Math.max(top, 0);
 
-		log(`showing options at ${left} / ${top}`);
+		// log(`showing options at ${left} / ${top}`);
 
 		this.style.borderRadius = '4px 4px 0px 0px';
-		showContextMenu(optionRows, left, top-1, true);
+		showContextMenu(optionRows, left, top - 4, entryPointRect.width, true);
 
-		log(`OptionsChooser.showOptions`, 'end');
+		// log(`OptionsChooser.showOptions`, 'end');
 	}
 
 	/**
@@ -152,7 +171,6 @@ export class OptionChooser extends HTMLElement {
 		this.removeEventListener('click', this.showOptions);
 		this.removeEventListener('keydown', this.keyboardPress);
 	}
-
 
 	/**
 	 * Handle keypress event

@@ -78,9 +78,10 @@ export function showToast(message = '0_o', duration = 3000) {
  * @param {Array} data - collection of objects representing each row
  * @param {Number} x - X position for the menu
  * @param {Number} y - Y position for the menu
+ * @param {Number} width - width for the menu (defaults to auto-width)
  * @param {Boolean} isDropdown - triggers slight style adjustments for dropdown control
  */
-export function showContextMenu(rows = [], x = false, y = false, isDropdown = false) {
+export function showContextMenu(rows = [], x = false, y = false, width = false, isDropdown = false) {
 	// log(`showContextMenu`, 'start');
 
 	let element = document.getElementById('context-menu');
@@ -110,8 +111,14 @@ export function showContextMenu(rows = [], x = false, y = false, isDropdown = fa
 		element.style.left = `${x}px`;
 		element.style.top = `${y}px`;
 		element.style.display = 'grid';
-		if (isDropdown) element.style.borderRadius = '0px 0px 4px 4px';
-		else element.style.borderRadius = '0px 4px 4px 4px';
+		if (isDropdown) {
+			element.style.borderRadius = '0px 0px 4px 4px';
+			element.style.borderTopWidth = '0px';
+		} else {
+			element.style.borderRadius = '0px 4px 4px 4px';
+			element.style.borderTopWidth = '1px';
+		}
+		if (width) element.style.width = `${width}px`;
 		setDialogHideListeners(element);
 		element.focus();
 	} else {
