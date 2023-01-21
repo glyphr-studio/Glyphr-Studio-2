@@ -3,7 +3,7 @@ import { accentColors, uiColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawPath } from '../../display_canvas/draw_paths.js';
-import { stopCreatingNewPathPoints } from './new_path.js';
+import { stopCreatingNewPath } from './new_path.js';
 
 // --------------------------------------------------------------
 // Making tool buttons
@@ -231,7 +231,7 @@ export function clickTool(tool) {
 		editor.multiSelect.points.clear();
 		editor.multiSelect.paths.clear();
 	} else {
-		stopCreatingNewPathPoints();
+		stopCreatingNewPath();
 	}
 
 	// log('clickTool', 'end');

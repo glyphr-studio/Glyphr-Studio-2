@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
-import { makeElement } from '../../common/dom.js';
+import { insertAfter, makeElement } from '../../common/dom.js';
 import { Path } from '../../project_data/path.js';
 import { PathPoint } from '../../project_data/path_point.js';
 import { setCursor } from '../cursors.js';
@@ -148,16 +148,23 @@ export class Tool_NewPath {
 			title: 'Done creating path',
 			content: 'Done creating path',
 		});
-		finishPath.addEventListener('click', () => {
-			stopCreatingNewPathPoints();
-			clickTool('pathEdit');
-		});
+		finishPath.addEventListener('click', removeStopCreatingNewPathButton);
 
-		document.body.appendChild(finishPath);
+		insertAfter(document.getElementById('editor-page__edit-canvas'), finishPath);
+		// document.body.appendChild(finishPath);
 	}
 }
-export function stopCreatingNewPathPoints() {
-	let newPathTool = getCurrentProjectEditor().eventHandlers.tool_addPath;
+
+export function removeStopCreatingNewPathButton() {
+	if (document.getElementById('done-creating-path-button')) {
+		stopCreatingNewPath();
+		clickTool('pathEdit');
+	}
+}
+
+export function stopCreatingNewPath() {
+	let editor = getCurrentProjectEditor();
+	let newPathTool = editor.eventHandlers.tool_addPath;
 	newPathTool.newPath = false;
 	newPathTool.firstPoint = true;
 	let doneButton = document.getElementById('done-creating-path-button');
