@@ -1,5 +1,5 @@
 import { addAsChildren, insertAfter, makeElement } from '../../common/dom.js';
-import style from './option-chooser.css?inline';
+import style from './option-chooser.css';
 import { closeAllDialogs, makeContextMenu } from '../dialogs/dialogs.js';
 import { json } from '../../common/functions.js';
 
@@ -156,8 +156,8 @@ export class OptionChooser extends HTMLElement {
 		// Something strange happens to placement if the dropdown is in a nav element
 		let navRect = document.querySelector('nav')?.getBoundingClientRect();
 
-		let left = entryPointRect.x - (navRect? navRect.x : 0);
-		let top = entryPointRect.y + entryPointRect.height - (navRect? navRect.y : 0);
+		let left = entryPointRect.x - (navRect ? navRect.x : 0);
+		let top = entryPointRect.y + entryPointRect.height - (navRect ? navRect.y : 0);
 		left = Math.max(left, 0);
 		top = Math.max(top, 0);
 
@@ -165,7 +165,7 @@ export class OptionChooser extends HTMLElement {
 
 		closeAllDialogs();
 		this.setAttribute('deployed', '');
-		insertAfter(this, makeContextMenu(optionRows, left, top-1, entryPointRect.width, true));
+		insertAfter(this, makeContextMenu(optionRows, left, top - 1, entryPointRect.width, true));
 
 		log(`OptionsChooser.showOptions`, 'end');
 	}
