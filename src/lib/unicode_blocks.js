@@ -1,5 +1,7 @@
+import { decToHex } from '../common/unicode';
+
 export function getUnicodeBlockByName(name) {
-	unicodeBlocks.forEach(block => {
+	unicodeBlocks.forEach((block) => {
 		if (block.name === name) return block;
 	});
 
@@ -9,7 +11,8 @@ export function getUnicodeBlockByName(name) {
 export const unicodeBlocks = [
 	{ begin: 0x0000, end: 0x0020, name: 'Basic Latin Controls' },
 	{ begin: 0x0021, end: 0x007f, name: 'Basic Latin' },
-	{ begin: 0x0080, end: 0x00ff, name: 'Latin-1 Supplement' },
+	{ begin: 0x0080, end: 0x009f, name: 'Latin-1 Supplement Controls' },
+	{ begin: 0x00a0, end: 0x00ff, name: 'Latin-1 Supplement' },
 	{ begin: 0x0100, end: 0x017f, name: 'Latin Extended-A' },
 	{ begin: 0x0180, end: 0x024f, name: 'Latin Extended-B' },
 	{ begin: 0x0250, end: 0x02af, name: 'IPA Extensions' },
@@ -184,3 +187,25 @@ export const unicodeBlocks = [
 	{ begin: 0xff00, end: 0xffef, name: 'Halfwidth and Fullwidth Forms' },
 	{ begin: 0xfff0, end: 0xffff, name: 'Specials' },
 ];
+
+export const unicodeNonCharPoints = [
+	{ begin: 0x0000, end: 0x0020, name: 'Basic Latin Controls' },
+	{ begin: 0x0080, end: 0x009f, name: 'Latin-1 Supplement Controls' },
+];
+
+export function isControlChar(char) {
+	for (let r = 0; r < unicodeNonCharPoints.length; r++) {
+		if (isCharInRange(char, unicodeNonCharPoints[r])) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+export function isCharInRange(char, range) {
+	char = parseInt(char);
+	if (isNaN(char)) return false;
+	let result = char <= range.end && char >= range.begin;
+	return result;
+}

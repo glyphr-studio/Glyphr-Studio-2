@@ -616,20 +616,22 @@ function showUnicodeGlyphRangeDialog() {
 
 	let rowWrapper;
 	unicodeBlocks.forEach((block) => {
-		rowWrapper = makeElement({
-			className: 'list__row-wrapper',
-			onClick: () => {
-				previewGlyphRange(block);
-			},
-		});
+		if (!block.name.includes('Controls')) {
+			rowWrapper = makeElement({
+				className: 'list__row-wrapper',
+				onClick: () => {
+					previewGlyphRange(block);
+				},
+			});
 
-		addAsChildren(rowWrapper, [
-			textToNode(`<span>${block.name}</span>`),
-			textToNode(`<code>${decToHex(block.begin)}</code>`),
-			textToNode(`<code>${decToHex(block.end)}</code>`),
-		]);
+			addAsChildren(rowWrapper, [
+				textToNode(`<span>${block.name}</span>`),
+				textToNode(`<code>${decToHex(block.begin)}</code>`),
+				textToNode(`<code>${decToHex(block.end)}</code>`),
+			]);
 
-		addAsChildren(listArea, rowWrapper);
+			addAsChildren(listArea, rowWrapper);
+		}
 	});
 
 	showModalDialog(content);
