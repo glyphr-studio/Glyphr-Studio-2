@@ -64,15 +64,16 @@
 	border-color: var(--red);
 }
 
+/* Context Menu */
 #context-menu {
 	display: grid;
-	grid-template-columns: 20px 1fr min-content min-content;
-	column-gap: 2px;
-	row-gap: 10px;
+	grid-template-columns: 24px 1fr min-content min-content;
+	column-gap: 0px;
+	row-gap: 5px;
 	padding: 10px;
 	position: absolute;
 	background-color: var(--enabled-resting-background);
-	z-index: 100 !important;
+	z-index: 1000 !important;
 	border: 1px solid var(--enabled-focus-border);
 	border-radius: 0px 4px 4px 4px;
 	box-shadow: var(--l3-shadow-down);
@@ -86,17 +87,18 @@
 .context-menu-row {
 	display: contents;
 	padding: 5px 10px 5px 5px;
+	height: 24px;
 }
 
-.context-menu-row label {
-	padding-right: 20px;
+.context-menu-row:hover > span,
+.context-menu-row:hover > .row-shortcuts {
+	background-color: var(--enabled-focus-background);
+	color: var(--blue-l35);
+	cursor: pointer;
 }
 
-.context-menu-row span,
-.context-menu-row label {
-	line-height: 22px;
-	height: 20px;
-	padding-left: 10px;
+.context-menu-row:focus {
+	outline: var(--global-focus-style);
 }
 
 .context-menu-row hr,
@@ -109,33 +111,38 @@
 	border-color: var(--gray-l90);
 }
 
-.context-menu-row .shortcut-wrapper {
-	width: max-content;
+.context-menu-row .row-icon {
+	height: 24px;
+	width: 24px;
+}
+
+.context-menu-row .row-icon svg {
 	height: 20px;
+	width: 20px;
+	margin: 2px;
+}
+
+.context-menu-row .row-name {
+	line-height: 22px;
+	height: 24px;
+	padding: 2px 20px 0px 10px;
+}
+
+.context-menu-row .row-shortcuts {
+	width: max-content;
+	height: 24px;
 	opacity: 0.8;
 	display: contents;
 	margin-left: 20px;
 }
 
-.context-menu-row .shortcut-wrapper code {
-	margin: 0px 2px;
+.context-menu-row .row-shortcuts code {
+	height: 20px;
+	margin: 2px;
 	font-size: 0.8em;
 }
 
-.context-menu-row svg {
-	height: 20px;
-	width: 20px;
-}
 
-.context-menu-row:hover * {
-	background-color: var(--enabled-focus-background);
-	color: var(--blue-l35);
-	cursor: pointer;
-}
-
-.context-menu-row:focus {
-	outline: var(--global-focus-style);
-}
 
 /* Modal dialog */
 #modal-dialog {

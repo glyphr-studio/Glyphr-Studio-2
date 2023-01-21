@@ -160,7 +160,8 @@ function makeOneContextMenuRow(data = {}) {
 
 	// Icon
 	if (data.icon) {
-		row.appendChild(
+		let svgWrapper = makeElement({className: 'row-icon'});
+		svgWrapper.appendChild(
 			textToNode(
 				makeIcon({
 					name: data.icon,
@@ -169,25 +170,26 @@ function makeOneContextMenuRow(data = {}) {
 				})
 			)
 		);
+		row.appendChild(svgWrapper);
 	} else {
 		row.appendChild(makeElement({ innerHTML: '[?]' }));
 	}
 
 	// Command name
 	data.name = data.name || 'NAME';
-	row.appendChild(makeElement({ tag: 'label', innerHTML: data.name }));
+	row.appendChild(makeElement({ className: 'row-name', innerHTML: data.name }));
 
 	// Keyboard Shortcut
+	let shortcutWrapper = makeElement({ className: 'row-shortcuts' });
 	if (data.shortcut) {
-		let shortcutWrapper = makeElement({ tag: 'div', className: 'shortcut-wrapper' });
 		data.shortcut.forEach((key) =>
 			shortcutWrapper.appendChild(makeElement({ tag: 'code', innerHTML: key }))
 		);
-		row.appendChild(shortcutWrapper);
 	} else {
-		row.appendChild(makeElement());
-		row.appendChild(makeElement());
+		shortcutWrapper.appendChild(makeElement());
+		shortcutWrapper.appendChild(makeElement());
 	}
+	row.appendChild(shortcutWrapper);
 
 	// Click function
 	if (data.onClick) row.addEventListener('click', data.onClick);
