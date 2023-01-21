@@ -32,8 +32,8 @@ export default {
 			type: `Boolean`,
 		},
 		showNonCharPoints: {
-			label: `Show non-glyph characters`,
-			description: `Show the Unicode code points represent things that aren't letters. These are characters that have no visible shapes and no advance width. They can probably be safely ignored.`,
+			label: `Show non-graphic control characters`,
+			description: `Show the Unicode code points represent things that aren't letters. In Unicode, the C0 and C1 control code or control character sets define control codes for use in text by computer systems that use ASCII and derivatives of ASCII.<br><br>This setting should probably stay turned off, control characters can probably be safely ignored.`,
 			type: `Boolean`,
 		},
 		formatSaveFile: {
