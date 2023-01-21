@@ -1,8 +1,8 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
-import { addAsChildren, makeElement } from '../common/dom.js';
-import { closeAllDialogs, showContextMenu } from '../controls/dialogs/dialogs.js';
+import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
+import { closeAllDialogs, makeContextMenu } from '../controls/dialogs/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { ioFont_exportFont } from '../io/font_export.js';
 
@@ -177,7 +177,8 @@ function makeMenu(menuName) {
 	if (menuName === 'File') {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
-			showContextMenu(
+			closeAllDialogs();
+			insertAfter(entryPoint, makeContextMenu(
 				[
 					{
 						name: 'Save Glyphr Studio Project File',
@@ -203,14 +204,15 @@ function makeMenu(menuName) {
 				],
 				rect.x,
 				rect.y + rect.height
-			);
+			));
 		});
 	}
 
 	if (menuName === 'Project') {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
-			showContextMenu(
+			closeAllDialogs();
+			insertAfter(entryPoint, makeContextMenu(
 				[
 					{
 						name: 'Open another project',
@@ -223,14 +225,15 @@ function makeMenu(menuName) {
 				],
 				rect.x,
 				rect.y + rect.height
-			);
+			));
 		});
 	}
 
 	if (menuName === 'Help') {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
-			showContextMenu(
+			closeAllDialogs();
+			insertAfter(entryPoint, makeContextMenu(
 				[
 					{
 						name: 'External Help & Documentation site',
@@ -261,7 +264,7 @@ function makeMenu(menuName) {
 				],
 				rect.x,
 				rect.y + rect.height
-			);
+			));
 		});
 	}
 

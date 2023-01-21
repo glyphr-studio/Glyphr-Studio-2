@@ -66,10 +66,14 @@
 
 #context-menu {
 	display: grid;
+	grid-template-columns: 20px 1fr min-content min-content;
+	column-gap: 2px;
+	row-gap: 10px;
 	padding: 10px;
+	position: absolute;
 	background-color: var(--enabled-resting-background);
-	z-index: 1 !important;
-	border: 1px solid var(--enabled-resting-border);
+	z-index: 100 !important;
+	border: 1px solid var(--enabled-focus-border);
 	border-radius: 0px 4px 4px 4px;
 	box-shadow: var(--l3-shadow-down);
 	animation: var(--animate-fade-in-slide-down);
@@ -79,27 +83,38 @@
 	outline: 0;
 }
 
-.context-menu-hr hr,
-.context-menu-hr hr:hover,
-.context-menu-hr hr:active,
-.context-menu-hr hr:focus {
+.context-menu-row {
+	display: contents;
+	padding: 5px 10px 5px 5px;
+}
+
+.context-menu-row label {
+	padding-right: 20px;
+}
+
+.context-menu-row span,
+.context-menu-row label {
+	line-height: 22px;
+	height: 20px;
+	padding-left: 10px;
+}
+
+.context-menu-row hr,
+.context-menu-row hr:hover,
+.context-menu-row hr:active,
+.context-menu-row hr:focus {
 	margin: 5px 0px 5px 0px;
 	grid-column: 1 / -1;
 	border-width: 0px 0px 1px 0px;
 	border-color: var(--gray-l90);
 }
 
-.context-menu-row {
-	display: grid;
-	grid-template-columns: 20px 1fr min-content;
-	column-gap: 10px;
-	padding: 5px 10px 5px 5px;
-}
-
 .context-menu-row .shortcut-wrapper {
 	width: max-content;
 	height: 20px;
 	opacity: 0.8;
+	display: contents;
+	margin-left: 20px;
 }
 
 .context-menu-row .shortcut-wrapper code {
@@ -112,12 +127,7 @@
 	width: 20px;
 }
 
-.context-menu-row span {
-	line-height: 22px;
-	height: 20px;
-}
-
-.context-menu-row:hover {
+.context-menu-row:hover * {
 	background-color: var(--enabled-focus-background);
 	color: var(--blue-l35);
 	cursor: pointer;

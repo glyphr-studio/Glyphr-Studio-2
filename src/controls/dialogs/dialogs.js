@@ -12,14 +12,18 @@ export function closeAllDialogs(hideToasts = false) {
 	let dialogs = document.querySelectorAll('dialog');
 	dialogs.forEach((elem) => animateRemove(elem));
 
+	let optionChoosers = document.querySelectorAll('option-chooser');
+	optionChoosers.forEach((elem) => elem.removeAttribute('deployed'));
+
 	if (hideToasts) {
 		let toasts = document.querySelectorAll('#toast');
 		toasts.forEach((elem) => animateRemove(elem));
 	}
+
 	// log(`closeAllDialogs`, 'end');
 }
 
-function animateRemove(element) {
+export function animateRemove(element) {
 	let animationLength = 120;
 	element.animate(
 		{ opacity: 0, transform: 'scale(0.98) translateY(-5px)' },
@@ -71,7 +75,7 @@ export function showToast(message = '0_o', duration = 3000) {
 // --------------------------------------------------------------
 
 /**
- * Creates and shows a small menu - can be used for:
+ * Creates a small menu - can be used for:
  *   * Top app File menus
  *   * Right-click menus
  *   * (Possibly) as a better Options dropdown for forms
@@ -80,25 +84,35 @@ export function showToast(message = '0_o', duration = 3000) {
  * @param {Number} y - Y position for the menu
  * @param {Number} width - width for the menu (defaults to auto-width)
  * @param {Boolean} isDropdown - triggers slight style adjustments for dropdown control
+ * @returns {HTMLElement}
  */
-export function showContextMenu(rows = [], x = false, y = false, width = false, isDropdown = false) {
-	// log(`showContextMenu`, 'start');
+export function makeContextMenu(
+	rows = [],
+	x = false,
+	y = false,
+	width = false,
+	isDropdown = false
+) {
+	// log(`makeContextMenu`, 'start');
+	// log(`x: ${x}`);
+	// log(`y: ${y}`);
+	// log(`width: ${width}`);
+	// log(`isDropdown: ${isDropdown}`);
 
-	let element = document.getElementById('context-menu');
+	// let element = document.getElementById('context-menu');
 
 	// remove any current context menu, or create one if it doesn't exist
-	if (element) {
-		element.style.display = 'none';
-		element.innerHTML = '';
-	} else {
-		element = makeElement({
+	// if (element) {
+	// 	element.style.display = 'none';
+	// 	element.innerHTML = '';
+	// } else {
+		let element = makeElement({
 			tag: 'dialog',
 			id: 'context-menu',
 			attributes: { tabindex: '-1' },
-			style: 'display: none;',
 		});
-		document.body.appendChild(element);
-	}
+		// document.body.appendChild(element);
+	// }
 
 	// Create and add each row
 	rows.forEach((item) => {
@@ -108,6 +122,7 @@ export function showContextMenu(rows = [], x = false, y = false, width = false, 
 
 	// Move it and show it
 	if (isFinite(x) && isFinite(y)) {
+		element.style.position = 'absolute';
 		element.style.left = `${x}px`;
 		element.style.top = `${y}px`;
 		element.style.display = 'grid';
@@ -118,20 +133,23 @@ export function showContextMenu(rows = [], x = false, y = false, width = false, 
 			element.style.borderRadius = '0px 4px 4px 4px';
 			element.style.borderTopWidth = '1px';
 		}
-		if (width) element.style.width = `${width}px`;
+		if (width) {
+			element.style.minWidth = `${width}px`;
+		}
 		setDialogHideListeners(element);
 		element.focus();
 	} else {
 		console.warn(`Context menu not supplied with a screen position.`);
 	}
 
-	// log(`showContextMenu`, 'end');
+	// log(`makeContextMenu`, 'end');
+	return element;
 }
 
 function makeOneContextMenuRow(data = {}) {
 	let row = makeElement({
 		tag: 'div',
-		className: data.name === 'hr' ? 'context-menu-hr' : 'context-menu-row',
+		className: 'context-menu-row',
 		attributes: { tabindex: '0' },
 	});
 
@@ -157,7 +175,7 @@ function makeOneContextMenuRow(data = {}) {
 
 	// Command name
 	data.name = data.name || 'NAME';
-	row.appendChild(makeElement({ innerHTML: data.name }));
+	row.appendChild(makeElement({ tag: 'label', innerHTML: data.name }));
 
 	// Keyboard Shortcut
 	if (data.shortcut) {
@@ -166,6 +184,9 @@ function makeOneContextMenuRow(data = {}) {
 			shortcutWrapper.appendChild(makeElement({ tag: 'code', innerHTML: key }))
 		);
 		row.appendChild(shortcutWrapper);
+	} else {
+		row.appendChild(makeElement());
+		row.appendChild(makeElement());
 	}
 
 	// Click function

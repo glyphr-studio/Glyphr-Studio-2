@@ -233,9 +233,28 @@
 /*
 	Glyph Chooser
 */
-.glyph-chooser__tile-grid {
+.glyph-chooser__wrapper {
 	background-color: var(--offWhite);
-	padding: 10px;
+}
+
+nav .glyph-chooser__wrapper {
+	padding: 20px;
+	margin-top: 5px;
+}
+
+.glyph-chooser__header {
+	display: block;
+	padding: 0px 20px 20px 0px;
+}
+
+.glyph-chooser__header option-chooser {
+	display: inline-block;
+	width: 100%;
+	min-width: 177px;
+	max-width: 488px;
+}
+
+.glyph-chooser__tile-grid {
 	animation: var(--animate-fade-in-slide-down);
 }
 

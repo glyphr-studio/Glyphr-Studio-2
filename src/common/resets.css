@@ -230,6 +230,9 @@ ul li {
 	margin-top: 10px;
 }
 
+nav, dialog {
+	z-index: 1000;
+}
 
 /* --------------------------------------------------------------
 // Common variables

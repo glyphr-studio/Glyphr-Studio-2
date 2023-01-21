@@ -20,6 +20,15 @@
 	cursor: pointer;
 }
 
+.wrapper[deployed] {
+	border-color: var(--enabled-focus-border);
+	border-radius: 4px 4px 0px 0px;
+}
+
+.wrapper[deployed] .selectionDisplay {
+	color: var(--enabled-resting-text);
+}
+
 .wrapper[disabled],
 .wrapper:hover[disabled],
 .wrapper:focus[disabled],
@@ -68,6 +77,7 @@
 	vertical-align: middle;
 }
 
-.wrapper:hover .downArrow {
+.wrapper:hover .downArrow,
+.wrapper[deployed] .downArrow {
 	color: var(--enabled-focus-fill);
 }

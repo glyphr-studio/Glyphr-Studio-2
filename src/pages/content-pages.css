@@ -143,6 +143,7 @@ code,
 
 .settings-page__tab-content {
 	width: clamp(300px 500px max-content);
+	animation: var(--animate-fade-in);
 }
 
 .settings-table {
