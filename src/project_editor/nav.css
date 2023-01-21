@@ -68,12 +68,12 @@
 }
 
 #nav-dropdown {
-	display: grid;
+	/* display: grid; */
+	display: block;
 	background-color: var(--offWhite);
 	box-shadow: var(--l3-shadow-down);
 	position: absolute;
 	z-index: 100;
-	padding: 0px;
 	border-radius: 0px 0px 4px 4px;
 	border-width: 4px 0px 0px 0px;
 	max-height: calc(100% - 95px);

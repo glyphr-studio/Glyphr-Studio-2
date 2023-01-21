@@ -1,6 +1,7 @@
-import { getCurrentProjectEditor } from '../app/main.js';
-import { makeElement } from '../common/dom.js';
-import { areHexValuesEqual, basicLatinOrder } from '../common/unicode.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
+import { json } from '../common/functions.js';
+import { areHexValuesEqual, basicLatinOrder, decToHex, unicodeRanges } from '../common/unicode.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph-tile.js';
 
 /**
@@ -14,21 +15,44 @@ import { GlyphTile } from '../controls/glyph-tile/glyph-tile.js';
 // Glyph chooser
 // --------------------------------------------------------------
 
+let savedClickHandler;
+let savedRegisterSubscriptions;
+
 export function makeGlyphChooserContent(clickHandler, registerSubscriptions = true) {
 	// log(`makeGlyphChooserContent`, 'start');
 	const editor = getCurrentProjectEditor();
-	// let content = `<div class="glyph-chooser__tile-grid">`;
-	let container = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
 
-	basicLatinOrder.forEach((glyphID) => {
-		let oneTile =
-			editor.selectedGlyphID === glyphID
-				? new GlyphTile({ glyph: glyphID, selected: 'true' })
-				: new GlyphTile({ glyph: glyphID });
+	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
 
-		oneTile.addEventListener('click', () => clickHandler(glyphID));
+	if (editor.project.settings.project.glyphRanges.length > 1) {
+		let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
+		header.appendChild(makeGlyphRangeChooser());
+		wrapper.appendChild(header);
+	}
+	savedClickHandler = clickHandler;
+	savedRegisterSubscriptions = registerSubscriptions;
 
-		if (registerSubscriptions) {
+	wrapper.appendChild(makeGlyphChooserTileGrid());
+
+	// log(`makeGlyphChooserContent`, 'end');
+	return wrapper;
+}
+
+function makeGlyphChooserTileGrid() {
+	// log(`makeGlyphChooserTileGrid`, 'start');
+	const editor = getCurrentProjectEditor();
+	// log(json(editor.selectedGlyphRange));
+
+	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
+	let rangeList = glyphRangeToList(editor.selectedGlyphRange);
+
+	rangeList.forEach((glyphID) => {
+		let oneTile = new GlyphTile({ glyph: glyphID });
+		if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');
+
+		oneTile.addEventListener('click', () => savedClickHandler(glyphID));
+
+		if (savedRegisterSubscriptions) {
 			editor.subscribe({
 				topic: 'whichGlyphIsSelected',
 				subscriberID: `glyphTile.${glyphID}`,
@@ -46,15 +70,62 @@ export function makeGlyphChooserContent(clickHandler, registerSubscriptions = tr
 			});
 		}
 
-		container.appendChild(oneTile);
+		tileGrid.appendChild(oneTile);
 	});
 
-	// log('Project Editor PubSub:');
-	// log(editor.subscribers);
+	// log(`makeGlyphChooserTileGrid`, 'end');
+	return tileGrid;
+}
 
-	// log(container);
-	// log(`makeGlyphChooserContent`, 'end');
-	return container;
+function glyphRangeToList(range) {
+	if ((range.begin === 0 || range.begin === 0x21) && range.end === 0x7f) {
+		return basicLatinOrder;
+	}
+
+	let result = [];
+	for (let i = range.begin; i < range.end; i++) {
+		result.push('' + decToHex(i));
+	}
+
+	return result;
+}
+
+function makeGlyphRangeChooser() {
+	// log(`makeGlyphRangeChooser`, 'start');
+
+	let ranges = getCurrentProject().settings.project.glyphRanges;
+
+	let optionChooser = makeElement({
+		tag: 'option-chooser',
+		attributes: { selected: getCurrentProjectEditor().selectedGlyphRange.name },
+	});
+
+	ranges.forEach((range) => {
+		// log(`range.name: ${range.name}`);
+
+		let option = makeElement({
+			tag: 'option',
+			innerHTML: range.name,
+			attributes: { note: `["${decToHex(range.begin)}", "${decToHex(range.end)}"]` },
+		});
+
+		option.addEventListener('click', () => {
+			// log(`OPTION.click - range: ${range.name}`);
+
+			getCurrentProjectEditor().selectedGlyphRange = range;
+			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
+			// log(tileGrid);
+			tileGrid.remove();
+			let wrapper = document.querySelector('.glyph-chooser__wrapper');
+			// log(wrapper);
+			wrapper.appendChild(makeGlyphChooserTileGrid());
+		});
+
+		optionChooser.appendChild(option);
+	});
+
+	// log(`makeGlyphRangeChooser`, 'end');
+	return optionChooser;
 }
 
 /*

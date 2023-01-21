@@ -12,7 +12,7 @@ import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { refreshPanel } from '../panels/panels.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { closeAllDialogs, setDialogHideListeners } from '../controls/dialogs/dialogs.js';
+import { animateRemove } from '../controls/dialogs/dialogs.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -225,10 +225,21 @@ export function toggleNavDropdown(parentElement) {
 	let dropdown = document.getElementById('nav-dropdown');
 
 	if (dropdown) {
-		closeAllDialogs();
+		closeAllNavMenus();
 	} else {
 		showNavDropdown(parentElement);
 	}
+}
+
+export function closeAllNavMenus() {
+	let navMenus = document.querySelectorAll('nav');
+	navMenus.forEach((elem) => animateRemove(elem));
+}
+
+export function setNavMenuHideListeners(element) {
+	element.addEventListener('mouseleave', () => {
+		closeAllNavMenus();
+	});
 }
 
 export function showNavDropdown(parentElement) {
@@ -252,7 +263,7 @@ export function showNavDropdown(parentElement) {
 			const editor = getCurrentProjectEditor();
 			editor.selectedGlyphID = glyphID;
 			editor.history.addState(`Navigated to ${editor.project.getGlyphName(glyphID, true)}`);
-			closeAllDialogs();
+			closeAllNavMenus();
 		});
 		size = '80%';
 	}
@@ -263,7 +274,7 @@ export function showNavDropdown(parentElement) {
 	}
 
 	let dropDown = makeElement({
-		tag: 'dialog',
+		tag: 'nav',
 		id: 'nav-dropdown',
 		attributes: { tabindex: '-1' },
 		style: `
@@ -275,12 +286,12 @@ export function showNavDropdown(parentElement) {
 		`,
 	});
 
-	setDialogHideListeners(dropDown);
+	setNavMenuHideListeners(dropDown);
 
 	addAsChildren(dropDown, dropdownContent);
 	// log(`dropDown:`);
 	// log(dropDown);
-	closeAllDialogs();
+	closeAllNavMenus();
 	document.getElementById('app__wrapper').appendChild(dropDown).focus();
 	// log(`showNavDropdown`, 'end');
 }

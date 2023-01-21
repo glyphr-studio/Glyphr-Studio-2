@@ -52,6 +52,7 @@ export class ProjectEditor {
 		this.selectedComponentID = false;
 		this.selectedLigatureID = false;
 		this.selectedKernID = false;
+		this.selectedGlyphRange = false;
 
 		// Navigation
 		this.nav = new Navigator();
@@ -250,6 +251,24 @@ export class ProjectEditor {
 		return this._selectedKernID;
 	}
 
+	/**
+	 * Returns the selected Glyph Range
+	 * @returns {Object}
+	 */
+	get selectedGlyphRange() {
+		if (!this._selectedGlyphRange) {
+			const ranges = this.project.settings.project.glyphRanges;
+			if (ranges.length) {
+				this._selectedGlyphRange = ranges[0];
+				return this._selectedGlyphRange;
+			} else {
+				return { begin: 0, end: 0, name: 'No glyph ranges exist.' };
+			}
+		}
+
+		return this._selectedGlyphRange;
+	}
+
 	// --------------------------------------------------------------
 	// Set Selected Work Items
 	// --------------------------------------------------------------
@@ -337,6 +356,18 @@ export class ProjectEditor {
 		// TODO Validate ID!
 		this._selectedKernID = id;
 	}
+
+	/**
+	 * Sets the selected glyph range
+	 * @param {Object} newRange - range object
+	 */
+	set selectedGlyphRange(newRange) {
+		this._selectedGlyphRange = newRange;
+	}
+
+	// --------------------------------------------------------------
+	// Multi-select
+	// --------------------------------------------------------------
 
 	/**
 	 * Syncs changes to multiselected paths from path point selections

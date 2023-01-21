@@ -103,3 +103,13 @@ export function textToNode(textHTML) {
 	let result = makeElement({ innerHTML: textHTML });
 	return result.firstElementChild;
 }
+
+/**
+ * Inserts an HTML node after a given node
+ * Kind of like the opposite of Node.insertBefore
+ * @param {HTMLElement} baseNode - current node
+ * @param {HTMLElement} newNode - node to add after current node
+ */
+export function insertAfter(baseNode, newNode) {
+	baseNode.parentNode.insertBefore(newNode, baseNode.nextSibling);
+}
