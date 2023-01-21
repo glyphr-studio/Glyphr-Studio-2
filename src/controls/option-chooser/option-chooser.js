@@ -2,6 +2,7 @@ import { addAsChildren, insertAfter, makeElement } from '../../common/dom.js';
 import style from './option-chooser.css';
 import { closeAllDialogs, makeContextMenu } from '../dialogs/dialogs.js';
 import { json } from '../../common/functions.js';
+import { closeAllNavMenus } from '../../project_editor/navigator.js';
 
 /**
  * An options group / dropdown control
@@ -53,7 +54,6 @@ export class OptionChooser extends HTMLElement {
 		this.wrapper.appendChild(this.downArrow);
 
 		if (!this.disabled) this.addAllEventListeners();
-
 		shadow.appendChild(this.wrapper);
 
 		// log(this);
@@ -134,7 +134,7 @@ export class OptionChooser extends HTMLElement {
 	}
 
 	showOptions() {
-		log(`OptionsChooser.showOptions`, 'start');
+		// log(`OptionsChooser.showOptions`, 'start');
 
 		const currentSelection = this.getAttribute('selected-id');
 		let optionRows = [];
@@ -172,7 +172,7 @@ export class OptionChooser extends HTMLElement {
 		this.setAttribute('deployed', '');
 		insertAfter(this, makeContextMenu(optionRows, left, top - 1, entryPointRect.width, true));
 
-		log(`OptionsChooser.showOptions`, 'end');
+		// log(`OptionsChooser.showOptions`, 'end');
 	}
 
 	/**

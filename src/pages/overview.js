@@ -1,6 +1,6 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeNavButton, showNavDropdown } from '../project_editor/navigator.js';
+import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
 import { makeAlpha1Message, makeContributeMessage } from './about.js';
 
@@ -38,14 +38,13 @@ export function makePage_Overview() {
 		editor.nav.page = 'Glyph edit';
 		editor.navigate();
 		editor.history.addState(`Navigated to ${editor.project.getGlyphName(glyphID, true)}`);
-
 	}, false);
 
 	content.querySelector('.content-page__right-area').appendChild(glyphsContent);
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
-		showNavDropdown(l1);
+		toggleNavDropdown(l1);
 	});
 
 	// log(`PageOverview.makePageContent`, 'end');

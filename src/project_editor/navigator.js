@@ -4,7 +4,7 @@ import { makePage_Overview } from '../pages/overview.js';
 import { makePage_About } from '../pages/about.js';
 import { makePage_Settings } from '../pages/settings.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { addAsChildren, makeElement } from '../common/dom.js';
+import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
 import { makeAppTopBar } from '../app/app.js';
 import { makeIcon } from '../common/graphics.js';
@@ -292,7 +292,11 @@ export function showNavDropdown(parentElement) {
 	// log(`dropDown:`);
 	// log(dropDown);
 	closeAllNavMenus();
-	document.getElementById('app__wrapper').appendChild(dropDown).focus();
+
+	// let appWrapper = document.getElementById('app__wrapper');
+	// appWrapper.appendChild(dropDown).focus();
+	insertAfter(parentElement, dropDown);
+
 	// log(`showNavDropdown`, 'end');
 }
 

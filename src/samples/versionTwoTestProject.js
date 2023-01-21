@@ -8,14 +8,20 @@ export function getVersionTwoTestProject() {
 				latestVersion: '2.0.0-alpha2',
 				initialVersion: '2.0.0-alpha1',
 				projectID: 'g2_AlphaTestProject1',
-				font: {
-					fontFamily: 'Alpha Test',
-					upm: 1000,
-					ascent: 800,
-					capHeight: 790,
-					xHeight: 580,
-					descent: -200,
-				},
+				glyphRanges: [
+					{ begin: 0x0021, end: 0x007f, name: 'Basic Latin' },
+					{ begin: 0x0080, end: 0x00ff, name: 'Latin-1 Supplement' },
+					{ begin: 0x0100, end: 0x017f, name: 'Latin Extended-A' },
+					{ begin: 0x0180, end: 0x024f, name: 'Latin Extended-B' },
+				],
+			},
+			font: {
+				fontFamily: 'Alpha Test',
+				upm: 1000,
+				ascent: 800,
+				capHeight: 790,
+				xHeight: 580,
+				descent: -200,
 			},
 		},
 

@@ -73,13 +73,16 @@
 	background-color: var(--offWhite);
 	box-shadow: var(--l3-shadow-down);
 	position: absolute;
-	z-index: 100;
 	border-radius: 0px 0px 4px 4px;
 	border-width: 4px 0px 0px 0px;
 	max-height: calc(100% - 95px);
 	overflow-x: hidden;
 	overflow-y: auto;
 	animation: var(--animate-fade-in-slide-down);
+}
+
+nav {
+	z-index: 100;
 }
 
 #nav-dropdown:focus {

@@ -11,9 +11,7 @@
 	font-family: FiraGo, tahoma, verdana, sans-serif;
 	font-size: 14px;
 	font-weight: normal;
-	z-index: 0;
 	text-align: left;
-	/* color: var(--gray-l20); */
 	box-sizing: border-box;
 }
 
@@ -230,9 +228,6 @@ ul li {
 	margin-top: 10px;
 }
 
-nav, dialog {
-	z-index: 1000;
-}
 
 /* --------------------------------------------------------------
 // Common variables
