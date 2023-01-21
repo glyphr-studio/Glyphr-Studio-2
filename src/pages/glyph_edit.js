@@ -5,7 +5,8 @@ import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
 import { hexToChars } from '../common/unicode.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
-import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
+import { clickTool, makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
+import { removeStopCreatingNewPathButton, stopCreatingNewPath } from '../edit_canvas/tools/new_path.js';
 
 /**
  * Page > Glyph Edit
@@ -105,6 +106,7 @@ export function makePage_GlyphEdit() {
 		subscriberID: 'editCanvas.selectedGlyph',
 		callback: (newGlyphID) => {
 			// log(`Main Canvas subscriber callback`, 'start');
+			removeStopCreatingNewPathButton();
 			let newChar = hexToChars(newGlyphID);
 			// log(`new id ${newGlyphID} results in ${newChar} on the main canvas`);
 			content.querySelector('#editor-page__edit-canvas').setAttribute('glyphs', newChar);
@@ -116,6 +118,7 @@ export function makePage_GlyphEdit() {
 		topic: 'whichPathIsSelected',
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
+			removeStopCreatingNewPathButton();
 			editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath' });
 		},
 	});

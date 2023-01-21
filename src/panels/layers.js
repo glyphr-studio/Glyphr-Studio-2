@@ -9,6 +9,7 @@ import { makeActionButtonIcon } from './action_buttons.js';
 import { addChildActions, getActionData } from './actions.js';
 import { refreshPanel } from './panels.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
+import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
