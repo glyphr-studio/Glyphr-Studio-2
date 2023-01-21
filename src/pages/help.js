@@ -2,6 +2,7 @@ import { makeElement } from '../common/dom.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { emailLink } from '../app/app.js';
+import { closeAllDialogs } from '../controls/dialogs/dialogs.js';
 
 /**
  * Page > About

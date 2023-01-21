@@ -15,7 +15,7 @@
 #app__top-bar {
 	grid-row: 1;
 	padding: 6px 0px 6px 11px;
-	z-index: 100 !important;
+	z-index: 2000 !important;
 }
 
 #app__main-content {
@@ -56,7 +56,6 @@
 	border-radius: 2px;
 	box-shadow: none;
 	color: var(--enabled-resting-lightText);
-	z-index: 1000 !important;
 }
 
 .menu-entry-point:hover {
