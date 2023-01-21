@@ -1,6 +1,6 @@
 import { makeElement } from '../../common/dom.js';
 import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
-import style from './button-toggle.css?inline';
+import style from './button-toggle.css';
 
 /**
  * Shows an icon that is either selected or unselected,
@@ -45,7 +45,7 @@ export class ButtonToggle extends HTMLElement {
 		let shadow = this.attachShadow({ mode: 'open' });
 		let styles = makeElement({ tag: 'style', innerHTML: style });
 		shadow.appendChild(styles);
-		
+
 		shadow.appendChild(this.wrapper);
 
 		if (!this.disabled) {
