@@ -14,7 +14,7 @@ dialog {
 	/* color: rgb(155, 221, 255); */
 	color: var(--green-l10);
 	padding: 4px 8px;
-	z-index: 1010;
+	z-index: 2010;
 	text-align: center;
 	border: 1px solid var(--green-l60);
 	border-radius: 4px;

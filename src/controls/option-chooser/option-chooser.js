@@ -159,7 +159,7 @@ export class OptionChooser extends HTMLElement {
 
 		let entryPointRect = this.getBoundingClientRect();
 		// Something strange happens to placement if the dropdown is in a nav element
-		let navRect = document.querySelector('nav')?.getBoundingClientRect();
+		let navRect = document.querySelector('#nav-dropdown-chooser')?.getBoundingClientRect();
 
 		let left = entryPointRect.x - (navRect ? navRect.x : 0);
 		let top = entryPointRect.y + entryPointRect.height - (navRect ? navRect.y : 0);
@@ -169,6 +169,7 @@ export class OptionChooser extends HTMLElement {
 		// log(`showing options at ${left} / ${top}`);
 
 		closeAllDialogs();
+		closeAllNavMenus(true);
 		this.setAttribute('deployed', '');
 		insertAfter(this, makeContextMenu(optionRows, left, top - 1, entryPointRect.width, true));
 
