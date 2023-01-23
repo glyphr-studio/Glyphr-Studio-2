@@ -140,8 +140,8 @@
 	display: block;
 	width: 90%;
 	margin: 10px 0px 10px 0px;
-	background-color: var(--gray-l15);
-	border: 1px dashed var(--gray-l65);
+	background-color: rgba(0, 0, 0, 0.15);
+	border: 1px dashed var(--gray-l45);
 	color: var(--gray-l65);
 	padding: 18px 0px 20px 20px;
 	line-height: 2em;

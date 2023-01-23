@@ -12,7 +12,7 @@ import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { refreshPanel } from '../panels/panels.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { animateRemove } from '../controls/dialogs/dialogs.js';
+import { animateRemove, closeAllDialogs } from '../controls/dialogs/dialogs.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -222,7 +222,7 @@ export function makeNavButtonContent(title, superTitle) {
 }
 
 export function toggleNavDropdown(parentElement) {
-	let dropdown = document.getElementById('nav-dropdown');
+	let dropdown = document.querySelector('nav');
 
 	if (dropdown) {
 		closeAllNavMenus();
@@ -231,9 +231,24 @@ export function toggleNavDropdown(parentElement) {
 	}
 }
 
-export function closeAllNavMenus() {
+/**
+ *	Close all the main nav menu dropdowns
+ * @param {Boolean} isChooserMenu - The Glyph Chooser can be inside a nav menu,
+ *	this method gets called from other dropdowns, so we have to know if this is
+ *	being called from a control inside a nav menu or from outside of it.
+ */
+export function closeAllNavMenus(isChooserMenu) {
+	// log(`closeAllNavMenus`, 'start');
 	let navMenus = document.querySelectorAll('nav');
-	navMenus.forEach((elem) => animateRemove(elem));
+	// log(navMenus);
+	navMenus.forEach((elem) => {
+		if (isChooserMenu) {
+			if (elem.id !== 'nav-dropdown-chooser') animateRemove(elem);
+		} else {
+			animateRemove(elem);
+		}
+	});
+	// log(`closeAllNavMenus`, 'end');
 }
 
 export function setNavMenuHideListeners(element) {
@@ -245,6 +260,7 @@ export function setNavMenuHideListeners(element) {
 export function showNavDropdown(parentElement) {
 	// log(`showNavDropdown`, 'start');
 	let size = '500px';
+	let navID;
 	let rect = parentElement.getBoundingClientRect();
 	let parentStyle = getComputedStyle(parentElement);
 	let top = rect.top + rect.height - 3;
@@ -256,6 +272,7 @@ export function showNavDropdown(parentElement) {
 	if (dropdownType === 'PAGE') {
 		dropdownContent = makePageChooserContent();
 		size = `${parentElement.parentElement.getBoundingClientRect().width - 2}px`;
+		navID = 'nav-dropdown-page';
 	}
 
 	if (dropdownType === 'EDITING') {
@@ -266,16 +283,18 @@ export function showNavDropdown(parentElement) {
 			closeAllNavMenus();
 		});
 		size = '80%';
+		navID = 'nav-dropdown-chooser';
 	}
 
 	if (dropdownType === 'PANEL') {
 		dropdownContent = makePanelChooserContent();
 		size = `${rect.width - 2}px`;
+		navID = 'nav-dropdown-panel';
 	}
 
 	let dropDown = makeElement({
 		tag: 'nav',
-		id: 'nav-dropdown',
+		id: navID,
 		attributes: { tabindex: '-1' },
 		style: `
 			left: ${rect.left + 1}px;
@@ -292,6 +311,7 @@ export function showNavDropdown(parentElement) {
 	// log(`dropDown:`);
 	// log(dropDown);
 	closeAllNavMenus();
+	closeAllDialogs();
 
 	// let appWrapper = document.getElementById('app__wrapper');
 	// appWrapper.appendChild(dropDown).focus();
