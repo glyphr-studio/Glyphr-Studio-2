@@ -47,7 +47,7 @@ export async function validateFileInput(input, callback) {
 
 	const reader = new FileReader();
 	reader.onerror = () => {
-		failWithError('A file reader error occurred.');
+		failWithError('A file reader error occurred. [FR0]');
 	};
 
 	if (
@@ -74,6 +74,7 @@ export async function validateFileInput(input, callback) {
 		return failWithError(`
 			Unrecognized file type (.${validationResult.fileSuffix}).
 			Try loading a Glyphr Studio Project file, or a font file.
+			[FR1]
 		`);
 	}
 
@@ -97,12 +98,16 @@ function readerValidateFont() {
 		font = OpenTypeJS.parse(file);
 		log(font);
 	} catch (err) {
-		return failWithError(err.message);
+		return failWithError(`
+			Font file could not be read. [FF0]
+			<hr>
+			${err.message}
+		`);
 	}
 
 	if (font) {
-		if (!(font.glyphs && font.glyphs.length)) {
-			return failWithError('Font file does not have any glyph data.');
+		if (!font?.glyphs?.length) {
+			return failWithError('Font file does not have any glyph data. [FF1]');
 		} else {
 			validationResult.content = font;
 		}
@@ -128,7 +133,11 @@ function readerValidateSVG() {
 		svgData = svgData.replace(/&#x/g, '0x');
 		jsonData = XMLtoJSON(svgData);
 	} catch (err) {
-		return failWithError(err.message);
+		return failWithError(`
+			SVG file could not be read. [SVG0]
+			<hr>
+			${err.message}
+		`);
 	}
 
 	// Check to see if it's actually a SVG Font
@@ -136,7 +145,7 @@ function readerValidateSVG() {
 	if (!font) {
 		return failWithError(`
 			The SVG file you tried to load was not a SVG Font file.
-			See Glyphr Studio help for more information.`);
+			See Glyphr Studio help for more information. [SVG1]`);
 	} else {
 		validationResult.content = font;
 	}
@@ -160,7 +169,7 @@ function readerValidateTXTandGS2() {
 	} catch (error) {
 		return failWithError(`
 			The file could not be read. Expecting a Glyphr Studio Project file
-			in JSON format.
+			in JSON format. [PF0]
 			<hr>
 			${error.message}
 		`);
@@ -170,7 +179,7 @@ function readerValidateTXTandGS2() {
 	if (!projectData.settings && !projectData.projectsettings) {
 		return failWithError(`
 		The provided text file is missing project settings.
-		It may not be a Glyphr Studio Project file.
+		It may not be a Glyphr Studio Project file. [PF1]
 		`);
 	}
 
@@ -178,7 +187,7 @@ function readerValidateTXTandGS2() {
 	if (!projectData?.settings?.project?.latestVersion && !projectData?.projectsettings?.versionnum) {
 		return failWithError(`
 			The provided text file has no version information associated with it.
-			It may not be a Glyphr Studio Project file.
+			It may not be a Glyphr Studio Project file. [PF2]
 		`);
 	}
 
@@ -190,7 +199,7 @@ function readerValidateTXTandGS2() {
 	// Version information could not be parsed as SemVer
 	if (!version) {
 		return failWithError(`
-			The version information could not be read for the provided project file.
+			The version information could not be read for the provided project file. [PF3]
 		`);
 	}
 
@@ -199,7 +208,7 @@ function readerValidateTXTandGS2() {
 	if (isSemVerLessThan(thisGlyphrStudioVersion, version)) {
 		return failWithError(`
 			This Glyphr Studio project file was created with a future version of
-			Glyphr Studio (0_o) As with most software, Glyphr Studio is not forwards-compatible.
+			Glyphr Studio (0_o) As with most software, Glyphr Studio is not forwards-compatible. [PF4]
 		`);
 	}
 
@@ -212,7 +221,7 @@ function readerValidateTXTandGS2() {
 		return failWithError(`
 			Only Glyphr Studio Project files with version 1.13.2 and above can be
 			imported into Glyphr Studio v2. For versions 1.13.1 and below, open and re-save
-			the project file with Glyphr Studio v1 App (which will update it).
+			the project file with Glyphr Studio v1 App (which will update it). [PF5]
 		`);
 	}
 
