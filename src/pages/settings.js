@@ -322,11 +322,11 @@ function makeOneSettingsRow(groupName, propertyName) {
 	if (!settingType) {
 		input = makeElement({
 			tag: 'input',
-			attributes: { type: 'text', value: JSON.parse(JSON.stringify(settingValue)) },
+			attributes: { type: 'text', value: sanitizeValueWithJSON(settingValue) },
 		});
 
 		input.addEventListener('change', (event) => {
-			let newValue = JSON.parse(JSON.stringify(event.target.value));
+			let newValue = sanitizeValueWithJSON(event.target.value);
 			settings[groupName][propertyName] = newValue;
 		});
 	}
@@ -365,6 +365,17 @@ function makeOneSettingsRow(groupName, propertyName) {
 	}
 
 	return [label, info, input, type];
+}
+
+function sanitizeValueWithJSON(input) {
+	let j = JSON.stringify(input);
+
+	if (j) {
+		let p = JSON.parse(j);
+		return p || '';
+	}
+
+	return '';
 }
 
 // --------------------------------------------------------------
