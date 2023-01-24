@@ -5,7 +5,7 @@ import { lookUpGlyphName } from '../../lib/unicode_names.js';
 import { Glyph } from '../../project_data/glyph.js';
 import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
 import { drawGlyph } from '../../display_canvas/draw_paths.js';
-import style from './glyph-tile.css';
+import './glyph-tile.css';
 
 /**
  * description

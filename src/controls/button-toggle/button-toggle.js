@@ -1,6 +1,6 @@
 import { makeElement } from '../../common/dom.js';
 import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
-import style from './button-toggle.css';
+import './button-toggle.css';
 
 /**
  * Shows an icon that is either selected or unselected,
