@@ -138,11 +138,11 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 		return false;
 	}
 
-	// if (path.pathPoints.length < 2) {
-	// 	// log(`RETURNING FALSE: ${path.pathPoints.length} points in the path`);
-	// 	// log('drawPathToCanvas', 'end');
-	// 	return false;
-	// }
+	if (path.pathPoints.length < 2) {
+		// log(`RETURNING FALSE: ${path.pathPoints.length} points in the path`);
+		// log('drawPathToCanvas', 'end');
+		return false;
+	}
 
 	let pp;
 	let np;

@@ -13,6 +13,7 @@ import { InputNumber } from '../controls/input-number/input-number.js';
 import { InputNumberLockable } from '../controls/input-number-lockable/input-number-lockable.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { makeElement } from '../common/dom.js';
+import { closeAllDialogs } from '../controls/dialogs/dialogs.js';
 
 // The main app object
 export const GSApp = new GlyphrStudioApp();
@@ -104,6 +105,43 @@ export function getCurrentProjectEditor() {
 		gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
 	}
 	return gs.projectEditors[gs.selectedProjectEditor];
+}
+
+export function showAppErrorPage(friendlyMessage = '', errorObject = {message: '', stack: ''}) {
+	const wrapper = document.querySelector('#app__wrapper');
+	closeAllDialogs();
+	let content = `
+		<div id="app__landing-page">
+		<div style="margin: auto; font-size: 16px; text-align: center; color: rgba(255, 255, 255, 0.8)">
+			<div style="font-size: 20px; padding-bottom: 20px; text-align: center; color: var(--purple-l60);">
+				(╯°□°）╯︵ ┻━┻
+			</div>
+				<h1 style="text-align: center;">${friendlyMessage || 'Glyphr Studio ran into a problem'}</h1>
+				<br>
+				Please send us an email, hopefully we'll be able to help:
+				<a
+					style="color: white; text-decoration: underline"
+					href="mailto:mail@glyphrstudio.com&subject=[${GSApp.version}] Feedback"
+					>mail@glyphrstudio.com</a
+				>
+				<br><br><br>
+				<pre
+					style="
+						border: 1px solid hsla(0, 100%, 100%, 0.2);
+						background-color: hsla(0, 0%, 0%, 0.2);
+						border-radius: 4px;
+						text-align: left;
+						font-family: monospace;
+						padding: 10px;
+						width: 100%;
+						user-select: text;
+					"
+				>${errorObject.stack.replaceAll('<', '&lt;')}</pre>
+			</div>
+		</div>
+	`;
+
+	wrapper.innerHTML = content;
 }
 
 /**

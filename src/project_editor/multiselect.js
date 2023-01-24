@@ -306,7 +306,7 @@ export class MultiSelectPaths extends MultiSelect {
 
 	combine() {
 		// log('MultiSelectPaths.combine', 'start');
-		const ns = new Glyph(clone(this.virtualGlyph));
+		const ns = this.virtualGlyph.clone();
 		ns.flattenGlyph();
 		const cs = combinePaths(ns.paths);
 
