@@ -1,7 +1,7 @@
 import { makeElement } from '../../common/dom.js';
 import { ButtonToggle } from '../button-toggle/button-toggle.js';
 import { InputNumber } from '../input-number/input-number.js';
-import './input-number-lockable.css';
+import style from './input-number-lockable.css';
 
 /**
  * A numeric input field, with up/down arrows for increment/decrement,
