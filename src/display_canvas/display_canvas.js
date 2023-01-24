@@ -7,7 +7,7 @@ import { drawGlyph } from './draw_paths.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
 import { livePreviewPageWindowResize } from '../pages/live_preview.js';
 import { livePreviewOptions } from '../panels/live_preview.js';
-import './display-canvas.css';
+import style from './display-canvas.css';
 
 /**
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
