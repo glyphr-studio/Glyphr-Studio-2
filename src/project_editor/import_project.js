@@ -1,11 +1,12 @@
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { getGlyphrStudioApp } from '../app/main.js';
-import { parseSemVer } from '../io/validate_file_input.js';
+import { parseSemVer, tryToGetProjectVersion } from '../io/validate_file_input.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
 import { unicodeRanges } from '../common/unicode.js';
 import { ControlPoint } from '../project_data/control_point.js';
+import { showError } from '../controls/dialogs/dialogs.js';
 
 /**
  * Takes a js Object from a JSON-based project file, and returns
@@ -18,8 +19,8 @@ export function importGlyphrProjectFromText(importedProject) {
 	log('passed:');
 	log(importedProject);
 
-	const version = parseSemVer(importedProject.settings.project.latestVersion);
-	log('version found ' + importedProject.settings.project.latestVersion);
+	const version = tryToGetProjectVersion(importedProject);
+	log('version found ' + version);
 
 	if (version.major === 1) {
 		importedProject = migrate_Project(importedProject);
@@ -62,13 +63,13 @@ function migrate_Project(oldProject) {
 	// Metadata
 	const newPreferences = newProject.settings.app;
 	const newRanges = newProject.settings.project.glyphRanges;
-	const newSysGuides = newProject.guides.system;
+	const newSysGuides = newProject.settings.app.guides.system;
 	const newFont = newProject.settings.font;
 	const oldSettings = oldProject.projectsettings;
 	const oldRanges = oldProject.projectsettings.glyphrange;
 	const oldGuides = oldProject.projectsettings.guides;
 	const oldColors = oldProject.projectsettings.colors;
-	const oldMeta = oldProject.settings;
+	const oldMeta = oldProject.metadata;
 
 	newProject.settings.project.name = oldSettings.name || 'My Font';
 
@@ -171,9 +172,17 @@ function migrate_Path(oldShape, parentGlyph) {
 	newPath.hLock = oldShape.hlock;
 	newPath.ratioLock = oldShape.ratiolock;
 
-	oldShape.path.pathpoints.forEach((point) => {
-		newPath.pathPoints.push(migrate_PathPoint(point, newPath));
-	});
+	if (oldShape.path) {
+		oldShape.path.pathpoints.forEach((point) => {
+			newPath.pathPoints.push(migrate_PathPoint(point, newPath));
+		});
+	} else {
+		// TODO Component Instance
+		showError(`Alpha-2 Warning<br>This v1 project uses Components,
+			but Components are not supported in Alpha-2. They will
+			be in the future, though.
+		`);
+	}
 
 	return newPath;
 }
@@ -206,6 +215,6 @@ function migrate_PathPoint(oldPathPoint, parentPath) {
 		parent: newPathPoint,
 	});
 
-	this.resolvePointType();
+	// do NOT .resolvePointType
 	return newPathPoint;
 }

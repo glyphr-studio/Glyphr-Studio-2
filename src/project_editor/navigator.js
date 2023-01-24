@@ -3,7 +3,7 @@ import { makePage_GlyphEdit } from '../pages/glyph_edit.js';
 import { makePage_Overview } from '../pages/overview.js';
 import { makePage_About } from '../pages/about.js';
 import { makePage_Settings } from '../pages/settings.js';
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, showAppErrorPage } from '../app/main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
 import { makeAppTopBar } from '../app/app.js';
@@ -12,7 +12,7 @@ import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { refreshPanel } from '../panels/panels.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { animateRemove, closeAllDialogs } from '../controls/dialogs/dialogs.js';
+import { animateRemove, closeAllDialogs, showError } from '../controls/dialogs/dialogs.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -99,12 +99,18 @@ export class Navigator {
 		// log(wrapper);
 
 		if (wrapper) {
-			const pageContent = this.makePageContent(fadePageIn);
-			wrapper.innerHTML = '';
-			if (this.page !== 'Open project') wrapper.appendChild(makeAppTopBar());
-			wrapper.appendChild(pageContent);
+			try {
+				const pageContent = this.makePageContent(fadePageIn);
+				wrapper.innerHTML = '';
+				if (this.page !== 'Open project') wrapper.appendChild(makeAppTopBar());
+				wrapper.appendChild(pageContent);
+			} catch (error) {
+				console.warn(`Navigation failed:`, error);
+				showAppErrorPage(`Oops, navigation failed!`, error);
+				log(getCurrentProject());
+			}
 		} else {
-			console.warn(`app__wrapper could not be found, navigation failed`);
+			console.warn(`Navigation failed: app__wrapper could not be found.`);
 		}
 
 		log(`Navigator.navigate`, 'end');

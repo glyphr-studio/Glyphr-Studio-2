@@ -1,7 +1,7 @@
 {
   "name": "glyphr-studio-2",
   "author": "Matt LaGrandeur",
-  "version": "0.0.1-alpha",
+  "version": "2.0.0-alpha.2",
   "license": "GPL-3.0-or-later",
   "homepage": "https://github.com/glyphr-studio/Glyphr-Studio-2#readme",
   "description": "V2 is back :-) the overall goal is codebase modernization. Much of the code hasn't been worked on since 2010, so it's time to do an all-up scrub.",

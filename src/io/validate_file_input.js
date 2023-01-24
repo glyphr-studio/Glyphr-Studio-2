@@ -191,8 +191,7 @@ function readerValidateTXTandGS2() {
 		`);
 	}
 
-	let version = parseSemVer(projectData?.projectsettings?.versionnum);
-	if (!version) version = parseSemVer(projectData?.settings?.project?.latestVersion);
+	let version = tryToGetProjectVersion(projectData);
 
 	log(`version: ${json(version)}`);
 
@@ -228,13 +227,24 @@ function readerValidateTXTandGS2() {
 	// Success fallthrough!
 	validationResult.content = projectData;
 
-	postValidationCallback(validationResult);
 	log(`readerValidateTXTandGS2`, 'end');
+	postValidationCallback(validationResult);
 }
 
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
+
+/**
+ * A cross v1 / v2 way to check for project version
+ * @param {Object} projectData - GS Project to check
+ * @returns {Object} - hopefully a version object
+ */
+export function tryToGetProjectVersion(projectData) {
+	let version = parseSemVer(projectData?.projectsettings?.versionnum);
+	if (!version) version = parseSemVer(projectData?.settings?.project?.latestVersion);
+	return version;
+}
 
 function failWithError(message) {
 	validationResult.errorMessage = message;

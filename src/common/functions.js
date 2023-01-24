@@ -69,13 +69,16 @@ export function makeRandomID() {
  * @returns {object}
  */
 export function clone(source) {
-	const newObj = source instanceof Array ? [] : {};
+	return structuredClone(source);
+	/*
+	const newObj = Array.isArray(source) ? [] : {};
 	for (const i of Object.keys(source)) {
 		if (source[i] && typeof source[i] === 'object' && i !== 'parent' && i !== 'cache') {
 			newObj[i] = clone(source[i]);
 		} else newObj[i] = source[i];
 	}
 	return newObj;
+	*/
 }
 
 /**
