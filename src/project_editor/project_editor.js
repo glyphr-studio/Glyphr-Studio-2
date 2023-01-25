@@ -521,25 +521,23 @@ export class ProjectEditor {
 		// log(`ProjectEditor.makeAutoFitView`, 'start');
 		// log(`rect: ${rect}`);
 
-		const fontSettings = this.project.settings.font;
-
 		//Zoom
-		let newZ = Math.min(
-			rect.height / (fontSettings.upm * 1.2),
+		const newZ = Math.min(
+			rect.height / (this.project.totalVertical * 1.2),
 			rect.width / (this.selectedItem.advanceWidth * 1.5)
 		);
 
 		// Vertical
-		let visibleGlyphHeight = fontSettings.upm * newZ;
-		let topSpace = (rect.height - visibleGlyphHeight) / 2;
-		let newY = topSpace + fontSettings.ascent * newZ;
+		const visibleGlyphHeight = this.project.totalVertical * newZ;
+		const topSpace = (rect.height - visibleGlyphHeight) / 2;
+		const newY = topSpace + this.project.settings.font.ascent * newZ;
 
 		// Horizontal
 		let visibleGlyphWidth = this.selectedItem.advanceWidth * newZ;
 		if (visibleGlyphWidth === 0) visibleGlyphWidth = rect.width / 3;
-		let newX = (rect.width - visibleGlyphWidth) / 2;
+		const newX = (rect.width - visibleGlyphWidth) / 2;
 
-		let newView = { dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3) };
+		const newView = { dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3) };
 
 		// log(`newView: ${JSON.stringify(newView)}`);
 		// log(`ProjectEditor.makeAutoFitView`, 'end');
@@ -548,7 +546,7 @@ export class ProjectEditor {
 
 	autoFitView() {
 		// log(`ProjectEditor.autoFitView`, 'start');
-		let bounds = this.getEditCanvasWrapperBounds();
+		const bounds = this.getEditCanvasWrapperBounds();
 		if (bounds) {
 			this.view = this.makeAutoFitView(bounds);
 			this.publish('view', this.view);

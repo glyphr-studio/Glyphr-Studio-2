@@ -122,15 +122,15 @@ export class EditCanvas extends HTMLElement {
 		// log('EditCanvas.redraw', 'start');
 		// if(oa?.calledBy) log(`==REDRAW BY ${oa.calledBy}==`);
 		const editor = getCurrentProjectEditor();
-		let view = editor.view;
-		let settings = getCurrentProject().settings;
-		let ctx = this.ctx;
-		let width = this.width;
-		let height = this.height;
+		const project = getCurrentProject();
+		const view = editor.view;
+		const ctx = this.ctx;
+		const width = this.width;
+		const height = this.height;
 
 		// Current Glyph
-		let glyphHex = glyphToHex(this.glyphs.charAt(0));
-		let sg = editor.project.getGlyph(glyphHex);
+		const glyphHex = glyphToHex(this.glyphs.charAt(0));
+		const sg = editor.project.getGlyph(glyphHex);
 		// log(sg);
 
 		if (requestAnimationFrame) requestAnimationFrame(redrawAnimationFrame);
@@ -146,7 +146,7 @@ export class EditCanvas extends HTMLElement {
 			drawGlyph(sg, ctx, view);
 
 			// Draw selected path / path
-			let editMode = editor.selectedTool;
+			const editMode = editor.selectedTool;
 			// log(`editMode: ${editMode}`);
 
 			if (editMode === 'resize') {
@@ -178,12 +178,12 @@ export class EditCanvas extends HTMLElement {
 
 		function drawGuides() {
 			ctx.fillStyle = accentColors.gray.l90;
-			let gridTop = sYcY(settings.font.ascent, view);
-			let gridHeight = settings.font.upm * view.dz;
-			let gridPad = 100 * view.dz;
-			let gridWidth = sg.advanceWidth * view.dz;
+			const gridTop = sYcY(project.settings.font.ascent, view);
+			const gridHeight = project.totalVertical * view.dz;
+			const gridPad = 100 * view.dz;
+			const gridWidth = sg.advanceWidth * view.dz;
 
-			let gridLines = settings.app.guides.system;
+			const gridLines = project.settings.app.guides.system;
 			// Verticals
 			if (gridLines.showLeftSide) {
 				ctx.fillRect(view.dx, gridTop, 1, gridHeight);

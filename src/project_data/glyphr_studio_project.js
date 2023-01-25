@@ -331,7 +331,34 @@ export class GlyphrStudioProject {
 		// log(`GSProject.calcFontMaxes`, 'end');
 		return fm;
 	}
+
+	/**
+	 * Synthetic property.
+	 * Ascent + Descent doesn't always have to equal UPM.
+	 * So, for calculating the space (mostly for edit-canvas and display-canvas)
+	 * it's better to use Ascent + Descent instead of UPM.
+	 * @returns {Number} - vertical height in Em
+	 */
+	get totalVertical() {
+		let desc = Math.abs(parseInt(this.settings.font.descent));
+		let asc = parseInt(this.settings.font.ascent);
+		return desc + asc;
+	}
+
+	/**
+	 * Synthetic property
+	 * For calculating views, it's good to start with an advance width
+	 * that makes some sort of sense.
+	 * @returns {Number} - width in Em
+	 */
+	get defaultAdvanceWidth() {
+		return parseInt(this.settings.font.upm) / 2;
+	}
 }
+
+// --------------------------------------------------------------
+// Helpers
+// --------------------------------------------------------------
 
 /**
  * Takes a template object of expected keys and default values

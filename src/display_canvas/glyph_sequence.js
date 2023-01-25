@@ -113,7 +113,6 @@ export class GlyphSequence {
 		let thisKern;
 		let thisGlyph;
 
-		const upm = project.settings.font.upm;
 		this.data = [];
 		this.textBlocks = this.glyphString.split('\n');
 
@@ -133,7 +132,7 @@ export class GlyphSequence {
 				thisGlyph = project.getGlyph(charsToHexArray(currentBlock[charNumber]).join(''));
 
 				// Calculate width
-				thisWidth = thisGlyph ? thisGlyph.advanceWidth : upm / 2;
+				thisWidth = thisGlyph ? thisGlyph.advanceWidth : project.defaultAdvanceWidth;
 
 				// Kern distance
 				thisKern = calculateKernOffset(currentBlock[charNumber], currentBlock[charNumber + 1]);
@@ -175,14 +174,14 @@ export class GlyphSequence {
 		let currentY = 0;
 		let checkForBreak = false;
 
-		const scale = this.fontSize / upm;
+		const scale = this.fontSize / project.totalVertical;
 		// log(`scale: ${scale}`);
 
 		const ascent = project.settings.font.ascent;
 		// log(`ascent: ${ascent}`);
 
 		//Convert area properties to project / UPM scales
-		const singleLineHeight = upm + this.lineGap / scale;
+		const singleLineHeight = project.totalVertical + this.lineGap / scale;
 		// log(`singleLineHeight: ${singleLineHeight}`);
 
 		const scaleAreaWidth = this.areaMaxes.width / scale;
