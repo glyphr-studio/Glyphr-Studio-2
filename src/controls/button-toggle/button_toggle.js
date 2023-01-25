@@ -1,5 +1,4 @@
 import { makeElement } from '../../common/dom.js';
-import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
 import style from './button-toggle.css?inline';
 
 /**
@@ -130,8 +129,6 @@ export class ButtonToggle extends HTMLElement {
 			this.removeAttribute('selected');
 			this.wrapper.removeAttribute('selected');
 		}
-
-		flashUIElementAsActive(this);
 	}
 
 	/**

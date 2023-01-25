@@ -21,9 +21,9 @@
 }
 
 .wrapper[disabled],
-.wrapper:hover[disabled],
-.wrapper:focus[disabled],
-.wrapper:active[disabled] {
+.wrapper[disabled]:hover,
+.wrapper[disabled]:focus,
+.wrapper[disabled]:active {
 	background-color: var(--disabled-background);
 	border-color: var(--disabled-background);
 }
@@ -54,10 +54,10 @@
 	border-radius: 3px 0px 0px 3px;
 }
 
-.numberInput[disabled],
-.numberInput:hover[disabled],
-.numberInput:focus[disabled],
-.numberInput:active[disabled] {
+.wrapper[disabled] .numberInput,
+.wrapper[disabled] .numberInput:hover,
+.wrapper[disabled] .numberInput:focus,
+.wrapper[disabled] .numberInput:active {
 	background-color: var(--disabled-background);
 	border-color: var(--disabled-border);
 	color: var(--disabled-text);
@@ -79,8 +79,7 @@
 	border-left-color: var(--enabled-focus-border);
 }
 
-.wrapper:hover[disabled] .arrowWrapper,
-.arrowWrapper:hover[disabled] {
+.wrapper[disabled]:hover .arrowWrapper {
 	border-left-color: var(--disabled-background);
 }
 
@@ -89,10 +88,10 @@
 	outline-offset: -1px;
 }
 
-.arrowWrapper[disabled],
-.arrowWrapper:hover[disabled],
-.arrowWrapper:focus[disabled],
-.arrowWrapper:active[disabled] {
+.wrapper[disabled] .arrowWrapper,
+.wrapper[disabled] .arrowWrapper:hover,
+.wrapper[disabled] .arrowWrapper:focus,
+.wrapper[disabled] .arrowWrapper:active {
 	border-color: var(--disabled-background);
 	background-color: var(--disabled-background);
 }
@@ -153,14 +152,14 @@
 	background-color: var(--enabled-active-background);
 }
 
-.upArrow[disabled],
-.downArrow[disabled],
-.upArrow:hover[disabled],
-.downArrow:hover[disabled],
-.upArrow:focus[disabled],
-.downArrow:focus[disabled],
-.upArrow:active[disabled],
-.downArrow:active[disabled] {
+.wrapper[disabled] .arrowWrapper .upArrow,
+.wrapper[disabled] .arrowWrapper .downArrow,
+.wrapper[disabled] .arrowWrapper .upArrow:hover,
+.wrapper[disabled] .arrowWrapper .downArrow:hover,
+.wrapper[disabled] .arrowWrapper .upArrow:focus,
+.wrapper[disabled] .arrowWrapper .downArrow:focus,
+.wrapper[disabled] .arrowWrapper .upArrow:active,
+.wrapper[disabled] .arrowWrapper .downArrow:active {
 	cursor: default;
 	color: var(--disabled-fill) !important;
 	background-color: var(--disabled-background) !important;

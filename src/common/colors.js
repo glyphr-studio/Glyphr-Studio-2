@@ -284,25 +284,3 @@ export function makeRandomSaturatedColor() {
 	}
 	return 'rgb(' + arr[0] + ',' + arr[1] + ',' + arr[2] + ')';
 }
-
-/**
- * When a UI Element is sent an event via JavaScript
- * (as opposed to a user's input via keyboard or mouse)
- * the element's Style does not look like a native
- * :active style. This function sends an artificial
- * :active style for a brief moment.
- * @param {object} elem - HTML Element to flash
- */
-export function flashUIElementAsActive(elem) {
-	elem.style.borderColor = uiColors.enabled.active.border;
-	elem.style.backgroundColor = uiColors.enabled.active.background;
-	elem.style.color = uiColors.enabled.active.fill;
-	elem.style.fill = uiColors.enabled.active.fill;
-
-	window.setTimeout(function () {
-		elem.style.borderColor = uiColors.enabled.resting.border;
-		elem.style.backgroundColor = uiColors.enabled.resting.background;
-		elem.style.color = uiColors.enabled.resting.fill;
-		elem.style.fill = uiColors.enabled.resting.fill;
-	}, 200);
-}
