@@ -2,15 +2,15 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp, showAppErrorPage } from './app.js';
 
 /* Web Components */
-import { OptionChooser } from '../controls/option-chooser/option-chooser.js';
-import { ButtonToggle } from '../controls/button-toggle/button-toggle.js';
+import { OptionChooser } from '../controls/option-chooser/option_chooser.js';
+import { ButtonToggle } from '../controls/button-toggle/button_toggle.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { EditCanvas } from '../edit_canvas/edit_canvas.js';
-import { FancyButton } from '../controls/fancy-button/fancy-button.js';
-import { GlyphTile } from '../controls/glyph-tile/glyph-tile.js';
-import { InfoBubble } from '../controls/info-bubble/info-bubble.js';
-import { InputNumber } from '../controls/input-number/input-number.js';
-import { InputNumberLockable } from '../controls/input-number-lockable/input-number-lockable.js';
+import { FancyButton } from '../controls/fancy-button/fancy_button.js';
+import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
+import { InfoBubble } from '../controls/info-bubble/info_bubble.js';
+import { InputNumber } from '../controls/input-number/input_number.js';
+import { InputNumberLockable } from '../controls/input-number-lockable/input_number_lockable.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { makeElement } from '../common/dom.js';
 import { closeAllDialogs } from '../controls/dialogs/dialogs.js';

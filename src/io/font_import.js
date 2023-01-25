@@ -2,7 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '
 import { isVal, json, round } from '../common/functions.js';
 import { decToHex, getUnicodeName } from '../common/unicode.js';
 import { showError } from '../controls/dialogs/dialogs.js';
-import { updateProgressIndicator } from '../controls/progress-indicator/progress-indicator.js';
+import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { importOverflowCount, isOutOfBounds, resetOpenProjectTabs } from '../pages/open_project.js';
 import { Glyph } from '../project_data/glyph.js';
