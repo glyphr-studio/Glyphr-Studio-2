@@ -1,6 +1,6 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { closeAllDialogs, makeContextMenu } from '../controls/dialogs/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
@@ -120,6 +120,28 @@ export class GlyphrStudioApp {
 	}
 }
 
+export function showAppErrorPage(friendlyMessage = '', errorObject = { message: '', stack: '' }) {
+	const wrapper = document.querySelector('#app__wrapper');
+	closeAllDialogs();
+	let content = `
+		<div id="app__landing-page">
+		<div class="error-page__wrapper">
+			<div class="error-page__table-flip">(╯°▢°）╯︵ ┻━┻</div>
+				<h1>${friendlyMessage || 'Glyphr Studio ran into a problem'}</h1>
+				<br>
+				Please send us an email, hopefully we'll be able to help:
+				<a
+					href="mailto:mail@glyphrstudio.com&subject=[${GSApp.version}] Feedback"
+					>mail@glyphrstudio.com</a>
+				<br><br><br>
+				<pre>${errorObject.stack.replaceAll('<', '&lt;')}</pre>
+			</div>
+		</div>
+	`;
+
+	wrapper.innerHTML = content;
+}
+
 function addTelemetry() {
 	/*
 	<!-- Google tag (gtag.js) -->
@@ -178,33 +200,36 @@ function makeMenu(menuName) {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
 			closeAllDialogs();
-			insertAfter(entryPoint, makeContextMenu(
-				[
-					{
-						name: 'Save Glyphr Studio Project File',
-						icon: 'command_save',
-						shortcut: ['Ctrl', 's'],
-						onClick: () => {
-							getCurrentProjectEditor().saveGlyphrProjectFile();
+			insertAfter(
+				entryPoint,
+				makeContextMenu(
+					[
+						{
+							name: 'Save Glyphr Studio Project File',
+							icon: 'command_save',
+							shortcut: ['Ctrl', 's'],
+							onClick: () => {
+								getCurrentProjectEditor().saveGlyphrProjectFile();
+							},
 						},
-					},
-					{ name: 'hr' },
-					{
-						name: 'Export OTF File',
-						icon: 'command_export',
-						shortcut: ['Ctrl', 'e'],
-						onClick: ioFont_exportFont,
-					},
-					{
-						name: 'Export SVG Font File',
-						icon: 'command_export',
-						shortcut: ['Ctrl', 'g'],
-						onClick: ioSVG_exportSVGfont,
-					},
-				],
-				rect.x,
-				rect.y + rect.height
-			));
+						{ name: 'hr' },
+						{
+							name: 'Export OTF File',
+							icon: 'command_export',
+							shortcut: ['Ctrl', 'e'],
+							onClick: ioFont_exportFont,
+						},
+						{
+							name: 'Export SVG Font File',
+							icon: 'command_export',
+							shortcut: ['Ctrl', 'g'],
+							onClick: ioSVG_exportSVGfont,
+						},
+					],
+					rect.x,
+					rect.y + rect.height
+				)
+			);
 		});
 	}
 
@@ -212,20 +237,23 @@ function makeMenu(menuName) {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
 			closeAllDialogs();
-			insertAfter(entryPoint, makeContextMenu(
-				[
-					{
-						name: 'Open another project',
-						icon: 'command_newTab',
-						shortcut: ['Ctrl', 'o'],
-						onClick: () => {
-							window.open('https://glyphrstudio.com/v2/app/', '_blank');
+			insertAfter(
+				entryPoint,
+				makeContextMenu(
+					[
+						{
+							name: 'Open another project',
+							icon: 'command_newTab',
+							shortcut: ['Ctrl', 'o'],
+							onClick: () => {
+								window.open('https://glyphrstudio.com/v2/app/', '_blank');
+							},
 						},
-					},
-				],
-				rect.x,
-				rect.y + rect.height
-			));
+					],
+					rect.x,
+					rect.y + rect.height
+				)
+			);
 		});
 	}
 
@@ -233,38 +261,41 @@ function makeMenu(menuName) {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
 			closeAllDialogs();
-			insertAfter(entryPoint, makeContextMenu(
-				[
-					{
-						name: 'External Help & Documentation site',
-						icon: 'command_newTab',
-						onClick: () => {
-							window.open('https://glyphrstudio.com/v2/help/', '_blank');
+			insertAfter(
+				entryPoint,
+				makeContextMenu(
+					[
+						{
+							name: 'External Help & Documentation site',
+							icon: 'command_newTab',
+							onClick: () => {
+								window.open('https://glyphrstudio.com/v2/help/', '_blank');
+							},
 						},
-					},
-					{ name: 'hr' },
-					{
-						name: 'In-app help',
-						icon: 'command_help',
-						onClick: () => {
-							let editor = getCurrentProjectEditor();
-							editor.nav.page = 'Help';
-							editor.navigate();
+						{ name: 'hr' },
+						{
+							name: 'In-app help',
+							icon: 'command_help',
+							onClick: () => {
+								let editor = getCurrentProjectEditor();
+								editor.nav.page = 'Help';
+								editor.navigate();
+							},
 						},
-					},
-					{
-						name: 'About Glyphr Studio',
-						icon: 'command_info',
-						onClick: () => {
-							let editor = getCurrentProjectEditor();
-							editor.nav.page = 'About';
-							editor.navigate();
+						{
+							name: 'About Glyphr Studio',
+							icon: 'command_info',
+							onClick: () => {
+								let editor = getCurrentProjectEditor();
+								editor.nav.page = 'About';
+								editor.navigate();
+							},
 						},
-					},
-				],
-				rect.x,
-				rect.y + rect.height
-			));
+					],
+					rect.x,
+					rect.y + rect.height
+				)
+			);
 		});
 	}
 
