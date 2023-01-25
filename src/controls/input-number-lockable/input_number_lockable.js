@@ -1,6 +1,6 @@
 import { makeElement } from '../../common/dom.js';
-import { ButtonToggle } from '../button-toggle/button-toggle.js';
-import { InputNumber } from '../input-number/input-number.js';
+import { ButtonToggle } from '../button-toggle/button_toggle.js';
+import { InputNumber } from '../input-number/input_number.js';
 import style from './input-number-lockable.css?inline';
 
 /**

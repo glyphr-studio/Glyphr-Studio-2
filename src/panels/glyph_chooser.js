@@ -2,7 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { json } from '../common/functions.js';
 import { areHexValuesEqual, basicLatinOrder, decToHex, unicodeRanges } from '../common/unicode.js';
-import { GlyphTile } from '../controls/glyph-tile/glyph-tile.js';
+import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { isControlChar } from '../lib/unicode_blocks.js';
 
 /**
