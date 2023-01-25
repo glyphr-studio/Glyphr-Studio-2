@@ -43,8 +43,8 @@ export class DisplayCanvas extends HTMLElement {
 		this.drawCrisp = false;
 
 		// Put it all together
-		let shadow = this.attachShadow({ mode: 'open' });
-		let styles = makeElement({ tag: 'style', innerHTML: style });
+		const shadow = this.attachShadow({ mode: 'open' });
+		const styles = makeElement({ tag: 'style', innerHTML: style });
 		shadow.appendChild(styles);
 
 		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
@@ -77,12 +77,12 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`this.width: ${this.width}`);
 		// log(`this.height: ${this.height}`);
 
-		let contentWidth = this.width - 2 * this.pagePadding;
-		let contentHeight = this.height - 2 * this.pagePadding;
+		const contentWidth = this.width - 2 * this.pagePadding;
+		const contentHeight = this.height - 2 * this.pagePadding;
 		// log(`contentWidth: ${contentWidth}`);
 		// log(`contentHeight: ${contentHeight}`);
 
-		let maxes = {
+		const maxes = {
 			xMin: this.pagePadding,
 			xMax: this.pagePadding + contentWidth,
 			yMin: this.pagePadding,
@@ -227,7 +227,7 @@ export class DisplayCanvas extends HTMLElement {
 	}
 
 	iterator(drawFunction) {
-		let data = this.glyphSequence.data;
+		const data = this.glyphSequence.data;
 		for (let block = 0; block < data.length; block++) {
 			for (let glyph = 0; glyph < data[block].length; glyph++) {
 				drawFunction(data[block][glyph], this);
@@ -243,12 +243,12 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`displayCanvas.drawPageExtras`, 'start');
 		// log(maxes);
 		const maxes = this.calculatePageMaxes();
-		let top = maxes.yMin || 0;
-		let bottom = maxes.yMax === Infinity ? this.canvas.height : maxes.yMax || this.canvas.height;
-		let left = maxes.xMin || 0;
-		let right = maxes.xMax === Infinity ? this.canvas.width : maxes.xMax || this.canvas.width;
-		let width = right - left;
-		let height = bottom - top;
+		const top = maxes.yMin || 0;
+		const bottom = maxes.yMax === Infinity ? this.canvas.height : maxes.yMax || this.canvas.height;
+		const left = maxes.xMin || 0;
+		const right = maxes.xMax === Infinity ? this.canvas.width : maxes.xMax || this.canvas.width;
+		const width = right - left;
+		const height = bottom - top;
 
 		// log(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
 
@@ -274,13 +274,14 @@ export class DisplayCanvas extends HTMLElement {
 
 	drawGlyphExtras(charData) {
 		// log(`displayCanvas.drawGlyphExtras`, 'start');
-		const settings = getCurrentProject().settings.font;
+		const project = getCurrentProject();
+		const settings = project.settings.font;
 		const scale = charData.view.dz;
 		let drawWidth = charData.widths.advance * scale;
-		let drawHeight = settings.upm * scale;
+		let drawHeight = project.totalVertical * scale;
 		let drawY = charData.view.dy + this.pagePadding - settings.ascent * scale;
 		let drawX = charData.view.dx + this.pagePadding;
-		let drawK = charData.widths.kern * scale * -1;
+		const drawK = charData.widths.kern * scale * -1;
 
 		// log(`\t drawing ${charData.char}`);
 		// log(`\t scaled view \t ${json(scaledView, true)}`);
@@ -314,11 +315,11 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
 		// const settings = getCurrentProject().settings.font;
-		let glyph = charData.glyph;
+		const glyph = charData.glyph;
 		// TODO flattenGlyphs
-		// let flattenGlyphs = td.flattenGlyphs || false;
-		let flattenGlyphs = false;
-		let view = clone(charData.view);
+		// const flattenGlyphs = td.flattenGlyphs || false;
+		const flattenGlyphs = false;
+		const view = clone(charData.view);
 		// view.dx *= view.dz;
 		view.dx += this.pagePadding;
 		// view.dy += settings.ascent + this.pagePadding;
@@ -354,9 +355,9 @@ export class DisplayCanvas extends HTMLElement {
 	// --------------------------------------------------------------
 
 	createImage() {
-		let imageData = this.canvas.toDataURL();
+		const imageData = this.canvas.toDataURL();
 
-		let win = window.open(document.location.href, 'Glyphr Test Drive');
+		const win = window.open(document.location.href, 'Glyphr Test Drive');
 
 		win.document.write(
 			'<!DOCTYPE html><html>' +

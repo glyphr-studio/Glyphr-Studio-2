@@ -695,21 +695,19 @@ export class Path extends GlyphElement {
 	// --------------------------------------------------------------
 	/**
 	 * Make SVG from this Path
-	 * @param {number} size - how big
-	 * @param {number} gutter - margin
-	 * @param {number} upm - project UPM size
-	 * @param {number} descender - project descender size
+	 * @param {number} size - how big the resulting SVG should be
+	 * @param {number} padding - interior space around the glyph
 	 * @returns {string} - svg
 	 */
 	makeSVG(size = 50, padding = 5) {
-		const fontSettings = getCurrentProject().settings.font;
-		const scale = (size - padding * 2) / fontSettings.upm;
-		const scaledUPM = size / fontSettings.upm;
-		const translateY = fontSettings.ascent * scale + padding * 2;
+		const project = getCurrentProject();
+		const scale = (size - padding * 2) / project.totalVertical;
+		const scaledHeight = size / project.totalVertical;
+		const translateY = project.settings.font.ascent * scale + padding * 2;
 
 		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
 		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
-		re += `\t<g transform="translate(${padding},${translateY}) scale(${scaledUPM}, -${scaledUPM})">\n`;
+		re += `\t<g transform="translate(${padding},${translateY}) scale(${scaledHeight}, -${scaledHeight})">\n`;
 		re += `\t\t<path d="${this.svgPathData}"/>\n`;
 		re += `\t</g>\n</svg>`;
 		return re;

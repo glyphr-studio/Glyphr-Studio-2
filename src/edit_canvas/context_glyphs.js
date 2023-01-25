@@ -6,6 +6,8 @@
 		Common functions around this can be found here.
 **/
 
+import { getCurrentProject } from "../app/main";
+
 // -------------------
 // CONTEXT GLYPHS
 // -------------------
@@ -100,7 +102,7 @@ function getGlyphSequenceAdvanceWidth(sequence) {
 			advanceWidth += g.advanceWidth;
 			if (a[i + 1]) advanceWidth += calculateKernOffset(v, a[i + 1]);
 		} else {
-			advanceWidth += (getCurrentProject().settings.font.upm * 1) / 2;
+			advanceWidth += getCurrentProject().defaultAdvanceWidth;
 		}
 	});
 
@@ -386,21 +388,21 @@ function findAndUnderlineHotspot(cx, cy) {
 }
 
 function calculateDefaultView() {
-	const ps = getCurrentProject().settings.font;
+	const project = getCurrentProject();
 
 	const xpadding = 80;
 	const ypadding = 80; // Height of the UI across the top
 	const canw = window.innerWidth - 470; // 470 is the width of the left panel area
 	const canh = window.innerHeight - ypadding;
 
-	const strw = ps.upm / 2;
-	const strh = ps.ascent - ps.descent;
+	const strw = project.defaultAdvanceWidth;
+	const strh = project.totalVertical;
 
 	let zw = round(canw / (strw * 1.4), 3);
 	let zh = round(canh / (strh * 1.4), 3);
 	let nz = Math.min(zh, zw);
 	const nx = round((canw - nz * strw) / 2);
-	const ny = round((canh - nz * strh) / 2 + ps.ascent * nz);
+	const ny = round((canh - nz * strh) / 2 + project.settings.font.ascent * nz);
 
 	_UI.defaultView = { dx: nx, dy: ny, dz: nz };
 }

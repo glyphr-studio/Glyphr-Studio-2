@@ -35,11 +35,12 @@ export class GlyphTile extends HTMLElement {
 
 		// log(`this.glyphHex: ${this.glyphHex}`);
 
-		let fontSettings = getCurrentProject().settings.font;
-		let overallSize = 50;
-		let gutterSize = 2;
-		let contentSize = overallSize - 2 * gutterSize;
-		let zoom = contentSize / fontSettings.upm;
+		const project = getCurrentProject();
+		const fontSettings = project.settings.font;
+		const overallSize = 50;
+		const gutterSize = 2;
+		const contentSize = overallSize - 2 * gutterSize;
+		const zoom = contentSize / project.totalVertical;
 		let advanceWidth;
 
 		// log(`contentSize: ${contentSize}`);
@@ -85,8 +86,8 @@ export class GlyphTile extends HTMLElement {
 		this.name.innerHTML = this.glyphHex === '0x20' ? 'Space' : this.glyphChar;
 
 		// Put it all together
-		let shadow = this.attachShadow({ mode: 'open' });
-		let styles = makeElement({ tag: 'style', innerHTML: style });
+		const shadow = this.attachShadow({ mode: 'open' });
+		const styles = makeElement({ tag: 'style', innerHTML: style });
 		shadow.appendChild(styles);
 
 		this.wrapper.appendChild(this.thumbnail);
@@ -104,7 +105,7 @@ export class GlyphTile extends HTMLElement {
 		// log(`oldValue: ${oldValue}`);
 		// log(`newValue: ${newValue}`);
 
-		let wrapper = this.shadowRoot ? this.shadowRoot.querySelector('.wrapper') : false;
+		const wrapper = this.shadowRoot ? this.shadowRoot.querySelector('.wrapper') : false;
 
 		if (wrapper) {
 			if (this.hasAttribute('selected')) wrapper.setAttribute('selected', '');
@@ -120,64 +121,5 @@ function redrawGlyph(tile) {
 	if (tile.glyphObject && tile.ctx) {
 		tile.ctx.clearRect(0, 0, tile.thumbnail.width, tile.thumbnail.height);
 		drawGlyph(tile.glyphObject, tile.ctx, tile.view);
-	}
-}
-
-/**
- * This is just for testing, in real life this will call
- * a global project function
- * @param {string} gid - glyph id
- * @returns {Glyph}
- */
-function getTestGlyph(gid) {
-	if (gid === '0x41') {
-		return new Glyph({
-			id: gid,
-			paths: [
-				{
-					path: {
-						pathPoints: [
-							{ p: { coord: { x: 0, y: 0 } } },
-							{ p: { coord: { x: 200, y: 700 } } },
-							{ p: { coord: { x: 300, y: 700 } } },
-							{ p: { coord: { x: 500, y: 0 } } },
-							{ p: { coord: { x: 400, y: 0 } } },
-							{ p: { coord: { x: 300, y: 300 } } },
-							{ p: { coord: { x: 200, y: 300 } } },
-							{ p: { coord: { x: 100, y: 0 } } },
-						],
-					},
-				},
-				{
-					path: {
-						pathPoints: [
-							{ p: { coord: { x: 200, y: 350 } } },
-							{ p: { coord: { x: 300, y: 350 } } },
-							{ p: { coord: { x: 250, y: 600 } } },
-						],
-					},
-				},
-				{
-					path: {
-						pathPoints: [
-							{ p: { coord: { x: 0, y: 700 } } },
-							{ p: { coord: { x: 100, y: 700 } } },
-							{ p: { coord: { x: 0, y: 600 } } },
-						],
-					},
-				},
-				{
-					path: {
-						pathPoints: [
-							{ p: { coord: { x: 0, y: -300 } } },
-							{ p: { coord: { x: 100, y: -300 } } },
-							{ p: { coord: { x: 0, y: -200 } } },
-						],
-					},
-				},
-			],
-		});
-	} else {
-		return false;
 	}
 }
