@@ -63,7 +63,7 @@ export function makeEditToolsButtons() {
 		let newToolButton = makeElement({
 			tag: 'button',
 			title: toolButtonData[buttonName].title,
-			className: 'edit-canvas__tool',
+			className: 'editor-page__tool',
 			innerHTML: makeToolButtonSVG({
 				name: buttonName,
 				selected: isSelected,
@@ -73,14 +73,14 @@ export function makeEditToolsButtons() {
 
 		newToolButton.addEventListener('click', () => clickTool(buttonName));
 
-		if (isSelected) newToolButton.classList.add('edit-canvas__tool-selected');
+		if (isSelected) newToolButton.classList.add('editor-page__tool-selected');
 
 		editor.subscribe({
 			topic: 'whichToolIsSelected',
 			subscriberID: `tools.${buttonName}`,
 			callback: (newSelectedTool) => {
 				let isSelected = newSelectedTool === buttonName;
-				newToolButton.classList.toggle('edit-canvas__tool-selected', isSelected);
+				newToolButton.classList.toggle('editor-page__tool-selected', isSelected);
 				newToolButton.innerHTML = makeToolButtonSVG({ name: buttonName, selected: isSelected });
 			},
 		});
@@ -140,7 +140,7 @@ export function makeViewToolsButtons() {
 		let isSelected = editor.selectedTool === buttonName;
 		let newToolButton = makeElement({
 			tag: 'button',
-			className: 'edit-canvas__tool',
+			className: 'editor-page__tool',
 			title: viewButtonTitles[buttonName],
 			innerHTML: makeToolButtonSVG({
 				name: buttonName,
@@ -149,7 +149,7 @@ export function makeViewToolsButtons() {
 		});
 		newToolButton.addEventListener('click', () => clickTool(buttonName));
 
-		if (isSelected) newToolButton.classList.add('edit-canvas__tool-selected');
+		if (isSelected) newToolButton.classList.add('editor-page__tool-selected');
 
 		if (buttonName === 'pan') {
 			editor.subscribe({
@@ -157,7 +157,7 @@ export function makeViewToolsButtons() {
 				subscriberID: `tools.${buttonName}`,
 				callback: (newSelectedTool) => {
 					let isSelected = newSelectedTool === buttonName;
-					newToolButton.classList.toggle('edit-canvas__tool-selected', isSelected);
+					newToolButton.classList.toggle('editor-page__tool-selected', isSelected);
 					newToolButton.innerHTML = makeToolButtonSVG({ name: buttonName, selected: isSelected });
 				},
 			});
@@ -173,7 +173,7 @@ export function makeViewToolsButtons() {
 
 	let zoomReadout = makeElement({
 		tag: 'input',
-		className: 'edit-canvas__zoom-readout',
+		className: 'editor-page__zoom-readout',
 		title: 'Zoom level',
 		innerHTML: zoomReadoutNumber,
 	});
@@ -195,7 +195,7 @@ export function makeViewToolsButtons() {
 	});
 
 	// Put it all together
-	let responsiveGroup = makeElement({ className: 'edit-canvas__responsive-group' });
+	let responsiveGroup = makeElement({ className: 'editor-page__responsive-group' });
 
 	addAsChildren(responsiveGroup, [
 		makeElement({ tag: 'div', content: '&emsp;' }),
@@ -252,7 +252,7 @@ export function makeKernToolsButtons() {
 	const kern = `
 		<button
 			title="kern"
-			class="${st === 'kern' ? 'edit-canvas__tool-selected ' : ' '} tool"
+			class="${st === 'kern' ? 'editor-page__tool-selected ' : ' '} tool"
 			onclick="clickTool(\'kern\');"
 		>
 			${makeToolButtonSVG({ name: 'kern', selected: st === 'kern' })}
