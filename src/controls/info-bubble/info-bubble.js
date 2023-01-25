@@ -1,7 +1,7 @@
 import { accentColors } from '../../common/colors.js';
 import { makeElement } from '../../common/dom.js';
-import style from './info-bubble.css';
-import bubbleStyle from './info-bubble-popup.css';
+import style from './info-bubble.css?inline';
+import bubbleStyle from './info-bubble-popup.css?inline';
 
 /**
  * A small bubble that displays information

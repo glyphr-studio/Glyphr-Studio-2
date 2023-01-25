@@ -18,7 +18,7 @@ import {
 import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js';
 import { makeCrisp, round } from '../common/functions.js';
 import { setCursor, updateCursor } from './cursors.js';
-import style from './edit-canvas.css';
+import style from './edit-canvas.css?inline';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas

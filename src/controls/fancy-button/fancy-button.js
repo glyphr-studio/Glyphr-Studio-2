@@ -1,5 +1,5 @@
 import { makeElement } from '../../common/dom.js';
-import style from './fancy-button.css';
+import style from './fancy-button.css?inline';
 
 /**
  * It's a button... only fancier!
