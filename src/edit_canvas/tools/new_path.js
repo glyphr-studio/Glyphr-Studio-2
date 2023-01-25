@@ -143,7 +143,7 @@ export class Tool_NewPath {
 	showDoneCreatingPathButton() {
 		let finishPath = makeElement({
 			tag: 'button',
-			className: 'edit-canvas__tool-selected',
+			className: 'editor-page__tool-selected',
 			id: 'done-creating-path-button',
 			title: 'Done creating path',
 			content: 'Done creating path',
