@@ -1,5 +1,5 @@
 import { addAsChildren, insertAfter, makeElement } from '../../common/dom.js';
-import style from './option-chooser.css';
+import style from './option-chooser.css?inline';
 import { closeAllDialogs, makeContextMenu } from '../dialogs/dialogs.js';
 import { json } from '../../common/functions.js';
 import { closeAllNavMenus } from '../../project_editor/navigator.js';
