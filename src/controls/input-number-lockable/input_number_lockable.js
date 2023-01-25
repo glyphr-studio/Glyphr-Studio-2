@@ -81,7 +81,8 @@ export class InputNumberLockable extends HTMLElement {
 	connectedCallback() {
 		// log(`InputNumberLockable.connectedCallback`, 'start');
 		let parentValue = this.getAttribute('value');
-		// log(`parentValue: ${parentValue}`);
+		this.inputNumber.setAttribute('value', parentValue);
+		this.inputNumber.value = parentValue;
 		this.value = parentValue;
 		// log(`InputNumberLockable.connectedCallback`, 'end');
 	}
@@ -113,6 +114,8 @@ export class InputNumberLockable extends HTMLElement {
 				} else if (mutation.attributeName === 'value') {
 					// log(`changing value`);
 					this.elementRoot.setAttribute('value', mutation.target.value);
+					this.elementRoot.value = mutation.target.value;
+
 				}
 			}
 		}
@@ -123,7 +126,7 @@ export class InputNumberLockable extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['disabled', 'selected'];
+		return ['disabled', 'selected', 'value'];
 	}
 
 	/**

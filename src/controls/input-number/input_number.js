@@ -1,5 +1,4 @@
 import { makeElement } from '../../common/dom.js';
-import { uiColors, flashUIElementAsActive } from '../../common/colors.js';
 import { round } from '../../common/functions.js';
 import style from './input-number.css?inline';
 
@@ -16,13 +15,7 @@ export class InputNumber extends HTMLElement {
 		// log(JSON.stringify(attributes));
 		super();
 
-		// Object.keys(attributes).forEach((key) =>
-		// 	this.setAttribute(key, attributes[key])
-		// );
-
-		this._value = 99999999;
-
-		this.precision = this.getAttribute('precision') || 3;
+		if (this.getAttribute('precision')) this.precision = this.getAttribute('precision');
 		this.disabled = this.hasAttribute('disabled');
 
 		this.wrapper = makeElement({ className: 'wrapper' });
@@ -33,7 +26,7 @@ export class InputNumber extends HTMLElement {
 			tag: 'input',
 			className: 'numberInput',
 			tabIndex: !this.disabled,
-			attributes: { type: 'text' },
+			attributes: { type: 'text', value: this.sanitizeValue(this.getAttribute('value')) },
 		});
 		this.numberInput.elementRoot = this;
 
@@ -57,9 +50,6 @@ export class InputNumber extends HTMLElement {
 		});
 		this.downArrow.elementRoot = this;
 
-		// log('upArrow');
-		// log(this.upArrow);
-
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
 		let styles = makeElement({ tag: 'style', innerHTML: style });
@@ -71,7 +61,12 @@ export class InputNumber extends HTMLElement {
 		this.wrapper.appendChild(this.numberInput);
 		this.wrapper.appendChild(this.arrowWrapper);
 
-		if (!this.disabled) this.addAllEventListeners();
+		if (this.disabled) {
+			this.numberInput.setAttribute('disabled', '');
+			this.wrapper.setAttribute('disabled', '');
+		} else {
+			this.addAllEventListeners();
+		}
 
 		shadow.appendChild(this.wrapper);
 
@@ -83,7 +78,7 @@ export class InputNumber extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['disabled'];
+		return ['disabled', 'value'];
 	}
 
 	/**
@@ -91,13 +86,6 @@ export class InputNumber extends HTMLElement {
 	 */
 	connectedCallback() {
 		// log(`InputNumber.connectedCallback`, 'start');
-		let myValue = this.getAttribute('value');
-		// log(`myValue: ${myValue}`);
-		this.value = myValue;
-		if (this.disabled) this.wrapper.setAttribute('disabled', '');
-		if (this.disabled) this.numberInput.setAttribute('disabled', '');
-		if (this.disabled) this.upArrow.setAttribute('disabled', '');
-		if (this.disabled) this.downArrow.setAttribute('disabled', '');
 		// log(`InputNumber.connectedCallback`, 'end');
 	}
 
@@ -115,24 +103,25 @@ export class InputNumber extends HTMLElement {
 			if (newValue === '') {
 				// disabled
 				this.wrapper.setAttribute('disabled', '');
-				this.numberInput.removeAttribute('tabIndex');
 				this.numberInput.setAttribute('disabled', '');
+				this.numberInput.removeAttribute('tabIndex');
 				this.arrowWrapper.removeAttribute('tabIndex');
-				this.arrowWrapper.setAttribute('disabled', '');
-				this.upArrow.setAttribute('disabled', '');
-				this.downArrow.setAttribute('disabled', '');
 				this.removeAllEventListeners();
 			} else if (oldValue === '') {
 				// enabled
 				this.wrapper.removeAttribute('disabled');
-				this.numberInput.setAttribute('tabIndex', '0');
 				this.numberInput.removeAttribute('disabled');
+				this.numberInput.setAttribute('tabIndex', '0');
 				this.arrowWrapper.setAttribute('tabIndex', '0');
-				this.arrowWrapper.removeAttribute('disabled');
-				this.upArrow.removeAttribute('disabled');
-				this.downArrow.removeAttribute('disabled');
 				this.addAllEventListeners();
 			}
+		}
+
+		if (attributeName === 'value') {
+			this.numberInput.setAttribute('value', newValue);
+			this.numberInput.value = newValue;
+			let changeEvent = new Event('change', { bubbles: true, composed: true });
+			this.dispatchEvent(changeEvent);
 		}
 
 		// log(`InputNumber.attributeChangedCallback`, 'end');
@@ -148,9 +137,6 @@ export class InputNumber extends HTMLElement {
 		this.arrowWrapper.addEventListener('keydown', this.arrowKeyboardPressed);
 		this.numberInput.addEventListener('change', this.numberInputChanged);
 		this.numberInput.addEventListener('keydown', this.numberInputKeyboardPress);
-		this.arrowWrapper.addEventListener('mouseout', (event) => {
-			this.removeArrowStyle(this.upArrow, this.downArrow);
-		});
 	}
 
 	/**
@@ -169,48 +155,24 @@ export class InputNumber extends HTMLElement {
 	}
 
 	/**
-	 * Up and down arrows get CSS injected during interaction, this
-	 * removes that
+	 * Make sure new values are good
+	 * @param {Number} input - new value
 	 */
-	removeArrowStyle(upArrow, downArrow) {
-		upArrow.setAttribute('style', '');
-		downArrow.setAttribute('style', '');
-	}
-
-	/**
-	 * Get the main value
-	 * @returns {number}
-	 */
-	get value() {
-		// log(`InputNumber.get value`, 'start');
-		// log(`this._value: ${this._value}`);
-		// log(`InputNumber.get value`, 'end');
-		return this._value;
-	}
-
-	/**
-	 * Set the main numberValue
-	 * @param {number} number - new main value
-	 */
-	set value(number) {
-		// log(`InputNumber.set value`, 'start');
-		// log(`passed ${number}`);
-		this._value = round(parseFloat(number), this.precision) || 0;
-		// log(`this._value is now ${this._value}`);
-		// log(`this.value is now ${this.value}`);
-		this.numberInput.setAttribute('value', this._value);
-		this.setAttribute('value', this._value);
-		// log(`InputNumber.set value`, 'end');
+	sanitizeValue(input) {
+		let newValue = parseFloat(input) || 0;
+		if (this.precision) newValue = round(newValue, this.precision);
+		return newValue;
 	}
 
 	/**
 	 * Handle onChange event
 	 */
 	numberInputChanged(ev) {
-		this.elementRoot.value = this.elementRoot.numberInput.value;
-		let changeEvent = new Event('change', { bubbles: true, composed: true });
-		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
-		flashUIElementAsActive(this);
+		// log(`InputNumber.numberInputChanged`, 'start');
+		let newValue = this.elementRoot.sanitizeValue(ev.target.value);
+		this.elementRoot.value = newValue;
+		this.elementRoot.setAttribute('value', newValue);
+		// log(`InputNumber.numberInputChanged`, 'end');
 	}
 
 	/**
@@ -220,12 +182,10 @@ export class InputNumber extends HTMLElement {
 	increment(ev) {
 		// log(`InputNumber.increment`, 'start');
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-		// log(`this.elementRoot.value BEFORE: ${this.elementRoot.value}`);
-		this.elementRoot.value += mod ? 10 : 1;
-		// log(`this.elementRoot.value AFTERS: ${this.elementRoot.value}`);
-		let changeEvent = new Event('change', { bubbles: true, composed: true });
-		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
-		flashUIElementAsActive(this);
+		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
+		let newValue = this.elementRoot.sanitizeValue(currentValue += mod ? 10 : 1);
+		this.elementRoot.value = newValue;
+		this.elementRoot.setAttribute('value', newValue);
 		// log(`InputNumber.increment`, 'end');
 	}
 
@@ -236,12 +196,10 @@ export class InputNumber extends HTMLElement {
 	decrement(ev) {
 		// log(`InputNumber.decrement`, 'start');
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
-		// log(`this.elementRoot.value BEFORE: ${this.elementRoot.value}`);
-		this.elementRoot.value -= mod ? 10 : 1;
-		// log(`this.elementRoot.value AFTERS: ${this.elementRoot.value}`);
-		let changeEvent = new Event('change', { bubbles: true, composed: true });
-		setTimeout(() => this.elementRoot.dispatchEvent(changeEvent));
-		flashUIElementAsActive(this);
+		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
+		let newValue = this.elementRoot.sanitizeValue(currentValue -= mod ? 10 : 1);
+		this.elementRoot.value = newValue;
+		this.elementRoot.setAttribute('value', newValue);
 		// log(`InputNumber.decrement`, 'end');
 	}
 

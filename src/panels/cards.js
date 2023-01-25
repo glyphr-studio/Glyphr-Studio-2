@@ -120,6 +120,7 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 				if (property === 'width') workItem.setPathSize(newValue, false, true);
 				if (property === 'height') workItem.setPathSize(false, newValue, true);
 			} else {
+				// log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
 				workItem[property] = newValue;
 			}
 
