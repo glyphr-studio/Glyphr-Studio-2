@@ -1,5 +1,5 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
-import { GlyphrStudioApp } from './app.js';
+import { GlyphrStudioApp, showAppErrorPage } from './app.js';
 
 /* Web Components */
 import { OptionChooser } from '../controls/option-chooser/option-chooser.js';
@@ -22,25 +22,29 @@ export const GSApp = new GlyphrStudioApp();
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
-	if (GSApp.version) {
-		console.info(
-			`%cApp Version ${GSApp.version}%c\n`,
-			'color:hsl(199, 100%, 64%); background-color:hsla(200, 100%, 49%, 10%); padding: 4px 8px; border-radius: 12px;',
-			'background-color: transparent;'
-		);
-	}
-	log(`glyphrStudioOnLoad`, 'start');
+	try {
+		if (GSApp.version) {
+			console.info(
+				`%cApp Version ${GSApp.version}%c\n`,
+				'color:hsl(199, 100%, 64%); background-color:hsla(200, 100%, 49%, 10%); padding: 4px 8px; border-radius: 12px;',
+				'background-color: transparent;'
+			);
+		}
+		log(`glyphrStudioOnLoad`, 'start');
 
-	if (passPreChecks()) {
-		registerCustomComponents();
+		if (passPreChecks()) {
+			registerCustomComponents();
 
-		// Load project
-		GSApp.setUp();
-		log(GSApp);
-	} else {
-		log('did NOT pass pre-checks');
+			// Load project
+			GSApp.setUp();
+			log(GSApp);
+		} else {
+			log('did NOT pass pre-checks');
+		}
+		log(`glyphrStudioOnLoad`, 'end');
+	} catch (error) {
+		showAppErrorPage('Glyphr Studio failed to load!', error);
 	}
-	log(`glyphrStudioOnLoad`, 'end');
 }
 
 /**
@@ -105,43 +109,6 @@ export function getCurrentProjectEditor() {
 		gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
 	}
 	return gs.projectEditors[gs.selectedProjectEditor];
-}
-
-export function showAppErrorPage(friendlyMessage = '', errorObject = {message: '', stack: ''}) {
-	const wrapper = document.querySelector('#app__wrapper');
-	closeAllDialogs();
-	let content = `
-		<div id="app__landing-page">
-		<div style="margin: auto; font-size: 16px; text-align: center; color: rgba(255, 255, 255, 0.8)">
-			<div style="font-size: 20px; padding-bottom: 20px; text-align: center; color: var(--purple-l60);">
-				(╯°□°）╯︵ ┻━┻
-			</div>
-				<h1 style="text-align: center;">${friendlyMessage || 'Glyphr Studio ran into a problem'}</h1>
-				<br>
-				Please send us an email, hopefully we'll be able to help:
-				<a
-					style="color: white; text-decoration: underline"
-					href="mailto:mail@glyphrstudio.com&subject=[${GSApp.version}] Feedback"
-					>mail@glyphrstudio.com</a
-				>
-				<br><br><br>
-				<pre
-					style="
-						border: 1px solid hsla(0, 100%, 100%, 0.2);
-						background-color: hsla(0, 0%, 0%, 0.2);
-						border-radius: 4px;
-						text-align: left;
-						font-family: monospace;
-						padding: 10px;
-						width: 100%;
-						user-select: text;
-					"
-				>${errorObject.stack.replaceAll('<', '&lt;')}</pre>
-			</div>
-		</div>
-	`;
-
-	wrapper.innerHTML = content;
 }
 
 /**

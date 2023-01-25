@@ -58,6 +58,10 @@
 				overflow: hidden;
 			}
 
+			body {
+				background: linear-gradient(135deg, var(--blue-l15), var(--purple-l05));
+			}
+
 			#app__wrapper {
 				background-color: #161d20;
 			}
@@ -68,13 +72,13 @@
 				visibility: visible;
 				transition: opacity 500ms ease-out;
 				background-color: #0e1214;
-				background: linear-gradient(135deg, var(--blue-l15), var(--purple-l05));
 				padding: auto;
 				text-align: left;
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
 				padding-bottom: 189px;
+				background: linear-gradient(135deg, var(--blue-l15), var(--purple-l05));
 			}
 
 			#app__landing-page svg,
@@ -91,6 +95,45 @@
 				fill: transparent;
 				stroke-width: 0.4px;
 				stroke: var(--blue-l50);
+			}
+
+			.error-page__wrapper {
+				margin: auto;
+				font-size: 16px;
+				text-align: center;
+				color: rgba(255, 255, 255, 0.8);
+			}
+
+			.error-page__table-flip {
+				font-size: 36px;
+				opacity: 0.8;
+				font-weight: bold;
+				padding-bottom: 20px;
+				text-align: center;
+				color: var(--purple-l60);
+				text-shadow: 0px 0px 2px var(--purple-l20);
+				letter-spacing: -2px;
+			}
+
+			.error-page__wrapper h1 {
+				text-align: center;
+				color: var(--purple-l80);
+			}
+
+			.error-page__wrapper a {
+				color: white;
+				text-decoration: underline;
+			}
+
+			.error-page__wrapper pre {
+				border: 1px solid hsla(0, 100%, 100%, 0.2);
+				background-color: hsla(0, 0%, 0%, 0.2);
+				border-radius: 4px;
+				text-align: left;
+				font-family: monospace;
+				padding: 10px;
+				width: 100%;
+				user-select: text;
 			}
 		</style>
 		<link rel="stylesheet" type="text/css" href="./app/app.css" />
