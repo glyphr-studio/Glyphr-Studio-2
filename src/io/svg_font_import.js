@@ -313,7 +313,7 @@ export function ioSVG_importSVGfont(font) {
 
 		fontSettings.family = fname;
 		fontSettings.style = fontAttributes['font-style'] || 'Regular';
-		fontSettings.panose = fontAttributes['panose-1'] || '2 0 0 0 0 0 0 0 0 0';
+		fontSettings.panose = fontAttributes['panose-1'] || '0 0 0 0 0 0 0 0 0 0';
 		fontSettings.upm = 1 * fontAttributes['units-per-em'] || 1000;
 		fontSettings.ascent = 1 * fontAttributes.ascent || 700;
 		fontSettings.capHeight = 1 * fontAttributes['cap-height'] || 675;

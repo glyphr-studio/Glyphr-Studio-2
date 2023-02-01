@@ -198,6 +198,7 @@ function makeSettingsTabContentApp() {
 		`,
 	});
 
+	/*
 	addAsChildren(tabContent, [
 		makeOneSettingsRow('app', 'savePreferences'),
 		makeOneSettingsRow('app', 'stopPageNavigation'),
@@ -206,6 +207,11 @@ function makeSettingsTabContentApp() {
 		makeOneSettingsRow('app', 'formatSaveFile'),
 		makeOneSettingsRow('app', 'combinePathsOnExport'),
 		makeOneSettingsRow('app', 'maxCombinePathsOnExport'),
+	]);
+	*/
+	addAsChildren(tabContent, [
+		makeOneSettingsRow('app', 'showNonCharPoints'),
+		makeOneSettingsRow('app', 'formatSaveFile'),
 	]);
 
 	return tabContent;
@@ -295,9 +301,14 @@ function makeOneSettingsRow(groupName, propertyName) {
 	const settingType = thisSetting?.type;
 	const settingValue = settings[groupName][propertyName];
 
+	let displayLabel = thisSetting.label;
+	displayLabel = displayLabel.replaceAll(' ', '&nbsp;');
+	displayLabel = displayLabel.replaceAll('-', '&#8209;');
+	displayLabel = `${displayLabel}:&emsp;`;
+
 	const label = makeElement({
 		className: 'settings__label',
-		innerHTML: `${thisSetting.label.replaceAll(' ', '&nbsp;')}: `,
+		innerHTML: displayLabel,
 	});
 
 	let type = textToNode('<span></span>');

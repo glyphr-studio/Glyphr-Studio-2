@@ -50,7 +50,7 @@ export class GlyphrStudioProject {
 			font: {
 				family: 'My Font',
 				style: 'Regular',
-				version: '1.0.0',
+				version: '1.0',
 				description: '',
 				panose: '0 0 0 0 0 0 0 0 0 0',
 				upm: 1000,
