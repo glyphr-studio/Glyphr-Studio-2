@@ -26,21 +26,34 @@ export function makePage_About() {
 					<a href="https://www.glyphrstudio.com" target="_blank">glyphrstudio.com</a>
 					<br><br>
 
+					Email:<br>
+					${emailLink()}
+					<br><br>
+
 					Help for Glyphr Studio v2:<br>
 					<a href="https://www.glyphrstudio.com/v2/help" target="_blank">glyphrstudio.com/v2/help</a>
 					<br><br>
 
-					Email:<br>
-					${emailLink()}
+					Blog:<br>
+					<a href="http://www.glyphrstudio.com/blog/" target="_blank">glyphrstudio.com/blog</a>
+					<br><br>
+
+					Mastodon:<br>
+					<a href="https://typo.social/@glyphrstudio" target="_blank">@glyphrstudio@typo.social</a>
+					<br><br>
+
+					Reddit:<br>
+					<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">reddit.com/r/GlyphrStudio</a>
 					<br><br>
 
 					Twitter:<br>
 					<a href="https://twitter.com/glyphrstudio" target="_blank">@glyphrstudio</a>
 					<br><br>
 
-					Blog:<br>
-					<a href="http://www.glyphrstudio.com/blog/" target="_blank">glyphrstudio.com/blog</a>
+					GitHub:<br>
+					<a href="https://github.com/glyphr-studio" target="_blank">github.com/glyphr-studio</a>
 					<br><br>
+
 					<br><br>
 
 					${makeContributeMessage()}
@@ -55,7 +68,7 @@ export function makePage_About() {
 				<p class="logoNote">*not the final logo!</p>
 
 				<br>
-				${makeAlpha1Message()}
+				${makePreReleaseNote()}
 				<br>
 
 				<h1>Version information</h1>
@@ -99,31 +112,34 @@ export function makePage_About() {
 	return content;
 }
 
-export function makeAlpha1Message() {
+export function makePreReleaseNote() {
 	const app = window._GlyphrStudioApp;
 	let content = `
-		<h1>Welcome to Alpha-1!</h1>
+		<h1>Welcome to Alpha-2!</h1>
 		<p>
 			What is an alpha? Currently, Glyphr Studio v2 does not
-			have enough features to be considered a usable product (mainly, it's missing
-			importing/exporting font files, and opening/saving project files). But, there
+			have enough features to be considered a usable product, and the code base is
+			evolving so quickly that it may not be totally stable. But, there
 			are still some features that we'd love to get feedback on, and probably some
 			bugs that we still haven't found.
 		</p>
 		<br>
 		<h3>
 			There is a ton of information over on the blog:<br>
-			<a href="https://www.glyphrstudio.com/blog/?p=288" target="_blank">V2 Alpha-1 MEGA POST</a>
+			<a href="https://www.glyphrstudio.com/blog/2022/11/02/v2-alpha-1-mega-post/" target="_blank">Alpha-1 MEGA POST</a>
+			<br>
+			<a href="https://www.glyphrstudio.com/blog/2023/02/01/v2-alpha-2-mega-post/" target="_blank">Alpha-2 MEGA POST</a>
 		</h3>
 		<br>
-		<strong>For Alpha-1, please try the following scenarios:</strong>
+		<strong>For Alpha-1 and Alpha-2, please try the following scenarios:</strong>
 		<ul>
-			<li>Navigate around using the upper-left Page Chooser, Glyph Chooser, and Panel Chooser</li>
-			<li>Resize paths with the arrow tool and edit paths with the pen tool</li>
-			<li>Create new shapes on the edit canvas</li>
-			<li>Edit glyph, path, and path point details from the Attributes panel</li>
-			<li>Copy and paste paths</li>
-			<li>Undo edits</li>
+			<li>Open and Save Glyphr Studio v2 Project files (.gs2)</li>
+			<li>Import other font formats, like OTF, TTF, WOFF, and SVG Fonts.</li>
+			<li>Export OTF and SVG Fonts</li>
+			<li>Navigate around using the upper-left Page Chooser, Glyph Chooser, and Panel Chooser.</li>
+			<li>On the Glyph Edit page, use all the various panels and tools to edit or create shapes.</li>
+			<li>Use the Live Preview page to view your font in sentences or blocks of text.</li>
+			<li>Use the Settings page to adjust options for the App, your Project, and your Font.</li>
 		</ul>
 
 		<br>

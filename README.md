@@ -5,6 +5,20 @@ so it's time to do an all-up scrub.
 While most user scenarios and functionality will be the same as V1, the one main functionality improvement will
 be **multi-project editing** that will allow for cross-project copy/paste and merging fonts.
 
+## Links
+| Website | [glyphrstudio.com](https://www.glyphrstudio.com) |
+| :---- | :---- |
+| Email | [mail@glyphrstudio.com](mailto:mail@glyphrstudio.com) |
+| App | [glyphrstudio.com/v2/online](https://www.glyphrstudio.com/v2/online) |
+| Help & Documentation | [glyphrstudio.com/v2/help](https://www.glyphrstudio.com/v2/help/) |
+| Blog | [glyphrstudio.com/blog](https://www.glyphrstudio.com/blog/) |
+| | |
+| Mastodon | [@glyphrstudio@typo.social](https://typo.social/@glyphrstudio) |
+| Reddit | [reddit.com/r/GlyphrStudio](https://www.reddit.com/r/GlyphrStudio/) |
+| Twitter | [@glyphrstudio](https://twitter.com/glyphrstudio) |
+| GitHub | [github.com/glyphr-studio](https://github.com/glyphr-studio) |
+
+
 ## What's changing
 My rough road-map is to start refactoring the Glyph Element objects (the underlying data structures
 that describe glyphs), ensure we have good separation between data and the UI, then start working on

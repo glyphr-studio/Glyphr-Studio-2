@@ -65,7 +65,7 @@ export default {
 		version: {
 			label: `Font version`,
 			description: `If this font gets updates regularly, keep track of what version this iteration is. This is recommended to be in Semantic Versioning format, you can learn more at <a href="https://semver.org/" target="_blank">semver.org</a>.`,
-			example: `Version 1.0.0`,
+			example: `Version 1.0`,
 		},
 		description: {
 			label: `Font description`,
