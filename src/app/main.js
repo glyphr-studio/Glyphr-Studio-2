@@ -14,7 +14,7 @@ import { makeElement } from '../common/dom.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp, showAppErrorPage } from './app.js';
 import logo from '../common/graphics/logo-icon.svg?raw';
-
+import asciiLogo from '../common/graphics/ascii-wordmark-vertical.txt?raw';
 
 // The main app object
 export const GSApp = new GlyphrStudioApp();
@@ -23,6 +23,10 @@ export const GSApp = new GlyphrStudioApp();
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
+	console.info(
+		`%c${asciiLogo}\n`,
+		'color: hsl(199, 100%, 64%)'
+	);
 	try {
 		if (GSApp.version) {
 			console.info(
