@@ -22,18 +22,6 @@
 		<meta name="viewport" content="width=device-width" />
 		<script src="app/main.js" type="module"></script>
 		<script type="module">
-			console.info(
-				`%c
-				 ░░░░░░    ░░░░░░   ░░░░░░
-				▒▒        ▒▒             ▒▒
-				▒▒   ▒▒▒   ▒▒▒▒▒     ▒▒▒▒▒
-				▓▓    ▓▓       ▓▓   ▓▓
-				 ▓▓▓▓▓▓   ▓▓▓▓▓▓    ▓▓▓▓▓▓▓
-				G L Y P H R  S T U D I O  2
-			`.replace(/\t/gi, ''),
-				'color: hsl(199, 100%, 64%)'
-			);
-
 			import { glyphrStudioOnLoad, GSApp, log } from './app/main.js';
 			window.log = log;
 			document.addEventListener('DOMContentLoaded', glyphrStudioOnLoad);
