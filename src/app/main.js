@@ -1,6 +1,3 @@
-import { ProjectEditor } from '../project_editor/project_editor.js';
-import { GlyphrStudioApp, showAppErrorPage } from './app.js';
-
 /* Web Components */
 import { OptionChooser } from '../controls/option-chooser/option_chooser.js';
 import { ButtonToggle } from '../controls/button-toggle/button_toggle.js';
@@ -11,9 +8,13 @@ import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { InfoBubble } from '../controls/info-bubble/info_bubble.js';
 import { InputNumber } from '../controls/input-number/input_number.js';
 import { InputNumberLockable } from '../controls/input-number-lockable/input_number_lockable.js';
-import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 import { makeElement } from '../common/dom.js';
-import { closeAllDialogs } from '../controls/dialogs/dialogs.js';
+
+/* Other stuff */
+import { ProjectEditor } from '../project_editor/project_editor.js';
+import { GlyphrStudioApp, showAppErrorPage } from './app.js';
+import logo from '../common/graphics/logo-icon.svg?raw';
+
 
 // The main app object
 export const GSApp = new GlyphrStudioApp();
@@ -31,6 +32,16 @@ export function glyphrStudioOnLoad() {
 			);
 		}
 		log(`glyphrStudioOnLoad`, 'start');
+		// <!-- <link
+		// 	rel="icon"
+		// 	type="image/x-icon"
+		// 	href="
+		let favIcon = makeElement({
+			tag: 'link',
+			attributes: { rel: 'shortcut icon', href: `data:image/svg+xml,${encodeURI(logo)}` },
+		});
+
+		document.head.appendChild(favIcon);
 
 		if (passPreChecks()) {
 			registerCustomComponents();

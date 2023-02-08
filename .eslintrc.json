@@ -11,7 +11,7 @@
     },
     "rules":{
         "prettier/prettier": {
-            "endOfLine": "auto"
+            "endOfLine": 1
         }
     },
     "ignorePatterns": [

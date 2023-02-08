@@ -5,6 +5,7 @@ import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { closeAllDialogs, makeContextMenu } from '../controls/dialogs/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { ioFont_exportFont } from '../io/font_export.js';
+import logoHorizontal from '../common/graphics/logo-wordmark-horizontal.svg?raw';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -34,7 +35,7 @@ export class GlyphrStudioApp {
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
-			telemetry: false, // Load google analytics
+			telemetry: true, // Load google analytics
 		};
 
 		this.temp = {};
@@ -170,7 +171,7 @@ function addTelemetry() {
 export function makeAppTopBar() {
 	let topBar = makeElement({ tag: 'div', id: 'app__top-bar' });
 
-	let logo = makeElement({ innerHTML: 'Glyphr Studio', className: 'top-bar__logo' });
+	let logo = makeElement({ innerHTML: logoHorizontal, className: 'top-bar__logo' });
 
 	let menus = makeElement({ className: 'top-bar__menus' });
 	menus.appendChild(makeMenu('File'));

@@ -2,7 +2,7 @@ import { makeElement } from '../common/dom.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { emailLink } from '../app/app.js';
-import alphaLogo from '../common/graphics/alpha-logo.svg?raw';
+import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 
 /**
  * Page > About
@@ -62,10 +62,9 @@ export function makePage_About() {
 				</div>
 			</div>
 			<div class="content-page__right-area">
-				<div class="GS2Logo">
-					${alphaLogo}
+				<div class="about-page__logo">
+					${logoVertical}
 				</div>
-				<p class="logoNote">*not the final logo!</p>
 
 				<br>
 				${makePreReleaseNote()}
