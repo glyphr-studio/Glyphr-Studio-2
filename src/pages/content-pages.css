@@ -51,9 +51,12 @@
 	padding: 20px;
 }
 
-.GS2Logo {
-	width: 400px;
-	fill: var(--purple-l30);
+.about-page__logo {
+	/* fill: url(#logoGradient); */
+	width: 300px;
+	fill: var(--purple-l40);
+	stroke: var(--purple-l10);
+	stroke-width: 10px;
 }
 
 .logoNote {

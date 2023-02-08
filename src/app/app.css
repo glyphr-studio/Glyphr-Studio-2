@@ -16,6 +16,8 @@
 	grid-row: 1;
 	padding: 6px 0px 6px 11px;
 	z-index: 2000 !important;
+	display: grid;
+	grid-template-columns: 150px 1fr 320px;
 }
 
 #app__main-content {
@@ -34,12 +36,20 @@
 }
 
 .top-bar__logo {
-	color: var(--blue-l50);
-	font-size: 1.4em;
+	display: inline-block;
+	margin-left: 2px;
+}
+
+.top-bar__logo svg {
+	fill: var(--blue-l50);
+	height: 28px;
 }
 
 .top-bar__menus {
 	margin-left: 20px;
+	margin-top: 8px;
+	display: inline-block;
+	height: 28px;
 }
 
 .menu-entry-point,
@@ -67,8 +77,8 @@
 	position: absolute;
 	opacity: 80%;
 	right: 10px;
+	top: 10px;
 	padding: 2px 4px;
-	margin: 5px 0px 0px 0px;
 	font-size: 0.8em;
 	background-color: var(--purple-l40);
 	border: 1px solid var(--purple-l30);

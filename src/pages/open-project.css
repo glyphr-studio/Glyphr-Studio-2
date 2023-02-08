@@ -31,6 +31,13 @@
 	margin: 0px 20px 16px 0px;
 }
 
+#open-project__logo {
+	/* fill: url(#logoGradient); */
+	fill: var(--blue-l30);
+	stroke: var(--blue-l80);
+	stroke-width: 10px;
+}
+
 .open-project__version-name,
 .open-project__version-number,
 .open-project__blurb {

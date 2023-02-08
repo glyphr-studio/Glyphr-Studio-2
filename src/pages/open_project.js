@@ -12,7 +12,7 @@ import { json } from '../common/functions.js';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { closeAllDialogs, showError } from '../controls/dialogs/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
-import alphaLogo from '../common/graphics/alpha-logo-wordmark.svg?raw';
+import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 
 /**
  * Page > Open Project
@@ -42,7 +42,7 @@ export function makePage_OpenProject() {
 		innerHTML: `
 			<div id="open-project__page">
 				<div id="open-project__left-area" vertical-align="middle">
-					<div id="open-project__logo">${alphaLogo}</div>
+					<div id="open-project__logo">${logoVertical}</div>
 					<span class="open-project__version-name">${app.versionName}</span>
 					<span class="open-project__version-number">${app.version}${recentMessage}</span>
 					<div class="open-project__blurb">
