@@ -42,7 +42,6 @@
 
 .top-bar__logo svg {
 	fill: var(--blue-l50);
-	height: 28px;
 }
 
 .top-bar__menus {

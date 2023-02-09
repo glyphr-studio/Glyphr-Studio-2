@@ -1,11 +1,11 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
-import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { closeAllDialogs, makeContextMenu } from '../controls/dialogs/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { ioFont_exportFont } from '../io/font_export.js';
-import logoHorizontal from '../common/graphics/logo-wordmark-horizontal.svg?raw';
+import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
+import { log } from '../common/functions.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -16,9 +16,9 @@ export class GlyphrStudioApp {
 	 */
 	constructor() {
 		// Version
-		this.versionName = 'Version 2: Alpha-2';
-		this.version = '2.0.0-alpha.2';
-		this.versionDate = 1675210000000;
+		this.versionName = 'Version 2: Beta-1';
+		this.version = '2.0.0-beta.1';
+		this.versionDate = false;
 		this.projectEditors = [];
 		this.selectedProjectEditor = 0;
 

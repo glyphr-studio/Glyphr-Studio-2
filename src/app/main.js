@@ -36,10 +36,6 @@ export function glyphrStudioOnLoad() {
 			);
 		}
 		log(`glyphrStudioOnLoad`, 'start');
-		// <!-- <link
-		// 	rel="icon"
-		// 	type="image/x-icon"
-		// 	href="
 		let favIcon = makeElement({
 			tag: 'link',
 			attributes: { rel: 'shortcut icon', href: `data:image/svg+xml,${encodeURI(logo)}` },

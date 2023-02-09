@@ -9,11 +9,7 @@
         "ecmaVersion": 6,
         "sourceType": "module"
     },
-    "rules":{
-        "prettier/prettier": {
-            "endOfLine": 1
-        }
-    },
+    "rules":{},
     "ignorePatterns": [
         "*.test.js",
         "dev/lib/*",
