@@ -136,6 +136,10 @@ td {
 	vertical-align: top;
 }
 
+svg {
+	overflow: visible;
+}
+
 .number {
 	font-family: monospace;
 }
