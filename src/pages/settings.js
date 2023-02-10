@@ -7,6 +7,7 @@ import {
 	showModalDialog,
 	showToast,
 } from '../controls/dialogs/dialogs.js';
+import { TabControl } from '../controls/tabs/tab_control.js';
 import { unicodeBlocks } from '../lib/unicode_blocks.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
@@ -38,15 +39,24 @@ export function makePage_Settings() {
 	let panelArea = content.querySelector('#content-page__panel');
 	let rightArea = content.querySelector('.content-page__right-area');
 
-	addAsChildren(panelArea, makeSettingsTabs());
+	// addAsChildren(panelArea, makeSettingsTabs());
 
-	addAsChildren(rightArea, [
-		makeSettingsTabContentFont(),
-		makeSettingsTabContentProject(),
-		makeSettingsTabContentApp(),
-	]);
+	// addAsChildren(rightArea, [
+	// 	makeSettingsTabContentFont(),
+	// 	makeSettingsTabContentProject(),
+	// 	makeSettingsTabContentApp(),
+	// ]);
 
-	selectTab(content, 'Font');
+	// selectTab(content, 'Font');
+
+	const tabControl = new TabControl(rightArea);
+
+	tabControl.registerTab('Font', makeSettingsTabContentFont());
+	tabControl.registerTab('Project', makeSettingsTabContentProject());
+	tabControl.registerTab('App', makeSettingsTabContentApp());
+
+	addAsChildren(panelArea, tabControl.makeTabs());
+	tabControl.selectTab('Font');
 
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
@@ -55,78 +65,6 @@ export function makePage_Settings() {
 	});
 
 	return content;
-}
-
-function selectTab(parent, tabName = 'Font') {
-	const tabContentFont = parent.querySelector('#tab-content__font');
-	const tabContentProject = parent.querySelector('#tab-content__project');
-	const tabContentApp = parent.querySelector('#tab-content__app');
-	const tabFont = parent.querySelector('#tab__font');
-	const tabProject = parent.querySelector('#tab__project');
-	const tabApp = parent.querySelector('#tab__app');
-
-	tabContentFont.style.display = 'none';
-	tabContentProject.style.display = 'none';
-	tabContentApp.style.display = 'none';
-	tabFont.removeAttribute('selected');
-	tabProject.removeAttribute('selected');
-	tabApp.removeAttribute('selected');
-
-	if (tabName === 'Font') {
-		tabContentFont.style.display = 'grid';
-		tabFont.setAttribute('selected', '');
-	}
-
-	if (tabName === 'Project') {
-		tabContentProject.style.display = 'grid';
-		tabProject.setAttribute('selected', '');
-	}
-
-	if (tabName === 'App') {
-		tabContentApp.style.display = 'grid';
-		tabApp.setAttribute('selected', '');
-	}
-}
-
-function makeSettingsTabs() {
-	const tabContainer = makeElement({
-		tag: 'div',
-		className: 'settings-page__tab-container',
-	});
-
-	const tabFont = makeElement({
-		className: 'settings-page__tab',
-		id: 'tab__font',
-		innerHTML: 'Font metadata',
-		attributes: { tabindex: 1 },
-		onClick: () => {
-			selectTab(document, 'Font');
-		},
-	});
-
-	const tabProject = makeElement({
-		className: 'settings-page__tab',
-		id: 'tab__project',
-		innerHTML: 'Project settings',
-		attributes: { tabindex: 1 },
-		onClick: () => {
-			selectTab(document, 'Project');
-		},
-	});
-
-	const tabApp = makeElement({
-		className: 'settings-page__tab',
-		id: 'tab__app',
-		innerHTML: 'App preferences',
-		attributes: { tabindex: 1 },
-		onClick: () => {
-			selectTab(document, 'App');
-		},
-	});
-
-	addAsChildren(tabContainer, [tabFont, tabProject, tabApp]);
-
-	return tabContainer;
 }
 
 function makeSettingsTabContentFont() {

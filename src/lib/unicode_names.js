@@ -1,5 +1,5 @@
+// import { log } from '../app/main.js';
 import { normalizeHex } from '../common/unicode.js';
-import { log } from '../common/functions.js';
 
 /**
  * Get a glyph's name based on a unicode hex ID
@@ -11,7 +11,6 @@ export function lookUpGlyphName(id, forceLongName = false) {
 	// log(`lookUpGlyphName`, 'start');
 	// log('passed');
 	// log(id);
-
 	// not passed an id
 	if (!id) {
 		// log('not passed an ID, returning false');

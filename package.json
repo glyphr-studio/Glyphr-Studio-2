@@ -16,7 +16,6 @@
   },
   "devDependencies": {
     "buffer": "^6.0.3",
-    "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "jasmine": "^4.4.0",
@@ -41,5 +40,8 @@
   },
   "jshintConfig": {
     "esversion": 11
+  },
+  "dependencies": {
+    "eslint": "^8.33.0"
   }
 }

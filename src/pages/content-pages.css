@@ -29,7 +29,7 @@
 	width: 100%;
 	border-radius: 4px;
 }
-
+/*
 #content-page__panel {
 	border: 1px solid var(--blue-l85);
 	padding: 10px;
@@ -38,6 +38,7 @@
 	border-radius: 4px;
 	box-shadow: var(--l2-shadow);
 }
+*/
 
 .content-page__right-area {
 	border: 1px solid var(--blue-l85);
@@ -57,6 +58,18 @@
 	fill: var(--purple-l40);
 	stroke: var(--purple-l10);
 	stroke-width: 10px;
+}
+
+.about-page__contact-table {
+	display: grid;
+	grid-template-columns: max-content 1fr;
+	row-gap: 20px;
+	column-gap: 20px;
+}
+
+.about-page__contact-table h2 {
+	grid-column: -1 / 1;
+	margin-top: 20px;
 }
 
 .logoNote {
@@ -127,31 +140,6 @@ code,
 }
 
 /* Settings page */
-.settings-page__tab {
-	display: block;
-	font-size: 1.2em;
-	cursor: pointer;
-	padding: 10px;
-	border-radius: 2px;
-}
-
-.settings-page__tab:hover {
-	background-color: var(--blue-l95);
-}
-
-.settings-page__tab:focus {
-	outline: var(--global-outline-style);
-}
-
-.settings-page__tab[selected] {
-	color: var(--blue-l40);
-	background-color: var(--blue-l90);
-}
-
-.settings-page__tab-content {
-	width: clamp(300px 500px max-content);
-	animation: var(--animate-fade-in);
-}
 
 .settings-table {
 	display: grid;
@@ -159,6 +147,11 @@ code,
 	grid-template-rows: 24px;
 	row-gap: 10px;
 	column-gap: 10px;
+}
+
+.settings-page__tab-content {
+	width: clamp(300px 500px max-content);
+	animation: var(--animate-fade-in);
 }
 
 .settings-page__tab-content h1,

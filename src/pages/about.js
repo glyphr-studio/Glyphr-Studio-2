@@ -1,18 +1,17 @@
-import { makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { emailLink } from '../app/app.js';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import donateKofiSrc from '../common/graphics/donate-kofi.png';
 import donatePaypalSrc from '../common/graphics/donate-paypal.png';
+import { TabControl } from '../controls/tabs/tab_control.js';
 
 /**
  * Page > About
  * Information about Glyphr Studio
  */
 export function makePage_About() {
-	const editor = getCurrentProjectEditor();
-	const app = window._GlyphrStudioApp;
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
@@ -22,84 +21,9 @@ export function makePage_About() {
 				<div class="content-page__nav-area">
 					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'About' })}
 				</div>
-				<div id="content-page__panel">
-					<h3>Helpful links</h3>
-					Main site: <br>
-					<a href="https://www.glyphrstudio.com" target="_blank">glyphrstudio.com</a>
-					<br><br>
-
-					Email:<br>
-					${emailLink()}
-					<br><br>
-
-					Help for Glyphr Studio v2:<br>
-					<a href="https://www.glyphrstudio.com/v2/help" target="_blank">glyphrstudio.com/v2/help</a>
-					<br><br>
-
-					Blog:<br>
-					<a href="http://www.glyphrstudio.com/blog/" target="_blank">glyphrstudio.com/blog</a>
-					<br><br>
-
-					Mastodon:<br>
-					<a href="https://typo.social/@glyphrstudio" target="_blank">@glyphrstudio@typo.social</a>
-					<br><br>
-
-					Reddit:<br>
-					<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">reddit.com/r/GlyphrStudio</a>
-					<br><br>
-
-					Twitter:<br>
-					<a href="https://twitter.com/glyphrstudio" target="_blank">@glyphrstudio</a>
-					<br><br>
-
-					GitHub:<br>
-					<a href="https://github.com/glyphr-studio" target="_blank">github.com/glyphr-studio</a>
-					<br><br>
-
-					<br><br>
-
-					${makeContributeMessage()}
-
-
-				</div>
+				<div id="content-page__panel"></div>
 			</div>
-			<div class="content-page__right-area">
-				<div class="about-page__logo">
-					${logoVertical}
-				</div>
-
-				<br>
-				${makePreReleaseNote()}
-				<br>
-
-				<h1>Version information</h1>
-				<div class="page__card">
-					<h3>Glyphr Studio App</h3>
-					<label>Version name:</label> ${app.versionName}<br>
-					<label>Version number:</label> ${app.version}<br>
-					<label>Last updated on:</label> ${new Date(app.versionDate).toDateString()}.
-				</div>
-
-				<div class="page__card">
-					<h3>This Glyphr Studio Project</h3>
-					<label>Project name:</label> ${editor.project.settings.project.name}<br>
-					<label>Unique project ID:</label> ${editor.project.settings.project.id}<br>
-					<label>Initially created with:</label> Version ${
-						editor.project.settings.project.initialVersion
-					}</span>
-				</div>
-
-				<br><br>
-
-				<h1>License</h1>
-				<p>
-					Glyphr Studio is licensed under a <a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>,
-					which is a free / open source 'copyleft' license. You are free to use, distribute, and modify Glyphr Studio as long as
-					this license and its freeness stays intact.
-				</p>
-				<br><br>
-
-			</div>
+			<div class="content-page__right-area"></div>
 		</div>
 	`,
 	});
@@ -110,11 +34,99 @@ export function makePage_About() {
 		toggleNavDropdown(l1);
 	});
 
+	const rightArea = content.querySelector('.content-page__right-area');
+	const tabControl = new TabControl(rightArea);
+
+	tabControl.registerTab('Release note', makePreReleaseNote(true));
+	tabControl.registerTab('Contact and socials', makeContactInfo());
+	tabControl.registerTab('Version', makeVersionInfo());
+	tabControl.registerTab('License', makeLicenseInfo());
+
+	tabControl.selectTab('Release note');
+
+	const panelArea = content.querySelector('#content-page__panel');
+	addAsChildren(panelArea, [tabControl.makeTabs(), makeContributeCard()]);
+
 	return content;
 }
 
-export function makePreReleaseNote() {
-	let content = `
+function makeLicenseInfo() {
+	const content = makeElement({
+		innerHTML: `
+		<h1>License</h1>
+		<h2>The Glyphr Studio App</h2>
+		<p>
+			The Glyphr Studio App is licensed under a
+			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>,
+			which is a free / open source 'copyleft' license. You are free to use, distribute,
+			and modify Glyphr Studio as long as this license and its freeness stays intact.
+		</p>
+
+		<h2>Fonts you create</h2>
+		<p>
+			Any font you create belongs 100% to you, and you must decide how to license it.<br>
+			You can find out <a href="https://www.glyphrstudio.com/v2/help/about/licensing.html" target="_blank">
+			more about licensing on the Help site</a>.
+		</p>
+
+		<h2>Libraries</h2>
+		<p>Glyphr Studio includes the following 3rd party libraries:</p>
+
+		<div class="page__card">
+			<h3>opentype.js</h3>
+			<a href="https://opentype.js.org/" target="_blank">opentype.js.org</a><br>
+			opentype.js is available on
+			<a href="https://github.com/opentypejs/opentype.js" target="_blank">GitHub</a>
+			under the
+			<a href="https://raw.github.com/opentypejs/opentype.js/master/LICENSE" target="_blank">MIT License</a>.<br>
+			Copyright © 2020 Frederik De Bleser.
+		</div>
+	`,
+	});
+
+	return content;
+}
+
+function makeVersionInfo() {
+	const editor = getCurrentProjectEditor();
+	const app = window._GlyphrStudioApp;
+	const content = makeElement({
+		innerHTML: `
+			<h1>Version information</h1>
+			<div class="page__card">
+				<h3>Glyphr Studio App</h3>
+				<label>Version name:</label> ${app.versionName}<br>
+				<label>Version number:</label> ${app.version}<br>
+				<label>Last updated on:</label> ${new Date(app.versionDate).toDateString()}.
+			</div>
+
+			<div class="page__card">
+				<h3>This Glyphr Studio Project</h3>
+				<label>Project name:</label> ${editor.project.settings.project.name}<br>
+				<label>Unique project ID:</label> ${editor.project.settings.project.id}<br>
+				<label>Initially created with:</label> Version ${
+					editor.project.settings.project.initialVersion
+				}</span>
+			</div>
+		`,
+	});
+
+	return content;
+}
+
+export function makePreReleaseNote(showLogo = false) {
+	const content = makeElement({
+		innerHTML: `
+		${
+			showLogo
+				? `
+				<div class="about-page__logo">
+					${logoVertical}
+				</div>
+				<br><br>
+			`
+				: ''
+		}
 		<h1>Welcome to Alpha-2!</h1>
 		<p>
 			What is an alpha? Currently, Glyphr Studio v2 does not
@@ -124,13 +136,15 @@ export function makePreReleaseNote() {
 			bugs that we still haven't found.
 		</p>
 		<br>
+
 		<h3>
 			There is a ton of information over on the blog:<br>
 			<a href="https://www.glyphrstudio.com/blog/2022/11/02/v2-alpha-1-mega-post/" target="_blank">Alpha-1 MEGA POST</a>
 			<br>
 			<a href="https://www.glyphrstudio.com/blog/2023/02/01/v2-alpha-2-mega-post/" target="_blank">Alpha-2 MEGA POST</a>
 		</h3>
-		<br>
+
+		<br><br>
 		<strong>For Alpha-1 and Alpha-2, please try the following scenarios:</strong>
 		<ul>
 			<li>Open and Save Glyphr Studio v2 Project files (.gs2)</li>
@@ -147,12 +161,16 @@ export function makePreReleaseNote() {
 			If you find any bugs, or have an suggestions about functionality, please email us!
 			${emailLink()}
 		</p>
-	`;
+	`,
+	});
+
 	return content;
 }
 
-export function makeContributeMessage() {
-	let content = `
+export function makeContributeCard() {
+	const content = makeElement({
+		className: 'panel__card full-width more-padding',
+		innerHTML: `
 	<h3>Contribute!</h3>
 	If you think Glyphr Studio is pretty cool, there are two huge ways you can make it better!
 	<br>
@@ -177,7 +195,48 @@ export function makeContributeMessage() {
 
 	<a href="https://www.paypal.com/donate/?hosted_button_id=35R85K8X5MGFQ" target="_blank" class="donateLinkButton">
 		<img src="${donatePaypalSrc}" alt="PayPal - The safer, easier way to pay online!" /></a>
-	`;
+	`,
+	});
+
+	return content;
+}
+
+function makeContactInfo() {
+	const content = makeElement({
+		innerHTML: `
+			<h1>Contact and socials</h1>
+
+			<div class="about-page__contact-table">
+				<h2>Web</h2>
+				<span>Main site:</span>
+				<a href="https://www.glyphrstudio.com" target="_blank">glyphrstudio.com</a>
+
+				<span>Email:</span>
+				${emailLink()}
+
+				<span>Help for Glyphr Studio v2:</span>
+				<a href="https://www.glyphrstudio.com/v2/help" target="_blank">glyphrstudio.com/v2/help</a>
+
+				<span>Blog:</span>
+				<a href="http://www.glyphrstudio.com/blog/" target="_blank">glyphrstudio.com/blog</a>
+
+				<h2>Socials</h2>
+				<span>Mastodon:</span>
+				<a href="https://typo.social/@glyphrstudio" target="_blank">@glyphrstudio@typo.social</a>
+
+				<span>Reddit:</span>
+				<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">reddit.com/r/GlyphrStudio</a>
+
+				<span>Twitter:</span>
+				<a href="https://twitter.com/glyphrstudio" target="_blank">@glyphrstudio</a>
+
+				<h2>Source code</h2>
+
+				<span>GitHub:</span>
+				<a href="https://github.com/glyphr-studio" target="_blank">github.com/glyphr-studio</a>
+			</div>
+		`,
+	});
 
 	return content;
 }

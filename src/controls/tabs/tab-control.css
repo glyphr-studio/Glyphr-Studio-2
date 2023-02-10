@@ -1,0 +1,26 @@
+.tab-control__tab-container {
+	display: block;
+	width: 100%;
+}
+
+.tab-control__tab {
+	display: block;
+	width: 100%;
+	font-size: 1.2em;
+	cursor: pointer;
+	padding: 10px;
+	border-radius: 2px;
+}
+
+.tab-control__tab:hover {
+	background-color: var(--blue-l95);
+}
+
+.tab-control__tab:focus {
+	outline: var(--global-outline-style);
+}
+
+.tab-control__tab[selected] {
+	color: var(--blue-l40);
+	background-color: var(--blue-l90);
+}
