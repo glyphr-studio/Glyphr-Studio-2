@@ -1,12 +1,12 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor, log } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
 import { hexToChars } from '../common/unicode.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
-import { clickTool, makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
-import { removeStopCreatingNewPathButton, stopCreatingNewPath } from '../edit_canvas/tools/new_path.js';
+import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
+import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 
 /**
  * Page > Glyph Edit
@@ -81,7 +81,7 @@ export function makePage_GlyphEdit() {
 	editor.subscribe({
 		topic: ['whichGlyphIsSelected', 'whichPathIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
-		callback: (newSelection) => {
+		callback: () => {
 			let panelContent = content.querySelector('.editor-page__panel');
 			panelContent.innerHTML = '';
 			// panelContent.appendChild(makePanel());

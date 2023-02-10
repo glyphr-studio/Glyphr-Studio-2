@@ -1,18 +1,18 @@
 import { makePage_OpenProject } from '../pages/open_project.js';
 import { makePage_GlyphEdit } from '../pages/glyph_edit.js';
+import { makePage_Ligatures } from '../pages/ligatures.js';
 import { makePage_Overview } from '../pages/overview.js';
 import { makePage_About } from '../pages/about.js';
 import { makePage_Settings } from '../pages/settings.js';
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
 import { makeAppTopBar, showAppErrorPage } from '../app/app.js';
 import { makeIcon } from '../common/graphics.js';
 import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
-import { refreshPanel } from '../panels/panels.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { animateRemove, closeAllDialogs, showError } from '../controls/dialogs/dialogs.js';
+import { animateRemove, closeAllDialogs } from '../controls/dialogs/dialogs.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -43,7 +43,7 @@ export class Navigator {
 				iconName: 'page_glyphEdit',
 			},
 			Ligatures: {
-				pageMaker: false,
+				pageMaker: makePage_Ligatures,
 				iconName: 'page_ligatures',
 			},
 			Components: {
@@ -166,10 +166,10 @@ export class Navigator {
 		const nh = this.page;
 		return (
 			nh === 'Glyph edit' ||
-			nh === 'components' ||
-			nh === 'kerning' ||
-			nh === 'import svg' ||
-			nh === 'ligatures'
+			nh === 'Components' ||
+			nh === 'Kerning' ||
+			nh === 'Import SVG' ||
+			nh === 'Ligatures'
 		);
 	}
 
@@ -179,23 +179,7 @@ export class Navigator {
 	 */
 	get isOnEditCanvasPage() {
 		const nh = this.page;
-		return nh === 'Glyph edit' || nh === 'components' || nh === 'kerning' || nh === 'ligatures';
-	}
-
-	/**
-	 * Returns true if the current page has no panels
-	 * @returns {boolean}
-	 */
-	get isOnNoNavPage() {
-		const nh = this.page;
-		return (
-			nh === 'font settings' ||
-			nh === 'project settings' ||
-			nh === 'global actions' ||
-			nh === 'export font' ||
-			nh === 'help' ||
-			nh === 'about'
-		);
+		return nh === 'Glyph edit' || nh === 'Components' || nh === 'Kerning' || nh === 'Ligatures';
 	}
 }
 
