@@ -4,7 +4,7 @@
 	width: 100%;
 	min-width: 100%;
 	display: grid;
-	grid-template-columns: 450px 1fr;
+	grid-template-columns: 450px 40px 1fr;
 	grid-template-rows: 100%;
 	column-gap: 10px;
 	padding: 0px 10px 10px 10px;
@@ -129,4 +129,51 @@ display-canvas {
 	position: relative;
 	left: -1px;
 	top: -1px;
+}
+
+.editor-page__first-run {
+	display: block;
+	margin: 20px;
+	width: calc(100% - 40px);
+	max-width: 700px;
+}
+
+.editor-page__first-run p {
+	margin-bottom: 20px;
+}
+
+.editor-page__first-run fancy-button {
+	margin-right: 10px;
+}
+
+.ligatures-page__common-ligature-table {
+	margin-bottom: 10px;
+}
+
+.ligature-display-wrapper {
+	display: inline-block;
+	width: max-content;
+	padding: 8px 10px 0px 10px;
+	margin: 10px 10px 0px 0px;
+	background-color: var(--gray-l95);
+	border: 1px solid var(--gray-l90);
+	border-radius: 4px;
+}
+
+.ligature-display-wrapper span {
+	display: inline-block;
+	text-align: center;
+	margin: 0px 5px 0px 5px;
+	color: var(--gray-l50);
+	line-height: 2em;
+	position: relative;
+	top: -4px;
+}
+
+.ligature-display-wrapper pre {
+	display: inline-block;
+	font-size: 2em;
+	line-height: 1em;
+	letter-spacing: 0.05em;
+	text-align: center;
 }

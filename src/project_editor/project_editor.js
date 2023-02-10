@@ -2,7 +2,6 @@ import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 
 import { History } from './history.js';
 import { Navigator } from './navigator.js';
-import { makeElement } from '../common/dom.js';
 import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
 import { json, getFirstID, clone, round } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
@@ -10,6 +9,7 @@ import { Glyph } from '../project_data/glyph.js';
 import { normalizeHex } from '../common/unicode.js';
 import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
+import { log } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -456,7 +456,6 @@ export class ProjectEditor {
 		if (this._views[wid].default) delete this._views[wid].default;
 		// log(`set as ${JSON.stringify(this._views[wid])}`);
 		// log(`ProjectEditor SET view`, 'end');
-		return this._views[wid];
 	}
 
 	/**
@@ -559,7 +558,7 @@ export class ProjectEditor {
 	}
 
 	autoFitIfViewIsDefault() {
-		if (this.nav.isOnEditCanvasPage) {
+		if (this.nav.isOnEditCanvasPage && this.selectedWorkItemID) {
 			if (this.view.default) {
 				this.autoFitView();
 				this.publish('view', this.view);
