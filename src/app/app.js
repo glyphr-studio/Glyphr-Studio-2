@@ -1,11 +1,11 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp, GSApp, log } from './main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { closeAllDialogs, makeContextMenu } from '../controls/dialogs/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { ioFont_exportFont } from '../io/font_export.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
-import { log } from '../common/functions.js';
+
 
 /**
  * Creates a new Glyphr Studio Application
@@ -27,7 +27,7 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: false, // Use a 'Dev Mode' window title
-				currentPage: false, // navigate straight to a page
+				currentPage: 'Help', // navigate straight to a page
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel
 				currentTool: false, // select a tool

@@ -2,7 +2,7 @@ import { makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
-import { makePreReleaseNote, makeContributeMessage } from './about.js';
+import { makePreReleaseNote } from './about.js';
 
 /**
  * Page > Overview
@@ -10,7 +10,6 @@ import { makePreReleaseNote, makeContributeMessage } from './about.js';
  * and glyph information
  */
 export function makePage_Overview() {
-	const editor = getCurrentProjectEditor();
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
@@ -20,10 +19,7 @@ export function makePage_Overview() {
 				<div class="content-page__nav-area">
 					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Overview' })}
 				</div>
-				<div id="content-page__panel">
-					${makePreReleaseNote()}
-					<br>
-				</div>
+				<div id="content-page__panel"></div>
 			</div>
 			<div class="content-page__right-area"></div>
 		</div>
@@ -47,6 +43,12 @@ export function makePage_Overview() {
 		toggleNavDropdown(l1);
 	});
 
+	const panelArea = content.querySelector('#content-page__panel');
+	const welcomeCard = makeElement({
+		className: 'panel__card full-width more-padding',
+	});
+	welcomeCard.appendChild(makePreReleaseNote(false));
+	panelArea.appendChild(welcomeCard);
 	// log(`PageOverview.makePageContent`, 'end');
 
 	return content;

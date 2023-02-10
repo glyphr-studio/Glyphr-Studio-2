@@ -1,16 +1,13 @@
 import { makeElement } from '../common/dom.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
-import { getCurrentProjectEditor } from '../app/main.js';
 import { emailLink } from '../app/app.js';
-import { closeAllDialogs } from '../controls/dialogs/dialogs.js';
+import { TabControl } from '../controls/tabs/tab_control.js';
 
 /**
  * Page > About
  * Information about Glyphr Studio
  */
 export function makePage_Help() {
-	const editor = getCurrentProjectEditor();
-	const app = window._GlyphrStudioApp;
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
@@ -20,26 +17,9 @@ export function makePage_Help() {
 				<div class="content-page__nav-area">
 					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Help' })}
 				</div>
-				<div id="content-page__panel">
-				<p>
-					At any time, you can reach out to ${emailLink()} for any help you need.
-				</p>
-				</div>
+				<div id="content-page__panel"></div>
 			</div>
-			<div class="content-page__right-area">
-				<h1>Help</h1>
-				<p>
-					Help articles for Glyphr Studio v2 will be at
-					<a href="https://www.glyphrstudio.com/v2/help" target="_blank">glyphrstudio.com/v2/help</a>,
-					though during the Alpha/Beta stages content may be sparse.
-				</p>
-
-				<br><br>
-
-				<h1>Keyboard shortcut reference</h1>
-				${makeKeyboardShortcutReference()}
-
-			</div>
+			<div class="content-page__right-area"></div>
 		</div>
 	`,
 	});
@@ -50,11 +30,40 @@ export function makePage_Help() {
 		toggleNavDropdown(l1);
 	});
 
+	const rightArea = content.querySelector('.content-page__right-area');
+	const tabControl = new TabControl(rightArea);
+
+	tabControl.registerTab('Overview', makeHelpOverview());
+	tabControl.registerTab('Keyboard shortcuts', makeKeyboardShortcutReference());
+	tabControl.selectTab('Overview');
+
+	const panelArea = content.querySelector('#content-page__panel');
+	panelArea.appendChild(tabControl.makeTabs());
+
+	return content;
+}
+
+function makeHelpOverview() {
+	const content = makeElement({
+		innerHTML: `
+		<h1>Help</h1>
+		<p>
+			Help articles for Glyphr Studio v2 will be at
+			<a href="https://www.glyphrstudio.com/v2/help" target="_blank">glyphrstudio.com/v2/help</a>,
+			please email us if you find anything missing.
+		</p>
+		<p>
+			At any time, you can reach out for any help you need:
+			${emailLink()}
+		</p>
+	`});
+
 	return content;
 }
 
 export function makeKeyboardShortcutReference() {
-	let content = `
+	let content = makeElement({
+		innerHTML: `
 		<div class="keyboardShortcutTable">
 			<h3>View</h3>
 			<span>
@@ -146,6 +155,7 @@ export function makeKeyboardShortcutReference() {
 			</label>
 
 		</div>
-	`;
+	`});
+
 	return content;
 }

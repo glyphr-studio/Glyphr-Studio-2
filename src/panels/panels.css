@@ -26,6 +26,10 @@
 	animation: var(--animate-fade-in-slide-down);
 }
 
+.panel__card.more-padding {
+	padding: 15px 25px 20px 20px;
+}
+
 .panel__card.full-width,
 .pre-checkbox {
 	grid-column: 1 / -1;
