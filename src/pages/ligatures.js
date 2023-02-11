@@ -189,7 +189,7 @@ function makeLigaturesFirstRunContent() {
 			</p>
 			<p>
 				These are just some examples. <strong>Ligatures can have any sequence of two
-				more characters.</strong> In a text editing program that has ligatures enabled,
+				or more characters.</strong> In a text editing program that has ligatures enabled,
 				this sequence of characters is recognized, then replaced with the custom ligature
 				character that you design.
 			</p>

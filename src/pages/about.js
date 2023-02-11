@@ -55,13 +55,20 @@ function makeLicenseInfo() {
 		innerHTML: `
 		<h1>License</h1>
 		<h2>The Glyphr Studio App</h2>
-		<p>
+		<br>
+		<div class="page__card">
+			<h3>Glyphr Studio</h3>
+			<a href="https://www.glyphrstudio.com/" target="_blank">glyphrstudio.com</a>
+			<br><br>
 			The Glyphr Studio App is licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>,
 			which is a free / open source 'copyleft' license. You are free to use, distribute,
 			and modify Glyphr Studio as long as this license and its freeness stays intact.
-		</p>
+			<br><br>
+			Copyright © 2010 - 2023 Matthew LaGrandeur
+		</div>
 
+		<br><br><br>
 		<h2>Fonts you create</h2>
 		<p>
 			Any font you create belongs 100% to you, and you must decide how to license it.<br>
@@ -69,16 +76,19 @@ function makeLicenseInfo() {
 			more about licensing on the Help site</a>.
 		</p>
 
+		<br>
 		<h2>Libraries</h2>
 		<p>Glyphr Studio includes the following 3rd party libraries:</p>
 
 		<div class="page__card">
 			<h3>opentype.js</h3>
-			<a href="https://opentype.js.org/" target="_blank">opentype.js.org</a><br>
+			<a href="https://opentype.js.org/" target="_blank">opentype.js.org</a>
+			<br><br>
 			opentype.js is available on
 			<a href="https://github.com/opentypejs/opentype.js" target="_blank">GitHub</a>
 			under the
-			<a href="https://raw.github.com/opentypejs/opentype.js/master/LICENSE" target="_blank">MIT License</a>.<br>
+			<a href="https://raw.github.com/opentypejs/opentype.js/master/LICENSE" target="_blank">MIT License</a>.
+			<br><br>
 			Copyright © 2020 Frederik De Bleser.
 		</div>
 	`,
@@ -177,8 +187,12 @@ export function makeContributeCard() {
 	<ul>
 		<li>
 			<strong>Send Feedback</strong> -
-			Use new features and let us know if you run into issues.  Follow us on Twitter and read the Blog,
-			and participate in discussions.	Be vocal, and let us know what we should do next!
+			Use new features and let us know if you run into issues.  Follow us on
+			<a href="https://typo.social/@glyphrstudio" target="_blank">Mastodon</a>,
+			<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">Reddit</a>, or
+			<a href="https://twitter.com/glyphrstudio" target="_blank">Twitter</a>.
+			Read the <a href="http://www.glyphrstudio.com/blog/" target="_blank">blog</a>,
+			and participate in discussions. Be vocal, and let us know what we should do next!
 			<br>
 		</li>
 		<li>
