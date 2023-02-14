@@ -10,6 +10,7 @@ import { normalizeHex } from '../common/unicode.js';
 import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { log } from '../app/main.js';
+import { HKern } from '../project_data/h_kern.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -196,7 +197,10 @@ export class ProjectEditor {
 	 * @returns {object}
 	 */
 	get selectedLigature() {
-		const re = this.ligatures[this.selectedLigatureID];
+		// log(`ProjectEditor GET selectedLigature`, 'start');
+		const selectedID = this.selectedLigatureID;
+		const re = this.project.ligatures[selectedID];
+		// log(`ProjectEditor GET selectedLigature`, 'end');
 		return re;
 	}
 
@@ -205,9 +209,13 @@ export class ProjectEditor {
 	 * @returns {string}
 	 */
 	get selectedLigatureID() {
+		// log(`ProjectEditor GET selectedLigatureID`, 'start');
+		// log(`this._selectedLigatureID: ${this._selectedLigatureID}`);
 		if (!this._selectedLigatureID) {
 			this._selectedLigatureID = getFirstID(this.project.ligatures);
 		}
+		// log(`this._selectedLigatureID: ${this._selectedLigatureID}`);
+		// log(`ProjectEditor GET selectedLigatureID`, 'end');
 		return this._selectedLigatureID;
 	}
 

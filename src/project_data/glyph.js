@@ -3,9 +3,9 @@ import { isAllZeros, Maxes } from './maxes.js';
 import { Path } from './path.js';
 import { ComponentInstance } from './component_instance.js';
 import { getOverallMaxes } from './maxes.js';
-import { json, clone, hasNonValues, isVal, trim } from '../common/functions.js';
-import { parseUnicodeInput, getUnicodeName, hexToHTML, hexToChars } from '../common/unicode.js';
-import { getCurrentProject } from '../app/main.js';
+import { hasNonValues, isVal, trim } from '../common/functions.js';
+import { getUnicodeName, hexToHTML, hexToChars } from '../common/unicode.js';
+import { getCurrentProject, log } from '../app/main.js';
 // import { combinePaths } from '../panels/REFACTOR_path.js';
 
 /**
@@ -30,19 +30,23 @@ export class Glyph extends GlyphElement {
 	 */
 	constructor({
 		id = false,
+		name = false,
 		paths = [],
 		advanceWidth = 0,
 		ratioLock = false,
 		usedIn = [],
+		ligature = [],
 		contextGlyphs = '',
 	} = {}) {
 		// log(`Glyph.constructor`, 'start');
 		super();
 		this.id = id;
+		this.name = name;
 		this.paths = paths;
 		this.advanceWidth = advanceWidth;
 		this.ratioLock = ratioLock;
 		this.usedIn = usedIn;
+		this.ligature = ligature;
 		this.contextGlyphs = contextGlyphs;
 
 		this.objType = 'Glyph';
@@ -69,6 +73,7 @@ export class Glyph extends GlyphElement {
 		if (this.advanceWidth !== 0) re.advanceWidth = this.advanceWidth;
 		if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
 		if (this.usedIn.length) re.usedIn = this.usedIn;
+		if (this.ligature.length) re.ligature = this.ligature;
 
 		if (this.paths && this.paths.length) {
 			re.paths = [];
@@ -102,6 +107,7 @@ export class Glyph extends GlyphElement {
 		if (this.advanceWidth !== 0) re += `${ind}advanceWidth: ${this.advanceWidth}\n`;
 		if (this.ratioLock !== false) re += `${ind}ratioLock: ${this.ratioLock}\n`;
 		if (this.usedIn.length) re += `${ind}usedIn: ${JSON.stringify(this.usedIn)}\n`;
+		if (this.ligature.length) re += `${ind}ligature: ${JSON.stringify(this.ligature)}\n`;
 
 		if (this.paths && this.paths.length) {
 			re += `${ind}paths: [\n`;
@@ -164,6 +170,15 @@ export class Glyph extends GlyphElement {
 	get usedIn() {
 		// log(`Glyph.usedIn Getter - is array? ${Array.isArray(this._usedIn)}`);
 		return this._usedIn || [];
+	}
+
+	/**
+	 * get ligature
+	 * @returns {array}
+	 */
+	get ligature() {
+		// log(`Glyph.ligature Getter - is array? ${Array.isArray(this._ligature)}`);
+		return this._ligature || [];
 	}
 
 	// computed properties
@@ -264,18 +279,28 @@ export class Glyph extends GlyphElement {
 	 */
 	get name() {
 		// log('Glyph GET name', 'start');
-		let name = getUnicodeName(this.id);
+		let name = this._name || getUnicodeName(this.id);
 		// log(`ID: ${this.id} result: ${name}`);
 		// log('Glyph GET name', 'end');
-		return this._name || name;
+		return name;
 	}
 
 	/**
-	 * get char name
+	 * Get character associated with this Glyph.
+	 * If this is a Ligature, returns a string of
+	 * characters.
 	 * @returns {string}
 	 */
 	get char() {
-		return hexToChars(this.id);
+		if (this.ligature.length) {
+			return this.ligature.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
+		} else {
+			return hexToChars(this.id);
+		}
+	}
+
+	get chars() {
+		return this.char;
 	}
 
 	/**
@@ -309,8 +334,6 @@ export class Glyph extends GlyphElement {
 		// log(`Glyph SET id`, 'start');
 		// log(`passed newID: ${newID}`);
 
-		newID = parseUnicodeInput(newID);
-		newID = newID.join ? newID.join('') : '0x0000';
 		this._id = newID;
 		// log(`this._id: ${this._id}`);
 
@@ -391,6 +414,18 @@ export class Glyph extends GlyphElement {
 	 */
 	set usedIn(usedIn) {
 		this._usedIn = usedIn || [];
+	}
+
+	/**
+	 * set ligature
+	 * @param {array} ligature
+	 */
+	set ligature(ligature) {
+		log(`Glyph SET ligature`, 'start');
+		log(`ligature: ${ligature}`);
+
+		this._ligature = ligature || [];
+		log(`Glyph SET ligature`, 'end');
 	}
 
 	// computed properties

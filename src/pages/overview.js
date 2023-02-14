@@ -14,7 +14,7 @@ export function makePage_Overview() {
 		tag: 'div',
 		id: 'app__page',
 		innerHTML: `
-		<div class="editor__page">
+		<div class="content__page">
 			<div class="content-page__left-area">
 				<div class="content-page__nav-area">
 					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Overview' })}

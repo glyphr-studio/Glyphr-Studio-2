@@ -7,7 +7,6 @@ import {
 	dimSplitElement,
 	makeInputs_position,
 	makeInputs_size,
-	makeSingleCheckbox,
 	makeSingleInput,
 	makeSingleLabel,
 } from './cards.js';

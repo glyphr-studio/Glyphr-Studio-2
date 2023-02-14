@@ -144,6 +144,7 @@ display-canvas {
 
 .editor-page__first-run fancy-button {
 	margin-right: 10px;
+	margin-bottom: 10px;
 }
 
 .ligatures-page__common-ligature-table {

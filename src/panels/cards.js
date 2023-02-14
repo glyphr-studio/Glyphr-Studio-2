@@ -9,8 +9,6 @@ import { round } from '../common/functions.js';
 export function makeInputs_position(workItem, labelPrefix = '', lockable = false) {
 	// TODO transform origin
 	// log(`makeInputs_position`, 'start');
-	let x = workItem.x;
-	let y = workItem.y;
 	// log(`x: ${round(x, 3)}`);
 	// log(`y: ${round(y, 3)}`);
 	let thisTopic = `current${workItem.objType}`;
@@ -218,7 +216,7 @@ function toggleHandleInputs(handle, show) {
 	if (group) group.style.display = show ? 'grid' : 'none';
 }
 
-export function makeSingleLabel(text, info = false) {
+export function makeSingleLabel(text) {
 	let newLabel = makeElement({
 		tag: 'label',
 		innerHTML: text,

@@ -1,9 +1,7 @@
 import { makeElement } from '../../common/dom.js';
-import { uiColors, accentColors } from '../../common/colors.js';
 import { hexToChars } from '../../common/unicode.js';
 import { lookUpGlyphName } from '../../lib/unicode_names.js';
-import { Glyph } from '../../project_data/glyph.js';
-import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
+import { getCurrentProject, log } from '../../app/main.js';
 import { drawGlyph } from '../../display_canvas/draw_paths.js';
 import style from './glyph-tile.css?inline';
 
@@ -22,18 +20,24 @@ export class GlyphTile extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		// log(`GlyphTile.constructor`, 'start');
+		log(`GlyphTile.constructor`, 'start');
+
 		// log(attributes);
 		super();
 
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
-		this.glyphHex = this.getAttribute('glyph');
-		this.glyphChar = hexToChars(this.glyphHex);
-		this.glyphObject = getCurrentProject().getGlyph(this.glyphHex);
+		const glyphID = this.getAttribute('glyph');
+		const glyph = getCurrentProject().getGlyph(glyphID);
+		const chars = glyph.chars || hexToChars(glyphID);
+		const name = glyph?.name || lookUpGlyphName(glyphID, true);
 		this.view = {};
 
-		// log(`this.glyphHex: ${this.glyphHex}`);
+		log(`glyphID: ${glyphID}`);
+		log(`chars: ${chars}`);
+		log(`name: ${name}`);
+		log(glyph);
+
 
 		const project = getCurrentProject();
 		const fontSettings = project.settings.font;
@@ -46,14 +50,14 @@ export class GlyphTile extends HTMLElement {
 		// log(`contentSize: ${contentSize}`);
 		// log(`zoom: ${zoom}`);
 
-		this.setAttribute('title', `${lookUpGlyphName(this.glyphHex, true)}\n${this.glyphHex}`);
+		this.setAttribute('title', `${name}\n${glyphID}`);
 
 		this.wrapper = makeElement({ className: 'wrapper' });
 		this.wrapper.style.backgroundSize = `auto ${overallSize}px`;
 
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
 
-		if (this.glyphObject && this.glyphObject.paths.length) {
+		if (glyph && glyph.paths.length) {
 			this.thumbnail = makeElement({
 				tag: 'canvas',
 				className: 'thumbnail',
@@ -65,7 +69,7 @@ export class GlyphTile extends HTMLElement {
 			this.ctx = this.thumbnail.getContext('2d');
 			this.thumbnail.width = overallSize;
 			this.thumbnail.height = overallSize;
-			advanceWidth = this.glyphObject.advanceWidth;
+			advanceWidth = glyph.advanceWidth;
 
 			this.view = {
 				dx: gutterSize + (contentSize - zoom * advanceWidth) / 2,
@@ -77,13 +81,13 @@ export class GlyphTile extends HTMLElement {
 		} else {
 			this.thumbnail = makeElement({
 				className: 'thumbnail',
-				content: this.glyphChar,
+				content: chars,
 			});
-			// log(`no glyphObject`);
+			// log(`no glyph`);
 		}
 
 		this.name = makeElement({ className: 'name' });
-		this.name.innerHTML = this.glyphHex === '0x20' ? 'Space' : this.glyphChar;
+		this.name.innerHTML = glyphID === '0x20' ? 'Space' : chars;
 
 		// Put it all together
 		const shadow = this.attachShadow({ mode: 'open' });
@@ -96,10 +100,10 @@ export class GlyphTile extends HTMLElement {
 		shadow.appendChild(this.wrapper);
 		redrawGlyph(this);
 
-		// log(`GlyphTile.constructor`, 'end');
+		log(`GlyphTile.constructor`, 'end');
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
+	attributeChangedCallback() {
 		// log(`GlyphTile.attributeChangedCallback`, 'start');
 		// log(`name: ${name}`);
 		// log(`oldValue: ${oldValue}`);
@@ -118,8 +122,8 @@ export class GlyphTile extends HTMLElement {
 }
 
 function redrawGlyph(tile) {
-	if (tile.glyphObject && tile.ctx) {
+	if (tile.glyph && tile.ctx) {
 		tile.ctx.clearRect(0, 0, tile.thumbnail.width, tile.thumbnail.height);
-		drawGlyph(tile.glyphObject, tile.ctx, tile.view);
+		drawGlyph(tile.glyph, tile.ctx, tile.view);
 	}
 }
