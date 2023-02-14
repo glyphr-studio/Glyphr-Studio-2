@@ -1,5 +1,5 @@
-import { addAsChildren, makeElement } from '../common/dom.js';
-import { getCurrentProjectEditor, log } from '../app/main.js';
+import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
@@ -7,6 +7,8 @@ import { hexToChars } from '../common/unicode.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
+import { Glyph } from '../project_data/glyph.js';
+import { showModalDialog } from '../controls/dialogs/dialogs.js';
 
 /**
  * Page > Ligatures
@@ -19,7 +21,7 @@ export function makePage_Ligatures() {
 	// log('current ProjectEditor');
 	// log(editor);
 	// log(editor.nav);
-	// log(`editor.selectedLigatureID: ${editor.selectedLigatureID}`);
+	log(`editor.selectedLigatureID: ${editor.selectedLigatureID}`);
 	// log(`editor.selectedItemID: ${editor.selectedItemID}`);
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
@@ -40,7 +42,7 @@ export function makePage_Ligatures() {
 			<div class="editor-page__edit-canvas-wrapper"></div>
 			<div class="editor-page__zoom-area"></div>
 			` : `
-			<div class="editor-page__edit-canvas-wrapper" style="grid-column: span 2;"></div>
+			<div class="editor-page__edit-canvas-wrapper" style="grid-column: span 2; overflow-y: scroll;"></div>
 			`}
 		</div>
 	`,
@@ -60,27 +62,26 @@ export function makePage_Ligatures() {
 		addAsChildren(canvasArea, makeLigaturesFirstRunContent());
 		navArea.style.display = 'block';
 		l1.style.width = '100%';
-		l1.style.borderRadius = '4px 4px 0px 0px';
-		// canvasArea.style.gridColumnStart = '2';
-		// canvasArea.style.gridColumnEnd = '3';
+		l1.style.borderRadius = '4px';
 		log(`makePage_Ligatures`, 'end');
 		return content;
 	}
 
+	const selectedLigature = editor.selectedLigature;
 	const l2Button = makeNavButton({
 		level: 'l2',
 		superTitle: 'EDITING',
-		title: lookUpGlyphName(selectedLigatureID, true),
+		title: selectedLigature.name,
 	});
 	const l3Button = makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel });
 
-	navArea.appendChild(l2Button);
-	navArea.appendChild(l3Button);
+	navArea.appendChild(textToNode(l2Button));
+	navArea.appendChild(textToNode(l3Button));
 
 	const editCanvas = makeElement({
 		tag: 'edit-canvas',
 		id: 'editor-page__edit-canvas',
-		attributes: { glyphs: selectedLigatureID },
+		attributes: { glyphs: selectedLigature.chars },
 	});
 
 	canvasArea.appendChild(editCanvas);
@@ -168,7 +169,7 @@ function makeLigaturesFirstRunContent() {
 	ligaturesWithCodePoints.forEach((lig) => {
 		commonLigatureTable += `
 			<span class="ligature-display-wrapper">
-					<pre>${lig.chars}</pre>
+					<pre>${lig.display}</pre>
 					<span> ➞ </span>
 					<pre>&#${parseInt(lig.point)};</pre>
 			</span>
@@ -205,6 +206,7 @@ function makeLigaturesFirstRunContent() {
 		tag: 'fancy-button',
 		innerHTML: 'Add the common Latin ligatures to your project',
 		attributes: { secondary: '' },
+		onClick: addCommonLigaturesToProject,
 	});
 
 	content.appendChild(addOneLigatureButton);
@@ -212,20 +214,84 @@ function makeLigaturesFirstRunContent() {
 	return content;
 }
 
-// Some of these intentionally have zero-width invisible characters between the 'chars'
+// The 'display' property intentionally have zero-width
+// invisible characters between the 'chars' to prevent
+// triggering a ligature
 const ligaturesWithCodePoints = [
-	{ chars: 'f‌f', point: '0xFB00' },
-	{ chars: 'f‌i', point: '0xFB01' },
-	{ chars: 'f‌l', point: '0xFB02' },
-	{ chars: 'f‌f‌i', point: '0xFB03' },
-	{ chars: 'f‌f‌l', point: '0xFB04' },
-	{ chars: 'st', point: '0xFB06' },
-	{ chars: 'AE', point: '0x00C6' },
-	{ chars: 'ae', point: '0x00E6' },
-	{ chars: 'OE', point: '0x0152' },
-	{ chars: 'oe', point: '0x0153' },
+	{ chars: 'ae', display: 'ae', point: '0x00E6' },
+	{ chars: 'AE', display: 'AE', point: '0x00C6' },
+	{ chars: 'ff', display: 'f‌f', point: '0xFB00' },
+	{ chars: 'fi', display: 'f‌i', point: '0xFB01' },
+	{ chars: 'fl', display: 'f‌l', point: '0xFB02' },
+	{ chars: 'oe', display: 'oe', point: '0x0153' },
+	{ chars: 'OE', display: 'OE', point: '0x0152' },
+	{ chars: 'st', display: 'st', point: '0xFB06' },
+	{ chars: 'ffi', display: 'f‌f‌i', point: '0xFB03' },
+	{ chars: 'ffl', display: 'f‌f‌l', point: '0xFB04' },
 ];
 
+function addCommonLigaturesToProject() {
+	ligaturesWithCodePoints.forEach(lig => addLigature(lig.chars));
+	getCurrentProjectEditor().navigate('Ligatures');
+}
+
+function addLigature(sequence) {
+	if (sequence.length < 2) {
+		return 'Ligature sequences need to be two or more characters.';
+	}
+
+	const newID = makeLigatureID(sequence);
+	const project = getCurrentProject();
+	if (project.ligatures[newID]) {
+		return 'Ligature already exists';
+	}
+
+	project.ligatures[newID] = new Glyph({
+		name: `Ligature ${sequence}`,
+		id: newID,
+		ligature: sequence.split('').map(char => char.codePointAt(0)),
+	});
+
+	return project.ligatures[newID];
+}
+
+function makeLigatureID(sequence) {
+	return sequence.split('').reduce(
+		(acc, value) => `${acc}-${value}`,
+		'liga'
+	);
+}
+
+export function makeCard_ligatureActions() {
+	let actions = makeElement({
+		tag: 'div',
+		className: 'panel__card',
+		innerHTML: '<h3>Ligature actions</h3>',
+	});
+
+	const addButton = makeElement({
+		tag: 'fancy-button',
+		innerHTML: 'Create new ligature',
+	});
+
+	const deleteButton = makeElement({
+		tag: 'fancy-button',
+		innerHTML: 'Delete this ligature',
+		attributes: { danger: '' },
+	});
+
+	addAsChildren(actions, [addButton, deleteButton]);
+	return actions;
+}
+
+export function showAddLigatureDialog() {
+	const dialog = makeElement({
+		tag: 'dialog',
+		innerHTML: '<h3>Add a new ligature</h3>'
+	});
+
+	showModalDialog(dialog);
+}
 /*
 function showNewLigatureDialog() {
 	var con = '<h1>New Ligature</h1>';

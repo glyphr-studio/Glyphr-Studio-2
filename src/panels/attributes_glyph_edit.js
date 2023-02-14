@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { makeCard_ligatureActions } from '../pages/ligatures.js';
 import { makeCard_glyphAttributes } from './card_glyph.js';
 import { makeCard_multiSelectPathAttributes, makeCard_pathAttributes } from './card_path.js';
 import {
@@ -54,6 +55,11 @@ export function makePanel_GlyphAttributes() {
 
 	// Glyph
 	content.push(makeCard_glyphAttributes(editor.selectedGlyph));
+
+	// Ligature
+	if (editor.nav.page === 'Ligatures') {
+		content.push(makeCard_ligatureActions());
+	}
 
 	// TODO used-in glyph card
 

@@ -2,8 +2,9 @@ import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
 import { clone, round, trim } from '../common/functions.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
-import { decToHex, hexToHTML, basicLatinOrder, normalizeHex } from '../common/unicode.js';
+import { decToHex, hexToHTML, normalizeHex } from '../common/unicode.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
+import { log } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -198,7 +199,7 @@ export class GlyphrStudioProject {
 		id = '' + id;
 		let result;
 
-		if (this.ligatures && id.indexOf('0x', 2) > -1) {
+		if (this.ligatures && id.indexOf('liga') > -1) {
 			// --------------------------------------------------------------
 			// Ligature
 			// --------------------------------------------------------------
@@ -353,6 +354,30 @@ export class GlyphrStudioProject {
 	 */
 	get defaultAdvanceWidth() {
 		return parseInt(this.settings.font.upm) / 2;
+	}
+
+	/**
+	 * For detecting ligatures in sequences of text,
+	 * it is necessary to first sort the sequence by length,
+	 * then alphabetically.
+	 */
+	get sortedLigatures() {
+		log(`GlyphrStudioProject GET sortedLigatures`, 'start');
+
+		let result = [];
+
+		Object.keys(this.ligatures).forEach(key => {
+			result.push(this.ligatures[key]);
+		});
+
+		result.sort(function (a, b) {
+			if (a.chars.length === b.chars.length) return a.chars.localeCompare(b.chars);
+			else return a.chars.length - b.chars.length;
+		});
+
+		log(result);
+		log(`GlyphrStudioProject GET sortedLigatures`, 'end');
+		return result;
 	}
 }
 

@@ -1,7 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { addAsChildren, makeElement } from '../common/dom.js';
-import { json } from '../common/functions.js';
-import { areHexValuesEqual, basicLatinOrder, decToHex, unicodeRanges } from '../common/unicode.js';
+import { makeElement } from '../common/dom.js';
+import { areHexValuesEqual, basicLatinOrder, decToHex } from '../common/unicode.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { isControlChar } from '../lib/unicode_blocks.js';
 
@@ -25,15 +24,25 @@ export function makeGlyphChooserContent(clickHandler, registerSubscriptions = tr
 
 	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
 
-	if (editor.project.settings.project.glyphRanges.length > 1) {
-		let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
-		header.appendChild(makeGlyphRangeChooser());
-		wrapper.appendChild(header);
+	if (editor.nav.page !== 'Ligatures') {
+		if (editor.project.settings.project.glyphRanges.length > 1) {
+			let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
+			header.appendChild(makeGlyphRangeChooser());
+			wrapper.appendChild(header);
+		}
 	}
 	savedClickHandler = clickHandler;
 	savedRegisterSubscriptions = registerSubscriptions;
 
-	wrapper.appendChild(makeGlyphChooserTileGrid());
+	if (editor.nav.page !== 'Ligatures') {
+		wrapper.appendChild(makeGlyphChooserTileGrid());
+	} else {
+		wrapper.appendChild(makeLigatureChooserTileGrid());
+		wrapper.appendChild(makeElement({
+			tag: 'fancy-button',
+			innerHTML: 'Create new ligature',
+		}));
+	}
 
 	// log(`makeGlyphChooserContent`, 'end');
 	return wrapper;
@@ -139,4 +148,42 @@ function makeGlyphRangeChooser() {
 
 export function makeRangeID(range) {
 	return `${range.name} ["${decToHex(range.begin)}", "${decToHex(range.end)}"]`;
+}
+
+function makeLigatureChooserTileGrid() {
+	// log(`makeLigatureChooserTileGrid`, 'start');
+	const editor = getCurrentProjectEditor();
+
+	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
+	let sortedLigatures = editor.project.sortedLigatures;
+
+	sortedLigatures.forEach((ligature) => {
+		let oneTile = new GlyphTile({ glyph: ligature.id });
+		if (editor.selectedLigatureID === ligature.id) oneTile.setAttribute('selected', '');
+
+		oneTile.addEventListener('click', () => savedClickHandler(ligature.id));
+
+		if (savedRegisterSubscriptions) {
+			editor.subscribe({
+				topic: 'whichLigatureIsSelected',
+				subscriberID: `glyphTile.${ligature.id}`,
+				callback: (newLigatureID) => {
+					// log('whichLigatureIsSelected subscriber callback');
+					// log(`checking if ${glyph.id} === ${ligature}`);
+					if (newLigatureID === ligature.id) {
+						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
+						oneTile.setAttribute('selected', '');
+					} else {
+						// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
+						oneTile.removeAttribute('selected');
+					}
+				},
+			});
+		}
+
+		tileGrid.appendChild(oneTile);
+	});
+
+	// log(`makeLigatureChooserTileGrid`, 'end');
+	return tileGrid;
 }

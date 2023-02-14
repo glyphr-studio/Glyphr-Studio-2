@@ -89,7 +89,17 @@ function makeLicenseInfo() {
 			under the
 			<a href="https://raw.github.com/opentypejs/opentype.js/master/LICENSE" target="_blank">MIT License</a>.
 			<br><br>
-			Copyright © 2020 Frederik De Bleser.
+			Copyright © 2020 Frederik De Bleser
+		</div>
+
+		<div class="page__card">
+			<h3>XMLtoJSON</h3>
+			<a href="https://github.com/mattlag/XMLtoJSON" target="_blank">github.com/mattlag/XMLtoJSON</a>
+			<br><br>
+			XMLtoJSON is licensed under a
+			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
+			<br><br>
+			Copyright © 2023 Matthew LaGrandeur
 		</div>
 	`,
 	});
