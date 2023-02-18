@@ -1,5 +1,5 @@
 import { makeElement } from '../common/dom.js';
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
 import { makePreReleaseNote } from './about.js';
@@ -48,7 +48,54 @@ export function makePage_Overview() {
 		className: 'panel__card full-width more-padding',
 	});
 	welcomeCard.appendChild(makePreReleaseNote(false));
+
+	const settings = getCurrentProject().settings;
+	const projectSummaryCard = makeElement({
+		className: 'panel__card more-padding',
+		innerHTML: `
+			<h2>Project info</h2>
+			<label>Project name: </label><span>${settings.project.name}</span>
+			<label>Font family: </label><span>${settings.font.family}</span>
+			<label>Style: </label><span>${settings.font.style}</span>
+			<label>UPM: </label><span>${settings.font.upm}</span>
+			<label>Ascent: </label><span>${settings.font.ascent}</span>
+			<label>Descent: </label><span>${settings.font.descent}</span>
+			<br><span></span>
+		`,
+	});
+	projectSummaryCard.appendChild(makeElement({
+		tag: 'fancy-button',
+		innerHTML: 'Edit project and font info',
+		attributes: { secondary: '' },
+		onClick: () => {
+			const editor = getCurrentProjectEditor();
+			editor.nav.page = 'Settings';
+			editor.navigate();
+		}
+	}));
+
+	const contributeCard = makeElement({
+		className: 'panel__card full-width more-padding',
+		innerHTML: `
+			Glyphr Studio is community supported. Learn how you can help:
+			<br>
+			`,
+	});
+	contributeCard.appendChild(
+		makeElement({
+			tag: 'fancy-button',
+			innerHTML: 'Support Glyphr Studio!',
+			attributes: { secondary: '' },
+			onClick: () => {
+
+			},
+		})
+	);
+
+
+	panelArea.appendChild(projectSummaryCard);
 	panelArea.appendChild(welcomeCard);
+	panelArea.appendChild(contributeCard);
 	// log(`PageOverview.makePageContent`, 'end');
 
 	return content;
