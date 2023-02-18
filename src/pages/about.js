@@ -135,46 +135,27 @@ function makeVersionInfo() {
 }
 
 export function makePreReleaseNote(showLogo = false) {
+	let logo = '';
+	if (showLogo) {
+		logo = `<div class="about-page__logo">
+		${logoVertical}
+		</div><br><br>`;
+	}
 	const content = makeElement({
 		innerHTML: `
-		${
-			showLogo
-				? `
-				<div class="about-page__logo">
-					${logoVertical}
-				</div>
-				<br><br>
-			`
-				: ''
-		}
-		<h1>Welcome to Alpha-2!</h1>
+		${logo}
+		<h2>Welcome to Beta-1!</h2>
 		<p>
-			What is an alpha? Currently, Glyphr Studio v2 does not
-			have enough features to be considered a usable product, and the code base is
-			evolving so quickly that it may not be totally stable. But, there
-			are still some features that we'd love to get feedback on, and probably some
-			bugs that we still haven't found.
+			We are very excited that Glyphr Studio v2 is nearing completion... but it's not
+			quite there yet.  We need your help trying out the app to make sure all the
+			scenarios are solid!
 		</p>
 		<br>
 
 		<h3>
-			There is a ton of information over on the blog:<br>
-			<a href="https://www.glyphrstudio.com/blog/2022/11/02/v2-alpha-1-mega-post/" target="_blank">Alpha-1 MEGA POST</a>
-			<br>
-			<a href="https://www.glyphrstudio.com/blog/2023/02/01/v2-alpha-2-mega-post/" target="_blank">Alpha-2 MEGA POST</a>
+			Please read the Beta-1 blog post for details:<br>
+			<a href="https://www.glyphrstudio.com/blog" target="_blank">BLOG</a>
 		</h3>
-
-		<br><br>
-		<strong>For Alpha-1 and Alpha-2, please try the following scenarios:</strong>
-		<ul>
-			<li>Open and Save Glyphr Studio v2 Project files (.gs2)</li>
-			<li>Import other font formats, like OTF, TTF, WOFF, and SVG Fonts.</li>
-			<li>Export OTF and SVG Fonts</li>
-			<li>Navigate around using the upper-left Page Chooser, Glyph Chooser, and Panel Chooser.</li>
-			<li>On the Glyph Edit page, use all the various panels and tools to edit or create shapes.</li>
-			<li>Use the Live Preview page to view your font in sentences or blocks of text.</li>
-			<li>Use the Settings page to adjust options for the App, your Project, and your Font.</li>
-		</ul>
 
 		<br>
 		<p>

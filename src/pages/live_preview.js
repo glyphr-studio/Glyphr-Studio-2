@@ -12,7 +12,7 @@ import { livePreviewOptions, makePanel_LivePreview } from '../panels/live_previe
 
 export function makePage_LivePreview() {
 	// log(`makePage_LivePreview`, 'start');
-	const editor = getCurrentProjectEditor();
+	// const editor = getCurrentProjectEditor();
 	// log('current ProjectEditor');
 	// log(editor);
 	// log(editor.nav);
@@ -27,7 +27,7 @@ export function makePage_LivePreview() {
 				<div class="content-page__nav-area">
 					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Live preview' })}
 				</div>
-				<div class="content-page__panel"></div>
+				<div id="content-page__panel"></div>
 			</div>
 			<div class="live-preview-page__canvas-wrapper">
 				<display-canvas id="live-preview-page__canvas"

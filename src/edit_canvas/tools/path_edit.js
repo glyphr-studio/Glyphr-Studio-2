@@ -2,11 +2,11 @@
 // Path Edit - selects points and moves points and handles (Pen)
 // ----------------------------------------------------------------
 
-import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
+import { getCurrentProjectEditor } from '../../app/main.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { setCursor } from '../cursors.js';
 import { isOverControlPoint } from '../detect_edit_affordances.js';
-import { checkForMouseOverHotspot, clickEmptySpace, findAndCallHotspot } from '../events_mouse.js';
+import { clickEmptySpace } from '../events_mouse.js';
 import { getPathAtLocation } from './tools.js';
 import { eventHandlerData } from '../events.js';
 
@@ -21,7 +21,7 @@ export class Tool_PathEdit {
 		// --------------------------------------------------------------
 		// Mouse Down
 		// --------------------------------------------------------------
-		this.mousedown = function (ev) {
+		this.mousedown = function () {
 			// log('Tool_PathEdit.mousedown', 'start');
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
@@ -101,7 +101,7 @@ export class Tool_PathEdit {
 		// --------------------------------------------------------------
 		// Mouse Move
 		// --------------------------------------------------------------
-		this.mousemove = function (ev) {
+		this.mousemove = function () {
 			// log('Tool_PathEdit.mousemove', 'start');
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();

@@ -201,7 +201,7 @@ export function resizePath() {
 	// log('Done lx/rx/ty/by: ' + paths.maxes.print());
 	// log(`resizePath`, 'end');
 }
-
+/*
 export function checkForMouseOverHotspot(x, y) {
 	const editor = getCurrentProjectEditor();
 	if (isHotspotHere(x, y)) {
@@ -225,6 +225,7 @@ export function checkForMouseOverHotspot(x, y) {
 	}
 }
 
+
 function updateDragSelectArea(dx, dy, dw, dh) {
 	// log('updateDragSelectArea dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
 	eventHandlerData.dragSelectArea.xMin += dx;
@@ -232,6 +233,7 @@ function updateDragSelectArea(dx, dy, dw, dh) {
 	eventHandlerData.dragSelectArea.xMax += dw + dx;
 	eventHandlerData.dragSelectArea.yMin += dh + dy;
 }
+*/
 
 export function canResize(handle) {
 	const editor = getCurrentProjectEditor();
@@ -299,7 +301,7 @@ export function handleMouseWheel(event) {
 // --------------------------------------------------------------
 // Canvas hotspots
 // --------------------------------------------------------------
-
+/*
 export function registerCanvasHotspot(hotspot) {
 	eventHandlerData.canvasHotSpots.push(hotspot);
 }
@@ -403,3 +405,4 @@ export function findAndUnderlineHotspot(cx, cy) {
 	return hs.target.xMin;
 	// log('findAndUnderlineHotspot', 'end');
 }
+*/

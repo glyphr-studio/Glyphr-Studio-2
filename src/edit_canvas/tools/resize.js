@@ -1,8 +1,10 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
+import { calculateAngle } from '../../common/functions.js';
 import { setCursor } from '../cursors.js';
+import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { checkForMouseOverHotspot, clickEmptySpace, resizePath } from '../events_mouse.js';
-import { clickTool, getPathAtLocation } from './tools.js';
+import { clickEmptySpace, resizePath } from '../events_mouse.js';
+import { getPathAtLocation } from './tools.js';
 
 // ----------------------------------------------------------------
 // Resize - resizes whole paths (Arrow / Pointer)
@@ -22,7 +24,7 @@ export class Tool_Resize {
 		// --------------------------------------------------------------
 		// Mouse Down
 		// --------------------------------------------------------------
-		this.mousedown = function (ev) {
+		this.mousedown = function () {
 			// log('Tool_Resize.mousedown', 'start');
 			// log('x:y ' + eventHandlerData.mousePosition.x + ':' + eventHandlerData.mousePosition.y);
 			const editor = getCurrentProjectEditor();
@@ -90,7 +92,7 @@ export class Tool_Resize {
 		// --------------------------------------------------------------
 		// Mouse Move
 		// --------------------------------------------------------------
-		this.mousemove = function (ev) {
+		this.mousemove = function () {
 			// log(`Tool_Resize.mousemove`, 'start');
 
 			const ehd = eventHandlerData;
@@ -130,6 +132,7 @@ export class Tool_Resize {
 				this.didStuff = true;
 			} else if (this.rotating) {
 				// log(`detected ROTATING`);
+				
 				let a1 = calculateAngle(
 					{ x: cXsX(ehd.mousePosition.x), y: cYsY(ehd.mousePosition.y) },
 					ehd.rotationCenter

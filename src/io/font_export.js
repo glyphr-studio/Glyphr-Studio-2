@@ -1,4 +1,4 @@
-import { getCurrentProject } from '../app/main.js';
+import { getCurrentProject, log } from '../app/main.js';
 import { round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { decToHex, getUnicodeShortName } from '../common/unicode.js';

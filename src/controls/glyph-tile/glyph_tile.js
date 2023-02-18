@@ -28,15 +28,15 @@ export class GlyphTile extends HTMLElement {
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		const glyphID = this.getAttribute('glyph');
-		const glyph = getCurrentProject().getGlyph(glyphID);
-		const chars = glyph.chars || hexToChars(glyphID);
-		const name = glyph?.name || lookUpGlyphName(glyphID, true);
+		this.glyph = getCurrentProject().getGlyph(glyphID);
+		const chars = this.glyph.chars || hexToChars(glyphID);
+		const name = this.glyph?.name || lookUpGlyphName(glyphID, true);
 		this.view = {};
 
 		log(`glyphID: ${glyphID}`);
 		log(`chars: ${chars}`);
 		log(`name: ${name}`);
-		log(glyph);
+		log(this.glyph);
 
 
 		const project = getCurrentProject();
@@ -57,7 +57,7 @@ export class GlyphTile extends HTMLElement {
 
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
 
-		if (glyph && glyph.paths.length) {
+		if (this.glyph && this.glyph.paths.length) {
 			this.thumbnail = makeElement({
 				tag: 'canvas',
 				className: 'thumbnail',
@@ -69,7 +69,7 @@ export class GlyphTile extends HTMLElement {
 			this.ctx = this.thumbnail.getContext('2d');
 			this.thumbnail.width = overallSize;
 			this.thumbnail.height = overallSize;
-			advanceWidth = glyph.advanceWidth;
+			advanceWidth = this.glyph.advanceWidth;
 
 			this.view = {
 				dx: gutterSize + (contentSize - zoom * advanceWidth) / 2,
