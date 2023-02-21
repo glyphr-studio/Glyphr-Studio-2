@@ -26,7 +26,7 @@
 	animation: var(--animate-fade-in-slide-down);
 }
 
-.panel__card.more-padding {
+.more-padding {
 	padding: 15px 25px 20px 20px;
 }
 
