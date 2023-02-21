@@ -2,7 +2,8 @@ import { makeElement } from '../common/dom.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
-import { makePreReleaseNote } from './about.js';
+import { makeContributeCard, makeContributeContent, makePreReleaseNote } from './about.js';
+import { showModalDialog } from '../controls/dialogs/dialogs.js';
 
 /**
  * Page > Overview
@@ -77,17 +78,17 @@ export function makePage_Overview() {
 	const contributeCard = makeElement({
 		className: 'panel__card full-width more-padding',
 		innerHTML: `
-			Glyphr Studio is community supported. Learn how you can help:
+			Glyphr Studio is community supported.
 			<br>
 			`,
 	});
 	contributeCard.appendChild(
 		makeElement({
 			tag: 'fancy-button',
-			innerHTML: 'Support Glyphr Studio!',
+			innerHTML: 'Learn how you can help Glyphr Studio!',
 			attributes: { secondary: '' },
 			onClick: () => {
-
+				showModalDialog(makeContributeContent(), 500);
 			},
 		})
 	);

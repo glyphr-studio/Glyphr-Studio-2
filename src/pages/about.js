@@ -1,4 +1,4 @@
-import { addAsChildren, makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { emailLink } from '../app/app.js';
@@ -152,11 +152,10 @@ export function makePreReleaseNote(showLogo = false) {
 		</p>
 		<br>
 
-		<h3>
-			Please read the Beta-1 blog post for details:<br>
-			<a href="https://www.glyphrstudio.com/blog" target="_blank">BLOG</a>
-		</h3>
-
+		<a href="https://www.glyphrstudio.com/blog" target="_blank" style="font-size: 1.2em;">
+			Read the Beta-1 blog post for details
+		</a>
+		<br>
 		<br>
 		<p>
 			If you find any bugs, or have an suggestions about functionality, please email us!
@@ -171,39 +170,46 @@ export function makePreReleaseNote(showLogo = false) {
 export function makeContributeCard() {
 	const content = makeElement({
 		className: 'panel__card full-width more-padding',
-		innerHTML: `
-	<h3>Contribute!</h3>
-	If you think Glyphr Studio is pretty cool, there are two huge ways you can make it better!
-	<br>
-	<ul>
-		<li>
-			<strong>Send Feedback</strong> -
-			Use new features and let us know if you run into issues.  Follow us on
-			<a href="https://typo.social/@glyphrstudio" target="_blank">Mastodon</a>,
-			<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">Reddit</a>, or
-			<a href="https://twitter.com/glyphrstudio" target="_blank">Twitter</a>.
-			Read the <a href="http://www.glyphrstudio.com/blog/" target="_blank">blog</a>,
-			and participate in discussions. Be vocal, and let us know what we should do next!
-			<br>
-		</li>
-		<li>
-			<strong>Make a Monetary Contribution</strong> -
-			Glyphr Studio will always be free, and we think that is very important.  But, it does take some
-			money to keep it going.	Contributions of even small amounts of money help keep the Glyphr Studio
-			effort going strong!
-			<br><br>
-		</li>
-	</ul>
-
-	<a href="https://ko-fi.com/glyphrstudio" target="_blank" class="donateLinkButton">
-		<img src="${donateKofiSrc}" alt="Support me on Ko-fi" /></a>
-
-	<a href="https://www.paypal.com/donate/?hosted_button_id=35R85K8X5MGFQ" target="_blank" class="donateLinkButton">
-		<img src="${donatePaypalSrc}" alt="PayPal - The safer, easier way to pay online!" /></a>
-	`,
 	});
-
+	content.appendChild(makeContributeContent());
 	return content;
+}
+
+export function makeContributeContent() {
+	return makeElement({
+		tag: 'div',
+		attributes: { style: 'margin: 20px;' },
+		innerHTML: `
+			<h3>Contribute!</h3>
+			If you want to give back to Glyphr Studio, there are two huge ways you can make it better!
+			<br>
+			<ul>
+				<li>
+					<strong>Send Feedback</strong> -
+					Use new features and let us know if you run into issues.  Follow us on
+					<a href="https://typo.social/@glyphrstudio" target="_blank">Mastodon</a>,
+					<a href="https://www.reddit.com/r/GlyphrStudio/" target="_blank">Reddit</a>, or
+					<a href="https://twitter.com/glyphrstudio" target="_blank">Twitter</a>.
+					Read the <a href="http://www.glyphrstudio.com/blog/" target="_blank">blog</a>,
+					and participate in discussions. Be vocal, and let us know what we should do next!
+					<br>
+				</li>
+				<li>
+					<strong>Make a Monetary Contribution</strong> -
+					Glyphr Studio will always be free, and we think that is very important.  But, it does take some
+					money to keep it going.	Contributions of even small amounts of money help keep the Glyphr Studio
+					effort going strong!
+					<br><br>
+				</li>
+			</ul>
+
+			<a href="https://ko-fi.com/glyphrstudio" target="_blank" class="donateLinkButton">
+				<img src="${donateKofiSrc}" alt="Support me on Ko-fi" /></a>
+
+			<a href="https://www.paypal.com/donate/?hosted_button_id=35R85K8X5MGFQ" target="_blank" class="donateLinkButton">
+				<img src="${donatePaypalSrc}" alt="PayPal - The safer, easier way to pay online!" /></a>
+			`,
+	});
 }
 
 function makeContactInfo() {

@@ -51,8 +51,8 @@ export function makePage_Settings() {
 
 	const tabControl = new TabControl(rightArea);
 
-	tabControl.registerTab('Font', makeSettingsTabContentFont());
 	tabControl.registerTab('Project', makeSettingsTabContentProject());
+	tabControl.registerTab('Font', makeSettingsTabContentFont());
 	tabControl.registerTab('App', makeSettingsTabContentApp());
 
 	addAsChildren(panelArea, tabControl.makeTabs());
