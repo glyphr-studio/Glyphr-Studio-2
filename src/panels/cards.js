@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor, log } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 import { round } from '../common/functions.js';
 
@@ -79,12 +79,12 @@ export function makeInputs_size(workItem) {
 }
 
 export function makeSingleInput(workItem, property, thisTopic, tagName) {
-	// log(`makeSingleInput`, 'start');
-	// log(`workItem.objType: ${workItem.objType}`);
+	log(`makeSingleInput`, 'start');
+	log(`workItem.objType: ${workItem.objType}`);
 	// log(`workItem.type: ${workItem.type}`);
-	// log(`property: ${property}`);
-	// log(`thisTopic: ${thisTopic}`);
-	// log(`tagName: ${tagName}`);
+	log(`property: ${property}`);
+	log(`thisTopic: ${thisTopic}`);
+	log(`tagName: ${tagName}`);
 
 	let newInput = makeElement({ tag: tagName, className: `singleInput-${property}` });
 	let value = tagName === 'input' ? workItem[property] : round(workItem[property], 3);
@@ -118,7 +118,7 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 				if (property === 'width') workItem.setPathSize(newValue, false, true);
 				if (property === 'height') workItem.setPathSize(false, newValue, true);
 			} else {
-				// log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
+				log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
 				workItem[property] = newValue;
 			}
 
@@ -138,24 +138,24 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 		topic: thisTopic,
 		subscriberID: `attributesPanel.${thisTopic}.${property}`,
 		callback: (changedItem) => {
-			// log(`SINGLE INPUT CALLBACK`, 'start');
-			// log(`attributesPanel.${thisTopic}.${property}`);
-			// log(changedItem);
-			// log(`property: ${property}`);
-			// log(`changedItem[property]: ${changedItem[property]}`);
+			log(`SINGLE INPUT SUBSCRIPTION CALLBACK`, 'start');
+			log(`attributesPanel.${thisTopic}.${property}`);
+			log(changedItem);
+			log(`property: ${property}`);
+			log(`changedItem[property]: ${changedItem[property]}`);
 
 			if (changedItem[property] || changedItem[property] === 0) {
 				let newValue;
 				if (tagName === 'input') newValue = changedItem[property];
 				else newValue = round(changedItem[property], 3);
 				newInput.value = newValue;
-				// log(`new value: ${newValue}`);
+				log(`new value: ${newValue}`);
 			}
-			// log(`SINGLE INPUT CALLBACK`, 'end');
+			log(`SINGLE INPUT SUBSCRIPTION CALLBACK`, 'end');
 		},
 	});
 
-	// log(`makeSingleInput`, 'end');
+	log(`makeSingleInput`, 'end');
 	return newInput;
 }
 

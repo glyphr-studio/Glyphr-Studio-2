@@ -285,7 +285,7 @@ export function ioSVG_importSVGfont(font) {
 			rangeStart = 1 * _UI.glyphRange[r].begin;
 			rend = 1 * _UI.glyphRange[r].end + 1;
 			for (let t = rangeStart; t < rend; t++) {
-				if (getGlyph(t)) {
+				if (getItem(t)) {
 					project.projectSettings.glyphRanges[r] = true;
 					break;
 				}

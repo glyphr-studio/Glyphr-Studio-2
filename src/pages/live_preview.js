@@ -1,5 +1,4 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { livePreviewOptions, makePanel_LivePreview } from '../panels/live_preview.js';
@@ -60,7 +59,7 @@ export function makePage_LivePreview() {
 		toggleNavDropdown(l1);
 	});
 
-	let panelArea = content.querySelector('.content-page__panel');
+	let panelArea = content.querySelector('#content-page__panel');
 	addAsChildren(panelArea, makePanel_LivePreview());
 
 	// log(`makePage_LivePreview`, 'end');

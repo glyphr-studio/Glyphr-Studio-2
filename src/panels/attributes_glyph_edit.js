@@ -39,9 +39,10 @@ export function makePanel_GlyphAttributes() {
 		// log('One path selected');
 		// log(selPaths.singleton);
 		if (selPaths.singleton.objType === 'ComponentInstance') {
+			// TODO components
 			// component selected
 			// log("...Component selected");
-			content.push(makeCard_componentInstanceAttributes(selPaths.singleton));
+			// content.push(makeCard_componentInstanceAttributes(selPaths.singleton));
 		} else {
 			// regular path selected
 			// log("...Regular path selected");
@@ -54,7 +55,7 @@ export function makePanel_GlyphAttributes() {
 	}
 
 	// Glyph
-	content.push(makeCard_glyphAttributes(editor.selectedGlyph));
+	content.push(makeCard_glyphAttributes(editor.selectedItem));
 
 	// Ligature
 	if (editor.nav.page === 'Ligatures') {

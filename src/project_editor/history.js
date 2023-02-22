@@ -118,7 +118,7 @@ export class History {
 		// Index 0 is the previous current state, so remove it
 		q.shift();
 
-		editor.publish('currentGlyph', editor.selectedItem);
+		editor.publish('currentItem', editor.selectedItem);
 		if (editor.nav.panel === 'History') {
 			refreshPanel();
 		}

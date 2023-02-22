@@ -38,11 +38,11 @@ export function makeUsedInThumbs() {
 				<table cellpadding=0 cellspacing=0 border=0>
 					<tr><td title="${cname}">
 						<div class="ssusedinthumb" onclick="goToEditGlyph(${unique[k]});">
-							${getGlyph(unique[k]).makeSVG()}
+							${getItem(unique[k]).makeSVG()}
 						</div>
 					</td></tr>
 					<tr><td>
-						${cname === 'Space' ? cname : getGlyph(unique[k]).glyphhtml}
+						${cname === 'Space' ? cname : getItem(unique[k]).glyphhtml}
 					</td></tr>
 				</table>
 			`;
@@ -231,7 +231,7 @@ function makeCard_componentInstanceAttributes(s) {
 		'</tr>';
 
 	// ROOT
-	let cr = getGlyph(s.link);
+	let cr = getItem(s.link);
 	content += '<tr><td colspan=2><h3>root component</h3></td></tr></table>';
 	content += '<table class="layertable">';
 	content += '<tr class="componentlayer" onclick="goToEditGlyph(\'' + s.link + '\');">';

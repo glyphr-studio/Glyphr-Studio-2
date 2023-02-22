@@ -189,7 +189,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.ctx.clearRect(0, 0, this.width, this.height);
 
 		// let glyphHex = glyphToHex(this.glyphs.charAt(0));
-		// let sg = getCurrentProject().getGlyph(glyphHex);
+		// let sg = getCurrentProject().getItem(glyphHex);
 		// log(sg);
 		// // drawGlyph(sg, this.ctx, view);
 
@@ -335,7 +335,7 @@ export class DisplayCanvas extends HTMLElement {
 
 			// TODO flattenGlyphs
 			// if (flattenGlyphs) {
-			// 	if (!this.cache.hasOwnProperty(charData.char)) {
+			// 	if (!this.cache[charData.char]) {
 			// 		this.cache[charData.char] = glyph.clone().combineAllShapes(true);
 			// 	}
 

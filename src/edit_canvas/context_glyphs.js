@@ -6,7 +6,7 @@
 		Common functions around this can be found here.
 **/
 
-import { getCurrentProject } from "../app/main";
+import { getCurrentProject } from '../app/main';
 
 // -------------------
 // CONTEXT GLYPHS
@@ -15,7 +15,7 @@ import { getCurrentProject } from "../app/main";
 function drawContextGlyphs() {
 	// log('drawContextGlyphs', 'start');
 	const selwid = getSelectedWorkItemID();
-	const currGlyphObject = getGlyph(selwid, true);
+	const currGlyphObject = getItem(selwid, true);
 	const currGlyphChar = hexToChars(selwid);
 	const v = getView('drawContextGlyphs');
 	const split = splitContextGlyphString(currGlyphChar);
@@ -97,7 +97,7 @@ function getGlyphSequenceAdvanceWidth(sequence) {
 
 	let g;
 	sequence.forEach(function (v, i, a) {
-		g = getGlyph(glyphToHex(v));
+		g = getItem(glyphToHex(v));
 		if (g) {
 			advanceWidth += g.advanceWidth;
 			if (a[i + 1]) advanceWidth += calculateKernOffset(v, a[i + 1]);
@@ -353,7 +353,7 @@ function hotspotNavigateToGlyph(gid) {
 	v.dx += v.dz * delta * flipper;
 	v.dx += v.dz * kern * flipper;
 
-	getGlyph(gid, true).contextGlyphs = ctxg;
+	getItem(gid, true).contextGlyphs = ctxg;
 	selectGlyph(gid);
 	setView(v);
 
@@ -448,7 +448,7 @@ function getStringAdvanceWidth(str) {
 	let aw = 0;
 
 	for (let c = 0; c < carr.length; c++) {
-		g = getGlyph(charsToHexArray(carr[c])[0]);
+		g = getItem(charsToHexArray(carr[c])[0]);
 
 		aw += g.advanceWidth;
 

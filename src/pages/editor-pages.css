@@ -19,6 +19,14 @@
 	row-gap: 2px;
 }
 
+#editor-page__panel {
+	grid-row: 3;
+	width: 450px;
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
 .editor-page__nav-area {
 	display: grid;
 	grid-template-columns: min-content 1fr;

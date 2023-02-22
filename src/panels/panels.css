@@ -1,12 +1,3 @@
-.editor-page__panel,
-#content-page__panel {
-	grid-row: 3;
-	width: 450px;
-	height: 100%;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
-
 .panel__card {
 	display: grid;
 	/* align with buttons at the bottom of cards */
@@ -316,6 +307,7 @@ nav .glyph-chooser__wrapper {
 .layer-panel__layer-thumb {
 	background-color: white;
 	grid-column: 1;
+	overflow: hidden;
 }
 
 .layer-panel__layer-name {

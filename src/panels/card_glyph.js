@@ -24,16 +24,17 @@ export function makeCard_glyphAttributes(glyph) {
 
 	let advanceWidthLabel = makeSingleLabel('advance width');
 	let halfSizeAdvanceWidthInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentGlyph', 'input-number');
+	let advanceWidthInput = makeSingleInput(glyph, 'advanceWidth', 'currentItem', 'input-number');
 	let autoFitAdvanceWidth = makeElement({
 		tag: 'button',
 		className: 'panel-card__action-button',
-		title: 'Auto-fit advance width\nThe advance width will be set to the x-max of the paths in this glyph.',
+		title:
+			'Auto-fit advance width\nThe advance width will be set to the x-max of the paths in this glyph.',
 		innerHTML: makeIcon({ name: 'command_autoFit' }),
 		onClick: () => {
 			let editor = getCurrentProjectEditor();
 			editor.selectedItem.advanceWidth = editor.selectedItem.maxes.xMax;
-			editor.publish('currentGlyph', editor.selectedItem);
+			editor.publish('currentItem', editor.selectedItem);
 		},
 	});
 	addAsChildren(halfSizeAdvanceWidthInput, [advanceWidthInput, makeElement(), autoFitAdvanceWidth]);
@@ -66,8 +67,8 @@ export function makeCard_glyphAttributes(glyph) {
 		`,
 	});
 	let doubleBearingInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let lsbInput = makeSingleInput(glyph, 'leftSideBearing', 'currentGlyph', 'input-number');
-	let rsbInput = makeSingleInput(glyph, 'rightSideBearing', 'currentGlyph', 'input-number');
+	let lsbInput = makeSingleInput(glyph, 'leftSideBearing', 'currentItem', 'input-number');
+	let rsbInput = makeSingleInput(glyph, 'rightSideBearing', 'currentItem', 'input-number');
 	doubleBearingInput.appendChild(lsbInput);
 	doubleBearingInput.appendChild(dimSplitElement());
 	doubleBearingInput.appendChild(rsbInput);

@@ -47,11 +47,6 @@
 	/* background-size: auto ${overallSize}px; */
 }
 
-.wrapper[selected]:hover,
-.wrapper[selected]:focus {
-	cursor: default;
-}
-
 .thumbnail {
 	display: block;
 	background-color: white;

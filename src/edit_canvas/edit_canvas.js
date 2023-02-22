@@ -1,24 +1,17 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
-import { glyphToHex } from '../common/unicode.js';
 import { eventHandlerData, initEventHandlers } from './events.js';
-import { drawGlyph, drawPath } from '../display_canvas/draw_paths.js';
+import { drawGlyph } from '../display_canvas/draw_paths.js';
 import {
 	computeAndDrawBoundingBox,
 	computeAndDrawBoundingBoxHandles,
 	computeAndDrawPathPointHandles,
 	computeAndDrawPathPoints,
-	drawBoundingBox,
 	drawNewBasicPath,
-	drawPathPointHover,
 	drawSelectedPathOutline,
-	testDrawAllPathPointHandles,
 } from './draw_edit_affordances.js';
-import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js';
-import { makeCrisp, round } from '../common/functions.js';
-import { setCursor, updateCursor } from './cursors.js';
-// import style from './edit-canvas.css?inline';
+import { round } from '../common/functions.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -29,7 +22,7 @@ export class EditCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['glyphs'];
+		return ['editing-item-id'];
 	}
 
 	/**
@@ -44,7 +37,7 @@ export class EditCanvas extends HTMLElement {
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
 		// element attributes
-		this.glyphs = this.getAttribute('glyphs') || '';
+		this.editingItemID = this.getAttribute('editing-item-id') || '';
 		this.width = this.getAttribute('width') || 2000;
 		this.height = this.getAttribute('height') || 2000;
 
@@ -72,7 +65,7 @@ export class EditCanvas extends HTMLElement {
 			'whichGlyphIsSelected',
 			'whichPathIsSelected',
 			'whichPathPointIsSelected',
-			'currentGlyph',
+			'currentItem',
 			'currentPath',
 			'currentPathPoint',
 			'currentControlPoint',
@@ -106,10 +99,12 @@ export class EditCanvas extends HTMLElement {
 		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		switch (attributeName) {
-			case 'glyphs':
-				this.glyphs = newValue;
+			case 'editing-item-id':
+				this.editingItemID = newValue;
 				getCurrentProjectEditor().autoFitIfViewIsDefault();
-				this.redraw({ calledBy: 'EditCanvas.attributeChangeCallback - attribute: glyphs' });
+				this.redraw({
+					calledBy: 'EditCanvas.attributeChangeCallback - attribute: editing-item-id',
+				});
 				break;
 		}
 		// log(`EditCanvas.attributeChangeCallback`, 'end');
@@ -118,9 +113,8 @@ export class EditCanvas extends HTMLElement {
 	// --------------------------------------------------------------
 	// Redraw the canvas
 	// --------------------------------------------------------------
-	redraw(oa = {}) {
+	redraw() {
 		// log('EditCanvas.redraw', 'start');
-		// if(oa?.calledBy) log(`==REDRAW BY ${oa.calledBy}==`);
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();
 		const view = editor.view;
@@ -129,8 +123,7 @@ export class EditCanvas extends HTMLElement {
 		const height = this.height;
 
 		// Current Glyph
-		const glyphHex = glyphToHex(this.glyphs.charAt(0));
-		const sg = editor.project.getGlyph(glyphHex);
+		const sg = editor.project.getItem(this.editingItemID);
 		// log(sg);
 
 		if (requestAnimationFrame) requestAnimationFrame(redrawAnimationFrame);
@@ -154,7 +147,7 @@ export class EditCanvas extends HTMLElement {
 				computeAndDrawBoundingBox(ctx);
 				computeAndDrawBoundingBoxHandles(ctx);
 			} else if (editMode === 'rotate') {
-				computeAndDrawRotationAffordance(ctx);
+				// computeAndDrawRotationAffordance(ctx);
 			} else if (editMode === 'pathEdit') {
 				drawSelectedPathOutline(ctx, view);
 				if (eventHandlerData.isCtrlDown || editor.multiSelect.points.count > 1) {

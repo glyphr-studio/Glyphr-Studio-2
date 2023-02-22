@@ -5,8 +5,9 @@ import { ComponentInstance } from './component_instance.js';
 import { getOverallMaxes } from './maxes.js';
 import { hasNonValues, isVal, trim } from '../common/functions.js';
 import { getUnicodeName, hexToHTML, hexToChars } from '../common/unicode.js';
-import { getCurrentProject, log } from '../app/main.js';
-// import { combinePaths } from '../panels/REFACTOR_path.js';
+import { getCurrentProject } from '../app/main.js';
+import { log } from '../app/main.js';
+
 
 /**
  * Glyph Element > Glyph
@@ -421,11 +422,11 @@ export class Glyph extends GlyphElement {
 	 * @param {array} ligature
 	 */
 	set ligature(ligature) {
-		log(`Glyph SET ligature`, 'start');
-		log(`ligature: ${ligature}`);
+		// log(`Glyph SET ligature`, 'start');
+		// log(`ligature: ${ligature}`);
 
 		this._ligature = ligature || [];
-		log(`Glyph SET ligature`, 'end');
+		// log(`Glyph SET ligature`, 'end');
 	}
 
 	// computed properties

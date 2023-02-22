@@ -19,7 +19,7 @@ export function glyphChanged(glyph) {
 
 	// log(`calling changed on usedIn`);
 	for (let g = 0; g < glyph.usedIn.length; g++) {
-		glyphChanged(project.getGlyph(glyph.usedIn[g]));
+		glyphChanged(project.getItem(glyph.usedIn[g]));
 	}
 	// log(` Glyph.changed - End\n`);
 }
@@ -28,7 +28,7 @@ export function glyphChanged(glyph) {
 			this.cache = {};
 			if (ascend) {
 					for (let g = 0; g < this.usedIn.length; g++) {
-							getCurrentProject().getGlyph(this.usedIn[g]).changed(descend, ascend);
+							getCurrentProject().getItem(this.usedIn[g]).changed(descend, ascend);
 					}
 			}
 			if (descend) {
@@ -81,7 +81,7 @@ function collectAllDownstreamLinks(glyph, re = [], excludePeers = false) {
 	for (let s = 0; s < glyph.paths.length; s++) {
 		if (glyph.paths[s].objType === 'ComponentInstance') {
 			re = re.concat(
-				getCurrentProject().getGlyph(glyph.paths[s].link).collectAllDownstreamLinks(re)
+				getCurrentProject().getItem(glyph.paths[s].link).collectAllDownstreamLinks(re)
 			);
 			if (!excludePeers) re.push(glyph.paths[s].link);
 		}
@@ -96,7 +96,7 @@ function collectAllDownstreamLinks(glyph, re = [], excludePeers = false) {
  */
 function collectAllUpstreamLinks(glyph, re = []) {
 	for (let g = 0; g < glyph.usedIn.length; g++) {
-		re = re.concat(getCurrentProject().getGlyph(glyph.usedIn[g]).collectAllUpstreamLinks(re));
+		re = re.concat(getCurrentProject().getItem(glyph.usedIn[g]).collectAllUpstreamLinks(re));
 		re.push(glyph.usedIn[g]);
 	}
 	return re;
@@ -114,7 +114,7 @@ export function deleteLinks(glyph) {
 	let upstreamGlyph;
 	const project = getCurrentProject();
 	for (let c = 0; c < glyph.usedIn.length; c++) {
-		upstreamGlyph = project.getGlyph(glyph.usedIn[c]);
+		upstreamGlyph = project.getItem(glyph.usedIn[c]);
 		// log('removing from ' + upstreamGlyph.name);
 		// log(upstreamGlyph.paths);
 		for (let u = 0; u < upstreamGlyph.paths.length; u++) {

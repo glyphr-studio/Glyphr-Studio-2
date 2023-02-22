@@ -110,7 +110,7 @@ export function makePanel_Layers() {
 
 	// Overall, watch for changes:
 	editor.subscribe({
-		topic: ['currentPath', 'currentGlyph'],
+		topic: ['currentPath', 'currentItem'],
 		subscriberID: 'layersPanel',
 		callback: () => {
 			refreshPanel();

@@ -234,7 +234,7 @@ export function ioFont_importFont(font) {
 			rangeStart = 1 * _UI.glyphRange[r].begin;
 			rend = 1 * _UI.glyphRange[r].end + 1;
 			for (let t = rangeStart; t < rend; t++) {
-				if (getGlyph('' + decToHex(t))) {
+				if (getItem('' + decToHex(t))) {
 					project.settings.glyphRanges[r] = true;
 					break;
 				}

@@ -372,7 +372,7 @@ export function hotspotNavigateToGlyph(gid) {
 	v.dx += v.dz * delta * flipper;
 	v.dx += v.dz * kern * flipper;
 
-	getGlyph(gid, true).contextGlyphs = ctxg;
+	getItem(gid, true).contextGlyphs = ctxg;
 	selectGlyph(gid);
 	setView(v);
 

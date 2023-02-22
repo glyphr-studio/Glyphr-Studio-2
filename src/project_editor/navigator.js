@@ -86,12 +86,12 @@ export class Navigator {
 	 */
 	navigate() {
 		log(`Navigator.navigate`, 'start');
-
+		let editor = getCurrentProjectEditor();
 		let fadePageIn = false;
 
 		log(`this.page: ${this.page}`);
 		log(`this.panel: ${this.panel}`);
-		log(`editor.selectedItemID: ${getCurrentProjectEditor().selectedItemID}`);
+		log(`editor.selectedItemID: ${editor.selectedItemID}`);
 
 		const wrapper = document.getElementById('app__wrapper');
 
@@ -102,7 +102,11 @@ export class Navigator {
 			try {
 				const pageContent = this.makePageContent(fadePageIn);
 				wrapper.innerHTML = '';
-				if (this.page !== 'Open project') wrapper.appendChild(makeAppTopBar());
+				if (this.page !== 'Open project') {
+					wrapper.appendChild(makeAppTopBar());
+					editor.multiSelect.paths.clear();
+					editor.multiSelect.points.clear();
+				}
 				wrapper.appendChild(pageContent);
 			} catch (error) {
 				console.warn(`Navigation failed:`, error);
@@ -266,10 +270,14 @@ export function showNavDropdown(parentElement) {
 	}
 
 	if (dropdownType === 'EDITING') {
-		dropdownContent = makeGlyphChooserContent((glyphID) => {
+		dropdownContent = makeGlyphChooserContent((itemID) => {
 			const editor = getCurrentProjectEditor();
-			editor.selectedGlyphID = glyphID;
-			editor.history.addState(`Navigated to ${editor.project.getGlyphName(glyphID, true)}`);
+			if (editor.nav.page === 'Glyph edit') editor.selectedGlyphID = itemID;
+			else if (editor.nav.page === 'Ligatures') editor.selectedLigatureID = itemID;
+			else if (editor.nav.page === 'Components') editor.selectedComponentID = itemID;
+			else if (editor.nav.page === 'Kerns') editor.selectedKernID = itemID;
+
+			editor.history.addState(`Navigated to ${editor.project.getGlyphName(itemID, true)}`);
 			closeAllNavMenus();
 		});
 		size = '80%';

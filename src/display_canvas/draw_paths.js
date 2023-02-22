@@ -36,7 +36,7 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 		drewPath = drawPath(path, ctx, view);
 		if (!drewPath) {
 			console.warn('Could not draw path ' + path.name + ' in Glyph ' + glyph.name);
-			if (path.objType === 'ComponentInstance' && !getCurrentProject().getGlyph(path.link)) {
+			if (path.objType === 'ComponentInstance' && !getCurrentProject().getItem(path.link)) {
 				console.warn('>>> Component Instance has bad link: ' + path.link);
 				const i = glyph.paths.indexOf(path);
 				if (i > -1) {

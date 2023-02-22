@@ -187,7 +187,7 @@ dialog {
 
 .modal-dialog__body {
 	display: block;
-	padding: 0px;
+	padding: 0px 20px 20px 20px;
 }
 
 .modal-dialog__close-button {

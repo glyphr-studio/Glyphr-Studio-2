@@ -6,6 +6,7 @@ import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { clone } from '../common/functions.js';
 import { Path } from '../project_data/path.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -78,7 +79,7 @@ export function getActionData(name) {
 				let newPath = editor.selectedItem.addOnePath(rectPathFromMaxes());
 				editor.multiSelect.paths.select(newPath);
 				editor.publish('whichPathIsSelected', newPath);
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
@@ -107,7 +108,7 @@ export function getActionData(name) {
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				editor.selectedItem.flipEW();
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
@@ -116,7 +117,7 @@ export function getActionData(name) {
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				editor.selectedItem.flipNS();
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
@@ -125,11 +126,11 @@ export function getActionData(name) {
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				editor.selectedItem.roundAll();
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
-			title: `Delete Glyph\nRemove this Glyph from the project. Don\'t worry, you can undo this action.`,
+			title: `Delete Glyph\nRemove this Glyph from the project. Don't worry, you can undo this action.`,
 			iconName: 'deleteGlyph',
 			disabled: true,
 		},
@@ -188,7 +189,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				let path = editor.multiSelect.paths.virtualGlyph;
 				path.flipEW();
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
@@ -198,7 +199,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				let path = editor.multiSelect.paths.virtualGlyph;
 				path.flipNS();
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
@@ -208,7 +209,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				let path = editor.multiSelect.paths.virtualGlyph;
 				path.roundAll();
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 	]);
@@ -222,7 +223,7 @@ export function getActionData(name) {
 			onClick: () => {
 				moveLayer('up');
 				const editor = getCurrentProjectEditor();
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
@@ -232,7 +233,7 @@ export function getActionData(name) {
 			onClick: () => {
 				moveLayer('down');
 				const editor = getCurrentProjectEditor();
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 	];
@@ -247,7 +248,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('left');
-				editor.publish('currentGlyph', vGlyph);
+				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
@@ -258,7 +259,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('center');
-				editor.publish('currentGlyph', vGlyph);
+				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
@@ -269,7 +270,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('right');
-				editor.publish('currentGlyph', vGlyph);
+				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
@@ -280,7 +281,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('top');
-				editor.publish('currentGlyph', vGlyph);
+				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
@@ -291,7 +292,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('middle');
-				editor.publish('currentGlyph', vGlyph);
+				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
@@ -302,7 +303,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.paths;
 				vGlyph.align('bottom');
-				editor.publish('currentGlyph', vGlyph);
+				editor.publish('currentItem', vGlyph);
 			},
 		},
 	];
@@ -485,7 +486,7 @@ export function deleteSelectedPaths() {
 
 	msPaths.deletePaths();
 	editor.history.addState(historyTitle);
-	editor.publish('currentGlyph', editor.multiSelect.paths.virtualGlyph);
+	editor.publish('currentItem', editor.multiSelect.paths.virtualGlyph);
 }
 
 export function deleteSelectedPoints() {
@@ -541,21 +542,21 @@ function moveLayer(direction = 'up') {
 
 function combineSelectedPaths() {
 	showToast('Combining selected paths... ', 100);
-
+	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
 		editor.multiSelect.paths.combine();
 		editor.history.addState('combine selected paths');
-		redraw({ calledBy: 'actions panel' });
+		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
 
 function combineAllGlyphPaths() {
 	showToast('Combining all glyph paths... ', 100);
-
+	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
-		getSelectedItem().combineAllPaths(true);
+		editor.selectedItem.combineAllPaths(true);
 		editor.history.addState('combine all glyph paths');
-		redraw({ calledBy: 'actions panel' });
+		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
 
@@ -639,7 +640,7 @@ export function clipboardPaste() {
 			newPath.name = newName + newSuffix;
 
 			if (newPath.objType === 'ComponentInstance') {
-				getGlyph(newPath.link).addToUsedIn(getSelectedItemID);
+				getItem(newPath.link).addToUsedIn(getSelectedItemID);
 				// TODO add to used in
 			}
 
@@ -659,7 +660,7 @@ export function clipboardPaste() {
 
 		let len = newPaths.length;
 		editor.history.addState(len === 1 ? 'Pasted Path' : `Pasted ${len} Paths`);
-		editor.publish('currentGlyph', editor.selectedItem);
+		editor.publish('currentItem', editor.selectedItem);
 	}
 	// log('clipboardPaste', 'end');
 }
@@ -728,7 +729,7 @@ function initGetPathsDialogOptions(type) {
 
 function pastePathsFrom(sourceGlyphID) {
 	let destinationGlyphID = getSelectedItemID();
-	let sourceGlyph = getGlyph(sourceGlyphID);
+	let sourceGlyph = getItem(sourceGlyphID);
 	// TODO hook up options
 	let options = false;
 
@@ -762,14 +763,14 @@ export function copyPathsFromTo(sourceGlyph, destinationID, updateWidth = false)
 	const project = getCurrentProject();
 	const editor = getCurrentProjectEditor();
 	const msPaths = editor.multiSelect.paths;
-	const destinationGlyph = project.getGlyph(destinationID, true);
+	const destinationGlyph = project.getItem(destinationID, true);
 	log(`Destination Glyph`);
 	log(destinationGlyph);
 	let tc;
 	for (let c = 0; c < sourceGlyph.paths.length; c++) {
 		tc = sourceGlyph.paths[c];
 		if (tc.objType === 'ComponentInstance') {
-			project.getGlyph(tc.link).addToUsedIn(destinationID);
+			project.getItem(tc.link).addToUsedIn(destinationID);
 			tc = new ComponentInstance(tc);
 		} else if (tc.objType === 'Path') {
 			tc = new Path(tc);

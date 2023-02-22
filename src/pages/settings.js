@@ -56,7 +56,7 @@ export function makePage_Settings() {
 	tabControl.registerTab('App', makeSettingsTabContentApp());
 
 	addAsChildren(panelArea, tabControl.makeTabs());
-	tabControl.selectTab('Font');
+	tabControl.selectTab('Project');
 
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');

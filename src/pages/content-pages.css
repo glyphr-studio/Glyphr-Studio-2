@@ -29,16 +29,15 @@
 	width: 100%;
 	border-radius: 4px;
 }
-/*
+
 #content-page__panel {
-	border: 1px solid var(--blue-l85);
-	padding: 10px;
-	background-color: var(--offWhite);
-	grid-row: 2;
-	border-radius: 4px;
-	box-shadow: var(--l2-shadow);
+	grid-row: 3;
+	width: 450px;
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
-*/
+
 
 .content-page__right-area {
 	border: 1px solid var(--blue-l85);
@@ -325,7 +324,6 @@ code,
 	display: grid;
 	grid-template-columns: 1fr 24px 2fr;
 	row-gap: 10px;
-	margin: 0px 20px 20px 20px;
 }
 
 .glyph-range-editor__wrapper label {

@@ -572,7 +572,7 @@ export class ComponentInstance extends GlyphElement {
 		// log(`ComponentInstance.cloneAndFlatten`, 'start');
 		// log('\t gid: ' + gid);
 
-		let og = getGlyph(gid, true);
+		let og = getItem(gid, true);
 		if(og) og = new Glyph(clone(og, 'convertComponentInstanceToGlyph'));
 
 		let newPaths = [];
@@ -660,7 +660,7 @@ export class ComponentInstance extends GlyphElement {
 		// log('passed nx/ny/force: ' + nx + ' / ' + ny + ' / ' + force);
 		// log('translate was: ' + this.translateX + ' / ' + this.translateY);
 		// TODO fix project access
-		// const linkMaxes = getCurrentProject().getGlyph(this.link).maxes;
+		// const linkMaxes = getCurrentProject().getItem(this.link).maxes;
 		const linkMaxes = { xMin: 0, yMax: 0 };
 
 		nx = parseFloat(nx);
@@ -709,7 +709,7 @@ export class ComponentInstance extends GlyphElement {
 	 */
 	setPathSize(nw, nh, ratioLock) {
 		// TODO fix project access
-		// const linkMaxes = getCurrentProject().getGlyph(this.link).maxes;
+		// const linkMaxes = getCurrentProject().getItem(this.link).maxes;
 		const linkMaxes = { xMin: 0, yMax: 0 };
 
 		const dx = nw ? nw * 1 - linkMaxes.xMin : 0;
