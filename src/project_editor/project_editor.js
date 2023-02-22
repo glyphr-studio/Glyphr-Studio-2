@@ -146,10 +146,25 @@ export class ProjectEditor {
 	 * based on the current page
 	 */
 	get selectedItem() {
-		if (this.nav.page === 'Glyph edit') return this.selectedGlyph;
-		else if (this.nav.page === 'Components') return this.selectedComponent;
-		else if (this.nav.page === 'Ligatures') return this.selectedLigature;
-		else return false;
+		// log(`ProjectEditor GET selectedItem`, 'start');
+
+		if (this.nav.page === 'Glyph edit') {
+			// log(`this.selectedGlyph: ${this.selectedGlyph}`);
+			// log(`ProjectEditor GET selectedItem`, 'end');
+			return this.selectedGlyph;
+		} else if (this.nav.page === 'Components') {
+			// log(`this.selectedComponent: ${this.selectedComponent}`);
+			// log(`ProjectEditor GET selectedItem`, 'end');
+			return this.selectedComponent;
+		} else if (this.nav.page === 'Ligatures') {
+			// log(`this.selectedLigature: ${this.selectedLigature}`);
+			// log(`ProjectEditor GET selectedItem`, 'end');
+			return this.selectedLigature;
+		} else {
+			// log(`Nav page not detected`);
+			// log(`ProjectEditor GET selectedItem`, 'end');
+			return false;
+		}
 	}
 
 	/**
@@ -171,7 +186,7 @@ export class ProjectEditor {
 		// log('ProjectEditor GET selectedGlyph', 'start');
 		const id = this.selectedGlyphID;
 		// log(`selectedGlyphID ${id}`);
-		const re = this.project.getGlyph(id);
+		const re = this.project.getItem(id);
 		// log(re);
 		// log('ProjectEditor GET selectedGlyph', 'end');
 		return re || new Glyph();

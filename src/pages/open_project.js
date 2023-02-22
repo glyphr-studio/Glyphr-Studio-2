@@ -1,14 +1,11 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
-import { projects } from '../samples/samples.js';
-import { uiColors, accentColors } from '../common/colors.js';
 import { ioFont_importFont } from '../io/font_import.js';
 import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp, log } from '../app/main.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
-import { json } from '../common/functions.js';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { closeAllDialogs, showError } from '../controls/dialogs/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
@@ -19,11 +16,6 @@ import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
  * The first page you see when you open Glyphr Studio.
  * HTML and associated functions for this page.
  */
-
-let importRange = {
-	begin: 0x0020,
-	end: 0x024f,
-};
 
 export const importOverflowCount = 326;
 
@@ -294,6 +286,7 @@ function importProjectDataAndNavigate(glyphrStudioProjectFile = new GlyphrStudio
  * Handle Message event
  * @param {object} event - event
  */
+/*
 function handleMessage(event) {
 	const app = getGlyphrStudioApp();
 	// assume strings are SVG fonts
@@ -306,7 +299,7 @@ function handleMessage(event) {
 		// ioFont_importFont(false);
 	}
 }
-
+*/
 // --------------------------------------------------------------
 // Drag Events
 // --------------------------------------------------------------
@@ -331,7 +324,7 @@ function handleDragEnter(event) {
  * Handle DragLeave event
  * @param {object} event - event
  */
-function handleDragLeave(event) {
+function handleDragLeave() {
 	// log(`handleDragLeave`, 'start');
 	// cancelDefaultEventActions(event);
 	const dropNote = document.getElementById('open-project__drop-note');
@@ -363,9 +356,28 @@ function handleLoadSample(name) {
 		'<h2>Load an Example project</h2>Loading example project...';
 
 	setTimeout(function () {
+		log(`Loading sample project ${name}`);
+
 		importProjectDataAndNavigate(getVersionTwoTestProject());
 	}, 100);
 }
+
+
+let importRange = {
+	begin: 0x0020,
+	end: 0x024f,
+};
+
+export function isOutOfBounds(uni) {
+	if (!uni.length) return true;
+
+	for (let u = 0; u < uni.length; u++) {
+		if (parseInt(uni[u]) > importRange.end || parseInt(uni[u]) < importRange.begin) return true;
+	}
+
+	return false;
+}
+
 
 /*
 
@@ -388,15 +400,7 @@ function handleLoadSample(name) {
 // --------------------------------------------------------------
 // OLD IMPORT STUFF
 // --------------------------------------------------------------
-export function isOutOfBounds(uni) {
-	if (!uni.length) return true;
-
-	for (let u = 0; u < uni.length; u++) {
-		if (parseInt(uni[u]) > importRange.end || parseInt(uni[u]) < importRange.begin) return true;
-	}
-
-	return false;
-}
+/*
 
 function make_ImportFilter(chars, kerns, functionName) {
 	let re =
@@ -485,3 +489,4 @@ function checkFilter(id) {
 
 	document.getElementById('import-font-button').disabled = false;
 }
+*/

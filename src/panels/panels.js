@@ -50,7 +50,7 @@ export function makePanel() {
  */
 export function refreshPanel() {
 	// log(`refreshPanel`, 'start');
-	let panelArea = document.querySelector('.editor-page__panel');
+	let panelArea = document.querySelector('#editor-page__panel');
 	if (panelArea) {
 		// panelArea.style.opacity = '0';
 		let newContent = makePanel();

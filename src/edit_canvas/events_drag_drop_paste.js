@@ -23,7 +23,7 @@ export function importSVGtoCurrentWorkItem(svgData) {
 		// log(`updated item glyph`);
 		// log(editor.selectedItem);
 
-		editor.publish('currentGlyph', editor.selectedItem);
+		editor.publish('currentItem', editor.selectedItem);
 		editor.history.addState('Pasted SVG to glyph ' + editor.selectedItem.name);
 		showToast('Pasted ' + tempGlyph.paths.length + ' paths from SVG');
 	} else {

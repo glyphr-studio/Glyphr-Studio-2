@@ -132,7 +132,7 @@ export class Tool_Resize {
 				this.didStuff = true;
 			} else if (this.rotating) {
 				// log(`detected ROTATING`);
-				
+
 				let a1 = calculateAngle(
 					{ x: cXsX(ehd.mousePosition.x), y: cYsY(ehd.mousePosition.y) },
 					ehd.rotationCenter
@@ -181,7 +181,7 @@ export class Tool_Resize {
 				ehd.lastX = ehd.mousePosition.x;
 				ehd.lastY = ehd.mousePosition.y;
 				ehd.undoQueueHasChanged = true;
-				editor.publish('currentGlyph', editor.selectedItem);
+				editor.publish('currentItem', editor.selectedItem);
 			} else {
 				// log(`did NOT do stuff`);
 			}

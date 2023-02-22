@@ -9,7 +9,12 @@
         "ecmaVersion": 2020,
         "sourceType": "module"
     },
-    "rules":{},
+    "rules":{
+        "no-unused-vars": "warn"
+    },
+    "globals": {
+        "log": "off"
+    },
     "ignorePatterns": [
         "*.test.js",
         "dev/lib/*",

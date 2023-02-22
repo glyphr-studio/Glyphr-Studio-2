@@ -3,12 +3,13 @@ import { makeElement } from '../common/dom.js';
 import { areHexValuesEqual, basicLatinOrder, decToHex } from '../common/unicode.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { isControlChar } from '../lib/unicode_blocks.js';
+import { showAddLigatureDialog } from '../pages/ligatures.js';
 
 /**
-		Panel > Chooser
-		Shows a list of all the Glyphs to choose from
-		for whatever the current page is.  Also has
-		the logic for creating Glyph chooser dialogs.
+	Panel > Chooser
+	Shows a list of all the Glyphs to choose from
+	for whatever the current page is.  Also has
+	the logic for creating Glyph chooser dialogs.
 **/
 
 // --------------------------------------------------------------
@@ -38,10 +39,13 @@ export function makeGlyphChooserContent(clickHandler, registerSubscriptions = tr
 		wrapper.appendChild(makeGlyphChooserTileGrid());
 	} else {
 		wrapper.appendChild(makeLigatureChooserTileGrid());
-		wrapper.appendChild(makeElement({
-			tag: 'fancy-button',
-			innerHTML: 'Create new ligature',
-		}));
+		wrapper.appendChild(
+			makeElement({
+				tag: 'fancy-button',
+				innerHTML: 'Create new ligature',
+				onClick: showAddLigatureDialog,
+			})
+		);
 	}
 
 	// log(`makeGlyphChooserContent`, 'end');
@@ -57,7 +61,7 @@ function makeGlyphChooserTileGrid() {
 	let rangeList = glyphRangeToList(editor.selectedGlyphRange);
 
 	rangeList.forEach((glyphID) => {
-		let oneTile = new GlyphTile({ glyph: glyphID });
+		let oneTile = new GlyphTile({ 'displayed-item-id': glyphID });
 		if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');
 
 		oneTile.addEventListener('click', () => savedClickHandler(glyphID));
@@ -158,7 +162,7 @@ function makeLigatureChooserTileGrid() {
 	let sortedLigatures = editor.project.sortedLigatures;
 
 	sortedLigatures.forEach((ligature) => {
-		let oneTile = new GlyphTile({ glyph: ligature.id });
+		let oneTile = new GlyphTile({ 'displayed-item-id': ligature.id });
 		if (editor.selectedLigatureID === ligature.id) oneTile.setAttribute('selected', '');
 
 		oneTile.addEventListener('click', () => savedClickHandler(ligature.id));

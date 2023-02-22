@@ -23,8 +23,6 @@ export function makePage_GlyphEdit() {
 	// log(`editor.selectedItemID: ${editor.selectedItemID}`);
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
-
-	let canvasGlyph = hexToChars(editor.selectedGlyphID);
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
@@ -40,11 +38,11 @@ export function makePage_GlyphEdit() {
 					})}
 					${makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel })}
 				</div>
-				<div class="editor-page__panel"></div>
+				<div id="editor-page__panel"></div>
 			</div>
 			<div class="editor-page__tools-area"></div>
 			<div class="editor-page__edit-canvas-wrapper">
-				<edit-canvas id="editor-page__edit-canvas" glyphs="${canvasGlyph}"></edit-canvas>
+				<edit-canvas id="editor-page__edit-canvas" editing-item-id="${editor.selectedGlyphID}"></edit-canvas>
 			</div>
 			<div class="editor-page__zoom-area"></div>
 		</div>
@@ -77,12 +75,12 @@ export function makePage_GlyphEdit() {
 	});
 
 	// Panel
-	content.querySelector('.editor-page__panel').appendChild(makePanel());
+	content.querySelector('#editor-page__panel').appendChild(makePanel());
 	editor.subscribe({
 		topic: ['whichGlyphIsSelected', 'whichPathIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
 		callback: () => {
-			let panelContent = content.querySelector('.editor-page__panel');
+			let panelContent = content.querySelector('#editor-page__panel');
 			panelContent.innerHTML = '';
 			// panelContent.appendChild(makePanel());
 			refreshPanel();
@@ -107,9 +105,8 @@ export function makePage_GlyphEdit() {
 		callback: (newGlyphID) => {
 			// log(`Main Canvas subscriber callback`, 'start');
 			removeStopCreatingNewPathButton();
-			let newChar = hexToChars(newGlyphID);
-			// log(`new id ${newGlyphID} results in ${newChar} on the main canvas`);
-			content.querySelector('#editor-page__edit-canvas').setAttribute('glyphs', newChar);
+			// log(`new id ${newGlyphID} on the main canvas`);
+			content.querySelector('#editor-page__edit-canvas').setAttribute('editing-item-id', newGlyphID);
 			// log(`Main Canvas subscriber callback`, 'end');
 		},
 	});

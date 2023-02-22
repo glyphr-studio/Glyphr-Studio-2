@@ -129,7 +129,7 @@ export class GlyphSequence {
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
 				// log(`==== charNumber: ${charNumber}`);
-				thisGlyph = project.getGlyph(charsToHexArray(currentBlock[charNumber]).join(''));
+				thisGlyph = project.getItem(charsToHexArray(currentBlock[charNumber]).join(''));
 
 				// Calculate width
 				thisWidth = thisGlyph ? thisGlyph.advanceWidth : project.defaultAdvanceWidth;

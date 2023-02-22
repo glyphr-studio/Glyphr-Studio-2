@@ -183,8 +183,8 @@ export class GlyphrStudioProject {
 	 * @param {boolean} create - create if it doesn't exist yet
 	 * @returns {Glyph}
 	 */
-	getGlyph(id, create = false) {
-		log('GlyphrStudioProject.getGlyph', 'start');
+	getItem(id, create = false) {
+		log('GlyphrStudioProject.getItem', 'start');
 		log('passed: ' + id + ' create: ' + create);
 
 		// --------------------------------------------------------------
@@ -192,7 +192,7 @@ export class GlyphrStudioProject {
 		// --------------------------------------------------------------
 		if (!id) {
 			log('Not passed an ID, returning false');
-			log('GlyphrStudioProject.getGlyph', 'end');
+			log('GlyphrStudioProject.getItem', 'end');
 			return false;
 		}
 
@@ -208,12 +208,12 @@ export class GlyphrStudioProject {
 			result = this.ligatures[id];
 			if (result) {
 				log(`Returning found Ligature`);
-				log('GlyphrStudioProject.getGlyph', 'end');
+				log('GlyphrStudioProject.getItem', 'end');
 				return result;
 			} else if (create) {
 				this.ligatures[id] = new Glyph({ id: id });
 				log('Create was true, returning a new Ligature.');
-				log('GlyphrStudioProject.getGlyph', 'end');
+				log('GlyphrStudioProject.getItem', 'end');
 				return this.ligatures[id];
 			}
 		} else if (this.glyphs && id.indexOf('0x') > -1) {
@@ -224,16 +224,16 @@ export class GlyphrStudioProject {
 
 			let normalHex = '' + normalizeHex(id);
 			log(`normalHex: ${normalHex}`);
-			
+
 			result = this.glyphs[normalHex];
 			if (result) {
 				log('Returning found Glyph');
-				log('GlyphrStudioProject.getGlyph', 'end');
+				log('GlyphrStudioProject.getItem', 'end');
 				return result;
 			} else if (create) {
 				this.glyphs[id] = new Glyph({ id: id });
 				log('Create was true, returning a new Glyph.');
-				log('GlyphrStudioProject.getGlyph', 'end');
+				log('GlyphrStudioProject.getItem', 'end');
 				return this.glyphs[id];
 			}
 		} else if (this.components && this.components[id]) {
@@ -244,7 +244,7 @@ export class GlyphrStudioProject {
 
 			result = this.components[id];
 			log('Returning whatever component[id] happened to be');
-			log('GlyphrStudioProject.getGlyph', 'end');
+			log('GlyphrStudioProject.getItem', 'end');
 			return this.components[id] || false;
 		}
 
@@ -252,7 +252,7 @@ export class GlyphrStudioProject {
 		// No Result
 		// --------------------------------------------------------------
 		log('NO RESULT FOUND');
-		log('GlyphrStudioProject.getGlyph', 'end');
+		log('GlyphrStudioProject.getItem', 'end');
 		return false;
 	}
 
@@ -291,7 +291,7 @@ export class GlyphrStudioProject {
 			return un;
 		}
 
-		const item = this.getGlyph(id);
+		const item = this.getItem(id);
 		if (id.indexOf('0x', 2) > -1) {
 			// ligature
 			// log('ligature - returning ' + hexToHTML(id));
@@ -327,7 +327,7 @@ export class GlyphrStudioProject {
 
 		ranges.forEach((range) => {
 			for (let char = range.begin; char < range.end; char++) {
-				thisGlyph = this.getGlyph(decToHex(char));
+				thisGlyph = this.getItem(decToHex(char));
 				if (thisGlyph) fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
 			}
 			fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
@@ -374,7 +374,7 @@ export class GlyphrStudioProject {
 
 		let result = [];
 
-		Object.keys(this.ligatures).forEach(key => {
+		Object.keys(this.ligatures).forEach((key) => {
 			result.push(this.ligatures[key]);
 		});
 

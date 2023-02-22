@@ -2,7 +2,7 @@ import { makeElement } from '../common/dom.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
-import { makeContributeCard, makeContributeContent, makePreReleaseNote } from './about.js';
+import { makeContributeContent, makePreReleaseNote } from './about.js';
 import { showModalDialog } from '../controls/dialogs/dialogs.js';
 
 /**

@@ -27,17 +27,16 @@ export class GlyphTile extends HTMLElement {
 
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
-		const glyphID = this.getAttribute('glyph');
-		this.glyph = getCurrentProject().getGlyph(glyphID);
-		const chars = this.glyph.chars || hexToChars(glyphID);
-		const name = this.glyph?.name || lookUpGlyphName(glyphID, true);
+		const displayedItemID = this.getAttribute('displayed-item-id');
+		this.glyph = getCurrentProject().getItem(displayedItemID);
+		const chars = this.glyph.chars || hexToChars(displayedItemID);
+		const name = this.glyph?.name || lookUpGlyphName(displayedItemID, true);
 		this.view = {};
 
-		log(`glyphID: ${glyphID}`);
+		log(`displayedItemID: ${displayedItemID}`);
 		log(`chars: ${chars}`);
 		log(`name: ${name}`);
 		log(this.glyph);
-
 
 		const project = getCurrentProject();
 		const fontSettings = project.settings.font;
@@ -50,7 +49,7 @@ export class GlyphTile extends HTMLElement {
 		// log(`contentSize: ${contentSize}`);
 		// log(`zoom: ${zoom}`);
 
-		this.setAttribute('title', `${name}\n${glyphID}`);
+		this.setAttribute('title', `${name}\n${displayedItemID}`);
 
 		this.wrapper = makeElement({ className: 'wrapper' });
 		this.wrapper.style.backgroundSize = `auto ${overallSize}px`;
@@ -87,7 +86,7 @@ export class GlyphTile extends HTMLElement {
 		}
 
 		this.name = makeElement({ className: 'name' });
-		this.name.innerHTML = glyphID === '0x20' ? 'Space' : chars;
+		this.name.innerHTML = displayedItemID === '0x20' ? 'Space' : chars;
 
 		// Put it all together
 		const shadow = this.attachShadow({ mode: 'open' });
@@ -98,7 +97,7 @@ export class GlyphTile extends HTMLElement {
 		this.wrapper.appendChild(this.name);
 
 		shadow.appendChild(this.wrapper);
-		redrawGlyph(this);
+		redraw(this);
 
 		log(`GlyphTile.constructor`, 'end');
 	}
@@ -116,12 +115,12 @@ export class GlyphTile extends HTMLElement {
 			else wrapper.removeAttribute('selected');
 		}
 
-		redrawGlyph(this);
+		redraw(this);
 		// log(`GlyphTile.attributeChangedCallback`, 'end');
 	}
 }
 
-function redrawGlyph(tile) {
+function redraw(tile) {
 	if (tile.glyph && tile.ctx) {
 		tile.ctx.clearRect(0, 0, tile.thumbnail.width, tile.thumbnail.height);
 		drawGlyph(tile.glyph, tile.ctx, tile.view);

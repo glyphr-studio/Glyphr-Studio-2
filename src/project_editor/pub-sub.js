@@ -9,9 +9,10 @@
  * - 'view' - change to the edit canvas view.
  * - 'whichToolIsSelected' - change to which edit tool is selected.
  * - 'whichGlyphIsSelected' - change to which glyph is being edited.
+ * - 'whichLigatureIsSelected' - change to which ligature is being edited.
  * - 'whichPathIsSelected' - change to which path is being edited.
  * - 'whichPathPointIsSelected' - change to which point is being edited.
- * - 'currentGlyph' - edits to the current glyph.
+ * - 'currentItem' - edits to the current glyph, ligature, or component.
  * - 'currentPath' - edits to the current path.
  * - 'currentPathPoint' - edits to the current point.
  * - 'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
@@ -34,9 +35,10 @@ export function publish(topic, data) {
 		}
 
 		if (topic === 'view') {
+			//anything?
 		}
 
-		if (topic === 'whichGlyphIsSelected') {
+		if (topic === 'whichGlyphIsSelected' || topic === 'whichLigatureIsSelected') {
 			this.multiSelect.paths.clear();
 			this.multiSelect.points.clear();
 		}
@@ -46,9 +48,10 @@ export function publish(topic, data) {
 		}
 
 		if (topic === 'whichPathPointIsSelected') {
+			//anything?
 		}
 
-		if (topic === 'currentGlyph') {
+		if (topic === 'currentItem') {
 			let singlePath = this.multiSelect.paths.singleton;
 			let singlePoint = this.multiSelect.points.singleton;
 			if (singlePath) {
@@ -63,20 +66,20 @@ export function publish(topic, data) {
 
 		if (topic === 'currentPath') {
 			// if a path changes, then so must its' Glyph also
-			callCallbacksByTopic('currentGlyph', data.parent);
+			callCallbacksByTopic('currentItem', data.parent);
 		}
 
 		if (topic === 'currentPathPoint') {
 			// if a PathPoint changes, then so must its' Path and Glyph also
 			callCallbacksByTopic('currentPath', data.parent);
-			callCallbacksByTopic('currentGlyph', data.parent.parent);
+			callCallbacksByTopic('currentItem', data.parent.parent);
 		}
 
 		if (topic.includes('currentControlPoint')) {
 			// if a PathPoint changes, then so must its' Path and Glyph also
 			callCallbacksByTopic('currentPathPoint', data.parent);
 			callCallbacksByTopic('currentPath', data.parent.parent);
-			callCallbacksByTopic('currentGlyph', data.parent.parent.parent);
+			callCallbacksByTopic('currentItem', data.parent.parent.parent);
 
 			if (topic === 'currentControlPoint.p') {
 				callCallbacksByTopic('currentControlPoint.p', data.parent.p);
@@ -111,7 +114,7 @@ export function publish(topic, data) {
  * - 'whichGlyphIsSelected' - change to which glyph is being edited.
  * - 'whichPathIsSelected' - change to which path is being edited.
  * - 'whichPathPointIsSelected' - change to which point is being edited.
- * - 'currentGlyph' - edits to the current glyph.
+ * - 'currentItem' - edits to the current glyph, ligature, or component.
  * - 'currentPath' - edits to the current path.
  * - 'currentPathPoint' - edits to the current point.
  * @param {string} subscriberID - the name of the thing listening
