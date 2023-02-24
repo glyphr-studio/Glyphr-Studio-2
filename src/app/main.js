@@ -6,7 +6,6 @@ import { FancyButton } from '../controls/fancy-button/fancy_button.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { InfoBubble } from '../controls/info-bubble/info_bubble.js';
 import { InputNumber } from '../controls/input-number/input_number.js';
-import { InputNumberLockable } from '../controls/input-number-lockable/input_number_lockable.js';
 import { makeElement } from '../common/dom.js';
 
 /* Other stuff */
@@ -83,7 +82,6 @@ function registerCustomComponents() {
 		{ fileName: 'glyph-tile', className: GlyphTile },
 		{ fileName: 'info-bubble', className: InfoBubble },
 		{ fileName: 'input-number', className: InputNumber },
-		{ fileName: 'input-number-lockable', className: InputNumberLockable },
 		{ fileName: 'edit-canvas', className: EditCanvas },
 	];
 

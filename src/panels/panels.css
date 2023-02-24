@@ -116,13 +116,11 @@
 	width: 100%;
 }
 
-.panel__card input-number,
-.panel__card input-number-lockable {
+.panel__card input-number {
 	width: 120px;
 }
 
-.panel__card .doubleInput input-number,
-.panel__card .doubleInput input-number-lockable {
+.panel__card .doubleInput input-number {
 	width: 100%;
 }
 
