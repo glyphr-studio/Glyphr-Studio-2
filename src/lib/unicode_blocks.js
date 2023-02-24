@@ -1,10 +1,15 @@
-import { decToHex } from '../common/unicode';
-
 export function getUnicodeBlockByName(name) {
-	unicodeBlocks.forEach((block) => {
-		if (block.name === name) return block;
-	});
-
+	// log(`getUnicodeBlockByName`, 'start');
+	// log(`name: ${name}`);
+	for (let b = 0; b < unicodeBlocks.length; b++) {
+		if (unicodeBlocks[b].name === name) {
+			// log(`found unicodeBlocks[b].name: ${unicodeBlocks[b].name}`);
+			// log(`getUnicodeBlockByName`, 'end');
+			return unicodeBlocks[b];
+		}
+	}
+	// log(`returning FALSE`);
+	// log(`getUnicodeBlockByName`, 'end');
 	return false;
 }
 

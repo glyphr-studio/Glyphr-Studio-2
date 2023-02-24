@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { clone } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { refreshPanel } from '../panels/panels.js';
@@ -24,20 +24,24 @@ export class History {
 	/**
 	 * Capture the current state of an Item (and related Items) and put
 	 * it into the History queue.
+	 * 	- For normal changes, call addState after change is made
+	 * 	- For deleting items, call addState before deletion, and mark as itemWasDeleted
 	 * @param {String} changeTitle - What to call this change in the History panel
-	 * @param {Array} otherChanges - Array of IDs for other items that are changed
-	 * (for example, changing a Component also changes Glyphs it's linked to)
+	 * @param {Object} options - additional information:
+	 * 	- itemWasDeleted: flag so the item can be added back to the project
+	 * 	- otherChanges: array of other items that should be updated,
+	 * 	  (for example, changing a Component also changes Glyphs it's linked to)
 	 */
-	addState(title = '', otherChanges = false) {
+	addState(title = '', options = {}) {
 		// log(`History.addState`, 'start');
 		const editor = getCurrentProjectEditor();
 		const changedItem = editor.selectedItem;
 		title = title || `Change to ${changedItem.name}`;
-		const entry = makeHistoryEntry(editor, title, changedItem);
+		const entry = makeHistoryEntry(editor.selectedItemID, title, changedItem, options.itemWasDeleted);
 		this.queue.unshift(entry);
 
-		if (otherChanges.length) {
-			//TODO implement other change saves
+		if (options.otherChanges) {
+			//TODO Components
 		}
 
 		editor.setProjectAsUnsaved();
@@ -78,12 +82,18 @@ export class History {
 			q.shift();
 			// TODO Kern Undo - go to kern page
 			// TODO Ligature Undo - go to Ligature page
+			// TODO Component - go to Component page
 			editor.nav.page = 'Glyph edit';
 			editor.navigate();
-			// log(`Need to navigate to next changed glyph`);
-			showToast('Navigated without undo-ing');
-			// log(`History.restoreState`, 'end');
-			return;
+
+			if (q[0]?.itemWasDeleted) {
+				showToast(`Restored deleted item<br>${q[0].itemState.name}`);
+			} else {
+				showToast('Navigated without undo-ing');
+				// log(`Need to navigate to next changed glyph`);
+				// log(`History.restoreState`, 'end');
+				return;
+			}
 		}
 
 		let nextEntry;
@@ -133,12 +143,13 @@ export class History {
 	}
 }
 
-function makeHistoryEntry(editor, title, changedItem) {
+function makeHistoryEntry(itemID, title, changedItem, itemWasDeleted = false) {
 	let newEntry = {
 		timeStamp: new Date().getTime(),
-		itemID: editor.selectedGlyphID,
+		itemID: itemID,
 		title: title,
 		itemState: new Glyph(changedItem.save()),
+		itemWasDeleted: itemWasDeleted,
 	};
 
 	return newEntry;

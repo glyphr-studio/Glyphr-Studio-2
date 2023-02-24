@@ -6,11 +6,13 @@ import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
 import { json, getFirstID, clone, round } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
-import { normalizeHex } from '../common/unicode.js';
+import { basicLatinOrder, decToHex, normalizeHex } from '../common/unicode.js';
 import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { log } from '../app/main.js';
 import { HKern } from '../project_data/h_kern.js';
+import { areGlyphRangesEqual } from '../pages/settings.js';
+import { getUnicodeBlockByName, unicodeBlocks } from '../lib/unicode_blocks.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -198,7 +200,8 @@ export class ProjectEditor {
 	 */
 	get selectedGlyphID() {
 		// log('ProjectEditor GET selectedGlyphID', 'start');
-		if (!this._selectedGlyphID) {
+		const currentID = this._selectedGlyphID;
+		if (!currentID || !this.project.getItem(currentID)) {
 			this._selectedGlyphID = getFirstID(this.project.glyphs);
 		}
 
@@ -226,7 +229,8 @@ export class ProjectEditor {
 	get selectedLigatureID() {
 		// log(`ProjectEditor GET selectedLigatureID`, 'start');
 		// log(`this._selectedLigatureID: ${this._selectedLigatureID}`);
-		if (!this._selectedLigatureID) {
+		const currentID = this._selectedLigatureID;
+		if (!currentID || !this.project.getItem(currentID)) {
 			this._selectedLigatureID = getFirstID(this.project.ligatures);
 		}
 		// log(`this._selectedLigatureID: ${this._selectedLigatureID}`);
@@ -248,7 +252,8 @@ export class ProjectEditor {
 	 * @returns {string}
 	 */
 	get selectedComponentID() {
-		if (!this._selectedComponentID) {
+		const currentID = this._selectedComponentID;
+		if (!currentID || !this.project.getItem(currentID)) {
 			this._selectedComponentID = getFirstID(this.project.components);
 		}
 		return this._selectedComponentID;
@@ -268,7 +273,8 @@ export class ProjectEditor {
 	 * @returns {string}
 	 */
 	get selectedKernID() {
-		if (!this._selectedKernID) {
+		const currentID = this._selectedKernID;
+		if (!currentID || !this.project.getItem(currentID)) {
 			this._selectedKernID = getFirstID(this.project.kerning);
 		}
 		return this._selectedKernID;
@@ -285,7 +291,7 @@ export class ProjectEditor {
 				this._selectedGlyphRange = ranges[0];
 				return this._selectedGlyphRange;
 			} else {
-				return { begin: 0, end: 0, name: 'No glyph ranges exist.' };
+				return false;
 			}
 		}
 
@@ -338,7 +344,7 @@ export class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedLigatureID(id) {
-		// TODO Validate ID!
+		// TODO Ligatures Validate ID!
 		this._selectedLigatureID = id;
 	}
 
@@ -357,7 +363,7 @@ export class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedComponentID(id) {
-		// TODO Validate ID!
+		// TODO Components Validate ID!
 		this._selectedComponentID = id;
 	}
 
@@ -376,7 +382,7 @@ export class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedKernID(id) {
-		// TODO Validate ID!
+		// TODO Kern Validate ID!
 		this._selectedKernID = id;
 	}
 
@@ -386,6 +392,91 @@ export class ProjectEditor {
 	 */
 	set selectedGlyphRange(newRange) {
 		this._selectedGlyphRange = newRange;
+	}
+
+	// --------------------------------------------------------------
+	// Project-level actions
+	// --------------------------------------------------------------
+
+	deleteSelectedItemFromProject(page = false) {
+		const itemType = page || this.nav.page;
+		let id;
+		let historyTitle;
+		if (itemType === 'Glyph edit') {
+			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
+			id = this.selectedGlyphID;
+			historyTitle = `Deleted Glyph ${id} : ${this.selectedGlyph.name}`;
+			this.history.addState(historyTitle, { itemWasDeleted: true });
+			delete this.project.glyphs[id];
+		} else if (itemType === 'Components') {
+			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
+			id = this.selectedComponentID;
+			historyTitle = `Deleted Component ${id} : ${this.selectedComponent.name}`;
+			this.history.addState(historyTitle, { itemWasDeleted: true });
+			delete this.project.components[id];
+		} else if (itemType === 'Ligatures') {
+			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
+			id = this.selectedLigatureID;
+			historyTitle = `Deleted Ligature ${id} : ${this.selectedLigature.name}`;
+			this.history.addState(historyTitle, { itemWasDeleted: true });
+			delete this.project.ligatures[id];
+		} else if (itemType === 'Kerning') {
+			// log(`deleting selectedKernID: ${this.selectedKernID}`);
+			id = this.selectedKernID;
+			historyTitle = `Deleted Kern ${id} : ${this.selectedKern.name}`;
+			this.history.addState(historyTitle, { itemWasDeleted: true });
+			delete this.project.kerning[id];
+		}
+
+		this.selectFallbackItem();
+	}
+
+	/**
+	 * When an item is deleted, this finds the next best item to select.
+	 * For Glyphs, there is additional logic to stay within the current
+	 * selected range, and to special case Basic Latin order.
+	 * For Ligatures, Components, and Kerns, it's just the first item.
+	 */
+	selectFallbackItem(page = false) {
+		log(`ProjectEditor.selectFallbackItem`, 'start');
+		const itemType = page || this.nav.page;
+
+		if (itemType === 'Glyph edit') {
+			const selectedRange = this.selectedGlyphRange;
+			if (selectedRange) {
+				if (areGlyphRangesEqual(getUnicodeBlockByName('Basic Latin'), selectedRange)) {
+					log(`Selected range detected as BASIC LATIN`);
+
+					for (let i = 0; i < basicLatinOrder.length; i++) {
+						log(`checking id ${basicLatinOrder[i]}`);
+						if (this.project.glyphs[basicLatinOrder[i]]) {
+							this.selectedGlyphID = decToHex(basicLatinOrder[i]);
+							break;
+						}
+					}
+				} else {
+					log(`Selected Range detected as ${selectedRange.name}`);
+
+					for (let id = selectedRange.begin; id <= selectedRange.end; id++) {
+						if (this.project.glyphs[id]) {
+							this.selectedGlyphID = decToHex(id);
+							break;
+						}
+					}
+				}
+			}
+			log(`new selectedGlyphID: ${this.selectedGlyphID}`);
+		} else if (itemType === 'Components') {
+			this.selectedComponentID = getFirstID(this.project.components);
+			log(`new selectedComponentID: ${this.selectedComponentID}`);
+		} else if (itemType === 'Ligatures') {
+			this.selectedLigatureID = getFirstID(this.project.ligatures);
+			log(`new selectedLigatureID: ${this.selectedLigatureID}`);
+		} else if (itemType === 'Kern') {
+			this.selectedKernID = getFirstID(this.project.kerning);
+			log(`new selectedKernID: ${this.selectedKernID}`);
+		}
+		log(`ProjectEditor.selectFallbackItem`, 'end');
 	}
 
 	// --------------------------------------------------------------

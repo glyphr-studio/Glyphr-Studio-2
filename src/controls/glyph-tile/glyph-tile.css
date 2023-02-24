@@ -66,14 +66,14 @@
 	opacity: 1;
 	background-color: white;
 	box-shadow: var(--l1-shadow);
-	color: var(--enabled-active-lightText);
+	color: var(--disabled-text-light);
 }
 
 .wrapper[selected] .thumbnail {
 	opacity: 1;
 	background-color: white;
 	box-shadow: var(--l1-shadow);
-	color: var(--enabled-active-lightText);
+	color: var(--disabled-text-light);
 }
 
 .wrapper[selected]:hover .thumbnail {

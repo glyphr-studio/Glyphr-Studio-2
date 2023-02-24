@@ -331,7 +331,7 @@ nav .glyph-chooser__wrapper {
 	width: 100%;
 	border-width: 0px 0px 1px 0px;
 	border-color: var(--gray-l80);
-	margin-top: 20px;
+	/* margin-top: 20px; */
 }
 
 .history-list__date {
