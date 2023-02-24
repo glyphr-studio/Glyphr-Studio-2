@@ -1,4 +1,4 @@
-import { getGlyphrStudioApp } from '../app/main.js';
+import { getGlyphrStudioApp, log } from '../app/main.js';
 import { json } from '../common/functions.js';
 import OpenTypeJS from '../lib/opentypejs_1-3-1.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';

@@ -20,7 +20,7 @@ export class GlyphTile extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		log(`GlyphTile.constructor`, 'start');
+		// log(`GlyphTile.constructor`, 'start');
 
 		// log(attributes);
 		super();
@@ -33,10 +33,10 @@ export class GlyphTile extends HTMLElement {
 		const name = this.glyph?.name || lookUpGlyphName(displayedItemID, true);
 		this.view = {};
 
-		log(`displayedItemID: ${displayedItemID}`);
-		log(`chars: ${chars}`);
-		log(`name: ${name}`);
-		log(this.glyph);
+		// log(`displayedItemID: ${displayedItemID}`);
+		// log(`chars: ${chars}`);
+		// log(`name: ${name}`);
+		// log(this.glyph);
 
 		const project = getCurrentProject();
 		const fontSettings = project.settings.font;
@@ -99,7 +99,7 @@ export class GlyphTile extends HTMLElement {
 		shadow.appendChild(this.wrapper);
 		redraw(this);
 
-		log(`GlyphTile.constructor`, 'end');
+		// log(`GlyphTile.constructor`, 'end');
 	}
 
 	attributeChangedCallback() {

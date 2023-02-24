@@ -6,7 +6,7 @@ import { round } from '../common/functions.js';
 // Common attributes stuff
 // --------------------------------------------------------------
 
-export function makeInputs_position(workItem, labelPrefix = '', lockable = false) {
+export function makeInputs_position(workItem, labelPrefix = '') {
 	// TODO transform origin
 	// log(`makeInputs_position`, 'start');
 	// log(`x: ${round(x, 3)}`);
@@ -18,18 +18,8 @@ export function makeInputs_position(workItem, labelPrefix = '', lockable = false
 	// Label + inputs
 	let label = makeElement({ tag: 'label', innerHTML: `${labelPrefix}x${dimSplit()}y` });
 	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let xInput = makeSingleInput(
-		workItem,
-		'x',
-		thisTopic,
-		`input-number${lockable ? '-lockable' : ''}`
-	);
-	let yInput = makeSingleInput(
-		workItem,
-		'y',
-		thisTopic,
-		`input-number${lockable ? '-lockable' : ''}`
-	);
+	let xInput = makeSingleInput(workItem, 'x', thisTopic, 'input-number');
+	let yInput = makeSingleInput(workItem, 'y', thisTopic, 'input-number');
 
 	// Put double input together
 	doubleInput.appendChild(xInput);
@@ -79,83 +69,98 @@ export function makeInputs_size(workItem) {
 }
 
 export function makeSingleInput(workItem, property, thisTopic, tagName) {
-	log(`makeSingleInput`, 'start');
-	log(`workItem.objType: ${workItem.objType}`);
-	// log(`workItem.type: ${workItem.type}`);
-	log(`property: ${property}`);
-	log(`thisTopic: ${thisTopic}`);
-	log(`tagName: ${tagName}`);
+	// log(`makeSingleInput`, 'start');
+	// log(`workItem.objType: ${workItem.objType}`);
+	// log(`property: ${property}`);
+	// log(`thisTopic: ${thisTopic}`);
+	// log(`tagName: ${tagName}`);
 
 	let newInput = makeElement({ tag: tagName, className: `singleInput-${property}` });
 	let value = tagName === 'input' ? workItem[property] : round(workItem[property], 3);
 	newInput.setAttribute('value', value);
 
-	newInput.addEventListener('change', (event) => {
-		let newValue = event.target.value;
-		let editor = getCurrentProjectEditor();
-		if (!workItem.hasOwnProperty('isLocked') || !workItem.isLocked(property)) {
-			// Update the view so that the glyph stays put
-			// and the LSB moves to the left or right
-			if (property === 'leftSideBearing') {
-				let view = editor.view;
-				editor.view.dx -= (newValue - workItem.leftSideBearing) * view.dz;
-				editor.publish('view', workItem);
-			}
-
-			// Code Smell
-			if (
-				workItem.objType === 'Glyph' &&
-				(property === 'width' || property === 'height') &&
-				workItem.ratioLock
-			) {
-				if (property === 'width') workItem.setGlyphSize(newValue, false, true);
-				if (property === 'height') workItem.setGlyphSize(false, newValue, true);
-			} else if (
-				workItem.objType === 'Path' &&
-				(property === 'width' || property === 'height') &&
-				workItem.ratioLock
-			) {
-				if (property === 'width') workItem.setPathSize(newValue, false, true);
-				if (property === 'height') workItem.setPathSize(false, newValue, true);
+	if (workItem.isLockable()) {
+		newInput.setAttribute('is-locked', workItem.isLocked(property));
+		newInput.addEventListener('lock', (event) => {
+			log(`makeSingleInput LOCK event`, 'start');
+			log(event);
+			if (event.detail.isLocked) {
+				workItem.lock(property);
 			} else {
-				log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
-				workItem[property] = newValue;
+				workItem.unlock(property);
 			}
-
+			const editor = getCurrentProjectEditor();
 			editor.publish(thisTopic, workItem);
-		}
-	});
-
-	if (tagName.includes('-lockable')) {
-		addAttributeListener(newInput, 'disabled', (element) => {
-			let disabled = element.getAttribute('disabled');
-			if (disabled === null) workItem.unlock(property);
-			else workItem.lock(property);
+			log(`makeSingleInput LOCK event`, 'end');
 		});
 	}
+
+	newInput.addEventListener('change', (event) => {
+		log(`makeSingleInput CHANGE event`, 'start');
+		log(event);
+
+		if (workItem.isLocked(property)) return;
+		let newValue = event.target.getAttribute('value');
+		log(`property: ${property}`);
+		log(`newValue: ${newValue}`);
+
+		const editor = getCurrentProjectEditor();
+		// Update the view so that the glyph stays put
+		// and the LSB moves to the left or right
+		if (property === 'leftSideBearing') {
+			let view = editor.view;
+			editor.view.dx -= (newValue - workItem.leftSideBearing) * view.dz;
+			editor.publish('view', workItem);
+		}
+
+		// Code Smell
+		if (
+			workItem.objType === 'Glyph' &&
+			(property === 'width' || property === 'height') &&
+			workItem.ratioLock
+		) {
+			if (property === 'width') workItem.setGlyphSize(newValue, false, true);
+			if (property === 'height') workItem.setGlyphSize(false, newValue, true);
+		} else if (
+			workItem.objType === 'Path' &&
+			(property === 'width' || property === 'height') &&
+			workItem.ratioLock
+		) {
+			if (property === 'width') workItem.setPathSize(newValue, false, true);
+			if (property === 'height') workItem.setPathSize(false, newValue, true);
+		} else {
+			// log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
+			workItem[property] = newValue;
+		}
+
+		editor.publish(thisTopic, workItem);
+		log(`makeSingleInput CHANGE event`, 'end');
+	});
 
 	getCurrentProjectEditor().subscribe({
 		topic: thisTopic,
 		subscriberID: `attributesPanel.${thisTopic}.${property}`,
 		callback: (changedItem) => {
-			log(`SINGLE INPUT SUBSCRIPTION CALLBACK`, 'start');
-			log(`attributesPanel.${thisTopic}.${property}`);
-			log(changedItem);
-			log(`property: ${property}`);
-			log(`changedItem[property]: ${changedItem[property]}`);
+			// log(`SINGLE INPUT SUBSCRIPTION CALLBACK`, 'start');
+			// log(`attributesPanel.${thisTopic}.${property}`);
+			// log(changedItem);
+			// log(`property: ${property}`);
+			// log(`changedItem.property: ${changedItem[property]}`);
 
 			if (changedItem[property] || changedItem[property] === 0) {
+				// log(`value OLD: ${newInput.value}`);
 				let newValue;
 				if (tagName === 'input') newValue = changedItem[property];
 				else newValue = round(changedItem[property], 3);
 				newInput.value = newValue;
-				log(`new value: ${newValue}`);
+				newInput.setAttribute('value', newValue);
+				// log(`value NEW: ${newInput.value}`);
 			}
-			log(`SINGLE INPUT SUBSCRIPTION CALLBACK`, 'end');
+			// log(`SINGLE INPUT SUBSCRIPTION CALLBACK`, 'end');
 		},
 	});
 
-	log(`makeSingleInput`, 'end');
+	// log(`makeSingleInput`, 'end');
 	return newInput;
 }
 

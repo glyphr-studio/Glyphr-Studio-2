@@ -14,7 +14,6 @@ import {
 	duplicates,
 	pointsAreEqual,
 	strSan,
-	json,
 } from '../common/functions.js';
 import { getCurrentProject } from '../app/main.js';
 
@@ -292,11 +291,7 @@ export class Path extends GlyphElement {
 		// log('sanitized: ' + name);
 		if (name !== '') {
 			this._name = name;
-		} else {
-			return false;
 		}
-
-		return this;
 	}
 
 	/**
@@ -372,7 +367,6 @@ export class Path extends GlyphElement {
 	 */
 	set xLock(xLock) {
 		this._xLock = !!xLock;
-		return this;
 	}
 
 	/**
@@ -382,7 +376,6 @@ export class Path extends GlyphElement {
 	 */
 	set yLock(yLock) {
 		this._yLock = !!yLock;
-		return this;
 	}
 
 	/**
@@ -392,7 +385,6 @@ export class Path extends GlyphElement {
 	 */
 	set wLock(wLock) {
 		this._wLock = !!wLock;
-		return this;
 	}
 
 	/**
@@ -402,7 +394,6 @@ export class Path extends GlyphElement {
 	 */
 	set hLock(hLock) {
 		this._hLock = !!hLock;
-		return this;
 	}
 
 	/**
@@ -412,7 +403,6 @@ export class Path extends GlyphElement {
 	 */
 	set ratioLock(ratioLock) {
 		this._ratioLock = !!ratioLock;
-		return this;
 	}
 
 	/**
@@ -437,9 +427,15 @@ export class Path extends GlyphElement {
 	}
 
 	/**
-	 * For glyph elements with lockable parameters, this function
-	 * will be overwritten to return a boolean.
-	 * By default, properties are all unlocked.
+	 * Indicates that this object has lockable properties
+	 * @returns {Boolean}
+	 */
+	isLockable() {
+		return true;
+	}
+
+	/**
+	 * Checks to see if a property is locked.
 	 * @param {string} propertyName - property to check if locked
 	 * @returns {Boolean}
 	 */

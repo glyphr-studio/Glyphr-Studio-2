@@ -1,167 +1,238 @@
 * {
 	box-sizing: border-box;
-}
-
-.wrapper {
-	margin: 0px;
-	padding: 0px;
-	display: grid;
-	grid-template-columns: 1fr 24px;
-	border-style: solid;
-	border-color: var(--enabled-restingLight-border);
-	background-color: var(--enabled-restingLight-background);
-	border-radius: 4px;
-}
-
-.wrapper:hover,
-.wrapper:focus,
-.wrapper *:hover,
-.wrapper *:focus {
-	border-color: var(--enabled-focus-border);
-}
-
-.wrapper[disabled],
-.wrapper[disabled]:hover,
-.wrapper[disabled]:focus,
-.wrapper[disabled]:active {
-	background-color: var(--disabled-background);
-	border-color: var(--disabled-background);
-}
-
-.numberInput {
-	background-color: transparent;
-	border: 0;
-	border-radius: 4px 0px 0px 4px;
 	margin: 0;
-	margin-right: 0px;
-	color: var(--enabled-resting-text);
-	grid-column-start: 1;
+	padding: 0;
+	border: 0;
+
+	--_border-resting: var(--enabled-restingLight-border);
+	--_border-focus: var(--enabled-focus-border);
+	--_border-disabled: var(--disabled-background);
+
+	--_background-resting: var(--enabled-restingLight-background);
+	--_background-focus: white;
+	--_background-disabled: var(--disabled-background);
+
+	--_text-resting: var(--enabled-resting-text);
+	--_text-focus: var(--enabled-focus-text);
+	--_text-disabled: var(--enabled-restingLight-text);
+
+	--_fill-resting: var(--enabled-restingLight-fill);
+	--_fill-focus: var(--enabled-focus-fill);
+	--_fill-disabled: var(--enabled-restingLight-fill);
+
+	--_selected_border-resting: var(--blue-l65);
+	--_selected_fill-resting: var(--blue-l65);
+	--_selected_border-focus: var(--blue-l50);
+	--_selected_fill-focus: var(--blue-l50);
+}
+
+:host {
+	display: grid;
+	background-color: transparent;
+	grid-template-columns: 1fr 24px min-content;
+}
+
+.numberInput:focus,
+.arrowWrapper:focus,
+.upArrow:focus,
+.downArrow:focus,
+.lock:focus {
+	outline: var(--global-focus-style);
+	outline-offset: -1px;
+}
+
+/* Number input */
+.numberInput {
+	background-color: var(--_background-resting);
+	color: var(--_text-resting);
+	border-style: solid;
+	border-width: 1px;
+	border-color: var(--_border-resting);
+	border-right-color: transparent;
+	border-radius: 4px 0px 0px 4px;
+	grid-column: 1;
 	min-width: 50px;
-	height: 24px;
-	padding: 0px 8px 0px 2px;
+	padding: 4px 8px 4px 2px;
 	text-align: right;
 	font-family: monospace;
 }
 
 .numberInput:hover,
-.numberInput:active {
-	background-color: white;
-}
-
+.numberInput:active,
 .numberInput:focus {
-	outline: var(--global-focus-style);
-	outline-offset: -1px;
-	border-radius: 3px 0px 0px 3px;
+	background-color: var(--_background-focus);
+	border-color: var(--_border-focus);
+	color: var(--_text-focus);
 }
 
-.wrapper[disabled] .numberInput,
-.wrapper[disabled] .numberInput:hover,
-.wrapper[disabled] .numberInput:focus,
-.wrapper[disabled] .numberInput:active {
-	background-color: var(--disabled-background);
-	border-color: var(--disabled-border);
-	color: var(--disabled-text);
+.numberInput[disabled],
+.numberInput[disabled]:hover,
+.numberInput[disabled]:focus,
+.numberInput[disabled]:active {
+	background-color: var(--_background-disabled);
+	border-color: var(--_border-disabled);
+	color: var(--_text-disabled);
 	text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
 }
 
+/* Arrows */
 .arrowWrapper {
 	grid-column-start: 2;
 	display: grid;
-	grid-template-rows: 1fr 1fr;
-	border-left: 1px solid var(--enabled-restingLight-border);
+	grid-template-rows: 1fr 1px 1fr;
+	background-color: transparent;
+	border:0;
 	width: 24px;
-	height: 24px;
-	margin: 0;
 }
 
-.wrapper:hover .arrowWrapper,
-.arrowWrapper:hover {
-	border-left-color: var(--enabled-focus-border);
+.arrowWrapper:hover,
+.arrowWrapper:focus,
+.arrowWrapper:active {
+	border-color: transparent;
+	border-left-color: var(--_border-resting);
+	border-width: 1px;
 }
 
-.wrapper[disabled]:hover .arrowWrapper {
-	border-left-color: var(--disabled-background);
+.arrowWrapper:hover .arrowSeparator,
+.arrowWrapper:focus .arrowSeparator,
+.arrowWrapper:active .arrowSeparator {
+	background-color: var(--_border-focus);
 }
 
-.arrowWrapper:focus {
-	outline: var(--global-focus-style);
-	outline-offset: -1px;
-}
-
-.wrapper[disabled] .arrowWrapper,
-.wrapper[disabled] .arrowWrapper:hover,
-.wrapper[disabled] .arrowWrapper:focus,
-.wrapper[disabled] .arrowWrapper:active {
-	border-color: var(--disabled-background);
-	background-color: var(--disabled-background);
-}
-
-.wrapper .upArrow,
-.wrapper .downArrow,
 .upArrow,
 .downArrow {
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
-	padding: 0;
-	margin: 0;
+	background-color: var(--_background-resting);
 	border-width: 1px;
+	border-style: solid;
+	border-color: var(--_border-resting);
 	text-align: center;
-	line-height: 10px;
-	height: 12px;
+	line-height: 9px;
 	font-size: 0.9em;
 	cursor: pointer;
-	color: var(--enabled-restingLight-fill);
+	color: var(--_fill-resting);
+}
+
+.arrowSeparator {
+	background-color: var(--_border-resting);
 }
 
 .upArrow {
+	border-width: 1px 1px 0px 1px;
 	border-radius: 0px 3px 0px 0px;
-	grid-row-start: 1;
+	grid-row: 1;
 	vertical-align: bottom;
 }
 
 .downArrow {
+	border-width: 0px 1px 1px 1px;
 	border-radius: 0px 0px 3px 0px;
-	grid-row-start: 2;
+	grid-row: 3;
 	vertical-align: top;
 }
 
 .upArrow:hover,
-.downArrow:hover {
-	background-color: var(--enabled-focus-background) !important;
-}
-
 .upArrow:focus,
-.downArrow:focus {
-	outline: var(--global-focus-style);
-	outline-offset: -1px;
-}
-
-.wrapper:hover .upArrow,
-.wrapper:hover .downArrow,
-.upArrow:hover,
-.downArrow:hover {
-	color: var(--enabled-focus-fill);
-	background-color: var(--enabled-resting-background);
-}
-
 .upArrow:active,
+.downArrow:hover,
+.downArrow:focus,
 .downArrow:active {
-	color: var(--enabled-active-fill);
-	background-color: var(--enabled-active-background);
+	background-color: var(--_background-focus);
+	border-color: var(--_border-focus);
+	color: var(--_fill-focus);
 }
 
-.wrapper[disabled] .arrowWrapper .upArrow,
-.wrapper[disabled] .arrowWrapper .downArrow,
-.wrapper[disabled] .arrowWrapper .upArrow:hover,
-.wrapper[disabled] .arrowWrapper .downArrow:hover,
-.wrapper[disabled] .arrowWrapper .upArrow:focus,
-.wrapper[disabled] .arrowWrapper .downArrow:focus,
-.wrapper[disabled] .arrowWrapper .upArrow:active,
-.wrapper[disabled] .arrowWrapper .downArrow:active {
+.arrowWrapper[disabled],
+.arrowWrapper[disabled]:hover,
+.arrowWrapper[disabled]:focus,
+.arrowWrapper[disabled]:active,
+.arrowWrapper[disabled] .arrowSeparator,
+.arrowWrapper[disabled] .upArrow,
+.arrowWrapper[disabled] .downArrow,
+.arrowWrapper[disabled] .upArrow:hover,
+.arrowWrapper[disabled] .downArrow:hover,
+.arrowWrapper[disabled] .upArrow:focus,
+.arrowWrapper[disabled] .downArrow:focus,
+.arrowWrapper[disabled] .upArrow:active,
+.arrowWrapper[disabled] .downArrow:active {
+	background-color: var(--_background-disabled);
+	border-color: var(--_border-disabled);
+	color: var(--_fill-disabled);
 	cursor: default;
-	color: var(--disabled-fill) !important;
-	background-color: var(--disabled-background) !important;
 	outline: none;
+}
+
+/* Lock */
+.lock {
+	grid-column: 3;
+	display: none;
+	max-height: 25px;
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--_border-resting);
+	border-left-color: transparent;
+	border-radius: 0px 4px 4px 0px;
+	margin-right: 1px;
+	box-sizing: border-box;
+	background-color: var(--_background-resting);
+}
+
+.lock svg {
+	fill: var(--_fill-resting);
+}
+
+.lock:hover,
+.lock:active,
+.lock:focus {
+	cursor: pointer;
+	border-color: var(--_border-focus);
+	/* border-left-color: transparent; */
+	background-color: var(--_background-focus);
+	/* border-radius: 4px; */
+}
+
+.lock:hover svg,
+.lock:active svg,
+.lock:focus svg {
+	fill: var(--_fill-focus);
+}
+
+.lock[selected] {
+	border-color: var(--_selected_border-resting);
+	border-radius: 4px;
+}
+
+.lock[selected] svg {
+	fill: var(--_selected_fill-resting);
+}
+
+.lock[selected]:hover,
+.lock[selected]:active,
+.lock[selected]:focus {
+	border-color: var(--_selected_border-focus);
+}
+
+.lock[selected]:hover svg,
+.lock[selected]:active svg,
+.lock[selected]:focus svg {
+	fill: var(--_selected_fill-focus);
+}
+
+.lock[disabled],
+.lock:hover[disabled],
+.lock:focus[disabled],
+.lock:active[disabled] {
+	cursor: default;
+	border-color: var(--_border-disabled);
+	background-color: var(--_background-disabled);
+}
+
+.lock[disabled] svg,
+.lock:hover[disabled] svg,
+.lock:focus[disabled] svg,
+.lock:active[disabled] svg {
+	fill: var(--_fill-disabled);
 }

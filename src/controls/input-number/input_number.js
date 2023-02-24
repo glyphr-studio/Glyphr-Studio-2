@@ -1,5 +1,7 @@
+import { log } from '../../app/main.js';
 import { makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
+import { cancelDefaultEventActions } from '../../edit_canvas/events.js';
 import style from './input-number.css?inline';
 
 /**
@@ -10,31 +12,36 @@ export class InputNumber extends HTMLElement {
 	 * Create an InputNumber
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
-	constructor(attributes = {}) {
+	constructor() {
 		// log(`InputNumber.constructor`, 'start');
 		// log(JSON.stringify(attributes));
 		super();
 
-		if (this.getAttribute('precision')) this.precision = this.getAttribute('precision');
-		this.disabled = this.hasAttribute('disabled');
+		const isDisabled = this.hasAttribute('disabled');
 
-		this.wrapper = makeElement({ className: 'wrapper' });
-		this.wrapper.elementRoot = this;
-		this.wrapper.style.borderWidth = attributes.hideBorder ? '0px' : '1px';
+		// this.wrapper = makeElement({ className: 'wrapper' });
+		// this.wrapper.elementRoot = this;
+		// this.wrapper.style.borderWidth = attributes.hideBorder ? '0px' : '1px';
 
+		// Input element
 		this.numberInput = makeElement({
 			tag: 'input',
 			className: 'numberInput',
-			tabIndex: !this.disabled,
+			tabIndex: !isDisabled,
 			attributes: { type: 'text', value: this.sanitizeValue(this.getAttribute('value')) },
 		});
 		this.numberInput.elementRoot = this;
 
+		// Arrows
 		this.arrowWrapper = makeElement({
 			className: 'arrowWrapper',
-			tabIndex: !this.disabled,
+			tabIndex: !isDisabled,
 		});
 		this.arrowWrapper.elementRoot = this;
+
+		const arrowSeparator = makeElement({
+			className: 'arrowSeparator',
+		});
 
 		this.upArrow = makeElement({
 			className: 'upArrow',
@@ -50,25 +57,40 @@ export class InputNumber extends HTMLElement {
 		});
 		this.downArrow.elementRoot = this;
 
+		// Lock
+		this.padlock = makeElement({
+			className: 'lock',
+			attributes: { tabIndex: 0 },
+			content: `
+			<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+				xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+				x="0px" y="0px" width="24px" height="24px"
+				viewBox="0 0 26 26" enable-background="new 0 0 26 26">
+				<path d="M17,12V8h-1V7h-1V6h-4v1h-1v1H9v4H8v8h10v-8H17z M15,12h-4V9h1V8h2v1h1V12z"/>
+			</svg>
+			`,
+		});
+		this.padlock.elementRoot = this;
+
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
 		let styles = makeElement({ tag: 'style', innerHTML: style });
 		shadow.appendChild(styles);
 
 		this.arrowWrapper.appendChild(this.upArrow);
+		this.arrowWrapper.appendChild(arrowSeparator);
 		this.arrowWrapper.appendChild(this.downArrow);
 
-		this.wrapper.appendChild(this.numberInput);
-		this.wrapper.appendChild(this.arrowWrapper);
+		shadow.appendChild(this.numberInput);
+		shadow.appendChild(this.arrowWrapper);
+		shadow.appendChild(this.padlock);
 
-		if (this.disabled) {
+		if (isDisabled) {
 			this.numberInput.setAttribute('disabled', '');
-			this.wrapper.setAttribute('disabled', '');
+			this.setAttribute('disabled', '');
 		} else {
 			this.addAllEventListeners();
 		}
-
-		shadow.appendChild(this.wrapper);
 
 		// log(this);
 		// log(`InputNumber.constructor`, 'end');
@@ -78,7 +100,7 @@ export class InputNumber extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['disabled', 'value'];
+		return ['disabled', 'value', 'locked', 'unlocked'];
 	}
 
 	/**
@@ -86,6 +108,34 @@ export class InputNumber extends HTMLElement {
 	 */
 	connectedCallback() {
 		// log(`InputNumber.connectedCallback`, 'start');
+
+		if (this.getAttribute('is-locked') === 'true') {
+			this.padlock.style.display = 'block';
+			this.setToLocked(true);
+		}
+
+		if (this.getAttribute('is-locked') === 'false') {
+			this.padlock.style.display = 'block';
+			this.upArrow.style.borderRadius = '0px';
+			this.downArrow.style.borderRadius = '0px';
+			this.setToUnlocked(true);
+		}
+
+		this.padlock.addEventListener('click', () => {
+			// log(`InputNumber.padlock Click handler`, 'start');
+
+			// log(this.padlock);
+			// Toggle the lock state
+			if (this.getAttribute('is-locked') === 'true') {
+				this.setToUnlocked();
+			} else {
+				this.setToLocked();
+			}
+
+			// log(`InputNumber.padlock Click handler`, 'end');
+		});
+		this.padlock.addEventListener('keydown', this.lockButtonKeyboardPress);
+
 		// log(`InputNumber.connectedCallback`, 'end');
 	}
 
@@ -99,59 +149,95 @@ export class InputNumber extends HTMLElement {
 		// log(`InputNumber.attributeChangedCallback`, 'start');
 		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
-		if (attributeName === 'disabled') {
-			if (newValue === '') {
-				// disabled
-				this.wrapper.setAttribute('disabled', '');
-				this.numberInput.setAttribute('disabled', '');
-				this.numberInput.removeAttribute('tabIndex');
-				this.arrowWrapper.removeAttribute('tabIndex');
-				this.removeAllEventListeners();
-			} else if (oldValue === '') {
-				// enabled
-				this.wrapper.removeAttribute('disabled');
-				this.numberInput.removeAttribute('disabled');
-				this.numberInput.setAttribute('tabIndex', '0');
-				this.arrowWrapper.setAttribute('tabIndex', '0');
-				this.addAllEventListeners();
-			}
-		}
-
 		if (attributeName === 'value') {
 			this.numberInput.setAttribute('value', newValue);
-			this.numberInput.value = newValue;
-			let changeEvent = new Event('change', { bubbles: true, composed: true });
-			this.dispatchEvent(changeEvent);
+		}
+
+		if (attributeName === 'is-locked') {
+			if (newValue === 'true') {
+				// locked
+				this.setToLocked();
+			} else if (oldValue === '') {
+				// unlocked
+				this.setToUnlocked();
+			}
 		}
 
 		// log(`InputNumber.attributeChangedCallback`, 'end');
 	}
 
 	/**
-	 * Add all event listeners to elements
+	 * Locked state
+	 */
+	setToLocked(internalEvent = false) {
+		// log(`InputNumber.setToLocked`, 'start');
+		this.setAttribute('is-locked', 'true');
+		this.padlock.setAttribute('selected', '');
+		this.setToDisabled();
+		if (!internalEvent) {
+			this.dispatchEvent(new CustomEvent('lock', { detail: { isLocked: true } }));
+		}
+		// log(`InputNumber.setToLocked`, 'end');
+	}
+
+	setToUnlocked(internalEvent = false) {
+		// log(`InputNumber.setToUnlocked`, 'start');
+		this.setAttribute('is-locked', 'false');
+		this.padlock.removeAttribute('selected');
+		this.setToEnabled();
+		if (!internalEvent) {
+			this.dispatchEvent(new CustomEvent('lock', { detail: { isLocked: false } }));
+		}
+		// log(`InputNumber.setToUnlocked`, 'end');
+	}
+
+	/**
+	 * Enabled or disabled
+	 */
+	setToDisabled() {
+		// log(`InputNumber.setToDisabled`, 'start');
+		this.setAttribute('disabled', '');
+		this.numberInput.setAttribute('disabled', '');
+		this.numberInput.removeAttribute('tabIndex');
+		this.arrowWrapper.setAttribute('disabled', '');
+		this.arrowWrapper.removeAttribute('tabIndex');
+		this.removeAllEventListeners();
+		// log(`InputNumber.setToDisabled`, 'end');
+	}
+
+	setToEnabled() {
+		// log(`InputNumber.setToEnabled`, 'start');
+		this.removeAttribute('disabled');
+		this.numberInput.removeAttribute('disabled');
+		this.numberInput.setAttribute('tabIndex', '0');
+		this.arrowWrapper.removeAttribute('disabled');
+		this.arrowWrapper.setAttribute('tabIndex', '0');
+		this.addAllEventListeners();
+		// log(`InputNumber.setToEnabled`, 'end');
+	}
+
+	/**
+	 * Event Listeners
 	 */
 	addAllEventListeners() {
 		// log('addAllEventListeners');
 		this.upArrow.addEventListener('click', this.increment);
 		this.downArrow.addEventListener('click', this.decrement);
-		this.arrowWrapper.addEventListener('keydown', this.arrowKeyboardPressed);
+		this.arrowWrapper.addEventListener('keydown', this.arrowButtonsKeyboardPressed);
 		this.numberInput.addEventListener('change', this.numberInputChanged);
 		this.numberInput.addEventListener('keydown', this.numberInputKeyboardPress);
 	}
 
-	/**
-	 * Add all event listeners to elements
-	 */
 	removeAllEventListeners() {
 		// log('removeAllEventListeners');
 		this.upArrow.removeEventListener('click', this.increment);
 		this.downArrow.removeEventListener('click', this.decrement);
-		this.arrowWrapper.removeEventListener('keydown', this.arrowKeyboardPressed);
+		this.arrowWrapper.removeEventListener('keydown', this.arrowButtonsKeyboardPressed);
 		this.numberInput.removeEventListener('change', this.numberInputChanged);
 		this.numberInput.removeEventListener('keydown', this.numberInputKeyboardPress);
-		this.arrowWrapper.removeEventListener('mouseout', (event) => {
-			// log(event);
-		});
+		// this.arrowWrapper.removeEventListener('mouseout', (event) => {
+		// 	// log(event);
+		// });
 	}
 
 	/**
@@ -168,11 +254,11 @@ export class InputNumber extends HTMLElement {
 	 * Handle onChange event
 	 */
 	numberInputChanged(ev) {
-		// log(`InputNumber.numberInputChanged`, 'start');
+		log(`InputNumber.numberInputChanged`, 'start');
 		let newValue = this.elementRoot.sanitizeValue(ev.target.value);
-		this.elementRoot.value = newValue;
 		this.elementRoot.setAttribute('value', newValue);
-		// log(`InputNumber.numberInputChanged`, 'end');
+		this.elementRoot.dispatchEvent(new Event('change'));
+		log(`InputNumber.numberInputChanged`, 'end');
 	}
 
 	/**
@@ -180,13 +266,13 @@ export class InputNumber extends HTMLElement {
 	 * @param {object} ev - event
 	 */
 	increment(ev) {
-		// log(`InputNumber.increment`, 'start');
+		log(`InputNumber.increment`, 'start');
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
-		let newValue = this.elementRoot.sanitizeValue(currentValue += mod ? 10 : 1);
-		this.elementRoot.value = newValue;
+		let newValue = this.elementRoot.sanitizeValue((currentValue += mod ? 10 : 1));
 		this.elementRoot.setAttribute('value', newValue);
-		// log(`InputNumber.increment`, 'end');
+		this.elementRoot.dispatchEvent(new Event('change'));
+		log(`InputNumber.increment`, 'end');
 	}
 
 	/**
@@ -194,20 +280,20 @@ export class InputNumber extends HTMLElement {
 	 * @param {object} ev - event
 	 */
 	decrement(ev) {
-		// log(`InputNumber.decrement`, 'start');
+		log(`InputNumber.decrement`, 'start');
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
-		let newValue = this.elementRoot.sanitizeValue(currentValue -= mod ? 10 : 1);
-		this.elementRoot.value = newValue;
+		let newValue = this.elementRoot.sanitizeValue((currentValue -= mod ? 10 : 1));
 		this.elementRoot.setAttribute('value', newValue);
-		// log(`InputNumber.decrement`, 'end');
+		this.elementRoot.dispatchEvent(new Event('change'));
+		log(`InputNumber.decrement`, 'end');
 	}
 
 	/**
 	 * Handle keypress event
 	 * @param {object} ev - event
 	 */
-	arrowKeyboardPressed(ev) {
+	arrowButtonsKeyboardPressed(ev) {
 		let click = new MouseEvent('click', {
 			shiftKey: ev.shiftKey,
 			ctrlKey: ev.ctrlKey,
@@ -218,17 +304,19 @@ export class InputNumber extends HTMLElement {
 		switch (ev.keyCode) {
 			case 38: // d-pad up
 			case 39: // d-pad right
-			case 104: // ten key up
 			case 102: // ten key right
+			case 104: // ten key up
 			case 107: // ten key +
+				cancelDefaultEventActions(ev);
 				this.elementRoot.upArrow.dispatchEvent(click);
 				break;
 
-			case 40: // d-pad down
 			case 37: // d-pad left
+			case 40: // d-pad down
 			case 98: // ten key down
 			case 100: // ten key left
 			case 109: // ten key -
+				cancelDefaultEventActions(ev);
 				this.elementRoot.downArrow.dispatchEvent(click);
 				break;
 
@@ -251,15 +339,43 @@ export class InputNumber extends HTMLElement {
 
 		switch (ev.keyCode) {
 			case 38: // d-pad up
-			case 104: // ten key up
-			case 107: // ten key +
+			case 39: // d-pad right
+				cancelDefaultEventActions(ev);
 				this.elementRoot.upArrow.dispatchEvent(click);
 				break;
 
+			case 37: // d-pad left
 			case 40: // d-pad down
-			case 98: // ten key down
-			case 109: // ten key -
+				cancelDefaultEventActions(ev);
 				this.elementRoot.downArrow.dispatchEvent(click);
+				break;
+
+			default:
+				break;
+		}
+	}
+
+	/**
+	 * Handle lock keypress event
+	 * @param {object} ev - event
+	 */
+	lockButtonKeyboardPress(ev) {
+		let click = new MouseEvent('click', {
+			shiftKey: ev.shiftKey,
+			ctrlKey: ev.ctrlKey,
+			altKey: ev.altKey,
+			metaKey: ev.metaKey,
+		});
+
+		switch (ev.keyCode) {
+			case 13: // enter
+			case 32: // space
+			case 37: // d-pad left
+			case 38: // d-pad up
+			case 39: // d-pad right
+			case 40: // d-pad down
+				cancelDefaultEventActions(ev);
+				this.elementRoot.padlock.dispatchEvent(click);
 				break;
 
 			default:
