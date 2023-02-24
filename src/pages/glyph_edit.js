@@ -42,7 +42,9 @@ export function makePage_GlyphEdit() {
 			</div>
 			<div class="editor-page__tools-area"></div>
 			<div class="editor-page__edit-canvas-wrapper">
-				<edit-canvas id="editor-page__edit-canvas" editing-item-id="${editor.selectedGlyphID}"></edit-canvas>
+				<edit-canvas id="editor-page__edit-canvas" editing-item-id="${
+					editor.selectedGlyphID
+				}"></edit-canvas>
 			</div>
 			<div class="editor-page__zoom-area"></div>
 		</div>
@@ -75,14 +77,13 @@ export function makePage_GlyphEdit() {
 	});
 
 	// Panel
-	content.querySelector('#editor-page__panel').appendChild(makePanel());
+	const panel = content.querySelector('#editor-page__panel');
+	panel.appendChild(makePanel());
+
 	editor.subscribe({
 		topic: ['whichGlyphIsSelected', 'whichPathIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
 		callback: () => {
-			let panelContent = content.querySelector('#editor-page__panel');
-			panelContent.innerHTML = '';
-			// panelContent.appendChild(makePanel());
 			refreshPanel();
 		},
 	});
@@ -106,7 +107,9 @@ export function makePage_GlyphEdit() {
 			// log(`Main Canvas subscriber callback`, 'start');
 			removeStopCreatingNewPathButton();
 			// log(`new id ${newGlyphID} on the main canvas`);
-			content.querySelector('#editor-page__edit-canvas').setAttribute('editing-item-id', newGlyphID);
+			content
+				.querySelector('#editor-page__edit-canvas')
+				.setAttribute('editing-item-id', newGlyphID);
 			// log(`Main Canvas subscriber callback`, 'end');
 		},
 	});
@@ -116,7 +119,9 @@ export function makePage_GlyphEdit() {
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
 			removeStopCreatingNewPathButton();
-			editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath' });
+			if (editor.editCanvas.redraw) {
+				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPath' });
+			}
 		},
 	});
 
@@ -124,7 +129,9 @@ export function makePage_GlyphEdit() {
 		topic: 'whichPathPointIsSelected',
 		subscriberID: 'editCanvas.selectedPathPoint',
 		callback: () => {
-			editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPathPoint' });
+			if (editor.editCanvas.redraw) {
+				editor.editCanvas.redraw({ calledBy: 'Edit canvas subscription to selectedPathPoint' });
+			}
 		},
 	});
 

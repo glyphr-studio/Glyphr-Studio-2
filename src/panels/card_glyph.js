@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor, log } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeIcon } from '../common/graphics.js';
 import { makeActionsArea_Glyph, makeActionsArea_Universal } from './actions.js';
@@ -16,6 +16,9 @@ import {
 // --------------------------------------------------------------
 
 export function makeCard_glyphAttributes(glyph) {
+	// log(`makeCard_glyphAttributes`, 'start');
+	// log(`glyph.id: ${glyph.id}`);
+
 	let glyphCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
@@ -83,6 +86,8 @@ export function makeCard_glyphAttributes(glyph) {
 	addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
 	addAsChildren(glyphCard, makeActionsArea_Glyph());
 	addAsChildren(glyphCard, makeActionsArea_Universal());
-
+	// log(`returning:`);
+	// log(glyphCard);
+	// log(`makeCard_glyphAttributes`, 'end');
 	return glyphCard;
 }

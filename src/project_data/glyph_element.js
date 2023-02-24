@@ -63,12 +63,21 @@ export class GlyphElement {
 
 	/**
 	 * For glyph elements with lockable properties, this function
+	 * will return true.
+	 * @returns {Boolean}
+	 */
+	isLockable() {
+		return false;
+	}
+
+	/**
+	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to return a boolean.
 	 * By default, properties are all unlocked.
 	 * @param {string} propertyName - property to check if locked
 	 * @returns {Boolean}
 	 */
-	isLocked(propertyName) {
+	isLocked() {
 		return false;
 	}
 
@@ -77,14 +86,14 @@ export class GlyphElement {
 	 * will be overwritten to lock properties.
 	 * @param {string} propertyName - property to lock
 	 */
-	lock(propertyName) {}
+	lock() {}
 
 	/**
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to lock properties.
 	 * @param {string} propertyName - property to unlock
 	 */
-	unlock(propertyName) {}
+	unlock() {}
 
 	/**
 	 * Export object properties that need to be saved to a project file

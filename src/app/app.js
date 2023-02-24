@@ -5,6 +5,8 @@ import { closeAllDialogs, makeContextMenu } from '../controls/dialogs/dialogs.js
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { ioFont_exportFont } from '../io/font_export.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
+import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
+import { getVersionTwoTestProject } from '../samples/versionTwoTestProject.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -26,15 +28,16 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: false, // Use a 'Dev Mode' window title
-				currentPage: 'Ligatures', // navigate straight to a page
+				sampleProject: true, // Load the sample project
+				currentPage: 'Glyph edit', // navigate straight to a page
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel
-				currentTool: false, // select a tool
+				currentTool: 'pathEdit', // select a tool
 				testActions: [],
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
-			telemetry: true, // Load google analytics
+			telemetry: false, // Load google analytics
 		};
 
 		this.temp = {};
@@ -64,6 +67,7 @@ export class GlyphrStudioApp {
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation
+			if (dev.sampleProject) editor.project = importGlyphrProjectFromText(getVersionTwoTestProject());
 			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
@@ -161,7 +165,7 @@ function addTelemetry() {
 
 	window.dataLayer = window.dataLayer || [];
 	function gtag() {
-		dataLayer.push(arguments);
+		window.dataLayer.push(arguments);
 	}
 	gtag('js', new Date());
 	gtag('config', 'G-L8S3D8WCC9');

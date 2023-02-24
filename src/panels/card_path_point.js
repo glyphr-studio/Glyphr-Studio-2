@@ -3,11 +3,9 @@ import { accentColors } from '../common/colors.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeActionsArea_PathPoint } from './actions.js';
 import {
-	dimSplit,
 	makeInputs_position,
 	makeInputs_size,
 	makeSingleCheckbox,
-	makeSingleInput,
 	makeSingleLabel,
 } from './cards.js';
 
@@ -30,7 +28,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 
 	// -- Point -- //
 	// Point x/y
-	let pointPosition = makeInputs_position(selectedPoint.p, 'point', true);
+	let pointPosition = makeInputs_position(selectedPoint.p, 'point');
 	let pointTypeLabel = makeSingleLabel('point type');
 	let pointTypeWrapper = makeElement();
 
@@ -77,7 +75,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 		id: 'h1InputGroup',
 		style: `display: ${selectedPoint.h1.use ? 'grid' : 'none'}`,
 	});
-	let h1Position = makeInputs_position(selectedPoint.h1, 'h1', true);
+	let h1Position = makeInputs_position(selectedPoint.h1, 'h1');
 	addAsChildren(h1Group, h1Position);
 
 	// -- Handle 2 -- //
@@ -90,7 +88,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 		id: 'h2InputGroup',
 		style: `display: ${selectedPoint.h2.use ? 'grid' : 'none'}`,
 	});
-	let h2Position = makeInputs_position(selectedPoint.h2, 'h2', true);
+	let h2Position = makeInputs_position(selectedPoint.h2, 'h2');
 	addAsChildren(h2Group, h2Position);
 
 	// Put it all together

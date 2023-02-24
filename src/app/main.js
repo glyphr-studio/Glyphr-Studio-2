@@ -1,6 +1,5 @@
 /* Web Components */
 import { OptionChooser } from '../controls/option-chooser/option_chooser.js';
-import { ButtonToggle } from '../controls/button-toggle/button_toggle.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 import { FancyButton } from '../controls/fancy-button/fancy_button.js';
@@ -79,7 +78,6 @@ function passPreChecks() {
 function registerCustomComponents() {
 	const data = [
 		{ fileName: 'option-chooser', className: OptionChooser },
-		{ fileName: 'button-toggle', className: ButtonToggle },
 		{ fileName: 'display-canvas', className: DisplayCanvas },
 		{ fileName: 'fancy-button', className: FancyButton },
 		{ fileName: 'glyph-tile', className: GlyphTile },

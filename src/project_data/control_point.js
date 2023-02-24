@@ -249,6 +249,14 @@ export class ControlPoint extends GlyphElement {
 	}
 
 	/**
+	 * Indicates that this object has lockable properties
+	 * @returns {Boolean}
+	 */
+	isLockable() {
+		return true;
+	}
+
+	/**
 	 * Check to see if x or y are locked
 	 * @param {string} propertyName - property to check if locked
 	 * @returns {Boolean}

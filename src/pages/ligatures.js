@@ -114,9 +114,6 @@ export function makePage_Ligatures() {
 		topic: ['whichLigatureIsSelected', 'whichPathIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
 		callback: () => {
-			let panelContent = content.querySelector('#editor-page__panel');
-			panelContent.innerHTML = '';
-			// panelContent.appendChild(makePanel());
 			refreshPanel();
 		},
 	});
