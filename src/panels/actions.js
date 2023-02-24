@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp, log } from '../app/main.js';
 import { makeActionButton, makeActionButtonIcon } from './action_buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { saveFile } from '../project_editor/saving.js';
@@ -130,13 +130,19 @@ export function getActionData(name) {
 			},
 		},
 		{
-			title: `Delete Glyph\nRemove this Glyph from the project. Don't worry, you can undo this action.`,
 			iconName: 'deleteGlyph',
-			disabled: true,
+			title: `Delete Glyph\nRemove this Glyph from the project. Don't worry, you can undo this action.`,
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				editor.deleteSelectedItemFromProject();
+				log(`New item id: ${editor.selectedItemID}`);
+				editor.publish('whichGlyphIsSelected', editor.selectedItemID);
+				editor.history.addState(`Navigated to ${editor.project.getGlyphName(editor.selectedItemID, true)}`);
+			},
 		},
 		{
-			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
 			iconName: 'exportGlyphSVG',
+			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				let content = editor.selectedItem.makeSVG();
@@ -379,7 +385,7 @@ export function getActionData(name) {
 // --------------------------------------------------------------
 
 // Universal actions
-export function makeActionsArea_Universal(test = false) {
+export function makeActionsArea_Universal() {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 
 	addChildActions(actionsArea, getActionData('allActions'));
@@ -407,7 +413,7 @@ export function makeActionsArea_Universal(test = false) {
 }
 
 // Glyph actions
-export function makeActionsArea_Glyph(test = false) {
+export function makeActionsArea_Glyph() {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	addChildActions(actionsArea, getActionData('glyphActions'));
 	return actionsArea;

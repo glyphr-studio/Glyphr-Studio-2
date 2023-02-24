@@ -259,28 +259,6 @@ function makeLigatureID(sequence) {
 	return sequence.split('').reduce((acc, value) => `${acc}-${value}`, 'liga');
 }
 
-export function makeCard_ligatureActions() {
-	let actions = makeElement({
-		tag: 'div',
-		className: 'panel__card',
-		innerHTML: '<h3>Ligature actions</h3>',
-	});
-
-	const addButton = makeElement({
-		tag: 'fancy-button',
-		innerHTML: 'Create new ligature',
-	});
-
-	const deleteButton = makeElement({
-		tag: 'fancy-button',
-		innerHTML: 'Delete this ligature',
-		attributes: { danger: '' },
-	});
-
-	addAsChildren(actions, [addButton, deleteButton]);
-	return actions;
-}
-
 export function showAddLigatureDialog() {
 	const content = makeElement({
 		innerHTML: `

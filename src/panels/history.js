@@ -1,6 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
-import { refreshPanel } from './panels.js';
 
 /**
 		Panel > History
@@ -17,7 +16,7 @@ export function makePanel_History() {
 		tag: 'button',
 		className: q.length > 0 ? 'button__call-to-action number' : 'number',
 		innerHTML: `undo ${q.length}`,
-		style: 'max-width: 30%; grid-column: 1 / -1;'
+		style: 'max-width: 30%; grid-column: 1 / -1;',
 	});
 	historyArea.appendChild(undoButton);
 
@@ -41,35 +40,44 @@ export function makePanel_History() {
 
 	q.forEach((entry) => {
 		if (entry.itemID !== currentItemID) {
-			historyArea.appendChild(makeElement({
-				tag: 'h3',
-				innerHTML: editor.project.getGlyphName(entry.itemID, true),
-			}));
+			historyArea.appendChild(
+				makeElement({
+					tag: 'h3',
+					innerHTML: editor.project.getGlyphName(entry.itemID, true),
+				})
+			);
 			currentItemID = entry.itemID;
 		}
-		historyArea.appendChild(makeElement({
-			className: 'history-list__title',
-			innerHTML: entry.title,
-		}));
+		historyArea.appendChild(
+			makeElement({
+				className: 'history-list__title',
+				innerHTML: entry.title,
+			})
+		);
 
-		historyArea.appendChild(makeElement({
-			className: 'history-list__date number',
-			innerHTML: new Date(entry.timeStamp).toLocaleString(),
-		}));
+		historyArea.appendChild(
+			makeElement({
+				className: 'history-list__date number',
+				innerHTML: new Date(entry.timeStamp).toLocaleTimeString(),
+			})
+		);
 	});
 
+	// historyArea.appendChild(makeElement({ tag: 'hr' }));
 
-	historyArea.appendChild(makeElement({ tag: 'hr' }));
+	historyArea.appendChild(
+		makeElement({
+			className: 'history-list__title history-list__initial-entry',
+			innerHTML: 'Initial state',
+		})
+	);
 
-	historyArea.appendChild(makeElement({
-		className: 'history-list__title history-list__initial-entry',
-		innerHTML: '<i>Initial state</i>',
-	}));
-
-	historyArea.appendChild(makeElement({
-		className: 'history-list__date number history-list__initial-entry',
-		innerHTML: new Date(editor.history.initialTimeStamp).toLocaleString(),
-	}));
+	historyArea.appendChild(
+		makeElement({
+			className: 'history-list__date number history-list__initial-entry',
+			innerHTML: new Date(editor.history.initialTimeStamp).toLocaleTimeString(),
+		})
+	);
 
 	// History object calls to refresh the panel - no subscribers here
 

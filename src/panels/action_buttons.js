@@ -224,7 +224,7 @@ makeActionButtonIcon.exportGlyphSVG = function () {
 
 makeActionButtonIcon.deleteGlyph = function () {
 	let red = actionButtonIconColors.redX;
-	let fill = actionButtonIconColors.lightFill;
+	let fill = actionButtonIconColors.darkFill;
 
 	let re = `
 		<path fill="${fill}" d="M20.2,18.5H10L7.8,25h3.5v3.6H0V25h3.5l7.8-21.8H7.8V0h14.6v3.2h-3.6l8,21.8H30v3.6H18.8V25h3.5L20.2,18.5zM19.2,15.2L15.4,3.2H15l-4,11.9H19.2z"/>

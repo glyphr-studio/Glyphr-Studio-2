@@ -1,5 +1,6 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
+import { json } from '../common/functions.js';
 import { decToHex, getUnicodeName, hexToChars } from '../common/unicode.js';
 import {
 	closeAllDialogs,
@@ -647,6 +648,16 @@ function isGlyphRangeUnique(range) {
 	return true;
 }
 
-function areGlyphRangesEqual(range1, range2) {
-	return range1.begin === range2.begin && range1.end === range2.end;
+export function areGlyphRangesEqual(range1, range2) {
+	// log(`areGlyphRangesEqual`, 'start');
+	// log(`range1: ${json(range1)}`);
+	// log(`range2: ${json(range2)}`);
+
+	const result =
+		parseInt(range1.begin) === parseInt(range2.begin) &&
+		parseInt(range1.end) === parseInt(range2.end);
+	// log(`result: ${result}`);
+
+	// log(`areGlyphRangesEqual`, 'end');
+	return result;
 }

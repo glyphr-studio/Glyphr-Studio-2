@@ -110,7 +110,7 @@
 	--enabled-resting-text: hsl(0, 0%, 5%);
 	--enabled-resting-lightText: hsl(0, 0%, 10%);
 	--enabled-resting-border: hsl(0, 0%, 75%);
-	--enabled-resting-fill: hsl(0, 0%, 39%);
+	--enabled-resting-fill: hsl(0, 0%, 40%);
 	--enabled-resting-background: hsl(0, 0%, 98%);
 
 	--enabled-restingLight-text: hsl(0, 0%, 20%);
@@ -132,6 +132,7 @@
 	--enabled-active-background: white;
 
 	--disabled-text: hsl(0, 0%, 40%);
+	--disabled-text-light: hsl(0, 0%, 60%);
 	--disabled-text-dark: hsl(0, 0%, 20%);
 	--disabled-border: hsl(0, 0%, 82%);
 	--disabled-fill: hsl(0, 0%, 82%);
