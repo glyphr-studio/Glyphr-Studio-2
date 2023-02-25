@@ -32,7 +32,9 @@ export class GlyphrStudioApp {
 				currentPage: 'Glyph edit', // navigate straight to a page
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel
-				currentTool: 'pathEdit', // select a tool
+				currentTool: false, // select a tool
+				selectFirstPath: true, // select a shape
+				selectFirstPoint: true, // select a path point
 				testActions: [],
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
@@ -57,21 +59,19 @@ export class GlyphrStudioApp {
 		if (dev.mode) {
 			if (dev.overwriteTitle) document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
 
-			// Sample project?
-
-			// Selected canvas stuff
-			// editor.multiSelect.paths.select(editor.selectedGlyph.paths[0]);
-			// editor.multiSelect.points.select(editor.selectedGlyph.paths[0].pathPoints[0]);
-
 			// Test Function
 			if (dev.testOnLoad) dev.testOnLoad();
 
-			// Navigation
-			if (dev.sampleProject) editor.project = importGlyphrProjectFromText(getVersionTwoTestProject());
+			// Navigation & selection
+			if (dev.sampleProject)
+				editor.project = importGlyphrProjectFromText(getVersionTwoTestProject());
 			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
 			if (dev.currentTool) editor.selectedTool = dev.currentTool;
+			if (dev.selectFirstPath) editor.multiSelect.paths.select(editor.selectedGlyph.paths[0]);
+			if (dev.selectFirstPoint)
+				editor.multiSelect.points.select(editor.selectedGlyph.paths[0].pathPoints[0]);
 		}
 
 		if (this.settings.telemetry) {
@@ -82,6 +82,7 @@ export class GlyphrStudioApp {
 		// log(editor.nav.page);
 		this.fadeOutLandingPage();
 		editor.navigate();
+		if (dev.mode && (dev.selectFirstPath || dev.selectFirstPoint)) editor.editCanvas.redraw();
 
 		log(`GlyphrStudioApp.setUp`, 'end');
 	}
