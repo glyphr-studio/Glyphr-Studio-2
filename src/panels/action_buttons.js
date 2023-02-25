@@ -54,11 +54,11 @@ export function svgWrap(content) {
 }
 
 let actionButtonIconColors = {
-	darkFill: accentColors.blue.l15,
+	darkFill: accentColors.gray.l25,
 	lightFill: accentColors.gray.l85,
-	blueOutline: accentColors.blue.l65,
+	blueOutline: accentColors.blue.l70,
 	greenOutline: accentColors.green.l70,
-	grayOutline: accentColors.gray.l50,
+	grayOutline: accentColors.gray.l70,
 	redX: uiColors.red,
 };
 

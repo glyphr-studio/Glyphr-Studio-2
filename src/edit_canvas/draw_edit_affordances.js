@@ -1,6 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
-import { makeCrisp } from '../common/functions.js';
+import { makeCrisp, round } from '../common/functions.js';
 import { drawPath } from '../display_canvas/draw_paths.js';
 import { eventHandlerData } from './events.js';
 import { sXcX, sYcY } from './edit_canvas.js';
@@ -14,7 +14,7 @@ import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js'
 export let canvasUIPointSize = 7;
 let rotateHandleHeight = 40;
 let accentBlue = accentColors.blue.l65;
-let accentGreen = accentColors.green.l65;
+// let accentGreen = accentColors.green.l65;
 let accentGray = accentColors.gray.l65;
 let pathFill = '#000';
 let pointFill = '#FFF';
@@ -34,7 +34,8 @@ export function computeAndDrawBoundingBox(ctx) {
 	let thickness = editor.multiSelect.paths.length > 1 ? multiSelectThickness : 1;
 	drawBoundingBox(ctx, maxes, thickness);
 }
-
+/*
+TODO rotate
 export function computeAndDrawRotationAffordance(ctx) {
 	const editor = getCurrentProjectEditor();
 	let ss;
@@ -47,7 +48,7 @@ export function computeAndDrawRotationAffordance(ctx) {
 		drawRotationAffordance(accentGray, multiSelectThickness);
 	}
 }
-
+*/
 export function computeAndDrawBoundingBoxHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	if (editor.multiSelect.paths.length < 1) return;
@@ -101,31 +102,21 @@ export function drawBoundingBox(ctx, maxes, thickness) {
 	// log(maxes);
 
 	let accent = thickness === 1 ? accentBlue : accentGray;
-	let lx = sXcX(maxes.xMin);
-	let rx = sXcX(maxes.xMax);
-	let ty = sYcY(maxes.yMax);
-	let by = sYcY(maxes.yMin);
+	const bb = getBoundingBoxAndHandleDimensions(maxes, thickness);
 
-	if (thickness > 1) {
-		lx -= thickness;
-		rx += thickness;
-		ty -= thickness;
-		by += thickness;
-	}
-
-	let w = rx - lx;
-	let h = by - ty;
+	let w = bb.rightX - bb.leftX;
+	let h = bb.topY - bb.bottomY;
 
 	ctx.fillStyle = 'transparent';
 	ctx.strokeStyle = accent;
 	ctx.lineWidth = thickness;
-	ctx.strokeRect(lx, ty, w, h);
+	ctx.strokeRect(bb.leftX, bb.bottomY, w, h);
 	// log(`drawBoundingBox`, 'end');
 }
 
 function drawBoundingBoxHandles(ctx, maxes, thickness) {
 	let accent = thickness === 1 ? accentBlue : accentGray;
-	let bb = getBoundingBoxHandleDimensions(maxes, thickness);
+	let bb = getBoundingBoxAndHandleDimensions(maxes, thickness);
 
 	ctx.fillStyle = pointFill;
 	ctx.lineWidth = 1;
@@ -143,34 +134,28 @@ function drawBoundingBoxHandles(ctx, maxes, thickness) {
 */
 
 	//upper left
-	if (canResize('nw')) drawSquareHandle(ctx, { x: bb.leftX, y: bb.topY });
-
+	if (canResize('nw')) drawSquareHandle(ctx, bb.nw);
 	//top
-	if (canResize('n')) drawSquareHandle(ctx, { x: bb.midX, y: bb.topY });
-
+	if (canResize('n')) drawSquareHandle(ctx, bb.n);
 	//upper right
-	if (canResize('ne')) drawSquareHandle(ctx, { x: bb.rightX, y: bb.topY });
-
+	if (canResize('ne')) drawSquareHandle(ctx, bb.ne);
 	// right
-	if (canResize('e')) drawSquareHandle(ctx, { x: bb.rightX, y: bb.midY });
-
+	if (canResize('e')) drawSquareHandle(ctx, bb.e);
 	//lower right
-	if (canResize('se')) drawSquareHandle(ctx, { x: bb.rightX, y: bb.bottomY });
-
+	if (canResize('se')) drawSquareHandle(ctx, bb.se);
 	//bottom
-	if (canResize('s')) drawSquareHandle(ctx, { x: bb.midX, y: bb.bottomY });
-
+	if (canResize('s')) drawSquareHandle(ctx, bb.s);
 	//lower left
-	if (canResize('sw')) drawSquareHandle(ctx, { x: bb.leftX, y: bb.bottomY });
-
+	if (canResize('sw')) drawSquareHandle(ctx, bb.sw);
 	//left
-	if (canResize('w')) drawSquareHandle(ctx, { x: bb.leftX, y: bb.midY });
-
+	if (canResize('w')) drawSquareHandle(ctx, bb.w);
 	// //Center Dot
 	// ctx.fillRect(bb.midX, bb.midY, ps, ps);
 	// ctx.strokeRect(bb.midX, bb.midY, ps, ps);
 }
 
+/*
+TODO rotate
 function drawRotationAffordance(ctx, accent, thickness) {
 	const editor = getCurrentProjectEditor();
 	accent = accent || accentBlue;
@@ -248,7 +233,7 @@ function drawLine(ctx, p1, p2) {
 	ctx.closePath();
 	ctx.stroke();
 }
-
+*/
 function drawSquareHandle(ctx, ul) {
 	ctx.fillRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
 	ctx.strokeRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
@@ -280,7 +265,7 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	const editor = getCurrentProjectEditor();
 	let re = false;
 	let ps = canvasUIPointSize;
-	let bb = getBoundingBoxHandleDimensions(maxes);
+	let bb = getBoundingBoxAndHandleDimensions(maxes);
 
 	// log('\t point size - ' + ps);
 	// log('\t l/m/r x: ' + bb.leftX + ' / ' + bb.midX + ' / ' + bb.rightX);
@@ -299,42 +284,42 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	}
 
 	// upper left
-	if (px > bb.leftX && px < bb.leftX + ps && py > bb.topY && py < bb.topY + ps) {
+	if (px > bb.nw.x && px < bb.nw.x + ps && py > bb.nw.y && py < bb.nw.y + ps) {
 		re = 'nw';
 	}
 
 	// top
-	if (px > bb.midX && px < bb.midX + ps && py > bb.topY && py < bb.topY + ps) {
+	if (px > bb.n.x && px < bb.n.x + ps && py > bb.n.y && py < bb.n.y + ps) {
 		re = 'n';
 	}
 
 	// upper right
-	if (px > bb.rightX && px < bb.rightX + ps && py > bb.topY && py < bb.topY + ps) {
+	if (px > bb.ne.x && px < bb.ne.x + ps && py > bb.ne.y && py < bb.ne.y + ps) {
 		re = 'ne';
 	}
 
 	// right
-	if (px > bb.rightX && px < bb.rightX + ps && py > bb.midY && py < bb.midY + ps) {
+	if (px > bb.e.x && px < bb.e.x + ps && py > bb.e.y && py < bb.e.y + ps) {
 		re = 'e';
 	}
 
 	// lower right
-	if (px > bb.rightX && px < bb.rightX + ps && py > bb.bottomY && py < bb.bottomY + ps) {
+	if (px > bb.se.x && px < bb.se.x + ps && py > bb.se.y && py < bb.se.y + ps) {
 		re = 'se';
 	}
 
 	// bottom
-	if (px > bb.midX && px < bb.midX + ps && py > bb.bottomY && py < bb.bottomY + ps) {
+	if (px > bb.s.x && px < bb.s.x + ps && py > bb.s.y && py < bb.s.y + ps) {
 		re = 's';
 	}
 
 	// lower left
-	if (px > bb.leftX && px < bb.leftX + ps && py > bb.bottomY && py < bb.bottomY + ps) {
+	if (px > bb.sw.x && px < bb.sw.x + ps && py > bb.sw.y && py < bb.sw.y + ps) {
 		re = 'sw';
 	}
 
 	// left
-	if (px > bb.leftX && px < bb.leftX + ps && py > bb.midY && py < bb.midY + ps) {
+	if (px > bb.w.x && px < bb.w.x + ps && py > bb.w.y && py < bb.w.y + ps) {
 		re = 'w';
 	}
 
@@ -344,36 +329,52 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	return re;
 }
 
-function getBoundingBoxHandleDimensions(maxes, thickness) {
-	let dimensions = {};
-	let hp = canvasUIPointSize / 2;
+function getBoundingBoxAndHandleDimensions(maxes, thickness) {
+	const pt = canvasUIPointSize;
+	const hp = canvasUIPointSize / 2;
 	thickness = 1;
+	const pad = 1;
 
 	// Translation Fidelity - converting passed canvas values to saved value system
-	dimensions.leftX = sXcX(maxes.xMin) - hp;
-	dimensions.midX = Math.floor(sXcX(maxes.xMin) + (sXcX(maxes.xMax) - sXcX(maxes.xMin)) / 2 - hp);
-	dimensions.rightX = sXcX(maxes.xMax) - hp;
-	dimensions.topY = sYcY(maxes.yMax) - hp;
-	dimensions.midY = Math.floor(sYcY(maxes.yMax) + (sYcY(maxes.yMin) - sYcY(maxes.yMax)) / 2 - hp);
-	dimensions.bottomY = sYcY(maxes.yMin) - hp;
+	let leftX = sXcX(maxes.xMin);
+	let midX = round(sXcX(maxes.xMin) + (sXcX(maxes.xMax) - sXcX(maxes.xMin)) / 2);
+	let rightX = sXcX(maxes.xMax);
+	let topY = sYcY(maxes.yMax);
+	let midY = round(sYcY(maxes.yMax) + (sYcY(maxes.yMin) - sYcY(maxes.yMax)) / 2);
+	let bottomY = sYcY(maxes.yMin);
 
 	if (thickness > 1) {
-		dimensions.leftX -= thickness;
-		dimensions.rightX += thickness;
-		dimensions.topY -= thickness;
-		dimensions.bottomY += thickness;
+		leftX -= thickness;
+		rightX += thickness;
+		topY -= thickness;
+		bottomY += thickness;
 	}
 
-	dimensions.leftX = makeCrisp(dimensions.leftX, -1);
-	dimensions.midX = makeCrisp(dimensions.midX, -1);
-	dimensions.rightX = makeCrisp(dimensions.rightX, 1);
-	dimensions.topY = makeCrisp(dimensions.topY, -1);
-	dimensions.midY = makeCrisp(dimensions.midY, -1);
-	dimensions.bottomY = makeCrisp(dimensions.bottomY, 1);
+	leftX = makeCrisp(leftX, false) - pad;
+	midX = makeCrisp(midX, false);
+	rightX = makeCrisp(rightX, true) + pad;
+	topY = makeCrisp(topY, false) - pad;
+	midY = makeCrisp(midY, false);
+	bottomY = makeCrisp(bottomY, true) + pad;
 
-	dimensions.hp = hp;
+	let result = {
+		leftX: leftX,
+		midX: midX,
+		rightX: rightX,
+		topY: topY,
+		midY: midY,
+		bottomY: bottomY,
+		nw: { x: leftX - pt, y: topY - pt },
+		n: { x: makeCrisp(midX - hp) + pad, y: topY - pt },
+		ne: { x: rightX, y: topY - pt },
+		e: { x: rightX, y: makeCrisp(midY - hp) + pad },
+		w: { x: leftX - pt, y: makeCrisp(midY - hp) + pad },
+		sw: { x: leftX - pt, y: bottomY },
+		s: { x: makeCrisp(midX - hp) + pad, y: bottomY },
+		se: { x: rightX, y: bottomY },
+	};
 
-	return dimensions;
+	return result;
 }
 
 /* NEEDS TO BE REFACTORED
@@ -579,15 +580,11 @@ export function drawDirectionalityPoint(point, ctx, isSelected, next) {
  * @param {boolean} drawH2 - draw the second handle
  */
 export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
-	// let canvasUIPointSize = 7;
-	let pointFill = uiColors.offWhite;
 	let accent = uiColors.accent;
 	ctx.fillStyle = accent;
 	ctx.strokeStyle = accent;
 	ctx.lineWidth = 1;
 	ctx.font = '10px Consolas';
-
-	const halfPointSize = canvasUIPointSize / 2;
 
 	if (drawH1 && point.h1.use) {
 		drawOneHandle(point.h1, '1');
@@ -618,9 +615,8 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
  * @param {object} ctx - canvas context
  * @param {string} accent - accent color
  * @param {Point} prevP - Previous point in the path sequence
- * @param {number} canvasUIPointSize - how big to draw the point
  */
-export function drawQuadraticHandle(ctx) {
+export function drawQuadraticHandle(point, ctx, accent, prevP) {
 	// Draw Quadratic handle point from imported SVG
 	ctx.fillStyle = accent;
 	ctx.strokeStyle = accent;
