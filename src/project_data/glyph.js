@@ -8,7 +8,6 @@ import { getUnicodeName, hexToHTML, hexToChars } from '../common/unicode.js';
 import { getCurrentProject } from '../app/main.js';
 import { log } from '../app/main.js';
 
-
 /**
  * Glyph Element > Glyph
  * A single collection of outlines that could
@@ -31,6 +30,7 @@ export class Glyph extends GlyphElement {
 	 */
 	constructor({
 		id = false,
+		objType = 'Glyph',
 		name = false,
 		paths = [],
 		advanceWidth = 0,
@@ -50,7 +50,7 @@ export class Glyph extends GlyphElement {
 		this.ligature = ligature;
 		this.contextGlyphs = contextGlyphs;
 
-		this.objType = 'Glyph';
+		this.objType = objType;
 		// log(this.print());
 		// log(`Glyph.constructor`, 'end');
 	}
@@ -82,9 +82,10 @@ export class Glyph extends GlyphElement {
 		}
 
 		if (!verbose) {
+			if (this.objType === 'Glyph') delete re.name;
 			delete re.objType;
-			delete re.name;
 		}
+
 		if (this.__ID) re.__ID = this.__ID;
 
 		return re;
@@ -293,11 +294,17 @@ export class Glyph extends GlyphElement {
 	 * @returns {string}
 	 */
 	get char() {
+		// log(`Glyph.char`, 'start');
+		let result;
 		if (this.ligature.length) {
-			return this.ligature.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
+			// log(`this.ligature.length: ${this.ligature.length}`);
+			result = this.ligature.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
 		} else {
-			return hexToChars(this.id);
+			result = hexToChars(this.id);
 		}
+		// log(`result: ${result}`);
+		// log(`Glyph.char`, 'end');
+		return result;
 	}
 
 	get chars() {
