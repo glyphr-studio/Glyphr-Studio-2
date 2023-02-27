@@ -197,7 +197,7 @@ textarea:focus,
 info-bubble:focus,
 glyph-tile:focus {
 	outline: var(--global-focus-style);
-	outline-offset: 2px;
+	outline-offset: -1px;
 }
 
 input[type='image'] {

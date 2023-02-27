@@ -333,7 +333,10 @@ export class GlyphrStudioProject {
 			fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
 		});
 
-		// TODO Ligatures!
+
+		for (const lig of Object.keys(this.ligatures)) {
+			fm.maxes = getOverallMaxes([fm.maxes, this.ligatures[lig]]);
+		}
 
 		// log(`returning fm`);
 		// log(fm);

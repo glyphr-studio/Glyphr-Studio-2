@@ -1,6 +1,5 @@
-import { getCurrentProject } from '../app/main.js';
-import { clone, round } from '../common/functions.js';
-import { charsToHexArray, parseUnicodeInput } from '../common/unicode';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { charsToHexArray, hexToChars, parseUnicodeInput } from '../common/unicode';
 import { Maxes } from '../project_data/maxes.js';
 
 /**
@@ -106,6 +105,7 @@ export class GlyphSequence {
 		 */
 
 		let currentBlock;
+		let currentChar;
 		let textBlockNumber;
 		let charNumber;
 		let aggregateWidth = 0;
@@ -122,25 +122,29 @@ export class GlyphSequence {
 		for (textBlockNumber = 0; textBlockNumber < this.textBlocks.length; textBlockNumber++) {
 			// log(`================ START textBlockNumber: ${textBlockNumber}`);
 
-			// TODO Ligatures
-			// currentBlock = findAndMergeLigatures(this.textBlocks[textBlockNumber].split(''));
-			currentBlock = this.textBlocks[textBlockNumber].split('');
+			currentBlock = findAndMergeLigatures(this.textBlocks[textBlockNumber].split(''));
 			this.data[textBlockNumber] = [];
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
-				// log(`==== charNumber: ${charNumber}`);
-				thisGlyph = project.getItem(charsToHexArray(currentBlock[charNumber]).join(''));
+				currentChar = currentBlock[charNumber];
+				// log(`==== char: ${charNumber} ${currentChar}`);
+				if (currentChar.indexOf('liga-') === 0) {
+					thisGlyph = project.ligatures[currentChar];
+					currentChar = thisGlyph.chars;
+				} else {
+					thisGlyph = project.getItem(charsToHexArray(currentChar));
+				}
 
 				// Calculate width
 				thisWidth = thisGlyph ? thisGlyph.advanceWidth : project.defaultAdvanceWidth;
 
 				// Kern distance
-				thisKern = calculateKernOffset(currentBlock[charNumber], currentBlock[charNumber + 1]);
+				thisKern = calculateKernOffset(currentChar, currentBlock[charNumber + 1]);
 				aggregateWidth += thisWidth + thisKern;
 
 				// Each char gets this data to draw it
 				this.data[textBlockNumber][charNumber] = {
-					char: currentBlock[charNumber],
+					char: currentChar,
 					glyph: thisGlyph,
 					view: false,
 					widths: {
@@ -148,7 +152,7 @@ export class GlyphSequence {
 						kern: thisKern,
 						aggregate: aggregateWidth,
 					},
-					isLineBreaker: this.lineBreakers.indexOf(currentBlock[charNumber]) > -1,
+					isLineBreaker: this.lineBreakers.indexOf(currentChar) > -1,
 					isVisible: false,
 					lineNumber: false,
 				};
@@ -363,7 +367,8 @@ function calculateKernOffset(c1, c2) {
  */
 function findAndMergeLigatures(glyphCollection) {
 	// log('findAndMergeLigatures', 'start');
-	let ligatures = sortLigatures();
+	const editor = getCurrentProjectEditor();
+	const ligatures = editor.project.sortedLigatures;
 	// log('sorted ligatures: ');
 	// log(ligatures);
 
@@ -371,17 +376,18 @@ function findAndMergeLigatures(glyphCollection) {
 	for (let c = 0; c < glyphCollection.length; c++) {
 		// for(let g=ligatures.length-1; g>-1; g--){
 		for (let g = 0; g < ligatures.length; g++) {
-			ligatureCharacters = hexToChars(ligatures[g].id);
+			ligatureCharacters = ligatures[g].chars;
 			// log('checking ' + ligatureCharacters);
 			carrot = glyphCollection.slice(c, c + ligatureCharacters.length).join('');
 			// log('against ' + carrot);
 			if (carrot === ligatureCharacters) {
-				glyphCollection.splice(c, ligatureCharacters.length, ligatureCharacters);
+				glyphCollection.splice(c, ligatureCharacters.length, ligatures[g].id);
 				// log('!Ligature Found! array['+c+'] is now ' + glyphCollection[c]);
 			}
 		}
 	}
 
+	// log(glyphCollection);
 	// log('findAndMergeLigatures', 'end');
 	return glyphCollection;
 }
