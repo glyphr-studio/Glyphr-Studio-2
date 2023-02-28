@@ -27,16 +27,15 @@ export class GlyphRange {
 
 	// Generator
 	*generator() {
-		let basicLatinIndex = 0;
 		if (this.begin <= 0x21 && this.end === 0x7f) {
+			let basicLatinIndex = 0;
 			while (basicLatinIndex < basicLatinOrder.length) {
 				yield basicLatinOrder[basicLatinIndex];
 				basicLatinIndex++;
 			}
 		} else {
 			let current = this.begin;
-			let showControls = getCurrentProject().settings.app.showNonCharPoints;
-			if (showControls) {
+			if (getCurrentProject().settings.app.showNonCharPoints) {
 				while (current <= this.end) yield current++;
 			} else {
 				while (isControlChar(current)) current++;
