@@ -57,10 +57,7 @@ function makeGlyphChooserTileGrid() {
 	// log(editor.selectedGlyphRange);
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
-	// let rangeList = glyphRangeToList(editor.selectedGlyphRange);
-
-	for (const glyphID of editor.selectedGlyphRange.generator()) {
-	// rangeList.forEach((glyphID) => {
+	editor.selectedGlyphRange.array.forEach((glyphID) => {
 		let oneTile = new GlyphTile({ 'displayed-item-id': glyphID });
 		if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');
 
@@ -85,7 +82,7 @@ function makeGlyphChooserTileGrid() {
 		}
 
 		tileGrid.appendChild(oneTile);
-	}
+	});
 
 	// log(`makeGlyphChooserTileGrid`, 'end');
 	return tileGrid;

@@ -7,6 +7,7 @@ export class GlyphRange {
 		this.begin = begin;
 		this.end = end;
 		this.name = name;
+		this.cachedArray = false;
 	}
 
 	get begin() {
@@ -25,7 +26,10 @@ export class GlyphRange {
 		this._end = parseInt(val);
 	}
 
+	// --------------------------------------------------------------
 	// Generator
+	// --------------------------------------------------------------
+
 	*generator() {
 		if (this.begin <= 0x21 && this.end === 0x7f) {
 			let basicLatinIndex = 0;
@@ -44,7 +48,10 @@ export class GlyphRange {
 		}
 	}
 
-	// Calculated properties
+	// --------------------------------------------------------------
+	// Methods
+	// --------------------------------------------------------------
+
 	get isValid() {
 		let begin = this.begin !== 0;
 		let end = this.end !== 0;
@@ -60,6 +67,10 @@ export class GlyphRange {
 		};
 	}
 
+	// --------------------------------------------------------------
+	// Calculated properties
+	// --------------------------------------------------------------
+
 	get beginHex() {
 		return decToHex(this.begin);
 	}
@@ -74,5 +85,17 @@ export class GlyphRange {
 
 	get id() {
 		return `${this.name} ${this.note}`;
+	}
+
+	get array() {
+		if (this.cachedArray) return this.cachedArray;
+
+		const result = [];
+
+		for (const glyphID of this.generator()) {
+			result.push(glyphID);
+		}
+		this.cachedArray = result;
+		return result;
 	}
 }
