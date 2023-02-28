@@ -1,8 +1,6 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
-import { areHexValuesEqual, basicLatinOrder, decToHex } from '../common/unicode.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
-import { isControlChar } from '../lib/unicode_blocks.js';
 import { showAddLigatureDialog } from '../pages/ligatures.js';
 
 /**
@@ -55,12 +53,14 @@ export function makeGlyphChooserContent(clickHandler, registerSubscriptions = tr
 function makeGlyphChooserTileGrid() {
 	// log(`makeGlyphChooserTileGrid`, 'start');
 	const editor = getCurrentProjectEditor();
-	// log(json(editor.selectedGlyphRange));
+	// log(editor.project.settings.project.glyphRanges);
+	// log(editor.selectedGlyphRange);
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
-	let rangeList = glyphRangeToList(editor.selectedGlyphRange);
+	// let rangeList = glyphRangeToList(editor.selectedGlyphRange);
 
-	rangeList.forEach((glyphID) => {
+	for (const glyphID of editor.selectedGlyphRange.generator()) {
+	// rangeList.forEach((glyphID) => {
 		let oneTile = new GlyphTile({ 'displayed-item-id': glyphID });
 		if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');
 
@@ -73,7 +73,7 @@ function makeGlyphChooserTileGrid() {
 				callback: (newGlyphID) => {
 					// log('whichGlyphIsSelected subscriber callback');
 					// log(`checking if ${glyph.id} === ${glyphID}`);
-					if (areHexValuesEqual(newGlyphID, glyphID)) {
+					if (parseInt(newGlyphID) === parseInt(glyphID)) {
 						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
 						oneTile.setAttribute('selected', '');
 					} else {
@@ -85,28 +85,10 @@ function makeGlyphChooserTileGrid() {
 		}
 
 		tileGrid.appendChild(oneTile);
-	});
+	}
 
 	// log(`makeGlyphChooserTileGrid`, 'end');
 	return tileGrid;
-}
-
-function glyphRangeToList(range) {
-	if ((range.begin === 0 || range.begin === 0x21) && range.end === 0x7f) {
-		return basicLatinOrder;
-	}
-
-	let showControls = getCurrentProject().settings.app.showNonCharPoints;
-	let result = [];
-	for (let i = range.begin; i < range.end; i++) {
-		if (showControls) {
-			result.push('' + decToHex(i));
-		} else {
-			if (!isControlChar(i)) result.push('' + decToHex(i));
-		}
-	}
-
-	return result;
 }
 
 function makeGlyphRangeChooser() {
@@ -114,11 +96,12 @@ function makeGlyphRangeChooser() {
 
 	let ranges = getCurrentProject().settings.project.glyphRanges;
 	let selectedRange = getCurrentProjectEditor().selectedGlyphRange;
+	// log(selectedRange);
 	let optionChooser = makeElement({
 		tag: 'option-chooser',
 		attributes: {
 			'selected-name': selectedRange.name,
-			'selected-id': makeRangeID(selectedRange),
+			'selected-id': selectedRange.id,
 		},
 	});
 
@@ -128,7 +111,7 @@ function makeGlyphRangeChooser() {
 		let option = makeElement({
 			tag: 'option',
 			innerHTML: range.name,
-			attributes: { note: `["${decToHex(range.begin)}", "${decToHex(range.end)}"]` },
+			attributes: { note: range.note },
 		});
 
 		option.addEventListener('click', () => {
@@ -148,10 +131,6 @@ function makeGlyphRangeChooser() {
 
 	// log(`makeGlyphRangeChooser`, 'end');
 	return optionChooser;
-}
-
-export function makeRangeID(range) {
-	return `${range.name} ["${decToHex(range.begin)}", "${decToHex(range.end)}"]`;
 }
 
 function makeLigatureChooserTileGrid() {

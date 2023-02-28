@@ -5,6 +5,7 @@ import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, hexToHTML, normalizeHex } from '../common/unicode.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 import { log } from '../app/main.js';
+import { GlyphRange } from './glyph_range.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -26,7 +27,7 @@ export class GlyphrStudioProject {
 				latestVersion: '2.0.0-alpha.2',
 				initialVersion: '2.0.0-alpha.1',
 				id: false,
-				glyphRanges: [{ begin: 0x0021, end: 0x007f, name: 'Basic Latin' }],
+				glyphRanges: [],
 			},
 			app: {
 				savePreferences: false,
@@ -99,8 +100,12 @@ export class GlyphrStudioProject {
 
 		// Keep glyph ranges of passed project
 		if (newProject?.settings?.project?.glyphRanges) {
-			this.settings.project.glyphRanges = newProject.settings.project.glyphRanges;
+			newProject.settings.project.glyphRanges.forEach((range) => {
+				this.settings.project.glyphRanges.push(new GlyphRange(range));
+			});
 		}
+		// log(`Finished importing Glyph Ranges`);
+		// log(this.settings.project.glyphRanges);
 
 		// Merge with templates
 		if (newProject.settings) {
@@ -113,20 +118,20 @@ export class GlyphrStudioProject {
 		// log(this.settings);
 
 		// Components
-		hydrateGlyphrObjectList(Glyph, newProject.components, this.components);
+		hydrateProjectItems(Glyph, newProject.components, this.components);
 		// log('finished hydrating components');
 
 		// Glyphs
-		hydrateGlyphrObjectList(Glyph, newProject.glyphs, this.glyphs);
+		hydrateProjectItems(Glyph, newProject.glyphs, this.glyphs);
 		// log('finished hydrating glyphs');
 		// log(this.glyphs);
 
 		// Ligatures
-		hydrateGlyphrObjectList(Glyph, newProject.ligatures, this.ligatures);
+		hydrateProjectItems(Glyph, newProject.ligatures, this.ligatures);
 		// log('finished hydrating ligatures');
 
 		// Kerning
-		hydrateGlyphrObjectList(HKern, newProject.kerning, this.kerning);
+		hydrateProjectItems(HKern, newProject.kerning, this.kerning);
 		// log('finished hydrating kern pairs');
 
 		// log(this);
@@ -333,7 +338,6 @@ export class GlyphrStudioProject {
 			fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
 		});
 
-
 		for (const lig of Object.keys(this.ligatures)) {
 			fm.maxes = getOverallMaxes([fm.maxes, this.ligatures[lig]]);
 		}
@@ -430,7 +434,7 @@ function merge(template = {}, importing = {}, trimStrings = false) {
  * @param {Object} source - collection of temporary objects to hydrate
  * @param {Object} destination - project object for final items
  */
-function hydrateGlyphrObjectList(GlyphrStudioItem, source, destination) {
+function hydrateProjectItems(GlyphrStudioItem, source, destination) {
 	source = source || {};
 	for (const key of Object.keys(source)) {
 		if (source[key]) {
