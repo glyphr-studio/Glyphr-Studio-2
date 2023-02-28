@@ -11,6 +11,7 @@ import {
 import { TabControl } from '../controls/tabs/tab_control.js';
 import { unicodeBlocks } from '../lib/unicode_blocks.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
+import { GlyphRange } from '../project_data/glyph_range.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import settingsMap from './settings_data.js';
 
@@ -628,7 +629,7 @@ function previewGlyphRange(range) {
 function addGlyphRange(range, successCallback) {
 	if (isGlyphRangeUnique(range)) {
 		let ranges = getCurrentProject().settings.project.glyphRanges;
-		ranges.push(range);
+		ranges.push(new GlyphRange(range));
 		ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
 		updateCurrentRangesTable();
 		showToast(`Added ${range.name} to your project.`);

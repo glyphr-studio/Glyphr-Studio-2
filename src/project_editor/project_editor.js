@@ -12,7 +12,8 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { log } from '../app/main.js';
 import { HKern } from '../project_data/h_kern.js';
 import { areGlyphRangesEqual } from '../pages/settings.js';
-import { getUnicodeBlockByName, unicodeBlocks } from '../lib/unicode_blocks.js';
+import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
+import { GlyphRange } from '../project_data/glyph_range.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -285,16 +286,27 @@ export class ProjectEditor {
 	 * @returns {Object}
 	 */
 	get selectedGlyphRange() {
-		if (!this._selectedGlyphRange) {
-			const ranges = this.project.settings.project.glyphRanges;
+		// log(`ProjectEditor.selectedGlyphRange`, 'start');
+		// log('current ranges');
+		const ranges = this.project.settings.project.glyphRanges;
+		// log(ranges);
+		// log('currently selected');
+		// log(this._selectedGlyphRange);
+
+		if (!this._selectedGlyphRange || !this._selectedGlyphRange.isValid) {
+			// log('detected none selected');
 			if (ranges.length) {
+				// log('was false, returning first range');
 				this._selectedGlyphRange = ranges[0];
-				return this._selectedGlyphRange;
 			} else {
-				return false;
+				// log('was false, and no ranges, returning default');
+				this._selectedGlyphRange = new GlyphRange({ end: 0x7f, name: 'Basic Latin (default)' });
 			}
 		}
 
+		// log(`returning`);
+		// log(this._selectedGlyphRange);
+		// log(`ProjectEditor.selectedGlyphRange`, 'end');
 		return this._selectedGlyphRange;
 	}
 
@@ -391,7 +403,7 @@ export class ProjectEditor {
 	 * @param {Object} newRange - range object
 	 */
 	set selectedGlyphRange(newRange) {
-		this._selectedGlyphRange = newRange;
+		this._selectedGlyphRange = new GlyphRange(newRange);
 	}
 
 	// --------------------------------------------------------------
