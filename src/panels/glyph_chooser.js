@@ -1,5 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
+import { countItems } from '../common/functions.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { showAddLigatureDialog } from '../pages/ligatures.js';
 
@@ -17,23 +18,24 @@ import { showAddLigatureDialog } from '../pages/ligatures.js';
 let savedClickHandler;
 let savedRegisterSubscriptions;
 
-export function makeGlyphChooserContent(clickHandler, registerSubscriptions = true) {
+export function makeGlyphChooserContent(
+	clickHandler,
+	registerSubscriptions = true,
+	includeItemTypeChooser = false
+) {
 	// log(`makeGlyphChooserContent`, 'start');
 	const editor = getCurrentProjectEditor();
+	savedClickHandler = clickHandler;
+	savedRegisterSubscriptions = registerSubscriptions;
 
 	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
 
 	if (editor.nav.page !== 'Ligatures') {
 		if (editor.project.settings.project.glyphRanges.length > 1) {
 			let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
-			header.appendChild(makeGlyphRangeChooser());
+			header.appendChild(makeRangeAndItemTypeChooser(includeItemTypeChooser));
 			wrapper.appendChild(header);
 		}
-	}
-	savedClickHandler = clickHandler;
-	savedRegisterSubscriptions = registerSubscriptions;
-
-	if (editor.nav.page !== 'Ligatures') {
 		wrapper.appendChild(makeGlyphChooserTileGrid());
 	} else {
 		wrapper.appendChild(makeLigatureChooserTileGrid());
@@ -88,11 +90,12 @@ function makeGlyphChooserTileGrid() {
 	return tileGrid;
 }
 
-function makeGlyphRangeChooser() {
-	// log(`makeGlyphRangeChooser`, 'start');
+function makeRangeAndItemTypeChooser(includeItemTypeChooser = false) {
+	// log(`makeRangeAndItemTypeChooser`, 'start');
 
-	let ranges = getCurrentProject().settings.project.glyphRanges;
-	let selectedRange = getCurrentProjectEditor().selectedGlyphRange;
+	const editor = getCurrentProjectEditor();
+	let ranges = editor.project.settings.project.glyphRanges;
+	let selectedRange = editor.selectedGlyphRange;
 	// log(selectedRange);
 	let optionChooser = makeElement({
 		tag: 'option-chooser',
@@ -101,11 +104,32 @@ function makeGlyphRangeChooser() {
 			'selected-id': selectedRange.id,
 		},
 	});
+	let option;
+
+	if (includeItemTypeChooser) {
+		// log(`range.name: Ligatures`);
+		option = makeElement({
+			tag: 'option',
+			innerHTML: 'Ligatures',
+			attributes: { note: `${countItems(editor.project.ligatures)}&nbsp;items` },
+		});
+
+		option.addEventListener('click', () => {
+			getCurrentProjectEditor().selectedGlyphRange = 'Ligatures';
+			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
+			tileGrid.remove();
+			let wrapper = document.querySelector('.glyph-chooser__wrapper');
+			wrapper.appendChild(makeLigatureChooserTileGrid());
+		});
+
+		optionChooser.appendChild(option);
+		optionChooser.appendChild(makeElement({ tag: 'hr' }));
+	}
 
 	ranges.forEach((range) => {
 		// log(`range.name: ${range.name}`);
 
-		let option = makeElement({
+		option = makeElement({
 			tag: 'option',
 			innerHTML: range.name,
 			attributes: { note: range.note },
@@ -126,7 +150,7 @@ function makeGlyphRangeChooser() {
 		optionChooser.appendChild(option);
 	});
 
-	// log(`makeGlyphRangeChooser`, 'end');
+	// log(`makeRangeAndItemTypeChooser`, 'end');
 	return optionChooser;
 }
 

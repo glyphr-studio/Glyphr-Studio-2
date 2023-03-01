@@ -94,7 +94,9 @@ dialog {
 }
 
 .context-menu-row:hover > span,
-.context-menu-row:hover > .row-shortcuts {
+.context-menu-row:hover > .row-notes,
+.context-menu-row:hover > .row-notes span,
+.context-menu-row:hover > .row-notes code {
 	background-color: var(--enabled-focus-background);
 	color: var(--blue-l35);
 	cursor: pointer;
@@ -131,7 +133,8 @@ dialog {
 	padding: 2px 20px 0px 10px;
 }
 
-.context-menu-row .row-shortcuts {
+.context-menu-row .row-notes {
+	background-color: transparent;
 	width: max-content;
 	height: 24px;
 	opacity: 0.8;
@@ -139,11 +142,21 @@ dialog {
 	margin-left: 20px;
 }
 
-.context-menu-row .row-shortcuts code {
+.context-menu-row .row-notes code {
 	height: 20px;
 	margin: 2px;
 	font-size: 0.8em;
 }
+
+.context-menu-row .row-notes span {
+	grid-column:span 2;
+	font-size: 0.8em;
+	line-height: 24px;
+	padding: 0px 0px 0px 4px;
+	height: 24px;
+	margin: 0;
+}
+
 
 
 
@@ -166,7 +179,7 @@ dialog {
 
 .modal-dialog__content {
 	display: grid;
-	grid-template-rows: 20px 1fr;
+	grid-template-rows: 30px 1fr;
 	width: clamp(500px, 66vw, 1000px);
 	max-height: calc(100vh - 80px);
 	overflow-y: hidden;
@@ -181,12 +194,15 @@ dialog {
 
 .modal-dialog__header {
 	margin: 4px;
+	height: 20px;
 	display: grid;
 	grid-template-columns: 1fr 20px;
 }
 
 .modal-dialog__body {
 	display: block;
+	max-height: calc(100vh - 120px);
+	overflow-y: auto;
 	padding: 0px 20px 20px 20px;
 }
 
@@ -210,4 +226,11 @@ dialog {
 	cursor: pointer;
 		padding: 0px;
 			margin: 0px;
+}
+
+.modal-dialog__glyph-chooser-scroll-area {
+	height: 100%;
+	padding: 10px 5px 5px 10px;
+	background-color: var(--offWhite);
+	margin-bottom: 10px;
 }

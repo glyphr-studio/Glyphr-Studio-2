@@ -1,4 +1,9 @@
-import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp, log } from '../app/main.js';
+import {
+	getCurrentProject,
+	getCurrentProjectEditor,
+	getGlyphrStudioApp,
+	log,
+} from '../app/main.js';
 import { makeActionButton, makeActionButtonIcon } from './action_buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { saveFile } from '../project_editor/saving.js';
@@ -6,7 +11,8 @@ import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { clone } from '../common/functions.js';
 import { Path } from '../project_data/path.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
-import { showToast } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, showModalDialog, showToast } from '../controls/dialogs/dialogs.js';
+import { makeGlyphChooserContent } from './glyph_chooser.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -91,7 +97,9 @@ export function getActionData(name) {
 		{
 			iconName: 'pastePathsFromAnotherGlyph',
 			title: `Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one.`,
-			disabled: true,
+			onClick: () => {
+				showDialogChooseOtherGlyph('copyPaths');
+			},
 		},
 	];
 
@@ -137,7 +145,9 @@ export function getActionData(name) {
 				editor.deleteSelectedItemFromProject();
 				log(`New item id: ${editor.selectedItemID}`);
 				editor.publish('whichGlyphIsSelected', editor.selectedItemID);
-				editor.history.addState(`Navigated to ${editor.project.getGlyphName(editor.selectedItemID, true)}`);
+				editor.history.addState(
+					`Navigated to ${editor.project.getGlyphName(editor.selectedItemID, true)}`
+				);
 			},
 		},
 		{
@@ -545,7 +555,8 @@ function moveLayer(direction = 'up') {
 // --------------------------------------------------------------
 // Combine
 // --------------------------------------------------------------
-
+// TODO boolean combine
+/*
 function combineSelectedPaths() {
 	showToast('Combining selected paths... ', 100);
 	const editor = getCurrentProjectEditor();
@@ -565,6 +576,7 @@ function combineAllGlyphPaths() {
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
+*/
 
 // --------------------------------------------------------------
 // Copy Paste
@@ -646,7 +658,7 @@ export function clipboardPaste() {
 			newPath.name = newName + newSuffix;
 
 			if (newPath.objType === 'ComponentInstance') {
-				getItem(newPath.link).addToUsedIn(getSelectedItemID);
+				editor.project.getItem(newPath.link).addToUsedIn(editor.project.selectedItemID);
 				// TODO add to used in
 			}
 
@@ -679,29 +691,43 @@ export function makeActionButtonPasteTooltip(clipBoardPathCount) {
 	return re;
 }
 
-function showDialogGetPaths(msg) {
-	let content = '<h1>Get Paths</h1>';
-	content +=
-		'Clicking a glyph will copy all the paths in that glyph, and paste them into this glyph.<br><br>';
-	content += msg ? msg : '';
-	content += initGetPathsDialogOptions();
+function showDialogChooseOtherGlyph(type) {
+	let content = makeElement({
+		innerHTML: '<h2>Choose another glyph</h2>',
+	});
+	let onClick = false;
 
-	_UI.glyphChooser.dialog = {
-		fname: 'pastePathsFrom',
-		choices: 'all',
-		selected: 'glyphs',
-	};
-
-	openBigDialog(content);
+	if (type === 'copyPaths') {
+		content.innerHTML += `
+			All the paths from the glyph you select will be copied and pasted into this glyph.<br><br>`;
+		onClick = (itemID) => {
+			const editor = getCurrentProjectEditor();
+			const otherItem = editor.project.getItem(itemID);
+			const thisItem = editor.selectedItem;
+			copyPathsFromTo(otherItem, thisItem, false);
+			editor.history.addState(`
+				Paths were copied from ${otherItem.name}.`);
+			closeEveryTypeOfDialog();
+			showToast(`${otherItem.paths.length} paths copied from<br>${otherItem.name}`);
+		};
+	}
+	const scrollArea = makeElement({
+		tag: 'div',
+		className: 'modal-dialog__glyph-chooser-scroll-area',
+	});
+	const chooserArea = makeGlyphChooserContent(onClick, false, true);
+	scrollArea.appendChild(chooserArea);
+	content.appendChild(scrollArea);
+	showModalDialog(content);
 }
 
+/*
 function initGetPathsDialogOptions(type) {
-	/*
+
 		_UI.glyphChooser.getPathOptions = {
 				srcAutoWidth: false,
 				srcWidth: false,
 		};
-	*/
 	type = type || 'paths';
 	let gso = _UI.glyphChooser.getPathOptions;
 
@@ -734,13 +760,15 @@ function initGetPathsDialogOptions(type) {
 }
 
 function pastePathsFrom(sourceGlyphID) {
-	let destinationGlyphID = getSelectedItemID();
-	let sourceGlyph = getItem(sourceGlyphID);
+	const editor = getCurrentProjectEditor();
+	let destinationGlyphID = editor.selectedItemID;
+	let destinationGlyph = editor.selectedItem;
+	let sourceGlyph = editor.project.getItem(sourceGlyphID);
 	// TODO hook up options
 	let options = false;
 
 	if (sourceGlyphID !== destinationGlyphID && sourceGlyph) {
-		copyPathsFromTo(sourceGlyph, destinationGlyphID, options);
+		copyPathsFromTo(sourceGlyph, destinationGlyph, options);
 
 		showToast('Copied ' + this.paths.length + ' paths');
 		redraw({ calledBy: 'pastePathsFrom' });
@@ -753,30 +781,29 @@ function pastePathsFrom(sourceGlyphID) {
 		showDialogGetPaths("Sorry, you can't paste paths from the glyph you selected.<br>");
 	}
 }
+*/
 
 /**
  * Copy paths (and attributes) from one glyph to another
- * @param {Glyph} - source to copy paths from
- * @param {string} destinationID - where to copy paths to
+ * @param {Glyph} sourceGlyph - source to copy paths from
+ * @param {Glyph} destinationGlyph - where to copy paths to
  * @param {object} updateWidth - should advance width copy as well
  */
-export function copyPathsFromTo(sourceGlyph, destinationID, updateWidth = false) {
+export function copyPathsFromTo(sourceGlyph, destinationGlyph, updateWidth = false) {
 	log('copyPathsFromTo', 'start');
 	log(`Source Glyph`);
 	log(sourceGlyph);
-	log(`destinationID: ${destinationID}`);
+	log(`Destination Glyph`);
+	log(destinationGlyph);
 
 	const project = getCurrentProject();
 	const editor = getCurrentProjectEditor();
 	const msPaths = editor.multiSelect.paths;
-	const destinationGlyph = project.getItem(destinationID, true);
-	log(`Destination Glyph`);
-	log(destinationGlyph);
 	let tc;
 	for (let c = 0; c < sourceGlyph.paths.length; c++) {
 		tc = sourceGlyph.paths[c];
 		if (tc.objType === 'ComponentInstance') {
-			project.getItem(tc.link).addToUsedIn(destinationID);
+			project.getItem(tc.link).addToUsedIn(destinationGlyph.id);
 			tc = new ComponentInstance(tc);
 		} else if (tc.objType === 'Path') {
 			tc = new Path(tc);
@@ -798,7 +825,8 @@ export function copyPathsFromTo(sourceGlyph, destinationID, updateWidth = false)
 // --------------------------------------------------------------
 // COMPONENT Actions
 // --------------------------------------------------------------
-
+// TODO components
+/*
 function showDialogLinkComponentToGlyph(msg) {
 	let sls = getSelectedItem();
 	let content = '<h1>Link to Glyph</h1>';
@@ -831,3 +859,4 @@ function linkComponentToGlyph(id) {
 		);
 	}
 }
+*/

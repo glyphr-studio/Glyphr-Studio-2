@@ -3,7 +3,7 @@ import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { json } from '../common/functions.js';
 import { decToHex, getUnicodeName, hexToChars } from '../common/unicode.js';
 import {
-	closeAllDialogs,
+	closeEveryTypeOfDialog,
 	showError,
 	showModalDialog,
 	showToast,
@@ -449,7 +449,7 @@ function showCustomGlyphRangeDialog(rangeIndex) {
 		tag: 'fancy-button',
 		attributes: { secondary: '' },
 		innerHTML: 'Cancel',
-		onClick: closeAllDialogs,
+		onClick: closeEveryTypeOfDialog,
 	});
 
 	let buttonRemove;
@@ -517,7 +517,7 @@ function saveGlyphRange(index = false) {
 		updateCurrentRangesTable();
 		showToast(`Saved changes to ${newRange.name}.`);
 	} else {
-		addGlyphRange(newRange, closeAllDialogs);
+		addGlyphRange(newRange, closeEveryTypeOfDialog);
 	}
 }
 
@@ -533,7 +533,7 @@ function removeGlyphRange(index) {
 		ranges.splice(index, 1);
 		ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
 		updateCurrentRangesTable();
-		closeAllDialogs();
+		closeEveryTypeOfDialog();
 		showToast(`Removed ${oldRangeName}.`);
 	}
 }

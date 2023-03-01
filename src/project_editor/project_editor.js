@@ -92,6 +92,9 @@ export class ProjectEditor {
 		// Clipboard
 		this.clipboard = false;
 
+		// Dialogs
+		this.closeAllDialogsOverride = false;
+
 		log(this);
 		log('ProjectEditor.constructor', 'end');
 	}

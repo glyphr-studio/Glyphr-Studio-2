@@ -12,7 +12,7 @@ import { makeIcon } from '../common/graphics.js';
 import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { animateRemove, closeAllDialogs } from '../controls/dialogs/dialogs.js';
+import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -308,8 +308,8 @@ export function showNavDropdown(parentElement) {
 	addAsChildren(dropDown, dropdownContent);
 	// log(`dropDown:`);
 	// log(dropDown);
-	closeAllNavMenus();
-	closeAllDialogs();
+	// closeAllNavMenus();
+	closeEveryTypeOfDialog();
 
 	// let appWrapper = document.getElementById('app__wrapper');
 	// appWrapper.appendChild(dropDown).focus();

@@ -50,6 +50,14 @@ export function makeRandomID() {
 	return result;
 }
 
+/**
+ * Like .length property, but for object keys
+ * @param {Object} object - object to count
+ */
+export function countItems(object) {
+	return Object.keys(object).length;
+}
+
 // --------------------------------------------------------------
 // Common Functions
 // --------------------------------------------------------------
