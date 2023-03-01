@@ -84,8 +84,8 @@ export function makeCard_glyphAttributes(glyph) {
 	addAsChildren(glyphCard, makeInputs_position(glyph));
 	addAsChildren(glyphCard, makeInputs_size(glyph));
 	addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
-	addAsChildren(glyphCard, makeActionsArea_Glyph());
 	addAsChildren(glyphCard, makeActionsArea_Universal());
+	addAsChildren(glyphCard, makeActionsArea_Glyph());
 	// log(`returning:`);
 	// log(glyphCard);
 	// log(`makeCard_glyphAttributes`, 'end');

@@ -58,17 +58,22 @@ export class InputNumber extends HTMLElement {
 		this.downArrow.elementRoot = this;
 
 		// Lock
+		this.iconLocked = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+			<path d="m11,4h-2c-1.66,0-3,1.34-3,3v8c0,1,1,2,2,2h4c1,0,2-1,2-2V7c0-1.66-1.34-3-3-3Zm-.5,11h-1v-3h1v3Zm-3.5-5v-3c0-1.1.9-2,2-2h2c1.1,0,2,.9,2,2v3h-6Z"/>
+			</svg>
+		`;
+
+		this.iconUnlocked = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+			<path d="m14,7v-1c0-1.66-1.34-3-3-3h-2c-1.66,0-3,1.34-3,3v9c0,1,1,2,2,2h4c1,0,2-1,2-2v-5h-7v-4c0-1.1.9-2,2-2h2c1.1,0,2,.9,2,2v1h1Zm-1,4v5h-6v-5h6Z"/>
+			</svg>
+		`;
+
 		this.padlock = makeElement({
 			className: 'lock',
 			attributes: { tabIndex: 0 },
-			content: `
-			<svg version="1.1" xmlns="http://www.w3.org/2000/svg"
-				xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
-				x="0px" y="0px" width="24px" height="24px"
-				viewBox="0 0 26 26" enable-background="new 0 0 26 26">
-				<path d="M17,12V8h-1V7h-1V6h-4v1h-1v1H9v4H8v8h10v-8H17z M15,12h-4V9h1V8h2v1h1V12z"/>
-			</svg>
-			`,
+			content: this.iconUnlocked,
 		});
 		this.padlock.elementRoot = this;
 
@@ -174,6 +179,7 @@ export class InputNumber extends HTMLElement {
 		this.setAttribute('is-locked', 'true');
 		this.padlock.setAttribute('selected', '');
 		this.setToDisabled();
+		this.padlock.innerHTML = this.iconLocked;
 		if (!internalEvent) {
 			this.dispatchEvent(new CustomEvent('lock', { detail: { isLocked: true } }));
 		}
@@ -185,6 +191,7 @@ export class InputNumber extends HTMLElement {
 		this.setAttribute('is-locked', 'false');
 		this.padlock.removeAttribute('selected');
 		this.setToEnabled();
+		this.padlock.innerHTML = this.iconUnlocked;
 		if (!internalEvent) {
 			this.dispatchEvent(new CustomEvent('lock', { detail: { isLocked: false } }));
 		}

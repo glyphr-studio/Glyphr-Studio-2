@@ -82,8 +82,8 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 	if (workItem.isLockable()) {
 		newInput.setAttribute('is-locked', workItem.isLocked(property));
 		newInput.addEventListener('lock', (event) => {
-			log(`makeSingleInput LOCK event`, 'start');
-			log(event);
+			// log(`makeSingleInput LOCK event`, 'start');
+			// log(event);
 			if (event.detail.isLocked) {
 				workItem.lock(property);
 			} else {
@@ -91,18 +91,18 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 			}
 			const editor = getCurrentProjectEditor();
 			editor.publish(thisTopic, workItem);
-			log(`makeSingleInput LOCK event`, 'end');
+			// log(`makeSingleInput LOCK event`, 'end');
 		});
 	}
 
 	newInput.addEventListener('change', (event) => {
-		log(`makeSingleInput CHANGE event`, 'start');
-		log(event);
+		// log(`makeSingleInput CHANGE event`, 'start');
+		// log(event);
 
 		if (workItem.isLocked(property)) return;
 		let newValue = event.target.getAttribute('value');
-		log(`property: ${property}`);
-		log(`newValue: ${newValue}`);
+		// log(`property: ${property}`);
+		// log(`newValue: ${newValue}`);
 
 		const editor = getCurrentProjectEditor();
 		// Update the view so that the glyph stays put
@@ -134,7 +134,7 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 		}
 
 		editor.publish(thisTopic, workItem);
-		log(`makeSingleInput CHANGE event`, 'end');
+		// log(`makeSingleInput CHANGE event`, 'end');
 	});
 
 	getCurrentProjectEditor().subscribe({

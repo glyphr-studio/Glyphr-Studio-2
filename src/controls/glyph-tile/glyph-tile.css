@@ -76,10 +76,6 @@
 	color: var(--disabled-text-light);
 }
 
-.wrapper[selected]:hover .thumbnail {
-	cursor: default;
-}
-
 .name {
 	display: block;
 	text-align: left;

@@ -112,7 +112,9 @@
 	grid-template-columns: 1fr 16px 1fr;
 }
 
-.panel__card input {
+.panel__card input,
+.panel__card option-chooser,
+.panel__card option-toggle {
 	width: 100%;
 }
 
