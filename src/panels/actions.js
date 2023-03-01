@@ -106,11 +106,6 @@ export function getActionData(name) {
 	// GLYPH
 	data.glyphActions = [
 		{
-			iconName: 'combine',
-			title: `Combine all paths\nCombines the paths of all paths with the same winding into as few paths as possible.`,
-			disabled: true,
-		},
-		{
 			iconName: 'flipHorizontal',
 			title: `Flip Vertical\nReflects the glyph vertically.`,
 			onClick: () => {
@@ -138,16 +133,21 @@ export function getActionData(name) {
 			},
 		},
 		{
+			iconName: 'combine',
+			title: `Combine all paths\nCombines the paths of all paths with the same winding into as few paths as possible.`,
+			disabled: true,
+		},
+		{
 			iconName: 'deleteGlyph',
 			title: `Delete Glyph\nRemove this Glyph from the project. Don't worry, you can undo this action.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
+				const name = editor.selectedItem.name;
 				editor.deleteSelectedItemFromProject();
 				log(`New item id: ${editor.selectedItemID}`);
 				editor.publish('whichGlyphIsSelected', editor.selectedItemID);
-				editor.history.addState(
-					`Navigated to ${editor.project.getGlyphName(editor.selectedItemID, true)}`
-				);
+				editor.history.addState(`Navigated to ${name}`);
+				showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
 			},
 		},
 		{
