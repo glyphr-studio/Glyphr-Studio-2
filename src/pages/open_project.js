@@ -7,7 +7,7 @@ import { getCurrentProjectEditor, getGlyphrStudioApp, log } from '../app/main.js
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import versionTwoTestProject from '../samples/versionTwoTestProject.json';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
-import { closeAllDialogs, showError } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, showError } from '../controls/dialogs/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 
@@ -275,7 +275,7 @@ function postValidationCallback(validationResult) {
 }
 
 function importProjectDataAndNavigate(glyphrStudioProjectFile = new GlyphrStudioProject()) {
-	closeAllDialogs();
+	closeEveryTypeOfDialog();
 	const editor = getCurrentProjectEditor();
 	editor.project = importGlyphrProjectFromText(glyphrStudioProjectFile);
 	editor.nav.page = 'Overview';
@@ -362,7 +362,6 @@ function handleLoadSample(name) {
 	}, 100);
 }
 
-
 let importRange = {
 	begin: 0x0020,
 	end: 0x024f,
@@ -377,7 +376,6 @@ export function isOutOfBounds(uni) {
 
 	return false;
 }
-
 
 /*
 

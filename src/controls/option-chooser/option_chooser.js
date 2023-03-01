@@ -1,6 +1,9 @@
 import { addAsChildren, insertAfter, makeElement } from '../../common/dom.js';
 import style from './option-chooser.css?inline';
-import { closeAllDialogs, makeContextMenu } from '../dialogs/dialogs.js';
+import {
+	closeAllOptionChoosers,
+	makeContextMenu,
+} from '../dialogs/dialogs.js';
 import { json } from '../../common/functions.js';
 import { closeAllNavMenus } from '../../project_editor/navigator.js';
 
@@ -139,21 +142,23 @@ export class OptionChooser extends HTMLElement {
 		const currentSelection = this.getAttribute('selected-id');
 		let optionRows = [];
 		[...this.children].forEach((child) => {
-			if (child.tagName.toLowerCase() === 'option') {
+			let tag = child.tagName.toLowerCase();
+			if (tag === 'option') {
 				let note = child.getAttribute('note') || '';
 				let selectionID = `${child.innerText} ${note}`;
 				optionRows.push({
 					name: child.innerText,
 					icon: currentSelection === selectionID ? 'selected' : 'notSelected',
 					id: selectionID,
-					shortcut: JSON.parse(note),
+					note: note,
 					onClick: () => {
 						this.setAttribute('selected-id', selectionID);
 						this.setAttribute('selected-name', child.innerText);
-						closeAllDialogs();
 						child.dispatchEvent(new Event('click'));
 					},
 				});
+			} else if (tag === 'hr') {
+				optionRows.push({ name: 'hr' });
 			}
 		});
 
@@ -168,7 +173,7 @@ export class OptionChooser extends HTMLElement {
 
 		// log(`showing options at ${left} / ${top}`);
 
-		closeAllDialogs();
+		closeAllOptionChoosers();
 		closeAllNavMenus(true);
 		this.setAttribute('deployed', '');
 		insertAfter(this, makeContextMenu(optionRows, left, top - 1, entryPointRect.width, true));

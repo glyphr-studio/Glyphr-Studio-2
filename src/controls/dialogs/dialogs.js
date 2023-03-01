@@ -1,26 +1,56 @@
+import { log } from '../../app/main.js';
 import { accentColors, uiColors } from '../../common/colors.js';
 import { addAsChildren, makeElement, textToNode } from '../../common/dom.js';
 import { makeIcon } from '../../common/graphics.js';
+import { closeAllNavMenus } from '../../project_editor/navigator.js';
 
 // --------------------------------------------------------------
 // Generic dialog stuff
 // --------------------------------------------------------------
-export function closeAllDialogs(hideToasts = false) {
-	// log(`closeAllDialogs`, 'start');
-	// log(`hideToasts: ${hideToasts}`);
+export function closeEveryTypeOfDialog() {
+	// log(`closeEveryTypeOfDialog`, 'start');
+	closeAllNavMenus();
+	closeAllModalDialogs();
+	closeAllOptionChoosers();
+	closeAllErrors();
+	closeAllToasts();
+	// log(`closeEveryTypeOfDialog`, 'end');
+}
 
+export function closeAllModalDialogs() {
+	// log(`closeAllModalDialogs`, 'start');
 	let dialogs = document.querySelectorAll('dialog');
 	dialogs.forEach((elem) => animateRemove(elem));
+	// log(`closeAllModalDialogs`, 'end');
+}
 
+export function closeAllOptionChoosers() {
+	// log(`closeAllOptionChoosers`, 'start');
+	closeAllContextMenus();
 	let optionChoosers = document.querySelectorAll('option-chooser');
 	optionChoosers.forEach((elem) => elem.removeAttribute('deployed'));
+	// log(`closeAllOptionChoosers`, 'end');
+}
 
-	if (hideToasts) {
-		let toasts = document.querySelectorAll('#toast');
-		toasts.forEach((elem) => animateRemove(elem));
-	}
+export function closeAllContextMenus() {
+	// log(`closeAllContextMenus`, 'start');
+	let menus = document.querySelectorAll('#context-menu');
+	menus.forEach((elem) => animateRemove(elem));
+	// log(`closeAllContextMenus`, 'end');
+}
 
-	// log(`closeAllDialogs`, 'end');
+export function closeAllToasts() {
+	// log(`closeAllToasts`, 'start');
+	let toasts = document.querySelectorAll('#toast');
+	toasts.forEach((elem) => animateRemove(elem));
+	// log(`closeAllToasts`, 'end');
+}
+
+export function closeAllErrors() {
+	// log(`closeAllErrors`, 'start');
+	let errors = document.querySelectorAll('#error');
+	errors.forEach((elem) => animateRemove(elem));
+	// log(`closeAllErrors`, 'end');
 }
 
 export function animateRemove(element) {
@@ -106,12 +136,12 @@ export function makeContextMenu(
 	// 	element.style.display = 'none';
 	// 	element.innerHTML = '';
 	// } else {
-		let element = makeElement({
-			tag: 'dialog',
-			id: 'context-menu',
-			attributes: { tabindex: '-1' },
-		});
-		// document.body.appendChild(element);
+	let element = makeElement({
+		tag: 'dialog',
+		id: 'context-menu',
+		attributes: { tabindex: '-1' },
+	});
+	// document.body.appendChild(element);
 	// }
 
 	// Create and add each row
@@ -136,7 +166,7 @@ export function makeContextMenu(
 		if (width) {
 			element.style.minWidth = `${width}px`;
 		}
-		setDialogHideListeners(element);
+		element.addEventListener('mouseleave', closeAllOptionChoosers);
 		element.focus();
 	} else {
 		console.warn(`Context menu not supplied with a screen position.`);
@@ -160,7 +190,7 @@ function makeOneContextMenuRow(data = {}) {
 
 	// Icon
 	if (data.icon) {
-		let svgWrapper = makeElement({className: 'row-icon'});
+		let svgWrapper = makeElement({ className: 'row-icon' });
 		svgWrapper.appendChild(
 			textToNode(
 				makeIcon({
@@ -179,28 +209,29 @@ function makeOneContextMenuRow(data = {}) {
 	data.name = data.name || 'NAME';
 	row.appendChild(makeElement({ className: 'row-name', innerHTML: data.name }));
 
-	// Keyboard Shortcut
-	let shortcutWrapper = makeElement({ className: 'row-shortcuts' });
-	if (data.shortcut) {
-		data.shortcut.forEach((key) =>
-			shortcutWrapper.appendChild(makeElement({ tag: 'code', innerHTML: key }))
-		);
+	// Note / Keyboard Shortcut
+	let noteWrapper = makeElement({ className: 'row-notes' });
+	if (data.note) {
+		if (data.note.charAt(0) === '[' ) {
+			JSON.parse(data.note).forEach((key) =>
+				noteWrapper.appendChild(makeElement({ tag: 'code', innerHTML: key }))
+			);
+		} else {
+			noteWrapper.appendChild(textToNode(`<span>${data.note}</span>`));
+		}
 	} else {
-		shortcutWrapper.appendChild(makeElement());
-		shortcutWrapper.appendChild(makeElement());
+		noteWrapper.appendChild(makeElement());
+		noteWrapper.appendChild(makeElement());
 	}
-	row.appendChild(shortcutWrapper);
+	row.appendChild(noteWrapper);
 
 	// Click function
-	if (data.onClick) row.addEventListener('click', data.onClick);
+	row.addEventListener('click', () => {
+		closeAllOptionChoosers();
+		if (data.onClick) data.onClick();
+	});
 
 	return row;
-}
-
-export function setDialogHideListeners(element) {
-	element.addEventListener('mouseleave', () => {
-		closeAllDialogs();
-	});
 }
 
 // --------------------------------------------------------------
@@ -212,20 +243,20 @@ export function setDialogHideListeners(element) {
  * @param {string} message - HTML content of the dialog box
  */
 export function showError(message) {
-	let element = makeElement({ tag: 'dialog', id: 'error' });
+	let element = makeElement({ tag: 'div', id: 'error' });
 	let header = makeElement({ className: 'error__header', innerHTML: '<h3>Error</h3>' });
 	let close = makeElement({ tag: 'button', innerHTML: '&times;' });
-	close.addEventListener('click', closeAllDialogs);
+	close.addEventListener('click', closeEveryTypeOfDialog);
 	header.appendChild(close);
 	let body = makeElement({ className: 'error__body', innerHTML: message });
 	addAsChildren(element, [header, body]);
 
-	closeAllDialogs(true);
+	closeEveryTypeOfDialog(true);
 	document.body.appendChild(element);
 }
 
 // --------------------------------------------------------------
-// Big dialog
+// Modal dialog
 // --------------------------------------------------------------
 
 /**
@@ -247,13 +278,15 @@ export function showModalDialog(contentNode, maxWidth) {
 		`,
 	});
 
-	modal.querySelector('.modal-dialog__close-button').addEventListener('click', closeAllDialogs);
+	modal
+		.querySelector('.modal-dialog__close-button')
+		.addEventListener('click', closeEveryTypeOfDialog);
 
 	addAsChildren(modal.querySelector('.modal-dialog__body'), contentNode);
 	if (maxWidth) {
 		modal.querySelector('.modal-dialog__content').style.maxWidth = `${maxWidth}px`;
 	}
 
-	closeAllDialogs(true);
+	closeEveryTypeOfDialog();
 	document.body.appendChild(modal);
 }

@@ -16,7 +16,7 @@ export function importSVGtoCurrentWorkItem(svgData) {
 
 		// Add new Glyph Shapes
 		const editor = getCurrentProjectEditor();
-		copyPathsFromTo(tempGlyph, editor.selectedItemID);
+		copyPathsFromTo(tempGlyph, editor.selectedItem);
 		// log('tempGlyph');
 		// log(tempGlyph);
 

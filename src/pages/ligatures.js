@@ -8,7 +8,7 @@ import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 import { Glyph } from '../project_data/glyph.js';
-import { closeAllDialogs, showError, showModalDialog } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, showError, showModalDialog } from '../controls/dialogs/dialogs.js';
 
 /**
  * Page > Ligatures
@@ -137,7 +137,9 @@ export function makePage_Ligatures() {
 			// log(`Main Canvas subscriber callback`, 'start');
 			removeStopCreatingNewPathButton();
 			// log(`new id ${newLigatureID} on the main canvas`);
-			content.querySelector('#editor-page__edit-canvas').setAttribute('editing-item-id', newLigatureID);
+			content
+				.querySelector('#editor-page__edit-canvas')
+				.setAttribute('editing-item-id', newLigatureID);
 			// log(`Main Canvas subscriber callback`, 'end');
 		},
 	});
@@ -299,7 +301,7 @@ export function showAddLigatureDialog() {
 			const editor = getCurrentProjectEditor();
 			editor.selectedLigatureID = result.id;
 			editor.nav.navigate();
-			closeAllDialogs();
+			closeEveryTypeOfDialog();
 		}
 	});
 

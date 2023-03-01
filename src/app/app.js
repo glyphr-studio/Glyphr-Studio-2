@@ -1,7 +1,7 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp, GSApp, log } from './main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
-import { closeAllDialogs, makeContextMenu } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, makeContextMenu } from '../controls/dialogs/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { ioFont_exportFont } from '../io/font_export.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
@@ -33,8 +33,8 @@ export class GlyphrStudioApp {
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel
 				currentTool: false, // select a tool
-				selectFirstPath: true, // select a shape
-				selectFirstPoint: true, // select a path point
+				selectFirstPath: false, // select a shape
+				selectFirstPoint: false, // select a path point
 				testActions: [],
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
@@ -63,8 +63,7 @@ export class GlyphrStudioApp {
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation & selection
-			if (dev.sampleProject)
-				editor.project = importGlyphrProjectFromText(versionTwoTestProject);
+			if (dev.sampleProject) editor.project = importGlyphrProjectFromText(versionTwoTestProject);
 			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
@@ -127,7 +126,7 @@ export class GlyphrStudioApp {
 
 export function showAppErrorPage(friendlyMessage = '', errorObject = { message: '', stack: '' }) {
 	const wrapper = document.querySelector('#app__wrapper');
-	closeAllDialogs();
+	closeEveryTypeOfDialog();
 	let content = `
 		<div id="app__landing-page">
 		<div class="error-page__wrapper">
@@ -199,12 +198,12 @@ function makeMenu(menuName) {
 		className: 'menu-entry-point',
 	});
 
-	entryPoint.addEventListener('mouseover', closeAllDialogs);
+	entryPoint.addEventListener('mouseover', closeEveryTypeOfDialog);
 
 	if (menuName === 'File') {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
-			closeAllDialogs();
+			closeEveryTypeOfDialog();
 			insertAfter(
 				entryPoint,
 				makeContextMenu(
@@ -241,7 +240,7 @@ function makeMenu(menuName) {
 	if (menuName === 'Project') {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
-			closeAllDialogs();
+			closeEveryTypeOfDialog();
 			insertAfter(
 				entryPoint,
 				makeContextMenu(
@@ -265,7 +264,7 @@ function makeMenu(menuName) {
 	if (menuName === 'Help') {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
-			closeAllDialogs();
+			closeEveryTypeOfDialog();
 			insertAfter(
 				entryPoint,
 				makeContextMenu(
