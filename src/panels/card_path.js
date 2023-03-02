@@ -73,16 +73,6 @@ export function makeCard_pathAttributes(path) {
 			getCurrentProjectEditor().publish('currentPath', path);
 		},
 	});
-	getCurrentProjectEditor().subscribe({
-		topic: 'currentPath',
-		subscriberID: `attributesPanel.currentPath.winding`,
-		callback: (changedItem) => {
-			if (Number.isFinite(changedItem.winding)) {
-				// let newWinding = makeWindingButtonText(changedItem.winding);
-				// windingButton.innerHTML = newWinding;
-			}
-		},
-	});
 
 	// Position and Size
 	let positionInputs = makeInputs_position(path);

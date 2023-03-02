@@ -110,7 +110,7 @@ export class OptionToggle extends HTMLElement {
 		}
 
 		if (attributeName === 'selected-value') {
-			this.dispatchEvent(new Event('changed'));
+			this.dispatchEvent(new Event('change'));
 		}
 
 		// log(`OptionToggle.attributeChangedCallback`, 'end');
@@ -137,14 +137,13 @@ export class OptionToggle extends HTMLElement {
 			this.selectionDisplay.innerHTML = this.options[0].name;
 			this.toggleIcon.innerHTML = this.makeIcon(true);
 		}
-		this.dispatchEvent(new Event('changed'));
+		// this.dispatchEvent(new Event('change'));
 		// log(`OptionToggle.toggle`, 'end');
 	}
 
 	isFirstOptionSelected() {
 		const currentName = this.getAttribute('selected-name');
 		// log(`currentName: ${currentName}`);
-
 		return currentName === this.options[0].name;
 	}
 
@@ -154,7 +153,7 @@ export class OptionToggle extends HTMLElement {
 	addAllEventListeners() {
 		// log('addAllEventListeners');
 		this.addEventListener('click', this.toggle);
-		this.addEventListener('keydown', this.keyboardPress);
+		this.addEventListener('keydown', this.keyPress);
 	}
 
 	/**
@@ -163,14 +162,14 @@ export class OptionToggle extends HTMLElement {
 	removeAllEventListeners() {
 		// log('removeAllEventListeners');
 		this.removeEventListener('click', this.toggle);
-		this.removeEventListener('keydown', this.keyboardPress);
+		this.removeEventListener('keydown', this.keyPress);
 	}
 
 	/**
 	 * Handle keypress event
 	 * @param {object} ev - event
 	 */
-	keyboardPress(ev) {
+	keyPress(ev) {
 		switch (ev.keyCode) {
 			case 13: // enter
 			case 32: // space
@@ -184,7 +183,8 @@ export class OptionToggle extends HTMLElement {
 			case 107: // ten key +
 			case 109: // ten key -
 			case 100: // ten key left
-				this.toggle();
+				// this.toggle();
+				this.dispatchEvent(new Event('click'));
 				break;
 
 			default:
