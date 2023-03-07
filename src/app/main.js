@@ -54,6 +54,7 @@ export function glyphrStudioOnLoad() {
 		log(`glyphrStudioOnLoad`, 'end');
 	} catch (error) {
 		showAppErrorPage('Glyphr Studio failed to load!', error);
+		console.error(error);
 	}
 }
 

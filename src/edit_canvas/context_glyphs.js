@@ -7,6 +7,7 @@
 **/
 
 import { getCurrentProject } from '../app/main';
+import { charToHex } from '../common/character_ids';
 
 // -------------------
 // CONTEXT GLYPHS
@@ -16,7 +17,7 @@ function drawContextGlyphs() {
 	// log('drawContextGlyphs', 'start');
 	const selwid = getSelectedWorkItemID();
 	const currGlyphObject = getItem(selwid, true);
-	const currGlyphChar = hexToChars(selwid);
+	const currGlyphChar = hexesToChars(selwid);
 	const v = getView('drawContextGlyphs');
 	const split = splitContextGlyphString(currGlyphChar);
 
@@ -97,7 +98,7 @@ function getGlyphSequenceAdvanceWidth(sequence) {
 
 	let g;
 	sequence.forEach(function (v, i, a) {
-		g = getItem(glyphToHex(v));
+		g = getItem(charToHex(v));
 		if (g) {
 			advanceWidth += g.advanceWidth;
 			if (a[i + 1]) advanceWidth += calculateKernOffset(v, a[i + 1]);
@@ -218,7 +219,7 @@ function drawGlyphNameExtra(text, currx, topy, advanceWidth, color, regHotspot) 
 				y: texty + 6,
 			},
 			onclick: function () {
-				hotspotNavigateToGlyph(glyphToHex(regHotspot));
+				hotspotNavigateToGlyph(charToHex(regHotspot));
 			},
 		});
 	}
@@ -322,7 +323,7 @@ function hotspotNavigateToGlyph(gid) {
 
 	const v = getView('hotspotNavigateToGlyph');
 	const currchar = getSelectedWorkItemChar();
-	const newchar = hexToChars(gid);
+	const newchar = hexesToChars(gid);
 	const ctxg = getContextGlyphString();
 	const p1 = ctxg.indexOf(currchar);
 	const p2 = ctxg.indexOf(newchar);

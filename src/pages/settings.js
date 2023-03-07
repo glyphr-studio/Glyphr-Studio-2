@@ -1,7 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { json } from '../common/functions.js';
-import { decToHex, getUnicodeName, hexToChars } from '../common/unicode.js';
+import { decToHex, hexesToChars } from '../common/character_ids.js';
 import {
 	closeEveryTypeOfDialog,
 	showError,
@@ -14,6 +14,7 @@ import { makeDirectCheckbox } from '../panels/cards.js';
 import { GlyphRange } from '../project_data/glyph_range.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import settingsMap from './settings_data.js';
+import { getUnicodeName } from '../lib/unicode_names.js';
 
 /**
  * Page > Settings
@@ -620,7 +621,7 @@ function previewGlyphRange(range) {
 			makeElement({
 				className: 'glyph-range-chooser__preview-tile',
 				title: `${hexString}\n${name}`,
-				innerHTML: hexToChars(g),
+				innerHTML: hexesToChars(g),
 			})
 		);
 	}

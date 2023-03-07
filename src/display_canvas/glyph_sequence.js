@@ -1,5 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
-import { charsToHexArray, hexToChars, parseUnicodeInput } from '../common/unicode';
+import { charsToHexArray, hexesToChars, parseCharsInput } from '../common/character_ids';
 import { Maxes } from '../project_data/maxes.js';
 
 /**
@@ -328,8 +328,8 @@ function calculateKernOffset(c1, c2) {
 
 	if (!c1 || !c2) return 0;
 
-	c1 = parseUnicodeInput(c1).join('');
-	c2 = parseUnicodeInput(c2).join('');
+	c1 = parseCharsInput(c1).join('');
+	c2 = parseCharsInput(c2).join('');
 	// log('converted: ' + c1 + ' and ' + c2);
 
 	let kernPairs = getCurrentProject().kerning;
@@ -341,11 +341,11 @@ function calculateKernOffset(c1, c2) {
 		for (let l = 0; l < kernPairs[p].leftGroup.length; l++) {
 			leftGroupChar = kernPairs[p].leftGroup[l];
 			// log('checking leftGroup ' + leftGroupChar + ' against ' + c1);
-			if (parseUnicodeInput(leftGroupChar)[0] === c1) {
+			if (parseCharsInput(leftGroupChar)[0] === c1) {
 				// log('LEFT GROUP MATCH! for ' + c1);
 				for (let r = 0; r < kernPairs[p].rightGroup.length; r++) {
 					rightGroupChar = kernPairs[p].rightGroup[r];
-					if (parseUnicodeInput(rightGroupChar)[0] === c2) {
+					if (parseCharsInput(rightGroupChar)[0] === c2) {
 						result = kernPairs[p].value * -1;
 						// log('FOUND MATCH! returning ' + result);
 						return result;

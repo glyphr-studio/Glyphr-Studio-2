@@ -1,5 +1,5 @@
 import { GlyphElement } from './glyph_element.js';
-import { hexToChars } from '../common/unicode.js';
+import { hexesToChars } from '../common/character_ids.js';
 
 /**
  * Horizontal Kern
@@ -60,8 +60,8 @@ export class HKern extends GlyphElement {
 	 * @returns {string}
 	 */
 	get name() {
-		const left = hexToChars(this.leftGroup.join(''));
-		const right = hexToChars(this.rightGroup.join(''));
+		const left = hexesToChars(this.leftGroup.join(''));
+		const right = hexesToChars(this.rightGroup.join(''));
 		return '' + left + ' | ' + right;
 	}
 

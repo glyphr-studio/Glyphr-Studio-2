@@ -1,6 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { isVal, json, round } from '../common/functions.js';
-import { decToHex, getUnicodeName } from '../common/unicode.js';
+import { decToHex } from '../common/character_ids.js';
 import { showError } from '../controls/dialogs/dialogs.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
@@ -11,6 +11,7 @@ import {
 	ioSVG_cleanAndFormatPathDefinition,
 	ioSVG_convertSVGTagToPath,
 } from './svg_outline_import.js';
+import { getUnicodeName } from '../lib/unicode_names.js';
 
 /**
 	IO > Import > OpenType
@@ -201,6 +202,7 @@ export function ioFont_importFont(font) {
 	 *  IMPORT LIGATURES?
 	 *
 	 */
+	// TODO Ligatures import
 	const finalLigatures = {};
 
 	/*

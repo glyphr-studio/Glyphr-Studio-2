@@ -6,7 +6,7 @@ import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
 import { json, getFirstID, clone, round } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
-import { basicLatinOrder, decToHex, normalizeHex } from '../common/unicode.js';
+import { decToHex, isHex, validateAsHex } from '../common/character_ids.js';
 import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { log } from '../app/main.js';
@@ -334,11 +334,17 @@ export class ProjectEditor {
 	set selectedGlyphID(id) {
 		// log(`ProjectEditor SET selectedGlyphID`, 'start');
 		// log(`id: ${id}`);
-		// TODO Validate ID!
-		const newID = normalizeHex(id);
-		this._selectedGlyphID = newID;
-		if (!this.project.glyphs[newID]) {
-			this.project.glyphs[newID] = new Glyph({ id: newID });
+		if (typeof id !== 'string') return;
+		if (!isHex(id)) {
+			this._selectedGlyphID = false;
+			return;
+		}
+		if (this.project.glyphs[id]) {
+			this._selectedGlyphID = id;
+		} else if (isHex(id)) {
+			id = validateAsHex(id);
+			this.project.glyphs[id] = new Glyph({ id: id });
+			this._selectedGlyphID = id;
 		}
 		this.publish('whichGlyphIsSelected', this.selectedGlyphID);
 		// log(`ProjectEditor SET selectedGlyphID`, 'end');
@@ -351,7 +357,7 @@ export class ProjectEditor {
 	set selectedLigature(newLigature = {}) {
 		let id = this.selectedLigatureID;
 		newLigature = new Glyph(newLigature);
-		this.project.glyphs[id] = newLigature;
+		this.project.ligatures[id] = newLigature;
 	}
 
 	/**
@@ -359,8 +365,13 @@ export class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedLigatureID(id) {
-		// TODO Ligatures Validate ID!
-		this._selectedLigatureID = id;
+		if (typeof id !== 'string') return;
+		if (this.project.ligatures[id]) {
+			this._selectedLigatureID = id;
+		} else {
+			console.warn(`Ligature ID ${id} does not exist in the project.`);
+			this._selectedLigatureID = getFirstID(this.project.ligatures);
+		}
 	}
 
 	/**
@@ -370,7 +381,7 @@ export class ProjectEditor {
 	set selectedComponent(newComponent = {}) {
 		let id = this.selectedComponentID;
 		newComponent = new Glyph(newComponent);
-		this.project.glyphs[id] = newComponent;
+		this.project.components[id] = newComponent;
 	}
 
 	/**
@@ -378,8 +389,13 @@ export class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedComponentID(id) {
-		// TODO Components Validate ID!
-		this._selectedComponentID = id;
+		if (typeof id !== 'string') return;
+		if (this.project.components[id]) {
+			this._selectedComponentID = id;
+		} else {
+			console.warn(`Component ID ${id} does not exist in the project.`);
+			this._selectedComponentID = getFirstID(this.project.components);
+		}
 	}
 
 	/**
@@ -389,7 +405,7 @@ export class ProjectEditor {
 	set selectedKern(newKern = {}) {
 		let id = this.selectedKernID;
 		newKern = new HKern(newKern);
-		this.project.glyphs[id] = newKern;
+		this.project.kerns[id] = newKern;
 	}
 
 	/**
@@ -397,8 +413,13 @@ export class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedKernID(id) {
-		// TODO Kern Validate ID!
-		this._selectedKernID = id;
+		if (typeof id !== 'string') return;
+		if (this.project.kerns[id]) {
+			this._selectedKernID = id;
+		} else {
+			console.warn(`Kern ID ${id} does not exist in the project.`);
+			this._selectedKernID = getFirstID(this.project.kerns);
+		}
 	}
 
 	/**
@@ -755,3 +776,111 @@ function removeDefaultValues(target, defaults, filterName) {
 
 	return target;
 }
+
+export const basicLatinOrder = [
+	'0x41',
+	'0x42',
+	'0x43',
+	'0x44',
+	'0x45',
+	'0x46',
+	'0x47',
+	'0x48',
+	'0x49',
+	'0x4A',
+	'0x4B',
+	'0x4C',
+	'0x4D',
+	'0x4E',
+	'0x4F',
+	'0x50',
+	'0x51',
+	'0x52',
+	'0x53',
+	'0x54',
+	'0x55',
+	'0x56',
+	'0x57',
+	'0x58',
+	'0x59',
+	'0x5A',
+	'0x61',
+	'0x62',
+	'0x63',
+	'0x64',
+	'0x65',
+	'0x66',
+	'0x67',
+	'0x68',
+	'0x69',
+	'0x6A',
+	'0x6B',
+	'0x6C',
+	'0x6D',
+	'0x6E',
+	'0x6F',
+	'0x70',
+	'0x71',
+	'0x72',
+	'0x73',
+	'0x74',
+	'0x75',
+	'0x76',
+	'0x77',
+	'0x78',
+	'0x79',
+	'0x7A',
+	'0x30',
+	'0x31',
+	'0x32',
+	'0x33',
+	'0x34',
+	'0x35',
+	'0x36',
+	'0x37',
+	'0x38',
+	'0x39',
+	'0x21',
+	'0x22',
+	'0x23',
+	'0x24',
+	'0x25',
+	'0x26',
+	'0x27',
+	'0x28',
+	'0x29',
+	'0x2A',
+	'0x2B',
+	'0x2C',
+	'0x2D',
+	'0x2E',
+	'0x2F',
+	'0x3A',
+	'0x3B',
+	'0x3C',
+	'0x3D',
+	'0x3E',
+	'0x3F',
+	'0x40',
+	'0x5B',
+	'0x5C',
+	'0x5D',
+	'0x5E',
+	'0x5F',
+	'0x60',
+	'0x7B',
+	'0x7C',
+	'0x7D',
+	'0x7E',
+	'0x20',
+];
+
+// https://en.wikipedia.org/wiki/Typographic_ligature
+export const ligatureToUnicode = {
+	ff: '0xFB00',
+	fi: '0xFB01',
+	fl: '0xFB02',
+	ft: '0xFB05',
+	ffi: '0xFB03',
+	ffl: '0xFB04',
+};

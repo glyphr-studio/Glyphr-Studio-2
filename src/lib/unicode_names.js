@@ -1,5 +1,5 @@
 // import { log } from '../app/main.js';
-import { normalizeHex } from '../common/unicode.js';
+import { normalizeHex } from '../common/character_ids.js';
 
 /**
  * Get a glyph's name based on a unicode hex ID
@@ -32,6 +32,60 @@ export function lookUpGlyphName(id, forceLongName = false) {
 	// log('inexplicably fails, returning [name not found]\n');
 	// log(`lookUpGlyphName`, 'end');
 	return '[name not found]';
+}
+
+/**
+ * Gets the name of a Unicode character
+ * @param {number} codePoint - Unicode code point
+ * @returns {string} - name
+ */
+export function getUnicodeName(codePoint) {
+	// log('getUnicodeName', 'start');
+	// log('passed ' + codePoint);
+
+	codePoint = normalizeHex(codePoint);
+	// log('normalized ' + codePoint);
+
+	let name;
+	const chn = codePoint * 1;
+
+	if (chn >= 0x4e00 && chn < 0xa000) {
+		name = 'CJK Unified Ideograph ' + codePoint.substr(2);
+	} else {
+		name = unicodeNames[codePoint] || '[name not found]';
+	}
+
+	// log(`name: ${name}`);
+
+	// log('getUnicodeName', 'end');
+	return name;
+}
+
+/**
+ * Gets a short name for a Unicode character, and if not,
+ * returns the regular long name
+ * @param {number} codePoint - Unicode code point
+ * @returns {string} - name
+ */
+export function getUnicodeShortName(codePoint) {
+	// log('getUnicodeShortName', 'start');
+	// log('passed ' + codePoint);
+	codePoint = '' + codePoint;
+	let name = shortUnicodeNames[codePoint];
+	if (!name) {
+		name = getUnicodeName(codePoint);
+		if (name)
+			name = name
+				.replace(/latin /gi, '')
+				.replace(/ /g, '')
+				.substr(0, 20);
+		else name = 'none';
+	}
+
+	// log(`name: ${name}`);
+
+	// log('getUnicodeShortName', 'end');
+	return name;
 }
 
 export const shortUnicodeNames = {

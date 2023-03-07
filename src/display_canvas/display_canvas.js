@@ -2,7 +2,7 @@ import { makeElement } from '../common/dom.js';
 import { GlyphSequence } from './glyph_sequence.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
-import { glyphToHex } from '../common/unicode.js';
+import { charToHex } from '../common/character_ids.js';
 import { drawGlyph } from './draw_paths.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
 import { livePreviewPageWindowResize } from '../pages/live_preview.js';
@@ -188,7 +188,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		this.ctx.clearRect(0, 0, this.width, this.height);
 
-		// let glyphHex = glyphToHex(this.glyphs.charAt(0));
+		// let glyphHex = charToHex(this.glyphs.charAt(0));
 		// let sg = getCurrentProject().getItem(glyphHex);
 		// log(sg);
 		// // drawGlyph(sg, this.ctx, view);

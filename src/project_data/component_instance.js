@@ -1,6 +1,6 @@
 import { GlyphElement } from './glyph_element.js';
 // import { getCurrentProject } from '../app/main.js';
-import { parseUnicodeInput } from '../common/unicode.js';
+import { parseCharsInput } from '../common/character_ids.js';
 import { strSan, rad, deg } from '../common/functions.js';
 
 /**
@@ -313,7 +313,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set link(link) {
-		this._link = parseUnicodeInput(link)[0];
+		this._link = parseCharsInput(link)[0];
 		this.changed();
 	}
 

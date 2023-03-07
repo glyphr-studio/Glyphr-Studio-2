@@ -1,7 +1,8 @@
 import { getCurrentProject, log } from '../app/main.js';
 import { round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
-import { decToHex, getUnicodeShortName } from '../common/unicode.js';
+import { decToHex } from '../common/character_ids.js';
+import { getUnicodeShortName } from '../lib/unicode_names.js';
 import openTypeJS from '../lib/opentypejs_1-3-1.js';
 import { Glyph } from '../project_data/glyph.js';
 
@@ -81,6 +82,7 @@ export function ioFont_exportFont() {
 				}
 			}
 		}
+		// TODO Ligatures export
 
 		exportArray.sort(function (a, b) {
 			return a.xc - b.xc;

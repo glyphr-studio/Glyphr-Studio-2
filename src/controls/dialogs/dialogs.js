@@ -220,8 +220,7 @@ function makeOneContextMenuRow(data = {}) {
 			noteWrapper.appendChild(textToNode(`<span>${data.note}</span>`));
 		}
 	} else {
-		noteWrapper.appendChild(makeElement());
-		noteWrapper.appendChild(makeElement());
+		noteWrapper.appendChild(textToNode(`<span></span>`));
 	}
 	row.appendChild(noteWrapper);
 
