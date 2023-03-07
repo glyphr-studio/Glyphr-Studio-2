@@ -3,7 +3,7 @@ import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js'
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
-import { hexToChars } from '../common/unicode.js';
+import { hexesToChars } from '../common/character_ids.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
@@ -258,7 +258,7 @@ function addLigature(sequence) {
 	return project.ligatures[newID];
 }
 
-function makeLigatureID(sequence) {
+export function makeLigatureID(sequence) {
 	return sequence.split('').reduce((acc, value) => `${acc}-${value}`, 'liga');
 }
 
@@ -332,7 +332,7 @@ function createNewLigature() {
 	var inlig = document.getElementById('newligatureinput').value;
 	// debug('\t retrieved ' + lid);
 	var ligID = inlig.replace(/\s/gi, '');
-	ligID = parseUnicodeInput(ligID);
+	ligID = parseCharsInput(ligID);
 	// debug('\t parsed ' + ligID);
 
 	// Do checks
@@ -365,7 +365,7 @@ function doesLigatureHaveCodePoint(id) {
 
 	if (id.indexOf('0x', 2) === -1) return false;
 
-	var ch = hexToChars(id);
+	var ch = hexesToChars(id);
 
 	for (var i = 0; i < ligaturesWithCodePoints.length; i++) {
 		if (ligaturesWithCodePoints[i].chars === ch) return ligaturesWithCodePoints[i];
@@ -378,7 +378,7 @@ function addCommonLigatures() {
 	var lig, id;
 	for (var i = 0; i < ligaturesWithCodePoints.length; i++) {
 		lig = ligaturesWithCodePoints[i];
-		id = parseUnicodeInput(lig.chars).join('');
+		id = parseCharsInput(lig.chars).join('');
 		if (!_GP.ligatures[id]) _GP.ligatures[id] = new Glyph({ glyphhex: id });
 	}
 

@@ -1,10 +1,11 @@
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { round } from '../common/functions.js';
-import { getUnicodeName, parseUnicodeInput } from '../common/unicode.js';
+import { hexesToChars, parseCharsInput } from '../common/character_ids.js';
 import { showError } from '../controls/dialogs/dialogs.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
+import { makeLigatureID } from '../pages/ligatures.js';
 import { importOverflowCount, isOutOfBounds } from '../pages/open_project.js';
 import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
@@ -14,6 +15,7 @@ import {
 	ioSVG_convertSVGTagToPath,
 	ioSVG_getTags,
 } from './svg_outline_import.js';
+import { getUnicodeName } from '../lib/unicode_names.js';
 
 /**
 	IO > Import > SVG Font
@@ -27,9 +29,7 @@ export function ioSVG_importSVGfont(font) {
 
 	const project = getCurrentProject();
 	let chars;
-
-	// TODO kerning
-	// let kerns;
+	let kerns; // TODO kerning
 
 	const latinExtendedB = getUnicodeBlockByName('Latin Extended-B');
 
@@ -73,9 +73,10 @@ export function ioSVG_importSVGfont(font) {
 	 *
 	 */
 	let maxChar = 0;
-	let minChar = 0xffff;
+	let minChar = 0xffff; // TODO BMP+
 	let customGlyphRange = [];
 	const finalGlyphs = {};
+	const finalLigatures = {};
 	let charCounter = 0;
 
 	function importOneGlyph() {
@@ -102,7 +103,7 @@ export function ioSVG_importSVGfont(font) {
 		// log('importOneGlyph', 'start');
 		// log('starting  unicode \t' + attributes.unicode + ' \t ' + attributes['glyph-name']);
 
-		let uni = parseUnicodeInput(attributes.unicode);
+		let uni = parseCharsInput(attributes.unicode);
 		if (attributes.unicode === ' ') uni = ['0x0020'];
 
 		if (uni === false) {
@@ -168,9 +169,12 @@ export function ioSVG_importSVGfont(font) {
 			} else {
 				// It's a LIGATURE
 				uni = uni.join('');
-				finalLigatures[uni] = new Glyph({
+				const chars = hexesToChars(uni);
+				const newID = makeLigatureID(chars);
+				finalLigatures[newID] = new Glyph({
 					paths: newPaths,
 					advanceWidth: advanceWidth,
+					ligature: chars.split(''),
 				});
 			}
 
@@ -272,8 +276,8 @@ export function ioSVG_importSVGfont(font) {
 	function finalizeFontImport() {
 		const editor = getCurrentProjectEditor();
 		project.glyphs = finalGlyphs;
-		// TODO Ligatures
-		// project.ligatures = finalLigatures;
+		project.ligatures = finalLigatures;
+
 		// TODO Kerning
 		// project.kerning = finalKerns;
 
@@ -374,7 +378,7 @@ function getKernMembersByName(names, chars, arr, limit) {
 				if (chars[c].attributes.unicode) {
 					// Push the match
 					if (names[n] === chars[c].attributes['glyph-name']) {
-						uni = parseUnicodeInput(chars[c].attributes.unicode);
+						uni = parseCharsInput(chars[c].attributes.unicode);
 						if (1 * uni < limit) arr = arr.concat(uni);
 					}
 				}
@@ -398,7 +402,7 @@ function getKernMembersByUnicodeID(ids, chars, arr, limit) {
 				if (chars[c].attributes.unicode) {
 					// Push the match
 					if (ids[i] === chars[c].attributes.unicode) {
-						uni = parseUnicodeInput(chars[c].attributes.unicode);
+						uni = parseCharsInput(chars[c].attributes.unicode);
 						if (1 * uni < limit) arr = arr.concat(uni);
 					}
 				}

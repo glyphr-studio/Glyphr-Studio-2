@@ -205,6 +205,17 @@ export function numSan(num) {
 }
 
 /**
+ * Simple test for integer numbers
+ * @param {*} input thing to test
+ */
+export function isInteger(input) {
+	input = parseFloat(input);
+	if (isNaN(input)) return false;
+	if (input !== Math.round(input)) return false;
+	return true;
+}
+
+/**
  * Removes illegal file name chars
  * @param {string} val - string to sanitize
  * @returns {string}

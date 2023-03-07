@@ -2,7 +2,7 @@ import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
 import { clone, round, trim } from '../common/functions.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
-import { decToHex, hexToHTML, normalizeHex } from '../common/unicode.js';
+import { decToHex, hexToHTML, validateAsHex } from '../common/character_ids.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 import { log } from '../app/main.js';
 import { GlyphRange } from './glyph_range.js';
@@ -227,7 +227,7 @@ export class GlyphrStudioProject {
 			// --------------------------------------------------------------
 			// log(`detected GLYPH`);
 
-			let normalHex = '' + normalizeHex(id);
+			let normalHex = '' + validateAsHex(id);
 			// log(`normalHex: ${normalHex}`);
 
 			result = this.glyphs[normalHex];
@@ -438,7 +438,7 @@ function hydrateProjectItems(GlyphrStudioItem, source, destination) {
 	source = source || {};
 	for (const key of Object.keys(source)) {
 		if (source[key]) {
-			destination[normalizeHex(key)] = new GlyphrStudioItem(source[key]);
+			destination[validateAsHex(key)] = new GlyphrStudioItem(source[key]);
 		}
 	}
 }

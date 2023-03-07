@@ -1,5 +1,5 @@
 import { makeElement } from '../../common/dom.js';
-import { hexToChars } from '../../common/unicode.js';
+import { hexesToChars } from '../../common/character_ids.js';
 import { lookUpGlyphName } from '../../lib/unicode_names.js';
 import { getCurrentProject, log } from '../../app/main.js';
 import { drawGlyph } from '../../display_canvas/draw_paths.js';
@@ -29,7 +29,7 @@ export class GlyphTile extends HTMLElement {
 
 		const displayedItemID = this.getAttribute('displayed-item-id');
 		this.glyph = getCurrentProject().getItem(displayedItemID);
-		const chars = this.glyph.chars || hexToChars(displayedItemID);
+		const chars = this.glyph.chars || hexesToChars(displayedItemID);
 		const name = this.glyph?.name || lookUpGlyphName(displayedItemID, true);
 		this.view = {};
 

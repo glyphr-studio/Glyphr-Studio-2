@@ -4,9 +4,10 @@ import { tryToGetProjectVersion } from '../io/validate_file_input.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
-import { unicodeRanges } from '../common/unicode.js';
+import { hexesToChars, validateAsHex } from '../common/character_ids.js';
 import { ControlPoint } from '../project_data/control_point.js';
 import { showError } from '../controls/dialogs/dialogs.js';
+import { makeLigatureID } from '../pages/ligatures.js';
 
 /**
  * Takes a js Object from a JSON-based project file, and returns
@@ -52,11 +53,22 @@ function migrate_Project(oldProject) {
 
 	const newProject = new GlyphrStudioProject();
 
-	Object.keys(oldProject.glyphs).forEach((key) => {
-		newProject.glyphs[key] = migrate_Glyph(oldProject.glyphs[key], key);
+	// Glyphs
+	Object.keys(oldProject.glyphs).forEach((oldID) => {
+		const newID = validateAsHex(oldID);
+		newProject.glyphs[newID] = migrate_Glyph(oldProject.glyphs[oldID]);
+		newProject.glyphs[newID].id = newID;
 	});
 
-	// TODO Ligatures
+	// Ligatures
+	Object.keys(oldProject.ligatures).forEach((oldID) => {
+		const chars = hexesToChars(oldID);
+		const newID = makeLigatureID(chars);
+		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID]);
+		newProject.ligatures[newID].id = newID;
+		newProject.ligatures[newID].ligature = chars.split('');
+	});
+
 	// TODO Components
 	// TODO Kerns
 
@@ -74,6 +86,13 @@ function migrate_Project(oldProject) {
 	newProject.settings.project.name = oldSettings.name || 'My Font';
 
 	// Glyph ranges
+	const unicodeRanges = {
+		basicLatin: { begin: 0x20, end: 0x7e, name: 'Basic Latin' },
+		latinSupplementControls: { begin: 0x80, end: 0x9f, name: 'Latin Supplement Controls' },
+		latinSupplement: { begin: 0xa0, end: 0xff, name: 'Latin Supplement' },
+		latinExtendedA: { begin: 0x100, end: 0x17f, name: 'Latin Extended A' },
+		latinExtendedB: { begin: 0x180, end: 0x24f, name: 'Latin Extended B' },
+	};
 	if (oldRanges.basiclatin) newRanges.push(unicodeRanges.basicLatin);
 	if (oldRanges.latinsupplement) newRanges.push(unicodeRanges.latinSupplement);
 	if (oldRanges.latinextendeda) newRanges.push(unicodeRanges.latinExtendedA);
@@ -142,9 +161,8 @@ function migrate_Project(oldProject) {
  * @param {Object} oldGlyph - v1 Glyph to migrate
  * @returns {Glyph} - new v2 Glyph
  */
-function migrate_Glyph(oldGlyph, glyphID) {
+function migrate_Glyph(oldGlyph) {
 	const newGlyph = new Glyph();
-	newGlyph.id = glyphID;
 	newGlyph.advanceWidth = oldGlyph.glyphwidth;
 	newGlyph.ratioLock = oldGlyph.ratiolock;
 	newGlyph.usedIn = oldGlyph.usedin;

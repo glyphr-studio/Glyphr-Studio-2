@@ -53,13 +53,13 @@ function makeOneKernPairRow(k, id) {
 		'<td><input class="rowleftgroup" type="text" onchange="updateKernGroup(\'' +
 		id +
 		"', 'left', this.value);\" value=\"" +
-		hexToChars(k.leftGroup.join('')) +
+		hexesToChars(k.leftGroup.join('')) +
 		'"></td>';
 	re +=
 		'<td><input class="rowrightgroup" type="text" onchange="updateKernGroup(\'' +
 		id +
 		"', 'right', this.value);\" value=\"" +
-		hexToChars(k.rightGroup.join('')) +
+		hexesToChars(k.rightGroup.join('')) +
 		'"></td>';
 	re +=
 		'<td><input class="kernvalue" type="number" id="' +
@@ -158,7 +158,7 @@ function createNewKernPair() {
 
 function parseKernGroupInput(chars) {
 	chars = trim(chars);
-	chars = parseUnicodeInput(chars);
+	chars = parseCharsInput(chars);
 	if (chars === false) return false;
 	chars = chars.filter(function (elem, pos) {
 		return chars.indexOf(elem) === pos;

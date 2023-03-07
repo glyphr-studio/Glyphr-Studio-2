@@ -1,7 +1,8 @@
 import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { round, trim } from '../common/functions.js';
-import { isValidHex } from '../common/unicode.js';
+import { hexesToXMLHexes } from '../common/character_ids.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
+import { Glyph } from '../project_data/glyph.js';
 import { makeDateStampSuffix, saveFile } from '../project_editor/saving.js';
 /**
 	IO > Export > SVG Font
@@ -124,13 +125,11 @@ function ioSVG_makeAllGlyphsAndLigatures() {
 	const finalGlyphs = getCurrentProject().glyphs;
 	let con = '';
 
-	// TODO Ligatures
-	// sortLigatures();
-	// const li = getCurrentProject().ligatures;
-	// con += '\t\t\t<!-- Ligatures -->\n';
-	// for (const l of Object.keys(li)) {
-	// 	con += ioSVG_makeOneGlyphOrLigature(li[l], l);
-	// }
+	const li = getCurrentProject().ligatures;
+	con += '\t\t\t<!-- Ligatures -->\n';
+	for (const l of Object.keys(li)) {
+		con += ioSVG_makeOneGlyphOrLigature(li[l], l);
+	}
 
 	// con += '\n';
 
@@ -151,18 +150,6 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 		return '';
 	}
 
-	uni = uni.split('0x');
-	uni.forEach(function (v, i, a) {
-		// only export glyph if it has a valid hexadecimal unicode
-		if (!isValidHex(v)) {
-			console.warn('Glyph ' + uni.join('') + ' not exported: Bad hex value.');
-			return '';
-		}
-
-		if (v) a[i] = '&#x' + v + ';';
-	});
-	uni = uni.join('');
-
 	if (getCurrentProject().settings.app.combinePathsOnExport) {
 		gl = new Glyph(gl).flattenGlyph().combineAllPaths(true);
 	}
@@ -172,7 +159,7 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 
 	let con = '\t\t\t';
 	con += `<glyph glyph-name="${gl.name.replace(/ /g, '_')}" `;
-	con += `unicode="${uni}" `;
+	con += `unicode="${gl.chars}" `;
 	con += `horiz-adv-x="${gl.advanceWidth}" `;
 	con += `d="${pathData}" />\n`;
 	return con;
@@ -191,8 +178,8 @@ function ioSVG_makeAllKernPairs() {
 		for (let lg = 0; lg < kp[k].leftGroup.length; lg++) {
 			for (let rg = 0; rg < kp[k].rightGroup.length; rg++) {
 				con += `\t\t\t<hkern `;
-				con += `u1="${hexToUnicodeHex(kp[k].leftGroup[lg])}" `;
-				con += `u2="${hexToUnicodeHex(kp[k].rightGroup[rg])}" `;
+				con += `u1="${hexesToXMLHexes(kp[k].leftGroup[lg])}" `;
+				con += `u2="${hexesToXMLHexes(kp[k].rightGroup[rg])}" `;
 				con += `k="${kp[k].value}" />\n`;
 			}
 		}

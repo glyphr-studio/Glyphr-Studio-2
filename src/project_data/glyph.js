@@ -4,7 +4,8 @@ import { Path } from './path.js';
 import { ComponentInstance } from './component_instance.js';
 import { getOverallMaxes } from './maxes.js';
 import { hasNonValues, isVal, trim } from '../common/functions.js';
-import { getUnicodeName, hexToHTML, hexToChars } from '../common/unicode.js';
+import { hexToHTML, hexesToChars } from '../common/character_ids.js';
+import { getUnicodeName } from '../lib/unicode_names.js';
 import { getCurrentProject } from '../app/main.js';
 import { log } from '../app/main.js';
 
@@ -300,7 +301,7 @@ export class Glyph extends GlyphElement {
 			// log(`this.ligature.length: ${this.ligature.length}`);
 			result = this.ligature.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
 		} else {
-			result = hexToChars(this.id);
+			result = hexesToChars(this.id);
 		}
 		// log(`result: ${result}`);
 		// log(`Glyph.char`, 'end');
