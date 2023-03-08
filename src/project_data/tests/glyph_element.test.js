@@ -1,3 +1,4 @@
+import { assert, describe, expect, it } from 'vitest';
 import { GlyphElement } from '../glyph_element.js';
 
 describe('GlyphElement', () => {

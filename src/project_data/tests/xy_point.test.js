@@ -1,3 +1,4 @@
+import { assert, describe, expect, it } from 'vitest';
 import { XYPoint } from '../xy_point.js';
 
 describe('XYPoint', () => {

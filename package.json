@@ -10,7 +10,7 @@
     "dev": "vite serve ./src/",
     "build": "vite build ./src/ --emptyOutDir",
     "preview": "vite preview",
-    "test": "jasmine",
+    "test": "vitest watch",
     "lint": "eslint src",
     "fix": "eslint src --fix"
   },
@@ -18,11 +18,10 @@
     "buffer": "^6.0.3",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "jasmine": "^4.4.0",
-    "jasmine-core": "^4.3.0",
     "jshint": "^2.13.5",
     "prettier": "^2.7.1",
-    "vite": "^4.0.4"
+    "vite": "^4.0.4",
+    "vitest": "^0.29.2"
   },
   "bugs": {
     "url": "https://github.com/glyphr-studio/Glyphr-Studio-2/issues"

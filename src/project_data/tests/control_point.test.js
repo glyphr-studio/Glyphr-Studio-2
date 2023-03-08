@@ -1,3 +1,4 @@
+import { assert, describe, expect, it } from 'vitest';
 import { ControlPoint } from '../control_point.js';
 
 describe('ControlPoint', () => {
@@ -21,7 +22,7 @@ describe('ControlPoint', () => {
 	it('use', () => {
 		const cp = new ControlPoint();
 		cp.use = false;
-		expect(cp.use).toBeFalse();
+		expect(cp.use).toBeFalsey();
 	});
 
 	it('xLock', () => {

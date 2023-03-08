@@ -71,16 +71,20 @@ export function countItems(object) {
  * @returns {object}
  */
 export function clone(source) {
-	return structuredClone(source);
-	/*
-	const newObj = Array.isArray(source) ? [] : {};
-	for (const i of Object.keys(source)) {
-		if (source[i] && typeof source[i] === 'object' && i !== 'parent' && i !== 'cache') {
-			newObj[i] = clone(source[i]);
-		} else newObj[i] = source[i];
+	try {
+		return structuredClone(source);
+	} catch (error) {
+		console.warn('No structuredClone, falling back to manual clone');
+
+		const newObj = Array.isArray(source) ? [] : {};
+		for (const i of Object.keys(source)) {
+			if (source[i] && typeof source[i] === 'object' && i !== 'parent' && i !== 'cache') {
+				newObj[i] = clone(source[i]);
+			} else newObj[i] = source[i];
+		}
+		return newObj;
+
 	}
-	return newObj;
-	*/
 }
 
 /**

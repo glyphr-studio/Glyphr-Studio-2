@@ -1,3 +1,4 @@
+import { assert, describe, expect, it } from 'vitest';
 import { Glyph } from '../glyph.js';
 import { clone, numSan } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';

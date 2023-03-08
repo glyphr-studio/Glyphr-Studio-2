@@ -1,4 +1,7 @@
-export default {
+/// <reference types="vitest" />
+import { defineConfig } from "vite"
+
+export default defineConfig({
 	base: '/v2/app/',
 	build: {
 		outDir: '../dist/',
@@ -6,4 +9,9 @@ export default {
 		emptyOutDir: true,
 		chunkSizeWarningLimit: 2000,
 	},
-};
+	test: {
+		include: [
+			'./project_data/tests/*.test.js'
+		],
+	}
+});
