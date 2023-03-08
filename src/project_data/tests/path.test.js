@@ -1,3 +1,4 @@
+import { assert, describe, expect, it } from 'vitest';
 import { Path } from '../path.js';
 import { PathPoint } from '../path_point.js';
 import {

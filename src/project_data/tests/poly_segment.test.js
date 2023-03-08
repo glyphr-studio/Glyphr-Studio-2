@@ -1,3 +1,4 @@
+import { assert, describe, expect, it } from 'vitest';
 import { Segment } from '../segment.js';
 import { PolySegment } from '../poly_segment.js';
 
