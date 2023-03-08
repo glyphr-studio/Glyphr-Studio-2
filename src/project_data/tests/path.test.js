@@ -32,6 +32,12 @@ function trianglePath() {
 }
 
 describe('Path', () => {
+
+	it('Constructor - objType', () => {
+		const path = new Path();
+		expect(path.objType).toBe('Path');
+	});
+
 	it('pathPoints', () => {
 		// also tests pathPoints setter
 		const path = samplePath();
@@ -43,14 +49,80 @@ describe('Path', () => {
 		let saved = path.save();
 		// console.log(saved);
 		expect(saved).toEqual({
-			name: 'Path',
-			pathPoints: [
-				{ p: { coord: { x: 100, y: 200 } }, type: 'corner' },
-				{ p: { coord: { x: 300, y: 600 } }, type: 'corner' },
-				{ p: { coord: { x: 400, y: 500 } }, type: 'corner' },
-			],
-			winding: -4,
-		});
+  "name": "Path",
+  "pathPoints": [
+    {
+      "h1": {
+        "coord": {
+          "x": 50,
+          "y": 200,
+        },
+        "use": false,
+      },
+      "h2": {
+        "coord": {
+          "x": 150,
+          "y": 200,
+        },
+        "use": false,
+      },
+      "p": {
+        "coord": {
+          "x": 100,
+          "y": 200,
+        },
+      },
+      "type": "corner",
+    },
+    {
+      "h1": {
+        "coord": {
+          "x": 250,
+          "y": 600,
+        },
+        "use": false,
+      },
+      "h2": {
+        "coord": {
+          "x": 350,
+          "y": 600,
+        },
+        "use": false,
+      },
+      "p": {
+        "coord": {
+          "x": 300,
+          "y": 600,
+        },
+      },
+      "type": "corner",
+    },
+    {
+      "h1": {
+        "coord": {
+          "x": 350,
+          "y": 500,
+        },
+        "use": false,
+      },
+      "h2": {
+        "coord": {
+          "x": 450,
+          "y": 500,
+        },
+        "use": false,
+      },
+      "p": {
+        "coord": {
+          "x": 400,
+          "y": 500,
+        },
+      },
+      "type": "corner",
+    },
+  ],
+  "winding": -4,
+});
 	});
 
 	it('print', () => {
@@ -178,7 +250,7 @@ describe('Path', () => {
 	it('makePostScript', () => {
 		const path = samplePath();
 		expect(path.makePostScript().re).toBe(
-			'\t\t\t\t326.65249430318556 500 rmoveto \n\t\t\t\t86.80744781082728 0 70.54005788598715 -71.01004289702911 0 -85.53294831955458 rrcurveto \n\t\t\t\t0 -85.53294831955458 -69.8451137552994 -71.92406046386174 -87.50239194151504 0 rrcurveto \n\t\t\t\t-87.50239194151504 0 -69.15010236167052 71.01000804467071 0 86.4470007387456 rrcurveto \n\t\t\t\t0 86.4470007387456 69.84504649235828 70.09599047783809 86.80744781082728 0 rrcurveto \n'
+			'326.65249430318556 500 rmoveto\n\n86.80744781082728 0 70.54005788598715 -71.01004289702911 0 -85.53294831955458 rrcurveto\n\n0 -85.53294831955458 -69.8451137552994 -71.92406046386174 -87.50239194151504 0 rrcurveto\n\n-87.50239194151504 0 -69.15010236167052 71.01000804467071 0 86.4470007387456 rrcurveto\n\n0 86.4470007387456 69.84504649235828 70.09599047783809 86.80744781082728 0 rrcurveto\n'
 		);
 	});
 
@@ -238,17 +310,6 @@ describe('Path', () => {
 		expect(samplePath().addPathPoint(pp).p.x).toBe(0);
 	});
 
-	it('insertPathPoint', () => {
-		expect(samplePath().insertPathPoint().p.x).toBe(437.879040081);
-	});
-
-	it('findClosestPointOnCurve', () => {
-		expect(samplePath().findClosestPointOnCurve({ x: 100, y: 100 }).x).toBe(219.88358613439445);
-	});
-
-	it('findXYPointFromSplit', () => {
-		expect(samplePath().findXYPointFromSplit().x).toBe(437.879040080653);
-	});
 
 	it('checkForNaN', () => {
 		const p = samplePath();
@@ -259,6 +320,20 @@ describe('Path', () => {
 	it('PathPoint: pointNumber', () => {
 		const pp = samplePath().pathPoints[3];
 		expect(pp.pointNumber).toBe(3);
+	});
+
+
+
+	it('insertPathPoint', () => {
+		expect(samplePath().insertPathPoint().p.x).toBe(437.879040081);
+	});
+
+	it('findClosestPointOnCurve', () => {
+		expect(samplePath().findClosestPointOnCurve({ x: 100, y: 100 }).x).toBe(219.88358613439445);
+	});
+
+	it('findXYPointFromSplit', () => {
+		expect(samplePath().findXYPointFromSplit().x).toBe(437.879040080653);
 	});
 
 	it('findPathIntersections', () => {

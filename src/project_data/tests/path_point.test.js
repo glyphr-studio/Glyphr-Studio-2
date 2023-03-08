@@ -1,24 +1,26 @@
 import { assert, describe, expect, it } from 'vitest';
+import { ControlPoint } from '../control_point.js';
 import { PathPoint } from '../path_point.js';
-
-const testPathPoint = {
-	p: { coord: { x: 100, y: 100 } },
-	h1: { coord: { x: 0, y: 0 } },
-	h2: { coord: { x: 200, y: 200 } },
-	type: 'corner',
-	q: false,
-	parent: false,
-};
 
 /**
  * default sample PathPoint
  * @returns {PathPoint}
  */
 function samplePathPoint() {
-	return new PathPoint(testPathPoint);
+	let pp = new PathPoint();
+	pp.p = new ControlPoint({coord: {x: 100, y: 100}});
+	pp.h1 = new ControlPoint({coord: {x: 0, y: 0}});
+	pp.h2 = new ControlPoint({ coord: { x: 200, y: 200 } });
+	pp.type = 'corner';
+	return pp;
 }
 
 describe('PathPoint', () => {
+	it('Constructor - objType', () => {
+		const pp = new PathPoint();
+		expect(pp.objType).toBe('PathPoint');
+	});
+
 	it('Constructor - p.x', () => {
 		const pp = samplePathPoint();
 		expect(pp.p.x).toBe(100);

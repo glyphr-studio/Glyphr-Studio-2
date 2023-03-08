@@ -1,14 +1,8 @@
-import {
-	getCurrentProject,
-	getCurrentProjectEditor,
-	getGlyphrStudioApp,
-	log,
-} from '../app/main.js';
-import { makeActionButton, makeActionButtonIcon } from './action_buttons.js';
+import { getCurrentProjectEditor, log } from '../app/main.js';
+import { makeActionButton } from './action_buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { saveFile } from '../project_editor/saving.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
-import { clone } from '../common/functions.js';
 import { Path } from '../project_data/path.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { closeEveryTypeOfDialog, showModalDialog, showToast } from '../controls/dialogs/dialogs.js';
@@ -402,6 +396,7 @@ export function makeActionsArea_Universal() {
 	addChildActions(actionsArea, getActionData('addPathActions'));
 
 	// Dev actions for testing
+	/*
 	let dev = getGlyphrStudioApp().settings.dev;
 	if (dev.testActions.length) {
 		// DEV
@@ -418,7 +413,7 @@ export function makeActionsArea_Universal() {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'test'}));
 		addChildActions(actionsArea, getActionData('devActions'));
 	}
-
+	*/
 	return actionsArea;
 }
 
@@ -796,14 +791,13 @@ export function copyPathsFromTo(sourceGlyph, destinationGlyph, updateWidth = fal
 	log(`Destination Glyph`);
 	log(destinationGlyph);
 
-	const project = getCurrentProject();
 	const editor = getCurrentProjectEditor();
 	const msPaths = editor.multiSelect.paths;
 	let tc;
 	for (let c = 0; c < sourceGlyph.paths.length; c++) {
 		tc = sourceGlyph.paths[c];
 		if (tc.objType === 'ComponentInstance') {
-			project.getItem(tc.link).addToUsedIn(destinationGlyph.id);
+			editor.project.getItem(tc.link).addToUsedIn(destinationGlyph.id);
 			tc = new ComponentInstance(tc);
 		} else if (tc.objType === 'Path') {
 			tc = new Path(tc);

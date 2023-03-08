@@ -332,7 +332,7 @@ function createNewLigature() {
 	var inlig = document.getElementById('newligatureinput').value;
 	// debug('\t retrieved ' + lid);
 	var ligID = inlig.replace(/\s/gi, '');
-	ligID = parseCharsInput(ligID);
+	ligID = parseCharsInputAsHex(ligID);
 	// debug('\t parsed ' + ligID);
 
 	// Do checks
@@ -378,7 +378,7 @@ function addCommonLigatures() {
 	var lig, id;
 	for (var i = 0; i < ligaturesWithCodePoints.length; i++) {
 		lig = ligaturesWithCodePoints[i];
-		id = parseCharsInput(lig.chars).join('');
+		id = parseCharsInputAsHex(lig.chars).join('');
 		if (!_GP.ligatures[id]) _GP.ligatures[id] = new Glyph({ glyphhex: id });
 	}
 

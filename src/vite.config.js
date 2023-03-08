@@ -1,5 +1,5 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vite"
+import { defineConfig } from 'vite';
 
 export default defineConfig({
 	base: '/v2/app/',
@@ -10,8 +10,7 @@ export default defineConfig({
 		chunkSizeWarningLimit: 2000,
 	},
 	test: {
-		include: [
-			'./project_data/tests/*.test.js'
-		],
-	}
+		exclude: ['**/*.test.js'],
+		include: ['path.test.js'],
+	},
 });

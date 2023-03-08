@@ -1,4 +1,4 @@
-import { log } from '../app/main.js';
+// import { log } from '../app/main.js';
 import { isInteger } from './functions.js';
 
 /**
@@ -31,6 +31,7 @@ export function isChar(input) {
  * @returns {boolean}
  */
 export function isUnicode(input) {
+	if (typeof input !== 'string') return false;
 	input = normalizePrefixes(input);
 	return isNumberWithPrefix(input, 'U+');
 }
@@ -40,6 +41,7 @@ export function isUnicode(input) {
  * @returns {boolean}
  */
 export function isHex(input) {
+	if (typeof input !== 'string') return false;
 	input = normalizePrefixes(input);
 	return isNumberWithPrefix(input, '0x');
 }
@@ -49,6 +51,7 @@ export function isHex(input) {
  * @returns {boolean}
  */
 export function isXMLDec(input) {
+	if (typeof input !== 'string') return false;
 	return isNumberWithPrefix(input, '&#');
 }
 
@@ -57,6 +60,7 @@ export function isXMLDec(input) {
  * @returns {boolean}
  */
 export function isXMLHex(input) {
+	if (typeof input !== 'string') return false;
 	input = normalizePrefixes(input);
 	return isNumberWithPrefix(input, '&#x');
 }
@@ -73,11 +77,41 @@ export function isXMLHex(input) {
  * @param {string} input - thing to normalize
  * @returns {string}
  */
-function normalizePrefixes(input) {
+export function normalizePrefixes(input) {
 	input = input.replaceAll('0X', '0x');
 	input = input.replaceAll('&#X', '&#x');
 	input = input.replaceAll('u+', 'U+');
 	return input;
+}
+
+/**
+ * Hex, Unicode IDs, and XML Char Entities all use different prefixes,
+ * but the same Hexadecimal suffix. This validates and formats the suffix.
+ * @param {string} input - string to check
+ * @returns {string} - validated and formatted suffix
+ */
+export function validateDecOrHexSuffix(input) {
+	const green = '0123456789ABCDEF';
+	input = input.toString();
+	input = input.toUpperCase();
+
+	for (var c = 0; c < input.length; c++) {
+		if (green.indexOf(input.charAt(c)) === -1) return false;
+	}
+
+	const result = parseInt(`0x${input}`);
+	if (isNaN(result)) return false;
+	return result.toString(16).toUpperCase();
+}
+
+/**
+ * @param {string} input - thing to check
+ * @param {string} prefix - prefix to check for
+ * @returns {boolean}
+ */
+export function hasPrefix(input, prefix) {
+	input = normalizePrefixes(input);
+	return input.indexOf(prefix) > -1;
 }
 
 /**
@@ -88,39 +122,16 @@ function normalizePrefixes(input) {
  * @param {string} prefix - prefix to check for
  * @returns {boolean}
  */
-function isNumberWithPrefix(input, prefix) {
+export function isNumberWithPrefix(input, prefix) {
 	// Check for prefix
-	if (hasPrefix(input, prefix)) return false;
+	if (!hasPrefix(input, prefix)) return false;
 	// Check for many instance instead of single instance
 	if (input.indexOf(prefix, prefix.length) > 0) return false;
 	// Check for valid number suffix
-	// Since we don't care about the actual value, just throwing a
-	// '0x' at the beginning to see if it is a valid dec or hex number
 	let value = input.substring(prefix.length);
-	if (isNaN(Number(`0x${value}`))) return false;
+	if (!validateDecOrHexSuffix(value)) return false;
 
 	return true;
-}
-
-/**
- * @param {string} input - thing to check
- * @param {string} prefix - prefix to check for
- * @returns {boolean}
- */
-function hasPrefix(input, prefix) {
-	return input.indexOf(prefix) > -1;
-}
-
-/**
- * Hex, Unicode IDs, and XML Char Entities all use different prefixes,
- * but the same Hexadecimal suffix. This validates and formats the suffix.
- * @param {string} input - string to check
- * @returns {string} - validated and formatted suffix
- */
-function validateHexSuffix(input) {
-	const result = parseInt(`0x${input}`);
-	if (isNaN(result)) return false;
-	return result.toString(16).toUpperCase();
 }
 
 // --------------------------------------------------------------
@@ -133,8 +144,9 @@ function validateHexSuffix(input) {
  */
 export function validateAsHex(input) {
 	if (!isHex(input)) return false;
-	const result = validateHexSuffix(input);
-	return result ? `0x${result}` : false;
+	if (!isNumberWithPrefix(input, '0x')) return false;
+	let suffix = validateDecOrHexSuffix(input.substring(2));
+	return `0x${suffix}`;
 }
 
 /**
@@ -143,10 +155,8 @@ export function validateAsHex(input) {
  */
 export function validateAsUnicode(input) {
 	if (!isUnicode(input)) return false;
-	const result = unicodeToHex(input);
-	if (result === false) return false;
-	if (isNaN(Number(result))) return false;
-	return `U+${result.substring(2)}`;
+	if (!isNumberWithPrefix(input, 'U+')) return false;
+	return `U+${input.substring(2).toUpperCase()}`;
 }
 
 /**
@@ -155,10 +165,8 @@ export function validateAsUnicode(input) {
  */
 export function validateAsXMLHex(input) {
 	if (!isXMLHex(input)) return false;
-	const result = xmlHexToHex(input);
-	if (result === false) return false;
-	if (isNaN(Number(result))) return false;
-	return `&#x${result.substring(2)}`;
+	if (!isNumberWithPrefix(input, '&#x')) return false;
+	return `&#x${input.substring(3).toUpperCase()}`;
 }
 
 /**
@@ -182,7 +190,9 @@ export function validateAsXMLDec(input) {
  */
 export function decToHex(input) {
 	if (!isInteger(input)) return false;
-	let suffix = validateHexSuffix(input.toString(16));
+	input = parseInt(input);
+	if (isNaN(input)) return false;
+	let suffix = validateDecOrHexSuffix(Number(input).toString(16));
 	return suffix ? `0x${suffix}` : false;
 }
 
@@ -193,7 +203,7 @@ export function decToHex(input) {
  */
 export function charToHex(input) {
 	if (!isChar(input)) return false;
-	return input.charCodeAt(0);
+	return `0x${input.charCodeAt(0)}`;
 }
 
 /**
@@ -203,7 +213,7 @@ export function charToHex(input) {
  */
 export function unicodeToHex(input) {
 	if (!isUnicode(input)) return false;
-	let suffix = validateHexSuffix(input.substring(2));
+	let suffix = validateDecOrHexSuffix(input.substring(2));
 	return suffix ? `0x${suffix}` : false;
 }
 
@@ -214,7 +224,7 @@ export function unicodeToHex(input) {
  */
 export function xmlHexToHex(input) {
 	if (!isXMLHex(input)) return false;
-	let suffix = validateHexSuffix(input.substring(3));
+	let suffix = validateDecOrHexSuffix(input.substring(3));
 	return suffix ? `0x${suffix}` : false;
 }
 
@@ -241,10 +251,10 @@ export function hexesToHexArray(input) {
 	input = input.replaceAll('X', 'x');
 	let result = input.split('0x');
 	result = result.map((value) => {
-		return validateAsHex(value);
+		return validateAsHex(`0x${value}`);
 	});
 
-	return result;
+	return result.splice(1);
 }
 
 /**
@@ -256,10 +266,10 @@ export function unicodesToUnicodeArray(input) {
 	input = input.replaceAll('u', 'U');
 	let result = input.split('U+');
 	result = result.map((value) => {
-		return validateAsUnicode(value);
+		return validateAsUnicode(`U+${value}`);
 	});
 
-	return result;
+	return result.splice(1);
 }
 
 // --------------------------------------------------------------
@@ -274,7 +284,7 @@ export function unicodesToUnicodeArray(input) {
 export function charsToHexArray(input) {
 	const result = [];
 	for (let i = 0; i < input.length; i++) {
-		result.push(charToHex(i));
+		result.push(charToHex(input.charAt(i)));
 	}
 	return result;
 }
@@ -285,7 +295,7 @@ export function charsToHexArray(input) {
  * @returns {string} - string
  */
 export function hexesToChars(input) {
-	log('hexesToChars', 'start');
+	// log('hexesToChars', 'start');
 	input = input.replaceAll('X', 'x');
 	if (String(input).charAt(1) !== 'x') return false;
 
@@ -294,12 +304,12 @@ export function hexesToChars(input) {
 
 	for (let i = 0; i < input.length; i++) {
 		if (input[i] !== '') {
-			input[i] = String.fromCharCode(`0x${input[i]}`);
+			input[i] = String.fromCharCode(input[i]);
 			if (input[i]) result += input[i];
 		}
 	}
 
-	log(`hexesToChars`, 'end');
+	// log(`hexesToChars`, 'end');
 	return result;
 }
 
@@ -310,18 +320,14 @@ export function hexesToChars(input) {
  */
 export function hexesToXMLHexes(input) {
 	let hexArr = hexesToHexArray(input);
-	let result = '';
-	if (hexArr && hexArr.length) {
-		result = hexArr.reduce((acc, value) => {
-			if (!isHex(value)) return '';
-			return value.replaceAll('0x', '&#x') + ';';
-		});
-	}
+	let result = hexArr.join(';');
+	result = result.replaceAll('0x', '&#x');
+	result += ';';
 	return result;
 }
 
 // --------------------------------------------------------------
-// Accepting unknown formats
+// Accepting unknown inputs
 // --------------------------------------------------------------
 
 /**
@@ -329,41 +335,39 @@ export function hexesToXMLHexes(input) {
  * @param {string} input - input string
  * @returns {array} - sanitized array of strings
  */
-export function parseCharsInput(input) {
+export function parseCharsInputAsHex(input) {
 	// Takes any kind or number of input
 	// and returns an array of hex values
 	// Unicode: 'U+123;U+123;'
 	// Hexadecimal: '0x1230x123'
 	// Chars: 'abc'
 
-	// log('parseCharsInput', 'start');
+	// log('parseCharsInputAsHex', 'start');
 	// log('passed ' + input);
 
 	if (!input) return false;
 
 	let entries = [];
 	const results = [];
+	input = normalizePrefixes(input);
 
 	if (hasPrefix(input, 'U+')) {
-		input = input.replace(/u\+/g, 'U+');
 		entries = input.split('U+');
 	} else if (hasPrefix(input, '0x')) {
-		input = input.replace(/0X/g, '0x');
 		entries = input.split('0x');
 	} else {
 		return charsToHexArray(input);
 	}
 
 	entries.forEach((entry) => {
-		entry = entry.replace(/;/g, '');
 		if (entry !== '') {
-			results.push(validateAsHex(entry));
+			results.push(validateAsHex(`0x${entry}`));
 		}
 	});
 
 	if (results.length === 0) results.push('0x0');
 	// log('returning ' + JSON.stringify(results));
-	// log('parseCharsInput', 'end');
+	// log('parseCharsInputAsHex', 'end');
 	return results;
 }
 

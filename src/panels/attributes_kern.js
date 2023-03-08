@@ -158,7 +158,7 @@ function createNewKernPair() {
 
 function parseKernGroupInput(chars) {
 	chars = trim(chars);
-	chars = parseCharsInput(chars);
+	chars = parseCharsInputAsHex(chars);
 	if (chars === false) return false;
 	chars = chars.filter(function (elem, pos) {
 		return chars.indexOf(elem) === pos;
