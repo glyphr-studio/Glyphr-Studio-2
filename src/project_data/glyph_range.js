@@ -1,13 +1,13 @@
-import { getCurrentProject } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { isControlChar } from '../lib/unicode_blocks.js';
 import { basicLatinOrder } from '../project_editor/project_editor.js';
 
 export class GlyphRange {
-	constructor({ begin = 0, end = 0, name = '' }) {
+	constructor({ begin = 0, end = 0, name = '', showNonCharPoints = false }) {
 		this.begin = begin;
 		this.end = end;
 		this.name = name;
+		this.showNonCharPoints = showNonCharPoints;
 		this.cachedArray = false;
 	}
 
@@ -40,7 +40,7 @@ export class GlyphRange {
 			}
 		} else {
 			let current = this.begin;
-			if (getCurrentProject().settings.app.showNonCharPoints) {
+			if (this.showNonCharPoints) {
 				while (current <= this.end) yield current++;
 			} else {
 				while (isControlChar(current)) current++;

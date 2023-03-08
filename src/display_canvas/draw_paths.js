@@ -1,6 +1,5 @@
-import { ComponentInstance } from '../project_data/component_instance.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
-import { json, round } from '../common/functions.js';
+import { round } from '../common/functions.js';
 import { getCurrentProject } from '../app/main.js';
 
 // --------------------------------------------------------------

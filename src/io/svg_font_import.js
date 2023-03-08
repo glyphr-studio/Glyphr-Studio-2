@@ -1,6 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { round } from '../common/functions.js';
-import { hexesToChars, parseCharsInput } from '../common/character_ids.js';
+import { hexesToChars, parseCharsInputAsHex } from '../common/character_ids.js';
 import { showError } from '../controls/dialogs/dialogs.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
@@ -103,7 +103,7 @@ export function ioSVG_importSVGfont(font) {
 		// log('importOneGlyph', 'start');
 		// log('starting  unicode \t' + attributes.unicode + ' \t ' + attributes['glyph-name']);
 
-		let uni = parseCharsInput(attributes.unicode);
+		let uni = parseCharsInputAsHex(attributes.unicode);
 		if (attributes.unicode === ' ') uni = ['0x0020'];
 
 		if (uni === false) {
@@ -378,7 +378,7 @@ function getKernMembersByName(names, chars, arr, limit) {
 				if (chars[c].attributes.unicode) {
 					// Push the match
 					if (names[n] === chars[c].attributes['glyph-name']) {
-						uni = parseCharsInput(chars[c].attributes.unicode);
+						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
 						if (1 * uni < limit) arr = arr.concat(uni);
 					}
 				}
@@ -402,7 +402,7 @@ function getKernMembersByUnicodeID(ids, chars, arr, limit) {
 				if (chars[c].attributes.unicode) {
 					// Push the match
 					if (ids[i] === chars[c].attributes.unicode) {
-						uni = parseCharsInput(chars[c].attributes.unicode);
+						uni = parseCharsInputAsHex(chars[c].attributes.unicode);
 						if (1 * uni < limit) arr = arr.concat(uni);
 					}
 				}

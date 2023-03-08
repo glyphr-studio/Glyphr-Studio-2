@@ -6,7 +6,7 @@ import { drawGlyph } from '../../display_canvas/draw_paths.js';
 import style from './glyph-tile.css?inline';
 
 /**
- * description
+ * A clickable mini-preview tile of a single glyph
  */
 export class GlyphTile extends HTMLElement {
 	// Specify observed attributes so that

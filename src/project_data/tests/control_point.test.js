@@ -22,7 +22,7 @@ describe('ControlPoint', () => {
 	it('use', () => {
 		const cp = new ControlPoint();
 		cp.use = false;
-		expect(cp.use).toBeFalsey();
+		expect(cp.use).toBeFalsy();
 	});
 
 	it('xLock', () => {

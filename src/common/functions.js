@@ -74,7 +74,7 @@ export function clone(source) {
 	try {
 		return structuredClone(source);
 	} catch (error) {
-		console.warn('No structuredClone, falling back to manual clone');
+		// console.warn('No structuredClone, falling back to manual clone');
 
 		const newObj = Array.isArray(source) ? [] : {};
 		for (const i of Object.keys(source)) {

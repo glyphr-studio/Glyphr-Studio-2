@@ -1,13 +1,11 @@
 import { GlyphElement } from './glyph_element.js';
-import { isAllZeros, Maxes } from './maxes.js';
+import { isAllZeros, getOverallMaxes, Maxes } from './maxes.js';
 import { Path } from './path.js';
 import { ComponentInstance } from './component_instance.js';
-import { getOverallMaxes } from './maxes.js';
 import { hasNonValues, isVal, trim } from '../common/functions.js';
 import { hexToHTML, hexesToChars } from '../common/character_ids.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
-import { getCurrentProject } from '../app/main.js';
-import { log } from '../app/main.js';
+// import { log } from '../app/main.js';
 
 /**
  * Glyph Element > Glyph
@@ -844,15 +842,16 @@ export class Glyph extends GlyphElement {
 	 * Make SVG from this Glyph
 	 * @param {number} size - how big the resulting SVG should be
 	 * @param {number} padding - interior space around the glyph
+	 * @param {number} totalVertical - kind of like UPM from project metrics
+	 * @param {number} ascent - distance between y=0 and top of totalVertical
 	 * @returns {string} - svg
 	 */
-	makeSVG(size = 500, padding = 10) {
+	makeSVG(size = 50, padding = 5, totalVertical = 1000, ascent = 700) {
 		// log('Glyph.makeSVG', 'start');
 		// log(this);
-		const project = getCurrentProject();
-		const scale = (size - padding * 2) / project.totalVertical;
-		const scaledHeight = size / project.totalVertical;
-		const translateY = project.settings.font.ascent * scale + padding * 2;
+		const scale = (size - padding * 2) / totalVertical;
+		const scaledHeight = size / totalVertical;
+		const translateY = ascent * scale + padding * 2;
 
 		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
 		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;

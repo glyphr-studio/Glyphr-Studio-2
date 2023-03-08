@@ -60,9 +60,10 @@ function multiTriangleGlyph() {
 }
 
 describe('Glyph', () => {
-	beforeAll(() => {
-		spyOn(console, 'log').and.callThrough();
-	});
+	// beforeAll(() => {
+	// 	spyOn(console, 'log').and.callThrough();
+	// });
+	// it('META TEST', () => { expect(true).toBeTruthy(); });
 
 	it('save', () => {
 		expect(sampleGlyph().save()).toEqual(
@@ -265,4 +266,5 @@ describe('Glyph', () => {
 		g.removeFromUsedIn('0x0012');
 		expect(g.usedIn[0]).toBe('0x0004');
 	});
+
 });

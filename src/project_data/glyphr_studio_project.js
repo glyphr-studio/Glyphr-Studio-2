@@ -1,10 +1,10 @@
+import { clone, round, trim } from '../common/functions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
-import { clone, round, trim } from '../common/functions.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, hexToHTML, validateAsHex } from '../common/character_ids.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
-import { log } from '../app/main.js';
+// import { log } from '../app/main.js';
 import { GlyphRange } from './glyph_range.js';
 
 /**

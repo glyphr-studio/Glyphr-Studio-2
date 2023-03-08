@@ -5,7 +5,6 @@ describe('GlyphrStudioProject', () => {
 	it('New project: UPM', () => {
 		// Stick this here for other tests to use
 		const newProject = new GlyphrStudioProject();
-
 		expect(newProject.settings.font.upm).toBe(1000);
 	});
 

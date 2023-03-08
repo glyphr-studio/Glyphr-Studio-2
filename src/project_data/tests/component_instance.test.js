@@ -1,5 +1,4 @@
 import { assert, describe, expect, it } from 'vitest';
-import { describe } from 'vitest';
 import { ComponentInstance } from '../component_instance.js';
 
 /**

@@ -15,7 +15,6 @@ import {
 	pointsAreEqual,
 	strSan,
 } from '../common/functions.js';
-import { getCurrentProject } from '../app/main.js';
 
 /**
  * Glyph Element > Path
@@ -693,13 +692,14 @@ export class Path extends GlyphElement {
 	 * Make SVG from this Path
 	 * @param {number} size - how big the resulting SVG should be
 	 * @param {number} padding - interior space around the glyph
+	 * @param {number} totalVertical - kind of like UPM from project metrics
+	 * @param {number} ascent - distance between y=0 and top of totalVertical
 	 * @returns {string} - svg
 	 */
-	makeSVG(size = 50, padding = 5) {
-		const project = getCurrentProject();
-		const scale = (size - padding * 2) / project.totalVertical;
-		const scaledHeight = size / project.totalVertical;
-		const translateY = project.settings.font.ascent * scale + padding * 2;
+	makeSVG(size = 50, padding = 5, totalVertical = 1000, ascent = 700) {
+		const scale = (size - padding * 2) / totalVertical;
+		const scaledHeight = size / totalVertical;
+		const translateY = ascent * scale + padding * 2;
 
 		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
 		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
@@ -830,8 +830,7 @@ export class Path extends GlyphElement {
 		let p2ppx;
 		let p2ppy;
 		let trr = '';
-		let re = `
-				${this.pathPoints[0].p.x - lastX} ${this.pathPoints[0].p.y - lastY} rmoveto
+		let re = `${this.pathPoints[0].p.x - lastX} ${this.pathPoints[0].p.y - lastY} rmoveto
 		`;
 
 		// log('\n\t ' + re);
@@ -854,7 +853,7 @@ export class Path extends GlyphElement {
 
 		// log(`Path.makePostScript`, 'end');
 		return {
-			re: re,
+			re: re.replaceAll('\t', ''),
 			lastX: p2.p.x,
 			lastY: p2.p.y,
 		};
