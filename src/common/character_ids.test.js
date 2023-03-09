@@ -136,7 +136,7 @@ describe('Character IDs - Single to Single Conversion', () => {
 	});
 
 	it('charToHex', () => {
-		expect(charToHex('a')).toBe('0x97');
+		expect(charToHex('a')).toBe('0x61');
 	});
 
 	it('unicodeToHex', () => {
@@ -164,29 +164,29 @@ describe('Character IDs - Splitting a string of many IDs', () => {
 
 describe('Character IDs - Many to many conversions', () => {
 	it('charsToHexArray', () => {
-		expect(charsToHexArray('abc')).toEqual(['0x97', '0x98', '0x99']);
+		expect(charsToHexArray('abc')).toEqual(['0x61', '0x62', '0x63']);
 	});
 
 	it('hexesToChars', () => {
-		expect(hexesToChars('0x970x980x99')).toEqual('abc');
+		expect(hexesToChars('0x610x620x63')).toEqual('abc');
 	});
 
 	it('hexesToXMLHexes', () => {
-		expect(hexesToXMLHexes('0x970x980x99')).toEqual('&#x97;&#x98;&#x99;');
+		expect(hexesToXMLHexes('0x610x620x63')).toEqual('&#x61;&#x62;&#x63;');
 	});
 });
 
 describe('Character IDs - Accepting unknown inputs', () => {
 	it('parseCharsInputAsHex - hex input', () => {
-		expect(parseCharsInputAsHex('0x970x980x99')).toEqual(['0x97', '0x98', '0x99']);
+		expect(parseCharsInputAsHex('0x610x620x63')).toEqual(['0x61', '0x62', '0x63']);
 	});
-	
+
 	it('parseCharsInputAsHex - unicode input', () => {
-		expect(parseCharsInputAsHex('U+97U+98U+99')).toEqual(['0x97', '0x98', '0x99']);
+		expect(parseCharsInputAsHex('U+61U+62U+63')).toEqual(['0x61', '0x62', '0x63']);
 	});
 
 	it('parseCharsInputAsHex - char input', () => {
-		expect(parseCharsInputAsHex('abc')).toEqual(['0x97', '0x98', '0x99']);
+		expect(parseCharsInputAsHex('abc')).toEqual(['0x61', '0x62', '0x63']);
 	});
 
 	it('areHexValuesEqual', () => {

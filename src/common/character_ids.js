@@ -203,7 +203,7 @@ export function decToHex(input) {
  */
 export function charToHex(input) {
 	if (!isChar(input)) return false;
-	return `0x${input.charCodeAt(0)}`;
+	return `0x${Number(input.charCodeAt(0)).toString(16).toUpperCase()}`;
 }
 
 /**
@@ -304,7 +304,7 @@ export function hexesToChars(input) {
 
 	for (let i = 0; i < input.length; i++) {
 		if (input[i] !== '') {
-			input[i] = String.fromCharCode(input[i]);
+			input[i] = String.fromCharCode(`0x${input[i]}`);
 			if (input[i]) result += input[i];
 		}
 	}

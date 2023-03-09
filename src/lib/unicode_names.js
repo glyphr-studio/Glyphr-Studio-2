@@ -1,5 +1,5 @@
 // import { log } from '../app/main.js';
-import { normalizeHex } from '../common/character_ids.js';
+import { validateAsHex } from '../common/character_ids.js';
 
 /**
  * Get a glyph's name based on a unicode hex ID
@@ -18,7 +18,7 @@ export function lookUpGlyphName(id, forceLongName = false) {
 		return false;
 	}
 
-	id = normalizeHex(id);
+	id = validateAsHex(id);
 	// log(`normalized ${id} type is ${typeof id}`);
 
 	// known unicode names
@@ -43,7 +43,7 @@ export function getUnicodeName(codePoint) {
 	// log('getUnicodeName', 'start');
 	// log('passed ' + codePoint);
 
-	codePoint = normalizeHex(codePoint);
+	codePoint = validateAsHex(codePoint);
 	// log('normalized ' + codePoint);
 
 	let name;
