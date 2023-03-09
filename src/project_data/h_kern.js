@@ -62,7 +62,7 @@ export class HKern extends GlyphElement {
 	get name() {
 		const left = hexesToChars(this.leftGroup.join(''));
 		const right = hexesToChars(this.rightGroup.join(''));
-		return '' + left + ' | ' + right;
+		return `${left} | ${right}`;
 	}
 
 	// --------------------------------------------------------------

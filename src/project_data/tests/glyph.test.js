@@ -59,37 +59,11 @@ function multiTriangleGlyph() {
 	return re;
 }
 
-describe('Glyph', () => {
+describe('Glyph - Getters and Setters', () => {
 	// beforeAll(() => {
 	// 	spyOn(console, 'log').and.callThrough();
 	// });
 	// it('META TEST', () => { expect(true).toBeTruthy(); });
-
-	it('save', () => {
-		expect(sampleGlyph().save()).toEqual(
-			JSON.parse(`
-			{
-				"id":"0x0000",
-				"paths":[
-					{
-						"name": "Path",
-						"winding":-5,
-						"pathPoints":[
-							{"p":{"coord":{"x":326.65249430318556,"y":500}},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500}},"h2":{"coord":{"x":413.45994211401285,"y":500}}},
-							{"p":{"coord":{"x":484,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709}},"h2":{"coord":{"x":484,"y":257.92406046386174}}},
-							{"p":{"coord":{"x":326.65249430318556,"y":186}},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186}},"h2":{"coord":{"x":239.15010236167052,"y":186}}},
-							{"p":{"coord":{"x":170,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707}},"h2":{"coord":{"x":170,"y":429.9040095221619}}}
-						]
-					}
-				]
-			}
-		`)
-		);
-	});
-
-	it('print', () => {
-		expect(sampleGlyph().print()).toBeTruthy();
-	});
 
 	it('get/set id', () => {
 		const g = sampleGlyph();
@@ -167,7 +141,35 @@ describe('Glyph', () => {
 		g.maxes = { xMax: 123, xMin: 123, yMax: 435, yMin: 345 };
 		expect(g.maxes.save()).toEqual({ xMax: 123, xMin: 123, yMax: 435, yMin: 345 });
 	});
+});
 
+describe('Glyph - outputs', () => {
+	it('save', () => {
+		expect(sampleGlyph().save()).toEqual(`
+			{
+				"id":"0x0000",
+				"paths":[
+					{
+						"name": "Path",
+						"winding":-5,
+						"pathPoints":[
+							{"p":{"coord":{"x":326.65249430318556,"y":500}},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500}},"h2":{"coord":{"x":413.45994211401285,"y":500}}},
+							{"p":{"coord":{"x":484,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709}},"h2":{"coord":{"x":484,"y":257.92406046386174}}},
+							{"p":{"coord":{"x":326.65249430318556,"y":186}},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186}},"h2":{"coord":{"x":239.15010236167052,"y":186}}},
+							{"p":{"coord":{"x":170,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707}},"h2":{"coord":{"x":170,"y":429.9040095221619}}}
+						]
+					}
+				]
+			}`
+		);
+	});
+
+	it('print', () => {
+		expect(sampleGlyph().print()).toBeTruthy();
+	});
+});
+
+describe('Glyph - updating', () => {
 	it('setGlyphPosition', () => {
 		const g = sampleGlyph();
 		g.setGlyphPosition(1000);
@@ -266,5 +268,4 @@ describe('Glyph', () => {
 		g.removeFromUsedIn('0x0012');
 		expect(g.usedIn[0]).toBe('0x0004');
 	});
-
 });

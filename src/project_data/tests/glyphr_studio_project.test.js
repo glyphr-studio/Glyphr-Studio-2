@@ -1,7 +1,9 @@
 import { assert, describe, expect, it } from 'vitest';
 import { GlyphrStudioProject } from '../glyphr_studio_project.js';
 
+
 describe('GlyphrStudioProject', () => {
+
 	it('New project: UPM', () => {
 		// Stick this here for other tests to use
 		const newProject = new GlyphrStudioProject();
