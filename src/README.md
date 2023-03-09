@@ -26,9 +26,9 @@ practice, but it's a big change from V1, so it is at least worth mentioning.
 
 ### Meta
 
-Testing has been set up using Jasmine, and can be run by doing `npm test`.
-Tests are stored as `-.test.js` in a `test` folder (at the moment, only
-Project Data code has test coverage). All files with this suffix
+Testing has been set up using Vitest, and can be run by doing `npm test`.
+Tests are stored as `-.test.js` in a `test` folder (for Project Data)
+or directly next to the file they test. All files with this suffix
 will be included in the test pass.
 
 # Project Data
@@ -38,7 +38,7 @@ Our data structure is roughly hierarchical:
     Glyphr Studio Project
       ┣━ Settings
       ┃   ┣━ Project
-      ┃   ┣━ Preferences
+      ┃   ┣━ App
       ┃   ┗━ Font
       ┣━ Kerning
       ┃   ┗━ HKern

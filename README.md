@@ -12,7 +12,6 @@ be **multi-project editing** that will allow for cross-project copy/paste and me
 | App | [glyphrstudio.com/v2/app](https://www.glyphrstudio.com/v2/app) |
 | Help & Docs | [glyphrstudio.com/v2/help](https://www.glyphrstudio.com/v2/help/) |
 | Blog | [glyphrstudio.com/blog](https://www.glyphrstudio.com/blog/) |
-| | |
 | Mastodon | [@glyphrstudio@typo.social](https://typo.social/@glyphrstudio) |
 | Reddit | [reddit.com/r/GlyphrStudio](https://www.reddit.com/r/GlyphrStudio/) |
 | Twitter | [@glyphrstudio](https://twitter.com/glyphrstudio) |
@@ -31,8 +30,8 @@ the new UI layer.
 | :white_check_mark: | Template strings instead of string concatenation |
 | :white_check_mark: | Lint everything with Prettier |
 | :white_check_mark: | JSDoc *all the things* |
-| :white_check_mark: | Jasmine tests for everything (basic coverage) |
-| :soon: | Jasmine tests for everything (advanced coverage) |
+| :white_check_mark: | Vitest tests for everything (basic coverage) |
+| :soon: | Vitest tests for everything (advanced coverage) |
 
 | | **UI Layer stuff** |
 |:---:|:--- |
@@ -43,14 +42,8 @@ the new UI layer.
 | :white_check_mark: | Template strings instead of string concatenation |
 | :white_check_mark: | Lint everything with Prettier |
 | :white_check_mark: | JSDoc *all the things* |
-| :black_square_button: | Jasmine tests for everything (basic coverage) |
+| :black_square_button: | Vitest tests for everything (basic coverage) |
 | :black_square_button: | Investigation - Language switching for localization |
-
-| | **Supplemental stuff** |
-|:---:|:--- |
-| :black_square_button: | Investigate tech stack for Help & Documentation site |
-| :black_square_button: | Investigate migration or redesign for Blog site |
-| :black_square_button: | Create new website |
 
 
 ## What's not changing
