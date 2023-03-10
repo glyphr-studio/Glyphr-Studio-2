@@ -104,9 +104,6 @@ export class GlyphTile extends HTMLElement {
 
 	attributeChangedCallback() {
 		// log(`GlyphTile.attributeChangedCallback`, 'start');
-		// log(`name: ${name}`);
-		// log(`oldValue: ${oldValue}`);
-		// log(`newValue: ${newValue}`);
 
 		const wrapper = this.shadowRoot ? this.shadowRoot.querySelector('.wrapper') : false;
 

@@ -30,10 +30,10 @@ import { basicLatinOrder, GlyphRange } from '../project_data/glyph_range.js';
 export class ProjectEditor {
 	/**
 	 * Initialize a project editor, with defaults
-	 * @param {object} newEditor - Glyphr Studio Project File JSON
+	 * @param {object} newProjectEditor
 	 */
 	constructor(newProjectEditor = {}) {
-		log('ProjectEditor.constructor', 'start');
+		// log('ProjectEditor.constructor', 'start');
 
 		// History
 		this.history = new History();
@@ -95,20 +95,20 @@ export class ProjectEditor {
 		// Dialogs
 		this.closeAllDialogsOverride = false;
 
-		log(this);
-		log('ProjectEditor.constructor', 'end');
+		// log(this);
+		// log('ProjectEditor.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
 	// Navigate
 	// --------------------------------------------------------------
 	navigate() {
-		log(`ProjectEditor.navigate`, 'start');
+		// log(`ProjectEditor.navigate`, 'start');
 
 		this.nav.navigate();
 		this.autoFitIfViewIsDefault();
 
-		log(`ProjectEditor.navigate`, 'end');
+		// log(`ProjectEditor.navigate`, 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -121,7 +121,9 @@ export class ProjectEditor {
 	 */
 	get project() {
 		if (!this._project || this._project === {}) {
+			// log(`Calling new GlyphrStudioProject from ProjectEditor GET .project`);
 			this._project = new GlyphrStudioProject();
+			this.initializeHistory(this._project);
 		}
 		return this._project;
 	}
@@ -132,6 +134,8 @@ export class ProjectEditor {
 	 * @returns {GlyphrStudioProject}
 	 */
 	set project(gsp) {
+		if (!gsp) return;
+		// log(`Calling new GlyphrStudioProject from ProjectEditor SET .project`);
 		this._project = new GlyphrStudioProject(gsp);
 		this.initializeHistory(gsp);
 	}
@@ -140,7 +144,7 @@ export class ProjectEditor {
 		this.history = new History();
 		this.history.queue = [];
 		this.history.initialTimeStamp = new Date().getTime();
-		this.history.initialProject = new GlyphrStudioProject(project);
+		this.history.initialProject = project;
 	}
 
 	// --------------------------------------------------------------
@@ -235,6 +239,8 @@ export class ProjectEditor {
 		// log(`this._selectedLigatureID: ${this._selectedLigatureID}`);
 		const currentID = this._selectedLigatureID;
 		if (!currentID || !this.project.getItem(currentID)) {
+			// log(`No current id, getFirstID...`);
+			// log(this.project.ligatures);
 			this._selectedLigatureID = getFirstID(this.project.ligatures);
 		}
 		// log(`this._selectedLigatureID: ${this._selectedLigatureID}`);
@@ -372,6 +378,7 @@ export class ProjectEditor {
 			console.warn(`Ligature ID ${id} does not exist in the project.`);
 			this._selectedLigatureID = getFirstID(this.project.ligatures);
 		}
+		this.publish('whichLigatureIsSelected', this.selectedLigatureID);
 	}
 
 	/**
@@ -396,6 +403,8 @@ export class ProjectEditor {
 			console.warn(`Component ID ${id} does not exist in the project.`);
 			this._selectedComponentID = getFirstID(this.project.components);
 		}
+
+		this.publish('whichComponentIsSelected', this.selectedComponentID);
 	}
 
 	/**
@@ -420,6 +429,8 @@ export class ProjectEditor {
 			console.warn(`Kern ID ${id} does not exist in the project.`);
 			this._selectedKernID = getFirstID(this.project.kerns);
 		}
+
+		this.publish('whichKernIsSelected', this.selectedKernID);
 	}
 
 	/**
@@ -474,24 +485,24 @@ export class ProjectEditor {
 	 * For Ligatures, Components, and Kerns, it's just the first item.
 	 */
 	selectFallbackItem(page = false) {
-		log(`ProjectEditor.selectFallbackItem`, 'start');
+		// log(`ProjectEditor.selectFallbackItem`, 'start');
 		const itemType = page || this.nav.page;
 
 		if (itemType === 'Glyph edit') {
 			const selectedRange = this.selectedGlyphRange;
 			if (selectedRange) {
 				if (areGlyphRangesEqual(getUnicodeBlockByName('Basic Latin'), selectedRange)) {
-					log(`Selected range detected as BASIC LATIN`);
+					// log(`Selected range detected as BASIC LATIN`);
 
 					for (let i = 0; i < basicLatinOrder.length; i++) {
-						log(`checking id ${basicLatinOrder[i]}`);
+						// log(`checking id ${basicLatinOrder[i]}`);
 						if (this.project.glyphs[basicLatinOrder[i]]) {
 							this.selectedGlyphID = decToHex(basicLatinOrder[i]);
 							break;
 						}
 					}
 				} else {
-					log(`Selected Range detected as ${selectedRange.name}`);
+					// log(`Selected Range detected as ${selectedRange.name}`);
 
 					for (let id = selectedRange.begin; id <= selectedRange.end; id++) {
 						if (this.project.glyphs[id]) {
@@ -501,18 +512,18 @@ export class ProjectEditor {
 					}
 				}
 			}
-			log(`new selectedGlyphID: ${this.selectedGlyphID}`);
+			// log(`new selectedGlyphID: ${this.selectedGlyphID}`);
 		} else if (itemType === 'Components') {
 			this.selectedComponentID = getFirstID(this.project.components);
-			log(`new selectedComponentID: ${this.selectedComponentID}`);
+			// log(`new selectedComponentID: ${this.selectedComponentID}`);
 		} else if (itemType === 'Ligatures') {
 			this.selectedLigatureID = getFirstID(this.project.ligatures);
-			log(`new selectedLigatureID: ${this.selectedLigatureID}`);
+			// log(`new selectedLigatureID: ${this.selectedLigatureID}`);
 		} else if (itemType === 'Kern') {
 			this.selectedKernID = getFirstID(this.project.kerning);
-			log(`new selectedKernID: ${this.selectedKernID}`);
+			// log(`new selectedKernID: ${this.selectedKernID}`);
 		}
-		log(`ProjectEditor.selectFallbackItem`, 'end');
+		// log(`ProjectEditor.selectFallbackItem`, 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -538,7 +549,7 @@ export class ProjectEditor {
 		for (let p = 0; p < selectedPoints.length; p++) {
 			parentPath = selectedPoints[p].parent;
 			// if(!msPaths.isSelected(parentPath)) {
-			// 	log(`selecting path`);
+				log(`selecting path`);
 			// 	msPaths.add(parentPath);
 			// 	changed = true;
 			// }
@@ -739,11 +750,13 @@ export class ProjectEditor {
 	 * @param {boolean} overwrite - for Electron app, overwrite current working file
 	 */
 	saveGlyphrProjectFile() {
-		log(`ProjectEditor.saveGlyphrProjectFile`, 'start');
+		// log(`ProjectEditor.saveGlyphrProjectFile`, 'start');
 
 		// log('' + this.project.settings.app.formatSaveFile);
 
 		let saveData = this.project.save();
+
+		// log(`Calling new GlyphrStudioProject from saveGlyphrProjectFile`);
 		const defaultValues = new GlyphrStudioProject();
 		saveData = removeDefaultValues(saveData, defaultValues, 'settings');
 
@@ -760,7 +773,7 @@ export class ProjectEditor {
 		saveFile(fileName, saveData);
 		showToast('Saved Glyphr Studio Project File');
 		this.setProjectAsSaved();
-		log(`ProjectEditor.saveGlyphrProjectFile`, 'end');
+		// log(`ProjectEditor.saveGlyphrProjectFile`, 'end');
 	}
 
 	setProjectAsSaved() {}

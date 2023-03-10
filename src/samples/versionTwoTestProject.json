@@ -692,7 +692,7 @@
     "liga-A-B": {
       "id": "liga-A-B",
 			"objType": "Ligature",
-			"name": "Ligature AB",
+			"name": "Ligature A B",
 			"ligature": [65, 66],
       "advanceWidth": 655,
       "paths": [

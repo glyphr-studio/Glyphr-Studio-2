@@ -274,7 +274,7 @@ function postValidationCallback(validationResult) {
 	}
 }
 
-function importProjectDataAndNavigate(glyphrStudioProjectFile = new GlyphrStudioProject()) {
+function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	closeEveryTypeOfDialog();
 	const editor = getCurrentProjectEditor();
 	editor.project = importGlyphrProjectFromText(glyphrStudioProjectFile);
