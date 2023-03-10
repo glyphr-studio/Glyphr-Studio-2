@@ -460,7 +460,7 @@ function sortLigatures() {
 
 	for (var s = 0; s < sortarr.length; s++) {
 		temp = sortarr[s];
-		_GP.ligatures[temp.id] = temp.ligature;
+		_GP.ligatures[temp.id] = temp.gsub;
 	}
 
 	return sortarr;

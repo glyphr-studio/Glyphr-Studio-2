@@ -182,7 +182,7 @@ export function ioSVG_importSVGfont(font) {
 					id: newID,
 					paths: newPaths,
 					advanceWidth: advanceWidth,
-					ligature: hexesToHexArray(uni),
+					gsub: hexesToHexArray(uni),
 				});
 			}
 

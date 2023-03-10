@@ -395,15 +395,17 @@ export class GlyphrStudioProject {
 			result.push(this.ligatures[key]);
 		});
 
-		result.sort(function (a, b) {
-			if (a.chars.length === b.chars.length) return a.chars.localeCompare(b.chars);
-			else return a.chars.length - b.chars.length;
-		});
+		result.sort(sortLigatures);
 
 		// log(result);
 		// log(`GlyphrStudioProject GET sortedLigatures`, 'end');
 		return result;
 	}
+}
+
+export function sortLigatures(a, b){
+	if (a.chars.length === b.chars.length) return a.chars.localeCompare(b.chars);
+	else return a.chars.length - b.chars.length;
 }
 
 // --------------------------------------------------------------

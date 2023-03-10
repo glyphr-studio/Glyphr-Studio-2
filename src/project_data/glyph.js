@@ -36,7 +36,7 @@ export class Glyph extends GlyphElement {
 		advanceWidth = 0,
 		ratioLock = false,
 		usedIn = [],
-		ligature = [],
+		gsub = [],
 		contextGlyphs = '',
 	} = {}) {
 		// log(`Glyph.constructor`, 'start');
@@ -47,7 +47,7 @@ export class Glyph extends GlyphElement {
 		this.advanceWidth = advanceWidth;
 		this.ratioLock = ratioLock;
 		this.usedIn = usedIn;
-		this.ligature = ligature;
+		this.gsub = gsub;
 		this.contextGlyphs = contextGlyphs;
 
 		this.objType = objType;
@@ -74,7 +74,7 @@ export class Glyph extends GlyphElement {
 		if (this.advanceWidth !== 0) re.advanceWidth = this.advanceWidth;
 		if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
 		if (this.usedIn.length) re.usedIn = this.usedIn;
-		if (this.ligature.length) re.ligature = this.ligature;
+		if (this.gsub.length) re.gsub = this.gsub;
 
 		if (this.paths && this.paths.length) {
 			re.paths = [];
@@ -109,7 +109,7 @@ export class Glyph extends GlyphElement {
 		if (this.advanceWidth !== 0) re += `${ind}advanceWidth: ${this.advanceWidth}\n`;
 		if (this.ratioLock !== false) re += `${ind}ratioLock: ${this.ratioLock}\n`;
 		if (this.usedIn.length) re += `${ind}usedIn: ${JSON.stringify(this.usedIn)}\n`;
-		if (this.ligature.length) re += `${ind}ligature: ${JSON.stringify(this.ligature)}\n`;
+		if (this.gsub.length) re += `${ind}gsub: ${JSON.stringify(this.gsub)}\n`;
 
 		if (this.paths && this.paths.length) {
 			re += `${ind}paths: [\n`;
@@ -175,12 +175,12 @@ export class Glyph extends GlyphElement {
 	}
 
 	/**
-	 * get ligature
+	 * get gsub
 	 * @returns {array}
 	 */
-	get ligature() {
-		// log(`Glyph.ligature Getter - is array? ${Array.isArray(this._ligature)}`);
-		return this._ligature || [];
+	get gsub() {
+		// log(`Glyph.gsub Getter - is array? ${Array.isArray(this._gsub)}`);
+		return this._gsub || [];
 	}
 
 	// computed properties
@@ -311,9 +311,9 @@ export class Glyph extends GlyphElement {
 		// log(`Glyph.char`, 'start');
 		// log(this);
 		let result;
-		if (this.ligature.length) {
-			// log(`this.ligature.length: ${this.ligature.length}`);
-			result = this.ligature.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
+		if (this.gsub.length) {
+			// log(`this.gsub.length: ${this.gsub.length}`);
+			result = this.gsub.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
 		} else {
 			result = hexesToChars(this.id);
 		}
@@ -431,15 +431,15 @@ export class Glyph extends GlyphElement {
 	}
 
 	/**
-	 * set ligature
-	 * @param {array} ligature
+	 * set gsub
+	 * @param {array} gsub
 	 */
-	set ligature(ligature) {
-		// log(`Glyph SET ligature`, 'start');
-		// log(`ligature: ${ligature}`);
+	set gsub(gsub) {
+		// log(`Glyph SET gsub`, 'start');
+		// log(`gsub: ${gsub}`);
 
-		this._ligature = ligature || [];
-		// log(`Glyph SET ligature`, 'end');
+		this._gsub = gsub || [];
+		// log(`Glyph SET gsub`, 'end');
 	}
 
 	// computed properties
