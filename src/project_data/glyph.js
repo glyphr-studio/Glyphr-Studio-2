@@ -3,8 +3,9 @@ import { isAllZeros, getOverallMaxes, Maxes } from './maxes.js';
 import { Path } from './path.js';
 import { ComponentInstance } from './component_instance.js';
 import { hasNonValues, isVal, trim } from '../common/functions.js';
-import { hexToHTML, hexesToChars } from '../common/character_ids.js';
+import { hexesToChars } from '../common/character_ids.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
+import { log } from '../app/main.js';
 // import { log } from '../app/main.js';
 
 /**
@@ -280,7 +281,21 @@ export class Glyph extends GlyphElement {
 	 */
 	get name() {
 		// log('Glyph GET name', 'start');
-		let name = this._name || getUnicodeName(this.id);
+		let name = this._name;
+		// log(`name: ${name}`);
+
+		if (!name) {
+			if (this.id.startsWith('liga')) {
+				let suffix = this.id.substring(5);
+				name = `Ligature ${suffix.replaceAll('-', ' ')}`;
+			} else if (this.id.startsWith('comp')) {
+				let suffix = this.id.substring(5);
+				name = `Component ${suffix}`;
+			} else {
+				name = getUnicodeName(this.id);
+			}
+			this._name = name;
+		}
 		// log(`ID: ${this.id} result: ${name}`);
 		// log('Glyph GET name', 'end');
 		return name;
@@ -294,6 +309,7 @@ export class Glyph extends GlyphElement {
 	 */
 	get char() {
 		// log(`Glyph.char`, 'start');
+		// log(this);
 		let result;
 		if (this.ligature.length) {
 			// log(`this.ligature.length: ${this.ligature.length}`);
@@ -308,15 +324,6 @@ export class Glyph extends GlyphElement {
 
 	get chars() {
 		return this.char;
-	}
-
-	/**
-	 * get HTML Char Code
-	 * @returns {String}
-	 */
-	get charCode() {
-		const code = hexToHTML(this.id);
-		return code || '';
 	}
 
 	/**

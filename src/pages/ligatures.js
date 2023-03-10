@@ -97,8 +97,8 @@ export function makePage_Ligatures() {
 	editor.subscribe({
 		topic: 'whichLigatureIsSelected',
 		subscriberID: 'nav.ligatureChooserButton',
-		callback: (newLigatureID) => {
-			l2.innerHTML = makeNavButtonContent(lookUpGlyphName(newLigatureID, true), 'EDITING');
+		callback: () => {
+			l2.innerHTML = makeNavButtonContent(editor.selectedLigature.name, 'EDITING');
 		},
 	});
 
@@ -251,7 +251,6 @@ function addLigature(sequence) {
 	project.ligatures[newID] = new Glyph({
 		id: newID,
 		objType: 'Ligature',
-		name: `Ligature ${sequence}`,
 		ligature: sequence.split('').map((char) => char.codePointAt(0)),
 	});
 
@@ -259,6 +258,10 @@ function addLigature(sequence) {
 }
 
 export function makeLigatureID(sequence) {
+	log(`makeLigatureID`, 'start');
+	log(`sequence: ${sequence}`);
+
+	log(`makeLigatureID`, 'end');
 	return sequence.split('').reduce((acc, value) => `${acc}-${value}`, 'liga');
 }
 

@@ -1,4 +1,5 @@
 // import { log } from '../app/main.js';
+import { log } from '../app/main.js';
 import { validateAsHex } from '../common/character_ids.js';
 
 /**
@@ -40,11 +41,11 @@ export function lookUpGlyphName(id, forceLongName = false) {
  * @returns {string} - name
  */
 export function getUnicodeName(codePoint) {
-	// log('getUnicodeName', 'start');
-	// log('passed ' + codePoint);
+	log('getUnicodeName', 'start');
+	log('passed ' + codePoint);
 
 	codePoint = validateAsHex(codePoint);
-	// log('normalized ' + codePoint);
+	log('normalized ' + codePoint);
 
 	let name;
 	const chn = codePoint * 1;
@@ -55,9 +56,8 @@ export function getUnicodeName(codePoint) {
 		name = unicodeNames[codePoint] || '[name not found]';
 	}
 
-	// log(`name: ${name}`);
-
-	// log('getUnicodeName', 'end');
+	log(`name: ${name}`);
+	log('getUnicodeName', 'end');
 	return name;
 }
 

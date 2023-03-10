@@ -1,6 +1,6 @@
-import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { round } from '../common/functions.js';
-import { hexesToChars, parseCharsInputAsHex } from '../common/character_ids.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp, log } from '../app/main.js';
+import { generateNewID, round } from '../common/functions.js';
+import { hexesToChars, hexesToHexArray, parseCharsInputAsHex } from '../common/character_ids.js';
 import { showError } from '../controls/dialogs/dialogs.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
@@ -16,6 +16,7 @@ import {
 	ioSVG_getTags,
 } from './svg_outline_import.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
+import { HKern } from '../project_data/h_kern.js';
 
 /**
 	IO > Import > SVG Font
@@ -80,6 +81,7 @@ export function ioSVG_importSVGfont(font) {
 	let charCounter = 0;
 
 	function importOneGlyph() {
+		// log(`importOneGlyph`, 'start');
 		updateProgressIndicator(`
 			Importing glyph:
 			<span class="progress-indicator__counter">${charCounter}</span>
@@ -100,7 +102,6 @@ export function ioSVG_importSVGfont(font) {
 		const attributes = chars[charCounter].attributes;
 
 		// Get the appropriate unicode decimal for this char
-		// log('importOneGlyph', 'start');
 		// log('starting  unicode \t' + attributes.unicode + ' \t ' + attributes['glyph-name']);
 
 		let uni = parseCharsInputAsHex(attributes.unicode);
@@ -154,6 +155,8 @@ export function ioSVG_importSVGfont(font) {
 
 			if (uni.length === 1) {
 				// It's a GLYPH
+				// log(`Detected Glyph`);
+
 				// Get some range data
 				uni = uni[0];
 				minChar = Math.min(minChar, uni);
@@ -161,6 +164,7 @@ export function ioSVG_importSVGfont(font) {
 				if (1 * uni > latinExtendedB.end) customGlyphRange.push(uni);
 
 				finalGlyphs[uni] = new Glyph({
+					id: uni,
 					paths: newPaths,
 					advanceWidth: advanceWidth,
 				});
@@ -168,13 +172,17 @@ export function ioSVG_importSVGfont(font) {
 					project.settings.app.showNonCharPoints = true;
 			} else {
 				// It's a LIGATURE
+				// log(`Detected Ligature`);
 				uni = uni.join('');
+				// log(`uni: ${uni}`);
 				const chars = hexesToChars(uni);
+				// log(`chars: ${chars}`);
 				const newID = makeLigatureID(chars);
 				finalLigatures[newID] = new Glyph({
+					id: newID,
 					paths: newPaths,
 					advanceWidth: advanceWidth,
-					ligature: chars.split(''),
+					ligature: hexesToHexArray(uni),
 				});
 			}
 
@@ -185,7 +193,7 @@ export function ioSVG_importSVGfont(font) {
 		// finish loop
 		setTimeout(importOneGlyph, 10);
 
-		// log('importOneGlyph', 'end');
+		// log(`importOneGlyph`, 'end');
 	}
 
 	/*

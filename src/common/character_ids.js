@@ -1,4 +1,5 @@
 // import { log } from '../app/main.js';
+import { log } from '../app/main.js';
 import { isInteger } from './functions.js';
 
 /**
@@ -332,24 +333,26 @@ export function hexesToXMLHexes(input) {
 
 /**
  * Take user input and try to get Unicode out
+ * 		Unicode: 'U+123;U+123;'
+ * 		Hexadecimal: '0x1230x123'
+ * 		Chars: 'abc'
  * @param {string} input - input string
  * @returns {array} - sanitized array of strings
  */
 export function parseCharsInputAsHex(input) {
-	// Takes any kind or number of input
-	// and returns an array of hex values
-	// Unicode: 'U+123;U+123;'
-	// Hexadecimal: '0x1230x123'
-	// Chars: 'abc'
-
 	// log('parseCharsInputAsHex', 'start');
-	// log('passed ' + input);
+	// log(`input: ${input}`);
 
-	if (!input) return false;
+	if (!input) {
+		// log(`input is false, returning false`);
+		// log('parseCharsInputAsHex', 'end');
+		return false;
+	}
 
 	let entries = [];
 	const results = [];
 	input = normalizePrefixes(input);
+	input = input.replaceAll(';', '');
 
 	if (hasPrefix(input, 'U+')) {
 		entries = input.split('U+');

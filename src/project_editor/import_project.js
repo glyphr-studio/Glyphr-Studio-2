@@ -16,12 +16,13 @@ import { makeLigatureID } from '../pages/ligatures.js';
  * @returns {GlyphrStudioProject}
  */
 export function importGlyphrProjectFromText(importedProject) {
-	log('importGlyphrProjectFromText', 'start');
-	log('passed:');
-	log(importedProject);
+	// log('importGlyphrProjectFromText', 'start');
+	// log('passed:');
+	// log(importedProject);
+	if(!importedProject) importedProject = new GlyphrStudioProject();
 
 	const version = tryToGetProjectVersion(importedProject);
-	log(`version found: ${version.major}.${version.minor}.${version.patch}.${version.preRelease}`);
+	// log(`version found: ${version.major}.${version.minor}.${version.patch}.${version.preRelease}`);
 
 	if (version.major === 1) {
 		importedProject = migrate_Project(importedProject);
@@ -32,7 +33,9 @@ export function importGlyphrProjectFromText(importedProject) {
 	importedProject.settings.project.latestVersion = app.version;
 
 	// Hydrate after all updates
-	log('importGlyphrProjectFromText', 'end');
+
+	// log(`Calling new GlyphrStudioProject from importGlyphrProjectFromText`);
+	// log('importGlyphrProjectFromText', 'end');
 	return new GlyphrStudioProject(importedProject);
 }
 
@@ -51,6 +54,7 @@ export function importGlyphrProjectFromText(importedProject) {
 function migrate_Project(oldProject) {
 	// log('migrate_Project', 'start');
 
+	// log(`Calling new GlyphrStudioProject from migrate_Project`);
 	const newProject = new GlyphrStudioProject();
 
 	// Glyphs

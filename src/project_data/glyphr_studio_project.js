@@ -2,10 +2,11 @@ import { clone, round, trim } from '../common/functions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
-import { decToHex, hexToHTML, validateAsHex } from '../common/character_ids.js';
+import { decToHex, validateAsHex } from '../common/character_ids.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 // import { log } from '../app/main.js';
 import { GlyphRange } from './glyph_range.js';
+import { log } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -16,9 +17,7 @@ export class GlyphrStudioProject {
 	 * @param {object} newProject - Glyphr Studio Project File JSON
 	 */
 	constructor(newProject = {}) {
-		// log('GlyphrStudioProject.constructor', 'start');
-		// log('passed newProject:');
-		// log(newProject);
+		log('GlyphrStudioProject.constructor', 'start');
 
 		// Set up all internal default values first
 		this.settings = {
@@ -95,47 +94,59 @@ export class GlyphrStudioProject {
 		// ---------------------------------------------------------------
 		// Handle passed object
 		// ---------------------------------------------------------------
-		// log("\t passed: ");
-		// log(newProject);
+		log('\npassed: ');
+		log(newProject);
 
-		// Keep glyph ranges of passed project
+		// Glyph Ranges
 		if (newProject?.settings?.project?.glyphRanges) {
 			newProject.settings.project.glyphRanges.forEach((range) => {
 				this.settings.project.glyphRanges.push(new GlyphRange(range));
 			});
 		}
-		// log(`Finished importing Glyph Ranges`);
-		// log(this.settings.project.glyphRanges);
+		log('finished importing Glyph Ranges');
+		log(this.settings.project.glyphRanges);
 
-		// Merge with templates
+		// Settings
 		if (newProject.settings) {
-			// log('merging settings from newProject');
+			log('merging settings from newProject');
 			this.settings = merge(this.settings, newProject.settings);
 		}
 		this.settings.project.id = this.settings.project.id || makeProjectID();
 		this.settings.font.descent = -1 * Math.abs(this.settings.font.descent);
-		// log('finished merging settings');
-		// log(this.settings);
+		log('finished merging settings - result:');
+		log(this.settings);
 
 		// Components
+		log(`\nStarting components - passed:`);
+		log(newProject.components);
 		hydrateProjectItems(Glyph, newProject.components, this.components);
-		// log('finished hydrating components');
+		log('finished hydrating components - result:');
+		log(this.components);
 
 		// Glyphs
+		log(`\nStarting glyphs - passed:`);
+		log(newProject.glyphs);
 		hydrateProjectItems(Glyph, newProject.glyphs, this.glyphs);
-		// log('finished hydrating glyphs');
-		// log(this.glyphs);
+		log('finished hydrating glyphs - result:');
+		log(this.glyphs);
 
 		// Ligatures
+		log(`\nStarting ligatures - passed:`);
+		log(newProject.ligatures);
 		hydrateProjectItems(Glyph, newProject.ligatures, this.ligatures);
-		// log('finished hydrating ligatures');
+		log('finished hydrating ligatures - result:');
+		log(this.ligatures);
 
 		// Kerning
+		log(`\nStarting kerning - passed:`);
+		log(newProject.kerning);
 		hydrateProjectItems(HKern, newProject.kerning, this.kerning);
-		// log('finished hydrating kern pairs');
+		log('finished hydrating kern pairs - result:');
+		log(this.kerning);
 
-		// log(this);
-		// log('GlyphrStudioProject.constructor', 'end');
+		log('\n\nfinished EVERYTHING - result:');
+		log(this);
+		log('GlyphrStudioProject.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -299,8 +310,7 @@ export class GlyphrStudioProject {
 		const item = this.getItem(id);
 		if (id.indexOf('0x', 2) > -1) {
 			// ligature
-			// log('ligature - returning ' + hexToHTML(id));
-			return item.name || hexToHTML(id);
+			return item.name;
 		} else {
 			// Component
 			// log('getGlyphName - inexplicably fails, returning [name not found]\n');
@@ -438,7 +448,7 @@ function hydrateProjectItems(GlyphrStudioItem, source, destination) {
 	source = source || {};
 	for (const key of Object.keys(source)) {
 		if (source[key]) {
-			destination[validateAsHex(key)] = new GlyphrStudioItem(source[key]);
+			destination[key] = new GlyphrStudioItem(source[key]);
 		}
 	}
 }
