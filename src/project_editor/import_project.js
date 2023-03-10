@@ -70,7 +70,7 @@ function migrate_Project(oldProject) {
 		const newID = makeLigatureID(chars);
 		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID]);
 		newProject.ligatures[newID].id = newID;
-		newProject.ligatures[newID].ligature = chars.split('');
+		newProject.ligatures[newID].gsub = chars.split('');
 	});
 
 	// TODO Components

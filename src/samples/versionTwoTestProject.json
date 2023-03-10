@@ -1,10 +1,10 @@
 {
   "settings": {
     "project": {
-      "name": "Alpha Test Font",
+      "name": "GS2 Test Font",
       "latestVersion": "2.0.0-beta.1",
       "initialVersion": "2.0.0-alpha1",
-      "id": "g2_8H1LCYK4G2",
+      "id": "g2_test_font",
       "glyphRanges": [
         {
           "begin": 33,
@@ -49,7 +49,7 @@
       }
     },
     "font": {
-      "family": "My Font",
+      "family": "GS2 Test Font",
       "style": "Regular",
       "version": "1.0",
       "description": "",
@@ -693,7 +693,7 @@
       "id": "liga-A-B",
 			"objType": "Ligature",
 			"name": "Ligature A B",
-			"ligature": [65, 66],
+			"gsub": ["0x41", "0x42"],
       "advanceWidth": 655,
       "paths": [
         {
