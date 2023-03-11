@@ -1,6 +1,6 @@
 import { getCurrentProject, log } from '../app/main.js';
-import { round } from '../common/functions.js';
-import { showToast } from '../controls/dialogs/dialogs.js';
+import { pause, round } from '../common/functions.js';
+import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
 import { decToHex, parseCharsInputAsHex } from '../common/character_ids.js';
 import { getUnicodeShortName } from '../lib/unicode_names.js';
 import openTypeJS from '../lib/opentypejs_1-3-1.js';
@@ -12,32 +12,55 @@ import { sortLigatures } from '../project_data/glyphr_studio_project.js';
 	Using OpenType.js to convert a Glyphr Studio
 	Project into OpenType.js format for saving.
 **/
-const options = {};
-const exportGlyphs = [];
-let glyphIndexNumber = 0;
-const exportLigatures = [];
-const privateUseArea = [];
+
 const ligatureSubstitutions = [];
 const codePointGlyphIndexTable = {};
-let currentExportLigatureCodePoint = 0xe000;
-let currentExportNumber = 0;
-let currentExportItem = {};
 
-export function ioFont_exportFont() {
+export async function ioFont_exportFont() {
 	// log('ioFont_exportFont', 'start');
 
-	firstExportStep();
-	populateExportList();
-	currentExportItem = exportGlyphs[0];
-	generateOneGlyph();
+	const options = createOptionsObject();
+	const exportLists = populateExportList();
 
+	let exportedItem;
+	for (let g = 0; g < exportLists.glyphs.length; g++) {
+		exportedItem = await generateOneGlyph(exportLists.glyphs[g]);
+		options.glyphs.push(exportedItem);
+	}
+
+	for (let l = 0; l < exportLists.ligatures.length; l++) {
+		exportedItem = await generateOneLigature(exportLists.ligatures[l]);
+		options.glyphs.push(exportedItem);
+	}
+
+	showToast('Finalizing...');
+
+	options.glyphs.sort(function (a, b) {
+		return a.unicode - b.unicode;
+	});
+
+	// Create Font
+	// log('NEW options ARG TO FONT');
+	// log(options);
+	const font = new openTypeJS.Font(options);
+	ligatureSubstitutions.forEach((sub) => font.substitution.addLigature('liga', sub));
+	// log('Font object:');
+	// log(font.toTables());
+
+	font.download();
+	await pause();
+	showToast('Export complete!');
+	await pause(1000);
+
+	closeAllToasts();
 	// log('ioFont_exportFont', 'end');
 }
 
-function firstExportStep() {
-	// log('firstExportStep', 'start');
+function createOptionsObject() {
+	// log('createOptionsObject', 'start');
 
 	// Add settings
+	const options = {};
 	const project = getCurrentProject();
 	const fontSettings = project.settings.font;
 
@@ -83,12 +106,15 @@ function firstExportStep() {
 	);
 
 	codePointGlyphIndexTable['0x0'] = 0;
-	// log('firstExportStep', 'end');
+	return options;
+	// log('createOptionsObject', 'end');
 }
 
 function populateExportList() {
 	// log('populateExportList', 'start');
-	// Add Glyphs and Ligatures
+
+	// Add Glyphs
+	const exportGlyphs = [];
 	const project = getCurrentProject();
 	let thisGlyph;
 	for (const key of Object.keys(project.glyphs)) {
@@ -106,10 +132,9 @@ function populateExportList() {
 	exportGlyphs.sort(function (a, b) {
 		return a.xc - b.xc;
 	});
-	// log('exportGlyphs');
-	// log(exportGlyphs);
 
 	// Add Ligatures
+	const exportLigatures = [];
 	// const ligWithCodePoint;
 	for (const key of Object.keys(project.ligatures)) {
 		if (project.ligatures[key]) {
@@ -136,14 +161,16 @@ function populateExportList() {
 			}
 		}
 	}
-	exportLigatures.sort(sortLigatures);
+	// exportLigatures.sort(sortLigatures);
 	// log('exportLigatures');
 	// log(exportLigatures);
+
 	// log('populateExportList', 'end');
+	return { glyphs: exportGlyphs, ligatures: exportLigatures };
 }
 
-function generateOneGlyph() {
-	// log('generateOneGlyph', 'start');
+async function generateOneGlyph(currentExportItem) {
+	log('generateOneGlyph', 'start');
 	// export this glyph
 	const project = getCurrentProject();
 	const glyph = currentExportItem.xg;
@@ -151,7 +178,7 @@ function generateOneGlyph() {
 	const comb = project.settings.app.combinePathsOnExport;
 	const maxes = glyph.maxes;
 
-	// log(glyph.name);
+	log(glyph.name);
 
 	showToast('Exporting<br>' + glyph.name, 999999);
 
@@ -176,121 +203,60 @@ function generateOneGlyph() {
 		path: thisPath,
 	});
 
-	// log(thisGlyph);
-
 	// Add this finished glyph
-	options.glyphs.push(thisGlyph);
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.id)] = thisIndex;
 
-	// start the next one
-	currentExportNumber++;
+	await pause();
+	// log(thisGlyph);
+	log('generateOneGlyph', 'end');
+	return thisGlyph;
+}
 
-	if (currentExportNumber < exportGlyphs.length) {
-		currentExportItem = exportGlyphs[currentExportNumber];
-		setTimeout(generateOneGlyph, 10);
-	} else {
-		currentExportNumber = 0;
-		currentExportItem = exportLigatures[0];
-		setTimeout(generateOneLigature, 10);
+async function generateOneLigature(currentExportItem) {
+	log(`generateOneLigature`, 'start');
+	log(currentExportItem);
+
+	// export this glyph
+	const project = getCurrentProject();
+	const liga = currentExportItem.xg;
+	const comb = project.settings.app.combinePathsOnExport;
+	const maxes = liga.maxes;
+
+	// log(`generateOneLigature: ${ligaID}\t${liga.name}\t${getNameForExport(ligaID)}`);
+	showToast('Exporting<br>' + liga.name, 999999);
+
+	if (comb && liga.paths.length <= project.settings.app.maxCombinePathsOnExport) {
+		liga.combineAllShapes(true);
 	}
 
-	// log('generateOneGlyph', 'end');
+	const thisPath = liga.makeOpenTypeJSpath(new openTypeJS.Path());
+	const thisIndex = getNextGlyphIndexNumber();
+
+	const glyphInfo = {
+		name: liga.name,
+		index: thisIndex,
+		advanceWidth: round(liga.advanceWidth || 1), // has to be non-zero
+		path: thisPath,
+		xMin: round(maxes.xMin),
+		xMax: round(maxes.xMax),
+		yMin: round(maxes.yMin),
+		yMax: round(maxes.yMax),
+	};
+
+	// Add substitution info to font
+	const indexList = liga.gsub.map((v) => codePointGlyphIndexTable[v]);
+	// log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex} which is ${parseCharsInputAsHex(ligaCodePoint)}`);
+	ligatureSubstitutions.push({ sub: indexList, by: thisIndex });
+	// log(glyphInfo);
+
+	await pause();
+	log(`generateOneLigature`, 'end');
+	return new openTypeJS.Glyph(glyphInfo);
 }
 
-function generateOneLigature() {
-	// log('\n generateOneLigature - START');
-
-	if (currentExportNumber < exportLigatures.length) {
-		// export this glyph
-		const project = getCurrentProject();
-		const liga = currentExportItem.xg;
-		// const ligaID = currentExportItem.xc;
-		const comb = project.settings.app.combinePathsOnExport;
-
-		// log(`generateOneLigature: ${ligaID}\t${liga.name}\t${getNameForExport(ligaID)}`);
-		showToast('Exporting<br>' + liga.name, 999999);
-
-		if (comb && liga.paths.length <= project.settings.app.maxCombinePathsOnExport) {
-			liga.combineAllShapes(true);
-		}
-
-		const thisPath = liga.makeOpenTypeJSpath(new openTypeJS.Path());
-		const ligaCodePoint = getNextLigatureCodePoint(currentExportLigatureCodePoint);
-		const thisIndex = getNextGlyphIndexNumber();
-
-		const glyphInfo = {
-			name: liga.name,
-			unicode: ligaCodePoint,
-			index: thisIndex,
-			advanceWidth: round(liga.advanceWidth || 1), // has to be non-zero
-			path: thisPath,
-		};
-
-		// Add ligature glyph to the font
-		options.glyphs.push(new openTypeJS.Glyph(glyphInfo));
-
-		// Add substitution info to font
-		const indexList = liga.gsub.map(v => codePointGlyphIndexTable[v]);
-		// log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex} which is ${parseCharsInputAsHex(ligaCodePoint)}`);
-
-		ligatureSubstitutions.push({ sub: indexList, by: thisIndex });
-		// log(glyphInfo);
-
-		// start the next one
-		currentExportNumber++;
-		currentExportItem = exportLigatures[currentExportNumber];
-		setTimeout(generateOneLigature, 10);
-	} else {
-		showToast('Finalizing...', 10);
-		setTimeout(lastExportStep, 10);
-	}
-}
-
-function getNextGlyphIndexNumber() {
-	glyphIndexNumber++;
-	return glyphIndexNumber;
-}
-
-function getNextLigatureCodePoint(point) {
-	while (point < 0xf8ff) {
-		if (privateUseArea.includes(point)) {
-			point++;
-		} else {
-			privateUseArea.push(point);
-			return point;
-		}
-	}
-
-	// Fallback.  This really shouldn't happen... but if somebody
-	// has used the entire Private Use area, I guess we'll just
-	// start throwing Ligatures into the Korean block?
-
-	console.warn(`
-		The entire Unicode Private Use Area (U+E000 to U+F8FF) seems to be taken.
-		Ligatures will now be added to the block starting at U+AC00.
-	`);
-	point = 0xac00;
-	return getNextLigatureCodePoint();
-}
-
-function lastExportStep() {
-	// log('lastExportStep', 'start');
-	options.glyphs.sort(function (a, b) {
-		return a.unicode - b.unicode;
-	});
-
-	// Create Font
-	// log('NEW options ARG TO FONT');
-	// log(options);
-	const font = new openTypeJS.Font(options);
-
-	ligatureSubstitutions.forEach(sub => font.substitution.addLigature('liga', sub));
-
-	// log('Font object:');
-	// log(font.toTables());
-
-	font.download();
-	// log('lastExportStep', 'end');
+function* getNextGlyphIndexNumber() {
+	let currentIndex = 0;
+	yield currentIndex++;
 }
 
 function generateNotdefGlyph() {

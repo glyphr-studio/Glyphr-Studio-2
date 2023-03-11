@@ -290,6 +290,20 @@ export function duplicates(v, i, a) {
 	return a.indexOf(v) === i;
 }
 
+/**
+ * Pauses execution to allow for the UI to display
+ * rapid updates
+ * @param {number} ms - milliseconds to pause
+ * @returns {Promise}
+ */
+export function pause(ms = 10) {
+	return new Promise((resolve) => {
+		setTimeout(() => {
+			resolve('fast');
+		}, ms);
+	});
+}
+
 // ---------------------------------------------------------------------
 // Angle and Rotation Stuff
 // ---------------------------------------------------------------------
