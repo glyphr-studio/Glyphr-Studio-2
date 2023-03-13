@@ -17,7 +17,7 @@ const ligatureSubstitutions = [];
 const codePointGlyphIndexTable = {};
 
 export async function ioFont_exportFont() {
-	// log('ioFont_exportFont', 'start');
+	log('ioFont_exportFont', 'start');
 
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
@@ -43,9 +43,13 @@ export async function ioFont_exportFont() {
 	// log('NEW options ARG TO FONT');
 	// log(options);
 	const font = new openTypeJS.Font(options);
-	ligatureSubstitutions.forEach((sub) => font.substitution.addLigature('liga', sub));
-	// log('Font object:');
-	// log(font.toTables());
+	ligatureSubstitutions.forEach((sub) => {
+		log(`Adding ligature to font`);
+		log(sub);
+		font.substitution.addLigature('liga', sub);
+	});
+	log('Font object:');
+	log(font.toTables());
 
 	font.download();
 	await pause();
@@ -53,7 +57,7 @@ export async function ioFont_exportFont() {
 	await pause(1000);
 
 	closeAllToasts();
-	// log('ioFont_exportFont', 'end');
+	log('ioFont_exportFont', 'end');
 }
 
 function createOptionsObject() {
@@ -143,7 +147,7 @@ function populateExportList() {
 			if (project.ligatures[key].gsub.length > 1) {
 				thisGlyph = project.ligatures[key].clone();
 				// log(`\t adding ligature "${thisGlyph.name}"`);
-				exportLigatures.push({ xg: thisGlyph, xc: key });
+				exportLigatures.push({ xg: thisGlyph, xc: key, chars: thisGlyph.chars });
 
 				// ligWithCodePoint = doesLigatureHaveCodePoint(l);
 				// if (ligWithCodePoint) {
@@ -155,13 +159,14 @@ function populateExportList() {
 				// 	if (parseInt(l) >= 0xe000) privateUseArea.push(parseInt(l));
 				// }
 			} else {
-				console.warn(
-					`Skipped exporting ligature ${project.ligatures[key].name} - only has one source character`
-				);
+				console.warn(`
+					Skipped exporting ligature ${project.ligatures[key].name}.
+					Source chars length: ${project.ligatures[key].gsub.length}
+				`);
 			}
 		}
 	}
-	// exportLigatures.sort(sortLigatures);
+	exportLigatures.sort(sortLigatures);
 	// log('exportLigatures');
 	// log(exportLigatures);
 
@@ -190,12 +195,12 @@ async function generateOneGlyph(currentExportItem) {
 	// log('openTypeJS thisPath');
 	// log(thisPath);
 	const thisIndex = getNextGlyphIndexNumber();
-
+	const thisAdvance = round(glyph.advanceWidth || 1); // has to be non-zero
 	const thisGlyph = new openTypeJS.Glyph({
 		name: getUnicodeShortName(decToHex(num)),
 		unicode: parseInt(num),
 		index: thisIndex,
-		advanceWidth: round(glyph.advanceWidth || 1), // has to be non-zero
+		advanceWidth: thisAdvance,
 		xMin: round(maxes.xMin),
 		xMax: round(maxes.xMax),
 		yMin: round(maxes.yMin),
@@ -207,7 +212,7 @@ async function generateOneGlyph(currentExportItem) {
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.id)] = thisIndex;
 
 	await pause();
-	// log(thisGlyph);
+	log(thisGlyph);
 	log('generateOneGlyph', 'end');
 	return thisGlyph;
 }
@@ -231,6 +236,8 @@ async function generateOneLigature(currentExportItem) {
 
 	const thisPath = liga.makeOpenTypeJSpath(new openTypeJS.Path());
 	const thisIndex = getNextGlyphIndexNumber();
+	log(`thisIndex: ${thisIndex}`);
+
 
 	const glyphInfo = {
 		name: liga.name,
@@ -245,7 +252,7 @@ async function generateOneLigature(currentExportItem) {
 
 	// Add substitution info to font
 	const indexList = liga.gsub.map((v) => codePointGlyphIndexTable[v]);
-	// log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex} which is ${parseCharsInputAsHex(ligaCodePoint)}`);
+	log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex}}`);
 	ligatureSubstitutions.push({ sub: indexList, by: thisIndex });
 	// log(glyphInfo);
 
@@ -254,9 +261,10 @@ async function generateOneLigature(currentExportItem) {
 	return new openTypeJS.Glyph(glyphInfo);
 }
 
-function* getNextGlyphIndexNumber() {
-	let currentIndex = 0;
-	yield currentIndex++;
+let currentIndex = 0;
+function getNextGlyphIndexNumber() {
+	currentIndex += 1;
+	return currentIndex;
 }
 
 function generateNotdefGlyph() {
