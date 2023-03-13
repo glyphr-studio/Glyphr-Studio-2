@@ -347,10 +347,8 @@ export class Glyph extends GlyphElement {
 	set id(newID) {
 		// log(`Glyph SET id`, 'start');
 		// log(`passed newID: ${newID}`);
-
 		this._id = newID;
 		// log(`this._id: ${this._id}`);
-
 		// log(`Glyph SET id`, 'end');
 	}
 
