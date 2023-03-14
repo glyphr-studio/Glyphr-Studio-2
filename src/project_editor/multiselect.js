@@ -195,6 +195,7 @@ export class MultiSelectPoints extends MultiSelect {
 		else return this.members[0].pointNumber;
 	}
 
+	/*
 	draw_PathPointHandles() {
 		const sh = this.virtualPath;
 		draw_PathPointHandles(sh.pathPoints);
@@ -209,7 +210,7 @@ export class MultiSelectPoints extends MultiSelect {
 
 		// log('MultiSelectPoints.draw_PathPoints', 'end');
 	}
-
+*/
 	setPointType(t) {
 		for (let m = 0; m < this.members.length; m++) {
 			this.members[m].setPointType(t);
@@ -304,10 +305,12 @@ export class MultiSelectPaths extends MultiSelect {
 	// just define this as nothing so it can be called from the root class
 	// selectPathsThatHaveSelectedPoints() {}
 
+	/*
+	// TODO boolean combine
 	combine() {
 		// log('MultiSelectPaths.combine', 'start');
 		const ns = this.virtualGlyph.clone();
-		ns.flattenGlyph();
+		ns.convertLinksToPaths();
 		const cs = combinePaths(ns.paths);
 
 		// If everything worked, delete original paths and add new ones
@@ -319,7 +322,7 @@ export class MultiSelectPaths extends MultiSelect {
 
 		// log('MultiSelectPaths.combine', 'end');
 	}
-
+*/
 	deletePaths() {
 		// log('deletePath', 'start');
 		const editor = getCurrentProjectEditor();
@@ -333,7 +336,8 @@ export class MultiSelectPaths extends MultiSelect {
 				path = this.members[s];
 
 				if (path.objType === 'ComponentInstance') {
-					removeFromUsedIn(path.link, editor.selectedGlyph);
+					//TODO components
+					// removeFromUsedIn(path.link, editor.selectedGlyph);
 				}
 
 				index = itemPaths.indexOf(path);
@@ -447,6 +451,7 @@ export class MultiSelectPaths extends MultiSelect {
 		return !failed;
 	}
 
+	/*
 	draw_PathPoints() {
 		// log('MultiSelectPaths.draw_PathPoints', 'start');
 		let s;
@@ -458,7 +463,7 @@ export class MultiSelectPaths extends MultiSelect {
 
 		// log('MultiSelectPaths.draw_PathPoints', 'end');
 	}
-
+*/
 	reverseWinding() {
 		for (let m = 0; m < this.members.length; m++) {
 			this.members[m].reverseWinding();

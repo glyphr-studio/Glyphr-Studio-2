@@ -151,7 +151,7 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 	}
 
 	if (getCurrentProject().settings.app.combinePathsOnExport) {
-		gl = new Glyph(gl).flattenGlyph().combineAllPaths(true);
+		gl = new Glyph(gl).convertLinksToPaths().combineAllPaths(true);
 	}
 
 	let pathData = gl.svgPathData;

@@ -287,7 +287,12 @@ export class Glyph extends GlyphElement {
 		if (!name) {
 			if (this.id.startsWith('liga')) {
 				let suffix = this.id.substring(5);
-				name = `Ligature ${suffix.replaceAll('-', ' ')}`;
+				suffix = suffix.split('-');
+				name = 'Ligature ';
+				suffix.forEach((char) => {
+					if (char.length === 1) name += char;
+					else name += hexesToChars(char);
+				});
 			} else if (this.id.startsWith('comp')) {
 				let suffix = this.id.substring(5);
 				name = `Component ${suffix}`;
@@ -308,17 +313,18 @@ export class Glyph extends GlyphElement {
 	 * @returns {string}
 	 */
 	get char() {
-		// log(`Glyph.char`, 'start');
+		// log(`Glyph GET char`, 'start');
 		// log(this);
 		let result;
 		if (this.gsub.length) {
 			// log(`this.gsub.length: ${this.gsub.length}`);
+			// log(this.gsub);
 			result = this.gsub.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
 		} else {
 			result = hexesToChars(this.id);
 		}
 		// log(`result: ${result}`);
-		// log(`Glyph.char`, 'end');
+		// log(`Glyph GET char`, 'end');
 		return result;
 	}
 
@@ -912,31 +918,29 @@ export class Glyph extends GlyphElement {
 	 * Converts all the Component Instances in this Glyph to stand-alone paths
 	 * @returns {Glyph}
 	 */
-	flattenGlyph() {
-		// log(`Glyph.flattenGlyph`, 'start');
+	convertLinksToPaths() {
+		// log(`Glyph.convertLinksToPaths`, 'start');
 
-		const result = [];
-		let ts;
-		let tg;
-		for (let s = 0; s < this.paths.length; s++) {
-			ts = this.paths[s];
-			// log(`path ${s} is ${ts.objType}`);
-
-			if (ts.objType === 'Path') {
-				result.push(ts.save());
-			} else if (ts.objType === 'ComponentInstance') {
-				tg = ts.transformedGlyph;
-				tg = tg.flattenGlyph();
-				for (let c = 0; c < tg.paths.length; c++) {
-					result.push(tg.paths[c].save());
-				}
+		const newPaths = [];
+		let newItem;
+		this.paths.forEach((item) => {
+			if (item.objType === 'Path') {
+				newItem = new Path(item);
+				newItem.parent = this;
+				newPaths.push(newItem);
+			} else if (item.objType === 'ComponentInstance') {
+				item.transformedGlyph.paths.forEach((tgItem) => {
+					newItem = new Path(tgItem);
+					newItem.parent = this;
+					newPaths.push(newItem);
+				});
 			} else {
-				// log('Glyph.flattenGlyph', - ERROR - none path or ci in paths array');
+				// log('Glyph.convertLinksToPaths', - ERROR - none path or ci in paths array');
 			}
-		}
-		this.paths = result;
+		});
+		this.paths = newPaths;
 
-		// log(`Glyph.flattenGlyph`, 'end');
+		// log(`Glyph.convertLinksToPaths`, 'end');
 		return this;
 	}
 
@@ -948,7 +952,7 @@ export class Glyph extends GlyphElement {
 	combineAllPaths() {
 		// log('Glyph.combineAllPaths', 'start');
 
-		this.flattenGlyph();
+		this.convertLinksToPaths();
 		/*
 
 			TODO Boolean Combine get functionality from V1

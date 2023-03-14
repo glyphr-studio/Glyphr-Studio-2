@@ -7,6 +7,7 @@ import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 import { Glyph } from '../project_data/glyph.js';
 import { closeEveryTypeOfDialog, showError, showModalDialog } from '../controls/dialogs/dialogs.js';
+import { charToHex } from '../common/character_ids.js';
 
 /**
  * Page > Ligatures
@@ -14,12 +15,12 @@ import { closeEveryTypeOfDialog, showError, showModalDialog } from '../controls/
  * Comprised of Panels of tools, and the Edit Canvas
  */
 export function makePage_Ligatures() {
-	log(`makePage_Ligatures`, 'start');
+	// log(`makePage_Ligatures`, 'start');
 	const editor = getCurrentProjectEditor();
 	// log('current ProjectEditor');
 	// log(editor);
 	// log(editor.nav);
-	log(`editor.selectedLigatureID: ${editor.selectedLigatureID}`);
+	// log(`editor.selectedLigatureID: ${editor.selectedLigatureID}`);
 	// log(`editor.selectedItemID: ${editor.selectedItemID}`);
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
@@ -64,7 +65,7 @@ export function makePage_Ligatures() {
 		navArea.style.display = 'block';
 		l1.style.width = '100%';
 		l1.style.borderRadius = '4px';
-		log(`makePage_Ligatures`, 'end');
+		// log(`makePage_Ligatures`, 'end');
 		return content;
 	}
 
@@ -159,7 +160,7 @@ export function makePage_Ligatures() {
 		},
 	});
 
-	log(`makePage_Ligatures`, 'end');
+	// log(`makePage_Ligatures`, 'end');
 	return content;
 }
 
@@ -256,11 +257,24 @@ function addLigature(sequence) {
 }
 
 export function makeLigatureID(sequence) {
-	log(`makeLigatureID`, 'start');
-	log(`sequence: ${sequence}`);
+	// log(`makeLigatureID`, 'start');
+	// log(`sequence: ${sequence}`);
 
-	log(`makeLigatureID`, 'end');
-	return sequence.split('').reduce((acc, value) => `${acc}-${value}`, 'liga');
+	let newID = 'liga';
+	let chars = sequence.split('');
+	chars.forEach((char) => {
+		// If basic latin letter, use the letter
+		let code = char.charCodeAt(0);
+		if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+			newID += '-' + char;
+		} else {
+			newID += '-' + charToHex(char);
+		}
+	});
+	// log(`newID: ${newID}`);
+
+	// log(`makeLigatureID`, 'end');
+	return newID;
 }
 
 export function showAddLigatureDialog() {
