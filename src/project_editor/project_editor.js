@@ -107,6 +107,9 @@ export class ProjectEditor {
 
 		this.nav.navigate();
 		this.autoFitIfViewIsDefault();
+		// if (this.nav.isOnEditCanvasPage) {
+		// 	this.history.addState(`Navigated to ${this.nav.page}`);
+		// }
 
 		// log(`ProjectEditor.navigate`, 'end');
 	}
@@ -185,6 +188,7 @@ export class ProjectEditor {
 		if (this.nav.page === 'Glyph edit') return this.selectedGlyphID;
 		else if (this.nav.page === 'Components') return this.selectedComponentID;
 		else if (this.nav.page === 'Ligatures') return this.selectedLigatureID;
+		else if (this.nav.page === 'Kerning') return this.selectedKernID;
 		else return false;
 	}
 
@@ -322,6 +326,40 @@ export class ProjectEditor {
 	// --------------------------------------------------------------
 	// Set Selected Work Items
 	// --------------------------------------------------------------
+
+	/**
+	 * Sets the appropriate Glyph, Ligature, or Component
+	 * based on the current page
+	 */
+	set selectedItem(newItem) {
+		// log(`ProjectEditor SET selectedItem`, 'start');
+
+		if (this.nav.page === 'Glyph edit') {
+			// log(`this.selectedGlyph: ${this.selectedGlyph}`);
+			// log(`ProjectEditor SET selectedItem`, 'end');
+			this.selectedGlyph = newItem;
+		} else if (this.nav.page === 'Components') {
+			// log(`this.selectedComponent: ${this.selectedComponent}`);
+			// log(`ProjectEditor SET selectedItem`, 'end');
+			this.selectedComponent = newItem;
+		} else if (this.nav.page === 'Ligatures') {
+			// log(`this.selectedLigature: ${this.selectedLigature}`);
+			// log(`ProjectEditor SET selectedItem`, 'end');
+			this.selectedLigature = newItem;
+		}
+	}
+
+	/**
+	 * Sets the selected item based on nav.page
+	 * @param {string} id - ID to select
+	 */
+	set selectedItemID(newID) {
+		// should this detect ID format?
+		if (this.nav.page === 'Glyph edit') this.selectedGlyphID = newID;
+		else if (this.nav.page === 'Components') this.selectedComponentID = newID;
+		else if (this.nav.page === 'Ligatures') this.selectedLigatureID = newID;
+		else if (this.nav.page === 'Kerning') this.selectedKernID = newID;
+	}
 
 	/**
 	 * Replaces the current Glyph
@@ -549,7 +587,7 @@ export class ProjectEditor {
 		for (let p = 0; p < selectedPoints.length; p++) {
 			parentPath = selectedPoints[p].parent;
 			// if(!msPaths.isSelected(parentPath)) {
-				log(`selecting path`);
+			log(`selecting path`);
 			// 	msPaths.add(parentPath);
 			// 	changed = true;
 			// }

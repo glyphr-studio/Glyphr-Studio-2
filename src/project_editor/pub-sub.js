@@ -38,6 +38,7 @@ export function publish(topic, data) {
 			//anything?
 		}
 
+		// TODO Components
 		if (topic === 'whichGlyphIsSelected' || topic === 'whichLigatureIsSelected') {
 			this.multiSelect.paths.clear();
 			this.multiSelect.points.clear();

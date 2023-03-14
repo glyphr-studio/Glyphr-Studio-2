@@ -94,8 +94,8 @@ export class GlyphrStudioProject {
 		// ---------------------------------------------------------------
 		// Handle passed object
 		// ---------------------------------------------------------------
-		log('\npassed: ');
-		log(newProject);
+		// log('\npassed: ');
+		// log(newProject);
 
 		// Glyph Ranges
 		if (newProject?.settings?.project?.glyphRanges) {
@@ -103,48 +103,48 @@ export class GlyphrStudioProject {
 				this.settings.project.glyphRanges.push(new GlyphRange(range));
 			});
 		}
-		log('finished importing Glyph Ranges');
-		log(this.settings.project.glyphRanges);
+		// log('finished importing Glyph Ranges');
+		// log(this.settings.project.glyphRanges);
 
 		// Settings
 		if (newProject.settings) {
-			log('merging settings from newProject');
+			// log('merging settings from newProject');
 			this.settings = merge(this.settings, newProject.settings);
 		}
 		this.settings.project.id = this.settings.project.id || makeProjectID();
 		this.settings.font.descent = -1 * Math.abs(this.settings.font.descent);
-		log('finished merging settings - result:');
-		log(this.settings);
+		// log('finished merging settings - result:');
+		// log(this.settings);
 
 		// Components
-		log(`\nStarting components - passed:`);
-		log(newProject.components);
+		// log(`\nStarting components - passed:`);
+		// log(newProject.components);
 		hydrateProjectItems(Glyph, newProject.components, this.components);
-		log('finished hydrating components - result:');
-		log(this.components);
+		// log('finished hydrating components - result:');
+		// log(this.components);
 
 		// Glyphs
-		log(`\nStarting glyphs - passed:`);
-		log(newProject.glyphs);
+		// log(`\nStarting glyphs - passed:`);
+		// log(newProject.glyphs);
 		hydrateProjectItems(Glyph, newProject.glyphs, this.glyphs);
-		log('finished hydrating glyphs - result:');
-		log(this.glyphs);
+		// log('finished hydrating glyphs - result:');
+		// log(this.glyphs);
 
 		// Ligatures
-		log(`\nStarting ligatures - passed:`);
-		log(newProject.ligatures);
+		// log(`\nStarting ligatures - passed:`);
+		// log(newProject.ligatures);
 		hydrateProjectItems(Glyph, newProject.ligatures, this.ligatures);
-		log('finished hydrating ligatures - result:');
-		log(this.ligatures);
+		// log('finished hydrating ligatures - result:');
+		// log(this.ligatures);
 
 		// Kerning
-		log(`\nStarting kerning - passed:`);
-		log(newProject.kerning);
+		// log(`\nStarting kerning - passed:`);
+		// log(newProject.kerning);
 		hydrateProjectItems(HKern, newProject.kerning, this.kerning);
-		log('finished hydrating kern pairs - result:');
-		log(this.kerning);
+		// log('finished hydrating kern pairs - result:');
+		// log(this.kerning);
 
-		log('\n\nfinished EVERYTHING - result:');
+		// log('\n\nfinished EVERYTHING - result:');
 		log(this);
 		log('GlyphrStudioProject.constructor', 'end');
 	}
