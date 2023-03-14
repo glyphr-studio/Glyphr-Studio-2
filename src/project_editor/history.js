@@ -11,9 +11,6 @@ import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 	state, to enable undo.  History changes are saved per
 	item (Glyph, Component, Ligature, Kern)
 **/
-
-// TODO History assumes Glyph only, extend to Item
-
 export class History {
 	constructor() {
 		this.queue = [];
@@ -37,7 +34,13 @@ export class History {
 		const editor = getCurrentProjectEditor();
 		const changedItem = editor.selectedItem;
 		title = title || `Change to ${changedItem.name}`;
-		const entry = makeHistoryEntry(editor.selectedItemID, title, changedItem, options.itemWasDeleted);
+		const entry = makeHistoryEntry({
+			itemID: editor.selectedItemID,
+			title: title,
+			page: editor.nav.page,
+			changedItem: changedItem,
+			itemWasDeleted: options.itemWasDeleted,
+		});
 		this.queue.unshift(entry);
 
 		if (options.otherChanges) {
@@ -62,46 +65,64 @@ export class History {
 	 */
 	restoreState() {
 		// log(`History.restoreState`, 'start');
-		// log(this.queue);
 		const editor = getCurrentProjectEditor();
 
 		let q = this.queue;
+
+		// --------------------------------------------------------------
+		// Check for empty queue
+		// --------------------------------------------------------------
 
 		if (q.length === 0) {
 			editor.setProjectAsSaved();
 			const undoButton = document.getElementById('actionButtonUndo');
 			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
+			showToast(`No more undo`);
 			// log(`Queue is 0, returning`);
 			// log(`History.restoreState`, 'end');
 			return;
 		}
 
+		// --------------------------------------------------------------
+		// Check if next item is different than current item
+		// --------------------------------------------------------------
+
 		if (q.length > 1 && q[0].itemID !== q[1].itemID) {
 			// Assumes navigate adds an entry to the queue
-			editor.selectedGlyphID = q[1].itemID;
+			editor.nav.page = q[1].page;
+			editor.selectedItemID = q[1].itemID;
 			q.shift();
-			// TODO Kern Undo - go to kern page
-			// TODO Ligature Undo - go to Ligature page
-			// TODO Component - go to Component page
-			editor.nav.page = 'Glyph edit';
 			editor.navigate();
 
 			if (q[0]?.itemWasDeleted) {
 				showToast(`Restored deleted item<br>${q[0].itemState.name}`);
 			} else {
 				showToast('Navigated without undo-ing');
-				// log(`Need to navigate to next changed glyph`);
+				// log(`Need to navigate to next changed item`);
 				// log(`History.restoreState`, 'end');
 				return;
 			}
 		}
 
+		// --------------------------------------------------------------
+		// get the next item
+		// --------------------------------------------------------------
+
 		let nextEntry;
 		if (q.length === 1) {
 			// With only one change in the queue, undo falls back to the initial project state
+			let baseItemState;
+			if (editor.nav.page === 'Glyph edit') {
+				baseItemState = this.initialProject.glyphs[editor.selectedGlyphID].save();
+			} else if (editor.nav.page === 'Ligatures') {
+				baseItemState = this.initialProject.ligatures[editor.selectedLigatureID].save();
+			} else if (editor.nav.page === 'Components') {
+				baseItemState = this.initialProject.components[editor.selectedComponentID].save();
+			}
+			// TODO Kerning
 			nextEntry = {
-				itemState: this.initialProject.glyphs[editor.selectedGlyphID].save(),
-				itemID: editor.selectedGlyphID,
+				itemState: baseItemState,
+				itemID: editor.selectedItemID,
 				title: 'Initial state',
 			};
 			// log(`Queue length was 1, setting 'nextEntry' to base project`);
@@ -111,11 +132,11 @@ export class History {
 		}
 
 		// --------------------------------------------------------------
-		// Everything checks out, proceed with the undo
+		// proceed with the undo
 		// --------------------------------------------------------------
 
-		// log(`Undoing: ${nextEntry.title}`);
-		// log(`Replacing current glyph with:`);
+		// log(`Undoing to: ${nextEntry.title}`);
+		// log(`Replacing current item with:`);
 		// log(nextEntry.itemState);
 
 		// Clear selections
@@ -123,7 +144,8 @@ export class History {
 		editor.multiSelect.paths.clear();
 
 		// Overwrite the current item with the redo state
-		editor.selectedGlyph = nextEntry.itemState;
+		// log(`overwriting ${editor.selectedItem.name}`);
+		editor.selectedItem = nextEntry.itemState;
 
 		// Index 0 is the previous current state, so remove it
 		q.shift();
@@ -143,11 +165,13 @@ export class History {
 	}
 }
 
-function makeHistoryEntry(itemID, title, changedItem, itemWasDeleted = false) {
+function makeHistoryEntry({ itemID, title, changedItem, page, itemWasDeleted = false }) {
+	// TODO Kerning
 	let newEntry = {
 		timeStamp: new Date().getTime(),
 		itemID: itemID,
 		title: title,
+		page: page,
 		itemState: new Glyph(changedItem.save()),
 		itemWasDeleted: itemWasDeleted,
 	};

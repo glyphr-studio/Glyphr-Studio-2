@@ -13,6 +13,7 @@ import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
 import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
+import { ProjectEditor } from './project_editor.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -272,11 +273,7 @@ export function showNavDropdown(parentElement) {
 	if (dropdownType === 'EDITING') {
 		dropdownContent = makeGlyphChooserContent((itemID) => {
 			const editor = getCurrentProjectEditor();
-			if (editor.nav.page === 'Glyph edit') editor.selectedGlyphID = itemID;
-			else if (editor.nav.page === 'Ligatures') editor.selectedLigatureID = itemID;
-			else if (editor.nav.page === 'Components') editor.selectedComponentID = itemID;
-			else if (editor.nav.page === 'Kerns') editor.selectedKernID = itemID;
-
+			editor.selectedItemID = itemID;
 			editor.history.addState(`Navigated to ${editor.project.getGlyphName(itemID, true)}`);
 			closeAllNavMenus();
 		});
@@ -327,7 +324,6 @@ function makePageChooserContent() {
 
 	Object.keys(toc).forEach((pageName) => {
 		if (pageName !== 'Open project' && toc[pageName].pageMaker) {
-			// if(pageName !== 'Open project'){
 			pageButton = makeNavButton_Page(pageName, toc[pageName].iconName);
 			content.appendChild(pageButton);
 		}
@@ -349,6 +345,7 @@ function makeNavButton_Page(pageName, iconName) {
 		let editor = getCurrentProjectEditor();
 		editor.nav.page = pageName;
 		editor.navigate();
+		editor.history.addState(`Navigated to ${editor.project.getGlyphName(editor.selectedItemID, true)}`);
 	});
 	return button;
 }

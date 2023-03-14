@@ -303,7 +303,7 @@ export function showAddLigatureDialog() {
 		} else {
 			const editor = getCurrentProjectEditor();
 			editor.selectedLigatureID = result.id;
-			editor.nav.navigate();
+			editor.navigate();
 			closeEveryTypeOfDialog();
 		}
 	});
