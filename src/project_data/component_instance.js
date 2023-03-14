@@ -2,6 +2,8 @@ import { GlyphElement } from './glyph_element.js';
 // import { getCurrentProject } from '../app/main.js';
 import { parseCharsInputAsHex } from '../common/character_ids.js';
 import { strSan, rad, deg } from '../common/functions.js';
+import { getCurrentProject } from '../app/main.js';
+import { Glyph } from './glyph.js';
 
 /**
  * Glyph Element > Component Instance
@@ -35,7 +37,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @param {object} parent - link to the parent Glyph object
 	 */
 	constructor({
-		link = '0x0000',
+		link = false,
 		name = 'Component Instance',
 		translateX = 0,
 		translateY = 0,
@@ -55,8 +57,10 @@ export class ComponentInstance extends GlyphElement {
 	} = {}) {
 		super();
 		this.parent = parent;
-		this.link = link;
 		this.name = name;
+
+		// Component instance properties
+		this.link = link;
 		this.translateX = translateX;
 		this.translateY = translateY;
 		this.scaleW = scaleW;
@@ -66,6 +70,8 @@ export class ComponentInstance extends GlyphElement {
 		this.reverseWinding = reverseWinding;
 		this.rotation = rotation;
 		this.rotateFirst = rotateFirst;
+
+		// Path-like properties
 		this.xLock = xLock;
 		this.yLock = yLock;
 		this.wLock = wLock;
@@ -249,7 +255,9 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {Glyph}
 	 */
 	get transformedGlyph() {
-		if (!this.cache.transformedGlyph) this.makeTransformedGlyph();
+		if (!this.cache.transformedGlyph) {
+			this.makeTransformedGlyph();
+		}
 		return this.cache.transformedGlyph;
 	}
 
@@ -313,7 +321,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set link(link) {
-		this._link = parseCharsInputAsHex(link)[0];
+		this._link = link;
 		this.changed();
 	}
 
@@ -522,20 +530,21 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {Glyph}
 	 */
 
-	// TODO refactor
-	/*
 	makeTransformedGlyph() {
 		// log('ComponentInstance.makeTransformedGlyph - START ' + this.name);
-
-		const g = this.cloneAndFlattenGlyph();
-		if (!g) {
-			console.warn(
-				'Tried to get Component: ' +
-					this.link +
-					" but it doesn't exist - bad usedIn array maintenance."
-			);
+		const project = getCurrentProject();
+		const linkedGlyph = project.getItem(this.link);
+		if (!linkedGlyph) {
+			console.warn(`
+				Tried to get Component: ${this.link} but it
+				doesn't exist - bad usedIn array maintenance.
+			`);
 			return false;
 		}
+
+		const newGlyph = new Glyph(linkedGlyph);
+		newGlyph.convertLinksToPaths();
+
 		// log('DELTAS' + '\n\t translateX:\t' + this.translateX  + '\n\t translateY:\t' + this.translateY  + '\n\t scaleW:\t' + this.scaleW  + '\n\t scaleH:\t' + this.scaleH  + '\n\t flipEW:\t' + this.isFlippedEW  + '\n\t flipNS:\t' + this.isFlippedNS  + '\n\t reverseWinding:\t' + this.reverseWinding  + '\n\t rotation:\t' + this.rotation);
 		if (
 			this.translateX ||
@@ -548,57 +557,25 @@ export class ComponentInstance extends GlyphElement {
 			this.rotation
 		) {
 			// log('Modifying w ' + this.scaleW + ' h ' + this.scaleH);
-			// log('before maxes ' + json(g.maxes, true));
-			if (this.rotateFirst) g.rotate(rad(this.rotation, g.maxes.center));
-			if (this.isFlippedEW) g.flipEW();
-			if (this.isFlippedNS) g.flipNS();
-			g.updateGlyphPosition(this.translateX, this.translateY, true);
-			g.updateGlyphSize(this.scaleW, this.scaleH, false);
-			if (this.reverseWinding) g.reverseWinding();
-			if (!this.rotateFirst) g.rotate(rad(this.rotation, g.maxes.center));
-			// log('afters maxes ' + json(g.maxes, true));
+			// log('before maxes ' + json(newGlyph.maxes, true));
+			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
+			if (this.isFlippedEW) newGlyph.flipEW();
+			if (this.isFlippedNS) newGlyph.flipNS();
+			newGlyph.updateGlyphPosition(this.translateX, this.translateY, true);
+			newGlyph.updateGlyphSize(this.scaleW, this.scaleH, false);
+			if (this.reverseWinding) newGlyph.reverseWinding();
+			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
+			// log('afters maxes ' + json(newGlyph.maxes, true));
 		} else {
 			// log('Not changing, no deltas');
 		}
 
-		g.changed();
-		this.cache.transformedGlyph = g;
+		newGlyph.changed();
+		this.cache.transformedGlyph = newGlyph;
 		// log('ComponentInstance.makeTransformedGlyph', 'end');
 
-		return g;
+		return newGlyph;
 	}
-
-	cloneAndFlattenGlyph() {
-		// log(`ComponentInstance.cloneAndFlatten`, 'start');
-		// log('\t gid: ' + gid);
-
-		let og = getItem(gid, true);
-		if(og) og = new Glyph(clone(og, 'convertComponentInstanceToGlyph'));
-
-		let newPaths = [];
-		let tempglyph;
-
-		if(og.paths){
-			for(let s=0; s<og.paths.length; s++){
-				if(og.paths[s].objtype === 'componentinstance'){
-					tempglyph = og.paths[s].makeTransformedGlyph();
-					newPaths = newPaths.concat(tempglyph.paths);
-
-				} else {
-					newPaths.push(og.paths[s]);
-				}
-			}
-
-			og.paths = newPaths;
-		} else {
-			og.paths = [];
-		}
-
-		// log(og);
-		// log(`ComponentInstance.cloneAndFlatten`, 'end');
-		return og;
-	}
-*/
 
 	// --------------------------------------------------------------
 	// Export to different languages
@@ -627,6 +604,15 @@ export class ComponentInstance extends GlyphElement {
 			lastX: lastX,
 			lastY: lastY,
 		};
+	}
+
+	/**
+	 * Wrapper function to return svg for how this
+	 * component instance will appear
+	 * @returns {string} - svg data
+	 */
+	makeSVG() {
+		return this.transformedGlyph.makeSVG();
 	}
 
 	// --------------------------------------------------------------

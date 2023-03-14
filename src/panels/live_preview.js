@@ -244,7 +244,7 @@ function makeShowOptions() {
 	let showGlyphExtras = false;
 	let showLineExtras = false;
 	let showPageExtras = false;
-	let flattenGlyphs = false;
+	let combineGlyphShapes = false;
 
 
 	let content = '<table class="detail">';
@@ -273,10 +273,10 @@ function makeShowOptions() {
 		'</td></tr>';
 
 	content +=
-		'<tr><td> <label for="flattenGlyphs">preview combine glyph shapes</label>' +
-		helpUI(flattenMessage) +
+		'<tr><td> <label for="combineGlyphShapes">preview combine glyph shapes</label>' +
+		helpUI(combineMessage) +
 		' </td><td>' +
-		checkUI('flattenGlyphs', flattenGlyphs, false) +
+		checkUI('combineGlyphShapes', combineGlyphShapes, false) +
 		'</td></tr>';
 
 	content +=
@@ -286,11 +286,11 @@ function makeShowOptions() {
 	*/
 }
 
-let flattenMessage = `
+let combineMessage = `
 <h1>Combine Glyphs Shapes</h1>
 In Project Settings &rsaQuo; Export Options you have the option to combine all glyph shapes.
 Having glyphs with many overlapping paths in a font can sometimes cause issues.
-So, this setting will flatten each glyph as it&prime;s exported to your font.
+So, this setting will combine all overlapping paths in each glyph as it&prime;s exported to your font.
 <br>
 Selecting this option in Test Drive here will <i>preview</i> how your glyph shapes will be
 combined. This preview will not change your designs in Glyphr Studio. There is a

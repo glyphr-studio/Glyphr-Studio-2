@@ -30,8 +30,11 @@ export class GlyphRange {
 	// Generator
 	// --------------------------------------------------------------
 
+	/**
+	 * For this range, yields char points in order.
+	 */
 	*generator() {
-		if (this.begin <= 0x21 && this.end === 0x7f) {
+		if (this.begin <= 0x21 && (this.end === 0x7e || this.end === 0x7f)) {
 			let basicLatinIndex = 0;
 			while (basicLatinIndex < basicLatinOrder.length) {
 				yield basicLatinOrder[basicLatinIndex];
@@ -40,10 +43,10 @@ export class GlyphRange {
 		} else {
 			let current = this.begin;
 			if (this.showNonCharPoints) {
-				while (current <= this.end) yield current++;
+				while (current <= this.end) yield decToHex(current++);
 			} else {
 				while (isControlChar(current)) current++;
-				while (current <= this.end) yield current++;
+				while (current <= this.end) yield decToHex(current++);
 			}
 		}
 	}

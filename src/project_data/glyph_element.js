@@ -25,6 +25,8 @@ export class GlyphElement {
 		} else {
 			// log(status + ' - No Parent!');
 		}
+
+		// TODO components item.changed for each usedIn reference
 	}
 
 	/**

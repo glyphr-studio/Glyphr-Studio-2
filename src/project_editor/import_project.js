@@ -4,10 +4,11 @@ import { tryToGetProjectVersion } from '../io/validate_file_input.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
-import { hexesToChars, validateAsHex } from '../common/character_ids.js';
+import { charToHex, hexesToChars, validateAsHex } from '../common/character_ids.js';
 import { ControlPoint } from '../project_data/control_point.js';
 import { showError } from '../controls/dialogs/dialogs.js';
 import { makeLigatureID } from '../pages/ligatures.js';
+import { ComponentInstance } from '../project_data/component_instance.js';
 
 /**
  * Takes a js Object from a JSON-based project file, and returns
@@ -19,7 +20,7 @@ export function importGlyphrProjectFromText(importedProject) {
 	// log('importGlyphrProjectFromText', 'start');
 	// log('passed:');
 	// log(importedProject);
-	if(!importedProject) importedProject = new GlyphrStudioProject();
+	if (!importedProject) importedProject = new GlyphrStudioProject();
 
 	const version = tryToGetProjectVersion(importedProject);
 	// log(`version found: ${version.major}.${version.minor}.${version.patch}.${version.preRelease}`);
@@ -58,22 +59,32 @@ function migrate_Project(oldProject) {
 	const newProject = new GlyphrStudioProject();
 
 	// Glyphs
+	// log(`Migrating Glyphs`);
 	Object.keys(oldProject.glyphs).forEach((oldID) => {
-		const newID = validateAsHex(oldID);
-		newProject.glyphs[newID] = migrate_Glyph(oldProject.glyphs[oldID]);
-		newProject.glyphs[newID].id = newID;
+		const newID = migrate_ItemID(oldID);
+		// log(`newID: ${newID}`);
+		// log(`typeof newID: ${typeof newID}`);
+
+		newProject.glyphs[newID] = migrate_Glyph(oldProject.glyphs[oldID], newID);
 	});
 
 	// Ligatures
+	// log(`Migrating Ligatures`);
 	Object.keys(oldProject.ligatures).forEach((oldID) => {
+		const newID = migrate_ItemID(oldID);
 		const chars = hexesToChars(oldID);
-		const newID = makeLigatureID(chars);
-		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID]);
-		newProject.ligatures[newID].id = newID;
-		newProject.ligatures[newID].gsub = chars.split('');
+		let newGsub = chars.split('').map(charToHex);
+		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID);
+		newProject.ligatures[newID].gsub = newGsub;
 	});
 
-	// TODO Components
+	// Components
+	// log(`Migrating Components`);
+	Object.keys(oldProject.components).forEach((oldID) => {
+		const newID = migrate_ItemID(oldID);
+		newProject.components[newID] = migrate_Glyph(oldProject.components[oldID], newID);
+	});
+
 	// TODO Kerns
 
 	// Metadata
@@ -156,8 +167,8 @@ function migrate_Project(oldProject) {
 	newFont.overlinePosition = oldMeta.overline_position || 750;
 	newFont.overlineThickness = oldMeta.overline_thickness || 10;
 
-	return newProject;
 	// log('migrate_Project', 'end');
+	return newProject;
 }
 
 /**
@@ -165,15 +176,26 @@ function migrate_Project(oldProject) {
  * @param {Object} oldGlyph - v1 Glyph to migrate
  * @returns {Glyph} - new v2 Glyph
  */
-function migrate_Glyph(oldGlyph) {
+function migrate_Glyph(oldGlyph, newID) {
 	const newGlyph = new Glyph();
+	newGlyph.id = newID;
 	newGlyph.advanceWidth = oldGlyph.glyphwidth;
 	newGlyph.ratioLock = oldGlyph.ratiolock;
-	newGlyph.usedIn = oldGlyph.usedin;
+	newGlyph.usedIn = oldGlyph.usedin.map(migrate_ItemID);
 	newGlyph.contextGlyphs = oldGlyph.contextglyphs;
 
-	oldGlyph.shapes.forEach((shape) => {
-		newGlyph.paths.push(migrate_Path(shape, newGlyph));
+	let newItem;
+	oldGlyph.shapes.forEach((item) => {
+		if (item.path) {
+			// Regular Shape
+			newItem = migrate_Path(item, newGlyph);
+			newGlyph.addOnePath(newItem);
+		} else {
+			// Component Instance
+			newItem = new ComponentInstance(item);
+			newItem.link = migrate_ItemID(item.link);
+			newGlyph.addOnePath(newItem);
+		}
 	});
 
 	return newGlyph;
@@ -199,11 +221,7 @@ function migrate_Path(oldShape, parentGlyph) {
 			newPath.pathPoints.push(migrate_PathPoint(point, newPath));
 		});
 	} else {
-		// TODO Component Instance
-		showError(`Alpha-2 Warning<br>This v1 project uses Components,
-			but Components are not supported in Alpha-2. They will
-			be in the future, though.
-		`);
+		// log(oldShape);
 	}
 
 	return newPath;
@@ -239,4 +257,41 @@ function migrate_PathPoint(oldPathPoint, parentPath) {
 
 	// do NOT .resolvePointType
 	return newPathPoint;
+}
+
+function migrate_ItemID(oldID) {
+	// log(`migrate_ItemID`, 'start');
+	// log(`oldID: ${oldID}`);
+
+	let result = false;
+
+	// Component
+	if (oldID.startsWith('com')) {
+		// log(`Detected as Component`);
+		result = `comp-${oldID.split('com')[1]}`;
+	}
+
+	// Kern
+	if (oldID.startsWith('kern')) {
+		// log(`Detected as Kern`);
+		result = `kern-${oldID.split('kern')[1]}`;
+	}
+
+	const chars = hexesToChars(oldID);
+	// Ligature
+	if (chars.length > 1) {
+		// log(`Detected as Ligature`);
+		result = makeLigatureID(chars);
+	}
+
+	// Glyph
+	if (chars.length === 1) {
+		// log(`Detected as Glyph`);
+		result = validateAsHex(oldID);
+	}
+
+
+	// log(`result: ${result}`);
+	// log(`migrate_ItemID`, 'end');
+	return result;
 }

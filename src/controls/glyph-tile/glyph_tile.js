@@ -20,10 +20,9 @@ export class GlyphTile extends HTMLElement {
 	 * @param {object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		// log(`GlyphTile.constructor`, 'start');
-
-		// log(attributes);
 		super();
+		// log(`GlyphTile.constructor`, 'start');
+		// log(attributes);
 
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 

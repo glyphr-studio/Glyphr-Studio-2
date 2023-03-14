@@ -316,9 +316,9 @@ export class DisplayCanvas extends HTMLElement {
 		// log(this.ctx);
 		// const settings = getCurrentProject().settings.font;
 		const glyph = charData.glyph;
-		// TODO flattenGlyphs
-		// const flattenGlyphs = td.flattenGlyphs || false;
-		const flattenGlyphs = false;
+		// TODO combineAllPaths
+		// const combineAllPaths = td.combineAllPaths || false;
+		// const combineAllPaths = false;
 		const view = clone(charData.view);
 		// view.dx *= view.dz;
 		view.dx += this.pagePadding;
@@ -333,8 +333,8 @@ export class DisplayCanvas extends HTMLElement {
 			this.ctx.fillStyle = uiColors.enabled.resting.text;
 			this.ctx.strokeStyle = 'transparent';
 
-			// TODO flattenGlyphs
-			// if (flattenGlyphs) {
+			// TODO combineAllPaths
+			// if (combineAllPaths) {
 			// 	if (!this.cache[charData.char]) {
 			// 		this.cache[charData.char] = glyph.clone().combineAllShapes(true);
 			// 	}

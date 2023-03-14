@@ -17,7 +17,7 @@ export class GlyphrStudioProject {
 	 * @param {object} newProject - Glyphr Studio Project File JSON
 	 */
 	constructor(newProject = {}) {
-		log('GlyphrStudioProject.constructor', 'start');
+		// log('GlyphrStudioProject.constructor', 'start');
 
 		// Set up all internal default values first
 		this.settings = {
@@ -145,8 +145,8 @@ export class GlyphrStudioProject {
 		// log(this.kerning);
 
 		// log('\n\nfinished EVERYTHING - result:');
-		log(this);
-		log('GlyphrStudioProject.constructor', 'end');
+		// log(this);
+		// log('GlyphrStudioProject.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------

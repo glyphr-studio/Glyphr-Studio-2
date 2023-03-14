@@ -1,4 +1,5 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor, log } from '../app/main.js';
+import { decToHex } from '../common/character_ids.js';
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
@@ -60,6 +61,7 @@ function makeGlyphChooserTileGrid() {
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
 	editor.selectedGlyphRange.array.forEach((glyphID) => {
+		// log(`glyphID: ${glyphID}`);
 		let oneTile = new GlyphTile({ 'displayed-item-id': glyphID });
 		if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');
 

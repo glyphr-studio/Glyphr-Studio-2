@@ -268,15 +268,20 @@ nav .glyph-chooser__wrapper {
 	grid-template-columns: 1fr;
 }
 
-.layer-panel__row {
+.layer-panel__path-row,
+.layer-panel__component-row {
 	border: 1px solid var(--gray-l95);
 	padding: 2px;
 	background-color: var(--gray-l95);
 	border-radius: 4px;
 	width: 100%;
+	max-width: 430px;
+	overflow: hidden;
 	display: grid;
-	gap: 10px;
+	column-gap: 10px;
+	row-gap: 4px;
 	grid-template-columns: min-content max-content;
+	grid-template-rows: 2fr 1fr;
 	align-items: center;
 }
 
@@ -284,29 +289,37 @@ nav .glyph-chooser__wrapper {
 	opacity: 0.4;
 	font-style: italic;
 }
-/*
-.layer-panel__path {
 
+.layer-panel__path-row {
+	border-color: var(--blue-l90);
+		background-color: var(--blue-l95);
 }
 
-.layer-panel__component {
-
+.layer-panel__component-row {
+	border-color: var(--green-l95);
+	background-color: var(--green-l98);
 }
-*/
+
 .layer-panel__selected {
 	border-right-width: 8px;
-	border-right-color: var(--blue-l60);
 }
 
-.layer-panel__row:hover,
-.layer-panel__row:active {
+.layer-panel__path-row:hover,
+.layer-panel__path-row:active {
 	border-color: var(--blue-l85);
+	cursor: pointer;
+}
+
+.layer-panel__component-row:hover,
+.layer-panel__component-row:active {
+	border-color: var(--green-l85);
 	cursor: pointer;
 }
 
 .layer-panel__layer-thumb {
 	background-color: white;
 	grid-column: 1;
+	grid-row: -1 / 1;
 	overflow: hidden;
 }
 
@@ -314,8 +327,26 @@ nav .glyph-chooser__wrapper {
 	display: block;
 	height: min-content;
 	grid-column: 2;
+	font-size: 1.2em;
+	margin-top: 10px;
 }
 
+.layer-panel__layer-note {
+	font-size: 0.8em;
+	margin-bottom: 4px;
+}
+
+.layer-panel__component-row .layer-panel__layer-note {
+	color: var(--green-l50);
+}
+
+.layer-panel__path-row .layer-panel__layer-note {
+	color: var(--blue-l60);
+}
+
+/*
+	History Panel
+*/
 .history-list {
 	width: 100%;
 	display: grid;
