@@ -14,6 +14,7 @@ import { makePage_Help } from '../pages/help.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
 import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
 import { ProjectEditor } from './project_editor.js';
+import { makePage_Components } from '../pages/components.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -48,7 +49,7 @@ export class Navigator {
 				iconName: 'page_ligatures',
 			},
 			Components: {
-				pageMaker: false,
+				pageMaker: makePage_Components,
 				iconName: 'page_components',
 			},
 			Kerning: {
