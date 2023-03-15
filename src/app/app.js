@@ -181,9 +181,12 @@ export function makeAppTopBar() {
 	menus.appendChild(makeMenu('Project'));
 	menus.appendChild(makeMenu('Help'));
 
+	let mailIcon = `
+<?xml version="1.0" encoding="UTF-8"?><svg id="Mail" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21 9"><polygon points="8 1 0 1 0 2 8 2 8 1 8 1"/><polygon points="20 0 10 0 10 1 20 1 20 0 20 0"/><polygon points="20 8 10 8 10 9 20 9 20 8 20 8"/><polygon points="8 3 2 3 2 4 8 4 8 3 8 3"/><polygon points="8 7 6 7 6 8 8 8 8 7 8 7"/><polygon points="10 1 9 1 9 8 10 8 10 1 10 1"/><polygon points="21 1 20 1 20 8 21 8 21 1 21 1"/><polygon points="8 5 4 5 4 6 8 6 8 5 8 5"/><polygon points="12 2 10 2 10 3 12 3 12 2 12 2"/><polygon points="14 3 12 3 12 4 14 4 14 3 14 3"/><polygon points="16 4 14 4 14 5 16 5 16 4 16 4"/><polygon points="20 2 18 2 18 3 20 3 20 2 20 2"/><polygon points="18 3 16 3 16 4 18 4 18 3 18 3"/></svg>
+	`;
 	let bugContact = makeElement({
 		className: 'top-bar__bug-contact',
-		innerHTML: `Found a bug? Have some feedback? ${emailLink()}`,
+		innerHTML: `Found a bug? Have some feedback? ${mailIcon} ${emailLink()}`,
 	});
 
 	addAsChildren(topBar, [logo, menus, bugContact]);

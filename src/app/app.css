@@ -86,13 +86,20 @@
 	box-shadow: var(--l3-shadow);
 }
 
+.top-bar__bug-contact svg {
+	height: 9px;
+	fill: var(--purple-l80);
+	position: relative;
+	top: 1px;
+	margin-left: 4px;
+}
+
 .top-bar__bug-contact a,
 .top-bar__bug-contact a:hover,
 .top-bar__bug-contact a:focus,
 .top-bar__bug-contact a:visited {
 	font-size: 1em;
 	color: var(--purple-l90);
-	margin-left: 4px;
 }
 
 .top-bar__bug-contact a:active {
