@@ -7,6 +7,7 @@ import {
 	dimSplitElement,
 	makeInputs_position,
 	makeInputs_size,
+	makeLinkReferenceRow,
 	makeSingleInput,
 	makeSingleLabel,
 } from './cards.js';
@@ -90,4 +91,22 @@ export function makeCard_glyphAttributes(glyph) {
 	// log(glyphCard);
 	// log(`makeCard_glyphAttributes`, 'end');
 	return glyphCard;
+}
+
+export function makeCard_glyphLinks(item) {
+	if (!item.usedIn.length) return '';
+	let linksCard = makeElement({
+		tag: 'div',
+		className: 'panel__card full-width item-links__rows-area',
+		innerHTML: `
+			<h3>Links</h3>
+			This ${item.displayType} is linked to the following items as a component root.
+		`,
+	});
+
+	item.usedIn.forEach(itemID => {
+		linksCard.appendChild(makeLinkReferenceRow(itemID));
+	});
+
+	return linksCard;
 }

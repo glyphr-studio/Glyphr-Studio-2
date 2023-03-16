@@ -1,3 +1,4 @@
+import { getCurrentProject } from '../app/main.js';
 import { json, clone, makeRandomID } from '../common/functions.js';
 
 /**
@@ -26,7 +27,13 @@ export class GlyphElement {
 			// log(status + ' - No Parent!');
 		}
 
-		// TODO components item.changed for each usedIn reference
+		if (this.usedIn?.length) {
+			const project = getCurrentProject();
+			this.usedIn.forEach(itemID => {
+				const item = project.getItem(itemID);
+				if(item && item.changed) item.changed();
+			});
+		}
 	}
 
 	/**
@@ -34,6 +41,13 @@ export class GlyphElement {
 	 */
 	get objType() {
 		return this._objType || this.constructor.name;
+	}
+
+	get displayType() {
+		if (this.id.startsWith('liga-')) return 'Ligature';
+		if (this.id.startsWith('comp-')) return 'Component';
+		if (this.id.startsWith('0x')) return 'Glyph';
+		return this.objType;
 	}
 
 	/**

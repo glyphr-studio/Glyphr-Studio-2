@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor, log } from '../app/main.js';
-import { makeCard_glyphAttributes } from './card_glyph.js';
+import { makeCard_componentInstanceAttributes } from './card_component_instance.js';
+import { makeCard_glyphAttributes, makeCard_glyphLinks } from './card_glyph.js';
 import { makeCard_multiSelectPathAttributes, makeCard_pathAttributes } from './card_path.js';
 import {
 	makeCard_multiSelectPathPointAttributes,
@@ -38,10 +39,9 @@ export function makePanel_GlyphAttributes() {
 		// log('One path selected');
 		// log(selPaths.singleton);
 		if (selPaths.singleton.objType === 'ComponentInstance') {
-			// TODO components
 			// component selected
 			// log("...Component selected");
-			// content.push(makeCard_componentInstanceAttributes(selPaths.singleton));
+			content.push(makeCard_componentInstanceAttributes(selPaths.singleton));
 		} else {
 			// regular path selected
 			// log("...Regular path selected");
@@ -55,8 +55,8 @@ export function makePanel_GlyphAttributes() {
 
 	// Glyph
 	content.push(makeCard_glyphAttributes(editor.selectedItem));
-
-	// TODO used-in glyph card
+	const linksCard = makeCard_glyphLinks(editor.selectedItem);
+	if (linksCard) content.push(linksCard);
 
 	// Subscriber
 	editor.subscribe({

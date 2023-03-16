@@ -1,6 +1,6 @@
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
 import { round } from '../common/functions.js';
-import { getCurrentProject } from '../app/main.js';
+import { getCurrentProject, log } from '../app/main.js';
 
 // --------------------------------------------------------------
 // Glyph
@@ -25,28 +25,24 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 		return false;
 	}
 
-	let path;
 	let drewPath;
-
 	ctx.beginPath();
-	for (let j = 0; j < glyph.paths.length; j++) {
-		path = glyph.paths[j];
+	glyph.paths.forEach((item) => {
 		// log(`${glyph.name} drawing ${path.objType} #${j} "${path.name}"`);
-		drewPath = drawPath(path, ctx, view);
+		drewPath = drawItem(item, ctx, view);
 		if (!drewPath) {
-			console.warn('Could not draw path ' + path.name + ' in Glyph ' + glyph.name);
-			if (path.objType === 'ComponentInstance' && !getCurrentProject().getItem(path.link)) {
-				console.warn('>>> Component Instance has bad link: ' + path.link);
-				const i = glyph.paths.indexOf(path);
+			console.warn('Could not draw item ' + item.name + ' in Glyph ' + glyph.name);
+			if (item.objType === 'ComponentInstance' && !getCurrentProject().getItem(item.link)) {
+				console.warn('>>> Component Instance has bad link: ' + item.link);
+				const i = glyph.paths.indexOf(item);
 				if (i > -1) {
 					glyph.paths.splice(i, 1);
 					console.warn('>>> Deleted the Instance');
 				}
 			}
 		}
-	}
+	});
 	ctx.closePath();
-
 	ctx.fillStyle = fill;
 	ctx.globalAlpha = alpha;
 	ctx.fill('nonzero');
@@ -63,15 +59,15 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 // --------------------------------------------------------------
 /**
  *
- * @param {Path or ComponentInstance} path - what thing to draw
+ * @param {Path or ComponentInstance} item - what thing to draw
  * @param {object} ctx - canvas context
  * @param {object} view - view
  */
-export function drawPath(path, ctx, view) {
-	if (path.objType === 'ComponentInstance') {
-		return drawComponentInstanceToCanvas(path, ctx, view);
+export function drawItem(item, ctx, view) {
+	if (item.objType === 'ComponentInstance') {
+		return drawComponentInstanceToCanvas(item, ctx, view);
 	} else {
-		return drawPathToCanvas(path, ctx, view);
+		return drawPathToCanvas(item, ctx, view);
 	}
 }
 
@@ -88,23 +84,21 @@ export function drawPath(path, ctx, view) {
  */
 function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
 	// log('drawComponentInstanceToCanvas', 'start');
-	// log('view ' + json(view, true));
-
 	// Have to iterate through paths instead of using drawGlyph
 	// due to stacking paths with appropriate winding
 
-	const g = componentInstance.transformedGlyph;
-	if (!g) return false;
+	const glyph = componentInstance.transformedGlyph;
+	// log(glyph);
+	if (!glyph) return false;
 	let drewPath = false;
 	let failed = false;
 
-	ctx.beginPath();
-	for (let s = 0; s < g.paths.length; s++) {
-		drewPath = drawPath(g.paths[s], ctx, view);
+	glyph.paths.forEach((item) => {
+		drewPath = drawItem(item, ctx, view);
 		failed = failed || !drewPath;
-	}
-	ctx.closePath();
+	});
 
+	// log(`!failed: ${!failed}`);
 	// log('drawComponentInstanceToCanvas', 'end');
 	return !failed;
 }
@@ -186,7 +180,6 @@ function drawPathToCanvas(path, ctx, view, snap = true) {
 		}
 	}
 
-	// setView(currView);
 	// log('drawPathToCanvas', 'end');
 	return true;
 }

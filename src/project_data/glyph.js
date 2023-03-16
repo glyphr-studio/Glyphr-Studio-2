@@ -54,7 +54,7 @@ export class Glyph extends GlyphElement {
 		// log(this.print());
 		// log(`Glyph.constructor`, 'end');
 	}
-
+	
 	// --------------------------------------------------------------
 	// Common Glyphr Studio object methods
 	// --------------------------------------------------------------
@@ -340,6 +340,26 @@ export class Glyph extends GlyphElement {
 		if (this.cache.svgPathData) return this.cache.svgPathData;
 		this.cache.svgPathData = this.makeSVGPathData();
 		return this.cache.svgPathData;
+	}
+
+	/**
+	 * Used by the UI to describe what this glyph contains
+	 */
+	get contentType() {
+		if (this.cache.contentType) return this.cache.contentType;
+		let result = 'unknown';
+		let paths = 0;
+		let componentInstances = 0;
+		this.paths.forEach(item => {
+			if (item.objType === 'ComponentInstance') componentInstances++;
+			if (item.objType === 'Path') paths++;
+		});
+		if (paths > 0 && componentInstances === 0) result = 'paths';
+		if (componentInstances > 0 && paths === 0) result = 'component instances';
+		if (paths > 0 && componentInstances > 0) result = 'items';
+
+		this.cache.contentType = result;
+		return result;
 	}
 
 	// --------------------------------------------------------------

@@ -260,3 +260,40 @@ export function makeDirectCheckbox(workItem, property, callback) {
 
 	return newCheckbox;
 }
+
+export function makeLinkReferenceRow(itemID) {
+	const editor = getCurrentProjectEditor();
+	const targetItem = editor.project.getItem(itemID);
+
+	let row = makeElement({ className: 'item-link__row' });
+	row.addEventListener('click', () => {
+		if (targetItem.displayType === 'Glyph') editor.nav.page = 'Glyph edit';
+		if (targetItem.displayType === 'Component') editor.nav.page = 'Components';
+		if (targetItem.displayType === 'Ligature') editor.nav.page = 'Ligatures';
+		editor.selectedItemID = itemID;
+		editor.navigate();
+	});
+
+	row.appendChild(
+		makeElement({
+			className: 'item-link__thumbnail',
+			innerHTML: targetItem.makeSVG(),
+		})
+	);
+
+	row.appendChild(
+		makeElement({
+			className: 'item-link__title',
+			innerHTML: `${targetItem.name}`,
+		})
+	);
+
+	row.appendChild(
+		makeElement({
+			className: 'item-link__subtitle',
+			innerHTML: `${targetItem.displayType}&ensp;|&ensp;${itemID}`,
+		})
+	);
+
+	return row;
+}

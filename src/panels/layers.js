@@ -13,7 +13,7 @@ import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.j
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
-	let rowsArea = makeElement({ className: 'panel__card full-width layer-panel__rows-area' });
+	let rowsArea = makeElement({ className: 'panel__card full-width item-links__rows-area' });
 	const editor = getCurrentProjectEditor();
 	const project = getCurrentProject();
 	let selected = editor.selectedItem;
@@ -22,18 +22,18 @@ export function makePanel_Layers() {
 	if (eventHandlerData.newBasicPath) {
 		let path = eventHandlerData.newBasicPath;
 		let row = makeElement();
-		row.setAttribute('class', 'layer-panel__row layer-panel__path layer-panel__new-path');
+		row.setAttribute('class', 'item-link__row layer-panel__new-path');
 		row.classList.add('layer-panel__selected');
 		row.appendChild(
 			makeElement({
-				className: 'layer-panel__layer-thumb',
+				className: 'item-link__thumbnail',
 				innerHTML: path.makeSVG(),
 			})
 		);
 
 		row.appendChild(
 			makeElement({
-				className: 'layer-panel__layer-name',
+				className: 'item-link__title',
 				innerHTML: path.name,
 			})
 		);
@@ -47,9 +47,9 @@ export function makePanel_Layers() {
 			let row = makeElement();
 
 			if (item.objType === 'ComponentInstance') {
-				row.setAttribute('class', 'layer-panel__component-row');
+				row.setAttribute('class', 'item-link__row layer-panel__component-row');
 			} else {
-				row.setAttribute('class', 'layer-panel__path-row');
+				row.setAttribute('class', 'item-link__row layer-panel__path-row');
 			}
 
 			if (editor.multiSelect.paths.isSelected(item)) {
@@ -77,22 +77,24 @@ export function makePanel_Layers() {
 
 			row.appendChild(
 				makeElement({
-					className: 'layer-panel__layer-thumb',
+					className: 'item-link__thumbnail',
 					innerHTML: item.makeSVG(),
 				})
 			);
 
 			row.appendChild(
 				makeElement({
-					className: 'layer-panel__layer-name',
+					className: 'item-link__title',
 					innerHTML: `${item.name}`,
 				})
 			);
 
+			let subtitle = 'Path';
+			if (item.link) subtitle = `Component instance&emsp;|&emsp;${project.getItem(item.link).name}`;
 			row.appendChild(
 				makeElement({
-					className: 'layer-panel__layer-note',
-					innerHTML: item.link ? `Component instance &emsp;|&emsp; ${project.getItem(item.link).name}` : 'Path',
+					className: 'item-link__subtitle',
+					innerHTML: subtitle,
 				})
 			);
 
