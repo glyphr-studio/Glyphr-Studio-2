@@ -17,7 +17,7 @@
 	padding: 6px 0px 6px 11px;
 	z-index: 2000 !important;
 	display: grid;
-	grid-template-columns: 150px 1fr 320px;
+	grid-template-columns: 150px 150px 1fr;
 }
 
 #app__main-content {
@@ -78,7 +78,6 @@
 	right: 10px;
 	top: 10px;
 	padding: 2px 4px;
-	font-size: 0.8em;
 	background-color: var(--purple-l40);
 	border: 1px solid var(--purple-l30);
 	color: var(--purple-l80);
@@ -86,22 +85,59 @@
 	box-shadow: var(--l3-shadow);
 }
 
+@media (min-width: 810px) {
+	.top-bar__bug-blurb {
+		display: inline-block !important;
+	}
+	.top-bar__bug-icon {
+		position: relative;
+		top: 1px;
+	}
+	.top-bar__bug-link {
+		display: inline-block !important;
+	}
+}
+.top-bar__bug-blurb {
+	display: none;
+}
+
+.top-bar__bug-link {
+	display: none;
+}
+
+.top-bar__bug-icon {
+	position: relative;
+	left: -2px;
+}
+
+.top-bar__bug-contact span {
+	font-size: 0.8em;
+	margin: 0;
+	padding: 0;
+}
+
 .top-bar__bug-contact svg {
 	height: 9px;
-	fill: var(--purple-l80);
-	position: relative;
-	top: 1px;
+	fill: var(--purple-l70);
 	margin-left: 4px;
 }
 
-.top-bar__bug-contact a,
-.top-bar__bug-contact a:hover,
-.top-bar__bug-contact a:focus,
-.top-bar__bug-contact a:visited {
-	font-size: 1em;
-	color: var(--purple-l90);
+.top-bar__bug-icon:hover svg {
+	fill: white;
 }
 
-.top-bar__bug-contact a:active {
+.top-bar__bug-link a {
+	font-size: 1em;
+	color: var(--purple-l80);
+}
+
+.top-bar__bug-link a:hover,
+.top-bar__bug-link a:focus,
+.top-bar__bug-link a:visited {
+	font-size: 1em;
+	color: white !important;
+}
+
+.top-bar__bug-link a:active {
 	color: white;
 }
