@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeCrisp, round } from '../common/functions.js';
-import { drawPath } from '../display_canvas/draw_paths.js';
+import { drawItem } from '../display_canvas/draw_paths.js';
 import { eventHandlerData } from './events.js';
 import { sXcX, sYcY } from './edit_canvas.js';
 import { canResize } from './events_mouse.js';
@@ -14,7 +14,7 @@ import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js'
 export let canvasUIPointSize = 7;
 let rotateHandleHeight = 40;
 let accentBlue = accentColors.blue.l65;
-// let accentGreen = accentColors.green.l65;
+let accentGreen = accentColors.green.l65;
 let accentGray = accentColors.gray.l65;
 let pathFill = '#000';
 let pointFill = '#FFF';
@@ -29,10 +29,12 @@ let multiSelectThickness = 3;
 
 export function computeAndDrawBoundingBox(ctx) {
 	const editor = getCurrentProjectEditor();
-	if (editor.multiSelect.paths.length < 1) return;
-	let maxes = editor.multiSelect.paths.maxes;
-	let thickness = editor.multiSelect.paths.length > 1 ? multiSelectThickness : 1;
-	drawBoundingBox(ctx, maxes, thickness);
+	let msPaths = editor.multiSelect.paths;
+	if (msPaths.length < 1) return;
+	let maxes = msPaths.maxes;
+	let style = computeSelectionStyle();
+
+	drawBoundingBox(ctx, maxes, style.thickness, style.accent);
 }
 /*
 TODO rotate
@@ -51,28 +53,47 @@ export function computeAndDrawRotationAffordance(ctx) {
 */
 export function computeAndDrawBoundingBoxHandles(ctx) {
 	const editor = getCurrentProjectEditor();
-	if (editor.multiSelect.paths.length < 1) return;
-	let maxes = editor.multiSelect.paths.maxes;
-	let thickness = editor.multiSelect.paths.length > 1 ? multiSelectThickness : 1;
-	drawBoundingBoxHandles(ctx, maxes, thickness);
+	let msPaths = editor.multiSelect.paths;
+	if (msPaths.length < 1) return;
+	let maxes = msPaths.maxes;
+	let style = computeSelectionStyle();
+
+	drawBoundingBoxHandles(ctx, maxes, style.thickness, style.accent);
 }
 
+function computeSelectionStyle() {
+	const editor = getCurrentProjectEditor();
+	let msPaths = editor.multiSelect.paths;
+	let thickness = 1;
+	let accent = accentBlue;
+	if (msPaths.length > 1) {
+		thickness = multiSelectThickness;
+		accent = accentGray;
+	} else {
+		if (msPaths.singleton.objType === 'ComponentInstance') {
+			accent = accentGreen;
+		}
+	}
+	return { thickness: thickness, accent: accent };
+}
 // --------------------------------------------------------------
 // Paths
 // --------------------------------------------------------------
 export function drawSelectedPathOutline(ctx, view) {
 	// log(`drawSelectedPathOutline`, 'start');
 	const editor = getCurrentProjectEditor();
-	let selected = editor.multiSelect.paths.members.length;
+	let msPaths = editor.multiSelect.paths;
+	let selected = msPaths.members.length;
 	// log(`selected: ${selected}`);
+	let style = computeSelectionStyle();
 
 	if (selected > 0) {
 		ctx.beginPath();
-		editor.multiSelect.paths.drawPaths(ctx, view);
+		msPaths.drawPaths(ctx, view);
 		ctx.closePath();
 
-		ctx.strokeStyle = accentBlue;
-		ctx.lineWidth = selected > 1 ? 2 : 1;
+		ctx.strokeStyle = style.accent;
+		ctx.lineWidth = style.thickness;
 		ctx.stroke();
 	}
 
@@ -81,7 +102,7 @@ export function drawSelectedPathOutline(ctx, view) {
 
 export function drawNewBasicPath(ctx, path, view) {
 	ctx.beginPath();
-	drawPath(path, ctx, view);
+	drawItem(path, ctx, view);
 	ctx.closePath();
 
 	ctx.fillStyle = pathFill;
@@ -96,12 +117,11 @@ export function drawNewBasicPath(ctx, path, view) {
 // Bounding Box
 // --------------------------------------------------------------
 
-export function drawBoundingBox(ctx, maxes, thickness) {
+export function drawBoundingBox(ctx, maxes, thickness, accent) {
 	// log(`drawBoundingBox`, 'start');
 	// log(`thickness: ${thickness}`);
 	// log(maxes);
 
-	let accent = thickness === 1 ? accentBlue : accentGray;
 	const bb = getBoundingBoxAndHandleDimensions(maxes, thickness);
 
 	let w = bb.rightX - bb.leftX;
@@ -114,8 +134,7 @@ export function drawBoundingBox(ctx, maxes, thickness) {
 	// log(`drawBoundingBox`, 'end');
 }
 
-function drawBoundingBoxHandles(ctx, maxes, thickness) {
-	let accent = thickness === 1 ? accentBlue : accentGray;
+function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
 	let bb = getBoundingBoxAndHandleDimensions(maxes, thickness);
 
 	ctx.fillStyle = pointFill;

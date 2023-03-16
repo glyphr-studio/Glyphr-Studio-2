@@ -170,28 +170,14 @@ export function getActionData(name) {
 			title: 'Delete\nRemoves the currently selected path or paths from this glyph.',
 			onClick: deleteSelectedPaths,
 		},
-	];
-
-	if (selectedPaths.length === 1 && selectedPaths[0].objType === 'ComponentInstance') {
-		data.pathActions = data.pathActions.concat([
-			{
-				iconName: 'switchPathComponent',
-				iconData: true,
-				title: `Turn Component Instance into a Path\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's paths as regular Paths to this glyph.`,
-			},
-		]);
-	} else {
-		data.pathActions = data.pathActions.concat([
-			{
-				iconName: 'switchPathComponent',
-				iconData: false,
-				title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
-				disabled: true,
-			},
-		]);
-	}
-
-	data.pathActions = data.pathActions.concat([
+		{
+			iconName: 'switchPathComponent',
+			iconOptions: false,
+			title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
+			onClick: () => {
+				// TODO components
+			}
+		},
 		{
 			iconName: 'flipHorizontal',
 			title: 'Flip Horizontal\nReflects the currently selected path or paths horizontally.',
@@ -222,7 +208,19 @@ export function getActionData(name) {
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
-	]);
+	];
+
+	// COMPONENT INSTANCE
+	data.componentInstanceActions = [
+		{
+			iconName: 'switchPathComponent',
+			iconOptions: true,
+			title: `Turn Component Instance into a Path\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's paths as regular Paths to this glyph.`,
+			onClick: () => {
+				// TODO components
+			}
+		},
+	];
 
 	// LAYERS
 	data.layerActions = [
@@ -388,6 +386,14 @@ export function getActionData(name) {
 // Individual actions areas
 // --------------------------------------------------------------
 
+export function addChildActions(parent, actionsArray) {
+	addAsChildren(
+		parent,
+		actionsArray.map((iconData) => makeActionButton(iconData))
+	);
+	return parent;
+}
+
 // Universal actions
 export function makeActionsArea_Universal() {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
@@ -457,6 +463,32 @@ export function makeActionsArea_Path(test = false) {
 	return alignActions ? [actionsArea, alignActions] : actionsArea;
 }
 
+export function makeActionsArea_ComponentInstance(test = false) {
+	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
+	let alignActions = false;
+	let selectedPaths = getCurrentProjectEditor().multiSelect.paths.members;
+
+	if (selectedPaths.length > 0 || test) {
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'paths'}));
+		addChildActions(actionsArea, getActionData('componentInstanceActions'));
+	}
+
+	// Layer actions
+	if (selectedPaths.length === 1 || test) {
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'path layers'}));
+		addChildActions(actionsArea, getActionData('layerActions'));
+	}
+
+	// Path align actions
+	if (selectedPaths.length > 1 || test) {
+		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
+		alignActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
+		addChildActions(alignActions, getActionData('alignActions'));
+	}
+
+	return alignActions ? [actionsArea, alignActions] : actionsArea;
+}
+
 // Point actions
 export function makeActionsArea_PathPoint(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
@@ -472,13 +504,6 @@ export function makeActionsArea_PathPoint(test = false) {
 	return actionsArea;
 }
 
-export function addChildActions(parent, actionsArray) {
-	addAsChildren(
-		parent,
-		actionsArray.map((iconData) => makeActionButton(iconData))
-	);
-	return parent;
-}
 
 // --------------------------------------------------------------
 // Delete selected path / point

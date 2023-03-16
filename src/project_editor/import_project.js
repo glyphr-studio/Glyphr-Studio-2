@@ -177,6 +177,8 @@ function migrate_Project(oldProject) {
  * @returns {Glyph} - new v2 Glyph
  */
 function migrate_Glyph(oldGlyph, newID) {
+	log(`migrate_Glyph`, 'start');
+
 	const newGlyph = new Glyph();
 	newGlyph.id = newID;
 	newGlyph.advanceWidth = oldGlyph.glyphwidth;
@@ -188,16 +190,21 @@ function migrate_Glyph(oldGlyph, newID) {
 	oldGlyph.shapes.forEach((item) => {
 		if (item.path) {
 			// Regular Shape
+			log(`importing item as path`);
+			log(item);
 			newItem = migrate_Path(item, newGlyph);
 			newGlyph.addOnePath(newItem);
 		} else {
 			// Component Instance
-			newItem = new ComponentInstance(item);
-			newItem.link = migrate_ItemID(item.link);
+			log(`import item as COMPONENT INSTANCE`);
+			log(item);
+			newItem = new migrate_ComponentInstance(item);
 			newGlyph.addOnePath(newItem);
 		}
 	});
 
+	log(newGlyph);
+	log(`migrate_Glyph`, 'end');
 	return newGlyph;
 }
 
@@ -257,6 +264,21 @@ function migrate_PathPoint(oldPathPoint, parentPath) {
 
 	// do NOT .resolvePointType
 	return newPathPoint;
+}
+
+function migrate_ComponentInstance(oldItem) {
+	const newItem = new ComponentInstance();
+	newItem.link = migrate_ItemID(oldItem.link);
+	newItem.translateX = oldItem.translatex;
+	newItem.translateY = oldItem.translatey;
+	newItem.scaleW = oldItem.scalew;
+	newItem.scaleH = oldItem.scaleh;
+	newItem.isFlippedNS = oldItem.flipns;
+	newItem.isFlippedEW = oldItem.flipew;
+	newItem.reverseWinding = oldItem.reversewinding;
+	newItem.rotation = oldItem.rotation;
+	newItem.rotateFirst = oldItem.rotatefirst;
+	return newItem;
 }
 
 function migrate_ItemID(oldID) {

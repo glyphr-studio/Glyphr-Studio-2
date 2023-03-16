@@ -1,6 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
-import { drawPath } from '../display_canvas/draw_paths.js';
+import { drawItem } from '../display_canvas/draw_paths.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -444,7 +444,7 @@ export class MultiSelectPaths extends MultiSelect {
 		let failed = false;
 		let drewPath = false;
 		for (let m = 0; m < this.members.length; m++) {
-			drewPath = drawPath(this.members[m], ctx, view);
+			drewPath = drawItem(this.members[m], ctx, view);
 			failed = failed || !drewPath;
 		}
 

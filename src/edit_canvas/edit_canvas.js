@@ -67,6 +67,7 @@ export class EditCanvas extends HTMLElement {
 			'whichPathPointIsSelected',
 			'currentItem',
 			'currentPath',
+			'currentComponentInstance',
 			'currentPathPoint',
 			'currentControlPoint',
 			'currentControlPoint.p',

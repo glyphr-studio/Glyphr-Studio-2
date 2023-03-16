@@ -1,8 +1,8 @@
 import { GlyphElement } from './glyph_element.js';
 // import { getCurrentProject } from '../app/main.js';
 import { parseCharsInputAsHex } from '../common/character_ids.js';
-import { strSan, rad, deg } from '../common/functions.js';
-import { getCurrentProject } from '../app/main.js';
+import { strSan, rad, deg, json } from '../common/functions.js';
+import { getCurrentProject, log } from '../app/main.js';
 import { Glyph } from './glyph.js';
 
 /**
@@ -531,7 +531,7 @@ export class ComponentInstance extends GlyphElement {
 	 */
 
 	makeTransformedGlyph() {
-		// log('ComponentInstance.makeTransformedGlyph - START ' + this.name);
+		log('ComponentInstance.makeTransformedGlyph - START ' + this.name);
 		const project = getCurrentProject();
 		const linkedGlyph = project.getItem(this.link);
 		if (!linkedGlyph) {
@@ -545,7 +545,7 @@ export class ComponentInstance extends GlyphElement {
 		const newGlyph = new Glyph(linkedGlyph);
 		newGlyph.convertLinksToPaths();
 
-		// log('DELTAS' + '\n\t translateX:\t' + this.translateX  + '\n\t translateY:\t' + this.translateY  + '\n\t scaleW:\t' + this.scaleW  + '\n\t scaleH:\t' + this.scaleH  + '\n\t flipEW:\t' + this.isFlippedEW  + '\n\t flipNS:\t' + this.isFlippedNS  + '\n\t reverseWinding:\t' + this.reverseWinding  + '\n\t rotation:\t' + this.rotation);
+		log('DELTAS' + '\n\t translateX:\t' + this.translateX  + '\n\t translateY:\t' + this.translateY  + '\n\t scaleW:\t' + this.scaleW  + '\n\t scaleH:\t' + this.scaleH  + '\n\t flipEW:\t' + this.isFlippedEW  + '\n\t flipNS:\t' + this.isFlippedNS  + '\n\t reverseWinding:\t' + this.reverseWinding  + '\n\t rotation:\t' + this.rotation);
 		if (
 			this.translateX ||
 			this.translateY ||
@@ -556,8 +556,8 @@ export class ComponentInstance extends GlyphElement {
 			this.reverseWinding ||
 			this.rotation
 		) {
-			// log('Modifying w ' + this.scaleW + ' h ' + this.scaleH);
-			// log('before maxes ' + json(newGlyph.maxes, true));
+			log('Modifying w ' + this.scaleW + ' h ' + this.scaleH);
+			log('before maxes ' + json(newGlyph.maxes, true));
 			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
 			if (this.isFlippedEW) newGlyph.flipEW();
 			if (this.isFlippedNS) newGlyph.flipNS();
@@ -565,14 +565,15 @@ export class ComponentInstance extends GlyphElement {
 			newGlyph.updateGlyphSize(this.scaleW, this.scaleH, false);
 			if (this.reverseWinding) newGlyph.reverseWinding();
 			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
-			// log('afters maxes ' + json(newGlyph.maxes, true));
+			log('afters maxes ' + json(newGlyph.maxes, true));
 		} else {
-			// log('Not changing, no deltas');
+			log('Not changing, no deltas');
 		}
 
 		newGlyph.changed();
 		this.cache.transformedGlyph = newGlyph;
-		// log('ComponentInstance.makeTransformedGlyph', 'end');
+		log(newGlyph);
+		log('ComponentInstance.makeTransformedGlyph', 'end');
 
 		return newGlyph;
 	}

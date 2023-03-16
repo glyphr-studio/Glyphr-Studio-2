@@ -2,7 +2,7 @@ import { getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors, uiColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
-import { drawPath } from '../../display_canvas/draw_paths.js';
+import { drawItem } from '../../display_canvas/draw_paths.js';
 import { stopCreatingNewPath } from './new_path.js';
 
 // --------------------------------------------------------------
@@ -403,7 +403,7 @@ function isThisPathHere(path, px, py) {
 	ctx.fillRect(0, 0, editor.canvasSize, editor.canvasSize);
 
 	ctx.beginPath();
-	drawPath(path, ctx, editor.view);
+	drawItem(path, ctx, editor.view);
 	ctx.closePath();
 
 	ctx.fillStyle = 'rgb(0,0,0)';
