@@ -4,6 +4,7 @@ import { parseCharsInputAsHex } from '../common/character_ids.js';
 import { strSan, rad, deg, json } from '../common/functions.js';
 import { getCurrentProject, log } from '../app/main.js';
 import { Glyph } from './glyph.js';
+import { convertLinksToPaths } from '../project_editor/cross_item_actions.js';
 
 /**
  * Glyph Element > Component Instance
@@ -249,17 +250,6 @@ export class ComponentInstance extends GlyphElement {
 	}
 
 	// Computed properties
-
-	/**
-	 * get transformedGlyph
-	 * @returns {Glyph}
-	 */
-	get transformedGlyph() {
-		if (!this.cache.transformedGlyph) {
-			this.makeTransformedGlyph();
-		}
-		return this.cache.transformedGlyph;
-	}
 
 	/**
 	 * get x
@@ -527,102 +517,7 @@ export class ComponentInstance extends GlyphElement {
 		this.setPathSize(false, h);
 	}
 
-	// --------------------------------------------------------------
-	// Get Transformed Glyph
-	// --------------------------------------------------------------
 
-	/**
-	 * Component Instances are basically links to other Glyphs, plus some transformations.
-	 * This function grabs a clone of the linked-to Glyph, applies the transformations,
-	 * and returns a Glyph object - while also updating the cache
-	 * @returns {Glyph}
-	 */
-
-	makeTransformedGlyph() {
-		// log('ComponentInstance.makeTransformedGlyph', 'start');
-		// log(`name: ${this.name}`);
-		const project = getCurrentProject();
-		const linkedGlyph = project.getItem(this.link);
-		if (!linkedGlyph) {
-			console.warn(`
-				Tried to get Component: ${this.link} but it
-				doesn't exist - bad usedIn array maintenance.
-			`);
-			return false;
-		}
-
-		const newGlyph = new Glyph(linkedGlyph);
-		newGlyph.convertLinksToPaths();
-
-		// log(`translateX: ${this.translateX}`);
-		// log(`translateY: ${this.translateY}`);
-		// log(`resizeWidth: ${this.resizeWidth}`);
-		// log(`resizeHeight: ${this.resizeHeight}`);
-		// log(`flipEW: ${this.isFlippedEW}`);
-		// log(`flipNS: ${this.isFlippedNS}`);
-		// log(`reverseWinding: ${this.reverseWinding}`);
-		// log(`rotation: ${this.rotation}`);
-
-		if (
-			this.translateX ||
-			this.translateY ||
-			this.resizeWidth ||
-			this.resizeHeight ||
-			this.isFlippedEW ||
-			this.isFlippedNS ||
-			this.reverseWinding ||
-			this.rotation
-		) {
-			// log('Modifying w ' + this.resizeWidth + ' h ' + this.resizeHeight);
-			// log('before maxes ' + json(newGlyph.maxes, true));
-			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
-			if (this.isFlippedEW) newGlyph.flipEW();
-			if (this.isFlippedNS) newGlyph.flipNS();
-			newGlyph.updateGlyphPosition(this.translateX, this.translateY, true);
-			newGlyph.updateGlyphSize(this.resizeWidth, this.resizeHeight, false);
-			if (this.reverseWinding) newGlyph.reverseWinding();
-			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
-			// log('afters maxes ' + json(newGlyph.maxes, true));
-		} else {
-			// log('Not changing, no deltas');
-		}
-
-		newGlyph.changed();
-		this.cache.transformedGlyph = newGlyph;
-		// log(newGlyph);
-		// log('ComponentInstance.makeTransformedGlyph', 'end');
-
-		return newGlyph;
-	}
-
-	// --------------------------------------------------------------
-	// Export to different languages
-	// --------------------------------------------------------------
-
-	/**
-	 * Make a PostScript path from this path
-	 * PostScript paths use relative MoveTo commands, so
-	 * this path must know about where the last path left off
-	 * @param {number} lastX - x from previous path
-	 * @param {number} lastY - y from previous path
-	 * @returns {string} - PostScript path data
-	 */
-	makePostScript(lastX, lastY) {
-		const g = this.transformedGlyph;
-		let re;
-		let part;
-		g.paths.forEach((path) => {
-			part = path.makePostScript(lastX, lastY);
-			lastX = part.lastX;
-			lastY = part.lastY;
-			re += part.re;
-		});
-		return {
-			re: re,
-			lastX: lastX,
-			lastY: lastY,
-		};
-	}
 
 	// --------------------------------------------------------------
 	// Parity methods, shared between Paths and ComponentInstances

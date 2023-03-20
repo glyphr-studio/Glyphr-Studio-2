@@ -180,7 +180,6 @@ export class MultiSelectPoints extends MultiSelect {
 
 			if (pointIndex > -1) {
 				parentPath.pathPoints.splice(pointIndex, 1);
-				// parentPath.recalculateMaxes();
 				parentPath.changed();
 				minPointIndex = Math.min(pointIndex, minPointIndex);
 			}

@@ -89,7 +89,6 @@ export class Tool_PathEdit {
 				msPaths.select(clickedPath);
 			} else {
 				// log('detected NOTHING');
-				// msPaths.recalculateMaxes();
 				clickEmptySpace();
 				// findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			}

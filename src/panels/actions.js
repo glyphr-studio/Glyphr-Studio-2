@@ -7,6 +7,7 @@ import { Path } from '../project_data/path.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { closeEveryTypeOfDialog, showModalDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { makeGlyphChooserContent } from './glyph_chooser.js';
+import { makeGlyphSVGforExport } from '../project_editor/cross_item_actions.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -149,7 +150,7 @@ export function getActionData(name) {
 			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let content = editor.selectedItem.makeSVGforExport();
+				let content = makeGlyphSVGforExport(editor.selectedItem);
 				let name = editor.selectedItem.name;
 				saveFile(name + '.svg', content);
 			},
