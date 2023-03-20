@@ -26,17 +26,6 @@ export class GlyphElement {
 		} else {
 			// log(status + ' - No Parent!');
 		}
-
-		if (this.usedIn?.length) {
-			const project = getCurrentProject();
-			// log(`Calling changed() on usedIn for ${this.name}`);
-			// log(this.usedIn);
-			this.usedIn.forEach(itemID => {
-				const item = project.getItem(itemID);
-				// log(item);
-				if(item && item.changed) item.changed();
-			});
-		}
 	}
 
 	/**

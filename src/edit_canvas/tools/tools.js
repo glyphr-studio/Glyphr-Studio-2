@@ -3,6 +3,7 @@ import { accentColors, uiColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawItem } from '../../display_canvas/draw_paths.js';
+import { Path } from '../../project_data/path.js';
 import { stopCreatingNewPath } from './new_path.js';
 
 // --------------------------------------------------------------
@@ -305,7 +306,6 @@ export function addPathToCurrentItem(newPath) {
 			editor.selectedTool = 'pathEdit';
 		} else if (newPath && editor.selectedTool === 'pathEdit') {
 			// log(`triggered as true: newPath && editor.selectedTool == pathEdit \n\t NOT calling calcmaxes, okay?`);
-			//newPath.recalculateMaxes();
 		}
 	} else {
 		// log(`passed null, creating new path.`);

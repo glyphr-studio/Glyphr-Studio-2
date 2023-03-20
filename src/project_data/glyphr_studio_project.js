@@ -6,7 +6,7 @@ import { decToHex, validateAsHex } from '../common/character_ids.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 // import { log } from '../app/main.js';
 import { GlyphRange } from './glyph_range.js';
-import { log } from '../app/main.js';
+import { getCurrentProject, log } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -503,3 +503,4 @@ function makeProjectID() {
 
 	return re;
 }
+

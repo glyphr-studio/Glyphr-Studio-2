@@ -1,5 +1,5 @@
 import { GlyphElement } from './glyph_element.js';
-import { isAllZeros, getOverallMaxes, Maxes } from './maxes.js';
+import { Maxes } from './maxes.js';
 import { Path } from './path.js';
 import { ComponentInstance } from './component_instance.js';
 import { hasNonValues, isVal, trim } from '../common/functions.js';
@@ -252,26 +252,6 @@ export class Glyph extends GlyphElement {
 	 * @returns {Maxes}
 	 */
 	get maxes() {
-		// log('Glyph GET maxes', 'start');
-		// log('cache before');
-		// log(json(this.cache, true));
-
-		if (!this.cache.maxes) {
-			// log('detected no maxes cache');
-			this.recalculateMaxes();
-		} else if (hasNonValues(this.cache.maxes)) {
-			// log('detected hasNonValues');
-			this.recalculateMaxes();
-		} else if (isAllZeros(this.cache.maxes)) {
-			// log('detected all values zero');
-			this.recalculateMaxes();
-		} else {
-			// log('NO DETECTION to recalculate');
-		}
-
-		// log('cache after');
-		// log(json(this.cache, true));
-		// log('Glyph GET maxes', 'end');
 		return new Maxes(this.cache.maxes);
 	}
 
@@ -330,24 +310,6 @@ export class Glyph extends GlyphElement {
 
 	get chars() {
 		return this.char;
-	}
-
-	/**
-	 * get SVG Path Data
-	 * @returns {string}
-	 */
-	get svgPathData() {
-		// log(`Glyph GET svgPathData`, 'start');
-
-		if (!this.cache.svgPathData) {
-			// this.cache.svgPathData = this.makeSVGPathData(); // DOES NOT WORK FOR SOME REASON
-			let result = this.makeSVGPathData();
-			this.cache.svgPathData = result;
-
-		}
-		// log(`this.cache.svgPathData: ${this.cache.svgPathData}`);
-		// log(`Glyph GET svgPathData`, 'end');
-		return this.cache.svgPathData;
 	}
 
 	/**
@@ -848,84 +810,10 @@ export class Glyph extends GlyphElement {
 		// log('Glyph.alignPaths', 'end');
 	}
 
-	// --------------------------------------------------------------
-	// Calculating dimensions
-	// --------------------------------------------------------------
-
-	/**
-	 * Calculate the overall maxes for this Glyph
-	 * @returns {Maxes}
-	 */
-	recalculateMaxes() {
-		// log(`Glyph.recalculateMaxes - START `);
-
-		let temp = { xMax: 0, xMin: 0, yMax: 0, yMin: 0 };
-		// log(this.paths);
-		if (this.paths && this.paths.length > 0) {
-			// log('... has paths, calling getOverallMaxes');
-			temp = getOverallMaxes(this.paths.map((path) => path.maxes));
-		}
-
-		this.cache.maxes = new Maxes(temp);
-		// log(`result`);
-		// log(this.cache);
-		// log(`Glyph.recalculateMaxes`, 'end');
-		return this.cache.maxes;
-	}
 
 	// --------------------------------------------------------------
 	// Export to different languages
 	// --------------------------------------------------------------
-
-	makeSVGforExport() {
-		// log('Glyph.makeSVGforExport', 'start');
-		// log(this);
-		let size = Math.max(this.maxes.height, this.maxes.width);
-		// log(this.svgPathData);
-
-		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
-		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
-		re += `\t<g transform="translate(100,${size})">\n`;
-		re += `\t\t<path d="${this.svgPathData}"/>\n`;
-		re += `\t</g>\n</svg>`;
-
-		// log(re);
-		// log('Glyph.makeSVGforExport', 'end');
-		return re;
-	}
-
-	/**
-	 * Make the data (attribute d="") for an SVG path tag
-	 * @returns {string}
-	 */
-	makeSVGPathData() {
-		// log(`Glyph.makeSVGPathData()`, 'start');
-
-		let pathData = '';
-
-		// Make Path Data
-		this.paths.forEach((item) => {
-			// log(`item ${j} of ${this.paths.length}`);
-			// log(item);
-			// log(`PATH DATA START`);
-			// log(pathData);
-			if (item.objType === 'ComponentInstance') {
-				const workingItem = item.transformedGlyph;
-				if (workingItem) pathData += workingItem.svgPathData;
-			} else {
-				pathData += item.svgPathData;
-				pathData += ' ';
-			}
-			// log(`PATH DATA END`);
-			// log(pathData);
-		});
-
-		if (trim(pathData) === '') pathData = 'M0,0Z';
-		// log(`RETURNING`);
-		// log(pathData);
-		// log(`Glyph.makeSVGPathData()`, 'end');
-		return pathData;
-	}
 
 	makeOpenTypeJSpath(openTypePath) {
 		this.paths.forEach((item) => {
@@ -938,35 +826,7 @@ export class Glyph extends GlyphElement {
 	// Boolean Combine
 	// --------------------------------------------------------------
 
-	/**
-	 * Converts all the Component Instances in this Glyph to stand-alone paths
-	 * @returns {Glyph}
-	 */
-	convertLinksToPaths() {
-		// log(`Glyph.convertLinksToPaths`, 'start');
 
-		const newPaths = [];
-		let newItem;
-		this.paths.forEach((item) => {
-			if (item.objType === 'Path') {
-				newItem = new Path(item);
-				newItem.parent = this;
-				newPaths.push(newItem);
-			} else if (item.objType === 'ComponentInstance') {
-				item.transformedGlyph.paths.forEach((tgItem) => {
-					newItem = new Path(tgItem);
-					newItem.parent = this;
-					newPaths.push(newItem);
-				});
-			} else {
-				// log('Glyph.convertLinksToPaths', - ERROR - none path or ci in paths array');
-			}
-		});
-		this.paths = newPaths;
-
-		// log(`Glyph.convertLinksToPaths`, 'end');
-		return this;
-	}
 
 	/**
 	 * Boolean combine all paths in this Glyph to as few paths as possible
@@ -976,7 +836,7 @@ export class Glyph extends GlyphElement {
 	combineAllPaths() {
 		// log('Glyph.combineAllPaths', 'start');
 
-		this.convertLinksToPaths();
+		// this.convertLinksToPaths();
 		/*
 
 			TODO Boolean Combine get functionality from V1
@@ -995,26 +855,6 @@ export class Glyph extends GlyphElement {
 		// log('Glyph.combineAllPaths', 'end');
 		*/
 		return this;
-	}
-
-	// --------------------------------------------------------------
-	// Methods
-	// --------------------------------------------------------------
-
-	/**
-	 * Return true if there is anything to draw for this Glyph
-	 * @returns {boolean}
-	 */
-	hasPaths() {
-		let tg;
-		for (let s = 0; s < this.paths.length; s++) {
-			if (this.paths[s].objType !== 'ComponentInstance') return true;
-			else {
-				tg = this.paths[s].transformedGlyph;
-				if (tg.hasPaths()) return true;
-			}
-		}
-		return false;
 	}
 
 	// --------------------------------------------------------------
