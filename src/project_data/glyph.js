@@ -337,8 +337,16 @@ export class Glyph extends GlyphElement {
 	 * @returns {string}
 	 */
 	get svgPathData() {
-		if (this.cache.svgPathData) return this.cache.svgPathData;
-		this.cache.svgPathData = this.makeSVGPathData();
+		// log(`Glyph GET svgPathData`, 'start');
+
+		if (!this.cache.svgPathData) {
+			// this.cache.svgPathData = this.makeSVGPathData(); // DOES NOT WORK FOR SOME REASON
+			let result = this.makeSVGPathData();
+			this.cache.svgPathData = result;
+
+		}
+		// log(`this.cache.svgPathData: ${this.cache.svgPathData}`);
+		// log(`Glyph GET svgPathData`, 'end');
 		return this.cache.svgPathData;
 	}
 
@@ -891,7 +899,7 @@ export class Glyph extends GlyphElement {
 	 * @returns {string}
 	 */
 	makeSVGPathData() {
-		if (this.cache.svg) return this.cache.svg;
+		// log(`Glyph.makeSVGPathData()`, 'start');
 
 		let pathData = '';
 
@@ -899,6 +907,8 @@ export class Glyph extends GlyphElement {
 		this.paths.forEach((item) => {
 			// log(`item ${j} of ${this.paths.length}`);
 			// log(item);
+			// log(`PATH DATA START`);
+			// log(pathData);
 			if (item.objType === 'ComponentInstance') {
 				const workingItem = item.transformedGlyph;
 				if (workingItem) pathData += workingItem.svgPathData;
@@ -906,10 +916,14 @@ export class Glyph extends GlyphElement {
 				pathData += item.svgPathData;
 				pathData += ' ';
 			}
+			// log(`PATH DATA END`);
+			// log(pathData);
 		});
 
 		if (trim(pathData) === '') pathData = 'M0,0Z';
-		this.cache.svg = pathData;
+		// log(`RETURNING`);
+		// log(pathData);
+		// log(`Glyph.makeSVGPathData()`, 'end');
 		return pathData;
 	}
 

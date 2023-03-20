@@ -2,7 +2,6 @@ import { makeElement } from '../../common/dom.js';
 import { hexesToChars } from '../../common/character_ids.js';
 import { lookUpGlyphName } from '../../lib/unicode_names.js';
 import { getCurrentProject, log } from '../../app/main.js';
-import { drawGlyph } from '../../display_canvas/draw_paths.js';
 import style from './glyph-tile.css?inline';
 
 /**
@@ -66,7 +65,8 @@ export class GlyphTile extends HTMLElement {
 		}
 
 		this.name = makeElement({ className: 'name' });
-		this.name.innerHTML = displayedItemID === '0x20' ? 'Space' : chars;
+		if (chars) this.name.innerHTML = displayedItemID === '0x20' ? 'Space' : chars;
+		else this.name.innerHTML = name.replaceAll('Component ', 'comp-');
 
 		// Put it all together
 		const shadow = this.attachShadow({ mode: 'open' });

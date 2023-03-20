@@ -251,8 +251,8 @@ makeActionButtonIcon.reverseWinding = function () {
 };
 
 makeActionButtonIcon.switchPathComponent = function (isComponent) {
-	log(`makeActionButtonIcon.switchComponent`, 'start');
-	log(`isComponent: ${isComponent}`);
+	// log(`makeActionButtonIcon.switchComponent`, 'start');
+	// log(`isComponent: ${isComponent}`);
 	let re = '';
 	let before = isComponent ? actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
 	let after = isComponent ? actionButtonIconColors.blueOutline : actionButtonIconColors.greenOutline;
@@ -265,7 +265,7 @@ makeActionButtonIcon.switchPathComponent = function (isComponent) {
 	<path fill="${after}" d="M19.1,2L28,15.6V28h-5.8L17,23.1V2h2 M20.4,0H15v24l6.4,6H30V15L20.4,0L20.4,0z"/>
 	`;
 
-	log(`makeActionButtonIcon.switchComponent`, 'end');
+	// log(`makeActionButtonIcon.switchComponent`, 'end');
 	return svgWrap(re);
 };
 
