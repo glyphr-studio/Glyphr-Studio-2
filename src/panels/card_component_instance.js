@@ -37,13 +37,13 @@ export function makeCard_componentInstanceAttributes(componentInstance) {
 	let translateYLabel = makeSingleLabel('Δ y');
 	let translateYInput = makeSingleInput(componentInstance, 'translateY', 'currentComponentInstance', 'input');
 
-	// scaleW
+	// resizeWidth
 	let scaleWLabel = makeSingleLabel('Δ width');
-	let scaleWInput = makeSingleInput(componentInstance, 'scaleW', 'currentComponentInstance', 'input');
+	let scaleWInput = makeSingleInput(componentInstance, 'resizeWidth', 'currentComponentInstance', 'input');
 
-	// scaleH
+	// resizeHeight
 	let scaleHLabel = makeSingleLabel('Δ height');
-	let scaleHInput = makeSingleInput(componentInstance, 'scaleH', 'currentComponentInstance', 'input');
+	let scaleHInput = makeSingleInput(componentInstance, 'resizeHeight', 'currentComponentInstance', 'input');
 */
 	let translateInputs = makeComponentInstanceInputs_translate(componentInstance);
 	let scaleInputs = makeComponentInstanceInputs_size(componentInstance);
@@ -203,8 +203,13 @@ function makeComponentInstanceInputs_size(workItem) {
 		`,
 	});
 	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let wInput = makeSingleInput(workItem, 'width', 'currentComponentInstance', 'input-number');
-	let hInput = makeSingleInput(workItem, 'height', 'currentComponentInstance', 'input-number');
+	let wInput = makeSingleInput(workItem, 'resizeWidth', 'currentComponentInstance', 'input-number');
+	let hInput = makeSingleInput(
+		workItem,
+		'resizeHeight',
+		'currentComponentInstance',
+		'input-number'
+	);
 
 	// Put double input together
 	doubleInput.appendChild(wInput);

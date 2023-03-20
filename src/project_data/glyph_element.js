@@ -1,4 +1,4 @@
-import { getCurrentProject } from '../app/main.js';
+import { getCurrentProject, log } from '../app/main.js';
 import { json, clone, makeRandomID } from '../common/functions.js';
 
 /**
@@ -29,8 +29,11 @@ export class GlyphElement {
 
 		if (this.usedIn?.length) {
 			const project = getCurrentProject();
+			// log(`Calling changed() on usedIn for ${this.name}`);
+			// log(this.usedIn);
 			this.usedIn.forEach(itemID => {
 				const item = project.getItem(itemID);
+				// log(item);
 				if(item && item.changed) item.changed();
 			});
 		}
@@ -82,7 +85,7 @@ export class GlyphElement {
 	 * will return true.
 	 * @returns {Boolean}
 	 */
-	isLockable() {
+	get isLockable() {
 		return false;
 	}
 
@@ -143,6 +146,16 @@ export class GlyphElement {
 	 */
 	toString() {
 		return json(this.save());
+	}
+
+	/**
+	 * Test to see if this object uses the Glyph constructor
+	 */
+	get isGlyphLike() {
+		if (this.objType === 'Glyph') return true;
+		if (this.objType === 'Component') return true;
+		if (this.objType === 'Ligature') return true;
+		return false;
 	}
 
 	/**

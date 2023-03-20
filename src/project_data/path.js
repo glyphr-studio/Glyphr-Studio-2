@@ -429,7 +429,7 @@ export class Path extends GlyphElement {
 	 * Indicates that this object has lockable properties
 	 * @returns {Boolean}
 	 */
-	isLockable() {
+	get isLockable() {
 		return true;
 	}
 
@@ -688,27 +688,6 @@ export class Path extends GlyphElement {
 	// --------------------------------------------------------------
 	//  Translate to other languages
 	// --------------------------------------------------------------
-	/**
-	 * Make SVG from this Path
-	 * @param {number} size - how big the resulting SVG should be
-	 * @param {number} padding - interior space around the glyph
-	 * @param {number} totalVertical - kind of like UPM from project metrics
-	 * @param {number} ascent - distance between y=0 and top of totalVertical
-	 * @returns {string} - svg
-	 */
-	makeSVG(size = 50, padding = 5, totalVertical = 1000, ascent = 700) {
-		const scale = (size - padding * 2) / totalVertical;
-		const scaledHeight = size / totalVertical;
-		const translateY = ascent * scale + padding * 2;
-
-		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
-		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
-		re += `\t<g transform="translate(${padding},${translateY}) scale(${scaledHeight}, -${scaledHeight})">\n`;
-		re += `\t\t<path d="${this.svgPathData}"/>\n`;
-		re += `\t</g>\n</svg>`;
-		return re;
-	}
-
 	/**
 	 * Create SVG data
 	 * @param {string} glyphName - Name of the glyph this path belongs to

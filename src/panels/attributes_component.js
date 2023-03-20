@@ -38,7 +38,7 @@ export function makeUsedInThumbs() {
 				<table cellpadding=0 cellspacing=0 border=0>
 					<tr><td title="${cname}">
 						<div class="ssusedinthumb" onclick="goToEditGlyph(${unique[k]});">
-							${getItem(unique[k]).makeSVG()}
+							${project.makeItemThumbnail(getItem(unique[k]))}
 						</div>
 					</td></tr>
 					<tr><td>
@@ -146,21 +146,21 @@ function makeCard_componentInstanceAttributes(s) {
 		'<div class="lockwrapper">' +
 		lockUI('_UI.multiSelect.paths.singleton.wLock', s.wLock, 'wLock') +
 		'<input type="number" id="comw" value="' +
-		round(s.scaleW, 3) +
+		round(s.resizeWidth, 3) +
 		'" ' +
 		(s.wLock
 			? 'disabled="disabled" '
-			: 'onchange="updateComponentInstanceDetail(\'scaleW\', this.value, this.id);">') +
+			: 'onchange="updateComponentInstanceDetail(\'resizeWidth\', this.value, this.id);">') +
 		'</div>' +
 		dimSplit() +
 		'<div class="lockwrapper">' +
 		lockUI('_UI.multiSelect.paths.singleton.hLock', s.hLock, 'hLock') +
 		'<input type="number" id="comh" value="' +
-		round(s.scaleH, 3) +
+		round(s.resizeHeight, 3) +
 		'" ' +
 		(s.hLock
 			? 'disabled="disabled" '
-			: 'onchange="updateComponentInstanceDetail(\'scaleH\', this.value, this.id);">') +
+			: 'onchange="updateComponentInstanceDetail(\'resizeHeight\', this.value, this.id);">') +
 		'</div>' +
 		'</td>' +
 		'</tr>';
@@ -235,7 +235,7 @@ function makeCard_componentInstanceAttributes(s) {
 	content += '<tr><td colspan=2><h3>root component</h3></td></tr></table>';
 	content += '<table class="layertable">';
 	content += '<tr class="componentlayer" onclick="goToEditGlyph(\'' + s.link + '\');">';
-	content += '<td class="layerthumb">' + cr.makeSVG() + '</td>';
+	content += '<td class="layerthumb">' + project.makeItemThumbnail(cr) + '</td>';
 	content += '<td class="layername">' + cr.name;
 	content += '<span class="layernote">edit this component</span>';
 	content += '</td></tr>';
@@ -265,10 +265,10 @@ function updateComponentInstanceDetail(key, value, id) {
 		w = ts.maxes.xMax - ts.maxes.xMin;
 		h = ts.maxes.yMax - ts.maxes.yMin;
 
-		if (key === 'scaleW') {
-			selci.scaleH += (value - oldval) * (h / w);
-		} else if (key === 'scaleH') {
-			selci.scaleW += (value - oldval) * (w / h);
+		if (key === 'resizeWidth') {
+			selci.resizeHeight += (value - oldval) * (h / w);
+		} else if (key === 'resizeHeight') {
+			selci.resizeWidth += (value - oldval) * (w / h);
 		}
 	}
 

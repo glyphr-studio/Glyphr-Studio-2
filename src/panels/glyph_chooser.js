@@ -55,6 +55,7 @@ export function makeGlyphChooserContent(
 
 function makeGlyphChooserTileGrid() {
 	// log(`makeGlyphChooserTileGrid`, 'start');
+	// console.time('makeGlyphChooserTileGrid');
 	const editor = getCurrentProjectEditor();
 	// log(editor.project.settings.project.glyphRanges);
 	// log(editor.selectedGlyphRange);
@@ -88,6 +89,7 @@ function makeGlyphChooserTileGrid() {
 		tileGrid.appendChild(oneTile);
 	});
 
+	// console.timeEnd('makeGlyphChooserTileGrid');
 	// log(`makeGlyphChooserTileGrid`, 'end');
 	return tileGrid;
 }
