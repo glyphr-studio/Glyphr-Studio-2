@@ -315,7 +315,8 @@ export class ComponentInstance extends GlyphElement {
 	 * get svgPathData
 	 */
 	get svgPathData() {
-		return this.transformedGlyph.svgPathData;
+		let result = this.transformedGlyph.svgPathData;
+		return result;
 	}
 
 	// --------------------------------------------------------------
@@ -538,8 +539,8 @@ export class ComponentInstance extends GlyphElement {
 	 */
 
 	makeTransformedGlyph() {
-		log('ComponentInstance.makeTransformedGlyph', 'start');
-		log(`name: ${this.name}`);
+		// log('ComponentInstance.makeTransformedGlyph', 'start');
+		// log(`name: ${this.name}`);
 		const project = getCurrentProject();
 		const linkedGlyph = project.getItem(this.link);
 		if (!linkedGlyph) {
@@ -553,25 +554,15 @@ export class ComponentInstance extends GlyphElement {
 		const newGlyph = new Glyph(linkedGlyph);
 		newGlyph.convertLinksToPaths();
 
-		log(
-			'DELTAS' +
-				'\n\t translateX:\t' +
-				this.translateX +
-				'\n\t translateY:\t' +
-				this.translateY +
-				'\n\t resizeWidth:\t' +
-				this.resizeWidth +
-				'\n\t resizeHeight:\t' +
-				this.resizeHeight +
-				'\n\t flipEW:\t' +
-				this.isFlippedEW +
-				'\n\t flipNS:\t' +
-				this.isFlippedNS +
-				'\n\t reverseWinding:\t' +
-				this.reverseWinding +
-				'\n\t rotation:\t' +
-				this.rotation
-		);
+		// log(`translateX: ${this.translateX}`);
+		// log(`translateY: ${this.translateY}`);
+		// log(`resizeWidth: ${this.resizeWidth}`);
+		// log(`resizeHeight: ${this.resizeHeight}`);
+		// log(`flipEW: ${this.isFlippedEW}`);
+		// log(`flipNS: ${this.isFlippedNS}`);
+		// log(`reverseWinding: ${this.reverseWinding}`);
+		// log(`rotation: ${this.rotation}`);
+
 		if (
 			this.translateX ||
 			this.translateY ||
@@ -582,8 +573,8 @@ export class ComponentInstance extends GlyphElement {
 			this.reverseWinding ||
 			this.rotation
 		) {
-			log('Modifying w ' + this.resizeWidth + ' h ' + this.resizeHeight);
-			log('before maxes ' + json(newGlyph.maxes, true));
+			// log('Modifying w ' + this.resizeWidth + ' h ' + this.resizeHeight);
+			// log('before maxes ' + json(newGlyph.maxes, true));
 			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
 			if (this.isFlippedEW) newGlyph.flipEW();
 			if (this.isFlippedNS) newGlyph.flipNS();
@@ -591,15 +582,15 @@ export class ComponentInstance extends GlyphElement {
 			newGlyph.updateGlyphSize(this.resizeWidth, this.resizeHeight, false);
 			if (this.reverseWinding) newGlyph.reverseWinding();
 			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
-			log('afters maxes ' + json(newGlyph.maxes, true));
+			// log('afters maxes ' + json(newGlyph.maxes, true));
 		} else {
-			log('Not changing, no deltas');
+			// log('Not changing, no deltas');
 		}
 
 		newGlyph.changed();
 		this.cache.transformedGlyph = newGlyph;
-		log(newGlyph);
-		log('ComponentInstance.makeTransformedGlyph', 'end');
+		// log(newGlyph);
+		// log('ComponentInstance.makeTransformedGlyph', 'end');
 
 		return newGlyph;
 	}

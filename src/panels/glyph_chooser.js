@@ -3,6 +3,7 @@ import { decToHex } from '../common/character_ids.js';
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
+import { showAddComponentDialog } from '../pages/components.js';
 import { showAddLigatureDialog } from '../pages/ligatures.js';
 
 /**
@@ -31,14 +32,8 @@ export function makeGlyphChooserContent(
 
 	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
 
-	if (editor.nav.page !== 'Ligatures') {
-		if (editor.project.settings.project.glyphRanges.length > 1) {
-			let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
-			header.appendChild(makeRangeAndItemTypeChooser(includeItemTypeChooser));
-			wrapper.appendChild(header);
-		}
-		wrapper.appendChild(makeGlyphChooserTileGrid());
-	} else {
+	if (editor.nav.page === 'Ligatures') {
+		// Ligature Chooser
 		wrapper.appendChild(makeLigatureChooserTileGrid());
 		wrapper.appendChild(
 			makeElement({
@@ -47,6 +42,24 @@ export function makeGlyphChooserContent(
 				onClick: showAddLigatureDialog,
 			})
 		);
+	} else if (editor.nav.page === 'Components') {
+		// Component Chooser
+		wrapper.appendChild(makeComponentChooserTileGrid());
+		wrapper.appendChild(
+			makeElement({
+				tag: 'fancy-button',
+				innerHTML: 'Create new component',
+				onClick: showAddComponentDialog,
+			})
+		);
+	} else {
+		// Overview and Glyph = Glyph Chooser
+		if (editor.project.settings.project.glyphRanges.length > 1) {
+			let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
+			header.appendChild(makeRangeAndItemTypeChooser(includeItemTypeChooser));
+			wrapper.appendChild(header);
+		}
+		wrapper.appendChild(makeGlyphChooserTileGrid());
 	}
 
 	// log(`makeGlyphChooserContent`, 'end');
@@ -193,5 +206,42 @@ function makeLigatureChooserTileGrid() {
 	});
 
 	// log(`makeLigatureChooserTileGrid`, 'end');
+	return tileGrid;
+}
+
+function makeComponentChooserTileGrid() {
+	// log(`makeComponentChooserTileGrid`, 'start');
+	const editor = getCurrentProjectEditor();
+
+	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
+
+	Object.keys(editor.project.components).forEach((componentID) => {
+		let oneTile = new GlyphTile({ 'displayed-item-id': componentID });
+		if (editor.selectedComponentID === componentID) oneTile.setAttribute('selected', '');
+
+		oneTile.addEventListener('click', () => savedClickHandler(componentID));
+
+		if (savedRegisterSubscriptions) {
+			editor.subscribe({
+				topic: 'whichComponentIsSelected',
+				subscriberID: `glyphTile.${componentID}`,
+				callback: (newComponentID) => {
+					// log('whichComponentIsSelected subscriber callback');
+					// log(`checking if ${glyph.id} === ${Component}`);
+					if (newComponentID === componentID) {
+						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
+						oneTile.setAttribute('selected', '');
+					} else {
+						// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
+						oneTile.removeAttribute('selected');
+					}
+				},
+			});
+		}
+
+		tileGrid.appendChild(oneTile);
+	});
+
+	// log(`makeComponentChooserTileGrid`, 'end');
 	return tileGrid;
 }

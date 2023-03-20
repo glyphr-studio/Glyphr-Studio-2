@@ -1,4 +1,5 @@
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
+import { countItems } from '../common/functions.js';
 import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
@@ -188,7 +189,7 @@ function makeComponentsFirstRunContent() {
 }
 
 function addComponent(name) {
-	const newID = makeComponentID(name);
+	const newID = makeComponentID();
 	const project = getCurrentProject();
 	if (project.components[newID]) {
 		return 'Component already exists';
@@ -197,18 +198,21 @@ function addComponent(name) {
 	project.components[newID] = new Glyph({
 		id: newID,
 		objType: 'Component',
+		name: name,
 		component: name.split('').map((char) => char.codePointAt(0)),
 	});
 
 	return project.components[newID];
 }
 
-export function makeComponentID(name) {
+export function makeComponentID() {
 	log(`makeComponentID`, 'start');
-	log(`name: ${name}`);
 
+	const project = getCurrentProject();
+	let counter = countItems(project.components);
+	while (project.components[`comp-${counter}`]) counter++;
 	log(`makeComponentID`, 'end');
-	return `comp-${name}`;
+	return `comp-${counter}`;
 }
 
 export function showAddComponentDialog() {

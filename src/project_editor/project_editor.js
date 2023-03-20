@@ -240,14 +240,10 @@ export class ProjectEditor {
 	 */
 	get selectedLigatureID() {
 		// log(`ProjectEditor GET selectedLigatureID`, 'start');
-		// log(`this._selectedLigatureID: ${this._selectedLigatureID}`);
 		const currentID = this._selectedLigatureID;
 		if (!currentID || !this.project.getItem(currentID)) {
-			// log(`No current id, getFirstID...`);
-			// log(this.project.ligatures);
 			this._selectedLigatureID = getFirstID(this.project.ligatures);
 		}
-		// log(`this._selectedLigatureID: ${this._selectedLigatureID}`);
 		// log(`ProjectEditor GET selectedLigatureID`, 'end');
 		return this._selectedLigatureID;
 	}
@@ -257,7 +253,8 @@ export class ProjectEditor {
 	 * @returns {object}
 	 */
 	get selectedComponent() {
-		const re = this.components[this.selectedComponentID];
+
+		const re = this.project.components[this.selectedComponentID];
 		return re;
 	}
 
@@ -270,6 +267,7 @@ export class ProjectEditor {
 		if (!currentID || !this.project.getItem(currentID)) {
 			this._selectedComponentID = getFirstID(this.project.components);
 		}
+
 		return this._selectedComponentID;
 	}
 
@@ -278,7 +276,7 @@ export class ProjectEditor {
 	 * @returns {object}
 	 */
 	get selectedKern() {
-		const re = this.kerns[this.selectedKernID];
+		const re = this.project.kerns[this.selectedKernID];
 		return re;
 	}
 

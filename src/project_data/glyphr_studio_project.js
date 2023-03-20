@@ -326,7 +326,6 @@ export class GlyphrStudioProject {
 	 */
 	makeItemThumbnail(item) {
 		// log('GlyphrStudioProject.makeItemThumbnail', 'start');
-		// log(item);
 		const size = 50;
 		const padding = 5;
 		const scale = (size - padding * 2) / this.totalVertical;
@@ -340,11 +339,12 @@ export class GlyphrStudioProject {
 		// log(`item.svgPathData: ${item.svgPathData}`);
 		// log(item.svgPathData);
 
+		const svg = item.svgPathData;
 		let re = `
 		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50px" height="50px">
 			<path
 				transform="translate(${translateX},${translateY}) scale(${scale}, -${scale})"
-				d="${item.svgPathData}"
+				d="${svg}"
 			/>
 		</svg>`;
 
