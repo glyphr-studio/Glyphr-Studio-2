@@ -37,14 +37,7 @@ export class GlyphTile extends HTMLElement {
 		// log(`name: ${name}`);
 		// log(this.glyph);
 
-		const project = getCurrentProject();
-		const fontSettings = project.settings.font;
 		const overallSize = 50;
-		const gutterSize = 2;
-		const contentSize = overallSize - 2 * gutterSize;
-		const zoom = contentSize / project.totalVertical;
-		let advanceWidth;
-
 		// log(`contentSize: ${contentSize}`);
 		// log(`zoom: ${zoom}`);
 
@@ -57,23 +50,11 @@ export class GlyphTile extends HTMLElement {
 
 		if (this.glyph && this.glyph.paths.length) {
 			this.thumbnail = makeElement({
-				tag: 'canvas',
+				tag: 'span',
 				className: 'thumbnail',
-				style: `
-					width: ${overallSize}px;
-					height: ${overallSize}px;
-				`,
 			});
-			this.ctx = this.thumbnail.getContext('2d');
 			this.thumbnail.width = overallSize;
 			this.thumbnail.height = overallSize;
-			advanceWidth = this.glyph.advanceWidth;
-
-			this.view = {
-				dx: gutterSize + (contentSize - zoom * advanceWidth) / 2,
-				dy: gutterSize + zoom * fontSettings.ascent,
-				dz: zoom,
-			};
 
 			// log(`view is ${this.view.dx}, ${this.view.dy}, ${this.view.dz}`);
 		} else {
@@ -111,14 +92,14 @@ export class GlyphTile extends HTMLElement {
 			else wrapper.removeAttribute('selected');
 		}
 
-		redraw(this);
+		// redraw(this);
 		// log(`GlyphTile.attributeChangedCallback`, 'end');
 	}
 }
 
 function redraw(tile) {
-	if (tile.glyph && tile.ctx) {
-		tile.ctx.clearRect(0, 0, tile.thumbnail.width, tile.thumbnail.height);
-		drawGlyph(tile.glyph, tile.ctx, tile.view);
+	if (tile.glyph) {
+		const project = getCurrentProject();
+		tile.thumbnail.innerHTML = project.makeItemThumbnail(tile.glyph);
 	}
 }

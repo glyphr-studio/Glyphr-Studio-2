@@ -22,8 +22,8 @@ export class ComponentInstance extends GlyphElement {
 	 * @param {string} name - name
 	 * @param {number} translateX - horizontal position difference
 	 * @param {number} translateY - vertical position difference
-	 * @param {number} scaleW - horizontal size difference
-	 * @param {number} scaleH - vertical size difference
+	 * @param {number} resizeWidth - horizontal size difference
+	 * @param {number} resizeHeight - vertical size difference
 	 * @param {boolean} flipEW - flipped horizontally
 	 * @param {boolean} flipNS - flipped vertically
 	 * @param {boolean} reverseWinding - paths have opposite winding
@@ -41,8 +41,8 @@ export class ComponentInstance extends GlyphElement {
 		name = 'Component Instance',
 		translateX = 0,
 		translateY = 0,
-		scaleW = 0,
-		scaleH = 0,
+		resizeWidth = 0,
+		resizeHeight = 0,
 		isFlippedNS = false,
 		isFlippedEW = false,
 		reverseWinding = false,
@@ -63,8 +63,8 @@ export class ComponentInstance extends GlyphElement {
 		this.link = link;
 		this.translateX = translateX;
 		this.translateY = translateY;
-		this.scaleW = scaleW;
-		this.scaleH = scaleH;
+		this.resizeWidth = resizeWidth;
+		this.resizeHeight = resizeHeight;
 		this.isFlippedNS = isFlippedNS; // These have a different name because there is a function 'flipNS'
 		this.isFlippedEW = isFlippedEW; // These have a different name because there is a function 'flipEW'
 		this.reverseWinding = reverseWinding;
@@ -98,8 +98,8 @@ export class ComponentInstance extends GlyphElement {
 		if (this.name !== 'Component Instance') re.name = this.name;
 		if (this.translateX !== 0) re.translateX = this.translateX;
 		if (this.translateY !== 0) re.translateY = this.translateY;
-		if (this.scaleW !== 0) re.scaleW = this.scaleW;
-		if (this.scaleH !== 0) re.scaleH = this.scaleH;
+		if (this.resizeWidth !== 0) re.resizeWidth = this.resizeWidth;
+		if (this.resizeHeight !== 0) re.resizeHeight = this.resizeHeight;
 		if (this.isFlippedNS !== false) re.isFlippedNS = this.isFlippedNS;
 		if (this.isFlippedEW !== false) re.isFlippedEW = this.isFlippedEW;
 		if (this.reverseWinding !== false) re.reverseWinding = this.reverseWinding;
@@ -153,18 +153,18 @@ export class ComponentInstance extends GlyphElement {
 	}
 
 	/**
-	 * get scaleW
+	 * get resizeWidth
 	 * @returns {number}
 	 */
-	get scaleW() {
+	get resizeWidth() {
 		return this._scaleW;
 	}
 
 	/**
-	 * get scaleH
+	 * get resizeHeight
 	 * @returns {number}
 	 */
-	get scaleH() {
+	get resizeHeight() {
 		return this._scaleH;
 	}
 
@@ -311,6 +311,13 @@ export class ComponentInstance extends GlyphElement {
 		return this.transformedGlyph.maxes.center;
 	}
 
+	/**
+	 * get svgPathData
+	 */
+	get svgPathData() {
+		return this.transformedGlyph.svgPathData;
+	}
+
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------
@@ -364,23 +371,23 @@ export class ComponentInstance extends GlyphElement {
 	}
 
 	/**
-	 * set scaleW
-	 * @param {number} scaleW
+	 * set resizeWidth
+	 * @param {number} resizeWidth
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
-	set scaleW(scaleW) {
-		this._scaleW = parseFloat(scaleW);
+	set resizeWidth(resizeWidth) {
+		this._scaleW = parseFloat(resizeWidth);
 		if (isNaN(this._scaleW)) this._scaleW = 0;
 		this.changed();
 	}
 
 	/**
-	 * set scaleH
-	 * @param {number} scaleH
+	 * set resizeHeight
+	 * @param {number} resizeHeight
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
-	set scaleH(scaleH) {
-		this._scaleH = parseFloat(scaleH);
+	set resizeHeight(resizeHeight) {
+		this._scaleH = parseFloat(resizeHeight);
 		if (isNaN(this._scaleH)) this._scaleH = 0;
 		this.changed();
 	}
@@ -531,7 +538,8 @@ export class ComponentInstance extends GlyphElement {
 	 */
 
 	makeTransformedGlyph() {
-		log('ComponentInstance.makeTransformedGlyph - START ' + this.name);
+		log('ComponentInstance.makeTransformedGlyph', 'start');
+		log(`name: ${this.name}`);
 		const project = getCurrentProject();
 		const linkedGlyph = project.getItem(this.link);
 		if (!linkedGlyph) {
@@ -545,24 +553,42 @@ export class ComponentInstance extends GlyphElement {
 		const newGlyph = new Glyph(linkedGlyph);
 		newGlyph.convertLinksToPaths();
 
-		log('DELTAS' + '\n\t translateX:\t' + this.translateX  + '\n\t translateY:\t' + this.translateY  + '\n\t scaleW:\t' + this.scaleW  + '\n\t scaleH:\t' + this.scaleH  + '\n\t flipEW:\t' + this.isFlippedEW  + '\n\t flipNS:\t' + this.isFlippedNS  + '\n\t reverseWinding:\t' + this.reverseWinding  + '\n\t rotation:\t' + this.rotation);
+		log(
+			'DELTAS' +
+				'\n\t translateX:\t' +
+				this.translateX +
+				'\n\t translateY:\t' +
+				this.translateY +
+				'\n\t resizeWidth:\t' +
+				this.resizeWidth +
+				'\n\t resizeHeight:\t' +
+				this.resizeHeight +
+				'\n\t flipEW:\t' +
+				this.isFlippedEW +
+				'\n\t flipNS:\t' +
+				this.isFlippedNS +
+				'\n\t reverseWinding:\t' +
+				this.reverseWinding +
+				'\n\t rotation:\t' +
+				this.rotation
+		);
 		if (
 			this.translateX ||
 			this.translateY ||
-			this.scaleW ||
-			this.scaleH ||
+			this.resizeWidth ||
+			this.resizeHeight ||
 			this.isFlippedEW ||
 			this.isFlippedNS ||
 			this.reverseWinding ||
 			this.rotation
 		) {
-			log('Modifying w ' + this.scaleW + ' h ' + this.scaleH);
+			log('Modifying w ' + this.resizeWidth + ' h ' + this.resizeHeight);
 			log('before maxes ' + json(newGlyph.maxes, true));
 			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
 			if (this.isFlippedEW) newGlyph.flipEW();
 			if (this.isFlippedNS) newGlyph.flipNS();
 			newGlyph.updateGlyphPosition(this.translateX, this.translateY, true);
-			newGlyph.updateGlyphSize(this.scaleW, this.scaleH, false);
+			newGlyph.updateGlyphSize(this.resizeWidth, this.resizeHeight, false);
 			if (this.reverseWinding) newGlyph.reverseWinding();
 			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
 			log('afters maxes ' + json(newGlyph.maxes, true));
@@ -605,15 +631,6 @@ export class ComponentInstance extends GlyphElement {
 			lastX: lastX,
 			lastY: lastY,
 		};
-	}
-
-	/**
-	 * Wrapper function to return svg for how this
-	 * component instance will appear
-	 * @returns {string} - svg data
-	 */
-	makeSVG() {
-		return this.transformedGlyph.makeSVG();
 	}
 
 	// --------------------------------------------------------------
@@ -680,11 +697,11 @@ export class ComponentInstance extends GlyphElement {
 				dw = dh * (w / h);
 			}
 		}
-		// log('translate was: ' + this.scaleW + ' / ' + this.scaleH);
-		this.scaleW = 1 * this.scaleW + dw;
-		this.scaleH = 1 * this.scaleH + dh;
+		// log('translate was: ' + this.resizeWidth + ' / ' + this.resizeHeight);
+		this.resizeWidth = 1 * this.resizeWidth + dw;
+		this.resizeHeight = 1 * this.resizeHeight + dh;
 		if (this.rotation === 0) this.rotateFirst = false;
-		// log('translate now: ' + this.scaleW + ' / ' + this.scaleH);
+		// log('translate now: ' + this.resizeWidth + ' / ' + this.resizeHeight);
 		// log('ComponentInstance.updatePathSize', 'end');
 	}
 
@@ -747,7 +764,12 @@ export class ComponentInstance extends GlyphElement {
 		// log('was ' + this.rotation);
 		// if(this.isFlippedEW || this.isFlippedNS) degrees *= -1;
 		this.rotation = (this.rotation + degrees) % 360;
-		if (this.scaleH === 0 && this.scaleW === 0 && !this.isFlippedEW && !this.isFlippedNS) {
+		if (
+			this.resizeHeight === 0 &&
+			this.resizeWidth === 0 &&
+			!this.isFlippedEW &&
+			!this.isFlippedNS
+		) {
 			this.rotateFirst = true;
 		}
 		// log('is now ' + this.rotation);

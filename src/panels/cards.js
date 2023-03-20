@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 import { round } from '../common/functions.js';
 
@@ -79,7 +79,7 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 	let value = tagName === 'input' ? workItem[property] : round(workItem[property], 3);
 	newInput.setAttribute('value', value);
 
-	if (workItem.isLockable()) {
+	if (workItem.isLockable) {
 		newInput.setAttribute('is-locked', workItem.isLocked(property));
 		newInput.addEventListener('lock', (event) => {
 			// log(`makeSingleInput LOCK event`, 'start');
@@ -263,6 +263,7 @@ export function makeDirectCheckbox(workItem, property, callback) {
 
 export function makeLinkReferenceRow(itemID) {
 	const editor = getCurrentProjectEditor();
+	const project = getCurrentProject();
 	const targetItem = editor.project.getItem(itemID);
 
 	let row = makeElement({ className: 'item-link__row' });
@@ -277,7 +278,7 @@ export function makeLinkReferenceRow(itemID) {
 	row.appendChild(
 		makeElement({
 			className: 'item-link__thumbnail',
-			innerHTML: targetItem.makeSVG(),
+			innerHTML: project.makeItemThumbnail(targetItem),
 		})
 	);
 

@@ -54,7 +54,7 @@ export class Glyph extends GlyphElement {
 		// log(this.print());
 		// log(`Glyph.constructor`, 'end');
 	}
-	
+
 	// --------------------------------------------------------------
 	// Common Glyphr Studio object methods
 	// --------------------------------------------------------------
@@ -350,7 +350,7 @@ export class Glyph extends GlyphElement {
 		let result = 'unknown';
 		let paths = 0;
 		let componentInstances = 0;
-		this.paths.forEach(item => {
+		this.paths.forEach((item) => {
 			if (item.objType === 'ComponentInstance') componentInstances++;
 			if (item.objType === 'Path') paths++;
 		});
@@ -869,28 +869,20 @@ export class Glyph extends GlyphElement {
 	// Export to different languages
 	// --------------------------------------------------------------
 
-	/**
-	 * Make SVG from this Glyph
-	 * @param {number} size - how big the resulting SVG should be
-	 * @param {number} padding - interior space around the glyph
-	 * @param {number} totalVertical - kind of like UPM from project metrics
-	 * @param {number} ascent - distance between y=0 and top of totalVertical
-	 * @returns {string} - svg
-	 */
-	makeSVG(size = 50, padding = 5, totalVertical = 1000, ascent = 700) {
-		// log('Glyph.makeSVG', 'start');
+	makeSVGforExport() {
+		// log('Glyph.makeSVGforExport', 'start');
 		// log(this);
-		const scale = (size - padding * 2) / totalVertical;
-		const scaledHeight = size / totalVertical;
-		const translateY = ascent * scale + padding * 2;
+		let size = Math.max(this.maxes.height, this.maxes.width);
+		// log(this.svgPathData);
 
 		let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
 		re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
-		re += `\t<g transform="translate(${padding},${translateY}) scale(${scaledHeight}, -${scaledHeight})">\n`;
+		re += `\t<g transform="translate(100,${size})">\n`;
 		re += `\t\t<path d="${this.svgPathData}"/>\n`;
 		re += `\t</g>\n</svg>`;
 
-		// log('Glyph.makeSVG', 'end');
+		// log(re);
+		// log('Glyph.makeSVGforExport', 'end');
 		return re;
 	}
 
@@ -902,11 +894,9 @@ export class Glyph extends GlyphElement {
 		if (this.cache.svg) return this.cache.svg;
 
 		let pathData = '';
-		let item;
 
 		// Make Path Data
-		this.paths.forEach((path) => {
-			item = path.clone();
+		this.paths.forEach((item) => {
 			// log(`item ${j} of ${this.paths.length}`);
 			// log(item);
 			if (item.objType === 'ComponentInstance') {
@@ -924,8 +914,8 @@ export class Glyph extends GlyphElement {
 	}
 
 	makeOpenTypeJSpath(openTypePath) {
-		this.paths.forEach((path) => {
-			openTypePath = path.makeOpenTypeJSpath(openTypePath);
+		this.paths.forEach((item) => {
+			openTypePath = item.makeOpenTypeJSpath(openTypePath);
 		});
 		return openTypePath;
 	}

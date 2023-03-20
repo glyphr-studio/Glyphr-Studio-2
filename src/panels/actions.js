@@ -149,7 +149,7 @@ export function getActionData(name) {
 			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let content = editor.selectedItem.makeSVG();
+				let content = editor.selectedItem.makeSVGforExport();
 				let name = editor.selectedItem.name;
 				saveFile(name + '.svg', content);
 			},
@@ -176,7 +176,7 @@ export function getActionData(name) {
 			title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
 			onClick: () => {
 				// TODO components
-			}
+			},
 		},
 		{
 			iconName: 'flipHorizontal',
@@ -218,7 +218,7 @@ export function getActionData(name) {
 			title: `Turn Component Instance into a Path\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's paths as regular Paths to this glyph.`,
 			onClick: () => {
 				// TODO components
-			}
+			},
 		},
 	];
 
@@ -503,7 +503,6 @@ export function makeActionsArea_PathPoint(test = false) {
 
 	return actionsArea;
 }
-
 
 // --------------------------------------------------------------
 // Delete selected path / point

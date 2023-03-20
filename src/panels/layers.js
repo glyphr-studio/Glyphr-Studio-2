@@ -27,7 +27,7 @@ export function makePanel_Layers() {
 		row.appendChild(
 			makeElement({
 				className: 'item-link__thumbnail',
-				innerHTML: path.makeSVG(),
+				innerHTML: project.makeItemThumbnail(path),
 			})
 		);
 
@@ -78,7 +78,7 @@ export function makePanel_Layers() {
 			row.appendChild(
 				makeElement({
 					className: 'item-link__thumbnail',
-					innerHTML: item.makeSVG(),
+					innerHTML: project.makeItemThumbnail(item),
 				})
 			);
 

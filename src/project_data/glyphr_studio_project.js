@@ -321,6 +321,39 @@ export class GlyphrStudioProject {
 	}
 
 	/**
+	 *
+	 * @returns
+	 */
+	makeItemThumbnail(item) {
+		// log('GlyphrStudioProject.makeItemThumbnail', 'start');
+		// log(item);
+		const size = 50;
+		const padding = 5;
+		const scale = (size - padding * 2) / this.totalVertical;
+		const itemHeight = this.totalVertical;
+		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;
+		const translateX = (size - itemWidth * scale) / 2;
+		const translateY = itemHeight * scale - padding;
+		// log(`item?.advanceWidth: ${item?.advanceWidth}`);
+		// log(`item?.parent?.advanceWidth: ${item?.parent?.advanceWidth}`);
+		// log(`itemWidth: ${itemWidth}`);
+		// log(`item.svgPathData: ${item.svgPathData}`);
+		// log(item.svgPathData);
+
+		let re = `
+		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50px" height="50px">
+			<path
+				transform="translate(${translateX},${translateY}) scale(${scale}, -${scale})"
+				d="${item.svgPathData}"
+			/>
+		</svg>`;
+
+		// log(re);
+		// log('GlyphrStudioProject.makeItemThumbnail', 'end');
+		return re;
+	}
+
+	/**
 	 * Calculate the overall bounds given every glyph in this font
 	 * @returns {object} - font maxes
 	 */
@@ -403,7 +436,7 @@ export class GlyphrStudioProject {
 	}
 }
 
-export function sortLigatures(a, b){
+export function sortLigatures(a, b) {
 	if (a.chars.length === b.chars.length) return a.chars.localeCompare(b.chars);
 	else return a.chars.length - b.chars.length;
 }

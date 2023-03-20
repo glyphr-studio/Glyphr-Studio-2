@@ -271,8 +271,8 @@ function migrate_ComponentInstance(oldItem) {
 	newItem.link = migrate_ItemID(oldItem.link);
 	newItem.translateX = oldItem.translatex;
 	newItem.translateY = oldItem.translatey;
-	newItem.scaleW = oldItem.scalew;
-	newItem.scaleH = oldItem.scaleh;
+	newItem.resizeWidth = oldItem.scalew;
+	newItem.resizeHeight = oldItem.scaleh;
 	newItem.isFlippedNS = oldItem.flipns;
 	newItem.isFlippedEW = oldItem.flipew;
 	newItem.reverseWinding = oldItem.reversewinding;
@@ -311,7 +311,6 @@ function migrate_ItemID(oldID) {
 		// log(`Detected as Glyph`);
 		result = validateAsHex(oldID);
 	}
-
 
 	// log(`result: ${result}`);
 	// log(`migrate_ItemID`, 'end');
