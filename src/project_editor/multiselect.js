@@ -309,7 +309,7 @@ export class MultiSelectPaths extends MultiSelect {
 	combine() {
 		// log('MultiSelectPaths.combine', 'start');
 		const ns = this.virtualGlyph.clone();
-		ns.convertLinksToPaths();
+		ns.makeGlyphWithResolvedLinks();
 		const cs = combinePaths(ns.paths);
 
 		// If everything worked, delete original paths and add new ones

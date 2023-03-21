@@ -1,7 +1,6 @@
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
 import { round } from '../common/functions.js';
 import { getCurrentProject, log } from '../app/main.js';
-import { getTransformedGlyph } from '../project_editor/cross_item_actions.js';
 
 // --------------------------------------------------------------
 // Glyph
@@ -88,7 +87,7 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
 	// Have to iterate through paths instead of using drawGlyph
 	// due to stacking paths with appropriate winding
 
-	const glyph = getTransformedGlyph(componentInstance);
+	const glyph = componentInstance.transformedGlyph;
 	// log(glyph);
 	if (!glyph) return false;
 	let drewPath = false;

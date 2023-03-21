@@ -1,7 +1,5 @@
-import { getCurrentProject } from '../app/main.js';
-import { hasNonValues, rad, trim } from '../common/functions.js';
+import { getCurrentProject, log } from '../app/main.js';
 import { Glyph } from '../project_data/glyph.js';
-import { getOverallMaxes, isAllZeros, Maxes } from '../project_data/maxes.js';
 import { Path } from '../project_data/path.js';
 
 // --------------------------------------------------------------
@@ -16,144 +14,17 @@ import { Path } from '../project_data/path.js';
  * @param {Glyph} glyph - glyph to mark as changed
  */
 export function glyphChanged(glyph) {
-	recalculateGlyphMaxes(glyph);
 	if (glyph.cache) glyph.cache = {};
 	const project = getCurrentProject();
 
 	// log(`calling changed on usedIn`);
-	glyph.usedIn.forEach(itemID => {
+	glyph.usedIn.forEach((itemID) => {
 		const item = project.getItem(itemID);
 		if (item) glyphChanged(item);
 	});
 }
 
-// --------------------------------------------------------------
-// Get / Make Glyph Maxes
-// --------------------------------------------------------------
 
-export function getGlyphMaxes(glyph) {
-	// log('Glyph GET maxes', 'start');
-	// log('cache before')
-	if (!glyph.cache.maxes) {
-		// log('detected no maxes cache');
-		recalculateGlyphMaxes(glyph);
-	} else if (hasNonValues(glyph.cache.maxes)) {
-		// log('detected hasNonValues');
-		recalculateGlyphMaxes(glyph);
-	} else if (isAllZeros(glyph.cache.maxes)) {
-		// log('detected all values zero');
-		recalculateGlyphMaxes(glyph);
-	} else {
-		// log('NO DETECTION to recalculate');
-	}
-
-	// log('cache after');
-	// log(json(glyph.cache, true));
-	// log('Glyph GET maxes', 'end');
-	return glyph.cache.maxes;
-}
-/**
- * Calculate the overall maxes for this Glyph
- * @returns {Maxes}
- */
-export function recalculateGlyphMaxes(glyph) {
-	// log(`recalculateGlyphMaxes - START `);
-
-	let temp = { xMax: 0, xMin: 0, yMax: 0, yMin: 0 };
-	// log(glyph.paths);
-	if (glyph.paths && glyph.paths.length > 0) {
-		// log('... has paths, calling getOverallMaxes');
-		temp = getOverallMaxes(
-			glyph.paths.map((item) => {
-				if (item.objType === 'Path') return item.maxes;
-				else return getTransformedGlyph(item).maxes;
-			})
-		);
-	}
-
-	glyph.cache.maxes = new Maxes(temp);
-	// log(`result`);
-	// log(glyph.cache);
-	// log(`recalculateGlyphMaxes`, 'end');
-	return glyph.cache.maxes;
-}
-
-// --------------------------------------------------------------
-// Get / Make Transformed Glyph
-// --------------------------------------------------------------
-/**
- * Component Instances are basically links to other Glyphs, plus some transformations.
- * This function grabs a clone of the linked-to Glyph, applies the transformations,
- * and returns a Glyph object - while also updating the cache
- * @param {ComponentInstance}
- * @returns {Glyph}
- */
-
-export function getTransformedGlyph(componentInstance) {
-	const project = getCurrentProject();
-	const linkedGlyph = project.getItem(componentInstance.link);
-	if (!linkedGlyph.cache.transformedGlyph) {
-		linkedGlyph.cache.transformedGlyph = makeTransformedGlyph(linkedGlyph);
-	}
-	return linkedGlyph.cache.transformedGlyph;
-}
-
-export function makeTransformedGlyph(componentInstance) {
-	// log('ComponentInstance.makeTransformedGlyph', 'start');
-	// log(`name: ${this.name}`);
-	const project = getCurrentProject();
-	const linkedGlyph = project.getItem(componentInstance.link);
-	if (!linkedGlyph) {
-		console.warn(`
-				Tried to get Component: ${componentInstance.link} but it
-				doesn't exist - bad usedIn array maintenance.
-			`);
-		return false;
-	}
-
-	let newGlyph = new Glyph(linkedGlyph);
-	newGlyph = convertLinksToPaths(newGlyph);
-
-	// log(`translateX: ${componentInstance.translateX}`);
-	// log(`translateY: ${componentInstance.translateY}`);
-	// log(`resizeWidth: ${componentInstance.resizeWidth}`);
-	// log(`resizeHeight: ${componentInstance.resizeHeight}`);
-	// log(`flipEW: ${componentInstance.isFlippedEW}`);
-	// log(`flipNS: ${componentInstance.isFlippedNS}`);
-	// log(`reverseWinding: ${componentInstance.reverseWinding}`);
-	// log(`rotation: ${componentInstance.rotation}`);
-
-	if (
-		componentInstance.translateX ||
-		componentInstance.translateY ||
-		componentInstance.resizeWidth ||
-		componentInstance.resizeHeight ||
-		componentInstance.isFlippedEW ||
-		componentInstance.isFlippedNS ||
-		componentInstance.reverseWinding ||
-		componentInstance.rotation
-	) {
-		// log('Modifying w ' + componentInstance.resizeWidth + ' h ' + componentInstance.resizeHeight);
-		// log('before maxes ' + json(newGlyph.maxes, true));
-		if (componentInstance.rotateFirst)
-			newGlyph.rotate(rad(componentInstance.rotation, newGlyph.maxes.center));
-		if (componentInstance.isFlippedEW) newGlyph.flipEW();
-		if (componentInstance.isFlippedNS) newGlyph.flipNS();
-		newGlyph.updateGlyphPosition(componentInstance.translateX, componentInstance.translateY, true);
-		newGlyph.updateGlyphSize(componentInstance.resizeWidth, componentInstance.resizeHeight, false);
-		if (componentInstance.reverseWinding) newGlyph.reverseWinding();
-		if (!componentInstance.rotateFirst)
-			newGlyph.rotate(rad(componentInstance.rotation, newGlyph.maxes.center));
-		// log('afters maxes ' + json(newGlyph.maxes, true));
-	} else {
-		// log('Not changing, no deltas');
-	}
-
-	// log(newGlyph);
-	// log('ComponentInstance.makeTransformedGlyph', 'end');
-
-	return newGlyph;
-}
 
 // --------------------------------------------------------------
 // Make other languages
@@ -163,7 +34,7 @@ export function makeGlyphSVGforExport(glyph) {
 	// log('Glyph.makeSVGforExport', 'start');
 	// log(glyph);
 	let size = Math.max(glyph.maxes.height, glyph.maxes.width);
-	let svg = getGlyphSVGPathData(glyph);
+	let svg = glyph.svgPathData;
 	// log(svg);
 
 	let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
@@ -178,47 +49,6 @@ export function makeGlyphSVGforExport(glyph) {
 }
 
 /**
- * Get / Make the data (attribute d="") for an SVG path tag
- * @param {Glyph} - glyph object to get/make the path data for
- * @returns {string} - SVG definition for the path d="" attribute
- */
-export function getGlyphSVGPathData(glyph) {
-	if (!glyph.cache.svgPathData) {
-		glyph.cache.svgPathData = makeGlyphSVGPathData(glyph);
-	}
-	return glyph.cache.svgPathData;
-}
-
-export function makeGlyphSVGPathData(glyph) {
-	// log(`makeGlyphSVGPathData()`, 'start');
-
-	let pathData = '';
-
-	// Make Path Data
-	glyph.paths.forEach((item) => {
-		// log(`item ${j} of ${glyph.paths.length}`);
-		// log(item);
-		// log(`PATH DATA START`);
-		// log(pathData);
-		if (item.objType === 'ComponentInstance') {
-			const workingItem = getTransformedGlyph(item);
-			if (workingItem) pathData += makeGlyphSVGPathData(workingItem);
-		} else {
-			pathData += item.svgPathData;
-			pathData += ' ';
-		}
-		// log(`PATH DATA END`);
-		// log(pathData);
-	});
-
-	if (trim(pathData) === '') pathData = 'M0,0Z';
-	// log(`RETURNING`);
-	// log(pathData);
-	// log(`makeGlyphSVGPathData()`, 'end');
-	return pathData;
-}
-
-/**
  * Make a PostScript path from this path
  * PostScript paths use relative MoveTo commands, so
  * this path must know about where the last path left off
@@ -227,7 +57,7 @@ export function makeGlyphSVGPathData(glyph) {
  * @returns {string} - PostScript path data
  */
 export function makeGlyphPostScript(glyph, lastX, lastY) {
-	const g = makeTransformedGlyph(glyph);
+	const g = glyph.transformedGlyph;
 	let re;
 	let part;
 	g.paths.forEach((path) => {
@@ -251,30 +81,23 @@ export function makeGlyphPostScript(glyph, lastX, lastY) {
  * Converts all the Component Instances in this Glyph to stand-alone paths
  * @returns {Glyph}
  */
-export function convertLinksToPaths(glyph) {
-	// log(`convertLinksToPaths`, 'start');
-
-	const newPaths = [];
-	let newItem;
-	glyph.paths.forEach((item) => {
+export function makeGlyphWithResolvedLinks(sourceGlyph) {
+	// log(`makeGlyphWithResolvedLinks`, 'start');
+	let newPaths = [];
+	sourceGlyph.paths.forEach((item) => {
 		if (item.objType === 'Path') {
-			newItem = new Path(item);
-			newItem.parent = glyph;
-			newPaths.push(newItem);
+			newPaths.push(new Path(item));
 		} else if (item.objType === 'ComponentInstance') {
-			item.transformedGlyph.paths.forEach((tgItem) => {
-				newItem = new Path(tgItem);
-				newItem.parent = glyph;
-				newPaths.push(newItem);
-			});
-		} else {
-			// log('Glyph.convertLinksToPaths', - ERROR - none path or ci in paths array');
+			const transformedGlyph = item.transformedGlyph;
+			if (transformedGlyph && transformedGlyph.paths) {
+				const resolvedGlyph = makeGlyphWithResolvedLinks(transformedGlyph);
+				newPaths = newPaths.concat(resolvedGlyph.paths);
+			}
 		}
 	});
-	glyph.paths = newPaths;
 
-	// log(`convertLinksToPaths`, 'end');
-	return glyph;
+	// log(`makeGlyphWithResolvedLinks`, 'end');
+	return new Glyph({ paths: newPaths });
 }
 
 /**

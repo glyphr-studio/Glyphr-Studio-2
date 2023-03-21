@@ -177,7 +177,7 @@ function migrate_Project(oldProject) {
  * @returns {Glyph} - new v2 Glyph
  */
 function migrate_Glyph(oldGlyph, newID) {
-	log(`migrate_Glyph`, 'start');
+	// log(`migrate_Glyph`, 'start');
 
 	const newGlyph = new Glyph();
 	newGlyph.id = newID;
@@ -190,21 +190,21 @@ function migrate_Glyph(oldGlyph, newID) {
 	oldGlyph.shapes.forEach((item) => {
 		if (item.path) {
 			// Regular Shape
-			log(`importing item as path`);
-			log(item);
+			// log(`importing item as path`);
+			// log(item);
 			newItem = migrate_Path(item, newGlyph);
 			newGlyph.addOnePath(newItem);
 		} else {
 			// Component Instance
-			log(`import item as COMPONENT INSTANCE`);
-			log(item);
+			// log(`import item as COMPONENT INSTANCE`);
+			// log(item);
 			newItem = new migrate_ComponentInstance(item);
 			newGlyph.addOnePath(newItem);
 		}
 	});
 
-	log(newGlyph);
-	log(`migrate_Glyph`, 'end');
+	// log(newGlyph);
+	// log(`migrate_Glyph`, 'end');
 	return newGlyph;
 }
 

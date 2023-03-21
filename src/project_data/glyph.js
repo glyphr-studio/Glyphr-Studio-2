@@ -1,5 +1,5 @@
 import { GlyphElement } from './glyph_element.js';
-import { Maxes } from './maxes.js';
+import { getOverallMaxes, isAllZeros, Maxes } from './maxes.js';
 import { Path } from './path.js';
 import { ComponentInstance } from './component_instance.js';
 import { hasNonValues, isVal, trim } from '../common/functions.js';
@@ -247,13 +247,13 @@ export class Glyph extends GlyphElement {
 		return advance - rightMax;
 	}
 
-	/**
-	 * get maxes
-	 * @returns {Maxes}
-	 */
-	get maxes() {
-		return new Maxes(this.cache.maxes);
-	}
+	// /**
+	//  * get maxes
+	//  * @returns {Maxes}
+	//  */
+	// get maxes() {
+	// 	return new Maxes(this.cache.maxes);
+	// }
 
 	/**
 	 * get name
@@ -503,14 +503,14 @@ export class Glyph extends GlyphElement {
 		this.advanceWidth += delta;
 	}
 
-	/**
-	 * Set Maxes
-	 * @param {Maxes} maxes
-	 */
-	set maxes(maxes) {
-		this.cache.maxes = {};
-		this.cache.maxes = new Maxes(maxes);
-	}
+	// /**
+	//  * Set Maxes
+	//  * @param {Maxes} maxes
+	//  */
+	// set maxes(maxes) {
+	// 	this.cache.maxes = {};
+	// 	this.cache.maxes = new Maxes(maxes);
+	// }
 
 	// --------------------------------------------------------------
 	// Transform & move
@@ -749,6 +749,103 @@ export class Glyph extends GlyphElement {
 	}
 
 	// --------------------------------------------------------------
+	// SVG
+	// --------------------------------------------------------------
+
+	/**
+	 * Get / Make the data (attribute d="") for an SVG path tag
+	 * @param {Glyph} - glyph object to get/make the path data for
+	 * @returns {string} - SVG definition for the path d="" attribute
+	 */
+	get svgPathData() {
+		// log(`Glyph GET svgPathData`, 'start');
+		// log(this);
+		if (!this?.cache?.svgPathData) {
+			this.cache.svgPathData = this.makeSVGPathData(this);
+		}
+		// log(`Glyph GET svgPathData`, 'end');
+		return this.cache.svgPathData;
+	}
+
+	makeSVGPathData() {
+		// log(`makeSVGPathData()`, 'start');
+
+		let pathData = '';
+
+		// Make Path Data
+		this.paths.forEach((item) => {
+			// log(`item ${j} of ${this.paths.length}`);
+			// log(item);
+			// log(`PATH DATA START`);
+			// log(pathData);
+			if (item.objType === 'ComponentInstance') {
+				const workingItem = item.transformedGlyph;
+				if (workingItem) pathData += workingItem.svgPathData;
+			} else {
+				pathData += item.svgPathData;
+				pathData += ' ';
+			}
+			// log(`PATH DATA END`);
+			// log(pathData);
+		});
+
+		if (trim(pathData) === '') pathData = 'M0,0Z';
+		// log(`RETURNING`);
+		// log(pathData);
+		// log(`makeSVGPathData()`, 'end');
+		return pathData;
+	}
+
+	// --------------------------------------------------------------
+	// Get / Make Glyph Maxes
+	// --------------------------------------------------------------
+
+	get maxes() {
+		// log('Glyph GET maxes', 'start');
+		// log('cache before')
+		if (!this.cache.maxes) {
+			// log('detected no maxes cache');
+			this.recalculateGlyphMaxes();
+		} else if (hasNonValues(this.cache.maxes)) {
+			// log('detected hasNonValues');
+			this.recalculateGlyphMaxes();
+		} else if (isAllZeros(this.cache.maxes)) {
+			// log('detected all values zero');
+			this.recalculateGlyphMaxes();
+		} else {
+			// log('NO DETECTION to recalculate');
+		}
+
+		// log('cache after');
+		// log(json(this.cache, true));
+		// log('Glyph GET maxes', 'end');
+		return this.cache.maxes;
+	}
+
+	/**
+	 * Calculate the overall maxes for this Glyph
+	 * @returns {Maxes}
+	 */
+	recalculateGlyphMaxes() {
+		// log(`recalculateGlyphMaxes - START `);
+
+		let overallMaxes = { xMax: 0, xMin: 0, yMax: 0, yMin: 0 };
+		// log(this.paths);
+		if (this.paths && this.paths.length > 0) {
+			// log('... has paths, calling getOverallMaxes');
+			overallMaxes = getOverallMaxes(
+				this.paths.map(item => item.maxes)
+			);
+		}
+
+		this.cache.maxes = new Maxes(overallMaxes);
+		// log(`result`);
+		// log(this.cache);
+		// log(`recalculateGlyphMaxes`, 'end');
+		return this.cache.maxes;
+	}
+
+	// --------------------------------------------------------------
 	// Alignment
 	// --------------------------------------------------------------
 
@@ -810,7 +907,6 @@ export class Glyph extends GlyphElement {
 		// log('Glyph.alignPaths', 'end');
 	}
 
-
 	// --------------------------------------------------------------
 	// Export to different languages
 	// --------------------------------------------------------------
@@ -826,8 +922,6 @@ export class Glyph extends GlyphElement {
 	// Boolean Combine
 	// --------------------------------------------------------------
 
-
-
 	/**
 	 * Boolean combine all paths in this Glyph to as few paths as possible
 	 * @param {boolean} doNotToast - don't show progress messages
@@ -836,7 +930,7 @@ export class Glyph extends GlyphElement {
 	combineAllPaths() {
 		// log('Glyph.combineAllPaths', 'start');
 
-		// this.convertLinksToPaths();
+		// this.makeGlyphWithResolvedLinks();
 		/*
 
 			TODO Boolean Combine get functionality from V1
