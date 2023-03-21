@@ -4,7 +4,7 @@ import { parseCharsInputAsHex } from '../common/character_ids.js';
 import { strSan, rad, deg, json } from '../common/functions.js';
 import { getCurrentProject, log } from '../app/main.js';
 import { Glyph } from './glyph.js';
-import { convertLinksToPaths } from '../project_editor/cross_item_actions.js';
+import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 
 /**
  * Glyph Element > Component Instance
@@ -115,6 +115,88 @@ export class ComponentInstance extends GlyphElement {
 		if (verbose) re.objType = this.objType;
 
 		return re;
+	}
+
+	// --------------------------------------------------------------
+	// Get / Make Transformed Glyph
+	// --------------------------------------------------------------
+	/**
+	 * Component Instances are basically links to other Glyphs, plus some transformations.
+	 * This function grabs a clone of the linked-to Glyph, applies the transformations,
+	 * and returns a Glyph object - while also updating the cache
+	 * @returns {Glyph}
+	 */
+
+	get transformedGlyph() {
+		if (!this.cache.transformedGlyph) {
+			this.cache.transformedGlyph = this.makeTransformedGlyph();
+		}
+		return this.cache.transformedGlyph;
+	}
+
+	makeTransformedGlyph() {
+		// log('makeTransformedGlyph', 'start');
+		// log(this);
+		// log(`name: ${this.name}`);
+		// log(`link: ${this.link}`);
+
+		const linkedGlyph = this.getCrossLinkedItem();
+		if (!linkedGlyph) {
+			console.warn(
+				`Tried to get Component: ${this.link} but it doesn't exist - bad usedIn array maintenance.`
+			);
+			// log('makeTransformedGlyph', 'end');
+			return false;
+		}
+
+		const newGlyph = makeGlyphWithResolvedLinks(linkedGlyph);
+
+		// log(`translateX: ${this.translateX}`);
+		// log(`translateY: ${this.translateY}`);
+		// log(`resizeWidth: ${this.resizeWidth}`);
+		// log(`resizeHeight: ${this.resizeHeight}`);
+		// log(`flipEW: ${this.isFlippedEW}`);
+		// log(`flipNS: ${this.isFlippedNS}`);
+		// log(`reverseWinding: ${this.reverseWinding}`);
+		// log(`rotation: ${this.rotation}`);
+
+		if (
+			this.translateX ||
+			this.translateY ||
+			this.resizeWidth ||
+			this.resizeHeight ||
+			this.isFlippedEW ||
+			this.isFlippedNS ||
+			this.reverseWinding ||
+			this.rotation
+		) {
+			// log('Modifying w ' + this.resizeWidth + ' h ' + this.resizeHeight);
+			// log('before maxes ' + json(newGlyph.maxes, true));
+			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
+			if (this.isFlippedEW) newGlyph.flipEW();
+			if (this.isFlippedNS) newGlyph.flipNS();
+			newGlyph.updateGlyphPosition(this.translateX, this.translateY, true);
+			newGlyph.updateGlyphSize(this.resizeWidth, this.resizeHeight, false);
+			if (this.reverseWinding) newGlyph.reverseWinding();
+			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
+			// log('afters maxes ' + json(newGlyph.maxes, true));
+		} else {
+			// log('Not changing, no deltas');
+		}
+
+		// log(newGlyph);
+		// log('makeTransformedGlyph', 'end');
+
+		return newGlyph;
+	}
+
+	getCrossLinkedItem() {
+		// log(`ComponentInstance.getCrossLinkedItem`, 'start');
+		// log(this);
+		let project = this?.parent?.parent;
+		// log(project);
+		// log(`ComponentInstance.getCrossLinkedItem`, 'end');
+		return project?.getItem(this.link);
 	}
 
 	// --------------------------------------------------------------
@@ -273,7 +355,7 @@ export class ComponentInstance extends GlyphElement {
 	 */
 	get width() {
 		const g = this.transformedGlyph.maxes;
-		return g.xMax - g.xMin;
+		return g.width;
 	}
 
 	/**
@@ -282,7 +364,7 @@ export class ComponentInstance extends GlyphElement {
 	 */
 	get height() {
 		const g = this.transformedGlyph.maxes;
-		return g.yMax - g.yMin;
+		return g.height;
 	}
 
 	/**
@@ -305,6 +387,7 @@ export class ComponentInstance extends GlyphElement {
 	 * get svgPathData
 	 */
 	get svgPathData() {
+		//TODO optimize
 		let result = this.transformedGlyph.svgPathData;
 		return result;
 	}
@@ -516,8 +599,6 @@ export class ComponentInstance extends GlyphElement {
 	set height(h) {
 		this.setPathSize(false, h);
 	}
-
-
 
 	// --------------------------------------------------------------
 	// Parity methods, shared between Paths and ComponentInstances

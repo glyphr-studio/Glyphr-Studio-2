@@ -6,7 +6,7 @@ import { decToHex, validateAsHex } from '../common/character_ids.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 // import { log } from '../app/main.js';
 import { GlyphRange } from './glyph_range.js';
-import { getCurrentProject, log } from '../app/main.js';
+import { log } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -119,28 +119,28 @@ export class GlyphrStudioProject {
 		// Components
 		// log(`\nStarting components - passed:`);
 		// log(newProject.components);
-		hydrateProjectItems(Glyph, newProject.components, this.components);
+		hydrateProjectItems(Glyph, newProject.components, this.components, this);
 		// log('finished hydrating components - result:');
 		// log(this.components);
 
 		// Glyphs
 		// log(`\nStarting glyphs - passed:`);
 		// log(newProject.glyphs);
-		hydrateProjectItems(Glyph, newProject.glyphs, this.glyphs);
+		hydrateProjectItems(Glyph, newProject.glyphs, this.glyphs, this);
 		// log('finished hydrating glyphs - result:');
 		// log(this.glyphs);
 
 		// Ligatures
 		// log(`\nStarting ligatures - passed:`);
 		// log(newProject.ligatures);
-		hydrateProjectItems(Glyph, newProject.ligatures, this.ligatures);
+		hydrateProjectItems(Glyph, newProject.ligatures, this.ligatures, this);
 		// log('finished hydrating ligatures - result:');
 		// log(this.ligatures);
 
 		// Kerning
 		// log(`\nStarting kerning - passed:`);
 		// log(newProject.kerning);
-		hydrateProjectItems(HKern, newProject.kerning, this.kerning);
+		hydrateProjectItems(HKern, newProject.kerning, this.kerning, this);
 		// log('finished hydrating kern pairs - result:');
 		// log(this.kerning);
 
@@ -333,13 +333,10 @@ export class GlyphrStudioProject {
 		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;
 		const translateX = (size - itemWidth * scale) / 2;
 		const translateY = itemHeight * scale - padding;
-		// log(`item?.advanceWidth: ${item?.advanceWidth}`);
-		// log(`item?.parent?.advanceWidth: ${item?.parent?.advanceWidth}`);
-		// log(`itemWidth: ${itemWidth}`);
-		// log(`item.svgPathData: ${item.svgPathData}`);
-		// log(item.svgPathData);
-
 		const svg = item.svgPathData;
+		// log(`itemWidth: ${itemWidth}`);
+		// log(svg);
+
 		let re = `
 		<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50px" height="50px">
 			<path
@@ -478,12 +475,14 @@ function merge(template = {}, importing = {}, trimStrings = false) {
  * @param {Object} GlyphrStudioItem - Glyph, Guide, or HKern
  * @param {Object} source - collection of temporary objects to hydrate
  * @param {Object} destination - project object for final items
+ * @param {GlyphrStudioProject} destinationProject - parent project
  */
-function hydrateProjectItems(GlyphrStudioItem, source, destination) {
+function hydrateProjectItems(GlyphrStudioItem, source, destination, destinationProject) {
 	source = source || {};
 	for (const key of Object.keys(source)) {
 		if (source[key]) {
 			destination[key] = new GlyphrStudioItem(source[key]);
+			destination[key].parent = destinationProject;
 		}
 	}
 }
@@ -503,4 +502,3 @@ function makeProjectID() {
 
 	return re;
 }
-

@@ -20,7 +20,7 @@ export class GlyphElement {
 			this.cache = {};
 		}
 
-		if (this.parent) {
+		if (this.parent && this.parent.changed) {
 			// log(status + ' - calling parent.changed()');
 			this.parent.changed();
 		} else {

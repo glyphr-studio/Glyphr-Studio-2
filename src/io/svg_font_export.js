@@ -4,7 +4,7 @@ import { hexesToXMLHexes } from '../common/character_ids.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { Glyph } from '../project_data/glyph.js';
 import { makeDateStampSuffix, saveFile } from '../project_editor/saving.js';
-import { convertLinksToPaths } from '../project_editor/cross_item_actions.js';
+import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 /**
 	IO > Export > SVG Font
 	Converting a Glyphr Studio Project to XML in
@@ -153,7 +153,7 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 
 	// TODO Boolean combine
 	// if (getCurrentProject().settings.app.combinePathsOnExport) {
-	// 	gl = convertLinksToPaths(new Glyph(gl)).combineAllPaths(true);
+	// 	gl = makeGlyphWithResolvedLinks(new Glyph(gl)).combineAllPaths(true);
 	// }
 
 	let pathData = gl.svgPathData;
