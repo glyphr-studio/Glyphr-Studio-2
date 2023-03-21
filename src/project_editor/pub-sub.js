@@ -2,6 +2,9 @@
 // PubSub
 // --------------------------------------------------------------
 
+import { getCurrentProject } from '../app/main';
+import { glyphChanged } from './cross_item_actions.js';
+
 /**
  * Sends a new piece of data concerning a topic area that
  * triggers changes for subscribers
@@ -69,6 +72,7 @@ export function publish(topic, data) {
 				// It's possible to make updates to a Glyph while a single path point is selected
 				callCallbacksByTopic('currentPathPoint', singlePoint);
 			}
+			glyphChanged(data);
 		}
 
 		if (topic === 'currentPath') {
