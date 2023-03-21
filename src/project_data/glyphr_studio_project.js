@@ -119,28 +119,28 @@ export class GlyphrStudioProject {
 		// Components
 		// log(`\nStarting components - passed:`);
 		// log(newProject.components);
-		hydrateProjectItems(Glyph, newProject.components, this.components, this);
+		hydrateProjectItems(Glyph, newProject.components, 'Component', this.components, this);
 		// log('finished hydrating components - result:');
 		// log(this.components);
 
 		// Glyphs
 		// log(`\nStarting glyphs - passed:`);
 		// log(newProject.glyphs);
-		hydrateProjectItems(Glyph, newProject.glyphs, this.glyphs, this);
+		hydrateProjectItems(Glyph, newProject.glyphs, 'Glyph', this.glyphs, this);
 		// log('finished hydrating glyphs - result:');
 		// log(this.glyphs);
 
 		// Ligatures
 		// log(`\nStarting ligatures - passed:`);
 		// log(newProject.ligatures);
-		hydrateProjectItems(Glyph, newProject.ligatures, this.ligatures, this);
+		hydrateProjectItems(Glyph, newProject.ligatures, 'Ligature', this.ligatures, this);
 		// log('finished hydrating ligatures - result:');
 		// log(this.ligatures);
 
 		// Kerning
 		// log(`\nStarting kerning - passed:`);
 		// log(newProject.kerning);
-		hydrateProjectItems(HKern, newProject.kerning, this.kerning, this);
+		hydrateProjectItems(HKern, newProject.kerning, 'HKern', this.kerning, this);
 		// log('finished hydrating kern pairs - result:');
 		// log(this.kerning);
 
@@ -474,14 +474,16 @@ function merge(template = {}, importing = {}, trimStrings = false) {
  * Takes generic Objects, and initializes them as Glyphr Studio objects
  * @param {Object} GlyphrStudioItem - Glyph, Guide, or HKern
  * @param {Object} source - collection of temporary objects to hydrate
+ * @param {String} objType - type of object this is
  * @param {Object} destination - project object for final items
  * @param {GlyphrStudioProject} destinationProject - parent project
  */
-function hydrateProjectItems(GlyphrStudioItem, source, destination, destinationProject) {
+function hydrateProjectItems(GlyphrStudioItem, source, objType, destination, destinationProject) {
 	source = source || {};
 	for (const key of Object.keys(source)) {
 		if (source[key]) {
 			destination[key] = new GlyphrStudioItem(source[key]);
+			destination[key].objType = objType;
 			destination[key].parent = destinationProject;
 		}
 	}

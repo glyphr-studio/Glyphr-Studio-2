@@ -14,14 +14,22 @@ import { Path } from '../project_data/path.js';
  * @param {Glyph} glyph - glyph to mark as changed
  */
 export function glyphChanged(glyph) {
+	log(`glyphChanged`, 'start');
+	log(glyph);
 	if (glyph.cache) glyph.cache = {};
 	const project = getCurrentProject();
-
-	// log(`calling changed on usedIn`);
 	glyph.usedIn.forEach((itemID) => {
 		const item = project.getItem(itemID);
-		if (item) glyphChanged(item);
+		if (item) {
+			glyphChanged(item);
+			if (item.paths) {
+				item.paths.forEach(pathItem => {
+					if (pathItem.objType === 'ComponentInstance') pathItem.cache = {};
+				});
+			}
+		}
 	});
+	log(`glyphChanged`, 'end');
 }
 
 
