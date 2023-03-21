@@ -96,13 +96,14 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 	}
 
 	newInput.addEventListener('change', (event) => {
-		// log(`makeSingleInput CHANGE event`, 'start');
-		// log(event);
+		log(`makeSingleInput CHANGE event`, 'start');
+		log(event);
 
 		if (workItem.isLocked(property)) return;
-		let newValue = event.target.getAttribute('value');
-		// log(`property: ${property}`);
-		// log(`newValue: ${newValue}`);
+		// let newValue = event.target.getAttribute('value');
+		let newValue = event.target.value;
+		log(`property: ${property}`);
+		log(`newValue: ${newValue}`);
 
 		const editor = getCurrentProjectEditor();
 		// Update the view so that the glyph stays put
@@ -115,7 +116,7 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 
 		// Code Smell
 		if (
-			workItem.objType === 'Glyph' &&
+			workItem.constructor.name === 'Glyph' &&
 			(property === 'width' || property === 'height') &&
 			workItem.ratioLock
 		) {
@@ -129,12 +130,13 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 			if (property === 'width') workItem.setPathSize(newValue, false, true);
 			if (property === 'height') workItem.setPathSize(false, newValue, true);
 		} else {
-			// log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
+			log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
 			workItem[property] = newValue;
+			log(`workItem[property]: ${workItem[property]}`);
 		}
 
 		editor.publish(thisTopic, workItem);
-		// log(`makeSingleInput CHANGE event`, 'end');
+		log(`makeSingleInput CHANGE event`, 'end');
 	});
 
 	getCurrentProjectEditor().subscribe({
@@ -266,7 +268,7 @@ export function makeLinkReferenceRow(itemID) {
 	const project = getCurrentProject();
 	const targetItem = editor.project.getItem(itemID);
 
-	let row = makeElement({ className: 'item-link__row' });
+	let row = makeElement({ className: 'item-link__row', attributes: {'target-item-id': itemID} });
 	row.addEventListener('click', () => {
 		if (targetItem.displayType === 'Glyph') editor.nav.page = 'Glyph edit';
 		if (targetItem.displayType === 'Component') editor.nav.page = 'Components';
@@ -278,6 +280,7 @@ export function makeLinkReferenceRow(itemID) {
 	row.appendChild(
 		makeElement({
 			className: 'item-link__thumbnail',
+			attributes: {'target-item-id': itemID},
 			innerHTML: project.makeItemThumbnail(targetItem),
 		})
 	);

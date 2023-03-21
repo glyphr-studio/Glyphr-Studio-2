@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeIcon } from '../common/graphics.js';
 import { makeActionsArea_Glyph, makeActionsArea_Universal } from './actions.js';
@@ -23,7 +23,7 @@ export function makeCard_glyphAttributes(glyph) {
 	let glyphCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: '<h3>Glyph</h3>',
+		innerHTML: `<h3>${glyph.displayType}</h3>`,
 	});
 
 	let advanceWidthLabel = makeSingleLabel('advance width');
@@ -78,9 +78,16 @@ export function makeCard_glyphAttributes(glyph) {
 	doubleBearingInput.appendChild(rsbInput);
 
 	// Put it all together
-	addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
-	addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
-	addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	if (glyph.displayType !== 'Component') {
+		addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
+		addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
+		addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	} else {
+		addAsChildren(glyphCard, [
+			makeSingleLabel('name'),
+			makeSingleInput(glyph, 'name', 'currentItem', 'input'),
+		]);
+	}
 	addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
 	addAsChildren(glyphCard, makeInputs_position(glyph));
 	addAsChildren(glyphCard, makeInputs_size(glyph));
@@ -104,8 +111,23 @@ export function makeCard_glyphLinks(item) {
 		`,
 	});
 
-	item.usedIn.forEach(itemID => {
+	item.usedIn.forEach((itemID) => {
 		linksCard.appendChild(makeLinkReferenceRow(itemID));
+	});
+
+	getCurrentProjectEditor().subscribe({
+		topic: 'currentItem',
+		subscriberID: 'ItemLinkRow',
+		callback: () => {
+			const editor = getCurrentProjectEditor();
+			const project = getCurrentProject();
+			const thumbs = document.querySelectorAll('.item-link__thumbnail');
+			thumbs.forEach((thumb) => {
+				const targetID = thumb.getAttribute('target-item-id');
+				const targetItem = editor.project.getItem(targetID);
+				thumb.innerHTML = project.makeItemThumbnail(targetItem);
+			});
+		},
 	});
 
 	return linksCard;

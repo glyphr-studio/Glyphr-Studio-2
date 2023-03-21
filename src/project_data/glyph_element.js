@@ -1,4 +1,4 @@
-import { getCurrentProject, log } from '../app/main.js';
+import { log } from '../app/main.js';
 import { json, clone, makeRandomID } from '../common/functions.js';
 
 /**
@@ -135,16 +135,6 @@ export class GlyphElement {
 	 */
 	toString() {
 		return json(this.save());
-	}
-
-	/**
-	 * Test to see if this object uses the Glyph constructor
-	 */
-	get isGlyphLike() {
-		if (this.objType === 'Glyph') return true;
-		if (this.objType === 'Component') return true;
-		if (this.objType === 'Ligature') return true;
-		return false;
 	}
 
 	/**

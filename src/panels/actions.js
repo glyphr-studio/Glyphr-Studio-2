@@ -7,7 +7,7 @@ import { Path } from '../project_data/path.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { closeEveryTypeOfDialog, showModalDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { makeGlyphChooserContent } from './glyph_chooser.js';
-import { makeGlyphSVGforExport } from '../project_editor/cross_item_actions.js';
+import { addToUsedIn, makeGlyphSVGforExport } from '../project_editor/cross_item_actions.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -220,6 +220,12 @@ export function getActionData(name) {
 			onClick: () => {
 				// TODO components
 			},
+		},
+		{
+			iconName: 'deletePath',
+			iconOptions: true,
+			title: 'Delete\nRemoves the currently selected component instance from this glyph.',
+			onClick: deleteSelectedPaths,
 		},
 	];
 
@@ -678,8 +684,7 @@ export function clipboardPaste() {
 			newPath.name = newName + newSuffix;
 
 			if (newPath.objType === 'ComponentInstance') {
-				editor.project.getItem(newPath.link).addToUsedIn(editor.project.selectedItemID);
-				// TODO add to used in
+				addToUsedIn(editor.project.getItem(newPath.link), editor.project.selectedItemID);
 			}
 
 			newPaths.push(newPath);
@@ -818,18 +823,18 @@ export function copyPathsFromTo(sourceGlyph, destinationGlyph, updateWidth = fal
 
 	const editor = getCurrentProjectEditor();
 	const msPaths = editor.multiSelect.paths;
-	let tc;
+	let item;
 	for (let c = 0; c < sourceGlyph.paths.length; c++) {
-		tc = sourceGlyph.paths[c];
-		if (tc.objType === 'ComponentInstance') {
-			editor.project.getItem(tc.link).addToUsedIn(destinationGlyph.id);
-			tc = new ComponentInstance(tc);
-		} else if (tc.objType === 'Path') {
-			tc = new Path(tc);
+		item = sourceGlyph.paths[c];
+		if (item.objType === 'ComponentInstance') {
+			addToUsedIn(editor.project.getItem(item.link), destinationGlyph.id);
+			item = new ComponentInstance(item);
+		} else if (item.objType === 'Path') {
+			item = new Path(item);
 		}
 
-		msPaths.add(tc);
-		destinationGlyph.paths = destinationGlyph.paths.concat(tc);
+		msPaths.add(item);
+		destinationGlyph.paths = destinationGlyph.paths.concat(item);
 	}
 
 	if (updateWidth) {

@@ -950,38 +950,4 @@ export class Glyph extends GlyphElement {
 		*/
 		return this;
 	}
-
-	// --------------------------------------------------------------
-	// Used-In array
-	// --------------------------------------------------------------
-
-	/**
-	 * When this Glyph is linked-to from another ComponentInstance, track
-	 * where it's being used by adding it to this.usedIn
-	 * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
-	 * @returns {Glyph} - reference to this Glyph
-	 */
-	addToUsedIn(linkID) {
-		this.usedIn.push('' + linkID);
-		// sort numerically as opposed to alpha
-		this.usedIn.sort(function (a, b) {
-			return a - b;
-		});
-
-		return this;
-	}
-
-	/**
-	 * Removes a link from this usedIn array
-	 * @param {string} linkID - GlyphID where this Glyph is being used as a Component Instance
-	 * @returns {Glyph} - reference to this Glyph
-	 */
-	removeFromUsedIn(linkID) {
-		const id = this.usedIn.indexOf('' + linkID);
-		if (id !== -1) {
-			this.usedIn.splice(id, 1);
-		}
-
-		return this;
-	}
 }

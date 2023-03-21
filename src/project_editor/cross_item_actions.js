@@ -14,8 +14,8 @@ import { Path } from '../project_data/path.js';
  * @param {Glyph} glyph - glyph to mark as changed
  */
 export function glyphChanged(glyph) {
-	log(`glyphChanged`, 'start');
-	log(glyph);
+	// log(`glyphChanged`, 'start');
+	// log(glyph);
 	if (glyph.cache) glyph.cache = {};
 	const project = getCurrentProject();
 	glyph.usedIn.forEach((itemID) => {
@@ -29,7 +29,7 @@ export function glyphChanged(glyph) {
 			}
 		}
 	});
-	log(`glyphChanged`, 'end');
+	// log(`glyphChanged`, 'end');
 }
 
 
@@ -196,7 +196,47 @@ export function deleteLinks(glyph) {
 	// Delete downstream usedIn array values
 	for (let s = 0; s < glyph.paths.length; s++) {
 		if (glyph.paths[s].objType === 'ComponentInstance') {
-			glyph.removeFromUsedIn(glyph.paths[s].link, glyph.id);
+			removeFromUsedIn(project.getItem(glyph.paths[s].link), glyph.id);
 		}
 	}
 }
+
+	// --------------------------------------------------------------
+	// Used-In array
+	// --------------------------------------------------------------
+
+	/**
+	 * When a Glyph is linked-to from another ComponentInstance, track
+	 * where it's being used by adding it to glyph.usedIn
+	 * @param {Glyph} glyph - reference to the Glyph
+	 * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
+	 */
+	export function addToUsedIn(glyph, linkID) {
+		glyph.usedIn.push('' + linkID);
+		// sort numerically as opposed to alpha
+		glyph.usedIn.sort(function (a, b) {
+			return a - b;
+		});
+	}
+
+	/**
+	 * Removes a link from a glyph's usedIn array
+	 * @param {Glyph} glyph - reference to the Glyph
+	 * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
+	 */
+	export function removeFromUsedIn(glyph, linkID) {
+		// log(`removeFromUsedIn`, 'start');
+		// log(`linkID: ${linkID}`);
+		// log(glyph.usedIn);
+
+		const idIndex = glyph.usedIn.indexOf('' + linkID);
+		// log(`idIndex: ${idIndex}`);
+
+		if (idIndex !== -1) {
+			// log(`Removing ${idIndex}`);
+
+			glyph.usedIn.splice(idIndex, 1);
+		}
+		// log(glyph.usedIn);
+		// log(`removeFromUsedIn`, 'end');
+	}

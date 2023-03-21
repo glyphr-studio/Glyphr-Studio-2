@@ -362,6 +362,8 @@ function handleLoadSample(name) {
 	}, 100);
 }
 
+// TODO import all ranges
+// TODO glyph range
 let importRange = {
 	begin: 0x0020,
 	end: 0x024f,
