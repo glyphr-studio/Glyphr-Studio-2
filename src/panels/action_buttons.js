@@ -111,10 +111,14 @@ makeActionButtonIcon.pastePathsFromAnotherGlyph = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.addPath = function (component) {
+makeActionButtonIcon.addPath = function (isComponentInstance = false) {
 	let re = '';
-	let accent = component ? actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
+	let accent = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
+	if (isComponentInstance) {
+		accent = actionButtonIconColors.greenOutline;
+		fill = actionButtonIconColors.lightFill;
+	}
 
 	// path
 	re += `
@@ -250,18 +254,25 @@ makeActionButtonIcon.reverseWinding = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.switchPathComponent = function (isComponent) {
+makeActionButtonIcon.switchPathComponent = function (isComponentInstance = false) {
 	// log(`makeActionButtonIcon.switchComponent`, 'start');
-	// log(`isComponent: ${isComponent}`);
+	// log(`isComponentInstance: ${isComponentInstance}`);
 	let re = '';
-	let before = isComponent ? actionButtonIconColors.greenOutline : actionButtonIconColors.blueOutline;
-	let after = isComponent ? actionButtonIconColors.blueOutline : actionButtonIconColors.greenOutline;
-	let fill = actionButtonIconColors.darkFill;
+	let before = actionButtonIconColors.blueOutline;
+	let after = actionButtonIconColors.greenOutline;
+	let beforeFill = actionButtonIconColors.darkFill;
+	let afterFill = actionButtonIconColors.lightFill;
+		if (isComponentInstance) {
+			before = actionButtonIconColors.greenOutline;
+			after = actionButtonIconColors.blueOutline;
+			beforeFill = actionButtonIconColors.lightFill;
+			afterFill = actionButtonIconColors.darkFill;
+		}
 
 	re += `
-	<polygon fill="${fill}" points="5.1,21 1,17.2 1,1 3.4,1 10,11.3 10,21"/>
+	<polygon fill="${beforeFill}" points="5.1,21 1,17.2 1,1 3.4,1 10,11.3 10,21"/>
 	<path fill="${before}" d="M2.9,2L9,11.6V20H5.5L2,16.7V2H2.9 M3.9,0H0v17.6L4.7,22H11V11L3.9,0L3.9,0z"/>
-	<polygon fill="${fill}" points="21.8,29 16,23.6 16,1 19.8,1 29,15.3 29,29"/>
+	<polygon fill="${afterFill}" points="21.8,29 16,23.6 16,1 19.8,1 29,15.3 29,29"/>
 	<path fill="${after}" d="M19.1,2L28,15.6V28h-5.8L17,23.1V2h2 M20.4,0H15v24l6.4,6H30V15L20.4,0L20.4,0z"/>
 	`;
 
@@ -313,11 +324,15 @@ makeActionButtonIcon.combine = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.deletePath = function () {
+makeActionButtonIcon.deletePath = function (isComponentInstance = false) {
 	let re = '';
 	let red = actionButtonIconColors.redX;
 	let accent = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
+	if (isComponentInstance) {
+		accent = actionButtonIconColors.greenOutline;
+		fill = actionButtonIconColors.lightFill;
+	}
 
 	// path
 	re += `

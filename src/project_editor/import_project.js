@@ -75,6 +75,7 @@ function migrate_Project(oldProject) {
 		const chars = hexesToChars(oldID);
 		let newGsub = chars.split('').map(charToHex);
 		newProject.ligatures[newID] = migrate_Glyph(oldProject.ligatures[oldID], newID);
+		newProject.ligatures[newID].objType = 'Ligature';
 		newProject.ligatures[newID].gsub = newGsub;
 	});
 
@@ -83,6 +84,8 @@ function migrate_Project(oldProject) {
 	Object.keys(oldProject.components).forEach((oldID) => {
 		const newID = migrate_ItemID(oldID);
 		newProject.components[newID] = migrate_Glyph(oldProject.components[oldID], newID);
+		newProject.components[newID].objType = 'Component';
+		newProject.components[newID].advanceWidth = false;
 	});
 
 	// TODO Kerns

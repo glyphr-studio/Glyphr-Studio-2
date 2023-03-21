@@ -2,14 +2,10 @@
 		Panel > Layers
 		Shows a list of all the paths in a Glyph.
 **/
-
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { makeActionButtonIcon } from './action_buttons.js';
 import { addChildActions, getActionData } from './actions.js';
-import { refreshPanel } from './panels.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
-import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');
@@ -44,7 +40,7 @@ export function makePanel_Layers() {
 	if (paths.length > 0) {
 		for (let i = paths.length - 1; i >= 0; i--) {
 			let item = paths[i];
-			let row = makeElement();
+			let row = makeElement({attributes: {'target-path-index': i}});
 
 			if (item.objType === 'ComponentInstance') {
 				row.setAttribute('class', 'item-link__row layer-panel__component-row');
@@ -58,8 +54,8 @@ export function makePanel_Layers() {
 
 			editor.subscribe({
 				topic: 'whichPathIsSelected',
-				subscriberID: 'layersPanel.rowButton',
-				callback: (newSelectedPath) => {
+				subscriberID: `layersPanel.item-link-row-${i}`,
+				callback: () => {
 					// log(`Layer subscription callback for selectedPath`, 'start');
 
 					let isSelected = editor.multiSelect.paths.isSelected(item);
@@ -75,12 +71,12 @@ export function makePanel_Layers() {
 				editor.publish('whichPathIsSelected', item);
 			});
 
-			row.appendChild(
-				makeElement({
-					className: 'item-link__thumbnail',
-					innerHTML: project.makeItemThumbnail(item),
-				})
-			);
+			const thumbnail = makeElement({
+				className: 'item-link__thumbnail',
+				attributes: {'target-path-index': i},
+				innerHTML: project.makeItemThumbnail(item),
+			});
+			row.appendChild(thumbnail);
 
 			row.appendChild(
 				makeElement({
@@ -113,7 +109,13 @@ export function makePanel_Layers() {
 		topic: ['currentPath', 'currentItem'],
 		subscriberID: 'layersPanel',
 		callback: () => {
-			refreshPanel();
+			const editor = getCurrentProjectEditor();
+			const project = getCurrentProject();
+			const thumbs = document.querySelectorAll('.item-link__thumbnail');
+			thumbs.forEach((thumb) => {
+				const pathIndex = thumb.getAttribute('target-path-index');
+				thumb.innerHTML = project.makeItemThumbnail(editor.selectedItem.paths[pathIndex]);
+			});
 		},
 	});
 

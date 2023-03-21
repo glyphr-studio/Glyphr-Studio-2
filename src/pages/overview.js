@@ -4,6 +4,7 @@ import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
 import { makeContributeContent, makePreReleaseNote } from './about.js';
 import { showModalDialog } from '../controls/dialogs/dialogs.js';
+import { countItems } from '../common/functions.js';
 
 /**
  * Page > Overview
@@ -50,17 +51,18 @@ export function makePage_Overview() {
 	});
 	welcomeCard.appendChild(makePreReleaseNote(false));
 
-	const settings = getCurrentProject().settings;
+	const project = getCurrentProject();
 	const projectSummaryCard = makeElement({
 		className: 'panel__card more-padding',
 		innerHTML: `
 			<h2>Project info</h2>
-			<label>Project name: </label><span>${settings.project.name}</span>
-			<label>Font family: </label><span>${settings.font.family}</span>
-			<label>Style: </label><span>${settings.font.style}</span>
-			<label>UPM: </label><span>${settings.font.upm}</span>
-			<label>Ascent: </label><span>${settings.font.ascent}</span>
-			<label>Descent: </label><span>${settings.font.descent}</span>
+			<label>Project name: </label><span>${project.settings.project.name}</span>
+			<label>Font family: </label><span>${project.settings.font.family}</span>
+			<label>Style: </label><span>${project.settings.font.style}</span>
+			<label>Glyph count: </label><span>${countItems(project.glyphs) + countItems(project.ligatures)}</span>
+			<label>UPM: </label><span>${project.settings.font.upm}</span>
+			<label>Ascent: </label><span>${project.settings.font.ascent}</span>
+			<label>Descent: </label><span>${project.settings.font.descent}</span>
 			<br><span></span>
 		`,
 	});

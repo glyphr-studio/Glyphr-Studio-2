@@ -1,9 +1,10 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { drawItem } from '../display_canvas/draw_paths.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
+import { removeFromUsedIn } from './cross_item_actions.js';
 
 /**
 		Multi-Select
@@ -325,21 +326,21 @@ export class MultiSelectPaths extends MultiSelect {
 	deletePaths() {
 		// log('deletePath', 'start');
 		const editor = getCurrentProjectEditor();
+		const project = getCurrentProject();
 		const itemPaths = editor.selectedItem.paths;
-		let path;
+		let item;
 		let index;
 
 		if (this.members.length === 0) this.clear();
 		else {
 			for (let s = 0; s < this.members.length; s++) {
-				path = this.members[s];
+				item = this.members[s];
 
-				if (path.objType === 'ComponentInstance') {
-					//TODO components
-					// removeFromUsedIn(path.link, editor.selectedGlyph);
+				if (item.objType === 'ComponentInstance') { 
+					removeFromUsedIn(project.getItem(item.link), item.parent.id);
 				}
 
-				index = itemPaths.indexOf(path);
+				index = itemPaths.indexOf(item);
 				if (index > -1) itemPaths.splice(index, 1);
 			}
 
