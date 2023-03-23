@@ -180,7 +180,7 @@ function migrate_Project(oldProject) {
  * @returns {Glyph} - new v2 Glyph
  */
 function migrate_Glyph(oldGlyph, newID) {
-	// log(`migrate_Glyph`, 'start');
+	log(`migrate_Glyph`, 'start');
 
 	const newGlyph = new Glyph({
 		id: newID,
@@ -208,8 +208,8 @@ function migrate_Glyph(oldGlyph, newID) {
 		}
 	});
 
-	// log(newGlyph);
-	// log(`migrate_Glyph`, 'end');
+	log(newGlyph);
+	log(`migrate_Glyph`, 'end');
 	return newGlyph;
 }
 
@@ -287,37 +287,37 @@ function migrate_ComponentInstance(oldItem) {
 }
 
 function migrate_ItemID(oldID) {
-	// log(`migrate_ItemID`, 'start');
-	// log(`oldID: ${oldID}`);
+	log(`migrate_ItemID`, 'start');
+	log(`oldID: ${oldID}`);
 
 	let result = false;
 
 	// Component
 	if (oldID.startsWith('com')) {
-		// log(`Detected as Component`);
+		log(`Detected as Component`);
 		result = `comp-${oldID.split('com')[1]}`;
 	}
 
 	// Kern
 	if (oldID.startsWith('kern')) {
-		// log(`Detected as Kern`);
+		log(`Detected as Kern`);
 		result = `kern-${oldID.split('kern')[1]}`;
 	}
 
 	const chars = hexesToChars(oldID);
 	// Ligature
 	if (chars.length > 1) {
-		// log(`Detected as Ligature`);
+		log(`Detected as Ligature`);
 		result = makeLigatureID(chars);
 	}
 
 	// Glyph
 	if (chars.length === 1) {
-		// log(`Detected as Glyph`);
-		result = validateAsHex(oldID);
+		log(`Detected as Glyph`);
+		result = `glyph-${validateAsHex(oldID)}`;
 	}
 
-	// log(`result: ${result}`);
-	// log(`migrate_ItemID`, 'end');
+	log(`result: ${result}`);
+	log(`migrate_ItemID`, 'end');
 	return result;
 }

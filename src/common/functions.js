@@ -249,6 +249,20 @@ export function trim(text = '') {
 }
 
 /**
+ * Takes a string and a search term, and removes all instances
+ * of that search term from the base string.
+ * @param {string} base - base string to operate on
+ * @param {string} searchTerm - what to remove
+ * @returns {string}
+ */
+export function remove(base = '', searchTerm = '') {
+	base = String(base);
+	base = base.split(searchTerm);
+	base = base.join('');
+	return base || '';
+}
+
+/**
  * Checks to see if something is a value, and not null or undefined
  * @param {*} val - variable to test
  * @returns {boolean}

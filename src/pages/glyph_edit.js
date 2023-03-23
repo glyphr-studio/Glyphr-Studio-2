@@ -2,7 +2,6 @@ import { addAsChildren, makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor, log } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
-import { lookUpGlyphName } from '../lib/unicode_names.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
@@ -33,7 +32,7 @@ export function makePage_GlyphEdit() {
 					${makeNavButton({
 						level: 'l2',
 						superTitle: 'EDITING',
-						title: lookUpGlyphName(editor.selectedGlyphID, true),
+						title: editor.project.getItemName(editor.selectedGlyphID, true),
 					})}
 					${makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel })}
 				</div>
@@ -65,7 +64,7 @@ export function makePage_GlyphEdit() {
 		topic: 'whichGlyphIsSelected',
 		subscriberID: 'nav.glyphChooserButton',
 		callback: (newGlyphID) => {
-			l2.innerHTML = makeNavButtonContent(lookUpGlyphName(newGlyphID, true), 'EDITING');
+			l2.innerHTML = makeNavButtonContent(editor.project.getItemName(newGlyphID, true), 'EDITING');
 		},
 	});
 

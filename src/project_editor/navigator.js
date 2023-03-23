@@ -275,7 +275,7 @@ export function showNavDropdown(parentElement) {
 		dropdownContent = makeGlyphChooserContent((itemID) => {
 			const editor = getCurrentProjectEditor();
 			editor.selectedItemID = itemID;
-			editor.history.addState(`Navigated to ${editor.project.getGlyphName(itemID, true)}`);
+			editor.history.addState(`Navigated to ${editor.project.getItemName(itemID, true)}`);
 			closeAllNavMenus();
 		});
 		size = '80%';
@@ -346,7 +346,9 @@ function makeNavButton_Page(pageName, iconName) {
 		let editor = getCurrentProjectEditor();
 		editor.nav.page = pageName;
 		editor.navigate();
-		editor.history.addState(`Navigated to ${editor.project.getGlyphName(editor.selectedItemID, true)}`);
+		editor.history.addState(
+			`Navigated to ${editor.project.getItemName(editor.selectedItemID, true)}`
+		);
 	});
 	return button;
 }

@@ -128,7 +128,7 @@ export class GlyphSequence {
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
 				currentChar = currentBlock[charNumber];
 				// log(`==== char: ${charNumber} ${currentChar}`);
-				if (currentChar.indexOf('liga-') === 0) {
+				if (currentChar.startsWith('liga-')) {
 					thisGlyph = project.ligatures[currentChar];
 					currentChar = thisGlyph.chars;
 				} else {
