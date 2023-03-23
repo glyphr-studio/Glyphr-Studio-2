@@ -23,6 +23,7 @@ export class Glyph extends GlyphElement {
 	/**
 	 * Create a Glyph
 	 * @param {string} id - unique identifier (Unicode code point)
+	 * @param {object} parent - link to the Glyphr Studio Project
 	 * @param {number} advanceWidth - manual setting for advance width
 	 * @param {boolean} ratioLock - maintain aspect ratio while resizing
 	 * @param {boolean} paths - collection of Paths and Component Instances in this Glyph
@@ -30,6 +31,7 @@ export class Glyph extends GlyphElement {
 	 */
 	constructor({
 		id = false,
+		parent = false,
 		objType = 'Glyph',
 		name = false,
 		paths = [],
@@ -42,6 +44,7 @@ export class Glyph extends GlyphElement {
 		// log(`Glyph.constructor`, 'start');
 		super();
 		this.id = id;
+		this.parent = parent;
 		this.name = name;
 		this.paths = paths;
 		this.advanceWidth = advanceWidth;

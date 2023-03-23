@@ -3,7 +3,6 @@ import { getCurrentProjectEditor, log } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { lookUpGlyphName } from '../lib/unicode_names.js';
-import { hexesToChars } from '../common/character_ids.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
@@ -14,7 +13,7 @@ import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.j
  * Comprised of Panels of tools, and the Edit Canvas
  */
 export function makePage_GlyphEdit() {
-	log(`makePage_GlyphEdit`, 'start');
+	// log(`makePage_GlyphEdit`, 'start');
 	const editor = getCurrentProjectEditor();
 	// log('current ProjectEditor');
 	// log(editor);
@@ -135,6 +134,6 @@ export function makePage_GlyphEdit() {
 		},
 	});
 
-	log(`makePage_GlyphEdit`, 'end');
+	// log(`makePage_GlyphEdit`, 'end');
 	return content;
 }

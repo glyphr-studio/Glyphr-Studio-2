@@ -96,14 +96,14 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 	}
 
 	newInput.addEventListener('change', (event) => {
-		log(`makeSingleInput CHANGE event`, 'start');
-		log(event);
+		// log(`makeSingleInput CHANGE event`, 'start');
+		// log(event);
 
 		if (workItem.isLocked(property)) return;
 		// let newValue = event.target.getAttribute('value');
 		let newValue = event.target.value;
-		log(`property: ${property}`);
-		log(`newValue: ${newValue}`);
+		// log(`property: ${property}`);
+		// log(`newValue: ${newValue}`);
 
 		const editor = getCurrentProjectEditor();
 		// Update the view so that the glyph stays put
@@ -130,13 +130,13 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 			if (property === 'width') workItem.setPathSize(newValue, false, true);
 			if (property === 'height') workItem.setPathSize(false, newValue, true);
 		} else {
-			log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
+			// log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
 			workItem[property] = newValue;
-			log(`workItem[property]: ${workItem[property]}`);
+			// log(`workItem[property]: ${workItem[property]}`);
 		}
 
 		editor.publish(thisTopic, workItem);
-		log(`makeSingleInput CHANGE event`, 'end');
+		// log(`makeSingleInput CHANGE event`, 'end');
 	});
 
 	getCurrentProjectEditor().subscribe({

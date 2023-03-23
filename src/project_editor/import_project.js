@@ -1,5 +1,5 @@
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
-import { getGlyphrStudioApp, log } from '../app/main.js';
+import { getCurrentProject, getGlyphrStudioApp, log } from '../app/main.js';
 import { tryToGetProjectVersion } from '../io/validate_file_input.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -182,12 +182,14 @@ function migrate_Project(oldProject) {
 function migrate_Glyph(oldGlyph, newID) {
 	// log(`migrate_Glyph`, 'start');
 
-	const newGlyph = new Glyph();
-	newGlyph.id = newID;
-	newGlyph.advanceWidth = oldGlyph.glyphwidth;
-	newGlyph.ratioLock = oldGlyph.ratiolock;
-	newGlyph.usedIn = oldGlyph.usedin.map(migrate_ItemID);
-	newGlyph.contextGlyphs = oldGlyph.contextglyphs;
+	const newGlyph = new Glyph({
+		id: newID,
+		parent: getCurrentProject(),
+		advanceWidth: oldGlyph.glyphwidth,
+		ratioLock: oldGlyph.ratiolock,
+		usedIn: oldGlyph.usedin.map(migrate_ItemID),
+		contextGlyphs: oldGlyph.contextglyphs,
+	});
 
 	let newItem;
 	oldGlyph.shapes.forEach((item) => {
