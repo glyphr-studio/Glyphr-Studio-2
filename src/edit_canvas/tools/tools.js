@@ -315,7 +315,7 @@ export function addPathToCurrentItem(newPath) {
 
 	let sg = editor.selectedItem;
 
-	newPath = sg.addOnePath(newPath);
+	newPath = sg.addOneShape(newPath);
 
 	// log(`returns: ${ewPath.name}`);
 	// log(`addPathToCurrentItem`, 'end');

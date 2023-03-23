@@ -5,9 +5,18 @@ import { saveFile } from '../project_editor/saving.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { Path } from '../project_data/path.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
-import { closeEveryTypeOfDialog, showModalDialog, showToast } from '../controls/dialogs/dialogs.js';
+import {
+	closeEveryTypeOfDialog,
+	showError,
+	showModalDialog,
+	showToast,
+} from '../controls/dialogs/dialogs.js';
 import { makeGlyphChooserContent } from './glyph_chooser.js';
-import { addToUsedIn, makeGlyphSVGforExport } from '../project_editor/cross_item_actions.js';
+import {
+	addToUsedIn,
+	canAddComponent,
+	makeGlyphSVGforExport,
+} from '../project_editor/cross_item_actions.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -77,7 +86,7 @@ export function getActionData(name) {
 			title: `Add Path\nCreates a new default path and adds it to this glyph.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let newPath = editor.selectedItem.addOnePath(rectPathFromMaxes());
+				let newPath = editor.selectedItem.addOneShape(rectPathFromMaxes());
 				editor.multiSelect.paths.select(newPath);
 				editor.publish('whichPathIsSelected', newPath);
 				editor.publish('currentItem', editor.selectedItem);
@@ -650,23 +659,23 @@ export function clipboardPaste() {
 	}
 
 	if (clipboard && clipboard.paths.length) {
-		let newPaths = [];
+		let newShapes = [];
 
-		let newPath, newName, newSuffix, caret, suffix;
-		clipboard.paths.forEach((path) => {
-			if (path.objType === 'ComponentInstance') {
-				newPath = new ComponentInstance(path);
+		let newShape, newName, newSuffix, caret, suffix;
+		clipboard.paths.forEach((shape) => {
+			if (shape.objType === 'ComponentInstance') {
+				newShape = new ComponentInstance(shape);
 			} else {
-				newPath = new Path(path);
+				newShape = new Path(shape);
 			}
 
 			if (offsetPaths) {
-				newPath.updatePathPosition(clipboard.dx, clipboard.dy, true);
+				newShape.updatePathPosition(clipboard.dx, clipboard.dy, true);
 			}
 
-			newName = newPath.name;
+			newName = newShape.name;
 			newSuffix = ' (copy)';
-			caret = newPath.name.lastIndexOf('(copy');
+			caret = newShape.name.lastIndexOf('(copy');
 
 			if (caret > 0) {
 				suffix = newName.substring(caret + 5);
@@ -683,27 +692,27 @@ export function clipboardPaste() {
 					// log("\t - newSuffix " + newSuffix);
 				}
 			}
-			newPath.name = newName + newSuffix;
+			newShape.name = newName + newSuffix;
 
-			if (newPath.objType === 'ComponentInstance') {
-				addToUsedIn(editor.project.getItem(newPath.link), editor.project.selectedItemID);
+			if (newShape.objType === 'ComponentInstance') {
+				addToUsedIn(editor.project.getItem(newShape.link), editor.project.selectedItemID);
 			}
 
-			newPaths.push(newPath);
+			newShapes.push(newShape);
 		});
 
 		// log(`New paths that have been copied`);
-		// log(newPaths);
+		// log(newShapes);
 
 		editor.multiSelect.paths.clear();
 		editor.multiSelect.points.clear();
 
-		editor.selectedItem.paths = editor.selectedItem.paths.concat(newPaths);
-		newPaths.forEach((path) => editor.multiSelect.paths.add(path));
+		editor.selectedItem.paths = editor.selectedItem.paths.concat(newShapes);
+		newShapes.forEach((path) => editor.multiSelect.paths.add(path));
 
 		clipboard.sourceID = editor.selectedItemID;
 
-		let len = newPaths.length;
+		let len = newShapes.length;
 		editor.history.addState(len === 1 ? 'Pasted Path' : `Pasted ${len} Paths`);
 		editor.publish('currentItem', editor.selectedItem);
 	}
@@ -747,10 +756,19 @@ function showDialogChooseOtherItem(type) {
 			const otherItem = editor.project.getItem(itemID);
 			const thisItem = editor.selectedItem;
 			const newInstance = linkComponentFromTo(otherItem, thisItem, false);
-			editor.multiSelect.paths.add(newInstance);
-			editor.history.addState(`Component instance was linked from ${otherItem.name}.`);
-			closeEveryTypeOfDialog();
-			showToast(`Component instance linked from<br>${otherItem.name}`);
+			if (newInstance) {
+				editor.multiSelect.paths.add(newInstance);
+				editor.history.addState(`Component instance was linked from ${otherItem.name}.`);
+				closeEveryTypeOfDialog();
+				showToast(`Component instance linked from<br>${otherItem.name}`);
+			} else {
+				closeEveryTypeOfDialog();
+				showError(`
+					Cannot add ${thisItem.name} to ${otherItem.name} as a component instance.
+					<br>
+					This is usually because adding the link would create a circular reference.
+					`);
+			}
 		};
 	}
 
@@ -772,11 +790,10 @@ function showDialogChooseOtherItem(type) {
  * @param {Glyph} destinationItem - where to put the component instance
  */
 export function linkComponentFromTo(sourceItem, destinationItem) {
-	const sourceID = sourceItem.id;
-	const destinationID = destinationItem.id;
-	const newInstance = new ComponentInstance({ link: sourceID });
-	destinationItem.addOnePath(newInstance);
-	addToUsedIn(sourceItem, destinationID);
+	if (!canAddComponent(destinationItem, sourceItem.id)) return false;
+	const newInstance = new ComponentInstance({ link: sourceItem.id });
+	destinationItem.addOneShape(newInstance);
+	addToUsedIn(sourceItem, destinationItem.id);
 	return newInstance;
 }
 
@@ -806,7 +823,7 @@ export function copyPathsFromTo(sourceItem, destinationItem, updateWidth = false
 		}
 
 		msPaths.add(item);
-		destinationItem.addOnePath(item);
+		destinationItem.addOneShape(item);
 	}
 
 	if (updateWidth) {

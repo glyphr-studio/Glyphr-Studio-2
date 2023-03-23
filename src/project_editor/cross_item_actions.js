@@ -23,16 +23,14 @@ export function glyphChanged(glyph) {
 		if (item) {
 			glyphChanged(item);
 			if (item.paths) {
-				item.paths.forEach(pathItem => {
-					if (pathItem.objType === 'ComponentInstance') pathItem.cache = {};
+				item.paths.forEach((shape) => {
+					if (shape.objType === 'ComponentInstance') shape.cache = {};
 				});
 			}
 		}
 	});
 	// log(`glyphChanged`, 'end');
 }
-
-
 
 // --------------------------------------------------------------
 // Make other languages
@@ -68,8 +66,8 @@ export function makeGlyphPostScript(glyph, lastX, lastY) {
 	const g = glyph.transformedGlyph;
 	let re;
 	let part;
-	g.paths.forEach((path) => {
-		part = path.makePostScript(lastX, lastY);
+	g.paths.forEach((shape) => {
+		part = shape.makePostScript(lastX, lastY);
 		lastX = part.lastX;
 		lastY = part.lastY;
 		re += part.re;
@@ -92,11 +90,11 @@ export function makeGlyphPostScript(glyph, lastX, lastY) {
 export function makeGlyphWithResolvedLinks(sourceGlyph) {
 	// log(`makeGlyphWithResolvedLinks`, 'start');
 	let newPaths = [];
-	sourceGlyph.paths.forEach((item) => {
-		if (item.objType === 'Path') {
-			newPaths.push(new Path(item));
-		} else if (item.objType === 'ComponentInstance') {
-			const transformedGlyph = item.transformedGlyph;
+	sourceGlyph.paths.forEach((shape) => {
+		if (shape.objType === 'Path') {
+			newPaths.push(new Path(shape));
+		} else if (shape.objType === 'ComponentInstance') {
+			const transformedGlyph = shape.transformedGlyph;
 			if (transformedGlyph && transformedGlyph.paths) {
 				const resolvedGlyph = makeGlyphWithResolvedLinks(transformedGlyph);
 				newPaths = newPaths.concat(resolvedGlyph.paths);
@@ -115,16 +113,16 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
  * @param {string} componentID - ID of component to look for
  * @returns {boolean}
  */
-export function canAddComponent(destinationGlyph, componentID) {
+export function canAddComponent(destinationItem, componentID) {
 	// log('Glyph.canAddComponent', 'start');
-	// log('adding ' + componentID + ' to (me) ' + destinationGlyph.id);
-	if (destinationGlyph.id === componentID) return false;
-	if (destinationGlyph.usedIn.length === 0) return true;
-	let downlinks = collectAllDownstreamLinks(destinationGlyph, [], true);
+	// log('adding ' + componentID + ' to (me) ' + destinationItem.id);
+	if (destinationItem.id === componentID) return false;
+	if (destinationItem.usedIn.length === 0) return true;
+	let downlinks = collectAllDownstreamLinks(destinationItem, [], true);
 	downlinks = downlinks.filter(function (elem, pos) {
 		return downlinks.indexOf(elem) === pos;
 	});
-	let uplinks = collectAllUpstreamLinks(destinationGlyph, []);
+	let uplinks = collectAllUpstreamLinks(destinationItem, []);
 	uplinks = uplinks.filter(function (elem, pos) {
 		return uplinks.indexOf(elem) === pos;
 	});
@@ -138,54 +136,54 @@ export function canAddComponent(destinationGlyph, componentID) {
 
 /**
  * Look "down" through component instances, collecting IDs
- * @param {array} re - collection of glyph IDs
+ * @param {array} result - collection of item IDs
  * @param {boolean} excludePeers - At the top level, no need to collect IDs
  * @returns {array}
  */
-function collectAllDownstreamLinks(glyph, re = [], excludePeers = false) {
-	for (let s = 0; s < glyph.paths.length; s++) {
-		if (glyph.paths[s].objType === 'ComponentInstance') {
-			re = re.concat(
-				getCurrentProject().getItem(glyph.paths[s].link).collectAllDownstreamLinks(re)
-			);
-			if (!excludePeers) re.push(glyph.paths[s].link);
+function collectAllDownstreamLinks(item, result = [], excludePeers = false) {
+	item.paths.forEach((shape) => {
+		if (shape.objType === 'ComponentInstance') {
+			const linkedShape = getCurrentProject().getItem(shape.link);
+			result = result.concat(collectAllDownstreamLinks(linkedShape, result));
+			if (!excludePeers) result.push(shape.link);
 		}
-	}
-	return re;
+	});
+	return result;
 }
 
 /**
  * Look "up" through the usedIn array to collect IDs
- * @param {array} re - collection of glyph IDs
+ * @param {array} result - collection of item IDs
  * @returns {array}
  */
-function collectAllUpstreamLinks(glyph, re = []) {
-	for (let g = 0; g < glyph.usedIn.length; g++) {
-		re = re.concat(getCurrentProject().getItem(glyph.usedIn[g]).collectAllUpstreamLinks(re));
-		re.push(glyph.usedIn[g]);
-	}
-	return re;
+function collectAllUpstreamLinks(item, result = []) {
+	item.usedIn.forEach((itemID) => {
+		const linkedItem = getCurrentProject().getItem(itemID);
+		result = result.concat(collectAllUpstreamLinks(linkedItem, result));
+		result.push(itemID);
+	});
+	return result;
 }
 
 /**
  * This method is called on Glyphs just before they are deleted
  * to clean up all the component instance linking
- * @param {Glyph} glyph - ID of the glyph being deleted
+ * @param {Glyph} item - ID of the item being deleted
  */
-export function deleteLinks(glyph) {
+export function deleteLinks(item) {
 	// log('Glyph.deleteLinks', 'start');
-	// log('passed this as id: ' + glyph.id);
+	// log('passed this as id: ' + item.id);
 	// Delete upstream Component Instances
 	let upstreamGlyph;
 	const project = getCurrentProject();
-	for (let c = 0; c < glyph.usedIn.length; c++) {
-		upstreamGlyph = project.getItem(glyph.usedIn[c]);
+	for (let c = 0; c < item.usedIn.length; c++) {
+		upstreamGlyph = project.getItem(item.usedIn[c]);
 		// log('removing from ' + upstreamGlyph.name);
 		// log(upstreamGlyph.paths);
 		for (let u = 0; u < upstreamGlyph.paths.length; u++) {
 			if (
 				upstreamGlyph.paths[u].objType === 'ComponentInstance' &&
-				upstreamGlyph.paths[u].link === glyph.id
+				upstreamGlyph.paths[u].link === item.id
 			) {
 				upstreamGlyph.paths.splice(u, 1);
 				u--;
@@ -194,49 +192,49 @@ export function deleteLinks(glyph) {
 		// log(upstreamGlyph.paths);
 	}
 	// Delete downstream usedIn array values
-	for (let s = 0; s < glyph.paths.length; s++) {
-		if (glyph.paths[s].objType === 'ComponentInstance') {
-			removeFromUsedIn(project.getItem(glyph.paths[s].link), glyph.id);
+	for (let s = 0; s < item.paths.length; s++) {
+		if (item.paths[s].objType === 'ComponentInstance') {
+			removeFromUsedIn(project.getItem(item.paths[s].link), item.id);
 		}
 	}
 }
 
-	// --------------------------------------------------------------
-	// Used-In array
-	// --------------------------------------------------------------
+// --------------------------------------------------------------
+// Used-In array
+// --------------------------------------------------------------
 
-	/**
-	 * When a Glyph is linked-to from another ComponentInstance, track
-	 * where it's being used by adding it to glyph.usedIn
-	 * @param {Glyph} glyph - reference to the Glyph
-	 * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
-	 */
-	export function addToUsedIn(glyph, linkID) {
-		glyph.usedIn.push('' + linkID);
-		// sort numerically as opposed to alpha
-		glyph.usedIn.sort(function (a, b) {
-			return a - b;
-		});
+/**
+ * When a Glyph is linked-to from another ComponentInstance, track
+ * where it's being used by adding it to glyph.usedIn
+ * @param {Glyph} glyph - reference to the Glyph
+ * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
+ */
+export function addToUsedIn(glyph, linkID) {
+	glyph.usedIn.push('' + linkID);
+	// sort numerically as opposed to alpha
+	glyph.usedIn.sort(function (a, b) {
+		return a - b;
+	});
+}
+
+/**
+ * Removes a link from a glyph's usedIn array
+ * @param {Glyph} glyph - reference to the Glyph
+ * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
+ */
+export function removeFromUsedIn(glyph, linkID) {
+	// log(`removeFromUsedIn`, 'start');
+	// log(`linkID: ${linkID}`);
+	// log(glyph.usedIn);
+
+	const idIndex = glyph.usedIn.indexOf('' + linkID);
+	// log(`idIndex: ${idIndex}`);
+
+	if (idIndex !== -1) {
+		// log(`Removing ${idIndex}`);
+
+		glyph.usedIn.splice(idIndex, 1);
 	}
-
-	/**
-	 * Removes a link from a glyph's usedIn array
-	 * @param {Glyph} glyph - reference to the Glyph
-	 * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
-	 */
-	export function removeFromUsedIn(glyph, linkID) {
-		// log(`removeFromUsedIn`, 'start');
-		// log(`linkID: ${linkID}`);
-		// log(glyph.usedIn);
-
-		const idIndex = glyph.usedIn.indexOf('' + linkID);
-		// log(`idIndex: ${idIndex}`);
-
-		if (idIndex !== -1) {
-			// log(`Removing ${idIndex}`);
-
-			glyph.usedIn.splice(idIndex, 1);
-		}
-		// log(glyph.usedIn);
-		// log(`removeFromUsedIn`, 'end');
-	}
+	// log(glyph.usedIn);
+	// log(`removeFromUsedIn`, 'end');
+}

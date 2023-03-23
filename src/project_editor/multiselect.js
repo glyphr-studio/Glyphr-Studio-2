@@ -285,8 +285,8 @@ export class MultiSelectPaths extends MultiSelect {
 	selectAll() {
 		const currItem = getCurrentProjectEditor().selectedItem;
 		if (currItem.paths) {
-			currItem.paths.forEach((path) => {
-				this.add(path);
+			currItem.paths.forEach((shape) => {
+				this.add(shape);
 			});
 		}
 	}
@@ -336,7 +336,7 @@ export class MultiSelectPaths extends MultiSelect {
 			for (let s = 0; s < this.members.length; s++) {
 				item = this.members[s];
 
-				if (item.objType === 'ComponentInstance') { 
+				if (item.objType === 'ComponentInstance') {
 					removeFromUsedIn(project.getItem(item.link), item.parent.id);
 				}
 
@@ -354,7 +354,7 @@ export class MultiSelectPaths extends MultiSelect {
 	align(edge) {
 		// showToast('align ' + edge);
 		const g = this.virtualGlyph;
-		g.alignPaths(edge);
+		g.alignShapes(edge);
 		getCurrentProjectEditor().history.addState('Aligned paths ' + edge);
 	}
 
