@@ -1,5 +1,5 @@
 import { makeElement } from '../common/dom.js';
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
 import { makeContributeContent, makePreReleaseNote } from './about.js';
@@ -59,23 +59,27 @@ export function makePage_Overview() {
 			<label>Project name: </label><span>${project.settings.project.name}</span>
 			<label>Font family: </label><span>${project.settings.font.family}</span>
 			<label>Style: </label><span>${project.settings.font.style}</span>
-			<label>Glyph count: </label><span>${countItems(project.glyphs) + countItems(project.ligatures)}</span>
+			<label>Glyph count: </label><span>${
+				countItems(project.glyphs) + countItems(project.ligatures)
+			}</span>
 			<label>UPM: </label><span>${project.settings.font.upm}</span>
 			<label>Ascent: </label><span>${project.settings.font.ascent}</span>
 			<label>Descent: </label><span>${project.settings.font.descent}</span>
 			<br><span></span>
 		`,
 	});
-	projectSummaryCard.appendChild(makeElement({
-		tag: 'fancy-button',
-		innerHTML: 'Edit project and font info',
-		attributes: { secondary: '' },
-		onClick: () => {
-			const editor = getCurrentProjectEditor();
-			editor.nav.page = 'Settings';
-			editor.navigate();
-		}
-	}));
+	projectSummaryCard.appendChild(
+		makeElement({
+			tag: 'fancy-button',
+			innerHTML: 'Edit project and font info',
+			attributes: { secondary: '' },
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				editor.nav.page = 'Settings';
+				editor.navigate();
+			},
+		})
+	);
 
 	const contributeCard = makeElement({
 		className: 'panel__card full-width more-padding',
@@ -94,7 +98,6 @@ export function makePage_Overview() {
 			},
 		})
 	);
-
 
 	panelArea.appendChild(projectSummaryCard);
 	panelArea.appendChild(welcomeCard);

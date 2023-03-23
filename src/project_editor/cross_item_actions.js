@@ -105,7 +105,7 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 	});
 
 	// log(`makeGlyphWithResolvedLinks`, 'end');
-	return new Glyph({ paths: newPaths });
+	return new Glyph({ paths: newPaths, parent: getCurrentProject() });
 }
 
 /**

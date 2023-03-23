@@ -249,6 +249,7 @@ function addLigature(sequence) {
 
 	project.ligatures[newID] = new Glyph({
 		id: newID,
+		parent: project,
 		objType: 'Ligature',
 		ligature: sequence.split('').map((char) => char.codePointAt(0)),
 	});

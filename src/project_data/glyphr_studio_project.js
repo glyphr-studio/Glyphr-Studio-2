@@ -1,4 +1,4 @@
-import { clone, round, trim } from '../common/functions.js';
+import { clone, json, round, trim } from '../common/functions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
@@ -199,13 +199,11 @@ export class GlyphrStudioProject {
 	 * @param {boolean} create - create if it doesn't exist yet
 	 * @returns {Glyph}
 	 */
-	getItem(id, create = false) {
+	getItem(id) {
 		// log('GlyphrStudioProject.getItem', 'start');
-		// log('passed: ' + id + ' create: ' + create);
+		// log(`id: ${id}`);
 
-		// --------------------------------------------------------------
-		// No ID
-		// --------------------------------------------------------------
+
 		if (!id) {
 			// log('Not passed an ID, returning false');
 			// log('GlyphrStudioProject.getItem', 'end');
@@ -215,61 +213,23 @@ export class GlyphrStudioProject {
 		id = '' + id;
 		let result;
 
-		if (this.ligatures && id.indexOf('liga') > -1) {
-			// --------------------------------------------------------------
-			// Ligature
-			// --------------------------------------------------------------
+		if (this.ligatures && id.indexOf('liga-') > -1) {
 			// log(`detected LIGATURE`);
-
-			result = this.ligatures[id];
-			if (result) {
-				// log(`Returning found Ligature`);
-				// log('GlyphrStudioProject.getItem', 'end');
-				return result;
-			} else if (create) {
-				this.ligatures[id] = new Glyph({ id: id });
-				// log('Create was true, returning a new Ligature.');
-				// log('GlyphrStudioProject.getItem', 'end');
-				return this.ligatures[id];
-			}
+			result = this.ligatures[id] || false;
 		} else if (this.glyphs && id.indexOf('0x') > -1) {
-			// --------------------------------------------------------------
-			// Glyph
-			// --------------------------------------------------------------
 			// log(`detected GLYPH`);
-
-			let normalHex = '' + validateAsHex(id);
-			// log(`normalHex: ${normalHex}`);
-
-			result = this.glyphs[normalHex];
-			if (result) {
-				// log('Returning found Glyph');
-				// log('GlyphrStudioProject.getItem', 'end');
-				return result;
-			} else if (create) {
-				this.glyphs[id] = new Glyph({ id: id });
-				// log('Create was true, returning a new Glyph.');
-				// log('GlyphrStudioProject.getItem', 'end');
-				return this.glyphs[id];
-			}
-		} else if (this.components && this.components[id]) {
-			// --------------------------------------------------------------
-			// Component
-			// --------------------------------------------------------------
+			result = this.glyphs[id] || false;
+		} else if (this.components && id.indexOf('comp-') > -1) {
 			// log(`detected COMPONENT`);
-
-			result = this.components[id];
-			// log('Returning whatever component[id] happened to be');
-			// log('GlyphrStudioProject.getItem', 'end');
-			return this.components[id] || false;
+			result = this.components[id] || false;
+		} else {
+			// log('NO RESULT FOUND');
 		}
 
-		// --------------------------------------------------------------
-		// No Result
-		// --------------------------------------------------------------
-		// log('NO RESULT FOUND');
+		// log(`returning result:`);
+		// log(result);
 		// log('GlyphrStudioProject.getItem', 'end');
-		return false;
+		return result;
 	}
 
 	/**
@@ -297,6 +257,7 @@ export class GlyphrStudioProject {
 		// not passed an id
 		if (!id) {
 			// log('not passed an ID, returning false');
+			// log('GlyphrStudioProject.getGlyphName', 'end');
 			return false;
 		}
 
@@ -304,20 +265,24 @@ export class GlyphrStudioProject {
 		const un = forceLongName ? unicodeNames[id] : shortUnicodeNames[id];
 		if (un) {
 			// log('got unicode name: ' + un);
+			// log('GlyphrStudioProject.getGlyphName', 'end');
 			return un;
 		}
 
 		const item = this.getItem(id);
-		if (id.indexOf('0x', 2) > -1) {
+		if (id.indexOf('liga-') > -1) {
 			// ligature
+			// log('GlyphrStudioProject.getGlyphName', 'end');
+			return item.name;
+		} else if (id.indexOf('comp-') > -1) {
+			// Component
+			// log('GlyphrStudioProject.getGlyphName', 'end');
 			return item.name;
 		} else {
-			// Component
 			// log('getGlyphName - inexplicably fails, returning [name not found]\n');
-			return item.name || '[name not found]';
+			// log('GlyphrStudioProject.getGlyphName', 'end');
+			return '[name not found]';
 		}
-
-		// log('getGlyphName - returning nothing', 'end');
 	}
 
 	/**
@@ -481,12 +446,21 @@ function merge(template = {}, importing = {}, trimStrings = false) {
 function hydrateProjectItems(GlyphrStudioItem, source, objType, destination, destinationProject) {
 	source = source || {};
 	for (const key of Object.keys(source)) {
+		let validatedKey = validateItemID(key, objType);
 		if (source[key]) {
-			destination[key] = new GlyphrStudioItem(source[key]);
-			destination[key].objType = objType;
-			destination[key].parent = destinationProject;
+			destination[validatedKey] = new GlyphrStudioItem(source[key]);
+			destination[validatedKey].id = validatedKey;
+			destination[validatedKey].objType = objType;
+			destination[validatedKey].parent = destinationProject;
 		}
 	}
+}
+
+function validateItemID(oldID, objType) {
+	if (objType === 'Glyph') {
+		return validateAsHex(oldID);
+	}
+	return oldID;
 }
 
 /**

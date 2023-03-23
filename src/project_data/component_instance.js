@@ -195,8 +195,11 @@ export class ComponentInstance extends GlyphElement {
 		// log(this);
 		let project = this?.parent?.parent;
 		// log(project);
+		let item = project?.getItem(this.link);
+		// log(`Retrieved item`);
+		// log(item);
 		// log(`ComponentInstance.getCrossLinkedItem`, 'end');
-		return project?.getItem(this.link);
+		return item;
 	}
 
 	// --------------------------------------------------------------

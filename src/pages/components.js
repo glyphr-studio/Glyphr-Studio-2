@@ -15,12 +15,12 @@ import { closeEveryTypeOfDialog, showError, showModalDialog } from '../controls/
  * Comprised of Panels of tools, and the Edit Canvas
  */
 export function makePage_Components() {
-	log(`makePage_Components`, 'start');
+	// log(`makePage_Components`, 'start');
 	const editor = getCurrentProjectEditor();
 	// log('current ProjectEditor');
 	// log(editor);
 	// log(editor.nav);
-	log(`editor.selectedComponentID: ${editor.selectedComponentID}`);
+	// log(`editor.selectedComponentID: ${editor.selectedComponentID}`);
 	// log(`editor.selectedItemID: ${editor.selectedItemID}`);
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
@@ -65,7 +65,7 @@ export function makePage_Components() {
 		navArea.style.display = 'block';
 		l1.style.width = '100%';
 		l1.style.borderRadius = '4px';
-		log(`makePage_Components`, 'end');
+		// log(`makePage_Components`, 'end');
 		return content;
 	}
 
@@ -160,7 +160,7 @@ export function makePage_Components() {
 		},
 	});
 
-	log(`makePage_Components`, 'end');
+	// log(`makePage_Components`, 'end');
 	return content;
 }
 
@@ -197,6 +197,7 @@ function addComponent(name) {
 
 	project.components[newID] = new Glyph({
 		id: newID,
+		parent: project,
 		objType: 'Component',
 		name: name,
 		component: name.split('').map((char) => char.codePointAt(0)),
@@ -206,12 +207,12 @@ function addComponent(name) {
 }
 
 export function makeComponentID() {
-	log(`makeComponentID`, 'start');
+	// log(`makeComponentID`, 'start');
 
 	const project = getCurrentProject();
 	let counter = countItems(project.components);
 	while (project.components[`comp-${counter}`]) counter++;
-	log(`makeComponentID`, 'end');
+	// log(`makeComponentID`, 'end');
 	return `comp-${counter}`;
 }
 

@@ -22,10 +22,7 @@ export const GSApp = new GlyphrStudioApp();
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
-	console.info(
-		`%c${asciiLogo}\n`,
-		'color: hsl(199, 100%, 64%)'
-	);
+	console.info(`%c${asciiLogo}\n`, 'color: hsl(199, 100%, 64%)');
 	try {
 		if (GSApp.version) {
 			console.info(

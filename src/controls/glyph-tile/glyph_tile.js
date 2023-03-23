@@ -27,7 +27,7 @@ export class GlyphTile extends HTMLElement {
 
 		const displayedItemID = this.getAttribute('displayed-item-id');
 		this.glyph = getCurrentProject().getItem(displayedItemID);
-		const chars = this.glyph.chars || hexesToChars(displayedItemID);
+		const chars = this.glyph?.chars || hexesToChars(displayedItemID);
 		const name = this.glyph?.name || lookUpGlyphName(displayedItemID, true);
 		this.view = {};
 

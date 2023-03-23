@@ -198,12 +198,12 @@ export class ProjectEditor {
 	 */
 	get selectedGlyph() {
 		// log('ProjectEditor GET selectedGlyph', 'start');
-		const id = this.selectedGlyphID;
-		// log(`selectedGlyphID ${id}`);
-		const re = this.project.getItem(id);
+		const selectedID = this.selectedGlyphID;
+		// log(`selectedGlyphID ${selectedID}`);
+		const re = this.project.glyphs[selectedID];
 		// log(re);
 		// log('ProjectEditor GET selectedGlyph', 'end');
-		return re || new Glyph();
+		return re;
 	}
 
 	/**
@@ -212,12 +212,11 @@ export class ProjectEditor {
 	 */
 	get selectedGlyphID() {
 		// log('ProjectEditor GET selectedGlyphID', 'start');
-		const currentID = this._selectedGlyphID;
-		if (!currentID || !this.project.getItem(currentID)) {
+
+		if (!this._selectedGlyphID) {
 			this._selectedGlyphID = getFirstID(this.project.glyphs);
 		}
-
-		// log(`returning ${this._selectedGlyphID}`);
+		// log(`RETURNING this._selectedGlyphID: ${this._selectedGlyphID}`);
 		// log('ProjectEditor GET selectedGlyphID', 'end');
 		return this._selectedGlyphID;
 	}
@@ -240,8 +239,7 @@ export class ProjectEditor {
 	 */
 	get selectedLigatureID() {
 		// log(`ProjectEditor GET selectedLigatureID`, 'start');
-		const currentID = this._selectedLigatureID;
-		if (!currentID || !this.project.getItem(currentID)) {
+		if (!this._selectedLigatureID) {
 			this._selectedLigatureID = getFirstID(this.project.ligatures);
 		}
 		// log(`ProjectEditor GET selectedLigatureID`, 'end');
@@ -253,7 +251,6 @@ export class ProjectEditor {
 	 * @returns {object}
 	 */
 	get selectedComponent() {
-
 		const re = this.project.components[this.selectedComponentID];
 		return re;
 	}
@@ -263,11 +260,9 @@ export class ProjectEditor {
 	 * @returns {string}
 	 */
 	get selectedComponentID() {
-		const currentID = this._selectedComponentID;
-		if (!currentID || !this.project.getItem(currentID)) {
+		if (!this.selectedComponentID) {
 			this._selectedComponentID = getFirstID(this.project.components);
 		}
-
 		return this._selectedComponentID;
 	}
 
@@ -285,8 +280,7 @@ export class ProjectEditor {
 	 * @returns {string}
 	 */
 	get selectedKernID() {
-		const currentID = this._selectedKernID;
-		if (!currentID || !this.project.getItem(currentID)) {
+		if (!this._selectedKernID) {
 			this._selectedKernID = getFirstID(this.project.kerning);
 		}
 		return this._selectedKernID;
@@ -366,6 +360,7 @@ export class ProjectEditor {
 	set selectedGlyph(newGlyph = {}) {
 		let id = this.selectedGlyphID;
 		newGlyph = new Glyph(newGlyph);
+		newGlyph.parent = this.project;
 		this.project.glyphs[id] = newGlyph;
 	}
 
@@ -385,7 +380,7 @@ export class ProjectEditor {
 			this._selectedGlyphID = id;
 		} else if (isHex(id)) {
 			id = validateAsHex(id);
-			this.project.glyphs[id] = new Glyph({ id: id });
+			this.project.glyphs[id] = new Glyph({ id: id, parent: this.project });
 			this._selectedGlyphID = id;
 		}
 		this.publish('whichGlyphIsSelected', this.selectedGlyphID);
@@ -399,6 +394,7 @@ export class ProjectEditor {
 	set selectedLigature(newLigature = {}) {
 		let id = this.selectedLigatureID;
 		newLigature = new Glyph(newLigature);
+		newLigature.parent = this.project;
 		this.project.ligatures[id] = newLigature;
 	}
 
@@ -424,6 +420,7 @@ export class ProjectEditor {
 	set selectedComponent(newComponent = {}) {
 		let id = this.selectedComponentID;
 		newComponent = new Glyph(newComponent);
+		newComponent.parent = this.project;
 		this.project.components[id] = newComponent;
 	}
 
@@ -585,7 +582,7 @@ export class ProjectEditor {
 		for (let p = 0; p < selectedPoints.length; p++) {
 			parentPath = selectedPoints[p].parent;
 			// if(!msPaths.isSelected(parentPath)) {
-			log(`selecting path`);
+			// log(`selecting path`);
 			// 	msPaths.add(parentPath);
 			// 	changed = true;
 			// }

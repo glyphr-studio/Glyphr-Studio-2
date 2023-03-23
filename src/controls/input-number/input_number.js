@@ -261,11 +261,11 @@ export class InputNumber extends HTMLElement {
 	 * Handle onChange event
 	 */
 	numberInputChanged(ev) {
-		log(`InputNumber.numberInputChanged`, 'start');
+		// log(`InputNumber.numberInputChanged`, 'start');
 		let newValue = this.elementRoot.sanitizeValue(ev.target.value);
 		this.elementRoot.setAttribute('value', newValue);
 		this.elementRoot.dispatchEvent(new Event('change'));
-		log(`InputNumber.numberInputChanged`, 'end');
+		// log(`InputNumber.numberInputChanged`, 'end');
 	}
 
 	/**
@@ -273,13 +273,13 @@ export class InputNumber extends HTMLElement {
 	 * @param {object} ev - event
 	 */
 	increment(ev) {
-		log(`InputNumber.increment`, 'start');
+		// log(`InputNumber.increment`, 'start');
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
 		let newValue = this.elementRoot.sanitizeValue((currentValue += mod ? 10 : 1));
 		this.elementRoot.setAttribute('value', newValue);
 		this.elementRoot.dispatchEvent(new Event('change'));
-		log(`InputNumber.increment`, 'end');
+		// log(`InputNumber.increment`, 'end');
 	}
 
 	/**
@@ -287,13 +287,13 @@ export class InputNumber extends HTMLElement {
 	 * @param {object} ev - event
 	 */
 	decrement(ev) {
-		log(`InputNumber.decrement`, 'start');
+		// log(`InputNumber.decrement`, 'start');
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
 		let newValue = this.elementRoot.sanitizeValue((currentValue -= mod ? 10 : 1));
 		this.elementRoot.setAttribute('value', newValue);
 		this.elementRoot.dispatchEvent(new Event('change'));
-		log(`InputNumber.decrement`, 'end');
+		// log(`InputNumber.decrement`, 'end');
 	}
 
 	/**
