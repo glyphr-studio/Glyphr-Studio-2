@@ -173,7 +173,6 @@ export function makePage_Components() {
 }
 
 function makeComponentsFirstRunContent() {
-
 	let componentExampleTable = '';
 	[
 		{
@@ -226,21 +225,13 @@ function makeComponentsFirstRunContent() {
 	return content;
 }
 
-function addComponent(name) {
+export function addComponent(newComponent) {
 	const newID = makeComponentID();
 	const project = getCurrentProject();
-	if (project.components[newID]) {
-		return 'Component already exists';
-	}
-
-	project.components[newID] = new Glyph({
-		id: newID,
-		parent: project,
-		objType: 'Component',
-		name: name,
-		component: name.split('').map((char) => char.codePointAt(0)),
-	});
-
+	project.components[newID] = new Glyph(newComponent);
+	project.components[newID].id = newID;
+	project.components[newID].parent = project;
+	project.components[newID].objType = 'Component';
 	return project.components[newID];
 }
 
@@ -280,7 +271,7 @@ export function showAddComponentDialog() {
 	});
 
 	submitButton.addEventListener('click', () => {
-		const result = addComponent(newComponentInput.value);
+		const result = addComponent(new Glyph({ name: newComponentInput.value }));
 		if (typeof result === 'string') {
 			showError(result);
 		} else {

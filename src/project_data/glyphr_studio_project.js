@@ -119,28 +119,28 @@ export class GlyphrStudioProject {
 		// Components
 		// log(`\nStarting components - passed:`);
 		// log(newProject.components);
-		hydrateProjectItems(Glyph, newProject.components, 'Component', this.components, this);
+		this.hydrateProjectItems(Glyph, newProject.components, 'Component');
 		// log('finished hydrating components - result:');
 		// log(this.components);
 
 		// Glyphs
 		// log(`\nStarting glyphs - passed:`);
 		// log(newProject.glyphs);
-		hydrateProjectItems(Glyph, newProject.glyphs, 'Glyph', this.glyphs, this);
+		this.hydrateProjectItems(Glyph, newProject.glyphs, 'Glyph');
 		// log('finished hydrating glyphs - result:');
 		// log(this.glyphs);
 
 		// Ligatures
 		// log(`\nStarting ligatures - passed:`);
 		// log(newProject.ligatures);
-		hydrateProjectItems(Glyph, newProject.ligatures, 'Ligature', this.ligatures, this);
+		this.hydrateProjectItems(Glyph, newProject.ligatures, 'Ligature');
 		// log('finished hydrating ligatures - result:');
 		// log(this.ligatures);
 
 		// Kerning
 		// log(`\nStarting kerning - passed:`);
 		// log(newProject.kerning);
-		hydrateProjectItems(HKern, newProject.kerning, 'HKern', this.kerning, this);
+		this.hydrateProjectItems(HKern, newProject.kerning, 'HKern');
 		// log('finished hydrating kern pairs - result:');
 		// log(this.kerning);
 
@@ -168,6 +168,8 @@ export class GlyphrStudioProject {
 			kerning: {},
 		};
 
+		savedProject.settings.project.glyphRanges.forEach((range) => delete range.cachedArray);
+
 		/**
 		 * Generic iterator for glyphs, ligatures, components, and kerning
 		 * @param {object} group - which group to do
@@ -190,7 +192,7 @@ export class GlyphrStudioProject {
 	}
 
 	// --------------------------------------------------------------
-	// GLYPH GETTERS
+	// Getting Items
 	// --------------------------------------------------------------
 
 	/**
@@ -251,7 +253,9 @@ export class GlyphrStudioProject {
 
 		if (id.startsWith('glyph-')) {
 			// known unicode names
-			const un = forceLongName ? unicodeNames[remove(id, 'glyph-')] : shortUnicodeNames[remove(id, 'glyph-')];
+			const un = forceLongName
+				? unicodeNames[remove(id, 'glyph-')]
+				: shortUnicodeNames[remove(id, 'glyph-')];
 			if (un) {
 				log('got unicode name: ' + un);
 				log('GlyphrStudioProject.getItemName', 'end');
@@ -267,8 +271,9 @@ export class GlyphrStudioProject {
 	}
 
 	/**
-	 *
-	 * @returns
+	 * Makes an SVG Thumbnail
+	 * @param {Glyph, Path, or ComponentInstance} item - thing to make the thumbnail of
+	 * @returns {string} - SVG icon
 	 */
 	makeItemThumbnail(item) {
 		// log('GlyphrStudioProject.makeItemThumbnail', 'start');
@@ -294,44 +299,6 @@ export class GlyphrStudioProject {
 		// log(re);
 		// log('GlyphrStudioProject.makeItemThumbnail', 'end');
 		return re;
-	}
-
-	/**
-	 * Calculate the overall bounds given every glyph in this font
-	 * @returns {object} - font maxes
-	 */
-	calcFontMaxes() {
-		// log(`GSProject.calcFontMaxes`, 'start');
-
-		const fm = {
-			maxGlyph: 0x20,
-			maxes: new Maxes(),
-		};
-
-		// log(`fm starts as`);
-		// log(fm);
-
-		let thisGlyph;
-		const ranges = this.settings.project.glyphRanges;
-		// log(`ranges`);
-		// log(ranges);
-
-		ranges.forEach((range) => {
-			for (let char = range.begin; char < range.end; char++) {
-				thisGlyph = this.getItem(decToHex(char));
-				if (thisGlyph) fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
-			}
-			fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
-		});
-
-		for (const lig of Object.keys(this.ligatures)) {
-			fm.maxes = getOverallMaxes([fm.maxes, this.ligatures[lig]]);
-		}
-
-		// log(`returning fm`);
-		// log(fm);
-		// log(`GSProject.calcFontMaxes`, 'end');
-		return fm;
 	}
 
 	/**
@@ -377,16 +344,78 @@ export class GlyphrStudioProject {
 		// log(`GlyphrStudioProject GET sortedLigatures`, 'end');
 		return result;
 	}
-}
 
-export function sortLigatures(a, b) {
-	if (a.chars.length === b.chars.length) return a.chars.localeCompare(b.chars);
-	else return a.chars.length - b.chars.length;
+	// --------------------------------------------------------------
+	// Adding Items
+	// --------------------------------------------------------------
+
+	addNewItem(newItem, objType, newID) {
+		let destination;
+		if (objType === 'Glyph'){
+			destination = this.glyphs;
+		}
+		if (objType === 'Ligature'){
+			destination = this.ligatures;
+			newID = '';
+		}
+		if (objType === 'Component'){
+			destination = this.components;
+			newID = '';
+		}
+		if (objType === 'HKern'){
+			destination = this.kerning;
+			newID = '';
+		}
+
+		newItem.parent = this;
+		newItem.objType = objType;
+		destination[newID] = newItem;
+	}
+
+	/**
+	 * Takes generic Objects, and initializes them as Glyphr Studio objects
+	 * @param {Object} GlyphrStudioItem - Glyph, Guide, or HKern
+	 * @param {Object} source - collection of temporary objects to hydrate
+	 * @param {String} objType - type of object this is
+	 * @param {GlyphrStudioProject} destinationProject - parent project
+	 */
+	hydrateProjectItems(GlyphrStudioItem, source, objType) {
+		log(`hydrateProjectItems`, 'start');
+		log(`objType: ${objType}`);
+		log(`SOURCE:`);
+		log(source);
+		source = source || {};
+		let destination;
+		if (objType === 'Glyph') destination = this.glyphs;
+		if (objType === 'Ligature') destination = this.ligatures;
+		if (objType === 'Component') destination = this.components;
+		if (objType === 'HKern') destination = this.kerning;
+
+		for (const key of Object.keys(source)) {
+			let validatedKey = validateItemID(key, objType);
+			log(`\n STARTING key: ${key}`);
+			log(`validatedKey: ${validatedKey}`);
+
+			if (source[key]) {
+				destination[validatedKey] = new GlyphrStudioItem(source[key]);
+				destination[validatedKey].id = validatedKey;
+				destination[validatedKey].objType = objType;
+				destination[validatedKey].parent = this;
+				log(`DONE WITH ONE ITEM:`);
+				log(destination[validatedKey]);
+			}
+		}
+		log(`hydrateProjectItems`, 'end');
+	}
 }
 
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
+export function sortLigatures(a, b) {
+	if (a.chars.length === b.chars.length) return a.chars.localeCompare(b.chars);
+	else return a.chars.length - b.chars.length;
+}
 
 /**
  * Takes a template object of expected keys and default values
@@ -414,37 +443,6 @@ function merge(template = {}, importing = {}, trimStrings = false) {
 	}
 	// log('glyphr_studio_project - merge', 'end');
 	return template;
-}
-
-/**
- * Takes generic Objects, and initializes them as Glyphr Studio objects
- * @param {Object} GlyphrStudioItem - Glyph, Guide, or HKern
- * @param {Object} source - collection of temporary objects to hydrate
- * @param {String} objType - type of object this is
- * @param {Object} destination - project object for final items
- * @param {GlyphrStudioProject} destinationProject - parent project
- */
-function hydrateProjectItems(GlyphrStudioItem, source, objType, destination, destinationProject) {
-	log(`hydrateProjectItems`, 'start');
-	log(`objType: ${objType}`);
-	log(`SOURCE:`);
-	log(source);
-	source = source || {};
-	for (const key of Object.keys(source)) {
-		let validatedKey = validateItemID(key, objType);
-		log(`\n STARTING key: ${key}`);
-		log(`validatedKey: ${validatedKey}`);
-
-		if (source[key]) {
-			destination[validatedKey] = new GlyphrStudioItem(source[key]);
-			destination[validatedKey].id = validatedKey;
-			destination[validatedKey].objType = objType;
-			destination[validatedKey].parent = destinationProject;
-			log(`DONE WITH ONE ITEM:`);
-			log(destination[validatedKey]);
-		}
-	}
-	log(`hydrateProjectItems`, 'end');
 }
 
 function validateItemID(oldID, objType) {
