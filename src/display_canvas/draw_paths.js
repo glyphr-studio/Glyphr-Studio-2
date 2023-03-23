@@ -27,14 +27,14 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 
 	let drewPath;
 	ctx.beginPath();
-	glyph.paths.forEach((item) => {
+	glyph.paths.forEach((shape) => {
 		// log(`${glyph.name} drawing ${path.objType} #${j} "${path.name}"`);
-		drewPath = drawItem(item, ctx, view);
+		drewPath = drawItem(shape, ctx, view);
 		if (!drewPath) {
-			console.warn('Could not draw item ' + item.name + ' in Glyph ' + glyph.name);
-			if (item.objType === 'ComponentInstance' && !getCurrentProject().getItem(item.link)) {
-				console.warn('>>> Component Instance has bad link: ' + item.link);
-				const i = glyph.paths.indexOf(item);
+			console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + glyph.name);
+			if (shape.objType === 'ComponentInstance' && !getCurrentProject().getItem(shape.link)) {
+				console.warn('>>> Component Instance has bad link: ' + shape.link);
+				const i = glyph.paths.indexOf(shape);
 				if (i > -1) {
 					glyph.paths.splice(i, 1);
 					console.warn('>>> Deleted the Instance');
@@ -93,8 +93,8 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
 	let drewPath = false;
 	let failed = false;
 
-	glyph.paths.forEach((item) => {
-		drewPath = drawItem(item, ctx, view);
+	glyph.paths.forEach((shape) => {
+		drewPath = drawItem(shape, ctx, view);
 		failed = failed || !drewPath;
 	});
 

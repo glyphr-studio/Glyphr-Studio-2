@@ -198,13 +198,13 @@ function migrate_Glyph(oldGlyph, newID) {
 			// log(`importing item as path`);
 			// log(item);
 			newItem = migrate_Path(item, newGlyph);
-			newGlyph.addOnePath(newItem);
+			newGlyph.addOneShape(newItem);
 		} else {
 			// Component Instance
 			// log(`import item as COMPONENT INSTANCE`);
 			// log(item);
 			newItem = new migrate_ComponentInstance(item);
-			newGlyph.addOnePath(newItem);
+			newGlyph.addOneShape(newItem);
 		}
 	});
 

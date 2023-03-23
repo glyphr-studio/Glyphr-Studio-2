@@ -116,8 +116,8 @@ export class Glyph extends GlyphElement {
 
 		if (this.paths && this.paths.length) {
 			re += `${ind}paths: [\n`;
-			this._paths.forEach((sh) => {
-				re += sh.print(level + 2);
+			this._paths.forEach((shape) => {
+				re += shape.print(level + 2);
 				re += `\n`;
 			});
 			re += `${ind}]\n`;
@@ -251,14 +251,6 @@ export class Glyph extends GlyphElement {
 	}
 
 	/**
-	 * get maxes
-	 * @returns {Maxes}
-	 */
-	get maxes() {
-		return new Maxes(this.cache.maxes);
-	}
-
-	/**
 	 * get name
 	 * @returns {string}
 	 */
@@ -329,9 +321,9 @@ export class Glyph extends GlyphElement {
 		let result = 'unknown';
 		let paths = 0;
 		let componentInstances = 0;
-		this.paths.forEach((item) => {
-			if (item.objType === 'ComponentInstance') componentInstances++;
-			if (item.objType === 'Path') paths++;
+		this.paths.forEach((shape) => {
+			if (shape.objType === 'ComponentInstance') componentInstances++;
+			if (shape.objType === 'Path') paths++;
 		});
 		if (paths > 0 && componentInstances === 0) result = 'paths';
 		if (componentInstances > 0 && paths === 0) result = 'component instances';
@@ -359,17 +351,17 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * set paths
-	 * @param {array} paths
+	 * @param {array} newShapes - collection of Path or Component Instance
 	 */
-	set paths(newPaths = []) {
+	set paths(newShapes = []) {
 		// log(`Glyph.paths setter - Start`);
-		// log(`passed length ${newPaths.length}`);
+		// log(`passed length ${newShapes.length}`);
 
 		this._paths = [];
 
-		if (newPaths && newPaths.length) {
-			newPaths.forEach((path) => {
-				this.addOnePath(path);
+		if (newShapes && newShapes.length) {
+			newShapes.forEach((shape) => {
+				this.addOneShape(shape);
 			});
 		}
 
@@ -380,23 +372,23 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Adds a new path to this glyph, making sure linking is in place
-	 * @param {Path} newPath - Path to add to this glyph
+	 * @param {Path or ComponentInstance} newShape - Path to add to this glyph
 	 */
-	addOnePath(newPath) {
-		// log(`Glyph.addOnePath`, 'start');
-		// log(newPath);
+	addOneShape(newShape) {
+		// log(`Glyph.addOneShape`, 'start');
+		// log(newShape);
 
-		if (isVal(newPath.link)) {
-			// log(`hydrating ci - name: ${newPath.name}`);
-			newPath.parent = this;
-			this._paths.push(new ComponentInstance(newPath));
+		if (isVal(newShape.link)) {
+			// log(`hydrating ci - name: ${newShape.name}`);
+			newShape.parent = this;
+			this._paths.push(new ComponentInstance(newShape));
 		} else {
-			// log(`hydrating path - name: ${newPath.name}`);
-			newPath.parent = this;
-			this._paths.push(new Path(newPath));
+			// log(`hydrating path - name: ${newShape.name}`);
+			newShape.parent = this;
+			this._paths.push(new Path(newShape));
 		}
 		this.changed();
-		// log(`Glyph.addOnePath`, 'end');
+		// log(`Glyph.addOneShape`, 'end');
 		return this._paths.at(-1);
 	}
 
@@ -511,15 +503,6 @@ export class Glyph extends GlyphElement {
 		let delta = newRSB - this.rightSideBearing;
 		this.advanceWidth += delta;
 	}
-
-	// /**
-	//  * Set Maxes
-	//  * @param {Maxes} maxes
-	//  */
-	// set maxes(maxes) {
-	// 	this.cache.maxes = {};
-	// 	this.cache.maxes = new Maxes(maxes);
-	// }
 
 	// --------------------------------------------------------------
 	// Transform & move
@@ -782,16 +765,16 @@ export class Glyph extends GlyphElement {
 		let pathData = '';
 
 		// Make Path Data
-		this.paths.forEach((item) => {
-			// log(`item ${j} of ${this.paths.length}`);
-			// log(item);
+		this.paths.forEach((shape) => {
+			// log(`shape ${j} of ${this.paths.length}`);
+			// log(shape);
 			// log(`PATH DATA START`);
 			// log(pathData);
-			if (item.objType === 'ComponentInstance') {
-				const workingItem = item.transformedGlyph;
+			if (shape.objType === 'ComponentInstance') {
+				const workingItem = shape.transformedGlyph;
 				if (workingItem) pathData += workingItem.svgPathData;
 			} else {
-				pathData += item.svgPathData;
+				pathData += shape.svgPathData;
 				pathData += ' ';
 			}
 			// log(`PATH DATA END`);
@@ -842,9 +825,7 @@ export class Glyph extends GlyphElement {
 		// log(this.paths);
 		if (this.paths && this.paths.length > 0) {
 			// log('... has paths, calling getOverallMaxes');
-			overallMaxes = getOverallMaxes(
-				this.paths.map(item => item.maxes)
-			);
+			overallMaxes = getOverallMaxes(this.paths.map((item) => item.maxes));
 		}
 
 		this.cache.maxes = new Maxes(overallMaxes);
@@ -862,58 +843,58 @@ export class Glyph extends GlyphElement {
 	 * Move all the paths to align with an edge
 	 * @param {string} edge - which edge to align all the paths to
 	 */
-	alignPaths(edge) {
-		// log('Glyph.alignPaths', 'start');
+	alignShapes(edge) {
+		// log('Glyph.alignShapes', 'start');
 		// log('edge: ' + edge);
 		const glyphMaxes = this.maxes;
 
 		if (edge === 'top') {
-			this.paths.forEach((path) => {
+			this.paths.forEach((shape) => {
 				// log(`just setting to glyph.yMax: ${glyphMaxes.yMax}`);
-				path.setPathPosition(false, glyphMaxes.yMax);
+				shape.setPathPosition(false, glyphMaxes.yMax);
 			});
 		}
 
 		if (edge === 'middle') {
-			this.paths.forEach((path) => {
-				let delta = glyphMaxes.center.y - path.maxes.center.y;
+			this.paths.forEach((shape) => {
+				let delta = glyphMaxes.center.y - shape.maxes.center.y;
 				// log(`delta: ${delta}`);
-				path.updatePathPosition(0, delta);
+				shape.updatePathPosition(0, delta);
 			});
 		}
 
 		if (edge === 'bottom') {
-			this.paths.forEach((path) => {
-				let delta = glyphMaxes.yMin - path.maxes.yMin;
+			this.paths.forEach((shape) => {
+				let delta = glyphMaxes.yMin - shape.maxes.yMin;
 				// log(`delta: ${delta}`);
-				path.updatePathPosition(0, delta);
+				shape.updatePathPosition(0, delta);
 			});
 		}
 
 		if (edge === 'left') {
-			this.paths.forEach((path) => {
+			this.paths.forEach((shape) => {
 				// log(`just setting to glyph.xMin: ${glyphMaxes.xMin}`);
-				path.setPathPosition(glyphMaxes.xMin, false);
+				shape.setPathPosition(glyphMaxes.xMin, false);
 			});
 		}
 
 		if (edge === 'center') {
-			this.paths.forEach((path) => {
-				let delta = glyphMaxes.center.x - path.maxes.center.x;
+			this.paths.forEach((shape) => {
+				let delta = glyphMaxes.center.x - shape.maxes.center.x;
 				// log(`delta: ${delta}`);
-				path.updatePathPosition(delta, 0);
+				shape.updatePathPosition(delta, 0);
 			});
 		}
 
 		if (edge === 'right') {
-			this.paths.forEach((path) => {
-				let delta = glyphMaxes.xMax - path.maxes.xMax;
+			this.paths.forEach((shape) => {
+				let delta = glyphMaxes.xMax - shape.maxes.xMax;
 				// log(`delta: ${delta}`);
-				path.updatePathPosition(delta, 0);
+				shape.updatePathPosition(delta, 0);
 			});
 		}
 
-		// log('Glyph.alignPaths', 'end');
+		// log('Glyph.alignShapes', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -921,8 +902,8 @@ export class Glyph extends GlyphElement {
 	// --------------------------------------------------------------
 
 	makeOpenTypeJSpath(openTypePath) {
-		this.paths.forEach((item) => {
-			openTypePath = item.makeOpenTypeJSpath(openTypePath);
+		this.paths.forEach((shape) => {
+			openTypePath = shape.makeOpenTypeJSpath(openTypePath);
 		});
 		return openTypePath;
 	}

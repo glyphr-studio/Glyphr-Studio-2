@@ -47,7 +47,7 @@ export class Tool_NewPath {
 						: editor.selectedItem.paths.length;
 
 				count += 1;
-				this.newPath = editor.selectedItem.addOnePath(new Path({ name: 'Path ' + count }));
+				this.newPath = editor.selectedItem.addOneShape(new Path({ name: 'Path ' + count }));
 				this.currentPoint = this.newPath.addPathPoint(newPoint);
 				msPaths.select(this.newPath);
 				msPoints.select(this.currentPoint);
