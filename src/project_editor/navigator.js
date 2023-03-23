@@ -346,9 +346,11 @@ function makeNavButton_Page(pageName, iconName) {
 		let editor = getCurrentProjectEditor();
 		editor.nav.page = pageName;
 		editor.navigate();
-		editor.history.addState(
-			`Navigated to ${editor.project.getItemName(editor.selectedItemID, true)}`
-		);
+		if (editor.selectedItemID) {
+			editor.history.addState(
+				`Navigated to ${editor.project.getItemName(editor.selectedItemID, true)}`
+			);
+		}
 	});
 	return button;
 }

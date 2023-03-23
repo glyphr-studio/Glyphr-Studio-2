@@ -17,6 +17,9 @@ import {
 	canAddComponent,
 	makeGlyphSVGforExport,
 } from '../project_editor/cross_item_actions.js';
+import { Glyph } from '../project_data/glyph.js';
+import { addComponent } from '../pages/components.js';
+import { countItems, trim } from '../common/functions.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -187,7 +190,27 @@ export function getActionData(name) {
 			iconOptions: false,
 			title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
 			onClick: () => {
-				// TODO components
+				const editor = getCurrentProjectEditor();
+				const newComponent = new Glyph({
+					objType: 'Component',
+					name: `Component ${countItems(editor.project.components)}`,
+				});
+				editor.multiSelect.paths.members.forEach((shape) => {
+					if (shape.objType === 'Path') {
+						newComponent.addOneShape(new Path(shape));
+						name += ' ' + shape.name;
+					}
+				});
+				const addedComponent = addComponent(newComponent);
+				addToUsedIn(addedComponent, editor.selectedItemID);
+				editor.selectedItem.addOneShape(
+					new ComponentInstance({
+						link: addedComponent.id,
+					})
+				);
+				editor.multiSelect.paths.deletePaths();
+				editor.history.addState('Turned a path into a component', [addedComponent]);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{

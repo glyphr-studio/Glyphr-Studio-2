@@ -1,10 +1,11 @@
 import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { round, trim } from '../common/functions.js';
-import { hexesToXMLHexes } from '../common/character_ids.js';
+import { decToHex, hexesToXMLHexes } from '../common/character_ids.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { Glyph } from '../project_data/glyph.js';
 import { makeDateStampSuffix, saveFile } from '../project_editor/saving.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
+import { getOverallMaxes, Maxes } from '../project_data/maxes.js';
 /**
 	IO > Export > SVG Font
 	Converting a Glyphr Studio Project to XML in
@@ -66,7 +67,7 @@ function ioSVG_makeFontFace() {
 	const project = getCurrentProject();
 	// const app = getGlyphrStudioApp();
 	const fontSettings = project.settings.font;
-	const fm = project.calcFontMaxes();
+	const fm = calcFontMaxes();
 	const t = '\t\t';
 	let con = '';
 
@@ -102,6 +103,43 @@ function ioSVG_makeFontFace() {
 
 	// log('ioSVG_makeFontFace', 'end');
 	return con;
+}
+	/**
+	 * Calculate the overall bounds given every glyph in this font
+	 * @returns {object} - font maxes
+	 */
+	function calcFontMaxes() {
+		// log(`GSProject.calcFontMaxes`, 'start');
+		const project = getCurrentProject();
+		const fm = {
+			maxGlyph: 0x20,
+			maxes: new Maxes(),
+		};
+
+		// log(`fm starts as`);
+		// log(fm);
+
+		let thisGlyph;
+		const ranges = project.settings.project.glyphRanges;
+		// log(`ranges`);
+		// log(ranges);
+
+		ranges.forEach((range) => {
+			for (let char = range.begin; char < range.end; char++) {
+				thisGlyph = project.getItem(decToHex(char));
+				if (thisGlyph) fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
+			}
+			fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
+		});
+
+		for (const lig of Object.keys(project.ligatures)) {
+			fm.maxes = getOverallMaxes([fm.maxes, project.ligatures[lig]]);
+		}
+
+		// log(`returning fm`);
+		// log(fm);
+		// log(`GSProject.calcFontMaxes`, 'end');
+		return fm;
 }
 
 function ioSVG_makeMissingGlyph() {
