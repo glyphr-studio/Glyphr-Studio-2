@@ -1,4 +1,4 @@
-import { clone, json, round, trim } from '../common/functions.js';
+import { clone, json, remove, round, trim } from '../common/functions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
@@ -203,7 +203,6 @@ export class GlyphrStudioProject {
 		// log('GlyphrStudioProject.getItem', 'start');
 		// log(`id: ${id}`);
 
-
 		if (!id) {
 			// log('Not passed an ID, returning false');
 			// log('GlyphrStudioProject.getItem', 'end');
@@ -213,13 +212,13 @@ export class GlyphrStudioProject {
 		id = '' + id;
 		let result;
 
-		if (this.ligatures && id.indexOf('liga-') > -1) {
+		if (this.ligatures && id.startsWith('liga-')) {
 			// log(`detected LIGATURE`);
 			result = this.ligatures[id] || false;
-		} else if (this.glyphs && id.indexOf('0x') > -1) {
+		} else if (this.glyphs && id.startsWith('glyph-')) {
 			// log(`detected GLYPH`);
 			result = this.glyphs[id] || false;
-		} else if (this.components && id.indexOf('comp-') > -1) {
+		} else if (this.components && id.startsWith('comp-')) {
 			// log(`detected COMPONENT`);
 			result = this.components[id] || false;
 		} else {
@@ -233,56 +232,38 @@ export class GlyphrStudioProject {
 	}
 
 	/**
-	 * Get the type of glyph based on it's ID
-	 * @param {string} id - Glyph ID
-	 * @returns {string}
-	 */
-	getGlyphType(id) {
-		if (id.indexOf('0x', 2) > -1) return 'Ligature';
-		else if (id.indexOf('0x') > -1) return 'Glyph';
-		else return 'Component';
-	}
-
-	/**
 	 * Get a glyph's name based on it's ID
 	 * @param {string} id - Glyph ID
 	 * @param {boolean} forceLongName - don't use the short Unicode name by default
 	 * @returns {string}
 	 */
-	getGlyphName(id, forceLongName = false) {
+	getItemName(id, forceLongName = false) {
 		id = '' + id;
-		// log('GlyphrStudioProject.getGlyphName', 'start');
-		// log('passed ' + id);
+		log('GlyphrStudioProject.getItemName', 'start');
+		log('passed ' + id);
 
 		// not passed an id
 		if (!id) {
-			// log('not passed an ID, returning false');
-			// log('GlyphrStudioProject.getGlyphName', 'end');
+			log('not passed an ID, returning false');
+			log('GlyphrStudioProject.getItemName', 'end');
 			return false;
 		}
 
-		// known unicode names
-		const un = forceLongName ? unicodeNames[id] : shortUnicodeNames[id];
-		if (un) {
-			// log('got unicode name: ' + un);
-			// log('GlyphrStudioProject.getGlyphName', 'end');
-			return un;
+		if (id.startsWith('glyph-')) {
+			// known unicode names
+			const un = forceLongName ? unicodeNames[remove(id, 'glyph-')] : shortUnicodeNames[remove(id, 'glyph-')];
+			if (un) {
+				log('got unicode name: ' + un);
+				log('GlyphrStudioProject.getItemName', 'end');
+				return un;
+			}
 		}
 
 		const item = this.getItem(id);
-		if (id.indexOf('liga-') > -1) {
-			// ligature
-			// log('GlyphrStudioProject.getGlyphName', 'end');
-			return item.name;
-		} else if (id.indexOf('comp-') > -1) {
-			// Component
-			// log('GlyphrStudioProject.getGlyphName', 'end');
-			return item.name;
-		} else {
-			// log('getGlyphName - inexplicably fails, returning [name not found]\n');
-			// log('GlyphrStudioProject.getGlyphName', 'end');
-			return '[name not found]';
-		}
+		const result = item.name || '[name not found]';
+		log(`Returning: ${result}`);
+		log('GlyphrStudioProject.getItemName', 'end');
+		return result;
 	}
 
 	/**
@@ -444,21 +425,33 @@ function merge(template = {}, importing = {}, trimStrings = false) {
  * @param {GlyphrStudioProject} destinationProject - parent project
  */
 function hydrateProjectItems(GlyphrStudioItem, source, objType, destination, destinationProject) {
+	log(`hydrateProjectItems`, 'start');
+	log(`objType: ${objType}`);
+	log(`SOURCE:`);
+	log(source);
 	source = source || {};
 	for (const key of Object.keys(source)) {
 		let validatedKey = validateItemID(key, objType);
+		log(`\n STARTING key: ${key}`);
+		log(`validatedKey: ${validatedKey}`);
+
 		if (source[key]) {
 			destination[validatedKey] = new GlyphrStudioItem(source[key]);
 			destination[validatedKey].id = validatedKey;
 			destination[validatedKey].objType = objType;
 			destination[validatedKey].parent = destinationProject;
+			log(`DONE WITH ONE ITEM:`);
+			log(destination[validatedKey]);
 		}
 	}
+	log(`hydrateProjectItems`, 'end');
 }
 
 function validateItemID(oldID, objType) {
 	if (objType === 'Glyph') {
-		return validateAsHex(oldID);
+		let suffix = remove(oldID, 'glyph-');
+		suffix = validateAsHex(suffix);
+		if (suffix) return `glyph-${suffix}`;
 	}
 	return oldID;
 }

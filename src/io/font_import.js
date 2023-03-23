@@ -108,11 +108,12 @@ function importOneGlyph(otfGlyph, project) {
 	// minChar = Math.min(minChar, uni);
 	// maxChar = Math.max(maxChar, uni);
 
-	importedGlyph.id = uni;
+	const glyphID = `glyph-${uni}`;
+	importedGlyph.id = glyphID;
 	const latinExtendedB = getUnicodeBlockByName('Latin Extended-B');
 	if (1 * uni > latinExtendedB.end) customGlyphRange.push(uni);
 
-	finalGlyphs[uni] = importedGlyph;
+	finalGlyphs[glyphID] = importedGlyph;
 	// log(`Pushing new glyph to finalGlyphs as:`);
 	// log(finalGlyphs[uni]);
 

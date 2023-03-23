@@ -85,12 +85,12 @@
     }
   },
   "glyphs": {
-    "0x20": {
-      "id": "0x20",
+    "glyph-0x20": {
+      "id": "glyph-0x20",
       "advanceWidth": 200
     },
-    "0x41": {
-      "id": "0x0041",
+    "glyph-0x41": {
+      "id": "glyph-0x0041",
       "advanceWidth": 530,
       "paths": [
         {
@@ -217,8 +217,8 @@
         }
       ]
     },
-    "0x42": {
-      "id": "0x0042",
+    "glyph-0x42": {
+      "id": "glyph-0x0042",
       "advanceWidth": 405,
       "paths": [
         {
@@ -461,8 +461,8 @@
         }
       ]
     },
-    "0x43": {
-      "id": "0x0043",
+    "glyph-0x43": {
+      "id": "glyph-0x0043",
       "advanceWidth": 420,
       "paths": [
         {

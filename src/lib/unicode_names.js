@@ -3,39 +3,6 @@ import { log } from '../app/main.js';
 import { validateAsHex } from '../common/character_ids.js';
 
 /**
- * Get a glyph's name based on a unicode hex ID
- * @param {string} id - Unicode Hex ID
- * @param {boolean} forceLongName - don't use the short Unicode name by default
- * @returns {string}
- */
-export function lookUpGlyphName(id, forceLongName = false) {
-	// log(`lookUpGlyphName`, 'start');
-	// log('passed');
-	// log(id);
-	// not passed an id
-	if (!id) {
-		// log('not passed an ID, returning false');
-		// log(`lookUpGlyphName`, 'end');
-		return false;
-	}
-
-	id = validateAsHex(id);
-	// log(`normalized ${id} type is ${typeof id}`);
-
-	// known unicode names
-	const un = forceLongName ? unicodeNames[id] : shortUnicodeNames[id];
-	if (un) {
-		// log('got unicode name: ' + un);
-		// log(`lookUpGlyphName`, 'end');
-		return un;
-	}
-
-	// log('inexplicably fails, returning [name not found]\n');
-	// log(`lookUpGlyphName`, 'end');
-	return '[name not found]';
-}
-
-/**
  * Gets the name of a Unicode character
  * @param {number} codePoint - Unicode code point
  * @returns {string} - name

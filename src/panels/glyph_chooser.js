@@ -74,7 +74,8 @@ function makeGlyphChooserTileGrid() {
 	// log(editor.selectedGlyphRange);
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
-	editor.selectedGlyphRange.array.forEach((glyphID) => {
+	editor.selectedGlyphRange.array.forEach((charID) => {
+		const glyphID = `glyph-${charID}`;
 		// log(`glyphID: ${glyphID}`);
 		let oneTile = new GlyphTile({ 'displayed-item-id': glyphID });
 		if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');

@@ -2,7 +2,7 @@ import { GlyphElement } from './glyph_element.js';
 import { getOverallMaxes, isAllZeros, Maxes } from './maxes.js';
 import { Path } from './path.js';
 import { ComponentInstance } from './component_instance.js';
-import { hasNonValues, isVal, trim } from '../common/functions.js';
+import { hasNonValues, isVal, remove, trim } from '../common/functions.js';
 import { hexesToChars } from '../common/character_ids.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
 import { log } from '../app/main.js';
@@ -250,42 +250,48 @@ export class Glyph extends GlyphElement {
 		return advance - rightMax;
 	}
 
-	// /**
-	//  * get maxes
-	//  * @returns {Maxes}
-	//  */
-	// get maxes() {
-	// 	return new Maxes(this.cache.maxes);
-	// }
+	/**
+	 * get maxes
+	 * @returns {Maxes}
+	 */
+	get maxes() {
+		return new Maxes(this.cache.maxes);
+	}
 
 	/**
 	 * get name
 	 * @returns {string}
 	 */
 	get name() {
-		// log('Glyph GET name', 'start');
+		log('Glyph GET name', 'start');
+		log(this);
+
 		let name = this._name;
-		// log(`name: ${name}`);
+		if (!name && !this.id) return '[no id]';
+		log(`this.id: ${this.id}`);
+		log(`name: ${name}`);
 
 		if (!name) {
-			if (this.id.startsWith('liga')) {
-				let suffix = this.id.substring(5);
+			if (this.id.startsWith('liga-')) {
+				let suffix = remove(this.id, 'liga-');
 				suffix = suffix.split('-');
 				name = 'Ligature ';
 				suffix.forEach((char) => {
 					if (char.length === 1) name += char;
 					else name += hexesToChars(char);
 				});
-			} else if (this.id.startsWith('comp')) {
-				let suffix = this.id.substring(5);
+			} else if (this.id.startsWith('comp-')) {
+				let suffix = remove(this.id, 'comp-');
 				name = `Component ${suffix}`;
-			} else {
-				name = getUnicodeName(this.id);
+			} else if (this.id.startsWith('glyph-')) {
+				let suffix = remove(this.id, 'glyph-');
+				name = getUnicodeName(suffix);
 			}
+
 			this._name = name;
 		}
-		// log(`ID: ${this.id} result: ${name}`);
-		// log('Glyph GET name', 'end');
+		log(`ID: ${this.id} result: ${name}`);
+		log('Glyph GET name', 'end');
 		return name;
 	}
 
@@ -304,7 +310,7 @@ export class Glyph extends GlyphElement {
 			// log(this.gsub);
 			result = this.gsub.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
 		} else {
-			result = hexesToChars(this.id);
+			result = hexesToChars(remove(this.id, 'glyph-'));
 		}
 		// log(`result: ${result}`);
 		// log(`Glyph GET char`, 'end');

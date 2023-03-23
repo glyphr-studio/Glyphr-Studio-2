@@ -172,7 +172,7 @@ function drawContextGlyphExtras(char) {
 		const texty = sYcY(getCurrentProject().settings.font.descent - 60);
 
 		// Draw the glyph name
-		let gname = char.glyph ? char.glyph.getName() : getGlyphName(charsToHexArray(char.char));
+		let gname = char.glyph ? char.glyph.getName() : getItemName(charsToHexArray(char.char));
 		gname = gname.replace(/latin /i, '');
 		drawGlyphNameExtra(gname, currx, texty, advanceWidth, color, char.char);
 

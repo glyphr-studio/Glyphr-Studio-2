@@ -209,7 +209,7 @@ async function generateOneGlyph(currentExportItem) {
 	});
 
 	// Add this finished glyph
-	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.id)] = thisIndex;
+	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
 
 	await pause();
 	log(thisGlyph);

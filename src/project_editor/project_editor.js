@@ -52,7 +52,7 @@ export class ProjectEditor {
 		this.unsubscribe = unsubscribe;
 
 		// Selections
-		this.selectedGlyphID = '0x41';
+		this.selectedGlyphID = 'glyph-0x41';
 		this.selectedComponentID = false;
 		this.selectedLigatureID = false;
 		this.selectedKernID = false;
@@ -260,7 +260,7 @@ export class ProjectEditor {
 	 * @returns {string}
 	 */
 	get selectedComponentID() {
-		if (!this.selectedComponentID) {
+		if (!this._selectedComponentID) {
 			this._selectedComponentID = getFirstID(this.project.components);
 		}
 		return this._selectedComponentID;
@@ -372,14 +372,13 @@ export class ProjectEditor {
 		// log(`ProjectEditor SET selectedGlyphID`, 'start');
 		// log(`id: ${id}`);
 		if (typeof id !== 'string') return;
-		if (!isHex(id)) {
+		if (!id.startsWith('glyph-')) {
 			this._selectedGlyphID = false;
 			return;
 		}
 		if (this.project.glyphs[id]) {
 			this._selectedGlyphID = id;
-		} else if (isHex(id)) {
-			id = validateAsHex(id);
+		} else if (id.startsWith('glyph-')) {
 			this.project.glyphs[id] = new Glyph({ id: id, parent: this.project });
 			this._selectedGlyphID = id;
 		}
