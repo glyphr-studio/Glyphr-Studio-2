@@ -168,7 +168,7 @@ function makeLigaturesFirstRunContent() {
 	let commonLigatureTable = '';
 	ligaturesWithCodePoints.forEach((lig) => {
 		commonLigatureTable += `
-			<span class="ligature-display-wrapper">
+			<span class="first-run__example-wrapper">
 					<pre>${lig.display}</pre>
 					<span> ➞ </span>
 					<pre>&#${parseInt(lig.point)};</pre>
@@ -184,7 +184,7 @@ function makeLigaturesFirstRunContent() {
 				Ligatures are a feature of fonts where a specified sequence of characters
 				is recognized and replaced with a single new character that you design.
 				In Latin, there are some common ligatures:
-				<div class="ligatures-page__common-ligature-table">
+				<div class="first-run__examples-table">
 				${commonLigatureTable}
 				</div>
 			</p>
@@ -251,7 +251,7 @@ function addLigature(sequence) {
 		id: newID,
 		parent: project,
 		objType: 'Ligature',
-		ligature: sequence.split('').map((char) => char.codePointAt(0)),
+		gsub: sequence.split('').map((char) => char.codePointAt(0)),
 	});
 
 	return project.ligatures[newID];
