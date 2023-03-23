@@ -160,11 +160,42 @@ export function makePage_Components() {
 		},
 	});
 
+	editor.subscribe({
+		topic: 'currentItem',
+		subscriberID: 'ComponentsPage.l2Nav',
+		callback: () => {
+			l2.innerHTML = makeNavButtonContent(editor.selectedComponent.name, 'EDITING');
+		},
+	});
+
 	// log(`makePage_Components`, 'end');
 	return content;
 }
 
 function makeComponentsFirstRunContent() {
+
+	let componentExampleTable = '';
+	[
+		{
+			root: 'A',
+			instances:
+				'&#xC0;&#xC1;&#xC2;&#xC3;&#xC4;&#xC5;&#x100;&#x102;&#x104;&#x1DE;&#x1FA;&#x200;&#x226;&#x23A;&#x1E00;&#x24B6;&#x2C6F;',
+		},
+		{
+			root: 'N',
+			instances:
+				'&#xD1;&#x143;&#x145;&#x147;&#x19D;&#x1F8;&#x1E44;&#x1E46;&#x1E48;&#x1E4A;&#x24C3;&#xA790;&#xA7A4;',
+		},
+	].forEach((example) => {
+		componentExampleTable += `
+			<span class="first-run__example-wrapper">
+					<pre>${example.root}</pre>
+					<span> ➞ </span>
+					<pre>${example.instances}</pre>
+			</span>
+		`;
+	});
+
 	const content = makeElement({
 		className: 'editor-page__first-run',
 		innerHTML: `
@@ -174,6 +205,13 @@ function makeComponentsFirstRunContent() {
 				across many different glyphs. The root is called a 'Component' and these are added
 				by reference to other glyphs, where they are called 'Component Instances'.
 				Updating the root component will also update all component instances.
+			</p>
+			<p>
+				<div class="first-run__examples-table">
+					${componentExampleTable}
+				</div>
+				Diacritic glyphs (glyphs with accents) are just one example of where having a shared
+				component root can be used across many individual characters.
 			</p>
 		`,
 	});

@@ -139,6 +139,7 @@ display-canvas {
 	top: -1px;
 }
 
+/* First run pages */
 .editor-page__first-run {
 	display: block;
 	margin: 20px;
@@ -155,11 +156,11 @@ display-canvas {
 	margin-bottom: 10px;
 }
 
-.ligatures-page__common-ligature-table {
+.first-run__examples-table {
 	margin-bottom: 10px;
 }
 
-.ligature-display-wrapper {
+.first-run__example-wrapper {
 	display: inline-block;
 	width: max-content;
 	padding: 8px 10px 0px 10px;
@@ -169,7 +170,7 @@ display-canvas {
 	border-radius: 4px;
 }
 
-.ligature-display-wrapper span {
+.first-run__example-wrapper span {
 	display: inline-block;
 	text-align: center;
 	margin: 0px 5px 0px 5px;
@@ -179,7 +180,7 @@ display-canvas {
 	top: -4px;
 }
 
-.ligature-display-wrapper pre {
+.first-run__example-wrapper pre {
 	display: inline-block;
 	font-size: 2em;
 	line-height: 1em;
