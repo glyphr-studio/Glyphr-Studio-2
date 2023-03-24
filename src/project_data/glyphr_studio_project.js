@@ -3,7 +3,6 @@ import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
-import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 // import { log } from '../app/main.js';
 import { GlyphRange } from './glyph_range.js';
 import { log } from '../app/main.js';
@@ -17,8 +16,8 @@ export class GlyphrStudioProject {
 	 * @param {object} newProject - Glyphr Studio Project File JSON
 	 */
 	constructor(newProject = {}) {
-		// log('GlyphrStudioProject.constructor', 'start');
-
+		log('GlyphrStudioProject.constructor', 'start');
+		log(newProject);
 		// Set up all internal default values first
 		this.settings = {
 			project: {
@@ -146,7 +145,7 @@ export class GlyphrStudioProject {
 
 		// log('\n\nfinished EVERYTHING - result:');
 		// log(this);
-		// log('GlyphrStudioProject.constructor', 'end');
+		log('GlyphrStudioProject.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
