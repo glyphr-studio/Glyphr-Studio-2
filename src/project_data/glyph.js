@@ -255,13 +255,13 @@ export class Glyph extends GlyphElement {
 	 * @returns {string}
 	 */
 	get name() {
-		log('Glyph GET name', 'start');
-		log(this);
+		// log('Glyph GET name', 'start');
+		// log(this);
 
 		let name = this._name;
 		if (!name && !this.id) return '[no id]';
-		log(`this.id: ${this.id}`);
-		log(`name: ${name}`);
+		// log(`this.id: ${this.id}`);
+		// log(`name: ${name}`);
 
 		if (!name) {
 			if (this.id.startsWith('liga-')) {
@@ -282,8 +282,8 @@ export class Glyph extends GlyphElement {
 
 			this._name = name;
 		}
-		log(`ID: ${this.id} result: ${name}`);
-		log('Glyph GET name', 'end');
+		// log(`ID: ${this.id} result: ${name}`);
+		// log('Glyph GET name', 'end');
 		return name;
 	}
 

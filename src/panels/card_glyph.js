@@ -80,18 +80,22 @@ export function makeCard_glyphAttributes(glyph) {
 	// Put it all together
 	if (glyph.displayType !== 'Component') {
 		addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
-		addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
-		addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+		if (glyph.paths.length) {
+			addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
+			addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+		}
 	} else {
 		addAsChildren(glyphCard, [
 			makeSingleLabel('name'),
 			makeSingleInput(glyph, 'name', 'currentItem', 'input'),
 		]);
 	}
-	addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
-	addAsChildren(glyphCard, makeInputs_position(glyph));
-	addAsChildren(glyphCard, makeInputs_size(glyph));
-	addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	if (glyph.paths.length) {
+		addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
+		addAsChildren(glyphCard, makeInputs_position(glyph));
+		addAsChildren(glyphCard, makeInputs_size(glyph));
+		addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	}
 	addAsChildren(glyphCard, makeActionsArea_Universal());
 	addAsChildren(glyphCard, makeActionsArea_Glyph());
 	// log(`returning:`);
