@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { ioSVG_convertSVGTagsToGlyph } from '../io/svg_outline_import.js';
-import { copyPathsFromTo } from '../panels/actions.js';
+import { copyShapesFromTo } from '../panels/actions.js';
 import { cancelDefaultEventActions } from './events.js';
 
 export function importSVGtoCurrentWorkItem(svgData) {
@@ -16,7 +16,7 @@ export function importSVGtoCurrentWorkItem(svgData) {
 
 		// Add new Glyph Shapes
 		const editor = getCurrentProjectEditor();
-		copyPathsFromTo(tempGlyph, editor.selectedItem);
+		const newShapes = copyShapesFromTo(tempGlyph, editor.selectedItem);
 		// log('tempGlyph');
 		// log(tempGlyph);
 
@@ -25,6 +25,8 @@ export function importSVGtoCurrentWorkItem(svgData) {
 
 		editor.publish('currentItem', editor.selectedItem);
 		editor.history.addState('Pasted SVG to glyph ' + editor.selectedItem.name);
+		editor.multiSelect.paths.clear();
+		newShapes.forEach(shape => editor.multiSelect.paths.add(shape));
 		showToast('Pasted ' + tempGlyph.paths.length + ' paths from SVG');
 	} else {
 		// showToast('Could not import pasted SVG code.');

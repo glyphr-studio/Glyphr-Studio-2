@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { drawItem } from '../display_canvas/draw_paths.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
@@ -328,24 +328,22 @@ export class MultiSelectPaths extends MultiSelect {
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();
 		const itemPaths = editor.selectedItem.paths;
-		let item;
 		let index;
 
 		if (this.members.length === 0) this.clear();
 		else {
-			for (let s = 0; s < this.members.length; s++) {
-				item = this.members[s];
-
+			this.members.forEach(item => {
 				if (item.objType === 'ComponentInstance') {
 					removeFromUsedIn(project.getItem(item.link), item.parent.id);
 				}
-
 				index = itemPaths.indexOf(item);
 				if (index > -1) itemPaths.splice(index, 1);
-			}
+			});
 
-			this.select(itemPaths.at(-1));
 		}
+
+		this.select(itemPaths.at(-1));
+
 
 		// TODO publish change
 		// log('deletePath', 'end');

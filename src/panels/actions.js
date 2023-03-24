@@ -16,6 +16,7 @@ import {
 	addToUsedIn,
 	canAddComponent,
 	makeGlyphSVGforExport,
+	removeFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { addComponent } from '../pages/components.js';
@@ -198,17 +199,20 @@ export function getActionData(name) {
 				editor.multiSelect.paths.members.forEach((shape) => {
 					if (shape.objType === 'Path') {
 						newComponent.addOneShape(new Path(shape));
-						name += ' ' + shape.name;
+					} else if (shape.objType === 'ComponentInstance') {
+						newComponent.addOneShape(new ComponentInstance(shape));
 					}
+					name += ' ' + shape.name;
 				});
 				const addedComponent = addComponent(newComponent);
 				addToUsedIn(addedComponent, editor.selectedItemID);
-				editor.selectedItem.addOneShape(
+				const newShape = editor.selectedItem.addOneShape(
 					new ComponentInstance({
 						link: addedComponent.id,
 					})
 				);
 				editor.multiSelect.paths.deletePaths();
+				editor.multiSelect.paths.select(newShape);
 				editor.history.addState('Turned a path into a component', [addedComponent]);
 				editor.publish('currentItem', editor.selectedItem);
 			},
@@ -252,7 +256,21 @@ export function getActionData(name) {
 			iconOptions: true,
 			title: `Turn Component Instance into a Path\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's paths as regular Paths to this glyph.`,
 			onClick: () => {
-				// TODO components
+				const editor = getCurrentProjectEditor();
+				const otherChangedItems = [];
+				let newShapes = [];
+				editor.multiSelect.paths.members.forEach((shape) => {
+					if (shape.objType === 'ComponentInstance') {
+						const sourceItem = editor.project.getItem(shape.link);
+						newShapes = newShapes.concat(copyShapesFromTo(shape.transformedGlyph, editor.selectedItem));
+						removeFromUsedIn(sourceItem, editor.selectedItemID);
+						otherChangedItems.push(sourceItem);
+					}
+				});
+				editor.multiSelect.paths.deletePaths();
+				newShapes.forEach(shape => editor.multiSelect.paths.add(shape));
+				editor.history.addState('Turned a component instance into a path', otherChangedItems);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
@@ -765,8 +783,10 @@ function showDialogChooseOtherItem(type) {
 			const editor = getCurrentProjectEditor();
 			const otherItem = editor.project.getItem(itemID);
 			const thisItem = editor.selectedItem;
-			copyPathsFromTo(otherItem, thisItem, false);
+			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
 			editor.history.addState(`Paths were copied from ${otherItem.name}.`);
+			editor.multiSelect.paths.clear();
+			newShapes.forEach(shape => editor.multiSelect.paths.add(shape));
 			closeEveryTypeOfDialog();
 			showToast(`${otherItem.paths.length} paths copied from<br>${otherItem.name}`);
 		};
@@ -826,16 +846,16 @@ export function linkComponentFromTo(sourceItem, destinationItem) {
  * @param {Glyph} destinationItem - where to copy paths to
  * @param {object} updateWidth - should advance width copy as well
  */
-export function copyPathsFromTo(sourceItem, destinationItem, updateWidth = false) {
-	// log('copyPathsFromTo', 'start');
+export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = false) {
+	log('copyShapesFromTo', 'start');
 	// log(`Source item`);
 	// log(sourceItem);
 	// log(`Destination item`);
 	// log(destinationItem);
 
 	const editor = getCurrentProjectEditor();
-	const msPaths = editor.multiSelect.paths;
 	let item;
+	let newShapes = [];
 	for (let c = 0; c < sourceItem.paths.length; c++) {
 		item = sourceItem.paths[c];
 		if (item.objType === 'ComponentInstance') {
@@ -845,8 +865,8 @@ export function copyPathsFromTo(sourceItem, destinationItem, updateWidth = false
 			item = new Path(item);
 		}
 
-		msPaths.add(item);
 		destinationItem.addOneShape(item);
+		newShapes.push(item);
 	}
 
 	if (updateWidth) {
@@ -855,6 +875,8 @@ export function copyPathsFromTo(sourceItem, destinationItem, updateWidth = false
 
 	// log('Result for destination item:');
 	// log(destinationItem);
-	// log('copyPathsFromTo', 'end');
-	return item;
+	log(`Returning newShapes`);
+	log(newShapes);
+	log('copyShapesFromTo', 'end');
+	return newShapes;
 }
