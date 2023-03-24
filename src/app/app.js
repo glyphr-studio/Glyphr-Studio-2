@@ -119,7 +119,6 @@ export class GlyphrStudioApp {
 		if (!this.projectEditors[this.selectedProjectEditor]) {
 			this.projectEditors[this.selectedProjectEditor] = new ProjectEditor();
 		}
-
 		return this.projectEditors[this.selectedProjectEditor];
 	}
 }
@@ -187,20 +186,26 @@ export function makeAppTopBar() {
 		className: 'top-bar__bug-contact',
 	});
 
-	bugContact.appendChild(makeElement({
-		className: 'top-bar__bug-blurb',
-		innerHTML: 'Found a bug? Have some feedback?'
-	}));
+	bugContact.appendChild(
+		makeElement({
+			className: 'top-bar__bug-blurb',
+			innerHTML: 'Found a bug? Have some feedback?',
+		})
+	);
 
-	bugContact.appendChild(makeElement({
-		className: 'top-bar__bug-icon',
-		innerHTML: emailLink(mailIcon)
-	}));
+	bugContact.appendChild(
+		makeElement({
+			className: 'top-bar__bug-icon',
+			innerHTML: emailLink(mailIcon),
+		})
+	);
 
-	bugContact.appendChild(makeElement({
-		className: 'top-bar__bug-link',
-		innerHTML: emailLink()
-	}));
+	bugContact.appendChild(
+		makeElement({
+			className: 'top-bar__bug-link',
+			innerHTML: emailLink(),
+		})
+	);
 
 	addAsChildren(topBar, [logo, menus, bugContact]);
 

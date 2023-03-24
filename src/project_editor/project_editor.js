@@ -33,7 +33,7 @@ export class ProjectEditor {
 	 * @param {object} newProjectEditor
 	 */
 	constructor(newProjectEditor = {}) {
-		// log('ProjectEditor.constructor', 'start');
+		log('ProjectEditor.constructor', 'start');
 
 		// History
 		this.history = new History();
@@ -52,7 +52,7 @@ export class ProjectEditor {
 		this.unsubscribe = unsubscribe;
 
 		// Selections
-		this.selectedGlyphID = 'glyph-0x41';
+		this.selectedGlyphID = false;
 		this.selectedComponentID = false;
 		this.selectedLigatureID = false;
 		this.selectedKernID = false;
@@ -96,7 +96,7 @@ export class ProjectEditor {
 		this.closeAllDialogsOverride = false;
 
 		// log(this);
-		// log('ProjectEditor.constructor', 'end');
+		log('ProjectEditor.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -137,10 +137,18 @@ export class ProjectEditor {
 	 * @returns {GlyphrStudioProject}
 	 */
 	set project(gsp) {
-		if (!gsp) return;
-		// log(`Calling new GlyphrStudioProject from ProjectEditor SET .project`);
-		this._project = new GlyphrStudioProject(gsp);
-		this.initializeHistory(gsp);
+		// log(`ProjectEditor SET project`, 'start');
+		// log(gsp);
+		if (gsp) {
+			// log(`Importing project...`);
+			this._project = new GlyphrStudioProject(gsp);
+			this.initializeHistory(gsp);
+			this.selectedGlyphID = 'glyph-0x41';
+		} else {
+			// log(`Setting to false`);
+			this._project = false;
+		}
+		// log(`ProjectEditor SET project`, 'end');
 	}
 
 	initializeHistory(project) {

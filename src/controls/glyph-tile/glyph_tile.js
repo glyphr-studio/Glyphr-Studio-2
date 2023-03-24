@@ -3,6 +3,7 @@ import { hexesToChars } from '../../common/character_ids.js';
 import { getCurrentProject, log } from '../../app/main.js';
 import style from './glyph-tile.css?inline';
 import { remove } from '../../common/functions.js';
+import { isWhitespace } from '../../lib/unicode_names.js';
 
 /**
  * A clickable mini-preview tile of a single glyph
@@ -28,6 +29,7 @@ export class GlyphTile extends HTMLElement {
 		const displayedItemID = this.getAttribute('displayed-item-id');
 		this.glyph = project.getItem(displayedItemID);
 		const chars = this.glyph?.chars || hexesToChars(remove(displayedItemID, 'glyph-'));
+
 		const name = this.glyph?.name || project.getItemName(displayedItemID, true);
 		this.view = {};
 
@@ -45,7 +47,7 @@ export class GlyphTile extends HTMLElement {
 
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
 
-		if (this.glyph && this.glyph.paths.length) {
+		if (this.glyph && this.glyph.advanceWidth) {
 			this.thumbnail = makeElement({
 				tag: 'span',
 				className: 'thumbnail',
@@ -56,13 +58,19 @@ export class GlyphTile extends HTMLElement {
 		} else {
 			this.thumbnail = makeElement({
 				className: 'thumbnail',
-				content: chars,
 			});
+			if (isWhitespace(remove(displayedItemID, 'glyph-'))) {
+				this.thumbnail.innerHTML = `
+					<div class="whitespace-char-thumbnail">white space</div>
+				`;
+			} else {
+				this.thumbnail.innerHTML = chars;
+			}
 			// log(`no glyph`);
 		}
 
 		this.name = makeElement({ className: 'name' });
-		if (chars) this.name.innerHTML = displayedItemID === '0x20' ? 'Space' : chars;
+		if (chars) this.name.innerHTML = displayedItemID === 'glyph-0x20' ? 'Space' : chars;
 		else this.name.innerHTML = name.replaceAll('Component ', 'comp-');
 
 		// Put it all together
@@ -95,7 +103,7 @@ export class GlyphTile extends HTMLElement {
 }
 
 function redraw(tile) {
-	if (tile.glyph) {
+	if (tile.glyph?.paths?.length) {
 		const project = getCurrentProject();
 		tile.thumbnail.innerHTML = project.makeItemThumbnail(tile.glyph);
 	}

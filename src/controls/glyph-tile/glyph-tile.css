@@ -76,6 +76,13 @@
 	color: var(--disabled-text-light);
 }
 
+.whitespace-char-thumbnail {
+	font-size: 12px;
+	line-height: 10px;
+	padding-top: 14px;
+	height: 50px;
+}
+
 .name {
 	display: block;
 	text-align: left;

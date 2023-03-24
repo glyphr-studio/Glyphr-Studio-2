@@ -55,6 +55,50 @@ export function getUnicodeShortName(codePoint) {
 	return name;
 }
 
+export function isWhitespace(charID) {
+	log(`isWhitespace`, 'start');
+	log(`charID: ${charID}`);
+	log(`whitespaceCharacters.indexOf(charID): ${whitespaceCharacters.indexOf(charID)}`);
+	
+	log(`isWhitespace`, 'end');
+	return whitespaceCharacters.indexOf(charID) > -1;
+}
+
+export const whitespaceCharacters = [
+	'0x9',
+	'0xA',
+	'0xB',
+	'0xC',
+	'0xD',
+	'0x20',
+	'0x85',
+	'0xA0',
+	'0xAD',
+	'0x1680',
+	'0x2000',
+	'0x2001',
+	'0x2002',
+	'0x2003',
+	'0x2004',
+	'0x2005',
+	'0x2006',
+	'0x2007',
+	'0x2008',
+	'0x2009',
+	'0x200A',
+	'0x2028',
+	'0x2029',
+	'0x202F',
+	'0x205F',
+	'0x3000',
+	'0x180E',
+	'0x200B',
+	'0x200C',
+	'0x200D',
+	'0x2060',
+	'0xFEFF',
+];
+
 export const shortUnicodeNames = {
 	'0x41': 'A',
 	'0xC6': 'AE',
