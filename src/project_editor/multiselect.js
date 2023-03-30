@@ -4,7 +4,7 @@ import { drawItem } from '../display_canvas/draw_paths.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-import { removeFromUsedIn } from './cross_item_actions.js';
+import { glyphChanged, removeFromUsedIn } from './cross_item_actions.js';
 
 /**
 		Multi-Select
@@ -131,7 +131,7 @@ class MultiSelect {
 	}
 
 	get members() {
-		return this._members;
+		return this._members || [];
 	}
 
 	get singleton() {
@@ -164,8 +164,16 @@ export class MultiSelectPoints extends MultiSelect {
 		// log(`MultiSelectPoints.publishChanges`, 'end');
 	}
 
+	changed() {
+		this.members.forEach((member) => {
+			member.changed();
+			glyphChanged(member.parent.parent);
+		});
+	}
+
 	updatePathPosition(dx, dy) {
 		this.virtualPath.updatePathPosition(dx, dy);
+		this.changed();
 	}
 
 	deletePathPoints() {
@@ -195,26 +203,11 @@ export class MultiSelectPoints extends MultiSelect {
 		else return this.members[0].pointNumber;
 	}
 
-	/*
-	draw_PathPointHandles() {
-		const sh = this.virtualPath;
-		draw_PathPointHandles(sh.pathPoints);
-	}
-
-	draw_PathPoints() {
-		// log('MultiSelectPoints.draw_PathPoints', 'start');
-		const sh = this.virtualPath;
-		// ('\t path is ' + json(sh));
-
-		draw_PathPoints(sh.pathPoints);
-
-		// log('MultiSelectPoints.draw_PathPoints', 'end');
-	}
-*/
 	setPointType(t) {
 		for (let m = 0; m < this.members.length; m++) {
 			this.members[m].setPointType(t);
 		}
+		this.changed();
 	}
 
 	resetHandles() {
@@ -222,6 +215,7 @@ export class MultiSelectPoints extends MultiSelect {
 			// log(this.members[m]);
 			this.members[m].resetHandles();
 		}
+		this.changed();
 	}
 
 	resolvePointType() {
@@ -229,6 +223,7 @@ export class MultiSelectPoints extends MultiSelect {
 			// log(this.members[m]);
 			this.members[m].resolvePointType();
 		}
+		this.changed();
 	}
 
 	updatePathPointPosition(dx, dy) {
@@ -243,6 +238,7 @@ export class MultiSelectPoints extends MultiSelect {
 				this.members[m].updatePathPointPosition('p', dx, dy);
 			}
 		}
+		this.changed();
 		// log(`MultiSelectPoints.updatePathPointPosition`, 'end');
 	}
 }
@@ -256,6 +252,7 @@ export class MultiSelectPaths extends MultiSelect {
 		super();
 		this._virtualGlyph = new Glyph();
 		this._virtualGlyph.name = 'Multi-Selected Paths';
+		this._virtualGlyph.id = 'Multi-Selected Paths';
 	}
 
 	get virtualGlyph() {
@@ -272,9 +269,19 @@ export class MultiSelectPaths extends MultiSelect {
 		editor.publish(topic, this.members);
 	}
 
+	changed() {
+		this.members.forEach((member) => {
+			member.changed();
+			glyphChanged(member.parent);
+		});
+	}
+
 	get maxes() {
-		if (this.members.length === 1) return this.members[0].maxes;
-		else return this.virtualGlyph.maxes;
+		// log(`MultiSelectPaths VirtualGlyph GET maxes`, 'start');
+		let result = this.virtualGlyph.maxes;
+		// log(result);
+		// log(`MultiSelectPaths VirtualGlyph GET maxes`, 'end');
+		return result;
 	}
 
 	get ratioLock() {
@@ -332,18 +339,16 @@ export class MultiSelectPaths extends MultiSelect {
 
 		if (this.members.length === 0) this.clear();
 		else {
-			this.members.forEach(item => {
+			this.members.forEach((item) => {
 				if (item.objType === 'ComponentInstance') {
 					removeFromUsedIn(project.getItem(item.link), item.parent.id);
 				}
 				index = itemPaths.indexOf(item);
 				if (index > -1) itemPaths.splice(index, 1);
 			});
-
 		}
 
 		this.select(itemPaths.at(-1));
-
 
 		// TODO publish change
 		// log('deletePath', 'end');
@@ -356,42 +361,38 @@ export class MultiSelectPaths extends MultiSelect {
 		getCurrentProjectEditor().history.addState('Aligned paths ' + edge);
 	}
 
-	// Wrapper functions
-
-	changed() {
-		for (let m = 0; m < this.members.length; m++) {
-			this.members[m].changed();
-		}
-	}
-
-	// convert to name setter
 	changePathName(n) {
 		this.singleton.changePathName(n);
 	}
 
 	updatePathPosition(dx, dy) {
-		// log(`MultiSelect.path.updatePathPosition`, 'start');
-		// log(`dx: ${dx}`);
-		// log(`dy: ${dy}`);
+		// log(`MultiSelectPath.updatePathPosition`, 'start');
+		// log(`dx: ${dx} dy: ${dy}`);
 		this.virtualGlyph.updateGlyphPosition(dx, dy);
-		// log(`MultiSelect.path.updatePathPosition`, 'end');
+		// The "real" glyph is updated through the parent.changed() hierarchy
+		// This virtual glyph needs a manual call.
+		this.changed();
+		// log(`MultiSelectPath.updatePathPosition`, 'end');
 	}
 
 	setPathPosition(nx, ny) {
 		this.virtualGlyph.setGlyphPosition(nx, ny);
+		this.changed();
 	}
 
 	updatePathSize(dw, dh, ratioLock) {
-		if (this.members.length === 1) this.members[0].updatePathSize(dw, dh, ratioLock);
-		else if (this.members.length > 1) this.virtualGlyph.updateGlyphSize(dw, dh, ratioLock);
+		this.virtualGlyph.updateGlyphSize(dw, dh, ratioLock);
+		this.changed();
 	}
 
 	setPathSize(nw, nh, ratioLock) {
 		this.virtualGlyph.setGlyphSize(nw, nh, ratioLock);
+		this.changed();
 	}
 
 	rotate(angle, about) {
 		this.virtualGlyph.rotate(angle, about);
+		this.changed();
 	}
 
 	isRotatable() {
@@ -401,10 +402,12 @@ export class MultiSelectPaths extends MultiSelect {
 
 	flipNS(mid) {
 		this.virtualGlyph.flipNS(mid);
+		this.changed();
 	}
 
 	flipEW(mid) {
 		this.virtualGlyph.flipEW(mid);
+		this.changed();
 	}
 
 	getAttribute(attr) {
@@ -466,5 +469,6 @@ export class MultiSelectPaths extends MultiSelect {
 		for (let m = 0; m < this.members.length; m++) {
 			this.members[m].reverseWinding();
 		}
+		this.changed();
 	}
 }

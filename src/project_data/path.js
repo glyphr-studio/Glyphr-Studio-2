@@ -14,7 +14,9 @@ import {
 	duplicates,
 	pointsAreEqual,
 	strSan,
+	json,
 } from '../common/functions.js';
+import { log } from '../app/main.js';
 
 /**
  * Glyph Element > Path
@@ -571,7 +573,7 @@ export class Path extends GlyphElement {
 	 */
 	setPathPosition(nx = false, ny = false) {
 		// log('Path.setPathPosition', 'start');
-		// log('nx ny force:\t ' + nx + '\t ' + ny + '\t ' + force);
+		// log(`nx:${nx}\tny:${ny}`);
 
 		if (nx !== false) nx = parseFloat(nx);
 		if (ny !== false) ny = parseFloat(ny);
@@ -600,8 +602,14 @@ export class Path extends GlyphElement {
 		for (let d = 0; d < this.pathPoints.length; d++) {
 			const pp = this.pathPoints[d];
 			// log('-------------------- pathPoint #' + d);
+			// log(`BEFORE pp.p.x: ${pp.p.x}`);
 			pp.updatePathPointPosition('p', dx, dy);
+			// log(`AFTERS pp.p.x: ${pp.p.x}`);
 		}
+		// We need this here even though .changed()
+		// should have propagated from the PathPoint
+		// this.changed();
+
 
 		// log('Path.updatePathPosition', 'end');
 	}
@@ -1182,7 +1190,7 @@ export class Path extends GlyphElement {
 	 */
 	recalculateMaxes() {
 		// log('Path.recalculateMaxes', 'start');
-		// log(`before ${this.cache.maxes.print()}`);
+		// log(`before ${this.cache?.maxes?.print()}`);
 		this.cache.maxes = new Maxes();
 
 		if (!this.cache.segments) this.cache.segments = [];

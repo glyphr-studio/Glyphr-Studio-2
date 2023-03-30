@@ -14,17 +14,35 @@ export class GlyphElement {
 	 * Any change that updates the path of any part of a glyph
 	 * gets bubbled up through the GlyphElement hierarchy
 	 */
+	// changed(chain = '') {
 	changed() {
-		// log(`~~CHANGED ${this.objType}`);
+		// log(`changed called on ${this.name || this.objType}`);
+		// log(`~CHANGED`, 'start');
+		// log(`${this.objType} ${this?.name} ${this.__ID}`);
 		if (this.cache) {
 			this.cache = {};
 		}
+		// log(chain);
+		// log(this.cache);
 
 		if (this.parent && this.parent.changed) {
-			// log(status + ' - calling parent.changed()');
+			// log('\tcalling parent.changed()');
+			// this.parent.changed(`${chain} / ${this.objType}${this?.__ID}`);
 			this.parent.changed();
 		} else {
-			// log(status + ' - No Parent!');
+			// log(`${this.objType}${this?.__ID}`);
+			// log(this.cache);
+			// log('\tNo Parent!');
+		}
+		// log(`~CHANGED`, 'end');
+	}
+
+	traceLineage(descendants = '') {
+		let path = `${this.name || this.objType} / ${descendants}`;
+		if (this.parent && this.parent.traceLineage) {
+			this.parent.traceLineage(path);
+		} else {
+			console.warn(`No Parent! \n ${path}`);
 		}
 	}
 

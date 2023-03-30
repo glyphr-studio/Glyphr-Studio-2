@@ -56,11 +56,11 @@ export function getUnicodeShortName(codePoint) {
 }
 
 export function isWhitespace(charID) {
-	log(`isWhitespace`, 'start');
-	log(`charID: ${charID}`);
-	log(`whitespaceCharacters.indexOf(charID): ${whitespaceCharacters.indexOf(charID)}`);
-	
-	log(`isWhitespace`, 'end');
+	// log(`isWhitespace`, 'start');
+	// log(`charID: ${charID}`);
+	// log(`whitespaceCharacters.indexOf(charID): ${whitespaceCharacters.indexOf(charID)}`);
+
+	// log(`isWhitespace`, 'end');
 	return whitespaceCharacters.indexOf(charID) > -1;
 }
 
