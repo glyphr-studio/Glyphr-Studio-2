@@ -16,8 +16,8 @@ export class GlyphrStudioProject {
 	 * @param {object} newProject - Glyphr Studio Project File JSON
 	 */
 	constructor(newProject = {}) {
-		log('GlyphrStudioProject.constructor', 'start');
-		log(newProject);
+		// log('GlyphrStudioProject.constructor', 'start');
+		// log(newProject);
 		// Set up all internal default values first
 		this.settings = {
 			project: {
@@ -145,7 +145,7 @@ export class GlyphrStudioProject {
 
 		// log('\n\nfinished EVERYTHING - result:');
 		// log(this);
-		log('GlyphrStudioProject.constructor', 'end');
+		// log('GlyphrStudioProject.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -240,32 +240,36 @@ export class GlyphrStudioProject {
 	 */
 	getItemName(id, forceLongName = false) {
 		id = '' + id;
-		log('GlyphrStudioProject.getItemName', 'start');
-		log('passed ' + id);
+		// log('GlyphrStudioProject.getItemName', 'start');
+		// log('passed ' + id);
 
 		// not passed an id
 		if (!id) {
-			log('not passed an ID, returning false');
-			log('GlyphrStudioProject.getItemName', 'end');
+			// log('not passed an ID, returning false');
+			// log('GlyphrStudioProject.getItemName', 'end');
 			return false;
 		}
 
 		if (id.startsWith('glyph-')) {
 			// known unicode names
-			const un = forceLongName
-				? unicodeNames[remove(id, 'glyph-')]
-				: shortUnicodeNames[remove(id, 'glyph-')];
-			if (un) {
-				log('got unicode name: ' + un);
-				log('GlyphrStudioProject.getItemName', 'end');
-				return un;
+			let unicodeName;
+			if (forceLongName) {
+				unicodeName = unicodeNames[remove(id, 'glyph-')];
+			} else {
+				unicodeName = shortUnicodeNames[remove(id, 'glyph-')];
+			}
+
+			if (unicodeName) {
+				// log('got unicode name: ' + un);
+				// log('GlyphrStudioProject.getItemName', 'end');
+				return unicodeName;
 			}
 		}
 
 		const item = this.getItem(id);
 		const result = item.name || '[name not found]';
-		log(`Returning: ${result}`);
-		log('GlyphrStudioProject.getItemName', 'end');
+		// log(`Returning: ${result}`);
+		// log('GlyphrStudioProject.getItemName', 'end');
 		return result;
 	}
 
@@ -350,18 +354,18 @@ export class GlyphrStudioProject {
 
 	addNewItem(newItem, objType, newID) {
 		let destination;
-		if (objType === 'Glyph'){
+		if (objType === 'Glyph') {
 			destination = this.glyphs;
 		}
-		if (objType === 'Ligature'){
+		if (objType === 'Ligature') {
 			destination = this.ligatures;
 			newID = '';
 		}
-		if (objType === 'Component'){
+		if (objType === 'Component') {
 			destination = this.components;
 			newID = '';
 		}
-		if (objType === 'HKern'){
+		if (objType === 'HKern') {
 			destination = this.kerning;
 			newID = '';
 		}
@@ -379,10 +383,10 @@ export class GlyphrStudioProject {
 	 * @param {GlyphrStudioProject} destinationProject - parent project
 	 */
 	hydrateProjectItems(GlyphrStudioItem, source, objType) {
-		log(`hydrateProjectItems`, 'start');
-		log(`objType: ${objType}`);
-		log(`SOURCE:`);
-		log(source);
+		// log(`hydrateProjectItems`, 'start');
+		// log(`objType: ${objType}`);
+		// log(`SOURCE:`);
+		// log(source);
 		source = source || {};
 		let destination;
 		if (objType === 'Glyph') destination = this.glyphs;
@@ -392,19 +396,19 @@ export class GlyphrStudioProject {
 
 		for (const key of Object.keys(source)) {
 			let validatedKey = validateItemID(key, objType);
-			log(`\n STARTING key: ${key}`);
-			log(`validatedKey: ${validatedKey}`);
+			// log(`\n STARTING key: ${key}`);
+			// log(`validatedKey: ${validatedKey}`);
 
 			if (source[key]) {
 				destination[validatedKey] = new GlyphrStudioItem(source[key]);
 				destination[validatedKey].id = validatedKey;
 				destination[validatedKey].objType = objType;
 				destination[validatedKey].parent = this;
-				log(`DONE WITH ONE ITEM:`);
-				log(destination[validatedKey]);
+				// log(`DONE WITH ONE ITEM:`);
+				// log(destination[validatedKey]);
 			}
 		}
-		log(`hydrateProjectItems`, 'end');
+		// log(`hydrateProjectItems`, 'end');
 	}
 }
 

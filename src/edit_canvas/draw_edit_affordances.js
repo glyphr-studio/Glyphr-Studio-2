@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor, log } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeCrisp, round } from '../common/functions.js';
 import { drawItem } from '../display_canvas/draw_paths.js';
@@ -406,10 +406,11 @@ function getBoundingBoxAndHandleDimensions(maxes, thickness) {
 export function computeAndDrawPathPointHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
-	let paths = editor.multiSelect.paths.members;
+	let msPaths = editor.multiSelect.paths.members;
 
-	paths.forEach((path) => {
-		path.pathPoints.forEach((point) => {
+	msPaths.forEach((shape) => {
+		if(shape.objType === 'ComponentInstance') return;
+		shape.pathPoints.forEach((point) => {
 			if (editor.multiSelect.points.isSelected(point)) {
 				drawHandles(point, ctx);
 			}
@@ -420,11 +421,12 @@ export function computeAndDrawPathPointHandles(ctx) {
 export function testDrawAllPathPointHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
-	let paths = editor.selectedItem.paths;
+	let msPaths = editor.selectedItem.paths;
 
 	ctx.strokeStyle = 'purple';
-	paths.forEach((path) => {
-		path.pathPoints.forEach((point) => {
+	msPaths.forEach((shape) => {
+		if(shape.objType === 'ComponentInstance') return;
+		shape.pathPoints.forEach((point) => {
 			ctx.beginPath();
 			ctx.arc(sXcX(point.h1.x), sYcY(point.h1.y), 3, 0, Math.PI * 2, true);
 			ctx.closePath();
@@ -439,14 +441,15 @@ export function testDrawAllPathPointHandles(ctx) {
 
 export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 	const editor = getCurrentProjectEditor();
-	let paths = editor.multiSelect.paths.members;
-	if (drawAllPathPoints) paths = editor.selectedItem.paths;
+	let msPaths = editor.multiSelect.paths.members;
+	if (drawAllPathPoints) msPaths = editor.selectedItem.paths;
 
-	paths.forEach((path) => {
-		path.pathPoints.forEach((point, index) => {
+	msPaths.forEach((shape) => {
+		if(shape.objType === 'ComponentInstance') return;
+		shape.pathPoints.forEach((point, index) => {
 			if (index === 0) {
 				// This could just be '1' but whatever
-				let nextPoint = path.pathPoints[path.getNextPointNum(0)];
+				let nextPoint = shape.pathPoints[shape.getNextPointNum(0)];
 				drawDirectionalityPoint(point, ctx, editor.multiSelect.points.isSelected(point), nextPoint);
 			} else {
 				drawPoint(point, ctx, editor.multiSelect.points.isSelected(point));

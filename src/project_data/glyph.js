@@ -2,7 +2,7 @@ import { GlyphElement } from './glyph_element.js';
 import { getOverallMaxes, isAllZeros, Maxes } from './maxes.js';
 import { Path } from './path.js';
 import { ComponentInstance } from './component_instance.js';
-import { hasNonValues, isVal, remove, trim } from '../common/functions.js';
+import { hasNonValues, isVal, json, remove, trim } from '../common/functions.js';
 import { hexesToChars } from '../common/character_ids.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
 import { log } from '../app/main.js';
@@ -544,7 +544,9 @@ export class Glyph extends GlyphElement {
 		for (let i = 0; i < this.paths.length; i++) {
 			const path = this.paths[i];
 			// log(`moving path #${i} - ${path.name}`);
+			// log(`BEFORE path.maxes.xMin: ${path.maxes.xMin}`);
 			path.updatePathPosition(dx, dy);
+			// log(`AFTERS path.maxes.xMin: ${path.maxes.xMin}`);
 		}
 		// log(this.name);
 		// log('Glyph.updateGlyphPosition', 'end');
@@ -794,7 +796,7 @@ export class Glyph extends GlyphElement {
 
 	get maxes() {
 		// log('Glyph GET maxes', 'start');
-		// log('cache before')
+		// log('cache before');
 		if (!this.cache.maxes) {
 			// log('detected no maxes cache');
 			this.recalculateGlyphMaxes();

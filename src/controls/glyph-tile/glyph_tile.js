@@ -21,7 +21,7 @@ export class GlyphTile extends HTMLElement {
 	 */
 	constructor(attributes = {}) {
 		super();
-		log(`GlyphTile.constructor`, 'start');
+		// log(`GlyphTile.constructor`, 'start');
 		// log(attributes);
 
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
@@ -33,10 +33,10 @@ export class GlyphTile extends HTMLElement {
 		const name = this.glyph?.name || project.getItemName(displayedItemID, true);
 		this.view = {};
 
-		log(`displayedItemID: ${displayedItemID}`);
-		log(`chars: ${chars}`);
-		log(`name: ${name}`);
-		log(this.glyph);
+		// log(`displayedItemID: ${displayedItemID}`);
+		// log(`chars: ${chars}`);
+		// log(`name: ${name}`);
+		// log(this.glyph);
 
 		const overallSize = 50;
 
@@ -84,7 +84,7 @@ export class GlyphTile extends HTMLElement {
 		shadow.appendChild(this.wrapper);
 		redraw(this);
 
-		log(`GlyphTile.constructor`, 'end');
+		// log(`GlyphTile.constructor`, 'end');
 	}
 
 	attributeChangedCallback() {
