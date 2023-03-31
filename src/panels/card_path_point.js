@@ -20,7 +20,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	let pathPointCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: '<h3>Path point</h3>',
+		innerHTML: `<h3>Path point ${selectedPoint.pointNumber + 1}</h3>`,
 	});
 
 	// let pointNumLabel = makeSingleLabel('Selected path point');
