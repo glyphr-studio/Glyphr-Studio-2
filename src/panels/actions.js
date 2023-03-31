@@ -436,6 +436,34 @@ export function getActionData(name) {
 				editor.publish('currentControlPoint.p', point.p);
 			},
 		},
+		{
+			iconName: 'selectNextPathPoint',
+			title: `Select next Path Point\nSelect the path point that comes after the currently selected path point.`,
+			disabled: selectedPoints.length !== 1,
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				let msPoints = editor.multiSelect.points;
+				let path = msPoints.singleton.parent;
+				let thisIndex = msPoints.singleton.pointNumber;
+				let nextIndex = path.getNextPointNum(thisIndex);
+				msPoints.select(path.pathPoints[nextIndex]);
+				editor.publish('whichPathPointIsSelected', path.pathPoints[nextIndex]);
+			},
+		},
+		{
+			iconName: 'selectPreviousPathPoint',
+			title: `Select pervious Path Point\nSelect the path point that comes before the currently selected path point.`,
+			disabled: selectedPoints.length !== 1,
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				let msPoints = editor.multiSelect.points;
+				let path = msPoints.singleton.parent;
+				let thisIndex = msPoints.singleton.pointNumber;
+				let previousIndex = path.getPreviousPointNum(thisIndex);
+				msPoints.select(path.pathPoints[previousIndex]);
+				editor.publish('whichPathPointIsSelected', path.pathPoints[previousIndex]);
+			},
+		},
 	];
 
 	return data[name];

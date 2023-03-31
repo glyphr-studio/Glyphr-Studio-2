@@ -262,12 +262,12 @@ makeActionButtonIcon.switchPathComponent = function (isComponentInstance = false
 	let after = actionButtonIconColors.greenOutline;
 	let beforeFill = actionButtonIconColors.darkFill;
 	let afterFill = actionButtonIconColors.lightFill;
-		if (isComponentInstance) {
-			before = actionButtonIconColors.greenOutline;
-			after = actionButtonIconColors.blueOutline;
-			beforeFill = actionButtonIconColors.lightFill;
-			afterFill = actionButtonIconColors.darkFill;
-		}
+	if (isComponentInstance) {
+		before = actionButtonIconColors.greenOutline;
+		after = actionButtonIconColors.blueOutline;
+		beforeFill = actionButtonIconColors.lightFill;
+		afterFill = actionButtonIconColors.darkFill;
+	}
 
 	re += `
 	<polygon fill="${beforeFill}" points="5.1,21 1,17.2 1,1 3.4,1 10,11.3 10,21"/>
@@ -525,6 +525,32 @@ makeActionButtonIcon.insertPathPoint = function () {
 		<rect x="15" y="21" fill="${blue}" width="15" height="3"/>';
 	`;
 
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.selectNextPathPoint = function () {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let gray = actionButtonIconColors.grayOutline;
+	re += `
+		<rect x="22.5" y="11.5" width="7" height="7" fill="white"/>
+		<path d="m29,12v6h-6v-6h6m1-1h-8v8h8v-8h0Z" fill="${blue}"/>
+		<path d="m19,15s-7-7-7-7v5h-6v4h6v5s7-7,7-7Z" fill="${gray}"/>
+		<rect y="13" width="3" height="4" fill="${gray}"/>
+	`;
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.selectPreviousPathPoint = function () {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let gray = actionButtonIconColors.grayOutline;
+	re += `
+		<rect x=".5" y="11.5" width="7" height="7" fill="white"/>
+		<path d="m7,12v6H1v-6h6m1-1H0v8h8v-8h0Z" fill="${blue}"/>
+		<path d="m11,15s7-7,7-7v5h6v4h-6s0,5,0,5l-7-7Z" fill="${gray}"/>
+		<rect x="27" y="13" width="3" height="4" fill="${gray}"/>
+	`;
 	return svgWrap(re);
 };
 
