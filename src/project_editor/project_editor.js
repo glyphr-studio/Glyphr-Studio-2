@@ -313,7 +313,11 @@ export class ProjectEditor {
 				this._selectedGlyphRange = ranges[0];
 			} else {
 				// log('was false, and no ranges, returning default');
-				this._selectedGlyphRange = new GlyphRange({ end: 0x7f, name: 'Basic Latin (default)' });
+				this._selectedGlyphRange = new GlyphRange({
+					begin: 0x20,
+					end: 0x7e,
+					name: 'Basic Latin (default)',
+				});
 			}
 		}
 

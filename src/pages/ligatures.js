@@ -266,7 +266,7 @@ export function makeLigatureID(sequence) {
 	chars.forEach((char) => {
 		// If basic latin letter, use the letter
 		let code = char.charCodeAt(0);
-		if ((code >= 65 && code <= 90) || (code >= 97 && code <= 122)) {
+		if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
 			newID += '-' + char;
 		} else {
 			newID += '-' + charToHex(char);

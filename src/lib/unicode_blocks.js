@@ -14,8 +14,8 @@ export function getUnicodeBlockByName(name) {
 }
 
 export const unicodeBlocks = [
-	{ begin: 0x0000, end: 0x0020, name: 'Basic Latin Controls' },
-	{ begin: 0x0021, end: 0x007f, name: 'Basic Latin' },
+	{ begin: 0x0000, end: 0x001f, name: 'Basic Latin Controls' },
+	{ begin: 0x0020, end: 0x007f, name: 'Basic Latin' },
 	{ begin: 0x0080, end: 0x009f, name: 'Latin-1 Supplement Controls' },
 	{ begin: 0x00a0, end: 0x00ff, name: 'Latin-1 Supplement' },
 	{ begin: 0x0100, end: 0x017f, name: 'Latin Extended-A' },
@@ -194,7 +194,7 @@ export const unicodeBlocks = [
 ];
 
 export const unicodeNonCharPoints = [
-	{ begin: 0x0000, end: 0x0020, name: 'Basic Latin Controls' },
+	{ begin: 0x0000, end: 0x001f, name: 'Basic Latin Controls' },
 	{ begin: 0x0080, end: 0x009f, name: 'Latin-1 Supplement Controls' },
 ];
 
@@ -213,4 +213,13 @@ export function isCharInRange(char, range) {
 	if (isNaN(char)) return false;
 	let result = char <= range.end && char >= range.begin;
 	return result;
+}
+
+export function getParentRange(char) {
+	for (let b = 0; b < unicodeBlocks.length; b++) {
+		if (char <= unicodeBlocks[b].end && char >= unicodeBlocks[b].begin) {
+			return unicodeBlocks[b];
+		}
+	}
+	return false;
 }
