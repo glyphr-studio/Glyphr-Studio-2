@@ -180,6 +180,7 @@ function makeLivePreviewOptions() {
 	glyphsInput.addEventListener('keyup', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
+		livePreviewOptions.glyphString = newValue;
 		displayCanvas.setAttribute('glyphs', newValue);
 	});
 
