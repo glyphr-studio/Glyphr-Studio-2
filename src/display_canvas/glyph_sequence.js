@@ -1,5 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
-import { charsToHexArray, hexesToChars, parseCharsInputAsHex } from '../common/character_ids';
+import { charToHex, charsToHexArray, hexesToChars, parseCharsInputAsHex } from '../common/character_ids';
 import { Maxes } from '../project_data/maxes.js';
 
 /**
@@ -132,7 +132,7 @@ export class GlyphSequence {
 					thisGlyph = project.ligatures[currentChar];
 					currentChar = thisGlyph.chars;
 				} else {
-					thisGlyph = project.getItem(charsToHexArray(currentChar));
+					thisGlyph = project.getItem(`glyph-${charToHex(currentChar)}`);
 				}
 
 				// Calculate width
