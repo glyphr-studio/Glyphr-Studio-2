@@ -213,19 +213,28 @@ dialog {
 	text-align: center;
 	width: 20px;
 	height: 20px;
-	line-height: 16px;
+	line-height: 14px;
 	font-size: 1.2em;
-	padding: 0px;
+	padding: 0px 0px 2px 0px;
 	margin: 0px;
 }
 
 .modal-dialog__close-button:hover {
 	background-color: var(--blue-l90);
-	color: var(--blue-l20);
-	border-color: var(--blue-l20);
+	color: var(--blue-l30);
+	border-color: var(--blue-l70);
 	cursor: pointer;
-		padding: 0px;
-			margin: 0px;
+	padding: 0px 0px 2px 0px;
+	margin: 0px;
+}
+
+.modal-dialog__close-button:active,
+.modal-dialog__close-button:focus {
+	background-color: var(--blue-l90);
+	color: var(--blue-l50);
+	cursor: pointer;
+	padding: 0px;
+	margin: 0px;
 }
 
 .modal-dialog__glyph-chooser-scroll-area {
