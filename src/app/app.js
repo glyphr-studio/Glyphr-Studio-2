@@ -232,7 +232,7 @@ function makeMenu(menuName) {
 						{
 							name: 'Save Glyphr Studio Project File',
 							icon: 'command_save',
-							shortcut: ['Ctrl', 's'],
+							note: ['Ctrl', 's'],
 							onClick: () => {
 								getCurrentProjectEditor().saveGlyphrProjectFile();
 							},
@@ -241,13 +241,13 @@ function makeMenu(menuName) {
 						{
 							name: 'Export OTF File',
 							icon: 'command_export',
-							shortcut: ['Ctrl', 'e'],
+							note: ['Ctrl', 'e'],
 							onClick: ioFont_exportFont,
 						},
 						{
 							name: 'Export SVG Font File',
 							icon: 'command_export',
-							shortcut: ['Ctrl', 'g'],
+							note: ['Ctrl', 'g'],
 							onClick: ioSVG_exportSVGfont,
 						},
 					],
@@ -269,7 +269,7 @@ function makeMenu(menuName) {
 						{
 							name: 'Open another project',
 							icon: 'command_newTab',
-							shortcut: ['Ctrl', 'o'],
+							note: ['Ctrl', 'o'],
 							onClick: () => {
 								window.open('https://glyphrstudio.com/v2/app/', '_blank');
 							},

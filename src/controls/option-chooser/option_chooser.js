@@ -4,7 +4,6 @@ import {
 	closeAllOptionChoosers,
 	makeContextMenu,
 } from '../dialogs/dialogs.js';
-import { json } from '../../common/functions.js';
 import { closeAllNavMenus } from '../../project_editor/navigator.js';
 
 /**
