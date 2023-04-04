@@ -2,7 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js'
 import { countItems, isVal, pause, round } from '../common/functions.js';
 import { decToHex } from '../common/character_ids.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
-import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
+import { getParentRange, getUnicodeBlockByName, isControlChar } from '../lib/unicode_blocks.js';
 import { isOutOfBounds } from '../pages/open_project.js';
 import { Glyph } from '../project_data/glyph.js';
 import {
@@ -11,6 +11,7 @@ import {
 } from './svg_outline_import.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
 import { makeLigatureID } from '../pages/ligatures.js';
+import { GlyphRange } from '../project_data/glyph_range.js';
 
 /**
 	IO > Import > OpenType
@@ -18,10 +19,10 @@ import { makeLigatureID } from '../pages/ligatures.js';
 	and convert it to a Glyphr Studio Project.
 **/
 const finalGlyphs = {};
+const importedRanges = {};
 const finalLigatures = {};
 let importItemCounter = 0;
 let importItemTotal = 0;
-let customGlyphRange = [];
 // let maxChar = 0;
 // let minChar = 0xffff;
 
@@ -52,6 +53,7 @@ export async function ioFont_importFont(importedFont) {
 	// project.kerning = finalKerns;
 
 	const editor = getCurrentProjectEditor();
+	editor.selectedGlyphRange = getUnicodeBlockByName('Basic Latin');
 	editor.nav.page = 'Overview';
 	editor.navigate();
 
@@ -110,16 +112,21 @@ function importOneGlyph(otfGlyph, project) {
 
 	const glyphID = `glyph-${uni}`;
 	importedGlyph.id = glyphID;
-	const latinExtendedB = getUnicodeBlockByName('Latin Extended-B');
-	if (1 * uni > latinExtendedB.end) customGlyphRange.push(uni);
 
 	finalGlyphs[glyphID] = importedGlyph;
 	// log(`Pushing new glyph to finalGlyphs as:`);
 	// log(finalGlyphs[uni]);
 
-	if (getUnicodeName(uni) === '[name not found]') {
+	if (isControlChar(uni)) {
 		project.settings.app.showNonCharPoints = true;
+		console.warn(`CONTROL CHAR FOUND ${uni}`);
 	}
+
+	const parentRange = getParentRange(uni);
+	if (!importedRanges[parentRange.name]) {
+		importedRanges[parentRange.name] = parentRange;
+	}
+
 	// Successful loop, advance importItemCounter
 	importItemCounter++;
 	log(importedGlyph);
@@ -235,59 +242,10 @@ function importOneLigature(otfLigature, otfFont) {
  */
 // const finalKerns = {};
 // function importOneKern() {
-
 // }
 
 function importFontMetadata(font, project) {
 	// log('importFontMetadata', 'start');
-
-	/*
-		REFACTOR
-		let rangeStart;
-		let rend;
-		for (const r of Object.keys(_UI.glyphRange)) {
-			rangeStart = 1 * _UI.glyphRange[r].begin;
-			rend = 1 * _UI.glyphRange[r].end + 1;
-			for (let t = rangeStart; t < rend; t++) {
-				if (getItem('' + decToHex(t))) {
-					project.settings.glyphRanges[r] = true;
-					break;
-				}
-			}
-		}
-		*/
-
-	// Make a custom ranges for the rest, with logical separations
-	// log('customGlyphRange.length ' + customGlyphRange.length);
-
-	if (customGlyphRange.length) {
-		const ranges = project.settings.project.glyphRanges;
-		const maxValley = 50;
-		const maxRange = 100;
-		customGlyphRange = customGlyphRange.sort();
-		let rangeStart = customGlyphRange[0];
-		let rangeEnd = customGlyphRange[0];
-		let fencepost = true;
-
-		customGlyphRange.forEach((range) => {
-			// log('' + range + ' \t ' + rangeStart + ' \t ' + rangeEnd);
-
-			if (range - rangeStart > maxRange || range - rangeEnd > maxValley) {
-				ranges.push({ begin: rangeStart, end: rangeEnd });
-				rangeStart = range;
-				rangeEnd = range;
-				fencepost = false;
-				// log('new glyphRange ' + json(ranges));
-			} else {
-				rangeEnd = range;
-				fencepost = true;
-				// log('incrementing...');
-			}
-		});
-
-		if (fencepost) ranges.push({ begin: rangeStart, end: rangeEnd });
-		// log('new glyphRange ' + json(ranges));
-	}
 
 	// Import Font Settings
 	// Check to make sure certain stuff is there
@@ -322,6 +280,11 @@ function importFontMetadata(font, project) {
 	fontSettings.license = getTableValue(font.tables.name.license) || '';
 	fontSettings.licenseURL = getTableValue(font.tables.name.licenseURL) || '';
 	fontSettings.description = getTableValue(font.tables.name.description) || '';
+
+	// Ranges
+	for (const range of Object.keys(importedRanges)) {
+		project.settings.project.glyphRanges.push(new GlyphRange(importedRanges[range]));
+	}
 
 	// log('importFontMetadata', 'end');
 }

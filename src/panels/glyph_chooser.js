@@ -74,34 +74,36 @@ function makeGlyphChooserTileGrid() {
 	// log(editor.selectedGlyphRange);
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
-	editor.selectedGlyphRange.array.forEach((charID) => {
-		const glyphID = `glyph-${charID}`;
-		// log(`glyphID: ${glyphID}`);
-		let oneTile = new GlyphTile({ 'displayed-item-id': glyphID });
-		if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');
+	let rangeArray = editor.selectedGlyphRange.array;
+	if (rangeArray?.length){
+		rangeArray.forEach((charID) => {
+			const glyphID = `glyph-${charID}`;
+			// log(`glyphID: ${glyphID}`);
+			let oneTile = new GlyphTile({ 'displayed-item-id': glyphID });
+			if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');
 
-		oneTile.addEventListener('click', () => savedClickHandler(glyphID));
+			oneTile.addEventListener('click', () => savedClickHandler(glyphID));
 
-		if (savedRegisterSubscriptions) {
-			editor.subscribe({
-				topic: 'whichGlyphIsSelected',
-				subscriberID: `glyphTile.${glyphID}`,
-				callback: (newGlyphID) => {
-					// log('whichGlyphIsSelected subscriber callback');
-					// log(`checking if ${glyph.id} === ${glyphID}`);
-					if (parseInt(newGlyphID) === parseInt(glyphID)) {
-						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
-						oneTile.setAttribute('selected', '');
-					} else {
-						// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
-						oneTile.removeAttribute('selected');
-					}
-				},
-			});
-		}
-
-		tileGrid.appendChild(oneTile);
-	});
+			if (savedRegisterSubscriptions) {
+				editor.subscribe({
+					topic: 'whichGlyphIsSelected',
+					subscriberID: `glyphTile.${glyphID}`,
+					callback: (newGlyphID) => {
+						// log('whichGlyphIsSelected subscriber callback');
+						// log(`checking if ${glyph.id} === ${glyphID}`);
+						if (parseInt(newGlyphID) === parseInt(glyphID)) {
+							// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
+							oneTile.setAttribute('selected', '');
+						} else {
+							// log(`Callback: removing ${oneTile.getAttribute('glyph')} attribute selected`);
+							oneTile.removeAttribute('selected');
+						}
+					},
+				});
+			}
+			tileGrid.appendChild(oneTile);
+		});
+	}
 
 	// console.timeEnd('makeGlyphChooserTileGrid');
 	// log(`makeGlyphChooserTileGrid`, 'end');
