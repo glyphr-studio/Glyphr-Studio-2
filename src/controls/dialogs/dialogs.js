@@ -177,6 +177,8 @@ export function makeContextMenu(
 }
 
 function makeOneContextMenuRow(data = {}) {
+	// log(`makeOneContextMenuRow`, 'start');
+	// log(data);
 	let row = makeElement({
 		tag: 'div',
 		className: 'context-menu-row',
@@ -211,9 +213,15 @@ function makeOneContextMenuRow(data = {}) {
 
 	// Note / Keyboard Shortcut
 	let noteWrapper = makeElement({ className: 'row-notes' });
+	// log(`data.note: ${data.note}`);
+
 	if (data.note) {
-		if (data.note.charAt(0) === '[' ) {
+		if (typeof data.note === 'string' && data.note.charAt(0) === '[') {
 			JSON.parse(data.note).forEach((key) =>
+				noteWrapper.appendChild(makeElement({ tag: 'code', innerHTML: key }))
+			);
+		} else if (Array.isArray(data.note)) {
+			data.note.forEach((key) =>
 				noteWrapper.appendChild(makeElement({ tag: 'code', innerHTML: key }))
 			);
 		} else {
@@ -230,6 +238,7 @@ function makeOneContextMenuRow(data = {}) {
 		if (data.onClick) data.onClick();
 	});
 
+	// log(`makeOneContextMenuRow`, 'end');
 	return row;
 }
 
