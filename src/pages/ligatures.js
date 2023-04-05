@@ -6,7 +6,7 @@ import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 import { Glyph } from '../project_data/glyph.js';
-import { closeEveryTypeOfDialog, showError, showModalDialog } from '../controls/dialogs/dialogs.js';
+import { closeAllInfoBubbles, closeEveryTypeOfDialog, showError, showModalDialog } from '../controls/dialogs/dialogs.js';
 import { charToHex } from '../common/character_ids.js';
 
 /**
@@ -108,7 +108,9 @@ export function makePage_Ligatures() {
 	});
 
 	// Panel
-	content.querySelector('#editor-page__panel').appendChild(makePanel());
+	const panel = content.querySelector('#editor-page__panel');
+	panel.appendChild(makePanel());
+	panel.addEventListener('scroll', closeAllInfoBubbles);
 	editor.subscribe({
 		topic: ['whichLigatureIsSelected', 'whichPathIsSelected'],
 		subscriberID: 'nav.panelChooserButton',

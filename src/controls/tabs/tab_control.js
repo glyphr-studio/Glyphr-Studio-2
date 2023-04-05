@@ -1,9 +1,11 @@
 import { addAsChildren, makeElement } from '../../common/dom.js';
+import { closeAllInfoBubbles } from '../dialogs/dialogs.js';
 
 export class TabControl {
 	constructor(targetElement) {
 		this.tabs = [];
 		this.targetElement = targetElement;
+		this.targetElement.addEventListener('scroll', closeAllInfoBubbles);
 	}
 
 	registerTab(tabName = 'Tab Name', tabContent = '') {
@@ -46,5 +48,6 @@ export class TabControl {
 				tab.tabElement.removeAttribute('selected');
 			}
 		});
+		closeAllInfoBubbles();
 	}
 }

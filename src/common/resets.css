@@ -191,6 +191,10 @@ textarea:focus::-webkit-resizer {
 	border: 2px outset var(--enabled-focus-background);
 }
 
+info-bubble {
+	width: 12px;
+}
+
 input:focus,
 button:focus,
 textarea:focus,

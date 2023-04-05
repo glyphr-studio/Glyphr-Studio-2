@@ -13,6 +13,7 @@
 	left: 100px;
 	top: 100px;
 	text-align: center;
+	animation: var(--animate-fade-in);
 }
 
 .pointer {

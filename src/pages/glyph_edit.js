@@ -5,6 +5,7 @@ import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
+import { closeAllInfoBubbles } from '../controls/dialogs/dialogs.js';
 
 /**
  * Page > Glyph Edit
@@ -77,7 +78,7 @@ export function makePage_GlyphEdit() {
 	// Panel
 	const panel = content.querySelector('#editor-page__panel');
 	panel.appendChild(makePanel());
-
+	panel.addEventListener('scroll', closeAllInfoBubbles);
 	editor.subscribe({
 		topic: ['whichGlyphIsSelected', 'whichPathIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
