@@ -14,6 +14,7 @@ export function closeEveryTypeOfDialog() {
 	closeAllOptionChoosers();
 	closeAllErrors();
 	closeAllToasts();
+	closeAllInfoBubbles();
 	// log(`closeEveryTypeOfDialog`, 'end');
 }
 
@@ -53,10 +54,19 @@ export function closeAllErrors() {
 	// log(`closeAllErrors`, 'end');
 }
 
-export function animateRemove(element) {
-	let animationLength = 120;
+export function closeAllInfoBubbles() {
+	// log(`closeAllInfoBubbles`, 'start');
+	let bubbles = document.querySelectorAll('#bubble');
+	bubbles.forEach((elem) => {
+		elem.querySelector('.content').dispatchEvent(new Event('mouseleave'));
+		elem.blur();
+	});
+	// log(`closeAllInfoBubbles`, 'end');
+}
+
+export function animateRemove(element, animationLength = 120, scale = 0.98, translateY = '-5px') {
 	element.animate(
-		{ opacity: 0, transform: 'scale(0.98) translateY(-5px)' },
+		{ opacity: 0, transform: `scale(${scale}) translateY(${translateY})` },
 		{ duration: animationLength }
 	);
 	window.setTimeout(() => {

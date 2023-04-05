@@ -1,7 +1,8 @@
-import { accentColors } from '../../common/colors.js';
 import { makeElement } from '../../common/dom.js';
 import style from './info-bubble.css?inline';
 import bubbleStyle from './info-bubble-popup.css?inline';
+import { log } from '../../app/main.js';
+import { animateRemove, closeAllInfoBubbles } from '../dialogs/dialogs.js';
 
 /**
  * A small bubble that displays information
@@ -26,11 +27,16 @@ export class InfoBubble extends HTMLElement {
 		shadow.appendChild(wrapper);
 
 		// Event listeners
-		this.addEventListener('mouseover', this.show);
-		this.addEventListener('focus', this.show);
+		this.addEventListener('click', this.toggle);
+		this.addEventListener('keydown', this.keyPress);
+	}
 
-		this.addEventListener('mouseout', () => this.hide(this.entryPoint));
-		this.addEventListener('blur', () => this.hide(this.entryPoint));
+	/**
+	 * Toggle the bubble
+	 */
+	toggle() {
+		if (document.getElementById('bubble')) this.hide(this.entryPoint);
+		else this.show();
 	}
 
 	/**
@@ -38,7 +44,7 @@ export class InfoBubble extends HTMLElement {
 	 */
 	show() {
 		// log(`info-bubble show`, 'start');
-
+		closeAllInfoBubbles();
 		// put together bubble stuff
 		// log(`Making bubble...`);
 		let bubble = makeElement({
@@ -60,14 +66,9 @@ export class InfoBubble extends HTMLElement {
 
 		bubble.appendChild(pointer);
 		bubble.appendChild(content);
+		content.addEventListener('mouseleave', () => this.hide(this.entryPoint));
 
-		// Event listeners
-		// bubble.addEventListener('mouseover', () => this.isMouseOverBubble = true);
-		// bubble.addEventListener('focus', () => this.isMouseOverBubble = true);
-
-		bubble.addEventListener('mouseout', () => this.hide(this.entryPoint));
-		bubble.addEventListener('blur', () => this.hide(this.entryPoint));
-
+		// Add and show bubble
 		document.body.appendChild(bubble);
 		let entryPointRect = this.entryPoint.getBoundingClientRect();
 		let bubbleRect = bubble.getBoundingClientRect();
@@ -86,6 +87,8 @@ export class InfoBubble extends HTMLElement {
 		this.entryPoint.style.borderColor = 'rgb(180, 180, 180)';
 		this.entryPoint.style.backgroundColor = 'rgb(180, 180, 180)';
 		this.entryPoint.style.color = 'rgb(250, 250, 250)';
+		this.entryPoint.style.cursor = 'pointer';
+		this.entryPoint.innerHTML = '✖';
 
 		// log(`info-bubble show`, 'end');
 	}
@@ -97,20 +100,40 @@ export class InfoBubble extends HTMLElement {
 		// log(`info-bubble hide`, 'start');
 		// log(this);
 		// log(entryPoint);
-
 		let bubble = document.getElementById('bubble');
-		bubble.style.left = '-1000px';
-		bubble.style.top = '-1000px';
-		bubble.style.display = 'none';
-		bubble.style.opacity = '0';
-
-		document.body.removeChild(bubble);
+		animateRemove(bubble, 120, 0.98, '0px');
+		// document.body.removeChild(bubble);
 		// log(`bubble has been removed`);
 
 		entryPoint.style.borderColor = 'rgb(180, 180, 180)';
 		entryPoint.style.backgroundColor = 'transparent';
 		entryPoint.style.color = 'rgb(180, 180, 180)';
-
+		entryPoint.style.cursor = 'help';
+		entryPoint.innerHTML = '?';
+		entryPoint.blur();
 		// log(`info-bubble hide`, 'end');
+	}
+
+	/**
+	 * Handle keypress event
+	 * @param {object} ev - event
+	 */
+	keyPress(ev) {
+		switch (ev.keyCode) {
+			case 13: // enter
+			case 37: // d-pad left
+			case 39: // d-pad right
+			case 98: // ten key down
+			case 102: // ten key right
+			case 104: // ten key up
+			case 107: // ten key +
+			case 109: // ten key -
+			case 100: // ten key left
+				this.dispatchEvent(new Event('click'));
+				break;
+
+			default:
+				break;
+		}
 	}
 }
