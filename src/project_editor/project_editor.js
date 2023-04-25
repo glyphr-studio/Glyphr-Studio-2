@@ -497,19 +497,29 @@ export class ProjectEditor {
 			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
 			historyTitle = `Deleted Glyph ${id} : ${this.selectedGlyph.name}`;
-			this.history.addState(historyTitle, { itemWasDeleted: true });
+			this.history.addState(historyTitle, {
+				itemWasDeleted: true,
+				otherChanges: clone(this.selectedGlyph.usedIn),
+			});
 			delete this.project.glyphs[id];
 		} else if (itemType === 'Components') {
 			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
 			id = this.selectedComponentID;
 			historyTitle = `Deleted Component ${id} : ${this.selectedComponent.name}`;
-			this.history.addState(historyTitle, { itemWasDeleted: true });
+			this.history.addState(historyTitle, {
+				itemWasDeleted: true,
+				otherChanges: clone(this.selectedComponent.usedIn),
+			});
+			// TODO components update usedin
 			delete this.project.components[id];
 		} else if (itemType === 'Ligatures') {
 			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
 			id = this.selectedLigatureID;
 			historyTitle = `Deleted Ligature ${id} : ${this.selectedLigature.name}`;
-			this.history.addState(historyTitle, { itemWasDeleted: true });
+			this.history.addState(historyTitle, {
+				itemWasDeleted: true,
+				otherChanges: clone(this.selectedLigature.usedIn),
+			});
 			delete this.project.ligatures[id];
 		} else if (itemType === 'Kerning') {
 			// log(`deleting selectedKernID: ${this.selectedKernID}`);

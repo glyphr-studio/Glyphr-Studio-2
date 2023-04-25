@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { showToast } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { ioFont_exportFont } from '../io/font_export.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import {
@@ -8,7 +8,6 @@ import {
 	deleteSelectedPoints,
 	clipboardPaste,
 } from '../panels/actions.js';
-import { setCursor, updateCursor } from './cursors.js';
 import {
 	cancelDefaultEventActions,
 	eventHandlerData,
@@ -110,7 +109,7 @@ export function handleKeyPress(event) {
 	}
 
 	if (key === 'esc') {
-		closeDialog();
+		closeEveryTypeOfDialog();
 	}
 
 	// z
