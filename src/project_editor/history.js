@@ -41,11 +41,18 @@ export class History {
 			changedItem: changedItem,
 			itemWasDeleted: options.itemWasDeleted,
 		});
-		this.queue.unshift(entry);
 
 		if (options.otherChanges) {
-			//TODO Components
+			entry.otherChanges = [];
+			options.otherChanges.forEach(itemID => {
+				entry.otherChanges.push(makeHistoryEntry({
+					itemID: itemID,
+					changedItem: getCurrentProject().getItem(itemID),
+				}));
+			});
 		}
+
+		this.queue.unshift(entry);
 
 		editor.setProjectAsUnsaved();
 		if (editor.nav.panel === 'History') {
@@ -146,7 +153,11 @@ export class History {
 		// Overwrite the current item with the redo state
 		// log(`overwriting ${editor.selectedItem.name}`);
 		editor.selectedItem = nextEntry.itemState;
-
+		if (nextEntry.otherChanges.length) {
+			nextEntry.otherChanges.forEach((entry) => {
+				editor.project.setItem(entry.itemID, entry.changedItem);
+			});
+		}
 		// Index 0 is the previous current state, so remove it
 		q.shift();
 
@@ -165,7 +176,7 @@ export class History {
 	}
 }
 
-function makeHistoryEntry({ itemID, title, changedItem, page, itemWasDeleted = false }) {
+function makeHistoryEntry({ itemID, title = '', changedItem, page = '', itemWasDeleted = false }) {
 	// TODO Kerning
 	let newEntry = {
 		timeStamp: new Date().getTime(),

@@ -191,13 +191,12 @@ export class GlyphrStudioProject {
 	}
 
 	// --------------------------------------------------------------
-	// Getting Items
+	// Getting / Setting Items
 	// --------------------------------------------------------------
 
 	/**
-	 * Get a glyph by ID, create it if need be
+	 * Get a glyph, ligature, or component by ID
 	 * @param {string} id - which Glyph to return
-	 * @param {boolean} create - create if it doesn't exist yet
 	 * @returns {Glyph}
 	 */
 	getItem(id) {
@@ -213,6 +212,7 @@ export class GlyphrStudioProject {
 		id = '' + id;
 		let result;
 
+		// TODO Kern
 		if (this.ligatures && id.startsWith('liga-')) {
 			// log(`detected LIGATURE`);
 			result = this.ligatures[id] || false;
@@ -230,6 +230,41 @@ export class GlyphrStudioProject {
 		// log(result);
 		// log('GlyphrStudioProject.getItem', 'end');
 		return result;
+	}
+
+	/**
+	 * Sets an item based on an ID
+	 * @param {string} id - item ID to set
+	 * @param {Glyph} newItem - new thing to set
+	 * @returns nothing
+	 */
+	setItem(id, newItem) {
+		// log('GlyphrStudioProject.setItem', 'start');
+		// log(`id: ${id}`);
+
+		if (!id) {
+			// log('Not passed an ID, returning false');
+			// log('GlyphrStudioProject.setItem', 'end');
+			return false;
+		}
+
+		id = '' + id;
+
+		// TODO Kern
+		if (this.ligatures && id.startsWith('liga-')) {
+			// log(`detected LIGATURE`);
+			this.ligatures[id] = newItem;
+		} else if (this.glyphs && id.startsWith('glyph-')) {
+			// log(`detected GLYPH`);
+			this.glyphs[id] = newItem;
+		} else if (this.components && id.startsWith('comp-')) {
+			// log(`detected COMPONENT`);
+			this.components[id] = newItem;
+		} else {
+			// log('NO RESULT FOUND');
+		}
+
+		// log('GlyphrStudioProject.setItem', 'end');
 	}
 
 	/**
@@ -346,6 +381,42 @@ export class GlyphrStudioProject {
 		// log(result);
 		// log(`GlyphrStudioProject GET sortedLigatures`, 'end');
 		return result;
+	}
+
+	forEachItem(fun) {
+		log(`GlyphrStudioProject.forEachItem`, 'start');
+		console.time('forEachItem');
+		let aggregate = [];
+		let counter = 0;
+		let result;
+
+		// Glyphs
+		for (const id of Object.keys(this.glyphs)) {
+			result = fun(this.glyphs[id]);
+			aggregate = aggregate.concat(result);
+			counter++;
+		}
+
+		// Components
+		for (const id of Object.keys(this.components)) {
+			result = fun(this.components[id]);
+			aggregate = aggregate.concat(result);
+			counter++;
+		}
+
+		// Ligatures
+		for (const id of Object.keys(this.ligatures)) {
+			result = fun(this.ligatures[id]);
+			aggregate = aggregate.concat(result);
+			counter++;
+		}
+
+		log(`counter: ${counter}`);
+		log(`aggregate:`);
+		log(aggregate);
+		console.timeEnd('forEachItem');
+		log(`GlyphrStudioProject.forEachItem`, 'end');
+		return aggregate;
 	}
 
 	// --------------------------------------------------------------

@@ -213,7 +213,9 @@ export function getActionData(name) {
 				);
 				editor.multiSelect.paths.deletePaths();
 				editor.multiSelect.paths.select(newShape);
-				editor.history.addState('Turned a path into a component', [addedComponent]);
+				editor.history.addState('Turned a path into a component', {
+					otherChanges: [addedComponent.id],
+				});
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -262,13 +264,15 @@ export function getActionData(name) {
 				editor.multiSelect.paths.members.forEach((shape) => {
 					if (shape.objType === 'ComponentInstance') {
 						const sourceItem = editor.project.getItem(shape.link);
-						newShapes = newShapes.concat(copyShapesFromTo(shape.transformedGlyph, editor.selectedItem));
+						newShapes = newShapes.concat(
+							copyShapesFromTo(shape.transformedGlyph, editor.selectedItem)
+						);
 						removeFromUsedIn(sourceItem, editor.selectedItemID);
 						otherChangedItems.push(sourceItem);
 					}
 				});
 				editor.multiSelect.paths.deletePaths();
-				newShapes.forEach(shape => editor.multiSelect.paths.add(shape));
+				newShapes.forEach((shape) => editor.multiSelect.paths.add(shape));
 				editor.history.addState('Turned a component instance into a path', otherChangedItems);
 				editor.publish('currentItem', editor.selectedItem);
 			},
@@ -814,7 +818,7 @@ function showDialogChooseOtherItem(type) {
 			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
 			editor.history.addState(`Paths were copied from ${otherItem.name}.`);
 			editor.multiSelect.paths.clear();
-			newShapes.forEach(shape => editor.multiSelect.paths.add(shape));
+			newShapes.forEach((shape) => editor.multiSelect.paths.add(shape));
 			closeEveryTypeOfDialog();
 			showToast(`${otherItem.paths.length} paths copied from<br>${otherItem.name}`);
 		};
