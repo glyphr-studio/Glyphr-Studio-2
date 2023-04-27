@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
@@ -20,19 +20,39 @@ import { showAddLigatureDialog } from '../pages/ligatures.js';
 let savedClickHandler;
 let savedRegisterSubscriptions;
 
-export function makeGlyphChooserContent(
-	clickHandler,
-	registerSubscriptions = true,
-	includeItemTypeChooser = false
-) {
-	// log(`makeGlyphChooserContent`, 'start');
+export function makeAllItemTypeChooserContent(clickHandler, registerSubscriptions = true) {
+	// log(`makeAllItemTypeChooserContent`, 'start');
 	const editor = getCurrentProjectEditor();
 	savedClickHandler = clickHandler;
 	savedRegisterSubscriptions = registerSubscriptions;
 
 	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
+	let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
+	header.appendChild(makeRangeAndItemTypeChooser());
+	wrapper.appendChild(header);
 
 	if (editor.nav.page === 'Ligatures') {
+		// Ligature Chooser
+		wrapper.appendChild(makeLigatureChooserTileGrid());
+	} else if (editor.nav.page === 'Components') {
+		// Component Chooser
+		wrapper.appendChild(makeComponentChooserTileGrid());
+	} else {
+		// Overview and Glyph = Glyph Chooser
+		wrapper.appendChild(makeGlyphChooserTileGrid());
+	}
+
+	// log(`makeAllItemTypeChooserContent`, 'end');
+	return wrapper;
+}
+
+export function makeSingleItemTypeChooserContent(itemType, clickHandler) {
+	// log(`makeSingleItemTypeChooserContent`, 'start');
+	savedClickHandler = clickHandler;
+	savedRegisterSubscriptions = true;
+	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
+
+	if (itemType === 'Ligatures') {
 		// Ligature Chooser
 		wrapper.appendChild(makeLigatureChooserTileGrid());
 		wrapper.appendChild(
@@ -42,7 +62,7 @@ export function makeGlyphChooserContent(
 				onClick: showAddLigatureDialog,
 			})
 		);
-	} else if (editor.nav.page === 'Components') {
+	} else if (itemType === 'Components') {
 		// Component Chooser
 		wrapper.appendChild(makeComponentChooserTileGrid());
 		wrapper.appendChild(
@@ -53,17 +73,127 @@ export function makeGlyphChooserContent(
 			})
 		);
 	} else {
-		// Overview and Glyph = Glyph Chooser
-		if (editor.project.settings.project.glyphRanges.length > 1) {
-			let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
-			header.appendChild(makeRangeAndItemTypeChooser(includeItemTypeChooser));
-			wrapper.appendChild(header);
-		}
+		// Glyph Chooser
+		let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
+		wrapper.appendChild(header);
+		header.appendChild(makeRangeChooser());
 		wrapper.appendChild(makeGlyphChooserTileGrid());
 	}
 
-	// log(`makeGlyphChooserContent`, 'end');
+	// log(`makeSingleItemTypeChooserContent`, 'end');
 	return wrapper;
+}
+
+function makeRangeAndItemTypeChooser() {
+	// log(`makeRangeAndItemTypeChooser`, 'start');
+
+	const editor = getCurrentProjectEditor();
+	let selectedRange = editor.selectedGlyphRange;
+	// log(selectedRange);
+	let optionChooser = makeElement({
+		tag: 'option-chooser',
+		attributes: {
+			'selected-name': selectedRange.name,
+			'selected-id': selectedRange.id,
+		},
+	});
+	let option;
+
+	let ligatureCount = countItems(editor.project.ligatures);
+	let componentCount = countItems(editor.project.components);
+
+	if (ligatureCount) {
+		// log(`range.name: Ligatures`);
+		option = makeElement({
+			tag: 'option',
+			innerHTML: 'Ligatures',
+			attributes: { note: `${ligatureCount}&nbsp;items` },
+		});
+
+		option.addEventListener('click', () => {
+			getCurrentProjectEditor().selectedGlyphRange = 'Ligatures';
+			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
+			tileGrid.remove();
+			let wrapper = document.querySelector('.glyph-chooser__wrapper');
+			wrapper.appendChild(makeLigatureChooserTileGrid());
+		});
+
+		optionChooser.appendChild(option);
+	}
+
+	if (componentCount) {
+		// log(`range.name: Components`);
+		option = makeElement({
+			tag: 'option',
+			innerHTML: 'Components',
+			attributes: { note: `${componentCount}&nbsp;items` },
+		});
+
+		option.addEventListener('click', () => {
+			getCurrentProjectEditor().selectedGlyphRange = 'Components';
+			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
+			tileGrid.remove();
+			let wrapper = document.querySelector('.glyph-chooser__wrapper');
+			wrapper.appendChild(makeComponentChooserTileGrid());
+		});
+
+		optionChooser.appendChild(option);
+	}
+
+	if (ligatureCount || componentCount) optionChooser.appendChild(makeElement({ tag: 'hr' }));
+
+	addRangeOptionsToOptionChooser(optionChooser);
+
+	// log(`makeRangeAndItemTypeChooser`, 'end');
+	return optionChooser;
+}
+
+function makeRangeChooser() {
+	// log(`makeRangeChooser`, 'start');
+
+	const editor = getCurrentProjectEditor();
+	let selectedRange = editor.selectedGlyphRange;
+	// log(selectedRange);
+	let optionChooser = makeElement({
+		tag: 'option-chooser',
+		attributes: {
+			'selected-name': selectedRange.name,
+			'selected-id': selectedRange.id,
+		},
+	});
+
+	addRangeOptionsToOptionChooser(optionChooser);
+
+	return optionChooser;
+}
+
+function addRangeOptionsToOptionChooser(optionChooser) {
+	const project = getCurrentProject();
+	let ranges = project.settings.project.glyphRanges;
+	let option;
+	ranges.forEach((range) => {
+		// log(`range.name: ${range.name}`);
+
+		option = makeElement({
+			tag: 'option',
+			innerHTML: range.name,
+			attributes: { note: range.note },
+		});
+
+		option.addEventListener('click', () => {
+			// log(`OPTION.click - range: ${range.name}`);
+
+			getCurrentProjectEditor().selectedGlyphRange = range;
+			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
+			// log(tileGrid);
+			tileGrid.remove();
+			let wrapper = document.querySelector('.glyph-chooser__wrapper');
+			// log(wrapper);
+			wrapper.appendChild(makeGlyphChooserTileGrid());
+		});
+
+		optionChooser.appendChild(option);
+	});
 }
 
 function makeGlyphChooserTileGrid() {
@@ -75,7 +205,7 @@ function makeGlyphChooserTileGrid() {
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
 	let rangeArray = editor.selectedGlyphRange.array;
-	if (rangeArray?.length){
+	if (rangeArray?.length) {
 		rangeArray.forEach((charID) => {
 			const glyphID = `glyph-${charID}`;
 			// log(`glyphID: ${glyphID}`);
@@ -108,70 +238,6 @@ function makeGlyphChooserTileGrid() {
 	// console.timeEnd('makeGlyphChooserTileGrid');
 	// log(`makeGlyphChooserTileGrid`, 'end');
 	return tileGrid;
-}
-
-function makeRangeAndItemTypeChooser(includeItemTypeChooser = false) {
-	// log(`makeRangeAndItemTypeChooser`, 'start');
-
-	const editor = getCurrentProjectEditor();
-	let ranges = editor.project.settings.project.glyphRanges;
-	let selectedRange = editor.selectedGlyphRange;
-	// log(selectedRange);
-	let optionChooser = makeElement({
-		tag: 'option-chooser',
-		attributes: {
-			'selected-name': selectedRange.name,
-			'selected-id': selectedRange.id,
-		},
-	});
-	let option;
-
-	if (includeItemTypeChooser) {
-		// log(`range.name: Ligatures`);
-		option = makeElement({
-			tag: 'option',
-			innerHTML: 'Ligatures',
-			attributes: { note: `${countItems(editor.project.ligatures)}&nbsp;items` },
-		});
-
-		option.addEventListener('click', () => {
-			getCurrentProjectEditor().selectedGlyphRange = 'Ligatures';
-			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
-			tileGrid.remove();
-			let wrapper = document.querySelector('.glyph-chooser__wrapper');
-			wrapper.appendChild(makeLigatureChooserTileGrid());
-		});
-
-		optionChooser.appendChild(option);
-		optionChooser.appendChild(makeElement({ tag: 'hr' }));
-	}
-
-	ranges.forEach((range) => {
-		// log(`range.name: ${range.name}`);
-
-		option = makeElement({
-			tag: 'option',
-			innerHTML: range.name,
-			attributes: { note: range.note },
-		});
-
-		option.addEventListener('click', () => {
-			// log(`OPTION.click - range: ${range.name}`);
-
-			getCurrentProjectEditor().selectedGlyphRange = range;
-			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
-			// log(tileGrid);
-			tileGrid.remove();
-			let wrapper = document.querySelector('.glyph-chooser__wrapper');
-			// log(wrapper);
-			wrapper.appendChild(makeGlyphChooserTileGrid());
-		});
-
-		optionChooser.appendChild(option);
-	});
-
-	// log(`makeRangeAndItemTypeChooser`, 'end');
-	return optionChooser;
 }
 
 function makeLigatureChooserTileGrid() {

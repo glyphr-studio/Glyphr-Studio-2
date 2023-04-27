@@ -1,19 +1,16 @@
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
-
 import { History } from './history.js';
 import { Navigator } from './navigator.js';
 import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
 import { json, getFirstID, clone, round } from '../common/functions.js';
 import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
-import { decToHex, isHex, validateAsHex } from '../common/character_ids.js';
 import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { log } from '../app/main.js';
 import { HKern } from '../project_data/h_kern.js';
-import { areGlyphRangesEqual } from '../pages/settings.js';
-import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
-import { basicLatinOrder, GlyphRange } from '../project_data/glyph_range.js';
+import { GlyphRange } from '../project_data/glyph_range.js';
+import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -490,46 +487,44 @@ export class ProjectEditor {
 	// --------------------------------------------------------------
 
 	deleteSelectedItemFromProject(page = false) {
+		log(`deleteSelectedItemFromProject`, 'start');
+		log(`page: ${page}`);
+
 		const itemType = page || this.nav.page;
 		let id;
 		let historyTitle;
+
 		if (itemType === 'Glyph edit') {
-			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
+			log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
 			historyTitle = `Deleted Glyph ${id} : ${this.selectedGlyph.name}`;
-			this.history.addState(historyTitle, {
-				itemWasDeleted: true,
-				otherChanges: clone(this.selectedGlyph.usedIn),
-			});
+			this.history.addState(historyTitle, true);
+			deleteLinks(this.selectedGlyph);
 			delete this.project.glyphs[id];
 		} else if (itemType === 'Components') {
-			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
+			log(`deleting selectedComponentID: ${this.selectedComponentID}`);
 			id = this.selectedComponentID;
 			historyTitle = `Deleted Component ${id} : ${this.selectedComponent.name}`;
-			this.history.addState(historyTitle, {
-				itemWasDeleted: true,
-				otherChanges: clone(this.selectedComponent.usedIn),
-			});
-			// TODO components update usedin
+			this.history.addState(historyTitle, true);
+			deleteLinks(this.selectedComponent);
 			delete this.project.components[id];
 		} else if (itemType === 'Ligatures') {
-			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
+			log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
 			id = this.selectedLigatureID;
 			historyTitle = `Deleted Ligature ${id} : ${this.selectedLigature.name}`;
-			this.history.addState(historyTitle, {
-				itemWasDeleted: true,
-				otherChanges: clone(this.selectedLigature.usedIn),
-			});
+			this.history.addState(historyTitle, true);
+			deleteLinks(this.selectedLigature);
 			delete this.project.ligatures[id];
 		} else if (itemType === 'Kerning') {
-			// log(`deleting selectedKernID: ${this.selectedKernID}`);
+			log(`deleting selectedKernID: ${this.selectedKernID}`);
 			id = this.selectedKernID;
 			historyTitle = `Deleted Kern ${id} : ${this.selectedKern.name}`;
-			this.history.addState(historyTitle, { itemWasDeleted: true });
+			this.history.addState(historyTitle, true);
 			delete this.project.kerning[id];
 		}
 
 		this.selectFallbackItem();
+		log(`deleteSelectedItemFromProject`, 'end');
 	}
 
 	/**
@@ -539,45 +534,36 @@ export class ProjectEditor {
 	 * For Ligatures, Components, and Kerns, it's just the first item.
 	 */
 	selectFallbackItem(page = false) {
-		// log(`ProjectEditor.selectFallbackItem`, 'start');
+		log(`ProjectEditor.selectFallbackItem`, 'start');
 		const itemType = page || this.nav.page;
 
 		if (itemType === 'Glyph edit') {
 			const selectedRange = this.selectedGlyphRange;
 			if (selectedRange) {
-				if (areGlyphRangesEqual(getUnicodeBlockByName('Basic Latin'), selectedRange)) {
-					// log(`Selected range detected as BASIC LATIN`);
-
-					for (let i = 0; i < basicLatinOrder.length; i++) {
-						// log(`checking id ${basicLatinOrder[i]}`);
-						if (this.project.glyphs[basicLatinOrder[i]]) {
-							this.selectedGlyphID = decToHex(basicLatinOrder[i]);
-							break;
-						}
-					}
-				} else {
-					// log(`Selected Range detected as ${selectedRange.name}`);
-
-					for (let id = selectedRange.begin; id <= selectedRange.end; id++) {
-						if (this.project.glyphs[id]) {
-							this.selectedGlyphID = decToHex(id);
-							break;
-						}
+				log(`Selected Range detected as ${selectedRange.name}`);
+				let rangeList = selectedRange.array;
+				for (let i = 0; i < rangeList.length; i++) {
+					let id = `glyph-${rangeList[i]}`;
+					log(`checking id ${id}`);
+					if (this.project.glyphs[id]) {
+						this.selectedGlyphID = id;
+						break;
 					}
 				}
 			}
-			// log(`new selectedGlyphID: ${this.selectedGlyphID}`);
+			log(`new selectedGlyphID: ${this.selectedGlyphID}`);
 		} else if (itemType === 'Components') {
 			this.selectedComponentID = getFirstID(this.project.components);
-			// log(`new selectedComponentID: ${this.selectedComponentID}`);
+			log(`new selectedComponentID: ${this.selectedComponentID}`);
 		} else if (itemType === 'Ligatures') {
 			this.selectedLigatureID = getFirstID(this.project.ligatures);
-			// log(`new selectedLigatureID: ${this.selectedLigatureID}`);
+			log(`new selectedLigatureID: ${this.selectedLigatureID}`);
 		} else if (itemType === 'Kern') {
 			this.selectedKernID = getFirstID(this.project.kerning);
-			// log(`new selectedKernID: ${this.selectedKernID}`);
+			log(`new selectedKernID: ${this.selectedKernID}`);
 		}
-		// log(`ProjectEditor.selectFallbackItem`, 'end');
+
+		log(`ProjectEditor.selectFallbackItem`, 'end');
 	}
 
 	// --------------------------------------------------------------

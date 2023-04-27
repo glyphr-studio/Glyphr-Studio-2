@@ -11,12 +11,12 @@ import {
 	showModalDialog,
 	showToast,
 } from '../controls/dialogs/dialogs.js';
-import { makeGlyphChooserContent } from './glyph_chooser.js';
+import { makeAllItemTypeChooserContent } from './glyph_chooser.js';
 import {
-	addToUsedIn,
+	addLinkToUsedIn,
 	canAddComponent,
 	makeGlyphSVGforExport,
-	removeFromUsedIn,
+	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { addComponent } from '../pages/components.js';
@@ -149,14 +149,19 @@ export function getActionData(name) {
 		},
 		{
 			iconName: 'deleteGlyph',
-			title: `Delete Glyph\nRemove this Glyph from the project. Don't worry, you can undo this action.`,
+			title: `Delete Glyph\nRemove this Glyph from the project. ${
+				editor.selectedItem?.usedIn?.length
+					? `\nGlyphs that are used as a root component (like this one) cannot be deleted. Delete or flatten the component instances first.`
+					: `\nDon't worry, you can undo this action.`
+			}`,
+			disabled: editor.selectedItem?.usedIn?.length,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				const name = editor.selectedItem.name;
 				editor.deleteSelectedItemFromProject();
 				// log(`New item id: ${editor.selectedItemID}`);
 				editor.publish('whichGlyphIsSelected', editor.selectedItemID);
-				editor.history.addState(`Navigated to ${name}`);
+				editor.history.addState(`Automatically navigated to ${editor.selectedItem.name}`);
 				showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
 			},
 		},
@@ -205,7 +210,7 @@ export function getActionData(name) {
 					name += ' ' + shape.name;
 				});
 				const addedComponent = addComponent(newComponent);
-				addToUsedIn(addedComponent, editor.selectedItemID);
+				addLinkToUsedIn(addedComponent, editor.selectedItemID);
 				const newShape = editor.selectedItem.addOneShape(
 					new ComponentInstance({
 						link: addedComponent.id,
@@ -213,9 +218,7 @@ export function getActionData(name) {
 				);
 				editor.multiSelect.paths.deletePaths();
 				editor.multiSelect.paths.select(newShape);
-				editor.history.addState('Turned a path into a component', {
-					otherChanges: [addedComponent.id],
-				});
+				editor.history.addState('Turned a path into a component');
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -267,7 +270,7 @@ export function getActionData(name) {
 						newShapes = newShapes.concat(
 							copyShapesFromTo(shape.transformedGlyph, editor.selectedItem)
 						);
-						removeFromUsedIn(sourceItem, editor.selectedItemID);
+						removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
 						otherChangedItems.push(sourceItem);
 					}
 				});
@@ -768,7 +771,7 @@ export function clipboardPaste() {
 			newShape.name = newName + newSuffix;
 
 			if (newShape.objType === 'ComponentInstance') {
-				addToUsedIn(editor.project.getItem(newShape.link), editor.project.selectedItemID);
+				addLinkToUsedIn(editor.project.getItem(newShape.link), editor.project.selectedItemID);
 			}
 
 			newShapes.push(newShape);
@@ -852,7 +855,7 @@ function showDialogChooseOtherItem(type) {
 		className: 'modal-dialog__glyph-chooser-scroll-area',
 	});
 
-	const chooserArea = makeGlyphChooserContent(onClick, false, true);
+	const chooserArea = makeAllItemTypeChooserContent(onClick);
 	scrollArea.appendChild(chooserArea);
 	content.appendChild(scrollArea);
 	showModalDialog(content);
@@ -868,7 +871,7 @@ export function linkComponentFromTo(sourceItem, destinationItem) {
 	if (!canAddComponent(destinationItem, sourceItem.id)) return false;
 	const newInstance = new ComponentInstance({ link: sourceItem.id });
 	destinationItem.addOneShape(newInstance);
-	addToUsedIn(sourceItem, destinationItem.id);
+	addLinkToUsedIn(sourceItem, destinationItem.id);
 	return newInstance;
 }
 
@@ -891,7 +894,7 @@ export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = fals
 	for (let c = 0; c < sourceItem.paths.length; c++) {
 		item = sourceItem.paths[c];
 		if (item.objType === 'ComponentInstance') {
-			addToUsedIn(editor.project.getItem(item.link), destinationItem.id);
+			addLinkToUsedIn(editor.project.getItem(item.link), destinationItem.id);
 			item = new ComponentInstance(item);
 		} else if (item.objType === 'Path') {
 			item = new Path(item);

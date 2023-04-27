@@ -1,7 +1,7 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
-import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
+import { makeAllItemTypeChooserContent } from '../panels/glyph_chooser.js';
 import { makeContributeContent, makePreReleaseNote } from './about.js';
 import { showModalDialog } from '../controls/dialogs/dialogs.js';
 import { countItems } from '../common/functions.js';
@@ -30,10 +30,10 @@ export function makePage_Overview() {
 
 	// log(content);
 
-	let glyphsContent = makeGlyphChooserContent((glyphID) => {
+	let glyphsContent = makeAllItemTypeChooserContent((glyphID) => {
 		log(`Overview page - Glyph Chooser tile click handler`, 'start');
 		log(`glyphID: ${glyphID}`);
-		
+
 		const editor = getCurrentProjectEditor();
 		editor.selectedGlyphID = glyphID;
 		editor.nav.page = 'Glyph edit';

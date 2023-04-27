@@ -1,4 +1,5 @@
 import { getCurrentProject, log } from '../app/main.js';
+import { deleteSelectedPaths } from '../panels/actions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 
@@ -168,7 +169,7 @@ function collectAllUpstreamLinks(item, result = []) {
 /**
  * This method is called on Glyphs just before they are deleted
  * to clean up all the component instance linking
- * @param {Glyph} item - ID of the item being deleted
+ * @param {Glyph} item - item being deleted
  */
 export function deleteLinks(item) {
 	// log('Glyph.deleteLinks', 'start');
@@ -194,7 +195,7 @@ export function deleteLinks(item) {
 	// Delete downstream usedIn array values
 	for (let s = 0; s < item.paths.length; s++) {
 		if (item.paths[s].objType === 'ComponentInstance') {
-			removeFromUsedIn(project.getItem(item.paths[s].link), item.id);
+			removeLinkFromUsedIn(project.getItem(item.paths[s].link), item.id);
 		}
 	}
 }
@@ -209,7 +210,7 @@ export function deleteLinks(item) {
  * @param {Glyph} glyph - reference to the Glyph
  * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
  */
-export function addToUsedIn(glyph, linkID) {
+export function addLinkToUsedIn(glyph, linkID) {
 	glyph.usedIn.push('' + linkID);
 	// sort numerically as opposed to alpha
 	glyph.usedIn.sort(function (a, b) {
@@ -222,8 +223,8 @@ export function addToUsedIn(glyph, linkID) {
  * @param {Glyph} glyph - reference to the Glyph
  * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
  */
-export function removeFromUsedIn(glyph, linkID) {
-	// log(`removeFromUsedIn`, 'start');
+export function removeLinkFromUsedIn(glyph, linkID) {
+	// log(`removeLinkFromUsedIn`, 'start');
 	// log(`linkID: ${linkID}`);
 	// log(glyph.usedIn);
 
@@ -236,5 +237,37 @@ export function removeFromUsedIn(glyph, linkID) {
 		glyph.usedIn.splice(idIndex, 1);
 	}
 	// log(glyph.usedIn);
-	// log(`removeFromUsedIn`, 'end');
+	// log(`removeLinkFromUsedIn`, 'end');
 }
+
+/**
+ * Called before a glyph is deleted. if this glyph is used as a
+ * component root, then we also have to delete the component instances
+ * from other glyphs.
+ * @param {Glyph} rootGlyph - glyph where the usedIn array is the delete list
+ */
+/*
+NOT ALLOWED
+export function deleteComponentInstancesBasedOnRootList(rootGlyph) {
+	log(`deleteComponentInstancesBasedOnRootList`, 'start');
+
+	let project = getCurrentProject();
+	if (rootGlyph.usedIn.length) {
+		rootGlyph.usedIn.forEach((id) => {
+			log(`rootGlyph.usedIn id: ${id}`);
+
+			let parent = project.getItem(id);
+			for (let p = 0; p < parent.paths.length; p++) {
+				log(`path ${p} link = ${parent.paths[p]?.link}`);
+				if (parent.paths[p]?.link === rootGlyph.id) {
+					log(`>>>HIT<<<`);
+					if (p > -1) parent.paths.splice(p, 1);
+					parent.changed();
+					break;
+				}
+			}
+		});
+	}
+	log(`deleteComponentInstancesBasedOnRootList`, 'end');
+}
+*/
