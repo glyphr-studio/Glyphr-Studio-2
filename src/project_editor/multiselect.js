@@ -4,7 +4,7 @@ import { drawItem } from '../display_canvas/draw_paths.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-import { glyphChanged, removeFromUsedIn } from './cross_item_actions.js';
+import { glyphChanged, removeLinkFromUsedIn } from './cross_item_actions.js';
 
 /**
 		Multi-Select
@@ -341,7 +341,7 @@ export class MultiSelectPaths extends MultiSelect {
 		else {
 			this.members.forEach((item) => {
 				if (item.objType === 'ComponentInstance') {
-					removeFromUsedIn(project.getItem(item.link), item.parent.id);
+					removeLinkFromUsedIn(project.getItem(item.link), item.parent.id);
 				}
 				index = itemPaths.indexOf(item);
 				if (index > -1) itemPaths.splice(index, 1);

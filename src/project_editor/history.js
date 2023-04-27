@@ -24,13 +24,10 @@ export class History {
 	 * 	- For normal changes, call addState after change is made
 	 * 	- For deleting items, call addState before deletion, and mark as itemWasDeleted
 	 * @param {String} changeTitle - What to call this change in the History panel
-	 * @param {Object} options - additional information:
-	 * 	- itemWasDeleted: flag so the item can be added back to the project
-	 * 	- otherChanges: array of other items that should be updated,
-	 * 	  (for example, changing a Component also changes Glyphs it's linked to)
+	 * @param {Object} itemWasDeleted - flag so the item can be added back to the project
 	 */
-	addState(title = '', options = {}) {
-		// log(`History.addState`, 'start');
+	addState(title = '', itemWasDeleted = false) {
+		log(`History.addState`, 'start');
 		const editor = getCurrentProjectEditor();
 		const changedItem = editor.selectedItem;
 		title = title || `Change to ${changedItem.name}`;
@@ -39,19 +36,11 @@ export class History {
 			title: title,
 			page: editor.nav.page,
 			changedItem: changedItem,
-			itemWasDeleted: options.itemWasDeleted,
+			itemWasDeleted: itemWasDeleted,
 		});
 
-		if (options.otherChanges) {
-			entry.otherChanges = [];
-			options.otherChanges.forEach(itemID => {
-				entry.otherChanges.push(makeHistoryEntry({
-					itemID: itemID,
-					changedItem: getCurrentProject().getItem(itemID),
-				}));
-			});
-		}
-
+		log(`New entry:`);
+		log(entry);
 		this.queue.unshift(entry);
 
 		editor.setProjectAsUnsaved();
@@ -61,8 +50,8 @@ export class History {
 
 		const undoButton = document.getElementById('actionButtonUndo');
 		if (undoButton) undoButton.removeAttribute('disabled');
-		// log(this);
-		// log(`History.addState`, 'end');
+		log(this);
+		log(`History.addState`, 'end');
 	}
 
 	/**
@@ -71,7 +60,7 @@ export class History {
 	 * steps back and restore queue index 1.
 	 */
 	restoreState() {
-		// log(`History.restoreState`, 'start');
+		log(`History.restoreState`, 'start');
 		const editor = getCurrentProjectEditor();
 
 		let q = this.queue;
@@ -85,8 +74,8 @@ export class History {
 			const undoButton = document.getElementById('actionButtonUndo');
 			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
 			showToast(`No more undo`);
-			// log(`Queue is 0, returning`);
-			// log(`History.restoreState`, 'end');
+			log(`Queue is 0, returning`);
+			log(`History.restoreState`, 'end');
 			return;
 		}
 
@@ -105,8 +94,8 @@ export class History {
 				showToast(`Restored deleted item<br>${q[0].itemState.name}`);
 			} else {
 				showToast('Navigated without undo-ing');
-				// log(`Need to navigate to next changed item`);
-				// log(`History.restoreState`, 'end');
+				log(`Need to navigate to next changed item`);
+				log(`History.restoreState`, 'end');
 				return;
 			}
 		}
@@ -118,13 +107,24 @@ export class History {
 		let nextEntry;
 		if (q.length === 1) {
 			// With only one change in the queue, undo falls back to the initial project state
+			log(this.initialProject);
 			let baseItemState;
+			let baseItem;
 			if (editor.nav.page === 'Glyph edit') {
-				baseItemState = this.initialProject.glyphs[editor.selectedGlyphID].save();
+				log(`editor.selectedGlyphID : ${editor.selectedGlyphID}`);
+				baseItem = this.initialProject.glyphs[editor.selectedGlyphID];
+				log(baseItem);
+				baseItemState = baseItem.save();
 			} else if (editor.nav.page === 'Ligatures') {
-				baseItemState = this.initialProject.ligatures[editor.selectedLigatureID].save();
+				log(`editor.selectedLigatureID : ${editor.selectedLigatureID}`);
+				baseItem = this.initialProject.ligatures[editor.selectedLigatureID];
+				log(baseItem);
+				baseItemState = baseItem.save();
 			} else if (editor.nav.page === 'Components') {
-				baseItemState = this.initialProject.components[editor.selectedComponentID].save();
+				log(`editor.selectedComponentID : ${editor.selectedComponentID}`);
+				baseItem = this.initialProject.components[editor.selectedComponentID];
+				log(baseItem);
+				baseItemState = baseItem.save();
 			}
 			// TODO Kerning
 			nextEntry = {
@@ -132,8 +132,8 @@ export class History {
 				itemID: editor.selectedItemID,
 				title: 'Initial state',
 			};
-			// log(`Queue length was 1, setting 'nextEntry' to base project`);
-			// log(nextEntry);
+			log(`Queue length was 1, setting 'nextEntry' to base project`);
+			log(nextEntry);
 		} else {
 			nextEntry = q[1];
 		}
@@ -142,22 +142,18 @@ export class History {
 		// proceed with the undo
 		// --------------------------------------------------------------
 
-		// log(`Undoing to: ${nextEntry.title}`);
-		// log(`Replacing current item with:`);
-		// log(nextEntry.itemState);
+		log(`Undoing to: ${nextEntry.title}`);
+		log(`nextEntry:`);
+		log(nextEntry);
 
 		// Clear selections
 		editor.multiSelect.points.clear();
 		editor.multiSelect.paths.clear();
 
 		// Overwrite the current item with the redo state
-		// log(`overwriting ${editor.selectedItem.name}`);
+		log(`overwriting ${editor.selectedItem.name}`);
 		editor.selectedItem = nextEntry.itemState;
-		if (nextEntry.otherChanges.length) {
-			nextEntry.otherChanges.forEach((entry) => {
-				editor.project.setItem(entry.itemID, entry.changedItem);
-			});
-		}
+
 		// Index 0 is the previous current state, so remove it
 		q.shift();
 
@@ -171,8 +167,8 @@ export class History {
 			const undoButton = document.getElementById('actionButtonUndo');
 			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
 		}
-		// log(q);
-		// log(`History.restoreState`, 'end');
+		log(q);
+		log(`History.restoreState`, 'end');
 	}
 }
 

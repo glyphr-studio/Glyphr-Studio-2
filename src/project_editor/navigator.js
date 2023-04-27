@@ -6,7 +6,7 @@ import { makePage_About } from '../pages/about.js';
 import { makePage_Settings } from '../pages/settings.js';
 import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
-import { makeGlyphChooserContent } from '../panels/glyph_chooser.js';
+import { makeSingleItemTypeChooserContent } from '../panels/glyph_chooser.js';
 import { makeAppTopBar, showAppErrorPage } from '../app/app.js';
 import { makeIcon } from '../common/graphics.js';
 import { accentColors } from '../common/colors.js';
@@ -272,8 +272,10 @@ export function showNavDropdown(parentElement) {
 	}
 
 	if (dropdownType === 'EDITING') {
-		dropdownContent = makeGlyphChooserContent((itemID) => {
-			const editor = getCurrentProjectEditor();
+		const editor = getCurrentProjectEditor();
+		dropdownContent = makeSingleItemTypeChooserContent(
+			editor.nav.page,
+			(itemID) => {
 			editor.selectedItemID = itemID;
 			editor.history.addState(`Navigated to ${editor.project.getItemName(itemID, true)}`);
 			closeAllNavMenus();
