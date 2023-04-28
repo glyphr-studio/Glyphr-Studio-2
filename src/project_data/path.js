@@ -16,7 +16,7 @@ import {
 	strSan,
 	json,
 } from '../common/functions.js';
-import { log } from '../app/main.js';
+// import { log } from '../app/main.js';
 
 /**
  * Glyph Element > Path
@@ -609,7 +609,6 @@ export class Path extends GlyphElement {
 		// We need this here even though .changed()
 		// should have propagated from the PathPoint
 		// this.changed();
-
 
 		// log('Path.updatePathPosition', 'end');
 	}

@@ -5,7 +5,6 @@ import { ComponentInstance } from './component_instance.js';
 import { hasNonValues, isVal, json, remove, trim } from '../common/functions.js';
 import { hexesToChars } from '../common/character_ids.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
-import { log } from '../app/main.js';
 // import { log } from '../app/main.js';
 
 /**

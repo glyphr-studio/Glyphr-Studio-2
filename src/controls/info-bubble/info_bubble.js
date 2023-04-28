@@ -1,7 +1,7 @@
 import { makeElement } from '../../common/dom.js';
 import style from './info-bubble.css?inline';
 import bubbleStyle from './info-bubble-popup.css?inline';
-import { log } from '../../app/main.js';
+// import { log } from '../../app/main.js';
 import { animateRemove, closeAllInfoBubbles } from '../dialogs/dialogs.js';
 
 /**

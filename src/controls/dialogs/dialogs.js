@@ -1,4 +1,4 @@
-import { log } from '../../app/main.js';
+// import { log } from '../../app/main.js';
 import { accentColors, uiColors } from '../../common/colors.js';
 import { addAsChildren, makeElement, textToNode } from '../../common/dom.js';
 import { makeIcon } from '../../common/graphics.js';

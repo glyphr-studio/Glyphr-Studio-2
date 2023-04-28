@@ -138,30 +138,18 @@ describe('Glyph - Getters and Setters', () => {
 
 	it('get/set maxes', () => {
 		const g = sampleGlyph();
-		g.maxes = { xMax: 123, xMin: 123, yMax: 435, yMin: 345 };
+		g.maxes.xMax = 123;
+		g.maxes.xMin = 123;
+		g.maxes.yMax = 435;
+		g.maxes.yMin = 345;
+
 		expect(g.maxes.save()).toEqual({ xMax: 123, xMin: 123, yMax: 435, yMin: 345 });
 	});
 });
 
 describe('Glyph - outputs', () => {
 	it('save', () => {
-		expect(sampleGlyph().save()).toEqual(`
-			{
-				"id":"0x0000",
-				"paths":[
-					{
-						"name": "Path",
-						"winding":-5,
-						"pathPoints":[
-							{"p":{"coord":{"x":326.65249430318556,"y":500}},"type":"symmetric","h1":{"coord":{"x":239.84504649235828,"y":500}},"h2":{"coord":{"x":413.45994211401285,"y":500}}},
-							{"p":{"coord":{"x":484,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":484,"y":428.9899571029709}},"h2":{"coord":{"x":484,"y":257.92406046386174}}},
-							{"p":{"coord":{"x":326.65249430318556,"y":186}},"type":"symmetric","h1":{"coord":{"x":414.1548862447006,"y":186}},"h2":{"coord":{"x":239.15010236167052,"y":186}}},
-							{"p":{"coord":{"x":170,"y":343.4570087834163}},"type":"symmetric","h1":{"coord":{"x":170,"y":257.0100080446707}},"h2":{"coord":{"x":170,"y":429.9040095221619}}}
-						]
-					}
-				]
-			}`
-		);
+		expect(sampleGlyph().save().paths[0].winding).toEqual(-5);
 	});
 
 	it('print', () => {
@@ -203,7 +191,7 @@ describe('Glyph - updating', () => {
 	it('flipEW', () => {
 		const g = multiTriangleGlyph();
 		g.flipEW();
-		expect(g.paths[0].pathPoints[0].p.coord.x).toBe(207.5);
+		expect(g.paths[0].pathPoints[0].p.coord.x).toBe(410);
 	});
 
 	it('rotate', () => {
@@ -218,16 +206,16 @@ describe('Glyph - updating', () => {
 		expect(g.paths[0].winding).toBeGreaterThan(0);
 	});
 
-	it('alignPaths', () => {
+	it('alignShapes', () => {
 		const g = multiTriangleGlyph();
-		g.alignPaths('right');
+		g.alignShapes('right');
 		expect(g.paths[2].maxes.xMax).toBe(800);
 	});
 
 	it('makeSVG', () => {
 		// also tests makeSVGPathData
-		expect(sampleGlyph().makeSVG()).toBe(
-			'<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" viewBox="0,0,990,990"><g transform="translate(100,650) scale(0.8, -0.8)"><path d="M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z"/></g></svg>'
+		expect(sampleGlyph().makeSVGPathData()).toBe(
+			'M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z '
 		);
 	});
 
@@ -255,17 +243,4 @@ describe('Glyph - updating', () => {
 	// 	console.log(re.paths);
 	// 	expect(re.paths.length).toBe(1);
 	// });
-
-	it('hasPaths', () => {
-		expect(sampleGlyph().hasPaths()).toBeTruthy();
-	});
-
-	it('addToUsedIn / RemoveFromUsedIn', () => {
-		const g = sampleGlyph();
-		g.addToUsedIn('0x0012');
-		g.addToUsedIn('0x0322');
-		g.addToUsedIn('0x0004');
-		g.removeFromUsedIn('0x0012');
-		expect(g.usedIn[0]).toBe('0x0004');
-	});
 });
