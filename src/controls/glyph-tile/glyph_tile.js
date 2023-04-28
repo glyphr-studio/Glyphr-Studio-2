@@ -54,7 +54,6 @@ export class GlyphTile extends HTMLElement {
 			});
 			this.thumbnail.width = overallSize;
 			this.thumbnail.height = overallSize;
-
 		} else {
 			this.thumbnail = makeElement({
 				className: 'thumbnail',
@@ -103,7 +102,7 @@ export class GlyphTile extends HTMLElement {
 }
 
 function redraw(tile) {
-	if (tile.glyph?.paths?.length) {
+	if (tile.glyph?.shapes?.length) {
 		const project = getCurrentProject();
 		tile.thumbnail.innerHTML = project.makeItemThumbnail(tile.glyph);
 	}

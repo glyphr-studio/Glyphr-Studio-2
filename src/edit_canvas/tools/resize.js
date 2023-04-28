@@ -4,7 +4,7 @@ import { setCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { clickEmptySpace, resizePath } from '../events_mouse.js';
-import { getPathAtLocation } from './tools.js';
+import { getShapeAtLocation } from './tools.js';
 
 // ----------------------------------------------------------------
 // Resize - resizes whole paths (Arrow / Pointer)
@@ -28,17 +28,17 @@ export class Tool_Resize {
 			// log('Tool_Resize.mousedown', 'start');
 			// log('x:y ' + eventHandlerData.mousePosition.x + ':' + eventHandlerData.mousePosition.y);
 			const editor = getCurrentProjectEditor();
-			const msPaths = editor.multiSelect.paths;
+			const msShapes = editor.multiSelect.shapes;
 			const ehd = eventHandlerData;
 			ehd.handle = false;
 			ehd.lastX = ehd.mousePosition.x;
 			ehd.firstX = ehd.mousePosition.x;
 			ehd.lastY = ehd.mousePosition.y;
 			ehd.firstY = ehd.mousePosition.y;
-			ehd.handle = msPaths.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y);
+			ehd.handle = msShapes.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y);
 
 			this.didStuff = false;
-			this.clickedPath = getPathAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+			this.clickedPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
 			this.resizing = false;
 			this.dragging = false;
 			this.rotating = false;
@@ -50,9 +50,9 @@ export class Tool_Resize {
 				if (ehd.handle === 'rotate') {
 					// log('mousedown - setting rotating = true');
 					this.rotating = true;
-					ehd.rotationCenter = msPaths.maxes.center;
-					ehd.rotationStartTopY = msPaths.maxes.yMax + editor.rotateHandleHeight / editor.view.dz;
-					this.historyTitle = 'Rotated path';
+					ehd.rotationCenter = msShapes.maxes.center;
+					ehd.rotationStartTopY = msShapes.maxes.yMax + editor.rotateHandleHeight / editor.view.dz;
+					this.historyTitle = 'Rotated shape';
 				} else {
 					// log('clicked on ehd.handle: ' + ehd.handle);
 					this.resizing = true;
@@ -60,18 +60,18 @@ export class Tool_Resize {
 				setCursor(ehd.handle);
 			} else if (this.clickedPath) {
 				if (ehd.isCtrlDown) {
-					if (msPaths.isSelected(this.clickedPath)) {
+					if (msShapes.isSelected(this.clickedPath)) {
 						// If we don't drag this shape, then deselect it on mouseup
 						this.monitorForDeselect = true;
 					} else {
-						msPaths.add(this.clickedPath);
+						msShapes.add(this.clickedPath);
 					}
 				} else {
-					if (msPaths.isSelected(this.clickedPath)) {
+					if (msShapes.isSelected(this.clickedPath)) {
 						// If we don't drag this shape, then deselect it on mouseup
 						this.monitorForDeselect = true;
 					} else {
-						msPaths.select(this.clickedPath);
+						msShapes.select(this.clickedPath);
 					}
 				}
 
@@ -98,11 +98,11 @@ export class Tool_Resize {
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			const view = editor.view;
-			const msPaths = editor.multiSelect.paths;
+			const msShapes = editor.multiSelect.shapes;
 			this.didStuff = false;
 			const corner =
-				ehd.handle || msPaths.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y);
-			const singlePath = msPaths.singleton;
+				ehd.handle || msShapes.isOverBoundingBoxHandle(ehd.mousePosition.x, ehd.mousePosition.y);
+			const singlePath = msShapes.singleton;
 
 			if (this.dragging) {
 				// log('Dragging');
@@ -113,21 +113,21 @@ export class Tool_Resize {
 				if (singlePath) {
 					if (singlePath.xLock) dx = 0;
 					if (singlePath.yLock) dy = 0;
-					this.historyTitle = `Moved path: ${singlePath.name}`;
+					this.historyTitle = `Moved shape: ${singlePath.name}`;
 				} else {
-					this.historyTitle = `Moved ${msPaths.members.length} paths`;
+					this.historyTitle = `Moved ${msShapes.members.length} shapes`;
 				}
 
-				msPaths.updatePathPosition(dx, dy);
+				msShapes.updateShapePosition(dx, dy);
 				this.monitorForDeselect = false;
 				this.didStuff = true;
 			} else if (this.resizing) {
 				// log('detected RESIZING');
 				resizePath();
 				if (singlePath) {
-					this.historyTitle = `Resized path: ${singlePath.name}`;
+					this.historyTitle = `Resized shape: ${singlePath.name}`;
 				} else {
-					this.historyTitle = `Resized ${msPaths.members.length} paths`;
+					this.historyTitle = `Resized ${msShapes.members.length} shapes`;
 				}
 				this.didStuff = true;
 			} else if (this.rotating) {
@@ -138,17 +138,17 @@ export class Tool_Resize {
 					ehd.rotationCenter
 				);
 				let a2 = calculateAngle({ x: cXsX(ehd.lastX), y: cYsY(ehd.lastY) }, ehd.rotationCenter);
-				msPaths.rotate(a1 - a2, ehd.rotationCenter);
+				msShapes.rotate(a1 - a2, ehd.rotationCenter);
 				if (singlePath) {
-					this.historyTitle = `Rotated path: ${singlePath.name}`;
+					this.historyTitle = `Rotated shape: ${singlePath.name}`;
 				} else {
-					this.historyTitle = `Rotated ${msPaths.members.length} paths`;
+					this.historyTitle = `Rotated ${msShapes.members.length} shapes`;
 				}
 				this.didStuff = true;
 			}
 
 			// Figure out cursor
-			let hoveredPath = getPathAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+			let hoveredPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
 
 			if (corner) {
 				setCursor(corner);
@@ -158,7 +158,7 @@ export class Tool_Resize {
 				setCursor('arrowSquare');
 			} else if (ehd.isCtrlDown) {
 				if (hoveredPath) {
-					if (msPaths.isSelected(hoveredPath)) {
+					if (msShapes.isSelected(hoveredPath)) {
 						setCursor('arrowSquareMinus');
 					} else {
 						setCursor('arrowSquarePlus');
@@ -205,7 +205,7 @@ export class Tool_Resize {
 			}
 
 			if (this.monitorForDeselect) {
-				editor.multiSelect.paths.remove(this.clickedPath);
+				editor.multiSelect.shapes.remove(this.clickedPath);
 			}
 
 			// Finish Up

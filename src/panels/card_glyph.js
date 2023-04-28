@@ -52,20 +52,20 @@ export function makeCard_glyphAttributes(glyph) {
 			<info-bubble>
 				<h1>Side Bearings</h1>
 				Side bearings are the blank space to the left and right
-				of paths in a glyph. The open space between
+				of shapes in a glyph. The open space between
 				characters is very important for legibility.
 				<br><br>
-				These are calculated values based on path positions and the
+				These are calculated values based on shape positions and the
 				Advance Width. They are not properties that are saved with the
 				glyph, but it's helpful to think about them as if they were.
 				<br>
 				<h2>Left side bearing</h2>
-				Distance from x=0 and the leftmost side of paths in the glyph.
+				Distance from x=0 and the leftmost side of shapes in the glyph.
 				Editing this will move all the shapes in the glyph, and update
 				the Advance Width.
 				<br>
 				<h2>Right side bearing</h2>
-				Distance from the rightmost side of paths in the glyph to the
+				Distance from the rightmost side of shapes in the glyph to the
 				Advance Width.
 			</info-bubble>
 		`,
@@ -80,7 +80,7 @@ export function makeCard_glyphAttributes(glyph) {
 	// Put it all together
 	if (glyph.displayType !== 'Component') {
 		addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
-		if (glyph.paths.length) {
+		if (glyph.shapes.length) {
 			addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
 			addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
 		}
@@ -90,7 +90,7 @@ export function makeCard_glyphAttributes(glyph) {
 			makeSingleInput(glyph, 'name', 'currentItem', 'input'),
 		]);
 	}
-	if (glyph.paths.length) {
+	if (glyph.shapes.length) {
 		addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
 		addAsChildren(glyphCard, makeInputs_position(glyph));
 		addAsChildren(glyphCard, makeInputs_size(glyph));

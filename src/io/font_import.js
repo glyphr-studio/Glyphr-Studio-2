@@ -169,7 +169,7 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 	}
 
 	const importedGlyph = new Glyph({
-		paths: newPaths,
+		shapes: newPaths,
 		advanceWidth: advance,
 	});
 

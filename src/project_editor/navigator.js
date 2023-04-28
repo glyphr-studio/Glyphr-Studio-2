@@ -106,7 +106,7 @@ export class Navigator {
 				wrapper.innerHTML = '';
 				if (this.page !== 'Open project') {
 					wrapper.appendChild(makeAppTopBar());
-					editor.multiSelect.paths.clear();
+					editor.multiSelect.shapes.clear();
 					editor.multiSelect.points.clear();
 				}
 				wrapper.appendChild(pageContent);
@@ -273,9 +273,7 @@ export function showNavDropdown(parentElement) {
 
 	if (dropdownType === 'EDITING') {
 		const editor = getCurrentProjectEditor();
-		dropdownContent = makeSingleItemTypeChooserContent(
-			editor.nav.page,
-			(itemID) => {
+		dropdownContent = makeSingleItemTypeChooserContent(editor.nav.page, (itemID) => {
 			editor.selectedItemID = itemID;
 			editor.history.addState(`Navigated to ${editor.project.getItemName(itemID, true)}`);
 			closeAllNavMenus();

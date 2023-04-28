@@ -107,14 +107,14 @@ export function getMousePositionData(event) {
 export function clickEmptySpace() {
 	const editor = getCurrentProjectEditor();
 	editor.multiSelect.points.clear();
-	editor.multiSelect.paths.clear();
+	editor.multiSelect.shapes.clear();
 }
 
 export function resizePath() {
 	// log('resizePath', 'start');
 	const editor = getCurrentProjectEditor();
-	let paths = editor.multiSelect.paths;
-	// log(paths);
+	let shapes = editor.multiSelect.shapes;
+	// log(shapes);
 	let resizeCorner = eventHandlerData.handle;
 	// log('handle ' + resizeCorner);
 
@@ -124,10 +124,10 @@ export function resizePath() {
 	let ly = cYsY(eventHandlerData.lastY);
 	let dh = ly - my;
 	let dw = lx - mx;
-	let rl = paths.virtualGlyph.ratioLock || false;
+	let rl = shapes.virtualGlyph.ratioLock || false;
 
 	// Check that the path won't have negative dimensions
-	let maxes = paths.maxes;
+	let maxes = shapes.maxes;
 	// TODO if resizing handle goes past the opposite side,
 	// flip the shape and selected handle to keep going
 	if (mx >= maxes.xMax && maxes.xMax - maxes.xMin + dw < 2) dw = 0;
@@ -139,66 +139,66 @@ export function resizePath() {
 		case 'n':
 			if (canResize('n')) {
 				setCursor('n-resize');
-				paths.updatePathSize(0, dh * -1, rl);
+				shapes.updateShapeSize(0, dh * -1, rl);
 			}
 			break;
 
 		case 'ne':
 			if (canResize('ne')) {
 				setCursor('ne-resize');
-				paths.updatePathSize(dw * -1, dh * -1, rl);
+				shapes.updateShapeSize(dw * -1, dh * -1, rl);
 			}
 			break;
 
 		case 'e':
 			if (canResize('e')) {
 				setCursor('e-resize');
-				paths.updatePathSize(dw * -1, 0, rl);
+				shapes.updateShapeSize(dw * -1, 0, rl);
 			}
 			break;
 
 		case 'se':
 			if (canResize('se')) {
 				setCursor('se-resize');
-				paths.updatePathSize(dw * -1, dh, rl);
-				paths.updatePathPosition(0, dh * -1);
+				shapes.updateShapeSize(dw * -1, dh, rl);
+				shapes.updateShapePosition(0, dh * -1);
 			}
 			break;
 
 		case 's':
 			if (canResize('s')) {
 				setCursor('s-resize');
-				paths.updatePathPosition(0, dh * -1);
-				paths.updatePathSize(0, dh, rl);
+				shapes.updateShapePosition(0, dh * -1);
+				shapes.updateShapeSize(0, dh, rl);
 			}
 			break;
 
 		case 'sw':
 			if (canResize('sw')) {
 				setCursor('sw-resize');
-				paths.updatePathSize(dw, dh, rl);
-				paths.updatePathPosition(dw * -1, dh * -1);
+				shapes.updateShapeSize(dw, dh, rl);
+				shapes.updateShapePosition(dw * -1, dh * -1);
 			}
 			break;
 
 		case 'w':
 			if (canResize('w')) {
 				setCursor('w-resize');
-				paths.updatePathSize(dw, 0, rl);
-				paths.updatePathPosition(dw * -1, 0);
+				shapes.updateShapeSize(dw, 0, rl);
+				shapes.updateShapePosition(dw * -1, 0);
 			}
 			break;
 
 		case 'nw':
 			if (canResize('nw')) {
 				setCursor('nw-resize');
-				paths.updatePathSize(dw, dh * -1, rl);
-				paths.updatePathPosition(dw * -1, 0);
+				shapes.updateShapeSize(dw, dh * -1, rl);
+				shapes.updateShapePosition(dw * -1, 0);
 			}
 			break;
 	}
 
-	// log('Done lx/rx/ty/by: ' + paths.maxes.print());
+	// log('Done lx/rx/ty/by: ' + shapes.maxes.print());
 	// log(`resizePath`, 'end');
 }
 /*
@@ -237,7 +237,7 @@ function updateDragSelectArea(dx, dy, dw, dh) {
 
 export function canResize(handle) {
 	const editor = getCurrentProjectEditor();
-	let selectedPaths = editor.multiSelect.paths;
+	let selectedPaths = editor.multiSelect.shapes;
 	let rl = selectedPaths.ratioLock;
 	let xl = selectedPaths.xLock;
 	let yl = selectedPaths.yLock;

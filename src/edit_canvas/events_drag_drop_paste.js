@@ -25,9 +25,9 @@ export function importSVGtoCurrentWorkItem(svgData) {
 
 		editor.publish('currentItem', editor.selectedItem);
 		editor.history.addState('Pasted SVG to glyph ' + editor.selectedItem.name);
-		editor.multiSelect.paths.clear();
-		newShapes.forEach(shape => editor.multiSelect.paths.add(shape));
-		showToast('Pasted ' + tempGlyph.paths.length + ' paths from SVG');
+		editor.multiSelect.shapes.clear();
+		newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+		showToast('Pasted ' + tempGlyph.shapes.length + ' shapes from SVG');
 	} else {
 		// showToast('Could not import pasted SVG code.');
 	}

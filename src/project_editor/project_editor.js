@@ -3,7 +3,7 @@ import { History } from './history.js';
 import { Navigator } from './navigator.js';
 import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
 import { json, getFirstID, clone, round } from '../common/functions.js';
-import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
+import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
 import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
@@ -30,7 +30,7 @@ export class ProjectEditor {
 	 * @param {object} newProjectEditor
 	 */
 	constructor(newProjectEditor = {}) {
-		log('ProjectEditor.constructor', 'start');
+		// log('ProjectEditor.constructor', 'start');
 
 		// History
 		this.history = new History();
@@ -83,7 +83,7 @@ export class ProjectEditor {
 		// MultiSelect
 		this.multiSelect = {
 			points: new MultiSelectPoints(),
-			paths: new MultiSelectPaths(),
+			shapes: new MultiSelectShapes(),
 		};
 
 		// Clipboard
@@ -93,7 +93,7 @@ export class ProjectEditor {
 		this.closeAllDialogsOverride = false;
 
 		// log(this);
-		log('ProjectEditor.constructor', 'end');
+		// log('ProjectEditor.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -487,36 +487,36 @@ export class ProjectEditor {
 	// --------------------------------------------------------------
 
 	deleteSelectedItemFromProject(page = false) {
-		log(`deleteSelectedItemFromProject`, 'start');
-		log(`page: ${page}`);
+		// log(`deleteSelectedItemFromProject`, 'start');
+		// log(`page: ${page}`);
 
 		const itemType = page || this.nav.page;
 		let id;
 		let historyTitle;
 
 		if (itemType === 'Glyph edit') {
-			log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
+			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
 			historyTitle = `Deleted Glyph ${id} : ${this.selectedGlyph.name}`;
 			this.history.addState(historyTitle, true);
 			deleteLinks(this.selectedGlyph);
 			delete this.project.glyphs[id];
 		} else if (itemType === 'Components') {
-			log(`deleting selectedComponentID: ${this.selectedComponentID}`);
+			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
 			id = this.selectedComponentID;
 			historyTitle = `Deleted Component ${id} : ${this.selectedComponent.name}`;
 			this.history.addState(historyTitle, true);
 			deleteLinks(this.selectedComponent);
 			delete this.project.components[id];
 		} else if (itemType === 'Ligatures') {
-			log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
+			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
 			id = this.selectedLigatureID;
 			historyTitle = `Deleted Ligature ${id} : ${this.selectedLigature.name}`;
 			this.history.addState(historyTitle, true);
 			deleteLinks(this.selectedLigature);
 			delete this.project.ligatures[id];
 		} else if (itemType === 'Kerning') {
-			log(`deleting selectedKernID: ${this.selectedKernID}`);
+			// log(`deleting selectedKernID: ${this.selectedKernID}`);
 			id = this.selectedKernID;
 			historyTitle = `Deleted Kern ${id} : ${this.selectedKern.name}`;
 			this.history.addState(historyTitle, true);
@@ -524,7 +524,7 @@ export class ProjectEditor {
 		}
 
 		this.selectFallbackItem();
-		log(`deleteSelectedItemFromProject`, 'end');
+		// log(`deleteSelectedItemFromProject`, 'end');
 	}
 
 	/**
@@ -534,36 +534,36 @@ export class ProjectEditor {
 	 * For Ligatures, Components, and Kerns, it's just the first item.
 	 */
 	selectFallbackItem(page = false) {
-		log(`ProjectEditor.selectFallbackItem`, 'start');
+		// log(`ProjectEditor.selectFallbackItem`, 'start');
 		const itemType = page || this.nav.page;
 
 		if (itemType === 'Glyph edit') {
 			const selectedRange = this.selectedGlyphRange;
 			if (selectedRange) {
-				log(`Selected Range detected as ${selectedRange.name}`);
+				// log(`Selected Range detected as ${selectedRange.name}`);
 				let rangeList = selectedRange.array;
 				for (let i = 0; i < rangeList.length; i++) {
 					let id = `glyph-${rangeList[i]}`;
-					log(`checking id ${id}`);
+					// log(`checking id ${id}`);
 					if (this.project.glyphs[id]) {
 						this.selectedGlyphID = id;
 						break;
 					}
 				}
 			}
-			log(`new selectedGlyphID: ${this.selectedGlyphID}`);
+			// log(`new selectedGlyphID: ${this.selectedGlyphID}`);
 		} else if (itemType === 'Components') {
 			this.selectedComponentID = getFirstID(this.project.components);
-			log(`new selectedComponentID: ${this.selectedComponentID}`);
+			// log(`new selectedComponentID: ${this.selectedComponentID}`);
 		} else if (itemType === 'Ligatures') {
 			this.selectedLigatureID = getFirstID(this.project.ligatures);
-			log(`new selectedLigatureID: ${this.selectedLigatureID}`);
+			// log(`new selectedLigatureID: ${this.selectedLigatureID}`);
 		} else if (itemType === 'Kern') {
 			this.selectedKernID = getFirstID(this.project.kerning);
-			log(`new selectedKernID: ${this.selectedKernID}`);
+			// log(`new selectedKernID: ${this.selectedKernID}`);
 		}
 
-		log(`ProjectEditor.selectFallbackItem`, 'end');
+		// log(`ProjectEditor.selectFallbackItem`, 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -580,31 +580,31 @@ export class ProjectEditor {
 		const selectedPoints = msPoints.members;
 		if (selectedPoints.length === 0) return;
 
-		const msPaths = this.multiSelect.paths;
-		const selectedItemPaths = this.selectedItem.paths;
+		const msShapes = this.multiSelect.shapes;
+		const selectedItemShapes = this.selectedItem.shapes;
 
 		let parentPath;
 		let changed = false;
 
 		for (let p = 0; p < selectedPoints.length; p++) {
 			parentPath = selectedPoints[p].parent;
-			// if(!msPaths.isSelected(parentPath)) {
+			// if(!msShapes.isSelected(parentPath)) {
 			// log(`selecting path`);
-			// 	msPaths.add(parentPath);
+			// 	msShapes.add(parentPath);
 			// 	changed = true;
 			// }
-			for (let p = 0; p < selectedItemPaths.length; p++) {
-				if (selectedItemPaths[p].objType !== 'ComponentInstance') {
-					if (parentPath === selectedItemPaths[p]) {
+			for (let p = 0; p < selectedItemShapes.length; p++) {
+				if (selectedItemShapes[p].objType !== 'ComponentInstance') {
+					if (parentPath === selectedItemShapes[p]) {
 						// log(`selecting path!`);
-						msPaths.add(selectedItemPaths[p]);
+						msShapes.add(selectedItemShapes[p]);
 						changed = true;
 					}
 				}
 			}
 		}
 
-		if (changed) msPaths.publishChanges();
+		if (changed) msShapes.publishChanges();
 		// log('ProjectEditor.selectPathsThatHaveSelectedPoints', 'end');
 	}
 

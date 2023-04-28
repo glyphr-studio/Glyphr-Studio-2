@@ -24,7 +24,7 @@ export class Tool_NewPath {
 			// log('Tool_NewPath.mousedown', 'start');
 			const editor = getCurrentProjectEditor();
 			const ehd = eventHandlerData;
-			const msPaths = editor.multiSelect.paths;
+			const msShapes = editor.multiSelect.shapes;
 			const msPoints = editor.multiSelect.points;
 
 			// New point
@@ -34,8 +34,8 @@ export class Tool_NewPath {
 
 			// Ensure selection
 			if (this.newPath) {
-				if (!msPaths.isSelected(this.newPath)) {
-					msPaths.select(this.newPath);
+				if (!msShapes.isSelected(this.newPath)) {
+					msShapes.select(this.newPath);
 				}
 			}
 
@@ -44,12 +44,12 @@ export class Tool_NewPath {
 				let count =
 					editor.nav.page === 'components'
 						? Object.keys(getCurrentProject().components).length
-						: editor.selectedItem.paths.length;
+						: editor.selectedItem.shapes.length;
 
 				count += 1;
 				this.newPath = editor.selectedItem.addOneShape(new Path({ name: 'Path ' + count }));
 				this.currentPoint = this.newPath.addPathPoint(newPoint);
-				msPaths.select(this.newPath);
+				msShapes.select(this.newPath);
 				msPoints.select(this.currentPoint);
 				editor.publish('whichPathPointIsSelected', this.currentPoint);
 				this.showDoneCreatingPathButton();

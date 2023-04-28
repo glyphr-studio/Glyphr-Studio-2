@@ -331,7 +331,7 @@ export class Path extends GlyphElement {
 	 * @returns {Path} - reference to this Path
 	 */
 	set x(x) {
-		this.setPathPosition(x, false);
+		this.setShapePosition(x, false);
 	}
 
 	/**
@@ -340,7 +340,7 @@ export class Path extends GlyphElement {
 	 * @returns {Path} - reference to this Path
 	 */
 	set y(y) {
-		this.setPathPosition(false, y);
+		this.setShapePosition(false, y);
 	}
 
 	/**
@@ -349,7 +349,7 @@ export class Path extends GlyphElement {
 	 * @returns {Path} - reference to this Path
 	 */
 	set height(h) {
-		this.setPathSize(false, h);
+		this.setShapeSize(false, h);
 	}
 
 	/**
@@ -358,7 +358,7 @@ export class Path extends GlyphElement {
 	 * @returns {Path} - reference to this Path
 	 */
 	set width(w) {
-		this.setPathSize(w, false);
+		this.setShapeSize(w, false);
 	}
 
 	/**
@@ -481,14 +481,14 @@ export class Path extends GlyphElement {
 	 * @param {boolean} ratioLock - if one is changed, change the other
 	 * @returns {Path} - reference to this path
 	 */
-	setPathSize(nw = false, nh = false, ratioLock = false) {
+	setShapeSize(nw = false, nh = false, ratioLock = false) {
 		if (nw !== false) nw = parseFloat(nw);
 		if (nh !== false) nh = parseFloat(nh);
 
 		const dw = nw !== false ? nw - this.width : 0;
 		const dh = nh !== false ? nh - this.height : 0;
 
-		this.updatePathSize(dw, dh, ratioLock);
+		this.updateShapeSize(dw, dh, ratioLock);
 
 		return this;
 	}
@@ -500,8 +500,8 @@ export class Path extends GlyphElement {
 	 * @param {boolean} ratioLock - if one is changed, change the other
 	 * @returns {Path} - reference to this path
 	 */
-	updatePathSize(dw = 0, dh = 0, ratioLock = false) {
-		// log('Path.updatePathSize', 'start');
+	updateShapeSize(dw = 0, dh = 0, ratioLock = false) {
+		// log('Path.updateShapeSize', 'start');
 		// log('dw,dh,rl\t'+dw+' , '+dh+' , '+ratioLock);
 		dw = parseFloat(dw);
 		dh = parseFloat(dh);
@@ -562,7 +562,7 @@ export class Path extends GlyphElement {
 			// log('ratioWidth = ' + ratioWidth);
 		}
 
-		// log('Path.updatePathSize', 'end');
+		// log('Path.updateShapeSize', 'end');
 	}
 
 	/**
@@ -571,8 +571,8 @@ export class Path extends GlyphElement {
 	 * @param {number} ny - new Y
 	 * @returns {Path} - reference to this path
 	 */
-	setPathPosition(nx = false, ny = false) {
-		// log('Path.setPathPosition', 'start');
+	setShapePosition(nx = false, ny = false) {
+		// log('Path.setShapePosition', 'start');
 		// log(`nx:${nx}\tny:${ny}`);
 
 		if (nx !== false) nx = parseFloat(nx);
@@ -582,8 +582,8 @@ export class Path extends GlyphElement {
 		const dy = ny !== false ? ny * 1 - this.maxes.yMax : 0;
 		// log('dx dy: ' + dx + ' ' + dy);
 
-		this.updatePathPosition(dx, dy);
-		// log('Path.setPathPosition', 'end');
+		this.updateShapePosition(dx, dy);
+		// log('Path.setShapePosition', 'end');
 	}
 
 	/**
@@ -592,8 +592,8 @@ export class Path extends GlyphElement {
 	 * @param {number} dy - delta Y
 	 * @returns {Path} - reference to this path
 	 */
-	updatePathPosition(dx = 0, dy = 0) {
-		// log('Path.updatePathPosition', 'start');
+	updateShapePosition(dx = 0, dy = 0) {
+		// log('Path.updateShapePosition', 'start');
 
 		dx = parseFloat(dx);
 		dy = parseFloat(dy);
@@ -610,7 +610,7 @@ export class Path extends GlyphElement {
 		// should have propagated from the PathPoint
 		// this.changed();
 
-		// log('Path.updatePathPosition', 'end');
+		// log('Path.updateShapePosition', 'end');
 	}
 
 	/**

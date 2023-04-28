@@ -20,23 +20,23 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 	// log(glyph.name);
 	// log('view ' + json(view, true));
 	// log(ctx);
-	if (!glyph.paths) {
-		console.warn(`Glyph ${glyph.name} has no paths to draw`);
+	if (!glyph.shapes) {
+		console.warn(`Glyph ${glyph.name} has no shapes to draw`);
 		return false;
 	}
 
-	let drewPath;
+	let drewShape;
 	ctx.beginPath();
-	glyph.paths.forEach((shape) => {
-		// log(`${glyph.name} drawing ${path.objType} #${j} "${path.name}"`);
-		drewPath = drawItem(shape, ctx, view);
-		if (!drewPath) {
+	glyph.shapes.forEach((shape) => {
+		// log(`${glyph.name} drawing ${shape.objType} #${j} "${shape.name}"`);
+		drewShape = drawShape(shape, ctx, view);
+		if (!drewShape) {
 			console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + glyph.name);
 			if (shape.objType === 'ComponentInstance' && !getCurrentProject().getItem(shape.link)) {
 				console.warn('>>> Component Instance has bad link: ' + shape.link);
-				const i = glyph.paths.indexOf(shape);
+				const i = glyph.shapes.indexOf(shape);
 				if (i > -1) {
-					glyph.paths.splice(i, 1);
+					glyph.shapes.splice(i, 1);
 					console.warn('>>> Deleted the Instance');
 				}
 			}
@@ -59,15 +59,15 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 // --------------------------------------------------------------
 /**
  *
- * @param {Path or ComponentInstance} item - what thing to draw
+ * @param {Path or ComponentInstance} shape - what thing to draw
  * @param {object} ctx - canvas context
  * @param {object} view - view
  */
-export function drawItem(item, ctx, view) {
-	if (item.objType === 'ComponentInstance') {
-		return drawComponentInstanceToCanvas(item, ctx, view);
+export function drawShape(shape, ctx, view) {
+	if (shape.objType === 'ComponentInstance') {
+		return drawComponentInstanceToCanvas(shape, ctx, view);
 	} else {
-		return drawPathToCanvas(item, ctx, view);
+		return drawPathToCanvas(shape, ctx, view);
 	}
 }
 
@@ -90,12 +90,12 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
 	const glyph = componentInstance.transformedGlyph;
 	// log(glyph);
 	if (!glyph) return false;
-	let drewPath = false;
+	let drewShape = false;
 	let failed = false;
 
-	glyph.paths.forEach((shape) => {
-		drewPath = drawItem(shape, ctx, view);
-		failed = failed || !drewPath;
+	glyph.shapes.forEach((shape) => {
+		drewShape = drawShape(shape, ctx, view);
+		failed = failed || !drewShape;
 	});
 
 	// log(`!failed: ${!failed}`);

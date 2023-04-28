@@ -104,42 +104,42 @@ function ioSVG_makeFontFace() {
 	// log('ioSVG_makeFontFace', 'end');
 	return con;
 }
-	/**
-	 * Calculate the overall bounds given every glyph in this font
-	 * @returns {object} - font maxes
-	 */
-	function calcFontMaxes() {
-		// log(`GSProject.calcFontMaxes`, 'start');
-		const project = getCurrentProject();
-		const fm = {
-			maxGlyph: 0x20,
-			maxes: new Maxes(),
-		};
+/**
+ * Calculate the overall bounds given every glyph in this font
+ * @returns {object} - font maxes
+ */
+function calcFontMaxes() {
+	// log(`GSProject.calcFontMaxes`, 'start');
+	const project = getCurrentProject();
+	const fm = {
+		maxGlyph: 0x20,
+		maxes: new Maxes(),
+	};
 
-		// log(`fm starts as`);
-		// log(fm);
+	// log(`fm starts as`);
+	// log(fm);
 
-		let thisGlyph;
-		const ranges = project.settings.project.glyphRanges;
-		// log(`ranges`);
-		// log(ranges);
+	let thisGlyph;
+	const ranges = project.settings.project.glyphRanges;
+	// log(`ranges`);
+	// log(ranges);
 
-		ranges.forEach((range) => {
-			for (let char = range.begin; char < range.end; char++) {
-				thisGlyph = project.getItem(`glyph-${decToHex(char)}`);
-				if (thisGlyph) fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
-			}
-			fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
-		});
-
-		for (const lig of Object.keys(project.ligatures)) {
-			fm.maxes = getOverallMaxes([fm.maxes, project.ligatures[lig]]);
+	ranges.forEach((range) => {
+		for (let char = range.begin; char < range.end; char++) {
+			thisGlyph = project.getItem(`glyph-${decToHex(char)}`);
+			if (thisGlyph) fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
 		}
+		fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
+	});
 
-		// log(`returning fm`);
-		// log(fm);
-		// log(`GSProject.calcFontMaxes`, 'end');
-		return fm;
+	for (const lig of Object.keys(project.ligatures)) {
+		fm.maxes = getOverallMaxes([fm.maxes, project.ligatures[lig]]);
+	}
+
+	// log(`returning fm`);
+	// log(fm);
+	// log(`GSProject.calcFontMaxes`, 'end');
+	return fm;
 }
 
 function ioSVG_makeMissingGlyph() {
@@ -182,9 +182,9 @@ function ioSVG_makeAllGlyphsAndLigatures() {
 }
 
 function ioSVG_makeOneGlyphOrLigature(gl, uni) {
-	// if(!gl.paths.length && !gl.advanceWidth) return '';
+	// if(!gl.shapes.length && !gl.advanceWidth) return '';
 	// Results in lots of special unicode glyphs with no paths
-	if (!gl.paths.length && uni != 0x0020) {
+	if (!gl.shapes.length && uni != 0x0020) {
 		console.warn('Glyph ' + uni + ' not exported: No paths.');
 		return '';
 	}

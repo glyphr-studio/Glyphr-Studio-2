@@ -38,28 +38,28 @@ import { countItems, trim } from '../common/functions.js';
 
 export function getActionData(name) {
 	const editor = getCurrentProjectEditor();
-	let selectedPaths = editor.multiSelect.paths.members;
+	let selectedPaths = editor.multiSelect.shapes.members;
 	let selectedPoints = editor.multiSelect.points.members;
 	let data = {};
-	let clipBoardPaths = editor.clipboard.paths;
-	let clipBoardPathCount = clipBoardPaths ? clipBoardPaths.length : 0;
+	let clipBoardShapes = editor.clipboard.shapes;
+	let clipBoardPathCount = clipBoardShapes ? clipBoardShapes.length : 0;
 	let historyLength = editor.history.queue.length;
 
 	// UNIVERSAL ACTIONS
 	data.allActions = [
 		{
 			iconName: 'copy',
-			iconOptions: !clipBoardPaths,
-			title: `Copy\nAdds the selected path or paths to the clipboard.`,
-			disabled: !editor.multiSelect.paths.length,
+			iconOptions: !clipBoardShapes,
+			title: `Copy\nAdds the selected shape(s) to the clipboard.`,
+			disabled: !editor.multiSelect.shapes.length,
 			id: 'actionButtonCopy',
 			onClick: clipboardCopy,
 		},
 		{
 			iconName: 'paste',
-			iconOptions: !clipBoardPaths,
+			iconOptions: !clipBoardShapes,
 			title: makeActionButtonPasteTooltip(clipBoardPathCount),
-			disabled: !clipBoardPaths,
+			disabled: !clipBoardShapes,
 			id: 'actionButtonPaste',
 			onClick: clipboardPaste,
 		},
@@ -83,7 +83,7 @@ export function getActionData(name) {
 	}
 
 	// ADDING PATH STUFF
-	data.addPathActions = [
+	data.addShapeActions = [
 		{
 			iconName: 'addPath',
 			iconOptions: false,
@@ -91,7 +91,7 @@ export function getActionData(name) {
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				let newPath = editor.selectedItem.addOneShape(rectPathFromMaxes());
-				editor.multiSelect.paths.select(newPath);
+				editor.multiSelect.shapes.select(newPath);
 				editor.publish('whichPathIsSelected', newPath);
 				editor.publish('currentItem', editor.selectedItem);
 			},
@@ -178,17 +178,17 @@ export function getActionData(name) {
 	];
 
 	// PATH
-	data.pathActions = [
+	data.shapeActions = [
 		{
 			iconName: 'copy',
-			iconOptions: !clipBoardPaths,
-			title: `Copy\nAdds the selected path or paths to the clipboard.`,
+			iconOptions: !clipBoardShapes,
+			title: `Copy\nAdds the selected shape(s) to the clipboard.`,
 			id: 'actionButtonCopyPath',
 			onClick: clipboardCopy,
 		},
 		{
 			iconName: 'deletePath',
-			title: 'Delete\nRemoves the currently selected path or paths from this glyph.',
+			title: 'Delete\nRemoves the currently selected shape(s) from this glyph.',
 			onClick: deleteSelectedPaths,
 		},
 		{
@@ -201,7 +201,7 @@ export function getActionData(name) {
 					objType: 'Component',
 					name: `Component ${countItems(editor.project.components)}`,
 				});
-				editor.multiSelect.paths.members.forEach((shape) => {
+				editor.multiSelect.shapes.members.forEach((shape) => {
 					if (shape.objType === 'Path') {
 						newComponent.addOneShape(new Path(shape));
 					} else if (shape.objType === 'ComponentInstance') {
@@ -216,29 +216,29 @@ export function getActionData(name) {
 						link: addedComponent.id,
 					})
 				);
-				editor.multiSelect.paths.deletePaths();
-				editor.multiSelect.paths.select(newShape);
+				editor.multiSelect.shapes.deleteShapes();
+				editor.multiSelect.shapes.select(newShape);
 				editor.history.addState('Turned a path into a component');
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
 			iconName: 'flipHorizontal',
-			title: 'Flip Horizontal\nReflects the currently selected path or paths horizontally.',
+			title: 'Flip Horizontal\nReflects the currently selected shape(s) horizontally.',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let path = editor.multiSelect.paths.virtualGlyph;
-				path.flipEW();
+				let shape = editor.multiSelect.shapes.virtualGlyph;
+				shape.flipEW();
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
 			iconName: 'flipVertical',
-			title: 'Flip Vertical\nReflects the currently selected path or paths vertically',
+			title: 'Flip Vertical\nReflects the currently selected shape(s) vertically',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let path = editor.multiSelect.paths.virtualGlyph;
-				path.flipNS();
+				let shape = editor.multiSelect.shapes.virtualGlyph;
+				shape.flipNS();
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -247,8 +247,8 @@ export function getActionData(name) {
 			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let path = editor.multiSelect.paths.virtualGlyph;
-				path.roundAll();
+				let shape = editor.multiSelect.shapes.virtualGlyph;
+				shape.roundAll();
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -264,7 +264,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const otherChangedItems = [];
 				let newShapes = [];
-				editor.multiSelect.paths.members.forEach((shape) => {
+				editor.multiSelect.shapes.members.forEach((shape) => {
 					if (shape.objType === 'ComponentInstance') {
 						const sourceItem = editor.project.getItem(shape.link);
 						newShapes = newShapes.concat(
@@ -274,8 +274,8 @@ export function getActionData(name) {
 						otherChangedItems.push(sourceItem);
 					}
 				});
-				editor.multiSelect.paths.deletePaths();
-				newShapes.forEach((shape) => editor.multiSelect.paths.add(shape));
+				editor.multiSelect.shapes.deleteShapes();
+				newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
 				editor.history.addState('Turned a component instance into a path', otherChangedItems);
 				editor.publish('currentItem', editor.selectedItem);
 			},
@@ -315,67 +315,67 @@ export function getActionData(name) {
 	// ALIGN
 	data.alignActions = [
 		{
-			title: `Align Left\nMoves all the selected paths so they are left aligned with the leftmost path.`,
+			title: `Align Left\nMoves all the selected shape so they are left aligned with the leftmost shape.`,
 			iconName: 'align',
 			iconOptions: 'left',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.paths;
+				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('left');
 				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
-			title: `Align Center\nMoves all the selected paths so they are center aligned between the leftmost and rightmost path.`,
+			title: `Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape.`,
 			iconName: 'align',
 			iconOptions: 'center',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.paths;
+				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('center');
 				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
-			title: `Align Right\nMoves all the selected paths so they are right aligned with the rightmost path.`,
+			title: `Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape.`,
 			iconName: 'align',
 			iconOptions: 'right',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.paths;
+				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('right');
 				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
-			title: `Align Top\nMoves all the selected paths so they are top aligned with the topmost path.`,
+			title: `Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape.`,
 			iconName: 'align',
 			iconOptions: 'top',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.paths;
+				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('top');
 				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
-			title: `Align Middle\nMoves all the selected paths so they are middle aligned between the topmost and bottommost path.`,
+			title: `Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape.`,
 			iconName: 'align',
 			iconOptions: 'middle',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.paths;
+				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('middle');
 				editor.publish('currentItem', vGlyph);
 			},
 		},
 		{
-			title: `Align Bottom\nMoves all the selected paths so they are bottom aligned with the bottommost path.`,
+			title: `Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape.`,
 			iconName: 'align',
 			iconOptions: 'bottom',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.paths;
+				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('bottom');
 				editor.publish('currentItem', vGlyph);
 			},
@@ -409,7 +409,7 @@ export function getActionData(name) {
 			disabled: selectedPoints.length !== 1,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let newPoint = editor.multiSelect.paths.singleton.insertPathPoint(
+				let newPoint = editor.multiSelect.shapes.singleton.insertPathPoint(
 					selectedPoints[0].pointNumber
 				);
 				editor.multiSelect.points.select(newPoint);
@@ -493,7 +493,7 @@ export function makeActionsArea_Universal() {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 
 	addChildActions(actionsArea, getActionData('allActions'));
-	addChildActions(actionsArea, getActionData('addPathActions'));
+	addChildActions(actionsArea, getActionData('addShapeActions'));
 
 	// Dev actions for testing
 	/*
@@ -528,11 +528,11 @@ export function makeActionsArea_Glyph() {
 export function makeActionsArea_Path(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	let alignActions = false;
-	let selectedPaths = getCurrentProjectEditor().multiSelect.paths.members;
+	let selectedPaths = getCurrentProjectEditor().multiSelect.shapes.members;
 
 	if (selectedPaths.length > 0 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'paths'}));
-		addChildActions(actionsArea, getActionData('pathActions'));
+		addChildActions(actionsArea, getActionData('shapeActions'));
 	}
 
 	// Boolean combine actions
@@ -560,7 +560,7 @@ export function makeActionsArea_Path(test = false) {
 export function makeActionsArea_ComponentInstance(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	let alignActions = false;
-	let selectedPaths = getCurrentProjectEditor().multiSelect.paths.members;
+	let selectedPaths = getCurrentProjectEditor().multiSelect.shapes.members;
 
 	if (selectedPaths.length > 0 || test) {
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'paths'}));
@@ -604,18 +604,18 @@ export function makeActionsArea_PathPoint(test = false) {
 
 export function deleteSelectedPaths() {
 	const editor = getCurrentProjectEditor();
-	let msPaths = editor.multiSelect.paths;
+	let msShapes = editor.multiSelect.shapes;
 
 	let historyTitle;
-	if (msPaths.length > 1) {
-		historyTitle = `Deleted ${msPaths.length} paths`;
+	if (msShapes.length > 1) {
+		historyTitle = `Deleted ${msShapes.length} paths`;
 	} else {
-		historyTitle = `Deleted path: ${msPaths.singleton.name}`;
+		historyTitle = `Deleted path: ${msShapes.singleton.name}`;
 	}
 
-	msPaths.deletePaths();
+	msShapes.deleteShapes();
 	editor.history.addState(historyTitle);
-	editor.publish('currentItem', editor.multiSelect.paths.virtualGlyph);
+	editor.publish('currentItem', editor.multiSelect.shapes.virtualGlyph);
 }
 
 export function deleteSelectedPoints() {
@@ -631,11 +631,11 @@ export function deleteSelectedPoints() {
 
 	let minDeletedPoint = msPoints.deletePathPoints();
 	editor.history.addState(historyTitle);
-	let pathSingleton = editor.multiSelect.paths.singleton;
+	let pathSingleton = editor.multiSelect.shapes.singleton;
 	if (pathSingleton) {
 		msPoints.select(pathSingleton.pathPoints[pathSingleton.getPreviousPointNum(minDeletedPoint)]);
 	} else {
-		editor.publish('whichPathPointIsSelected', editor.multiSelect.paths);
+		editor.publish('whichPathPointIsSelected', editor.multiSelect.shapes);
 	}
 }
 
@@ -645,8 +645,8 @@ export function deleteSelectedPoints() {
 
 function moveLayer(direction = 'up') {
 	const editor = getCurrentProjectEditor();
-	const selectedPath = editor.multiSelect.paths.singleton;
-	const itemPaths = editor.selectedItem.paths;
+	const selectedPath = editor.multiSelect.shapes.singleton;
+	const itemPaths = editor.selectedItem.shapes;
 	const currentIndex = itemPaths.indexOf(selectedPath);
 	let tempPath;
 
@@ -674,7 +674,7 @@ function combineSelectedPaths() {
 	showToast('Combining selected paths... ', 100);
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
-		editor.multiSelect.paths.combine();
+		editor.multiSelect.shapes.combine();
 		editor.history.addState('combine selected paths');
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
@@ -701,13 +701,13 @@ export function clipboardCopy() {
 	let selPaths = [];
 	let button = document.getElementById('actionButtonPaste');
 
-	editor.multiSelect.paths.members.forEach((path) => {
-		selPaths.push(path.save(true));
+	editor.multiSelect.shapes.members.forEach((shape) => {
+		selPaths.push(shape.save(true));
 	});
 
 	if (selPaths.length) {
 		editor.clipboard = {
-			paths: selPaths,
+			shapes: selPaths,
 			sourceID: editor.selectedItemID,
 			dx: 0,
 			dy: 0,
@@ -734,11 +734,11 @@ export function clipboardPaste() {
 		clipboard.dy -= 20;
 	}
 
-	if (clipboard && clipboard.paths.length) {
+	if (clipboard && clipboard.shapes.length) {
 		let newShapes = [];
 
 		let newShape, newName, newSuffix, caret, suffix;
-		clipboard.paths.forEach((shape) => {
+		clipboard.shapes.forEach((shape) => {
 			if (shape.objType === 'ComponentInstance') {
 				newShape = new ComponentInstance(shape);
 			} else {
@@ -746,7 +746,7 @@ export function clipboardPaste() {
 			}
 
 			if (offsetPaths) {
-				newShape.updatePathPosition(clipboard.dx, clipboard.dy, true);
+				newShape.updateShapePosition(clipboard.dx, clipboard.dy, true);
 			}
 
 			newName = newShape.name;
@@ -780,11 +780,11 @@ export function clipboardPaste() {
 		// log(`New paths that have been copied`);
 		// log(newShapes);
 
-		editor.multiSelect.paths.clear();
+		editor.multiSelect.shapes.clear();
 		editor.multiSelect.points.clear();
 
-		editor.selectedItem.paths = editor.selectedItem.paths.concat(newShapes);
-		newShapes.forEach((path) => editor.multiSelect.paths.add(path));
+		editor.selectedItem.shapes = editor.selectedItem.shapes.concat(newShapes);
+		newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
 
 		clipboard.sourceID = editor.selectedItemID;
 
@@ -796,7 +796,7 @@ export function clipboardPaste() {
 }
 
 export function makeActionButtonPasteTooltip(clipBoardPathCount) {
-	let re = `Paste\nAdds the previously-copied path or paths into this glyph.\n\n`;
+	let re = `Paste\nAdds the previously-copied shape(s) into this glyph.\n\n`;
 	re += `Currently ${clipBoardPathCount} Path${
 		clipBoardPathCount === 1 ? '' : 's'
 	} on the clipboard.`;
@@ -820,10 +820,10 @@ function showDialogChooseOtherItem(type) {
 			const thisItem = editor.selectedItem;
 			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
 			editor.history.addState(`Paths were copied from ${otherItem.name}.`);
-			editor.multiSelect.paths.clear();
-			newShapes.forEach((shape) => editor.multiSelect.paths.add(shape));
+			editor.multiSelect.shapes.clear();
+			newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
 			closeEveryTypeOfDialog();
-			showToast(`${otherItem.paths.length} paths copied from<br>${otherItem.name}`);
+			showToast(`${otherItem.shapes.length} paths copied from<br>${otherItem.name}`);
 		};
 	}
 
@@ -835,7 +835,7 @@ function showDialogChooseOtherItem(type) {
 			const thisItem = editor.selectedItem;
 			const newInstance = linkComponentFromTo(otherItem, thisItem, false);
 			if (newInstance) {
-				editor.multiSelect.paths.add(newInstance);
+				editor.multiSelect.shapes.add(newInstance);
 				editor.history.addState(`Component instance was linked from ${otherItem.name}.`);
 				closeEveryTypeOfDialog();
 				showToast(`Component instance linked from<br>${otherItem.name}`);
@@ -891,8 +891,8 @@ export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = fals
 	const editor = getCurrentProjectEditor();
 	let item;
 	let newShapes = [];
-	for (let c = 0; c < sourceItem.paths.length; c++) {
-		item = sourceItem.paths[c];
+	for (let c = 0; c < sourceItem.shapes.length; c++) {
+		item = sourceItem.shapes[c];
 		if (item.objType === 'ComponentInstance') {
 			addLinkToUsedIn(editor.project.getItem(item.link), destinationItem.id);
 			item = new ComponentInstance(item);

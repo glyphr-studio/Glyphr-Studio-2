@@ -7,7 +7,7 @@ import { cXsX, cYsY } from '../edit_canvas.js';
 import { setCursor } from '../cursors.js';
 import { isOverControlPoint } from '../detect_edit_affordances.js';
 import { clickEmptySpace } from '../events_mouse.js';
-import { getPathAtLocation } from './tools.js';
+import { getShapeAtLocation } from './tools.js';
 import { eventHandlerData } from '../events.js';
 
 export class Tool_PathEdit {
@@ -26,22 +26,22 @@ export class Tool_PathEdit {
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			const msPoints = editor.multiSelect.points;
-			const msPaths = editor.multiSelect.paths;
+			const msShapes = editor.multiSelect.shapes;
 			const view = editor.view;
 			ehd.lastX = ehd.mousePosition.x;
 			ehd.lastY = ehd.mousePosition.y;
 			this.historyTitle = 'Path edit tool';
 
 			this.controlPoint = isOverControlPoint(
-				ehd.isCtrlDown ? editor.selectedItem : msPaths.virtualGlyph,
+				ehd.isCtrlDown ? editor.selectedItem : msShapes.virtualGlyph,
 				cXsX(ehd.mousePosition.x, view),
 				cYsY(ehd.mousePosition.y, view)
 			);
 			// log(`isOverControlPoint:`);
 			// log(this.controlPoint);
 
-			const clickedPath = getPathAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
-			// log(`getPathAtLocation:`);
+			const clickedPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
+			// log(`getShapeAtLocation:`);
 			// log(clickedPath);
 
 			if (this.controlPoint) {
@@ -86,14 +86,14 @@ export class Tool_PathEdit {
 			} else if (clickedPath) {
 				// log('detected PATH');
 				clickEmptySpace();
-				msPaths.select(clickedPath);
+				msShapes.select(clickedPath);
 			} else {
 				// log('detected NOTHING');
 				clickEmptySpace();
 				// findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			}
 
-			// if (msPaths.members.length) editor.nav.panel = 'Attributes';
+			// if (msShapes.members.length) editor.nav.panel = 'Attributes';
 			// log('Tool_PathEdit.mousedown', 'end');
 		};
 
@@ -188,7 +188,7 @@ export class Tool_PathEdit {
 			} else {
 				// Single selection
 				hoveredControlPoint = isOverControlPoint(
-					editor.multiSelect.paths.virtualGlyph,
+					editor.multiSelect.shapes.virtualGlyph,
 					cXsX(ehd.mousePosition.x, view),
 					cYsY(ehd.mousePosition.y, view)
 				);

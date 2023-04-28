@@ -12,7 +12,7 @@ function sampleGlyph() {
 	// console.log('SAMPLE PATH POINTS');
 	// console.log(samples.pathPoints);
 	let re = new Glyph();
-	re.paths = [{ pathPoints: clone(samples.pathPoints) }];
+	re.shapes = [{ pathPoints: clone(samples.pathPoints) }];
 
 	// re.recalculateMaxes();
 	// console.log('SAMPLE GLYPH');
@@ -26,7 +26,7 @@ function sampleGlyph() {
  */
 function multiTriangleGlyph() {
 	let re = new Glyph({
-		paths: [
+		shapes: [
 			{
 				name: 'Path One',
 				pathPoints: [
@@ -73,8 +73,8 @@ describe('Glyph - Getters and Setters', () => {
 
 	it('get/set paths', () => {
 		const g = new Glyph();
-		g.paths = [{ path: { pathPoints: clone(samples.pathPoints) } }];
-		expect(g.paths.length).toBe(1);
+		g.shapes = [{ path: { pathPoints: clone(samples.pathPoints) } }];
+		expect(g.shapes.length).toBe(1);
 	});
 
 	it('get/set advanceWidth', () => {
@@ -149,7 +149,7 @@ describe('Glyph - Getters and Setters', () => {
 
 describe('Glyph - outputs', () => {
 	it('save', () => {
-		expect(sampleGlyph().save().paths[0].winding).toEqual(-5);
+		expect(sampleGlyph().save().shapes[0].winding).toEqual(-5);
 	});
 
 	it('print', () => {
@@ -185,31 +185,31 @@ describe('Glyph - updating', () => {
 	it('flipNS', () => {
 		const g = multiTriangleGlyph();
 		g.flipNS();
-		expect(g.paths[0].pathPoints[0].p.coord.x).toBe(400);
+		expect(g.shapes[0].pathPoints[0].p.coord.x).toBe(400);
 	});
 
 	it('flipEW', () => {
 		const g = multiTriangleGlyph();
 		g.flipEW();
-		expect(g.paths[0].pathPoints[0].p.coord.x).toBe(410);
+		expect(g.shapes[0].pathPoints[0].p.coord.x).toBe(410);
 	});
 
 	it('rotate', () => {
 		const g = multiTriangleGlyph();
 		g.rotate(2, { x: 123, y: 123 });
-		expect(g.paths[0].pathPoints[0].p.coord.x).toBe(62.555475375006786);
+		expect(g.shapes[0].pathPoints[0].p.coord.x).toBe(62.555475375006786);
 	});
 
 	it('reverseWinding', () => {
 		const g = sampleGlyph();
 		g.reverseWinding();
-		expect(g.paths[0].winding).toBeGreaterThan(0);
+		expect(g.shapes[0].winding).toBeGreaterThan(0);
 	});
 
 	it('alignShapes', () => {
 		const g = multiTriangleGlyph();
 		g.alignShapes('right');
-		expect(g.paths[2].maxes.xMax).toBe(800);
+		expect(g.shapes[2].maxes.xMax).toBe(800);
 	});
 
 	it('makeSVG', () => {
@@ -240,7 +240,7 @@ describe('Glyph - updating', () => {
 
 	// 	const g = new Glyph({paths: [s1, s2]});
 	// 	const re = g.combineAllPaths(true, true);
-	// 	console.log(re.paths);
-	// 	expect(re.paths.length).toBe(1);
+	// 	console.log(re.shapes);
+	// 	expect(re.shapes.length).toBe(1);
 	// });
 });

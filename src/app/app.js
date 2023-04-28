@@ -33,7 +33,7 @@ export class GlyphrStudioApp {
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel
 				currentTool: false, // select a tool
-				selectFirstPath: false, // select a shape
+				selectFirstShape: false, // select a shape
 				selectFirstPoint: false, // select a path point
 				testActions: [],
 				testOnLoad: function () {},
@@ -68,9 +68,9 @@ export class GlyphrStudioApp {
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
 			if (dev.currentTool) editor.selectedTool = dev.currentTool;
-			if (dev.selectFirstPath) editor.multiSelect.paths.select(editor.selectedGlyph.paths[0]);
+			if (dev.selectFirstShape) editor.multiSelect.shapes.select(editor.selectedGlyph.shapes[0]);
 			if (dev.selectFirstPoint)
-				editor.multiSelect.points.select(editor.selectedGlyph.paths[0].pathPoints[0]);
+				editor.multiSelect.points.select(editor.selectedGlyph.shapes[0].pathPoints[0]);
 		}
 
 		if (this.settings.telemetry) {
@@ -81,7 +81,7 @@ export class GlyphrStudioApp {
 		// log(editor.nav.page);
 		this.fadeOutLandingPage();
 		editor.navigate();
-		if (dev.mode && (dev.selectFirstPath || dev.selectFirstPoint)) editor.editCanvas.redraw();
+		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw();
 
 		log(`GlyphrStudioApp.setUp`, 'end');
 	}

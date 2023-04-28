@@ -67,7 +67,8 @@ The classes in this main hierarchy all extend the **`Glyph Element`** class,
 which implements some common concepts - the main one being caching
 and cache clearing whenever a change is made.
 
-The **`Glyph`** type is used for Glyphs, Components, and Ligatures.
+The **`Glyph`** type is used for Glyphs, Components, and Ligatures. In the
+code, the word "**Item**" is used to generically refer to these.
 
 **`Path`** and **`Component Instance`** surface the same API, essentially,
 and can be treated interchangeably from a **`Glyph`**'s point of view.
@@ -75,8 +76,8 @@ Under the covers, though, a **`Path`** relies on **`Path Points`** to draw
 itself, where a **`Component Instance`** relies on a link to another
 **`Glyph`**, plus some transforms, to draw itself.
 
-(Note: removal of the concept of `Shape` from v2. `Shape` functionality has
-been merged into `Path`.)
+In the code, the word "**Shape**" is used to generically refer to either
+a **`Path`** or a **`Component Instance`**.
 
 **All Glyph Elements should have 100% test coverage**
 

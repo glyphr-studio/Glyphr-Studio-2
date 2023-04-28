@@ -105,7 +105,7 @@ export function makeCard_multiSelectPathAttributes(glyph) {
 	let multiPathCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>${glyph.paths.length} selected paths</h3>`,
+		innerHTML: `<h3>${glyph.shapes.length} selected paths</h3>`,
 	});
 	addAsChildren(multiPathCard, makeInputs_position(glyph));
 	addAsChildren(multiPathCard, makeInputs_size(glyph));

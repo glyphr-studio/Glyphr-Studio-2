@@ -2,7 +2,7 @@ import { getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors, uiColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
-import { drawItem } from '../../display_canvas/draw_paths.js';
+import { drawShape } from '../../display_canvas/draw_paths.js';
 import { Path } from '../../project_data/path.js';
 import { stopCreatingNewPath } from './new_path.js';
 
@@ -39,7 +39,7 @@ export function makeEditToolsButtons() {
 	};
 
 	// Disable pen and add path point buttons for certain conditions
-	const hasComponentInstance = editor.multiSelect.paths.contains('ComponentInstance');
+	const hasComponentInstance = editor.multiSelect.shapes.contains('ComponentInstance');
 
 	if (editor.selectedTool !== 'pathEdit' && hasComponentInstance) {
 		toolButtonData.pathEdit.disabled = true;
@@ -49,7 +49,7 @@ export function makeEditToolsButtons() {
 		toolButtonData.pathAddPoint.disabled = true;
 	}
 
-	if (editor.multiSelect.paths.count > 1) {
+	if (editor.multiSelect.shapes.count > 1) {
 		toolButtonData.pathAddPoint.disabled = true;
 	}
 
@@ -230,7 +230,7 @@ export function clickTool(tool) {
 
 	if (tool === 'newPath') {
 		editor.multiSelect.points.clear();
-		editor.multiSelect.paths.clear();
+		editor.multiSelect.shapes.clear();
 	} else {
 		stopCreatingNewPath();
 	}
@@ -349,52 +349,39 @@ export function addBasicPath(type){
 	}
 
 	newPath = new Path({'pathPoints':parr});
-	newPath.name = (pathtype + getSelectedItem.paths.length+1);
+	newPath.name = (pathtype + getSelectedItem.shapes.length+1);
 
-	getSelectedItem.paths.push(newPath);
-	_UI.ms.paths.select(newPath);
+	getSelectedItem.shapes.push(newPath);
+	_UI.ms.shapes.select(newPath);
 	// updateCurrentGlyphWidth();
 }
 */
 
-export function turnSelectedPathIntoAComponent() {
-	let s = clone(_UI.ms.paths.getMembers(), 'turnSelectedPathIntoAComponent');
-	let n =
-		s.length === 1 ? 'Component ' + s[0].name : 'Component ' + (getLength(_GP.components) + 1);
-
-	_UI.ms.paths.deletePaths();
-	let newID = createNewComponent(new Glyph({ paths: s, name: n }));
-	insertComponentInstance(newID);
-	_UI.selectedToolName = 'pathEdit';
-	selectPath(getSelectedItem.paths.length - 1);
-	redraw({ calledby: 'turnSelectedPathIntoAComponent' });
-}
-
-export function getPathAtLocation(x, y) {
-	// log(`getPathAtLocation`, 'start');
+export function getShapeAtLocation(x, y) {
+	// log(`getShapeAtLocation`, 'start');
 	// log('checking x:' + x + ' y:' + y);
 
-	let path;
+	let shape;
 	const editor = getCurrentProjectEditor();
-	let sws = editor.selectedItem?.paths;
+	let sws = editor.selectedItem?.shapes;
 	if (!sws) return false;
 	// log(sws);
 	for (let j = sws.length - 1; j >= 0; j--) {
-		path = sws[j];
-		// log('Checking path ' + j);
-		if (isThisPathHere(path, x, y)) {
-			// log(`getPathAtLocation`, 'end');
-			return path;
+		shape = sws[j];
+		// log('Checking shape ' + j);
+		if (isThisShapeHere(shape, x, y)) {
+			// log(`getShapeAtLocation`, 'end');
+			return shape;
 		}
 	}
 
 	// clickEmptySpace();
-	// log(`getPathAtLocation`, 'end');
+	// log(`getShapeAtLocation`, 'end');
 	return false;
 }
 
-function isThisPathHere(path, px, py) {
-	// log(`isThisPathHere`, 'start');
+function isThisShapeHere(shape, px, py) {
+	// log(`isThisShapeHere`, 'start');
 
 	const editor = getCurrentProjectEditor();
 	let ctx = editor.ghostCTX;
@@ -403,7 +390,7 @@ function isThisPathHere(path, px, py) {
 	ctx.fillRect(0, 0, editor.canvasSize, editor.canvasSize);
 
 	ctx.beginPath();
-	drawItem(path, ctx, editor.view);
+	drawShape(shape, ctx, editor.view);
 	ctx.closePath();
 
 	ctx.fillStyle = 'rgb(0,0,0)';
@@ -411,7 +398,7 @@ function isThisPathHere(path, px, py) {
 
 	let imageData = ctx.getImageData(px, py, 1, 1);
 	// log('ISHERE? red = ' + imageData.data[0] + '  returning: ' + (imageData.data[0] < 255));
-	// log(`isThisPathHere`, 'end');
+	// log(`isThisShapeHere`, 'end');
 	return imageData.data[0] < 255;
 }
 

@@ -23,8 +23,8 @@ export function glyphChanged(glyph) {
 		const item = project.getItem(itemID);
 		if (item) {
 			glyphChanged(item);
-			if (item.paths) {
-				item.paths.forEach((shape) => {
+			if (item.shapes) {
+				item.shapes.forEach((shape) => {
 					if (shape.objType === 'ComponentInstance') shape.cache = {};
 				});
 			}
@@ -67,7 +67,7 @@ export function makeGlyphPostScript(glyph, lastX, lastY) {
 	const g = glyph.transformedGlyph;
 	let re;
 	let part;
-	g.paths.forEach((shape) => {
+	g.shapes.forEach((shape) => {
 		part = shape.makePostScript(lastX, lastY);
 		lastX = part.lastX;
 		lastY = part.lastY;
@@ -91,20 +91,20 @@ export function makeGlyphPostScript(glyph, lastX, lastY) {
 export function makeGlyphWithResolvedLinks(sourceGlyph) {
 	// log(`makeGlyphWithResolvedLinks`, 'start');
 	let newPaths = [];
-	sourceGlyph.paths.forEach((shape) => {
+	sourceGlyph.shapes.forEach((shape) => {
 		if (shape.objType === 'Path') {
 			newPaths.push(new Path(shape));
 		} else if (shape.objType === 'ComponentInstance') {
 			const transformedGlyph = shape.transformedGlyph;
-			if (transformedGlyph && transformedGlyph.paths) {
+			if (transformedGlyph && transformedGlyph.shapes) {
 				const resolvedGlyph = makeGlyphWithResolvedLinks(transformedGlyph);
-				newPaths = newPaths.concat(resolvedGlyph.paths);
+				newPaths = newPaths.concat(resolvedGlyph.shapes);
 			}
 		}
 	});
 
 	// log(`makeGlyphWithResolvedLinks`, 'end');
-	return new Glyph({ paths: newPaths, parent: getCurrentProject() });
+	return new Glyph({ shapes: newPaths, parent: getCurrentProject() });
 }
 
 /**
@@ -142,7 +142,7 @@ export function canAddComponent(destinationItem, componentID) {
  * @returns {array}
  */
 function collectAllDownstreamLinks(item, result = [], excludePeers = false) {
-	item.paths.forEach((shape) => {
+	item.shapes.forEach((shape) => {
 		if (shape.objType === 'ComponentInstance') {
 			const linkedShape = getCurrentProject().getItem(shape.link);
 			result = result.concat(collectAllDownstreamLinks(linkedShape, result));
@@ -180,22 +180,22 @@ export function deleteLinks(item) {
 	for (let c = 0; c < item.usedIn.length; c++) {
 		upstreamGlyph = project.getItem(item.usedIn[c]);
 		// log('removing from ' + upstreamGlyph.name);
-		// log(upstreamGlyph.paths);
-		for (let u = 0; u < upstreamGlyph.paths.length; u++) {
+		// log(upstreamGlyph.shapes);
+		for (let u = 0; u < upstreamGlyph.shapes.length; u++) {
 			if (
-				upstreamGlyph.paths[u].objType === 'ComponentInstance' &&
-				upstreamGlyph.paths[u].link === item.id
+				upstreamGlyph.shapes[u].objType === 'ComponentInstance' &&
+				upstreamGlyph.shapes[u].link === item.id
 			) {
-				upstreamGlyph.paths.splice(u, 1);
+				upstreamGlyph.shapes.splice(u, 1);
 				u--;
 			}
 		}
-		// log(upstreamGlyph.paths);
+		// log(upstreamGlyph.shapes);
 	}
 	// Delete downstream usedIn array values
-	for (let s = 0; s < item.paths.length; s++) {
-		if (item.paths[s].objType === 'ComponentInstance') {
-			removeLinkFromUsedIn(project.getItem(item.paths[s].link), item.id);
+	for (let s = 0; s < item.shapes.length; s++) {
+		if (item.shapes[s].objType === 'ComponentInstance') {
+			removeLinkFromUsedIn(project.getItem(item.shapes[s].link), item.id);
 		}
 	}
 }
@@ -257,11 +257,11 @@ export function deleteComponentInstancesBasedOnRootList(rootGlyph) {
 			log(`rootGlyph.usedIn id: ${id}`);
 
 			let parent = project.getItem(id);
-			for (let p = 0; p < parent.paths.length; p++) {
-				log(`path ${p} link = ${parent.paths[p]?.link}`);
-				if (parent.paths[p]?.link === rootGlyph.id) {
+			for (let p = 0; p < parent.shapes.length; p++) {
+				log(`path ${p} link = ${parent.shapes[p]?.link}`);
+				if (parent.shapes[p]?.link === rootGlyph.id) {
 					log(`>>>HIT<<<`);
-					if (p > -1) parent.paths.splice(p, 1);
+					if (p > -1) parent.shapes.splice(p, 1);
 					parent.changed();
 					break;
 				}

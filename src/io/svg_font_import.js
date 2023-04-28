@@ -170,7 +170,7 @@ export function ioSVG_importSVGfont(font) {
 
 				finalGlyphs[uni] = new Glyph({
 					id: uni,
-					paths: newPaths,
+					shapes: newPaths,
 					advanceWidth: advanceWidth,
 				});
 				if (getUnicodeName(uni) === '[name not found]')
@@ -185,7 +185,7 @@ export function ioSVG_importSVGfont(font) {
 				const newID = makeLigatureID(chars);
 				finalLigatures[newID] = new Glyph({
 					id: newID,
-					paths: newPaths,
+					shapes: newPaths,
 					advanceWidth: advanceWidth,
 					gsub: hexesToHexArray(uni),
 				});

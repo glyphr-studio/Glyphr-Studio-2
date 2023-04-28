@@ -9,8 +9,4 @@ export default defineConfig({
 		emptyOutDir: true,
 		chunkSizeWarningLimit: 2000,
 	},
-	test: {
-		exclude: ['**/*.test.js'],
-		include: ['path.test.js'],
-	},
 });

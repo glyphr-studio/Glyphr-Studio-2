@@ -148,7 +148,7 @@ export class History {
 
 		// Clear selections
 		editor.multiSelect.points.clear();
-		editor.multiSelect.paths.clear();
+		editor.multiSelect.shapes.clear();
 
 		// Overwrite the current item with the redo state
 		log(`overwriting ${editor.selectedItem.name}`);

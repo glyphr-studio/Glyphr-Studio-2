@@ -216,7 +216,7 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 			Check the Import SVG section of the Help page.`);
 	}
 
-	const resultGlyph = new Glyph({ paths: newPaths });
+	const resultGlyph = new Glyph({ shapes: newPaths });
 	resultGlyph.changed(true);
 
 	// log(`RESULTING paths in a glyph`);
