@@ -7,7 +7,7 @@ import { MultiSelectPoints, MultiSelectPaths } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
 import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
-import { log } from '../app/main.js';
+// import { log } from '../app/main.js';
 import { HKern } from '../project_data/h_kern.js';
 import { GlyphRange } from '../project_data/glyph_range.js';
 import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';

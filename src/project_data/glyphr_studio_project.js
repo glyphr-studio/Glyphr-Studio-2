@@ -3,9 +3,8 @@ import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
-// import { log } from '../app/main.js';
 import { GlyphRange } from './glyph_range.js';
-import { log } from '../app/main.js';
+// import { log } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project

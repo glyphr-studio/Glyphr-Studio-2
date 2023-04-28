@@ -1,4 +1,4 @@
-import { assert, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { HKern } from '../h_kern.js';
 
 /**
@@ -12,8 +12,8 @@ function sampleHKern() {
 		value: 123,
 	});
 }
-
 describe('HKern', () => {
+	it('test', () => true);
 	it('leftGroup', () => {
 		expect(sampleHKern().leftGroup[0]).toBe('0x0041');
 	});

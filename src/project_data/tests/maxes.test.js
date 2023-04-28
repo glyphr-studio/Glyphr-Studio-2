@@ -1,6 +1,6 @@
 import { assert, describe, expect, it } from 'vitest';
-import { Maxes, maxesMaxBounds } from '../maxes.js';
-import { maxesOverlap, getOverallMaxes } from '../maxes.js';
+import { Maxes } from '../maxes.js';
+import { maxesOverlap, getOverallMaxes, maxesMaxBounds } from '../maxes.js';
 
 describe('Maxes', () => {
 	// beforeAll(() => {

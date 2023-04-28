@@ -10,14 +10,16 @@
     "dev": "vite serve ./src/",
     "build": "vite build ./src/ --emptyOutDir",
     "preview": "vite preview",
-    "test": "vitest watch",
+    "test": "vitest watch --dom",
     "lint": "eslint src",
     "fix": "eslint src --fix"
   },
   "devDependencies": {
+    "@vitest/ui": "^0.30.1",
     "buffer": "^6.0.3",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "happy-dom": "^9.9.2",
     "jshint": "^2.13.5",
     "prettier": "^2.7.1",
     "vite": "^4.0.4",

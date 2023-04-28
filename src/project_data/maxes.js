@@ -1,4 +1,4 @@
-import { isVal, json, round } from '../common/functions.js';
+import { isVal, round } from '../common/functions.js';
 import { GlyphElement } from './glyph_element.js';
 
 /**
@@ -131,8 +131,8 @@ export class Maxes extends GlyphElement {
 	 */
 	get center() {
 		return {
-			x: (this.width / 2) + this.xMin,
-			y: (this.height / 2) + this.yMin,
+			x: this.width / 2 + this.xMin,
+			y: this.height / 2 + this.yMin,
 		};
 	}
 
@@ -293,12 +293,7 @@ export function getOverallMaxes(maxesArray) {
  * @returns {Boolean}
  */
 export function isAllZeros(maxes) {
-	return (
-		maxes.xMax === 0 &&
-		maxes.xMin === 0 &&
-		maxes.yMax === 0 &&
-		maxes.yMin === 0
-	);
+	return maxes.xMax === 0 && maxes.xMin === 0 && maxes.yMax === 0 && maxes.yMin === 0;
 }
 
 /**
