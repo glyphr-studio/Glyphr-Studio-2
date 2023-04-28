@@ -48,7 +48,7 @@ export function publish(topic, data) {
 			topic === 'whichLigatureIsSelected' ||
 			topic === 'whichComponentIsSelected'
 		) {
-			this.multiSelect.paths.clear();
+			this.multiSelect.shapes.clear();
 			this.multiSelect.points.clear();
 		}
 
@@ -61,7 +61,7 @@ export function publish(topic, data) {
 		}
 
 		if (topic === 'currentItem') {
-			let singlePath = this.multiSelect.paths.singleton;
+			let singlePath = this.multiSelect.shapes.singleton;
 			let singlePoint = this.multiSelect.points.singleton;
 			if (singlePath) {
 				// It's possible to make updates to a Glyph while a single path is selected

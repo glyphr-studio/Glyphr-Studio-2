@@ -94,7 +94,7 @@ export function handleKeyPress(event) {
 			if (editMode === 'arrow') {
 				cancelDefaultEventActions(event);
 				editor.multiSelect.points.members = [];
-				editor.multiSelect.paths.selectAll();
+				editor.multiSelect.shapes.selectAll();
 			}
 		}
 
@@ -247,12 +247,13 @@ function nudge(dx, dy, ev) {
 	let editMode = getEditMode();
 
 	if (editMode === 'kern') {
-		let nv = getSelectedKern().value + (mx || my);
-		updateKernValue(getSelectedKernID(), nv);
-		editor.editCanvas.redraw({ calledBy: 'Nudge kern value', redrawPanels: false });
+		// TODO kerning
+		// let nv = getSelectedKern().value + (mx || my);
+		// updateKernValue(getSelectedKernID(), nv);
+		// editor.editCanvas.redraw({ calledBy: 'Nudge kern value', redrawPanels: false });
 	} else if (editMode === 'arrow') {
-		editor.multiSelect.paths.updatePathPosition(mx, my);
-		editor.editCanvas.redraw({ calledBy: 'Nudge path' });
+		editor.multiSelect.shapes.updateShapePosition(mx, my);
+		editor.editCanvas.redraw({ calledBy: 'Nudge shape' });
 	} else if (editMode === 'pen') {
 		editor.multiSelect.points.members.forEach(function (o, i) {
 			o.updatePathPointPosition('p', mx, my);

@@ -11,8 +11,11 @@ export class Tool_PathAddPoint {
 		this.addPoint = false;
 		this.mousedown = function (ev) {
 			const editor = getCurrentProjectEditor();
-			let singlePath = editor.multiSelect.paths.singleton;
-			let s = getPathAtLocation(eventHandlerData.mousePosition.x, eventHandlerData.mousePosition.y);
+			let singlePath = editor.multiSelect.shapes.singleton;
+			let s = getShapeAtLocation(
+				eventHandlerData.mousePosition.x,
+				eventHandlerData.mousePosition.y
+			);
 
 			if (this.addPoint && singlePath && singlePath.objType !== 'ComponentInstance') {
 				let p = singlePath.insertPathPoint(this.addPoint.point, this.addPoint.split);
@@ -20,8 +23,8 @@ export class Tool_PathAddPoint {
 				// editor.history.addState('Added point to path');
 			} else if (s) {
 				editor.multiSelect.points.clear();
-				if (eventHandlerData.isCtrlDown) editor.multiSelect.paths.add(s);
-				else editor.multiSelect.paths.select(s);
+				if (eventHandlerData.isCtrlDown) editor.multiSelect.shapes.add(s);
+				else editor.multiSelect.shapes.select(s);
 
 				if (s.objType === 'ComponentInstance') clickTool('pathEdit');
 				editor.nav.panel = 'Attributes';
@@ -39,7 +42,7 @@ export class Tool_PathAddPoint {
 
 		this.mousemove = function (ev) {
 			const editor = getCurrentProjectEditor();
-			let singlePath = editor.multiSelect.paths.singleton;
+			let singlePath = editor.multiSelect.shapes.singleton;
 			if (singlePath) {
 				let pt = singlePath.findClosestPointOnCurve({
 					x: cXsX(eventHandlerData.mousePosition.x),

@@ -187,7 +187,7 @@ async function generateOneGlyph(currentExportItem) {
 
 	showToast('Exporting<br>' + glyph.name, 999999);
 
-	if (comb && glyph.paths.length <= project.settings.app.maxCombinePathsOnExport) {
+	if (comb && glyph.shapes.length <= project.settings.app.maxCombinePathsOnExport) {
 		glyph.combineAllPaths(true);
 	}
 
@@ -230,14 +230,13 @@ async function generateOneLigature(currentExportItem) {
 	// log(`generateOneLigature: ${ligaID}\t${liga.name}\t${getNameForExport(ligaID)}`);
 	showToast('Exporting<br>' + liga.name, 999999);
 
-	if (comb && liga.paths.length <= project.settings.app.maxCombinePathsOnExport) {
+	if (comb && liga.shapes.length <= project.settings.app.maxCombinePathsOnExport) {
 		liga.combineAllShapes(true);
 	}
 
 	const thisPath = liga.makeOpenTypeJSpath(new openTypeJS.Path());
 	const thisIndex = getNextGlyphIndexNumber();
 	log(`thisIndex: ${thisIndex}`);
-
 
 	const glyphInfo = {
 		name: liga.name,
@@ -296,7 +295,7 @@ function generateNotdefGlyph() {
 	let notdef = new Glyph({
 		name: 'notdef',
 		advanceWidth: 432,
-		paths: notDefGlyphPaths,
+		shapes: notDefGlyphPaths,
 	});
 	// log(`notdef.maxes: ${notdef.maxes}`);
 	// log(`capHeight ${capHeight}`);

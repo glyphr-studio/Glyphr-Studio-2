@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor, log } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeCrisp, round } from '../common/functions.js';
-import { drawItem } from '../display_canvas/draw_paths.js';
+import { drawShape } from '../display_canvas/draw_paths.js';
 import { eventHandlerData } from './events.js';
 import { sXcX, sYcY } from './edit_canvas.js';
 import { canResize } from './events_mouse.js';
@@ -29,9 +29,9 @@ let multiSelectThickness = 3;
 
 export function computeAndDrawBoundingBox(ctx) {
 	const editor = getCurrentProjectEditor();
-	let msPaths = editor.multiSelect.paths;
-	if (msPaths.length < 1) return;
-	let maxes = msPaths.maxes;
+	let msShapes = editor.multiSelect.shapes;
+	if (msShapes.length < 1) return;
+	let maxes = msShapes.maxes;
 	let style = computeSelectionStyle();
 
 	drawBoundingBox(ctx, maxes, style.thickness, style.accent);
@@ -41,21 +41,21 @@ TODO rotate
 export function computeAndDrawRotationAffordance(ctx) {
 	const editor = getCurrentProjectEditor();
 	let ss;
-	if (editor.multiSelect.paths.length === 1) {
-		ss = editor.multiSelect.paths.members[0];
+	if (editor.multiSelect.shapes.length === 1) {
+		ss = editor.multiSelect.shapes.members[0];
 		const accent = ss.objType === 'ComponentInstance' ? accentGreen : accentBlue;
 		drawRotationAffordance(accent, false);
-	} else if (editor.multiSelect.paths.length > 1) {
-		ss = editor.multiSelect.paths.virtualGlyph;
+	} else if (editor.multiSelect.shapes.length > 1) {
+		ss = editor.multiSelect.shapes.virtualGlyph;
 		drawRotationAffordance(accentGray, multiSelectThickness);
 	}
 }
 */
 export function computeAndDrawBoundingBoxHandles(ctx) {
 	const editor = getCurrentProjectEditor();
-	let msPaths = editor.multiSelect.paths;
-	if (msPaths.length < 1) return;
-	let maxes = msPaths.maxes;
+	let msShapes = editor.multiSelect.shapes;
+	if (msShapes.length < 1) return;
+	let maxes = msShapes.maxes;
 	let style = computeSelectionStyle();
 
 	drawBoundingBoxHandles(ctx, maxes, style.thickness, style.accent);
@@ -63,14 +63,14 @@ export function computeAndDrawBoundingBoxHandles(ctx) {
 
 function computeSelectionStyle() {
 	const editor = getCurrentProjectEditor();
-	let msPaths = editor.multiSelect.paths;
+	let msShapes = editor.multiSelect.shapes;
 	let thickness = 1;
 	let accent = accentBlue;
-	if (msPaths.length > 1) {
+	if (msShapes.length > 1) {
 		thickness = multiSelectThickness;
 		accent = accentGray;
 	} else {
-		if (msPaths.singleton.objType === 'ComponentInstance') {
+		if (msShapes.singleton.objType === 'ComponentInstance') {
 			accent = accentGreen;
 		}
 	}
@@ -82,14 +82,14 @@ function computeSelectionStyle() {
 export function drawSelectedPathOutline(ctx, view) {
 	// log(`drawSelectedPathOutline`, 'start');
 	const editor = getCurrentProjectEditor();
-	let msPaths = editor.multiSelect.paths;
-	let selected = msPaths.members.length;
+	let msShapes = editor.multiSelect.shapes;
+	let selected = msShapes.members.length;
 	// log(`selected: ${selected}`);
 	let style = computeSelectionStyle();
 
 	if (selected > 0) {
 		ctx.beginPath();
-		msPaths.drawPaths(ctx, view);
+		msShapes.drawShapes(ctx, view);
 		ctx.closePath();
 
 		ctx.strokeStyle = style.accent;
@@ -102,7 +102,7 @@ export function drawSelectedPathOutline(ctx, view) {
 
 export function drawNewBasicPath(ctx, path, view) {
 	ctx.beginPath();
-	drawItem(path, ctx, view);
+	drawShape(path, ctx, view);
 	ctx.closePath();
 
 	ctx.fillStyle = pathFill;
@@ -143,7 +143,7 @@ function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
 
 	// TODO rotate handle
 	/*
-	if(getCurrentProjectEditor().multiSelect.paths.isRotatable()){
+	if(getCurrentProjectEditor().multiSelect.shapes.isRotatable()){
 		let h = rotateHandleHeight;
 		ctx.lineWidth = thickness;
 		drawLine({x:bb.midX + bb.hp, y:bb.topY}, {x:bb.midX + bb.hp, y:bb.topY - h});
@@ -291,7 +291,7 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	// log('\t t/m/b y: ' + bb.topY + ' / ' + bb.midY + ' / ' + bb.bottomY);
 
 	// rotation handle
-	if (editor.multiSelect.paths.isRotatable()) {
+	if (editor.multiSelect.shapes.isRotatable()) {
 		if (
 			px > bb.midX &&
 			px < bb.midX + ps &&
@@ -406,10 +406,10 @@ function getBoundingBoxAndHandleDimensions(maxes, thickness) {
 export function computeAndDrawPathPointHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
-	let msPaths = editor.multiSelect.paths.members;
+	let msShapes = editor.multiSelect.shapes.members;
 
-	msPaths.forEach((shape) => {
-		if(shape.objType === 'ComponentInstance') return;
+	msShapes.forEach((shape) => {
+		if (shape.objType === 'ComponentInstance') return;
 		shape.pathPoints.forEach((point) => {
 			if (editor.multiSelect.points.isSelected(point)) {
 				drawHandles(point, ctx);
@@ -421,11 +421,11 @@ export function computeAndDrawPathPointHandles(ctx) {
 export function testDrawAllPathPointHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
-	let msPaths = editor.selectedItem.paths;
+	let msShapes = editor.selectedItem.shapes;
 
 	ctx.strokeStyle = 'purple';
-	msPaths.forEach((shape) => {
-		if(shape.objType === 'ComponentInstance') return;
+	msShapes.forEach((shape) => {
+		if (shape.objType === 'ComponentInstance') return;
 		shape.pathPoints.forEach((point) => {
 			ctx.beginPath();
 			ctx.arc(sXcX(point.h1.x), sYcY(point.h1.y), 3, 0, Math.PI * 2, true);
@@ -441,11 +441,11 @@ export function testDrawAllPathPointHandles(ctx) {
 
 export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 	const editor = getCurrentProjectEditor();
-	let msPaths = editor.multiSelect.paths.members;
-	if (drawAllPathPoints) msPaths = editor.selectedItem.paths;
+	let msShapes = editor.multiSelect.shapes.members;
+	if (drawAllPathPoints) msShapes = editor.selectedItem.shapes;
 
-	msPaths.forEach((shape) => {
-		if(shape.objType === 'ComponentInstance') return;
+	msShapes.forEach((shape) => {
+		if (shape.objType === 'ComponentInstance') return;
 		shape.pathPoints.forEach((point, index) => {
 			if (index === 0) {
 				// This could just be '1' but whatever

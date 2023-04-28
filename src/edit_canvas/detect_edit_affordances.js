@@ -26,9 +26,9 @@ export function isOverControlPoint(item, x, y, noHandles) {
  */
 function isOverGlyphControlPoint(glyph, x, y, noHandles) {
 	let re = false;
-	for (let s = 0; s < glyph.paths.length; s++) {
-		if (glyph.paths[s].objType !== 'ComponentInstance') {
-			re = isOverPathControlPoint(glyph.paths[s], x, y, noHandles);
+	for (let s = 0; s < glyph.shapes.length; s++) {
+		if (glyph.shapes[s].objType !== 'ComponentInstance') {
+			re = isOverPathControlPoint(glyph.shapes[s], x, y, noHandles);
 			if (re) {
 				// log(`isOverGlyphControlPoint - returning path#${s}`);
 				return re;

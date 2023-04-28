@@ -139,7 +139,7 @@ export class EditCanvas extends HTMLElement {
 			// Draw glyphs
 			drawGlyph(sg, ctx, view);
 
-			// Draw selected path / path
+			// Draw selected shape
 			const editMode = editor.selectedTool;
 			// log(`editMode: ${editMode}`);
 

@@ -383,7 +383,7 @@ export class GlyphrStudioProject {
 	}
 
 	forEachItem(fun) {
-		log(`GlyphrStudioProject.forEachItem`, 'start');
+		// log(`GlyphrStudioProject.forEachItem`, 'start');
 		console.time('forEachItem');
 		let aggregate = [];
 		let counter = 0;
@@ -410,11 +410,11 @@ export class GlyphrStudioProject {
 			counter++;
 		}
 
-		log(`counter: ${counter}`);
-		log(`aggregate:`);
-		log(aggregate);
+		// log(`counter: ${counter}`);
+		// log(`aggregate:`);
+		// log(aggregate);
 		console.timeEnd('forEachItem');
-		log(`GlyphrStudioProject.forEachItem`, 'end');
+		// log(`GlyphrStudioProject.forEachItem`, 'end');
 		return aggregate;
 	}
 

@@ -99,21 +99,21 @@ export function makeKeyboardShortcutReference() {
 				<code>ctrl</code><code>c</code>
 			</span>
 			<label>
-				Copy the selected paths
+				Copy the selected shapes
 			</label>
 
 			<span>
 				<code>ctrl</code><code>v</code>
 			</span>
 			<label>
-				Paste the selected paths
+				Paste the selected shapes
 			</label>
 
 			<span>
 				<code>ctrl</code><code>a</code>
 			</span>
 			<label>
-				Select all paths
+				Select all shapes
 			</label>
 
 			<span>
@@ -121,7 +121,7 @@ export function makeKeyboardShortcutReference() {
 				<code>backspace</code>
 			</span>
 			<label>
-				Delete the selected paths or path points
+				Delete the selected shapes or path points
 			</label>
 
 			<span>
@@ -131,7 +131,7 @@ export function makeKeyboardShortcutReference() {
 				<code>⇩</code>
 			</span>
 			<label>
-				Nudge the selected path or path point <span class="number">1em</span><br>
+				Nudge the selected shape or path point <span class="number">1em</span><br>
 				Press <code>shift</code> to nudge <span class="number">10em</span>
 			</label>
 

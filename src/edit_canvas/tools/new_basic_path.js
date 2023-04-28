@@ -43,7 +43,7 @@ export class Tool_NewBasicPath {
 			// log(`ehd.firstX: ${ehd.firstX}`);
 			// log(`ehd.firstY: ${ehd.firstY}`);
 
-			editor.multiSelect.paths.clear();
+			editor.multiSelect.shapes.clear();
 
 			editor.editCanvas.redraw({ calledBy: 'Event Handler Tool_NewBasicPath mousedown' });
 
@@ -94,7 +94,7 @@ export class Tool_NewBasicPath {
 			let path;
 			if (xSize > canvasUIPointSize && ySize > canvasUIPointSize) {
 				// log(`New path is large enough`);
-				let count = workItem.paths.length;
+				let count = workItem.shapes.length;
 
 				if (editor.nav.page === 'components') {
 					count = Object.keys(editor.project.components).length;
@@ -112,7 +112,7 @@ export class Tool_NewBasicPath {
 				ehd.newBasicPathMaxes = false;
 				ehd.newBasicPath = false;
 				path = addPathToCurrentItem(path);
-				editor.multiSelect.paths.select(path);
+				editor.multiSelect.shapes.select(path);
 				switchToolTo('resize');
 			} else {
 				// log(`New path too small`);

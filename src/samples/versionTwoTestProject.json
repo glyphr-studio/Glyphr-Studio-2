@@ -92,7 +92,7 @@
     "glyph-0x41": {
       "id": "glyph-0x0041",
       "advanceWidth": 530,
-      "paths": [
+      "shapes": [
         {
           "name": "Large outline",
           "pathPoints": [
@@ -220,7 +220,7 @@
     "glyph-0x42": {
       "id": "glyph-0x0042",
       "advanceWidth": 405,
-      "paths": [
+      "shapes": [
         {
           "name": "Large outline",
           "pathPoints": [
@@ -464,7 +464,7 @@
     "glyph-0x43": {
       "id": "glyph-0x0043",
       "advanceWidth": 420,
-      "paths": [
+      "shapes": [
         {
           "name": "Path",
           "pathPoints": [
@@ -695,7 +695,7 @@
 			"name": "Ligature A B",
 			"gsub": ["0x41", "0x42"],
       "advanceWidth": 655,
-      "paths": [
+      "shapes": [
         {
           "name": "Large outline",
           "pathPoints": [

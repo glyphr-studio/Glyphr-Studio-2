@@ -573,7 +573,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstancePath
 	 */
 	set x(x) {
-		this.setPathPosition(x, false);
+		this.setShapePosition(x, false);
 	}
 
 	/**
@@ -582,7 +582,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set y(y) {
-		this.setPathPosition(false, y);
+		this.setShapePosition(false, y);
 	}
 
 	/**
@@ -591,7 +591,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set width(w) {
-		this.setPathSize(w, false);
+		this.setShapeSize(w, false);
 	}
 
 	/**
@@ -600,7 +600,7 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set height(h) {
-		this.setPathSize(false, h);
+		this.setShapeSize(false, h);
 	}
 
 	// --------------------------------------------------------------
@@ -608,12 +608,12 @@ export class ComponentInstance extends GlyphElement {
 	// --------------------------------------------------------------
 
 	/**
-	 * updatePathPosition
+	 * updateShapePosition
 	 * @param {number} dx - delta x
 	 * @param {number} dy - delta y
 	 */
-	updatePathPosition(dx, dy) {
-		// log('ComponentInstance.updatePathPosition', 'start');
+	updateShapePosition(dx, dy) {
+		// log('ComponentInstance.updateShapePosition', 'start');
 		// log('passed dx/dy/force: ' + dx + ' / ' + dy + ' / ' + force);
 		// log('translate was: ' + this.translateX + ' / ' + this.translateY);
 		dx = parseFloat(dx) || 0;
@@ -621,16 +621,16 @@ export class ComponentInstance extends GlyphElement {
 		this.translateX = 1 * this.translateX + dx;
 		this.translateY = 1 * this.translateY + dy;
 		// log('translate now: ' + this.translateX + ' / ' + this.translateY);
-		// log('ComponentInstance.updatePathPosition', 'end');
+		// log('ComponentInstance.updateShapePosition', 'end');
 	}
 
 	/**
-	 * setPathPosition
+	 * setShapePosition
 	 * @param {number} nx - new x value
 	 * @param {number} ny - new y value
 	 */
-	setPathPosition(nx, ny) {
-		// log('ComponentInstance.setPathPosition', 'start');
+	setShapePosition(nx, ny) {
+		// log('ComponentInstance.setShapePosition', 'start');
 		// log('passed nx/ny/force: ' + nx + ' / ' + ny + ' / ' + force);
 		// log('translate was: ' + this.translateX + ' / ' + this.translateY);
 		// TODO fix project access
@@ -643,17 +643,17 @@ export class ComponentInstance extends GlyphElement {
 		if (!isNaN(nx)) this.translateX = nx - linkMaxes.xMin;
 		if (!isNaN(ny)) this.translateY = ny - linkMaxes.yMax;
 		// log('translate now: ' + this.translateX + ' / ' + this.translateY);
-		// log('ComponentInstance.setPathPosition', 'end');
+		// log('ComponentInstance.setShapePosition', 'end');
 	}
 
 	/**
-	 * updatePathSize
+	 * updateShapeSize
 	 * @param {number} dw - delta width
 	 * @param {number} dh - delta height
 	 * @param {boolean} ratioLock - maintain aspect ratio
 	 */
-	updatePathSize(dw, dh, ratioLock) {
-		// log('ComponentInstance.updatePathSize', 'start');
+	updateShapeSize(dw, dh, ratioLock) {
+		// log('ComponentInstance.updateShapeSize', 'start');
 		// log('passed dw/dh/ratioLock: ' + dw + ' / ' + dh + ' / ' + ratioLock);
 		if (dw !== false) dw = parseFloat(dw) || 0;
 		if (dh !== false) dh = parseFloat(dh) || 0;
@@ -672,23 +672,23 @@ export class ComponentInstance extends GlyphElement {
 		this.resizeHeight = 1 * this.resizeHeight + dh;
 		if (this.rotation === 0) this.rotateFirst = false;
 		// log('translate now: ' + this.resizeWidth + ' / ' + this.resizeHeight);
-		// log('ComponentInstance.updatePathSize', 'end');
+		// log('ComponentInstance.updateShapeSize', 'end');
 	}
 
 	/**
-	 * setPathSize
+	 * setShapeSize
 	 * @param {number} nw - new width
 	 * @param {number} nh - new height
 	 * @param {boolean} ratioLock - maintain aspect ratio
 	 */
-	setPathSize(nw, nh, ratioLock) {
+	setShapeSize(nw, nh, ratioLock) {
 		// TODO fix project access
 		// const linkMaxes = getCurrentProject().getItem(this.link).maxes;
 		const linkMaxes = { xMin: 0, yMax: 0 };
 
 		const dx = nw ? nw * 1 - linkMaxes.xMin : 0;
 		const dy = nh ? nh * 1 - linkMaxes.yMax : 0;
-		this.updatePathPosition(dx, dy, ratioLock);
+		this.updateShapePosition(dx, dy, ratioLock);
 	}
 
 	/**

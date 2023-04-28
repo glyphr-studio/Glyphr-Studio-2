@@ -13,7 +13,7 @@ export function makePanel_Layers() {
 	const editor = getCurrentProjectEditor();
 	const project = getCurrentProject();
 	let selected = editor.selectedItem;
-	let paths = selected.paths;
+	let paths = selected.shapes;
 
 	if (eventHandlerData.newBasicPath) {
 		let path = eventHandlerData.newBasicPath;
@@ -40,7 +40,7 @@ export function makePanel_Layers() {
 	if (paths.length > 0) {
 		for (let i = paths.length - 1; i >= 0; i--) {
 			let item = paths[i];
-			let row = makeElement({attributes: {'target-path-index': i}});
+			let row = makeElement({ attributes: { 'target-path-index': i } });
 
 			if (item.objType === 'ComponentInstance') {
 				row.setAttribute('class', 'item-link__row layer-panel__component-row');
@@ -48,7 +48,7 @@ export function makePanel_Layers() {
 				row.setAttribute('class', 'item-link__row layer-panel__path-row');
 			}
 
-			if (editor.multiSelect.paths.isSelected(item)) {
+			if (editor.multiSelect.shapes.isSelected(item)) {
 				row.classList.add('layer-panel__selected');
 			}
 
@@ -58,7 +58,7 @@ export function makePanel_Layers() {
 				callback: () => {
 					// log(`Layer subscription callback for selectedPath`, 'start');
 
-					let isSelected = editor.multiSelect.paths.isSelected(item);
+					let isSelected = editor.multiSelect.shapes.isSelected(item);
 					// log(`isSelected: ${isSelected}`);
 					// log(row.classList.toString());
 					row.classList.toggle('layer-panel__selected', isSelected);
@@ -67,13 +67,13 @@ export function makePanel_Layers() {
 			});
 
 			row.addEventListener('click', () => {
-				editor.multiSelect.paths.select(item);
+				editor.multiSelect.shapes.select(item);
 				editor.publish('whichPathIsSelected', item);
 			});
 
 			const thumbnail = makeElement({
 				className: 'item-link__thumbnail',
-				attributes: {'target-path-index': i},
+				attributes: { 'target-path-index': i },
 				innerHTML: project.makeItemThumbnail(item),
 			});
 			row.appendChild(thumbnail);
@@ -114,7 +114,7 @@ export function makePanel_Layers() {
 			const thumbs = document.querySelectorAll('.item-link__thumbnail');
 			thumbs.forEach((thumb) => {
 				const pathIndex = thumb.getAttribute('target-path-index');
-				thumb.innerHTML = project.makeItemThumbnail(editor.selectedItem.paths[pathIndex]);
+				thumb.innerHTML = project.makeItemThumbnail(editor.selectedItem.shapes[pathIndex]);
 			});
 		},
 	});
@@ -135,10 +135,10 @@ function makeActionArea_Layers() {
 		tag: 'div',
 		className: 'panel__actions-area',
 	});
-	addChildActions(actionsArea, getActionData('addPathActions'));
+	addChildActions(actionsArea, getActionData('addShapeActions'));
 
-	let selectedPaths = editor.multiSelect.paths.members;
-	let totalPaths = editor.selectedItem.paths.length;
+	let selectedPaths = editor.multiSelect.shapes.members;
+	let totalPaths = editor.selectedItem.shapes.length;
 	if (totalPaths > 1 && selectedPaths.length === 1) {
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}

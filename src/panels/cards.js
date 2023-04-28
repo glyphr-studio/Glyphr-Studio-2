@@ -127,8 +127,8 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 			(property === 'width' || property === 'height') &&
 			workItem.ratioLock
 		) {
-			if (property === 'width') workItem.setPathSize(newValue, false, true);
-			if (property === 'height') workItem.setPathSize(false, newValue, true);
+			if (property === 'width') workItem.setShapeSize(newValue, false, true);
+			if (property === 'height') workItem.setShapeSize(false, newValue, true);
 		} else {
 			// log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
 			workItem[property] = newValue;
@@ -268,7 +268,7 @@ export function makeLinkReferenceRow(itemID) {
 	const project = getCurrentProject();
 	const targetItem = editor.project.getItem(itemID);
 
-	let row = makeElement({ className: 'item-link__row', attributes: {'target-item-id': itemID} });
+	let row = makeElement({ className: 'item-link__row', attributes: { 'target-item-id': itemID } });
 	row.addEventListener('click', () => {
 		if (targetItem.displayType === 'Glyph') editor.nav.page = 'Glyph edit';
 		if (targetItem.displayType === 'Component') editor.nav.page = 'Components';
@@ -280,7 +280,7 @@ export function makeLinkReferenceRow(itemID) {
 	row.appendChild(
 		makeElement({
 			className: 'item-link__thumbnail',
-			attributes: {'target-item-id': itemID},
+			attributes: { 'target-item-id': itemID },
 			innerHTML: project.makeItemThumbnail(targetItem),
 		})
 	);
