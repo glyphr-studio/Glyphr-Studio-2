@@ -120,7 +120,7 @@ function calcFontMaxes() {
 	// log(fm);
 
 	let thisGlyph;
-	const ranges = project.settings.project.glyphRanges;
+	const ranges = project.settings.project.characterRanges;
 	// log(`ranges`);
 	// log(ranges);
 

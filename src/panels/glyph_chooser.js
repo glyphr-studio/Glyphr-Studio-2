@@ -89,7 +89,7 @@ function makeRangeAndItemTypeChooser() {
 	// log(`makeRangeAndItemTypeChooser`, 'start');
 
 	const editor = getCurrentProjectEditor();
-	let selectedRange = editor.selectedGlyphRange;
+	let selectedRange = editor.selectedCharacterRange;
 	// log(selectedRange);
 	let optionChooser = makeElement({
 		tag: 'option-chooser',
@@ -112,7 +112,7 @@ function makeRangeAndItemTypeChooser() {
 		});
 
 		option.addEventListener('click', () => {
-			getCurrentProjectEditor().selectedGlyphRange = 'Ligatures';
+			getCurrentProjectEditor().selectedCharacterRange = 'Ligatures';
 			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
 			tileGrid.remove();
 			let wrapper = document.querySelector('.glyph-chooser__wrapper');
@@ -131,7 +131,7 @@ function makeRangeAndItemTypeChooser() {
 		});
 
 		option.addEventListener('click', () => {
-			getCurrentProjectEditor().selectedGlyphRange = 'Components';
+			getCurrentProjectEditor().selectedCharacterRange = 'Components';
 			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
 			tileGrid.remove();
 			let wrapper = document.querySelector('.glyph-chooser__wrapper');
@@ -153,7 +153,7 @@ function makeRangeChooser() {
 	// log(`makeRangeChooser`, 'start');
 
 	const editor = getCurrentProjectEditor();
-	let selectedRange = editor.selectedGlyphRange;
+	let selectedRange = editor.selectedCharacterRange;
 	// log(selectedRange);
 	let optionChooser = makeElement({
 		tag: 'option-chooser',
@@ -170,7 +170,7 @@ function makeRangeChooser() {
 
 function addRangeOptionsToOptionChooser(optionChooser) {
 	const project = getCurrentProject();
-	let ranges = project.settings.project.glyphRanges;
+	let ranges = project.settings.project.characterRanges;
 	let option;
 	ranges.forEach((range) => {
 		// log(`range.name: ${range.name}`);
@@ -184,7 +184,7 @@ function addRangeOptionsToOptionChooser(optionChooser) {
 		option.addEventListener('click', () => {
 			// log(`OPTION.click - range: ${range.name}`);
 
-			getCurrentProjectEditor().selectedGlyphRange = range;
+			getCurrentProjectEditor().selectedCharacterRange = range;
 			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
 			// log(tileGrid);
 			tileGrid.remove();
@@ -201,11 +201,11 @@ function makeGlyphChooserTileGrid() {
 	// log(`makeGlyphChooserTileGrid`, 'start');
 	// console.time('makeGlyphChooserTileGrid');
 	const editor = getCurrentProjectEditor();
-	// log(editor.project.settings.project.glyphRanges);
-	// log(editor.selectedGlyphRange);
+	// log(editor.project.settings.project.characterRanges);
+	// log(editor.selectedCharacterRange);
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
-	let rangeArray = editor.selectedGlyphRange.array;
+	let rangeArray = editor.selectedCharacterRange.array;
 	if (rangeArray?.length) {
 		rangeArray.forEach((charID) => {
 			const glyphID = `glyph-${charID}`;

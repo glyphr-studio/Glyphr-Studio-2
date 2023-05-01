@@ -9,7 +9,7 @@ import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 // import { log } from '../app/main.js';
 import { HKern } from '../project_data/h_kern.js';
-import { GlyphRange } from '../project_data/glyph_range.js';
+import { CharacterRange } from '../project_data/character_range.js';
 import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 
 /**
@@ -53,7 +53,7 @@ export class ProjectEditor {
 		this.selectedComponentID = false;
 		this.selectedLigatureID = false;
 		this.selectedKernID = false;
-		this.selectedGlyphRange = false;
+		this.selectedCharacterRange = false;
 
 		// Navigation
 		this.nav = new Navigator();
@@ -295,22 +295,22 @@ export class ProjectEditor {
 	 * Returns the selected Glyph Range
 	 * @returns {Object}
 	 */
-	get selectedGlyphRange() {
-		// log(`ProjectEditor.selectedGlyphRange`, 'start');
+	get selectedCharacterRange() {
+		// log(`ProjectEditor.selectedCharacterRange`, 'start');
 		// log('current ranges');
-		const ranges = this.project.settings.project.glyphRanges;
+		const ranges = this.project.settings.project.characterRanges;
 		// log(ranges);
 		// log('currently selected');
-		// log(this._selectedGlyphRange);
+		// log(this._selectedCharacterRange);
 
-		if (!this._selectedGlyphRange || !this._selectedGlyphRange.isValid) {
+		if (!this._selectedCharacterRange || !this._selectedCharacterRange.isValid) {
 			// log('detected none selected');
 			if (ranges.length) {
 				// log('was false, returning first range');
-				this._selectedGlyphRange = ranges[0];
+				this._selectedCharacterRange = ranges[0];
 			} else {
 				// log('was false, and no ranges, returning default');
-				this._selectedGlyphRange = new GlyphRange({
+				this._selectedCharacterRange = new CharacterRange({
 					begin: 0x20,
 					end: 0x7e,
 					name: 'Basic Latin (default)',
@@ -319,9 +319,9 @@ export class ProjectEditor {
 		}
 
 		// log(`returning`);
-		// log(this._selectedGlyphRange);
-		// log(`ProjectEditor.selectedGlyphRange`, 'end');
-		return this._selectedGlyphRange;
+		// log(this._selectedCharacterRange);
+		// log(`ProjectEditor.selectedCharacterRange`, 'end');
+		return this._selectedCharacterRange;
 	}
 
 	// --------------------------------------------------------------
@@ -475,11 +475,11 @@ export class ProjectEditor {
 	}
 
 	/**
-	 * Sets the selected glyph range
+	 * Sets the selected character range
 	 * @param {Object} newRange - range object
 	 */
-	set selectedGlyphRange(newRange) {
-		this._selectedGlyphRange = new GlyphRange(newRange);
+	set selectedCharacterRange(newRange) {
+		this._selectedCharacterRange = new CharacterRange(newRange);
 	}
 
 	// --------------------------------------------------------------
@@ -538,7 +538,7 @@ export class ProjectEditor {
 		const itemType = page || this.nav.page;
 
 		if (itemType === 'Characters') {
-			const selectedRange = this.selectedGlyphRange;
+			const selectedRange = this.selectedCharacterRange;
 			if (selectedRange) {
 				// log(`Selected Range detected as ${selectedRange.name}`);
 				let rangeList = selectedRange.array;

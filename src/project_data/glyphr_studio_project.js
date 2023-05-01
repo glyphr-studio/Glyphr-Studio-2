@@ -3,7 +3,7 @@ import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
-import { GlyphRange } from './glyph_range.js';
+import { CharacterRange } from './character_range.js';
 // import { log } from '../app/main.js';
 
 /**
@@ -24,7 +24,7 @@ export class GlyphrStudioProject {
 				latestVersion: '2.0.0-alpha.2',
 				initialVersion: '2.0.0-alpha.1',
 				id: false,
-				glyphRanges: [],
+				characterRanges: [],
 			},
 			app: {
 				savePreferences: false,
@@ -96,13 +96,13 @@ export class GlyphrStudioProject {
 		// log(newProject);
 
 		// Glyph Ranges
-		if (newProject?.settings?.project?.glyphRanges) {
-			newProject.settings.project.glyphRanges.forEach((range) => {
-				this.settings.project.glyphRanges.push(new GlyphRange(range));
+		if (newProject?.settings?.project?.characterRanges) {
+			newProject.settings.project.characterRanges.forEach((range) => {
+				this.settings.project.characterRanges.push(new CharacterRange(range));
 			});
 		}
 		// log('finished importing Glyph Ranges');
-		// log(this.settings.project.glyphRanges);
+		// log(this.settings.project.characterRanges);
 
 		// Settings
 		if (newProject.settings) {
@@ -166,7 +166,10 @@ export class GlyphrStudioProject {
 			kerning: {},
 		};
 
-		savedProject.settings.project.glyphRanges.forEach((range) => delete range.cachedArray);
+		savedProject.settings.project.characterRanges = [];
+		this.settings.project.characterRanges.forEach((range) => {
+			savedProject.settings.project.characterRanges.push(range.save());
+		});
 
 		/**
 		 * Generic iterator for glyphs, ligatures, components, and kerning
