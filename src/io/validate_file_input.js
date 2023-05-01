@@ -32,9 +32,9 @@ let postValidationCallback;
  * @returns {Object} - processed stuff to use
  */
 export async function validateFileInput(input, callback) {
-	log(`validateFileInput`, 'start');
+	// log(`validateFileInput`, 'start');
 	postValidationCallback = callback;
-	log(input.files);
+	// log(input.files);
 
 	const file = input.files[0];
 	validationResult.fileName = file.name;
@@ -42,8 +42,8 @@ export async function validateFileInput(input, callback) {
 	fileSuffix = fileSuffix[fileSuffix.length - 1].toLowerCase();
 	validationResult.fileSuffix = fileSuffix;
 
-	log(`validationResult.fileName: ${validationResult.fileName}`);
-	log(`validationResult.fileSuffix: ${validationResult.fileSuffix}`);
+	// log(`validationResult.fileName: ${validationResult.fileName}`);
+	// log(`validationResult.fileSuffix: ${validationResult.fileSuffix}`);
 
 	const reader = new FileReader();
 	reader.onerror = () => {
@@ -78,7 +78,7 @@ export async function validateFileInput(input, callback) {
 		`);
 	}
 
-	log(`validateFileInput`, 'end');
+	// log(`validateFileInput`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -90,13 +90,13 @@ export async function validateFileInput(input, callback) {
  * @returns Validated data object
  */
 function readerValidateFont() {
-	log(`readerValidateFont`, 'start');
+	// log(`readerValidateFont`, 'start');
 	const file = this.result;
 	let font = false;
 
 	try {
 		font = OpenTypeJS.parse(file);
-		log(font);
+		// log(font);
 	} catch (err) {
 		return failWithError(`
 			Font file could not be read. [FF0]
@@ -114,7 +114,7 @@ function readerValidateFont() {
 	}
 
 	postValidationCallback(validationResult);
-	log(`readerValidateFont`, 'end');
+	// log(`readerValidateFont`, 'end');
 }
 
 /**
@@ -122,7 +122,7 @@ function readerValidateFont() {
  * @returns Validated data object
  */
 function readerValidateSVG() {
-	log(`readerValidateSVG`, 'start');
+	// log(`readerValidateSVG`, 'start');
 	let svgData = this.result;
 	let jsonData;
 
@@ -150,7 +150,7 @@ function readerValidateSVG() {
 		validationResult.content = font;
 	}
 	postValidationCallback(validationResult);
-	log(`readerValidateSVG`, 'end');
+	// log(`readerValidateSVG`, 'end');
 }
 
 /**
@@ -159,7 +159,7 @@ function readerValidateSVG() {
  * @returns Validated data object
  */
 function readerValidateTXTandGS2() {
-	log(`readerValidateTXTandGS2`, 'start');
+	// log(`readerValidateTXTandGS2`, 'start');
 	const file = this.result;
 	let projectData;
 
@@ -193,7 +193,7 @@ function readerValidateTXTandGS2() {
 
 	let version = tryToGetProjectVersion(projectData);
 
-	log(`version: ${json(version)}`);
+	// log(`version: ${json(version)}`);
 
 	// Version information could not be parsed as SemVer
 	if (!version) {
@@ -214,7 +214,7 @@ function readerValidateTXTandGS2() {
 	// Only upgrade recent v1 projects,
 	// versions 1.13.1 and below are not supported
 	// versions 1.13.2 and above are supported
-	log(`version: ${json(version)}`);
+	// log(`version: ${json(version)}`);
 
 	if (isSemVerLessThan(version, [1, 13, 2])) {
 		return failWithError(`
@@ -227,7 +227,7 @@ function readerValidateTXTandGS2() {
 	// Success fallthrough!
 	validationResult.content = projectData;
 
-	log(`readerValidateTXTandGS2`, 'end');
+	// log(`readerValidateTXTandGS2`, 'end');
 	postValidationCallback(validationResult);
 }
 

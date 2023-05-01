@@ -1,9 +1,9 @@
+import { log } from '../app/main.js';
+import { glyphChanged } from './cross_item_actions.js';
+
 // --------------------------------------------------------------
 // PubSub
 // --------------------------------------------------------------
-
-import { getCurrentProject } from '../app/main';
-import { glyphChanged } from './cross_item_actions.js';
 
 /**
  * Sends a new piece of data concerning a topic area that
@@ -12,15 +12,18 @@ import { glyphChanged } from './cross_item_actions.js';
  * - 'view' - change to the edit canvas view.
  * - 'whichToolIsSelected' - change to which edit tool is selected.
  * - 'whichGlyphIsSelected' - change to which glyph is being edited.
- * - 'whichLigatureIsSelected' - change to which ligature is being edited.
- * - 'whichComponentIsSelected' - change to which component instance is being edited
+ * - 'whichLigatureIsSelected' - change to which Ligature is being edited.
+ * - 'whichComponentIsSelected' - change to which Component is being edited.
  * - 'whichPathIsSelected' - change to which path is being edited.
  * - 'whichPathPointIsSelected' - change to which point is being edited.
  * - 'currentItem' - edits to the current glyph, ligature, or component.
- * - 'currentPath' - edits to the current path.
- * - 'currentComponentInstance' - edits to the current instance
- * - 'currentPathPoint' - edits to the current point.
- * - 'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
+ * - 		'currentGlyph' - edits to the current Glyph
+ * - 		'currentLigature' - edits to the current Ligature
+ * - 		'currentComponent' - edits to the current Component
+ * - 		'currentPath' - edits to the current path.
+ * - 		'currentComponentInstance' - edits to the current instance
+ * - 		'currentPathPoint' - edits to the current point.
+ * - 		'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
  * @param {object} data - whatever the new state is
  */
 export function publish(topic, data) {
@@ -60,42 +63,61 @@ export function publish(topic, data) {
 			//anything?
 		}
 
-		if (topic === 'currentItem') {
+		/*
+			PubSub allows for topics to be either a generic 'selectedItem'
+			topic, or a specific 'selectedGlyph' / 'selectedComponent' / 'selectedLigature'
+			topic. In both cases, when the specific case is called, so must the
+			generic case - and vise versa.
+		*/
+		let specificItem = false;
+		if (
+			topic === 'currentItem' ||
+			topic === 'currentGlyph' ||
+			topic === 'currentLigature' ||
+			topic === 'currentComponent'
+		) {
+			specificItem = `current${this.selectedItem.objType}`;
+			callCallbacksByTopic('currentItem', data);
+			callCallbacksByTopic(specificItem, data);
 			let singlePath = this.multiSelect.shapes.singleton;
 			let singlePoint = this.multiSelect.points.singleton;
 			if (singlePath) {
-				// It's possible to make updates to a Glyph while a single path is selected
+				// It's possible to make updates to an Item while a single path is selected
 				if (singlePath.objType === 'Path') callCallbacksByTopic('currentPath', singlePath);
 				else callCallbacksByTopic('currentComponentInstance', singlePath);
 			}
 			if (singlePoint) {
-				// It's possible to make updates to a Glyph while a single path point is selected
+				// It's possible to make updates to an Item while a single path point is selected
 				callCallbacksByTopic('currentPathPoint', singlePoint);
 			}
 			glyphChanged(data);
 		}
 
 		if (topic === 'currentPath') {
-			// if a path changes, then so must the Glyph also
+			// if a path changes, then so must the Item also
 			callCallbacksByTopic('currentItem', data.parent);
+			if (specificItem) callCallbacksByTopic(specificItem, data.parent);
 		}
 
 		if (topic === 'currentComponentInstance') {
-			// if a path changes, then so must the Glyph also
+			// if a path changes, then so must the Item also
 			callCallbacksByTopic('currentItem', data.parent);
+			if (specificItem) callCallbacksByTopic(specificItem, data.parent);
 		}
 
 		if (topic === 'currentPathPoint') {
-			// if a PathPoint changes, then so must the Path and Glyph also
+			// if a PathPoint changes, then so must the Path and Item also
 			callCallbacksByTopic('currentPath', data.parent);
 			callCallbacksByTopic('currentItem', data.parent.parent);
+			if (specificItem) callCallbacksByTopic(specificItem, data.parent.parent);
 		}
 
 		if (topic.includes('currentControlPoint')) {
-			// if a PathPoint changes, then so must the Path and Glyph also
+			// if a PathPoint changes, then so must the Path and Item also
 			callCallbacksByTopic('currentPathPoint', data.parent);
 			callCallbacksByTopic('currentPath', data.parent.parent);
 			callCallbacksByTopic('currentItem', data.parent.parent.parent);
+			if (specificItem) callCallbacksByTopic(specificItem, data.parent.parent.parent);
 
 			if (topic === 'currentControlPoint.p') {
 				callCallbacksByTopic('currentControlPoint.p', data.parent.p);
@@ -133,9 +155,13 @@ export function publish(topic, data) {
  * - 'whichPathIsSelected' - change to which path is being edited.
  * - 'whichPathPointIsSelected' - change to which point is being edited.
  * - 'currentItem' - edits to the current glyph, ligature, or component.
- * - 'currentPath' - edits to the current path.
- * - 'currentComponentInstance' - edits to the current instance
- * - 'currentPathPoint' - edits to the current point.
+ * - 		'currentGlyph' - edits to the current Glyph
+ * - 		'currentLigature' - edits to the current Ligature
+ * - 		'currentComponent' - edits to the current Component
+ * - 		'currentPath' - edits to the current path.
+ * - 		'currentComponentInstance' - edits to the current instance
+ * - 		'currentPathPoint' - edits to the current point.
+ * - 		'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
  * @param {string} subscriberID - the name of the thing listening
  * @param {function} callback - what to do when a change is triggered
  * @returns nothing

@@ -31,15 +31,15 @@ export function makePage_Overview() {
 	// log(content);
 
 	let glyphsContent = makeAllItemTypeChooserContent((glyphID) => {
-		log(`Overview page - Glyph Chooser tile click handler`, 'start');
-		log(`glyphID: ${glyphID}`);
+		// log(`Overview page - Glyph Chooser tile click handler`, 'start');
+		// log(`glyphID: ${glyphID}`);
 
 		const editor = getCurrentProjectEditor();
 		editor.selectedGlyphID = glyphID;
 		editor.nav.page = 'Glyph edit';
 		editor.navigate();
 		editor.history.addState(`Navigated to ${editor.project.getItemName(glyphID, true)}`);
-		log(`Overview page - Glyph Chooser tile click handler`, 'end');
+		// log(`Overview page - Glyph Chooser tile click handler`, 'end');
 	}, false);
 
 	content.querySelector('.content-page__right-area').appendChild(glyphsContent);
