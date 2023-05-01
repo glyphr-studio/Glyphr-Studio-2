@@ -63,12 +63,13 @@ export class CharacterRange {
 	}
 
 	save() {
-		return {
+		let result = {
 			name: this.name,
-			begin: this.begin,
-			end: this.end,
-			showNonCharPoints: this.showNonCharPoints,
+			begin: this.beginHex,
+			end: this.endHex,
 		};
+		if (this.showNonCharPoints) result.showNonCharPoints = true;
+		return result;
 	}
 
 	// --------------------------------------------------------------
