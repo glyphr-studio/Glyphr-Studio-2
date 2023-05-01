@@ -707,9 +707,11 @@ export class Glyph extends GlyphElement {
 	 * @returns {Glyph} - reference to this glyph
 	 */
 	roundAll(precision = 0) {
-		for (let p = 0; p < this.shapes.length; p++) {
-			this.shapes[p].roundAll(precision);
-		}
+		this.shapes.forEach(shape => {
+			if (shape.roundAll) {
+				shape.roundAll(precision);
+			}
+		});
 		return this;
 	}
 

@@ -75,6 +75,7 @@ export function getActionData(name) {
 		},
 	];
 
+	// TODO Components
 	if (editor.nav.page === 'components') {
 		data.allActions.push({
 			iconName: 'linkToGlyph',
@@ -91,6 +92,7 @@ export function getActionData(name) {
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				let newPath = editor.selectedItem.addOneShape(rectPathFromMaxes());
+				editor.history.addState(`Added a default rectangle path`);
 				editor.multiSelect.shapes.select(newPath);
 				editor.publish('whichPathIsSelected', newPath);
 				editor.publish('currentItem', editor.selectedItem);
@@ -121,6 +123,7 @@ export function getActionData(name) {
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				editor.selectedItem.flipEW();
+				editor.history.addState(`Flipped all shapes in this glyph vertically`);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -130,15 +133,19 @@ export function getActionData(name) {
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				editor.selectedItem.flipNS();
+				editor.history.addState(`Flipped all shapes in this glyph horizontally`);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
 			iconName: 'round',
-			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
+			title: `Round all path point and handle position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				editor.selectedItem.roundAll();
+				editor.history.addState(
+					`Rounded all the path point and handle position values in this glyph`
+				);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -159,9 +166,9 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const name = editor.selectedItem.name;
 				editor.deleteSelectedItemFromProject();
+				editor.history.addState(`Automatically navigated to ${editor.selectedItem.name}`);
 				// log(`New item id: ${editor.selectedItemID}`);
 				editor.publish('whichGlyphIsSelected', editor.selectedItemID);
-				editor.history.addState(`Automatically navigated to ${editor.selectedItem.name}`);
 				showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
 			},
 		},
@@ -217,8 +224,8 @@ export function getActionData(name) {
 					})
 				);
 				editor.multiSelect.shapes.deleteShapes();
-				editor.multiSelect.shapes.select(newShape);
 				editor.history.addState('Turned a path into a component');
+				editor.multiSelect.shapes.select(newShape);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -229,6 +236,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				let shape = editor.multiSelect.shapes.virtualGlyph;
 				shape.flipEW();
+				editor.history.addState(`Flipped shape ${shape.name} horizontally`);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -239,16 +247,20 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				let shape = editor.multiSelect.shapes.virtualGlyph;
 				shape.flipNS();
+				editor.history.addState(`flipped shape ${shape.name} vertically`);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
 			iconName: 'round',
-			title: `Round all point position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
+			title: `Round all path point and handle position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				let shape = editor.multiSelect.shapes.virtualGlyph;
 				shape.roundAll();
+				editor.history.addState(
+					`Rounded all the path point and handle position values in this shape`
+				);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -262,7 +274,6 @@ export function getActionData(name) {
 			title: `Turn Component Instance into a Path\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's paths as regular Paths to this glyph.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				const otherChangedItems = [];
 				let newShapes = [];
 				editor.multiSelect.shapes.members.forEach((shape) => {
 					if (shape.objType === 'ComponentInstance') {
@@ -271,12 +282,11 @@ export function getActionData(name) {
 							copyShapesFromTo(shape.transformedGlyph, editor.selectedItem)
 						);
 						removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
-						otherChangedItems.push(sourceItem);
 					}
 				});
 				editor.multiSelect.shapes.deleteShapes();
 				newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
-				editor.history.addState('Turned a component instance into a path', otherChangedItems);
+				editor.history.addState('Turned a component instance into a path');
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -297,6 +307,7 @@ export function getActionData(name) {
 			onClick: () => {
 				moveLayer('up');
 				const editor = getCurrentProjectEditor();
+				editor.history.addState(`Moved layer up`);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -307,6 +318,7 @@ export function getActionData(name) {
 			onClick: () => {
 				moveLayer('down');
 				const editor = getCurrentProjectEditor();
+				editor.history.addState(`Moved layer down`);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -322,6 +334,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('left');
+				editor.history.addState(`Left aligned ${editor.multiSelect.shapes.length} shapes`);
 				editor.publish('currentItem', vGlyph);
 			},
 		},
@@ -333,6 +346,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('center');
+				editor.history.addState(`Center aligned ${editor.multiSelect.shapes.length} shapes`);
 				editor.publish('currentItem', vGlyph);
 			},
 		},
@@ -344,6 +358,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('right');
+				editor.history.addState(`Right aligned ${editor.multiSelect.shapes.length} shapes`);
 				editor.publish('currentItem', vGlyph);
 			},
 		},
@@ -355,6 +370,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('top');
+				editor.history.addState(`Top aligned ${editor.multiSelect.shapes.length} shapes`);
 				editor.publish('currentItem', vGlyph);
 			},
 		},
@@ -366,6 +382,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('middle');
+				editor.history.addState(`Middle aligned ${editor.multiSelect.shapes.length} shapes`);
 				editor.publish('currentItem', vGlyph);
 			},
 		},
@@ -377,6 +394,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				const vGlyph = editor.multiSelect.shapes;
 				vGlyph.align('bottom');
+				editor.history.addState(`Bottom aligned ${editor.multiSelect.shapes.length} shapes`);
 				editor.publish('currentItem', vGlyph);
 			},
 		},
@@ -412,6 +430,7 @@ export function getActionData(name) {
 				let newPoint = editor.multiSelect.shapes.singleton.insertPathPoint(
 					selectedPoints[0].pointNumber
 				);
+				editor.history.addState(`Inserted a new path point at position ${newPoint.pointNumber}`);
 				editor.multiSelect.points.select(newPoint);
 				// editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
 			},
@@ -429,17 +448,21 @@ export function getActionData(name) {
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				editor.multiSelect.points.resetHandles();
+				editor.history.addState(
+					`Reset the handles for ${editor.multiSelect.points.length} point(s)`
+				);
 				editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
 			},
 		},
 		{
 			iconName: 'round',
-			title: `Round point position values\nIf a x or y value for the point or a handle has decimals, it will be rounded to the nearest whole number.`,
+			title: `Round path point and handle position values\nIf a x or y value for the point or a handle has decimals, it will be rounded to the nearest whole number.`,
 			disabled: selectedPoints.length !== 1,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				let point = editor.multiSelect.points.singleton;
 				point.roundAll(0);
+				editor.history.addState(`Rounded path point and handle position values in this path point`);
 				editor.publish('currentControlPoint.p', point.p);
 			},
 		},
@@ -819,9 +842,9 @@ function showDialogChooseOtherItem(type) {
 			const otherItem = editor.project.getItem(itemID);
 			const thisItem = editor.selectedItem;
 			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
-			editor.history.addState(`Paths were copied from ${otherItem.name}.`);
 			editor.multiSelect.shapes.clear();
 			newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+			editor.history.addState(`Paths were copied from ${otherItem.name}.`);
 			closeEveryTypeOfDialog();
 			showToast(`${otherItem.shapes.length} paths copied from<br>${otherItem.name}`);
 		};

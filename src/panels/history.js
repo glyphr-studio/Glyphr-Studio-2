@@ -59,6 +59,7 @@ export function makePanel_History() {
 			makeElement({
 				className: 'history-list__date number',
 				innerHTML: new Date(entry.timeStamp).toLocaleTimeString(),
+				title: new Date(entry.timeStamp).toLocaleString(),
 			})
 		);
 	});
