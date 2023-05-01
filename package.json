@@ -10,7 +10,7 @@
     "dev": "vite serve ./src/",
     "build": "vite build ./src/ --emptyOutDir",
     "preview": "vite preview",
-    "test": "vitest watch --dom",
+    "test": "vitest watch --dom --silent=false",
     "lint": "eslint src",
     "fix": "eslint src --fix"
   },

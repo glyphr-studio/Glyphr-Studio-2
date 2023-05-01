@@ -1,6 +1,24 @@
 import { assert, describe, expect, it } from 'vitest';
 import { GlyphElement } from '../glyph_element.js';
 
+// --------------------------------------------------------------
+// CHECKLIST
+// --------------------------------------------------------------
+/*
+	// changed
+	// traceLineage
+	objType
+	// displayType
+	cache
+	// isLockable
+	// isLocked
+	// lock
+	// unlock
+	save
+	// clone
+	// toString
+	// print
+*/
 describe('GlyphElement', () => {
 	it('objType get/set', () => {
 		const ge = new GlyphElement();

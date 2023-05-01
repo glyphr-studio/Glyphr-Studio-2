@@ -15,6 +15,30 @@ function samplePathPoint() {
 	return pp;
 }
 
+// --------------------------------------------------------------
+// CHECKLIST
+// --------------------------------------------------------------
+/*
+	save
+	// print
+	p
+	h1
+	h2
+	q
+	type
+	// pointNumber
+	updatePathPointPosition
+	makeSymmetric
+	makeFlat
+	isFlat
+	// reconcileHandle
+	resolvePointType
+	makePointedTo
+	// hasOverlappingHandle
+	rotate
+	resetHandles
+	roundAll
+*/
 describe('PathPoint', () => {
 	it('Constructor - objType', () => {
 		const pp = new PathPoint();

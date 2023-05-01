@@ -31,6 +31,59 @@ function trianglePath() {
 	});
 }
 
+// --------------------------------------------------------------
+// CHECKLIST
+// --------------------------------------------------------------
+/*
+	save
+	print
+	name
+	pathPoints
+	winding
+	x
+	y
+	height
+	width
+	// xLock
+	// yLock
+	// wLock
+	// hLock
+	// ratioLock
+	maxes
+	svgPathData
+	// isLockable
+	// isLocked
+	// lock
+	// unlock
+	// setShapeSize
+	// updateShapeSize
+	// setShapePosition
+	// updateShapePosition
+	rotate
+	getNextPointNum
+	getPreviousPointNum
+	addPointsAtPathIntersections
+	containsPoint
+	makeSVGPathData
+	// makeOpenTypeJSpath
+	makePostScript
+	makeSegment
+	calculateQuickSegmentLength
+	makePolySegment
+	findWinding
+	reverseWinding
+	flipNS
+	flipEW
+	// roundAll
+	addPathPoint
+	insertPathPoint
+	findClosestPointOnCurve
+	findXYPointFromSplit
+	// recalculateMaxes
+	// validate
+	checkForNaN
+*/
+
 describe('Path', () => {
 
 	it('Constructor - objType', () => {
@@ -128,6 +181,12 @@ describe('Path', () => {
 	it('print', () => {
 		const path = samplePath();
 		expect(path.print()).toBeTruthy();
+	});
+
+	it('get / set name', () => {
+		const path = samplePath();
+		path.name = 'Sample Test Path';
+		expect(path.name).toBe('Sample Test Path');
 	});
 
 	// pathPoints getter is tested lots of places

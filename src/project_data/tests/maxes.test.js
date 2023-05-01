@@ -2,11 +2,23 @@ import { assert, describe, expect, it } from 'vitest';
 import { Maxes } from '../maxes.js';
 import { maxesOverlap, getOverallMaxes, maxesMaxBounds } from '../maxes.js';
 
-describe('Maxes', () => {
-	// beforeAll(() => {
-	// 	spyOn(console, 'log').and.callThrough();;
-	// });
 
+// --------------------------------------------------------------
+// CHECKLIST
+// --------------------------------------------------------------
+/*
+	save
+	// print
+	xMin
+	xMax
+	yMin
+	yMax
+	// center
+	// width
+	// height
+	// roundAll
+*/
+describe('Maxes', () => {
 	it('constructor', () => {
 		const m1 = new Maxes();
 		expect(m1.xMax).toBe(Number.MIN_SAFE_INTEGER);

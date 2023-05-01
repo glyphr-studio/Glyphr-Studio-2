@@ -9,6 +9,45 @@ function sampleComponentInstance() {
 	return new ComponentInstance();
 }
 
+// --------------------------------------------------------------
+// CHECKLIST
+// --------------------------------------------------------------
+/*
+	// save
+	// transformedGlyph
+	// makeTransformedGlyph
+	// getCrossLinkedItem
+	link
+	name
+	translateX
+	translateY
+	// resizeWidth
+	// resizeHeight
+	isFlippedEW
+	isFlippedNS
+	reverseWinding
+	rotation
+	rotateFirst
+	xLock
+	yLock
+	wLock
+	hLock
+	ratioLock
+	x
+	y
+	width
+	height
+	// maxes
+	// center
+	// svgPathData
+	// updateShapePosition
+	// setShapePosition
+	// updateShapeSize
+	// setShapeSize
+	// flipEW
+	// flipNS
+	// rotate
+*/
 describe('ComponentInstance', () => {
 	it('get/set link', () => {
 		const ci = sampleComponentInstance();
@@ -106,8 +145,6 @@ describe('ComponentInstance', () => {
 		expect(ci.ratioLock).toBe(true);
 	});
 
-	// TODO refactor with component stuff
-	/*
 	it('get/set x', () => {
 		let ci = sampleComponentInstance();
 		ci.x = 600;
@@ -131,5 +168,5 @@ describe('ComponentInstance', () => {
 		ci.height = 500;
 		expect(ci.height).toBe(500);
 	});
-	*/
+
 });

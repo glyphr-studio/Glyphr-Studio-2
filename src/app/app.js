@@ -7,6 +7,7 @@ import { ioFont_exportFont } from '../io/font_export.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import versionTwoTestProject from '../samples/versionTwoTestProject.json';
+import { _DEV } from './dev_mode_includes.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -58,7 +59,8 @@ export class GlyphrStudioApp {
 		const dev = this.settings.dev;
 		if (dev.mode) {
 			if (dev.overwriteTitle) document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
-
+			window._DEV = _DEV;
+			
 			// Test Function
 			if (dev.testOnLoad) dev.testOnLoad();
 
