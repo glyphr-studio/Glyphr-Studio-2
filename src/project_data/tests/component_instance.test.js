@@ -41,9 +41,7 @@ function sampleComponentInstance() {
 	// center
 	// svgPathData
 	// updateShapePosition
-	// setShapePosition
 	// updateShapeSize
-	// setShapeSize
 	// flipEW
 	// flipNS
 	// rotate

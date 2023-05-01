@@ -96,7 +96,6 @@ function multiTriangleGlyph() {
 	makeSVGPathData
 	maxes
 	// recalculateGlyphMaxes
-	alignShapes
 	// makeOpenTypeJSpath
 	combineAllPaths
 */
@@ -267,12 +266,6 @@ describe('Glyph - updating', () => {
 		const g = sampleGlyph();
 		g.reverseWinding();
 		expect(g.shapes[0].winding).toBeGreaterThan(0);
-	});
-
-	it('alignShapes', () => {
-		const g = multiTriangleGlyph();
-		g.alignShapes('right');
-		expect(g.shapes[2].maxes.xMax).toBe(800);
 	});
 
 	it('makeSVG', () => {

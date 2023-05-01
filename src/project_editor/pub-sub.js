@@ -135,9 +135,11 @@ export function publish(topic, data) {
 
 	function callCallbacksByTopic(callTopic, data) {
 		// log(`== calling callbacks ${topic} to ${callTopic}`);
-		Object.keys(subscribers[callTopic]).forEach((subscriberID) => {
-			subscribers[callTopic][subscriberID](data);
-		});
+		if (subscribers[callTopic]) {
+			Object.keys(subscribers[callTopic]).forEach((subscriberID) => {
+				subscribers[callTopic][subscriberID](data);
+			});
+		}
 	}
 
 	// log(`ProjectEditor.publish`, 'end');

@@ -75,7 +75,6 @@ export function getActionData(name) {
 		},
 	];
 
-	// TODO Components
 	if (editor.nav.page === 'Components') {
 		data.allActions.push({
 			iconName: 'linkToGlyph',

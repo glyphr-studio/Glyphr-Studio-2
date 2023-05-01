@@ -348,15 +348,52 @@ export class MultiSelectShapes extends MultiSelect {
 		}
 
 		this.select(itemShapes.at(-1));
-
-		// TODO publish change
 		// log('deleteShapes', 'end');
 	}
 
 	align(edge) {
 		// showToast('align ' + edge);
-		const g = this.virtualGlyph;
-		g.alignShapes(edge);
+		const glyphMaxes = this.maxes;
+		this.virtualGlyph.shapes.forEach((shape) => {
+			if (edge === 'top') {
+				let delta = glyphMaxes.yMax - shape.maxes.yMax;
+				// log(`delta: ${delta}`);
+				shape.updateShapePosition(0, delta);
+			}
+
+			if (edge === 'middle') {
+				let delta = glyphMaxes.center.y - shape.maxes.center.y;
+				// log(`delta: ${delta}`);
+				shape.updateShapePosition(0, delta);
+			}
+
+			if (edge === 'bottom') {
+				let delta = glyphMaxes.yMin - shape.maxes.yMin;
+				// log(`delta: ${delta}`);
+				shape.updateShapePosition(0, delta);
+			}
+
+			if (edge === 'left') {
+				let delta = glyphMaxes.xMin - shape.maxes.xMin;
+				// log(`delta: ${delta}`);
+				shape.updateShapePosition(delta, 0);
+			}
+
+			if (edge === 'center') {
+				let delta = glyphMaxes.center.x - shape.maxes.center.x;
+				// log(`delta: ${delta}`);
+				shape.updateShapePosition(delta, 0);
+			}
+
+			if (edge === 'right') {
+				let delta = glyphMaxes.xMax - shape.maxes.xMax;
+				// log(`delta: ${delta}`);
+				shape.updateShapePosition(delta, 0);
+			}
+		});
+
+		// log('Glyph.alignShapes', 'end');
+
 		getCurrentProjectEditor().history.addState('Aligned shapes ' + edge);
 	}
 

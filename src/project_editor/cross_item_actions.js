@@ -19,6 +19,7 @@ export function glyphChanged(glyph) {
 	// log(glyph);
 	if (glyph.cache) glyph.cache = {};
 	const project = getCurrentProject();
+	glyph.usedIn = glyph.usedIn || [];
 	glyph.usedIn.forEach((itemID) => {
 		const item = project.getItem(itemID);
 		if (item) {
