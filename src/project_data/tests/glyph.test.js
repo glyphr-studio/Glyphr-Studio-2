@@ -11,7 +11,7 @@ import { Path } from '../path.js';
 function sampleGlyph() {
 	// console.log('SAMPLE PATH POINTS');
 	// console.log(samples.pathPoints);
-	let re = new Glyph();
+	let re = new Glyph({ id: 'glyph-0x41' });
 	re.shapes = [{ pathPoints: clone(samples.pathPoints) }];
 
 	// re.recalculateMaxes();
@@ -26,6 +26,7 @@ function sampleGlyph() {
  */
 function multiTriangleGlyph() {
 	let re = new Glyph({
+		id: 'glyph-0x41',
 		shapes: [
 			{
 				name: 'Path One',
@@ -59,6 +60,46 @@ function multiTriangleGlyph() {
 	return re;
 }
 
+// --------------------------------------------------------------
+// CHECKLIST
+// --------------------------------------------------------------
+/*
+	save
+	print
+	id
+	shapes
+	advanceWidth
+	ratioLock
+	usedIn
+	gsub
+	x
+	y
+	width
+	height
+	leftSideBearing
+	rightSideBearing
+	name
+	char
+	chars
+	contentType
+	// addOneShape
+	setGlyphPosition
+	updateGlyphPosition
+	setGlyphSize
+	updateGlyphSize
+	flipNS
+	flipEW
+	// roundAll
+	rotate
+	reverseWinding
+	// svgPathData
+	makeSVGPathData
+	maxes
+	// recalculateGlyphMaxes
+	alignShapes
+	// makeOpenTypeJSpath
+	combineAllPaths
+*/
 describe('Glyph - Getters and Setters', () => {
 	// beforeAll(() => {
 	// 	spyOn(console, 'log').and.callThrough();
@@ -95,6 +136,22 @@ describe('Glyph - Getters and Setters', () => {
 		expect(g.rightSideBearing).toBe(456);
 	});
 
+	it('get/set name', () => {
+		const g = sampleGlyph();
+		g.name = 'Sample Test Glyph';
+		expect(g.name).toBe('Sample Test Glyph');
+	});
+
+	it('get char and chars', () => {
+		const g = sampleGlyph();
+		expect(g.chars).toBe('A');
+	});
+
+	it('get contentType', () => {
+		const g = sampleGlyph();
+		expect(g.contentType).toBe('paths');
+	});
+
 	it('get/set ratioLock', () => {
 		const g = sampleGlyph();
 		g.ratioLock = true;
@@ -105,6 +162,12 @@ describe('Glyph - Getters and Setters', () => {
 		const g = sampleGlyph();
 		g.usedIn = ['0x1235', '0x1236'];
 		expect(g.usedIn).toEqual(['0x1235', '0x1236']);
+	});
+
+	it('get/set gsub', () => {
+		const g = sampleGlyph();
+		g.gsub = ['0x1235', '0x1236'];
+		expect(g.gsub).toEqual(['0x1235', '0x1236']);
 	});
 
 	it('get/set x', () => {

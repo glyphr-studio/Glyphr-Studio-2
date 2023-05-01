@@ -1,6 +1,28 @@
 import { assert, describe, expect, it } from 'vitest';
 import { ControlPoint } from '../control_point.js';
 
+// --------------------------------------------------------------
+// CHECKLIST
+// --------------------------------------------------------------
+/*
+	save
+	// print
+	x
+	y
+	coord
+	use
+	xLock
+	yLock
+	// type
+	// angle
+	// niceAngle
+	// length
+	// isLockable
+	// isLocked
+	// lock
+	// unlock
+	// rotate
+*/
 describe('ControlPoint', () => {
 	it('Constructor - x', () => {
 		expect(new ControlPoint().x).toBe(0);

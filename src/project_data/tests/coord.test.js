@@ -2,6 +2,15 @@ import { describe, expect, it } from 'vitest';
 import { Coord } from '../coord.js';
 import { pointsAreEqual } from '../../common/functions.js';
 
+// --------------------------------------------------------------
+// CHECKLIST
+// --------------------------------------------------------------
+/*
+	// save
+	// print
+	x
+	y
+*/
 describe('Coord', () => {
 	it('Constructor - x', () => {
 		expect(new Coord({ x: 101 }).x).toBe(101);

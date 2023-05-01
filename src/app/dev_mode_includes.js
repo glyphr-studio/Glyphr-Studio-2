@@ -4,45 +4,48 @@
  * _DEV for runtime testing
  */
 
-window._DEV = {};
+export let _DEV = {};
 
 // common
 import * as colors from '../common/colors.js';
-window._DEV.colors = colors;
+_DEV.colors = colors;
 
 import * as functions from '../common/functions.js';
-window._DEV.functions = functions;
+_DEV.functions = functions;
 
 // glyph_elements
-import * as xyPoint from '../glyph_elements/xy_point.js';
-window._DEV.xyPoint = xyPoint;
+import * as glyphElement from '../project_data/glyph_element.js';
+_DEV.glyphElement = glyphElement;
 
-import * as coord from '../glyph_elements/coord.js';
-window._DEV.coord = coord;
+import * as xyPoint from '../project_data/xy_point.js';
+_DEV.xyPoint = xyPoint;
 
-import * as maxes from '../glyph_elements/maxes.js';
-window._DEV.maxes = maxes;
+import * as coord from '../project_data/coord.js';
+_DEV.coord = coord;
 
-import * as controlPoint from '../glyph_elements/control_point.js';
-window._DEV.controlPoint = controlPoint;
+import * as maxes from '../project_data/maxes.js';
+_DEV.maxes = maxes;
 
-import * as pathPoint from '../glyph_elements/path_point.js';
-window._DEV.pathPoint = pathPoint;
+import * as controlPoint from '../project_data/control_point.js';
+_DEV.controlPoint = controlPoint;
 
-import * as segment from '../glyph_elements/segment.js';
-window._DEV.segment = segment;
+import * as pathPoint from '../project_data/path_point.js';
+_DEV.pathPoint = pathPoint;
 
-import * as path from '../glyph_elements/path.js';
-window._DEV.path = path;
+import * as segment from '../project_data/segment.js';
+_DEV.segment = segment;
 
-import * as polySegment from '../glyph_elements/poly_segment.js';
-window._DEV.polySegment = polySegment;
+import * as path from '../project_data/path.js';
+_DEV.path = path;
 
-import * as componentInstance from '../glyph_elements/component_instance.js';
-window._DEV.componentInstance = componentInstance;
+import * as polySegment from '../project_data/poly_segment.js';
+_DEV.polySegment = polySegment;
 
-import * as glyph from '../glyph_elements/glyph.js';
-window._DEV.glyph = glyph;
+import * as componentInstance from '../project_data/component_instance.js';
+_DEV.componentInstance = componentInstance;
 
-import * as hKern from '../glyph_elements/h_kern.js';
-window._DEV.hKern = hKern;
+import * as glyph from '../project_data/glyph.js';
+_DEV.glyph = glyph;
+
+import * as hKern from '../project_data/h_kern.js';
+_DEV.hKern = hKern;
