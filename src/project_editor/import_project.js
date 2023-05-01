@@ -92,7 +92,7 @@ function migrate_Project(oldProject) {
 
 	// Metadata
 	const newPreferences = newProject.settings.app;
-	const newRanges = newProject.settings.project.glyphRanges;
+	const newRanges = newProject.settings.project.characterRanges;
 	const newSysGuides = newProject.settings.app.guides.system;
 	const newFont = newProject.settings.font;
 	const oldSettings = oldProject.projectsettings;

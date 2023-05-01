@@ -294,7 +294,7 @@ code,
 	grid-template-columns: 5fr 1fr 1fr;
 	column-gap: 0px;
 	row-gap: 5px;
-	height: calc(100vh - 190px);
+	height: calc(100vh - 220px);
 	overflow-y: auto;
 	padding-right: 20px;
 	margin-bottom: 10px;

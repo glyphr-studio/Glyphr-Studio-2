@@ -1,4 +1,5 @@
 // import { log } from '../app/main.js';
+import { log } from '../app/main.js';
 import { isInteger } from './functions.js';
 
 /**
@@ -296,6 +297,8 @@ export function charsToHexArray(input) {
  */
 export function hexesToChars(input) {
 	// log('hexesToChars', 'start');
+	// log(`input: ${input}`);
+
 	input = input.replaceAll('X', 'x');
 	if (String(input).charAt(1) !== 'x') return false;
 

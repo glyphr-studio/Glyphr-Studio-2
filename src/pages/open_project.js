@@ -427,7 +427,7 @@ function make_ImportFilter(chars, kerns, functionName) {
 		'<tr><td class="checkcol"><input type="checkbox" onclick="checkFilter(\'custom\');" id="custom"/></td><td>';
 	re +=
 		'<h3>Import a custom range of glyphs</h3>' +
-		'A nice overview of glyph ranges can be found at<br><a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia\'s Unicode Block page</a>.<br>' +
+		'A nice overview of character ranges can be found at<br><a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia\'s Unicode Block page</a>.<br>' +
 		'<table class="settingstable"><tr>' +
 		"<td>begin:<br><input type=\"text\" onchange=\"checkFilter('custom');document.getElementById('import-font-button').disabled = 'disabled';\" value=\"" +
 		decToHex(importRange.begin) +
