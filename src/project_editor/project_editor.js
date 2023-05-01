@@ -9,7 +9,7 @@ import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 // import { log } from '../app/main.js';
 import { HKern } from '../project_data/h_kern.js';
-import { CharacterRange } from '../project_data/glyph_range.js';
+import { GlyphRange } from '../project_data/glyph_range.js';
 import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 
 /**
@@ -49,11 +49,11 @@ export class ProjectEditor {
 		this.unsubscribe = unsubscribe;
 
 		// Selections
-		this.selectedCharacterID = false;
+		this.selectedGlyphID = false;
 		this.selectedComponentID = false;
 		this.selectedLigatureID = false;
 		this.selectedKernID = false;
-		this.selectedCharacterRange = false;
+		this.selectedGlyphRange = false;
 
 		// Navigation
 		this.nav = new Navigator();
@@ -140,7 +140,7 @@ export class ProjectEditor {
 			// log(`Importing project...`);
 			this._project = new GlyphrStudioProject(gsp);
 			this.initializeHistory(gsp);
-			this.selectedCharacterID = 'char-0x41';
+			this.selectedGlyphID = 'glyph-0x41';
 		} else {
 			// log(`Setting to false`);
 			this._project = false;
@@ -166,10 +166,10 @@ export class ProjectEditor {
 	get selectedItem() {
 		// log(`ProjectEditor GET selectedItem`, 'start');
 
-		if (this.nav.page === 'Characters') {
-			// log(`this.selectedCharacter: ${this.selectedCharacter}`);
+		if (this.nav.page === 'Glyph edit') {
+			// log(`this.selectedGlyph: ${this.selectedGlyph}`);
 			// log(`ProjectEditor GET selectedItem`, 'end');
-			return this.selectedCharacter;
+			return this.selectedGlyph;
 		} else if (this.nav.page === 'Components') {
 			// log(`this.selectedComponent: ${this.selectedComponent}`);
 			// log(`ProjectEditor GET selectedItem`, 'end');
@@ -186,11 +186,11 @@ export class ProjectEditor {
 	}
 
 	/**
-	 * Returns the appropriate Character, Ligature, Component, or Kern
+	 * Returns the appropriate Glyph, Ligature or Component
 	 * ID based on the current page
 	 */
 	get selectedItemID() {
-		if (this.nav.page === 'Characters') return this.selectedCharacterID;
+		if (this.nav.page === 'Glyph edit') return this.selectedGlyphID;
 		else if (this.nav.page === 'Components') return this.selectedComponentID;
 		else if (this.nav.page === 'Ligatures') return this.selectedLigatureID;
 		else if (this.nav.page === 'Kerning') return this.selectedKernID;
@@ -201,13 +201,13 @@ export class ProjectEditor {
 	 * Returns the selected glyph
 	 * @returns {object}
 	 */
-	get selectedCharacter() {
-		// log('ProjectEditor GET selectedCharacter', 'start');
-		const selectedID = this.selectedCharacterID;
-		// log(`selectedCharacterID ${selectedID}`);
+	get selectedGlyph() {
+		// log('ProjectEditor GET selectedGlyph', 'start');
+		const selectedID = this.selectedGlyphID;
+		// log(`selectedGlyphID ${selectedID}`);
 		const re = this.project.glyphs[selectedID];
 		// log(re);
-		// log('ProjectEditor GET selectedCharacter', 'end');
+		// log('ProjectEditor GET selectedGlyph', 'end');
 		return re;
 	}
 
@@ -215,15 +215,15 @@ export class ProjectEditor {
 	 * Returns the selected glyph ID
 	 * @returns {string}
 	 */
-	get selectedCharacterID() {
-		// log('ProjectEditor GET selectedCharacterID', 'start');
+	get selectedGlyphID() {
+		// log('ProjectEditor GET selectedGlyphID', 'start');
 
-		if (!this._selectedCharacterID) {
-			this._selectedCharacterID = getFirstID(this.project.glyphs);
+		if (!this._selectedGlyphID) {
+			this._selectedGlyphID = getFirstID(this.project.glyphs);
 		}
-		// log(`RETURNING this._selectedCharacterID: ${this._selectedCharacterID}`);
-		// log('ProjectEditor GET selectedCharacterID', 'end');
-		return this._selectedCharacterID;
+		// log(`RETURNING this._selectedGlyphID: ${this._selectedGlyphID}`);
+		// log('ProjectEditor GET selectedGlyphID', 'end');
+		return this._selectedGlyphID;
 	}
 
 	/**
@@ -295,22 +295,22 @@ export class ProjectEditor {
 	 * Returns the selected Glyph Range
 	 * @returns {Object}
 	 */
-	get selectedCharacterRange() {
-		// log(`ProjectEditor.selectedCharacterRange`, 'start');
+	get selectedGlyphRange() {
+		// log(`ProjectEditor.selectedGlyphRange`, 'start');
 		// log('current ranges');
-		const ranges = this.project.settings.project.characterRanges;
+		const ranges = this.project.settings.project.glyphRanges;
 		// log(ranges);
 		// log('currently selected');
-		// log(this._selectedCharacterRange);
+		// log(this._selectedGlyphRange);
 
-		if (!this._selectedCharacterRange || !this._selectedCharacterRange.isValid) {
+		if (!this._selectedGlyphRange || !this._selectedGlyphRange.isValid) {
 			// log('detected none selected');
 			if (ranges.length) {
 				// log('was false, returning first range');
-				this._selectedCharacterRange = ranges[0];
+				this._selectedGlyphRange = ranges[0];
 			} else {
 				// log('was false, and no ranges, returning default');
-				this._selectedCharacterRange = new CharacterRange({
+				this._selectedGlyphRange = new GlyphRange({
 					begin: 0x20,
 					end: 0x7e,
 					name: 'Basic Latin (default)',
@@ -319,9 +319,9 @@ export class ProjectEditor {
 		}
 
 		// log(`returning`);
-		// log(this._selectedCharacterRange);
-		// log(`ProjectEditor.selectedCharacterRange`, 'end');
-		return this._selectedCharacterRange;
+		// log(this._selectedGlyphRange);
+		// log(`ProjectEditor.selectedGlyphRange`, 'end');
+		return this._selectedGlyphRange;
 	}
 
 	// --------------------------------------------------------------
@@ -335,10 +335,10 @@ export class ProjectEditor {
 	set selectedItem(newItem) {
 		// log(`ProjectEditor SET selectedItem`, 'start');
 
-		if (this.nav.page === 'Characters') {
-			// log(`this.selectedCharacter: ${this.selectedCharacter}`);
+		if (this.nav.page === 'Glyph edit') {
+			// log(`this.selectedGlyph: ${this.selectedGlyph}`);
 			// log(`ProjectEditor SET selectedItem`, 'end');
-			this.selectedCharacter = newItem;
+			this.selectedGlyph = newItem;
 		} else if (this.nav.page === 'Components') {
 			// log(`this.selectedComponent: ${this.selectedComponent}`);
 			// log(`ProjectEditor SET selectedItem`, 'end');
@@ -356,7 +356,7 @@ export class ProjectEditor {
 	 */
 	set selectedItemID(newID) {
 		// should this detect ID format?
-		if (this.nav.page === 'Characters') this.selectedCharacterID = newID;
+		if (this.nav.page === 'Glyph edit') this.selectedGlyphID = newID;
 		else if (this.nav.page === 'Components') this.selectedComponentID = newID;
 		else if (this.nav.page === 'Ligatures') this.selectedLigatureID = newID;
 		else if (this.nav.page === 'Kerning') this.selectedKernID = newID;
@@ -366,8 +366,8 @@ export class ProjectEditor {
 	 * Replaces the current Glyph
 	 * @param {Glyph} newGlyph - new glyph to set
 	 */
-	set selectedCharacter(newGlyph = {}) {
-		let id = this.selectedCharacterID;
+	set selectedGlyph(newGlyph = {}) {
+		let id = this.selectedGlyphID;
 		newGlyph = new Glyph(newGlyph);
 		newGlyph.parent = this.project;
 		this.project.glyphs[id] = newGlyph;
@@ -377,22 +377,22 @@ export class ProjectEditor {
 	 * Sets the selected glyph
 	 * @param {string} id - ID to select
 	 */
-	set selectedCharacterID(id) {
-		// log(`ProjectEditor SET selectedCharacterID`, 'start');
+	set selectedGlyphID(id) {
+		// log(`ProjectEditor SET selectedGlyphID`, 'start');
 		// log(`id: ${id}`);
 		if (typeof id !== 'string') return;
-		if (!id.startsWith('char-')) {
-			this._selectedCharacterID = false;
+		if (!id.startsWith('glyph-')) {
+			this._selectedGlyphID = false;
 			return;
 		}
 		if (this.project.glyphs[id]) {
-			this._selectedCharacterID = id;
-		} else if (id.startsWith('char-')) {
+			this._selectedGlyphID = id;
+		} else if (id.startsWith('glyph-')) {
 			this.project.glyphs[id] = new Glyph({ id: id, parent: this.project });
-			this._selectedCharacterID = id;
+			this._selectedGlyphID = id;
 		}
-		this.publish('whichGlyphIsSelected', this.selectedCharacterID);
-		// log(`ProjectEditor SET selectedCharacterID`, 'end');
+		this.publish('whichGlyphIsSelected', this.selectedGlyphID);
+		// log(`ProjectEditor SET selectedGlyphID`, 'end');
 	}
 
 	/**
@@ -478,8 +478,8 @@ export class ProjectEditor {
 	 * Sets the selected glyph range
 	 * @param {Object} newRange - range object
 	 */
-	set selectedCharacterRange(newRange) {
-		this._selectedCharacterRange = new CharacterRange(newRange);
+	set selectedGlyphRange(newRange) {
+		this._selectedGlyphRange = new GlyphRange(newRange);
 	}
 
 	// --------------------------------------------------------------
@@ -494,12 +494,12 @@ export class ProjectEditor {
 		let id;
 		let historyTitle;
 
-		if (itemType === 'Characters') {
-			// log(`deleting selectedCharacterID: ${this.selectedCharacterID}`);
-			id = this.selectedCharacterID;
-			historyTitle = `Deleted Glyph ${id} : ${this.selectedCharacter.name}`;
+		if (itemType === 'Glyph edit') {
+			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
+			id = this.selectedGlyphID;
+			historyTitle = `Deleted Glyph ${id} : ${this.selectedGlyph.name}`;
 			this.history.addState(historyTitle, true);
-			deleteLinks(this.selectedCharacter);
+			deleteLinks(this.selectedGlyph);
 			delete this.project.glyphs[id];
 		} else if (itemType === 'Components') {
 			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
@@ -537,21 +537,21 @@ export class ProjectEditor {
 		// log(`ProjectEditor.selectFallbackItem`, 'start');
 		const itemType = page || this.nav.page;
 
-		if (itemType === 'Characters') {
-			const selectedRange = this.selectedCharacterRange;
+		if (itemType === 'Glyph edit') {
+			const selectedRange = this.selectedGlyphRange;
 			if (selectedRange) {
 				// log(`Selected Range detected as ${selectedRange.name}`);
 				let rangeList = selectedRange.array;
 				for (let i = 0; i < rangeList.length; i++) {
-					let id = `char-${rangeList[i]}`;
+					let id = `glyph-${rangeList[i]}`;
 					// log(`checking id ${id}`);
 					if (this.project.glyphs[id]) {
-						this.selectedCharacterID = id;
+						this.selectedGlyphID = id;
 						break;
 					}
 				}
 			}
-			// log(`new selectedCharacterID: ${this.selectedCharacterID}`);
+			// log(`new selectedGlyphID: ${this.selectedGlyphID}`);
 		} else if (itemType === 'Components') {
 			this.selectedComponentID = getFirstID(this.project.components);
 			// log(`new selectedComponentID: ${this.selectedComponentID}`);

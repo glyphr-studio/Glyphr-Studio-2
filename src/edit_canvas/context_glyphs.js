@@ -1,6 +1,6 @@
 /**
 		Framework > Edit Canvas
-		The Characters, Components, Ligatures, and to
+		The Glyph Edit, Components, Ligatures, and to
 		a certain extent, Kerning pages use a common
 		HTML5 Canvas mechanism for interaction.
 		Common functions around this can be found here.
@@ -545,8 +545,8 @@ function drawGuides() {
 	if (!getSelectedWorkItemID()) return;
 
 	const ps = getCurrentProject().projectSettings;
-	const onglyphedit = editor.nav.page === 'Characters' || editor.nav.page === 'Ligatures';
-	const onkern = editor.nav.page === 'Kerning';
+	const onglyphedit = editor.nav.page === 'Glyph edit' || editor.nav.page === 'ligatures';
+	const onkern = editor.nav.page === 'kerning';
 	// log('ps.guides: ');
 	// log(ps.guides);
 

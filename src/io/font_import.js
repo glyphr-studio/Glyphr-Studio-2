@@ -11,7 +11,7 @@ import {
 } from './svg_outline_import.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
 import { makeLigatureID } from '../pages/ligatures.js';
-import { CharacterRange } from '../project_data/glyph_range.js';
+import { GlyphRange } from '../project_data/glyph_range.js';
 
 /**
 	IO > Import > OpenType
@@ -53,7 +53,7 @@ export async function ioFont_importFont(importedFont) {
 	// project.kerning = finalKerns;
 
 	const editor = getCurrentProjectEditor();
-	editor.selectedCharacterRange = getUnicodeBlockByName('Basic Latin');
+	editor.selectedGlyphRange = getUnicodeBlockByName('Basic Latin');
 	editor.nav.page = 'Overview';
 	editor.navigate();
 
@@ -110,10 +110,10 @@ function importOneGlyph(otfGlyph, project) {
 	// minChar = Math.min(minChar, uni);
 	// maxChar = Math.max(maxChar, uni);
 
-	const charID = `char-${uni}`;
-	importedGlyph.id = charID;
+	const glyphID = `glyph-${uni}`;
+	importedGlyph.id = glyphID;
 
-	finalGlyphs[charID] = importedGlyph;
+	finalGlyphs[glyphID] = importedGlyph;
 	// log(`Pushing new glyph to finalGlyphs as:`);
 	// log(finalGlyphs[uni]);
 
@@ -215,8 +215,8 @@ function importOneLigature(otfLigature, otfFont) {
 
 	// Convert font glyph index to decimal for gsub
 	let newGsub = [];
-	otfLigature.gsub.forEach((charID) => {
-		newGsub.push(otfFont.glyphs.get(charID).unicode);
+	otfLigature.gsub.forEach((glyphID) => {
+		newGsub.push(otfFont.glyphs.get(glyphID).unicode);
 	});
 	// log(`newGsub`);
 	// log(newGsub);
@@ -283,7 +283,7 @@ function importFontMetadata(font, project) {
 
 	// Ranges
 	for (const range of Object.keys(importedRanges)) {
-		project.settings.project.characterRanges.push(new CharacterRange(importedRanges[range]));
+		project.settings.project.glyphRanges.push(new GlyphRange(importedRanges[range]));
 	}
 
 	// log('importFontMetadata', 'end');

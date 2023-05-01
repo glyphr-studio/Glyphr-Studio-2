@@ -60,20 +60,19 @@ export class GlyphrStudioApp {
 		if (dev.mode) {
 			if (dev.overwriteTitle) document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
 			window._DEV = _DEV;
-
+			
 			// Test Function
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation & selection
 			if (dev.sampleProject) editor.project = importGlyphrProjectFromText(versionTwoTestProject);
-			if (dev.currentGlyphID) editor.selectedCharacterID = dev.currentGlyphID;
+			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
 			if (dev.currentTool) editor.selectedTool = dev.currentTool;
-			if (dev.selectFirstShape)
-				editor.multiSelect.shapes.select(editor.selectedCharacter.shapes[0]);
+			if (dev.selectFirstShape) editor.multiSelect.shapes.select(editor.selectedGlyph.shapes[0]);
 			if (dev.selectFirstPoint)
-				editor.multiSelect.points.select(editor.selectedCharacter.shapes[0].pathPoints[0]);
+				editor.multiSelect.points.select(editor.selectedGlyph.shapes[0].pathPoints[0]);
 		}
 
 		if (this.settings.telemetry) {

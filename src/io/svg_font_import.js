@@ -80,7 +80,7 @@ export function ioSVG_importSVGfont(font) {
 	 */
 	let maxChar = 0;
 	let minChar = 0xffff; // TODO BMP+
-	let customCharacterRange = [];
+	let customGlyphRange = [];
 	const finalGlyphs = {};
 	const finalLigatures = {};
 	let charCounter = 0;
@@ -166,7 +166,7 @@ export function ioSVG_importSVGfont(font) {
 				uni = uni[0];
 				minChar = Math.min(minChar, uni);
 				maxChar = Math.max(maxChar, uni);
-				if (1 * uni > latinExtendedB.end) customCharacterRange.push(uni);
+				if (1 * uni > latinExtendedB.end) customGlyphRange.push(uni);
 
 				finalGlyphs[uni] = new Glyph({
 					id: uni,
@@ -298,12 +298,12 @@ export function ioSVG_importSVGfont(font) {
 		REFACTOR
 		let rangeStart;
 		let rend;
-		for (const r of Object.keys(_UI.characterRange)) {
-			rangeStart = 1 * _UI.characterRange[r].begin;
-			rend = 1 * _UI.characterRange[r].end + 1;
+		for (const r of Object.keys(_UI.glyphRange)) {
+			rangeStart = 1 * _UI.glyphRange[r].begin;
+			rend = 1 * _UI.glyphRange[r].end + 1;
 			for (let t = rangeStart; t < rend; t++) {
 				if (getItem(t)) {
-					project.projectSettings.characterRanges[r] = true;
+					project.projectSettings.glyphRanges[r] = true;
 					break;
 				}
 			}
@@ -311,11 +311,11 @@ export function ioSVG_importSVGfont(font) {
 		*/
 
 		// Make a custom range for the rest
-		if (customCharacterRange.length) {
-			customCharacterRange = customCharacterRange.sort();
-			project.settings.project.characterRanges.push({
-				begin: customCharacterRange[0],
-				end: customCharacterRange[customCharacterRange.length - 1],
+		if (customGlyphRange.length) {
+			customGlyphRange = customGlyphRange.sort();
+			project.settings.project.glyphRanges.push({
+				begin: customGlyphRange[0],
+				end: customGlyphRange[customGlyphRange.length - 1],
 			});
 		}
 

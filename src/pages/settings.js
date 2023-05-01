@@ -11,7 +11,7 @@ import {
 import { TabControl } from '../controls/tabs/tab_control.js';
 import { unicodeBlocks } from '../lib/unicode_blocks.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
-import { CharacterRange } from '../project_data/glyph_range.js';
+import { GlyphRange } from '../project_data/glyph_range.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import settingsMap from './settings_data.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
@@ -193,7 +193,7 @@ function makeSettingsTabContentProject() {
 				<a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia's Unicode Block page</a>
 				is a good place to get familiar with all the different glyphs it's possible to have in a font.
 				<br><br>
-				The glyph ranges below will be visible on the Characters page, and they will be exported to fonts.
+				The glyph ranges below will be visible on the Glyph Edit page, and they will be exported to fonts.
 				<br><br>
 				Removing a glyph range <strong>will not</strong> delete individual glyphs from the project.
 			</p>
@@ -203,7 +203,7 @@ function makeSettingsTabContentProject() {
 	const addStandardRangeButton = makeElement({
 		tag: 'fancy-button',
 		innerHTML: 'Add glyph ranges from standard Unicode blocks',
-		onClick: showUnicodeCharacterRangeDialog,
+		onClick: showUnicodeGlyphRangeDialog,
 	});
 	// Have to add attribute after the button is created
 	addStandardRangeButton.setAttribute('secondary', '');
@@ -211,7 +211,7 @@ function makeSettingsTabContentProject() {
 	const addCustomRangeButton = makeElement({
 		tag: 'fancy-button',
 		innerHTML: 'Add a custom glyph range',
-		onClick: showCustomCharacterRangeDialog,
+		onClick: showCustomGlyphRangeDialog,
 	});
 	// Have to add attribute after the button is created
 	addCustomRangeButton.setAttribute('secondary', '');
@@ -223,13 +223,10 @@ function makeSettingsTabContentProject() {
 		textToNode('<br>'),
 		textToNode('<br>'),
 		textToNode('<h3>Current ranges</h3>'),
-		textToNode('<div class="character-range-table__wrapper"></div>'),
+		textToNode('<div class="glyph-range-table__wrapper"></div>'),
 	]);
 
-	addAsChildren(
-		rangesArea.querySelector('.character-range-table__wrapper'),
-		makeCurrentRangesTable()
-	);
+	addAsChildren(rangesArea.querySelector('.glyph-range-table__wrapper'), makeCurrentRangesTable());
 
 	addAsChildren(tabContent, [settingsArea, rangesArea]);
 
@@ -340,7 +337,7 @@ function sanitizeValueWithJSON(input) {
 function makeCurrentRangesTable() {
 	const rangeTable = makeElement({
 		tag: 'div',
-		className: 'character-range-table__list-area',
+		className: 'glyph-range-table__list-area',
 	});
 
 	addAsChildren(rangeTable, [
@@ -350,7 +347,7 @@ function makeCurrentRangesTable() {
 		textToNode('<span class="list__column-header">&nbsp;</span>'),
 	]);
 
-	const ranges = getCurrentProject().settings.project.characterRanges;
+	const ranges = getCurrentProject().settings.project.glyphRanges;
 
 	if (ranges.length) {
 		ranges.forEach((range, index) => {
@@ -362,7 +359,7 @@ function makeCurrentRangesTable() {
 					tag: 'a',
 					innerHTML: 'Edit',
 					onClick: () => {
-						showCustomCharacterRangeDialog(index);
+						showCustomGlyphRangeDialog(index);
 					},
 				}),
 			]);
@@ -380,7 +377,7 @@ function makeCurrentRangesTable() {
 }
 
 function updateCurrentRangesTable() {
-	const wrapper = document.querySelector('.character-range-table__wrapper');
+	const wrapper = document.querySelector('.glyph-range-table__wrapper');
 	wrapper.innerHTML = '';
 	addAsChildren(wrapper, makeCurrentRangesTable());
 }
@@ -388,7 +385,7 @@ function updateCurrentRangesTable() {
 // --------------------------------------------------------------
 // Edit Range or Add Custom Range
 // --------------------------------------------------------------
-function showCustomCharacterRangeDialog(rangeIndex) {
+function showCustomGlyphRangeDialog(rangeIndex) {
 	rangeIndex = parseInt(rangeIndex);
 	const isNew = isNaN(rangeIndex);
 	const unicodeHelp = `
@@ -401,7 +398,7 @@ function showCustomCharacterRangeDialog(rangeIndex) {
 	`;
 
 	const content = makeElement({
-		className: 'character-range-editor__wrapper',
+		className: 'glyph-range-editor__wrapper',
 		innerHTML: `
 			<h1>${isNew ? 'Add' : 'Edit'} glyph range</h1>
 		`,
@@ -409,7 +406,7 @@ function showCustomCharacterRangeDialog(rangeIndex) {
 
 	const inputName = makeElement({
 		tag: 'input',
-		id: 'character-range-editor__name',
+		id: 'glyph-range-editor__name',
 		attributes: { type: 'text' },
 	});
 	inputName.addEventListener('change', (event) => {
@@ -418,7 +415,7 @@ function showCustomCharacterRangeDialog(rangeIndex) {
 
 	const inputBegin = makeElement({
 		tag: 'input',
-		id: 'character-range-editor__begin',
+		id: 'glyph-range-editor__begin',
 		attributes: { type: 'text' },
 	});
 	inputBegin.addEventListener('change', (event) => {
@@ -427,7 +424,7 @@ function showCustomCharacterRangeDialog(rangeIndex) {
 
 	const inputEnd = makeElement({
 		tag: 'input',
-		id: 'character-range-editor__end',
+		id: 'glyph-range-editor__end',
 		attributes: { type: 'text' },
 	});
 	inputEnd.addEventListener('change', (event) => {
@@ -435,18 +432,18 @@ function showCustomCharacterRangeDialog(rangeIndex) {
 	});
 
 	if (!isNew) {
-		let range = getCurrentProject().settings.project.characterRanges[rangeIndex];
+		let range = getCurrentProject().settings.project.glyphRanges[rangeIndex];
 		inputName.value = range.name;
 		inputBegin.value = '' + decToHex(range.begin);
 		inputEnd.value = '' + decToHex(range.end);
 	}
 
-	const buttonBar = makeElement({ className: 'character-range-editor__footer' });
+	const buttonBar = makeElement({ className: 'glyph-range-editor__footer' });
 
 	const buttonSave = makeElement({
 		tag: 'fancy-button',
 		innerHTML: 'Save',
-		onClick: saveCharacterRange,
+		onClick: saveGlyphRange,
 	});
 
 	const buttonCancel = makeElement({
@@ -464,7 +461,7 @@ function showCustomCharacterRangeDialog(rangeIndex) {
 			attributes: { secondary: '', danger: '' },
 			innerHTML: 'Remove range',
 			onClick: () => {
-				removeCharacterRange(rangeIndex);
+				removeGlyphRange(rangeIndex);
 			},
 		});
 
@@ -486,10 +483,10 @@ function showCustomCharacterRangeDialog(rangeIndex) {
 	showModalDialog(content, 500);
 }
 
-function saveCharacterRange(index = false) {
-	let newName = document.getElementById('character-range-editor__name').value;
-	let newBegin = parseInt(document.getElementById('character-range-editor__begin').value);
-	let newEnd = parseInt(document.getElementById('character-range-editor__end').value);
+function saveGlyphRange(index = false) {
+	let newName = document.getElementById('glyph-range-editor__name').value;
+	let newBegin = parseInt(document.getElementById('glyph-range-editor__begin').value);
+	let newEnd = parseInt(document.getElementById('glyph-range-editor__end').value);
 
 	if (isNaN(newBegin)) {
 		showError(`Start must be a number, a Unicode code point, or a Hexadecimal number.`);
@@ -514,24 +511,24 @@ function saveCharacterRange(index = false) {
 		name: newName,
 	};
 
-	const ranges = getCurrentProject().settings.project.characterRanges;
+	const ranges = getCurrentProject().settings.project.glyphRanges;
 	if (ranges[index]) {
 		ranges[index] = newRange;
 		ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
 		updateCurrentRangesTable();
 		showToast(`Saved changes to ${newRange.name}.`);
 	} else {
-		addCharacterRange(newRange, closeEveryTypeOfDialog);
+		addGlyphRange(newRange, closeEveryTypeOfDialog);
 	}
 }
 
-function removeCharacterRange(index) {
+function removeGlyphRange(index) {
 	const editor = getCurrentProjectEditor();
-	const ranges = editor.project.settings.project.characterRanges;
+	const ranges = editor.project.settings.project.glyphRanges;
 
 	if (ranges[index]) {
-		if (areCharacterRangesEqual(ranges[index], editor.selectedCharacterRange)) {
-			editor.selectedCharacterRange = false;
+		if (areGlyphRangesEqual(ranges[index], editor.selectedGlyphRange)) {
+			editor.selectedGlyphRange = false;
 		}
 		let oldRangeName = ranges[index].name;
 		ranges.splice(index, 1);
@@ -554,25 +551,25 @@ function sanitizeUnicodeInput(inputString) {
 // Range Chooser
 // --------------------------------------------------------------
 
-function showUnicodeCharacterRangeDialog() {
+function showUnicodeGlyphRangeDialog() {
 	const content = makeElement({
-		className: 'character-range-chooser__wrapper',
+		className: 'glyph-range-chooser__wrapper',
 		innerHTML: `
 			<h1>Add glyph ranges from Unicode</h1>
 			<h3>Preview</h3>
 			<h3>Blocks</h3>
-			<div class="character-range-chooser__preview-area">
-				<div class="character-range-chooser__preview">
+			<div class="glyph-range-chooser__preview-area">
+				<div class="glyph-range-chooser__preview">
 					Select a glyph range from the right to preview it here.
 				</div>
-				<h4 id="character-range-chooser__preview-selected"></h4>
-				<fancy-button disabled id="character-range-chooser__add-button">Add range to project</fancy-button>
+				<h4 id="glyph-range-chooser__preview-selected"></h4>
+				<fancy-button disabled id="glyph-range-chooser__add-button">Add range to project</fancy-button>
 			</div>
-			<div class="character-range-chooser__list-area"></div>
+			<div class="glyph-range-chooser__list-area"></div>
 		`,
 	});
 
-	const listArea = content.querySelector('.character-range-chooser__list-area');
+	const listArea = content.querySelector('.glyph-range-chooser__list-area');
 
 	addAsChildren(listArea, [
 		textToNode('<span class="list__column-header">Range name</span>'),
@@ -586,7 +583,7 @@ function showUnicodeCharacterRangeDialog() {
 			rowWrapper = makeElement({
 				className: 'list__row-wrapper',
 				onClick: () => {
-					previewCharacterRange(block);
+					previewGlyphRange(block);
 				},
 			});
 
@@ -603,16 +600,16 @@ function showUnicodeCharacterRangeDialog() {
 	showModalDialog(content);
 }
 
-function previewCharacterRange(range) {
-	document.querySelector('#character-range-chooser__preview-selected').innerHTML = range.name;
+function previewGlyphRange(range) {
+	document.querySelector('#glyph-range-chooser__preview-selected').innerHTML = range.name;
 
-	const addButton = document.querySelector('#character-range-chooser__add-button');
+	const addButton = document.querySelector('#glyph-range-chooser__add-button');
 	addButton.addEventListener('click', () => {
-		addCharacterRange(range);
+		addGlyphRange(range);
 	});
 	addButton.removeAttribute('disabled');
 
-	const previewArea = document.querySelector('.character-range-chooser__preview');
+	const previewArea = document.querySelector('.glyph-range-chooser__preview');
 	previewArea.innerHTML = '';
 
 	let hexString;
@@ -622,7 +619,7 @@ function previewCharacterRange(range) {
 		name = getUnicodeName(hexString);
 		previewArea.appendChild(
 			makeElement({
-				className: 'character-range-chooser__preview-tile',
+				className: 'glyph-range-chooser__preview-tile',
 				title: `${hexString}\n${name}`,
 				innerHTML: hexesToChars(g),
 			})
@@ -630,10 +627,10 @@ function previewCharacterRange(range) {
 	}
 }
 
-function addCharacterRange(range, successCallback) {
-	if (isCharacterRangeUnique(range)) {
-		let ranges = getCurrentProject().settings.project.characterRanges;
-		ranges.push(new CharacterRange(range));
+function addGlyphRange(range, successCallback) {
+	if (isGlyphRangeUnique(range)) {
+		let ranges = getCurrentProject().settings.project.glyphRanges;
+		ranges.push(new GlyphRange(range));
 		ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
 		updateCurrentRangesTable();
 		showToast(`Added ${range.name} to your project.`);
@@ -643,8 +640,8 @@ function addCharacterRange(range, successCallback) {
 	}
 }
 
-function isCharacterRangeUnique(range) {
-	const ranges = getCurrentProject().settings.project.characterRanges;
+function isGlyphRangeUnique(range) {
+	const ranges = getCurrentProject().settings.project.glyphRanges;
 
 	for (let r = 0; r < ranges.length; r++) {
 		if (ranges[r].begin === range.begin && ranges[r].end === range.end) return false;
@@ -653,8 +650,8 @@ function isCharacterRangeUnique(range) {
 	return true;
 }
 
-export function areCharacterRangesEqual(range1, range2) {
-	// log(`areCharacterRangesEqual`, 'start');
+export function areGlyphRangesEqual(range1, range2) {
+	// log(`areGlyphRangesEqual`, 'start');
 	// log(`range1: ${json(range1)}`);
 	// log(`range2: ${json(range2)}`);
 
@@ -663,6 +660,6 @@ export function areCharacterRangesEqual(range1, range2) {
 		parseInt(range1.end) === parseInt(range2.end);
 	// log(`result: ${result}`);
 
-	// log(`areCharacterRangesEqual`, 'end');
+	// log(`areGlyphRangesEqual`, 'end');
 	return result;
 }

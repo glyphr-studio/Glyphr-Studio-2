@@ -275,8 +275,8 @@ export class Glyph extends GlyphElement {
 			} else if (this.id.startsWith('comp-')) {
 				let suffix = remove(this.id, 'comp-');
 				name = `Component ${suffix}`;
-			} else if (this.id.startsWith('char-')) {
-				let suffix = remove(this.id, 'char-');
+			} else if (this.id.startsWith('glyph-')) {
+				let suffix = remove(this.id, 'glyph-');
 				name = getUnicodeName(suffix);
 			}
 
@@ -302,7 +302,7 @@ export class Glyph extends GlyphElement {
 			// log(this.gsub);
 			result = this.gsub.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
 		} else {
-			result = hexesToChars(remove(this.id, 'char-'));
+			result = hexesToChars(remove(this.id, 'glyph-'));
 		}
 		// log(`result: ${result}`);
 		// log(`Glyph GET char`, 'end');

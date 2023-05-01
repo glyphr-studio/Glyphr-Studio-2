@@ -65,7 +65,7 @@ export function publish(topic, data) {
 
 		/*
 			PubSub allows for topics to be either a generic 'selectedItem'
-			topic, or a specific 'selectedCharacter' / 'selectedComponent' / 'selectedLigature'
+			topic, or a specific 'selectedGlyph' / 'selectedComponent' / 'selectedLigature'
 			topic. In both cases, when the specific case is called, so must the
 			generic case - and vise versa.
 		*/

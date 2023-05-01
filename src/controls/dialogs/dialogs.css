@@ -237,7 +237,7 @@ dialog {
 	margin: 0px;
 }
 
-.modal-dialog__item-chooser-scroll-area {
+.modal-dialog__glyph-chooser-scroll-area {
 	height: 100%;
 	padding: 10px 5px 5px 10px;
 	background-color: var(--offWhite);
