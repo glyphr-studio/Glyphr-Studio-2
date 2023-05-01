@@ -1,4 +1,4 @@
-// import { log } from '../../app/main.js';
+import { log } from '../../app/main.js';
 import { makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { cancelDefaultEventActions } from '../../edit_canvas/events.js';
@@ -14,7 +14,6 @@ export class InputNumber extends HTMLElement {
 	 */
 	constructor() {
 		// log(`InputNumber.constructor`, 'start');
-		// log(JSON.stringify(attributes));
 		super();
 
 		const isDisabled = this.hasAttribute('disabled');
@@ -152,10 +151,13 @@ export class InputNumber extends HTMLElement {
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		// log(`InputNumber.attributeChangedCallback`, 'start');
+		// log(`for < ${this.getAttribute('class')} >`);
 		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		if (attributeName === 'value') {
+			// log(`setting internal numberInput. PRE  ${this.numberInput.getAttribute('value')}`);
 			this.numberInput.setAttribute('value', newValue);
+			// log(`setting internal numberInput. POST ${this.numberInput.getAttribute('value')}`);
 		}
 
 		if (attributeName === 'is-locked') {
@@ -243,7 +245,7 @@ export class InputNumber extends HTMLElement {
 		this.numberInput.removeEventListener('change', this.numberInputChanged);
 		this.numberInput.removeEventListener('keydown', this.numberInputKeyboardPress);
 		// this.arrowWrapper.removeEventListener('mouseout', (event) => {
-		// 	// log(event);
+		// log(event);
 		// });
 	}
 
@@ -262,8 +264,10 @@ export class InputNumber extends HTMLElement {
 	 */
 	numberInputChanged(ev) {
 		// log(`InputNumber.numberInputChanged`, 'start');
+		// log(`for < ${this.elementRoot.getAttribute('class')} >`);
 		let newValue = this.elementRoot.sanitizeValue(ev.target.value);
 		this.elementRoot.setAttribute('value', newValue);
+		this.elementRoot.value = newValue;
 		this.elementRoot.dispatchEvent(new Event('change'));
 		// log(`InputNumber.numberInputChanged`, 'end');
 	}
@@ -274,10 +278,12 @@ export class InputNumber extends HTMLElement {
 	 */
 	increment(ev) {
 		// log(`InputNumber.increment`, 'start');
+		// log(`for < ${this.elementRoot.getAttribute('class')} >`);
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
 		let newValue = this.elementRoot.sanitizeValue((currentValue += mod ? 10 : 1));
 		this.elementRoot.setAttribute('value', newValue);
+		this.elementRoot.value = newValue;
 		this.elementRoot.dispatchEvent(new Event('change'));
 		// log(`InputNumber.increment`, 'end');
 	}
@@ -288,10 +294,12 @@ export class InputNumber extends HTMLElement {
 	 */
 	decrement(ev) {
 		// log(`InputNumber.decrement`, 'start');
+		// log(`for < ${this.elementRoot.getAttribute('class')} >`);
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
 		let newValue = this.elementRoot.sanitizeValue((currentValue -= mod ? 10 : 1));
 		this.elementRoot.setAttribute('value', newValue);
+		this.elementRoot.value = newValue;
 		this.elementRoot.dispatchEvent(new Event('change'));
 		// log(`InputNumber.decrement`, 'end');
 	}

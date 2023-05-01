@@ -905,7 +905,7 @@ export function linkComponentFromTo(sourceItem, destinationItem) {
  * @param {object} updateWidth - should advance width copy as well
  */
 export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = false) {
-	log('copyShapesFromTo', 'start');
+	// log('copyShapesFromTo', 'start');
 	// log(`Source item`);
 	// log(sourceItem);
 	// log(`Destination item`);
@@ -933,8 +933,8 @@ export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = fals
 
 	// log('Result for destination item:');
 	// log(destinationItem);
-	log(`Returning newShapes`);
-	log(newShapes);
-	log('copyShapesFromTo', 'end');
+	// log(`Returning newShapes`);
+	// log(newShapes);
+	// log('copyShapesFromTo', 'end');
 	return newShapes;
 }

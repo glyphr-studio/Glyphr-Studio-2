@@ -104,6 +104,8 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 		let newValue = event.target.value;
 		// log(`property: ${property}`);
 		// log(`newValue: ${newValue}`);
+		// log(`thisTopic: ${thisTopic}`);
+
 
 		const editor = getCurrentProjectEditor();
 		// Update the view so that the glyph stays put

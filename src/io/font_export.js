@@ -17,7 +17,7 @@ const ligatureSubstitutions = [];
 const codePointGlyphIndexTable = {};
 
 export async function ioFont_exportFont() {
-	log('ioFont_exportFont', 'start');
+	// log('ioFont_exportFont', 'start');
 
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
@@ -44,12 +44,12 @@ export async function ioFont_exportFont() {
 	// log(options);
 	const font = new openTypeJS.Font(options);
 	ligatureSubstitutions.forEach((sub) => {
-		log(`Adding ligature to font`);
-		log(sub);
+		// log(`Adding ligature to font`);
+		// log(sub);
 		font.substitution.addLigature('liga', sub);
 	});
-	log('Font object:');
-	log(font.toTables());
+	// log('Font object:');
+	// log(font.toTables());
 
 	font.download();
 	await pause();
@@ -57,7 +57,7 @@ export async function ioFont_exportFont() {
 	await pause(1000);
 
 	closeAllToasts();
-	log('ioFont_exportFont', 'end');
+	// log('ioFont_exportFont', 'end');
 }
 
 function createOptionsObject() {
@@ -175,7 +175,7 @@ function populateExportList() {
 }
 
 async function generateOneGlyph(currentExportItem) {
-	log('generateOneGlyph', 'start');
+	// log('generateOneGlyph', 'start');
 	// export this glyph
 	const project = getCurrentProject();
 	const glyph = currentExportItem.xg;
@@ -183,7 +183,7 @@ async function generateOneGlyph(currentExportItem) {
 	const comb = project.settings.app.combinePathsOnExport;
 	const maxes = glyph.maxes;
 
-	log(glyph.name);
+	// log(glyph.name);
 
 	showToast('Exporting<br>' + glyph.name, 999999);
 
@@ -212,14 +212,14 @@ async function generateOneGlyph(currentExportItem) {
 	codePointGlyphIndexTable[parseCharsInputAsHex(glyph.chars)] = thisIndex;
 
 	await pause();
-	log(thisGlyph);
-	log('generateOneGlyph', 'end');
+	// log(thisGlyph);
+	// log('generateOneGlyph', 'end');
 	return thisGlyph;
 }
 
 async function generateOneLigature(currentExportItem) {
-	log(`generateOneLigature`, 'start');
-	log(currentExportItem);
+	// log(`generateOneLigature`, 'start');
+	// log(currentExportItem);
 
 	// export this glyph
 	const project = getCurrentProject();
@@ -236,7 +236,7 @@ async function generateOneLigature(currentExportItem) {
 
 	const thisPath = liga.makeOpenTypeJSpath(new openTypeJS.Path());
 	const thisIndex = getNextGlyphIndexNumber();
-	log(`thisIndex: ${thisIndex}`);
+	// log(`thisIndex: ${thisIndex}`);
 
 	const glyphInfo = {
 		name: liga.name,
@@ -251,12 +251,12 @@ async function generateOneLigature(currentExportItem) {
 
 	// Add substitution info to font
 	const indexList = liga.gsub.map((v) => codePointGlyphIndexTable[v]);
-	log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex}}`);
+	// log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex}}`);
 	ligatureSubstitutions.push({ sub: indexList, by: thisIndex });
 	// log(glyphInfo);
 
 	await pause();
-	log(`generateOneLigature`, 'end');
+	// log(`generateOneLigature`, 'end');
 	return new openTypeJS.Glyph(glyphInfo);
 }
 

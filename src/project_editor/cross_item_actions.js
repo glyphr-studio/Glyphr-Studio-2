@@ -249,18 +249,18 @@ export function removeLinkFromUsedIn(glyph, linkID) {
 /*
 NOT ALLOWED
 export function deleteComponentInstancesBasedOnRootList(rootGlyph) {
-	log(`deleteComponentInstancesBasedOnRootList`, 'start');
+	// log(`deleteComponentInstancesBasedOnRootList`, 'start');
 
 	let project = getCurrentProject();
 	if (rootGlyph.usedIn.length) {
 		rootGlyph.usedIn.forEach((id) => {
-			log(`rootGlyph.usedIn id: ${id}`);
+			// log(`rootGlyph.usedIn id: ${id}`);
 
 			let parent = project.getItem(id);
 			for (let p = 0; p < parent.shapes.length; p++) {
-				log(`path ${p} link = ${parent.shapes[p]?.link}`);
+				// log(`path ${p} link = ${parent.shapes[p]?.link}`);
 				if (parent.shapes[p]?.link === rootGlyph.id) {
-					log(`>>>HIT<<<`);
+					// log(`>>>HIT<<<`);
 					if (p > -1) parent.shapes.splice(p, 1);
 					parent.changed();
 					break;
@@ -268,6 +268,6 @@ export function deleteComponentInstancesBasedOnRootList(rootGlyph) {
 			}
 		});
 	}
-	log(`deleteComponentInstancesBasedOnRootList`, 'end');
+	// log(`deleteComponentInstancesBasedOnRootList`, 'end');
 }
 */

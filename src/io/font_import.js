@@ -27,12 +27,12 @@ let importItemTotal = 0;
 // let minChar = 0xffff;
 
 export async function ioFont_importFont(importedFont) {
-	log('ioFont_importFont', 'start');
-	log(importedFont);
+	// log('ioFont_importFont', 'start');
+	// log(importedFont);
 	const project = getCurrentProject();
 	const fontGlyphs = importedFont.glyphs.glyphs;
 	const fontLigatures = importedFont.substitution.getLigatures('liga');
-	log(fontLigatures);
+	// log(fontLigatures);
 	importItemTotal = countItems(fontGlyphs) + fontLigatures.length;
 	// updateFontImportProgressIndicator(1);
 
@@ -57,7 +57,7 @@ export async function ioFont_importFont(importedFont) {
 	editor.nav.page = 'Overview';
 	editor.navigate();
 
-	log('ioFont_importFont', 'end');
+	// log('ioFont_importFont', 'end');
 }
 
 async function updateFontImportProgressIndicator() {
@@ -71,28 +71,28 @@ async function updateFontImportProgressIndicator() {
 }
 
 function importOneGlyph(otfGlyph, project) {
-	log('importOneGlyph', 'start');
+	// log('importOneGlyph', 'start');
 
 	// Get the appropriate unicode decimal for this glyph
 	// log(`otfGlyph.unicode: ${otfGlyph.unicode}`);
 	// log(`otfGlyph.name: ${otfGlyph.name}`);
 	// log(`otfGlyph.advanceWidth: ${otfGlyph.advanceWidth}`);
-	log(otfGlyph);
+	// log(otfGlyph);
 
 	const uni = decToHex(otfGlyph.unicode || 0);
 
 	if (uni === false || uni === '0x0000') {
 		// Check for .notdef
-		log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
+		// log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
 		importItemTotal--;
-		log('importOneGlyph', 'end');
+		// log('importOneGlyph', 'end');
 		return;
 	}
 
 	if (isOutOfBounds([uni])) {
-		log(`!!! Skipping ${otfGlyph.name} OUT OF BOUNDS !!!`);
+		// log(`!!! Skipping ${otfGlyph.name} OUT OF BOUNDS !!!`);
 		importItemTotal--;
-		log('importOneGlyph', 'end');
+		// log('importOneGlyph', 'end');
 		return;
 	}
 
@@ -102,7 +102,7 @@ function importOneGlyph(otfGlyph, project) {
 		console.warn(`Something went wrong with importing this glyph.`);
 		console.log(otfGlyph);
 		importItemTotal--;
-		log('importOneGlyph', 'end');
+		// log('importOneGlyph', 'end');
 		return;
 	}
 
@@ -129,15 +129,15 @@ function importOneGlyph(otfGlyph, project) {
 
 	// Successful loop, advance importItemCounter
 	importItemCounter++;
-	log(importedGlyph);
-	log('importOneGlyph', 'end');
+	// log(importedGlyph);
+	// log('importOneGlyph', 'end');
 }
 
 function makeGlyphrStudioGlyphObject(otfGlyph) {
-	log(`makeGlyphrStudioGlyphObject`, 'start');
-	log(otfGlyph);
+	// log(`makeGlyphrStudioGlyphObject`, 'start');
+	// log(otfGlyph);
 	const advance = otfGlyph.advanceWidth;
-	log(`advance: ${advance}`);
+	// log(`advance: ${advance}`);
 
 	const newPaths = [];
 	let pathCounter = 0;
@@ -173,7 +173,7 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 		advanceWidth: advance,
 	});
 
-	log(`makeGlyphrStudioGlyphObject`, 'end');
+	// log(`makeGlyphrStudioGlyphObject`, 'end');
 	return importedGlyph;
 }
 
@@ -200,9 +200,9 @@ function flattenDataArray(data) {
 }
 
 function importOneLigature(otfLigature, otfFont) {
-	log(`importOneLigature`, 'start');
-	log(`otfLigature.glyph.name: ${otfLigature.glyph.name}`);
-	log(otfLigature);
+	// log(`importOneLigature`, 'start');
+	// log(`otfLigature.glyph.name: ${otfLigature.glyph.name}`);
+	// log(otfLigature);
 
 	// make the Glyphr Studio Glyph
 	const importedLigature = makeGlyphrStudioGlyphObject(otfLigature.glyph);
@@ -218,21 +218,21 @@ function importOneLigature(otfLigature, otfFont) {
 	otfLigature.gsub.forEach((glyphID) => {
 		newGsub.push(otfFont.glyphs.get(glyphID).unicode);
 	});
-	log(`newGsub`);
-	log(newGsub);
+	// log(`newGsub`);
+	// log(newGsub);
 	importedLigature.gsub = newGsub;
 
 	// Update properties
 	importedLigature.objType = 'Ligature';
 	const newLigatureID = makeLigatureID(String.fromCharCode(...newGsub));
-	log(`newLigatureID: ${newLigatureID}`);
+	// log(`newLigatureID: ${newLigatureID}`);
 	importedLigature.id = newLigatureID;
 
 	// Finish up
 	finalLigatures[newLigatureID] = importedLigature;
 	importItemCounter++;
-	log(importedLigature);
-	log(`importOneLigature`, 'end');
+	// log(importedLigature);
+	// log(`importOneLigature`, 'end');
 }
 
 /*

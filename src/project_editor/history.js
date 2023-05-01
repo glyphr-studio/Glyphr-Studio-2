@@ -27,7 +27,7 @@ export class History {
 	 * @param {Object} itemWasDeleted - flag so the item can be added back to the project
 	 */
 	addState(title = '', itemWasDeleted = false) {
-		log(`History.addState`, 'start');
+		// log(`History.addState`, 'start');
 		const editor = getCurrentProjectEditor();
 		const changedItem = editor.selectedItem;
 		title = title || `Change to ${changedItem.name}`;
@@ -39,8 +39,8 @@ export class History {
 			itemWasDeleted: itemWasDeleted,
 		});
 
-		log(`New entry:`);
-		log(entry);
+		// log(`New entry:`);
+		// log(entry);
 		this.queue.unshift(entry);
 
 		editor.setProjectAsUnsaved();
@@ -50,8 +50,8 @@ export class History {
 
 		const undoButton = document.getElementById('actionButtonUndo');
 		if (undoButton) undoButton.removeAttribute('disabled');
-		log(this);
-		log(`History.addState`, 'end');
+		// log(this);
+		// log(`History.addState`, 'end');
 	}
 
 	/**
@@ -60,7 +60,7 @@ export class History {
 	 * steps back and restore queue index 1.
 	 */
 	restoreState() {
-		log(`History.restoreState`, 'start');
+		// log(`History.restoreState`, 'start');
 		const editor = getCurrentProjectEditor();
 
 		let q = this.queue;
@@ -74,8 +74,8 @@ export class History {
 			const undoButton = document.getElementById('actionButtonUndo');
 			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
 			showToast(`No more undo`);
-			log(`Queue is 0, returning`);
-			log(`History.restoreState`, 'end');
+			// log(`Queue is 0, returning`);
+			// log(`History.restoreState`, 'end');
 			return;
 		}
 
@@ -94,8 +94,8 @@ export class History {
 				showToast(`Restored deleted item<br>${q[0].itemState.name}`);
 			} else {
 				showToast('Navigated without undo-ing');
-				log(`Need to navigate to next changed item`);
-				log(`History.restoreState`, 'end');
+				// log(`Need to navigate to next changed item`);
+				// log(`History.restoreState`, 'end');
 				return;
 			}
 		}
@@ -107,23 +107,23 @@ export class History {
 		let nextEntry;
 		if (q.length === 1) {
 			// With only one change in the queue, undo falls back to the initial project state
-			log(this.initialProject);
+			// log(this.initialProject);
 			let baseItemState;
 			let baseItem;
 			if (editor.nav.page === 'Glyph edit') {
-				log(`editor.selectedGlyphID : ${editor.selectedGlyphID}`);
+				// log(`editor.selectedGlyphID : ${editor.selectedGlyphID}`);
 				baseItem = this.initialProject.glyphs[editor.selectedGlyphID];
-				log(baseItem);
+				// log(baseItem);
 				baseItemState = baseItem.save();
 			} else if (editor.nav.page === 'Ligatures') {
-				log(`editor.selectedLigatureID : ${editor.selectedLigatureID}`);
+				// log(`editor.selectedLigatureID : ${editor.selectedLigatureID}`);
 				baseItem = this.initialProject.ligatures[editor.selectedLigatureID];
-				log(baseItem);
+				// log(baseItem);
 				baseItemState = baseItem.save();
 			} else if (editor.nav.page === 'Components') {
-				log(`editor.selectedComponentID : ${editor.selectedComponentID}`);
+				// log(`editor.selectedComponentID : ${editor.selectedComponentID}`);
 				baseItem = this.initialProject.components[editor.selectedComponentID];
-				log(baseItem);
+				// log(baseItem);
 				baseItemState = baseItem.save();
 			}
 			// TODO Kerning
@@ -132,8 +132,8 @@ export class History {
 				itemID: editor.selectedItemID,
 				title: 'Initial state',
 			};
-			log(`Queue length was 1, setting 'nextEntry' to base project`);
-			log(nextEntry);
+			// log(`Queue length was 1, setting 'nextEntry' to base project`);
+			// log(nextEntry);
 		} else {
 			nextEntry = q[1];
 		}
@@ -142,16 +142,16 @@ export class History {
 		// proceed with the undo
 		// --------------------------------------------------------------
 
-		log(`Undoing to: ${nextEntry.title}`);
-		log(`nextEntry:`);
-		log(nextEntry);
+		// log(`Undoing to: ${nextEntry.title}`);
+		// log(`nextEntry:`);
+		// log(nextEntry);
 
 		// Clear selections
 		editor.multiSelect.points.clear();
 		editor.multiSelect.shapes.clear();
 
 		// Overwrite the current item with the redo state
-		log(`overwriting ${editor.selectedItem.name}`);
+		// log(`overwriting ${editor.selectedItem.name}`);
 		editor.selectedItem = nextEntry.itemState;
 
 		// Index 0 is the previous current state, so remove it
@@ -167,8 +167,8 @@ export class History {
 			const undoButton = document.getElementById('actionButtonUndo');
 			if (undoButton) undoButton.setAttribute('disabled', 'disabled');
 		}
-		log(q);
-		log(`History.restoreState`, 'end');
+		// log(q);
+		// log(`History.restoreState`, 'end');
 	}
 }
 
