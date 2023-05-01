@@ -132,7 +132,7 @@ export class GlyphSequence {
 					thisGlyph = project.ligatures[currentChar];
 					currentChar = thisGlyph.chars;
 				} else {
-					thisGlyph = project.getItem(`glyph-${charToHex(currentChar)}`);
+					thisGlyph = project.getItem(`char-${charToHex(currentChar)}`);
 				}
 
 				// Calculate width

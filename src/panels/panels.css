@@ -228,32 +228,32 @@
 /*
 	Glyph Chooser
 */
-.glyph-chooser__wrapper {
+.item-chooser__wrapper {
 	background-color: var(--offWhite);
 }
 
-nav .glyph-chooser__wrapper {
+nav .item-chooser__wrapper {
 	padding: 20px;
 	margin-top: 5px;
 }
 
-.glyph-chooser__header {
+.item-chooser__header {
 	display: block;
 	padding: 0px 20px 20px 0px;
 }
 
-.glyph-chooser__header option-chooser {
+.item-chooser__header option-chooser {
 	display: inline-block;
 	width: 100%;
 	min-width: 177px;
 	max-width: 488px;
 }
 
-.glyph-chooser__tile-grid {
+.item-chooser__tile-grid {
 	animation: var(--animate-fade-in-slide-down);
 }
 
-.glyph-chooser__tile-grid glyph-tile {
+.item-chooser__tile-grid glyph-tile {
 	display: inline-block;
 	margin: 0px 10px 10px 0px;
 }

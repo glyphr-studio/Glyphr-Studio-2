@@ -11,7 +11,7 @@ import {
 	showModalDialog,
 	showToast,
 } from '../controls/dialogs/dialogs.js';
-import { makeAllItemTypeChooserContent } from './glyph_chooser.js';
+import { makeAllItemTypeChooserContent } from './item_chooser.js';
 import {
 	addLinkToUsedIn,
 	canAddComponent,
@@ -875,7 +875,7 @@ function showDialogChooseOtherItem(type) {
 
 	const scrollArea = makeElement({
 		tag: 'div',
-		className: 'modal-dialog__glyph-chooser-scroll-area',
+		className: 'modal-dialog__item-chooser-scroll-area',
 	});
 
 	const chooserArea = makeAllItemTypeChooserContent(onClick);

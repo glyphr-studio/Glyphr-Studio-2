@@ -85,12 +85,12 @@
     }
   },
   "glyphs": {
-    "glyph-0x20": {
-      "id": "glyph-0x20",
+    "char-0x20": {
+      "id": "char-0x20",
       "advanceWidth": 200
     },
-    "glyph-0x41": {
-      "id": "glyph-0x0041",
+    "char-0x41": {
+      "id": "char-0x0041",
       "advanceWidth": 530,
       "shapes": [
         {
@@ -217,8 +217,8 @@
         }
       ]
     },
-    "glyph-0x42": {
-      "id": "glyph-0x0042",
+    "char-0x42": {
+      "id": "char-0x0042",
       "advanceWidth": 405,
       "shapes": [
         {
@@ -461,8 +461,8 @@
         }
       ]
     },
-    "glyph-0x43": {
-      "id": "glyph-0x0043",
+    "char-0x43": {
+      "id": "char-0x0043",
       "advanceWidth": 420,
       "shapes": [
         {
