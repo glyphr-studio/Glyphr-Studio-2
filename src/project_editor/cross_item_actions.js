@@ -118,7 +118,7 @@ export function canAddComponent(destinationItem, componentID) {
 	// log('Glyph.canAddComponent', 'start');
 	// log('adding ' + componentID + ' to (me) ' + destinationItem.id);
 	if (destinationItem.id === componentID) return false;
-	if (destinationItem.usedIn.length === 0) return true;
+	if (!destinationItem.usedIn || destinationItem.usedIn.length === 0) return true;
 	let downlinks = collectAllDownstreamLinks(destinationItem, [], true);
 	downlinks = downlinks.filter(function (elem, pos) {
 		return downlinks.indexOf(elem) === pos;

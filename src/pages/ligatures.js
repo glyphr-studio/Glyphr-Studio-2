@@ -249,12 +249,12 @@ function addLigature(sequence) {
 		return 'Ligature already exists';
 	}
 
-	project.ligatures[newID] = new Glyph({
+	project.addNewItem(new Glyph({
 		id: newID,
 		parent: project,
 		objType: 'Ligature',
 		gsub: sequence.split('').map((char) => char.codePointAt(0)),
-	});
+	}), 'Ligature', newID);
 
 	return project.ligatures[newID];
 }

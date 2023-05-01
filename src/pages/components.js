@@ -230,10 +230,7 @@ function makeComponentsFirstRunContent() {
 export function addComponent(newComponent) {
 	const newID = makeComponentID();
 	const project = getCurrentProject();
-	project.components[newID] = new Glyph(newComponent);
-	project.components[newID].id = newID;
-	project.components[newID].parent = project;
-	project.components[newID].objType = 'Component';
+	project.addNewItem(new Glyph(newComponent), 'Component', newID);
 	return project.components[newID];
 }
 
@@ -252,7 +249,7 @@ export function showAddComponentDialog() {
 		innerHTML: `
 			<h2>Add a new component</h2>
 				Specify a name to create a new component:
-				<br>
+				<br><br>
 				<input id="components__new-component-input" type="text"
 					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 				/>

@@ -429,18 +429,16 @@ export class GlyphrStudioProject {
 		}
 		if (objType === 'Ligature') {
 			destination = this.ligatures;
-			newID = '';
 		}
 		if (objType === 'Component') {
 			destination = this.components;
-			newID = '';
 		}
 		if (objType === 'HKern') {
 			destination = this.kerning;
-			newID = '';
 		}
 
 		newItem.parent = this;
+		newItem.id = newID;
 		newItem.objType = objType;
 		destination[newID] = newItem;
 	}
