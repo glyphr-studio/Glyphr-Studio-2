@@ -15,7 +15,7 @@ export function makePage_LivePreview() {
 	// log('current ProjectEditor');
 	// log(editor);
 	// log(editor.nav);
-	// log(editor.selectedCharacter);
+	// log(editor.selectedGlyph);
 
 	const content = makeElement({
 		tag: 'div',

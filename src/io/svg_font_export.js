@@ -120,13 +120,13 @@ function calcFontMaxes() {
 	// log(fm);
 
 	let thisGlyph;
-	const ranges = project.settings.project.characterRanges;
+	const ranges = project.settings.project.glyphRanges;
 	// log(`ranges`);
 	// log(ranges);
 
 	ranges.forEach((range) => {
 		for (let char = range.begin; char < range.end; char++) {
-			thisGlyph = project.getItem(`char-${decToHex(char)}`);
+			thisGlyph = project.getItem(`glyph-${decToHex(char)}`);
 			if (thisGlyph) fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
 		}
 		fm.maxGlyph = Math.max(fm.maxGlyph, range.end);

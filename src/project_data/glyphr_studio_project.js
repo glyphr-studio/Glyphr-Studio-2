@@ -3,7 +3,7 @@ import { Glyph } from '../project_data/glyph.js';
 import { HKern } from '../project_data/h_kern.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
-import { CharacterRange } from './glyph_range.js';
+import { GlyphRange } from './glyph_range.js';
 // import { log } from '../app/main.js';
 
 /**
@@ -24,7 +24,7 @@ export class GlyphrStudioProject {
 				latestVersion: '2.0.0-alpha.2',
 				initialVersion: '2.0.0-alpha.1',
 				id: false,
-				characterRanges: [],
+				glyphRanges: [],
 			},
 			app: {
 				savePreferences: false,
@@ -96,13 +96,13 @@ export class GlyphrStudioProject {
 		// log(newProject);
 
 		// Glyph Ranges
-		if (newProject?.settings?.project?.characterRanges) {
-			newProject.settings.project.characterRanges.forEach((range) => {
-				this.settings.project.characterRanges.push(new CharacterRange(range));
+		if (newProject?.settings?.project?.glyphRanges) {
+			newProject.settings.project.glyphRanges.forEach((range) => {
+				this.settings.project.glyphRanges.push(new GlyphRange(range));
 			});
 		}
 		// log('finished importing Glyph Ranges');
-		// log(this.settings.project.characterRanges);
+		// log(this.settings.project.glyphRanges);
 
 		// Settings
 		if (newProject.settings) {
@@ -166,7 +166,7 @@ export class GlyphrStudioProject {
 			kerning: {},
 		};
 
-		savedProject.settings.project.characterRanges.forEach((range) => delete range.cachedArray);
+		savedProject.settings.project.glyphRanges.forEach((range) => delete range.cachedArray);
 
 		/**
 		 * Generic iterator for glyphs, ligatures, components, and kerning
@@ -215,7 +215,7 @@ export class GlyphrStudioProject {
 		if (this.ligatures && id.startsWith('liga-')) {
 			// log(`detected LIGATURE`);
 			result = this.ligatures[id] || false;
-		} else if (this.glyphs && id.startsWith('char-')) {
+		} else if (this.glyphs && id.startsWith('glyph-')) {
 			// log(`detected GLYPH`);
 			result = this.glyphs[id] || false;
 		} else if (this.components && id.startsWith('comp-')) {
@@ -253,7 +253,7 @@ export class GlyphrStudioProject {
 		if (this.ligatures && id.startsWith('liga-')) {
 			// log(`detected LIGATURE`);
 			this.ligatures[id] = newItem;
-		} else if (this.glyphs && id.startsWith('char-')) {
+		} else if (this.glyphs && id.startsWith('glyph-')) {
 			// log(`detected GLYPH`);
 			this.glyphs[id] = newItem;
 		} else if (this.components && id.startsWith('comp-')) {
@@ -284,13 +284,13 @@ export class GlyphrStudioProject {
 			return false;
 		}
 
-		if (id.startsWith('char-')) {
+		if (id.startsWith('glyph-')) {
 			// known unicode names
 			let unicodeName;
 			if (forceLongName) {
-				unicodeName = unicodeNames[remove(id, 'char-')];
+				unicodeName = unicodeNames[remove(id, 'glyph-')];
 			} else {
-				unicodeName = shortUnicodeNames[remove(id, 'char-')];
+				unicodeName = shortUnicodeNames[remove(id, 'glyph-')];
 			}
 
 			if (unicodeName) {
@@ -520,9 +520,9 @@ function merge(template = {}, importing = {}, trimStrings = false) {
 
 function validateItemID(oldID, objType) {
 	if (objType === 'Glyph') {
-		let suffix = remove(oldID, 'char-');
+		let suffix = remove(oldID, 'glyph-');
 		suffix = validateAsHex(suffix);
-		if (suffix) return `char-${suffix}`;
+		if (suffix) return `glyph-${suffix}`;
 	}
 	return oldID;
 }

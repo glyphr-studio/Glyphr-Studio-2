@@ -1,12 +1,12 @@
 import { makePage_OpenProject } from '../pages/open_project.js';
-import { makePage_Characters } from '../pages/characters.js';
+import { makePage_GlyphEdit } from '../pages/glyph_edit.js';
 import { makePage_Ligatures } from '../pages/ligatures.js';
 import { makePage_Overview } from '../pages/overview.js';
 import { makePage_About } from '../pages/about.js';
 import { makePage_Settings } from '../pages/settings.js';
 import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
-import { makeSingleItemTypeChooserContent } from '../panels/item_chooser.js';
+import { makeSingleItemTypeChooserContent } from '../panels/glyph_chooser.js';
 import { makeAppTopBar, showAppErrorPage } from '../app/app.js';
 import { makeIcon } from '../common/graphics.js';
 import { accentColors } from '../common/colors.js';
@@ -40,8 +40,8 @@ export class Navigator {
 				pageMaker: makePage_Overview,
 				iconName: 'page_overview',
 			},
-			Characters: {
-				pageMaker: makePage_Characters,
+			'Glyph edit': {
+				pageMaker: makePage_GlyphEdit,
 				iconName: 'page_glyphEdit',
 			},
 			Ligatures: {
@@ -171,7 +171,7 @@ export class Navigator {
 	get isOnChooserPanelPage() {
 		const nh = this.page;
 		return (
-			nh === 'Characters' ||
+			nh === 'Glyph edit' ||
 			nh === 'Components' ||
 			nh === 'Kerning' ||
 			nh === 'Import SVG' ||
@@ -185,7 +185,7 @@ export class Navigator {
 	 */
 	get isOnEditCanvasPage() {
 		const nh = this.page;
-		return nh === 'Characters' || nh === 'Components' || nh === 'Kerning' || nh === 'Ligatures';
+		return nh === 'Glyph edit' || nh === 'Components' || nh === 'Kerning' || nh === 'Ligatures';
 	}
 }
 

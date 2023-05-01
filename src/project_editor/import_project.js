@@ -92,7 +92,7 @@ function migrate_Project(oldProject) {
 
 	// Metadata
 	const newPreferences = newProject.settings.app;
-	const newRanges = newProject.settings.project.characterRanges;
+	const newRanges = newProject.settings.project.glyphRanges;
 	const newSysGuides = newProject.settings.app.guides.system;
 	const newFont = newProject.settings.font;
 	const oldSettings = oldProject.projectsettings;
@@ -314,7 +314,7 @@ function migrate_ItemID(oldID) {
 	// Glyph
 	if (chars.length === 1) {
 		// log(`Detected as Glyph`);
-		result = `char-${validateAsHex(oldID)}`;
+		result = `glyph-${validateAsHex(oldID)}`;
 	}
 
 	// log(`result: ${result}`);

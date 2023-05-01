@@ -8,17 +8,17 @@ import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.j
 import { closeAllInfoBubbles } from '../controls/dialogs/dialogs.js';
 
 /**
- * Page > Characters
+ * Page > Glyph Edit
  * The main edit surface for Glyphr Studio
  * Comprised of Panels of tools, and the Edit Canvas
  */
-export function makePage_Characters() {
-	// log(`makePage_Characters`, 'start');
+export function makePage_GlyphEdit() {
+	// log(`makePage_GlyphEdit`, 'start');
 	const editor = getCurrentProjectEditor();
 	// log('current ProjectEditor');
 	// log(editor);
 	// log(editor.nav);
-	// log(`editor.selectedCharacterID: ${editor.selectedCharacterID}`);
+	// log(`editor.selectedGlyphID: ${editor.selectedGlyphID}`);
 	// log(`editor.selectedItemID: ${editor.selectedItemID}`);
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
@@ -29,11 +29,11 @@ export function makePage_Characters() {
 		<div class="editor__page">
 			<div class="editor-page__left-area">
 				<div class="editor-page__nav-area">
-					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Characters' })}
+					${makeNavButton({ level: 'l1', superTitle: 'PAGE', title: 'Glyph edit' })}
 					${makeNavButton({
 						level: 'l2',
 						superTitle: 'EDITING',
-						title: editor.project.getItemName(editor.selectedCharacterID, true),
+						title: editor.project.getItemName(editor.selectedGlyphID, true),
 					})}
 					${makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel })}
 				</div>
@@ -42,7 +42,7 @@ export function makePage_Characters() {
 			<div class="editor-page__tools-area"></div>
 			<div class="editor-page__edit-canvas-wrapper">
 				<edit-canvas id="editor-page__edit-canvas" editing-item-id="${
-					editor.selectedCharacterID
+					editor.selectedGlyphID
 				}"></edit-canvas>
 			</div>
 			<div class="editor-page__zoom-area"></div>
@@ -101,7 +101,7 @@ export function makePage_Characters() {
 	// Canvas
 	editor.subscribe({
 		topic: 'whichGlyphIsSelected',
-		subscriberID: 'editCanvas.selectedCharacter',
+		subscriberID: 'editCanvas.selectedGlyph',
 		callback: (newGlyphID) => {
 			// log(`Main Canvas subscriber callback`, 'start');
 			removeStopCreatingNewPathButton();
@@ -134,6 +134,6 @@ export function makePage_Characters() {
 		},
 	});
 
-	// log(`makePage_Characters`, 'end');
+	// log(`makePage_GlyphEdit`, 'end');
 	return content;
 }

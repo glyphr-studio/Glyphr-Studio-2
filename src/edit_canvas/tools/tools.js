@@ -92,12 +92,12 @@ export function makeEditToolsButtons() {
 	// Put it all together
 	let content = [];
 
-	const onCharactersPage = editor.nav.page === 'Characters';
+	const onGlyphEditPage = editor.nav.page === 'Glyph edit';
 	const onComponentPage = editor.nav.page === 'Components';
 	const onLigaturesPage = editor.nav.page === 'Ligatures';
 	const selectedItem = editor.selectedItem;
 
-	if (onCharactersPage || onLigaturesPage) {
+	if (onGlyphEditPage || onLigaturesPage) {
 		content.push(toolButtonElements.newRectangle);
 		content.push(toolButtonElements.newOval);
 		content.push(toolButtonElements.newPath);
@@ -109,7 +109,7 @@ export function makeEditToolsButtons() {
 		content.push(toolButtonElements.newPath);
 	}
 
-	if (onCharactersPage || onComponentPage || onLigaturesPage) {
+	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
 		// content.push(toolButtonElements.pathAddPoint);
 		content.push(makeElement({ tag: 'div', style: 'height: 20px;' }));
 		content.push(toolButtonElements.pathEdit);

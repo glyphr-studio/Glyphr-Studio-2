@@ -56,7 +56,7 @@ export class GlyphElement {
 	get displayType() {
 		if (this.id.startsWith('liga-')) return 'Ligature';
 		if (this.id.startsWith('comp-')) return 'Component';
-		if (this.id.startsWith('char-')) return 'Character';
+		if (this.id.startsWith('glyph-')) return 'Glyph';
 		return this.objType;
 	}
 
