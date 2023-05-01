@@ -36,7 +36,7 @@ export function makePage_Overview() {
 
 		const editor = getCurrentProjectEditor();
 		editor.selectedGlyphID = glyphID;
-		editor.nav.page = 'Glyph edit';
+		editor.nav.page = 'Characters';
 		editor.navigate();
 		editor.history.addState(`Navigated to ${editor.project.getItemName(glyphID, true)}`);
 		// log(`Overview page - Glyph Chooser tile click handler`, 'end');
