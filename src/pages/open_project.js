@@ -362,11 +362,10 @@ function handleLoadSample(name) {
 	}, 100);
 }
 
-// TODO import all ranges
-// TODO glyph range
+// TODO BMP+
 let importRange = {
-	begin: 0x0020,
-	end: 0x024f,
+	begin: 0x0,
+	end: 0xffff,
 };
 
 export function isOutOfBounds(uni) {

@@ -840,68 +840,6 @@ export class Glyph extends GlyphElement {
 	}
 
 	// --------------------------------------------------------------
-	// Alignment
-	// --------------------------------------------------------------
-
-	/**
-	 * Move all the shapes to align with an edge
-	 * @param {string} edge - which edge to align all the shapes to
-	 */
-	alignShapes(edge) {
-		// log('Glyph.alignShapes', 'start');
-		// log('edge: ' + edge);
-		const glyphMaxes = this.maxes;
-
-		if (edge === 'top') {
-			this.shapes.forEach((shape) => {
-				// log(`just setting to glyph.yMax: ${glyphMaxes.yMax}`);
-				shape.setShapePosition(false, glyphMaxes.yMax);
-			});
-		}
-
-		if (edge === 'middle') {
-			this.shapes.forEach((shape) => {
-				let delta = glyphMaxes.center.y - shape.maxes.center.y;
-				// log(`delta: ${delta}`);
-				shape.updateShapePosition(0, delta);
-			});
-		}
-
-		if (edge === 'bottom') {
-			this.shapes.forEach((shape) => {
-				let delta = glyphMaxes.yMin - shape.maxes.yMin;
-				// log(`delta: ${delta}`);
-				shape.updateShapePosition(0, delta);
-			});
-		}
-
-		if (edge === 'left') {
-			this.shapes.forEach((shape) => {
-				// log(`just setting to glyph.xMin: ${glyphMaxes.xMin}`);
-				shape.setShapePosition(glyphMaxes.xMin, false);
-			});
-		}
-
-		if (edge === 'center') {
-			this.shapes.forEach((shape) => {
-				let delta = glyphMaxes.center.x - shape.maxes.center.x;
-				// log(`delta: ${delta}`);
-				shape.updateShapePosition(delta, 0);
-			});
-		}
-
-		if (edge === 'right') {
-			this.shapes.forEach((shape) => {
-				let delta = glyphMaxes.xMax - shape.maxes.xMax;
-				// log(`delta: ${delta}`);
-				shape.updateShapePosition(delta, 0);
-			});
-		}
-
-		// log('Glyph.alignShapes', 'end');
-	}
-
-	// --------------------------------------------------------------
 	// Export to different languages
 	// --------------------------------------------------------------
 
@@ -923,12 +861,9 @@ export class Glyph extends GlyphElement {
 	 */
 	combineAllPaths() {
 		// log('Glyph.combineAllPaths', 'start');
-
+		// TODO Boolean Combine 
 		// this.makeGlyphWithResolvedLinks();
 		/*
-
-			TODO Boolean Combine get functionality from V1
-
 		const paths = combinePaths(this.shapes, doNotToast);
 		if (paths) {
 			// log('new paths');

@@ -86,7 +86,6 @@ export function isOverFirstPoint(path, x, y) {
  * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
  */
 function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
-	//TODO browser zoom messes with visible handle size
 	const targetSize = canvasUIPointSize;
 	const test = { x: x, y: y };
 	if (pointsAreEqual(pathPoint.p, test, targetSize)) {
