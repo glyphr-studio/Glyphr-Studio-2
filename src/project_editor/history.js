@@ -110,7 +110,7 @@ export class History {
 			// log(this.initialProject);
 			let baseItemState;
 			let baseItem;
-			if (editor.nav.page === 'Glyph edit') {
+			if (editor.nav.page === 'Characters') {
 				// log(`editor.selectedGlyphID : ${editor.selectedGlyphID}`);
 				baseItem = this.initialProject.glyphs[editor.selectedGlyphID];
 				// log(baseItem);

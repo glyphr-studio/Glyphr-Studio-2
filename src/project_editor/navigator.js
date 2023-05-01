@@ -1,5 +1,5 @@
 import { makePage_OpenProject } from '../pages/open_project.js';
-import { makePage_GlyphEdit } from '../pages/glyph_edit.js';
+import { makePage_Characters } from '../pages/characters.js';
 import { makePage_Ligatures } from '../pages/ligatures.js';
 import { makePage_Overview } from '../pages/overview.js';
 import { makePage_About } from '../pages/about.js';
@@ -40,9 +40,9 @@ export class Navigator {
 				pageMaker: makePage_Overview,
 				iconName: 'page_overview',
 			},
-			'Glyph edit': {
-				pageMaker: makePage_GlyphEdit,
-				iconName: 'page_glyphEdit',
+			Characters: {
+				pageMaker: makePage_Characters,
+				iconName: 'page_characters',
 			},
 			Ligatures: {
 				pageMaker: makePage_Ligatures,
@@ -171,7 +171,7 @@ export class Navigator {
 	get isOnChooserPanelPage() {
 		const nh = this.page;
 		return (
-			nh === 'Glyph edit' ||
+			nh === 'Characters' ||
 			nh === 'Components' ||
 			nh === 'Kerning' ||
 			nh === 'Import SVG' ||
@@ -185,7 +185,7 @@ export class Navigator {
 	 */
 	get isOnEditCanvasPage() {
 		const nh = this.page;
-		return nh === 'Glyph edit' || nh === 'Components' || nh === 'Kerning' || nh === 'Ligatures';
+		return nh === 'Characters' || nh === 'Components' || nh === 'Kerning' || nh === 'Ligatures';
 	}
 }
 

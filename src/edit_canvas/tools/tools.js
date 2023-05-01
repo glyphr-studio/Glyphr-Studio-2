@@ -92,7 +92,7 @@ export function makeEditToolsButtons() {
 	// Put it all together
 	let content = [];
 
-	const onGlyphEditPage = editor.nav.page === 'Glyph edit';
+	const onGlyphEditPage = editor.nav.page === 'Characters';
 	const onComponentPage = editor.nav.page === 'Components';
 	const onLigaturesPage = editor.nav.page === 'Ligatures';
 	const selectedItem = editor.selectedItem;

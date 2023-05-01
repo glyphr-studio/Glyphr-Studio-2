@@ -106,7 +106,6 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 		// log(`newValue: ${newValue}`);
 		// log(`thisTopic: ${thisTopic}`);
 
-
 		const editor = getCurrentProjectEditor();
 		// Update the view so that the glyph stays put
 		// and the LSB moves to the left or right
@@ -272,7 +271,7 @@ export function makeLinkReferenceRow(itemID) {
 
 	let row = makeElement({ className: 'item-link__row', attributes: { 'target-item-id': itemID } });
 	row.addEventListener('click', () => {
-		if (targetItem.displayType === 'Glyph') editor.nav.page = 'Glyph edit';
+		if (targetItem.displayType === 'Glyph') editor.nav.page = 'Characters';
 		if (targetItem.displayType === 'Component') editor.nav.page = 'Components';
 		if (targetItem.displayType === 'Ligature') editor.nav.page = 'Ligatures';
 		editor.selectedItemID = itemID;

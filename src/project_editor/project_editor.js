@@ -166,7 +166,7 @@ export class ProjectEditor {
 	get selectedItem() {
 		// log(`ProjectEditor GET selectedItem`, 'start');
 
-		if (this.nav.page === 'Glyph edit') {
+		if (this.nav.page === 'Characters') {
 			// log(`this.selectedGlyph: ${this.selectedGlyph}`);
 			// log(`ProjectEditor GET selectedItem`, 'end');
 			return this.selectedGlyph;
@@ -190,7 +190,7 @@ export class ProjectEditor {
 	 * ID based on the current page
 	 */
 	get selectedItemID() {
-		if (this.nav.page === 'Glyph edit') return this.selectedGlyphID;
+		if (this.nav.page === 'Characters') return this.selectedGlyphID;
 		else if (this.nav.page === 'Components') return this.selectedComponentID;
 		else if (this.nav.page === 'Ligatures') return this.selectedLigatureID;
 		else if (this.nav.page === 'Kerning') return this.selectedKernID;
@@ -335,7 +335,7 @@ export class ProjectEditor {
 	set selectedItem(newItem) {
 		// log(`ProjectEditor SET selectedItem`, 'start');
 
-		if (this.nav.page === 'Glyph edit') {
+		if (this.nav.page === 'Characters') {
 			// log(`this.selectedGlyph: ${this.selectedGlyph}`);
 			// log(`ProjectEditor SET selectedItem`, 'end');
 			this.selectedGlyph = newItem;
@@ -356,7 +356,7 @@ export class ProjectEditor {
 	 */
 	set selectedItemID(newID) {
 		// should this detect ID format?
-		if (this.nav.page === 'Glyph edit') this.selectedGlyphID = newID;
+		if (this.nav.page === 'Characters') this.selectedGlyphID = newID;
 		else if (this.nav.page === 'Components') this.selectedComponentID = newID;
 		else if (this.nav.page === 'Ligatures') this.selectedLigatureID = newID;
 		else if (this.nav.page === 'Kerning') this.selectedKernID = newID;
@@ -494,7 +494,7 @@ export class ProjectEditor {
 		let id;
 		let historyTitle;
 
-		if (itemType === 'Glyph edit') {
+		if (itemType === 'Characters') {
 			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
 			historyTitle = `Deleted Glyph ${id} : ${this.selectedGlyph.name}`;
@@ -537,7 +537,7 @@ export class ProjectEditor {
 		// log(`ProjectEditor.selectFallbackItem`, 'start');
 		const itemType = page || this.nav.page;
 
-		if (itemType === 'Glyph edit') {
+		if (itemType === 'Characters') {
 			const selectedRange = this.selectedGlyphRange;
 			if (selectedRange) {
 				// log(`Selected Range detected as ${selectedRange.name}`);

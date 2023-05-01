@@ -193,7 +193,7 @@ function makeSettingsTabContentProject() {
 				<a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia's Unicode Block page</a>
 				is a good place to get familiar with all the different glyphs it's possible to have in a font.
 				<br><br>
-				The glyph ranges below will be visible on the Glyph Edit page, and they will be exported to fonts.
+				The glyph ranges below will be visible on the Characters page, and they will be exported to fonts.
 				<br><br>
 				Removing a glyph range <strong>will not</strong> delete individual glyphs from the project.
 			</p>
