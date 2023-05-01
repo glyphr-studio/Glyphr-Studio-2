@@ -366,7 +366,7 @@ nav .glyph-chooser__wrapper {
 .history-list {
 	width: 100%;
 	display: grid;
-	grid-template-columns: max-content 1fr;
+	grid-template-columns: 1fr max-content;
 	gap: 10px;
 	padding-right: 10px;
 }
