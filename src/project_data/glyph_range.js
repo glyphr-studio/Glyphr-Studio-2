@@ -1,7 +1,7 @@
 import { decToHex } from '../common/character_ids.js';
 import { isControlChar } from '../lib/unicode_blocks.js';
 
-export class GlyphRange {
+export class CharacterRange {
 	constructor({ begin = 0, end = 0, name = '', showNonCharPoints = false }) {
 		this.begin = begin;
 		this.end = end;

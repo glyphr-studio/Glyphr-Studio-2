@@ -28,7 +28,7 @@ export class GlyphTile extends HTMLElement {
 		const project = getCurrentProject();
 		const displayedItemID = this.getAttribute('displayed-item-id');
 		this.glyph = project.getItem(displayedItemID);
-		const chars = this.glyph?.chars || hexesToChars(remove(displayedItemID, 'glyph-'));
+		const chars = this.glyph?.chars || hexesToChars(remove(displayedItemID, 'char-'));
 
 		const name = this.glyph?.name || project.getItemName(displayedItemID, true);
 		this.view = {};
@@ -58,7 +58,7 @@ export class GlyphTile extends HTMLElement {
 			this.thumbnail = makeElement({
 				className: 'thumbnail',
 			});
-			if (isWhitespace(remove(displayedItemID, 'glyph-'))) {
+			if (isWhitespace(remove(displayedItemID, 'char-'))) {
 				this.thumbnail.innerHTML = `
 					<div class="whitespace-char-thumbnail">white space</div>
 				`;
@@ -69,7 +69,7 @@ export class GlyphTile extends HTMLElement {
 		}
 
 		this.name = makeElement({ className: 'name' });
-		if (chars) this.name.innerHTML = displayedItemID === 'glyph-0x20' ? 'Space' : chars;
+		if (chars) this.name.innerHTML = displayedItemID === 'char-0x20' ? 'Space' : chars;
 		else this.name.innerHTML = name.replaceAll('Component ', 'comp-');
 
 		// Put it all together

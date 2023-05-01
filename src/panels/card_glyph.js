@@ -13,14 +13,14 @@ import {
 } from './cards.js';
 
 // --------------------------------------------------------------
-// Glyph attributes
+// Character attributes
 // --------------------------------------------------------------
 
-export function makeCard_glyphAttributes(glyph) {
-	// log(`makeCard_glyphAttributes`, 'start');
+export function makeCard_characterAttributes(glyph) {
+	// log(`makeCard_characterAttributes`, 'start');
 	// log(`glyph.id: ${glyph.id}`);
 
-	let glyphCard = makeElement({
+	let charCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
 		innerHTML: `<h3>${glyph.displayType}</h3>`,
@@ -79,29 +79,29 @@ export function makeCard_glyphAttributes(glyph) {
 
 	// Put it all together
 	if (glyph.displayType !== 'Component') {
-		addAsChildren(glyphCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
+		addAsChildren(charCard, [advanceWidthLabel, halfSizeAdvanceWidthInput]);
 		if (glyph.shapes.length) {
-			addAsChildren(glyphCard, [bearingLabel, doubleBearingInput]);
-			addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+			addAsChildren(charCard, [bearingLabel, doubleBearingInput]);
+			addAsChildren(charCard, makeElement({ tag: 'div', className: 'rowPad' }));
 		}
 	} else {
-		addAsChildren(glyphCard, [
+		addAsChildren(charCard, [
 			makeSingleLabel('name'),
 			makeSingleInput(glyph, 'name', 'currentItem', 'input'),
 		]);
 	}
 	if (glyph.shapes.length) {
-		addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
-		addAsChildren(glyphCard, makeInputs_position(glyph));
-		addAsChildren(glyphCard, makeInputs_size(glyph));
-		addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+		addAsChildren(charCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
+		addAsChildren(charCard, makeInputs_position(glyph));
+		addAsChildren(charCard, makeInputs_size(glyph));
+		addAsChildren(charCard, makeElement({ tag: 'div', className: 'rowPad' }));
 	}
-	addAsChildren(glyphCard, makeActionsArea_Universal());
-	addAsChildren(glyphCard, makeActionsArea_Glyph());
+	addAsChildren(charCard, makeActionsArea_Universal());
+	addAsChildren(charCard, makeActionsArea_Glyph());
 	// log(`returning:`);
-	// log(glyphCard);
-	// log(`makeCard_glyphAttributes`, 'end');
-	return glyphCard;
+	// log(charCard);
+	// log(`makeCard_characterAttributes`, 'end');
+	return charCard;
 }
 
 export function makeCard_glyphLinks(item) {

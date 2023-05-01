@@ -295,7 +295,7 @@ So, this setting will combine all overlapping paths in each glyph as it&prime;s 
 <br>
 Selecting this option in Test Drive here will <i>preview</i> how your glyph shapes will be
 combined. This preview will not change your designs in Glyphr Studio. There is a
-Combine Shapes action in Glyph Edit if you wish to permanently combine shapes.
+Combine Shapes action if you wish to permanently combine shapes.
 <br>
 As a warning, this process is time intensive, so the first time you type a letter
 it may take a few seconds to render.
