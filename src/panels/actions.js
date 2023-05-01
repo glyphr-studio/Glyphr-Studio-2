@@ -76,10 +76,13 @@ export function getActionData(name) {
 	];
 
 	// TODO Components
-	if (editor.nav.page === 'components') {
+	if (editor.nav.page === 'Components') {
 		data.allActions.push({
 			iconName: 'linkToGlyph',
 			title: `Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance.`,
+			onClick: () => {
+				showDialogChooseOtherItem('linkAsComponent');
+			},
 		});
 	}
 
@@ -103,7 +106,7 @@ export function getActionData(name) {
 			iconOptions: true,
 			title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
 			onClick: () => {
-				showDialogChooseOtherItem('linkComponent');
+				showDialogChooseOtherItem('addAsComponentInstance');
 			},
 		},
 		{
@@ -827,8 +830,8 @@ export function makeActionButtonPasteTooltip(clipBoardPathCount) {
 }
 
 function showDialogChooseOtherItem(type) {
-	// log(`showDialogChooseOtherItem`, 'start');
-	// log(`type: ${type}`);
+	log(`showDialogChooseOtherItem`, 'start');
+	log(`type: ${type}`);
 
 	let content = makeElement({
 		innerHTML: '<h2>Choose another glyph</h2>',
@@ -844,20 +847,26 @@ function showDialogChooseOtherItem(type) {
 			const newShapes = copyShapesFromTo(otherItem, thisItem, false);
 			editor.multiSelect.shapes.clear();
 			newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+			editor.publish('currentItem', thisItem);
 			editor.history.addState(`Paths were copied from ${otherItem.name}.`);
 			closeEveryTypeOfDialog();
 			showToast(`${otherItem.shapes.length} paths copied from<br>${otherItem.name}`);
 		};
 	}
 
-	if (type === 'linkComponent') {
+	if (type === 'addAsComponentInstance') {
 		content.innerHTML += `The glyph you select will be treated as a root component, and added to this glyph as a component instance.<br><br>`;
 		onClick = (itemID) => {
 			const editor = getCurrentProjectEditor();
-			const otherItem = editor.project.getItem(itemID);
+			let otherItem = editor.project.getItem(itemID);
+			if (!otherItem) {
+				editor.project.addNewItem(new Glyph({}), 'Glyph', itemID);
+				otherItem = editor.project.getItem(itemID);
+			}
 			const thisItem = editor.selectedItem;
-			const newInstance = linkComponentFromTo(otherItem, thisItem, false);
+			const newInstance = linkComponentFromTo(otherItem, thisItem);
 			if (newInstance) {
+				editor.publish('currentItem', thisItem);
 				editor.multiSelect.shapes.add(newInstance);
 				editor.history.addState(`Component instance was linked from ${otherItem.name}.`);
 				closeEveryTypeOfDialog();
@@ -873,16 +882,43 @@ function showDialogChooseOtherItem(type) {
 		};
 	}
 
+	if (type === 'linkAsComponent') {
+		content.innerHTML += `This component will be linked to the glyph you select as a component instance.<br><br>`;
+		onClick = (itemID) => {
+			const editor = getCurrentProjectEditor();
+			let destinationItem = editor.project.getItem(itemID);
+			if (!destinationItem) {
+				editor.project.addNewItem(new Glyph({}), 'Glyph', itemID);
+				destinationItem = editor.project.getItem(itemID);
+			}
+			const thisItem = editor.selectedItem;
+			const newInstance = linkComponentFromTo(thisItem, destinationItem);
+			if (newInstance) {
+				editor.publish('currentItem', thisItem);
+				editor.history.addState(`Component was linked to ${destinationItem.name}.`);
+				closeEveryTypeOfDialog();
+				showToast(`Component was linked to<br>${destinationItem.name}`);
+			} else {
+				closeEveryTypeOfDialog();
+				showError(`
+				Cannot add ${thisItem.name} to ${destinationItem.name} as a component instance.
+					<br>
+					This is usually because adding the link would create a circular reference.
+					`);
+			}
+		};
+	}
+
 	const scrollArea = makeElement({
 		tag: 'div',
 		className: 'modal-dialog__glyph-chooser-scroll-area',
 	});
 
-	const chooserArea = makeAllItemTypeChooserContent(onClick);
+	const chooserArea = makeAllItemTypeChooserContent(onClick, 'Characters');
 	scrollArea.appendChild(chooserArea);
 	content.appendChild(scrollArea);
 	showModalDialog(content);
-	// log(`showDialogChooseOtherItem`, 'end');
+	log(`showDialogChooseOtherItem`, 'end');
 }
 
 /**

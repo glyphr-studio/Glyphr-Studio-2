@@ -20,21 +20,22 @@ import { showAddLigatureDialog } from '../pages/ligatures.js';
 let savedClickHandler;
 let savedRegisterSubscriptions;
 
-export function makeAllItemTypeChooserContent(clickHandler, registerSubscriptions = true) {
+export function makeAllItemTypeChooserContent(clickHandler, type = false) {
 	// log(`makeAllItemTypeChooserContent`, 'start');
 	const editor = getCurrentProjectEditor();
 	savedClickHandler = clickHandler;
-	savedRegisterSubscriptions = registerSubscriptions;
+	savedRegisterSubscriptions = true;
 
 	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
 	let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
 	header.appendChild(makeRangeAndItemTypeChooser());
 	wrapper.appendChild(header);
 
-	if (editor.nav.page === 'Ligatures') {
+	let show = type || editor.nav.page;
+	if (show === 'Ligatures') {
 		// Ligature Chooser
 		wrapper.appendChild(makeLigatureChooserTileGrid());
-	} else if (editor.nav.page === 'Components') {
+	} else if (show === 'Components') {
 		// Component Chooser
 		wrapper.appendChild(makeComponentChooserTileGrid());
 	} else {
