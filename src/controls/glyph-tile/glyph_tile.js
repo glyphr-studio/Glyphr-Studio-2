@@ -63,7 +63,13 @@ export class GlyphTile extends HTMLElement {
 					<div class="whitespace-char-thumbnail">white space</div>
 				`;
 			} else {
-				this.thumbnail.innerHTML = chars;
+				if (chars) {
+					this.thumbnail.innerHTML = chars;
+				} else {
+					this.thumbnail.innerHTML = `
+						<div class="whitespace-char-thumbnail">${displayedItemID}</div>
+					`;
+				}
 			}
 			// log(`no glyph`);
 		}
