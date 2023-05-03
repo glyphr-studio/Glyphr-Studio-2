@@ -1,4 +1,3 @@
-// import { log } from '../../app/main.js';
 import { makeElement } from '../../common/dom.js';
 import style from './option-toggle.css?inline';
 

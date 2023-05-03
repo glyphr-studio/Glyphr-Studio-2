@@ -2,7 +2,7 @@ import { GlyphElement } from './glyph_element.js';
 // import { getCurrentProject } from '../app/main.js';
 import { parseCharsInputAsHex } from '../common/character_ids.js';
 import { strSan, rad, deg, json } from '../common/functions.js';
-import { getCurrentProject, log } from '../app/main.js';
+import { getCurrentProject } from '../app/main.js';
 import { Glyph } from './glyph.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 

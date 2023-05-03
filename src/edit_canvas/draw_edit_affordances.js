@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeCrisp, round } from '../common/functions.js';
 import { drawShape } from '../display_canvas/draw_paths.js';

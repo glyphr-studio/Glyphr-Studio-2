@@ -2,7 +2,6 @@ import {
 	getCurrentProject,
 	getCurrentProjectEditor,
 	getGlyphrStudioApp,
-	log,
 } from '../app/main.js';
 import { generateNewID, round } from '../common/functions.js';
 import { hexesToChars, hexesToHexArray, parseCharsInputAsHex } from '../common/character_ids.js';

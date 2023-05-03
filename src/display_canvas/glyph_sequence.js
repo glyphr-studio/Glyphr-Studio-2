@@ -1,5 +1,10 @@
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
-import { charToHex, charsToHexArray, hexesToChars, parseCharsInputAsHex } from '../common/character_ids';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import {
+	charToHex,
+	charsToHexArray,
+	hexesToChars,
+	parseCharsInputAsHex,
+} from '../common/character_ids';
 import { Maxes } from '../project_data/maxes.js';
 
 /**

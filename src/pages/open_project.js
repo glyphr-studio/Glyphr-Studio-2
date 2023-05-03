@@ -3,7 +3,7 @@ import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { ioFont_importFont } from '../io/font_import.js';
 import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp, log } from '../app/main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import versionTwoTestProject from '../samples/versionTwoTestProject.json';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';

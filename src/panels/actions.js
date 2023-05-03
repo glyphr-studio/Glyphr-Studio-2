@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { makeActionButton } from './action_buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { saveFile } from '../project_editor/saving.js';

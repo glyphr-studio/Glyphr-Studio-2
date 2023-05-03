@@ -4,7 +4,6 @@ import { HKern } from '../project_data/h_kern.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
 import { CharacterRange } from './character_range.js';
-// import { log } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project

@@ -1,5 +1,5 @@
 import { makeElement } from '../common/dom.js';
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { makeAllItemTypeChooserContent } from '../panels/glyph_chooser.js';
 import { makeContributeContent, makePreReleaseNote } from './about.js';

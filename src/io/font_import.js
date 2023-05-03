@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { countItems, isVal, pause, round } from '../common/functions.js';
 import { decToHex } from '../common/character_ids.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';

@@ -13,7 +13,7 @@
         "no-unused-vars": "warn"
     },
     "globals": {
-        "log": "off"
+        "log": "readonly"
     },
     "ignorePatterns": [
         "*.test.js",

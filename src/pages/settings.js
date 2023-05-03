@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { json } from '../common/functions.js';
 import { decToHex, hexesToChars } from '../common/character_ids.js';

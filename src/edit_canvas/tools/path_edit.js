@@ -22,7 +22,7 @@ export class Tool_PathEdit {
 		// Mouse Down
 		// --------------------------------------------------------------
 		this.mousedown = function () {
-			// log('Tool_PathEdit.mousedown', 'start');
+			log('Tool_PathEdit.mousedown', 'start');
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			const msPoints = editor.multiSelect.points;
@@ -37,24 +37,24 @@ export class Tool_PathEdit {
 				cXsX(ehd.mousePosition.x, view),
 				cYsY(ehd.mousePosition.y, view)
 			);
-			// log(`isOverControlPoint:`);
-			// log(this.controlPoint);
+			log(`isOverControlPoint:`);
+			log(this.controlPoint);
 
 			const clickedPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
-			// log(`getShapeAtLocation:`);
-			// log(clickedPath);
+			log(`getShapeAtLocation:`);
+			log(clickedPath);
 
 			if (this.controlPoint) {
-				// log('detected CONTROL POINT');
+				log('detected CONTROL POINT');
 				this.dragging = true;
 				this.pathPoint = this.controlPoint.parent;
 				const isPathPointSelected = msPoints.isSelected(this.pathPoint);
 
 				if (this.controlPoint.type === 'p') {
-					// log('detected P');
+					log('detected P');
 
 					if (ehd.isCtrlDown) {
-						// log('Multi Select Mode');
+						log('Multi Select Mode');
 						if (isPathPointSelected) {
 							// If we don't drag the points, deselect on mouseup
 							this.monitorForDeselect = true;
@@ -64,7 +64,7 @@ export class Tool_PathEdit {
 							this.historyTitle = `Moved ${msPoints.length} path points`;
 						}
 					} else {
-						// log('Single Select Mode');
+						log('Single Select Mode');
 						if (isPathPointSelected) {
 							// If we don't drag the point, deselect on mouseup
 							this.monitorForDeselect = true;
@@ -75,26 +75,26 @@ export class Tool_PathEdit {
 						}
 					}
 				} else {
-					// log('detected HANDLE');
+					log('detected HANDLE');
 					msPoints.singleHandle = this.controlPoint.type;
 					this.historyTitle = `Moved path point: ${this.pathPoint.pointNumber} ${this.controlPoint.type}`;
-					// log(`set ms.singleHandle: ${msPoints.singleHandle}`);
+					log(`set ms.singleHandle: ${msPoints.singleHandle}`);
 					// setCursor('penCircle');
 				}
 
 				// selectPathsThatHaveSelectedPoints();
 			} else if (clickedPath) {
-				// log('detected PATH');
+				log('detected PATH');
 				clickEmptySpace();
 				msShapes.select(clickedPath);
 			} else {
-				// log('detected NOTHING');
+				log('detected NOTHING');
 				clickEmptySpace();
 				// findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			}
 
 			// if (msShapes.members.length) editor.nav.panel = 'Attributes';
-			// log('Tool_PathEdit.mousedown', 'end');
+			log('Tool_PathEdit.mousedown', 'end');
 		};
 
 		// --------------------------------------------------------------

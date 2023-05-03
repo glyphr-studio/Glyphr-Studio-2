@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeIcon } from '../common/graphics.js';
 import { makeActionsArea_Glyph, makeActionsArea_Universal } from './actions.js';

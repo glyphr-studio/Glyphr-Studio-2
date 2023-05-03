@@ -1,5 +1,5 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';

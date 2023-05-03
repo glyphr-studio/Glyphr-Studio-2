@@ -16,7 +16,6 @@ import {
 	strSan,
 	json,
 } from '../common/functions.js';
-// import { log } from '../app/main.js';
 
 /**
  * Glyph Element > Path

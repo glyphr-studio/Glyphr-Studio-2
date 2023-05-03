@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';

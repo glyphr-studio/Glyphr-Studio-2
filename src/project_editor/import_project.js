@@ -1,5 +1,5 @@
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
-import { getCurrentProject, getGlyphrStudioApp, log } from '../app/main.js';
+import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { tryToGetProjectVersion } from '../io/validate_file_input.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';

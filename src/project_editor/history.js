@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { clone } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { refreshPanel } from '../panels/panels.js';
