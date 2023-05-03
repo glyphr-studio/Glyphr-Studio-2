@@ -59,31 +59,13 @@ export class EditCanvas extends HTMLElement {
 		editor.editCanvas = this;
 
 		// Set up Subscriptions
-		let canvasSubscriptions = [
-			'view',
-			'whichToolIsSelected',
-			'whichGlyphIsSelected',
-			'whichPathIsSelected',
-			'whichPathPointIsSelected',
-			'currentItem',
-			'currentPath',
-			'currentComponentInstance',
-			'currentPathPoint',
-			'currentControlPoint',
-			'currentControlPoint.p',
-			'currentControlPoint.h1',
-			'currentControlPoint.h2',
-		];
-
-		canvasSubscriptions.forEach((topic) => {
-			editor.subscribe({
-				topic: topic,
-				subscriberID: `editCanvas-${topic}`,
-				callback: () => {
-					this.redraw({ calledBy: `editCanvas-${topic}` });
-					// updateCursor();
-				},
-			});
+		editor.subscribe({
+			topic: '*',
+			subscriberID: `editCanvas-all`,
+			callback: () => {
+				this.redraw({ calledBy: `editCanvas-all` });
+				// updateCursor();
+			},
 		});
 
 		// log(`EditCanvas.constructor`, 'end');
