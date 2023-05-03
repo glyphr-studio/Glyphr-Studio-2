@@ -28,29 +28,29 @@ export function makePanel_GlyphAttributes() {
 		// log(`pushing point card`);
 		content.push(makeCard_pathPointAttributes(selPoints.singleton));
 	} else if (selPoints.length > 1) {
-		let virtualPath = selPoints.virtualPath;
-		content.push(makeCard_multiSelectPathPointAttributes(virtualPath));
+		let virtualShape = selPoints.virtualShape;
+		content.push(makeCard_multiSelectPathPointAttributes(virtualShape));
 	}
 
 	// Shapes
-	let selPaths = editor.multiSelect.shapes;
-	if (selPaths.length === 1) {
+	let selShapes = editor.multiSelect.shapes;
+	if (selShapes.length === 1) {
 		// One shape selected
 		// log('One shape selected');
-		// log(selPaths.singleton);
-		if (selPaths.singleton.objType === 'ComponentInstance') {
+		// log(selShapes.singleton);
+		if (selShapes.singleton.objType === 'ComponentInstance') {
 			// component selected
 			// log("...Component selected");
-			content.push(makeCard_componentInstanceAttributes(selPaths.singleton));
+			content.push(makeCard_componentInstanceAttributes(selShapes.singleton));
 		} else {
 			// regular path selected
 			// log("...Regular path selected");
-			content.push(makeCard_pathAttributes(selPaths.singleton));
+			content.push(makeCard_pathAttributes(selShapes.singleton));
 		}
-	} else if (selPaths.length > 1) {
+	} else if (selShapes.length > 1 && selPoints.length === 0) {
 		// Many shapes selected
 		// log('More than one shape selected');
-		content.push(makeCard_multiSelectPathAttributes(selPaths.virtualGlyph));
+		content.push(makeCard_multiSelectPathAttributes(selShapes.virtualGlyph));
 	}
 
 	// Glyph

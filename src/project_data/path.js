@@ -33,6 +33,7 @@ export class Path extends GlyphElement {
 	 */
 	constructor({
 		name = 'Path',
+		objType = 'Path',
 		pathPoints = [],
 		winding,
 		xLock = false,
@@ -54,7 +55,7 @@ export class Path extends GlyphElement {
 		this.ratioLock = ratioLock;
 		this.parent = parent;
 
-		this.objType = 'Path';
+		this.objType = objType;
 
 		// log(`Path.constructor - End\n`);
 	}
