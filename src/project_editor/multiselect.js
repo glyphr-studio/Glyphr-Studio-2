@@ -146,14 +146,16 @@ class MultiSelect {
 export class MultiSelectPoints extends MultiSelect {
 	constructor() {
 		super();
-		this._virtualPath = new Path();
-		this._virtualPath.name = 'Multi-selected Points';
+		this._virtualShape = new Path({
+			name: 'Multi-selected Path Points',
+			objType: 'VirtualShape'
+		});
 	}
 
-	get virtualPath() {
-		this._virtualPath._pathPoints = this.members;
-		this._virtualPath.changed();
-		return this._virtualPath;
+	get virtualShape() {
+		this._virtualShape._pathPoints = this.members;
+		this._virtualShape.changed();
+		return this._virtualShape;
 	}
 
 	publishChanges(topic = 'whichPathPointIsSelected') {
@@ -171,7 +173,7 @@ export class MultiSelectPoints extends MultiSelect {
 	}
 
 	updateShapePosition(dx, dy) {
-		this.virtualPath.updateShapePosition(dx, dy);
+		this.virtualShape.updateShapePosition(dx, dy);
 		this.changed();
 	}
 
@@ -213,6 +215,14 @@ export class MultiSelectPoints extends MultiSelect {
 		for (let m = 0; m < this.members.length; m++) {
 			// log(this.members[m]);
 			this.members[m].resetHandles();
+		}
+		this.changed();
+	}
+
+	roundAll(precision = 9) {
+		for (let m = 0; m < this.members.length; m++) {
+			// log(this.members[m]);
+			this.members[m].roundAll(precision);
 		}
 		this.changed();
 	}

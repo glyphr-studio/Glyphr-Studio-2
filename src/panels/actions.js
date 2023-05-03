@@ -149,6 +149,7 @@ export function getActionData(name) {
 					`Rounded all the path point and handle position values in this glyph`
 				);
 				editor.publish('currentItem', editor.selectedItem);
+				showToast('Values were rounded for all path points in this glyph.');
 			},
 		},
 		{
@@ -264,6 +265,7 @@ export function getActionData(name) {
 					`Rounded all the path point and handle position values in this shape`
 				);
 				editor.publish('currentItem', editor.selectedItem);
+				showToast('Values were rounded for all the path points in the selected paths.');
 			},
 		},
 	];
@@ -446,26 +448,26 @@ export function getActionData(name) {
 		{
 			iconName: 'resetPathPoint',
 			title: `Reset Handles\nMoves the handles of the currently selected point or points to default locations.`,
-			disabled: selectedPoints.length !== 1,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				editor.multiSelect.points.resetHandles();
 				editor.history.addState(
-					`Reset the handles for ${editor.multiSelect.points.length} point(s)`
+					`Reset the handles for ${editor.multiSelect.points.length} path point(s)`
 				);
-				editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
+				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
 		{
 			iconName: 'round',
 			title: `Round path point and handle position values\nIf a x or y value for the point or a handle has decimals, it will be rounded to the nearest whole number.`,
-			disabled: selectedPoints.length !== 1,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
-				let point = editor.multiSelect.points.singleton;
-				point.roundAll(0);
-				editor.history.addState(`Rounded path point and handle position values in this path point`);
-				editor.publish('currentControlPoint.p', point.p);
+				editor.multiSelect.points.roundAll(0);
+				editor.history.addState(
+					`Rounded path point and handle position values for ${editor.multiSelect.points.length} path point(s)`
+				);
+				editor.publish('currentItem', editor.selectedItem);
+				showToast('Values were rounded for the selected path points.');
 			},
 		},
 		{
@@ -654,7 +656,7 @@ export function deleteSelectedPoints() {
 		historyTitle = `Deleted path point: ${msPoints.singleton.pointNumber}`;
 	}
 
-	let minDeletedPoint = msPoints.deletePathPoints();
+	let minDeletedPoint = msPoints.deleteShapesPoints();
 	editor.history.addState(historyTitle);
 	let pathSingleton = editor.multiSelect.shapes.singleton;
 	if (pathSingleton) {

@@ -142,6 +142,7 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 		}
 
 		if (workItem.objType === 'VirtualGlyph') editor.publish(thisTopic, editor.selectedItem);
+		else if (workItem.objType === 'VirtualShape') editor.publish(thisTopic, editor.selectedItem);
 		else editor.publish(thisTopic, workItem);
 		// log(`makeSingleInput CHANGE event`, 'end');
 	});

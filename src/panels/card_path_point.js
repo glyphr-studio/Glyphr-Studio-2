@@ -102,16 +102,21 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	return pathPointCard;
 }
 
-export function makeCard_multiSelectPathPointAttributes(path) {
+export function makeCard_multiSelectPathPointAttributes(virtualShape) {
+	// log(`makeCard_multiSelectPathPointAttributes`, 'start');
+	// log(virtualShape);
 	let multiPathPointCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>${path.pathPoints.length} selected path points</h3>`,
+		innerHTML: `<h3>${virtualShape.pathPoints.length} selected path points</h3>`,
 	});
-	addAsChildren(multiPathPointCard, makeInputs_position(path));
-	addAsChildren(multiPathPointCard, makeInputs_size(path));
+
+	// TODO Multi-Select Path Points size/position
+	// addAsChildren(multiPathPointCard, makeInputs_position(virtualShape));
+	// addAsChildren(multiPathPointCard, makeInputs_size(virtualShape));
 	addAsChildren(multiPathPointCard, makeActionsArea_PathPoint());
 
+	// log(`makeCard_multiSelectPathPointAttributes`, 'end');
 	return multiPathPointCard;
 }
 

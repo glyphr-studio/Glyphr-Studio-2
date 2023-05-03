@@ -18,6 +18,7 @@ import { glyphChanged } from './cross_item_actions.js';
 		* - 		'currentLigature' - edits to the current Ligature
 		* - 		'currentComponent' - edits to the current Component
 		* - 		'currentPath' - edits to the current path.
+		* - 		'currentVirtualShape' - edits to the current multi-selected path points.
 		* - 		'currentComponentInstance' - edits to the current instance
 		* - 		'currentPathPoint' - edits to the current point.
 		* - 		'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
@@ -36,6 +37,7 @@ const allTopics = [
 	'currentLigature',
 	'currentComponent',
 	'currentPath',
+	'currentVirtualShape',
 	'currentComponentInstance',
 	'currentPathPoint',
 	'currentControlPoint',
@@ -97,6 +99,7 @@ export function publish(topic, data) {
 			// If the multi-select virtual glyph changes, so must the Item
 			callCallbacksByTopic('currentItem', this.selectedItem);
 			callCallbacksByTopic(specificItem, this.selectedItem);
+			// callCallbacksByTopic('currentVirtualGlyph', this.multiSelect.shapes.virtualGlyph);
 		}
 
 		if (
