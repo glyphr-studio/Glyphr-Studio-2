@@ -1,4 +1,3 @@
-// import { log } from '../app/main.js';
 import { json, clone, makeRandomID } from '../common/functions.js';
 
 /**

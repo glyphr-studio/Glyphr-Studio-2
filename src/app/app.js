@@ -1,5 +1,5 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp, GSApp, log } from './main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { closeEveryTypeOfDialog, makeContextMenu } from '../controls/dialogs/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
@@ -60,7 +60,7 @@ export class GlyphrStudioApp {
 		if (dev.mode) {
 			if (dev.overwriteTitle) document.title = '⡄⡆⡇🄳🄴🅅 🄼🄾🄳🄴⡇⡆⡄';
 			window._DEV = _DEV;
-			
+
 			// Test Function
 			if (dev.testOnLoad) dev.testOnLoad();
 

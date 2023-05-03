@@ -4,7 +4,7 @@ import { makePage_Ligatures } from '../pages/ligatures.js';
 import { makePage_Overview } from '../pages/overview.js';
 import { makePage_About } from '../pages/about.js';
 import { makePage_Settings } from '../pages/settings.js';
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { makeSingleItemTypeChooserContent } from '../panels/glyph_chooser.js';
 import { makeAppTopBar, showAppErrorPage } from '../app/app.js';

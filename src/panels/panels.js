@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makePanel_GlyphAttributes } from './attributes_glyph_edit.js';
 import { makePanel_Layers } from './layers.js';

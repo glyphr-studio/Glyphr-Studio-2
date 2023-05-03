@@ -1,6 +1,6 @@
 import { makeElement } from '../../common/dom.js';
 import { hexesToChars } from '../../common/character_ids.js';
-import { getCurrentProject, log } from '../../app/main.js';
+import { getCurrentProject } from '../../app/main.js';
 import style from './glyph-tile.css?inline';
 import { remove } from '../../common/functions.js';
 import { isWhitespace } from '../../lib/unicode_names.js';

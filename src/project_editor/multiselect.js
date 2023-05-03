@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { Glyph } from '../project_data/glyph.js';
@@ -252,7 +252,7 @@ export class MultiSelectShapes extends MultiSelect {
 		this._virtualGlyph = new Glyph({
 			name: 'Multi-selected Shapes',
 			id: 'Multi-selected Shapes',
-			objType: 'VirtualGlyph'
+			objType: 'VirtualGlyph',
 		});
 	}
 

@@ -1,4 +1,3 @@
-import { log } from '../../app/main.js';
 import { makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { cancelDefaultEventActions } from '../../edit_canvas/events.js';

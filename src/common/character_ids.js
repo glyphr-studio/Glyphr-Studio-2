@@ -1,5 +1,3 @@
-// import { log } from '../app/main.js';
-import { log } from '../app/main.js';
 import { isInteger } from './functions.js';
 
 /**

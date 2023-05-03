@@ -1,4 +1,4 @@
-import { getCurrentProject, log } from '../app/main.js';
+import { getCurrentProject } from '../app/main.js';
 import { deleteSelectedPaths } from '../panels/actions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';

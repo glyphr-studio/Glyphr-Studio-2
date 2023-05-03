@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { makeCard_componentInstanceAttributes } from './card_component_instance.js';
 import { makeCard_glyphAttributes, makeCard_glyphLinks } from './card_glyph.js';
 import { makeCard_multiSelectPathAttributes, makeCard_pathAttributes } from './card_path.js';

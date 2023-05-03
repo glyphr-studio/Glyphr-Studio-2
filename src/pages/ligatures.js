@@ -1,12 +1,17 @@
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
 import { Glyph } from '../project_data/glyph.js';
-import { closeAllInfoBubbles, closeEveryTypeOfDialog, showError, showModalDialog } from '../controls/dialogs/dialogs.js';
+import {
+	closeAllInfoBubbles,
+	closeEveryTypeOfDialog,
+	showError,
+	showModalDialog,
+} from '../controls/dialogs/dialogs.js';
 import { charToHex } from '../common/character_ids.js';
 
 /**
@@ -249,12 +254,16 @@ function addLigature(sequence) {
 		return 'Ligature already exists';
 	}
 
-	project.addNewItem(new Glyph({
-		id: newID,
-		parent: project,
-		objType: 'Ligature',
-		gsub: sequence.split('').map((char) => char.codePointAt(0)),
-	}), 'Ligature', newID);
+	project.addNewItem(
+		new Glyph({
+			id: newID,
+			parent: project,
+			objType: 'Ligature',
+			gsub: sequence.split('').map((char) => char.codePointAt(0)),
+		}),
+		'Ligature',
+		newID
+	);
 
 	return project.ligatures[newID];
 }

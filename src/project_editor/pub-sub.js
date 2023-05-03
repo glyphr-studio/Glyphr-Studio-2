@@ -1,4 +1,3 @@
-import { log } from '../app/main.js';
 import { glyphChanged } from './cross_item_actions.js';
 
 // --------------------------------------------------------------
