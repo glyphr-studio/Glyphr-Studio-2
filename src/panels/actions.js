@@ -21,6 +21,7 @@ import {
 import { Glyph } from '../project_data/glyph.js';
 import { addComponent } from '../pages/components.js';
 import { countItems, trim } from '../common/functions.js';
+import { eventHandlerData } from '../edit_canvas/events.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -472,29 +473,41 @@ export function getActionData(name) {
 		},
 		{
 			iconName: 'selectNextPathPoint',
-			title: `Select next Path Point\nSelect the path point that comes after the currently selected path point.`,
-			disabled: selectedPoints.length !== 1,
+			disabled: editor.multiSelect.points.hasMultipleParents,
+			title: `Select next Path Point\nSelect the path point that comes after the currently selected path point.\nHold [Ctrl] to add the next path point to the selection.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				let msPoints = editor.multiSelect.points;
-				let path = msPoints.singleton.parent;
-				let thisIndex = msPoints.singleton.pointNumber;
+				let path = msPoints.members[0].parent;
+				let thisIndex = msPoints.highestSelectedPointNumber;
 				let nextIndex = path.getNextPointNum(thisIndex);
-				msPoints.select(path.pathPoints[nextIndex]);
+				log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
+
+				if (eventHandlerData.isCtrlDown) {
+					msPoints.add(path.pathPoints[nextIndex]);
+				} else {
+					msPoints.select(path.pathPoints[nextIndex]);
+				}
 				editor.publish('whichPathPointIsSelected', path.pathPoints[nextIndex]);
 			},
 		},
 		{
 			iconName: 'selectPreviousPathPoint',
-			title: `Select pervious Path Point\nSelect the path point that comes before the currently selected path point.`,
-			disabled: selectedPoints.length !== 1,
+			disabled: editor.multiSelect.points.hasMultipleParents,
+			title: `Select pervious Path Point\nSelect the path point that comes before the currently selected path point.\nHold [Ctrl] to add the previous path point to the selection.`,
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
 				let msPoints = editor.multiSelect.points;
-				let path = msPoints.singleton.parent;
-				let thisIndex = msPoints.singleton.pointNumber;
+				let path = msPoints.members[0].parent;
+				let thisIndex = msPoints.lowestSelectedPointNumber;
 				let previousIndex = path.getPreviousPointNum(thisIndex);
-				msPoints.select(path.pathPoints[previousIndex]);
+				log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
+
+				if (eventHandlerData.isCtrlDown) {
+					msPoints.add(path.pathPoints[previousIndex]);
+				} else {
+					msPoints.select(path.pathPoints[previousIndex]);
+				}
 				editor.publish('whichPathPointIsSelected', path.pathPoints[previousIndex]);
 			},
 		},

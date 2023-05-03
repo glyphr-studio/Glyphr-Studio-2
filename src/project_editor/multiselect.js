@@ -148,7 +148,7 @@ export class MultiSelectPoints extends MultiSelect {
 		super();
 		this._virtualShape = new Path({
 			name: 'Multi-selected Path Points',
-			objType: 'VirtualShape'
+			objType: 'VirtualShape',
 		});
 	}
 
@@ -156,6 +156,20 @@ export class MultiSelectPoints extends MultiSelect {
 		this._virtualShape._pathPoints = this.members;
 		this._virtualShape.changed();
 		return this._virtualShape;
+	}
+
+	get hasMultipleParents() {
+		for (let c = 0; c < this.members.length; c++) {
+			let checkParent = this.members[c].parent;
+			for (let a = 0; a < this.members.length; a++) {
+				if (c !== a) {
+					if (checkParent !== this.members[a].parent) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 
 	publishChanges(topic = 'whichPathPointIsSelected') {
@@ -199,9 +213,42 @@ export class MultiSelectPoints extends MultiSelect {
 		return minPointIndex;
 	}
 
-	getSingletonPointNumber() {
+	get highestSelectedPointNumber() {
 		if (!this.members[0]) return false;
-		else return this.members[0].pointNumber;
+		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
+		let highest = this.members.at(-1).pointNumber;
+		// log(`highest: ${highest}`);
+		let parentPath = this.members[0].parent;
+		if (highest === parentPath.pathPoints.length - 1) {
+			highest = 0;
+			while (this.isSelected(parentPath.pathPoints[highest])) {
+				// log(`adding one`);
+				highest++;
+				// log(`highest: ${highest}`);
+			}
+			highest -= 1;
+		}
+		// log(`highest selected point number: ${highest}`);
+		return highest;
+	}
+
+	get lowestSelectedPointNumber() {
+		if (!this.members[0]) return false;
+		this.members.sort((a, b) => a.pointNumber - b.pointNumber);
+		let lowest = this.members[0].pointNumber;
+		// log(`lowest: ${lowest}`);
+		let parentPath = this.members[0].parent;
+		if (lowest === 0) {
+			lowest = parentPath.pathPoints.length - 1;
+			while (this.isSelected(parentPath.pathPoints[lowest])) {
+				// log(`subtracting one`);
+				lowest--;
+				// log(`lowest: ${lowest}`);
+			}
+			lowest += 1;
+		}
+		// log(`lowest selected point number: ${lowest}`);
+		return lowest;
 	}
 
 	setPointType(t) {
