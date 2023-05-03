@@ -4,26 +4,48 @@ import { glyphChanged } from './cross_item_actions.js';
 // --------------------------------------------------------------
 // PubSub
 // --------------------------------------------------------------
+/*
+	TOPICS
+		* - 'view' - change to the edit canvas view.
+		* - 'whichToolIsSelected' - change to which edit tool is selected.
+		* - 'whichGlyphIsSelected' - change to which glyph is being edited.
+		* - 'whichLigatureIsSelected' - change to which Ligature is being edited.
+		* - 'whichComponentIsSelected' - change to which Component is being edited.
+		* - 'whichPathIsSelected' - change to which path is being edited.
+		* - 'whichPathPointIsSelected' - change to which point is being edited.
+		* - 'currentItem' - edits to the current glyph, ligature, or component.
+		* - 		'currentGlyph' - edits to the current Glyph
+		* - 		'currentVirtualGlyph' - edits to the current multi-selected shapes
+		* - 		'currentLigature' - edits to the current Ligature
+		* - 		'currentComponent' - edits to the current Component
+		* - 		'currentPath' - edits to the current path.
+		* - 		'currentComponentInstance' - edits to the current instance
+		* - 		'currentPathPoint' - edits to the current point.
+		* - 		'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
+*/
+const allTopics = [
+	'view',
+	'whichToolIsSelected',
+	'whichGlyphIsSelected',
+	'whichLigatureIsSelected',
+	'whichComponentIsSelected',
+	'whichPathIsSelected',
+	'whichPathPointIsSelected',
+	'currentItem',
+	'currentGlyph',
+	'currentVirtualGlyph',
+	'currentLigature',
+	'currentComponent',
+	'currentPath',
+	'currentComponentInstance',
+	'currentPathPoint',
+	'currentControlPoint',
+];
 
 /**
  * Sends a new piece of data concerning a topic area that
  * triggers changes for subscribers
  * @param {string} topic keyword to trigger changes
- * - 'view' - change to the edit canvas view.
- * - 'whichToolIsSelected' - change to which edit tool is selected.
- * - 'whichGlyphIsSelected' - change to which glyph is being edited.
- * - 'whichLigatureIsSelected' - change to which Ligature is being edited.
- * - 'whichComponentIsSelected' - change to which Component is being edited.
- * - 'whichPathIsSelected' - change to which path is being edited.
- * - 'whichPathPointIsSelected' - change to which point is being edited.
- * - 'currentItem' - edits to the current glyph, ligature, or component.
- * - 		'currentGlyph' - edits to the current Glyph
- * - 		'currentLigature' - edits to the current Ligature
- * - 		'currentComponent' - edits to the current Component
- * - 		'currentPath' - edits to the current path.
- * - 		'currentComponentInstance' - edits to the current instance
- * - 		'currentPathPoint' - edits to the current point.
- * - 		'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
  * @param {object} data - whatever the new state is
  */
 export function publish(topic, data) {
@@ -64,19 +86,26 @@ export function publish(topic, data) {
 		}
 
 		/*
-			PubSub allows for topics to be either a generic 'selectedItem'
-			topic, or a specific 'selectedGlyph' / 'selectedComponent' / 'selectedLigature'
-			topic. In both cases, when the specific case is called, so must the
-			generic case - and vise versa.
+		PubSub allows for topics to be either a generic 'selectedItem'
+		topic, or a specific 'selectedGlyph' / 'selectedComponent' / 'selectedLigature'
+		topic. In both cases, when the specific case is called, so must the
+		generic case - and vise versa.
 		*/
-		let specificItem = false;
+
+		let specificItem = `current${this.selectedItem.objType}`;
+
+		if (topic === 'currentVirtualGlyph') {
+			// If the multi-select virtual glyph changes, so must the Item
+			callCallbacksByTopic('currentItem', this.selectedItem);
+			callCallbacksByTopic(specificItem, this.selectedItem);
+		}
+
 		if (
 			topic === 'currentItem' ||
 			topic === 'currentGlyph' ||
 			topic === 'currentLigature' ||
 			topic === 'currentComponent'
 		) {
-			specificItem = `current${this.selectedItem.objType}`;
 			callCallbacksByTopic('currentItem', data);
 			callCallbacksByTopic(specificItem, data);
 			let singlePath = this.multiSelect.shapes.singleton;
@@ -96,20 +125,20 @@ export function publish(topic, data) {
 		if (topic === 'currentPath') {
 			// if a path changes, then so must the Item also
 			callCallbacksByTopic('currentItem', data.parent);
-			if (specificItem) callCallbacksByTopic(specificItem, data.parent);
+			callCallbacksByTopic(specificItem, data.parent);
 		}
 
 		if (topic === 'currentComponentInstance') {
 			// if a path changes, then so must the Item also
 			callCallbacksByTopic('currentItem', data.parent);
-			if (specificItem) callCallbacksByTopic(specificItem, data.parent);
+			callCallbacksByTopic(specificItem, data.parent);
 		}
 
 		if (topic === 'currentPathPoint') {
 			// if a PathPoint changes, then so must the Path and Item also
 			callCallbacksByTopic('currentPath', data.parent);
 			callCallbacksByTopic('currentItem', data.parent.parent);
-			if (specificItem) callCallbacksByTopic(specificItem, data.parent.parent);
+			callCallbacksByTopic(specificItem, data.parent.parent);
 		}
 
 		if (topic.includes('currentControlPoint')) {
@@ -117,7 +146,7 @@ export function publish(topic, data) {
 			callCallbacksByTopic('currentPathPoint', data.parent);
 			callCallbacksByTopic('currentPath', data.parent.parent);
 			callCallbacksByTopic('currentItem', data.parent.parent.parent);
-			if (specificItem) callCallbacksByTopic(specificItem, data.parent.parent.parent);
+			callCallbacksByTopic(specificItem, data.parent.parent.parent);
 
 			if (topic === 'currentControlPoint.p') {
 				callCallbacksByTopic('currentControlPoint.p', data.parent.p);
@@ -149,21 +178,6 @@ export function publish(topic, data) {
  * Sets up an intent to listen for changes based on a keyword, and
  * provides a callback function in case a change is published
  * @param {string or array} topic what keyword to listen for
- * - 'view' - change to the edit canvas view.
- * - 'whichToolIsSelected' - change to which edit tool is selected.
- * - 'whichGlyphIsSelected' - change to which glyph is being edited.
- * - 'whichLigatureIsSelected' - change to which Ligature is being edited.
- * - 'whichComponentIsSelected' - change to which Component is being edited.
- * - 'whichPathIsSelected' - change to which path is being edited.
- * - 'whichPathPointIsSelected' - change to which point is being edited.
- * - 'currentItem' - edits to the current glyph, ligature, or component.
- * - 		'currentGlyph' - edits to the current Glyph
- * - 		'currentLigature' - edits to the current Ligature
- * - 		'currentComponent' - edits to the current Component
- * - 		'currentPath' - edits to the current path.
- * - 		'currentComponentInstance' - edits to the current instance
- * - 		'currentPathPoint' - edits to the current point.
- * - 		'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
  * @param {string} subscriberID - the name of the thing listening
  * @param {function} callback - what to do when a change is triggered
  * @returns nothing
@@ -190,6 +204,9 @@ export function subscribe({ topic = false, subscriberID = '', callback = false }
 
 	// Support string for single topic, array for multi topic
 	let topicList = typeof topic === 'string' ? [topic] : topic;
+
+	// Support * string for all topics
+	if (topicList[0] === '*') topicList = allTopics;
 
 	topicList.forEach((thisTopic) => {
 		if (!this.subscribers[thisTopic]) this.subscribers[thisTopic] = {};

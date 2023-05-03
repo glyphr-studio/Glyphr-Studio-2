@@ -101,14 +101,15 @@ function makeWindingButtonText(winding) {
 	return buttonText;
 }
 
-export function makeCard_multiSelectPathAttributes(glyph) {
+export function makeCard_multiSelectPathAttributes(virtualGlyph) {
 	let multiPathCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>${glyph.shapes.length} selected paths</h3>`,
+		innerHTML: `<h3>${virtualGlyph.shapes.length} selected paths</h3>`,
 	});
-	addAsChildren(multiPathCard, makeInputs_position(glyph));
-	addAsChildren(multiPathCard, makeInputs_size(glyph));
+
+	addAsChildren(multiPathCard, makeInputs_position(virtualGlyph));
+	addAsChildren(multiPathCard, makeInputs_size(virtualGlyph));
 	addAsChildren(multiPathCard, makeActionsArea_Path());
 
 	return multiPathCard;

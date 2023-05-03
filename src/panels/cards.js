@@ -75,7 +75,12 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 	// log(`thisTopic: ${thisTopic}`);
 	// log(`tagName: ${tagName}`);
 
-	let newInput = makeElement({ tag: tagName, className: `singleInput-${property}` });
+	let newInput = makeElement({
+		tag: tagName,
+		className: `singleInput-${property}`,
+		attributes: { 'pubsub-topic': thisTopic },
+	});
+
 	let value = tagName === 'input' ? workItem[property] : round(workItem[property], 3);
 	newInput.setAttribute('value', value);
 
@@ -136,7 +141,8 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 			// log(`workItem[property]: ${workItem[property]}`);
 		}
 
-		editor.publish(thisTopic, workItem);
+		if (workItem.objType === 'VirtualGlyph') editor.publish(thisTopic, editor.selectedItem);
+		else editor.publish(thisTopic, workItem);
 		// log(`makeSingleInput CHANGE event`, 'end');
 	});
 
@@ -205,7 +211,7 @@ export function makeSingleCheckbox(workItem, property, thisTopic) {
 			topic: thisTopic,
 			subscriberID: `attributesPanel.${thisTopic}.${property}`,
 			callback: (changedItem) => {
-				if (!!changedItem[property]) {
+				if (changedItem[property]) {
 					newCheckbox.setAttribute('checked', '');
 					if (property === 'use') toggleHandleInputs(workItem.type, true);
 				} else {

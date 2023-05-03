@@ -249,9 +249,11 @@ export class MultiSelectPoints extends MultiSelect {
 export class MultiSelectShapes extends MultiSelect {
 	constructor() {
 		super();
-		this._virtualGlyph = new Glyph();
-		this._virtualGlyph.name = 'Multi-Selected Shapes';
-		this._virtualGlyph.id = 'Multi-Selected Shapes';
+		this._virtualGlyph = new Glyph({
+			name: 'Multi-selected Shapes',
+			id: 'Multi-selected Shapes',
+			objType: 'VirtualGlyph'
+		});
 	}
 
 	get virtualGlyph() {
@@ -285,7 +287,7 @@ export class MultiSelectShapes extends MultiSelect {
 
 	get ratioLock() {
 		if (this.members.length === 1) return this.members[0].ratioLock;
-		else return false;
+		else return this.virtualGlyph.ratioLock;
 	}
 
 	selectAll() {
