@@ -10,10 +10,16 @@ import { canvasUIPointSize } from './draw_edit_affordances';
  * @returns {boolean}
  */
 export function isOverControlPoint(item, x, y, noHandles) {
-	if (item.objType === 'Glyph') return isOverGlyphControlPoint(item, x, y, noHandles);
-	if (item.objType === 'Path') return isOverPathControlPoint(item, x, y, noHandles);
-	if (item.objType === 'PathPoint') return isOverPathPointControlPoint(item, x, y, noHandles);
-	return false;
+	// log(`isOverControlPoint`, 'start');
+	// log(item);
+	let result = false;
+	if (item.objType==='Glyph') result = isOverGlyphControlPoint(item, x, y, noHandles);
+	if (item.objType==='VirtualGlyph') result = isOverGlyphControlPoint(item, x, y, noHandles);
+	if (item.objType === 'Path') result = isOverPathControlPoint(item, x, y, noHandles);
+	if (item.objType === 'PathPoint') result = isOverPathPointControlPoint(item, x, y, noHandles);
+	// log(`result: ${result}`);
+	// log(`isOverControlPoint`, 'end');
+	return result;
 }
 
 /**
@@ -25,16 +31,21 @@ export function isOverControlPoint(item, x, y, noHandles) {
  * @returns {boolean}
  */
 function isOverGlyphControlPoint(glyph, x, y, noHandles) {
+	// log(`isOverGlyphControlPoint`, 'start');
+
 	let re = false;
 	for (let s = 0; s < glyph.shapes.length; s++) {
 		if (glyph.shapes[s].objType !== 'ComponentInstance') {
 			re = isOverPathControlPoint(glyph.shapes[s], x, y, noHandles);
 			if (re) {
 				// log(`isOverGlyphControlPoint - returning path#${s}`);
+				// log(`isOverGlyphControlPoint`, 'end');
 				return re;
 			}
 		}
 	}
+	// log(`returning false`);
+	// log(`isOverGlyphControlPoint`, 'end');
 	return false;
 }
 
