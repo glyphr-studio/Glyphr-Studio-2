@@ -20,7 +20,6 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "happy-dom": "^9.9.2",
-    "jshint": "^2.13.5",
     "prettier": "^2.7.1",
     "vite": "^4.0.4",
     "vitest": "^0.29.2"
@@ -38,9 +37,6 @@
     "singleQuote": true,
     "useTabs": true,
     "arrowParens": "always"
-  },
-  "jshintConfig": {
-    "esversion": 11
   },
   "dependencies": {
     "eslint": "^8.33.0"
