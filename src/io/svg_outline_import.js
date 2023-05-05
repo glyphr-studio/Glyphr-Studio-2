@@ -5,7 +5,7 @@ import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { Coord } from '../project_data/coord.js';
-import { json } from '../common/functions.js';
+import { json, pointsAreEqual } from '../common/functions.js';
 import { ControlPoint } from '../project_data/control_point.js';
 /**
 	IO > Import > SVG Outlines
@@ -78,7 +78,7 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 
 			for (let d = 0; d < data.length; d++) {
 				if (data[d].length) {
-					tag = ioSVG_convertSVGTagToPath(data[d]);
+					tag = ioSVG_convertSVGTagToPath(data[d], newPaths);
 					if (tag.pathPoints.length) {
 						// tag.name = 'Path';
 						pushPath(tag, 'Path');
@@ -237,8 +237,9 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 export function ioSVG_cleanAndFormatPathDefinition(data) {
 	let returnData = [];
 
-	// log('ioSVG_cleanAndFormatPathDefinition', 'start');
-	// log('dirty data\n\t ' + data);
+	log('ioSVG_cleanAndFormatPathDefinition', 'start');
+	log('dirty data:');
+	log(data);
 
 	// Move commands for a path are treated as different Glyphr Paths
 	data = data.replace(/M/g, ',z,M');
@@ -279,11 +280,11 @@ export function ioSVG_cleanAndFormatPathDefinition(data) {
 	if (data.charAt(0) === ',') data = data.slice(1);
 
 	// Remove extra Z commands
-	// log('2nd to last char ' + data.charAt(data.length - 2));
+	log('2nd to last char ' + data.charAt(data.length - 2));
 	if (data.charAt(data.length - 2) === 'z') data = data.slice(0, -2);
-	// if(data.substr(-2) === ',z') data = data.slice(0, -2);
-	// if(data.substr(0, 3) === ',z,') data = data.slice(3);
-	// log('first two chars are |' + data.substr(0, 2) + '|');
+	// if(data.slice(-2) === ',z') data = data.slice(0, -2);
+	// if(data.slice(3) === ',z,') data = data.slice(3);
+	log('first two chars are |' + data.substring(0, 2) + '|');
 	if (data.substring(0, 2) === 'z,') data = data.slice(2);
 
 	// Clean up commas again
@@ -297,8 +298,8 @@ export function ioSVG_cleanAndFormatPathDefinition(data) {
 	let second = -1;
 	let subsequence = '';
 
-	data.forEach(function (v, i, a) {
-		// Search for two instances of '.'
+	// Search for two instances of '.'
+	data.forEach((v) => {
 		// log('v: ' + v);
 		first = v.indexOf('.');
 		// log('first: ' + first);
@@ -334,8 +335,9 @@ export function ioSVG_cleanAndFormatPathDefinition(data) {
 	returnData = returnData.join(',');
 	returnData = returnData.split(',z');
 
-	// log('clean data\n\t ' + returnData);
-	// log('ioSVG_cleanAndFormatPathDefinition', 'end');
+	log('clean data');
+	log(returnData);
+	log('ioSVG_cleanAndFormatPathDefinition', 'end');
 
 	return returnData;
 }
@@ -375,9 +377,9 @@ export function ioSVG_getTags(obj, grabTags) {
  * @param {Object} data - input data from SVG
  * @returns {Path} - Glyphr Studio Path object
  */
-export function ioSVG_convertSVGTagToPath(data) {
-	// log('ioSVG_convertSVGTagToPath', 'start');
-	// log('passed data ' + data);
+export function ioSVG_convertSVGTagToPath(data, newPaths = []) {
+	log('ioSVG_convertSVGTagToPath', 'start');
+	log('passed data ' + data);
 
 	// Parse comma separated data into commands / data chunks
 	data = data.split(',');
@@ -392,7 +394,7 @@ export function ioSVG_convertSVGTagToPath(data) {
 			dataChunk = data.slice(commandPosition + 1, curr);
 			command = data[commandPosition];
 			dataChunk = dataChunk.map((value) => Number(value));
-			// log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
+			log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
 			chunks.push({ command: command, data: dataChunk });
 			commandPosition = curr;
 		}
@@ -403,39 +405,40 @@ export function ioSVG_convertSVGTagToPath(data) {
 	dataChunk = data.slice(commandPosition + 1, curr);
 	command = data[commandPosition];
 	dataChunk = dataChunk.map((value) => Number(value));
-	// log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
+	log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
 	chunks.push({ command: command, data: dataChunk });
 
-	// log('chunks data is \n' + json(chunks, true));
+	log('chunks data is \n' + json(chunks, true));
 
 	// Turn the commands and data into Glyphr objects
 	let newPathPoints = [];
 	for (let c = 0; c < chunks.length; c++) {
-		// log('' + chunks[c].command + ' : ' + chunks[c].data);
+		log('' + chunks[c].command + ' : ' + chunks[c].data);
 		if (chunks[c].command) {
-			newPathPoints = handlePathChunk(chunks[c], newPathPoints, c === chunks.length - 1);
+			newPathPoints = handlePathChunk(chunks[c], newPathPoints, c === chunks.length - 1, newPaths);
 		}
 	}
 
 	// Combine 1st and last point
 	const fp = newPathPoints[0];
 	const lp = newPathPoints[newPathPoints.length - 1];
-	if (fp.p.x === lp.p.x && fp.p.y === lp.p.y) {
-		// log('fp/lp same:\nFirst Point: ' + fp.print() + '\nLast Point:  ' + lp.print());
+	const threshold = 0.001;
+	if (pointsAreEqual(fp.p.x, lp.p.x, threshold) && pointsAreEqual(fp.p.y, lp.p.y, threshold)) {
+		log('fp/lp same:\nFirst Point: ' + fp.print() + '\nLast Point:  ' + lp.print());
 		fp.h1.x = lp.h1.x;
 		fp.h1.y = lp.h1.y;
 		fp.h1.use = lp.h1.use;
 		newPathPoints.pop();
 		fp.resolvePointType();
-		// log('AFTER:\nFirst Point: ' + fp.print());
+		log('AFTER:\nFirst Point: ' + fp.print());
 	}
 
 	const newPath = new Path({ pathPoints: newPathPoints });
 	newPath.validate('Import SVG');
 
-	// log('unscaled path:');
-	// log(newPath);
-	// log('ioSVG_convertSVGTagToPath', 'end');
+	log('unscaled path:');
+	log(newPath);
+	log('ioSVG_convertSVGTagToPath', 'end');
 	return newPath;
 }
 
@@ -472,7 +475,7 @@ function isPathCommand(c) {
  * @param {Boolean} isLastPoint - if it's the last point
  * @returns {Array} - of PathPoints
  */
-function handlePathChunk(chunk, pathPoints = [], isLastPoint = false) {
+function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths = []) {
 	// log('handlePathChunk', 'start');
 	// log('chunk: ' + json(chunk, true));
 
@@ -486,10 +489,39 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false) {
 	let qCoord;
 	let nx;
 	let ny;
-	let lastPoint = pathPoints[pathPoints.length - 1] || new PathPoint();
+	let lastPoint;
 	let newPoint;
 	let previousX;
 	let previousY;
+
+	// There may be a bunch of unaddressed edge cases here - path commands
+	// assume last command position is known, even across compound shapes
+	// and Zz commands.  Edge cases are potentially when import assumes
+	// the last point makes sense in a series of commands, but actually
+	// the last point is across a compound shape, and is valid SVG but not
+	// necessarily logical.
+	let lastPointIsFromAnotherShape = false;
+
+	if (pathPoints.length) {
+		// Middle of current path, use the previous point
+		lastPoint = pathPoints[pathPoints.length - 1];
+		// log(`last point from current path`);
+	} else if (newPaths?.length) {
+		// First point in this compound path, look to the last point in the previous path
+		let lastPath = newPaths[newPaths.length - 1];
+		if (lastPath?.pathPoints?.length) {
+			// lastPoint = lastPath.pathPoints[lastPath.pathPoints.length-1];
+			lastPoint = lastPath.pathPoints[0];
+			lastPointIsFromAnotherShape = true;
+			// log(`last point from PREVIOUS path`);
+		}
+	}
+
+	if (!lastPoint) {
+		// Default to a new 0,0 point
+		lastPoint = new PathPoint();
+		// log(`Default last point`);
+	}
 
 	// log(`previous point: ${lastPoint.p.x} ${lastPoint.p.y}`);
 
@@ -558,12 +590,12 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false) {
 
 			// log(`linear end nx ny: ${nx} ${ny}`);
 
-			lastPoint.h2.use = false;
+			// lastPoint.h2.use = false;
+			if (!lastPointIsFromAnotherShape) lastPoint.h2.use = false; // Compound Path Circle bug
 			newPoint = new PathPoint({
 				p: { coord: { x: nx, y: ny } },
 			});
 			pathPoints.push(newPoint);
-
 			lastPoint = pathPoints[pathPoints.length - 1];
 		}
 

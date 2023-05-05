@@ -481,7 +481,7 @@ export function getActionData(name) {
 				let path = msPoints.members[0].parent;
 				let thisIndex = msPoints.highestSelectedPointNumber;
 				let nextIndex = path.getNextPointNum(thisIndex);
-				log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
+				// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
 
 				if (eventHandlerData.isCtrlDown) {
 					msPoints.add(path.pathPoints[nextIndex]);
@@ -501,7 +501,7 @@ export function getActionData(name) {
 				let path = msPoints.members[0].parent;
 				let thisIndex = msPoints.lowestSelectedPointNumber;
 				let previousIndex = path.getPreviousPointNum(thisIndex);
-				log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
+				// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
 
 				if (eventHandlerData.isCtrlDown) {
 					msPoints.add(path.pathPoints[previousIndex]);
@@ -844,8 +844,8 @@ export function makeActionButtonPasteTooltip(clipBoardPathCount) {
 }
 
 function showDialogChooseOtherItem(type) {
-	log(`showDialogChooseOtherItem`, 'start');
-	log(`type: ${type}`);
+	// log(`showDialogChooseOtherItem`, 'start');
+	// log(`type: ${type}`);
 
 	let content = makeElement({
 		innerHTML: '<h2>Choose another glyph</h2>',
@@ -932,7 +932,7 @@ function showDialogChooseOtherItem(type) {
 	scrollArea.appendChild(chooserArea);
 	content.appendChild(scrollArea);
 	showModalDialog(content);
-	log(`showDialogChooseOtherItem`, 'end');
+	// log(`showDialogChooseOtherItem`, 'end');
 }
 
 /**

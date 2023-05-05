@@ -262,7 +262,7 @@ function importFontMetadata(font, project) {
 	fontSettings.xHeight = 1 * getTableValue(font.tables.os2.sxHeight) || 400;
 	fontSettings.overshoot = round(fontSettings.upm / 100);
 
-	fontSettings.family = fname.substr(0, 31);
+	fontSettings.family = fname.substring(0, 31);
 	fontSettings.panose = getTableValue(font.tables.os2.panose) || '0 0 0 0 0 0 0 0 0 0';
 	fontSettings.version =
 		getTableValue(font.tables.head.fontRevision) ||
