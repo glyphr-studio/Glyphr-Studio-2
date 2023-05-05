@@ -73,20 +73,20 @@ function drawContextGlyphs() {
 	// log('drawContextGlyphs', 'end');
 }
 
-function splitContextGlyphString(splitchar) {
-	const ctxgs = getContextGlyphString();
+function splitContextGlyphString(splitChar) {
+	const chars = getContextGlyphString();
 
 	let l = '';
 	let r = '';
 
-	const pos = ctxgs.indexOf(splitchar);
+	const pos = chars.indexOf(splitChar);
 
 	if (pos === -1) {
-		l = ctxgs;
+		l = chars;
 		r = '';
 	} else {
-		l = ctxgs.substr(0, pos);
-		r = ctxgs.substr(pos + splitchar.length);
+		l = chars.substring(0, pos);
+		r = chars.substring(pos + splitChar.length);
 	}
 
 	return { left: l, right: r };

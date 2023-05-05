@@ -204,7 +204,10 @@ export class ProjectEditor {
 		// log('ProjectEditor GET selectedGlyph', 'start');
 		const selectedID = this.selectedGlyphID;
 		// log(`selectedGlyphID ${selectedID}`);
-		const re = this.project.glyphs[selectedID];
+		if (!this.project.glyphs[selectedID]) {
+			this.project.addNewItem(new Glyph(), 'Glyph', selectedID);
+		}
+		let re = this.project.glyphs[selectedID];
 		// log(re);
 		// log('ProjectEditor GET selectedGlyph', 'end');
 		return re;
@@ -218,7 +221,7 @@ export class ProjectEditor {
 		// log('ProjectEditor GET selectedGlyphID', 'start');
 
 		if (!this._selectedGlyphID) {
-			this._selectedGlyphID = getFirstID(this.project.glyphs);
+			this._selectedGlyphID = getFirstID(this.project.glyphs) || 'glyph-0x41';
 		}
 		// log(`RETURNING this._selectedGlyphID: ${this._selectedGlyphID}`);
 		// log('ProjectEditor GET selectedGlyphID', 'end');
