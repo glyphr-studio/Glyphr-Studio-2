@@ -237,9 +237,9 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 export function ioSVG_cleanAndFormatPathDefinition(data) {
 	let returnData = [];
 
-	log('ioSVG_cleanAndFormatPathDefinition', 'start');
-	log('dirty data:');
-	log(data);
+	// log('ioSVG_cleanAndFormatPathDefinition', 'start');
+	// log('dirty data:');
+	// log(data);
 
 	// Move commands for a path are treated as different Glyphr Paths
 	data = data.replace(/M/g, ',z,M');
@@ -280,11 +280,11 @@ export function ioSVG_cleanAndFormatPathDefinition(data) {
 	if (data.charAt(0) === ',') data = data.slice(1);
 
 	// Remove extra Z commands
-	log('2nd to last char ' + data.charAt(data.length - 2));
+	// log('2nd to last char ' + data.charAt(data.length - 2));
 	if (data.charAt(data.length - 2) === 'z') data = data.slice(0, -2);
 	// if(data.slice(-2) === ',z') data = data.slice(0, -2);
 	// if(data.slice(3) === ',z,') data = data.slice(3);
-	log('first two chars are |' + data.substring(0, 2) + '|');
+	// log('first two chars are |' + data.substring(0, 2) + '|');
 	if (data.substring(0, 2) === 'z,') data = data.slice(2);
 
 	// Clean up commas again
@@ -335,9 +335,9 @@ export function ioSVG_cleanAndFormatPathDefinition(data) {
 	returnData = returnData.join(',');
 	returnData = returnData.split(',z');
 
-	log('clean data');
-	log(returnData);
-	log('ioSVG_cleanAndFormatPathDefinition', 'end');
+	// log('clean data');
+	// log(returnData);
+	// log('ioSVG_cleanAndFormatPathDefinition', 'end');
 
 	return returnData;
 }
@@ -378,8 +378,8 @@ export function ioSVG_getTags(obj, grabTags) {
  * @returns {Path} - Glyphr Studio Path object
  */
 export function ioSVG_convertSVGTagToPath(data, newPaths = []) {
-	log('ioSVG_convertSVGTagToPath', 'start');
-	log('passed data ' + data);
+	// log('ioSVG_convertSVGTagToPath', 'start');
+	// log('passed data ' + data);
 
 	// Parse comma separated data into commands / data chunks
 	data = data.split(',');
@@ -394,7 +394,7 @@ export function ioSVG_convertSVGTagToPath(data, newPaths = []) {
 			dataChunk = data.slice(commandPosition + 1, curr);
 			command = data[commandPosition];
 			dataChunk = dataChunk.map((value) => Number(value));
-			log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
+			// log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
 			chunks.push({ command: command, data: dataChunk });
 			commandPosition = curr;
 		}
@@ -405,40 +405,43 @@ export function ioSVG_convertSVGTagToPath(data, newPaths = []) {
 	dataChunk = data.slice(commandPosition + 1, curr);
 	command = data[commandPosition];
 	dataChunk = dataChunk.map((value) => Number(value));
-	log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
+	// log(`Parsed command ${command} data: ${json(dataChunk, true)}`);
 	chunks.push({ command: command, data: dataChunk });
 
-	log('chunks data is \n' + json(chunks, true));
+	// log('chunks data is \n' + json(chunks, true));
 
 	// Turn the commands and data into Glyphr objects
 	let newPathPoints = [];
 	for (let c = 0; c < chunks.length; c++) {
-		log('' + chunks[c].command + ' : ' + chunks[c].data);
+		// log(`START CHUNK ${c} =========================`);
+		// log('' + chunks[c].command + ' : ' + chunks[c].data);
 		if (chunks[c].command) {
 			newPathPoints = handlePathChunk(chunks[c], newPathPoints, c === chunks.length - 1, newPaths);
 		}
+		// log(new Path({ pathPoints: newPathPoints }).print());
+		// log(`END CHUNK ${c} =========================`);
 	}
 
 	// Combine 1st and last point
-	const fp = newPathPoints[0];
-	const lp = newPathPoints[newPathPoints.length - 1];
+	const firstPoint = newPathPoints[0];
+	const lastPoint = newPathPoints[newPathPoints.length - 1];
 	const threshold = 0.001;
-	if (pointsAreEqual(fp.p.x, lp.p.x, threshold) && pointsAreEqual(fp.p.y, lp.p.y, threshold)) {
-		log('fp/lp same:\nFirst Point: ' + fp.print() + '\nLast Point:  ' + lp.print());
-		fp.h1.x = lp.h1.x;
-		fp.h1.y = lp.h1.y;
-		fp.h1.use = lp.h1.use;
+	if (pointsAreEqual(firstPoint.p, lastPoint.p, threshold)) {
+		// log('firstPoint/lastPoint same:\nFirst Point: ' + firstPoint.print() + '\nLast Point:  ' + lastPoint.print());
+		firstPoint.h1.x = lastPoint.h1.x;
+		firstPoint.h1.y = lastPoint.h1.y;
+		firstPoint.h1.use = lastPoint.h1.use;
 		newPathPoints.pop();
-		fp.resolvePointType();
-		log('AFTER:\nFirst Point: ' + fp.print());
+		firstPoint.resolvePointType();
+		// log('AFTER:\nFirst Point: ' + firstPoint.print());
 	}
 
 	const newPath = new Path({ pathPoints: newPathPoints });
 	newPath.validate('Import SVG');
 
-	log('unscaled path:');
-	log(newPath);
-	log('ioSVG_convertSVGTagToPath', 'end');
+	// log('unscaled path:');
+	// log(newPath);
+	// log('ioSVG_convertSVGTagToPath', 'end');
 	return newPath;
 }
 
@@ -522,8 +525,16 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 		lastPoint = new PathPoint();
 		// log(`Default last point`);
 	}
-
 	// log(`previous point: ${lastPoint.p.x} ${lastPoint.p.y}`);
+
+	// Helper function for logging path points as they're added
+	// function logPathPoints() {
+		// log(`logPathPoints`, 'start');
+		// pathPoints.forEach((pp, i) => {
+			// log(`\n~~${i}~~\n${pp.print()}\n`);
+		// });
+		// log(`logPathPoints`, 'end');
+	// }
 
 	if (isCommand('MmLlHhVv')) {
 		// ABSOLUTE line methods
@@ -597,6 +608,7 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 			});
 			pathPoints.push(newPoint);
 			lastPoint = pathPoints[pathPoints.length - 1];
+			// logPathPoints();
 		}
 
 		// log('completed while loop');
@@ -648,8 +660,8 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 			});
 			newPoint.makePointedTo(previousX, previousY, false, 'h1', true);
 			pathPoints.push(newPoint);
-
 			lastPoint = pathPoints[pathPoints.length - 1];
+			// logPathPoints();
 		}
 
 		// log('completed while loop');
@@ -708,6 +720,7 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 			});
 			pathPoints.push(newPoint);
 			lastPoint = pathPoints[pathPoints.length - 1];
+			// logPathPoints();
 		}
 
 		// log('completed while loop');
@@ -767,6 +780,7 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 
 			pathPoints.push(newPoint);
 			lastPoint = pathPoints[pathPoints.length - 1];
+			// logPathPoints();
 		}
 
 		// log('completed while loop');
@@ -798,6 +812,8 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 				use: true,
 			});
 			lastPoint.resolvePointType();
+			// log(`lastPoint`);
+			// log(lastPoint.print());
 
 			h1Coord = new Coord({ x: currentData[2], y: currentData[3] });
 			pCoord = new Coord({ x: currentData[4], y: currentData[5] });
@@ -806,6 +822,7 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 				// Relative offset for c
 				previousX = lastPoint.p.x;
 				previousY = lastPoint.p.y;
+				// log(`relative c, adding x: ${previousX} y: ${previousY}`);
 				lastPoint.h2.x += previousX;
 				lastPoint.h2.y += previousY;
 				h1Coord.x += previousX;
@@ -826,6 +843,7 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 
 			pathPoints.push(newPoint);
 			lastPoint = pathPoints[pathPoints.length - 1];
+			// logPathPoints(pathPoints);
 		}
 
 		// log('completed while loop');
@@ -850,8 +868,10 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 			}
 			// log(`command ${cmd} while loop data ${currentData}`);
 
-			lastPoint.makeSymmetric('h1');
-			lastPoint.h2.use = true;
+			if (lastPoint.type !== 'corner') {
+				lastPoint.makeSymmetric('h1');
+				lastPoint.h2.use = true;
+			}
 
 			h1Coord = new Coord({ x: currentData[0], y: currentData[1] });
 			pCoord = new Coord({ x: currentData[2], y: currentData[3] });
@@ -874,11 +894,12 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 			newPoint = new PathPoint({
 				p: { coord: pCoord },
 				h1: { coord: h1Coord, use: true },
-				h2: { coord: pCoord, use: true },
-				type: 'symmetric',
+				h2: { coord: pCoord, use: false },
+				type: 'corner',
 			});
 			pathPoints.push(newPoint);
 			lastPoint = pathPoints[pathPoints.length - 1];
+			// logPathPoints();
 		}
 
 		// log('completed while loop');
@@ -891,18 +912,12 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 	// Finish up last point
 	if (isLastPoint) {
 		const added = pathPoints[pathPoints.length - 1];
-		// log(`last point was`);
-		// log(added.type);
+		// log(`last point type was \t ${added.type}`);
 		added.resolvePointType();
-		// log(`after resolvePointType`);
-		// log(added.type);
+		// log(`last point type is now\t ${added.type}`);
 	}
 
-	// log('Resulting Path Chunk');
-	// log(pathPoints);
-
 	// log('handlePathChunk', 'end');
-
 	return pathPoints;
 }
 

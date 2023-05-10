@@ -77,8 +77,8 @@ export class PathPoint extends GlyphElement {
 		re += `${ind}type: ${this.type}\n`;
 		re += `${ind}p: ${this.p.print(level + 1)}\n`;
 
-		if (this.h1.use) re += `${ind}h1: ${this.h1.print(level + 1)}\n`;
-		if (this.h2.use) re += `${ind}h2: ${this.h2.print(level + 1)}\n`;
+		re += `${ind}h1: ${this.h1.print(level + 1)}\n`;
+		re += `${ind}h2: ${this.h2.print(level + 1)}\n`;
 
 		re += `${ind.substring(2)}}/PathPoint ${isVal(num) ? num : ''}`;
 
@@ -285,12 +285,16 @@ export class PathPoint extends GlyphElement {
 			hold = this.h1.use ? 'h1' : 'h2';
 			if (!(this.h1.use || this.h2.use)) {
 				if (
-					(this.h2.x + this.p.x + this.h1.x) / 3 === this.p.x &&
-					(this.h2.y + this.p.y + this.h1.y) / 3 === this.p.y
+					// (this.h2.x + this.p.x + this.h1.x) / 3 === this.p.x &&
+					// (this.h2.y + this.p.y + this.h1.y) / 3 === this.p.y
+					pointsAreEqual(this.p.coord, this.h1.coord) &&
+					pointsAreEqual(this.p.coord, this.h2.coord)
 				) {
 					// Handles and points are all in the same place
-					this.h2.x -= 100;
-					this.h1.x += 100;
+					this.h2.x -= 200;
+					this.h1.x += 200;
+					this.h1.use = true;
+					this.h2.use = true;
 					// log(`Handles and points are all in the same place`);
 					// log('PathPoint.makeSymmetric', 'end');
 					return;
@@ -351,6 +355,8 @@ export class PathPoint extends GlyphElement {
 	 */
 	makeFlat(hold) {
 		// log('PathPoint.makeFlat', 'start');
+		// log(`Point position: ${this.p.x} / ${this.p.y}`);
+
 		// log(`hold: ${hold}`);
 		this._type = 'flat';
 
@@ -364,8 +370,10 @@ export class PathPoint extends GlyphElement {
 			hold = this.h1.use ? 'h1' : 'h2';
 			if (!(this.h1.use || this.h2.use)) {
 				if (
-					(this.h2.x + this.p.x + this.h1.x) / 3 === this.p.x &&
-					(this.h2.y + this.p.y + this.h1.y) / 3 === this.p.y
+					// 	(this.h2.x + this.p.x + this.h1.x) / 3 === this.p.x &&
+					// 	(this.h2.y + this.p.y + this.h1.y) / 3 === this.p.y
+					pointsAreEqual(this.p.coord, this.h1.coord) &&
+					pointsAreEqual(this.p.coord, this.h2.coord)
 				) {
 					// Handles and points are all in the same place
 					this.h2.x -= 300;
@@ -375,6 +383,7 @@ export class PathPoint extends GlyphElement {
 					return;
 				}
 			}
+			// log(`hold: ${hold}`);
 		}
 
 		this.h1.use = true;
@@ -438,15 +447,33 @@ export class PathPoint extends GlyphElement {
 	 * @returns {boolean}
 	 * */
 	isFlat() {
-		if (!this.h1.use || !this.h2.use) return false;
-		if (this.p.x === this.h1.x && this.p.x === this.h2.x) return true;
-		if (this.p.y === this.h1.y && this.p.y === this.h2.y) return true;
+		// log(`PathPoint.isFlat`, 'start');
+		// log(`Point position: ${this.p.x} / ${this.p.y}`);
+
+		if (!this.h1.use || !this.h2.use) {
+			// log(`Not using any handles to be flat, return false`);
+			// log(`PathPoint.isFlat`, 'end');
+			return false;
+		}
+		if (this.p.x === this.h1.x && this.p.x === this.h2.x) {
+			// log(`X alignment, return true`);
+			// log(`PathPoint.isFlat`, 'end');
+			return true;
+		}
+		if (this.p.y === this.h1.y && this.p.y === this.h2.y) {
+			// log(`Y alignment, return true`);
+			// log(`PathPoint.isFlat`, 'end');
+			return true;
+		}
 
 		const a1 = this.h1.angle;
 		const a2 = this.h2.angle;
 		// log('comparing ' + a1 + ' / ' + a2);
 
-		return round(Math.abs(a1) + Math.abs(a2), 2) === 3.14;
+		const piTest = round(Math.abs(a1) + Math.abs(a2), 2);
+		// log(`returning piTest === 3.14: ${piTest === 3.14}`);
+		// log(`PathPoint.isFlat`, 'end');
+		return piTest === 3.14;
 	}
 
 	/**
