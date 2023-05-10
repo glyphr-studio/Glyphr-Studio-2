@@ -51,6 +51,7 @@ export class ControlPoint extends GlyphElement {
 		if (this.yLock) re.yLock = true;
 
 		if (verbose) re.objType = this.objType;
+		if (this.type === 'p') delete re.use;
 
 		return re;
 	}
@@ -68,7 +69,7 @@ export class ControlPoint extends GlyphElement {
 		ind += '  ';
 
 		re += `${ind}coord: ${this.coord.print(level + 1)}\n`;
-		re += `${ind}use: ${this.use}\n`;
+		if(this.type !== 'p') re += `${ind}use: ${this.use}\n`;
 
 		re += `${ind.substring(2)}}`;
 
