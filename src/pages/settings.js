@@ -262,7 +262,7 @@ function makeOneSettingsRow(groupName, propertyName) {
 		});
 
 		input.addEventListener('change', (event) => {
-			let newValue = parseInt(event.target.valueAsNumber);
+			let newValue = parseInt(event.target.value);
 			if (isNaN(newValue)) {
 				showToast(`Could not save value - needs to be a number.`);
 			} else {

@@ -18,8 +18,8 @@ export class GlyphrStudioApp {
 	 */
 	constructor() {
 		// Version
-		this.versionName = 'Version 2: Beta-1';
-		this.version = '2.0.0-beta.1';
+		this.versionName = 'Version 2: Beta 1.0';
+		this.version = '2.0.0-beta.1.0';
 		this.versionDate = false;
 		this.projectEditors = [];
 		this.selectedProjectEditor = 0;
