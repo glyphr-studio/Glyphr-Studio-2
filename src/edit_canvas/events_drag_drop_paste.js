@@ -4,8 +4,8 @@ import { ioSVG_convertSVGTagsToGlyph } from '../io/svg_outline_import.js';
 import { copyShapesFromTo } from '../panels/actions.js';
 import { cancelDefaultEventActions } from './events.js';
 
-export function importSVGtoCurrentWorkItem(svgData) {
-	// log(`importSVGtoCurrentWorkItem`, 'start');
+export function importSVGtoCurrentItem(svgData) {
+	// log(`importSVGtoCurrentItem`, 'start');
 
 	const tempGlyph = ioSVG_convertSVGTagsToGlyph(svgData);
 
@@ -31,7 +31,7 @@ export function importSVGtoCurrentWorkItem(svgData) {
 	} else {
 		// showToast('Could not import pasted SVG code.');
 	}
-	// log(`importSVGtoCurrentWorkItem`, 'end');
+	// log(`importSVGtoCurrentItem`, 'end');
 }
 
 export function handlePasteSVGonEditCanvas(event) {
@@ -48,7 +48,7 @@ export function handlePasteSVGonEditCanvas(event) {
 
 	const pasteData = clipboardData.getData('Text');
 	// log(pasteData);
-	importSVGtoCurrentWorkItem(pasteData);
+	importSVGtoCurrentItem(pasteData);
 }
 
 export function handleDropSVGonEditCanvas(event) {
@@ -67,7 +67,7 @@ export function handleDropSVGonEditCanvas(event) {
 
 	if (fname === 'svg') {
 		reader.onload = function () {
-			importSVGtoCurrentWorkItem(reader.result);
+			importSVGtoCurrentItem(reader.result);
 		};
 
 		reader.readAsText(f);

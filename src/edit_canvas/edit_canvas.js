@@ -68,6 +68,9 @@ export class EditCanvas extends HTMLElement {
 			},
 		});
 
+		// Auto-fit view
+		editor.autoFitIfViewIsDefault();
+
 		// log(`EditCanvas.constructor`, 'end');
 	}
 
@@ -100,7 +103,7 @@ export class EditCanvas extends HTMLElement {
 		// log('EditCanvas.redraw', 'start');
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();
-		const view = editor.view;
+		let view = editor.view;
 		const ctx = this.ctx;
 		const width = this.width;
 		const height = this.height;

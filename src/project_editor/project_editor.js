@@ -761,12 +761,17 @@ export class ProjectEditor {
 	}
 
 	autoFitIfViewIsDefault() {
-		if (this.nav.isOnEditCanvasPage && this.selectedWorkItemID) {
+		// log(`ProjectEditor.autoFitIfViewIsDefault`, 'start');
+		// log(`this.nav.isOnEditCanvasPage: ${this.nav.isOnEditCanvasPage}`);
+		// log(`this.selectedItemID: ${this.selectedItemID}`);
+		if (this.nav.isOnEditCanvasPage && this.selectedItemID) {
+			// log(`this.view.default: ${this.view.default}`);
 			if (this.view.default) {
 				this.autoFitView();
 				this.publish('view', this.view);
 			}
 		}
+		// log(`ProjectEditor.autoFitIfViewIsDefault`, 'end');
 	}
 
 	getEditCanvasWrapperBounds() {

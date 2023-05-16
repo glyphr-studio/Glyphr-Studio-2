@@ -83,7 +83,6 @@ export class Tool_NewBasicPath {
 			// log(`Tool_NewBasicPath.mouseup`, 'start');
 			const editor = getCurrentProjectEditor();
 			const ehd = eventHandlerData;
-			let workItem = editor.selectedItem;
 
 			// Only make the new path if it's not really small
 			let xSize = Math.abs(ehd.newBasicPathMaxes.xMax - ehd.newBasicPathMaxes.xMin);
@@ -94,7 +93,7 @@ export class Tool_NewBasicPath {
 			let path;
 			if (xSize > canvasUIPointSize && ySize > canvasUIPointSize) {
 				// log(`New path is large enough`);
-				let count = workItem.shapes.length;
+				let count = editor.selectedItem.shapes.length;
 
 				if (editor.nav.page === 'components') {
 					count = Object.keys(editor.project.components).length;

@@ -22,18 +22,18 @@ export function makePanel_Guides() {
 	return [systemCard];
 }
 
-export function makeGuideCheckbox(workItem, property, label) {
+export function makeGuideCheckbox(item, property, label) {
 	let newCheckbox = makeElement({
 		tag: 'input',
 		attributes: {
 			type: 'checkbox',
 		},
 	});
-	if (workItem[property]) newCheckbox.setAttribute('checked', '');
+	if (item[property]) newCheckbox.setAttribute('checked', '');
 
 	newCheckbox.addEventListener('change', (event) => {
 		let newValue = event.target.checked;
-		workItem[property] = !!newValue;
+		item[property] = !!newValue;
 		getCurrentProjectEditor().editCanvas.redraw();
 	});
 

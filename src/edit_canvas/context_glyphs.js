@@ -15,7 +15,7 @@ import { charToHex } from '../common/character_ids';
 
 function drawContextGlyphs() {
 	// log('drawContextGlyphs', 'start');
-	const selwid = getSelectedWorkItemID();
+	const selwid = getSelectedItemID();
 	const currGlyphObject = getItem(selwid, true);
 	const currGlyphChar = hexesToChars(selwid);
 	const v = getView('drawContextGlyphs');
@@ -117,11 +117,11 @@ function drawContextGlyphLeftLineExtras(char, seq) {
 
 	let kern = calculateKernOffset(
 		seq.glyphstring[seq.glyphstring.length - 1],
-		getSelectedWorkItemChar()
+		getSelectedItemChar()
 	);
 
 	if (kern) {
-		const selwi = getSelectedWorkItem();
+		const selwi = getSelectedItem();
 		const v = getView('drawContextGlyphLeftLineExtras');
 		kern *= -1;
 		let rightx = selwi.isAutoWide ? kern - selwi.lsb : kern;
@@ -133,11 +133,11 @@ function drawContextGlyphLeftLineExtras(char, seq) {
 }
 
 function drawContextGlyphRightLineExtras(char, seq) {
-	const kern = calculateKernOffset(getSelectedWorkItemChar(), char.char);
+	const kern = calculateKernOffset(getSelectedItemChar(), char.char);
 
 	if (kern) {
 		const v = getView('drawContextGlyphRightLineExtras');
-		const selwi = getSelectedWorkItem();
+		const selwi = getSelectedItem();
 		let rightx = selwi.advanceWidth;
 		if (selwi.isAutoWide) rightx -= selwi.lsb;
 		rightx = v.dx + rightx * v.dz;
@@ -322,7 +322,7 @@ function hotspotNavigateToGlyph(gid) {
 	// log('passed ' + gid);
 
 	const v = getView('hotspotNavigateToGlyph');
-	const currchar = getSelectedWorkItemChar();
+	const currchar = getSelectedItemChar();
 	const newchar = hexesToChars(gid);
 	const ctxg = getContextGlyphString();
 	const p1 = ctxg.indexOf(currchar);
@@ -542,7 +542,7 @@ function drawVerticalLine(x, ctx, color) {
 function drawGuides() {
 	// log('drawGuides', 'start');
 
-	if (!getSelectedWorkItemID()) return;
+	if (!getSelectedItemID()) return;
 
 	const ps = getCurrentProject().projectSettings;
 	const onglyphedit = editor.nav.page === 'Characters' || editor.nav.page === 'ligatures';
@@ -568,7 +568,7 @@ function drawGuides() {
 			}
 		}
 
-		const selwi = getSelectedWorkItem();
+		const selwi = getSelectedItem();
 		if (selwi) {
 			const t = _UI.eventhandlers.tempnewbasicshape;
 			const rl = t ? Math.max(selwi.glyphWidth, t.xMax) : selwi.glyphWidth;
@@ -582,7 +582,7 @@ function drawGuides() {
 			ps.guides.descent.location = ps.descent;
 			ps.guides.min.location = ll;
 			ps.guides.max.location = rl;
-			ps.guides.leftside.location = getSelectedWorkItem() * -1;
+			ps.guides.leftside.location = getSelectedItem() * -1;
 			ps.guides.rightside.location = getSelectedGlyphRightSideBearing() + rl;
 
 			// Minor Guidelines - Overshoots
@@ -599,7 +599,7 @@ function drawGuides() {
 			if (onglyphedit) {
 				ps.guides.min.draw(0);
 				ps.guides.leftside.draw();
-				if (getSelectedWorkItemShapes().length || !selwi.isAutoWide) {
+				if (getSelectedItemShapes().length || !selwi.isAutoWide) {
 					ps.guides.max.draw(0);
 					ps.guides.rightside.draw();
 				}

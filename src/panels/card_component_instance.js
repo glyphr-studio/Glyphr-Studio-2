@@ -155,7 +155,7 @@ export function makeCard_componentInstanceAttributes(componentInstance) {
 	return componentInstanceCard;
 }
 
-function makeComponentInstanceInputs_translate(workItem) {
+function makeComponentInstanceInputs_translate(item) {
 	// TODO transform origin
 	// log(`makeInputs_translate`, 'start');
 
@@ -173,8 +173,8 @@ function makeComponentInstanceInputs_translate(workItem) {
 		`,
 	});
 	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let xInput = makeSingleInput(workItem, 'translateX', 'currentComponentInstance', 'input-number');
-	let yInput = makeSingleInput(workItem, 'translateY', 'currentComponentInstance', 'input-number');
+	let xInput = makeSingleInput(item, 'translateX', 'currentComponentInstance', 'input-number');
+	let yInput = makeSingleInput(item, 'translateY', 'currentComponentInstance', 'input-number');
 
 	// Put double input together
 	doubleInput.appendChild(xInput);
@@ -185,7 +185,7 @@ function makeComponentInstanceInputs_translate(workItem) {
 	return [label, doubleInput];
 }
 
-function makeComponentInstanceInputs_size(workItem) {
+function makeComponentInstanceInputs_size(item) {
 	// TODO transform origin
 	// log(`makeComponentInstanceInputs_size`, 'start');
 
@@ -203,9 +203,9 @@ function makeComponentInstanceInputs_size(workItem) {
 		`,
 	});
 	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let wInput = makeSingleInput(workItem, 'resizeWidth', 'currentComponentInstance', 'input-number');
+	let wInput = makeSingleInput(item, 'resizeWidth', 'currentComponentInstance', 'input-number');
 	let hInput = makeSingleInput(
-		workItem,
+		item,
 		'resizeHeight',
 		'currentComponentInstance',
 		'input-number'
@@ -232,7 +232,7 @@ function makeComponentInstanceInputs_size(workItem) {
 		`,
 	});
 
-	let ratioLockCheckbox = makeSingleCheckbox(workItem, 'ratioLock', 'currentComponentInstance');
+	let ratioLockCheckbox = makeSingleCheckbox(item, 'ratioLock', 'currentComponentInstance');
 
 	// log(`makeComponentInstanceInputs_size`, 'end');
 	return [inputLabel, doubleInput, ratioLockLabel, ratioLockCheckbox];
