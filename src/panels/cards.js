@@ -6,20 +6,20 @@ import { round } from '../common/functions.js';
 // Common attributes stuff
 // --------------------------------------------------------------
 
-export function makeInputs_position(workItem, labelPrefix = '') {
+export function makeInputs_position(item, labelPrefix = '') {
 	// TODO transform origin
 	// log(`makeInputs_position`, 'start');
 	// log(`x: ${round(x, 3)}`);
 	// log(`y: ${round(y, 3)}`);
-	let thisTopic = `current${workItem.objType}`;
-	if (workItem.type) thisTopic += `.${workItem.type}`;
+	let thisTopic = `current${item.objType}`;
+	if (item.type) thisTopic += `.${item.type}`;
 
 	if (labelPrefix) labelPrefix += ':&ensp;';
 	// Label + inputs
 	let label = makeElement({ tag: 'label', innerHTML: `${labelPrefix}x${dimSplit()}y` });
 	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let xInput = makeSingleInput(workItem, 'x', thisTopic, 'input-number');
-	let yInput = makeSingleInput(workItem, 'y', thisTopic, 'input-number');
+	let xInput = makeSingleInput(item, 'x', thisTopic, 'input-number');
+	let yInput = makeSingleInput(item, 'y', thisTopic, 'input-number');
 
 	// Put double input together
 	doubleInput.appendChild(xInput);
@@ -30,16 +30,16 @@ export function makeInputs_position(workItem, labelPrefix = '') {
 	return [label, doubleInput];
 }
 
-export function makeInputs_size(workItem) {
+export function makeInputs_size(item) {
 	// TODO transform origin
 	// log(`makeInputs_size`, 'start');
-	let thisTopic = `current${workItem.objType}`;
+	let thisTopic = `current${item.objType}`;
 
 	// Label + Inputs
 	let inputLabel = makeElement({ tag: 'label', innerHTML: `width${dimSplit()}height` });
 	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let wInput = makeSingleInput(workItem, 'width', thisTopic, 'input-number');
-	let hInput = makeSingleInput(workItem, 'height', thisTopic, 'input-number');
+	let wInput = makeSingleInput(item, 'width', thisTopic, 'input-number');
+	let hInput = makeSingleInput(item, 'height', thisTopic, 'input-number');
 
 	// Put double input together
 	doubleInput.appendChild(wInput);
@@ -62,15 +62,15 @@ export function makeInputs_size(workItem) {
 		`,
 	});
 
-	let ratioLockCheckbox = makeSingleCheckbox(workItem, 'ratioLock', thisTopic);
+	let ratioLockCheckbox = makeSingleCheckbox(item, 'ratioLock', thisTopic);
 
 	// log(`makeInputs_size`, 'end');
 	return [inputLabel, doubleInput, ratioLockLabel, ratioLockCheckbox];
 }
 
-export function makeSingleInput(workItem, property, thisTopic, tagName) {
+export function makeSingleInput(item, property, thisTopic, tagName) {
 	// log(`makeSingleInput`, 'start');
-	// log(`workItem.objType: ${workItem.objType}`);
+	// log(`item.objType: ${item.objType}`);
 	// log(`property: ${property}`);
 	// log(`thisTopic: ${thisTopic}`);
 	// log(`tagName: ${tagName}`);
@@ -81,21 +81,21 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 		attributes: { 'pubsub-topic': thisTopic },
 	});
 
-	let value = tagName === 'input' ? workItem[property] : round(workItem[property], 3);
+	let value = tagName === 'input' ? item[property] : round(item[property], 3);
 	newInput.setAttribute('value', value);
 
-	if (workItem.isLockable) {
-		newInput.setAttribute('is-locked', workItem.isLocked(property));
+	if (item.isLockable) {
+		newInput.setAttribute('is-locked', item.isLocked(property));
 		newInput.addEventListener('lock', (event) => {
 			// log(`makeSingleInput LOCK event`, 'start');
 			// log(event);
 			if (event.detail.isLocked) {
-				workItem.lock(property);
+				item.lock(property);
 			} else {
-				workItem.unlock(property);
+				item.unlock(property);
 			}
 			const editor = getCurrentProjectEditor();
-			editor.publish(thisTopic, workItem);
+			editor.publish(thisTopic, item);
 			// log(`makeSingleInput LOCK event`, 'end');
 		});
 	}
@@ -104,7 +104,7 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 		// log(`makeSingleInput CHANGE event`, 'start');
 		// log(event);
 
-		if (workItem.isLocked(property)) return;
+		if (item.isLocked(property)) return;
 		// let newValue = event.target.getAttribute('value');
 		let newValue = event.target.value;
 		// log(`property: ${property}`);
@@ -116,34 +116,34 @@ export function makeSingleInput(workItem, property, thisTopic, tagName) {
 		// and the LSB moves to the left or right
 		if (property === 'leftSideBearing') {
 			let view = editor.view;
-			editor.view.dx -= (newValue - workItem.leftSideBearing) * view.dz;
-			editor.publish('view', workItem);
+			editor.view.dx -= (newValue - item.leftSideBearing) * view.dz;
+			editor.publish('view', item);
 		}
 
 		// Code Smell
 		if (
-			workItem.constructor.name === 'Glyph' &&
+			item.constructor.name === 'Glyph' &&
 			(property === 'width' || property === 'height') &&
-			workItem.ratioLock
+			item.ratioLock
 		) {
-			if (property === 'width') workItem.setGlyphSize(newValue, false, true);
-			if (property === 'height') workItem.setGlyphSize(false, newValue, true);
+			if (property === 'width') item.setGlyphSize(newValue, false, true);
+			if (property === 'height') item.setGlyphSize(false, newValue, true);
 		} else if (
-			workItem.objType === 'Path' &&
+			item.objType === 'Path' &&
 			(property === 'width' || property === 'height') &&
-			workItem.ratioLock
+			item.ratioLock
 		) {
-			if (property === 'width') workItem.setShapeSize(newValue, false, true);
-			if (property === 'height') workItem.setShapeSize(false, newValue, true);
+			if (property === 'width') item.setShapeSize(newValue, false, true);
+			if (property === 'height') item.setShapeSize(false, newValue, true);
 		} else {
 			// log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
-			workItem[property] = newValue;
-			// log(`workItem[property]: ${workItem[property]}`);
+			item[property] = newValue;
+			// log(`item[property]: ${item[property]}`);
 		}
 
-		if (workItem.objType === 'VirtualGlyph') editor.publish(thisTopic, editor.selectedItem);
-		else if (workItem.objType === 'VirtualShape') editor.publish(thisTopic, editor.selectedItem);
-		else editor.publish(thisTopic, workItem);
+		if (item.objType === 'VirtualGlyph') editor.publish(thisTopic, editor.selectedItem);
+		else if (item.objType === 'VirtualShape') editor.publish(thisTopic, editor.selectedItem);
+		else editor.publish(thisTopic, item);
 		// log(`makeSingleInput CHANGE event`, 'end');
 	});
 
@@ -186,23 +186,23 @@ export function addAttributeListener(element, listenFor = [], callback = false) 
 	// observer.observe(element, { attributes: true, subtree: true });
 }
 
-export function makeSingleCheckbox(workItem, property, thisTopic) {
+export function makeSingleCheckbox(item, property, thisTopic) {
 	let newCheckbox = makeElement({
 		tag: 'input',
 		attributes: {
 			type: 'checkbox',
 		},
 	});
-	if (workItem[property]) newCheckbox.setAttribute('checked', '');
+	if (item[property]) newCheckbox.setAttribute('checked', '');
 
 	newCheckbox.addEventListener('change', (event) => {
 		let newValue = event.target.checked;
-		workItem[property] = !!newValue;
+		item[property] = !!newValue;
 		if (thisTopic) {
-			getCurrentProjectEditor().publish(thisTopic, workItem);
+			getCurrentProjectEditor().publish(thisTopic, item);
 			if (property === 'use') {
-				toggleHandleInputs(workItem.type, !!newValue);
-				workItem.parent.reconcileHandle(workItem.type);
+				toggleHandleInputs(item.type, !!newValue);
+				item.parent.reconcileHandle(item.type);
 			}
 		}
 	});
@@ -214,10 +214,10 @@ export function makeSingleCheckbox(workItem, property, thisTopic) {
 			callback: (changedItem) => {
 				if (changedItem[property]) {
 					newCheckbox.setAttribute('checked', '');
-					if (property === 'use') toggleHandleInputs(workItem.type, true);
+					if (property === 'use') toggleHandleInputs(item.type, true);
 				} else {
 					newCheckbox.removeAttribute('checked');
-					if (property === 'use') toggleHandleInputs(workItem.type, false);
+					if (property === 'use') toggleHandleInputs(item.type, false);
 				}
 			},
 		});
@@ -255,16 +255,16 @@ export function dimSplitElement() {
 // 'direct' controls that don't use pub/sub
 // --------------------------------------------------------------
 
-export function makeDirectCheckbox(workItem, property, callback) {
+export function makeDirectCheckbox(item, property, callback) {
 	let newCheckbox = makeElement({
 		tag: 'input',
 		attributes: { type: 'checkbox' },
 	});
-	if (workItem[property]) newCheckbox.setAttribute('checked', '');
+	if (item[property]) newCheckbox.setAttribute('checked', '');
 
 	newCheckbox.addEventListener('change', (event) => {
 		let newValue = event.target.checked;
-		workItem[property] = !!newValue;
+		item[property] = !!newValue;
 		if (callback) callback(newValue);
 	});
 
