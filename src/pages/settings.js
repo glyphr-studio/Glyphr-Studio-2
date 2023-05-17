@@ -140,19 +140,19 @@ function makeSettingsTabContentApp() {
 	});
 
 	/*
-	addAsChildren(tabContent, [
-		makeOneSettingsRow('app', 'savePreferences'),
-		makeOneSettingsRow('app', 'stopPageNavigation'),
-		makeOneSettingsRow('app', 'showNonCharPoints'),
-		textToNode('<h2>Exporting</h2>'),
-		makeOneSettingsRow('app', 'formatSaveFile'),
-		makeOneSettingsRow('app', 'combinePathsOnExport'),
-		makeOneSettingsRow('app', 'maxCombinePathsOnExport'),
-	]);
+		savePreferences: false,
+		stopPageNavigation: true,
+		showNonCharPoints: false,
+		formatSaveFile: false,
+		moveShapesOnSVGDragDrop: false,
+		combinePathsOnExport: false,
+		maxCombinePathsOnExport: 30,
 	*/
 	addAsChildren(tabContent, [
+		makeOneSettingsRow('app', 'stopPageNavigation'),
 		makeOneSettingsRow('app', 'showNonCharPoints'),
 		makeOneSettingsRow('app', 'formatSaveFile'),
+		makeOneSettingsRow('app', 'moveShapesOnSVGDragDrop'),
 	]);
 
 	return tabContent;

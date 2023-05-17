@@ -868,10 +868,9 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 			}
 			// log(`command ${cmd} while loop data ${currentData}`);
 
-			if (lastPoint.type !== 'corner') {
-				lastPoint.makeSymmetric('h1');
-				lastPoint.h2.use = true;
-			}
+			// Leveraging makeSymmetric to fulfill 's' command
+			lastPoint.makeSymmetric('h1');
+			lastPoint.h2.use = true;
 
 			h1Coord = new Coord({ x: currentData[0], y: currentData[1] });
 			pCoord = new Coord({ x: currentData[2], y: currentData[3] });
