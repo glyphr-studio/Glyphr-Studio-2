@@ -30,6 +30,7 @@ export class GlyphrStudioProject {
 				stopPageNavigation: true,
 				showNonCharPoints: false,
 				formatSaveFile: false,
+				moveShapesOnSVGDragDrop: false,
 				combinePathsOnExport: false,
 				maxCombinePathsOnExport: 30,
 				guides: {

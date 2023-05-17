@@ -823,8 +823,12 @@ export function clipboardPaste() {
 		editor.multiSelect.shapes.clear();
 		editor.multiSelect.points.clear();
 
-		editor.selectedItem.shapes = editor.selectedItem.shapes.concat(newShapes);
-		newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+		const addedShapes = [];
+		newShapes.forEach((shape) => {
+			addedShapes.push(editor.selectedItem.addOneShape(shape));
+		});
+		
+		addedShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
 
 		clipboard.sourceID = editor.selectedItemID;
 
@@ -963,6 +967,7 @@ export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = fals
 
 	const editor = getCurrentProjectEditor();
 	let item;
+	let  newShape;
 	let newShapes = [];
 	for (let c = 0; c < sourceItem.shapes.length; c++) {
 		item = sourceItem.shapes[c];
@@ -973,8 +978,8 @@ export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = fals
 			item = new Path(item);
 		}
 
-		destinationItem.addOneShape(item);
-		newShapes.push(item);
+		newShape = destinationItem.addOneShape(item);
+		newShapes.push(newShape);
 	}
 
 	if (updateWidth) {

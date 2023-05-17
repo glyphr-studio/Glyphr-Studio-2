@@ -41,6 +41,11 @@ export default {
 			description: `Glyphr Studio Project files (.gs2) are text files in JSON format. By default, this file is saved to optimize for smaller file size. Setting this option to true formats the file to be more easily read by a human, but could increase the file size by 2x or more.`,
 			type: `Boolean`,
 		},
+		moveShapesOnSVGDragDrop: {
+			label: `Move shapes when drag+dropping an SVG file`,
+			description: `When importing SVG by dragging and dropping a .svg file onto the canvas, move the imported shapes to the origin (x = 0, y = shapes height).`,
+			type: `Boolean`,
+		},
 		combinePathsOnExport: {
 			label: `Combine paths on export`,
 			description: `This will boolean-combine all paths before a font is exported. This may make the exported font perform better, but it will drastically increase export time.`,
