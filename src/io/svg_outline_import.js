@@ -69,19 +69,26 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 	*/
 	if (pathTags.path.length) {
 		data = '';
-		let tag = {};
-
+		let path;
+		let isNewTag = true;
 		for (let p = 0; p < pathTags.path.length; p++) {
 			// Compound Paths are treated as different Glyphr Paths
+			// But we need to keep track of the start of the tag for relative commands
+			isNewTag = true;
 			data = pathTags.path[p].attributes.d;
 			data = ioSVG_cleanAndFormatPathDefinition(data);
-
+			// log(`cleaned and formatted path d`);
+			// log(data);
 			for (let d = 0; d < data.length; d++) {
+				// log(`data number: ${d}`);
+				// log(`isNewTag: ${isNewTag}`);
+
 				if (data[d].length) {
-					tag = ioSVG_convertSVGTagToPath(data[d], newPaths);
-					if (tag.pathPoints.length) {
-						// tag.name = 'Path';
-						pushPath(tag, 'Path');
+					path = ioSVG_convertSVGTagToPath(data[d], newPaths, isNewTag);
+					if (path.pathPoints.length) {
+						// path.name = 'Path';
+						pushPath(path, 'Path');
+						isNewTag = false;
 					}
 				}
 			}
@@ -375,11 +382,15 @@ export function ioSVG_getTags(obj, grabTags) {
 /**
  * Takes input data from SVG object and returns a Glyphr Studio Path
  * @param {Object} data - input data from SVG
+ * @param {Array} newPaths - current set of imported paths
+ * @param {Boolean} isNewTag - is this the start of a new SVG Tag
  * @returns {Path} - Glyphr Studio Path object
  */
-export function ioSVG_convertSVGTagToPath(data, newPaths = []) {
+export function ioSVG_convertSVGTagToPath(data, newPaths = [], isNewTag = false) {
 	// log('ioSVG_convertSVGTagToPath', 'start');
 	// log('passed data ' + data);
+	// log(`isNewTag: ${isNewTag}`);
+
 
 	// Parse comma separated data into commands / data chunks
 	data = data.split(',');
@@ -412,11 +423,14 @@ export function ioSVG_convertSVGTagToPath(data, newPaths = []) {
 
 	// Turn the commands and data into Glyphr objects
 	let newPathPoints = [];
+	let isLastPoint = false;
 	for (let c = 0; c < chunks.length; c++) {
 		// log(`START CHUNK ${c} =========================`);
 		// log('' + chunks[c].command + ' : ' + chunks[c].data);
 		if (chunks[c].command) {
-			newPathPoints = handlePathChunk(chunks[c], newPathPoints, c === chunks.length - 1, newPaths);
+			isLastPoint = c === chunks.length - 1;
+			newPathPoints = handlePathChunk(chunks[c], newPathPoints, newPaths, isLastPoint, isNewTag);
+			isNewTag = false;
 		}
 		// log(new Path({ pathPoints: newPathPoints }).print());
 		// log(`END CHUNK ${c} =========================`);
@@ -475,12 +489,18 @@ function isPathCommand(c) {
  *
  * @param {String} chunk - Command + Data chunk to process
  * @param {Array} pathPoints - Collection of points for recursive iteration
- * @param {Boolean} isLastPoint - if it's the last point
+ * @param {Array} newPaths - collection of the paths being imported
+ * @param {Boolean} isLastPoint - if it's the last point in this path
+ * @param {Boolean} isNewTag - if this path is the first in a SVG Tag
  * @returns {Array} - of PathPoints
  */
-function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths = []) {
+//(chunks[c], newPathPoints, newPaths, isLastPoint, isNewTag);
+function handlePathChunk(chunk, pathPoints = [], newPaths = [], isLastPoint = false, isNewTag = false) {
 	// log('handlePathChunk', 'start');
 	// log('chunk: ' + json(chunk, true));
+	// log(`isLastPoint: ${isLastPoint}`);
+	// log(`isNewTag: ${isNewTag}`);
+
 
 	const cmd = chunk.command;
 	let currentData = [];
@@ -492,10 +512,15 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 	let qCoord;
 	let nx;
 	let ny;
-	let lastPoint;
 	let newPoint;
 	let previousX;
 	let previousY;
+
+	// If the previous shape was from a different SVG Tag, relative commands
+	// should reference 0,0 as the previous point.
+	// If the previous shape was part of the same SVG Tag but used a Zz command
+	// to create a compound shape, the previous point's coordinates should
+	// be used for relative commands.
 
 	// There may be a bunch of unaddressed edge cases here - path commands
 	// assume last command position is known, even across compound shapes
@@ -503,29 +528,35 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 	// the last point makes sense in a series of commands, but actually
 	// the last point is across a compound shape, and is valid SVG but not
 	// necessarily logical.
-	let lastPointIsFromAnotherShape = false;
 
-	if (pathPoints.length) {
+	let lastPointIsFromAnotherShape = false;
+	let lastPoint;
+
+	if (isNewTag) {
+		// New SVG tags always get default Path Point (0,0)
+		// log(`Default 0,0 - isNewTag is true`);
+		lastPoint = new PathPoint();
+	} else if (pathPoints.length) {
 		// Middle of current path, use the previous point
+		// log(`Last point from current path`);
 		lastPoint = pathPoints[pathPoints.length - 1];
-		// log(`last point from current path`);
 	} else if (newPaths?.length) {
 		// First point in this compound path, look to the last point in the previous path
 		let lastPath = newPaths[newPaths.length - 1];
 		if (lastPath?.pathPoints?.length) {
+			// log(`Last point from PREVIOUS path`);
 			// lastPoint = lastPath.pathPoints[lastPath.pathPoints.length-1];
 			lastPoint = lastPath.pathPoints[0];
 			lastPointIsFromAnotherShape = true;
-			// log(`last point from PREVIOUS path`);
 		}
+	} else {
+		// Default to a new Path Point
+		lastPoint = new PathPoint();
+		// log(`Default 0,0 for last point`);
 	}
 
-	if (!lastPoint) {
-		// Default to a new 0,0 point
-		lastPoint = new PathPoint();
-		// log(`Default last point`);
-	}
-	// log(`previous point: ${lastPoint.p.x} ${lastPoint.p.y}`);
+	// log(`lastPoint: ${lastPoint.p.x} ${lastPoint.p.y}`);
+	// log(`lastPointIsFromAnotherShape: ${lastPointIsFromAnotherShape}`);
 
 	// Helper function for logging path points as they're added
 	// function logPathPoints() {
@@ -601,7 +632,6 @@ function handlePathChunk(chunk, pathPoints = [], isLastPoint = false, newPaths =
 
 			// log(`linear end nx ny: ${nx} ${ny}`);
 
-			// lastPoint.h2.use = false;
 			if (!lastPointIsFromAnotherShape) lastPoint.h2.use = false; // Compound Path Circle bug
 			newPoint = new PathPoint({
 				p: { coord: { x: nx, y: ny } },
