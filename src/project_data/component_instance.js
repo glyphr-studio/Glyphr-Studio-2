@@ -564,44 +564,6 @@ export class ComponentInstance extends GlyphElement {
 		this._ratioLock = !!ratioLock;
 	}
 
-	// Computed properties
-
-	/**
-	 * Set X position
-	 * @param {number} x
-	 * @returns {ComponentInstance} - reference to this ComponentInstancePath
-	 */
-	set x(x) {
-		this.setShapePosition(x, false);
-	}
-
-	/**
-	 * Set Y position
-	 * @param {number} y
-	 * @returns {ComponentInstance} - reference to this ComponentInstance
-	 */
-	set y(y) {
-		this.setShapePosition(false, y);
-	}
-
-	/**
-	 * Set Width
-	 * @param {number} w
-	 * @returns {ComponentInstance} - reference to this ComponentInstance
-	 */
-	set width(w) {
-		this.setShapeSize(w, false);
-	}
-
-	/**
-	 * Set Height
-	 * @param {number} h
-	 * @returns {ComponentInstance} - reference to this ComponentInstance
-	 */
-	set height(h) {
-		this.setShapeSize(false, h);
-	}
-
 	// --------------------------------------------------------------
 	// Parity methods, shared between Paths and ComponentInstances
 	// --------------------------------------------------------------
