@@ -100,13 +100,7 @@ export class ProjectEditor {
 	// --------------------------------------------------------------
 	navigate() {
 		// log(`ProjectEditor.navigate`, 'start');
-
 		this.nav.navigate();
-		this.autoFitIfViewIsDefault();
-		// if (this.nav.isOnEditCanvasPage) {
-		// 	this.history.addState(`Navigated to ${this.nav.page}`);
-		// }
-
 		// log(`ProjectEditor.navigate`, 'end');
 	}
 
@@ -357,11 +351,10 @@ export class ProjectEditor {
 	 * @param {string} id - ID to select
 	 */
 	set selectedItemID(newID) {
-		// should this detect ID format?
-		if (this.nav.page === 'Characters') this.selectedGlyphID = newID;
-		else if (this.nav.page === 'Components') this.selectedComponentID = newID;
-		else if (this.nav.page === 'Ligatures') this.selectedLigatureID = newID;
-		else if (this.nav.page === 'Kerning') this.selectedKernID = newID;
+		if (newID.startsWith('glyph-')) this.selectedGlyphID = newID;
+		else if (newID.startsWith('comp-')) this.selectedComponentID = newID;
+		else if (newID.startsWith('liga-')) this.selectedLigatureID = newID;
+		else if (newID.startsWith('kern-')) this.selectedKernID = newID;
 	}
 
 	/**
@@ -746,20 +739,6 @@ export class ProjectEditor {
 		return newView;
 	}
 
-	autoFitView() {
-		// log(`ProjectEditor.autoFitView`, 'start');
-		const bounds = this.getEditCanvasWrapperBounds();
-		if (bounds) {
-			this.view = this.makeAutoFitView(bounds);
-			this.publish('view', this.view);
-		} else {
-			console.warn('autoFitView called before DOM was ready');
-			this.view = clone(this.defaultView);
-		}
-		// log(`ProjectEditor.autoFitView`, 'end');
-		return this.view;
-	}
-
 	autoFitIfViewIsDefault() {
 		// log(`ProjectEditor.autoFitIfViewIsDefault`, 'start');
 		// log(`this.nav.isOnEditCanvasPage: ${this.nav.isOnEditCanvasPage}`);
@@ -774,14 +753,28 @@ export class ProjectEditor {
 		// log(`ProjectEditor.autoFitIfViewIsDefault`, 'end');
 	}
 
+	autoFitView() {
+		// log(`ProjectEditor.autoFitView`, 'start');
+		const bounds = this.getEditCanvasWrapperBounds();
+		if (bounds) {
+			this.view = this.makeAutoFitView(bounds);
+			this.publish('view', this.view);
+		} else {
+			console.warn('autoFitView called before DOM was ready');
+			this.view = clone(this.defaultView);
+		}
+		// log(`ProjectEditor.autoFitView`, 'end');
+		return this.view;
+	}
+
 	getEditCanvasWrapperBounds() {
 		// log(`getEditCanvasWrapperBounds`, 'start');
 
-		let wrapper = document.getElementsByClassName('editor-page__edit-canvas-wrapper');
-		if (wrapper && wrapper[0]) {
-			// log(`wrapper[0]: ${wrapper[0]}`);
+		let wrapper = document.querySelector('.editor-page__edit-canvas-wrapper');
+		// log(wrapper);
+		if (wrapper) {
 			// log(`getEditCanvasWrapperBounds`, 'end');
-			return wrapper[0].getBoundingClientRect();
+			return wrapper.getBoundingClientRect();
 		}
 
 		// log(`getEditCanvasWrapperBounds`, 'end');
