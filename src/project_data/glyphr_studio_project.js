@@ -20,8 +20,8 @@ export class GlyphrStudioProject {
 		this.settings = {
 			project: {
 				name: 'My Font',
-				latestVersion: '2.0.0-alpha.2',
-				initialVersion: '2.0.0-alpha.1',
+				latestVersion: '2.0.0-beta.1.0',
+				initialVersion: '2.0.0-beta.1.0',
 				id: false,
 				characterRanges: [],
 			},

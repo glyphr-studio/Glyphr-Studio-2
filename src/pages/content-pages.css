@@ -175,6 +175,13 @@ code,
 	line-height: 24px;
 }
 
+.settings_read-only-value {
+	font-family: monospace;
+	padding-left: 4px;
+	color: var(--enabled-resting-text);
+	user-select: text;
+}
+
 .settings-page__tab-content input[type=checkbox]{
 	width: 24px;
 }

@@ -296,6 +296,7 @@ function makeOneSettingsRow(groupName, propertyName) {
 	if (settingType === 'Read only') {
 		input = makeElement({
 			innerHTML: settingValue,
+			className: 'settings_read-only-value'
 		});
 	}
 
