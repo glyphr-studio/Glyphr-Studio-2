@@ -540,11 +540,11 @@ export class Glyph extends GlyphElement {
 		dx = parseFloat(dx) || 0;
 		dy = parseFloat(dy) || 0;
 		for (let i = 0; i < this.shapes.length; i++) {
-			const path = this.shapes[i];
-			// log(`moving path #${i} - ${path.name}`);
-			// log(`BEFORE path.maxes.xMin: ${path.maxes.xMin}`);
-			path.updateShapePosition(dx, dy);
-			// log(`AFTERS path.maxes.xMin: ${path.maxes.xMin}`);
+			const shape = this.shapes[i];
+			// log(`moving shape #${i} - ${shape.name}`);
+			// log(`BEFORE shape.maxes.xMin: ${shape.maxes.xMin}`);
+			shape.updateShapePosition(dx, dy);
+			// log(`AFTERS shape.maxes.xMin: ${shape.maxes.xMin}`);
 		}
 		// log(this.name);
 		// log('Glyph.updateGlyphPosition', 'end');
