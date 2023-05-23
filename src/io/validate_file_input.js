@@ -309,3 +309,15 @@ export function parseSemVer(versionString) {
 	// log(`parseSemVer`, 'end');
 	return result;
 }
+
+export function makeSemVerString(versionObject) {
+	const major = versionObject?.major || '0';
+	const minor = versionObject?.minor || '0';
+	const patch = versionObject?.patch || '0';
+	const preRelease = versionObject?.preRelease;
+
+	let result = `${major}.${minor}.${patch}`;
+	if (preRelease) result = `${result}.${preRelease}`;
+
+	return result;
+}

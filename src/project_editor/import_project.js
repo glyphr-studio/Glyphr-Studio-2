@@ -1,6 +1,6 @@
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
-import { tryToGetProjectVersion } from '../io/validate_file_input.js';
+import { makeSemVerString, tryToGetProjectVersion } from '../io/validate_file_input.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
@@ -33,6 +33,7 @@ export function importGlyphrProjectFromText(importedProject) {
 	// Update the version
 	const app = getGlyphrStudioApp();
 	importedProject.settings.project.latestVersion = app.version;
+	importedProject.settings.project.initialVersion = makeSemVerString(version);
 
 	// Hydrate after all updates
 	// log(`Calling new GlyphrStudioProject from importGlyphrProjectFromText`);
