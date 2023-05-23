@@ -811,7 +811,7 @@ export function clipboardPaste() {
 			newShape.name = newName + newSuffix;
 
 			if (newShape.objType === 'ComponentInstance') {
-				addLinkToUsedIn(editor.project.getItem(newShape.link), editor.project.selectedItemID);
+				addLinkToUsedIn(editor.project.getItem(newShape.link), editor.selectedItemID);
 			}
 
 			newShapes.push(newShape);
@@ -827,7 +827,7 @@ export function clipboardPaste() {
 		newShapes.forEach((shape) => {
 			addedShapes.push(editor.selectedItem.addOneShape(shape));
 		});
-		
+
 		addedShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
 
 		clipboard.sourceID = editor.selectedItemID;

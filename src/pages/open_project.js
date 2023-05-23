@@ -1,11 +1,12 @@
-import { addAsChildren, makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { ioFont_importFont } from '../io/font_import.js';
 import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
-import versionTwoTestProject from '../samples/versionTwoTestProject.json';
+import simpleExampleProject from '../samples/simpleExampleProject.json';
+import obleggExampleProject from '../samples/oblegg-0-1.gs2?raw';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { closeEveryTypeOfDialog, showError } from '../controls/dialogs/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
@@ -159,18 +160,38 @@ function makeTabs() {
 	const tabContentExamples = makeElement({
 		id: 'tab-content__examples',
 		className: 'open-project__tab-content',
-		innerHTML:
-			'<h2>Load an example project</h2>\nVersion 2 Sample is a project that shows off some basic and new features:\n<br><br>',
+		innerHTML: `<h2>Load an example project</h2>`,
 		style: 'display: none;',
 	});
 
-	const buttonLoadExample = makeElement({
-		tag: 'fancy-button',
-		innerHTML: 'v2 sample project',
-		onClick: () => handleLoadSample('v2Sample'),
+	const contentSimpleProject = makeElement({
+		tag: 'div',
+		innerHTML: `The Simple v2 Project has a few characters and things to show off basic functionality:<br><br>`,
 	});
 
-	addAsChildren(tabContentExamples, buttonLoadExample);
+	const buttonSimpleProject = makeElement({
+		tag: 'fancy-button',
+		innerHTML: 'Simple v2 project',
+		onClick: () => handleLoadSample('simpleProject'),
+	});
+
+	const contentOblegg = makeElement({
+		tag: 'div',
+		innerHTML: `Oblegg is the GSv2 project we use to test all the various Glyphr Studio features:<br><br>`,
+	});
+
+	const buttonOblegg = makeElement({
+		tag: 'fancy-button',
+		innerHTML: 'Oblegg (v0.1)',
+		onClick: () => handleLoadSample('oblegg'),
+	});
+
+	addAsChildren(tabContentExamples, [
+		contentOblegg,
+		buttonOblegg,
+		contentSimpleProject,
+		buttonSimpleProject,
+	]);
 
 	// --------------------------------------------------------------
 	// Make tabs, hook it all up
@@ -353,12 +374,14 @@ function handleNewProject() {
  */
 function handleLoadSample(name) {
 	document.getElementById('tab-content__examples').innerHTML =
-		'<h2>Load an Example project</h2>Loading example project...';
+		'<h2>Load an example project</h2>Loading example project...';
 
+	let project = simpleExampleProject;
+	if (name === 'oblegg') project = obleggExampleProject;
 	setTimeout(function () {
 		log(`Loading sample project ${name}`);
 
-		importProjectDataAndNavigate(versionTwoTestProject);
+		importProjectDataAndNavigate(project);
 	}, 100);
 }
 

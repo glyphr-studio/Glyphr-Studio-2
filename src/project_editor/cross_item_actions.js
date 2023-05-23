@@ -206,38 +206,46 @@ export function deleteLinks(item) {
 // --------------------------------------------------------------
 
 /**
- * When a Glyph is linked-to from another ComponentInstance, track
- * where it's being used by adding it to glyph.usedIn
- * @param {Glyph} glyph - reference to the Glyph
- * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
+ * When an Item is linked-to from another ComponentInstance, track
+ * where it's being used by adding it to item.usedIn
+ * @param {Glyph} item - reference to the item (Glyph, Component, Ligature)
+ * @param {string} linkID - itemID where the item is being used as a Component Instance
  */
-export function addLinkToUsedIn(glyph, linkID) {
-	glyph.usedIn.push('' + linkID);
+export function addLinkToUsedIn(item, linkID) {
+	log(`addLinkToUsedIn`, 'start');
+	log(`linkID: ${linkID}`);
+	log(`usedIn BEFORE:`);
+	log(item.usedIn);
+	log(item);
+	item.usedIn.push('' + linkID);
 	// sort numerically as opposed to alpha
-	glyph.usedIn.sort(function (a, b) {
+	item.usedIn.sort(function (a, b) {
 		return a - b;
 	});
+		log(`usedIn AFTER:`);
+		log(item.usedIn);
+	log(`addLinkToUsedIn`, 'end');
 }
 
 /**
- * Removes a link from a glyph's usedIn array
- * @param {Glyph} glyph - reference to the Glyph
- * @param {string} linkID - GlyphID where the Glyph is being used as a Component Instance
+ * Removes a link from an item's usedIn array
+ * @param {Glyph} item - reference to the item (Glyph, Component, Ligature)
+ * @param {string} linkID - itemID where the item is being used as a Component Instance
  */
-export function removeLinkFromUsedIn(glyph, linkID) {
+export function removeLinkFromUsedIn(item, linkID) {
 	// log(`removeLinkFromUsedIn`, 'start');
 	// log(`linkID: ${linkID}`);
-	// log(glyph.usedIn);
+	// log(item.usedIn);
 
-	const idIndex = glyph.usedIn.indexOf('' + linkID);
+	const idIndex = item.usedIn.indexOf('' + linkID);
 	// log(`idIndex: ${idIndex}`);
 
 	if (idIndex !== -1) {
 		// log(`Removing ${idIndex}`);
 
-		glyph.usedIn.splice(idIndex, 1);
+		item.usedIn.splice(idIndex, 1);
 	}
-	// log(glyph.usedIn);
+	// log(item.usedIn);
 	// log(`removeLinkFromUsedIn`, 'end');
 }
 

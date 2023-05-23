@@ -93,7 +93,8 @@ export function publish(topic, data) {
 		generic case - and vise versa.
 		*/
 
-		let specificItem = `current${this.selectedItem.objType}`;
+		let specificItem = false;
+		if(this.selectedItem?.objType) specificItem = `current${this.selectedItem.objType}`;
 
 		if (topic === 'currentVirtualGlyph') {
 			// If the multi-select virtual glyph changes, so must the Item

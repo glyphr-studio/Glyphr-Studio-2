@@ -317,6 +317,7 @@ export class GlyphrStudioProject {
 	 */
 	makeItemThumbnail(item) {
 		// log('GlyphrStudioProject.makeItemThumbnail', 'start');
+		// log(item);
 		const size = 50;
 		const padding = 5;
 		const scale = (size - padding * 2) / this.totalVertical;
@@ -324,7 +325,7 @@ export class GlyphrStudioProject {
 		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;
 		const translateX = (size - itemWidth * scale) / 2;
 		const translateY = itemHeight * scale - padding;
-		const svg = item.svgPathData;
+		const svg = item?.svgPathData || 'H100 V100 H-100 V-100';
 		// log(`itemWidth: ${itemWidth}`);
 		// log(svg);
 
