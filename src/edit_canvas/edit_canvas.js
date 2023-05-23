@@ -68,10 +68,15 @@ export class EditCanvas extends HTMLElement {
 			},
 		});
 
-		// Auto-fit view
-		editor.autoFitIfViewIsDefault();
-
 		// log(`EditCanvas.constructor`, 'end');
+	}
+
+	connectedCallback() {
+		// log(`EditCanvas.connectedCallback`, 'start');
+		// Auto-fit view
+		const editor = getCurrentProjectEditor();
+		editor.autoFitIfViewIsDefault();
+		// log(`EditCanvas.connectedCallback`, 'end');
 	}
 
 	/**
@@ -87,7 +92,7 @@ export class EditCanvas extends HTMLElement {
 		switch (attributeName) {
 			case 'editing-item-id':
 				this.editingItemID = newValue;
-				getCurrentProjectEditor().autoFitIfViewIsDefault();
+				// getCurrentProjectEditor().autoFitIfViewIsDefault();
 				this.redraw({
 					calledBy: 'EditCanvas.attributeChangeCallback - attribute: editing-item-id',
 				});

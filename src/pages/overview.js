@@ -30,19 +30,27 @@ export function makePage_Overview() {
 
 	// log(content);
 
-	let glyphsContent = makeAllItemTypeChooserContent((glyphID) => {
+	let itemsContent = makeAllItemTypeChooserContent((itemID) => {
 		// log(`Overview page - Glyph Chooser tile click handler`, 'start');
-		// log(`glyphID: ${glyphID}`);
+		// log(`itemID: ${itemID}`);
 
 		const editor = getCurrentProjectEditor();
-		editor.selectedGlyphID = glyphID;
-		editor.nav.page = 'Characters';
+		editor.selectedItemID = itemID;
+		// log(`editor.selectedItemID: ${editor.selectedItemID}`);
+
+
+		// TODO kerns
+		if (itemID.startsWith('glyph-')) editor.nav.page = 'Characters';
+		else if (itemID.startsWith('liga-')) editor.nav.page = 'Ligatures';
+		else if (itemID.startsWith('comp-')) editor.nav.page = 'Components';
+		// log(`editor.nav.page: ${editor.nav.page}`);
 		editor.navigate();
-		editor.history.addState(`Navigated to ${editor.project.getItemName(glyphID, true)}`);
+
+		editor.history.addState(`Navigated to ${editor.project.getItemName(itemID, true)}`);
 		// log(`Overview page - Glyph Chooser tile click handler`, 'end');
 	}, false);
 
-	content.querySelector('.content-page__right-area').appendChild(glyphsContent);
+	content.querySelector('.content-page__right-area').appendChild(itemsContent);
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
@@ -88,7 +96,7 @@ export function makePage_Overview() {
 	const contributeCard = makeElement({
 		className: 'panel__card full-width more-padding',
 		innerHTML: `
-			Glyphr Studio is community supported.
+			Glyphr Studio is open source and community supported.
 			<br>
 			`,
 	});
