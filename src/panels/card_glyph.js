@@ -105,17 +105,25 @@ export function makeCard_glyphAttributes(glyph) {
 }
 
 export function makeCard_glyphLinks(item) {
-	if (!item.usedIn.length) return '';
+	// log(`makeCard_glyphLinks`, 'start');
+	// log(`item.id: ${item.id}`);
+
+	// log(item.usedIn);
+	if (!item.usedIn.length) {
+		// log(`makeCard_glyphLinks`, 'end');
+		return '';
+	}
 	let linksCard = makeElement({
 		tag: 'div',
 		className: 'panel__card full-width item-links__rows-area',
 		innerHTML: `
-			<h3>Links</h3>
-			This ${item.displayType} is linked to the following items as a component root.
+		<h3>Links</h3>
+		This ${item.displayType} is linked to the following items as a component root.
 		`,
 	});
 
 	item.usedIn.forEach((itemID) => {
+		// log(`appending card for ${itemID}`);
 		linksCard.appendChild(makeLinkReferenceRow(itemID));
 	});
 
@@ -134,5 +142,6 @@ export function makeCard_glyphLinks(item) {
 		},
 	});
 
+	// log(`makeCard_glyphLinks`, 'end');
 	return linksCard;
 }

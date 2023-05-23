@@ -101,6 +101,9 @@
 	margin-bottom: 10px;
 }
 
+.open-project__tab-content fancy-button {
+	margin-bottom: 40px;
+}
 .open-project__tab-content #customRangeBegin,
 .open-project__tab-content #customRangeEnd {
 	width: 140px;

@@ -272,9 +272,13 @@ export function makeDirectCheckbox(item, property, callback) {
 }
 
 export function makeLinkReferenceRow(itemID) {
+	// log(`makeLinkReferenceRow`, 'start');
+	// log(`itemID: ${itemID}`);
+
 	const editor = getCurrentProjectEditor();
 	const project = getCurrentProject();
 	const targetItem = editor.project.getItem(itemID);
+	// log(targetItem);
 
 	let row = makeElement({ className: 'item-link__row', attributes: { 'target-item-id': itemID } });
 	row.addEventListener('click', () => {
@@ -296,16 +300,17 @@ export function makeLinkReferenceRow(itemID) {
 	row.appendChild(
 		makeElement({
 			className: 'item-link__title',
-			innerHTML: `${targetItem.name}`,
+			innerHTML: `${targetItem?.name || 'ERROR'}`,
 		})
 	);
 
 	row.appendChild(
 		makeElement({
 			className: 'item-link__subtitle',
-			innerHTML: `${targetItem.displayType}&ensp;|&ensp;${itemID}`,
+			innerHTML: `${targetItem?.displayType || 'ERROR'}&ensp;|&ensp;${itemID}`,
 		})
 	);
 
+	// log(`makeLinkReferenceRow`, 'end');
 	return row;
 }

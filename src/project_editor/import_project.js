@@ -18,6 +18,7 @@ import { ComponentInstance } from '../project_data/component_instance.js';
  */
 export function importGlyphrProjectFromText(importedProject) {
 	// log('importGlyphrProjectFromText', 'start');
+	if (typeof importedProject === 'string') importedProject = JSON.parse(importedProject);
 	// log('passed:');
 	// log(importedProject);
 	if (!importedProject) importedProject = new GlyphrStudioProject();
@@ -34,10 +35,11 @@ export function importGlyphrProjectFromText(importedProject) {
 	importedProject.settings.project.latestVersion = app.version;
 
 	// Hydrate after all updates
-
 	// log(`Calling new GlyphrStudioProject from importGlyphrProjectFromText`);
+	const newProject = new GlyphrStudioProject(importedProject);
+
 	// log('importGlyphrProjectFromText', 'end');
-	return new GlyphrStudioProject(importedProject);
+	return newProject;
 }
 
 // --------------------------------------------------------------

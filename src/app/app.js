@@ -6,7 +6,7 @@ import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { ioFont_exportFont } from '../io/font_export.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import versionTwoTestProject from '../samples/versionTwoTestProject.json';
+import simpleExampleProject from '../samples/simpleExampleProject.json';
 import { _DEV } from './dev_mode_includes.js';
 
 /**
@@ -65,7 +65,7 @@ export class GlyphrStudioApp {
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation & selection
-			if (dev.sampleProject) editor.project = importGlyphrProjectFromText(versionTwoTestProject);
+			if (dev.sampleProject) editor.project = importGlyphrProjectFromText(simpleExampleProject);
 			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
