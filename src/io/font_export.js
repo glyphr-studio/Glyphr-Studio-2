@@ -122,14 +122,12 @@ function populateExportList() {
 	const project = getCurrentProject();
 	let thisGlyph;
 	for (const key of Object.keys(project.glyphs)) {
-		if (project.glyphs[key]) {
-			if (parseInt(key)) {
-				// thisGlyph = new Glyph(clone(project.glyphs[key]));
-				thisGlyph = project.glyphs[key].clone();
-				exportGlyphs.push({ xg: thisGlyph, xc: key });
-			} else {
-				console.warn('Skipped exporting Glyph ' + key + ' - non-numeric key value.');
-			}
+		let glyphNumber = parseInt(key.substring(6));
+		if (glyphNumber) {
+			thisGlyph = project.glyphs[key].clone();
+			exportGlyphs.push({ xg: thisGlyph, xc: glyphNumber });
+		} else {
+			console.warn('Skipped exporting Glyph ' + glyphNumber + ' - non-numeric key value.');
 		}
 	}
 
@@ -141,29 +139,26 @@ function populateExportList() {
 	const exportLigatures = [];
 	// const ligWithCodePoint;
 	for (const key of Object.keys(project.ligatures)) {
-		if (project.ligatures[key]) {
-			// log(project.ligatures[key]);
+		// log(project.ligatures[key]);
+		if (project.ligatures[key].gsub.length > 1) {
+			thisGlyph = project.ligatures[key].clone();
+			// log(`\t adding ligature "${thisGlyph.name}"`);
+			exportLigatures.push({ xg: thisGlyph, xc: key, chars: thisGlyph.chars });
 
-			if (project.ligatures[key].gsub.length > 1) {
-				thisGlyph = project.ligatures[key].clone();
-				// log(`\t adding ligature "${thisGlyph.name}"`);
-				exportLigatures.push({ xg: thisGlyph, xc: key, chars: thisGlyph.chars });
-
-				// ligWithCodePoint = doesLigatureHaveCodePoint(l);
-				// if (ligWithCodePoint) {
-				// 	// log(`\t LIGATURE WITH CODE POINT FOUND for ${l} at ${ligWithCodePoint.point}`);
-				// 	const dupe = new Glyph(
-				// 		clone(_GP.ligatures[l], 'ioOTF export.populateExportLists - ligature with code point')
-				// 	);
-				// 	exportGlyphs.push({ xg: dupe, xc: ligWithCodePoint.point });
-				// 	if (parseInt(l) >= 0xe000) privateUseArea.push(parseInt(l));
-				// }
-			} else {
-				console.warn(`
+			// ligWithCodePoint = doesLigatureHaveCodePoint(l);
+			// if (ligWithCodePoint) {
+			// 	// log(`\t LIGATURE WITH CODE POINT FOUND for ${l} at ${ligWithCodePoint.point}`);
+			// 	const dupe = new Glyph(
+			// 		clone(_GP.ligatures[l], 'ioOTF export.populateExportLists - ligature with code point')
+			// 	);
+			// 	exportGlyphs.push({ xg: dupe, xc: ligWithCodePoint.point });
+			// 	if (parseInt(l) >= 0xe000) privateUseArea.push(parseInt(l));
+			// }
+		} else {
+			console.warn(`
 					Skipped exporting ligature ${project.ligatures[key].name}.
 					Source chars length: ${project.ligatures[key].gsub.length}
 				`);
-			}
 		}
 	}
 	exportLigatures.sort(sortLigatures);
