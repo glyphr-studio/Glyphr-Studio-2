@@ -120,6 +120,7 @@ function importOneGlyph(otfGlyph, project) {
 	if (isControlChar(uni)) {
 		project.settings.app.showNonCharPoints = true;
 		console.warn(`CONTROL CHAR FOUND ${uni}`);
+		log(otfGlyph);
 	}
 
 	const parentRange = getParentRange(uni);
@@ -246,15 +247,16 @@ function importOneLigature(otfLigature, otfFont) {
 
 function importFontMetadata(font, project) {
 	// log('importFontMetadata', 'start');
-
+	// log(font);
 	// Import Font Settings
 	// Check to make sure certain stuff is there
 	// space has horiz-adv-x
 	// log('Custom range stuff done');
 	const fontSettings = project.settings.font;
-	const fname = font.familyName || 'My Font';
+	const familyName = getTableValue(font.names.fontFamily) || 'My Font';
+	project.settings.project.name = familyName;
 
-	fontSettings.name = fname;
+	fontSettings.name = familyName;
 	fontSettings.upm = 1 * font.unitsPerEm || 1000;
 	fontSettings.ascent = 1 * font.ascender || 700;
 	fontSettings.descent = -1 * Math.abs(font.descender) || 300;
@@ -262,7 +264,7 @@ function importFontMetadata(font, project) {
 	fontSettings.xHeight = 1 * getTableValue(font.tables.os2.sxHeight) || 400;
 	fontSettings.overshoot = round(fontSettings.upm / 100);
 
-	fontSettings.family = fname.substring(0, 31);
+	fontSettings.family = familyName.substring(0, 31);
 	fontSettings.panose = getTableValue(font.tables.os2.panose) || '0 0 0 0 0 0 0 0 0 0';
 	fontSettings.version =
 		getTableValue(font.tables.head.fontRevision) ||
@@ -285,7 +287,7 @@ function importFontMetadata(font, project) {
 	for (const range of Object.keys(importedRanges)) {
 		project.settings.project.characterRanges.push(new CharacterRange(importedRanges[range]));
 	}
-
+	// log(fontSettings);
 	// log('importFontMetadata', 'end');
 }
 

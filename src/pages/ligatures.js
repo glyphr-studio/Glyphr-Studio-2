@@ -13,6 +13,9 @@ import {
 	showModalDialog,
 } from '../controls/dialogs/dialogs.js';
 import { charToHex } from '../common/character_ids.js';
+import { normalizePrefixes } from '../common/character_ids.js';
+import { validateDecOrHexSuffix } from '../common/character_ids.js';
+import { hexesToChars } from '../common/character_ids.js';
 
 /**
  * Page > Ligatures
@@ -244,13 +247,54 @@ function addCommonLigaturesToProject() {
 }
 
 function addLigature(sequence) {
+	// log(`addLigature`, 'start');
+
 	if (sequence.length < 2) {
+		// log(`addLigature`, 'end');
 		return 'Ligature sequences need to be two or more characters.';
 	}
 
+	// Test to see if Unicode or Hex notation is being used
+	let prefix = false;
+	let workingSequence = normalizePrefixes(sequence);
+	if (workingSequence.startsWith('U+')) {
+		workingSequence = workingSequence.split('U+');
+		workingSequence = workingSequence.slice(1);
+		prefix = 'U+';
+	} else if (workingSequence.startsWith('0x')) {
+		workingSequence = workingSequence.split('0x');
+		workingSequence = workingSequence.slice(1);
+		prefix = '0x';
+	}
+
+	// log(`prefix: ${prefix}`);
+	// log(`workingSequence: ${workingSequence}`);
+
+	if (prefix && workingSequence.length > 1) {
+		sequence = '';
+		for (let i = 0; i < workingSequence.length; i++) {
+			let id = workingSequence[i];
+			// log(`id: ${id}`);
+			let validatedSuffix = validateDecOrHexSuffix(id);
+			// log(`validatedSuffix: ${validatedSuffix}`);
+
+			if (validatedSuffix) sequence += hexesToChars(`0x${validatedSuffix}`);
+			else {
+				// log(`addLigature`, 'end');
+				return `Invalid Hex or Unicode format: ${prefix}${id}.`;
+			}
+		}
+	}
+
+	// log(`sequence: ${sequence}`);
+
+	// Finish up creating new ID and Ligature
 	const newID = makeLigatureID(sequence);
+	// log(`newID: ${newID}`);
+
 	const project = getCurrentProject();
 	if (project.ligatures[newID]) {
+		// log(`addLigature`, 'end');
 		return 'Ligature already exists';
 	}
 
@@ -265,6 +309,7 @@ function addLigature(sequence) {
 		newID
 	);
 
+	// log(`addLigature`, 'end');
 	return project.ligatures[newID];
 }
 
@@ -321,7 +366,10 @@ export function showAddLigatureDialog() {
 	});
 
 	submitButton.addEventListener('click', () => {
+		// log(`showAddLigatureDialog button click handler`, 'start');
 		const result = addLigature(newLigatureInput.value);
+		// log(`result: ${result}`);
+
 		if (typeof result === 'string') {
 			showError(result);
 		} else {
@@ -330,6 +378,7 @@ export function showAddLigatureDialog() {
 			editor.navigate();
 			closeEveryTypeOfDialog();
 		}
+		// log(`showAddLigatureDialog button click handler`, 'end');
 	});
 
 	showModalDialog(content, 500);
