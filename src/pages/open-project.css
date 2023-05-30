@@ -85,7 +85,7 @@
 .open-project__tab-wrapper {
 	width: 400px;
 	position: absolute;
-	top: calc(50% - 100px);
+	top: calc(50% - 130px);
 }
 .open-project__tab-content {
 	margin: 20px 4px 0px 10px;
