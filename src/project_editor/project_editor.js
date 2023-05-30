@@ -10,6 +10,7 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { HKern } from '../project_data/h_kern.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
+import { decToHex } from '../common/character_ids.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -215,7 +216,11 @@ export class ProjectEditor {
 		// log('ProjectEditor GET selectedGlyphID', 'start');
 
 		if (!this._selectedGlyphID) {
-			this._selectedGlyphID = getFirstID(this.project.glyphs) || 'glyph-0x41';
+			const rangeBegin = this.selectedCharacterRange.begin;
+			// Special case Basic Latin (return Capital A, not Space)
+			if (rangeBegin === 0x20) return 'glyph-0x41';
+			// Otherwise, just return the first char of the selected range
+			this._selectedGlyphID = `glyph-${decToHex(rangeBegin)}`;
 		}
 		// log(`RETURNING this._selectedGlyphID: ${this._selectedGlyphID}`);
 		// log('ProjectEditor GET selectedGlyphID', 'end');
