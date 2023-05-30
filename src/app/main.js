@@ -22,12 +22,12 @@ export const GSApp = new GlyphrStudioApp();
  * First function to run when the browser starts
  */
 export function glyphrStudioOnLoad() {
-	console.info(`%c${asciiLogo}\n`, 'color: hsl(199, 100%, 64%)');
+	console.info(`%c${asciiLogo}\n`, 'color: hsl(200, 100%, 41%);');
 	try {
 		if (GSApp.version) {
 			console.info(
 				`%cApp Version ${GSApp.version}%c\n`,
-				'color:hsl(199, 100%, 64%); background-color:hsla(200, 100%, 49%, 10%); padding: 4px 8px; border-radius: 12px;',
+				'color:hsl(200, 100%, 41%);; background-color:hsla(200, 100%, 49%, 10%); padding: 4px 8px; border-radius: 12px;',
 				'background-color: transparent;'
 			);
 		}
