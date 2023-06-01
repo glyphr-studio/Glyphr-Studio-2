@@ -33684,7 +33684,7 @@ Drag and drop one of the following:<br>`,style:"display: none;"}),t=R({id:"open-
 		</p>
 		<br>
 
-		<a href="https://www.glyphrstudio.com/blog" target="_blank" style="font-size: 1.2em;">
+		<a href="https://www.glyphrstudio.com/blog/2023/06/01/v2-beta-1-mega-post/" target="_blank" style="font-size: 1.2em;">
 			Read the Beta-1 blog post for details
 		</a>
 		<br>
