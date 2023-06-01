@@ -154,7 +154,7 @@ export function makePreReleaseNote(showLogo = false) {
 		</p>
 		<br>
 
-		<a href="https://www.glyphrstudio.com/blog/?p=317" target="_blank" style="font-size: 1.2em;">
+		<a href="https://www.glyphrstudio.com/blog/2023/06/01/v2-beta-1-mega-post/" target="_blank" style="font-size: 1.2em;">
 			Read the Beta-1 blog post for details
 		</a>
 		<br>
