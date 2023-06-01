@@ -7,7 +7,6 @@
 			<stop offset="0%" stop-color="var(--blue-l60)" />
 			<stop offset="100%" stop-color="var(--purple-l50)" />
 		</linearGradient>
-	</defs>>
 	</defs>
 	<mask maskUnits="userSpaceOnUse" x="-10000" y="0" width="1000" height="1000" id="SVGID_1_">
 		<g class="st0">
