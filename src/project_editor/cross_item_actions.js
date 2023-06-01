@@ -212,19 +212,19 @@ export function deleteLinks(item) {
  * @param {string} linkID - itemID where the item is being used as a Component Instance
  */
 export function addLinkToUsedIn(item, linkID) {
-	log(`addLinkToUsedIn`, 'start');
-	log(`linkID: ${linkID}`);
-	log(`usedIn BEFORE:`);
-	log(item.usedIn);
-	log(item);
+	// log(`addLinkToUsedIn`, 'start');
+	// log(`linkID: ${linkID}`);
+	// log(`usedIn BEFORE:`);
+	// log(item.usedIn);
+	// log(item);
 	item.usedIn.push('' + linkID);
 	// sort numerically as opposed to alpha
 	item.usedIn.sort(function (a, b) {
 		return a - b;
 	});
-		log(`usedIn AFTER:`);
-		log(item.usedIn);
-	log(`addLinkToUsedIn`, 'end');
+	// log(`usedIn AFTER:`);
+	// log(item.usedIn);
+	// log(`addLinkToUsedIn`, 'end');
 }
 
 /**

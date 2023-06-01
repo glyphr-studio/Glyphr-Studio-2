@@ -120,7 +120,7 @@ function importOneGlyph(otfGlyph, project) {
 	if (isControlChar(uni)) {
 		project.settings.app.showNonCharPoints = true;
 		console.warn(`CONTROL CHAR FOUND ${uni}`);
-		log(otfGlyph);
+		// log(otfGlyph);
 	}
 
 	const parentRange = getParentRange(uni);

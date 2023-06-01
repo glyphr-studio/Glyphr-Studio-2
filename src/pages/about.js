@@ -117,7 +117,9 @@ function makeVersionInfo() {
 				<h3>Glyphr Studio App</h3>
 				<label>Version name:</label> ${app.versionName}<br>
 				<label>Version number:</label> ${app.version}<br>
-				<label>Last updated on:</label> ${new Date(app.versionDate).toDateString()}.
+				<label>Last updated on:</label> ${
+					app.versionDate ? new Date(app.versionDate).toDateString() : '[n/a - dev edition]'
+				}
 			</div>
 
 			<div class="page__card">
@@ -152,7 +154,7 @@ export function makePreReleaseNote(showLogo = false) {
 		</p>
 		<br>
 
-		<a href="https://www.glyphrstudio.com/blog" target="_blank" style="font-size: 1.2em;">
+		<a href="https://www.glyphrstudio.com/blog/?p=317" target="_blank" style="font-size: 1.2em;">
 			Read the Beta-1 blog post for details
 		</a>
 		<br>
