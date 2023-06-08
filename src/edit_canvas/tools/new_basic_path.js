@@ -214,7 +214,7 @@ export function ovalPathFromMaxes(maxes = {}, name = 'Oval') {
 	// Second Point - Right
 	let Pr = new ControlPoint({ coord: { x: rx, y: by + hh } });
 	let H1r = new ControlPoint({ coord: { x: rx, y: ty - hhd } });
-	let H2r = new ControlPoint({ coord: { x: rx, y: by - hhd } });
+	let H2r = new ControlPoint({ coord: { x: rx, y: by + hhd } });
 
 	// Third Point - Bottom
 	let Pb = new ControlPoint({ coord: { x: lx + hw, y: by } });
