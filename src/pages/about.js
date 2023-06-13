@@ -93,6 +93,16 @@ function makeLicenseInfo() {
 		</div>
 
 		<div class="page__card">
+			<h3>SVG-to-Bézier</h3>
+			<a href="https://github.com/mattlag/SVG-to-Bezier" target="_blank">github.com/mattlag/SVG-to-Bezier</a>
+			<br><br>
+			XMLtoJSON is licensed under a
+			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
+			<br><br>
+			Copyright © 2023 Matthew LaGrandeur
+		</div>
+
+		<div class="page__card">
 			<h3>XMLtoJSON</h3>
 			<a href="https://github.com/mattlag/XMLtoJSON" target="_blank">github.com/mattlag/XMLtoJSON</a>
 			<br><br>

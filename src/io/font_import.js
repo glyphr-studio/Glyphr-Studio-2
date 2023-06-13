@@ -5,11 +5,7 @@ import { updateProgressIndicator } from '../controls/progress-indicator/progress
 import { getParentRange, getUnicodeBlockByName, isControlChar } from '../lib/unicode_blocks.js';
 import { isOutOfBounds } from '../pages/open_project.js';
 import { Glyph } from '../project_data/glyph.js';
-import {
-	ioSVG_cleanAndFormatPathDefinition,
-	ioSVG_convertSVGTagToPath,
-} from './svg_outline_import.js';
-import { getUnicodeName } from '../lib/unicode_names.js';
+import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { CharacterRange } from '../project_data/character_range.js';
 
@@ -135,69 +131,33 @@ function importOneGlyph(otfGlyph, project) {
 }
 
 function makeGlyphrStudioGlyphObject(otfGlyph) {
-	// log(`makeGlyphrStudioGlyphObject`, 'start');
-	// log(otfGlyph);
+	log(`makeGlyphrStudioGlyphObject`, 'start');
+	log(otfGlyph);
 	const advance = otfGlyph.advanceWidth;
-	// log(`advance: ${advance}`);
+	log(`advance: ${advance}`);
 
-	const newPaths = [];
-	let pathCounter = 0;
+	// const newPaths = [];
+	// let pathCounter = 0;
 	// Import Path Data
-	let data = flattenDataArray(otfGlyph.path.commands);
-	// log('Glyph has path data \n' + data);
+	let data = otfGlyph.path.toSVG();
+	log('Glyph has .toSVG data');
+	log(data);
 
-	if (data && data !== 'z') {
-		data = ioSVG_cleanAndFormatPathDefinition(data);
+	let importedGlyph;
 
-		// log('split data into ' + data.length + ' Glyphr Studio paths.');
-		// log(data);
+	if (data) {
+		importedGlyph = ioSVG_convertSVGTagsToGlyph(`<svg>${data}</svg>`);
+		log(`importedGlyph`);
+		log(importedGlyph);
 
-		data.forEach((pathData) => {
-			if (pathData.length) {
-				// log('starting convertPathTag');
-				const newPath = ioSVG_convertSVGTagToPath(pathData);
-				// log('created path from PathTag');
-				// log(newPath);
-				if (newPath.pathPoints.length) {
-					pathCounter++;
-					newPath.name = `Path ${pathCounter}`;
-					newPaths.push(newPath);
-				} else {
-					// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + pathData);
-				}
-			}
-		});
+	} else {
+		importedGlyph = new Glyph();
 	}
 
-	const importedGlyph = new Glyph({
-		shapes: newPaths,
-		advanceWidth: advance,
-	});
+	if(importedGlyph)	importedGlyph.advanceWidth = advance;
 
-	// log(`makeGlyphrStudioGlyphObject`, 'end');
+	log(`makeGlyphrStudioGlyphObject`, 'end');
 	return importedGlyph;
-}
-
-function flattenDataArray(data) {
-	// log('flattenDataArray', 'start');
-	// log(json(data, true));
-
-	let result = '';
-	data.forEach((entry) => {
-		result += entry.type;
-		if (isVal(entry.x1) && isVal(entry.y1)) {
-			result += `${entry.x1},${entry.y1},`;
-			if (isVal(entry.x2) && isVal(entry.y2)) {
-				result += `${entry.x2},${entry.y2},`;
-			}
-		}
-		if (isVal(entry.x) && isVal(entry.y)) result += `${entry.x},${entry.y},`;
-	});
-
-	// log(result);
-	// log('flattenDataArray', 'end');
-
-	return result;
 }
 
 function importOneLigature(otfLigature, otfFont) {

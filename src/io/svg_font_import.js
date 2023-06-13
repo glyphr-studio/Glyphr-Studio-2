@@ -1,21 +1,12 @@
-import {
-	getCurrentProject,
-	getCurrentProjectEditor,
-} from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { generateNewID, round } from '../common/functions.js';
 import { hexesToChars, hexesToHexArray, parseCharsInputAsHex } from '../common/character_ids.js';
-import { showError } from '../controls/dialogs/dialogs.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
-import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { importOverflowCount, isOutOfBounds } from '../pages/open_project.js';
-import { Glyph } from '../project_data/glyph.js';
-import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
-import { Path } from '../project_data/path.js';
 import {
-	ioSVG_cleanAndFormatPathDefinition,
-	ioSVG_convertSVGTagToPath,
+	ioSVG_convertSVGTagsToGlyph,
 	ioSVG_getTags,
 } from './svg_outline_import.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
@@ -124,69 +115,44 @@ export function ioSVG_importSVGfont(font) {
 			 *  GLYPH OR LIGATURE IMPORT
 			 *
 			 */
-			const newPaths = [];
-			let pathCounter = 0;
-
-			// Import Path Data
-			let data = attributes.d;
-			// log('Glyph has path data ' + data);
-			if (data && data !== 'z') {
-				data = ioSVG_cleanAndFormatPathDefinition(data);
-
-				// log('split z, data into ' + data.length + ' Glyphr Studio paths.');
-				// log(data);
-
-				data.forEach((pathData) => {
-					if (pathData.length) {
-						// log('starting convertPathTag');
-						let newPath = ioSVG_convertSVGTagToPath(pathData);
-						// log('created path from PathTag');
-						// log(newPath);
-						if (newPath.pathPoints.length) {
-							pathCounter++;
-							newPath.name = `Path ${pathCounter}`;
-							newPaths.push(newPath);
-						} else {
-							// log('!!!!!!!!!!!!!!!!!!\n\t data resulted in no path points: ' + pathData);
-						}
-					}
-				});
-			}
+			const glyphSVG = `<svg><glyph d="${chars[charCounter].attributes.d}"/></svg>`;
+			const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG);
 
 			// Get Advance Width
 			const advanceWidth = parseInt(attributes['horiz-adv-x']);
+			newGlyph.advanceWidth = advanceWidth;
 
 			if (uni.length === 1) {
 				// It's a GLYPH
-				// log(`Detected Glyph`);
+				log(`Detected Glyph`);
 
 				// Get some range data
 				uni = uni[0];
 				minChar = Math.min(minChar, uni);
 				maxChar = Math.max(maxChar, uni);
 				if (1 * uni > latinExtendedB.end) customCharacterRange.push(uni);
-
-				finalGlyphs[uni] = new Glyph({
-					id: uni,
-					shapes: newPaths,
-					advanceWidth: advanceWidth,
-				});
-				if (getUnicodeName(uni) === '[name not found]')
+				newGlyph.id = `glyph-${uni}`;
+				log(newGlyph);
+				finalGlyphs[`glyph-${uni}`] = newGlyph;
+				// finalGlyphs[uni] = new Glyph({
+				// 	id: uni,
+				// 	shapes: newPaths,
+				// 	advanceWidth: advanceWidth,
+				// });
+				if (getUnicodeName(uni) === '[name not found]') {
 					project.settings.app.showNonCharPoints = true;
+				}
 			} else {
 				// It's a LIGATURE
-				// log(`Detected Ligature`);
+				log(`Detected Ligature`);
 				uni = uni.join('');
 				// log(`uni: ${uni}`);
 				const chars = hexesToChars(uni);
 				// log(`chars: ${chars}`);
 				const newID = makeLigatureID(chars);
-				finalLigatures[newID] = new Glyph({
-					id: newID,
-					shapes: newPaths,
-					advanceWidth: advanceWidth,
-					gsub: hexesToHexArray(uni),
-				});
+				newGlyph.id = newID;
+				newGlyph.gsub = hexesToHexArray(uni);
+				finalLigatures[newID] = newGlyph;
 			}
 
 			// Successful loop, advance charCounter
