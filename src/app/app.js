@@ -20,10 +20,13 @@ export class GlyphrStudioApp {
 		// Version
 		this.versionName = 'Version 2: Beta 1.1';
 		this.version = '2.0.0-beta.1.1';
-		this.versionDate = 0;
+		this.versionDate = 1686790000000;
+
+		// Project Editors
 		this.projectEditors = [];
 		this.selectedProjectEditor = 0;
 
+		// Settings
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff

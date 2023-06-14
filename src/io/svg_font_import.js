@@ -5,10 +5,7 @@ import { updateProgressIndicator } from '../controls/progress-indicator/progress
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { importOverflowCount, isOutOfBounds } from '../pages/open_project.js';
-import {
-	ioSVG_convertSVGTagsToGlyph,
-	ioSVG_getTags,
-} from './svg_outline_import.js';
+import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
 import { HKern } from '../project_data/h_kern.js';
 
@@ -36,10 +33,10 @@ export function ioSVG_importSVGfont(font) {
 
 		// Get Kerns
 		// TODO kerning
-		// kerns = ioSVG_getTags(font, 'hkern');
+		// kerns = getTagsByName(font, 'hkern');
 
 		// Get Glyphs
-		chars = ioSVG_getTags(font, 'glyph');
+		chars = getTagsByName(font, 'glyph');
 
 		// test for range
 		// if (chars.length < importOverflowCount) {
@@ -124,7 +121,7 @@ export function ioSVG_importSVGfont(font) {
 
 			if (uni.length === 1) {
 				// It's a GLYPH
-				log(`Detected Glyph`);
+				// log(`Detected Glyph`);
 
 				// Get some range data
 				uni = uni[0];
@@ -132,7 +129,7 @@ export function ioSVG_importSVGfont(font) {
 				maxChar = Math.max(maxChar, uni);
 				if (1 * uni > latinExtendedB.end) customCharacterRange.push(uni);
 				newGlyph.id = `glyph-${uni}`;
-				log(newGlyph);
+				// log(newGlyph);
 				finalGlyphs[`glyph-${uni}`] = newGlyph;
 				// finalGlyphs[uni] = new Glyph({
 				// 	id: uni,
@@ -144,7 +141,7 @@ export function ioSVG_importSVGfont(font) {
 				}
 			} else {
 				// It's a LIGATURE
-				log(`Detected Ligature`);
+				// log(`Detected Ligature`);
 				uni = uni.join('');
 				// log(`uni: ${uni}`);
 				const chars = hexesToChars(uni);
@@ -318,6 +315,35 @@ export function ioSVG_importSVGfont(font) {
 		// log('ioSVG_importSVGfont', 'end');
 	}
 	// log('ioSVG_importSVGfont', 'end');
+}
+/**
+ * Recursively looks through data and returns any data that matches
+ * a specified list of tag names.
+ * @param {Object} obj - object to look through
+ * @param {Array or String} grabTags - list of tags to collect
+ * @returns {Array} - collection of objects representing tags
+ */
+function getTagsByName(obj, grabTags) {
+	// log('getTagsByName', 'start');
+	// log('grabTags: ' + JSON.stringify(grabTags));
+	// log('passed obj: ');
+	// log(obj);
+
+	if (typeof grabTags === 'string') grabTags = [grabTags];
+	let result = [];
+
+	if (obj.content) {
+		for (let c = 0; c < obj.content.length; c++) {
+			result = result.concat(getTagsByName(obj.content[c], grabTags));
+		}
+	} else {
+		if (grabTags.indexOf(obj.name) > -1) {
+			result = [obj];
+		}
+	}
+
+	// log('getTagsByName', 'end');
+	return result;
 }
 
 export function getFirstTagInstance(obj, tagname) {

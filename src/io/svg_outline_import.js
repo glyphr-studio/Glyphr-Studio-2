@@ -5,21 +5,21 @@ import { PathPoint } from '../project_data/path_point.js';
 import { ControlPoint } from '../project_data/control_point.js';
 
 export function ioSVG_convertSVGTagsToGlyph(svgData) {
-	log('ioSVG_convertSVGTagsToGlyph', 'start');
+	// log('ioSVG_convertSVGTagsToGlyph', 'start');
 
-	log(`Passed svgData`);
-	log(svgData);
+	// log(`Passed svgData`);
+	// log(svgData);
 
 	const bezierData = SVGtoBezier(svgData);
-	log(`Resulting Bezier Data`);
-	log(bezierData);
+	// log(`Resulting Bezier Data`);
+	// log(bezierData);
 
 	if (bezierData.length === 0) {
 		// showError(`
 		// 	Could not find any SVG tags to import.
 		// 	Supported tags are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.`
 		// );
-		log('ioSVG_convertSVGTagsToGlyph', 'end');
+		// log('ioSVG_convertSVGTagsToGlyph', 'end');
 		return;
 	}
 
@@ -39,13 +39,35 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 
 		if (path.length) {
 			pathCounter++;
-			log(`pathCounter: ${pathCounter}`);
+			// log(`pathCounter: ${pathCounter}`);
+			const isPathClosed = path[0][0].x === path.at(-1)[3].x && path[0][0].y === path.at(-1)[3].y;
 			let thisPath = new Path({ name: `Path ${pathCounter}` });
+			let newPoint;
+
+			if (!isPathClosed) {
+				newPoint = new PathPoint({ p: { coord: { x: path[0][0].x, y: path[0][0].y } } });
+				if (path[0][1]) {
+					newPoint.h2 = new ControlPoint({ coord: { x: path[0][1].x, y: path[0][1].y } });
+				}
+				thisPath.addPathPoint(newPoint);
+			}
+
 			for (let b = 0; b < path.length - 1; b++) {
-				log(`Bezier path: b: ${b}`);
+				// log(`>>>>Bezier path: ${b} and ${b + 1}`);
 				thisPath.addPathPoint(makePathPointFromBeziers(path[b], path[b + 1]));
 			}
-			thisPath.addPathPoint(makePathPointFromBeziers(path.at(-1), path[0]));
+
+			if (isPathClosed) {
+				// log(`>>>>Bezier path: at(-1) and 0`);
+				thisPath.addPathPoint(makePathPointFromBeziers(path.at(-1), path[0]));
+			} else {
+				newPoint = new PathPoint({ p: { coord: { x: path.at(-1)[3].x, y: path.at(-1)[3].y } } });
+				if (path.at(-1)[2]) {
+					newPoint.h1 = new ControlPoint({ coord: { x: path.at(-1)[2].x, y: path.at(-1)[2].y } });
+				}
+				thisPath.addPathPoint(newPoint);
+			}
+
 			newPaths.push(thisPath);
 		}
 	});
@@ -53,20 +75,20 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 	const resultGlyph = new Glyph({ shapes: newPaths });
 	resultGlyph.changed(true);
 
-	log(`RESULTING paths in a glyph`);
-	log(resultGlyph);
+	// log(`RESULTING paths in a glyph`);
+	// log(resultGlyph);
 
-	log('ioSVG_convertSVGTagsToGlyph', 'end');
+	// log('ioSVG_convertSVGTagsToGlyph', 'end');
 	return resultGlyph;
 }
 
 function makePathPointFromBeziers(seg1, seg2) {
-	log(`makePathPointFromBeziers`, 'start');
-	log(`seg1: ${JSON.stringify(seg1)}`);
-	log(`seg2: ${JSON.stringify(seg2)}`);
+	// log(`makePathPointFromBeziers`, 'start');
+	// log(`seg1: ${JSON.stringify(seg1)}`);
+	// log(`seg2: ${JSON.stringify(seg2)}`);
 
 	if (seg1[3].x !== seg2[0].x || seg1[3].y !== seg2[0].y) {
-		console.warn(`Segments do not share endpoints`);
+		// console.warn(`Segments do not share endpoints`);
 	}
 
 	let newPoint = new PathPoint({
@@ -76,48 +98,18 @@ function makePathPointFromBeziers(seg1, seg2) {
 	if (seg1[2]) {
 		newPoint.h1 = new ControlPoint({ coord: { x: seg1[2].x, y: seg1[2].y }, use: true });
 	} else {
-		console.warn(`NOT SETTING h1`);
-		log(seg1[2]);
+		// console.warn(`NOT SETTING h1`);
+		// log(seg1[2]);
 	}
 
 	if (seg2[1]) {
 		newPoint.h2 = new ControlPoint({ coord: { x: seg2[1].x, y: seg2[1].y }, use: true });
 	} else {
-		console.warn(`NOT SETTING h2`);
-		log(seg2[1]);
+		// console.warn(`NOT SETTING h2`);
+		// log(seg2[1]);
 	}
 
-	log(newPoint.print());
-	log(`makePathPointFromBeziers`, 'end');
+	// log(newPoint.print());
+	// log(`makePathPointFromBeziers`, 'end');
 	return newPoint;
-}
-
-/**
- * Recursively looks through data and returns any data that matches
- * a specified list of tag names.
- * @param {Object} obj - object to look through
- * @param {Array or String} grabTags - list of tags to collect
- * @returns {Array} - collection of objects representing tags
- */
-export function ioSVG_getTags(obj, grabTags) {
-	// log('ioSVG_getTags', 'start');
-	// log('grabTags: ' + JSON.stringify(grabTags));
-	// log('passed obj: ');
-	// log(obj);
-
-	if (typeof grabTags === 'string') grabTags = [grabTags];
-	let result = [];
-
-	if (obj.content) {
-		for (let c = 0; c < obj.content.length; c++) {
-			result = result.concat(ioSVG_getTags(obj.content[c], grabTags));
-		}
-	} else {
-		if (grabTags.indexOf(obj.name) > -1) {
-			result = [obj];
-		}
-	}
-
-	// log('ioSVG_getTags', 'end');
-	return result;
 }
