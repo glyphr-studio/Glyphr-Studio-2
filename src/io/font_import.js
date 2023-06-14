@@ -131,24 +131,24 @@ function importOneGlyph(otfGlyph, project) {
 }
 
 function makeGlyphrStudioGlyphObject(otfGlyph) {
-	log(`makeGlyphrStudioGlyphObject`, 'start');
-	log(otfGlyph);
+	// log(`makeGlyphrStudioGlyphObject`, 'start');
+	// log(otfGlyph);
 	const advance = otfGlyph.advanceWidth;
-	log(`advance: ${advance}`);
+	// log(`advance: ${advance}`);
 
 	// const newPaths = [];
 	// let pathCounter = 0;
 	// Import Path Data
 	let data = otfGlyph.path.toSVG();
-	log('Glyph has .toSVG data');
-	log(data);
+	// log('Glyph has .toSVG data');
+	// log(data);
 
 	let importedGlyph;
 
 	if (data) {
 		importedGlyph = ioSVG_convertSVGTagsToGlyph(`<svg>${data}</svg>`);
-		log(`importedGlyph`);
-		log(importedGlyph);
+		// log(`importedGlyph`);
+		// log(importedGlyph);
 
 	} else {
 		importedGlyph = new Glyph();
@@ -156,7 +156,7 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 
 	if(importedGlyph)	importedGlyph.advanceWidth = advance;
 
-	log(`makeGlyphrStudioGlyphObject`, 'end');
+	// log(`makeGlyphrStudioGlyphObject`, 'end');
 	return importedGlyph;
 }
 
