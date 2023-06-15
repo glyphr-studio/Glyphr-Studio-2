@@ -1,6 +1,6 @@
 import { clone, json, remove, round, trim } from '../common/functions.js';
 import { Glyph } from '../project_data/glyph.js';
-import { HKern } from '../project_data/h_kern.js';
+import { KernGroup } from './kern_group.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
 import { CharacterRange } from './character_range.js';
@@ -138,7 +138,7 @@ export class GlyphrStudioProject {
 		// Kerning
 		// log(`\nStarting kerning - passed:`);
 		// log(newProject.kerning);
-		this.hydrateProjectItems(HKern, newProject.kerning, 'HKern');
+		this.hydrateProjectItems(KernGroup, newProject.kerning, 'KernGroup');
 		// log('finished hydrating kern pairs - result:');
 		// log(this.kerning);
 
@@ -437,7 +437,7 @@ export class GlyphrStudioProject {
 		if (objType === 'Component') {
 			destination = this.components;
 		}
-		if (objType === 'HKern') {
+		if (objType === 'KernGroup') {
 			destination = this.kerning;
 		}
 
@@ -449,7 +449,7 @@ export class GlyphrStudioProject {
 
 	/**
 	 * Takes generic Objects, and initializes them as Glyphr Studio objects
-	 * @param {Object} GlyphrStudioItem - Glyph, Guide, or HKern
+	 * @param {Object} GlyphrStudioItem - Glyph, Guide, or KernGroup
 	 * @param {Object} source - collection of temporary objects to hydrate
 	 * @param {String} objType - type of object this is
 	 * @param {GlyphrStudioProject} destinationProject - parent project
@@ -464,7 +464,7 @@ export class GlyphrStudioProject {
 		if (objType === 'Glyph') destination = this.glyphs;
 		if (objType === 'Ligature') destination = this.ligatures;
 		if (objType === 'Component') destination = this.components;
-		if (objType === 'HKern') destination = this.kerning;
+		if (objType === 'KernGroup') destination = this.kerning;
 
 		for (const key of Object.keys(source)) {
 			let validatedKey = validateItemID(key, objType);

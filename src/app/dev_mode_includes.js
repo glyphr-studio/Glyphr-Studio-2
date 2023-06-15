@@ -47,5 +47,5 @@ _DEV.componentInstance = componentInstance;
 import * as glyph from '../project_data/glyph.js';
 _DEV.glyph = glyph;
 
-import * as hKern from '../project_data/h_kern.js';
-_DEV.hKern = hKern;
+import * as kernGroup from '../project_data/kern_group.js';
+_DEV.kernGroup = kernGroup;

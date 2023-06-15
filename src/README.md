@@ -41,7 +41,7 @@ Our data structure is roughly hierarchical:
       ┃   ┣━ App
       ┃   ┗━ Font
       ┣━ Kerning
-      ┃   ┗━ HKern
+      ┃   ┗━ KernGroup
       ┣━ Components
       ┃   ┗━ Glyph
       ┣━ Ligatures
@@ -57,7 +57,7 @@ Our data structure is roughly hierarchical:
                       ┗━ Segment
 
 Though there is also **`XY Point`** type for simple coordinates. Additionally,
-there is also the **`HKern`** type, used to represent class-based kern information.
+there is also the **`KernGroup`** type, used to represent class-based kern information.
 
 Besides this, the most common hierarchy is:
 
