@@ -15,6 +15,7 @@ import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live
 import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
 import { ProjectEditor } from './project_editor.js';
 import { makePage_Components } from '../pages/components.js';
+import { makePage_Kerning } from '../pages/kerning.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -53,7 +54,7 @@ export class Navigator {
 				iconName: 'page_components',
 			},
 			Kerning: {
-				pageMaker: false,
+				pageMaker: makePage_Kerning,
 				iconName: 'page_kerning',
 			},
 			'Live preview': {

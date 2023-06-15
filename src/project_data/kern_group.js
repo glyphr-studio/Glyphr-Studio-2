@@ -2,13 +2,13 @@ import { GlyphElement } from './glyph_element.js';
 import { hexesToChars } from '../common/character_ids.js';
 
 /**
- * Horizontal Kern
+ * Kern Group
  * An object for storing two groups of glyphs, and
- * the kern value that applies to them.
+ * the horizontal kern value that applies to them.
  */
-export class HKern extends GlyphElement {
+export class KernGroup extends GlyphElement {
 	/**
-	 * Set up the HKern object
+	 * Set up the KernGroup object
 	 * @param {array} leftGroup - Collection of Unicode values
 	 * @param {array} rightGroup - Collection of Unicode values
 	 * @param {number} value - Amount to move leftGroup to the right
@@ -19,7 +19,7 @@ export class HKern extends GlyphElement {
 		this.rightGroup = rightGroup;
 		this.value = value;
 
-		this.objType = 'HKern';
+		this.objType = 'KernGroup';
 	}
 
 	// --------------------------------------------------------------

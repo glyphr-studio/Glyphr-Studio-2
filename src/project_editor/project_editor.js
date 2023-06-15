@@ -7,7 +7,7 @@ import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import { Glyph } from '../project_data/glyph.js';
 import { publish, subscribe, unsubscribe } from './pub-sub.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
-import { HKern } from '../project_data/h_kern.js';
+import { KernGroup } from '../project_data/kern_group.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 import { decToHex } from '../common/character_ids.js';
@@ -450,11 +450,11 @@ export class ProjectEditor {
 
 	/**
 	 * Replaces the current Kern
-	 * @param {HKern} newKern - new kern to set
+	 * @param {KernGroup} newKern - new kern to set
 	 */
 	set selectedKern(newKern = {}) {
 		let id = this.selectedKernID;
-		newKern = new HKern(newKern);
+		newKern = new KernGroup(newKern);
 		this.project.kerns[id] = newKern;
 	}
 

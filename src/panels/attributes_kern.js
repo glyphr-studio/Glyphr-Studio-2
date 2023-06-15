@@ -84,7 +84,7 @@ function addCommonKernPairs() {
 
 	for (let k = 0; k < add.length; k += 2) {
 		nid = generateNewID(getCurrentProject().kerning);
-		getCurrentProject().kerning[nid] = new HKern({
+		getCurrentProject().kerning[nid] = new KernGroup({
 			leftGroup: parseKernGroupInput(add[k]),
 			rightGroup: parseKernGroupInput(add[k + 1]),
 		});
@@ -145,7 +145,7 @@ function createNewKernPair() {
 	else {
 		let id = generateNewID(getCurrentProject().kerning, 'kern');
 
-		getCurrentProject().kerning[id] = new HKern({
+		getCurrentProject().kerning[id] = new KernGroup({
 			leftGroup: l,
 			rightGroup: r,
 		});

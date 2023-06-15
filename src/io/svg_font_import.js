@@ -7,7 +7,7 @@ import { makeLigatureID } from '../pages/ligatures.js';
 import { importOverflowCount, isOutOfBounds } from '../pages/open_project.js';
 import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
-import { HKern } from '../project_data/h_kern.js';
+import { KernGroup } from '../project_data/kern_group.js';
 
 /**
 	IO > Import > SVG Font
@@ -221,7 +221,7 @@ export function ioSVG_importSVGfont(font) {
 			newID = generateNewID(finalKerns, 'kern');
 			kernValue = thisKern.attributes.k || 0;
 			// log('Making a kern pair with k = ' + kernValue);
-			finalKerns[newID] = new HKern({
+			finalKerns[newID] = new KernGroup({
 				leftGroup: leftGroup,
 				rightGroup: rightGroup,
 				value: kernValue,
