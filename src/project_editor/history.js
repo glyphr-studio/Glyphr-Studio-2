@@ -125,8 +125,12 @@ export class History {
 				baseItem = this.initialProject.components[editor.selectedComponentID];
 				// log(baseItem);
 				baseItemState = baseItem.save();
+			} else if (editor.nav.page === 'Kerning') {
+				// log(`editor.selectedKernID : ${editor.selectedKernID}`);
+				baseItem = this.initialProject.kerning[editor.selectedKernID];
+				// log(baseItem);
+				baseItemState = baseItem.save();
 			}
-			// TODO Kerning
 			nextEntry = {
 				itemState: baseItemState,
 				itemID: editor.selectedItemID,
@@ -174,6 +178,7 @@ export class History {
 
 function makeHistoryEntry({ itemID, title = '', changedItem, page = '', itemWasDeleted = false }) {
 	// TODO Kerning
+	if (page === 'Kerning') return;
 	let newEntry = {
 		timeStamp: new Date().getTime(),
 		itemID: itemID,

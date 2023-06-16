@@ -1058,5 +1058,11 @@
     }
   },
   "components": {},
-  "kerning": {}
+  "kerning": {
+    "kern-0": {
+      "leftGroup": ["glyph-0x41", "glyph-0x42", "glyph-0x43"],
+      "rightGroup": ["glyph-0x43"],
+      "value": -100
+    }
+  }
 }

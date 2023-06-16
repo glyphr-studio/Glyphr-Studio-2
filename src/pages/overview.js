@@ -38,11 +38,10 @@ export function makePage_Overview() {
 		editor.selectedItemID = itemID;
 		// log(`editor.selectedItemID: ${editor.selectedItemID}`);
 
-
-		// TODO kerns
 		if (itemID.startsWith('glyph-')) editor.nav.page = 'Characters';
 		else if (itemID.startsWith('liga-')) editor.nav.page = 'Ligatures';
 		else if (itemID.startsWith('comp-')) editor.nav.page = 'Components';
+		else if (itemID.startsWith('kern-')) editor.nav.page = 'Kerning';
 		// log(`editor.nav.page: ${editor.nav.page}`);
 		editor.navigate();
 

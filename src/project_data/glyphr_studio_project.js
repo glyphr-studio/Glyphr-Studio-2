@@ -214,7 +214,6 @@ export class GlyphrStudioProject {
 		id = '' + id;
 		let result;
 
-		// TODO Kern
 		if (this.ligatures && id.startsWith('liga-')) {
 			// log(`detected LIGATURE`);
 			result = this.ligatures[id] || false;
@@ -224,6 +223,9 @@ export class GlyphrStudioProject {
 		} else if (this.components && id.startsWith('comp-')) {
 			// log(`detected COMPONENT`);
 			result = this.components[id] || false;
+		} else if (this.kerning && id.startsWith('kern-')) {
+			// log(`detected KERN`);
+			result = this.kerning[id] || false;
 		} else {
 			// log('NO RESULT FOUND');
 		}
@@ -252,7 +254,6 @@ export class GlyphrStudioProject {
 
 		id = '' + id;
 
-		// TODO Kern
 		if (this.ligatures && id.startsWith('liga-')) {
 			// log(`detected LIGATURE`);
 			this.ligatures[id] = newItem;
@@ -262,6 +263,9 @@ export class GlyphrStudioProject {
 		} else if (this.components && id.startsWith('comp-')) {
 			// log(`detected COMPONENT`);
 			this.components[id] = newItem;
+		} else if (this.kerning && id.startsWith('kern-')) {
+			// log(`detected KERN`);
+			this.kerning[id] = newItem;
 		} else {
 			// log('NO RESULT FOUND');
 		}

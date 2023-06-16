@@ -11,7 +11,7 @@ import {
 	drawNewBasicPath,
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
-import { round } from '../common/functions.js';
+import { clone, round } from '../common/functions.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -112,22 +112,26 @@ export class EditCanvas extends HTMLElement {
 		const ctx = this.ctx;
 		const width = this.width;
 		const height = this.height;
+		const currentItemID = this.editingItemID;
 
-		// Current Glyph
-		const sg = editor.project.getItem(this.editingItemID);
-		// log(sg);
+		if (currentItemID.startsWith('kern-')) {
+			if (requestAnimationFrame) requestAnimationFrame(redrawKernEdit);
+			else redrawKernEdit();
+		} else {
+			if (requestAnimationFrame) requestAnimationFrame(redrawGlyphEdit);
+			else redrawGlyphEdit();
+		}
 
-		if (requestAnimationFrame) requestAnimationFrame(redrawAnimationFrame);
-		else this.redrawAnimationFrame();
+		// log('EditCanvas.redraw', 'end');
 
-		function redrawAnimationFrame() {
+		function redrawGlyphEdit() {
 			ctx.clearRect(0, 0, width, height);
 
 			// Guides
 			drawGuides();
 
 			// Draw glyphs
-			drawGlyph(sg, ctx, view);
+			drawGlyph(project.getItem(currentItemID), ctx, view);
 
 			// Draw selected shape
 			const editMode = editor.selectedTool;
@@ -160,19 +164,50 @@ export class EditCanvas extends HTMLElement {
 			}
 		}
 
+		function redrawKernEdit() {
+			log(`redrawKernEdit`, 'start');
+
+			let kernGroup = project.getItem(currentItemID);
+
+			if (kernGroup) {
+				drawGuides();
+				let drawItem;
+				// drawGlyphKernExtra(kernGroup.value, view.dx, sYcY(_GP.projectsettings.descent - 60), view.dz);
+
+				// Draw right hand group
+				let rightAlpha = Math.max(0.25, 1 / kernGroup.rightGroup.length);
+				kernGroup.rightGroup.forEach(id => {
+					drawItem = project.getItem(id, true);
+					drawGlyph(drawItem, ctx, view, rightAlpha);
+				});
+
+				// DRAW ALL LEFT HAND GROUP
+				let leftAlpha = Math.max(0.25, 1 / kernGroup.leftGroup.length);
+				kernGroup.leftGroup.forEach(id => {
+					drawItem = project.getItem(id, true);
+					let thisView = clone(view);
+					thisView.dx -= drawItem.advanceWidth * thisView.dz;
+					thisView.dx += kernGroup.value * thisView.dz;
+					drawGlyph(drawItem, ctx, thisView, leftAlpha);
+				});
+			}
+
+			log(`redrawKernEdit`, 'end');
+		}
+
 		function drawGuides() {
 			ctx.fillStyle = accentColors.gray.l90;
 			const gridTop = sYcY(project.settings.font.ascent, view);
 			const gridHeight = project.totalVertical * view.dz;
 			const gridPad = 100 * view.dz;
-			const gridWidth = sg.advanceWidth * view.dz;
+			const gridWidth = project.getItem(currentItemID).advanceWidth * view.dz;
 
 			const gridLines = project.settings.app.guides.system;
 			// Verticals
 			if (gridLines.showLeftSide) {
 				ctx.fillRect(view.dx, gridTop, 1, gridHeight);
 			}
-			if (gridLines.showRightSide && sg.advanceWidth) {
+			if (gridLines.showRightSide && project.getItem(currentItemID).advanceWidth) {
 				ctx.fillRect(round(view.dx + gridWidth), gridTop, 1, gridHeight);
 			}
 
@@ -181,8 +216,6 @@ export class EditCanvas extends HTMLElement {
 				ctx.fillRect(view.dx - gridPad, view.dy, gridWidth + gridPad * 2, 1);
 			}
 		}
-
-		// log('EditCanvas.redraw', 'end');
 	}
 }
 

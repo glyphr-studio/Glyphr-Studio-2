@@ -9,6 +9,7 @@ import { ControlPoint } from '../project_data/control_point.js';
 import { showError } from '../controls/dialogs/dialogs.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
+import { KernGroup } from '../project_data/kern_group.js';
 
 /**
  * Takes a js Object from a JSON-based project file, and returns
@@ -91,7 +92,16 @@ function migrate_Project(oldProject) {
 		newProject.components[newID].advanceWidth = false;
 	});
 
-	// TODO Kerns
+	// Kerns
+	Object.keys(oldProject.kerning).forEach((oldID) => {
+		const newID = migrate_ItemID(oldID);
+		const oldKern = oldProject.kerning[oldID];
+		newProject.kerning[newID] = new KernGroup({
+			leftGroup: oldKern.leftgroup,
+			rightGroup: oldKern.rightgroup,
+			value: oldKern.value
+		});
+	});
 
 	// Metadata
 	const newPreferences = newProject.settings.app;
