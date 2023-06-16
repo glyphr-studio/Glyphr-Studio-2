@@ -21,7 +21,7 @@ export function ioSVG_importSVGfont(font) {
 
 	const project = getCurrentProject();
 	let chars;
-	let kerns; // TODO kerning
+	let kerns;
 
 	const latinExtendedB = getUnicodeBlockByName('Latin Extended-B');
 
@@ -32,8 +32,7 @@ export function ioSVG_importSVGfont(font) {
 		updateProgressIndicator('Reading font data...');
 
 		// Get Kerns
-		// TODO kerning
-		// kerns = getTagsByName(font, 'hkern');
+		kerns = getTagsByName(font, 'hkern');
 
 		// Get Glyphs
 		chars = getTagsByName(font, 'glyph');
@@ -81,10 +80,9 @@ export function ioSVG_importSVGfont(font) {
 		`);
 
 		if (charCounter >= chars.length) {
-			// TODO Kerning
-			// setTimeout(importOneKern, 10);
+			setTimeout(importOneKern, 10);
 			updateProgressIndicator('Finalizing the imported font...');
-			setTimeout(startFinalizeFontImport, 10);
+			// setTimeout(startFinalizeFontImport, 10);
 
 			return;
 		}
@@ -251,25 +249,7 @@ export function ioSVG_importSVGfont(font) {
 		const editor = getCurrentProjectEditor();
 		project.glyphs = finalGlyphs;
 		project.ligatures = finalLigatures;
-
-		// TODO Kerning
-		// project.kerning = finalKerns;
-
-		/*
-		REFACTOR
-		let rangeStart;
-		let rend;
-		for (const r of Object.keys(_UI.glyphRange)) {
-			rangeStart = 1 * _UI.glyphRange[r].begin;
-			rend = 1 * _UI.glyphRange[r].end + 1;
-			for (let t = rangeStart; t < rend; t++) {
-				if (getItem(t)) {
-					project.projectSettings.characterRanges[r] = true;
-					break;
-				}
-			}
-		}
-		*/
+		project.kerning = finalKerns;
 
 		// Make a custom range for the rest
 		if (customCharacterRange.length) {

@@ -277,7 +277,7 @@ export class ProjectEditor {
 	 * @returns {object}
 	 */
 	get selectedKern() {
-		const re = this.project.kerns[this.selectedKernID];
+		const re = this.project.kerning[this.selectedKernID];
 		return re;
 	}
 
@@ -455,7 +455,7 @@ export class ProjectEditor {
 	set selectedKern(newKern = {}) {
 		let id = this.selectedKernID;
 		newKern = new KernGroup(newKern);
-		this.project.kerns[id] = newKern;
+		this.project.kerning[id] = newKern;
 	}
 
 	/**
@@ -464,11 +464,11 @@ export class ProjectEditor {
 	 */
 	set selectedKernID(id) {
 		if (typeof id !== 'string') return;
-		if (this.project.kerns[id]) {
+		if (this.project.kerning[id]) {
 			this._selectedKernID = id;
 		} else {
 			console.warn(`Kern ID ${id} does not exist in the project.`);
-			this._selectedKernID = getFirstID(this.project.kerns);
+			this._selectedKernID = getFirstID(this.project.kerning);
 		}
 
 		this.publish('whichKernIsSelected', this.selectedKernID);

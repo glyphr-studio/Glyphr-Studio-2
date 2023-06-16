@@ -3,44 +3,34 @@
 		Shows a list of all the kern pairs.
 **/
 
-function makePanel_KerningAttributes() {
-	// log('makePanel_KerningAttributes', 'start');
+import { getCurrentProjectEditor } from '../app/main';
+import { makeCard_kernGroup } from './card_kern_group';
 
-	let content = '<div class="panel__card">';
-	content += editor.nav.page;
-	content += '<h2>Pairs</h2>';
-	content += '</div>';
-
-	content += '<div class="panel__card">';
-	let rows = '';
-	for (let k of Object.keys(getCurrentProject().kerning)) {
-		rows += makeOneKernPairRow(getCurrentProject().kerning[k], k);
-	}
-	content +=
-		rows ||
-		'No kern pairs exist yet.  You can create a new one, or add some common kern pairs to get started.';
-	content += '</div>';
-
-	content += '<div class="panel__card">';
-	content += '<button onclick="showNewKernPairDialog();">add new kern pair</button><br>';
-	if (!rows)
-		content += '<button onclick="addCommonKernPairs();">add some common kern pairs</button>';
-	content += '</div>';
-
-	if (!rows) {
-		content += '<div class="panel__card">';
-		content += '<h2>Please note!</h2><br>';
-		content +=
-			'Kern information will only be exported to SVG Fonts. This is a limitation of the library we use to write OTF files.<br><br>';
-		content +=
-			'If you really need kern information in an OTF file, first export your project to an SVG Font, then use an online service to ';
-		content += 'convert your SVG Font to an OTF Font.';
-		content += '</div>';
-	}
-
-	// log('makePanel_KerningAttributes', 'end');
-	return content;
+export function makePanel_KernGroupAttributes() {
+	// log('makePanel_KernGroupAttributes', 'start');
+	const editor = getCurrentProjectEditor();
+	// log('makePanel_KernGroupAttributes', 'end');
+	return makeCard_kernGroup(editor.selectedKern);
 }
+
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function makeOneKernPairRow(k, id) {
 	let selstyle = '';
@@ -174,3 +164,5 @@ function deleteKernPair(id) {
 	_UI.selectedKern = getFirstID(getCurrentProject().kerning);
 	redraw({ calledBy: 'deleteKernPair' });
 }
+
+*/

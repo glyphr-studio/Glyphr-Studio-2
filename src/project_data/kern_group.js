@@ -60,8 +60,8 @@ export class KernGroup extends GlyphElement {
 	 * @returns {string}
 	 */
 	get name() {
-		const left = hexesToChars(this.leftGroup.join(''));
-		const right = hexesToChars(this.rightGroup.join(''));
+		const left = hexesToChars(this.leftGroup.map((id => id.replace('glyph-', ''))).join(''));
+		const right = hexesToChars(this.rightGroup.map((id => id.replace('glyph-', ''))).join(''));
 		return `${left} | ${right}`;
 	}
 

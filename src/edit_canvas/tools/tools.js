@@ -250,15 +250,18 @@ export function switchToolTo(newTool) {
 
 export function makeKernToolsButtons() {
 	// Kern
-	const kern = `
-		<button
-			title="kern"
-			class="${st === 'kern' ? 'editor-page__tool-selected ' : ' '} tool"
-			onclick="clickTool(\'kern\');"
-		>
-			${makeToolButtonSVG({ name: 'kern', selected: st === 'kern' })}
-		</button>
-	`;
+	const editor = getCurrentProjectEditor();
+	const kern = makeElement({
+		tag: 'button',
+		className: 'editor-page__tool',
+		title: 'Adjust kern value',
+		innerHTML: makeToolButtonSVG({
+			name: 'kern',
+			selected: editor.selectedTool === 'kern',
+		}),
+	});
+
+	return kern;
 }
 
 export function makeContextGlyphControls() {

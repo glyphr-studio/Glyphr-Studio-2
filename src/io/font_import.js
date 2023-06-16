@@ -8,6 +8,8 @@ import { Glyph } from '../project_data/glyph.js';
 import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { CharacterRange } from '../project_data/character_range.js';
+import { KernGroup } from '../project_data/kern_group.js';
+import { makeKernID } from '../pages/kerning.js';
 
 /**
 	IO > Import > OpenType
@@ -17,20 +19,21 @@ import { CharacterRange } from '../project_data/character_range.js';
 const finalGlyphs = {};
 const importedRanges = {};
 const finalLigatures = {};
+const finalKerns = {};
 let importItemCounter = 0;
 let importItemTotal = 0;
 // let maxChar = 0;
 // let minChar = 0xffff;
 
 export async function ioFont_importFont(importedFont) {
-	// log('ioFont_importFont', 'start');
-	// log(importedFont);
+	log('ioFont_importFont', 'start');
+	log(importedFont);
 	const project = getCurrentProject();
 	const fontGlyphs = importedFont.glyphs.glyphs;
 	const fontLigatures = importedFont.substitution.getLigatures('liga');
-	// log(fontLigatures);
-	importItemTotal = countItems(fontGlyphs) + fontLigatures.length;
-	// updateFontImportProgressIndicator(1);
+	const fontKerns = importedFont.kerningPairs;
+
+	importItemTotal = countItems(fontGlyphs) + fontLigatures.length + countItems(fontKerns);
 
 	for (const key of Object.keys(fontGlyphs)) {
 		await updateFontImportProgressIndicator();
@@ -42,18 +45,25 @@ export async function ioFont_importFont(importedFont) {
 		importOneLigature({ glyph: importedFont.glyphs.get(liga.by), gsub: liga.sub }, importedFont);
 	}
 
+	for (const key of Object.keys(fontKerns)) {
+		await updateFontImportProgressIndicator();
+		importOneKern(key, fontKerns[key], project);
+	}
+
 	importFontMetadata(importedFont, project);
 
 	project.glyphs = finalGlyphs;
 	project.ligatures = finalLigatures;
-	// project.kerning = finalKerns;
+	project.kerning = finalKerns;
+
+	log(project);
 
 	const editor = getCurrentProjectEditor();
 	editor.selectedCharacterRange = getUnicodeBlockByName('Basic Latin');
 	editor.nav.page = 'Overview';
 	editor.navigate();
 
-	// log('ioFont_importFont', 'end');
+	log('ioFont_importFont', 'end');
 }
 
 async function updateFontImportProgressIndicator() {
@@ -65,6 +75,10 @@ async function updateFontImportProgressIndicator() {
 		`);
 	await pause();
 }
+
+// --------------------------------------------------------------
+// Characters
+// --------------------------------------------------------------
 
 function importOneGlyph(otfGlyph, project) {
 	// log('importOneGlyph', 'start');
@@ -149,16 +163,19 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 		importedGlyph = ioSVG_convertSVGTagsToGlyph(`<svg>${data}</svg>`);
 		// log(`importedGlyph`);
 		// log(importedGlyph);
-
 	} else {
 		importedGlyph = new Glyph();
 	}
 
-	if(importedGlyph)	importedGlyph.advanceWidth = advance;
+	if (importedGlyph) importedGlyph.advanceWidth = advance;
 
 	// log(`makeGlyphrStudioGlyphObject`, 'end');
 	return importedGlyph;
 }
+
+// --------------------------------------------------------------
+// Ligatures
+// --------------------------------------------------------------
 
 function importOneLigature(otfLigature, otfFont) {
 	// log(`importOneLigature`, 'start');
@@ -196,14 +213,40 @@ function importOneLigature(otfLigature, otfFont) {
 	// log(`importOneLigature`, 'end');
 }
 
-/*
- *
- *  IMPORT KERNS?
- *
- */
-// const finalKerns = {};
-// function importOneKern() {
-// }
+// --------------------------------------------------------------
+// Kerning
+// --------------------------------------------------------------
+
+function importOneKern(members, value, project) {
+	// log(`importOneKern`, 'start');
+	members = members.split(',');
+	let left = decToHex(members[0]);
+	let right = decToHex(members[1]);
+
+	if (members.length !== 2) {
+		console.warn(
+			`Something went wrong with importing this kern pair: ${JSON.stringify(members)} | ${value} `
+		);
+		importItemCounter--;
+		// log(`importOneKern`, 'end');
+		return;
+	}
+	const importedKern = new KernGroup({
+		leftGroup: [left],
+		rightGroup: [right],
+		value: value,
+	});
+	const newKernID = makeKernID(finalKerns);
+
+	// Finish up
+	finalKerns[newKernID] = importedKern;
+	importItemCounter++;
+	// log(`importOneKern`, 'end');
+}
+
+// --------------------------------------------------------------
+// Metadata
+// --------------------------------------------------------------
 
 function importFontMetadata(font, project) {
 	// log('importFontMetadata', 'start');

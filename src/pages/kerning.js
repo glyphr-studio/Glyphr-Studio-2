@@ -4,17 +4,16 @@ import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
 import { makeKernToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
-import { Glyph } from '../project_data/glyph.js';
 import {
 	closeAllInfoBubbles,
 	closeEveryTypeOfDialog,
 	showError,
 	showModalDialog,
 } from '../controls/dialogs/dialogs.js';
-import { charToHex } from '../common/character_ids.js';
-import { normalizePrefixes } from '../common/character_ids.js';
-import { validateDecOrHexSuffix } from '../common/character_ids.js';
-import { hexesToChars } from '../common/character_ids.js';
+import { countItems } from '../common/functions.js';
+import { KernGroup } from '../project_data/kern_group.js';
+import { makeCard_kernGroup } from '../panels/card_kern_group.js';
+import { makePanel_KernGroupAttributes } from '../panels/attributes_kern.js';
 
 /**
  * Page > Kerning
@@ -32,6 +31,7 @@ export function makePage_Kerning() {
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
 	const selectedKernID = editor.selectedKernID;
+	editor.nav.panel = 'Attributes';
 
 	const editingContent = `
 		<div class="editor-page__tools-area"></div>
@@ -67,7 +67,7 @@ export function makePage_Kerning() {
 	const canvasArea = content.querySelector('.editor-page__edit-canvas-wrapper');
 
 	if (!selectedKernID) {
-		// Early return for project with zero kerns
+		// Early return for project with zero kern groups
 		addAsChildren(canvasArea, makeKerningFirstRunContent());
 		navArea.style.display = 'block';
 		l1.style.width = '100%';
@@ -102,24 +102,24 @@ export function makePage_Kerning() {
 	});
 	editor.subscribe({
 		topic: 'whichKernIsSelected',
-		subscriberID: 'nav.ligatureChooserButton',
+		subscriberID: 'nav.kernChooserButton',
 		callback: () => {
 			l2.innerHTML = makeNavButtonContent(editor.selectedKern.name, 'EDITING');
 		},
 	});
 
 	// Panel Selector
-	let l3 = content.querySelector('#nav-button-l3');
-	l3.addEventListener('click', function () {
-		toggleNavDropdown(l3);
-	});
+	// let l3 = content.querySelector('#nav-button-l3');
+	// l3.addEventListener('click', function () {
+	// 	toggleNavDropdown(l3);
+	// });
 
 	// Panel
 	const panel = content.querySelector('#editor-page__panel');
-	panel.appendChild(makePanel());
+	panel.appendChild(makePanel_KernGroupAttributes());
 	panel.addEventListener('scroll', closeAllInfoBubbles);
 	editor.subscribe({
-		topic: ['whichKernIsSelected', 'whichPathIsSelected'],
+		topic: ['whichKernIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
 		callback: () => {
 			refreshPanel();
@@ -196,135 +196,86 @@ function makeKerningFirstRunContent() {
 	return content;
 }
 
-function addKern(sequence) {
+function addKern(leftGroup, rightGroup, value) {
 	// log(`addKern`, 'start');
 
-	if (sequence.length < 2) {
-		// log(`addKern`, 'end');
-		return 'Kern sequences need to be two or more characters.';
-	}
-
-	// Test to see if Unicode or Hex notation is being used
-	let prefix = false;
-	let workingSequence = normalizePrefixes(sequence);
-	if (workingSequence.startsWith('U+')) {
-		workingSequence = workingSequence.split('U+');
-		workingSequence = workingSequence.slice(1);
-		prefix = 'U+';
-	} else if (workingSequence.startsWith('0x')) {
-		workingSequence = workingSequence.split('0x');
-		workingSequence = workingSequence.slice(1);
-		prefix = '0x';
-	}
-
-	// log(`prefix: ${prefix}`);
-	// log(`workingSequence: ${workingSequence}`);
-
-	if (prefix && workingSequence.length > 1) {
-		sequence = '';
-		for (let i = 0; i < workingSequence.length; i++) {
-			let id = workingSequence[i];
-			// log(`id: ${id}`);
-			let validatedSuffix = validateDecOrHexSuffix(id);
-			// log(`validatedSuffix: ${validatedSuffix}`);
-
-			if (validatedSuffix) sequence += hexesToChars(`0x${validatedSuffix}`);
-			else {
-				// log(`addKern`, 'end');
-				return `Invalid Hex or Unicode format: ${prefix}${id}.`;
-			}
-		}
-	}
-
-	// log(`sequence: ${sequence}`);
-
 	// Finish up creating new ID and Kern
-	const newID = makeKernID(sequence);
+	const newID = makeKernID();
 	// log(`newID: ${newID}`);
 
 	const project = getCurrentProject();
-	if (project.ligatures[newID]) {
-		// log(`addKern`, 'end');
-		return 'Kern already exists';
-	}
 
 	project.addNewItem(
-		new Glyph({
-			id: newID,
-			parent: project,
-			objType: 'Kern',
-			gsub: sequence.split('').map((char) => char.codePointAt(0)),
+		new KernGroup({
+			leftGroup: leftGroup,
+			rightGroup: rightGroup,
+			value: value,
 		}),
-		'Kern',
+		'KernGroup',
 		newID
 	);
 
+	getCurrentProjectEditor().selectedKernID = newID;
+
 	// log(`addKern`, 'end');
-	return project.ligatures[newID];
+	return project.kerning[newID];
 }
 
-export function makeKernID(sequence) {
+export function makeKernID(kernGroups = getCurrentProject().kerning) {
 	// log(`makeKernID`, 'start');
-	// log(`sequence: ${sequence}`);
-
-	let newID = 'kern';
-	let chars = sequence.split('');
-	chars.forEach((char) => {
-		// If basic latin letter, use the letter
-		let code = char.charCodeAt(0);
-		if ((code >= 0x41 && code <= 0x5a) || (code >= 0x61 && code <= 0x7a)) {
-			newID += '-' + char;
-		} else {
-			newID += '-' + charToHex(char);
-		}
-	});
-	// log(`newID: ${newID}`);
-
+	let counter = countItems(kernGroups);
+	while (kernGroups[`kern-${counter}`]) counter++;
 	// log(`makeKernID`, 'end');
-	return newID;
+	return `kern-${counter}`;
 }
 
 export function showAddKernDialog() {
 	const content = makeElement({
 		innerHTML: `
 			<h2>Add a new kern group</h2>
-				Create a new ligature by specifying two or more individual glyphs that will make up the ligature (like <code>ff</code>).
-				<br><br>
-				Kern glyphs can also be specified in Unicode format (like <code>U+0066U+0066</code>) or hexadecimal format (like <code>0x00660x0066</code>).
-				<br><br>
-				Hexadecimal, Unicode, and regular glyph formats cannot be mixed - choose one type!
+				Create a new kern group by specifying which characters should be in the left-side group,
+				the right-side group, then what distance in <code>Em</code> units should be used for the
+				kern value.
 				<br><br>
 
-				<h3>Kern Glyphs</h3>
-				<input id="ligatures__new-ligature-input" type="text"
+				<h3>Left group</h3>
+				<input id="kerning__add-new-kern-group__left-group" type="text"
 					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 				/>
 				<br><br>
-				<fancy-button disabled id="ligatures__add-new-ligature-button">Add new ligature to project</fancy-button>
+				<h3>Right group</h3>
+				<input id="kerning__add-new-kern-group__right-group" type="text"
+					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				/>
+				<br><br>
+				<h3>Value</h3>
+				<input id="kerning__add-new-kern-group__value" type="text"
+					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				/>
+				<br><br>
+				<fancy-button disabled id="kerning__add-new-kern-group__submit-button">Add new kern group</fancy-button>
 		`,
 	});
 
-	const submitButton = content.querySelector('#ligatures__add-new-ligature-button');
-	const newKernInput = content.querySelector('#ligatures__new-ligature-input');
-
-	newKernInput.addEventListener('keyup', () => {
-		if (newKernInput.value.length < 2) {
-			submitButton.setAttribute('disabled', '');
-		} else {
-			submitButton.removeAttribute('disabled');
-		}
-	});
+	const submitButton = content.querySelector('#kerning__add-new-kern-group__submit-button');
 
 	submitButton.addEventListener('click', () => {
 		// log(`showAddKernDialog button click handler`, 'start');
-		const result = addKern(newKernInput.value);
+		const newKernLeft = content.querySelector('#kerning__add-new-kern-group__left-group');
+		const newKernRight = content.querySelector('#kerning__add-new-kern-group__right-group');
+		const newKernValue = content.querySelector('#kerning__add-new-kern-group__value');
+
+		const result = addKern(
+			newKernLeft.value.split(),
+			newKernRight.value.split(),
+			parseInt(newKernValue.value)
+		);
 		// log(`result: ${result}`);
 
 		if (typeof result === 'string') {
 			showError(result);
 		} else {
 			const editor = getCurrentProjectEditor();
-			editor.selectedKernID = result.id;
 			editor.navigate();
 			closeEveryTypeOfDialog();
 		}
@@ -332,4 +283,21 @@ export function showAddKernDialog() {
 	});
 
 	showModalDialog(content, 500);
+}
+
+export function makeKernGroupCharChips(group) {
+	log(`makeKernGroupCharChips`, 'start');
+	log(`group: ${group}`);
+
+	const wrapper = makeElement();
+	const project = getCurrentProject();
+	group.forEach((charID) => {
+		log(`charID: ${charID}`);
+
+		let char = project.getItem(charID);
+		log(char);
+		wrapper.appendChild(makeElement({ tag: 'code', innerHTML: char.char }));
+	});
+	log(`makeKernGroupCharChips`, 'end');
+	return wrapper;
 }

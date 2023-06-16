@@ -303,6 +303,17 @@ export function getActionData(name) {
 		},
 	];
 
+	// KERN GROUP
+	data.kernGroupActions = [
+		{
+			iconName: 'deleteGlyph',
+			title: 'Delete this kern group',
+			onClick: () => {
+				log(`DELETE KERN GROUP`);
+			},
+		},
+	];
+
 	// LAYERS
 	data.layerActions = [
 		{
@@ -638,6 +649,13 @@ export function makeActionsArea_PathPoint(test = false) {
 	return actionsArea;
 }
 
+// Kern Group actions
+export function makeActionsArea_KernGroup() {
+	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
+	addChildActions(actionsArea, getActionData('kernGroupActions'));
+	return actionsArea;
+}
+
 // --------------------------------------------------------------
 // Delete selected path / point
 // --------------------------------------------------------------
@@ -967,7 +985,7 @@ export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = fals
 
 	const editor = getCurrentProjectEditor();
 	let item;
-	let  newShape;
+	let newShape;
 	let newShapes = [];
 	for (let c = 0; c < sourceItem.shapes.length; c++) {
 		item = sourceItem.shapes[c];
