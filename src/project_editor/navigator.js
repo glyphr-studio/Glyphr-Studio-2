@@ -16,6 +16,7 @@ import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialo
 import { ProjectEditor } from './project_editor.js';
 import { makePage_Components } from '../pages/components.js';
 import { makePage_Kerning } from '../pages/kerning.js';
+import { countItems } from '../common/functions.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -283,12 +284,23 @@ export function showNavDropdown(parentElement) {
 
 	if (dropdownType === 'EDITING') {
 		const editor = getCurrentProjectEditor();
+		const project = getCurrentProject();
 		dropdownContent = makeSingleItemTypeChooserContent(editor.nav.page, (itemID) => {
 			editor.selectedItemID = itemID;
 			editor.history.addState(`Navigated to ${editor.project.getItemName(itemID, true)}`);
 			closeAllNavMenus();
 		});
-		size = '80%';
+
+		if (
+			(editor.nav.page === 'Ligatures' && countItems(project.ligatures) > 25) ||
+			(editor.nav.page === 'Components' && countItems(project.components) > 25) ||
+			editor.nav.page === 'Characters'
+		) {
+			size = '80%';
+		} else {
+			size = `${parentElement.getBoundingClientRect().width - 2}px`;
+		}
+
 		navID = 'nav-dropdown-chooser';
 	}
 
