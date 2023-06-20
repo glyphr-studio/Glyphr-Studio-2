@@ -11,7 +11,6 @@ import { KernGroup } from '../project_data/kern_group.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 import { decToHex } from '../common/character_ids.js';
-import { calculateKernGroupWidth } from '../pages/kerning.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -737,7 +736,7 @@ export class ProjectEditor {
 
 		let itemWidth;
 		if (isKern) {
-			itemWidth = calculateKernGroupWidth(this.selectedItem);
+			itemWidth = this.selectedItem.groupWidth;
 		} else {
 			itemWidth = this.selectedItem.advanceWidth || this.project.defaultAdvanceWidth;
 		}

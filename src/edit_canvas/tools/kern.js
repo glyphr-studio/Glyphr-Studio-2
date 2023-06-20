@@ -22,20 +22,21 @@ export class Tool_Kern {
 			const editor = getCurrentProjectEditor();
 			this.dragging = false;
 			this.deltaX = 0;
-			editor.history.addState('Kern Adjustment: ' + editor.getSelectedKern.value);
+			editor.history.addState('Kern Adjustment: ' + editor.selectedKernGroup.value);
 			// redraw({calledBy:'Kern.mouseup'});
 		};
 
 		this.mousemove = () => {
 			if (this.dragging) {
+				// log('Tool_Kern - Mouse Move');
 				// Moving paths if mousedown
 				const editor = getCurrentProjectEditor();
-				let value = 1 * editor.getSelectedKern.value;
+				let value = 1 * editor.selectedKernGroup.value;
 				let newValue = round(
 					value + (1 * (eventHandlerData.mousePosition.x - this.deltaX)) / editor.view.dz
 				);
 				editor.selectedKernGroup.value = newValue;
-				editor.publish('currentKern', editor.selectedKernGroup);
+				editor.publish('currentKernGroup', editor.selectedKernGroup);
 				this.deltaX = eventHandlerData.mousePosition.x;
 			}
 		};

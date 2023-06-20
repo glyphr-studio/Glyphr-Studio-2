@@ -197,7 +197,7 @@ function drawGlyphNameExtra(text, currx, topY, advanceWidth, color, regHotspot) 
 	const textx = currx + (advanceWidth - textw) / 2; // center the glyph name
 	const texty = topY + 22;
 
-	ctx.font = '12px tahoma, verdana, sans-serif';
+	ctx.font = '12px Tahoma, Verdana, sans-serif';
 
 	ctx.strokeStyle = 'white';
 	ctx.lineWidth = 10;
@@ -229,16 +229,16 @@ function drawGlyphNameExtra(text, currx, topY, advanceWidth, color, regHotspot) 
 
 export function drawGlyphKernExtra(ctx, kern, rightX, topY, scale) {
 	// const color = getColorFromRGBA(
-		// 	'rgb(255,0,255)',
-		// 	transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency)
-		// );
-		const color = accentColors.purple.l70;
-		const barHeight = Math.max(scale * 10, 1);
-		const offset = (barHeight * -1);
+	// 	'rgb(255,0,255)',
+	// 	transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency)
+	// );
+	const color = accentColors.purple.l70;
+	const barHeight = Math.max(scale * 10, 1);
+	const offset = barHeight * -1;
 
-	ctx.font = '12px tahoma, verdana, sans-serif';
+	ctx.font = '12px Tahoma, Verdana, sans-serif';
 	ctx.fillStyle = color;
-	ctx.fillRect(rightX, topY + offset, kern * scale, barHeight);
+	ctx.fillRect(Math.floor(rightX), topY + offset, Math.ceil(kern * scale), barHeight);
 
 	const text = 'kern: ' + kern;
 	const textWidth = ctx.measureText(text).width;
@@ -552,7 +552,7 @@ function drawGuides() {
 
 	if (_UI.showGuides) {
 		if (onkern) {
-			_UI.guides.leftGroupXMax.location = getSelectedKern().value;
+			_UI.guides.leftGroupXMax.location = editor.selectedKern.value;
 			_UI.guides.leftGroupXMax.draw();
 			_UI.guides.rightGroupXMin.draw();
 			ps.guides.baseline.draw();
