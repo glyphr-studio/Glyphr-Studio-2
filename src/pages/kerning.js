@@ -287,17 +287,17 @@ export function showAddKernDialog() {
 }
 
 export function makeKernGroupCharChips(group) {
-	log(`makeKernGroupCharChips`, 'start');
-	log(`group: ${group}`);
+	// log(`makeKernGroupCharChips`, 'start');
+	// log(`group: ${group}`);
 
 	const wrapper = makeElement();
 	group.forEach((charID) => {
-		log(`charID: ${charID}`);
+		// log(`charID: ${charID}`);
 
 		let char = hexesToChars(charID.substring(6));
-		log(char);
+		// log(char);
 		wrapper.appendChild(makeElement({ tag: 'code', innerHTML: char }));
 	});
-	log(`makeKernGroupCharChips`, 'end');
+	// log(`makeKernGroupCharChips`, 'end');
 	return wrapper;
 }
