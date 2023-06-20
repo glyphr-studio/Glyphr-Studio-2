@@ -335,7 +335,7 @@ function makeKernGroupChooserList() {
 
 	Object.keys(editor.project.kerning).forEach((kernID) => {
 		let oneRow = makeOneKernGroupRow(kernID);
-		if (editor.selectedKernID === kernID) oneRow.setAttribute('selected', '');
+		if (editor.selectedKernGroupID === kernID) oneRow.setAttribute('selected', '');
 
 		oneRow.addEventListener('click', () => savedClickHandler(kernID));
 

@@ -27,11 +27,11 @@ export function makePage_Kerning() {
 	// log('current ProjectEditor');
 	// log(editor);
 	// log(editor.nav);
-	// log(`editor.selectedKernID: ${editor.selectedKernID}`);
+	// log(`editor.selectedKernGroupID: ${editor.selectedKernGroupID}`);
 	// log(`editor.selectedItemID: ${editor.selectedItemID}`);
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
-	const selectedKernID = editor.selectedKernID;
+	const selectedKernGroupID = editor.selectedKernGroupID;
 	editor.nav.panel = 'Attributes';
 
 	const editingContent = `
@@ -53,7 +53,7 @@ export function makePage_Kerning() {
 				</div>
 				<div id="editor-page__panel"></div>
 			</div>
-			${selectedKernID ? editingContent : firstRunContent}
+			${selectedKernGroupID ? editingContent : firstRunContent}
 		</div>
 	`,
 	});
@@ -67,7 +67,7 @@ export function makePage_Kerning() {
 	const navArea = content.querySelector('.editor-page__nav-area');
 	const canvasArea = content.querySelector('.editor-page__edit-canvas-wrapper');
 
-	if (!selectedKernID) {
+	if (!selectedKernGroupID) {
 		// Early return for project with zero kern groups
 		addAsChildren(canvasArea, makeKerningFirstRunContent());
 		navArea.style.display = 'block';
@@ -77,11 +77,11 @@ export function makePage_Kerning() {
 		return content;
 	}
 
-	const selectedKern = editor.selectedKern;
+	const selectedKernGroup = editor.selectedKernGroup;
 	const l2Button = makeNavButton({
 		level: 'l2',
 		superTitle: 'EDITING',
-		title: selectedKern.name,
+		title: selectedKernGroup.name,
 	});
 	const l3Button = makeNavButton({ level: 'l3', superTitle: 'PANEL', title: editor.nav.panel });
 
@@ -91,7 +91,7 @@ export function makePage_Kerning() {
 	const editCanvas = makeElement({
 		tag: 'edit-canvas',
 		id: 'editor-page__edit-canvas',
-		attributes: { 'editing-item-id': editor.selectedKernID },
+		attributes: { 'editing-item-id': editor.selectedKernGroupID },
 	});
 
 	canvasArea.appendChild(editCanvas);
@@ -105,7 +105,7 @@ export function makePage_Kerning() {
 		topic: 'whichKernGroupIsSelected',
 		subscriberID: 'nav.kernChooserButton',
 		callback: () => {
-			l2.innerHTML = makeNavButtonContent(editor.selectedKern.name, 'EDITING');
+			l2.innerHTML = makeNavButtonContent(editor.selectedKernGroup.name, 'EDITING');
 		},
 	});
 
@@ -141,11 +141,12 @@ export function makePage_Kerning() {
 	// Canvas
 	editor.subscribe({
 		topic: 'whichKernGroupIsSelected',
-		subscriberID: 'editCanvas.selectedKern',
+		subscriberID: 'editCanvas.selectedKernGroup',
 		callback: (newKernID) => {
-			// log(`new id ${newKernID} on the main canvas`);
+			log(`Main Canvas subscriber callback`, 'start');
+			log(`new id ${newKernID} on the main canvas`);
 			content.querySelector('#editor-page__edit-canvas').setAttribute('editing-item-id', newKernID);
-			// log(`Main Canvas subscriber callback`, 'end');
+			log(`Main Canvas subscriber callback`, 'end');
 		},
 	});
 
@@ -216,7 +217,7 @@ function addKern(leftGroup, rightGroup, value) {
 		newID
 	);
 
-	getCurrentProjectEditor().selectedKernID = newID;
+	getCurrentProjectEditor().selectedKernGroupID = newID;
 
 	// log(`addKern`, 'end');
 	return project.kerning[newID];
@@ -300,4 +301,28 @@ export function makeKernGroupCharChips(group) {
 	});
 	// log(`makeKernGroupCharChips`, 'end');
 	return wrapper;
+}
+
+export function calculateKernGroupWidth(kernGroup) {
+	log(`calculateKernGroupWidth`, 'start');
+
+	const project = getCurrentProject();
+	let leftWidth = project.defaultAdvanceWidth;
+	let rightWidth = project.defaultAdvanceWidth;
+
+	kernGroup.leftGroup.forEach((id) => {
+		let item = project.getItem(id);
+		if (item && item.advanceWidth) leftWidth = Math.max(leftWidth, item.advanceWidth);
+	});
+
+	kernGroup.rightGroup.forEach((id) => {
+		let item = project.getItem(id);
+		if (item && item.advanceWidth) rightWidth = Math.max(rightWidth, item.advanceWidth);
+	});
+
+	let width = leftWidth + kernGroup.value + rightWidth;
+	log(`width: ${width}`);
+
+	log(`calculateKernGroupWidth`, 'end');
+	return width;
 }

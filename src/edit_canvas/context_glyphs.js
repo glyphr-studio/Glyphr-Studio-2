@@ -8,6 +8,8 @@
 
 import { getCurrentProject } from '../app/main';
 import { charToHex } from '../common/character_ids';
+import { accentColors } from '../common/colors';
+import { makeCrisp } from '../common/functions';
 
 // -------------------
 // CONTEXT GLYPHS
@@ -124,11 +126,11 @@ function drawContextGlyphLeftLineExtras(char, seq) {
 		const selwi = getSelectedItem();
 		const v = getView('drawContextGlyphLeftLineExtras');
 		kern *= -1;
-		let rightx = selwi.isAutoWide ? kern - selwi.lsb : kern;
-		rightx = v.dx + rightx * v.dz;
+		let rightX = selwi.isAutoWide ? kern - selwi.lsb : kern;
+		rightX = v.dx + rightX * v.dz;
 		const texty = sYcY(getCurrentProject().settings.font.descent - 60);
 
-		drawGlyphKernExtra(-kern, rightx, texty, v.dz);
+		drawGlyphKernExtra(ctx, -kern, rightX, texty, v.dz);
 	}
 }
 
@@ -138,12 +140,12 @@ function drawContextGlyphRightLineExtras(char, seq) {
 	if (kern) {
 		const v = getView('drawContextGlyphRightLineExtras');
 		const selwi = getSelectedItem();
-		let rightx = selwi.advanceWidth;
-		if (selwi.isAutoWide) rightx -= selwi.lsb;
-		rightx = v.dx + rightx * v.dz;
+		let rightX = selwi.advanceWidth;
+		if (selwi.isAutoWide) rightX -= selwi.lsb;
+		rightX = v.dx + rightX * v.dz;
 		const texty = sYcY(getCurrentProject().settings.font.descent - 60);
 
-		drawGlyphKernExtra(kern, rightx, texty, v.dz);
+		drawGlyphKernExtra(ctx, kern, rightX, texty, v.dz);
 	}
 }
 
@@ -167,7 +169,7 @@ function drawContextGlyphExtras(char) {
 		const view = getView('drawContextGlyphExtras');
 		const advanceWidth = char.width * view.dz;
 		const currx = char.view.dx * view.dz;
-		const rightx = currx + advanceWidth;
+		const rightX = currx + advanceWidth;
 		const color = getColorFromRGBA('rgb(204,81,0)', alpha);
 		const texty = sYcY(getCurrentProject().settings.font.descent - 60);
 
@@ -177,23 +179,23 @@ function drawContextGlyphExtras(char) {
 		drawGlyphNameExtra(gname, currx, texty, advanceWidth, color, char.char);
 
 		// Draw vertical lines
-		drawVerticalLine(rightx, false, color);
+		drawVerticalLine(rightX, false, color);
 
 		// Draw kern notation
-		if (char.kern) drawGlyphKernExtra(char.kern, rightx, texty, view.dz);
+		if (char.kern) drawGlyphKernExtra(ctx, char.kern, rightX, texty, view.dz);
 	}
 
 	// log('drawContextGlyphExtras', 'end');
 }
 
-function drawGlyphNameExtra(text, currx, topy, advanceWidth, color, regHotspot) {
+function drawGlyphNameExtra(text, currx, topY, advanceWidth, color, regHotspot) {
 	// log('drawGlyphNameExtra', 'start');
 	// log(`${text} passed regHotspot ${regHotspot}`);
 
 	const ctx = _UI.glyphEditCTX;
 	const textw = ctx.measureText(text).width;
 	const textx = currx + (advanceWidth - textw) / 2; // center the glyph name
-	const texty = topy + 22;
+	const texty = topY + 22;
 
 	ctx.font = '12px tahoma, verdana, sans-serif';
 
@@ -225,36 +227,35 @@ function drawGlyphNameExtra(text, currx, topy, advanceWidth, color, regHotspot) 
 	}
 }
 
-function drawGlyphKernExtra(kern, rightx, topy, scale) {
-	const desc = getCurrentProject().settings.font.descent;
-	const ctx = _UI.glyphEditCTX;
-	const offset = 40;
-	const color = getColorFromRGBA(
-		'rgb(255,0,255)',
-		transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency)
-	);
-	const barheight = Math.max(scale * 10, 1);
+export function drawGlyphKernExtra(ctx, kern, rightX, topY, scale) {
+	// const color = getColorFromRGBA(
+		// 	'rgb(255,0,255)',
+		// 	transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency)
+		// );
+		const color = accentColors.purple.l70;
+		const barHeight = Math.max(scale * 10, 1);
+		const offset = (barHeight * -1);
 
 	ctx.font = '12px tahoma, verdana, sans-serif';
 	ctx.fillStyle = color;
-	ctx.fillRect(rightx, topy + offset, kern * scale, barheight);
+	ctx.fillRect(rightX, topY + offset, kern * scale, barHeight);
 
 	const text = 'kern: ' + kern;
-	const textwidth = ctx.measureText(text).width;
-	const textx = rightx - (kern * -1 * scale - textwidth) / 2 - textwidth;
+	const textWidth = ctx.measureText(text).width;
+	const textx = rightX - (kern * -1 * scale - textWidth) / 2 - textWidth;
 
-	ctx.strokeStyle = color;
-	drawVerticalLine(rightx + kern * scale, false, color);
+	// ctx.strokeStyle = color;
+	// drawVerticalLine(rightX + kern * scale, ctx, color);
 
-	ctx.strokeStyle = 'white';
-	ctx.lineWidth = 10;
-	ctx.miterLimit = 1;
+	// ctx.strokeStyle = 'white';
+	// ctx.lineWidth = 10;
+	// ctx.miterLimit = 1;
 
-	// ctx.strokeText(text, textx, (topy + (offset*4)));
-	// ctx.fillText(text, textx, (topy + (offset*4)));
+	// ctx.strokeText(text, textx, (topY + (offset*4)));
+	// ctx.fillText(text, textx, (topY + (offset*4)));
 
-	ctx.strokeText(text, textx, topy + offset + barheight + 22);
-	ctx.fillText(text, textx, topy + offset + barheight + 22);
+	// ctx.strokeText(text, textx, topY + offset + barHeight + 22);
+	ctx.fillText(text, textx, topY + offset + barHeight + 22);
 }
 
 function drawContextGlyph(char) {
@@ -526,7 +527,6 @@ function drawHorizontalLine(y, ctx, color) {
 }
 
 function drawVerticalLine(x, ctx, color) {
-	ctx = ctx || _UI.glyphEditCTX;
 	color = color || 'rgb(0,0,0)';
 
 	ctx.strokeStyle = color;
@@ -534,7 +534,7 @@ function drawVerticalLine(x, ctx, color) {
 	x = makeCrisp(x);
 	ctx.beginPath();
 	ctx.moveTo(x, 0);
-	ctx.lineTo(x, _UI.glyphEditCanvasSize + 1);
+	ctx.lineTo(x, 99999);
 	ctx.stroke();
 	ctx.closePath();
 }

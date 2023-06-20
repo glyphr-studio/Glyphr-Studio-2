@@ -11,6 +11,7 @@ import { KernGroup } from '../project_data/kern_group.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 import { decToHex } from '../common/character_ids.js';
+import { calculateKernGroupWidth } from '../pages/kerning.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -52,7 +53,7 @@ export class ProjectEditor {
 		this.selectedGlyphID = false;
 		this.selectedComponentID = false;
 		this.selectedLigatureID = false;
-		this.selectedKernID = false;
+		this.selectedKernGroupID = false;
 		this.selectedCharacterRange = false;
 
 		// Navigation
@@ -164,14 +165,18 @@ export class ProjectEditor {
 			// log(`this.selectedGlyph: ${this.selectedGlyph}`);
 			// log(`ProjectEditor GET selectedItem`, 'end');
 			return this.selectedGlyph;
-		} else if (this.nav.page === 'Components') {
-			// log(`this.selectedComponent: ${this.selectedComponent}`);
-			// log(`ProjectEditor GET selectedItem`, 'end');
-			return this.selectedComponent;
 		} else if (this.nav.page === 'Ligatures') {
 			// log(`this.selectedLigature: ${this.selectedLigature}`);
 			// log(`ProjectEditor GET selectedItem`, 'end');
 			return this.selectedLigature;
+		} else if (this.nav.page === 'Components') {
+			// log(`this.selectedComponent: ${this.selectedComponent}`);
+			// log(`ProjectEditor GET selectedItem`, 'end');
+			return this.selectedComponent;
+		} else if (this.nav.page === 'Kerning') {
+			// log(`this.selectedKernGroup: ${this.selectedKernGroup}`);
+			// log(`ProjectEditor GET selectedItem`, 'end');
+			return this.selectedKernGroup;
 		} else {
 			// log(`Nav page not detected`);
 			// log(`ProjectEditor GET selectedItem`, 'end');
@@ -187,7 +192,7 @@ export class ProjectEditor {
 		if (this.nav.page === 'Characters') return this.selectedGlyphID;
 		else if (this.nav.page === 'Components') return this.selectedComponentID;
 		else if (this.nav.page === 'Ligatures') return this.selectedLigatureID;
-		else if (this.nav.page === 'Kerning') return this.selectedKernID;
+		else if (this.nav.page === 'Kerning') return this.selectedKernGroupID;
 		else return false;
 	}
 
@@ -276,8 +281,8 @@ export class ProjectEditor {
 	 * Returns the selected kern
 	 * @returns {object}
 	 */
-	get selectedKern() {
-		const re = this.project.kerning[this.selectedKernID];
+	get selectedKernGroup() {
+		const re = this.project.kerning[this.selectedKernGroupID];
 		return re;
 	}
 
@@ -285,11 +290,11 @@ export class ProjectEditor {
 	 * Returns the selected kern ID
 	 * @returns {string}
 	 */
-	get selectedKernID() {
-		if (!this._selectedKernID) {
-			this._selectedKernID = getFirstID(this.project.kerning);
+	get selectedKernGroupID() {
+		if (!this._selectedKernGroupID) {
+			this._selectedKernGroupID = getFirstID(this.project.kerning);
 		}
-		return this._selectedKernID;
+		return this._selectedKernGroupID;
 	}
 
 	/**
@@ -359,7 +364,7 @@ export class ProjectEditor {
 		if (newID.startsWith('glyph-')) this.selectedGlyphID = newID;
 		else if (newID.startsWith('comp-')) this.selectedComponentID = newID;
 		else if (newID.startsWith('liga-')) this.selectedLigatureID = newID;
-		else if (newID.startsWith('kern-')) this.selectedKernID = newID;
+		else if (newID.startsWith('kern-')) this.selectedKernGroupID = newID;
 	}
 
 	/**
@@ -452,8 +457,8 @@ export class ProjectEditor {
 	 * Replaces the current Kern
 	 * @param {KernGroup} newKern - new kern to set
 	 */
-	set selectedKern(newKern = {}) {
-		let id = this.selectedKernID;
+	set selectedKernGroup(newKern = {}) {
+		let id = this.selectedKernGroupID;
 		newKern = new KernGroup(newKern);
 		this.project.kerning[id] = newKern;
 	}
@@ -462,16 +467,16 @@ export class ProjectEditor {
 	 * Sets the selected kern
 	 * @param {string} id - ID to select
 	 */
-	set selectedKernID(id) {
+	set selectedKernGroupID(id) {
 		if (typeof id !== 'string') return;
 		if (this.project.kerning[id]) {
-			this._selectedKernID = id;
+			this._selectedKernGroupID = id;
 		} else {
 			console.warn(`Kern ID ${id} does not exist in the project.`);
-			this._selectedKernID = getFirstID(this.project.kerning);
+			this._selectedKernGroupID = getFirstID(this.project.kerning);
 		}
 
-		this.publish('whichKernGroupIsSelected', this.selectedKernID);
+		this.publish('whichKernGroupIsSelected', this.selectedKernGroupID);
 	}
 
 	/**
@@ -516,9 +521,9 @@ export class ProjectEditor {
 			deleteLinks(this.selectedLigature);
 			delete this.project.ligatures[id];
 		} else if (itemType === 'Kerning') {
-			// log(`deleting selectedKernID: ${this.selectedKernID}`);
-			id = this.selectedKernID;
-			historyTitle = `Deleted Kern ${id} : ${this.selectedKern.name}`;
+			// log(`deleting selectedKernGroupID: ${this.selectedKernGroupID}`);
+			id = this.selectedKernGroupID;
+			historyTitle = `Deleted Kern ${id} : ${this.selectedKernGroup.name}`;
 			this.history.addState(historyTitle, true);
 			delete this.project.kerning[id];
 		}
@@ -559,8 +564,8 @@ export class ProjectEditor {
 			this.selectedLigatureID = getFirstID(this.project.ligatures);
 			// log(`new selectedLigatureID: ${this.selectedLigatureID}`);
 		} else if (itemType === 'Kern') {
-			this.selectedKernID = getFirstID(this.project.kerning);
-			// log(`new selectedKernID: ${this.selectedKernID}`);
+			this.selectedKernGroupID = getFirstID(this.project.kerning);
+			// log(`new selectedKernGroupID: ${this.selectedKernGroupID}`);
 		}
 
 		// log(`ProjectEditor.selectFallbackItem`, 'end');
@@ -629,33 +634,33 @@ export class ProjectEditor {
 	 */
 	set view(oa) {
 		// log(`ProjectEditor SET view`, 'start');
-		let wid = this.selectedItemID;
+		let id = this.selectedItemID;
 
 		// Ensure there are at least defaults
-		if (!this._views[wid]) {
+		if (!this._views[id]) {
 			// log(`\t no view, getting default`);
-			this._views[wid] = this.view;
+			this._views[id] = this.view;
 		}
 		// log(`\t setting ${JSON.stringify(oa)}`);
 
 		// Check for which to set
 		if (Number.isFinite(oa.dx)) {
 			// log(`oa.dx: ${oa.dx}`);
-			this._views[wid].dx = oa.dx;
+			this._views[id].dx = oa.dx;
 		}
 
 		if (Number.isFinite(oa.dy)) {
 			// log(`oa.dy: ${oa.dy}`);
-			this._views[wid].dy = oa.dy;
+			this._views[id].dy = oa.dy;
 		}
 
 		if (Number.isFinite(oa.dz)) {
 			// log(`oa.dz: ${oa.dz}`);
-			this._views[wid].dz = oa.dz;
+			this._views[id].dz = oa.dz;
 		}
 
-		if (this._views[wid].default) delete this._views[wid].default;
-		// log(`set as ${JSON.stringify(this._views[wid])}`);
+		if (this._views[id].default) delete this._views[id].default;
+		// log(`set as ${JSON.stringify(this._views[id])}`);
 		// log(`ProjectEditor SET view`, 'end');
 	}
 
@@ -719,23 +724,41 @@ export class ProjectEditor {
 
 	makeAutoFitView(rect = false) {
 		// log(`ProjectEditor.makeAutoFitView`, 'start');
-		// log(`rect: ${rect}`);
+		// log(`rect:`);
+		// log(rect);
+
+		const isKern = this.selectedItem.objType === 'KernGroup';
+		// log(`this.selectedItem: ${this.selectedItem}`);
+
+		// log(`isKern: ${isKern}`);
+
+		const itemHeight = this.project.totalVertical;
+		// log(`itemHeight: ${itemHeight}`);
+
+		let itemWidth;
+		if (isKern) {
+			itemWidth = calculateKernGroupWidth(this.selectedItem);
+		} else {
+			itemWidth = this.selectedItem.advanceWidth || this.project.defaultAdvanceWidth;
+		}
+		// log(`itemWidth: ${itemWidth}`);
 
 		//Zoom
-		const newZ = Math.min(
-			rect.height / (this.project.totalVertical * 1.2),
-			rect.width / (this.selectedItem.advanceWidth * 1.5)
-		);
+		const newZ = Math.min(rect.height / (itemHeight * 1.2), rect.width / (itemWidth * 1.5));
 
 		// Vertical
-		const visibleGlyphHeight = this.project.totalVertical * newZ;
+		const visibleGlyphHeight = itemHeight * newZ;
 		const topSpace = (rect.height - visibleGlyphHeight) / 2;
 		const newY = topSpace + this.project.settings.font.ascent * newZ;
 
 		// Horizontal
-		let visibleGlyphWidth = this.selectedItem.advanceWidth * newZ;
+		let visibleGlyphWidth = itemWidth * newZ;
 		if (visibleGlyphWidth === 0) visibleGlyphWidth = rect.width / 3;
-		const newX = (rect.width - visibleGlyphWidth) / 2;
+		let newX = (rect.width - visibleGlyphWidth) / 2;
+		if (isKern) {
+			newX += (visibleGlyphWidth / 2);
+			newX += this.selectedItem.value * newZ * -1;
+		}
 
 		const newView = { dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3) };
 
