@@ -97,9 +97,9 @@ function migrate_Project(oldProject) {
 		const newID = migrate_ItemID(oldID);
 		const oldKern = oldProject.kerning[oldID];
 		newProject.kerning[newID] = new KernGroup({
-			leftGroup: oldKern.leftgroup,
-			rightGroup: oldKern.rightgroup,
-			value: oldKern.value
+			value: oldKern.value,
+			leftGroup: oldKern.leftgroup.map((oldID => migrate_ItemID(oldID))),
+			rightGroup: oldKern.rightgroup.map((oldID => migrate_ItemID(oldID))),
 		});
 	});
 

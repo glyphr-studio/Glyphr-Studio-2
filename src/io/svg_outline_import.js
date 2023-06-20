@@ -20,7 +20,7 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 		// 	Supported tags are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.`
 		// );
 		// log('ioSVG_convertSVGTagsToGlyph', 'end');
-		return;
+		return new Glyph();
 	}
 
 	let pathCounter = 0;

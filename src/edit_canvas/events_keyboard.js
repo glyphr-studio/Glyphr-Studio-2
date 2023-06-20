@@ -247,10 +247,9 @@ function nudge(dx, dy, ev) {
 	let editMode = getEditMode();
 
 	if (editMode === 'kern') {
-		// TODO kerning
-		// let nv = editor.selectedKern.value + (mx || my);
-		// updateKernValue(getselectedKernGroupID(), nv);
-		// editor.editCanvas.redraw({ calledBy: 'Nudge kern value', redrawPanels: false });
+		// TODO kern
+		editor.selectedKernGroup.value += (mx || my);
+		editor.editCanvas.redraw({ calledBy: 'Nudge kern value', redrawPanels: false });
 	} else if (editMode === 'arrow') {
 		editor.multiSelect.shapes.updateShapePosition(mx, my);
 		editor.editCanvas.redraw({ calledBy: 'Nudge shape' });

@@ -295,7 +295,7 @@ export function makeKernGroupCharChips(group) {
 	group.forEach((charID) => {
 		// log(`charID: ${charID}`);
 
-		let char = hexesToChars(charID.substring(6));
+		let char = hexesToChars(charID);
 		// log(char);
 		wrapper.appendChild(makeElement({ tag: 'code', innerHTML: char }));
 	});

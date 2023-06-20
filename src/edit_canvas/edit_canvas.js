@@ -206,7 +206,7 @@ export class EditCanvas extends HTMLElement {
 				// log(`Drawing right-hand group`);
 				let rightAlpha = Math.max(0.25, 1 / kernGroup.rightGroup.length);
 				kernGroup.rightGroup.forEach((id) => {
-					drawItem = project.getItem(id, true);
+					drawItem = project.getItem(`glyph-${id}`, true);
 					// log(drawItem);
 					// log(view);
 					drawGlyph(drawItem, ctx, view, rightAlpha);
@@ -216,7 +216,7 @@ export class EditCanvas extends HTMLElement {
 				// log(`Drawing left-hand group`);
 				let leftAlpha = Math.max(0.25, 1 / kernGroup.leftGroup.length);
 				kernGroup.leftGroup.forEach((id) => {
-					drawItem = project.getItem(id, true);
+					drawItem = project.getItem(`glyph-${id}`, true);
 					// log(drawItem);
 					let thisView = clone(view);
 					thisView.dx -= drawItem.advanceWidth * thisView.dz;

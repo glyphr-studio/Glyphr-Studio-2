@@ -90,6 +90,7 @@ export function makeCard_glyphAttributes(glyph) {
 		]);
 	}
 	if (glyph.shapes.length) {
+		addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
 		addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
 		addAsChildren(glyphCard, makeInputs_position(glyph));
 		addAsChildren(glyphCard, makeInputs_size(glyph));

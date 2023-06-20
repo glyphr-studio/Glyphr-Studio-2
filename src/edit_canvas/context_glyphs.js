@@ -552,7 +552,7 @@ function drawGuides() {
 
 	if (_UI.showGuides) {
 		if (onkern) {
-			_UI.guides.leftGroupXMax.location = editor.selectedKern.value;
+			_UI.guides.leftGroupXMax.location = editor.selectedKernGroup.value;
 			_UI.guides.leftGroupXMax.draw();
 			_UI.guides.rightGroupXMin.draw();
 			ps.guides.baseline.draw();
