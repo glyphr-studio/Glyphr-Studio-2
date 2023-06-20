@@ -131,7 +131,7 @@ export class EditCanvas extends HTMLElement {
 			ctx.clearRect(0, 0, width, height);
 
 			// Guides
-			drawGuides();
+			drawSystemGuidelines();
 
 			// Draw glyphs
 			drawGlyph(project.getItem(currentItemID), ctx, view);
@@ -169,15 +169,27 @@ export class EditCanvas extends HTMLElement {
 		}
 
 		function redrawKernEdit() {
-			log(`EditCanvas.redraw.redrawKernEdit`, 'start');
-			log(`currentItemID: ${currentItemID}`);
+			// log(`EditCanvas.redraw.redrawKernEdit`, 'start');
+			// log(`currentItemID: ${currentItemID}`);
 			editor.autoFitIfViewIsDefault();
 			ctx.clearRect(0, 0, width, height);
 			let kernGroup = project.getItem(currentItemID);
-			log(kernGroup);
+			// log(kernGroup);
 
 			if (kernGroup) {
-				// drawGuides();
+				// drawSystemGuidelines(false);
+				ctx.fillStyle = accentColors.gray.l90;
+				const gridPad = 100 * view.dz;
+				const visibleLeftWidth = kernGroup.leftGroupWidth * view.dz;
+				const visibleRightWidth = kernGroup.rightGroupWidth * view.dz;
+				const visibleValue = kernGroup.value * view.dz;
+				ctx.fillRect(
+					view.dx - gridPad - visibleLeftWidth + visibleValue,
+					Math.ceil(view.dy),
+					gridPad * 2 + visibleLeftWidth + visibleRightWidth - visibleValue,
+					1
+				);
+
 				drawGlyphKernExtra(
 					ctx,
 					kernGroup.value,
@@ -214,28 +226,34 @@ export class EditCanvas extends HTMLElement {
 				});
 			}
 
-			log(`EditCanvas.redraw.redrawKernEdit`, 'end');
+			// log(`EditCanvas.redraw.redrawKernEdit`, 'end');
 		}
 
-		function drawGuides() {
+		function drawSystemGuidelines(drawVerticals = true) {
+			// log(`drawSystemGuidelines`, 'start');
+
 			ctx.fillStyle = accentColors.gray.l90;
 			const gridPad = 100 * view.dz;
 			const advanceWidth = project.getItem(currentItemID).advanceWidth;
-			const gridWidth = advanceWidth * view.dz;
+			let gridWidth = advanceWidth * view.dz;
 
 			const gridLines = project.settings.app.guides.system;
 			// Verticals
-			if (gridLines.showLeftSide) {
-				drawEmVerticalLine(ctx, 0, view);
-			}
-			if (gridLines.showRightSide && advanceWidth) {
-				drawEmVerticalLine(ctx, advanceWidth, view);
+			if (drawVerticals) {
+				if (gridLines.showLeftSide) {
+					drawEmVerticalLine(ctx, 0, view, false);
+				}
+				if (gridLines.showRightSide && advanceWidth) {
+					drawEmVerticalLine(ctx, advanceWidth, view, true);
+				}
 			}
 
 			// Baseline
 			if (gridLines.showBaseline) {
-				ctx.fillRect(view.dx - gridPad, view.dy, gridWidth + gridPad * 2, 1);
+				// log(`drawing baseline...`);
+				ctx.fillRect(view.dx - gridPad, Math.ceil(view.dy), gridWidth + gridPad * 2, 1);
 			}
+			// log(`drawSystemGuidelines`, 'end');
 		}
 	}
 }
@@ -244,7 +262,7 @@ function drawEmVerticalLine(ctx, emX = 0, view, roundUp = 'none') {
 	// log(`drawEmVerticalLine`, 'start');
 	const project = getCurrentProject();
 	const lineTopY = sYcY(project.settings.font.ascent, view);
-	let lineX = (sXcX(emX));
+	let lineX = sXcX(emX);
 	if (roundUp === true) lineX = Math.ceil(lineX);
 	if (roundUp === false) lineX = Math.floor(lineX);
 	const lineHeight = project.totalVertical * view.dz;

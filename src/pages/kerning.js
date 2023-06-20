@@ -12,7 +12,6 @@ import {
 } from '../controls/dialogs/dialogs.js';
 import { countItems } from '../common/functions.js';
 import { KernGroup } from '../project_data/kern_group.js';
-import { makeCard_kernGroup } from '../panels/card_kern_group.js';
 import { makePanel_KernGroupAttributes } from '../panels/attributes_kern.js';
 import { hexesToChars } from '../common/character_ids.js';
 
@@ -33,6 +32,7 @@ export function makePage_Kerning() {
 
 	const selectedKernGroupID = editor.selectedKernGroupID;
 	editor.nav.panel = 'Attributes';
+	editor.selectedTool = 'kern';
 
 	const editingContent = `
 		<div class="editor-page__tools-area"></div>
@@ -301,28 +301,4 @@ export function makeKernGroupCharChips(group) {
 	});
 	// log(`makeKernGroupCharChips`, 'end');
 	return wrapper;
-}
-
-export function calculateKernGroupWidth(kernGroup) {
-	log(`calculateKernGroupWidth`, 'start');
-
-	const project = getCurrentProject();
-	let leftWidth = project.defaultAdvanceWidth;
-	let rightWidth = project.defaultAdvanceWidth;
-
-	kernGroup.leftGroup.forEach((id) => {
-		let item = project.getItem(id);
-		if (item && item.advanceWidth) leftWidth = Math.max(leftWidth, item.advanceWidth);
-	});
-
-	kernGroup.rightGroup.forEach((id) => {
-		let item = project.getItem(id);
-		if (item && item.advanceWidth) rightWidth = Math.max(rightWidth, item.advanceWidth);
-	});
-
-	let width = leftWidth + kernGroup.value + rightWidth;
-	log(`width: ${width}`);
-
-	log(`calculateKernGroupWidth`, 'end');
-	return width;
 }

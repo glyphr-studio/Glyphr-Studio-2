@@ -18,7 +18,7 @@ export function makeCard_kernGroup(kernGroup) {
 	});
 
 	let valueLabel = makeSingleLabel('Value');
-	let valueInput = makeSingleInput(kernGroup, 'value', 'currentKern', 'input-number');
+	let valueInput = makeSingleInput(kernGroup, 'value', 'currentKernGroup', 'input-number');
 
 	let leftLabel = makeSingleLabel('Left group');
 	let leftInput = makeKernGroupCharChips(kernGroup.leftGroup);

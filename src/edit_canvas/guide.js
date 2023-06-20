@@ -1,6 +1,11 @@
-import { getCurrentProjectEditor } from '../app/main.js';
-import { makeRandomSaturatedColor } from '../common/colors.js';
-import { makeCrisp } from '../common/functions.js';
+import { getCurrentProjectEditor, getCurrentProject } from '../app/main.js';
+import {
+	getColorFromRGBA,
+	makeRandomSaturatedColor,
+	shiftColor,
+	transparencyToAlpha,
+} from '../common/colors.js';
+import { isVal, makeCrisp } from '../common/functions.js';
 
 /**
 		Guide
@@ -20,14 +25,14 @@ export class Guide {
 		this.displayName = isVal(oa.displayName) ? oa.displayName : true;
 		this.editable = isVal(oa.editable) ? oa.editable : true;
 	}
-	draw(delta) {
+
+	draw(delta, ctx) {
 		// log('\nGuide.draw', 'start');
 		// log('name: ' + this.name);
 		// log('delta: ' + delta);
 		if (!this.visible) return;
 		delta = delta * 1;
-		let ctx = _UI.glyphEditCTX;
-		let cansize = _UI.glyphEditCanvasSize;
+		let canvasSize = 1000;
 		let psc = getCurrentProject().projectSettings.colors;
 		const editor = getCurrentProjectEditor();
 		let v = editor.view;
@@ -43,7 +48,7 @@ export class Guide {
 			if (delta) pos += delta * v.dz;
 			start.x = 0;
 			start.y = pos;
-			end.x = cansize;
+			end.x = canvasSize;
 			end.y = pos;
 			label.x = 25;
 			label.y = pos - pad;
@@ -53,10 +58,11 @@ export class Guide {
 			start.x = pos;
 			start.y = 0;
 			end.x = pos;
-			end.y = cansize;
+			end.y = canvasSize;
 			label.x = pos + pad;
 			label.y = 11;
 		}
+
 		let alpha = transparencyToAlpha(
 			this.editable ? psc.customGuideTransparency : psc.systemGuideTransparency
 		);
@@ -74,10 +80,10 @@ export class Guide {
 			ctx.stroke();
 			ctx.closePath();
 			// Draw Label
-			if (this.displayName && _UI.showGuidesLabels && !delta) {
-				_UI.glyphEditCTX.fillStyle = color;
-				_UI.glyphEditCTX.font = '10px tahoma, verdana, sans-serif';
-				_UI.glyphEditCTX.fillText(this.name, label.x, label.y);
+			if (this.displayName && getCurrentProject().settings.app.showGuidesLabels && !delta) {
+				ctx.fillStyle = color;
+				ctx.font = '10px Tahoma, Verdana, sans-serif';
+				ctx.fillText(this.name, label.x, label.y);
 			}
 		}
 		// log('Guide.draw', 'end');

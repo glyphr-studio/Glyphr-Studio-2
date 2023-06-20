@@ -251,17 +251,28 @@ export function switchToolTo(newTool) {
 export function makeKernToolsButtons() {
 	// Kern
 	const editor = getCurrentProjectEditor();
-	const kern = makeElement({
+	const kernToolButton = makeElement({
 		tag: 'button',
-		className: 'editor-page__tool',
+		className: 'editor-page__tool editor-page__tool-selected',
 		title: 'Adjust kern value',
 		innerHTML: makeToolButtonSVG({
 			name: 'kern',
-			selected: editor.selectedTool === 'kern',
+			selected: true,
 		}),
 	});
 
-	return kern;
+	kernToolButton.addEventListener('click', () => clickTool('kern'));
+
+	editor.subscribe({
+		topic: 'whichToolIsSelected',
+		subscriberID: `tools.kern`,
+		callback: (newSelectedTool) => {
+			let isSelected = newSelectedTool === 'kern';
+			kernToolButton.classList.toggle('editor-page__tool-selected', isSelected);
+			kernToolButton.innerHTML = makeToolButtonSVG({ name: 'kern', selected: isSelected });
+		},
+	});
+	return kernToolButton;
 }
 
 export function makeContextGlyphControls() {
