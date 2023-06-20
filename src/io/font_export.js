@@ -165,6 +165,9 @@ function populateExportList() {
 	// log('exportLigatures');
 	// log(exportLigatures);
 
+	// Add Kerns
+	// TODO Export kerning?
+
 	// log('populateExportList', 'end');
 	return { glyphs: exportGlyphs, ligatures: exportLigatures };
 }

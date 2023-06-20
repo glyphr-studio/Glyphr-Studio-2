@@ -1060,13 +1060,13 @@
   "components": {},
   "kerning": {
     "kern-0": {
-      "leftGroup": ["glyph-0x41", "glyph-0x42", "glyph-0x43"],
-      "rightGroup": ["glyph-0x43"],
+      "leftGroup": ["0x41", "0x42", "0x43"],
+      "rightGroup": ["0x43"],
       "value": -100
     },
     "kern-1": {
-      "leftGroup": ["glyph-0x51", "glyph-0x52", "glyph-0x53"],
-      "rightGroup": ["glyph-0x53"],
+      "leftGroup": ["0x51", "0x52", "0x53"],
+      "rightGroup": ["0x53"],
       "value": -100
     }
   }

@@ -344,12 +344,12 @@ function calculateKernOffset(c1, c2) {
 
 	for (let p of Object.keys(kernPairs)) {
 		for (let l = 0; l < kernPairs[p].leftGroup.length; l++) {
-			leftGroupChar = kernPairs[p].leftGroup[l].slice(6);
+			leftGroupChar = kernPairs[p].leftGroup[l];
 			// log('checking leftGroup ' + leftGroupChar + ' against ' + c1);
 			if (parseCharsInputAsHex(leftGroupChar)[0] === c1) {
 				// log('LEFT GROUP MATCH! for ' + c1);
 				for (let r = 0; r < kernPairs[p].rightGroup.length; r++) {
-					rightGroupChar = kernPairs[p].rightGroup[r].slice(6);
+					rightGroupChar = kernPairs[p].rightGroup[r];
 					if (parseCharsInputAsHex(rightGroupChar)[0] === c2) {
 						result = kernPairs[p].value * -1;
 						// log('FOUND MATCH! returning ' + result);
