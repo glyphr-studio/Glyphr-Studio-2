@@ -4,6 +4,7 @@ import { makePanel_GlyphAttributes } from './attributes_glyph_edit.js';
 import { makePanel_Layers } from './layers.js';
 import { makePanel_History } from './history.js';
 import { makePanel_Guides } from './guides.js';
+import { makePanel_KernGroupAttributes } from './attributes_kern.js';
 
 /**
  * Assembles the correct panel based on the current
@@ -23,7 +24,8 @@ export function makePanel() {
 		editor.unsubscribe({ idToRemove: 'layersPanel' });
 		editor.unsubscribe({ idToRemove: 'historyPanel' });
 		editor.unsubscribe({ idToRemove: 'guidesPanel' });
-		addAsChildren(content, makePanel_GlyphAttributes());
+		if (editor.nav.page === 'Kerning') addAsChildren(content, makePanel_KernGroupAttributes());
+		else addAsChildren(content, makePanel_GlyphAttributes());
 	} else if (panel === 'Layers') {
 		editor.unsubscribe({ idToRemove: 'attributesPanel' });
 		editor.unsubscribe({ idToRemove: 'historyPanel' });

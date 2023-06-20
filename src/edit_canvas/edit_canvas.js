@@ -11,7 +11,8 @@ import {
 	drawNewBasicPath,
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
-import { clone, round } from '../common/functions.js';
+import { clone, makeCrisp, round } from '../common/functions.js';
+import { drawGlyphKernExtra } from './context_glyphs.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -125,6 +126,8 @@ export class EditCanvas extends HTMLElement {
 		// log('EditCanvas.redraw', 'end');
 
 		function redrawGlyphEdit() {
+			// log(`EditCanvas.redraw.redrawGlyphEdit`, 'start');
+			editor.autoFitIfViewIsDefault();
 			ctx.clearRect(0, 0, width, height);
 
 			// Guides
@@ -162,53 +165,71 @@ export class EditCanvas extends HTMLElement {
 			if (eventHandlerData.newBasicPath) {
 				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
 			}
+			// log(`EditCanvas.redraw.redrawGlyphEdit`, 'end');
 		}
 
 		function redrawKernEdit() {
-			log(`redrawKernEdit`, 'start');
-
+			log(`EditCanvas.redraw.redrawKernEdit`, 'start');
+			log(`currentItemID: ${currentItemID}`);
+			editor.autoFitIfViewIsDefault();
+			ctx.clearRect(0, 0, width, height);
 			let kernGroup = project.getItem(currentItemID);
+			log(kernGroup);
 
 			if (kernGroup) {
-				drawGuides();
-				let drawItem;
-				// drawGlyphKernExtra(kernGroup.value, view.dx, sYcY(_GP.projectsettings.descent - 60), view.dz);
+				// drawGuides();
+				drawGlyphKernExtra(
+					ctx,
+					kernGroup.value,
+					view.dx,
+					sYcY(project.settings.font.descent),
+					view.dz
+				);
+				ctx.fillStyle = accentColors.purple.l60;
+				drawEmVerticalLine(ctx, 0, view, false);
+				drawEmVerticalLine(ctx, kernGroup.value, view, true);
 
+				let drawItem;
 				// Draw right hand group
+				// log(`Drawing right-hand group`);
 				let rightAlpha = Math.max(0.25, 1 / kernGroup.rightGroup.length);
-				kernGroup.rightGroup.forEach(id => {
+				kernGroup.rightGroup.forEach((id) => {
 					drawItem = project.getItem(id, true);
+					// log(drawItem);
+					// log(view);
 					drawGlyph(drawItem, ctx, view, rightAlpha);
 				});
 
-				// DRAW ALL LEFT HAND GROUP
+				// Draw left hand group
+				// log(`Drawing left-hand group`);
 				let leftAlpha = Math.max(0.25, 1 / kernGroup.leftGroup.length);
-				kernGroup.leftGroup.forEach(id => {
+				kernGroup.leftGroup.forEach((id) => {
 					drawItem = project.getItem(id, true);
+					// log(drawItem);
 					let thisView = clone(view);
 					thisView.dx -= drawItem.advanceWidth * thisView.dz;
 					thisView.dx += kernGroup.value * thisView.dz;
+					// log(thisView);
 					drawGlyph(drawItem, ctx, thisView, leftAlpha);
 				});
 			}
 
-			log(`redrawKernEdit`, 'end');
+			log(`EditCanvas.redraw.redrawKernEdit`, 'end');
 		}
 
 		function drawGuides() {
 			ctx.fillStyle = accentColors.gray.l90;
-			const gridTop = sYcY(project.settings.font.ascent, view);
-			const gridHeight = project.totalVertical * view.dz;
 			const gridPad = 100 * view.dz;
-			const gridWidth = project.getItem(currentItemID).advanceWidth * view.dz;
+			const advanceWidth = project.getItem(currentItemID).advanceWidth;
+			const gridWidth = advanceWidth * view.dz;
 
 			const gridLines = project.settings.app.guides.system;
 			// Verticals
 			if (gridLines.showLeftSide) {
-				ctx.fillRect(view.dx, gridTop, 1, gridHeight);
+				drawEmVerticalLine(ctx, 0, view);
 			}
-			if (gridLines.showRightSide && project.getItem(currentItemID).advanceWidth) {
-				ctx.fillRect(round(view.dx + gridWidth), gridTop, 1, gridHeight);
+			if (gridLines.showRightSide && advanceWidth) {
+				drawEmVerticalLine(ctx, advanceWidth, view);
 			}
 
 			// Baseline
@@ -217,6 +238,22 @@ export class EditCanvas extends HTMLElement {
 			}
 		}
 	}
+}
+
+function drawEmVerticalLine(ctx, emX = 0, view, roundUp = 'none') {
+	// log(`drawEmVerticalLine`, 'start');
+	const project = getCurrentProject();
+	const lineTopY = sYcY(project.settings.font.ascent, view);
+	let lineX = (sXcX(emX));
+	if (roundUp === true) lineX = Math.ceil(lineX);
+	if (roundUp === false) lineX = Math.floor(lineX);
+	const lineHeight = project.totalVertical * view.dz;
+	// log(`lineX: ${lineX}`);
+	// log(`lineTopY: ${lineTopY}`);
+	// log(`lineHeight: ${lineHeight}`);
+
+	ctx.fillRect(lineX, lineTopY, 1, lineHeight);
+	// log(`drawEmVerticalLine`, 'end');
 }
 
 // --------------------------------------------------------------------------

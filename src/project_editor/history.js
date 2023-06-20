@@ -126,8 +126,8 @@ export class History {
 				// log(baseItem);
 				baseItemState = baseItem.save();
 			} else if (editor.nav.page === 'Kerning') {
-				// log(`editor.selectedKernID : ${editor.selectedKernID}`);
-				baseItem = this.initialProject.kerning[editor.selectedKernID];
+				// log(`editor.selectedKernGroupID : ${editor.selectedKernGroupID}`);
+				baseItem = this.initialProject.kerning[editor.selectedKernGroupID];
 				// log(baseItem);
 				baseItemState = baseItem.save();
 			}

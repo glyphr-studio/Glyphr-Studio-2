@@ -34,8 +34,8 @@ export class Tool_Kern {
 				let newValue = round(
 					value + (1 * (eventHandlerData.mousePosition.x - this.deltaX)) / editor.view.dz
 				);
-				editor.selectedKern.value = newValue;
-				editor.publish('currentKern', editor.selectedKern);
+				editor.selectedKernGroup.value = newValue;
+				editor.publish('currentKern', editor.selectedKernGroup);
 				this.deltaX = eventHandlerData.mousePosition.x;
 			}
 		};

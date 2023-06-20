@@ -10,7 +10,7 @@ export function makePanel_KernGroupAttributes() {
 	// log('makePanel_KernGroupAttributes', 'start');
 	const editor = getCurrentProjectEditor();
 	// log('makePanel_KernGroupAttributes', 'end');
-	return makeCard_kernGroup(editor.selectedKern);
+	return makeCard_kernGroup(editor.selectedKernGroup);
 }
 
 /*
@@ -34,7 +34,7 @@ export function makePanel_KernGroupAttributes() {
 
 function makeOneKernPairRow(k, id) {
 	let selstyle = '';
-	if (getSelectedKernID() === id)
+	if (getselectedKernGroupID() === id)
 		selstyle = 'style="background-color:' + _UI.colors.blue.l55 + '; ';
 
 	let re = '<table class="kernrow"><tr>';
@@ -80,7 +80,7 @@ function addCommonKernPairs() {
 		});
 	}
 
-	_UI.selectedKern = getFirstID(getCurrentProject().kerning);
+	_UI.selectedKernGroup = getFirstID(getCurrentProject().kerning);
 	redraw({ calledBy: 'addCommonKernPairs' });
 }
 
@@ -101,7 +101,7 @@ function updateKernGroup(id, side, val) {
 }
 
 function selectKern(id) {
-	_UI.selectedKern = id;
+	_UI.selectedKernGroup = id;
 	redraw({ calledBy: 'selectKern' });
 }
 
@@ -141,7 +141,7 @@ function createNewKernPair() {
 		});
 
 		closeDialog();
-		_UI.selectedKern = id;
+		_UI.selectedKernGroup = id;
 		redraw({ calledBy: 'createNewKernPair' });
 	}
 }
@@ -161,7 +161,7 @@ function deleteKernPair(id) {
 	showToast('Deleted ' + k.getName());
 
 	delete getCurrentProject().kerning[id];
-	_UI.selectedKern = getFirstID(getCurrentProject().kerning);
+	_UI.selectedKernGroup = getFirstID(getCurrentProject().kerning);
 	redraw({ calledBy: 'deleteKernPair' });
 }
 
