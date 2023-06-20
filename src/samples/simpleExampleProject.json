@@ -1065,11 +1065,6 @@
       "value": -100
     },
     "kern-1": {
-      "leftGroup": ["glyph-0x41"],
-      "rightGroup": ["glyph-0x43", "glyph-0x42", "glyph-0x43"],
-      "value": -100
-    },
-    "kern-2": {
       "leftGroup": ["glyph-0x51", "glyph-0x52", "glyph-0x53"],
       "rightGroup": ["glyph-0x53"],
       "value": -100
