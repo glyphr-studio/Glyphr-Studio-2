@@ -259,6 +259,60 @@ nav .glyph-chooser__wrapper {
 }
 
 /*
+	Kern Group Chooser
+*/
+.kern-group-chooser__list {
+	width: 100%;
+	margin-bottom: 20px;
+	display: grid;
+	row-gap: 10px;
+}
+
+.kern-group-chooser__row {
+	display: grid;
+	grid-template-columns: max-content max-content min-content max-content;
+	column-gap: 0px;
+
+	border: 1px solid var(--gray-l90);
+	padding-left: 20px;
+	background-color: var(--gray-l95);
+	border-radius: 4px;
+	width: 100%;
+	height: 40px;
+	overflow: hidden;
+	align-items: center;
+}
+
+.kern-group-chooser__members-divider {
+	color: var(--gray-l80);
+}
+
+.kern-group-chooser__right-members {
+	width: 100px;
+	text-align: left;
+}
+
+.kern-group-chooser__left-members {
+	width: 100px;
+	text-align: right;
+}
+
+.kern-group-chooser__row:hover,
+.kern-group-chooser__row:active {
+	border-left-width: 10px;
+	border-color: var(--gray-l80);
+	padding-left: 11px;
+	cursor: pointer;
+}
+
+.kern-group-chooser__row[selected] {
+	border-left-width: 10px;
+	border-color: var(--blue-l70);
+	padding-left: 11px;
+}
+
+
+/*
 	Generic item link rows
 */
 .item-links__rows-area {
@@ -326,7 +380,7 @@ nav .glyph-chooser__wrapper {
 
 .layer-panel__path-row {
 	border-color: var(--blue-l90);
-		background-color: var(--blue-l95);
+	background-color: var(--blue-l95);
 }
 
 .layer-panel__component-row {

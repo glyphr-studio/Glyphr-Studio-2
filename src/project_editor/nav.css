@@ -86,6 +86,17 @@ nav:focus {
 	outline: 0;
 }
 
+#nav-dropdown-page {
+	padding: 10px 0px 0px 5px;
+}
+
+.nav-dropdown__subtitle {
+	margin: 15px 0px 5px 10px;
+	color: var(--blue-l90);
+	opacity: 50%;
+	font-size: 0.9em;
+}
+
 .nav-dropdown__button {
 	display: grid;
 	align-items: center;

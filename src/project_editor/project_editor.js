@@ -471,7 +471,7 @@ export class ProjectEditor {
 			this._selectedKernID = getFirstID(this.project.kerning);
 		}
 
-		this.publish('whichKernIsSelected', this.selectedKernID);
+		this.publish('whichKernGroupIsSelected', this.selectedKernID);
 	}
 
 	/**

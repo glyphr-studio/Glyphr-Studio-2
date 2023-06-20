@@ -1,9 +1,10 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
-import { makeElement } from '../common/dom.js';
+import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { showAddComponentDialog } from '../pages/components.js';
+import { makeKernGroupCharChips, showAddKernDialog } from '../pages/kerning.js';
 import { showAddLigatureDialog } from '../pages/ligatures.js';
 
 /**
@@ -71,6 +72,16 @@ export function makeSingleItemTypeChooserContent(itemType, clickHandler) {
 				tag: 'fancy-button',
 				innerHTML: 'Create new component',
 				onClick: showAddComponentDialog,
+			})
+		);
+	} else if (itemType === 'Kerning') {
+		// Component Chooser
+		wrapper.appendChild(makeKernGroupChooserList());
+		wrapper.appendChild(
+			makeElement({
+				tag: 'fancy-button',
+				innerHTML: 'Create new kerning group',
+				onClick: showAddKernDialog,
 			})
 		);
 	} else {
@@ -314,4 +325,65 @@ function makeComponentChooserTileGrid() {
 
 	// log(`makeComponentChooserTileGrid`, 'end');
 	return tileGrid;
+}
+
+function makeKernGroupChooserList() {
+	// log(`makeKernGroupChooserList`, 'start');
+	const editor = getCurrentProjectEditor();
+
+	let kernGroupRows = makeElement({ tag: 'div', className: 'kern-group-chooser__list' });
+
+	Object.keys(editor.project.kerning).forEach((kernID) => {
+		let oneRow = makeOneKernGroupRow(kernID);
+		if (editor.selectedKernID === kernID) oneRow.setAttribute('selected', '');
+
+		oneRow.addEventListener('click', () => savedClickHandler(kernID));
+
+		if (savedRegisterSubscriptions) {
+			editor.subscribe({
+				topic: 'whichKernGroupIsSelected',
+				subscriberID: `kernGroupRow.${kernID}`,
+				callback: (newKernGroupID) => {
+					// log('whichKernGroupIsSelected subscriber callback');
+					if (newKernGroupID === kernID) {
+						oneRow.setAttribute('selected', '');
+					} else {
+						oneRow.removeAttribute('selected');
+					}
+				},
+			});
+		}
+
+		kernGroupRows.appendChild(oneRow);
+	});
+
+	// log(`makeKernGroupChooserList`, 'end');
+	return kernGroupRows;
+}
+
+function makeOneKernGroupRow(kernID) {
+	log(`makeOneKernGroupRow`, 'start');
+	log(`kernID: ${kernID}`);
+
+	const kernGroup = getCurrentProject().getItem(kernID);
+	const rowWrapper = makeElement({ className: 'kern-group-chooser__row' });
+	const leftMembers = makeElement({
+		className: 'kern-group-chooser__left-members',
+	});
+	leftMembers.appendChild(makeKernGroupCharChips(kernGroup.leftGroup));
+	const rightMembers = makeElement({
+		className: 'kern-group-chooser__right-members',
+	});
+	rightMembers.appendChild(makeKernGroupCharChips(kernGroup.rightGroup));
+
+	addAsChildren(rowWrapper, [
+		makeElement({ content: kernID }),
+		leftMembers,
+		makeElement({ className: 'kern-group-chooser__members-divider', content: '&emsp;|&emsp;' }),
+		rightMembers,
+	]);
+
+	log(rowWrapper);
+	log(`makeOneKernGroupRow`, 'end');
+	return rowWrapper;
 }

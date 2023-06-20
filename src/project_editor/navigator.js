@@ -6,7 +6,7 @@ import { makePage_About } from '../pages/about.js';
 import { makePage_Settings } from '../pages/settings.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
-import { makeSingleItemTypeChooserContent } from '../panels/glyph_chooser.js';
+import { makeSingleItemTypeChooserContent } from '../panels/item_chooser.js';
 import { makeAppTopBar, showAppErrorPage } from '../app/app.js';
 import { makeIcon } from '../common/graphics.js';
 import { accentColors } from '../common/colors.js';
@@ -41,6 +41,9 @@ export class Navigator {
 				pageMaker: makePage_Overview,
 				iconName: 'page_overview',
 			},
+			'Design glyphs': {
+				type: 'subtitle',
+			},
 			Characters: {
 				pageMaker: makePage_Characters,
 				iconName: 'page_characters',
@@ -53,6 +56,9 @@ export class Navigator {
 				pageMaker: makePage_Components,
 				iconName: 'page_components',
 			},
+			Refine: {
+				type: 'subtitle',
+			},
 			Kerning: {
 				pageMaker: makePage_Kerning,
 				iconName: 'page_kerning',
@@ -64,6 +70,9 @@ export class Navigator {
 			'Global actions': {
 				pageMaker: false,
 				iconName: 'page_globalActions',
+			},
+			'Settings & more': {
+				type: 'subtitle',
 			},
 			Settings: {
 				pageMaker: makePage_Settings,
@@ -324,9 +333,13 @@ function makePageChooserContent() {
 	let pageButton;
 	let toc = getCurrentProjectEditor().nav.tableOfContents;
 
-	Object.keys(toc).forEach((pageName) => {
-		if (pageName !== 'Open project' && toc[pageName].pageMaker) {
-			pageButton = makeNavButton_Page(pageName, toc[pageName].iconName);
+	Object.keys(toc).forEach((itemName) => {
+		if (toc[itemName]?.type === 'subtitle') {
+			content.appendChild(
+				makeElement({ tag: 'h3', content: itemName, className: 'nav-dropdown__subtitle' })
+			);
+		} else if (itemName !== 'Open project' && toc[itemName].pageMaker) {
+			pageButton = makeNavButton_Page(itemName, toc[itemName].iconName);
 			content.appendChild(pageButton);
 		}
 	});

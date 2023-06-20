@@ -1,7 +1,7 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
-import { makeAllItemTypeChooserContent } from '../panels/glyph_chooser.js';
+import { makeAllItemTypeChooserContent } from '../panels/item_chooser.js';
 import { makeContributeContent, makePreReleaseNote } from './about.js';
 import { showModalDialog } from '../controls/dialogs/dialogs.js';
 import { countItems } from '../common/functions.js';

@@ -11,7 +11,7 @@ import {
 	showModalDialog,
 	showToast,
 } from '../controls/dialogs/dialogs.js';
-import { makeAllItemTypeChooserContent } from './glyph_chooser.js';
+import { makeAllItemTypeChooserContent } from './item_chooser.js';
 import {
 	addLinkToUsedIn,
 	canAddComponent,
