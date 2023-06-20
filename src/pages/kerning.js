@@ -14,6 +14,7 @@ import { countItems } from '../common/functions.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { makeCard_kernGroup } from '../panels/card_kern_group.js';
 import { makePanel_KernGroupAttributes } from '../panels/attributes_kern.js';
+import { hexesToChars } from '../common/character_ids.js';
 
 /**
  * Page > Kerning
@@ -101,7 +102,7 @@ export function makePage_Kerning() {
 		toggleNavDropdown(l2);
 	});
 	editor.subscribe({
-		topic: 'whichKernIsSelected',
+		topic: 'whichKernGroupIsSelected',
 		subscriberID: 'nav.kernChooserButton',
 		callback: () => {
 			l2.innerHTML = makeNavButtonContent(editor.selectedKern.name, 'EDITING');
@@ -119,7 +120,7 @@ export function makePage_Kerning() {
 	panel.appendChild(makePanel_KernGroupAttributes());
 	panel.addEventListener('scroll', closeAllInfoBubbles);
 	editor.subscribe({
-		topic: ['whichKernIsSelected'],
+		topic: ['whichKernGroupIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
 		callback: () => {
 			refreshPanel();
@@ -139,7 +140,7 @@ export function makePage_Kerning() {
 
 	// Canvas
 	editor.subscribe({
-		topic: 'whichKernIsSelected',
+		topic: 'whichKernGroupIsSelected',
 		subscriberID: 'editCanvas.selectedKern',
 		callback: (newKernID) => {
 			// log(`new id ${newKernID} on the main canvas`);
@@ -290,13 +291,12 @@ export function makeKernGroupCharChips(group) {
 	log(`group: ${group}`);
 
 	const wrapper = makeElement();
-	const project = getCurrentProject();
 	group.forEach((charID) => {
 		log(`charID: ${charID}`);
 
-		let char = project.getItem(charID);
+		let char = hexesToChars(charID.substring(6));
 		log(char);
-		wrapper.appendChild(makeElement({ tag: 'code', innerHTML: char.char }));
+		wrapper.appendChild(makeElement({ tag: 'code', innerHTML: char }));
 	});
 	log(`makeKernGroupCharChips`, 'end');
 	return wrapper;
