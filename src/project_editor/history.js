@@ -4,6 +4,7 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { refreshPanel } from '../panels/panels.js';
 import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
+import { KernGroup } from '../project_data/kern_group.js';
 
 /**
 	History
@@ -155,13 +156,16 @@ export class History {
 		editor.multiSelect.shapes.clear();
 
 		// Overwrite the current item with the redo state
+		// log(editor.selectedItem.print());
 		// log(`overwriting ${editor.selectedItem.name}`);
 		editor.selectedItem = nextEntry.itemState;
+		// log(editor.selectedItem.print());
 
 		// Index 0 is the previous current state, so remove it
 		q.shift();
 
 		editor.publish('currentItem', editor.selectedItem);
+
 		if (editor.nav.panel === 'History') {
 			refreshPanel();
 		}
@@ -177,14 +181,19 @@ export class History {
 }
 
 function makeHistoryEntry({ itemID, title = '', changedItem, page = '', itemWasDeleted = false }) {
-	// TODO Kerning
-	if (page === 'Kerning') return;
+	let item;
+	if (page === 'Kerning') {
+		item = new KernGroup(changedItem.save());
+	} else {
+		item = new Glyph(changedItem.save());
+	}
+
 	let newEntry = {
 		timeStamp: new Date().getTime(),
 		itemID: itemID,
 		title: title,
 		page: page,
-		itemState: new Glyph(changedItem.save()),
+		itemState: item,
 		itemWasDeleted: itemWasDeleted,
 	};
 

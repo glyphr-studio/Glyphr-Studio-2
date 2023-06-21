@@ -388,6 +388,9 @@ function makePanelChooserContent() {
 	let pageButton;
 	let panels = listOfPanels();
 	let shownPanels = ['Attributes', 'Layers', 'History', 'Guides'];
+	if (getCurrentProjectEditor().nav.page === 'Kerning') {
+		shownPanels = ['Attributes', 'History'];
+	}
 
 	shownPanels.forEach((panelName) => {
 		pageButton = makeNavButton_Panel(panelName, panels[panelName].iconName);
