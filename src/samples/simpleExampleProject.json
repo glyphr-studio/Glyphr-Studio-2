@@ -1060,12 +1060,17 @@
   "components": {},
   "kerning": {
     "kern-0": {
-      "leftGroup": ["0x41", "0x42", "0x43"],
+      "leftGroup": ["0x41", "0x42", "0x43", "0x43", "0x43"],
       "rightGroup": ["0x43"],
       "value": -100
     },
     "kern-1": {
       "leftGroup": ["0x51", "0x52", "0x53"],
+      "rightGroup": ["0x53"],
+      "value": -100
+    },
+    "kern-2": {
+      "leftGroup": ["0x41", "0x42", "0x43","0x44", "0x45", "0x46","0x47", "0x48", "0x49","0x51", "0x52", "0x53"],
       "rightGroup": ["0x53"],
       "value": -100
     }

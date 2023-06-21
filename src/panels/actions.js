@@ -22,6 +22,7 @@ import { Glyph } from '../project_data/glyph.js';
 import { addComponent } from '../pages/components.js';
 import { countItems, trim } from '../common/functions.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
+import { showAddEditKernGroupDialog } from '../pages/kerning.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -306,10 +307,23 @@ export function getActionData(name) {
 	// KERN GROUP
 	data.kernGroupActions = [
 		{
+			iconName: 'moveLayerUp',
+			title: 'Edit this kern group',
+			onClick: () => {
+				const editor = getCurrentProjectEditor();
+				showAddEditKernGroupDialog(editor.selectedKernGroup);
+			},
+		},
+		{
 			iconName: 'deleteGlyph',
 			title: 'Delete this kern group',
 			onClick: () => {
-				log(`DELETE KERN GROUP`);
+				const editor = getCurrentProjectEditor();
+				const name = editor.selectedKernGroupID;
+				editor.deleteSelectedItemFromProject();
+				editor.history.addState(`Automatically navigated to ${editor.selectedItemID}`);
+				editor.publish('whichKernGroupIsSelected', editor.selectedItemID);
+				showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
 			},
 		},
 	];

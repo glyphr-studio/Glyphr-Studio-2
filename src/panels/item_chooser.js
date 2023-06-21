@@ -4,7 +4,7 @@ import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { showAddComponentDialog } from '../pages/components.js';
-import { makeKernGroupCharChips, showAddKernDialog } from '../pages/kerning.js';
+import { makeKernGroupCharChips, showAddEditKernGroupDialog } from '../pages/kerning.js';
 import { showAddLigatureDialog } from '../pages/ligatures.js';
 
 /**
@@ -81,7 +81,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 			makeElement({
 				tag: 'fancy-button',
 				innerHTML: 'Create new kerning group',
-				onClick: showAddKernDialog,
+				onClick: showAddEditKernGroupDialog,
 			})
 		);
 	} else {

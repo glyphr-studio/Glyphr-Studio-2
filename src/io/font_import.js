@@ -9,7 +9,7 @@ import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { KernGroup } from '../project_data/kern_group.js';
-import { makeKernID } from '../pages/kerning.js';
+import { makeKernGroupID } from '../pages/kerning.js';
 
 /**
 	IO > Import > OpenType
@@ -236,7 +236,7 @@ function importOneKern(members, value, project) {
 		rightGroup: [right],
 		value: value,
 	});
-	const newKernID = makeKernID(finalKerns);
+	const newKernID = makeKernGroupID(finalKerns);
 
 	// Finish up
 	finalKerns[newKernID] = importedKern;
