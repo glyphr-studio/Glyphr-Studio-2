@@ -16,9 +16,6 @@ export function updateCursor(tool) {
 		} else if (tool === 'newOval') {
 			// log('setting cursor to crosshairCircle');
 			setCursor('crosshairCircle');
-		} else if (tool === 'pathEdit') {
-			// log('pathEdit :: not setting cursor');
-			// Handled by eventHandler
 		} else if (tool === 'newPath') {
 			// log('setting cursor to penPlus');
 			setCursor('penPlus');

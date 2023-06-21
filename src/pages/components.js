@@ -125,6 +125,7 @@ export function makePage_Components() {
 	});
 
 	// Tools
+	if (editor.selectedTool === 'kern') editor.selectedTool = 'resize';
 	let toolsArea = content.querySelector('.editor-page__tools-area');
 	toolsArea.innerHTML = '';
 	let toolsButtons = makeEditToolsButtons();

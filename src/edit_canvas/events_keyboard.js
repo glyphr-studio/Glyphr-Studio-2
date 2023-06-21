@@ -236,6 +236,10 @@ function getKeyFromEvent(event) {
 }
 
 function nudge(dx, dy, ev) {
+	// log(`events_keyboard Nudge`, 'start');
+	// log(`dx: ${dx}`);
+	// log(`dy: ${dy}`);
+
 	const editor = getCurrentProjectEditor();
 	const ehd = eventHandlerData;
 	if (ehd.isCtrlDown) return;
@@ -245,25 +249,32 @@ function nudge(dx, dy, ev) {
 	let mx = dx * multiplier;
 	let my = dy * multiplier;
 	let editMode = getEditMode();
+	// log(`editMode: ${editMode}`);
 
 	if (editMode === 'kern') {
-		// TODO kern
 		editor.selectedKernGroup.value += (mx || my);
+		editor.history.addState(`Nudged kern group ${editor.selectedKernGroupID} by ${mx}`);
+		editor.publish('selectedKernGroup', editor.selectedKernGroup);
 		editor.editCanvas.redraw({ calledBy: 'Nudge kern value', redrawPanels: false });
 	} else if (editMode === 'arrow') {
 		editor.multiSelect.shapes.updateShapePosition(mx, my);
+		editor.history.addState(`Nudged shape(s) by ${mx}, ${my}`);
+		editor.publish('selectedShape', editor.selectedItem);
 		editor.editCanvas.redraw({ calledBy: 'Nudge shape' });
 	} else if (editMode === 'pen') {
 		editor.multiSelect.points.members.forEach(function (o, i) {
 			o.updatePathPointPosition('p', mx, my);
 		});
+		editor.history.addState(`Nudged path point(s) by ${mx}, ${my}`);
+		editor.publish('selectedPathPoint', editor.selectedItem);
 		editor.editCanvas.redraw({ calledBy: 'Nudge path point' });
 	}
+	// log(`events_keyboard Nudge`, 'end');
 }
 
 function getEditMode() {
 	const editor = getCurrentProjectEditor();
-	if (editor.nav.page === 'kern') return 'kern';
+	if (editor.nav.page === 'Kerning') return 'kern';
 	if (editor.selectedTool === 'resize') return 'arrow';
 	if (editor.selectedTool === 'pathEdit') return 'pen';
 }

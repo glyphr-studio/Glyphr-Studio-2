@@ -30,7 +30,6 @@ export function makePage_Kerning() {
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
 	const selectedKernGroupID = editor.selectedKernGroupID;
-	editor.selectedTool = 'kern';
 
 	const editingContent = `
 		<div class="editor-page__tools-area"></div>
@@ -126,6 +125,7 @@ export function makePage_Kerning() {
 	});
 
 	// Tools
+	editor.selectedTool = 'kern';
 	let toolsArea = content.querySelector('.editor-page__tools-area');
 	toolsArea.innerHTML = '';
 	let toolsButtons = makeKernToolsButtons();
