@@ -293,12 +293,20 @@ export function charsToHexArray(input) {
  * @param {string} input - hexadecimal
  * @returns {string} - string
  */
-export function hexesToChars(input) {
+export function hexesToChars(input = '') {
 	// log('hexesToChars', 'start');
 	// log(`input: ${input}`);
 
+	if (!input) {
+		// log(`hexesToChars`, 'end');
+		return false;
+	}
+	
 	input = input.replaceAll('X', 'x');
-	if (String(input).charAt(1) !== 'x') return false;
+	if (String(input).charAt(1) !== 'x') {
+		// log(`hexesToChars`, 'end');
+		return false;
+	}
 
 	input = input.split('0x');
 	let result = '';

@@ -290,11 +290,15 @@ nav .glyph-chooser__wrapper {
 .kern-group-chooser__right-members {
 	width: 100px;
 	text-align: left;
+	width: max-content;
+	margin-right: 10px;
 }
 
 .kern-group-chooser__left-members {
 	width: 100px;
 	text-align: right;
+	width: max-content;
+	margin-left: 10px;
 }
 
 .kern-group-chooser__row:hover,

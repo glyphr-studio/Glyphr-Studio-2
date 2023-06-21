@@ -317,7 +317,7 @@ export function showNavDropdown(parentElement) {
 		style: `
 			left: ${rect.left + 1}px;
 			top: ${top}px;
-			width: ${size};
+			min-width: ${size};
 			background-color: ${parentStyle.backgroundColor};
 			border-color: ${parentStyle.backgroundColor};
 		`,

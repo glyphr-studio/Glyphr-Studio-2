@@ -12,7 +12,8 @@ import {
 } from '../controls/dialogs/dialogs.js';
 import { countItems } from '../common/functions.js';
 import { KernGroup } from '../project_data/kern_group.js';
-import { hexesToChars } from '../common/character_ids.js';
+import { charsToHexArray, hexesToChars } from '../common/character_ids.js';
+import { getUnicodeName } from '../lib/unicode_names.js';
 
 /**
  * Page > Kerning
@@ -141,10 +142,10 @@ export function makePage_Kerning() {
 		topic: 'whichKernGroupIsSelected',
 		subscriberID: 'editCanvas.selectedKernGroup',
 		callback: (newKernID) => {
-			log(`Main Canvas subscriber callback`, 'start');
-			log(`new id ${newKernID} on the main canvas`);
+			// log(`Main Canvas subscriber callback`, 'start');
+			// log(`new id ${newKernID} on the main canvas`);
 			content.querySelector('#editor-page__edit-canvas').setAttribute('editing-item-id', newKernID);
-			log(`Main Canvas subscriber callback`, 'end');
+			// log(`Main Canvas subscriber callback`, 'end');
 		},
 	});
 
@@ -189,18 +190,20 @@ function makeKerningFirstRunContent() {
 	const addOneKernButton = makeElement({
 		tag: 'fancy-button',
 		innerHTML: 'Create a new kern pair',
-		onClick: showAddKernDialog,
+		onClick: showAddEditKernGroupDialog,
 	});
 
 	content.appendChild(addOneKernButton);
 	return content;
 }
 
-function addKern(leftGroup, rightGroup, value) {
-	// log(`addKern`, 'start');
-
+function addKernGroup(leftGroup, rightGroup, value) {
+	// log(`addKernGroup`, 'start');
+	// log(leftGroup);
+	// log(rightGroup);
+	// log(value);
 	// Finish up creating new ID and Kern
-	const newID = makeKernID();
+	const newID = makeKernGroupID();
 	// log(`newID: ${newID}`);
 
 	const project = getCurrentProject();
@@ -215,72 +218,110 @@ function addKern(leftGroup, rightGroup, value) {
 		newID
 	);
 
-	getCurrentProjectEditor().selectedKernGroupID = newID;
-
-	// log(`addKern`, 'end');
+	// log(`addKernGroup`, 'end');
 	return project.kerning[newID];
 }
 
-export function makeKernID(kernGroups = getCurrentProject().kerning) {
-	// log(`makeKernID`, 'start');
+export function makeKernGroupID(kernGroups = getCurrentProject().kerning) {
+	// log(`makeKernGroupID`, 'start');
 	let counter = countItems(kernGroups);
 	while (kernGroups[`kern-${counter}`]) counter++;
-	// log(`makeKernID`, 'end');
+	// log(`makeKernGroupID`, 'end');
 	return `kern-${counter}`;
 }
 
-export function showAddKernDialog() {
+export function showAddEditKernGroupDialog(kernGroup) {
+	if (!kernGroup) kernGroup = false;
 	const content = makeElement({
 		innerHTML: `
-			<h2>Add a new kern group</h2>
-				Create a new kern group by specifying which characters should be in the left-side group,
-				the right-side group, then what distance in <code>Em</code> units should be used for the
-				kern value.
+			<h2>${kernGroup ? 'Edit this' : 'Add new'} kern group</h2>
+				Specify which characters should be in the left-side group,
+				the right-side group, then what distance in <code>Em</code>
+				units should be used for the kern value.
 				<br><br>
 
 				<h3>Left group</h3>
 				<input id="kerning__add-new-kern-group__left-group" type="text"
+					value="${kernGroup ? kernGroup.leftGroupAsString : ''}"
 					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 				/>
 				<br><br>
 				<h3>Right group</h3>
 				<input id="kerning__add-new-kern-group__right-group" type="text"
+					value="${kernGroup ? kernGroup.rightGroupAsString : ''}"
 					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 				/>
 				<br><br>
 				<h3>Value</h3>
 				<input id="kerning__add-new-kern-group__value" type="text"
+					value="${kernGroup ? kernGroup.value : ''}"
 					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 				/>
 				<br><br>
-				<fancy-button disabled id="kerning__add-new-kern-group__submit-button">Add new kern group</fancy-button>
+				<fancy-button disabled id="kerning__add-new-kern-group__submit-button">
+					${kernGroup ? 'Save changes' : 'Add new kern group'}
+				</fancy-button>
 		`,
 	});
 
 	const submitButton = content.querySelector('#kerning__add-new-kern-group__submit-button');
+	const leftGroupInput = content.querySelector('#kerning__add-new-kern-group__left-group');
+	const rightGroupInput = content.querySelector('#kerning__add-new-kern-group__right-group');
+	const valueInput = content.querySelector('#kerning__add-new-kern-group__value');
 
-	submitButton.addEventListener('click', () => {
-		// log(`showAddKernDialog button click handler`, 'start');
-		const newKernLeft = content.querySelector('#kerning__add-new-kern-group__left-group');
-		const newKernRight = content.querySelector('#kerning__add-new-kern-group__right-group');
-		const newKernValue = content.querySelector('#kerning__add-new-kern-group__value');
+	leftGroupInput.addEventListener('change', inputChange);
+	rightGroupInput.addEventListener('change', inputChange);
+	valueInput.addEventListener('change', inputChange);
 
-		const result = addKern(
-			newKernLeft.value.split(),
-			newKernRight.value.split(),
-			parseInt(newKernValue.value)
-		);
-		// log(`result: ${result}`);
+	if (kernGroup) {
+		submitButton.removeAttribute('disabled');
+		submitButton.addEventListener('click', addEditDialogSubmit);
+	}
 
-		if (typeof result === 'string') {
-			showError(result);
+	function inputChange() {
+		if (leftGroupInput.value !== '' && rightGroupInput.value !== '' && valueInput.value) {
+			submitButton.removeAttribute('disabled');
+			submitButton.addEventListener('click', addEditDialogSubmit);
 		} else {
-			const editor = getCurrentProjectEditor();
+			submitButton.setAttribute('disabled', '');
+			submitButton.removeEventListener('click', addEditDialogSubmit);
+		}
+	}
+
+	function addEditDialogSubmit() {
+		log(`showAddEditKernGroupDialog button click handler`, 'start');
+		const editor = getCurrentProjectEditor();
+		let leftNew = charsToHexArray(leftGroupInput.value);
+		log(`leftNew: ${leftNew}`);
+		let rightNew = charsToHexArray(rightGroupInput.value);
+		log(`rightNew: ${rightNew}`);
+		let valueNew = parseInt(valueInput.value);
+		log(`valueNew: ${valueNew}`);
+
+		if (kernGroup) {
+			log(kernGroup.print());
+			kernGroup.leftGroup = leftNew;
+			kernGroup.rightGroup = rightNew;
+			kernGroup.value = valueNew;
+			log(kernGroup.print());
+			editor.history.addState('Edited kern group: ' + editor.selectedKernGroupID);
+			editor.publish('currentKernGroup', editor.selectedKernGroup);
 			editor.navigate();
 			closeEveryTypeOfDialog();
+		} else {
+			const result = addKernGroup(leftNew, rightNew, valueNew);
+			// log(`result: ${result}`);
+
+			if (typeof result === 'string') {
+				showError(result);
+			} else {
+				editor.selectedItemID = result.id;
+				editor.navigate();
+				closeEveryTypeOfDialog();
+			}
 		}
-		// log(`showAddKernDialog button click handler`, 'end');
-	});
+		log(`showAddEditKernGroupDialog button click handler`, 'end');
+	}
 
 	showModalDialog(content, 500);
 }
@@ -292,11 +333,29 @@ export function makeKernGroupCharChips(group) {
 	const wrapper = makeElement();
 	group.forEach((charID) => {
 		// log(`charID: ${charID}`);
-
-		let char = hexesToChars(charID);
-		// log(char);
-		wrapper.appendChild(makeElement({ tag: 'code', innerHTML: char }));
+		wrapper.appendChild(makeCharChip(charID));
 	});
 	// log(`makeKernGroupCharChips`, 'end');
 	return wrapper;
+}
+
+export function makeCharChip(charID) {
+	// log(`makeCharChip`, 'start');
+	// log(`charID: ${charID}`);
+
+	let char = hexesToChars(charID);
+	let name = getUnicodeName(charID);
+	let title = charID;
+	if (name) title = `${name}\n${charID}`;
+	// log(`char: ${char}`);
+	// log(`name: ${name}`);
+	// log(`title: ${title}`);
+
+	let chip = makeElement({
+		tag: 'code',
+		innerHTML: char,
+		attributes: { title: title },
+	});
+	// log(`makeCharChip`, 'end');
+	return chip;
 }

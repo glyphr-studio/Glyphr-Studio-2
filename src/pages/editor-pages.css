@@ -187,3 +187,9 @@ display-canvas {
 	letter-spacing: 0.05em;
 	text-align: center;
 }
+
+/* Kern Groups */
+#kerning__add-new-kern-group__left-group,
+#kerning__add-new-kern-group__right-group {
+	width: 100%;
+}

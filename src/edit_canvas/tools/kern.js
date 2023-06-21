@@ -22,7 +22,7 @@ export class Tool_Kern {
 			const editor = getCurrentProjectEditor();
 			this.dragging = false;
 			this.deltaX = 0;
-			editor.history.addState('Kern Adjustment: ' + editor.selectedKernGroup.value);
+			editor.history.addState('Kern group value: ' + editor.selectedKernGroup.value);
 			// redraw({calledBy:'Kern.mouseup'});
 		};
 
