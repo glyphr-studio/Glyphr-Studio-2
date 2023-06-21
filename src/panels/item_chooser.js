@@ -48,13 +48,13 @@ export function makeAllItemTypeChooserContent(clickHandler, type = false) {
 	return wrapper;
 }
 
-export function makeSingleItemTypeChooserContent(itemType, clickHandler) {
+export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 	// log(`makeSingleItemTypeChooserContent`, 'start');
 	savedClickHandler = clickHandler;
 	savedRegisterSubscriptions = true;
 	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
 
-	if (itemType === 'Ligatures') {
+	if (itemPageName === 'Ligatures') {
 		// Ligature Chooser
 		wrapper.appendChild(makeLigatureChooserTileGrid());
 		wrapper.appendChild(
@@ -64,7 +64,7 @@ export function makeSingleItemTypeChooserContent(itemType, clickHandler) {
 				onClick: showAddLigatureDialog,
 			})
 		);
-	} else if (itemType === 'Components') {
+	} else if (itemPageName === 'Components') {
 		// Component Chooser
 		wrapper.appendChild(makeComponentChooserTileGrid());
 		wrapper.appendChild(
@@ -74,7 +74,7 @@ export function makeSingleItemTypeChooserContent(itemType, clickHandler) {
 				onClick: showAddComponentDialog,
 			})
 		);
-	} else if (itemType === 'Kerning') {
+	} else if (itemPageName === 'Kerning') {
 		// Component Chooser
 		wrapper.appendChild(makeKernGroupChooserList());
 		wrapper.appendChild(

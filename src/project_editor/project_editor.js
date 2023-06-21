@@ -344,14 +344,18 @@ export class ProjectEditor {
 			// log(`this.selectedGlyph: ${this.selectedGlyph}`);
 			// log(`ProjectEditor SET selectedItem`, 'end');
 			this.selectedGlyph = newItem;
-		} else if (this.nav.page === 'Components') {
-			// log(`this.selectedComponent: ${this.selectedComponent}`);
-			// log(`ProjectEditor SET selectedItem`, 'end');
-			this.selectedComponent = newItem;
 		} else if (this.nav.page === 'Ligatures') {
 			// log(`this.selectedLigature: ${this.selectedLigature}`);
 			// log(`ProjectEditor SET selectedItem`, 'end');
 			this.selectedLigature = newItem;
+		} else if (this.nav.page === 'Components') {
+			// log(`this.selectedComponent: ${this.selectedComponent}`);
+			// log(`ProjectEditor SET selectedItem`, 'end');
+			this.selectedComponent = newItem;
+		} else if (this.nav.page === 'Kerning') {
+			// log(`this.selectedKernGroup: ${this.selectedKernGroup}`);
+			// log(`ProjectEditor SET selectedItem`, 'end');
+			this.selectedKernGroup = newItem;
 		}
 	}
 
@@ -494,32 +498,32 @@ export class ProjectEditor {
 		// log(`deleteSelectedItemFromProject`, 'start');
 		// log(`page: ${page}`);
 
-		const itemType = page || this.nav.page;
+		const itemPageName = page || this.nav.page;
 		let id;
 		let historyTitle;
 
-		if (itemType === 'Characters') {
+		if (itemPageName === 'Characters') {
 			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
 			historyTitle = `Deleted Glyph ${id} : ${this.selectedGlyph.name}`;
 			this.history.addState(historyTitle, true);
 			deleteLinks(this.selectedGlyph);
 			delete this.project.glyphs[id];
-		} else if (itemType === 'Components') {
+		} else if (itemPageName === 'Components') {
 			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
 			id = this.selectedComponentID;
 			historyTitle = `Deleted Component ${id} : ${this.selectedComponent.name}`;
 			this.history.addState(historyTitle, true);
 			deleteLinks(this.selectedComponent);
 			delete this.project.components[id];
-		} else if (itemType === 'Ligatures') {
+		} else if (itemPageName === 'Ligatures') {
 			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
 			id = this.selectedLigatureID;
 			historyTitle = `Deleted Ligature ${id} : ${this.selectedLigature.name}`;
 			this.history.addState(historyTitle, true);
 			deleteLinks(this.selectedLigature);
 			delete this.project.ligatures[id];
-		} else if (itemType === 'Kerning') {
+		} else if (itemPageName === 'Kerning') {
 			// log(`deleting selectedKernGroupID: ${this.selectedKernGroupID}`);
 			id = this.selectedKernGroupID;
 			historyTitle = `Deleted Kern ${id} : ${this.selectedKernGroup.name}`;
@@ -539,9 +543,9 @@ export class ProjectEditor {
 	 */
 	selectFallbackItem(page = false) {
 		// log(`ProjectEditor.selectFallbackItem`, 'start');
-		const itemType = page || this.nav.page;
+		const itemPageName = page || this.nav.page;
 
-		if (itemType === 'Characters') {
+		if (itemPageName === 'Characters') {
 			const selectedRange = this.selectedCharacterRange;
 			if (selectedRange) {
 				// log(`Selected Range detected as ${selectedRange.name}`);
@@ -556,13 +560,13 @@ export class ProjectEditor {
 				}
 			}
 			// log(`new selectedGlyphID: ${this.selectedGlyphID}`);
-		} else if (itemType === 'Components') {
+		} else if (itemPageName === 'Components') {
 			this.selectedComponentID = getFirstID(this.project.components);
 			// log(`new selectedComponentID: ${this.selectedComponentID}`);
-		} else if (itemType === 'Ligatures') {
+		} else if (itemPageName === 'Ligatures') {
 			this.selectedLigatureID = getFirstID(this.project.ligatures);
 			// log(`new selectedLigatureID: ${this.selectedLigatureID}`);
-		} else if (itemType === 'Kern') {
+		} else if (itemPageName === 'Kerning') {
 			this.selectedKernGroupID = getFirstID(this.project.kerning);
 			// log(`new selectedKernGroupID: ${this.selectedKernGroupID}`);
 		}

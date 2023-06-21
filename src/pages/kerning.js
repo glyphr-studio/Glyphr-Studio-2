@@ -12,7 +12,6 @@ import {
 } from '../controls/dialogs/dialogs.js';
 import { countItems } from '../common/functions.js';
 import { KernGroup } from '../project_data/kern_group.js';
-import { makePanel_KernGroupAttributes } from '../panels/attributes_kern.js';
 import { hexesToChars } from '../common/character_ids.js';
 
 /**
@@ -31,7 +30,6 @@ export function makePage_Kerning() {
 	// log(`editor.nav.panel: ${editor.nav.panel}`);
 
 	const selectedKernGroupID = editor.selectedKernGroupID;
-	editor.nav.panel = 'Attributes';
 	editor.selectedTool = 'kern';
 
 	const editingContent = `
@@ -110,14 +108,14 @@ export function makePage_Kerning() {
 	});
 
 	// Panel Selector
-	// let l3 = content.querySelector('#nav-button-l3');
-	// l3.addEventListener('click', function () {
-	// 	toggleNavDropdown(l3);
-	// });
+	let l3 = content.querySelector('#nav-button-l3');
+	l3.addEventListener('click', function () {
+		toggleNavDropdown(l3);
+	});
 
 	// Panel
 	const panel = content.querySelector('#editor-page__panel');
-	panel.appendChild(makePanel_KernGroupAttributes());
+	panel.appendChild(makePanel());
 	panel.addEventListener('scroll', closeAllInfoBubbles);
 	editor.subscribe({
 		topic: ['whichKernGroupIsSelected'],

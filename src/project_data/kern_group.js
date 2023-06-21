@@ -44,6 +44,25 @@ export class KernGroup extends GlyphElement {
 		return re;
 	}
 
+	/**
+	 * Create a nicely-formatted string for this object
+	 * @param {number} level - how far down we are
+	 * @returns {string}
+	 */
+	print(level = 0) {
+		let ind = '';
+		for (let i = 0; i < level; i++) ind += '  ';
+
+		let re = `${ind}{${this.objType} \n`;
+		ind += '  ';
+		re += `${ind}leftGroup: ${JSON.stringify(this.leftGroup)}\n`;
+		re += `${ind}rightGroup: ${JSON.stringify(this.rightGroup)}\n`;
+		re += `${ind}value: ${this.value}\n`;
+		re += `${ind.substring(2)}}/${this.objType}`;
+
+		return re;
+	}
+
 	// --------------------------------------------------------------
 	// Getters
 	// --------------------------------------------------------------
