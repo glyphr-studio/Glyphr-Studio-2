@@ -1,3 +1,4 @@
+import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeKernGroupCharChips } from '../pages/kerning.js';
 import { makeActionsArea_KernGroup } from './actions.js';
