@@ -10,6 +10,7 @@ import {
 	makeLinkReferenceRow,
 	makeSingleInput,
 	makeSingleLabel,
+	rowPad,
 } from './cards.js';
 
 // --------------------------------------------------------------
@@ -90,12 +91,12 @@ export function makeCard_glyphAttributes(glyph) {
 		]);
 	}
 	if (glyph.shapes.length) {
-		addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+		addAsChildren(glyphCard, rowPad());
 		addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
 		addAsChildren(glyphCard, makeInputs_position(glyph));
 		addAsChildren(glyphCard, makeInputs_size(glyph));
 	}
-	addAsChildren(glyphCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	addAsChildren(glyphCard, rowPad());
 	addAsChildren(glyphCard, makeActionsArea_Universal());
 	addAsChildren(glyphCard, makeActionsArea_Glyph());
 	// log(`returning:`);

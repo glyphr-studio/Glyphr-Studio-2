@@ -5,6 +5,7 @@ import { makePanel_Layers } from './layers.js';
 import { makePanel_History } from './history.js';
 import { makePanel_Guides } from './guides.js';
 import { makePanel_KernGroupAttributes } from './attributes_kern.js';
+import { makePanel_ContextCharacters } from './context_characters.js';
 
 /**
  * Assembles the correct panel based on the current
@@ -24,22 +25,32 @@ export function makePanel() {
 		editor.unsubscribe({ idToRemove: 'layersPanel' });
 		editor.unsubscribe({ idToRemove: 'historyPanel' });
 		editor.unsubscribe({ idToRemove: 'guidesPanel' });
+		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
 		if (editor.nav.page === 'Kerning') addAsChildren(content, makePanel_KernGroupAttributes());
 		else addAsChildren(content, makePanel_GlyphAttributes());
 	} else if (panel === 'Layers') {
 		editor.unsubscribe({ idToRemove: 'attributesPanel' });
 		editor.unsubscribe({ idToRemove: 'historyPanel' });
 		editor.unsubscribe({ idToRemove: 'guidesPanel' });
+		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
 		addAsChildren(content, makePanel_Layers());
+	} else if (panel === 'Context characters') {
+		editor.unsubscribe({ idToRemove: 'attributesPanel' });
+		editor.unsubscribe({ idToRemove: 'layersPanel' });
+		editor.unsubscribe({ idToRemove: 'historyPanel' });
+		editor.unsubscribe({ idToRemove: 'guidesPanel' });
+		addAsChildren(content, makePanel_ContextCharacters());
 	} else if (panel === 'History') {
 		editor.unsubscribe({ idToRemove: 'attributesPanel' });
 		editor.unsubscribe({ idToRemove: 'layersPanel' });
 		editor.unsubscribe({ idToRemove: 'guidesPanel' });
+		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
 		addAsChildren(content, makePanel_History());
 	} else if (panel === 'Guides') {
 		editor.unsubscribe({ idToRemove: 'attributesPanel' });
 		editor.unsubscribe({ idToRemove: 'layersPanel' });
 		editor.unsubscribe({ idToRemove: 'historyPanel' });
+		editor.unsubscribe({ idToRemove: 'contextCharactersPanel' });
 		addAsChildren(content, makePanel_Guides());
 	}
 

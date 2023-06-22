@@ -240,6 +240,10 @@ export function makeSingleLabel(text) {
 	return newLabel;
 }
 
+export function rowPad() {
+	return makeElement({ tag: 'div', className: 'rowPad' });
+}
+
 export function dimSplit() {
 	return `<span class="dimSplit">&#x2044;</span>`;
 }

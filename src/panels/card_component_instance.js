@@ -8,6 +8,7 @@ import {
 	makeSingleCheckbox,
 	makeSingleInput,
 	makeSingleLabel,
+	rowPad,
 } from './cards.js';
 
 // --------------------------------------------------------------
@@ -144,11 +145,11 @@ export function makeCard_componentInstanceAttributes(componentInstance) {
 		// rotationInput,
 		// rotateFirstLabel,
 		// rotateFirstInput,
-		makeElement({ tag: 'div', className: 'rowPad' }),
+		rowPad(),
 		linkLabel,
 		linkRow,
 	]);
-	addAsChildren(componentInstanceCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	addAsChildren(componentInstanceCard, rowPad());
 	addAsChildren(componentInstanceCard, makeActionsArea_ComponentInstance());
 
 	// log(`makeCard_componentInstanceAttributes`, 'end');

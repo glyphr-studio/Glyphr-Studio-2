@@ -136,8 +136,8 @@ function migrate_Project(oldProject) {
 	newPreferences.maxCombinePathsOnExport = oldSettings.maxcombineshapesonexport || 30;
 	newPreferences.stopPageNavigation = oldSettings.stoppagenavigation || true;
 	newPreferences.formatSaveFile = oldSettings.formatsavefile || true;
-	newPreferences.contextGlyphs.showGuides = oldSettings.showcontextglyphguides || true;
-	newPreferences.contextGlyphs.transparency = oldColors.contextglyphtransparency || 90;
+	newPreferences.contextCharacters.showGuides = oldSettings.showcontextglyphguides || true;
+	newPreferences.contextCharacters.transparency = oldColors.contextglyphtransparency || 90;
 
 	// Guides
 	newSysGuides.transparency = oldColors.systemguidetransparency || 90;
@@ -201,7 +201,7 @@ function migrate_Glyph(oldGlyph, newID) {
 		advanceWidth: oldGlyph.glyphwidth,
 		ratioLock: oldGlyph.ratiolock,
 		usedIn: oldGlyph.usedin.map(migrate_ItemID),
-		contextGlyphs: oldGlyph.contextglyphs,
+		contextCharacters: oldGlyph.contextglyphs,
 	});
 
 	let newItem;
