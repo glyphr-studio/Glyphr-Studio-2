@@ -307,7 +307,7 @@ export function getActionData(name) {
 	// KERN GROUP
 	data.kernGroupActions = [
 		{
-			iconName: 'moveLayerUp',
+			iconName: 'edit',
 			title: 'Edit this kern group',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
@@ -315,7 +315,7 @@ export function getActionData(name) {
 			},
 		},
 		{
-			iconName: 'deleteGlyph',
+			iconName: 'delete',
 			title: 'Delete this kern group',
 			onClick: () => {
 				const editor = getCurrentProjectEditor();
