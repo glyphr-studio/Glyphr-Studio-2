@@ -8,6 +8,7 @@ import {
 	makeSingleCheckbox,
 	makeSingleInput,
 	makeSingleLabel,
+	rowPad,
 } from './cards.js';
 
 // --------------------------------------------------------------
@@ -87,7 +88,7 @@ export function makeCard_pathAttributes(path) {
 		positionInputs,
 		sizeInputs,
 	]);
-	addAsChildren(pathCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	addAsChildren(pathCard, rowPad());
 	addAsChildren(pathCard, makeActionsArea_Path());
 
 	// log(`makeCard_pathAttributes`, 'end');

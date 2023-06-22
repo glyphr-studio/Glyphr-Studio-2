@@ -275,34 +275,7 @@ export function makeKernToolsButtons() {
 	return kernToolButton;
 }
 
-export function makeContextGlyphControls() {
-	// Context Glyphs
-	let ctxg = '<div class="contextglyphsarea">';
-	ctxg += '<div id="contextglyphsoptions">';
-	ctxg +=
-		'<strong>Context Glyphs</strong> are letters you can display around the glyph you are currently editing.<br><br>';
-	ctxg += checkUI(
-		'getCurrentProject().projectSettings.contextGlyphs.showGuides',
-		getCurrentProject().projectSettings.contextGlyphs.showGuides,
-		true
-	);
-	ctxg +=
-		'<label style="margin-left:10px; position:relative; top:-6px;" for="contextGlyphs.showGuides">show guides</label><br>';
-	ctxg +=
-		'glyph ' +
-		sliderUI('contextGlyphTransparency', 'contextGlyphTransparency_dropdown', true, false);
-	ctxg += '<br/>';
-	ctxg +=
-		'guide ' + sliderUI('systemGuideTransparency', 'systemGuideTransparency_dropdown', true, false);
-	ctxg += '</div>';
-	ctxg += '<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
-	ctxg += 'onblur="_UI.focusElement = false;" onmouseover="mouseoutcec();" ';
-	ctxg += 'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
-	ctxg += 'value="' + getContextGlyphString() + '"/>';
-	ctxg +=
-		'<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
-	ctxg += '</div>';
-}
+
 
 // --------------------------------------------------------------
 // Button helper functions

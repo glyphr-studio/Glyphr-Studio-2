@@ -2,7 +2,7 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeKernGroupCharChips } from '../pages/kerning.js';
 import { makeActionsArea_KernGroup } from './actions.js';
-import { makeSingleInput, makeSingleLabel } from './cards.js';
+import { makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
 
 // --------------------------------------------------------------
 // Kern Group attributes
@@ -37,7 +37,7 @@ export function makeCard_kernGroup(kernGroup) {
 		rightInput,
 	]);
 
-	addAsChildren(kernGroupCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	addAsChildren(kernGroupCard, rowPad());
 	addAsChildren(kernGroupCard, makeActionsArea_KernGroup());
 
 	// log(`makeCard_kernGroup`, 'end');

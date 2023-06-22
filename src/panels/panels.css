@@ -152,6 +152,10 @@
 	grid-column: 1 / -1;
 }
 
+.spanAll {
+	grid-column: 1 / -1;
+}
+
 .dimSplit {
 	color: var(--gray-l80);
 	width: 16px;

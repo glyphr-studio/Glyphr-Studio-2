@@ -27,11 +27,6 @@ export function handleKeyPress(event) {
 		// log('handleKeyPress', 'end');
 		return;
 	}
-	// TODO context glyphs
-	// if (document.activeElement.id === 'contextglyphsinput') {
-	// log('handleKeyPress', 'end');
-	// 	return;
-	// }
 
 	// log('handleKeyPress', 'start');
 	const key = getKeyFromEvent(event);

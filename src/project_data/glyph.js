@@ -37,7 +37,7 @@ export class Glyph extends GlyphElement {
 		ratioLock = false,
 		usedIn = [],
 		gsub = [],
-		contextGlyphs = '',
+		contextCharacters = '',
 	} = {}) {
 		// log(`Glyph.constructor`, 'start');
 		super();
@@ -49,7 +49,7 @@ export class Glyph extends GlyphElement {
 		this.ratioLock = ratioLock;
 		this.usedIn = usedIn;
 		this.gsub = gsub;
-		this.contextGlyphs = contextGlyphs;
+		this.contextCharacters = contextCharacters;
 
 		this.objType = objType;
 		// log(this.print());

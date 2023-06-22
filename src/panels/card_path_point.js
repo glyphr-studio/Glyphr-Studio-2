@@ -7,6 +7,7 @@ import {
 	makeInputs_size,
 	makeSingleCheckbox,
 	makeSingleLabel,
+	rowPad,
 } from './cards.js';
 
 // --------------------------------------------------------------
@@ -95,7 +96,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	addAsChildren(pathPointCard, pointPosition);
 	addAsChildren(pathPointCard, [pointTypeLabel, pointTypeWrapper]);
 	addAsChildren(pathPointCard, [useH1Label, h1Group, useH2Label, h2Group]);
-	addAsChildren(pathPointCard, makeElement({ tag: 'div', className: 'rowPad' }));
+	addAsChildren(pathPointCard, rowPad());
 	addAsChildren(pathPointCard, makeActionsArea_PathPoint());
 
 	// log(`makeCard_pathPointAttributes`, 'end');

@@ -41,9 +41,11 @@ export class GlyphrStudioProject {
 						showRightSide: true,
 					},
 				},
-				contextGlyphs: {
+				contextCharacters: {
+					showCharacters: false,
+					characterTransparency: 90,
 					showGuides: true,
-					transparency: 90,
+					guidesTransparency: 90,
 				},
 			},
 			font: {

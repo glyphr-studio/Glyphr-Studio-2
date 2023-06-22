@@ -387,13 +387,16 @@ function makePanelChooserContent() {
 	let content = makeElement();
 	let pageButton;
 	let panels = listOfPanels();
-	let shownPanels = ['Attributes', 'Layers', 'History', 'Guides'];
-	if (getCurrentProjectEditor().nav.page === 'Kerning') {
+	let shownPanels = ['Attributes', 'Layers', 'ContextCharacters', 'History', 'Guides'];
+	let page = getCurrentProjectEditor().nav.page;
+	if (page === 'Kerning') {
 		shownPanels = ['Attributes', 'History'];
+	} else if (page === 'Components') {
+		shownPanels = ['Attributes', 'Layers', 'History'];
 	}
 
 	shownPanels.forEach((panelName) => {
-		pageButton = makeNavButton_Panel(panelName, panels[panelName].iconName);
+		pageButton = makeNavButton_Panel(panels[panelName].name, panels[panelName].iconName);
 		content.appendChild(pageButton);
 	});
 
@@ -425,25 +428,30 @@ function makeNavButton_Panel(panelName, iconName) {
  */
 function listOfPanels() {
 	return {
+		Attributes: {
+			name: 'Attributes',
+			panelMaker: false,
+			iconName: 'panel_attributes',
+		},
 		Layers: {
 			name: 'Layers',
 			panelMaker: false,
 			iconName: 'panel_layers',
 		},
-		Guides: {
-			name: 'Guides',
+		ContextCharacters: {
+			name: 'Context characters',
 			panelMaker: false,
-			iconName: 'panel_guides',
+			iconName: 'panel_contextCharacters',
 		},
 		History: {
 			name: 'History',
 			panelMaker: false,
 			iconName: 'panel_history',
 		},
-		Attributes: {
-			name: 'Attributes',
+		Guides: {
+			name: 'Guides',
 			panelMaker: false,
-			iconName: 'panel_attributes',
+			iconName: 'panel_guides',
 		},
 	};
 }
