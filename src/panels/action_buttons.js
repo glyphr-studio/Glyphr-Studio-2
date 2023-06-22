@@ -348,6 +348,32 @@ makeActionButtonIcon.deletePath = function (isComponentInstance = false) {
 	return svgWrap(re);
 };
 
+// Kerning actions
+makeActionButtonIcon.edit = function () {
+	let re = '';
+	let accent = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
+
+	re += `
+		<path fill="${accent}" d="m28.643,1.357c-1.577-1.577-4.109-1.891-5.651-.349L4,20,0,29l1,1,9-4L28.992,7.008c1.542-1.542,1.228-4.074-.349-5.651Z"/>
+		<path fill="${fill}" d="m28.643,1.357C27.771.486,26.608,0,25.482,0,24.57,0,23.682.318,22.992,1.008L4,20,0,29l1,1,9-4L28.992,7.008c1.542-1.542,1.228-4.074-.349-5.651ZM6.268,20.561l15.793-15.793,3.172,3.172-15.793,15.793-3.172-3.172Zm-.662.752l3.082,3.082-5.548,2.466,2.466-5.548ZM27.577,5.594l-1.638,1.638-3.172-3.172,1.638-1.638c.281-.28.643-.423,1.076-.423.611,0,1.264.288,1.747.771.44.44.719,1.018.765,1.586.028.346-.021.842-.416,1.237Z"/>
+	`;
+
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.delete = function () {
+	let re = '';
+	let red = actionButtonIconColors.redX;
+
+	re += `
+		<path fill="${red}" d="m23.597,28.681c1.121,1.472,6.349-1.368,4.386-3.98C23.74,19.055,12.613,7.416,7.367,3.301,3.535.295,0,2.518,0,2.518c0,0,13.846,13.354,23.597,26.164Z"/>
+		<path fill="${red}" d="m6.893,28.339c-1.703,2.813-6.56-.4-4.174-3.566C7.551,18.364,16.797,6.057,23.298,1.396c4.182-2.998,6.702-.235,6.702-.235,0,0-14.277,12.59-23.107,27.178Z"/>
+	`;
+
+	return svgWrap(re);
+};
+
 // Layer actions
 makeActionButtonIcon.moveLayerDown = function () {
 	let re = '';
