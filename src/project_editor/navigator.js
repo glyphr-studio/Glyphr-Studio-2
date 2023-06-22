@@ -425,11 +425,6 @@ function makeNavButton_Panel(panelName, iconName) {
  */
 function listOfPanels() {
 	return {
-		Chooser: {
-			name: 'Chooser',
-			panelMaker: false,
-			iconName: 'panel_chooser',
-		},
 		Layers: {
 			name: 'Layers',
 			panelMaker: false,
