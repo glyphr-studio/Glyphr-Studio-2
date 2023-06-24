@@ -2,7 +2,7 @@ import { clone, json, remove, round, trim } from '../common/functions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { KernGroup } from './kern_group.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
-import { decToHex, validateAsHex } from '../common/character_ids.js';
+import { charsToHexArray, decToHex, validateAsHex } from '../common/character_ids.js';
 import { CharacterRange } from './character_range.js';
 
 /**
@@ -236,6 +236,24 @@ export class GlyphrStudioProject {
 		// log(result);
 		// log('GlyphrStudioProject.getItem', 'end');
 		return result;
+	}
+
+	/**
+	 * Given a single character or a string of characters, find the
+	 * Glyphr Studio item ID that corresponds to it.
+	 * @param {String} chars - single character or gsub for ligatures
+	 * @returns {String} - item ID
+	 */
+	getItemID(chars) {
+		if (chars.length === 1) {
+			return this.getItem(`glyph-${charsToHexArray(chars)[0]}`);
+		} else {
+			for (let id of Object.keys(this.ligatures)) {
+				let lig = this.ligatures[id];
+				if (lig.gsub === chars) return id;
+			}
+		}
+		return false;
 	}
 
 	/**

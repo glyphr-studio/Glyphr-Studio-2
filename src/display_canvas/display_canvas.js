@@ -1,5 +1,5 @@
 import { makeElement } from '../common/dom.js';
-import { GlyphSequence } from './glyph_sequence.js';
+import { CharacterSequence } from './character_sequence.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { charToHex } from '../common/character_ids.js';
@@ -35,7 +35,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		this.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
 
-		this.glyphSequence = false;
+		this.CharacterSequence = false;
 
 		this.showPageExtras = attributes.showPageExtras || livePreviewOptions.showPageExtras;
 		this.showLineExtras = attributes.showLineExtras || livePreviewOptions.showLineExtras;
@@ -50,7 +50,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(this.canvas);
 		// livePreviewPageWindowResize();
-		this.updateGlyphSequence();
+		this.updateCharacterSequence();
 		this.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
 		this.canvas.height = this.height;
 		this.canvas.width = this.width;
@@ -59,17 +59,17 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`DisplayCanvas.constructor`, 'end');
 	}
 
-	updateGlyphSequence() {
-		// log(`DisplayCanvas.updateGlyphSequence`, 'start');
+	updateCharacterSequence() {
+		// log(`DisplayCanvas.updateCharacterSequence`, 'start');
 		// log(`this.width: ${this.width}`);
 		// log(`this.height: ${this.height}`);
-		this.glyphSequence = new GlyphSequence({
+		this.CharacterSequence = new CharacterSequence({
 			glyphString: this.glyphs,
 			fontSize: this.fontSize,
 			areaMaxes: this.calculatePageMaxes(),
 			lineGap: this.lineGap,
 		});
-		// log(`DisplayCanvas.updateGlyphSequence`, 'end');
+		// log(`DisplayCanvas.updateCharacterSequence`, 'end');
 	}
 
 	calculatePageMaxes() {
@@ -169,7 +169,7 @@ export class DisplayCanvas extends HTMLElement {
 				break;
 		}
 
-		this.updateGlyphSequence();
+		this.updateCharacterSequence();
 		this.redraw();
 
 		// log(`DisplayCanvas.attributeChangeCallback`, 'end');
@@ -227,7 +227,7 @@ export class DisplayCanvas extends HTMLElement {
 	}
 
 	iterator(drawFunction) {
-		const data = this.glyphSequence.data;
+		const data = this.CharacterSequence.data;
 		for (let block = 0; block < data.length; block++) {
 			for (let glyph = 0; glyph < data[block].length; glyph++) {
 				drawFunction(data[block][glyph], this);
@@ -265,8 +265,8 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`displayCanvas.drawLineExtras`, 'start');
 		this.ctx.strokeStyle = accentColors.gray.l85;
 		this.ctx.beginPath();
-		this.ctx.moveTo(this.glyphSequence.areaMaxes.xMin, charData.view.dy + this.pagePadding);
-		this.ctx.lineTo(this.glyphSequence.areaMaxes.xMax, charData.view.dy + this.pagePadding);
+		this.ctx.moveTo(this.CharacterSequence.areaMaxes.xMin, charData.view.dy + this.pagePadding);
+		this.ctx.lineTo(this.CharacterSequence.areaMaxes.xMax, charData.view.dy + this.pagePadding);
 		this.ctx.closePath();
 		this.ctx.stroke();
 		// log(`displayCanvas.drawLineExtras`, 'end');

@@ -4,7 +4,7 @@ import {
 	charsToHexArray,
 	hexesToChars,
 	parseCharsInputAsHex,
-} from '../common/character_ids';
+} from '../common/character_ids.js';
 import { Maxes } from '../project_data/maxes.js';
 
 /**
@@ -16,9 +16,9 @@ import { Maxes } from '../project_data/maxes.js';
 	of the given page (canvas) area.
 **/
 
-export class GlyphSequence {
+export class CharacterSequence {
 	constructor(oa = {}) {
-		// log('GlyphSequence', 'start');
+		// log('CharacterSequence', 'start');
 
 		// Internal properties
 		this.textBlocks = [];
@@ -35,7 +35,7 @@ export class GlyphSequence {
 		// Initialize data
 		this.generateData();
 
-		// log('GlyphSequence', 'end');
+		// log('CharacterSequence', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -92,7 +92,7 @@ export class GlyphSequence {
 	 * @returns nothing
 	 */
 	generateData() {
-		// log('GlyphSequence.generateData', 'start');
+		// log('CharacterSequence.generateData', 'start');
 		const project = getCurrentProject();
 
 		/*
@@ -240,7 +240,7 @@ export class GlyphSequence {
 								// text takes up too much vertical space
 								// returning early will leave non-computed chars.isVisible = false
 								// log('Vertical Max Reached');
-								// log('GlyphSequence.generateData', 'end');
+								// log('CharacterSequence.generateData', 'end');
 								return;
 							} else {
 								// more vertical space exists for the next line
@@ -280,7 +280,7 @@ export class GlyphSequence {
 				// text takes up too much vertical space
 				// returning early will leave non-computed chars.isVisible = false
 				// log(`Vertical Max Reached @ End Of Block ${textBlockNumber}`);
-				// log('GlyphSequence.generateData', 'end');
+				// log('CharacterSequence.generateData', 'end');
 				return;
 			}
 
@@ -291,7 +291,7 @@ export class GlyphSequence {
 
 		// log('after view calc this.data');
 		// log(this.data);
-		// log('GlyphSequence.generateData', 'end');
+		// log('CharacterSequence.generateData', 'end');
 	}
 }
 
@@ -327,7 +327,7 @@ function getNextLineBreaker(block, start) {
  * @param {Glyph} c2 - second glyph to check
  * @returns
  */
-function calculateKernOffset(c1, c2) {
+export function calculateKernOffset(c1, c2) {
 	// log('calculateKernOffset', 'start');
 	// log('passed: ' + c1 + ' and ' + c2);
 
@@ -371,7 +371,7 @@ function calculateKernOffset(c1, c2) {
  * @param {Array} glyphCollection - Array of Glyph objects
  * @returns - Array with merged results
  */
-function findAndMergeLigatures(glyphCollection) {
+export function findAndMergeLigatures(glyphCollection) {
 	// log('findAndMergeLigatures', 'start');
 	const editor = getCurrentProjectEditor();
 	const ligatures = editor.project.sortedLigatures;

@@ -46,7 +46,7 @@ export function makePage_LivePreview() {
 	// 	subscriberID: 'livePreviewPage',
 	// 	callback: () => {
 	// 		let displayCanvas = document.getElementById('live-preview-page__canvas');
-	// 		displayCanvas.glyphSequence = displayCanvas.updateGlyphSequence();
+	// 		displayCanvas.CharacterSequence = displayCanvas.updateCharacterSequence();
 	// 		displayCanvas.redraw();
 	// 	}
 	// });
@@ -79,7 +79,7 @@ export function livePreviewPageWindowResize() {
 	// displayCanvas.height = clientRect.height;
 	displayCanvas.setAttribute('width', clientRect.width);
 	displayCanvas.setAttribute('height', clientRect.height);
-	displayCanvas.updateGlyphSequence();
+	displayCanvas.updateCharacterSequence();
 	displayCanvas.redraw();
 	// log(`livePreviewPageWindowResize`, 'end');
 }
