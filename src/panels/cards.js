@@ -104,7 +104,7 @@ export function makeSingleInput(item, property, thisTopic, tagName) {
 		// log(`makeSingleInput CHANGE event`, 'start');
 		// log(event);
 
-		if (item.isLocked(property)) return;
+		if (item.isLockable && item.isLocked(property)) return;
 		// let newValue = event.target.getAttribute('value');
 		let newValue = event.target.value;
 		// log(`property: ${property}`);

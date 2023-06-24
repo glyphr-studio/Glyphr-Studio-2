@@ -12,7 +12,7 @@ import {
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
-import { drawGlyphKernExtra } from './context_glyphs.js';
+import { drawContextCharacters, drawGlyphKernExtra } from './context_characters.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -129,6 +129,11 @@ export class EditCanvas extends HTMLElement {
 			// log(`EditCanvas.redraw.redrawGlyphEdit`, 'start');
 			editor.autoFitIfViewIsDefault();
 			ctx.clearRect(0, 0, width, height);
+
+			// Context characters
+			if (editor.project.settings.app.contextCharacters.showCharacters) {
+				drawContextCharacters(ctx);
+			}
 
 			// Guides
 			drawSystemGuidelines();

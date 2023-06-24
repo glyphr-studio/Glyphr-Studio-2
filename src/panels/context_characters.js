@@ -34,7 +34,13 @@ export function makePanel_ContextCharacters() {
 		'input'
 	);
 	charsInput.classList.add('spanAll');
-	addAsChildren(charsCard, [description, rowPad(), toggleCheckboxLabel, toggleCheckbox, charsInput]);
+	addAsChildren(charsCard, [
+		description,
+		rowPad(),
+		toggleCheckboxLabel,
+		toggleCheckbox,
+		charsInput,
+	]);
 
 	// Options
 	let optionsCard = makeElement({
@@ -73,7 +79,7 @@ export function makePanel_ContextCharacters() {
 
 /*
 
-export function makeContextGlyphControls() {
+export function makeContextCharactersControls() {
 	// Context Glyphs
 	let ctxg = '<div class="contextglyphsarea">';
 	ctxg += '<div id="contextglyphsoptions">';
@@ -93,10 +99,10 @@ export function makeContextGlyphControls() {
 	ctxg +=
 		'guide ' + sliderUI('systemGuideTransparency', 'systemGuideTransparency_dropdown', true, false);
 	ctxg += '</div>';
-	ctxg += '<input type="text" id="contextglyphsinput" oninput="updateContextGlyphs();" ';
+	ctxg += '<input type="text" id="contextglyphsinput" oninput="updateContextCharacterss();" ';
 	ctxg += 'onblur="_UI.focusElement = false;" onmouseover="mouseoutcec();" ';
 	ctxg += 'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
-	ctxg += 'value="' + getContextGlyphString() + '"/>';
+	ctxg += 'value="' + getContextCharactersString() + '"/>';
 	ctxg +=
 		'<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
 	ctxg += '</div>';
