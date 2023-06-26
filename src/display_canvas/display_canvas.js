@@ -1,11 +1,10 @@
 import { makeElement } from '../common/dom.js';
 import { CharacterSequence } from './character_sequence.js';
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
-import { charToHex } from '../common/character_ids.js';
 import { drawGlyph } from './draw_paths.js';
-import { clone, makeCrisp, round } from '../common/functions.js';
-import { livePreviewPageWindowResize } from '../pages/live_preview.js';
+import { clone, json, makeCrisp, round } from '../common/functions.js';
+// import { livePreviewPageWindowResize } from '../pages/live_preview.js';
 import { livePreviewOptions } from '../panels/live_preview.js';
 import style from './display-canvas.css?inline';
 
@@ -19,7 +18,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * @param {Object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		// log(`DisplayCanvas.constructor`, 'start');
+		log(`DisplayCanvas.constructor`, 'start');
 		super();
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 
@@ -56,31 +55,38 @@ export class DisplayCanvas extends HTMLElement {
 		this.canvas.width = this.width;
 
 		// this.redraw();
-		// log(`DisplayCanvas.constructor`, 'end');
+		log(this);
+		log(`DisplayCanvas.constructor`, 'end');
 	}
 
 	updateCharacterSequence() {
-		// log(`DisplayCanvas.updateCharacterSequence`, 'start');
-		// log(`this.width: ${this.width}`);
-		// log(`this.height: ${this.height}`);
+		log(`DisplayCanvas.updateCharacterSequence`, 'start');
+		log(`this.width: ${this.width}`);
+		log(`this.height: ${this.height}`);
 		this.CharacterSequence = new CharacterSequence({
-			glyphString: this.glyphs,
+			characterString: this.glyphs,
 			fontSize: this.fontSize,
 			areaMaxes: this.calculatePageMaxes(),
 			lineGap: this.lineGap,
+			pagePadding: this.pagePadding,
+			ctx: this.ctx,
+			drawPageExtras: this.drawDisplayPageExtras,
+			drawLineExtras: this.drawDisplayLineExtras,
+			drawCharacterExtras: this.drawDisplayCharacterExtras,
+			drawCharacter: this.drawDisplayCharacter,
 		});
-		// log(`DisplayCanvas.updateCharacterSequence`, 'end');
+		log(`DisplayCanvas.updateCharacterSequence`, 'end');
 	}
 
 	calculatePageMaxes() {
-		// log(`DisplayCanvas.calculatePageMaxes`, 'start');
-		// log(`this.width: ${this.width}`);
-		// log(`this.height: ${this.height}`);
+		log(`DisplayCanvas.calculatePageMaxes`, 'start');
+		log(`this.width: ${this.width}`);
+		log(`this.height: ${this.height}`);
 
 		const contentWidth = this.width - 2 * this.pagePadding;
 		const contentHeight = this.height - 2 * this.pagePadding;
-		// log(`contentWidth: ${contentWidth}`);
-		// log(`contentHeight: ${contentHeight}`);
+		log(`contentWidth: ${contentWidth}`);
+		log(`contentHeight: ${contentHeight}`);
 
 		const maxes = {
 			xMin: this.pagePadding,
@@ -89,7 +95,7 @@ export class DisplayCanvas extends HTMLElement {
 			yMax: this.pagePadding + contentHeight,
 		};
 
-		// log(`DisplayCanvas.calculatePageMaxes`, 'end');
+		log(`DisplayCanvas.calculatePageMaxes`, 'end');
 		return maxes;
 	}
 
@@ -113,9 +119,9 @@ export class DisplayCanvas extends HTMLElement {
 	 * Draw the canvas when it's loaded
 	 */
 	connectedCallback() {
-		// log(`DisplayCanvas.connectedCallback`, 'start');
+		log(`DisplayCanvas.connectedCallback`, 'start');
 		this.redraw();
-		// log(`DisplayCanvas.connectedCallback`, 'end');
+		log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
 	/**
@@ -125,8 +131,8 @@ export class DisplayCanvas extends HTMLElement {
 	 * @param {String} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		// log(`DisplayCanvas.attributeChangeCallback`, 'start');
-		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		log(`DisplayCanvas.attributeChangeCallback`, 'start');
+		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 
 		switch (attributeName) {
 			case 'glyphs':
@@ -172,58 +178,30 @@ export class DisplayCanvas extends HTMLElement {
 		this.updateCharacterSequence();
 		this.redraw();
 
-		// log(`DisplayCanvas.attributeChangeCallback`, 'end');
+		log(`DisplayCanvas.attributeChangeCallback`, 'end');
 	}
 
 	/**
 	 * Updates the canvas
 	 */
 	redraw() {
-		// log('DisplayCanvas.redraw', 'start');
-		// log(`THIS CONTEXT`);
-		// log(this.ctx);
+		log('DisplayCanvas.redraw', 'start');
+		log(`THIS CONTEXT`);
+		log(this.ctx);
 
-		// log(`this.width: ${this.width}`);
-		// log(`this.height: ${this.height}`);
+		log(`this.width: ${this.width}`);
+		log(`this.height: ${this.height}`);
 
 		this.ctx.clearRect(0, 0, this.width, this.height);
 
-		// let glyphHex = charToHex(this.glyphs.charAt(0));
-		// let sg = getCurrentProject().getItem(glyphHex);
-		// log(sg);
-		// // drawGlyph(sg, this.ctx, view);
-
-		if (this.showPageExtras) {
-			// log(`DRAW PAGE EXTRAS`);
-			this.drawPageExtras();
-		}
-
-		if (this.glyphString === '') return;
-
-		let currentLine = -1;
-		if (this.showLineExtras) {
-			// log('DRAW LINE EXTRAS');
-			this.iterator((char) => {
-				if (char.lineNumber !== currentLine) {
-					this.drawLineExtras(char);
-					currentLine = char.lineNumber;
-				}
-			});
-		}
-
-		if (this.showGlyphExtras) {
-			// log('DRAW GLYPH EXTRAS');
-			this.iterator((char) => {
-				if (char.isVisible) this.drawGlyphExtras(char);
-			});
-		}
-
-		// log('DRAW GLYPHS');
-		this.iterator((char) => {
-			if (char.isVisible) this.drawGlyph(char);
+		this.CharacterSequence.draw({
+			showPageExtras: this.showPageExtras,
+			showLineExtras: this.showLineExtras,
+			showCharacterExtras: this.showCharacterExtras,
+			showCharacter: true,
 		});
 
-		// log('DisplayCanvas.redraw', 'end');
+		log('DisplayCanvas.redraw', 'end');
 	}
 
 	iterator(drawFunction) {
@@ -234,14 +212,13 @@ export class DisplayCanvas extends HTMLElement {
 			}
 		}
 	}
-
 	// --------------------------------------------------------------
 	// Draw functions for individual pieces
 	// --------------------------------------------------------------
 
-	drawPageExtras() {
-		// log(`displayCanvas.drawPageExtras`, 'start');
-		// log(maxes);
+	drawDisplayPageExtras() {
+		log(`displayCanvas.drawPageExtras`, 'start');
+		log(maxes);
 		const maxes = this.calculatePageMaxes();
 		const top = maxes.yMin || 0;
 		const bottom = maxes.yMax === Infinity ? this.canvas.height : maxes.yMax || this.canvas.height;
@@ -250,7 +227,7 @@ export class DisplayCanvas extends HTMLElement {
 		const width = right - left;
 		const height = bottom - top;
 
-		// log(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
+		log(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
 
 		this.ctx.fillStyle = 'transparent';
 		this.ctx.strokeStyle = accentColors.gray.l90;
@@ -258,22 +235,22 @@ export class DisplayCanvas extends HTMLElement {
 
 		this.ctx.strokeRect(makeCrisp(left), makeCrisp(top), round(width), round(height));
 
-		// log(`displayCanvas.drawPageExtras`, 'end');
+		log(`displayCanvas.drawPageExtras`, 'end');
 	}
 
-	drawLineExtras(charData) {
-		// log(`displayCanvas.drawLineExtras`, 'start');
+	drawDisplayLineExtras(charData) {
+		log(`displayCanvas.drawLineExtras`, 'start');
 		this.ctx.strokeStyle = accentColors.gray.l85;
 		this.ctx.beginPath();
 		this.ctx.moveTo(this.CharacterSequence.areaMaxes.xMin, charData.view.dy + this.pagePadding);
 		this.ctx.lineTo(this.CharacterSequence.areaMaxes.xMax, charData.view.dy + this.pagePadding);
 		this.ctx.closePath();
 		this.ctx.stroke();
-		// log(`displayCanvas.drawLineExtras`, 'end');
+		log(`displayCanvas.drawLineExtras`, 'end');
 	}
 
-	drawGlyphExtras(charData) {
-		// log(`displayCanvas.drawGlyphExtras`, 'start');
+	drawDisplayCharacterExtras(charData) {
+		log(`displayCanvas.drawCharacterExtras`, 'start');
 		const project = getCurrentProject();
 		const settings = project.settings.font;
 		const scale = charData.view.dz;
@@ -283,8 +260,7 @@ export class DisplayCanvas extends HTMLElement {
 		let drawX = charData.view.dx + this.pagePadding;
 		const drawK = charData.widths.kern * scale * -1;
 
-		// log(`\t drawing ${charData.char}`);
-		// log(`\t scaled view \t ${json(scaledView, true)}`);
+		log(`\t drawing ${charData.char}`);
 
 		if (charData.widths.kern) {
 			this.ctx.fillStyle = 'orange';
@@ -306,28 +282,38 @@ export class DisplayCanvas extends HTMLElement {
 
 		this.ctx.strokeRect(drawX, drawY, drawWidth, drawHeight);
 
-		// log(`displayCanvas.drawGlyphExtras`, 'end');
+		log(`displayCanvas.drawCharacterExtras`, 'end');
 	}
 
-	drawGlyph(charData) {
-		// log(`displayCanvas.drawGlyph`, 'start');
-		// log(charData);
-		// log(`THIS CONTEXT`);
-		// log(this.ctx);
+	drawDisplayCharacter(charData) {
+		log(`displayCanvas.drawCharacter`, 'start');
+		log(this);
+		log(charData);
+		log(`THIS CONTEXT`);
+		log(this.ctx);
 		// const settings = getCurrentProject().settings.font;
 		const glyph = charData.glyph;
+
 		// TODO combineAllPaths
 		// const combineAllPaths = td.combineAllPaths || false;
 		// const combineAllPaths = false;
+
+		log(`charData.view`);
+		log(`dx: ${charData.view.dx}, dy: ${charData.view.dy}, dz: ${charData.view.dz}`);
 		const view = clone(charData.view);
+		log(`cloned view`);
+		log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
+
+		log(`this.pagePadding: ${this.pagePadding}`);
+
 		// view.dx *= view.dz;
 		view.dx += this.pagePadding;
 		// view.dy += settings.ascent + this.pagePadding;
 		// view.dy *= view.dz;
 		view.dy += this.pagePadding;
 
-		// log(`\t drawing ${charData.char}`);
-		// log(view);
+		log(`\t drawing ${charData.char}`);
+		log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
 
 		if (glyph) {
 			this.ctx.fillStyle = uiColors.enabled.resting.text;
@@ -347,7 +333,7 @@ export class DisplayCanvas extends HTMLElement {
 			drawGlyph(glyph, this.ctx, view, 1, true);
 		}
 
-		// log(`displayCanvas.drawGlyph`, 'end');
+		log(`displayCanvas.drawCharacter`, 'end');
 	}
 
 	// --------------------------------------------------------------

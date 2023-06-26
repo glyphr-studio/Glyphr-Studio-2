@@ -9,7 +9,7 @@ import { addAsChildren, makeElement } from '../common/dom';
 import { makeDirectCheckbox, makeSingleCheckbox, makeSingleInput, makeSingleLabel } from './cards';
 
 export let livePreviewOptions = {
-	glyphString: 'A B C',
+	characterString: 'A B C',
 	fontSize: 48,
 	lineGap: 12,
 	pagePadding: 10,
@@ -85,14 +85,14 @@ function makeButton(text, chars = false) {
 	return button;
 }
 
-function updateDisplayCanvasGlyphs(glyphString) {
+function updateDisplayCanvasGlyphs(characterString) {
 	const glyphsInput = document.getElementById('livePreviewGlyphsInput');
 	if (glyphsInput) {
-		glyphsInput.innerHTML = glyphString;
+		glyphsInput.innerHTML = characterString;
 	}
 	let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 	if (displayCanvas) {
-		displayCanvas.setAttribute('glyphs', glyphString);
+		displayCanvas.setAttribute('glyphs', characterString);
 	}
 }
 
@@ -174,13 +174,13 @@ function makeLivePreviewOptions() {
 	let glyphsInput = makeElement({
 		tag: 'textarea',
 		id: 'livePreviewGlyphsInput',
-		innerHTML: livePreviewOptions.glyphString,
+		innerHTML: livePreviewOptions.characterString,
 	});
-	// glyphsInput.setAttribute('value', livePreviewOptions.glyphString);
+	// glyphsInput.setAttribute('value', livePreviewOptions.characterString);
 	glyphsInput.addEventListener('keyup', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
-		livePreviewOptions.glyphString = newValue;
+		livePreviewOptions.characterString = newValue;
 		displayCanvas.setAttribute('glyphs', newValue);
 	});
 
