@@ -86,9 +86,9 @@ export class OptionToggle extends HTMLElement {
 
 	/**
 	 * Listens for attribute changes on this element
-	 * @param {string} attributeName - which attribute was changed
-	 * @param {string} oldValue - value before the change
-	 * @param {string} newValue - value after the change
+	 * @param {String} attributeName - which attribute was changed
+	 * @param {String} oldValue - value before the change
+	 * @param {String} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		// log(`OptionToggle.attributeChangedCallback`, 'start');
@@ -166,7 +166,7 @@ export class OptionToggle extends HTMLElement {
 
 	/**
 	 * Handle keypress event
-	 * @param {object} ev - event
+	 * @param {Object} ev - event
 	 */
 	keyPress(ev) {
 		switch (ev.keyCode) {

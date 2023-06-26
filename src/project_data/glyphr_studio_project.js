@@ -11,7 +11,7 @@ import { CharacterRange } from './character_range.js';
 export class GlyphrStudioProject {
 	/**
 	 * Initialize a project, with defaults
-	 * @param {object} newProject - Glyphr Studio Project File JSON
+	 * @param {Object} newProject - Glyphr Studio Project File JSON
 	 */
 	constructor(newProject = {}) {
 		// log('GlyphrStudioProject.constructor', 'start');
@@ -156,7 +156,7 @@ export class GlyphrStudioProject {
 	/**
 	 * Saves Glyph Element, Settings, and Metadata hierarchy
 	 * that describes a Glyphr Studio Project
-	 * @param {boolean} verbose - include extra properties for better readability
+	 * @param {Boolean} verbose - include extra properties for better readability
 	 * @returns {GlyphrStudioProject}
 	 */
 	save(verbose = false) {
@@ -175,8 +175,8 @@ export class GlyphrStudioProject {
 
 		/**
 		 * Generic iterator for glyphs, ligatures, components, and kerning
-		 * @param {object} group - which group to do
-		 * @param {string} name - name of the group
+		 * @param {Object} group - which group to do
+		 * @param {String} name - name of the group
 		 */
 		function iterator(group, name) {
 			for (const key of Object.keys(group)) {
@@ -200,7 +200,7 @@ export class GlyphrStudioProject {
 
 	/**
 	 * Get a glyph, ligature, or component by ID
-	 * @param {string} id - which Glyph to return
+	 * @param {String} id - which Glyph to return
 	 * @returns {Glyph}
 	 */
 	getItem(id) {
@@ -258,7 +258,7 @@ export class GlyphrStudioProject {
 
 	/**
 	 * Sets an item based on an ID
-	 * @param {string} id - item ID to set
+	 * @param {String} id - item ID to set
 	 * @param {Glyph} newItem - new thing to set
 	 * @returns nothing
 	 */
@@ -295,9 +295,9 @@ export class GlyphrStudioProject {
 
 	/**
 	 * Get a glyph's name based on it's ID
-	 * @param {string} id - Glyph ID
-	 * @param {boolean} forceLongName - don't use the short Unicode name by default
-	 * @returns {string}
+	 * @param {String} id - Glyph ID
+	 * @param {Boolean} forceLongName - don't use the short Unicode name by default
+	 * @returns {String}
 	 */
 	getItemName(id, forceLongName = false) {
 		id = '' + id;
@@ -337,7 +337,7 @@ export class GlyphrStudioProject {
 	/**
 	 * Makes an SVG Thumbnail
 	 * @param {Glyph, Path, or ComponentInstance} item - thing to make the thumbnail of
-	 * @returns {string} - SVG icon
+	 * @returns {String} - SVG icon
 	 */
 	makeItemThumbnail(item) {
 		// log('GlyphrStudioProject.makeItemThumbnail', 'start');
@@ -556,7 +556,7 @@ function validateItemID(oldID, objType) {
 /**
  * Generate a unique Project ID so we can recognize a
  * project through file name and project name re-naming
- * @returns {string} - ID
+ * @returns {String} - ID
  */
 function makeProjectID() {
 	const j = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';

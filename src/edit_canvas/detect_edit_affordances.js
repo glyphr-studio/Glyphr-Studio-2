@@ -4,17 +4,17 @@ import { canvasUIPointSize } from './draw_edit_affordances';
 /**
  * Checks to see if the cursor is over a control point, for cursor hover effect
  * @param {Glyph or ComponentInstance} item - what Glyph, Ligature, ComponentInstance, or Component to check
- * @param {number} x - x to check
- * @param {number} y - y to check
- * @param {boolean} noHandles - only check for Path Points, not Handles
- * @returns {boolean}
+ * @param {Number} x - x to check
+ * @param {Number} y - y to check
+ * @param {Boolean} noHandles - only check for Path Points, not Handles
+ * @returns {Boolean}
  */
 export function isOverControlPoint(item, x, y, noHandles) {
 	// log(`isOverControlPoint`, 'start');
 	// log(item);
 	let result = false;
-	if (item.objType==='Glyph') result = isOverGlyphControlPoint(item, x, y, noHandles);
-	if (item.objType==='VirtualGlyph') result = isOverGlyphControlPoint(item, x, y, noHandles);
+	if (item.objType === 'Glyph') result = isOverGlyphControlPoint(item, x, y, noHandles);
+	if (item.objType === 'VirtualGlyph') result = isOverGlyphControlPoint(item, x, y, noHandles);
 	if (item.objType === 'Path') result = isOverPathControlPoint(item, x, y, noHandles);
 	if (item.objType === 'PathPoint') result = isOverPathPointControlPoint(item, x, y, noHandles);
 	// log(`result: ${result}`);
@@ -25,10 +25,10 @@ export function isOverControlPoint(item, x, y, noHandles) {
 /**
  * Checks to see if the cursor is over a control point, for cursor hover effect
  * @param {Glyph} glyph - what glyph to check
- * @param {number} x - x to check
- * @param {number} y - y to check
- * @param {boolean} noHandles - only check for Path Points, not Handles
- * @returns {boolean}
+ * @param {Number} x - x to check
+ * @param {Number} y - y to check
+ * @param {Boolean} noHandles - only check for Path Points, not Handles
+ * @returns {Boolean}
  */
 function isOverGlyphControlPoint(glyph, x, y, noHandles) {
 	// log(`isOverGlyphControlPoint`, 'start');
@@ -52,10 +52,10 @@ function isOverGlyphControlPoint(glyph, x, y, noHandles) {
 /**
  * Checks to see if the cursor is over a control point, for cursor hover effect
  * @param {Path} path - what Path to check
- * @param {number} x - x to check
- * @param {number} y - y to check
- * @param {boolean} noHandles - only check for Path Points, not Handles
- * @returns {boolean}
+ * @param {Number} x - x to check
+ * @param {Number} y - y to check
+ * @param {Boolean} noHandles - only check for Path Points, not Handles
+ * @returns {Boolean}
  */
 function isOverPathControlPoint(path, x, y, noHandles) {
 	// log(`isOverPathControlPoint`, 'start');
@@ -78,9 +78,9 @@ function isOverPathControlPoint(path, x, y, noHandles) {
 /**
  * Specifically checks to see if x/y is over the 1st point in the path
  * @param {Path} path - what Path to check
- * @param {number} x - x to check
- * @param {number} y - y to check
- * @returns {boolean}
+ * @param {Number} x - x to check
+ * @param {Number} y - y to check
+ * @returns {Boolean}
  */
 export function isOverFirstPoint(path, x, y) {
 	let pp = path.pathPoints[0];
@@ -91,10 +91,10 @@ export function isOverFirstPoint(path, x, y) {
 /**
  * Checks to see if there is a control point where the mouse is (Point, H1 or H2)
  * @param {PathPoint} pathPoint - Which PathPoint to check
- * @param {number} x - mouse x position
- * @param {number} y - mouse y position
- * @param {boolean} noHandles - Eliminates checking for handles in multi-select situations
- * @returns {object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
+ * @param {Number} x - mouse x position
+ * @param {Number} y - mouse y position
+ * @param {Boolean} noHandles - Eliminates checking for handles in multi-select situations
+ * @returns {Object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
  */
 function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
 	const targetSize = canvasUIPointSize;

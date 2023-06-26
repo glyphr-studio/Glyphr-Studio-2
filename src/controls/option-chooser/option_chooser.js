@@ -1,9 +1,6 @@
 import { addAsChildren, insertAfter, makeElement } from '../../common/dom.js';
 import style from './option-chooser.css?inline';
-import {
-	closeAllOptionChoosers,
-	makeContextMenu,
-} from '../dialogs/dialogs.js';
+import { closeAllOptionChoosers, makeContextMenu } from '../dialogs/dialogs.js';
 import { closeAllNavMenus } from '../../project_editor/navigator.js';
 
 /**
@@ -80,9 +77,9 @@ export class OptionChooser extends HTMLElement {
 
 	/**
 	 * Listens for attribute changes on this element
-	 * @param {string} attributeName - which attribute was changed
-	 * @param {string} oldValue - value before the change
-	 * @param {string} newValue - value after the change
+	 * @param {String} attributeName - which attribute was changed
+	 * @param {String} oldValue - value before the change
+	 * @param {String} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		// log(`OptionChooser.attributeChangedCallback`, 'start');
@@ -200,7 +197,7 @@ export class OptionChooser extends HTMLElement {
 
 	/**
 	 * Handle keypress event
-	 * @param {object} ev - event
+	 * @param {Object} ev - event
 	 */
 	keyboardPress(ev) {
 		switch (ev.keyCode) {

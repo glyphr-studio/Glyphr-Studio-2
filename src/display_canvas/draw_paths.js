@@ -9,11 +9,11 @@ import { getCurrentProject } from '../app/main.js';
 /**
  * Draw a Glyph to a canvas
  * @param {Glyph} glyph - what glyph to draw
- * @param {object} ctx - canvas context
- * @param {object} view - x/y/z view object
- * @param {number} alpha - transparency between 0 and 1
- * @param {string} fill - glyph fill color
- * @returns {number} - Advance Width, according to view.z
+ * @param {Object} ctx - canvas context
+ * @param {Object} view - x/y/z view object
+ * @param {Number} alpha - transparency between 0 and 1
+ * @param {String} fill - glyph fill color
+ * @returns {Number} - Advance Width, according to view.z
  */
 export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fill = '#000') {
 	// log('drawGlyph', 'start');
@@ -60,8 +60,8 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 /**
  *
  * @param {Path or ComponentInstance} shape - what thing to draw
- * @param {object} ctx - canvas context
- * @param {object} view - view
+ * @param {Object} ctx - canvas context
+ * @param {Object} view - view
  */
 export function drawShape(shape, ctx, view) {
 	if (shape.objType === 'ComponentInstance') {
@@ -78,9 +78,9 @@ export function drawShape(shape, ctx, view) {
 /**
  * Draw this Path to a canvas
  * @param {ComponentInstance} componentInstance - what to draw
- * @param {object} ctx - canvas context
+ * @param {Object} ctx - canvas context
  * @param {view} view
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
 	// log('drawComponentInstanceToCanvas', 'start');
@@ -110,9 +110,9 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
 /**
  * Draw a path to a canvas
  * @param {Path} path - what path to draw
- * @param {object} ctx - HTML Canvas Context
- * @param {object} view - View object with x / y offset and Zoom
- * @param {boolean} snap - snap values to whole numbers
+ * @param {Object} ctx - HTML Canvas Context
+ * @param {Object} view - View object with x / y offset and Zoom
+ * @param {Boolean} snap - snap values to whole numbers
  */
 function drawPathToCanvas(path, ctx, view, snap = true) {
 	// log('drawPathToCanvas', 'start');

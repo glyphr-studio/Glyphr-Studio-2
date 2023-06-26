@@ -171,8 +171,8 @@ export const uiColors = {
 
 /**
  * Convert a color string into an object
- * @param {string} c - color string
- * @returns {object}
+ * @param {String} c - color string
+ * @returns {Object}
  */
 export function parseColorString(c) {
 	const val = { r: 0, g: 0, b: 0, a: 1 };
@@ -198,10 +198,10 @@ export function parseColorString(c) {
 /**
  * Takes a color string, then lightens or darkens that color
  * by a certain percentage
- * @param {string} c - color string
- * @param {number} percent - amount to shift color
- * @param {boolean} lighter - true = lighten, false = darken
- * @returns {string}
+ * @param {String} c - color string
+ * @param {Number} percent - amount to shift color
+ * @param {Boolean} lighter - true = lighten, false = darken
+ * @returns {String}
  */
 export function shiftColor(c, percent, lighter) {
 	percent = Math.max(0, Math.min(percent, 1));
@@ -226,9 +226,9 @@ export function shiftColor(c, percent, lighter) {
 
 /**
  * Converts an RGBA color to it's opaque RGB equivalent
- * @param {object} rgb - color object in RGB
- * @param {number} alpha - transparency
- * @returns {string}
+ * @param {Object} rgb - color object in RGB
+ * @param {Number} alpha - transparency
+ * @returns {String}
  */
 export function getColorFromRGBA(rgb, alpha) {
 	const val = parseColorString(rgb);
@@ -246,8 +246,8 @@ export function getColorFromRGBA(rgb, alpha) {
 
 /**
  * Converts Transparency to Alpha, invert and change scale
- * @param {number} transparency - 0=opaque, 100=transparent
- * @returns {number}
+ * @param {Number} transparency - 0=opaque, 100=transparent
+ * @returns {Number}
  */
 export function transparencyToAlpha(transparency) {
 	const t = parseInt(transparency);
@@ -261,7 +261,7 @@ export function transparencyToAlpha(transparency) {
 
 /**
  * Makes a random fully saturated color
- * @returns {string}
+ * @returns {String}
  */
 export function makeRandomSaturatedColor() {
 	const sat = Math.floor(Math.random() * 5) * 51;

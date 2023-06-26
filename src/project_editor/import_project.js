@@ -53,8 +53,8 @@ export function importGlyphrProjectFromText(importedProject) {
  * roll through updates to translate any old project file structure
  * to current project file structure.
  * Hopefully this is minimal.
- * @param {string} project - Old project object data
- * @returns {object} - Latest Glyphr Studio v2 Project structure
+ * @param {String} project - Old project object data
+ * @returns {Object} - Latest Glyphr Studio v2 Project structure
  */
 function migrate_Project(oldProject) {
 	// log('migrate_Project', 'start');
@@ -98,8 +98,8 @@ function migrate_Project(oldProject) {
 		const oldKern = oldProject.kerning[oldID];
 		newProject.kerning[newID] = new KernGroup({
 			value: oldKern.value,
-			leftGroup: oldKern.leftgroup.map((oldID => migrate_ItemID(oldID))),
-			rightGroup: oldKern.rightgroup.map((oldID => migrate_ItemID(oldID))),
+			leftGroup: oldKern.leftgroup.map((oldID) => migrate_ItemID(oldID)),
+			rightGroup: oldKern.rightgroup.map((oldID) => migrate_ItemID(oldID)),
 		});
 	});
 

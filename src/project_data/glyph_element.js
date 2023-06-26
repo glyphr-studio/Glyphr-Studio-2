@@ -61,8 +61,8 @@ export class GlyphElement {
 
 	/**
 	 * Find out what type of Element this is
-	 * @param {string} type
-	 * @returns {string}
+	 * @param {String} type
+	 * @returns {String}
 	 */
 	set objType(type) {
 		this._objType = type;
@@ -70,7 +70,7 @@ export class GlyphElement {
 
 	/**
 	 * get the cache
-	 * @returns {object}
+	 * @returns {Object}
 	 */
 	get cache() {
 		if (!this._cache) this._cache = {};
@@ -79,8 +79,8 @@ export class GlyphElement {
 
 	/**
 	 * set the cache
-	 * @param {object} cache
-	 * @returns {object}
+	 * @param {Object} cache
+	 * @returns {Object}
 	 */
 	set cache(cache = {}) {
 		this._cache = cache;
@@ -99,7 +99,7 @@ export class GlyphElement {
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to return a boolean.
 	 * By default, properties are all unlocked.
-	 * @param {string} propertyName - property to check if locked
+	 * @param {String} propertyName - property to check if locked
 	 * @returns {Boolean}
 	 */
 	isLocked() {
@@ -109,20 +109,20 @@ export class GlyphElement {
 	/**
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to lock properties.
-	 * @param {string} propertyName - property to lock
+	 * @param {String} propertyName - property to lock
 	 */
 	lock() {}
 
 	/**
 	 * For glyph elements with lockable properties, this function
 	 * will be overwritten to lock properties.
-	 * @param {string} propertyName - property to unlock
+	 * @param {String} propertyName - property to unlock
 	 */
 	unlock() {}
 
 	/**
 	 * Export object properties that need to be saved to a project file
-	 * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+	 * @param {Boolean} verbose - export some extra stuff that makes the saved object more readable
 	 * @returns {*}
 	 */
 	save(verbose = false) {
@@ -148,7 +148,7 @@ export class GlyphElement {
 	/**
 	 * String representation of this object
 	 * Uses .save() to only get defaults
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	toString() {
 		return json(this.save());
@@ -156,9 +156,9 @@ export class GlyphElement {
 
 	/**
 	 * Create a nicely-formatted string for this object
-	 * @param {number} level - how far down we are
-	 * @param {number} num - increment designator for arrays
-	 * @returns {string}
+	 * @param {Number} level - how far down we are
+	 * @param {Number} num - increment designator for arrays
+	 * @returns {String}
 	 */
 	print(level = 0, num = false) {
 		let ind = '';

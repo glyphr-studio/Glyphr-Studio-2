@@ -19,23 +19,23 @@ import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions
 export class ComponentInstance extends GlyphElement {
 	/**
 	 * Create a ComponentInstance
-	 * @param {number} link - Root component that this instances is based on
-	 * @param {string} name - name
-	 * @param {number} translateX - horizontal position difference
-	 * @param {number} translateY - vertical position difference
-	 * @param {number} resizeWidth - horizontal size difference
-	 * @param {number} resizeHeight - vertical size difference
-	 * @param {boolean} flipEW - flipped horizontally
-	 * @param {boolean} flipNS - flipped vertically
-	 * @param {boolean} reverseWinding - paths have opposite winding
-	 * @param {number} rotation - rotation difference
-	 * @param {boolean} rotateFirst - rotate/resize is different than resize/rotate
-	 * @param {boolean} xLock - can the path be moved horizontally
-	 * @param {boolean} yLock - can the path be moved vertically
-	 * @param {boolean} wLock - can the path be resized horizontally
-	 * @param {boolean} hLock - can the path be resized vertically
-	 * @param {boolean} ratioLock - while resizing, maintain aspect ratio
-	 * @param {object} parent - link to the parent Glyph object
+	 * @param {Number} link - Root component that this instances is based on
+	 * @param {String} name - name
+	 * @param {Number} translateX - horizontal position difference
+	 * @param {Number} translateY - vertical position difference
+	 * @param {Number} resizeWidth - horizontal size difference
+	 * @param {Number} resizeHeight - vertical size difference
+	 * @param {Boolean} flipEW - flipped horizontally
+	 * @param {Boolean} flipNS - flipped vertically
+	 * @param {Boolean} reverseWinding - paths have opposite winding
+	 * @param {Number} rotation - rotation difference
+	 * @param {Boolean} rotateFirst - rotate/resize is different than resize/rotate
+	 * @param {Boolean} xLock - can the path be moved horizontally
+	 * @param {Boolean} yLock - can the path be moved vertically
+	 * @param {Boolean} wLock - can the path be resized horizontally
+	 * @param {Boolean} hLock - can the path be resized vertically
+	 * @param {Boolean} ratioLock - while resizing, maintain aspect ratio
+	 * @param {Object} parent - link to the parent Glyph object
 	 */
 	constructor({
 		link = false,
@@ -88,7 +88,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * Export object properties that need to be saved to a project file
-	 * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+	 * @param {Boolean} verbose - export some extra stuff that makes the saved object more readable
 	 * @returns {*}
 	 */
 	save(verbose = false) {
@@ -208,7 +208,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get link
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get link() {
 		return this._link;
@@ -216,7 +216,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get name
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get name() {
 		return this._name;
@@ -224,7 +224,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get translateX
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get translateX() {
 		return this._translateX;
@@ -232,7 +232,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get translateY
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get translateY() {
 		return this._translateY;
@@ -240,7 +240,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get resizeWidth
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get resizeWidth() {
 		return this._scaleW;
@@ -248,7 +248,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get resizeHeight
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get resizeHeight() {
 		return this._scaleH;
@@ -256,7 +256,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get isFlippedEW
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get isFlippedEW() {
 		return this._isFlippedEW;
@@ -264,7 +264,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get isFlippedNS
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get isFlippedNS() {
 		return this._isFlippedNS;
@@ -272,7 +272,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get reverseWinding
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get reverseWinding() {
 		return this._reverseWinding;
@@ -280,7 +280,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get rotation
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get rotation() {
 		return this._rotation;
@@ -288,7 +288,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get rotateFirst
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get rotateFirst() {
 		return this._rotateFirst;
@@ -296,7 +296,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get xLock
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get xLock() {
 		return this._xLock;
@@ -304,7 +304,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get yLock
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get yLock() {
 		return this._yLock;
@@ -312,7 +312,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get wLock
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get wLock() {
 		return this._wLock;
@@ -320,7 +320,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get hLock
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get hLock() {
 		return this._hLock;
@@ -328,7 +328,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get ratioLock
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get ratioLock() {
 		return this._ratioLock;
@@ -338,7 +338,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get x
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get x() {
 		return this.maxes.xMin;
@@ -346,7 +346,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get y
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get y() {
 		return this.maxes.yMax;
@@ -354,7 +354,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get width
-	 * @returns {number} width
+	 * @returns {Number} width
 	 */
 	get width() {
 		const g = this.transformedGlyph.maxes;
@@ -363,7 +363,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * get height
-	 * @returns {number} height
+	 * @returns {Number} height
 	 */
 	get height() {
 		const g = this.transformedGlyph.maxes;
@@ -400,7 +400,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set link
-	 * @param {string} link
+	 * @param {String} link
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set link(link) {
@@ -410,7 +410,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set name
-	 * @param {string} name
+	 * @param {String} name
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set name(name = '') {
@@ -426,7 +426,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set translateX
-	 * @param {number} translateX
+	 * @param {Number} translateX
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set translateX(translateX) {
@@ -437,7 +437,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set translateY
-	 * @param {number} translateY
+	 * @param {Number} translateY
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set translateY(translateY) {
@@ -448,7 +448,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set resizeWidth
-	 * @param {number} resizeWidth
+	 * @param {Number} resizeWidth
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set resizeWidth(resizeWidth) {
@@ -459,7 +459,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set resizeHeight
-	 * @param {number} resizeHeight
+	 * @param {Number} resizeHeight
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set resizeHeight(resizeHeight) {
@@ -470,7 +470,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set isFlippedNS
-	 * @param {boolean} isFlippedNS
+	 * @param {Boolean} isFlippedNS
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set isFlippedNS(isFlippedNS) {
@@ -480,7 +480,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set isFlippedEW
-	 * @param {boolean} isFlippedEW
+	 * @param {Boolean} isFlippedEW
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set isFlippedEW(isFlippedEW) {
@@ -490,7 +490,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set reverseWinding
-	 * @param {boolean} reverseWinding
+	 * @param {Boolean} reverseWinding
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set reverseWinding(reverseWinding) {
@@ -500,7 +500,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set rotation
-	 * @param {number} rotation
+	 * @param {Number} rotation
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set rotation(rotation) {
@@ -511,7 +511,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set rotateFirst
-	 * @param {boolean} rotateFirst
+	 * @param {Boolean} rotateFirst
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set rotateFirst(rotateFirst) {
@@ -521,7 +521,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set xLock
-	 * @param {boolean} xLock
+	 * @param {Boolean} xLock
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set xLock(xLock) {
@@ -530,7 +530,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set yLock
-	 * @param {boolean} yLock
+	 * @param {Boolean} yLock
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set yLock(yLock) {
@@ -539,7 +539,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set wLock
-	 * @param {boolean} wLock
+	 * @param {Boolean} wLock
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set wLock(wLock) {
@@ -548,7 +548,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set hLock
-	 * @param {boolean} hLock
+	 * @param {Boolean} hLock
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set hLock(hLock) {
@@ -557,7 +557,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * set ratioLock
-	 * @param {boolean} ratioLock
+	 * @param {Boolean} ratioLock
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set ratioLock(ratioLock) {
@@ -570,8 +570,8 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * updateShapePosition
-	 * @param {number} dx - delta x
-	 * @param {number} dy - delta y
+	 * @param {Number} dx - delta x
+	 * @param {Number} dy - delta y
 	 */
 	updateShapePosition(dx, dy) {
 		// log('ComponentInstance.updateShapePosition', 'start');
@@ -587,9 +587,9 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * updateShapeSize
-	 * @param {number} dw - delta width
-	 * @param {number} dh - delta height
-	 * @param {boolean} ratioLock - maintain aspect ratio
+	 * @param {Number} dw - delta width
+	 * @param {Number} dh - delta height
+	 * @param {Boolean} ratioLock - maintain aspect ratio
 	 */
 	updateShapeSize(dw, dh, ratioLock) {
 		// log('ComponentInstance.updateShapeSize', 'start');
@@ -616,7 +616,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * flipEW
-	 * @param {number} mid - x value about which to flip
+	 * @param {Number} mid - x value about which to flip
 	 * @returns {ComponentInstance} - reference to this component instance
 	 */
 	flipEW(mid) {
@@ -631,7 +631,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * flipNS
-	 * @param {number} mid - y value about which to flip
+	 * @param {Number} mid - y value about which to flip
 	 * @returns {ComponentInstance} - reference to this component instance
 	 */
 	flipNS(mid) {
@@ -646,7 +646,7 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * rotate
-	 * @param {number} angle - how much to rotate (radians)
+	 * @param {Number} angle - how much to rotate (radians)
 	 * @returns {ComponentInstance} - reference to this component instance
 	 */
 	rotate(angle) {

@@ -115,7 +115,7 @@ export class InfoBubble extends HTMLElement {
 
 	/**
 	 * Handle keypress event
-	 * @param {object} ev - event
+	 * @param {Object} ev - event
 	 */
 	keyPress(ev) {
 		switch (ev.keyCode) {

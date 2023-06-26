@@ -106,7 +106,7 @@ function ioSVG_makeFontFace() {
 }
 /**
  * Calculate the overall bounds given every glyph in this font
- * @returns {object} - font maxes
+ * @returns {Object} - font maxes
  */
 function calcFontMaxes() {
 	// log(`GSProject.calcFontMaxes`, 'start');

@@ -10,7 +10,7 @@ export class ControlPoint extends GlyphElement {
 	/**
 	 * Create a ControlPoint
 	 * @param {Coord} coord - position of the handle
-	 * @param {boolean} use - show or hide the handle
+	 * @param {Boolean} use - show or hide the handle
 	 * @param {PathPoint} parent - link to the parent Path object
 	 */
 	constructor({
@@ -38,7 +38,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Export object properties that need to be saved to a project file
-	 * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+	 * @param {Boolean} verbose - export some extra stuff that makes the saved object more readable
 	 * @returns {*}
 	 */
 	save(verbose = false) {
@@ -58,8 +58,8 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Create a nicely-formatted string for this object
-	 * @param {number} level - how far down we are
-	 * @returns {string}
+	 * @param {Number} level - how far down we are
+	 * @returns {String}
 	 */
 	print(level = 0) {
 		let ind = '';
@@ -69,7 +69,7 @@ export class ControlPoint extends GlyphElement {
 		ind += '  ';
 
 		re += `${ind}coord: ${this.coord.print(level + 1)}\n`;
-		if(this.type !== 'p') re += `${ind}use: ${this.use}\n`;
+		if (this.type !== 'p') re += `${ind}use: ${this.use}\n`;
 
 		re += `${ind.substring(2)}}`;
 
@@ -82,7 +82,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Get the x coordinate
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get x() {
 		return this.use ? this._coord.x : this.parent.p.x;
@@ -90,7 +90,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Get the y coordinate
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get y() {
 		return this.use ? this._coord.y : this.parent.p.y;
@@ -106,7 +106,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Get the show/hide value
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get use() {
 		return this._use === false ? false : true;
@@ -114,7 +114,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Is the handle locked in the x dimension
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get xLock() {
 		return this._xLock;
@@ -122,7 +122,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Is the handle locked in the y dimension
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get yLock() {
 		return this._yLock;
@@ -130,7 +130,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Gets the point type: p, h1, h2
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get type() {
 		return this._type;
@@ -138,7 +138,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Handle angle relative to Root Point
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get angle() {
 		return calculateAngle(this.coord, this.parent.p.coord);
@@ -146,7 +146,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Handle "Nice Angle" for UI
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get niceAngle() {
 		return angleToNiceAngle(this.angle);
@@ -154,7 +154,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Handle Length
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get length() {
 		return calculateLength(this.coord, this.parent.p.coord);
@@ -167,7 +167,7 @@ export class ControlPoint extends GlyphElement {
 	/**
 	 * Set the X position
 	 * If this is not a handle, move the point and the handles
-	 * @param {number} position
+	 * @param {Number} position
 	 */
 	set x(position) {
 		// log(`ControlPoint SET x`, 'start');
@@ -193,7 +193,7 @@ export class ControlPoint extends GlyphElement {
 	/**
 	 * Set the Y position
 	 * If this is not a handle, move the point and the handles
-	 * @param {number} position
+	 * @param {Number} position
 	 */
 	set y(position) {
 		if (this.type === 'p') {
@@ -218,7 +218,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Show or hide the handle
-	 * @param {boolean} show
+	 * @param {Boolean} show
 	 */
 	set use(show) {
 		this._use = !!show;
@@ -227,7 +227,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Set the handle lock in the x dimension
-	 * @param {boolean} lock
+	 * @param {Boolean} lock
 	 */
 	set xLock(lock) {
 		this._xLock = !!lock;
@@ -235,7 +235,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Set the handle lock in the y dimension
-	 * @param {boolean} lock
+	 * @param {Boolean} lock
 	 */
 	set yLock(lock) {
 		this._yLock = !!lock;
@@ -243,7 +243,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Sets the point type: p, h1, h2
-	 * @param {string} type
+	 * @param {String} type
 	 */
 	set type(t) {
 		this._type = t;
@@ -259,7 +259,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Check to see if x or y are locked
-	 * @param {string} propertyName - property to check if locked
+	 * @param {String} propertyName - property to check if locked
 	 * @returns {Boolean}
 	 */
 	isLocked(propertyName) {
@@ -270,7 +270,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Sets xLock/yLock based on x or y input
-	 * @param {string} propertyName - property to lock
+	 * @param {String} propertyName - property to lock
 	 */
 	lock(propertyName) {
 		// log(`ControlPoint.lock`, 'start');
@@ -282,7 +282,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Sets xLock/yLock based on x or y input
-	 * @param {string} propertyName - property to unlock
+	 * @param {String} propertyName - property to unlock
 	 */
 	unlock(propertyName) {
 		// log(`ControlPoint.unlock`, 'start');

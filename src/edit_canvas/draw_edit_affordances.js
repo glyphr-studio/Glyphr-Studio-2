@@ -472,8 +472,8 @@ export function drawPathPointHover(ctx, point) {
 /**
  * Draws this point on the edit canvas
  * @param {PathPoint} point - point to draw
- * @param {object} ctx - canvas context
- * @param {boolean} isSelected - draw this as selected
+ * @param {Object} ctx - canvas context
+ * @param {Boolean} isSelected - draw this as selected
  */
 export function drawPoint(point, ctx, isSelected) {
 	// log('PathPoint.drawPoint', 'start');
@@ -504,8 +504,8 @@ export function drawPoint(point, ctx, isSelected) {
 /**
  * Draws a point with an arrow to show path winding
  * @param {PathPoint} point - point to draw
- * @param {object} ctx - canvas context
- * @param {boolean} isSelected - draw this as selected
+ * @param {Object} ctx - canvas context
+ * @param {Boolean} isSelected - draw this as selected
  * @param {Point} next - next Point in the path sequence
  */
 export function drawDirectionalityPoint(point, ctx, isSelected, next) {
@@ -571,9 +571,9 @@ export function drawDirectionalityPoint(point, ctx, isSelected, next) {
 /**
  * Draws the handles on the edit canvas
  * @param {PathPoint} point - point to draw
- * @param {object} ctx - canvas context
- * @param {boolean} drawH1 - draw the first handle
- * @param {boolean} drawH2 - draw the second handle
+ * @param {Object} ctx - canvas context
+ * @param {Boolean} drawH1 - draw the first handle
+ * @param {Boolean} drawH2 - draw the second handle
  */
 export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
 	let accent = uiColors.accent;
@@ -608,8 +608,8 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
 /**
  * Draws a Quadratic point to the edit canvas
  * @param {PathPoint} point - point to draw
- * @param {object} ctx - canvas context
- * @param {string} accent - accent color
+ * @param {Object} ctx - canvas context
+ * @param {String} accent - accent color
  * @param {Point} prevP - Previous point in the path sequence
  */
 export function drawQuadraticHandle(point, ctx, accent, prevP) {

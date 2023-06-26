@@ -988,7 +988,7 @@ export function linkComponentFromTo(sourceItem, destinationItem) {
  * Copy paths (and attributes) from one glyph to another
  * @param {Glyph} sourceItem - source to copy paths from
  * @param {Glyph} destinationItem - where to copy paths to
- * @param {object} updateWidth - should advance width copy as well
+ * @param {Object} updateWidth - should advance width copy as well
  */
 export function copyShapesFromTo(sourceItem, destinationItem, updateWidth = false) {
 	// log('copyShapesFromTo', 'start');

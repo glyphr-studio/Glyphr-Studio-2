@@ -50,8 +50,8 @@ const allTopics = [
 /**
  * Sends a new piece of data concerning a topic area that
  * triggers changes for subscribers
- * @param {string} topic keyword to trigger changes
- * @param {object} data - whatever the new state is
+ * @param {String} topic keyword to trigger changes
+ * @param {Object} data - whatever the new state is
  */
 export function publish(topic, data) {
 	// log(`ProjectEditor.publish`, 'start');
@@ -98,7 +98,7 @@ export function publish(topic, data) {
 		*/
 
 		let specificItem = false;
-		if(this.selectedItem?.objType) specificItem = `current${this.selectedItem.objType}`;
+		if (this.selectedItem?.objType) specificItem = `current${this.selectedItem.objType}`;
 
 		if (topic === 'currentVirtualGlyph') {
 			// If the multi-select virtual glyph changes, so must the Item
@@ -185,7 +185,7 @@ export function publish(topic, data) {
  * Sets up an intent to listen for changes based on a keyword, and
  * provides a callback function in case a change is published
  * @param {string or array} topic what keyword to listen for
- * @param {string} subscriberID - the name of the thing listening
+ * @param {String} subscriberID - the name of the thing listening
  * @param {function} callback - what to do when a change is triggered
  * @returns nothing
  */

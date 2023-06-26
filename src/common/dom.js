@@ -1,12 +1,12 @@
 /**
  * Nicer centralized way of creating DOM elements
- * @param {string} tag - HTML element to create
- * @param {string} className - class to add to the element
- * @param {string} id - id to add to the element
- * @param {string} content - If this is a text node, what text to add
- * @param {boolean} tabIndex - make this elem a tab stop
- * @param {object} attributes - key/value pairs for attr/values
- * @param {string} innerHTML - text HTML to add as the content of this element
+ * @param {String} tag - HTML element to create
+ * @param {String} className - class to add to the element
+ * @param {String} id - id to add to the element
+ * @param {String} content - If this is a text node, what text to add
+ * @param {Boolean} tabIndex - make this elem a tab stop
+ * @param {Object} attributes - key/value pairs for attr/values
+ * @param {String} innerHTML - text HTML to add as the content of this element
  * @returns {HTMLElement}
  */
 export function makeElement({

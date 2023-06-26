@@ -60,9 +60,9 @@ export function makeGlyphSVGforExport(glyph) {
  * Make a PostScript path from this path
  * PostScript paths use relative MoveTo commands, so
  * this path must know about where the last path left off
- * @param {number} lastX - x from previous path
- * @param {number} lastY - y from previous path
- * @returns {string} - PostScript path data
+ * @param {Number} lastX - x from previous path
+ * @param {Number} lastY - y from previous path
+ * @returns {String} - PostScript path data
  */
 export function makeGlyphPostScript(glyph, lastX, lastY) {
 	const g = glyph.transformedGlyph;
@@ -112,8 +112,8 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
  * Component Instances contain links to other Glyphs, or
  * other Component Instances.  Circular links cause the world
  * to explode, so let's check for those before we add a new link.
- * @param {string} componentID - ID of component to look for
- * @returns {boolean}
+ * @param {String} componentID - ID of component to look for
+ * @returns {Boolean}
  */
 export function canAddComponent(destinationItem, componentID) {
 	// log('Glyph.canAddComponent', 'start');
@@ -138,9 +138,9 @@ export function canAddComponent(destinationItem, componentID) {
 
 /**
  * Look "down" through component instances, collecting IDs
- * @param {array} result - collection of item IDs
- * @param {boolean} excludePeers - At the top level, no need to collect IDs
- * @returns {array}
+ * @param {Array} result - collection of item IDs
+ * @param {Boolean} excludePeers - At the top level, no need to collect IDs
+ * @returns {Array}
  */
 function collectAllDownstreamLinks(item, result = [], excludePeers = false) {
 	item.shapes.forEach((shape) => {
@@ -155,8 +155,8 @@ function collectAllDownstreamLinks(item, result = [], excludePeers = false) {
 
 /**
  * Look "up" through the usedIn array to collect IDs
- * @param {array} result - collection of item IDs
- * @returns {array}
+ * @param {Array} result - collection of item IDs
+ * @returns {Array}
  */
 function collectAllUpstreamLinks(item, result = []) {
 	item.usedIn.forEach((itemID) => {
@@ -209,7 +209,7 @@ export function deleteLinks(item) {
  * When an Item is linked-to from another ComponentInstance, track
  * where it's being used by adding it to item.usedIn
  * @param {Glyph} item - reference to the item (Glyph, Component, Ligature)
- * @param {string} linkID - itemID where the item is being used as a Component Instance
+ * @param {String} linkID - itemID where the item is being used as a Component Instance
  */
 export function addLinkToUsedIn(item, linkID) {
 	// log(`addLinkToUsedIn`, 'start');
@@ -230,7 +230,7 @@ export function addLinkToUsedIn(item, linkID) {
 /**
  * Removes a link from an item's usedIn array
  * @param {Glyph} item - reference to the item (Glyph, Component, Ligature)
- * @param {string} linkID - itemID where the item is being used as a Component Instance
+ * @param {String} linkID - itemID where the item is being used as a Component Instance
  */
 export function removeLinkFromUsedIn(item, linkID) {
 	// log(`removeLinkFromUsedIn`, 'start');

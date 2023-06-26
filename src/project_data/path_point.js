@@ -16,8 +16,8 @@ export class PathPoint extends GlyphElement {
 	 * @param {ControlPoint} h1 - First handle
 	 * @param {ControlPoint} h2 - Second handle
 	 * @param {ControlPoint} q - Quadratic handle
-	 * @param {string} type - corner, flat, or symmetric
-	 * @param {object} parent - link to the parent Path object
+	 * @param {String} type - corner, flat, or symmetric
+	 * @param {Object} parent - link to the parent Path object
 	 */
 	constructor({ p, h1, h2, q, type = 'corner', parent = false } = {}) {
 		super();
@@ -39,7 +39,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Export object properties that need to be saved to a project file
-	 * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+	 * @param {Boolean} verbose - export some extra stuff that makes the saved object more readable
 	 * @returns {*}
 	 */
 	save(verbose = false) {
@@ -63,9 +63,9 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Create a nicely-formatted string for this object
-	 * @param {number} level - how far down we are
-	 * @param {number} num - increment designator for arrays
-	 * @returns {string}
+	 * @param {Number} level - how far down we are
+	 * @param {Number} num - increment designator for arrays
+	 * @returns {String}
 	 */
 	print(level = 0, num = false) {
 		let ind = '';
@@ -123,7 +123,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Get a point's type
-	 * @returns {string} type - symmetric / flat / corner
+	 * @returns {String} type - symmetric / flat / corner
 	 */
 	get type() {
 		return this._type;
@@ -131,7 +131,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Figure out where this point is in the overall path
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get pointNumber() {
 		if (!this.parent) return false;
@@ -203,7 +203,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Change a point's type
-	 * @param {string} type - symmetric / flat / corner
+	 * @param {String} type - symmetric / flat / corner
 	 */
 	set type(type) {
 		// log(`PathPoint SET type`, 'start');
@@ -220,9 +220,9 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Updates position based on deltas
-	 * @param {string} controlPoint - p / h1 / h2
-	 * @param {number} dx - delta x
-	 * @param {number} dy - delta y
+	 * @param {String} controlPoint - p / h1 / h2
+	 * @param {Number} dx - delta x
+	 * @param {Number} dy - delta y
 	 */
 	updatePathPointPosition(controlPoint = 'p', dx = 0, dy = 0) {
 		// log(`PathPoint.updatePathPointPosition`, 'start');
@@ -273,7 +273,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Moves one handle to be symmetrical with the other
-	 * @param {string} hold - Handle to not move while making symmetric
+	 * @param {String} hold - Handle to not move while making symmetric
 	 * @returns {PathPoint}
 	 */
 	makeSymmetric(hold) {
@@ -350,7 +350,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Moves one handle to be inline with the other, while maintaining handle length
-	 * @param {string} hold - handle to not move
+	 * @param {String} hold - handle to not move
 	 * @returns {PathPoint}
 	 */
 	makeFlat(hold) {
@@ -444,7 +444,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Checks to see if two handles are flat
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 * */
 	isFlat() {
 		// log(`PathPoint.isFlat`, 'start');
@@ -499,7 +499,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Figures out what type a point is based on handle positions
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	resolvePointType() {
 		// log('PathPoint.resolvePointType', 'start');
@@ -523,11 +523,11 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Makes handles pointed at a specific point
-	 * @param {number} px - X value to point at
-	 * @param {number} py - Y value to point at
-	 * @param {number} length - Length the handle should end up
-	 * @param {string} handle - Which handle to move
-	 * @param {boolean} doNotResolvePointType - After updating, skip auto-resolving the point type
+	 * @param {Number} px - X value to point at
+	 * @param {Number} py - Y value to point at
+	 * @param {Number} length - Length the handle should end up
+	 * @param {String} handle - Which handle to move
+	 * @param {Boolean} doNotResolvePointType - After updating, skip auto-resolving the point type
 	 * @returns {PathPoint}
 	 */
 	makePointedTo(px, py, length = false, handle = 'h2', doNotResolvePointType = false) {
@@ -570,7 +570,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Rotate Point and Handles around a center of rotation
-	 * @param {number} angle - how much to rotate (radians)
+	 * @param {Number} angle - how much to rotate (radians)
 	 * @param {XYPoint} about - x/y point center of rotation
 	 * @returns {PathPoint}
 	 */
@@ -603,7 +603,7 @@ export class PathPoint extends GlyphElement {
 
 	/**
 	 * Round all point x/y values to a certain precision
-	 * @param {number} precision - how many decimal places to round to
+	 * @param {Number} precision - how many decimal places to round to
 	 * @returns {PathPoint} - reference to this path point
 	 */
 	roundAll(precision = 9) {

@@ -5,8 +5,8 @@
 export class XYPoint {
 	/**
 	 * Create a XYPoint
-	 * @param {number} x - The X value
-	 * @param {number} y - The Y value
+	 * @param {Number} x - The X value
+	 * @param {Number} y - The Y value
 	 */
 	constructor(x = 0, y = 0) {
 		x = parseFloat(x);

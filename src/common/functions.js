@@ -9,8 +9,8 @@
 
 /**
  * Gets the first key in an object
- * @param {object} obj
- * @returns {string}
+ * @param {Object} obj
+ * @returns {String}
  */
 export function getFirstID(obj) {
 	for (const key of Object.keys(obj)) return key;
@@ -19,9 +19,9 @@ export function getFirstID(obj) {
 
 /**
  * Creates a unique key for an object given a prefix
- * @param {object} obj
- * @param {string} base - string prefix for the new ID
- * @returns {string}
+ * @param {Object} obj
+ * @param {String} base - string prefix for the new ID
+ * @returns {String}
  */
 export function generateNewID(obj, base) {
 	let number = 1;
@@ -67,8 +67,8 @@ export function countItems(object) {
  * 'parent' is a pointer up to parent object, they
  * cause infinite loops when cloning objects.  Kind of a hack.
  * 'cache' is also left out by default.
- * @param {object} source - object to clone
- * @returns {object}
+ * @param {Object} source - object to clone
+ * @returns {Object}
  */
 export function clone(source) {
 	try {
@@ -83,16 +83,15 @@ export function clone(source) {
 			} else newObj[i] = source[i];
 		}
 		return newObj;
-
 	}
 }
 
 /**
  * Wrapper for JSON.stringify that does pretty
  * formatting by default
- * @param {object} obj - object to stringify
- * @param {boolean} raw - true = don't format
- * @returns {string}
+ * @param {Object} obj - object to stringify
+ * @param {Boolean} raw - true = don't format
+ * @returns {String}
  */
 export function json(obj, raw) {
 	obj = clone(obj);
@@ -107,9 +106,9 @@ export function json(obj, raw) {
 /**
  * Simple way of comparing equality between things (including Objects)
  * Not intended for complex objects :-)
- * @param {object} obj1 - first object to compare
- * @param {object} obj2 - second object to compare
- * @returns {boolean}
+ * @param {Object} obj1 - first object to compare
+ * @param {Object} obj2 - second object to compare
+ * @returns {Boolean}
  */
 export function areEqual(obj1, obj2) {
 	// log(`areEqual`, 'start');
@@ -134,10 +133,10 @@ export function areEqual(obj1, obj2) {
 
 /**
  * Compare two x/y points within a margin of rounding
- * @param {object} c1 - Coord or XYPoint, First point to compare
- * @param {object} c2 - Coord or XYPoint, Second point to compare
- * @param {number} threshold - how close to compare positions
- * @returns {boolean}
+ * @param {Object} c1 - Coord or XYPoint, First point to compare
+ * @param {Object} c2 - Coord or XYPoint, Second point to compare
+ * @param {Number} threshold - how close to compare positions
+ * @returns {Boolean}
  */
 export function pointsAreEqual(c1, c2, threshold = 1) {
 	// log('pointsAreEqual', 'start');
@@ -169,9 +168,9 @@ export function pointsAreEqual(c1, c2, threshold = 1) {
 /**
  * Rounds a number to include a .5 so it draws nicely on canvas
  * true = +0.5, false = -0.5
- * @param {number} num - number to crisp
- * @param {boolean} dir - direction, plus or minus, to adjust number
- * @returns {number}
+ * @param {Number} num - number to crisp
+ * @param {Boolean} dir - direction, plus or minus, to adjust number
+ * @returns {Number}
  */
 export function makeCrisp(num, dir) {
 	const mul = dir ? 1 : -1;
@@ -180,9 +179,9 @@ export function makeCrisp(num, dir) {
 
 /**
  * Better rounding than Math.round
- * @param {number} num - number to round
- * @param {number} dec - number of decimal places
- * @returns {number}
+ * @param {Number} num - number to round
+ * @param {Number} dec - number of decimal places
+ * @returns {Number}
  */
 export function round(num, dec = 0) {
 	if (!num) return 0;
@@ -192,8 +191,8 @@ export function round(num, dec = 0) {
 /**
  * Floating point numbers make me mad
  * Looks for sequences of 0s or 9s
- * @param {number} num - number to sanitize
- * @returns {number}
+ * @param {Number} num - number to sanitize
+ * @returns {Number}
  */
 export function numSan(num) {
 	num = parseFloat(num);
@@ -221,8 +220,8 @@ export function isInteger(input) {
 
 /**
  * Removes illegal file name chars
- * @param {string} val - string to sanitize
- * @returns {string}
+ * @param {String} val - string to sanitize
+ * @returns {String}
  */
 export function strSan(val = '') {
 	val = String(val);
@@ -231,8 +230,8 @@ export function strSan(val = '') {
 
 /**
  * Removes beginning and trailing whitespace, and any breaking or tab chars
- * @param {string} text - text to trim
- * @returns {string}
+ * @param {String} text - text to trim
+ * @returns {String}
  */
 export function trim(text = '') {
 	text = String(text);
@@ -251,9 +250,9 @@ export function trim(text = '') {
 /**
  * Takes a string and a search term, and removes all instances
  * of that search term from the base string.
- * @param {string} base - base string to operate on
- * @param {string} searchTerm - what to remove
- * @returns {string}
+ * @param {String} base - base string to operate on
+ * @param {String} searchTerm - what to remove
+ * @returns {String}
  */
 export function remove(base = '', searchTerm = '') {
 	base = String(base);
@@ -265,7 +264,7 @@ export function remove(base = '', searchTerm = '') {
 /**
  * Checks to see if something is a value, and not null or undefined
  * @param {*} val - variable to test
- * @returns {boolean}
+ * @returns {Boolean}
  */
 export function isVal(val) {
 	if (val === 0) return true;
@@ -278,8 +277,8 @@ export function isVal(val) {
 
 /**
  * Checks all object properties for isVal
- * @param {object} obj - object to check
- * @returns {boolean}
+ * @param {Object} obj - object to check
+ * @returns {Boolean}
  */
 export function hasNonValues(obj) {
 	if (!obj) return true;
@@ -296,9 +295,9 @@ export function hasNonValues(obj) {
 /**
  * A export function for filtering duplicates in an array
  * @param {*} v
- * @param {number} i
- * @param {array} a
- * @returns {boolean}
+ * @param {Number} i
+ * @param {Array} a
+ * @returns {Boolean}
  */
 export function duplicates(v, i, a) {
 	return a.indexOf(v) === i;
@@ -307,7 +306,7 @@ export function duplicates(v, i, a) {
 /**
  * Pauses execution to allow for the UI to display
  * rapid updates
- * @param {number} ms - milliseconds to pause
+ * @param {Number} ms - milliseconds to pause
  * @returns {Promise}
  */
 export function pause(ms = 10) {
@@ -333,7 +332,7 @@ export function pause(ms = 10) {
  * Calculates the angle (in radians) of a handle given a point
  * @param {XYPoint} handle - x/y point of handle
  * @param {XYPoint} point - x/y point of point
- * @returns {number}
+ * @returns {Number}
  */
 export function calculateAngle(handle, point = { x: 0, y: 0 }) {
 	let result = Math.atan2(handle.y - point.y, handle.x - point.x);
@@ -350,7 +349,7 @@ export function calculateAngle(handle, point = { x: 0, y: 0 }) {
  * Calculates the length of a handle, given a point
  * @param {XYPoint} handle - x/y point of handle
  * @param {XYPoint} point - x/y point of point
- * @returns {number}
+ * @returns {Number}
  */
 export function calculateLength(handle, point) {
 	const adj = point.x - handle.x;
@@ -362,7 +361,7 @@ export function calculateLength(handle, point) {
 /**
  * Rotates a point a certain number of degrees around a given point
  * @param {XYPoint} point - x/y point to rotate
- * @param {number} angle - how much to rotate (radians)
+ * @param {Number} angle - how much to rotate (radians)
  * @param {XYPoint} about - x/y point center of rotation
  */
 export function rotate(point, angle, about = { x: 0, y: 0 }) {
@@ -388,8 +387,8 @@ export function rotate(point, angle, about = { x: 0, y: 0 }) {
 
 /**
  * Convert degrees to radians
- * @param {number} deg - degrees
- * @returns {number}
+ * @param {Number} deg - degrees
+ * @returns {Number}
  */
 export function rad(deg) {
 	return ((deg * Math.PI) / 180) % Math.PI;
@@ -397,8 +396,8 @@ export function rad(deg) {
 
 /**
  * Convert radians to degrees
- * @param {number} rad - radians
- * @returns {number}
+ * @param {Number} rad - radians
+ * @returns {Number}
  */
 export function deg(rad) {
 	return ((rad * 180) / Math.PI) % 360;
@@ -407,8 +406,8 @@ export function deg(rad) {
 /**
  * Given a standard JavaScript angle (radians), convert it to the angle
  * system we show the user (degrees, aka "Nice Angle")
- * @param {number} angle - Angle in Radians
- * @returns {number} - Angle in Degrees
+ * @param {Number} angle - Angle in Radians
+ * @returns {Number} - Angle in Degrees
  */
 export function angleToNiceAngle(angle) {
 	angle = deg(angle);
@@ -423,8 +422,8 @@ export function angleToNiceAngle(angle) {
 /**
  * Given a "Nice Angle" in degrees from the UI, calculate the type of
  * angle that JavaScript knows about (radians)
- * @param {number} angle - Angle in Degrees
- * @returns {number} - Angle in Radians
+ * @param {Number} angle - Angle in Degrees
+ * @returns {Number} - Angle in Radians
  */
 export function niceAngleToAngle(angle) {
 	angle += 90;

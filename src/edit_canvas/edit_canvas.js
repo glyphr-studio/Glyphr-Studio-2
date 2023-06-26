@@ -12,7 +12,7 @@ import {
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
-import { drawContextCharacters, drawGlyphKernExtra } from './context_characters.js';
+import { drawContextCharacters, drawCharacterKernExtra } from './context_characters.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -28,7 +28,7 @@ export class EditCanvas extends HTMLElement {
 
 	/**
 	 * Create an EditCanvas
-	 * @param {object} attributes - collection of key: value pairs to set as attributes
+	 * @param {Object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
 		// log(`EditCanvas.constructor`, 'start');
@@ -82,9 +82,9 @@ export class EditCanvas extends HTMLElement {
 
 	/**
 	 * Listens for attribute changes on this element
-	 * @param {string} attributeName - which attribute was changed
-	 * @param {string} oldValue - value before the change
-	 * @param {string} newValue - value after the change
+	 * @param {String} attributeName - which attribute was changed
+	 * @param {String} oldValue - value before the change
+	 * @param {String} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		// log(`EditCanvas.attributeChangeCallback`, 'start');
@@ -195,7 +195,7 @@ export class EditCanvas extends HTMLElement {
 					1
 				);
 
-				drawGlyphKernExtra(
+				drawCharacterKernExtra(
 					ctx,
 					kernGroup.value,
 					view.dx,

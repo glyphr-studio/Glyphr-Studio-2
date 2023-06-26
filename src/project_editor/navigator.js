@@ -135,7 +135,7 @@ export class Navigator {
 
 	/**
 	 * Sets the current view to the appropriate Page
-	 * @returns {object} Page Loader object - {string} content and {function} callback
+	 * @returns {Object} Page Loader object - {string} content and {function} callback
 	 */
 	makePageContent(fadePageIn = false) {
 		// log(`Navigator.makePageContent`, 'start');
@@ -177,7 +177,7 @@ export class Navigator {
 
 	/**
 	 * Returns True if the current page has a glyph chooser panel
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get isOnChooserPanelPage() {
 		const nh = this.page;
@@ -192,7 +192,7 @@ export class Navigator {
 
 	/**
 	 * Returns true if the current page has an Edit Canvas
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get isOnEditCanvasPage() {
 		const nh = this.page;

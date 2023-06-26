@@ -57,7 +57,7 @@ export function glyphrStudioOnLoad() {
 
 /**
  * Does some checking against new-ish HTML/JavaScript features
- * @returns {boolean}
+ * @returns {Boolean}
  */
 function passPreChecks() {
 	let pass = true;
@@ -121,8 +121,8 @@ export function getCurrentProjectEditor() {
 /**
  * Wrapper for console.log that does some extra fancy stuff, and
  * also adheres to a global switch in settings
- * @param {string} message - message to show in the console
- * @param {boolean} type - 'start' or 'end'
+ * @param {String} message - message to show in the console
+ * @param {Boolean} type - 'start' or 'end'
  */
 
 let logColors = {};

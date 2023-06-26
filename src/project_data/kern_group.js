@@ -11,8 +11,8 @@ import { duplicates } from '../common/functions.js';
 export class KernGroup extends GlyphElement {
 	/**
 	 * Set up the KernGroup object
-	 * @param {array} leftGroup - Collection of Unicode values
-	 * @param {array} rightGroup - Collection of Unicode values
+	 * @param {Array} leftGroup - Collection of Unicode values
+	 * @param {Array} rightGroup - Collection of Unicode values
 	 * @param {Number} value - Amount to move leftGroup to the right
 	 */
 	constructor({ leftGroup = [], rightGroup = [], value = 0 } = {}) {
@@ -29,7 +29,7 @@ export class KernGroup extends GlyphElement {
 
 	/**
 	 * Export object properties that need to be saved to a project file
-	 * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+	 * @param {Boolean} verbose - export some extra stuff that makes the saved object more readable
 	 * @returns {*}
 	 */
 	save(verbose = false) {

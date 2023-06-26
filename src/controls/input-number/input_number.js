@@ -9,7 +9,7 @@ import style from './input-number.css?inline';
 export class InputNumber extends HTMLElement {
 	/**
 	 * Create an InputNumber
-	 * @param {object} attributes - collection of key: value pairs to set as attributes
+	 * @param {Object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor() {
 		// log(`InputNumber.constructor`, 'start');
@@ -144,9 +144,9 @@ export class InputNumber extends HTMLElement {
 
 	/**
 	 * Listens for attribute changes on this element
-	 * @param {string} attributeName - which attribute was changed
-	 * @param {string} oldValue - value before the change
-	 * @param {string} newValue - value after the change
+	 * @param {String} attributeName - which attribute was changed
+	 * @param {String} oldValue - value before the change
+	 * @param {String} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		// log(`InputNumber.attributeChangedCallback`, 'start');
@@ -273,7 +273,7 @@ export class InputNumber extends HTMLElement {
 
 	/**
 	 * Increment the value
-	 * @param {object} ev - event
+	 * @param {Object} ev - event
 	 */
 	increment(ev) {
 		// log(`InputNumber.increment`, 'start');
@@ -289,7 +289,7 @@ export class InputNumber extends HTMLElement {
 
 	/**
 	 * Decrement the value
-	 * @param {object} ev - event
+	 * @param {Object} ev - event
 	 */
 	decrement(ev) {
 		// log(`InputNumber.decrement`, 'start');
@@ -305,7 +305,7 @@ export class InputNumber extends HTMLElement {
 
 	/**
 	 * Handle keypress event
-	 * @param {object} ev - event
+	 * @param {Object} ev - event
 	 */
 	arrowButtonsKeyboardPressed(ev) {
 		let click = new MouseEvent('click', {
@@ -341,7 +341,7 @@ export class InputNumber extends HTMLElement {
 
 	/**
 	 * Handle keypress event
-	 * @param {object} ev - event
+	 * @param {Object} ev - event
 	 */
 	numberInputKeyboardPress(ev) {
 		let click = new MouseEvent('click', {
@@ -371,7 +371,7 @@ export class InputNumber extends HTMLElement {
 
 	/**
 	 * Handle lock keypress event
-	 * @param {object} ev - event
+	 * @param {Object} ev - event
 	 */
 	lockButtonKeyboardPress(ev) {
 		let click = new MouseEvent('click', {

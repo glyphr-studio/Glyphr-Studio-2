@@ -27,7 +27,7 @@ import { decToHex } from '../common/character_ids.js';
 export class ProjectEditor {
 	/**
 	 * Initialize a project editor, with defaults
-	 * @param {object} newProjectEditor
+	 * @param {Object} newProjectEditor
 	 */
 	constructor(newProjectEditor = {}) {
 		// log('ProjectEditor.constructor', 'start');
@@ -197,7 +197,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected glyph
-	 * @returns {object}
+	 * @returns {Object}
 	 */
 	get selectedGlyph() {
 		// log('ProjectEditor GET selectedGlyph', 'start');
@@ -214,7 +214,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected glyph ID
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get selectedGlyphID() {
 		// log('ProjectEditor GET selectedGlyphID', 'start');
@@ -233,7 +233,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected ligature
-	 * @returns {object}
+	 * @returns {Object}
 	 */
 	get selectedLigature() {
 		// log(`ProjectEditor GET selectedLigature`, 'start');
@@ -245,7 +245,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected ligature ID
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get selectedLigatureID() {
 		// log(`ProjectEditor GET selectedLigatureID`, 'start');
@@ -258,7 +258,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected component
-	 * @returns {object}
+	 * @returns {Object}
 	 */
 	get selectedComponent() {
 		const re = this.project.components[this.selectedComponentID];
@@ -267,7 +267,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected component ID
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get selectedComponentID() {
 		if (!this._selectedComponentID) {
@@ -278,7 +278,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected kern
-	 * @returns {object}
+	 * @returns {Object}
 	 */
 	get selectedKernGroup() {
 		const re = this.project.kerning[this.selectedKernGroupID];
@@ -287,7 +287,7 @@ export class ProjectEditor {
 
 	/**
 	 * Returns the selected kern ID
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get selectedKernGroupID() {
 		if (!this._selectedKernGroupID) {
@@ -361,7 +361,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected item based on nav.page
-	 * @param {string} id - ID to select
+	 * @param {String} id - ID to select
 	 */
 	set selectedItemID(newID) {
 		if (newID.startsWith('glyph-')) this.selectedGlyphID = newID;
@@ -383,7 +383,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected glyph
-	 * @param {string} id - ID to select
+	 * @param {String} id - ID to select
 	 */
 	set selectedGlyphID(id) {
 		// log(`ProjectEditor SET selectedGlyphID`, 'start');
@@ -416,7 +416,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected ligature
-	 * @param {string} id - ID to select
+	 * @param {String} id - ID to select
 	 */
 	set selectedLigatureID(id) {
 		if (typeof id !== 'string') return;
@@ -442,7 +442,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected component
-	 * @param {string} id - ID to select
+	 * @param {String} id - ID to select
 	 */
 	set selectedComponentID(id) {
 		if (typeof id !== 'string') return;
@@ -468,7 +468,7 @@ export class ProjectEditor {
 
 	/**
 	 * Sets the selected kern
-	 * @param {string} id - ID to select
+	 * @param {String} id - ID to select
 	 */
 	set selectedKernGroupID(id) {
 		if (typeof id !== 'string') return;
@@ -692,7 +692,7 @@ export class ProjectEditor {
 
 	/**
 	 * Check to see if a work item has a view set already
-	 * @param {string} id - work item id to check
+	 * @param {String} id - work item id to check
 	 * @returns boolean
 	 */
 	viewExists(id) {
@@ -759,7 +759,7 @@ export class ProjectEditor {
 		if (visibleGlyphWidth === 0) visibleGlyphWidth = rect.width / 3;
 		let newX = (rect.width - visibleGlyphWidth) / 2;
 		if (isKern) {
-			newX += (visibleGlyphWidth / 2);
+			newX += visibleGlyphWidth / 2;
 			newX += this.selectedItem.value * newZ * -1;
 		}
 
@@ -818,7 +818,7 @@ export class ProjectEditor {
 
 	/**
 	 * Save a Glyphr Project Text File
-	 * @param {boolean} overwrite - for Electron app, overwrite current working file
+	 * @param {Boolean} overwrite - for Electron app, overwrite current working file
 	 */
 	saveGlyphrProjectFile() {
 		// log(`ProjectEditor.saveGlyphrProjectFile`, 'start');
