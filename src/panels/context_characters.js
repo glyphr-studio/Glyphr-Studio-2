@@ -25,53 +25,56 @@ export function makePanel_ContextCharacters() {
 	});
 
 	const ccOptions = project.settings.app.contextCharacters;
-	let toggleCheckbox = makeDirectCheckbox(ccOptions, 'showCharacters');
-	let toggleCheckboxLabel = makeSingleLabel('Show&nbsp;context&nbsp;characters');
+	let toggleCheckboxLabel = makeSingleLabel('Show&nbsp;context&nbsp;characters&nbsp;&nbsp;');
+	let toggleCheckbox = makeDirectCheckbox(ccOptions, 'showCharacters', () => {
+		const editor = getCurrentProjectEditor();
+		editor.editCanvas.redraw();
+	});
+
 	let charsInput = makeSingleInput(
 		editor.selectedItem,
 		'contextCharacters',
-		'currentItem',
+		'editCanvasRedraw',
 		'input'
 	);
+
+	let transparencyLabel = makeSingleLabel('Transparency');
+	let transparencyInput = makeSingleInput(
+		ccOptions,
+		'characterTransparency',
+		'editCanvasRedraw',
+		'input-number'
+	);
+
 	charsInput.classList.add('spanAll');
 	addAsChildren(charsCard, [
 		description,
+		charsInput,
 		rowPad(),
 		toggleCheckboxLabel,
 		toggleCheckbox,
-		charsInput,
+		transparencyLabel,
+		transparencyInput,
 	]);
 
 	// Options
 	let optionsCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>Options</h3>
+		innerHTML: `<h3>Guides and labels</h3>
 	`,
 	});
 
-	let transparencyLabel = makeSingleLabel('Character transparency');
-	let transparencyInput = makeSingleInput(
-		ccOptions,
-		'characterTransparency',
-		false,
-		'input-number'
-	);
+	let guidesCheckboxLabel = makeSingleLabel('Show guides and labels');
+	let guidesCheckbox = makeDirectCheckbox(ccOptions, 'showGuides', () => {
+		const editor = getCurrentProjectEditor();
+		editor.editCanvas.redraw();
+	});
 
-	let guidesCheckboxLabel = makeSingleLabel('Show guides');
-	let guidesCheckbox = makeDirectCheckbox(ccOptions, 'showGuides');
+	let guidesLabel = makeSingleLabel('Transparency');
+	let guidesInput = makeSingleInput(ccOptions, 'guidesTransparency', 'editCanvasRedraw', 'input-number');
 
-	let guidesLabel = makeSingleLabel('Guides transparency');
-	let guidesInput = makeSingleInput(ccOptions, 'guidesTransparency', false, 'input-number');
-
-	addAsChildren(optionsCard, [
-		transparencyLabel,
-		transparencyInput,
-		guidesCheckboxLabel,
-		guidesCheckbox,
-		guidesLabel,
-		guidesInput,
-	]);
+	addAsChildren(optionsCard, [guidesCheckboxLabel, guidesCheckbox, guidesLabel, guidesInput]);
 
 	// log(`makePanel_ContextCharacters`, 'end');
 	return [charsCard, optionsCard];

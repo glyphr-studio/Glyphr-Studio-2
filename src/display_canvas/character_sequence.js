@@ -26,12 +26,20 @@ export class CharacterSequence {
 		this.data = [];
 
 		// External properties
+		this.characterString = oa.characterString;
 		this.fontSize = oa.fontSize;
 		this.lineGap = oa.lineGap;
-		this.glyphString = oa.glyphString;
 		this.areaMaxes = oa.areaMaxes;
+		this.pagePadding = oa.pagePadding;
 
-		// log(this);
+		// Drawing
+		this.ctx = oa.ctx;
+		this.drawPageExtras = oa.drawPageExtras || false;
+		this.drawLineExtras = oa.drawLineExtras || false;
+		this.drawCharacterExtras = oa.drawCharacterExtras || false;
+		this.drawCharacter = oa.drawCharacter || false;
+
+		log(this);
 		// Initialize data
 		this.generateData();
 
@@ -74,25 +82,87 @@ export class CharacterSequence {
 		else this._lineGap = 0;
 	}
 
-	get glyphString() {
-		return this._glyphString;
+	get characterString() {
+		return this._characterString;
 	}
 
-	set glyphString(newString = false) {
-		if (typeof newString === 'string') this._glyphString = newString;
-		else this._glyphString = '';
+	set characterString(newString = false) {
+		if (typeof newString === 'string') this._characterString = newString;
+		else this._characterString = '';
 
-		// log(`this.glyphString ${this.glyphString}`);
+		// log(`this.characterString ${this.characterString}`);
+	}
+
+	get pagePadding() {
+		return this._pagePadding;
+	}
+
+	set pagePadding(padding) {
+		this._pagePadding = padding || 0;
+	}
+
+	draw({
+		showPageExtras = false,
+		showLineExtras = false,
+		showCharacterExtras = false,
+		showCharacter = false,
+	} = {}) {
+		log(`CharacterSequence.draw`, 'start');
+
+		if (this.drawPageExtras && showPageExtras) {
+			// log(`DRAW PAGE EXTRAS`);
+			this.drawPageExtras();
+		}
+
+		if (this.characterString === '') {
+			log(`No character string, early return`);
+			log(`CharacterSequence.draw`, 'end');
+			return;
+		}
+
+		let currentLine = -1;
+		if (this.drawLineExtras && showLineExtras) {
+			// log('DRAW LINE EXTRAS');
+			this.iterator((charData) => {
+				if (charData.lineNumber !== currentLine) {
+					this.drawLineExtras(charData, this);
+					currentLine = charData.lineNumber;
+				}
+			});
+		}
+
+		if (this.drawCharacterExtras && showCharacterExtras) {
+			// log('DRAW CHARACTER EXTRAS');
+			this.iterator((charData) => {
+				this.drawCharacterExtras(charData);
+			});
+		}
+
+		// log('DRAW CHARACTER');
+		if (this.drawCharacter && showCharacter) {
+			this.iterator((charData) => {
+				this.drawCharacter(charData);
+			});
+		}
+		log(`CharacterSequence.draw`, 'end');
+	}
+
+	iterator(drawFunction) {
+		for (let block = 0; block < this.data.length; block++) {
+			for (let char = 0; char < this.data[block].length; char++) {
+				drawFunction(this.data[block][char], this);
+			}
+		}
 	}
 
 	/**
 	 * This is the large / expensive function that goes through
-	 * the glyphString char by char and calculates all the data
+	 * the characterString char by char and calculates all the data
 	 * it needs to display lines of words within a fixed area.
 	 * @returns nothing
 	 */
 	generateData() {
-		// log('CharacterSequence.generateData', 'start');
+		log('CharacterSequence.generateData', 'start');
 		const project = getCurrentProject();
 
 		/*
@@ -119,20 +189,20 @@ export class CharacterSequence {
 		let thisGlyph;
 
 		this.data = [];
-		this.textBlocks = this.glyphString.split('\n');
+		this.textBlocks = this.characterString.split('\n');
 
-		// log('========================== LOOP 1: CALCULATING WIDTHS');
-		// log(`this.textBlocks.length: ${this.textBlocks.length}`);
+		log('========================== LOOP 1: CALCULATING WIDTHS');
+		log(`this.textBlocks.length: ${this.textBlocks.length}`);
 
 		for (textBlockNumber = 0; textBlockNumber < this.textBlocks.length; textBlockNumber++) {
-			// log(`================ START textBlockNumber: ${textBlockNumber}`);
+			log(`================ START textBlockNumber: ${textBlockNumber}`);
 
 			currentBlock = findAndMergeLigatures(this.textBlocks[textBlockNumber].split(''));
 			this.data[textBlockNumber] = [];
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
 				currentChar = currentBlock[charNumber];
-				// log(`==== char: ${charNumber} ${currentChar}`);
+				log(`==== char: ${charNumber} ${currentChar}`);
 				if (currentChar.startsWith('liga-')) {
 					thisGlyph = project.ligatures[currentChar];
 					currentChar = thisGlyph.chars;
@@ -162,7 +232,7 @@ export class CharacterSequence {
 					lineNumber: false,
 				};
 			}
-			// log(`================ END textBlockNumber ${textBlockNumber}`);
+			log(`================ END textBlockNumber ${textBlockNumber}`);
 		}
 
 		/*
@@ -184,29 +254,33 @@ export class CharacterSequence {
 		let checkForBreak = false;
 
 		const scale = this.fontSize / project.totalVertical;
-		// log(`scale: ${scale}`);
+		log(`scale: ${scale}`);
 
 		const ascent = project.settings.font.ascent;
-		// log(`ascent: ${ascent}`);
+		log(`ascent: ${ascent}`);
 
 		//Convert area properties to project / UPM scales
 		const singleLineHeight = project.totalVertical + this.lineGap / scale;
-		// log(`singleLineHeight: ${singleLineHeight}`);
+		log(`singleLineHeight: ${singleLineHeight}`);
 
 		const scaleAreaWidth = this.areaMaxes.width / scale;
-		// log(`scaleAreaWidth: ${scaleAreaWidth}`);
+		log(`scaleAreaWidth: ${scaleAreaWidth}`);
 
 		const scaleAreaYMax = this.areaMaxes.yMax / scale;
+		log(`scaleAreaYMax: ${scaleAreaYMax}`);
 
-		// log('========================== LOOP 2: CALCULATING DATA PER CHAR');
+		const scaleAreaXMin = this.areaMaxes.xMin / scale;
+		log(`scaleAreaXMin: ${scaleAreaXMin}`);
+
+		log('========================== LOOP 2: CALCULATING DATA PER CHAR');
 		for (textBlockNumber = 0; textBlockNumber < this.data.length; textBlockNumber++) {
 			currentBlock = this.data[textBlockNumber];
-			// log(`================ START textBlockNumber: ${textBlockNumber}`);
+			log(`================ START textBlockNumber: ${textBlockNumber}`);
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
 				charData = currentBlock[charNumber];
-				// log(`charNumber: ${charNumber} - |${charData.char}|`);
-				// log(charData);
+				log(`charNumber: ${charNumber} - |${charData.char}|`);
+				log(charData);
 
 				if (charData.view === false) {
 					// position for this charData hasn't been calculated
@@ -217,37 +291,37 @@ export class CharacterSequence {
 							nextLineBreak.widths.advance -
 							charData.widths.aggregate;
 
-						// log(`Checking for word length and right side of area`);
-						// log(`currentX: ${currentX}`);
-						// log(`wordAggregate: ${wordAggregate}`);
-						// log(`... is it larger than ...`);
-						// log(`scaleAreaWidth: ${scaleAreaWidth}`);
+						log(`Checking for word length and right side of area`);
+						log(`currentX: ${currentX}`);
+						log(`wordAggregate: ${wordAggregate}`);
+						log(`... is it larger than ...`);
+						log(`scaleAreaWidth: ${scaleAreaWidth}`);
 
 						if (currentX + wordAggregate > scaleAreaWidth) {
 							// word takes up too much horizontal space
 							// increment the line, and do a vertical space check
-							// log(`word does not fit on the current line...`);
+							log(`word does not fit on the current line...`);
 
 							currentLine++;
 
-							// log(`Checking for next line height against height of area`);
-							// log(`currentY: ${currentY}`);
-							// log(`singleLineHeight: ${singleLineHeight}`);
-							// log(`... is larger than...`);
-							// log(`scaleAreaYMax: ${scaleAreaYMax}`);
+							log(`Checking for next line height against height of area`);
+							log(`currentY: ${currentY}`);
+							log(`singleLineHeight: ${singleLineHeight}`);
+							log(`... is larger than...`);
+							log(`scaleAreaYMax: ${scaleAreaYMax}`);
 
 							if (currentY + singleLineHeight > scaleAreaYMax) {
 								// text takes up too much vertical space
 								// returning early will leave non-computed chars.isVisible = false
-								// log('Vertical Max Reached');
-								// log('CharacterSequence.generateData', 'end');
+								log('Vertical Max Reached');
+								log('CharacterSequence.generateData', 'end');
 								return;
 							} else {
 								// more vertical space exists for the next line
-								// log(`more vertical space for next line`);
+								log(`more vertical space for next line`);
 								currentX = 0;
 								currentY = currentLine * singleLineHeight;
-								// log(`currentY: ${currentY}`);
+								log(`currentY: ${currentY}`);
 							}
 						}
 
@@ -257,7 +331,7 @@ export class CharacterSequence {
 					charData.isVisible = true;
 					charData.lineNumber = currentLine;
 					charData.view = {
-						dx: currentX * scale,
+						dx: scaleAreaXMin + currentX * scale,
 						dy: (currentY + ascent) * scale,
 						dz: scale,
 					};
@@ -270,28 +344,28 @@ export class CharacterSequence {
 			// End of one block
 			currentLine++;
 
-			// log(`== Checking at end of block to see if there is room for the next line`);
+			log(`== Checking at end of block to see if there is room for the next line`);
 
-			// log(`currentY: ${currentY}`);
-			// log(`singleLineHeight: ${singleLineHeight}`);
-			// log(`scaleAreaYMax: ${scaleAreaYMax}`);
+			log(`currentY: ${currentY}`);
+			log(`singleLineHeight: ${singleLineHeight}`);
+			log(`scaleAreaYMax: ${scaleAreaYMax}`);
 
 			if (currentY + singleLineHeight > scaleAreaYMax) {
 				// text takes up too much vertical space
 				// returning early will leave non-computed chars.isVisible = false
-				// log(`Vertical Max Reached @ End Of Block ${textBlockNumber}`);
-				// log('CharacterSequence.generateData', 'end');
+				log(`Vertical Max Reached @ End Of Block ${textBlockNumber}`);
+				log('CharacterSequence.generateData', 'end');
 				return;
 			}
 
 			currentX = 0;
 			currentY = currentLine * singleLineHeight;
-			// log(`================ END textBlockNumber: ${textBlockNumber}`);
+			log(`================ END textBlockNumber: ${textBlockNumber}`);
 		}
 
-		// log('after view calc this.data');
-		// log(this.data);
-		// log('CharacterSequence.generateData', 'end');
+		log('after view calc this.data');
+		log(this.data);
+		log('CharacterSequence.generateData', 'end');
 	}
 }
 

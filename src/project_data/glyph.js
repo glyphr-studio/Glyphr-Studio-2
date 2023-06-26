@@ -184,6 +184,15 @@ export class Glyph extends GlyphElement {
 		return this._gsub || [];
 	}
 
+	/**
+	 * get contextCharacters
+	 * @returns {String}
+	 */
+	get contextCharacters() {
+		if (!this._contextCharacters || this._contextCharacters === this.char) return this.char;
+		else return this._contextCharacters;
+	}
+
 	// computed properties
 
 	/**
@@ -433,6 +442,15 @@ export class Glyph extends GlyphElement {
 
 		this._gsub = gsub || [];
 		// log(`Glyph SET gsub`, 'end');
+	}
+
+	/**
+	 * set contextCharacters
+	 * @returns {String}
+	 */
+	set contextCharacters(chars = false) {
+		if (!chars || chars === this.char || typeof chars !== 'string') delete this._contextCharacters;
+		else this._contextCharacters = chars;
 	}
 
 	// computed properties
