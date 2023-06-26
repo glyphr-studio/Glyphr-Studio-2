@@ -93,7 +93,7 @@ export class GlyphrStudioApp {
 
 	/**
 	 * Fades out the initial load screen to show the App
-	 * @param {number} delay - override default fadeout time
+	 * @param {Number} delay - override default fadeout time
 	 */
 	fadeOutLandingPage(delay = 700) {
 		const landingPage = document.getElementById('app__landing-page');
@@ -344,7 +344,7 @@ export function emailLink(displayText = 'mail@glyphrstudio.com') {
 }
 /**
  * Generates the content for the "email us" link
- * @returns {string}
+ * @returns {String}
  */
 export function makeEmailContent() {
 	const con = `Have a feature idea or ran into an issue%3F We'd be happy to help!

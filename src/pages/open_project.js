@@ -253,7 +253,7 @@ function deselectAllTabs() {
 
 /**
  * Handle file drop
- * @param {object} event - drop event
+ * @param {Object} event - drop event
  */
 function handleDrop(event) {
 	// log('handleDrop', 'start');
@@ -305,7 +305,7 @@ function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 
 /**
  * Handle Message event
- * @param {object} event - event
+ * @param {Object} event - event
  */
 /*
 function handleMessage(event) {
@@ -327,7 +327,7 @@ function handleMessage(event) {
 
 /**
  * Handle DragOver event
- * @param {object} event - event
+ * @param {Object} event - event
  */
 function handleDragEnter(event) {
 	// log(`handleDragEnter`, 'start');
@@ -343,7 +343,7 @@ function handleDragEnter(event) {
 
 /**
  * Handle DragLeave event
- * @param {object} event - event
+ * @param {Object} event - event
  */
 function handleDragLeave() {
 	// log(`handleDragLeave`, 'start');
@@ -370,7 +370,7 @@ function handleNewProject() {
 
 /**
  * Load a project sample
- * @param {string} name - which sample to load
+ * @param {String} name - which sample to load
  */
 function handleLoadSample(name) {
 	document.getElementById('tab-content__examples').innerHTML =

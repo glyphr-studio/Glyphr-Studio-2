@@ -81,8 +81,8 @@ export function animateRemove(element, animationLength = 120, scale = 0.98, tran
 /**
  * Creates and shows a little message at the top/center
  * of the screen, which disappears after a set time
- * @param {string} message - message to show
- * @param {number} duration - how long to show the message (milliseconds)
+ * @param {String} message - message to show
+ * @param {Number} duration - how long to show the message (milliseconds)
  */
 export function showToast(message = '0_o', duration = 3000) {
 	// log(`showToast`, 'start');
@@ -257,7 +257,7 @@ function makeOneContextMenuRow(data = {}) {
 
 /**
  * Shows the error message box
- * @param {string} message - HTML content of the dialog box
+ * @param {String} message - HTML content of the dialog box
  */
 export function showError(message) {
 	let element = makeElement({ tag: 'div', id: 'error' });

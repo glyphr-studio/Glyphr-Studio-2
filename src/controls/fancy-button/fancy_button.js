@@ -7,7 +7,7 @@ import style from './fancy-button.css?inline';
 export class FancyButton extends HTMLElement {
 	/**
 	 * Create an FancyButton
-	 * @param {object} attributes - collection of key: value pairs to set as attributes
+	 * @param {Object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
 		super();
@@ -56,9 +56,9 @@ export class FancyButton extends HTMLElement {
 
 	/**
 	 * Listens for attribute changes on this element
-	 * @param {string} attributeName - which attribute was changed
-	 * @param {string} oldValue - value before the change
-	 * @param {string} newValue - value after the change
+	 * @param {String} attributeName - which attribute was changed
+	 * @param {String} oldValue - value before the change
+	 * @param {String} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
@@ -94,7 +94,7 @@ export class FancyButton extends HTMLElement {
 
 	/**
 	 * Handle keypress events
-	 * @param {object} ev - event
+	 * @param {Object} ev - event
 	 */
 	keyPress(ev) {
 		if (ev.keyCode === 13) {
@@ -111,7 +111,7 @@ export class FancyButton extends HTMLElement {
 
 	/**
 	 * Fake pressed state for keyboard event
-	 * @param {object} elem - element that got pressed
+	 * @param {Object} elem - element that got pressed
 	 */
 	flashAsPressed(elem) {
 		elem.wrapper.style.top = '1px';

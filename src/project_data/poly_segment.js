@@ -38,7 +38,7 @@ export class PolySegment extends GlyphElement {
 
 	/**
 	 * Export object properties that need to be saved to a project file
-	 * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+	 * @param {Boolean} verbose - export some extra stuff that makes the saved object more readable
 	 * @returns {*}
 	 */
 	save(verbose = false) {
@@ -57,8 +57,8 @@ export class PolySegment extends GlyphElement {
 
 	/**
 	 * Create a nicely-formatted string for this object
-	 * @param {number} level - how far down we are
-	 * @returns {string}
+	 * @param {Number} level - how far down we are
+	 * @returns {String}
 	 */
 	print(level = 0) {
 		let ind = '';
@@ -85,7 +85,7 @@ export class PolySegment extends GlyphElement {
 
 	/**
 	 * get the Segments array
-	 * @returns {array}
+	 * @returns {Array}
 	 */
 	get segments() {
 		return this._segments;
@@ -97,7 +97,7 @@ export class PolySegment extends GlyphElement {
 
 	/**
 	 * set the Segments array
-	 * @param {array} segments
+	 * @param {Array} segments
 	 */
 	set segments(segments = []) {
 		this._segments = [];
@@ -174,7 +174,7 @@ export class PolySegment extends GlyphElement {
 	/**
 	 * Search to see if a Segment is in this PolySegment
 	 * @param {Segment} seg - to look for
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	containsSegment(seg) {
 		for (let s = 0; s < this._segments.length; s++) {
@@ -185,7 +185,7 @@ export class PolySegment extends GlyphElement {
 
 	/**
 	 * Round all the Segment values
-	 * @param {number} precision - decimal places
+	 * @param {Number} precision - decimal places
 	 * @returns {PolySegment}
 	 */
 	roundAll(precision = 3) {
@@ -202,7 +202,7 @@ export class PolySegment extends GlyphElement {
 
 	/**
 	 * Finds all the intersections between segments
-	 * @returns {array} - collection of intersections in ix format
+	 * @returns {Array} - collection of intersections in ix format
 	 */
 	findIntersections() {
 		// log('PolySegment.findIntersections', 'start');
@@ -230,8 +230,8 @@ export class PolySegment extends GlyphElement {
 	/**
 	 * Takes a collection of intersections, and splits all the applicable
 	 * segments at those points
-	 * @param {array} ixArray - array of intersections in ix format
-	 * @param {number} threshold - how closely to look and split
+	 * @param {Array} ixArray - array of intersections in ix format
+	 * @param {Number} threshold - how closely to look and split
 	 * @returns {PolySegment}
 	 */
 	splitSegmentsAtIntersections(ixArray = this.findIntersections(), threshold = 1) {
@@ -266,7 +266,7 @@ export class PolySegment extends GlyphElement {
 	/**
 	 * Takes all the segments and orders them based on their
 	 * starting and ending points
-	 * @returns {array} - collection of stitched PolySegments (hopefully just one)
+	 * @returns {Array} - collection of stitched PolySegments (hopefully just one)
 	 */
 	stitchSegmentsTogether() {
 		// log('PolySegment.stitchSegmentsTogether', 'start');
@@ -526,8 +526,8 @@ export class PolySegment extends GlyphElement {
  * This is a recursive algorithm
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
- * @param {number} depth - How deep this recursive call has gone
- * @returns {array} - collection of overlap points in ix format like ['x/y', 'x/y', 'x/y']
+ * @param {Number} depth - How deep this recursive call has gone
+ * @returns {Array} - collection of overlap points in ix format like ['x/y', 'x/y', 'x/y']
  */
 export function findSegmentIntersections(s1, s2, depth) {
 	// log('findSegmentIntersections', 'start');
@@ -643,8 +643,8 @@ export function findSegmentIntersections(s1, s2, depth) {
  * Checks a segment's points to see of two segments are equal
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
- * @param {number} threshold - precision
- * @returns {boolean}
+ * @param {Number} threshold - precision
+ * @returns {Boolean}
  */
 export function segmentsAreEqual(s1, s2, threshold) {
 	// log('segmentsAreEqual', 'start');
@@ -676,7 +676,7 @@ export function segmentsAreEqual(s1, s2, threshold) {
  * If so, just return one point from the coincident lines
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
- * @returns {array} - collection of overlaps in ix format
+ * @returns {Array} - collection of overlaps in ix format
  */
 export function findOverlappingLineSegmentIntersections(s1, s2) {
 	// log(`findOverlappingLineSegmentIntersections`, 'start');
@@ -704,7 +704,7 @@ export function findOverlappingLineSegmentIntersections(s1, s2) {
  * This is much faster than comparing two curves
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
- * @returns {array} - overlap point in ix format
+ * @returns {Array} - overlap point in ix format
  */
 export function findCrossingLineSegmentIntersections(s1, s2) {
 	// log('findCrossingLineSegmentIntersections', 'start');
@@ -742,7 +742,7 @@ export function findCrossingLineSegmentIntersections(s1, s2) {
  * Finds if two segments overlap in their end points
  * @param {Segment} s1 - first segment
  * @param {Segment} s2 - second segment
- * @returns {array} - collection of overlaps in ix format
+ * @returns {Array} - collection of overlaps in ix format
  */
 export function findEndPointSegmentIntersections(s1, s2) {
 	// log('findEndPointSegmentIntersections', 'start');

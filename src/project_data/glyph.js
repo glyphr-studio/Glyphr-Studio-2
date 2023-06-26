@@ -20,12 +20,12 @@ import { getUnicodeName } from '../lib/unicode_names.js';
 export class Glyph extends GlyphElement {
 	/**
 	 * Create a Glyph
-	 * @param {string} id - unique identifier (Unicode code point)
-	 * @param {object} parent - link to the Glyphr Studio Project
-	 * @param {number} advanceWidth - manual setting for advance width
-	 * @param {boolean} ratioLock - maintain aspect ratio while resizing
-	 * @param {boolean} shapes - collection of Paths and Component Instances in this Glyph
-	 * @param {array} usedIn - array of IDs where this Glyph is used as a component instance
+	 * @param {String} id - unique identifier (Unicode code point)
+	 * @param {Object} parent - link to the Glyphr Studio Project
+	 * @param {Number} advanceWidth - manual setting for advance width
+	 * @param {Boolean} ratioLock - maintain aspect ratio while resizing
+	 * @param {Boolean} shapes - collection of Paths and Component Instances in this Glyph
+	 * @param {Array} usedIn - array of IDs where this Glyph is used as a component instance
 	 */
 	constructor({
 		id = false,
@@ -62,7 +62,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Export object properties that need to be saved to a project file
-	 * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+	 * @param {Boolean} verbose - export some extra stuff that makes the saved object more readable
 	 * @returns {*}
 	 */
 	save(verbose = false) {
@@ -94,8 +94,8 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Create a nicely-formatted string for this object
-	 * @param {number} level - how far down we are
-	 * @returns {string}
+	 * @param {Number} level - how far down we are
+	 * @returns {String}
 	 */
 	print(level = 0) {
 		let ind = '';
@@ -136,7 +136,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * get id
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get id() {
 		return this._id;
@@ -144,7 +144,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * get shapes
-	 * @returns {array}
+	 * @returns {Array}
 	 */
 	get shapes() {
 		return this._shapes;
@@ -152,7 +152,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * get advanceWidth
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get advanceWidth() {
 		return this._advanceWidth;
@@ -160,7 +160,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * get ratioLock
-	 * @returns {boolean}
+	 * @returns {Boolean}
 	 */
 	get ratioLock() {
 		return this._ratioLock;
@@ -168,7 +168,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * get usedIn
-	 * @returns {array}
+	 * @returns {Array}
 	 */
 	get usedIn() {
 		// log(`Glyph.usedIn Getter - is array? ${Array.isArray(this._usedIn)}`);
@@ -177,7 +177,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * get gsub
-	 * @returns {array}
+	 * @returns {Array}
 	 */
 	get gsub() {
 		// log(`Glyph.gsub Getter - is array? ${Array.isArray(this._gsub)}`);
@@ -190,7 +190,7 @@ export class Glyph extends GlyphElement {
 	 * Get X position
 	 * This is a calculated property
 	 * based on all the Shapes in this Glyph
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get x() {
 		return this.maxes.xMin;
@@ -200,7 +200,7 @@ export class Glyph extends GlyphElement {
 	 * Get Y position
 	 * This is a calculated property
 	 * based on all the Shapes in this Glyph
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get y() {
 		return this.maxes.yMax;
@@ -210,7 +210,7 @@ export class Glyph extends GlyphElement {
 	 * Get Width
 	 * This is a calculated property
 	 * based on all the Shapes in this Glyph
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get width() {
 		const w = this.maxes.xMax - this.maxes.xMin;
@@ -221,7 +221,7 @@ export class Glyph extends GlyphElement {
 	 * Get Height
 	 * This is a calculated property
 	 * based on all the Shapes in this Glyph
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get height() {
 		const h = this.maxes.yMax - this.maxes.yMin;
@@ -231,7 +231,7 @@ export class Glyph extends GlyphElement {
 	/**
 	 * get leftSideBearing
 	 * This is a calculated-on-the-fly property
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get leftSideBearing() {
 		return this.maxes.xMin;
@@ -240,7 +240,7 @@ export class Glyph extends GlyphElement {
 	/**
 	 * get rightSideBearing
 	 * This is a calculated-on-the-fly property
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get rightSideBearing() {
 		let rightMax = this.maxes.xMax;
@@ -250,7 +250,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * get name
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get name() {
 		// log('Glyph GET name', 'start');
@@ -289,7 +289,7 @@ export class Glyph extends GlyphElement {
 	 * Get character associated with this Glyph.
 	 * If this is a Ligature, returns a string of
 	 * characters.
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	get char() {
 		// log(`Glyph GET char`, 'start');
@@ -337,7 +337,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * set id
-	 * @param {string} newID
+	 * @param {String} newID
 	 */
 	set id(newID) {
 		// log(`Glyph SET id`, 'start');
@@ -349,7 +349,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * set paths
-	 * @param {array} newShapes - collection of Path or Component Instance
+	 * @param {Array} newShapes - collection of Path or Component Instance
 	 */
 	set shapes(newShapes = []) {
 		// log(`Glyph.shapes setter - Start`);
@@ -392,7 +392,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * set advanceWidth
-	 * @param {number} advanceWidth
+	 * @param {Number} advanceWidth
 	 */
 	set advanceWidth(advanceWidth) {
 		// log(`Glyph SET advanceWidth`, 'start');
@@ -409,7 +409,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * set ratioLock
-	 * @param {boolean} ratioLock
+	 * @param {Boolean} ratioLock
 	 */
 	set ratioLock(ratioLock) {
 		this._ratioLock = !!ratioLock;
@@ -417,7 +417,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * set usedIn
-	 * @param {array} usedIn
+	 * @param {Array} usedIn
 	 */
 	set usedIn(usedIn) {
 		this._usedIn = usedIn || [];
@@ -425,7 +425,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * set gsub
-	 * @param {array} gsub
+	 * @param {Array} gsub
 	 */
 	set gsub(gsub) {
 		// log(`Glyph SET gsub`, 'start');
@@ -441,7 +441,7 @@ export class Glyph extends GlyphElement {
 	 * Set name
 	 * This usually is not necessary, Glyph.name (getter)
 	 * does a lookup of unicode names.
-	 * @param {string} newName
+	 * @param {String} newName
 	 */
 	set name(newName) {
 		this._name = newName;
@@ -449,7 +449,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Set X position
-	 * @param {number} x
+	 * @param {Number} x
 	 */
 	set x(x) {
 		// log(`Glyph SET x`);
@@ -459,7 +459,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Set Y position
-	 * @param {number} y
+	 * @param {Number} y
 	 */
 	set y(y) {
 		this.setGlyphPosition(false, y);
@@ -467,7 +467,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Set Width
-	 * @param {number} w
+	 * @param {Number} w
 	 */
 	set width(w) {
 		this.setGlyphSize(w, false);
@@ -475,7 +475,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Set Height
-	 * @param {number} h
+	 * @param {Number} h
 	 */
 	set height(h) {
 		this.setGlyphSize(false, h);
@@ -484,7 +484,7 @@ export class Glyph extends GlyphElement {
 	/**
 	 * set leftSideBearing
 	 * This is a convenience method, not a glyph property
-	 * @param {number} newLSB - what to set LSB to
+	 * @param {Number} newLSB - what to set LSB to
 	 */
 	set leftSideBearing(newLSB) {
 		let delta = newLSB - this.leftSideBearing;
@@ -495,7 +495,7 @@ export class Glyph extends GlyphElement {
 	/**
 	 * set rightSideBearing
 	 * This is a convenience method, not a glyph property
-	 * @param {number} newRSB - what to set RSB to
+	 * @param {Number} newRSB - what to set RSB to
 	 */
 	set rightSideBearing(newRSB) {
 		let delta = newRSB - this.rightSideBearing;
@@ -508,8 +508,8 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Move all the Shapes in this glyph as one group
-	 * @param {number} nx - new x
-	 * @param {number} ny - new y
+	 * @param {Number} nx - new x
+	 * @param {Number} ny - new y
 	 */
 	setGlyphPosition(nx, ny) {
 		// log('Glyph.setGlyphPosition', 'start');
@@ -529,8 +529,8 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Update all the shapes' positions in this glyph as one group
-	 * @param {number} dx - delta x
-	 * @param {number} dy - delta y
+	 * @param {Number} dx - delta x
+	 * @param {Number} dy - delta y
 	 */
 	updateGlyphPosition(dx, dy) {
 		// log('Glyph.updateGlyphPosition', 'start');
@@ -552,9 +552,9 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Set all the sizes of the Shapes in this glyph as one group
-	 * @param {number} nw - new width
-	 * @param {number} nh - new height
-	 * @param {boolean} ratioLock - true to scale width and height 1:1
+	 * @param {Number} nw - new width
+	 * @param {Number} nh - new height
+	 * @param {Boolean} ratioLock - true to scale width and height 1:1
 	 */
 	setGlyphSize(nw, nh, ratioLock) {
 		const m = this.maxes;
@@ -573,9 +573,9 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Update all the sizes of the Shapes in this glyph as one group
-	 * @param {number} dw - delta width
-	 * @param {number} dh - delta height
-	 * @param {boolean} ratioLock - true to scale width and height 1:1
+	 * @param {Number} dw - delta width
+	 * @param {Number} dh - delta height
+	 * @param {Boolean} ratioLock - true to scale width and height 1:1
 	 */
 	updateGlyphSize(dw, dh, ratioLock) {
 		// log('Glyph.updateGlyphSize', 'start');
@@ -665,7 +665,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Flips this glyph about a horizontal line
-	 * @param {number} mid - y value about which to flip
+	 * @param {Number} mid - y value about which to flip
 	 * @returns {Glyph} - reference to this glyph
 	 */
 	flipNS(mid = this.maxes.center.y) {
@@ -685,7 +685,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Flips this glyph about a vertical line
-	 * @param {number} mid - y value about which to flip
+	 * @param {Number} mid - y value about which to flip
 	 * @returns {Glyph} - reference to this glyph
 	 */
 	flipEW(mid = this.maxes.center.x) {
@@ -702,11 +702,11 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Round all point x/y values to a certain precision
-	 * @param {number} precision - how many decimal places to round to
+	 * @param {Number} precision - how many decimal places to round to
 	 * @returns {Glyph} - reference to this glyph
 	 */
 	roundAll(precision = 0) {
-		this.shapes.forEach(shape => {
+		this.shapes.forEach((shape) => {
 			if (shape.roundAll) {
 				shape.roundAll(precision);
 			}
@@ -716,7 +716,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Rotate about a point
-	 * @param {number} angle - how much to rotate (radians)
+	 * @param {Number} angle - how much to rotate (radians)
 	 * @param {XYPoint} about - x/y center of rotation
 	 * @returns {Glyph} - reference to this glyph
 	 */
@@ -749,7 +749,7 @@ export class Glyph extends GlyphElement {
 	/**
 	 * Get / Make the data (attribute d="") for an SVG path tag
 	 * @param {Glyph} - glyph object to get/make the path data for
-	 * @returns {string} - SVG definition for the path d="" attribute
+	 * @returns {String} - SVG definition for the path d="" attribute
 	 */
 	get svgPathData() {
 		// log(`Glyph GET svgPathData`, 'start');
@@ -854,7 +854,7 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Boolean combine all Shapes in this Glyph to as few paths as possible
-	 * @param {boolean} doNotToast - don't show progress messages
+	 * @param {Boolean} doNotToast - don't show progress messages
 	 * @returns {Glyph} - reference to this Glyph
 	 */
 	combineAllPaths() {

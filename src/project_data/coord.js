@@ -9,9 +9,9 @@ import { numSan, isVal } from '../common/functions.js';
 export class Coord extends GlyphElement {
 	/**
 	 * Create a coordinate
-	 * @param {number} x - The X value
-	 * @param {number} y - The Y value
-	 * @param {object} parent - link to the parent ControlPoint object
+	 * @param {Number} x - The X value
+	 * @param {Number} y - The Y value
+	 * @param {Object} parent - link to the parent ControlPoint object
 	 */
 	constructor({ x = 0, y = 0, parent = false } = {}) {
 		super();
@@ -41,8 +41,8 @@ export class Coord extends GlyphElement {
 
 	/**
 	 * Create a nicely-formatted string for this object
-	 * @param {number} level - how far down we are
-	 * @returns {string}
+	 * @param {Number} level - how far down we are
+	 * @returns {String}
 	 */
 	print(level = 0) {
 		let ind = '';
@@ -62,7 +62,7 @@ export class Coord extends GlyphElement {
 
 	/**
 	 * Make sure x is a number
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get x() {
 		if (!isNaN(this._x)) {
@@ -76,7 +76,7 @@ export class Coord extends GlyphElement {
 
 	/**
 	 * Make sure y is a number
-	 * @returns {number}
+	 * @returns {Number}
 	 */
 	get y() {
 		if (!isNaN(this._y)) {
@@ -94,7 +94,7 @@ export class Coord extends GlyphElement {
 
 	/**
 	 * Set the x position of the point
-	 * @param {number} position
+	 * @param {Number} position
 	 */
 	set x(position = 0) {
 		position = numSan(position);
@@ -111,7 +111,7 @@ export class Coord extends GlyphElement {
 
 	/**
 	 * Set the y position of the point
-	 * @param {number} position
+	 * @param {Number} position
 	 */
 	set y(position = 0) {
 		position = numSan(position);

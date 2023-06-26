@@ -17,7 +17,7 @@ export class GlyphTile extends HTMLElement {
 
 	/**
 	 * Create an GlyphTile
-	 * @param {object} attributes - collection of key: value pairs to set as attributes
+	 * @param {Object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
 		super();

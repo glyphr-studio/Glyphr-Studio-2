@@ -8,10 +8,10 @@ import { GlyphElement } from './glyph_element.js';
 export class Maxes extends GlyphElement {
 	/**
 	 * Create a Maxes object
-	 * @param {number} xMin - smallest x value
-	 * @param {number} xMax - largest x value
-	 * @param {number} yMin - smallest y value
-	 * @param {number} yMax - largest y value
+	 * @param {Number} xMin - smallest x value
+	 * @param {Number} xMax - largest x value
+	 * @param {Number} yMin - smallest y value
+	 * @param {Number} yMax - largest y value
 	 */
 	constructor({ xMin, xMax, yMin, yMax } = {}) {
 		super();
@@ -36,7 +36,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Export object properties that need to be saved to a project file
-	 * @param {boolean} verbose - export some extra stuff that makes the saved object more readable
+	 * @param {Boolean} verbose - export some extra stuff that makes the saved object more readable
 	 * @returns {*}
 	 */
 	save(verbose = false) {
@@ -59,8 +59,8 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Create a nicely-formatted string for this object
-	 * @param {number} level - how far down we are
-	 * @returns {string}
+	 * @param {Number} level - how far down we are
+	 * @returns {String}
 	 */
 	print(level = 0) {
 		let ind = '';
@@ -82,7 +82,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Get xMin
-	 * @returns {number} value
+	 * @returns {Number} value
 	 */
 	get xMin() {
 		// log(`Maxes GET xMin`, 'start');
@@ -100,7 +100,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Get xMax
-	 * @returns {number} value
+	 * @returns {Number} value
 	 */
 	get xMax() {
 		if (isVal(this._xMax)) return this._xMax;
@@ -109,7 +109,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Get yMin
-	 * @returns {number} value
+	 * @returns {Number} value
 	 */
 	get yMin() {
 		if (isVal(this._yMin)) return this._yMin;
@@ -118,7 +118,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Get yMax
-	 * @returns {number} value
+	 * @returns {Number} value
 	 */
 	get yMax() {
 		if (isVal(this._yMax)) return this._yMax;
@@ -127,7 +127,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Figures out the center of the bounding box
-	 * @returns {object} x/y point
+	 * @returns {Object} x/y point
 	 */
 	get center() {
 		return {
@@ -138,7 +138,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Figures out the width of the area
-	 * @returns {number} value
+	 * @returns {Number} value
 	 */
 	get width() {
 		return this.xMax - this.xMin;
@@ -146,7 +146,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Figures out the height of the area
-	 * @returns {number} value
+	 * @returns {Number} value
 	 */
 	get height() {
 		return this.yMax - this.yMin;
@@ -158,7 +158,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Set xMin
-	 * @param {number} x - new value
+	 * @param {Number} x - new value
 	 * @returns {Maxes}
 	 */
 	set xMin(x) {
@@ -179,7 +179,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Set xMax
-	 * @param {number} x - new value
+	 * @param {Number} x - new value
 	 * @returns {Maxes}
 	 */
 	set xMax(x) {
@@ -190,7 +190,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Set yMin
-	 * @param {number} y - new value
+	 * @param {Number} y - new value
 	 * @returns {Maxes}
 	 */
 	set yMin(y) {
@@ -201,7 +201,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Set yMax
-	 * @param {number} y - new value
+	 * @param {Number} y - new value
 	 * @returns {Maxes}
 	 */
 	set yMax(y) {
@@ -216,7 +216,7 @@ export class Maxes extends GlyphElement {
 
 	/**
 	 * Rounds all the values to a certain precision
-	 * @param {number} precision - how many decimal paces to round to
+	 * @param {Number} precision - how many decimal paces to round to
 	 */
 	roundAll(precision = 3) {
 		this.xMin = round(this.xMin, precision);
@@ -234,8 +234,8 @@ export class Maxes extends GlyphElement {
  * Given two Maxes, check if they overlap
  * @param {Maxes} m1 - first maxes
  * @param {Maxes} m2 - second maxes
- * @param {boolean} exclusive - 'inclusive' or 'exclusive'
- * @returns {boolean}
+ * @param {Boolean} exclusive - 'inclusive' or 'exclusive'
+ * @returns {Boolean}
  */
 export function maxesOverlap(m1, m2, exclusive = true) {
 	// log(`maxesOverlap`, 'start');
@@ -257,7 +257,7 @@ export function maxesOverlap(m1, m2, exclusive = true) {
 /**
  * This takes an array of maxes objects, and returns a maxes
  * object that represents the extremes of all the passed objects
- * @param {array} maxesArray - array of 'maxes' objects
+ * @param {Array} maxesArray - array of 'maxes' objects
  * @returns {Maxes}
  */
 export function getOverallMaxes(maxesArray) {
@@ -298,7 +298,7 @@ export function isAllZeros(maxes) {
 
 /**
  * Generic smallest box
- * @returns {object}
+ * @returns {Object}
  */
 export function maxesMinBounds() {
 	return {
@@ -311,7 +311,7 @@ export function maxesMinBounds() {
 
 /**
  * Generic largest box
- * @returns {object}
+ * @returns {Object}
  */
 export function maxesMaxBounds() {
 	return {

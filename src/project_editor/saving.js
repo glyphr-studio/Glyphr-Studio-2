@@ -1,13 +1,12 @@
-
 // --------------------------------------------------------------
 // File Saver
 // --------------------------------------------------------------
 
 /**
  * Saves a file
- * @param {string} fileName - name for the saved file
- * @param {string} buffer - data for the file
- * @param {string} fileType - file suffix
+ * @param {String} fileName - name for the saved file
+ * @param {String} buffer - data for the file
+ * @param {String} fileType - file suffix
  */
 export function saveFile(fileName, buffer, fileType) {
 	fileType = fileType || 'text/plain;charset=utf-8';
@@ -35,7 +34,7 @@ export function saveFile(fileName, buffer, fileType) {
 
 /**
  * Generates a date suffix for file saves
- * @returns {string}
+ * @returns {String}
  */
 export function makeDateStampSuffix() {
 	const d = new Date();
@@ -55,7 +54,7 @@ export function makeDateStampSuffix() {
 
 /**
  * Wrapper for window.localStorage.setItem
- * @param {string} key - storage key
+ * @param {String} key - storage key
  * @param {*} value - what to save
  */
 export function localStorageSet(key, value) {
@@ -69,7 +68,7 @@ export function localStorageSet(key, value) {
 
 /**
  * Wrapper for window.localStorage.getItem
- * @param {string} key - key to look for
+ * @param {String} key - key to look for
  * @returns {*}
  */
 export function localStorageGet(key) {
