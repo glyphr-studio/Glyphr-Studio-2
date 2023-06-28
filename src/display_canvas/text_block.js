@@ -145,8 +145,8 @@ export class TextBlock {
 	}
 
 	drawCanvasMaxes(ctx) {
-		log(`TextBlock.drawCanvasMaxes`, 'start');
-		log(this.canvasMaxes);
+		// log(`TextBlock.drawCanvasMaxes`, 'start');
+		// log(this.canvasMaxes);
 		ctx.fillStyle = 'transparent';
 		ctx.strokeStyle = 'lime';
 		ctx.lineWidth = 1;
@@ -156,7 +156,7 @@ export class TextBlock {
 			this.canvasMaxes.width,
 			this.canvasMaxes.height
 		);
-		log(`TextBlock.drawCanvasMaxes`, 'end');
+		// log(`TextBlock.drawCanvasMaxes`, 'end');
 	}
 
 	/**
@@ -166,7 +166,7 @@ export class TextBlock {
 	 * @returns nothing
 	 */
 	generateData() {
-		log('TextBlock.generateData', 'start');
+		// log('TextBlock.generateData', 'start');
 		const project = getCurrentProject();
 
 		/*
@@ -195,18 +195,18 @@ export class TextBlock {
 		this.data = [];
 		this.textBlocks = this.characterString.split('\n');
 
-		log('========================== LOOP 1: CALCULATING WIDTHS');
-		log(`this.textBlocks.length: ${this.textBlocks.length}`);
+		// log('========================== LOOP 1: CALCULATING WIDTHS');
+		// log(`this.textBlocks.length: ${this.textBlocks.length}`);
 
 		for (textBlockNumber = 0; textBlockNumber < this.textBlocks.length; textBlockNumber++) {
-			log(`================ START textBlockNumber: ${textBlockNumber}`);
+			// log(`================ START textBlockNumber: ${textBlockNumber}`);
 
 			currentBlock = findAndMergeLigatures(this.textBlocks[textBlockNumber].split(''));
 			this.data[textBlockNumber] = [];
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
 				currentChar = currentBlock[charNumber];
-				log(`==== char: ${charNumber} ${currentChar}`);
+				// log(`==== char: ${charNumber} ${currentChar}`);
 				if (currentChar.startsWith('liga-')) {
 					thisGlyph = project.ligatures[currentChar];
 					currentChar = thisGlyph.chars;
@@ -236,7 +236,7 @@ export class TextBlock {
 					lineNumber: false,
 				};
 			}
-			log(`================ END textBlockNumber ${textBlockNumber}`);
+			// log(`================ END textBlockNumber ${textBlockNumber}`);
 		}
 
 		/*
@@ -258,10 +258,10 @@ export class TextBlock {
 		let checkForBreak = false;
 
 		const scale = this.fontSize / project.totalVertical;
-		log(`scale: ${scale}`);
+		// log(`scale: ${scale}`);
 
 		const ascent = project.settings.font.ascent;
-		log(`ascent: ${ascent}`);
+		// log(`ascent: ${ascent}`);
 
 		//Convert area properties to project / UPM scales
 		const upmMaxes = {
@@ -272,20 +272,20 @@ export class TextBlock {
 			xMin: this.canvasMaxes.xMin / scale,
 		};
 
-		log(`upmMaxes`);
-		log(upmMaxes);
+		// log(`upmMaxes`);
+		// log(upmMaxes);
 
-		log('========================== LOOP 2: CALCULATING DATA PER CHAR');
+		// log('========================== LOOP 2: CALCULATING DATA PER CHAR');
 		currentX = upmMaxes.xMin;
 		currentBaselineY = upmMaxes.yMin + ascent;
 		for (textBlockNumber = 0; textBlockNumber < this.data.length; textBlockNumber++) {
 			currentBlock = this.data[textBlockNumber];
-			log(`================ START textBlockNumber: ${textBlockNumber}`);
+			// log(`================ START textBlockNumber: ${textBlockNumber}`);
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
 				charData = currentBlock[charNumber];
-				log(`charNumber: ${charNumber} - |${charData.char}|`);
-				log(charData);
+				// log(`charNumber: ${charNumber} - |${charData.char}|`);
+				// log(charData);
 
 				if (charData.view === false) {
 					// position for this charData hasn't been calculated
@@ -296,38 +296,38 @@ export class TextBlock {
 							nextLineBreak.widths.advance -
 							charData.widths.aggregate;
 
-						log(`Checking for word length and right side of area`);
-						log(`currentX: ${currentX}`);
-						log(`wordAggregate: ${wordAggregate}`);
-						log(`... is it larger than ...`);
-						log(`upmMaxes.width: ${upmMaxes.width}`);
+						// log(`Checking for word length and right side of area`);
+						// log(`currentX: ${currentX}`);
+						// log(`wordAggregate: ${wordAggregate}`);
+						// log(`... is it larger than ...`);
+						// log(`upmMaxes.width: ${upmMaxes.width}`);
 
 						if (currentX + wordAggregate > upmMaxes.width) {
 							// word takes up too much horizontal space
 							// increment the line, and do a vertical space check
-							log(`word does not fit on the current line...`);
+							// log(`word does not fit on the current line...`);
 
 							currentLine++;
 
-							log(`Checking for next line height against height of area`);
-							log(`currentBaselineY: ${currentBaselineY}`);
-							log(`upmMaxes.lineHeight: ${upmMaxes.lineHeight}`);
-							log(`... is larger than...`);
-							log(`upmMaxes.yMax: ${upmMaxes.yMax}`);
+							// log(`Checking for next line height against height of area`);
+							// log(`currentBaselineY: ${currentBaselineY}`);
+							// log(`upmMaxes.lineHeight: ${upmMaxes.lineHeight}`);
+							// log(`... is larger than...`);
+							// log(`upmMaxes.yMax: ${upmMaxes.yMax}`);
 
 							if (currentBaselineY + upmMaxes.lineHeight > upmMaxes.yMax) {
 								// text takes up too much vertical space
 								// returning early will leave non-computed chars.isVisible = false
-								log('Vertical Max Reached');
-								log('TextBlock.generateData', 'end');
+								// log('Vertical Max Reached');
+								// log('TextBlock.generateData', 'end');
 								return;
 							} else {
 								// more vertical space exists for the next line
-								log(`more vertical space for next line`);
+								// log(`more vertical space for next line`);
 								currentX = upmMaxes.xMin;
 								// currentX = 0;
 								currentBaselineY = upmMaxes.yMin + ascent + currentLine * upmMaxes.lineHeight;
-								log(`currentBaselineY: ${currentBaselineY}`);
+								// log(`currentBaselineY: ${currentBaselineY}`);
 							}
 						}
 
@@ -350,29 +350,29 @@ export class TextBlock {
 			// End of one block
 			currentLine++;
 
-			log(`== Checking at end of block to see if there is room for the next line`);
+			// log(`== Checking at end of block to see if there is room for the next line`);
 
-			log(`currentBaselineY: ${currentBaselineY}`);
-			log(`upmMaxes.lineHeight: ${upmMaxes.lineHeight}`);
-			log(`upmMaxes.yMax: ${upmMaxes.yMax}`);
+			// log(`currentBaselineY: ${currentBaselineY}`);
+			// log(`upmMaxes.lineHeight: ${upmMaxes.lineHeight}`);
+			// log(`upmMaxes.yMax: ${upmMaxes.yMax}`);
 
 			if (currentBaselineY + upmMaxes.lineHeight > upmMaxes.yMax) {
 				// text takes up too much vertical space
 				// returning early will leave non-computed chars.isVisible = false
-				log(`Vertical Max Reached @ End Of Block ${textBlockNumber}`);
-				log('TextBlock.generateData', 'end');
+				// log(`Vertical Max Reached @ End Of Block ${textBlockNumber}`);
+				// log('TextBlock.generateData', 'end');
 				return;
 			}
 
 			currentX = upmMaxes.xMin;
 			// currentX = 0;
 			currentBaselineY = upmMaxes.yMin + ascent + currentLine * upmMaxes.lineHeight;
-			log(`================ END textBlockNumber: ${textBlockNumber}`);
+			// log(`================ END textBlockNumber: ${textBlockNumber}`);
 		}
 
-		log('after view calc this.data');
-		log(this.data);
-		log('TextBlock.generateData', 'end');
+		// log('after view calc this.data');
+		// log(this.data);
+		// log('TextBlock.generateData', 'end');
 	}
 }
 

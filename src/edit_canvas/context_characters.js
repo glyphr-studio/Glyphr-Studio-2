@@ -1,6 +1,12 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import { charToHex, charsToHexArray } from '../common/character_ids';
-import { accentColors, getColorFromRGBA, shiftColor, transparencyToAlpha } from '../common/colors';
+import {
+	accentColors,
+	getColorFromRGBA,
+	shiftColor,
+	transparencyToAlpha,
+	uiColors,
+} from '../common/colors';
 import { json, makeCrisp, round } from '../common/functions';
 import {
 	TextBlock,
@@ -10,7 +16,7 @@ import {
 import { drawGlyph } from '../display_canvas/draw_paths';
 import { Maxes } from '../project_data/maxes';
 import { setCursor } from './cursors';
-import { sYcY } from './edit_canvas';
+import { cXsX, drawEmVerticalLine, sYcY } from './edit_canvas';
 
 const contextCharacters = {
 	ctx: false,
@@ -44,7 +50,9 @@ export function drawContextCharacters(ctx) {
 	clearCanvasHotspots(ctx);
 
 	if (split.left) {
-		let leftDistance = getTextBlockAdvanceWidth(split.left);
+		let leftDistance = getItemStringAdvanceWidth(split.left);
+		log(`leftDistance: ${leftDistance}`);
+
 		leftDistance += calculateKernOffset(
 			split.left.charAt(split.left.length - 1),
 			contextCharacters.currentGlyphChar
@@ -139,32 +147,47 @@ function splitContextCharacterString(splitChar) {
 
 /**
  * Finds the advance width of a Text Block string
- * @param {Object} block - Text Block object
+ * @param {Object} textString - Text Block object
  * @returns {Number} width in Em units
  */
-function getTextBlockAdvanceWidth(block) {
+function getItemStringAdvanceWidth(textString) {
+	// log(`getItemStringAdvanceWidth`, 'start');
+	// log(`textString: ${textString}`);
+
 	let advanceWidth = 0;
-	block = findAndMergeLigatures(block.split(''));
+	textString = findAndMergeLigatures(textString.split(''));
+	// log(textString);
 	const project = getCurrentProject();
-	let glyph;
+	let item;
 	let itemID;
-	block.forEach(function (v, i, a) {
+	textString.forEach(function (v, i, a) {
 		itemID = project.getItemID(v);
-		glyph = project.getItem(itemID);
-		if (glyph) {
-			advanceWidth += glyph.advanceWidth;
-			if (a[i + 1]) advanceWidth += calculateKernOffset(v, a[i + 1]);
+		// log(`itemID: ${itemID}`);
+		item = project.getItem(itemID);
+		// log(item);
+		if (item) {
+			advanceWidth += item.advanceWidth;
+			// log(`just item advanceWidth: ${advanceWidth}`);
+
+			if (a[i + 1]) {
+				// log(`Next item found:`);
+				// log(a[i + 1]);
+				advanceWidth += calculateKernOffset(v, a[i + 1]);
+				// log(`+= kern for next advanceWidth: ${advanceWidth}`);
+			}
 		} else {
 			advanceWidth += getCurrentProject().defaultAdvanceWidth;
 		}
 	});
 
+	// log(`returning advanceWidth: ${advanceWidth}`);
+
+	// log(`getItemStringAdvanceWidth`, 'end');
 	return advanceWidth;
 }
 
 /**
  * Draws the Guide Lines and Labels ("Extras") for the left half
- * @param {Object} ctx - Edit canvas context
  * @param {Object} char - Individual character from a text block
  * @param {TextBlock} block - text block to draw
  */
@@ -178,6 +201,15 @@ function drawContextCharacterLeftLineExtras(char, block) {
 	const color = getColorFromRGBA('rgb(204,81,0)', alpha);
 	drawVerticalLine(char.view.dx * char.view.dz, contextCharacters.ctx, color);
 
+	// Baseline
+	drawBaseline(
+		contextCharacters.ctx,
+		char.view.dx,
+		char.view.dy,
+		char.widths.advance * char.view.dz
+	);
+
+	// Kern data
 	let kern = calculateKernOffset(
 		block.characterString.charAt(block.characterString.length - 1),
 		selectedItem.char
@@ -197,13 +229,21 @@ function drawContextCharacterLeftLineExtras(char, block) {
 
 /**
  * Draws the Guide Lines and Labels ("Extras") for the right half
- * @param {Object} ctx - Edit canvas context
  * @param {Object} char - Individual character from a text block
  */
 function drawContextCharacterRightLineExtras(char) {
 	const selectedItem = getCurrentProjectEditor().selectedItem;
 	const kern = calculateKernOffset(selectedItem.char, char.char);
 
+	// Baseline
+	drawBaseline(
+		contextCharacters.ctx,
+		char.view.dx,
+		char.view.dy,
+		char.widths.advance * char.view.dz
+	);
+
+	// Kern data
 	if (kern) {
 		const v = getCurrentProjectEditor().view;
 		let rightX = selectedItem.advanceWidth;
@@ -213,48 +253,55 @@ function drawContextCharacterRightLineExtras(char) {
 		drawCharacterKernExtra(contextCharacters.ctx, kern, rightX, textY, v.dz);
 	}
 }
+
+function drawBaseline(ctx, x, y, width) {
+	ctx.fillStyle = accentColors.gray.l90;
+	ctx.fillRect(x, Math.ceil(y), width, 1);
+}
+
 /**
- * Draws the Guide Lines and Labels ("Extras") for the center character
- * @param {Object} ctx - Edit canvas context
+ * Draws the Guide Lines and Labels ("Extras") for each text block character
  * @param {Object} char - Individual character from a text block
  */
 function drawContextCharacterExtras(char) {
-	// log('drawContextCharacterExtras', 'start');
-
-	// log(`${char.char}
-	//  width \t ${char.width}
-	//  aggregate \t ${char.aggregate}
-	//  isLineBreaker \t ${char.isLineBreaker}
-	//  view \t ${json(char.view, true)}
-	//  line \t ${char.lineNumber}
-	// \n`);
-	// log(char.glyph);
+	log('drawContextCharacterExtras', 'start');
+	log(char);
 
 	const ps = getCurrentProject().settings.app;
 	const alpha = transparencyToAlpha(ps.guides.system.transparency);
 
 	if (ps.contextCharacters.showGuides && alpha) {
 		const editor = getCurrentProjectEditor();
-		const view = editor.view;
-		const advanceWidth = char.width * view.dz;
-		const currentX = char.view.dx * view.dz;
+		const view = char.view;
+		const advanceWidth = char.widths.advance * view.dz;
+		const currentX = char.view.dx; // * view.dz;
 		const rightX = currentX + advanceWidth;
-		const color = getColorFromRGBA('rgb(204,81,0)', alpha);
+		// const color = getColorFromRGBA('rgb(204,81,0)', alpha);
+		const color = 'rgb(204,81,0)';
 		const textY = sYcY(getCurrentProject().settings.font.descent - 60);
 
 		// Draw the glyph name
+		log(`drawing name`);
 		let name = char.glyph ? char.glyph.name : editor.getItemName(charsToHexArray(char.char));
 		name = name.replace(/latin /i, '');
+		log(`name: ${name}`);
 		drawCharacterNameExtra(name, currentX, textY, advanceWidth, color, char.char);
 
 		// Draw vertical lines
-		drawVerticalLine(rightX, contextCharacters.ctx, color);
+		log(`drawing vertical right x line`);
+		contextCharacters.ctx.fillStyle = color;
+		drawEmVerticalLine(contextCharacters.ctx, cXsX(rightX), editor.view, false);
+		drawEmVerticalLine(contextCharacters.ctx, cXsX(currentX), editor.view, true);
 
 		// Draw kern notation
-		if (char.kern) drawCharacterKernExtra(contextCharacters.ctx, char.kern, rightX, textY, view.dz);
+
+		if (char.kern) {
+			log(`drawing kern data`);
+			drawCharacterKernExtra(contextCharacters.ctx, char.kern, rightX, textY, view.dz);
+		}
 	}
 
-	// log('drawContextCharacterExtras', 'end');
+	log('drawContextCharacterExtras', 'end');
 }
 
 /**
@@ -268,16 +315,25 @@ function drawContextCharacterExtras(char) {
  * @param {Boolean} registerHotspot - register a hotspot for this name?
  */
 function drawCharacterNameExtra(text, currentX, topY, advanceWidth, color, registerHotspot) {
-	// log('drawCharacterNameExtra', 'start');
-	// log(`${text} passed registerHotspot ${registerHotspot}`);
+	log('drawCharacterNameExtra', 'start');
+	log(`text: ${text}`);
+	log(`currentX: ${currentX}`);
+	log(`topY: ${topY}`);
+	log(`advanceWidth: ${advanceWidth}`);
+	log(`color: ${color}`);
+	log(`registerHotspot: ${registerHotspot}`);
+
 	const ctx = contextCharacters.ctx;
 	const textWidth = ctx.measureText(text).width;
 	const textX = currentX + (advanceWidth - textWidth) / 2; // center the glyph name
 	const textY = topY + 22;
+	log(`textX: ${textX}`);
+	log(`textY: ${textY}`);
+	log(`textWidth: ${textWidth}`);
 
 	ctx.font = '12px Tahoma, Verdana, sans-serif';
 
-	ctx.strokeStyle = 'white';
+	ctx.strokeStyle = uiColors.offWhite;
 	ctx.lineWidth = 10;
 	ctx.strokeText(text, textX, textY);
 
@@ -303,6 +359,7 @@ function drawCharacterNameExtra(text, currentX, topY, advanceWidth, color, regis
 			},
 		});
 	}
+	log('drawCharacterNameExtra', 'end');
 }
 
 /**
@@ -381,7 +438,9 @@ export function isHotspotHere(cx, cy) {
 
 	for (let i = 0; i < chs.length; i++) {
 		v = chs[i];
-		// log(`isHotspotHere - checking ${v.target.xMin} - ${v.target.xMax} - ${v.target.yMin} - ${v.target.yMax}`);
+		log(
+			`isHotspotHere - checking ${v.target.xMin} - ${v.target.xMax} - ${v.target.yMin} - ${v.target.yMax}`
+		);
 		// log(`results ${(cx <= v.target.xMax)} - ${(cx >= v.target.xMin)} - ${(cy <= v.target.yMax)} - ${(cy >= v.target.yMin)}`);
 		if (cx <= v.target.xMax && cx >= v.target.xMin && cy <= v.target.yMax && cy >= v.target.yMin) {
 			return v;
@@ -427,7 +486,7 @@ function hotspotNavigateToItem(id) {
 	const str = contextCharacters.chars.substring(p1, p2);
 	// log(`substring from ${p1} to ${p2} yields ${str}`);
 
-	const delta = getTextBlockAdvanceWidth(str);
+	const delta = getItemStringAdvanceWidth(str);
 
 	// log(`advance width: ${delta} screen pixels: ${sXcX(delta)}`);
 	// v.dx += sXcX(delta);

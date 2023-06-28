@@ -263,7 +263,7 @@ export class EditCanvas extends HTMLElement {
 	}
 }
 
-function drawEmVerticalLine(ctx, emX = 0, view, roundUp = 'none') {
+export function drawEmVerticalLine(ctx, emX = 0, view, roundUp = 'none') {
 	// log(`drawEmVerticalLine`, 'start');
 	const project = getCurrentProject();
 	const lineTopY = sYcY(project.settings.font.ascent, view);
