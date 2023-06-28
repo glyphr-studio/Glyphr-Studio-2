@@ -72,6 +72,7 @@ export function drawContextCharacters(ctx) {
 			characterString: split.left,
 			fontSize: v.dz * project.totalVertical,
 			canvasMaxes: leftMaxes,
+			rounding: false,
 			drawLineExtras: drawContextCharacterLeftLineExtras,
 			drawCharacterExtras: drawContextCharacterExtras,
 			drawCharacter: drawSingleContextCharacter,
@@ -105,6 +106,7 @@ export function drawContextCharacters(ctx) {
 			characterString: split.right,
 			fontSize: v.dz * project.totalVertical,
 			canvasMaxes: rightMaxes,
+			rounding: true,
 			drawLineExtras: drawContextCharacterRightLineExtras,
 			drawCharacterExtras: drawContextCharacterExtras,
 			drawCharacter: drawSingleContextCharacter,
@@ -201,14 +203,6 @@ function drawContextCharacterLeftLineExtras(char, block) {
 	const color = getColorFromRGBA('rgb(204,81,0)', alpha);
 	drawVerticalLine(char.view.dx * char.view.dz, contextCharacters.ctx, color);
 
-	// Baseline
-	drawBaseline(
-		contextCharacters.ctx,
-		char.view.dx,
-		char.view.dy,
-		char.widths.advance * char.view.dz
-	);
-
 	// Kern data
 	let kern = calculateKernOffset(
 		block.characterString.charAt(block.characterString.length - 1),
@@ -235,14 +229,6 @@ function drawContextCharacterRightLineExtras(char) {
 	const selectedItem = getCurrentProjectEditor().selectedItem;
 	const kern = calculateKernOffset(selectedItem.char, char.char);
 
-	// Baseline
-	drawBaseline(
-		contextCharacters.ctx,
-		char.view.dx,
-		char.view.dy,
-		char.widths.advance * char.view.dz
-	);
-
 	// Kern data
 	if (kern) {
 		const v = getCurrentProjectEditor().view;
@@ -263,7 +249,7 @@ function drawBaseline(ctx, x, y, width) {
  * Draws the Guide Lines and Labels ("Extras") for each text block character
  * @param {Object} char - Individual character from a text block
  */
-function drawContextCharacterExtras(char) {
+function drawContextCharacterExtras(char, rounding = 'none') {
 	log('drawContextCharacterExtras', 'start');
 	log(char);
 
@@ -280,6 +266,14 @@ function drawContextCharacterExtras(char) {
 		const color = 'rgb(204,81,0)';
 		const textY = sYcY(getCurrentProject().settings.font.descent - 60);
 
+		// Baseline
+		drawBaseline(
+			contextCharacters.ctx,
+			char.view.dx,
+			char.view.dy,
+			char.widths.advance * char.view.dz
+		);
+
 		// Draw the glyph name
 		log(`drawing name`);
 		let name = char.glyph ? char.glyph.name : editor.getItemName(charsToHexArray(char.char));
@@ -288,13 +282,12 @@ function drawContextCharacterExtras(char) {
 		drawCharacterNameExtra(name, currentX, textY, advanceWidth, color, char.char);
 
 		// Draw vertical lines
-		log(`drawing vertical right x line`);
+		log(`drawing vertical line`);
 		contextCharacters.ctx.fillStyle = color;
-		drawEmVerticalLine(contextCharacters.ctx, cXsX(rightX), editor.view, false);
-		drawEmVerticalLine(contextCharacters.ctx, cXsX(currentX), editor.view, true);
+		drawEmVerticalLine(contextCharacters.ctx, cXsX(rightX), editor.view, rounding);
+		drawEmVerticalLine(contextCharacters.ctx, cXsX(currentX), editor.view, rounding);
 
 		// Draw kern notation
-
 		if (char.kern) {
 			log(`drawing kern data`);
 			drawCharacterKernExtra(contextCharacters.ctx, char.kern, rightX, textY, view.dz);

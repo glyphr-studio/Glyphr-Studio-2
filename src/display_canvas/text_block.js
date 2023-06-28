@@ -31,6 +31,7 @@ export class TextBlock {
 		this.drawLineExtras = oa.drawLineExtras || false;
 		this.drawCharacterExtras = oa.drawCharacterExtras || false;
 		this.drawCharacter = oa.drawCharacter || false;
+		this.rounding = oa.rounding || false;
 
 		log(this);
 		// Initialize data
@@ -123,7 +124,7 @@ export class TextBlock {
 		if (this.drawCharacterExtras && showCharacterExtras) {
 			log('DRAW CHARACTER EXTRAS');
 			this.iterator((charData) => {
-				this.drawCharacterExtras(charData);
+				this.drawCharacterExtras(charData, this.rounding);
 			});
 		}
 
