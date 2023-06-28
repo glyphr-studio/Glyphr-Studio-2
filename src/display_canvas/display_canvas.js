@@ -1,5 +1,5 @@
 import { makeElement } from '../common/dom.js';
-import { CharacterSequence } from './character_sequence.js';
+import { TextBlock } from './text_block.js';
 import { getCurrentProject } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { drawGlyph } from './draw_paths.js';
@@ -35,7 +35,7 @@ export class DisplayCanvas extends HTMLElement {
 		displayCanvas.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		displayCanvas.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
 
-		displayCanvas.characterSequence = false;
+		displayCanvas.textBlock = false;
 
 		this.showPageExtras = attributes.showPageExtras || livePreviewOptions.showPageExtras;
 		this.showLineExtras = attributes.showLineExtras || livePreviewOptions.showLineExtras;
@@ -54,7 +54,7 @@ export class DisplayCanvas extends HTMLElement {
 		displayCanvas.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(displayCanvas.canvas);
 		// livePreviewPageWindowResize();
-		this.updateCharacterSequence();
+		this.updateTextBlock();
 		displayCanvas.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
 		displayCanvas.canvas.height = displayCanvas.height;
 		displayCanvas.canvas.width = displayCanvas.width;
@@ -64,11 +64,11 @@ export class DisplayCanvas extends HTMLElement {
 		log(`DisplayCanvas.constructor`, 'end');
 	}
 
-	updateCharacterSequence() {
-		log(`DisplayCanvas.updateCharacterSequence`, 'start');
+	updateTextBlock() {
+		log(`DisplayCanvas.updateTextBlock`, 'start');
 		log(`displayCanvas.width: ${displayCanvas.width}`);
 		log(`displayCanvas.height: ${displayCanvas.height}`);
-		displayCanvas.characterSequence = new CharacterSequence({
+		displayCanvas.textBlock = new TextBlock({
 			characterString: displayCanvas.text,
 			fontSize: displayCanvas.fontSize,
 			canvasMaxes: this.calculatePageMaxes(),
@@ -78,7 +78,7 @@ export class DisplayCanvas extends HTMLElement {
 			drawCharacterExtras: drawDisplayCharacterExtras,
 			drawCharacter: drawDisplayCharacter,
 		});
-		log(`DisplayCanvas.updateCharacterSequence`, 'end');
+		log(`DisplayCanvas.updateTextBlock`, 'end');
 	}
 
 	calculatePageMaxes() {
@@ -178,7 +178,7 @@ export class DisplayCanvas extends HTMLElement {
 				break;
 		}
 
-		this.updateCharacterSequence();
+		this.updateTextBlock();
 		this.redraw();
 
 		log(`DisplayCanvas.attributeChangeCallback`, 'end');
@@ -197,7 +197,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		displayCanvas.ctx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
 
-		displayCanvas.characterSequence.draw({
+		displayCanvas.textBlock.draw({
 			showPageExtras: this.showPageExtras,
 			showLineExtras: this.showLineExtras,
 			showCharacterExtras: this.showCharacterExtras,
@@ -208,7 +208,7 @@ export class DisplayCanvas extends HTMLElement {
 	}
 
 	iterator(drawFunction) {
-		const data = displayCanvas.characterSequence.data;
+		const data = displayCanvas.textBlock.data;
 		for (let block = 0; block < data.length; block++) {
 			for (let glyph = 0; glyph < data[block].length; glyph++) {
 				drawFunction(data[block][glyph], this);
@@ -250,8 +250,8 @@ function drawDisplayLineExtras(charData) {
 	log(`displayCanvas.drawDisplayLineExtras`, 'start');
 	displayCanvas.ctx.strokeStyle = accentColors.gray.l85;
 	displayCanvas.ctx.beginPath();
-	displayCanvas.ctx.moveTo(displayCanvas.characterSequence.canvasMaxes.xMin, charData.view.dy);
-	displayCanvas.ctx.lineTo(displayCanvas.characterSequence.canvasMaxes.xMax, charData.view.dy);
+	displayCanvas.ctx.moveTo(displayCanvas.textBlock.canvasMaxes.xMin, charData.view.dy);
+	displayCanvas.ctx.lineTo(displayCanvas.textBlock.canvasMaxes.xMax, charData.view.dy);
 	displayCanvas.ctx.closePath();
 	displayCanvas.ctx.stroke();
 	log(`displayCanvas.drawDisplayLineExtras`, 'end');
