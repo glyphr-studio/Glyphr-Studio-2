@@ -35,7 +35,7 @@ export class GlyphrStudioProject {
 				maxCombinePathsOnExport: 30,
 				guides: {
 					system: {
-						transparency: 90,
+						transparency: 10,
 						showBaseline: true,
 						showLeftSide: true,
 						showRightSide: true,
@@ -43,9 +43,9 @@ export class GlyphrStudioProject {
 				},
 				contextCharacters: {
 					showCharacters: false,
-					characterTransparency: 90,
+					characterTransparency: 10,
 					showGuides: true,
-					guidesTransparency: 90,
+					guidesTransparency: 10,
 				},
 			},
 			font: {
@@ -246,7 +246,7 @@ export class GlyphrStudioProject {
 	 */
 	getItemID(chars) {
 		if (chars.length === 1) {
-			return this.getItem(`glyph-${charsToHexArray(chars)[0]}`);
+			return `glyph-${charsToHexArray(chars)[0]}`;
 		} else {
 			for (let id of Object.keys(this.ligatures)) {
 				let lig = this.ligatures[id];
