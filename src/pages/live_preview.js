@@ -30,7 +30,7 @@ export function makePage_LivePreview() {
 			</div>
 			<div class="live-preview-page__canvas-wrapper">
 				<display-canvas id="live-preview-page__canvas"
-					glyphs="${livePreviewOptions.characterString}"
+					text="${livePreviewOptions.text}"
 					font-size="${livePreviewOptions.fontSize}"
 					line-gap="${livePreviewOptions.lineGap}"
 					page-padding="${livePreviewOptions.pagePadding}"
