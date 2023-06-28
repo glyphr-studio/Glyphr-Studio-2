@@ -8,6 +8,7 @@ import {
 	findAndMergeLigatures,
 } from '../display_canvas/character_sequence';
 import { drawGlyph } from '../display_canvas/draw_paths';
+import { Maxes } from '../project_data/maxes';
 import { setCursor } from './cursors';
 import { sYcY } from './edit_canvas';
 
@@ -27,7 +28,8 @@ const contextCharacters = {
 export function drawContextCharacters(ctx) {
 	log('drawContextCharacters', 'start');
 	const editor = getCurrentProjectEditor();
-	const totalVertical = getCurrentProject().totalVertical;
+	const project = getCurrentProject();
+	const ascent = project.settings.font.ascent;
 	contextCharacters.ctx = ctx;
 	contextCharacters.currentGlyphChar = editor.selectedItem.char;
 	contextCharacters.chars = editor.selectedItem.contextCharacters;
@@ -47,16 +49,21 @@ export function drawContextCharacters(ctx) {
 			split.left.charAt(split.left.length - 1),
 			contextCharacters.currentGlyphChar
 		);
-
 		log(`leftDistance: ${leftDistance}`);
+
+		let leftMaxes = new Maxes({
+			xMin: v.dx - leftDistance * v.dz,
+			xMax: v.dx,
+			yMin: v.dy - ascent * v.dz,
+			yMax: v.dy,
+		});
+		log(`Left canvas Maxes`);
+		log(leftMaxes.print());
 
 		contextCharacters.leftSequence = new CharacterSequence({
 			characterString: split.left,
-			fontSize: v.dz * totalVertical,
-			areaMaxes: {
-				xMin: v.dx - leftDistance * v.dz,
-				yMin: v.dy,
-			},
+			fontSize: v.dz * project.totalVertical,
+			canvasMaxes: leftMaxes,
 			drawLineExtras: drawContextCharacterLeftLineExtras,
 			drawCharacterExtras: drawContextCharacterExtras,
 			drawCharacter: drawSingleContextCharacter,
@@ -68,21 +75,28 @@ export function drawContextCharacters(ctx) {
 			showCharacterExtras: true,
 			showCharacter: true,
 		});
+
+		// contextCharacters.leftSequence.drawCanvasMaxes(contextCharacters.ctx);
 	}
 
 	if (split.right) {
 		let rightDistance = editor.selectedItem.advanceWidth;
 		rightDistance += calculateKernOffset(contextCharacters.currentGlyphChar, split.right.charAt(0));
-
 		log(`rightDistance: ${rightDistance}`);
+
+		let rightMaxes = new Maxes({
+			xMin: v.dx + rightDistance * v.dz,
+			xMax: Number.MAX_SAFE_INTEGER,
+			yMin: v.dy - ascent * v.dz,
+			yMax: v.dy,
+		});
+		log(`Right canvas Maxes`);
+		log(rightMaxes.print());
 
 		contextCharacters.rightSequence = new CharacterSequence({
 			characterString: split.right,
-			fontSize: v.dz * totalVertical,
-			areaMaxes: {
-				xMin: v.dx + rightDistance * v.dz,
-				yMin: v.dy,
-			},
+			fontSize: v.dz * project.totalVertical,
+			canvasMaxes: rightMaxes,
 			drawLineExtras: drawContextCharacterRightLineExtras,
 			drawCharacterExtras: drawContextCharacterExtras,
 			drawCharacter: drawSingleContextCharacter,
@@ -94,6 +108,8 @@ export function drawContextCharacters(ctx) {
 			showCharacterExtras: true,
 			showCharacter: true,
 		});
+
+		// contextCharacters.rightSequence.drawCanvasMaxes(contextCharacters.ctx);
 	}
 
 	log('drawContextCharacters', 'end');
@@ -335,14 +351,12 @@ export function drawCharacterKernExtra(ctx, kern, rightX, topY, scale) {
 function drawSingleContextCharacter(charData) {
 	log('drawSingleContextCharacter', 'start');
 	log(charData);
-	const v = getCurrentProjectEditor().view;
-	const c = charData.view;
 
 	if (charData.isVisible && charData.glyph) {
 		drawGlyph(
 			charData.glyph,
 			contextCharacters.ctx,
-			{ dx: c.dx * c.dz, dy: v.dy, dz: c.dz },
+			charData.view,
 			transparencyToAlpha(getCurrentProject().settings.app.contextGlyphTransparency)
 		);
 	}

@@ -9,11 +9,11 @@ import { addAsChildren, makeElement } from '../common/dom';
 import { makeDirectCheckbox, makeSingleCheckbox, makeSingleInput, makeSingleLabel } from './cards';
 
 export let livePreviewOptions = {
-	characterString: 'A B C',
+	text: 'A B C',
 	fontSize: 48,
 	lineGap: 12,
 	pagePadding: 10,
-	showGlyphExtras: false,
+	showCharacterExtras: false,
 	showLineExtras: false,
 	showPageExtras: false,
 };
@@ -85,14 +85,14 @@ function makeButton(text, chars = false) {
 	return button;
 }
 
-function updateDisplayCanvasGlyphs(characterString) {
+function updateDisplayCanvasGlyphs(text) {
 	const glyphsInput = document.getElementById('livePreviewGlyphsInput');
 	if (glyphsInput) {
-		glyphsInput.innerHTML = characterString;
+		glyphsInput.innerHTML = text;
 	}
 	let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 	if (displayCanvas) {
-		displayCanvas.setAttribute('glyphs', characterString);
+		displayCanvas.setAttribute('text', text);
 	}
 }
 
@@ -174,14 +174,14 @@ function makeLivePreviewOptions() {
 	let glyphsInput = makeElement({
 		tag: 'textarea',
 		id: 'livePreviewGlyphsInput',
-		innerHTML: livePreviewOptions.characterString,
+		innerHTML: livePreviewOptions.text,
 	});
-	// glyphsInput.setAttribute('value', livePreviewOptions.characterString);
+	// glyphsInput.setAttribute('value', livePreviewOptions.text);
 	glyphsInput.addEventListener('keyup', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
-		livePreviewOptions.characterString = newValue;
-		displayCanvas.setAttribute('glyphs', newValue);
+		livePreviewOptions.text = newValue;
+		displayCanvas.setAttribute('text', newValue);
 	});
 
 	let fontSizeLabel = makeSingleLabel('Font size:');
@@ -209,11 +209,15 @@ function makeLivePreviewOptions() {
 
 function makeShowOptions() {
 	let glyphOutlineLabel = makeSingleLabel('Glyph bounding box:');
-	let glyphOutlineToggle = makeDirectCheckbox(livePreviewOptions, 'showGlyphExtras', (newValue) => {
-		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		displayCanvas.showGlyphExtras = newValue;
-		displayCanvas.redraw();
-	});
+	let glyphOutlineToggle = makeDirectCheckbox(
+		livePreviewOptions,
+		'showCharacterExtras',
+		(newValue) => {
+			let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+			displayCanvas.showCharacterExtras = newValue;
+			displayCanvas.redraw();
+		}
+	);
 
 	let baselineLabel = makeSingleLabel('Baselines:');
 	let baselineToggle = makeDirectCheckbox(livePreviewOptions, 'showLineExtras', (newValue) => {
@@ -242,7 +246,7 @@ function makeShowOptions() {
 	const fontSettings = getCurrentProject().settings.font;
 	const lineGap = fontSettings.lineGap;
 	let padSize = 20;
-	let showGlyphExtras = false;
+	let showCharacterExtras = false;
 	let showLineExtras = false;
 	let showPageExtras = false;
 	let combineGlyphShapes = false;
@@ -261,8 +265,8 @@ function makeShowOptions() {
 		'" onchange="changeLineGap(this.value); redraw_TestDrive();"></td></tr>';
 	// content += '<tr><td> glyph spacing <span class="unit">(em units)</span> </td><td><input type="number" value="'+padSize+'" onchange="padSize=this.value*1; redraw_TestDrive();"></td></tr>';
 	content +=
-		'<tr><td> <label for="showGlyphExtras">show glyph boxes</label> </td><td>' +
-		checkUI('showGlyphExtras', showGlyphExtras, true) +
+		'<tr><td> <label for="showCharacterExtras">show glyph boxes</label> </td><td>' +
+		checkUI('showCharacterExtras', showCharacterExtras, true) +
 		'</td></tr>';
 	content +=
 		'<tr><td> <label for="showLineExtras">show baseline</label> </td><td>' +

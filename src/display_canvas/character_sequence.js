@@ -29,11 +29,9 @@ export class CharacterSequence {
 		this.characterString = oa.characterString;
 		this.fontSize = oa.fontSize;
 		this.lineGap = oa.lineGap;
-		this.areaMaxes = oa.areaMaxes;
-		this.pagePadding = oa.pagePadding;
+		this.canvasMaxes = oa.canvasMaxes;
 
 		// Drawing
-		this.ctx = oa.ctx;
 		this.drawPageExtras = oa.drawPageExtras || false;
 		this.drawLineExtras = oa.drawLineExtras || false;
 		this.drawCharacterExtras = oa.drawCharacterExtras || false;
@@ -50,18 +48,18 @@ export class CharacterSequence {
 	// Getters / Setters
 	// --------------------------------------------------------------
 
-	get areaMaxes() {
-		return this._areaMaxes;
+	get canvasMaxes() {
+		return this._canvasMaxes;
 	}
 
-	set areaMaxes(newMaxes = {}) {
-		this._areaMaxes = new Maxes({
+	set canvasMaxes(newMaxes = {}) {
+		this._canvasMaxes = new Maxes({
 			xMin: newMaxes.xMin || 0,
 			xMax: newMaxes.xMax || Infinity,
 			yMin: newMaxes.yMin || 0,
 			yMax: newMaxes.yMax || Infinity,
 		});
-		// log(`SET areaMaxes\n ${this.areaMaxes.print()}`);
+		// log(`SET canvasMaxes\n ${this.canvasMaxes.print()}`);
 	}
 
 	get fontSize() {
@@ -93,14 +91,6 @@ export class CharacterSequence {
 		// log(`this.characterString ${this.characterString}`);
 	}
 
-	get pagePadding() {
-		return this._pagePadding;
-	}
-
-	set pagePadding(padding) {
-		this._pagePadding = padding || 0;
-	}
-
 	draw({
 		showPageExtras = false,
 		showLineExtras = false,
@@ -108,9 +98,13 @@ export class CharacterSequence {
 		showCharacter = false,
 	} = {}) {
 		log(`CharacterSequence.draw`, 'start');
+		log(`showPageExtras: ${showPageExtras}`);
+		log(`showLineExtras: ${showLineExtras}`);
+		log(`showCharacterExtras: ${showCharacterExtras}`);
+		log(`showCharacter: ${showCharacter}`);
 
 		if (this.drawPageExtras && showPageExtras) {
-			// log(`DRAW PAGE EXTRAS`);
+			log(`DRAW PAGE EXTRAS`);
 			this.drawPageExtras();
 		}
 
@@ -122,7 +116,7 @@ export class CharacterSequence {
 
 		let currentLine = -1;
 		if (this.drawLineExtras && showLineExtras) {
-			// log('DRAW LINE EXTRAS');
+			log('DRAW LINE EXTRAS');
 			this.iterator((charData) => {
 				if (charData.lineNumber !== currentLine) {
 					this.drawLineExtras(charData, this);
@@ -132,14 +126,14 @@ export class CharacterSequence {
 		}
 
 		if (this.drawCharacterExtras && showCharacterExtras) {
-			// log('DRAW CHARACTER EXTRAS');
+			log('DRAW CHARACTER EXTRAS');
 			this.iterator((charData) => {
 				this.drawCharacterExtras(charData);
 			});
 		}
 
-		// log('DRAW CHARACTER');
 		if (this.drawCharacter && showCharacter) {
+			log('DRAW CHARACTER');
 			this.iterator((charData) => {
 				this.drawCharacter(charData);
 			});
@@ -153,6 +147,21 @@ export class CharacterSequence {
 				drawFunction(this.data[block][char], this);
 			}
 		}
+	}
+
+	drawCanvasMaxes(ctx) {
+		log(`CharacterSequence.drawCanvasMaxes`, 'start');
+		log(this.canvasMaxes);
+		ctx.fillStyle = 'transparent';
+		ctx.strokeStyle = 'lime';
+		ctx.lineWidth = 1;
+		ctx.strokeRect(
+			this.canvasMaxes.xMin,
+			this.canvasMaxes.yMin,
+			this.canvasMaxes.width,
+			this.canvasMaxes.height
+		);
+		log(`CharacterSequence.drawCanvasMaxes`, 'end');
 	}
 
 	/**
@@ -173,7 +182,7 @@ export class CharacterSequence {
 		 *		All the char data calculated here will
 		 *		be in Em units, except the final view
 		 *		which will calculate the size and
-		 *		position relative to the areaMaxes
+		 *		position relative to the canvasMaxes
 		 *	----------------------------------------
 		 *
 		 *
@@ -250,7 +259,7 @@ export class CharacterSequence {
 		let wordAggregate;
 		let currentLine = 0;
 		let currentX = 0;
-		let currentY = 0;
+		let currentBaselineY = 0;
 		let checkForBreak = false;
 
 		const scale = this.fontSize / project.totalVertical;
@@ -260,19 +269,20 @@ export class CharacterSequence {
 		log(`ascent: ${ascent}`);
 
 		//Convert area properties to project / UPM scales
-		const singleLineHeight = project.totalVertical + this.lineGap / scale;
-		log(`singleLineHeight: ${singleLineHeight}`);
+		const upmMaxes = {
+			lineHeight: project.totalVertical + this.lineGap / scale,
+			width: this.canvasMaxes.width / scale,
+			yMax: this.canvasMaxes.yMax / scale,
+			yMin: this.canvasMaxes.yMin / scale,
+			xMin: this.canvasMaxes.xMin / scale,
+		};
 
-		const scaleAreaWidth = this.areaMaxes.width / scale;
-		log(`scaleAreaWidth: ${scaleAreaWidth}`);
-
-		const scaleAreaYMax = this.areaMaxes.yMax / scale;
-		log(`scaleAreaYMax: ${scaleAreaYMax}`);
-
-		const scaleAreaXMin = this.areaMaxes.xMin / scale;
-		log(`scaleAreaXMin: ${scaleAreaXMin}`);
+		log(`upmMaxes`);
+		log(upmMaxes);
 
 		log('========================== LOOP 2: CALCULATING DATA PER CHAR');
+		currentX = upmMaxes.xMin;
+		currentBaselineY = upmMaxes.yMin + ascent;
 		for (textBlockNumber = 0; textBlockNumber < this.data.length; textBlockNumber++) {
 			currentBlock = this.data[textBlockNumber];
 			log(`================ START textBlockNumber: ${textBlockNumber}`);
@@ -284,7 +294,7 @@ export class CharacterSequence {
 
 				if (charData.view === false) {
 					// position for this charData hasn't been calculated
-					if (checkForBreak && Number.isFinite(scaleAreaWidth)) {
+					if (checkForBreak && Number.isFinite(upmMaxes.width)) {
 						nextLineBreak = getNextLineBreaker(currentBlock, charNumber);
 						wordAggregate =
 							nextLineBreak.widths.aggregate +
@@ -295,9 +305,9 @@ export class CharacterSequence {
 						log(`currentX: ${currentX}`);
 						log(`wordAggregate: ${wordAggregate}`);
 						log(`... is it larger than ...`);
-						log(`scaleAreaWidth: ${scaleAreaWidth}`);
+						log(`upmMaxes.width: ${upmMaxes.width}`);
 
-						if (currentX + wordAggregate > scaleAreaWidth) {
+						if (currentX + wordAggregate > upmMaxes.width) {
 							// word takes up too much horizontal space
 							// increment the line, and do a vertical space check
 							log(`word does not fit on the current line...`);
@@ -305,12 +315,12 @@ export class CharacterSequence {
 							currentLine++;
 
 							log(`Checking for next line height against height of area`);
-							log(`currentY: ${currentY}`);
-							log(`singleLineHeight: ${singleLineHeight}`);
+							log(`currentBaselineY: ${currentBaselineY}`);
+							log(`upmMaxes.lineHeight: ${upmMaxes.lineHeight}`);
 							log(`... is larger than...`);
-							log(`scaleAreaYMax: ${scaleAreaYMax}`);
+							log(`upmMaxes.yMax: ${upmMaxes.yMax}`);
 
-							if (currentY + singleLineHeight > scaleAreaYMax) {
+							if (currentBaselineY + upmMaxes.lineHeight > upmMaxes.yMax) {
 								// text takes up too much vertical space
 								// returning early will leave non-computed chars.isVisible = false
 								log('Vertical Max Reached');
@@ -319,9 +329,10 @@ export class CharacterSequence {
 							} else {
 								// more vertical space exists for the next line
 								log(`more vertical space for next line`);
-								currentX = 0;
-								currentY = currentLine * singleLineHeight;
-								log(`currentY: ${currentY}`);
+								currentX = upmMaxes.xMin;
+								// currentX = 0;
+								currentBaselineY = upmMaxes.yMin + ascent + currentLine * upmMaxes.lineHeight;
+								log(`currentBaselineY: ${currentBaselineY}`);
 							}
 						}
 
@@ -331,8 +342,8 @@ export class CharacterSequence {
 					charData.isVisible = true;
 					charData.lineNumber = currentLine;
 					charData.view = {
-						dx: scaleAreaXMin + currentX * scale,
-						dy: (currentY + ascent) * scale,
+						dx: currentX * scale,
+						dy: currentBaselineY * scale,
 						dz: scale,
 					};
 					currentX += charData.widths.advance + charData.widths.kern;
@@ -346,11 +357,11 @@ export class CharacterSequence {
 
 			log(`== Checking at end of block to see if there is room for the next line`);
 
-			log(`currentY: ${currentY}`);
-			log(`singleLineHeight: ${singleLineHeight}`);
-			log(`scaleAreaYMax: ${scaleAreaYMax}`);
+			log(`currentBaselineY: ${currentBaselineY}`);
+			log(`upmMaxes.lineHeight: ${upmMaxes.lineHeight}`);
+			log(`upmMaxes.yMax: ${upmMaxes.yMax}`);
 
-			if (currentY + singleLineHeight > scaleAreaYMax) {
+			if (currentBaselineY + upmMaxes.lineHeight > upmMaxes.yMax) {
 				// text takes up too much vertical space
 				// returning early will leave non-computed chars.isVisible = false
 				log(`Vertical Max Reached @ End Of Block ${textBlockNumber}`);
@@ -358,8 +369,9 @@ export class CharacterSequence {
 				return;
 			}
 
-			currentX = 0;
-			currentY = currentLine * singleLineHeight;
+			currentX = upmMaxes.xMin;
+			// currentX = 0;
+			currentBaselineY = upmMaxes.yMin + ascent + currentLine * upmMaxes.lineHeight;
 			log(`================ END textBlockNumber: ${textBlockNumber}`);
 		}
 
