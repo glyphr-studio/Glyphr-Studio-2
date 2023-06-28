@@ -3,10 +3,10 @@ import { charToHex, charsToHexArray } from '../common/character_ids';
 import { accentColors, getColorFromRGBA, shiftColor, transparencyToAlpha } from '../common/colors';
 import { json, makeCrisp, round } from '../common/functions';
 import {
-	CharacterSequence,
+	TextBlock,
 	calculateKernOffset,
 	findAndMergeLigatures,
-} from '../display_canvas/character_sequence';
+} from '../display_canvas/text_block';
 import { drawGlyph } from '../display_canvas/draw_paths';
 import { Maxes } from '../project_data/maxes';
 import { setCursor } from './cursors';
@@ -17,8 +17,8 @@ const contextCharacters = {
 	chars: '',
 	currentGlyphChar: '',
 	canvasHotSpots: [],
-	leftSequence: false,
-	rightSequence: false,
+	leftBlock: false,
+	rightBlock: false,
 };
 
 /**
@@ -44,7 +44,7 @@ export function drawContextCharacters(ctx) {
 	clearCanvasHotspots(ctx);
 
 	if (split.left) {
-		let leftDistance = getCharacterSequenceAdvanceWidth(split.left);
+		let leftDistance = getTextBlockAdvanceWidth(split.left);
 		leftDistance += calculateKernOffset(
 			split.left.charAt(split.left.length - 1),
 			contextCharacters.currentGlyphChar
@@ -60,7 +60,7 @@ export function drawContextCharacters(ctx) {
 		log(`Left canvas Maxes`);
 		log(leftMaxes.print());
 
-		contextCharacters.leftSequence = new CharacterSequence({
+		contextCharacters.leftBlock = new TextBlock({
 			characterString: split.left,
 			fontSize: v.dz * project.totalVertical,
 			canvasMaxes: leftMaxes,
@@ -68,15 +68,15 @@ export function drawContextCharacters(ctx) {
 			drawCharacterExtras: drawContextCharacterExtras,
 			drawCharacter: drawSingleContextCharacter,
 		});
-		log(contextCharacters.leftSequence);
-		contextCharacters.leftSequence.draw({
+		log(contextCharacters.leftBlock);
+		contextCharacters.leftBlock.draw({
 			showPageExtras: false,
 			showLineExtras: true,
 			showCharacterExtras: true,
 			showCharacter: true,
 		});
 
-		// contextCharacters.leftSequence.drawCanvasMaxes(contextCharacters.ctx);
+		// contextCharacters.leftBlock.drawCanvasMaxes(contextCharacters.ctx);
 	}
 
 	if (split.right) {
@@ -93,7 +93,7 @@ export function drawContextCharacters(ctx) {
 		log(`Right canvas Maxes`);
 		log(rightMaxes.print());
 
-		contextCharacters.rightSequence = new CharacterSequence({
+		contextCharacters.rightBlock = new TextBlock({
 			characterString: split.right,
 			fontSize: v.dz * project.totalVertical,
 			canvasMaxes: rightMaxes,
@@ -101,15 +101,15 @@ export function drawContextCharacters(ctx) {
 			drawCharacterExtras: drawContextCharacterExtras,
 			drawCharacter: drawSingleContextCharacter,
 		});
-		log(contextCharacters.rightSequence);
-		contextCharacters.rightSequence.draw({
+		log(contextCharacters.rightBlock);
+		contextCharacters.rightBlock.draw({
 			showPageExtras: false,
 			showLineExtras: true,
 			showCharacterExtras: true,
 			showCharacter: true,
 		});
 
-		// contextCharacters.rightSequence.drawCanvasMaxes(contextCharacters.ctx);
+		// contextCharacters.rightBlock.drawCanvasMaxes(contextCharacters.ctx);
 	}
 
 	log('drawContextCharacters', 'end');
@@ -138,17 +138,17 @@ function splitContextCharacterString(splitChar) {
 }
 
 /**
- * Finds the advance width of a Character Sequence string
- * @param {Object} sequence - Character Sequence object
+ * Finds the advance width of a Text Block string
+ * @param {Object} block - Text Block object
  * @returns {Number} width in Em units
  */
-function getCharacterSequenceAdvanceWidth(sequence) {
+function getTextBlockAdvanceWidth(block) {
 	let advanceWidth = 0;
-	sequence = findAndMergeLigatures(sequence.split(''));
+	block = findAndMergeLigatures(block.split(''));
 	const project = getCurrentProject();
 	let glyph;
 	let itemID;
-	sequence.forEach(function (v, i, a) {
+	block.forEach(function (v, i, a) {
 		itemID = project.getItemID(v);
 		glyph = project.getItem(itemID);
 		if (glyph) {
@@ -165,13 +165,13 @@ function getCharacterSequenceAdvanceWidth(sequence) {
 /**
  * Draws the Guide Lines and Labels ("Extras") for the left half
  * @param {Object} ctx - Edit canvas context
- * @param {Object} char - Individual character from a sequence
- * @param {CharacterSequence} seq - sequence to draw
+ * @param {Object} char - Individual character from a text block
+ * @param {TextBlock} block - text block to draw
  */
-function drawContextCharacterLeftLineExtras(char, seq) {
+function drawContextCharacterLeftLineExtras(char, block) {
 	log(`drawContextCharacterLeftLineExtras`, 'start');
 	log(`char: ${char}`);
-	log(`seq: ${seq}`);
+	log(`block: ${block}`);
 
 	const selectedItem = getCurrentProjectEditor().selectedItem;
 	const alpha = transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency);
@@ -179,7 +179,7 @@ function drawContextCharacterLeftLineExtras(char, seq) {
 	drawVerticalLine(char.view.dx * char.view.dz, contextCharacters.ctx, color);
 
 	let kern = calculateKernOffset(
-		seq.characterString.charAt(seq.characterString.length - 1),
+		block.characterString.charAt(block.characterString.length - 1),
 		selectedItem.char
 	);
 
@@ -198,7 +198,7 @@ function drawContextCharacterLeftLineExtras(char, seq) {
 /**
  * Draws the Guide Lines and Labels ("Extras") for the right half
  * @param {Object} ctx - Edit canvas context
- * @param {Object} char - Individual character from a sequence
+ * @param {Object} char - Individual character from a text block
  */
 function drawContextCharacterRightLineExtras(char) {
 	const selectedItem = getCurrentProjectEditor().selectedItem;
@@ -216,7 +216,7 @@ function drawContextCharacterRightLineExtras(char) {
 /**
  * Draws the Guide Lines and Labels ("Extras") for the center character
  * @param {Object} ctx - Edit canvas context
- * @param {Object} char - Individual character from a sequence
+ * @param {Object} char - Individual character from a text block
  */
 function drawContextCharacterExtras(char) {
 	// log('drawContextCharacterExtras', 'start');
@@ -346,7 +346,7 @@ export function drawCharacterKernExtra(ctx, kern, rightX, topY, scale) {
 
 /**
  * Draws a single character to the edit canvas
- * @param {Object} charData - Character Sequence character
+ * @param {Object} charData - Text Block character
  */
 function drawSingleContextCharacter(charData) {
 	log('drawSingleContextCharacter', 'start');
@@ -427,7 +427,7 @@ function hotspotNavigateToItem(id) {
 	const str = contextCharacters.chars.substring(p1, p2);
 	// log(`substring from ${p1} to ${p2} yields ${str}`);
 
-	const delta = getCharacterSequenceAdvanceWidth(str);
+	const delta = getTextBlockAdvanceWidth(str);
 
 	// log(`advance width: ${delta} screen pixels: ${sXcX(delta)}`);
 	// v.dx += sXcX(delta);

@@ -1,14 +1,9 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import {
-	charToHex,
-	charsToHexArray,
-	hexesToChars,
-	parseCharsInputAsHex,
-} from '../common/character_ids.js';
+import { charToHex, parseCharsInputAsHex } from '../common/character_ids.js';
 import { Maxes } from '../project_data/maxes.js';
 
 /**
-	Glyph Sequence
+	Text Block
 	Drawing multiple lines of text.
 	Given a string of text and other
 	display metrics, this calculates
@@ -16,9 +11,9 @@ import { Maxes } from '../project_data/maxes.js';
 	of the given page (canvas) area.
 **/
 
-export class CharacterSequence {
+export class TextBlock {
 	constructor(oa = {}) {
-		// log('CharacterSequence', 'start');
+		// log('TextBlock', 'start');
 
 		// Internal properties
 		this.textBlocks = [];
@@ -41,7 +36,7 @@ export class CharacterSequence {
 		// Initialize data
 		this.generateData();
 
-		// log('CharacterSequence', 'end');
+		// log('TextBlock', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -97,7 +92,7 @@ export class CharacterSequence {
 		showCharacterExtras = false,
 		showCharacter = false,
 	} = {}) {
-		log(`CharacterSequence.draw`, 'start');
+		log(`TextBlock.draw`, 'start');
 		log(`showPageExtras: ${showPageExtras}`);
 		log(`showLineExtras: ${showLineExtras}`);
 		log(`showCharacterExtras: ${showCharacterExtras}`);
@@ -110,7 +105,7 @@ export class CharacterSequence {
 
 		if (this.characterString === '') {
 			log(`No character string, early return`);
-			log(`CharacterSequence.draw`, 'end');
+			log(`TextBlock.draw`, 'end');
 			return;
 		}
 
@@ -138,7 +133,7 @@ export class CharacterSequence {
 				this.drawCharacter(charData);
 			});
 		}
-		log(`CharacterSequence.draw`, 'end');
+		log(`TextBlock.draw`, 'end');
 	}
 
 	iterator(drawFunction) {
@@ -150,7 +145,7 @@ export class CharacterSequence {
 	}
 
 	drawCanvasMaxes(ctx) {
-		log(`CharacterSequence.drawCanvasMaxes`, 'start');
+		log(`TextBlock.drawCanvasMaxes`, 'start');
 		log(this.canvasMaxes);
 		ctx.fillStyle = 'transparent';
 		ctx.strokeStyle = 'lime';
@@ -161,7 +156,7 @@ export class CharacterSequence {
 			this.canvasMaxes.width,
 			this.canvasMaxes.height
 		);
-		log(`CharacterSequence.drawCanvasMaxes`, 'end');
+		log(`TextBlock.drawCanvasMaxes`, 'end');
 	}
 
 	/**
@@ -171,7 +166,7 @@ export class CharacterSequence {
 	 * @returns nothing
 	 */
 	generateData() {
-		log('CharacterSequence.generateData', 'start');
+		log('TextBlock.generateData', 'start');
 		const project = getCurrentProject();
 
 		/*
@@ -324,7 +319,7 @@ export class CharacterSequence {
 								// text takes up too much vertical space
 								// returning early will leave non-computed chars.isVisible = false
 								log('Vertical Max Reached');
-								log('CharacterSequence.generateData', 'end');
+								log('TextBlock.generateData', 'end');
 								return;
 							} else {
 								// more vertical space exists for the next line
@@ -365,7 +360,7 @@ export class CharacterSequence {
 				// text takes up too much vertical space
 				// returning early will leave non-computed chars.isVisible = false
 				log(`Vertical Max Reached @ End Of Block ${textBlockNumber}`);
-				log('CharacterSequence.generateData', 'end');
+				log('TextBlock.generateData', 'end');
 				return;
 			}
 
@@ -377,7 +372,7 @@ export class CharacterSequence {
 
 		log('after view calc this.data');
 		log(this.data);
-		log('CharacterSequence.generateData', 'end');
+		log('TextBlock.generateData', 'end');
 	}
 }
 
