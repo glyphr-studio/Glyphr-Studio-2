@@ -28,26 +28,29 @@
         }
       ]
     },
-    "app": {
-      "savePreferences": false,
-      "stopPageNavigation": true,
-      "showNonCharPoints": false,
-      "formatSaveFile": true,
-      "combinePathsOnExport": false,
-      "maxCombinePathsOnExport": 30,
-      "guides": {
-        "system": {
-          "transparency": 90,
-          "showBaseline": true,
-          "showLeftSide": true,
-          "showRightSide": true
-        }
+			"app": {
+				"savePreferences": false,
+				"stopPageNavigation": true,
+				"showNonCharPoints": false,
+				"formatSaveFile": false,
+				"moveShapesOnSVGDragDrop": false,
+				"combinePathsOnExport": false,
+				"maxCombinePathsOnExport": 30,
+				"guides": {
+					"system": {
+						"transparency": 10,
+						"showBaseline": true,
+						"showLeftSide": true,
+						"showRightSide": true
+					}
+				},
+				"contextCharacters": {
+					"showCharacters": false,
+					"characterTransparency": 10,
+					"showGuides": true,
+					"guidesTransparency": 10
+				}
       },
-      "contextGlyphs": {
-        "showGuides": true,
-        "transparency": 90
-      }
-    },
     "font": {
       "family": "GS2 Test Font",
       "style": "Regular",

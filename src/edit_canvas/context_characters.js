@@ -199,9 +199,9 @@ function drawContextCharacterLeftLineExtras(char, block) {
 	log(`block: ${block}`);
 
 	const selectedItem = getCurrentProjectEditor().selectedItem;
-	const alpha = transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency);
-	const color = getColorFromRGBA('rgb(204,81,0)', alpha);
-	drawVerticalLine(char.view.dx * char.view.dz, contextCharacters.ctx, color);
+	// const alpha = transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency);
+	// const color = getColorFromRGBA('rgb(204,81,0)', alpha);
+	// drawVerticalLine(char.view.dx * char.view.dz, contextCharacters.ctx, color);
 
 	// Kern data
 	let kern = calculateKernOffset(
@@ -253,17 +253,17 @@ function drawContextCharacterExtras(char, rounding = 'none') {
 	log('drawContextCharacterExtras', 'start');
 	log(char);
 
-	const ps = getCurrentProject().settings.app;
-	const alpha = transparencyToAlpha(ps.guides.system.transparency);
+	const appSettings = getCurrentProject().settings.app;
 
-	if (ps.contextCharacters.showGuides && alpha) {
+	if (appSettings.contextCharacters.showGuides) {
+		const alpha = transparencyToAlpha(appSettings.contextCharacters.guidesTransparency);
 		const editor = getCurrentProjectEditor();
 		const view = char.view;
 		const advanceWidth = char.widths.advance * view.dz;
 		const currentX = char.view.dx; // * view.dz;
 		const rightX = currentX + advanceWidth;
-		// const color = getColorFromRGBA('rgb(204,81,0)', alpha);
-		const color = 'rgb(204,81,0)';
+		const color = getColorFromRGBA('rgb(214, 71, 0)', alpha);
+		// const color = 'rgb(204,81,0)';
 		const textY = sYcY(getCurrentProject().settings.font.descent - 60);
 
 		// Baseline
