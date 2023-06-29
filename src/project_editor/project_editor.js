@@ -715,14 +715,14 @@ export class ProjectEditor {
 			dy: cy ? cy - (cy - v.dy) * zoomInput : v.dy,
 		};
 
-		this.publish('view', this.view);
+		this.publish('editCanvasView', this.view);
 		// log(`updateViewZoom`, 'end');
 	}
 
 	setViewZoom(zoomInput) {
 		const newValue = parseFloat(zoomInput) / 100;
 		this.view = { dz: newValue };
-		this.publish('view', this.view);
+		this.publish('editCanvasView', this.view);
 	}
 
 	makeAutoFitView(rect = false) {
@@ -778,7 +778,7 @@ export class ProjectEditor {
 			// log(`this.view.default: ${this.view.default}`);
 			if (this.view.default) {
 				this.autoFitView();
-				this.publish('view', this.view);
+				this.publish('editCanvasView', this.view);
 			}
 		}
 		// log(`ProjectEditor.autoFitIfViewIsDefault`, 'end');
@@ -789,7 +789,7 @@ export class ProjectEditor {
 		const bounds = this.getEditCanvasWrapperBounds();
 		if (bounds) {
 			this.view = this.makeAutoFitView(bounds);
-			this.publish('view', this.view);
+			this.publish('editCanvasView', this.view);
 		} else {
 			console.warn('autoFitView called before DOM was ready');
 			this.view = clone(this.defaultView);

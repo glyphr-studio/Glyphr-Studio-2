@@ -9,6 +9,11 @@ import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeSingleCheckbox } from './cards.js';
 
 export function makePanel_Guides() {
+	const systemCard = makeSystemGuidesCard();
+	return [systemCard];
+}
+
+export function makeSystemGuidesCard() {
 	const editor = getCurrentProjectEditor();
 	const systemGuides = editor.project.settings.app.guides.system;
 	let systemCard = makeElement({
@@ -18,8 +23,7 @@ export function makePanel_Guides() {
 	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showBaseline', 'Baseline'));
 	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showLeftSide', 'Left side'));
 	addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showRightSide', 'Right side'));
-
-	return [systemCard];
+	return systemCard;
 }
 
 export function makeGuideCheckbox(item, property, label) {

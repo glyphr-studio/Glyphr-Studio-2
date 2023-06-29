@@ -221,7 +221,7 @@ export function clickTool(tool) {
 		if (tool === 'zoomEm') editor.autoFitView();
 		if (tool === 'zoomIn') editor.view = { dz: (editor.view.dz *= 1.1) };
 		if (tool === 'zoomOut') editor.view = { dz: (editor.view.dz *= 0.9) };
-		editor.publish('view', editor.view);
+		editor.publish('editCanvasView', editor.view);
 	} else {
 		switchToolTo(tool);
 	}
@@ -274,8 +274,6 @@ export function makeKernToolsButtons() {
 	});
 	return kernToolButton;
 }
-
-
 
 // --------------------------------------------------------------
 // Button helper functions
