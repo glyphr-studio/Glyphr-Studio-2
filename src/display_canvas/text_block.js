@@ -31,9 +31,9 @@ export class TextBlock {
 		this.drawLineExtras = oa.drawLineExtras || false;
 		this.drawCharacterExtras = oa.drawCharacterExtras || false;
 		this.drawCharacter = oa.drawCharacter || false;
-		this.rounding = oa.rounding || false;
+		this.roundUp = oa.roundUp || false;
 
-		log(this);
+		// log(this);
 		// Initialize data
 		this.generateData();
 
@@ -93,26 +93,26 @@ export class TextBlock {
 		showCharacterExtras = false,
 		showCharacter = false,
 	} = {}) {
-		log(`TextBlock.draw`, 'start');
-		log(`showPageExtras: ${showPageExtras}`);
-		log(`showLineExtras: ${showLineExtras}`);
-		log(`showCharacterExtras: ${showCharacterExtras}`);
-		log(`showCharacter: ${showCharacter}`);
+		// log(`TextBlock.draw`, 'start');
+		// log(`showPageExtras: ${showPageExtras}`);
+		// log(`showLineExtras: ${showLineExtras}`);
+		// log(`showCharacterExtras: ${showCharacterExtras}`);
+		// log(`showCharacter: ${showCharacter}`);
 
 		if (this.drawPageExtras && showPageExtras) {
-			log(`DRAW PAGE EXTRAS`);
+			// log(`DRAW PAGE EXTRAS`);
 			this.drawPageExtras();
 		}
 
 		if (this.characterString === '') {
-			log(`No character string, early return`);
-			log(`TextBlock.draw`, 'end');
+			// log(`No character string, early return`);
+			// log(`TextBlock.draw`, 'end');
 			return;
 		}
 
 		let currentLine = -1;
 		if (this.drawLineExtras && showLineExtras) {
-			log('DRAW LINE EXTRAS');
+			// log('DRAW LINE EXTRAS');
 			this.iterator((charData) => {
 				if (charData.lineNumber !== currentLine) {
 					this.drawLineExtras(charData, this);
@@ -122,19 +122,19 @@ export class TextBlock {
 		}
 
 		if (this.drawCharacterExtras && showCharacterExtras) {
-			log('DRAW CHARACTER EXTRAS');
+			// log('DRAW CHARACTER EXTRAS');
 			this.iterator((charData) => {
-				this.drawCharacterExtras(charData, this.rounding);
+				this.drawCharacterExtras(charData, this.roundUp);
 			});
 		}
 
 		if (this.drawCharacter && showCharacter) {
-			log('DRAW CHARACTER');
+			// log('DRAW CHARACTER');
 			this.iterator((charData) => {
 				this.drawCharacter(charData);
 			});
 		}
-		log(`TextBlock.draw`, 'end');
+		// log(`TextBlock.draw`, 'end');
 	}
 
 	iterator(drawFunction) {

@@ -130,13 +130,16 @@ export class EditCanvas extends HTMLElement {
 			editor.autoFitIfViewIsDefault();
 			ctx.clearRect(0, 0, width, height);
 
+			const contextCharacterSettings = editor.project.settings.app.contextCharacters;
 			// Context characters
-			if (editor.project.settings.app.contextCharacters.showCharacters) {
+			if (contextCharacterSettings.showCharacters) {
 				drawContextCharacters(ctx);
 			}
 
 			// Guides
-			drawSystemGuidelines();
+			drawSystemGuidelines(
+				!(contextCharacterSettings.showCharacters && contextCharacterSettings.showGuides)
+			);
 
 			// Draw glyphs
 			drawGlyph(project.getItem(currentItemID), ctx, view);
@@ -195,13 +198,7 @@ export class EditCanvas extends HTMLElement {
 					1
 				);
 
-				drawCharacterKernExtra(
-					ctx,
-					kernGroup.value,
-					view.dx,
-					sYcY(project.settings.font.descent),
-					view.dz
-				);
+				drawCharacterKernExtra(ctx, kernGroup.value, view.dx, view.dz);
 				ctx.fillStyle = accentColors.purple.l60;
 				drawEmVerticalLine(ctx, 0, view, false);
 				drawEmVerticalLine(ctx, kernGroup.value, view, true);
