@@ -34,7 +34,7 @@ export class Tool_Pan {
 				};
 				// log(update);
 				editor.view = update;
-				editor.publish('view', editor.view);
+				editor.publish('editCanvasView', editor.view);
 			}
 		};
 

@@ -68,7 +68,7 @@ export function makeInputs_size(item) {
 	return [inputLabel, doubleInput, ratioLockLabel, ratioLockCheckbox];
 }
 
-export function makeSingleInput(item, property, thisTopic, tagName) {
+export function makeSingleInput(item, property, thisTopic, tagName, additionalListeners = []) {
 	// log(`makeSingleInput`, 'start');
 	// log(`item.objType: ${item.objType}`);
 	// log(`property: ${property}`);
@@ -100,8 +100,8 @@ export function makeSingleInput(item, property, thisTopic, tagName) {
 		});
 	}
 
-	newInput.addEventListener('change', (event) => {
-		// log(`makeSingleInput CHANGE event`, 'start');
+	function changeHappened(event) {
+		// log(`makeSingleInput.changeHappened event`, 'start');
 		// log(event);
 
 		if (item.isLockable && item.isLocked(property)) return;
@@ -117,7 +117,7 @@ export function makeSingleInput(item, property, thisTopic, tagName) {
 		if (property === 'leftSideBearing') {
 			let view = editor.view;
 			editor.view.dx -= (newValue - item.leftSideBearing) * view.dz;
-			editor.publish('view', item);
+			editor.publish('editCanvasView', item);
 		}
 
 		// Code Smell
@@ -136,16 +136,29 @@ export function makeSingleInput(item, property, thisTopic, tagName) {
 			if (property === 'width') item.setShapeSize(newValue, false, true);
 			if (property === 'height') item.setShapeSize(false, newValue, true);
 		} else {
-			// log(`MAKE SINGLE INPUT CHANGE EVENT ${property} is set to ${newValue}`);
+			// log(`MAKE SINGLE INPUT EVENT ${property} is set to ${newValue}`);
 			item[property] = newValue;
 			// log(`item[property]: ${item[property]}`);
 		}
 
-		if (item.objType === 'VirtualGlyph') editor.publish(thisTopic, editor.selectedItem);
-		else if (item.objType === 'VirtualShape') editor.publish(thisTopic, editor.selectedItem);
-		else editor.publish(thisTopic, item);
-		// log(`makeSingleInput CHANGE event`, 'end');
-	});
+		if (item.objType === 'VirtualGlyph') {
+			editor.publish(thisTopic, editor.selectedItem);
+		} else if (item.objType === 'VirtualShape') {
+			editor.publish(thisTopic, editor.selectedItem);
+		} else {
+			// log(`thisTopic: ${thisTopic}`);
+
+			editor.publish(thisTopic, item);
+		}
+		// log(`makeSingleInput.changeHappened event`, 'end');
+	}
+
+	newInput.addEventListener('change', changeHappened);
+	if (additionalListeners) {
+		additionalListeners.forEach((listenerName) => {
+			newInput.addEventListener(listenerName, changeHappened);
+		});
+	}
 
 	getCurrentProjectEditor().subscribe({
 		topic: thisTopic,

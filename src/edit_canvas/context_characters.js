@@ -69,6 +69,7 @@ export function drawContextCharacters(ctx) {
 		// log(`Left canvas Maxes`);
 		// log(leftMaxes.print());
 
+		// if (!contextCharacters.leftBlock) {
 		contextCharacters.leftBlock = new TextBlock({
 			characterString: split.left,
 			fontSize: view.dz * project.totalVertical,
@@ -79,6 +80,7 @@ export function drawContextCharacters(ctx) {
 			drawCharacter: drawSingleContextCharacter,
 		});
 		// log(contextCharacters.leftBlock);
+		// }
 
 		contextCharacters.leftBlock.draw({
 			showPageExtras: false,
@@ -105,6 +107,7 @@ export function drawContextCharacters(ctx) {
 		// log(`Right canvas Maxes`);
 		// log(rightMaxes.print());
 
+		// if (!contextCharacters.rightBlock) {
 		contextCharacters.rightBlock = new TextBlock({
 			characterString: split.right,
 			fontSize: view.dz * project.totalVertical,
@@ -115,6 +118,7 @@ export function drawContextCharacters(ctx) {
 			drawCharacter: drawSingleContextCharacter,
 		});
 		// log(contextCharacters.rightBlock);
+		// }
 
 		contextCharacters.rightBlock.draw({
 			showPageExtras: false,
@@ -131,7 +135,13 @@ export function drawContextCharacters(ctx) {
 		const item = editor.selectedItem;
 		const alpha = transparencyToAlpha(project.settings.app.contextCharacters.guidesTransparency);
 		const textColor = getColorFromRGBA('rgb(128, 43, 0)', alpha);
-		drawCharacterNameExtra(item.name, view.dx, item.advanceWidth * view.dz, textColor, false);
+		drawCharacterNameExtra(
+			item.name.replace(/latin /i, ''),
+			view.dx,
+			item.advanceWidth * view.dz,
+			textColor,
+			false
+		);
 
 		const lineColor = getColorFromRGBA('rgb(214, 71, 0)', alpha);
 		contextCharacters.ctx.fillStyle = lineColor;
@@ -220,12 +230,14 @@ function drawContextCharacterLeftLineExtras(char, block) {
 	// drawVerticalLine(char.view.dx * char.view.dz, contextCharacters.ctx, color);
 
 	// Draw baseline from first char to selected item
-	drawBaseline(
-		contextCharacters.ctx,
-		char.view.dx - 20,
-		char.view.dy,
-		editor.view.dx - char.view.dx + 20
-	);
+	if (editor.project.settings.app.contextCharacters.showGuides) {
+		drawBaseline(
+			contextCharacters.ctx,
+			char.view.dx - 20,
+			char.view.dy,
+			editor.view.dx - char.view.dx + 20
+		);
+	}
 
 	// Kern data
 	// Draw kern data between rightmost char and the selected item
@@ -262,7 +274,9 @@ function drawContextCharacterRightLineExtras(char) {
 	const underlineWidth = rightHandAdvanceWidth * editor.view.dz;
 	// log(`underlineWidth: ${underlineWidth}`);
 
-	drawBaseline(contextCharacters.ctx, char.view.dx, char.view.dy, underlineWidth + 20);
+	if (editor.project.settings.app.contextCharacters.showGuides) {
+		drawBaseline(contextCharacters.ctx, char.view.dx, char.view.dy, underlineWidth + 20);
+	}
 	// log(`drawContextCharacterRightLineExtras`, 'end');
 }
 
@@ -291,7 +305,9 @@ function drawContextCharacterExtras(char, roundUp = 'none') {
 
 		// Draw the glyph name
 		// log(`drawing name`);
-		let name = char.glyph ? char.glyph.name : editor.getItemName(charsToHexArray(char.char));
+		let name;
+		if (char.item) name = char.item.name;
+		else name = editor.project.getItemName(`glyph-${charsToHexArray(char.char)}`, true);
 		name = name.replace(/latin /i, '');
 		// log(`name: ${name}`);
 		drawCharacterNameExtra(name, currentX, advanceWidth, color, char.char);
@@ -416,9 +432,9 @@ function drawSingleContextCharacter(charData) {
 	// log('drawSingleContextCharacter', 'start');
 	// log(charData);
 
-	if (charData.isVisible && charData.glyph) {
+	if (charData.isVisible && charData.item) {
 		drawGlyph(
-			charData.glyph,
+			charData.item,
 			contextCharacters.ctx,
 			charData.view,
 			transparencyToAlpha(getCurrentProject().settings.app.contextCharacters.characterTransparency)
@@ -569,24 +585,6 @@ export function findAndUnderlineHotspot(cx, cy) {
 // 	editor.view = { dx: nx, dy: ny, dz: nz };
 // }
 
-// -------------------
-// Drawing Grid
-// -------------------
-
-// function drawHorizontalLine(y, ctx, color) {
-// 	ctx = ctx || contextCharacters.ctx;
-// 	color = color || 'rgb(0,0,0)';
-
-// 	ctx.strokeStyle = color;
-// 	ctx.lineWidth = 1;
-// 	y = makeCrisp(y);
-// 	ctx.beginPath();
-// 	ctx.moveTo(0, y);
-// 	ctx.lineTo(contextCharacters.glyphEditCanvasSize, y);
-// 	ctx.stroke();
-// 	ctx.closePath();
-// }
-
 function drawVerticalLine(x, ctx, color) {
 	color = color || 'rgb(0,0,0)';
 
@@ -599,97 +597,3 @@ function drawVerticalLine(x, ctx, color) {
 	ctx.stroke();
 	ctx.closePath();
 }
-
-// function drawGuides() {
-// 	// log('drawGuides', 'start');
-// 	const editor = getCurrentProjectEditor();
-
-// 	if (editor.selectedItemID) return;
-
-// 	const ps = getCurrentProject().projectSettings;
-// 	const onKernPage = editor.nav.page === 'kerning';
-// 	// log('ps.guides: ');
-// 	// log(ps.guides);
-
-// 	if (contextCharacters.showGuides) {
-// 		if (onKernPage) {
-// 			contextCharacters.guides.leftGroupXMax.location = editor.selectedKernGroup.value;
-// 			contextCharacters.guides.leftGroupXMax.draw();
-// 			contextCharacters.guides.rightGroupXMin.draw();
-// 			ps.guides.baseline.draw();
-// 			return;
-// 		}
-
-// 		// Update custom guides
-// 		let g;
-// 		for (const c of Object.keys(ps.guides)) {
-// 			g = ps.guides[c];
-// 			if (g.editable) {
-// 				g.draw();
-// 			}
-// 		}
-
-// 		const selectedItem = editor.selectedItem;
-// 		if (selectedItem) {
-// 			const t = contextCharacters.eventHandlers.tempNewBasicShape;
-// 			const rl = t ? Math.max(selectedItem.glyphWidth, t.xMax) : selectedItem.glyphWidth;
-// 			const ll = Math.min(selectedItem.maxes.xMin, 0);
-
-// 			// Update system guides
-// 			ps.guides.xHeight.location = ps.xHeight;
-// 			ps.guides.capHeight.location = ps.capHeight;
-// 			ps.guides.ascent.location = ps.ascent;
-// 			ps.guides.baseline.location = 0;
-// 			ps.guides.descent.location = ps.descent;
-// 			ps.guides.min.location = ll;
-// 			ps.guides.max.location = rl;
-// 			ps.guides.leftside.location = editor.selectedItem * -1;
-// 			ps.guides.rightside.location = selectedItem.advanceWidth + rl;
-
-// 			// Minor Guidelines - Overshoots
-// 			if (contextCharacters.showOvershoots) {
-// 				const os = ps.overshoot;
-// 				ps.guides.xHeight.draw(-1 * os);
-// 				ps.guides.ascent.draw(-1 * os);
-// 				ps.guides.baseline.draw(os);
-// 				ps.guides.descent.draw(os);
-// 			}
-
-// 			// Verticals
-// 			ps.guides.zero.draw(0);
-// 			if (editor.isOnEditPage()) {
-// 				ps.guides.min.draw(0);
-// 				ps.guides.leftside.draw();
-// 				if (selectedItem.shapes.length) {
-// 					ps.guides.max.draw(0);
-// 					ps.guides.rightside.draw();
-// 				}
-// 			}
-
-// 			// Horizontals
-// 			ps.guides.xHeight.draw();
-// 			ps.guides.capHeight.draw();
-// 			ps.guides.ascent.draw();
-// 			ps.guides.descent.draw();
-// 			ps.guides.baseline.draw();
-
-// 			// Out of bounds triangle
-// 			if (ps.guides.baseline.visible || ps.guides.leftside.visible) {
-// 				const ctx = contextCharacters.ctx;
-// 				const v = getCurrentProjectEditor().view;
-// 				ctx.fillStyle = shiftColor(
-// 					ps.guides.baseline.color,
-// 					ps.colors.systemGuideTransparency / 100,
-// 					true
-// 				);
-// 				ctx.beginPath();
-// 				ctx.moveTo(v.dx - 1, v.dy);
-// 				ctx.lineTo(v.dx - 1, v.dy + ps.pointSize * 2);
-// 				ctx.lineTo(v.dx - 1 - ps.pointSize * 2, v.dy);
-// 				ctx.closePath();
-// 				ctx.fill();
-// 			}
-// 		}
-// 	}
-// 	// log('drawGuides', 'end');
-// }

@@ -5,7 +5,7 @@ import { glyphChanged } from './cross_item_actions.js';
 // --------------------------------------------------------------
 /*
 	TOPICS
-		* - 'view' - change to the edit canvas view.
+		* - 'editCanvasView' - change to the edit canvas, view or extra non-item graphics.
 		* - 'whichToolIsSelected' - change to which edit tool is selected.
 		* - 'whichGlyphIsSelected' - change to which glyph is being edited.
 		* - 'whichLigatureIsSelected' - change to which Ligature is being edited.
@@ -26,7 +26,7 @@ import { glyphChanged } from './cross_item_actions.js';
 		* - 		'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
 */
 const allTopics = [
-	'view',
+	'editCanvasView',
 	'whichToolIsSelected',
 	'whichGlyphIsSelected',
 	'whichLigatureIsSelected',
@@ -69,7 +69,7 @@ export function publish(topic, data) {
 			// log(`PubSub publish whichToolIsSelected: ${data}`);
 		}
 
-		if (topic === 'view') {
+		if (topic === 'editCanvasView') {
 			//anything?
 		}
 

@@ -210,8 +210,8 @@ export class DisplayCanvas extends HTMLElement {
 	iterator(drawFunction) {
 		const data = displayCanvas.textBlock.data;
 		for (let block = 0; block < data.length; block++) {
-			for (let glyph = 0; glyph < data[block].length; glyph++) {
-				drawFunction(data[block][glyph], this);
+			for (let item = 0; item < data[block].length; item++) {
+				drawFunction(data[block][item], this);
 			}
 		}
 	}
@@ -300,7 +300,7 @@ function drawDisplayCharacter(charData) {
 	log(`THIS CONTEXT`);
 	log(displayCanvas.ctx);
 	// const settings = getCurrentProject().settings.font;
-	const glyph = charData.glyph;
+	const item = charData.item;
 
 	// TODO combineAllPaths
 	// const combineAllPaths = td.combineAllPaths || false;
@@ -323,22 +323,22 @@ function drawDisplayCharacter(charData) {
 	log(`\t drawing ${charData.char}`);
 	// log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
 
-	if (glyph) {
+	if (item) {
 		displayCanvas.ctx.fillStyle = uiColors.enabled.resting.text;
 		displayCanvas.ctx.strokeStyle = 'transparent';
 
 		// TODO combineAllPaths
 		// if (combineAllPaths) {
 		// 	if (!this.cache[charData.char]) {
-		// 		this.cache[charData.char] = glyph.clone().combineAllShapes(true);
+		// 		this.cache[charData.char] = item.clone().combineAllShapes(true);
 		// 	}
 
 		// 	this.cache[charData.char].drawGlyph(displayCanvas.ctx, view, 1, true);
 		// } else {
-		// 	drawGlyph(glyph, displayCanvas.ctx, view, 1, true);
+		// 	drawGlyph(item, displayCanvas.ctx, view, 1, true);
 		// }
 
-		drawGlyph(glyph, displayCanvas.ctx, view, 1, true);
+		drawGlyph(item, displayCanvas.ctx, view, 1, true);
 	}
 
 	log(`displayCanvas.drawDisplayCharacter`, 'end');

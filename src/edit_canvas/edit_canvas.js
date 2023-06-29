@@ -65,10 +65,8 @@ export class EditCanvas extends HTMLElement {
 			subscriberID: `editCanvas-all`,
 			callback: () => {
 				this.redraw({ calledBy: `editCanvas-all` });
-				// updateCursor();
 			},
 		});
-
 		// log(`EditCanvas.constructor`, 'end');
 	}
 
@@ -106,7 +104,7 @@ export class EditCanvas extends HTMLElement {
 	// Redraw the canvas
 	// --------------------------------------------------------------
 	redraw() {
-		log('EditCanvas.redraw', 'start');
+		// log('EditCanvas.redraw', 'start');
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();
 		let view = editor.view;
@@ -123,7 +121,7 @@ export class EditCanvas extends HTMLElement {
 			else redrawGlyphEdit();
 		}
 
-		log('EditCanvas.redraw', 'end');
+		// log('EditCanvas.redraw', 'end');
 
 		function redrawGlyphEdit() {
 			// log(`EditCanvas.redraw.redrawGlyphEdit`, 'start');

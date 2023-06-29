@@ -5,6 +5,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeDirectCheckbox, makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
+import { makeSystemGuidesCard } from './guides.js';
 
 export function makePanel_ContextCharacters() {
 	// log(`makePanel_ContextCharacters`, 'start');
@@ -31,15 +32,16 @@ export function makePanel_ContextCharacters() {
 	let charsInput = makeSingleInput(
 		editor.selectedItem,
 		'contextCharacters',
-		'editCanvasRedraw',
-		'input'
+		'editCanvasView',
+		'input',
+		['input']
 	);
 
 	let transparencyLabel = makeSingleLabel('Transparency');
 	let transparencyInput = makeSingleInput(
 		ccOptions,
 		'characterTransparency',
-		'editCanvasRedraw',
+		'editCanvasView',
 		'input-number'
 	);
 
@@ -69,14 +71,14 @@ export function makePanel_ContextCharacters() {
 	let guidesInput = makeSingleInput(
 		ccOptions,
 		'guidesTransparency',
-		'editCanvasRedraw',
+		'editCanvasView',
 		'input-number'
 	);
 
 	addAsChildren(optionsCard, [guidesCheckboxLabel, guidesCheckbox, guidesLabel, guidesInput]);
 
 	// log(`makePanel_ContextCharacters`, 'end');
-	return [charsCard, optionsCard];
+	return [charsCard, optionsCard, makeSystemGuidesCard()];
 }
 
 function refresh() {

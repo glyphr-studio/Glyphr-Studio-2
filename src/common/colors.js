@@ -231,12 +231,12 @@ export function shiftColor(c, percent, lighter) {
  * @returns {String}
  */
 export function getColorFromRGBA(rgb, alpha) {
-	log(`getColorFromRGBA`, 'start');
-	log(`rgb: ${rgb}`);
-	log(`alpha: ${alpha}`);
+	// log(`getColorFromRGBA`, 'start');
+	// log(`rgb: ${rgb}`);
+	// log(`alpha: ${alpha}`);
 
 	const val = parseColorString(rgb);
-	log(`val: ${val}`);
+	// log(`val: ${val}`);
 
 	const dr = round((255 - val.r) * (1 - alpha));
 	const dg = round((255 - val.g) * (1 - alpha));
@@ -247,9 +247,9 @@ export function getColorFromRGBA(rgb, alpha) {
 	const b = val.b + db;
 
 	const result = `rgb(${r},${g},${b})`;
-	log(`result: ${result}`);
+	// log(`result: ${result}`);
 
-	log(`getColorFromRGBA`, 'end');
+	// log(`getColorFromRGBA`, 'end');
 	return result;
 }
 

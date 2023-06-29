@@ -191,7 +191,7 @@ export class TextBlock {
 		let aggregateWidth = 0;
 		let thisWidth;
 		let thisKern;
-		let thisGlyph;
+		let thisItem;
 
 		this.data = [];
 		this.textBlocks = this.characterString.split('\n');
@@ -209,14 +209,14 @@ export class TextBlock {
 				currentChar = currentBlock[charNumber];
 				// log(`==== char: ${charNumber} ${currentChar}`);
 				if (currentChar.startsWith('liga-')) {
-					thisGlyph = project.ligatures[currentChar];
-					currentChar = thisGlyph.chars;
+					thisItem = project.ligatures[currentChar];
+					currentChar = thisItem.chars;
 				} else {
-					thisGlyph = project.getItem(`glyph-${charToHex(currentChar)}`);
+					thisItem = project.getItem(`glyph-${charToHex(currentChar)}`);
 				}
 
 				// Calculate width
-				thisWidth = thisGlyph ? thisGlyph.advanceWidth : project.defaultAdvanceWidth;
+				thisWidth = thisItem ? thisItem.advanceWidth : project.defaultAdvanceWidth;
 
 				// Kern distance
 				thisKern = calculateKernOffset(currentChar, currentBlock[charNumber + 1]);
@@ -225,7 +225,7 @@ export class TextBlock {
 				// Each char gets this data to draw it
 				this.data[textBlockNumber][charNumber] = {
 					char: currentChar,
-					glyph: thisGlyph,
+					item: thisItem,
 					view: false,
 					widths: {
 						advance: thisWidth,
