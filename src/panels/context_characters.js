@@ -26,10 +26,7 @@ export function makePanel_ContextCharacters() {
 
 	const ccOptions = project.settings.app.contextCharacters;
 	let toggleCheckboxLabel = makeSingleLabel('Show&nbsp;context&nbsp;characters&nbsp;&nbsp;');
-	let toggleCheckbox = makeDirectCheckbox(ccOptions, 'showCharacters', () => {
-		const editor = getCurrentProjectEditor();
-		editor.editCanvas.redraw();
-	});
+	let toggleCheckbox = makeDirectCheckbox(ccOptions, 'showCharacters', refresh);
 
 	let charsInput = makeSingleInput(
 		editor.selectedItem,
@@ -66,18 +63,25 @@ export function makePanel_ContextCharacters() {
 	});
 
 	let guidesCheckboxLabel = makeSingleLabel('Show guides and labels');
-	let guidesCheckbox = makeDirectCheckbox(ccOptions, 'showGuides', () => {
-		const editor = getCurrentProjectEditor();
-		editor.editCanvas.redraw();
-	});
+	let guidesCheckbox = makeDirectCheckbox(ccOptions, 'showGuides', refresh);
 
 	let guidesLabel = makeSingleLabel('Transparency');
-	let guidesInput = makeSingleInput(ccOptions, 'guidesTransparency', 'editCanvasRedraw', 'input-number');
+	let guidesInput = makeSingleInput(
+		ccOptions,
+		'guidesTransparency',
+		'editCanvasRedraw',
+		'input-number'
+	);
 
 	addAsChildren(optionsCard, [guidesCheckboxLabel, guidesCheckbox, guidesLabel, guidesInput]);
 
 	// log(`makePanel_ContextCharacters`, 'end');
 	return [charsCard, optionsCard];
+}
+
+function refresh() {
+	const editor = getCurrentProjectEditor();
+	editor.editCanvas.redraw();
 }
 
 /*

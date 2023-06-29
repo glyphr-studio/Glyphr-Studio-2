@@ -231,7 +231,12 @@ export function shiftColor(c, percent, lighter) {
  * @returns {String}
  */
 export function getColorFromRGBA(rgb, alpha) {
+	log(`getColorFromRGBA`, 'start');
+	log(`rgb: ${rgb}`);
+	log(`alpha: ${alpha}`);
+
 	const val = parseColorString(rgb);
+	log(`val: ${val}`);
 
 	const dr = round((255 - val.r) * (1 - alpha));
 	const dg = round((255 - val.g) * (1 - alpha));
@@ -241,7 +246,11 @@ export function getColorFromRGBA(rgb, alpha) {
 	const g = val.g + dg;
 	const b = val.b + db;
 
-	return `rgb(${r},${g},${b})`;
+	const result = `rgb(${r},${g},${b})`;
+	log(`result: ${result}`);
+
+	log(`getColorFromRGBA`, 'end');
+	return result;
 }
 
 /**
@@ -250,13 +259,19 @@ export function getColorFromRGBA(rgb, alpha) {
  * @returns {Number}
  */
 export function transparencyToAlpha(transparency) {
+	// log(`transparencyToAlpha`, 'start');
+	// log(`transparency: ${transparency}`);
 	const t = parseInt(transparency);
 	if (!t || isNaN(t)) return 1;
+	// log(`t: ${t}`);
 
 	if (t > 100) return 0;
 	if (t < 0) return 1;
 
-	return (100 - transparency) / 100;
+	const result = (100 - transparency) / 100;
+	// log(`result: ${result}`);
+	// log(`transparencyToAlpha`, 'end');
+	return result;
 }
 
 /**
