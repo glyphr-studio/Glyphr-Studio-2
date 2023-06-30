@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';
 import {
@@ -202,31 +203,32 @@ export function resizePath() {
 	// log('Done lx/rx/ty/by: ' + selected.maxes.print());
 	// log(`resizePath`, 'end');
 }
-/*
+
 export function checkForMouseOverHotspot(x, y) {
 	const editor = getCurrentProjectEditor();
+
 	if (isHotspotHere(x, y)) {
 		let hs = findAndUnderlineHotspot(x, y);
 		setCursor('pointer');
-		if (hs !== eventHandlerData.canvasHotSpotHovering)
-			redraw({
+		if (hs !== eventHandlerData.canvasHotspotHovering)
+			editor.redraw({
 				calledBy: 'checkForMouseOverHotspot',
 				redrawPanels: false,
 				redrawTools: false,
 			});
-		eventHandlerData.canvasHotSpotHovering = hs;
+		eventHandlerData.canvasHotspotHovering = hs;
 	} else {
-		if (eventHandlerData.canvasHotSpotHovering)
-			redraw({
+		if (eventHandlerData.canvasHotspotHovering)
+			editor.redraw({
 				calledBy: 'checkForMouseOverHotspot',
 				redrawPanels: false,
 				redrawTools: false,
 			});
-		eventHandlerData.canvasHotSpotHovering = false;
+		eventHandlerData.canvasHotspotHovering = false;
 	}
 }
 
-
+/*
 function updateDragSelectArea(dx, dy, dw, dh) {
 	// log('updateDragSelectArea dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
 	eventHandlerData.dragSelectArea.xMin += dx;

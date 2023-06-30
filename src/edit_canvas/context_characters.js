@@ -16,13 +16,13 @@ import {
 import { drawGlyph } from '../display_canvas/draw_paths';
 import { Maxes } from '../project_data/maxes';
 import { setCursor } from './cursors';
-import { cXsX, drawEmVerticalLine, sYcY } from './edit_canvas';
+import { cXsX, drawEmVerticalLine, sXcX, sYcY } from './edit_canvas';
 
 const contextCharacters = {
 	ctx: false,
 	chars: '',
 	currentGlyphChar: '',
-	canvasHotSpots: [],
+	canvasHotspots: [],
 	leftBlock: false,
 	rightBlock: false,
 };
@@ -146,6 +146,7 @@ export function drawContextCharacters(ctx) {
 		const lineColor = getColorFromRGBA('rgb(214, 71, 0)', alpha);
 		contextCharacters.ctx.fillStyle = lineColor;
 		drawEmVerticalLine(contextCharacters.ctx, 0, editor.view, false);
+		drawEmVerticalLine(contextCharacters.ctx, editor.selectedItem.advanceWidth, editor.view, false);
 	}
 
 	// log('drawContextCharacters', 'end');
@@ -157,20 +158,27 @@ export function drawContextCharacters(ctx) {
  * @returns {Object} - two arrays
  */
 function splitContextCharacterString(splitChar) {
-	let l = '';
-	let r = '';
+	log(`splitContextCharacterString`, 'start');
+	const cChars = contextCharacters.chars;
+	log(`cChars: ${cChars}`);
+	log(`splitChar: ${splitChar}`);
+	const result = { left: false, right: false };
 
-	const pos = contextCharacters.chars.indexOf(splitChar);
-
-	if (pos === -1) {
-		l = contextCharacters.chars;
-		r = '';
-	} else {
-		l = contextCharacters.chars.substring(0, pos);
-		r = contextCharacters.chars.substring(pos + splitChar.length);
+	if (cChars) {
+		const pos = cChars.indexOf(splitChar);
+		log(`pos: ${pos}`);
+		if (pos === -1) {
+			result.left = cChars;
+			result.right = '';
+		} else {
+			result.left = cChars.substring(0, pos);
+			result.right = cChars.substring(pos + splitChar.length);
+		}
 	}
 
-	return { left: l, right: r };
+	log(result);
+	log(`splitContextCharacterString`, 'end');
+	return result;
 }
 
 /**
@@ -310,7 +318,7 @@ function drawContextCharacterExtras(char, roundUp = 'none') {
 		else name = editor.project.getItemName(`glyph-${charsToHexArray(char.char)}`, true);
 		name = name.replace(/latin /i, '');
 		// log(`name: ${name}`);
-		drawCharacterNameExtra(name, currentX, advanceWidth, color, char.char);
+		drawCharacterNameExtra(name, currentX, advanceWidth, color, char.item.id);
 
 		// Draw vertical lines
 		// log(`drawing vertical line`);
@@ -336,13 +344,13 @@ function drawContextCharacterExtras(char, roundUp = 'none') {
  * @param {String} color - what color to draw the name
  * @param {Boolean} registerHotspot - register a hotspot for this name?
  */
-function drawCharacterNameExtra(text, currentX, advanceWidth, color, registerHotspot) {
-	// log('drawCharacterNameExtra', 'start');
-	// log(`text: ${text}`);
+function drawCharacterNameExtra(text, currentX, advanceWidth, color, hotspotItemID = false) {
+	log('drawCharacterNameExtra', 'start');
+	log(`text: ${text}`);
 	// log(`currentX: ${currentX}`);
 	// log(`advanceWidth: ${advanceWidth}`);
 	// log(`color: ${color}`);
-	// log(`registerHotspot: ${registerHotspot}`);
+	log(`hotspotItemID: ${hotspotItemID}`);
 
 	const ctx = contextCharacters.ctx;
 	const textWidth = ctx.measureText(text).width;
@@ -363,7 +371,7 @@ function drawCharacterNameExtra(text, currentX, advanceWidth, color, registerHot
 	ctx.fillText(text, textX, textY);
 
 	// Register hotspot
-	if (registerHotspot) {
+	if (hotspotItemID) {
 		registerCanvasHotspot({
 			target: {
 				xMin: currentX,
@@ -377,11 +385,11 @@ function drawCharacterNameExtra(text, currentX, advanceWidth, color, registerHot
 				y: textY + 6,
 			},
 			onclick: function () {
-				hotspotNavigateToItem(charToHex(registerHotspot));
+				hotspotNavigateToItem(hotspotItemID);
 			},
 		});
 	}
-	// log('drawCharacterNameExtra', 'end');
+	log('drawCharacterNameExtra', 'end');
 }
 
 /**
@@ -448,41 +456,64 @@ function drawSingleContextCharacter(charData) {
 // -------------------------------
 
 function registerCanvasHotspot(hotspot) {
-	contextCharacters.canvasHotSpots.push(hotspot);
+	log(`registerCanvasHotspot`, 'start');
+	contextCharacters.canvasHotspots.push(hotspot);
+	log(contextCharacters.canvasHotspots);
+	log(`registerCanvasHotspot`, 'end');
 }
 
 function clearCanvasHotspots() {
-	contextCharacters.canvasHotSpots = [];
+	contextCharacters.canvasHotspots = [];
 }
 
 export function isHotspotHere(cx, cy) {
-	const chs = contextCharacters.canvasHotSpots;
-	let v;
+	log(`isHotspotHere`, 'start');
+	log(`cx: ${cx}`);
+	log(`cy: ${cy}`);
 
-	for (let i = 0; i < chs.length; i++) {
-		v = chs[i];
-		// log(`isHotspotHere - checking`);
-		// log(`${ v.target.xMin } - ${ v.target.xMax } - ${ v.target.yMin } - ${ v.target.yMax }`);
-		// log(`results ${(cx <= v.target.xMax)} - ${(cx >= v.target.xMin)} - ${(cy <= v.target.yMax)} - ${(cy >= v.target.yMin)}`);
-		if (cx <= v.target.xMax && cx >= v.target.xMin && cy <= v.target.yMax && cy >= v.target.yMin) {
-			return v;
+	const spots = contextCharacters.canvasHotspots;
+	let spot;
+
+	for (let i = 0; i < spots.length; i++) {
+		spot = spots[i];
+		log(`${spot.target.xMin} - ${spot.target.xMax} - ${spot.target.yMin} - ${spot.target.yMax}`);
+		log(`x results ${cx <= spot.target.xMax} - ${cx >= spot.target.xMin}`);
+		log(`y results ${cy <= spot.target.yMax} - ${cy >= spot.target.yMin}`);
+
+		if (
+			cx <= spot.target.xMax &&
+			cx >= spot.target.xMin &&
+			cy <= spot.target.yMax &&
+			cy >= spot.target.yMin
+		) {
+			log(`Hit!`);
+			log(spot);
+			log(`isHotspotHere`, 'end');
+			return spot;
 		}
 	}
 
+	log(`None found`);
+	log(`isHotspotHere`, 'end');
 	return false;
 }
 
 export function findAndCallHotspot(cx, cy) {
-	contextCharacters.canvasHotSpots.forEach((v) => {
-		if (cx <= v.target.xMax && cx >= v.target.xMin && cy <= v.target.yMax && cy >= v.target.yMin) {
-			v.onclick();
+	contextCharacters.canvasHotspots.forEach((spot) => {
+		if (
+			cx <= spot.target.xMax &&
+			cx >= spot.target.xMin &&
+			cy <= spot.target.yMax &&
+			cy >= spot.target.yMin
+		) {
+			spot.onclick();
 		}
 	});
 }
 
 function hotspotNavigateToItem(id) {
-	// log('hotspotNavigateToItem', 'start');
-	// log('passed ' + id);
+	log('hotspotNavigateToItem', 'start');
+	log('passed ' + id);
 
 	const editor = getCurrentProjectEditor();
 	const v = editor.view;
@@ -506,31 +537,33 @@ function hotspotNavigateToItem(id) {
 	}
 
 	const str = contextCharacters.chars.substring(p1, p2);
-	// log(`substring from ${p1} to ${p2} yields ${str}`);
+	log(`substring from ${p1} to ${p2} yields ${str}`);
 
 	const delta = getItemStringAdvanceWidth(str);
 
-	// log(`advance width: ${delta} screen pixels: ${sXcX(delta)}`);
+	log(`advance width: ${delta} screen pixels: ${sXcX(delta)}`);
 	// v.dx += sXcX(delta);
 	const kern = calculateKernOffset(leftCharacter, rightCharacter);
-	// log(`kern offset ${leftCharacter} and ${rightCharacter} is ${kern}`);
+	log(`kern offset ${leftCharacter} and ${rightCharacter} is ${kern}`);
 
 	v.dx += v.dz * delta * flipper;
 	v.dx += v.dz * kern * flipper;
 
 	charItem.contextCharacters = contextCharacters.chars;
-	editor.selectedItem = id;
-	editor.view = v;
 
-	// log('hotspotNavigateToItem', 'end');
+	editor.selectedItemID = id;
+	editor.view = v;
+	editor.nav.navigate();
+
+	log('hotspotNavigateToItem', 'end');
 }
 
 export function findAndUnderlineHotspot(cx, cy) {
-	// log('findAndUnderlineHotspot', 'start');
-	// log(`cx:${cx} \t cy:${cy}`);
+	log('findAndUnderlineHotspot', 'start');
+	log(`cx:${cx} \t cy:${cy}`);
 	const hs = isHotspotHere(cx, cy);
 	const ctx = contextCharacters.ctx;
-	// log(`${hs}`);
+	log(`${hs}`);
 	if (hs) {
 		const t = getCurrentProject().settings.app.guides.system.transparency;
 		// var t2 = (((100 - t) / 2) + t);
@@ -545,8 +578,8 @@ export function findAndUnderlineHotspot(cx, cy) {
 		setCursor('arrow');
 	}
 
+	log('findAndUnderlineHotspot', 'end');
 	return hs.target.xMin;
-	// log('findAndUnderlineHotspot', 'end');
 }
 
 // function fitViewToContextCharacters(doNotZoom) {
