@@ -95,7 +95,7 @@
     "glyph-0x41": {
       "id": "glyph-0x0041",
       "advanceWidth": 530,
-      "contextCharacters": "CAB",
+      "contextCharacters": "BBBBABBBB",
       "shapes": [
         {
           "name": "Large outline",

@@ -11,6 +11,8 @@ import { KernGroup } from '../project_data/kern_group.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 import { decToHex } from '../common/character_ids.js';
+import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
+import { calculateKernOffset } from '../display_canvas/text_block.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -730,39 +732,90 @@ export class ProjectEditor {
 		// log(`rect:`);
 		// log(rect);
 
+		/*
+			Gather measurements from project data (Em) units
+		*/
 		const isKern = this.selectedItem.objType === 'KernGroup';
-		// log(`this.selectedItem: ${this.selectedItem}`);
-
 		// log(`isKern: ${isKern}`);
 
-		const itemHeight = this.project.totalVertical;
-		// log(`itemHeight: ${itemHeight}`);
+		const emPadding = this.project.defaultAdvanceWidth / 2;
+		let emWidth = emPadding * 2;
+		let emLeftOffset = 0;
+		const emHeight = this.project.totalVertical + emPadding * 2;
 
-		let itemWidth;
 		if (isKern) {
-			itemWidth = this.selectedItem.groupWidth;
+			// Kerning
+			emWidth += this.selectedItem.groupWidth;
+			emLeftOffset = this.selectedItem.leftGroupWidth;
+			emLeftOffset -= this.selectedItem.value;
+		} else if (this.project.settings.app.contextCharacters.showCharacters) {
+			// Context Characters
+			let ctxChars = this.selectedItem.contextCharacters;
+			// log(`ctxChars: ${ctxChars}`);
+			let selChar = this.selectedItem.char;
+			if (ctxChars === selChar) {
+				emWidth += this.selectedItem.advanceWidth;
+			} else {
+				let selCharIndex = ctxChars.indexOf(selChar);
+				// log(`selCharIndex: ${selCharIndex}`);
+				// Context Characters do not contain the current selected char
+				// Add it implicitly
+				if (selCharIndex === -1) {
+					ctxChars += selChar;
+					selCharIndex = 1;
+				}
+				// Need to separate the two sides, because the
+				// selected item char will not be combined with
+				// the characters on either side to form ligatures
+				let leftChars = ctxChars.substring(0, selCharIndex);
+				let rightChars = ctxChars.substring(selCharIndex + 1);
+				emWidth += getItemStringAdvanceWidth(leftChars);
+				emWidth += this.selectedItem.advanceWidth;
+				emWidth += getItemStringAdvanceWidth(rightChars);
+				emWidth += calculateKernOffset(leftChars.charAt(leftChars.length), selChar);
+				emWidth += calculateKernOffset(selChar, rightChars.charAt(0));
+				// log(`leftChars: ${leftChars}`);
+				// log(`rightChars: ${rightChars}`);
+
+				emLeftOffset = getItemStringAdvanceWidth(leftChars);
+			}
 		} else {
-			itemWidth = this.selectedItem.advanceWidth || this.project.defaultAdvanceWidth;
+			emWidth += this.selectedItem.advanceWidth || this.project.defaultAdvanceWidth;
 		}
-		// log(`itemWidth: ${itemWidth}`);
+
+		// log(`emHeight: ${emHeight}`);
+		// log(`emWidth: ${emWidth}`);
+		// log(`emLeftOffset: ${emLeftOffset}`);
+
+		/*
+			Calculate measurements in Canvas (px) units
+		*/
 
 		//Zoom
-		const newZ = Math.min(rect.height / (itemHeight * 1.2), rect.width / (itemWidth * 1.5));
+		const newZ = Math.min(rect.height / emHeight, rect.width / emWidth);
+		// log(`newZ: ${newZ}`);
 
 		// Vertical
-		const visibleGlyphHeight = itemHeight * newZ;
-		const topSpace = (rect.height - visibleGlyphHeight) / 2;
-		const newY = topSpace + this.project.settings.font.ascent * newZ;
+		const canvasPadding = emPadding * newZ;
+		const canvasItemsHeight = emHeight * newZ;
+		let newY = (rect.height - canvasItemsHeight) / 2;
+		newY += canvasPadding;
+		newY += this.project.settings.font.ascent * newZ;
+		// log(`newY: ${newY}`);
 
 		// Horizontal
-		let visibleGlyphWidth = itemWidth * newZ;
-		if (visibleGlyphWidth === 0) visibleGlyphWidth = rect.width / 3;
-		let newX = (rect.width - visibleGlyphWidth) / 2;
-		if (isKern) {
-			newX += visibleGlyphWidth / 2;
-			newX += this.selectedItem.value * newZ * -1;
-		}
+		let canvasItemsWidth = emWidth * newZ;
+		// log(`canvasItemsWidth: ${canvasItemsWidth}`);
 
+		if (canvasItemsWidth === 0) canvasItemsWidth = rect.width / 3;
+		let newX = (rect.width - canvasItemsWidth) / 2;
+		newX += emLeftOffset * newZ;
+		newX += canvasPadding;
+		// log(`newX: ${newX}`);
+
+		/*
+			Assemble final view
+		*/
 		const newView = { dx: round(newX, 3), dy: round(newY, 3), dz: round(newZ, 3) };
 
 		// log(`newView: ${JSON.stringify(newView)}`);
@@ -778,7 +831,6 @@ export class ProjectEditor {
 			// log(`this.view.default: ${this.view.default}`);
 			if (this.view.default) {
 				this.autoFitView();
-				this.publish('editCanvasView', this.view);
 			}
 		}
 		// log(`ProjectEditor.autoFitIfViewIsDefault`, 'end');

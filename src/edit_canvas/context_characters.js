@@ -178,7 +178,7 @@ function splitContextCharacterString(splitChar) {
  * @param {Object} textString - Text Block object
  * @returns {Number} width in Em units
  */
-function getItemStringAdvanceWidth(textString) {
+export function getItemStringAdvanceWidth(textString) {
 	// log(`getItemStringAdvanceWidth`, 'start');
 	// log(`textString: ${textString}`);
 
