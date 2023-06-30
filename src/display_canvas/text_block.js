@@ -405,9 +405,9 @@ function getNextLineBreaker(block, start) {
  * Takes two glyphs as arguments, and determines the number of Em units of
  * offset between them.  First checks to see if there are custom kern values
  * for the pair, and if not, returns 0.
- * @param {Glyph} c1 - first glyph to check
- * @param {Glyph} c2 - second glyph to check
- * @returns
+ * @param {String} c1 - first character to check
+ * @param {String} c2 - second character to check
+ * @returns {Number} - Kern value in Em units
  */
 export function calculateKernOffset(c1, c2) {
 	// log('calculateKernOffset', 'start');

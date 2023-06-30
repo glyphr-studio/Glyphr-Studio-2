@@ -27,7 +27,10 @@ export function makePanel_ContextCharacters() {
 
 	const ccOptions = project.settings.app.contextCharacters;
 	let toggleCheckboxLabel = makeSingleLabel('Show&nbsp;context&nbsp;characters&nbsp;&nbsp;');
-	let toggleCheckbox = makeDirectCheckbox(ccOptions, 'showCharacters', refresh);
+	let toggleCheckbox = makeDirectCheckbox(ccOptions, 'showCharacters', () => {
+		getCurrentProjectEditor().autoFitView();
+		refresh();
+	});
 
 	let charsInput = makeSingleInput(
 		editor.selectedItem,
@@ -36,6 +39,7 @@ export function makePanel_ContextCharacters() {
 		'input',
 		['input']
 	);
+	charsInput.addEventListener('input', () => getCurrentProjectEditor().autoFitView());
 
 	let transparencyLabel = makeSingleLabel('Transparency');
 	let transparencyInput = makeSingleInput(

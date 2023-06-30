@@ -122,7 +122,7 @@ export class KernGroup extends GlyphElement {
 		let leftWidth = 0;
 		const project = getCurrentProject();
 		this.leftGroup.forEach((id) => {
-			let item = project.getItem(id);
+			let item = project.getItem(`glyph-${id}`);
 			if (item && item.advanceWidth) leftWidth = Math.max(leftWidth, item.advanceWidth);
 		});
 		return leftWidth;
@@ -132,7 +132,7 @@ export class KernGroup extends GlyphElement {
 		let rightWidth = 0;
 		const project = getCurrentProject();
 		this.rightGroup.forEach((id) => {
-			let item = project.getItem(id);
+			let item = project.getItem(`glyph-${id}`);
 			if (item && item.advanceWidth) rightWidth = Math.max(rightWidth, item.advanceWidth);
 		});
 		return rightWidth;
@@ -144,7 +144,7 @@ export class KernGroup extends GlyphElement {
 			const project = getCurrentProject();
 			let leftWidth = this.leftGroupWidth || project.defaultAdvanceWidth;
 			let rightWidth = this.rightGroupWidth || project.defaultAdvanceWidth;
-			this.cache.groupWidth = leftWidth + this.value + rightWidth;
+			this.cache.groupWidth = leftWidth - this.value + rightWidth;
 			// log(`this.cache.groupWidth: ${this.cache.groupWidth}`);
 		}
 		// log(`KernGroup GET groupWidth`, 'end');
@@ -162,6 +162,7 @@ export class KernGroup extends GlyphElement {
 	set leftGroup(newGroup = []) {
 		newGroup = newGroup.map((value) => validateAsHex(value));
 		newGroup = newGroup.filter(duplicates);
+		this.changed();
 		this._leftGroup = newGroup;
 	}
 	/**
@@ -171,6 +172,7 @@ export class KernGroup extends GlyphElement {
 	set rightGroup(newGroup = []) {
 		newGroup = newGroup.map((value) => validateAsHex(value));
 		newGroup = newGroup.filter(duplicates);
+		this.changed();
 		this._rightGroup = newGroup;
 	}
 
@@ -180,5 +182,6 @@ export class KernGroup extends GlyphElement {
 	 */
 	set value(val) {
 		this._value = parseInt(val) || 0;
+		this.changed();
 	}
 }
