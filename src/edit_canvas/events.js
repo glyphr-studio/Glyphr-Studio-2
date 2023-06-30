@@ -41,7 +41,7 @@ export let eventHandlerData = {
 	isAltDown: false,
 	hoverPoint: false,
 	multi: false,
-	canvasHotSpots: [],
+	canvasHotspots: [],
 };
 
 export function initEventHandlers(canvas) {

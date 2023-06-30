@@ -9,6 +9,7 @@ import { isOverControlPoint } from '../detect_edit_affordances.js';
 import { clickEmptySpace } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 import { eventHandlerData } from '../events.js';
+import { findAndCallHotspot } from '../context_characters.js';
 
 export class Tool_PathEdit {
 	constructor() {
@@ -90,7 +91,7 @@ export class Tool_PathEdit {
 			} else {
 				// log('detected NOTHING');
 				clickEmptySpace();
-				// findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
+				findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			}
 
 			// if (msShapes.members.length) editor.nav.panel = 'Attributes';

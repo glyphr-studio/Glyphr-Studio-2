@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { calculateAngle } from '../../common/functions.js';
+import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
@@ -84,8 +85,7 @@ export class Tool_Resize {
 				// log('clicked on nothing');
 				clickEmptySpace();
 
-				// TODO hotspots
-				// findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
+				findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			}
 		};
 
