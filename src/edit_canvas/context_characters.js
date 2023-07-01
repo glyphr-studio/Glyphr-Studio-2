@@ -25,6 +25,10 @@ const contextCharacters = {
 	canvasHotspots: [],
 	leftBlock: false,
 	rightBlock: false,
+	labelColors: {
+		link: 'rgb(214, 71, 0)',
+		selected: 'rgb(128, 43, 0)',
+	},
 };
 
 /**
@@ -134,7 +138,7 @@ export function drawContextCharacters(ctx) {
 	if (project.settings.app.contextCharacters.showGuides) {
 		const item = editor.selectedItem;
 		const alpha = transparencyToAlpha(project.settings.app.contextCharacters.guidesTransparency);
-		const textColor = getColorFromRGBA('rgb(128, 43, 0)', alpha);
+		const textColor = getColorFromRGBA(contextCharacters.labelColors.selected, alpha);
 		drawCharacterNameExtra(
 			item.name.replace(/latin /i, ''),
 			view.dx,
@@ -143,7 +147,7 @@ export function drawContextCharacters(ctx) {
 			false
 		);
 
-		const lineColor = getColorFromRGBA('rgb(214, 71, 0)', alpha);
+		const lineColor = getColorFromRGBA(contextCharacters.labelColors.link, alpha);
 		contextCharacters.ctx.fillStyle = lineColor;
 		drawEmVerticalLine(contextCharacters.ctx, 0, editor.view, false);
 		drawEmVerticalLine(contextCharacters.ctx, editor.selectedItem.advanceWidth, editor.view, false);
@@ -158,15 +162,15 @@ export function drawContextCharacters(ctx) {
  * @returns {Object} - two arrays
  */
 function splitContextCharacterString(splitChar) {
-	log(`splitContextCharacterString`, 'start');
+	// log(`splitContextCharacterString`, 'start');
 	const cChars = contextCharacters.chars;
-	log(`cChars: ${cChars}`);
-	log(`splitChar: ${splitChar}`);
+	// log(`cChars: ${cChars}`);
+	// log(`splitChar: ${splitChar}`);
 	const result = { left: false, right: false };
 
 	if (cChars) {
 		const pos = cChars.indexOf(splitChar);
-		log(`pos: ${pos}`);
+		// log(`pos: ${pos}`);
 		if (pos === -1) {
 			result.left = cChars;
 			result.right = '';
@@ -176,8 +180,8 @@ function splitContextCharacterString(splitChar) {
 		}
 	}
 
-	log(result);
-	log(`splitContextCharacterString`, 'end');
+	// log(result);
+	// log(`splitContextCharacterString`, 'end');
 	return result;
 }
 
@@ -269,7 +273,7 @@ function drawContextCharacterLeftLineExtras(char, block) {
  * Draws the Guide Lines and Labels ("Extras") for the right half
  * @param {Object} char - Individual character from a text block
  */
-function drawContextCharacterRightLineExtras(char) {
+function drawContextCharacterRightLineExtras(char, block) {
 	// log(`drawContextCharacterRightLineExtras`, 'start');
 
 	// Draw baseline from the first char to the end of the right-hand group
@@ -284,6 +288,19 @@ function drawContextCharacterRightLineExtras(char) {
 
 	if (editor.project.settings.app.contextCharacters.showGuides) {
 		drawBaseline(contextCharacters.ctx, char.view.dx, char.view.dy, underlineWidth + 20);
+	}
+
+	// Kern data
+	// Draw kern data between leftmost char and the selected item
+	let kern = calculateKernOffset(editor.selectedItem.char, block.characterString.charAt(0));
+
+	if (kern) {
+		const v = getCurrentProjectEditor().view;
+		// kern *= -1;
+		let rightX = kern + editor.selectedItem.advanceWidth;
+		rightX = v.dx + rightX * v.dz;
+
+		drawCharacterKernExtra(contextCharacters.ctx, -kern, rightX, v.dz);
 	}
 	// log(`drawContextCharacterRightLineExtras`, 'end');
 }
@@ -309,7 +326,12 @@ function drawContextCharacterExtras(char, roundUp = 'none') {
 		const advanceWidth = char.widths.advance * char.view.dz;
 		const currentX = char.view.dx; // * view.dz;
 		const rightX = currentX + advanceWidth;
-		const color = getColorFromRGBA('rgb(214, 71, 0)', alpha);
+		let color = getColorFromRGBA(contextCharacters.labelColors.link, alpha);
+		let linkID = char.item.id;
+		if (editor.selectedItemID === char.item.id) {
+			color = getColorFromRGBA(contextCharacters.labelColors.selected, alpha);
+			linkID = false;
+		}
 
 		// Draw the glyph name
 		// log(`drawing name`);
@@ -318,7 +340,7 @@ function drawContextCharacterExtras(char, roundUp = 'none') {
 		else name = editor.project.getItemName(`glyph-${charsToHexArray(char.char)}`, true);
 		name = name.replace(/latin /i, '');
 		// log(`name: ${name}`);
-		drawCharacterNameExtra(name, currentX, advanceWidth, color, char.item.id);
+		drawCharacterNameExtra(name, currentX, advanceWidth, color, linkID);
 
 		// Draw vertical lines
 		// log(`drawing vertical line`);
@@ -345,12 +367,12 @@ function drawContextCharacterExtras(char, roundUp = 'none') {
  * @param {Boolean} registerHotspot - register a hotspot for this name?
  */
 function drawCharacterNameExtra(text, currentX, advanceWidth, color, hotspotItemID = false) {
-	log('drawCharacterNameExtra', 'start');
-	log(`text: ${text}`);
+	// log('drawCharacterNameExtra', 'start');
+	// log(`text: ${text}`);
 	// log(`currentX: ${currentX}`);
 	// log(`advanceWidth: ${advanceWidth}`);
 	// log(`color: ${color}`);
-	log(`hotspotItemID: ${hotspotItemID}`);
+	// log(`hotspotItemID: ${hotspotItemID}`);
 
 	const ctx = contextCharacters.ctx;
 	const textWidth = ctx.measureText(text).width;
@@ -389,7 +411,7 @@ function drawCharacterNameExtra(text, currentX, advanceWidth, color, hotspotItem
 			},
 		});
 	}
-	log('drawCharacterNameExtra', 'end');
+	// log('drawCharacterNameExtra', 'end');
 }
 
 /**
@@ -456,10 +478,10 @@ function drawSingleContextCharacter(charData) {
 // -------------------------------
 
 function registerCanvasHotspot(hotspot) {
-	log(`registerCanvasHotspot`, 'start');
+	// log(`registerCanvasHotspot`, 'start');
 	contextCharacters.canvasHotspots.push(hotspot);
-	log(contextCharacters.canvasHotspots);
-	log(`registerCanvasHotspot`, 'end');
+	// log(contextCharacters.canvasHotspots);
+	// log(`registerCanvasHotspot`, 'end');
 }
 
 function clearCanvasHotspots() {
@@ -467,18 +489,18 @@ function clearCanvasHotspots() {
 }
 
 export function isHotspotHere(cx, cy) {
-	log(`isHotspotHere`, 'start');
-	log(`cx: ${cx}`);
-	log(`cy: ${cy}`);
+	// log(`isHotspotHere`, 'start');
+	// log(`cx: ${cx}`);
+	// log(`cy: ${cy}`);
 
 	const spots = contextCharacters.canvasHotspots;
 	let spot;
 
 	for (let i = 0; i < spots.length; i++) {
 		spot = spots[i];
-		log(`${spot.target.xMin} - ${spot.target.xMax} - ${spot.target.yMin} - ${spot.target.yMax}`);
-		log(`x results ${cx <= spot.target.xMax} - ${cx >= spot.target.xMin}`);
-		log(`y results ${cy <= spot.target.yMax} - ${cy >= spot.target.yMin}`);
+		// log(`${spot.target.xMin} - ${spot.target.xMax} - ${spot.target.yMin} - ${spot.target.yMax}`);
+		// log(`x results ${cx <= spot.target.xMax} - ${cx >= spot.target.xMin}`);
+		// log(`y results ${cy <= spot.target.yMax} - ${cy >= spot.target.yMin}`);
 
 		if (
 			cx <= spot.target.xMax &&
@@ -486,15 +508,15 @@ export function isHotspotHere(cx, cy) {
 			cy <= spot.target.yMax &&
 			cy >= spot.target.yMin
 		) {
-			log(`Hit!`);
-			log(spot);
-			log(`isHotspotHere`, 'end');
+			// log(`Hit!`);
+			// log(spot);
+			// log(`isHotspotHere`, 'end');
 			return spot;
 		}
 	}
 
-	log(`None found`);
-	log(`isHotspotHere`, 'end');
+	// log(`None found`);
+	// log(`isHotspotHere`, 'end');
 	return false;
 }
 
@@ -551,19 +573,25 @@ function hotspotNavigateToItem(id) {
 
 	charItem.contextCharacters = contextCharacters.chars;
 
-	editor.selectedItemID = id;
 	editor.view = v;
+	if (id.startsWith('liga-')) {
+		editor.nav.page = 'Ligatures'
+		editor.selectedItemID = id;
+	} else {
+		editor.nav.page = 'Characters'
+		editor.selectedItemID = id;
+	}
 	editor.nav.navigate();
 
 	log('hotspotNavigateToItem', 'end');
 }
 
 export function findAndUnderlineHotspot(cx, cy) {
-	log('findAndUnderlineHotspot', 'start');
-	log(`cx:${cx} \t cy:${cy}`);
+	// log('findAndUnderlineHotspot', 'start');
+	// log(`cx:${cx} \t cy:${cy}`);
 	const hs = isHotspotHere(cx, cy);
 	const ctx = contextCharacters.ctx;
-	log(`${hs}`);
+	// log(`${hs}`);
 	if (hs) {
 		const t = getCurrentProject().settings.app.guides.system.transparency;
 		// var t2 = (((100 - t) / 2) + t);
@@ -571,6 +599,7 @@ export function findAndUnderlineHotspot(cx, cy) {
 		const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);
 
 		ctx.strokeStyle = rgb;
+		ctx.lineWidth = 1;
 		ctx.beginPath();
 		ctx.moveTo(hs.underline.xMin, makeCrisp(hs.underline.y));
 		ctx.lineTo(hs.underline.xMax, makeCrisp(hs.underline.y));
@@ -578,45 +607,9 @@ export function findAndUnderlineHotspot(cx, cy) {
 		setCursor('arrow');
 	}
 
-	log('findAndUnderlineHotspot', 'end');
+	// log('findAndUnderlineHotspot', 'end');
 	return hs.target.xMin;
 }
-
-// function fitViewToContextCharacters(doNotZoom) {
-// 	// log('fitViewToContextCharacters', 'start');
-// 	const ps = getCurrentProject().settings.font;
-// 	const editor = getCurrentProjectEditor();
-
-// 	// const xPadding = 80;
-// 	const yPadding = 80; // Height of the UI across the top
-// 	const canvasWidth = window.innerWidth - 470; // 470 is the width of the left panel area
-// 	const canvasHeight = window.innerHeight - yPadding;
-// 	// log(`CAN \t ${canvasWidth} \t ${canvasHeight}`);
-
-// 	const stringWidth = contextCharacters.advanceWidth;
-// 	const stringHeight = ps.ascent - ps.descent;
-// 	// log(`STR \t ${stringWidth} \t ${stringHeight}`);
-
-// 	let zw;
-// 	let zh;
-// 	let nz;
-
-// 	if (doNotZoom) {
-// 		nz = editor.view.dz;
-// 		// log(`VZ \t ${nz}`);
-// 	} else {
-// 		zw = round(canvasWidth / (stringWidth * 1.4), 3);
-// 		zh = round(canvasHeight / (stringHeight * 1.4), 3);
-// 		// log(`NZ \t ${zw} \t ${zh}`);
-// 	}
-
-// 	nz = Math.min(zh, zw);
-// 	const nx = round((canvasWidth - nz * stringWidth) / 2);
-// 	const ny = round((canvasHeight - nz * stringHeight) / 2 + ps.ascent * nz);
-// 	// log(`VIEW \t ${nx} \t ${ny} \t ${nz}`);
-
-// 	editor.view = { dx: nx, dy: ny, dz: nz };
-// }
 
 function drawVerticalLine(x, ctx, color) {
 	color = color || 'rgb(0,0,0)';
