@@ -210,20 +210,10 @@ export function checkForMouseOverHotspot(x, y) {
 	if (isHotspotHere(x, y)) {
 		let hs = findAndUnderlineHotspot(x, y);
 		setCursor('pointer');
-		if (hs !== eventHandlerData.canvasHotspotHovering)
-			editor.redraw({
-				calledBy: 'checkForMouseOverHotspot',
-				redrawPanels: false,
-				redrawTools: false,
-			});
+		if (hs !== eventHandlerData.canvasHotspotHovering) editor.publish('editCanvasView', editor.view);
 		eventHandlerData.canvasHotspotHovering = hs;
 	} else {
-		if (eventHandlerData.canvasHotspotHovering)
-			editor.redraw({
-				calledBy: 'checkForMouseOverHotspot',
-				redrawPanels: false,
-				redrawTools: false,
-			});
+		if (eventHandlerData.canvasHotspotHovering) editor.publish('editCanvasView', editor.view);
 		eventHandlerData.canvasHotspotHovering = false;
 	}
 }

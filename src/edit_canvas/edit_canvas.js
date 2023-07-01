@@ -233,7 +233,7 @@ export class EditCanvas extends HTMLElement {
 			// log(`drawSystemGuidelines`, 'start');
 
 			ctx.fillStyle = accentColors.gray.l90;
-			const gridPad = 100 * view.dz;
+			const gridPad = 20 * view.dz;
 			const advanceWidth = project.getItem(currentItemID).advanceWidth;
 			let gridWidth = advanceWidth * view.dz;
 

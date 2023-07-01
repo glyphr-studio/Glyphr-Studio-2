@@ -4,7 +4,7 @@ import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
-import { clickEmptySpace, resizePath } from '../events_mouse.js';
+import { checkForMouseOverHotspot, clickEmptySpace, resizePath } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 
 // ----------------------------------------------------------------
@@ -174,7 +174,7 @@ export class Tool_Resize {
 				}
 			}
 
-			// checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
+			checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 
 			if (this.didStuff) {
 				// log('did stuff');

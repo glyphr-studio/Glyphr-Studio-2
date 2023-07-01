@@ -6,7 +6,7 @@ import { getCurrentProjectEditor } from '../../app/main.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { setCursor } from '../cursors.js';
 import { isOverControlPoint } from '../detect_edit_affordances.js';
-import { clickEmptySpace } from '../events_mouse.js';
+import { checkForMouseOverHotspot, clickEmptySpace } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 import { eventHandlerData } from '../events.js';
 import { findAndCallHotspot } from '../context_characters.js';
@@ -154,7 +154,7 @@ export class Tool_PathEdit {
 				editor.publish(`currentControlPoint.${cpt}`, this.controlPoint);
 			}
 
-			// checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
+			checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 
 			// Figure out cursor
 			let hoveredControlPoint;
