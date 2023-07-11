@@ -318,6 +318,7 @@ export function showNavDropdown(parentElement) {
 			left: ${rect.left + 1}px;
 			top: ${top}px;
 			min-width: ${size};
+			max-width: 60%;
 			background-color: ${parentStyle.backgroundColor};
 			border-color: ${parentStyle.backgroundColor};
 		`,

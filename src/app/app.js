@@ -35,7 +35,7 @@ export class GlyphrStudioApp {
 				sampleProject: true, // Load the sample project
 				currentPage: 'Characters', // navigate straight to a page (title case names)
 				currentGlyphID: false, // select a glyph
-				currentPanel: 'Context characters', // navigate straight to a panel (title case names)
+				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
 				selectFirstShape: false, // select a shape
 				selectFirstPoint: false, // select a path point

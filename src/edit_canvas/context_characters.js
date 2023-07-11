@@ -237,10 +237,6 @@ function drawContextCharacterLeftLineExtras(char, block) {
 	// log(`block: ${block}`);
 
 	const editor = getCurrentProjectEditor();
-	// const alpha = transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency);
-	// const color = getColorFromRGBA('rgb(204,81,0)', alpha);
-	// drawVerticalLine(char.view.dx * char.view.dz, contextCharacters.ctx, color);
-
 	// Draw baseline from first char to selected item
 	if (editor.project.settings.app.contextCharacters.showGuides) {
 		drawBaseline(
@@ -422,10 +418,6 @@ function drawCharacterNameExtra(text, currentX, advanceWidth, color, hotspotItem
  * @param {Number} scale - view.dz
  */
 export function drawCharacterKernExtra(ctx, kern, rightX, scale) {
-	// const color = getColorFromRGBA(
-	// 	'rgb(255,0,255)',
-	// 	transparencyToAlpha(getCurrentProject().settings.app.guides.system.transparency)
-	// );
 	const topY = sYcY(getCurrentProject().settings.font.descent);
 	const color = accentColors.purple.l70;
 	const barHeight = Math.max(scale * 10, 1);
@@ -593,7 +585,7 @@ export function findAndUnderlineHotspot(cx, cy) {
 	const ctx = contextCharacters.ctx;
 	// log(`${hs}`);
 	if (hs) {
-		const t = getCurrentProject().settings.app.guides.system.transparency;
+		const t = getCurrentProject().settings.app.contextCharacters.guidesTransparency;
 		// var t2 = (((100 - t) / 2) + t);
 		const alpha = transparencyToAlpha(t);
 		const rgb = getColorFromRGBA('rgb(204,81,0)', alpha);

@@ -45,20 +45,26 @@
 }
 
 .editor-page__zoom-area {
-	grid-template-columns: min-content 1fr min-content;
-	display: grid;
-	column-gap: 5px;
-	position: absolute;
-	right: 15px;
-	bottom: 14px;
-	margin-bottom: -4px;
+	display: none;
+}
+
+@media (min-width: 645px) {
+	.editor-page__zoom-area {
+		grid-template-columns: min-content 1fr min-content min-content;
+		display: grid;
+		column-gap: 5px;
+		position: absolute;
+		right: 15px;
+		bottom: 14px;
+		margin-bottom: -4px;
+	}
 }
 
 .editor-page__responsive-group {
 	display: none;
 }
 
-@media (min-width: 810px) {
+@media (min-width: 844px) {
 	.editor-page__responsive-group {
 		display: grid;
 		grid-template-columns: repeat(6, min-content);

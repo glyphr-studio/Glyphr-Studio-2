@@ -43,9 +43,9 @@ export class GlyphrStudioProject {
 				},
 				contextCharacters: {
 					showCharacters: false,
-					characterTransparency: 10,
+					characterTransparency: 20,
 					showGuides: true,
-					guidesTransparency: 10,
+					guidesTransparency: 70,
 				},
 			},
 			font: {

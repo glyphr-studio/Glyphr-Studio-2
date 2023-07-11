@@ -4,6 +4,7 @@ import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';
 import { Path } from '../../project_data/path.js';
+import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
 import { stopCreatingNewPath } from './new_path.js';
 
 // --------------------------------------------------------------
@@ -195,6 +196,23 @@ export function makeViewToolsButtons() {
 		},
 	});
 
+	// Live Preview pop-out
+	let isPoppedOut = !!editor.popOutWindow;
+	let livePreviewPopOut = makeElement({
+		tag: 'button',
+		className: 'editor-page__tool',
+		id: 'editor-page__tool__open-live-preview-pop-out',
+		title: 'Pop out a Live Preview window',
+		innerHTML: makeToolButtonSVG({
+			name: isPoppedOut ? 'closeLivePreview' : 'openLivePreview',
+			selected: false,
+		}),
+	});
+	livePreviewPopOut.addEventListener('click', () => {
+		if (isPoppedOut) closePopOutWindow();
+		else openPopOutWindow();
+	});
+
 	// Put it all together
 	let responsiveGroup = makeElement({ className: 'editor-page__responsive-group' });
 
@@ -208,7 +226,7 @@ export function makeViewToolsButtons() {
 	]);
 
 	// log(`makeViewToolsButtons`, 'end');
-	return [viewButtonElements.pan, responsiveGroup, viewButtonElements.zoomEm];
+	return [viewButtonElements.pan, responsiveGroup, viewButtonElements.zoomEm, livePreviewPopOut];
 }
 
 export function clickTool(tool) {
@@ -792,6 +810,87 @@ icons.pan = {
 		<rect x="11" y="1" width="1" height="1"></rect>
 		<rect x="12" y="2" width="1" height="1"></rect>
 		<rect x="13" y="3" width="1" height="1"></rect>
+	`,
+};
+
+icons.livePreview = {
+	outline: `
+		<polygon points="8 12 7 12 7 13 5 13 5 9 6 9 6 8 3 8 3 9 4 9 4 13 3 13 3 14 8 14 8 12"/>
+		<rect x="8" y="10" width="1" height="1"/>
+		<rect x="10" y="10" width="2" height="1"/>
+		<rect x="12" y="11" width="1" height="2"/>
+		<polygon points="12 13 10 13 10 11 9 11 9 15 8 15 8 16 10 16 10 14 12 14 12 13"/>
+		<rect x="1" y="6" width="1" height="12"/>
+		<rect x="14" y="8" width="1" height="10"/>
+		<rect x="2" y="5" width="10" height="1"/>
+		<polygon points="14 1 14 2 18 2 18 6 19 6 19 1 14 1"/>
+		<rect x="15" y="4" width="1" height="1"/>
+		<rect x="16" y="3" width="1" height="1"/>
+		<rect x="14" y="5" width="1" height="1"/>
+		<rect x="13" y="6" width="1" height="1"/>
+		<rect x="17" y="2" width="1" height="1"/>
+		<rect x="2" y="18" width="12" height="1"/>
+	`,
+};
+
+icons.openLivePreview = {
+	fill: `
+	<rect data-name="Background" x="2" y="6" width="12" height="12"/>
+	`,
+	outline: `
+		<g data-name="Lp">
+			<polygon points="8 12 7 12 7 13 5 13 5 9 6 9 6 8 3 8 3 9 4 9 4 13 3 13 3 14 8 14 8 12"/>
+			<rect x="8" y="10" width="1" height="1"/>
+			<rect x="10" y="10" width="2" height="1"/>
+			<rect x="12" y="11" width="1" height="2"/>
+			<polygon points="12 13 10 13 10 11 9 11 9 15 8 15 8 16 10 16 10 14 12 14 12 13"/>
+			<rect x="1" y="6" width="1" height="12"/>
+			<rect x="14" y="8" width="1" height="10"/>
+			<rect x="2" y="5" width="10" height="1"/>
+			<rect x="2" y="18" width="12" height="1"/>
+		</g>
+		<g data-name="Launch">
+			<polygon points="14 1 14 2 18 2 18 6 19 6 19 1 14 1"/>
+			<rect x="15" y="4" width="1" height="1"/>
+			<rect x="16" y="3" width="1" height="1"/>
+			<rect x="14" y="5" width="1" height="1"/>
+			<rect x="13" y="6" width="1" height="1"/>
+			<rect x="17" y="2" width="1" height="1"/>
+		</g>
+	`,
+};
+
+icons.closeLivePreview = {
+	fill: `
+	<rect data-name="Background" x="2" y="6" width="12" height="12"/>
+	`,
+	outline: `
+		<g data-name="Lp">
+			<polygon points="8 12 7 12 7 13 5 13 5 9 6 9 6 8 3 8 3 9 4 9 4 13 3 13 3 14 8 14 8 12"/>
+			<rect x="8" y="10" width="1" height="1"/>
+			<rect x="10" y="10" width="2" height="1"/>
+			<rect x="12" y="11" width="1" height="2"/>
+			<polygon points="12 13 10 13 10 11 9 11 9 15 8 15 8 16 10 16 10 14 12 14 12 13"/>
+			<rect x="1" y="6" width="1" height="12"/>
+			<rect x="14" y="8" width="1" height="10"/>
+			<rect x="2" y="5" width="10" height="1"/>
+			<rect x="2" y="18" width="12" height="1"/>
+		</g>
+		<g data-name="Close">
+			<rect x="15" y="4" width="1" height="1"/>
+			<rect x="16" y="3" width="1" height="1"/>
+			<rect x="14" y="5" width="1" height="1"/>
+			<rect x="13" y="6" width="1" height="1"/>
+			<rect x="13" y="0" width="1" height="1"/>
+			<rect x="19" y="0" width="1" height="1"/>
+			<rect x="19" y="6" width="1" height="1"/>
+			<rect x="17" y="2" width="1" height="1"/>
+			<rect x="18" y="1" width="1" height="1"/>
+			<rect x="15" y="2" width="1" height="1"/>
+			<rect x="14" y="1" width="1" height="1"/>
+			<rect x="18" y="5" width="1" height="1"/>
+			<rect x="17" y="4" width="1" height="1"/>
+		</g>
 	`,
 };
 
