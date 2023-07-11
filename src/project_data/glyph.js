@@ -76,6 +76,8 @@ export class Glyph extends GlyphElement {
 		if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
 		if (this.usedIn.length) re.usedIn = this.usedIn;
 		if (this.gsub.length) re.gsub = this.gsub;
+		let cc = this.contextCharacters;
+		if (cc.length && cc !== this.char) re.contextCharacters = cc;
 
 		if (this.shapes && this.shapes.length) {
 			re.shapes = [];

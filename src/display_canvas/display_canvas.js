@@ -3,7 +3,7 @@ import { TextBlock } from './text_block.js';
 import { getCurrentProject } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { drawGlyph } from './draw_paths.js';
-import { clone, json, makeCrisp, round } from '../common/functions.js';
+import { clone, makeCrisp, round } from '../common/functions.js';
 // import { livePreviewPageWindowResize } from '../pages/live_preview.js';
 import { livePreviewOptions } from '../panels/live_preview.js';
 import style from './display-canvas.css?inline';
@@ -22,7 +22,13 @@ export class DisplayCanvas extends HTMLElement {
 		log(`DisplayCanvas.constructor`, 'start');
 		super();
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
+		this.isSetUp = false;
+		log(this);
+		log(this.parentElement);
+		log(`DisplayCanvas.constructor`, 'end');
+	}
 
+	setUp() {
 		const clientRect = this.parentElement.getClientRects()[0];
 		displayCanvas.width = clientRect.width;
 		displayCanvas.height = clientRect.height;
@@ -37,10 +43,10 @@ export class DisplayCanvas extends HTMLElement {
 
 		displayCanvas.textBlock = false;
 
-		this.showPageExtras = attributes.showPageExtras || livePreviewOptions.showPageExtras;
-		this.showLineExtras = attributes.showLineExtras || livePreviewOptions.showLineExtras;
+		this.showPageExtras = this.attributes.showPageExtras || livePreviewOptions.showPageExtras;
+		this.showLineExtras = this.attributes.showLineExtras || livePreviewOptions.showLineExtras;
 		this.showCharacterExtras =
-			attributes.showCharacterExtras || livePreviewOptions.showCharacterExtras;
+			this.attributes.showCharacterExtras || livePreviewOptions.showCharacterExtras;
 		this.drawCrisp = false;
 
 		// Extra Fancy Super Codez
@@ -59,9 +65,18 @@ export class DisplayCanvas extends HTMLElement {
 		displayCanvas.canvas.height = displayCanvas.height;
 		displayCanvas.canvas.width = displayCanvas.width;
 
-		// this.redraw();
-		log(this);
-		log(`DisplayCanvas.constructor`, 'end');
+		// Finish
+		this.isSetUp = true;
+	}
+
+	/**
+	 * Draw the canvas when it's loaded
+	 */
+	connectedCallback() {
+		log(`DisplayCanvas.connectedCallback`, 'start');
+		this.setUp();
+		this.redraw();
+		log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
 	updateTextBlock() {
@@ -119,15 +134,6 @@ export class DisplayCanvas extends HTMLElement {
 	}
 
 	/**
-	 * Draw the canvas when it's loaded
-	 */
-	connectedCallback() {
-		log(`DisplayCanvas.connectedCallback`, 'start');
-		this.redraw();
-		log(`DisplayCanvas.connectedCallback`, 'end');
-	}
-
-	/**
 	 * Listens for attribute changes on this element
 	 * @param {String} attributeName - which attribute was changed
 	 * @param {String} oldValue - value before the change
@@ -136,7 +142,7 @@ export class DisplayCanvas extends HTMLElement {
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		log(`DisplayCanvas.attributeChangeCallback`, 'start');
 		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
-
+		log(this.parentElement);
 		switch (attributeName) {
 			case 'text':
 				displayCanvas.text = newValue;
@@ -189,6 +195,11 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	redraw() {
 		log('DisplayCanvas.redraw', 'start');
+		if (!this.isSetUp) {
+			log(`Detected as NOT SET UP`);
+			this.setUp();
+		}
+
 		log(`THIS CONTEXT`);
 		log(displayCanvas.ctx);
 

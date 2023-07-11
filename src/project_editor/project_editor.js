@@ -68,6 +68,9 @@ export class ProjectEditor {
 		this.defaultView = { dx: 200, dy: 500, dz: 0.5, default: true };
 		this.defaultKernView = { dx: 500, dy: 500, dz: 0.5, default: true };
 
+		// Pop Out Window
+		this.popOutWindow = false;
+		
 		// Ghost Canvas
 		this.canvasSize = 2000;
 		this.ghostCanvas = document.createElement('canvas');
