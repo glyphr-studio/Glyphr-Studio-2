@@ -1,10 +1,19 @@
 body {
 	margin: 0;
-	padding: 0;
+	padding: 20;
+	background-color: var(--gray-l97);
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 #pop-out__wrapper {
-	width: 100vw;
-	height: 100vh;
-	border: 1px solid lime;
+	width: calc(100% - 20px);
+	height: 100%;
+	border: 1px solid var(--gray-l95);
+	background-color: white;
+}
+
+display-canvas {
+	display: inline-block;
+	margin: 20px;
 }
