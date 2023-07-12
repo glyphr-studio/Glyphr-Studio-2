@@ -23,18 +23,44 @@ export class DisplayCanvas extends HTMLElement {
 		super();
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
 		this.isSetUp = false;
-		log(this);
-		log(this.parentElement);
 		log(`DisplayCanvas.constructor`, 'end');
 	}
 
 	setUp() {
-		const clientRect = this.parentElement.getClientRects()[0];
-		displayCanvas.width = clientRect.width;
-		displayCanvas.height = clientRect.height;
+		log(`DisplayCanvas.setUp`, 'start');
+
+		// Extra Fancy Super Codez
+		displayCanvas.calculatePageMaxes = this.calculatePageMaxes;
+
+		// Put it all together
+		const shadow = this.attachShadow({ mode: 'open' });
+		const styles = makeElement({ tag: 'style', innerHTML: style });
+		shadow.appendChild(styles);
+
+		displayCanvas.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
+		shadow.appendChild(displayCanvas.canvas);
+		// livePreviewPageWindowResize();
+		// this.updateTextBlock();
+		displayCanvas.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
+		displayCanvas.canvas.height = displayCanvas.height;
+		displayCanvas.canvas.width = displayCanvas.width;
+
+		// Finish
+		this.isSetUp = true;
+		log(`DisplayCanvas.setUp`, 'end');
+	}
+
+	updateCanvasSize() {
+		log(`updateCanvasSize`, 'start');
+		log(`this.parentElement`);
+		log(this.parentElement);
+		const clientRect = this?.parentElement?.getClientRects()[0];
+		displayCanvas.width = clientRect?.width || 1000;
+		displayCanvas.height = clientRect?.height || 1000;
+		displayCanvas.canvas.height = displayCanvas.height;
+		displayCanvas.canvas.width = displayCanvas.width;
 
 		displayCanvas.text = this.getAttribute('text') || '';
-
 		displayCanvas.fontSize = parseInt(this.getAttribute('font-size')) || 48;
 		displayCanvas.pagePadding = parseInt(this.getAttribute('page-padding')) || 5;
 		displayCanvas.lineGap = parseInt(this.getAttribute('line-gap')) || 12;
@@ -48,25 +74,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.showCharacterExtras =
 			this.attributes.showCharacterExtras || livePreviewOptions.showCharacterExtras;
 		this.drawCrisp = false;
-
-		// Extra Fancy Super Codez
-		displayCanvas.calculatePageMaxes = this.calculatePageMaxes;
-
-		// Put it all together
-		const shadow = this.attachShadow({ mode: 'open' });
-		const styles = makeElement({ tag: 'style', innerHTML: style });
-		shadow.appendChild(styles);
-
-		displayCanvas.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
-		shadow.appendChild(displayCanvas.canvas);
-		// livePreviewPageWindowResize();
-		this.updateTextBlock();
-		displayCanvas.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
-		displayCanvas.canvas.height = displayCanvas.height;
-		displayCanvas.canvas.width = displayCanvas.width;
-
-		// Finish
-		this.isSetUp = true;
+		log(`updateCanvasSize`, 'end');
 	}
 
 	/**
@@ -74,8 +82,19 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	connectedCallback() {
 		log(`DisplayCanvas.connectedCallback`, 'start');
-		this.setUp();
-		this.redraw();
+		window.setTimeout(() => {
+			log(`DisplayCanvas.connectedCallback SETTIMEOUT HANDLER`, 'start');
+			log(`this.parentElement`);
+			log(this.parentElement);
+			log(`this.parentElement.clientRects`);
+			log(this.parentElement.getClientRects()[0]);
+
+			this.setUp();
+			this.updateCanvasSize();
+			this.updateTextBlock();
+			this.redraw();
+			log(`DisplayCanvas.connectedCallback SETTIMEOUT HANDLER`, 'end');
+		}, 10);
 		log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
@@ -142,7 +161,7 @@ export class DisplayCanvas extends HTMLElement {
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		log(`DisplayCanvas.attributeChangeCallback`, 'start');
 		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
-		log(this.parentElement);
+
 		switch (attributeName) {
 			case 'text':
 				displayCanvas.text = newValue;
@@ -184,8 +203,10 @@ export class DisplayCanvas extends HTMLElement {
 				break;
 		}
 
-		this.updateTextBlock();
-		this.redraw();
+		if (this.isSetUp) {
+			this.updateTextBlock();
+			this.redraw();
+		}
 
 		log(`DisplayCanvas.attributeChangeCallback`, 'end');
 	}
@@ -195,10 +216,6 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	redraw() {
 		log('DisplayCanvas.redraw', 'start');
-		if (!this.isSetUp) {
-			log(`Detected as NOT SET UP`);
-			this.setUp();
-		}
 
 		log(`THIS CONTEXT`);
 		log(displayCanvas.ctx);
