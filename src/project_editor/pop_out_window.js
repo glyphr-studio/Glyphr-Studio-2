@@ -28,7 +28,8 @@ export function openPopOutWindow() {
 		})
 	);
 
-	editor.popOutWindow.addEventListener('beforeUnload', closePopOutWindow);
+	editor.popOutWindow.addEventListener('beforeunload', closePopOutWindow);
+	window.addEventListener('beforeunload', closePopOutWindow);
 
 	editor.subscribe({
 		topic: '*',
@@ -39,10 +40,15 @@ export function openPopOutWindow() {
 	const popWrapper = popDoc.querySelector('#pop-out__wrapper');
 	log(popWrapper);
 	log(popWrapper.getClientRects()[0]);
-	popWrapper.appendChild(makeElement({
-		tag: 'display-canvas',
-		attributes: { text: editor.selectedItem.char }
-	}));
+	popWrapper.appendChild(
+		makeElement({
+			tag: 'display-canvas',
+			attributes: {
+				text: `the quick brown fox jumps over the lazy dog.
+THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.`,
+			},
+		})
+	);
 
 	// Update buttons
 	const popButton = document.getElementById('editor-page__tool__open-live-preview-pop-out');
@@ -57,12 +63,16 @@ export function openPopOutWindow() {
 	log(`openPopOutWindow`, 'end');
 }
 
-export function closePopOutWindow() {
+export function closePopOutWindow(event) {
+	if (event) event.preventDefault();
+
 	try {
 		getCurrentProjectEditor().popOutWindow.close();
+		window.removeEventListener('beforeunload', closePopOutWindow);
 	} catch (e) {
 		console.warn('Could not close pop-out window');
 	}
+
 	// Update buttons
 	const popButton = document.getElementById('editor-page__tool__open-live-preview-pop-out');
 	if (popButton) {
@@ -71,10 +81,11 @@ export function closePopOutWindow() {
 			selected: false,
 		});
 	}
+	return undefined;
 }
 
 function redrawPopOutWindow() {
 	const editor = getCurrentProjectEditor();
 	const canvases = editor.popOutWindow.document.body.querySelectorAll('display-canvas');
-	canvases.forEach(can => can.redraw());
+	canvases.forEach((can) => can.redraw());
 }

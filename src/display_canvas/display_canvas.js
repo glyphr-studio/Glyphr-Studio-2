@@ -322,11 +322,11 @@ function drawDisplayCharacterExtras(charData) {
 }
 
 function drawDisplayCharacter(charData) {
-	log(`displayCanvas.drawDisplayCharacter`, 'start');
-	log(this);
-	log(charData);
-	log(`THIS CONTEXT`);
-	log(displayCanvas.ctx);
+	// log(`displayCanvas.drawDisplayCharacter`, 'start');
+	// log(this);
+	// log(charData);
+	// log(`THIS CONTEXT`);
+	// log(displayCanvas.ctx);
 	// const settings = getCurrentProject().settings.font;
 	const item = charData.item;
 
@@ -337,8 +337,8 @@ function drawDisplayCharacter(charData) {
 	// log(`charData.view`);
 	// log(`dx: ${charData.view.dx}, dy: ${charData.view.dy}, dz: ${charData.view.dz}`);
 	const view = clone(charData.view);
-	log(`cloned view`);
-	log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
+	// log(`cloned view`);
+	// log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
 
 	// log(`displayCanvas.pagePadding: ${displayCanvas.pagePadding}`);
 
@@ -348,7 +348,7 @@ function drawDisplayCharacter(charData) {
 	// view.dy *= view.dz;
 	// view.dy += displayCanvas.pagePadding;
 
-	log(`\t drawing ${charData.char}`);
+	// log(`\t drawing ${charData.char}`);
 	// log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
 
 	if (item) {
@@ -369,7 +369,7 @@ function drawDisplayCharacter(charData) {
 		drawGlyph(item, displayCanvas.ctx, view, 1, true);
 	}
 
-	log(`displayCanvas.drawDisplayCharacter`, 'end');
+	// log(`displayCanvas.drawDisplayCharacter`, 'end');
 }
 
 // --------------------------------------------------------------

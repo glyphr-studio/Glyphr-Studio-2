@@ -7,7 +7,7 @@ body {
 }
 
 #pop-out__wrapper {
-	width: calc(100% - 20px);
+	width: 100%;
 	height: 100%;
 	border: 1px solid var(--gray-l95);
 	background-color: white;

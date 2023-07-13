@@ -80,8 +80,8 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 		wrapper.appendChild(
 			makeElement({
 				tag: 'fancy-button',
-				innerHTML: 'Create new kerning group',
-				onClick: showAddEditKernGroupDialog,
+				innerHTML: 'Create a new kern group',
+				onClick: () => showAddEditKernGroupDialog(false),
 			})
 		);
 	} else {

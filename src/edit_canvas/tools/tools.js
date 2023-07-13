@@ -197,7 +197,7 @@ export function makeViewToolsButtons() {
 	});
 
 	// Live Preview pop-out
-	let isPoppedOut = !!editor.popOutWindow;
+	let isPoppedOut = editor.popOutWindow !== false;
 	let livePreviewPopOut = makeElement({
 		tag: 'button',
 		className: 'editor-page__tool',
@@ -209,8 +209,11 @@ export function makeViewToolsButtons() {
 		}),
 	});
 	livePreviewPopOut.addEventListener('click', () => {
-		if (isPoppedOut) closePopOutWindow();
-		else openPopOutWindow();
+		log(`Live Preview Pop Out CLICK HANDLER`, 'start');
+		log(`editor.popOutWindow: ${editor.popOutWindow}`);
+		if (editor.popOutWindow === false) openPopOutWindow();
+		else closePopOutWindow();
+		log(`Live Preview Pop Out CLICK HANDLER`, 'end');
 	});
 
 	// Put it all together
