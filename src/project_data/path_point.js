@@ -44,8 +44,8 @@ export class PathPoint extends GlyphElement {
 	 */
 	save(verbose = false) {
 		const re = {
-			p: this.p.save(verbose),
 			type: this.type,
+			p: this.p.save(verbose),
 		};
 
 		if (this.h1.use || (!this.h1.use && !this.hasOverlappingHandle('h1'))) {

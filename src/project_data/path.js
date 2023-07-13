@@ -72,8 +72,8 @@ export class Path extends GlyphElement {
 	save(verbose = false) {
 		const re = {
 			name: this.name,
-			pathPoints: [],
 			winding: this.winding,
+			pathPoints: [],
 		};
 
 		if (this.xLock) re.xLock = true;

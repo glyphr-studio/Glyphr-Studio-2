@@ -97,9 +97,17 @@ export function json(obj, raw) {
 	obj = clone(obj);
 	if (raw) return JSON.stringify(obj);
 	else {
-		const j = JSON.stringify(obj, undefined, 2);
-		if (j) return j.replace(/\n/g, '\r\n');
-		else return '';
+		let result = JSON.stringify(obj, undefined, 2);
+		result = result || '';
+		result = result.replace(/\n/g, '\r\n');
+		// The only things indented this much are Coords and Control Points
+		// This puts them on a single line
+		result = result.replaceAll('\r\n                  "', '"');
+		result = result.replaceAll('\r\n                }', '}');
+		result = result.replaceAll('\r\n                "', '"');
+		result = result.replaceAll('\r\n              }', '}');
+		result = result.replaceAll('},"', '}, "');
+		return result;
 	}
 }
 
