@@ -14,6 +14,7 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp, showAppErrorPage } from './app.js';
 import logo from '../common/graphics/logo-icon.svg?raw';
 import asciiLogo from '../common/graphics/ascii-wordmark-vertical.txt?raw';
+import { closePopOutWindow } from '../project_editor/pop_out_window.js';
 
 // The main app object
 export const GSApp = new GlyphrStudioApp();
@@ -41,7 +42,6 @@ export function glyphrStudioOnLoad() {
 
 		if (passPreChecks()) {
 			registerCustomComponents();
-
 			// Load project
 			GSApp.setUp();
 			log(GSApp);

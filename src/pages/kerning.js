@@ -189,8 +189,8 @@ function makeKerningFirstRunContent() {
 
 	const addOneKernButton = makeElement({
 		tag: 'fancy-button',
-		innerHTML: 'Create a new kern pair',
-		onClick: showAddEditKernGroupDialog,
+		innerHTML: 'Create a new kern group',
+		onClick: () => showAddEditKernGroupDialog(false),
 	});
 
 	content.appendChild(addOneKernButton);
@@ -230,37 +230,39 @@ export function makeKernGroupID(kernGroups = getCurrentProject().kerning) {
 	return `kern-${counter}`;
 }
 
-export function showAddEditKernGroupDialog(kernGroup) {
-	if (!kernGroup) kernGroup = false;
+export function showAddEditKernGroupDialog(kernGroup = false) {
+	log(`showAddEditKernGroupDialog`, 'start');
+	log(`kernGroup`);
+	log(kernGroup);
 	const content = makeElement({
 		innerHTML: `
-			<h2>${kernGroup ? 'Edit this' : 'Add new'} kern group</h2>
-				Specify which characters should be in the left-side group,
-				the right-side group, then what distance in <code>Em</code>
-				units should be used for the kern value.
-				<br><br>
+		<h2>${kernGroup ? 'Edit this' : 'Create a new'} kern group</h2>
+		Specify which characters should be in the left-side group,
+		the right-side group, then what distance in <code>Em</code>
+		units should be used for the kern value.
+		<br><br>
 
-				<h3>Left group</h3>
-				<input id="kerning__add-new-kern-group__left-group" type="text"
-					value="${kernGroup ? kernGroup.leftGroupAsString : ''}"
-					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				/>
-				<br><br>
-				<h3>Right group</h3>
-				<input id="kerning__add-new-kern-group__right-group" type="text"
-					value="${kernGroup ? kernGroup.rightGroupAsString : ''}"
-					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				/>
-				<br><br>
-				<h3>Value</h3>
-				<input id="kerning__add-new-kern-group__value" type="text"
-					value="${kernGroup ? kernGroup.value : ''}"
-					autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				/>
-				<br><br>
-				<fancy-button disabled id="kerning__add-new-kern-group__submit-button">
-					${kernGroup ? 'Save changes' : 'Add new kern group'}
-				</fancy-button>
+		<h3>Left group</h3>
+		<input id="kerning__add-new-kern-group__left-group" type="text"
+		value="${kernGroup ? kernGroup.leftGroupAsString : ''}"
+		autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+		/>
+		<br><br>
+		<h3>Right group</h3>
+		<input id="kerning__add-new-kern-group__right-group" type="text"
+		value="${kernGroup ? kernGroup.rightGroupAsString : ''}"
+		autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+		/>
+		<br><br>
+		<h3>Value</h3>
+		<input id="kerning__add-new-kern-group__value" type="text"
+			value="${kernGroup ? kernGroup.value : ''}"
+			autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+		/>
+		<br><br>
+		<fancy-button disabled id="kerning__add-new-kern-group__submit-button">
+			${kernGroup ? 'Save changes' : 'Add new kern group'}
+		</fancy-button>
 		`,
 	});
 
@@ -324,6 +326,7 @@ export function showAddEditKernGroupDialog(kernGroup) {
 	}
 
 	showModalDialog(content, 500);
+	log(`showAddEditKernGroupDialog`, 'end');
 }
 
 export function makeKernGroupCharChips(group) {

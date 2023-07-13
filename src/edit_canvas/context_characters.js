@@ -1,13 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
-import { charToHex, charsToHexArray } from '../common/character_ids';
-import {
-	accentColors,
-	getColorFromRGBA,
-	shiftColor,
-	transparencyToAlpha,
-	uiColors,
-} from '../common/colors';
-import { json, makeCrisp, round } from '../common/functions';
+import { charsToHexArray } from '../common/character_ids';
+import { accentColors, getColorFromRGBA, transparencyToAlpha, uiColors } from '../common/colors';
+import { makeCrisp } from '../common/functions';
 import {
 	TextBlock,
 	calculateKernOffset,
@@ -38,6 +32,12 @@ const contextCharacters = {
 export function drawContextCharacters(ctx) {
 	// log('drawContextCharacters', 'start');
 	const editor = getCurrentProjectEditor();
+	if (!shouldDrawContextCharacters()) {
+		// log(`0 or 1 context character`);
+		// log('drawContextCharacters', 'end');
+		return;
+	}
+
 	const project = getCurrentProject();
 	const ascent = project.settings.font.ascent;
 	contextCharacters.ctx = ctx;
@@ -183,6 +183,19 @@ function splitContextCharacterString(splitChar) {
 	// log(result);
 	// log(`splitContextCharacterString`, 'end');
 	return result;
+}
+
+/**
+ * Centralized way to ask if context character stuff should be drawn
+ * @returns {Boolean}
+ */
+export function shouldDrawContextCharacters() {
+	const editor = getCurrentProjectEditor();
+	const item = editor.selectedItem;
+	if (!item.contextCharacters) return false;
+	if (item.contextCharacters === item.char) return false;
+	if (!editor.project.settings.app.contextCharacters.showCharacters) return false;
+	return true;
 }
 
 /**
@@ -567,10 +580,10 @@ function hotspotNavigateToItem(id) {
 
 	editor.view = v;
 	if (id.startsWith('liga-')) {
-		editor.nav.page = 'Ligatures'
+		editor.nav.page = 'Ligatures';
 		editor.selectedItemID = id;
 	} else {
-		editor.nav.page = 'Characters'
+		editor.nav.page = 'Characters';
 		editor.selectedItemID = id;
 	}
 	editor.nav.navigate();
