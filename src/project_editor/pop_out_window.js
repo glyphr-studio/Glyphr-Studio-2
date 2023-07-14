@@ -4,6 +4,8 @@ import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
 import style from './pop-out-window.css?inline';
 import color from '../common/colors.css?inline';
 import reset from '../common/resets.css?inline';
+import { makeIcon } from '../common/graphics';
+import { makeActionButtonIcon } from '../panels/action_buttons';
 
 export function openPopOutWindow() {
 	log(`openPopOutWindow`, 'start');
@@ -96,4 +98,27 @@ function redrawPopOutWindow() {
 	const editor = getCurrentProjectEditor();
 	const canvases = editor.popOutWindow.document.body.querySelectorAll('display-canvas');
 	canvases.forEach((can) => can.redraw());
+}
+
+export function makeLivePreviewPopOutCard(showBlurb = false) {
+	const card = makeElement({
+		tag: 'div',
+		className: 'panel__card full-width',
+		innerHTML: '<h3>Pop out live preview</h3>',
+	});
+	if (showBlurb) {
+		card.innerHTML += `
+			A full-screen live preview can be launched in a new window,
+			useful for sentence or paragraph scale previews of your typeface.`;
+	}
+	const button = makeElement({
+		tag: 'fancy-button',
+		attributes: { secondary: '' },
+		content: 'Launch live preview in a new window',
+	});
+	// button.innerHTML += makeToolButtonSVG({ name: 'openLivePreview' });
+	button.addEventListener('click', openPopOutWindow);
+	card.appendChild(button);
+
+	return card;
 }

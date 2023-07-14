@@ -6,6 +6,7 @@
 
 import { getCurrentProject } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
+import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window';
 import { makeDirectCheckbox, makeSingleCheckbox, makeSingleInput, makeSingleLabel } from './cards';
 
 export let livePreviewOptions = {
@@ -68,7 +69,7 @@ export function makePanel_LivePreview() {
 		makeButton('All lower case letter permutations', makePermutations(false)),
 	]);
 
-	return [optionsCard, showCard, pangramCard, glyphSetsCard];
+	return [optionsCard, showCard, makeLivePreviewPopOutCard(), pangramCard, glyphSetsCard];
 }
 
 function makeButton(text, chars = false) {
