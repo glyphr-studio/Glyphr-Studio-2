@@ -33,7 +33,7 @@ export function openPopOutWindow() {
 
 	editor.subscribe({
 		topic: '*',
-		subscriberID: 'LivePreviewPopOutWindow',
+		subscriberID: 'livePreviewPopOutWindow',
 		callback: redrawPopOutWindow,
 	});
 
@@ -64,14 +64,20 @@ THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.`,
 }
 
 export function closePopOutWindow(event) {
+	log(`closePopOutWindow`, 'start');
+
 	if (event) event.preventDefault();
+	const editor = getCurrentProjectEditor();
 
 	try {
-		getCurrentProjectEditor().popOutWindow.close();
-		window.removeEventListener('beforeunload', closePopOutWindow);
+		editor.popOutWindow.close();
 	} catch (e) {
 		console.warn('Could not close pop-out window');
 	}
+
+	editor.popOutWindow = false;
+	editor.unsubscribe({ idToRemove: 'livePreviewPopOutWindow' });
+	window.removeEventListener('beforeunload', closePopOutWindow);
 
 	// Update buttons
 	const popButton = document.getElementById('editor-page__tool__open-live-preview-pop-out');
@@ -81,6 +87,8 @@ export function closePopOutWindow(event) {
 			selected: false,
 		});
 	}
+
+	log(`closePopOutWindow`, 'end');
 	return undefined;
 }
 
