@@ -877,12 +877,12 @@ export class Glyph extends GlyphElement {
 	 * @param {Boolean} doNotToast - don't show progress messages
 	 * @returns {Glyph} - reference to this Glyph
 	 */
-	combineAllPaths() {
-		// log('Glyph.combineAllPaths', 'start');
+	combineAllShapes() {
+		// log('Glyph.combineAllShapes', 'start');
 		// TODO Boolean Combine
 		// this.makeGlyphWithResolvedLinks();
 		/*
-		const paths = combinePaths(this.shapes, doNotToast);
+		const paths = combineShapes(this.shapes, doNotToast);
 		if (paths) {
 			// log('new paths');
 			this.shapes = paths;
@@ -893,7 +893,7 @@ export class Glyph extends GlyphElement {
 		// log(this.print());
 
 		// log(this.name);
-		// log('Glyph.combineAllPaths', 'end');
+		// log('Glyph.combineAllShapes', 'end');
 		*/
 		return this;
 	}

@@ -186,7 +186,7 @@ async function generateOneGlyph(currentExportItem) {
 	showToast('Exporting<br>' + glyph.name, 999999);
 
 	if (comb && glyph.shapes.length <= project.settings.app.maxCombinePathsOnExport) {
-		glyph.combineAllPaths(true);
+		glyph.combineAllShapes(true);
 	}
 
 	const thisPath = glyph.makeOpenTypeJSpath(new openTypeJS.Path());

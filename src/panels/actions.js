@@ -756,7 +756,7 @@ function combineAllGlyphPaths() {
 	showToast('Combining all glyph paths... ', 100);
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
-		editor.selectedItem.combineAllPaths(true);
+		editor.selectedItem.combineAllShapes(true);
 		editor.history.addState('combine all glyph paths');
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);

@@ -330,9 +330,9 @@ function drawDisplayCharacter(charData) {
 	// const settings = getCurrentProject().settings.font;
 	const item = charData.item;
 
-	// TODO combineAllPaths
-	// const combineAllPaths = td.combineAllPaths || false;
-	// const combineAllPaths = false;
+	// TODO combineAllShapes
+	// const combineAllShapes = td.combineAllShapes || false;
+	// const combineAllShapes = false;
 
 	// log(`charData.view`);
 	// log(`dx: ${charData.view.dx}, dy: ${charData.view.dy}, dz: ${charData.view.dz}`);
@@ -355,8 +355,8 @@ function drawDisplayCharacter(charData) {
 		displayCanvas.ctx.fillStyle = uiColors.enabled.resting.text;
 		displayCanvas.ctx.strokeStyle = 'transparent';
 
-		// TODO combineAllPaths
-		// if (combineAllPaths) {
+		// TODO combineAllShapes
+		// if (combineAllShapes) {
 		// 	if (!this.cache[charData.char]) {
 		// 		this.cache[charData.char] = item.clone().combineAllShapes(true);
 		// 	}
