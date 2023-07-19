@@ -376,7 +376,7 @@ export class MultiSelectShapes extends MultiSelect {
 		// log('MultiSelectShapes.combine', 'start');
 		const ns = this.virtualGlyph.clone();
 		ns.makeGlyphWithResolvedLinks();
-		const cs = combinePaths(ns.shapes);
+		const cs = combineShapes(ns.shapes);
 
 		// If everything worked, delete original paths and add new ones
 		if (cs) {
