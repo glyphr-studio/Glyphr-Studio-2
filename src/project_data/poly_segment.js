@@ -1,8 +1,6 @@
 import { GlyphElement } from './glyph_element.js';
 import { XYPoint } from './xy_point.js';
 import { Segment } from './segment.js';
-// import { Path } from './path.js';
-// import { PathPoint } from './path_point.js';
 import { maxesOverlap } from './maxes.js';
 import { duplicates, clone, pointsAreEqual, round, numSan } from '../common/functions.js';
 
@@ -514,6 +512,33 @@ export class PolySegment extends GlyphElement {
 		// log('PolySegment.removeNonConnectingSegments', 'end');
 
 		return this;
+	}
+
+	/**
+	 * Looks for straight line segments that are in line with each other,
+	 * then merges them into one larger line.
+	 */
+	combineInlineSegments() {
+		// log(`PolySegment.combineInlineSegments`, 'start');
+		// let startLength = this.segments.length;
+		let ts, ns;
+
+		for (let s = 0; s < this.segments.length; s++) {
+			ts = this.segments[s];
+			ns = s === this.segments.length - 1 ? this.segments[0] : this.segments[s + 1];
+			if (ts.line === ns.line) {
+				this.segments[s] = new Segment({
+					p1x: ts.p1x,
+					p1y: ts.p1y,
+					p4x: ns.p4x,
+					p4y: ns.p4y,
+				});
+				this.segments.splice(s + 1, 1);
+				s--;
+			}
+		}
+		// log(`Removed segments: ${this.segments.length - startLength}`);
+		// log(`PolySegment.combineInlineSegments`, 'end');
 	}
 }
 

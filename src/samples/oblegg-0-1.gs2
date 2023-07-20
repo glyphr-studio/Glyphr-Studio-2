@@ -9189,6 +9189,55 @@
         }
       ]
     },
+    "glyph-0x30": {
+      "id": "glyph-0x30",
+      "shapes": [
+        {
+          "name": "Rectangle 0",
+          "winding": -5,
+          "pathPoints": [
+            {
+              "type": "corner",
+              "p": {"coord": {"x": 0,"y": 200}}
+            },
+            {
+              "type": "corner",
+              "p": {"coord": {"x": 100,"y": 200}}
+            },
+            {
+              "type": "corner",
+              "p": {"coord": {"x": 100,"y": 100}}
+            },
+            {
+              "type": "corner",
+              "p": {"coord": {"x": 0,"y": 100}}
+            }
+          ]
+        },
+        {
+          "name": "Rectangle 0 (copy)",
+          "winding": -5,
+          "pathPoints": [
+            {
+              "type": "corner",
+              "p": {"coord": {"x": 50,"y": 150}}
+            },
+            {
+              "type": "corner",
+              "p": {"coord": {"x": 150,"y": 150}}
+            },
+            {
+              "type": "corner",
+              "p": {"coord": {"x": 150,"y": 50}}
+            },
+            {
+              "type": "corner",
+              "p": {"coord": {"x": 50,"y": 50}}
+            }
+          ]
+        }
+      ]
+    },
     "glyph-0x2C": {
       "id": "glyph-0x2C",
       "shapes": [

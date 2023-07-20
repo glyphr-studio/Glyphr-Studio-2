@@ -4,8 +4,7 @@ import { isAllZeros, Maxes } from './maxes.js';
 import { Segment } from './segment.js';
 import { PolySegment } from './poly_segment.js';
 import { PathPoint } from './path_point.js';
-import { getOverallMaxes, maxesOverlap } from './maxes.js';
-import { findSegmentIntersections } from './poly_segment.js';
+import { getOverallMaxes } from './maxes.js';
 import {
 	clone,
 	round,
@@ -692,6 +691,12 @@ export class Path extends GlyphElement {
 		return false;
 	}
 
+
+	// --------------------------------------------------------------
+	// Boolean Combine
+	// --------------------------------------------------------------
+
+
 	// --------------------------------------------------------------
 	//  Translate to other languages
 	// --------------------------------------------------------------
@@ -853,19 +858,22 @@ export class Path extends GlyphElement {
 	makeSegment(num = 0) {
 		// log('Path.makeSegment', 'start');
 		// log('passed ' + num);
-		// make a segment
-
 		num = num % this.pathPoints.length;
 
 		// check cache
 		if (!this.cache.segments) this.cache.segments = [];
-		if (this.cache.segments[num]) return this.cache.segments[num];
+		if (this.cache.segments[num]) {
+			// log(`Returning cached segment`);
+			// log('Path.makeSegment', 'end');
+			return this.cache.segments[num];
+		}
 
 		// log('validated as ' + num);
 		const pp1 = this.pathPoints[num];
 		// let pp2 = this.pathPoints[(num+1)%this.pathPoints.length];
 		const pp2 = this.pathPoints[this.getNextPointNum(num)];
-
+		// log(pp1);
+		// log(pp2);
 		const re = new Segment({
 			p1x: pp1.p.x,
 			p1y: pp1.p.y,
@@ -1075,10 +1083,12 @@ export class Path extends GlyphElement {
 	 * @returns {PathPoint} - reference to the added path point
 	 */
 	insertPathPoint(pointNumber = 0, t = 0.5) {
-		const pp1i = pointNumber;
-		const pp1 = pp1i === false ? this.pathPoints[0] : this.pathPoints[pp1i];
-		// let pp2i = (pp1i+1)%this.pathPoints.length;
-		const pp2i = this.getNextPointNum(pp1i);
+		log(`Path.insertPathPoint`, 'start');
+		log(`pointNumber: ${pointNumber}`);
+		log(`t: ${t}`);
+
+		const pp1 = pointNumber === false ? this.pathPoints[0] : this.pathPoints[pointNumber];
+		const pp2i = this.getNextPointNum(pointNumber);
 		const pp2 = this.pathPoints[pp2i];
 		let nP;
 		let nH1;
@@ -1086,7 +1096,7 @@ export class Path extends GlyphElement {
 		let ppn;
 
 		if (this.pathPoints.length > 1) {
-			const splits = this.makeSegment(pp1i).split(t);
+			const splits = this.makeSegment(pointNumber).split(t);
 			const s1 = splits[0];
 			const s2 = splits[1];
 
@@ -1122,6 +1132,7 @@ export class Path extends GlyphElement {
 		this.pathPoints.splice(pp2i, 0, ppn);
 		// this.selectPathPoint(pp2i);
 
+		log(`Path.insertPathPoint`, 'end');
 		return ppn;
 	}
 
@@ -1278,5 +1289,3 @@ export class Path extends GlyphElement {
 		return false;
 	}
 }
-
-

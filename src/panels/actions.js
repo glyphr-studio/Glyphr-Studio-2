@@ -157,7 +157,8 @@ export function getActionData(name) {
 		{
 			iconName: 'combine',
 			title: `Combine all paths\nCombines the paths of all paths with the same winding into as few paths as possible.`,
-			disabled: true,
+			disabled: !editor.selectedItem.shapes.length,
+			onClick: combineAllGlyphPaths,
 		},
 		{
 			iconName: 'deleteGlyph',
@@ -434,19 +435,20 @@ export function getActionData(name) {
 	data.boolActions = [
 		{
 			iconName: 'combine',
-			disabled: true,
 			title: `Combine\nSelect two paths, and combine their paths into a single path.`,
+			disabled: !editor.multiSelect.shapes.length,
+			onClick: combineSelectedPaths,
 		},
-		{
-			iconName: 'subtractUsingTop',
-			disabled: true,
-			title: `Subtract Using Upper\nSelect two paths, and the upper path will be used to cut out an area from the lower path.`,
-		},
-		{
-			iconName: 'subtractUsingBottom',
-			disabled: true,
-			title: `Subtract Using Lower\nSelect two paths, and the lower path will be used to cut out an area from the upper path.`,
-		},
+		// {
+		// 	iconName: 'subtractUsingTop',
+		// 	disabled: true,
+		// 	title: `Subtract Using Upper\nSelect two paths, and the upper path will be used to cut out an area from the lower path.`,
+		// },
+		// {
+		// 	iconName: 'subtractUsingBottom',
+		// 	disabled: true,
+		// 	title: `Subtract Using Lower\nSelect two paths, and the lower path will be used to cut out an area from the upper path.`,
+		// },
 	];
 
 	// PATH POINT
@@ -740,8 +742,7 @@ function moveLayer(direction = 'up') {
 // --------------------------------------------------------------
 // Combine
 // --------------------------------------------------------------
-// TODO boolean combine
-/*
+
 function combineSelectedPaths() {
 	showToast('Combining selected paths... ', 100);
 	const editor = getCurrentProjectEditor();
@@ -761,7 +762,6 @@ function combineAllGlyphPaths() {
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
-*/
 
 // --------------------------------------------------------------
 // Copy Paste

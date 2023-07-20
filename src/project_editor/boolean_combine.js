@@ -1,54 +1,82 @@
-import { clone, duplicates, pointsAreEqual } from '../common/functions.js';
-import { ControlPoint } from '../project_data/control_point.js';
+import { clone, duplicates, json, pointsAreEqual } from '../common/functions.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
+import { debugDrawPoints } from '../edit_canvas/draw_edit_affordances.js';
+import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
+import { isShapeHere } from '../edit_canvas/tools/tools.js';
 import { maxesOverlap } from '../project_data/maxes.js';
 import { Path } from '../project_data/path.js';
-import { findSegmentIntersections } from '../project_data/poly_segment.js';
-
+import { PathPoint } from '../project_data/path_point.js';
+import { PolySegment, findSegmentIntersections } from '../project_data/poly_segment.js';
+import { Segment } from '../project_data/segment.js';
+import { XYPoint } from '../project_data/xy_point.js';
 
 // --------------------------------------------------------------
-// Boolean Combine
+// Note about IX Format
+// --------------------------------------------------------------
+/*
+	Boolean combine does a lot of finding intersections between two
+	bezier curves. These intersections are simple x/y points, but they
+	are passed around and filtered for duplicates. To do this a bit
+	easier, the IX format is a text representation of two numbers,
+	separated by a forward slash.
+
+	"Intersections" or "IX" format is stuff like this:
+		'123/345'
+		'0.01/0.02'
+*/
+
+// --------------------------------------------------------------
+// Boolean Combine - Top level functions
 // --------------------------------------------------------------
 
-export function combineShapes(shapes, showToast = true, resolveOverlaps = true) {
-	// debug('\n combineShapes - START');
-	// debug(shapes);
+/**
+ * Takes an array of paths and combines them
+ * @param {Array} paths - collection of paths and component instances to merge
+ * @param {Boolean} notifyErrors - show little alerts about the progress
+ * @param {Boolean} resolveOverlaps - do extra work to remove overlapping paths and points
+ * @returns {Array} - new set of combined paths
+ */
+export function combineAllPaths(paths, notifyErrors = true, resolveOverlaps = true) {
+	log('combineAllPaths', 'start');
+	log(paths);
 
-	let tempShapes = false;
+	let tempPaths = false;
 
-	if (shapes.length <= 1) {
-		// debug('\t length=1 - returning what was passed');
+	// Early return stuff
+	if (paths.length <= 1) {
+		log('length=1 - returning what was passed');
 		return false;
-	} else if (shapes.length === 2) {
-		// debug('\t length=2, starting combineTwoShapes');
-		tempShapes = combineTwoShapes(shapes[0], shapes[1], showToast);
+	} else if (paths.length === 2) {
+		log('length=2, starting combineTwoPaths');
+		tempPaths = combineTwoPaths(paths[0], paths[1], notifyErrors);
 
-		if (!tempShapes) {
-			// debug('\t length=2 - returning what was passed');
-			if (showToast) showToast('The selected shapes do not have overlapping paths.');
+		if (!tempPaths) {
+			log('length=2 - returning what was passed');
+			if (notifyErrors) showToast('The selected paths do not overlap.');
 			return false;
 		} else {
-			tempShapes = [tempShapes];
-			// debug('\t length=2 - continuing with tempShapes from combineTwoShapes');
-			// debug(tempShapes);
+			tempPaths = [tempPaths];
+			log('length=2 - continuing with tempPaths from combineTwoPaths');
+			log(tempPaths);
 		}
 	}
 
-	// One pass through collapsing shapes down
+	// One pass through collapsing paths down
 	function singlePass(arr) {
-		// debug('\n\t singlePass');
-		// debug('\t\t start arr len ' + arr.length);
+		log('\n\t singlePass');
+		log('\t\t start arr len ' + arr.length);
 		let re;
 		let newPaths = [];
 		let didStuff = false;
 
 		for (let outer = 0; outer < arr.length; outer++) {
 			for (let inner = 0; inner < arr.length; inner++) {
-				// debug('\t\t testing shape ' + outer + ' and ' + inner);
+				log('\t\t testing shape ' + outer + ' and ' + inner);
 
 				if (outer !== inner && arr[outer] && arr[inner]) {
-					re = combineTwoShapes(arr[outer], arr[inner], showToast);
+					re = combineTwoPaths(arr[outer], arr[inner], notifyErrors);
 
-					// debug('\t\t combineShapes returned ' + (re.length || re));
+					log('\t\t combineAllPaths returned ' + (re.length || re));
 					if (re !== false) {
 						newPaths.push(re);
 						didStuff = true;
@@ -65,17 +93,17 @@ export function combineShapes(shapes, showToast = true, resolveOverlaps = true) 
 			})
 		);
 
-		// debug('\t singlePass didStuff = ' + didStuff);
+		log('singlePass didStuff = ' + didStuff);
 
 		return { arr: newPaths, didStuff: didStuff };
 	}
 
-	// Sort shapes by winding
+	// Sort paths by winding
 
-	if (!tempShapes) {
-		// debug('\t No tempShapes, sorting the existing shapes');
-		tempShapes = clone(shapes, 'combineShapes');
-		tempShapes.sort(function (a, b) {
+	if (!tempPaths) {
+		log('No tempPaths, sorting the existing paths');
+		tempPaths = clone(paths);
+		tempPaths.sort(function (a, b) {
 			return a.path.getWinding() - b.path.getWinding();
 		});
 
@@ -87,73 +115,79 @@ export function combineShapes(shapes, showToast = true, resolveOverlaps = true) 
 		while (looping && count < 20) {
 			looping = false;
 
-			lr = singlePass(tempShapes);
+			lr = singlePass(tempPaths);
 			looping = lr.didStuff;
 			if (!looping && count === 0) {
-				if (!showToast) showToast('The selected shapes do not have overlapping paths.');
+				if (!showToast) showToast('The selected paths do not overlap.');
 				return false;
 			}
 
-			tempShapes = lr.arr;
-			// debug('\t didStuff ' + lr.didStuff);
+			tempPaths = lr.arr;
+			log('didStuff ' + lr.didStuff);
 			count++;
 		}
 	}
 
-	// debug('\t working on shapes (tempShapes)');
-	// debug(tempShapes);
+	log('working on paths (tempPaths)');
+	log(tempPaths);
 
-	let newShapes = [];
+	let newPaths = [];
 	if (resolveOverlaps) {
-		// debug('\t resolveOverlaps is true');
-		newShapes = tempShapes;
-		// debug('\t newShapes is now ');
-		// debug(newShapes);
-	} else {
-		// debug('\t resolveOverlaps is false, tempShapes.length = ' + tempShapes.length);
+		log('resolveOverlaps is true, tempPaths.length = ' + tempPaths.length);
 		// Collapse each shape's overlapping paths
-		for (let ts = 0; ts < tempShapes.length; ts++) {
-			newShapes = newShapes.concat(resolveSelfOverlaps(tempShapes[ts]));
+		for (let ts = 0; ts < tempPaths.length; ts++) {
+			log(`ts: ${ts}`);
+
+			newPaths = newPaths.concat(resolveSelfOverlaps(tempPaths[ts]));
 		}
-		// debug('\t newShapes is now ');
-		// debug(newShapes);
+	} else {
+		log('resolveOverlaps is false');
+		newPaths = tempPaths;
 	}
+	log('newPaths is now ');
+	log(newPaths);
 
-	// debug('\t returning');
-	// debug(newShapes);
+	log('returning');
+	log(newPaths);
 
-	// debug(' combineShapes - END\n');
-	return newShapes;
+	log('combineAllPaths', 'end');
+	return newPaths;
 }
 
-function combineTwoShapes(shape1, shape2) {
-	// debug('\n combineTwoShapes - START');
+/**
+ * Takes two paths and attempts to combine them
+ * @param {Path} path1 - Path to combine
+ * @param {Path} path2 - Other path to combine
+ * @returns - Array of path or paths
+ */
+function combineTwoPaths(path1, path2) {
+	log('combineTwoPaths', 'start');
 	// Find intersections
-	let intersections = findPathIntersections(shape1.path, shape2.path);
+	let intersections = findPathIntersections(path1, path2);
 
 	if (intersections.length < 1) {
-		// debug('\t no intersections, returning.');
+		log('no intersections, returning.');
 		return false;
 	}
-	// debug('\t found intersections');
-	// debug(intersections);
+	log('found intersections');
+	log(intersections);
 
 	// Insert one intersection into both shapes
-	let ix = ixToCoord(intersections[0]);
-
-	let p1 = shape1.path.containsPoint(ix);
-	if (!p1) {
-		p1 = shape1.path.getClosestPointOnCurve(ix);
-		p1 = shape1.path.insertControlPoint(p1.split, p1.point);
+	let intersectionPoint = ixToXYPoint(intersections[0]);
+	let closestPoint;
+	let point1 = path1.containsPoint(intersectionPoint);
+	if (!point1) {
+		closestPoint = path1.findClosestPointOnCurve(intersectionPoint);
+		point1 = path1.insertPathPoint(closestPoint.point, closestPoint.split);
 	}
-	p1.customid = 'overlap';
+	point1.customID = 'overlap';
 
-	let p2 = shape2.path.containsPoint(ix);
-	if (!p2) {
-		p2 = shape2.path.getClosestPointOnCurve(ix);
-		p2 = shape2.path.insertControlPoint(p2.split, p2.point);
+	let point2 = path2.containsPoint(intersectionPoint);
+	if (!point2) {
+		closestPoint = path2.findClosestPointOnCurve(intersectionPoint);
+		point2 = path2.insertPathPoint(closestPoint.point, closestPoint.split);
 	}
-	p2.customid = 'overlap';
+	point2.customID = 'overlap';
 
 	// Walk one shape until the overlap point is found
 	// Flip to the other shape, add all the points
@@ -163,10 +197,10 @@ function combineTwoShapes(shape1, shape2) {
 		let re = [];
 		let pt = {};
 
-		for (let pp = 0; pp < path.pathpoints.length; pp++) {
-			pt = new ControlPoint(path.pathpoints[pp]);
+		for (let pp = 0; pp < path.pathPoints.length; pp++) {
+			pt = new PathPoint(path.pathPoints[pp]);
 
-			if (path.pathpoints[pp].customid !== 'overlap') {
+			if (path.pathPoints[pp].customID !== 'overlap') {
 				re.push(pt);
 			} else {
 				return {
@@ -181,12 +215,12 @@ function combineTwoShapes(shape1, shape2) {
 		let re = [];
 		let ov = {};
 
-		for (let pp = 0; pp < path.pathpoints.length; pp++) {
-			if (path.pathpoints[pp].customid === 'overlap') {
-				ov = new ControlPoint(path.pathpoints[pp]);
+		for (let pp = 0; pp < path.pathPoints.length; pp++) {
+			if (path.pathPoints[pp].customID === 'overlap') {
+				ov = new PathPoint(path.pathPoints[pp]);
 
-				for (let pa = pp + 1; pa < path.pathpoints.length; pa++) {
-					re.push(new ControlPoint(path.pathpoints[pa]));
+				for (let pa = pp + 1; pa < path.pathPoints.length; pa++) {
+					re.push(new PathPoint(path.pathPoints[pa]));
 				}
 
 				return {
@@ -197,20 +231,20 @@ function combineTwoShapes(shape1, shape2) {
 		}
 	}
 
-	let s1h1 = getPointsBeforeOverlap(shape1.path);
-	let s1h2 = getPointsAfterOverlap(shape1.path);
-	let s2h1 = getPointsBeforeOverlap(shape2.path);
-	let s2h2 = getPointsAfterOverlap(shape2.path);
+	let s1h1 = getPointsBeforeOverlap(path1);
+	let s1h2 = getPointsAfterOverlap(path1);
+	let s2h1 = getPointsBeforeOverlap(path2);
+	let s2h2 = getPointsAfterOverlap(path2);
 
 	let newPoints = [];
 
 	newPoints = newPoints.concat(s1h1.points);
 
 	newPoints.push(
-		new ControlPoint({
-			P: clone(s1h1.overlap.P, 'combineTwoShapes'),
-			H1: clone(s1h1.overlap.H1, 'combineTwoShapes'),
-			H2: clone(s2h1.overlap.H2, 'combineTwoShapes'),
+		new PathPoint({
+			P: clone(s1h1.overlap.P, 'combineTwoPaths'),
+			H1: clone(s1h1.overlap.H1, 'combineTwoPaths'),
+			H2: clone(s2h1.overlap.H2, 'combineTwoPaths'),
 			type: 'corner',
 			useh1: s1h1.overlap.useh1,
 			useh2: s2h1.overlap.useh2,
@@ -221,10 +255,10 @@ function combineTwoShapes(shape1, shape2) {
 	newPoints = newPoints.concat(s2h1.points);
 
 	newPoints.push(
-		new ControlPoint({
-			P: clone(s2h1.overlap.P, 'combineTwoShapes'),
-			H1: clone(s2h1.overlap.H1, 'combineTwoShapes'),
-			H2: clone(s1h2.overlap.H2, 'combineTwoShapes'),
+		new PathPoint({
+			P: clone(s2h1.overlap.P, 'combineTwoPaths'),
+			H1: clone(s2h1.overlap.H1, 'combineTwoPaths'),
+			H2: clone(s1h2.overlap.H2, 'combineTwoPaths'),
 			type: 'corner',
 			useh1: s2h1.overlap.useh1,
 			useh2: s1h2.overlap.useh2,
@@ -232,92 +266,53 @@ function combineTwoShapes(shape1, shape2) {
 	);
 
 	newPoints = newPoints.concat(s1h2.points);
-
-	// debug(' combineTwoShapes - returning successfully - END\n');
-
-	return new Path({ path: { pathpoints: newPoints } });
-}
-
-function ixToCoord(ix) {
-	// debug('\n ixToCoord - START');
-	// debug(ix);
-	var re = {
-		x: parseFloat(ix.split('/')[0]),
-		y: parseFloat(ix.split('/')[1]),
-	};
-	// debug([re]);
-	// debug(' ixToCoord - END\n');
-	return re;
-}
-
-function resolveSelfOverlaps(path) {
-	// debug('\n Shape.resolveSelfOverlaps - START');
-	// Add self intersects to path
-	let polySegment = path.getPolySegment();
-	let ix = polySegment.findIntersections();
-	// debug('\t intersections');
-	// debug(json(ix, true));
-
-	if (ix.length === 0) return new Path(clone(path, 'Shape.resolveSelfOverlaps'));
-
-	let segmentNumber = polySegment.segments.length;
-
-	let threshold = 0.01;
-	polySegment.splitSegmentsAtProvidedIntersections(ix, threshold);
-
-	if (segmentNumber === polySegment.segments.length)
-		return new Path(clone(path, 'Shape.resolveSelfOverlaps'));
-
-	// debug('\t before filtering ' + polySegment.segments.length);
-	polySegment.removeZeroLengthSegments();
-	polySegment.removeDuplicateSegments();
-	polySegment.removeSegmentsOverlappingShape(path);
-	polySegment.removeRedundantSegments();
-	polySegment.removeNonConnectingSegments();
-	// polySegment.combineInlineSegments();
-	// debug('\t afters filtering ' + polySegment.segments.length);
-
-	// if(_UI.devmode) polySegment.drawPolySegmentOutline();
-
-	// let resultingPaths = [];
-	// resultingPaths.push(new Path({'name':path.name, 'path':polySegment.getPath()}));
-
-	let resultingSegments = polySegment.stitchSegmentsTogether();
-
-	let resultingPaths = [];
-	let psn;
-	for (let ps = 0; ps < resultingSegments.length; ps++) {
-		psn = resultingSegments[ps];
-		if (psn.segments.length > 1) resultingPaths.push(new Path({ name: path.name, path: psn.getPath() }));
-	}
-
-	// debug(' Shape.resolveSelfOverlaps - END\n');
-	return resultingPaths;
+	let result = new Path({ pathPoints: newPoints });
+	log(result);
+	log('combineTwoPaths', 'end');
+	return result;
 }
 
 /**
- * Find overlaps between two paths
- * @param {Path} p1 - first path
- * @param {Path} p2 - second path
- * @returns {Array}
+ * Converts from IX format to XY format
+ * @param {String} ix - Intersection in IX Format
+ * @returns {XYPoint} - coordinate
  */
-function findPathIntersections(p1, p2) {
+function ixToXYPoint(ix) {
+	// log('ixToXYPoint', 'start');
+	// log(ix);
+	let re = new XYPoint(parseFloat(ix.split('/')[0]), parseFloat(ix.split('/')[1]));
+	// log([re]);
+	// log(' ixToXYPoint', 'end');
+	return re;
+}
+
+// --------------------------------------------------------------
+// Finding intersections
+// --------------------------------------------------------------
+
+/**
+ * Find overlaps between two paths
+ * @param {Path} path1 - first path
+ * @param {Path} path2 - second path
+ * @returns {Array} - collection of intersections in IX Format
+ */
+function findPathIntersections(path1, path2) {
 	// log('findPathIntersections', 'start');
 	let intersects = [];
 
 	// Find overlaps at boundaries
-	intersects = intersects.concat(findPathPointIntersections(p1, p2));
+	intersects = intersects.concat(findPathPointIntersections(path1, path2));
 
-	intersects = intersects.concat(findPathPointBoundaryIntersections(p1, p2));
+	intersects = intersects.concat(findPathPointBoundaryIntersections(path1, path2));
 
 	intersects = intersects.filter(duplicates);
 	// log('intersections after boundary detection');
 	// log(intersects);
 
 	// Maxes within boundaries
-	if (!maxesOverlap(p1.maxes, p2.maxes)) {
-		// log(p1.maxes);
-		// log(p2.maxes);
+	if (!maxesOverlap(path1.maxes, path2.maxes)) {
+		// log(path1.maxes);
+		// log(path2.maxes);
 		// log('paths don't intersect');
 		// log(`findPathIntersections`, 'end');
 		return intersects;
@@ -331,29 +326,35 @@ function findPathIntersections(p1, p2) {
 	/**
 	 * Quickly find if two segments could overlap by checking
 	 * their bounding boxes
-	 * @param {Path} p1 - first path
+	 * @param {Path} path1 - first path
 	 * @param {PathPoint} p1p - first path point
-	 * @param {Path} p2 - second path
+	 * @param {Path} path2 - second path
 	 * @param {PathPoint} p2p - second path point
 	 */
-	function pushSegOverlaps(p1, p1p, p2, p2p) {
-		// log('pushSegOverlaps - p1p ' + p1p + ' - p2p ' + p2p);
-		bs = p1.makeSegment(p1p);
-		ts = p2.makeSegment(p2p);
+	function pushSegOverlaps(path1, p1p, path2, p2p) {
+		// log(`pushSegOverlaps`, 'start');
+		// log(`path1: ${path1}`);
+		// log(`p1p: ${p1p}`);
+		// log(`path2: ${path2}`);
+		// log(`p2p: ${p2p}`);
+
+		bs = path1.makeSegment(p1p);
+		ts = path2.makeSegment(p2p);
 
 		if (maxesOverlap(bs.getFastMaxes(), ts.getFastMaxes())) {
-			// log('\t\t pushed!');
+			// log('\t pushed!');
 			segmentOverlaps.push({ bottom: bs, top: ts });
 		}
+		// log(`pushSegOverlaps`, 'end');
 	}
 
 	// Find overlaps within a single segment -- don't care about this case
 	// Find overlaps within a single path -- don't care about this case
 
 	// Find overlaps between two paths
-	for (let bpp = 0; bpp < p1.pathPoints.length; bpp++) {
-		for (let tpp = 0; tpp < p2.pathPoints.length; tpp++) {
-			pushSegOverlaps(p1, bpp, p2, tpp);
+	for (let bpp = 0; bpp < path1.pathPoints.length; bpp++) {
+		for (let tpp = 0; tpp < path2.pathPoints.length; tpp++) {
+			pushSegOverlaps(path1, bpp, path2, tpp);
 		}
 	}
 
@@ -384,11 +385,11 @@ function findPathIntersections(p1, p2) {
 /**
  * Collects instances of path points being on a bounding
  * box of the other path
- * @param {Path} p1 - first path
- * @param {Path} p2 - second path
- * @returns {Array}
+ * @param {Path} path1 - first path
+ * @param {Path} path2 - second path
+ * @returns {Array} - collection of intersections in IX Format
  */
-function findPathPointBoundaryIntersections(p1, p2) {
+function findPathPointBoundaryIntersections(path1, path2) {
 	let re = [];
 
 	/**
@@ -415,8 +416,8 @@ function findPathPointBoundaryIntersections(p1, p2) {
 		}
 	}
 
-	check(p1, p2);
-	check(p2, p1);
+	check(path1, path2);
+	check(path2, path1);
 
 	re = re.filter(duplicates);
 
@@ -425,22 +426,22 @@ function findPathPointBoundaryIntersections(p1, p2) {
 
 /**
  * Finds x/y overlaps between any points given two paths
- * @param {Path} p1 - first path
- * @param {Path} p2 - second path
- * @returns {Array} - collection of IX strings, representing xy points
+ * @param {Path} path1 - first path
+ * @param {Path} path2 - second path
+ * @returns {Array} - collection of intersections in IX Format
  */
-function findPathPointIntersections(p1, p2) {
+function findPathPointIntersections(path1, path2) {
 	// log('findPathPointIntersections', 'start');
 	let re = [];
 	let ix;
 
-	// log(p1.toString());
-	// log(p2.toString());
+	// log(path1.toString());
+	// log(path2.toString());
 
-	for (let pp1 = 0; pp1 < p1.pathPoints.length; pp1++) {
-		for (let pp2 = 0; pp2 < p2.pathPoints.length; pp2++) {
-			if (pointsAreEqual(p1.pathPoints[pp1].p, p2.pathPoints[pp2].p, 0.01)) {
-				ix = '' + p1.pathPoints[pp1].p.x + '/' + p1.pathPoints[pp1].p.y;
+	for (let pp1 = 0; pp1 < path1.pathPoints.length; pp1++) {
+		for (let pp2 = 0; pp2 < path2.pathPoints.length; pp2++) {
+			if (pointsAreEqual(path1.pathPoints[pp1].p, path2.pathPoints[pp2].p, 0.01)) {
+				ix = '' + path1.pathPoints[pp1].p.x + '/' + path1.pathPoints[pp1].p.y;
 				// log(`found ${ix}`);
 
 				re.push(ix);
@@ -453,4 +454,165 @@ function findPathPointIntersections(p1, p2) {
 	// log('returning ' + re);
 	// log('findPathPointIntersections', 'end');
 	return re;
+}
+
+// --------------------------------------------------------------
+// Split segments apart, then stitch them back together
+// --------------------------------------------------------------
+
+/**
+ * Checks for a bunch of 'overlap' and 'orphan' scenarios
+ * concerning segments and path points
+ * @param {Path} path - Path to check
+ * @returns {Array} - Collection of resulting paths
+ */
+function resolveSelfOverlaps(path) {
+	log('resolveSelfOverlaps', 'start');
+	log('path');
+	log(path);
+
+	let polySegment = path.makePolySegment();
+	log('polySegment');
+	log(polySegment);
+
+	// Add self intersects to path
+	let ix = polySegment.findIntersections();
+	log('intersections');
+	log(json(ix, true));
+
+	if (ix.length === 0) {
+		log(`ix.length === 0, returning path as is`);
+		log('resolveSelfOverlaps', 'end');
+		return new Path(path);
+	}
+
+	let segmentNumber = polySegment.segments.length;
+	let threshold = 0.01;
+	polySegment.splitSegmentsAtIntersections(ix, threshold);
+
+	if (segmentNumber === polySegment.segments.length) {
+		log(`Splitting the polySegment on itself resulted in the same length, returning path as is`);
+		log('resolveSelfOverlaps', 'end');
+		return new Path(path);
+	}
+
+	log('before filtering ' + polySegment.segments.length);
+
+	polySegment.removeZeroLengthSegments();
+	log('after removeZeroLengthSegments ' + polySegment.segments.length);
+
+	polySegment.removeDuplicateSegments();
+	log('after removeDuplicateSegments ' + polySegment.segments.length);
+
+	polySegment = removeSegmentsOverlappingPath(polySegment, path);
+	log('after removeSegmentsOverlappingPath ' + polySegment.segments.length);
+
+	polySegment.removeRedundantLineSegments();
+	log('after removeRedundantLineSegments ' + polySegment.segments.length);
+
+	polySegment.removeNonConnectingSegments();
+	log('after removeNonConnectingSegments ' + polySegment.segments.length);
+
+	polySegment.combineInlineSegments();
+	log('after combineInlineSegments ' + polySegment.segments.length);
+
+	log('afters filtering ' + polySegment.segments.length);
+
+	// polySegment.drawPolySegmentOutline();
+	let resultingSegments = polySegment.stitchSegmentsTogether();
+	let resultingPaths = [];
+	let psn;
+	log(`resultingSegments`);
+	log(resultingSegments);
+	for (let ps = 0; ps < resultingSegments.length; ps++) {
+		psn = resultingSegments[ps];
+		if (psn.segments.length > 1) {
+			let thisPath = psn.getPath();
+			thisPath.name = path.name;
+			resultingPaths.push(thisPath);
+		}
+	}
+
+	log('resolveSelfOverlaps', 'end');
+	return resultingPaths;
+}
+
+/**
+ * Uses a provided Path to act as a mask, and removes Segments from
+ * a PolySegment that are 'under' that Path
+ * @param {PolySegment} polySegment - Collection of segments to remove from
+ * @param {Path} path - path that acts like a mask
+ * @returns {PolySegment} - new PolySegment with less Segments
+ */
+function removeSegmentsOverlappingPath(polySegment, path) {
+	// log('PolySegment.removeSegmentsOverlappingPath', 'start');
+	let segments = polySegment.segments;
+	// let len = segments.length;
+	// log('segments starting as ' + segments.length);
+	// log(segments);
+	segments.forEach((segment) => {
+		if (testForHit(segment, 0.33, path) && testForHit(segment, 0.66, path)) {
+			debugDrawSegmentPoints(segment);
+			segment.objType = 'hit';
+		} else {
+			debugDrawSegmentPoints(segment);
+		}
+	});
+
+	// log(segments);
+	polySegment.segments = segments.filter(function (v) {
+		return v.objType === 'segment';
+	});
+
+	// alert('removeSegmentsOverlappingPath - hits and misses');
+	// log(' PolySegment.removeSegmentsOverlappingPath - removed ' + (len-this.segments.length) + ' - END\n');
+	return polySegment;
+}
+
+/**
+ * Takes a Segment and a decimal 'time' to get a single point along
+ * that segment curve, then checks to see if that point is over
+ * a given path.
+ * @param {Segment} segment - Segment to get the point from
+ * @param {Number} split - decimal 'time' between 0 and 1 for position on the Segment
+ * @param {Path} path - Path to check point against
+ * @returns {Boolean}
+ */
+function testForHit(segment, split, path) {
+	let splitSegment = segment.splitAtTime(split);
+	let pt = 3;
+	let tx = splitSegment[0].p4x;
+	let ty = splitSegment[0].p4y;
+
+	// Big hit detection, to miss border paths
+	// let re = isShapeHere(path, sXcX(tx), sYcY(ty)) &&
+	// isShapeHere(path, sXcX(tx), sYcY(ty + pt)) &&
+	// isShapeHere(path, sXcX(tx), sYcY(ty - pt)) &&
+	// isShapeHere(path, sXcX(tx + pt), sYcY(ty)) &&
+	// isShapeHere(path, sXcX(tx - pt), sYcY(ty));
+	// if (re) alert('HIT ' + tx + ', ' + ty);
+
+	if (!isShapeHere(path, sXcX(tx), sYcY(ty + pt))) return false;
+	if (!isShapeHere(path, sXcX(tx), sYcY(ty - pt))) return false;
+	if (!isShapeHere(path, sXcX(tx + pt), sYcY(ty))) return false;
+	if (!isShapeHere(path, sXcX(tx - pt), sYcY(ty))) return false;
+	if (!isShapeHere(path, sXcX(tx), sYcY(ty))) return false;
+
+	return true;
+}
+
+/**
+ * For debugging, visually draw a segment's points to the edit canvas
+ * @param {Segment} segment - Segment to draw
+ */
+function debugDrawSegmentPoints(segment) {
+	debugDrawPoints(
+		[
+			{ x: segment.p1x, y: segment.p1y },
+			{ x: segment.p2x, y: segment.p2y },
+			{ x: segment.p3x, y: segment.p3y },
+			{ x: segment.p4x, y: segment.p4y },
+		],
+		'lime'
+	);
 }
