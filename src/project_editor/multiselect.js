@@ -3,7 +3,13 @@ import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-import { glyphChanged, removeLinkFromUsedIn } from './cross_item_actions.js';
+import {
+	glyphChanged,
+	makeGlyphWithResolvedLinks,
+	removeLinkFromUsedIn,
+} from './cross_item_actions.js';
+import { combineAllPaths } from './boolean_combine.js';
+import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 
 /**
 		Multi-Select
@@ -370,24 +376,24 @@ export class MultiSelectShapes extends MultiSelect {
 	// just define this as nothing so it can be called from the root class
 	// selectPathsThatHaveSelectedPoints() {}
 
-	/*
-	// TODO boolean combine
 	combine() {
-		// log('MultiSelectShapes.combine', 'start');
-		const ns = this.virtualGlyph.clone();
-		ns.makeGlyphWithResolvedLinks();
-		const cs = combineShapes(ns.shapes);
+		log('MultiSelectShapes.combine', 'start');
+		const editor = getCurrentProjectEditor();
+		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph.clone());
+		const combinedShapes = combineAllPaths(newGlyph.shapes);
 
+		log(`combinedShapes`);
+		log(combinedShapes);
 		// If everything worked, delete original paths and add new ones
-		if (cs) {
+		if (combinedShapes) {
 			this.deleteShapes();
-			for (let n = 0; n < cs.length; n++) addPathToCurrentItem(cs[n]);
+			combinedShapes.forEach((shape) => addPathToCurrentItem(shape));
 			editor.history.addState('Combined paths');
 		}
 
-		// log('MultiSelectShapes.combine', 'end');
+		log('MultiSelectShapes.combine', 'end');
 	}
-*/
+
 	deleteShapes() {
 		// log('deleteShapes', 'start');
 		const editor = getCurrentProjectEditor();

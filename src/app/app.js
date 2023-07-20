@@ -7,6 +7,7 @@ import { ioFont_exportFont } from '../io/font_export.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
+import obleggSampleProject from '../samples/oblegg-0-1.gs2?raw';
 import { _DEV } from './dev_mode_includes.js';
 
 /**
@@ -32,9 +33,9 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: false, // Use a 'Dev Mode' window title
-				sampleProject: false, // Load the sample project
-				currentPage: false, // navigate straight to a page (title case names)
-				currentGlyphID: false, // select a glyph
+				sampleProject: true, // Load the sample project
+				currentPage: 'Characters', // navigate straight to a page (title case names)
+				currentGlyphID: 'glyph-0x30', // select a glyph
 				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
 				selectFirstShape: false, // select a shape
@@ -68,7 +69,11 @@ export class GlyphrStudioApp {
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation & selection
-			if (dev.sampleProject) editor.project = importGlyphrProjectFromText(simpleExampleProject);
+			if (dev.sampleProject) {
+				let proj = simpleExampleProject;
+				if (dev.sampleProject !== 'oblegg') proj = obleggSampleProject;
+				editor.project = importGlyphrProjectFromText(proj);
+			}
 			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;

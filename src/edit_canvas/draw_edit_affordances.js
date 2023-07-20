@@ -2,10 +2,8 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeCrisp, round } from '../common/functions.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
-import { eventHandlerData } from './events.js';
 import { sXcX, sYcY } from './edit_canvas.js';
 import { canResize } from './events_mouse.js';
-import { ovalPathFromMaxes, rectPathFromMaxes } from './tools/new_basic_path.js';
 
 // --------------------------------------------------------------
 // Common size stuff
@@ -399,10 +397,6 @@ function getBoundingBoxAndHandleDimensions(maxes, thickness) {
 // --------------------------------------------------------------
 // Paths and PathPoints
 // --------------------------------------------------------------
-// --------------------------------------------------------------
-// Canvas Stuff
-// --------------------------------------------------------------
-
 export function computeAndDrawPathPointHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	// let points = editor.multiSelect.points;
@@ -639,4 +633,19 @@ export function drawQuadraticHandle(point, ctx, accent, prevP) {
 			ctx.stroke();
 		}
 	}
+}
+
+// --------------------------------------------------------------
+// Visual debugging
+// --------------------------------------------------------------
+
+export function debugDrawPoints(xyPoints = [], color = 'rgb(200,50,60)') {
+	// log('debugDrawPoints', 'start');
+	// log(xyPoints);
+	let ctx = getCurrentProjectEditor().editCanvas.ctx;
+	ctx.fillStyle = color;
+	xyPoints.forEach((point) => {
+		ctx.fillRect(sXcX(point.x), sYcY(point.y), 5, 5);
+	});
+	// log('debugDrawPoints', 'end');
 }

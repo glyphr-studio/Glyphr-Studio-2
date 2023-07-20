@@ -867,34 +867,4 @@ export class Glyph extends GlyphElement {
 		});
 		return openTypePath;
 	}
-
-	// --------------------------------------------------------------
-	// Boolean Combine
-	// --------------------------------------------------------------
-
-	/**
-	 * Boolean combine all Shapes in this Glyph to as few paths as possible
-	 * @param {Boolean} doNotToast - don't show progress messages
-	 * @returns {Glyph} - reference to this Glyph
-	 */
-	combineAllShapes() {
-		// log('Glyph.combineAllShapes', 'start');
-		// TODO Boolean Combine
-		// this.makeGlyphWithResolvedLinks();
-		/*
-		const paths = combineShapes(this.shapes, doNotToast);
-		if (paths) {
-			// log('new paths');
-			this.shapes = paths;
-			// log(this.shapes);
-		}
-
-		// log(`this glyph AFTER`);
-		// log(this.print());
-
-		// log(this.name);
-		// log('Glyph.combineAllShapes', 'end');
-		*/
-		return this;
-	}
 }

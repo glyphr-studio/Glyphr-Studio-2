@@ -375,7 +375,7 @@ export function getShapeAtLocation(x, y) {
 	for (let j = sws.length - 1; j >= 0; j--) {
 		shape = sws[j];
 		// log('Checking shape ' + j);
-		if (isThisShapeHere(shape, x, y)) {
+		if (isShapeHere(shape, x, y)) {
 			// log(`getShapeAtLocation`, 'end');
 			return shape;
 		}
@@ -386,8 +386,8 @@ export function getShapeAtLocation(x, y) {
 	return false;
 }
 
-function isThisShapeHere(shape, px, py) {
-	// log(`isThisShapeHere`, 'start');
+export function isShapeHere(shape, px, py) {
+	// log(`isShapeHere`, 'start');
 
 	const editor = getCurrentProjectEditor();
 	let ctx = editor.ghostCTX;
@@ -403,8 +403,8 @@ function isThisShapeHere(shape, px, py) {
 	ctx.fill();
 
 	let imageData = ctx.getImageData(px, py, 1, 1);
-	// log('ISHERE? red = ' + imageData.data[0] + '  returning: ' + (imageData.data[0] < 255));
-	// log(`isThisShapeHere`, 'end');
+	// log('red = ' + imageData.data[0] + '  returning: ' + (imageData.data[0] < 255));
+	// log(`isShapeHere`, 'end');
 	return imageData.data[0] < 255;
 }
 
