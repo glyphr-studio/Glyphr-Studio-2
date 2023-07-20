@@ -87,11 +87,8 @@ export function combineAllPaths(paths, notifyErrors = true, resolveOverlaps = tr
 			}
 		}
 
-		newPaths = newPaths.concat(
-			arr.filter(function (v) {
-				return v;
-			})
-		);
+		// concat truthy values
+		newPaths = newPaths.concat(arr.filter(p => p));
 
 		log('singlePass didStuff = ' + didStuff);
 
@@ -237,35 +234,32 @@ function combineTwoPaths(path1, path2) {
 	let s2h2 = getPointsAfterOverlap(path2);
 
 	let newPoints = [];
-
+	let newPoint;
 	newPoints = newPoints.concat(s1h1.points);
 
-	newPoints.push(
-		new PathPoint({
-			P: clone(s1h1.overlap.P, 'combineTwoPaths'),
-			H1: clone(s1h1.overlap.H1, 'combineTwoPaths'),
-			H2: clone(s2h1.overlap.H2, 'combineTwoPaths'),
-			type: 'corner',
-			useh1: s1h1.overlap.useh1,
-			useh2: s2h1.overlap.useh2,
-		})
-	);
-
+	newPoint = new PathPoint({
+		p: s1h1.overlap.p,
+		h1: s1h1.overlap.h1,
+		h2: s2h1.overlap.h2,
+		type: 'corner',
+	});
+	newPoint.h1.use = s1h1.overlap.h1.use;
+	newPoint.h2.use = s2h1.overlap.h2.use;
+	newPoints.push(newPoint);
 	newPoints = newPoints.concat(s2h2.points);
 	newPoints = newPoints.concat(s2h1.points);
 
-	newPoints.push(
-		new PathPoint({
-			P: clone(s2h1.overlap.P, 'combineTwoPaths'),
-			H1: clone(s2h1.overlap.H1, 'combineTwoPaths'),
-			H2: clone(s1h2.overlap.H2, 'combineTwoPaths'),
-			type: 'corner',
-			useh1: s2h1.overlap.useh1,
-			useh2: s1h2.overlap.useh2,
-		})
-	);
-
+	newPoint = new PathPoint({
+		p: s2h1.overlap.p,
+		h1: s2h1.overlap.h1,
+		h2: s1h2.overlap.h2,
+		type: 'corner',
+	});
+	newPoint.h1.use = s2h1.overlap.h1.use;
+	newPoint.h2.use = s1h2.overlap.h2.use;
+	newPoints.push(newPoint);
 	newPoints = newPoints.concat(s1h2.points);
+
 	let result = new Path({ pathPoints: newPoints });
 	log(result);
 	log('combineTwoPaths', 'end');
