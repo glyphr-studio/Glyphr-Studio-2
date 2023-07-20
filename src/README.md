@@ -1,9 +1,17 @@
 # Welcome to teh code...
 
-There are two main areas of code in Glyphr Studio v2 -
-divided out into folders. Those two main areas are:
+## Getting started
+We have adopted Vite for all the things. After you clone the `Glyphr-Studio-2`
+repository and navigate to that directory, just do a `npm install --include-dev`
+to get up to date, then using the `npm run dev` command will start the Vite dev
+server. `npm run test` will run Vitest, although features may be developed
+before their tests are.
 
-- **Project Data** - this is the hierarchy of data, from
+## Codebase organization
+There are two main areas of code in Glyphr Studio v2 -
+each with an associated set of directories. Those two main areas are:
+
+- **Project Data** - this is the hierarchy of font data, from
   x/y points all the way up to paths, glyphs, and metadata. This
   is the 'theoretical' type data that can be exported to various
   formats, saved to a project file, drawn to screens, manipulated
@@ -26,7 +34,7 @@ practice, but it's a big change from V1, so it is at least worth mentioning.
 
 ### Meta
 
-Testing has been set up using Vitest, and can be run by doing `npm test`.
+Testing has been set up using Vitest, and can be run by doing `npm run test`.
 Tests are stored as `-.test.js` in a `test` folder (for Project Data)
 or directly next to the file they test. All files with this suffix
 will be included in the test pass.
@@ -138,6 +146,12 @@ The new App hierarchy will look roughly like this:
           ┣━ Pub/Sub
           ┣━ Current Selected State
           ┣━ History
+          ┣━ Dialogs
+          ┣━ Edit Canvas
+          ┃   ┣━ Views
+          ┃   ┣━ Multi-select
+          ┃   ┗━ Event handlers
+          ┣━ Pop-out windows
           ┗━ Navigation
               ┗━ Page
                   ┣━ Content
