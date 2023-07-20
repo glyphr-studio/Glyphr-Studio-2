@@ -83,6 +83,11 @@ function createOptionsObject() {
 	options.description = fontSettings.description || ' ';
 	options.copyright = fontSettings.copyright || ' ';
 	options.trademark = fontSettings.trademark || ' ';
+	options.weightClass = parseInt(fontSettings.weight);
+	options.panose = fontSettings.panose.split(' ').map(Number) || [];
+	options.italicAngle = fontSettings.italicAngle || 0;
+	options.slope = fontSettings.slope || 0;
+
 	options.glyphs = [];
 
 	// log('NEW options ARG BEFORE GLYPHS');
