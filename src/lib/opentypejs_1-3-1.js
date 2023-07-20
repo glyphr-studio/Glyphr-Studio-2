@@ -6466,7 +6466,7 @@ function makeHeadTable(options) {
 			{ name: 'yMin', type: 'SHORT', value: 0 },
 			{ name: 'xMax', type: 'SHORT', value: 0 },
 			{ name: 'yMax', type: 'SHORT', value: 0 },
-			{ name: 'macStyle', type: 'USHORT', value: 0 },
+			{ name: 'macStyle', type: 'USHORT', value: options.macStyle },
 			{ name: 'lowestRecPPEM', type: 'USHORT', value: 0 },
 			{ name: 'fontDirectionHint', type: 'SHORT', value: 2 },
 			{ name: 'indexToLocFormat', type: 'SHORT', value: 0 },
@@ -7812,10 +7812,11 @@ function parsePostTable(data, start) {
 	return post;
 }
 
-function makePostTable() {
+function makePostTable(options) {
+	log(Math.round(options.italicAngle*0x10000));
 	return new table.Table('post', [
 		{ name: 'version', type: 'FIXED', value: 0x00030000 },
-		{ name: 'italicAngle', type: 'FIXED', value: 0 },
+		{ name: 'italicAngle', type: 'FIXED', value: Math.round(options.italicAngle * 0x10000) },
 		{ name: 'underlinePosition', type: 'FWORD', value: 0 },
 		{ name: 'underlineThickness', type: 'FWORD', value: 0 },
 		{ name: 'isFixedPitch', type: 'ULONG', value: 0 },
@@ -8362,6 +8363,13 @@ function fontToSfntTable(font) {
 	globals.ascender = font.ascender;
 	globals.descender = font.descender;
 
+	var macStyle = 0;
+	if (font.italicAngle < 0) {
+		macStyle |= 2;
+	}
+	if (font.weightClass >= 600) {
+		macStyle |= 1;
+	}
 	var headTable = head.make({
 		flags: 3, // 00000011 (baseline for font at y=0; left sidebearing point at x=0)
 		unitsPerEm: font.unitsPerEm,
@@ -8370,6 +8378,7 @@ function fontToSfntTable(font) {
 		xMax: globals.xMax,
 		yMax: globals.yMax,
 		lowestRecPPEM: 3,
+		macStyle: macStyle,
 		createdTimestamp: font.createdTimestamp,
 	});
 
@@ -8381,6 +8390,7 @@ function fontToSfntTable(font) {
 		minRightSideBearing: globals.minRightSideBearing,
 		xMaxExtent: globals.maxLeftSideBearing + (globals.xMax - globals.xMin),
 		numberOfHMetrics: font.glyphs.length,
+		slope: font.slope,
 	});
 
 	var maxpTable = maxp.make(font.glyphs.length);
@@ -8450,7 +8460,7 @@ function fontToSfntTable(font) {
 	var nameTable = _name.make(names, languageTags);
 	var ltagTable = languageTags.length > 0 ? ltag.make(languageTags) : undefined;
 
-	var postTable = post.make();
+	var postTable = post.make(font);
 	var cffTable = cff.make(font.glyphs, {
 		version: font.getEnglishName('version'),
 		fullName: englishFullName,
@@ -14822,13 +14832,39 @@ function Font(options) {
 		this.unitsPerEm = options.unitsPerEm || 1000;
 		this.ascender = options.ascender;
 		this.descender = options.descender;
+		this.slope = options.slope;
+		this.italicAngle = options.italicAngle;
 		this.createdTimestamp = options.createdTimestamp;
+
+		var selection = 0;
+		if (this.italicAngle < 0) {
+			selection |= this.fsSelectionValues.ITALIC;
+		} else if (this.italicAngle > 0) {
+			selection |= this.fsSelectionValues.OBLIQUE;
+		}
+		if (this.weightClass >= 600) {
+			selection |= this.fsSelectionValues.BOLD;
+		}
+		if (selection == 0) {
+			selection = this.fsSelectionValues.REGULAR;
+		}
+
 		this.tables = Object.assign(options.tables, {
 			os2: Object.assign(
 				{
 					usWeightClass: options.weightClass || this.usWeightClasses.MEDIUM,
 					usWidthClass: options.widthClass || this.usWidthClasses.MEDIUM,
-					fsSelection: options.fsSelection || this.fsSelectionValues.REGULAR,
+					bFamilyType: options.panose[0] || 0,
+					bSerifStyle: options.panose[1] || 0,
+					bWeight: options.panose[2] || 0,
+					bProportion: options.panose[3] || 0,
+					bContrast: options.panose[4] || 0,
+					bStrokeVariation: options.panose[5] || 0,
+					bArmStyle: options.panose[6] || 0,
+					bLetterform: options.panose[7] || 0,
+					bMidline: options.panose[8] || 0,
+					bXHeight: options.panose[9] || 0,
+					fsSelection: selection,
 				},
 				options.tables.os2
 			),
