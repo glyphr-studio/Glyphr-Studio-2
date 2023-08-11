@@ -74,6 +74,7 @@ function computeSelectionStyle() {
 	}
 	return { thickness: thickness, accent: accent };
 }
+
 // --------------------------------------------------------------
 // Paths
 // --------------------------------------------------------------
