@@ -11,7 +11,7 @@ import {
 	isVal,
 	hasNonValues,
 	duplicates,
-	pointsAreEqual,
+	xyPointsAreEqual,
 	strSan,
 	json,
 } from '../common/functions.js';
@@ -683,7 +683,7 @@ export class Path extends GlyphElement {
 	 */
 	containsPoint(point, wantSecond) {
 		for (let pp = 0; pp < this.pathPoints.length; pp++) {
-			if (pointsAreEqual(point, this.pathPoints[pp].p, 0.01)) {
+			if (xyPointsAreEqual(point, this.pathPoints[pp].p, 0.01)) {
 				if (wantSecond) wantSecond = false;
 				else return this.pathPoints[pp];
 			}
@@ -691,11 +691,9 @@ export class Path extends GlyphElement {
 		return false;
 	}
 
-
 	// --------------------------------------------------------------
 	// Boolean Combine
 	// --------------------------------------------------------------
-
 
 	// --------------------------------------------------------------
 	//  Translate to other languages
@@ -1067,6 +1065,7 @@ export class Path extends GlyphElement {
 	addPathPoint(newPoint) {
 		// log('Path.addPathPoint', 'start');
 		// log('newPoint = ' + newPoint);
+		newPoint = new PathPoint(newPoint);
 		newPoint.parent = this;
 		this.pathPoints.push(newPoint);
 		this.findWinding();
@@ -1083,9 +1082,9 @@ export class Path extends GlyphElement {
 	 * @returns {PathPoint} - reference to the added path point
 	 */
 	insertPathPoint(pointNumber = 0, t = 0.5) {
-		log(`Path.insertPathPoint`, 'start');
-		log(`pointNumber: ${pointNumber}`);
-		log(`t: ${t}`);
+		// log(`Path.insertPathPoint`, 'start');
+		// log(`pointNumber: ${pointNumber}`);
+		// log(`t: ${t}`);
 
 		const pp1 = pointNumber === false ? this.pathPoints[0] : this.pathPoints[pointNumber];
 		const pp2i = this.getNextPointNum(pointNumber);
@@ -1132,7 +1131,7 @@ export class Path extends GlyphElement {
 		this.pathPoints.splice(pp2i, 0, ppn);
 		// this.selectPathPoint(pp2i);
 
-		log(`Path.insertPathPoint`, 'end');
+		// log(`Path.insertPathPoint`, 'end');
 		return ppn;
 	}
 

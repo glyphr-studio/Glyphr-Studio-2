@@ -1,4 +1,4 @@
-import { pointsAreEqual } from '../common/functions';
+import { xyPointsAreEqual } from '../common/functions';
 import { canvasUIPointSize } from './draw_edit_affordances';
 
 /**
@@ -85,7 +85,7 @@ function isOverPathControlPoint(path, x, y, noHandles) {
 export function isOverFirstPoint(path, x, y) {
 	let pp = path.pathPoints[0];
 	if (!pp) return false;
-	return pointsAreEqual({ x: x, y: y }, pp.p.coord, canvasUIPointSize);
+	return xyPointsAreEqual({ x: x, y: y }, pp.p.coord, canvasUIPointSize);
 }
 
 /**
@@ -99,20 +99,20 @@ export function isOverFirstPoint(path, x, y) {
 function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
 	const targetSize = canvasUIPointSize;
 	const test = { x: x, y: y };
-	if (pointsAreEqual(pathPoint.p, test, targetSize)) {
+	if (xyPointsAreEqual(pathPoint.p, test, targetSize)) {
 		// log(`isOverPathPointControlPoint - Returning p`);
 		return pathPoint.p;
 	}
 
 	if (pathPoint.h1.use && !noHandles) {
-		if (pointsAreEqual(pathPoint.h1, test, targetSize)) {
+		if (xyPointsAreEqual(pathPoint.h1, test, targetSize)) {
 			// log(`isOverPathPointControlPoint - Returning h1`);
 			return pathPoint.h1;
 		}
 	}
 
 	if (pathPoint.h2.use && !noHandles) {
-		if (pointsAreEqual(pathPoint.h2, test, targetSize)) {
+		if (xyPointsAreEqual(pathPoint.h2, test, targetSize)) {
 			// log(`isOverPathPointControlPoint - Returning h2`);
 			return pathPoint.h2;
 		}

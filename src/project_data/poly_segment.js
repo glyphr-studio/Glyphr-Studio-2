@@ -2,7 +2,7 @@ import { GlyphElement } from './glyph_element.js';
 import { XYPoint } from './xy_point.js';
 import { Segment } from './segment.js';
 import { maxesOverlap } from './maxes.js';
-import { duplicates, clone, pointsAreEqual, round, numSan } from '../common/functions.js';
+import { duplicates, clone, xyPointsAreEqual, round, numSan } from '../common/functions.js';
 
 /**
  * Glyph Element > Poly Segment
@@ -129,8 +129,8 @@ export class PolySegment extends GlyphElement {
 				h2: { coord: { x: seg2.p2x, y: seg2.p2y } },
 			};
 
-			if (seg1.line || pointsAreEqual(newPP.h1, newPP.p)) newPP.h1.use = false;
-			if (seg2.line || pointsAreEqual(newPP.h2, newPP.p)) newPP.h2.use = false;
+			if (seg1.line || xyPointsAreEqual(newPP.h1, newPP.p)) newPP.h1.use = false;
+			if (seg2.line || xyPointsAreEqual(newPP.h2, newPP.p)) newPP.h2.use = false;
 
 			// newPP.resolvePointType();
 
@@ -143,7 +143,7 @@ export class PolySegment extends GlyphElement {
 		// Connect the first / last point if not already
 		const firstP = new XYPoint(segments[0].p1x, segments[0].p1y);
 		const lastP = new XYPoint(segments[segments.length - 1].p4x, segments[segments.length - 1].p4y);
-		if (!pointsAreEqual(firstP, lastP)) {
+		if (!xyPointsAreEqual(firstP, lastP)) {
 			segments.push(
 				new Segment({
 					p1x: lastP.x,
@@ -380,12 +380,12 @@ export class PolySegment extends GlyphElement {
 		let currSeg;
 		for (let s = 0; s < this._segments.length; s++) {
 			currSeg = this._segments[s];
-			if (pointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(4))) {
+			if (xyPointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(4))) {
 				if (currSeg.line) {
 					currSeg.objType = 'LINE ZERO';
 				} else if (
-					pointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(2)) &&
-					pointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(3))
+					xyPointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(2)) &&
+					xyPointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(3))
 				) {
 					currSeg.objType = 'ZERO';
 				}
@@ -519,26 +519,32 @@ export class PolySegment extends GlyphElement {
 	 * then merges them into one larger line.
 	 */
 	combineInlineSegments() {
-		// log(`PolySegment.combineInlineSegments`, 'start');
-		// let startLength = this.segments.length;
-		let ts, ns;
+		log(`PolySegment.combineInlineSegments`, 'start');
+		let startLength = this.segments.length;
+		let thisSegment, nextSegment;
 
 		for (let s = 0; s < this.segments.length; s++) {
-			ts = this.segments[s];
-			ns = s === this.segments.length - 1 ? this.segments[0] : this.segments[s + 1];
-			if (ts.line === ns.line) {
+			log(`segment number ${s}`);
+
+			thisSegment = this.segments[s];
+			nextSegment = this.segments[s + 1];
+			if (s === this.segments.length - 1) nextSegment = this.segments[0];
+			log(`thisSegment.lineType: ${thisSegment.lineType}`);
+			log(`nextSegment.lineType: ${nextSegment.lineType}`);
+
+			if (thisSegment.lineType === nextSegment.lineType) {
 				this.segments[s] = new Segment({
-					p1x: ts.p1x,
-					p1y: ts.p1y,
-					p4x: ns.p4x,
-					p4y: ns.p4y,
+					p1x: thisSegment.p1x,
+					p1y: thisSegment.p1y,
+					p4x: nextSegment.p4x,
+					p4y: nextSegment.p4y,
 				});
 				this.segments.splice(s + 1, 1);
 				s--;
 			}
 		}
-		// log(`Removed segments: ${this.segments.length - startLength}`);
-		// log(`PolySegment.combineInlineSegments`, 'end');
+		log(`Removed segments: ${this.segments.length - startLength}`);
+		log(`PolySegment.combineInlineSegments`, 'end');
 	}
 }
 
@@ -677,15 +683,15 @@ export function segmentsAreEqual(s1, s2, threshold) {
 	// log([s1, s2]);
 
 	if (
-		pointsAreEqual(s1.getXYPoint(1), s2.getXYPoint(1), threshold) &&
-		pointsAreEqual(s1.getXYPoint(4), s2.getXYPoint(4), threshold)
+		xyPointsAreEqual(s1.getXYPoint(1), s2.getXYPoint(1), threshold) &&
+		xyPointsAreEqual(s1.getXYPoint(4), s2.getXYPoint(4), threshold)
 	) {
 		if (s1.lineType && s2.lineType) {
 			// log('segmentsAreEqual - returning LINE true', 'end');
 			return true;
 		} else if (
-			pointsAreEqual(s1.getXYPoint(2), s2.getXYPoint(2), threshold) &&
-			pointsAreEqual(s1.getXYPoint(3), s2.getXYPoint(3), threshold)
+			xyPointsAreEqual(s1.getXYPoint(2), s2.getXYPoint(2), threshold) &&
+			xyPointsAreEqual(s1.getXYPoint(3), s2.getXYPoint(3), threshold)
 		) {
 			// log('segmentsAreEqual - returning FULLY true', 'end');
 			return true;

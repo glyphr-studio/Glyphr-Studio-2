@@ -1,7 +1,14 @@
 import { GlyphElement } from './glyph_element.js';
 import { XYPoint } from './xy_point.js';
 import { Maxes } from './maxes.js';
-import { clone, numSan, isVal, round, hasNonValues, pointsAreEqual } from '../common/functions.js';
+import {
+	clone,
+	numSan,
+	isVal,
+	round,
+	hasNonValues,
+	xyPointsAreEqual,
+} from '../common/functions.js';
 
 /**
  * Glyph Element > Segment
@@ -670,7 +677,7 @@ export class Segment extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	containsStartPoint(pt, threshold = 1) {
-		return pointsAreEqual(this.getXYPoint(1), pt, threshold);
+		return xyPointsAreEqual(this.getXYPoint(1), pt, threshold);
 	}
 	/**
 	 * Checks to see if an x/y value is the end of this Segment
@@ -679,7 +686,7 @@ export class Segment extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	containsEndPoint(pt, threshold = 1) {
-		return pointsAreEqual(this.getXYPoint(4), pt, threshold);
+		return xyPointsAreEqual(this.getXYPoint(4), pt, threshold);
 	}
 
 	/**
@@ -751,7 +758,7 @@ export class Segment extends GlyphElement {
 		const s1c4 = this.getXYPoint(4);
 		const s2c1 = s2.getXYPoint(1);
 
-		return pointsAreEqual(s1c4, s2c1, threshold);
+		return xyPointsAreEqual(s1c4, s2c1, threshold);
 	}
 
 	/**

@@ -8,7 +8,7 @@ import {
 	makeGlyphWithResolvedLinks,
 	removeLinkFromUsedIn,
 } from './cross_item_actions.js';
-import { combineAllPaths } from './boolean_combine.js';
+import { combineAllPaths, findPathIntersections, insertPathPointsAtIXPoint } from './boolean_combine.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 
 /**
@@ -392,6 +392,22 @@ export class MultiSelectShapes extends MultiSelect {
 		}
 
 		log('MultiSelectShapes.combine', 'end');
+	}
+
+	addPathPointsAtIntersections() {
+		let path1 = this.members[0];
+		let path2 = this.members[1];
+		let intersections = findPathIntersections(path1, path2);
+		if (intersections.length < 1) {
+			log('no intersections, returning.');
+			return false;
+		}
+
+		// Add path points at all intersections
+		intersections.forEach((ix) => {
+			insertPathPointsAtIXPoint(ix, path1);
+			insertPathPointsAtIXPoint(ix, path2);
+		});
 	}
 
 	deleteShapes() {

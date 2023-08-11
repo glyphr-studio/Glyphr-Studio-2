@@ -439,6 +439,12 @@ export function getActionData(name) {
 			disabled: !editor.multiSelect.shapes.length,
 			onClick: combineSelectedPaths,
 		},
+		{
+			iconName: 'test',
+			title: `Add Path Points at intersections\nSelect two paths, and add path points to each where they cross.`,
+			disabled: !editor.multiSelect.shapes.length === 2,
+			onClick: addPathPointsAtIntersectionsAction,
+		},
 		// {
 		// 	iconName: 'subtractUsingTop',
 		// 	disabled: true,
@@ -749,6 +755,14 @@ function combineSelectedPaths() {
 	setTimeout(function () {
 		editor.multiSelect.shapes.combine();
 		editor.history.addState('combine selected paths');
+		// redraw({ calledBy: 'actions panel' });
+	}, 200);
+}
+function addPathPointsAtIntersectionsAction() {
+	const editor = getCurrentProjectEditor();
+	setTimeout(function () {
+		editor.multiSelect.shapes.addPathPointsAtIntersections();
+		editor.history.addState('add path points at intersections');
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }

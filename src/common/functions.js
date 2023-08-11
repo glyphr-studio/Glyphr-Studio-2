@@ -146,8 +146,8 @@ export function areEqual(obj1, obj2) {
  * @param {Number} threshold - how close to compare positions
  * @returns {Boolean}
  */
-export function pointsAreEqual(c1, c2, threshold = 1) {
-	// log('pointsAreEqual', 'start');
+export function xyPointsAreEqual(c1, c2, threshold = 1) {
+	// log('xyPointsAreEqual', 'start');
 	// log('c1 ' + json(c1, true));
 	// log('c2 ' + json(c2, true));
 	// log('threshold ' + threshold);
@@ -168,7 +168,7 @@ export function pointsAreEqual(c1, c2, threshold = 1) {
 	}
 
 	// log('not a match');
-	// log('pointsAreEqual', 'end');
+	// log('xyPointsAreEqual', 'end');
 
 	return false;
 }
@@ -193,7 +193,7 @@ export function makeCrisp(num, dir) {
  */
 export function round(num, dec = 0) {
 	if (!num) return 0;
-	return Number(Math.round(num + 'e' + dec) + 'e-' + dec) || 0;
+	return Number(Math.round(`${num}e${dec}`) + `e-${dec}`) || 0;
 }
 
 /**

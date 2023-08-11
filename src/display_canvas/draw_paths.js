@@ -114,7 +114,7 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
  * @param {Object} view - View object with x / y offset and Zoom
  * @param {Boolean} snap - snap values to whole numbers
  */
-function drawPathToCanvas(path, ctx, view, snap = true) {
+function drawPathToCanvas(path, ctx, view, snap = false) {
 	// log('drawPathToCanvas', 'start');
 	// log(ctx);
 
