@@ -36,7 +36,7 @@ import { XYPoint } from '../project_data/xy_point.js';
  */
 export function combineAllPaths(paths = [], notifyErrors = true) {
 	log(`combineAllPaths`, 'start');
-	let resultPaths = false;
+	let resultPaths = [];
 
 	// One Path
 	if (paths.length <= 1) {
@@ -51,7 +51,7 @@ export function combineAllPaths(paths = [], notifyErrors = true) {
 			if (notifyErrors) showToast('The selected paths do not overlap.');
 		}
 		log(`combineAllPaths`, 'end');
-		return paths;
+		return [resultPaths];
 	}
 
 	// More than two paths
