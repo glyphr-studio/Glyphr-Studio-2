@@ -1,4 +1,4 @@
-import { duplicates, json, xyPointsAreEqual, round, clone } from '../common/functions.js';
+import { duplicates, json, xyPointsAreEqual, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { debugDrawPoints } from '../edit_canvas/draw_edit_affordances.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
@@ -7,7 +7,7 @@ import { maxesOverlap } from '../project_data/maxes.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
 import { PolySegment, findSegmentIntersections } from '../project_data/poly_segment.js';
-import { Segment } from '../project_data/segment.js';
+import { Segment, areSegmentsEquivalent } from '../project_data/segment.js';
 import { XYPoint } from '../project_data/xy_point.js';
 
 /*
@@ -28,123 +28,8 @@ import { XYPoint } from '../project_data/xy_point.js';
 // Combine all paths
 // --------------------------------------------------------------
 
-/**
- * Takes a collection of paths and combines as many together as possible
- * @param {Array} paths - list of paths to combine
- * @param {Boolean} notifyErrors - show toast notifications on errors
- * @returns {Array} - collection of paths
- */
-export function combineAllPaths(paths = [], notifyErrors = true) {
+export function combineAllPaths(paths = []) {
 	log(`combineAllPaths`, 'start');
-	let resultPaths = [];
-
-	// One Path
-	if (paths.length <= 1) {
-		log(`combineAllPaths`, 'end');
-		return paths;
-	}
-
-	// Two Paths
-	if (paths.length === 2) {
-		resultPaths = combineTwoPaths(paths[0], paths[1]);
-		if (!resultPaths) {
-			if (notifyErrors) showToast('The selected paths do not overlap.');
-		}
-		log(`combineAllPaths`, 'end');
-		return [resultPaths];
-	}
-
-	// More than two paths
-	// TODO Boolean Combine, don't combine opposite windings
-	paths.map((path, index) => (resultPaths[index] = new Path(path)));
-	resultPaths.sort(function (a, b) {
-		return a.winding - b.winding;
-	});
-
-	// Main collapsing loop
-	let looping = true;
-	let count = 0;
-	let loopResult;
-	let loopMax = 20;
-
-	while (looping && count <= loopMax) {
-		if (count === loopMax) {
-			console.warn(`Combine All Paths - too many collapsing loops`);
-			return paths;
-		}
-
-		looping = false;
-
-		loopResult = onePassCombinePaths(resultPaths);
-		looping = loopResult.didStuff;
-		if (!looping && count === 0) {
-			if (notifyErrors) showToast('The selected paths do not overlap.');
-			log(`combineAllPaths`, 'end');
-			return paths;
-		}
-
-		resultPaths = loopResult.paths;
-		count++;
-	}
-
-	// Resolve self overlaps
-	let tempPaths = [];
-	resultPaths.forEach((path) => {
-		tempPaths = tempPaths.concat(resolveSelfOverlaps(path));
-	});
-	resultPaths = tempPaths;
-
-	log(`combineAllPaths`, 'end');
-	return resultPaths;
-}
-
-/**
- * Takes a single list of paths, and uses two for loops to attempt
- * to combine as many of the paths in the list as possible. It is
- * possible that these loops could not combine any, combine some, or
- * combine all. A 'didStuff' flag is returned, if nothing was done then
- * no more of the paths can be combined.
- * @param {Array} paths - collection of paths to attempt to combine
- * @returns {Object} - resulting paths and a 'didStuff' flag
- */
-function onePassCombinePaths(paths = []) {
-	log(`onePassCombinePaths`, 'start');
-	let resultPaths = [];
-	let didStuff = false;
-	let checkList = paths.map((value) => !!value);
-
-	for (let outer = 0; outer < paths.length; outer++) {
-		for (let inner = 0; inner < paths.length; inner++) {
-			log('attempting to combine paths ' + outer + ' with ' + inner);
-
-			if (outer !== inner && checkList[outer] && checkList[inner]) {
-				let combined = combineTwoPaths(paths[outer], paths[inner]);
-
-				if (combined !== false) {
-					resultPaths.push(combined);
-					didStuff = true;
-					checkList[outer] = false;
-					checkList[inner] = false;
-				}
-			}
-		}
-	}
-
-	// Add back any un-combined paths
-	for (let i = 0; i < checkList.length; i++) {
-		if (checkList[i]) resultPaths.push(paths[i]);
-	}
-
-	// Finish up
-	log(`didStuff: ${didStuff}`);
-	log(resultPaths);
-
-	log(`onePassCombinePaths`, 'end');
-	return { paths: resultPaths, didStuff: didStuff };
-}
-
-export function combineAllPathsAlternate(paths = []) {
-	log(`combineAllPathsAlternate`, 'start');
 	log(paths);
 	// paths = clone(paths);
 
@@ -171,11 +56,29 @@ export function combineAllPathsAlternate(paths = []) {
 		allSegments = allSegments.concat(path.makePolySegment().segments);
 	});
 	allSegments = new PolySegment({ segments: allSegments });
-	log(allSegments);
+	// log(allSegments);
+	log(`\n\n All Segments collected`);
+	console.table(allSegments.valuesAsArray);
+
+	// Filter duplicate segments
+	allSegments.segments = allSegments.segments.filter((segment, index) => {
+		for (let j = 0; j < allSegments.segments.length; j++) {
+			if (j !== index) {
+				if (areSegmentsEquivalent(segment, allSegments.segments[j])) {
+					return false;
+				}
+			}
+		}
+		return true;
+	});
+	log(`\n\n All segments filtered for duplicates`);
+	console.table(allSegments.valuesAsArray);
 
 	// Filter overlapped segments
 	paths.forEach((path) => (allSegments = removeSegmentsOverlappingPath(allSegments, path)));
-	log(allSegments);
+	// log(allSegments);
+	log(`\n\n All segments filtered for path overlapping`);
+	console.table(allSegments.valuesAsArray);
 
 	// Stich segments together
 	allSegments = allSegments.segments;
@@ -190,13 +93,13 @@ export function combineAllPathsAlternate(paths = []) {
 		let targetY = orderedSegments.at(-1).p4y;
 		log(`\t target: ${targetX} ${targetY}`);
 
-
 		for (let i = 0; i < allSegments.length; i++) {
 			let testX = allSegments[i].p1x;
 			let testY = allSegments[i].p1y;
 			log(`\t test: ${testX} ${testY}`);
 
-			if (targetX === testX && targetY === testY) {
+			// if (targetX === testX && targetY === testY) {
+			if (xyPointsAreEqual({ x: targetX, y: targetY }, { x: testX, y: testY }, 1)) {
 				orderedSegments.push(allSegments.splice(i, 1)[0]);
 				log(`\t Match found at ${testX}, ${testY}`);
 				log(orderedSegments);
@@ -212,117 +115,22 @@ export function combineAllPathsAlternate(paths = []) {
 			break;
 		}
 	}
-	log(`Ordered Segments`);
-	log(orderedSegments);
+	orderedSegments = new PolySegment({ segments: orderedSegments });
+	log(`\n\n Ordered Segments`);
+	console.table(orderedSegments.valuesAsArray);
 
 	// Make Path
-	let resultPath = new PolySegment({segments: orderedSegments}).getPath();
+	let resultPath = orderedSegments.getPath();
+	log(`Resulting path`);
 	log(resultPath);
 
-	log(`combineAllPathsAlternate`, 'end');
+	log(`combineAllPaths`, 'end');
 	return [resultPath];
 }
 
 // --------------------------------------------------------------
-// Combining just two paths
+// Path intersections
 // --------------------------------------------------------------
-
-function combineTwoPaths(path1, path2) {
-	log(`combineTwoPaths`, 'start');
-
-	// Find intersections
-	let intersections = findPathIntersections(path1, path2);
-	if (intersections.length < 1) {
-		log('no intersections, returning.');
-		log(`combineTwoPaths`, 'end');
-		return false;
-	} else {
-		log('found intersections');
-		log(intersections);
-	}
-
-	// Add path points at all intersections
-	log(`path1.pathPoints.length: ${path1.pathPoints.length}`);
-	log(`path2.pathPoints.length: ${path2.pathPoints.length}`);
-	intersections.forEach((ix) => {
-		insertPathPointsAtIXPoint(ix, path1);
-		insertPathPointsAtIXPoint(ix, path2);
-	});
-	log(`path1.pathPoints.length: ${path1.pathPoints.length}`);
-	log(`path2.pathPoints.length: ${path2.pathPoints.length}`);
-
-	/*
-		Traverse the working path, adding path points to the result path
-		until an 'overlap' point is detected, then switch the working path
-		and continue to add points until another overlap point is reached,
-		or the first point of path 1 is reached.
-	*/
-	path1.customID = 'path1';
-	path2.customID = 'path2';
-	let resultPath = new Path();
-	resultPath.addPathPoint(path1.pathPoints[0]);
-	let workingPath = path1;
-	path1.pathPoints[0].customID = 'completed';
-	let workingPoint = path1.pathPoints[1];
-	let loopNumber = 1;
-	let loopMax = 999;
-	log(path1);
-	log(path2);
-	while (loopNumber <= loopMax) {
-		log(`loopNumber: ${loopNumber}`);
-		log(`\t workingPath.customID: ${workingPath.customID}`);
-		log(`\t workingPoint.customID: ${workingPoint.customID}`);
-		log(`\t workingPoint.pointNumber: ${workingPoint.pointNumber}`);
-
-		if (loopNumber === loopMax) {
-			console.warn(`Combine Two Paths - too many points to loop through.`);
-			break;
-		}
-
-		if (workingPoint.customID === 'completed') {
-			// Back to a completed point, end the loop
-			log(`\t COMPLETED point, breaking loop`);
-			break;
-		} else if (workingPoint?.customID?.startsWith('overlap')) {
-			// Overlap point detected, add it and flip the working path
-			log(`\t OVERLAP point`);
-			resultPath.addPathPoint(
-				new PathPoint({
-					p: workingPoint.p,
-					h1: workingPoint.h1,
-				})
-			);
-			let lastResultPoint = resultPath.pathPoints.at(-1);
-
-			// Switch working path
-			if (workingPath.customID === 'path1') workingPath = path2;
-			else if (workingPath.customID === 'path2') workingPath = path1;
-			else log(`\t ERROR switching working path`);
-			log(`\t working path is now ${workingPath.customID}`);
-
-			// Switch working point
-			let oldWorkingPoint = workingPoint;
-			workingPoint = findPointByCustomID(workingPath, workingPoint.customID);
-			oldWorkingPoint.customID = 'completed';
-			if (workingPoint) lastResultPoint.h2 = workingPoint.h2;
-			else log(`\t ERROR updating h2 handle`);
-		} else {
-			// Just a normal point, add it to the result path
-			log(`\t REGULAR point`);
-			resultPath.addPathPoint(workingPoint);
-		}
-
-		// End of loop advancements
-		let nextPointNum = workingPath.getNextPointNum(workingPoint.pointNumber);
-		workingPoint = workingPath.pathPoints[nextPointNum];
-		loopNumber++;
-	}
-
-	// All done
-	log(resultPath);
-	log(`combineTwoPaths`, 'end');
-	return resultPath;
-}
 
 export function insertPathPointsAtIXPoint(ixPoint, path) {
 	log(`insertPathPointsAtIXPoint`, 'start');
@@ -335,19 +143,6 @@ export function insertPathPointsAtIXPoint(ixPoint, path) {
 	newPoint.customID = `overlap ${ixPoint}`;
 	log(`insertPathPointsAtIXPoint`, 'end');
 }
-
-function findPointByCustomID(path, id) {
-	for (let p = 0; p < path.pathPoints.length; p++) {
-		if (path.pathPoints[p]?.customID === id) {
-			return path.pathPoints[p];
-		}
-	}
-	return false;
-}
-
-// --------------------------------------------------------------
-// Path intersections
-// --------------------------------------------------------------
 
 /**
  * Converts from IX format to XY format
@@ -618,10 +413,10 @@ function resolveSelfOverlaps(path) {
 function removeSegmentsOverlappingPath(polySegment, path) {
 	log('removeSegmentsOverlappingPath', 'start');
 	let startLength = polySegment.segments.length;
-	log('Path mask');
-	log(path);
-	log('polySegment.segments starting as ' + polySegment.segments.length);
-	log(polySegment.segments);
+	// log('Path mask');
+	// log(path);
+	// log('polySegment.segments starting as ' + polySegment.segments.length);
+	// log(polySegment.segments);
 	polySegment.segments.forEach((segment) => {
 		if (testForHit(segment, 0.33, path) && testForHit(segment, 0.66, path)) {
 			debugDrawSegmentPoints(segment);
@@ -631,13 +426,13 @@ function removeSegmentsOverlappingPath(polySegment, path) {
 		}
 	});
 
-	log(polySegment.segments);
+	// log(polySegment.segments);
 	polySegment.segments = polySegment.segments.filter((seg) => {
 		return seg.objType === 'Segment';
 	});
 
 	log(`removed: ${startLength - polySegment.segments.length} segments`);
-	log(polySegment);
+	// log(polySegment);
 	log('removeSegmentsOverlappingPath', 'end');
 	return polySegment;
 }
@@ -693,6 +488,228 @@ function debugDrawSegmentPoints(segment) {
 // --------------------------------------------------------------
 // OLD
 // --------------------------------------------------------------
+/**
+ * Takes a collection of paths and combines as many together as possible
+ * @param {Array} paths - list of paths to combine
+ * @param {Boolean} notifyErrors - show toast notifications on errors
+ * @returns {Array} - collection of paths
+ */
+// export function combineAllPaths_REFACTORED(paths = [], notifyErrors = true) {
+// 	log(`combineAllPaths`, 'start');
+// 	let resultPaths = [];
+
+// 	// One Path
+// 	if (paths.length <= 1) {
+// 		log(`combineAllPaths`, 'end');
+// 		return paths;
+// 	}
+
+// 	// Two Paths
+// 	if (paths.length === 2) {
+// 		resultPaths = combineTwoPaths_REFACTORED(paths[0], paths[1]);
+// 		if (!resultPaths) {
+// 			if (notifyErrors) showToast('The selected paths do not overlap.');
+// 		}
+// 		log(`combineAllPaths`, 'end');
+// 		return [resultPaths];
+// 	}
+
+// 	// More than two paths
+// 	// TODO Boolean Combine, don't combine opposite windings
+// 	paths.map((path, index) => (resultPaths[index] = new Path(path)));
+// 	resultPaths.sort(function (a, b) {
+// 		return a.winding - b.winding;
+// 	});
+
+// 	// Main collapsing loop
+// 	let looping = true;
+// 	let count = 0;
+// 	let loopResult;
+// 	let loopMax = 20;
+
+// 	while (looping && count <= loopMax) {
+// 		if (count === loopMax) {
+// 			console.warn(`Combine All Paths - too many collapsing loops`);
+// 			return paths;
+// 		}
+
+// 		looping = false;
+
+// 		loopResult = onePassCombinePaths_REFACTORED(resultPaths);
+// 		looping = loopResult.didStuff;
+// 		if (!looping && count === 0) {
+// 			if (notifyErrors) showToast('The selected paths do not overlap.');
+// 			log(`combineAllPaths`, 'end');
+// 			return paths;
+// 		}
+
+// 		resultPaths = loopResult.paths;
+// 		count++;
+// 	}
+
+// 	// Resolve self overlaps
+// 	let tempPaths = [];
+// 	resultPaths.forEach((path) => {
+// 		tempPaths = tempPaths.concat(resolveSelfOverlaps(path));
+// 	});
+// 	resultPaths = tempPaths;
+
+// 	log(`combineAllPaths`, 'end');
+// 	return resultPaths;
+// }
+
+/**
+ * Takes a single list of paths, and uses two for loops to attempt
+ * to combine as many of the paths in the list as possible. It is
+ * possible that these loops could not combine any, combine some, or
+ * combine all. A 'didStuff' flag is returned, if nothing was done then
+ * no more of the paths can be combined.
+ * @param {Array} paths - collection of paths to attempt to combine
+ * @returns {Object} - resulting paths and a 'didStuff' flag
+ */
+// function onePassCombinePaths_REFACTORED(paths = []) {
+// 	log(`onePassCombinePaths`, 'start');
+// 	let resultPaths = [];
+// 	let didStuff = false;
+// 	let checkList = paths.map((value) => !!value);
+
+// 	for (let outer = 0; outer < paths.length; outer++) {
+// 		for (let inner = 0; inner < paths.length; inner++) {
+// 			log('attempting to combine paths ' + outer + ' with ' + inner);
+
+// 			if (outer !== inner && checkList[outer] && checkList[inner]) {
+// 				let combined = combineTwoPaths_REFACTORED(paths[outer], paths[inner]);
+
+// 				if (combined !== false) {
+// 					resultPaths.push(combined);
+// 					didStuff = true;
+// 					checkList[outer] = false;
+// 					checkList[inner] = false;
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	// Add back any un-combined paths
+// 	for (let i = 0; i < checkList.length; i++) {
+// 		if (checkList[i]) resultPaths.push(paths[i]);
+// 	}
+
+// 	// Finish up
+// 	log(`didStuff: ${didStuff}`);
+// 	log(resultPaths);
+
+// 	log(`onePassCombinePaths`, 'end');
+// 	return { paths: resultPaths, didStuff: didStuff };
+// }
+// --------------------------------------------------------------
+// Combining just two paths
+// --------------------------------------------------------------
+
+// function combineTwoPaths_REFACTORED(path1, path2) {
+// 	log(`combineTwoPaths_REFACTORED`, 'start');
+
+// 	// Find intersections
+// 	let intersections = findPathIntersections(path1, path2);
+// 	if (intersections.length < 1) {
+// 		log('no intersections, returning.');
+// 		log(`combineTwoPaths_REFACTORED`, 'end');
+// 		return false;
+// 	} else {
+// 		log('found intersections');
+// 		log(intersections);
+// 	}
+
+// 	// Add path points at all intersections
+// 	log(`path1.pathPoints.length: ${path1.pathPoints.length}`);
+// 	log(`path2.pathPoints.length: ${path2.pathPoints.length}`);
+// 	intersections.forEach((ix) => {
+// 		insertPathPointsAtIXPoint(ix, path1);
+// 		insertPathPointsAtIXPoint(ix, path2);
+// 	});
+// 	log(`path1.pathPoints.length: ${path1.pathPoints.length}`);
+// 	log(`path2.pathPoints.length: ${path2.pathPoints.length}`);
+
+// 		// Traverse the working path, adding path points to the result path
+// 		// until an 'overlap' point is detected, then switch the working path
+// 		// and continue to add points until another overlap point is reached,
+// 		// or the first point of path 1 is reached.
+
+// 	path1.customID = 'path1';
+// 	path2.customID = 'path2';
+// 	let resultPath = new Path();
+// 	resultPath.addPathPoint(path1.pathPoints[0]);
+// 	let workingPath = path1;
+// 	path1.pathPoints[0].customID = 'completed';
+// 	let workingPoint = path1.pathPoints[1];
+// 	let loopNumber = 1;
+// 	let loopMax = 999;
+// 	log(path1);
+// 	log(path2);
+// 	while (loopNumber <= loopMax) {
+// 		log(`loopNumber: ${loopNumber}`);
+// 		log(`\t workingPath.customID: ${workingPath.customID}`);
+// 		log(`\t workingPoint.customID: ${workingPoint.customID}`);
+// 		log(`\t workingPoint.pointNumber: ${workingPoint.pointNumber}`);
+
+// 		if (loopNumber === loopMax) {
+// 			console.warn(`Combine Two Paths - too many points to loop through.`);
+// 			break;
+// 		}
+
+// 		if (workingPoint.customID === 'completed') {
+// 			// Back to a completed point, end the loop
+// 			log(`\t COMPLETED point, breaking loop`);
+// 			break;
+// 		} else if (workingPoint?.customID?.startsWith('overlap')) {
+// 			// Overlap point detected, add it and flip the working path
+// 			log(`\t OVERLAP point`);
+// 			resultPath.addPathPoint(
+// 				new PathPoint({
+// 					p: workingPoint.p,
+// 					h1: workingPoint.h1,
+// 				})
+// 			);
+// 			let lastResultPoint = resultPath.pathPoints.at(-1);
+
+// 			// Switch working path
+// 			if (workingPath.customID === 'path1') workingPath = path2;
+// 			else if (workingPath.customID === 'path2') workingPath = path1;
+// 			else log(`\t ERROR switching working path`);
+// 			log(`\t working path is now ${workingPath.customID}`);
+
+// 			// Switch working point
+// 			let oldWorkingPoint = workingPoint;
+// 			workingPoint = findPointByCustomID_REFACTORED(workingPath, workingPoint.customID);
+// 			oldWorkingPoint.customID = 'completed';
+// 			if (workingPoint) lastResultPoint.h2 = workingPoint.h2;
+// 			else log(`\t ERROR updating h2 handle`);
+// 		} else {
+// 			// Just a normal point, add it to the result path
+// 			log(`\t REGULAR point`);
+// 			resultPath.addPathPoint(workingPoint);
+// 		}
+
+// 		// End of loop advancements
+// 		let nextPointNum = workingPath.getNextPointNum(workingPoint.pointNumber);
+// 		workingPoint = workingPath.pathPoints[nextPointNum];
+// 		loopNumber++;
+// 	}
+
+// 	// All done
+// 	log(resultPath);
+// 	log(`combineTwoPaths_REFACTORED`, 'end');
+// 	return resultPath;
+// }
+
+// function findPointByCustomID_REFACTORED(path, id) {
+// 	for (let p = 0; p < path.pathPoints.length; p++) {
+// 		if (path.pathPoints[p]?.customID === id) {
+// 			return path.pathPoints[p];
+// 		}
+// 	}
+// 	return false;
+// }
 
 /**
  * Takes an array of paths and combines them
@@ -714,7 +731,7 @@ function debugDrawSegmentPoints(segment) {
 // 	} else if (paths.length === 2) {
 // 		// log('length=2, starting combinePathsAtFirstIntersection');
 // 		// tempPaths = combinePathsAtFirstIntersection(paths[0], paths[1], notifyErrors);
-// 		tempPaths = combineTwoPaths(paths[0], paths[1]);
+// 		tempPaths = combineTwoPaths_REFACTORED(paths[0], paths[1]);
 
 // 		if (!tempPaths) {
 // 			log('length=2 - returning false');
@@ -723,7 +740,7 @@ function debugDrawSegmentPoints(segment) {
 // 		} else {
 // 			tempPaths = [tempPaths];
 // 			// log('length=2 - continuing with tempPaths from combinePathsAtFirstIntersection');
-// 			log('length=2 - continuing with tempPaths from combineTwoPaths');
+// 			log('length=2 - continuing with tempPaths from combineTwoPaths_REFACTORED');
 // 			log(tempPaths);
 // 			log(`OLDcombineAllPaths`, 'end');
 // 			return tempPaths;

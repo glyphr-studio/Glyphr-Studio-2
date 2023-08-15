@@ -169,6 +169,14 @@ export class Segment extends GlyphElement {
 		return new Maxes(this.cache.maxes);
 	}
 
+	/**
+	 * Returns named point properties as an array of 8 numbers
+	 */
+	get valuesAsArray() {
+		let re = [this.p1x, this.p1y, this.p2x, this.p2y, this.p3x, this.p3y, this.p4x, this.p4y];
+		return re;
+	}
+
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------
@@ -846,4 +854,23 @@ export function pointsAreCollinear(a, b, c, precision) {
 	const s2 = (c.x - a.x) * (b.y - a.y);
 
 	return round(s1, precision) === round(s2, precision);
+}
+
+/**
+ * Checks to see if two segments have the same data points
+ * @param {Segment} segment1 - first segment to check
+ * @param {Segment} segment2 - second segment to check
+ * @returns {Boolean} - if they're equal
+ */
+export function areSegmentsEquivalent(segment1, segment2) {
+	if (segment1.p1x !== segment2.p1x) return false;
+	if (segment1.p1y !== segment2.p1y) return false;
+	if (segment1.p4x !== segment2.p4x) return false;
+	if (segment1.p4y !== segment2.p4y) return false;
+	if (segment1.p2x !== segment2.p2x) return false;
+	if (segment1.p2y !== segment2.p2y) return false;
+	if (segment1.p3x !== segment2.p3x) return false;
+	if (segment1.p3y !== segment2.p3y) return false;
+
+	return true;
 }

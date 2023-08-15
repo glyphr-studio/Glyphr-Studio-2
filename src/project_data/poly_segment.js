@@ -104,6 +104,15 @@ export class PolySegment extends GlyphElement {
 		}
 	}
 
+	/**
+	 * Creates a 2x2 matrix of raw segment point values
+	 */
+	get valuesAsArray() {
+		let re = [];
+		this.segments.forEach((segment) => re.push(segment.valuesAsArray));
+		return re;
+	}
+
 	// --------------------------------------------------------------
 	// Methods
 	// --------------------------------------------------------------
@@ -129,8 +138,10 @@ export class PolySegment extends GlyphElement {
 				h2: { coord: { x: seg2.p2x, y: seg2.p2y } },
 			};
 
-			if (seg1.line || xyPointsAreEqual(newPP.h1, newPP.p)) newPP.h1.use = false;
-			if (seg2.line || xyPointsAreEqual(newPP.h2, newPP.p)) newPP.h2.use = false;
+			if (xyPointsAreEqual(newPP.h1.coord, newPP.p.coord)) newPP.h1.use = false;
+			if (xyPointsAreEqual(newPP.h2.coord, newPP.p.coord)) newPP.h2.use = false;
+			if (seg1.lineType) newPP.h1.use = false;
+			if (seg2.lineType) newPP.h2.use = false;
 
 			// newPP.resolvePointType();
 
@@ -142,7 +153,7 @@ export class PolySegment extends GlyphElement {
 
 		// Connect the first / last point if not already
 		const firstP = new XYPoint(segments[0].p1x, segments[0].p1y);
-		const lastP = new XYPoint(segments[segments.length - 1].p4x, segments[segments.length - 1].p4y);
+		const lastP = new XYPoint(segments.at(-1).p4x, segments.at(-1).p4y);
 		if (!xyPointsAreEqual(firstP, lastP)) {
 			segments.push(
 				new Segment({
@@ -155,7 +166,7 @@ export class PolySegment extends GlyphElement {
 		}
 
 		// Fencepost make the first PathPoint
-		pp.push(makePathPointFromSegments(segments[segments.length - 1], segments[0]));
+		pp.push(makePathPointFromSegments(segments.at(-1), segments[0]));
 
 		// Loop through Segments and create PathPoints
 		let ns;
@@ -381,7 +392,7 @@ export class PolySegment extends GlyphElement {
 		for (let s = 0; s < this._segments.length; s++) {
 			currSeg = this._segments[s];
 			if (xyPointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(4))) {
-				if (currSeg.line) {
+				if (currSeg.lineType) {
 					currSeg.objType = 'LINE ZERO';
 				} else if (
 					xyPointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(2)) &&
