@@ -8,7 +8,7 @@ import {
 	makeGlyphWithResolvedLinks,
 	removeLinkFromUsedIn,
 } from './cross_item_actions.js';
-import { combineAllPaths, findPathIntersections, insertPathPointsAtIXPoint } from './boolean_combine.js';
+import { combineAllPaths, combineAllPathsAlternate, findPathIntersections, insertPathPointsAtIXPoint } from './boolean_combine.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 
 /**
@@ -380,7 +380,8 @@ export class MultiSelectShapes extends MultiSelect {
 		log('MultiSelectShapes.combine', 'start');
 		const editor = getCurrentProjectEditor();
 		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph.clone());
-		const combinedShapes = combineAllPaths(newGlyph.shapes);
+		// const combinedShapes = combineAllPaths(newGlyph.shapes);
+		const combinedShapes = combineAllPathsAlternate(newGlyph.shapes);
 
 		log(`combinedShapes`);
 		log(combinedShapes);

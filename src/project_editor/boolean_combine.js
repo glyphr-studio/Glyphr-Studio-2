@@ -1,4 +1,4 @@
-import { duplicates, json, xyPointsAreEqual, round } from '../common/functions.js';
+import { duplicates, json, xyPointsAreEqual, round, clone } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { debugDrawPoints } from '../edit_canvas/draw_edit_affordances.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
@@ -55,6 +55,7 @@ export function combineAllPaths(paths = [], notifyErrors = true) {
 	}
 
 	// More than two paths
+	// TODO Boolean Combine, don't combine opposite windings
 	paths.map((path, index) => (resultPaths[index] = new Path(path)));
 	resultPaths.sort(function (a, b) {
 		return a.winding - b.winding;
@@ -64,8 +65,14 @@ export function combineAllPaths(paths = [], notifyErrors = true) {
 	let looping = true;
 	let count = 0;
 	let loopResult;
+	let loopMax = 20;
 
-	while (looping && count < 20) {
+	while (looping && count <= loopMax) {
+		if (count === loopMax) {
+			console.warn(`Combine All Paths - too many collapsing loops`);
+			return paths;
+		}
+
 		looping = false;
 
 		loopResult = onePassCombinePaths(resultPaths);
@@ -136,6 +143,86 @@ function onePassCombinePaths(paths = []) {
 	return { paths: resultPaths, didStuff: didStuff };
 }
 
+export function combineAllPathsAlternate(paths = []) {
+	log(`combineAllPathsAlternate`, 'start');
+	log(paths);
+	// paths = clone(paths);
+
+	// Find all intersections
+	let intersections = [];
+	for (let i = 0; i < paths.length; i++) {
+		for (let j = 1; j < paths.length; j++) {
+			if (i !== j) {
+				intersections = intersections.concat(findPathIntersections(paths[i], paths[j]));
+			}
+		}
+	}
+	intersections = intersections.filter(duplicates);
+	log(intersections);
+
+	// Chop at all intersections
+	intersections.forEach((ix) => {
+		paths.forEach((path) => insertPathPointsAtIXPoint(ix, path));
+	});
+
+	// Convert to Bezier segments
+	let allSegments = [];
+	paths.forEach((path) => {
+		allSegments = allSegments.concat(path.makePolySegment().segments);
+	});
+	allSegments = new PolySegment({ segments: allSegments });
+	log(allSegments);
+
+	// Filter overlapped segments
+	paths.forEach((path) => (allSegments = removeSegmentsOverlappingPath(allSegments, path)));
+	log(allSegments);
+
+	// Stich segments together
+	allSegments = allSegments.segments;
+	let orderedSegments = [];
+	orderedSegments[0] = allSegments.shift();
+	let didStuff = false;
+
+	while (allSegments.length) {
+		log(`un-stitched length ${allSegments.length}`);
+
+		let targetX = orderedSegments.at(-1).p4x;
+		let targetY = orderedSegments.at(-1).p4y;
+		log(`\t target: ${targetX} ${targetY}`);
+
+
+		for (let i = 0; i < allSegments.length; i++) {
+			let testX = allSegments[i].p1x;
+			let testY = allSegments[i].p1y;
+			log(`\t test: ${testX} ${testY}`);
+
+			if (targetX === testX && targetY === testY) {
+				orderedSegments.push(allSegments.splice(i, 1)[0]);
+				log(`\t Match found at ${testX}, ${testY}`);
+				log(orderedSegments);
+				didStuff = true;
+				break;
+			}
+		}
+
+		if (didStuff) {
+			didStuff = false;
+		} else {
+			log(`NO MATCH FOUND`);
+			break;
+		}
+	}
+	log(`Ordered Segments`);
+	log(orderedSegments);
+
+	// Make Path
+	let resultPath = new PolySegment({segments: orderedSegments}).getPath();
+	log(resultPath);
+
+	log(`combineAllPathsAlternate`, 'end');
+	return [resultPath];
+}
+
 // --------------------------------------------------------------
 // Combining just two paths
 // --------------------------------------------------------------
@@ -175,20 +262,26 @@ function combineTwoPaths(path1, path2) {
 	let resultPath = new Path();
 	resultPath.addPathPoint(path1.pathPoints[0]);
 	let workingPath = path1;
-	path1.pathPoints[0].customID = 'first';
+	path1.pathPoints[0].customID = 'completed';
 	let workingPoint = path1.pathPoints[1];
 	let loopNumber = 1;
+	let loopMax = 999;
 	log(path1);
 	log(path2);
-	while (loopNumber < 9999) {
+	while (loopNumber <= loopMax) {
 		log(`loopNumber: ${loopNumber}`);
 		log(`\t workingPath.customID: ${workingPath.customID}`);
 		log(`\t workingPoint.customID: ${workingPoint.customID}`);
 		log(`\t workingPoint.pointNumber: ${workingPoint.pointNumber}`);
 
-		if (workingPoint.customID === 'first') {
-			// Back to the first point, end the loop
-			log(`\t FIRST point, breaking loop`);
+		if (loopNumber === loopMax) {
+			console.warn(`Combine Two Paths - too many points to loop through.`);
+			break;
+		}
+
+		if (workingPoint.customID === 'completed') {
+			// Back to a completed point, end the loop
+			log(`\t COMPLETED point, breaking loop`);
 			break;
 		} else if (workingPoint?.customID?.startsWith('overlap')) {
 			// Overlap point detected, add it and flip the working path
@@ -208,7 +301,9 @@ function combineTwoPaths(path1, path2) {
 			log(`\t working path is now ${workingPath.customID}`);
 
 			// Switch working point
+			let oldWorkingPoint = workingPoint;
 			workingPoint = findPointByCustomID(workingPath, workingPoint.customID);
+			oldWorkingPoint.customID = 'completed';
 			if (workingPoint) lastResultPoint.h2 = workingPoint.h2;
 			else log(`\t ERROR updating h2 handle`);
 		} else {
@@ -409,18 +504,18 @@ function findPathPointBoundaryIntersections(path1, path2) {
  * @returns {Array} - collection of intersections in IX Format
  */
 function findPathPointIntersections(path1, path2) {
-	// log('findPathPointIntersections', 'start');
+	log('findPathPointIntersections', 'start');
 	let re = [];
 	let ix;
 
-	// log(path1.toString());
-	// log(path2.toString());
+	log(path1);
+	log(path2);
 
 	for (let pp1 = 0; pp1 < path1.pathPoints.length; pp1++) {
 		for (let pp2 = 0; pp2 < path2.pathPoints.length; pp2++) {
 			if (xyPointsAreEqual(path1.pathPoints[pp1].p, path2.pathPoints[pp2].p, 0.01)) {
 				ix = '' + path1.pathPoints[pp1].p.x + '/' + path1.pathPoints[pp1].p.y;
-				// log(`found ${ix}`);
+				log(`found ${ix}`);
 
 				re.push(ix);
 			}
@@ -429,8 +524,8 @@ function findPathPointIntersections(path1, path2) {
 
 	re = re.filter(duplicates);
 
-	// log('returning ' + re);
-	// log('findPathPointIntersections', 'end');
+	log('returning ' + re);
+	log('findPathPointIntersections', 'end');
 	return re;
 }
 
