@@ -10,6 +10,7 @@ import {
 } from './cross_item_actions.js';
 import {
 	combineAllPaths,
+	combinePaths,
 	findPathIntersections,
 	insertPathPointsAtIXPoint,
 } from './boolean_combine.js';
@@ -378,45 +379,36 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	combine() {
-		log('MultiSelectShapes.combine', 'start');
+		// log('MultiSelectShapes.combine', 'start');
 		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph.clone());
-		// const combinedShapes = combineAllPaths(newGlyph.shapes);
+		const combinedShapes = combineAllPaths(newGlyph.shapes);
 
-		let clockwise = newGlyph.shapes.filter(path => path.winding < 0);
-		let counterClockwise = newGlyph.shapes.filter(path => path.winding > 0);
-		let unknown = newGlyph.shapes.filter(path => path.winding === 0);
-
-		let combinedShapes = [];
-		combinedShapes = combinedShapes.concat(combineAllPaths(unknown));
-		combinedShapes = combinedShapes.concat(combineAllPaths(clockwise));
-		combinedShapes = combinedShapes.concat(combineAllPaths(counterClockwise));
-
-		log(`combinedShapes`);
-		log(combinedShapes);
+		// log(`combinedShapes`);
+		// log(combinedShapes);
 		// If everything worked, delete original paths and add new ones
 		if (combinedShapes) {
 			this.deleteShapes();
 			combinedShapes.forEach((shape) => addPathToCurrentItem(shape));
 		}
 
-		log('MultiSelectShapes.combine', 'end');
+		// log('MultiSelectShapes.combine', 'end');
 	}
 
-	addPathPointsAtIntersections() {
-		let path1 = this.members[0];
-		let path2 = this.members[1];
-		let intersections = findPathIntersections(path1, path2);
-		if (intersections.length < 1) {
-			log('no intersections, returning.');
-			return false;
-		}
+	// addPathPointsAtIntersections() {
+	// 	let path1 = this.members[0];
+	// 	let path2 = this.members[1];
+	// 	let intersections = findPathIntersections(path1, path2);
+	// 	if (intersections.length < 1) {
+	// 		// log('no intersections, returning.');
+	// 		return false;
+	// 	}
 
-		// Add path points at all intersections
-		intersections.forEach((ix) => {
-			insertPathPointsAtIXPoint(ix, path1);
-			insertPathPointsAtIXPoint(ix, path2);
-		});
-	}
+	// 	// Add path points at all intersections
+	// 	intersections.forEach((ix) => {
+	// 		insertPathPointsAtIXPoint(ix, path1);
+	// 		insertPathPointsAtIXPoint(ix, path2);
+	// 	});
+	// }
 
 	deleteShapes() {
 		// log('deleteShapes', 'start');

@@ -157,7 +157,7 @@ export function getActionData(name) {
 		{
 			iconName: 'combine',
 			title: `Combine all paths\nCombines all paths with the same winding into as few paths as possible.`,
-			disabled: !editor.selectedItem.shapes.length,
+			disabled: editor.selectedItem.shapes.length < 2,
 			onClick: combineAllGlyphPaths,
 		},
 		{
@@ -439,12 +439,12 @@ export function getActionData(name) {
 			disabled: !editor.multiSelect.shapes.length,
 			onClick: combineSelectedPaths,
 		},
-		{
-			iconName: 'test',
-			title: `Add Path Points at intersections\nSelect two paths, and add path points to each where they cross.`,
-			disabled: !editor.multiSelect.shapes.length === 2,
-			onClick: addPathPointsAtIntersectionsAction,
-		},
+		// {
+		// 	iconName: 'test',
+		// 	title: `Add Path Points at intersections\nSelect two paths, and add path points to each where they cross.`,
+		// 	disabled: !editor.multiSelect.shapes.length === 2,
+		// 	onClick: addPathPointsAtIntersectionsAction,
+		// },
 		// {
 		// 	iconName: 'subtractUsingTop',
 		// 	disabled: true,
@@ -758,20 +758,22 @@ function combineSelectedPaths() {
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
-function addPathPointsAtIntersectionsAction() {
-	const editor = getCurrentProjectEditor();
-	setTimeout(function () {
-		editor.multiSelect.shapes.addPathPointsAtIntersections();
-		editor.history.addState('Added path points at intersections');
-		// redraw({ calledBy: 'actions panel' });
-	}, 200);
-}
+
+// function addPathPointsAtIntersectionsAction() {
+// 	const editor = getCurrentProjectEditor();
+// 	setTimeout(function () {
+// 		editor.multiSelect.shapes.addPathPointsAtIntersections();
+// 		editor.history.addState('Added path points at intersections');
+// 		// redraw({ calledBy: 'actions panel' });
+// 	}, 200);
+// }
 
 function combineAllGlyphPaths() {
 	showToast('Combining all glyph paths... ', 100);
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
-		editor.selectedItem.combineAllShapes(true);
+		editor.multiSelect.shapes.selectAll();
+		editor.multiSelect.shapes.combine();
 		editor.history.addState('Combined all glyph paths');
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);

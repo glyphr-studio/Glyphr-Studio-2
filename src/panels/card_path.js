@@ -68,12 +68,14 @@ export function makeCard_pathAttributes(path) {
 		tag: 'option-toggle',
 		innerHTML: `<option>Clockwise</option><option>Counter-clockwise</option>`,
 		attributes: {
-			'selected-name': makeWindingButtonText(path.winding),
-			'selected-value': makeWindingButtonText(path.winding),
+			'selected-name': getWindingName(path.winding),
+			'selected-value': getWindingName(path.winding),
 		},
 		onClick: () => {
+			const editor = getCurrentProjectEditor();
 			path.reverseWinding();
-			getCurrentProjectEditor().publish('currentPath', path);
+			editor.history.addState(`Toggled path winding to ${getWindingName(path.winding)}`);
+			editor.publish('currentPath', path);
 		},
 	});
 
@@ -97,11 +99,11 @@ export function makeCard_pathAttributes(path) {
 	return pathCard;
 }
 
-function makeWindingButtonText(winding) {
-	let buttonText = 'unknown';
-	if (winding > 0) buttonText = 'Counter-clockwise';
-	if (winding < 0) buttonText = 'Clockwise';
-	return buttonText;
+function getWindingName(winding) {
+	let name = 'Unknown';
+	if (winding > 0) name = 'Counter-clockwise';
+	if (winding < 0) name = 'Clockwise';
+	return name;
 }
 
 export function makeCard_multiSelectPathAttributes(virtualGlyph) {

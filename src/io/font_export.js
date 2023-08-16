@@ -180,19 +180,13 @@ function populateExportList() {
 async function generateOneGlyph(currentExportItem) {
 	// log('generateOneGlyph', 'start');
 	// export this glyph
-	const project = getCurrentProject();
 	const glyph = currentExportItem.xg;
 	const num = currentExportItem.xc;
-	const comb = project.settings.app.combinePathsOnExport;
 	const maxes = glyph.maxes;
 
 	// log(glyph.name);
 
 	showToast('Exporting<br>' + glyph.name, 999999);
-
-	if (comb && glyph.shapes.length <= project.settings.app.maxCombinePathsOnExport) {
-		glyph.combineAllShapes(true);
-	}
 
 	const thisPath = glyph.makeOpenTypeJSpath(new openTypeJS.Path());
 	// log('openTypeJS thisPath');
@@ -225,17 +219,11 @@ async function generateOneLigature(currentExportItem) {
 	// log(currentExportItem);
 
 	// export this glyph
-	const project = getCurrentProject();
 	const liga = currentExportItem.xg;
-	const comb = project.settings.app.combinePathsOnExport;
 	const maxes = liga.maxes;
 
 	// log(`generateOneLigature: ${ligaID}\t${liga.name}\t${getNameForExport(ligaID)}`);
 	showToast('Exporting<br>' + liga.name, 999999);
-
-	if (comb && liga.shapes.length <= project.settings.app.maxCombinePathsOnExport) {
-		liga.combineAllShapes(true);
-	}
 
 	const thisPath = liga.makeOpenTypeJSpath(new openTypeJS.Path());
 	const thisIndex = getNextGlyphIndexNumber();

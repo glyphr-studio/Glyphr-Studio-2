@@ -145,8 +145,6 @@ function makeSettingsTabContentApp() {
 		showNonCharPoints: false,
 		formatSaveFile: false,
 		moveShapesOnSVGDragDrop: false,
-		combinePathsOnExport: false,
-		maxCombinePathsOnExport: 30,
 	*/
 	addAsChildren(tabContent, [
 		makeOneSettingsRow('app', 'stopPageNavigation'),

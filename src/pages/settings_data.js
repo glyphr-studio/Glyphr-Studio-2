@@ -46,16 +46,6 @@ export default {
 			description: `When importing SVG by dragging and dropping a .svg file onto the canvas, move the imported shapes to the origin (x = 0, y = shapes height).`,
 			type: `Boolean`,
 		},
-		combinePathsOnExport: {
-			label: `Combine paths on export`,
-			description: `This will boolean-combine all paths before a font is exported. This may make the exported font perform better, but it will drastically increase export time.`,
-			type: `Boolean`,
-		},
-		maxCombinePathsOnExport: {
-			label: `Max paths to combine on export`,
-			description: `Limit the total number of paths in a glyph to combine on export. This will only take effect if the "Combine paths on export" setting is true.`,
-			type: `Number`,
-		},
 	},
 	font: {
 		family: {
