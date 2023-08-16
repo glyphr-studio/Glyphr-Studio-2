@@ -10,7 +10,6 @@ import {
 } from './cross_item_actions.js';
 import {
 	combineAllPaths,
-	combineAllPaths,
 	findPathIntersections,
 	insertPathPointsAtIXPoint,
 } from './boolean_combine.js';
