@@ -1098,25 +1098,25 @@ export class Path extends GlyphElement {
 			const splits = this.makeSegment(pointNumber).split(t);
 			const s1 = splits[0];
 			const s2 = splits[1];
+			// log(`new segments:`);
+			// console.table(s1.valuesAsArray);
+			// console.table(s2.valuesAsArray);
 
 			// New Point
 			nP = { coord: { x: s1.p4x, y: s1.p4y } };
 			nH1 = { coord: { x: s1.p3x, y: s1.p3y } };
 			nH2 = { coord: { x: s2.p2x, y: s2.p2y } };
-			ppn = new PathPoint({ p: nP, h1: nH1, h2: nH2, type: 'flat' });
-			ppn.roundAll();
+			ppn = new PathPoint({ p: nP, h1: nH1, h2: nH2 });  // don't include type for ppn
 
 			// Update P1
 			if (pp1.type === 'symmetric') pp1.type = 'flat';
 			pp1.h2.x = s1.p2x;
 			pp1.h2.y = s1.p2y;
-			pp1.roundAll();
 
 			// Update P2
 			if (pp2.type === 'symmetric') pp2.type = 'flat';
 			pp2.h1.x = s2.p3x;
 			pp2.h1.y = s2.p3y;
-			pp2.roundAll();
 		} else {
 			// just make a random point
 			const d = 100;

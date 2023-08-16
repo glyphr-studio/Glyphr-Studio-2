@@ -83,6 +83,7 @@ export function combineAllPaths(paths = []) {
 	// Stich segments together
 	allSegments = allSegments.segments;
 	let orderedSegments = [];
+	let newPolySegments = [];
 	orderedSegments[0] = allSegments.shift();
 	let didStuff = false;
 
@@ -108,37 +109,54 @@ export function combineAllPaths(paths = []) {
 			}
 		}
 
-		if (didStuff) {
+		if (didStuff && allSegments.length >= 1) {
+			// Continue stitching loops for this shape
 			didStuff = false;
 		} else {
-			log(`NO MATCH FOUND`);
-			break;
+			// No matches were found, or no more segments to stitch
+			log(`allSegments.length: ${allSegments.length}`);
+			newPolySegments.push(new PolySegment({ segments: orderedSegments }));
+			log(`newPolySegments`);
+			log(newPolySegments);
+
+			if (allSegments.length <= 1) {
+				// No more segments to stitch
+				break;
+			} else {
+				// More segments that weren't attached to the previous shape
+				// Start a new PolySegment to stitch
+				orderedSegments = [];
+				orderedSegments[0] = allSegments.shift();
+			}
 		}
 	}
-	orderedSegments = new PolySegment({ segments: orderedSegments });
-	log(`\n\n Ordered Segments`);
-	console.table(orderedSegments.valuesAsArray);
-
+	log(newPolySegments);
 	// Make Path
-	let resultPath = orderedSegments.getPath();
-	log(`Resulting path`);
-	log(resultPath);
+	let newPaths = newPolySegments.map(polySegment => polySegment.getPath());
+	log(`Resulting paths`);
+	log(newPaths);
 
 	log(`combineAllPaths`, 'end');
-	return [resultPath];
+	return newPaths;
 }
 
 // --------------------------------------------------------------
 // Path intersections
 // --------------------------------------------------------------
 
+/**
+ * Takes an IX Point, finds the closest point on a given path,
+ * and adds a Path Point to that place.
+ * @param {String} ixPoint - point in IX Format
+ * @param {Path} path - Path to add the point to
+ */
 export function insertPathPointsAtIXPoint(ixPoint, path) {
 	log(`insertPathPointsAtIXPoint`, 'start');
 	log(`ixPoint: ${ixPoint}`);
 	let newPoint = path.containsPoint(ixPoint);
 	if (!newPoint) {
 		let closestPoint = path.findClosestPointOnCurve(ixToXYPoint(ixPoint));
-		newPoint = path.insertPathPoint(closestPoint.point, round(closestPoint.split, 4));
+		newPoint = path.insertPathPoint(closestPoint.point, closestPoint.split);
 	}
 	newPoint.customID = `overlap ${ixPoint}`;
 	log(`insertPathPointsAtIXPoint`, 'end');
