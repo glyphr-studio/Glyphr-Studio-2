@@ -17,6 +17,7 @@ import { ProjectEditor } from './project_editor.js';
 import { makePage_Components } from '../pages/components.js';
 import { makePage_Kerning } from '../pages/kerning.js';
 import { countItems } from '../common/functions.js';
+import { makePage_GlobalActions } from '../pages/global_actions.js';
 
 // --------------------------------------------------------------
 // Navigation
@@ -69,7 +70,7 @@ export class Navigator {
 				iconName: 'page_livePreview',
 			},
 			'Global actions': {
-				pageMaker: false,
+				pageMaker: makePage_GlobalActions,
 				iconName: 'page_globalActions',
 			},
 			'Settings & more': {
