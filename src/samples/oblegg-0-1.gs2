@@ -79,7 +79,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -17,
           "pathPoints": [
             {
               "type": "corner",
@@ -277,7 +276,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 2,
           "pathPoints": [
             {
               "type": "corner",
@@ -307,7 +305,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -9,
           "pathPoints": [
             {
               "type": "corner",
@@ -409,7 +406,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 4,
           "pathPoints": [
             {
               "type": "flat",
@@ -445,7 +441,6 @@
         },
         {
           "name": "Path 3",
-          "winding": 4,
           "pathPoints": [
             {
               "type": "flat",
@@ -487,7 +482,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -13,
           "pathPoints": [
             {
               "type": "corner",
@@ -643,7 +637,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -13,
           "pathPoints": [
             {
               "type": "corner",
@@ -745,7 +738,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 3,
           "pathPoints": [
             {
               "type": "corner",
@@ -799,7 +791,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -15,
           "pathPoints": [
             {
               "type": "corner",
@@ -991,7 +982,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -15,
           "pathPoints": [
             {
               "type": "corner",
@@ -1171,7 +1161,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -11,
           "pathPoints": [
             {
               "type": "flat",
@@ -1303,7 +1292,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -21,
           "pathPoints": [
             {
               "type": "corner",
@@ -1579,7 +1567,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -13,
           "pathPoints": [
             {
               "type": "corner",
@@ -1759,7 +1746,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -12,
           "pathPoints": [
             {
               "type": "corner",
@@ -1933,7 +1919,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -20,
           "pathPoints": [
             {
               "type": "corner",
@@ -2215,7 +2200,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -13,
           "pathPoints": [
             {
               "type": "corner",
@@ -2359,7 +2343,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -5,
           "pathPoints": [
             {
               "type": "flat",
@@ -2389,7 +2372,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 3,
           "pathPoints": [
             {
               "type": "flat",
@@ -2425,7 +2407,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -15,
           "pathPoints": [
             {
               "type": "corner",
@@ -2641,7 +2622,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -17,
           "pathPoints": [
             {
               "type": "corner",
@@ -2929,7 +2909,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -9,
           "pathPoints": [
             {
               "type": "corner",
@@ -3091,7 +3070,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 3,
           "pathPoints": [
             {
               "type": "corner",
@@ -3139,7 +3117,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -7,
           "pathPoints": [
             {
               "type": "corner",
@@ -3205,7 +3182,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 1,
           "pathPoints": [
             {
               "type": "flat",
@@ -3277,7 +3253,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -11,
           "pathPoints": [
             {
               "type": "corner",
@@ -3463,7 +3438,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 1,
           "pathPoints": [
             {
               "type": "corner",
@@ -3523,7 +3497,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -9,
           "pathPoints": [
             {
               "type": "corner",
@@ -3691,7 +3664,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -13,
           "pathPoints": [
             {
               "type": "corner",
@@ -3847,7 +3819,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -14,
           "pathPoints": [
             {
               "type": "corner",
@@ -4045,7 +4016,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -12,
           "pathPoints": [
             {
               "type": "corner",
@@ -4159,7 +4129,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -14,
           "pathPoints": [
             {
               "type": "corner",
@@ -4309,7 +4278,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -21,
           "pathPoints": [
             {
               "type": "corner",
@@ -4537,7 +4505,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -16,
           "pathPoints": [
             {
               "type": "corner",
@@ -4723,7 +4690,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -13,
           "pathPoints": [
             {
               "type": "corner",
@@ -4855,7 +4821,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -9,
           "pathPoints": [
             {
               "type": "corner",
@@ -4993,7 +4958,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 4,
           "pathPoints": [
             {
               "type": "corner",
@@ -5038,7 +5002,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -11,
           "pathPoints": [
             {
               "type": "corner",
@@ -5176,7 +5139,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 5,
           "pathPoints": [
             {
               "type": "corner",
@@ -5228,7 +5190,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -12,
           "pathPoints": [
             {
               "type": "corner",
@@ -5360,7 +5321,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 5,
           "pathPoints": [
             {
               "type": "flat",
@@ -5418,7 +5378,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -4,
           "pathPoints": [
             {
               "type": "flat",
@@ -5580,7 +5539,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -2,
           "pathPoints": [
             {
               "type": "corner",
@@ -5652,7 +5610,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 5,
           "pathPoints": [
             {
               "type": "flat",
@@ -5724,7 +5681,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -1,
           "pathPoints": [
             {
               "type": "corner",
@@ -5862,7 +5818,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 4,
           "pathPoints": [
             {
               "type": "flat",
@@ -5908,7 +5863,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -15,
           "pathPoints": [
             {
               "type": "corner",
@@ -6113,7 +6067,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -10,
           "pathPoints": [
             {
               "type": "corner",
@@ -6305,7 +6258,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 3,
           "pathPoints": [
             {
               "type": "corner",
@@ -6341,7 +6293,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -16,
           "pathPoints": [
             {
               "type": "corner",
@@ -6566,7 +6517,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -12,
           "pathPoints": [
             {
               "type": "corner",
@@ -6674,7 +6624,6 @@
         },
         {
           "name": "Path 2",
-          "winding": -7,
           "pathPoints": [
             {
               "type": "flat",
@@ -6722,7 +6671,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -7,
           "pathPoints": [
             {
               "type": "flat",
@@ -6764,7 +6712,6 @@
         },
         {
           "name": "Path 2",
-          "winding": -10,
           "pathPoints": [
             {
               "type": "flat",
@@ -6878,7 +6825,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -18,
           "pathPoints": [
             {
               "type": "corner",
@@ -7100,7 +7046,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -12,
           "pathPoints": [
             {
               "type": "corner",
@@ -7214,7 +7159,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -18,
           "pathPoints": [
             {
               "type": "corner",
@@ -7544,7 +7488,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -15,
           "pathPoints": [
             {
               "type": "corner",
@@ -7748,7 +7691,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -14,
           "pathPoints": [
             {
               "type": "corner",
@@ -7922,7 +7864,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -8,
           "pathPoints": [
             {
               "type": "corner",
@@ -8072,7 +8013,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -13,
           "pathPoints": [
             {
               "type": "corner",
@@ -8228,7 +8168,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -12,
           "pathPoints": [
             {
               "type": "corner",
@@ -8402,7 +8341,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -8,
           "pathPoints": [
             {
               "type": "corner",
@@ -8492,7 +8430,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -10,
           "pathPoints": [
             {
               "type": "corner",
@@ -8630,7 +8567,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -13,
           "pathPoints": [
             {
               "type": "corner",
@@ -8859,7 +8795,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -12,
           "pathPoints": [
             {
               "type": "flat",
@@ -9057,7 +8992,6 @@
       "shapes": [
         {
           "name": "Path 1",
-          "winding": -12,
           "pathPoints": [
             {
               "type": "corner",
@@ -9194,7 +9128,6 @@
       "shapes": [
         {
           "name": "Rectangle 0",
-          "winding": -5,
           "pathPoints": [
             {
               "type": "corner",
@@ -9224,7 +9157,6 @@
         },
         {
           "name": "Rectangle 0 (copy)",
-          "winding": -5,
           "pathPoints": [
             {
               "type": "corner",
@@ -9254,7 +9186,6 @@
         },
         {
           "name": "Oval 2",
-          "winding": -5,
           "pathPoints": [
             {
               "type": "symmetric",
@@ -9284,7 +9215,6 @@
         },
         {
           "name": "Oval 2 (copy)",
-          "winding": -5,
           "pathPoints": [
             {
               "type": "symmetric",
@@ -9383,7 +9313,6 @@
         },
         {
           "name": "Path 3",
-          "winding": 4,
           "pathPoints": [
             {
               "type": "symmetric",
@@ -9407,7 +9336,6 @@
         },
         {
           "name": "Rectangle 3",
-          "winding": 5,
           "pathPoints": [
             {
               "type": "corner",
@@ -9456,7 +9384,6 @@
         },
         {
           "name": "Path 3 (copy)",
-          "winding": 4,
           "pathPoints": [
             {
               "type": "corner",
@@ -9489,7 +9416,6 @@
       "shapes": [
         {
           "name": "Path 2",
-          "winding": -7,
           "pathPoints": [
             {
               "type": "flat",
@@ -9544,7 +9470,6 @@
         },
         {
           "name": "Path 2",
-          "winding": 3,
           "pathPoints": [
             {
               "type": "corner",

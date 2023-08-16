@@ -285,7 +285,7 @@ export class PolySegment extends GlyphElement {
 
 		/**
 		 * Looks for a segment with a provided starting point
-		 * @param {XYPoint} coi, 'start'ng point to look for
+		 * @param {XYPoint} co starting point to look for
 		 * @returns {Segment}
 		 */
 		function getSegmentStartingAt(co) {
@@ -448,27 +448,19 @@ export class PolySegment extends GlyphElement {
 	 * @returns {PolySegment}
 	 */
 	removeDuplicateSegments() {
-		// log('PolySegment.removeDuplicateSegments', 'start');
-		for (let x = 0; x < this._segments.length; x++) {
-			for (let y = x; y < this._segments.length; y++) {
-				if (x !== y && this._segments[x] && this._segments[y]) {
-					if (segmentsAreEqual(this._segments[x], this._segments[y])) {
-						this._segments[y].objType = 'DUPE';
-					}
-
-					if (segmentsAreEqual(this._segments[x], this._segments[y].getReverse())) {
-						this._segments[y].objType = 'REVERSE';
+		// // log('PolySegment.removeDuplicateSegments', 'start');
+		this._segments = this._segments.filter((segment, index) => {
+			for (let j = 0; j < this._segments.length; j++) {
+				if (j !== index) {
+					if (segmentsAreEqual(segment, this._segments[j])) {
+						return false;
 					}
 				}
 			}
-		}
-
-		// log(this._segments);
-		this._segments = this._segments.filter(function (v) {
-			return v.objType === 'Segment';
+			return true;
 		});
-		// log('PolySegment.removeDuplicateSegments', 'end');
 
+		// log('PolySegment.removeDuplicateSegments', 'end');
 		return this;
 	}
 
@@ -688,9 +680,8 @@ export function findSegmentIntersections(s1, s2, depth) {
  * @param {Number} threshold - precision
  * @returns {Boolean}
  */
-export function segmentsAreEqual(s1, s2, threshold) {
+export function segmentsAreEqual(s1, s2, threshold = 1) {
 	// log('segmentsAreEqual', 'start');
-	threshold = threshold || 1;
 	// log([s1, s2]);
 
 	if (
