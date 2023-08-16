@@ -156,7 +156,7 @@ export function getActionData(name) {
 		},
 		{
 			iconName: 'combine',
-			title: `Combine all paths\nCombines the paths of all paths with the same winding into as few paths as possible.`,
+			title: `Combine all paths\nCombines all paths with the same winding into as few paths as possible.`,
 			disabled: !editor.selectedItem.shapes.length,
 			onClick: combineAllGlyphPaths,
 		},
@@ -435,7 +435,7 @@ export function getActionData(name) {
 	data.boolActions = [
 		{
 			iconName: 'combine',
-			title: `Combine\nSelect two paths, and combine their paths into a single path.`,
+			title: `Combine\nCombines selected paths with the same winding into as few paths as possible.`,
 			disabled: !editor.multiSelect.shapes.length,
 			onClick: combineSelectedPaths,
 		},

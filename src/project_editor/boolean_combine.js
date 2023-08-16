@@ -7,7 +7,7 @@ import { maxesOverlap } from '../project_data/maxes.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
 import { PolySegment, findSegmentIntersections } from '../project_data/poly_segment.js';
-import { Segment, areSegmentsEquivalent } from '../project_data/segment.js';
+import { Segment } from '../project_data/segment.js';
 import { XYPoint } from '../project_data/xy_point.js';
 
 /*
@@ -29,10 +29,12 @@ import { XYPoint } from '../project_data/xy_point.js';
 // --------------------------------------------------------------
 
 export function combineAllPaths(paths = []) {
-	log(`combineAllPaths`, 'start');
-	log(paths);
-	// paths = clone(paths);
+	// log(`combineAllPaths`, 'start');
+	// log(paths);
 
+	// --------------------------------------------------------------
+	// Prepare Paths and convert to PolySegment
+	// --------------------------------------------------------------
 	// Find all intersections
 	let intersections = [];
 	for (let i = 0; i < paths.length; i++) {
@@ -43,7 +45,7 @@ export function combineAllPaths(paths = []) {
 		}
 	}
 	intersections = intersections.filter(duplicates);
-	log(intersections);
+	// log(intersections);
 
 	// Chop at all intersections
 	intersections.forEach((ix) => {
@@ -57,30 +59,31 @@ export function combineAllPaths(paths = []) {
 	});
 	allSegments = new PolySegment({ segments: allSegments });
 	// log(allSegments);
-	log(`\n\n All Segments collected`);
-	console.table(allSegments.valuesAsArray);
+	// log(`\n\n All Segments collected`);
+	// console.table(allSegments.valuesAsArray);
 
-	// Filter duplicate segments
-	allSegments.segments = allSegments.segments.filter((segment, index) => {
-		for (let j = 0; j < allSegments.segments.length; j++) {
-			if (j !== index) {
-				if (areSegmentsEquivalent(segment, allSegments.segments[j])) {
-					return false;
-				}
-			}
-		}
-		return true;
-	});
-	log(`\n\n All segments filtered for duplicates`);
-	console.table(allSegments.valuesAsArray);
+	// --------------------------------------------------------------
+	// Filter out segments we don't need
+	// --------------------------------------------------------------
 
-	// Filter overlapped segments
+	allSegments.removeZeroLengthSegments();
+	// log('after removeZeroLengthSegments ' + allSegments.segments.length);
+
+	allSegments.removeDuplicateSegments();
+	// log('after removeDuplicateSegments ' + allSegments.segments.length);
+
+	allSegments.removeRedundantLineSegments();
+	// log('after removeRedundantLineSegments ' + allSegments.segments.length);
+
 	paths.forEach((path) => (allSegments = removeSegmentsOverlappingPath(allSegments, path)));
-	// log(allSegments);
-	log(`\n\n All segments filtered for path overlapping`);
-	console.table(allSegments.valuesAsArray);
+	// log('after removeSegmentsOverlappingPath ' + allSegments.segments.length);
 
-	// Stich segments together
+	// log(`Segments Post Filtering`);
+	// console.table(allSegments.valuesAsArray);
+
+	// --------------------------------------------------------------
+	// Take remaining segments and stitch them together
+	// --------------------------------------------------------------
 	allSegments = allSegments.segments;
 	let orderedSegments = [];
 	let newPolySegments = [];
@@ -88,22 +91,19 @@ export function combineAllPaths(paths = []) {
 	let didStuff = false;
 
 	while (allSegments.length) {
-		log(`un-stitched length ${allSegments.length}`);
+		// log(`un-stitched length ${allSegments.length}`);
 
-		let targetX = orderedSegments.at(-1).p4x;
-		let targetY = orderedSegments.at(-1).p4y;
-		log(`\t target: ${targetX} ${targetY}`);
+		let target = orderedSegments.at(-1).getXYPoint(4);
+		// log(`\t Target ${target.x}, ${target.y}`);
 
 		for (let i = 0; i < allSegments.length; i++) {
-			let testX = allSegments[i].p1x;
-			let testY = allSegments[i].p1y;
-			log(`\t test: ${testX} ${testY}`);
+			let test = allSegments[i].getXYPoint(1);
+			// log(`\t Testing ${test.x}, ${test.y}`);
 
-			// if (targetX === testX && targetY === testY) {
-			if (xyPointsAreEqual({ x: targetX, y: targetY }, { x: testX, y: testY }, 1)) {
+			if (xyPointsAreEqual(target, test, 1)) {
 				orderedSegments.push(allSegments.splice(i, 1)[0]);
-				log(`\t Match found at ${testX}, ${testY}`);
-				log(orderedSegments);
+				// log(`\t Match found at ${test.x}, ${test.y}`);
+				// log(orderedSegments);
 				didStuff = true;
 				break;
 			}
@@ -114,10 +114,10 @@ export function combineAllPaths(paths = []) {
 			didStuff = false;
 		} else {
 			// No matches were found, or no more segments to stitch
-			log(`allSegments.length: ${allSegments.length}`);
+			// log(`allSegments.length: ${allSegments.length}`);
 			newPolySegments.push(new PolySegment({ segments: orderedSegments }));
-			log(`newPolySegments`);
-			log(newPolySegments);
+			// log(`newPolySegments`);
+			// log(newPolySegments);
 
 			if (allSegments.length <= 1) {
 				// No more segments to stitch
@@ -130,13 +130,17 @@ export function combineAllPaths(paths = []) {
 			}
 		}
 	}
-	log(newPolySegments);
-	// Make Path
-	let newPaths = newPolySegments.map(polySegment => polySegment.getPath());
-	log(`Resulting paths`);
-	log(newPaths);
+	// log(newPolySegments);
 
-	log(`combineAllPaths`, 'end');
+	// --------------------------------------------------------------
+	// Finish up
+	// --------------------------------------------------------------
+
+	let newPaths = newPolySegments.map((polySegment) => polySegment.getPath());
+	// log(`Resulting paths`);
+	// log(newPaths);
+
+	// log(`combineAllPaths`, 'end');
 	return newPaths;
 }
 
@@ -151,15 +155,15 @@ export function combineAllPaths(paths = []) {
  * @param {Path} path - Path to add the point to
  */
 export function insertPathPointsAtIXPoint(ixPoint, path) {
-	log(`insertPathPointsAtIXPoint`, 'start');
-	log(`ixPoint: ${ixPoint}`);
+	// log(`insertPathPointsAtIXPoint`, 'start');
+	// log(`ixPoint: ${ixPoint}`);
 	let newPoint = path.containsPoint(ixPoint);
 	if (!newPoint) {
 		let closestPoint = path.findClosestPointOnCurve(ixToXYPoint(ixPoint));
 		newPoint = path.insertPathPoint(closestPoint.point, closestPoint.split);
 	}
 	newPoint.customID = `overlap ${ixPoint}`;
-	log(`insertPathPointsAtIXPoint`, 'end');
+	// log(`insertPathPointsAtIXPoint`, 'end');
 }
 
 /**
@@ -188,9 +192,7 @@ export function findPathIntersections(path1, path2) {
 
 	// Find overlaps at boundaries
 	intersects = intersects.concat(findPathPointIntersections(path1, path2));
-
 	intersects = intersects.concat(findPathPointBoundaryIntersections(path1, path2));
-
 	intersects = intersects.filter(duplicates);
 	// log('intersections after boundary detection');
 	// log(intersects);
@@ -317,18 +319,18 @@ function findPathPointBoundaryIntersections(path1, path2) {
  * @returns {Array} - collection of intersections in IX Format
  */
 function findPathPointIntersections(path1, path2) {
-	log('findPathPointIntersections', 'start');
+	// log('findPathPointIntersections', 'start');
 	let re = [];
 	let ix;
 
-	log(path1);
-	log(path2);
+	// log(path1);
+	// log(path2);
 
 	for (let pp1 = 0; pp1 < path1.pathPoints.length; pp1++) {
 		for (let pp2 = 0; pp2 < path2.pathPoints.length; pp2++) {
 			if (xyPointsAreEqual(path1.pathPoints[pp1].p, path2.pathPoints[pp2].p, 0.01)) {
 				ix = '' + path1.pathPoints[pp1].p.x + '/' + path1.pathPoints[pp1].p.y;
-				log(`found ${ix}`);
+				// log(`found ${ix}`);
 
 				re.push(ix);
 			}
@@ -337,89 +339,14 @@ function findPathPointIntersections(path1, path2) {
 
 	re = re.filter(duplicates);
 
-	log('returning ' + re);
-	log('findPathPointIntersections', 'end');
+	// log('returning ' + re);
+	// log('findPathPointIntersections', 'end');
 	return re;
 }
 
 // --------------------------------------------------------------
 // Resolving segment overlap cases
 // --------------------------------------------------------------
-
-/**
- * Checks for a bunch of 'overlap' and 'orphan' scenarios
- * concerning segments and path points
- * @param {Path} path - Path to check
- * @returns {Array} - Collection of resulting paths
- */
-function resolveSelfOverlaps(path) {
-	log('resolveSelfOverlaps', 'start');
-	log('path');
-	log(path);
-
-	let polySegment = path.makePolySegment();
-	log('polySegment');
-	log(polySegment);
-
-	// Add self intersects to path
-	let ix = polySegment.findIntersections();
-	log('intersections');
-	log(json(ix, true));
-
-	if (ix.length === 0) {
-		log(`ix.length === 0, returning path as is`);
-		log('resolveSelfOverlaps', 'end');
-		return new Path(path);
-	}
-
-	let segmentNumber = polySegment.segments.length;
-	let threshold = 0.01;
-	polySegment.splitSegmentsAtIntersections(ix, threshold);
-
-	if (segmentNumber === polySegment.segments.length) {
-		log(`Splitting the polySegment on itself resulted in the same length, returning path as is`);
-		log('resolveSelfOverlaps', 'end');
-		return new Path(path);
-	}
-
-	log('before filtering ' + polySegment.segments.length);
-
-	polySegment.removeZeroLengthSegments();
-	log('after removeZeroLengthSegments ' + polySegment.segments.length);
-
-	polySegment.removeDuplicateSegments();
-	log('after removeDuplicateSegments ' + polySegment.segments.length);
-
-	polySegment = removeSegmentsOverlappingPath(polySegment, path);
-	log('after removeSegmentsOverlappingPath ' + polySegment.segments.length);
-
-	polySegment.removeRedundantLineSegments();
-	log('after removeRedundantLineSegments ' + polySegment.segments.length);
-
-	polySegment.removeNonConnectingSegments();
-	log('after removeNonConnectingSegments ' + polySegment.segments.length);
-
-	// polySegment.combineInlineSegments();
-	// log('after combineInlineSegments ' + polySegment.segments.length);
-
-	// polySegment.drawPolySegmentOutline();
-	let resultingSegments = polySegment.stitchSegmentsTogether();
-	let resultingPaths = [];
-	let psn;
-	log(`resultingSegments`);
-	log(resultingSegments);
-	for (let ps = 0; ps < resultingSegments.length; ps++) {
-		psn = resultingSegments[ps];
-		if (psn.segments.length > 1) {
-			let thisPath = psn.getPath();
-			thisPath.name = path.name;
-			resultingPaths.push(thisPath);
-		}
-	}
-
-	log('resolveSelfOverlaps', 'end');
-	return resultingPaths;
-}
 
 /**
  * Uses a provided Path to act as a mask, and removes Segments from
@@ -429,8 +356,8 @@ function resolveSelfOverlaps(path) {
  * @returns {PolySegment} - new PolySegment with less Segments
  */
 function removeSegmentsOverlappingPath(polySegment, path) {
-	log('removeSegmentsOverlappingPath', 'start');
-	let startLength = polySegment.segments.length;
+	// log('removeSegmentsOverlappingPath', 'start');
+	// let startLength = polySegment.segments.length;
 	// log('Path mask');
 	// log(path);
 	// log('polySegment.segments starting as ' + polySegment.segments.length);
@@ -449,9 +376,9 @@ function removeSegmentsOverlappingPath(polySegment, path) {
 		return seg.objType === 'Segment';
 	});
 
-	log(`removed: ${startLength - polySegment.segments.length} segments`);
+	// log(`removed: ${startLength - polySegment.segments.length} segments`);
 	// log(polySegment);
-	log('removeSegmentsOverlappingPath', 'end');
+	// log('removeSegmentsOverlappingPath', 'end');
 	return polySegment;
 }
 
@@ -506,6 +433,81 @@ function debugDrawSegmentPoints(segment) {
 // --------------------------------------------------------------
 // OLD
 // --------------------------------------------------------------
+
+/**
+ * Checks for a bunch of 'overlap' and 'orphan' scenarios
+ * concerning segments and path points
+ * @param {Path} path - Path to check
+ * @returns {Array} - Collection of resulting paths
+ */
+// function resolveSelfOverlaps(path) {
+//	// log('resolveSelfOverlaps', 'start');
+//	// log('path');
+//	// log(path);
+
+// 	let polySegment = path.makePolySegment();
+//	// log('polySegment');
+//	// log(polySegment);
+
+// 	// Add self intersects to path
+// 	let ix = polySegment.findIntersections();
+//	// log('intersections');
+//	// log(json(ix, true));
+
+// 	if (ix.length === 0) {
+//		// log(`ix.length === 0, returning path as is`);
+//		// log('resolveSelfOverlaps', 'end');
+// 		return new Path(path);
+// 	}
+
+// 	let segmentNumber = polySegment.segments.length;
+// 	let threshold = 0.01;
+// 	polySegment.splitSegmentsAtIntersections(ix, threshold);
+
+// 	if (segmentNumber === polySegment.segments.length) {
+//		// log(`Splitting the polySegment on itself resulted in the same length, returning path as is`);
+//		// log('resolveSelfOverlaps', 'end');
+// 		return new Path(path);
+// 	}
+
+//	// log('before filtering ' + polySegment.segments.length);
+
+// 	polySegment.removeZeroLengthSegments();
+//	// log('after removeZeroLengthSegments ' + polySegment.segments.length);
+
+// 	polySegment.removeDuplicateSegments();
+//	// log('after removeDuplicateSegments ' + polySegment.segments.length);
+
+// 	polySegment.removeRedundantLineSegments();
+//	// log('after removeRedundantLineSegments ' + polySegment.segments.length);
+
+// 	polySegment = removeSegmentsOverlappingPath(polySegment, path);
+//	// log('after removeSegmentsOverlappingPath ' + polySegment.segments.length);
+// 	polySegment.removeNonConnectingSegments();
+//	// log('after removeNonConnectingSegments ' + polySegment.segments.length);
+
+// 	// polySegment.combineInlineSegments();
+// 	// log('after combineInlineSegments ' + polySegment.segments.length);
+
+// 	// polySegment.drawPolySegmentOutline();
+// 	let resultingSegments = polySegment.stitchSegmentsTogether();
+// 	let resultingPaths = [];
+// 	let psn;
+//	// log(`resultingSegments`);
+//	// log(resultingSegments);
+// 	for (let ps = 0; ps < resultingSegments.length; ps++) {
+// 		psn = resultingSegments[ps];
+// 		if (psn.segments.length > 1) {
+// 			let thisPath = psn.getPath();
+// 			thisPath.name = path.name;
+// 			resultingPaths.push(thisPath);
+// 		}
+// 	}
+
+//	// log('resolveSelfOverlaps', 'end');
+// 	return resultingPaths;
+// }
+
 /**
  * Takes a collection of paths and combines as many together as possible
  * @param {Array} paths - list of paths to combine
@@ -513,12 +515,12 @@ function debugDrawSegmentPoints(segment) {
  * @returns {Array} - collection of paths
  */
 // export function combineAllPaths_REFACTORED(paths = [], notifyErrors = true) {
-// 	log(`combineAllPaths`, 'start');
+//	// log(`combineAllPaths`, 'start');
 // 	let resultPaths = [];
 
 // 	// One Path
 // 	if (paths.length <= 1) {
-// 		log(`combineAllPaths`, 'end');
+//		// log(`combineAllPaths`, 'end');
 // 		return paths;
 // 	}
 
@@ -528,7 +530,7 @@ function debugDrawSegmentPoints(segment) {
 // 		if (!resultPaths) {
 // 			if (notifyErrors) showToast('The selected paths do not overlap.');
 // 		}
-// 		log(`combineAllPaths`, 'end');
+//		// log(`combineAllPaths`, 'end');
 // 		return [resultPaths];
 // 	}
 
@@ -557,7 +559,7 @@ function debugDrawSegmentPoints(segment) {
 // 		looping = loopResult.didStuff;
 // 		if (!looping && count === 0) {
 // 			if (notifyErrors) showToast('The selected paths do not overlap.');
-// 			log(`combineAllPaths`, 'end');
+//			// log(`combineAllPaths`, 'end');
 // 			return paths;
 // 		}
 
@@ -572,7 +574,7 @@ function debugDrawSegmentPoints(segment) {
 // 	});
 // 	resultPaths = tempPaths;
 
-// 	log(`combineAllPaths`, 'end');
+//	// log(`combineAllPaths`, 'end');
 // 	return resultPaths;
 // }
 
@@ -586,14 +588,14 @@ function debugDrawSegmentPoints(segment) {
  * @returns {Object} - resulting paths and a 'didStuff' flag
  */
 // function onePassCombinePaths_REFACTORED(paths = []) {
-// 	log(`onePassCombinePaths`, 'start');
+//	// log(`onePassCombinePaths`, 'start');
 // 	let resultPaths = [];
 // 	let didStuff = false;
 // 	let checkList = paths.map((value) => !!value);
 
 // 	for (let outer = 0; outer < paths.length; outer++) {
 // 		for (let inner = 0; inner < paths.length; inner++) {
-// 			log('attempting to combine paths ' + outer + ' with ' + inner);
+//			// log('attempting to combine paths ' + outer + ' with ' + inner);
 
 // 			if (outer !== inner && checkList[outer] && checkList[inner]) {
 // 				let combined = combineTwoPaths_REFACTORED(paths[outer], paths[inner]);
@@ -614,10 +616,10 @@ function debugDrawSegmentPoints(segment) {
 // 	}
 
 // 	// Finish up
-// 	log(`didStuff: ${didStuff}`);
-// 	log(resultPaths);
+//	// log(`didStuff: ${didStuff}`);
+//	// log(resultPaths);
 
-// 	log(`onePassCombinePaths`, 'end');
+//	// log(`onePassCombinePaths`, 'end');
 // 	return { paths: resultPaths, didStuff: didStuff };
 // }
 // --------------------------------------------------------------
@@ -625,28 +627,28 @@ function debugDrawSegmentPoints(segment) {
 // --------------------------------------------------------------
 
 // function combineTwoPaths_REFACTORED(path1, path2) {
-// 	log(`combineTwoPaths_REFACTORED`, 'start');
+//	// log(`combineTwoPaths_REFACTORED`, 'start');
 
 // 	// Find intersections
 // 	let intersections = findPathIntersections(path1, path2);
 // 	if (intersections.length < 1) {
-// 		log('no intersections, returning.');
-// 		log(`combineTwoPaths_REFACTORED`, 'end');
+//		// log('no intersections, returning.');
+//		// log(`combineTwoPaths_REFACTORED`, 'end');
 // 		return false;
 // 	} else {
-// 		log('found intersections');
-// 		log(intersections);
+//		// log('found intersections');
+//		// log(intersections);
 // 	}
 
 // 	// Add path points at all intersections
-// 	log(`path1.pathPoints.length: ${path1.pathPoints.length}`);
-// 	log(`path2.pathPoints.length: ${path2.pathPoints.length}`);
+//	// log(`path1.pathPoints.length: ${path1.pathPoints.length}`);
+//	// log(`path2.pathPoints.length: ${path2.pathPoints.length}`);
 // 	intersections.forEach((ix) => {
 // 		insertPathPointsAtIXPoint(ix, path1);
 // 		insertPathPointsAtIXPoint(ix, path2);
 // 	});
-// 	log(`path1.pathPoints.length: ${path1.pathPoints.length}`);
-// 	log(`path2.pathPoints.length: ${path2.pathPoints.length}`);
+//	// log(`path1.pathPoints.length: ${path1.pathPoints.length}`);
+//	// log(`path2.pathPoints.length: ${path2.pathPoints.length}`);
 
 // 		// Traverse the working path, adding path points to the result path
 // 		// until an 'overlap' point is detected, then switch the working path
@@ -662,13 +664,13 @@ function debugDrawSegmentPoints(segment) {
 // 	let workingPoint = path1.pathPoints[1];
 // 	let loopNumber = 1;
 // 	let loopMax = 999;
-// 	log(path1);
-// 	log(path2);
+//	// log(path1);
+//	// log(path2);
 // 	while (loopNumber <= loopMax) {
-// 		log(`loopNumber: ${loopNumber}`);
-// 		log(`\t workingPath.customID: ${workingPath.customID}`);
-// 		log(`\t workingPoint.customID: ${workingPoint.customID}`);
-// 		log(`\t workingPoint.pointNumber: ${workingPoint.pointNumber}`);
+//		// log(`loopNumber: ${loopNumber}`);
+//		// log(`\t workingPath.customID: ${workingPath.customID}`);
+//		// log(`\t workingPoint.customID: ${workingPoint.customID}`);
+//		// log(`\t workingPoint.pointNumber: ${workingPoint.pointNumber}`);
 
 // 		if (loopNumber === loopMax) {
 // 			console.warn(`Combine Two Paths - too many points to loop through.`);
@@ -677,11 +679,11 @@ function debugDrawSegmentPoints(segment) {
 
 // 		if (workingPoint.customID === 'completed') {
 // 			// Back to a completed point, end the loop
-// 			log(`\t COMPLETED point, breaking loop`);
+//			// log(`\t COMPLETED point, breaking loop`);
 // 			break;
 // 		} else if (workingPoint?.customID?.startsWith('overlap')) {
 // 			// Overlap point detected, add it and flip the working path
-// 			log(`\t OVERLAP point`);
+//			// log(`\t OVERLAP point`);
 // 			resultPath.addPathPoint(
 // 				new PathPoint({
 // 					p: workingPoint.p,
@@ -694,7 +696,7 @@ function debugDrawSegmentPoints(segment) {
 // 			if (workingPath.customID === 'path1') workingPath = path2;
 // 			else if (workingPath.customID === 'path2') workingPath = path1;
 // 			else log(`\t ERROR switching working path`);
-// 			log(`\t working path is now ${workingPath.customID}`);
+//			// log(`\t working path is now ${workingPath.customID}`);
 
 // 			// Switch working point
 // 			let oldWorkingPoint = workingPoint;
@@ -704,7 +706,7 @@ function debugDrawSegmentPoints(segment) {
 // 			else log(`\t ERROR updating h2 handle`);
 // 		} else {
 // 			// Just a normal point, add it to the result path
-// 			log(`\t REGULAR point`);
+//			// log(`\t REGULAR point`);
 // 			resultPath.addPathPoint(workingPoint);
 // 		}
 
@@ -715,8 +717,8 @@ function debugDrawSegmentPoints(segment) {
 // 	}
 
 // 	// All done
-// 	log(resultPath);
-// 	log(`combineTwoPaths_REFACTORED`, 'end');
+//	// log(resultPath);
+//	// log(`combineTwoPaths_REFACTORED`, 'end');
 // 	return resultPath;
 // }
 
@@ -737,14 +739,14 @@ function debugDrawSegmentPoints(segment) {
  * @returns {Array} - new set of combined paths
  */
 // export function OLDcombineAllPaths(paths, notifyErrors = true, resolveOverlaps = true) {
-// 	log('OLDcombineAllPaths', 'start');
-// 	log(paths);
+//	// log('OLDcombineAllPaths', 'start');
+//	// log(paths);
 
 // 	let tempPaths = false;
 
 // 	// Early return stuff
 // 	if (paths.length <= 1) {
-// 		log('length=1 - returning false');
+//		// log('length=1 - returning false');
 // 		return false;
 // 	} else if (paths.length === 2) {
 // 		// log('length=2, starting combinePathsAtFirstIntersection');
@@ -752,35 +754,35 @@ function debugDrawSegmentPoints(segment) {
 // 		tempPaths = combineTwoPaths_REFACTORED(paths[0], paths[1]);
 
 // 		if (!tempPaths) {
-// 			log('length=2 - returning false');
+//			// log('length=2 - returning false');
 // 			if (notifyErrors) showToast('The selected paths do not overlap.');
 // 			return false;
 // 		} else {
 // 			tempPaths = [tempPaths];
 // 			// log('length=2 - continuing with tempPaths from combinePathsAtFirstIntersection');
-// 			log('length=2 - continuing with tempPaths from combineTwoPaths_REFACTORED');
-// 			log(tempPaths);
-// 			log(`OLDcombineAllPaths`, 'end');
+//			// log('length=2 - continuing with tempPaths from combineTwoPaths_REFACTORED');
+//			// log(tempPaths);
+//			// log(`OLDcombineAllPaths`, 'end');
 // 			return tempPaths;
 // 		}
 // 	}
 
 // 	// One pass through collapsing paths down
 // 	function singlePass(arr) {
-// 		log('\n\t singlePass');
-// 		log('\t\t start arr len ' + arr.length);
+//		// log('\n\t singlePass');
+//		// log('\t\t start arr len ' + arr.length);
 // 		let re;
 // 		let newPaths = [];
 // 		let didStuff = false;
 
 // 		for (let outer = 0; outer < arr.length; outer++) {
 // 			for (let inner = 0; inner < arr.length; inner++) {
-// 				log('\t\t testing shape ' + outer + ' and ' + inner);
+//				// log('\t\t testing shape ' + outer + ' and ' + inner);
 
 // 				if (outer !== inner && arr[outer] && arr[inner]) {
 // 					re = combinePathsAtFirstIntersection(arr[outer], arr[inner], notifyErrors);
 
-// 					log('\t\t OLDcombineAllPaths returned ' + (re.length || re));
+//					// log('\t\t OLDcombineAllPaths returned ' + (re.length || re));
 // 					if (re !== false) {
 // 						newPaths.push(re);
 // 						didStuff = true;
@@ -794,7 +796,7 @@ function debugDrawSegmentPoints(segment) {
 // 		// concat truthy values
 // 		newPaths = newPaths.concat(arr.filter((p) => p));
 
-// 		log('singlePass didStuff = ' + didStuff);
+//		// log('singlePass didStuff = ' + didStuff);
 
 // 		return { arr: newPaths, didStuff: didStuff };
 // 	}
@@ -802,7 +804,7 @@ function debugDrawSegmentPoints(segment) {
 // 	// Sort paths by winding
 
 // 	if (!tempPaths) {
-// 		log('No tempPaths, sorting the existing paths');
+//		// log('No tempPaths, sorting the existing paths');
 // 		tempPaths = [];
 // 		paths.map((path, index) => (tempPaths[index] = new Path(path)));
 // 		// tempPaths = clone(paths);
@@ -826,30 +828,30 @@ function debugDrawSegmentPoints(segment) {
 // 			}
 
 // 			tempPaths = loopResult.arr;
-// 			log('didStuff ' + loopResult.didStuff);
+//			// log('didStuff ' + loopResult.didStuff);
 // 			count++;
 // 		}
 // 	}
 
-// 	log('working on paths (tempPaths)');
-// 	log(tempPaths);
+//	// log('working on paths (tempPaths)');
+//	// log(tempPaths);
 
 // 	let newPaths = [];
 // 	if (resolveOverlaps) {
-// 		log('resolveOverlaps is true, tempPaths.length = ' + tempPaths.length);
+//		// log('resolveOverlaps is true, tempPaths.length = ' + tempPaths.length);
 // 		// Collapse each shape's overlapping paths
 // 		for (let ts = 0; ts < tempPaths.length; ts++) {
-// 			log(`ts: ${ts}`);
+//			// log(`ts: ${ts}`);
 // 			newPaths = newPaths.concat(resolveSelfOverlaps(tempPaths[ts]));
 // 		}
 // 	} else {
-// 		log('resolveOverlaps is false');
+//		// log('resolveOverlaps is false');
 // 		newPaths = tempPaths;
 // 	}
 
-// 	log('returning');
-// 	log(newPaths);
-// 	log('OLDcombineAllPaths', 'end');
+//	// log('returning');
+//	// log(newPaths);
+//	// log('OLDcombineAllPaths', 'end');
 // 	return newPaths;
 // }
 
@@ -860,16 +862,16 @@ function debugDrawSegmentPoints(segment) {
  * @returns - Array of path or paths
  */
 // function combinePathsAtFirstIntersection(path1, path2) {
-// 	log('combinePathsAtFirstIntersection', 'start');
+//	// log('combinePathsAtFirstIntersection', 'start');
 // 	// Find intersections
 // 	let intersections = findPathIntersections(path1, path2);
 
 // 	if (intersections.length < 1) {
-// 		log('no intersections, returning.');
+//		// log('no intersections, returning.');
 // 		return false;
 // 	}
-// 	log('found intersections');
-// 	log(intersections);
+//	// log('found intersections');
+//	// log(intersections);
 
 // 	// Insert one intersection into both shapes
 // 	let intersectionPoint = ixToXYPoint(intersections[0]);
@@ -963,7 +965,7 @@ function debugDrawSegmentPoints(segment) {
 // 	newPoints = newPoints.concat(shape1half2.points);
 
 // 	let result = new Path({ pathPoints: newPoints });
-// 	log(result);
-// 	log('combinePathsAtFirstIntersection', 'end');
+//	// log(result);
+//	// log('combinePathsAtFirstIntersection', 'end');
 // 	return result;
 // }
