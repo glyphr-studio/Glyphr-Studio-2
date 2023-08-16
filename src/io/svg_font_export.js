@@ -189,11 +189,6 @@ function ioSVG_makeOneGlyphOrLigature(gl, uni) {
 		return '';
 	}
 
-	// TODO Boolean combine
-	// if (getCurrentProject().settings.app.combinePathsOnExport) {
-	// 	gl = makeGlyphWithResolvedLinks(new Glyph(gl)).combineAllShapes(true);
-	// }
-
 	let pathData = gl.svgPathData;
 	pathData = pathData || 'M0,0Z';
 

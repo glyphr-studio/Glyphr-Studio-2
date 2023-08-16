@@ -274,29 +274,4 @@ describe('Glyph - updating', () => {
 			'M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z '
 		);
 	});
-
-	// TODO Boolean Combine write tests
-	// flattenGlyph
-
-	// it('combineAllPaths', () => {
-	// 	const s1 = new Path({
-	// 		name: 's1',
-	// 		pathPoints: [
-	// 			{p: {coord: {x: 100, y: 200}}},
-	// 			{p: {coord: {x: 300, y: 600}}},
-	// 			{p: {coord: {x: 400, y: 500}}},
-	// 		]
-	// 	});
-
-	// 	console.log(s1);
-	// 	const s2 = new Path(s1);
-	// 	s2.name = 's2';
-	// 	s2.y = 500;
-	// 	console.log(s2);
-
-	// 	const g = new Glyph({paths: [s1, s2]});
-	// 	const re = g.combineAllPaths(true, true);
-	// 	console.log(re.shapes);
-	// 	expect(re.shapes.length).toBe(1);
-	// });
 });

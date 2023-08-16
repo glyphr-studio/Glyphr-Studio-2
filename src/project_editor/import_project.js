@@ -132,8 +132,6 @@ function migrate_Project(oldProject) {
 
 	// Preferences
 	// newPreferences.showNonCharPoints = oldSettings.glyphrange.filternoncharpoints || true;
-	newPreferences.combinePathsOnExport = oldSettings.combineshapesonexport || false;
-	newPreferences.maxCombinePathsOnExport = oldSettings.maxcombineshapesonexport || 30;
 	newPreferences.stopPageNavigation = oldSettings.stoppagenavigation || true;
 	newPreferences.formatSaveFile = oldSettings.formatsavefile || true;
 	newPreferences.contextCharacters.showGuides = oldSettings.showcontextglyphguides || true;
