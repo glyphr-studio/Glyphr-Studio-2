@@ -377,15 +377,19 @@ export class MultiSelectShapes extends MultiSelect {
 		return false;
 	}
 
-	// just define this as nothing so it can be called from the root class
-	// selectPathsThatHaveSelectedPoints() {}
-
 	combine() {
 		log('MultiSelectShapes.combine', 'start');
-		const editor = getCurrentProjectEditor();
 		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph.clone());
 		// const combinedShapes = combineAllPaths(newGlyph.shapes);
-		const combinedShapes = combineAllPaths(newGlyph.shapes);
+
+		let clockwise = newGlyph.shapes.filter(path => path.winding < 0);
+		let counterClockwise = newGlyph.shapes.filter(path => path.winding > 0);
+		let unknown = newGlyph.shapes.filter(path => path.winding === 0);
+
+		let combinedShapes = [];
+		combinedShapes = combinedShapes.concat(combineAllPaths(unknown));
+		combinedShapes = combinedShapes.concat(combineAllPaths(clockwise));
+		combinedShapes = combinedShapes.concat(combineAllPaths(counterClockwise));
 
 		log(`combinedShapes`);
 		log(combinedShapes);
@@ -393,7 +397,6 @@ export class MultiSelectShapes extends MultiSelect {
 		if (combinedShapes) {
 			this.deleteShapes();
 			combinedShapes.forEach((shape) => addPathToCurrentItem(shape));
-			editor.history.addState('Combined paths');
 		}
 
 		log('MultiSelectShapes.combine', 'end');
@@ -479,8 +482,6 @@ export class MultiSelectShapes extends MultiSelect {
 		});
 
 		// log('Glyph.alignShapes', 'end');
-
-		getCurrentProjectEditor().history.addState('Aligned shapes ' + edge);
 	}
 
 	updateShapePosition(dx, dy) {

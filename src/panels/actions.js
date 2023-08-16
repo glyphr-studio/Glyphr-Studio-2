@@ -253,7 +253,7 @@ export function getActionData(name) {
 				const editor = getCurrentProjectEditor();
 				let shape = editor.multiSelect.shapes.virtualGlyph;
 				shape.flipNS();
-				editor.history.addState(`flipped shape ${shape.name} vertically`);
+				editor.history.addState(`Flipped shape ${shape.name} vertically`);
 				editor.publish('currentItem', editor.selectedItem);
 			},
 		},
@@ -754,7 +754,7 @@ function combineSelectedPaths() {
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
 		editor.multiSelect.shapes.combine();
-		editor.history.addState('combine selected paths');
+		editor.history.addState('Combined selected paths');
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
@@ -762,7 +762,7 @@ function addPathPointsAtIntersectionsAction() {
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
 		editor.multiSelect.shapes.addPathPointsAtIntersections();
-		editor.history.addState('add path points at intersections');
+		editor.history.addState('Added path points at intersections');
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
@@ -772,7 +772,7 @@ function combineAllGlyphPaths() {
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
 		editor.selectedItem.combineAllShapes(true);
-		editor.history.addState('combine all glyph paths');
+		editor.history.addState('Combined all glyph paths');
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
