@@ -2,7 +2,6 @@ import { getCurrentProject } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
 import { showToast } from '../controls/dialogs/dialogs';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator';
-import { makeContributeCard } from './about';
 
 /**
  * Page > Global Actions
@@ -45,16 +44,16 @@ export function makePage_GlobalActions() {
 	rightArea.innerHTML += ``;
 
 	addAsChildren(rightArea, [
-		makeElement({tag: 'h1', content: 'Move and resize'}),
+		makeElement({ tag: 'h1', content: 'Move and resize' }),
 		makeCard_Move(),
 		makeCard_ScaleHorizontal(),
 		makeCard_ScaleVertical(),
 		makeCard_Resize(),
 		makeCard_Flatten(),
-		makeElement({tag: 'h1', content: 'Font types'}),
+		makeElement({ tag: 'h1', content: 'Font types' }),
 		makeCard_Monospace(),
 		makeCard_AllCaps(),
-		makeElement({tag: 'h1', content: 'Diacritics'}),
+		makeElement({ tag: 'h1', content: 'Diacritics' }),
 		makeCard_Diacritics(),
 		makeCard_DiacriticsAdvanced(),
 	]);
@@ -106,7 +105,7 @@ function glyphIterator(oa) {
 		currentItem = project.getItem(currentItemID, true);
 		// log(`Got glyph: ${currentItem.name}`);
 
-		showToast(title + '<br>' + currentItem.getName(), 10000);
+		showToast(title + '<br>' + currentItem.name, 10000);
 
 		oa.action(currentItem, currentItemID);
 
@@ -170,9 +169,17 @@ function makeCard_Move() {
 	card.appendChild(effect);
 
 	let table = makeElement({ className: 'settings-table' });
+	table.innerHTML += `
+		<label for="moveX">X&nbsp;move:</label>
+		<input-number id="moveX" value="0"></input-number>
+		<pre title="Expected value type">Em</pre>
+	`;
+	table.innerHTML += `
+		<label for="moveY">Y&nbsp;move:</label>
+		<input-number id="moveY" value="0"></input-number>
+		<pre title="Expected value type">Em</pre>
+	`;
 	card.appendChild(table);
-	('<tr><td>X move: &nbsp;</td><td><input id="moveX" type="number" value="0"></td><td><span class="unit">(em units)</span></td></tr>');
-	('<tr><td>Y move: &nbsp;</td><td><input id="moveY" type="number" value="0"></td><td><span class="unit">(em units)</span></td></tr>');
 
 	let button = makeElement({ tag: 'fancy-button', content: 'Move all glyphs' });
 	button.addEventListener('click', updateAllGlyphPositions);
@@ -192,14 +199,12 @@ function updateAllGlyphPositions() {
 		title: 'Moving glyph',
 		action: function (glyph) {
 			if (!glyph.shapes || !glyph.shapes.length) return;
-			let shape;
-			for (let s = 0; s < glyph.shapes.length; s++) {
-				shape = glyph.shapes[s];
-				if (shape.objtype !== 'componentinstance') {
-					shape.updateShapePosition(moveX, moveY, true);
-					glyph.changed(true, true);
+			glyph.shapes.forEach((shape) => {
+				if (shape.objType !== 'ComponentInstance') {
+					shape.updateShapePosition(moveX, moveY);
+					glyph.changed();
 				}
-			}
+			});
 		},
 	});
 }
@@ -231,7 +236,7 @@ function makeCard_ScaleVertical() {
 
 	let table = makeElement({ className: 'settings-table' });
 	card.appendChild(table);
-	('<tr><td>Scale value: &nbsp;</td><td><input id="scaleh" type="number" value="1"></td></tr>');
+	`<label>Scale value: </label><input id="scaleh" type="number" value="1">`;
 
 	let button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
 	button.addEventListener('click', scaleAllGlyphsVertically);
@@ -278,8 +283,8 @@ function makeCard_ScaleHorizontal() {
 
 	let table = makeElement({ className: 'settings-table' });
 	card.appendChild(table);
-	('<tr><td>Scale value: &nbsp;</td><td><input id="scalew" type="number" value="1"></td></tr>');
-	('<tr><td><input id="scaleupdatewidth" type="checkbox" checked></td><td style="vertical-align:top;">Update the glyph width property (when auto-calculate glyph width equals false)</td></tr>');
+	`<label>Scale value: </label><input id="scalew" type="number" value="1">`;
+	`<input id="scaleupdatewidth" type="checkbox" checked><label>Update the glyph width property (when auto-calculate glyph width equals false)</label>`;
 
 	let button = makeElement({ tag: 'fancy-button', content: 'Scale all glyphs' });
 	button.addEventListener('click', scaleAllGlyphsHorizontally);
@@ -329,12 +334,12 @@ function makeCard_Resize() {
 
 	let table = makeElement({ className: 'settings-table' });
 	card.appendChild(table);
-	('<tr><td>&#916; Width: &nbsp;</td><td><input id="sizew" type="number" value="0"></td><td><span class="unit">(em units)</span></td></tr>');
-	('<tr><td>&#916; Height: &nbsp;</td><td><input id="sizeh" type="number" value="0"></td><td><span class="unit">(em units)</span></td></tr>');
-	('<tr><td class="uicolumn" style="width:20px;"><input id="updateglyphwidthproperty" type="checkbox" checked></td><td colspan="2" style="vertical-align:top;">Update the glyph width property (when auto-calculate glyph width equals false)</td></tr>');
-	('<tr><td class="uicolumn" style="width:20px;"><input id="maintainaspectratio" type="checkbox"></td><td colspan="2" style="vertical-align:top;">Maintain aspect ratio</td></tr>');
-	('<tr><td colspan="3">If checked, the width vs. height ratio of the re-sized glyphs will remain the same.<br>');
-	('<b>Leave either &#916; Width or &#916; Height as zero</b></td></tr>');
+	`&#916; Width: &nbsp;</td><td><input id="sizew" type="number" value="0"></td><td><span class="unit">(em units)</span>`;
+	`&#916; Height: &nbsp;</td><td><input id="sizeh" type="number" value="0"></td><td><span class="unit">(em units)</span>`;
+	`<tr><td class="uicolumn" style="width:20px;"><input id="updateglyphwidthproperty" type="checkbox" checked></td><td colspan="2" style="vertical-align:top;">Update the glyph width property (when auto-calculate glyph width equals false)`;
+	`<tr><td class="uicolumn" style="width:20px;"><input id="maintainaspectratio" type="checkbox"></td><td colspan="2" style="vertical-align:top;">Maintain aspect ratio`;
+	`<tr><td colspan="3">If checked, the width vs. height ratio of the re-sized glyphs will remain the same.<br>`;
+	`<b>Leave either &#916; Width or &#916; Height as zero</b>`;
 
 	let button = makeElement({ tag: 'fancy-button', content: 'Re-size all glyphs' });
 	button.addEventListener('click', updateAllGlyphSizesByEm);
@@ -382,17 +387,17 @@ function makeCard_Flatten() {
 	const card = makeElement({ className: 'global-actions__card' });
 
 	card.appendChild(
-		makeElement({ tag: 'h2', content: 'Convert all Component Instances into Shapes' })
+		makeElement({ tag: 'h2', content: 'Convert all Component Instances into Paths' })
 	);
 	let description = makeElement({
 		className: 'global-actions__description',
-		content: `This will remove all links from Component Instances to their Components, and leave behind a stand-alone shape that looks exactly like the Component Instance did.`,
+		content: `This will remove all links from Component Instances to their Components, and leave behind a stand-alone path that looks exactly like the Component Instance did.`,
 	});
 	card.appendChild(description);
 
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
-		content: `Every shape in every Glyph, Component, and Ligature will have the "Turn Component Instance into a Shape" command run on it.`,
+		content: `Every shape in every Glyph, Component, and Ligature will have the "Turn Component Instance into a Path" command run on it.`,
 	});
 	card.appendChild(effect);
 
@@ -438,7 +443,7 @@ function makeCard_Monospace() {
 
 	let table = makeElement({ className: 'settings-table' });
 	card.appendChild(table);
-	('<tr><td>Glyph Width: &nbsp; <input id="monospacewidth" type="number" value="500"></td><td><span class="unit">(em units)</span></td></tr>');
+	`Glyph Width: &nbsp; <input id="monospacewidth" type="number" value="500"></td><td><span class="unit">(em units)</span>`;
 
 	let button = makeElement({ tag: 'fancy-button', content: 'Convert project to Monospace' });
 	button.addEventListener('click', convertProjectToMonospace);
@@ -494,10 +499,10 @@ function makeCard_AllCaps() {
 
 	let table = makeElement({ className: 'settings-table' });
 	card.appendChild(table);
-	('<tr><td><input type="checkbox" id="allcapsbasic" checked="true"/></td><td><label for="allcapsbasic">Basic Latin</label></td></tr>');
-	('<tr><td><input type="checkbox" id="allcapssupplement"/></td><td><label for="allcapssupplement">Latin Supplement</label></td></tr>');
-	('<tr><td><input type="checkbox" id="allcapsa"/></td><td><label for="allcapsa">Latin Extended A</label></td></tr>');
-	('<tr><td><input type="checkbox" id="allcapsb"/></td><td><label for="allcapsb">Latin Extended B</label></td></tr>');
+	`<input type="checkbox" id="allcapsbasic" checked="true"/></td><td><label for="allcapsbasic">Basic Latin</label>`;
+	`<input type="checkbox" id="allcapssupplement"/></td><td><label for="allcapssupplement">Latin Supplement</label>`;
+	`<input type="checkbox" id="allcapsa"/></td><td><label for="allcapsa">Latin Extended A</label>`;
+	`<input type="checkbox" id="allcapsb"/></td><td><label for="allcapsb">Latin Extended B</label>`;
 
 	let button = makeElement({ tag: 'fancy-button', content: 'Convert project to All Caps' });
 	button.addEventListener('click', convertProjectToAllCaps);

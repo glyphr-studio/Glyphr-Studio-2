@@ -235,9 +235,9 @@ code,
 .global-actions__effect-description {
 	line-height: 1.3em;
 	padding: 10px;
-	background-color: var(--purple-l95);
-	color: var(--purple-l20);
-	border-left: 5px solid var(--purple-l50);
+	background-color: var(--orange-l95);
+	color: var(--orange-l20);
+	border-left: 5px solid var(--orange-l50);
 }
 
 .global-actions__card .global-actions__effect-description,
@@ -256,6 +256,35 @@ code,
 .global-actions__card fancy-button {
 	grid-column: 1;
 	margin: 10px 0px 10px 0px;
+}
+
+.global-actions__card .settings-table {
+	width: 200px;
+	display: grid;
+	grid-template-columns: min-content minmax(min-content, 300px) min-content;
+	grid-template-rows: 24px;
+	row-gap: 10px;
+	column-gap: 10px;
+}
+
+.global-actions__card label {
+	line-height: 24px;
+}
+
+.global-actions__card pre {
+	height: 24px;
+	font-size: 0.8em;
+	line-height: 24px;
+	width: min-content;
+	color: var(--disabled-text);
+	border: 1px solid var(--disabled-border);
+	opacity: 0.4;
+	border-radius: 4px;
+	padding: 0px 5px;
+}
+
+.global-actions__card pre:hover {
+	opacity: 1;
 }
 
 /* Generic table stuff */
