@@ -1,5 +1,7 @@
-import { getCurrentProject } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { deleteSelectedPaths } from '../panels/actions.js';
+import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 
@@ -79,6 +81,45 @@ export function makeGlyphPostScript(glyph, lastX, lastY) {
 		lastX: lastX,
 		lastY: lastY,
 	};
+}
+
+
+// --------------------------------------------------------------
+// Components
+// --------------------------------------------------------------
+export function insertComponentInstance(sourceID, destinationID, updateAdvanceWidth = false) {
+	log(`insertComponentInstance`, 'start');
+	log('sourceID: ' + sourceID + ' destinationID: ' + destinationID);
+	const editor = getCurrentProjectEditor();
+	const project = getCurrentProject();
+
+	let select = !destinationID;
+	destinationID = destinationID || editor.selectedItemID;
+	let destinationGlyph = project.getItem(destinationID, true);
+
+	if (canAddComponent(destinationGlyph, sourceID)) {
+		let sourceItem = project.getItem(sourceID);
+		let name = `Instance of ${sourceItem.name}`;
+		let newComponentInstance = new ComponentInstance({ link: sourceID, name: name });
+
+		// log('INSERT COMPONENT - JSON: \t' + JSON.stringify(newComponentInstance));
+		destinationGlyph.addOneShape(newComponentInstance);
+		destinationGlyph.changed();
+		if (select) {
+			editor.multiSelect.shapes.select(newComponentInstance);
+			editor.publish('whatShapeIsSelected', editor.multiSelect.shapes.singleton());
+		}
+
+		addLinkToUsedIn(sourceItem, destinationID);
+
+		if (updateAdvanceWidth) destinationGlyph.advanceWidth = sourceItem.advanceWidth;
+		log(`insertComponentInstance`, 'end');
+		return true;
+	} else {
+		showToast('A circular link was found, components can\'t include links to themselves.');
+		log(`insertComponentInstance`, 'end');
+		return false;
+	}
 }
 
 // --------------------------------------------------------------
