@@ -212,7 +212,7 @@ code,
 	max-width: 800px;
 	display: grid;
 	/* align with buttons at the bottom of cards */
-	grid-template-columns: clamp(110px, 150px, 190px) 1fr;
+	grid-template-columns: 1fr;
 	align-items: center;
 	justify-items: left;
 	row-gap: 10px;
@@ -261,7 +261,7 @@ code,
 .global-actions__card .settings-table {
 	width: 200px;
 	display: grid;
-	grid-template-columns: min-content minmax(min-content, 300px) min-content;
+	grid-template-columns: min-content min-content min-content;
 	grid-template-rows: 24px;
 	row-gap: 10px;
 	column-gap: 10px;
@@ -269,6 +269,16 @@ code,
 
 .global-actions__card label {
 	line-height: 24px;
+	width: max-content;
+}
+
+.global-actions__card input-number {
+	width: 100px;
+}
+
+.global-actions__card input[type="checkbox"] {
+	width: 20px;
+	height: 20px;
 }
 
 .global-actions__card pre {
@@ -285,6 +295,16 @@ code,
 
 .global-actions__card pre:hover {
 	opacity: 1;
+}
+
+.textAction {
+	color: var(--blue-l60);
+	text-decoration: none;
+}
+
+.textAction:hover {
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 /* Generic table stuff */
