@@ -15,7 +15,7 @@ export class GlyphElement {
 	 */
 	// changed(chain = '') {
 	changed() {
-		// log(`changed called on ${this.name || this.objType}`);
+		// log(`changed called on ${this.objType}:${this.id}:${this.name}`);
 		// log(`~CHANGED`, 'start');
 		// log(`${this.objType} ${this?.name} ${this.__ID}`);
 		if (this.cache) {

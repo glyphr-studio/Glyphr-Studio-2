@@ -131,7 +131,8 @@ export function insertComponentInstance(sourceID, destinationID, updateAdvanceWi
  * @returns {Glyph}
  */
 export function makeGlyphWithResolvedLinks(sourceGlyph) {
-	// log(`makeGlyphWithResolvedLinks`, 'start');
+	log(`makeGlyphWithResolvedLinks`, 'start');
+	log(sourceGlyph);
 	let newPaths = [];
 	sourceGlyph.shapes.forEach((shape) => {
 		if (shape.objType === 'Path') {
@@ -144,9 +145,10 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 			}
 		}
 	});
-
-	// log(`makeGlyphWithResolvedLinks`, 'end');
-	return new Glyph({ shapes: newPaths, parent: getCurrentProject() });
+	const result = new Glyph(sourceGlyph);
+	result.shapes = newPaths;
+	log(`makeGlyphWithResolvedLinks`, 'end');
+	return result;
 }
 
 /**
