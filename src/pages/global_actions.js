@@ -1,11 +1,21 @@
-import { getCurrentProject } from '../app/main';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import { decToHex } from '../common/character_ids';
 import { addAsChildren, makeElement } from '../common/dom';
 import { showToast } from '../controls/dialogs/dialogs';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks';
-import { unicodeDiacriticsMapAdvanced, unicodeDiacriticsMapSimple, unicodeLowercaseMap } from '../lib/unicode_mappings';
+import {
+	unicodeDiacriticsMapAdvanced,
+	unicodeDiacriticsMapSimple,
+	unicodeLowercaseMap,
+} from '../lib/unicode_mappings';
+import { copyShapesFromTo } from '../panels/actions';
 import { Glyph } from '../project_data/glyph';
-import { insertComponentInstance } from '../project_editor/cross_item_actions';
+import { Path } from '../project_data/path';
+import {
+	insertComponentInstance,
+	makeGlyphWithResolvedLinks,
+	removeLinkFromUsedIn,
+} from '../project_editor/cross_item_actions';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator';
 
 /**
@@ -71,8 +81,8 @@ export function makePage_GlobalActions() {
 //	------------------
 
 function glyphIterator(oa) {
-	// log('glyphIterator', 'start');
-	// log('passed:\n ' + json(oa));
+	// log(`glyphIterator`, 'start');
+	// log(oa);
 
 	const project = getCurrentProject();
 	let listOfItemIDs = [];
@@ -105,6 +115,8 @@ function glyphIterator(oa) {
 	// Functions
 
 	function processOneItem() {
+		// log(`glyphIterator>processOneItem`, 'start');
+
 		// log(`itemNumber: ${itemNumber}`);
 		currentItemID = listOfItemIDs[itemNumber];
 		currentItem = project.getItem(currentItemID, true);
@@ -121,6 +133,7 @@ function glyphIterator(oa) {
 			showToast(title + '<br>Done!', 1000);
 			if (callback) callback();
 		}
+		// log(`glyphIterator>processOneItem`, 'end');
 	}
 
 	function makeItemList() {
@@ -150,6 +163,7 @@ function glyphIterator(oa) {
 
 	showToast(title + '<br>Starting...', 10000);
 	setTimeout(makeItemList, 500);
+	// log(`glyphIterator`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -255,8 +269,8 @@ function makeCard_ScaleVertical() {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
 				let newY = glyph.maxes.yMax * scaleVertical;
-				glyph.setGlyphSize(false, newHeight, false);
-				glyph.setGlyphPosition(false, newY, true);
+				glyph.setGlyphSize(false, newHeight, false, false);
+				glyph.setGlyphPosition(false, newY, false);
 			},
 		});
 	});
@@ -433,13 +447,29 @@ function makeCard_Flatten() {
 
 	let button = makeElement({
 		tag: 'fancy-button',
-		content: 'Convert Component Instances to Shapes',
+		content: 'Convert Component Instances to Paths',
 	});
 	button.addEventListener('click', () => {
 		glyphIterator({
-			title: 'Converting Component Instances to Shapes',
-			action: function (glyph) {
-				glyph.flattenGlyph();
+			title: 'Converting Component Instances to Paths',
+			action: function (workingItem) {
+				// log(`Global Action: Flatten`, 'start');
+				// log(workingItem);
+				const editor = getCurrentProjectEditor();
+				let newShapes = new Glyph();
+				workingItem.shapes.forEach((shape) => {
+					if (shape.objType === 'ComponentInstance') {
+						const rootItem = editor.project.getItem(shape.link);
+						copyShapesFromTo(shape.transformedGlyph, newShapes);
+						removeLinkFromUsedIn(rootItem, workingItem.id);
+					} else {
+						newShapes.addOneShape(new Path(shape));
+					}
+				});
+				workingItem.shapes = [];
+				newShapes.shapes.forEach((shape) => workingItem.addOneShape(shape));
+				workingItem.changed();
+				// log(`Global Action: Flatten`, 'end');
 			},
 		});
 	});
@@ -455,7 +485,7 @@ function makeCard_Flatten() {
 function makeCard_Monospace() {
 	const card = makeElement({ className: 'global-actions__card' });
 
-	card.appendChild(makeElement({ tag: 'h2', content: 'Monospace Font' }));
+	card.appendChild(makeElement({ tag: 'h2', content: 'Monospace font' }));
 
 	let description = makeElement({
 		className: 'global-actions__description',
@@ -514,18 +544,18 @@ function makeCard_Monospace() {
 function makeCard_AllCaps() {
 	const card = makeElement({ className: 'global-actions__card' });
 
-	card.appendChild(makeElement({ tag: 'h2', content: 'All Caps Font' }));
+	card.appendChild(makeElement({ tag: 'h2', content: 'All-caps font' }));
 
 	let description = makeElement({
 		className: 'global-actions__description',
-		content: `All Caps fonts have no lowercase letters. To make things easy, the lowercase letters in these fonts contain duplicates of their uppercase form. Select the ranges where you would like to add uppercase Component Instances to lowercase letters.`,
+		content: `All-caps fonts have no lowercase letters. To make things easy, the lowercase letters in these fonts contain duplicates of their uppercase form. Select the ranges where you would like to add uppercase Component Instances to lowercase letters.`,
 	});
 	card.appendChild(description);
 
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
 		content:
-			'Capital letters will be added as Component Instances to their lowercase counterparts.',
+			'Capital letters will be added as Component Instances to their lowercase counterparts in the selected ranges.',
 	});
 	card.appendChild(effect);
 
@@ -654,7 +684,7 @@ function makeCard_AllCaps() {
 function makeCard_Diacritics() {
 	const card = makeElement({ className: 'global-actions__card' });
 
-	card.appendChild(makeElement({ tag: 'h2', content: 'Diacritical Glyph Generator (basic)' }));
+	card.appendChild(makeElement({ tag: 'h2', content: 'Diacritical glyph generator (basic)' }));
 
 	let description = makeElement({
 		className: 'global-actions__description',
@@ -712,7 +742,7 @@ function makeCard_Diacritics() {
 function makeCard_DiacriticsAdvanced() {
 	const card = makeElement({ className: 'global-actions__card' });
 
-	card.appendChild(makeElement({ tag: 'h2', content: 'Diacritical Glyph Generator (advanced)' }));
+	card.appendChild(makeElement({ tag: 'h2', content: 'Diacritical glyph generator (advanced)' }));
 
 	let description = makeElement({
 		className: 'global-actions__description',

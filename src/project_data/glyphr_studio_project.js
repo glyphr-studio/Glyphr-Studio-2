@@ -510,8 +510,20 @@ export class GlyphrStudioProject {
 // Helpers
 // --------------------------------------------------------------
 export function sortLigatures(a, b) {
-	if (a.chars.length === b.chars.length) return a.chars.localeCompare(b.chars);
-	else return a.chars.length - b.chars.length;
+	// log(`sortLigatures`, 'start');
+	// log(`a: ${a.chars}`);
+	// log(`b: ${b.chars}`);
+
+	if (a.chars.length === b.chars.length) {
+		// log(`same length`);
+
+		// log(`sortLigatures`, 'end');
+		return a.chars.localeCompare(b.chars);
+
+	} else {
+		// log(`sortLigatures`, 'end');
+		return a.chars.length - b.chars.length;
+	}
 }
 
 /**

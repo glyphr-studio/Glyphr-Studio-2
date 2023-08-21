@@ -531,7 +531,7 @@ export class Glyph extends GlyphElement {
 	 * @param {Number} nx - new x
 	 * @param {Number} ny - new y
 	 */
-	setGlyphPosition(nx, ny) {
+	setGlyphPosition(nx, ny, updateComponentInstances = true) {
 		// log('Glyph.setGlyphPosition', 'start');
 		// log(`nx/ny: ${nx} ${ny}`);
 		const m = this.maxes;
@@ -543,7 +543,7 @@ export class Glyph extends GlyphElement {
 		const dx = nx !== false ? nx - m.xMin : 0;
 		const dy = ny !== false ? ny - m.yMax : 0;
 		// log(`dx/dy: ${dx} ${dy}`);
-		this.updateGlyphPosition(dx, dy);
+		this.updateGlyphPosition(dx, dy, updateComponentInstances);
 		// log('Glyph.setGlyphPosition', 'end');
 	}
 
@@ -552,7 +552,7 @@ export class Glyph extends GlyphElement {
 	 * @param {Number} dx - delta x
 	 * @param {Number} dy - delta y
 	 */
-	updateGlyphPosition(dx, dy) {
+	updateGlyphPosition(dx, dy, updateComponentInstances = true) {
 		// log('Glyph.updateGlyphPosition', 'start');
 		// log('dx/dy: ' + dx + ' ' + dy);
 		// log('number of shapes: ' + this.shapes.length);
@@ -561,6 +561,7 @@ export class Glyph extends GlyphElement {
 		dy = parseFloat(dy) || 0;
 		for (let i = 0; i < this.shapes.length; i++) {
 			const shape = this.shapes[i];
+			if (shape.objType === 'ComponentInstance' && !updateComponentInstances) continue;
 			// log(`moving shape #${i} - ${shape.name}`);
 			// log(`BEFORE shape.maxes.xMin: ${shape.maxes.xMin}`);
 			shape.updateShapePosition(dx, dy);
@@ -576,7 +577,7 @@ export class Glyph extends GlyphElement {
 	 * @param {Number} nh - new height
 	 * @param {Boolean} ratioLock - true to scale width and height 1:1
 	 */
-	setGlyphSize(nw, nh, ratioLock) {
+	setGlyphSize(nw, nh, ratioLock, updateComponentInstances = true) {
 		const m = this.maxes;
 		if (nw !== false) nw = parseFloat(nw);
 		if (nh !== false) nh = parseFloat(nh);
@@ -588,7 +589,7 @@ export class Glyph extends GlyphElement {
 			if (Math.abs(nh) > Math.abs(nw)) dw = cw * (nh / ch) - cw;
 			else dh = ch * (nw / cw) - ch;
 		}
-		this.updateGlyphSize(dw, dh, false);
+		this.updateGlyphSize(dw, dh, false, updateComponentInstances);
 	}
 
 	/**
@@ -597,7 +598,7 @@ export class Glyph extends GlyphElement {
 	 * @param {Number} dh - delta height
 	 * @param {Boolean} ratioLock - true to scale width and height 1:1
 	 */
-	updateGlyphSize(dw, dh, ratioLock) {
+	updateGlyphSize(dw, dh, ratioLock, updateComponentInstances = true) {
 		// log('Glyph.updateGlyphSize', 'start');
 		// log('number of shapes: ' + this.shapes.length);
 		// log('dw dh rl:\t' + dw + '/' + dh + '/' + ratioLock);
@@ -624,16 +625,16 @@ export class Glyph extends GlyphElement {
 		}
 		// log('ratio dw/dh:\t' + ratioWidth + '/' + ratioHeight);
 
-		let path;
-		let pathMaxes;
-		let oldPathWidth;
-		let oldPathHeight;
-		let oldPathX;
-		let oldPathY;
-		let newPathWidth;
-		let newPathHeight;
-		let newPathX;
-		let newPathY;
+		let shape;
+		let shapeMaxes;
+		let oldShapeWidth;
+		let oldShapeHeight;
+		let oldShapeX;
+		let oldShapeY;
+		let newShapeWidth;
+		let newShapeHeight;
+		let newShapeX;
+		let newShapeY;
 		let deltaWidth;
 		let deltaHeight;
 		let deltaX;
@@ -641,41 +642,43 @@ export class Glyph extends GlyphElement {
 
 		// log('Before Maxes ' + json(m, true));
 		for (let i = 0; i < this.shapes.length; i++) {
-			path = this.shapes[i];
-			// log('>>> Updating ' + path.objType + ' ' + i + '/' + this.shapes.length + ' : ' + path.name);
-			pathMaxes = path.maxes;
+			shape = this.shapes[i];
+			if (shape.objType === 'ComponentInstance' && !updateComponentInstances) continue;
+
+			// log('>>> Updating ' + shape.objType + ' ' + i + '/' + this.shapes.length + ' : ' + shape.name);
+			shapeMaxes = shape.maxes;
 
 			// scale
-			oldPathWidth = pathMaxes.xMax - pathMaxes.xMin;
-			newPathWidth = oldPathWidth * ratioWidth;
+			oldShapeWidth = shapeMaxes.xMax - shapeMaxes.xMin;
+			newShapeWidth = oldShapeWidth * ratioWidth;
 
 			if (ratioWidth === 0) deltaWidth = false;
-			else deltaWidth = newPathWidth - oldPathWidth;
+			else deltaWidth = newShapeWidth - oldShapeWidth;
 
-			oldPathHeight = pathMaxes.yMax - pathMaxes.yMin;
-			newPathHeight = oldPathHeight * ratioHeight;
+			oldShapeHeight = shapeMaxes.yMax - shapeMaxes.yMin;
+			newShapeHeight = oldShapeHeight * ratioHeight;
 
 			if (ratioHeight === 0) deltaHeight = false;
-			else deltaHeight = newPathHeight - oldPathHeight;
+			else deltaHeight = newShapeHeight - oldShapeHeight;
 
-			// log('Path ' + i + ' dw dh ' + deltaWidth + ' ' + deltaHeight);
-			path.updateShapeSize(deltaWidth, deltaHeight, false);
+			// log('Shape ' + i + ' dw dh ' + deltaWidth + ' ' + deltaHeight);
+			shape.updateShapeSize(deltaWidth, deltaHeight, false);
 
 			// move
-			oldPathX = pathMaxes.xMin - m.xMin;
-			newPathX = oldPathX * ratioWidth;
+			oldShapeX = shapeMaxes.xMin - m.xMin;
+			newShapeX = oldShapeX * ratioWidth;
 
 			if (ratioWidth === 0) deltaX = false;
-			else deltaX = newPathX - oldPathX;
+			else deltaX = newShapeX - oldShapeX;
 
-			oldPathY = pathMaxes.yMin - m.yMin;
-			newPathY = oldPathY * ratioHeight;
+			oldShapeY = shapeMaxes.yMin - m.yMin;
+			newShapeY = oldShapeY * ratioHeight;
 
 			if (ratioHeight === 0) deltaY = false;
-			else deltaY = newPathY - oldPathY;
+			else deltaY = newShapeY - oldShapeY;
 
-			// log('Path Pos ' + i + ' dx dy ' + deltaX + ' ' + deltaY);
-			path.updateShapePosition(deltaX, deltaY, true);
+			// log('Shape Pos ' + i + ' dx dy ' + deltaX + ' ' + deltaY);
+			shape.updateShapePosition(deltaX, deltaY, true);
 		}
 
 		// log('Afters Maxes ' + json(this.maxes, true));

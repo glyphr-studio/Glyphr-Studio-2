@@ -540,15 +540,14 @@ export class Path extends GlyphElement {
 
 		// ControlPoint.x and ControlPoint.y for type === 'p' also moves h1 / h2
 		// Directly access .coord to avoid this
-		for (let e = 0; e < this.pathPoints.length; e++) {
-			const pp = this.pathPoints[e];
+		this.pathPoints.forEach((pp) => {
 			pp.p.coord.x = (pp.p.coord.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
 			pp.h1.coord.x = (pp.h1.coord.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
 			pp.h2.coord.x = (pp.h2.coord.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
 			pp.p.coord.y = (pp.p.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
 			pp.h1.coord.y = (pp.h1.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
 			pp.h2.coord.y = (pp.h2.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
-		}
+		});
 
 		if (this.checkForNaN()) {
 			// log('NAN FOUND IN THIS PATH');
@@ -976,15 +975,13 @@ export class Path extends GlyphElement {
 	reverseWinding() {
 		// log('Path.reverseWinding', 'start');
 		let ht;
-		let pp;
 
 		if (this.pathPoints) {
-			for (let i = 0; i < this.pathPoints.length; i++) {
-				pp = this.pathPoints[i];
+			this.pathPoints.forEach((pp) => {
 				ht = pp.h1;
 				pp.h1 = pp.h2;
 				pp.h2 = ht;
-			}
+			});
 
 			this.pathPoints.reverse();
 			this.winding *= -1;
@@ -1008,12 +1005,11 @@ export class Path extends GlyphElement {
 		// log(this.print());
 		// const startingY = this.y;
 
-		for (let e = 0; e < this.pathPoints.length; e++) {
-			const pp = this.pathPoints[e];
+		this.pathPoints.forEach((pp) => {
 			pp.p.coord.y += (mid - pp.p.coord.y) * 2;
 			pp.h1.coord.y += (mid - pp.h1.coord.y) * 2;
 			pp.h2.coord.y += (mid - pp.h2.coord.y) * 2;
-		}
+		});
 		// this.y = startingY;
 		this.reverseWinding();
 
@@ -1032,12 +1028,11 @@ export class Path extends GlyphElement {
 		// const startingX = this.x;
 		// log(`calculating mid: (width)/2 + x = mid: ${this.width}/2 + ${this.x} = ${mid}`);
 
-		for (let e = 0; e < this.pathPoints.length; e++) {
-			const pp = this.pathPoints[e];
+		this.pathPoints.forEach((pp) => {
 			pp.p.coord.x += (mid - pp.p.coord.x) * 2;
 			pp.h1.coord.x += (mid - pp.h1.coord.x) * 2;
 			pp.h2.coord.x += (mid - pp.h2.coord.x) * 2;
-		}
+		});
 		// this.x = startingX;
 		this.reverseWinding();
 
@@ -1050,10 +1045,7 @@ export class Path extends GlyphElement {
 	 * @returns {Path} - reference to this path
 	 */
 	roundAll(precision = 0) {
-		for (let e = 0; e < this.pathPoints.length; e++) {
-			const pp = this.pathPoints[e];
-			pp.roundAll(precision);
-		}
+		this.pathPoints.forEach((pp) => pp.roundAll(precision));
 		return this;
 	}
 
@@ -1106,7 +1098,7 @@ export class Path extends GlyphElement {
 			nP = { coord: { x: s1.p4x, y: s1.p4y } };
 			nH1 = { coord: { x: s1.p3x, y: s1.p3y } };
 			nH2 = { coord: { x: s2.p2x, y: s2.p2y } };
-			ppn = new PathPoint({ p: nP, h1: nH1, h2: nH2 });  // don't include type for ppn
+			ppn = new PathPoint({ p: nP, h1: nH1, h2: nH2 }); // don't include type for ppn
 
 			// Update P1
 			if (pp1.type === 'symmetric') pp1.type = 'flat';
@@ -1236,35 +1228,33 @@ export class Path extends GlyphElement {
 	 * @param {String} calledBy - message for who called this
 	 */
 	validate() {
-		let tp;
-		for (let pp = 0; pp < this.pathPoints.length; pp++) {
-			tp = this.pathPoints[pp];
-			if (!tp.p.x && tp.p.x !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} p.x from ${tp.p.x}`);
-				tp.p.x = 0;
+		this.pathPoints.forEach(pp => {
+			if (!pp.p.x && pp.p.x !== 0) {
+				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} p.x from ${pp.p.x}`);
+				pp.p.x = 0;
 			}
-			if (!tp.p.y && tp.p.y !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} p.y from ${tp.p.y}`);
-				tp.p.y = 0;
+			if (!pp.p.y && pp.p.y !== 0) {
+				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} p.y from ${pp.p.y}`);
+				pp.p.y = 0;
 			}
-			if (!tp.h1.x && tp.h1.x !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h1.x from ${tp.h1.x}`);
-				tp.h1.x = 0;
+			if (!pp.h1.x && pp.h1.x !== 0) {
+				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h1.x from ${pp.h1.x}`);
+				pp.h1.x = 0;
 			}
-			if (!tp.h1.y && tp.h1.y !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h1.y from ${tp.h1.y}`);
-				tp.h1.y = 0;
+			if (!pp.h1.y && pp.h1.y !== 0) {
+				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h1.y from ${pp.h1.y}`);
+				pp.h1.y = 0;
 			}
-			if (!tp.h2.x && tp.h2.x !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h2.x from ${tp.h2.x}`);
-				tp.h2.x = 0;
+			if (!pp.h2.x && pp.h2.x !== 0) {
+				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h2.x from ${pp.h2.x}`);
+				pp.h2.x = 0;
 			}
-			if (!tp.h2.y && tp.h2.y !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h2.y from ${tp.h2.y}`);
-				tp.h2.y = 0;
+			if (!pp.h2.y && pp.h2.y !== 0) {
+				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h2.y from ${pp.h2.y}`);
+				pp.h2.y = 0;
 			}
-			tp.roundAll();
-		}
+			pp.roundAll();
+		});
 	}
 
 	/**
