@@ -1,3 +1,30 @@
+/**
+ * Takes one of the mapping objects below, and while turning
+ * the search term and object keys into integers, attempts to match
+ * the search key with an object key.
+ * For example, '0x30' should match '0x0030' even though the
+ * strings don't match, the numeric value does.
+ * @param {Object} source - Object to search through
+ * @param {String} hexKey - Hexadecimal key to search for
+ */
+export function findMappedValue(source, hexKey) {
+	log(`findMappedValue`, 'start');
+	log(`searching for hexKey: ${hexKey}`);
+
+	let integerKey = parseInt(hexKey);
+	for (const sourceKey of Object.keys(source)) {
+		// log(`checking sourceKey: ${sourceKey}`);
+		// log(`checking ${parseInt(sourceKey)} === ${integerKey}`);
+		if (parseInt(sourceKey) === integerKey) {
+			log(`FOUND!`);
+			log(`findMappedValue`, 'end');
+			return source[sourceKey];
+		}
+	}
+	log(`findMappedValue`, 'end');
+	return false;
+}
+
 // Keys are destination, Array values are sources
 // Simple utilizes only the "Basic Latin" range to generate
 // glyphs in the "Latin Supplement" range
