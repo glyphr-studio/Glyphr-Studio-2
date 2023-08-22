@@ -1,9 +1,10 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
-import { decToHex } from '../common/character_ids';
+import { decToHex, normalizePrefixes, validateDecOrHexSuffix } from '../common/character_ids';
 import { addAsChildren, makeElement } from '../common/dom';
 import { showToast } from '../controls/dialogs/dialogs';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks';
 import {
+	findMappedValue,
 	unicodeDiacriticsMapAdvanced,
 	unicodeDiacriticsMapSimple,
 	unicodeLowercaseMap,
@@ -17,6 +18,7 @@ import {
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator';
+import { addCharacterRange } from './settings';
 
 /**
  * Page > Global Actions
@@ -81,46 +83,48 @@ export function makePage_GlobalActions() {
 //	------------------
 
 function glyphIterator(oa) {
-	// log(`glyphIterator`, 'start');
-	// log(oa);
+	log(`glyphIterator`, 'start');
+	log(oa);
 
 	const project = getCurrentProject();
 	let listOfItemIDs = [];
 	let itemNumber = 0;
 	let title = oa.title || 'Iterating on Glyph';
-	let filter =
-		oa.filter ||
-		(() => {
-			return true;
-		});
+	let filter = () => {
+		return true;
+	};
 	let callback = oa.callback || false;
 	let currentItem, currentItemID;
 
 	// Translate range notation to filter function
-	if (oa.filter && oa.filter.begin && oa.filter.end) {
-		let begin = parseInt(oa.filter.begin);
-		let end = parseInt(oa.filter.end);
-		let itemIntegerID;
+	if (oa.filter) {
+		if (oa.filter.begin && oa.filter.end) {
+			let begin = parseInt(oa.filter.begin);
+			let end = parseInt(oa.filter.end);
+			let itemIntegerID;
 
-		filter = (itemID) => {
-			if (itemID.startsWith('glyph-')) {
-				itemIntegerID = parseInt(itemID, 16);
-				return itemIntegerID >= begin && itemIntegerID <= end;
-			} else {
-				return false;
-			}
-		};
+			filter = (itemID) => {
+				if (itemID.startsWith('glyph-')) {
+					itemIntegerID = parseInt(itemID.substring(6), 16);
+					return itemIntegerID >= begin && itemIntegerID <= end;
+				} else {
+					return false;
+				}
+			};
+		} else {
+			filter = oa.filter;
+		}
 	}
 
 	// Functions
 
 	function processOneItem() {
-		// log(`glyphIterator>processOneItem`, 'start');
+		log(`glyphIterator>processOneItem`, 'start');
 
-		// log(`itemNumber: ${itemNumber}`);
+		log(`itemNumber: ${itemNumber}`);
 		currentItemID = listOfItemIDs[itemNumber];
 		currentItem = project.getItem(currentItemID, true);
-		// log(`Got glyph: ${currentItem.name}`);
+		log(`Got glyph: ${currentItem.name}`);
 
 		showToast(title + '<br>' + currentItem.name, 10000);
 
@@ -133,7 +137,7 @@ function glyphIterator(oa) {
 			showToast(title + '<br>Done!', 1000);
 			if (callback) callback();
 		}
-		// log(`glyphIterator>processOneItem`, 'end');
+		log(`glyphIterator>processOneItem`, 'end');
 	}
 
 	function makeItemList() {
@@ -152,8 +156,8 @@ function glyphIterator(oa) {
 			if (filter(id)) listOfItemIDs.push(id);
 		});
 
-		// log('item list');
-		// log(listOfItemIDs);
+		log('item list');
+		log(listOfItemIDs);
 
 		// Kick off the process
 		setTimeout(processOneItem, 10);
@@ -163,7 +167,7 @@ function glyphIterator(oa) {
 
 	showToast(title + '<br>Starting...', 10000);
 	setTimeout(makeItemList, 500);
-	// log(`glyphIterator`, 'end');
+	log(`glyphIterator`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -495,7 +499,7 @@ function makeCard_Monospace() {
 
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
-		content: `Each ligature and glyph's Auto Width property will be set to false, and it's width property will be set to the number provided.`,
+		content: `Each ligature and glyph's advance width property will be set to the number provided.`,
 	});
 	card.appendChild(effect);
 
@@ -512,8 +516,8 @@ function makeCard_Monospace() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Convert project to Monospace' });
 	button.addEventListener('click', () => {
 		// log('convertProjectToMonospace', 'start');
-		let width = document.getElementById('monospaceWidth').value * 1;
-		// log(`width input: ${width}`);
+		let width = document.getElementById('monospaceWidth').value;
+		log(`width input: ${width}`);
 
 		if (isNaN(width) || width === 0) {
 			// log(`width is NaN or zero`);
@@ -579,13 +583,13 @@ function makeCard_AllCaps() {
 	card.appendChild(table);
 
 	let button = makeElement({ tag: 'fancy-button', content: 'Convert project to All Caps' });
-	button.addEventListener('click', () => {
-		// log('convertProjectToAllCaps', 'start');
+	button.addEventListener('click', async () => {
+		log('convertProjectToAllCaps', 'start');
 		const project = getCurrentProject();
 
-		function convertRangeToAllCaps(begin, end, name, callback) {
+		async function convertRangeToAllCaps(range, callback) {
 			// Make sure all glyphs exist
-			for (let gid = begin; gid < end; gid++) {
+			for (let gid = range.begin; gid < range.end; gid++) {
 				let itemID = `glyph-${decToHex(gid)}`;
 				let item = project.getItem(itemID);
 				if (!item) {
@@ -594,83 +598,60 @@ function makeCard_AllCaps() {
 			}
 
 			glyphIterator({
-				title: 'Converting ' + name + ' to All Caps',
-				filter: { begin: begin, end: end },
+				title: 'Converting ' + range.name + ' to All Caps',
+				filter: { begin: range.begin, end: range.end },
 				action: function (item, itemID) {
-					let destinationItemID = unicodeLowercaseMap[itemID];
-					if (destinationItemID) {
-						insertComponentInstance(itemID, destinationItemID, false);
+					log(`glyphIterator>ConvertToAllCaps>Action`, 'start');
+					let destinationItemHex = findMappedValue(unicodeLowercaseMap, itemID.substring(6));
+					log(`destinationItemHex: ${destinationItemHex}`);
+					destinationItemHex = decToHex(parseInt(destinationItemHex), 16);
+					log(`destinationItemHex: ${destinationItemHex}`);
+					if (destinationItemHex) {
+						insertComponentInstance(
+							itemID,
+							`glyph-${(destinationItemHex)}`,
+							false
+						);
 					}
+					log(`glyphIterator>ConvertToAllCaps>Action`, 'end');
 				},
 				callback: callback,
 			});
 		}
 
 		// Basic Latin range
-		function convertBasicLatinToAllCaps() {
-			// log(`allCaps BASIC`);
-			if (document.getElementById('allCapsBasic').checked) {
-				let range = getUnicodeBlockByName('Basic Latin');
-				project.addRange(range);
-				convertRangeToAllCaps(
-					range.begin,
-					range.end,
-					'Basic Latin',
-					convertLatinSupplementToAllCaps
-				);
-			} else {
-				convertLatinSupplementToAllCaps();
-			}
+		if (document.getElementById('allCapsBasic').checked) {
+			log(`Converting range: allCapsBasic`);
+			let range = getUnicodeBlockByName('Basic Latin');
+			addCharacterRange(range);
+			await convertRangeToAllCaps(range);
 		}
 
 		// Latin-1 Supplement range
-		function convertLatinSupplementToAllCaps() {
-			// log(`allCaps SUPPLEMENT`);
-			if (document.getElementById('allCapsSupplement').checked) {
-				let range = getUnicodeBlockByName('Latin-1 Supplement');
-				project.addRange(range);
-				convertRangeToAllCaps(
-					range.begin,
-					range.end,
-					'Latin-1 Supplement',
-					convertLatinextEndedAToAllCaps
-				);
-			} else {
-				convertLatinextEndedAToAllCaps();
-			}
+		if (document.getElementById('allCapsSupplement').checked) {
+			log(`Converting range: allCapsSupplement`);
+			let range = getUnicodeBlockByName('Latin-1 Supplement');
+			addCharacterRange(range);
+			await convertRangeToAllCaps(range);
 		}
 
 		// Latin Extended-A range
-		function convertLatinextEndedAToAllCaps() {
-			// log(`allCaps A`);
-			if (document.getElementById('allCapsLatinA').checked) {
-				let range = getUnicodeBlockByName('Latin Extended-A');
-				project.addRange(range);
-				convertRangeToAllCaps(
-					range.begin,
-					range.end,
-					'Latin Extended-A',
-					convertLatinExtendedBToAllCaps
-				);
-			} else {
-				convertLatinExtendedBToAllCaps();
-			}
+		if (document.getElementById('allCapsLatinA').checked) {
+			log(`Converting range: allCapsLatinA`);
+			let range = getUnicodeBlockByName('Latin Extended-A');
+			addCharacterRange(range);
+			await convertRangeToAllCaps(range);
 		}
 
 		// Latin Extended-A range
-		function convertLatinExtendedBToAllCaps() {
-			// log(`allCaps B`);
-			if (document.getElementById('allCapsLatinB').checked) {
-				let range = getUnicodeBlockByName('Latin Extended-B');
-				project.addRange(range);
-				convertRangeToAllCaps(range.begin, range.end, 'Latin Extended-B');
-			}
+		if (document.getElementById('allCapsLatinB').checked) {
+			log(`Converting range: allCapsLatinB`);
+			let range = getUnicodeBlockByName('Latin Extended-B');
+			addCharacterRange(range);
+			await convertRangeToAllCaps(range);
 		}
 
-		// Start the roll through
-		convertBasicLatinToAllCaps();
-
-		// log('convertProjectToAllCaps', 'end');
+		log('convertProjectToAllCaps', 'end');
 	});
 	card.appendChild(button);
 
@@ -795,8 +776,8 @@ function makeCard_DiacriticsAdvanced() {
 
 		showToast('Starting to assemble Diacritical Glyphs', 10000);
 
-		project.addRange(range);
-		project.addRange(range);
+		addCharacterRange(range);
+		addCharacterRange(range);
 
 		setTimeout(processOneItem, 500);
 	});

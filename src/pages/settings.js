@@ -294,7 +294,7 @@ function makeOneSettingsRow(groupName, propertyName) {
 	if (settingType === 'Read only') {
 		input = makeElement({
 			innerHTML: settingValue,
-			className: 'settings_read-only-value'
+			className: 'settings_read-only-value',
 		});
 	}
 
@@ -517,7 +517,10 @@ function saveCharacterRange(index = false) {
 		updateCurrentRangesTable();
 		showToast(`Saved changes to ${newRange.name}.`);
 	} else {
-		addCharacterRange(newRange, closeEveryTypeOfDialog);
+		addCharacterRange(newRange, () => {
+			closeEveryTypeOfDialog();
+			updateCurrentRangesTable();
+		});
 	}
 }
 
@@ -606,7 +609,7 @@ function previewCharacterRange(range) {
 
 	const addButton = document.querySelector('#glyph-range-chooser__add-button');
 	addButton.addEventListener('click', () => {
-		addCharacterRange(range);
+		addCharacterRange(range, updateCurrentRangesTable);
 	});
 	addButton.removeAttribute('disabled');
 
@@ -629,16 +632,15 @@ function previewCharacterRange(range) {
 	// log(`previewCharacterRange`, 'end');
 }
 
-function addCharacterRange(range, successCallback) {
+export function addCharacterRange(range, successCallback, showNotification = true) {
 	if (isCharacterRangeUnique(range)) {
 		let ranges = getCurrentProject().settings.project.characterRanges;
 		ranges.push(new CharacterRange(range));
 		ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
-		updateCurrentRangesTable();
-		showToast(`Added ${range.name} to your project.`);
+		if (showNotification) showToast(`Added ${range.name} to your project.`);
 		if (successCallback) successCallback();
 	} else {
-		showToast(`Glyph range is already added to your project.`);
+		if (showNotification) showToast(`Glyph range is already added to your project.`);
 	}
 }
 
