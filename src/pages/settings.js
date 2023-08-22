@@ -517,7 +517,7 @@ function saveCharacterRange(index = false) {
 		updateCurrentRangesTable();
 		showToast(`Saved changes to ${newRange.name}.`);
 	} else {
-		addCharacterRange(newRange, () => {
+		addCharacterRangeToCurrentProject(newRange, () => {
 			closeEveryTypeOfDialog();
 			updateCurrentRangesTable();
 		});
@@ -609,7 +609,7 @@ function previewCharacterRange(range) {
 
 	const addButton = document.querySelector('#glyph-range-chooser__add-button');
 	addButton.addEventListener('click', () => {
-		addCharacterRange(range, updateCurrentRangesTable);
+		addCharacterRangeToCurrentProject(range, updateCurrentRangesTable);
 	});
 	addButton.removeAttribute('disabled');
 
@@ -632,7 +632,7 @@ function previewCharacterRange(range) {
 	// log(`previewCharacterRange`, 'end');
 }
 
-export function addCharacterRange(range, successCallback, showNotification = true) {
+export function addCharacterRangeToCurrentProject(range, successCallback, showNotification = true) {
 	if (isCharacterRangeUnique(range)) {
 		let ranges = getCurrentProject().settings.project.characterRanges;
 		ranges.push(new CharacterRange(range));

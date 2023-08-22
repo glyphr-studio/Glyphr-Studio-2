@@ -302,6 +302,12 @@ code,
 	text-decoration: none;
 }
 
+.global-actions__card code {
+	line-height: 12px;
+	padding: 1px 4px;
+	font-size: 0.9em;
+}
+
 .textAction:hover {
 	cursor: pointer;
 	text-decoration: underline;

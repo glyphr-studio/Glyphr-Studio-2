@@ -787,7 +787,7 @@ export class Glyph extends GlyphElement {
 	makeSVGPathData() {
 		// log(`makeSVGPathData()`, 'start');
 
-		let pathData = '';
+		let pathData = 'M0,0';
 
 		// Make Path Data
 		this.shapes.forEach((shape) => {
@@ -806,7 +806,7 @@ export class Glyph extends GlyphElement {
 			// log(pathData);
 		});
 
-		if (trim(pathData) === '') pathData = 'M0,0Z';
+		if (trim(pathData) === 'M0,0') pathData = 'M0,0Z';
 		// log(`RETURNING`);
 		// log(pathData);
 		// log(`makeSVGPathData()`, 'end');
