@@ -1,5 +1,10 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
-import { decToHex, normalizePrefixes, validateDecOrHexSuffix } from '../common/character_ids';
+import {
+	decToHex,
+	normalizePrefixes,
+	validateAsHex,
+	validateDecOrHexSuffix,
+} from '../common/character_ids';
 import { addAsChildren, makeElement } from '../common/dom';
 import { showToast } from '../controls/dialogs/dialogs';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks';
@@ -13,12 +18,13 @@ import { copyShapesFromTo } from '../panels/actions';
 import { Glyph } from '../project_data/glyph';
 import { Path } from '../project_data/path';
 import {
+	glyphChanged,
 	insertComponentInstance,
 	makeGlyphWithResolvedLinks,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator';
-import { addCharacterRange } from './settings';
+import { addCharacterRangeToCurrentProject } from './settings';
 
 /**
  * Page > Global Actions
@@ -83,8 +89,8 @@ export function makePage_GlobalActions() {
 //	------------------
 
 function glyphIterator(oa) {
-	log(`glyphIterator`, 'start');
-	log(oa);
+	// log(`glyphIterator`, 'start');
+	// log(oa);
 
 	const project = getCurrentProject();
 	let listOfItemIDs = [];
@@ -119,16 +125,17 @@ function glyphIterator(oa) {
 	// Functions
 
 	function processOneItem() {
-		log(`glyphIterator>processOneItem`, 'start');
+		// log(`glyphIterator>processOneItem`, 'start');
 
-		log(`itemNumber: ${itemNumber}`);
+		// log(`itemNumber: ${itemNumber}`);
 		currentItemID = listOfItemIDs[itemNumber];
 		currentItem = project.getItem(currentItemID, true);
-		log(`Got glyph: ${currentItem.name}`);
+		// log(`Got glyph: ${currentItem.name}`);
 
 		showToast(title + '<br>' + currentItem.name, 10000);
 
 		oa.action(currentItem, currentItemID);
+		glyphChanged(currentItem);
 
 		if (itemNumber < listOfItemIDs.length - 1) {
 			itemNumber++;
@@ -137,7 +144,7 @@ function glyphIterator(oa) {
 			showToast(title + '<br>Done!', 1000);
 			if (callback) callback();
 		}
-		log(`glyphIterator>processOneItem`, 'end');
+		// log(`glyphIterator>processOneItem`, 'end');
 	}
 
 	function makeItemList() {
@@ -156,8 +163,8 @@ function glyphIterator(oa) {
 			if (filter(id)) listOfItemIDs.push(id);
 		});
 
-		log('item list');
-		log(listOfItemIDs);
+		// log('item list');
+		// log(listOfItemIDs);
 
 		// Kick off the process
 		setTimeout(processOneItem, 10);
@@ -167,7 +174,7 @@ function glyphIterator(oa) {
 
 	showToast(title + '<br>Starting...', 10000);
 	setTimeout(makeItemList, 500);
-	log(`glyphIterator`, 'end');
+	// log(`glyphIterator`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -373,8 +380,8 @@ function makeCard_Resize() {
 			<input-number id="resizeWidth" type="number" value="0"></input-number>
 			<pre title="Expected value type">Em</pre>
 
-			<label for="resizeWidth">&#916;&nbsp;Height:</label>
-			<input-number id="resizeWidth" type="number" value="0"></input-number>
+			<label for="resizeHeight">&#916;&nbsp;Height:</label>
+			<input-number id="resizeHeight" type="number" value="0"></input-number>
 			<pre title="Expected value type">Em</pre>
 		`,
 	});
@@ -406,7 +413,7 @@ function makeCard_Resize() {
 
 		if (ratio && !resizeH && !resizeW) {
 			// For ratio lock to work, one delta value has to be zero
-			// Let's just choose width for some reason
+			// Let's just choose width so we can still do scaleH calculations
 			resizeW = 0;
 		}
 		// log(`after sanitizing - resizeW: ${resizeW}, resizeH: ${resizeH}, ratio lock: ${ratio}`);
@@ -415,8 +422,11 @@ function makeCard_Resize() {
 			title: 'Re-sizing glyph',
 			action: function (glyph) {
 				if (!glyph.shapes || !glyph.shapes.length) return;
+				let scaleVertical = (resizeH + glyph.maxes.height) / glyph.maxes.height;
+				let newY = glyph.maxes.yMax * scaleVertical;
 				glyph.updateGlyphSize(resizeW, resizeH, ratio, true);
-				if (updateAdvanceWidth) glyph.advanceWidth = glyph.advanceWidth * 1 + resizeW * 1;
+				glyph.setGlyphPosition(false, newY, false);
+				if (updateAdvanceWidth) glyph.advanceWidth += resizeW;
 			},
 		});
 
@@ -516,8 +526,9 @@ function makeCard_Monospace() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Convert project to Monospace' });
 	button.addEventListener('click', () => {
 		// log('convertProjectToMonospace', 'start');
-		let width = document.getElementById('monospaceWidth').value;
-		log(`width input: ${width}`);
+		let width = document.getElementById('monospaceWidth').getAttribute('value');
+		width = parseFloat(width);
+		// log(`width input: ${width}`);
 
 		if (isNaN(width) || width === 0) {
 			// log(`width is NaN or zero`);
@@ -584,7 +595,7 @@ function makeCard_AllCaps() {
 
 	let button = makeElement({ tag: 'fancy-button', content: 'Convert project to All Caps' });
 	button.addEventListener('click', async () => {
-		log('convertProjectToAllCaps', 'start');
+		// log('convertProjectToAllCaps', 'start');
 		const project = getCurrentProject();
 
 		async function convertRangeToAllCaps(range, callback) {
@@ -601,19 +612,15 @@ function makeCard_AllCaps() {
 				title: 'Converting ' + range.name + ' to All Caps',
 				filter: { begin: range.begin, end: range.end },
 				action: function (item, itemID) {
-					log(`glyphIterator>ConvertToAllCaps>Action`, 'start');
+					// log(`glyphIterator>ConvertToAllCaps>Action`, 'start');
 					let destinationItemHex = findMappedValue(unicodeLowercaseMap, itemID.substring(6));
-					log(`destinationItemHex: ${destinationItemHex}`);
-					destinationItemHex = decToHex(parseInt(destinationItemHex), 16);
-					log(`destinationItemHex: ${destinationItemHex}`);
+					// log(`destinationItemHex: ${destinationItemHex}`);
+					destinationItemHex = decToHex(parseInt(destinationItemHex));
+					// log(`destinationItemHex: ${destinationItemHex}`);
 					if (destinationItemHex) {
-						insertComponentInstance(
-							itemID,
-							`glyph-${(destinationItemHex)}`,
-							false
-						);
+						insertComponentInstance(itemID, `glyph-${destinationItemHex}`, false);
 					}
-					log(`glyphIterator>ConvertToAllCaps>Action`, 'end');
+					// log(`glyphIterator>ConvertToAllCaps>Action`, 'end');
 				},
 				callback: callback,
 			});
@@ -621,37 +628,37 @@ function makeCard_AllCaps() {
 
 		// Basic Latin range
 		if (document.getElementById('allCapsBasic').checked) {
-			log(`Converting range: allCapsBasic`);
+			// log(`Converting range: allCapsBasic`);
 			let range = getUnicodeBlockByName('Basic Latin');
-			addCharacterRange(range);
+			addCharacterRangeToCurrentProject(range);
 			await convertRangeToAllCaps(range);
 		}
 
 		// Latin-1 Supplement range
 		if (document.getElementById('allCapsSupplement').checked) {
-			log(`Converting range: allCapsSupplement`);
+			// log(`Converting range: allCapsSupplement`);
 			let range = getUnicodeBlockByName('Latin-1 Supplement');
-			addCharacterRange(range);
+			addCharacterRangeToCurrentProject(range);
 			await convertRangeToAllCaps(range);
 		}
 
 		// Latin Extended-A range
 		if (document.getElementById('allCapsLatinA').checked) {
-			log(`Converting range: allCapsLatinA`);
+			// log(`Converting range: allCapsLatinA`);
 			let range = getUnicodeBlockByName('Latin Extended-A');
-			addCharacterRange(range);
+			addCharacterRangeToCurrentProject(range);
 			await convertRangeToAllCaps(range);
 		}
 
 		// Latin Extended-A range
 		if (document.getElementById('allCapsLatinB').checked) {
-			log(`Converting range: allCapsLatinB`);
+			// log(`Converting range: allCapsLatinB`);
 			let range = getUnicodeBlockByName('Latin Extended-B');
-			addCharacterRange(range);
+			addCharacterRangeToCurrentProject(range);
 			await convertRangeToAllCaps(range);
 		}
 
-		log('convertProjectToAllCaps', 'end');
+		// log('convertProjectToAllCaps', 'end');
 	});
 	card.appendChild(button);
 
@@ -682,23 +689,25 @@ function makeCard_Diacritics() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Generate Diacritical Glyphs' });
 	button.addEventListener('click', () => {
 		let range = getUnicodeBlockByName('Latin-1 Supplement');
-		let currentItemID = decToHex(range.begin);
+		let currentItemHex = decToHex(range.begin);
 		let sourceArray;
+		// const project = getCurrentProject();
 
 		function processOneDiacriticItem() {
-			// log(`processOneDiacriticItem - currentItemID = ${currentItemID}`);
-			sourceArray = unicodeDiacriticsMapSimple[currentItemID];
+			// log(`processOneDiacriticItem - currentItemHex = ${currentItemHex}`);
+			sourceArray = findMappedValue(unicodeDiacriticsMapSimple, currentItemHex);
+			let currentItemID = `glyph-${currentItemHex}`;
 
 			if (sourceArray) {
-				showToast(`Adding diacritical ${currentItemID}`, 10000);
-				insertComponentInstance(sourceArray[0], currentItemID, true);
-				insertComponentInstance(sourceArray[1], currentItemID, false);
+				showToast(`Adding diacritical ${currentItemHex}`, 10000);
+				insertComponentInstance(`glyph-${validateAsHex(sourceArray[0])}`, currentItemID, true);
+				insertComponentInstance(`glyph-${validateAsHex(sourceArray[1])}`, currentItemID, false);
 			}
 
-			currentItemID++;
+			currentItemHex++;
 
-			if (currentItemID <= range.end) {
-				currentItemID = decToHex(currentItemID);
+			if (currentItemHex <= range.end) {
+				currentItemHex = decToHex(currentItemHex);
 				setTimeout(processOneDiacriticItem, 10);
 			} else {
 				showToast('Done!', 1000);
@@ -707,7 +716,7 @@ function makeCard_Diacritics() {
 
 		showToast('Starting to assemble Diacritical Glyphs', 10000);
 
-		getCurrentProject().addRange(range);
+		addCharacterRangeToCurrentProject(range);
 
 		setTimeout(processOneDiacriticItem, 500);
 	});
@@ -740,34 +749,35 @@ function makeCard_DiacriticsAdvanced() {
 	let button = makeElement({ tag: 'fancy-button', content: 'Generate Diacritical Glyphs' });
 	button.addEventListener('click', () => {
 		let project = getCurrentProject();
-		let range = getUnicodeBlockByName('Latin-1 Supplement');
-		let currentItemID = decToHex(range.begin);
+		let rangeSupplement = getUnicodeBlockByName('Latin-1 Supplement');
+		addCharacterRangeToCurrentProject(rangeSupplement);
+		let rangeExtendedA = getUnicodeBlockByName('Latin Extended-A');
+		addCharacterRangeToCurrentProject(rangeExtendedA);
+		let range = { begin: rangeSupplement.begin, end: rangeExtendedA.end };
+		let currentItemHex = decToHex(range.begin);
 		let sourceArray;
 		let targetCenter, currCenter;
 
 		function processOneItem() {
-			// log(`processOneItem - currentItemID = ${currentItemID}`);
-			sourceArray = unicodeDiacriticsMapAdvanced[currentItemID];
+			// log(`processOneItem - currentItemHex = ${currentItemHex}`);
+			sourceArray = findMappedValue(unicodeDiacriticsMapAdvanced, currentItemHex);
+			let currentItemID = `glyph-${currentItemHex}`;
+			let sourceID1 = `glyph-${validateAsHex(sourceArray[0])}`;
+			let sourceID2 = `glyph-${validateAsHex(sourceArray[1])}`;
 
 			if (sourceArray) {
-				showToast(`Adding diacritical ${currentItemID}`, 10000);
-				insertComponentInstance(sourceArray[0], currentItemID, true);
-				insertComponentInstance(sourceArray[1], currentItemID, false);
-
-				targetCenter = project.getItem(sourceArray[0]).maxes.centerX;
-				currCenter = project.getItem(sourceArray[1]).maxes.centerX;
+				showToast(`Adding diacritical ${currentItemHex}`, 10000);
+				insertComponentInstance(sourceID1, currentItemID, true);
+				insertComponentInstance(sourceID2, currentItemID, false);
+				targetCenter = project.getItem(sourceID1).maxes.centerX;
+				currCenter = project.getItem(sourceID2).maxes.centerX;
 				project.getItem(currentItemID).shapes[1].updateShapePosition(targetCenter - currCenter, 0);
 			}
 
-			currentItemID++;
+			currentItemHex++;
 
-			if (currentItemID === range.end) {
-				range = getUnicodeBlockByName('Latin Extended-A');
-				currentItemID = range.begin;
-			}
-
-			if (currentItemID <= range.end) {
-				currentItemID = decToHex(currentItemID);
+			if (currentItemHex <= range.end) {
+				currentItemHex = decToHex(currentItemHex);
 				setTimeout(processOneItem, 10);
 			} else {
 				showToast('Done!', 1000);
@@ -775,10 +785,6 @@ function makeCard_DiacriticsAdvanced() {
 		}
 
 		showToast('Starting to assemble Diacritical Glyphs', 10000);
-
-		addCharacterRange(range);
-		addCharacterRange(range);
-
 		setTimeout(processOneItem, 500);
 	});
 	card.appendChild(button);

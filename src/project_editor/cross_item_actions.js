@@ -20,6 +20,7 @@ export function glyphChanged(glyph) {
 	// log(`glyphChanged`, 'start');
 	// log(glyph);
 	if (glyph.cache) glyph.cache = {};
+	glyph.recalculateGlyphMaxes();
 	const project = getCurrentProject();
 	glyph.usedIn = glyph.usedIn || [];
 	glyph.usedIn.forEach((itemID) => {
@@ -83,13 +84,12 @@ export function makeGlyphPostScript(glyph, lastX, lastY) {
 	};
 }
 
-
 // --------------------------------------------------------------
 // Components
 // --------------------------------------------------------------
 export function insertComponentInstance(sourceID, destinationID, updateAdvanceWidth = false) {
-	log(`insertComponentInstance`, 'start');
-	log('sourceID: ' + sourceID + ' destinationID: ' + destinationID);
+	// log(`insertComponentInstance`, 'start');
+	// log('sourceID: ' + sourceID + ' destinationID: ' + destinationID);
 	const editor = getCurrentProjectEditor();
 	const project = getCurrentProject();
 
@@ -97,14 +97,16 @@ export function insertComponentInstance(sourceID, destinationID, updateAdvanceWi
 	destinationID = destinationID || editor.selectedItemID;
 	let destinationGlyph = project.getItem(destinationID, true);
 
-	if (canAddComponent(destinationGlyph, sourceID)) {
-		let sourceItem = project.getItem(sourceID);
+	if (canAddComponentInstance(destinationGlyph, sourceID)) {
+		// log(`destinationGlyph`);
+		// log(destinationGlyph);
+		let sourceItem = project.getItem(sourceID, true);
 		let name = `Instance of ${sourceItem.name}`;
 		let newComponentInstance = new ComponentInstance({ link: sourceID, name: name });
 
 		// log('INSERT COMPONENT - JSON: \t' + JSON.stringify(newComponentInstance));
 		destinationGlyph.addOneShape(newComponentInstance);
-		destinationGlyph.changed();
+		glyphChanged(destinationGlyph);
 		if (select) {
 			editor.multiSelect.shapes.select(newComponentInstance);
 			editor.publish('whatShapeIsSelected', editor.multiSelect.shapes.singleton());
@@ -113,11 +115,11 @@ export function insertComponentInstance(sourceID, destinationID, updateAdvanceWi
 		addLinkToUsedIn(sourceItem, destinationID);
 
 		if (updateAdvanceWidth) destinationGlyph.advanceWidth = sourceItem.advanceWidth;
-		log(`insertComponentInstance`, 'end');
+		// log(`insertComponentInstance`, 'end');
 		return true;
 	} else {
-		showToast('A circular link was found, components can\'t include links to themselves.');
-		log(`insertComponentInstance`, 'end');
+		showToast("A circular link was found, components can't include links to themselves.");
+		// log(`insertComponentInstance`, 'end');
 		return false;
 	}
 }
@@ -131,8 +133,8 @@ export function insertComponentInstance(sourceID, destinationID, updateAdvanceWi
  * @returns {Glyph}
  */
 export function makeGlyphWithResolvedLinks(sourceGlyph) {
-	log(`makeGlyphWithResolvedLinks`, 'start');
-	log(sourceGlyph);
+	// log(`makeGlyphWithResolvedLinks`, 'start');
+	// log(sourceGlyph);
 	let newPaths = [];
 	sourceGlyph.shapes.forEach((shape) => {
 		if (shape.objType === 'Path') {
@@ -147,7 +149,7 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 	});
 	const result = new Glyph(sourceGlyph);
 	result.shapes = newPaths;
-	log(`makeGlyphWithResolvedLinks`, 'end');
+	// log(`makeGlyphWithResolvedLinks`, 'end');
 	return result;
 }
 
@@ -158,24 +160,43 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
  * @param {String} componentID - ID of component to look for
  * @returns {Boolean}
  */
-export function canAddComponent(destinationItem, componentID) {
-	// log('Glyph.canAddComponent', 'start');
+export function canAddComponentInstance(destinationItem, componentID) {
+	// log(`canAddComponentInstance`, 'start');
+	// log(`destinationItem`);
+	// log(destinationItem);
+	// log(`componentID: ${componentID}`);
+
 	// log('adding ' + componentID + ' to (me) ' + destinationItem.id);
-	if (destinationItem.id === componentID) return false;
-	if (!destinationItem.usedIn || destinationItem.usedIn.length === 0) return true;
+	if (destinationItem.id === componentID) {
+		// log(`canAddComponentInstance`, 'end');
+		return false;
+	}
+	if (!destinationItem.usedIn || destinationItem.usedIn.length === 0) {
+		// log(`canAddComponentInstance`, 'end');
+		return true;
+	}
 	let downlinks = collectAllDownstreamLinks(destinationItem, [], true);
 	downlinks = downlinks.filter(function (elem, pos) {
+		// log(`canAddComponentInstance`, 'end');
 		return downlinks.indexOf(elem) === pos;
 	});
 	let uplinks = collectAllUpstreamLinks(destinationItem, []);
 	uplinks = uplinks.filter(function (elem, pos) {
+		// log(`canAddComponentInstance`, 'end');
 		return uplinks.indexOf(elem) === pos;
 	});
 	// log('downlinks: ' + downlinks);
 	// log('uplinks: ' + uplinks);
-	if (downlinks.indexOf(componentID) > -1) return false;
-	if (uplinks.indexOf(componentID) > -1) return false;
+	if (downlinks.indexOf(componentID) > -1) {
+		// log(`canAddComponentInstance`, 'end');
+		return false;
+	}
+	if (uplinks.indexOf(componentID) > -1) {
+		// log(`canAddComponentInstance`, 'end');
+		return false;
+	}
 
+	// log(`canAddComponentInstance`, 'end');
 	return true;
 }
 

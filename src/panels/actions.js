@@ -14,7 +14,7 @@ import {
 import { makeAllItemTypeChooserContent } from './item_chooser.js';
 import {
 	addLinkToUsedIn,
-	canAddComponent,
+	canAddComponentInstance,
 	makeGlyphSVGforExport,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
@@ -993,7 +993,7 @@ function showDialogChooseOtherItem(type) {
  * @param {Glyph} destinationItem - where to put the component instance
  */
 export function linkComponentFromTo(sourceItem, destinationItem) {
-	if (!canAddComponent(destinationItem, sourceItem.id)) return false;
+	if (!canAddComponentInstance(destinationItem, sourceItem.id)) return false;
 	const newInstance = new ComponentInstance({ link: sourceItem.id });
 	destinationItem.addOneShape(newInstance);
 	addLinkToUsedIn(sourceItem, destinationItem.id);

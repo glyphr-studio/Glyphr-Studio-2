@@ -201,7 +201,7 @@ export class GlyphrStudioProject {
 	 * @param {String} id - which Glyph to return
 	 * @returns {Glyph}
 	 */
-	getItem(id) {
+	getItem(id, forceCreateGlyph = false) {
 		// log('GlyphrStudioProject.getItem', 'start');
 		// log(`id: ${id}`);
 
@@ -219,7 +219,13 @@ export class GlyphrStudioProject {
 			result = this.ligatures[id] || false;
 		} else if (this.glyphs && id.startsWith('glyph-')) {
 			// log(`detected GLYPH`);
+			id = `glyph-${validateAsHex(id.substring(6))}`;
 			result = this.glyphs[id] || false;
+			if (!result && forceCreateGlyph) {
+				// log(`forceCreateGlyph with id ${id}`);
+				this.addNewItem(new Glyph({ id: id }), 'Glyph', id);
+				result = this.glyphs[id];
+			}
 		} else if (this.components && id.startsWith('comp-')) {
 			// log(`detected COMPONENT`);
 			result = this.components[id] || false;
