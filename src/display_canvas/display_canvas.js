@@ -45,21 +45,7 @@ export class DisplayCanvas extends HTMLElement {
 		displayCanvas.canvas.height = displayCanvas.height;
 		displayCanvas.canvas.width = displayCanvas.width;
 
-		// Finish
-		this.isSetUp = true;
-		log(`DisplayCanvas.setUp`, 'end');
-	}
-
-	updateCanvasSize() {
-		log(`updateCanvasSize`, 'start');
-		log(`this.parentElement`);
-		log(this.parentElement);
-		const clientRect = this?.parentElement?.getClientRects()[0];
-		displayCanvas.width = clientRect?.width || 1000;
-		displayCanvas.height = clientRect?.height || 1000;
-		displayCanvas.canvas.height = displayCanvas.height;
-		displayCanvas.canvas.width = displayCanvas.width;
-
+		// Attributes
 		displayCanvas.text = this.getAttribute('text') || '';
 		displayCanvas.fontSize = parseInt(this.getAttribute('font-size')) || 48;
 		displayCanvas.pagePadding = parseInt(this.getAttribute('page-padding')) || 5;
@@ -75,7 +61,38 @@ export class DisplayCanvas extends HTMLElement {
 		this.showCharacterExtras =
 			this.attributes.showCharacterExtras || livePreviewOptions.showCharacterExtras;
 		this.drawCrisp = false;
+
+		// Finish
+		this.isSetUp = true;
+		log(`DisplayCanvas.setUp`, 'end');
+	}
+
+	updateCanvasSize() {
+		log(`updateCanvasSize`, 'start');
+		log(`this.parentElement`);
+		log(this.parentElement);
+		const clientRect = this?.parentElement?.getClientRects()[0];
+		displayCanvas.width = clientRect?.width || 1000;
+		displayCanvas.height = clientRect?.height || 1000;
+		displayCanvas.canvas.height = displayCanvas.height;
+		displayCanvas.canvas.width = displayCanvas.width;
+
+		log(displayCanvas);
 		log(`updateCanvasSize`, 'end');
+	}
+
+	updateCanvasSizeForAutoHeight() {
+		log(`updateCanvasSizeForAutoHeight`, 'start');
+		if (displayCanvas.heightMode === 'auto') {
+			let newHeight = displayCanvas.textBlock.pixelHeight;
+			newHeight += displayCanvas.pagePadding;
+			log(`newHeight: ${newHeight}`);
+			displayCanvas.height = newHeight;
+			displayCanvas.canvas.height = displayCanvas.height;
+			this.removeAttribute('style');
+			this.setAttribute('style', `height: ${newHeight}px;`);
+		}
+		log(`updateCanvasSizeForAutoHeight`, 'end');
 	}
 
 	/**
@@ -93,6 +110,7 @@ export class DisplayCanvas extends HTMLElement {
 			this.setUp();
 			this.updateCanvasSize();
 			this.updateTextBlock();
+			this.updateCanvasSizeForAutoHeight();
 			this.redraw();
 			log(`DisplayCanvas.connectedCallback SETTIMEOUT HANDLER`, 'end');
 		}, 10);
@@ -118,14 +136,14 @@ export class DisplayCanvas extends HTMLElement {
 	}
 
 	calculatePageMaxes() {
-		log(`DisplayCanvas.calculatePageMaxes`, 'start');
-		log(`displayCanvas.width: ${displayCanvas.width}`);
-		log(`displayCanvas.height: ${displayCanvas.height}`);
+		// log(`DisplayCanvas.calculatePageMaxes`, 'start');
+		// log(`displayCanvas.width: ${displayCanvas.width}`);
+		// log(`displayCanvas.height: ${displayCanvas.height}`);
 
 		const contentWidth = displayCanvas.width - 2 * displayCanvas.pagePadding;
 		const contentHeight = displayCanvas.height - 2 * displayCanvas.pagePadding;
-		log(`contentWidth: ${contentWidth}`);
-		log(`contentHeight: ${contentHeight}`);
+		// log(`contentWidth: ${contentWidth}`);
+		// log(`contentHeight: ${contentHeight}`);
 
 		const maxes = {
 			xMin: displayCanvas.pagePadding,
@@ -134,7 +152,7 @@ export class DisplayCanvas extends HTMLElement {
 			yMax: displayCanvas.pagePadding + contentHeight,
 		};
 
-		log(`DisplayCanvas.calculatePageMaxes`, 'end');
+		// log(`DisplayCanvas.calculatePageMaxes`, 'end');
 		return maxes;
 	}
 
@@ -142,14 +160,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return [
-			'text',
-			'font-size',
-			'line-gap',
-			'page-padding',
-			'height',
-			'width',
-		];
+		return ['text', 'font-size', 'line-gap', 'page-padding', 'height', 'width'];
 	}
 
 	/**
@@ -161,6 +172,7 @@ export class DisplayCanvas extends HTMLElement {
 	attributeChangedCallback(attributeName, oldValue, newValue) {
 		log(`DisplayCanvas.attributeChangeCallback`, 'start');
 		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		log(displayCanvas);
 
 		switch (attributeName) {
 			case 'text':
@@ -180,15 +192,15 @@ export class DisplayCanvas extends HTMLElement {
 				break;
 
 			case 'height':
-				displayCanvas.height = parseInt(newValue);
-				// this.setAttribute('height', parseInt(newValue));
-				displayCanvas.canvas.height = parseInt(newValue);
+				let newHeight = parseFloat(newValue);
+				displayCanvas.height = newHeight;
+				displayCanvas.canvas.height = newHeight;
 				break;
 
 			case 'width':
-				displayCanvas.width = parseInt(newValue);
-				// this.setAttribute('width', parseInt(newValue));
-				displayCanvas.canvas.width = parseInt(newValue);
+				let newWidth = parseFloat(newValue);
+				displayCanvas.width = newWidth;
+				displayCanvas.canvas.width = newWidth;
 				break;
 
 			case 'vertical-align':
@@ -205,6 +217,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		if (this.isSetUp) {
 			this.updateTextBlock();
+			this.updateCanvasSizeForAutoHeight();
 			this.redraw();
 		}
 
@@ -249,9 +262,9 @@ export class DisplayCanvas extends HTMLElement {
 // --------------------------------------------------------------
 
 function drawDisplayPageExtras() {
-	log(`displayCanvas.drawDisplayPageExtras`, 'start');
+	// log(`displayCanvas.drawDisplayPageExtras`, 'start');
 	const maxes = displayCanvas.calculatePageMaxes();
-	log(maxes);
+	// log(maxes);
 	const top = maxes.yMin || 0;
 	const bottom =
 		maxes.yMax === Infinity
@@ -263,7 +276,7 @@ function drawDisplayPageExtras() {
 	const width = right - left;
 	const height = bottom - top;
 
-	log(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
+	// log(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
 
 	displayCanvas.ctx.fillStyle = 'transparent';
 	displayCanvas.ctx.strokeStyle = accentColors.gray.l90;
@@ -271,22 +284,22 @@ function drawDisplayPageExtras() {
 
 	displayCanvas.ctx.strokeRect(makeCrisp(left), makeCrisp(top), round(width), round(height));
 
-	log(`displayCanvas.drawDisplayPageExtras`, 'end');
+	// log(`displayCanvas.drawDisplayPageExtras`, 'end');
 }
 
 function drawDisplayLineExtras(charData) {
-	log(`displayCanvas.drawDisplayLineExtras`, 'start');
+	// log(`displayCanvas.drawDisplayLineExtras`, 'start');
 	displayCanvas.ctx.strokeStyle = accentColors.gray.l85;
 	displayCanvas.ctx.beginPath();
 	displayCanvas.ctx.moveTo(displayCanvas.textBlock.canvasMaxes.xMin, charData.view.dy);
 	displayCanvas.ctx.lineTo(displayCanvas.textBlock.canvasMaxes.xMax, charData.view.dy);
 	displayCanvas.ctx.closePath();
 	displayCanvas.ctx.stroke();
-	log(`displayCanvas.drawDisplayLineExtras`, 'end');
+	// log(`displayCanvas.drawDisplayLineExtras`, 'end');
 }
 
 function drawDisplayCharacterExtras(charData) {
-	log(`displayCanvas.drawDisplayCharacterExtras`, 'start');
+	// log(`displayCanvas.drawDisplayCharacterExtras`, 'start');
 	const project = getCurrentProject();
 	const settings = project.settings.font;
 	const scale = charData.view.dz;
@@ -296,7 +309,7 @@ function drawDisplayCharacterExtras(charData) {
 	let drawX = charData.view.dx;
 	const drawK = charData.widths.kern * scale * -1;
 
-	log(`\t drawing ${charData.char}`);
+	// log(`\t drawing ${charData.char}`);
 
 	if (charData.widths.kern) {
 		displayCanvas.ctx.fillStyle = 'orange';
@@ -318,7 +331,7 @@ function drawDisplayCharacterExtras(charData) {
 
 	displayCanvas.ctx.strokeRect(drawX, drawY, drawWidth, drawHeight);
 
-	log(`displayCanvas.drawDisplayCharacterExtras`, 'end');
+	// log(`displayCanvas.drawDisplayCharacterExtras`, 'end');
 }
 
 function drawDisplayCharacter(charData) {

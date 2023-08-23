@@ -11,9 +11,10 @@ body {
 	height: 100%;
 	border: 1px solid var(--gray-l95);
 	background-color: white;
+	padding: 0px;
 }
 
 display-canvas {
 	display: inline-block;
-	margin: 20px;
+	margin: 0px;
 }
