@@ -19,12 +19,14 @@ export class TextBlock {
 		this.textBlocks = [];
 		this.lineBreakers = oa.lineBreakers || ['\u0020', '\u2002', '\u2003'];
 		this.data = [];
+		this.pixelHeight = 0;
 
 		// External properties
 		this.characterString = oa.characterString;
 		this.fontSize = oa.fontSize;
 		this.lineGap = oa.lineGap;
 		this.canvasMaxes = oa.canvasMaxes;
+		this.heightMode = oa.heightMode;
 
 		// Drawing
 		this.drawPageExtras = oa.drawPageExtras || false;
@@ -74,6 +76,19 @@ export class TextBlock {
 	set lineGap(newGap = false) {
 		if (Number.isFinite(newGap)) this._lineGap = newGap;
 		else this._lineGap = 0;
+	}
+
+	get heightMode() {
+		return this._heightMode;
+	}
+
+	/**
+	 * 'static' for fixed px value
+	 * 'fill' to extend to the size of the parent div
+	 * 'auto' to be as tall as the text requires
+	 */
+	set heightMode(newMode = 'static') {
+		this._heightMode = newMode;
 	}
 
 	get characterString() {
@@ -273,6 +288,8 @@ export class TextBlock {
 			xMin: this.canvasMaxes.xMin / scale,
 		};
 
+		if (this.heightMode === 'auto') upmMaxes.yMax = Number.Infinity;
+
 		// log(`upmMaxes`);
 		// log(upmMaxes);
 
@@ -368,6 +385,7 @@ export class TextBlock {
 			currentX = upmMaxes.xMin;
 			// currentX = 0;
 			currentBaselineY = upmMaxes.yMin + ascent + currentLine * upmMaxes.lineHeight;
+			this.pixelHeight = currentBaselineY * scale;
 			// log(`================ END textBlockNumber: ${textBlockNumber}`);
 		}
 
