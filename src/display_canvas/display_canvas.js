@@ -64,8 +64,9 @@ export class DisplayCanvas extends HTMLElement {
 		displayCanvas.fontSize = parseInt(this.getAttribute('font-size')) || 48;
 		displayCanvas.pagePadding = parseInt(this.getAttribute('page-padding')) || 5;
 		displayCanvas.lineGap = parseInt(this.getAttribute('line-gap')) || 12;
-		displayCanvas.verticalAlign = this.getAttribute('vertical-align') || 'middle';
-		displayCanvas.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
+		// displayCanvas.verticalAlign = this.getAttribute('vertical-align') || 'middle';
+		// displayCanvas.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
+		displayCanvas.heightMode = this.getAttribute('height-mode') || 'static';
 
 		displayCanvas.textBlock = false;
 
@@ -107,6 +108,7 @@ export class DisplayCanvas extends HTMLElement {
 			fontSize: displayCanvas.fontSize,
 			canvasMaxes: this.calculatePageMaxes(),
 			lineGap: displayCanvas.lineGap,
+			heightMode: displayCanvas.heightMode,
 			drawPageExtras: drawDisplayPageExtras,
 			drawLineExtras: drawDisplayLineExtras,
 			drawCharacterExtras: drawDisplayCharacterExtras,
@@ -147,8 +149,6 @@ export class DisplayCanvas extends HTMLElement {
 			'page-padding',
 			'height',
 			'width',
-			'vertical-align',
-			'horizontal-align',
 		];
 	}
 
