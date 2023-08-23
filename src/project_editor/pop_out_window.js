@@ -1,11 +1,9 @@
-import { getCurrentProjectEditor } from '../app/main';
+import { getCurrentProjectEditor, log } from '../app/main';
 import { makeElement } from '../common/dom';
 import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
 import style from './pop-out-window.css?inline';
 import color from '../common/colors.css?inline';
 import reset from '../common/resets.css?inline';
-import { makeIcon } from '../common/graphics';
-import { makeActionButtonIcon } from '../panels/action_buttons';
 
 export function openPopOutWindow() {
 	log(`openPopOutWindow`, 'start');
@@ -32,6 +30,7 @@ export function openPopOutWindow() {
 
 	editor.popOutWindow.addEventListener('beforeunload', closePopOutWindow);
 	window.addEventListener('beforeunload', closePopOutWindow);
+	editor.popOutWindow.addEventListener('resize', livePreviewPopOutWindowResize);
 
 	editor.subscribe({
 		topic: '*',
@@ -48,6 +47,7 @@ export function openPopOutWindow() {
 			attributes: {
 				text: `the quick brown fox jumps over the lazy dog.
 THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.`,
+				'height-mode': 'auto'
 			},
 		})
 	);
@@ -121,4 +121,25 @@ export function makeLivePreviewPopOutCard(showBlurb = false) {
 	card.appendChild(button);
 
 	return card;
+}
+
+export function livePreviewPopOutWindowResize() {
+	log(`livePreviewPopOutWindowResize`, 'start');
+	const editor = getCurrentProjectEditor();
+	let popDoc = editor.popOutWindow.document;
+	const wrapper = popDoc.querySelector('#pop-out__wrapper');
+	log(wrapper);
+	const displayCanvas = popDoc.querySelector('display-canvas');
+	log(displayCanvas);
+	const clientRect = wrapper.getClientRects()[0];
+	log(`clientRect.width: ${clientRect.width}`);
+	log(`clientRect.height: ${clientRect.height}`);
+
+	// displayCanvas.width = clientRect.width;
+	// displayCanvas.height = clientRect.height;
+	displayCanvas.setAttribute('width', clientRect.width);
+	displayCanvas.setAttribute('height', clientRect.height);
+	displayCanvas.updateTextBlock();
+	displayCanvas.redraw();
+	log(`livePreviewPopOutWindowResize`, 'end');
 }

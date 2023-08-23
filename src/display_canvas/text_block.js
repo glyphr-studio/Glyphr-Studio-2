@@ -385,7 +385,7 @@ export class TextBlock {
 			currentX = upmMaxes.xMin;
 			// currentX = 0;
 			currentBaselineY = upmMaxes.yMin + ascent + currentLine * upmMaxes.lineHeight;
-			this.pixelHeight = currentBaselineY * scale;
+			this.pixelHeight = currentLine * upmMaxes.lineHeight * scale;
 			// log(`================ END textBlockNumber: ${textBlockNumber}`);
 		}
 
