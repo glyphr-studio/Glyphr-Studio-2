@@ -1,7 +1,8 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeNavButton } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
-import { livePreviewOptions, makePanel_LivePreview } from '../panels/live_preview.js';
+import { makePanel_LivePreview } from '../panels/live_preview.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 
 /**
  * Page > Live preview
@@ -16,7 +17,8 @@ export function makePage_LivePreview() {
 	// log(editor);
 	// log(editor.nav);
 	// log(editor.selectedGlyph);
-
+	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
+	
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',

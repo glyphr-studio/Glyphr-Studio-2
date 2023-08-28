@@ -13,6 +13,7 @@ import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 import { decToHex } from '../common/character_ids.js';
 import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
+import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -70,6 +71,9 @@ export class ProjectEditor {
 
 		// Pop Out Window
 		this.popOutWindow = false;
+
+		// Live preview
+		this.livePreviewPageOptions = new TextBlockOptions();
 		
 		// Ghost Canvas
 		this.canvasSize = 2000;
