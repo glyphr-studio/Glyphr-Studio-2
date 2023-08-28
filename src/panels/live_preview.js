@@ -291,17 +291,3 @@ function makeShowOptions() {
 	return content;
 	*/
 }
-
-let combineMessage = `
-<h1>Combine Glyphs Shapes</h1>
-In Project Settings &rsaQuo; Export Options you have the option to combine all glyph shapes.
-Having glyphs with many overlapping paths in a font can sometimes cause issues.
-So, this setting will combine all overlapping paths in each glyph as it&prime;s exported to your font.
-<br>
-Selecting this option in Test Drive here will <i>preview</i> how your glyph shapes will be
-combined. This preview will not change your designs in Glyphr Studio. There is a
-Combine Shapes action for each glyph if you wish to permanently combine shapes.
-<br>
-As a warning, this process is time intensive, so the first time you type a letter
-it may take a few seconds to render.
-`;

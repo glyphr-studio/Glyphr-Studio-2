@@ -31,7 +31,7 @@ export function importSVGtoCurrentItem(svgData) {
 		if (getCurrentProject().settings.app.moveShapesOnSVGDragDrop) {
 			msShapes.setShapePosition(0, msShapes.maxes.height);
 		}
-		
+
 		editor.publish('currentItem', editor.selectedItem);
 		showToast('Pasted ' + tempGlyph.shapes.length + ' shapes from SVG');
 	} else {
