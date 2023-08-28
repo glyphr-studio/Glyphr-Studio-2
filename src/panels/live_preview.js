@@ -4,20 +4,10 @@
  * Also floating dialog for 'torn out' live previews
  */
 
-import { getCurrentProject } from '../app/main';
+import { getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
 import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window';
 import { makeDirectCheckbox, makeSingleCheckbox, makeSingleInput, makeSingleLabel } from './cards';
-
-export let livePreviewOptions = {
-	text: 'A B C',
-	fontSize: 48,
-	lineGap: 12,
-	pagePadding: 10,
-	showCharacterExtras: false,
-	showLineExtras: false,
-	showPageExtras: false,
-};
 
 export function makePanel_LivePreview() {
 	// Options
@@ -171,13 +161,15 @@ function makePermutations(upper) {
 }
 
 function makeLivePreviewOptions() {
+	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
+
+	// Text
 	let glyphsLabel = makeSingleLabel('Preview glyphs:');
 	let glyphsInput = makeElement({
 		tag: 'textarea',
 		id: 'livePreviewGlyphsInput',
 		innerHTML: livePreviewOptions.text,
 	});
-	// glyphsInput.setAttribute('value', livePreviewOptions.text);
 	glyphsInput.addEventListener('keyup', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
@@ -185,6 +177,7 @@ function makeLivePreviewOptions() {
 		displayCanvas.setAttribute('text', newValue);
 	});
 
+	// Font size
 	let fontSizeLabel = makeSingleLabel('Font size:');
 	let fontSizeInput = makeElement({
 		tag: 'input-number',
@@ -192,9 +185,12 @@ function makeLivePreviewOptions() {
 	});
 	fontSizeInput.addEventListener('change', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		displayCanvas.setAttribute('font-size', event.target.value);
+		let newValue = event.target.value;
+		livePreviewOptions.fontSize = newValue;
+		displayCanvas.setAttribute('font-size', newValue);
 	});
 
+	// Line gap
 	let lineGapLabel = makeSingleLabel('Line gap:');
 	let lineGapInput = makeElement({
 		tag: 'input-number',
@@ -202,13 +198,16 @@ function makeLivePreviewOptions() {
 	});
 	lineGapInput.addEventListener('change', (event) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		displayCanvas.setAttribute('line-gap', event.target.value);
+		let newValue = event.target.value;
+		livePreviewOptions.lineGap = newValue;
+		displayCanvas.setAttribute('line-gap', newValue);
 	});
 
 	return [glyphsLabel, glyphsInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
 }
 
 function makeShowOptions() {
+	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
 	let glyphOutlineLabel = makeSingleLabel('Glyph bounding box:');
 	let glyphOutlineToggle = makeDirectCheckbox(
 		livePreviewOptions,
@@ -216,6 +215,7 @@ function makeShowOptions() {
 		(newValue) => {
 			let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 			displayCanvas.showCharacterExtras = newValue;
+			// livePreviewOptions.showCharacterExtras = newValue;
 			displayCanvas.redraw();
 		}
 	);
@@ -224,6 +224,7 @@ function makeShowOptions() {
 	let baselineToggle = makeDirectCheckbox(livePreviewOptions, 'showLineExtras', (newValue) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		displayCanvas.showLineExtras = newValue;
+		// livePreviewOptions.showLineExtras = newValue;
 		displayCanvas.redraw();
 	});
 
@@ -231,6 +232,7 @@ function makeShowOptions() {
 	let pageOutlineToggle = makeDirectCheckbox(livePreviewOptions, 'showPageExtras', (newValue) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		displayCanvas.showPageExtras = newValue;
+		// livePreviewOptions.showPageExtras = newValue;
 		displayCanvas.redraw();
 	});
 

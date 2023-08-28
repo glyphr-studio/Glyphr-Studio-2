@@ -1,11 +1,10 @@
 import { makeElement } from '../common/dom.js';
 import { TextBlock } from './text_block.js';
-import { getCurrentProject } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { drawGlyph } from './draw_paths.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
 // import { livePreviewPageWindowResize } from '../pages/live_preview.js';
-import { livePreviewOptions } from '../panels/live_preview.js';
 import style from './display-canvas.css?inline';
 
 /**
@@ -56,6 +55,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		displayCanvas.textBlock = false;
 
+		const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
 		this.showPageExtras = this.attributes.showPageExtras || livePreviewOptions.showPageExtras;
 		this.showLineExtras = this.attributes.showLineExtras || livePreviewOptions.showLineExtras;
 		this.showCharacterExtras =
@@ -174,45 +174,40 @@ export class DisplayCanvas extends HTMLElement {
 		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
 		log(displayCanvas);
 
-		switch (attributeName) {
-			case 'text':
-				displayCanvas.text = newValue;
-				break;
+		if (attributeName === 'text') {
+			displayCanvas.text = newValue;
+		}
 
-			case 'font-size':
-				displayCanvas.fontSize = Math.max(parseInt(newValue), 1);
-				break;
+		if (attributeName === 'font-size') {
+			displayCanvas.fontSize = Math.max(parseInt(newValue), 1);
+		}
 
-			case 'line-gap':
-				displayCanvas.lineGap = Math.max(parseInt(newValue), 0);
-				break;
+		if (attributeName === 'line-gap') {
+			displayCanvas.lineGap = Math.max(parseInt(newValue), 0);
+		}
 
-			case 'page-padding':
-				displayCanvas.pagePadding = Math.max(parseInt(newValue), 0);
-				break;
+		if (attributeName === 'page-padding') {
+			displayCanvas.pagePadding = Math.max(parseInt(newValue), 0);
+		}
 
-			case 'height':
-				let newHeight = parseFloat(newValue);
-				displayCanvas.height = newHeight;
-				displayCanvas.canvas.height = newHeight;
-				break;
+		if (attributeName === 'height') {
+			let newHeight = parseFloat(newValue);
+			displayCanvas.height = newHeight;
+			displayCanvas.canvas.height = newHeight;
+		}
 
-			case 'width':
-				let newWidth = parseFloat(newValue);
-				displayCanvas.width = newWidth;
-				displayCanvas.canvas.width = newWidth;
-				break;
+		if (attributeName === 'width') {
+			let newWidth = parseFloat(newValue);
+			displayCanvas.width = newWidth;
+			displayCanvas.canvas.width = newWidth;
+		}
 
-			case 'vertical-align':
-				this.vertical = newValue;
-				break;
+		if (attributeName === 'vertical-align') {
+			this.vertical = newValue;
+		}
 
-			case 'horizontal-align':
-				this.horizontal = newValue;
-				break;
-
-			default:
-				break;
+		if (attributeName === 'horizontal-align') {
+			this.horizontal = newValue;
 		}
 
 		if (this.isSetUp) {
