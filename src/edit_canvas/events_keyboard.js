@@ -230,7 +230,7 @@ function getKeyFromEvent(event) {
 	return specialGlyphs[parseInt(event.which)] || String.fromCharCode(event.which).toLowerCase();
 }
 
-function nudge(dx, dy, ev) {
+function nudge(dx, dy) {
 	// log(`events_keyboard Nudge`, 'start');
 	// log(`dx: ${dx}`);
 	// log(`dy: ${dy}`);
@@ -257,8 +257,8 @@ function nudge(dx, dy, ev) {
 		editor.publish('selectedShape', editor.selectedItem);
 		editor.editCanvas.redraw({ calledBy: 'Nudge shape' });
 	} else if (editMode === 'pen') {
-		editor.multiSelect.points.members.forEach(function (o, i) {
-			o.updatePathPointPosition('p', mx, my);
+		editor.multiSelect.points.members.forEach(point => {
+			point.updatePathPointPosition('p', mx, my);
 		});
 		editor.history.addState(`Nudged path point(s) by ${mx}, ${my}`);
 		editor.publish('selectedPathPoint', editor.selectedItem);
