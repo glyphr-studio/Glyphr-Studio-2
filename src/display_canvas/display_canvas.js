@@ -46,12 +46,12 @@ export class DisplayCanvas extends HTMLElement {
 
 		// Attributes
 		displayCanvas.text = this.getAttribute('text') || '';
-		displayCanvas.fontSize = parseInt(this.getAttribute('font-size')) || 48;
-		displayCanvas.pagePadding = parseInt(this.getAttribute('page-padding')) || 5;
-		displayCanvas.lineGap = parseInt(this.getAttribute('line-gap')) || 12;
+		displayCanvas.fontSize = parseInt(this.getAttribute('fontSize')) || 48;
+		displayCanvas.pagePadding = parseInt(this.getAttribute('pagePadding')) || 5;
+		displayCanvas.lineGap = parseInt(this.getAttribute('lineGap')) || 12;
 		// displayCanvas.verticalAlign = this.getAttribute('vertical-align') || 'middle';
 		// displayCanvas.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
-		displayCanvas.heightMode = this.getAttribute('height-mode') || 'static';
+		displayCanvas.heightMode = this.getAttribute('pageHeight') || 'static';
 
 		displayCanvas.textBlock = false;
 
@@ -160,7 +160,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['text', 'font-size', 'line-gap', 'page-padding', 'height', 'width'];
+		return ['text', 'fontSize', 'lineGap', 'pagePadding', 'height', 'width'];
 	}
 
 	/**
@@ -178,15 +178,15 @@ export class DisplayCanvas extends HTMLElement {
 			displayCanvas.text = newValue;
 		}
 
-		if (attributeName === 'font-size') {
+		if (attributeName === 'fontSize') {
 			displayCanvas.fontSize = Math.max(parseInt(newValue), 1);
 		}
 
-		if (attributeName === 'line-gap') {
+		if (attributeName === 'lineGap') {
 			displayCanvas.lineGap = Math.max(parseInt(newValue), 0);
 		}
 
-		if (attributeName === 'page-padding') {
+		if (attributeName === 'pagePadding') {
 			displayCanvas.pagePadding = Math.max(parseInt(newValue), 0);
 		}
 

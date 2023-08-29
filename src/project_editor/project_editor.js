@@ -73,7 +73,7 @@ export class ProjectEditor {
 		this.popOutWindow = false;
 		this.popOutLivePreviews = [
 			new TextBlockOptions({ text: 'Pack my box with five dozen liquor waffle coffins.', fontSize: 128 }),
-			new TextBlockOptions({ text: '{{english_50}}', fontSize: 18 }),
+			new TextBlockOptions({ text: '{{english_10}}', fontSize: 18 }),
 		];
 
 		// Live preview
