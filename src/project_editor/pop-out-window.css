@@ -1,20 +1,28 @@
 body {
 	margin: 0;
-	padding: 20;
-	background-color: var(--gray-l97);
+	padding: 20px;
+	background-color: white;
 	overflow-x: hidden;
 	overflow-y: auto;
+}
+
+body:hover {
+	background-color: var(--gray-l97);
+}
+
+body:hover display-canvas {
+	border: 1px solid var(--gray-l90);
 }
 
 #pop-out__wrapper {
 	width: 100%;
 	height: 100%;
-	border: 1px solid var(--gray-l95);
-	background-color: white;
 	padding: 0px;
 }
 
 display-canvas {
 	display: inline-block;
-	margin: 0px;
+	margin: 10px;
+	border: 1px solid white;
+	background-color: white;
 }
