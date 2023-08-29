@@ -41,16 +41,21 @@ export function openPopOutWindow() {
 	const popWrapper = popDoc.querySelector('#pop-out__wrapper');
 	log(popWrapper);
 	log(popWrapper.getClientRects()[0]);
-	popWrapper.appendChild(
-		makeElement({
-			tag: 'display-canvas',
-			attributes: {
-				text: `the quick brown fox jumps over the lazy dog.
-THE QUICK BROWN FOX JUMPS OVER THE LAZY DOG.`,
-				'height-mode': 'auto'
-			},
-		})
-	);
+
+	editor.popOutLivePreviews.forEach(textBlock => {
+		let content = textBlock.text;
+		if (content === '{{english_50}}') content = textBlock.english_50;
+		popWrapper.appendChild(
+			makeElement({
+				tag: 'display-canvas',
+				attributes: {
+					text: content,
+					'font-size': textBlock.fontSize,
+					'height-mode': 'auto'
+				},
+			})
+		);
+	})
 
 	// Update buttons
 	const popButton = document.getElementById('editor-page__tool__open-live-preview-pop-out');
