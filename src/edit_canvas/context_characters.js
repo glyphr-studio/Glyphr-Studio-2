@@ -75,8 +75,10 @@ export function drawContextCharacters(ctx) {
 
 		// if (!contextCharacters.leftBlock) {
 		contextCharacters.leftBlock = new TextBlock({
-			characterString: split.left,
-			fontSize: view.dz * project.totalVertical,
+			options: {
+				text: split.left,
+				fontSize: view.dz * project.totalVertical,
+			},
 			canvasMaxes: leftMaxes,
 			rounding: false,
 			drawLineExtras: drawContextCharacterLeftLineExtras,
@@ -113,8 +115,10 @@ export function drawContextCharacters(ctx) {
 
 		// if (!contextCharacters.rightBlock) {
 		contextCharacters.rightBlock = new TextBlock({
-			characterString: split.right,
-			fontSize: view.dz * project.totalVertical,
+			options: {
+				text: split.right,
+				fontSize: view.dz * project.totalVertical,
+			},
 			canvasMaxes: rightMaxes,
 			rounding: true,
 			drawLineExtras: drawContextCharacterRightLineExtras,
@@ -263,7 +267,7 @@ function drawContextCharacterLeftLineExtras(char, block) {
 	// Kern data
 	// Draw kern data between rightmost char and the selected item
 	let kern = calculateKernOffset(
-		block.characterString.charAt(block.characterString.length - 1),
+		block.options.text.charAt(block.options.text.length - 1),
 		editor.selectedItem.char
 	);
 
@@ -289,7 +293,7 @@ function drawContextCharacterRightLineExtras(char, block) {
 	// Draw baseline from first char to selected item
 	const editor = getCurrentProjectEditor();
 	const rightHandAdvanceWidth = getItemStringAdvanceWidth(
-		contextCharacters.rightBlock.characterString
+		contextCharacters.rightBlock.options.text
 	);
 	// log(`rightHandAdvanceWidth: ${rightHandAdvanceWidth}`);
 	const underlineWidth = rightHandAdvanceWidth * editor.view.dz;
@@ -301,7 +305,7 @@ function drawContextCharacterRightLineExtras(char, block) {
 
 	// Kern data
 	// Draw kern data between leftmost char and the selected item
-	let kern = calculateKernOffset(editor.selectedItem.char, block.characterString.charAt(0));
+	let kern = calculateKernOffset(editor.selectedItem.char, block.options.text.charAt(0));
 
 	if (kern) {
 		const v = getCurrentProjectEditor().view;

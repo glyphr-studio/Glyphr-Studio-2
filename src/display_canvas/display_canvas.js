@@ -4,8 +4,8 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { drawGlyph } from './draw_paths.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
-// import { livePreviewPageWindowResize } from '../pages/live_preview.js';
 import style from './display-canvas.css?inline';
+import { TextBlockOptions } from './text_block_options.js';
 
 /**
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
@@ -20,13 +20,24 @@ export class DisplayCanvas extends HTMLElement {
 	constructor(attributes = {}) {
 		log(`DisplayCanvas.constructor`, 'start');
 		super();
-		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
+		log('attributes');
+		log(attributes);
+		displayCanvas.textBlockOptions = new TextBlockOptions();
+		Object.keys(attributes).forEach((key) => {
+			this.setAttribute(key, attributes[key]);
+			if (displayCanvas.textBlockOptions[key]) {
+				displayCanvas.textBlockOptions[key] = attributes[key];
+			}
+		});
 		this.isSetUp = false;
+		log('displayCanvas.textBlockOptions RESULT');
+		log(displayCanvas.textBlockOptions);
 		log(`DisplayCanvas.constructor`, 'end');
 	}
 
 	setUp() {
 		log(`DisplayCanvas.setUp`, 'start');
+		log(displayCanvas.textBlockOptions);
 
 		// Extra Fancy Super Codez
 		displayCanvas.calculatePageMaxes = this.calculatePageMaxes;
@@ -38,28 +49,10 @@ export class DisplayCanvas extends HTMLElement {
 
 		displayCanvas.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
 		shadow.appendChild(displayCanvas.canvas);
-		// livePreviewPageWindowResize();
-		// this.updateTextBlock();
+
 		displayCanvas.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
 		displayCanvas.canvas.height = displayCanvas.height;
 		displayCanvas.canvas.width = displayCanvas.width;
-
-		// Attributes
-		displayCanvas.text = this.getAttribute('text') || '';
-		displayCanvas.fontSize = parseInt(this.getAttribute('fontSize')) || 48;
-		displayCanvas.pagePadding = parseInt(this.getAttribute('pagePadding')) || 5;
-		displayCanvas.lineGap = parseInt(this.getAttribute('lineGap')) || 12;
-		// displayCanvas.verticalAlign = this.getAttribute('vertical-align') || 'middle';
-		// displayCanvas.horizontalAlign = this.getAttribute('horizontal-align') || 'center';
-		displayCanvas.heightMode = this.getAttribute('pageHeight') || 'static';
-
-		displayCanvas.textBlock = false;
-
-		const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
-		this.showPageExtras = this.attributes.showPageExtras || livePreviewOptions.showPageExtras;
-		this.showLineExtras = this.attributes.showLineExtras || livePreviewOptions.showLineExtras;
-		this.showCharacterExtras =
-			this.attributes.showCharacterExtras || livePreviewOptions.showCharacterExtras;
 		this.drawCrisp = false;
 
 		// Finish
@@ -83,7 +76,7 @@ export class DisplayCanvas extends HTMLElement {
 
 	updateCanvasSizeForAutoHeight() {
 		log(`updateCanvasSizeForAutoHeight`, 'start');
-		if (displayCanvas.heightMode === 'auto') {
+		if (displayCanvas.pageHeight === 'auto') {
 			let newHeight = displayCanvas.textBlock.pixelHeight;
 			newHeight += displayCanvas.pagePadding;
 			log(`newHeight: ${newHeight}`);
@@ -121,12 +114,12 @@ export class DisplayCanvas extends HTMLElement {
 		log(`DisplayCanvas.updateTextBlock`, 'start');
 		log(`displayCanvas.width: ${displayCanvas.width}`);
 		log(`displayCanvas.height: ${displayCanvas.height}`);
+		log(`displayCanvas.textBlockOptions:`);
+		log(displayCanvas.textBlockOptions);
+
 		displayCanvas.textBlock = new TextBlock({
-			characterString: displayCanvas.text,
-			fontSize: displayCanvas.fontSize,
+			options: displayCanvas.textBlockOptions,
 			canvasMaxes: this.calculatePageMaxes(),
-			lineGap: displayCanvas.lineGap,
-			heightMode: displayCanvas.heightMode,
 			drawPageExtras: drawDisplayPageExtras,
 			drawLineExtras: drawDisplayLineExtras,
 			drawCharacterExtras: drawDisplayCharacterExtras,
@@ -139,17 +132,17 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`DisplayCanvas.calculatePageMaxes`, 'start');
 		// log(`displayCanvas.width: ${displayCanvas.width}`);
 		// log(`displayCanvas.height: ${displayCanvas.height}`);
-
-		const contentWidth = displayCanvas.width - 2 * displayCanvas.pagePadding;
-		const contentHeight = displayCanvas.height - 2 * displayCanvas.pagePadding;
+		const pagePadding = displayCanvas.textBlockOptions.pagePadding;
+		const contentWidth = displayCanvas.width - 2 * pagePadding;
+		const contentHeight = displayCanvas.height - 2 * pagePadding;
 		// log(`contentWidth: ${contentWidth}`);
 		// log(`contentHeight: ${contentHeight}`);
 
 		const maxes = {
-			xMin: displayCanvas.pagePadding,
-			xMax: displayCanvas.pagePadding + contentWidth,
-			yMin: displayCanvas.pagePadding,
-			yMax: displayCanvas.pagePadding + contentHeight,
+			xMin: pagePadding,
+			xMax: pagePadding + contentWidth,
+			yMin: pagePadding,
+			yMax: pagePadding + contentHeight,
 		};
 
 		// log(`DisplayCanvas.calculatePageMaxes`, 'end');
@@ -160,7 +153,14 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['text', 'fontSize', 'lineGap', 'pagePadding', 'height', 'width'];
+		return [
+			'text',
+			'fontsize',
+			'linegap',
+			'pagepadding',
+			'height',
+			'width',
+		];
 	}
 
 	/**
@@ -175,19 +175,19 @@ export class DisplayCanvas extends HTMLElement {
 		log(displayCanvas);
 
 		if (attributeName === 'text') {
-			displayCanvas.text = newValue;
+			displayCanvas.textBlockOptions.text = newValue;
 		}
 
-		if (attributeName === 'fontSize') {
-			displayCanvas.fontSize = Math.max(parseInt(newValue), 1);
+		if (attributeName === 'fontsize') {
+			displayCanvas.textBlockOptions.fontSize = Math.max(parseInt(newValue), 1);
 		}
 
-		if (attributeName === 'lineGap') {
-			displayCanvas.lineGap = Math.max(parseInt(newValue), 0);
+		if (attributeName === 'linegap') {
+			displayCanvas.textBlockOptions.lineGap = Math.max(parseInt(newValue), 0);
 		}
 
-		if (attributeName === 'pagePadding') {
-			displayCanvas.pagePadding = Math.max(parseInt(newValue), 0);
+		if (attributeName === 'pagepadding') {
+			displayCanvas.textBlockOptions.pagePadding = Math.max(parseInt(newValue), 0);
 		}
 
 		if (attributeName === 'height') {
@@ -200,14 +200,6 @@ export class DisplayCanvas extends HTMLElement {
 			let newWidth = parseFloat(newValue);
 			displayCanvas.width = newWidth;
 			displayCanvas.canvas.width = newWidth;
-		}
-
-		if (attributeName === 'vertical-align') {
-			this.vertical = newValue;
-		}
-
-		if (attributeName === 'horizontal-align') {
-			this.horizontal = newValue;
 		}
 
 		if (this.isSetUp) {
@@ -234,9 +226,9 @@ export class DisplayCanvas extends HTMLElement {
 		displayCanvas.ctx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
 
 		displayCanvas.textBlock.draw({
-			showPageExtras: this.showPageExtras,
-			showLineExtras: this.showLineExtras,
-			showCharacterExtras: this.showCharacterExtras,
+			showPageExtras: displayCanvas.textBlockOptions.showPageExtras,
+			showLineExtras: displayCanvas.textBlockOptions.showLineExtras,
+			showCharacterExtras: displayCanvas.textBlockOptions.showCharacterExtras,
 			showCharacter: true,
 		});
 

@@ -3,6 +3,7 @@ import { makeNavButton } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { makePanel_LivePreview } from '../panels/live_preview.js';
 import { getCurrentProjectEditor } from '../app/main.js';
+import { makeDisplayCanvasFromTextBlockOptions } from '../display_canvas/text_block_options.js';
 
 /**
  * Page > Live preview
@@ -17,7 +18,6 @@ export function makePage_LivePreview() {
 	// log(editor);
 	// log(editor.nav);
 	// log(editor.selectedGlyph);
-	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
 
 	const content = makeElement({
 		tag: 'div',
@@ -30,29 +30,14 @@ export function makePage_LivePreview() {
 				</div>
 				<div id="content-page__panel"></div>
 			</div>
-			<div class="live-preview-page__canvas-wrapper">
-				<display-canvas id="live-preview-page__canvas"
-					text="${livePreviewOptions.text}"
-					fontSize="${livePreviewOptions.fontSize}"
-					lineGap="${livePreviewOptions.lineGap}"
-					pagePadding="${livePreviewOptions.pagePadding}"
-					pageHeight="auto"
-				></display-canvas>
-			</div>
+			<div class="live-preview-page__canvas-wrapper"></div>
 		</div>
-	`,
+		`,
 	});
 
-	// Subscriber
-	// editor.subscribe({
-	// 	topic: 'livePreview',
-	// 	subscriberID: 'livePreviewPage',
-	// 	callback: () => {
-	// 		let displayCanvas = document.getElementById('live-preview-page__canvas');
-	// 		displayCanvas.TextBlock = displayCanvas.updateTextBlock();
-	// 		displayCanvas.redraw();
-	// 	}
-	// });
+	let canvasWrapper = content.querySelector('.live-preview-page__canvas-wrapper');
+	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
+	canvasWrapper.appendChild(makeDisplayCanvasFromTextBlockOptions(livePreviewOptions));
 
 	window.addEventListener('resize', livePreviewPageWindowResize);
 
@@ -71,15 +56,12 @@ export function makePage_LivePreview() {
 
 export function livePreviewPageWindowResize() {
 	log(`livePreviewPageWindowResize`, 'start');
-
 	const wrapper = document.querySelector('.live-preview-page__canvas-wrapper');
-	const displayCanvas = document.querySelector('#live-preview-page__canvas');
+	const displayCanvas = document.querySelector('display-canvas');
 	const clientRect = wrapper.getClientRects()[0];
 	log(`clientRect.width: ${clientRect.width}`);
 	log(`clientRect.height: ${clientRect.height}`);
 
-	// displayCanvas.width = clientRect.width;
-	// displayCanvas.height = clientRect.height;
 	displayCanvas.setAttribute('width', clientRect.width);
 	displayCanvas.setAttribute('height', clientRect.height);
 	displayCanvas.updateTextBlock();
