@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { charToHex, parseCharsInputAsHex } from '../common/character_ids.js';
 import { Maxes } from '../project_data/maxes.js';
+import { TextBlockOptions } from './text_block_options.js';
 
 /**
 	Text Block
@@ -20,15 +21,12 @@ export class TextBlock {
 		this.lineBreakers = oa.lineBreakers || ['\u0020', '\u2002', '\u2003'];
 		this.data = [];
 		this.pixelHeight = 0;
+		this.canvasMaxes = oa.canvasMaxes;
 
 		// External properties
-		this.characterString = oa.characterString;
-		this.fontSize = oa.fontSize;
-		this.lineGap = oa.lineGap;
-		this.canvasMaxes = oa.canvasMaxes;
-		this.heightMode = oa.heightMode;
+		this.options = new TextBlockOptions(oa.options);
 
-		// Drawing
+		// Drawing functions
 		this.drawPageExtras = oa.drawPageExtras || false;
 		this.drawLineExtras = oa.drawLineExtras || false;
 		this.drawCharacterExtras = oa.drawCharacterExtras || false;
@@ -60,48 +58,6 @@ export class TextBlock {
 		// log(`SET canvasMaxes\n ${this.canvasMaxes.print()}`);
 	}
 
-	get fontSize() {
-		return this._fontSize;
-	}
-
-	set fontSize(newSize = false) {
-		if (Number.isFinite(newSize)) this._fontSize = newSize;
-		else this._fontSize = 48;
-	}
-
-	get lineGap() {
-		return this._lineGap;
-	}
-
-	set lineGap(newGap = false) {
-		if (Number.isFinite(newGap)) this._lineGap = newGap;
-		else this._lineGap = 0;
-	}
-
-	get heightMode() {
-		return this._heightMode;
-	}
-
-	/**
-	 * 'static' for fixed px value
-	 * 'fill' to extend to the size of the parent div
-	 * 'auto' to be as tall as the text requires
-	 */
-	set heightMode(newMode = 'static') {
-		this._heightMode = newMode;
-	}
-
-	get characterString() {
-		return this._characterString;
-	}
-
-	set characterString(newString = false) {
-		if (typeof newString === 'string') this._characterString = newString;
-		else this._characterString = '';
-
-		// log(`this.characterString ${this.characterString}`);
-	}
-
 	draw({
 		showPageExtras = false,
 		showLineExtras = false,
@@ -119,7 +75,7 @@ export class TextBlock {
 			this.drawPageExtras();
 		}
 
-		if (this.characterString === '') {
+		if (this.options.text === '') {
 			// log(`No character string, early return`);
 			// log(`TextBlock.draw`, 'end');
 			return;
@@ -177,7 +133,7 @@ export class TextBlock {
 
 	/**
 	 * This is the large / expensive function that goes through
-	 * the characterString char by char and calculates all the data
+	 * the options.text char by char and calculates all the data
 	 * it needs to display lines of words within a fixed area.
 	 * @returns nothing
 	 */
@@ -209,7 +165,7 @@ export class TextBlock {
 		let thisItem;
 
 		this.data = [];
-		this.textBlocks = this.characterString.split('\n');
+		this.textBlocks = this.options.text.split('\n');
 
 		// log('========================== LOOP 1: CALCULATING WIDTHS');
 		// log(`this.textBlocks.length: ${this.textBlocks.length}`);
@@ -273,7 +229,7 @@ export class TextBlock {
 		let currentBaselineY = 0;
 		let checkForBreak = false;
 
-		const scale = this.fontSize / project.totalVertical;
+		const scale = this.options.fontSize / project.totalVertical;
 		// log(`scale: ${scale}`);
 
 		const ascent = project.settings.font.ascent;
@@ -281,14 +237,14 @@ export class TextBlock {
 
 		//Convert area properties to project / UPM scales
 		const upmMaxes = {
-			lineHeight: project.totalVertical + this.lineGap / scale,
+			lineHeight: project.totalVertical + this.options.lineGap / scale,
 			width: this.canvasMaxes.width / scale,
 			yMax: this.canvasMaxes.yMax / scale,
 			yMin: this.canvasMaxes.yMin / scale,
 			xMin: this.canvasMaxes.xMin / scale,
 		};
 
-		if (this.heightMode === 'auto') upmMaxes.yMax = Number.Infinity;
+		if (this.options.pageHeight === 'auto') upmMaxes.yMax = Number.Infinity;
 
 		// log(`upmMaxes`);
 		// log(upmMaxes);

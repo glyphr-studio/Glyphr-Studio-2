@@ -72,12 +72,21 @@ export class ProjectEditor {
 		// Pop Out Window
 		this.popOutWindow = false;
 		this.popOutLivePreviews = [
-			new TextBlockOptions({ text: 'Pack my box with five dozen liquor waffle coffins.', fontSize: 128 }),
-			new TextBlockOptions({ text: '{{english_10}}', fontSize: 18 }),
+			new TextBlockOptions({
+				name: 'Title',
+				text: 'Pack my box with five dozen liquor waffle coffins.',
+				fontSize: 128,
+			}),
+			new TextBlockOptions({
+				name: 'Body',
+				text: '{{english_10}}',
+				fontSize: 18,
+			}),
+			new TextBlockOptions({text: 'hi'}),
 		];
 
 		// Live preview
-		this.livePreviewPageOptions = new TextBlockOptions();
+		this.livePreviewPageOptions = new TextBlockOptions({ text: 'A B C' });
 
 		// Ghost Canvas
 		this.canvasSize = 2000;

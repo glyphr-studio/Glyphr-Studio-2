@@ -4,6 +4,7 @@ import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
 import style from './pop-out-window.css?inline';
 import color from '../common/colors.css?inline';
 import reset from '../common/resets.css?inline';
+import { makeDisplayCanvasFromTextBlockOptions } from '../display_canvas/text_block_options';
 
 export function openPopOutWindow() {
 	log(`openPopOutWindow`, 'start');
@@ -42,21 +43,10 @@ export function openPopOutWindow() {
 	log(popWrapper);
 	log(popWrapper.getClientRects()[0]);
 
-	editor.popOutLivePreviews.forEach((textBlock) => {
-		let content = textBlock.text;
-		if (content === '{{english_10}}') content = textBlock.english_10;
-		if (content === '{{english_50}}') content = textBlock.english_50;
-		if (content === '{{english_95}}') content = textBlock.english_95;
-		popWrapper.appendChild(
-			makeElement({
-				tag: 'display-canvas',
-				attributes: {
-					text: content,
-					fontSize: textBlock.fontSize,
-					pageHeight: 'auto',
-				},
-			})
-		);
+	editor.popOutLivePreviews.forEach((options) => {
+		log(`appending new display canvas`);
+		log(options);
+		popWrapper.appendChild(makeDisplayCanvasFromTextBlockOptions(options));
 	});
 
 	// Update buttons
@@ -135,18 +125,18 @@ export function livePreviewPopOutWindowResize() {
 	const editor = getCurrentProjectEditor();
 	let popDoc = editor.popOutWindow.document;
 	const wrapper = popDoc.querySelector('#pop-out__wrapper');
-	log(wrapper);
-	const displayCanvas = popDoc.querySelector('display-canvas');
-	log(displayCanvas);
+	const allDisplayCanvases = popDoc.querySelectorAll('display-canvas');
 	const clientRect = wrapper.getClientRects()[0];
 	log(`clientRect.width: ${clientRect.width}`);
 	log(`clientRect.height: ${clientRect.height}`);
+	log(allDisplayCanvases);
+	allDisplayCanvases.forEach((displayCanvas) => {
+		log(`displayCanvas.options.name: ${displayCanvas.getAttribute('title')}`);
 
-	// displayCanvas.width = clientRect.width;
-	// displayCanvas.height = clientRect.height;
-	displayCanvas.setAttribute('width', clientRect.width);
-	displayCanvas.setAttribute('height', clientRect.height);
-	displayCanvas.updateTextBlock();
-	displayCanvas.redraw();
+		displayCanvas.setAttribute('width', clientRect.width);
+		displayCanvas.setAttribute('height', clientRect.height);
+		displayCanvas.updateTextBlock();
+		displayCanvas.redraw();
+	});
 	log(`livePreviewPopOutWindowResize`, 'end');
 }
