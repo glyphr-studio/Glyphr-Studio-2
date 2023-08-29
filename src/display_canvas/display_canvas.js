@@ -160,7 +160,7 @@ export class DisplayCanvas extends HTMLElement {
 
 		// Heights
 		if (pageHeight === 'auto') {
-			maxes.yMax = Number.MAX_SAFE_INTEGER;
+			maxes.yMax = Infinity;
 		} else if (pageHeight === 'fit') {
 			maxes.yMax = clientRect.height - 2 * pagePadding;
 		} else if (!isNaN(parseInt(pageHeight))) {
@@ -182,7 +182,15 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['text', 'fontsize', 'linegap', 'pagepadding'];
+		return [
+			'text',
+			'fontsize',
+			'linegap',
+			'pagepadding',
+			'showpageextras',
+			'showlineextras',
+			'showcharacterextras',
+		];
 	}
 
 	/**
@@ -210,6 +218,17 @@ export class DisplayCanvas extends HTMLElement {
 
 		if (attributeName === 'pagepadding') {
 			this.textBlockOptions.pagePadding = Math.max(parseInt(newValue), 0);
+		}
+
+		if (attributeName === 'showpageextras') {
+			this.textBlockOptions.showPageExtras = newValue === 'true';
+		}
+		if (attributeName === 'showlineextras') {
+			this.textBlockOptions.showLineExtras = newValue === 'true';
+		}
+		if (attributeName === 'showcharacterextras') {
+			this.textBlockOptions.showCharacterExtras = newValue === 'true';
+
 		}
 
 		if (this.isSetUp) {
@@ -253,14 +272,14 @@ export class DisplayCanvas extends HTMLElement {
 	// Draw functions for individual pieces
 	// --------------------------------------------------------------
 
-	drawDisplayPageExtras(ctx) {
+	drawDisplayPageExtras(ctx, textBlock) {
 		// log(`displayCanvas.drawDisplayPageExtras`, 'start');
-		const maxes = this.calculatePageMaxes();
-		// log(maxes);
-		const top = maxes.yMin || 0;
-		const bottom = maxes.yMax === Infinity ? this.canvas.height : maxes.yMax || this.canvas.height;
-		const left = maxes.xMin || 0;
-		const right = maxes.xMax === Infinity ? this.canvas.width : maxes.xMax || this.canvas.width;
+		const canvasMaxes = textBlock.canvasMaxes;
+		// log(textBlock);
+		const top = canvasMaxes.yMin || 0;
+		const bottom = canvasMaxes.yMax === Infinity ? textBlock.pixelHeight : canvasMaxes.yMax;
+		const left = canvasMaxes.xMin || 0;
+		const right = canvasMaxes.xMax || 1000;
 		const width = right - left;
 		const height = bottom - top;
 
@@ -275,12 +294,12 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`displayCanvas.drawDisplayPageExtras`, 'end');
 	}
 
-	drawDisplayLineExtras(ctx, charData) {
+	drawDisplayLineExtras(ctx, charData, textBlock) {
 		// log(`displayCanvas.drawDisplayLineExtras`, 'start');
 		ctx.strokeStyle = accentColors.gray.l85;
 		ctx.beginPath();
-		ctx.moveTo(this.textBlock.canvasMaxes.xMin, charData.view.dy);
-		ctx.lineTo(this.textBlock.canvasMaxes.xMax, charData.view.dy);
+		ctx.moveTo(textBlock.canvasMaxes.xMin, charData.view.dy);
+		ctx.lineTo(textBlock.canvasMaxes.xMax, charData.view.dy);
 		ctx.closePath();
 		ctx.stroke();
 		// log(`displayCanvas.drawDisplayLineExtras`, 'end');
