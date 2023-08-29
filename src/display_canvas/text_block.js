@@ -73,7 +73,7 @@ export class TextBlock {
 
 		if (this.drawPageExtras && showPageExtras) {
 			// log(`DRAW PAGE EXTRAS`);
-			this.drawPageExtras(this.ctx);
+			this.drawPageExtras(this.ctx, this);
 		}
 
 		if (this.options.text === '') {

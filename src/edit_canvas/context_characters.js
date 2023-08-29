@@ -105,7 +105,7 @@ export function drawContextCharacters(ctx) {
 
 		let rightMaxes = new Maxes({
 			xMin: view.dx + rightDistance * view.dz,
-			xMax: Number.MAX_SAFE_INTEGER,
+			xMax: Infinity,
 			yMin: view.dy - ascent * view.dz,
 			yMax: view.dy,
 		});

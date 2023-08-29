@@ -214,26 +214,26 @@ function makeShowOptions() {
 		'showCharacterExtras',
 		(newValue) => {
 			let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-			displayCanvas.showCharacterExtras = newValue;
+			displayCanvas.setAttribute('showCharacterExtras', newValue);
 			// livePreviewOptions.showCharacterExtras = newValue;
-			displayCanvas.redraw();
+			// displayCanvas.redraw();
 		}
 	);
 
 	let baselineLabel = makeSingleLabel('Baselines:');
 	let baselineToggle = makeDirectCheckbox(livePreviewOptions, 'showLineExtras', (newValue) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		displayCanvas.showLineExtras = newValue;
+		displayCanvas.setAttribute('showLineExtras', newValue);
 		// livePreviewOptions.showLineExtras = newValue;
-		displayCanvas.redraw();
+		// displayCanvas.redraw();
 	});
 
 	let pageOutlineLabel = makeSingleLabel('Page outline:');
 	let pageOutlineToggle = makeDirectCheckbox(livePreviewOptions, 'showPageExtras', (newValue) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		displayCanvas.showPageExtras = newValue;
+		displayCanvas.setAttribute('showPageExtras', newValue);
 		// livePreviewOptions.showPageExtras = newValue;
-		displayCanvas.redraw();
+		// displayCanvas.redraw();
 	});
 
 	return [
