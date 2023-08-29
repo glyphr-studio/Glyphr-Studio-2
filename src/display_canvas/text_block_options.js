@@ -3,24 +3,24 @@ import { makeElement } from '../common/dom';
 export class TextBlockOptions {
 	/**
 	 * PageHeight / PageWidth:
-	 * 'static' for fixed px value
-	 * 'fill' to extend to the size of the parent div
+	 * {Number} for fixed px value
+	 * 'fit' to extend to the size of the parent div
 	 * 'auto' to be as tall as the text requires
 	 */
 	constructor(options = {}) {
-		log(`TextBlockOptions.constructor`, 'start');
-		log(options);
+		// log(`TextBlockOptions.constructor`, 'start');
+		// log(options);
 		this.name = options.name || false;
 		this.text = options.text || '';
 		this.fontSize = options.fontSize || 48;
 		this.lineGap = options.lineGap || 12;
 		this.pagePadding = options.pagePadding || 10;
-		this.pageWidth = options.pageWidth || 'auto';
+		this.pageWidth = options.pageWidth || 'fit';
 		this.pageHeight = options.pageHeight || 'auto';
 		this.showCharacterExtras = options.showCharacterExtras || false;
 		this.showLineExtras = options.showLineExtras || false;
 		this.showPageExtras = options.showPageExtras || false;
-		log(`TextBlockOptions.constructor`, 'end');
+		// log(`TextBlockOptions.constructor`, 'end');
 	}
 
 	get text() {
@@ -44,8 +44,8 @@ const english_50 =
 	'salaam abed acme gad aery aft jag bah fain rajah hake alb lam ankh baobab apps aqua agar asp tat auk aver awl axon dray laze bah bobby webcam abductee abed clubfeet subgroups subhead bier abjure lambkin bleep submerse hobnail bola subplot brr albs bobtail bur obverse bobwhite bobby cads cocci apace achoo cis beck clew acme picnicker coda acquirable craw docs bract cud chancy czarina coda oddball redcap adder deb gadfly cadge dhoti ding adjure bodkin addle adman gladness doc midpoint dram ids hardtop duh adverted dweeb dyer adze lea deb beck zed jeep fief aegis meh lei deejay pekoe ell emo wen oleo hep coequal ere espy eta euro bevy clew hex fey wheezy fa halfback serfdom fey doff afghan wolfhound fie flan hafnium fob halfpence frack coifs aft futz daffy gad bugbear dogcatcher hangdog loge dogfish boggy aught gird glop magma cosign agog grog ergs dogtrot ague wigwag gyro haw highboy ashcans archduke hep mirthful flashgun fishhook hie babushka phlox bathmat techno hob dishpan thru ankhs aught hula schwa ashy iamb jib mica ids fie coif brig jihad piing demijohn wiki mil sim ding viol pip cliquish dirk cis clit odium diva antiwar nix sukiyaki baize jag jeep jib josh julep kale backbit crankcase workday hake sackful ginkgo ankh kith lockjaw yukked anklet milkmaid knave kook chickpea krone auks buckteeth haiku inkwell balky la alb milch veld lea milf bilge bullhorn clit killjoy bilk ell palmy ulna lo pulpy catafalque bulrush awls dolt alum salvo bulwark lynx maw iamb gimcrack slumdog meh brimful farmhand mid mkay armlet jimmy limn emo ump kumquat armrest ems emu triumvirate dimwit gamy nary inbox conch wend pone confab bong inhere nib ninja ankh wanly enmesh jinn noel unpin jonquil unripe duns nth nu convoke unwed lynx onyx benzene roan fob doc hod aloe oft agog oho poi emoji gook pol tom yon coon fop toque orb hos sot lout coven cowl lox soy boozy paps soapbox topcoat stepdad jape campfire popgun aphid pip bumpkin plait stepmom grapnel poi apps prig apps inapt pug pwn pyx aqua brad orb orc gird ere serf erg rho brig marjoram dirk purl berm lorn euro carpi marquis brr burs arty drub nervy airway aery furze mesa busby scat misdo apse misfire disgorge ashy sim disjointedly rusk slaw ism snaky sol asp squab disrobe buss sty suet svelte swag hussy eta catbird butch cote outfox outgo nth ti catkin fitly litmus botnet tom potpie tram lats attar tun outvote twain sty futz aqua nub deuce cud ague mufti pug duh quid jujube auk hula ump dun quoit yup bur buss abut muumuu uvula bauxite obloquy abuzz diva aver vim vole chevron ovule divvy bevy swag cowbird howdah wen lawfully gewgaw whey wiki hawker awl bowman pwn wooer cowpox wrack haws newtons wuss dewy frowzy fixate oxbow coxcomb fixer oxford foxglove foxhound axial laxly laxness axon sexpot coxswain sextet nexus boxwood epoxy yaw flyby lyceum hydra ye mayfly cygnet tallyho yip skyjack beryl hymen lynx yon hypo gyro cloys mythic yuk byword pyx piazza zed zing buzzkill drizzly hazmat kazoo gazpacho kudzu zwieback boozy';
 
 export function makeDisplayCanvasFromTextBlockOptions(textBlock = new TextBlockOptions()) {
-	log(`makeDisplayCanvasFromTextBlockOptions`, 'start');
-	log(textBlock);
+	// log(`makeDisplayCanvasFromTextBlockOptions`, 'start');
+	// log(textBlock);
 	const displayCanvas = makeElement({ tag: 'display-canvas' });
 	displayCanvas.setAttribute('text', textBlock.text);
 	displayCanvas.setAttribute('fontSize', textBlock.fontSize);
@@ -57,12 +57,12 @@ export function makeDisplayCanvasFromTextBlockOptions(textBlock = new TextBlockO
 	displayCanvas.setAttribute('showLineExtras', textBlock.showLineExtras);
 	displayCanvas.setAttribute('showCharacterExtras', textBlock.showCharacterExtras);
 
-	log(`textBlock.name: ${textBlock.name}`);
+	// log(`textBlock.name: ${textBlock.name}`);
 	if (textBlock.name) {
 		displayCanvas.setAttribute('title', textBlock.name);
 	}
 
-	log(`makeDisplayCanvasFromTextBlockOptions`, 'end');
+	// log(`makeDisplayCanvasFromTextBlockOptions`, 'end');
 
 	return displayCanvas;
 }

@@ -7,7 +7,7 @@
 import { getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
 import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window';
-import { makeDirectCheckbox, makeSingleCheckbox, makeSingleInput, makeSingleLabel } from './cards';
+import { makeDirectCheckbox, makeSingleLabel } from './cards';
 
 export function makePanel_LivePreview() {
 	// Options

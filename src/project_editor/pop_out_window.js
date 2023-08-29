@@ -7,7 +7,7 @@ import reset from '../common/resets.css?inline';
 import { makeDisplayCanvasFromTextBlockOptions } from '../display_canvas/text_block_options';
 
 export function openPopOutWindow() {
-	log(`openPopOutWindow`, 'start');
+	// log(`openPopOutWindow`, 'start');
 	const editor = getCurrentProjectEditor();
 	editor.popOutWindow = window.open('', 'glyphr-studio-pop-out-live-preview');
 
@@ -40,12 +40,12 @@ export function openPopOutWindow() {
 	});
 
 	const popWrapper = popDoc.querySelector('#pop-out__wrapper');
-	log(popWrapper);
-	log(popWrapper.getClientRects()[0]);
+	// log(popWrapper);
+	// log(popWrapper.getClientRects()[0]);
 
 	editor.popOutLivePreviews.forEach((options) => {
-		log(`appending new display canvas`);
-		log(options);
+		// log(`appending new display canvas`);
+		// log(options);
 		popWrapper.appendChild(makeDisplayCanvasFromTextBlockOptions(options));
 	});
 
@@ -57,13 +57,13 @@ export function openPopOutWindow() {
 			selected: false,
 		});
 	}
-	log(popDoc);
+	// log(popDoc);
 	// editor.popOutWindow.setTimeout(refreshPopOutWindow, 10);
-	log(`openPopOutWindow`, 'end');
+	// log(`openPopOutWindow`, 'end');
 }
 
 export function closePopOutWindow(event) {
-	log(`closePopOutWindow`, 'start');
+	// log(`closePopOutWindow`, 'start');
 
 	if (event) event.preventDefault();
 	const editor = getCurrentProjectEditor();
@@ -87,7 +87,7 @@ export function closePopOutWindow(event) {
 		});
 	}
 
-	log(`closePopOutWindow`, 'end');
+	// log(`closePopOutWindow`, 'end');
 	return undefined;
 }
 
@@ -121,22 +121,14 @@ export function makeLivePreviewPopOutCard(showBlurb = false) {
 }
 
 export function livePreviewPopOutWindowResize() {
-	log(`livePreviewPopOutWindowResize`, 'start');
+	// log(`livePreviewPopOutWindowResize`, 'start');
 	const editor = getCurrentProjectEditor();
 	let popDoc = editor.popOutWindow.document;
-	const wrapper = popDoc.querySelector('#pop-out__wrapper');
 	const allDisplayCanvases = popDoc.querySelectorAll('display-canvas');
-	const clientRect = wrapper.getClientRects()[0];
-	log(`clientRect.width: ${clientRect.width}`);
-	log(`clientRect.height: ${clientRect.height}`);
-	log(allDisplayCanvases);
+	// log(allDisplayCanvases);
 	allDisplayCanvases.forEach((displayCanvas) => {
-		log(`displayCanvas.options.name: ${displayCanvas.getAttribute('title')}`);
-
-		displayCanvas.setAttribute('width', clientRect.width);
-		displayCanvas.setAttribute('height', clientRect.height);
-		displayCanvas.updateTextBlock();
-		displayCanvas.redraw();
+		// log(`displayCanvas.options.name: ${displayCanvas.getAttribute('title')}`);
+		displayCanvas.handleCanvasResize();
 	});
-	log(`livePreviewPopOutWindowResize`, 'end');
+	// log(`livePreviewPopOutWindowResize`, 'end');
 }
