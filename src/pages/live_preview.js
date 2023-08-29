@@ -18,7 +18,7 @@ export function makePage_LivePreview() {
 	// log(editor.nav);
 	// log(editor.selectedGlyph);
 	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
-	
+
 	const content = makeElement({
 		tag: 'div',
 		id: 'app__page',
@@ -33,10 +33,10 @@ export function makePage_LivePreview() {
 			<div class="live-preview-page__canvas-wrapper">
 				<display-canvas id="live-preview-page__canvas"
 					text="${livePreviewOptions.text}"
-					font-size="${livePreviewOptions.fontSize}"
-					line-gap="${livePreviewOptions.lineGap}"
-					page-padding="${livePreviewOptions.pagePadding}"
-					height-mode="auto"
+					fontSize="${livePreviewOptions.fontSize}"
+					lineGap="${livePreviewOptions.lineGap}"
+					pagePadding="${livePreviewOptions.pagePadding}"
+					pageHeight="auto"
 				></display-canvas>
 			</div>
 		</div>

@@ -187,7 +187,7 @@ function makeLivePreviewOptions() {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
 		livePreviewOptions.fontSize = newValue;
-		displayCanvas.setAttribute('font-size', newValue);
+		displayCanvas.setAttribute('fontSize', newValue);
 	});
 
 	// Line gap
@@ -200,7 +200,7 @@ function makeLivePreviewOptions() {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
 		livePreviewOptions.lineGap = newValue;
-		displayCanvas.setAttribute('line-gap', newValue);
+		displayCanvas.setAttribute('lineGap', newValue);
 	});
 
 	return [glyphsLabel, glyphsInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];

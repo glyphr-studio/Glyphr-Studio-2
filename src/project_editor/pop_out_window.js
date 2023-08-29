@@ -42,20 +42,22 @@ export function openPopOutWindow() {
 	log(popWrapper);
 	log(popWrapper.getClientRects()[0]);
 
-	editor.popOutLivePreviews.forEach(textBlock => {
+	editor.popOutLivePreviews.forEach((textBlock) => {
 		let content = textBlock.text;
+		if (content === '{{english_10}}') content = textBlock.english_10;
 		if (content === '{{english_50}}') content = textBlock.english_50;
+		if (content === '{{english_95}}') content = textBlock.english_95;
 		popWrapper.appendChild(
 			makeElement({
 				tag: 'display-canvas',
 				attributes: {
 					text: content,
-					'font-size': textBlock.fontSize,
-					'height-mode': 'auto'
+					fontSize: textBlock.fontSize,
+					pageHeight: 'auto',
 				},
 			})
 		);
-	})
+	});
 
 	// Update buttons
 	const popButton = document.getElementById('editor-page__tool__open-live-preview-pop-out');
