@@ -14,7 +14,7 @@ import { TextBlockOptions } from './text_block_options.js';
 
 export class TextBlock {
 	constructor(oa = {}) {
-		// log('TextBlock', 'start');
+		// log('TextBlock.constructor', 'start');
 
 		// Internal properties
 		this.textBlocks = [];
@@ -22,6 +22,7 @@ export class TextBlock {
 		this.data = [];
 		this.pixelHeight = 0;
 		this.canvasMaxes = oa.canvasMaxes;
+		this.ctx = oa.ctx;
 
 		// External properties
 		this.options = new TextBlockOptions(oa.options);
@@ -37,7 +38,7 @@ export class TextBlock {
 		// Initialize data
 		this.generateData();
 
-		// log('TextBlock', 'end');
+		// log('TextBlock.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -72,7 +73,7 @@ export class TextBlock {
 
 		if (this.drawPageExtras && showPageExtras) {
 			// log(`DRAW PAGE EXTRAS`);
-			this.drawPageExtras();
+			this.drawPageExtras(this.ctx);
 		}
 
 		if (this.options.text === '') {
@@ -86,7 +87,7 @@ export class TextBlock {
 			// log('DRAW LINE EXTRAS');
 			this.iterator((charData) => {
 				if (charData.lineNumber !== currentLine) {
-					this.drawLineExtras(charData, this);
+					this.drawLineExtras(this.ctx, charData, this);
 					currentLine = charData.lineNumber;
 				}
 			});
@@ -95,14 +96,14 @@ export class TextBlock {
 		if (this.drawCharacterExtras && showCharacterExtras) {
 			// log('DRAW CHARACTER EXTRAS');
 			this.iterator((charData) => {
-				this.drawCharacterExtras(charData, this.roundUp);
+				this.drawCharacterExtras(this.ctx, charData, this.roundUp);
 			});
 		}
 
 		if (this.drawCharacter && showCharacter) {
 			// log('DRAW CHARACTER');
 			this.iterator((charData) => {
-				this.drawCharacter(charData);
+				this.drawCharacter(this.ctx, charData);
 			});
 		}
 		// log(`TextBlock.draw`, 'end');

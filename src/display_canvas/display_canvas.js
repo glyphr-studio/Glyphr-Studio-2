@@ -1,6 +1,6 @@
 import { makeElement } from '../common/dom.js';
 import { TextBlock } from './text_block.js';
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { drawGlyph } from './draw_paths.js';
 import { clone, makeCrisp, round } from '../common/functions.js';
@@ -11,139 +11,168 @@ import { TextBlockOptions } from './text_block_options.js';
  * DisplayCanvas takes a string of glyphs and displays them on the canvas
  * No editing involved
  */
-const displayCanvas = {};
+// const displayCanvas = {};
 export class DisplayCanvas extends HTMLElement {
 	/**
 	 * Create an DisplayCanvas
 	 * @param {Object} attributes - collection of key: value pairs to set as attributes
 	 */
 	constructor(attributes = {}) {
-		log(`DisplayCanvas.constructor`, 'start');
+		// log(`DisplayCanvas.constructor`, 'start');
 		super();
-		log('attributes');
-		log(attributes);
-		displayCanvas.textBlockOptions = new TextBlockOptions();
+		// log('attributes');
+		// log(attributes);
+		this.textBlockOptions = new TextBlockOptions();
 		Object.keys(attributes).forEach((key) => {
-			this.setAttribute(key, attributes[key]);
-			if (displayCanvas.textBlockOptions[key]) {
-				displayCanvas.textBlockOptions[key] = attributes[key];
+			if (key !== 'width' && key !== 'height') {
+				this.setAttribute(key, attributes[key]);
+			}
+			if (this.textBlockOptions[key]) {
+				this.textBlockOptions[key] = attributes[key];
 			}
 		});
 		this.isSetUp = false;
-		log('displayCanvas.textBlockOptions RESULT');
-		log(displayCanvas.textBlockOptions);
-		log(`DisplayCanvas.constructor`, 'end');
+		// log(`DisplayCanvas.constructor`, 'end');
 	}
 
 	setUp() {
-		log(`DisplayCanvas.setUp`, 'start');
-		log(displayCanvas.textBlockOptions);
-
-		// Extra Fancy Super Codez
-		displayCanvas.calculatePageMaxes = this.calculatePageMaxes;
+		// log(`DisplayCanvas.setUp`, 'start');
+		// log(this.textBlockOptions);
 
 		// Put it all together
 		const shadow = this.attachShadow({ mode: 'open' });
 		const styles = makeElement({ tag: 'style', innerHTML: style });
 		shadow.appendChild(styles);
 
-		displayCanvas.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
-		shadow.appendChild(displayCanvas.canvas);
+		this.canvas = makeElement({ tag: 'canvas', id: 'mainDisplayCanvas' });
+		shadow.appendChild(this.canvas);
 
-		displayCanvas.ctx = shadow.getElementById('mainDisplayCanvas').getContext('2d');
-		displayCanvas.canvas.height = displayCanvas.height;
-		displayCanvas.canvas.width = displayCanvas.width;
+		this.ctx = this.canvas.getContext('2d');
 		this.drawCrisp = false;
 
 		// Finish
 		this.isSetUp = true;
-		log(`DisplayCanvas.setUp`, 'end');
+		// log(`DisplayCanvas.setUp`, 'end');
+	}
+
+	handleCanvasResize() {
+		this.updateTextBlock();
+		this.updateCanvasSize();
+		this.redraw();
 	}
 
 	updateCanvasSize() {
-		log(`updateCanvasSize`, 'start');
-		log(`this.parentElement`);
-		log(this.parentElement);
+		// log(`updateCanvasSize`, 'start');
+		// log(`this.parentElement`);
+		// log(this.parentElement);
+		// log('this.textBlock');
+		// log(this.textBlock);
 		const clientRect = this?.parentElement?.getClientRects()[0];
-		displayCanvas.width = clientRect?.width || 1000;
-		displayCanvas.height = clientRect?.height || 1000;
-		displayCanvas.canvas.height = displayCanvas.height;
-		displayCanvas.canvas.width = displayCanvas.width;
+		// log(clientRect);
+		const pageHeight = this.textBlockOptions.pageHeight;
+		const pageWidth = this.textBlockOptions.pageWidth;
+		// log(`pageHeight: ${pageHeight}`);
+		// log(`pageWidth: ${pageWidth}`);
 
-		log(displayCanvas);
-		log(`updateCanvasSize`, 'end');
-	}
+		let newHeight = 1000;
+		let newWidth = 1000;
 
-	updateCanvasSizeForAutoHeight() {
-		log(`updateCanvasSizeForAutoHeight`, 'start');
-		if (displayCanvas.pageHeight === 'auto') {
-			let newHeight = displayCanvas.textBlock.pixelHeight;
-			newHeight += displayCanvas.pagePadding;
-			log(`newHeight: ${newHeight}`);
-			displayCanvas.height = newHeight;
-			displayCanvas.canvas.height = displayCanvas.height;
-			this.removeAttribute('style');
-			this.setAttribute('style', `height: ${newHeight}px;`);
+		// Heights
+		if (pageHeight === 'auto') {
+			newHeight = this.textBlock.pixelHeight;
+			newHeight += this.textBlockOptions.pagePadding;
+		} else if (pageHeight === 'fit') {
+			newHeight = clientRect.height;
+		} else if (!isNaN(parseInt(pageHeight))) {
+			newHeight = parseInt(pageHeight);
 		}
-		log(`updateCanvasSizeForAutoHeight`, 'end');
+
+		// Widths
+		if (pageWidth === 'fit') {
+			newWidth = clientRect.width;
+		} else if (!isNaN(parseInt(pageWidth))) {
+			newWidth = parseInt(pageWidth);
+		}
+
+		// Assign new values
+		// log(`newHeight: ${newHeight}`);
+		// log(`newWidth: ${newWidth}`);
+		this.height = newHeight;
+		this.width = newWidth;
+		this.canvas.height = newHeight;
+		this.canvas.width = newWidth;
+
+		// log(this);
+		// log(`updateCanvasSize`, 'end');
 	}
 
 	/**
 	 * Draw the canvas when it's loaded
 	 */
 	connectedCallback() {
-		log(`DisplayCanvas.connectedCallback`, 'start');
+		// log(`DisplayCanvas.connectedCallback`, 'start');
 		window.setTimeout(() => {
-			log(`DisplayCanvas.connectedCallback SETTIMEOUT HANDLER`, 'start');
-			log(`this.parentElement`);
-			log(this.parentElement);
-			log(`this.parentElement.clientRects`);
-			log(this.parentElement.getClientRects()[0]);
+			// log(`DisplayCanvas.connectedCallback SETTIMEOUT HANDLER`, 'start');
+			// log(`this.parentElement`);
+			// log(this.parentElement);
+			// log(`this.parentElement.clientRects`);
+			// log(this.parentElement.getClientRects()[0]);
 
 			this.setUp();
-			this.updateCanvasSize();
 			this.updateTextBlock();
-			this.updateCanvasSizeForAutoHeight();
+			this.updateCanvasSize();
 			this.redraw();
-			log(`DisplayCanvas.connectedCallback SETTIMEOUT HANDLER`, 'end');
+			// log(`DisplayCanvas.connectedCallback SETTIMEOUT HANDLER`, 'end');
 		}, 10);
-		log(`DisplayCanvas.connectedCallback`, 'end');
+		// log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
 	updateTextBlock() {
-		log(`DisplayCanvas.updateTextBlock`, 'start');
-		log(`displayCanvas.width: ${displayCanvas.width}`);
-		log(`displayCanvas.height: ${displayCanvas.height}`);
-		log(`displayCanvas.textBlockOptions:`);
-		log(displayCanvas.textBlockOptions);
+		// log(`DisplayCanvas.updateTextBlock`, 'start');
+		// log(`this.textBlockOptions:`);
+		// log(this.textBlockOptions);
 
-		displayCanvas.textBlock = new TextBlock({
-			options: displayCanvas.textBlockOptions,
+		this.textBlock = new TextBlock({
+			options: this.textBlockOptions,
 			canvasMaxes: this.calculatePageMaxes(),
-			drawPageExtras: drawDisplayPageExtras,
-			drawLineExtras: drawDisplayLineExtras,
-			drawCharacterExtras: drawDisplayCharacterExtras,
-			drawCharacter: drawDisplayCharacter,
+			ctx: this.ctx,
+			drawPageExtras: this.drawDisplayPageExtras,
+			drawLineExtras: this.drawDisplayLineExtras,
+			drawCharacterExtras: this.drawDisplayCharacterExtras,
+			drawCharacter: this.drawDisplayCharacter,
 		});
-		log(`DisplayCanvas.updateTextBlock`, 'end');
+		// log(`DisplayCanvas.updateTextBlock`, 'end');
 	}
 
 	calculatePageMaxes() {
 		// log(`DisplayCanvas.calculatePageMaxes`, 'start');
-		// log(`displayCanvas.width: ${displayCanvas.width}`);
-		// log(`displayCanvas.height: ${displayCanvas.height}`);
-		const pagePadding = displayCanvas.textBlockOptions.pagePadding;
-		const contentWidth = displayCanvas.width - 2 * pagePadding;
-		const contentHeight = displayCanvas.height - 2 * pagePadding;
-		// log(`contentWidth: ${contentWidth}`);
-		// log(`contentHeight: ${contentHeight}`);
+		const clientRect = this?.parentElement?.getClientRects()[0];
+		const pagePadding = this.textBlockOptions.pagePadding;
+		const pageHeight = this.textBlockOptions.pageHeight;
+		const pageWidth = this.textBlockOptions.pageWidth;
 
 		const maxes = {
 			xMin: pagePadding,
-			xMax: pagePadding + contentWidth,
 			yMin: pagePadding,
-			yMax: pagePadding + contentHeight,
+			xMax: 1000,
+			yMax: 1000,
 		};
+
+		// Heights
+		if (pageHeight === 'auto') {
+			maxes.yMax = Number.MAX_SAFE_INTEGER;
+		} else if (pageHeight === 'fit') {
+			maxes.yMax = clientRect.height - 2 * pagePadding;
+		} else if (!isNaN(parseInt(pageHeight))) {
+			maxes.yMax = parseInt(pageHeight);
+		}
+
+		// Widths
+		if (pageWidth === 'fit') {
+			maxes.xMax = clientRect.width - 2 * pagePadding;
+		} else if (!isNaN(parseInt(pageWidth))) {
+			maxes.xMax = parseInt(pageWidth);
+		}
 
 		// log(`DisplayCanvas.calculatePageMaxes`, 'end');
 		return maxes;
@@ -153,14 +182,7 @@ export class DisplayCanvas extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return [
-			'text',
-			'fontsize',
-			'linegap',
-			'pagepadding',
-			'height',
-			'width',
-		];
+		return ['text', 'fontsize', 'linegap', 'pagepadding'];
 	}
 
 	/**
@@ -170,224 +192,177 @@ export class DisplayCanvas extends HTMLElement {
 	 * @param {String} newValue - value after the change
 	 */
 	attributeChangedCallback(attributeName, oldValue, newValue) {
-		log(`DisplayCanvas.attributeChangeCallback`, 'start');
-		log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
-		log(displayCanvas);
+		// log(`DisplayCanvas.attributeChangeCallback`, 'start');
+		// log(`Attribute ${attributeName} was ${oldValue}, is now ${newValue}`);
+		// log(this);
 
 		if (attributeName === 'text') {
-			displayCanvas.textBlockOptions.text = newValue;
+			this.textBlockOptions.text = newValue;
 		}
 
 		if (attributeName === 'fontsize') {
-			displayCanvas.textBlockOptions.fontSize = Math.max(parseInt(newValue), 1);
+			this.textBlockOptions.fontSize = Math.max(parseInt(newValue), 1);
 		}
 
 		if (attributeName === 'linegap') {
-			displayCanvas.textBlockOptions.lineGap = Math.max(parseInt(newValue), 0);
+			this.textBlockOptions.lineGap = Math.max(parseInt(newValue), 0);
 		}
 
 		if (attributeName === 'pagepadding') {
-			displayCanvas.textBlockOptions.pagePadding = Math.max(parseInt(newValue), 0);
-		}
-
-		if (attributeName === 'height') {
-			let newHeight = parseFloat(newValue);
-			displayCanvas.height = newHeight;
-			displayCanvas.canvas.height = newHeight;
-		}
-
-		if (attributeName === 'width') {
-			let newWidth = parseFloat(newValue);
-			displayCanvas.width = newWidth;
-			displayCanvas.canvas.width = newWidth;
+			this.textBlockOptions.pagePadding = Math.max(parseInt(newValue), 0);
 		}
 
 		if (this.isSetUp) {
-			this.updateTextBlock();
-			this.updateCanvasSizeForAutoHeight();
-			this.redraw();
+			this.handleCanvasResize();
 		}
 
-		log(`DisplayCanvas.attributeChangeCallback`, 'end');
+		// log(`DisplayCanvas.attributeChangeCallback`, 'end');
 	}
 
 	/**
 	 * Updates the canvas
 	 */
 	redraw() {
-		log('DisplayCanvas.redraw', 'start');
+		// log('DisplayCanvas.redraw', 'start');
 
-		log(`THIS CONTEXT`);
-		log(displayCanvas.ctx);
+		// log(`THIS CONTEXT`);
+		// log(this.ctx);
 
-		log(`displayCanvas.width: ${displayCanvas.width}`);
-		log(`displayCanvas.height: ${displayCanvas.height}`);
+		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-		displayCanvas.ctx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
-
-		displayCanvas.textBlock.draw({
-			showPageExtras: displayCanvas.textBlockOptions.showPageExtras,
-			showLineExtras: displayCanvas.textBlockOptions.showLineExtras,
-			showCharacterExtras: displayCanvas.textBlockOptions.showCharacterExtras,
+		this.textBlock.draw({
+			showPageExtras: this.textBlockOptions.showPageExtras,
+			showLineExtras: this.textBlockOptions.showLineExtras,
+			showCharacterExtras: this.textBlockOptions.showCharacterExtras,
 			showCharacter: true,
 		});
 
-		log('DisplayCanvas.redraw', 'end');
+		// log('DisplayCanvas.redraw', 'end');
 	}
 
 	iterator(drawFunction) {
-		const data = displayCanvas.textBlock.data;
+		const data = this.textBlock.data;
 		for (let block = 0; block < data.length; block++) {
 			for (let item = 0; item < data[block].length; item++) {
 				drawFunction(data[block][item], this);
 			}
 		}
 	}
-}
-// --------------------------------------------------------------
-// Draw functions for individual pieces
-// --------------------------------------------------------------
 
-function drawDisplayPageExtras() {
-	// log(`displayCanvas.drawDisplayPageExtras`, 'start');
-	const maxes = displayCanvas.calculatePageMaxes();
-	// log(maxes);
-	const top = maxes.yMin || 0;
-	const bottom =
-		maxes.yMax === Infinity
-			? displayCanvas.canvas.height
-			: maxes.yMax || displayCanvas.canvas.height;
-	const left = maxes.xMin || 0;
-	const right =
-		maxes.xMax === Infinity ? displayCanvas.canvas.width : maxes.xMax || displayCanvas.canvas.width;
-	const width = right - left;
-	const height = bottom - top;
+	// --------------------------------------------------------------
+	// Draw functions for individual pieces
+	// --------------------------------------------------------------
 
-	// log(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
+	drawDisplayPageExtras(ctx) {
+		// log(`displayCanvas.drawDisplayPageExtras`, 'start');
+		const maxes = this.calculatePageMaxes();
+		// log(maxes);
+		const top = maxes.yMin || 0;
+		const bottom = maxes.yMax === Infinity ? this.canvas.height : maxes.yMax || this.canvas.height;
+		const left = maxes.xMin || 0;
+		const right = maxes.xMax === Infinity ? this.canvas.width : maxes.xMax || this.canvas.width;
+		const width = right - left;
+		const height = bottom - top;
 
-	displayCanvas.ctx.fillStyle = 'transparent';
-	displayCanvas.ctx.strokeStyle = accentColors.gray.l90;
-	displayCanvas.ctx.lineWidth = 1;
+		// log(`\t new t/b/l/r: ${top} / ${bottom} / ${left} / ${right}`);
 
-	displayCanvas.ctx.strokeRect(makeCrisp(left), makeCrisp(top), round(width), round(height));
+		ctx.fillStyle = 'transparent';
+		ctx.strokeStyle = accentColors.gray.l90;
+		ctx.lineWidth = 1;
 
-	// log(`displayCanvas.drawDisplayPageExtras`, 'end');
-}
+		ctx.strokeRect(makeCrisp(left), makeCrisp(top), round(width), round(height));
 
-function drawDisplayLineExtras(charData) {
-	// log(`displayCanvas.drawDisplayLineExtras`, 'start');
-	displayCanvas.ctx.strokeStyle = accentColors.gray.l85;
-	displayCanvas.ctx.beginPath();
-	displayCanvas.ctx.moveTo(displayCanvas.textBlock.canvasMaxes.xMin, charData.view.dy);
-	displayCanvas.ctx.lineTo(displayCanvas.textBlock.canvasMaxes.xMax, charData.view.dy);
-	displayCanvas.ctx.closePath();
-	displayCanvas.ctx.stroke();
-	// log(`displayCanvas.drawDisplayLineExtras`, 'end');
-}
-
-function drawDisplayCharacterExtras(charData) {
-	// log(`displayCanvas.drawDisplayCharacterExtras`, 'start');
-	const project = getCurrentProject();
-	const settings = project.settings.font;
-	const scale = charData.view.dz;
-	let drawWidth = charData.widths.advance * scale;
-	let drawHeight = project.totalVertical * scale;
-	let drawY = charData.view.dy - settings.ascent * scale;
-	let drawX = charData.view.dx;
-	const drawK = charData.widths.kern * scale * -1;
-
-	// log(`\t drawing ${charData.char}`);
-
-	if (charData.widths.kern) {
-		displayCanvas.ctx.fillStyle = 'orange';
-		displayCanvas.ctx.globalAlpha = 0.3;
-		displayCanvas.ctx.fillRect(drawX + drawWidth - drawK, drawY, drawK, drawHeight);
-		displayCanvas.ctx.globalAlpha = 1;
+		// log(`displayCanvas.drawDisplayPageExtras`, 'end');
 	}
 
-	displayCanvas.ctx.fillStyle = 'transparent';
-	displayCanvas.ctx.strokeStyle = accentColors.blue.l85;
-	displayCanvas.ctx.lineWidth = 1;
-
-	if (this.drawCrisp) {
-		drawX = makeCrisp(drawX);
-		drawY = makeCrisp(drawY);
-		drawWidth = round(drawWidth);
-		drawHeight = round(drawHeight);
+	drawDisplayLineExtras(ctx, charData) {
+		// log(`displayCanvas.drawDisplayLineExtras`, 'start');
+		ctx.strokeStyle = accentColors.gray.l85;
+		ctx.beginPath();
+		ctx.moveTo(this.textBlock.canvasMaxes.xMin, charData.view.dy);
+		ctx.lineTo(this.textBlock.canvasMaxes.xMax, charData.view.dy);
+		ctx.closePath();
+		ctx.stroke();
+		// log(`displayCanvas.drawDisplayLineExtras`, 'end');
 	}
 
-	displayCanvas.ctx.strokeRect(drawX, drawY, drawWidth, drawHeight);
+	drawDisplayCharacterExtras(ctx, charData) {
+		// log(`displayCanvas.drawDisplayCharacterExtras`, 'start');
+		const project = getCurrentProject();
+		const settings = project.settings.font;
+		const scale = charData.view.dz;
+		let drawWidth = charData.widths.advance * scale;
+		let drawHeight = project.totalVertical * scale;
+		let drawY = charData.view.dy - settings.ascent * scale;
+		let drawX = charData.view.dx;
+		const drawK = charData.widths.kern * scale * -1;
 
-	// log(`displayCanvas.drawDisplayCharacterExtras`, 'end');
-}
+		// log(`\t drawing ${charData.char}`);
 
-function drawDisplayCharacter(charData) {
-	// log(`displayCanvas.drawDisplayCharacter`, 'start');
-	// log(this);
-	// log(charData);
-	// log(`THIS CONTEXT`);
-	// log(displayCanvas.ctx);
-	// const settings = getCurrentProject().settings.font;
-	const item = charData.item;
+		if (charData.widths.kern) {
+			ctx.fillStyle = 'orange';
+			ctx.globalAlpha = 0.3;
+			ctx.fillRect(drawX + drawWidth - drawK, drawY, drawK, drawHeight);
+			ctx.globalAlpha = 1;
+		}
 
-	// TODO combineAllShapes
-	// const combineAllShapes = td.combineAllShapes || false;
-	// const combineAllShapes = false;
+		ctx.fillStyle = 'transparent';
+		ctx.strokeStyle = accentColors.blue.l85;
+		ctx.lineWidth = 1;
 
-	// log(`charData.view`);
-	// log(`dx: ${charData.view.dx}, dy: ${charData.view.dy}, dz: ${charData.view.dz}`);
-	const view = clone(charData.view);
-	// log(`cloned view`);
-	// log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
+		if (this.drawCrisp) {
+			drawX = makeCrisp(drawX);
+			drawY = makeCrisp(drawY);
+			drawWidth = round(drawWidth);
+			drawHeight = round(drawHeight);
+		}
 
-	// log(`displayCanvas.pagePadding: ${displayCanvas.pagePadding}`);
+		ctx.strokeRect(drawX, drawY, drawWidth, drawHeight);
 
-	// view.dx *= view.dz;
-	// view.dx += displayCanvas.pagePadding;
-	// view.dy += settings.ascent + displayCanvas.pagePadding;
-	// view.dy *= view.dz;
-	// view.dy += displayCanvas.pagePadding;
-
-	// log(`\t drawing ${charData.char}`);
-	// log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
-
-	if (item) {
-		displayCanvas.ctx.fillStyle = uiColors.enabled.resting.text;
-		displayCanvas.ctx.strokeStyle = 'transparent';
-
-		// TODO combineAllShapes
-		// if (combineAllShapes) {
-		// 	if (!this.cache[charData.char]) {
-		// 		this.cache[charData.char] = item.clone().combineAllShapes(true);
-		// 	}
-
-		// 	this.cache[charData.char].drawGlyph(displayCanvas.ctx, view, 1, true);
-		// } else {
-		// 	drawGlyph(item, displayCanvas.ctx, view, 1, true);
-		// }
-
-		drawGlyph(item, displayCanvas.ctx, view, 1, true);
+		// log(`displayCanvas.drawDisplayCharacterExtras`, 'end');
 	}
 
-	// log(`displayCanvas.drawDisplayCharacter`, 'end');
+	drawDisplayCharacter(ctx, charData) {
+		// log(`displayCanvas.drawDisplayCharacter`, 'start');
+		// log(this);
+		// log(charData);
+		// log(`THIS CONTEXT`);
+		// log(ctx);
+		// const settings = getCurrentProject().settings.font;
+		const item = charData.item;
+
+		// log(`charData.view`);
+		// log(`dx: ${charData.view.dx}, dy: ${charData.view.dy}, dz: ${charData.view.dz}`);
+		const view = clone(charData.view);
+		// log(`cloned view`);
+		// log(`dx: ${view.dx}, dy: ${view.dy}, dz: ${view.dz}`);
+
+		if (item) {
+			ctx.fillStyle = uiColors.enabled.resting.text;
+			ctx.strokeStyle = 'transparent';
+			drawGlyph(item, ctx, view, 1, true);
+		}
+
+		// log(`displayCanvas.drawDisplayCharacter`, 'end');
+	}
+
+	// --------------------------------------------------------------
+	// Update options
+	// --------------------------------------------------------------
+
+	// createImage() {
+	// 	const imageData = this.canvas.toDataURL();
+
+	// 	const win = window.open(document.location.href, 'Glyphr Test Drive');
+
+	// 	win.document.write(
+	// 		'<!DOCTYPE html><html>' +
+	// 			'<head><title>Glyphr - Test Drive Image</title></head>' +
+	// 			'<body style="padding:40px; text-align:center;">' +
+	// 			'<img src="' +
+	// 			imageData +
+	// 			'" title="Glyphr Test Drive" style="border:1px solid #f6f6f6;">' +
+	// 			'</html>'
+	// 	);
+	// }
 }
-
-// --------------------------------------------------------------
-// Update options
-// --------------------------------------------------------------
-
-// function createImage() {
-// 	const imageData = displayCanvas.canvas.toDataURL();
-
-// 	const win = window.open(document.location.href, 'Glyphr Test Drive');
-
-// 	win.document.write(
-// 		'<!DOCTYPE html><html>' +
-// 			'<head><title>Glyphr - Test Drive Image</title></head>' +
-// 			'<body style="padding:40px; text-align:center;">' +
-// 			'<img src="' +
-// 			imageData +
-// 			'" title="Glyphr Test Drive" style="border:1px solid #f6f6f6;">' +
-// 			'</html>'
-// 	);
-// }

@@ -55,16 +55,8 @@ export function makePage_LivePreview() {
 }
 
 export function livePreviewPageWindowResize() {
-	log(`livePreviewPageWindowResize`, 'start');
-	const wrapper = document.querySelector('.live-preview-page__canvas-wrapper');
+	// log(`livePreviewPageWindowResize`, 'start');
 	const displayCanvas = document.querySelector('display-canvas');
-	const clientRect = wrapper.getClientRects()[0];
-	log(`clientRect.width: ${clientRect.width}`);
-	log(`clientRect.height: ${clientRect.height}`);
-
-	displayCanvas.setAttribute('width', clientRect.width);
-	displayCanvas.setAttribute('height', clientRect.height);
-	displayCanvas.updateTextBlock();
-	displayCanvas.redraw();
-	log(`livePreviewPageWindowResize`, 'end');
+	displayCanvas.handleCanvasResize();
+	// log(`livePreviewPageWindowResize`, 'end');
 }

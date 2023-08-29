@@ -13,7 +13,6 @@ import { setCursor } from './cursors';
 import { cXsX, drawEmVerticalLine, sXcX, sYcY } from './edit_canvas';
 
 const contextCharacters = {
-	ctx: false,
 	chars: '',
 	currentGlyphChar: '',
 	canvasHotspots: [],
@@ -40,7 +39,6 @@ export function drawContextCharacters(ctx) {
 
 	const project = getCurrentProject();
 	const ascent = project.settings.font.ascent;
-	contextCharacters.ctx = ctx;
 	contextCharacters.currentGlyphChar = editor.selectedItem.char;
 	contextCharacters.chars = editor.selectedItem.contextCharacters;
 	const view = editor.view;
@@ -80,6 +78,7 @@ export function drawContextCharacters(ctx) {
 				fontSize: view.dz * project.totalVertical,
 			},
 			canvasMaxes: leftMaxes,
+			ctx: ctx,
 			rounding: false,
 			drawLineExtras: drawContextCharacterLeftLineExtras,
 			drawCharacterExtras: drawContextCharacterExtras,
@@ -95,7 +94,7 @@ export function drawContextCharacters(ctx) {
 			showCharacter: true,
 		});
 
-		// contextCharacters.leftBlock.drawCanvasMaxes(contextCharacters.ctx);
+		// contextCharacters.leftBlock.drawCanvasMaxes(ctx);
 	}
 
 	// Draw right block
@@ -120,6 +119,7 @@ export function drawContextCharacters(ctx) {
 				fontSize: view.dz * project.totalVertical,
 			},
 			canvasMaxes: rightMaxes,
+			ctx: ctx,
 			rounding: true,
 			drawLineExtras: drawContextCharacterRightLineExtras,
 			drawCharacterExtras: drawContextCharacterExtras,
@@ -135,7 +135,7 @@ export function drawContextCharacters(ctx) {
 			showCharacter: true,
 		});
 
-		// contextCharacters.rightBlock.drawCanvasMaxes(contextCharacters.ctx);
+		// contextCharacters.rightBlock.drawCanvasMaxes(ctx);
 	}
 
 	// Draw label for selected item
@@ -144,6 +144,7 @@ export function drawContextCharacters(ctx) {
 		const alpha = transparencyToAlpha(project.settings.app.contextCharacters.guidesTransparency);
 		const textColor = getColorFromRGBA(contextCharacters.labelColors.selected, alpha);
 		drawCharacterNameExtra(
+			ctx,
 			item.name.replace(/latin /i, ''),
 			view.dx,
 			item.advanceWidth * view.dz,
@@ -152,9 +153,9 @@ export function drawContextCharacters(ctx) {
 		);
 
 		const lineColor = getColorFromRGBA(contextCharacters.labelColors.link, alpha);
-		contextCharacters.ctx.fillStyle = lineColor;
-		drawEmVerticalLine(contextCharacters.ctx, 0, editor.view, false);
-		drawEmVerticalLine(contextCharacters.ctx, editor.selectedItem.advanceWidth, editor.view, false);
+		ctx.fillStyle = lineColor;
+		drawEmVerticalLine(ctx, 0, editor.view, false);
+		drawEmVerticalLine(ctx, editor.selectedItem.advanceWidth, editor.view, false);
 	}
 
 	// log('drawContextCharacters', 'end');
@@ -248,7 +249,7 @@ export function getItemStringAdvanceWidth(textString) {
  * @param {Object} char - Individual character from a text block
  * @param {TextBlock} block - text block to draw
  */
-function drawContextCharacterLeftLineExtras(char, block) {
+function drawContextCharacterLeftLineExtras(ctx, char, block) {
 	// log(`drawContextCharacterLeftLineExtras`, 'start');
 	// log(`char: ${char}`);
 	// log(`block: ${block}`);
@@ -257,7 +258,7 @@ function drawContextCharacterLeftLineExtras(char, block) {
 	// Draw baseline from first char to selected item
 	if (editor.project.settings.app.contextCharacters.showGuides) {
 		drawBaseline(
-			contextCharacters.ctx,
+			ctx,
 			char.view.dx - 20,
 			char.view.dy,
 			editor.view.dx - char.view.dx + 20
@@ -277,7 +278,7 @@ function drawContextCharacterLeftLineExtras(char, block) {
 		let rightX = kern;
 		rightX = v.dx + rightX * v.dz;
 
-		drawCharacterKernExtra(contextCharacters.ctx, -kern, rightX, v.dz);
+		drawCharacterKernExtra(ctx, -kern, rightX, v.dz);
 	}
 	// log(`drawContextCharacterLeftLineExtras`, 'end');
 }
@@ -286,7 +287,7 @@ function drawContextCharacterLeftLineExtras(char, block) {
  * Draws the Guide Lines and Labels ("Extras") for the right half
  * @param {Object} char - Individual character from a text block
  */
-function drawContextCharacterRightLineExtras(char, block) {
+function drawContextCharacterRightLineExtras(ctx, char, block) {
 	// log(`drawContextCharacterRightLineExtras`, 'start');
 
 	// Draw baseline from the first char to the end of the right-hand group
@@ -300,7 +301,7 @@ function drawContextCharacterRightLineExtras(char, block) {
 	// log(`underlineWidth: ${underlineWidth}`);
 
 	if (editor.project.settings.app.contextCharacters.showGuides) {
-		drawBaseline(contextCharacters.ctx, char.view.dx, char.view.dy, underlineWidth + 20);
+		drawBaseline(ctx, char.view.dx, char.view.dy, underlineWidth + 20);
 	}
 
 	// Kern data
@@ -313,7 +314,7 @@ function drawContextCharacterRightLineExtras(char, block) {
 		let rightX = kern + editor.selectedItem.advanceWidth;
 		rightX = v.dx + rightX * v.dz;
 
-		drawCharacterKernExtra(contextCharacters.ctx, -kern, rightX, v.dz);
+		drawCharacterKernExtra(ctx, -kern, rightX, v.dz);
 	}
 	// log(`drawContextCharacterRightLineExtras`, 'end');
 }
@@ -327,7 +328,7 @@ function drawBaseline(ctx, x, y, width) {
  * Draws the Guide Lines and Labels ("Extras") for each text block character
  * @param {Object} char - Individual character from a text block
  */
-function drawContextCharacterExtras(char, roundUp = 'none') {
+function drawContextCharacterExtras(ctx, char, roundUp = 'none') {
 	// log('drawContextCharacterExtras', 'start');
 	// log(char);
 
@@ -353,18 +354,18 @@ function drawContextCharacterExtras(char, roundUp = 'none') {
 		else name = editor.project.getItemName(`glyph-${charsToHexArray(char.char)}`, true);
 		name = name.replace(/latin /i, '');
 		// log(`name: ${name}`);
-		drawCharacterNameExtra(name, currentX, advanceWidth, color, linkID);
+		drawCharacterNameExtra(ctx, name, currentX, advanceWidth, color, linkID);
 
 		// Draw vertical lines
 		// log(`drawing vertical line`);
-		contextCharacters.ctx.fillStyle = color;
-		drawEmVerticalLine(contextCharacters.ctx, cXsX(rightX), editor.view, roundUp);
-		drawEmVerticalLine(contextCharacters.ctx, cXsX(currentX), editor.view, roundUp);
+		ctx.fillStyle = color;
+		drawEmVerticalLine(ctx, cXsX(rightX), editor.view, roundUp);
+		drawEmVerticalLine(ctx, cXsX(currentX), editor.view, roundUp);
 
 		// Draw kern notation
 		if (char.widths.kern) {
 			// log(`drawing kern data`);
-			drawCharacterKernExtra(contextCharacters.ctx, char.widths.kern, rightX, char.view.dz);
+			drawCharacterKernExtra(ctx, char.widths.kern, rightX, char.view.dz);
 		}
 	}
 
@@ -379,7 +380,7 @@ function drawContextCharacterExtras(char, roundUp = 'none') {
  * @param {String} color - what color to draw the name
  * @param {Boolean} registerHotspot - register a hotspot for this name?
  */
-function drawCharacterNameExtra(text, currentX, advanceWidth, color, hotspotItemID = false) {
+function drawCharacterNameExtra(ctx, text, currentX, advanceWidth, color, hotspotItemID = false) {
 	// log('drawCharacterNameExtra', 'start');
 	// log(`text: ${text}`);
 	// log(`currentX: ${currentX}`);
@@ -387,7 +388,6 @@ function drawCharacterNameExtra(text, currentX, advanceWidth, color, hotspotItem
 	// log(`color: ${color}`);
 	// log(`hotspotItemID: ${hotspotItemID}`);
 
-	const ctx = contextCharacters.ctx;
 	const textWidth = ctx.measureText(text).width;
 	const topY = sYcY(getCurrentProject().settings.font.descent - 60);
 	const textX = currentX + (advanceWidth - textWidth) / 2; // center the glyph name
@@ -467,14 +467,14 @@ export function drawCharacterKernExtra(ctx, kern, rightX, scale) {
  * Draws a single character to the edit canvas
  * @param {Object} charData - Text Block character
  */
-function drawSingleContextCharacter(charData) {
+function drawSingleContextCharacter(ctx, charData) {
 	// log('drawSingleContextCharacter', 'start');
 	// log(charData);
 
 	if (charData.isVisible && charData.item) {
 		drawGlyph(
 			charData.item,
-			contextCharacters.ctx,
+			ctx,
 			charData.view,
 			transparencyToAlpha(getCurrentProject().settings.app.contextCharacters.characterTransparency)
 		);
@@ -599,7 +599,7 @@ export function findAndUnderlineHotspot(cx, cy) {
 	// log('findAndUnderlineHotspot', 'start');
 	// log(`cx:${cx} \t cy:${cy}`);
 	const hs = isHotspotHere(cx, cy);
-	const ctx = contextCharacters.ctx;
+	const ctx = getCurrentProjectEditor().editCanvas.ctx;
 	// log(`${hs}`);
 	if (hs) {
 		const t = getCurrentProject().settings.app.contextCharacters.guidesTransparency;
