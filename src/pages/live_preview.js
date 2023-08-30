@@ -3,7 +3,7 @@ import { makeNavButton } from '../project_editor/navigator.js';
 import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { makePanel_LivePreview } from '../panels/live_preview.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeDisplayCanvasFromTextBlockOptions } from '../display_canvas/text_block_options.js';
+import { DisplayCanvas } from '../display_canvas/display_canvas.js';
 
 /**
  * Page > Live preview
@@ -37,7 +37,7 @@ export function makePage_LivePreview() {
 
 	let canvasWrapper = content.querySelector('.live-preview-page__canvas-wrapper');
 	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
-	canvasWrapper.appendChild(makeDisplayCanvasFromTextBlockOptions(livePreviewOptions));
+	canvasWrapper.appendChild(new DisplayCanvas(livePreviewOptions));
 
 	window.addEventListener('resize', livePreviewPageWindowResize);
 
@@ -57,6 +57,6 @@ export function makePage_LivePreview() {
 export function livePreviewPageWindowResize() {
 	// log(`livePreviewPageWindowResize`, 'start');
 	const displayCanvas = document.querySelector('display-canvas');
-	displayCanvas.handleCanvasResize();
+	displayCanvas.resizeAndRedraw();
 	// log(`livePreviewPageWindowResize`, 'end');
 }

@@ -24,21 +24,28 @@ export class DisplayCanvas extends HTMLElement {
 		// log(attributes);
 		this.textBlockOptions = new TextBlockOptions();
 		Object.keys(attributes).forEach((key) => {
-			if (key !== 'width' && key !== 'height') {
-				this.setAttribute(caseCamelToKebab(key), attributes[key]);
-			}
-			if (this.textBlockOptions[key]) {
-				this.textBlockOptions[key] = attributes[key];
+			if (key !== '_text') {
+				if (key !== 'width' && key !== 'height') {
+					this.setAttribute(caseCamelToKebab(key), attributes[key]);
+				}
+				if (this.textBlockOptions[key]) {
+					this.textBlockOptions[key] = attributes[key];
+				}
+			} else {
+				this.textBlockOptions.text = attributes._text;
+				this.setAttribute('text', this.textBlockOptions.text);
 			}
 		});
 		this.isSetUp = false;
+		// log(this);
 		// log(`DisplayCanvas.constructor`, 'end');
 	}
 
-	setUp() {
-		// log(`DisplayCanvas.setUp`, 'start');
-		// log(this.textBlockOptions);
-
+	/**
+	 * Draw the canvas when it's loaded
+	 */
+	connectedCallback() {
+		// log(`DisplayCanvas.connectedCallback`, 'start');
 		// Put it all together
 		const shadow = this.attachShadow({ mode: 'open' });
 		const styles = makeElement({ tag: 'style', innerHTML: style });
@@ -52,23 +59,28 @@ export class DisplayCanvas extends HTMLElement {
 
 		// Finish
 		this.isSetUp = true;
-		// log(`DisplayCanvas.setUp`, 'end');
+		this.resizeAndRedraw();
+		// log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
-	handleCanvasResize() {
-		// log(`DisplayCanvas.handleCanvasResize`, 'start');
+	resizeAndRedraw() {
+		// log(`DisplayCanvas.resizeAndRedraw`, 'start');
+		if (!this.isSetUp) {
+			// log('DisplayCanvas.redraw', 'end');
+			return;
+		}
 		this.updateTextBlock();
 		this.updateCanvasSize();
 		this.redraw();
-		// log(`DisplayCanvas.handleCanvasResize`, 'end');
+		// log(`DisplayCanvas.resizeAndRedraw`, 'end');
 	}
 
 	updateCanvasSize() {
 		// log(`updateCanvasSize`, 'start');
+		// log(`this.textBlockOptions`);
+		// log(this.textBlockOptions);
 		// log(`this.parentElement`);
 		// log(this.parentElement);
-		// log('this.textBlock');
-		// log(this.textBlock);
 		const clientRect = this?.parentElement?.getClientRects()[0];
 		// log(clientRect);
 		const pageHeight = this.textBlockOptions.pageHeight;
@@ -95,7 +107,7 @@ export class DisplayCanvas extends HTMLElement {
 		} else if (!isNaN(parseInt(pageWidth))) {
 			newWidth = parseInt(pageWidth);
 		}
-		if(this.widthAdjustment) newWidth += this.widthAdjustment;
+		if (this.widthAdjustment) newWidth += this.widthAdjustment;
 
 		// Assign new values
 		// log(`newHeight: ${newHeight}`);
@@ -107,27 +119,6 @@ export class DisplayCanvas extends HTMLElement {
 
 		// log(this);
 		// log(`updateCanvasSize`, 'end');
-	}
-
-	/**
-	 * Draw the canvas when it's loaded
-	 */
-	connectedCallback() {
-		// log(`DisplayCanvas.connectedCallback`, 'start');
-		window.setTimeout(() => {
-			// log(`DisplayCanvas.connectedCallback SETTIMEOUT HANDLER`, 'start');
-			// log(`this.parentElement`);
-			// log(this.parentElement);
-			// log(`this.parentElement.clientRects`);
-			// log(this.parentElement.getClientRects()[0]);
-
-			this.setUp();
-			this.updateTextBlock();
-			this.updateCanvasSize();
-			this.redraw();
-			// log(`DisplayCanvas.connectedCallback SETTIMEOUT HANDLER`, 'end');
-		}, 10);
-		// log(`DisplayCanvas.connectedCallback`, 'end');
 	}
 
 	updateTextBlock() {
@@ -196,7 +187,7 @@ export class DisplayCanvas extends HTMLElement {
 			'show-page-extras',
 			'show-line-extras',
 			'show-character-extras',
-			'width-adjustment'
+			'width-adjustment',
 		];
 	}
 
@@ -213,39 +204,47 @@ export class DisplayCanvas extends HTMLElement {
 
 		if (attributeName === 'text') {
 			this.textBlockOptions.text = newValue;
+			this.resizeAndRedraw();
 		}
 
 		if (attributeName === 'font-size') {
 			this.textBlockOptions.fontSize = Math.max(parseInt(newValue), 1);
+			this.resizeAndRedraw();
 		}
 
 		if (attributeName === 'line-gap') {
 			this.textBlockOptions.lineGap = Math.max(parseInt(newValue), 0);
+			this.resizeAndRedraw();
 		}
 
 		if (attributeName === 'page-padding') {
 			this.textBlockOptions.pagePadding = Math.max(parseInt(newValue), 0);
+			this.resizeAndRedraw();
 		}
 
 		if (attributeName === 'show-page-extras') {
 			this.textBlockOptions.showPageExtras = newValue === 'true';
+			this.redraw();
 		}
 
 		if (attributeName === 'show-line-extras') {
 			this.textBlockOptions.showLineExtras = newValue === 'true';
+			this.redraw();
 		}
 
 		if (attributeName === 'show-character-extras') {
 			this.textBlockOptions.showCharacterExtras = newValue === 'true';
+			this.redraw();
 		}
 
 		if (attributeName === 'width-adjustment') {
 			this.widthAdjustment = parseInt(newValue);
+			this.resizeAndRedraw();
 		}
 
-		if (this.isSetUp) {
-			this.handleCanvasResize();
-		}
+		// if (this.isSetUp) {
+		// 	this.resizeAndRedraw();
+		// }
 
 		// log(`DisplayCanvas.attributeChangeCallback`, 'end');
 	}
@@ -255,7 +254,10 @@ export class DisplayCanvas extends HTMLElement {
 	 */
 	redraw() {
 		// log('DisplayCanvas.redraw', 'start');
-
+		if (!this.isSetUp) {
+			// log('DisplayCanvas.redraw', 'end');
+			return;
+		}
 		// log(`THIS CONTEXT`);
 		// log(this.ctx);
 
