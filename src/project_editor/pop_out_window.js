@@ -4,7 +4,7 @@ import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
 import style from './pop-out-window.css?inline';
 import color from '../common/colors.css?inline';
 import reset from '../common/resets.css?inline';
-import { makeDisplayCanvasFromTextBlockOptions } from '../display_canvas/text_block_options';
+import { DisplayCanvas } from '../display_canvas/display_canvas';
 
 export function openPopOutWindow() {
 	// log(`openPopOutWindow`, 'start');
@@ -47,7 +47,7 @@ export function openPopOutWindow() {
 		// log(`appending new display canvas`);
 		// log(options);
 		options.widthAdjustment = -20;
-		popWrapper.appendChild(makeDisplayCanvasFromTextBlockOptions(options));
+		popWrapper.appendChild(new DisplayCanvas(options));
 	});
 
 	// Update buttons
@@ -129,7 +129,7 @@ export function livePreviewPopOutWindowResize() {
 	// log(allDisplayCanvases);
 	allDisplayCanvases.forEach((displayCanvas) => {
 		// log(`displayCanvas.options.name: ${displayCanvas.getAttribute('title')}`);
-		displayCanvas.handleCanvasResize(-50);
+		displayCanvas.resizeAndRedraw(-50);
 	});
 	// log(`livePreviewPopOutWindowResize`, 'end');
 }
