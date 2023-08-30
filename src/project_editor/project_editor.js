@@ -76,17 +76,21 @@ export class ProjectEditor {
 				name: 'Title',
 				text: 'Pack my box with five dozen liquor waffle coffins.',
 				fontSize: 128,
+				showPageExtras: true,
 			}),
 			new TextBlockOptions({
 				name: 'Body',
 				text: '{{english_10}}',
 				fontSize: 18,
+				showPageExtras: true,
 			}),
-			new TextBlockOptions({text: 'hi'}),
+			new TextBlockOptions({ text: 'hi' }),
 		];
 
 		// Live preview
-		this.livePreviewPageOptions = new TextBlockOptions({ text: 'A B C' });
+		this.livePreviewPageOptions = new TextBlockOptions({
+			text: 'A B C',
+		});
 
 		// Ghost Canvas
 		this.canvasSize = 2000;

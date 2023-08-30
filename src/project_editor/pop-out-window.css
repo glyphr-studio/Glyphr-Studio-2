@@ -21,6 +21,7 @@ body:hover display-canvas {
 }
 
 display-canvas {
+	box-sizing: content-box;
 	display: inline-block;
 	margin: 10px;
 	border: 1px solid white;

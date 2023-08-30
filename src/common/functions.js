@@ -270,6 +270,43 @@ export function remove(base = '', searchTerm = '') {
 }
 
 /**
+ * Converts camelCaseString to kebab-case-string
+ * @param {String} camel - string to convert
+ * @returns {String}
+ */
+export function caseCamelToKebab(camel = '') {
+	let kebab = '';
+	for (let i = 0; i < camel.length; i++) {
+		let char = camel.charCodeAt(i);
+		if (char <= 0x5A && char >= 0x41) {
+			kebab += '-';
+		}
+		kebab += camel.charAt(i).toLowerCase();
+	}
+
+	return kebab;
+}
+
+/**
+ * Converts kebab-case-string to camelCaseString
+ * @param {String} kebab - string to convert
+ * @returns {String}
+ */
+export function caseKebabToCamel(kebab = '') {
+	let camel = '';
+	for (let i = 0; i < camel.length; i++) {
+		if (kebab.charAt(i) === '-') {
+			i++;
+			camel += kebab.charAt(i).toUpperCase();
+		} else {
+			camel += kebab.charAt(i);
+		}
+	}
+
+	return camel;
+}
+
+/**
  * Checks to see if something is a value, and not null or undefined
  * @param {*} val - variable to test
  * @returns {Boolean}

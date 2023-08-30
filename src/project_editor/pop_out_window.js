@@ -46,6 +46,7 @@ export function openPopOutWindow() {
 	editor.popOutLivePreviews.forEach((options) => {
 		// log(`appending new display canvas`);
 		// log(options);
+		options.widthAdjustment = -20;
 		popWrapper.appendChild(makeDisplayCanvasFromTextBlockOptions(options));
 	});
 
@@ -128,7 +129,7 @@ export function livePreviewPopOutWindowResize() {
 	// log(allDisplayCanvases);
 	allDisplayCanvases.forEach((displayCanvas) => {
 		// log(`displayCanvas.options.name: ${displayCanvas.getAttribute('title')}`);
-		displayCanvas.handleCanvasResize();
+		displayCanvas.handleCanvasResize(-50);
 	});
 	// log(`livePreviewPopOutWindowResize`, 'end');
 }
