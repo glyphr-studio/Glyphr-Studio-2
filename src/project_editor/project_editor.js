@@ -33,13 +33,18 @@ export class ProjectEditor {
 	 * @param {Object} newProjectEditor
 	 */
 	constructor(newProjectEditor = {}) {
-		// log('ProjectEditor.constructor', 'start');
+		log('ProjectEditor.constructor', 'start');
+		log(`\n⮟newProjectEditor⮟`);
+		log(newProjectEditor);
+
+		// Project
+		this.project = false;
+		if(newProjectEditor.project) this.project = newProjectEditor.project;
+		// log(`this.project`);
+		// log(this.project);
 
 		// History
 		this.history = new History();
-
-		// Project
-		this.project = newProjectEditor.project;
 
 		// Saving
 		this.projectSaved = true;
@@ -71,26 +76,10 @@ export class ProjectEditor {
 
 		// Pop Out Window
 		this.popOutWindow = false;
-		this.popOutLivePreviews = [
-			new TextBlockOptions({
-				name: 'Title',
-				text: 'Pack my box with five dozen liquor waffle coffins.',
-				fontSize: 128,
-				showPageExtras: true,
-			}),
-			new TextBlockOptions({
-				name: 'Body',
-				text: '{{english_10}}',
-				fontSize: 18,
-				showPageExtras: true,
-			}),
-			new TextBlockOptions({ text: 'hi' }),
-		];
 
-		// Live preview
-		this.livePreviewPageOptions = new TextBlockOptions({
-			text: 'A B C',
-		});
+		// Live previews - livePreviews[0] is for the Live Preview Page
+		// The rest are for the Pop Out Window
+		this.livePreviews = false;
 
 		// Ghost Canvas
 		this.canvasSize = 2000;
@@ -118,8 +107,9 @@ export class ProjectEditor {
 		// Dialogs
 		this.closeAllDialogsOverride = false;
 
-		// log(this);
-		// log('ProjectEditor.constructor', 'end');
+		log(`\n⮟this⮟`);
+		log(this);
+		log('ProjectEditor.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -886,6 +876,68 @@ export class ProjectEditor {
 
 		// log(`getEditCanvasWrapperBounds`, 'end');
 		return false;
+	}
+
+	// --------------------------------------------------------------
+	// Live Previews
+	// --------------------------------------------------------------
+	/**
+	 * editor.livePreviews holds all the live previews for both the
+	 * Live Previews page and the Pop Out Live Previews.
+	 * editor.livePreviews[0] is reserved for the Live Previews Page.
+	 * The rest are for the Pop Out Window.
+	 */
+	get livePreviews() {
+		// log(`ProjectEditor GET livePreviews`, 'start');
+		// log(`this._livePreviews: ${this._livePreviews}`);
+		// log(`this._livePreviews.length: ${this._livePreviews.length}`);
+		// log(`Array.isArray(this._livePreviews): ${Array.isArray(this._livePreviews)}`);
+		// log(`this?.project?.settings?.app?.livePreviews`);
+		// log(this?.project?.settings?.app?.livePreviews);
+		if (
+			!Array.isArray(this._livePreviews) ||
+			this._livePreviews.length === 0 ||
+			!this._livePreviews
+		) {
+			this._livePreviews = [];
+			if (this.project?.settings?.app?.livePreviews.length) {
+				this._livePreviews = this.project.settings.app.livePreviews.map(
+					(preview) => new TextBlockOptions(preview)
+				);
+			}
+			if (this._livePreviews[0].text === '') {
+				this.livePreviews[0] = new TextBlockOptions({
+					text: 'the five boxing wizards jump quickly',
+				});
+			}
+		}
+
+		// log(`Returning:`);
+		// log(this._livePreviews);
+		// log(`ProjectEditor GET livePreviews`, 'end');
+		return this._livePreviews;
+	}
+
+	set livePreviews(newPreviews) {
+		if (!Array.isArray(newPreviews)) {
+			this._livePreviews = [];
+		} else {
+			this._livePreviews = newPreviews.map((preview) => new TextBlockOptions(preview));
+		}
+	}
+
+	get livePreviewPageOptions() {
+		if (!this.livePreviews.length) {
+			this.livePreviews[0] = new TextBlockOptions({
+				text: 'the five boxing wizards jump quickly',
+			});
+		}
+
+		return this.livePreviews[0];
+	}
+
+	set livePreviewPageOptions(newOptions = {}) {
+		this.livePreviews[0] = new TextBlockOptions(newOptions);
 	}
 
 	// --------------------------------------------------------------

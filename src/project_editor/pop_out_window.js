@@ -43,11 +43,15 @@ export function openPopOutWindow() {
 	// log(popWrapper);
 	// log(popWrapper.getClientRects()[0]);
 
-	editor.popOutLivePreviews.forEach((options) => {
-		// log(`appending new display canvas`);
-		// log(options);
-		options.widthAdjustment = -20;
-		popWrapper.appendChild(new DisplayCanvas(options));
+	editor.livePreviews.forEach((options, index) => {
+		// index 0 is for the Live Previews Page
+		// the rest are for the Pop Out Window
+		if (index !== 0) {
+			// log(`appending new display canvas`);
+			// log(options);
+			options.widthAdjustment = -20;
+			popWrapper.appendChild(new DisplayCanvas(options));
+		}
 	});
 
 	// Update buttons

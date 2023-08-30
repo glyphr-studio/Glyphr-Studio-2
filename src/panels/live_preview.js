@@ -7,6 +7,7 @@
 import { getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
 import { caseCamelToKebab } from '../common/functions';
+import { TextBlockOptions } from '../display_canvas/text_block_options';
 import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window';
 import { makeDirectCheckbox, makeSingleLabel } from './cards';
 
@@ -162,7 +163,8 @@ function makePermutations(upper) {
 }
 
 function makeLivePreviewOptions() {
-	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
+	const editor = getCurrentProjectEditor();
+	const livePreviewOptions = editor.livePreviewPageOptions;
 
 	// Text
 	let glyphsLabel = makeSingleLabel('Text:');
@@ -208,7 +210,8 @@ function makeLivePreviewOptions() {
 }
 
 function makeShowOptions() {
-	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
+	const editor = getCurrentProjectEditor();
+	const livePreviewOptions = editor.livePreviewPageOptions;
 	let glyphOutlineLabel = makeSingleLabel('Glyph bounding box:');
 	let glyphOutlineToggle = makeDirectCheckbox(
 		livePreviewOptions,
@@ -245,52 +248,4 @@ function makeShowOptions() {
 		pageOutlineLabel,
 		pageOutlineToggle,
 	];
-
-	/*
-	const fontSettings = getCurrentProject().settings.font;
-	const lineGap = fontSettings.lineGap;
-	let padSize = 20;
-	let showCharacterExtras = false;
-	let showLineExtras = false;
-	let showPageExtras = false;
-	let combineGlyphShapes = false;
-
-
-	let content = '<table class="detail">';
-	content +=
-		'<tr><td> font size <span class="unit">(px)</span> </td><td><input type="number" value="' +
-		fontsize +
-		'" onchange="changeFontScale(this.value); redraw_TestDrive();"></td></tr>';
-	content +=
-		'<tr><td> 96dpi font size <span class="unit">(pt)</span> </td><td><input type="number" disabled="disabled" id="roughPointSize" valu="75"/></td></tr>';
-	content +=
-		'<tr><td> line gap <span class="unit">(em units)</span> </td><td><input type="number" value="' +
-		lineGap +
-		'" onchange="changeLineGap(this.value); redraw_TestDrive();"></td></tr>';
-	// content += '<tr><td> glyph spacing <span class="unit">(em units)</span> </td><td><input type="number" value="'+padSize+'" onchange="padSize=this.value*1; redraw_TestDrive();"></td></tr>';
-	content +=
-		'<tr><td> <label for="showCharacterExtras">show glyph boxes</label> </td><td>' +
-		checkUI('showCharacterExtras', showCharacterExtras, true) +
-		'</td></tr>';
-	content +=
-		'<tr><td> <label for="showLineExtras">show baseline</label> </td><td>' +
-		checkUI('showLineExtras', showLineExtras, true) +
-		'</td></tr>';
-	content +=
-		'<tr><td> <label for="showPageExtras">show page borders</label> </td><td>' +
-		checkUI('showPageExtras', showPageExtras, true) +
-		'</td></tr>';
-
-	content +=
-		'<tr><td> <label for="combineGlyphShapes">preview combine glyph shapes</label>' +
-		helpUI(combineMessage) +
-		' </td><td>' +
-		checkUI('combineGlyphShapes', combineGlyphShapes, false) +
-		'</td></tr>';
-
-	content +=
-		'<tr><td colspan=2><button onclick="createImage();">generate png file</button></td></tr>';
-	content += '</table>';
-	return content;
-	*/
 }

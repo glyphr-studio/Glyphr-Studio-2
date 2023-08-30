@@ -44,6 +44,7 @@ export function glyphrStudioOnLoad() {
 			registerCustomComponents();
 			// Load project
 			GSApp.setUp();
+			log(`\n⮟GSApp⮟`);
 			log(GSApp);
 		} else {
 			log('did NOT pass pre-checks');
