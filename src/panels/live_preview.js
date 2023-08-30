@@ -6,6 +6,7 @@
 
 import { getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
+import { caseCamelToKebab } from '../common/functions';
 import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window';
 import { makeDirectCheckbox, makeSingleLabel } from './cards';
 
@@ -83,7 +84,7 @@ function updateDisplayCanvasGlyphs(text) {
 	}
 	let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 	if (displayCanvas) {
-		displayCanvas.setAttribute('text', text);
+		displayCanvas.setAttribute(caseCamelToKebab('text'), text);
 	}
 }
 
@@ -156,7 +157,7 @@ function makePermutations(upper) {
 		}
 		result += '\n';
 	}
-
+	result = result.substring(0, result.length - 1);
 	return result;
 }
 
@@ -164,7 +165,7 @@ function makeLivePreviewOptions() {
 	const livePreviewOptions = getCurrentProjectEditor().livePreviewPageOptions;
 
 	// Text
-	let glyphsLabel = makeSingleLabel('Preview glyphs:');
+	let glyphsLabel = makeSingleLabel('Text:');
 	let glyphsInput = makeElement({
 		tag: 'textarea',
 		id: 'livePreviewGlyphsInput',
@@ -174,7 +175,7 @@ function makeLivePreviewOptions() {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
 		livePreviewOptions.text = newValue;
-		displayCanvas.setAttribute('text', newValue);
+		displayCanvas.setAttribute(caseCamelToKebab('text'), newValue);
 	});
 
 	// Font size
@@ -187,7 +188,7 @@ function makeLivePreviewOptions() {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
 		livePreviewOptions.fontSize = newValue;
-		displayCanvas.setAttribute('fontSize', newValue);
+		displayCanvas.setAttribute(caseCamelToKebab('fontSize'), newValue);
 	});
 
 	// Line gap
@@ -200,7 +201,7 @@ function makeLivePreviewOptions() {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
 		let newValue = event.target.value;
 		livePreviewOptions.lineGap = newValue;
-		displayCanvas.setAttribute('lineGap', newValue);
+		displayCanvas.setAttribute(caseCamelToKebab('lineGap'), newValue);
 	});
 
 	return [glyphsLabel, glyphsInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
@@ -214,7 +215,7 @@ function makeShowOptions() {
 		'showCharacterExtras',
 		(newValue) => {
 			let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-			displayCanvas.setAttribute('showCharacterExtras', newValue);
+			displayCanvas.setAttribute(caseCamelToKebab('showCharacterExtras'), newValue);
 			// livePreviewOptions.showCharacterExtras = newValue;
 			// displayCanvas.redraw();
 		}
@@ -223,7 +224,7 @@ function makeShowOptions() {
 	let baselineLabel = makeSingleLabel('Baselines:');
 	let baselineToggle = makeDirectCheckbox(livePreviewOptions, 'showLineExtras', (newValue) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		displayCanvas.setAttribute('showLineExtras', newValue);
+		displayCanvas.setAttribute(caseCamelToKebab('showLineExtras'), newValue);
 		// livePreviewOptions.showLineExtras = newValue;
 		// displayCanvas.redraw();
 	});
@@ -231,7 +232,7 @@ function makeShowOptions() {
 	let pageOutlineLabel = makeSingleLabel('Page outline:');
 	let pageOutlineToggle = makeDirectCheckbox(livePreviewOptions, 'showPageExtras', (newValue) => {
 		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		displayCanvas.setAttribute('showPageExtras', newValue);
+		displayCanvas.setAttribute(caseCamelToKebab('showPageExtras'), newValue);
 		// livePreviewOptions.showPageExtras = newValue;
 		// displayCanvas.redraw();
 	});

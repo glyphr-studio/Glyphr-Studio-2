@@ -3,7 +3,7 @@ import { TextBlock } from './text_block.js';
 import { getCurrentProject } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { drawGlyph } from './draw_paths.js';
-import { clone, makeCrisp, round } from '../common/functions.js';
+import { caseCamelToKebab, clone, makeCrisp, round } from '../common/functions.js';
 import style from './display-canvas.css?inline';
 import { TextBlockOptions } from './text_block_options.js';
 
@@ -25,7 +25,7 @@ export class DisplayCanvas extends HTMLElement {
 		this.textBlockOptions = new TextBlockOptions();
 		Object.keys(attributes).forEach((key) => {
 			if (key !== 'width' && key !== 'height') {
-				this.setAttribute(key, attributes[key]);
+				this.setAttribute(caseCamelToKebab(key), attributes[key]);
 			}
 			if (this.textBlockOptions[key]) {
 				this.textBlockOptions[key] = attributes[key];
@@ -56,9 +56,11 @@ export class DisplayCanvas extends HTMLElement {
 	}
 
 	handleCanvasResize() {
+		// log(`DisplayCanvas.handleCanvasResize`, 'start');
 		this.updateTextBlock();
 		this.updateCanvasSize();
 		this.redraw();
+		// log(`DisplayCanvas.handleCanvasResize`, 'end');
 	}
 
 	updateCanvasSize() {
@@ -93,6 +95,7 @@ export class DisplayCanvas extends HTMLElement {
 		} else if (!isNaN(parseInt(pageWidth))) {
 			newWidth = parseInt(pageWidth);
 		}
+		if(this.widthAdjustment) newWidth += this.widthAdjustment;
 
 		// Assign new values
 		// log(`newHeight: ${newHeight}`);
@@ -131,10 +134,11 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`DisplayCanvas.updateTextBlock`, 'start');
 		// log(`this.textBlockOptions:`);
 		// log(this.textBlockOptions);
+		let pageMaxes = this.calculatePageMaxes();
 
 		this.textBlock = new TextBlock({
 			options: this.textBlockOptions,
-			canvasMaxes: this.calculatePageMaxes(),
+			canvasMaxes: pageMaxes,
 			ctx: this.ctx,
 			drawPageExtras: this.drawDisplayPageExtras,
 			drawLineExtras: this.drawDisplayLineExtras,
@@ -162,17 +166,19 @@ export class DisplayCanvas extends HTMLElement {
 		if (pageHeight === 'auto') {
 			maxes.yMax = Infinity;
 		} else if (pageHeight === 'fit') {
-			maxes.yMax = clientRect.height - 2 * pagePadding;
+			maxes.yMax = clientRect.height - pagePadding;
 		} else if (!isNaN(parseInt(pageHeight))) {
 			maxes.yMax = parseInt(pageHeight);
 		}
 
 		// Widths
 		if (pageWidth === 'fit') {
-			maxes.xMax = clientRect.width - 2 * pagePadding;
+			maxes.xMax = clientRect.width - pagePadding;
 		} else if (!isNaN(parseInt(pageWidth))) {
 			maxes.xMax = parseInt(pageWidth);
 		}
+
+		if (this.widthAdjustment) maxes.xMax += this.widthAdjustment;
 
 		// log(`DisplayCanvas.calculatePageMaxes`, 'end');
 		return maxes;
@@ -184,12 +190,13 @@ export class DisplayCanvas extends HTMLElement {
 	static get observedAttributes() {
 		return [
 			'text',
-			'fontsize',
-			'linegap',
-			'pagepadding',
-			'showpageextras',
-			'showlineextras',
-			'showcharacterextras',
+			'font-size',
+			'line-gap',
+			'page-padding',
+			'show-page-extras',
+			'show-line-extras',
+			'show-character-extras',
+			'width-adjustment'
 		];
 	}
 
@@ -208,27 +215,32 @@ export class DisplayCanvas extends HTMLElement {
 			this.textBlockOptions.text = newValue;
 		}
 
-		if (attributeName === 'fontsize') {
+		if (attributeName === 'font-size') {
 			this.textBlockOptions.fontSize = Math.max(parseInt(newValue), 1);
 		}
 
-		if (attributeName === 'linegap') {
+		if (attributeName === 'line-gap') {
 			this.textBlockOptions.lineGap = Math.max(parseInt(newValue), 0);
 		}
 
-		if (attributeName === 'pagepadding') {
+		if (attributeName === 'page-padding') {
 			this.textBlockOptions.pagePadding = Math.max(parseInt(newValue), 0);
 		}
 
-		if (attributeName === 'showpageextras') {
+		if (attributeName === 'show-page-extras') {
 			this.textBlockOptions.showPageExtras = newValue === 'true';
 		}
-		if (attributeName === 'showlineextras') {
+
+		if (attributeName === 'show-line-extras') {
 			this.textBlockOptions.showLineExtras = newValue === 'true';
 		}
-		if (attributeName === 'showcharacterextras') {
-			this.textBlockOptions.showCharacterExtras = newValue === 'true';
 
+		if (attributeName === 'show-character-extras') {
+			this.textBlockOptions.showCharacterExtras = newValue === 'true';
+		}
+
+		if (attributeName === 'width-adjustment') {
+			this.widthAdjustment = parseInt(newValue);
 		}
 
 		if (this.isSetUp) {
