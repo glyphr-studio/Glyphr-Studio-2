@@ -34,7 +34,20 @@
         "characterTransparency": 20,
         "showGuides": false,
         "guidesTransparency": 70
-      }
+      },
+      "livePreviews": [
+        false,
+        {
+          "name": "Title",
+          "text": "pack my box with five dozen liquor waffle coffins.",
+          "fontSize": 128
+        },
+        {
+          "name": "Body",
+          "text": "{{english_10_frequent}}",
+          "fontSize": 18
+        }
+      ]
     },
     "font": {
       "family": "Oblegg",

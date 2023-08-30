@@ -30,7 +30,7 @@
 
 	"debug-object": {
 		"prefix": "logo",
-		"body": ["log(`${1:name}`);\nlog(${1:name});$0"],
+		"body": ["log(`\\n⮟${1:name}⮟`);\nlog(${1:name});$0"],
 		"description": "Debug message - object"
 	},
 

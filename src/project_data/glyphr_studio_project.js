@@ -4,6 +4,7 @@ import { KernGroup } from './kern_group.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { charsToHexArray, decToHex, validateAsHex } from '../common/character_ids.js';
 import { CharacterRange } from './character_range.js';
+import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -14,8 +15,9 @@ export class GlyphrStudioProject {
 	 * @param {Object} newProject - Glyphr Studio Project File JSON
 	 */
 	constructor(newProject = {}) {
-		// log('GlyphrStudioProject.constructor', 'start');
-		// log(newProject);
+		log('GlyphrStudioProject.constructor', 'start');
+		log(`\n⮟newProject⮟`);
+		log(newProject);
 		// Set up all internal default values first
 		this.settings = {
 			project: {
@@ -45,6 +47,7 @@ export class GlyphrStudioProject {
 					showGuides: true,
 					guidesTransparency: 70,
 				},
+				livePreviews: [],
 			},
 			font: {
 				family: 'My Font',
@@ -92,8 +95,6 @@ export class GlyphrStudioProject {
 		// ---------------------------------------------------------------
 		// Handle passed object
 		// ---------------------------------------------------------------
-		// log('\npassed: ');
-		// log(newProject);
 
 		// Glyph Ranges
 		if (newProject?.settings?.project?.characterRanges) {
@@ -111,6 +112,13 @@ export class GlyphrStudioProject {
 		}
 		this.settings.project.id = this.settings.project.id || makeProjectID();
 		this.settings.font.descent = -1 * Math.abs(this.settings.font.descent);
+
+		if (newProject?.settings?.app?.livePreviews) {
+			this.settings.app.livePreviews = newProject.settings.app.livePreviews.map(
+				(option) => new TextBlockOptions(option)
+			);
+		}
+
 		// log('finished merging settings - result:');
 		// log(this.settings);
 
@@ -142,9 +150,9 @@ export class GlyphrStudioProject {
 		// log('finished hydrating kern pairs - result:');
 		// log(this.kerning);
 
-		// log('\n\nfinished EVERYTHING - result:');
-		// log(this);
-		// log('GlyphrStudioProject.constructor', 'end');
+		log(`\n⮟this⮟`);
+		log(this);
+		log('GlyphrStudioProject.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -166,9 +174,16 @@ export class GlyphrStudioProject {
 			kerning: {},
 		};
 
+		// Overwriting characterRanges with .save() version
 		savedProject.settings.project.characterRanges = [];
 		this.settings.project.characterRanges.forEach((range) => {
 			savedProject.settings.project.characterRanges.push(range.save());
+		});
+
+		// Overwriting livePreviews with .save() version
+		savedProject.settings.app.livePreviews = [];
+		this.settings.app.livePreviews.forEach((preview) => {
+			savedProject.settings.app.livePreviews.push(preview.save());
 		});
 
 		/**
@@ -525,7 +540,6 @@ export function sortLigatures(a, b) {
 
 		// log(`sortLigatures`, 'end');
 		return a.chars.localeCompare(b.chars);
-
 	} else {
 		// log(`sortLigatures`, 'end');
 		return a.chars.length - b.chars.length;
