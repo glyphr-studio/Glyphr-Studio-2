@@ -1,5 +1,6 @@
 * {
 	box-sizing: border-box;
+	transition: var(--global-transition);
 }
 
 .wrapper {

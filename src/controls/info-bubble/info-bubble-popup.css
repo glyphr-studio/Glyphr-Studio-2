@@ -1,3 +1,7 @@
+* {
+	transition: inherit;
+}
+
 :root {
 	--bgColor: var(--gray-l10);
 	--textColor: var(--gray-l95);
