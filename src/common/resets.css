@@ -13,6 +13,7 @@
 	font-weight: normal;
 	text-align: left;
 	box-sizing: border-box;
+	transition: var(--global-transition);
 }
 
 html,
@@ -242,7 +243,7 @@ ul li {
 // ------------------------------------------------------------*/
 :root {
 	--global-focus-style: 1px dashed var(--purple-l50);
-
+	--global-transition: all 80ms ease-in-out;
 	--animate-fade-in-slide-down: fade-slide-in 180ms ease-in;
 	--animate-fade-in: fade-in 180ms ease-in;
 	--animate-fade-out: fade-out 180ms ease-out;

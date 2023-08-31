@@ -3,6 +3,7 @@
 	margin: 0;
 	padding: 0;
 	border: 0;
+	transition: var(--global-transition);
 
 	--_border-resting: var(--enabled-restingLight-border);
 	--_border-focus: var(--enabled-focus-border);
