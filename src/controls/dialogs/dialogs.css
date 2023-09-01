@@ -1,7 +1,3 @@
-* {
-	transition: var(--global-transition);
-}
-
 dialog {
 	z-index: 1000;
 }

@@ -23,6 +23,9 @@ export class FancyButton extends HTMLElement {
 		if (this.hasAttribute('danger')) {
 			this.wrapper.setAttribute('danger', '');
 		}
+		if (this.hasAttribute('minimal')) {
+			this.wrapper.setAttribute('minimal', '');
+		}
 
 		if (this.hasAttribute('disabled')) {
 			this.wrapper.setAttribute('disabled', '');
@@ -51,7 +54,7 @@ export class FancyButton extends HTMLElement {
 	 * Specify which attributes are observed and trigger attributeChangedCallback
 	 */
 	static get observedAttributes() {
-		return ['disabled', 'secondary', 'danger'];
+		return ['disabled', 'secondary', 'danger', 'minimal'];
 	}
 
 	/**
@@ -88,6 +91,15 @@ export class FancyButton extends HTMLElement {
 			} else if (oldValue === '') {
 				// safe
 				this.wrapper.removeAttribute('danger');
+			}
+		}
+		if (attributeName === 'minimal') {
+			if (newValue === '') {
+				// minimal
+				this.wrapper.setAttribute('minimal', '');
+			} else if (oldValue === '') {
+				// primary
+				this.wrapper.removeAttribute('minimal');
 			}
 		}
 	}

@@ -4,13 +4,17 @@ body {
 	background-color: white;
 	overflow-x: hidden;
 	overflow-y: auto;
+	pointer-events: none;
+	transition: none;
 }
 
 body:hover {
+	transition: background-color 250ms ease-in-out;
 	background-color: var(--gray-l97);
 }
 
 body:hover display-canvas {
+	transition: border 250ms ease-in-out;
 	border: 1px solid var(--gray-l90);
 }
 
@@ -26,4 +30,37 @@ display-canvas {
 	margin: 10px;
 	border: 1px solid white;
 	background-color: white;
+}
+
+/* display-canvas:hover:before {
+	content: 'Edit';
+	position: relative;
+	top: 10px;
+	width: 100%;
+	background-color: lime;
+	text-align: right;
+} */
+
+.pop-out__footer {
+	margin: 20px 10px 10px 10px;
+	padding: 40px 0px;
+	opacity: 0.1;
+	text-align: center;
+	transition: opacity 250ms ease-in-out;
+	pointer-events: auto;
+}
+
+body:hover .pop-out__footer {
+	transition: opacity 250ms ease-in-out;
+	opacity: 0.5
+}
+
+body:hover .pop-out__footer:hover {
+	transition: opacity 250ms ease-in-out;
+	opacity: 1;
+}
+
+.pop-out__footer fancy-button {
+	height: 31px;
+	transition: opacity 250ms ease-in-out;
 }
