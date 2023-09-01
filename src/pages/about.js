@@ -111,6 +111,17 @@ function makeLicenseInfo() {
 			<br><br>
 			Copyright © 2023 Matthew LaGrandeur
 		</div>
+
+		<div class="page__card">
+			<h3>Spell Checker Oriented Word List (SCOWL)</h3>
+			<a href="https://github.com/en-wl/wordlist" target="_blank">github.com/en-wl/wordlist</a>
+			<br><br>
+			SCOWL word lists were used to generate the Glyphr Studio letter pair coverage live preview texts.
+			SCOWL is derived from many sources under a BSD compatible license. The combined work is freely available under a
+			<a href='https://raw.githubusercontent.com/kevina/wordlist/master/scowl/Copyright' target='_blank'>MIT-like</a> license.
+			<br><br>
+			Copyright © 2000-2018 Kevin Atkinson
+		</div>
 	`,
 	});
 

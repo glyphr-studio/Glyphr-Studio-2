@@ -8,27 +8,28 @@ import { getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
 import { caseCamelToKebab } from '../common/functions';
 import { TextBlockOptions } from '../display_canvas/text_block_options';
-import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window';
+import { redrawLivePreviewPageDisplayCanvas } from '../pages/live_preview';
+import { makeLivePreviewPopOutCard, openPopOutWindow } from '../project_editor/pop_out_window';
 import { makeDirectCheckbox, makeSingleLabel } from './cards';
 
-export function makePanel_LivePreview() {
+export function makePanel_LivePreview(textBlockOptions) {
 	// Options
-	let optionsCard = makeElement({
+	let basicOptionsCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
 		innerHTML: '<h3>Options</h3>',
 	});
 
-	addAsChildren(optionsCard, makeLivePreviewOptions());
+	addAsChildren(basicOptionsCard, makeTextBlockOptions_basicOptions(textBlockOptions));
 
 	// Show
-	let showCard = makeElement({
+	let pageOptionsCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
 		innerHTML: '<h3>Show</h3>',
 	});
 
-	addAsChildren(showCard, makeShowOptions());
+	addAsChildren(pageOptionsCard, makeTextBlockOptions_pageOptions(textBlockOptions));
 
 	// Pangrams
 	let pangramCard = makeElement({
@@ -61,7 +62,8 @@ export function makePanel_LivePreview() {
 		makeButton('All lower case letter permutations', makePermutations(false)),
 	]);
 
-	return [optionsCard, showCard, makeLivePreviewPopOutCard(), pangramCard, glyphSetsCard];
+	// return [basicOptionsCard, pageOptionsCard, makeLivePreviewPopOutCard(), pangramCard, glyphSetsCard];
+	return [basicOptionsCard, pageOptionsCard];
 }
 
 function makeButton(text, chars = false) {
@@ -162,81 +164,89 @@ function makePermutations(upper) {
 	return result;
 }
 
-function makeLivePreviewOptions() {
-	const editor = getCurrentProjectEditor();
-	const livePreviewOptions = editor.livePreviewPageOptions;
-
+function makeTextBlockOptions_basicOptions(textBlockOptions) {
 	// Text
 	let glyphsLabel = makeSingleLabel('Text:');
 	let glyphsInput = makeElement({
 		tag: 'textarea',
-		id: 'livePreviewGlyphsInput',
-		innerHTML: livePreviewOptions.text,
+		id: 'textBlockGlyphsInput',
+		innerHTML: textBlockOptions.text,
 	});
 	glyphsInput.addEventListener('keyup', (event) => {
-		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		let newValue = event.target.value;
-		livePreviewOptions.text = newValue;
-		displayCanvas.setAttribute(caseCamelToKebab('text'), newValue);
+		textBlockOptions.text = event.target.value;
+		redrawAllLivePreviews();
+		// getCurrentProjectEditor().publish({topic: 'livePreviewTextBlockOptions', textBlockOptions})
+		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		// let newValue = event.target.value;
+		// textBlockOptions.text = newValue;
+		// displayCanvas.setAttribute(caseCamelToKebab('text'), newValue);
 	});
 
 	// Font size
 	let fontSizeLabel = makeSingleLabel('Font size:');
 	let fontSizeInput = makeElement({
 		tag: 'input-number',
-		attributes: { value: livePreviewOptions.fontSize },
+		attributes: { value: textBlockOptions.fontSize },
 	});
 	fontSizeInput.addEventListener('change', (event) => {
-		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		let newValue = event.target.value;
-		livePreviewOptions.fontSize = newValue;
-		displayCanvas.setAttribute(caseCamelToKebab('fontSize'), newValue);
+		textBlockOptions.fontSize = event.target.value;
+		redrawAllLivePreviews();
+		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		// let newValue = event.target.value;
+		// textBlockOptions.fontSize = newValue;
+		// displayCanvas.setAttribute(caseCamelToKebab('fontSize'), newValue);
 	});
 
 	// Line gap
 	let lineGapLabel = makeSingleLabel('Line gap:');
 	let lineGapInput = makeElement({
 		tag: 'input-number',
-		attributes: { value: livePreviewOptions.lineGap },
+		attributes: { value: textBlockOptions.lineGap },
 	});
 	lineGapInput.addEventListener('change', (event) => {
-		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		let newValue = event.target.value;
-		livePreviewOptions.lineGap = newValue;
-		displayCanvas.setAttribute(caseCamelToKebab('lineGap'), newValue);
+		textBlockOptions.lineGap = event.target.value;
+		redrawAllLivePreviews();
+		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		// let newValue = event.target.value;
+		// textBlockOptions.lineGap = newValue;
+		// displayCanvas.setAttribute(caseCamelToKebab('lineGap'), newValue);
 	});
 
 	return [glyphsLabel, glyphsInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
 }
 
-function makeShowOptions() {
-	const editor = getCurrentProjectEditor();
-	const livePreviewOptions = editor.livePreviewPageOptions;
+function makeTextBlockOptions_pageOptions(textBlockOptions) {
 	let glyphOutlineLabel = makeSingleLabel('Glyph bounding box:');
 	let glyphOutlineToggle = makeDirectCheckbox(
-		livePreviewOptions,
+		textBlockOptions,
 		'showCharacterExtras',
 		(newValue) => {
-			let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-			displayCanvas.setAttribute(caseCamelToKebab('showCharacterExtras'), newValue);
-			// livePreviewOptions.showCharacterExtras = newValue;
+			textBlockOptions.showCharacterExtras = newValue;
+			redrawAllLivePreviews();
+			// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+			// displayCanvas.setAttribute(caseCamelToKebab('showCharacterExtras'), newValue);
+			// textBlockOptions.showCharacterExtras = newValue;
 			// displayCanvas.redraw();
 		}
 	);
 
 	let baselineLabel = makeSingleLabel('Baselines:');
-	let baselineToggle = makeDirectCheckbox(livePreviewOptions, 'showLineExtras', (newValue) => {
-		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		displayCanvas.setAttribute(caseCamelToKebab('showLineExtras'), newValue);
-		// livePreviewOptions.showLineExtras = newValue;
+	let baselineToggle = makeDirectCheckbox(textBlockOptions, 'showLineExtras', (newValue) => {
+		textBlockOptions.showLineExtras = newValue;
+		redrawAllLivePreviews();
+		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		// displayCanvas.setAttribute(caseCamelToKebab('showLineExtras'), newValue);
+		// textBlockOptions.showLineExtras = newValue;
 		// displayCanvas.redraw();
 	});
 
 	let pageOutlineLabel = makeSingleLabel('Page outline:');
-	let pageOutlineToggle = makeDirectCheckbox(livePreviewOptions, 'showPageExtras', (newValue) => {
-		let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		displayCanvas.setAttribute(caseCamelToKebab('showPageExtras'), newValue);
-		// livePreviewOptions.showPageExtras = newValue;
+	let pageOutlineToggle = makeDirectCheckbox(textBlockOptions, 'showPageExtras', (newValue) => {
+		textBlockOptions.showPageExtras = newValue;
+		redrawAllLivePreviews();
+		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
+		// displayCanvas.setAttribute(caseCamelToKebab('showPageExtras'), newValue);
+		// textBlockOptions.showPageExtras = newValue;
 		// displayCanvas.redraw();
 	});
 
@@ -248,4 +258,9 @@ function makeShowOptions() {
 		pageOutlineLabel,
 		pageOutlineToggle,
 	];
+}
+
+function redrawAllLivePreviews() {
+	redrawLivePreviewPageDisplayCanvas();
+	if (getCurrentProjectEditor().popOutWindow) openPopOutWindow();
 }
