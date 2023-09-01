@@ -1,4 +1,5 @@
-import { accentColors, uiColors } from '../../common/colors.js';
+import { getCurrentProjectEditor } from '../../app/main.js';
+import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement, textToNode } from '../../common/dom.js';
 import { makeIcon } from '../../common/graphics.js';
 import { closeAllNavMenus } from '../../project_editor/navigator.js';
@@ -18,10 +19,19 @@ export function closeEveryTypeOfDialog() {
 }
 
 export function closeAllModalDialogs() {
-	// log(`closeAllModalDialogs`, 'start');
+	log(`closeAllModalDialogs`, 'start');
 	let dialogs = document.querySelectorAll('dialog');
 	dialogs.forEach((elem) => animateRemove(elem));
-	// log(`closeAllModalDialogs`, 'end');
+	const editor = getCurrentProjectEditor();
+	if (editor.popOutWindow) {
+		log(`\n⮟editor.popOutWindow⮟`);
+		log(editor.popOutWindow);
+		dialogs = editor.popOutWindow.document.querySelectorAll('dialog');
+		log(`\n⮟dialogs⮟`);
+		log(dialogs);
+		dialogs.forEach((elem) => animateRemove(elem));
+	}
+	log(`closeAllModalDialogs`, 'end');
 }
 
 export function closeAllOptionChoosers() {
@@ -280,19 +290,30 @@ export function showError(message) {
  * Shows a big dialog that blurs the UI behind it.
  * @param {DOM Node} contentNode - HTML to show in the dialog
  */
-export function showModalDialog(contentNode, maxWidth) {
+export function showModalDialog(contentNode, maxWidth, doc = document) {
+	let modal = makeModalDialog(contentNode, maxWidth, doc);
+	closeEveryTypeOfDialog();
+	doc.body.appendChild(modal);
+}
+
+export function makeModalDialog(contentNode, maxWidth, doc = document) {
+	// log(`makeModalDialog`, 'start');
+	// log(`\n⮟contentNode⮟`);
+	// log(contentNode);
+	// log(`maxWidth: ${maxWidth}`);
 	let modal = makeElement({
 		tag: 'dialog',
 		id: 'modal-dialog',
 		innerHTML: `
 		<div class="modal-dialog__content">
-			<div class="modal-dialog__header">
+		<div class="modal-dialog__header">
 				<span></span>
 				<button class="modal-dialog__close-button">&times;</button>
-			</div>
-			<div class="modal-dialog__body"></div>
-		</div>
-		`,
+				</div>
+				<div class="modal-dialog__body"></div>
+				</div>
+				`,
+				doc: doc,
 	});
 
 	modal
@@ -304,6 +325,8 @@ export function showModalDialog(contentNode, maxWidth) {
 		modal.querySelector('.modal-dialog__content').style.maxWidth = `${maxWidth}px`;
 	}
 
-	closeEveryTypeOfDialog();
-	document.body.appendChild(modal);
+	// log(`\n⮟modal⮟`);
+	// log(modal);
+	// log(`makeModalDialog`, 'end');
+	return modal;
 }

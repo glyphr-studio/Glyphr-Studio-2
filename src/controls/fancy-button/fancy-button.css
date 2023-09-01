@@ -5,6 +5,7 @@
 	-moz-user-select: none;
 	-ms-user-select: none;
 	user-select: none;
+	transition: var(--global-transition);
 }
 
 :host {
@@ -46,6 +47,7 @@
 	left: 0px;
 }
 
+/* Primary */
 .wrapper {
 	display: inline-block;
 	position: relative;
@@ -95,6 +97,7 @@
 	background-color: transparent;
 }
 
+/* Secondary */
 .wrapper[secondary] .buttonContent {
 	background-color: rgba(255, 255, 255, 0.95);
 }
@@ -117,11 +120,63 @@
 	background-color: white;
 }
 
+/* Minimal */
+.wrapper[minimal] {
+	padding: 1px;
+	box-shadow: var(--l1-shadow);
+	background: linear-gradient(135deg,
+		var(--blue-l70),
+		var(--blue-l90)
+	);
+	animation: var(--fancy-animation);
+}
+
+.wrapper[minimal] .buttonContent {
+	background-color: rgba(255, 255, 255, 0.95);
+}
+
+.wrapper[minimal] .buttonText {
+	background: linear-gradient(135deg,
+		var(--blue-l70),
+		var(--blue-l90)
+	);
+	background-size: var(--fancy-background-size);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.wrapper[minimal]:hover,
+.wrapper[minimal]:active {
+	box-shadow: var(--l2-shadow);
+	background: linear-gradient(135deg,
+		var(--blue-l40),
+		var(--blue-l70)
+	);
+}
+
+.wrapper[minimal]:hover .buttonContent,
+.wrapper[minimal]:active .buttonContent {
+	background-color: white;
+}
+
+.wrapper[minimal]:hover .buttonText,
+.wrapper[minimal]:active .buttonText {
+	background: linear-gradient(135deg,
+		var(--blue-l40),
+		var(--blue-l70)
+	);
+	background-size: var(--fancy-background-size);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+/* Danger */
 .wrapper[danger] {
 	background: linear-gradient(135deg,
-		var(--orange-l50),
-		var(--red)
-	);
+			var(--orange-l50),
+			var(--red));
 	animation: var(--fancy-animation);
 }
 
@@ -139,6 +194,7 @@
 	-webkit-text-fill-color: transparent;
 }
 
+/* Disabled */
 .wrapper[disabled],
 .wrapper[disabled]:hover,
 .wrapper[disabled]:focus,

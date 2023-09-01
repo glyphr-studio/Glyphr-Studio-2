@@ -21,14 +21,15 @@ export function makeElement({
 	style = false,
 	innerHTML = false,
 	onClick = false,
+	doc = document,
 } = {}) {
-	if (!document || !document.createElement) {
+	if (!doc || !doc.createElement) {
 		console.warn('no document or createElement');
-		console.warn(document);
+		console.warn(doc);
 		return '';
 	}
 
-	const newElement = document.createElement(tag);
+	const newElement = doc.createElement(tag);
 
 	if (className) newElement.setAttribute('class', className);
 

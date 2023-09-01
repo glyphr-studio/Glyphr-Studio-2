@@ -1,7 +1,3 @@
-import { makeElement } from '../common/dom';
-import { caseCamelToKebab } from '../common/functions';
-import { DisplayCanvas } from './display_canvas';
-
 export class TextBlockOptions {
 	/**
 	 * PageHeight / PageWidth:
@@ -40,6 +36,14 @@ export class TextBlockOptions {
 
 	set text(newText = '') {
 		this._text = newText;
+	}
+
+	get displayName() {
+		let result = '';
+		if (this.name) result += this.name;
+		else result += `${this.text.substring(0, 20)}...`;
+		result += `(${this.fontSize}px)`;
+		return result;
 	}
 
 	save() {

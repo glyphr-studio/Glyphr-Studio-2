@@ -4,7 +4,10 @@ import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
 import style from './pop-out-window.css?inline';
 import color from '../common/colors.css?inline';
 import reset from '../common/resets.css?inline';
+import dialogStyle from '../controls/dialogs/dialogs.css?inline';
 import { DisplayCanvas } from '../display_canvas/display_canvas';
+import logo from '../common/graphics/logo-icon.svg?raw';
+import { makeModalDialog, showModalDialog } from '../controls/dialogs/dialogs';
 
 export function openPopOutWindow() {
 	// log(`openPopOutWindow`, 'start');
@@ -21,6 +24,8 @@ export function openPopOutWindow() {
 	popDoc.head.appendChild(colors);
 	const styles = makeElement({ tag: 'style', innerHTML: style });
 	popDoc.head.appendChild(styles);
+	const dialogs = makeElement({ tag: 'style', innerHTML: dialogStyle });
+	popDoc.head.appendChild(dialogs);
 
 	popDoc.body.appendChild(
 		makeElement({
@@ -39,6 +44,13 @@ export function openPopOutWindow() {
 		callback: redrawPopOutWindow,
 	});
 
+	let favIcon = makeElement({
+		tag: 'link',
+		attributes: { rel: 'shortcut icon', href: `data:image/svg+xml,${encodeURI(logo)}` },
+	});
+
+	popDoc.head.appendChild(favIcon);
+
 	const popWrapper = popDoc.querySelector('#pop-out__wrapper');
 	// log(popWrapper);
 	// log(popWrapper.getClientRects()[0]);
@@ -53,6 +65,18 @@ export function openPopOutWindow() {
 			popWrapper.appendChild(new DisplayCanvas(options));
 		}
 	});
+
+	// Preview controls
+	const footer = makeElement({ tag: 'div', className: 'pop-out__footer' });
+	const editPreviewsButton = makeElement({
+		tag: 'fancy-button',
+		content: 'Edit live previews',
+		attributes: { minimal: '' },
+	});
+	editPreviewsButton.addEventListener('click', showEditLivePreviewDialog);
+
+	footer.appendChild(editPreviewsButton);
+	popWrapper.appendChild(footer);
 
 	// Update buttons
 	const popButton = document.getElementById('editor-page__tool__open-live-preview-pop-out');
@@ -136,4 +160,11 @@ export function livePreviewPopOutWindowResize() {
 		displayCanvas.resizeAndRedraw(-50);
 	});
 	// log(`livePreviewPopOutWindowResize`, 'end');
+}
+
+function showEditLivePreviewDialog() {
+	const popDoc = getCurrentProjectEditor().popOutWindow.document;
+	let diag = makeModalDialog(makeElement({ tag: 'h1', content: 'YO' }), false, popDoc);
+	diag.style.display = 'block';
+	popDoc.body.appendChild(diag);
 }
