@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor, log } from '../app/main';
+import { getCurrentProjectEditor } from '../app/main';
 import { makeElement } from '../common/dom';
 import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
 import style from './pop-out-window.css?inline';
@@ -7,7 +7,11 @@ import reset from '../common/resets.css?inline';
 import dialogStyle from '../controls/dialogs/dialogs.css?inline';
 import { DisplayCanvas } from '../display_canvas/display_canvas';
 import logo from '../common/graphics/logo-icon.svg?raw';
-import { makeModalDialog, showModalDialog } from '../controls/dialogs/dialogs';
+import {
+	animateRemove,
+	closeEveryTypeOfDialog,
+	makeModalDialog,
+} from '../controls/dialogs/dialogs';
 
 export function openPopOutWindow() {
 	// log(`openPopOutWindow`, 'start');
@@ -16,6 +20,7 @@ export function openPopOutWindow() {
 
 	// Init window properties
 	let popDoc = editor.popOutWindow.document;
+
 	popDoc.head.appendChild(makeElement({ tag: 'title', content: 'Live Preview - Glyphr Studio' }));
 
 	const resets = makeElement({ tag: 'style', innerHTML: reset });
@@ -163,8 +168,14 @@ export function livePreviewPopOutWindowResize() {
 }
 
 function showEditLivePreviewDialog() {
+	// log(`showEditLivePreviewDialog`, 'start');
 	const popDoc = getCurrentProjectEditor().popOutWindow.document;
 	let diag = makeModalDialog(makeElement({ tag: 'h1', content: 'YO' }), false, popDoc);
-	diag.style.display = 'block';
+	// diag.style.display = 'block';
 	popDoc.body.appendChild(diag);
+	// log(`showEditLivePreviewDialog`, 'end');
+}
+
+function makeOneLivePreviewEditor(textBlockOptions) {
+	
 }

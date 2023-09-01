@@ -19,19 +19,15 @@ export function closeEveryTypeOfDialog() {
 }
 
 export function closeAllModalDialogs() {
-	log(`closeAllModalDialogs`, 'start');
+	// log(`closeAllModalDialogs`, 'start');
 	let dialogs = document.querySelectorAll('dialog');
 	dialogs.forEach((elem) => animateRemove(elem));
 	const editor = getCurrentProjectEditor();
 	if (editor.popOutWindow) {
-		log(`\n⮟editor.popOutWindow⮟`);
-		log(editor.popOutWindow);
 		dialogs = editor.popOutWindow.document.querySelectorAll('dialog');
-		log(`\n⮟dialogs⮟`);
-		log(dialogs);
 		dialogs.forEach((elem) => animateRemove(elem));
 	}
-	log(`closeAllModalDialogs`, 'end');
+	// log(`closeAllModalDialogs`, 'end');
 }
 
 export function closeAllOptionChoosers() {

@@ -37,10 +37,8 @@ export function makePage_LivePreview() {
 	});
 
 	let canvasWrapper = content.querySelector('.live-preview-page__canvas-wrapper');
-
 	const editor = getCurrentProjectEditor();
 	const livePreviewOptions = editor.livePreviewPageOptions;
-
 	canvasWrapper.appendChild(new DisplayCanvas(livePreviewOptions));
 
 	window.addEventListener('resize', livePreviewPageWindowResize);
@@ -52,7 +50,7 @@ export function makePage_LivePreview() {
 	});
 
 	let panelArea = content.querySelector('#content-page__panel');
-	addAsChildren(panelArea, makePanel_LivePreview());
+	addAsChildren(panelArea, makePanel_LivePreview(editor.livePreviewPageOptions));
 
 	// log(`makePage_LivePreview`, 'end');
 	return content;
@@ -63,4 +61,14 @@ export function livePreviewPageWindowResize() {
 	const displayCanvas = document.querySelector('display-canvas');
 	displayCanvas.resizeAndRedraw();
 	// log(`livePreviewPageWindowResize`, 'end');
+}
+
+export function redrawLivePreviewPageDisplayCanvas() {
+	const editor = getCurrentProjectEditor();
+	if (editor.nav.page === 'Live preview') {
+		let canvasWrapper = document.querySelector('.live-preview-page__canvas-wrapper');
+		canvasWrapper.innerHTML = '';
+		const livePreviewOptions = editor.livePreviewPageOptions;
+		canvasWrapper.appendChild(new DisplayCanvas(livePreviewOptions));
+	}
 }
