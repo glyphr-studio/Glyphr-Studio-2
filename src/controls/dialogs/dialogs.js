@@ -74,7 +74,8 @@ export function animateRemove(element, animationLength = 120, scale = 0.98, tran
 		{ opacity: 0, transform: `scale(${scale}) translateY(${translateY})` },
 		{ duration: animationLength }
 	);
-	window.setTimeout(() => {
+	// This works for the main window, or the pop-out window
+	element.ownerDocument.defaultView.setTimeout(() => {
 		element.style.display = 'none';
 		element.remove();
 	}, animationLength - 10);
@@ -286,13 +287,13 @@ export function showError(message) {
  * Shows a big dialog that blurs the UI behind it.
  * @param {DOM Node} contentNode - HTML to show in the dialog
  */
-export function showModalDialog(contentNode, maxWidth, doc = document) {
-	let modal = makeModalDialog(contentNode, maxWidth, doc);
+export function showModalDialog(contentNode, maxWidth) {
+	let modal = makeModalDialog(contentNode, maxWidth);
 	closeEveryTypeOfDialog();
-	doc.body.appendChild(modal);
+	document.body.appendChild(modal);
 }
 
-export function makeModalDialog(contentNode, maxWidth, doc = document) {
+export function makeModalDialog(contentNode, maxWidth) {
 	// log(`makeModalDialog`, 'start');
 	// log(`\n⮟contentNode⮟`);
 	// log(contentNode);
@@ -303,13 +304,12 @@ export function makeModalDialog(contentNode, maxWidth, doc = document) {
 		innerHTML: `
 		<div class="modal-dialog__content">
 		<div class="modal-dialog__header">
-				<span></span>
-				<button class="modal-dialog__close-button">&times;</button>
-				</div>
-				<div class="modal-dialog__body"></div>
-				</div>
+			<span></span>
+			<button class="modal-dialog__close-button">&times;</button>
+			</div>
+			<div class="modal-dialog__body"></div>
+		</div>
 				`,
-				doc: doc,
 	});
 
 	modal

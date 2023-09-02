@@ -184,7 +184,7 @@ function showEditLivePreviewDialog() {
 	let header = makeElement({ tag: 'h1', content: 'Live Preview options' });
 	addAsChildren(panelArea, [header, makePanel_LivePreview(editor.livePreviews[1], false)]);
 
-	let diag = makeModalDialog(panelArea, 500, popDoc);
+	let diag = makeModalDialog(panelArea, 500);
 	popDoc.body.appendChild(diag);
 	// log(`showEditLivePreviewDialog`, 'end');
 }
