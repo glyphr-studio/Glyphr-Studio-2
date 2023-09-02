@@ -72,20 +72,21 @@ function makeButton(text, chars = false) {
 		innerHTML: text,
 	});
 
-	button.addEventListener('click', () => {
-		updateDisplayCanvasGlyphs(chars);
+	button.addEventListener('click', (event) => {
+		updateLivePreviewTextInputText(event, chars);
 	});
 
 	return button;
 }
 
-function updateDisplayCanvasGlyphs(text) {
-	const textInput = document.getElementById('textBlockTextInput');
+function updateLivePreviewTextInputText(event, text) {
+	// This works for the main window or the pop-out window
+	let doc = event.srcElement.ownerDocument;
+	const textInput = doc.getElementById('textBlockTextInput');
 	if (textInput) {
 		textInput.innerHTML = text;
 		textInput.dispatchEvent(new Event('keyup'));
 	}
-	// redrawAllLivePreviews();
 }
 
 function makeSymbolButton() {
@@ -134,16 +135,16 @@ function makeSymbolButton() {
 	return button;
 }
 
-function clickSymbolButton() {
+function clickSymbolButton(event) {
 	let symbols = [
 		0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a, 0x2b, 0x2c, 0x2d, 0x2e, 0x2f, 0x3a,
 		0x3b, 0x3c, 0x3d, 0x3e, 0x3f, 0x40, 0x5b, 0x5c, 0x5d, 0x5e, 0x5f, 0x60, 0x7b, 0x7c, 0x7d, 0x7e,
 	];
 
-	let glyphs = '';
-	symbols.forEach((symbol) => (glyphs += String.fromCharCode(symbol)));
+	let text = '';
+	symbols.forEach((symbol) => (text += String.fromCharCode(symbol)));
 
-	updateDisplayCanvasGlyphs(glyphs);
+	updateLivePreviewTextInputText(event, text);
 }
 
 function makePermutations(upper) {
@@ -163,20 +164,15 @@ function makePermutations(upper) {
 
 function makeTextBlockOptions_basicOptions(textBlockOptions) {
 	// Text
-	let glyphsLabel = makeSingleLabel('Text:');
-	let glyphsInput = makeElement({
+	let textLabel = makeSingleLabel('Text:');
+	let textInput = makeElement({
 		tag: 'textarea',
 		id: 'textBlockTextInput',
 		innerHTML: textBlockOptions.text,
 	});
-	glyphsInput.addEventListener('keyup', (event) => {
+	textInput.addEventListener('keyup', (event) => {
 		textBlockOptions.text = event.target.value;
 		redrawAllLivePreviews();
-		// getCurrentProjectEditor().publish({topic: 'livePreviewTextBlockOptions', textBlockOptions})
-		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		// let newValue = event.target.value;
-		// textBlockOptions.text = newValue;
-		// displayCanvas.setAttribute(caseCamelToKebab('text'), newValue);
 	});
 
 	// Font size
@@ -188,10 +184,6 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 	fontSizeInput.addEventListener('change', (event) => {
 		textBlockOptions.fontSize = event.target.value;
 		redrawAllLivePreviews();
-		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		// let newValue = event.target.value;
-		// textBlockOptions.fontSize = newValue;
-		// displayCanvas.setAttribute(caseCamelToKebab('fontSize'), newValue);
 	});
 
 	// Line gap
@@ -203,13 +195,9 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 	lineGapInput.addEventListener('change', (event) => {
 		textBlockOptions.lineGap = event.target.value;
 		redrawAllLivePreviews();
-		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		// let newValue = event.target.value;
-		// textBlockOptions.lineGap = newValue;
-		// displayCanvas.setAttribute(caseCamelToKebab('lineGap'), newValue);
 	});
 
-	return [glyphsLabel, glyphsInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
+	return [textLabel, textInput, fontSizeLabel, fontSizeInput, lineGapLabel, lineGapInput];
 }
 
 function makeTextBlockOptions_pageOptions(textBlockOptions) {
@@ -220,10 +208,6 @@ function makeTextBlockOptions_pageOptions(textBlockOptions) {
 		(newValue) => {
 			textBlockOptions.showCharacterExtras = newValue;
 			redrawAllLivePreviews();
-			// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-			// displayCanvas.setAttribute(caseCamelToKebab('showCharacterExtras'), newValue);
-			// textBlockOptions.showCharacterExtras = newValue;
-			// displayCanvas.redraw();
 		}
 	);
 
@@ -231,20 +215,12 @@ function makeTextBlockOptions_pageOptions(textBlockOptions) {
 	let baselineToggle = makeDirectCheckbox(textBlockOptions, 'showLineExtras', (newValue) => {
 		textBlockOptions.showLineExtras = newValue;
 		redrawAllLivePreviews();
-		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		// displayCanvas.setAttribute(caseCamelToKebab('showLineExtras'), newValue);
-		// textBlockOptions.showLineExtras = newValue;
-		// displayCanvas.redraw();
 	});
 
 	let pageOutlineLabel = makeSingleLabel('Page outline:');
 	let pageOutlineToggle = makeDirectCheckbox(textBlockOptions, 'showPageExtras', (newValue) => {
 		textBlockOptions.showPageExtras = newValue;
 		redrawAllLivePreviews();
-		// let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-		// displayCanvas.setAttribute(caseCamelToKebab('showPageExtras'), newValue);
-		// textBlockOptions.showPageExtras = newValue;
-		// displayCanvas.redraw();
 	});
 
 	return [
