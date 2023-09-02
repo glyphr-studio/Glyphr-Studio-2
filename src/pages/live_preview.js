@@ -4,7 +4,6 @@ import { toggleNavDropdown } from '../project_editor/navigator.js';
 import { makePanel_LivePreview } from '../panels/live_preview.js';
 import { getCurrentProjectEditor } from '../app/main.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
-import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 
 /**
  * Page > Live preview

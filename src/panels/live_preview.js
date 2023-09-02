@@ -6,8 +6,6 @@
 
 import { getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
-import { caseCamelToKebab } from '../common/functions';
-import { TextBlockOptions } from '../display_canvas/text_block_options';
 import { redrawLivePreviewPageDisplayCanvas } from '../pages/live_preview';
 import { makeLivePreviewPopOutCard, openPopOutWindow } from '../project_editor/pop_out_window';
 import { makeDirectCheckbox, makeSingleLabel } from './cards';
@@ -62,8 +60,14 @@ export function makePanel_LivePreview(textBlockOptions) {
 		makeButton('All lower case letter permutations', makePermutations(false)),
 	]);
 
-	// return [basicOptionsCard, pageOptionsCard, makeLivePreviewPopOutCard(), pangramCard, glyphSetsCard];
-	return [basicOptionsCard, pageOptionsCard];
+	// return [basicOptionsCard, pageOptionsCard];
+	return [
+		basicOptionsCard,
+		pageOptionsCard,
+		makeLivePreviewPopOutCard(),
+		pangramCard,
+		glyphSetsCard,
+	];
 }
 
 function makeButton(text, chars = false) {
@@ -81,14 +85,12 @@ function makeButton(text, chars = false) {
 }
 
 function updateDisplayCanvasGlyphs(text) {
-	const glyphsInput = document.getElementById('livePreviewGlyphsInput');
-	if (glyphsInput) {
-		glyphsInput.innerHTML = text;
+	const textInput = document.getElementById('textBlockTextInput');
+	if (textInput) {
+		textInput.innerHTML = text;
+		textInput.dispatchEvent(new Event('keyup'));
 	}
-	let displayCanvas = document.getElementsByTagName('display-canvas')[0];
-	if (displayCanvas) {
-		displayCanvas.setAttribute(caseCamelToKebab('text'), text);
-	}
+	// redrawAllLivePreviews();
 }
 
 function makeSymbolButton() {
@@ -169,7 +171,7 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 	let glyphsLabel = makeSingleLabel('Text:');
 	let glyphsInput = makeElement({
 		tag: 'textarea',
-		id: 'textBlockGlyphsInput',
+		id: 'textBlockTextInput',
 		innerHTML: textBlockOptions.text,
 	});
 	glyphsInput.addEventListener('keyup', (event) => {
