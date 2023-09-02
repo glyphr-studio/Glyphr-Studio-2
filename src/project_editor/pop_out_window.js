@@ -1,17 +1,15 @@
 import { getCurrentProjectEditor } from '../app/main';
-import { makeElement } from '../common/dom';
+import { addAsChildren, makeElement } from '../common/dom';
 import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
-import style from './pop-out-window.css?inline';
-import color from '../common/colors.css?inline';
-import reset from '../common/resets.css?inline';
+import popOutWindowStyle from './pop-out-window.css?inline';
+import colorStyle from '../common/colors.css?inline';
+import resetStyle from '../common/resets.css?inline';
 import dialogStyle from '../controls/dialogs/dialogs.css?inline';
+import panelStyle from '../panels/panels.css?inline';
 import { DisplayCanvas } from '../display_canvas/display_canvas';
 import logo from '../common/graphics/logo-icon.svg?raw';
-import {
-	animateRemove,
-	closeEveryTypeOfDialog,
-	makeModalDialog,
-} from '../controls/dialogs/dialogs';
+import { makeModalDialog } from '../controls/dialogs/dialogs';
+import { makePanel_LivePreview } from '../panels/live_preview';
 
 export function openPopOutWindow() {
 	// log(`openPopOutWindow`, 'start');
@@ -23,14 +21,16 @@ export function openPopOutWindow() {
 
 	popDoc.head.appendChild(makeElement({ tag: 'title', content: 'Live Preview - Glyphr Studio' }));
 
-	const resets = makeElement({ tag: 'style', innerHTML: reset });
+	const resets = makeElement({ tag: 'style', innerHTML: resetStyle });
 	popDoc.head.appendChild(resets);
-	const colors = makeElement({ tag: 'style', innerHTML: color });
+	const colors = makeElement({ tag: 'style', innerHTML: colorStyle });
 	popDoc.head.appendChild(colors);
-	const styles = makeElement({ tag: 'style', innerHTML: style });
-	popDoc.head.appendChild(styles);
+	const popWindow = makeElement({ tag: 'style', innerHTML: popOutWindowStyle });
+	popDoc.head.appendChild(popWindow);
 	const dialogs = makeElement({ tag: 'style', innerHTML: dialogStyle });
 	popDoc.head.appendChild(dialogs);
+	const panels = makeElement({ tag: 'style', innerHTML: panelStyle });
+	popDoc.head.appendChild(panels);
 
 	popDoc.body.appendChild(
 		makeElement({
@@ -56,7 +56,16 @@ export function openPopOutWindow() {
 
 	popDoc.head.appendChild(favIcon);
 
+	updatePopOutWindowContent();
+	// log(`openPopOutWindow`, 'end');
+}
+
+export function updatePopOutWindowContent() {
+	// log(`updatePopOutWindowContent`, 'start');
+	const editor = getCurrentProjectEditor();
+	let popDoc = editor.popOutWindow.document;
 	const popWrapper = popDoc.querySelector('#pop-out__wrapper');
+	popWrapper.innerHTML = '';
 	// log(popWrapper);
 	// log(popWrapper.getClientRects()[0]);
 
@@ -93,7 +102,7 @@ export function openPopOutWindow() {
 	}
 	// log(popDoc);
 	// editor.popOutWindow.setTimeout(refreshPopOutWindow, 10);
-	// log(`openPopOutWindow`, 'end');
+	// log(`updatePopOutWindowContent`, 'end');
 }
 
 export function closePopOutWindow(event) {
@@ -169,13 +178,13 @@ export function livePreviewPopOutWindowResize() {
 
 function showEditLivePreviewDialog() {
 	// log(`showEditLivePreviewDialog`, 'start');
-	const popDoc = getCurrentProjectEditor().popOutWindow.document;
-	let diag = makeModalDialog(makeElement({ tag: 'h1', content: 'YO' }), false, popDoc);
-	// diag.style.display = 'block';
+	const editor = getCurrentProjectEditor();
+	const popDoc = editor.popOutWindow.document;
+	let panelArea = makeElement({ tag: 'div', id: 'content-page__panel' });
+	let header = makeElement({ tag: 'h1', content: 'Live Preview options' });
+	addAsChildren(panelArea, [header, makePanel_LivePreview(editor.livePreviews[1], false)]);
+
+	let diag = makeModalDialog(panelArea, 500, popDoc);
 	popDoc.body.appendChild(diag);
 	// log(`showEditLivePreviewDialog`, 'end');
-}
-
-function makeOneLivePreviewEditor(textBlockOptions) {
-	
 }

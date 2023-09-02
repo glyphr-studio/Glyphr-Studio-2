@@ -10,7 +10,7 @@ import { redrawLivePreviewPageDisplayCanvas } from '../pages/live_preview';
 import { makeLivePreviewPopOutCard, openPopOutWindow } from '../project_editor/pop_out_window';
 import { makeDirectCheckbox, makeSingleLabel } from './cards';
 
-export function makePanel_LivePreview(textBlockOptions) {
+export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 	// Options
 	let basicOptionsCard = makeElement({
 		tag: 'div',
@@ -60,14 +60,9 @@ export function makePanel_LivePreview(textBlockOptions) {
 		makeButton('All lower case letter permutations', makePermutations(false)),
 	]);
 
-	// return [basicOptionsCard, pageOptionsCard];
-	return [
-		basicOptionsCard,
-		pageOptionsCard,
-		makeLivePreviewPopOutCard(),
-		pangramCard,
-		glyphSetsCard,
-	];
+	let result = [basicOptionsCard, pageOptionsCard, pangramCard, glyphSetsCard];
+	if (showPopOutCard) result.splice(2, 0, makeLivePreviewPopOutCard());
+	return result;
 }
 
 function makeButton(text, chars = false) {
