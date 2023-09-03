@@ -542,7 +542,7 @@ export function sortLigatures(a, b) {
 		return a.chars.localeCompare(b.chars);
 	} else {
 		// log(`sortLigatures`, 'end');
-		return a.chars.length - b.chars.length;
+		return b.chars.length - a.chars.length;
 	}
 }
 
