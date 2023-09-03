@@ -55,3 +55,7 @@ body:hover .pop-out__footer:hover {
 	height: 31px;
 	transition: opacity 300ms ease-in-out;
 }
+
+option-chooser {
+	width: 100%;
+}

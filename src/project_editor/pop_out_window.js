@@ -10,6 +10,7 @@ import { DisplayCanvas } from '../display_canvas/display_canvas';
 import logo from '../common/graphics/logo-icon.svg?raw';
 import { makeModalDialog } from '../controls/dialogs/dialogs';
 import { makePanel_LivePreview } from '../panels/live_preview';
+import { OptionChooser } from '../controls/option-chooser/option_chooser';
 
 export function openPopOutWindow() {
 	// log(`openPopOutWindow`, 'start');
@@ -182,7 +183,40 @@ function showEditLivePreviewDialog() {
 	const popDoc = editor.popOutWindow.document;
 	let panelArea = makeElement({ tag: 'div', id: 'content-page__panel' });
 	let header = makeElement({ tag: 'h1', content: 'Live Preview options' });
-	addAsChildren(panelArea, [header, makePanel_LivePreview(editor.livePreviews[1], false)]);
+
+	let previewChooser = makeElement({
+		tag: 'option-chooser',
+		attributes: {
+			'selected-name': editor.livePreviews[1].displayName,
+			'selected-id': 1,
+		},
+	});
+
+	for (let i = 1; i < editor.livePreviews.length; i++) {
+		let preview = editor.livePreviews[i];
+		let option = makeElement({
+			tag: 'option',
+			innerHTML: preview.displayName,
+			attributes: { note: `${preview.fontSize}px` },
+		});
+
+		option.addEventListener('click', () => {});
+
+		previewChooser.appendChild(option);
+	}
+
+	let previewSelectorCard = makeElement({
+		tag: 'div',
+		className: 'panel__card full-width',
+		innerHTML: `<h3>Edit live preview:</h3>`,
+	});
+	previewSelectorCard.appendChild(previewChooser);
+
+	addAsChildren(panelArea, [
+		header,
+		previewSelectorCard,
+		makePanel_LivePreview(editor.livePreviews[1], false),
+	]);
 
 	let diag = makeModalDialog(panelArea, 500);
 	popDoc.body.appendChild(diag);

@@ -41,7 +41,7 @@ export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 		makeButton('pack my box with five dozen liquor jugs'),
 		makeButton('the quick brown fox jumps over a lazy dog'),
 		makeButton('amazingly few discotheques provide jukeboxes'),
-		makeButton('quick enemy movement will<br>jeopardize six of the gunboats'),
+		makeButton('quick enemy movement will jeopardize six of the gunboats'),
 	]);
 
 	// Glyph sets
