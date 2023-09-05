@@ -9,7 +9,6 @@ export class TextBlockOptions {
 		// log(`TextBlockOptions.constructor`, 'start');
 		// log('options');
 		// log(options);
-		this.name = options.name || false;
 		this.text = options.text || '';
 		this.fontSize = options.fontSize || 48;
 		this.lineGap = options.lineGap || 12;
@@ -41,14 +40,12 @@ export class TextBlockOptions {
 	get displayName() {
 		let result = '';
 		result += `${this.text.substring(0, 40)}...`;
-		result += ` (${this.name})`;
 		// result += `(${this.fontSize}px)`;
 		return result;
 	}
 
 	save() {
 		let result = {};
-		if (this.name) result.name = this.name;
 		if (this.fontSize && this.fontSize !== 48) result.fontSize = this.fontSize;
 		if (this.lineGap && this.lineGap !== 12) result.lineGap = this.lineGap;
 		if (this.pagePadding && this.pagePadding !== 10) result.pagePadding = this.pagePadding;
@@ -57,7 +54,7 @@ export class TextBlockOptions {
 		if (this.showCharacterExtras) result.showCharacterExtras = this.showCharacterExtras;
 		if (this.showLineExtras) result.showLineExtras = this.showLineExtras;
 		if (this.showPageExtras) result.showPageExtras = this.showPageExtras;
-		if (this.widthAdjustment) result.widthAdjustment = this.widthAdjustment;
+		// if (this.widthAdjustment) result.widthAdjustment = this.widthAdjustment;
 
 		// handle sample text placeholders
 		if (this._text) result.text = this._text;

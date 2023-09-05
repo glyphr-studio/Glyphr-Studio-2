@@ -47,6 +47,7 @@ export class GlyphrStudioProject {
 					showGuides: true,
 					guidesTransparency: 70,
 				},
+				saveLivePreviews: true,
 				livePreviews: [],
 			},
 			font: {

@@ -20,42 +20,38 @@ export function closeEveryTypeOfDialog() {
 
 export function closeAllModalDialogs() {
 	// log(`closeAllModalDialogs`, 'start');
-	let dialogs = document.querySelectorAll('dialog');
-	dialogs.forEach((elem) => animateRemove(elem));
-	const editor = getCurrentProjectEditor();
-	if (editor.popOutWindow) {
-		dialogs = editor.popOutWindow.document.querySelectorAll('dialog');
-		dialogs.forEach((elem) => animateRemove(elem));
-	}
+	animateRemoveAll('dialog');
 	// log(`closeAllModalDialogs`, 'end');
 }
 
 export function closeAllOptionChoosers() {
 	// log(`closeAllOptionChoosers`, 'start');
 	closeAllContextMenus();
-	let optionChoosers = document.querySelectorAll('option-chooser');
-	optionChoosers.forEach((elem) => elem.removeAttribute('deployed'));
+	let elements = document.querySelectorAll('option-chooser');
+	elements.forEach((elem) => elem.removeAttribute('deployed'));
+	const editor = getCurrentProjectEditor();
+	if (editor.popOutWindow) {
+		elements = editor.popOutWindow.document.querySelectorAll('option-chooser');
+		elements.forEach((elem) => elem.removeAttribute('deployed'));
+	}
 	// log(`closeAllOptionChoosers`, 'end');
 }
 
 export function closeAllContextMenus() {
 	// log(`closeAllContextMenus`, 'start');
-	let menus = document.querySelectorAll('#context-menu');
-	menus.forEach((elem) => animateRemove(elem));
+	animateRemoveAll('#context-menu');
 	// log(`closeAllContextMenus`, 'end');
 }
 
 export function closeAllToasts() {
 	// log(`closeAllToasts`, 'start');
-	let toasts = document.querySelectorAll('#toast');
-	toasts.forEach((elem) => animateRemove(elem));
+	animateRemoveAll('#toast');
 	// log(`closeAllToasts`, 'end');
 }
 
 export function closeAllErrors() {
 	// log(`closeAllErrors`, 'start');
-	let errors = document.querySelectorAll('#error');
-	errors.forEach((elem) => animateRemove(elem));
+	animateRemoveAll('#error');
 	// log(`closeAllErrors`, 'end');
 }
 
@@ -66,7 +62,25 @@ export function closeAllInfoBubbles() {
 		elem.querySelector('.content').dispatchEvent(new Event('mouseleave'));
 		elem.blur();
 	});
+	const editor = getCurrentProjectEditor();
+	if (editor.popOutWindow) {
+		bubbles = editor.popOutWindow.document.querySelectorAll('#bubble');
+		bubbles.forEach((elem) => {
+			elem.querySelector('.content').dispatchEvent(new Event('mouseleave'));
+			elem.blur();
+		});
+	}
 	// log(`closeAllInfoBubbles`, 'end');
+}
+
+export function animateRemoveAll(query = '') {
+	let elements = document.querySelectorAll(query);
+	elements.forEach((elem) => animateRemove(elem));
+	const editor = getCurrentProjectEditor();
+	if (editor.popOutWindow) {
+		elements = editor.popOutWindow.document.querySelectorAll(query);
+		elements.forEach((elem) => animateRemove(elem));
+	}
 }
 
 export function animateRemove(element, animationLength = 120, scale = 0.98, translateY = '-5px') {

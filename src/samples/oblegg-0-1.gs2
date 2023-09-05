@@ -36,12 +36,10 @@
       "livePreviews": [
         {},
         {
-          "name": "Title",
           "fontSize": 128,
           "text": "pack my box with five dozen liquor waffle coffins."
         },
         {
-          "name": "Body",
           "fontSize": 18,
           "text": "{{scowl_10_short}}"
         }
