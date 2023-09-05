@@ -8,7 +8,7 @@ import dialogStyle from '../controls/dialogs/dialogs.css?inline';
 import panelStyle from '../panels/panels.css?inline';
 import { DisplayCanvas } from '../display_canvas/display_canvas';
 import logo from '../common/graphics/logo-icon.svg?raw';
-import { makeModalDialog } from '../controls/dialogs/dialogs';
+import { closeEveryTypeOfDialog, makeModalDialog } from '../controls/dialogs/dialogs';
 import { makePanel_LivePreview } from '../panels/live_preview';
 import { OptionChooser } from '../controls/option-chooser/option_chooser';
 
@@ -177,18 +177,19 @@ export function livePreviewPopOutWindowResize() {
 	// log(`livePreviewPopOutWindowResize`, 'end');
 }
 
+let selectedLivePreview = 1;
 function showEditLivePreviewDialog() {
 	// log(`showEditLivePreviewDialog`, 'start');
 	const editor = getCurrentProjectEditor();
 	const popDoc = editor.popOutWindow.document;
 	let panelArea = makeElement({ tag: 'div', id: 'content-page__panel' });
 	let header = makeElement({ tag: 'h1', content: 'Live Preview options' });
-
+	let selected = editor.livePreviews[selectedLivePreview];
 	let previewChooser = makeElement({
 		tag: 'option-chooser',
 		attributes: {
-			'selected-name': editor.livePreviews[1].displayName,
-			'selected-id': 1,
+			'selected-name': `${selectedLivePreview}: ${selected.displayName}`,
+			'selected-id': `${selectedLivePreview}: ${selected.displayName} ${selected.fontSize}px`,
 		},
 	});
 
@@ -196,11 +197,15 @@ function showEditLivePreviewDialog() {
 		let preview = editor.livePreviews[i];
 		let option = makeElement({
 			tag: 'option',
-			innerHTML: preview.displayName,
+			innerHTML: `${i}: ${preview.displayName}`,
 			attributes: { note: `${preview.fontSize}px` },
 		});
 
-		option.addEventListener('click', () => {});
+		option.addEventListener('click', () => {
+			selectedLivePreview = i;
+			closeEveryTypeOfDialog();
+			showEditLivePreviewDialog();
+		});
 
 		previewChooser.appendChild(option);
 	}
@@ -215,7 +220,7 @@ function showEditLivePreviewDialog() {
 	addAsChildren(panelArea, [
 		header,
 		previewSelectorCard,
-		makePanel_LivePreview(editor.livePreviews[1], false),
+		makePanel_LivePreview(editor.livePreviews[selectedLivePreview], false),
 	]);
 
 	let diag = makeModalDialog(panelArea, 500);

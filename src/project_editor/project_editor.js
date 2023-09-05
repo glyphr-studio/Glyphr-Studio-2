@@ -959,6 +959,15 @@ export class ProjectEditor {
 		const defaultValues = new GlyphrStudioProject();
 		saveData = removeDefaultValues(saveData, defaultValues, 'settings');
 
+		if (this.project.settings.app.saveLivePreviews) {
+			saveData.settings.app.livePreviews = [];
+			this.livePreviews.forEach((preview) => {
+				saveData.settings.app.livePreviews.push(preview.save());
+			});
+		} else {
+			delete saveData.settings.app.livePreviews;
+		}
+
 		if (this.project.settings.app.formatSaveFile) saveData = json(saveData);
 		else saveData = JSON.stringify(saveData);
 
