@@ -8,9 +8,9 @@ import dialogStyle from '../controls/dialogs/dialogs.css?inline';
 import panelStyle from '../panels/panels.css?inline';
 import { DisplayCanvas } from '../display_canvas/display_canvas';
 import logo from '../common/graphics/logo-icon.svg?raw';
-import { closeEveryTypeOfDialog, makeModalDialog } from '../controls/dialogs/dialogs';
+import { closeEveryTypeOfDialog, makeModalDialog, showToast } from '../controls/dialogs/dialogs';
 import { makePanel_LivePreview } from '../panels/live_preview';
-import { OptionChooser } from '../controls/option-chooser/option_chooser';
+import { TextBlockOptions } from '../display_canvas/text_block_options';
 
 export function openPopOutWindow() {
 	// log(`openPopOutWindow`, 'start');
@@ -90,7 +90,27 @@ export function updatePopOutWindowContent() {
 	});
 	editPreviewsButton.addEventListener('click', showEditLivePreviewDialog);
 
-	footer.appendChild(editPreviewsButton);
+	const addPreviewButton = makeElement({
+		tag: 'fancy-button',
+		content: 'Add a live preview',
+		attributes: { minimal: '' },
+	});
+	addPreviewButton.addEventListener('click', () => {
+		log(`addPreviewButton ONCLICK`, 'start');
+		let newPreview = new TextBlockOptions({ text: 'new live preview' });
+		log(`\n⮟newPreview⮟`);
+		log(newPreview);
+		const editor = getCurrentProjectEditor();
+		editor.livePreviews.push(newPreview);
+		selectedLivePreview = editor.livePreviews.length - 1;
+		updatePopOutWindowContent();
+		showEditLivePreviewDialog();
+		log(`addPreviewButton ONCLICK`, 'end');
+	});
+
+	// addAsChildren(footer, [editPreviewsButton, addPreviewButton]);
+	if (editor.livePreviews.length > 1) footer.appendChild(editPreviewsButton);
+	footer.appendChild(addPreviewButton);
 	popWrapper.appendChild(footer);
 
 	// Update buttons
@@ -177,14 +197,23 @@ export function livePreviewPopOutWindowResize() {
 	// log(`livePreviewPopOutWindowResize`, 'end');
 }
 
+// --------------------------------------------------------------
+// Pop out window options dialog
+// --------------------------------------------------------------
+
 let selectedLivePreview = 1;
 function showEditLivePreviewDialog() {
-	// log(`showEditLivePreviewDialog`, 'start');
+	log(`showEditLivePreviewDialog`, 'start');
 	const editor = getCurrentProjectEditor();
 	const popDoc = editor.popOutWindow.document;
 	let panelArea = makeElement({ tag: 'div', id: 'content-page__panel' });
 	let header = makeElement({ tag: 'h1', content: 'Live Preview options' });
+	log(`selectedLivePreview: ${selectedLivePreview}`);
+	log(`\n⮟editor.livePreviews⮟`);
+	log(editor.livePreviews);
 	let selected = editor.livePreviews[selectedLivePreview];
+	log(`\n⮟selected⮟`);
+	log(selected);
 	let previewChooser = makeElement({
 		tag: 'option-chooser',
 		attributes: {
@@ -210,12 +239,34 @@ function showEditLivePreviewDialog() {
 		previewChooser.appendChild(option);
 	}
 
+	let saveButton = makeElement({ tag: 'fancy-button', content: 'Save' });
+	saveButton.addEventListener('click', closeEveryTypeOfDialog);
+
+	let deleteButton = makeElement({
+		tag: 'fancy-button',
+		content: 'Delete',
+		attributes: { danger: '' },
+	});
+	deleteButton.addEventListener('click', () => {
+		const previews = getCurrentProjectEditor().livePreviews;
+		let name = previews[selectedLivePreview].displayName;
+		previews.splice(selectedLivePreview, 1);
+		if (selectedLivePreview >= previews.length) selectedLivePreview = previews.length - 1;
+		closeEveryTypeOfDialog();
+		updatePopOutWindowContent();
+		if (previews.length > 1) showEditLivePreviewDialog();
+		showToast(`Deleted live preview<br>${name}`);
+	});
+
+	let commitButtons = makeElement();
+	addAsChildren(commitButtons, [saveButton, deleteButton]);
+
 	let previewSelectorCard = makeElement({
 		tag: 'div',
-		className: 'panel__card full-width',
+		className: 'panel__card no-card',
 		innerHTML: `<h3>Edit live preview:</h3>`,
 	});
-	previewSelectorCard.appendChild(previewChooser);
+	addAsChildren(previewSelectorCard, [previewChooser, commitButtons]);
 
 	addAsChildren(panelArea, [
 		header,
@@ -225,5 +276,5 @@ function showEditLivePreviewDialog() {
 
 	let diag = makeModalDialog(panelArea, 500);
 	popDoc.body.appendChild(diag);
-	// log(`showEditLivePreviewDialog`, 'end');
+	log(`showEditLivePreviewDialog`, 'end');
 }

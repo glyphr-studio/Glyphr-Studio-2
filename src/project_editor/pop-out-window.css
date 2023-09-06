@@ -51,9 +51,10 @@ body:hover .pop-out__footer:hover {
 	opacity: 1;
 }
 
-.pop-out__footer fancy-button {
+fancy-button {
 	height: 31px;
 	transition: opacity 300ms ease-in-out;
+	margin: 5px 10px 10px 0px;
 }
 
 option-chooser {

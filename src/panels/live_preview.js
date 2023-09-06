@@ -29,6 +29,8 @@ export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 
 	addAsChildren(pageOptionsCard, makeTextBlockOptions_pageOptions(textBlockOptions));
 
+	let sampleTextHeader = makeElement({ className: 'panel__card no-card', innerHTML: '<h3>Sample text</h3>' });
+
 	// Pangrams
 	let pangramCard = makeElement({
 		tag: 'div',
@@ -60,7 +62,7 @@ export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 		makeButton('All lower case letter permutations', makePermutations(false)),
 	]);
 
-	let result = [basicOptionsCard, pageOptionsCard, pangramCard, glyphSetsCard];
+	let result = [basicOptionsCard, pageOptionsCard, sampleTextHeader, pangramCard, glyphSetsCard];
 	if (showPopOutCard) result.splice(2, 0, makeLivePreviewPopOutCard());
 	return result;
 }
