@@ -39,514 +39,539 @@ import { showAddEditKernGroupDialog } from '../pages/kerning.js';
  */
 
 export function getActionData(name) {
+	log(`getActionData`, 'start');
+	log(`name: ${name}`);
 	const editor = getCurrentProjectEditor();
 	let selectedPaths = editor.multiSelect.shapes.members;
 	let selectedPoints = editor.multiSelect.points.members;
-	let data = {};
+	let actionData = {};
 	let clipBoardShapes = editor.clipboard.shapes;
 	let clipBoardPathCount = clipBoardShapes ? clipBoardShapes.length : 0;
 	let historyLength = editor.history.queue.length;
 
 	// UNIVERSAL ACTIONS
-	data.allActions = [
-		{
-			iconName: 'copy',
-			iconOptions: !clipBoardShapes,
-			title: `Copy\nAdds the selected shape(s) to the clipboard.`,
-			disabled: !editor.multiSelect.shapes.length,
-			id: 'actionButtonCopy',
-			onClick: clipboardCopy,
-		},
-		{
-			iconName: 'paste',
-			iconOptions: !clipBoardShapes,
-			title: makeActionButtonPasteTooltip(clipBoardPathCount),
-			disabled: !clipBoardShapes,
-			id: 'actionButtonPaste',
-			onClick: clipboardPaste,
-		},
-		{
-			iconName: 'undo',
-			iconOptions: !historyLength,
-			title: `Undo\nStep backwards in time one action.`,
-			disabled: !historyLength,
-			id: 'actionButtonUndo',
-			onClick: () => {
-				editor.history.restoreState();
+	if (name === 'allActions') {
+		actionData = [
+			{
+				iconName: 'copy',
+				iconOptions: !clipBoardShapes,
+				title: `Copy\nAdds the selected shape(s) to the clipboard.`,
+				disabled: !editor.multiSelect.shapes.length,
+				id: 'actionButtonCopy',
+				onClick: clipboardCopy,
 			},
-		},
-	];
+			{
+				iconName: 'paste',
+				iconOptions: !clipBoardShapes,
+				title: makeActionButtonPasteTooltip(clipBoardPathCount),
+				disabled: !clipBoardShapes,
+				id: 'actionButtonPaste',
+				onClick: clipboardPaste,
+			},
+			{
+				iconName: 'undo',
+				iconOptions: !historyLength,
+				title: `Undo\nStep backwards in time one action.`,
+				disabled: !historyLength,
+				id: 'actionButtonUndo',
+				onClick: () => {
+					editor.history.restoreState();
+				},
+			},
+		];
 
-	if (editor.nav.page === 'Components') {
-		data.allActions.push({
-			iconName: 'linkToGlyph',
-			title: `Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance.`,
-			onClick: () => {
-				showDialogChooseOtherItem('linkAsComponent');
-			},
-		});
+		if (editor.nav.page === 'Components') {
+			actionData.push({
+				iconName: 'linkToGlyph',
+				title: `Link to Glyph\nChoose a glyph, and add this Component to that glyph as a Component Instance.`,
+				onClick: () => {
+					showDialogChooseOtherItem('linkAsComponent');
+				},
+			});
+		}
 	}
 
 	// ADDING PATH STUFF
-	data.addShapeActions = [
-		{
-			iconName: 'addPath',
-			iconOptions: false,
-			title: `Add Path\nCreates a new default path and adds it to this glyph.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				let newPath = editor.selectedItem.addOneShape(rectPathFromMaxes());
-				editor.history.addState(`Added a default rectangle path`);
-				editor.multiSelect.shapes.select(newPath);
-				editor.publish('whichPathIsSelected', newPath);
-				editor.publish('currentItem', editor.selectedItem);
+	if (name === 'addShapeActions') {
+		actionData = [
+			{
+				iconName: 'addPath',
+				iconOptions: false,
+				title: `Add Path\nCreates a new default path and adds it to this glyph.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let newPath = editor.selectedItem.addOneShape(rectPathFromMaxes());
+					editor.history.addState(`Added a default rectangle path`);
+					editor.multiSelect.shapes.select(newPath);
+					editor.publish('whichPathIsSelected', newPath);
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
-		},
-		{
-			iconName: 'addPath',
-			iconOptions: true,
-			title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
-			onClick: () => {
-				showDialogChooseOtherItem('addAsComponentInstance');
+			{
+				iconName: 'addPath',
+				iconOptions: true,
+				title: `Add Component Instance\nChoose another Component or Glyph, and use it as a Component Instance in this glyph.`,
+				onClick: () => {
+					showDialogChooseOtherItem('addAsComponentInstance');
+				},
 			},
-		},
-		{
-			iconName: 'pastePathsFromAnotherGlyph',
-			title: `Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one.`,
-			onClick: () => {
-				showDialogChooseOtherItem('copyPaths');
+			{
+				iconName: 'pastePathsFromAnotherGlyph',
+				title: `Get Paths\nChoose another Glyph, and copy all the paths from that glyph to this one.`,
+				onClick: () => {
+					showDialogChooseOtherItem('copyPaths');
+				},
 			},
-		},
-	];
+		];
+	}
 
 	// GLYPH
-	data.glyphActions = [
-		{
-			iconName: 'flipHorizontal',
-			title: `Flip Vertical\nReflects the glyph vertically.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				editor.selectedItem.flipEW();
-				editor.history.addState(`Flipped all shapes in this glyph vertically`);
-				editor.publish('currentItem', editor.selectedItem);
+	if (name === 'glyphActions') {
+		actionData = [
+			{
+				iconName: 'flipHorizontal',
+				title: `Flip Vertical\nReflects the glyph vertically.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					editor.selectedItem.flipEW();
+					editor.history.addState(`Flipped all shapes in this glyph vertically`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
-		},
-		{
-			iconName: 'flipVertical',
-			title: `Flip Horizontal\nReflects the glyph horizontally.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				editor.selectedItem.flipNS();
-				editor.history.addState(`Flipped all shapes in this glyph horizontally`);
-				editor.publish('currentItem', editor.selectedItem);
+			{
+				iconName: 'flipVertical',
+				title: `Flip Horizontal\nReflects the glyph horizontally.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					editor.selectedItem.flipNS();
+					editor.history.addState(`Flipped all shapes in this glyph horizontally`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
-		},
-		{
-			iconName: 'round',
-			title: `Round all path point and handle position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				editor.selectedItem.roundAll();
-				editor.history.addState(
-					`Rounded all the path point and handle position values in this glyph`
-				);
-				editor.publish('currentItem', editor.selectedItem);
-				showToast('Values were rounded for all path points in this glyph.');
+			{
+				iconName: 'round',
+				title: `Round all path point and handle position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					editor.selectedItem.roundAll();
+					editor.history.addState(
+						`Rounded all the path point and handle position values in this glyph`
+					);
+					editor.publish('currentItem', editor.selectedItem);
+					showToast('Values were rounded for all path points in this glyph.');
+				},
 			},
-		},
-		{
-			iconName: 'combine',
-			title: `Combine all paths\nCombines all paths with the same winding into as few paths as possible.`,
-			disabled: editor.selectedItem.shapes.length < 2,
-			onClick: combineAllGlyphPaths,
-		},
-		{
-			iconName: 'deleteGlyph',
-			title: `Delete Glyph\nRemove this Glyph from the project. ${
-				editor.selectedItem?.usedIn?.length
-					? `\nGlyphs that are used as a root component (like this one) cannot be deleted. Delete or un-link the component instances first.`
-					: `\nDon't worry, you can undo this action.`
-			}`,
-			disabled: editor.selectedItem?.usedIn?.length,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				const name = editor.selectedItem.name;
-				editor.deleteSelectedItemFromProject();
-				editor.history.addState(`Automatically navigated to ${editor.selectedItem.name}`);
-				// log(`New item id: ${editor.selectedItemID}`);
-				editor.publish('whichGlyphIsSelected', editor.selectedItemID);
-				showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
+			{
+				iconName: 'combine',
+				title: `Combine all paths\nCombines all paths with the same winding into as few paths as possible.`,
+				disabled: editor.selectedItem.shapes.length < 2,
+				onClick: combineAllGlyphPaths,
 			},
-		},
-		{
-			iconName: 'exportGlyphSVG',
-			title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				let content = makeGlyphSVGforExport(editor.selectedItem);
-				let name = editor.selectedItem.name;
-				saveFile(name + '.svg', content);
+			{
+				iconName: 'deleteGlyph',
+				title: `Delete Glyph\nRemove this Glyph from the project. ${
+					editor.selectedItem?.usedIn?.length
+						? `\nGlyphs that are used as a root component (like this one) cannot be deleted. Delete or un-link the component instances first.`
+						: `\nDon't worry, you can undo this action.`
+				}`,
+				disabled: editor.selectedItem?.usedIn?.length,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const name = editor.selectedItem.name;
+					editor.deleteSelectedItemFromProject();
+					editor.history.addState(`Automatically navigated to ${editor.selectedItem.name}`);
+					// log(`New item id: ${editor.selectedItemID}`);
+					editor.publish('whichGlyphIsSelected', editor.selectedItemID);
+					showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
+				},
 			},
-		},
-	];
+			{
+				iconName: 'exportGlyphSVG',
+				title: `Export glyph SVG File\nGenerate a SVG file that only includes the SVG outline for this glyph. This file can be dragged and dropped directly to another Glyphr Studio project edit canvas, allowing for copying glyph paths between projects.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let content = makeGlyphSVGforExport(editor.selectedItem);
+					let name = editor.selectedItem.name;
+					saveFile(name + '.svg', content);
+				},
+			},
+		];
+	}
 
 	// PATH
-	data.shapeActions = [
-		{
-			iconName: 'copy',
-			iconOptions: !clipBoardShapes,
-			title: `Copy\nAdds the selected shape(s) to the clipboard.`,
-			id: 'actionButtonCopyPath',
-			onClick: clipboardCopy,
-		},
-		{
-			iconName: 'deletePath',
-			title: 'Delete\nRemoves the currently selected shape(s) from this glyph.',
-			onClick: deleteSelectedPaths,
-		},
-		{
-			iconName: 'switchPathComponent',
-			iconOptions: false,
-			title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				const newComponent = new Glyph({
-					objType: 'Component',
-					name: `Component ${countItems(editor.project.components)}`,
-				});
-				editor.multiSelect.shapes.members.forEach((shape) => {
-					if (shape.objType === 'Path') {
-						newComponent.addOneShape(new Path(shape));
-					} else if (shape.objType === 'ComponentInstance') {
-						newComponent.addOneShape(new ComponentInstance(shape));
-					}
-					name += ' ' + shape.name;
-				});
-				const addedComponent = addComponent(newComponent);
-				addLinkToUsedIn(addedComponent, editor.selectedItemID);
-				const newShape = editor.selectedItem.addOneShape(
-					new ComponentInstance({
-						link: addedComponent.id,
-					})
-				);
-				editor.multiSelect.shapes.deleteShapes();
-				editor.history.addState('Turned a path into a component');
-				editor.multiSelect.shapes.select(newShape);
-				editor.publish('currentItem', editor.selectedItem);
+	if (name === 'shapeActions') {
+		actionData = [
+			{
+				iconName: 'copy',
+				iconOptions: !clipBoardShapes,
+				title: `Copy\nAdds the selected shape(s) to the clipboard.`,
+				id: 'actionButtonCopyPath',
+				onClick: clipboardCopy,
 			},
-		},
-		{
-			iconName: 'flipHorizontal',
-			title: 'Flip Horizontal\nReflects the currently selected shape(s) horizontally.',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				let shape = editor.multiSelect.shapes.virtualGlyph;
-				shape.flipEW();
-				editor.history.addState(`Flipped shape ${shape.name} horizontally`);
-				editor.publish('currentItem', editor.selectedItem);
+			{
+				iconName: 'deletePath',
+				title: 'Delete\nRemoves the currently selected shape(s) from this glyph.',
+				onClick: deleteSelectedPaths,
 			},
-		},
-		{
-			iconName: 'flipVertical',
-			title: 'Flip Vertical\nReflects the currently selected shape(s) vertically',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				let shape = editor.multiSelect.shapes.virtualGlyph;
-				shape.flipNS();
-				editor.history.addState(`Flipped shape ${shape.name} vertically`);
-				editor.publish('currentItem', editor.selectedItem);
+			{
+				iconName: 'switchPathComponent',
+				iconOptions: false,
+				title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const newComponent = new Glyph({
+						objType: 'Component',
+						name: `Component ${countItems(editor.project.components)}`,
+					});
+					editor.multiSelect.shapes.members.forEach((shape) => {
+						if (shape.objType === 'Path') {
+							newComponent.addOneShape(new Path(shape));
+						} else if (shape.objType === 'ComponentInstance') {
+							newComponent.addOneShape(new ComponentInstance(shape));
+						}
+						name += ' ' + shape.name;
+					});
+					const addedComponent = addComponent(newComponent);
+					addLinkToUsedIn(addedComponent, editor.selectedItemID);
+					const newShape = editor.selectedItem.addOneShape(
+						new ComponentInstance({
+							link: addedComponent.id,
+						})
+					);
+					editor.multiSelect.shapes.deleteShapes();
+					editor.history.addState('Turned a path into a component');
+					editor.multiSelect.shapes.select(newShape);
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
-		},
-		{
-			iconName: 'round',
-			title: `Round all path point and handle position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				let shape = editor.multiSelect.shapes.virtualGlyph;
-				shape.roundAll();
-				editor.history.addState(
-					`Rounded all the path point and handle position values in this shape`
-				);
-				editor.publish('currentItem', editor.selectedItem);
-				showToast('Values were rounded for all the path points in the selected paths.');
+			{
+				iconName: 'flipHorizontal',
+				title: 'Flip Horizontal\nReflects the currently selected shape(s) horizontally.',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let shape = editor.multiSelect.shapes.virtualGlyph;
+					shape.flipEW();
+					editor.history.addState(`Flipped shape ${shape.name} horizontally`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
-		},
-	];
+			{
+				iconName: 'flipVertical',
+				title: 'Flip Vertical\nReflects the currently selected shape(s) vertically',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let shape = editor.multiSelect.shapes.virtualGlyph;
+					shape.flipNS();
+					editor.history.addState(`Flipped shape ${shape.name} vertically`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
+			},
+			{
+				iconName: 'round',
+				title: `Round all path point and handle position values\nIf a x or y value for any point or a handle in the path has decimals, it will be rounded to the nearest whole number.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let shape = editor.multiSelect.shapes.virtualGlyph;
+					shape.roundAll();
+					editor.history.addState(
+						`Rounded all the path point and handle position values in this shape`
+					);
+					editor.publish('currentItem', editor.selectedItem);
+					showToast('Values were rounded for all the path points in the selected paths.');
+				},
+			},
+		];
+	}
 
 	// COMPONENT INSTANCE
-	data.componentInstanceActions = [
-		{
-			iconName: 'switchPathComponent',
-			iconOptions: true,
-			title: `Turn Component Instance into a Path\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's paths as regular Paths to this glyph.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				let newShapes = [];
-				editor.multiSelect.shapes.members.forEach((shape) => {
-					if (shape.objType === 'ComponentInstance') {
-						const sourceItem = editor.project.getItem(shape.link);
-						newShapes = newShapes.concat(
-							copyShapesFromTo(shape.transformedGlyph, editor.selectedItem)
-						);
-						removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
-					}
-				});
-				editor.multiSelect.shapes.deleteShapes();
-				newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
-				editor.history.addState('Turned a component instance into a path');
-				editor.publish('currentItem', editor.selectedItem);
+	if (name === 'componentInstanceActions') {
+		actionData = [
+			{
+				iconName: 'switchPathComponent',
+				iconOptions: true,
+				title: `Turn Component Instance into a Path\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's paths as regular Paths to this glyph.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let newShapes = [];
+					editor.multiSelect.shapes.members.forEach((shape) => {
+						if (shape.objType === 'ComponentInstance') {
+							const sourceItem = editor.project.getItem(shape.link);
+							newShapes = newShapes.concat(
+								copyShapesFromTo(shape.transformedGlyph, editor.selectedItem)
+							);
+							removeLinkFromUsedIn(sourceItem, editor.selectedItemID);
+						}
+					});
+					editor.multiSelect.shapes.deleteShapes();
+					newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
+					editor.history.addState('Turned a component instance into a path');
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
-		},
-		{
-			iconName: 'deletePath',
-			iconOptions: true,
-			title: 'Delete\nRemoves the currently selected component instance from this glyph.',
-			onClick: deleteSelectedPaths,
-		},
-	];
+			{
+				iconName: 'deletePath',
+				iconOptions: true,
+				title: 'Delete\nRemoves the currently selected component instance from this glyph.',
+				onClick: deleteSelectedPaths,
+			},
+		];
+	}
 
 	// KERN GROUP
-	data.kernGroupActions = [
-		{
-			iconName: 'edit',
-			title: 'Edit this kern group',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				showAddEditKernGroupDialog(editor.selectedKernGroup);
+	if (name === 'kernGroupActions') {
+		actionData = [
+			{
+				iconName: 'edit',
+				title: 'Edit this kern group',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					showAddEditKernGroupDialog(editor.selectedKernGroup);
+				},
 			},
-		},
-		{
-			iconName: 'delete',
-			title: 'Delete this kern group',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				const name = editor.selectedKernGroupID;
-				editor.deleteSelectedItemFromProject();
-				editor.history.addState(`Automatically navigated to ${editor.selectedItemID}`);
-				editor.publish('whichKernGroupIsSelected', editor.selectedItemID);
-				showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
+			{
+				iconName: 'delete',
+				title: 'Delete this kern group',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const name = editor.selectedKernGroupID;
+					editor.deleteSelectedItemFromProject();
+					editor.history.addState(`Automatically navigated to ${editor.selectedItemID}`);
+					editor.publish('whichKernGroupIsSelected', editor.selectedItemID);
+					showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
+				},
 			},
-		},
-	];
+		];
+	}
 
 	// LAYERS
-	data.layerActions = [
-		{
-			iconName: 'moveLayerUp',
-			title: `Move Path Up\nMoves the path up in the path layer order.`,
-			disabled: selectedPaths.length !== 1,
-			onClick: () => {
-				moveLayer('up');
-				const editor = getCurrentProjectEditor();
-				editor.history.addState(`Moved layer up`);
-				editor.publish('currentItem', editor.selectedItem);
+	if (name === 'layerActions') {
+		actionData = [
+			{
+				iconName: 'moveLayerUp',
+				title: `Move Path Up\nMoves the path up in the path layer order.`,
+				disabled: selectedPaths.length !== 1,
+				onClick: () => {
+					moveLayer('up');
+					const editor = getCurrentProjectEditor();
+					editor.history.addState(`Moved layer up`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
-		},
-		{
-			iconName: 'moveLayerDown',
-			title: `Move Path Down\nMoves the path down in the path layer order.`,
-			disabled: selectedPaths.length !== 1,
-			onClick: () => {
-				moveLayer('down');
-				const editor = getCurrentProjectEditor();
-				editor.history.addState(`Moved layer down`);
-				editor.publish('currentItem', editor.selectedItem);
+			{
+				iconName: 'moveLayerDown',
+				title: `Move Path Down\nMoves the path down in the path layer order.`,
+				disabled: selectedPaths.length !== 1,
+				onClick: () => {
+					moveLayer('down');
+					const editor = getCurrentProjectEditor();
+					editor.history.addState(`Moved layer down`);
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
-		},
-	];
+		];
+	}
 
 	// ALIGN
-	data.alignActions = [
-		{
-			title: `Align Left\nMoves all the selected shape so they are left aligned with the leftmost shape.`,
-			iconName: 'align',
-			iconOptions: 'left',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.shapes;
-				vGlyph.align('left');
-				editor.history.addState(`Left aligned ${editor.multiSelect.shapes.length} shapes`);
-				editor.publish('currentItem', vGlyph);
+	if (name === 'alignActions') {
+		actionData = [
+			{
+				title: `Align Left\nMoves all the selected shape so they are left aligned with the leftmost shape.`,
+				iconName: 'align',
+				iconOptions: 'left',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vGlyph = editor.multiSelect.shapes;
+					vGlyph.align('left');
+					editor.history.addState(`Left aligned ${editor.multiSelect.shapes.length} shapes`);
+					editor.publish('currentItem', vGlyph);
+				},
 			},
-		},
-		{
-			title: `Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape.`,
-			iconName: 'align',
-			iconOptions: 'center',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.shapes;
-				vGlyph.align('center');
-				editor.history.addState(`Center aligned ${editor.multiSelect.shapes.length} shapes`);
-				editor.publish('currentItem', vGlyph);
+			{
+				title: `Align Center\nMoves all the selected shapes so they are center aligned between the leftmost and rightmost shape.`,
+				iconName: 'align',
+				iconOptions: 'center',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vGlyph = editor.multiSelect.shapes;
+					vGlyph.align('center');
+					editor.history.addState(`Center aligned ${editor.multiSelect.shapes.length} shapes`);
+					editor.publish('currentItem', vGlyph);
+				},
 			},
-		},
-		{
-			title: `Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape.`,
-			iconName: 'align',
-			iconOptions: 'right',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.shapes;
-				vGlyph.align('right');
-				editor.history.addState(`Right aligned ${editor.multiSelect.shapes.length} shapes`);
-				editor.publish('currentItem', vGlyph);
+			{
+				title: `Align Right\nMoves all the selected shapes so they are right aligned with the rightmost shape.`,
+				iconName: 'align',
+				iconOptions: 'right',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vGlyph = editor.multiSelect.shapes;
+					vGlyph.align('right');
+					editor.history.addState(`Right aligned ${editor.multiSelect.shapes.length} shapes`);
+					editor.publish('currentItem', vGlyph);
+				},
 			},
-		},
-		{
-			title: `Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape.`,
-			iconName: 'align',
-			iconOptions: 'top',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.shapes;
-				vGlyph.align('top');
-				editor.history.addState(`Top aligned ${editor.multiSelect.shapes.length} shapes`);
-				editor.publish('currentItem', vGlyph);
+			{
+				title: `Align Top\nMoves all the selected shapes so they are top aligned with the topmost shape.`,
+				iconName: 'align',
+				iconOptions: 'top',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vGlyph = editor.multiSelect.shapes;
+					vGlyph.align('top');
+					editor.history.addState(`Top aligned ${editor.multiSelect.shapes.length} shapes`);
+					editor.publish('currentItem', vGlyph);
+				},
 			},
-		},
-		{
-			title: `Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape.`,
-			iconName: 'align',
-			iconOptions: 'middle',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.shapes;
-				vGlyph.align('middle');
-				editor.history.addState(`Middle aligned ${editor.multiSelect.shapes.length} shapes`);
-				editor.publish('currentItem', vGlyph);
+			{
+				title: `Align Middle\nMoves all the selected shapes so they are middle aligned between the topmost and bottommost shape.`,
+				iconName: 'align',
+				iconOptions: 'middle',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vGlyph = editor.multiSelect.shapes;
+					vGlyph.align('middle');
+					editor.history.addState(`Middle aligned ${editor.multiSelect.shapes.length} shapes`);
+					editor.publish('currentItem', vGlyph);
+				},
 			},
-		},
-		{
-			title: `Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape.`,
-			iconName: 'align',
-			iconOptions: 'bottom',
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				const vGlyph = editor.multiSelect.shapes;
-				vGlyph.align('bottom');
-				editor.history.addState(`Bottom aligned ${editor.multiSelect.shapes.length} shapes`);
-				editor.publish('currentItem', vGlyph);
+			{
+				title: `Align Bottom\nMoves all the selected shapes so they are bottom aligned with the bottommost shape.`,
+				iconName: 'align',
+				iconOptions: 'bottom',
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					const vGlyph = editor.multiSelect.shapes;
+					vGlyph.align('bottom');
+					editor.history.addState(`Bottom aligned ${editor.multiSelect.shapes.length} shapes`);
+					editor.publish('currentItem', vGlyph);
+				},
 			},
-		},
-	];
+		];
+	}
 
 	// COMBINE
-	data.boolActions = [
-		{
-			iconName: 'combine',
-			title: `Combine\nCombines selected paths with the same winding into as few paths as possible.`,
-			disabled: !editor.multiSelect.shapes.length,
-			onClick: combineSelectedPaths,
-		},
-		// {
-		// 	iconName: 'test',
-		// 	title: `Add Path Points at intersections\nSelect two paths, and add path points to each where they cross.`,
-		// 	disabled: !editor.multiSelect.shapes.length === 2,
-		// 	onClick: addPathPointsAtIntersectionsAction,
-		// },
-		// {
-		// 	iconName: 'subtractUsingTop',
-		// 	disabled: true,
-		// 	title: `Subtract Using Upper\nSelect two paths, and the upper path will be used to cut out an area from the lower path.`,
-		// },
-		// {
-		// 	iconName: 'subtractUsingBottom',
-		// 	disabled: true,
-		// 	title: `Subtract Using Lower\nSelect two paths, and the lower path will be used to cut out an area from the upper path.`,
-		// },
-	];
+	if (name === 'boolActions') {
+		actionData = [
+			{
+				iconName: 'combine',
+				title: `Combine\nCombines selected paths with the same winding into as few paths as possible.`,
+				disabled: !editor.multiSelect.shapes.length,
+				onClick: combineSelectedPaths,
+			},
+			// {
+			// 	iconName: 'test',
+			// 	title: `Add Path Points at intersections\nSelect two paths, and add path points to each where they cross.`,
+			// 	disabled: !editor.multiSelect.shapes.length === 2,
+			// 	onClick: addPathPointsAtIntersectionsAction,
+			// },
+			// {
+			// 	iconName: 'subtractUsingTop',
+			// 	disabled: true,
+			// 	title: `Subtract Using Upper\nSelect two paths, and the upper path will be used to cut out an area from the lower path.`,
+			// },
+			// {
+			// 	iconName: 'subtractUsingBottom',
+			// 	disabled: true,
+			// 	title: `Subtract Using Lower\nSelect two paths, and the lower path will be used to cut out an area from the upper path.`,
+			// },
+		];
+	}
 
 	// PATH POINT
-	data.pointActions = [
-		{
-			iconName: 'insertPathPoint',
-			title: `Insert Path Point\nAdds a new Path Point half way between the currently-selected point, and the next one.`,
-			disabled: selectedPoints.length !== 1,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				let newPoint = editor.multiSelect.shapes.singleton.insertPathPoint(
-					selectedPoints[0].pointNumber
-				);
-				editor.history.addState(`Inserted a new path point at position ${newPoint.pointNumber}`);
-				editor.multiSelect.points.select(newPoint);
-				// editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
+	if (name === 'pointActions') {
+		actionData = [
+			{
+				iconName: 'insertPathPoint',
+				title: `Insert Path Point\nAdds a new Path Point half way between the currently-selected point, and the next one.`,
+				disabled: selectedPoints.length !== 1,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let newPoint = editor.multiSelect.shapes.singleton.insertPathPoint(
+						selectedPoints[0].pointNumber
+					);
+					editor.history.addState(`Inserted a new path point at position ${newPoint.pointNumber}`);
+					editor.multiSelect.points.select(newPoint);
+					// editor.publish('currentPathPoint', editor.multiSelect.points.singleton);
+				},
 			},
-		},
-		{
-			iconName: 'deletePathPoint',
-			title: `Delete Path Point\nRemoves the currently selected point or points from the path.`,
-			disabled: selectedPaths.length === 0,
-			onClick: deleteSelectedPoints,
-		},
-		{
-			iconName: 'resetPathPoint',
-			title: `Reset Handles\nMoves the handles of the currently selected point or points to default locations.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				editor.multiSelect.points.resetHandles();
-				editor.history.addState(
-					`Reset the handles for ${editor.multiSelect.points.length} path point(s)`
-				);
-				editor.publish('currentItem', editor.selectedItem);
+			{
+				iconName: 'deletePathPoint',
+				title: `Delete Path Point\nRemoves the currently selected point or points from the path.`,
+				disabled: selectedPaths.length === 0,
+				onClick: deleteSelectedPoints,
 			},
-		},
-		{
-			iconName: 'round',
-			title: `Round path point and handle position values\nIf a x or y value for the point or a handle has decimals, it will be rounded to the nearest whole number.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				editor.multiSelect.points.roundAll(0);
-				editor.history.addState(
-					`Rounded path point and handle position values for ${editor.multiSelect.points.length} path point(s)`
-				);
-				editor.publish('currentItem', editor.selectedItem);
-				showToast('Values were rounded for the selected path points.');
+			{
+				iconName: 'resetPathPoint',
+				title: `Reset Handles\nMoves the handles of the currently selected point or points to default locations.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					editor.multiSelect.points.resetHandles();
+					editor.history.addState(
+						`Reset the handles for ${editor.multiSelect.points.length} path point(s)`
+					);
+					editor.publish('currentItem', editor.selectedItem);
+				},
 			},
-		},
-		{
-			iconName: 'selectNextPathPoint',
-			disabled: editor.multiSelect.points.hasMultipleParents,
-			title: `Select next Path Point\nSelect the path point that comes after the currently selected path point.\nHold [Ctrl] to add the next path point to the selection.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				let msPoints = editor.multiSelect.points;
-				let path = msPoints.members[0].parent;
-				let thisIndex = msPoints.highestSelectedPointNumber;
-				let nextIndex = path.getNextPointNum(thisIndex);
-				// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
+			{
+				iconName: 'round',
+				title: `Round path point and handle position values\nIf a x or y value for the point or a handle has decimals, it will be rounded to the nearest whole number.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					editor.multiSelect.points.roundAll(0);
+					editor.history.addState(
+						`Rounded path point and handle position values for ${editor.multiSelect.points.length} path point(s)`
+					);
+					editor.publish('currentItem', editor.selectedItem);
+					showToast('Values were rounded for the selected path points.');
+				},
+			},
+			{
+				iconName: 'selectNextPathPoint',
+				disabled: editor.multiSelect.points.hasMultipleParents,
+				title: `Select next Path Point\nSelect the path point that comes after the currently selected path point.\nHold [Ctrl] to add the next path point to the selection.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let msPoints = editor.multiSelect.points;
+					let path = msPoints.members[0].parent;
+					let thisIndex = msPoints.highestSelectedPointNumber;
+					let nextIndex = path.getNextPointNum(thisIndex);
+					// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
 
-				if (eventHandlerData.isCtrlDown) {
-					msPoints.add(path.pathPoints[nextIndex]);
-				} else {
-					msPoints.select(path.pathPoints[nextIndex]);
-				}
-				editor.publish('whichPathPointIsSelected', path.pathPoints[nextIndex]);
+					if (eventHandlerData.isCtrlDown) {
+						msPoints.add(path.pathPoints[nextIndex]);
+					} else {
+						msPoints.select(path.pathPoints[nextIndex]);
+					}
+					editor.publish('whichPathPointIsSelected', path.pathPoints[nextIndex]);
+				},
 			},
-		},
-		{
-			iconName: 'selectPreviousPathPoint',
-			disabled: editor.multiSelect.points.hasMultipleParents,
-			title: `Select pervious Path Point\nSelect the path point that comes before the currently selected path point.\nHold [Ctrl] to add the previous path point to the selection.`,
-			onClick: () => {
-				const editor = getCurrentProjectEditor();
-				let msPoints = editor.multiSelect.points;
-				let path = msPoints.members[0].parent;
-				let thisIndex = msPoints.lowestSelectedPointNumber;
-				let previousIndex = path.getPreviousPointNum(thisIndex);
-				// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
+			{
+				iconName: 'selectPreviousPathPoint',
+				disabled: editor.multiSelect.points.hasMultipleParents,
+				title: `Select pervious Path Point\nSelect the path point that comes before the currently selected path point.\nHold [Ctrl] to add the previous path point to the selection.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let msPoints = editor.multiSelect.points;
+					let path = msPoints.members[0].parent;
+					let thisIndex = msPoints.lowestSelectedPointNumber;
+					let previousIndex = path.getPreviousPointNum(thisIndex);
+					// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
 
-				if (eventHandlerData.isCtrlDown) {
-					msPoints.add(path.pathPoints[previousIndex]);
-				} else {
-					msPoints.select(path.pathPoints[previousIndex]);
-				}
-				editor.publish('whichPathPointIsSelected', path.pathPoints[previousIndex]);
+					if (eventHandlerData.isCtrlDown) {
+						msPoints.add(path.pathPoints[previousIndex]);
+					} else {
+						msPoints.select(path.pathPoints[previousIndex]);
+					}
+					editor.publish('whichPathPointIsSelected', path.pathPoints[previousIndex]);
+				},
 			},
-		},
-	];
+		];
+	}
 
-	return data[name];
+	log(`\n⮟actionData⮟`);
+	log(actionData);
+	log(`getActionData`, 'end');
+	return actionData;
 }
 
 // --------------------------------------------------------------

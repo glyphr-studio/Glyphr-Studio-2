@@ -119,7 +119,8 @@ export function makeCard_glyphLinks(item) {
 		className: 'panel__card full-width item-links__rows-area',
 		innerHTML: `
 		<h3>Links</h3>
-		This ${item.displayType} is linked to the following items as a component root.
+		This ${item.displayType} is linked to the following items.
+		It is used as a component root and will show up in these items as a component instance.
 		`,
 	});
 

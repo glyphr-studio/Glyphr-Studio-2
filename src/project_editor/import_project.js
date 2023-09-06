@@ -34,7 +34,9 @@ export function importGlyphrProjectFromText(importedProject) {
 	// Update the version
 	const app = getGlyphrStudioApp();
 	importedProject.settings.project.latestVersion = app.version;
-	importedProject.settings.project.initialVersion = makeSemVerString(version);
+	if (!importedProject.settings.project.initialVersion) {
+		importedProject.settings.project.initialVersion = makeSemVerString(version);
+	}
 
 	// Hydrate after all updates
 	// log(`Calling new GlyphrStudioProject from importGlyphrProjectFromText`);

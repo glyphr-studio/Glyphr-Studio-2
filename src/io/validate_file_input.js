@@ -317,7 +317,7 @@ export function makeSemVerString(versionObject) {
 	const preRelease = versionObject?.preRelease;
 
 	let result = `${major}.${minor}.${patch}`;
-	if (preRelease) result = `${result}.${preRelease}`;
+	if (preRelease) result = `${result}-${preRelease}`;
 
 	return result;
 }

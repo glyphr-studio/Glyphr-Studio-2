@@ -1,10 +1,10 @@
 {
   "settings": {
     "project": {
-      "name": "Oblegg 0.1",
+      "name": "Oblegg 0.2",
       "latestVersion": "2.0.0-beta.2.0",
-      "initialVersion": "2.0.0.beta.2.0",
-      "id": "g2_28OZ93ESET",
+      "initialVersion": "2.0.0-beta.1.0",
+      "id": "g2_OBLEGG0BETA",
       "characterRanges": [
         {
           "name": "Basic Latin",
@@ -9195,131 +9195,6 @@
               "p": {"coord": {"x": 910.767,"y": 235.801}},
               "h1": {"coord": {"x": 860.767,"y": 235.801}, "use": false},
               "h2": {"coord": {"x": 910.767,"y": 238.562}}
-            }
-          ]
-        }
-      ]
-    },
-    "glyph-0x30": {
-      "id": "glyph-0x30",
-      "shapes": [
-        {
-          "name": "Rectangle 0",
-          "winding": -5,
-          "pathPoints": [
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 0,"y": 200}},
-              "h1": {"coord": {"x": -50,"y": 200}, "use": false},
-              "h2": {"coord": {"x": 50,"y": 200}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 100,"y": 200}},
-              "h1": {"coord": {"x": 50,"y": 200}, "use": false},
-              "h2": {"coord": {"x": 150,"y": 200}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 100,"y": 100}},
-              "h1": {"coord": {"x": 50,"y": 100}, "use": false},
-              "h2": {"coord": {"x": 150,"y": 100}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 0,"y": 100}},
-              "h1": {"coord": {"x": -50,"y": 100}, "use": false},
-              "h2": {"coord": {"x": 50,"y": 100}, "use": false}
-            }
-          ]
-        },
-        {
-          "name": "Rectangle 0 (copy)",
-          "winding": -5,
-          "pathPoints": [
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 50,"y": 150}},
-              "h1": {"coord": {"x": 0,"y": 150}, "use": false},
-              "h2": {"coord": {"x": 100,"y": 150}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 150,"y": 150}},
-              "h1": {"coord": {"x": 100,"y": 150}, "use": false},
-              "h2": {"coord": {"x": 200,"y": 150}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 150,"y": 50}},
-              "h1": {"coord": {"x": 100,"y": 50}, "use": false},
-              "h2": {"coord": {"x": 200,"y": 50}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 50,"y": 50}},
-              "h1": {"coord": {"x": 0,"y": 50}, "use": false},
-              "h2": {"coord": {"x": 100,"y": 50}, "use": false}
-            }
-          ]
-        },
-        {
-          "name": "Oval 2",
-          "winding": -5,
-          "pathPoints": [
-            {
-              "type": "symmetric",
-              "p": {"coord": {"x": 319.8710022856668,"y": 1060}},
-              "h1": {"coord": {"x": 182.39550660433338,"y": 1060}},
-              "h2": {"coord": {"x": 457.34649796700023,"y": 1060}}
-            },
-            {
-              "type": "symmetric",
-              "p": {"coord": {"x": 570,"y": 809.677743607718}},
-              "h1": {"coord": {"x": 570,"y": 947.7852837718121}},
-              "h2": {"coord": {"x": 570,"y": 671.5702034436238}}
-            },
-            {
-              "type": "symmetric",
-              "p": {"coord": {"x": 319.8710022856668,"y": 560}},
-              "h1": {"coord": {"x": 457.6044933956666,"y": 560}},
-              "h2": {"coord": {"x": 182.137511175667,"y": 560}}
-            },
-            {
-              "type": "symmetric",
-              "p": {"coord": {"x": 70,"y": 809.677743607718}},
-              "h1": {"coord": {"x": 70,"y": 672.2147162281879}},
-              "h2": {"coord": {"x": 70,"y": 947.1407709872481}}
-            }
-          ]
-        },
-        {
-          "name": "Oval 2 (copy)",
-          "winding": -5,
-          "pathPoints": [
-            {
-              "type": "symmetric",
-              "p": {"coord": {"x": 249.87100228566678,"y": 1000}},
-              "h1": {"coord": {"x": 112.39550660433336,"y": 1000}},
-              "h2": {"coord": {"x": 387.34649796700023,"y": 1000}}
-            },
-            {
-              "type": "symmetric",
-              "p": {"coord": {"x": 500,"y": 749.6777436077174}},
-              "h1": {"coord": {"x": 500,"y": 887.7852837718116}},
-              "h2": {"coord": {"x": 500,"y": 611.5702034436232}}
-            },
-            {
-              "type": "symmetric",
-              "p": {"coord": {"x": 249.87100228566678,"y": 500}},
-              "h1": {"coord": {"x": 387.6044933956666,"y": 500}},
-              "h2": {"coord": {"x": 112.13751117566693,"y": 500}}
-            },
-            {
-              "type": "symmetric",
-              "p": {"coord": {"x": 0,"y": 749.6777436077174}},
-              "h1": {"coord": {"x": 0,"y": 612.2147162281873}},
-              "h2": {"coord": {"x": 0,"y": 887.1407709872475}}
             }
           ]
         }
