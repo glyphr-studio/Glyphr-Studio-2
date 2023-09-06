@@ -40,7 +40,6 @@ export class TextBlockOptions {
 	get displayName() {
 		let result = '';
 		result += `${this.text.substring(0, 40)}...`;
-		// result += `(${this.fontSize}px)`;
 		return result;
 	}
 
