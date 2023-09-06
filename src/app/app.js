@@ -7,7 +7,7 @@ import { ioFont_exportFont } from '../io/font_export.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
-import obleggSampleProject from '../samples/oblegg-0-1.gs2?raw';
+import obleggSampleProject from '../samples/oblegg-0-2.gs2?raw';
 import { _DEV } from './dev_mode_includes.js';
 
 /**
@@ -31,10 +31,10 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: true, // global switch for all the stuff below
+				mode: false, // global switch for all the stuff below
 				overwriteTitle: false, // Use a 'Dev Mode' window title
-				sampleProject: true, // Load the sample project
-				currentPage: 'Live preview', // navigate straight to a page (title case names)
+				sampleProject: false, // Load the sample project
+				currentPage: false, // navigate straight to a page (title case names)
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool

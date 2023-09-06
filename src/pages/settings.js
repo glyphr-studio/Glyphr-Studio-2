@@ -235,10 +235,15 @@ function makeSettingsTabContentProject() {
 // Individual settings
 // --------------------------------------------------------------
 function makeOneSettingsRow(groupName, propertyName) {
+	// log(`makeOneSettingsRow`, 'start');
+	// log(`groupName: ${groupName}`);
+	// log(`propertyName: ${propertyName}`);
 	const settings = getCurrentProject().settings;
 	const thisSetting = settingsMap[groupName][propertyName];
 	const settingType = thisSetting?.type;
 	const settingValue = settings[groupName][propertyName];
+	// log(`thisSetting: ${thisSetting}`);
+	// log(`settingValue: ${settingValue}`);
 
 	let displayLabel = thisSetting.label;
 	displayLabel = displayLabel.replaceAll(' ', '&nbsp;');
@@ -315,6 +320,7 @@ function makeOneSettingsRow(groupName, propertyName) {
 		info = textToNode('<span></span>');
 	}
 
+	// log(`makeOneSettingsRow`, 'end');
 	return [label, info, input, type];
 }
 

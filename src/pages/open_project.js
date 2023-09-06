@@ -6,7 +6,7 @@ import { importGlyphrProjectFromText } from '../project_editor/import_project.js
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
-import obleggExampleProject from '../samples/oblegg-0-1.gs2?raw';
+import obleggExampleProject from '../samples/oblegg-0-2.gs2?raw';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { closeEveryTypeOfDialog, showError } from '../controls/dialogs/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
@@ -182,7 +182,7 @@ function makeTabs() {
 
 	const buttonOblegg = makeElement({
 		tag: 'fancy-button',
-		innerHTML: 'Oblegg (v0.1)',
+		innerHTML: 'Oblegg (v0.2)',
 		onClick: () => handleLoadSample('oblegg'),
 	});
 
