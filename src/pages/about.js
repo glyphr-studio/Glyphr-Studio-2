@@ -167,16 +167,33 @@ export function makePreReleaseNote(showLogo = false) {
 	const content = makeElement({
 		innerHTML: `
 		${logo}
-		<h2>Welcome to Beta-1!</h2>
+		<h2>Welcome to Beta-2!</h2>
 		<p>
 			We are very excited that Glyphr Studio v2 is nearing completion... but it's not
 			quite there yet.  We need your help trying out the app to make sure all the
 			scenarios are solid!
 		</p>
 		<br>
+		<h3>Main Beta-2 scenarios:</h3>
+		<ul>
+			<li><b>Kerning</b> - Kern Groups can be saved and loaded from project files,
+			and the new Kerning page allows you to create, edit, and delete Kern Groups.</li>
+			<li><b>Global Actions Page</b> - see a whole list of actions that you can run
+			which can apply changes across many characters at once.</li>
+			<li><b>Context Characters</b> - a new panel was added to Character and Ligature edit
+			pages that allows you to display other characters around the glyph you are currently
+			editing.</li>
+			<li><b>Live Previews</b> - now much improved in functionality, the Live Preview Page
+			has better scrolling options for sample text. Also a new Pop-out Window can be launched
+			to display as many Live Previews as you want - great for seeing your changes in real time
+			in a second window as you make edits in the main app window.</li>
+			<li><b>Combine Shapes</b> - now when you select two or more paths on the edit canvas, a
+			"Combine shapes" action will allow you to merge multiple paths into as few paths as possible.</li>
+		</ul>
+		<br>
 
-		<a href="https://www.glyphrstudio.com/blog/2023/06/01/v2-beta-1-mega-post/" target="_blank" style="font-size: 1.2em;">
-			Read the Beta-1 blog post for details
+		<a href="https://www.glyphrstudio.com/blog/2023/09/07/v2-beta-2-0-mega-post/" target="_blank" style="font-size: 1.2em;">
+			Read the Beta-2 blog post for details
 		</a>
 		<br>
 		<br>
