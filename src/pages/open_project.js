@@ -3,14 +3,15 @@ import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { ioFont_importFont } from '../io/font_import.js';
 import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 import obleggExampleProject from '../samples/oblegg-0-2.gs2?raw';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
-import { closeEveryTypeOfDialog, showError } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, showError, showToast } from '../controls/dialogs/dialogs.js';
 import { validateFileInput } from '../io/validate_file_input.js';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
+import { updateWindowUnloadEvent } from '../app/app.js';
 
 /**
  * Page > Open Project
@@ -300,8 +301,11 @@ function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	const editor = getCurrentProjectEditor();
 	editor.project = importGlyphrProjectFromText(glyphrStudioProjectFile);
 	editor.nav.page = 'Overview';
+	updateWindowUnloadEvent();
 	editor.navigate();
 }
+
+
 
 /**
  * Handle Message event
