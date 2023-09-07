@@ -15,6 +15,7 @@ import { CharacterRange } from '../project_data/character_range.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import settingsMap from './settings_data.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
+import { updateWindowUnloadEvent } from '../app/app.js';
 
 /**
  * Page > Settings
@@ -147,7 +148,7 @@ function makeSettingsTabContentApp() {
 		moveShapesOnSVGDragDrop: false,
 	*/
 	addAsChildren(tabContent, [
-		makeOneSettingsRow('app', 'stopPageNavigation'),
+		makeOneSettingsRow('app', 'stopPageNavigation', updateWindowUnloadEvent),
 		makeOneSettingsRow('app', 'showNonCharPoints'),
 		makeOneSettingsRow('app', 'formatSaveFile'),
 		makeOneSettingsRow('app', 'moveShapesOnSVGDragDrop'),
@@ -234,7 +235,7 @@ function makeSettingsTabContentProject() {
 // --------------------------------------------------------------
 // Individual settings
 // --------------------------------------------------------------
-function makeOneSettingsRow(groupName, propertyName) {
+function makeOneSettingsRow(groupName, propertyName, callback = false) {
 	// log(`makeOneSettingsRow`, 'start');
 	// log(`groupName: ${groupName}`);
 	// log(`propertyName: ${propertyName}`);
@@ -271,6 +272,7 @@ function makeOneSettingsRow(groupName, propertyName) {
 			} else {
 				settings[groupName][propertyName] = newValue;
 			}
+			if (callback) callback();
 		});
 	}
 
@@ -283,11 +285,12 @@ function makeOneSettingsRow(groupName, propertyName) {
 		input.addEventListener('change', (event) => {
 			let newValue = sanitizeValueWithJSON(event.target.value);
 			settings[groupName][propertyName] = newValue;
+			if (callback) callback();
 		});
 	}
 
 	if (settingType === 'Boolean') {
-		input = makeDirectCheckbox(settings[groupName], propertyName);
+		input = makeDirectCheckbox(settings[groupName], propertyName, callback);
 	} else {
 		type = makeElement({
 			tag: 'pre',

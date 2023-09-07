@@ -13,7 +13,6 @@ import { accentColors } from '../common/colors.js';
 import { makePage_Help } from '../pages/help.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
 import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
-import { ProjectEditor } from './project_editor.js';
 import { makePage_Components } from '../pages/components.js';
 import { makePage_Kerning } from '../pages/kerning.js';
 import { countItems } from '../common/functions.js';
