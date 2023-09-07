@@ -1,7 +1,7 @@
 import { ProjectEditor } from '../project_editor/project_editor.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
-import { closeEveryTypeOfDialog, makeContextMenu } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, makeContextMenu, showToast } from '../controls/dialogs/dialogs.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { ioFont_exportFont } from '../io/font_export.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
@@ -9,6 +9,7 @@ import { importGlyphrProjectFromText } from '../project_editor/import_project.js
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 import obleggSampleProject from '../samples/oblegg-0-2.gs2?raw';
 import { _DEV } from './dev_mode_includes.js';
+import { pause } from '../common/functions.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -21,7 +22,7 @@ export class GlyphrStudioApp {
 		// Version
 		this.versionName = 'Version 2: Beta 2.0';
 		this.version = '2.0.0-beta.2.0';
-		this.versionDate = 0;
+		this.versionDate = 1694070000000;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -38,6 +39,7 @@ export class GlyphrStudioApp {
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
+				stopPageNavigation: false, // overwrite project-level setting
 				selectFirstShape: false, // select a shape
 				selectFirstPoint: false, // select a path point
 				testActions: [],
@@ -335,6 +337,35 @@ function makeMenu(menuName) {
 	}
 
 	return entryPoint;
+}
+
+// --------------------------------------------------------------
+// Window unload behavior
+// --------------------------------------------------------------
+
+export function updateWindowUnloadEvent() {
+	const project = getCurrentProject();
+	const app = getGlyphrStudioApp();
+
+	if (app.settings.dev.mode) {
+		if (app.settings.dev.stopPageNavigation) {
+			window.onbeforeunload = showBeforeUnloadConfirmation;
+		} else {
+			window.onbeforeunload = '';
+		}
+	} else if (project.settings.app.stopPageNavigation) {
+		window.onbeforeunload = showBeforeUnloadConfirmation;
+	} else {
+		window.onbeforeunload = '';
+	}
+}
+
+function showBeforeUnloadConfirmation(event) {
+	// console.log(`event.type: ${event.type}`);
+	event.preventDefault();
+	event.stopPropagation();
+	let message = 'Are you sure you want to exit? Any unsaved data may be lost.';
+	return message;
 }
 
 // --------------------------------------------------------------
