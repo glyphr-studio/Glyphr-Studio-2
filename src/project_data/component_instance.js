@@ -1,9 +1,5 @@
 import { GlyphElement } from './glyph_element.js';
-// import { getCurrentProject } from '../app/main.js';
-import { parseCharsInputAsHex } from '../common/character_ids.js';
-import { strSan, rad, deg, json } from '../common/functions.js';
-import { getCurrentProject } from '../app/main.js';
-import { Glyph } from './glyph.js';
+import { strSan, rad, deg } from '../common/functions.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 
 /**
@@ -192,11 +188,12 @@ export class ComponentInstance extends GlyphElement {
 
 	getCrossLinkedItem() {
 		// log(`ComponentInstance.getCrossLinkedItem`, 'start');
-		// log(this);
 		let project = this?.parent?.parent;
+		// log(`\n⮟project⮟`);
 		// log(project);
-		let item = project?.getItem(this.link);
-		// log(`Retrieved item`);
+		let item;
+		if (project && project.getItem) item = project.getItem(this.link);
+		// log(`\n⮟item⮟`);
 		// log(item);
 		// log(`ComponentInstance.getCrossLinkedItem`, 'end');
 		return item;

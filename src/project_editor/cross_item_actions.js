@@ -149,6 +149,7 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 	});
 	const result = new Glyph(sourceGlyph);
 	result.shapes = newPaths;
+	result.parent = getCurrentProject();
 	// log(`makeGlyphWithResolvedLinks`, 'end');
 	return result;
 }

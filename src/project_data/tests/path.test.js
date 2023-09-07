@@ -65,7 +65,6 @@ function trianglePath() {
 	addPointsAtPathIntersections
 	containsPoint
 	makeSVGPathData
-	// makeOpenTypeJSpath
 	makePostScript
 	makeSegment
 	calculateQuickSegmentLength
@@ -85,7 +84,6 @@ function trianglePath() {
 */
 
 describe('Path', () => {
-
 	it('Constructor - objType', () => {
 		const path = new Path();
 		expect(path.objType).toBe('Path');
@@ -102,80 +100,80 @@ describe('Path', () => {
 		let saved = path.save();
 		// console.log(saved);
 		expect(saved).toEqual({
-  "name": "Path",
-  "pathPoints": [
-    {
-      "h1": {
-        "coord": {
-          "x": 50,
-          "y": 200,
-        },
-        "use": false,
-      },
-      "h2": {
-        "coord": {
-          "x": 150,
-          "y": 200,
-        },
-        "use": false,
-      },
-      "p": {
-        "coord": {
-          "x": 100,
-          "y": 200,
-        },
-      },
-      "type": "corner",
-    },
-    {
-      "h1": {
-        "coord": {
-          "x": 250,
-          "y": 600,
-        },
-        "use": false,
-      },
-      "h2": {
-        "coord": {
-          "x": 350,
-          "y": 600,
-        },
-        "use": false,
-      },
-      "p": {
-        "coord": {
-          "x": 300,
-          "y": 600,
-        },
-      },
-      "type": "corner",
-    },
-    {
-      "h1": {
-        "coord": {
-          "x": 350,
-          "y": 500,
-        },
-        "use": false,
-      },
-      "h2": {
-        "coord": {
-          "x": 450,
-          "y": 500,
-        },
-        "use": false,
-      },
-      "p": {
-        "coord": {
-          "x": 400,
-          "y": 500,
-        },
-      },
-      "type": "corner",
-    },
-  ],
-  "winding": -4,
-});
+			name: 'Path',
+			pathPoints: [
+				{
+					h1: {
+						coord: {
+							x: 50,
+							y: 200,
+						},
+						use: false,
+					},
+					h2: {
+						coord: {
+							x: 150,
+							y: 200,
+						},
+						use: false,
+					},
+					p: {
+						coord: {
+							x: 100,
+							y: 200,
+						},
+					},
+					type: 'corner',
+				},
+				{
+					h1: {
+						coord: {
+							x: 250,
+							y: 600,
+						},
+						use: false,
+					},
+					h2: {
+						coord: {
+							x: 350,
+							y: 600,
+						},
+						use: false,
+					},
+					p: {
+						coord: {
+							x: 300,
+							y: 600,
+						},
+					},
+					type: 'corner',
+				},
+				{
+					h1: {
+						coord: {
+							x: 350,
+							y: 500,
+						},
+						use: false,
+					},
+					h2: {
+						coord: {
+							x: 450,
+							y: 500,
+						},
+						use: false,
+					},
+					p: {
+						coord: {
+							x: 400,
+							y: 500,
+						},
+					},
+					type: 'corner',
+				},
+			],
+			winding: -4,
+		});
 	});
 
 	it('print', () => {
@@ -369,7 +367,6 @@ describe('Path', () => {
 		expect(samplePath().addPathPoint(pp).p.x).toBe(0);
 	});
 
-
 	it('checkForNaN', () => {
 		const p = samplePath();
 		p.pathPoints[2].h1.x = 'asdf';
@@ -380,8 +377,6 @@ describe('Path', () => {
 		const pp = samplePath().pathPoints[3];
 		expect(pp.pointNumber).toBe(3);
 	});
-
-
 
 	it('insertPathPoint', () => {
 		expect(samplePath().insertPathPoint().p.x).toBe(437.879040081);

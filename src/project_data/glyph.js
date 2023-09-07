@@ -859,15 +859,4 @@ export class Glyph extends GlyphElement {
 		// log(`recalculateGlyphMaxes`, 'end');
 		return this.cache.maxes;
 	}
-
-	// --------------------------------------------------------------
-	// Export to different languages
-	// --------------------------------------------------------------
-
-	makeOpenTypeJSpath(openTypePath) {
-		this.shapes.forEach((shape) => {
-			openTypePath = shape.makeOpenTypeJSpath(openTypePath);
-		});
-		return openTypePath;
-	}
 }
