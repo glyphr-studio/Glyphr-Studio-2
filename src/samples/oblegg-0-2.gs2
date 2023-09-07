@@ -51,7 +51,7 @@
       "version": "0.1",
       "description": "Test font for Glyphr Studio v2",
       "panose": "0 0 0 0 0 0 0 0 0 0",
-      "upm": 1920,
+      "upm": 2048,
       "ascent": 1490,
       "descent": -430,
       "capHeight": 1490,

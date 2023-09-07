@@ -96,7 +96,6 @@ function multiTriangleGlyph() {
 	makeSVGPathData
 	maxes
 	// recalculateGlyphMaxes
-	// makeOpenTypeJSpath
 	combineAllPaths
 */
 describe('Glyph - Getters and Setters', () => {

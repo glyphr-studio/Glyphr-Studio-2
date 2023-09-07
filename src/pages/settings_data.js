@@ -75,7 +75,7 @@ export default {
 		},
 		upm: {
 			label: `Units per Em (UPM)`,
-			description: `UPM is the measure of the overall design space for a character in this font. Think of UPM like how many pixels of height you have to work with for each character. UPM can be any number, but traditionally it is either 1000 or 2048.`,
+			description: `UPM is the measure of the overall design space for a character in this font. Think of UPM like how many pixels of height you have to work with for each character.<br><br><b>Note!</b> Operating systems are picky about what UPM values they allow. In general, anything 1000 or below will work. Above 1000, many times only powers of 2 will work (like 1024, 2048, 4096, etc.).<br><br>Traditionally, UPM is either 1000 or 2048.`,
 			example: `1000, 2048`,
 			type: `Em`,
 		},

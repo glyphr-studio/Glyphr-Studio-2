@@ -39,8 +39,8 @@ import { showAddEditKernGroupDialog } from '../pages/kerning.js';
  */
 
 export function getActionData(name) {
-	log(`getActionData`, 'start');
-	log(`name: ${name}`);
+	// log(`getActionData`, 'start');
+	// log(`name: ${name}`);
 	const editor = getCurrentProjectEditor();
 	let selectedPaths = editor.multiSelect.shapes.members;
 	let selectedPoints = editor.multiSelect.points.members;
@@ -568,9 +568,9 @@ export function getActionData(name) {
 		];
 	}
 
-	log(`\n⮟actionData⮟`);
-	log(actionData);
-	log(`getActionData`, 'end');
+	// log(`\n⮟actionData⮟`);
+	// log(actionData);
+	// log(`getActionData`, 'end');
 	return actionData;
 }
 

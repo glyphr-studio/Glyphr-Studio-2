@@ -757,45 +757,6 @@ export class Path extends GlyphElement {
 		return re;
 	}
 
-	makeOpenTypeJSpath(openTypePath) {
-		// log('Path.makeOpenTypeJSpath', 'start');
-		// log('openTypePath:');
-		// log(openTypePath);
-
-		if (!this.pathPoints) {
-			if (this.pathPoints.length === 0) {
-				// log('!!!Path has zero points!');
-			}
-
-			openTypePath.close();
-			return openTypePath;
-		}
-
-		this.reverseWinding(); // OTF.js reverses the winding for some reason
-
-		openTypePath.moveTo(round(this.pathPoints[0].p.x), round(this.pathPoints[0].p.y));
-
-		this.pathPoints.forEach((point) => {
-			const nextPoint = this.pathPoints[this.getNextPointNum(point.pointNumber)];
-			openTypePath.curveTo(
-				round(point.h2.x),
-				round(point.h2.y),
-				round(nextPoint.h1.x),
-				round(nextPoint.h1.y),
-				round(nextPoint.p.x),
-				round(nextPoint.p.y)
-			);
-		});
-
-		openTypePath.close();
-		this.reverseWinding(); // Put it back
-
-		// log('returning path');
-		// log(openTypePath);
-		// log('Path.makeOpenTypeJSpath', 'end');
-		return openTypePath;
-	}
-
 	/**
 	 * Converts this path to Post Script
 	 * @param {Number} lastX - Last x value in the sequence
@@ -1228,7 +1189,7 @@ export class Path extends GlyphElement {
 	 * @param {String} calledBy - message for who called this
 	 */
 	validate() {
-		this.pathPoints.forEach(pp => {
+		this.pathPoints.forEach((pp) => {
 			if (!pp.p.x && pp.p.x !== 0) {
 				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} p.x from ${pp.p.x}`);
 				pp.p.x = 0;

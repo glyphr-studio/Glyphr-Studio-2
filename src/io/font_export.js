@@ -6,6 +6,7 @@ import { getUnicodeShortName } from '../lib/unicode_names.js';
 import openTypeJS from '../lib/opentypejs_1-3-1.js';
 import { Glyph } from '../project_data/glyph.js';
 import { sortLigatures } from '../project_data/glyphr_studio_project.js';
+import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 
 /**
 	IO > Export > OpenType
@@ -95,10 +96,10 @@ function createOptionsObject() {
 	// log('options.version ' + options.version);
 
 	// Add Notdef
-	const notdef = generateNotdefGlyph();
+	const notdef = makeNotdefGlyph();
 	// log(`notdef.advanceWidth: ${notdef.advanceWidth}`);
 
-	const notdefPath = notdef.makeOpenTypeJSpath(new openTypeJS.Path());
+	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
 
 	options.glyphs.push(
 		new openTypeJS.Glyph({
@@ -125,12 +126,13 @@ function populateExportList() {
 	// Add Glyphs
 	const exportGlyphs = [];
 	const project = getCurrentProject();
-	let thisGlyph;
+	let item;
 	for (const key of Object.keys(project.glyphs)) {
 		let glyphNumber = parseInt(key.substring(6));
 		if (glyphNumber) {
-			thisGlyph = project.glyphs[key].clone();
-			exportGlyphs.push({ xg: thisGlyph, xc: glyphNumber });
+			// item = project.glyphs[key].clone();
+			item = project.glyphs[key];
+			exportGlyphs.push({ xg: item, xc: glyphNumber });
 		} else {
 			console.warn('Skipped exporting Glyph ' + glyphNumber + ' - non-numeric key value.');
 		}
@@ -146,9 +148,10 @@ function populateExportList() {
 	for (const key of Object.keys(project.ligatures)) {
 		// log(project.ligatures[key]);
 		if (project.ligatures[key].gsub.length > 1) {
-			thisGlyph = project.ligatures[key].clone();
-			// log(`\t adding ligature "${thisGlyph.name}"`);
-			exportLigatures.push({ xg: thisGlyph, xc: key, chars: thisGlyph.chars });
+			// item = project.ligatures[key].clone();
+			item = project.ligatures[key];
+			// log(`\t adding ligature "${item.name}"`);
+			exportLigatures.push({ xg: item, xc: key, chars: item.chars });
 
 			// ligWithCodePoint = doesLigatureHaveCodePoint(l);
 			// if (ligWithCodePoint) {
@@ -188,7 +191,7 @@ async function generateOneGlyph(currentExportItem) {
 
 	showToast('Exporting<br>' + glyph.name, 999999);
 
-	const thisPath = glyph.makeOpenTypeJSpath(new openTypeJS.Path());
+	const thisPath = makeOpenTypeJS_Glyph(glyph, new openTypeJS.Path());
 	// log('openTypeJS thisPath');
 	// log(thisPath);
 	const thisIndex = getNextGlyphIndexNumber();
@@ -225,12 +228,12 @@ async function generateOneLigature(currentExportItem) {
 	// log(`generateOneLigature: ${ligaID}\t${liga.name}\t${getNameForExport(ligaID)}`);
 	showToast('Exporting<br>' + liga.name, 999999);
 
-	const thisPath = liga.makeOpenTypeJSpath(new openTypeJS.Path());
+	const thisPath = makeOpenTypeJS_Glyph(liga, new openTypeJS.Path());
 	const thisIndex = getNextGlyphIndexNumber();
 	// log(`thisIndex: ${thisIndex}`);
 
 	const glyphInfo = {
-		name: liga.name,
+		name: liga.name.replace('Ligature ', 'liga-'),
 		index: thisIndex,
 		advanceWidth: round(liga.advanceWidth || 1), // has to be non-zero
 		path: thisPath,
@@ -241,7 +244,7 @@ async function generateOneLigature(currentExportItem) {
 	};
 
 	// Add substitution info to font
-	const indexList = liga.gsub.map((v) => codePointGlyphIndexTable[v]);
+	const indexList = liga.gsub.map((v) => codePointGlyphIndexTable[decToHex(v)]);
 	// log(`\t INDEX sub: [${indexList.toString()}] by: ${thisIndex}}`);
 	ligatureSubstitutions.push({ sub: indexList, by: thisIndex });
 	// log(glyphInfo);
@@ -257,8 +260,8 @@ function getNextGlyphIndexNumber() {
 	return currentIndex;
 }
 
-function generateNotdefGlyph() {
-	// log(`generateNotdefGlyph`, 'start');
+function makeNotdefGlyph() {
+	// log(`makeNotdefGlyph`, 'start');
 	const capHeight = getCurrentProject().settings.font.capHeight;
 	const notDefGlyphPaths = [
 		{
@@ -303,6 +306,57 @@ function generateNotdefGlyph() {
 	}
 
 	// log(notdef);
-	// log(`generateNotdefGlyph`, 'end');
+	// log(`makeNotdefGlyph`, 'end');
 	return notdef;
+}
+
+function makeOpenTypeJS_Glyph(item, openTypePath) {
+	// log(`makeOpenTypeJS_Glyph`, 'start');
+	let flatItem = makeGlyphWithResolvedLinks(item);
+	flatItem.shapes.forEach((shape) => {
+		if (shape.objType === 'Path') {
+			openTypePath = makeOpenTypeJS_Path(shape, openTypePath);
+		}
+	});
+	// log(`makeOpenTypeJS_Glyph`, 'end');
+	return openTypePath;
+}
+
+function makeOpenTypeJS_Path(path, openTypePath) {
+	// log('makeOpenTypeJS_Path', 'start');
+	// log('openTypePath:');
+	// log(openTypePath);
+
+	if (!path.pathPoints) {
+		if (path.pathPoints.length === 0) {
+			// log('!!!Path has zero points!');
+		}
+
+		openTypePath.close();
+		return openTypePath;
+	}
+
+	path.reverseWinding(); // OTF.js reverses the winding for some reason
+
+	openTypePath.moveTo(round(path.pathPoints[0].p.x), round(path.pathPoints[0].p.y));
+
+	path.pathPoints.forEach((point) => {
+		const nextPoint = path.pathPoints[path.getNextPointNum(point.pointNumber)];
+		openTypePath.curveTo(
+			round(point.h2.x),
+			round(point.h2.y),
+			round(nextPoint.h1.x),
+			round(nextPoint.h1.y),
+			round(nextPoint.p.x),
+			round(nextPoint.p.y)
+		);
+	});
+
+	openTypePath.close();
+	path.reverseWinding(); // Put it back
+
+	// log('returning path');
+	// log(openTypePath);
+	// log('makeOpenTypeJS_Path', 'end');
+	return openTypePath;
 }

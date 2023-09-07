@@ -269,7 +269,7 @@ export function getOverallMaxes(maxesArray) {
 
 	for (let m = 0; m < maxesArray.length; m++) {
 		// log('iteration number ' + m);
-		tm = maxesArray[m];
+		tm = new Maxes(maxesArray[m]);
 		// log(tm);
 
 		// find
