@@ -1,10 +1,11 @@
-import { clone, json, remove, round, trim } from '../common/functions.js';
+import { clone, remove, round, trim } from '../common/functions.js';
 import { Glyph } from '../project_data/glyph.js';
 import { KernGroup } from './kern_group.js';
 import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
-import { charsToHexArray, decToHex, validateAsHex } from '../common/character_ids.js';
+import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { CharacterRange } from './character_range.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -15,15 +16,15 @@ export class GlyphrStudioProject {
 	 * @param {Object} newProject - Glyphr Studio Project File JSON
 	 */
 	constructor(newProject = {}) {
-		log('GlyphrStudioProject.constructor', 'start');
-		log(`\n⮟newProject⮟`);
-		log(newProject);
+		// log('GlyphrStudioProject.constructor', 'start');
+		// log(`\n⮟newProject⮟`);
+		// log(newProject);
 		// Set up all internal default values first
 		this.settings = {
 			project: {
 				name: 'My Font',
-				latestVersion: '2.0.0-beta.1.0',
-				initialVersion: '2.0.0-beta.1.0',
+				latestVersion: '2.0.0-beta.2.1',
+				initialVersion: '2.0.0-beta.2.1',
 				id: false,
 				characterRanges: [],
 			},
@@ -34,12 +35,11 @@ export class GlyphrStudioProject {
 				formatSaveFile: false,
 				moveShapesOnSVGDragDrop: false,
 				guides: {
-					system: {
-						transparency: 10,
-						showBaseline: true,
-						showLeftSide: true,
-						showRightSide: true,
-					},
+					showGuideLabels: true,
+					systemTransparency: 70,
+					systemGuides: ['baseline', 'leftSide', 'rightSide'],
+					customTransparency: 70,
+					custom: [],
 				},
 				contextCharacters: {
 					showCharacters: false,
@@ -97,27 +97,38 @@ export class GlyphrStudioProject {
 		// Handle passed object
 		// ---------------------------------------------------------------
 
+		// Settings
+		if (newProject.settings) {
+			// log('merging settings from newProject');
+			this.settings = merge(this.settings, newProject.settings);
+		}
+
+		// Guides
+		const guides = newProject?.settings?.app?.guides?.systemGuides;
+		if (guides) {
+			this.settings.app.guides.systemGuides = clone(guides);
+		}
+
 		// Glyph Ranges
-		if (newProject?.settings?.project?.characterRanges) {
-			newProject.settings.project.characterRanges.forEach((range) => {
+		let ranges = newProject?.settings?.project?.characterRanges;
+		if (ranges) {
+			ranges.forEach((range) => {
 				this.settings.project.characterRanges.push(new CharacterRange(range));
 			});
 		}
 		// log('finished importing Glyph Ranges');
 		// log(this.settings.project.characterRanges);
 
-		// Settings
-		if (newProject.settings) {
-			// log('merging settings from newProject');
-			this.settings = merge(this.settings, newProject.settings);
-		}
+		// Project ID
 		this.settings.project.id = this.settings.project.id || makeProjectID();
+
+		// Validate descent
 		this.settings.font.descent = -1 * Math.abs(this.settings.font.descent);
 
-		if (newProject?.settings?.app?.livePreviews) {
-			this.settings.app.livePreviews = newProject.settings.app.livePreviews.map(
-				(option) => new TextBlockOptions(option)
-			);
+		// Live Previews
+		const livePreviews = newProject?.settings?.app?.livePreviews;
+		if (livePreviews) {
+			this.settings.app.livePreviews = livePreviews.map((option) => new TextBlockOptions(option));
 		}
 
 		// log('finished merging settings - result:');
@@ -151,9 +162,9 @@ export class GlyphrStudioProject {
 		// log('finished hydrating kern pairs - result:');
 		// log(this.kerning);
 
-		log(`\n⮟this⮟`);
-		log(this);
-		log('GlyphrStudioProject.constructor', 'end');
+		// log(`\n⮟this⮟`);
+		// log(this);
+		// log('GlyphrStudioProject.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -559,8 +570,10 @@ export function sortLigatures(a, b) {
  */
 function merge(template = {}, importing = {}, trimStrings = false) {
 	// log('glyphr_studio_project - merge', 'start');
+	// log(`\n⮟importing⮟`);
+	// log(importing);
+	// log(`\n⮟template⮟`);
 	// log(template);
-
 	for (const a of Object.keys(template)) {
 		if (typeof template[a] === 'object') {
 			if (importing[a]) template[a] = merge(template[a], importing[a]);

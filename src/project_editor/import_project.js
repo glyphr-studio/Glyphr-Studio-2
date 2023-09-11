@@ -1,5 +1,5 @@
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
-import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { makeSemVerString, tryToGetProjectVersion } from '../io/validate_file_input.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -41,6 +41,25 @@ export function importGlyphrProjectFromText(importedProject) {
 	// Hydrate after all updates
 	// log(`Calling new GlyphrStudioProject from importGlyphrProjectFromText`);
 	const newProject = new GlyphrStudioProject(importedProject);
+
+	// Pull system guide visibility from project
+	const projectSystemGuides = newProject?.settings?.app?.guides?.systemGuides;
+	if (projectSystemGuides) {
+		// log(`\n⮟projectSystemGuides⮟`);
+		// log(projectSystemGuides);
+		const editor = getCurrentProjectEditor();
+		editor.systemGuides = {
+			ascent: projectSystemGuides.includes('ascent'),
+			capHeight: projectSystemGuides.includes('capHeight'),
+			xHeight: projectSystemGuides.includes('xHeight'),
+			baseline: projectSystemGuides.includes('baseline'),
+			descent: projectSystemGuides.includes('descent'),
+			leftSide: projectSystemGuides.includes('leftSide'),
+			rightSide: projectSystemGuides.includes('rightSide'),
+		};
+		// log(`\n⮟editor.systemGuides⮟`);
+		// log(editor.systemGuides);
+	}
 
 	// log('importGlyphrProjectFromText', 'end');
 	return newProject;

@@ -14,6 +14,7 @@ import { decToHex } from '../common/character_ids.js';
 import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
+import { showSystemGuideDefaults } from './guide.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -39,7 +40,7 @@ export class ProjectEditor {
 
 		// Project
 		this.project = false;
-		if(newProjectEditor.project) this.project = newProjectEditor.project;
+		if (newProjectEditor.project) this.project = newProjectEditor.project;
 		// log(`this.project`);
 		// log(this.project);
 
@@ -73,6 +74,9 @@ export class ProjectEditor {
 		this._views = {};
 		this.defaultView = { dx: 200, dy: 500, dz: 0.5, default: true };
 		this.defaultKernView = { dx: 500, dy: 500, dz: 0.5, default: true };
+
+		// Guides
+		this.systemGuides = clone(showSystemGuideDefaults);
 
 		// Pop Out Window
 		this.popOutWindow = false;
@@ -130,7 +134,7 @@ export class ProjectEditor {
 	 * @returns {GlyphrStudioProject}
 	 */
 	get project() {
-		if (!this._project || this._project === {}) {
+		if (!this._project) {
 			// log(`Calling new GlyphrStudioProject from ProjectEditor GET .project`);
 			this._project = new GlyphrStudioProject();
 			this.initializeHistory(this._project);
@@ -905,8 +909,8 @@ export class ProjectEditor {
 					(preview) => new TextBlockOptions(preview)
 				);
 			}
-			if (this._livePreviews[0].text === '') {
-				this.livePreviews[0] = new TextBlockOptions({
+			if (!this._livePreviews[0]?.text) {
+				this._livePreviews[0] = new TextBlockOptions({
 					text: 'the five boxing wizards jump quickly',
 				});
 			}
