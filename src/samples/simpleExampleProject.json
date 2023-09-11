@@ -41,7 +41,7 @@
 					"systemTransparency": 70,
 					"systemGuides": ["baseline"],
 					"customTransparency": 70,
-					"custom": []
+					"custom": [{"name": "Test guide"}]
 				},
 				"contextCharacters": {
 					"showCharacters": false,
