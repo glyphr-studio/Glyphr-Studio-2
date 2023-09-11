@@ -1,6 +1,11 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { accentColors } from '../common/colors.js';
+import {
+	accentColors,
+	getColorFromRGBA,
+	shiftColor,
+	transparencyToAlpha,
+} from '../common/colors.js';
 import { eventHandlerData, initEventHandlers } from './events.js';
 import { drawGlyph } from '../display_canvas/draw_paths.js';
 import {
@@ -11,8 +16,13 @@ import {
 	drawNewBasicPath,
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
-import { clone, makeCrisp, round } from '../common/functions.js';
-import { drawContextCharacters, drawCharacterKernExtra, shouldDrawContextCharacters } from './context_characters.js';
+import { clone, isVal, makeCrisp, round } from '../common/functions.js';
+import {
+	drawContextCharacters,
+	drawCharacterKernExtra,
+	shouldDrawContextCharacters,
+} from './context_characters.js';
+import { defaultSystemGuideColor } from '../project_editor/guide.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -230,30 +240,84 @@ export class EditCanvas extends HTMLElement {
 		function drawSystemGuidelines(drawVerticals = true) {
 			// log(`drawSystemGuidelines`, 'start');
 
-			ctx.fillStyle = accentColors.gray.l90;
-			const gridPad = 20 * view.dz;
+			let alpha = transparencyToAlpha(project.settings.app.guides.systemTransparency);
+			let fill = getColorFromRGBA(defaultSystemGuideColor, alpha);
+			// log(`defaultSystemGuideColor: ${defaultSystemGuideColor}`);
+			// log(`alpha: ${alpha}`);
+			// log(`fill: ${fill}`);
+			ctx.fillStyle = fill;
 			const advanceWidth = project.getItem(currentItemID).advanceWidth;
-			let gridWidth = advanceWidth * view.dz;
 
-			const gridLines = project.settings.app.guides.system;
 			// Verticals
 			if (drawVerticals) {
-				if (gridLines.showLeftSide) {
+				if (editor.systemGuides.leftSide) {
 					drawEmVerticalLine(ctx, 0, view, false);
 				}
-				if (gridLines.showRightSide && advanceWidth) {
+				if (editor.systemGuides.rightSide && advanceWidth) {
 					drawEmVerticalLine(ctx, advanceWidth, view, true);
 				}
 			}
 
-			// Baseline
-			if (gridLines.showBaseline) {
-				// log(`drawing baseline...`);
-				ctx.fillRect(view.dx - gridPad, Math.ceil(view.dy), gridWidth + gridPad * 2, 1);
+			// Horizontals
+			let deltaY = 0;
+			// ascent
+			if (editor.systemGuides.ascent) {
+				// log(`drawing ascent...`);
+				deltaY = project.settings.font.ascent;
+				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
 			}
+
+			// capHeight
+			if (editor.systemGuides.capHeight) {
+				// log(`drawing capHeight...`);
+				deltaY = project.settings.font.capHeight;
+				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
+			}
+
+			// xHeight
+			if (editor.systemGuides.xHeight) {
+				// log(`drawing xHeight...`);
+				deltaY = project.settings.font.xHeight;
+				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
+			}
+
+			// baseline
+			if (editor.systemGuides.baseline) {
+				// log(`drawing baseline...`);
+				deltaY = 0;
+				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
+			}
+
+			// descent
+			if (editor.systemGuides.descent) {
+				// log(`drawing descent...`);
+				deltaY = project.settings.font.descent;
+				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
+			}
+
 			// log(`drawSystemGuidelines`, 'end');
 		}
 	}
+}
+
+// --------------------------------------------------------------
+// Guides
+// --------------------------------------------------------------
+
+function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view, roundUp = 'none') {
+	// log(`drawEmHorizontalLine`, 'start');
+	const pad = 50 * view.dz;
+	let lineWidth = advanceWidth * view.dz;
+	let lineX = view.dx - pad;
+	let lineY = sYcY(emY);
+	lineWidth += pad * 2;
+	if (roundUp === true) lineY = Math.ceil(lineY);
+	if (roundUp === false) lineY = Math.floor(lineY);
+	// log(`lineX: ${lineX}`);
+	// log(`lineY: ${lineY}`);
+	// log(`lineWidth: ${lineWidth}`);
+	ctx.fillRect(lineX, lineY, lineWidth, 1);
+	// log(`drawEmHorizontalLine`, 'end');
 }
 
 export function drawEmVerticalLine(ctx, emX = 0, view, roundUp = 'none') {
@@ -270,6 +334,69 @@ export function drawEmVerticalLine(ctx, emX = 0, view, roundUp = 'none') {
 
 	ctx.fillRect(lineX, lineTopY, 1, lineHeight);
 	// log(`drawEmVerticalLine`, 'end');
+}
+
+function drawGuide(ctx, guide, delta = 0) {
+	// log('\nGuide.draw', 'start');
+	// log('name: ' + guide.name);
+	// log('delta: ' + delta);
+	if (!guide.visible) return;
+	delta = delta * 1;
+	let canvasSize = 1000;
+	let psc = getCurrentProject().projectSettings.colors;
+	const editor = getCurrentProjectEditor();
+	let v = editor.view;
+	let start = { x: 0, y: 0 };
+	let end = { x: 0, y: 0 };
+	let label = { x: 0, y: 0 };
+	let pad = 5;
+	let pos;
+	// log('view: ' + JSON.stringify(v));
+	// log('location: ' + guide.location);
+	if (guide.type === 'horizontal') {
+		pos = makeCrisp(v.dy - guide.location * v.dz);
+		if (delta) pos += delta * v.dz;
+		start.x = 0;
+		start.y = pos;
+		end.x = canvasSize;
+		end.y = pos;
+		label.x = 25;
+		label.y = pos - pad;
+	} else if (guide.type === 'vertical') {
+		pos = makeCrisp(v.dx - guide.location * v.dz * -1);
+		if (delta) pos += delta * v.dz;
+		start.x = pos;
+		start.y = 0;
+		end.x = pos;
+		end.y = canvasSize;
+		label.x = pos + pad;
+		label.y = 11;
+	}
+
+	let alpha = transparencyToAlpha(
+		guide.editable ? psc.customGuideTransparency : psc.systemGuideTransparency
+	);
+	let color = getColorFromRGBA(guide.color, alpha);
+	if (color !== 'rgb(255,255,255)') {
+		// Draw Line
+		// log('start: ' + JSON.stringify(start) + ' / end: ' + JSON.stringify(end));
+		ctx.strokeStyle = color;
+		ctx.globalAlpha = 1;
+		ctx.lineWidth = 1;
+		if (isVal(delta)) ctx.strokeStyle = shiftColor(color, 0.6, true);
+		ctx.beginPath();
+		ctx.moveTo(start.x, start.y);
+		ctx.lineTo(end.x, end.y);
+		ctx.stroke();
+		ctx.closePath();
+		// Draw Label
+		if (guide.displayName && getCurrentProject().settings.app.showGuidesLabels && !delta) {
+			ctx.fillStyle = color;
+			ctx.font = '10px Tahoma, Verdana, sans-serif';
+			ctx.fillText(guide.name, label.x, label.y);
+		}
+	}
+	// log('Guide.draw', 'end');
 }
 
 // --------------------------------------------------------------------------

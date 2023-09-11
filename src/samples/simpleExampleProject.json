@@ -32,17 +32,16 @@
 				"savePreferences": false,
 				"stopPageNavigation": true,
 				"showNonCharPoints": false,
-				"formatSaveFile": false,
+				"formatSaveFile": true,
 				"moveShapesOnSVGDragDrop": false,
 				"combinePathsOnExport": false,
 				"maxCombinePathsOnExport": 30,
 				"guides": {
-					"system": {
-						"transparency": 10,
-						"showBaseline": true,
-						"showLeftSide": true,
-						"showRightSide": true
-					}
+					"showGuideLabels": true,
+					"systemTransparency": 70,
+					"systemGuides": ["baseline"],
+					"customTransparency": 70,
+					"custom": []
 				},
 				"contextCharacters": {
 					"showCharacters": false,

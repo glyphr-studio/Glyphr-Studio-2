@@ -20,9 +20,9 @@ export class GlyphrStudioApp {
 	 */
 	constructor() {
 		// Version
-		this.versionName = 'Version 2: Beta 2.0';
-		this.version = '2.0.0-beta.2.0';
-		this.versionDate = 1694070000000;
+		this.versionName = 'Version 2: Beta 2.1';
+		this.version = '2.0.0-beta.2.1';
+		this.versionDate = 0;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -32,12 +32,12 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: false, // global switch for all the stuff below
+				mode: true, // global switch for all the stuff below
 				overwriteTitle: false, // Use a 'Dev Mode' window title
-				sampleProject: false, // Load the sample project
-				currentPage: false, // navigate straight to a page (title case names)
+				sampleProject: 'oblegg', // Load the sample project, true or 'oblegg'
+				currentPage: 'Characters', // navigate straight to a page (title case names)
 				currentGlyphID: false, // select a glyph
-				currentPanel: false, // navigate straight to a panel (title case names)
+				currentPanel: 'Guides', // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
 				stopPageNavigation: false, // overwrite project-level setting
 				selectFirstShape: false, // select a shape

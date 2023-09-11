@@ -2,7 +2,7 @@
   "settings": {
     "project": {
       "name": "Oblegg 0.2",
-      "latestVersion": "2.0.0-beta.2.0",
+      "latestVersion": "2.0.0-beta.2.1",
       "initialVersion": "2.0.0-beta.1.0",
       "id": "g2_OBLEGG0BETA",
       "characterRanges": [
@@ -20,12 +20,14 @@
       "formatSaveFile": true,
       "moveShapesOnSVGDragDrop": true,
       "guides": {
-        "system": {
-          "transparency": 90,
-          "showBaseline": true,
-          "showLeftSide": true,
-          "showRightSide": true
-        }
+        "showGuideLabels": true,
+        "systemTransparency": 10,
+        "customTransparency": 70,
+        "custom": [
+          {
+            "name": "Test Guideline"
+          }
+        ]
       },
       "contextCharacters": {
         "showCharacters": true,
