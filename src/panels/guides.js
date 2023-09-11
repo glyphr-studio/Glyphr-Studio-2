@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeDirectCheckbox, makeSingleLabel } from './cards.js';
 
@@ -9,8 +9,7 @@ import { makeDirectCheckbox, makeSingleLabel } from './cards.js';
 **/
 
 export function makePanel_Guides() {
-	const systemCard = makeSystemGuidesCard();
-	return [systemCard];
+	return [makeSystemGuidesCard(), makeCustomGuidesCard()];
 }
 
 export function makeSystemGuidesCard() {
@@ -18,9 +17,6 @@ export function makeSystemGuidesCard() {
 		className: 'panel__card',
 		innerHTML: '<h3>System guides</h3>',
 	});
-	// addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showBaseline', 'Baseline'));
-	// addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showLeftSide', 'Left side'));
-	// addAsChildren(systemCard, makeGuideCheckbox(systemGuides, 'showRightSide', 'Right side'));
 
 	addAsChildren(systemCard, [
 		makeSystemGuideRow('ascent', 'Ascent'),
@@ -50,6 +46,31 @@ function makeSystemGuideRow(property, title) {
 					shownGuides = shownGuides.filter((g) => g !== property);
 				}
 			}
+			editor.editCanvas.redraw();
+		}),
+	];
+}
+
+function makeCustomGuidesCard() {
+	let customCard = makeElement({
+		className: 'panel__card',
+		innerHTML: '<h3>Custom guides</h3>',
+	});
+
+	const guides = getCurrentProject().settings.app.guides.custom;
+
+	guides.forEach((guide) => {
+		addAsChildren(customCard, makeCustomGuideRow(guide));
+	});
+
+	return customCard;
+}
+
+function makeCustomGuideRow(guide) {
+	return [
+		makeSingleLabel(guide.name),
+		makeDirectCheckbox(guide, 'visible', () => {
+			const editor = getCurrentProjectEditor();
 			editor.editCanvas.redraw();
 		}),
 	];

@@ -6,6 +6,7 @@ import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { CharacterRange } from './character_range.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { getCurrentProjectEditor } from '../app/main.js';
+import { Guide } from '../project_editor/guide.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -103,32 +104,40 @@ export class GlyphrStudioProject {
 			this.settings = merge(this.settings, newProject.settings);
 		}
 
+		// Project ID
+		this.settings.project.id = this.settings.project.id || makeProjectID();
+
 		// Guides
-		const guides = newProject?.settings?.app?.guides?.systemGuides;
-		if (guides) {
-			this.settings.app.guides.systemGuides = clone(guides);
+		const newGuides = newProject?.settings?.app?.guides;
+		if (newGuides.systemGuides) {
+			this.settings.app.guides.systemGuides = clone(newGuides.systemGuides);
+		}
+		if (newGuides.custom) {
+			this.settings.app.guides.custom = [];
+			newGuides.custom.forEach((guide) =>
+				this.settings.app.guides.custom.push(new Guide(guide))
+			);
 		}
 
 		// Glyph Ranges
-		let ranges = newProject?.settings?.project?.characterRanges;
-		if (ranges) {
-			ranges.forEach((range) => {
+		let newRanges = newProject?.settings?.project?.characterRanges;
+		if (newRanges) {
+			this.settings.project.characterRanges = [];
+			newRanges.forEach((range) => {
 				this.settings.project.characterRanges.push(new CharacterRange(range));
 			});
 		}
 		// log('finished importing Glyph Ranges');
 		// log(this.settings.project.characterRanges);
 
-		// Project ID
-		this.settings.project.id = this.settings.project.id || makeProjectID();
-
 		// Validate descent
 		this.settings.font.descent = -1 * Math.abs(this.settings.font.descent);
 
 		// Live Previews
-		const livePreviews = newProject?.settings?.app?.livePreviews;
-		if (livePreviews) {
-			this.settings.app.livePreviews = livePreviews.map((option) => new TextBlockOptions(option));
+		const newPreviews = newProject?.settings?.app?.livePreviews;
+		if (newPreviews) {
+			this.settings.app.livePreviews = [];
+			this.settings.app.livePreviews = newPreviews.map((option) => new TextBlockOptions(option));
 		}
 
 		// log('finished merging settings - result:');
@@ -445,28 +454,28 @@ export class GlyphrStudioProject {
 		// log(`GlyphrStudioProject.forEachItem`, 'start');
 		console.time('forEachItem');
 		let aggregate = [];
-		let counter = 0;
+		// let counter = 0;
 		let result;
 
 		// Glyphs
 		for (const id of Object.keys(this.glyphs)) {
 			result = fun(this.glyphs[id]);
 			aggregate = aggregate.concat(result);
-			counter++;
+			// counter++;
 		}
 
 		// Components
 		for (const id of Object.keys(this.components)) {
 			result = fun(this.components[id]);
 			aggregate = aggregate.concat(result);
-			counter++;
+			// counter++;
 		}
 
 		// Ligatures
 		for (const id of Object.keys(this.ligatures)) {
 			result = fun(this.ligatures[id]);
 			aggregate = aggregate.concat(result);
-			counter++;
+			// counter++;
 		}
 
 		// log(`counter: ${counter}`);
