@@ -2,7 +2,12 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, makeRandomSaturatedColor } from '../common/colors.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeIcon } from '../common/graphics.js';
-import { Guide } from '../project_editor/guide.js';
+import {
+	Guide,
+	guideColorDark,
+	guideColorLight,
+	guideColorMedium,
+} from '../project_editor/guide.js';
 import { makeActionButton } from './action_buttons.js';
 import { makeDirectCheckbox, makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
 import { refreshPanel } from './panels.js';
@@ -23,7 +28,11 @@ export function makePanel_Guides() {
 	const showCustom = guides.customShowGuides;
 	addAsChildren(viewOptionsCard, [
 		makeDirectCheckbox(guides, 'drawGuidesOnTop', refreshGuideChange),
-		makeElement({ tag: 'label', style: 'grid-column: 2 / -1;', content: 'Draw guides over shapes' }),
+		makeElement({
+			tag: 'label',
+			style: 'grid-column: 2 / -1;',
+			content: 'Draw guides over shapes',
+		}),
 	]);
 
 	const systemShowGuidesCheckbox = makeDirectCheckbox(guides, 'systemShowGuides');
@@ -83,24 +92,20 @@ export function makeSystemGuidesCard() {
 	});
 
 	const metrics = getCurrentProject().settings.font;
-
+	const advanceWidth = getCurrentProjectEditor().selectedItem.advanceWidth;
 	addAsChildren(systemCard, [
-		makeSystemGuideRow('ascent', 'Ascent', metrics.ascent),
-		makeSystemGuideRow('capHeight', 'Cap height', metrics.capHeight),
-		makeSystemGuideRow('xHeight', 'X height', metrics.xHeight),
-		makeSystemGuideRow('baseline', 'Baseline', '0'),
-		makeSystemGuideRow('descent', 'Descent', metrics.descent),
-		makeSystemGuideRow('leftSide', 'Left side', '0'),
-		makeSystemGuideRow(
-			'rightSide',
-			'Right side',
-			getCurrentProjectEditor().selectedItem.advanceWidth
-		),
+		makeSystemGuideRow('ascent', 'Ascent', metrics.ascent, guideColorMedium),
+		makeSystemGuideRow('capHeight', 'Cap height', metrics.capHeight, guideColorLight),
+		makeSystemGuideRow('xHeight', 'X height', metrics.xHeight, guideColorLight),
+		makeSystemGuideRow('baseline', 'Baseline', '0', guideColorDark),
+		makeSystemGuideRow('descent', 'Descent', metrics.descent, guideColorMedium),
+		makeSystemGuideRow('leftSide', 'Left side', '0', guideColorDark),
+		makeSystemGuideRow('rightSide', 'Right side', advanceWidth, guideColorDark),
 	]);
 	return systemCard;
 }
 
-function makeSystemGuideRow(property, title, value = '0000') {
+function makeSystemGuideRow(property, title, value = '0000', color) {
 	const systemGuides = getCurrentProjectEditor().systemGuides;
 
 	// Checkbox
@@ -119,19 +124,20 @@ function makeSystemGuideRow(property, title, value = '0000') {
 		editor.editCanvas.redraw();
 	});
 	viewCheckbox.setAttribute('title', 'Show / hide guide');
+	viewCheckbox.setAttribute('style', `accent-color: ${color};`);
 
 	// Angle icon
 	let angleDisplay = makeElement({
 		className: 'guide-system-angle',
 		innerHTML: makeIcon({
 			name: 'command_horizontalBar',
-			color: accentColors.orange.l50,
+			color: color,
 		}),
 	});
 	if (property === 'leftSide' || property === 'rightSide') {
 		angleDisplay.innerHTML = makeIcon({
 			name: 'command_verticalBar',
-			color: accentColors.orange.l50,
+			color: color,
 		});
 	}
 

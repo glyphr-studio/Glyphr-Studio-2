@@ -5,7 +5,6 @@
 		custom guides to a Glyphr Studio Project.
 **/
 
-export const defaultCustomGuideColor = 'rgb(127, 0, 255)';
 
 
 
@@ -52,3 +51,20 @@ export class Guide {
 		this._name = newName;
 	}
 }
+
+
+// --------------------------------------------------------------
+// Colors
+// --------------------------------------------------------------
+/*
+	--orange-d80: rgb(227, 190, 171);
+	--orange-d70: rgb(212, 154, 125);
+	--orange-d60: rgb(191, 106, 64);
+	--orange-d50: rgb(161, 89, 54);
+	--orange-d40: rgb(126, 70, 42);
+*/
+
+export const defaultCustomGuideColor = 'rgb(127, 0, 255)';
+export const guideColorLight = 'rgb(227, 190, 171)';
+export const guideColorMedium = 'rgb(212, 154, 125)';
+export const guideColorDark = 'rgb(191, 106, 64)';

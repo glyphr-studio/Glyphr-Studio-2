@@ -22,6 +22,7 @@ import {
 	drawCharacterKernExtra,
 	shouldDrawContextCharacters,
 } from './context_characters.js';
+import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -315,20 +316,14 @@ export class EditCanvas extends HTMLElement {
 
 		function setSystemGuideColor(level = 'medium', alpha) {
 			let fill;
-			/*
-				--orange-d80: rgb(227, 190, 171);
-				--orange-d70: rgb(212, 154, 125);
-				--orange-d60: rgb(191, 106, 64);
-				--orange-d50: rgb(161, 89, 54);
-				--orange-d40: rgb(126, 70, 42);
-			*/
+
 
 			if (level === 'light') {
-				fill = getColorFromRGBA('rgb(227, 190, 171)', alpha);
+				fill = getColorFromRGBA(guideColorLight, alpha);
 			} else if (level === 'medium') {
-				fill = getColorFromRGBA('rgb(212, 154, 125)', alpha);
+				fill = getColorFromRGBA(guideColorMedium, alpha);
 			} else if (level === 'dark') {
-				fill = getColorFromRGBA('rgb(191, 106, 64)', alpha);
+				fill = getColorFromRGBA(guideColorDark, alpha);
 			}
 			// log(`fill: ${fill}`);
 			ctx.fillStyle = fill;
