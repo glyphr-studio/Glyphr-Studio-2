@@ -515,11 +515,7 @@ nav .glyph-chooser__wrapper {
 
 .guides-card__system {
 	display: grid;
-	grid-template-columns: 20px 1fr 20px max-content;
-}
-
-.guides-card__system input[type=checkbox] {
-	accent-color: var(--orange-l50);
+	grid-template-columns: 20px 1fr 20px 85px;
 }
 
 .guides-card__custom {
@@ -576,7 +572,8 @@ nav .glyph-chooser__wrapper {
 	width:10px;
 }
 
-.guides-card__custom .guide-angle-button svg {
+.guides-card__custom .guide-angle-button svg,
+.guides-card__system .guide-system-angle svg {
 	position: relative;
 	top: 2px;
 	width: 14px;
@@ -601,5 +598,6 @@ nav .glyph-chooser__wrapper {
 	font-family: monospace;
 	color: var(--enabled-restingLight-lightText);
 	text-align: right;
-	min-width: 40px;
+	width: 100%;
+	padding-right: 30px;
 }
