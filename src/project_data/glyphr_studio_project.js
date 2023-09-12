@@ -36,6 +36,7 @@ export class GlyphrStudioProject {
 				formatSaveFile: false,
 				moveShapesOnSVGDragDrop: false,
 				guides: {
+					drawGuidesOnTop: false,
 					systemShowGuides: true,
 					systemShowLabels: false,
 					systemTransparency: 70,

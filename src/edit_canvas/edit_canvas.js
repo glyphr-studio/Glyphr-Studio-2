@@ -146,8 +146,10 @@ export class EditCanvas extends HTMLElement {
 
 			// Guides
 			const guidesSettings = editor.project.settings.app.guides;
-			if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
-			if (guidesSettings.customShowGuides) drawCustomGuidelines();
+			if (!guidesSettings.drawGuidesOnTop) {
+				if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
+				if (guidesSettings.customShowGuides) drawCustomGuidelines();
+			}
 
 			// Draw glyphs
 			drawGlyph(project.getItem(currentItemID), ctx, view);
@@ -180,6 +182,12 @@ export class EditCanvas extends HTMLElement {
 			// Draw temporary new paths
 			if (eventHandlerData.newBasicPath) {
 				drawNewBasicPath(ctx, eventHandlerData.newBasicPath, view);
+			}
+
+			// Guides (if draw on top)
+			if (guidesSettings.drawGuidesOnTop) {
+				if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
+				if (guidesSettings.customShowGuides) drawCustomGuidelines();
 			}
 			// log(`EditCanvas.redraw.redrawGlyphEdit`, 'end');
 		}
@@ -267,7 +275,7 @@ export class EditCanvas extends HTMLElement {
 				// log(`drawing xHeight...`);
 				deltaY = project.settings.font.xHeight;
 				setSystemGuideColor('light', alpha);
-				drawEmHorizontalLine(ctx, deltaY, advanceWidth);
+				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
 				if (showLabels) drawGuideLabel('X height', deltaY, true);
 			}
 			// descent
@@ -405,7 +413,6 @@ export function drawEmVerticalLine(ctx, emX = 0, view) {
 
 	// log(`drawEmVerticalLine`, 'end');
 }
-
 
 // --------------------------------------------------------------------------
 // Convert between Saved values and Canvas values
