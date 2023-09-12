@@ -21,6 +21,10 @@ export function makePanel_Guides() {
 	const guides = getCurrentProject().settings.app.guides;
 	const showSystem = guides.systemShowGuides;
 	const showCustom = guides.customShowGuides;
+	addAsChildren(viewOptionsCard, [
+		makeDirectCheckbox(guides, 'drawGuidesOnTop', refreshGuideChange),
+		makeElement({ tag: 'label', style: 'grid-column: 2 / -1;', content: 'Draw guides over shapes' }),
+	]);
 
 	const systemShowGuidesCheckbox = makeDirectCheckbox(guides, 'systemShowGuides');
 	systemShowGuidesCheckbox.addEventListener('change', () => {

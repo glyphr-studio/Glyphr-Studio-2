@@ -491,6 +491,12 @@ nav .glyph-chooser__wrapper {
 	grid-template-columns: 20px min-content 1fr;
 }
 
+.guides-card__view-options h3,
+.guides-card__system h3,
+.guides-card__custom h3 {
+	margin-bottom: 4px;
+}
+
 .guides-card__view-options h4 {
 	position: relative;
 	top: -2px;
