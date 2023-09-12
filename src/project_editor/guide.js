@@ -5,27 +5,18 @@
 		custom guides to a Glyphr Studio Project.
 **/
 
-export const defaultCustomGuideColor = 'rgb(255, 100, 0)';
-export const defaultSystemGuideColor = 'rgb(95, 121, 134)';
-export const showSystemGuideDefaults = {
-	ascent: false,
-	capHeight: false,
-	xHeight: false,
-	baseline: true,
-	descent: false,
-	leftSide: true,
-	rightSide: true
-};
+export const defaultCustomGuideColor = 'rgb(127, 0, 255)';
+
+
 
 export class Guide {
-	constructor(oa) {
+	constructor(oa = {}) {
 		this.objType = 'Guide';
-		this.name = oa.name;
 		this.angle = oa.angle || 90;
+		this.name = oa.name;
 		this.location = !isNaN(parseInt(oa.location)) ? parseInt(oa.location) : 200;
 		this.color = oa.color || defaultCustomGuideColor;
 		this.visible = !!oa.visible;
-		this.readOnly = !!oa.readOnly;
 	}
 
 	save() {
@@ -52,7 +43,12 @@ export class Guide {
 		return this._name;
 	}
 
-	set name(newName = 'Guide') {
+	set name(newName = false) {
+		if (!newName) {
+			if (this.angle === 90) newName = 'Horizontal guide';
+			else if (this.angle === 0) newName = 'Vertical guide';
+			else newName = 'Guide';
+		}
 		this._name = newName;
 	}
 }

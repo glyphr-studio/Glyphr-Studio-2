@@ -522,18 +522,18 @@ export class PolySegment extends GlyphElement {
 	 * then merges them into one larger line.
 	 */
 	combineInlineSegments() {
-		log(`PolySegment.combineInlineSegments`, 'start');
+		// log(`PolySegment.combineInlineSegments`, 'start');
 		let startLength = this.segments.length;
 		let thisSegment, nextSegment;
 
 		for (let s = 0; s < this.segments.length; s++) {
-			log(`segment number ${s}`);
+			// log(`segment number ${s}`);
 
 			thisSegment = this.segments[s];
 			nextSegment = this.segments[s + 1];
 			if (s === this.segments.length - 1) nextSegment = this.segments[0];
-			log(`thisSegment.lineType: ${thisSegment.lineType}`);
-			log(`nextSegment.lineType: ${nextSegment.lineType}`);
+			// log(`thisSegment.lineType: ${thisSegment.lineType}`);
+			// log(`nextSegment.lineType: ${nextSegment.lineType}`);
 
 			if (thisSegment.lineType === nextSegment.lineType) {
 				this.segments[s] = new Segment({
@@ -546,8 +546,8 @@ export class PolySegment extends GlyphElement {
 				s--;
 			}
 		}
-		log(`Removed segments: ${this.segments.length - startLength}`);
-		log(`PolySegment.combineInlineSegments`, 'end');
+		// log(`Removed segments: ${this.segments.length - startLength}`);
+		// log(`PolySegment.combineInlineSegments`, 'end');
 	}
 }
 

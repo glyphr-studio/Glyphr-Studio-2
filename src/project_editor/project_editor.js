@@ -14,7 +14,6 @@ import { decToHex } from '../common/character_ids.js';
 import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
-import { showSystemGuideDefaults } from './guide.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.
@@ -33,10 +32,12 @@ export class ProjectEditor {
 	 * Initialize a project editor, with defaults
 	 * @param {Object} newProjectEditor
 	 */
-	constructor(newProjectEditor = {}) {
+	constructor(newProjectEditor = false) {
 		log('ProjectEditor.constructor', 'start');
-		log(`\n⮟newProjectEditor⮟`);
-		log(newProjectEditor);
+		if (newProjectEditor) {
+			log(`\n⮟Passed: newProjectEditor⮟`);
+			log(newProjectEditor);
+		}
 
 		// Project
 		this.project = false;
@@ -76,7 +77,15 @@ export class ProjectEditor {
 		this.defaultKernView = { dx: 500, dy: 500, dz: 0.5, default: true };
 
 		// Guides
-		this.systemGuides = clone(showSystemGuideDefaults);
+		this.systemGuides = {
+			ascent: false,
+			capHeight: false,
+			xHeight: false,
+			baseline: true,
+			descent: false,
+			leftSide: true,
+			rightSide: true,
+		};
 
 		// Pop Out Window
 		this.popOutWindow = false;
@@ -111,7 +120,7 @@ export class ProjectEditor {
 		// Dialogs
 		this.closeAllDialogsOverride = false;
 
-		log(`\n⮟this⮟`);
+		log(`\n⮟ProjectEditor⮟`);
 		log(this);
 		log('ProjectEditor.constructor', 'end');
 	}

@@ -7813,7 +7813,7 @@ function parsePostTable(data, start) {
 }
 
 function makePostTable(options) {
-	log(Math.round(options.italicAngle*0x10000));
+	// log(Math.round(options.italicAngle*0x10000));
 	return new table.Table('post', [
 		{ name: 'version', type: 'FIXED', value: 0x00030000 },
 		{ name: 'italicAngle', type: 'FIXED', value: Math.round(options.italicAngle * 0x10000) },

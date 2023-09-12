@@ -22,7 +22,6 @@ import {
 	drawCharacterKernExtra,
 	shouldDrawContextCharacters,
 } from './context_characters.js';
-import { defaultSystemGuideColor } from '../project_editor/guide.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -117,11 +116,12 @@ export class EditCanvas extends HTMLElement {
 		// log('EditCanvas.redraw', 'start');
 		const editor = getCurrentProjectEditor();
 		const project = getCurrentProject();
-		let view = editor.view;
+		const view = editor.view;
 		const ctx = this.ctx;
 		const width = this.width;
 		const height = this.height;
 		const currentItemID = this.editingItemID;
+		const advanceWidth = project.getItem(currentItemID).advanceWidth;
 
 		if (currentItemID.startsWith('kern-')) {
 			if (requestAnimationFrame) requestAnimationFrame(redrawKernEdit);
@@ -145,7 +145,9 @@ export class EditCanvas extends HTMLElement {
 			}
 
 			// Guides
-			drawSystemGuidelines(!shouldDrawContextCharacters());
+			const guidesSettings = editor.project.settings.app.guides;
+			if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
+			if (guidesSettings.customShowGuides) drawCustomGuidelines();
 
 			// Draw glyphs
 			drawGlyph(project.getItem(currentItemID), ctx, view);
@@ -239,63 +241,129 @@ export class EditCanvas extends HTMLElement {
 
 		function drawSystemGuidelines(drawVerticals = true) {
 			// log(`drawSystemGuidelines`, 'start');
-
-			let alpha = transparencyToAlpha(project.settings.app.guides.systemTransparency);
-			let fill = getColorFromRGBA(defaultSystemGuideColor, alpha);
-			// log(`defaultSystemGuideColor: ${defaultSystemGuideColor}`);
-			// log(`alpha: ${alpha}`);
-			// log(`fill: ${fill}`);
-			ctx.fillStyle = fill;
-			const advanceWidth = project.getItem(currentItemID).advanceWidth;
-
-			// Verticals
-			if (drawVerticals) {
-				if (editor.systemGuides.leftSide) {
-					drawEmVerticalLine(ctx, 0, view, false);
-				}
-				if (editor.systemGuides.rightSide && advanceWidth) {
-					drawEmVerticalLine(ctx, advanceWidth, view, true);
-				}
-			}
-
+			const alpha = transparencyToAlpha(project.settings.app.guides.systemTransparency);
+			const showLabels = project.settings.app.guides.systemShowLabels;
 			// Horizontals
 			let deltaY = 0;
-			// ascent
-			if (editor.systemGuides.ascent) {
-				// log(`drawing ascent...`);
-				deltaY = project.settings.font.ascent;
-				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
-			}
 
 			// capHeight
 			if (editor.systemGuides.capHeight) {
 				// log(`drawing capHeight...`);
 				deltaY = project.settings.font.capHeight;
+				setSystemGuideColor('light', alpha);
 				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
+				if (showLabels) drawGuideLabel('Cap height', deltaY, true);
 			}
-
+			// ascent
+			if (editor.systemGuides.ascent) {
+				// log(`drawing ascent...`);
+				deltaY = project.settings.font.ascent;
+				setSystemGuideColor('medium', alpha);
+				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
+				if (showLabels) drawGuideLabel('Ascent', deltaY, true);
+			}
 			// xHeight
 			if (editor.systemGuides.xHeight) {
 				// log(`drawing xHeight...`);
 				deltaY = project.settings.font.xHeight;
+				setSystemGuideColor('light', alpha);
+				drawEmHorizontalLine(ctx, deltaY, advanceWidth);
+				if (showLabels) drawGuideLabel('X height', deltaY, true);
+			}
+			// descent
+			if (editor.systemGuides.descent) {
+				// log(`drawing descent...`);
+				deltaY = project.settings.font.descent;
+				setSystemGuideColor('medium', alpha);
 				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
+				if (showLabels) drawGuideLabel('Descent', deltaY, true);
 			}
 
 			// baseline
 			if (editor.systemGuides.baseline) {
 				// log(`drawing baseline...`);
 				deltaY = 0;
+				setSystemGuideColor('dark', alpha);
 				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
+				if (showLabels) drawGuideLabel('Baseline', 0, true);
 			}
 
-			// descent
-			if (editor.systemGuides.descent) {
-				// log(`drawing descent...`);
-				deltaY = project.settings.font.descent;
-				drawEmHorizontalLine(ctx, deltaY, advanceWidth, view);
+			// Verticals
+			if (drawVerticals) {
+				if (editor.systemGuides.leftSide) {
+					setSystemGuideColor('dark', alpha);
+					drawEmVerticalLine(ctx, 0, view);
+					if (showLabels) drawGuideLabel('Left side', 0, false);
+				}
+				if (editor.systemGuides.rightSide && advanceWidth) {
+					setSystemGuideColor('dark', alpha);
+					drawEmVerticalLine(ctx, advanceWidth, view);
+					if (showLabels) drawGuideLabel('Right side', advanceWidth, false);
+				}
 			}
 
 			// log(`drawSystemGuidelines`, 'end');
+		}
+
+		function setSystemGuideColor(level = 'medium', alpha) {
+			let fill;
+			/*
+				--orange-d80: rgb(227, 190, 171);
+				--orange-d70: rgb(212, 154, 125);
+				--orange-d60: rgb(191, 106, 64);
+				--orange-d50: rgb(161, 89, 54);
+				--orange-d40: rgb(126, 70, 42);
+			*/
+
+			if (level === 'light') {
+				fill = getColorFromRGBA('rgb(227, 190, 171)', alpha);
+			} else if (level === 'medium') {
+				fill = getColorFromRGBA('rgb(212, 154, 125)', alpha);
+			} else if (level === 'dark') {
+				fill = getColorFromRGBA('rgb(191, 106, 64)', alpha);
+			}
+			// log(`fill: ${fill}`);
+			ctx.fillStyle = fill;
+		}
+
+		function drawCustomGuidelines() {
+			const guides = getCurrentProject().settings.app.guides;
+
+			if (guides.custom) {
+				let alpha = transparencyToAlpha(guides.customTransparency);
+				guides.custom.forEach((guide) => {
+					if (guide.visible) {
+						let fill = getColorFromRGBA(guide.color, alpha);
+						ctx.fillStyle = fill;
+						if (guide.angle === 90) {
+							drawEmHorizontalLine(ctx, guide.location, advanceWidth, view);
+							if (guides.customShowLabels) drawGuideLabel(guide.name, guide.location, true);
+						} else {
+							drawEmVerticalLine(ctx, guide.location, view);
+							if (guides.customShowLabels) drawGuideLabel(guide.name, guide.location, false);
+						}
+					}
+				});
+			}
+		}
+
+		function drawGuideLabel(name, location, isHorizontal) {
+			let deltaX = 4;
+			let deltaY = -4;
+			let x, y;
+			if (isHorizontal) {
+				x = 5;
+				y = sYcY(location) + deltaY;
+				y = location > 0 ? Math.floor(y) : Math.ceil(y);
+				ctx.fillRect(0, y - deltaY, 60, 1);
+			} else {
+				x = sXcX(location) + deltaX;
+				x = Math.floor(x);
+				y = 12;
+				ctx.fillRect(x - deltaX, 0, 1, 20);
+			}
+			ctx.font = '10px Tahoma, Verdana, sans-serif';
+			ctx.fillText(name, x, y);
 		}
 	}
 }
@@ -304,15 +372,15 @@ export class EditCanvas extends HTMLElement {
 // Guides
 // --------------------------------------------------------------
 
-function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view, roundUp = 'none') {
+function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view) {
 	// log(`drawEmHorizontalLine`, 'start');
 	const pad = 50 * view.dz;
 	let lineWidth = advanceWidth * view.dz;
 	let lineX = view.dx - pad;
 	let lineY = sYcY(emY);
 	lineWidth += pad * 2;
-	if (roundUp === true) lineY = Math.ceil(lineY);
-	if (roundUp === false) lineY = Math.floor(lineY);
+	if (emY > 0) lineY = Math.floor(lineY);
+	else lineY = Math.ceil(lineY);
 	// log(`lineX: ${lineX}`);
 	// log(`lineY: ${lineY}`);
 	// log(`lineWidth: ${lineWidth}`);
@@ -320,84 +388,24 @@ function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view, roundUp = 'none'
 	// log(`drawEmHorizontalLine`, 'end');
 }
 
-export function drawEmVerticalLine(ctx, emX = 0, view, roundUp = 'none') {
+export function drawEmVerticalLine(ctx, emX = 0, view) {
 	// log(`drawEmVerticalLine`, 'start');
 	const project = getCurrentProject();
-	const lineTopY = sYcY(project.settings.font.ascent, view);
+	const pad = 50 * view.dz;
+	const lineTopY = sYcY(project.settings.font.ascent, view) - pad;
 	let lineX = sXcX(emX);
-	if (roundUp === true) lineX = Math.ceil(lineX);
-	if (roundUp === false) lineX = Math.floor(lineX);
-	const lineHeight = project.totalVertical * view.dz;
+	lineX = Math.floor(lineX);
+	let lineHeight = project.totalVertical * view.dz;
+	lineHeight += pad * 2;
 	// log(`lineX: ${lineX}`);
 	// log(`lineTopY: ${lineTopY}`);
 	// log(`lineHeight: ${lineHeight}`);
 
 	ctx.fillRect(lineX, lineTopY, 1, lineHeight);
+
 	// log(`drawEmVerticalLine`, 'end');
 }
 
-function drawGuide(ctx, guide, delta = 0) {
-	// log('\nGuide.draw', 'start');
-	// log('name: ' + guide.name);
-	// log('delta: ' + delta);
-	if (!guide.visible) return;
-	delta = delta * 1;
-	let canvasSize = 1000;
-	let psc = getCurrentProject().projectSettings.colors;
-	const editor = getCurrentProjectEditor();
-	let v = editor.view;
-	let start = { x: 0, y: 0 };
-	let end = { x: 0, y: 0 };
-	let label = { x: 0, y: 0 };
-	let pad = 5;
-	let pos;
-	// log('view: ' + JSON.stringify(v));
-	// log('location: ' + guide.location);
-	if (guide.type === 'horizontal') {
-		pos = makeCrisp(v.dy - guide.location * v.dz);
-		if (delta) pos += delta * v.dz;
-		start.x = 0;
-		start.y = pos;
-		end.x = canvasSize;
-		end.y = pos;
-		label.x = 25;
-		label.y = pos - pad;
-	} else if (guide.type === 'vertical') {
-		pos = makeCrisp(v.dx - guide.location * v.dz * -1);
-		if (delta) pos += delta * v.dz;
-		start.x = pos;
-		start.y = 0;
-		end.x = pos;
-		end.y = canvasSize;
-		label.x = pos + pad;
-		label.y = 11;
-	}
-
-	let alpha = transparencyToAlpha(
-		guide.editable ? psc.customGuideTransparency : psc.systemGuideTransparency
-	);
-	let color = getColorFromRGBA(guide.color, alpha);
-	if (color !== 'rgb(255,255,255)') {
-		// Draw Line
-		// log('start: ' + JSON.stringify(start) + ' / end: ' + JSON.stringify(end));
-		ctx.strokeStyle = color;
-		ctx.globalAlpha = 1;
-		ctx.lineWidth = 1;
-		if (isVal(delta)) ctx.strokeStyle = shiftColor(color, 0.6, true);
-		ctx.beginPath();
-		ctx.moveTo(start.x, start.y);
-		ctx.lineTo(end.x, end.y);
-		ctx.stroke();
-		ctx.closePath();
-		// Draw Label
-		if (guide.displayName && getCurrentProject().settings.app.showGuidesLabels && !delta) {
-			ctx.fillStyle = color;
-			ctx.font = '10px Tahoma, Verdana, sans-serif';
-			ctx.fillText(guide.name, label.x, label.y);
-		}
-	}
-	// log('Guide.draw', 'end');
-}
 
 // --------------------------------------------------------------------------
 // Convert between Saved values and Canvas values

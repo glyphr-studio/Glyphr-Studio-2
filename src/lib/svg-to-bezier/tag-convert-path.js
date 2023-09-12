@@ -1,8 +1,4 @@
-import {
-	chunkAndValidateParameters,
-	sanitizeParameterData,
-	log,
-} from './svg-to-bezier.js';
+import { chunkAndValidateParameters, sanitizeParameterData } from './svg-to-bezier.js';
 import { convertArcToCommandToBezier } from './tag-convert-path-arc.js';
 
 /**
@@ -130,9 +126,7 @@ function chunkCommands(dAttribute) {
 		if (isCommand(data.charAt(i))) {
 			result.push({
 				type: data.charAt(commandStart),
-				parameters: chunkAndValidateParameters(
-					data.substring(commandStart + 1, i)
-				),
+				parameters: chunkAndValidateParameters(data.substring(commandStart + 1, i)),
 			});
 
 			commandStart = i;
@@ -143,9 +137,7 @@ function chunkCommands(dAttribute) {
 	if (commandStart < data.length - 1) {
 		result.push({
 			type: data.charAt(commandStart),
-			parameters: chunkAndValidateParameters(
-				data.substring(commandStart + 1, data.length)
-			),
+			parameters: chunkAndValidateParameters(data.substring(commandStart + 1, data.length)),
 		});
 	}
 
