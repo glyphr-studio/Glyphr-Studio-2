@@ -37,11 +37,14 @@
 				"combinePathsOnExport": false,
 				"maxCombinePathsOnExport": 30,
 				"guides": {
-					"showGuideLabels": true,
-					"systemTransparency": 70,
-					"systemGuides": ["baseline"],
-					"customTransparency": 70,
-					"custom": [{"name": "Test guide"}]
+					"systemShowGuides": true,
+					"systemShowLabels": true,
+					"systemTransparency": 10,
+					"systemGuides": ["baseline", "capHeight", "ascent", "descent","leftSide", "rightSide"],
+					"customShowGuides": true,
+					"customShowLabels": true,
+					"customTransparency": 10,
+					"custom": [{"name": "Test guide", "visible": true}]
 				},
 				"contextCharacters": {
 					"showCharacters": false,

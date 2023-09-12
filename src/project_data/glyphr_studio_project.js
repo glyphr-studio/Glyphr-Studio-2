@@ -36,9 +36,12 @@ export class GlyphrStudioProject {
 				formatSaveFile: false,
 				moveShapesOnSVGDragDrop: false,
 				guides: {
-					showGuideLabels: true,
+					systemShowGuides: true,
+					systemShowLabels: false,
 					systemTransparency: 70,
 					systemGuides: ['baseline', 'leftSide', 'rightSide'],
+					customShowGuides: true,
+					customShowLabels: false,
 					customTransparency: 70,
 					custom: [],
 				},
@@ -109,10 +112,10 @@ export class GlyphrStudioProject {
 
 		// Guides
 		const newGuides = newProject?.settings?.app?.guides;
-		if (newGuides.systemGuides) {
+		if (newGuides?.systemGuides) {
 			this.settings.app.guides.systemGuides = clone(newGuides.systemGuides);
 		}
-		if (newGuides.custom) {
+		if (newGuides?.custom) {
 			this.settings.app.guides.custom = [];
 			newGuides.custom.forEach((guide) =>
 				this.settings.app.guides.custom.push(new Guide(guide))
@@ -205,6 +208,12 @@ export class GlyphrStudioProject {
 		savedProject.settings.app.livePreviews = [];
 		this.settings.app.livePreviews.forEach((preview) => {
 			savedProject.settings.app.livePreviews.push(preview.save());
+		});
+
+		// Overwriting guides with .save() version
+		savedProject.settings.app.guides.custom = [];
+		this.settings.app.guides.custom.forEach((guide) => {
+			savedProject.settings.app.guides.custom.push(guide.save());
 		});
 
 		/**

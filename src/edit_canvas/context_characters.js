@@ -543,8 +543,8 @@ export function findAndCallHotspot(cx, cy) {
 }
 
 function hotspotNavigateToItem(id) {
-	log('hotspotNavigateToItem', 'start');
-	log('passed ' + id);
+	// log('hotspotNavigateToItem', 'start');
+	// log('passed ' + id);
 
 	const editor = getCurrentProjectEditor();
 	const v = editor.view;
@@ -568,14 +568,14 @@ function hotspotNavigateToItem(id) {
 	}
 
 	const str = contextCharacters.chars.substring(p1, p2);
-	log(`substring from ${p1} to ${p2} yields ${str}`);
+	// log(`substring from ${p1} to ${p2} yields ${str}`);
 
 	const delta = getItemStringAdvanceWidth(str);
 
-	log(`advance width: ${delta} screen pixels: ${sXcX(delta)}`);
+	// log(`advance width: ${delta} screen pixels: ${sXcX(delta)}`);
 	// v.dx += sXcX(delta);
 	const kern = calculateKernOffset(leftCharacter, rightCharacter);
-	log(`kern offset ${leftCharacter} and ${rightCharacter} is ${kern}`);
+	// log(`kern offset ${leftCharacter} and ${rightCharacter} is ${kern}`);
 
 	v.dx += v.dz * delta * flipper;
 	v.dx += v.dz * kern * flipper;
@@ -592,7 +592,7 @@ function hotspotNavigateToItem(id) {
 	}
 	editor.nav.navigate();
 
-	log('hotspotNavigateToItem', 'end');
+	// log('hotspotNavigateToItem', 'end');
 }
 
 export function findAndUnderlineHotspot(cx, cy) {

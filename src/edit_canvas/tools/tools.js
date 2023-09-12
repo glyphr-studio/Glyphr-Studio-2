@@ -209,11 +209,11 @@ export function makeViewToolsButtons() {
 		}),
 	});
 	livePreviewPopOut.addEventListener('click', () => {
-		log(`Live Preview Pop Out CLICK HANDLER`, 'start');
-		log(`editor.popOutWindow: ${editor.popOutWindow}`);
+		// log(`Live Preview Pop Out CLICK HANDLER`, 'start');
+		// log(`editor.popOutWindow: ${editor.popOutWindow}`);
 		if (editor.popOutWindow === false) openPopOutWindow();
 		else closePopOutWindow();
-		log(`Live Preview Pop Out CLICK HANDLER`, 'end');
+		// log(`Live Preview Pop Out CLICK HANDLER`, 'end');
 	});
 
 	// Put it all together

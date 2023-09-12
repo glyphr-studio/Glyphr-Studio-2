@@ -372,6 +372,7 @@ function makeNavButton_Page(pageName, iconName) {
 	button.addEventListener('click', () => {
 		let editor = getCurrentProjectEditor();
 		editor.nav.page = pageName;
+		if (pageName === 'Kerning') editor.nav.panel = 'Attributes';
 		editor.navigate();
 		if (editor.selectedItemID) {
 			editor.history.addState(

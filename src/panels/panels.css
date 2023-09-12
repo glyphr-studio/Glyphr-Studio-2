@@ -483,3 +483,117 @@ nav .glyph-chooser__wrapper {
 	min-width: 260px;
 	resize: vertical;
 }
+
+/*
+	Guides
+*/
+.guides-card__view-options {
+	grid-template-columns: 20px min-content 1fr;
+}
+
+.guides-card__view-options h4 {
+	position: relative;
+	top: -2px;
+	grid-column: 2 / -1;
+	column-span: 2 / 3;
+}
+
+.guides-card__view-options label {
+	grid-column: auto;
+}
+
+.guides-card__view-options .guide-transparency-input {
+	width: 90px;
+	grid-column: auto;
+}
+
+.guides-card__system {
+	display: grid;
+	grid-template-columns: 20px 1fr 20px max-content;
+}
+
+.guides-card__system input[type=checkbox] {
+	accent-color: var(--orange-l50);
+}
+
+.guides-card__custom {
+	display: grid;
+	grid-template-columns: 20px 1fr 22px 22px 22px 90px;
+	column-gap: 4px;
+}
+
+.guides-card__custom input[type=checkbox] {
+	margin: 0px 0px 0px 0px;
+}
+
+.guides-card__custom button {
+	height: 22px;
+	width: 22px;
+	padding: 0;
+}
+
+.guides-card__custom .guide-delete-button,
+.guides-card__custom .guide-angle-button {
+	background-color: transparent;
+	border-color: transparent;
+	box-shadow: none;
+}
+
+.guides-card__custom .guide-color-button {
+	border-color: var(--offWhite);
+	border-radius: 4px 10px 4px 4px;
+}
+
+.guides-card__custom .guide-delete-button {
+	opacity: 0.4;
+}
+
+.guides-card__custom .guide-angle-button {
+	opacity: 1;
+}
+
+.guides-card__custom .guide-delete-button:hover,
+.guides-card__custom .guide-color-button:hover,
+.guides-card__custom .guide-angle-button:hover {
+	background-color: var(--enabled-focus-background);
+	border-color: inherit;
+	box-shadow: inherit;
+	opacity: 1;
+}
+
+.guides-card__custom .guide-color-button:hover {
+	border-color: white;
+}
+
+.guides-card__custom .guide-delete-button svg {
+	height:10px;
+	width:10px;
+}
+
+.guides-card__custom .guide-angle-button svg {
+	position: relative;
+	top: 2px;
+	width: 14px;
+	height: 14px;
+}
+
+.guides-card__custom input-number {
+	width: 90px;
+}
+
+.guides-card__system label {
+	grid-column: auto;
+}
+
+.guide-system-angle {
+	width: 20px;
+	height: 20px;
+	text-align: center;
+}
+
+.guide-system-value {
+	font-family: monospace;
+	color: var(--enabled-restingLight-lightText);
+	text-align: right;
+	min-width: 40px;
+}

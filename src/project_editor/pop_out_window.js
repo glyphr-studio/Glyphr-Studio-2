@@ -96,16 +96,16 @@ export function updatePopOutWindowContent() {
 		attributes: { minimal: '' },
 	});
 	addPreviewButton.addEventListener('click', () => {
-		log(`addPreviewButton ONCLICK`, 'start');
+		// log(`addPreviewButton ONCLICK`, 'start');
 		let newPreview = new TextBlockOptions({ text: 'new live preview' });
-		log(`\n⮟newPreview⮟`);
-		log(newPreview);
+		// log(`\n⮟newPreview⮟`);
+		// log(newPreview);
 		const editor = getCurrentProjectEditor();
 		editor.livePreviews.push(newPreview);
 		selectedLivePreview = editor.livePreviews.length - 1;
 		updatePopOutWindowContent();
 		showEditLivePreviewDialog();
-		log(`addPreviewButton ONCLICK`, 'end');
+		// log(`addPreviewButton ONCLICK`, 'end');
 	});
 
 	// addAsChildren(footer, [editPreviewsButton, addPreviewButton]);
@@ -203,17 +203,17 @@ export function livePreviewPopOutWindowResize() {
 
 let selectedLivePreview = 1;
 function showEditLivePreviewDialog() {
-	log(`showEditLivePreviewDialog`, 'start');
+	// log(`showEditLivePreviewDialog`, 'start');
 	const editor = getCurrentProjectEditor();
 	const popDoc = editor.popOutWindow.document;
 	let panelArea = makeElement({ tag: 'div', id: 'content-page__panel' });
 	let header = makeElement({ tag: 'h1', content: 'Live Preview options' });
-	log(`selectedLivePreview: ${selectedLivePreview}`);
-	log(`\n⮟editor.livePreviews⮟`);
-	log(editor.livePreviews);
+	// log(`selectedLivePreview: ${selectedLivePreview}`);
+	// log(`\n⮟editor.livePreviews⮟`);
+	// log(editor.livePreviews);
 	let selected = editor.livePreviews[selectedLivePreview];
-	log(`\n⮟selected⮟`);
-	log(selected);
+	// log(`\n⮟selected⮟`);
+	// log(selected);
 	let previewChooser = makeElement({
 		tag: 'option-chooser',
 		attributes: {
@@ -276,5 +276,5 @@ function showEditLivePreviewDialog() {
 
 	let diag = makeModalDialog(panelArea, 500);
 	popDoc.body.appendChild(diag);
-	log(`showEditLivePreviewDialog`, 'end');
+	// log(`showEditLivePreviewDialog`, 'end');
 }

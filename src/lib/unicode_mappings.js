@@ -8,20 +8,20 @@
  * @param {String} hexKey - Hexadecimal key to search for
  */
 export function findMappedValue(source, hexKey) {
-	log(`findMappedValue`, 'start');
-	log(`searching for hexKey: ${hexKey}`);
+	// log(`findMappedValue`, 'start');
+	// log(`searching for hexKey: ${hexKey}`);
 
 	let integerKey = parseInt(hexKey);
 	for (const sourceKey of Object.keys(source)) {
 		// log(`checking sourceKey: ${sourceKey}`);
 		// log(`checking ${parseInt(sourceKey)} === ${integerKey}`);
 		if (parseInt(sourceKey) === integerKey) {
-			log(`FOUND!`);
-			log(`findMappedValue`, 'end');
+			// log(`FOUND!`);
+			// log(`findMappedValue`, 'end');
 			return source[sourceKey];
 		}
 	}
-	log(`findMappedValue`, 'end');
+	// log(`findMappedValue`, 'end');
 	return false;
 }
 

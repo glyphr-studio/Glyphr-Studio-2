@@ -136,6 +136,10 @@ icons.command_autoFit = `
 	<rect x="9" y="9" width="2" height="1"/>
 `;
 
+icons.command_verticalBar = `<rect x="9" y="0" width="2" height="18"/>`;
+
+icons.command_horizontalBar = `<rect y="9" x="1" height="2" width="19"/>`;
+
 // --------------------------------------------------------------
 // Pages
 // --------------------------------------------------------------

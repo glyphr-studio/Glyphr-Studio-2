@@ -231,9 +231,9 @@ export function makeKernGroupID(kernGroups = getCurrentProject().kerning) {
 }
 
 export function showAddEditKernGroupDialog(kernGroup = false) {
-	log(`showAddEditKernGroupDialog`, 'start');
-	log(`kernGroup`);
-	log(kernGroup);
+	// log(`showAddEditKernGroupDialog`, 'start');
+	// log(`kernGroup`);
+	// log(kernGroup);
 	const content = makeElement({
 		innerHTML: `
 		<h2>${kernGroup ? 'Edit this' : 'Create a new'} kern group</h2>
@@ -291,21 +291,21 @@ export function showAddEditKernGroupDialog(kernGroup = false) {
 	}
 
 	function addEditDialogSubmit() {
-		log(`showAddEditKernGroupDialog button click handler`, 'start');
+		// log(`showAddEditKernGroupDialog button click handler`, 'start');
 		const editor = getCurrentProjectEditor();
 		let leftNew = charsToHexArray(leftGroupInput.value);
-		log(`leftNew: ${leftNew}`);
+		// log(`leftNew: ${leftNew}`);
 		let rightNew = charsToHexArray(rightGroupInput.value);
-		log(`rightNew: ${rightNew}`);
+		// log(`rightNew: ${rightNew}`);
 		let valueNew = parseInt(valueInput.value);
-		log(`valueNew: ${valueNew}`);
+		// log(`valueNew: ${valueNew}`);
 
 		if (kernGroup) {
-			log(kernGroup.print());
+			// log(kernGroup.print());
 			kernGroup.leftGroup = leftNew;
 			kernGroup.rightGroup = rightNew;
 			kernGroup.value = valueNew;
-			log(kernGroup.print());
+			// log(kernGroup.print());
 			editor.history.addState('Edited kern group: ' + editor.selectedKernGroupID);
 			editor.publish('currentKernGroup', editor.selectedKernGroup);
 			editor.navigate();
@@ -322,11 +322,11 @@ export function showAddEditKernGroupDialog(kernGroup = false) {
 				closeEveryTypeOfDialog();
 			}
 		}
-		log(`showAddEditKernGroupDialog button click handler`, 'end');
+		// log(`showAddEditKernGroupDialog button click handler`, 'end');
 	}
 
 	showModalDialog(content, 500);
-	log(`showAddEditKernGroupDialog`, 'end');
+	// log(`showAddEditKernGroupDialog`, 'end');
 }
 
 export function makeKernGroupCharChips(group) {

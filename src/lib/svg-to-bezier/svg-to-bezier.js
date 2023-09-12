@@ -39,14 +39,14 @@ const enableConsoleLogging = false;
  * @returns {Array} - collection of Paths in Bezier Data Format
  */
 export function SVGtoBezier(inputSVG) {
-	log(`\n\n========================\nSVGtoBezier`);
-	log(inputSVG);
+	// log(`\n\n========================\nSVGtoBezier`);
+	// log(inputSVG);
 	let svgDocumentData = XMLtoJSON(inputSVG);
-	log(`JSON DATA`);
-	log(svgDocumentData);
+	// log(`JSON DATA`);
+	// log(svgDocumentData);
 	let bezierPaths = convertTags(svgDocumentData);
-	log(bezierPaths);
-	log(`\nSVGtoBezier\n========================\n\n`);
+	// log(bezierPaths);
+	// log(`\nSVGtoBezier\n========================\n\n`);
 	return bezierPaths;
 }
 
@@ -57,7 +57,7 @@ export function SVGtoBezier(inputSVG) {
  * @returns {Array} - collection of Paths in Bezier Data Format
  */
 function convertTags(tagData, parentTransformData = false) {
-	log(`\n\nCONVERT TAGS for ${tagData.name}`);
+	// log(`\n\nCONVERT TAGS for ${tagData.name}`);
 	let result = [];
 	let transformData = false;
 	if (!tagData?.content) return [];
@@ -68,29 +68,29 @@ function convertTags(tagData, parentTransformData = false) {
 
 	tagData.content.forEach((tag) => {
 		let name = tag.name.toLowerCase();
-		log(`Starting conversion for ${tag.name} - result.length = ${result.length}`);
+		// log(`Starting conversion for ${tag.name} - result.length = ${result.length}`);
 		if (name === 'circle' || name === 'ellipse') {
-			log(`MATCHED ${name} as CIRCLE or ELLIPSE`);
+			// log(`MATCHED ${name} as CIRCLE or ELLIPSE`);
 			result = result.concat(tagConvertCircleEllipse(tag, transformData));
 		}
 		if (name === 'path' || name === 'glyph') {
-			log(`MATCHED ${name} as PATH or GLYPH`);
+			// log(`MATCHED ${name} as PATH or GLYPH`);
 			result = result.concat(tagConvertPath(tag, transformData));
 		}
 		if (name === 'polygon' || name === 'polyline') {
-			log(`MATCHED ${name} as POLYGON or POLYLINE`);
+			// log(`MATCHED ${name} as POLYGON or POLYLINE`);
 			result = result.concat(tagConvertPolygonPolyline(tag, transformData));
 		}
 		if (name === 'rect') {
-			log(`MATCHED ${name} as RECT`);
+			// log(`MATCHED ${name} as RECT`);
 			result = result.concat(tagConvertRect(tag, transformData));
 		}
 		if (name === 'g') {
-			log(`MATCHED ${name} as G`);
+			// log(`MATCHED ${name} as G`);
 			result = result.concat(convertTags(tag, transformData));
 		}
 
-		log(`END for ${tag.name} - result.length = ${result.length}`);
+		// log(`END for ${tag.name} - result.length = ${result.length}`);
 	});
 
 	return result;
@@ -116,12 +116,12 @@ export function getTransformData(tag) {
 	let transforms = false;
 
 	if (tag.attributes.transform) {
-		log(`Detected transforms`);
-		log(tag.attributes.transform);
+		// log(`Detected transforms`);
+		// log(tag.attributes.transform);
 		let temp = tag.attributes.transform.replace(',', ' ');
 		temp = temp.toLowerCase();
 		temp = temp.split(')');
-		log(temp);
+		// log(temp);
 		transforms = [];
 		temp.forEach((value) => {
 			let data = value.split('(');
@@ -138,7 +138,7 @@ export function getTransformData(tag) {
 		});
 	}
 
-	log(transforms);
+	// log(transforms);
 	return transforms;
 }
 
