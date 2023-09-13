@@ -10,12 +10,14 @@
 
 export class Guide {
 	constructor(oa = {}) {
+		// log(`Guide.constructor`, 'start');
 		this.objType = 'Guide';
-		this.angle = oa.angle || 90;
+		this.angle = oa.angle === 90 ? 90 : 0;
 		this.name = oa.name;
 		this.location = !isNaN(parseInt(oa.location)) ? parseInt(oa.location) : 200;
 		this.color = oa.color || defaultCustomGuideColor;
 		this.visible = !!oa.visible;
+		// log(`Guide.constructor`, 'end');
 	}
 
 	save() {

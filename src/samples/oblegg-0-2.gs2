@@ -20,14 +20,15 @@
       "formatSaveFile": true,
       "moveShapesOnSVGDragDrop": true,
       "guides": {
-        "showGuideLabels": true,
-        "systemTransparency": 10,
+        "drawGuidesOnTop": false,
+        "systemShowGuides": true,
+        "systemShowLabels": false,
+        "systemTransparency": 70,
+        "systemGuides": ["baseline", "leftSide", "rightSide"],
+        "customShowGuides": true,
+        "customShowLabels": false,
         "customTransparency": 70,
-        "custom": [
-          {
-            "name": "Test Guideline"
-          }
-        ]
+        "custom": []
       },
       "contextCharacters": {
         "showCharacters": true,

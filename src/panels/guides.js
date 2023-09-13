@@ -134,15 +134,18 @@ function makeSystemGuideRow(property, title, value = '0000', color) {
 			color: color,
 		}),
 	});
+	angleDisplay.setAttribute('title', 'Horizontal guideline');
 	if (property === 'leftSide' || property === 'rightSide') {
 		angleDisplay.innerHTML = makeIcon({
 			name: 'command_verticalBar',
 			color: color,
 		});
+		angleDisplay.setAttribute('title', 'Vertical guideline');
 	}
 
 	// Value
 	const valueDisplay = makeElement({ className: 'guide-system-value', content: value });
+	valueDisplay.setAttribute('title', `Guide line position\nThese are based on this font's key metrics,\nwhich you can edit on the Font Settings page.`)
 
 	return [viewCheckbox, makeSingleLabel(title), angleDisplay, valueDisplay];
 }
