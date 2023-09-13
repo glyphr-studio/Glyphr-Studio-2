@@ -449,6 +449,18 @@ export function deg(rad) {
 }
 
 /**
+ * Snaps a radian to the nearest degree value
+ * @param {Number} radians - radians
+ * @returns - radians
+ */
+export function snapRadiansToDegrees(radians) {
+	var degrees = deg(radians);
+	degrees = round(degrees);
+	radians = rad(degrees);
+	return radians;
+}
+
+/**
  * Given a standard JavaScript angle (radians), convert it to the angle
  * system we show the user (degrees, aka "Nice Angle")
  * @param {Number} angle - Angle in Radians

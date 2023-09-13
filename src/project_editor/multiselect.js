@@ -8,12 +8,7 @@ import {
 	makeGlyphWithResolvedLinks,
 	removeLinkFromUsedIn,
 } from './cross_item_actions.js';
-import {
-	combineAllPaths,
-	combinePaths,
-	findPathIntersections,
-	insertPathPointsAtIXPoint,
-} from './boolean_combine.js';
+import { combineAllPaths } from './boolean_combine.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 
 /**
@@ -508,7 +503,7 @@ export class MultiSelectShapes extends MultiSelect {
 
 	isRotatable() {
 		if (this.members.length === 1) return true;
-		else return !this.contains('ComponentInstance');
+		else return !this.contains('Component Instance');
 	}
 
 	flipNS(mid) {

@@ -13,6 +13,7 @@ import {
 	computeAndDrawBoundingBoxHandles,
 	computeAndDrawPathPointHandles,
 	computeAndDrawPathPoints,
+	computeAndDrawRotationAffordance,
 	drawNewBasicPath,
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
@@ -164,7 +165,7 @@ export class EditCanvas extends HTMLElement {
 				computeAndDrawBoundingBox(ctx);
 				computeAndDrawBoundingBoxHandles(ctx);
 			} else if (editMode === 'rotate') {
-				// computeAndDrawRotationAffordance(ctx);
+				computeAndDrawRotationAffordance(ctx);
 			} else if (editMode === 'pathEdit') {
 				drawSelectedPathOutline(ctx, view);
 				if (eventHandlerData.isCtrlDown || editor.multiSelect.points.count > 1) {
