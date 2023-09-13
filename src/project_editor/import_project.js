@@ -10,6 +10,7 @@ import { showError } from '../controls/dialogs/dialogs.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { KernGroup } from '../project_data/kern_group.js';
+import { Guide } from './guide.js';
 
 /**
  * Takes a js Object from a JSON-based project file, and returns
@@ -127,7 +128,7 @@ function migrate_Project(oldProject) {
 	// Metadata
 	const newPreferences = newProject.settings.app;
 	const newRanges = newProject.settings.project.characterRanges;
-	const newSysGuides = newProject.settings.app.guides.system;
+	const newGuides = newProject.settings.app.guides;
 	const newFont = newProject.settings.font;
 	const oldSettings = oldProject.projectsettings;
 	const oldRanges = oldProject.projectsettings.glyphrange;
@@ -159,11 +160,20 @@ function migrate_Project(oldProject) {
 	newPreferences.contextCharacters.transparency = oldColors.contextglyphtransparency || 90;
 
 	// Guides
-	newSysGuides.transparency = oldColors.systemguidetransparency || 90;
-	newSysGuides.showBaseline = oldGuides.baseline.visible || true;
-	newSysGuides.showLeftSide = oldGuides.leftside.visible || true;
-	newSysGuides.showRightSide = oldGuides.rightside.visible || true;
-	// TODO Custom Guides
+	newGuides.systemTransparency = oldColors.systemguidetransparency || 70;
+	newGuides.customTransparency = oldColors.systemguidetransparency || 70;
+	Object.keys(oldGuides).forEach(key => {
+		let oldGuide = oldGuides[key];
+		if (oldGuide.editable) {
+			newGuides.custom.push(new Guide({
+				angle: oldGuide.type === 'horizontal'? 90 : 0,
+				location: oldGuide.location,
+				name: oldGuide.name,
+				color: oldGuide.color,
+				visible: oldGuide.visible,
+			}))
+		}
+	});
 
 	// Font
 	newFont.family = oldMeta.font_family || 'My Font';
