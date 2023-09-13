@@ -24,6 +24,7 @@ export let eventHandlerData = {
 	mousePosition: false,
 	handle: false,
 	rotationCenter: false,
+	rotationStartTopY: false,
 	rotateHandleHeight: 40,
 	isMouseOverCanvas: false,
 	corner: false,

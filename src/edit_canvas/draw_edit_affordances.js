@@ -1,8 +1,18 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
-import { makeCrisp, round } from '../common/functions.js';
+import {
+	angleToNiceAngle,
+	calculateAngle,
+	calculateLength,
+	clone,
+	makeCrisp,
+	rotate,
+	round,
+	snapRadiansToDegrees,
+} from '../common/functions.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
-import { sXcX, sYcY } from './edit_canvas.js';
+import { cXsX, cYsY, sXcX, sYcY } from './edit_canvas.js';
+import { eventHandlerData } from './events.js';
 import { canResize } from './events_mouse.js';
 
 // --------------------------------------------------------------
@@ -30,25 +40,29 @@ export function computeAndDrawBoundingBox(ctx) {
 	let msShapes = editor.multiSelect.shapes;
 	if (msShapes.length < 1) return;
 	let maxes = msShapes.maxes;
+	let ehd = eventHandlerData;
+	ehd.rotationCenter = maxes.center;
+	ehd.rotationStartTopY = maxes.yMax + rotateHandleHeight / editor.view.dz;
 	let style = computeSelectionStyle();
 
 	drawBoundingBox(ctx, maxes, style.thickness, style.accent);
 }
-/*
-TODO rotate
+
 export function computeAndDrawRotationAffordance(ctx) {
+	log(`computeAndDrawRotationAffordance`, 'start');
 	const editor = getCurrentProjectEditor();
 	let ss;
 	if (editor.multiSelect.shapes.length === 1) {
 		ss = editor.multiSelect.shapes.members[0];
 		const accent = ss.objType === 'ComponentInstance' ? accentGreen : accentBlue;
-		drawRotationAffordance(accent, false);
+		drawRotationAffordance(ctx, accent, false);
 	} else if (editor.multiSelect.shapes.length > 1) {
 		ss = editor.multiSelect.shapes.virtualGlyph;
-		drawRotationAffordance(accentGray, multiSelectThickness);
+		drawRotationAffordance(ctx, accentGray, multiSelectThickness);
 	}
+	log(`computeAndDrawRotationAffordance`, 'end');
 }
-*/
+
 export function computeAndDrawBoundingBoxHandles(ctx) {
 	const editor = getCurrentProjectEditor();
 	let msShapes = editor.multiSelect.shapes;
@@ -134,22 +148,28 @@ export function drawBoundingBox(ctx, maxes, thickness, accent) {
 }
 
 function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
+	log(`drawBoundingBoxHandles`, 'start');
 	let bb = getBoundingBoxAndHandleDimensions(maxes, thickness);
 
 	ctx.fillStyle = pointFill;
 	ctx.lineWidth = 1;
 	ctx.strokeStyle = accent;
 
-	// TODO rotate handle
-	/*
-	if(getCurrentProjectEditor().multiSelect.shapes.isRotatable()){
-		let h = rotateHandleHeight;
+	const msShapes = getCurrentProjectEditor().multiSelect.shapes;
+	if (msShapes.isRotatable()) {
+		const halfPointSize = canvasUIPointSize / 2;
 		ctx.lineWidth = thickness;
-		drawLine({x:bb.midX + bb.hp, y:bb.topY}, {x:bb.midX + bb.hp, y:bb.topY - h});
+		drawLine(
+			ctx,
+			{ x: bb.midX + 1, y: bb.topY },
+			{ x: bb.midX + 1, y: bb.topY - rotateHandleHeight }
+		);
 		ctx.lineWidth = 1;
-		drawCircleHandle({x:bb.midX + bb.hp, y:bb.topY - h + bb.hp});
+		drawCircleHandle(ctx, {
+			x: bb.midX + 1,
+			y: bb.topY - rotateHandleHeight + halfPointSize,
+		});
 	}
-*/
 
 	//upper left
 	if (canResize('nw')) drawSquareHandle(ctx, bb.nw);
@@ -170,28 +190,32 @@ function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
 	// //Center Dot
 	// ctx.fillRect(bb.midX, bb.midY, ps, ps);
 	// ctx.strokeRect(bb.midX, bb.midY, ps, ps);
+	log(`drawBoundingBoxHandles`, 'end');
 }
 
-/*
-TODO rotate
 function drawRotationAffordance(ctx, accent, thickness) {
-	const editor = getCurrentProjectEditor();
+	log(`drawRotationAffordance`, 'start');
+
 	accent = accent || accentBlue;
 	thickness = thickness || 1;
 	let center = clone(eventHandlerData.rotationCenter);
-	let startTopY = eventHandlerData.rotationStartPoint.y;
+	log(`center.x: ${center.x}`);
+	log(`center.y: ${center.y}`);
+	let startTopY = eventHandlerData.rotationStartTopY;
+	log(`startTopY: ${startTopY}`);
 	let mx = eventHandlerData.mousePosition.x;
+	log(`mx: ${mx}`);
 	let my = eventHandlerData.mousePosition.y;
-	let radians = calculateAngle({ x: cx_sx(mx), y: cy_sy(my) }, center);
+	log(`my: ${my}`);
+	let radians = calculateAngle({ x: cXsX(mx), y: cYsY(my) }, center);
+	log(`radians: ${radians}`);
 
-	// log('\t Init radians:\t' + radians);
 	let snap = eventHandlerData.isShiftDown;
 	if (snap) radians = snapRadiansToDegrees(radians);
 	let rotateHandle = { x: center.x, y: startTopY };
 	rotate(rotateHandle, radians, center, snap);
 	rotate(rotateHandle, Math.PI / -2, center, snap);
-
-	// log('\t Drag Angle:\t' + round(radians, 2));
+	log(`drag angle: ${round(radians, 2)}`);
 
 	let counterclockwise = false;
 	if (Math.abs(radians) > Math.PI / 2) {
@@ -221,16 +245,15 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	ctx.strokeStyle = accent.l65;
 	ctx.fillStyle = pointFill;
 	ctx.lineWidth = thickness;
-	drawLine({ x: rotateHandle.x, y: rotateHandle.y }, { x: center.x, y: center.y });
+	drawLine(ctx, { x: rotateHandle.x, y: rotateHandle.y }, { x: center.x, y: center.y });
 	ctx.lineWidth = 1;
-	drawCircleHandle(rotateHandle);
+	drawCircleHandle(ctx, rotateHandle);
 
 	// readout
-	let readout = round(radiansToNiceAngle(radians), 1);
+	let readout = round(angleToNiceAngle(radians), 1);
 	if (counterclockwise) readout -= 360;
 	readout = round(readout, 1);
-
-	// log('\t Readout angle:\t' + readout);
+	log(`readout: ${readout}`);
 
 	ctx.font = '24px OpenSans';
 	ctx.fillStyle = accent.l65;
@@ -238,6 +261,7 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	ctx.fillText('' + readout + '°', center.x, startTopY - 24);
 
 	ctx.globalAlpha = 1;
+	log(`drawRotationAffordance`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -251,18 +275,22 @@ function drawLine(ctx, p1, p2) {
 	ctx.closePath();
 	ctx.stroke();
 }
-*/
+
 function drawSquareHandle(ctx, ul) {
 	ctx.fillRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
 	ctx.strokeRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
 }
 
 function drawCircleHandle(ctx, center) {
+	log(`drawCircleHandle`, 'start');
+	log(`center.x: ${center.x}`);
+	log(`center.y: ${center.y}`);
 	ctx.beginPath();
 	ctx.arc(center.x, center.y, canvasUIPointSize / 2, 0, Math.PI * 2, true);
 	ctx.closePath();
 	ctx.fill();
 	ctx.stroke();
+	log(`drawCircleHandle`, 'end');
 }
 
 // --------------------------------------------------------------

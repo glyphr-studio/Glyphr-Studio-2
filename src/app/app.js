@@ -37,7 +37,7 @@ export class GlyphrStudioApp {
 				sampleProject: 'oblegg', // Load the sample project, true or 'oblegg'
 				currentPage: 'Characters', // navigate straight to a page (title case names)
 				currentGlyphID: false, // select a glyph
-				currentPanel: 'Guides', // navigate straight to a panel (title case names)
+				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
 				stopPageNavigation: false, // overwrite project-level setting
 				selectFirstShape: false, // select a shape
@@ -73,7 +73,7 @@ export class GlyphrStudioApp {
 			// Navigation & selection
 			if (dev.sampleProject) {
 				let proj = simpleExampleProject;
-				if (dev.sampleProject !== 'oblegg') proj = obleggSampleProject;
+				if (dev.sampleProject === 'oblegg') proj = obleggSampleProject;
 				editor.project = importGlyphrProjectFromText(proj);
 			}
 			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;
