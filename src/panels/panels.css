@@ -542,8 +542,30 @@ nav .glyph-chooser__wrapper {
 }
 
 .guides-card__custom .guide-color-button {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	height: 20px;
+	width: 20px;
+	background-color: transparent;
 	border-color: var(--offWhite);
-	border-radius: 4px 10px 4px 4px;
+	border-radius: 5px 10px 5px 5px;
+	padding: 9px 13px 11px 7px;
+	border-image-width: 700px;
+	border-width: 2px;
+}
+
+.guide-color-button::-webkit-color-swatch {
+	border: none;
+}
+
+.guide-color-button::-moz-color-swatch {
+	border: none;
+}
+
+.guides-card__custom .guide-color-button:hover {
+	cursor: pointer;
+	border-color: white;
 }
 
 .guides-card__custom .guide-delete-button {
