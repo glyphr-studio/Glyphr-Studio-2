@@ -196,6 +196,23 @@ export function parseColorString(c) {
 }
 
 /**
+ * Converts an RGB color string to it's Hex format
+ * @param {String} rgbString - color in rgb(0,0,0) format
+ * @returns {String} color in #000000 format
+ */
+export function rgbToHex(rgbString) {
+	let obj = parseColorString(rgbString);
+	let r = obj.r.toString(16).toUpperCase();
+	if(r.length === 1) r = `0${r}`;
+	let g = obj.g.toString(16).toUpperCase();
+	if(g.length === 1) g = `0${g}`;
+	let b = obj.b.toString(16).toUpperCase();
+	if(b.length === 1) b = `0${b}`;
+
+	return `#${r}${g}${b}`;
+}
+
+/**
  * Takes a color string, then lightens or darkens that color
  * by a certain percentage
  * @param {String} c - color string

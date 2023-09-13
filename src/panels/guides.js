@@ -1,5 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { accentColors, makeRandomSaturatedColor } from '../common/colors.js';
+import { accentColors, makeRandomSaturatedColor, parseColorString, rgbToHex } from '../common/colors.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeIcon } from '../common/graphics.js';
 import { makeFancySlider } from '../controls/fancy-slider/fancy_slider.js';
@@ -213,17 +213,31 @@ function makeCustomGuideRow(guide, number) {
 		refreshGuideChange();
 	});
 
-	// Color button
 	const colorButton = makeElement({
-		tag: 'button',
+		tag: 'input',
 		className: 'guide-color-button',
 		title: 'Change guide color',
-		attributes: { style: `background-color: ${guide.color};` },
+		attributes: {
+			type: 'color',
+			style: `background-color: ${guide.color};`,
+			value: rgbToHex(guide.color),
+		},
 	});
-	colorButton.addEventListener('click', () => {
+	colorButton.addEventListener('input', (event) => {
+		// Get new color
+		let rgb = parseColorString(event.target.value);
+		let rgbString = `rgb(${rgb.r},${rgb.g},${rgb.b})`;
+
+		// Row accents
+		colorButton.setAttribute('value', rgbToHex(rgbString));
+		colorButton.style.backgroundColor = rgbString;
+		viewCheckbox.style.accentColor = rgbString;
+		angleButton.querySelector('g').setAttribute('fill', rgbString);
+
+		// Update guide
 		const guide = getCurrentProject().settings.app.guides.custom[number];
-		guide.color = makeRandomSaturatedColor();
-		refreshGuideChange();
+		guide.color = rgbString;
+		getCurrentProjectEditor().editCanvas.redraw();
 	});
 
 	// Angle button
