@@ -2,6 +2,7 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, makeRandomSaturatedColor } from '../common/colors.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeIcon } from '../common/graphics.js';
+import { makeFancySlider } from '../controls/fancy-slider/fancy_slider.js';
 import {
 	Guide,
 	guideColorDark,
@@ -47,7 +48,10 @@ export function makePanel_Guides() {
 		addAsChildren(viewOptionsCard, [
 			makeElement(),
 			makeSingleLabel('Transparency'),
-			makeSingleInput(guides, 'systemTransparency', 'editCanvasView', 'input-number'),
+			makeFancySlider(guides.systemTransparency, (newValue) => {
+				guides.systemTransparency = newValue;
+				getCurrentProjectEditor().editCanvas.redraw();
+			}),
 			makeElement(),
 			makeSingleLabel('Show labels'),
 			makeDirectCheckbox(guides, 'systemShowLabels', refreshGuideChange),
@@ -67,7 +71,10 @@ export function makePanel_Guides() {
 		addAsChildren(viewOptionsCard, [
 			makeElement(),
 			makeSingleLabel('Transparency'),
-			makeSingleInput(guides, 'customTransparency', 'editCanvasView', 'input-number'),
+			makeFancySlider(guides.customTransparency, (newValue) => {
+				guides.customTransparency = newValue;
+				getCurrentProjectEditor().editCanvas.redraw();
+			}),
 			makeElement(),
 			makeSingleLabel('Show labels'),
 			makeDirectCheckbox(guides, 'customShowLabels', refreshGuideChange),
@@ -145,7 +152,10 @@ function makeSystemGuideRow(property, title, value = '0000', color) {
 
 	// Value
 	const valueDisplay = makeElement({ className: 'guide-system-value', content: value });
-	valueDisplay.setAttribute('title', `Guide line position\nThese are based on this font's key metrics,\nwhich you can edit on the Font Settings page.`)
+	valueDisplay.setAttribute(
+		'title',
+		`Guide line position\nThese are based on this font's key metrics,\nwhich you can edit on the Font Settings page.`
+	);
 
 	return [viewCheckbox, makeSingleLabel(title), angleDisplay, valueDisplay];
 }

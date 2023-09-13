@@ -7,7 +7,7 @@ export function updateProgressIndicator(message) {
 	const container = document.getElementById('progress-indicator__message');
 	const bar = document.getElementById('progress-indicator__bar');
 
-	degrees = (degrees+0.95) % 100;
+	degrees = (degrees + 0.95) % 100;
 	bar.style.backgroundPosition = `${degrees}%`;
 	if (message) container.innerHTML = message;
 }
@@ -22,7 +22,7 @@ export function makeProgressIndicator() {
 	});
 	let bar = makeElement({
 		tag: 'div',
-		id: 'progress-indicator__bar'
+		id: 'progress-indicator__bar',
 	});
 
 	addAsChildren(wrapper, [message, bar]);

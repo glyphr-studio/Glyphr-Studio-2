@@ -4,6 +4,7 @@
 **/
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
+import { makeFancySlider } from '../controls/fancy-slider/fancy_slider.js';
 import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window.js';
 import { makeDirectCheckbox, makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
 import { makeSystemGuidesCard } from './guides.js';
@@ -43,13 +44,10 @@ export function makePanel_ContextCharacters() {
 	charsInput.addEventListener('input', () => getCurrentProjectEditor().autoFitView());
 
 	let transparencyLabel = makeSingleLabel('Transparency');
-	let transparencyInput = makeSingleInput(
-		ccOptions,
-		'characterTransparency',
-		'editCanvasView',
-		'input-number'
-	);
-
+	let transparencyInput = makeFancySlider(ccOptions.characterTransparency, (newValue) => {
+		ccOptions.characterTransparency = newValue;
+		getCurrentProjectEditor().editCanvas.redraw();
+	});
 	charsInput.classList.add('spanAll');
 	addAsChildren(charsCard, [
 		description,
@@ -73,52 +71,18 @@ export function makePanel_ContextCharacters() {
 	let guidesCheckbox = makeDirectCheckbox(ccOptions, 'showGuides', refresh);
 
 	let guidesLabel = makeSingleLabel('Transparency');
-	let guidesInput = makeSingleInput(
-		ccOptions,
-		'guidesTransparency',
-		'editCanvasView',
-		'input-number'
-	);
+	let guidesInput = makeFancySlider(ccOptions.guidesTransparency, (newValue) => {
+		ccOptions.guidesTransparency = newValue;
+		getCurrentProjectEditor().editCanvas.redraw();
+	});
 
 	addAsChildren(optionsCard, [guidesCheckboxLabel, guidesCheckbox, guidesLabel, guidesInput]);
 
 	// log(`makePanel_ContextCharacters`, 'end');
-	return [charsCard, optionsCard, makeSystemGuidesCard(), makeLivePreviewPopOutCard(true)];
+	return [charsCard, optionsCard, makeLivePreviewPopOutCard(true)];
 }
 
 function refresh() {
 	const editor = getCurrentProjectEditor();
 	editor.editCanvas.redraw();
 }
-
-/*
-
-export function makeContextCharactersControls() {
-	// Context Glyphs
-	let ctxg = '<div class="contextglyphsarea">';
-	ctxg += '<div id="contextglyphsoptions">';
-	ctxg +=
-		'<strong>Context Glyphs</strong> are letters you can display around the glyph you are currently editing.<br><br>';
-	ctxg += checkUI(
-		'getCurrentProject().projectSettings.contextGlyphs.showGuides',
-		getCurrentProject().projectSettings.contextGlyphs.showGuides,
-		true
-	);
-	ctxg +=
-		'<label style="margin-left:10px; position:relative; top:-6px;" for="contextGlyphs.showGuides">show guides</label><br>';
-	ctxg +=
-		'glyph ' +
-		sliderUI('contextGlyphTransparency', 'contextGlyphTransparency_dropdown', true, false);
-	ctxg += '<br/>';
-	ctxg +=
-		'guide ' + sliderUI('systemGuideTransparency', 'systemGuideTransparency_dropdown', true, false);
-	ctxg += '</div>';
-	ctxg += '<input type="text" id="contextglyphsinput" oninput="updateContextCharacterss();" ';
-	ctxg += 'onblur="_UI.focusElement = false;" onmouseover="mouseoutcec();" ';
-	ctxg += 'title="context glyphs\ndisplay glyphs before or after the currently-selected glyph" ';
-	ctxg += 'value="' + getContextCharactersString() + '"/>';
-	ctxg +=
-		'<button id="contextglyphsoptionsbutton" onclick="showCtxGlyphsOptions();">&#x23F7;</button>';
-	ctxg += '</div>';
-}
-*/

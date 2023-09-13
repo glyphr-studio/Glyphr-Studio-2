@@ -1,0 +1,22 @@
+.fancy-slider__wrapper {
+	display: grid;
+	grid-template-columns: 1fr 40px;
+	width: 100%;
+}
+
+.fancy-slider__slider-readout {
+	display: inline-block;
+	font-family: monospace;
+	padding: 3px 0px 0px 10px;
+	width: 40px;
+	min-width: 30px;
+	text-align: right;
+	color: var(--enabled-restingLight-text);
+}
+
+.fancy-slider__bar{
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	accent-color: var(--purple-l45);
+}
