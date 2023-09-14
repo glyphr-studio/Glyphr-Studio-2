@@ -73,13 +73,14 @@ function computeSelectionStyle() {
 	return { thickness: thickness, accent: accent };
 }
 
-
 // --------------------------------------------------------------
 // Bounding Box
 // --------------------------------------------------------------
 
 export function drawBoundingBox(ctx, maxes, thickness, accent) {
 	// log(`drawBoundingBox`, 'start');
+	// log(`maxes.center.x: ${maxes.center.x}`);
+	// log(`maxes.center.y: ${maxes.center.y}`);
 	// log(`thickness: ${thickness}`);
 	// log(maxes);
 
@@ -96,7 +97,7 @@ export function drawBoundingBox(ctx, maxes, thickness, accent) {
 }
 
 function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
-	log(`drawBoundingBoxHandles`, 'start');
+	// log(`drawBoundingBoxHandles`, 'start');
 	let bb = getBoundingBoxAndHandleDimensions(maxes, thickness);
 
 	ctx.fillStyle = pointFill;
@@ -138,38 +139,37 @@ function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
 	// //Center Dot
 	// ctx.fillRect(bb.midX, bb.midY, ps, ps);
 	// ctx.strokeRect(bb.midX, bb.midY, ps, ps);
-	log(`drawBoundingBoxHandles`, 'end');
+	// log(`drawBoundingBoxHandles`, 'end');
 }
 
 function drawRotationAffordance(ctx, accent = accentBlue, thickness = 1) {
-	log(`drawRotationAffordance`, 'start');
-	const editor = getCurrentProjectEditor();
-	const msShapes = editor.multiSelect.shapes;
-	log(`accent: ${accent}`);
-	log(`thickness: ${thickness}`);
+	// log(`drawRotationAffordance`, 'start');
+	// const editor = getCurrentProjectEditor();
+	const ehd = eventHandlerData;
+	// log(`accent: ${accent}`);
+	// log(`thickness: ${thickness}`);
 
-	let center = msShapes.maxes.center;
-	log(`center.x: ${center.x}`);
-	log(`center.y: ${center.y}`);
+	let center = ehd.rotationStartCenter;
+	// log(`center.x: ${center.x}`);
+	// log(`center.y: ${center.y}`);
 
-	let startTopY = msShapes.maxes.yMax;
-	startTopY += rotateHandleHeight / editor.view.dz;
-	log(`startTopY: ${startTopY}`);
+	let startTopY = ehd.rotationStartMaxesTopY;
+	// log(`startTopY: ${startTopY}`);
 
-	let mx = eventHandlerData.mousePosition.x;
-	log(`mx: ${mx}`);
-	let my = eventHandlerData.mousePosition.y;
-	log(`my: ${my}`);
+	let mx = ehd.mousePosition.x;
+	// log(`mx: ${mx}`);
+	let my = ehd.mousePosition.y;
+	// log(`my: ${my}`);
 
 	let radians = calculateAngle({ x: cXsX(mx), y: cYsY(my) }, center);
-	log(`radians: ${radians}`);
+	// log(`radians: ${radians}`);
 
-	let snap = eventHandlerData.isShiftDown;
+	let snap = ehd.isShiftDown;
 	if (snap) radians = snapRadiansToDegrees(radians);
 	let rotateHandle = { x: center.x, y: startTopY };
-	rotate(rotateHandle, radians, center, snap);
-	rotate(rotateHandle, Math.PI / -2, center, snap);
-	log(`drag angle: ${round(radians, 2)}`);
+	rotate(rotateHandle, radians, center);
+	rotate(rotateHandle, Math.PI / -2, center);
+	// log(`drag angle: ${round(radians, 2)}`);
 
 	let counterclockwise = false;
 	if (Math.abs(radians) > Math.PI / 2) {
@@ -177,20 +177,24 @@ function drawRotationAffordance(ctx, accent = accentBlue, thickness = 1) {
 	}
 
 	// Convert things to Canvas System
-	rotateHandle.x = sXcX(rotateHandle.x);
-	rotateHandle.y = sYcY(rotateHandle.y);
-	center.x = sXcX(center.x);
-	center.y = sYcY(center.y);
+	let canvasHandle = {
+		x: sXcX(rotateHandle.x),
+		y: sYcY(rotateHandle.y),
+	};
+	let canvasCenter = {
+		x: sXcX(center.x),
+		y: sYcY(center.y),
+	};
 	startTopY = sYcY(startTopY);
-	let radius = calculateLength(center, rotateHandle);
+	let radius = calculateLength(canvasCenter, canvasHandle);
 
 	// Pizza Pie Sweep
 	ctx.fillStyle = accent;
 	ctx.strokeStyle = accent;
 	ctx.globalAlpha = 0.3;
 	ctx.beginPath();
-	ctx.moveTo(center.x, center.y);
-	ctx.arc(center.x, center.y, radius, Math.PI / -2, radians * -1, counterclockwise);
+	ctx.moveTo(canvasCenter.x, canvasCenter.y);
+	ctx.arc(canvasCenter.x, canvasCenter.y, radius, Math.PI / -2, radians * -1, counterclockwise);
 	ctx.closePath();
 	ctx.stroke();
 	ctx.fill();
@@ -199,23 +203,23 @@ function drawRotationAffordance(ctx, accent = accentBlue, thickness = 1) {
 	ctx.strokeStyle = accent;
 	ctx.fillStyle = pointFill;
 	ctx.lineWidth = thickness;
-	drawLine(ctx, { x: rotateHandle.x, y: rotateHandle.y }, { x: center.x, y: center.y });
+	drawLine(ctx, { x: canvasHandle.x, y: canvasHandle.y }, { x: canvasCenter.x, y: canvasCenter.y });
 	ctx.lineWidth = 1;
-	drawCircleHandle(ctx, rotateHandle);
+	drawCircleHandle(ctx, canvasHandle);
 
 	// readout
 	let readout = round(angleToNiceAngle(radians), 1);
 	if (counterclockwise) readout -= 360;
 	readout = round(readout, 1);
-	log(`readout: ${readout}`);
+	// log(`readout: ${readout}`);
 
-	ctx.font = '24px OpenSans';
+	ctx.font = '24px FiraGo, "Open Sans", sans-serif';
 	ctx.fillStyle = accent;
 	ctx.globalAlpha = 0.8;
-	ctx.fillText('' + readout + '°', center.x, startTopY - 24);
+	ctx.fillText('' + readout + '°', canvasCenter.x, startTopY - 24);
 
 	ctx.globalAlpha = 1;
-	log(`drawRotationAffordance`, 'end');
+	// log(`drawRotationAffordance`, 'end');
 }
 
 export function isOverBoundingBoxHandle(px, py, maxes) {
@@ -399,15 +403,15 @@ function drawSquareHandle(ctx, ul) {
 }
 
 function drawCircleHandle(ctx, center) {
-	log(`drawCircleHandle`, 'start');
-	log(`center.x: ${center.x}`);
-	log(`center.y: ${center.y}`);
+	// log(`drawCircleHandle`, 'start');
+	// log(`center.x: ${center.x}`);
+	// log(`center.y: ${center.y}`);
 	ctx.beginPath();
 	ctx.arc(center.x, center.y, canvasUIPointSize / 2, 0, Math.PI * 2, true);
 	ctx.closePath();
 	ctx.fill();
 	ctx.stroke();
-	log(`drawCircleHandle`, 'end');
+	// log(`drawCircleHandle`, 'end');
 }
 
 // --------------------------------------------------------------
@@ -659,9 +663,20 @@ export function debugDrawPoints(xyPoints = [], color = 'rgb(200,50,60)') {
 	// log('debugDrawPoints', 'start');
 	// log(xyPoints);
 	let ctx = getCurrentProjectEditor().editCanvas.ctx;
+	let oldFillStyle = ctx.fillStyle;
 	ctx.fillStyle = color;
+	let d = 10;
 	xyPoints.forEach((point) => {
-		ctx.fillRect(sXcX(point.x), sYcY(point.y), 5, 5);
+		// ctx.fillRect(sXcX(point.x), sYcY(point.y), 5, 5);
+		let x = sXcX(point.x);
+		let y = sYcY(point.y);
+		ctx.beginPath();
+		ctx.moveTo(x, y);
+		ctx.lineTo(x + d, y);
+		ctx.lineTo(x, y + d);
+		ctx.closePath();
+		ctx.fill();
 	});
+	ctx.fillStyle = oldFillStyle;
 	// log('debugDrawPoints', 'end');
 }

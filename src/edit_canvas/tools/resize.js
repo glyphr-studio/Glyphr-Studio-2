@@ -1,7 +1,8 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
-import { calculateAngle } from '../../common/functions.js';
+import { calculateAngle, clone } from '../../common/functions.js';
 import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
+import { debugDrawPoints } from '../draw_edit_affordances.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { checkForMouseOverHotspot, clickEmptySpace, resizePath } from '../events_mouse.js';
@@ -51,9 +52,11 @@ export class Tool_Resize {
 				if (ehd.handle === 'rotate') {
 					// log('mousedown - setting rotating = true');
 					this.rotating = true;
-					ehd.rotationCenter = msShapes.maxes.center;
-					ehd.rotationStartTopY = msShapes.maxes.yMax;
-					log(`ehd.rotationStartTopY: ${ehd.rotationStartTopY}`);
+					ehd.rotationStartCenter = clone(msShapes.maxes.center);
+					// log(`center.x: ${ehd.rotationStartCenter.x}`);
+					// log(`center.y: ${ehd.rotationStartCenter.y}`);
+					ehd.rotationStartMaxesTopY = cYsY(ehd.mousePosition.y);
+					// log(`ehd.rotationStartMaxesTopY: ${ehd.rotationStartMaxesTopY}`);
 					this.historyTitle = 'Rotated shape';
 				} else {
 					// log('clicked on ehd.handle: ' + ehd.handle);
@@ -134,13 +137,13 @@ export class Tool_Resize {
 				this.didStuff = true;
 			} else if (this.rotating) {
 				// log(`detected ROTATING`);
-
-				let a1 = calculateAngle(
-					{ x: cXsX(ehd.mousePosition.x), y: cYsY(ehd.mousePosition.y) },
-					ehd.rotationCenter
-				);
-				let a2 = calculateAngle({ x: cXsX(ehd.lastX), y: cYsY(ehd.lastY) }, ehd.rotationCenter);
-				msShapes.rotate(a1 - a2, ehd.rotationCenter);
+				let m = ehd.mousePosition;
+				let center = ehd.rotationStartCenter;
+				// log(`center.x: ${center.x}`);
+				// log(`center.y: ${center.y}`);
+				let a1 = calculateAngle({ x: cXsX(m.x), y: cYsY(m.y) }, center);
+				let a2 = calculateAngle({ x: cXsX(ehd.lastX), y: cYsY(ehd.lastY) }, center);
+				msShapes.rotate(a1 - a2, center);
 				if (singlePath) {
 					this.historyTitle = `Rotated shape: ${singlePath.name}`;
 				} else {
@@ -223,8 +226,8 @@ export class Tool_Resize {
 			ehd.lastY = -100;
 			ehd.firstX = -100;
 			ehd.firstY = -100;
-			ehd.rotationCenter = false;
-			ehd.rotationStartTopY = false;
+			ehd.rotationStartCenter = false;
+			ehd.rotationStartMaxesTopY = false;
 			if (ehd.undoQueueHasChanged) editor.history.addState(this.historyTitle);
 			ehd.undoQueueHasChanged = false;
 			// log(`Tool_Resize.mouseup`, 'end');
