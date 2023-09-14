@@ -29,9 +29,6 @@ let pointFill = '#FFF';
 let multiSelectThickness = 3;
 
 // --------------------------------------------------------------
-// Paths
-// --------------------------------------------------------------
-// --------------------------------------------------------------
 // Compute and Draw functions
 // --------------------------------------------------------------
 
@@ -40,27 +37,15 @@ export function computeAndDrawBoundingBox(ctx) {
 	let msShapes = editor.multiSelect.shapes;
 	if (msShapes.length < 1) return;
 	let maxes = msShapes.maxes;
-	let ehd = eventHandlerData;
-	ehd.rotationCenter = maxes.center;
-	ehd.rotationStartTopY = maxes.yMax + rotateHandleHeight / editor.view.dz;
 	let style = computeSelectionStyle();
-
 	drawBoundingBox(ctx, maxes, style.thickness, style.accent);
 }
 
 export function computeAndDrawRotationAffordance(ctx) {
-	log(`computeAndDrawRotationAffordance`, 'start');
-	const editor = getCurrentProjectEditor();
-	let ss;
-	if (editor.multiSelect.shapes.length === 1) {
-		ss = editor.multiSelect.shapes.members[0];
-		const accent = ss.objType === 'ComponentInstance' ? accentGreen : accentBlue;
-		drawRotationAffordance(ctx, accent, false);
-	} else if (editor.multiSelect.shapes.length > 1) {
-		ss = editor.multiSelect.shapes.virtualGlyph;
-		drawRotationAffordance(ctx, accentGray, multiSelectThickness);
-	}
-	log(`computeAndDrawRotationAffordance`, 'end');
+	// log(`computeAndDrawRotationAffordance`, 'start');
+	let style = computeSelectionStyle();
+	drawRotationAffordance(ctx, style.accent, style.thickness);
+	// log(`computeAndDrawRotationAffordance`, 'end');
 }
 
 export function computeAndDrawBoundingBoxHandles(ctx) {
@@ -69,7 +54,6 @@ export function computeAndDrawBoundingBoxHandles(ctx) {
 	if (msShapes.length < 1) return;
 	let maxes = msShapes.maxes;
 	let style = computeSelectionStyle();
-
 	drawBoundingBoxHandles(ctx, maxes, style.thickness, style.accent);
 }
 
@@ -89,42 +73,6 @@ function computeSelectionStyle() {
 	return { thickness: thickness, accent: accent };
 }
 
-// --------------------------------------------------------------
-// Paths
-// --------------------------------------------------------------
-export function drawSelectedPathOutline(ctx, view) {
-	// log(`drawSelectedPathOutline`, 'start');
-	const editor = getCurrentProjectEditor();
-	let msShapes = editor.multiSelect.shapes;
-	let selected = msShapes.members.length;
-	// log(`selected: ${selected}`);
-	let style = computeSelectionStyle();
-
-	if (selected > 0) {
-		ctx.beginPath();
-		msShapes.drawShapes(ctx, view);
-		ctx.closePath();
-
-		ctx.strokeStyle = style.accent;
-		ctx.lineWidth = style.thickness;
-		ctx.stroke();
-	}
-
-	// log(`drawSelectedPathOutline`, 'end');
-}
-
-export function drawNewBasicPath(ctx, path, view) {
-	ctx.beginPath();
-	drawShape(path, ctx, view);
-	ctx.closePath();
-
-	ctx.fillStyle = pathFill;
-	ctx.fill();
-	ctx.strokeStyle = accentBlue;
-	ctx.stroke();
-
-	drawBoundingBox(ctx, path.maxes, 1);
-}
 
 // --------------------------------------------------------------
 // Bounding Box
@@ -193,20 +141,26 @@ function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
 	log(`drawBoundingBoxHandles`, 'end');
 }
 
-function drawRotationAffordance(ctx, accent, thickness) {
+function drawRotationAffordance(ctx, accent = accentBlue, thickness = 1) {
 	log(`drawRotationAffordance`, 'start');
+	const editor = getCurrentProjectEditor();
+	const msShapes = editor.multiSelect.shapes;
+	log(`accent: ${accent}`);
+	log(`thickness: ${thickness}`);
 
-	accent = accent || accentBlue;
-	thickness = thickness || 1;
-	let center = clone(eventHandlerData.rotationCenter);
+	let center = msShapes.maxes.center;
 	log(`center.x: ${center.x}`);
 	log(`center.y: ${center.y}`);
-	let startTopY = eventHandlerData.rotationStartTopY;
+
+	let startTopY = msShapes.maxes.yMax;
+	startTopY += rotateHandleHeight / editor.view.dz;
 	log(`startTopY: ${startTopY}`);
+
 	let mx = eventHandlerData.mousePosition.x;
 	log(`mx: ${mx}`);
 	let my = eventHandlerData.mousePosition.y;
 	log(`my: ${my}`);
+
 	let radians = calculateAngle({ x: cXsX(mx), y: cYsY(my) }, center);
 	log(`radians: ${radians}`);
 
@@ -231,8 +185,8 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	let radius = calculateLength(center, rotateHandle);
 
 	// Pizza Pie Sweep
-	ctx.fillStyle = accent.l65;
-	ctx.strokeStyle = accent.l65;
+	ctx.fillStyle = accent;
+	ctx.strokeStyle = accent;
 	ctx.globalAlpha = 0.3;
 	ctx.beginPath();
 	ctx.moveTo(center.x, center.y);
@@ -242,7 +196,7 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	ctx.fill();
 
 	// rotate Handle
-	ctx.strokeStyle = accent.l65;
+	ctx.strokeStyle = accent;
 	ctx.fillStyle = pointFill;
 	ctx.lineWidth = thickness;
 	drawLine(ctx, { x: rotateHandle.x, y: rotateHandle.y }, { x: center.x, y: center.y });
@@ -256,46 +210,13 @@ function drawRotationAffordance(ctx, accent, thickness) {
 	log(`readout: ${readout}`);
 
 	ctx.font = '24px OpenSans';
-	ctx.fillStyle = accent.l65;
+	ctx.fillStyle = accent;
 	ctx.globalAlpha = 0.8;
 	ctx.fillText('' + readout + '°', center.x, startTopY - 24);
 
 	ctx.globalAlpha = 1;
 	log(`drawRotationAffordance`, 'end');
 }
-
-// --------------------------------------------------------------
-// Simple drawings
-// --------------------------------------------------------------
-
-function drawLine(ctx, p1, p2) {
-	ctx.beginPath();
-	ctx.moveTo(p1.x, p1.y);
-	ctx.lineTo(p2.x, p2.y);
-	ctx.closePath();
-	ctx.stroke();
-}
-
-function drawSquareHandle(ctx, ul) {
-	ctx.fillRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
-	ctx.strokeRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
-}
-
-function drawCircleHandle(ctx, center) {
-	log(`drawCircleHandle`, 'start');
-	log(`center.x: ${center.x}`);
-	log(`center.y: ${center.y}`);
-	ctx.beginPath();
-	ctx.arc(center.x, center.y, canvasUIPointSize / 2, 0, Math.PI * 2, true);
-	ctx.closePath();
-	ctx.fill();
-	ctx.stroke();
-	log(`drawCircleHandle`, 'end');
-}
-
-// --------------------------------------------------------------
-// Helpers
-// --------------------------------------------------------------
 
 export function isOverBoundingBoxHandle(px, py, maxes) {
 	// log(`isOverBoundingBoxHandle`, 'start');
@@ -421,6 +342,72 @@ function getBoundingBoxAndHandleDimensions(maxes, thickness) {
 	};
 
 	return result;
+}
+
+// --------------------------------------------------------------
+// Paths
+// --------------------------------------------------------------
+export function drawSelectedPathOutline(ctx, view) {
+	// log(`drawSelectedPathOutline`, 'start');
+	const editor = getCurrentProjectEditor();
+	let msShapes = editor.multiSelect.shapes;
+	let selected = msShapes.members.length;
+	// log(`selected: ${selected}`);
+	let style = computeSelectionStyle();
+
+	if (selected > 0) {
+		ctx.beginPath();
+		msShapes.drawShapes(ctx, view);
+		ctx.closePath();
+
+		ctx.strokeStyle = style.accent;
+		ctx.lineWidth = style.thickness;
+		ctx.stroke();
+	}
+
+	// log(`drawSelectedPathOutline`, 'end');
+}
+
+export function drawNewBasicPath(ctx, path, view) {
+	ctx.beginPath();
+	drawShape(path, ctx, view);
+	ctx.closePath();
+
+	ctx.fillStyle = pathFill;
+	ctx.fill();
+	ctx.strokeStyle = accentBlue;
+	ctx.stroke();
+
+	drawBoundingBox(ctx, path.maxes, 1);
+}
+
+// --------------------------------------------------------------
+// Simple drawings
+// --------------------------------------------------------------
+
+function drawLine(ctx, p1, p2) {
+	ctx.beginPath();
+	ctx.moveTo(p1.x, p1.y);
+	ctx.lineTo(p2.x, p2.y);
+	ctx.closePath();
+	ctx.stroke();
+}
+
+function drawSquareHandle(ctx, ul) {
+	ctx.fillRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
+	ctx.strokeRect(ul.x, ul.y, canvasUIPointSize, canvasUIPointSize);
+}
+
+function drawCircleHandle(ctx, center) {
+	log(`drawCircleHandle`, 'start');
+	log(`center.x: ${center.x}`);
+	log(`center.y: ${center.y}`);
+	ctx.beginPath();
+	ctx.arc(center.x, center.y, canvasUIPointSize / 2, 0, Math.PI * 2, true);
+	ctx.closePath();
+	ctx.fill();
+	ctx.stroke();
+	log(`drawCircleHandle`, 'end');
 }
 
 // --------------------------------------------------------------

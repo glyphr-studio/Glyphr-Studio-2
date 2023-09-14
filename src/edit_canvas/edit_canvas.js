@@ -136,7 +136,7 @@ export class EditCanvas extends HTMLElement {
 		// log('EditCanvas.redraw', 'end');
 
 		function redrawGlyphEdit() {
-			// log(`EditCanvas.redraw.redrawGlyphEdit`, 'start');
+			// log(`EditCanvas.redrawGlyphEdit`, 'start');
 			editor.autoFitIfViewIsDefault();
 			ctx.clearRect(0, 0, width, height);
 
@@ -159,13 +159,15 @@ export class EditCanvas extends HTMLElement {
 			// Draw selected shape
 			const editMode = editor.selectedTool;
 			// log(`editMode: ${editMode}`);
-
+			// log(`eventHandlerData.handle: ${eventHandlerData.handle}`);
 			if (editMode === 'resize') {
 				drawSelectedPathOutline(ctx, view);
-				computeAndDrawBoundingBox(ctx);
-				computeAndDrawBoundingBoxHandles(ctx);
-			} else if (editMode === 'rotate') {
-				computeAndDrawRotationAffordance(ctx);
+				if (eventHandlerData.handle === 'rotate') {
+					computeAndDrawRotationAffordance(ctx);
+				} else {
+					computeAndDrawBoundingBox(ctx);
+					computeAndDrawBoundingBoxHandles(ctx);
+				}
 			} else if (editMode === 'pathEdit') {
 				drawSelectedPathOutline(ctx, view);
 				if (eventHandlerData.isCtrlDown || editor.multiSelect.points.count > 1) {
@@ -191,7 +193,7 @@ export class EditCanvas extends HTMLElement {
 				if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
 				if (guidesSettings.customShowGuides) drawCustomGuidelines();
 			}
-			// log(`EditCanvas.redraw.redrawGlyphEdit`, 'end');
+			// log(`EditCanvas.redrawGlyphEdit`, 'end');
 		}
 
 		function redrawKernEdit() {

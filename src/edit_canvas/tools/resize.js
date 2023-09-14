@@ -26,7 +26,7 @@ export class Tool_Resize {
 		// Mouse Down
 		// --------------------------------------------------------------
 		this.mousedown = function () {
-			// log('Tool_Resize.mousedown', 'start');
+			// log(`Tool_Resize.mousedown`, 'start');
 			// log('x:y ' + eventHandlerData.mousePosition.x + ':' + eventHandlerData.mousePosition.y);
 			const editor = getCurrentProjectEditor();
 			const msShapes = editor.multiSelect.shapes;
@@ -52,7 +52,8 @@ export class Tool_Resize {
 					// log('mousedown - setting rotating = true');
 					this.rotating = true;
 					ehd.rotationCenter = msShapes.maxes.center;
-					ehd.rotationStartTopY = msShapes.maxes.yMax + editor.rotateHandleHeight / editor.view.dz;
+					ehd.rotationStartTopY = msShapes.maxes.yMax;
+					log(`ehd.rotationStartTopY: ${ehd.rotationStartTopY}`);
 					this.historyTitle = 'Rotated shape';
 				} else {
 					// log('clicked on ehd.handle: ' + ehd.handle);
@@ -87,6 +88,7 @@ export class Tool_Resize {
 
 				findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			}
+			// log(`Tool_Resize.mousedown`, 'end');
 		};
 
 		// --------------------------------------------------------------
@@ -105,7 +107,7 @@ export class Tool_Resize {
 			const singlePath = msShapes.singleton;
 
 			if (this.dragging) {
-				// log('Dragging');
+				// log('detected DRAGGING');
 				this.monitorForDeselect = false;
 				let dx = (ehd.mousePosition.x - ehd.lastX) / view.dz;
 				let dy = (ehd.lastY - ehd.mousePosition.y) / view.dz;
@@ -193,6 +195,7 @@ export class Tool_Resize {
 		// Mouse Up
 		// --------------------------------------------------------------
 		this.mouseup = function () {
+			// log(`Tool_Resize.mouseup`, 'start');
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 
@@ -224,6 +227,7 @@ export class Tool_Resize {
 			ehd.rotationStartTopY = false;
 			if (ehd.undoQueueHasChanged) editor.history.addState(this.historyTitle);
 			ehd.undoQueueHasChanged = false;
+			// log(`Tool_Resize.mouseup`, 'end');
 		};
 	}
 }
