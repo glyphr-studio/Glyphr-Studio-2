@@ -1,6 +1,11 @@
 import { GlyphElement } from './glyph_element.js';
 import { Coord } from './coord.js';
-import { calculateAngle, calculateLength, angleToNiceAngle, rotate } from '../common/functions.js';
+import {
+	calculateAngle,
+	calculateLength,
+	radiansToNiceAngle,
+	rotate,
+} from '../common/functions.js';
 
 /**
  * Glyph Element > ControlPoint
@@ -149,7 +154,7 @@ export class ControlPoint extends GlyphElement {
 	 * @returns {Number}
 	 */
 	get niceAngle() {
-		return angleToNiceAngle(this.angle);
+		return radiansToNiceAngle(this.angle);
 	}
 
 	/**

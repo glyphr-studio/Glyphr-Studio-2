@@ -244,12 +244,20 @@ function toggleHandleInputs(handle, show) {
 	if (group) group.style.display = show ? 'grid' : 'none';
 }
 
-export function makeSingleLabel(text) {
+export function makeSingleLabel(text, infoContent = false) {
+	let newText = makeElement({ content: text });
 	let newLabel = makeElement({
-		tag: 'label',
-		innerHTML: text,
+		tag: 'label'
 	});
-
+	newLabel.appendChild(newText);
+	if (infoContent) {
+		let newInfo = makeElement({
+			tag: 'info-bubble',
+			content: infoContent
+		});
+		newLabel.appendChild(newInfo);
+		newLabel.classList.add('info');
+	}
 	return newLabel;
 }
 

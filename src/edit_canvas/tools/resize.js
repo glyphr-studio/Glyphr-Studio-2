@@ -230,6 +230,7 @@ export class Tool_Resize {
 			ehd.rotationStartMaxesTopY = false;
 			if (ehd.undoQueueHasChanged) editor.history.addState(this.historyTitle);
 			ehd.undoQueueHasChanged = false;
+			editor.publish('currentItem', editor.selectedItem);
 			// log(`Tool_Resize.mouseup`, 'end');
 		};
 	}
