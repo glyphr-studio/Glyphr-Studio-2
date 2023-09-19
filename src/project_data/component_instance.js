@@ -501,13 +501,13 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set rotation(rotation) {
-		log(`ComponentInstance SET rotation`, 'start');
-		log(`PASSED rotation: ${rotation}`);
+		// log(`ComponentInstance SET rotation`, 'start');
+		// log(`PASSED rotation: ${rotation}`);
 		this._rotation = parseFloat(rotation);
 		if (isNaN(this._rotation)) this._rotation = 0;
 		this.changed();
-		log(`SET this._rotation: ${this._rotation}`);
-		log(`ComponentInstance SET rotation`, 'end');
+		// log(`SET this._rotation: ${this._rotation}`);
+		// log(`ComponentInstance SET rotation`, 'end');
 	}
 
 	/**
@@ -651,11 +651,11 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this component instance
 	 */
 	rotate(deltaRadians) {
-		log('ComponentInstance.rotate', 'start');
-		log(`deltaRadians: ${deltaRadians}`);
+		// log('ComponentInstance.rotate', 'start');
+		// log(`deltaRadians: ${deltaRadians}`);
 		const deltaDegrees = deg(deltaRadians) * -1;
-		log(`deltaDegrees: ${deltaDegrees}`);
-		log(`this.rotation WAS: ${this.rotation}`);
+		// log(`deltaDegrees: ${deltaDegrees}`);
+		// log(`this.rotation WAS: ${this.rotation}`);
 		this.rotation = this.rotation + deltaDegrees;
 		if (
 			this.resizeHeight === 0 &&
@@ -665,8 +665,8 @@ export class ComponentInstance extends GlyphElement {
 		) {
 			this.rotateFirst = true;
 		}
-		log(`this.rotation NOW: ${this.rotation}`);
-		log('ComponentInstance.rotate', 'end');
+		// log(`this.rotation NOW: ${this.rotation}`);
+		// log('ComponentInstance.rotate', 'end');
 		return this;
 	}
 }

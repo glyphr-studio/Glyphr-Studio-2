@@ -7,7 +7,7 @@ import {
 	isVal,
 	round,
 	hasNonValues,
-	xyPointsAreEqual,
+	xyPointsAreClose,
 } from '../common/functions.js';
 
 /**
@@ -685,7 +685,7 @@ export class Segment extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	containsStartPoint(pt, threshold = 1) {
-		return xyPointsAreEqual(this.getXYPoint(1), pt, threshold);
+		return xyPointsAreClose(this.getXYPoint(1), pt, threshold);
 	}
 	/**
 	 * Checks to see if an x/y value is the end of this Segment
@@ -694,7 +694,7 @@ export class Segment extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	containsEndPoint(pt, threshold = 1) {
-		return xyPointsAreEqual(this.getXYPoint(4), pt, threshold);
+		return xyPointsAreClose(this.getXYPoint(4), pt, threshold);
 	}
 
 	/**
@@ -766,7 +766,7 @@ export class Segment extends GlyphElement {
 		const s1c4 = this.getXYPoint(4);
 		const s2c1 = s2.getXYPoint(1);
 
-		return xyPointsAreEqual(s1c4, s2c1, threshold);
+		return xyPointsAreClose(s1c4, s2c1, threshold);
 	}
 
 	/**

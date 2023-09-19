@@ -11,7 +11,7 @@ import {
 	isVal,
 	hasNonValues,
 	duplicates,
-	xyPointsAreEqual,
+	xyPointsAreClose,
 	strSan,
 	json,
 } from '../common/functions.js';
@@ -682,7 +682,7 @@ export class Path extends GlyphElement {
 	 */
 	containsPoint(point, wantSecond) {
 		for (let pp = 0; pp < this.pathPoints.length; pp++) {
-			if (xyPointsAreEqual(point, this.pathPoints[pp].p, 0.01)) {
+			if (xyPointsAreClose(point, this.pathPoints[pp].p, 0.01)) {
 				if (wantSecond) wantSecond = false;
 				else return this.pathPoints[pp];
 			}

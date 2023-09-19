@@ -1,4 +1,5 @@
-import { xyPointsAreEqual } from '../common/functions';
+import { getCurrentProjectEditor } from '../app/main';
+import { xyPointsAreClose } from '../common/functions';
 import { canvasUIPointSize } from './draw_edit_affordances';
 
 /**
@@ -85,7 +86,7 @@ function isOverPathControlPoint(path, x, y, noHandles) {
 export function isOverFirstPoint(path, x, y) {
 	let pp = path.pathPoints[0];
 	if (!pp) return false;
-	return xyPointsAreEqual({ x: x, y: y }, pp.p.coord, canvasUIPointSize);
+	return xyPointsAreClose({ x: x, y: y }, pp.p.coord, canvasUIPointSize);
 }
 
 /**
@@ -97,22 +98,23 @@ export function isOverFirstPoint(path, x, y) {
  * @returns {Object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
  */
 function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
-	const targetSize = canvasUIPointSize;
+	const dz = getCurrentProjectEditor().view.dz;
+	const targetSize = canvasUIPointSize / dz;
 	const test = { x: x, y: y };
-	if (xyPointsAreEqual(pathPoint.p, test, targetSize)) {
+	if (xyPointsAreClose(pathPoint.p, test, targetSize)) {
 		// log(`isOverPathPointControlPoint - Returning p`);
 		return pathPoint.p;
 	}
 
 	if (pathPoint.h1.use && !noHandles) {
-		if (xyPointsAreEqual(pathPoint.h1, test, targetSize)) {
+		if (xyPointsAreClose(pathPoint.h1, test, targetSize)) {
 			// log(`isOverPathPointControlPoint - Returning h1`);
 			return pathPoint.h1;
 		}
 	}
 
 	if (pathPoint.h2.use && !noHandles) {
-		if (xyPointsAreEqual(pathPoint.h2, test, targetSize)) {
+		if (xyPointsAreClose(pathPoint.h2, test, targetSize)) {
 			// log(`isOverPathPointControlPoint - Returning h2`);
 			return pathPoint.h2;
 		}

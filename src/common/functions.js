@@ -146,8 +146,8 @@ export function areEqual(obj1, obj2) {
  * @param {Number} threshold - how close to compare positions
  * @returns {Boolean}
  */
-export function xyPointsAreEqual(c1, c2, threshold = 1) {
-	// log('xyPointsAreEqual', 'start');
+export function xyPointsAreClose(c1, c2, threshold = 1) {
+	// log('xyPointsAreClose', 'start');
 	// log('c1 ' + json(c1, true));
 	// log('c2 ' + json(c2, true));
 	// log('threshold ' + threshold);
@@ -157,19 +157,25 @@ export function xyPointsAreEqual(c1, c2, threshold = 1) {
 		return true;
 	}
 
-	const dx = Math.abs(c1.x - c2.x);
-	const dy = Math.abs(c1.y - c2.y);
-
-	// log('dx ' + dx + '\tdy ' + dy);
-
-	if (dx <= threshold && dy <= threshold) {
-		// log('below threshold match');
+	if (valuesAreClose(c1.x, c2.x, threshold) && valuesAreClose(c1.y, c2.y, threshold)) {
 		return true;
 	}
 
 	// log('not a match');
-	// log('xyPointsAreEqual', 'end');
+	// log('xyPointsAreClose', 'end');
 
+	return false;
+}
+
+/**
+ * Returns true if two values are within a threshold of each other
+ * @param {Number} v1 - First value
+ * @param {Number} v2 - Second value
+ * @param {Number} threshold - wiggle room
+ */
+export function valuesAreClose(v1, v2, threshold = 1) {
+	if (v1 === v2) return true;
+	if (Math.abs(v1 - v2) <= threshold) return true;
 	return false;
 }
 

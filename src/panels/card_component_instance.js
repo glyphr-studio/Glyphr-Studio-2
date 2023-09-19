@@ -114,10 +114,7 @@ export function makeCard_componentInstanceAttributes(componentInstance) {
 	]);
 
 	if (componentInstance.rotation !== 0) {
-		addAsChildren(componentInstanceCard, [
-			rotateFirstLabel,
-			rotateFirstInput,
-		]);
+		addAsChildren(componentInstanceCard, [rotateFirstLabel, rotateFirstInput]);
 	}
 	addAsChildren(componentInstanceCard, [rowPad(), linkLabel, linkRow]);
 	addAsChildren(componentInstanceCard, rowPad());

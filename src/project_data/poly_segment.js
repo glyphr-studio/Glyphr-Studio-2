@@ -2,7 +2,7 @@ import { GlyphElement } from './glyph_element.js';
 import { XYPoint } from './xy_point.js';
 import { Segment } from './segment.js';
 import { maxesOverlap } from './maxes.js';
-import { duplicates, clone, xyPointsAreEqual, round, numSan } from '../common/functions.js';
+import { duplicates, clone, xyPointsAreClose, round, numSan } from '../common/functions.js';
 
 /**
  * Glyph Element > Poly Segment
@@ -138,8 +138,8 @@ export class PolySegment extends GlyphElement {
 				h2: { coord: { x: seg2.p2x, y: seg2.p2y } },
 			};
 
-			if (xyPointsAreEqual(newPP.h1.coord, newPP.p.coord)) newPP.h1.use = false;
-			if (xyPointsAreEqual(newPP.h2.coord, newPP.p.coord)) newPP.h2.use = false;
+			if (xyPointsAreClose(newPP.h1.coord, newPP.p.coord)) newPP.h1.use = false;
+			if (xyPointsAreClose(newPP.h2.coord, newPP.p.coord)) newPP.h2.use = false;
 			if (seg1.lineType) newPP.h1.use = false;
 			if (seg2.lineType) newPP.h2.use = false;
 
@@ -154,7 +154,7 @@ export class PolySegment extends GlyphElement {
 		// Connect the first / last point if not already
 		const firstP = new XYPoint(segments[0].p1x, segments[0].p1y);
 		const lastP = new XYPoint(segments.at(-1).p4x, segments.at(-1).p4y);
-		if (!xyPointsAreEqual(firstP, lastP)) {
+		if (!xyPointsAreClose(firstP, lastP)) {
 			segments.push(
 				new Segment({
 					p1x: lastP.x,
@@ -391,12 +391,12 @@ export class PolySegment extends GlyphElement {
 		let currSeg;
 		for (let s = 0; s < this._segments.length; s++) {
 			currSeg = this._segments[s];
-			if (xyPointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(4))) {
+			if (xyPointsAreClose(currSeg.getXYPoint(1), currSeg.getXYPoint(4))) {
 				if (currSeg.lineType) {
 					currSeg.objType = 'LINE ZERO';
 				} else if (
-					xyPointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(2)) &&
-					xyPointsAreEqual(currSeg.getXYPoint(1), currSeg.getXYPoint(3))
+					xyPointsAreClose(currSeg.getXYPoint(1), currSeg.getXYPoint(2)) &&
+					xyPointsAreClose(currSeg.getXYPoint(1), currSeg.getXYPoint(3))
 				) {
 					currSeg.objType = 'ZERO';
 				}
@@ -685,15 +685,15 @@ export function segmentsAreEqual(s1, s2, threshold = 1) {
 	// log([s1, s2]);
 
 	if (
-		xyPointsAreEqual(s1.getXYPoint(1), s2.getXYPoint(1), threshold) &&
-		xyPointsAreEqual(s1.getXYPoint(4), s2.getXYPoint(4), threshold)
+		xyPointsAreClose(s1.getXYPoint(1), s2.getXYPoint(1), threshold) &&
+		xyPointsAreClose(s1.getXYPoint(4), s2.getXYPoint(4), threshold)
 	) {
 		if (s1.lineType && s2.lineType) {
 			// log('segmentsAreEqual - returning LINE true', 'end');
 			return true;
 		} else if (
-			xyPointsAreEqual(s1.getXYPoint(2), s2.getXYPoint(2), threshold) &&
-			xyPointsAreEqual(s1.getXYPoint(3), s2.getXYPoint(3), threshold)
+			xyPointsAreClose(s1.getXYPoint(2), s2.getXYPoint(2), threshold) &&
+			xyPointsAreClose(s1.getXYPoint(3), s2.getXYPoint(3), threshold)
 		) {
 			// log('segmentsAreEqual - returning FULLY true', 'end');
 			return true;

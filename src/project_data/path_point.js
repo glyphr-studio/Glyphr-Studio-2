@@ -1,6 +1,6 @@
 import { GlyphElement } from './glyph_element.js';
 import { ControlPoint } from './control_point.js';
-import { round, xyPointsAreEqual, isVal } from '../common/functions.js';
+import { round, xyPointsAreClose, isVal } from '../common/functions.js';
 
 /**
  * Glyph Element > Path Point
@@ -287,8 +287,8 @@ export class PathPoint extends GlyphElement {
 				if (
 					// (this.h2.x + this.p.x + this.h1.x) / 3 === this.p.x &&
 					// (this.h2.y + this.p.y + this.h1.y) / 3 === this.p.y
-					xyPointsAreEqual(this.p.coord, this.h1.coord) &&
-					xyPointsAreEqual(this.p.coord, this.h2.coord)
+					xyPointsAreClose(this.p.coord, this.h1.coord) &&
+					xyPointsAreClose(this.p.coord, this.h2.coord)
 				) {
 					// Handles and points are all in the same place
 					this.h2.x -= 200;
@@ -372,8 +372,8 @@ export class PathPoint extends GlyphElement {
 				if (
 					// 	(this.h2.x + this.p.x + this.h1.x) / 3 === this.p.x &&
 					// 	(this.h2.y + this.p.y + this.h1.y) / 3 === this.p.y
-					xyPointsAreEqual(this.p.coord, this.h1.coord) &&
-					xyPointsAreEqual(this.p.coord, this.h2.coord)
+					xyPointsAreClose(this.p.coord, this.h1.coord) &&
+					xyPointsAreClose(this.p.coord, this.h2.coord)
 				) {
 					// Handles and points are all in the same place
 					this.h2.x -= 300;
@@ -565,7 +565,7 @@ export class PathPoint extends GlyphElement {
 	 */
 	hasOverlappingHandle(hNumber) {
 		if (!this[hNumber] || !this[hNumber].coord) return false;
-		return xyPointsAreEqual(this[hNumber].coord, this.p.coord);
+		return xyPointsAreClose(this[hNumber].coord, this.p.coord);
 	}
 
 	/**
