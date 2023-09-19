@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import {
-	angleToNiceAngle,
+	radiansToNiceAngle,
 	calculateAngle,
 	calculateLength,
 	clone,
@@ -208,7 +208,7 @@ function drawRotationAffordance(ctx, accent = accentBlue, thickness = 1) {
 	drawCircleHandle(ctx, canvasHandle);
 
 	// readout
-	let readout = round(angleToNiceAngle(radians), 1);
+	let readout = round(radiansToNiceAngle(radians), 1);
 	if (counterclockwise) readout -= 360;
 	readout = round(readout, 1);
 	// log(`readout: ${readout}`);

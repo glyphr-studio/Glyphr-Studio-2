@@ -278,7 +278,7 @@ export function caseCamelToKebab(camel = '') {
 	let kebab = '';
 	for (let i = 0; i < camel.length; i++) {
 		let char = camel.charCodeAt(i);
-		if (char <= 0x5A && char >= 0x41) {
+		if (char <= 0x5a && char >= 0x41) {
 			kebab += '-';
 		}
 		kebab += camel.charAt(i).toLowerCase();
@@ -370,14 +370,14 @@ export function pause(ms = 10) {
 // Radians, top is positive bottom is negative
 // 3 o'clock is zero, 9 o'clock is pi
 
-// Glyphr Studio "Nice Angle" used in the UI
+// Glyphr Studio "Nice Angle" used in the UI and saved to project files.
 // 360 Degrees, 12 o'clock is zero, clockwise = positive
 
 /**
  * Calculates the angle (in radians) of a handle given a point
  * @param {XYPoint} handle - x/y point of handle
  * @param {XYPoint} point - x/y point of point
- * @returns {Number}
+ * @returns {Number} - Angle (in radians)
  */
 export function calculateAngle(handle, point = { x: 0, y: 0 }) {
 	let result = Math.atan2(handle.y - point.y, handle.x - point.x);
@@ -436,7 +436,7 @@ export function rotate(point, angle, about = { x: 0, y: 0 }) {
  * @returns {Number}
  */
 export function rad(deg) {
-	return ((deg * Math.PI) / 180) % Math.PI;
+	return (deg * Math.PI) / 180;
 }
 
 /**
@@ -445,7 +445,7 @@ export function rad(deg) {
  * @returns {Number}
  */
 export function deg(rad) {
-	return ((rad * 180) / Math.PI) % 360;
+	return (rad * 180) / Math.PI;
 }
 
 /**
@@ -463,17 +463,17 @@ export function snapRadiansToDegrees(radians) {
 /**
  * Given a standard JavaScript angle (radians), convert it to the angle
  * system we show the user (degrees, aka "Nice Angle")
- * @param {Number} angle - Angle in Radians
+ * @param {Number} rad - Angle in Radians
  * @returns {Number} - Angle in Degrees
  */
-export function angleToNiceAngle(angle) {
-	angle = deg(angle);
-	angle = 360 - angle;
-	angle -= 270;
-	angle = angle % 360;
-	if (angle < 0) angle += 360;
+export function radiansToNiceAngle(rad) {
+	let degrees = deg(rad);
+	degrees = 360 - degrees;
+	degrees -= 270;
+	degrees = degrees % 360;
+	if (degrees < 0) degrees += 360;
 
-	return angle;
+	return degrees;
 }
 
 /**
@@ -482,13 +482,13 @@ export function angleToNiceAngle(angle) {
  * @param {Number} angle - Angle in Degrees
  * @returns {Number} - Angle in Radians
  */
-export function niceAngleToAngle(angle) {
+export function niceAngleToRadians(angle) {
 	angle += 90;
 	angle = angle % 360;
 	if (angle < 180) angle = 360 - angle;
 	else angle *= -1;
 
-	angle = rad(angle);
+	let radians = rad(angle);
 
-	return angle;
+	return radians;
 }

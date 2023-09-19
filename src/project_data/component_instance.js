@@ -1,5 +1,5 @@
 import { GlyphElement } from './glyph_element.js';
-import { strSan, rad, deg } from '../common/functions.js';
+import { strSan, rad, deg, radiansToNiceAngle } from '../common/functions.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
 
 /**
@@ -168,13 +168,13 @@ export class ComponentInstance extends GlyphElement {
 		) {
 			// log('Modifying w ' + this.resizeWidth + ' h ' + this.resizeHeight);
 			// log('before maxes ' + json(newGlyph.maxes, true));
-			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
+			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation * -1), newGlyph.maxes.center);
 			if (this.isFlippedEW) newGlyph.flipEW();
 			if (this.isFlippedNS) newGlyph.flipNS();
 			newGlyph.updateGlyphPosition(this.translateX, this.translateY, true);
 			newGlyph.updateGlyphSize(this.resizeWidth, this.resizeHeight, false);
 			if (this.reverseWinding) newGlyph.reverseWinding();
-			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation, newGlyph.maxes.center));
+			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation * -1), newGlyph.maxes.center);
 			// log('afters maxes ' + json(newGlyph.maxes, true));
 		} else {
 			// log('Not changing, no deltas');
@@ -501,9 +501,13 @@ export class ComponentInstance extends GlyphElement {
 	 * @returns {ComponentInstance} - reference to this ComponentInstance
 	 */
 	set rotation(rotation) {
+		log(`ComponentInstance SET rotation`, 'start');
+		log(`PASSED rotation: ${rotation}`);
 		this._rotation = parseFloat(rotation);
 		if (isNaN(this._rotation)) this._rotation = 0;
 		this.changed();
+		log(`SET this._rotation: ${this._rotation}`);
+		log(`ComponentInstance SET rotation`, 'end');
 	}
 
 	/**
@@ -643,17 +647,16 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * rotate
-	 * @param {Number} angle - how much to rotate (radians)
+	 * @param {Number} deltaRadians - how much to rotate (radians)
 	 * @returns {ComponentInstance} - reference to this component instance
 	 */
-	rotate(angle) {
-		// log('ComponentInstance.rotate', 'start');
-		// log('passed ' + angle);
-		const degrees = deg(angle);
-		// log('deg ' + degrees);
-		// log('was ' + this.rotation);
-		// if(this.isFlippedEW || this.isFlippedNS) degrees *= -1;
-		this.rotation = (this.rotation + degrees) % 360;
+	rotate(deltaRadians) {
+		log('ComponentInstance.rotate', 'start');
+		log(`deltaRadians: ${deltaRadians}`);
+		const deltaDegrees = deg(deltaRadians) * -1;
+		log(`deltaDegrees: ${deltaDegrees}`);
+		log(`this.rotation WAS: ${this.rotation}`);
+		this.rotation = this.rotation + deltaDegrees;
 		if (
 			this.resizeHeight === 0 &&
 			this.resizeWidth === 0 &&
@@ -662,8 +665,8 @@ export class ComponentInstance extends GlyphElement {
 		) {
 			this.rotateFirst = true;
 		}
-		// log('is now ' + this.rotation);
-		// log('ComponentInstance.rotate', 'end');
+		log(`this.rotation NOW: ${this.rotation}`);
+		log('ComponentInstance.rotate', 'end');
 		return this;
 	}
 }
