@@ -1,4 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { valuesAreClose } from '../common/functions.js';
 import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';
@@ -130,10 +131,26 @@ export function resizePath() {
 
 	// Check that the path won't have negative dimensions
 	let maxes = selected.maxes;
-	// TODO if resizing handle goes past the opposite side,
-	// flip the shape and selected handle to keep going
-	if (mx >= maxes.xMax && maxes.xMax - maxes.xMin + dw < 2) dw = 0;
-	if (my >= maxes.yMax && maxes.yMax - maxes.yMin + dh < 2) dh = 0;
+
+	// Resizing width from the right
+	if (resizeCorner.includes('e')) {
+		if (mx + dw <= maxes.xMax) dw = 0;
+	}
+	// Resizing width from the left
+	if (resizeCorner.includes('w')) {
+		if (mx + dw >= maxes.xMin) dw = 0;
+		if (maxes.width + dw < 0) dw = maxes.width * -0.9;
+	}
+	// Resizing height from the top
+	if (resizeCorner.includes('n')) {
+		if (my <= maxes.yMax - dh) dh = 0;
+	}
+	// Resizing height from the bottom
+	if (resizeCorner.includes('s')) {
+		if (my + dh >= maxes.yMin) dh = 0;
+		if (maxes.height + dh < 0) dh = maxes.height * -0.9;
+	}
+
 	// log('dw/dh/rl: ' + dw + '/' + dh + '/' + rl);
 
 	// Resize the path
@@ -210,7 +227,8 @@ export function checkForMouseOverHotspot(x, y) {
 	if (isHotspotHere(x, y)) {
 		let hs = findAndUnderlineHotspot(x, y);
 		setCursor('pointer');
-		if (hs !== eventHandlerData.canvasHotspotHovering) editor.publish('editCanvasView', editor.view);
+		if (hs !== eventHandlerData.canvasHotspotHovering)
+			editor.publish('editCanvasView', editor.view);
 		eventHandlerData.canvasHotspotHovering = hs;
 	} else {
 		if (eventHandlerData.canvasHotspotHovering) editor.publish('editCanvasView', editor.view);

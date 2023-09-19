@@ -1,4 +1,4 @@
-import { duplicates, json, xyPointsAreEqual, round } from '../common/functions.js';
+import { duplicates, json, xyPointsAreClose, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { debugDrawPoints } from '../edit_canvas/draw_edit_affordances.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
@@ -125,7 +125,7 @@ export function combinePaths(paths = []) {
 			let test = allSegments[i].getXYPoint(1);
 			// log(`\t Testing ${test.x}, ${test.y}`);
 
-			if (xyPointsAreEqual(target, test, 1)) {
+			if (xyPointsAreClose(target, test, 1)) {
 				orderedSegments.push(allSegments.splice(i, 1)[0]);
 				// log(`\t Match found at ${test.x}, ${test.y}`);
 				// log(orderedSegments);
@@ -353,7 +353,7 @@ function findPathPointIntersections(path1, path2) {
 
 	for (let pp1 = 0; pp1 < path1.pathPoints.length; pp1++) {
 		for (let pp2 = 0; pp2 < path2.pathPoints.length; pp2++) {
-			if (xyPointsAreEqual(path1.pathPoints[pp1].p, path2.pathPoints[pp2].p, 0.01)) {
+			if (xyPointsAreClose(path1.pathPoints[pp1].p, path2.pathPoints[pp2].p, 0.01)) {
 				ix = '' + path1.pathPoints[pp1].p.x + '/' + path1.pathPoints[pp1].p.y;
 				// log(`found ${ix}`);
 
