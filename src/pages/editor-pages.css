@@ -26,6 +26,9 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 }
+#editor-page__panel span {
+	animation: var(--animate-slide-in);
+}
 
 .editor-page__nav-area {
 	display: grid;

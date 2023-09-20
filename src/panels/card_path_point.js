@@ -38,16 +38,19 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 			selectedPoint.type = 'symmetric';
 			editor.publish('currentPathPoint', selectedPoint);
 			editor.publish('currentControlPoint.p', selectedPoint.p);
+			// editor.publish('currentControlPoint', selectedPoint);
 		}),
 		makePointTypeButton('flat', selectedPoint.type === 'flat', () => {
 			selectedPoint.type = 'flat';
 			editor.publish('currentPathPoint', selectedPoint);
 			editor.publish('currentControlPoint.p', selectedPoint.p);
+			// editor.publish('currentControlPoint', selectedPoint);
 		}),
 		makePointTypeButton('corner', selectedPoint.type === 'corner', () => {
 			selectedPoint.type = 'corner';
 			editor.publish('currentPathPoint', selectedPoint);
 			editor.publish('currentControlPoint.p', selectedPoint.p);
+			// editor.publish('currentControlPoint', selectedPoint);
 		}),
 	]);
 	editor.subscribe({
@@ -62,45 +65,52 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 				document.getElementById(`pointTypeButton-corner`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-${changedItem.type}`).setAttribute('selected', '');
 			}
+			let h1Group = document.getElementById('h1Group');
+			h1Group.innerHTML = '';
+			addAsChildren(h1Group, makeHandleGroup('h1', changedItem));
+			let h2Group = document.getElementById('h2Group');
+			h2Group.innerHTML = '';
+			addAsChildren(h2Group, makeHandleGroup('h2', changedItem));
 			// log(`pointTypeButton subscriber callback`, 'end');
 		},
 	});
 
-	// -- Handle 1 -- //
-	// disable checkbox if not corner
-	let useH1Checkbox = makeSingleCheckbox(selectedPoint.h1, 'use', 'currentControlPoint.h1');
-	let useH1Label = makeElement({ className: 'pre-checkbox' });
-	addAsChildren(useH1Label, [useH1Checkbox, makeElement({ tag: 'h4', content: 'Use handle 1' })]);
-
-	let h1Group = makeElement({
-		id: 'h1InputGroup',
-		style: `display: ${selectedPoint.h1.use ? 'grid' : 'none'}`,
-	});
-	let h1Position = makeInputs_position(selectedPoint.h1, 'h1');
-	addAsChildren(h1Group, h1Position);
-
-	// -- Handle 2 -- //
-	// disable checkbox if not corner
-	let useH2Checkbox = makeSingleCheckbox(selectedPoint.h2, 'use', 'currentControlPoint.h2');
-	let useH2Label = makeElement({ className: 'pre-checkbox' });
-	addAsChildren(useH2Label, [useH2Checkbox, makeElement({ tag: 'h4', content: 'Use handle 2' })]);
-
-	let h2Group = makeElement({
-		id: 'h2InputGroup',
-		style: `display: ${selectedPoint.h2.use ? 'grid' : 'none'}`,
-	});
-	let h2Position = makeInputs_position(selectedPoint.h2, 'h2');
-	addAsChildren(h2Group, h2Position);
+	let h1Group = makeElement({ id: `h1Group`, className: 'span-all-columns' });
+	addAsChildren(h1Group, makeHandleGroup('h1', selectedPoint));
+	let h2Group = makeElement({ id: `h2Group`, className: 'span-all-columns' });
+	addAsChildren(h2Group, makeHandleGroup('h2', selectedPoint));
 
 	// Put it all together
 	addAsChildren(pathPointCard, pointPosition);
 	addAsChildren(pathPointCard, [pointTypeLabel, pointTypeWrapper]);
-	addAsChildren(pathPointCard, [useH1Label, h1Group, useH2Label, h2Group]);
+	addAsChildren(pathPointCard, [h1Group, h2Group]);
 	addAsChildren(pathPointCard, rowPad());
 	addAsChildren(pathPointCard, makeActionsArea_PathPoint());
 
 	// log(`makeCard_pathPointAttributes`, 'end');
 	return pathPointCard;
+}
+
+function makeHandleGroup(h = 'h1', selectedPoint) {
+	// Checkbox and title
+	let useHandleLabel = makeElement({ className: 'pre-checkbox' });
+	let useHandleCheckbox = makeSingleCheckbox(selectedPoint[h], 'use', `currentControlPoint.${h}`);
+	if (selectedPoint.type !== 'corner') useHandleCheckbox.setAttribute('disabled', '');
+	addAsChildren(useHandleLabel, [
+		useHandleCheckbox,
+		makeElement({ tag: 'h4', content: `Use handle ${h.charAt(1)}` }),
+	]);
+
+	// Inputs
+	let handleInputGroup = makeElement({
+		id: `${h}InputGroup`,
+		style: `display: ${selectedPoint[h].use ? 'grid' : 'none'}`,
+	});
+	let hPosition = makeInputs_position(selectedPoint[h], h);
+	addAsChildren(handleInputGroup, hPosition);
+
+	// Put it all together
+	return [useHandleLabel, handleInputGroup];
 }
 
 export function makeCard_multiSelectPathPointAttributes(virtualShape) {
@@ -112,9 +122,6 @@ export function makeCard_multiSelectPathPointAttributes(virtualShape) {
 		innerHTML: `<h3>${virtualShape.pathPoints.length} selected path points</h3>`,
 	});
 
-	// TODO Multi-Select Path Points size/position
-	// addAsChildren(multiPathPointCard, makeInputs_position(virtualShape));
-	// addAsChildren(multiPathPointCard, makeInputs_size(virtualShape));
 	addAsChildren(multiPathPointCard, makeActionsArea_PathPoint());
 
 	// log(`makeCard_multiSelectPathPointAttributes`, 'end');

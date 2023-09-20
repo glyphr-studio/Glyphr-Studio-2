@@ -65,14 +65,10 @@ export function refreshPanel() {
 	// log(`refreshPanel`, 'start');
 	let panelArea = document.querySelector('#editor-page__panel');
 	if (panelArea) {
-		// panelArea.style.opacity = '0';
 		let newContent = makePanel();
 		// log(newContent);
 		panelArea.innerHTML = '';
 		panelArea.appendChild(newContent);
-		// window.setTimeout(() => {
-		// 	panelArea.style.opacity = '1';
-		// }, 50);
 	}
 	// log(`refreshPanel`, 'end');
 }
