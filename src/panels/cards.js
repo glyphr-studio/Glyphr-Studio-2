@@ -6,20 +6,21 @@ import { round } from '../common/functions.js';
 // Common attributes stuff
 // --------------------------------------------------------------
 
-export function makeInputs_position(item, labelPrefix = '') {
+export function makeInputs_position(item, labelPrefix = '', additionalTopics = []) {
 	// TODO transform origin
 	// log(`makeInputs_position`, 'start');
 	// log(`x: ${round(x, 3)}`);
 	// log(`y: ${round(y, 3)}`);
 	let thisTopic = `current${item.objType}`;
 	if (item.type) thisTopic += `.${item.type}`;
+	let topics = [thisTopic].concat(additionalTopics);
 
 	if (labelPrefix) labelPrefix += ':&ensp;';
 	// Label + inputs
 	let label = makeElement({ tag: 'label', innerHTML: `${labelPrefix}x${dimSplit()}y` });
 	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
-	let xInput = makeSingleInput(item, 'x', thisTopic, 'input-number');
-	let yInput = makeSingleInput(item, 'y', thisTopic, 'input-number');
+	let xInput = makeSingleInput(item, 'x', topics, 'input-number');
+	let yInput = makeSingleInput(item, 'y', topics, 'input-number');
 
 	// Put double input together
 	doubleInput.appendChild(xInput);
@@ -75,10 +76,12 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 	// log(`thisTopic: ${thisTopic}`);
 	// log(`tagName: ${tagName}`);
 
+	let topics = Array.isArray(thisTopic) ? thisTopic : [thisTopic];
+
 	let newInput = makeElement({
 		tag: tagName,
 		className: `singleInput-${property}`,
-		attributes: { 'pubsub-topic': thisTopic },
+		attributes: { 'pubsub-topic': topics[0]},
 	});
 
 	let value = tagName === 'input' ? item[property] : round(item[property], 3);
@@ -95,7 +98,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 				item.unlock(property);
 			}
 			const editor = getCurrentProjectEditor();
-			editor.publish(thisTopic, item);
+			topics.forEach(topic => editor.publish(topic, item))
 			// log(`makeSingleInput LOCK event`, 'end');
 		});
 	}
@@ -142,13 +145,12 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 		}
 
 		if (item.objType === 'VirtualGlyph') {
-			editor.publish(thisTopic, editor.selectedItem);
+			topics.forEach(topic => editor.publish(topic, editor.selectedItem));
 		} else if (item.objType === 'VirtualShape') {
-			editor.publish(thisTopic, editor.selectedItem);
+			topics.forEach(topic => editor.publish(topic, editor.selectedItem));
 		} else {
 			// log(`thisTopic: ${thisTopic}`);
-
-			editor.publish(thisTopic, item);
+			topics.forEach(topic => editor.publish(topic, item));
 		}
 		// log(`makeSingleInput.changeHappened event`, 'end');
 	}
@@ -161,11 +163,11 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 	}
 
 	getCurrentProjectEditor().subscribe({
-		topic: thisTopic,
-		subscriberID: `attributesPanel.${thisTopic}.${property}`,
+		topic: topics,
+		subscriberID: `attributesPanel.${topics[0]}.${property}`,
 		callback: (changedItem) => {
 			// log(`SINGLE INPUT SUBSCRIPTION CALLBACK`, 'start');
-			// log(`attributesPanel.${thisTopic}.${property}`);
+			// log(`attributesPanel.${topics[0]}.${property}`);
 			// log(changedItem);
 			// log(`property: ${property}`);
 			// log(`changedItem.property: ${changedItem[property]}`);

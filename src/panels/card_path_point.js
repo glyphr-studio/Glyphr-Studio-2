@@ -36,21 +36,17 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 	addAsChildren(pointTypeWrapper, [
 		makePointTypeButton('symmetric', selectedPoint.type === 'symmetric', () => {
 			selectedPoint.type = 'symmetric';
+			selectedPoint.makeSymmetric();
 			editor.publish('currentPathPoint', selectedPoint);
-			editor.publish('currentControlPoint.p', selectedPoint.p);
-			// editor.publish('currentControlPoint', selectedPoint);
 		}),
 		makePointTypeButton('flat', selectedPoint.type === 'flat', () => {
 			selectedPoint.type = 'flat';
+			selectedPoint.makeFlat();
 			editor.publish('currentPathPoint', selectedPoint);
-			editor.publish('currentControlPoint.p', selectedPoint.p);
-			// editor.publish('currentControlPoint', selectedPoint);
 		}),
 		makePointTypeButton('corner', selectedPoint.type === 'corner', () => {
 			selectedPoint.type = 'corner';
 			editor.publish('currentPathPoint', selectedPoint);
-			editor.publish('currentControlPoint.p', selectedPoint.p);
-			// editor.publish('currentControlPoint', selectedPoint);
 		}),
 	]);
 	editor.subscribe({
@@ -59,18 +55,18 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 		callback: (changedItem) => {
 			// log(`pointTypeButton subscriber callback`, 'start');
 			// log(changedItem);
+
+			// Update Point Type
 			if (document.getElementById(`pointTypeButton-${changedItem.type}`)) {
 				document.getElementById(`pointTypeButton-symmetric`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-flat`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-corner`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-${changedItem.type}`).setAttribute('selected', '');
 			}
-			let h1Group = document.getElementById('h1Group');
-			h1Group.innerHTML = '';
-			addAsChildren(h1Group, makeHandleGroup('h1', changedItem));
-			let h2Group = document.getElementById('h2Group');
-			h2Group.innerHTML = '';
-			addAsChildren(h2Group, makeHandleGroup('h2', changedItem));
+
+			updateHandleGroup('h1', changedItem);
+			updateHandleGroup('h2', changedItem);
+
 			// log(`pointTypeButton subscriber callback`, 'end');
 		},
 	});
@@ -109,10 +105,44 @@ function makeHandleGroup(h = 'h1', selectedPoint) {
 	let hPosition = makeInputs_position(selectedPoint[h], h);
 	addAsChildren(handleInputGroup, hPosition);
 
+	let otherHandle = h === 'h1' ? 'h2' : 'h1';
+	getCurrentProjectEditor().subscribe({
+		topic: `currentControlPoint.${h}`,
+		subscriberID: `controlPointInput.${h}`,
+		callback: (changedControlPoint) => {
+			let parent = changedControlPoint.parent;
+			if (parent.type === 'symmetric') parent.makeSymmetric(h);
+			if (parent.type === 'flat') parent.makeFlat(h);
+			updateHandleGroup(otherHandle, parent);
+		},
+	});
+
 	// Put it all together
 	return [useHandleLabel, handleInputGroup];
 }
 
+function updateHandleGroup(h = 'h1', changedItem) {
+	// log(`updateHandleGroup`, 'start');
+	// log(`h: ${h}`);
+	// log(changedItem);
+
+	let handleGroup = document.getElementById(`${h}Group`);
+	let handleUse = changedItem[h].use;
+	let handleCheckbox = handleGroup.querySelector('input');
+	handleCheckbox.removeAttribute('checked');
+	handleCheckbox.removeAttribute('disabled');
+	if (handleUse) {
+		handleCheckbox.setAttribute('checked', '');
+		if (changedItem.type !== 'corner') handleCheckbox.setAttribute('disabled', '');
+		let handleInputGroup = document.getElementById(`${h}InputGroup`);
+		handleInputGroup.style.display = 'grid';
+		let handleInputGroupX = handleInputGroup.querySelectorAll('input-number')[0];
+		handleInputGroupX.setAttribute('value', changedItem[h].x);
+		let handleInputGroupY = handleInputGroup.querySelectorAll('input-number')[1];
+		handleInputGroupY.setAttribute('value', changedItem[h].y);
+	}
+	// log(`updateHandleGroup`, 'end');
+}
 export function makeCard_multiSelectPathPointAttributes(virtualShape) {
 	// log(`makeCard_multiSelectPathPointAttributes`, 'start');
 	// log(virtualShape);
