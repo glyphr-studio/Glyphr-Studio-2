@@ -244,9 +244,10 @@ ul li {
 :root {
 	--global-focus-style: 1px dashed var(--purple-l50);
 	--global-transition: all 80ms ease-in-out;
-	--animate-fade-in-slide-down: fade-slide-in 180ms ease-in;
-	--animate-fade-in: fade-in 180ms ease-in;
-	--animate-fade-out: fade-out 180ms ease-out;
+	--animate-fade-in-slide-down: 180ms ease-in fade-slide-in;
+	--animate-fade-in: 180ms ease-in fade-in;
+	--animate-fade-out: 180ms ease-out fade-out;
+	--animate-fade-update: 140ms ease-in fade-in-update;
 
 	--l1-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
 	--l2-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
@@ -263,6 +264,16 @@ ul li {
 	to {
 		opacity: 1;
 		transform: translateY(0px);
+	}
+}
+
+@keyframes fade-in-update {
+	from {
+		opacity: 0.6;
+	}
+
+	to {
+		opacity: 1;
 	}
 }
 

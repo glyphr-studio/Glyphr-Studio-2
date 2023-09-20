@@ -14,7 +14,7 @@
 	background-color: var(--offWhite);
 	border-radius: 4px;
 	box-shadow: var(--l2-shadow);
-	animation: var(--animate-fade-in-slide-down);
+	animation: var(--animate-fade-update);
 }
 
 .more-padding {

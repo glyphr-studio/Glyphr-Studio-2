@@ -58,7 +58,7 @@ export function makePanel_GlyphAttributes() {
 	const linksCard = makeCard_glyphLinks(editor.selectedItem);
 	if (linksCard) content.push(linksCard);
 
-	// Subscriber
+	// Subscribers
 	editor.subscribe({
 		topic: 'whichPathIsSelected',
 		subscriberID: 'attributesPanel',
