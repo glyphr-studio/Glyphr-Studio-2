@@ -23,6 +23,7 @@ import { addComponent } from '../pages/components.js';
 import { countItems, trim } from '../common/functions.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
 import { showAddEditKernGroupDialog } from '../pages/kerning.js';
+import { refreshPanel } from './panels.js';
 
 // --------------------------------------------------------------
 // Define action button data
@@ -158,6 +159,7 @@ export function getActionData(name) {
 						`Rounded all the path point and handle position values in this glyph`
 					);
 					editor.publish('currentItem', editor.selectedItem);
+					refreshPanel();
 					showToast('Values were rounded for all path points in this glyph.');
 				},
 			},
@@ -277,6 +279,7 @@ export function getActionData(name) {
 						`Rounded all the path point and handle position values in this shape`
 					);
 					editor.publish('currentItem', editor.selectedItem);
+					refreshPanel();
 					showToast('Values were rounded for all the path points in the selected paths.');
 				},
 			},
@@ -522,6 +525,7 @@ export function getActionData(name) {
 						`Rounded path point and handle position values for ${editor.multiSelect.points.length} path point(s)`
 					);
 					editor.publish('currentItem', editor.selectedItem);
+					refreshPanel();
 					showToast('Values were rounded for the selected path points.');
 				},
 			},
