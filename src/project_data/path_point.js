@@ -609,10 +609,14 @@ export class PathPoint extends GlyphElement {
 	roundAll(precision = 9) {
 		this.p.x = round(this.p.x, precision);
 		this.p.y = round(this.p.y, precision);
+		let h1use = this.h1.use;
 		this.h1.x = round(this.h1.x, precision);
 		this.h1.y = round(this.h1.y, precision);
+		this.h1.use = h1use;
+		let h2use = this.h2.use;
 		this.h2.x = round(this.h2.x, precision);
 		this.h2.y = round(this.h2.y, precision);
+		this.h2.use = h2use;
 
 		return this;
 	}
