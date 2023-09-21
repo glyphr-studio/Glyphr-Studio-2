@@ -83,7 +83,7 @@
 .editor-page__edit-canvas-wrapper,
 .live-preview-page__canvas-wrapper {
 	border: 1px solid var(--blue-l85);
-	background-color: var(--offWhite);
+	background-color: white;
 	grid-column: 3;
 	border-radius: 4px;
 	width: 100%;

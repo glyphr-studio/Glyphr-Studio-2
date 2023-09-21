@@ -1,11 +1,6 @@
 import { makeElement } from '../common/dom.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import {
-	accentColors,
-	getColorFromRGBA,
-	shiftColor,
-	transparencyToAlpha,
-} from '../common/colors.js';
+import { accentColors, getColorFromRGBA, transparencyToAlpha } from '../common/colors.js';
 import { eventHandlerData, initEventHandlers } from './events.js';
 import { drawGlyph } from '../display_canvas/draw_paths.js';
 import {
@@ -17,12 +12,8 @@ import {
 	drawNewBasicPath,
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
-import { clone, isVal, makeCrisp, round } from '../common/functions.js';
-import {
-	drawContextCharacters,
-	drawCharacterKernExtra,
-	shouldDrawContextCharacters,
-} from './context_characters.js';
+import { clone } from '../common/functions.js';
+import { drawContextCharacters, drawCharacterKernExtra } from './context_characters.js';
 import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
 
 /**
@@ -140,16 +131,11 @@ export class EditCanvas extends HTMLElement {
 			editor.autoFitIfViewIsDefault();
 			ctx.clearRect(0, 0, width, height);
 
-			const contextCharacterSettings = editor.project.settings.app.contextCharacters;
-			// Context characters
-			if (contextCharacterSettings.showCharacters) {
-				drawContextCharacters(ctx);
-			}
-
 			// Guides
 			const guidesSettings = editor.project.settings.app.guides;
 			if (!guidesSettings.drawGuidesOnTop) {
-				if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
+				// if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
+				if (guidesSettings.systemShowGuides) drawSystemGuidelines();
 				if (guidesSettings.customShowGuides) drawCustomGuidelines();
 			}
 
@@ -190,9 +176,17 @@ export class EditCanvas extends HTMLElement {
 
 			// Guides (if draw on top)
 			if (guidesSettings.drawGuidesOnTop) {
-				if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
+				// if (guidesSettings.systemShowGuides) drawSystemGuidelines(!shouldDrawContextCharacters());
+				if (guidesSettings.systemShowGuides) drawSystemGuidelines();
 				if (guidesSettings.customShowGuides) drawCustomGuidelines();
 			}
+
+			const contextCharacterSettings = editor.project.settings.app.contextCharacters;
+			// Context characters
+			if (contextCharacterSettings.showCharacters) {
+				drawContextCharacters(ctx);
+			}
+
 			// log(`EditCanvas.redrawGlyphEdit`, 'end');
 		}
 
@@ -319,8 +313,6 @@ export class EditCanvas extends HTMLElement {
 
 		function setSystemGuideColor(level = 'medium', alpha) {
 			let fill;
-
-
 			if (level === 'light') {
 				fill = getColorFromRGBA(guideColorLight, alpha);
 			} else if (level === 'medium') {
@@ -380,7 +372,8 @@ export class EditCanvas extends HTMLElement {
 
 function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view) {
 	// log(`drawEmHorizontalLine`, 'start');
-	const pad = 50 * view.dz;
+	let pad = 50 * view.dz;
+	// if (shouldDrawContextCharacters()) pad = 0;
 	let lineWidth = advanceWidth * view.dz;
 	let lineX = view.dx - pad;
 	let lineY = sYcY(emY);
@@ -397,7 +390,7 @@ function drawEmHorizontalLine(ctx, emY = 0, advanceWidth, view) {
 export function drawEmVerticalLine(ctx, emX = 0, view) {
 	// log(`drawEmVerticalLine`, 'start');
 	const project = getCurrentProject();
-	const pad = 50 * view.dz;
+	let pad = 50 * view.dz;
 	const lineTopY = sYcY(project.settings.font.ascent, view) - pad;
 	let lineX = sXcX(emX);
 	lineX = Math.floor(lineX);
