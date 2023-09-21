@@ -11,6 +11,7 @@ import { drawGlyph } from '../display_canvas/draw_paths';
 import { Maxes } from '../project_data/maxes';
 import { setCursor } from './cursors';
 import { cXsX, drawEmVerticalLine, sXcX, sYcY } from './edit_canvas';
+import { guideColorDark } from '../project_editor/guide';
 
 const contextCharacters = {
 	chars: '',
@@ -257,12 +258,7 @@ function drawContextCharacterLeftLineExtras(ctx, char, block) {
 	const editor = getCurrentProjectEditor();
 	// Draw baseline from first char to selected item
 	if (editor.project.settings.app.contextCharacters.showGuides) {
-		drawBaseline(
-			ctx,
-			char.view.dx - 20,
-			char.view.dy,
-			editor.view.dx - char.view.dx + 20
-		);
+		drawBaseline(ctx, char.view.dx - 20, char.view.dy, editor.view.dx - char.view.dx + 20);
 	}
 
 	// Kern data
@@ -320,7 +316,10 @@ function drawContextCharacterRightLineExtras(ctx, char, block) {
 }
 
 function drawBaseline(ctx, x, y, width) {
-	ctx.fillStyle = accentColors.gray.l90;
+	// ctx.fillStyle = accentColors.gray.l90;
+	const transparency = getCurrentProject().settings.app.contextCharacters.guidesTransparency;
+	const alpha = transparencyToAlpha(transparency);
+	ctx.fillStyle = getColorFromRGBA(guideColorDark, alpha);
 	ctx.fillRect(x, Math.ceil(y), width, 1);
 }
 
@@ -399,7 +398,7 @@ function drawCharacterNameExtra(ctx, text, currentX, advanceWidth, color, hotspo
 
 	// Item label
 	ctx.font = '12px Tahoma, Verdana, sans-serif';
-	ctx.strokeStyle = uiColors.offWhite;
+	ctx.strokeStyle = 'white';
 	ctx.lineWidth = 4;
 	ctx.strokeText(text, textX, textY);
 	ctx.fillStyle = color;
