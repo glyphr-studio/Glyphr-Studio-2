@@ -6,7 +6,7 @@ import { json, clone, makeRandomID } from '../common/functions.js';
 export class GlyphElement {
 	/** Yay! */
 	constructor() {
-		// this.__ID = makeRandomID();
+		this.__ID = makeRandomID();
 	}
 
 	/**
@@ -43,6 +43,10 @@ export class GlyphElement {
 		} else {
 			console.warn(`No Parent! \n ${path}`);
 		}
+	}
+
+	get ident() {
+		return this.__ID || '';
 	}
 
 	/**

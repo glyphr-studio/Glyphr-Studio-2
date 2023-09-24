@@ -49,9 +49,9 @@ class MultiSelect {
 	}
 
 	select(obj) {
-		// log('MultiSelect.select', 'start');
+		log('MultiSelect.select', 'start');
 		// log(`this.members.length: ${this.members.length}`);
-
+		log(`obj.objType: ${obj.objType}`);
 		// log(`obj.__ID: ${obj.__ID}`);
 
 		if (this.isSelectable(obj)) {
@@ -64,7 +64,7 @@ class MultiSelect {
 			this.clear();
 		}
 		// log(this.members);
-		// log('MultiSelect.select', 'end');
+		log('MultiSelect.select', 'end');
 	}
 
 	add(obj) {
@@ -152,15 +152,19 @@ class MultiSelect {
 export class MultiSelectPoints extends MultiSelect {
 	constructor() {
 		super();
+		// window.ciTest('vShape constructor 1');
 		this._virtualShape = new Path({
 			name: 'Multi-selected Path Points',
 			objType: 'VirtualShape',
 		});
+		// window.ciTest('vShape constructor 2');
 	}
 
 	get virtualShape() {
+		log(`MultiSelectPoints GET virtualShape`, 'start');
 		this._virtualShape._pathPoints = this.members;
 		this._virtualShape.changed();
+		log(`MultiSelectPoints GET virtualShape`, 'end');
 		return this._virtualShape;
 	}
 
@@ -320,12 +324,24 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	get virtualGlyph() {
+		// log(`MultiSelectShapes GET virtualGlyph`, 'start');
 		// needs to be _shapes, otherwise Glyph.shapes setter
 		// imports copies of the new array values.
 		this._virtualGlyph._shapes = this.members;
 		this._virtualGlyph.changed();
 
+		// log(`MultiSelectShapes GET virtualGlyph`, 'end');
 		return this._virtualGlyph;
+	}
+
+	get allPathPoints() {
+		let result = [];
+		this.members.forEach(shape => {
+			if (shape?.pathPoints) {
+				result = result.concat(shape.pathPoints);
+			}
+		});
+		return result;
 	}
 
 	publishChanges(topic = 'whichPathIsSelected') {

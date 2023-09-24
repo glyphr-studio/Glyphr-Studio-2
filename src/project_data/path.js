@@ -86,6 +86,7 @@ export class Path extends GlyphElement {
 		});
 
 		if (verbose) re.objType = this.objType;
+		if (!verbose && this.__ID) delete this.__ID;
 
 		return re;
 	}

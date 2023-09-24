@@ -43,7 +43,7 @@ export function generateNewID(obj, base) {
 export function makeRandomID() {
 	let glyphs = ['💖', '🦧', '🐆', '✅', '🐋', '😈', '🦑'];
 	let result = '';
-	for (let i = 0; i < 4; i++) {
+	for (let i = 0; i < 3; i++) {
 		result += glyphs[Math.floor(Math.random() * glyphs.length)];
 	}
 
@@ -148,16 +148,19 @@ export function areEqual(obj1, obj2) {
  */
 export function xyPointsAreClose(c1, c2, threshold = 1) {
 	// log('xyPointsAreClose', 'start');
-	// log('c1 ' + json(c1, true));
-	// log('c2 ' + json(c2, true));
+	// log(`c1: ${c1.x}, ${c1.y}`);
+	// log(`c2: ${c2.x}, ${c2.y}`);
 	// log('threshold ' + threshold);
 
 	if (c1.x === c2.x && c1.y === c2.y) {
 		// log('exact match');
+		// log('xyPointsAreClose', 'end');
 		return true;
 	}
 
 	if (valuesAreClose(c1.x, c2.x, threshold) && valuesAreClose(c1.y, c2.y, threshold)) {
+		// log(`close match`);
+		// log('xyPointsAreClose', 'end');
 		return true;
 	}
 
