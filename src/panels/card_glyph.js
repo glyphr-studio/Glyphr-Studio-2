@@ -21,10 +21,11 @@ export function makeCard_glyphAttributes(glyph) {
 	// log(`makeCard_glyphAttributes`, 'start');
 	// log(`glyph.id: ${glyph.id}`);
 
+	// `ident` is a unique ID per object for debugging
 	let glyphCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>${glyph.displayType}</h3>`,
+		innerHTML: `<h3>${glyph.displayType} ${glyph.ident}</h3>`,
 	});
 
 	let advanceWidthLabel = makeSingleLabel('advance width');

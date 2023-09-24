@@ -88,8 +88,7 @@ export class Glyph extends GlyphElement {
 			if (this.objType === 'Glyph') delete re.name;
 			delete re.objType;
 		}
-
-		if (this.__ID) re.__ID = this.__ID;
+		if (!verbose && this.__ID) delete this.__ID;
 
 		return re;
 	}

@@ -57,6 +57,7 @@ export class ControlPoint extends GlyphElement {
 
 		if (verbose) re.objType = this.objType;
 		if (this.type === 'p') delete re.use;
+		if (!verbose && this.__ID) delete this.__ID;
 
 		return re;
 	}

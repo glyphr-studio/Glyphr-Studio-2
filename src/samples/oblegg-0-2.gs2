@@ -24,7 +24,11 @@
         "systemShowGuides": true,
         "systemShowLabels": false,
         "systemTransparency": 70,
-        "systemGuides": ["baseline", "leftSide", "rightSide"],
+        "systemGuides": [
+          "baseline",
+          "leftSide",
+          "rightSide"
+        ],
         "customShowGuides": true,
         "customShowLabels": false,
         "customTransparency": 70,
@@ -36,8 +40,11 @@
         "showGuides": true,
         "guidesTransparency": 70
       },
+      "saveLivePreviews": true,
       "livePreviews": [
-        {},
+        {
+          "text": "the five boxing wizards jump quickly"
+        },
         {
           "fontSize": 128,
           "text": "pack my box with five dozen liquor waffle coffins."
@@ -2368,6 +2375,9 @@
     "glyph-0x4F": {
       "id": "glyph-0x4F",
       "advanceWidth": 1259.53,
+      "usedIn": [
+        "glyph-0x30"
+      ],
       "shapes": [
         {
           "name": "Path 1",
@@ -9248,6 +9258,16 @@
     "glyph-0x20": {
       "id": "glyph-0x20",
       "advanceWidth": 400
+    },
+    "glyph-0x30": {
+      "id": "glyph-0x30",
+      "advanceWidth": 1060,
+      "shapes": [
+        {
+          "link": "glyph-0x4F",
+          "resizeWidth": -200
+        }
+      ]
     }
   },
   "ligatures": {

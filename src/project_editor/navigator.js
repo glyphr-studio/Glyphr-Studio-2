@@ -129,7 +129,6 @@ export class Navigator {
 		} else {
 			console.warn(`Navigation failed: app__wrapper could not be found.`);
 		}
-
 		log(`Navigator.navigate`, 'end');
 	}
 

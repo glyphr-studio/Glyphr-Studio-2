@@ -17,11 +17,12 @@ import {
 export function makeCard_pathPointAttributes(selectedPoint) {
 	// log(`makeCard_pathPointAttributes`, 'start');
 	const editor = getCurrentProjectEditor();
-	// POINT
+
+	// `ident` is a unique ID per object for debugging
 	let pathPointCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: `<h3>Path point ${selectedPoint.pointNumber + 1}</h3>`,
+		innerHTML: `<h3>Path point ${selectedPoint.pointNumber + 1} ${selectedPoint.ident}</h3>`,
 	});
 
 	// let pointNumLabel = makeSingleLabel('Selected path point');

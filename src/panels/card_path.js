@@ -19,10 +19,11 @@ export function makeCard_pathAttributes(path) {
 	// log(`makeCard_pathAttributes`, 'start');
 	// log(path);
 
+	// `ident` is a unique ID per object for debugging
 	let pathCard = makeElement({
 		tag: 'div',
 		className: 'panel__card',
-		innerHTML: '<h3>Path</h3>',
+		innerHTML: `<h3>Path ${path.ident}</h3>`,
 	});
 
 	// Path name

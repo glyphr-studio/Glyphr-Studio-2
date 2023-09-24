@@ -932,10 +932,12 @@ function showDialogChooseOtherItem(type) {
 		innerHTML: '<h2>Choose another glyph</h2>',
 	});
 	let onClick = false;
+	let clickedID = false;
 
 	if (type === 'copyPaths') {
 		content.innerHTML += `All the paths from the glyph you select will be copied and pasted into this glyph.<br><br>`;
 		onClick = (itemID) => {
+			clickedID = itemID;
 			const editor = getCurrentProjectEditor();
 			const otherItem = editor.project.getItem(itemID);
 			const thisItem = editor.selectedItem;
@@ -950,8 +952,10 @@ function showDialogChooseOtherItem(type) {
 	}
 
 	if (type === 'addAsComponentInstance') {
+		log(`Dialog addAsComponentInstance`, 'start');
 		content.innerHTML += `The glyph you select will be treated as a root component, and added to this glyph as a component instance.<br><br>`;
 		onClick = (itemID) => {
+			clickedID = itemID;
 			const editor = getCurrentProjectEditor();
 			let otherItem = editor.project.getItem(itemID);
 			if (!otherItem) {
@@ -969,12 +973,13 @@ function showDialogChooseOtherItem(type) {
 			} else {
 				closeEveryTypeOfDialog();
 				showError(`
-					Cannot add ${thisItem.name} to ${otherItem.name} as a component instance.
-					<br>
-					This is usually because adding the link would create a circular reference.
-					`);
+				Cannot add ${thisItem.name} to ${otherItem.name} as a component instance.
+				<br>
+				This is usually because adding the link would create a circular reference.
+				`);
 			}
 		};
+		log(`Dialog addAsComponentInstance`, 'end');
 	}
 
 	if (type === 'linkAsComponent') {
