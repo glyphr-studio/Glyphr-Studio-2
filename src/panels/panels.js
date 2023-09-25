@@ -20,7 +20,6 @@ export function makePanel() {
 	// log(`panel: ${panel}`);
 
 	let content = makeElement();
-
 	if (panel === 'Attributes') {
 		editor.unsubscribe({ idToRemove: 'layersPanel' });
 		editor.unsubscribe({ idToRemove: 'historyPanel' });

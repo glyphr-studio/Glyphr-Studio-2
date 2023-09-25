@@ -52,6 +52,8 @@ export class Glyph extends GlyphElement {
 		this.contextCharacters = contextCharacters;
 
 		this.objType = objType;
+		// log(`this.id: ${this.id}`);
+		// log(`this.ident: ${this.ident}`);
 		// log(this.print());
 		// log(`Glyph.constructor`, 'end');
 	}

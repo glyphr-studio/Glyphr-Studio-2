@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { Glyph } from '../project_data/glyph.js';
@@ -49,9 +49,9 @@ class MultiSelect {
 	}
 
 	select(obj) {
-		log('MultiSelect.select', 'start');
+		// log('MultiSelect.select', 'start');
 		// log(`this.members.length: ${this.members.length}`);
-		log(`obj.objType: ${obj.objType}`);
+		// log(`obj.objType: ${obj.objType}`);
 		// log(`obj.__ID: ${obj.__ID}`);
 
 		if (this.isSelectable(obj)) {
@@ -64,7 +64,7 @@ class MultiSelect {
 			this.clear();
 		}
 		// log(this.members);
-		log('MultiSelect.select', 'end');
+		// log('MultiSelect.select', 'end');
 	}
 
 	add(obj) {
@@ -140,8 +140,15 @@ class MultiSelect {
 	}
 
 	get singleton() {
-		if (this.members.length === 1) return this.members[0];
-		else return false;
+		let result = false;
+		// log(`MultiSelect GET singleton`, 'start');
+		if (this.members.length === 1) {
+			result = this.members[0];
+			// log(`result.objType: ${result.objType}`);
+		}
+
+		// log(`MultiSelect GET singleton`, 'end');
+		return result;
 	}
 }
 
@@ -152,19 +159,17 @@ class MultiSelect {
 export class MultiSelectPoints extends MultiSelect {
 	constructor() {
 		super();
-		// window.ciTest('vShape constructor 1');
 		this._virtualShape = new Path({
 			name: 'Multi-selected Path Points',
 			objType: 'VirtualShape',
 		});
-		// window.ciTest('vShape constructor 2');
 	}
 
 	get virtualShape() {
-		log(`MultiSelectPoints GET virtualShape`, 'start');
+		// log(`MultiSelectPoints GET virtualShape`, 'start');
 		this._virtualShape._pathPoints = this.members;
 		this._virtualShape.changed();
-		log(`MultiSelectPoints GET virtualShape`, 'end');
+		// log(`MultiSelectPoints GET virtualShape`, 'end');
 		return this._virtualShape;
 	}
 
@@ -354,6 +359,7 @@ export class MultiSelectShapes extends MultiSelect {
 			member.changed();
 			glyphChanged(member.parent);
 		});
+		// this.virtualGlyph.changed();
 	}
 
 	get maxes() {
@@ -391,7 +397,7 @@ export class MultiSelectShapes extends MultiSelect {
 
 	combine() {
 		// log('MultiSelectShapes.combine', 'start');
-		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph.clone());
+		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph);
 		const combinedShapes = combineAllPaths(newGlyph.shapes);
 
 		// log(`combinedShapes`);

@@ -33,24 +33,24 @@ export function makePanel_GlyphAttributes() {
 	}
 
 	// Shapes
-	let selShapes = editor.multiSelect.shapes;
-	if (selShapes.length === 1) {
+	let msShapes = editor.multiSelect.shapes;
+	if (msShapes.length === 1) {
 		// One shape selected
 		// log('One shape selected');
-		// log(selShapes.singleton);
-		if (selShapes.singleton.objType === 'ComponentInstance') {
+		// log(msShapes.singleton);
+		if (msShapes.singleton.objType === 'ComponentInstance') {
 			// component selected
 			// log("...Component selected");
-			content.push(makeCard_componentInstanceAttributes(selShapes.singleton));
+			content.push(makeCard_componentInstanceAttributes(msShapes.singleton));
 		} else {
 			// regular path selected
 			// log("...Regular path selected");
-			content.push(makeCard_pathAttributes(selShapes.singleton));
+			content.push(makeCard_pathAttributes(msShapes.singleton));
 		}
-	} else if (selShapes.length > 1 && selPoints.length === 0) {
+	} else if (msShapes.length > 1 && selPoints.length === 0) {
 		// Many shapes selected
 		// log('More than one shape selected');
-		content.push(makeCard_multiSelectPathAttributes(selShapes.virtualGlyph));
+		content.push(makeCard_multiSelectPathAttributes(msShapes.virtualGlyph));
 	}
 
 	// Glyph

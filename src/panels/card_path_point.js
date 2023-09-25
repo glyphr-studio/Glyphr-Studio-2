@@ -4,7 +4,6 @@ import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeActionsArea_PathPoint } from './actions.js';
 import {
 	makeInputs_position,
-	makeInputs_size,
 	makeSingleCheckbox,
 	makeSingleLabel,
 	rowPad,
@@ -128,19 +127,21 @@ function updateHandleGroup(h = 'h1', changedItem) {
 	// log(changedItem);
 
 	let handleGroup = document.getElementById(`${h}Group`);
-	let handleUse = changedItem[h].use;
-	let handleCheckbox = handleGroup.querySelector('input');
-	handleCheckbox.removeAttribute('checked');
-	handleCheckbox.removeAttribute('disabled');
-	if (handleUse) {
-		handleCheckbox.setAttribute('checked', '');
-		if (changedItem.type !== 'corner') handleCheckbox.setAttribute('disabled', '');
-		let handleInputGroup = document.getElementById(`${h}InputGroup`);
-		handleInputGroup.style.display = 'grid';
-		let handleInputGroupX = handleInputGroup.querySelectorAll('input-number')[0];
-		handleInputGroupX.setAttribute('value', changedItem[h].x);
-		let handleInputGroupY = handleInputGroup.querySelectorAll('input-number')[1];
-		handleInputGroupY.setAttribute('value', changedItem[h].y);
+	if (handleGroup) {
+		let handleUse = changedItem[h].use;
+		let handleCheckbox = handleGroup.querySelector('input');
+		handleCheckbox.removeAttribute('checked');
+		handleCheckbox.removeAttribute('disabled');
+		if (handleUse) {
+			handleCheckbox.setAttribute('checked', '');
+			if (changedItem.type !== 'corner') handleCheckbox.setAttribute('disabled', '');
+			let handleInputGroup = document.getElementById(`${h}InputGroup`);
+			handleInputGroup.style.display = 'grid';
+			let handleInputGroupX = handleInputGroup.querySelectorAll('input-number')[0];
+			handleInputGroupX.setAttribute('value', changedItem[h].x);
+			let handleInputGroupY = handleInputGroup.querySelectorAll('input-number')[1];
+			handleInputGroupY.setAttribute('value', changedItem[h].y);
+		}
 	}
 	// log(`updateHandleGroup`, 'end');
 }

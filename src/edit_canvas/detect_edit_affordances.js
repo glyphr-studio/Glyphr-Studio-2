@@ -3,19 +3,19 @@ import { xyPointsAreClose } from '../common/functions';
 import { canvasUIPointSize } from './draw_edit_affordances';
 
 export function isOverOneOfThese(pathPoints = [], x, y) {
-	log(`isOverOneOfThese`, 'start');
-	log(`x: ${x}`);
-	log(`y: ${y}`);
-	log(pathPoints);
+	// log(`isOverOneOfThese`, 'start');
+	// log(`x: ${x}`);
+	// log(`y: ${y}`);
+	// log(pathPoints);
 	for (let i = 0; i < pathPoints.length; i++) {
 		let result = isOverPathPointControlPoint(pathPoints[i], x, y);
 		if (result) {
-			log(`RETURNING RESULT`);
-			log(`isOverOneOfThese`, 'end');
+			// log(`RETURNING RESULT`);
+			// log(`isOverOneOfThese`, 'end');
 			return result;
 		}
 	}
-	log(`isOverOneOfThese`, 'end');
+	// log(`isOverOneOfThese`, 'end');
 	return false;
 }
 
@@ -33,15 +33,15 @@ export function isOverControlPoint(item, x, y, noHandles) {
 	// log(item);
 	let result = false;
 	if (item) {
-		if (item.objType === 'Glyph' || item.objType === 'VirtualGlyph') {
+		if (Array.isArray(item)) {
+			result = isOverOneOfThese(item, x, y, noHandles);
+		} else if (item.objType === 'Glyph' || item.objType === 'VirtualGlyph') {
 			if (item.shapes && item.shapes.length) {
 				result = isOverGlyphControlPoint(item, x, y, noHandles);
 			}
-		}
-		if (item.objType === 'Path') {
+		} else if (item.objType === 'Path') {
 			result = isOverPathControlPoint(item, x, y, noHandles);
-		}
-		if (item.objType === 'PathPoint') {
+		} else if (item.objType === 'PathPoint') {
 			result = isOverPathPointControlPoint(item, x, y, noHandles);
 		}
 	}
@@ -58,7 +58,7 @@ export function isOverControlPoint(item, x, y, noHandles) {
  * @param {Boolean} noHandles - only check for Path Points, not Handles
  * @returns {Boolean}
  */
-function isOverGlyphControlPoint(glyph, x, y, noHandles) {
+export function isOverGlyphControlPoint(glyph, x, y, noHandles) {
 	// log(`isOverGlyphControlPoint`, 'start');
 	let re = false;
 	for (let s = 0; s < glyph.shapes.length; s++) {
@@ -125,8 +125,7 @@ export function isOverFirstPoint(path, x, y) {
  * @returns {Object} - 'type' = h1/h2/p, 'point' = reference to this PathPoint
  */
 function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false) {
-	log(`isOverPathPointControlPoint`, 'start');
-	log(`pathPoint.__ID: ${pathPoint.__ID}`);
+	// log(`isOverPathPointControlPoint`, 'start');
 	const dz = getCurrentProjectEditor().view.dz;
 	const targetSize = canvasUIPointSize / dz;
 	const test = { x: x, y: y };
@@ -137,8 +136,8 @@ function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false)
 		// log(`isOverPathPointControlPoint - Returning p`);
 		result = {
 			pathPoint: pathPoint,
-			controlPoint: 'p'
-		}
+			controlPoint: 'p',
+		};
 	}
 
 	// log(pathPoint.h1);
@@ -147,7 +146,7 @@ function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false)
 			// log(`isOverPathPointControlPoint - Returning h1`);
 			result = {
 				pathPoint: pathPoint,
-				controlPoint: 'h1'
+				controlPoint: 'h1',
 			};
 		}
 	}
@@ -158,12 +157,12 @@ function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false)
 			// log(`isOverPathPointControlPoint - Returning h2`);
 			result = {
 				pathPoint: pathPoint,
-				controlPoint: 'h2'
+				controlPoint: 'h2',
 			};
 		}
 	}
 
-	log(result);
-	log(`isOverPathPointControlPoint`, 'end');
+	// log(result);
+	// log(`isOverPathPointControlPoint`, 'end');
 	return result;
 }

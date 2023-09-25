@@ -1,9 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import {
 	decToHex,
-	normalizePrefixes,
 	validateAsHex,
-	validateDecOrHexSuffix,
 } from '../common/character_ids';
 import { addAsChildren, makeElement } from '../common/dom';
 import { showToast } from '../controls/dialogs/dialogs';
@@ -20,7 +18,6 @@ import { Path } from '../project_data/path';
 import {
 	glyphChanged,
 	insertComponentInstance,
-	makeGlyphWithResolvedLinks,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator';

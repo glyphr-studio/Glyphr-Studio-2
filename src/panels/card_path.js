@@ -2,10 +2,8 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeActionsArea_Path } from './actions.js';
 import {
-	dimSplit,
 	makeInputs_position,
 	makeInputs_size,
-	makeSingleCheckbox,
 	makeSingleInput,
 	makeSingleLabel,
 	rowPad,
