@@ -130,7 +130,6 @@ function populateExportList() {
 	for (const key of Object.keys(project.glyphs)) {
 		let glyphNumber = parseInt(key.substring(6));
 		if (glyphNumber) {
-			// item = project.glyphs[key].clone();
 			item = project.glyphs[key];
 			exportGlyphs.push({ xg: item, xc: glyphNumber });
 		} else {
@@ -148,7 +147,6 @@ function populateExportList() {
 	for (const key of Object.keys(project.ligatures)) {
 		// log(project.ligatures[key]);
 		if (project.ligatures[key].gsub.length > 1) {
-			// item = project.ligatures[key].clone();
 			item = project.ligatures[key];
 			// log(`\t adding ligature "${item.name}"`);
 			exportLigatures.push({ xg: item, xc: key, chars: item.chars });
