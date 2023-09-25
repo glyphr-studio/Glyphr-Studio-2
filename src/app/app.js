@@ -392,21 +392,3 @@ export function makeEmailContent() {
 
 	return con;
 }
-
-
-
-// --------------------------------------------------------------
-// Global debug functions
-// --------------------------------------------------------------
-
-window.ciTest = function (name = '') {
-	if (window._GlyphrStudioApp.projectEditors[0]) {
-		const editor = window._GlyphrStudioApp.projectEditors[0];
-		console.log(`\n|||${name}||||||||||||||||||||||||||||||||||||||||||||||||`);
-		console.log('glyph-41 pathPoints');
-		console.table(editor.project.glyphs['glyph-0x41'].shapes[0].pathPoints);
-		console.log('multiSelect points');
-		console.table(editor.multiSelect.points.members);
-		console.log(`|||${name}||||||||||||||||||||||||||||||||||||||||||||||||\n`);
-	}
-}

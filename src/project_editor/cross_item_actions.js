@@ -1,4 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { clone } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { deleteSelectedPaths } from '../panels/actions.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
@@ -19,7 +20,7 @@ import { Path } from '../project_data/path.js';
 export function glyphChanged(glyph) {
 	// log(`glyphChanged`, 'start');
 	// log(glyph);
-	if (glyph.cache) glyph.cache = {};
+	if (glyph?.cache) glyph.cache = {};
 	glyph.recalculateGlyphMaxes();
 	const project = getCurrentProject();
 	glyph.usedIn = glyph.usedIn || [];
@@ -134,9 +135,20 @@ export function insertComponentInstance(sourceID, destinationID, updateAdvanceWi
  */
 export function makeGlyphWithResolvedLinks(sourceGlyph) {
 	// log(`makeGlyphWithResolvedLinks`, 'start');
+	// log(`\n⮟sourceGlyph⮟`);
 	// log(sourceGlyph);
+	let detachedGlyph = new Glyph(sourceGlyph);
+	detachedGlyph.id = 'glyph-with-resolved-links';
+	detachedGlyph.name = 'Glyph with resolved links';
+	delete detachedGlyph.__ID;
+	delete detachedGlyph.parent;
+	delete detachedGlyph.usedIn;
+	// log(`\n⮟detachedGlyph⮟`);
+	// log(detachedGlyph);
 	let newPaths = [];
-	sourceGlyph.shapes.forEach((shape) => {
+	detachedGlyph.shapes.forEach((shape) => {
+		delete shape.__ID;
+		delete shape.parent;
 		if (shape.objType === 'Path') {
 			newPaths.push(new Path(shape));
 		} else if (shape.objType === 'ComponentInstance') {
@@ -147,9 +159,11 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 			}
 		}
 	});
-	const result = new Glyph(sourceGlyph);
+	const result = new Glyph(detachedGlyph);
 	result.shapes = newPaths;
 	result.parent = getCurrentProject();
+	// log(`\n⮟result⮟`);
+	// log(result);
 	// log(`makeGlyphWithResolvedLinks`, 'end');
 	return result;
 }

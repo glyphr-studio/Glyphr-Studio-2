@@ -114,6 +114,7 @@ export class Navigator {
 		if (wrapper) {
 			try {
 				const pageContent = this.makePageContent(fadePageIn);
+
 				wrapper.innerHTML = '';
 				if (this.page !== 'Open project') {
 					wrapper.appendChild(makeAppTopBar());
@@ -124,7 +125,7 @@ export class Navigator {
 			} catch (error) {
 				console.warn(`Navigation failed:`, error);
 				showAppErrorPage(`Oops, navigation failed!`, error);
-				log(getCurrentProject());
+				// log(getCurrentProject());
 			}
 		} else {
 			console.warn(`Navigation failed: app__wrapper could not be found.`);
@@ -160,9 +161,9 @@ export class Navigator {
 			// pageContent = this.pageContents[this.page];
 
 			window.removeEventListener('resize', livePreviewPageWindowResize);
+
 			pageContent = this.tableOfContents[this.page].pageMaker();
 		}
-
 		// Append results
 		editorContent.appendChild(pageContent);
 

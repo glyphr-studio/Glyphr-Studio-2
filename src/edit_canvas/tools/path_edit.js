@@ -5,7 +5,11 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { setCursor } from '../cursors.js';
-import { isOverControlPoint, isOverOneOfThese } from '../detect_edit_affordances.js';
+import {
+	isOverControlPoint,
+	isOverGlyphControlPoint,
+	isOverOneOfThese,
+} from '../detect_edit_affordances.js';
 import { checkForMouseOverHotspot, clickEmptySpace } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
 import { eventHandlerData } from '../events.js';
@@ -23,8 +27,7 @@ export class Tool_PathEdit {
 		// Mouse Down
 		// --------------------------------------------------------------
 		this.mousedown = function () {
-			log('Tool_PathEdit.mousedown', 'start');
-			window.ciTest('1');
+			// log('Tool_PathEdit.mousedown', 'start');
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			const msPoints = editor.multiSelect.points;
@@ -36,51 +39,32 @@ export class Tool_PathEdit {
 
 			const clickedPath = getShapeAtLocation(ehd.mousePosition.x, ehd.mousePosition.y);
 
-			window.ciTest('2');
 			// log(`getShapeAtLocation:`);
 			// log(clickedPath);
 
-			// this.controlPoint = isOverControlPoint(
-			// 	ehd.isCtrlDown ? editor.selectedItem : msShapes.virtualGlyph,
-			// 	cXsX(ehd.mousePosition.x, view),
-			// 	cYsY(ehd.mousePosition.y, view)
-			// );
-			let detection = isOverOneOfThese(
-				msShapes.allPathPoints,
+			let checkPoints = ehd.isCtrlDown ? editor.selectedItem : msShapes.allPathPoints;
+			let clickDetection = isOverControlPoint(
+				checkPoints,
 				cXsX(ehd.mousePosition.x, view),
 				cYsY(ehd.mousePosition.y, view)
 			);
 
-			if (detection) {
-				log(`DETECTED!!!!!!!!!!!!!!!!!!!!!`);
-				log(`\n⮟detection⮟`);
-				log(detection);
-				this.pathPoint = detection.pathPoint;
-				log(detection.pathPoint);
-				log(`detection.controlPoint: ${detection.controlPoint}`);
-				log(`detection.controlPoint === 'p': ${detection.controlPoint === 'p'}`);
-				log(`\n⮟detection.pathPoint.p⮟`);
-				log(detection.pathPoint.p);
-				if (detection.controlPoint === 'p') {
-					this.controlPoint = detection.pathPoint.p;
-				}
-				log(`\n⮟this.controlPoint⮟`);
-				log(this.controlPoint);
+			if (clickDetection) {
+				// log(`\n⮟clickDetection⮟`);
+				// log(clickDetection);
+				this.pathPoint = clickDetection.pathPoint;
+				if (clickDetection.controlPoint === 'p') this.controlPoint = clickDetection.pathPoint.p;
+				if (clickDetection.controlPoint === 'h1') this.controlPoint = clickDetection.pathPoint.h1;
+				if (clickDetection.controlPoint === 'h2') this.controlPoint = clickDetection.pathPoint.h2;
 			}
 
-			window.ciTest('3');
-			log(`this.controlPoint:`);
-			log(this.controlPoint);
-
 			if (this.controlPoint) {
-				log('detected CONTROL POINT');
+				// log('detected CONTROL POINT');
 				this.dragging = true;
-				// this.pathPoint = this.controlPoint.parent;
 				const isPathPointSelected = msPoints.isSelected(this.pathPoint);
 
-				window.ciTest('4');
 				if (this.controlPoint.type === 'p') {
-					log('detected P');
+					// log('detected P');
 
 					if (ehd.isCtrlDown) {
 						// log('Multi Select Mode');
@@ -99,14 +83,12 @@ export class Tool_PathEdit {
 							this.monitorForDeselect = true;
 						} else {
 							msPoints.select(this.pathPoint);
-							window.ciTest('5');
 							editor.selectPathsThatHaveSelectedPoints();
-							window.ciTest('6');
 							this.historyTitle = `Moved path point: ${this.pathPoint.pointNumber}`;
 						}
 					}
 				} else {
-					log('detected HANDLE');
+					// log('detected HANDLE');
 					msPoints.singleHandle = this.controlPoint.type;
 					this.historyTitle = `Moved path point: ${this.pathPoint.pointNumber} ${this.controlPoint.type}`;
 					// log(`set ms.singleHandle: ${msPoints.singleHandle}`);
@@ -115,18 +97,17 @@ export class Tool_PathEdit {
 
 				// selectPathsThatHaveSelectedPoints();
 			} else if (clickedPath) {
-				log('detected PATH');
+				// log('detected PATH');
 				clickEmptySpace();
 				msShapes.select(clickedPath);
 			} else {
-				log('detected NOTHING');
+				// log('detected NOTHING');
 				clickEmptySpace();
 				findAndCallHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 			}
 
 			// if (msShapes.members.length) editor.nav.panel = 'Attributes';
-			window.ciTest('7');
-			log('Tool_PathEdit.mousedown', 'end');
+			// log('Tool_PathEdit.mousedown', 'end');
 		};
 
 		// --------------------------------------------------------------
@@ -188,20 +169,20 @@ export class Tool_PathEdit {
 			checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
 
 			// Figure out cursor
-			let hoveredControlPoint;
+			let hoverDetection;
 			let hcpIsSelected;
 
 			if (ehd.isCtrlDown) {
 				// Multi-selection
 
-				hoveredControlPoint = isOverControlPoint(
+				hoverDetection = isOverControlPoint(
 					editor.selectedItem,
 					cXsX(ehd.mousePosition.x, view),
 					cYsY(ehd.mousePosition.y, view)
 				);
-				hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
+				hcpIsSelected = hoverDetection && msPoints.isSelected(hoverDetection.pathPoint);
 
-				if (hoveredControlPoint.type === 'p') {
+				if (hoverDetection.controlPoint === 'p') {
 					// Hovered over a Point
 					if (hcpIsSelected) {
 						// Point is selected
@@ -219,14 +200,14 @@ export class Tool_PathEdit {
 				}
 			} else {
 				// Single selection
-				hoveredControlPoint = isOverControlPoint(
-					editor.multiSelect.shapes.virtualGlyph,
+				hoverDetection = isOverControlPoint(
+					editor.multiSelect.shapes.allPathPoints,
 					cXsX(ehd.mousePosition.x, view),
 					cYsY(ehd.mousePosition.y, view)
 				);
-				hcpIsSelected = hoveredControlPoint && msPoints.isSelected(hoveredControlPoint.parent);
+				hcpIsSelected = hoverDetection && msPoints.isSelected(hoverDetection.pathPoint);
 
-				if (hoveredControlPoint.type === 'p') {
+				if (hoverDetection.controlPoint === 'p') {
 					// Hovered over a Point
 					if (hcpIsSelected) {
 						// Point is selected
@@ -251,7 +232,7 @@ export class Tool_PathEdit {
 		// Mouse Up
 		// --------------------------------------------------------------
 		this.mouseup = function () {
-			log('Tool_PathEdit.mouseup', 'start');
+			// log('Tool_PathEdit.mouseup', 'start');
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 			const msPoints = editor.multiSelect.points;
@@ -275,7 +256,7 @@ export class Tool_PathEdit {
 			ehd.lastX = -100;
 			ehd.lastY = -100;
 
-			log('Tool_PathEdit.mouseup', 'end');
+			// log('Tool_PathEdit.mouseup', 'end');
 		};
 	}
 }

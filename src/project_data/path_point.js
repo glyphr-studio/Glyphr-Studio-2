@@ -20,7 +20,7 @@ export class PathPoint extends GlyphElement {
 	 * @param {Object} parent - link to the parent Path object
 	 */
 	constructor({ p, h1, h2, q, type = 'corner', parent = false } = {}) {
-		log(`PathPoint.constructor`, 'start');
+		// log(`PathPoint.constructor`, 'start');
 		super();
 		this.parent = parent;
 		this.p = p;
@@ -32,7 +32,7 @@ export class PathPoint extends GlyphElement {
 
 		if (this.hasOverlappingHandle('h1')) this.h1.use = false;
 		if (this.hasOverlappingHandle('h2')) this.h2.use = false;
-		log(`PathPoint.constructor`, 'end');
+		// log(`PathPoint.constructor`, 'end');
 	}
 
 	// --------------------------------------------------------------
@@ -88,18 +88,18 @@ export class PathPoint extends GlyphElement {
 	}
 
 	get parent() {
-		log(`PathPoint GET Parent`, 'start');
-		log(`this.__ID: ${this.__ID}`);
-		log(`this._parent.__ID: ${this._parent.__ID}`);
-		log(`PathPoint GET Parent`, 'end');
+		// log(`PathPoint GET Parent`, 'start');
+		// log(`this.__ID: ${this.__ID}`);
+		// log(`this._parent.__ID: ${this._parent.__ID}`);
+		// log(`PathPoint GET Parent`, 'end');
 		return this._parent;
 	}
 
 	set parent(newParent) {
-		log(`PathPoint SET Parent`, 'start');
-		log(`this.__ID: ${this.__ID}`);
-		log(`newParent.__ID: ${newParent.__ID}`);
-		log(`PathPoint SET Parent`, 'end');
+		// log(`PathPoint SET Parent`, 'start');
+		// log(`this.__ID: ${this.__ID}`);
+		// log(`newParent.__ID: ${newParent.__ID}`);
+		// log(`PathPoint SET Parent`, 'end');
 		this._parent = newParent;
 	}
 	// --------------------------------------------------------------

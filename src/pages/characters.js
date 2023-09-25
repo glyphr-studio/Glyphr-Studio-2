@@ -55,7 +55,6 @@ export function makePage_Characters() {
 	l1.addEventListener('click', function () {
 		toggleNavDropdown(l1);
 	});
-
 	// Glyph Selector
 	let l2 = content.querySelector('#nav-button-l2');
 	l2.addEventListener('click', function () {
@@ -77,6 +76,7 @@ export function makePage_Characters() {
 
 	// Panel
 	const panel = content.querySelector('#editor-page__panel');
+
 	panel.appendChild(makePanel());
 	panel.addEventListener('scroll', closeAllInfoBubbles);
 	editor.subscribe({

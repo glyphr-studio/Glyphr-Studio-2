@@ -81,7 +81,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 	let newInput = makeElement({
 		tag: tagName,
 		className: `singleInput-${property}`,
-		attributes: { 'pubsub-topic': topics[0]},
+		attributes: { 'pubsub-topic': topics[0] },
 	});
 
 	let value = tagName === 'input' ? item[property] : round(item[property], 3);
@@ -98,7 +98,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 				item.unlock(property);
 			}
 			const editor = getCurrentProjectEditor();
-			topics.forEach(topic => editor.publish(topic, item))
+			topics.forEach((topic) => editor.publish(topic, item));
 			// log(`makeSingleInput LOCK event`, 'end');
 		});
 	}
@@ -110,6 +110,8 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 		if (item.isLockable && item.isLocked(property)) return;
 		// let newValue = event.target.getAttribute('value');
 		let newValue = event.target.value;
+		// log(`\n⮟item⮟`);
+		// log(item);
 		// log(`property: ${property}`);
 		// log(`newValue: ${newValue}`);
 		// log(`thisTopic: ${thisTopic}`);
@@ -145,12 +147,12 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 		}
 
 		if (item.objType === 'VirtualGlyph') {
-			topics.forEach(topic => editor.publish(topic, editor.selectedItem));
+			topics.forEach((topic) => editor.publish(topic, editor.selectedItem));
 		} else if (item.objType === 'VirtualShape') {
-			topics.forEach(topic => editor.publish(topic, editor.selectedItem));
+			topics.forEach((topic) => editor.publish(topic, editor.selectedItem));
 		} else {
 			// log(`thisTopic: ${thisTopic}`);
-			topics.forEach(topic => editor.publish(topic, item));
+			topics.forEach((topic) => editor.publish(topic, item));
 		}
 		// log(`makeSingleInput.changeHappened event`, 'end');
 	}
@@ -177,6 +179,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 				let newValue;
 				if (tagName === 'input') newValue = changedItem[property];
 				else newValue = round(changedItem[property], 3);
+				// log(`newValue: ${newValue}`);
 				newInput.value = newValue;
 				newInput.setAttribute('value', newValue);
 				// log(`value NEW: ${newInput.value}`);
@@ -249,13 +252,13 @@ function toggleHandleInputs(handle, show) {
 export function makeSingleLabel(text, infoContent = false) {
 	let newText = makeElement({ content: text });
 	let newLabel = makeElement({
-		tag: 'label'
+		tag: 'label',
 	});
 	newLabel.appendChild(newText);
 	if (infoContent) {
 		let newInfo = makeElement({
 			tag: 'info-bubble',
-			content: infoContent
+			content: infoContent,
 		});
 		newLabel.appendChild(newInfo);
 		newLabel.classList.add('info');
