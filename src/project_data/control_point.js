@@ -217,8 +217,8 @@ export class ControlPoint extends GlyphElement {
 	 * @param {Coord} pt
 	 */
 	set coord(pt) {
-		pt.parent = this;
 		this._coord = new Coord(pt);
+		this._coord.parent = this;
 		this.use = true;
 	}
 

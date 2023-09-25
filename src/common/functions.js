@@ -36,21 +36,6 @@ export function generateNewID(obj, base) {
 }
 
 /**
- * A quick visual way to see if two objects are actually the
- * same object from the console.
- * @returns String of emojis
- */
-export function makeRandomID() {
-	let glyphs = ['💖', '🦧', '🐆', '✅', '🐋', '😈', '🦑'];
-	let result = '';
-	for (let i = 0; i < 3; i++) {
-		result += glyphs[Math.floor(Math.random() * glyphs.length)];
-	}
-
-	return result;
-}
-
-/**
  * Like .length property, but for object keys
  * @param {Object} object - object to count
  */

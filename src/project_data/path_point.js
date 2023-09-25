@@ -172,9 +172,9 @@ export class PathPoint extends GlyphElement {
 	 * @param {ControlPoint} newPoint
 	 */
 	set p(newPoint = {}) {
-		newPoint.parent = this;
 		newPoint.type = 'p';
 		this._p = new ControlPoint(newPoint);
+		this._p.parent = this;
 	}
 
 	/**
@@ -186,9 +186,9 @@ export class PathPoint extends GlyphElement {
 			newPoint.coord = { x: this.p.x - 50, y: this.p.y };
 			newPoint.use = false;
 		}
-		newPoint.parent = this;
 		newPoint.type = 'h1';
 		this._h1 = new ControlPoint(newPoint);
+		this._h1.parent = this;
 	}
 
 	/**
@@ -200,9 +200,9 @@ export class PathPoint extends GlyphElement {
 			newPoint.coord = { x: this.p.x + 50, y: this.p.y };
 			newPoint.use = false;
 		}
-		newPoint.parent = this;
 		newPoint.type = 'h2';
 		this._h2 = new ControlPoint(newPoint);
+		this._h2.parent = this;
 	}
 	/**
 	 * set the single quadratic handle
@@ -213,9 +213,9 @@ export class PathPoint extends GlyphElement {
 			newPoint.coord = { x: this.p.x + 50, y: this.p.y };
 			newPoint.use = false;
 		}
-		newPoint.parent = this;
 		newPoint.type = 'q';
 		this._q = new ControlPoint(newPoint);
+		this._q.parent = this;
 	}
 
 	/**

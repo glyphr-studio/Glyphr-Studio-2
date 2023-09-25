@@ -132,9 +132,10 @@ export class ComponentInstance extends GlyphElement {
 
 	makeTransformedGlyph() {
 		// log('makeTransformedGlyph', 'start');
-		// log(this);
 		// log(`name: ${this.name}`);
 		// log(`link: ${this.link}`);
+		// log(`\n⮟this⮟`);
+		// log(this);
 
 		const linkedGlyph = this.getCrossLinkedItem();
 		if (!linkedGlyph) {
@@ -146,7 +147,8 @@ export class ComponentInstance extends GlyphElement {
 		}
 
 		const newGlyph = makeGlyphWithResolvedLinks(linkedGlyph);
-
+		// log(`\n⮟newGlyph⮟`);
+		// log(newGlyph);
 		// log(`translateX: ${this.translateX}`);
 		// log(`translateY: ${this.translateY}`);
 		// log(`resizeWidth: ${this.resizeWidth}`);
@@ -167,7 +169,7 @@ export class ComponentInstance extends GlyphElement {
 			this.rotation
 		) {
 			// log('Modifying w ' + this.resizeWidth + ' h ' + this.resizeHeight);
-			// log('before maxes ' + json(newGlyph.maxes, true));
+			// log(`before maxes ${this.maxes.print()}`);
 			if (this.rotateFirst) newGlyph.rotate(rad(this.rotation * -1), newGlyph.maxes.center);
 			if (this.isFlippedEW) newGlyph.flipEW();
 			if (this.isFlippedNS) newGlyph.flipNS();
@@ -175,11 +177,12 @@ export class ComponentInstance extends GlyphElement {
 			newGlyph.updateGlyphSize(this.resizeWidth, this.resizeHeight, false);
 			if (this.reverseWinding) newGlyph.reverseWinding();
 			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation * -1), newGlyph.maxes.center);
-			// log('afters maxes ' + json(newGlyph.maxes, true));
+			// log(`afters maxes ${this.maxes.print()}`);
 		} else {
 			// log('Not changing, no deltas');
 		}
 
+		// log(`\n⮟newGlyph⮟`);
 		// log(newGlyph);
 		// log('makeTransformedGlyph', 'end');
 

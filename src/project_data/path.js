@@ -306,8 +306,8 @@ export class Path extends GlyphElement {
 		if (newPathPoints && newPathPoints.length) {
 			// log('NEW PATH : Hydrating Path Points, length ' + pathPoints.length);
 			for (let i = 0; i < newPathPoints.length; i++) {
-				newPathPoints[i].parent = this;
 				this._pathPoints[i] = new PathPoint(newPathPoints[i]);
+				this._pathPoints[i].parent = this;
 			}
 		}
 	}

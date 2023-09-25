@@ -1,4 +1,4 @@
-import { json, clone, makeRandomID } from '../common/functions.js';
+import { json, clone } from '../common/functions.js';
 
 /**
  * Base for all Glyph Elements
@@ -193,4 +193,19 @@ export class GlyphElement {
 
 		return re;
 	}
+}
+
+/**
+ * A quick visual way to see if two objects are actually the
+ * same object from the console.
+ * @returns String of emojis
+ */
+export function makeRandomID() {
+	let glyphs = ['💖', '🦧', '🐆', '✅', '🐋', '😈', '🦑'];
+	let result = '';
+	for (let i = 0; i < 3; i++) {
+		result += glyphs[Math.floor(Math.random() * glyphs.length)];
+	}
+
+	return result;
 }
