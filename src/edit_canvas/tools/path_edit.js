@@ -161,7 +161,7 @@ export class Tool_PathEdit {
 				ehd.lastX = ehd.mousePosition.x;
 				ehd.lastY = ehd.mousePosition.y;
 				ehd.undoQueueHasChanged = true;
-				editor.publish(`currentControlPoint.${cpt}`, this.controlPoint);
+				editor.publish(`currentPathPoint`, this.controlPoint.parent);
 			}
 
 			checkForMouseOverHotspot(ehd.mousePosition.x, ehd.mousePosition.y);
