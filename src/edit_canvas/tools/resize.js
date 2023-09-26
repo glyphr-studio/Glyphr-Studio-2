@@ -2,7 +2,6 @@ import { getCurrentProjectEditor } from '../../app/main.js';
 import { calculateAngle, clone } from '../../common/functions.js';
 import { findAndCallHotspot } from '../context_characters.js';
 import { setCursor } from '../cursors.js';
-import { debugDrawPoints } from '../draw_edit_affordances.js';
 import { cXsX, cYsY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
 import { checkForMouseOverHotspot, clickEmptySpace, resizePath } from '../events_mouse.js';

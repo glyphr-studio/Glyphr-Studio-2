@@ -3,7 +3,6 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProjectEditor } from '../../app/main.js';
-import { setCursor } from '../cursors.js';
 import { eventHandlerData } from '../events.js';
 
 export class Tool_Pan {

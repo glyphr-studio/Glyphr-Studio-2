@@ -1,28 +1,28 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeActionButton } from './action_buttons.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { saveFile } from '../project_editor/saving.js';
-import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
-import { Path } from '../project_data/path.js';
-import { ComponentInstance } from '../project_data/component_instance.js';
+import { countItems } from '../common/functions.js';
 import {
 	closeEveryTypeOfDialog,
 	showError,
 	showModalDialog,
 	showToast,
 } from '../controls/dialogs/dialogs.js';
-import { makeAllItemTypeChooserContent } from './item_chooser.js';
+import { eventHandlerData } from '../edit_canvas/events.js';
+import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
+import { addComponent } from '../pages/components.js';
+import { showAddEditKernGroupDialog } from '../pages/kerning.js';
+import { ComponentInstance } from '../project_data/component_instance.js';
+import { Glyph } from '../project_data/glyph.js';
+import { Path } from '../project_data/path.js';
 import {
 	addLinkToUsedIn,
 	canAddComponentInstance,
 	makeGlyphSVGforExport,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
-import { Glyph } from '../project_data/glyph.js';
-import { addComponent } from '../pages/components.js';
-import { countItems, trim } from '../common/functions.js';
-import { eventHandlerData } from '../edit_canvas/events.js';
-import { showAddEditKernGroupDialog } from '../pages/kerning.js';
+import { saveFile } from '../project_editor/saving.js';
+import { makeActionButton } from './action_buttons.js';
+import { makeAllItemTypeChooserContent } from './item_chooser.js';
 import { refreshPanel } from './panels.js';
 
 // --------------------------------------------------------------

@@ -4,8 +4,8 @@
 **/
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { addChildActions, getActionData } from './actions.js';
 import { eventHandlerData } from '../edit_canvas/events.js';
+import { addChildActions, getActionData } from './actions.js';
 
 export function makePanel_Layers() {
 	// log(`makePanel_Layers`, 'start');

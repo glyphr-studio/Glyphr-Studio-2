@@ -1,11 +1,11 @@
-import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
-import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
-import { getCurrentProjectEditor } from '../app/main.js';
 import { emailLink } from '../app/app.js';
-import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
+import { getCurrentProjectEditor } from '../app/main.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import donateKofiSrc from '../common/graphics/donate-kofi.png';
 import donatePaypalSrc from '../common/graphics/donate-paypal.png';
+import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import { TabControl } from '../controls/tabs/tab_control.js';
+import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
  * Page > About

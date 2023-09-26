@@ -640,7 +640,7 @@ export class Segment extends GlyphElement {
 	// Curve Checking
 	// --------------------------------------------------------------
 
-	/** 
+	/**
 	 * Checks to see if this (line) Segment is overlapped by
 	 * a larger (line) Segment.
 	 * Returning true basically means we can get rid of this Segment

@@ -1,6 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { decToHex } from '../common/character_ids.js';
-import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { showAddComponentDialog } from '../pages/components.js';

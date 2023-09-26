@@ -1,5 +1,4 @@
 import { getCurrentProjectEditor } from '../app/main.js';
-import { valuesAreClose } from '../common/functions.js';
 import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';

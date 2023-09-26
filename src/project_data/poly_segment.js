@@ -435,7 +435,7 @@ export class PolySegment extends GlyphElement {
 					// exactly overlapping
 					if (tSeg.objType === 'Segment' && sSeg.objType === 'Segment') {
 						if (segmentsAreEqual(sSeg, tSeg)) {
-							sSeg.objType = 'DUPLICATE'
+							sSeg.objType = 'DUPLICATE';
 						}
 					}
 				}

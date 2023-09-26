@@ -1,5 +1,4 @@
 // import { log } from '../app/main.js';
-import { log } from '../app/main.js';
 import { validateAsHex } from '../common/character_ids.js';
 
 /**
@@ -617,7 +616,6 @@ export const shortUnicodeNames = {
 	'0x36': 'six',
 	'0x2F': 'slash',
 	'0x263A': 'smileface',
-	'0x20': 'space',
 	'0x2660': 'spade',
 	'0xA3': 'sterling',
 	'0x220B': 'suchthat',

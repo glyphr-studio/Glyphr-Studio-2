@@ -1,19 +1,19 @@
 /* Web Components */
-import { OptionChooser } from '../controls/option-chooser/option_chooser.js';
-import { OptionToggle } from '../controls/option-toggle/option_toggle.js';
-import { DisplayCanvas } from '../display_canvas/display_canvas.js';
-import { EditCanvas } from '../edit_canvas/edit_canvas.js';
+import { makeElement } from '../common/dom.js';
 import { FancyButton } from '../controls/fancy-button/fancy_button.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { InfoBubble } from '../controls/info-bubble/info_bubble.js';
 import { InputNumber } from '../controls/input-number/input_number.js';
-import { makeElement } from '../common/dom.js';
+import { OptionChooser } from '../controls/option-chooser/option_chooser.js';
+import { OptionToggle } from '../controls/option-toggle/option_toggle.js';
+import { DisplayCanvas } from '../display_canvas/display_canvas.js';
+import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 
 /* Other stuff */
+import asciiLogo from '../common/graphics/ascii-wordmark-vertical.txt?raw';
+import logo from '../common/graphics/logo-icon.svg?raw';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp, showAppErrorPage } from './app.js';
-import logo from '../common/graphics/logo-icon.svg?raw';
-import asciiLogo from '../common/graphics/ascii-wordmark-vertical.txt?raw';
 
 // The main app object
 export const GSApp = new GlyphrStudioApp();

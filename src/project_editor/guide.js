@@ -5,9 +5,6 @@
 		custom guides to a Glyphr Studio Project.
 **/
 
-
-
-
 export class Guide {
 	constructor(oa = {}) {
 		// log(`Guide.constructor`, 'start');
@@ -53,7 +50,6 @@ export class Guide {
 		this._name = newName;
 	}
 }
-
 
 // --------------------------------------------------------------
 // Colors

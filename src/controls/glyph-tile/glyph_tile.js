@@ -1,9 +1,9 @@
-import { makeElement } from '../../common/dom.js';
-import { hexesToChars } from '../../common/character_ids.js';
 import { getCurrentProject } from '../../app/main.js';
-import style from './glyph-tile.css?inline';
+import { hexesToChars } from '../../common/character_ids.js';
+import { makeElement } from '../../common/dom.js';
 import { remove } from '../../common/functions.js';
 import { isWhitespace } from '../../lib/unicode_names.js';
+import style from './glyph-tile.css?inline';
 
 /**
  * A clickable mini-preview tile of a single glyph

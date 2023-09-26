@@ -1,12 +1,11 @@
-import { clone, remove, round, trim } from '../common/functions.js';
-import { Glyph } from '../project_data/glyph.js';
-import { KernGroup } from './kern_group.js';
-import { unicodeNames, shortUnicodeNames } from '../lib/unicode_names.js';
 import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
-import { CharacterRange } from './character_range.js';
+import { clone, remove, round, trim } from '../common/functions.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
-import { getCurrentProjectEditor } from '../app/main.js';
+import { shortUnicodeNames, unicodeNames } from '../lib/unicode_names.js';
+import { Glyph } from '../project_data/glyph.js';
 import { Guide } from '../project_editor/guide.js';
+import { CharacterRange } from './character_range.js';
+import { KernGroup } from './kern_group.js';
 
 /**
  * Creates a new Glyphr Studio Project
@@ -118,9 +117,7 @@ export class GlyphrStudioProject {
 		}
 		if (newGuides?.custom) {
 			this.settings.app.guides.custom = [];
-			newGuides.custom.forEach((guide) =>
-				this.settings.app.guides.custom.push(new Guide(guide))
-			);
+			newGuides.custom.forEach((guide) => this.settings.app.guides.custom.push(new Guide(guide)));
 		}
 
 		// Glyph Ranges

@@ -1,15 +1,14 @@
-import { ProjectEditor } from '../project_editor/project_editor.js';
-import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
-import { closeEveryTypeOfDialog, makeContextMenu, showToast } from '../controls/dialogs/dialogs.js';
-import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
-import { ioFont_exportFont } from '../io/font_export.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
+import { closeEveryTypeOfDialog, makeContextMenu } from '../controls/dialogs/dialogs.js';
+import { ioFont_exportFont } from '../io/font_export.js';
+import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import simpleExampleProject from '../samples/simpleExampleProject.json';
+import { ProjectEditor } from '../project_editor/project_editor.js';
 import obleggSampleProject from '../samples/oblegg-0-2.gs2?raw';
+import simpleExampleProject from '../samples/simpleExampleProject.json';
 import { _DEV } from './dev_mode_includes.js';
-import { pause } from '../common/functions.js';
+import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
 
 /**
  * Creates a new Glyphr Studio Application

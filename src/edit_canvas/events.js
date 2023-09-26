@@ -1,16 +1,16 @@
-import { Tool_Pan } from './tools/pan.js';
-import { Tool_NewBasicPath } from './tools/new_basic_path.js';
-import { Tool_Resize } from './tools/resize.js';
-import { Tool_NewPath } from './tools/new_path.js';
-import { Tool_PathEdit } from './tools/path_edit.js';
-import { Tool_PathAddPoint } from './tools/path_add_point.js';
-import { Tool_Kern } from './tools/kern.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { setCursor, updateCursor } from './cursors.js';
-import { handleMouseEvents, handleMouseWheel } from './events_mouse.js';
-import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
-import { handleDropSVGonEditCanvas, handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
+import { setCursor, updateCursor } from './cursors.js';
+import { handleDropSVGonEditCanvas, handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
+import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
+import { handleMouseEvents, handleMouseWheel } from './events_mouse.js';
+import { Tool_Kern } from './tools/kern.js';
+import { Tool_NewBasicPath } from './tools/new_basic_path.js';
+import { Tool_NewPath } from './tools/new_path.js';
+import { Tool_Pan } from './tools/pan.js';
+import { Tool_PathAddPoint } from './tools/path_add_point.js';
+import { Tool_PathEdit } from './tools/path_edit.js';
+import { Tool_Resize } from './tools/resize.js';
 
 // --------------------------------------------------------------
 // Events - shared between Mouse and Keyboard

@@ -1,6 +1,6 @@
-import { GlyphElement } from './glyph_element.js';
-import { strSan, rad, deg, radiansToNiceAngle } from '../common/functions.js';
+import { deg, rad, strSan } from '../common/functions.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
+import { GlyphElement } from './glyph_element.js';
 
 /**
  * Glyph Element > Component Instance

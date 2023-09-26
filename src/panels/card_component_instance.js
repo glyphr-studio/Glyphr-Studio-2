@@ -1,6 +1,5 @@
-import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { makeActionsArea_ComponentInstance, makeActionsArea_Path } from './actions.js';
+import { makeActionsArea_ComponentInstance } from './actions.js';
 import {
 	dimSplit,
 	dimSplitElement,

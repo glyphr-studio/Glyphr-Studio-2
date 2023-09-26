@@ -1,11 +1,11 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makePanel_GlyphAttributes } from './attributes_glyph_edit.js';
-import { makePanel_Layers } from './layers.js';
-import { makePanel_History } from './history.js';
-import { makePanel_Guides } from './guides.js';
 import { makePanel_KernGroupAttributes } from './attributes_kern.js';
 import { makePanel_ContextCharacters } from './context_characters.js';
+import { makePanel_Guides } from './guides.js';
+import { makePanel_History } from './history.js';
+import { makePanel_Layers } from './layers.js';
 
 /**
  * Assembles the correct panel based on the current

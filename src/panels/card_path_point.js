@@ -58,7 +58,9 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 				document.getElementById(`pointTypeButton-symmetric`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-flat`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-corner`).removeAttribute('selected');
-				document.getElementById(`pointTypeButton-${changedPathPoint.type}`).setAttribute('selected', '');
+				document
+					.getElementById(`pointTypeButton-${changedPathPoint.type}`)
+					.setAttribute('selected', '');
 			}
 
 			updateHandleGroup('h1', changedPathPoint);

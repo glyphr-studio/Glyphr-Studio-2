@@ -7,7 +7,6 @@ import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeFancySlider } from '../controls/fancy-slider/fancy_slider.js';
 import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window.js';
 import { makeDirectCheckbox, makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
-import { makeSystemGuidesCard } from './guides.js';
 
 export function makePanel_ContextCharacters() {
 	// log(`makePanel_ContextCharacters`, 'start');

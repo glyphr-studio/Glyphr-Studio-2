@@ -1,6 +1,6 @@
-import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
-import { round } from '../common/functions.js';
 import { getCurrentProject } from '../app/main.js';
+import { round } from '../common/functions.js';
+import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
 
 // --------------------------------------------------------------
 // Glyph

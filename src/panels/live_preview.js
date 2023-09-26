@@ -29,7 +29,10 @@ export function makePanel_LivePreview(textBlockOptions, showPopOutCard = true) {
 
 	addAsChildren(pageOptionsCard, makeTextBlockOptions_pageOptions(textBlockOptions));
 
-	let sampleTextHeader = makeElement({ className: 'panel__card no-card', innerHTML: '<h3>Sample text</h3>' });
+	let sampleTextHeader = makeElement({
+		className: 'panel__card no-card',
+		innerHTML: '<h3>Sample text</h3>',
+	});
 
 	// Pangrams
 	let pangramCard = makeElement({

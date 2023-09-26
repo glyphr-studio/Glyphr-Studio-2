@@ -1,15 +1,15 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { countItems, isVal, pause, round } from '../common/functions.js';
 import { decToHex } from '../common/character_ids.js';
+import { countItems, pause, round } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getParentRange, getUnicodeBlockByName, isControlChar } from '../lib/unicode_blocks.js';
-import { isOutOfBounds } from '../pages/open_project.js';
-import { Glyph } from '../project_data/glyph.js';
-import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
-import { makeLigatureID } from '../pages/ligatures.js';
-import { CharacterRange } from '../project_data/character_range.js';
-import { KernGroup } from '../project_data/kern_group.js';
 import { makeKernGroupID } from '../pages/kerning.js';
+import { makeLigatureID } from '../pages/ligatures.js';
+import { isOutOfBounds } from '../pages/open_project.js';
+import { CharacterRange } from '../project_data/character_range.js';
+import { Glyph } from '../project_data/glyph.js';
+import { KernGroup } from '../project_data/kern_group.js';
+import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 
 /**
 	IO > Import > OpenType

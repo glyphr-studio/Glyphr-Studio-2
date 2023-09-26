@@ -1,7 +1,7 @@
-import { GlyphElement } from './glyph_element.js';
-import { hexesToChars, validateAsHex } from '../common/character_ids.js';
 import { getCurrentProject } from '../app/main.js';
+import { hexesToChars, validateAsHex } from '../common/character_ids.js';
 import { duplicates } from '../common/functions.js';
+import { GlyphElement } from './glyph_element.js';
 
 /**
  * Kern Group

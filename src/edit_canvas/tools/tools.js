@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
-import { accentColors, uiColors } from '../../common/colors.js';
+import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';

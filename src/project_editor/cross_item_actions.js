@@ -1,7 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { clone } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
-import { deleteSelectedPaths } from '../panels/actions.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';

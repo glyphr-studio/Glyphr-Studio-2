@@ -1,11 +1,14 @@
-import { addAsChildren, makeElement } from '../common/dom.js';
 import { getCurrentProjectEditor } from '../app/main.js';
-import { makeNavButton, makeNavButtonContent } from '../project_editor/navigator.js';
-import { toggleNavDropdown } from '../project_editor/navigator.js';
-import { makePanel, refreshPanel } from '../panels/panels.js';
-import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
-import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import { closeAllInfoBubbles } from '../controls/dialogs/dialogs.js';
+import { removeStopCreatingNewPathButton } from '../edit_canvas/tools/new_path.js';
+import { makeEditToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
+import { makePanel, refreshPanel } from '../panels/panels.js';
+import {
+	makeNavButton,
+	makeNavButtonContent,
+	toggleNavDropdown,
+} from '../project_editor/navigator.js';
 
 /**
  * Page > Characters

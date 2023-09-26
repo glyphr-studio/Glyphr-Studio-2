@@ -4,9 +4,9 @@ import { ioFont_exportFont } from '../io/font_export.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import {
 	clipboardCopy,
+	clipboardPaste,
 	deleteSelectedPaths,
 	deleteSelectedPoints,
-	clipboardPaste,
 } from '../panels/actions.js';
 import {
 	cancelDefaultEventActions,

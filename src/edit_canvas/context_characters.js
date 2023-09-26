@@ -2,16 +2,16 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import { charsToHexArray } from '../common/character_ids';
 import { accentColors, getColorFromRGBA, transparencyToAlpha, uiColors } from '../common/colors';
 import { makeCrisp } from '../common/functions';
+import { drawGlyph } from '../display_canvas/draw_paths';
 import {
 	TextBlock,
 	calculateKernOffset,
 	findAndMergeLigatures,
 } from '../display_canvas/text_block';
-import { drawGlyph } from '../display_canvas/draw_paths';
 import { Maxes } from '../project_data/maxes';
-import { setCursor } from './cursors';
-import { cXsX, drawEmVerticalLine, sXcX, sYcY } from './edit_canvas';
 import { guideColorDark } from '../project_editor/guide';
+import { setCursor } from './cursors';
+import { cXsX, drawEmVerticalLine, sYcY } from './edit_canvas';
 
 const contextCharacters = {
 	chars: '',
