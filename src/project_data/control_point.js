@@ -1,11 +1,11 @@
-import { GlyphElement } from './glyph_element.js';
-import { Coord } from './coord.js';
 import {
 	calculateAngle,
 	calculateLength,
 	radiansToNiceAngle,
 	rotate,
 } from '../common/functions.js';
+import { Coord } from './coord.js';
+import { GlyphElement } from './glyph_element.js';
 
 /**
  * Glyph Element > ControlPoint

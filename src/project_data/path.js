@@ -1,20 +1,17 @@
-import { GlyphElement } from './glyph_element.js';
-import { XYPoint } from './xy_point.js';
-import { isAllZeros, Maxes } from './maxes.js';
-import { Segment } from './segment.js';
-import { PolySegment } from './poly_segment.js';
-import { PathPoint } from './path_point.js';
-import { getOverallMaxes } from './maxes.js';
 import {
 	clone,
-	round,
-	isVal,
 	hasNonValues,
-	duplicates,
-	xyPointsAreClose,
+	isVal,
+	round,
 	strSan,
-	json,
+	xyPointsAreClose,
 } from '../common/functions.js';
+import { GlyphElement } from './glyph_element.js';
+import { Maxes, getOverallMaxes, isAllZeros } from './maxes.js';
+import { PathPoint } from './path_point.js';
+import { PolySegment } from './poly_segment.js';
+import { Segment } from './segment.js';
+import { XYPoint } from './xy_point.js';
 
 /**
  * Glyph Element > Path

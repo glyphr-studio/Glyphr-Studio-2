@@ -1,6 +1,6 @@
-import { GlyphElement } from './glyph_element.js';
+import { isVal, round, xyPointsAreClose } from '../common/functions.js';
 import { ControlPoint } from './control_point.js';
-import { round, xyPointsAreClose, isVal } from '../common/functions.js';
+import { GlyphElement } from './glyph_element.js';
 
 /**
  * Glyph Element > Path Point

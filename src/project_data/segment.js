@@ -1,14 +1,14 @@
-import { GlyphElement } from './glyph_element.js';
-import { XYPoint } from './xy_point.js';
-import { Maxes } from './maxes.js';
 import {
 	clone,
-	numSan,
-	isVal,
-	round,
 	hasNonValues,
+	isVal,
+	numSan,
+	round,
 	xyPointsAreClose,
 } from '../common/functions.js';
+import { GlyphElement } from './glyph_element.js';
+import { Maxes } from './maxes.js';
+import { XYPoint } from './xy_point.js';
 
 /**
  * Glyph Element > Segment
@@ -640,7 +640,7 @@ export class Segment extends GlyphElement {
 	// Curve Checking
 	// --------------------------------------------------------------
 
-	/**
+	/** 
 	 * Checks to see if this (line) Segment is overlapped by
 	 * a larger (line) Segment.
 	 * Returning true basically means we can get rid of this Segment

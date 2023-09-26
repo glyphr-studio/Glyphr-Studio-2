@@ -1,13 +1,9 @@
-import { duplicates, json, xyPointsAreClose, round } from '../common/functions.js';
-import { showToast } from '../controls/dialogs/dialogs.js';
+import { duplicates, xyPointsAreClose } from '../common/functions.js';
 import { debugDrawPoints } from '../edit_canvas/draw_edit_affordances.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
 import { isShapeHere } from '../edit_canvas/tools/tools.js';
 import { maxesOverlap } from '../project_data/maxes.js';
-import { Path } from '../project_data/path.js';
-import { PathPoint } from '../project_data/path_point.js';
 import { PolySegment, findSegmentIntersections } from '../project_data/poly_segment.js';
-import { Segment } from '../project_data/segment.js';
 import { XYPoint } from '../project_data/xy_point.js';
 
 /*
@@ -34,15 +30,27 @@ import { XYPoint } from '../project_data/xy_point.js';
  * @returns {Array} - resulting paths
  */
 export function combineAllPaths(paths = []) {
+	// log(`combineAllPaths`, 'start');
+	// log(`\n⮟paths⮟`);
+	// log(paths);
 	let clockwise = paths.filter((path) => path.winding < 0);
+	// log(`\n⮟clockwise⮟`);
+	// log(clockwise);
 	let counterClockwise = paths.filter((path) => path.winding > 0);
+	// log(`\n⮟counterClockwise⮟`);
+	// log(counterClockwise);
 	let unknown = paths.filter((path) => path.winding === 0);
+	// log(`\n⮟unknown⮟`);
+	// log(unknown);
 
 	let result = [];
-	result = result.concat(combinePaths(unknown));
-	result = result.concat(combinePaths(clockwise));
-	result = result.concat(combinePaths(counterClockwise));
+	if (unknown.length) result = result.concat(combinePaths(unknown));
+	if (clockwise.length) result = result.concat(combinePaths(clockwise));
+	if (counterClockwise.length) result = result.concat(combinePaths(counterClockwise));
 
+	// log(`\n⮟result⮟`);
+	// log(result);
+	// log(`combineAllPaths`, 'end');
 	return result;
 }
 
@@ -54,6 +62,7 @@ export function combineAllPaths(paths = []) {
  */
 export function combinePaths(paths = []) {
 	// log(`combinePaths`, 'start');
+	// log(`\n⮟paths⮟`);
 	// log(paths);
 
 	// --------------------------------------------------------------
@@ -69,12 +78,15 @@ export function combinePaths(paths = []) {
 		}
 	}
 	intersections = intersections.filter(duplicates);
+	// log(`\n⮟intersections⮟`);
 	// log(intersections);
 
 	// Chop at all intersections
 	intersections.forEach((ix) => {
 		paths.forEach((path) => insertPathPointsAtIXPoint(ix, path));
 	});
+	// log(`\n⮟paths⮟`);
+	// log(paths);
 
 	// Convert to Bezier segments
 	let allSegments = [];
@@ -82,8 +94,8 @@ export function combinePaths(paths = []) {
 		allSegments = allSegments.concat(path.makePolySegment().segments);
 	});
 	allSegments.sort((a, b) => a.maxes.xMin - b.maxes.xMin); // Helps with complex overlaps for some reason
+
 	allSegments = new PolySegment({ segments: allSegments });
-	// log(allSegments);
 	// log(`\n\n All Segments collected`);
 	// console.table(allSegments.valuesAsArray);
 
@@ -93,9 +105,6 @@ export function combinePaths(paths = []) {
 
 	allSegments.removeZeroLengthSegments();
 	// log('after removeZeroLengthSegments ' + allSegments.segments.length);
-
-	allSegments.removeDuplicateSegments();
-	// log('after removeDuplicateSegments ' + allSegments.segments.length);
 
 	allSegments.removeRedundantLineSegments();
 	// log('after removeRedundantLineSegments ' + allSegments.segments.length);
@@ -162,7 +171,8 @@ export function combinePaths(paths = []) {
 	// --------------------------------------------------------------
 
 	let newPaths = newPolySegments.map((polySegment) => polySegment.getPath());
-	// log(`Resulting paths`);
+
+	// log(`\n⮟newPaths⮟`);
 	// log(newPaths);
 
 	// log(`combinePaths`, 'end');
@@ -333,7 +343,6 @@ function findPathPointBoundaryIntersections(path1, path2) {
 	check(path2, path1);
 
 	re = re.filter(duplicates);
-
 	return re;
 }
 
