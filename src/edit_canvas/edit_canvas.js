@@ -1,8 +1,10 @@
-import { makeElement } from '../common/dom.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, getColorFromRGBA, transparencyToAlpha } from '../common/colors.js';
-import { eventHandlerData, initEventHandlers } from './events.js';
+import { makeElement } from '../common/dom.js';
+import { clone } from '../common/functions.js';
 import { drawGlyph } from '../display_canvas/draw_paths.js';
+import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
+import { drawCharacterKernExtra, drawContextCharacters } from './context_characters.js';
 import {
 	computeAndDrawBoundingBox,
 	computeAndDrawBoundingBoxHandles,
@@ -12,9 +14,7 @@ import {
 	drawNewBasicPath,
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
-import { clone } from '../common/functions.js';
-import { drawContextCharacters, drawCharacterKernExtra } from './context_characters.js';
-import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
+import { eventHandlerData, initEventHandlers } from './events.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas

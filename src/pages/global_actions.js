@@ -1,8 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
-import {
-	decToHex,
-	validateAsHex,
-} from '../common/character_ids';
+import { decToHex, validateAsHex } from '../common/character_ids';
 import { addAsChildren, makeElement } from '../common/dom';
 import { showToast } from '../controls/dialogs/dialogs';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks';

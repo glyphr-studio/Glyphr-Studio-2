@@ -1,5 +1,5 @@
+import { isVal, numSan } from '../common/functions.js';
 import { GlyphElement } from './glyph_element.js';
-import { numSan, isVal } from '../common/functions.js';
 
 /**
  * Glyph Element > Coordinate

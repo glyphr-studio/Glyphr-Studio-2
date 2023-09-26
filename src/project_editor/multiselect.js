@@ -1,15 +1,15 @@
-import { getCurrentProject, getCurrentProjectEditor, log } from '../app/main.js';
-import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
+import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
+import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
+import { combineAllPaths } from './boolean_combine.js';
 import {
 	glyphChanged,
 	makeGlyphWithResolvedLinks,
 	removeLinkFromUsedIn,
 } from './cross_item_actions.js';
-import { combineAllPaths } from './boolean_combine.js';
-import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 
 /**
 		Multi-Select
@@ -341,7 +341,7 @@ export class MultiSelectShapes extends MultiSelect {
 
 	get allPathPoints() {
 		let result = [];
-		this.members.forEach(shape => {
+		this.members.forEach((shape) => {
 			if (shape?.pathPoints) {
 				result = result.concat(shape.pathPoints);
 			}

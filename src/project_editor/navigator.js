@@ -1,22 +1,22 @@
-import { makePage_OpenProject } from '../pages/open_project.js';
-import { makePage_Characters } from '../pages/characters.js';
-import { makePage_Ligatures } from '../pages/ligatures.js';
-import { makePage_Overview } from '../pages/overview.js';
-import { makePage_About } from '../pages/about.js';
-import { makePage_Settings } from '../pages/settings.js';
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
-import { makeSingleItemTypeChooserContent } from '../panels/item_chooser.js';
 import { makeAppTopBar, showAppErrorPage } from '../app/app.js';
-import { makeIcon } from '../common/graphics.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
-import { makePage_Help } from '../pages/help.js';
-import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
-import { makePage_Components } from '../pages/components.js';
-import { makePage_Kerning } from '../pages/kerning.js';
+import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
+import { makeIcon } from '../common/graphics.js';
+import { animateRemove, closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
+import { makePage_About } from '../pages/about.js';
+import { makePage_Characters } from '../pages/characters.js';
+import { makePage_Components } from '../pages/components.js';
 import { makePage_GlobalActions } from '../pages/global_actions.js';
+import { makePage_Help } from '../pages/help.js';
+import { makePage_Kerning } from '../pages/kerning.js';
+import { makePage_Ligatures } from '../pages/ligatures.js';
+import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
+import { makePage_OpenProject } from '../pages/open_project.js';
+import { makePage_Overview } from '../pages/overview.js';
+import { makePage_Settings } from '../pages/settings.js';
+import { makeSingleItemTypeChooserContent } from '../panels/item_chooser.js';
 
 // --------------------------------------------------------------
 // Navigation

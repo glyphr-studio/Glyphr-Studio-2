@@ -98,8 +98,6 @@ export function publish(topic, data) {
 			//anything?
 		}
 
-
-
 		// ----------------------------------------------------------------------------
 		// Call topics based on generic / specific topics, and  Glyph Element hierarchy
 		// ----------------------------------------------------------------------------

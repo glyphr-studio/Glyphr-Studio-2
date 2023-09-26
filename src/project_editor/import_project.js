@@ -1,15 +1,14 @@
-import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
-import { makeSemVerString, tryToGetProjectVersion } from '../io/validate_file_input.js';
-import { Glyph } from '../project_data/glyph.js';
-import { Path } from '../project_data/path.js';
-import { PathPoint } from '../project_data/path_point.js';
 import { charToHex, hexesToChars, validateAsHex } from '../common/character_ids.js';
-import { ControlPoint } from '../project_data/control_point.js';
-import { showError } from '../controls/dialogs/dialogs.js';
+import { makeSemVerString, tryToGetProjectVersion } from '../io/validate_file_input.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
+import { ControlPoint } from '../project_data/control_point.js';
+import { Glyph } from '../project_data/glyph.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
+import { Path } from '../project_data/path.js';
+import { PathPoint } from '../project_data/path_point.js';
 import { Guide } from './guide.js';
 
 /**
@@ -162,16 +161,18 @@ function migrate_Project(oldProject) {
 	// Guides
 	newGuides.systemTransparency = oldColors.systemguidetransparency || 70;
 	newGuides.customTransparency = oldColors.systemguidetransparency || 70;
-	Object.keys(oldGuides).forEach(key => {
+	Object.keys(oldGuides).forEach((key) => {
 		let oldGuide = oldGuides[key];
 		if (oldGuide.editable) {
-			newGuides.custom.push(new Guide({
-				angle: oldGuide.type === 'horizontal'? 90 : 0,
-				location: oldGuide.location,
-				name: oldGuide.name,
-				color: oldGuide.color,
-				visible: oldGuide.visible,
-			}))
+			newGuides.custom.push(
+				new Guide({
+					angle: oldGuide.type === 'horizontal' ? 90 : 0,
+					location: oldGuide.location,
+					name: oldGuide.name,
+					color: oldGuide.color,
+					visible: oldGuide.visible,
+				})
+			);
 		}
 	});
 

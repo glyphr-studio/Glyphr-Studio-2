@@ -1,7 +1,7 @@
-import { addAsChildren, insertAfter, makeElement } from '../../common/dom.js';
-import style from './option-chooser.css?inline';
-import { closeAllOptionChoosers, makeContextMenu } from '../dialogs/dialogs.js';
+import { insertAfter, makeElement } from '../../common/dom.js';
 import { closeAllNavMenus } from '../../project_editor/navigator.js';
+import { closeAllOptionChoosers, makeContextMenu } from '../dialogs/dialogs.js';
+import style from './option-chooser.css?inline';
 
 /**
  * An options group / dropdown control

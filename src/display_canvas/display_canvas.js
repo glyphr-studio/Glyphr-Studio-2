@@ -1,10 +1,10 @@
-import { makeElement } from '../common/dom.js';
-import { TextBlock } from './text_block.js';
 import { getCurrentProject } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
-import { drawGlyph } from './draw_paths.js';
+import { makeElement } from '../common/dom.js';
 import { caseCamelToKebab, clone, makeCrisp, round } from '../common/functions.js';
 import style from './display-canvas.css?inline';
+import { drawGlyph } from './draw_paths.js';
+import { TextBlock } from './text_block.js';
 import { TextBlockOptions } from './text_block_options.js';
 
 /**

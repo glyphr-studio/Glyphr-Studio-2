@@ -1,16 +1,16 @@
 import { getCurrentProjectEditor } from '../app/main';
-import { addAsChildren, makeElement } from '../common/dom';
-import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
-import popOutWindowStyle from './pop-out-window.css?inline';
 import colorStyle from '../common/colors.css?inline';
-import resetStyle from '../common/resets.css?inline';
-import dialogStyle from '../controls/dialogs/dialogs.css?inline';
-import panelStyle from '../panels/panels.css?inline';
-import { DisplayCanvas } from '../display_canvas/display_canvas';
+import { addAsChildren, makeElement } from '../common/dom';
 import logo from '../common/graphics/logo-icon.svg?raw';
+import resetStyle from '../common/resets.css?inline';
 import { closeEveryTypeOfDialog, makeModalDialog, showToast } from '../controls/dialogs/dialogs';
-import { makePanel_LivePreview } from '../panels/live_preview';
+import dialogStyle from '../controls/dialogs/dialogs.css?inline';
+import { DisplayCanvas } from '../display_canvas/display_canvas';
 import { TextBlockOptions } from '../display_canvas/text_block_options';
+import { makeToolButtonSVG } from '../edit_canvas/tools/tools';
+import { makePanel_LivePreview } from '../panels/live_preview';
+import panelStyle from '../panels/panels.css?inline';
+import popOutWindowStyle from './pop-out-window.css?inline';
 
 export function openPopOutWindow() {
 	// log(`openPopOutWindow`, 'start');

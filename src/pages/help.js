@@ -1,7 +1,7 @@
-import { makeElement } from '../common/dom.js';
-import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import { emailLink } from '../app/app.js';
+import { makeElement } from '../common/dom.js';
 import { TabControl } from '../controls/tabs/tab_control.js';
+import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
  * Page > About
@@ -56,7 +56,8 @@ function makeHelpOverview() {
 			At any time, you can reach out for any help you need:
 			${emailLink()}
 		</p>
-	`});
+	`,
+	});
 
 	return content;
 }
@@ -155,7 +156,8 @@ export function makeKeyboardShortcutReference() {
 			</label>
 
 		</div>
-	`});
+	`,
+	});
 
 	return content;
 }

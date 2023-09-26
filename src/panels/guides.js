@@ -1,5 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { accentColors, makeRandomSaturatedColor, parseColorString, rgbToHex } from '../common/colors.js';
+import { makeRandomSaturatedColor, parseColorString, rgbToHex } from '../common/colors.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeIcon } from '../common/graphics.js';
 import { makeFancySlider } from '../controls/fancy-slider/fancy_slider.js';

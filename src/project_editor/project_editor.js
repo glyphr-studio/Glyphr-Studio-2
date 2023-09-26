@@ -1,19 +1,19 @@
-import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
-import { History } from './history.js';
-import { Navigator } from './navigator.js';
-import { saveFile, makeDateStampSuffix } from '../project_editor/saving.js';
-import { json, getFirstID, clone, round } from '../common/functions.js';
-import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
-import { Glyph } from '../project_data/glyph.js';
-import { publish, subscribe, unsubscribe } from './pub-sub.js';
-import { showToast } from '../controls/dialogs/dialogs.js';
-import { KernGroup } from '../project_data/kern_group.js';
-import { CharacterRange } from '../project_data/character_range.js';
-import { deleteLinks, removeLinkFromUsedIn } from './cross_item_actions.js';
 import { decToHex } from '../common/character_ids.js';
-import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
+import { clone, getFirstID, json, round } from '../common/functions.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
+import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
+import { CharacterRange } from '../project_data/character_range.js';
+import { Glyph } from '../project_data/glyph.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
+import { KernGroup } from '../project_data/kern_group.js';
+import { makeDateStampSuffix, saveFile } from '../project_editor/saving.js';
+import { deleteLinks } from './cross_item_actions.js';
+import { History } from './history.js';
+import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
+import { Navigator } from './navigator.js';
+import { publish, subscribe, unsubscribe } from './pub-sub.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.

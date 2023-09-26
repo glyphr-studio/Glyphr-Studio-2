@@ -1,11 +1,9 @@
 import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
-import { round, trim } from '../common/functions.js';
 import { decToHex, hexesToXMLHexes } from '../common/character_ids.js';
+import { round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
-import { Glyph } from '../project_data/glyph.js';
+import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 import { makeDateStampSuffix, saveFile } from '../project_editor/saving.js';
-import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
-import { getOverallMaxes, Maxes } from '../project_data/maxes.js';
 /**
 	IO > Export > SVG Font
 	Converting a Glyphr Studio Project to XML in

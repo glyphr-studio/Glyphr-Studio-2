@@ -2,7 +2,7 @@
 // New Basic Path - adds many points to a new path
 // ----------------------------------------------------------------
 
-import { getCurrentProjectEditor, getCurrentProject } from '../../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor } from '../../app/main.js';
 import { isVal, round } from '../../common/functions.js';
 import { ControlPoint } from '../../project_data/control_point.js';
 import { Path } from '../../project_data/path.js';

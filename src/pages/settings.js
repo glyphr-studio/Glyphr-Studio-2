@@ -1,7 +1,7 @@
+import { updateWindowUnloadEvent } from '../app/app.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
-import { json } from '../common/functions.js';
 import { decToHex, hexesToChars } from '../common/character_ids.js';
+import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import {
 	closeEveryTypeOfDialog,
 	showError,
@@ -10,12 +10,11 @@ import {
 } from '../controls/dialogs/dialogs.js';
 import { TabControl } from '../controls/tabs/tab_control.js';
 import { unicodeBlocks } from '../lib/unicode_blocks.js';
+import { getUnicodeName } from '../lib/unicode_names.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 import settingsMap from './settings_data.js';
-import { getUnicodeName } from '../lib/unicode_names.js';
-import { updateWindowUnloadEvent } from '../app/app.js';
 
 /**
  * Page > Settings

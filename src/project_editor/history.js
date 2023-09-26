@@ -1,9 +1,7 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { clone } from '../common/functions.js';
+import { getCurrentProjectEditor } from '../app/main.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { refreshPanel } from '../panels/panels.js';
 import { Glyph } from '../project_data/glyph.js';
-import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
 
 /**

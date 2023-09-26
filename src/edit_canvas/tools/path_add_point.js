@@ -3,8 +3,11 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProjectEditor } from '../../app/main.js';
+import { accentColors } from '../../common/colors.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
+import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
+import { clickTool, getShapeAtLocation } from './tools.js';
 
 export class Tool_PathAddPoint {
 	constructor() {
@@ -37,10 +40,10 @@ export class Tool_PathAddPoint {
 			}
 
 			eventHandlerData.hoverPoint = false;
-			redraw({ calledBy: 'Tool_PathAddPoint.mousedown' });
+			editor.redraw({ calledBy: 'Tool_PathAddPoint.mousedown' });
 		};
 
-		this.mousemove = function (ev) {
+		this.mousemove = function () {
 			const editor = getCurrentProjectEditor();
 			let singlePath = editor.multiSelect.shapes.singleton;
 			if (singlePath) {
@@ -52,7 +55,7 @@ export class Tool_PathAddPoint {
 					this.addPoint = pt;
 					let ptx = sXcX(pt.x) - canvasUIPointSize / 2;
 					let pty = sYcY(pt.y) - canvasUIPointSize / 2;
-					openNotation('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3), ptx, pty);
+					// openNotation('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3), ptx, pty);
 					eventHandlerData.hoverPoint = {
 						fill: accentColors.blue.l75,
 						x: ptx,
@@ -62,15 +65,15 @@ export class Tool_PathAddPoint {
 				} else {
 					this.addPoint = false;
 					eventHandlerData.hoverPoint = false;
-					closeNotation();
+					// closeNotation();
 				}
 			} else {
 				this.addPoint = false;
 				eventHandlerData.hoverPoint = false;
-				closeNotation();
+				// closeNotation();
 			}
 
-			redraw({ calledBy: 'Tool_PathAddPoint.mousemove', redrawPanels: false });
+			editor.redraw({ calledBy: 'Tool_PathAddPoint.mousemove', redrawPanels: false });
 		};
 
 		this.mouseup = function () {};

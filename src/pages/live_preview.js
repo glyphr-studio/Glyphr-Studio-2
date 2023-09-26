@@ -1,9 +1,8 @@
-import { addAsChildren, makeElement } from '../common/dom.js';
-import { makeNavButton } from '../project_editor/navigator.js';
-import { toggleNavDropdown } from '../project_editor/navigator.js';
-import { makePanel_LivePreview } from '../panels/live_preview.js';
 import { getCurrentProjectEditor } from '../app/main.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
 import { DisplayCanvas } from '../display_canvas/display_canvas.js';
+import { makePanel_LivePreview } from '../panels/live_preview.js';
+import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
 
 /**
  * Page > Live preview
