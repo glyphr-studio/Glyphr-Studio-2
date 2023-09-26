@@ -619,42 +619,6 @@ export function drawHandles(point, ctx, drawH1 = true, drawH2 = true) {
 	}
 }
 
-/**
- * Draws a Quadratic point to the edit canvas
- * @param {PathPoint} point - point to draw
- * @param {Object} ctx - canvas context
- * @param {String} accent - accent color
- * @param {Point} prevP - Previous point in the path sequence
- */
-export function drawQuadraticHandle(point, ctx, accent, prevP) {
-	// Draw Quadratic handle point from imported SVG
-	ctx.fillStyle = accent;
-	ctx.strokeStyle = accent;
-	ctx.lineWidth = 1;
-	const halfPointSize = canvasUIPointSize / 2;
-
-	if (point.q) {
-		ctx.beginPath();
-		ctx.arc(sXcX(point.q.x), sYcY(point.q.y), halfPointSize, 0, Math.PI * 2, true);
-		ctx.closePath();
-		ctx.fill();
-
-		ctx.beginPath();
-		ctx.moveTo(sXcX(point.p.x), sYcY(point.p.y));
-		ctx.lineTo(sXcX(point.q.x), sYcY(point.q.y));
-		ctx.closePath();
-		ctx.stroke();
-
-		if (prevP) {
-			ctx.beginPath();
-			ctx.moveTo(sXcX(prevP.x), sYcY(prevP.y));
-			ctx.lineTo(sXcX(point.q.x), sYcY(point.q.y));
-			ctx.closePath();
-			ctx.stroke();
-		}
-	}
-}
-
 // --------------------------------------------------------------
 // Visual debugging
 // --------------------------------------------------------------
