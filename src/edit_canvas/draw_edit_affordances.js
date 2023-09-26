@@ -472,10 +472,15 @@ export function computeAndDrawPathPoints(ctx, drawAllPathPoints = false) {
 }
 
 export function drawPathPointHover(ctx, point) {
+	log(`drawPathPointHover`, 'start');
+	log(`\n⮟point⮟`);
+	log(point);
+	let size = canvasUIPointSize;
 	if (point) {
-		ctx.fillStyle = pointFill;
-		ctx.fillRect(point.x, point.y, point.size, point.size);
+		ctx.fillStyle = accentColors.blue.l85,
+		ctx.fillRect(point.x, point.y, size, size);
 	}
+	log(`drawPathPointHover`, 'end');
 }
 
 // --------------------------------------------------------------

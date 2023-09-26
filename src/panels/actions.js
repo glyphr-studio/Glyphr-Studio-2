@@ -104,7 +104,7 @@ export function getActionData(name) {
 					let newPath = editor.selectedItem.addOneShape(rectPathFromMaxes());
 					editor.history.addState(`Added a default rectangle path`);
 					editor.multiSelect.shapes.select(newPath);
-					editor.publish('whichPathIsSelected', newPath);
+					editor.publish('whichShapeIsSelected', newPath);
 					editor.publish('currentItem', editor.selectedItem);
 				},
 			},

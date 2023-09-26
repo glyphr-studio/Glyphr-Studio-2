@@ -60,7 +60,7 @@ export function makePanel_GlyphAttributes() {
 
 	// Subscribers
 	editor.subscribe({
-		topic: 'whichPathIsSelected',
+		topic: 'whichShapeIsSelected',
 		subscriberID: 'attributesPanel',
 		callback: () => {
 			refreshPanel();

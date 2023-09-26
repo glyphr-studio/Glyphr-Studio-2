@@ -53,7 +53,7 @@ export function makePanel_Layers() {
 			}
 
 			editor.subscribe({
-				topic: 'whichPathIsSelected',
+				topic: 'whichShapeIsSelected',
 				subscriberID: `layersPanel.item-link-row-${i}`,
 				callback: () => {
 					// log(`Layer subscription callback for selectedPath`, 'start');
@@ -68,7 +68,7 @@ export function makePanel_Layers() {
 
 			row.addEventListener('click', () => {
 				editor.multiSelect.shapes.select(item);
-				editor.publish('whichPathIsSelected', item);
+				editor.publish('whichShapeIsSelected', item);
 			});
 
 			const thumbnail = makeElement({

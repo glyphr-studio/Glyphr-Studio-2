@@ -83,7 +83,7 @@ export function makePage_Characters() {
 	panel.appendChild(makePanel());
 	panel.addEventListener('scroll', closeAllInfoBubbles);
 	editor.subscribe({
-		topic: ['whichGlyphIsSelected', 'whichPathIsSelected'],
+		topic: ['whichGlyphIsSelected', 'whichShapeIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
 		callback: () => {
 			refreshPanel();
@@ -118,7 +118,7 @@ export function makePage_Characters() {
 	});
 
 	editor.subscribe({
-		topic: 'whichPathIsSelected',
+		topic: 'whichShapeIsSelected',
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
 			removeStopCreatingNewPathButton();

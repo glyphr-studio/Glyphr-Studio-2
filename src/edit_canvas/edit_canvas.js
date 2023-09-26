@@ -12,6 +12,7 @@ import {
 	computeAndDrawPathPoints,
 	computeAndDrawRotationAffordance,
 	drawNewBasicPath,
+	drawPathPointHover,
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
 import { eventHandlerData, initEventHandlers } from './events.js';
@@ -163,6 +164,12 @@ export class EditCanvas extends HTMLElement {
 					computeAndDrawPathPointHandles(ctx);
 					computeAndDrawPathPoints(ctx);
 					// drawPathPointHover(ctx, eventHandlerData.hoverPoint);
+				}
+			} else if (editMode === 'pathAddPoint') {
+				drawSelectedPathOutline(ctx, view);
+				computeAndDrawPathPoints(ctx);
+				if (eventHandlerData.hoverPoint) {
+					drawPathPointHover(ctx, eventHandlerData.hoverPoint);
 				}
 			} else if (editMode === 'newPath') {
 				computeAndDrawPathPointHandles(ctx);

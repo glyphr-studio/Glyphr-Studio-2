@@ -1,6 +1,7 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement, textToNode } from '../../common/dom.js';
+import { round } from '../../common/functions.js';
 import { makeIcon } from '../../common/graphics.js';
 import { closeAllNavMenus } from '../../project_editor/navigator.js';
 
@@ -14,6 +15,7 @@ export function closeEveryTypeOfDialog() {
 	closeAllOptionChoosers();
 	closeAllErrors();
 	closeAllToasts();
+	closeAllNotations();
 	closeAllInfoBubbles();
 	// log(`closeEveryTypeOfDialog`, 'end');
 }
@@ -73,6 +75,10 @@ export function closeAllInfoBubbles() {
 	// log(`closeAllInfoBubbles`, 'end');
 }
 
+export function closeAllNotations() {
+	animateRemoveAll('#notation');
+}
+
 export function animateRemoveAll(query = '') {
 	let elements = document.querySelectorAll(query);
 	elements.forEach((elem) => animateRemove(elem));
@@ -128,6 +134,19 @@ export function showToast(message = '0_o', duration = 3000) {
 	element.style.display = 'block';
 	window.setTimeout(() => animateRemove(element), duration);
 	// log(`showToast`, 'end');
+}
+
+// --------------------------------------------------------------
+// Notation
+// --------------------------------------------------------------
+
+export function showNotation(content, x, y) {
+	document.body.focus();
+	var n = document.getElementById('notation');
+	n.innerHTML = content;
+	n.style.top = round(y) + 'px';
+	n.style.left = round(x + 50) + 'px';
+	n.style.display = 'block';
 }
 
 // --------------------------------------------------------------
