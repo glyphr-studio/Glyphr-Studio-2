@@ -54,10 +54,12 @@ const allTopics = [
  * @param {Object} data - whatever the new state is
  */
 export function publish(topic, data) {
-	// log(`ProjectEditor.publish`, 'start');
-	// log(`topic: ${topic}`);
-	// log(data);
-	// log(this.subscribers[topic]);
+	log(`ProjectEditor.publish`, 'start');
+	log(`topic: ${topic}`);
+	log(`\n⮟data⮟`);
+	log(data);
+	log(`\n⮟this.subscribers[topic]⮟`);
+	log(this.subscribers[topic]);
 
 	let subscribers = this.subscribers;
 	if (this.subscribers[topic]) {
@@ -170,7 +172,7 @@ export function publish(topic, data) {
 	}
 
 	function callCallbacksByTopic(callTopic, data) {
-		// log(`== calling callbacks ${topic} to ${callTopic}`);
+		log(`== calling callbacks ${topic} to ${callTopic}`);
 		if (subscribers[callTopic]) {
 			Object.keys(subscribers[callTopic]).forEach((subscriberID) => {
 				subscribers[callTopic][subscriberID](data);
@@ -178,7 +180,7 @@ export function publish(topic, data) {
 		}
 	}
 
-	// log(`ProjectEditor.publish`, 'end');
+	log(`ProjectEditor.publish`, 'end');
 }
 
 /**

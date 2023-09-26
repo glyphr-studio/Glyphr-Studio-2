@@ -122,9 +122,9 @@ function makeHandleGroup(h = 'h1', selectedPoint) {
 }
 
 function updateHandleGroup(h = 'h1', changedItem) {
-	// log(`updateHandleGroup`, 'start');
-	// log(`h: ${h}`);
-	// log(changedItem);
+	log(`updateHandleGroup`, 'start');
+	log(`h: ${h}`);
+	log(changedItem);
 
 	let handleGroup = document.getElementById(`${h}Group`);
 	if (handleGroup) {
@@ -143,7 +143,7 @@ function updateHandleGroup(h = 'h1', changedItem) {
 			handleInputGroupY.setAttribute('value', changedItem[h].y);
 		}
 	}
-	// log(`updateHandleGroup`, 'end');
+	log(`updateHandleGroup`, 'end');
 }
 export function makeCard_multiSelectPathPointAttributes(virtualShape) {
 	// log(`makeCard_multiSelectPathPointAttributes`, 'start');

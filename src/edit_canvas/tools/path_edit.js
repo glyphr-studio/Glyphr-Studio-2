@@ -7,8 +7,6 @@ import { cXsX, cYsY } from '../edit_canvas.js';
 import { setCursor } from '../cursors.js';
 import {
 	isOverControlPoint,
-	isOverGlyphControlPoint,
-	isOverOneOfThese,
 } from '../detect_edit_affordances.js';
 import { checkForMouseOverHotspot, clickEmptySpace } from '../events_mouse.js';
 import { getShapeAtLocation } from './tools.js';
