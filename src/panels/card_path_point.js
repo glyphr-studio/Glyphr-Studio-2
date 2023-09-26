@@ -2,12 +2,7 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors } from '../common/colors.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeActionsArea_PathPoint } from './actions.js';
-import {
-	makeInputs_position,
-	makeSingleCheckbox,
-	makeSingleLabel,
-	rowPad,
-} from './cards.js';
+import { makeInputs_position, makeSingleCheckbox, makeSingleLabel, rowPad } from './cards.js';
 
 // --------------------------------------------------------------
 // Path Point attributes
@@ -49,25 +44,27 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 			editor.publish('currentPathPoint', selectedPoint);
 		}),
 	]);
+
 	editor.subscribe({
 		topic: 'currentPathPoint',
 		subscriberID: 'pointTypeButtons',
-		callback: (changedItem) => {
-			// log(`pointTypeButton subscriber callback`, 'start');
-			// log(changedItem);
+		callback: (changedPathPoint) => {
+			// log(`pointTypeButton CALLBACK`, 'start');
+			// log(`\n⮟changedPathPoint⮟`);
+			// log(changedPathPoint);
 
 			// Update Point Type
-			if (document.getElementById(`pointTypeButton-${changedItem.type}`)) {
+			if (document.getElementById(`pointTypeButton-${changedPathPoint.type}`)) {
 				document.getElementById(`pointTypeButton-symmetric`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-flat`).removeAttribute('selected');
 				document.getElementById(`pointTypeButton-corner`).removeAttribute('selected');
-				document.getElementById(`pointTypeButton-${changedItem.type}`).setAttribute('selected', '');
+				document.getElementById(`pointTypeButton-${changedPathPoint.type}`).setAttribute('selected', '');
 			}
 
-			updateHandleGroup('h1', changedItem);
-			updateHandleGroup('h2', changedItem);
+			updateHandleGroup('h1', changedPathPoint);
+			updateHandleGroup('h2', changedPathPoint);
 
-			// log(`pointTypeButton subscriber callback`, 'end');
+			// log(`pointTypeButton CALLBACK`, 'end');
 		},
 	});
 
@@ -90,7 +87,7 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 function makeHandleGroup(h = 'h1', selectedPoint) {
 	// Checkbox and title
 	let useHandleLabel = makeElement({ className: 'pre-checkbox' });
-	let useHandleCheckbox = makeSingleCheckbox(selectedPoint[h], 'use', `currentControlPoint.${h}`);
+	let useHandleCheckbox = makeSingleCheckbox(selectedPoint[h], 'use', `currentPathPoint`);
 	if (selectedPoint.type !== 'corner') useHandleCheckbox.setAttribute('disabled', '');
 	addAsChildren(useHandleLabel, [
 		useHandleCheckbox,
@@ -105,15 +102,18 @@ function makeHandleGroup(h = 'h1', selectedPoint) {
 	let hPosition = makeInputs_position(selectedPoint[h], h);
 	addAsChildren(handleInputGroup, hPosition);
 
-	let otherHandle = h === 'h1' ? 'h2' : 'h1';
 	getCurrentProjectEditor().subscribe({
-		topic: `currentControlPoint.${h}`,
-		subscriberID: `controlPointInput.${h}`,
-		callback: (changedControlPoint) => {
-			let parent = changedControlPoint.parent;
-			if (parent.type === 'symmetric') parent.makeSymmetric(h);
-			if (parent.type === 'flat') parent.makeFlat(h);
-			updateHandleGroup(otherHandle, parent);
+		topic: `currentPathPoint`,
+		subscriberID: `controlPointInputGroup.${h}`,
+		callback: (changedPathPoint) => {
+			// log(`controlPointInputGroup ${h} CALLBACK`, 'start');
+			// log(`\n⮟changedPathPoint⮟`);
+			// log(changedPathPoint);
+			if (changedPathPoint.type === 'symmetric') changedPathPoint.makeSymmetric(h);
+			if (changedPathPoint.type === 'flat') changedPathPoint.makeFlat(h);
+			updateHandleGroup('h1', changedPathPoint);
+			updateHandleGroup('h2', changedPathPoint);
+			// log(`controlPointInputGroup ${h} CALLBACK`, 'end');
 		},
 	});
 
@@ -122,28 +122,34 @@ function makeHandleGroup(h = 'h1', selectedPoint) {
 }
 
 function updateHandleGroup(h = 'h1', changedItem) {
-	log(`updateHandleGroup`, 'start');
-	log(`h: ${h}`);
-	log(changedItem);
+	// log(`updateHandleGroup`, 'start');
+	// log(`h: ${h}`);
+	// log(`\n⮟changedItem⮟`);
+	// log(changedItem);
+	let changedPathPoint = changedItem;
+	if (changedItem.objType === 'ControlPoint') {
+		changedPathPoint = changedItem.parent;
+	}
 
 	let handleGroup = document.getElementById(`${h}Group`);
 	if (handleGroup) {
-		let handleUse = changedItem[h].use;
+		let handleUse = changedPathPoint[h].use;
+		// log(`handleUse: ${handleUse}`);
 		let handleCheckbox = handleGroup.querySelector('input');
 		handleCheckbox.removeAttribute('checked');
 		handleCheckbox.removeAttribute('disabled');
 		if (handleUse) {
 			handleCheckbox.setAttribute('checked', '');
-			if (changedItem.type !== 'corner') handleCheckbox.setAttribute('disabled', '');
+			if (changedPathPoint.type !== 'corner') handleCheckbox.setAttribute('disabled', '');
 			let handleInputGroup = document.getElementById(`${h}InputGroup`);
 			handleInputGroup.style.display = 'grid';
 			let handleInputGroupX = handleInputGroup.querySelectorAll('input-number')[0];
-			handleInputGroupX.setAttribute('value', changedItem[h].x);
+			handleInputGroupX.setAttribute('value', changedPathPoint[h].x);
 			let handleInputGroupY = handleInputGroup.querySelectorAll('input-number')[1];
-			handleInputGroupY.setAttribute('value', changedItem[h].y);
+			handleInputGroupY.setAttribute('value', changedPathPoint[h].y);
 		}
 	}
-	log(`updateHandleGroup`, 'end');
+	// log(`updateHandleGroup`, 'end');
 }
 export function makeCard_multiSelectPathPointAttributes(virtualShape) {
 	// log(`makeCard_multiSelectPathPointAttributes`, 'start');

@@ -12,7 +12,9 @@ export function makeInputs_position(item, labelPrefix = '', additionalTopics = [
 	// log(`x: ${round(x, 3)}`);
 	// log(`y: ${round(y, 3)}`);
 	let thisTopic = `current${item.objType}`;
-	if (item.type) thisTopic += `.${item.type}`;
+	if (thisTopic === 'currentControlPoint') {
+		thisTopic = `currentPathPoint.${item.type}`;
+	}
 	let topics = [thisTopic].concat(additionalTopics);
 
 	if (labelPrefix) labelPrefix += ':&ensp;';
@@ -104,17 +106,17 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 	}
 
 	function changeHappened(event) {
-		log(`makeSingleInput.changeHappened event`, 'start');
-		log(event);
+		// log(`makeSingleInput.changeHappened event`, 'start');
+		// log(event);
 
 		if (item.isLockable && item.isLocked(property)) return;
 		// let newValue = event.target.getAttribute('value');
 		let newValue = event.target.value;
-		log(`\n⮟item⮟`);
-		log(item);
-		log(`property: ${property}`);
-		log(`newValue: ${newValue}`);
-		log(`thisTopic: ${thisTopic}`);
+		// log(`\n⮟item⮟`);
+		// log(item);
+		// log(`property: ${property}`);
+		// log(`newValue: ${newValue}`);
+		// log(`thisTopic: ${thisTopic}`);
 
 		const editor = getCurrentProjectEditor();
 		// Update the view so that the glyph stays put
@@ -154,7 +156,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			// log(`thisTopic: ${thisTopic}`);
 			topics.forEach((topic) => editor.publish(topic, item));
 		}
-		log(`makeSingleInput.changeHappened event`, 'end');
+		// log(`makeSingleInput.changeHappened event`, 'end');
 	}
 
 	newInput.addEventListener('change', changeHappened);
@@ -169,20 +171,23 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 		subscriberID: `attributesPanel.${topics[0]}.${property}`,
 		callback: (changedItem) => {
 			// log(`SINGLE INPUT SUBSCRIPTION CALLBACK`, 'start');
+			// log(`property: ${property}`);
+			// log(`topics[0]: ${topics[0]}`);
 			// log(`attributesPanel.${topics[0]}.${property}`);
 			// log(changedItem);
-			// log(`property: ${property}`);
-			// log(`changedItem.property: ${changedItem[property]}`);
+			if (changedItem) {
+				// log(`changedItem.property: ${changedItem[property]}`);
 
-			if (changedItem[property] || changedItem[property] === 0) {
-				// log(`value OLD: ${newInput.value}`);
-				let newValue;
-				if (tagName === 'input') newValue = changedItem[property];
-				else newValue = round(changedItem[property], 3);
-				// log(`newValue: ${newValue}`);
-				newInput.value = newValue;
-				newInput.setAttribute('value', newValue);
-				// log(`value NEW: ${newInput.value}`);
+				if (changedItem[property] || changedItem[property] === 0) {
+					// log(`value OLD: ${newInput.value}`);
+					let newValue;
+					if (tagName === 'input') newValue = changedItem[property];
+					else newValue = round(changedItem[property], 3);
+					// log(`newValue: ${newValue}`);
+					newInput.value = newValue;
+					newInput.setAttribute('value', newValue);
+					// log(`value NEW: ${newInput.value}`);
+				}
 			}
 			// log(`SINGLE INPUT SUBSCRIPTION CALLBACK`, 'end');
 		},

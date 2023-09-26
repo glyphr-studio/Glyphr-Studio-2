@@ -23,7 +23,6 @@ import { glyphChanged } from './cross_item_actions.js';
 		* - 		'currentVirtualShape' - edits to the current multi-selected path points.
 		* - 		'currentComponentInstance' - edits to the current instance
 		* - 		'currentPathPoint' - edits to the current point.
-		* - 		'currentControlPoint.p / .h1 / .h2' - edits to the current p/h1/h2.
 */
 const allTopics = [
 	'editCanvasView',
@@ -44,7 +43,9 @@ const allTopics = [
 	'currentVirtualShape',
 	'currentComponentInstance',
 	'currentPathPoint',
-	'currentControlPoint',
+	'currentPathPoint.p',
+	'currentPathPoint.h1',
+	'currentPathPoint.h2',
 ];
 
 /**
@@ -54,19 +55,24 @@ const allTopics = [
  * @param {Object} data - whatever the new state is
  */
 export function publish(topic, data) {
-	log(`ProjectEditor.publish`, 'start');
-	log(`topic: ${topic}`);
-	log(`\n⮟data⮟`);
-	log(data);
-	log(`\n⮟this.subscribers[topic]⮟`);
-	log(this.subscribers[topic]);
+	// log(`ProjectEditor.publish`, 'start');
+	// log(`topic: ${topic}`);
+	// log(`\n⮟data⮟`);
+	// log(data);
 
 	let subscribers = this.subscribers;
-	if (this.subscribers[topic]) {
-		// Iterate through all the callbacks
+	// log(`\n⮟subscribers[topic]⮟`);
+	// log(subscribers[topic]);
+
+	if (subscribers[topic]) {
+		// --------------------------------------------------------------
+		// Call callbacks that are directly called out by the topic
+		// --------------------------------------------------------------
 		callCallbacksByTopic(topic, data);
 
-		// Handle some things centrally
+		// --------------------------------------------------------------
+		// Some topics imply common behavior
+		// --------------------------------------------------------------
 		if (topic === 'whichToolIsSelected') {
 			// log(`PubSub publish whichToolIsSelected: ${data}`);
 		}
@@ -92,11 +98,18 @@ export function publish(topic, data) {
 			//anything?
 		}
 
+
+
+		// ----------------------------------------------------------------------------
+		// Call topics based on generic / specific topics, and  Glyph Element hierarchy
+		// ----------------------------------------------------------------------------
 		/*
-		PubSub allows for topics to be either a generic 'selectedItem'
-		topic, or a specific 'selectedGlyph' / 'selectedComponent' / 'selectedLigature'
-		topic. In both cases, when the specific case is called, so must the
-		generic case - and vise versa.
+			PubSub allows for topics to be either a generic 'selectedItem' topic,
+			or a specific 'selectedGlyph' / 'selectedComponent' / 'selectedLigature' topic.
+			In both cases, when the specific case is called, so must the generic case,
+			and if the generic case is called, so must the specific case.
+			Also, Glyph Element items will call topics for their ancestor chain and other
+			related / dependent topics.
 		*/
 
 		let specificItem = false;
@@ -143,36 +156,29 @@ export function publish(topic, data) {
 			callCallbacksByTopic(specificItem, data.parent);
 		}
 
-		if (topic === 'currentPathPoint') {
+		if (topic.includes('currentPathPoint')) {
 			// if a PathPoint changes, then so must the Path and Item also
 			callCallbacksByTopic('currentPath', data.parent);
 			callCallbacksByTopic('currentItem', data.parent.parent);
 			callCallbacksByTopic(specificItem, data.parent.parent);
-		}
-
-		if (topic.includes('currentControlPoint')) {
-			// if a PathPoint changes, then so must the Path and Item also
-			callCallbacksByTopic('currentPathPoint', data.parent);
-			callCallbacksByTopic('currentPath', data.parent.parent);
-			callCallbacksByTopic('currentItem', data.parent.parent.parent);
-			callCallbacksByTopic(specificItem, data.parent.parent.parent);
-
-			if (topic === 'currentControlPoint.p') {
-				callCallbacksByTopic('currentControlPoint.p', data.parent.p);
-				callCallbacksByTopic('currentControlPoint.h1', data.parent.h1);
-				callCallbacksByTopic('currentControlPoint.h2', data.parent.h2);
+			if (topic === 'currentPathPoint') {
+				callCallbacksByTopic('currentPathPoint.p', data.p);
+				callCallbacksByTopic('currentPathPoint.h1', data.h1);
+				callCallbacksByTopic('currentPathPoint.h2', data.h2);
 			}
-			if (topic === 'currentControlPoint.h1')
-				callCallbacksByTopic('currentControlPoint.h1', data.parent.h1);
-			if (topic === 'currentControlPoint.h2')
-				callCallbacksByTopic('currentControlPoint.h2', data.parent.h2);
+			if (topic === 'currentPathPoint.p') {
+				callCallbacksByTopic('currentPathPoint', data.parent);
+				callCallbacksByTopic('currentPathPoint.p', data);
+				callCallbacksByTopic('currentPathPoint.h1', data.parent.h1);
+				callCallbacksByTopic('currentPathPoint.h2', data.parent.h2);
+			}
 		}
 	} else {
 		// console.warn(`Nobody subscribed to topic ${topic}`);
 	}
 
 	function callCallbacksByTopic(callTopic, data) {
-		log(`== calling callbacks ${topic} to ${callTopic}`);
+		// log(`== calling callbacks ${topic} to ${callTopic}`);
 		if (subscribers[callTopic]) {
 			Object.keys(subscribers[callTopic]).forEach((subscriberID) => {
 				subscribers[callTopic][subscriberID](data);
@@ -180,7 +186,7 @@ export function publish(topic, data) {
 		}
 	}
 
-	log(`ProjectEditor.publish`, 'end');
+	// log(`ProjectEditor.publish`, 'end');
 }
 
 /**

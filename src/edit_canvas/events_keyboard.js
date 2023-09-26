@@ -266,7 +266,7 @@ function nudge(dx, dy) {
 			editor.publish('currentItem', editor.selectedItem);
 		} else if (msPoints.singleton) {
 			editor.history.addState(`Nudged path point by ${mx}, ${my}`);
-			editor.publish('currentPathPoint.p', msPoints.singleton);
+			editor.publish('currentPathPoint', msPoints.singleton);
 		}
 		editor.editCanvas.redraw({ calledBy: 'Nudge path point' });
 	}
