@@ -111,7 +111,7 @@ export function makeEditToolsButtons() {
 	}
 
 	if (onGlyphEditPage || onComponentPage || onLigaturesPage) {
-		// content.push(toolButtonElements.pathAddPoint);
+		content.push(toolButtonElements.pathAddPoint);
 		content.push(makeElement({ tag: 'div', style: 'height: 20px;' }));
 		content.push(toolButtonElements.pathEdit);
 		content.push(toolButtonElements.resize);

@@ -120,7 +120,7 @@ export function makePage_Components() {
 	panel.appendChild(makePanel());
 	panel.addEventListener('scroll', closeAllInfoBubbles);
 	editor.subscribe({
-		topic: ['whichComponentIsSelected', 'whichPathIsSelected'],
+		topic: ['whichComponentIsSelected', 'whichShapeIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
 		callback: () => {
 			refreshPanel();
@@ -155,7 +155,7 @@ export function makePage_Components() {
 	});
 
 	editor.subscribe({
-		topic: 'whichPathIsSelected',
+		topic: 'whichShapeIsSelected',
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
 			removeStopCreatingNewPathButton();

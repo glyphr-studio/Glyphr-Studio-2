@@ -6,6 +6,7 @@ import {
 	strSan,
 	xyPointsAreClose,
 } from '../common/functions.js';
+import { ControlPoint } from './control_point.js';
 import { GlyphElement } from './glyph_element.js';
 import { Maxes, getOverallMaxes, isAllZeros } from './maxes.js';
 import { PathPoint } from './path_point.js';
@@ -1032,10 +1033,11 @@ export class Path extends GlyphElement {
 	 * @param {Number} pointNumber - point number before the new split
 	 * @returns {PathPoint} - reference to the added path point
 	 */
-	insertPathPoint(pointNumber = 0, t = 0.5) {
+	insertPathPoint(pointNumber = 0, t = 0.5, round = false) {
 		// log(`Path.insertPathPoint`, 'start');
 		// log(`pointNumber: ${pointNumber}`);
 		// log(`t: ${t}`);
+		// log(`round: ${round}`);
 
 		const pp1 = pointNumber === false ? this.pathPoints[0] : this.pathPoints[pointNumber];
 		const pp2i = this.getNextPointNum(pointNumber);
@@ -1071,16 +1073,21 @@ export class Path extends GlyphElement {
 		} else {
 			// just make a random point
 			const d = 100;
-			nP = { coord: { x: pp1.p.x + d, y: pp1.p.y + d } };
-			nH1 = { coord: { x: pp1.h2.x + d, y: pp1.h2.y + d } };
-			nH2 = { coord: { x: pp1.h1.x + d, y: pp1.h1.y + d } };
+			nP = new ControlPoint({ coord: { x: pp1.p.x + d, y: pp1.p.y + d } });
+			nH1 = new ControlPoint({ coord: { x: pp1.h2.x + d, y: pp1.h2.y + d } });
+			nH2 = new ControlPoint({ coord: { x: pp1.h1.x + d, y: pp1.h1.y + d } });
 			ppn = new PathPoint({ p: nP, h1: nH1, h2: nH2, type: pp1.type });
 		}
+
+		// Round
+		if (round) ppn.roundAll(0);
 
 		// Insert
 		ppn.parent = this;
 		this.pathPoints.splice(pp2i, 0, ppn);
-		// this.selectPathPoint(pp2i);
+
+		// log(`\n⮟ppn⮟`);
+		// log(ppn);
 
 		// log(`Path.insertPathPoint`, 'end');
 		return ppn;
@@ -1093,6 +1100,9 @@ export class Path extends GlyphElement {
 	 * @returns {Object}
 	 */
 	findClosestPointOnCurve(point = new XYPoint(), wantSecond = false) {
+		// log(`Path.findClosestPointOnCurve`, 'start');
+		// log(`point.x: ${point.x}`);
+		// log(`point.y: ${point.y}`);
 		let grains = 10000;
 		let first = false;
 		let second = false;
@@ -1123,7 +1133,11 @@ export class Path extends GlyphElement {
 				}
 			}
 		}
-		return wantSecond ? second : first;
+		let result = wantSecond ? second : first;
+		// log(`\n⮟result⮟`);
+		// log(result);
+		// log(`Path.findClosestPointOnCurve`, 'end');
+		return result;
 	}
 
 	/**

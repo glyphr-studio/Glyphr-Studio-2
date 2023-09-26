@@ -3,7 +3,7 @@
 // ----------------------------------------------------------------
 
 import { getCurrentProjectEditor } from '../../app/main.js';
-import { accentColors } from '../../common/colors.js';
+import { round } from '../../common/functions.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
@@ -11,25 +11,36 @@ import { clickTool, getShapeAtLocation } from './tools.js';
 
 export class Tool_PathAddPoint {
 	constructor() {
-		this.addPoint = false;
+		this.previewPoint = false;
 		this.mousedown = function (ev) {
 			const editor = getCurrentProjectEditor();
 			let singlePath = editor.multiSelect.shapes.singleton;
-			let s = getShapeAtLocation(
+			let clickedShape = getShapeAtLocation(
 				eventHandlerData.mousePosition.x,
 				eventHandlerData.mousePosition.y
 			);
 
-			if (this.addPoint && singlePath && singlePath.objType !== 'ComponentInstance') {
-				let p = singlePath.insertPathPoint(this.addPoint.point, this.addPoint.split);
-				if (p) editor.multiSelect.points.select(p);
-				// editor.history.addState('Added point to path');
-			} else if (s) {
+			if (this.previewPoint && singlePath && singlePath.objType !== 'ComponentInstance') {
+				let addedPoint = singlePath.insertPathPoint(
+					this.previewPoint.point,
+					this.previewPoint.split,
+					eventHandlerData.isShiftDown
+				);
+				if (addedPoint) {
+					editor.multiSelect.points.select(addedPoint);
+					editor.publish('currentPath', singlePath);
+					editor.history.addState('Added point to path');
+				}
+			} else if (clickedShape) {
 				editor.multiSelect.points.clear();
-				if (eventHandlerData.isCtrlDown) editor.multiSelect.shapes.add(s);
-				else editor.multiSelect.shapes.select(s);
-
-				if (s.objType === 'ComponentInstance') clickTool('pathEdit');
+				if (eventHandlerData.isCtrlDown) editor.multiSelect.shapes.add(clickedShape);
+				else editor.multiSelect.shapes.select(clickedShape);
+				if (clickedShape.objType === 'ComponentInstance') {
+					clickTool('pathEdit');
+					editor.publish('currentComponentInstance');
+				} else {
+					editor.publish('whichShapeIsSelected');
+				}
 				editor.nav.panel = 'Attributes';
 			} else {
 				editor.selectedTool = 'newPath';
@@ -40,7 +51,6 @@ export class Tool_PathAddPoint {
 			}
 
 			eventHandlerData.hoverPoint = false;
-			editor.redraw({ calledBy: 'Tool_PathAddPoint.mousedown' });
 		};
 
 		this.mousemove = function () {
@@ -51,29 +61,28 @@ export class Tool_PathAddPoint {
 					x: cXsX(eventHandlerData.mousePosition.x),
 					y: cYsY(eventHandlerData.mousePosition.y),
 				});
+				if (eventHandlerData.isShiftDown) {
+					pt.x = round(pt.x);
+					pt.y = round(pt.y);
+				}
 				if (pt && pt.distance < 20) {
-					this.addPoint = pt;
+					this.previewPoint = pt;
 					let ptx = sXcX(pt.x) - canvasUIPointSize / 2;
 					let pty = sYcY(pt.y) - canvasUIPointSize / 2;
-					// openNotation('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3), ptx, pty);
-					eventHandlerData.hoverPoint = {
-						fill: accentColors.blue.l75,
-						x: ptx,
-						y: pty,
-						size: canvasUIPointSize,
-					};
+					// showNotation('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3), ptx, pty);
+					eventHandlerData.hoverPoint = { x: ptx, y: pty };
 				} else {
-					this.addPoint = false;
+					this.previewPoint = false;
 					eventHandlerData.hoverPoint = false;
-					// closeNotation();
+					// closeAllNotations();
 				}
 			} else {
-				this.addPoint = false;
+				this.previewPoint = false;
 				eventHandlerData.hoverPoint = false;
-				// closeNotation();
+				// closeAllNotations();
 			}
 
-			editor.redraw({ calledBy: 'Tool_PathAddPoint.mousemove', redrawPanels: false });
+			editor.editCanvas.redraw();
 		};
 
 		this.mouseup = function () {};

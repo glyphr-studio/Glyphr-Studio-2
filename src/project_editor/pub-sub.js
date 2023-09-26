@@ -11,7 +11,7 @@ import { glyphChanged } from './cross_item_actions.js';
 		* - 'whichLigatureIsSelected' - change to which Ligature is being edited.
 		* - 'whichComponentIsSelected' - change to which Component is being edited.
 		* - 'whichKernGroupIsSelected' - change to which Kern Group is being edited.
-		* - 'whichPathIsSelected' - change to which path is being edited.
+		* - 'whichShapeIsSelected' - change to which path is being edited.
 		* - 'whichPathPointIsSelected' - change to which point is being edited.
 		* - 'currentItem' - edits to the current glyph, ligature, or component.
 		* - 		'currentGlyph' - edits to the current Glyph
@@ -31,7 +31,7 @@ const allTopics = [
 	'whichLigatureIsSelected',
 	'whichComponentIsSelected',
 	'whichKernGroupIsSelected',
-	'whichPathIsSelected',
+	'whichShapeIsSelected',
 	'whichPathPointIsSelected',
 	'currentItem',
 	'currentGlyph',
@@ -90,7 +90,7 @@ export function publish(topic, data) {
 			this.multiSelect.points.clear();
 		}
 
-		if (topic === 'whichPathIsSelected') {
+		if (topic === 'whichShapeIsSelected') {
 			// this.multiSelect.points.clear();
 		}
 

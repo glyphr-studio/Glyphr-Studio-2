@@ -349,7 +349,7 @@ export class MultiSelectShapes extends MultiSelect {
 		return result;
 	}
 
-	publishChanges(topic = 'whichPathIsSelected') {
+	publishChanges(topic = 'whichShapeIsSelected') {
 		const editor = getCurrentProjectEditor();
 		editor.publish(topic, this.members);
 	}

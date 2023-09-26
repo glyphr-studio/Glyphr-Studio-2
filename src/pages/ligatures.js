@@ -125,7 +125,7 @@ export function makePage_Ligatures() {
 	panel.appendChild(makePanel());
 	panel.addEventListener('scroll', closeAllInfoBubbles);
 	editor.subscribe({
-		topic: ['whichLigatureIsSelected', 'whichPathIsSelected'],
+		topic: ['whichLigatureIsSelected', 'whichShapeIsSelected'],
 		subscriberID: 'nav.panelChooserButton',
 		callback: () => {
 			refreshPanel();
@@ -160,7 +160,7 @@ export function makePage_Ligatures() {
 	});
 
 	editor.subscribe({
-		topic: 'whichPathIsSelected',
+		topic: 'whichShapeIsSelected',
 		subscriberID: 'editCanvas.selectedPath',
 		callback: () => {
 			removeStopCreatingNewPathButton();
