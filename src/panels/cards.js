@@ -104,17 +104,17 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 	}
 
 	function changeHappened(event) {
-		// log(`makeSingleInput.changeHappened event`, 'start');
-		// log(event);
+		log(`makeSingleInput.changeHappened event`, 'start');
+		log(event);
 
 		if (item.isLockable && item.isLocked(property)) return;
 		// let newValue = event.target.getAttribute('value');
 		let newValue = event.target.value;
-		// log(`\n⮟item⮟`);
-		// log(item);
-		// log(`property: ${property}`);
-		// log(`newValue: ${newValue}`);
-		// log(`thisTopic: ${thisTopic}`);
+		log(`\n⮟item⮟`);
+		log(item);
+		log(`property: ${property}`);
+		log(`newValue: ${newValue}`);
+		log(`thisTopic: ${thisTopic}`);
 
 		const editor = getCurrentProjectEditor();
 		// Update the view so that the glyph stays put
@@ -154,7 +154,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			// log(`thisTopic: ${thisTopic}`);
 			topics.forEach((topic) => editor.publish(topic, item));
 		}
-		// log(`makeSingleInput.changeHappened event`, 'end');
+		log(`makeSingleInput.changeHappened event`, 'end');
 	}
 
 	newInput.addEventListener('change', changeHappened);

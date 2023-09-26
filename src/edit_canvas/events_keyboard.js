@@ -247,21 +247,27 @@ function nudge(dx, dy) {
 	// log(`editMode: ${editMode}`);
 
 	if (editMode === 'kern') {
-		editor.selectedKernGroup.value += (mx || my);
-		editor.history.addState(`Nudged kern group ${editor.selectedKernGroupID} by ${mx}`);
-		editor.publish('selectedKernGroup', editor.selectedKernGroup);
+		let delta = mx || my;
+		editor.selectedKernGroup.value += delta;
+		editor.history.addState(`Nudged kern group ${editor.selectedKernGroupID} by ${delta}`);
+		editor.publish('currentKernGroup', editor.selectedKernGroup);
 		editor.editCanvas.redraw({ calledBy: 'Nudge kern value', redrawPanels: false });
 	} else if (editMode === 'arrow') {
-		editor.multiSelect.shapes.updateShapePosition(mx, my);
+		const msShapes = editor.multiSelect.shapes;
+		msShapes.updateShapePosition(mx, my);
 		editor.history.addState(`Nudged shape(s) by ${mx}, ${my}`);
-		editor.publish('selectedShape', editor.selectedItem);
+		editor.publish('currentShape', editor.selectedItem); // needs to be shape
 		editor.editCanvas.redraw({ calledBy: 'Nudge shape' });
 	} else if (editMode === 'pen') {
-		editor.multiSelect.points.members.forEach(point => {
-			point.updatePathPointPosition('p', mx, my);
-		});
-		editor.history.addState(`Nudged path point(s) by ${mx}, ${my}`);
-		editor.publish('selectedPathPoint', editor.selectedItem);
+		const msPoints = editor.multiSelect.points;
+		msPoints.members.forEach((point) => point.updatePathPointPosition('p', mx, my));
+		if (msPoints.members.length > 1) {
+			editor.history.addState(`Nudged path points by ${mx}, ${my}`);
+			editor.publish('currentItem', editor.selectedItem);
+		} else if (msPoints.singleton) {
+			editor.history.addState(`Nudged path point by ${mx}, ${my}`);
+			editor.publish('currentPathPoint.p', msPoints.singleton);
+		}
 		editor.editCanvas.redraw({ calledBy: 'Nudge path point' });
 	}
 	// log(`events_keyboard Nudge`, 'end');
