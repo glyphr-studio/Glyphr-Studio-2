@@ -1,8 +1,8 @@
+import { clone, duplicates, numSan, round, xyPointsAreClose } from '../common/functions.js';
 import { GlyphElement } from './glyph_element.js';
-import { XYPoint } from './xy_point.js';
-import { Segment } from './segment.js';
 import { maxesOverlap } from './maxes.js';
-import { duplicates, clone, xyPointsAreClose, round, numSan } from '../common/functions.js';
+import { Segment } from './segment.js';
+import { XYPoint } from './xy_point.js';
 
 /**
  * Glyph Element > Poly Segment
@@ -422,17 +422,25 @@ export class PolySegment extends GlyphElement {
 		for (let s = 0; s < this._segments.length; s++) {
 			for (let t = 0; t < this._segments.length; t++) {
 				if (s !== t && this._segments[s] && this._segments[t]) {
+					let sSeg = this._segments[s];
+					let tSeg = this._segments[t];
 					// try one way
-					if (this._segments[s].isLineOverlappedByLine(this._segments[t])) {
-						this._segments[s].objType = 'REDUNDANT';
+					if (sSeg.isLineOverlappedByLine(tSeg)) {
+						sSeg.objType = 'REDUNDANT';
 					}
 					// try other way
-					if (this._segments[t].isLineOverlappedByLine(this._segments[s])) {
-						this._segments[t].objType = 'REDUNDANT';
+					if (tSeg.isLineOverlappedByLine(sSeg)) {
+						tSeg.objType = 'REDUNDANT';
+					}
+					// exactly overlapping
+					if (tSeg.objType === 'Segment' && sSeg.objType === 'Segment') {
+						if (segmentsAreEqual(sSeg, tSeg)) {
+							sSeg.objType = 'DUPLICATE'
+						}
 					}
 				}
-				// log(`Seg ${s} ${this._segments[s].objType}`);
 			}
+			// log(`Seg ${s} ${this._segments[s].objType}`);
 		}
 
 		this._segments = this._segments.filter(function (v) {
@@ -440,27 +448,6 @@ export class PolySegment extends GlyphElement {
 		});
 		// log('PolySegment.removeRedundantLineSegments', 'end');
 
-		return this;
-	}
-
-	/**
-	 * Removes all duplicate segments
-	 * @returns {PolySegment}
-	 */
-	removeDuplicateSegments() {
-		// // log('PolySegment.removeDuplicateSegments', 'start');
-		this._segments = this._segments.filter((segment, index) => {
-			for (let j = 0; j < this._segments.length; j++) {
-				if (j !== index) {
-					if (segmentsAreEqual(segment, this._segments[j])) {
-						return false;
-					}
-				}
-			}
-			return true;
-		});
-
-		// log('PolySegment.removeDuplicateSegments', 'end');
 		return this;
 	}
 
@@ -523,7 +510,7 @@ export class PolySegment extends GlyphElement {
 	 */
 	combineInlineSegments() {
 		// log(`PolySegment.combineInlineSegments`, 'start');
-		let startLength = this.segments.length;
+		// let startLength = this.segments.length;
 		let thisSegment, nextSegment;
 
 		for (let s = 0; s < this.segments.length; s++) {

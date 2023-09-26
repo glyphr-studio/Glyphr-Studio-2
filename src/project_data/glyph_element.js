@@ -1,4 +1,4 @@
-import { json, clone } from '../common/functions.js';
+import { clone, json } from '../common/functions.js';
 
 /**
  * Base for all Glyph Elements

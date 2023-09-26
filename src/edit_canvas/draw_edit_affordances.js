@@ -1,11 +1,10 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import {
-	radiansToNiceAngle,
 	calculateAngle,
 	calculateLength,
-	clone,
 	makeCrisp,
+	radiansToNiceAngle,
 	rotate,
 	round,
 	snapRadiansToDegrees,

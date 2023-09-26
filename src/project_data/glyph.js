@@ -1,10 +1,10 @@
+import { hexesToChars } from '../common/character_ids.js';
+import { hasNonValues, isVal, remove, trim } from '../common/functions.js';
+import { getUnicodeName } from '../lib/unicode_names.js';
+import { ComponentInstance } from './component_instance.js';
 import { GlyphElement } from './glyph_element.js';
 import { getOverallMaxes, isAllZeros, Maxes } from './maxes.js';
 import { Path } from './path.js';
-import { ComponentInstance } from './component_instance.js';
-import { hasNonValues, isVal, json, remove, trim } from '../common/functions.js';
-import { hexesToChars } from '../common/character_ids.js';
-import { getUnicodeName } from '../lib/unicode_names.js';
 
 /**
  * Glyph Element > Glyph
