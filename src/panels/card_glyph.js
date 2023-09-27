@@ -62,7 +62,7 @@ export function makeCard_glyphAttributes(glyph) {
 				glyph, but it's helpful to think about them as if they were.
 				<br>
 				<h2>Left side bearing</h2>
-				Distance from x=0 and the leftmost side of shapes in the glyph.
+				Distance from x=0 to the leftmost side of shapes in the glyph.
 				Editing this will move all the shapes in the glyph, and update
 				the Advance Width.
 				<br>

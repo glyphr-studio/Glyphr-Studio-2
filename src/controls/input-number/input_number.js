@@ -259,15 +259,26 @@ export class InputNumber extends HTMLElement {
 	}
 
 	/**
+	 * Update all the internal stuff to reflect a new value
+	 */
+	updateToNewValue(newValue, dispatch = true) {
+		// log(`updateToNewValue`, 'start');
+		// log(`newValue: ${newValue}`);
+		this.setAttribute('value', newValue);
+		this.value = newValue;
+		if(dispatch) this.dispatchEvent(new Event('change'));
+		this.numberInput.value = newValue;
+		// log(`updateToNewValue`, 'end');
+	}
+
+	/**
 	 * Handle onChange event
 	 */
 	numberInputChanged(ev) {
 		// log(`InputNumber.numberInputChanged`, 'start');
 		// log(`for < ${this.elementRoot.getAttribute('class')} >`);
 		let newValue = this.elementRoot.sanitizeValue(ev.target.value);
-		this.elementRoot.setAttribute('value', newValue);
-		this.elementRoot.value = newValue;
-		this.elementRoot.dispatchEvent(new Event('change'));
+		this.elementRoot.updateToNewValue(newValue, false);
 		// log(`InputNumber.numberInputChanged`, 'end');
 	}
 
@@ -281,9 +292,7 @@ export class InputNumber extends HTMLElement {
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
 		let newValue = this.elementRoot.sanitizeValue((currentValue += mod ? 10 : 1));
-		this.elementRoot.setAttribute('value', newValue);
-		this.elementRoot.value = newValue;
-		this.elementRoot.dispatchEvent(new Event('change'));
+		this.elementRoot.updateToNewValue(newValue);
 		// log(`InputNumber.increment`, 'end');
 	}
 
@@ -297,9 +306,7 @@ export class InputNumber extends HTMLElement {
 		let mod = ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey;
 		let currentValue = parseFloat(this.elementRoot.getAttribute('value'));
 		let newValue = this.elementRoot.sanitizeValue((currentValue -= mod ? 10 : 1));
-		this.elementRoot.setAttribute('value', newValue);
-		this.elementRoot.value = newValue;
-		this.elementRoot.dispatchEvent(new Event('change'));
+		this.elementRoot.updateToNewValue(newValue);
 		// log(`InputNumber.decrement`, 'end');
 	}
 

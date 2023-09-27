@@ -67,6 +67,7 @@ export function makePage_GlobalActions() {
 		makeCard_ScaleVertical(),
 		makeCard_Resize(),
 		makeCard_Flatten(),
+		makeCard_SideBearings(),
 		makeElement({ tag: 'h1', content: 'Font types' }),
 		makeCard_Monospace(),
 		makeCard_AllCaps(),
@@ -487,6 +488,84 @@ function makeCard_Flatten() {
 }
 
 // --------------------------------------------------------------
+// Side Bearings
+// --------------------------------------------------------------
+
+function makeCard_SideBearings() {
+	const card = makeElement({ className: 'global-actions__card' });
+
+	card.appendChild(makeElement({ tag: 'h2', content: 'Side bearings' }));
+
+	let description = makeElement({
+		className: 'global-actions__description',
+		content: `Side Bearing is the empty space around a glyph's shapes. The Left Side Bearing is the space between x=0 to the leftmost side of the glyph shapes. The Right Side Bearing is the distance between the rightmost side of the glyph shapes and the advance width. Side Bearings will probably have to be adjusted for each glyph in order for it to work well... but this action could be useful if you want to re-set all Side Bearings to some common value.`,
+	});
+	card.appendChild(description);
+
+	let effect = makeElement({
+		className: 'global-actions__effect-description',
+		content: `Each ligature and glyph will have their shapes moved and/or their advance width updated to create the specified side bearing widths.`,
+	});
+	card.appendChild(effect);
+
+	let table = makeElement({
+		className: 'settings-table',
+		innerHTML: `
+			<label for="sideBearingLeft">
+				<input type="checkbox" style="position: relative; top: 5px;" id="sideBearingLeftCheckbox">
+				&nbsp;Left&nbsp;Side&nbsp;Bearing:
+			</label>
+			<input-number id="sideBearingLeft" type="number" value="0"></input-number>
+			<pre title="Expected value type">Em</pre>
+			<label for="sideBearingRight">
+				<input type="checkbox" style="position: relative; top: 5px;" id="sideBearingRightCheckbox">
+				&nbsp;Right&nbsp;Side&nbsp;Bearing:
+			</label>
+			<input-number id="sideBearingRight" type="number" value="0"></input-number>
+			<pre title="Expected value type">Em</pre>
+		`,
+	});
+	card.appendChild(table);
+
+	let button = makeElement({ tag: 'fancy-button', content: 'Update Side Bearings' });
+	button.addEventListener('click', () => {
+		// log('updateSideBearings', 'start');
+		let left = document.getElementById('sideBearingLeft').getAttribute('value');
+		let leftCheckbox = document.getElementById('sideBearingLeftCheckbox').checked;
+		left = parseFloat(left);
+		log(`left input: ${left}`);
+		let right = document.getElementById('sideBearingRight').getAttribute('value');
+		let rightCheckbox = document.getElementById('sideBearingRightCheckbox').checked;
+		right = parseFloat(right);
+		log(`right input: ${right}`);
+
+		if (leftCheckbox || rightCheckbox) {
+			if (isNaN(left) || isNaN(right)) {
+				showToast('Side Bearing values must be numbers.');
+			} else {
+				glyphIterator({
+					title: 'Updating Side Bearings',
+					filter: function (itemID) {
+						return itemID.startsWith('glyph-') || itemID.startsWith('liga-');
+					},
+					action: function (glyph) {
+						if (!isNaN(left)) glyph.leftSideBearing = left;
+						if (!isNaN(right)) glyph.rightSideBearing = right;
+					},
+				});
+			}
+		} else {
+			showToast('Select a checkbox to enable Left and/or Right Side Bearings.');
+		}
+
+		// log('updateSideBearings', 'end');
+	});
+	card.appendChild(button);
+
+	return card;
+}
+
+// --------------------------------------------------------------
 // Monospace
 // --------------------------------------------------------------
 
@@ -503,7 +582,7 @@ function makeCard_Monospace() {
 
 	let effect = makeElement({
 		className: 'global-actions__effect-description',
-		content: `Each ligature and glyph's advance width property will be set to the number provided.`,
+		content: `Each ligature and glyph's advance width property will be set to the value provided.`,
 	});
 	card.appendChild(effect);
 
@@ -531,7 +610,7 @@ function makeCard_Monospace() {
 			glyphIterator({
 				title: 'Converting to Monospace',
 				filter: function (itemID) {
-					return itemID.startsWith('glyph') || itemID.startsWith('liga-');
+					return itemID.startsWith('glyph-') || itemID.startsWith('liga-');
 				},
 				action: function (glyph) {
 					glyph.advanceWidth = width;
