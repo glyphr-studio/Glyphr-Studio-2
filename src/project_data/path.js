@@ -662,18 +662,6 @@ export class Path extends GlyphElement {
 	}
 
 	/**
-	 * If this path overlaps itself, add Path Points
-	 * where it overlaps
-	 */
-	addPointsAtPathIntersections() {
-		const polySegment = this.makePolySegment();
-		polySegment.splitSegmentsAtIntersections();
-		const newPath = polySegment.getPath();
-		// this._pathPoints = clone(newPath.pathPoints);
-		this._pathPoints = newPath.pathPoints;
-	}
-
-	/**
 	 * Looks for a point in the path that matches a given point
 	 * @param {XYPoint} point - Point to test for
 	 * @param {Boolean} wantSecond - return the second result, not the first
@@ -688,10 +676,6 @@ export class Path extends GlyphElement {
 		}
 		return false;
 	}
-
-	// --------------------------------------------------------------
-	// Boolean Combine
-	// --------------------------------------------------------------
 
 	// --------------------------------------------------------------
 	//  Translate to other languages
@@ -807,14 +791,43 @@ export class Path extends GlyphElement {
 		};
 	}
 
+	// --------------------------------------------------------------
+	// Boolean Combine
+	// --------------------------------------------------------------
+	/**
+	 * PolySegment is an industry-standard way of describing Bezier paths
+	 * @returns {PolySegment}
+	 */
+	makePolySegment(pathNumber = '') {
+		log(`Path.makePolySegment`, 'start');
+		log(`pathNumber: ${pathNumber}`);
+		if (pathNumber !== '') {
+			log(`clearing cache`);
+			this.cache.segments = [];
+		}
+		const seg = [];
+		for (let pp = 0; pp < this.pathPoints.length; pp++) {
+			seg.push(this.makeSegment(pp, pathNumber));
+		}
+
+		const re = new PolySegment({ segments: seg });
+
+		// log(`returning`);
+		// log(re);
+		log(`Path.makePolySegment`, 'end');
+
+		return re;
+	}
+
 	/**
 	 * Get a part of the path in Segment format
 	 * @param {Number} num - segment number
 	 * @returns {Segment}
 	 */
-	makeSegment(num = 0) {
+	makeSegment(num = 0, pathNumber = '') {
 		// log('Path.makeSegment', 'start');
 		// log('passed ' + num);
+		// log(`pathNumber: ${pathNumber}`);
 		num = num % this.pathPoints.length;
 
 		// check cache
@@ -827,11 +840,16 @@ export class Path extends GlyphElement {
 
 		// log('validated as ' + num);
 		const pp1 = this.pathPoints[num];
+		let randomID = Math.round(Math.random() * 10000);
+		if (!pp1.pointID) pp1.pointID = `point-${randomID}`;
 		// let pp2 = this.pathPoints[(num+1)%this.pathPoints.length];
-		const pp2 = this.pathPoints[this.getNextPointNum(num)];
+		const next = this.getNextPointNum(num);
+		const pp2 = this.pathPoints[next];
+		if (!pp2.pointID) pp2.pointID = `point-${randomID}`;
 		// log(pp1);
 		// log(pp2);
 		const re = new Segment({
+			point1ID: pp1.pointID,
 			p1x: pp1.p.x,
 			p1y: pp1.p.y,
 			p2x: pp1.h2.x,
@@ -840,12 +858,24 @@ export class Path extends GlyphElement {
 			p3y: pp2.h1.y,
 			p4x: pp2.p.x,
 			p4y: pp2.p.y,
+			point2ID: pp2.pointID,
 		});
 		this.cache.segments[num] = re;
 		// log(re.print());
 		// log('Path.makeSegment', 'end');
 
 		return re;
+	}
+	/**
+	 * If this path overlaps itself, add Path Points
+	 * where it overlaps
+	 */
+	addPointsAtPathIntersections() {
+		const polySegment = this.makePolySegment();
+		polySegment.splitSegmentsAtIntersections();
+		const newPath = polySegment.getPath();
+		// this._pathPoints = clone(newPath.pathPoints);
+		this._pathPoints = newPath.pathPoints;
 	}
 
 	/**
@@ -856,27 +886,6 @@ export class Path extends GlyphElement {
 	calculateQuickSegmentLength(num = 0) {
 		let re = this.makeSegment(num);
 		re = re.quickLength;
-		return re;
-	}
-
-	/**
-	 * PolySegment is an industry-standard way of describing Bezier paths
-	 * @returns {PolySegment}
-	 */
-	makePolySegment() {
-		// log(`Path.makePolySegment`, 'start');
-
-		const seg = [];
-		for (let pp = 0; pp < this.pathPoints.length; pp++) {
-			seg.push(this.makeSegment(pp));
-		}
-
-		const re = new PolySegment({ segments: seg });
-
-		// log(`returning`);
-		// log(re);
-		// log(`Path.makePolySegment`, 'end');
-
 		return re;
 	}
 

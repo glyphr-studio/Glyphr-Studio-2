@@ -140,25 +140,27 @@ function isOverPathPointControlPoint(pathPoint, x = 0, y = 0, noHandles = false)
 		};
 	}
 
-	// log(pathPoint.h1);
-	if (pathPoint.h1.use && !noHandles) {
-		if (xyPointsAreClose(pathPoint.h1, test, targetSize)) {
-			// log(`isOverPathPointControlPoint - Returning h1`);
-			result = {
-				pathPoint: pathPoint,
-				controlPoint: 'h1',
-			};
+	if (!result) {
+		// log(pathPoint.h1);
+		if (pathPoint.h1.use && !noHandles) {
+			if (xyPointsAreClose(pathPoint.h1, test, targetSize)) {
+				// log(`isOverPathPointControlPoint - Returning h1`);
+				result = {
+					pathPoint: pathPoint,
+					controlPoint: 'h1',
+				};
+			}
 		}
-	}
 
-	// log(pathPoint.h2);
-	if (pathPoint.h2.use && !noHandles) {
-		if (xyPointsAreClose(pathPoint.h2, test, targetSize)) {
-			// log(`isOverPathPointControlPoint - Returning h2`);
-			result = {
-				pathPoint: pathPoint,
-				controlPoint: 'h2',
-			};
+		// log(pathPoint.h2);
+		if (pathPoint.h2.use && !noHandles) {
+			if (xyPointsAreClose(pathPoint.h2, test, targetSize)) {
+				// log(`isOverPathPointControlPoint - Returning h2`);
+				result = {
+					pathPoint: pathPoint,
+					controlPoint: 'h2',
+				};
+			}
 		}
 	}
 
