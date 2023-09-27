@@ -560,7 +560,7 @@ export class ProjectEditor {
 			delete this.project.kerning[id];
 		}
 
-		this.selectFallbackItem();
+		this.selectFallbackItem(itemPageName);
 		// log(`deleteSelectedItemFromProject`, 'end');
 	}
 
