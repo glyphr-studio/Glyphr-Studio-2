@@ -202,12 +202,11 @@ export class Tool_PathEdit {
 					cYsY(ehd.mousePosition.y, view)
 				);
 				hcpIsSelected = hoverDetection && msPoints.isSelected(hoverDetection.pathPoint);
-
 				if (hoverDetection.controlPoint === 'p') {
 					// Hovered over a Point
 					if (hcpIsSelected) {
 						// Point is selected
-						setCursor('penSquare');
+						setCursor('penSquareMinus');
 					} else {
 						// Point is not selected
 						setCursor('penSquare');

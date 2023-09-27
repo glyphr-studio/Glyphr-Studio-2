@@ -1,5 +1,4 @@
 import { duplicates, xyPointsAreClose } from '../common/functions.js';
-import { showToast } from '../controls/dialogs/dialogs.js';
 import { debugDrawPoints } from '../edit_canvas/draw_edit_affordances.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
 import { isShapeHere } from '../edit_canvas/tools/tools.js';
@@ -90,7 +89,7 @@ export function combineAllPaths(paths = []) {
  * @returns {Array} - resulting paths
  */
 export function combinePaths(paths = []) {
-	// log(`combinePaths`, 'start');
+	log(`combinePaths`, 'start');
 	// log(`\n⮟paths⮟`);
 	// log(paths);
 
@@ -124,10 +123,10 @@ export function combinePaths(paths = []) {
 
 	// Convert to Bezier segments
 	let allSegments = [];
-	paths.forEach((path) => {
-		allSegments = allSegments.concat(path.makePolySegment().segments);
+	paths.forEach((path, index) => {
+		allSegments = allSegments.concat(path.makePolySegment(index + 1).segments);
 	});
-	allSegments.sort((a, b) => a.maxes.xMin - b.maxes.xMin); // Helps with complex overlaps for some reason
+	// allSegments.sort((a, b) => a.maxes.xMin - b.maxes.xMin); // Helps with complex overlaps for some reason
 
 	allSegments = new PolySegment({ segments: allSegments });
 	// log(`\n\n All Segments collected`);
@@ -146,8 +145,8 @@ export function combinePaths(paths = []) {
 	paths.forEach((path) => (allSegments = removeSegmentsOverlappingPath(allSegments, path)));
 	// log('after removeSegmentsOverlappingPath ' + allSegments.segments.length);
 
-	// log(`Segments Post Filtering`);
-	// console.table(allSegments.valuesAsArray);
+	log(`Segments Post Filtering`);
+	console.table(allSegments.segments);
 
 	// --------------------------------------------------------------
 	// Take remaining segments and stitch them together
@@ -159,21 +158,43 @@ export function combinePaths(paths = []) {
 	let didStuff = false;
 
 	while (allSegments.length) {
-		// log(`un-stitched length ${allSegments.length}`);
+		log(`un-stitched length ${allSegments.length}`);
+		let target;
+		let test;
 
-		let target = orderedSegments.at(-1).getXYPoint(4);
-		// log(`\t Target ${target.x}, ${target.y}`);
+		// First try by ID
+		target = orderedSegments.at(-1);
+		log(`\t Target point2ID ${target.point2ID}`);
 
 		for (let i = 0; i < allSegments.length; i++) {
-			let test = allSegments[i].getXYPoint(1);
-			// log(`\t Testing ${test.x}, ${test.y}`);
+			test = allSegments[i];
+			// log(`\t Test point1ID ${test.point1ID}`);
 
-			if (xyPointsAreClose(target, test, 1)) {
+			if (target.point2ID === test.point1ID) {
 				orderedSegments.push(allSegments.splice(i, 1)[0]);
-				// log(`\t Match found at ${test.x}, ${test.y}`);
-				// log(orderedSegments);
+				log(`\t Match found for ${test.point1ID}`);
+				log(orderedSegments);
 				didStuff = true;
 				break;
+			}
+		}
+
+		// Next try by coordinates
+		if (!didStuff) {
+			target = orderedSegments.at(-1).getXYPoint(4);
+			log(`\t Target ${target.x}, ${target.y}`);
+
+			for (let i = 0; i < allSegments.length; i++) {
+				test = allSegments[i].getXYPoint(1);
+				log(`\t Testing ${test.x}, ${test.y}`);
+
+				if (xyPointsAreClose(target, test, 1)) {
+					orderedSegments.push(allSegments.splice(i, 1)[0]);
+					log(`\t Match found at ${test.x}, ${test.y}`);
+					log(orderedSegments);
+					didStuff = true;
+					break;
+				}
 			}
 		}
 
@@ -182,10 +203,10 @@ export function combinePaths(paths = []) {
 			didStuff = false;
 		} else {
 			// No matches were found, or no more segments to stitch
-			// log(`allSegments.length: ${allSegments.length}`);
+			log(`allSegments.length: ${allSegments.length}`);
 			newPolySegments.push(new PolySegment({ segments: orderedSegments }));
-			// log(`newPolySegments`);
-			// log(newPolySegments);
+			log(`newPolySegments`);
+			log(newPolySegments);
 
 			if (allSegments.length <= 1) {
 				// No more segments to stitch
@@ -198,7 +219,7 @@ export function combinePaths(paths = []) {
 			}
 		}
 	}
-	// log(newPolySegments);
+	log(newPolySegments);
 
 	// --------------------------------------------------------------
 	// Finish up
@@ -206,10 +227,10 @@ export function combinePaths(paths = []) {
 
 	let newPaths = newPolySegments.map((polySegment) => polySegment.getPath());
 
-	// log(`\n⮟newPaths⮟`);
-	// log(newPaths);
+	log(`\n⮟newPaths⮟`);
+	log(newPaths);
 
-	// log(`combinePaths`, 'end');
+	log(`combinePaths`, 'end');
 	return newPaths;
 }
 

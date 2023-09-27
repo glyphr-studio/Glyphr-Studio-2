@@ -37,7 +37,18 @@ export class Segment extends GlyphElement {
 	 * @param {Number} p4x - Second point x
 	 * @param {Number} p4y - Second point y
 	 */
-	constructor({ p1x = 0, p1y = 0, p2x, p2y, p3x, p3y, p4x = 0, p4y = 0 } = {}) {
+	constructor({
+		p1x = 0,
+		p1y = 0,
+		p2x,
+		p2y,
+		p3x,
+		p3y,
+		p4x = 0,
+		p4y = 0,
+		point1ID = false,
+		point2ID = false,
+	} = {}) {
 		super();
 		this.p1x = numSan(p1x);
 		this.p1y = numSan(p1y);
@@ -49,6 +60,9 @@ export class Segment extends GlyphElement {
 		this.p3x = isVal(p3x) ? numSan(p3x) : this.p4x;
 		this.p3y = isVal(p3y) ? numSan(p3y) : this.p4y;
 
+		// IDs for stitching
+		if(point1ID) this.point1ID = point1ID;
+		if(point2ID) this.point2ID = point2ID;
 		this.objType = 'Segment';
 
 		this.recalculateMaxes();
