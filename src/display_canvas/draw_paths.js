@@ -31,9 +31,9 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 		// log(`${glyph.name} drawing ${shape.objType} #${j} "${shape.name}"`);
 		drewShape = drawShape(shape, ctx, view);
 		if (!drewShape) {
-			console.warn('Could not draw shape ' + shape.name + ' in Glyph ' + glyph.name);
+			// log('Could not draw shape ' + shape.name + ' in Glyph ' + glyph.name);
 			if (shape.objType === 'ComponentInstance' && !getCurrentProject().getItem(shape.link)) {
-				console.warn('>>> Component Instance has bad link: ' + shape.link);
+				console.warn(`>>> Component Instance has bad link: ${shape.link} from ${glyph.id}`);
 				const i = glyph.shapes.indexOf(shape);
 				if (i > -1) {
 					glyph.shapes.splice(i, 1);

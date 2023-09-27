@@ -3,6 +3,7 @@ import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement, textToNode } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { makeIcon } from '../../common/graphics.js';
+import { sXcX, sYcY } from '../../edit_canvas/edit_canvas.js';
 import { closeAllNavMenus } from '../../project_editor/navigator.js';
 
 // --------------------------------------------------------------
@@ -141,12 +142,42 @@ export function showToast(message = '0_o', duration = 3000) {
 // --------------------------------------------------------------
 
 export function showNotation(content, x, y) {
-	document.body.focus();
-	var n = document.getElementById('notation');
-	n.innerHTML = content;
-	n.style.top = round(y) + 'px';
-	n.style.left = round(x + 50) + 'px';
-	n.style.display = 'block';
+	// document.body.focus();
+	let notation = document.getElementById('notation');
+	if (!notation) {
+		notation = makeElement({
+			id: 'notation',
+			attributes: { tabindex: '-1' },
+			style: 'display: none;',
+		});
+		document.body.appendChild(notation);
+	}
+	notation.innerHTML = content;
+	notation.style.top = (y - 10) + 'px';
+	notation.style.right = `calc(100% - ${x + 515}px)`;
+	notation.style.display = 'block';
+}
+
+export function makeAndShowPathAddPointNotation(emPoint) {
+	let x = round(emPoint.x, 3);
+	let y = round(emPoint.y, 3);
+	let splitX = ('' + x).split('.');
+	let preX = splitX[0] || '0';
+	let postX = splitX[1] || '';
+	let splitY = ('' + y).split('.');
+	let preY = splitY[0] || '0';
+	let postY = splitY[1] || '';
+
+	let content = `
+	<div class="notation__path-add-point">
+		<label>x</label>
+		<span style="text-align: right;">${preX}</span>
+		<span>${postX.length ? '.' : ''}${postX}</span>
+		<label>y</label>
+		<span style="text-align: right;">${preY}</span>
+		<span>${postY.length ? '.' : ''}${postY}</span>
+	</div>`;
+	showNotation(content, sXcX(emPoint.x), sYcY(emPoint.y));
 }
 
 // --------------------------------------------------------------

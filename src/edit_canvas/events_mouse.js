@@ -1,4 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
+import { closeAllNotations } from '../controls/dialogs/dialogs.js';
+import { closeAllNavMenus } from '../project_editor/navigator.js';
 import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';
@@ -299,6 +301,8 @@ export function handleMouseWheel(event) {
 	if (canZoom) {
 		if (event.ctrlKey || event.metaKey) {
 			cancelDefaultEventActions(event);
+			closeAllNotations();
+			eventHandlerData.hoverPoint = false;
 			// log('MOUSEWHEEL: canZoom=true and delta=' + delta );
 			if (delta > 0) {
 				editor.updateViewZoom(1.1, mouse);

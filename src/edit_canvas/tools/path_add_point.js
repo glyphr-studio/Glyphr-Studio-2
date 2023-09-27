@@ -4,6 +4,7 @@
 
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { round } from '../../common/functions.js';
+import { closeAllNotations, makeAndShowPathAddPointNotation, showNotation } from '../../controls/dialogs/dialogs.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
@@ -44,7 +45,8 @@ export class Tool_PathAddPoint {
 				editor.nav.panel = 'Attributes';
 			} else {
 				editor.selectedTool = 'newPath';
-				eventHandlerData.currentToolHandler = eventHandlerData.tool_addPath;
+				editor.publish('whichToolIsSelected', editor.selectedTool);
+				eventHandlerData.currentToolHandler = editor.eventHandlers.tool_addPath;
 				eventHandlerData.currentToolHandler.dragging = true;
 				eventHandlerData.currentToolHandler.firstPoint = true;
 				eventHandlerData.currentToolHandler.mousedown(ev);
@@ -56,30 +58,33 @@ export class Tool_PathAddPoint {
 		this.mousemove = function () {
 			const editor = getCurrentProjectEditor();
 			let singlePath = editor.multiSelect.shapes.singleton;
+			let mousePoint = eventHandlerData.mousePosition;
 			if (singlePath) {
-				let pt = singlePath.findClosestPointOnCurve({
-					x: cXsX(eventHandlerData.mousePosition.x),
-					y: cYsY(eventHandlerData.mousePosition.y),
+				let curvePoint = singlePath.findClosestPointOnCurve({
+					x: cXsX(mousePoint.x),
+					y: cYsY(mousePoint.y),
 				});
 				if (eventHandlerData.isShiftDown) {
-					pt.x = round(pt.x);
-					pt.y = round(pt.y);
+					curvePoint.x = round(curvePoint.x);
+					curvePoint.y = round(curvePoint.y);
 				}
-				if (pt && pt.distance < 20) {
-					this.previewPoint = pt;
-					let ptx = sXcX(pt.x) - canvasUIPointSize / 2;
-					let pty = sYcY(pt.y) - canvasUIPointSize / 2;
-					// showNotation('x: ' + round(pt.x, 3) + '<br>y: ' + round(pt.y, 3), ptx, pty);
-					eventHandlerData.hoverPoint = { x: ptx, y: pty };
+				if (curvePoint && curvePoint.distance < 20) {
+					this.previewPoint = curvePoint;
+					let canvasPoint = {
+						x: sXcX(curvePoint.x) - canvasUIPointSize / 2,
+						y: sYcY(curvePoint.y) - canvasUIPointSize / 2
+					}
+					makeAndShowPathAddPointNotation(curvePoint);
+					eventHandlerData.hoverPoint = canvasPoint;
 				} else {
 					this.previewPoint = false;
 					eventHandlerData.hoverPoint = false;
-					// closeAllNotations();
+					closeAllNotations();
 				}
 			} else {
 				this.previewPoint = false;
 				eventHandlerData.hoverPoint = false;
-				// closeAllNotations();
+				closeAllNotations();
 			}
 
 			editor.editCanvas.redraw();
