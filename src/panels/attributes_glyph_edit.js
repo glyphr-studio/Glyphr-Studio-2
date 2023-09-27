@@ -8,12 +8,9 @@ import {
 } from './card_path_point.js';
 import { refreshPanel } from './panels.js';
 
-/**
-	Panel > Attributes > Glyph
-	Builds a panel of attributes for a Glyph,
-	which changes based on Path or Path Point
-	selection.
-**/
+// --------------------------------------------------------------
+// Glyph Edit pages attributes panel
+// --------------------------------------------------------------
 
 export function makePanel_GlyphAttributes() {
 	// log('makePanel_GlyphAttributes', 'start');

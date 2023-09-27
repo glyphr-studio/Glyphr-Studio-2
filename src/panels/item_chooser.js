@@ -6,12 +6,9 @@ import { showAddComponentDialog } from '../pages/components.js';
 import { makeKernGroupCharChips, showAddEditKernGroupDialog } from '../pages/kerning.js';
 import { showAddLigatureDialog } from '../pages/ligatures.js';
 
-/**
-	Panel > Chooser
-	Shows a list of all the Glyphs to choose from
-	for whatever the current page is.  Also has
-	the logic for creating Glyph chooser dialogs.
-**/
+// --------------------------------------------------------------
+// Chooser panels
+// --------------------------------------------------------------
 
 // --------------------------------------------------------------
 // Glyph chooser

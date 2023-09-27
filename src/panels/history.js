@@ -1,10 +1,9 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 
-/**
-		Panel > History
-		Shows a list of all the undo-able actions.
-**/
+// --------------------------------------------------------------
+// History panel
+// --------------------------------------------------------------
 
 export function makePanel_History() {
 	const editor = getCurrentProjectEditor();

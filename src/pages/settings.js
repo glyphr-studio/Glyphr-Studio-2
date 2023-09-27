@@ -139,13 +139,6 @@ function makeSettingsTabContentApp() {
 		`,
 	});
 
-	/*
-		savePreferences: false,
-		stopPageNavigation: true,
-		showNonCharPoints: false,
-		formatSaveFile: false,
-		moveShapesOnSVGDragDrop: false,
-	*/
 	addAsChildren(tabContent, [
 		makeOneSettingsRow('app', 'stopPageNavigation', updateWindowUnloadEvent),
 		makeOneSettingsRow('app', 'showNonCharPoints'),

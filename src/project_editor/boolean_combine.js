@@ -5,6 +5,12 @@ import { isShapeHere } from '../edit_canvas/tools/tools.js';
 import { maxesOverlap } from '../project_data/maxes.js';
 import { PolySegment, findSegmentIntersections } from '../project_data/poly_segment.js';
 import { XYPoint } from '../project_data/xy_point.js';
+/**
+		Boolean Combine
+		Using Bezier math to merge two paths together.
+		Maybe other boolean stuff in the future, like:
+		Intersection, Minus front/back, Exclusion, Divide, Slice
+**/
 
 /*
 	Note about IX Format

@@ -1,6 +1,5 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { closeAllNotations } from '../controls/dialogs/dialogs.js';
-import { closeAllNavMenus } from '../project_editor/navigator.js';
 import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
 import { cXsX, cYsY } from './edit_canvas.js';
@@ -236,16 +235,6 @@ export function checkForMouseOverHotspot(x, y) {
 		eventHandlerData.canvasHotspotHovering = false;
 	}
 }
-
-/*
-function updateDragSelectArea(dx, dy, dw, dh) {
-	// log('updateDragSelectArea dx/dy/dw/dh = '+dx+' '+dy+' '+dw+' '+dh);
-	eventHandlerData.dragSelectArea.xMin += dx;
-	eventHandlerData.dragSelectArea.yMax += dy;
-	eventHandlerData.dragSelectArea.xMax += dw + dx;
-	eventHandlerData.dragSelectArea.yMin += dh + dy;
-}
-*/
 
 export function canResize(handle) {
 	const msShapes = getCurrentProjectEditor().multiSelect.shapes;

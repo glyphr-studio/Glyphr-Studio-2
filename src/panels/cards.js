@@ -3,7 +3,7 @@ import { makeElement } from '../common/dom.js';
 import { round } from '../common/functions.js';
 
 // --------------------------------------------------------------
-// Common attributes stuff
+// Common attributes card stuff
 // --------------------------------------------------------------
 
 export function makeInputs_position(item, labelPrefix = '', additionalTopics = []) {
@@ -200,7 +200,7 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 export function addAttributeListener(element, listenFor = [], callback = false) {
 	listenFor = typeof listenFor === 'string' ? [listenFor] : listenFor;
 
-	const mutationCallback = function (mutationsList, observer) {
+	const mutationCallback = function () {
 		if (callback) callback(element);
 	};
 	const observer = new MutationObserver(mutationCallback);

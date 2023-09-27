@@ -2,7 +2,7 @@ import { accentColors, uiColors } from '../common/colors.js';
 import { makeElement } from '../common/dom.js';
 
 // --------------------------------------------------------------
-// Action Button
+// Action Buttons
 // --------------------------------------------------------------
 
 export function makeActionButton({

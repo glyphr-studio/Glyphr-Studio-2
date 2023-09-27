@@ -13,11 +13,9 @@ import { makeActionButton } from './action_buttons.js';
 import { makeDirectCheckbox, makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
 import { refreshPanel } from './panels.js';
 
-/**
-		Panel > Guides
-		Shows a list of all the system and custom
-		guide lines.
-**/
+// --------------------------------------------------------------
+// Guides panel
+// --------------------------------------------------------------
 
 export function makePanel_Guides() {
 	let viewOptionsCard = makeElement({

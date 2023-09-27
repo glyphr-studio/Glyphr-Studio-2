@@ -328,41 +328,6 @@ export function addPathToCurrentItem(newPath) {
 	return newPath;
 }
 
-/*
-export function addBasicPath(type){
-	let hd = 50;
-	let th = 500;
-	let tw = 300;
-	let newPath = new Path({});
-	let parr = false;
-	let pathtype = 'Path ';
-	let p1,p2,p3,p4;
-
-	if(type === 'oval'){
-		p1 = new PathPoint({'P':new Coord({'x':0,'y':(th/2)}), 'H1':new Coord({'x':0,'y':hd}), 'H2':new Coord({'x':0,'y':(th-hd)}), 'type':'symmetric'});
-		p2 = new PathPoint({'P':new Coord({'x':(tw/2),'y':th}), 'H1':new Coord({'x':hd,'y':th}), 'H2':new Coord({'x':(tw-hd),'y':th}), 'type':'symmetric'});
-		p3 = new PathPoint({'P':new Coord({'x':tw,'y':(th/2)}), 'H1':new Coord({'x':tw,'y':(th-hd)}), 'H2':new Coord({'x':tw,'y':hd}), 'type':'symmetric'});
-		p4 = new PathPoint({'P':new Coord({'x':(tw/2),'y':0}), 'H1':new Coord({'x':(tw-hd),'y':0}), 'H2':new Coord({'x':hd,'y':0}), 'type':'symmetric'});
-		parr = [p1,p2,p3,p4];
-		pathtype = 'Oval ';
-	} else {
-		p1 = new PathPoint({'P':new Coord({'x':0,'y':0}), 'H1':new Coord({'x':hd,'y':0}), 'H2':new Coord({'x':0,'y':hd})});
-		p2 = new PathPoint({'P':new Coord({'x':0,'y':th}), 'H1':new Coord({'x':0,'y':(th-hd)}), 'H2':new Coord({'x':hd,'y':th})});
-		p3 = new PathPoint({'P':new Coord({'x':tw,'y':th}), 'H1':new Coord({'x':(tw-hd),'y':th}), 'H2':new Coord({'x':tw,'y':(th-hd)})});
-		p4 = new PathPoint({'P':new Coord({'x':tw,'y':0}), 'H1':new Coord({'x':tw,'y':hd}), 'H2':new Coord({'x':(tw-hd),'y':0})});
-		parr = [p1,p2,p3,p4];
-		pathtype = 'Rectangle ';
-	}
-
-	newPath = new Path({'pathPoints':parr});
-	newPath.name = (pathtype + getSelectedItem.shapes.length+1);
-
-	getSelectedItem.shapes.push(newPath);
-	_UI.ms.shapes.select(newPath);
-	// updateCurrentGlyphWidth();
-}
-*/
-
 export function getShapeAtLocation(x, y) {
 	// log(`getShapeAtLocation`, 'start');
 	// log('checking x:' + x + ' y:' + y);

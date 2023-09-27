@@ -14,7 +14,7 @@ import {
 } from './cards.js';
 
 // --------------------------------------------------------------
-// Glyph attributes
+// Glyph Attributes Card
 // --------------------------------------------------------------
 
 export function makeCard_glyphAttributes(glyph) {

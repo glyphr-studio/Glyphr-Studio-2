@@ -10,7 +10,7 @@ import {
 } from './cards.js';
 
 // --------------------------------------------------------------
-// Path attributes
+// Path Attributes Card
 // --------------------------------------------------------------
 
 export function makeCard_pathAttributes(path) {

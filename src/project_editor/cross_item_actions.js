@@ -3,12 +3,15 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-
-// --------------------------------------------------------------
-// Project-wide .changed()
-// --------------------------------------------------------------
+/**
+		Cross-item actions
+		By default, items in the Glyph Element hierarchy shouldn't 'reach out' and
+		make edits to other items. This is the role of the Project Editor. This
+		file has many of these types of functions.
+**/
 
 /**
+ * Project-wide changes
  * Calls .changed() on peer glyph objects to this glyph
  * NOTE: .changed() for other glyph elements are on their respective
  * objects. This one is centrally located because it looks across
@@ -320,35 +323,3 @@ export function removeLinkFromUsedIn(item, linkID) {
 	// log(item.usedIn);
 	// log(`removeLinkFromUsedIn`, 'end');
 }
-
-/**
- * Called before a glyph is deleted. if this glyph is used as a
- * component root, then we also have to delete the component instances
- * from other glyphs.
- * @param {Glyph} rootGlyph - glyph where the usedIn array is the delete list
- */
-/*
-NOT ALLOWED
-export function deleteComponentInstancesBasedOnRootList(rootGlyph) {
-	// log(`deleteComponentInstancesBasedOnRootList`, 'start');
-
-	let project = getCurrentProject();
-	if (rootGlyph.usedIn.length) {
-		rootGlyph.usedIn.forEach((id) => {
-			// log(`rootGlyph.usedIn id: ${id}`);
-
-			let parent = project.getItem(id);
-			for (let p = 0; p < parent.shapes.length; p++) {
-				// log(`path ${p} link = ${parent.shapes[p]?.link}`);
-				if (parent.shapes[p]?.link === rootGlyph.id) {
-					// log(`>>>HIT<<<`);
-					if (p > -1) parent.shapes.splice(p, 1);
-					parent.changed();
-					break;
-				}
-			}
-		});
-	}
-	// log(`deleteComponentInstancesBasedOnRootList`, 'end');
-}
-*/

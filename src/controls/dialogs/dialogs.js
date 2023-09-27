@@ -209,20 +209,11 @@ export function makeContextMenu(
 	// log(`width: ${width}`);
 	// log(`isDropdown: ${isDropdown}`);
 
-	// let element = document.getElementById('context-menu');
-
-	// remove any current context menu, or create one if it doesn't exist
-	// if (element) {
-	// 	element.style.display = 'none';
-	// 	element.innerHTML = '';
-	// } else {
 	let element = makeElement({
 		tag: 'dialog',
 		id: 'context-menu',
 		attributes: { tabindex: '-1' },
 	});
-	// document.body.appendChild(element);
-	// }
 
 	// Create and add each row
 	rows.forEach((item) => {

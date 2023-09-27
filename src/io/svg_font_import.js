@@ -37,6 +37,7 @@ export function ioSVG_importSVGfont(font) {
 		// Get Glyphs
 		chars = getTagsByName(font, 'glyph');
 
+		// TODO test for import overflow
 		// test for range
 		// if (chars.length < importOverflowCount) {
 		// 	setTimeout(startFontImport, 10);
