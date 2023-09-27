@@ -30,15 +30,32 @@ dialog {
 #notation {
 	display: none;
 	position: absolute;
-	left: 900px;
+	right: 900px;
 	top: 400px;
 	width: auto;
 	height: auto;
-	padding: 2px 4px 4px 4px;
-	z-index: 999;
+	padding: 0;
+	z-index: 2020;
 	background-color: rgb(229, 234, 239);
 	border: 5px solid rgb(229, 234, 239);
-	border-radius: 3px;
+	border-radius: 5px 5px 0px 5px;
+	box-shadow: var(--l2-shadow-upper-left);
+	animation: var(--animate-fade-in);
+}
+
+.notation__path-add-point {
+	display: grid;
+	grid-template-columns: 20px min-content min-content;
+	margin: 0px 5px 2px 5px;
+}
+
+.notation__path-add-point span {
+	font-family: monospace;
+}
+
+.notation__path-add-point label {
+	font-family: monospace;
+	color: var(--enabled-restingLight-lightText);
 }
 
 #error {

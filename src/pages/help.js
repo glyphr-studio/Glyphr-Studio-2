@@ -155,6 +155,22 @@ export function makeKeyboardShortcutReference() {
 				Toggle the pan tool
 			</label>
 
+			<span>
+				<code>shift</code>
+				<i><code>Shape Rotation handle</code></i>
+			</span>
+			<label>
+				Snap rotation degrees to whole numbers
+			</label>
+
+			<span>
+				<code>shift</code>
+				<i><code>Add Path Point tool</code></i>
+			</span>
+			<label>
+				Snap the new point's coordinates to whole numbers
+			</label>
+
 		</div>
 	`,
 	});
