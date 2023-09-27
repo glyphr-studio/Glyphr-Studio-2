@@ -20,7 +20,7 @@ export class Tool_NewPath {
 		this.currentPoint = {};
 		this.newPath = false;
 
-		this.mousedown = function (ev) {
+		this.mousedown = function () {
 			// log('Tool_NewPath.mousedown', 'start');
 			const editor = getCurrentProjectEditor();
 			const ehd = eventHandlerData;
@@ -85,7 +85,7 @@ export class Tool_NewPath {
 			// log('Tool_NewPath.mousedown', 'end');
 		};
 
-		this.mousemove = function (ev) {
+		this.mousemove = function () {
 			const ehd = eventHandlerData;
 			const editor = getCurrentProjectEditor();
 

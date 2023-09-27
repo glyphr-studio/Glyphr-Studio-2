@@ -378,24 +378,4 @@ export class DisplayCanvas extends HTMLElement {
 
 		// log(`displayCanvas.drawDisplayCharacter`, 'end');
 	}
-
-	// --------------------------------------------------------------
-	// Update options
-	// --------------------------------------------------------------
-
-	// createImage() {
-	// 	const imageData = this.canvas.toDataURL();
-
-	// 	const win = window.open(document.location.href, 'Glyphr Test Drive');
-
-	// 	win.document.write(
-	// 		'<!DOCTYPE html><html>' +
-	// 			'<head><title>Glyphr - Test Drive Image</title></head>' +
-	// 			'<body style="padding:40px; text-align:center;">' +
-	// 			'<img src="' +
-	// 			imageData +
-	// 			'" title="Glyphr Test Drive" style="border:1px solid #f6f6f6;">' +
-	// 			'</html>'
-	// 	);
-	// }
 }

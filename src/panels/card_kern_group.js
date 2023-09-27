@@ -4,7 +4,7 @@ import { makeActionsArea_KernGroup } from './actions.js';
 import { makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
 
 // --------------------------------------------------------------
-// Kern Group attributes
+// Kern Group Attributes Card
 // --------------------------------------------------------------
 
 export function makeCard_kernGroup(kernGroup) {

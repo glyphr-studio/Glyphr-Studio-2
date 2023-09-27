@@ -117,13 +117,8 @@ function drawComponentInstanceToCanvas(componentInstance, ctx, view) {
 function drawPathToCanvas(path, ctx, view, snap = false) {
 	// log('drawPathToCanvas', 'start');
 	// log(ctx);
-
 	// log(`view ${view.dx}, ${view.dy}, ${view.dz}`);
 	// log(path);
-
-	// let currView = ProjectEditor.('drawPathToCanvas');
-	// view = view || clone(currView);
-	// setView(view);
 
 	if (!path?.pathPoints || path.pathPoints === false) {
 		// log(`RETURNING FALSE: path.pathPoints does not exist`);

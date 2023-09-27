@@ -1,12 +1,12 @@
-/**
-		Panel > ContextCharacters
-		Shows a list of all the paths in a Glyph.
-**/
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeFancySlider } from '../controls/fancy-slider/fancy_slider.js';
 import { makeLivePreviewPopOutCard } from '../project_editor/pop_out_window.js';
 import { makeDirectCheckbox, makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
+
+// --------------------------------------------------------------
+// Context Characters panel
+// --------------------------------------------------------------
 
 export function makePanel_ContextCharacters() {
 	// log(`makePanel_ContextCharacters`, 'start');

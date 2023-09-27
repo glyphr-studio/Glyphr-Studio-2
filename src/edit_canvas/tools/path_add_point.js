@@ -4,7 +4,10 @@
 
 import { getCurrentProjectEditor } from '../../app/main.js';
 import { round } from '../../common/functions.js';
-import { closeAllNotations, makeAndShowPathAddPointNotation, showNotation } from '../../controls/dialogs/dialogs.js';
+import {
+	closeAllNotations,
+	makeAndShowPathAddPointNotation,
+} from '../../controls/dialogs/dialogs.js';
 import { canvasUIPointSize } from '../draw_edit_affordances.js';
 import { cXsX, cYsY, sXcX, sYcY } from '../edit_canvas.js';
 import { eventHandlerData } from '../events.js';
@@ -72,8 +75,8 @@ export class Tool_PathAddPoint {
 					this.previewPoint = curvePoint;
 					let canvasPoint = {
 						x: sXcX(curvePoint.x) - canvasUIPointSize / 2,
-						y: sYcY(curvePoint.y) - canvasUIPointSize / 2
-					}
+						y: sYcY(curvePoint.y) - canvasUIPointSize / 2,
+					};
 					makeAndShowPathAddPointNotation(curvePoint);
 					eventHandlerData.hoverPoint = canvasPoint;
 				} else {

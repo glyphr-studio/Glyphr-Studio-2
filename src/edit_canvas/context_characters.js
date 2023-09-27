@@ -448,16 +448,9 @@ export function drawCharacterKernExtra(ctx, kern, rightX, scale) {
 	const textWidth = ctx.measureText(text).width;
 	const textX = rightX - (kern * -1 * scale - textWidth) / 2 - textWidth;
 
-	// ctx.strokeStyle = color;
-	// drawVerticalLine(rightX + kern * scale, ctx, color);
-
 	ctx.strokeStyle = uiColors.offWhite;
 	ctx.lineWidth = 4;
 	ctx.miterLimit = 1;
-
-	// ctx.strokeText(text, textX, (topY + (offset*4)));
-	// ctx.fillText(text, textX, (topY + (offset*4)));
-
 	ctx.strokeText(text, textX, topY + offset + barHeight + 15);
 	ctx.fillText(text, textX, topY + offset + barHeight + 15);
 }
@@ -617,17 +610,4 @@ export function findAndUnderlineHotspot(cx, cy) {
 
 	// log('findAndUnderlineHotspot', 'end');
 	return hs.target.xMin;
-}
-
-function drawVerticalLine(x, ctx, color) {
-	color = color || 'rgb(0,0,0)';
-
-	ctx.strokeStyle = color;
-	ctx.lineWidth = 1;
-	x = makeCrisp(x);
-	ctx.beginPath();
-	ctx.moveTo(x, 0);
-	ctx.lineTo(x, 99999);
-	ctx.stroke();
-	ctx.closePath();
 }

@@ -477,8 +477,7 @@ export function drawPathPointHover(ctx, point) {
 	// log(point);
 	let size = canvasUIPointSize;
 	if (point) {
-		ctx.fillStyle = accentColors.blue.l85,
-		ctx.fillRect(point.x, point.y, size, size);
+		(ctx.fillStyle = accentColors.blue.l85), ctx.fillRect(point.x, point.y, size, size);
 	}
 	// log(`drawPathPointHover`, 'end');
 }

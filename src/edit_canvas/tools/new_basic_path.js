@@ -16,7 +16,7 @@ export class Tool_NewBasicPath {
 	constructor() {
 		this.dragging = false;
 
-		this.mousedown = function (ev) {
+		this.mousedown = function () {
 			// log(`Tool_NewBasicPath.mousedown`, 'start');
 			const editor = getCurrentProjectEditor();
 			const ehd = eventHandlerData;
@@ -50,7 +50,7 @@ export class Tool_NewBasicPath {
 			// log(`Tool_NewBasicPath.mousedown`, 'end');
 		};
 
-		this.mousemove = function (ev) {
+		this.mousemove = function () {
 			// log(`Tool_NewBasicPath.mousemove`, 'start');
 			const editor = getCurrentProjectEditor();
 			const ehd = eventHandlerData;
@@ -147,38 +147,24 @@ export function rectPathFromMaxes(maxes = {}, name = 'Rectangle') {
 	let by = isVal(maxes.yMin) ? maxes.yMin : 0;
 
 	// log(`lx: ${lx}, ty: ${ty}, rx: ${rx}, by: ${by}`);
-	// let qw = round((rx-lx)/4);
-	// let qh = round((ty-by)/4);
 
 	// First Point
 	let Pul = new ControlPoint({ coord: { x: lx, y: ty } });
 	// log(Pul);
-	// let H1ul = new ControlPoint({coord:{x:lx, y:(ty-qh)}});
-	// let H2ul = new ControlPoint({coord:{x:(lx+qw), y:ty}});
 
 	// Second Point
 	let Pur = new ControlPoint({ coord: { x: rx, y: ty } });
 	// log(Pur);
-	// let H1ur = new ControlPoint({coord:{x:(rx-qw), y:ty}});
-	// let H2ur = new ControlPoint({coord:{x:rx, y:(ty-qh)}});
 
 	// Third Point
 	let Plr = new ControlPoint({ coord: { x: rx, y: by } });
 	// log(Plr);
-	// let H1lr = new ControlPoint({coord:{x:rx, y:(by+qh)}});
-	// let H2lr = new ControlPoint({coord:{x:(rx-qw), y:by}});
 
 	// Fourth Point
 	let Pll = new ControlPoint({ coord: { x: lx, y: by } });
 	// log(Pll);
-	// let H1ll = new ControlPoint({coord:{x:(lx+qw), y:by}});
-	// let H2ll = new ControlPoint({coord:{x:lx, y:(by+qh)}});
 
 	let newPoints = [];
-	// newPoints[0] = new PathPoint({p:Pul, h1:H1ul, h2:H2ul});
-	// newPoints[1] = new PathPoint({p:Pur, h1:H1ur, h2:H2ur});
-	// newPoints[2] = new PathPoint({p:Plr, h1:H1lr, h2:H2lr});
-	// newPoints[3] = new PathPoint({p:Pll, h1:H1ll, h2:H2ll});
 	newPoints[0] = new PathPoint({ p: Pul });
 	newPoints[1] = new PathPoint({ p: Pur });
 	newPoints[2] = new PathPoint({ p: Plr });

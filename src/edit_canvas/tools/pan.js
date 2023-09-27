@@ -10,7 +10,7 @@ export class Tool_Pan {
 		this.deltaX = 0;
 		this.deltaY = 0;
 
-		this.mousedown = function (ev) {
+		this.mousedown = function () {
 			// log('PAN TOOL - mouse down: ' + eventHandlerData.mousePosition.x + ':' + eventHandlerData.mousePosition.y);
 			const editor = getCurrentProjectEditor();
 			let view = editor.view;
@@ -20,7 +20,7 @@ export class Tool_Pan {
 			eventHandlerData.isPanning = true;
 		};
 
-		this.mousemove = function (ev) {
+		this.mousemove = function () {
 			if (eventHandlerData.isPanning) {
 				// Moving paths if mousedown
 				const editor = getCurrentProjectEditor();

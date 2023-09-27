@@ -11,7 +11,7 @@ import {
 } from './cards.js';
 
 // --------------------------------------------------------------
-// Component Instance attributes
+// Component Instance Attributes Card
 // --------------------------------------------------------------
 
 export function makeCard_componentInstanceAttributes(componentInstance) {

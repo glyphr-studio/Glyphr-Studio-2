@@ -157,17 +157,6 @@ export function showAppErrorPage(friendlyMessage = '', errorObject = { message: 
 }
 
 function addTelemetry() {
-	/*
-	<!-- Google tag (gtag.js) -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=G-L8S3D8WCC9"></script>
-	<script>
-		window.dataLayer = window.dataLayer || [];
-		function gtag(){dataLayer.push(arguments);}
-		gtag('js', new Date());
-		gtag('config', 'G-L8S3D8WCC9');
-	</script>
-	*/
-
 	let gScript = document.createElement('script');
 	gScript.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=G-L8S3D8WCC9');
 	gScript.setAttribute('async', '');

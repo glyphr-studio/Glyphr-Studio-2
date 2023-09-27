@@ -5,7 +5,7 @@ import { makeActionsArea_PathPoint } from './actions.js';
 import { makeInputs_position, makeSingleCheckbox, makeSingleLabel, rowPad } from './cards.js';
 
 // --------------------------------------------------------------
-// Path Point attributes
+// Path Point Attributes Card
 // --------------------------------------------------------------
 
 export function makeCard_pathPointAttributes(selectedPoint) {
@@ -18,9 +18,6 @@ export function makeCard_pathPointAttributes(selectedPoint) {
 		className: 'panel__card',
 		innerHTML: `<h3>Path point ${selectedPoint.pointNumber + 1} ${selectedPoint.ident}</h3>`,
 	});
-
-	// let pointNumLabel = makeSingleLabel('Selected path point');
-	// let pointNumInput = makeSingleInput(selectedPath, 'selectedPathPoint', 'whichPathPointIsSelected', 'input-number');
 
 	// -- Point -- //
 	// Point x/y

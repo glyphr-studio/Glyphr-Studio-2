@@ -151,6 +151,7 @@ function populateExportList() {
 			// log(`\t adding ligature "${item.name}"`);
 			exportLigatures.push({ xg: item, xc: key, chars: item.chars });
 
+			// TODO Add Ligatures to ligature code points
 			// ligWithCodePoint = doesLigatureHaveCodePoint(l);
 			// if (ligWithCodePoint) {
 			// 	// log(`\t LIGATURE WITH CODE POINT FOUND for ${l} at ${ligWithCodePoint.point}`);
