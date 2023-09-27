@@ -1,4 +1,5 @@
 import { duplicates, xyPointsAreClose } from '../common/functions.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { debugDrawPoints } from '../edit_canvas/draw_edit_affordances.js';
 import { sXcX, sYcY } from '../edit_canvas/edit_canvas.js';
 import { isShapeHere } from '../edit_canvas/tools/tools.js';
@@ -50,14 +51,36 @@ export function combineAllPaths(paths = []) {
 	// log(unknown);
 
 	let result = [];
-	if (unknown.length) result = result.concat(combinePaths(unknown));
-	if (clockwise.length) result = result.concat(combinePaths(clockwise));
-	if (counterClockwise.length) result = result.concat(combinePaths(counterClockwise));
+	let errorMessage = '';
+	let didStuff = false;
+	function processWinding(shapeArray, name) {
+		if (shapeArray.length > 1) {
+			let combinationResult = combinePaths(shapeArray);
+			if (Array.isArray(combinationResult)) {
+				result = result.concat(combinationResult);
+				didStuff = true;
+				log(`Combined ${name}`);
+			} else {
+				errorMessage = combinationResult;
+				result = result.concat(shapeArray);
+				log(`No overlap for ${name}`);
+			}
+		} else {
+			result = result.concat(shapeArray);
+			log(`Less than one shape for ${name}`);
+		}
+	}
+
+	// Process each array
+	processWinding(clockwise, 'clockwise');
+	processWinding(counterClockwise, 'counterClockwise');
+	processWinding(unknown, 'unknown');
 
 	// log(`\n⮟result⮟`);
 	// log(result);
 	// log(`combineAllPaths`, 'end');
-	return result;
+	if (didStuff) return result;
+	else return errorMessage || 'No overlapping shapes found with the same winding.';
 }
 
 /**
@@ -93,6 +116,11 @@ export function combinePaths(paths = []) {
 	});
 	// log(`\n⮟paths⮟`);
 	// log(paths);
+
+	if (intersections.length === 0) {
+		// log(`combinePaths`, 'end');
+		return 'No overlapping shapes.';
+	}
 
 	// Convert to Bezier segments
 	let allSegments = [];

@@ -1,4 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { drawShape } from '../display_canvas/draw_paths.js';
 import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
@@ -396,19 +397,25 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	combine() {
-		// log('MultiSelectShapes.combine', 'start');
+		log('MultiSelectShapes.combine', 'start');
+		let success = true;
 		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph);
-		const combinedShapes = combineAllPaths(newGlyph.shapes);
+		const combineResult = combineAllPaths(newGlyph.shapes);
+		log(`\n⮟combineResult⮟`);
+		log(combineResult);
 
-		// log(`combinedShapes`);
-		// log(combinedShapes);
 		// If everything worked, delete original paths and add new ones
-		if (combinedShapes) {
+		if (Array.isArray(combineResult)) {
 			this.deleteShapes();
-			combinedShapes.forEach((shape) => addPathToCurrentItem(shape));
+			combineResult.forEach((shape) => addPathToCurrentItem(shape));
+			showToast(`Combine shapes complete!`, 2000);
+		} else {
+			success = false;
+			showToast(`Combine shapes error:<br>${combineResult}`, 2000);
 		}
 
-		// log('MultiSelectShapes.combine', 'end');
+		log('MultiSelectShapes.combine', 'end');
+		return success;
 	}
 
 	deleteShapes() {
