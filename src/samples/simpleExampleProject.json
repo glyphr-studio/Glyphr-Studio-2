@@ -1,57 +1,67 @@
 {
   "settings": {
     "project": {
-      "name": "ci-test",
-      "latestVersion": "2.0.0-beta.2.1",
-      "initialVersion": "2.0.0-beta.2.1",
-      "id": "g2_V69TJI2YVN",
-      "characterRanges": []
-    },
-    "app": {
-      "savePreferences": false,
-      "stopPageNavigation": true,
-      "showNonCharPoints": false,
-      "formatSaveFile": true,
-      "moveShapesOnSVGDragDrop": false,
-      "guides": {
-        "drawGuidesOnTop": false,
-        "systemShowGuides": true,
-        "systemShowLabels": false,
-        "systemTransparency": 70,
-        "systemGuides": [
-          "baseline",
-          "leftSide",
-          "rightSide"
-        ],
-        "customShowGuides": true,
-        "customShowLabels": false,
-        "customTransparency": 70,
-        "custom": []
-      },
-      "contextCharacters": {
-        "showCharacters": false,
-        "characterTransparency": 20,
-        "showGuides": true,
-        "guidesTransparency": 70
-      },
-      "saveLivePreviews": true,
-      "livePreviews": [
+      "name": "GS2 Test Font",
+      "latestVersion": "2.0.0-beta.1",
+      "initialVersion": "2.0.0-alpha1",
+      "id": "g2_test_font",
+      "characterRanges": [
         {
-          "text": "the five boxing wizards jump quickly"
+          "begin": 33,
+          "end": 127,
+          "name": "Basic Latin"
+        },
+        {
+          "begin": 128,
+          "end": 255,
+          "name": "Latin-1 Supplement"
+        },
+        {
+          "begin": 256,
+          "end": 383,
+          "name": "Latin Extended-A"
+        },
+        {
+          "begin": 384,
+          "end": 591,
+          "name": "Latin Extended-B"
         }
       ]
     },
+			"app": {
+				"savePreferences": false,
+				"stopPageNavigation": true,
+				"showNonCharPoints": false,
+				"formatSaveFile": true,
+				"moveShapesOnSVGDragDrop": false,
+				"guides": {
+					"systemShowGuides": true,
+					"systemShowLabels": true,
+					"systemTransparency": 10,
+					"systemGuides": ["baseline", "capHeight", "ascent", "descent","leftSide", "rightSide"],
+					"customShowGuides": true,
+					"customShowLabels": true,
+					"customTransparency": 10,
+					"custom": [{"name": "Test guide", "visible": true}]
+				},
+				"contextCharacters": {
+					"showCharacters": false,
+					"characterTransparency": 10,
+					"showGuides": true,
+					"guidesTransparency": 10
+				}
+      },
     "font": {
-      "family": "ci-test",
+      "family": "GS2 Test Font",
       "style": "Regular",
       "version": "1.0",
       "description": "",
       "panose": "0 0 0 0 0 0 0 0 0 0",
       "upm": 1000,
-      "ascent": 700,
-      "descent": -300,
-      "capHeight": 675,
-      "xHeight": 400,
+      "ascent": 800,
+      "descent": -200,
+      "capHeight": 790,
+      "xHeight": 580,
       "overshoot": 10,
       "lineGap": 250,
       "italicAngle": 0,
@@ -78,116 +88,995 @@
     }
   },
   "glyphs": {
-    "glyph-0x42": {
-      "id": "glyph-0x42",
-      "advanceWidth": 500,
+    "glyph-0x20": {
+      "id": "glyph-0x20",
+      "advanceWidth": 200
+    },
+    "glyph-0x41": {
+      "id": "glyph-0x0041",
+      "advanceWidth": 530,
+      "contextCharacters": "BBBBABBBB",
       "shapes": [
         {
-          "link": "glyph-0x41"
+          "name": "Large outline",
+          "pathPoints": [
+            {
+              "p": {
+                "coord": {
+                  "x": 363.2,
+                  "y": 145
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 166.7,
+                  "y": 145
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 130,
+                  "y": 0
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 0,
+                  "y": 0
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 197,
+                  "y": 790
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 333,
+                  "y": 790
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 530,
+                  "y": 0
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 400,
+                  "y": 0
+                }
+              },
+              "type": "corner"
+
+            }
+          ],
+          "winding": -5
+        },
+        {
+          "name": "Interior triangle",
+          "pathPoints": [
+            {
+              "p": {
+                "coord": {
+                  "x": 332.9,
+                  "y": 265
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 265,
+                  "y": 533
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 197.1,
+                  "y": 265
+                }
+              },
+              "type": "corner"
+
+            }
+          ],
+          "winding": 2
         }
       ]
     },
-    "glyph-0x41": {
-      "id": "glyph-0x41",
-      "advanceWidth": 500,
-      "usedIn": [
-        "glyph-0x42"
-      ],
+    "glyph-0x42": {
+      "id": "glyph-0x0042",
+      "advanceWidth": 405,
       "shapes": [
         {
-          "name": "Oval 0",
-          "winding": -5,
+          "name": "Large outline",
           "pathPoints": [
             {
-              "type": "symmetric",
-              "p": {"coord": {"x": 249.55,"y": 500}},
-              "h1": {"coord": {"x": 111.55,"y": 500}},
-              "h2": {"coord": {"x": 387.55,"y": 500}}
+              "p": {
+                "coord": {
+                  "x": 349.9,
+                  "y": 397
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 376.6,
+                  "y": 410
+                }
+              },
+              "h2": {
+                "coord": {
+                  "x": 376.6,
+                  "y": 384
+                }
+              }
             },
             {
-              "type": "symmetric",
-              "p": {"coord": {"x": 500,"y": 250.32191780821927}},
-              "h1": {"coord": {"x": 500,"y": 387.5205479452056}},
-              "h2": {"coord": {"x": 500,"y": 113.12328767123296}}
+              "p": {
+                "coord": {
+                  "x": 395,
+                  "y": 325
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 395,
+                  "y": 356.7
+                }
+              }
+
             },
             {
-              "type": "symmetric",
-              "p": {"coord": {"x": 249.55,"y": 0}},
-              "h1": {"coord": {"x": 388.45,"y": 0}},
-              "h2": {"coord": {"x": 110.65,"y": 0}}
+              "p": {
+                "coord": {
+                  "x": 395,
+                  "y": 80
+                }
+              },
+              "type": "corner",
+              "h2": {
+                "coord": {
+                  "x": 395,
+                  "y": 35.8
+                }
+              }
             },
             {
-              "type": "symmetric",
-              "p": {"coord": {"x": 0,"y": 250.32191780821927}},
-              "h1": {"coord": {"x": 0,"y": 112.47945205479465}},
-              "h2": {"coord": {"x": 0,"y": 388.1643835616439}}
+              "p": {
+                "coord": {
+                  "x": 315,
+                  "y": 0
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 359.2,
+                  "y": 0
+                }
+              }
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 10,
+                  "y": 0
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 10,
+                  "y": 790
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 315,
+                  "y": 790
+                }
+              },
+              "type": "corner",
+              "h2": {
+                "coord": {
+                  "x": 359.2,
+                  "y": 790
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 395,
+                  "y": 710
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 395,
+                  "y": 754.2
+                }
+              }
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 395,
+                  "y": 469
+                }
+              },
+              "type": "flat",
+              "h1": {
+                "coord": {
+                  "x": 395,
+                  "y": 519
+                }
+              },
+              "h2": {
+                "coord": {
+                  "x": 395,
+                  "y": 437.3
+                }
+              }
             }
-          ]
+          ],
+          "winding": -8
         },
         {
-          "name": "Rectangle 1",
-          "winding": -5,
+          "name": "Top interior square",
           "pathPoints": [
             {
-              "type": "corner",
-              "p": {"coord": {"x": 100,"y": 700}},
-              "h1": {"coord": {"x": 54.850746268656735,"y": 700}, "use": false},
-              "h2": {"coord": {"x": 145.14925373134326,"y": 700}, "use": false}
+              "p": {
+                "coord": {
+                  "x": 150,
+                  "y": 460
+                }
+              },
+              "type": "corner"
+
             },
             {
-              "type": "corner",
-              "p": {"coord": {"x": 200,"y": 700}},
-              "h1": {"coord": {"x": 154.85074626865674,"y": 700}, "use": false},
-              "h2": {"coord": {"x": 245.14925373134324,"y": 700}, "use": false}
+              "p": {
+                "coord": {
+                  "x": 260,
+                  "y": 460
+                }
+              },
+              "type": "corner"
+
             },
             {
-              "type": "corner",
-              "p": {"coord": {"x": 200,"y": 600}},
-              "h1": {"coord": {"x": 154.85074626865674,"y": 600}, "use": false},
-              "h2": {"coord": {"x": 245.14925373134324,"y": 600}, "use": false}
+              "p": {
+                "coord": {
+                  "x": 260,
+                  "y": 645
+                }
+              },
+              "type": "corner"
+
             },
             {
-              "type": "corner",
-              "p": {"coord": {"x": 100,"y": 600}},
-              "h1": {"coord": {"x": 54.850746268656735,"y": 600}, "use": false},
-              "h2": {"coord": {"x": 145.14925373134326,"y": 600}, "use": false}
+              "p": {
+                "coord": {
+                  "x": 150,
+                  "y": 645
+                }
+              },
+              "type": "corner"
+
             }
-          ]
+          ],
+          "winding": 3
         },
         {
-          "name": "Rectangle 1 (copy)",
-          "winding": -5,
+          "name": "Bottom interior square",
           "pathPoints": [
             {
-              "type": "corner",
-              "p": {"coord": {"x": 150,"y": 700}},
-              "h1": {"coord": {"x": 104.85074626865674,"y": 700}, "use": false},
-              "h2": {"coord": {"x": 195.14925373134326,"y": 700}, "use": false}
+              "p": {
+                "coord": {
+                  "x": 150,
+                  "y": 133
+                }
+              },
+              "type": "corner"
+
             },
             {
-              "type": "corner",
-              "p": {"coord": {"x": 250,"y": 700}},
-              "h1": {"coord": {"x": 204.85074626865674,"y": 700}, "use": false},
-              "h2": {"coord": {"x": 295.14925373134326,"y": 700}, "use": false}
+              "p": {
+                "coord": {
+                  "x": 260,
+                  "y": 133
+                }
+              },
+              "type": "corner"
+
             },
             {
-              "type": "corner",
-              "p": {"coord": {"x": 250,"y": 600}},
-              "h1": {"coord": {"x": 204.85074626865674,"y": 600}, "use": false},
-              "h2": {"coord": {"x": 295.14925373134326,"y": 600}, "use": false}
+              "p": {
+                "coord": {
+                  "x": 260,
+                  "y": 327
+                }
+              },
+              "type": "corner"
+
             },
             {
-              "type": "corner",
-              "p": {"coord": {"x": 150,"y": 600}},
-              "h1": {"coord": {"x": 104.85074626865674,"y": 600}, "use": false},
-              "h2": {"coord": {"x": 195.14925373134326,"y": 600}, "use": false}
+              "p": {
+                "coord": {
+                  "x": 150,
+                  "y": 327
+                }
+              },
+              "type": "corner"
+
             }
-          ]
+          ],
+          "winding": 3
+        }
+      ]
+    },
+    "glyph-0x43": {
+      "id": "glyph-0x0043",
+      "advanceWidth": 420,
+      "shapes": [
+        {
+          "name": "Path",
+          "pathPoints": [
+            {
+              "p": {
+                "coord": {
+                  "x": 270,
+                  "y": 540
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 270,
+                  "y": 645
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 155,
+                  "y": 645
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 155,
+                  "y": 145
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 270,
+                  "y": 145
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 270,
+                  "y": 250
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 410,
+                  "y": 250
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 410,
+                  "y": 80
+                }
+              },
+              "type": "corner",
+              "h2": {
+                "coord": {
+                  "x": 410,
+                  "y": 35.8
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 330,
+                  "y": 0
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 374.2,
+                  "y": 0
+                }
+              }
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 90,
+                  "y": 0
+                }
+              },
+              "type": "corner",
+              "h2": {
+                "coord": {
+                  "x": 45.8,
+                  "y": 0
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 10,
+                  "y": 80
+                }
+              },
+              "type": "flat",
+              "h1": {
+                "coord": {
+                  "x": 10,
+                  "y": 35.8
+                }
+              },
+              "h2": {
+                "coord": {
+                  "x": 10,
+                  "y": 130
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 10,
+                  "y": 710
+                }
+              },
+              "type": "corner",
+              "h2": {
+                "coord": {
+                  "x": 10,
+                  "y": 754.2
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 90,
+                  "y": 790
+                }
+              },
+              "type": "flat",
+              "h1": {
+                "coord": {
+                  "x": 45.8,
+                  "y": 790
+                }
+              },
+              "h2": {
+                "coord": {
+                  "x": 140,
+                  "y": 790
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 330,
+                  "y": 790
+                }
+              },
+              "type": "corner",
+              "h2": {
+                "coord": {
+                  "x": 374.2,
+                  "y": 790
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 410,
+                  "y": 710
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 410,
+                  "y": 754.2
+                }
+              }
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 410,
+                  "y": 540
+                }
+              },
+              "type": "corner"
+
+            }
+          ],
+          "winding": -9
         }
       ]
     }
   },
-  "ligatures": {},
+  "ligatures": {
+    "liga-A-B": {
+      "id": "liga-A-B",
+			"objType": "Ligature",
+			"name": "Ligature A B",
+			"gsub": ["0x41", "0x42"],
+      "advanceWidth": 655,
+      "shapes": [
+        {
+          "name": "Large outline",
+          "pathPoints": [
+            {
+              "p": {
+                "coord": {
+                  "x": 198.36494874133135,
+                  "y": 257.4721843121701
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 198.36494874133135,
+                  "y": 257.4721843121701
+                }
+              },
+              "h2": {
+                "coord": {
+                  "x": 198.36494874133135,
+                  "y": 257.4721843121701
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 297.26468934584466,
+                  "y": 256.7876281461819
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 311.525256293,
+                  "y": 145
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 311.525256293,
+                  "y": 145
+                }
+              },
+              "h2": {
+                "coord": {
+                  "x": 311.525256293,
+                  "y": 145
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 176.7,
+                  "y": 145
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 176.7,
+                  "y": 145
+                }
+              },
+              "h2": {
+                "coord": {
+                  "x": 176.7,
+                  "y": 145
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 140,
+                  "y": 0
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 10,
+                  "y": 0
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 207,
+                  "y": 788
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 333,
+                  "y": 788
+                }
+              },
+              "type": "corner"
+
+            }
+          ],
+          "winding": -5
+        },
+        {
+          "name": "Large outline",
+          "pathPoints": [
+            {
+              "p": {
+                "coord": {
+                  "x": 599.9,
+                  "y": 395
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 626.6,
+                  "y": 408
+                }
+              },
+              "h2": {
+                "coord": {
+                  "x": 626.6,
+                  "y": 382
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 645,
+                  "y": 323
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 645,
+                  "y": 354.7
+                }
+              }
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 645,
+                  "y": 78
+                }
+              },
+              "type": "corner",
+              "h2": {
+                "coord": {
+                  "x": 645,
+                  "y": 33.8
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 565,
+                  "y": -2
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 609.2,
+                  "y": -2
+                }
+              }
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 260,
+                  "y": -2
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 260,
+                  "y": 788
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 565,
+                  "y": 788
+                }
+              },
+              "type": "corner",
+
+              "h2": {
+                "coord": {
+                  "x": 609.2,
+                  "y": 788
+                }
+              }
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 645,
+                  "y": 708
+                }
+              },
+              "type": "corner",
+              "h1": {
+                "coord": {
+                  "x": 645,
+                  "y": 752.2
+                }
+              }
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 645,
+                  "y": 467
+                }
+              },
+              "type": "flat",
+              "h1": {
+                "coord": {
+                  "x": 645,
+                  "y": 517
+                }
+              },
+              "h2": {
+                "coord": {
+                  "x": 645,
+                  "y": 435.3
+                }
+              }
+            }
+          ],
+          "winding": -8
+        },
+        {
+          "name": "Top interior square",
+          "pathPoints": [
+            {
+              "p": {
+                "coord": {
+                  "x": 400,
+                  "y": 462
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 510,
+                  "y": 462
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 510,
+                  "y": 647
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 400,
+                  "y": 647
+                }
+              },
+              "type": "corner"
+
+            }
+          ],
+          "winding": 3
+        },
+        {
+          "name": "Bottom interior square",
+          "pathPoints": [
+            {
+              "p": {
+                "coord": {
+                  "x": 400,
+                  "y": 133
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 510,
+                  "y": 133
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 510,
+                  "y": 327
+                }
+              },
+              "type": "corner"
+
+            },
+            {
+              "p": {
+                "coord": {
+                  "x": 400,
+                  "y": 327
+                }
+              },
+              "type": "corner"
+
+            }
+          ],
+          "winding": 3
+        }
+      ]
+    }
+  },
   "components": {},
-  "kerning": {}
+  "kerning": {
+    "kern-0": {
+      "leftGroup": ["0x41", "0x42", "0x43", "0x43", "0x43"],
+      "rightGroup": ["0x43"],
+      "value": -100
+    },
+    "kern-1": {
+      "leftGroup": ["0x51", "0x52", "0x53"],
+      "rightGroup": ["0x53"],
+      "value": -100
+    },
+    "kern-2": {
+      "leftGroup": ["0x41", "0x42", "0x43","0x44", "0x45", "0x46","0x47", "0x48", "0x49","0x51", "0x52", "0x53"],
+      "rightGroup": ["0x53"],
+      "value": -100
+    }
+  }
 }

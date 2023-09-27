@@ -119,8 +119,9 @@ export function showToast(message = '0_o', duration = 3000) {
 
 	// remove any current context menu, or create one if it doesn't exist
 	if (element) {
-		element.style.display = 'none';
-		element.innerHTML = '';
+		// animateRemove(element);
+		// element.style.display = 'none';
+		// element.innerHTML = '';
 	} else {
 		element = makeElement({
 			tag: 'div',
