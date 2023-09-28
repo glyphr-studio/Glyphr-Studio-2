@@ -58,15 +58,15 @@ export function combineAllPaths(paths = []) {
 			if (Array.isArray(combinationResult)) {
 				result = result.concat(combinationResult);
 				didStuff = true;
-				log(`Combined ${name}`);
+				// log(`Combined ${name}`);
 			} else {
 				errorMessage = combinationResult;
 				result = result.concat(shapeArray);
-				log(`No overlap for ${name}`);
+				// log(`No overlap for ${name}`);
 			}
 		} else {
 			result = result.concat(shapeArray);
-			log(`Less than one shape for ${name}`);
+			// log(`Less than one shape for ${name}`);
 		}
 	}
 
@@ -89,7 +89,7 @@ export function combineAllPaths(paths = []) {
  * @returns {Array} - resulting paths
  */
 export function combinePaths(paths = []) {
-	log(`combinePaths`, 'start');
+	// log(`combinePaths`, 'start');
 	// log(`\n⮟paths⮟`);
 	// log(paths);
 
@@ -145,7 +145,7 @@ export function combinePaths(paths = []) {
 	paths.forEach((path) => (allSegments = removeSegmentsOverlappingPath(allSegments, path)));
 	// log('after removeSegmentsOverlappingPath ' + allSegments.segments.length);
 
-	log(`Segments Post Filtering`);
+	// log(`Segments Post Filtering`);
 	console.table(allSegments.segments);
 
 	// --------------------------------------------------------------
@@ -158,13 +158,13 @@ export function combinePaths(paths = []) {
 	let didStuff = false;
 
 	while (allSegments.length) {
-		log(`un-stitched length ${allSegments.length}`);
+		// log(`un-stitched length ${allSegments.length}`);
 		let target;
 		let test;
 
 		// First try by ID
 		target = orderedSegments.at(-1);
-		log(`\t Target point2ID ${target.point2ID}`);
+		// log(`\t Target point2ID ${target.point2ID}`);
 
 		for (let i = 0; i < allSegments.length; i++) {
 			test = allSegments[i];
@@ -172,8 +172,8 @@ export function combinePaths(paths = []) {
 
 			if (target.point2ID === test.point1ID) {
 				orderedSegments.push(allSegments.splice(i, 1)[0]);
-				log(`\t Match found for ${test.point1ID}`);
-				log(orderedSegments);
+				// log(`\t Match found for ${test.point1ID}`);
+				// log(orderedSegments);
 				didStuff = true;
 				break;
 			}
@@ -182,16 +182,16 @@ export function combinePaths(paths = []) {
 		// Next try by coordinates
 		if (!didStuff) {
 			target = orderedSegments.at(-1).getXYPoint(4);
-			log(`\t Target ${target.x}, ${target.y}`);
+			// log(`\t Target ${target.x}, ${target.y}`);
 
 			for (let i = 0; i < allSegments.length; i++) {
 				test = allSegments[i].getXYPoint(1);
-				log(`\t Testing ${test.x}, ${test.y}`);
+				// log(`\t Testing ${test.x}, ${test.y}`);
 
 				if (xyPointsAreClose(target, test, 1)) {
 					orderedSegments.push(allSegments.splice(i, 1)[0]);
-					log(`\t Match found at ${test.x}, ${test.y}`);
-					log(orderedSegments);
+					// log(`\t Match found at ${test.x}, ${test.y}`);
+					// log(orderedSegments);
 					didStuff = true;
 					break;
 				}
@@ -203,10 +203,10 @@ export function combinePaths(paths = []) {
 			didStuff = false;
 		} else {
 			// No matches were found, or no more segments to stitch
-			log(`allSegments.length: ${allSegments.length}`);
+			// log(`allSegments.length: ${allSegments.length}`);
 			newPolySegments.push(new PolySegment({ segments: orderedSegments }));
-			log(`newPolySegments`);
-			log(newPolySegments);
+			// log(`newPolySegments`);
+			// log(newPolySegments);
 
 			if (allSegments.length <= 1) {
 				// No more segments to stitch
@@ -219,7 +219,7 @@ export function combinePaths(paths = []) {
 			}
 		}
 	}
-	log(newPolySegments);
+	// log(newPolySegments);
 
 	// --------------------------------------------------------------
 	// Finish up
@@ -227,10 +227,10 @@ export function combinePaths(paths = []) {
 
 	let newPaths = newPolySegments.map((polySegment) => polySegment.getPath());
 
-	log(`\n⮟newPaths⮟`);
-	log(newPaths);
+	// log(`\n⮟newPaths⮟`);
+	// log(newPaths);
 
-	log(`combinePaths`, 'end');
+	// log(`combinePaths`, 'end');
 	return newPaths;
 }
 
@@ -453,10 +453,10 @@ function removeSegmentsOverlappingPath(polySegment, path) {
 	// log(polySegment.segments);
 	polySegment.segments.forEach((segment) => {
 		if (testForHit(segment, 0.33, path) && testForHit(segment, 0.66, path)) {
-			debugDrawSegmentPoints(segment);
+			// debugDrawSegmentPoints(segment);
 			segment.objType = 'hit';
 		} else {
-			debugDrawSegmentPoints(segment);
+			// debugDrawSegmentPoints(segment);
 		}
 	});
 
@@ -485,14 +485,6 @@ function testForHit(segment, split, path) {
 	let pt = 3;
 	let tx = splitSegment[0].p4x;
 	let ty = splitSegment[0].p4y;
-
-	// Big hit detection, to miss border paths
-	// let re = isShapeHere(path, sXcX(tx), sYcY(ty)) &&
-	// isShapeHere(path, sXcX(tx), sYcY(ty + pt)) &&
-	// isShapeHere(path, sXcX(tx), sYcY(ty - pt)) &&
-	// isShapeHere(path, sXcX(tx + pt), sYcY(ty)) &&
-	// isShapeHere(path, sXcX(tx - pt), sYcY(ty));
-	// if (re) alert('HIT ' + tx + ', ' + ty);
 
 	if (!isShapeHere(path, sXcX(tx), sYcY(ty + pt))) return false;
 	if (!isShapeHere(path, sXcX(tx), sYcY(ty - pt))) return false;

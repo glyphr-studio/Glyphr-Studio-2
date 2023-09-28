@@ -6,6 +6,7 @@ import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import obleggSampleProject from '../samples/oblegg-0-2.gs2?raw';
+import test from '../samples/bool_test.json?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 import { _DEV } from './dev_mode_includes.js';
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp, GSApp } from './main.js';
@@ -33,7 +34,7 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: true, // Use a 'Dev Mode' window title
-				sampleProject: 'oblegg', // Load the sample project, true or 'oblegg'
+				sampleProject: 'test', // Load the sample project, true or 'oblegg'
 				currentPage: 'Characters', // navigate straight to a page (title case names)
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel (title case names)
@@ -73,6 +74,7 @@ export class GlyphrStudioApp {
 			if (dev.sampleProject) {
 				let proj = simpleExampleProject;
 				if (dev.sampleProject === 'oblegg') proj = obleggSampleProject;
+				if (dev.sampleProject === 'test') proj = test;
 				editor.project = importGlyphrProjectFromText(proj);
 			}
 			if (dev.currentGlyphID) editor.selectedGlyphID = dev.currentGlyphID;

@@ -433,11 +433,11 @@ export class PolySegment extends GlyphElement {
 						tSeg.objType = 'REDUNDANT';
 					}
 					// exactly overlapping
-					if (tSeg.objType === 'Segment' && sSeg.objType === 'Segment') {
-						if (segmentsAreEqual(sSeg, tSeg)) {
-							sSeg.objType = 'DUPLICATE';
-						}
-					}
+					// if (tSeg.objType === 'Segment' && sSeg.objType === 'Segment') {
+					// 	if (segmentsAreEqual(sSeg, tSeg)) {
+					// 		sSeg.objType = 'DUPLICATE';
+					// 	}
+					// }
 				}
 			}
 			// log(`Seg ${s} ${this._segments[s].objType}`);

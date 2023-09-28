@@ -94,16 +94,6 @@ export class ProjectEditor {
 		// The rest are for the Pop Out Window
 		this.livePreviews = false;
 
-		// Ghost Canvas
-		this.canvasSize = 2000;
-		this.ghostCanvas = document.createElement('canvas');
-		this.ghostCanvas.width = this.canvasSize;
-		this.ghostCanvas.height = this.canvasSize;
-		this.ghostCTX = this.ghostCanvas.getContext('2d', {
-			alpha: false,
-			willReadFrequently: true,
-		});
-
 		// Canvas Event handlers
 		this.eventHandlers = {};
 		this.selectedTool = 'resize';

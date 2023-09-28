@@ -5,6 +5,7 @@ import { round } from '../../common/functions.js';
 import { drawShape } from '../../display_canvas/draw_paths.js';
 import { Path } from '../../project_data/path.js';
 import { closePopOutWindow, openPopOutWindow } from '../../project_editor/pop_out_window.js';
+import { cXsX, cYsY } from '../edit_canvas.js';
 import { stopCreatingNewPath } from './new_path.js';
 
 // --------------------------------------------------------------
@@ -328,9 +329,16 @@ export function addPathToCurrentItem(newPath) {
 	return newPath;
 }
 
-export function getShapeAtLocation(x, y) {
+/**
+ * Looks through the selected Item's shapes and returns
+ * a shape (or false) at the coordinate location
+ * @param {Number} cx - x coordinate in canvas units
+ * @param {Number} cy - y coordinate in canvas units
+ * @returns {Shape or Boolean}
+ */
+export function getShapeAtLocation(cx, cy) {
 	// log(`getShapeAtLocation`, 'start');
-	// log('checking x:' + x + ' y:' + y);
+	// log('checking cx:' + cx + ' cy:' + cy);
 
 	let shape;
 	const editor = getCurrentProjectEditor();
@@ -340,7 +348,7 @@ export function getShapeAtLocation(x, y) {
 	for (let j = sws.length - 1; j >= 0; j--) {
 		shape = sws[j];
 		// log('Checking shape ' + j);
-		if (isShapeHere(shape, x, y)) {
+		if (isShapeHere(shape, cx, cy)) {
 			// log(`getShapeAtLocation`, 'end');
 			return shape;
 		}
@@ -351,26 +359,67 @@ export function getShapeAtLocation(x, y) {
 	return false;
 }
 
-export function isShapeHere(shape, px, py) {
+export function isShapeHere(shape, cx, cy) {
 	// log(`isShapeHere`, 'start');
+	// log(`cx: ${cx} / cy: ${cy}`);
+	let sx = cXsX(cx);
+	let sy = cYsY(cy);
+	// log(`sx: ${sx} / sy: ${sy}`);
 
-	const editor = getCurrentProjectEditor();
-	let ctx = editor.ghostCTX;
+	if (!shape.maxes.isPointInside(sx, sy)) {
+		// log(`Outside maxes for this shape`);
+		// log(`isShapeHere`, 'end');
+		return false;
+	}
+
+	let g1 = 100;
+	let g2 = 200;
+	let ghc = document.createElement('canvas');
+	ghc.width = shape.maxes.width + g2;
+	ghc.height = shape.maxes.height + g2;
+	let ctx = ghc.getContext('2d', {
+		alpha: false,
+		willReadFrequently: true,
+	});
+	let view = { dx: shape.maxes.xMin * -1 + g1, dy: shape.maxes.yMax + g1, dz: 1 };
 
 	ctx.fillStyle = 'rgb(255, 255, 255)';
-	ctx.fillRect(0, 0, editor.canvasSize, editor.canvasSize);
+	ctx.fillRect(0, 0, shape.maxes.width + g2, shape.maxes.height + g2);
 
 	ctx.beginPath();
-	drawShape(shape, ctx, editor.view);
+	drawShape(shape, ctx, view);
 	ctx.closePath();
 
 	ctx.fillStyle = 'rgb(0,0,0)';
 	ctx.fill();
 
-	let imageData = ctx.getImageData(px, py, 1, 1);
+	let xTest = sx + view.dx;
+	let yTest = view.dy - sy;
+	let imageData = ctx.getImageData(xTest, yTest, 1, 1);
+
+	// Visually debug
+	// ctx.strokeStyle = 'lime';
+	// ctx.strokeAlign = 'outside';
+	// ctx.lineWidth = 4;
+	// ctx.strokeRect(xTest - 10, yTest - 10, 20, 20);
+	// openDebugPopOutWindow(ghc);
+
 	// log('red = ' + imageData.data[0] + '  returning: ' + (imageData.data[0] < 255));
 	// log(`isShapeHere`, 'end');
 	return imageData.data[0] < 255;
+}
+
+export function openDebugPopOutWindow(content) {
+	const editor = getCurrentProjectEditor();
+	if (!editor.debugPopOutWindow) {
+		editor.debugPopOutWindow = window.open('', 'glyphr-studio-debug-pop-out');
+		editor.debugPopOutWindow.document.body.style.backgroundColor = 'gray';
+	}
+
+	// Init window properties
+	let popDoc = editor.debugPopOutWindow.document;
+	popDoc.body.innerHTML = '';
+	popDoc.body.appendChild(content);
 }
 
 // --------------------------------------------------------------

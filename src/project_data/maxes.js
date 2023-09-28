@@ -224,6 +224,22 @@ export class Maxes extends GlyphElement {
 		this.yMin = round(this.yMin, precision);
 		this.yMax = round(this.yMax, precision);
 	}
+
+	/**
+	 * Checks to see if a x/y point is inside this maxes
+	 * @param {Number} x - x value to check
+	 * @param {Number} y - y value to check
+	 * @returns {Boolean}
+	 */
+	isPointInside(x, y) {
+		let result = (
+			x <= this.xMax &&
+			x >= this.xMin &&
+			y <= this.yMax &&
+			y >= this.yMin
+		);
+		return result;
+	}
 }
 
 // --------------------------------------------------------------
