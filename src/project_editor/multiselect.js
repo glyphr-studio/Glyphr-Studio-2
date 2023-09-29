@@ -397,12 +397,12 @@ export class MultiSelectShapes extends MultiSelect {
 	}
 
 	combine() {
-		log('MultiSelectShapes.combine', 'start');
+		// log('MultiSelectShapes.combine', 'start');
 		let success = true;
 		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph);
 		const combineResult = combineAllPaths(newGlyph.shapes);
-		log(`\n⮟combineResult⮟`);
-		log(combineResult);
+		// log(`\n⮟combineResult⮟`);
+		// log(combineResult);
 
 		// If everything worked, delete original paths and add new ones
 		if (Array.isArray(combineResult)) {
@@ -414,7 +414,7 @@ export class MultiSelectShapes extends MultiSelect {
 			showToast(`Combine shapes error:<br>${combineResult}`, 2000);
 		}
 
-		log('MultiSelectShapes.combine', 'end');
+		// log('MultiSelectShapes.combine', 'end');
 		return success;
 	}
 
