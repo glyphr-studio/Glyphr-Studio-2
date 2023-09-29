@@ -798,23 +798,19 @@ export class Path extends GlyphElement {
 	 * PolySegment is an industry-standard way of describing Bezier paths
 	 * @returns {PolySegment}
 	 */
-	makePolySegment(pathNumber = '') {
-		log(`Path.makePolySegment`, 'start');
-		log(`pathNumber: ${pathNumber}`);
-		if (pathNumber !== '') {
-			log(`clearing cache`);
-			this.cache.segments = [];
-		}
+	makePolySegment() {
+		// log(`Path.makePolySegment`, 'start');
+		// log(`pathNumber: ${pathNumber}`);
 		const seg = [];
 		for (let pp = 0; pp < this.pathPoints.length; pp++) {
-			seg.push(this.makeSegment(pp, pathNumber));
+			seg.push(this.makeSegment(pp));
 		}
 
 		const re = new PolySegment({ segments: seg });
 
 		// log(`returning`);
 		// log(re);
-		log(`Path.makePolySegment`, 'end');
+		// log(`Path.makePolySegment`, 'end');
 
 		return re;
 	}
@@ -824,10 +820,9 @@ export class Path extends GlyphElement {
 	 * @param {Number} num - segment number
 	 * @returns {Segment}
 	 */
-	makeSegment(num = 0, pathNumber = '') {
+	makeSegment(num = 0) {
 		// log('Path.makeSegment', 'start');
 		// log('passed ' + num);
-		// log(`pathNumber: ${pathNumber}`);
 		num = num % this.pathPoints.length;
 
 		// check cache
@@ -841,11 +836,11 @@ export class Path extends GlyphElement {
 		// log('validated as ' + num);
 		const pp1 = this.pathPoints[num];
 		let randomID = Math.round(Math.random() * 10000);
-		if (!pp1.pointID) pp1.pointID = `point-${randomID}`;
+		if (!pp1.pointID) pp1.pointID = `point-${num}-${randomID}`;
 		// let pp2 = this.pathPoints[(num+1)%this.pathPoints.length];
 		const next = this.getNextPointNum(num);
 		const pp2 = this.pathPoints[next];
-		if (!pp2.pointID) pp2.pointID = `point-${randomID}`;
+		if (!pp2.pointID) pp2.pointID = `point-${next}-${randomID}`;
 		// log(pp1);
 		// log(pp2);
 		const re = new Segment({

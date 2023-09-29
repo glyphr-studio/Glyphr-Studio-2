@@ -123,10 +123,10 @@ export function combinePaths(paths = []) {
 
 	// Convert to Bezier segments
 	let allSegments = [];
-	paths.forEach((path, index) => {
-		allSegments = allSegments.concat(path.makePolySegment(index + 1).segments);
+	paths.forEach((path) => {
+		allSegments = allSegments.concat(path.makePolySegment().segments);
 	});
-	// allSegments.sort((a, b) => a.maxes.xMin - b.maxes.xMin); // Helps with complex overlaps for some reason
+	allSegments.sort((a, b) => a.maxes.xMin - b.maxes.xMin); // Helps with complex overlaps for some reason
 
 	allSegments = new PolySegment({ segments: allSegments });
 	// log(`\n\n All Segments collected`);
@@ -146,7 +146,7 @@ export function combinePaths(paths = []) {
 	// log('after removeSegmentsOverlappingPath ' + allSegments.segments.length);
 
 	// log(`Segments Post Filtering`);
-	console.table(allSegments.segments);
+	// console.table(allSegments.segments);
 
 	// --------------------------------------------------------------
 	// Take remaining segments and stitch them together
@@ -156,69 +156,85 @@ export function combinePaths(paths = []) {
 	let newPolySegments = [];
 	orderedSegments[0] = allSegments.shift();
 	let didStuff = false;
+	let closedShape = false;
 
 	while (allSegments.length) {
 		// log(`un-stitched length ${allSegments.length}`);
 		let target;
 		let test;
+		didStuff = false;
+		closedShape = false;
 
-		// First try by ID
 		target = orderedSegments.at(-1);
 		// log(`\t Target point2ID ${target.point2ID}`);
 
-		for (let i = 0; i < allSegments.length; i++) {
-			test = allSegments[i];
-			// log(`\t Test point1ID ${test.point1ID}`);
+		// Check to see if this segment closes the current shape
+		if (target.point2ID === orderedSegments[0].point1ID) {
+			closedShape = true;
 
-			if (target.point2ID === test.point1ID) {
-				orderedSegments.push(allSegments.splice(i, 1)[0]);
-				// log(`\t Match found for ${test.point1ID}`);
-				// log(orderedSegments);
-				didStuff = true;
-				break;
-			}
-		}
-
-		// Next try by coordinates
-		if (!didStuff) {
-			target = orderedSegments.at(-1).getXYPoint(4);
-			// log(`\t Target ${target.x}, ${target.y}`);
-
+		} else {
+			// First try by ID
 			for (let i = 0; i < allSegments.length; i++) {
-				test = allSegments[i].getXYPoint(1);
-				// log(`\t Testing ${test.x}, ${test.y}`);
+				test = allSegments[i];
+				// log(`\t Test point1ID ${test.point1ID}`);
 
-				if (xyPointsAreClose(target, test, 1)) {
+				if (target.point2ID === test.point1ID) {
 					orderedSegments.push(allSegments.splice(i, 1)[0]);
-					// log(`\t Match found at ${test.x}, ${test.y}`);
+					// log(`\t Match found for ${test.point1ID}`);
 					// log(orderedSegments);
 					didStuff = true;
 					break;
 				}
 			}
+
+			// Next try by coordinates
+			if (!didStuff) {
+				// log(`Fallback to coordinate check`);
+				target = orderedSegments.at(-1).getXYPoint(4);
+				// log(`\t Target ${target.x}, ${target.y}`);
+
+				for (let i = 0; i < allSegments.length; i++) {
+					test = allSegments[i].getXYPoint(1);
+					// log(`\t Testing ${test.x}, ${test.y}`);
+
+					if (xyPointsAreClose(target, test, 1)) {
+						orderedSegments.push(allSegments.splice(i, 1)[0]);
+						// log(`\t Match found at ${test.x}, ${test.y}`);
+						// log(orderedSegments);
+						didStuff = true;
+						break;
+					}
+				}
+			}
 		}
 
-		if (didStuff && allSegments.length >= 1) {
-			// Continue stitching loops for this shape
-			didStuff = false;
-		} else {
-			// No matches were found, or no more segments to stitch
-			// log(`allSegments.length: ${allSegments.length}`);
-			newPolySegments.push(new PolySegment({ segments: orderedSegments }));
-			// log(`newPolySegments`);
-			// log(newPolySegments);
-
-			if (allSegments.length <= 1) {
-				// No more segments to stitch
-				break;
-			} else {
-				// More segments that weren't attached to the previous shape
-				// Start a new PolySegment to stitch
-				orderedSegments = [];
-				orderedSegments[0] = allSegments.shift();
+		// Check to end this loop
+		// If the shape isn't closed, and if stuff was did, then
+		// the loop will progress naturally to the next segment.
+		// log(`allSegments.length: ${allSegments.length}`);
+		if (closedShape) {
+			// Two points were found to close a shape
+			// log(`ClosedShape`);
+			startNewShape();
+		} else if (!didStuff) {
+			// Got through the whole loop without adding a segment
+			if (allSegments.length) {
+				// Artificially closing the shape, starting a new one
+				console.warn(`No matching segment found, closing shape.`);
+				startNewShape();
 			}
 		}
 	}
+
+	function startNewShape() {
+		newPolySegments.push(new PolySegment({ segments: orderedSegments }));
+		orderedSegments = [];
+		orderedSegments[0] = allSegments.shift();
+		didStuff = false;
+	}
+
+	// End of while loop fencepost
+	newPolySegments.push(new PolySegment({ segments: orderedSegments }));
 	// log(newPolySegments);
 
 	// --------------------------------------------------------------
