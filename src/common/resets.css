@@ -243,7 +243,7 @@ ul li {
 // ------------------------------------------------------------*/
 :root {
 	--global-focus-style: 1px dashed var(--purple-l50);
-	--global-transition: all 80ms ease-in-out;
+	--global-transition: all 80ms ease;
 	--animate-fade-in-slide-down: 180ms ease-in fade-slide-in;
 	--animate-fade-in: 180ms ease-in fade-in;
 	--animate-fade-out: 180ms ease-out fade-out;

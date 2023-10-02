@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
 import { redrawLivePreviewPageDisplayCanvas } from '../pages/live_preview';
-import { makeLivePreviewPopOutCard, openPopOutWindow } from '../project_editor/pop_out_window';
+import { makeLivePreviewPopOutCard, openPopOutWindow, updatePopOutWindowContent } from '../project_editor/pop_out_window';
 import { makeDirectCheckbox, makeSingleLabel } from './cards';
 
 // --------------------------------------------------------------
@@ -238,5 +238,5 @@ function makeTextBlockOptions_pageOptions(textBlockOptions) {
 
 function redrawAllLivePreviews() {
 	redrawLivePreviewPageDisplayCanvas();
-	if (getCurrentProjectEditor().popOutWindow) openPopOutWindow();
+	if (getCurrentProjectEditor().popOutWindow) updatePopOutWindowContent();
 }
