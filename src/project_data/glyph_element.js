@@ -36,15 +36,6 @@ export class GlyphElement {
 		// log(`~CHANGED`, 'end');
 	}
 
-	traceLineage(descendants = '') {
-		let path = `${this.name || this.objType} / ${descendants}`;
-		if (this.parent && this.parent.traceLineage) {
-			this.parent.traceLineage(path);
-		} else {
-			console.warn(`No Parent! \n ${path}`);
-		}
-	}
-
 	get ident() {
 		return this.__ID || '';
 	}
