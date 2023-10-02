@@ -6,7 +6,6 @@ import { GlyphElement } from '../glyph_element.js';
 // --------------------------------------------------------------
 /*
 	// changed
-	// traceLineage
 	objType
 	// displayType
 	cache
