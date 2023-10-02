@@ -9,6 +9,42 @@ import {
 } from '../poly_segment.js';
 import { round } from '../../common/functions.js';
 
+/*
+	constructor
+	save
+	get lineType
+	get length
+	get baseLength
+	get topLength
+	get quickLength
+	get/set maxes
+	// get valuesAsArray
+	print
+	split
+	splitAtPoint
+	splitAtTime
+	splitAtManyPoints
+	pointIsWithinMaxes
+	convertToLine
+	getSplitFromXYPoint
+	calculateLength
+	findXYPointFromSplit
+	getReverse
+	getXYPoint
+	getFastMaxes
+	recalculateMaxes
+	isLineOverlappedByLine
+	containsTerminalPoint
+	containsStartPoint
+	containsEndPoint
+	containsPointOnCurve
+	containsPointOnLine
+	precedes
+	determineLineType
+	roundAll
+	getLineLength
+	pointsAreCollinear
+*/
 // basically an upper-left quadrant quarter circle
 // Test Segment at t=0.5 is {x: 62.5, y: 137.5}
 const testSegment1 = { p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 100, p3y: 200, p4x: 200, p4y: 200 };
@@ -35,6 +71,18 @@ describe('Segment', () => {
 		});
 	});
 
+	it('print', () => {
+		expect(sampleSegment().print()).toEqual(
+`{Segment
+    line: false
+    p1: 0/0
+    p2: 0/100
+    p3: 100/200
+    p4: 200/200
+    maxes:   {xMin:0 xMax:200 yMin:0 yMax:200}
+}`
+		);
+	});
 	it('lineType getter', () => {
 		// also tests determineLineType
 		const seg = new Segment({ p1x: 0, p1y: 100, p4x: 100, p4y: 0 });
@@ -63,6 +111,11 @@ describe('Segment', () => {
 		expect(sampleSegment().maxes.xMax).toBe(200);
 	});
 
+	it('valuesAsArray getter', () => {
+		expect(sampleSegment().valuesAsArray).toEqual(
+			[0, 0, 0, 100, 100, 200, 200, 200]
+		);
+	});
 	it('split', () => {
 		expect(sampleSegment().split()[1].p1x).toBe(62.5);
 	});
@@ -81,9 +134,9 @@ describe('Segment', () => {
 			{ x: 101.9304, y: 169.2504 }, // t=0.66
 		];
 
-		const segs = sampleSegment().splitAtManyPoints(points);
+		const segments = sampleSegment().splitAtManyPoints(points);
 
-		expect(round(segs[2].p1x)).toBe(102);
+		expect(round(segments[2].p1x)).toBe(102);
 	});
 
 	it('pointIsWithinMaxes', () => {
