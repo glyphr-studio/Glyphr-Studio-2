@@ -27,4 +27,10 @@ describe('XYPoint', () => {
 		xyp.y = 789;
 		expect(xyp.y).toBe(789);
 	});
+
+	it('NaN Detection', () => {
+		const nanTest = new XYPoint('a', 'b');
+		expect(nanTest.x === 0);
+		expect(nanTest.y === 0);
+	});
 });
