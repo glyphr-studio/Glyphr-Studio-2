@@ -1,4 +1,4 @@
-import { assert, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { ComponentInstance } from '../component_instance.js';
 
 /**
@@ -11,40 +11,40 @@ function sampleComponentInstance() {
 
 // --------------------------------------------------------------
 // CHECKLIST
+// >> depends on root glyph
 // --------------------------------------------------------------
 /*
-	// save
-	// transformedGlyph
-	// makeTransformedGlyph
-	// getCrossLinkedItem
-	link
-	name
-	translateX
-	translateY
-	// resizeWidth
-	// resizeHeight
-	isFlippedEW
-	isFlippedNS
-	reverseWinding
-	rotation
-	rotateFirst
-	xLock
-	yLock
-	wLock
-	hLock
-	ratioLock
-	x
-	y
-	width
-	height
-	// maxes
-	// center
-	// svgPathData
-	// updateShapePosition
-	// updateShapeSize
-	// flipEW
-	// flipNS
-	// rotate
+	>> get transformedGlyph
+	>> makeTransformedGlyph
+	>> getCrossLinkedItem
+	get/set link
+	get/set name
+	get/set translateX
+	get/set translateY
+	get/set resizeWidth
+	get/set resizeHeight
+	get/set isFlippedEW
+	get/set isFlippedNS
+	get/set reverseWinding
+	get/set rotation
+	get/set rotateFirst
+	get/set xLock
+	get/set yLock
+	get/set wLock
+	get/set hLock
+	get/set ratioLock
+	>> get x
+	>> get y
+	>> get width
+	>> get height
+	>> get maxes
+	>> get center
+	>> get svgPathData
+	>> updateShapeSize
+	updateShapePosition
+	flipEW
+	flipNS
+	rotate
 */
 describe('ComponentInstance', () => {
 	it('get/set link', () => {
@@ -71,16 +71,16 @@ describe('ComponentInstance', () => {
 		expect(ci.translateY).toBe(456);
 	});
 
-	it('get/set scaleW', () => {
+	it('get/set resizeWidth', () => {
 		const ci = sampleComponentInstance();
-		ci.scaleW = 789;
-		expect(ci.scaleW).toBe(789);
+		ci.resizeWidth = 789;
+		expect(ci.resizeWidth).toBe(789);
 	});
 
-	it('get/set scaleH', () => {
+	it('get/set resizeHeight', () => {
 		const ci = sampleComponentInstance();
-		ci.scaleH = 246;
-		expect(ci.scaleH).toBe(246);
+		ci.resizeHeight = 246;
+		expect(ci.resizeHeight).toBe(246);
 	});
 
 	it('get/set isFlippedNS', () => {
@@ -143,4 +143,28 @@ describe('ComponentInstance', () => {
 		expect(ci.ratioLock).toBe(true);
 	});
 
+	it('updateShapePosition', () => {
+		const ci = sampleComponentInstance();
+		ci.updateShapePosition(100, 100);
+		expect(ci.translateX).toBe(100);
+		expect(ci.translateY).toBe(100);
+	});
+
+	it('flipEW', () => {
+		const ci = sampleComponentInstance();
+		ci.flipEW();
+		expect(ci.isFlippedEW).toBeTruthy();
+	});
+
+	it('flipNS', () => {
+		const ci = sampleComponentInstance();
+		ci.flipNS();
+		expect(ci.isFlippedNS).toBeTruthy();
+	});
+
+	it('rotate', () => {
+		const ci = sampleComponentInstance();
+		ci.rotate(Math.PI / 2);
+		expect(ci.rotation).toBe(-90);
+	});
 });

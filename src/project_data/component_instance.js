@@ -122,7 +122,6 @@ export class ComponentInstance extends GlyphElement {
 	 * and returns a Glyph object - while also updating the cache
 	 * @returns {Glyph}
 	 */
-
 	get transformedGlyph() {
 		if (!this.cache.transformedGlyph) {
 			this.cache.transformedGlyph = this.makeTransformedGlyph();
