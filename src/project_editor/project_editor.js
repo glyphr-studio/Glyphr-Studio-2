@@ -9,7 +9,7 @@ import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { makeDateStampSuffix, saveFile } from '../project_editor/saving.js';
-import { deleteLinks } from './cross_item_actions.js';
+import { deleteLinks, kernGroupDisplayWidth, kernGroupSideMaxWidth } from './cross_item_actions.js';
 import { History } from './history.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import { Navigator } from './navigator.js';
@@ -762,8 +762,8 @@ export class ProjectEditor {
 
 		if (isKern) {
 			// Kerning
-			emWidth += this.selectedItem.groupWidth;
-			emLeftOffset = this.selectedItem.leftGroupWidth;
+			emWidth += kernGroupDisplayWidth(this.selectedItem);
+			emLeftOffset = kernGroupSideMaxWidth(this.selectedItem.leftGroup);
 			emLeftOffset -= this.selectedItem.value;
 		} else if (this.project.settings.app.contextCharacters.showCharacters) {
 			// Context Characters

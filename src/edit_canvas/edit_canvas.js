@@ -3,6 +3,7 @@ import { accentColors, getColorFromRGBA, transparencyToAlpha } from '../common/c
 import { makeElement } from '../common/dom.js';
 import { clone } from '../common/functions.js';
 import { drawGlyph } from '../display_canvas/draw_paths.js';
+import { kernGroupSideMaxWidth } from '../project_editor/cross_item_actions.js';
 import { guideColorDark, guideColorLight, guideColorMedium } from '../project_editor/guide.js';
 import { drawCharacterKernExtra, drawContextCharacters } from './context_characters.js';
 import {
@@ -209,8 +210,8 @@ export class EditCanvas extends HTMLElement {
 				// drawSystemGuidelines(false);
 				ctx.fillStyle = accentColors.gray.l90;
 				const gridPad = 100 * view.dz;
-				const visibleLeftWidth = kernGroup.leftGroupWidth * view.dz;
-				const visibleRightWidth = kernGroup.rightGroupWidth * view.dz;
+				const visibleLeftWidth = kernGroupSideMaxWidth(kernGroup.leftGroup) * view.dz;
+				const visibleRightWidth = kernGroupSideMaxWidth(kernGroup.rightGroup) * view.dz;
 				const visibleValue = kernGroup.value * view.dz;
 				ctx.fillRect(
 					view.dx - gridPad - visibleLeftWidth + visibleValue,
@@ -219,10 +220,10 @@ export class EditCanvas extends HTMLElement {
 					1
 				);
 
-				drawCharacterKernExtra(ctx, kernGroup.value, view.dx, view.dz);
 				ctx.fillStyle = accentColors.purple.l60;
 				drawEmVerticalLine(ctx, 0, view, false);
 				drawEmVerticalLine(ctx, kernGroup.value, view, true);
+				drawCharacterKernExtra(ctx, kernGroup.value, view.dx, view.dz);
 
 				let drawItem;
 				// Draw right hand group

@@ -1,4 +1,3 @@
-import { getCurrentProject } from '../app/main.js';
 import { hexesToChars, validateAsHex } from '../common/character_ids.js';
 import { duplicates } from '../common/functions.js';
 import { GlyphElement } from './glyph_element.js';
@@ -102,6 +101,10 @@ export class KernGroup extends GlyphElement {
 		return result;
 	}
 
+	/**
+	 * Returns the left-group as a string
+	 * @returns {String}
+	 */
 	get leftGroupAsString() {
 		let left = '';
 		if (this.leftGroup) {
@@ -110,45 +113,16 @@ export class KernGroup extends GlyphElement {
 		return left;
 	}
 
+	/**
+	 * Returns the right-group as a string
+	 * @returns {String}
+	 */
 	get rightGroupAsString() {
 		let right = '';
 		if (this.rightGroup) {
 			right = hexesToChars(this.rightGroup.join(''));
 		}
 		return right;
-	}
-
-	get leftGroupWidth() {
-		let leftWidth = 0;
-		const project = getCurrentProject();
-		this.leftGroup.forEach((id) => {
-			let item = project.getItem(`glyph-${id}`);
-			if (item && item.advanceWidth) leftWidth = Math.max(leftWidth, item.advanceWidth);
-		});
-		return leftWidth;
-	}
-
-	get rightGroupWidth() {
-		let rightWidth = 0;
-		const project = getCurrentProject();
-		this.rightGroup.forEach((id) => {
-			let item = project.getItem(`glyph-${id}`);
-			if (item && item.advanceWidth) rightWidth = Math.max(rightWidth, item.advanceWidth);
-		});
-		return rightWidth;
-	}
-
-	get groupWidth() {
-		// log(`KernGroup GET groupWidth`, 'start');
-		if (!this?.cache?.groupWidth) {
-			const project = getCurrentProject();
-			let leftWidth = this.leftGroupWidth || project.defaultAdvanceWidth;
-			let rightWidth = this.rightGroupWidth || project.defaultAdvanceWidth;
-			this.cache.groupWidth = leftWidth - this.value + rightWidth;
-			// log(`this.cache.groupWidth: ${this.cache.groupWidth}`);
-		}
-		// log(`KernGroup GET groupWidth`, 'end');
-		return this.cache.groupWidth;
 	}
 
 	// --------------------------------------------------------------

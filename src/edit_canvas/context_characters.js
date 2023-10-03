@@ -448,11 +448,12 @@ export function drawCharacterKernExtra(ctx, kern, rightX, scale) {
 	const textWidth = ctx.measureText(text).width;
 	const textX = rightX - (kern * -1 * scale - textWidth) / 2 - textWidth;
 
-	ctx.strokeStyle = uiColors.offWhite;
+	ctx.strokeStyle = 'white';
 	ctx.lineWidth = 4;
 	ctx.miterLimit = 1;
-	ctx.strokeText(text, textX, topY + offset + barHeight + 15);
-	ctx.fillText(text, textX, topY + offset + barHeight + 15);
+	let textOffset = 25;
+	ctx.strokeText(text, textX, topY + offset + barHeight + textOffset);
+	ctx.fillText(text, textX, topY + offset + barHeight + textOffset);
 }
 
 /**
