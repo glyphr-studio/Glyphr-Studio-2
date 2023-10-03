@@ -229,7 +229,6 @@ export class PolySegment extends GlyphElement {
 				}
 			}
 		}
-		// log(ix);
 		ix = ix.filter(duplicates);
 		// log('found ' + ix.length + ' ix');
 		// log(ix);
@@ -600,14 +599,14 @@ export function findSegmentIntersections(s1, s2, depth) {
 	// log([s2m]);
 
 	// Complex segment intersections
-	// let threshold = 0.00005; // Wow, this was the threshold???
-	const threshold = 0.0005;
+	const threshold = 0.0009;
 	const precision = 3;
 
 	let s1w = s1m.xMax - s1m.xMin;
 	let s1h = s1m.yMax - s1m.yMin;
 	let s2w = s2m.xMax - s2m.xMin;
 	let s2h = s2m.yMax - s2m.yMin;
+	// log(`threshold: ${threshold}`);
 	// log('s1 w/h: ' + s1w + ' / ' + s1h);
 	// log('s2 w/h: ' + s2w + ' / ' + s2h);
 
