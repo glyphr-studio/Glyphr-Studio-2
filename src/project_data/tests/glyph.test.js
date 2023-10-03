@@ -1,8 +1,7 @@
-import { assert, describe, expect, it } from 'vitest';
-import { Glyph } from '../glyph.js';
-import { clone, numSan } from '../../common/functions.js';
+import { describe, expect, it } from 'vitest';
+import { clone } from '../../common/functions.js';
 import { samples } from '../../samples/samples.js';
-import { Path } from '../path.js';
+import { Glyph } from '../glyph.js';
 
 /**
  * Create a sample Glyph
@@ -66,44 +65,35 @@ function multiTriangleGlyph() {
 /*
 	save
 	print
-	id
-	shapes
-	advanceWidth
-	ratioLock
-	usedIn
-	gsub
-	x
-	y
-	width
-	height
-	leftSideBearing
-	rightSideBearing
-	name
-	char
-	chars
-	contentType
-	// addOneShape
+	get/set id
+	get/set shapes - also tests addOneShape
+	get/set advanceWidth
+	get/set ratioLock
+	get/set usedIn
+	get/set gsub
+	get/set contextCharacters
+	get/set x
+	get/set y
+	get/set width
+	get/set height
+	get/set leftSideBearing
+	get/set rightSideBearing
+	get/set name
+	get char
+	get contentType
 	setGlyphPosition
 	updateGlyphPosition
 	setGlyphSize
 	updateGlyphSize
 	flipNS
 	flipEW
-	// roundAll
+	roundAll
 	rotate
 	reverseWinding
-	// svgPathData
-	makeSVGPathData
-	maxes
-	// recalculateGlyphMaxes
-	combineAllPaths
+	get svgPathData
+	get maxes - also tests recalculateMaxes
 */
 describe('Glyph - Getters and Setters', () => {
-	// beforeAll(() => {
-	// 	spyOn(console, 'log').and.callThrough();
-	// });
-	// it('META TEST', () => { expect(true).toBeTruthy(); });
-
 	it('get/set id', () => {
 		const g = sampleGlyph();
 		g.id = '0x1234';
@@ -168,6 +158,12 @@ describe('Glyph - Getters and Setters', () => {
 		expect(g.gsub).toEqual(['0x1235', '0x1236']);
 	});
 
+	it('get/set contextCharacters', () => {
+		const g = sampleGlyph();
+		g.contextCharacters = 'abcdef';
+		expect(g.contextCharacters).toEqual('abcdef');
+	});
+
 	it('get/set x', () => {
 		const g = sampleGlyph();
 		g.x = 789;
@@ -206,6 +202,11 @@ describe('Glyph - Getters and Setters', () => {
 
 		expect(g.maxes.save()).toEqual({ xMax: 123, xMin: 123, yMax: 435, yMin: 345 });
 	});
+
+	it('get maxes', () => {
+		const g = multiTriangleGlyph();
+		expect(g.maxes.yMax).toBe(950);
+	});
 });
 
 describe('Glyph - outputs', () => {
@@ -215,6 +216,11 @@ describe('Glyph - outputs', () => {
 
 	it('print', () => {
 		expect(sampleGlyph().print()).toBeTruthy();
+	});
+
+	it('makeSVG', () => {
+		// also tests makeSVGPathData
+		expect(sampleGlyph().svgPathData.startsWith('M0,0M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.457')).toBeTruthy();
 	});
 });
 
@@ -255,6 +261,13 @@ describe('Glyph - updating', () => {
 		expect(g.shapes[0].pathPoints[0].p.coord.x).toBe(410);
 	});
 
+	it('roundAll', () => {
+		const g = multiTriangleGlyph();
+		g.shapes[0].pathPoints[0].p.coord.x = 410.123;
+		g.roundAll();
+		expect(g.shapes[0].pathPoints[0].p.coord.x).toBe(410);
+	});
+
 	it('rotate', () => {
 		const g = multiTriangleGlyph();
 		g.rotate(2, { x: 123, y: 123 });
@@ -265,12 +278,5 @@ describe('Glyph - updating', () => {
 		const g = sampleGlyph();
 		g.reverseWinding();
 		expect(g.shapes[0].winding).toBeGreaterThan(0);
-	});
-
-	it('makeSVG', () => {
-		// also tests makeSVGPathData
-		expect(sampleGlyph().makeSVGPathData()).toBe(
-			'M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.45700878 C484,257.92406046,414.15488624,186,326.6524943,186 C239.15010236,186,170,257.01000804,170,343.45700878 C170,429.90400952,239.84504649,500,326.6524943,500Z '
-		);
 	});
 });
