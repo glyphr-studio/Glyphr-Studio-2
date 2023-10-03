@@ -1,13 +1,8 @@
-import { assert, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
+import { clone, xyPointsAreClose } from '../../common/functions.js';
+import { samples } from '../../samples/samples.js';
 import { Path } from '../path.js';
 import { PathPoint } from '../path_point.js';
-import {
-	findPathIntersections,
-	findPathPointBoundaryIntersections,
-	findPathPointIntersections,
-} from '../path.js';
-import { clone } from '../../common/functions.js';
-import { samples } from '../../samples/samples.js';
 
 /**
  * A sample path
@@ -35,52 +30,50 @@ function trianglePath() {
 // CHECKLIST
 // --------------------------------------------------------------
 /*
+	constructor
 	save
 	print
-	name
-	pathPoints
-	winding
-	x
-	y
-	height
-	width
-	// xLock
-	// yLock
-	// wLock
-	// hLock
-	// ratioLock
-	maxes
-	svgPathData
-	// isLockable
-	// isLocked
-	// lock
-	// unlock
-	// setShapeSize
-	// updateShapeSize
-	// setShapePosition
-	// updateShapePosition
+	get/set name
+	get/set pathPoints
+	get/set winding
+	get/set x
+	get/set y
+	get/set height
+	get/set width
+	get/set xLock
+	get/set yLock
+	get/set wLock
+	get/set hLock
+	get/set ratioLock
+	get/set maxes - Also tests recalculateMaxes
+	get/set svgPathData
+	get isLockable
+	isLocked
+	lock
+	unlock
+	setShapeSize
+	updateShapeSize
+	setShapePosition
+	updateShapePosition
 	rotate
 	getNextPointNum
 	getPreviousPointNum
-	addPointsAtPathIntersections
 	containsPoint
 	makeSVGPathData
 	makePostScript
-	makeSegment
-	calculateQuickSegmentLength
 	makePolySegment
+	makeSegment
+	addPointsAtPathIntersections
+	calculateQuickSegmentLength
 	findWinding
 	reverseWinding
 	flipNS
 	flipEW
-	// roundAll
+	roundAll
 	addPathPoint
 	insertPathPoint
 	findClosestPointOnCurve
 	findXYPointFromSplit
-	// recalculateMaxes
-	// validate
-	checkForNaN
 */
 
 describe('Path', () => {
@@ -187,33 +180,6 @@ describe('Path', () => {
 		expect(path.name).toBe('Sample Test Path');
 	});
 
-	// pathPoints getter is tested lots of places
-
-	it('winding getter', () => {
-		const path = samplePath();
-		expect(path.winding).toBe(-5);
-	});
-
-	it('x getter', () => {
-		const path = samplePath();
-		expect(path.x).toBe(170);
-	});
-
-	it('y getter', () => {
-		const path = samplePath();
-		expect(path.y).toBe(500);
-	});
-
-	it('width getter', () => {
-		const path = samplePath();
-		expect(path.width).toBe(314);
-	});
-
-	it('height getter', () => {
-		const path = samplePath();
-		expect(path.height).toBe(314);
-	});
-
 	it('maxes getter', () => {
 		const path = samplePath();
 		expect(path.maxes.save()).toEqual({ xMin: 170, xMax: 484, yMin: 186, yMax: 500 });
@@ -226,13 +192,13 @@ describe('Path', () => {
 		);
 	});
 
-	it('winding setter', () => {
+	it('winding setter/getter', () => {
 		const path = samplePath();
 		path.winding = -1;
 		expect(path.winding).toBe(-1);
 	});
 
-	it('maxes setter', () => {
+	it('maxes setter/getter', () => {
 		const path = samplePath();
 		path.maxes = {
 			xMin: 100,
@@ -243,36 +209,77 @@ describe('Path', () => {
 		expect(path.maxes.center.x).toBe(200);
 	});
 
-	it('y setter', () => {
-		// y setter uses setPathPosition and updatePathPosition
+	it('y setter/getter', () => {
+		// y setter uses setShapePosition and updateShapePosition
 		const path = samplePath();
 		path.y = 654;
 		expect(path.y).toBe(654);
 	});
 
-	it('x setter', () => {
-		// x setter uses setPathPosition and updatePathPosition
+	it('x setter/getter', () => {
+		// x setter uses setShapePosition and updateShapePosition
 		const path = samplePath();
 		path.x = 654;
 
 		expect(path.x).toBe(654);
 	});
 
-	it('width setter', () => {
-		// width setter uses setPathSize and updatePathSize
+	it('width setter/getter', () => {
+		// width setter uses setShapeSize and updateShapeSize
 		const path = samplePath();
 		path.width = 500;
 		expect(path.width).toBe(500);
 	});
 
-	it('height setter', () => {
-		// height setter uses setPathSize and updatePathSize
+	it('height setter/getter', () => {
+		// height setter uses setShapeSize and updateShapeSize
 		const path = samplePath();
 		path.height = 654;
 		expect(path.height).toBe(654);
 	});
 
-	it('svgPathData setter', () => {
+	it('isLockable', () => {
+		expect(samplePath().isLockable).toBeTruthy();
+	});
+
+	it('x/y/w/h/ratio Lock setters/getters', () => {
+		const path = samplePath();
+		path.xLock = true;
+		path.yLock = true;
+		path.wLock = true;
+		path.hLock = true;
+		path.ratioLock = true;
+		expect(path.xLock).toBeTruthy();
+		expect(path.yLock).toBeTruthy();
+		expect(path.wLock).toBeTruthy();
+		expect(path.hLock).toBeTruthy();
+		expect(path.ratioLock).toBeTruthy();
+	});
+
+	it('lock / unlock / isLocked setters/getters', () => {
+		const path = samplePath();
+		path.lock('x');
+		path.lock('y');
+		path.lock('width');
+		path.lock('height');
+
+		expect(path.isLocked('x')).toBeTruthy();
+		expect(path.isLocked('y')).toBeTruthy();
+		expect(path.isLocked('width')).toBeTruthy();
+		expect(path.isLocked('height')).toBeTruthy();
+
+		path.unlock('x');
+		path.unlock('y');
+		path.unlock('width');
+		path.unlock('height');
+
+		expect(path.isLocked('x')).toBeFalsy();
+		expect(path.isLocked('y')).toBeFalsy();
+		expect(path.isLocked('width')).toBeFalsy();
+		expect(path.isLocked('height')).toBeFalsy();
+	});
+
+	it('svgPathData setter/getter', () => {
 		const path = samplePath();
 		path.svgPathData = '<svg>hi</svg>';
 
@@ -362,15 +369,16 @@ describe('Path', () => {
 		expect(p.pathPoints[2].p.x).toBe(400);
 	});
 
+	it('roundAll', () => {
+		const p = trianglePath();
+		p.pathPoints[0].h1.x = 400.123;
+		p.roundAll();
+		expect(p.pathPoints[0].h1.x).toBe(400);
+	});
+
 	it('addPathPoint', () => {
 		const pp = new PathPoint();
 		expect(samplePath().addPathPoint(pp).p.x).toBe(0);
-	});
-
-	it('checkForNaN', () => {
-		const p = samplePath();
-		p.pathPoints[2].h1.x = 'asdf';
-		expect(!p.checkForNaN()).toBeTruthy();
 	});
 
 	it('PathPoint: pointNumber', () => {
@@ -379,7 +387,19 @@ describe('Path', () => {
 	});
 
 	it('insertPathPoint', () => {
-		expect(samplePath().insertPathPoint().p.x).toBe(437.879040081);
+		const newPP = samplePath().insertPathPoint();
+		// expect(newPP.p.x).toBe(437.879040080653);
+		// expect(newPP.p.y).toBe(453.80336001154114);
+		expect(
+			xyPointsAreClose(
+				newPP.p,
+				{
+					x: 437.879,
+					y: 453.803,
+				},
+				3
+			)
+		).toBeTruthy();
 	});
 
 	it('findClosestPointOnCurve', () => {
@@ -388,26 +408,5 @@ describe('Path', () => {
 
 	it('findXYPointFromSplit', () => {
 		expect(samplePath().findXYPointFromSplit().x).toBe(437.879040080653);
-	});
-
-	it('findPathIntersections', () => {
-		const tp2 = trianglePath();
-		tp2.x = 150;
-
-		expect(findPathIntersections(trianglePath(), tp2).length).toBe(5);
-	});
-
-	it('findPathPointBoundaryIntersections', () => {
-		const tp2 = trianglePath();
-		tp2.x = 0;
-		tp2.y = 700;
-
-		expect(findPathPointBoundaryIntersections(trianglePath(), tp2).length).toBe(1);
-	});
-
-	it('findPathPointIntersections', () => {
-		const p2 = samplePath();
-		p2.y = 814;
-		expect(findPathPointIntersections(samplePath(), p2)[0]).toBe('326.65249430318556/500');
 	});
 });

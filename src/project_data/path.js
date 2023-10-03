@@ -547,18 +547,6 @@ export class Path extends GlyphElement {
 			pp.h1.coord.y = (pp.h1.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
 			pp.h2.coord.y = (pp.h2.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
 		});
-
-		if (this.checkForNaN()) {
-			// log('NAN FOUND IN THIS PATH');
-			// log('this.maxes = ' + json(this.maxes));
-			// log('oldWidth = ' + oldWidth);
-			// log('oldHeight = ' + oldHeight);
-			// log('newWidth = ' + newWidth);
-			// log('newHeight = ' + newHeight);
-			// log('ratioHeight = ' + ratioHeight);
-			// log('ratioWidth = ' + ratioWidth);
-		}
-
 		// log('Path.updateShapeSize', 'end');
 	}
 
@@ -1198,40 +1186,6 @@ export class Path extends GlyphElement {
 		// this.maxes.roundAll(4);
 		// log(`after> ${this.cache.maxes.print()}`);
 		// log('Path.recalculateMaxes', 'end');
-	}
-
-	/**
-	 * Looks through the whole path and sets erroneous values to 0
-	 * @param {String} calledBy - message for who called this
-	 */
-	validate() {
-		this.pathPoints.forEach((pp) => {
-			if (!pp.p.x && pp.p.x !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} p.x from ${pp.p.x}`);
-				pp.p.x = 0;
-			}
-			if (!pp.p.y && pp.p.y !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} p.y from ${pp.p.y}`);
-				pp.p.y = 0;
-			}
-			if (!pp.h1.x && pp.h1.x !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h1.x from ${pp.h1.x}`);
-				pp.h1.x = 0;
-			}
-			if (!pp.h1.y && pp.h1.y !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h1.y from ${pp.h1.y}`);
-				pp.h1.y = 0;
-			}
-			if (!pp.h2.x && pp.h2.x !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h2.x from ${pp.h2.x}`);
-				pp.h2.x = 0;
-			}
-			if (!pp.h2.y && pp.h2.y !== 0) {
-				// log(`VALIDATE PATH: ${calledBy} - resetting point ${pp} h2.y from ${pp.h2.y}`);
-				pp.h2.y = 0;
-			}
-			pp.roundAll();
-		});
 	}
 
 	/**
