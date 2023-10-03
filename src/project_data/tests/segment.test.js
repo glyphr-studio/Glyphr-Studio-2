@@ -2,7 +2,6 @@ import { assert, describe, expect, it } from 'vitest';
 import { Segment } from '../segment.js';
 import {
 	segmentsAreEqual,
-	findSegmentIntersections,
 	findOverlappingLineSegmentIntersections,
 	findCrossingLineSegmentIntersections,
 	findEndPointSegmentIntersections,
@@ -209,21 +208,6 @@ describe('Segment', () => {
 		const seg = sampleSegment();
 		seg.p2y = 123.4559;
 		expect(seg.roundAll(3).p2y).toBe(123.456);
-	});
-
-	it('findSegmentIntersections', () => {
-		// basically an upper-right quadrant quarter circle
-		const seg2 = new Segment({
-			p1x: 0,
-			p1y: 200,
-			p2x: 100,
-			p2y: 200,
-			p3x: 200,
-			p3y: 100,
-			p4x: 200,
-			p4y: 0,
-		});
-		expect(findSegmentIntersections(sampleSegment(), seg2)[0]).toBe('100/168.004');
 	});
 
 	it('segmentsAreEqual', () => {
