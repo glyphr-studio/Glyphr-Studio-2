@@ -13,7 +13,6 @@ export class GlyphElement {
 	 * Any change that updates the path of any part of a glyph
 	 * gets bubbled up through the GlyphElement hierarchy
 	 */
-	// changed(chain = '') {
 	changed() {
 		// log(`changed called on ${this.objType}:${this.id}:${this.name}`);
 		// log(`~CHANGED`, 'start');
@@ -21,15 +20,12 @@ export class GlyphElement {
 		if (this.cache) {
 			this.cache = {};
 		}
-		// log(chain);
 		// log(this.cache);
 
 		if (this.parent && this.parent.changed) {
 			// log('\tcalling parent.changed()');
-			// this.parent.changed(`${chain} / ${this.objType}${this?.__ID}`);
 			this.parent.changed();
 		} else {
-			// log(`${this.objType}${this?.__ID}`);
 			// log(this.cache);
 			// log('\tNo Parent!');
 		}
@@ -47,10 +43,17 @@ export class GlyphElement {
 		return this._objType || this.constructor.name;
 	}
 
+	/**
+	 * Returns the name of the type of Glyph Element this is.
+	 * For the three objects that use Glyph as their base type,
+	 * figures out the type based on the ID.
+	 */
 	get displayType() {
-		if (this.id.startsWith('liga-')) return 'Ligature';
-		if (this.id.startsWith('comp-')) return 'Component';
-		if (this.id.startsWith('glyph-')) return 'Glyph';
+		if (this.id) {
+			if (this.id.startsWith('liga-')) return 'Ligature';
+			if (this.id.startsWith('comp-')) return 'Component';
+			if (this.id.startsWith('glyph-')) return 'Glyph';
+		}
 		return this.objType;
 	}
 
@@ -80,40 +83,6 @@ export class GlyphElement {
 	set cache(cache = {}) {
 		this._cache = cache;
 	}
-
-	/**
-	 * For glyph elements with lockable properties, this function
-	 * will return true.
-	 * @returns {Boolean}
-	 */
-	get isLockable() {
-		return false;
-	}
-
-	/**
-	 * For glyph elements with lockable properties, this function
-	 * will be overwritten to return a boolean.
-	 * By default, properties are all unlocked.
-	 * @param {String} propertyName - property to check if locked
-	 * @returns {Boolean}
-	 */
-	isLocked() {
-		return false;
-	}
-
-	/**
-	 * For glyph elements with lockable properties, this function
-	 * will be overwritten to lock properties.
-	 * @param {String} propertyName - property to lock
-	 */
-	lock() {}
-
-	/**
-	 * For glyph elements with lockable properties, this function
-	 * will be overwritten to lock properties.
-	 * @param {String} propertyName - property to unlock
-	 */
-	unlock() {}
 
 	/**
 	 * Export object properties that need to be saved to a project file
@@ -156,6 +125,7 @@ export class GlyphElement {
 	 * @returns {String}
 	 */
 	print(level = 0, num = false) {
+		// log(`GlyphElement.print`, 'start');
 		let ind = '';
 		for (let i = 0; i < level; i++) ind += '  ';
 
@@ -163,9 +133,11 @@ export class GlyphElement {
 		ind += '  ';
 
 		const safeObj = this.save();
+		// log(`\n⮟safeObj⮟`);
+		// log(safeObj);
 		let elem;
 
-		for (const key of safeObj) {
+		for (const key of Object.keys(safeObj)) {
 			elem = this[key];
 			if (elem.print) {
 				re += `${ind}${key}: ${elem.print(level + 1)}\n`;
@@ -182,8 +154,49 @@ export class GlyphElement {
 
 		re += `${ind.substring(2)}}/${this.objType} ${num ? num : ''}`;
 
+		// log(`GlyphElement.print`, 'end');
 		return re;
 	}
+
+	// --------------------------------------------------------------
+	// Lock stuff
+	// For most objects this just provides defaults
+	// Certain objects will overwrite these methods
+	// for more functionality
+	// --------------------------------------------------------------
+	/**
+	 * For glyph elements with lockable properties, this function
+	 * will return true.
+	 * @returns {Boolean}
+	 */
+	get isLockable() {
+		return false;
+	}
+
+	/**
+	 * For glyph elements with lockable properties, this function
+	 * will be overwritten to return a boolean.
+	 * By default, properties are all unlocked.
+	 * @param {String} propertyName - property to check if locked
+	 * @returns {Boolean}
+	 */
+	isLocked() {
+		return false;
+	}
+
+	/**
+	 * For glyph elements with lockable properties, this function
+	 * will be overwritten to lock properties.
+	 * @param {String} propertyName - property to lock
+	 */
+	lock() {}
+
+	/**
+	 * For glyph elements with lockable properties, this function
+	 * will be overwritten to lock properties.
+	 * @param {String} propertyName - property to unlock
+	 */
+	unlock() {}
 }
 
 /**
