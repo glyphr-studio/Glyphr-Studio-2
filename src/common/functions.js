@@ -201,10 +201,10 @@ export function numSan(num) {
 	const stringNumber = '' + num;
 
 	if (stringNumber.indexOf('0000') > -1 || stringNumber.indexOf('9999') > -1) {
-		num = round(num, 4);
+		num = round(num, 3);
 	}
 
-	if (num < 0.0 && num > 0) num = 0;
+	if (num < 0.00001 && num > 0) num = 0;
 
 	return num;
 }
@@ -288,7 +288,7 @@ export function caseCamelToKebab(camel = '') {
  */
 export function caseKebabToCamel(kebab = '') {
 	let camel = '';
-	for (let i = 0; i < camel.length; i++) {
+	for (let i = 0; i < kebab.length; i++) {
 		if (kebab.charAt(i) === '-') {
 			i++;
 			camel += kebab.charAt(i).toUpperCase();

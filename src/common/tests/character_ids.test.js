@@ -25,7 +25,7 @@ import {
 	validateDecOrHexSuffix,
 	xmlDecToDec,
 	xmlHexToHex,
-} from './character_ids.js';
+} from '../character_ids.js';
 
 describe('Character IDs - Prefix and Suffix Checking', () => {
 	it('normalizePrefixes - hex', () => {

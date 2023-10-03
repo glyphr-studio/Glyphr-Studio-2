@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getColorFromRGBA, parseColorString, shiftColor, transparencyToAlpha } from './colors.js';
+import { getColorFromRGBA, parseColorString, shiftColor, transparencyToAlpha } from '../colors.js';
 
 describe('Colors', () => {
 	it('parseColorString', () => {
