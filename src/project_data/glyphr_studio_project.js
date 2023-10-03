@@ -558,6 +558,13 @@ export class GlyphrStudioProject {
 // --------------------------------------------------------------
 // Helpers
 // --------------------------------------------------------------
+
+/**
+ * Special logic to sort an array of Ligatures
+ * @param {Glyph} a - Ligature
+ * @param {Glyph} b - Ligature
+ * @returns {Number} - sort order
+ */
 export function sortLigatures(a, b) {
 	// log(`sortLigatures`, 'start');
 	// log(`a: ${a.chars}`);
@@ -575,6 +582,21 @@ export function sortLigatures(a, b) {
 }
 
 /**
+ * Taking old format IDs and updating them
+ * @param {String} oldID - old hex-only format for glyph ID
+ * @param {String} objType - making sure objType === 'Glyph'
+ * @returns {String} - validated ID
+ */
+export function validateItemID(oldID, objType) {
+	if (objType === 'Glyph') {
+		let suffix = remove(oldID, 'glyph-');
+		suffix = validateAsHex(suffix);
+		if (suffix) return `glyph-${suffix}`;
+	}
+	return oldID;
+}
+
+/**
  * Takes a template object of expected keys and default values
  * and an object to import:
  *   Overwrites template values if they exist in the imported object
@@ -584,7 +606,7 @@ export function sortLigatures(a, b) {
  * @param {Boolean} trimStrings - remove spaces from strings
  * @returns {Object}
  */
-function merge(template = {}, importing = {}, trimStrings = false) {
+export function merge(template = {}, importing = {}, trimStrings = false) {
 	// log('glyphr_studio_project - merge', 'start');
 	// log(`\n⮟importing⮟`);
 	// log(importing);
@@ -604,21 +626,12 @@ function merge(template = {}, importing = {}, trimStrings = false) {
 	return template;
 }
 
-function validateItemID(oldID, objType) {
-	if (objType === 'Glyph') {
-		let suffix = remove(oldID, 'glyph-');
-		suffix = validateAsHex(suffix);
-		if (suffix) return `glyph-${suffix}`;
-	}
-	return oldID;
-}
-
 /**
  * Generate a unique Project ID so we can recognize a
  * project through file name and project name re-naming
  * @returns {String} - ID
  */
-function makeProjectID() {
+export function makeProjectID() {
 	const j = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 	let re = 'g2_';
 
