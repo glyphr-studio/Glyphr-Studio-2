@@ -1,7 +1,23 @@
-import { assert, describe, expect, it } from 'vitest';
-import { Segment } from '../segment.js';
+import { describe, expect, it } from 'vitest';
 import { PolySegment } from '../poly_segment.js';
+import { Segment } from '../segment.js';
 
+/*
+	constructor
+	save
+	print
+	get/set segments
+	get valuesAsArray
+	get path
+	containsSegment
+	roundAll
+	findIntersections
+	splitSegmentsAtIntersections
+	stitchSegmentsTogether
+	removeZeroLengthSegments
+	removeRedundantLineSegments
+	removeNonConnectingSegments
+*/
 const samplePolySegments = [
 	{ p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 200, p3y: 300, p4x: 300, p4y: 300 },
 	{ p1x: 300, p1y: 300, p2x: 400, p2y: 300, p3x: 600, p3y: 200, p4x: 600, p4y: 0 },
@@ -25,12 +41,42 @@ describe('PolySegment', () => {
 		});
 	});
 
+	it('print', () => {
+		expect(samplePolySegment().print()).toEqual(`{PolySegment
+  segments: [
+    {Segment
+        line: false
+        p1: 0/0
+        p2: 0/100
+        p3: 200/300
+        p4: 300/300
+        maxes:       {xMin:0 xMax:300 yMin:0 yMax:300}
+    }
+    {Segment
+        line: false
+        p1: 300/300
+        p2: 400/300
+        p3: 600/200
+        p4: 600/0
+        maxes:       {xMin:300 xMax:600 yMin:0 yMax:300}
+    }
+  ]
+}`);
+	});
+
 	it('get segments', () => {
 		expect(samplePolySegment().segments[0].p3x).toBe(200);
 	});
 
+	it('get valuesAsArray', () => {
+		expect(samplePolySegment().valuesAsArray).toEqual([
+			[0, 0, 0, 100, 200, 300, 300, 300],
+			[300, 300, 400, 300, 600, 200, 600, 0],
+		]);
+	});
+
 	it('get path', () => {
-		const p = samplePolySegment().getPath();
+		const p = samplePolySegment().path;
 		expect(p.pathPoints.length).toBe(3);
 	});
 
@@ -105,18 +151,18 @@ describe('PolySegment', () => {
 				{ p1x: 600, p1y: 600, p4x: 500, p4y: 500 },
 			],
 		});
-		expect(ps.removeRedundantLineSegments().segments[0].p4x).toBe(700);
-	});
+		ps.removeRedundantLineSegments();
+		expect(ps.segments[0].p4x).toBe(700);
+		expect(ps.segments.length).toBe(1);
 
-	it('removeDuplicateSegments', () => {
-		const ps = new PolySegment({
+		const ps2 = new PolySegment({
 			segments: [
 				{ p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 200, p3y: 300, p4x: 300, p4y: 300 },
 				{ p1x: 300, p1y: 300, p4x: 600, p4y: 600 },
 				{ p1x: 0, p1y: 0, p2x: 0, p2y: 100, p3x: 200, p3y: 300, p4x: 300, p4y: 300 },
 			],
 		});
-		expect(ps.removeDuplicateSegments().segments.length).toBe(2);
+		expect(ps2.removeRedundantLineSegments().segments.length).toBe(2);
 	});
 
 	it('removeNonConnectingSegments', () => {
@@ -130,10 +176,4 @@ describe('PolySegment', () => {
 		});
 		expect(ps.removeNonConnectingSegments().segments.length).toBe(3);
 	});
-
-	// TODO write tests
-	//segmentsAreEqual
-	//findOverlappingLineSegmentIntersections
-	//findCrossingLineSegmentIntersections
-	//findEndPointSegmentIntersections
 });

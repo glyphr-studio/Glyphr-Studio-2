@@ -1,6 +1,7 @@
 import { clone, duplicates, numSan, round, xyPointsAreClose } from '../common/functions.js';
 import { GlyphElement } from './glyph_element.js';
 import { maxesOverlap } from './maxes.js';
+import { Path } from './path.js';
 import { Segment } from './segment.js';
 import { XYPoint } from './xy_point.js';
 
@@ -121,8 +122,8 @@ export class PolySegment extends GlyphElement {
 	 * Convert this PolySegment to a Path
 	 * @returns {Path}
 	 */
-	getPath() {
-		// log('PolySegment.getPath', 'start');
+	get path() {
+		// log('PolySegment GET path', 'start');
 		// log(this._segments);
 
 		/**
@@ -176,8 +177,8 @@ export class PolySegment extends GlyphElement {
 		}
 
 		// log(pp);
-		// log('PolySegment.getPath', 'end');
-		return { pathPoints: pp };
+		// log('PolySegment GET path', 'end');
+		return new Path({ pathPoints: pp });
 	}
 
 	/**
@@ -433,11 +434,11 @@ export class PolySegment extends GlyphElement {
 						tSeg.objType = 'REDUNDANT';
 					}
 					// exactly overlapping
-					// if (tSeg.objType === 'Segment' && sSeg.objType === 'Segment') {
-					// 	if (segmentsAreEqual(sSeg, tSeg)) {
-					// 		sSeg.objType = 'DUPLICATE';
-					// 	}
-					// }
+					if (tSeg.objType === 'Segment' && sSeg.objType === 'Segment') {
+						if (segmentsAreEqual(sSeg, tSeg)) {
+							sSeg.objType = 'DUPLICATE';
+						}
+					}
 				}
 			}
 			// log(`Seg ${s} ${this._segments[s].objType}`);
