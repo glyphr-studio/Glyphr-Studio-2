@@ -1,4 +1,4 @@
-import { isVal, round, xyPointsAreClose } from '../common/functions.js';
+import { calculateAngle, calculateLength, isVal, round, xyPointsAreClose } from '../common/functions.js';
 import { ControlPoint } from './control_point.js';
 import { GlyphElement } from './glyph_element.js';
 
@@ -383,10 +383,10 @@ export class PathPoint extends GlyphElement {
 		this.h1.use = true;
 		this.h2.use = true;
 
-		const angle1 = this.h1.angle;
-		const angle2 = this.h2.angle;
-		const hyp1 = this.h1.length;
-		const hyp2 = this.h2.length;
+		const angle1 = calculateAngle(this.h1.coord, this.p.coord);
+		const angle2 = calculateAngle(this.h2.coord, this.p.coord);
+		const hyp1 = calculateLength(this.p.coord, this.h1.coord);
+		const hyp2 = calculateLength(this.p.coord, this.h2.coord);
 
 		// new values
 		let newHx;
@@ -460,8 +460,8 @@ export class PathPoint extends GlyphElement {
 			return true;
 		}
 
-		const a1 = this.h1.angle;
-		const a2 = this.h2.angle;
+		const a1 = calculateAngle(this.h1.coord, this.p.coord);
+		const a2 = calculateAngle(this.h2.coord, this.p.coord);
 		// log('comparing ' + a1 + ' / ' + a2);
 
 		const piTest = round(Math.abs(a1) + Math.abs(a2), 2);
@@ -499,7 +499,9 @@ export class PathPoint extends GlyphElement {
 		// log('PathPoint.resolvePointType', 'start');
 
 		if (this.isFlat()) {
-			if (this.h1.length === this.h2.length) {
+			const h1Length = calculateLength(this.p.coord, this.h1.coord);
+			const h2Length = calculateLength(this.p.coord, this.h2.coord);
+			if (h1Length === h2Length) {
 				// log('resolvePointType - setting to Symmetric');
 				this._type = 'symmetric';
 			} else {
