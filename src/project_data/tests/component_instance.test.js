@@ -1,14 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ComponentInstance } from '../component_instance.js';
 
-/**
- * Create a sample Component Instance
- * @returns {ComponentInstance}
- */
-function sampleComponentInstance() {
-	return new ComponentInstance();
-}
-
 // --------------------------------------------------------------
 // CHECKLIST
 // >> depends on root glyph
@@ -46,6 +38,15 @@ function sampleComponentInstance() {
 	flipNS
 	rotate
 */
+
+/**
+ * Create a sample Component Instance
+ * @returns {ComponentInstance}
+ */
+function sampleComponentInstance() {
+	return new ComponentInstance();
+}
+
 describe('ComponentInstance', () => {
 	it('get/set link', () => {
 		const ci = sampleComponentInstance();
