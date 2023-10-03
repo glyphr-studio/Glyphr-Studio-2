@@ -241,7 +241,7 @@ export function combinePaths(paths = []) {
 	// Finish up
 	// --------------------------------------------------------------
 
-	let newPaths = newPolySegments.map((polySegment) => polySegment.getPath());
+	let newPaths = newPolySegments.map((polySegment) => polySegment.path);
 
 	// log(`\n⮟newPaths⮟`);
 	// log(newPaths);

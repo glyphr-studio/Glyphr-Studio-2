@@ -868,7 +868,7 @@ export class Path extends GlyphElement {
 	addPointsAtPathIntersections() {
 		const polySegment = this.makePolySegment();
 		polySegment.splitSegmentsAtIntersections();
-		const newPath = polySegment.getPath();
+		const newPath = polySegment.path;
 		// this._pathPoints = clone(newPath.pathPoints);
 		this._pathPoints = newPath.pathPoints;
 	}
