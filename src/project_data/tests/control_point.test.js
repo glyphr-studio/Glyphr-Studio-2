@@ -1,27 +1,25 @@
-import { assert, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { ControlPoint } from '../control_point.js';
 
 // --------------------------------------------------------------
 // CHECKLIST
 // --------------------------------------------------------------
 /*
+	constructor
 	save
 	// print
-	x
-	y
-	coord
-	use
-	xLock
-	yLock
-	// type
-	// angle
-	// niceAngle
-	// length
-	// isLockable
-	// isLocked
-	// lock
-	// unlock
-	// rotate
+	get/set x
+	get/set y
+	get/set coord
+	get/set use
+	get/set xLock
+	get/set yLock
+	get/set type
+	get isLockable
+	isLocked
+	lock
+	unlock
+	rotate
 */
 describe('ControlPoint', () => {
 	it('Constructor - x', () => {
@@ -47,21 +45,48 @@ describe('ControlPoint', () => {
 		expect(cp.use).toBeFalsy();
 	});
 
-	it('xLock', () => {
+	it('isLockable', () => {
+		const cp = new ControlPoint();
+		expect(cp.isLockable).toBeTruthy();
+	});
+
+	it('xLock, isLocked, lock, unlock', () => {
 		const cp = new ControlPoint();
 		cp.xLock = true;
 		expect(cp.xLock).toBeTruthy();
+		expect(cp.isLocked('x')).toBeTruthy();
+		cp.unlock('x');
+		expect(cp.isLocked('x')).toBeFalsy();
+		cp.lock('x');
+		expect(cp.isLocked('x')).toBeTruthy();
 	});
 
-	it('yLock', () => {
+	it('yLock, isLocked, lock, unlock', () => {
 		const cp = new ControlPoint();
 		cp.yLock = true;
 		expect(cp.yLock).toBeTruthy();
+		expect(cp.isLocked('y')).toBeTruthy();
+		cp.unlock('y');
+		expect(cp.isLocked('y')).toBeFalsy();
+		cp.lock('y');
+		expect(cp.isLocked('y')).toBeTruthy();
+	});
+
+	it('type', () => {
+		const cp = new ControlPoint({ type: 'h1' });
+		expect(cp.type).toEqual('h1');
 	});
 
 	it('save', () => {
 		const cp = new ControlPoint();
 		const savePoint = cp.save();
 		expect(savePoint).toEqual({ coord: { x: 0, y: 0 } });
+	});
+
+	it('rotate', () => {
+		const cp = new ControlPoint({ coord: { x: 100, y: 100 } });
+		cp.rotate((Math.PI / 2), { x: 50, y: 50 });
+		expect(cp.x).toEqual(0);
+		expect(cp.y).toEqual(100);
 	});
 });

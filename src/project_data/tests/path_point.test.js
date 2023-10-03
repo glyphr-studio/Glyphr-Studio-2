@@ -64,23 +64,6 @@ describe('PathPoint', () => {
 		);
 	});
 
-	it('ControlPoint: length', () => {
-		const pp = samplePathPoint();
-		expect(pp.h1.length).toBe(141.4213562373095);
-	});
-
-	it('ControlPoint: angle', () => {
-		const pp = samplePathPoint();
-		pp.h1.y = 100;
-		expect(pp.h1.angle).toBe(3.141592653589793);
-	});
-
-	it('ControlPoint: niceAngle', () => {
-		const pp = samplePathPoint();
-		pp.h1.y = 100;
-		expect(pp.h1.niceAngle).toBe(270);
-	});
-
 	it('ControlPoint: use', () => {
 		const pp = new PathPoint();
 		pp.h1.use = false;

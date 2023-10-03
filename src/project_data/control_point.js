@@ -1,9 +1,4 @@
-import {
-	calculateAngle,
-	calculateLength,
-	radiansToNiceAngle,
-	rotate,
-} from '../common/functions.js';
+import { calculateAngle, calculateLength, rotate } from '../common/functions.js';
 import { Coord } from './coord.js';
 import { GlyphElement } from './glyph_element.js';
 
@@ -142,30 +137,6 @@ export class ControlPoint extends GlyphElement {
 		return this._type;
 	}
 
-	/**
-	 * Handle angle relative to Root Point
-	 * @returns {Number}
-	 */
-	get angle() {
-		return calculateAngle(this.coord, this.parent.p.coord);
-	}
-
-	/**
-	 * Handle "Nice Angle" for UI
-	 * @returns {Number}
-	 */
-	get niceAngle() {
-		return radiansToNiceAngle(this.angle);
-	}
-
-	/**
-	 * Handle Length
-	 * @returns {Number}
-	 */
-	get length() {
-		return calculateLength(this.coord, this.parent.p.coord);
-	}
-
 	// --------------------------------------------------------------
 	// Setters
 	// --------------------------------------------------------------
@@ -254,6 +225,10 @@ export class ControlPoint extends GlyphElement {
 	set type(t) {
 		this._type = t;
 	}
+
+	// --------------------------------------------------------------
+	// Lock stuff
+	// --------------------------------------------------------------
 
 	/**
 	 * Indicates that this object has lockable properties
