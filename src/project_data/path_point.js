@@ -1,4 +1,4 @@
-import { calculateAngle, calculateLength, isVal, round, xyPointsAreClose } from '../common/functions.js';
+import { calculateAngle, calculateLength, round, xyPointsAreClose } from '../common/functions.js';
 import { ControlPoint } from './control_point.js';
 import { GlyphElement } from './glyph_element.js';
 
@@ -70,8 +70,8 @@ export class PathPoint extends GlyphElement {
 	print(level = 0, num = false) {
 		let ind = '';
 		for (let i = 0; i < level; i++) ind += '  ';
-
-		let re = `${ind}{PathPoint ${isVal(num) ? num : ''}\n`;
+		let pNum = parseInt(num) ? ` ${parseInt(num)}` : '';
+		let re = `${ind}{PathPoint${pNum}\n`;
 		ind += '  ';
 
 		re += `${ind}type: ${this.type}\n`;
@@ -80,26 +80,11 @@ export class PathPoint extends GlyphElement {
 		re += `${ind}h1: ${this.h1.print(level + 1)}\n`;
 		re += `${ind}h2: ${this.h2.print(level + 1)}\n`;
 
-		re += `${ind.substring(2)}}/PathPoint ${isVal(num) ? num : ''}`;
+		re += `${ind.substring(2)}}/PathPoint${pNum}`;
 
 		return re;
 	}
 
-	get parent() {
-		// log(`PathPoint GET Parent`, 'start');
-		// log(`this.__ID: ${this.__ID}`);
-		// log(`this._parent.__ID: ${this._parent.__ID}`);
-		// log(`PathPoint GET Parent`, 'end');
-		return this._parent;
-	}
-
-	set parent(newParent) {
-		// log(`PathPoint SET Parent`, 'start');
-		// log(`this.__ID: ${this.__ID}`);
-		// log(`newParent.__ID: ${newParent.__ID}`);
-		// log(`PathPoint SET Parent`, 'end');
-		this._parent = newParent;
-	}
 	// --------------------------------------------------------------
 	// Getters
 	// --------------------------------------------------------------

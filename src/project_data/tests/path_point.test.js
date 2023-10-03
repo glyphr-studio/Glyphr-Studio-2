@@ -1,5 +1,4 @@
-import { assert, describe, expect, it } from 'vitest';
-import { ControlPoint } from '../control_point.js';
+import { describe, expect, it } from 'vitest';
 import { PathPoint } from '../path_point.js';
 
 /**
@@ -7,11 +6,11 @@ import { PathPoint } from '../path_point.js';
  * @returns {PathPoint}
  */
 function samplePathPoint() {
-	let pp = new PathPoint();
-	pp.p = new ControlPoint({coord: {x: 100, y: 100}});
-	pp.h1 = new ControlPoint({coord: {x: 0, y: 0}});
-	pp.h2 = new ControlPoint({ coord: { x: 200, y: 200 } });
-	pp.type = 'corner';
+	let pp = new PathPoint({
+		p: { coord: { x: 100, y: 100 } },
+		h1: { coord: { x: 0, y: 0 } },
+		h2: { coord: { x: 200, y: 200 } },
+	});
 	return pp;
 }
 
@@ -19,26 +18,27 @@ function samplePathPoint() {
 // CHECKLIST
 // --------------------------------------------------------------
 /*
+	constructor
 	save
-	// print
-	p
-	h1
-	h2
-	q
-	type
-	// pointNumber
+	print
+	get/set p
+	get/set h1
+	get/set h2
+	get/set type
+	// get pointNumber - TESTED IN PATH
 	updatePathPointPosition
 	makeSymmetric
 	makeFlat
 	isFlat
-	// reconcileHandle
+	reconcileHandle
 	resolvePointType
 	makePointedTo
-	// hasOverlappingHandle
+	hasOverlappingHandle
 	rotate
 	resetHandles
 	roundAll
 */
+
 describe('PathPoint', () => {
 	it('Constructor - objType', () => {
 		const pp = new PathPoint();
@@ -62,6 +62,24 @@ describe('PathPoint', () => {
 				'{"p":{"coord":{"x":100,"y":100}},"type":"corner","h1":{"coord":{"x":0,"y":0}},"h2":{"coord":{"x":200,"y":200}}}'
 			)
 		);
+	});
+
+	it('print', () => {
+		const pp = samplePathPoint();
+		expect(pp.print()).toEqual(`{PathPoint
+  type: corner
+  p:   {ControlPoint
+    coord:     {x: 100  y: 100}
+  }
+  h1:   {ControlPoint
+    coord:     {x: 0  y: 0}
+    use: true
+  }
+  h2:   {ControlPoint
+    coord:     {x: 200  y: 200}
+    use: true
+  }
+}/PathPoint`);
 	});
 
 	it('ControlPoint: use', () => {
@@ -93,6 +111,14 @@ describe('PathPoint', () => {
 		expect(pp.makeFlat('h1').h2.x).toBe(429.412355566697);
 	});
 
+	it('reconcileHandle', () => {
+		const pp = samplePathPoint();
+		pp.type = 'symmetric';
+		pp.h2.x = 555;
+		pp.reconcileHandle('h1');
+		expect(pp.h1.x).toBe(-355);
+	});
+
 	it('resolvePointType', () => {
 		const pp = samplePathPoint();
 		expect(pp.resolvePointType()).toBe('symmetric');
@@ -101,6 +127,15 @@ describe('PathPoint', () => {
 	it('makePointedTo', () => {
 		const pp = samplePathPoint();
 		expect(pp.makePointedTo(300, 0).h2.x).toBe(166.66666666666666);
+	});
+
+	it('hasOverlappingHandle', () => {
+		const pp = new PathPoint({
+			p: { coord: { x: 100, y: 100 } },
+			h1: { coord: { x: 0, y: 0 } },
+			h2: { coord: { x: 100, y: 100 } },
+		});
+		expect(pp.hasOverlappingHandle('h2')).toBeTruthy();
 	});
 
 	it('rotate', () => {
