@@ -1,38 +1,89 @@
-import { assert, describe, expect, it } from 'vitest';
-import { GlyphElement } from '../glyph_element.js';
+import { describe, expect, it } from 'vitest';
+import { GlyphElement, makeRandomID } from '../glyph_element.js';
 
 // --------------------------------------------------------------
 // CHECKLIST
 // --------------------------------------------------------------
 /*
-	// changed
+	changed
 	objType
-	// displayType
+	displayType
 	cache
-	// isLockable
+	isLockable
 	// isLocked
 	// lock
 	// unlock
 	save
-	// clone
-	// toString
-	// print
+	toString
+	print
 */
+
 describe('GlyphElement', () => {
-	it('objType get/set', () => {
-		const ge = new GlyphElement();
-		ge.objType = 'test';
-		expect(ge.objType).toBe('test');
+	it('constructor', () => {
+		const glyphElement = new GlyphElement();
+
+		expect(glyphElement.ident).toBe('');
+		expect(glyphElement.objType).toBe('GlyphElement');
+		expect(glyphElement.displayType).toBe('GlyphElement');
+		expect(glyphElement.cache).toEqual({});
+		expect(glyphElement.isLockable).toBe(false);
 	});
 
-	it('cache get/set', () => {
-		const ge = new GlyphElement();
-		ge.cache = 'test';
-		expect(ge.cache).toBe('test');
+	it('objType', () => {
+		const glyphElement = new GlyphElement();
+		glyphElement.objType = 'TestType';
+
+		expect(glyphElement.objType).toBe('TestType');
 	});
 
 	it('save', () => {
-		const ge = new GlyphElement();
-		expect(ge.save(true)).toEqual({ objType: 'GlyphElement' });
+		const glyphElement = new GlyphElement();
+		glyphElement.id = 'testID';
+		const savedData = glyphElement.save();
+
+		expect(savedData.id).toBe('testID');
+		expect(savedData.objType).toBeUndefined();
+		expect(savedData.cache).toBeUndefined();
+
+		const savedData2 = glyphElement.save(true);
+		expect(savedData2.objType).toBe('GlyphElement');
+	});
+
+	it('cache and changed', () => {
+		const glyphElement = new GlyphElement();
+		glyphElement.cache = { foo: 'bar' };
+		glyphElement.changed();
+		expect(glyphElement.cache.foo).toBeUndefined();
+	});
+
+	it('clone', () => {
+		const glyphElement = new GlyphElement();
+		const clonedElement = glyphElement.clone();
+
+		expect(clonedElement).toEqual(glyphElement);
+		expect(clonedElement).not.toBe(glyphElement);
+	});
+
+	it('toString', () => {
+		const glyphElement = new GlyphElement();
+		glyphElement.id = 'testID';
+		const jsonString = glyphElement.toString();
+
+		expect(jsonString.replace(/\s+/g, '')).toBe(`{"id":"testID"}`);
+	});
+
+	it('print', () => {
+		const glyphElement = new GlyphElement();
+		glyphElement.id = 'testID';
+		const formattedString = glyphElement.print();
+
+		expect(formattedString).toBe('{GlyphElement \n  id: testID\n}/GlyphElement ');
+	});
+});
+describe('Random ID', () => {
+	it('makeRandomID', () => {
+		const randomID = makeRandomID();
+
+		expect(randomID).toMatch(/[💖🦧🐆✅🐋😈🦑]{3}/);
 	});
 });
