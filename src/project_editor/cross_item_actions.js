@@ -1,8 +1,8 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { duplicates } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
-import { KernGroup } from '../project_data/kern_group.js';
 import { Path } from '../project_data/path.js';
 /**
 		Cross-item actions
@@ -277,6 +277,25 @@ export function deleteLinks(item) {
 	}
 }
 
+/**
+ * Gets a collection of component instances that have a given root glyph
+ * @param {Glyph} rootGlyph - Glyph that is used other places as Component Instances
+ * @returns {Array} - collection of component instances
+ */
+export function getComponentInstancesFromRoot(rootGlyph) {
+	let results = [];
+	let destinationGlyph;
+	if (rootGlyph.usedIn.length) {
+		rootGlyph.usedIn.filter(duplicates).forEach((destinationGlyphID) => {
+			destinationGlyph = getCurrentProject().getItem(destinationGlyphID);
+			destinationGlyph.shapes.forEach((shape) => {
+				if (shape.link && shape.link === rootGlyph.id) results.push(shape);
+			});
+		});
+	}
+	return results;
+}
+
 // --------------------------------------------------------------
 // Used-In array
 // --------------------------------------------------------------
@@ -325,38 +344,36 @@ export function removeLinkFromUsedIn(item, linkID) {
 	// log(`removeLinkFromUsedIn`, 'end');
 }
 
-
-
 // --------------------------------------------------------------
 // Kerning
 // --------------------------------------------------------------
 
-	/**
-	 * Finds the largest advance width amongst a collection of Glyph IDs
-	 * @param {Array} sideGroup - collection of glyph IDs
-	 * @returns {Number} - Max advance width for the members
-	 */
-	export function kernGroupSideMaxWidth(sideGroup = []) {
-		let width = 0;
-		const project = getCurrentProject();
-		sideGroup.forEach((id) => {
-			let item = project.getItem(`glyph-${id}`);
-			if (item && item.advanceWidth) width = Math.max(width, item.advanceWidth);
-		});
-		return width;
-	}
+/**
+ * Finds the largest advance width amongst a collection of Glyph IDs
+ * @param {Array} sideGroup - collection of glyph IDs
+ * @returns {Number} - Max advance width for the members
+ */
+export function kernGroupSideMaxWidth(sideGroup = []) {
+	let width = 0;
+	const project = getCurrentProject();
+	sideGroup.forEach((id) => {
+		let item = project.getItem(`glyph-${id}`);
+		if (item && item.advanceWidth) width = Math.max(width, item.advanceWidth);
+	});
+	return width;
+}
 
-	/**
-	 * Calculates how wide this Kern Group should be displayed
-	 * @param {KernGroup} kernGroup - Kern Group to calculate
-	 * @returns {Number} - display width (em units)
-	 */
-	export function kernGroupDisplayWidth(kernGroup) {
-		// log(`KernGroup GET groupWidth`, 'start');
-			const project = getCurrentProject();
-			let leftWidth = kernGroupSideMaxWidth(kernGroup.leftGroup) || project.defaultAdvanceWidth;
-			let rightWidth = kernGroupSideMaxWidth(kernGroup.rightGroup) || project.defaultAdvanceWidth;
-			let width = leftWidth - kernGroup.value + rightWidth;
-		// log(`KernGroup GET groupWidth`, 'end');
-		return width;
-	}
+/**
+ * Calculates how wide this Kern Group should be displayed
+ * @param {KernGroup} kernGroup - Kern Group to calculate
+ * @returns {Number} - display width (em units)
+ */
+export function kernGroupDisplayWidth(kernGroup) {
+	// log(`KernGroup GET groupWidth`, 'start');
+	const project = getCurrentProject();
+	let leftWidth = kernGroupSideMaxWidth(kernGroup.leftGroup) || project.defaultAdvanceWidth;
+	let rightWidth = kernGroupSideMaxWidth(kernGroup.rightGroup) || project.defaultAdvanceWidth;
+	let width = leftWidth - kernGroup.value + rightWidth;
+	// log(`KernGroup GET groupWidth`, 'end');
+	return width;
+}

@@ -13,6 +13,7 @@ import { copyShapesFromTo } from '../panels/actions';
 import { Glyph } from '../project_data/glyph';
 import { Path } from '../project_data/path';
 import {
+	getComponentInstancesFromRoot,
 	glyphChanged,
 	insertComponentInstance,
 	removeLinkFromUsedIn,
@@ -549,8 +550,15 @@ function makeCard_SideBearings() {
 						return itemID.startsWith('glyph-') || itemID.startsWith('liga-');
 					},
 					action: function (glyph) {
-						if (!isNaN(left)) glyph.leftSideBearing = left;
-						if (!isNaN(right)) glyph.rightSideBearing = right;
+						if (glyph.shapes.length) {
+							if (!isNaN(left)) {
+								glyph.leftSideBearing = left;
+								getComponentInstancesFromRoot(glyph).forEach(instance => {
+									instance.translateX -= left;
+								});
+							}
+							if (!isNaN(right)) glyph.rightSideBearing = right;
+						}
 					},
 				});
 			}
