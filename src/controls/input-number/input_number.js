@@ -266,7 +266,7 @@ export class InputNumber extends HTMLElement {
 		// log(`newValue: ${newValue}`);
 		this.setAttribute('value', newValue);
 		this.value = newValue;
-		if(dispatch) this.dispatchEvent(new Event('change'));
+		if (dispatch) this.dispatchEvent(new Event('change'));
 		this.numberInput.value = newValue;
 		// log(`updateToNewValue`, 'end');
 	}
@@ -278,7 +278,7 @@ export class InputNumber extends HTMLElement {
 		// log(`InputNumber.numberInputChanged`, 'start');
 		// log(`for < ${this.elementRoot.getAttribute('class')} >`);
 		let newValue = this.elementRoot.sanitizeValue(ev.target.value);
-		this.elementRoot.updateToNewValue(newValue, false);
+		this.elementRoot.updateToNewValue(newValue);
 		// log(`InputNumber.numberInputChanged`, 'end');
 	}
 
@@ -311,6 +311,34 @@ export class InputNumber extends HTMLElement {
 	}
 
 	/**
+	 * Detects if a key should increment
+	 * @param {Number} keyCode - what key was pressed
+	 * @returns {Boolean}
+	 */
+	isIncrement(keyCode) {
+		if (keyCode === 38) return true; // d-pad up
+		if (keyCode === 39) return true; // d-pad right
+		if (keyCode === 102) return true; // ten key right
+		if (keyCode === 104) return true; // ten key up
+		if (keyCode === 107) return true; // ten key +
+		return false;
+	}
+
+	/**
+	 * Detects if a key should decrement
+	 * @param {Number} keyCode - what key was pressed
+	 * @returns {Boolean}
+	 */
+	isDecrement(keyCode) {
+		if (keyCode === 37) return true; // d-pad left
+		if (keyCode === 40) return true; // d-pad down
+		if (keyCode === 98) return true; // ten key down
+		if (keyCode === 100) return true; // ten key left
+		if (keyCode === 109) return true; // ten key -
+		return false;
+	}
+
+	/**
 	 * Handle keypress event
 	 * @param {Object} ev - event
 	 */
@@ -322,27 +350,14 @@ export class InputNumber extends HTMLElement {
 			metaKey: ev.metaKey,
 		});
 
-		switch (ev.keyCode) {
-			case 38: // d-pad up
-			case 39: // d-pad right
-			case 102: // ten key right
-			case 104: // ten key up
-			case 107: // ten key +
-				cancelDefaultEventActions(ev);
-				this.elementRoot.upArrow.dispatchEvent(click);
-				break;
+		if (this.elementRoot.isIncrement(ev.keyCode)) {
+			cancelDefaultEventActions(ev);
+			this.elementRoot.upArrow.dispatchEvent(click);
+		}
 
-			case 37: // d-pad left
-			case 40: // d-pad down
-			case 98: // ten key down
-			case 100: // ten key left
-			case 109: // ten key -
-				cancelDefaultEventActions(ev);
-				this.elementRoot.downArrow.dispatchEvent(click);
-				break;
-
-			default:
-				break;
+		if (this.elementRoot.isDecrement(ev.keyCode)) {
+			cancelDefaultEventActions(ev);
+			this.elementRoot.downArrow.dispatchEvent(click);
 		}
 	}
 
@@ -358,21 +373,16 @@ export class InputNumber extends HTMLElement {
 			metaKey: ev.metaKey,
 		});
 
-		switch (ev.keyCode) {
-			case 38: // d-pad up
-			case 39: // d-pad right
-				cancelDefaultEventActions(ev);
-				this.elementRoot.upArrow.dispatchEvent(click);
-				break;
+		const noModifier = ev.shiftKey && ev.ctrlKey && ev.altKey && ev.metaKey;
 
-			case 37: // d-pad left
-			case 40: // d-pad down
-				cancelDefaultEventActions(ev);
-				this.elementRoot.downArrow.dispatchEvent(click);
-				break;
-
-			default:
-				break;
+		if (this.elementRoot.isIncrement(ev.keyCode)) {
+			cancelDefaultEventActions(ev);
+			this.elementRoot.upArrow.dispatchEvent(click);
+		} else if (this.elementRoot.isDecrement(ev.keyCode)) {
+			cancelDefaultEventActions(ev);
+			this.elementRoot.downArrow.dispatchEvent(click);
+		} else if (noModifier) {
+			this.elementRoot.numberInputChanged(ev);
 		}
 	}
 

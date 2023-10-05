@@ -534,11 +534,11 @@ function makeCard_SideBearings() {
 		let left = document.getElementById('sideBearingLeft').getAttribute('value');
 		let leftCheckbox = document.getElementById('sideBearingLeftCheckbox').checked;
 		left = parseFloat(left);
-		log(`left input: ${left}`);
+		// log(`left input: ${left}`);
 		let right = document.getElementById('sideBearingRight').getAttribute('value');
 		let rightCheckbox = document.getElementById('sideBearingRightCheckbox').checked;
 		right = parseFloat(right);
-		log(`right input: ${right}`);
+		// log(`right input: ${right}`);
 
 		if (leftCheckbox || rightCheckbox) {
 			if (isNaN(left) || isNaN(right)) {
