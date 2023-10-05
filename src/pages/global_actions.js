@@ -69,6 +69,7 @@ export function makePage_GlobalActions() {
 		makeCard_Resize(),
 		makeCard_Flatten(),
 		makeCard_SideBearings(),
+		makeCard_Round(),
 		makeElement({ tag: 'h1', content: 'Font types' }),
 		makeCard_Monospace(),
 		makeCard_AllCaps(),
@@ -567,6 +568,48 @@ function makeCard_SideBearings() {
 		}
 
 		// log('updateSideBearings', 'end');
+	});
+	card.appendChild(button);
+
+	return card;
+}
+
+// --------------------------------------------------------------
+// Round
+// --------------------------------------------------------------
+
+function makeCard_Round() {
+	const card = makeElement({ className: 'global-actions__card' });
+
+	card.appendChild(
+		makeElement({ tag: 'h2', content: 'Round all point values' })
+	);
+	let description = makeElement({
+		className: 'global-actions__description',
+		content: `This will run the "round all" action on each glyph. This will ensure all path point values are rounded to their nearest whole number.`,
+	});
+	card.appendChild(description);
+
+	let effect = makeElement({
+		className: 'global-actions__effect-description',
+		content: `Every Character, Component, and Ligature will have the "Round all path point values" command run on it. Also, the Advance Width property will be rounded for Characters and Ligatures.`,
+	});
+	card.appendChild(effect);
+
+	let button = makeElement({
+		tag: 'fancy-button',
+		content: 'Round values',
+	});
+	button.addEventListener('click', () => {
+		glyphIterator({
+			title: 'Rounding',
+			action: function (workingItem) {
+				workingItem.roundAll();
+				if (workingItem.advanceWidth) workingItem.advanceWidth = Math.round(workingItem.advanceWidth);
+				workingItem.changed();
+				// log(`Global Action: Flatten`, 'end');
+			},
+		});
 	});
 	card.appendChild(button);
 
