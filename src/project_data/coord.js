@@ -32,8 +32,8 @@ export class Coord extends GlyphElement {
 	 */
 	save() {
 		const re = {
-			x: this.x,
-			y: this.y,
+			x: numSan(this.x),
+			y: numSan(this.y),
 		};
 
 		return re;
