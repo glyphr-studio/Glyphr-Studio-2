@@ -315,12 +315,12 @@ export class InputNumber extends HTMLElement {
 	 * @param {Number} keyCode - what key was pressed
 	 * @returns {Boolean}
 	 */
-	isIncrement(keyCode) {
+	isIncrement(keyCode, includeTenKey = true) {
 		if (keyCode === 38) return true; // d-pad up
 		if (keyCode === 39) return true; // d-pad right
-		if (keyCode === 102) return true; // ten key right
-		if (keyCode === 104) return true; // ten key up
-		if (keyCode === 107) return true; // ten key +
+		if (keyCode === 102 && includeTenKey) return true; // ten key right
+		if (keyCode === 104 && includeTenKey) return true; // ten key up
+		if (keyCode === 107 && includeTenKey) return true; // ten key +
 		return false;
 	}
 
@@ -329,12 +329,12 @@ export class InputNumber extends HTMLElement {
 	 * @param {Number} keyCode - what key was pressed
 	 * @returns {Boolean}
 	 */
-	isDecrement(keyCode) {
+	isDecrement(keyCode, includeTenKey = true) {
 		if (keyCode === 37) return true; // d-pad left
 		if (keyCode === 40) return true; // d-pad down
-		if (keyCode === 98) return true; // ten key down
-		if (keyCode === 100) return true; // ten key left
-		if (keyCode === 109) return true; // ten key -
+		if (keyCode === 98 && includeTenKey) return true; // ten key down
+		if (keyCode === 100 && includeTenKey) return true; // ten key left
+		if (keyCode === 109 && includeTenKey) return true; // ten key -
 		return false;
 	}
 
@@ -375,10 +375,10 @@ export class InputNumber extends HTMLElement {
 
 		const noModifier = ev.shiftKey && ev.ctrlKey && ev.altKey && ev.metaKey;
 
-		if (this.elementRoot.isIncrement(ev.keyCode)) {
+		if (this.elementRoot.isIncrement(ev.keyCode, false)) {
 			cancelDefaultEventActions(ev);
 			this.elementRoot.upArrow.dispatchEvent(click);
-		} else if (this.elementRoot.isDecrement(ev.keyCode)) {
+		} else if (this.elementRoot.isDecrement(ev.keyCode, false)) {
 			cancelDefaultEventActions(ev);
 			this.elementRoot.downArrow.dispatchEvent(click);
 		} else if (noModifier) {

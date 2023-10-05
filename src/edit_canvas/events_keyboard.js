@@ -256,7 +256,7 @@ function nudge(dx, dy) {
 		const msShapes = editor.multiSelect.shapes;
 		msShapes.updateShapePosition(mx, my);
 		editor.history.addState(`Nudged shape(s) by ${mx}, ${my}`);
-		editor.publish('currentShape', editor.selectedItem); // needs to be shape
+		editor.publish('currentItem', editor.selectedItem);
 		editor.editCanvas.redraw({ calledBy: 'Nudge shape' });
 	} else if (editMode === 'pen') {
 		const msPoints = editor.multiSelect.points;

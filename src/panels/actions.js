@@ -927,7 +927,7 @@ function showDialogChooseOtherItem(type) {
 	}
 
 	if (type === 'addAsComponentInstance') {
-		log(`Dialog addAsComponentInstance`, 'start');
+		// log(`Dialog addAsComponentInstance`, 'start');
 		content.innerHTML += `The glyph you select will be treated as a root component, and added to this glyph as a component instance.<br><br>`;
 		onClick = (itemID) => {
 			clickedID = itemID;
@@ -954,7 +954,7 @@ function showDialogChooseOtherItem(type) {
 				`);
 			}
 		};
-		log(`Dialog addAsComponentInstance`, 'end');
+		// log(`Dialog addAsComponentInstance`, 'end');
 	}
 
 	if (type === 'linkAsComponent') {
