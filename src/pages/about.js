@@ -167,7 +167,7 @@ export function makePreReleaseNote(showLogo = false) {
 	const content = makeElement({
 		innerHTML: `
 		${logo}
-		<h2>Welcome to Beta-2!</h2>
+		<h2>Welcome to Beta-2.1!</h2>
 		<p>
 			We are very excited that Glyphr Studio v2 is nearing completion... but it's not
 			quite there yet.  We need your help trying out the app to make sure all the
@@ -189,12 +189,20 @@ export function makePreReleaseNote(showLogo = false) {
 			in a second window as you make edits in the main app window.</li>
 			<li><b>Combine Shapes</b> - now when you select two or more paths on the edit canvas, a
 			"Combine shapes" action will allow you to merge multiple paths into as few paths as possible.</li>
+			<li><b>Rotation</b> - Rotate paths with the canvas rotate handle, and rotate Component Instances with the rotate property</li>
+			<li><b>Add Path Point tool</b> - hover over an existing path and use this new tool to add a path point anywhere along that path.</li>
 		</ul>
 		<br>
 
+		Read the
 		<a href="https://www.glyphrstudio.com/blog/2023/09/07/v2-beta-2-0-mega-post/" target="_blank" style="font-size: 1.2em;">
-			Read the Beta-2 blog post for details
+			Beta-2
 		</a>
+		and the
+		<a href="https://www.glyphrstudio.com/blog/2023/10/06/v2-beta-2-1-the-last-beta/" target="_blank" style="font-size: 1.2em;">
+			Beta-2.1
+		</a>
+		blog post for details
 		<br>
 		<br>
 		<p>

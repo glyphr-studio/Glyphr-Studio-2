@@ -21,7 +21,7 @@ export class GlyphrStudioApp {
 		// Version
 		this.versionName = 'Version 2: Beta 2.1';
 		this.version = '2.0.0-beta.2.1';
-		this.versionDate = 0;
+		this.versionDate = 1696600000000;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -31,7 +31,7 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: true, // global switch for all the stuff below
+				mode: false, // global switch for all the stuff below
 				overwriteTitle: true, // Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // Load the sample project, true or 'oblegg'
 				currentPage: 'Characters', // navigate straight to a page (title case names)
@@ -132,6 +132,17 @@ export class GlyphrStudioApp {
 			this.projectEditors[this.selectedProjectEditor] = new ProjectEditor();
 		}
 		return this.projectEditors[this.selectedProjectEditor];
+	}
+
+	getShipDate(dayOffset = 0) {
+		const msOffset = dayOffset * 24 * 60 * 60 * 1000;
+		const shipDate = new Date();
+		shipDate.setHours(12, 0, 0, 0);
+		shipDate.setTime(shipDate.getTime() + msOffset);
+		let result = '' + shipDate.getTime();
+		result = result.substring(0, 5);
+		result = `${result}00000000`;
+		return result;
 	}
 }
 
