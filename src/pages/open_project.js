@@ -182,7 +182,7 @@ function makeTabs() {
 
 	const buttonOblegg = makeElement({
 		tag: 'fancy-button',
-		innerHTML: 'Oblegg (v0.2)',
+		innerHTML: 'Oblegg (v0.3)',
 		onClick: () => handleLoadSample('oblegg'),
 	});
 
