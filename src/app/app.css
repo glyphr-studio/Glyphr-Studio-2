@@ -141,3 +141,7 @@
 .top-bar__bug-link a:active {
 	color: white;
 }
+
+.project-preview-row {
+	height: 100px;
+}
