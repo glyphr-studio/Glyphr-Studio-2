@@ -1,5 +1,6 @@
-import { makeAppTopBar, showAppErrorPage } from '../app/app.js';
+import { showAppErrorPage } from '../app/app.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { makeAppTopBar } from '../app/menu.js';
 import { accentColors } from '../common/colors.js';
 import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';

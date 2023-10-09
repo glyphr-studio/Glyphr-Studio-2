@@ -154,7 +154,7 @@ export function showNotation(content, x, y) {
 		document.body.appendChild(notation);
 	}
 	notation.innerHTML = content;
-	notation.style.top = (y - 10) + 'px';
+	notation.style.top = y - 10 + 'px';
 	notation.style.right = `calc(100% - ${x + 515}px)`;
 	notation.style.display = 'block';
 }
@@ -253,9 +253,18 @@ function makeOneContextMenuRow(data = {}) {
 	// log(data);
 	let row = makeElement({
 		tag: 'div',
-		className: 'context-menu-row',
+		className: data?.className || 'context-menu-row',
 		attributes: { tabindex: '0' },
 	});
+
+	if (data.child) {
+		row.appendChild(data.child);
+		row.addEventListener('click', () => {
+			closeAllOptionChoosers();
+			if (data.onClick) data.onClick();
+		});
+		return row;
+	}
 
 	if (data.name === 'hr') {
 		row.appendChild(makeElement({ tag: 'hr' }));
