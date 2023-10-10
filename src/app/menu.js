@@ -110,11 +110,11 @@ function makeMenu(menuName) {
 				[
 					{
 						child: makeProjectPreviewRow(0),
-						className: 'project-preview-row spanAll',
+						className: 'spanAll',
 					},
 					{
 						child: makeProjectPreviewRow(1),
-						className: 'project-preview-row spanAll',
+						className: 'spanAll',
 					},
 					{
 						name: 'hr',
@@ -188,12 +188,32 @@ function makeProjectPreviewRow(projectID = 0) {
 	const projectEditor = app.projectEditors[projectID];
 	log(`\n⮟projectEditor⮟`);
 	log(projectEditor);
-	let result;
+
+	let rowWrapper = makeElement({ tag: 'div', className: 'project-preview__row-wrapper' });
+	let superTitle = false;
+	let title = makeElement({ tag: 'h3' });
+	let thumbnail = false;
+
 	if (projectEditor) {
-		result = makeElement({ tag: 'h3', innerHTML: projectEditor.project.settings.project.name });
+		superTitle = makeElement({ className: 'project-preview__super-title' });
+		if (getCurrentProjectEditor() === projectEditor) {
+			superTitle.innerHTML = 'Editing';
+		} else {
+			superTitle.innerHTML = 'Switch to';
+		}
+		title.innerHTML = projectEditor.project.settings.project.name;
+		thumbnail = makeElement({
+			tag: 'display-canvas',
+			attributes: { text: 'Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj' },
+		});
 	} else {
-		result = makeElement({ tag: 'h3', innerHTML: '(open a new project)' });
+		title.innerHTML = 'Open a new project';
 	}
+
+	if (superTitle) addAsChildren(rowWrapper, superTitle);
+	addAsChildren(rowWrapper, title);
+	if (thumbnail) addAsChildren(rowWrapper, thumbnail);
+
 	log(`makeProjectPreviewRow`, 'end');
-	return result;
+	return rowWrapper;
 }

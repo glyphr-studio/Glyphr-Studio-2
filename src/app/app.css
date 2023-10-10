@@ -142,6 +142,31 @@
 	color: white;
 }
 
-.project-preview-row {
-	height: 100px;
+/*
+	Project Preview menu
+*/
+.project-preview__row-wrapper {
+	border: 1px solid var(--blue-l80);
+	border-radius: 4px;
+	padding: 10px;
+}
+
+.project-preview__super-title {
+	color: var(--blue-l25);
+	font-size: 0.75em;
+	letter-spacing: 0.2ch;
+	opacity: 80%;
+}
+
+.project-preview__row-wrapper display-canvas {
+	background-color: white;
+	border: 1px solid var(--blue-l95);
+	border-radius: 4px;
+	display: block;
+	height: auto;
+}
+
+.project-preview__no-project {
+	vertical-align: middle;
+	text-align: center;
 }
