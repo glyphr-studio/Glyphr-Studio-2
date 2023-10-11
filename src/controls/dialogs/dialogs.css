@@ -105,6 +105,7 @@ dialog {
 	grid-template-columns: 24px 1fr min-content min-content;
 	column-gap: 0px;
 	row-gap: 5px;
+	width: fit-content;
 	padding: 10px;
 	position: absolute;
 	background-color: var(--enabled-resting-background);
