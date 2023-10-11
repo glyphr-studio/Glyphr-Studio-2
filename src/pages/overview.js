@@ -49,7 +49,20 @@ export function makePage_Overview() {
 		// log(`Overview page - Glyph Chooser tile click handler`, 'end');
 	}, false);
 
-	content.querySelector('.content-page__right-area').appendChild(itemsContent);
+	const project = getCurrentProject();
+	const rightArea = content.querySelector('.content-page__right-area');
+	let previewText = project.settings.app.previewText || 'Aa Bb Cc Xx Yy Zz';
+
+	rightArea.appendChild(
+		makeElement({
+			tag: 'display-canvas',
+			attributes: { text: previewText, 'font-size': '64' },
+			title: 'You can customize the the project preview text from the Settings > App page.'
+		})
+	);
+	rightArea.appendChild(makeElement({ tag: 'hr', style: 'margin: 10px 0px 20px 0px;' }));
+	rightArea.appendChild(makeElement({ tag: 'br' }));
+	rightArea.appendChild(itemsContent);
 	// Page Selector
 	let l1 = content.querySelector('#nav-button-l1');
 	l1.addEventListener('click', function () {
@@ -62,7 +75,6 @@ export function makePage_Overview() {
 	});
 	welcomeCard.appendChild(makePreReleaseNote(false));
 
-	const project = getCurrentProject();
 	const projectSummaryCard = makeElement({
 		className: 'panel__card more-padding',
 		innerHTML: `

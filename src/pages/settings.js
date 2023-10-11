@@ -144,6 +144,7 @@ function makeSettingsTabContentApp() {
 		makeOneSettingsRow('app', 'showNonCharPoints'),
 		makeOneSettingsRow('app', 'formatSaveFile'),
 		makeOneSettingsRow('app', 'moveShapesOnSVGDragDrop'),
+		makeOneSettingsRow('app', 'previewText'),
 	]);
 
 	return tabContent;
