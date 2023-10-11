@@ -56,7 +56,8 @@ export function makePage_LivePreview() {
 
 export function livePreviewPageWindowResize() {
 	// log(`livePreviewPageWindowResize`, 'start');
-	const displayCanvas = document.querySelector('display-canvas');
+	const wrapper = document.querySelector('.live-preview-page__canvas-wrapper');
+	const displayCanvas = wrapper.querySelector('display-canvas');
 	displayCanvas.resizeAndRedraw();
 	// log(`livePreviewPageWindowResize`, 'end');
 }

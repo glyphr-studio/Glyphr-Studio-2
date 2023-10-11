@@ -53,6 +53,7 @@ export class GlyphrStudioProject {
 				},
 				saveLivePreviews: true,
 				livePreviews: [],
+				previewText: false,
 			},
 			font: {
 				family: 'My Font',

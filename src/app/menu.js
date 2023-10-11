@@ -117,19 +117,26 @@ function makeMenu(menuName) {
 						className: 'spanAll',
 					},
 					{
+						name: 'Learn more about working with two projects',
+						icon: 'command_newTab',
+						onClick: () => {
+							window.open('https://glyphrstudio.com/v2/help/working-with-multiple-projects.html', '_blank');
+						},
+					},
+					{
 						name: 'hr',
 					},
 					{
 						name: 'Open another project in a new window',
 						icon: 'command_newTab',
-						note: ['Ctrl', 'o'],
 						onClick: () => {
 							window.open('https://glyphrstudio.com/v2/app/', '_blank');
 						},
 					},
 				],
 				rect.x,
-				rect.y + rect.height
+				rect.y + rect.height,
+				500
 			);
 
 			insertAfter(entryPoint, menuRows);
@@ -198,16 +205,20 @@ function makeProjectPreviewRow(projectID = 0) {
 		superTitle = makeElement({ className: 'project-preview__super-title' });
 		if (getCurrentProjectEditor() === projectEditor) {
 			superTitle.innerHTML = 'Editing';
+			rowWrapper.classList.add('project-preview__primary');
 		} else {
 			superTitle.innerHTML = 'Switch to';
+			rowWrapper.classList.add('project-preview__secondary');
 		}
 		title.innerHTML = projectEditor.project.settings.project.name;
+		let previewText = projectEditor.project.settings.project.previewText || 'Aa Bb Cc Xx Yy Zz';
 		thumbnail = makeElement({
 			tag: 'display-canvas',
-			attributes: { text: 'Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj' },
+			attributes: { text: previewText, 'font-size': '24' },
 		});
 	} else {
-		title.innerHTML = 'Open a new project';
+		title.innerHTML = 'Open another project &emsp; <code>Ctrl</code><code>p</code>';
+		rowWrapper.classList.add('project-preview__no-project');
 	}
 
 	if (superTitle) addAsChildren(rowWrapper, superTitle);
