@@ -46,6 +46,10 @@ export default {
 			description: `When importing SVG by dragging and dropping a .svg file onto the canvas, move the imported shapes to the origin (x = 0, y = shapes height).`,
 			type: `Boolean`,
 		},
+		previewText: {
+			label: `Project preview text`,
+			description: `What text to show when previewing a project or switching between projects. If left blank, the string 'Aa Bb Cc Xx Yy Zz' will be used.`,
+		},
 	},
 	font: {
 		family: {

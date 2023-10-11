@@ -211,7 +211,7 @@ function makeProjectPreviewRow(projectID = 0) {
 			rowWrapper.classList.add('project-preview__secondary');
 		}
 		title.innerHTML = projectEditor.project.settings.project.name;
-		let previewText = projectEditor.project.settings.project.previewText || 'Aa Bb Cc Xx Yy Zz';
+		let previewText = projectEditor.project.settings.app.previewText || 'Aa Bb Cc Xx Yy Zz';
 		thumbnail = makeElement({
 			tag: 'display-canvas',
 			attributes: { text: previewText, 'font-size': '24' },

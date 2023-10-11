@@ -118,10 +118,6 @@
 	opacity: 1;
 }
 
-display-canvas {
-	background-color: white;
-}
-
 /* tools */
 .editor-page__tool,
 .editor-page__tool:active,

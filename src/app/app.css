@@ -164,6 +164,7 @@
 	border-radius: 4px;
 	display: block;
 	height: 42px;
+	overflow: hidden;
 }
 
 .project-preview__primary {
