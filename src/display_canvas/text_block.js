@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject } from '../app/main.js';
 import { charToHex, parseCharsInputAsHex } from '../common/character_ids.js';
 import { Maxes } from '../project_data/maxes.js';
 import { TextBlockOptions } from './text_block_options.js';
@@ -23,6 +23,7 @@ export class TextBlock {
 		this.pixelHeight = 0;
 		this.canvasMaxes = oa.canvasMaxes;
 		this.ctx = oa.ctx;
+		this.project = oa.project || getCurrentProject();
 
 		// External properties
 		this.options = new TextBlockOptions(oa.options);
@@ -140,8 +141,6 @@ export class TextBlock {
 	 */
 	generateData() {
 		// log('TextBlock.generateData', 'start');
-		const project = getCurrentProject();
-
 		/*
 		 *
 		 *
@@ -174,21 +173,24 @@ export class TextBlock {
 		for (textBlockNumber = 0; textBlockNumber < this.textBlocks.length; textBlockNumber++) {
 			// log(`================ START textBlockNumber: ${textBlockNumber}`);
 
-			currentBlock = findAndMergeLigatures(this.textBlocks[textBlockNumber].split(''));
+			currentBlock = findAndMergeLigatures(
+				this.textBlocks[textBlockNumber].split(''),
+				this.project
+			);
 			this.data[textBlockNumber] = [];
 
 			for (charNumber = 0; charNumber < currentBlock.length; charNumber++) {
 				currentChar = currentBlock[charNumber];
 				// log(`==== char: ${charNumber} ${currentChar}`);
 				if (currentChar.startsWith('liga-')) {
-					thisItem = project.ligatures[currentChar];
+					thisItem = this.project.ligatures[currentChar];
 					currentChar = thisItem.chars;
 				} else {
-					thisItem = project.getItem(`glyph-${charToHex(currentChar)}`);
+					thisItem = this.project.getItem(`glyph-${charToHex(currentChar)}`);
 				}
 
 				// Calculate width
-				thisWidth = thisItem ? thisItem.advanceWidth : project.defaultAdvanceWidth;
+				thisWidth = thisItem ? thisItem.advanceWidth : this.project.defaultAdvanceWidth;
 
 				// Kern distance
 				thisKern = calculateKernOffset(currentChar, currentBlock[charNumber + 1]);
@@ -230,15 +232,15 @@ export class TextBlock {
 		let currentBaselineY = 0;
 		let checkForBreak = false;
 
-		const scale = this.options.fontSize / project.totalVertical;
+		const scale = this.options.fontSize / this.project.totalVertical;
 		// log(`scale: ${scale}`);
 
-		const ascent = project.settings.font.ascent;
+		const ascent = this.project.settings.font.ascent;
 		// log(`ascent: ${ascent}`);
 
 		//Convert area properties to project / UPM scales
 		const upmMaxes = {
-			lineHeight: project.totalVertical + this.options.lineGap / scale,
+			lineHeight: this.project.totalVertical + this.options.lineGap / scale,
 			width: this.canvasMaxes.width / scale,
 			yMax: this.canvasMaxes.yMax / scale,
 			yMin: this.canvasMaxes.yMin / scale,
@@ -428,10 +430,14 @@ export function calculateKernOffset(c1, c2) {
  * @param {Array} glyphCollection - Array of Glyph objects
  * @returns - Array with merged results
  */
-export function findAndMergeLigatures(glyphCollection) {
+export function findAndMergeLigatures(glyphCollection, project) {
 	// log('findAndMergeLigatures', 'start');
-	const editor = getCurrentProjectEditor();
-	const ligatures = editor.project.sortedLigatures;
+	// log(`\n⮟glyphCollection⮟`);
+	// log(glyphCollection);
+	// log(`\n⮟project⮟`);
+	// log(project);
+	project = project || getCurrentProject();
+	const ligatures = project.sortedLigatures;
 	// log('sorted ligatures: ');
 	// log(ligatures);
 
@@ -450,6 +456,7 @@ export function findAndMergeLigatures(glyphCollection) {
 		}
 	}
 
+	// log(`\n⮟glyphCollection⮟`);
 	// log(glyphCollection);
 	// log('findAndMergeLigatures', 'end');
 	return glyphCollection;
