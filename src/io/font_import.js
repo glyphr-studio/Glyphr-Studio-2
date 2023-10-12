@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
 import { countItems, pause, round } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
@@ -28,7 +28,8 @@ let importItemTotal = 0;
 export async function ioFont_importFont(importedFont) {
 	log('ioFont_importFont', 'start');
 	log(importedFont);
-	const project = getCurrentProject();
+	const editor = getProjectEditorImportTarget();
+	const project = editor.project;
 	const fontGlyphs = importedFont.glyphs.glyphs;
 	const fontLigatures = importedFont.substitution.getLigatures('liga');
 	const fontKerns = importedFont.kerningPairs;
@@ -58,7 +59,7 @@ export async function ioFont_importFont(importedFont) {
 
 	log(project);
 
-	const editor = getCurrentProjectEditor();
+	setCurrentProjectEditor(editor);
 	editor.selectedCharacterRange = getUnicodeBlockByName('Basic Latin');
 	editor.nav.page = 'Overview';
 	editor.navigate();
