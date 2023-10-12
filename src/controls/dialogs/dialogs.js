@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
-import { accentColors } from '../../common/colors.js';
+import { accentColors, uiColors } from '../../common/colors.js';
 import { addAsChildren, makeElement, textToNode } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { makeIcon } from '../../common/graphics.js';
@@ -352,13 +352,13 @@ export function showError(message) {
  * Shows a big dialog that blurs the UI behind it.
  * @param {DOM Node} contentNode - HTML to show in the dialog
  */
-export function showModalDialog(contentNode, maxWidth) {
-	let modal = makeModalDialog(contentNode, maxWidth);
+export function showModalDialog(contentNode, maxWidth, noPadding) {
+	let modal = makeModalDialog(contentNode, maxWidth, noPadding);
 	closeEveryTypeOfDialog();
 	document.body.appendChild(modal);
 }
 
-export function makeModalDialog(contentNode, maxWidth) {
+export function makeModalDialog(contentNode, maxWidth = false, openProjectDialog = false) {
 	// log(`makeModalDialog`, 'start');
 	// log(`\n⮟contentNode⮟`);
 	// log(contentNode);
@@ -380,6 +380,11 @@ export function makeModalDialog(contentNode, maxWidth) {
 	modal
 		.querySelector('.modal-dialog__close-button')
 		.addEventListener('click', closeEveryTypeOfDialog);
+
+	if (openProjectDialog) {
+		let contentArea = modal.querySelector('.modal-dialog__content');
+		contentArea.classList.add('modal-dialog__open-new-project');
+	}
 
 	addAsChildren(modal.querySelector('.modal-dialog__body'), contentNode);
 	if (maxWidth) {

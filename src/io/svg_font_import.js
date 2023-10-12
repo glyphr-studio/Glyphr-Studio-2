@@ -1,4 +1,4 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProject, getCurrentProjectEditor, getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
 import { hexesToChars, hexesToHexArray, parseCharsInputAsHex } from '../common/character_ids.js';
 import { generateNewID, round } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
@@ -19,7 +19,8 @@ import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 export function ioSVG_importSVGfont(font) {
 	// log('ioSVG_importSVGfont', 'start');
 
-	const project = getCurrentProject();
+	const editor = getProjectEditorImportTarget();
+	const project = editor.project;
 	let chars;
 	let kerns;
 
@@ -236,7 +237,6 @@ export function ioSVG_importSVGfont(font) {
 	}
 
 	function finalizeFontImport() {
-		const editor = getCurrentProjectEditor();
 		project.glyphs = finalGlyphs;
 		project.ligatures = finalLigatures;
 		project.kerning = finalKerns;
@@ -281,6 +281,7 @@ export function ioSVG_importSVGfont(font) {
 		project.settings.project.name = fname;
 
 		log(project);
+		setCurrentProjectEditor(editor);
 		editor.nav.page = 'Overview';
 		editor.navigate();
 		// log('ioSVG_importSVGfont', 'end');

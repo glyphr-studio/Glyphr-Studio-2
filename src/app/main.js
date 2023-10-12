@@ -90,6 +90,10 @@ function registerCustomComponents() {
 	});
 }
 
+// --------------------------------------------------------------
+// Getting root objects (App, Editor, Project / Current, Import Target)
+// --------------------------------------------------------------
+
 /**
  * Returns the overall App object
  * @returns {GlyphrStudioApp}
@@ -103,7 +107,7 @@ export function getGlyphrStudioApp() {
  * @returns {GlyphrStudioProject}
  */
 export function getCurrentProject() {
-	return getGlyphrStudioApp().getCurrentProjectEditor().project;
+	return getCurrentProjectEditor().project;
 }
 
 /**
@@ -111,12 +115,47 @@ export function getCurrentProject() {
  * @returns {ProjectEditor}
  */
 export function getCurrentProjectEditor() {
-	const gs = getGlyphrStudioApp();
-	if (!gs.projectEditors[gs.selectedProjectEditor]) {
-		gs.projectEditors[gs.selectedProjectEditor] = new ProjectEditor();
+	const app = getGlyphrStudioApp();
+	if (!app.selectedProjectEditor) {
+		if (!app.projectEditors[0]) app.projectEditors[0] = new ProjectEditor();
+		app.selectedProjectEditor = app.projectEditors[0];
 	}
-	return gs.projectEditors[gs.selectedProjectEditor];
+	return app.selectedProjectEditor;
 }
+
+/**
+ * Sets the current Project Editor
+ * @param {ProjectEditor} newEditor - one to set
+ */
+export function setCurrentProjectEditor(newEditor) {
+	const app = getGlyphrStudioApp();
+	app.selectedProjectEditor = newEditor;
+}
+
+/**
+ * Gets the Project Editor that is available for importing an new project
+ * @returns {ProjectEditor}
+ */
+export function getProjectEditorImportTarget() {
+	const app = getGlyphrStudioApp();
+	if (!app.editorImportTarget) app.editorImportTarget = getCurrentProjectEditor();
+	return app.editorImportTarget;
+}
+
+/**
+ * Adds a new Project Editor and gets it ready for importing
+ * @returns {ProjectEditor}
+ */
+export function addProjectEditorAndSetAsImportTarget() {
+	const app = getGlyphrStudioApp();
+	app.projectEditors.push(new ProjectEditor());
+	app.editorImportTarget = app.projectEditors.at(-1);
+	return getProjectEditorImportTarget();
+}
+
+// --------------------------------------------------------------
+// Fancy Logging
+// --------------------------------------------------------------
 
 /**
  * Wrapper for console.log that does some extra fancy stuff, and

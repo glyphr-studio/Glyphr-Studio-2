@@ -1,10 +1,11 @@
 import { addAsChildren, insertAfter, makeElement } from '../common/dom';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
-import { closeEveryTypeOfDialog, makeContextMenu } from '../controls/dialogs/dialogs';
+import { closeEveryTypeOfDialog, makeContextMenu, showModalDialog } from '../controls/dialogs/dialogs';
 import { ioFont_exportFont } from '../io/font_export.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
+import { makeOpenProjectTabs, makePage_OpenProject } from '../pages/open_project';
 import { emailLink } from './app';
-import { getCurrentProjectEditor, getGlyphrStudioApp } from './main';
+import { addProjectEditorAndSetAsImportTarget, getCurrentProjectEditor, getGlyphrStudioApp } from './main';
 
 // --------------------------------------------------------------
 // Top bar for the App
@@ -127,7 +128,7 @@ function makeMenu(menuName) {
 						name: 'hr',
 					},
 					{
-						name: 'Open another project in a new window',
+						name: 'Open a separate project in a new window',
 						icon: 'command_newTab',
 						onClick: () => {
 							window.open('https://glyphrstudio.com/v2/app/', '_blank');
@@ -219,6 +220,7 @@ function makeProjectPreviewRow(projectID = 0) {
 	} else {
 		title.innerHTML = 'Open another project &emsp; <code>Ctrl</code><code>p</code>';
 		rowWrapper.classList.add('project-preview__no-project');
+		rowWrapper.addEventListener('click', openLoadNewProjectDialog);
 	}
 
 	if (superTitle) addAsChildren(rowWrapper, superTitle);
@@ -227,4 +229,9 @@ function makeProjectPreviewRow(projectID = 0) {
 
 	log(`makeProjectPreviewRow`, 'end');
 	return rowWrapper;
+}
+
+function openLoadNewProjectDialog() {
+	addProjectEditorAndSetAsImportTarget();
+	showModalDialog(makePage_OpenProject(), 500, true);
 }

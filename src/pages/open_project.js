@@ -1,5 +1,9 @@
 import { updateWindowUnloadEvent } from '../app/app.js';
-import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
+import {
+	getGlyphrStudioApp,
+	getProjectEditorImportTarget,
+	setCurrentProjectEditor,
+} from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import { closeEveryTypeOfDialog, showError } from '../controls/dialogs/dialogs.js';
@@ -20,7 +24,7 @@ import simpleExampleProject from '../samples/simpleExampleProject.json';
 
 export const importOverflowCount = 326;
 
-export function makePage_OpenProject() {
+export function makePage_OpenProject(showMinimalContent = false) {
 	// log(`makePage_OpenProject`, 'start');
 	const recent = 1000 * 60 * 60 * 24 * 7; // seven days in milliseconds
 	let recentMessage = '';
@@ -52,9 +56,11 @@ export function makePage_OpenProject() {
 		`,
 	});
 
+
+
 	// Tabs
 	const tableRight = content.querySelector('#open-project__right-area');
-	tableRight.appendChild(makeTabs());
+	tableRight.appendChild(makeOpenProjectTabs());
 	showDefaultTab(content);
 
 	// Drag over handlers
@@ -76,7 +82,7 @@ export function makePage_OpenProject() {
 }
 
 /**
- * makeTabs creates all tab content as display:hidden
+ * makeOpenProjectTabs creates all tab content as display:hidden
  * this function selects the default tab and content
  */
 function showDefaultTab(node) {
@@ -91,7 +97,7 @@ function showDefaultTab(node) {
 export function resetOpenProjectTabs() {
 	const tableRight = document.querySelector('#open-project__right-area');
 	tableRight.innerHTML = '';
-	tableRight.appendChild(makeTabs());
+	tableRight.appendChild(makeOpenProjectTabs());
 	showDefaultTab(document);
 }
 
@@ -99,7 +105,7 @@ export function resetOpenProjectTabs() {
  * Create the tabs for the load project page
  * @returns {Object} DOM node
  */
-function makeTabs() {
+export function makeOpenProjectTabs() {
 	// --------------------------------------------------------------
 	// Make contents for each tab
 	// --------------------------------------------------------------
@@ -297,7 +303,8 @@ function postValidationCallback(validationResult) {
 
 function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	closeEveryTypeOfDialog();
-	const editor = getCurrentProjectEditor();
+	const editor = getProjectEditorImportTarget();
+	setCurrentProjectEditor(editor);
 	editor.project = importGlyphrProjectFromText(glyphrStudioProjectFile);
 	editor.nav.page = 'Overview';
 	updateWindowUnloadEvent();

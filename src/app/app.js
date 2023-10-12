@@ -4,7 +4,7 @@ import { ProjectEditor } from '../project_editor/project_editor.js';
 import obleggSampleProject from '../samples/oblegg-0-2.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 import { _DEV } from './dev_mode_includes.js';
-import { GSApp, getCurrentProject, getGlyphrStudioApp } from './main.js';
+import { GSApp, addProjectEditorAndSetAsImportTarget, getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -21,7 +21,10 @@ export class GlyphrStudioApp {
 
 		// Project Editors
 		this.projectEditors = [];
-		this.selectedProjectEditor = 0;
+		this.selectedProjectEditor = false;
+
+		// Current import target
+		this.editorImportTarget = false;
 
 		// Settings
 		this.settings = {
@@ -30,7 +33,7 @@ export class GlyphrStudioApp {
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: true, // Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // Load the sample project, true or 'oblegg'
-				currentPage: 'Live preview', // navigate straight to a page (sentence case names)
+				currentPage: 'Overview', // navigate straight to a page (sentence case names)
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
@@ -53,8 +56,7 @@ export class GlyphrStudioApp {
 	setUp() {
 		log(`GlyphrStudioApp.setUp`, 'start');
 
-		this.projectEditors[0] = new ProjectEditor();
-		const editor = this.getCurrentProjectEditor();
+		const editor = addProjectEditorAndSetAsImportTarget();
 
 		// Dev mode stuff
 		const dev = this.settings.dev;
@@ -112,24 +114,10 @@ export class GlyphrStudioApp {
 	}
 
 	/**
-	 * Returns the project that is currently being edited
-	 * @returns {GlyphrStudioProject}
+	 * An epoch date number that looks nice
+	 * @param {Number} dayOffset - how many days to add to the result
+	 * @returns - nice number for the day a version was shipped
 	 */
-	getCurrentProject() {
-		return this.getCurrentProjectEditor().project;
-	}
-
-	/**
-	 * Returns the current Project Editor
-	 * @returns {ProjectEditor}
-	 */
-	getCurrentProjectEditor() {
-		if (!this.projectEditors[this.selectedProjectEditor]) {
-			this.projectEditors[this.selectedProjectEditor] = new ProjectEditor();
-		}
-		return this.projectEditors[this.selectedProjectEditor];
-	}
-
 	getShipDate(dayOffset = 0) {
 		const msOffset = dayOffset * 24 * 60 * 60 * 1000;
 		const shipDate = new Date();
@@ -142,28 +130,9 @@ export class GlyphrStudioApp {
 	}
 }
 
-export function showAppErrorPage(friendlyMessage = '', errorObject = { message: '', stack: '' }) {
-	const wrapper = document.querySelector('#app__wrapper');
-	closeEveryTypeOfDialog();
-	let content = `
-		<div id="app__landing-page">
-		<div class="error-page__wrapper">
-			<div class="error-page__table-flip">(╯°▢°）╯︵ ┻━┻</div>
-				<h1>${friendlyMessage || 'Glyphr Studio ran into a problem'}</h1>
-				<br>
-				Please send us an email, hopefully we'll be able to help:
-				<a
-					href="mailto:mail@glyphrstudio.com&subject=[${GSApp.version}] Feedback"
-					>mail@glyphrstudio.com</a>
-				<br><br><br>
-				<pre>${errorObject.stack.replaceAll('<', '&lt;')}</pre>
-			</div>
-		</div>
-	`;
-
-	wrapper.innerHTML = content;
-}
-
+/**
+ * Conditionally load Google Telemetry
+ */
 function addTelemetry() {
 	let gScript = document.createElement('script');
 	gScript.setAttribute('src', 'https://www.googletagmanager.com/gtag/js?id=G-L8S3D8WCC9');
@@ -208,8 +177,35 @@ function showBeforeUnloadConfirmation(event) {
 }
 
 // --------------------------------------------------------------
-// Issue email
+// Issues
 // --------------------------------------------------------------
+
+/**
+ * Catch an error and show this 'nice' page instead
+ * @param {String} friendlyMessage - What human-readable message to show
+ * @param {Object} errorObject - Error data
+ */
+export function showAppErrorPage(friendlyMessage = '', errorObject = { message: '', stack: '' }) {
+	const wrapper = document.querySelector('#app__wrapper');
+	closeEveryTypeOfDialog();
+	let content = `
+		<div id="app__landing-page">
+		<div class="error-page__wrapper">
+			<div class="error-page__table-flip">(╯°▢°）╯︵ ┻━┻</div>
+				<h1>${friendlyMessage || 'Glyphr Studio ran into a problem'}</h1>
+				<br>
+				Please send us an email, hopefully we'll be able to help:
+				<a
+					href="mailto:mail@glyphrstudio.com&subject=[${GSApp.version}] Feedback"
+					>mail@glyphrstudio.com</a>
+				<br><br><br>
+				<pre>${errorObject.stack.replaceAll('<', '&lt;')}</pre>
+			</div>
+		</div>
+	`;
+
+	wrapper.innerHTML = content;
+}
 
 export function emailLink(displayText = 'mail@glyphrstudio.com') {
 	let app = getGlyphrStudioApp();

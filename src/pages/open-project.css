@@ -175,3 +175,30 @@
 	border-radius: 10px;
 	margin: 10px;
 }
+
+/*
+	Open Project Dialog
+*/
+.modal-dialog__open-new-project {
+	background-color: transparent;
+	background: linear-gradient(135deg, var(--blue-l20), var(--purple-l15));
+	height: min-content;
+}
+
+.modal-dialog__open-new-project .modal-dialog__body {
+	padding: 0px;
+}
+
+.modal-dialog__open-new-project .open-project__tab-wrapper {
+	top: 50px;
+}
+
+.modal-dialog__open-new-project #open-project__page {
+	height: 400px;
+	top: 0;
+}
+
+.modal-dialog__open-new-project #open-project__left-area {
+	width: 0px;
+	display: none;
+}
