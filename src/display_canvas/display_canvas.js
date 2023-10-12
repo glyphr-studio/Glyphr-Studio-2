@@ -1,7 +1,7 @@
-import { getCurrentProject } from '../app/main.js';
+import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeElement } from '../common/dom.js';
-import { caseCamelToKebab, clone, makeCrisp, round } from '../common/functions.js';
+import { caseCamelToKebab, clone, isVal, makeCrisp, round } from '../common/functions.js';
 import style from './display-canvas.css?inline';
 import { drawGlyph } from './draw_paths.js';
 import { TextBlock } from './text_block.js';
@@ -126,7 +126,11 @@ export class DisplayCanvas extends HTMLElement {
 		// log(`this.textBlockOptions:`);
 		// log(this.textBlockOptions);
 		let pageMaxes = this.calculatePageMaxes();
-
+		let proj = false;
+		let editorID = parseInt(this.getAttribute('project-editor'));
+		if (!isNaN(editorID)) {
+			proj = getGlyphrStudioApp().projectEditors[editorID].project;
+		}
 		this.textBlock = new TextBlock({
 			options: this.textBlockOptions,
 			canvasMaxes: pageMaxes,
@@ -135,6 +139,7 @@ export class DisplayCanvas extends HTMLElement {
 			drawLineExtras: this.drawDisplayLineExtras,
 			drawCharacterExtras: this.drawDisplayCharacterExtras,
 			drawCharacter: this.drawDisplayCharacter,
+			project: proj,
 		});
 		// log(`DisplayCanvas.updateTextBlock`, 'end');
 	}

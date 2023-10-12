@@ -190,12 +190,12 @@ function makeMenu(menuName) {
 }
 
 function makeProjectPreviewRow(projectID = 0) {
-	log(`makeProjectPreviewRow`, 'start');
-	log(`projectID: ${projectID}`);
+	// log(`makeProjectPreviewRow`, 'start');
+	// log(`projectID: ${projectID}`);
 	const app = getGlyphrStudioApp();
 	const projectEditor = app.projectEditors[projectID];
-	log(`\n⮟projectEditor⮟`);
-	log(projectEditor);
+	// log(`\n⮟projectEditor⮟`);
+	// log(projectEditor);
 
 	let rowWrapper = makeElement({ tag: 'div', className: 'project-preview__row-wrapper' });
 	let superTitle = false;
@@ -215,7 +215,7 @@ function makeProjectPreviewRow(projectID = 0) {
 		let previewText = projectEditor.project.settings.app.previewText || 'Aa Bb Cc Xx Yy Zz';
 		thumbnail = makeElement({
 			tag: 'display-canvas',
-			attributes: { text: previewText, 'font-size': '24' },
+			attributes: { text: previewText, 'font-size': '24', 'project-editor': projectID },
 		});
 	} else {
 		title.innerHTML = 'Open another project &emsp; <code>Ctrl</code><code>p</code>';
@@ -227,7 +227,7 @@ function makeProjectPreviewRow(projectID = 0) {
 	addAsChildren(rowWrapper, title);
 	if (thumbnail) addAsChildren(rowWrapper, thumbnail);
 
-	log(`makeProjectPreviewRow`, 'end');
+	// log(`makeProjectPreviewRow`, 'end');
 	return rowWrapper;
 }
 
