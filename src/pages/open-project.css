@@ -202,3 +202,12 @@
 	width: 0px;
 	display: none;
 }
+
+.modal-dialog__open-new-project #open-project__drop-note {
+	height: 380px;
+	width: calc(100% - 20px);
+	padding: 150px 0px 0px 0px;
+	text-align: center;
+	color: var(--purple-l80);
+	background-color: hsla(285, 100%, 17%, 0.8); /* purple l15 */
+}

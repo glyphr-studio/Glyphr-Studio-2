@@ -1,10 +1,14 @@
 import { closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import { ProjectEditor } from '../project_editor/project_editor.js';
 import obleggSampleProject from '../samples/oblegg-0-2.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 import { _DEV } from './dev_mode_includes.js';
-import { GSApp, addProjectEditorAndSetAsImportTarget, getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
+import {
+	GSApp,
+	addProjectEditorAndSetAsImportTarget,
+	getCurrentProject,
+	getGlyphrStudioApp,
+} from './main.js';
 
 /**
  * Creates a new Glyphr Studio Application
