@@ -83,13 +83,20 @@ function makeButton(text, chars = false) {
 }
 
 function updateLivePreviewTextInputText(event, text) {
+	// log(`updateLivePreviewTextInputText`, 'start');
+	// log(event);
+	// log(`text: ${text}`);
+
 	// This works for the main window or the pop-out window
 	let doc = event.srcElement.ownerDocument;
 	const textInput = doc.getElementById('textBlockTextInput');
+
 	if (textInput) {
 		textInput.innerHTML = text;
+		textInput.value = text;
 		textInput.dispatchEvent(new Event('keyup'));
 	}
+	// log(`updateLivePreviewTextInputText`, 'end');
 }
 
 function makeSymbolButton() {
@@ -175,6 +182,7 @@ function makeTextBlockOptions_basicOptions(textBlockOptions) {
 	});
 	textInput.addEventListener('keyup', (event) => {
 		textBlockOptions.text = event.target.value;
+		event.target.innerHTML = event.target.value;
 		redrawAllLivePreviews();
 	});
 
