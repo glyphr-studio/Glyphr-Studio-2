@@ -1,12 +1,13 @@
 import { updateWindowUnloadEvent } from '../app/app.js';
 import {
+	addProjectEditorAndSetAsImportTarget,
 	getGlyphrStudioApp,
 	getProjectEditorImportTarget,
 	setCurrentProjectEditor,
 } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
-import { closeEveryTypeOfDialog, showError } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, showError, showToast } from '../controls/dialogs/dialogs.js';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { ioFont_importFont } from '../io/font_import.js';
@@ -23,9 +24,12 @@ import simpleExampleProject from '../samples/simpleExampleProject.json';
  */
 
 export const importOverflowCount = 326;
+let isSecondProject;
 
-export function makePage_OpenProject(showMinimalContent = false) {
+export function makePage_OpenProject(secondProjectFlag = false) {
 	// log(`makePage_OpenProject`, 'start');
+	// log(`secondProjectFlag: ${secondProjectFlag}`);
+	isSecondProject = secondProjectFlag;
 	const recent = 1000 * 60 * 60 * 24 * 7; // seven days in milliseconds
 	let recentMessage = '';
 	const app = getGlyphrStudioApp();
@@ -282,6 +286,8 @@ function handleDrop(event) {
 }
 
 function postValidationCallback(validationResult) {
+	// log(`postValidationCallback`, 'start');
+	if(isSecondProject) addProjectEditorAndSetAsImportTarget();
 	if (validationResult.content) {
 		if (validationResult.fileType === 'font') {
 			ioFont_importFont(validationResult.content);
@@ -299,6 +305,7 @@ function postValidationCallback(validationResult) {
 
 		resetOpenProjectTabs();
 	}
+	// log(`postValidationCallback`, 'end');
 }
 
 function importProjectDataAndNavigate(glyphrStudioProjectFile) {
@@ -307,6 +314,7 @@ function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	setCurrentProjectEditor(editor);
 	editor.project = importGlyphrProjectFromText(glyphrStudioProjectFile);
 	editor.nav.page = 'Overview';
+	if (isSecondProject) showToast(`Switched to<br>${editor.project.settings.project.name}`);
 	updateWindowUnloadEvent();
 	editor.navigate();
 }
@@ -374,6 +382,7 @@ function handleDragLeave() {
  * Create a new project from scratch
  */
 function handleNewProject() {
+	if (isSecondProject) addProjectEditorAndSetAsImportTarget();
 	setTimeout(importProjectDataAndNavigate, 10);
 }
 
@@ -382,13 +391,14 @@ function handleNewProject() {
  * @param {String} name - which sample to load
  */
 function handleLoadSample(name) {
+	if (isSecondProject) addProjectEditorAndSetAsImportTarget();
 	document.getElementById('tab-content__examples').innerHTML =
 		'<h2>Load an example project</h2>Loading example project...';
 
 	let project = simpleExampleProject;
 	if (name === 'oblegg') project = obleggExampleProject;
 	setTimeout(function () {
-		log(`Loading sample project ${name}`);
+		// log(`Loading sample project ${name}`);
 
 		importProjectDataAndNavigate(project);
 	}, 100);

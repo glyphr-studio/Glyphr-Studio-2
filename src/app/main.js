@@ -147,9 +147,11 @@ export function getProjectEditorImportTarget() {
  * @returns {ProjectEditor}
  */
 export function addProjectEditorAndSetAsImportTarget() {
+	// log(`addProjectEditorAndSetAsImportTarget`, 'start');
 	const app = getGlyphrStudioApp();
 	app.projectEditors.push(new ProjectEditor());
 	app.editorImportTarget = app.projectEditors.at(-1);
+	// log(`addProjectEditorAndSetAsImportTarget`, 'end');
 	return getProjectEditorImportTarget();
 }
 

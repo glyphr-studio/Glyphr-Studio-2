@@ -160,7 +160,7 @@
 }
 
 .project-preview__row-wrapper display-canvas {
-	background-color: var(--blue-l95);
+	background-color: var(--gray-l97);
 	border-radius: 4px;
 	display: block;
 	height: 42px;
@@ -181,14 +181,14 @@
 
 .project-preview__secondary {
 	background: linear-gradient(135deg,
-		var(--purple-l35),
-		var(--purple-l25));
-	border: 1px solid var(--purple-l60);
+		var(--gray-l95),
+		var(--gray-l90));
+	border: 1px solid var(--gray-l90);
 }
 
 .project-preview__secondary h3,
 .project-preview__secondary .project-preview__super-title {
-	color: var(--purple-l90);
+	color: var(--gray-l20);
 }
 
 .project-preview__no-project {
@@ -207,11 +207,17 @@
 	margin: 5px 0px 0px 0px;
 }
 
-.project-preview__no-project:hover {
+.project-preview__no-project:hover,
+.project-preview__secondary:hover {
 	cursor: pointer;
 	box-shadow: var(--l2-shadow-down);
+	border-color: var(--blue-l80);
+	position: relative;
+	top: -1px;
+	left: -1px;
 }
-.project-preview__no-project:hover h3 {
+.project-preview__no-project:hover,
+.project-preview__secondary:hover h3 {
 	opacity: 1;
 	border-color: var(--blue-l80);
 }

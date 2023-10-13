@@ -1,11 +1,16 @@
 import { addAsChildren, insertAfter, makeElement } from '../common/dom';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
-import { closeEveryTypeOfDialog, makeContextMenu, showModalDialog } from '../controls/dialogs/dialogs';
+import {
+	closeEveryTypeOfDialog,
+	makeContextMenu,
+	showModalDialog,
+	showToast,
+} from '../controls/dialogs/dialogs';
 import { ioFont_exportFont } from '../io/font_export.js';
 import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
-import { makeOpenProjectTabs, makePage_OpenProject } from '../pages/open_project';
+import { makePage_OpenProject } from '../pages/open_project';
 import { emailLink } from './app';
-import { addProjectEditorAndSetAsImportTarget, getCurrentProjectEditor, getGlyphrStudioApp } from './main';
+import { getCurrentProjectEditor, getGlyphrStudioApp } from './main';
 
 // --------------------------------------------------------------
 // Top bar for the App
@@ -121,7 +126,10 @@ function makeMenu(menuName) {
 						name: 'Learn more about working with two projects',
 						icon: 'command_newTab',
 						onClick: () => {
-							window.open('https://glyphrstudio.com/v2/help/working-with-multiple-projects.html', '_blank');
+							window.open(
+								'https://glyphrstudio.com/v2/help/working-with-multiple-projects.html',
+								'_blank'
+							);
 						},
 					},
 					{
@@ -210,6 +218,12 @@ function makeProjectPreviewRow(projectID = 0) {
 		} else {
 			superTitle.innerHTML = 'Switch to';
 			rowWrapper.classList.add('project-preview__secondary');
+			rowWrapper.addEventListener('click', () => {
+				const app = getGlyphrStudioApp();
+				app.selectedProjectEditor = projectEditor;
+				app.selectedProjectEditor.navigate();
+				showToast(`Switched to<br>${projectEditor.project.settings.project.name}`);
+			});
 		}
 		title.innerHTML = projectEditor.project.settings.project.name;
 		let previewText = projectEditor.project.settings.app.previewText || 'Aa Bb Cc Xx Yy Zz';
@@ -220,7 +234,9 @@ function makeProjectPreviewRow(projectID = 0) {
 	} else {
 		title.innerHTML = 'Open another project &emsp; <code>Ctrl</code><code>p</code>';
 		rowWrapper.classList.add('project-preview__no-project');
-		rowWrapper.addEventListener('click', openLoadNewProjectDialog);
+		rowWrapper.addEventListener('click', () => {
+			showModalDialog(makePage_OpenProject(true), 500, true);
+		});
 	}
 
 	if (superTitle) addAsChildren(rowWrapper, superTitle);
@@ -229,9 +245,4 @@ function makeProjectPreviewRow(projectID = 0) {
 
 	// log(`makeProjectPreviewRow`, 'end');
 	return rowWrapper;
-}
-
-function openLoadNewProjectDialog() {
-	addProjectEditorAndSetAsImportTarget();
-	showModalDialog(makePage_OpenProject(), 500, true);
 }
