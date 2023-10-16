@@ -2,8 +2,8 @@ import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/ma
 import { hexesToChars, hexesToHexArray, parseCharsInputAsHex } from '../common/character_ids.js';
 import { generateNewID, round } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
-import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
-import { getUnicodeName } from '../lib/unicode_names.js';
+import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks.js';
+import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';

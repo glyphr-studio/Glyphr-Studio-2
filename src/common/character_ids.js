@@ -310,10 +310,12 @@ export function hexesToChars(input = '') {
 
 	input = input.split('0x');
 	let result = '';
+	// log(input);
 
 	for (let i = 0; i < input.length; i++) {
 		if (input[i] !== '') {
-			input[i] = String.fromCharCode(`0x${input[i]}`);
+			input[i] = String.fromCodePoint(`0x${input[i]}`);
+			// log(input[i]);
 			if (input[i]) result += input[i];
 		}
 	}

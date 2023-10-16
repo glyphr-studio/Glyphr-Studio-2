@@ -2,13 +2,13 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import { decToHex, validateAsHex } from '../common/character_ids';
 import { addAsChildren, makeElement } from '../common/dom';
 import { showToast } from '../controls/dialogs/dialogs';
-import { getUnicodeBlockByName } from '../lib/unicode_blocks';
+import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks';
 import {
 	findMappedValue,
 	unicodeDiacriticsMapAdvanced,
 	unicodeDiacriticsMapSimple,
 	unicodeLowercaseMap,
-} from '../lib/unicode_mappings';
+} from '../lib/unicode/unicode_mappings';
 import { copyShapesFromTo } from '../panels/actions';
 import { Glyph } from '../project_data/glyph';
 import { Path } from '../project_data/path';
@@ -554,7 +554,7 @@ function makeCard_SideBearings() {
 						if (glyph.shapes.length) {
 							if (!isNaN(left)) {
 								glyph.leftSideBearing = left;
-								getComponentInstancesFromRoot(glyph).forEach(instance => {
+								getComponentInstancesFromRoot(glyph).forEach((instance) => {
 									instance.translateX -= left;
 								});
 							}
@@ -581,9 +581,7 @@ function makeCard_SideBearings() {
 function makeCard_Round() {
 	const card = makeElement({ className: 'global-actions__card' });
 
-	card.appendChild(
-		makeElement({ tag: 'h2', content: 'Round all point values' })
-	);
+	card.appendChild(makeElement({ tag: 'h2', content: 'Round all point values' }));
 	let description = makeElement({
 		className: 'global-actions__description',
 		content: `This will run the "round all" action on each glyph. This will ensure all path point values are rounded to their nearest whole number.`,
@@ -605,7 +603,8 @@ function makeCard_Round() {
 			title: 'Rounding',
 			action: function (workingItem) {
 				workingItem.roundAll();
-				if (workingItem.advanceWidth) workingItem.advanceWidth = Math.round(workingItem.advanceWidth);
+				if (workingItem.advanceWidth)
+					workingItem.advanceWidth = Math.round(workingItem.advanceWidth);
 				workingItem.changed();
 				// log(`Global Action: Flatten`, 'end');
 			},

@@ -1,19 +1,4 @@
-export function getUnicodeBlockByName(name) {
-	// log(`getUnicodeBlockByName`, 'start');
-	// log(`name: ${name}`);
-	for (let b = 0; b < unicodeBlocks.length; b++) {
-		if (unicodeBlocks[b].name === name) {
-			// log(`found unicodeBlocks[b].name: ${unicodeBlocks[b].name}`);
-			// log(`getUnicodeBlockByName`, 'end');
-			return unicodeBlocks[b];
-		}
-	}
-	// log(`returning FALSE`);
-	// log(`getUnicodeBlockByName`, 'end');
-	return false;
-}
-
-export const unicodeBlocks = [
+export const unicodeBlocksBMP = [
 	{ begin: 0x0000, end: 0x001f, name: 'Basic Latin Controls' },
 	{ begin: 0x0020, end: 0x007f, name: 'Basic Latin' },
 	{ begin: 0x0080, end: 0x009f, name: 'Latin-1 Supplement Controls' },
@@ -192,34 +177,3 @@ export const unicodeBlocks = [
 	{ begin: 0xff00, end: 0xffef, name: 'Halfwidth and Fullwidth Forms' },
 	{ begin: 0xfff0, end: 0xffff, name: 'Specials' },
 ];
-
-export const unicodeNonCharPoints = [
-	{ begin: 0x0000, end: 0x001f, name: 'Basic Latin Controls' },
-	{ begin: 0x0080, end: 0x009f, name: 'Latin-1 Supplement Controls' },
-];
-
-export function isControlChar(char) {
-	for (let r = 0; r < unicodeNonCharPoints.length; r++) {
-		if (isCharInRange(char, unicodeNonCharPoints[r])) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
-export function isCharInRange(char, range) {
-	char = parseInt(char);
-	if (isNaN(char)) return false;
-	let result = char <= range.end && char >= range.begin;
-	return result;
-}
-
-export function getParentRange(char) {
-	for (let b = 0; b < unicodeBlocks.length; b++) {
-		if (char <= unicodeBlocks[b].end && char >= unicodeBlocks[b].begin) {
-			return unicodeBlocks[b];
-		}
-	}
-	return false;
-}
