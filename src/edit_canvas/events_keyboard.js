@@ -227,7 +227,7 @@ function getKeyFromEvent(event) {
 		189: 'minus',
 		224: 'ctrl',
 	};
-	return specialGlyphs[parseInt(event.which)] || String.fromCharCode(event.which).toLowerCase();
+	return specialGlyphs[parseInt(event.which)] || String.fromCodePoint(event.which).toLowerCase();
 }
 
 function nudge(dx, dy) {

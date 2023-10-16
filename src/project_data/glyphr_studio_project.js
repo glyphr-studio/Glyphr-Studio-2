@@ -1,7 +1,7 @@
 import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { clone, remove, round, trim } from '../common/functions.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
-import { shortUnicodeNames, unicodeNames } from '../lib/unicode_names.js';
+import { getUnicodeName, getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Guide } from '../project_editor/guide.js';
 import { CharacterRange } from './character_range.js';
@@ -363,9 +363,9 @@ export class GlyphrStudioProject {
 			// known unicode names
 			let unicodeName;
 			if (forceLongName) {
-				unicodeName = unicodeNames[remove(id, 'glyph-')];
+				unicodeName = getUnicodeName(remove(id, 'glyph-'));
 			} else {
-				unicodeName = shortUnicodeNames[remove(id, 'glyph-')];
+				unicodeName = getUnicodeShortName(remove(id, 'glyph-'));
 			}
 
 			if (unicodeName) {

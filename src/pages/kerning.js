@@ -9,7 +9,7 @@ import {
 	showModalDialog,
 } from '../controls/dialogs/dialogs.js';
 import { makeKernToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
-import { getUnicodeName } from '../lib/unicode_names.js';
+import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import {

@@ -1,6 +1,6 @@
 import { hexesToChars } from '../common/character_ids.js';
 import { hasNonValues, isVal, remove, trim } from '../common/functions.js';
-import { getUnicodeName } from '../lib/unicode_names.js';
+import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { ComponentInstance } from './component_instance.js';
 import { GlyphElement } from './glyph_element.js';
 import { Maxes, getOverallMaxes, isAllZeros } from './maxes.js';
@@ -310,7 +310,7 @@ export class Glyph extends GlyphElement {
 		if (this.gsub.length) {
 			// log(`this.gsub.length: ${this.gsub.length}`);
 			// log(this.gsub);
-			result = this.gsub.reduce((acc, value) => `${acc}${String.fromCharCode(value)}`, '');
+			result = this.gsub.reduce((acc, value) => `${acc}${String.fromCodePoint(value)}`, '');
 		} else {
 			result = hexesToChars(remove(this.id, 'glyph-'));
 		}

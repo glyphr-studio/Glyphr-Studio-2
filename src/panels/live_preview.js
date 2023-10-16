@@ -1,7 +1,10 @@
 import { getCurrentProjectEditor } from '../app/main';
 import { addAsChildren, makeElement } from '../common/dom';
 import { redrawLivePreviewPageDisplayCanvas } from '../pages/live_preview';
-import { makeLivePreviewPopOutCard, openPopOutWindow, updatePopOutWindowContent } from '../project_editor/pop_out_window';
+import {
+	makeLivePreviewPopOutCard,
+	updatePopOutWindowContent,
+} from '../project_editor/pop_out_window';
 import { makeDirectCheckbox, makeSingleLabel } from './cards';
 
 // --------------------------------------------------------------
@@ -152,7 +155,7 @@ function clickSymbolButton(event) {
 	];
 
 	let text = '';
-	symbols.forEach((symbol) => (text += String.fromCharCode(symbol)));
+	symbols.forEach((symbol) => (text += String.fromCodePoint(symbol)));
 
 	updateLivePreviewTextInputText(event, text);
 }

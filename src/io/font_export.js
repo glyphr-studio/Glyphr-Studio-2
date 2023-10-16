@@ -3,7 +3,7 @@ import { decToHex, parseCharsInputAsHex } from '../common/character_ids.js';
 import { pause, round } from '../common/functions.js';
 import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
 import openTypeJS from '../lib/opentypejs_1-3-1.js';
-import { getUnicodeShortName } from '../lib/unicode_names.js';
+import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { Glyph } from '../project_data/glyph.js';
 import { sortLigatures } from '../project_data/glyphr_studio_project.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';

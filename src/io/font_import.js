@@ -2,7 +2,11 @@ import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/ma
 import { decToHex } from '../common/character_ids.js';
 import { countItems, pause, round } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
-import { getParentRange, getUnicodeBlockByName, isControlChar } from '../lib/unicode_blocks.js';
+import {
+	getParentRange,
+	getUnicodeBlockByName,
+	isControlChar,
+} from '../lib/unicode/unicode_blocks.js';
 import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { CharacterRange } from '../project_data/character_range.js';
@@ -195,7 +199,7 @@ function importOneLigature(otfLigature, otfFont) {
 
 	// Update properties
 	importedLigature.objType = 'Ligature';
-	const newLigatureID = makeLigatureID(String.fromCharCode(...newGsub));
+	const newLigatureID = makeLigatureID(String.fromCodePoint(...newGsub));
 	// log(`newLigatureID: ${newLigatureID}`);
 	importedLigature.id = newLigatureID;
 

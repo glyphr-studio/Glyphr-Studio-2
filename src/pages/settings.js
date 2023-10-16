@@ -9,8 +9,11 @@ import {
 	showToast,
 } from '../controls/dialogs/dialogs.js';
 import { TabControl } from '../controls/tabs/tab_control.js';
-import { unicodeBlocks } from '../lib/unicode_blocks.js';
-import { getUnicodeName } from '../lib/unicode_names.js';
+import { unicodeBlocksBMP } from '../lib/unicode/unicode_blocks_0_bmp.js';
+import { unicodeBlocksSMP } from '../lib/unicode/unicode_blocks_1_smp.js';
+import { unicodeBlocksSIP } from '../lib/unicode/unicode_blocks_2_sip.js';
+import { unicodeBlocksTIP } from '../lib/unicode/unicode_blocks_3_tip.js';
+import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
@@ -567,7 +570,9 @@ function showUnicodeCharacterRangeDialog() {
 					Select a character range from the right to preview it here.
 				</div>
 				<h4 id="glyph-range-chooser__preview-selected"></h4>
-				<fancy-button disabled id="glyph-range-chooser__add-button">Add range to project</fancy-button>
+				<span id="glyph-range-chooser__add-button-wrapper">
+					<fancy-button disabled id="glyph-range-chooser__add-button">Add range to project</fancy-button>
+				</span>
 			</div>
 			<div class="glyph-range-chooser__list-area"></div>
 		`,
@@ -582,7 +587,12 @@ function showUnicodeCharacterRangeDialog() {
 	]);
 
 	let rowWrapper;
-	unicodeBlocks.forEach((block) => {
+	unicodeBlocksBMP.forEach(processOneBlock);
+	unicodeBlocksSMP.forEach(processOneBlock);
+	unicodeBlocksSIP.forEach(processOneBlock);
+	unicodeBlocksTIP.forEach(processOneBlock);
+
+	function processOneBlock(block) {
 		if (!block.name.includes('Controls')) {
 			rowWrapper = makeElement({
 				className: 'list__row-wrapper',
@@ -599,7 +609,7 @@ function showUnicodeCharacterRangeDialog() {
 
 			addAsChildren(listArea, rowWrapper);
 		}
-	});
+	}
 
 	showModalDialog(content);
 }
@@ -609,11 +619,18 @@ function previewCharacterRange(range) {
 	// log(range);
 	document.querySelector('#glyph-range-chooser__preview-selected').innerHTML = range.name;
 
-	const addButton = document.querySelector('#glyph-range-chooser__add-button');
+	const addButton = makeElement({
+		tag: 'fancy-button',
+		id: 'glyph-range-chooser__add-button',
+		content: 'Add range to project',
+	});
 	addButton.addEventListener('click', () => {
 		addCharacterRangeToCurrentProject(range, updateCurrentRangesTable);
 	});
-	addButton.removeAttribute('disabled');
+
+	const addButtonWrapper = document.querySelector('#glyph-range-chooser__add-button-wrapper');
+	addButtonWrapper.innerHTML = '';
+	addButtonWrapper.appendChild(addButton);
 
 	const previewArea = document.querySelector('.glyph-range-chooser__preview');
 	previewArea.innerHTML = '';
@@ -635,6 +652,10 @@ function previewCharacterRange(range) {
 }
 
 export function addCharacterRangeToCurrentProject(range, successCallback, showNotification = true) {
+	// log(`addCharacterRangeToCurrentProject`, 'start');
+	// log(`\n⮟range⮟`);
+	// log(range);
+	// log(`showNotification: ${showNotification}`);
 	if (isCharacterRangeUnique(range)) {
 		let ranges = getCurrentProject().settings.project.characterRanges;
 		ranges.push(new CharacterRange(range));
@@ -644,6 +665,7 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 	} else {
 		if (showNotification) showToast(`Glyph range is already added to your project.`);
 	}
+	// log(`addCharacterRangeToCurrentProject`, 'end');
 }
 
 function isCharacterRangeUnique(range) {
