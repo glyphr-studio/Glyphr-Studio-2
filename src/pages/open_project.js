@@ -60,8 +60,6 @@ export function makePage_OpenProject(secondProjectFlag = false) {
 		`,
 	});
 
-
-
 	// Tabs
 	const tableRight = content.querySelector('#open-project__right-area');
 	tableRight.appendChild(makeOpenProjectTabs());
@@ -287,7 +285,7 @@ function handleDrop(event) {
 
 function postValidationCallback(validationResult) {
 	// log(`postValidationCallback`, 'start');
-	if(isSecondProject) addProjectEditorAndSetAsImportTarget();
+	if (isSecondProject) addProjectEditorAndSetAsImportTarget();
 	if (validationResult.content) {
 		if (validationResult.fileType === 'font') {
 			ioFont_importFont(validationResult.content);
@@ -402,20 +400,4 @@ function handleLoadSample(name) {
 
 		importProjectDataAndNavigate(project);
 	}, 100);
-}
-
-// TODO BMP+
-let importRange = {
-	begin: 0x0,
-	end: 0xffff,
-};
-
-export function isOutOfBounds(uni) {
-	if (!uni.length) return true;
-
-	for (let u = 0; u < uni.length; u++) {
-		if (parseInt(uni[u]) > importRange.end || parseInt(uni[u]) < importRange.begin) return true;
-	}
-
-	return false;
 }

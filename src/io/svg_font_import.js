@@ -1,11 +1,10 @@
-import { getCurrentProject, getCurrentProjectEditor, getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
+import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
 import { hexesToChars, hexesToHexArray, parseCharsInputAsHex } from '../common/character_ids.js';
 import { generateNewID, round } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode_blocks.js';
 import { getUnicodeName } from '../lib/unicode_names.js';
 import { makeLigatureID } from '../pages/ligatures.js';
-import { isOutOfBounds } from '../pages/open_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { ioSVG_convertSVGTagsToGlyph } from './svg_outline_import.js';
 
@@ -66,7 +65,7 @@ export function ioSVG_importSVGfont(font) {
 	 *
 	 */
 	let maxChar = 0;
-	let minChar = 0xffff; // TODO BMP+
+	let minChar = Number.MAX_SAFE_INTEGER;
 	let customCharacterRange = [];
 	const finalGlyphs = {};
 	const finalLigatures = {};
@@ -103,9 +102,6 @@ export function ioSVG_importSVGfont(font) {
 		if (uni === false) {
 			// Check for .notdef
 			// log('!!! Skipping '+attributes['glyph-name']+' NO UNICODE !!!');
-			chars.splice(charCounter, 1);
-		} else if (isOutOfBounds(uni)) {
-			// log('!!! Skipping '+attributes['glyph-name']+' OUT OF BOUNDS !!!');
 			chars.splice(charCounter, 1);
 		} else {
 			// log('GLYPH ' + charCounter + '/'+chars.length+'\t unicode: ' + json(uni) + '\t attributes: ' + json(attributes));
