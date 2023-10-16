@@ -1,7 +1,7 @@
 import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { accentColors, uiColors } from '../common/colors.js';
 import { makeElement } from '../common/dom.js';
-import { caseCamelToKebab, clone, isVal, makeCrisp, round } from '../common/functions.js';
+import { caseCamelToKebab, clone, makeCrisp, round } from '../common/functions.js';
 import style from './display-canvas.css?inline';
 import { drawGlyph } from './draw_paths.js';
 import { TextBlock } from './text_block.js';
@@ -192,6 +192,7 @@ export class DisplayCanvas extends HTMLElement {
 			'show-page-extras',
 			'show-line-extras',
 			'show-character-extras',
+			'show-placeholder-message',
 			'width-adjustment',
 		];
 	}
@@ -242,6 +243,11 @@ export class DisplayCanvas extends HTMLElement {
 			this.redraw();
 		}
 
+		if (attributeName === 'show-placeholder-message') {
+			this.textBlockOptions.showPlaceholderMessage = newValue === 'true';
+			this.redraw();
+		}
+
 		if (attributeName === 'width-adjustment') {
 			this.widthAdjustment = parseInt(newValue);
 			this.resizeAndRedraw();
@@ -268,12 +274,23 @@ export class DisplayCanvas extends HTMLElement {
 
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-		this.textBlock.draw({
-			showPageExtras: this.textBlockOptions.showPageExtras,
-			showLineExtras: this.textBlockOptions.showLineExtras,
-			showCharacterExtras: this.textBlockOptions.showCharacterExtras,
-			showCharacter: true,
-		});
+		if (this.textBlock.hasDrawableCharacters) {
+			this.textBlock.draw({
+				showPageExtras: this.textBlockOptions.showPageExtras,
+				showLineExtras: this.textBlockOptions.showLineExtras,
+				showCharacterExtras: this.textBlockOptions.showCharacterExtras,
+				showCharacter: true,
+			});
+		} else {
+			if (this.textBlockOptions.showPlaceholderMessage) {
+				this.ctx.fillStyle = uiColors.disabled.text;
+				this.ctx.font = '14px sans-serif';
+				this.ctx.textBaseline = 'middle';
+				let x = this.textBlock.canvasMaxes.xMin;
+				let y = this.height / 2;
+				this.ctx.fillText('Project preview text will be shown here.', x, y);
+			}
+		}
 
 		// log('DisplayCanvas.redraw', 'end');
 	}
