@@ -84,9 +84,9 @@ function makeLicenseInfo() {
 			<h3>opentype.js</h3>
 			<a href="https://opentype.js.org/" target="_blank">opentype.js.org</a>
 			<br><br>
-			opentype.js is available on
+			Available on
 			<a href="https://github.com/opentypejs/opentype.js" target="_blank">GitHub</a>
-			under the
+			under a
 			<a href="https://raw.github.com/opentypejs/opentype.js/master/LICENSE" target="_blank">MIT License</a>.
 			<br><br>
 			Copyright © 2020 Frederik De Bleser
@@ -96,7 +96,7 @@ function makeLicenseInfo() {
 			<h3>SVG-to-Bézier</h3>
 			<a href="https://github.com/mattlag/SVG-to-Bezier" target="_blank">github.com/mattlag/SVG-to-Bezier</a>
 			<br><br>
-			XMLtoJSON is licensed under a
+			Licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
 			<br><br>
 			Copyright © 2023 Matthew LaGrandeur
@@ -106,11 +106,16 @@ function makeLicenseInfo() {
 			<h3>XMLtoJSON</h3>
 			<a href="https://github.com/mattlag/XMLtoJSON" target="_blank">github.com/mattlag/XMLtoJSON</a>
 			<br><br>
-			XMLtoJSON is licensed under a
+			Licensed under a
 			<a href='https://www.gnu.org/licenses/gpl.html' target='_blank'>GNU General Public License</a>.
 			<br><br>
 			Copyright © 2023 Matthew LaGrandeur
 		</div>
+
+		<br>
+		<br>
+		<h2>Related projects</h2>
+		<p>Check out these projects related to typeface design:</p>
 
 		<div class="page__card">
 			<h3>Spell Checker Oriented Word List (SCOWL)</h3>
@@ -121,6 +126,14 @@ function makeLicenseInfo() {
 			<a href='https://raw.githubusercontent.com/kevina/wordlist/master/scowl/Copyright' target='_blank'>MIT-like</a> license.
 			<br><br>
 			Copyright © 2000-2018 Kevin Atkinson
+		</div>
+
+		<div class="page__card">
+			<h3>Unicode Ninja</h3>
+			<a href="https://unicode.ninja" target="_blank">unicode.ninja</a>
+			<br><br>
+			Unicode Ninja lets you explore the Unicode Basic Multilingual Plane. Browse through all character ranges, either
+			sorted numerically or categorized. Search for individual characters by name, and copy their HTML codes to your clipboard.
 		</div>
 	`,
 	});

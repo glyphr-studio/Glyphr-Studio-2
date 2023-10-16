@@ -99,6 +99,7 @@
 	background-color: white;
 	border-radius: 4px;
 	box-shadow: var(--l2-shadow);
+	vertical-align: top;
 }
 
 .content-page__right-area p {

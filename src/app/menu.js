@@ -229,7 +229,12 @@ function makeProjectPreviewRow(projectID = 0) {
 		let previewText = projectEditor.project.settings.app.previewText || 'Aa Bb Cc Xx Yy Zz';
 		thumbnail = makeElement({
 			tag: 'display-canvas',
-			attributes: { text: previewText, 'font-size': '24', 'project-editor': projectID },
+			attributes: {
+				text: previewText,
+				'font-size': '24',
+				'project-editor': projectID,
+				'show-placeholder-message': 'true',
+			},
 		});
 	} else {
 		title.innerHTML = 'Open another project &emsp; <code>Ctrl</code><code>p</code>';

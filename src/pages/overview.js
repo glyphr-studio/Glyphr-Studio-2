@@ -56,8 +56,8 @@ export function makePage_Overview() {
 	rightArea.appendChild(
 		makeElement({
 			tag: 'display-canvas',
-			attributes: { text: previewText, 'font-size': '64' },
-			title: 'You can customize the the project preview text from the Settings > App page.'
+			attributes: { text: previewText, 'font-size': '64', 'show-placeholder-message': 'true' },
+			title: 'You can customize the the project preview text from the Settings > App page.',
 		})
 	);
 	rightArea.appendChild(makeElement({ tag: 'hr', style: 'margin: 10px 0px 20px 0px;' }));
