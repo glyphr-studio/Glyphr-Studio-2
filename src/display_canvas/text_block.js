@@ -27,6 +27,7 @@ export class TextBlock {
 
 		// External properties
 		this.options = new TextBlockOptions(oa.options);
+		this.hasDrawableCharacters = false;
 
 		// Drawing functions
 		this.drawPageExtras = oa.drawPageExtras || false;
@@ -188,6 +189,9 @@ export class TextBlock {
 				} else {
 					thisItem = this.project.getItem(`glyph-${charToHex(currentChar)}`);
 				}
+
+				// Set the drawable characters property
+				if (thisItem?.shapes?.length) this.hasDrawableCharacters = true;
 
 				// Calculate width
 				thisWidth = thisItem ? thisItem.advanceWidth : this.project.defaultAdvanceWidth;
