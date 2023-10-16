@@ -5,7 +5,6 @@ import { updateProgressIndicator } from '../controls/progress-indicator/progress
 import { getParentRange, getUnicodeBlockByName, isControlChar } from '../lib/unicode_blocks.js';
 import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
-import { isOutOfBounds } from '../pages/open_project.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { Glyph } from '../project_data/glyph.js';
 import { KernGroup } from '../project_data/kern_group.js';
@@ -95,13 +94,6 @@ function importOneGlyph(otfGlyph, project) {
 	if (uni === false || uni === '0x0000') {
 		// Check for .notdef
 		// log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
-		importItemTotal--;
-		// log('importOneGlyph', 'end');
-		return;
-	}
-
-	if (isOutOfBounds([uni])) {
-		// log(`!!! Skipping ${otfGlyph.name} OUT OF BOUNDS !!!`);
 		importItemTotal--;
 		// log('importOneGlyph', 'end');
 		return;
