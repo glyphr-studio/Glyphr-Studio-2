@@ -25,7 +25,7 @@ export class OptionToggle extends HTMLElement {
 		this.wrapper.elementRoot = this;
 
 		this.selectionDisplay = makeElement({
-			className: 'selectionDisplay',
+			className: 'selection-display',
 			attributes: { tabIndex: -1 },
 			innerHTML: this.getDisplayName(),
 		});

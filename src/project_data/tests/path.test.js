@@ -242,6 +242,14 @@ describe('Path', () => {
 		expect(samplePath().isLockable).toBeTruthy();
 	});
 
+	it('get/set transformOrigin', () => {
+		const path = samplePath();
+		path.transformOrigin = 'top-left';
+		expect(path.transformOrigin).toBe('top-left');
+		path.transformOrigin = 'error';
+		expect(path.transformOrigin).toBe('baseline-left');
+	});
+
 	it('x/y/w/h/ratio Lock setters/getters', () => {
 		const path = samplePath();
 		path.xLock = true;

@@ -23,6 +23,7 @@ export class Glyph extends GlyphElement {
 	 * @param {String} id - unique identifier (Unicode code point)
 	 * @param {Object} parent - link to the Glyphr Studio Project
 	 * @param {Number} advanceWidth - manual setting for advance width
+	 * @param {String} transformOrigin - set the origin location for transforms
 	 * @param {Boolean} ratioLock - maintain aspect ratio while resizing
 	 * @param {Boolean} shapes - collection of Paths and Component Instances in this Glyph
 	 * @param {Array} usedIn - array of IDs where this Glyph is used as a component instance
@@ -34,6 +35,7 @@ export class Glyph extends GlyphElement {
 		name = false,
 		shapes = [],
 		advanceWidth = 0,
+		transformOrigin = false,
 		ratioLock = false,
 		usedIn = [],
 		gsub = [],
@@ -46,6 +48,7 @@ export class Glyph extends GlyphElement {
 		this.name = name;
 		this.shapes = shapes;
 		this.advanceWidth = advanceWidth;
+		this.transformOrigin = transformOrigin;
 		this.ratioLock = ratioLock;
 		this.usedIn = usedIn;
 		this.gsub = gsub;
@@ -75,6 +78,9 @@ export class Glyph extends GlyphElement {
 		};
 
 		if (this.advanceWidth !== 0) re.advanceWidth = this.advanceWidth;
+		if (this.transformOrigin && this.transformOrigin !== 'baseline-left') {
+			re.transformOrigin = this.transformOrigin;
+		}
 		if (this.ratioLock !== false) re.ratioLock = this.ratioLock;
 		if (this.usedIn.length) re.usedIn = this.usedIn;
 		if (this.gsub.length) re.gsub = this.gsub;
@@ -111,6 +117,7 @@ export class Glyph extends GlyphElement {
 		re += `${ind}name: ${this.name}\n`;
 
 		if (this.advanceWidth !== 0) re += `${ind}advanceWidth: ${this.advanceWidth}\n`;
+		if (this.transformOrigin !== false) re += `${ind}transformOrigin: ${this.transformOrigin}\n`;
 		if (this.ratioLock !== false) re += `${ind}ratioLock: ${this.ratioLock}\n`;
 		if (this.usedIn.length) re += `${ind}usedIn: ${JSON.stringify(this.usedIn)}\n`;
 		if (this.gsub.length) re += `${ind}gsub: ${JSON.stringify(this.gsub)}\n`;
@@ -159,6 +166,15 @@ export class Glyph extends GlyphElement {
 	 */
 	get advanceWidth() {
 		return this._advanceWidth;
+	}
+
+	/**
+	 * get transformOrigin
+	 * @returns {Boolean}
+	 */
+	get transformOrigin() {
+		if (!this._transformOrigin) this._transformOrigin = 'baseline-left';
+		return this._transformOrigin;
 	}
 
 	/**
@@ -419,6 +435,27 @@ export class Glyph extends GlyphElement {
 		// log(`Glyph SET advanceWidth`, 'end');
 	}
 
+	/**
+	 * set transformOrigin
+	 * @param {Boolean} transformOrigin - which point to set
+	 */
+	set transformOrigin(transformOrigin) {
+		let allowedNames = [
+			'top-left',
+			'baseline-left',
+			'bottom-left',
+			'top-right',
+			'baseline-right',
+			'bottom-right',
+			'center',
+		];
+		if (allowedNames.indexOf(transformOrigin) > -1) {
+			this._transformOrigin = transformOrigin;
+		} else {
+			this._transformOrigin = false;
+		}
+	}
+	
 	/**
 	 * set ratioLock
 	 * @param {Boolean} ratioLock

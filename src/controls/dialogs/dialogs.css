@@ -163,6 +163,11 @@ dialog {
 	line-height: 22px;
 	height: 24px;
 	padding: 2px 20px 0px 10px;
+	display: flex;
+
+}
+.context-menu-row .row-name svg {
+	margin-right: 10px;
 }
 
 .context-menu-row .row-notes {
