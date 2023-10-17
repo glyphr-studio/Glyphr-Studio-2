@@ -173,7 +173,7 @@ export class ComponentInstance extends GlyphElement {
 			if (this.isFlippedEW) newGlyph.flipEW();
 			if (this.isFlippedNS) newGlyph.flipNS();
 			newGlyph.updateGlyphPosition(this.translateX, this.translateY, true);
-			newGlyph.updateGlyphSize(this.resizeWidth, this.resizeHeight, false);
+			newGlyph.updateGlyphSize({width: this.resizeWidth, height: this.resizeHeight});
 			if (this.reverseWinding) newGlyph.reverseWinding();
 			if (!this.rotateFirst) newGlyph.rotate(rad(this.rotation * -1), newGlyph.maxes.center);
 			// log(`afters maxes ${this.maxes.print()}`);

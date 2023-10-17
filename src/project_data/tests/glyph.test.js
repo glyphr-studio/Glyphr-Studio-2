@@ -228,7 +228,11 @@ describe('Glyph - outputs', () => {
 
 	it('makeSVG', () => {
 		// also tests makeSVGPathData
-		expect(sampleGlyph().svgPathData.startsWith('M0,0M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.457')).toBeTruthy();
+		expect(
+			sampleGlyph().svgPathData.startsWith(
+				'M0,0M326.6524943,500 C413.45994211,500,484,428.9899571,484,343.457'
+			)
+		).toBeTruthy();
 	});
 });
 
@@ -247,13 +251,13 @@ describe('Glyph - updating', () => {
 
 	it('setGlyphSize', () => {
 		const g = sampleGlyph();
-		g.setGlyphSize(10);
+		g.setGlyphSize({ width: 10 });
 		expect(g.width).toBe(10);
 	});
 
 	it('updateGlyphSize', () => {
 		const g = sampleGlyph();
-		g.updateGlyphSize(500);
+		g.updateGlyphSize({ width: 500 });
 		expect(g.width).toBe(814);
 	});
 

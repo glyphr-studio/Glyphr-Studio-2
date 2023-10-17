@@ -297,7 +297,7 @@ function makeNotdefGlyph() {
 	if (capHeight !== 700) {
 		let delta = capHeight - 700;
 		// log(`delta is ${delta}`);
-		notdef.updateGlyphSize(false, delta, true);
+		notdef.updateGlyphSize({ height: delta, ratioLock: true });
 		// log(notdef);
 
 		notdef.advanceWidth = notdef.maxes.xMax;
