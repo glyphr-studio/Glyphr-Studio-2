@@ -455,7 +455,7 @@ export class Glyph extends GlyphElement {
 			this._transformOrigin = false;
 		}
 	}
-	
+
 	/**
 	 * set ratioLock
 	 * @param {Boolean} ratioLock
@@ -528,7 +528,7 @@ export class Glyph extends GlyphElement {
 	 * @param {Number} w
 	 */
 	set width(w) {
-		this.setGlyphSize(w, false);
+		this.setGlyphSize({ width: w });
 	}
 
 	/**
@@ -536,7 +536,7 @@ export class Glyph extends GlyphElement {
 	 * @param {Number} h
 	 */
 	set height(h) {
-		this.setGlyphSize(false, h);
+		this.setGlyphSize({ height: h });
 	}
 
 	/**
@@ -611,38 +611,57 @@ export class Glyph extends GlyphElement {
 
 	/**
 	 * Set all the sizes of the Shapes in this glyph as one group
-	 * @param {Number} nw - new width
-	 * @param {Number} nh - new height
+	 * @param {Number} width - new width
+	 * @param {Number} height - new height
 	 * @param {Boolean} ratioLock - true to scale width and height 1:1
+	 * @param {String} transformOrigin - name of transform origin point
 	 */
-	setGlyphSize(nw, nh, ratioLock, updateComponentInstances = true) {
+	setGlyphSize({
+		width = false,
+		height = false,
+		ratioLock = false,
+		updateComponentInstances = true,
+		transformOrigin = false,
+	} = {}) {
 		const m = this.maxes;
-		if (nw !== false) nw = parseFloat(nw);
-		if (nh !== false) nh = parseFloat(nh);
+		if (width !== false) width = parseFloat(width);
+		if (height !== false) height = parseFloat(height);
 		const ch = m.yMax - m.yMin;
 		const cw = m.xMax - m.xMin;
-		let dw = nw !== false ? nw - cw : 0;
-		let dh = nh !== false ? nh - ch : 0;
+		let dw = width !== false ? width - cw : 0;
+		let dh = height !== false ? height - ch : 0;
 		if (ratioLock) {
-			if (Math.abs(nh) > Math.abs(nw)) dw = cw * (nh / ch) - cw;
-			else dh = ch * (nw / cw) - ch;
+			if (Math.abs(height) > Math.abs(width)) dw = cw * (height / ch) - cw;
+			else dh = ch * (width / cw) - ch;
 		}
-		this.updateGlyphSize(dw, dh, false, updateComponentInstances);
+
+		this.updateGlyphSize({
+			width: dw,
+			height: dh,
+			updateComponentInstances: updateComponentInstances,
+			transformOrigin: transformOrigin,
+		});
 	}
 
 	/**
 	 * Update all the sizes of the Shapes in this glyph as one group
-	 * @param {Number} dw - delta width
-	 * @param {Number} dh - delta height
+	 * @param {Number} width - delta width
+	 * @param {Number} height - delta height
 	 * @param {Boolean} ratioLock - true to scale width and height 1:1
+	 * @param {String} transformOrigin - name of transform origin point
 	 */
-	updateGlyphSize(dw, dh, ratioLock, updateComponentInstances = true) {
+	updateGlyphSize({
+		width = 0,
+		height = 0,
+		ratioLock = false,
+		updateComponentInstances = true,
+		transformOrigin = false,
+	} = {}) {
 		// log('Glyph.updateGlyphSize', 'start');
 		// log('number of shapes: ' + this.shapes.length);
-		// log('dw dh rl:\t' + dw + '/' + dh + '/' + ratioLock);
 		const m = this.maxes;
-		if (dw !== false) dw = parseFloat(dw) || 0;
-		if (dh !== false) dh = parseFloat(dh) || 0;
+		let dw = parseFloat(width) || 0;
+		let dh = parseFloat(height) || 0;
 		// log('adjust dw/dh:\t' + dw + '/' + dh);
 		const oldW = m.xMax - m.xMin;
 		const oldH = m.yMax - m.yMin;

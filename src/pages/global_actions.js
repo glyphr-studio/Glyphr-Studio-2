@@ -277,7 +277,7 @@ function makeCard_ScaleVertical() {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
 				let newY = glyph.maxes.yMax * scaleVertical;
-				glyph.setGlyphSize(false, newHeight, false, false);
+				glyph.setGlyphSize({ height: newHeight, updateComponentInstances: false });
 				glyph.setGlyphPosition(false, newY, false);
 			},
 		});
@@ -338,7 +338,8 @@ function makeCard_ScaleHorizontal() {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let newWidth = (glyph.maxes.xMax - glyph.maxes.xMin) * scaleHorizontal;
 				let newX = glyph.maxes.xMin * scaleHorizontal;
-				glyph.setGlyphSize(newWidth, false, false);
+				glyph.setGlyphSize({ width: newWidth, updateComponentInstances: false });
+				// TODO Transform Origin (remove this)
 				glyph.setGlyphPosition(newX, false, true);
 				if (updateAdvanceWidth) glyph.advanceWidth = glyph.advanceWidth * scaleHorizontal;
 			},
@@ -421,7 +422,7 @@ function makeCard_Resize() {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let scaleVertical = (resizeH + glyph.maxes.height) / glyph.maxes.height;
 				let newY = glyph.maxes.yMax * scaleVertical;
-				glyph.updateGlyphSize(resizeW, resizeH, ratio, true);
+				glyph.updateGlyphSize({ width: resizeW, height: resizeH, ratioLock: ratio });
 				glyph.setGlyphPosition(false, newY, false);
 				if (updateAdvanceWidth) glyph.advanceWidth += resizeW;
 			},

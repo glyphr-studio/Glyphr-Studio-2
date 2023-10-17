@@ -56,7 +56,14 @@ export function makeInputs_size(item) {
 		'bottom-right',
 		'center',
 	];
-	let transformLabel = makeSingleLabel('transform origin');
+	let transformLabel = makeSingleLabel(
+		'transform origin',
+		`With increases or decreases to width or height,
+		the transform origin is the point that stays fixed.
+		<br><br>
+		This only takes effect when directly entering values
+		into the width or height inputs.`
+	);
 	let transformInput = makeElement({
 		tag: 'option-chooser',
 		attributes: {
@@ -159,22 +166,26 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 
 		// Code Smell
 		if (
+			item.ratioLock &&
 			item.constructor.name === 'Glyph' &&
-			(property === 'width' || property === 'height') &&
-			item.ratioLock
+			(property === 'width' || property === 'height')
 		) {
-			if (property === 'width') item.setGlyphSize(newValue, false, true);
-			if (property === 'height') item.setGlyphSize(false, newValue, true);
+			if (property === 'width') item.setGlyphSize({ width: newValue, ratioLock: true });
+			if (property === 'height') item.setGlyphSize({ height: newValue, ratioLock: true });
+			// log(`MAKE SINGLE INPUT EVENT on ratioLocked Glyph.${property} set to ${newValue}`);
+			// log(`item[property]: ${item[property]}`);
 		} else if (
+			item.ratioLock &&
 			item.objType === 'Path' &&
-			(property === 'width' || property === 'height') &&
-			item.ratioLock
+			(property === 'width' || property === 'height')
 		) {
 			if (property === 'width') item.setShapeSize(newValue, false, true);
 			if (property === 'height') item.setShapeSize(false, newValue, true);
+			// log(`MAKE SINGLE INPUT EVENT on ratioLocked Path.${property} set to ${newValue}`);
+			// log(`item[property]: ${item[property]}`);
 		} else {
-			// log(`MAKE SINGLE INPUT EVENT ${property} is set to ${newValue}`);
 			item[property] = newValue;
+			// log(`MAKE SINGLE INPUT EVENT ${property} set to ${newValue}`);
 			// log(`item[property]: ${item[property]}`);
 		}
 
