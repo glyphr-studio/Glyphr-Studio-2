@@ -2,6 +2,7 @@
 import { validateAsHex } from '../../common/character_ids.js';
 import { getParentRange } from './unicode_blocks.js';
 import { unicodeNamesBMP } from './unicode_names_0_bmp.js';
+import { unicodeNamesSMP } from './unicode_names_1_smp.js';
 
 /**
  * Gets the name of a Unicode character
@@ -13,18 +14,28 @@ export function getUnicodeName(codePoint) {
 	// log('passed ' + codePoint);
 
 	codePoint = validateAsHex(codePoint);
+	let codePointSuffix = codePoint.substr(2);
 	// log('normalized ' + codePoint);
 
 	let name;
 	const chn = codePoint * 1;
 
 	if ((chn >= 0x4e00 && chn < 0xa000) || (chn >= 0x20000 && chn < 0x323af)) {
-		name = 'CJK Unified Ideograph ' + codePoint.substr(2);
-	} else if (chn < 0xFFFF) {
+		name = `CJK Unified Ideograph ${codePointSuffix}`;
+	} else if (chn < 0xffff) {
 		name = unicodeNamesBMP[codePoint] || '[name not found]';
-	} else if (chn < 0x1FFFF) {
+	} else if (chn >= 0x18b00 && chn <= 0x18cd5) {
+		name = `Khitan Small Script Character ${codePointSuffix}`;
+	} else if (chn >= 0x18800 && chn <= 0x18aff) {
+		name = `Tangut Component ${chn - 0x18800 + 1}`;
+	} else if (chn >= 0x1b170 && chn <= 0x1b2fb) {
+		name = `Nushu Character ${codePointSuffix}`;
+	} else if (chn < 0x1fbf9) {
+		name = unicodeNamesSMP[codePoint] || '[name not found]';
+	} else if (chn < 0x1ffff) {
 		let block = getParentRange(codePoint);
-		name = `${block.name}-${codePoint}`;
+		if (block) name = `${block.name} ${codePointSuffix}`;
+		else name = '[name not found]';
 	} else {
 		name = '[name not found]';
 	}
