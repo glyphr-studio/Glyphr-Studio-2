@@ -1,13 +1,13 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
 import { round } from '../common/functions.js';
+import { makeTransformOriginIcon } from '../common/graphics.js';
 
 // --------------------------------------------------------------
 // Common attributes card stuff
 // --------------------------------------------------------------
 
 export function makeInputs_position(item, labelPrefix = '', additionalTopics = []) {
-	// TODO transform origin
 	// log(`makeInputs_position`, 'start');
 	// log(`x: ${round(x, 3)}`);
 	// log(`y: ${round(y, 3)}`);
@@ -34,41 +34,71 @@ export function makeInputs_position(item, labelPrefix = '', additionalTopics = [
 }
 
 export function makeInputs_size(item) {
-	// TODO transform origin
 	// log(`makeInputs_size`, 'start');
 	let thisTopic = `current${item.objType}`;
 
-	// Label + Inputs
-	let inputLabel = makeElement({ tag: 'label', innerHTML: `width${dimSplit()}height` });
-	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
+	// Width and Height
+	let dimensionLabel = makeSingleLabel(`width${dimSplit()}height`);
+	let dimensionInputs = makeElement({ tag: 'div', className: 'doubleInput' });
 	let wInput = makeSingleInput(item, 'width', thisTopic, 'input-number');
 	let hInput = makeSingleInput(item, 'height', thisTopic, 'input-number');
+	dimensionInputs.appendChild(wInput);
+	dimensionInputs.appendChild(dimSplitElement());
+	dimensionInputs.appendChild(hInput);
 
-	// Put double input together
-	doubleInput.appendChild(wInput);
-	doubleInput.appendChild(dimSplitElement());
-	doubleInput.appendChild(hInput);
+	// Transform origin
+	let origins = [
+		'top-left',
+		'baseline-left',
+		'bottom-left',
+		'top-right',
+		'baseline-right',
+		'bottom-right',
+		'center',
+	];
+	let transformLabel = makeSingleLabel('transform origin');
+	let transformInput = makeElement({
+		tag: 'option-chooser',
+		attributes: {
+			'selected-id': item.transformOrigin,
+			'selected-name': item.transformOrigin.replace('-', ' '),
+		},
+	});
+	origins.forEach((origin) => {
+		let option = makeElement({
+			tag: 'option',
+			attributes: { 'selection-id': origin },
+			innerHTML: `${makeTransformOriginIcon(origin)}${origin.replace('-', ' ')}`,
+		});
+		option.addEventListener('click', () => {
+			item.transformOrigin = origin;
+			getCurrentProjectEditor().publish('editCanvasView', item);
+		});
+		transformInput.appendChild(option);
+	});
 
 	// Ratio lock checkbox
-	let ratioLockLabel = makeElement({
-		tag: 'label',
-		className: 'info',
-		innerHTML: `
-		<span>lock aspect ratio</span>
-		<info-bubble>
+	let ratioLockLabel = makeSingleLabel(
+		'lock aspect ratio',
+		`
 			When either the width or height is adjusted,
 			the overall size will be kept proportional.
 			<br><br>
 			Maintaining aspect ratio will override value
 			locks if need be.
-		</info-bubble>
-		`,
-	});
-
+		`
+	);
 	let ratioLockCheckbox = makeSingleCheckbox(item, 'ratioLock', thisTopic);
 
 	// log(`makeInputs_size`, 'end');
-	return [inputLabel, doubleInput, ratioLockLabel, ratioLockCheckbox];
+	return [
+		dimensionLabel,
+		dimensionInputs,
+		transformLabel,
+		transformInput,
+		ratioLockLabel,
+		ratioLockCheckbox,
+	];
 }
 
 export function makeSingleInput(item, property, thisTopic, tagName, additionalListeners = []) {

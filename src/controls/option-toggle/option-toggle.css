@@ -41,7 +41,7 @@
 			text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
 }
 
-.selectionDisplay {
+.selection-display {
 	background-color: transparent;
 	border: 0;
 	border-radius: 4px 0px 0px 4px;
@@ -52,12 +52,12 @@
 	min-width: 50px;
 	height: 24px;
 	line-height: 24px;
-	padding: 0px 8px 0px 4px;
+	padding: 1px 8px 0px 8px;
 	text-align: left;
 	font-family: monospace;
 }
 
-.selectionDisplay .prefix {
+.selection-display .prefix {
 	color: var(--disabled-text);
 	font-size: 0.9em;
 }

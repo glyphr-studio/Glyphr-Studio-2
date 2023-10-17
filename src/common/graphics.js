@@ -1,5 +1,8 @@
 // --------------------------------------------------------------
 // Icons
+
+import { accentColors } from './colors';
+
 // --------------------------------------------------------------
 let icons = {};
 
@@ -223,6 +226,74 @@ icons.page_overview = `
 	<path d="m12.492,20.2l-2.503-5.798h-.989v-1.402h3.492v1.402h-.913l1.645,4.198,1.613-4.198h-1.007v-1.402h3.17v1.402h-.613l-3.883,9.598h-2.498v-1.5h1.593l.892-2.3Z"/>
 	<path d="m18,21.054v-1.315l4.37-5.433h-3.12v.694h-1.25v-2h6v1.406l-4.387,5.333h3.191v-.74h1.196v2.054h-6Z"/>
 `;
+
+// --------------------------------------------------------------
+// Transform Origin
+// --------------------------------------------------------------
+
+export function makeTransformOriginIcon(corner = 'baseline-left') {
+	let darkFill = accentColors.gray.l25;
+	let blue = accentColors.blue.l70;
+
+	let content = `
+		<path data-name="em-square"d="m2,2v16h16V2H2Zm15,15H3v-3h14v3Zm0-4H3V3h14v10Z" style="stroke-width: 0px;"/>
+	`;
+	if (corner === 'bottom-right') {
+		content += `
+			<rect data-name="bottom-right-border" x="15" y="15" width="5" height="5" style="fill: ${darkFill};"/>
+			<rect data-name="bottom-right-fill" x="16" y="16" width="3" height="3" style="fill: ${blue};"/>
+		`;
+	}
+	if (corner === 'baseline-right') {
+		content += `
+			<rect data-name="baseline-right-border" x="15" y="11" width="5" height="5" style="fill: ${darkFill};"/>
+			<rect data-name="baseline-right-fill" x="16" y="12" width="3" height="3" style="fill: ${blue};"/>
+		`;
+	}
+	if (corner === 'top-right') {
+		content += `
+			<rect data-name="top-right-border" x="15" y="0" width="5" height="5" style="fill: ${darkFill};"/>
+			<rect data-name="top-right-fill" x="16" y="1" width="3" height="3" style="fill: ${blue};"/>
+		`;
+	}
+	if (corner === 'bottom-left') {
+		content += `
+			<rect data-name="bottom-left-border" x="0" y="15" width="5" height="5" style="fill: ${darkFill};"/>
+			<rect data-name="bottom-left-fill" x="1" y="16" width="3" height="3" style="fill: ${blue};"/>
+		`;
+	}
+	if (corner === 'baseline-left') {
+		content += `
+			<rect data-name="baseline-left-border" x="0" y="11" width="5" height="5" style="fill: ${darkFill};"/>
+			<rect data-name="baseline-left-fill" x="1" y="12" width="3" height="3" style="fill: ${blue};"/>
+		`;
+	}
+	if (corner === 'top-left') {
+		content += `
+			<rect data-name="top-left-border" x="0" y="0" width="5" height="5" style="fill: ${darkFill};"/>
+			<rect data-name="top-left-fill" x="1" y="1" width="3" height="3" style="fill: ${blue};"/>
+		`;
+	}
+	if (corner === 'center') {
+		content += `
+			<rect data-name="center-border" x="8" y="8" width="4" height="4" style="fill: ${darkFill};"/>
+			<rect data-name="center-fill" x="9" y="9" width="2" height="2" style="fill: ${blue};"/>
+		`;
+	}
+
+	let wrapper = `
+		<svg version="1.1"
+			xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+			x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"
+		>
+			<defs></defs>
+			<rect fill="transparent" width="20" height="20"/>
+			<g pointer-events="none" width="20" height="20">${content}</g>
+		</svg>
+	`;
+
+	return wrapper;
+}
 
 // --------------------------------------------------------------
 // Miscellaneous

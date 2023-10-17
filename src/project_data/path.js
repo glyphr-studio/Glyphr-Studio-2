@@ -26,6 +26,12 @@ export class Path extends GlyphElement {
 	 * Create a Path
 	 * @param {Array} pathPoints - array of Path Point objects that make up this path
 	 * @param {Number} winding - number representing winding direction
+	 * @param {Boolean} xLock - lock the x property
+	 * @param {Boolean} yLock - lock the y property
+	 * @param {Boolean} wLock - lock the w property
+	 * @param {Boolean} hLock - lock the h property
+	 * @param {String} transformOrigin - set the origin location for transforms
+	 * @param {Boolean} ratioLock - when scaling, keep the aspect ratio
 	 * @param {Object} parent - link to the parent Glyph object
 	 */
 	constructor({
@@ -37,6 +43,7 @@ export class Path extends GlyphElement {
 		yLock = false,
 		wLock = false,
 		hLock = false,
+		transformOrigin = false,
 		ratioLock = false,
 		parent = false,
 	} = {}) {
@@ -49,6 +56,7 @@ export class Path extends GlyphElement {
 		this.yLock = yLock;
 		this.wLock = wLock;
 		this.hLock = hLock;
+		this.transformOrigin = transformOrigin;
 		this.ratioLock = ratioLock;
 		this.parent = parent;
 
@@ -77,6 +85,9 @@ export class Path extends GlyphElement {
 		if (this.yLock) re.yLock = true;
 		if (this.wLock) re.wLock = true;
 		if (this.hLock) re.hLock = true;
+		if (this.transformOrigin && this.transformOrigin !== 'baseline-left') {
+			re.transformOrigin = this.transformOrigin;
+		}
 		if (this.ratioLock) re.ratioLock = true;
 
 		this._pathPoints.forEach((pp) => {
@@ -228,6 +239,15 @@ export class Path extends GlyphElement {
 	}
 
 	/**
+	 * get transformOrigin
+	 * @returns {Boolean}
+	 */
+	get transformOrigin() {
+		if (!this._transformOrigin) this._transformOrigin = 'baseline-left';
+		return this._transformOrigin;
+	}
+
+	/**
 	 * get ratioLock
 	 * @returns {Boolean}
 	 */
@@ -283,7 +303,6 @@ export class Path extends GlyphElement {
 	/**
 	 * set name
 	 * @param {String} name
-	 * @returns {Path} - reference to this Path
 	 */
 	set name(name) {
 		name = strSan(name);
@@ -296,7 +315,6 @@ export class Path extends GlyphElement {
 	/**
 	 * Set PathPoints
 	 * @param {Array} pathPoints - array of Path Points
-	 * @returns {Path} - reference to this Path
 	 */
 	set pathPoints(newPathPoints) {
 		this._pathPoints = [];
@@ -316,7 +334,6 @@ export class Path extends GlyphElement {
 	 * positive = counterclockwise
 	 * zero = unknown
 	 * @param {Number} winding
-	 * @returns {Path} - reference to this Path
 	 */
 	set winding(winding) {
 		if (isVal(winding)) this._winding = winding;
@@ -326,7 +343,6 @@ export class Path extends GlyphElement {
 	/**
 	 * Set X position
 	 * @param {Number} x
-	 * @returns {Path} - reference to this Path
 	 */
 	set x(x) {
 		this.setShapePosition(x, false);
@@ -335,7 +351,6 @@ export class Path extends GlyphElement {
 	/**
 	 * Set Y position
 	 * @param {Number} y
-	 * @returns {Path} - reference to this Path
 	 */
 	set y(y) {
 		this.setShapePosition(false, y);
@@ -344,7 +359,6 @@ export class Path extends GlyphElement {
 	/**
 	 * Set Height
 	 * @param {Number} h
-	 * @returns {Path} - reference to this Path
 	 */
 	set height(h) {
 		this.setShapeSize(false, h);
@@ -353,7 +367,6 @@ export class Path extends GlyphElement {
 	/**
 	 * Set Width
 	 * @param {Number} w
-	 * @returns {Path} - reference to this Path
 	 */
 	set width(w) {
 		this.setShapeSize(w, false);
@@ -362,7 +375,6 @@ export class Path extends GlyphElement {
 	/**
 	 * set xLock
 	 * @param {Boolean} xLock
-	 * @returns {Path} - reference to this Path
 	 */
 	set xLock(xLock) {
 		this._xLock = !!xLock;
@@ -371,7 +383,6 @@ export class Path extends GlyphElement {
 	/**
 	 * set yLock
 	 * @param {Boolean} yLock
-	 * @returns {Path} - reference to this Path
 	 */
 	set yLock(yLock) {
 		this._yLock = !!yLock;
@@ -380,7 +391,6 @@ export class Path extends GlyphElement {
 	/**
 	 * set wLock
 	 * @param {Boolean} wLock
-	 * @returns {Path} - reference to this Path
 	 */
 	set wLock(wLock) {
 		this._wLock = !!wLock;
@@ -389,16 +399,35 @@ export class Path extends GlyphElement {
 	/**
 	 * set hLock
 	 * @param {Boolean} hLock
-	 * @returns {Path} - reference to this Path
 	 */
 	set hLock(hLock) {
 		this._hLock = !!hLock;
 	}
 
 	/**
+	 * set transformOrigin
+	 * @param {Boolean} transformOrigin - which point to set
+	 */
+	set transformOrigin(transformOrigin) {
+		let allowedNames = [
+			'top-left',
+			'baseline-left',
+			'bottom-left',
+			'top-right',
+			'baseline-right',
+			'bottom-right',
+			'center',
+		];
+		if (allowedNames.indexOf(transformOrigin) > -1) {
+			this._transformOrigin = transformOrigin;
+		} else {
+			this._transformOrigin = false;
+		}
+	}
+
+	/**
 	 * set ratioLock
 	 * @param {Boolean} ratioLock
-	 * @returns {Path} - reference to this Path
 	 */
 	set ratioLock(ratioLock) {
 		this._ratioLock = !!ratioLock;
@@ -407,7 +436,6 @@ export class Path extends GlyphElement {
 	/**
 	 * Set Maxes
 	 * @param {Maxes} maxes
-	 * @returns {Path} - reference to this Path
 	 */
 	set maxes(maxes) {
 		// log(`Path SET maxes`, 'start');
@@ -419,7 +447,6 @@ export class Path extends GlyphElement {
 	/**
 	 * Set or generate SVG path data
 	 * @param {String} data
-	 * @returns {Path} - reference to this Path
 	 */
 	set svgPathData(data) {
 		this.cache.svgPathData = data;

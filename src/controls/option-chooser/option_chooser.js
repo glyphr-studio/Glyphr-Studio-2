@@ -31,7 +31,7 @@ export class OptionChooser extends HTMLElement {
 		// this.selectionDisplay.innerHTML = displayText;
 
 		this.selectionDisplay = makeElement({
-			className: 'selectionDisplay',
+			className: 'selection-display',
 			attributes: { tabIndex: -1 },
 			innerHTML: this.getDisplayName(),
 		});
@@ -142,14 +142,15 @@ export class OptionChooser extends HTMLElement {
 			if (tag === 'option') {
 				let note = child.getAttribute('note') || '';
 				let selectionID = `${child.innerText} ${note}`;
+				if (child.getAttribute('selection-id')) selectionID = child.getAttribute('selection-id');
 				optionRows.push({
-					name: child.innerText,
+					name: child.innerHTML,
 					icon: currentSelection === selectionID ? 'selected' : 'notSelected',
 					id: selectionID,
 					note: note,
 					onClick: () => {
 						this.setAttribute('selected-id', selectionID);
-						this.setAttribute('selected-name', child.innerText);
+						this.setAttribute('selected-name', child.innerText.trim());
 						child.dispatchEvent(new Event('click'));
 					},
 				});

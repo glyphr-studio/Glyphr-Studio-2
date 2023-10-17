@@ -140,6 +140,14 @@ describe('Glyph - Getters and Setters', () => {
 		expect(g.contentType).toBe('paths');
 	});
 
+	it('get/set transformOrigin', () => {
+		const g = sampleGlyph();
+		g.transformOrigin = 'top-left';
+		expect(g.transformOrigin).toBe('top-left');
+		g.transformOrigin = 'error';
+		expect(g.transformOrigin).toBe('baseline-left');
+	});
+
 	it('get/set ratioLock', () => {
 		const g = sampleGlyph();
 		g.ratioLock = true;
