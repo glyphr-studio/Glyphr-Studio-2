@@ -719,7 +719,7 @@ export class Glyph extends GlyphElement {
 			else deltaHeight = newShapeHeight - oldShapeHeight;
 
 			// log('Shape ' + i + ' dw dh ' + deltaWidth + ' ' + deltaHeight);
-			shape.updateShapeSize(deltaWidth, deltaHeight, false);
+			shape.updateShapeSize({ width: deltaWidth, height: deltaHeight });
 
 			// move
 			oldShapeX = shapeMaxes.xMin - m.xMin;

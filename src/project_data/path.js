@@ -361,7 +361,7 @@ export class Path extends GlyphElement {
 	 * @param {Number} h
 	 */
 	set height(h) {
-		this.setShapeSize(false, h);
+		this.setShapeSize({ height: h });
 	}
 
 	/**
@@ -369,7 +369,7 @@ export class Path extends GlyphElement {
 	 * @param {Number} w
 	 */
 	set width(w) {
-		this.setShapeSize(w, false);
+		this.setShapeSize({ width: w });
 	}
 
 	/**
@@ -504,16 +504,22 @@ export class Path extends GlyphElement {
 	 * @param {Number} nw - new Width
 	 * @param {Number} nh - new Height
 	 * @param {Boolean} ratioLock - if one is changed, change the other
+	 * @param {String} transformOrigin - name of transform origin point
 	 * @returns {Path} - reference to this path
 	 */
-	setShapeSize(nw = false, nh = false, ratioLock = false) {
-		if (nw !== false) nw = parseFloat(nw);
-		if (nh !== false) nh = parseFloat(nh);
+	setShapeSize({ width = false, height = false, ratioLock = false, transformOrigin = false } = {}) {
+		if (width !== false) width = parseFloat(width);
+		if (height !== false) height = parseFloat(height);
 
-		const dw = nw !== false ? nw - this.width : 0;
-		const dh = nh !== false ? nh - this.height : 0;
+		const dw = width !== false ? width - this.width : 0;
+		const dh = height !== false ? height - this.height : 0;
 
-		this.updateShapeSize(dw, dh, ratioLock);
+		this.updateShapeSize({
+			width: dw,
+			height: dh,
+			ratioLock: ratioLock,
+			transformOrigin: transformOrigin,
+		});
 
 		return this;
 	}
@@ -523,13 +529,13 @@ export class Path extends GlyphElement {
 	 * @param {Number} dw - delta width
 	 * @param {Number} dh - delta height
 	 * @param {Boolean} ratioLock - if one is changed, change the other
+	 * @param {String} transformOrigin - name of transform origin point
 	 * @returns {Path} - reference to this path
 	 */
-	updateShapeSize(dw = 0, dh = 0, ratioLock = false) {
+	updateShapeSize({ width = 0, height = 0, ratioLock = false, transformOrigin = false } = {}) {
 		// log('Path.updateShapeSize', 'start');
-		// log('dw,dh,rl\t'+dw+' , '+dh+' , '+ratioLock);
-		dw = parseFloat(dw);
-		dh = parseFloat(dh);
+		let dw = parseFloat(width);
+		let dh = parseFloat(height);
 		if (!dw && !dh) return;
 
 		// Lock Aspect Ratio

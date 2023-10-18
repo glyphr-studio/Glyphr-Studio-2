@@ -158,28 +158,28 @@ export function resizePath() {
 		case 'n':
 			if (canResize('n')) {
 				setCursor('n-resize');
-				selected.updateShapeSize(0, dh * -1, rl);
+				selected.updateShapeSize({width: 0, height: dh * -1, ratioLock: rl});
 			}
 			break;
 
 		case 'ne':
 			if (canResize('ne')) {
 				setCursor('ne-resize');
-				selected.updateShapeSize(dw * -1, dh * -1, rl);
+				selected.updateShapeSize({ width: dw * -1, height: dh * -1, ratioLock: rl });
 			}
 			break;
 
 		case 'e':
 			if (canResize('e')) {
 				setCursor('e-resize');
-				selected.updateShapeSize(dw * -1, 0, rl);
+				selected.updateShapeSize({width: dw * -1, height: 0, ratioLock: rl});
 			}
 			break;
 
 		case 'se':
 			if (canResize('se')) {
 				setCursor('se-resize');
-				selected.updateShapeSize(dw * -1, dh, rl);
+				selected.updateShapeSize({width: dw * -1, height: dh, ratioLock: rl});
 				selected.updateShapePosition(0, dh * -1);
 			}
 			break;
@@ -188,14 +188,14 @@ export function resizePath() {
 			if (canResize('s')) {
 				setCursor('s-resize');
 				selected.updateShapePosition(0, dh * -1);
-				selected.updateShapeSize(0, dh, rl);
+				selected.updateShapeSize({width: 0, height: dh, ratioLock: rl});
 			}
 			break;
 
 		case 'sw':
 			if (canResize('sw')) {
 				setCursor('sw-resize');
-				selected.updateShapeSize(dw, dh, rl);
+				selected.updateShapeSize({width: dw, height: dh, ratioLock: rl});
 				selected.updateShapePosition(dw * -1, dh * -1);
 			}
 			break;
@@ -203,7 +203,7 @@ export function resizePath() {
 		case 'w':
 			if (canResize('w')) {
 				setCursor('w-resize');
-				selected.updateShapeSize(dw, 0, rl);
+				selected.updateShapeSize({width: dw, height: 0, ratioLock: rl});
 				selected.updateShapePosition(dw * -1, 0);
 			}
 			break;
@@ -211,7 +211,7 @@ export function resizePath() {
 		case 'nw':
 			if (canResize('nw')) {
 				setCursor('nw-resize');
-				selected.updateShapeSize(dw, dh * -1, rl);
+				selected.updateShapeSize({width: dw, height: dh * -1, ratioLock: rl});
 				selected.updateShapePosition(dw * -1, 0);
 			}
 			break;
