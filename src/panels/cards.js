@@ -179,8 +179,8 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			item.objType === 'Path' &&
 			(property === 'width' || property === 'height')
 		) {
-			if (property === 'width') item.setShapeSize(newValue, false, true);
-			if (property === 'height') item.setShapeSize(false, newValue, true);
+			if (property === 'width') item.setShapeSize({ width: newValue, ratioLock: true });
+			if (property === 'height') item.setShapeSize({ height: newValue, ratioLock: true });
 			// log(`MAKE SINGLE INPUT EVENT on ratioLocked Path.${property} set to ${newValue}`);
 			// log(`item[property]: ${item[property]}`);
 		} else {

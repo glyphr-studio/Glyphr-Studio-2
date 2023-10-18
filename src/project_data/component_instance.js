@@ -590,28 +590,27 @@ export class ComponentInstance extends GlyphElement {
 
 	/**
 	 * updateShapeSize
-	 * @param {Number} dw - delta width
-	 * @param {Number} dh - delta height
+	 * @param {Number} width - delta width
+	 * @param {Number} height - delta height
 	 * @param {Boolean} ratioLock - maintain aspect ratio
 	 */
-	updateShapeSize(dw, dh, ratioLock) {
+	updateShapeSize({ width = false, height = false, ratioLock = false }) {
 		// log('ComponentInstance.updateShapeSize', 'start');
-		// log('passed dw/dh/ratioLock: ' + dw + ' / ' + dh + ' / ' + ratioLock);
-		if (dw !== false) dw = parseFloat(dw) || 0;
-		if (dh !== false) dh = parseFloat(dh) || 0;
+		if (width !== false) width = parseFloat(width) || 0;
+		if (height !== false) height = parseFloat(height) || 0;
 		if (ratioLock) {
 			const ts = this.transformedGlyph.maxes;
 			const w = ts.xMax - ts.xMin;
 			const h = ts.yMax - ts.yMin;
-			if (Math.abs(dw) > Math.abs(dh)) {
-				dh = dw * (h / w);
+			if (Math.abs(width) > Math.abs(height)) {
+				height = width * (h / w);
 			} else {
-				dw = dh * (w / h);
+				width = height * (w / h);
 			}
 		}
 		// log('translate was: ' + this.resizeWidth + ' / ' + this.resizeHeight);
-		this.resizeWidth = 1 * this.resizeWidth + dw;
-		this.resizeHeight = 1 * this.resizeHeight + dh;
+		this.resizeWidth = 1 * this.resizeWidth + width;
+		this.resizeHeight = 1 * this.resizeHeight + height;
 		if (this.rotation === 0) this.rotateFirst = false;
 		// log('translate now: ' + this.resizeWidth + ' / ' + this.resizeHeight);
 		// log('ComponentInstance.updateShapeSize', 'end');

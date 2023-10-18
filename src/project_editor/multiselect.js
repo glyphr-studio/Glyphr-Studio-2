@@ -499,13 +499,13 @@ export class MultiSelectShapes extends MultiSelect {
 		this.changed();
 	}
 
-	updateShapeSize(dw, dh, ratioLock) {
-		this.virtualGlyph.updateGlyphSize({ width: dw, height: dh, ratioLock: ratioLock });
+	updateShapeSize(resizeOptions) {
+		this.virtualGlyph.updateGlyphSize(resizeOptions);
 		this.changed();
 	}
 
-	setShapeSize(nw, nh, ratioLock) {
-		this.virtualGlyph.setGlyphSize({ width: nw, height: nh, ratioLock: ratioLock });
+	setShapeSize(resizeOptions) {
+		this.virtualGlyph.setGlyphSize(resizeOptions);
 		this.changed();
 	}
 
