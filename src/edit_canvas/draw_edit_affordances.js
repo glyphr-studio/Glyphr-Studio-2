@@ -98,7 +98,6 @@ export function drawBoundingBox(ctx, maxes, thickness, accent) {
 function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
 	// log(`drawBoundingBoxHandles`, 'start');
 	let bb = getBoundingBoxAndHandleDimensions(maxes, thickness);
-
 	ctx.fillStyle = pointFill;
 	ctx.lineWidth = 1;
 	ctx.strokeStyle = accent;
@@ -127,12 +126,16 @@ function drawBoundingBoxHandles(ctx, maxes, thickness, accent) {
 	if (canResize('ne')) drawSquareHandle(ctx, bb.ne);
 	// right
 	if (canResize('e')) drawSquareHandle(ctx, bb.e);
+	// baseline right
+	if (canResize('be')) drawSquareHandle(ctx, bb.be);
 	//lower right
 	if (canResize('se')) drawSquareHandle(ctx, bb.se);
 	//bottom
 	if (canResize('s')) drawSquareHandle(ctx, bb.s);
 	//lower left
 	if (canResize('sw')) drawSquareHandle(ctx, bb.sw);
+	//baseline left
+	if (canResize('bw')) drawSquareHandle(ctx, bb.bw);
 	//left
 	if (canResize('w')) drawSquareHandle(ctx, bb.w);
 	// //Center Dot
@@ -273,6 +276,11 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 		re = 'e';
 	}
 
+	// baseline right
+	if (px > bb.be.x && px < bb.be.x + ps && py > bb.be.y && py < bb.be.y + ps) {
+		re = 'be';
+	}
+
 	// lower right
 	if (px > bb.se.x && px < bb.se.x + ps && py > bb.se.y && py < bb.se.y + ps) {
 		re = 'se';
@@ -286,6 +294,11 @@ export function isOverBoundingBoxHandle(px, py, maxes) {
 	// lower left
 	if (px > bb.sw.x && px < bb.sw.x + ps && py > bb.sw.y && py < bb.sw.y + ps) {
 		re = 'sw';
+	}
+
+	// baseline left
+	if (px > bb.bw.x && px < bb.bw.x + ps && py > bb.bw.y && py < bb.bw.y + ps) {
+		re = 'bw';
 	}
 
 	// left
@@ -310,6 +323,7 @@ function getBoundingBoxAndHandleDimensions(maxes, thickness) {
 	let midX = round(sXcX(maxes.xMin) + (sXcX(maxes.xMax) - sXcX(maxes.xMin)) / 2);
 	let rightX = sXcX(maxes.xMax);
 	let topY = sYcY(maxes.yMax);
+	let baselineY = sYcY(0);
 	let midY = round(sYcY(maxes.yMax) + (sYcY(maxes.yMin) - sYcY(maxes.yMax)) / 2);
 	let bottomY = sYcY(maxes.yMin);
 
@@ -338,10 +352,12 @@ function getBoundingBoxAndHandleDimensions(maxes, thickness) {
 		n: { x: makeCrisp(midX - hp) + pad, y: topY - pt },
 		ne: { x: rightX, y: topY - pt },
 		e: { x: rightX, y: makeCrisp(midY - hp) + pad },
-		w: { x: leftX - pt, y: makeCrisp(midY - hp) + pad },
-		sw: { x: leftX - pt, y: bottomY },
-		s: { x: makeCrisp(midX - hp) + pad, y: bottomY },
+		be: { x: rightX, y: makeCrisp(baselineY - hp) + pad },
 		se: { x: rightX, y: bottomY },
+		s: { x: makeCrisp(midX - hp) + pad, y: bottomY },
+		sw: { x: leftX - pt, y: bottomY },
+		bw: { x: leftX - pt, y: makeCrisp(baselineY - hp) + pad },
+		w: { x: leftX - pt, y: makeCrisp(midY - hp) + pad },
 	};
 
 	return result;

@@ -3,6 +3,8 @@
  * some random general-use functions
  */
 
+import { Maxes } from '../project_data/maxes';
+
 // --------------------------------------------------------------
 // Object Functions
 // --------------------------------------------------------------
@@ -360,19 +362,87 @@ export function pause(ms = 10) {
 // Translation
 // --------------------------------------------------------------
 
-export function calculateDeltasFromTransform(deltaWidth, deltaHeight, maxes, transformOrigin) {
-	let deltaX = 0;
-	let deltaY = 0;
+/**
+ * Position names are {y name}-{x name}
+ * Y names are: top, middle, baseline,bottom
+ * X names are: left, center, right
+ */
+export const transformOrigins = [
+	'top-left',
+	'middle-left',
+	'baseline-left',
+	'bottom-left',
+	'top-center',
+	'middle-center',
+	'baseline-center',
+	'bottom-center',
+	'top-right',
+	'middle-right',
+	'baseline-right',
+	'bottom-right',
+];
 
-	if (transformOrigin.indexOf('right') > -1) {
-		deltaX = deltaWidth;
+/**
+ * Takes an items current maxes and future size changes, and calculates
+ * the future position changes based on a given transform origin.
+ * @param {Number} deltaWidth - how much the item will change in width
+ * @param {Number} deltaHeight - how much the item will change in height
+ * @param {Maxes} maxes - item maxes *before* resizing
+ * @param {String} transformOrigin - name of the origin position
+ * @returns {Object} - deltaX and deltaY to apply after resizing
+ */
+export function calculateDeltasFromTransform(
+	deltaWidth = 0,
+	deltaHeight = 0,
+	maxes,
+	transformOrigin
+) {
+	// log(`calculateDeltasFromTransform`, 'start');
+	// log(`deltaWidth: ${deltaWidth}`);
+	// log(`deltaHeight: ${deltaHeight}`);
+	// log(`transformOrigin: ${transformOrigin}`);
+	// log(maxes.print());
+	if (transformOrigins.indexOf(transformOrigin) < 0) transformOrigin = 'baseline-left';
+	// log(`transformOrigin: ${transformOrigin}`);
+
+	let result = {
+		deltaX: 0,
+		deltaY: 0,
+	};
+
+	// Y adjustments - 'bottom' requires no adjustments
+	if (deltaHeight !== 0) {
+		if (transformOrigin.includes('top')) {
+			result.deltaY = deltaHeight * -1;
+		}
+
+		if (transformOrigin.includes('middle')) {
+			result.deltaY = deltaHeight / -2;
+		}
+
+		if (transformOrigin.includes('baseline')) {
+			let scaleVertical = (deltaHeight + maxes.height) / maxes.height;
+			let newY = maxes.yMax * scaleVertical;
+			let newAbsoluteY = (maxes.yMax - newY) * -1;
+			result.deltaY = newAbsoluteY - deltaHeight;
+		}
 	}
 
-	if (transformOrigin.indexOf('bottom') > -1) {
-		deltaY = deltaHeight * -1;
+	// X Adjustments - 'left' requires no adjustments
+	if (deltaWidth !== 0) {
+		if (transformOrigin.includes('right')) {
+			result.deltaX = deltaWidth * -1;
+		}
+
+		if (transformOrigin.includes('center')) {
+			result.deltaX = deltaWidth / -2;
+		}
 	}
 
-	return { deltaX: deltaX, deltaY: deltaY };
+	// log(`\n⮟result⮟`);
+	// log(result);
+	// log(`calculateDeltasFromTransform`, 'end');
+	return result;
 }
 
 // ---------------------------------------------------------------------

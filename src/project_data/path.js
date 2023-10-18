@@ -1,9 +1,11 @@
 import {
+	calculateDeltasFromTransform,
 	clone,
 	hasNonValues,
 	isVal,
 	round,
 	strSan,
+	transformOrigins,
 	xyPointsAreClose,
 } from '../common/functions.js';
 import { ControlPoint } from './control_point.js';
@@ -409,16 +411,7 @@ export class Path extends GlyphElement {
 	 * @param {Boolean} transformOrigin - which point to set
 	 */
 	set transformOrigin(transformOrigin) {
-		let allowedNames = [
-			'top-left',
-			'baseline-left',
-			'bottom-left',
-			'top-right',
-			'baseline-right',
-			'bottom-right',
-			'center',
-		];
-		if (allowedNames.indexOf(transformOrigin) > -1) {
+		if (transformOrigins.indexOf(transformOrigin) > -1) {
 			this._transformOrigin = transformOrigin;
 		} else {
 			this._transformOrigin = false;
@@ -536,6 +529,8 @@ export class Path extends GlyphElement {
 		// log('Path.updateShapeSize', 'start');
 		let dw = parseFloat(width);
 		let dh = parseFloat(height);
+		// log(`dw: ${dw}`);
+		// log(`dh: ${dh}`);
 		if (!dw && !dh) return;
 
 		// Lock Aspect Ratio
@@ -570,16 +565,21 @@ export class Path extends GlyphElement {
 			}
 		}
 
+		let deltas = calculateDeltasFromTransform(dw, dh, this.maxes, transformOrigin);
+		let xAdjustment = this.maxes.xMin; // + deltas.deltaX;
+		let yAdjustment = this.maxes.yMin; // + deltas.deltaY;
 		// ControlPoint.x and ControlPoint.y for type === 'p' also moves h1 / h2
 		// Directly access .coord to avoid this
 		this.pathPoints.forEach((pp) => {
-			pp.p.coord.x = (pp.p.coord.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
-			pp.h1.coord.x = (pp.h1.coord.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
-			pp.h2.coord.x = (pp.h2.coord.x - this.maxes.xMin) * ratioWidth + this.maxes.xMin;
-			pp.p.coord.y = (pp.p.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
-			pp.h1.coord.y = (pp.h1.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
-			pp.h2.coord.y = (pp.h2.coord.y - this.maxes.yMin) * ratioHeight + this.maxes.yMin;
+			pp.p.coord.x = (pp.p.coord.x - this.maxes.xMin) * ratioWidth + xAdjustment;
+			pp.h1.coord.x = (pp.h1.coord.x - this.maxes.xMin) * ratioWidth + xAdjustment;
+			pp.h2.coord.x = (pp.h2.coord.x - this.maxes.xMin) * ratioWidth + xAdjustment;
+			pp.p.coord.y = (pp.p.coord.y - this.maxes.yMin) * ratioHeight + yAdjustment;
+			pp.h1.coord.y = (pp.h1.coord.y - this.maxes.yMin) * ratioHeight + yAdjustment;
+			pp.h2.coord.y = (pp.h2.coord.y - this.maxes.yMin) * ratioHeight + yAdjustment;
 		});
+
+		this.updateShapePosition(deltas.deltaX, deltas.deltaY);
 		// log('Path.updateShapeSize', 'end');
 	}
 

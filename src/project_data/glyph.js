@@ -1,5 +1,12 @@
 import { hexesToChars } from '../common/character_ids.js';
-import { hasNonValues, isVal, remove, trim } from '../common/functions.js';
+import {
+	calculateDeltasFromTransform,
+	hasNonValues,
+	isVal,
+	remove,
+	transformOrigins,
+	trim,
+} from '../common/functions.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { ComponentInstance } from './component_instance.js';
 import { GlyphElement } from './glyph_element.js';
@@ -440,16 +447,7 @@ export class Glyph extends GlyphElement {
 	 * @param {Boolean} transformOrigin - which point to set
 	 */
 	set transformOrigin(transformOrigin) {
-		let allowedNames = [
-			'top-left',
-			'baseline-left',
-			'bottom-left',
-			'top-right',
-			'baseline-right',
-			'bottom-right',
-			'center',
-		];
-		if (allowedNames.indexOf(transformOrigin) > -1) {
+		if (transformOrigins.indexOf(transformOrigin) > -1) {
 			this._transformOrigin = transformOrigin;
 		} else {
 			this._transformOrigin = false;
@@ -658,36 +656,47 @@ export class Glyph extends GlyphElement {
 		transformOrigin = false,
 	} = {}) {
 		// log('Glyph.updateGlyphSize', 'start');
+		// log(`transformOrigin: ${transformOrigin}`);
+		// log(`ratioLock: ${ratioLock}`);
 		// log('number of shapes: ' + this.shapes.length);
-		const glyphMaxes = this.glyphMaxes;
-		let dw = parseFloat(width) || 0;
-		let dh = parseFloat(height) || 0;
-		// log('adjust dw/dh:\t' + dw + '/' + dh);
-		const oldW = glyphMaxes.xMax - glyphMaxes.xMin;
-		const oldH = glyphMaxes.yMax - glyphMaxes.yMin;
-		let newW = oldW + dw;
-		let newH = oldH + dh;
+		const glyphMaxes = this.maxes;
+		let dW = parseFloat(width) || 0;
+		let dH = parseFloat(height) || 0;
+		// log('adjust dW/dH:\t' + dW + '/' + dH);
+		const oldW = glyphMaxes.width;
+		const oldH = glyphMaxes.height;
+		let newW = oldW + dW;
+		let newH = oldH + dH;
 		if (Math.abs(newW) < 1) newW = 1;
 		if (Math.abs(newH) < 1) newH = 1;
 		// log('new w/h:\t' + newW + '/' + newH);
 		let ratioHeight = newH / oldH;
 		let ratioWidth = newW / oldW;
-		// log('ratio dw/dh:\t' + ratioWidth + '/' + ratioHeight);
+
+		// log('ratio dW/dH:\t' + ratioWidth + '/' + ratioHeight);
 		if (ratioLock) {
 			// Assuming only one will be nonzero
 			// if(Math.abs(ratioHeight) > Math.abs(ratioWidth)) ratioWidth = ratioHeight;
 			// else ratioHeight = ratioWidth;
-			if (dw !== 0 && dh === 0) ratioHeight = ratioWidth;
-			else ratioWidth = ratioHeight;
+			if (dW !== 0 && dH === 0) {
+				ratioHeight = ratioWidth;
+				newH = oldH * ratioHeight;
+				dH = newH - oldH;
+			} else {
+				ratioWidth = ratioHeight;
+				newW = oldW * ratioWidth;
+				dW = newW - oldW;
+			}
 		}
-		// log('ratio dw/dh:\t' + ratioWidth + '/' + ratioHeight);
+		// log('ratio dW/dH:\t' + ratioWidth + '/' + ratioHeight);
 
+		const deltas = calculateDeltasFromTransform(dW, dH, this.maxes, transformOrigin);
 		// log('Before Maxes ' + json(glyphMaxes, true));
 		this.shapes.forEach((shape) => {
 			if (shape.objType === 'ComponentInstance' && !updateComponentInstances) return;
 
 			// log('>>> Updating ' + shape.objType + ' ' + i + '/' + this.shapes.length + ' : ' + shape.name);
-			const shapeMaxes = shape.glyphMaxes;
+			const shapeMaxes = shape.maxes;
 
 			// scale
 			const oldShapeWidth = shapeMaxes.xMax - shapeMaxes.xMin;
@@ -702,8 +711,14 @@ export class Glyph extends GlyphElement {
 			let deltaHeight = false;
 			if (ratioHeight !== 0) deltaHeight = newShapeHeight - oldShapeHeight;
 
-			// log('Shape ' + i + ' dw dh ' + deltaWidth + ' ' + deltaHeight);
-			shape.updateShapeSize({ width: deltaWidth, height: deltaHeight });
+			// log('Shape ' + i + ' dW dH ' + deltaWidth + ' ' + deltaHeight);
+			// log(`updateShapeSize from updateGlyphSize`);
+			shape.updateShapeSize({
+				width: deltaWidth,
+				height: deltaHeight,
+				transformOrigin: 'bottom-left',
+			});
+			// log(`updateShapeSize from updateGlyphSize`);
 
 			// move
 			const oldShapeX = shapeMaxes.xMin - glyphMaxes.xMin;
@@ -722,6 +737,7 @@ export class Glyph extends GlyphElement {
 			shape.updateShapePosition(deltaX, deltaY, true);
 		});
 
+		this.updateGlyphPosition(deltas.deltaX, deltas.deltaY);
 		// log('Afters Maxes ' + json(this.maxes, true));
 		// log(this.name);
 		// log('Glyph.updateGlyphSize', 'end');

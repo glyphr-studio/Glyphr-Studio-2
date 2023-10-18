@@ -2,6 +2,7 @@ import { getCurrentProjectEditor } from '../app/main.js';
 import { closeAllNotations } from '../controls/dialogs/dialogs.js';
 import { findAndUnderlineHotspot, isHotspotHere } from './context_characters.js';
 import { setCursor } from './cursors.js';
+import { canvasUIPointSize } from './draw_edit_affordances.js';
 import { cXsX, cYsY } from './edit_canvas.js';
 import {
 	cancelDefaultEventActions,
@@ -158,61 +159,126 @@ export function resizePath() {
 		case 'n':
 			if (canResize('n')) {
 				setCursor('n-resize');
-				selected.updateShapeSize({width: 0, height: dh * -1, ratioLock: rl});
+				selected.updateShapeSize({
+					width: 0,
+					height: dh * -1,
+					ratioLock: rl,
+					transformOrigin: 'bottom-center',
+				});
 			}
 			break;
 
 		case 'ne':
 			if (canResize('ne')) {
 				setCursor('ne-resize');
-				selected.updateShapeSize({ width: dw * -1, height: dh * -1, ratioLock: rl });
+				selected.updateShapeSize({
+					width: dw * -1,
+					height: dh * -1,
+					ratioLock: rl,
+					transformOrigin: 'bottom-left',
+				});
 			}
 			break;
 
 		case 'e':
 			if (canResize('e')) {
 				setCursor('e-resize');
-				selected.updateShapeSize({width: dw * -1, height: 0, ratioLock: rl});
+				selected.updateShapeSize({
+					width: dw * -1,
+					height: 0,
+					ratioLock: rl,
+					transformOrigin: 'middle-left',
+				});
+			}
+			break;
+
+		case 'be':
+			if (canResize('be')) {
+				setCursor('e-resize');
+				selected.updateShapeSize({
+					width: dw * -1,
+					height: 0,
+					ratioLock: rl,
+					transformOrigin: 'baseline-left',
+				});
 			}
 			break;
 
 		case 'se':
 			if (canResize('se')) {
 				setCursor('se-resize');
-				selected.updateShapeSize({width: dw * -1, height: dh, ratioLock: rl});
-				selected.updateShapePosition(0, dh * -1);
+				selected.updateShapeSize({
+					width: dw * -1,
+					height: dh,
+					ratioLock: rl,
+					transformOrigin: 'top-left',
+				});
+				// selected.updateShapePosition(0, dh * -1);
 			}
 			break;
 
 		case 's':
 			if (canResize('s')) {
 				setCursor('s-resize');
-				selected.updateShapePosition(0, dh * -1);
-				selected.updateShapeSize({width: 0, height: dh, ratioLock: rl});
+				// selected.updateShapePosition(0, dh * -1);
+				selected.updateShapeSize({
+					width: 0,
+					height: dh,
+					ratioLock: rl,
+					transformOrigin: 'top-center',
+				});
 			}
 			break;
 
 		case 'sw':
 			if (canResize('sw')) {
 				setCursor('sw-resize');
-				selected.updateShapeSize({width: dw, height: dh, ratioLock: rl});
-				selected.updateShapePosition(dw * -1, dh * -1);
+				selected.updateShapeSize({
+					width: dw,
+					height: dh,
+					ratioLock: rl,
+					transformOrigin: 'top-right',
+				});
+				// selected.updateShapePosition(dw * -1, dh * -1);
+			}
+			break;
+
+		case 'bw':
+			if (canResize('bw')) {
+				setCursor('ew-resize');
+				selected.updateShapeSize({
+					width: dw,
+					height: 0,
+					ratioLock: rl,
+					transformOrigin: 'baseline-right',
+				});
+				// selected.updateShapePosition(dw * -1, 0);
 			}
 			break;
 
 		case 'w':
 			if (canResize('w')) {
 				setCursor('w-resize');
-				selected.updateShapeSize({width: dw, height: 0, ratioLock: rl});
-				selected.updateShapePosition(dw * -1, 0);
+				selected.updateShapeSize({
+					width: dw,
+					height: 0,
+					ratioLock: rl,
+					transformOrigin: 'middle-right',
+				});
+				// selected.updateShapePosition(dw * -1, 0);
 			}
 			break;
 
 		case 'nw':
 			if (canResize('nw')) {
 				setCursor('nw-resize');
-				selected.updateShapeSize({width: dw, height: dh * -1, ratioLock: rl});
-				selected.updateShapePosition(dw * -1, 0);
+				selected.updateShapeSize({
+					width: dw,
+					height: dh * -1,
+					ratioLock: rl,
+					transformOrigin: 'bottom-right',
+				});
+				// selected.updateShapePosition(dw * -1, 0);
 			}
 			break;
 	}
@@ -237,7 +303,8 @@ export function checkForMouseOverHotspot(x, y) {
 }
 
 export function canResize(handle) {
-	const msShapes = getCurrentProjectEditor().multiSelect.shapes;
+	const editor = getCurrentProjectEditor();
+	const msShapes = editor.multiSelect.shapes;
 	let selected = msShapes;
 	if (msShapes.length > 1) selected = msShapes.virtualGlyph;
 	let rl = selected.ratioLock;
@@ -245,6 +312,9 @@ export function canResize(handle) {
 	let yl = selected.yLock;
 	let wl = selected.wLock;
 	let hl = selected.hLock;
+	let yMax = selected.maxes.yMax;
+	let yMin = selected.maxes.yMin;
+	let handleSize = canvasUIPointSize / 2 / editor.view.dz;
 	let re = true;
 
 	switch (handle) {
@@ -260,6 +330,9 @@ export function canResize(handle) {
 		case 'e':
 			re = !wl;
 			break;
+		case 'be':
+			re = !wl && rl && yMin < handleSize * -1 && yMax > handleSize;
+			break;
 		case 'se':
 			re = rl ? false : !hl && !wl;
 			break;
@@ -268,6 +341,9 @@ export function canResize(handle) {
 			break;
 		case 'sw':
 			re = rl ? false : !hl && !xl && !wl;
+			break;
+		case 'bw':
+			re = !xl && !wl && rl && yMin < handleSize * -1 && yMax > handleSize;
 			break;
 		case 'w':
 			re = !xl && !wl;
