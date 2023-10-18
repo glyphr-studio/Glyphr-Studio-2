@@ -1,6 +1,6 @@
 import { closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import obleggSampleProject from '../samples/oblegg-0-2.gs2?raw';
+import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 import { _DEV } from './dev_mode_includes.js';
 import {

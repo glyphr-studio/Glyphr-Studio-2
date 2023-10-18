@@ -190,7 +190,7 @@ export function makeOpenProjectTabs() {
 
 	const buttonOblegg = makeElement({
 		tag: 'fancy-button',
-		innerHTML: 'Oblegg (v0.3)',
+		innerHTML: 'Oblegg',
 		onClick: () => handleLoadSample('oblegg'),
 	});
 

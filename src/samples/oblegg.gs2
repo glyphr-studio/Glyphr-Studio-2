@@ -1,10 +1,10 @@
 {
   "settings": {
     "project": {
-      "name": "Oblegg 0.3",
+      "name": "Oblegg",
       "latestVersion": "2.0.0",
       "initialVersion": "2.0.0-beta.1.0",
-      "id": "g2_OBLEGG0BETA",
+      "id": "g2_OBLEGG2",
       "characterRanges": [
         {
           "name": "Basic Latin",
@@ -59,7 +59,7 @@
     "font": {
       "family": "Oblegg",
       "style": "Regular",
-      "version": "0.3",
+      "version": "1.0",
       "description": "Test font for Glyphr Studio v2",
       "panose": "0 0 0 0 0 0 0 0 0 0",
       "upm": 2048,
@@ -9248,57 +9248,7 @@
     },
     "glyph-0x20": {
       "id": "glyph-0x20",
-      "advanceWidth": 400,
-      "shapes": [
-        {
-          "name": "Rectangle",
-          "winding": -5,
-          "pathPoints": [
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 0,"y": -10}},
-              "h1": {"coord": {"x": 0,"y": -105.87217312546153}, "use": false},
-              "h2": {"coord": {"x": 0,"y": 3.423239007400497}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 10,"y": 0}},
-              "h1": {"coord": {"x": 10,"y": -15}, "use": false},
-              "h2": {"coord": {"x": 10,"y": 31.038}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 0,"y": 10}},
-              "h1": {"coord": {"x": 0,"y": -26}, "use": false},
-              "h2": {"coord": {"x": 0,"y": 365}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 0,"y": 1000}},
-              "h1": {"coord": {"x": 0,"y": 1000}},
-              "h2": {"coord": {"x": 50,"y": 1000}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 100,"y": 1000}},
-              "h1": {"coord": {"x": 50,"y": 1000}, "use": false},
-              "h2": {"coord": {"x": 150,"y": 1000}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 100,"y": -200}},
-              "h1": {"coord": {"x": 50,"y": -200}, "use": false},
-              "h2": {"coord": {"x": 150,"y": -200}, "use": false}
-            },
-            {
-              "type": "corner",
-              "p": {"coord": {"x": 0,"y": -200}},
-              "h1": {"coord": {"x": -50,"y": -200}, "use": false},
-              "h2": {"coord": {"x": 0,"y": -200}}
-            }
-          ]
-        }
-      ]
+      "advanceWidth": 400
     },
     "glyph-0x30": {
       "id": "glyph-0x30",
