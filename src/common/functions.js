@@ -356,6 +356,25 @@ export function pause(ms = 10) {
 	});
 }
 
+// --------------------------------------------------------------
+// Translation
+// --------------------------------------------------------------
+
+export function calculateDeltasFromTransform(deltaWidth, deltaHeight, maxes, transformOrigin) {
+	let deltaX = 0;
+	let deltaY = 0;
+
+	if (transformOrigin.indexOf('right') > -1) {
+		deltaX = deltaWidth;
+	}
+
+	if (transformOrigin.indexOf('bottom') > -1) {
+		deltaY = deltaHeight * -1;
+	}
+
+	return { deltaX: deltaX, deltaY: deltaY };
+}
+
 // ---------------------------------------------------------------------
 // Angle and Rotation Stuff
 // ---------------------------------------------------------------------
