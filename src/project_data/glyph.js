@@ -659,12 +659,12 @@ export class Glyph extends GlyphElement {
 	} = {}) {
 		// log('Glyph.updateGlyphSize', 'start');
 		// log('number of shapes: ' + this.shapes.length);
-		const m = this.maxes;
+		const glyphMaxes = this.glyphMaxes;
 		let dw = parseFloat(width) || 0;
 		let dh = parseFloat(height) || 0;
 		// log('adjust dw/dh:\t' + dw + '/' + dh);
-		const oldW = m.xMax - m.xMin;
-		const oldH = m.yMax - m.yMin;
+		const oldW = glyphMaxes.xMax - glyphMaxes.xMin;
+		const oldH = glyphMaxes.yMax - glyphMaxes.yMin;
 		let newW = oldW + dw;
 		let newH = oldH + dh;
 		if (Math.abs(newW) < 1) newW = 1;
@@ -682,61 +682,45 @@ export class Glyph extends GlyphElement {
 		}
 		// log('ratio dw/dh:\t' + ratioWidth + '/' + ratioHeight);
 
-		let shape;
-		let shapeMaxes;
-		let oldShapeWidth;
-		let oldShapeHeight;
-		let oldShapeX;
-		let oldShapeY;
-		let newShapeWidth;
-		let newShapeHeight;
-		let newShapeX;
-		let newShapeY;
-		let deltaWidth;
-		let deltaHeight;
-		let deltaX;
-		let deltaY;
-
-		// log('Before Maxes ' + json(m, true));
-		for (let i = 0; i < this.shapes.length; i++) {
-			shape = this.shapes[i];
-			if (shape.objType === 'ComponentInstance' && !updateComponentInstances) continue;
+		// log('Before Maxes ' + json(glyphMaxes, true));
+		this.shapes.forEach((shape) => {
+			if (shape.objType === 'ComponentInstance' && !updateComponentInstances) return;
 
 			// log('>>> Updating ' + shape.objType + ' ' + i + '/' + this.shapes.length + ' : ' + shape.name);
-			shapeMaxes = shape.maxes;
+			const shapeMaxes = shape.glyphMaxes;
 
 			// scale
-			oldShapeWidth = shapeMaxes.xMax - shapeMaxes.xMin;
-			newShapeWidth = oldShapeWidth * ratioWidth;
+			const oldShapeWidth = shapeMaxes.xMax - shapeMaxes.xMin;
+			const newShapeWidth = oldShapeWidth * ratioWidth;
 
-			if (ratioWidth === 0) deltaWidth = false;
-			else deltaWidth = newShapeWidth - oldShapeWidth;
+			let deltaWidth = false;
+			if (ratioWidth !== 0) deltaWidth = newShapeWidth - oldShapeWidth;
 
-			oldShapeHeight = shapeMaxes.yMax - shapeMaxes.yMin;
-			newShapeHeight = oldShapeHeight * ratioHeight;
+			const oldShapeHeight = shapeMaxes.yMax - shapeMaxes.yMin;
+			const newShapeHeight = oldShapeHeight * ratioHeight;
 
-			if (ratioHeight === 0) deltaHeight = false;
-			else deltaHeight = newShapeHeight - oldShapeHeight;
+			let deltaHeight = false;
+			if (ratioHeight !== 0) deltaHeight = newShapeHeight - oldShapeHeight;
 
 			// log('Shape ' + i + ' dw dh ' + deltaWidth + ' ' + deltaHeight);
 			shape.updateShapeSize({ width: deltaWidth, height: deltaHeight });
 
 			// move
-			oldShapeX = shapeMaxes.xMin - m.xMin;
-			newShapeX = oldShapeX * ratioWidth;
+			const oldShapeX = shapeMaxes.xMin - glyphMaxes.xMin;
+			const newShapeX = oldShapeX * ratioWidth;
 
-			if (ratioWidth === 0) deltaX = false;
-			else deltaX = newShapeX - oldShapeX;
+			let deltaX = false;
+			if (ratioWidth !== 0) deltaX = newShapeX - oldShapeX;
 
-			oldShapeY = shapeMaxes.yMin - m.yMin;
-			newShapeY = oldShapeY * ratioHeight;
+			const oldShapeY = shapeMaxes.yMin - glyphMaxes.yMin;
+			const newShapeY = oldShapeY * ratioHeight;
 
-			if (ratioHeight === 0) deltaY = false;
-			else deltaY = newShapeY - oldShapeY;
+			let deltaY = false;
+			if (ratioHeight !== 0) deltaY = newShapeY - oldShapeY;
 
 			// log('Shape Pos ' + i + ' dx dy ' + deltaX + ' ' + deltaY);
 			shape.updateShapePosition(deltaX, deltaY, true);
-		}
+		});
 
 		// log('Afters Maxes ' + json(this.maxes, true));
 		// log(this.name);
