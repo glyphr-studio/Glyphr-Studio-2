@@ -234,62 +234,26 @@ icons.page_overview = `
 export function makeTransformOriginIcon(corner = 'baseline-left') {
 	let darkFill = accentColors.gray.l25;
 	let blue = accentColors.blue.l70;
-
-	let content = `
-		<path data-name="em-square"d="m2,2v16h16V2H2Zm15,15H3v-3h14v3Zm0-4H3V3h14v10Z" style="stroke-width: 0px;"/>
-	`;
-	if (corner === 'bottom-right') {
-		content += `
-			<rect data-name="bottom-right-border" x="15" y="15" width="5" height="5" style="fill: ${darkFill};"/>
-			<rect data-name="bottom-right-fill" x="16" y="16" width="3" height="3" style="fill: ${blue};"/>
-		`;
-	}
-	if (corner === 'baseline-right') {
-		content += `
-			<rect data-name="baseline-right-border" x="15" y="11" width="5" height="5" style="fill: ${darkFill};"/>
-			<rect data-name="baseline-right-fill" x="16" y="12" width="3" height="3" style="fill: ${blue};"/>
-		`;
-	}
-	if (corner === 'top-right') {
-		content += `
-			<rect data-name="top-right-border" x="15" y="0" width="5" height="5" style="fill: ${darkFill};"/>
-			<rect data-name="top-right-fill" x="16" y="1" width="3" height="3" style="fill: ${blue};"/>
-		`;
-	}
-	if (corner === 'bottom-left') {
-		content += `
-			<rect data-name="bottom-left-border" x="0" y="15" width="5" height="5" style="fill: ${darkFill};"/>
-			<rect data-name="bottom-left-fill" x="1" y="16" width="3" height="3" style="fill: ${blue};"/>
-		`;
-	}
-	if (corner === 'baseline-left') {
-		content += `
-			<rect data-name="baseline-left-border" x="0" y="11" width="5" height="5" style="fill: ${darkFill};"/>
-			<rect data-name="baseline-left-fill" x="1" y="12" width="3" height="3" style="fill: ${blue};"/>
-		`;
-	}
-	if (corner === 'top-left') {
-		content += `
-			<rect data-name="top-left-border" x="0" y="0" width="5" height="5" style="fill: ${darkFill};"/>
-			<rect data-name="top-left-fill" x="1" y="1" width="3" height="3" style="fill: ${blue};"/>
-		`;
-	}
-	if (corner === 'center') {
-		content += `
-			<rect data-name="center-border" x="8" y="8" width="4" height="4" style="fill: ${darkFill};"/>
-			<rect data-name="center-fill" x="9" y="9" width="2" height="2" style="fill: ${blue};"/>
-		`;
-	}
+	let x = 0; // for 'top'
+	if (corner.includes('center')) x = 7;
+	if (corner.includes('right')) x = 14;
+	let y = 0; // for 'left'
+	if (corner.includes('middle')) y = 8;
+	if (corner.includes('baseline')) y = 11;
+	if (corner.includes('bottom')) y = 15;
 
 	let wrapper = `
-		<svg version="1.1"
-			xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-			x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20"
-		>
-			<defs></defs>
-			<rect fill="transparent" width="20" height="20"/>
-			<g pointer-events="none" width="20" height="20">${content}</g>
-		</svg>
+	<svg version="1.1"
+	xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+	x="0px" y="0px" width="20px" height="20px" viewBox="0 0 20 20">
+	<defs></defs>
+	<rect fill="transparent" width="20" height="20"/>
+	<g pointer-events="none" width="20" height="20">
+			<path d="m2,2v16h15V2H2Zm14,15H3v-3h13v3Zm0-4H3V3h13v10Z"/>
+			<rect x="${x}" y="${y}" width="5" height="5" style="fill: ${darkFill};"/>
+			<rect x="${x + 1}" y="${y + 1}" width="3" height="3" style="fill: ${blue};"/>
+		</g>
+	</svg>
 	`;
 
 	return wrapper;

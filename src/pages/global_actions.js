@@ -420,10 +420,12 @@ function makeCard_Resize() {
 			title: 'Re-sizing glyph',
 			action: function (glyph) {
 				if (!glyph.shapes || !glyph.shapes.length) return;
-				let scaleVertical = (resizeH + glyph.maxes.height) / glyph.maxes.height;
-				let newY = glyph.maxes.yMax * scaleVertical;
-				glyph.updateGlyphSize({ width: resizeW, height: resizeH, ratioLock: ratio });
-				glyph.setGlyphPosition(false, newY, false);
+				glyph.updateGlyphSize({
+					width: resizeW,
+					height: resizeH,
+					ratioLock: ratio,
+					transformOrigin: 'baseline-left',
+				});
 				if (updateAdvanceWidth) glyph.advanceWidth += resizeW;
 			},
 		});

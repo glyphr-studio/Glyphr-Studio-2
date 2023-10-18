@@ -1,6 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeElement } from '../common/dom.js';
-import { round } from '../common/functions.js';
+import { round, transformOrigins } from '../common/functions.js';
 import { makeTransformOriginIcon } from '../common/graphics.js';
 
 // --------------------------------------------------------------
@@ -47,15 +47,16 @@ export function makeInputs_size(item) {
 	dimensionInputs.appendChild(hInput);
 
 	// Transform origin
-	let origins = [
+	let displayOrigins = [
 		'top-left',
 		'baseline-left',
 		'bottom-left',
 		'top-right',
 		'baseline-right',
 		'bottom-right',
-		'center',
+		'middle-center',
 	];
+	displayOrigins = transformOrigins;
 	let transformLabel = makeSingleLabel(
 		'transform origin',
 		`With increases or decreases to width or height,
@@ -71,7 +72,7 @@ export function makeInputs_size(item) {
 			'selected-name': item.transformOrigin.replace('-', ' '),
 		},
 	});
-	origins.forEach((origin) => {
+	displayOrigins.forEach((origin) => {
 		let option = makeElement({
 			tag: 'option',
 			attributes: { 'selection-id': origin },
@@ -164,25 +165,16 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			editor.publish('editCanvasView', item);
 		}
 
-		// Code Smell
+		// Special Case Glyph and Path: width and height properties
 		if (
-			item.ratioLock &&
-			item.constructor.name === 'Glyph' &&
+			(item.constructor.name === 'Glyph' || item.objType === 'Path') &&
 			(property === 'width' || property === 'height')
 		) {
-			if (property === 'width') item.setGlyphSize({ width: newValue, ratioLock: true });
-			if (property === 'height') item.setGlyphSize({ height: newValue, ratioLock: true });
-			// log(`MAKE SINGLE INPUT EVENT on ratioLocked Glyph.${property} set to ${newValue}`);
-			// log(`item[property]: ${item[property]}`);
-		} else if (
-			item.ratioLock &&
-			item.objType === 'Path' &&
-			(property === 'width' || property === 'height')
-		) {
-			if (property === 'width') item.setShapeSize({ width: newValue, ratioLock: true });
-			if (property === 'height') item.setShapeSize({ height: newValue, ratioLock: true });
-			// log(`MAKE SINGLE INPUT EVENT on ratioLocked Path.${property} set to ${newValue}`);
-			// log(`item[property]: ${item[property]}`);
+			let options = { width: false, height: false };
+			options.ratioLock = item.ratioLock;
+			options.transformOrigin = item.transformOrigin;
+			property === 'width' ? (options.width = newValue) : (options.height = newValue);
+			item.objType === 'Path' ? item.setShapeSize(options) : item.setGlyphSize(options);
 		} else {
 			item[property] = newValue;
 			// log(`MAKE SINGLE INPUT EVENT ${property} set to ${newValue}`);

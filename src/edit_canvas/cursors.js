@@ -101,6 +101,8 @@ export function setCursor(name) {
 	} else if (cur.indexOf(name) > -1) {
 		document.body.style.cursor = name;
 		// log('SET BUILT-IN CURSOR:\t'+name);
+	} else if (name === 'be' || name === 'bw') {
+		document.body.style.cursor = 'ew-resize';
 	} else {
 		document.body.style.cursor = 'auto';
 		// log('DEFAULT TO auto');

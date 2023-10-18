@@ -37,12 +37,12 @@ export class GlyphrStudioApp {
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: true, // Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // Load the sample project, true or 'oblegg'
-				currentPage: 'Overview', // navigate straight to a page (sentence case names)
-				currentGlyphID: false, // select a glyph
+				currentPage: 'Characters', // navigate straight to a page (sentence case names)
+				currentGlyphID: 'glyph-0x20', // select a glyph
 				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
 				stopPageNavigation: false, // overwrite project-level setting
-				selectFirstShape: false, // select a shape
+				selectFirstShape: true, // select a shape
 				selectFirstPoint: false, // select a path point
 				testActions: [],
 				testOnLoad: function () {},
@@ -82,9 +82,9 @@ export class GlyphrStudioApp {
 			if (dev.currentPage) editor.nav.page = dev.currentPage;
 			if (dev.currentPanel) editor.nav.panel = dev.currentPanel;
 			if (dev.currentTool) editor.selectedTool = dev.currentTool;
-			if (dev.selectFirstShape) editor.multiSelect.shapes.select(editor.selectedGlyph.shapes[0]);
+			if (dev.selectFirstShape) editor.multiSelect.shapes.select(editor.selectedItem.shapes[0]);
 			if (dev.selectFirstPoint)
-				editor.multiSelect.points.select(editor.selectedGlyph.shapes[0].pathPoints[0]);
+				editor.multiSelect.points.select(editor.selectedItem.shapes[0].pathPoints[0]);
 		}
 
 		if (this.settings.telemetry) {
