@@ -142,7 +142,7 @@ dialog {
 	font-size: 0.8em;
 	color: var(--enabled-restingLight-lightText);
 	font-family: monospace;
-	padding: 0px 20px 0px 35px;
+	padding: 0px 20px 0px 0px;
 }
 
 .context-menu-row hr,

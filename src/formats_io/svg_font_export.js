@@ -2,8 +2,9 @@ import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { decToHex, hexesToXMLHexes } from '../common/character_ids.js';
 import { round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
+import { isWhitespace } from '../lib/unicode/unicode_names.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
-import { makeFileDateString, saveFile } from '../project_editor/file_io.js';
+import { makeFileDateString, saveTextFile } from '../project_editor/file_io.js';
 /**
 	IO > Export > SVG Font
 	Converting a Glyphr Studio Project to XML in
@@ -54,7 +55,7 @@ ${ioSVG_makeAllKernPairs()}
 
 	const filename = project.settings.project.name + ' - SVG Font - ' + timestamp + '.svg';
 
-	saveFile(filename, con);
+	saveTextFile(filename, con);
 	showToast('Exported SVG Font File');
 
 	// log('ioSVG_exportSVGfont', 'end');
@@ -179,11 +180,11 @@ function ioSVG_makeAllGlyphsAndLigatures() {
 	return con;
 }
 
-function ioSVG_makeOneGlyphOrLigature(gl, uni) {
+function ioSVG_makeOneGlyphOrLigature(gl, id) {
 	// if(!gl.shapes.length && !gl.advanceWidth) return '';
 	// Results in lots of special unicode glyphs with no paths
-	if (!gl.shapes.length && uni != 0x0020) {
-		console.warn('Glyph ' + uni + ' not exported: No paths.');
+	if (!gl.shapes.length && !isWhitespace(id.substring(6))) {
+		console.warn('Glyph ' + id + ' not exported: No paths.');
 		return '';
 	}
 

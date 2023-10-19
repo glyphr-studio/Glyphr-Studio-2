@@ -9,7 +9,7 @@ import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { deleteLinks, kernGroupDisplayWidth, kernGroupSideMaxWidth } from './cross_item_actions.js';
-import { makeFileDateString, saveFile } from './file_io.js';
+import { saveTextFile } from './file_io.js';
 import { History } from './history.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import { Navigator } from './navigator.js';
@@ -40,7 +40,7 @@ export class ProjectEditor {
 		}
 
 		// File reference
-		this.loadedFile = false;
+		this.loadedFileHandle = false;
 
 		// Project
 		this.project = false;
@@ -954,14 +954,14 @@ export class ProjectEditor {
 	 * Save a Glyphr Project Text File
 	 * @param {Boolean} overwrite - for Electron app, overwrite current working file
 	 */
-	saveGlyphrProjectFile() {
-		// log(`ProjectEditor.saveGlyphrProjectFile`, 'start');
+	async saveProjectFile(saveAsCopy = false) {
+		// log(`ProjectEditor.saveProjectFile`, 'start');
 
 		// log('' + this.project.settings.app.formatSaveFile);
 
 		let saveData = this.project.save();
 
-		// log(`Calling new GlyphrStudioProject from saveGlyphrProjectFile`);
+		// log(`Calling new GlyphrStudioProject from saveProjectFile`);
 		const defaultValues = new GlyphrStudioProject();
 		saveData = removeDefaultValues(saveData, defaultValues, 'settings');
 
@@ -977,23 +977,12 @@ export class ProjectEditor {
 		if (this.project.settings.app.formatSaveFile) saveData = json(saveData);
 		else saveData = JSON.stringify(saveData);
 
-		// log('saveGlyphrProjectFile - \n'+saveData);
+		// log('saveProjectFile - \n'+saveData);
 
-
-		saveFile(this.makeFileName(), saveData);
+		await saveTextFile('gs2', saveData, saveAsCopy);
 		showToast('Saved Glyphr Studio Project File');
 		this.setProjectAsSaved();
-		// log(`ProjectEditor.saveGlyphrProjectFile`, 'end');
-	}
-
-	makeFileName() {
-		const fileName =
-			this.project.settings.project.name +
-			' - Glyphr Studio Project - ' +
-			makeFileDateString() +
-			'.gs2';
-
-		return fileName;
+		// log(`ProjectEditor.saveProjectFile`, 'end');
 	}
 
 	setProjectAsSaved() {}

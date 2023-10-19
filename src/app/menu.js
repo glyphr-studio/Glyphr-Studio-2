@@ -1,16 +1,17 @@
-import { addAsChildren, insertAfter, makeElement } from '../common/dom';
+import { addAsChildren, insertAfter, makeElement } from '../common/dom.js';
 import logoHorizontal from '../common/graphics/logo-wordmark-horizontal-small.svg?raw';
 import {
 	closeEveryTypeOfDialog,
 	makeContextMenu,
 	showModalDialog,
 	showToast,
-} from '../controls/dialogs/dialogs';
+} from '../controls/dialogs/dialogs.js';
 import { ioFont_exportFont } from '../formats_io/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
-import { makePage_OpenProject } from '../pages/open_project';
-import { emailLink } from './app';
-import { getCurrentProjectEditor, getGlyphrStudioApp } from './main';
+import { makePage_OpenProject } from '../pages/open_project.js';
+import { isFancyFileIOEnabled, makeFileName } from '../project_editor/file_io.js';
+import { emailLink } from './app.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 
 // --------------------------------------------------------------
 // Top bar for the App
@@ -68,64 +69,86 @@ function makeMenu(menuName) {
 		innerHTML: menuName,
 		className: 'menu-entry-point',
 	});
-
 	entryPoint.addEventListener('mouseover', closeEveryTypeOfDialog);
-
+	const editor = getCurrentProjectEditor();
 	if (menuName === 'File') {
+		let fileMenuData = [];
+		if (isFancyFileIOEnabled()) {
+			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
+			if (editor.loadedFileHandle?.name) {
+				projectDisplayName = editor.loadedFileHandle.name;
+			}
+			fileMenuData.push(
+				{
+					child: makeElement({
+						tag: 'h3',
+						content: projectDisplayName,
+					}),
+					className: 'spanAll',
+				},
+				{
+					name: 'Save this project file',
+					icon: 'command_save',
+					note: ['Ctrl', 's'],
+					onClick: () => editor.saveProjectFile(),
+				},
+				{
+					name: 'Save a copy of this project file',
+					icon: 'command_save',
+					onClick: () => editor.saveProjectFile(true),
+				}
+			);
+		} else {
+			fileMenuData.push(
+				{
+					child: makeElement({
+						tag: 'h3',
+						content: makeFileName('gs2', true),
+					}),
+					className: 'spanAll',
+				},
+				{
+					name: 'Save project file (to downloads folder)',
+					icon: 'command_save',
+					note: ['Ctrl', 's'],
+					onClick: () => editor.saveProjectFile(),
+				}
+			);
+		}
+		fileMenuData = fileMenuData.concat([
+			{ name: 'hr' },
+			{
+				child: makeElement({
+					tag: 'h3',
+					content: `${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`,
+				}),
+				className: 'spanAll',
+			},
+			{
+				name: 'Export OTF file',
+				icon: 'command_export',
+				note: ['Ctrl', 'e'],
+				onClick: ioFont_exportFont,
+			},
+			{ name: 'hr' },
+			{
+				child: makeElement({
+					tag: 'h3',
+					content: makeFileName('svg'),
+				}),
+				className: 'spanAll',
+			},
+			{
+				name: 'Export SVG font file',
+				icon: 'command_export',
+				note: ['Ctrl', 'g'],
+				onClick: ioSVG_exportSVGfont,
+			},
+		]);
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
-			const editor = getCurrentProjectEditor();
-			insertAfter(
-				entryPoint,
-				makeContextMenu(
-					[
-						{
-							name: 'Save Glyphr Studio Project File',
-							icon: 'command_save',
-							note: ['Ctrl', 's'],
-							onClick: () => editor.saveGlyphrProjectFile,
-						},
-						{
-							child: makeElement({
-								tag: 'h3',
-								content: `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`,
-							}),
-							className: 'spanAll',
-						},
-						{ name: 'hr' },
-						{
-							name: 'Export OTF File',
-							icon: 'command_export',
-							note: ['Ctrl', 'e'],
-							onClick: ioFont_exportFont,
-						},
-						{
-							child: makeElement({
-								tag: 'h3',
-								content: `${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`,
-							}),
-							className: 'spanAll',
-						},
-						{ name: 'hr' },
-						{
-							name: 'Export SVG Font File',
-							icon: 'command_export',
-							note: ['Ctrl', 'g'],
-							onClick: ioSVG_exportSVGfont,
-						},
-						{
-							child: makeElement({
-								tag: 'h3',
-								content: `${editor.project.settings.project.name} - SVG Font.svg`,
-							}),
-							className: 'spanAll',
-						},
-					],
-					rect.x,
-					rect.y + rect.height
-				)
-			);
+			insertAfter(entryPoint, makeContextMenu(fileMenuData, rect.x, rect.y + rect.height));
 		});
 	}
 
@@ -258,7 +281,7 @@ function makeProjectPreviewRow(projectID = 0) {
 			},
 		});
 	} else {
-		title.innerHTML = 'Open another project &emsp; <code>Ctrl</code><code>p</code>';
+		title.innerHTML = 'Open another project';
 		rowWrapper.classList.add('project-preview__no-project');
 		rowWrapper.addEventListener('click', () => {
 			showModalDialog(makePage_OpenProject(true), 500, true);
