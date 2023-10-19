@@ -38,7 +38,7 @@ export class GlyphrStudioApp {
 				overwriteTitle: true, // Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // Load the sample project, true or 'oblegg'
 				currentPage: 'Characters', // navigate straight to a page (sentence case names)
-				currentGlyphID: 'glyph-0x20', // select a glyph
+				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
 				stopPageNavigation: false, // overwrite project-level setting
@@ -59,7 +59,6 @@ export class GlyphrStudioApp {
 	 */
 	setUp() {
 		log(`GlyphrStudioApp.setUp`, 'start');
-
 		const editor = addProjectEditorAndSetAsImportTarget();
 
 		// Dev mode stuff

@@ -3,7 +3,7 @@ import { decToHex, hexesToXMLHexes } from '../common/character_ids.js';
 import { round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
-import { makeDateStampSuffix, saveFile } from '../project_editor/file_io.js';
+import { makeFileDateString, saveFile } from '../project_editor/file_io.js';
 /**
 	IO > Export > SVG Font
 	Converting a Glyphr Studio Project to XML in
@@ -17,7 +17,7 @@ export function ioSVG_exportSVGfont() {
 	const fontSettings = project.settings.font;
 	const family = fontSettings.family;
 	const familyID = family.replace(/ /g, '_');
-	const timestamp = makeDateStampSuffix();
+	const timestamp = makeFileDateString();
 	let timeOutput = timestamp.split('-');
 	timeOutput[0] = timeOutput[0].replace(/\./g, '-');
 	timeOutput[1] = timeOutput[1].replace(/\./g, ':');

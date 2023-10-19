@@ -138,11 +138,18 @@ dialog {
 	outline: var(--global-focus-style);
 }
 
+#context-menu .spanAll h3 {
+	font-size: 0.8em;
+	color: var(--enabled-restingLight-lightText);
+	font-family: monospace;
+	padding: 0px 20px 0px 35px;
+}
+
 .context-menu-row hr,
 .context-menu-row hr:hover,
 .context-menu-row hr:active,
 .context-menu-row hr:focus {
-	margin: 5px 0px 5px 0px;
+	margin: 8px 0px 8px 0px;
 	grid-column: 1 / -1;
 	border-width: 0px 0px 1px 0px;
 	border-color: var(--gray-l90);

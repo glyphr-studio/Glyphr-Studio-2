@@ -9,7 +9,7 @@ import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import { deleteLinks, kernGroupDisplayWidth, kernGroupSideMaxWidth } from './cross_item_actions.js';
-import { makeDateStampSuffix, saveFile } from './file_io.js';
+import { makeFileDateString, saveFile } from './file_io.js';
 import { History } from './history.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import { Navigator } from './navigator.js';
@@ -38,6 +38,9 @@ export class ProjectEditor {
 			log(`\n⮟Passed: newProjectEditor⮟`);
 			log(newProjectEditor);
 		}
+
+		// File reference
+		this.loadedFile = false;
 
 		// Project
 		this.project = false;
@@ -975,16 +978,22 @@ export class ProjectEditor {
 		else saveData = JSON.stringify(saveData);
 
 		// log('saveGlyphrProjectFile - \n'+saveData);
-		const fileName =
-			this.project.settings.project.name +
-			' - Glyphr Studio Project - ' +
-			makeDateStampSuffix() +
-			'.gs2';
 
-		saveFile(fileName, saveData);
+
+		saveFile(this.makeFileName(), saveData);
 		showToast('Saved Glyphr Studio Project File');
 		this.setProjectAsSaved();
 		// log(`ProjectEditor.saveGlyphrProjectFile`, 'end');
+	}
+
+	makeFileName() {
+		const fileName =
+			this.project.settings.project.name +
+			' - Glyphr Studio Project - ' +
+			makeFileDateString() +
+			'.gs2';
+
+		return fileName;
 	}
 
 	setProjectAsSaved() {}
