@@ -1,8 +1,4 @@
-// --------------------------------------------------------------
-// File Saver
-// --------------------------------------------------------------
-
-import { getCurrentProjectEditor } from "../app/main";
+import { getCurrentProjectEditor } from '../app/main.js';
 
 /**
  * Saves a file
@@ -22,7 +18,6 @@ export function saveFile(fileName, buffer, fileType) {
 		const link = document.createElement('a');
 		window.URL = window.URL || window.webkitURL;
 		link.href = window.URL.createObjectURL(fileBlob);
-		// link.onclick = ("alert("+window.URL.createObjectURL(fileBlob)+");");
 		link.download = fileName;
 
 		const event = new MouseEvent('click', {
@@ -38,7 +33,7 @@ export function saveFile(fileName, buffer, fileType) {
  * Generates a date suffix for file saves
  * @returns {String}
  */
-export function makeDateStampSuffix() {
+export function makeFileDateString() {
 	const d = new Date();
 	const yr = d.getFullYear();
 	const mo = d.getMonth() + 1;
@@ -47,7 +42,7 @@ export function makeDateStampSuffix() {
 	const min = (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
 	const sec = (d.getSeconds() < 10 ? '0' : '') + d.getSeconds();
 
-	return '' + yr + '.' + mo + '.' + day + '-' + hr + '.' + min + '.' + sec;
+	return `${yr}.${mo}.${day}-${hr}.${min}.${sec}`;
 }
 
 // ---------------------------------------------------------------------
@@ -88,7 +83,7 @@ export function localStorageGet(key) {
 // --------------------------------------------------------------
 
 export async function open(UI) {
-	if (UI.fancyFileIO) {
+	if (window.showOpenFilePicker && window.showSaveFilePicker) {
 		const pickerOptions = {
 			types: [
 				{
@@ -130,7 +125,7 @@ export async function open(UI) {
 export async function save(markdown, UI, fileHandle, callback = false) {
 	log(`\n save${fileHandle ? '' : ' as'} - START`);
 
-	if (UI.fancyFileIO) {
+	if (window.showOpenFilePicker && window.showSaveFilePicker) {
 		const isSaveAs = !fileHandle;
 
 		const pickerOptions = {

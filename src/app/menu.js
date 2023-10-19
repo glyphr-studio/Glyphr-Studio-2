@@ -75,6 +75,7 @@ function makeMenu(menuName) {
 		entryPoint.addEventListener('click', (event) => {
 			let rect = event.target.getBoundingClientRect();
 			closeEveryTypeOfDialog();
+			const editor = getCurrentProjectEditor();
 			insertAfter(
 				entryPoint,
 				makeContextMenu(
@@ -83,9 +84,14 @@ function makeMenu(menuName) {
 							name: 'Save Glyphr Studio Project File',
 							icon: 'command_save',
 							note: ['Ctrl', 's'],
-							onClick: () => {
-								getCurrentProjectEditor().saveGlyphrProjectFile();
-							},
+							onClick: () => editor.saveGlyphrProjectFile,
+						},
+						{
+							child: makeElement({
+								tag: 'h3',
+								content: `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`,
+							}),
+							className: 'spanAll',
 						},
 						{ name: 'hr' },
 						{
@@ -95,10 +101,25 @@ function makeMenu(menuName) {
 							onClick: ioFont_exportFont,
 						},
 						{
+							child: makeElement({
+								tag: 'h3',
+								content: `${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`,
+							}),
+							className: 'spanAll',
+						},
+						{ name: 'hr' },
+						{
 							name: 'Export SVG Font File',
 							icon: 'command_export',
 							note: ['Ctrl', 'g'],
 							onClick: ioSVG_exportSVGfont,
+						},
+						{
+							child: makeElement({
+								tag: 'h3',
+								content: `${editor.project.settings.project.name} - SVG Font.svg`,
+							}),
+							className: 'spanAll',
 						},
 					],
 					rect.x,
