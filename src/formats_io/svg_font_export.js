@@ -3,7 +3,7 @@ import { decToHex, hexesToXMLHexes } from '../common/character_ids.js';
 import { round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
-import { makeDateStampSuffix, saveFile } from '../project_editor/saving.js';
+import { makeDateStampSuffix, saveFile } from '../project_editor/file_io.js';
 /**
 	IO > Export > SVG Font
 	Converting a Glyphr Studio Project to XML in

@@ -10,11 +10,11 @@ import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import { closeEveryTypeOfDialog, showError, showToast } from '../controls/dialogs/dialogs.js';
 import { makeProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
-import { ioFont_importFont } from '../io/font_import.js';
-import { ioSVG_importSVGfont } from '../io/svg_font_import.js';
-import { validateFileInput } from '../io/validate_file_input.js';
+import { ioFont_importFont } from '../formats_io/font_import.js';
+import { ioSVG_importSVGfont } from '../formats_io/svg_font_import.js';
+import { validateFileInput } from '../formats_io/validate_file_input.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import obleggExampleProject from '../samples/oblegg-0-2.gs2?raw';
+import obleggExampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 
 /**

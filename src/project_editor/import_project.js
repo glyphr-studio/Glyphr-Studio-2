@@ -1,6 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { charToHex, hexesToChars, validateAsHex } from '../common/character_ids.js';
-import { makeSemVerString, tryToGetProjectVersion } from '../io/validate_file_input.js';
+import { makeSemVerString, tryToGetProjectVersion } from '../formats_io/validate_file_input.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { ControlPoint } from '../project_data/control_point.js';
