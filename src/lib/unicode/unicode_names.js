@@ -76,7 +76,7 @@ export function isWhitespace(charID) {
 	// log(`isWhitespace`, 'start');
 	// log(`charID: ${charID}`);
 	// log(`whitespaceCharacters.indexOf(charID): ${whitespaceCharacters.indexOf(charID)}`);
-
+	charID = validateAsHex(charID);
 	// log(`isWhitespace`, 'end');
 	return whitespaceCharacters.indexOf(charID) > -1;
 }

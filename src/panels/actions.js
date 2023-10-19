@@ -20,7 +20,7 @@ import {
 	makeGlyphSVGforExport,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
-import { saveFile } from '../project_editor/file_io.js';
+import { saveTextFile } from '../project_editor/file_io.js';
 import { makeActionButton } from './action_buttons.js';
 import { makeAllItemTypeChooserContent } from './item_chooser.js';
 import { refreshPanel } from './panels.js';
@@ -194,7 +194,7 @@ export function getActionData(name) {
 					const editor = getCurrentProjectEditor();
 					let content = makeGlyphSVGforExport(editor.selectedItem);
 					let name = editor.selectedItem.name;
-					saveFile(name + '.svg', content);
+					saveTextFile(name + '.svg', content);
 				},
 			},
 		];

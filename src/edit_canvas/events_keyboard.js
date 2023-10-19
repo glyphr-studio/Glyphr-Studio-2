@@ -40,7 +40,7 @@ export function handleKeyPress(event) {
 	// s
 	if (ehd.isCtrlDown && key === 's') {
 		cancelDefaultEventActions(event);
-		getCurrentProjectEditor().saveGlyphrProjectFile();
+		getCurrentProjectEditor().saveProjectFile();
 	}
 
 	// g
@@ -194,7 +194,9 @@ export function handleKeyPress(event) {
 }
 
 function getKeyFromEvent(event) {
-	// log('GETKEYFROMEVENT - keyCode:' + event.keyCode + '\twhich:' + event.which);
+	// log(`getKeyFromEvent`, 'start');
+	// log(`event.keyCode: ${event.keyCode}`);
+	// log(`event.which: ${event.which}`);
 	// for 91, 93, 224 'meta' keys, return 'ctrl'
 	let specialGlyphs = {
 		8: 'backspace',
@@ -227,7 +229,13 @@ function getKeyFromEvent(event) {
 		189: 'minus',
 		224: 'ctrl',
 	};
-	return specialGlyphs[parseInt(event.which)] || String.fromCodePoint(event.which).toLowerCase();
+
+	let result =
+		specialGlyphs[parseInt(event.which)] || String.fromCodePoint(event.which).toLowerCase();
+	// log(`result: ${result}`);
+
+	// log(`getKeyFromEvent`, 'end');
+	return result;
 }
 
 function nudge(dx, dy) {
