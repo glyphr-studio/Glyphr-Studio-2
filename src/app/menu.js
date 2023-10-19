@@ -6,8 +6,8 @@ import {
 	showModalDialog,
 	showToast,
 } from '../controls/dialogs/dialogs';
-import { ioFont_exportFont } from '../io/font_export.js';
-import { ioSVG_exportSVGfont } from '../io/svg_font_export.js';
+import { ioFont_exportFont } from '../formats_io/font_export.js';
+import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
 import { makePage_OpenProject } from '../pages/open_project';
 import { emailLink } from './app';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main';

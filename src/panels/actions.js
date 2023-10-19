@@ -20,7 +20,7 @@ import {
 	makeGlyphSVGforExport,
 	removeLinkFromUsedIn,
 } from '../project_editor/cross_item_actions.js';
-import { saveFile } from '../project_editor/saving.js';
+import { saveFile } from '../project_editor/file_io.js';
 import { makeActionButton } from './action_buttons.js';
 import { makeAllItemTypeChooserContent } from './item_chooser.js';
 import { refreshPanel } from './panels.js';
@@ -767,7 +767,7 @@ function combineSelectedPaths() {
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
 		let successful = editor.multiSelect.shapes.combine();
-		if(successful) editor.history.addState('Combined selected paths');
+		if (successful) editor.history.addState('Combined selected paths');
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
@@ -778,7 +778,7 @@ function combineAllGlyphPaths() {
 	setTimeout(function () {
 		editor.multiSelect.shapes.selectAll();
 		let successful = editor.multiSelect.shapes.combine();
-		if(successful) editor.history.addState('Combined all glyph paths');
+		if (successful) editor.history.addState('Combined all glyph paths');
 		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
