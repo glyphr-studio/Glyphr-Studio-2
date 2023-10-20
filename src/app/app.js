@@ -36,13 +36,13 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: true, // Use a 'Dev Mode' window title
-				sampleProject: 'oblegg', // Load the sample project, true or 'oblegg'
-				currentPage: 'Characters', // navigate straight to a page (sentence case names)
+				sampleProject: false, // Load the sample project, true or 'oblegg'
+				currentPage: false, // navigate straight to a page (sentence case names)
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
 				stopPageNavigation: false, // overwrite project-level setting
-				selectFirstShape: true, // select a shape
+				selectFirstShape: false, // select a shape
 				selectFirstPoint: false, // select a path point
 				testActions: [],
 				testOnLoad: function () {},

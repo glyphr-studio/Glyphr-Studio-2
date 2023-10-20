@@ -27,15 +27,16 @@ let postValidationCallback;
  * XML Document Parser to validate
  *  - SVG Font (.svg)
  *  - SVG (.svg)
- * @param {*} input - Any input from the user, hopefully a File
+ * @param {*} fileHandle - Any input from the user, hopefully a File
  * @returns {Object} - processed stuff to use
  */
-export async function validateFileInput(input, callback) {
-	// log(`validateFileInput`, 'start');
+export async function validateSingleFileInput(fileHandle, callback) {
+	// log(`validateSingleFileInput`, 'start');
 	postValidationCallback = callback;
-	// log(input.files);
 
-	const file = input.files[0];
+	validationResult.fileHandle = fileHandle;
+	const file = await fileHandle.getFile();
+	// log(file);
 	validationResult.fileName = file.name;
 	let fileSuffix = file.name.split('.');
 	fileSuffix = fileSuffix[fileSuffix.length - 1].toLowerCase();
@@ -77,7 +78,7 @@ export async function validateFileInput(input, callback) {
 		`);
 	}
 
-	// log(`validateFileInput`, 'end');
+	// log(`validateSingleFileInput`, 'end');
 }
 
 // --------------------------------------------------------------

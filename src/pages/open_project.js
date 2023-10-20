@@ -1,6 +1,7 @@
 import { updateWindowUnloadEvent } from '../app/app.js';
 import {
 	addProjectEditorAndSetAsImportTarget,
+	getCurrentProjectEditor,
 	getGlyphrStudioApp,
 	getProjectEditorImportTarget,
 	setCurrentProjectEditor,
@@ -12,7 +13,8 @@ import { makeProgressIndicator } from '../controls/progress-indicator/progress_i
 import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { ioFont_importFont } from '../formats_io/font_import.js';
 import { ioSVG_importSVGfont } from '../formats_io/svg_font_import.js';
-import { validateFileInput } from '../formats_io/validate_file_input.js';
+import { validateSingleFileInput } from '../formats_io/validate_file_input.js';
+import { isFancyFileIOEnabled } from '../project_editor/file_io.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import obleggExampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
@@ -55,7 +57,6 @@ export function makePage_OpenProject(secondProjectFlag = false) {
 				</div>
 				<div id="open-project__right-area" vertical-align="middle"></div>
 				<div id="open-project__drop-note"></div>
-				<input id="open-project__file-chooser" type="file" style="display: none;"/>
 			</div>
 		`,
 	});
@@ -72,13 +73,9 @@ export function makePage_OpenProject(secondProjectFlag = false) {
 
 	// Drop and Drag Leave handlers
 	const dropNote = content.querySelector('#open-project__drop-note');
-	dropNote.addEventListener('drop', handleDrop);
+	dropNote.addEventListener('drop', handleFileInput);
 	dropNote.addEventListener('dragleave', handleDragLeave);
 
-	// File chooser handler
-	content
-		.querySelector('#open-project__file-chooser')
-		.addEventListener('change', handleDrop, false);
 	// log(`makePage_OpenProject`, 'end');
 	return content;
 }
@@ -157,8 +154,13 @@ export function makeOpenProjectTabs() {
 		tag: 'fancy-button',
 		attributes: { dark: '' },
 		innerHTML: 'or, open file chooser...',
-		onClick: () => {
-			document.getElementById('open-project__file-chooser').click();
+		onClick: async () => {
+			if (isFancyFileIOEnabled()) {
+				const files = await window.showOpenFilePicker();
+				handleFileInput(files);
+			} else {
+				showError(`Can't open OS File Picker. Try dragging and dropping a file instead.`);
+			}
 		},
 	});
 
@@ -260,13 +262,14 @@ function deselectAllTabs() {
 }
 
 /**
- * Handle file drop
- * @param {Object} event - drop event
+ * Handle file input or drop
+ * @param {Object} input - event from drop, or fileHandle from showOpenFilePicker
  */
-function handleDrop(event) {
-	// log('handleDrop', 'start');
-	cancelDefaultEventActions(event);
-	// log(event);
+async function handleFileInput(input) {
+	// log('handleFileInput', 'start');
+	cancelDefaultEventActions(input);
+	// log(`\n⮟input⮟`);
+	// log(input);
 
 	const dropNote = document.getElementById('open-project__drop-note');
 	dropNote.style.display = 'none';
@@ -274,13 +277,16 @@ function handleDrop(event) {
 	rightArea.innerHTML = '';
 	rightArea.appendChild(makeProgressIndicator());
 
-	const fileChooser = document.getElementById('open-project__file-chooser');
-	const filesData = event.dataTransfer || fileChooser;
-	// log(filesData);
+	let fileHandle;
+	if (input?.dataTransfer?.items) {
+		fileHandle = await input.dataTransfer.items[0].getAsFileSystemHandle();
+	} else {
+		fileHandle = input[0];
+	}
+	// log(fileHandle);
+	validateSingleFileInput(fileHandle, postValidationCallback);
 
-	validateFileInput(filesData, postValidationCallback);
-
-	// log('handleDrop', 'end');
+	// log('handleFileInput', 'end');
 }
 
 function postValidationCallback(validationResult) {
@@ -292,6 +298,7 @@ function postValidationCallback(validationResult) {
 		} else if (validationResult.fileType === 'svg') {
 			ioSVG_importSVGfont(validationResult.content);
 		} else if (validationResult.fileType === 'project') {
+			getCurrentProjectEditor().loadedFileHandle = validationResult.fileHandle;
 			importProjectDataAndNavigate(validationResult.content);
 		}
 	} else {
