@@ -75,9 +75,7 @@ function makeMenu(menuName) {
 		let fileMenuData = [];
 		if (isFancyFileIOEnabled()) {
 			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
-			if (editor.loadedFileHandle?.name) {
-				projectDisplayName = editor.loadedFileHandle.name;
-			}
+			if (editor.loadedFileHandle?.name) projectDisplayName = editor.loadedFileHandle.name;
 			fileMenuData.push(
 				{
 					child: makeElement({

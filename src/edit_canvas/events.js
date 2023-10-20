@@ -77,8 +77,8 @@ export function initEventHandlers(canvas) {
 }
 
 export function cancelDefaultEventActions(event) {
-	event.preventDefault();
-	event.stopPropagation();
+	if (event.preventDefault) event.preventDefault();
+	if (event.stopPropagation) event.stopPropagation();
 	return false;
 }
 
