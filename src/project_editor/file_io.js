@@ -8,13 +8,17 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
  * @param {String} fileContent - Text content of the file
  */
 export async function saveTextFile(fileSuffix, fileContent, saveAsCopy = false) {
-	if (isFancyFileIOEnabled()) {
-		let fileHandle = getCurrentProjectEditor().loadedFilehandle;
+	// log(`saveTextFile`, 'start');
+	if (isFancyFileIOEnabled() && fileSuffix === 'gs2') {
+		let fileHandle = getCurrentProjectEditor().loadedFileHandle;
 		if (saveAsCopy) fileHandle = false;
+		// log(`\n⮟fileHandle⮟`);
+		// log(fileHandle);
 		await saveTextFileDirectly(fileSuffix, fileContent, fileHandle);
 	} else {
 		saveTextFileAsDownload(fileSuffix, fileContent);
 	}
+	// log(`saveTextFile`, 'end');
 }
 
 /**
@@ -62,9 +66,11 @@ export function isFancyFileIOEnabled() {
  */
 async function saveTextFileDirectly(fileSuffix, fileContent, fileHandle = false) {
 	// log(`saveTextFileDirectly`, 'start');
-	const isSaveAs = !fileHandle;
-	// log(`isSaveAs: ${isSaveAs}`);
+	// log(`fileSuffix: ${fileSuffix}`);
 	let fileName = makeFileName(fileSuffix);
+	// log(`fileName: ${fileName}`);
+	// log(`\n⮟fileHandle⮟`);
+	// log(fileHandle);
 	const pickerOptions = {
 		suggestedName: fileName,
 		types: [
@@ -75,8 +81,9 @@ async function saveTextFileDirectly(fileSuffix, fileContent, fileHandle = false)
 		],
 	};
 
-	if (isSaveAs) fileHandle = await window.showSaveFilePicker(pickerOptions);
-
+	if (!fileHandle) fileHandle = await window.showSaveFilePicker(pickerOptions);
+	// log(`\n⮟fileHandle⮟`);
+	// log(fileHandle);
 	const writable = await fileHandle.createWritable();
 	await writable.write(fileContent);
 	await writable.close();
@@ -84,11 +91,6 @@ async function saveTextFileDirectly(fileSuffix, fileContent, fileHandle = false)
 	editor.loadedFileHandle = fileHandle;
 
 	// log(`saveTextFileDirectly`, 'end');
-}
-
-function getDocumentName() {
-	const projectName = getCurrentProjectEditor().project.settings.project.name;
-	return `${projectName} - Glyphr Studio Project.gs2`;
 }
 
 export async function open(UI) {
@@ -106,9 +108,9 @@ export async function open(UI) {
 
 		const [fileHandle] = await window.showOpenFilePicker(pickerOptions);
 		// await updateEditorLoadedFile(fileHandle, UI);
-		log(UI.currentFile);
+		// log(UI.currentFile);
 	} else {
-		log('\t file open fallback');
+		// log('\t file open fallback');
 		const fileInput = document.createElement('input');
 		fileInput.setAttribute('type', 'file');
 		fileInput.addEventListener('change', () => {
@@ -119,7 +121,7 @@ export async function open(UI) {
 					UI.currentFile.text = reader.result;
 					UI.currentFile.blob = theFile;
 					UI.currentFile.handle = false;
-					log(UI.currentFile);
+					// log(UI.currentFile);
 				};
 			})(file);
 			reader.readAsText(file);
@@ -128,7 +130,7 @@ export async function open(UI) {
 		fileInput.click();
 	}
 
-	log('open - completed file');
+	// log('open - completed file');
 }
 
 // --------------------------------------------------------------

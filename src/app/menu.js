@@ -81,7 +81,7 @@ function makeMenu(menuName) {
 			fileMenuData.push(
 				{
 					child: makeElement({
-						tag: 'h3',
+						tag: 'h2',
 						content: projectDisplayName,
 					}),
 					className: 'spanAll',
@@ -102,7 +102,7 @@ function makeMenu(menuName) {
 			fileMenuData.push(
 				{
 					child: makeElement({
-						tag: 'h3',
+						tag: 'h2',
 						content: makeFileName('gs2', true),
 					}),
 					className: 'spanAll',
@@ -119,8 +119,12 @@ function makeMenu(menuName) {
 			{ name: 'hr' },
 			{
 				child: makeElement({
-					tag: 'h3',
-					content: `${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`,
+					tag: 'h2',
+					content:
+						`${editor.project.settings.font.family}-${editor.project.settings.font.style}.otf`.replaceAll(
+							' ',
+							''
+						),
 				}),
 				className: 'spanAll',
 			},
@@ -133,7 +137,7 @@ function makeMenu(menuName) {
 			{ name: 'hr' },
 			{
 				child: makeElement({
-					tag: 'h3',
+					tag: 'h2',
 					content: makeFileName('svg'),
 				}),
 				className: 'spanAll',

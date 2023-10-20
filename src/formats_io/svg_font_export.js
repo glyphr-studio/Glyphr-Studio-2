@@ -53,9 +53,7 @@ ${ioSVG_makeAllKernPairs()}
 </svg>
 `;
 
-	const filename = project.settings.project.name + ' - SVG Font - ' + timestamp + '.svg';
-
-	saveTextFile(filename, con);
+	saveTextFile('svg', con);
 	showToast('Exported SVG Font File');
 
 	// log('ioSVG_exportSVGfont', 'end');
