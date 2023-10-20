@@ -138,7 +138,7 @@ dialog {
 	outline: var(--global-focus-style);
 }
 
-#context-menu .spanAll h3 {
+#context-menu .spanAll h2 {
 	font-size: 0.8em;
 	color: var(--enabled-restingLight-lightText);
 	font-family: monospace;
