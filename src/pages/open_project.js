@@ -182,19 +182,23 @@ export function makeOpenProjectTabs() {
 	const saves = getGlyphrStudioApp().getLocalStorage().autoSaves;
 	let hasContent = false;
 	for (let id in saves) {
-		addAsChildren(contentAutoSavesList, [
-			makeElement({ content: saves[id].name }),
-			makeElement({ content: id }),
-			makeElement({ content: new Date(saves[id].time).toLocaleDateString() }),
+		contentAutoSavesList.appendChild(makeRestoreProjectRow(id));
+		hasContent = true;
+	}
+
+	function makeRestoreProjectRow(id) {
+		let row = makeElement({ tag: 'div', className: 'auto-saves__list-row' });
+		addAsChildren(row, [
+			makeElement({ className: 'name', content: saves[id].name }),
+			makeElement({ className: 'project-id', content: `(${id})` }),
 			makeElement({
 				tag: 'fancy-button',
 				innerHTML: '⇨',
-				onClick: () => {
-					loadProjectFromAutoSave(id);
-				},
+				onClick: () => loadProjectFromAutoSave(id),
 			}),
+			makeElement({ className: 'time-stamp', content: new Date(saves[id].time).toLocaleString() }),
 		]);
-		hasContent = true;
+		return row;
 	}
 
 	if (!hasContent)
@@ -294,16 +298,14 @@ export function makeOpenProjectTabs() {
 	});
 
 	const tabs = makeElement({ className: 'open-project__tabs' });
-	addAsChildren(tabs, [tabNew, tabLoad, tabAutoSaves, tabExamples]);
+	let tabControls = [tabNew, tabLoad, tabExamples];
+	if (!isSecondProject) tabControls.splice(2, 0, tabAutoSaves);
+	addAsChildren(tabs, tabControls);
 
 	const tabWrapper = makeElement({ className: 'open-project__tab-wrapper' });
-	addAsChildren(tabWrapper, [
-		tabs,
-		tabContentNew,
-		tabContentLoad,
-		tabContentAutoSaves,
-		tabContentExamples,
-	]);
+	let tabContents = [tabs, tabContentNew, tabContentLoad, tabContentExamples];
+	if (!isSecondProject) tabContents.splice(3, 0, tabContentAutoSaves);
+	addAsChildren(tabWrapper, tabContents);
 	return tabWrapper;
 }
 

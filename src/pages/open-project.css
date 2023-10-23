@@ -120,7 +120,7 @@
 	border-width: 1px;
 	border-color: transparent;
 	border-bottom-color: var(--blue-l15) !important;
-	padding: 4px 16px;
+	padding: 4px 15px;
 	margin: 0px -2px 0px 0px;
 	color: var(--blue-l70);
 	outline-width: 0px;
@@ -176,31 +176,71 @@
 	margin: 10px;
 }
 
+/*
+	Auto-save list view
+*/
 #auto-saves__list {
-	min-height: 200px;
+	min-height: 210px;
+	max-height: 210px;
 	border-radius: 4px;
 	overflow-y: auto;
 	overflow-x: none;
-	background-color: var(--blue-l10);
-	padding: 10px;
+	background-color: hsla(200, 100%, 30%, 5%); /* blue-l40 */
+	padding: 5px 10px 10px 5px;
+
+}
+
+.auto-saves__list-row {
 	display: grid;
-	grid-template-columns: 1fr min-content min-content min-content;
-	grid-template-rows: repeat(40px);
-	row-gap: 10px;
-	column-gap: 10px;
+	grid-template-columns: min-content 1fr 40px;
+	grid-template-rows: 24px 16px;
+	padding: 0px 0px 0px 5px;
+	margin-bottom: 10px;
+	border-radius: 4px;
+	vertical-align: top;
 }
 
-#auto-saves__list span {
-	line-height: 24px;
-	min-width: 90px;
+.auto-saves__list-row:hover {
+	background-color: hsla(200, 100%, 30%, 20%); /* blue-l40 */
 }
 
-#auto-saves__list fancy-button {
-	height: 20px;
+.auto-saves__list-row .name {
+	grid-column: span 2;
+	padding-top: 2px;
+	font-size: 1.1em;
+}
+
+.auto-saves__list-row .project-id,
+.auto-saves__list-row .time-stamp {
+	display: block;
+	opacity: 0.7;
+	padding: 0px 10px 4px 0px;
+	font-family: monospace;
+	font-size: 11px;
+}
+
+.auto-saves__list-row .project-id {
+	grid-column: 1;
+	grid-row: 2;
+	width: 100px;
+}
+
+.auto-saves__list-row .time-stamp {
+	grid-column: 2;
+	grid-row: 2;
+}
+
+.auto-saves__list-row fancy-button {
+	grid-column: 3;
+	height: 40px;
 	width: 20px;
 	padding: 0px;
 	font-size: 20px;
+	margin: 0px;
+	grid-row-start: 1;
+	grid-row-end: 2;
 }
+
 
 /*
 	Open Project Dialog

@@ -138,37 +138,36 @@ export class GlyphrStudioApp {
 	// --------------------------------------------------------------
 
 	getLocalStorage() {
-		log(`GlyphrStudioApp.getLocalStorage`, 'start');
+		// log(`GlyphrStudioApp.getLocalStorage`, 'start');
 		if (!window.localStorage.getItem('GlyphrStudio')) {
 			window.localStorage.setItem('GlyphrStudio', '{}');
 		}
 		const jsonData = window.localStorage.getItem('GlyphrStudio');
-		log(`jsonData: ${jsonData}`);
 		let data = {};
 		if (jsonData) data = JSON.parse(jsonData);
-		log(`\n⮟data⮟`);
-		log(data);
-		log(`GlyphrStudioApp.getLocalStorage`, 'end');
+		// log(`\n⮟data⮟`);
+		// log(data);
+		// log(`GlyphrStudioApp.getLocalStorage`, 'end');
 		return data;
 	}
 
 	setLocalStorage(key, newData) {
-		log(`GlyphrStudioApp.setLocalStorage`, 'start');
-		log(`key: ${key}`);
-		log(`\n⮟data⮟`);
-		log(newData);
+		// log(`GlyphrStudioApp.setLocalStorage`, 'start');
+		// log(`key: ${key}`);
+		// log(`\n⮟data⮟`);
+		// log(newData);
 
 		const data = this.getLocalStorage();
 		data[key] = newData;
 		window.localStorage.setItem('GlyphrStudio', JSON.stringify(data));
 
-		log(`\n⮟window.localStorage⮟`);
-		log(window.localStorage);
-		log(`GlyphrStudioApp.setLocalStorage`, 'end');
+		// log(`\n⮟window.localStorage⮟`);
+		// log(window.localStorage);
+		// log(`GlyphrStudioApp.setLocalStorage`, 'end');
 	}
 
 	addAutoSaveState() {
-		log(`addAutoSaveState`, 'start');
+		// log(`addAutoSaveState`, 'start');
 		const projectData = getCurrentProject().save();
 		const metadata = projectData.settings.project;
 		const saveData = {
@@ -177,12 +176,12 @@ export class GlyphrStudioApp {
 			id: metadata.id,
 			project: projectData,
 		};
-		log(`metadata.name: ${metadata.name}`);
-		log(`metadata.id: ${metadata.id}`);
+		// log(`metadata.name: ${metadata.name}`);
+		// log(`metadata.id: ${metadata.id}`);
 		let newSaves = this.getLocalStorage()?.autoSaves || {};
 		newSaves[metadata.id] = saveData;
-		log(`\n⮟newSaves⮟`);
-		log(newSaves);
+		// log(`\n⮟newSaves⮟`);
+		// log(newSaves);
 		this.setLocalStorage('autoSaves', newSaves);
 		log(`addAutoSaveState`, 'end');
 	}
