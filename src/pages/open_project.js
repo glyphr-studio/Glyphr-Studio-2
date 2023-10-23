@@ -166,6 +166,44 @@ export function makeOpenProjectTabs() {
 
 	addAsChildren(tabContentLoad, [dropTarget, openFileChooser]);
 
+	// Auto-saved backups
+	const tabContentAutoSaves = makeElement({
+		id: 'tab-content__auto-saves',
+		className: 'open-project__tab-content',
+		innerHTML: `<h2>Restore from auto-saved backup</h2>`,
+		style: 'display: none;',
+	});
+
+	const contentAutoSavesList = makeElement({
+		tag: 'div',
+		id: 'auto-saves__list',
+	});
+
+	const saves = getGlyphrStudioApp().getLocalStorage().autoSaves;
+	let hasContent = false;
+	for (let id in saves) {
+		addAsChildren(contentAutoSavesList, [
+			makeElement({ content: saves[id].name }),
+			makeElement({ content: id }),
+			makeElement({ content: new Date(saves[id].time).toLocaleDateString() }),
+			makeElement({
+				tag: 'fancy-button',
+				innerHTML: '⇨',
+				onClick: () => {
+					loadProjectFromAutoSave(id);
+				},
+			}),
+		]);
+		hasContent = true;
+	}
+
+	if (!hasContent)
+		contentAutoSavesList.appendChild(
+			makeElement({ tag: 'i', innerHTML: 'No auto-saves exist yet' })
+		);
+
+	addAsChildren(tabContentAutoSaves, [contentAutoSavesList]);
+
 	// Content for Examples tab
 	const tabContentExamples = makeElement({
 		id: 'tab-content__examples',
@@ -231,6 +269,18 @@ export function makeOpenProjectTabs() {
 		},
 	});
 
+	const tabAutoSaves = makeElement({
+		tag: 'button',
+		id: 'open-project__tab-auto-saves',
+		className: 'open-project__tab',
+		innerHTML: 'Restore',
+		onClick: () => {
+			deselectAllTabs();
+			tabAutoSaves.setAttribute('selected', '');
+			tabContentAutoSaves.style.display = 'block';
+		},
+	});
+
 	const tabExamples = makeElement({
 		tag: 'button',
 		id: 'open-project__tab-examples',
@@ -244,10 +294,16 @@ export function makeOpenProjectTabs() {
 	});
 
 	const tabs = makeElement({ className: 'open-project__tabs' });
-	addAsChildren(tabs, [tabNew, tabLoad, tabExamples]);
+	addAsChildren(tabs, [tabNew, tabLoad, tabAutoSaves, tabExamples]);
 
 	const tabWrapper = makeElement({ className: 'open-project__tab-wrapper' });
-	addAsChildren(tabWrapper, [tabs, tabContentNew, tabContentLoad, tabContentExamples]);
+	addAsChildren(tabWrapper, [
+		tabs,
+		tabContentNew,
+		tabContentLoad,
+		tabContentAutoSaves,
+		tabContentExamples,
+	]);
 	return tabWrapper;
 }
 
@@ -324,6 +380,16 @@ function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	editor.navigate();
 }
 
+function loadProjectFromAutoSave(projectID) {
+	const saves = getGlyphrStudioApp().getLocalStorage().autoSaves;
+	for (let id in saves) {
+		if (id === projectID) {
+			importProjectDataAndNavigate(saves[id].project);
+			showToast(`Restored project from auto-save:<br>${saves[id].name}`);
+			return;
+		}
+	}
+}
 /**
  * Handle Message event
  * @param {Object} event - event

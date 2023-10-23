@@ -143,6 +143,7 @@ function makeSettingsTabContentApp() {
 	});
 
 	addAsChildren(tabContent, [
+		makeOneSettingsRow('app', 'autoSave'),
 		makeOneSettingsRow('app', 'stopPageNavigation', updateWindowUnloadEvent),
 		makeOneSettingsRow('app', 'showNonCharPoints'),
 		makeOneSettingsRow('app', 'formatSaveFile'),

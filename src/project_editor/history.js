@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { refreshPanel } from '../panels/panels.js';
 import { Glyph } from '../project_data/glyph.js';
@@ -49,6 +49,15 @@ export class History {
 
 		const undoButton = document.getElementById('actionButtonUndo');
 		if (undoButton) undoButton.removeAttribute('disabled');
+
+		if (editor.project.settings.app.autoSave) {
+			const app = getGlyphrStudioApp();
+			if (app.settings.dev.mode && app.settings.dev.autoSave) {
+				app.addAutoSaveState();
+			} else {
+				app.addAutoSaveState();
+			}
+		}
 		// log(this);
 		// log(`History.addState`, 'end');
 	}

@@ -31,6 +31,7 @@ export class GlyphrStudioProject {
 			app: {
 				savePreferences: false,
 				stopPageNavigation: true,
+				autoSave: true,
 				showNonCharPoints: false,
 				formatSaveFile: false,
 				moveShapesOnSVGDragDrop: false,
