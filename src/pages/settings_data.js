@@ -26,6 +26,11 @@ export default {
 			description: `App preferences can be saved locally to your computer, then loaded automatically when you come back to this project.`,
 			type: `Boolean`,
 		},
+		autoSave: {
+			label: `Auto-save a copy of the project with each change`,
+			description: `When enabled, this option will use your browser's local storage to keep backups. These backups can be restored from the Open Projects page.`,
+			type: `Boolean`,
+		},
 		stopPageNavigation: {
 			label: `Warn about unsaved changes on window close`,
 			description: `This will stop closing the window or tab with an "Are you sure?" message if you have unsaved changes.`,
