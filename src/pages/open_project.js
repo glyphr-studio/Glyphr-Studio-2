@@ -85,8 +85,13 @@ export function makePage_OpenProject(secondProjectFlag = false) {
  * this function selects the default tab and content
  */
 function showDefaultTab(node) {
-	node.querySelector('#tab-content__examples').style.display = 'block';
-	node.querySelector('#open-project__tab-examples').setAttribute('selected', '');
+	if (isSecondProject) {
+		node.querySelector('#tab-content__load').style.display = 'block';
+		node.querySelector('#open-project__tab-load').setAttribute('selected', '');
+	} else {
+		node.querySelector('#tab-content__new').style.display = 'block';
+		node.querySelector('#open-project__tab-new').setAttribute('selected', '');
+	}
 }
 
 /**
