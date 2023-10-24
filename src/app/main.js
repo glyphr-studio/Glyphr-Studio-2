@@ -97,11 +97,13 @@ function registerCustomComponents() {
  * Events added to window, no matter what Project Editor is running
  */
 function addGlobalEventListeners() {
-	window.addEventListener('mouseup', () => {
-		closeAllNavMenus();
-		closeAllOptionChoosers();
-		closeAllInfoBubbles();
-	});
+	if (!getGlyphrStudioApp().settings.dev.mode) {
+		window.addEventListener('mouseup', () => {
+			closeAllNavMenus();
+			closeAllOptionChoosers();
+			closeAllInfoBubbles();
+		});
+	}
 }
 
 // --------------------------------------------------------------

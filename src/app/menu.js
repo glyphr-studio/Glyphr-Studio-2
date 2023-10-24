@@ -171,10 +171,11 @@ function makeMenu(menuName) {
 					},
 					{
 						name: 'Cross-project actions',
-						icon: 'command_autoFit',
+						icon: 'command_crossProjectActions',
 						onClick: () => {
 							getGlyphrStudioApp().appPageNavigate(makePage_CrossProjectActions);
 						},
+						disabled: getGlyphrStudioApp().projectEditors.length === 1,
 					},
 					{
 						name: 'Learn more about working with two projects',

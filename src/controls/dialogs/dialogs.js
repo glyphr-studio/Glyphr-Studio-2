@@ -1,5 +1,5 @@
 import { getCurrentProjectEditor } from '../../app/main.js';
-import { accentColors, uiColors } from '../../common/colors.js';
+import { accentColors } from '../../common/colors.js';
 import { addAsChildren, makeElement, textToNode } from '../../common/dom.js';
 import { round } from '../../common/functions.js';
 import { makeIcon } from '../../common/graphics.js';
@@ -251,18 +251,23 @@ export function makeContextMenu(
 function makeOneContextMenuRow(data = {}) {
 	// log(`makeOneContextMenuRow`, 'start');
 	// log(data);
+	let isDisabled = data.disabled || false;
+
 	let row = makeElement({
 		tag: 'div',
 		className: data?.className || 'context-menu-row',
 		attributes: { tabindex: '0' },
 	});
+	if (isDisabled) row.setAttribute('disabled', '');
 
 	if (data.child) {
 		row.appendChild(data.child);
-		row.addEventListener('click', () => {
-			closeAllOptionChoosers();
-			if (data.onClick) data.onClick();
-		});
+		if (!isDisabled) {
+			row.addEventListener('click', () => {
+				closeAllOptionChoosers();
+				if (data.onClick) data.onClick();
+			});
+		}
 		return row;
 	}
 

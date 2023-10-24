@@ -178,22 +178,24 @@ export function makeViewToolsButtons() {
 		tag: 'input',
 		className: 'editor-page__zoom-readout',
 		title: 'Zoom level',
-		innerHTML: zoomReadoutNumber,
+		innerHTML: `${zoomReadoutNumber}%`,
 	});
 	zoomReadout.setAttribute('value', zoomReadoutNumber);
 	zoomReadout.setAttribute('disabled', '');
 	zoomReadout.addEventListener('change', () => {
 		getCurrentProjectEditor().setViewZoom(this.value);
-		this.innerHTML = this.value;
+		this.innerHTML = `${this.value}%`;
+		this.value = `${zoomReadoutNumber}%`;
 	});
 
 	editor.subscribe({
-		topic: 'view',
+		topic: 'editCanvasView',
 		subscriberID: 'tools.zoomReadout',
 		callback: (newView) => {
 			let zoomReadoutNumber = round(newView.dz * 100, 2);
 			zoomReadout.setAttribute('value', zoomReadoutNumber);
-			zoomReadout.innerHTML = zoomReadoutNumber;
+			zoomReadout.innerHTML = `${zoomReadoutNumber}%`;
+			zoomReadout.value = `${zoomReadoutNumber}%`;
 		},
 	});
 

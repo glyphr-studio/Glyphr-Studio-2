@@ -60,11 +60,12 @@ let actionButtonIconColors = {
 	blueOutline: accentColors.blue.l70,
 	greenOutline: accentColors.green.l70,
 	grayOutline: accentColors.gray.l70,
+	purpleOutline: accentColors.purple.l40,
 	redX: uiColors.red,
 };
 
 // Universal actions
-makeActionButtonIcon.copy = function () {
+makeActionButtonIcon.copy = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -80,7 +81,7 @@ makeActionButtonIcon.copy = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.paste = function () {
+makeActionButtonIcon.paste = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -95,7 +96,7 @@ makeActionButtonIcon.paste = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.pastePathsFromAnotherGlyph = function () {
+makeActionButtonIcon.pastePathsFromAnotherGlyph = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -108,6 +109,21 @@ makeActionButtonIcon.pastePathsFromAnotherGlyph = function () {
 		<path fill="${blue}" d="M17.4,20.6h-4.8l-1,3h1.6v1.7H8v-1.7h1.6l3.6-10.2h-1.6V12h6.8v1.5h-1.7l3.7,10.2H22v1.7h-5.2v-1.7h1.7L17.4,20.6z M16.9,19.1l-1.8-5.6H15l-1.8,5.6H16.9z"/>
 	`;
 
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.pastePathsFromAnotherProject = () => {
+	let background = actionButtonIconColors.lightFill;
+	let purple = actionButtonIconColors.purpleOutline;
+
+	const re = `
+		<path fill="${background}" d="m11.5,1c4.817,0,7.471,0,8.986,1.514,1.514,1.515,1.514,4.168,1.514,8.986s0,7.471-1.514,8.985c-1.515,1.515-4.168,1.515-8.986,1.515s-7.471,0-8.985-1.515c-1.515-1.514-1.515-4.168-1.515-8.985s0-7.471,1.515-8.986c1.514-1.514,4.168-1.514,8.985-1.514"/>
+		<path fill="${purple}" d="m11.5,23c-5.084,0-7.886,0-9.692-1.808-1.808-1.808-1.808-4.608-1.808-9.692S0,3.615,1.808,1.808C3.614,0,6.416,0,11.5,0s7.886,0,9.692,1.808c1.808,1.808,1.808,4.608,1.808,9.692s0,7.885-1.808,9.692c-1.807,1.808-4.608,1.808-9.692,1.808Zm0-21c-4.55,0-7.057,0-8.278,1.222s-1.222,3.729-1.222,8.278,0,7.057,1.222,8.278,3.728,1.222,8.278,1.222,7.057,0,8.278-1.222,1.222-3.729,1.222-8.278,0-7.057-1.222-8.278-3.728-1.222-8.278-1.222Z"/>
+		<rect fill="${purple}" x="5" y="5" width="3" height="3"/>
+		<path fill="${background}" d="m18.5,8c4.817,0,7.471,0,8.986,1.514,1.514,1.515,1.514,4.168,1.514,8.986s0,7.471-1.514,8.985c-1.515,1.515-4.168,1.515-8.986,1.515s-7.471,0-8.985-1.515c-1.515-1.514-1.515-4.168-1.515-8.985s0-7.471,1.515-8.986c1.514-1.514,4.168-1.514,8.985-1.514"/>
+		<path fill="${purple}" d="m28.192,8.808c-1.807-1.808-4.608-1.808-9.692-1.808-.176,0-.329,0-.5,0v-2.001h-3v2.033c-.735.022-1.389.068-2,.133v-2.166h-3v2.961c-.437.228-.841.495-1.192.847-.352.352-.618.756-.847,1.192h-2.961v3h2.166c-.065.611-.111,1.265-.133,2h-2.033v3h2.001c0,.171,0,.324,0,.5,0,5.084,0,7.885,1.808,9.692,1.807,1.808,4.608,1.808,9.692,1.808s7.886,0,9.692-1.808c1.808-1.808,1.808-4.608,1.808-9.692s0-7.885-1.808-9.692Zm-1.414,17.971c-1.222,1.222-3.728,1.222-8.278,1.222s-7.057,0-8.278-1.222-1.222-3.729-1.222-8.278,0-7.057,1.222-8.278,3.728-1.222,8.278-1.222,7.057,0,8.278,1.222,1.222,3.729,1.222,8.278,0,7.057-1.222,8.278Z"/>
+		<path fill="${purple}" d="m20.233,20h-3.467l-1.092,3h1.525v2h-5.2v-2h1.733l3.467-9h-1.733v-2h6.067v2h-1.733l3.467,9h1.733v2h-5.2v-2h1.517l-1.083-3Zm-.433-1l-1.3-4-1.3,4h2.6Z"/>
+	`;
 	return svgWrap(re);
 };
 
@@ -135,7 +151,7 @@ makeActionButtonIcon.addPath = function (isComponentInstance = false) {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.undo = function () {
+makeActionButtonIcon.undo = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -148,7 +164,7 @@ makeActionButtonIcon.undo = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.linkToGlyph = function () {
+makeActionButtonIcon.linkToGlyph = () => {
 	let re = '';
 	let green = actionButtonIconColors.greenOutline;
 
@@ -164,7 +180,7 @@ makeActionButtonIcon.linkToGlyph = function () {
 };
 
 // (shared icons, Glyph and Path)
-makeActionButtonIcon.round = function () {
+makeActionButtonIcon.round = () => {
 	let red = actionButtonIconColors.redX;
 	let fill = actionButtonIconColors.darkFill;
 
@@ -180,7 +196,7 @@ makeActionButtonIcon.round = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.flipVertical = function () {
+makeActionButtonIcon.flipVertical = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -196,7 +212,7 @@ makeActionButtonIcon.flipVertical = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.flipHorizontal = function () {
+makeActionButtonIcon.flipHorizontal = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -213,7 +229,7 @@ makeActionButtonIcon.flipHorizontal = function () {
 };
 
 // Glyph actions
-makeActionButtonIcon.exportGlyphSVG = function () {
+makeActionButtonIcon.exportGlyphSVG = () => {
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
 
@@ -227,7 +243,7 @@ makeActionButtonIcon.exportGlyphSVG = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.deleteGlyph = function () {
+makeActionButtonIcon.deleteGlyph = () => {
 	let red = actionButtonIconColors.redX;
 	let fill = actionButtonIconColors.darkFill;
 
@@ -241,7 +257,7 @@ makeActionButtonIcon.deleteGlyph = function () {
 };
 
 // Path actions
-makeActionButtonIcon.reverseWinding = function () {
+makeActionButtonIcon.reverseWinding = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -281,7 +297,7 @@ makeActionButtonIcon.switchPathComponent = function (isComponentInstance = false
 };
 
 // Boolean combine actions
-makeActionButtonIcon.subtractUsingBottom = function () {
+makeActionButtonIcon.subtractUsingBottom = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -296,7 +312,7 @@ makeActionButtonIcon.subtractUsingBottom = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.subtractUsingTop = function () {
+makeActionButtonIcon.subtractUsingTop = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -311,7 +327,7 @@ makeActionButtonIcon.subtractUsingTop = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.combine = function () {
+makeActionButtonIcon.combine = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -350,7 +366,7 @@ makeActionButtonIcon.deletePath = function (isComponentInstance = false) {
 };
 
 // Kerning actions
-makeActionButtonIcon.edit = function () {
+makeActionButtonIcon.edit = () => {
 	let re = '';
 	let accent = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -363,7 +379,7 @@ makeActionButtonIcon.edit = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.delete = function () {
+makeActionButtonIcon.delete = () => {
 	let re = '';
 	let red = actionButtonIconColors.redX;
 
@@ -376,7 +392,7 @@ makeActionButtonIcon.delete = function () {
 };
 
 // Layer actions
-makeActionButtonIcon.moveLayerDown = function () {
+makeActionButtonIcon.moveLayerDown = () => {
 	let re = '';
 	let accent = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -391,7 +407,7 @@ makeActionButtonIcon.moveLayerDown = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.moveLayerUp = function () {
+makeActionButtonIcon.moveLayerUp = () => {
 	let re = '';
 	let accent = actionButtonIconColors.blueOutline;
 	let fill = actionButtonIconColors.darkFill;
@@ -484,7 +500,7 @@ makeActionButtonIcon.align = function (edge) {
 };
 
 // Point actions
-makeActionButtonIcon.resetPathPoint = function () {
+makeActionButtonIcon.resetPathPoint = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -509,7 +525,7 @@ makeActionButtonIcon.resetPathPoint = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.deletePathPoint = function () {
+makeActionButtonIcon.deletePathPoint = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let red = actionButtonIconColors.redX;
@@ -532,7 +548,7 @@ makeActionButtonIcon.deletePathPoint = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.insertPathPoint = function () {
+makeActionButtonIcon.insertPathPoint = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 
@@ -554,7 +570,7 @@ makeActionButtonIcon.insertPathPoint = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.selectNextPathPoint = function () {
+makeActionButtonIcon.selectNextPathPoint = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -567,7 +583,7 @@ makeActionButtonIcon.selectNextPathPoint = function () {
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.selectPreviousPathPoint = function () {
+makeActionButtonIcon.selectPreviousPathPoint = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;
 	let gray = actionButtonIconColors.grayOutline;
@@ -581,12 +597,12 @@ makeActionButtonIcon.selectPreviousPathPoint = function () {
 };
 
 // Dev actions for testing and default
-makeActionButtonIcon.default = function () {
+makeActionButtonIcon.default = () => {
 	let re = `<rect width="30" height="30" fill="${actionButtonIconColors.greenOutline}"/>`;
 	return svgWrap(re);
 };
 
-makeActionButtonIcon.test = function () {
+makeActionButtonIcon.test = () => {
 	let re = `
 		<path d="M28.05,23.82c-1.65-1.79-9.55-13.02-9.55-17.82V3h1c.28,0,.5-.72,.5-1s-.22-1-.5-1H10.5c-.28,0-.5,.72-.5,1s.22,1,.5,1h1v3c0,4.8-7.9,16.03-9.55,17.82-.58,.55-.95,1.32-.95,2.18,0,1.66,1.34,3,3,3H26c1.66,0,3-1.34,3-3,0-.86-.37-1.63-.95-2.18ZM13.5,6V3h3v3c0,2.76,2.01,6.95,4.25,10.72-3.27,1.69-5.6-.72-7.75-.72-.34,0-1.86-.31-4,1.15,2.34-3.88,4.5-8.28,4.5-11.15Zm3.5,20c-1.66,0-3-1.34-3-3s1.34-3,3-3,3,1.34,3,3-1.34,3-3,3Zm-6-7.5c0-.83,.67-1.5,1.5-1.5s1.5,.67,1.5,1.5-.67,1.5-1.5,1.5-1.5-.67-1.5-1.5Z" fill="${actionButtonIconColors.redX}"/>
 		<circle cx="15" cy="14" r="1" fill="${actionButtonIconColors.redX}"/>
