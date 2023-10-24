@@ -1,4 +1,4 @@
-import { getCurrentProjectEditor } from '../app/main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import {
@@ -122,6 +122,14 @@ export function getActionData(name) {
 				onClick: () => {
 					showDialogChooseOtherItem('copyPaths');
 				},
+			},
+			{
+				iconName: 'pastePathsFromAnotherProject',
+				title: `Get Paths From Another Project\nChoose another Glyph from the other open project, and copy all the paths from that glyph to this one.`,
+				onClick: () => {
+					// TODO pastePathsFromAnotherProject
+				},
+				disabled: getGlyphrStudioApp().projectEditors.length === 1,
 			},
 		];
 	}

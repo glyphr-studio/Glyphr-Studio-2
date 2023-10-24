@@ -123,6 +123,7 @@ dialog {
 	display: contents;
 	padding: 5px 10px 5px 5px;
 	height: 24px;
+	border-radius: 4px;
 }
 
 .context-menu-row:hover > span,
@@ -130,12 +131,30 @@ dialog {
 .context-menu-row:hover > .row-notes span,
 .context-menu-row:hover > .row-notes code {
 	background-color: var(--enabled-focus-background);
-	color: var(--blue-l35);
+	color: var(--blue-l45);
 	cursor: pointer;
 }
 
 .context-menu-row:focus {
 	outline: var(--global-focus-style);
+}
+
+.context-menu-row[disabled] {
+	opacity: 0.5;
+	color: var(--disabled-text-light);
+}
+
+.context-menu-row[disabled]:hover > span,
+.context-menu-row[disabled]:hover > .row-notes,
+.context-menu-row[disabled]:hover > .row-notes span,
+.context-menu-row[disabled]:hover > .row-notes code{
+	color: var(--disabled-text-light);
+	cursor: default;
+	background-color: transparent;
+}
+
+.context-menu-row[disabled] svg g{
+	fill: var(--disabled-text-light) !important;
 }
 
 #context-menu .spanAll h2 {

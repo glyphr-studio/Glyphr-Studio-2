@@ -76,8 +76,10 @@
 }
 
 .editor-page__zoom-readout {
-	width: 4em;
+	width: 4.5em;
 	height: 30px;
+	text-align: right;
+	padding-right: 4px;
 }
 
 .editor-page__edit-canvas-wrapper,
