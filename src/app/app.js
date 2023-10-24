@@ -37,7 +37,7 @@ export class GlyphrStudioApp {
 				mode: true, // global switch for all the stuff below
 				overwriteTitle: true, // Use a 'Dev Mode' window title
 				sampleProject: false, // Load the sample project, true or 'oblegg'
-				currentPage: false, // navigate straight to a page (sentence case names)
+				currentPage: 'Settings', // navigate straight to a page (sentence case names)
 				currentGlyphID: false, // select a glyph
 				currentPanel: false, // navigate straight to a panel (title case names)
 				currentTool: false, // select a tool
