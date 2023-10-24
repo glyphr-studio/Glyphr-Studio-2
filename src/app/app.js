@@ -1,3 +1,4 @@
+import { makeElement } from '../common/dom.js';
 import { closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
@@ -8,7 +9,10 @@ import {
 	addProjectEditorAndSetAsImportTarget,
 	getCurrentProject,
 	getGlyphrStudioApp,
+	getProjectEditorImportTarget,
+	setCurrentProjectEditor,
 } from './main.js';
+import { makePage_OpenProject } from './open_project.js';
 
 /**
  * Creates a new Glyphr Studio Application
@@ -34,18 +38,19 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: true, // global switch for all the stuff below
-				overwriteTitle: true, // Use a 'Dev Mode' window title
-				sampleProject: false, // Load the sample project, true or 'oblegg'
-				currentPage: 'Settings', // navigate straight to a page (sentence case names)
-				currentGlyphID: false, // select a glyph
-				currentPanel: false, // navigate straight to a panel (title case names)
-				currentTool: false, // select a tool
-				stopPageNavigation: false, // overwrite project-level setting
-				autoSave: false, // trigger auto saves
-				selectFirstShape: false, // select a shape
-				selectFirstPoint: false, // select a path point
-				testActions: [],
+				mode: false, // {bool} global switch for all the stuff below
+				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
+				sampleProject: false, // {bool or 'oblegg'} Load the sample project
+				twoSampleProjects: true, // {bool} Load two sample projects
+				currentPage: 'Settings', // {Sentence case page name} navigate straight to a page
+				currentGlyphID: false, // {glyph id} select a glyph
+				currentPanel: false, // {Title case panel name} navigate straight to a panel
+				currentTool: false, // {Tool name} select a tool
+				stopPageNavigation: false, // {bool} overwrite project-level setting
+				autoSave: false, // {bool} trigger auto saves
+				selectFirstShape: false, // {bool} select a shape
+				selectFirstPoint: false, // {bool} select a path point
+				testActions: [], // {functions}
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
@@ -60,7 +65,7 @@ export class GlyphrStudioApp {
 	 */
 	setUp() {
 		log(`GlyphrStudioApp.setUp`, 'start');
-		const editor = addProjectEditorAndSetAsImportTarget();
+		let editor = addProjectEditorAndSetAsImportTarget();
 
 		// Dev mode stuff
 		const dev = this.settings.dev;
@@ -72,7 +77,15 @@ export class GlyphrStudioApp {
 			if (dev.testOnLoad) dev.testOnLoad();
 
 			// Navigation & selection
-			if (dev.sampleProject) {
+			if (dev.twoSampleProjects) {
+				editor.project = importGlyphrProjectFromText(simpleExampleProject);
+				addProjectEditorAndSetAsImportTarget();
+				editor = getProjectEditorImportTarget();
+				setCurrentProjectEditor(editor);
+				editor.project = importGlyphrProjectFromText(obleggSampleProject);
+				editor.nav.page = dev.currentPage || 'Overview';
+				updateWindowUnloadEvent();
+			} else if (dev.sampleProject) {
 				let proj = simpleExampleProject;
 				if (dev.sampleProject === 'oblegg') proj = obleggSampleProject;
 				// if (dev.sampleProject === 'test') proj = test;
@@ -86,15 +99,24 @@ export class GlyphrStudioApp {
 			if (dev.selectFirstPoint)
 				editor.multiSelect.points.select(editor.selectedItem.shapes[0].pathPoints[0]);
 		}
+		// log(editor);
+		// log(editor.nav.page);
 
 		if (this.settings.telemetry) {
 			addTelemetry();
 		}
 
-		// log(editor);
-		// log(editor.nav.page);
+		// Load the Open Project page
+		const mainContent = makeElement({
+			tag: 'div',
+			id: 'app__main-content',
+		});
+		mainContent.appendChild(makePage_OpenProject());
+		const wrapper = document.getElementById('app__wrapper');
+		wrapper.appendChild(mainContent);
 		this.fadeOutLandingPage();
-		editor.navigate();
+
+		// Final dev mode stuff
 		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw();
 
 		log(`GlyphrStudioApp.setUp`, 'end');

@@ -1,11 +1,3 @@
-import { updateWindowUnloadEvent } from '../app/app.js';
-import {
-	addProjectEditorAndSetAsImportTarget,
-	getCurrentProjectEditor,
-	getGlyphrStudioApp,
-	getProjectEditorImportTarget,
-	setCurrentProjectEditor,
-} from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import logoVertical from '../common/graphics/logo-wordmark-vertical.svg?raw';
 import { closeEveryTypeOfDialog, showError, showToast } from '../controls/dialogs/dialogs.js';
@@ -18,11 +10,18 @@ import { isFancyFileIOEnabled } from '../project_editor/file_io.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import obleggExampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
+import { updateWindowUnloadEvent } from './app.js';
+import {
+	addProjectEditorAndSetAsImportTarget,
+	getCurrentProjectEditor,
+	getGlyphrStudioApp,
+	getProjectEditorImportTarget,
+	setCurrentProjectEditor,
+} from './main.js';
 
 /**
  * Page > Open Project
  * The first page you see when you open Glyphr Studio.
- * HTML and associated functions for this page.
  */
 
 export const importOverflowCount = 326;
@@ -376,7 +375,7 @@ function postValidationCallback(validationResult) {
 	// log(`postValidationCallback`, 'end');
 }
 
-function importProjectDataAndNavigate(glyphrStudioProjectFile) {
+export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	closeEveryTypeOfDialog();
 	const editor = getProjectEditorImportTarget();
 	setCurrentProjectEditor(editor);

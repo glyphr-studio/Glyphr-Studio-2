@@ -22,12 +22,6 @@ import { clickTool } from './tools/tools.js';
 
 export function handleKeyPress(event) {
 	const editor = getCurrentProjectEditor();
-
-	if (editor.nav.page === 'Open project') {
-		// log('handleKeyPress', 'end');
-		return;
-	}
-
 	// log('handleKeyPress', 'start');
 	const key = getKeyFromEvent(event);
 	// log(`KEY ${key} from ${event.which}`);

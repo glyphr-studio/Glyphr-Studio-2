@@ -8,10 +8,10 @@ import {
 } from '../controls/dialogs/dialogs.js';
 import { ioFont_exportFont } from '../formats_io/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
-import { makePage_OpenProject } from '../pages/open_project.js';
 import { isFancyFileIOEnabled, makeFileName } from '../project_editor/file_io.js';
 import { emailLink } from './app.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
+import { makePage_OpenProject } from './open_project.js';
 
 // --------------------------------------------------------------
 // Top bar for the App
