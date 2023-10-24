@@ -107,19 +107,33 @@ export class GlyphrStudioApp {
 		}
 
 		// Load the Open Project page
-		const mainContent = makeElement({
-			tag: 'div',
-			id: 'app__main-content',
-		});
-		mainContent.appendChild(makePage_OpenProject());
-		const wrapper = document.getElementById('app__wrapper');
-		wrapper.appendChild(mainContent);
+		if (dev.mode && dev.currentPage) {
+			editor.navigate();
+		} else {
+			this.appPageNavigate(makePage_OpenProject);
+		}
 		this.fadeOutLandingPage();
 
 		// Final dev mode stuff
 		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw();
 
 		log(`GlyphrStudioApp.setUp`, 'end');
+	}
+
+	/**
+	 * App Pages are 'above' Project Editor Pages, so we need a custom navigation
+	 * handler for Open Project and Cross Project Actions pages
+	 * @param {Function} pageMaker - function that creates app page content
+	 */
+	appPageNavigate(pageMaker) {
+		const mainContent = makeElement({
+			tag: 'div',
+			id: 'app__main-content',
+		});
+		mainContent.appendChild(pageMaker());
+		const wrapper = document.getElementById('app__wrapper');
+		wrapper.innerHTML = '';
+		wrapper.appendChild(mainContent);
 	}
 
 	/**

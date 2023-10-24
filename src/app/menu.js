@@ -10,6 +10,7 @@ import { ioFont_exportFont } from '../formats_io/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
 import { isFancyFileIOEnabled, makeFileName } from '../project_editor/file_io.js';
 import { emailLink } from './app.js';
+import { makePage_CrossProjectActions } from './cross_project_actions.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
 
@@ -167,6 +168,13 @@ function makeMenu(menuName) {
 					{
 						child: makeProjectPreviewRow(1),
 						className: 'spanAll',
+					},
+					{
+						name: 'Cross-project actions',
+						icon: 'command_autoFit',
+						onClick: () => {
+							getGlyphrStudioApp().appPageNavigate(makePage_CrossProjectActions);
+						},
 					},
 					{
 						name: 'Learn more about working with two projects',

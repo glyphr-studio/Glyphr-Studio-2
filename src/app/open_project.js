@@ -23,8 +23,6 @@ import {
  * Page > Open Project
  * The first page you see when you open Glyphr Studio.
  */
-
-export const importOverflowCount = 326;
 let isSecondProject;
 
 export function makePage_OpenProject(secondProjectFlag = false) {
