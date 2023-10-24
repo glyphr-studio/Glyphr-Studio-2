@@ -14,7 +14,6 @@ import { makePage_Help } from '../pages/help.js';
 import { makePage_Kerning } from '../pages/kerning.js';
 import { makePage_Ligatures } from '../pages/ligatures.js';
 import { livePreviewPageWindowResize, makePage_LivePreview } from '../pages/live_preview.js';
-import { makePage_OpenProject } from '../pages/open_project.js';
 import { makePage_Overview } from '../pages/overview.js';
 import { makePage_Settings } from '../pages/settings.js';
 import { makeSingleItemTypeChooserContent } from '../panels/item_chooser.js';
@@ -35,10 +34,6 @@ export class Navigator {
 	 */
 	get tableOfContents() {
 		return {
-			'Open project': {
-				pageMaker: makePage_OpenProject,
-				iconName: false,
-			},
 			Overview: {
 				pageMaker: makePage_Overview,
 				iconName: 'page_overview',
@@ -101,8 +96,6 @@ export class Navigator {
 	navigate() {
 		log(`Navigator.navigate`, 'start');
 		let editor = getCurrentProjectEditor();
-		let fadePageIn = false;
-
 		log(`this.page: ${this.page}`);
 		log(`this.panel: ${this.panel}`);
 		log(`editor.selectedItemID: ${editor.selectedItemID}`);
@@ -114,14 +107,11 @@ export class Navigator {
 
 		if (wrapper) {
 			try {
-				const pageContent = this.makePageContent(fadePageIn);
-
+				const pageContent = this.makePageContent();
 				wrapper.innerHTML = '';
-				if (this.page !== 'Open project') {
-					wrapper.appendChild(makeAppTopBar());
-					editor.multiSelect.shapes.clear();
-					editor.multiSelect.points.clear();
-				}
+				wrapper.appendChild(makeAppTopBar());
+				editor.multiSelect.shapes.clear();
+				editor.multiSelect.points.clear();
 				wrapper.appendChild(pageContent);
 			} catch (error) {
 				console.warn(`Navigation failed:`, error);
@@ -138,12 +128,11 @@ export class Navigator {
 	 * Sets the current view to the appropriate Page
 	 * @returns {Object} Page Loader object - {string} content and {function} callback
 	 */
-	makePageContent(fadePageIn = false) {
+	makePageContent() {
 		// log(`Navigator.makePageContent`, 'start');
 		const editorContent = makeElement({
 			tag: 'div',
 			id: 'app__main-content',
-			className: fadePageIn ? 'page-fade-in' : '',
 		});
 
 		// Default page loader fallback

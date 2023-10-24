@@ -388,7 +388,7 @@ function makeCurrentRangesTable() {
 		addAsChildren(
 			rangeTable,
 			textToNode(`
-			<em>No rages are visible in this project.</em>
+			<em>No ranges are visible in this project.<br>Defaulting to the Basic Latin range.</em>
 		`)
 		);
 	}

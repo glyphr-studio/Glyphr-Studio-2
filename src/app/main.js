@@ -12,6 +12,8 @@ import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 /* Other stuff */
 import asciiLogo from '../common/graphics/ascii-wordmark-vertical.txt?raw';
 import logo from '../common/graphics/logo-icon.svg?raw';
+import { closeAllInfoBubbles, closeAllOptionChoosers } from '../controls/dialogs/dialogs.js';
+import { closeAllNavMenus } from '../project_editor/navigator.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
 import { GlyphrStudioApp, showAppErrorPage } from './app.js';
 
@@ -41,6 +43,7 @@ export function glyphrStudioOnLoad() {
 
 		if (passPreChecks()) {
 			registerCustomComponents();
+			addGlobalEventListeners();
 			// Load project
 			GSApp.setUp();
 			log(`\n⮟GSApp⮟`);
@@ -87,6 +90,17 @@ function registerCustomComponents() {
 
 	data.forEach((control) => {
 		customElements.define(control.fileName, control.className);
+	});
+}
+
+/**
+ * Events added to window, no matter what Project Editor is running
+ */
+function addGlobalEventListeners() {
+	window.addEventListener('mouseup', () => {
+		closeAllNavMenus();
+		closeAllOptionChoosers();
+		closeAllInfoBubbles();
 	});
 }
 

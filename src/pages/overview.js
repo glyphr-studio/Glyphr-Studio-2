@@ -125,7 +125,6 @@ export function makePage_Overview() {
 	panelArea.appendChild(projectSummaryCard);
 	panelArea.appendChild(welcomeCard);
 	panelArea.appendChild(contributeCard);
-	// log(`PageOverview.makePageContent`, 'end');
 
 	return content;
 }
