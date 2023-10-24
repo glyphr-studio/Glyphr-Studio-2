@@ -28,7 +28,7 @@ export default {
 		},
 		autoSave: {
 			label: `Auto-save a copy of the project with each change`,
-			description: `When enabled, this option will use your browser's local storage to keep backups. These backups can be restored from the Open Projects page.`,
+			description: `When enabled, this option will use your browser's local storage to keep backups. These backups can be restored from the Open Projects page. Your browser's local storage is confined to this browser on this computer. If you use Glyphr Studio from another browser or on another computer, those backups will be available from there.`,
 			type: `Boolean`,
 		},
 		stopPageNavigation: {

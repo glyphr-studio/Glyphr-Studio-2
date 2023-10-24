@@ -63,7 +63,7 @@ export class InfoBubble extends HTMLElement {
 			className: 'content',
 		});
 		let bubbleWidth = this.getAttribute('bubble-width');
-		log(`bubbleWidth: ${bubbleWidth}`);
+		// log(`bubbleWidth: ${bubbleWidth}`);
 		if (bubbleWidth) content.setAttribute('style', `width: ${bubbleWidth};`);
 
 		bubble.appendChild(pointer);
