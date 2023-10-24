@@ -276,9 +276,11 @@ function makeCard_ScaleVertical() {
 			action: function (glyph) {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
-				let newY = glyph.maxes.yMax * scaleVertical;
-				glyph.setGlyphSize({ height: newHeight, updateComponentInstances: false });
-				glyph.setGlyphPosition(false, newY, false);
+				glyph.setGlyphSize({
+					height: newHeight,
+					updateComponentInstances: false,
+					transformOrigin: 'baseline-left',
+				});
 			},
 		});
 	});
@@ -337,10 +339,11 @@ function makeCard_ScaleHorizontal() {
 			action: function (glyph) {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let newWidth = (glyph.maxes.xMax - glyph.maxes.xMin) * scaleHorizontal;
-				let newX = glyph.maxes.xMin * scaleHorizontal;
-				glyph.setGlyphSize({ width: newWidth, updateComponentInstances: false });
-				// TODO Transform Origin (remove this)
-				glyph.setGlyphPosition(newX, false, true);
+				glyph.setGlyphSize({
+					width: newWidth,
+					updateComponentInstances: false,
+					transformOrigin: 'baseline-left',
+				});
 				if (updateAdvanceWidth) glyph.advanceWidth = glyph.advanceWidth * scaleHorizontal;
 			},
 		});
