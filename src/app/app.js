@@ -42,7 +42,7 @@ export class GlyphrStudioApp {
 				mode: true, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // {bool or 'oblegg'} Load the sample project
-				twoSampleProjects: false, // {bool} Load two sample projects
+				twoSampleProjects: true, // {bool} Load two sample projects
 				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
@@ -119,6 +119,17 @@ export class GlyphrStudioApp {
 		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw();
 
 		log(`GlyphrStudioApp.setUp`, 'end');
+	}
+
+	/**
+	 * Returns the project editor that isn't the selected project editor
+	 */
+	get otherProjectEditor() {
+		if (this.selectedProjectEditor === this.projectEditors[0]) {
+			return this.projectEditors[1];
+		} else {
+			return this.projectEditors[0];
+		}
 	}
 
 	/**
