@@ -8,9 +8,8 @@ export default defineConfig({
 		manifest: false,
 		emptyOutDir: true,
 		chunkSizeWarningLimit: 2000,
-		minify: false,
 		rollupOptions: {
-			treeshake: false,
+			treeshake: 'smallest',
 		},
 	},
 });
