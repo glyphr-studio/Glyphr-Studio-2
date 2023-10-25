@@ -24,7 +24,7 @@ import { makeSingleItemTypeChooserContent } from '../panels/item_chooser.js';
 
 export class Navigator {
 	constructor() {
-		this.page = 'Open project';
+		this.page = 'Overview';
 		this.panel = 'Attributes';
 		this.pageContents = {};
 	}
