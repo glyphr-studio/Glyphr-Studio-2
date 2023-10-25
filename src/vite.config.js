@@ -10,7 +10,7 @@ export default defineConfig({
 		chunkSizeWarningLimit: 2000,
 		minify: false,
 		rollupOptions: {
-			treeshake: 'smallest',
+			treeshake: false,
 		},
 	},
 });
