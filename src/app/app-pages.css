@@ -317,6 +317,27 @@
 	padding: 20px 0px 0px 0px;
 }
 
+#cross-project-actions__project-flipper code {
+	background-color: hsla(285, 100%, 17%, 0.1); /* purple l15 */
+	border-color: var(--purple-l05);
+	color: white;
+}
+#cross-project-actions__project-flipper .flip-button {
+	display: inline-block;
+	color: var(--purple-l80);
+	background-color: hsla(285, 100%, 17%, 0.2); /* purple l15 */
+	padding: 2px 6px;
+	border: 1px solid hsla(285, 100%, 17%, 0.2);
+	border-radius: 4px;
+	text-align: center;
+}
+
+#cross-project-actions__project-flipper .flip-button:hover {
+	cursor: pointer;
+	color: white;
+	border-color: var(--purple-l80);
+}
+
 .cross-project-actions__page-header h1 {
 	color: var(--purple-l90);
 }
@@ -356,29 +377,52 @@
 .cross-project-actions__column-layout {
 	width: 100%;
 	display: grid;
-	grid-template-columns: 20px max-content max-content 50px min-content 50px;
-	column-gap: 40px;
+	grid-template-columns: 20px max-content max-content 70px min-content 70px;
 	row-gap: 10px;
 	margin-top: 20px;
+}
+
+.cross-project-actions__column-header {
+	font-size: 0.8em;
+	border-bottom: 1px solid var(--blue-l20);
+	padding-left: 20px;
+	padding-bottom: 2px;
+	font-style: italic;
+	color: var(--gray-l60);
 }
 
 .cross-project-actions__column-layout .glyph-id {
 	grid-column: 3;
 	font-family: monospace;
-	color: var(--gray-l70);
+	color: var(--gray-l60);
+	padding-left: 20px;
 }
+
 .cross-project-actions__column-layout .glyph-name {
 	grid-column: 2;
 	font-size: 1.4em;
+	padding-left: 20px;
+}
+
+.cross-project-actions__column-layout .connector {
+	grid-column: 5;
+	font-size: 1.4em;
+	padding-left: 20px;
+	color: var(--gray-l60);
 }
 
 .cross-project-actions__column-layout .checkbox-wrapper {
 	height: 100%;
-	width: 100%;
+	width: 20px;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	grid-column: 1;
+}
+.cross-project-actions__column-layout .checkbox-wrapper input {
+	height: 20px;
+	width: 20px;
+	accent-color: var(--purple-l60);
 }
 
 .cross-project-actions__column-layout label,
@@ -399,6 +443,7 @@
 	height: 50px;
 	overflow: hidden;
 	border-radius: 4px;
+	margin-left: 20px;
 }
 
 /*

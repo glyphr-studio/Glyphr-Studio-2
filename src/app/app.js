@@ -79,11 +79,11 @@ export class GlyphrStudioApp {
 
 			// Navigation & selection
 			if (dev.twoSampleProjects) {
-				editor.project = importGlyphrProjectFromText(simpleExampleProject);
+				editor.project = importGlyphrProjectFromText(obleggSampleProject);
 				addProjectEditorAndSetAsImportTarget();
 				editor = getProjectEditorImportTarget();
 				setCurrentProjectEditor(editor);
-				editor.project = importGlyphrProjectFromText(obleggSampleProject);
+				editor.project = importGlyphrProjectFromText(simpleExampleProject);
 				editor.nav.page = dev.currentPage || 'Overview';
 				updateWindowUnloadEvent();
 			} else if (dev.sampleProject) {
