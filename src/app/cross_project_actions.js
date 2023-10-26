@@ -45,11 +45,14 @@ function makeContent_copyShapes(parent) {
 	const table = makeElement({
 		className: 'cross-project-actions__column-layout',
 		id: 'cross-project-actions__character-copy',
-		innerHTML: `
-			<h2 class="source">Source</h2>
-			<span class="tween" style="line-height: 28px;">copy</span>
-			<h2 class="destination">Destination</h2>
-		`,
+		// innerHTML: `
+		// 	<span>&nbsp;</span>
+		// 	<h2 class="source">Source ID</h2>
+		// 	<h2 class="source">Name</h2>
+		// 	<span>&nbsp;</span>
+		// 	<span>&nbsp;</span>
+		// 	<span>&nbsp;</span>
+		// `,
 	});
 
 	makeRows(new CharacterRange(getUnicodeBlockByName('Basic Latin')), table);
@@ -97,49 +100,49 @@ function makeRows(range, parent) {
 		const sourceItem = sourceEditor.project.getItem(`glyph-${id}`);
 		const destinationItem = destinationEditor.project.getItem(`glyph-${id}`);
 		if (sourceItem) {
-			parent.appendChild(makeItemPreview(sourceItem, 'source', sourceEditor));
-			if (sourceItem) {
-				let wrapper = makeElement({ className: 'tween' });
-				wrapper.appendChild(
-					makeElement({
-						tag: 'input',
-						attributes: { type: 'checkbox' },
-						className: 'copy-shapes-checkbox',
-						id: `checkbox-${id}`,
-					})
-				);
-				parent.appendChild(wrapper);
-			}
-			parent.appendChild(makeItemPreview(destinationItem, 'destination', destinationEditor));
+			let wrapper = makeElement({ className: 'checkbox-wrapper' });
+			wrapper.appendChild(
+				makeElement({
+					tag: 'input',
+					attributes: { type: 'checkbox', style: 'grid-column: 1;' },
+					className: 'copy-shapes-checkbox',
+					id: `checkbox-${id}`,
+				})
+			);
+			parent.appendChild(wrapper);
+
+			parent.appendChild(
+				makeElement({
+					tag: 'label',
+					attributes: { for: `checkbox-${id}` },
+					content: sourceItem.name,
+					className: 'glyph-name',
+				})
+			);
+			parent.appendChild(
+				makeElement({
+					tag: 'label',
+					attributes: { for: `checkbox-${id}` },
+					content: `glyph-${id}`,
+					className: 'glyph-id',
+				})
+			);
+
+			parent.appendChild(
+				makeElement({
+					className: 'thumbnail',
+					innerHTML: sourceEditor.project.makeItemThumbnail(sourceItem),
+					attributes: { style: 'grid-column: 4;' },
+				})
+			);
+			parent.appendChild(makeElement({ content: ' ➔ ', attributes: { style: 'grid-column: 5;' } }));
+			parent.appendChild(
+				makeElement({
+					className: 'thumbnail',
+					innerHTML: destinationEditor.project.makeItemThumbnail(destinationItem),
+					attributes: { style: 'grid-column: 6;' },
+				})
+			);
 		}
 	});
-}
-
-function makeItemPreview(item, className, editor) {
-	let row = makeElement({ className: `${className} item-preview__row` });
-
-	if (item) {
-		row.appendChild(
-			makeElement({
-				className: 'item-preview__thumbnail',
-				innerHTML: editor.project.makeItemThumbnail(item),
-			})
-		);
-
-		row.appendChild(
-			makeElement({
-				className: 'item-preview__title',
-				innerHTML: `${item?.name || 'ERROR'}`,
-			})
-		);
-
-		row.appendChild(
-			makeElement({
-				className: 'item-preview__subtitle',
-				innerHTML: `${item?.displayType || 'ERROR'}&ensp;|&ensp;${item.id}`,
-			})
-		);
-	}
-
-	return row;
 }
