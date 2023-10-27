@@ -3,6 +3,7 @@ import { duplicates } from '../common/functions';
 import { showToast } from '../controls/dialogs/dialogs';
 import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks';
 import { copyShapesFromTo } from '../panels/actions';
+import { makeSingleInput, makeSingleLabel } from '../panels/cards';
 import { CharacterRange } from '../project_data/character_range';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main';
@@ -107,7 +108,7 @@ function updateSelectedIDs(itemID, add = true) {
 	if (add) selectedItemIDs.push(itemID);
 	else selectedItemIDs.splice(selectedItemIDs.indexOf(itemID), 1);
 	selectedItemIDs = selectedItemIDs.filter(duplicates);
-	selectedItemIDs = selectedItemIDs.filter(item => !!item);
+	selectedItemIDs = selectedItemIDs.filter((item) => !!item);
 	document.getElementById('cross-project-actions__item-count').innerHTML = `
 		${selectedItemIDs.length} item${selectedItemIDs.length === 1 ? '' : 's'} selected
 	`;
@@ -135,17 +136,48 @@ function updateContent_copyShapes(parent) {
 	if (emRatio !== 1) {
 		parent.appendChild(
 			makeElement({
-				tag: 'div',
-				className: 'cross-project-actions__scale-warning',
-				innerHTML: `
-				Warning: the Em sizes for these two projects are different.
-				The destination font is ${Math.round(emRatio * 100)}% ${emRatio < 1 ? 'smaller' : 'larger'}
-				than the source font.
-			`,
+				tag: 'input',
+				attributes: { type: 'checkbox' },
+				id: 'checkbox-scale',
 			})
 		);
+		parent.appendChild(
+			makeSingleLabel(
+				`Scale items to match destination Em size. The destination font is ${Math.round(
+					emRatio * 100
+				)}% ${emRatio < 1 ? 'smaller' : 'larger'}
+				than the source font.`,
+				false,
+				'checkbox-scale'
+			)
+		);
+		parent.appendChild(makeElement({ tag: 'br' }));
 	}
+	parent.appendChild(
+		makeElement({
+			tag: 'input',
+			attributes: { type: 'checkbox' },
+			id: 'checkbox-advance-width',
+		})
+	);
+	parent.appendChild(
+		makeSingleLabel(
+			'Update advance width to maintain right-side bearing',
+			false,
+			'checkbox-advance-width'
+		)
+	);
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(
+		makeElement({
+			tag: 'input',
+			attributes: { type: 'checkbox' },
+			id: 'checkbox-reverse-windings',
+		})
+	);
+	parent.appendChild(makeSingleLabel('Reverse shape windings', false, 'checkbox-reverse-windings'));
 
+	// Table
 	const table = makeElement({
 		className: 'cross-project-actions__column-layout',
 		id: 'cross-project-actions__character-copy',
@@ -209,13 +241,43 @@ function copyShapes() {
 	// log(`Cross Project Actions - copyShapes`, 'start');
 	// log(`\n⮟selectedItemIDs⮟`);
 	// log(selectedItemIDs);
-	selectedItemIDs.forEach(itemID => {
-		// log(`itemID: ${itemID}`);
+	let emRatio =
+		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
+	log(`emRatio: ${emRatio}`);
+
+	let updateAdvanceWidth = document.getElementById('checkbox-advance-width').checked;
+	log(`updateAdvanceWidth: ${updateAdvanceWidth}`);
+
+	let scaleItems = document.getElementById('checkbox-scale')?.checked;
+	log(`scaleItems: ${scaleItems}`);
+
+	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
+	log(`reverseWindings: ${reverseWindings}`);
+
+	selectedItemIDs.forEach((itemID) => {
+		log(`itemID: ${itemID}`);
 		const sourceItem = sourceEditor.project.getItem(itemID);
 		const destinationItem = destinationEditor.project.getItem(itemID, true);
 		const resolvedGlyph = makeGlyphWithResolvedLinks(sourceItem);
+		log(resolvedGlyph);
+
+		if (scaleItems) {
+			let deltaWidth = resolvedGlyph.advanceWidth * emRatio - resolvedGlyph.advanceWidth;
+			log(`deltaWidth: ${deltaWidth}`);
+			resolvedGlyph.updateGlyphSize({
+				width: deltaWidth,
+				ratioLock: true,
+				transformOrigin: 'baseline-left',
+			});
+		}
+
+		if (reverseWindings) resolvedGlyph.reverseWinding();
+		let oldRSB = destinationItem.rightSideBearing;
+
 		copyShapesFromTo(resolvedGlyph, destinationItem);
+		if (updateAdvanceWidth) destinationItem.rightSideBearing = oldRSB;
 	});
+
 	showToast(`Copied shapes from ${selectedItemIDs.length} items`);
 	updateContent_copyShapes(document.querySelector('#cross-project-actions__page-content'));
 	clearAllSelections();

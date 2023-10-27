@@ -287,11 +287,12 @@ function toggleHandleInputs(handle, show) {
 	if (group) group.style.display = show ? 'grid' : 'none';
 }
 
-export function makeSingleLabel(text, infoContent = false) {
+export function makeSingleLabel(text, infoContent = false, forID = false) {
 	let newText = makeElement({ content: text });
 	let newLabel = makeElement({
 		tag: 'label',
 	});
+	if (forID) newLabel.setAttribute('for', forID);
 	newLabel.appendChild(newText);
 	if (infoContent) {
 		let newInfo = makeElement({

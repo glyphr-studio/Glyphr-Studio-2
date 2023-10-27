@@ -139,10 +139,10 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 	// log(`makeGlyphWithResolvedLinks`, 'start');
 	// log(`\n⮟sourceGlyph⮟`);
 	// log(sourceGlyph);
-	let resolvedGlyph = new Glyph({
-		id: 'glyph-with-resolved-links',
-		name: 'Glyph with resolved links',
-	});
+	let resolvedGlyph = new Glyph(sourceGlyph);
+	resolvedGlyph.id = 'glyph-with-resolved-links';
+	resolvedGlyph.name = 'Glyph with resolved links';
+	resolvedGlyph.shapes = [];
 	let newPaths = [];
 	sourceGlyph.shapes.forEach((shape) => {
 		// delete shape.__ID;
@@ -157,7 +157,8 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 			}
 		}
 	});
-	resolvedGlyph.shapes = newPaths;
+	newPaths.forEach(path => resolvedGlyph.addOneShape(path));
+	// resolvedGlyph.shapes = newPaths;
 	resolvedGlyph.parent = getCurrentProject();
 	// log(`\n⮟resolvedGlyph⮟`);
 	// log(resolvedGlyph);
