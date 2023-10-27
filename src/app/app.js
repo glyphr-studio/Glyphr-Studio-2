@@ -84,6 +84,7 @@ export class GlyphrStudioApp {
 				editor = getProjectEditorImportTarget();
 				setCurrentProjectEditor(editor);
 				editor.project = importGlyphrProjectFromText(simpleExampleProject);
+				// editor.project = importGlyphrProjectFromText(obleggSampleProject);
 				editor.nav.page = dev.currentPage || 'Overview';
 				updateWindowUnloadEvent();
 			} else if (dev.sampleProject) {

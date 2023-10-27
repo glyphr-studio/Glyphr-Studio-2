@@ -358,8 +358,9 @@
 	background-color: hsla(285, 100%, 17%, 0.3); /* purple l15 */
 	padding: 10px;
 	border-radius: 4px;
+	display: inline-block;
 	max-width: 800px;
-	width: max-content;
+	width: auto;
 }
 
 .cross-project-actions__page-header h1 {
@@ -403,6 +404,20 @@
 	background-color: var(--purple-l20);
 	border-color: var(--purple-l15);
 	color: white;
+}
+
+
+#cross-project-actions__page-content > input {
+	width: 14px;
+	height: 14px;
+}
+
+#cross-project-actions__page-content > label {
+	display: inline-block;
+	padding: 0px 0px 0px 10px;
+	line-height: 20px;
+	position:relative;
+	top: -2px;
 }
 
 .cross-project-actions__column-layout {
@@ -469,7 +484,8 @@
 	align-items: center;
 	justify-content: left;
 }
-.cross-project-actions__column-layout label:hover {
+
+#cross-project-actions__page label:hover {
 	color: white;
 }
 
