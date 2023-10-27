@@ -1,4 +1,5 @@
 import { makeElement } from '../common/dom';
+import { duplicates } from '../common/functions';
 import { showToast } from '../controls/dialogs/dialogs';
 import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks';
 import { copyShapesFromTo } from '../panels/actions';
@@ -6,9 +7,10 @@ import { CharacterRange } from '../project_data/character_range';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main';
 
-
 let sourceEditor;
 let destinationEditor;
+let selectedItemIDs = [];
+
 export function makePage_CrossProjectActions() {
 	const content = makeElement({
 		tag: 'div',
@@ -16,8 +18,12 @@ export function makePage_CrossProjectActions() {
 		innerHTML: `
 			<div id="cross-project-actions__page">
 				<div class="cross-project-actions__page-header">
-					<h1>Cross-project actions</h1>
-					<span id="cross-project-actions__close-button">✖</span>
+					<h1>Cross&#8209;project&nbsp;actions</h1><span></span><span id="cross-project-actions__close-button">✖</span>
+					<option-chooser selected-id="Copy shapes " selected-name="Copy shapes">
+						<option selected>Copy shapes</option>
+					</option-chooser>
+					<span id="cross-project-actions__item-count"></span>
+					<span></span>
 				</div>
 				<div id="cross-project-actions__page-content">
 				</div>
@@ -45,14 +51,14 @@ export function makePage_CrossProjectActions() {
 	return content;
 }
 
-function makeProjectFlipper() {
+function makeProjectFlipper(textPrefix = 'From') {
 	let sourceProject = sourceEditor.project.settings.project;
 	let destinationProject = destinationEditor.project.settings.project;
 	const wrapper = makeElement({
 		tag: 'span',
 		id: 'cross-project-actions__project-flipper',
 		innerHTML: `
-			From project
+			${textPrefix} project
 			<code id="project-flipper-source-name"
 				title="${sourceProject.name}\n${sourceProject.id}">
 				${sourceProject.name}
@@ -83,35 +89,61 @@ function flipProjects() {
 	updateContent_copyShapes(document.querySelector('#cross-project-actions__page-content'));
 }
 
+function toggleCheckboxes() {
+	let state = document.getElementById('toggle-all-checkbox').checked;
+	const checkboxes = document.querySelectorAll('.item-select-checkbox');
+	checkboxes.forEach((box) => {
+		box.checked = state;
+		updateSelectedIDs(box.getAttribute('item-id'), box.checked);
+	});
+}
 
+function clearAllSelections() {
+	selectedItemIDs = [];
+	document.getElementById('cross-project-actions__item-count').innerHTML = '';
+}
+
+function updateSelectedIDs(itemID, add = true) {
+	if (add) selectedItemIDs.push(itemID);
+	else selectedItemIDs.splice(selectedItemIDs.indexOf(itemID), 1);
+	selectedItemIDs = selectedItemIDs.filter(duplicates);
+	selectedItemIDs = selectedItemIDs.filter(item => !!item);
+	document.getElementById('cross-project-actions__item-count').innerHTML = `
+		${selectedItemIDs.length} item${selectedItemIDs.length === 1 ? '' : 's'} selected
+	`;
+}
 
 // --------------------------------------------------------------
 // Copy Shapes
 // --------------------------------------------------------------
 
-
 function updateContent_copyShapes(parent) {
 	parent.innerHTML = '';
 	parent.appendChild(
 		makeElement({
-			content: 'Copy glyph shapes from one project to another.&nbsp;&nbsp;',
+			tag: 'p',
+			content: `This action will take a copy of each path (or paths from a resolved component link)
+			from the source project and insert them into the same character in the destination project.&nbsp;&nbsp;`,
 		})
 	);
 
-	parent.appendChild(makeProjectFlipper());
+	parent.appendChild(makeProjectFlipper('Copy shapes from'));
 
-	let emRatio = destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
+	let emRatio =
+		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
 
 	if (emRatio !== 1) {
-		parent.appendChild(makeElement({
-			tag: 'div',
-			className: 'cross-project-actions__scale-warning',
-			innerHTML: `
-				Warning: the Em sizes of these to fonts is different.
+		parent.appendChild(
+			makeElement({
+				tag: 'div',
+				className: 'cross-project-actions__scale-warning',
+				innerHTML: `
+				Warning: the Em sizes for these two projects are different.
 				The destination font is ${Math.round(emRatio * 100)}% ${emRatio < 1 ? 'smaller' : 'larger'}
 				than the source font.
-			`
-		}));
+			`,
+			})
+		);
 	}
 
 	const table = makeElement({
@@ -174,46 +206,40 @@ function makeFooter_copyShapes(parent) {
 }
 
 function copyShapes() {
-	log(`Cross Project Actions - copyShapes`, 'start');
-
-	const checkboxes = document.querySelectorAll('.item-select-checkbox');
-	let count = 0;
-	checkboxes.forEach((box) => {
-		if (box.checked) {
-			const id = box.id.substring('checkbox-'.length);
-			log(`id: ${id}`);
-			const sourceItem = sourceEditor.project.getItem(`glyph-${id}`);
-			const destinationItem = destinationEditor.project.getItem(`glyph-${id}`, true);
-			const resolvedGlyph = makeGlyphWithResolvedLinks(sourceItem);
-			copyShapesFromTo(resolvedGlyph, destinationItem);
-			count++;
-		}
+	// log(`Cross Project Actions - copyShapes`, 'start');
+	// log(`\n⮟selectedItemIDs⮟`);
+	// log(selectedItemIDs);
+	selectedItemIDs.forEach(itemID => {
+		// log(`itemID: ${itemID}`);
+		const sourceItem = sourceEditor.project.getItem(itemID);
+		const destinationItem = destinationEditor.project.getItem(itemID, true);
+		const resolvedGlyph = makeGlyphWithResolvedLinks(sourceItem);
+		copyShapesFromTo(resolvedGlyph, destinationItem);
 	});
-	showToast(`Copied shapes from ${count} items`);
+	showToast(`Copied shapes from ${selectedItemIDs.length} items`);
 	updateContent_copyShapes(document.querySelector('#cross-project-actions__page-content'));
-	log(`Cross Project Actions - copyShapes`, 'end');
-}
-
-function toggleCheckboxes() {
-	let state = document.getElementById('toggle-all-checkbox').checked;
-	const checkboxes = document.querySelectorAll('.item-select-checkbox');
-	checkboxes.forEach((box) => (box.checked = state));
+	clearAllSelections();
+	// log(`Cross Project Actions - copyShapes`, 'end');
 }
 
 function makeRows(range, parent) {
 	range.array.forEach((id) => {
-		const sourceItem = sourceEditor.project.getItem(`glyph-${id}`);
-		const destinationItem = destinationEditor.project.getItem(`glyph-${id}`);
+		const itemID = `glyph-${id}`;
+		const sourceItem = sourceEditor.project.getItem(itemID);
+		const destinationItem = destinationEditor.project.getItem(itemID);
 		const title = `Select glyph-${id}`;
 		if (sourceItem) {
 			let wrapper = makeElement({ className: 'checkbox-wrapper' });
 			wrapper.appendChild(
 				makeElement({
 					tag: 'input',
-					attributes: { type: 'checkbox', style: 'grid-column: 1;' },
+					attributes: { type: 'checkbox', style: 'grid-column: 1;', 'item-id': itemID },
 					className: 'item-select-checkbox',
 					id: `checkbox-${id}`,
 					title: title,
+					onClick: (event) => {
+						updateSelectedIDs(itemID, event.target.checked);
+					},
 				})
 			);
 			parent.appendChild(wrapper);
@@ -231,7 +257,7 @@ function makeRows(range, parent) {
 				makeElement({
 					tag: 'label',
 					attributes: { for: `checkbox-${id}` },
-					content: `glyph-${id}`,
+					content: itemID,
 					className: 'glyph-id',
 					title: title,
 				})

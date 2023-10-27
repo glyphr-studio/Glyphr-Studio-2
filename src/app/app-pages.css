@@ -301,7 +301,7 @@
 .cross-project-actions__page-header {
 	grid-row: 1;
 	display: grid;
-	grid-template-columns: 1fr 50px;
+	grid-template-columns: min-content 1fr 50px;
 }
 
 #cross-project-actions__page-content {
@@ -315,6 +315,19 @@
 	border-style: solid;
 	border-color: var(--blue-l15);
 	padding: 20px 0px 0px 0px;
+}
+
+.cross-project-actions__page-header option-chooser {
+	max-width: 300px;
+	font-size: 1.2em;
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
+#cross-project-actions__project-flipper {
+	font-size: 1.2em;
+	display: block;
+	padding: 10px 0px;
 }
 
 #cross-project-actions__project-flipper code {
@@ -340,9 +353,24 @@
 	border-color: var(--purple-l80);
 }
 
+.cross-project-actions__scale-warning {
+	margin: 0px 0px 10px 0px;
+	background-color: hsla(285, 100%, 17%, 0.3); /* purple l15 */
+	padding: 10px;
+	border-radius: 4px;
+	max-width: 800px;
+	width: max-content;
+}
+
 .cross-project-actions__page-header h1 {
 	color: var(--purple-l90);
+	display: inline;
 }
+
+#cross-project-actions__page-content p {
+	max-width: 800px;
+}
+
 #cross-project-actions__page-content h2,
 .cross-project-actions__column-layout h2 {
 	color: var(--gray-l80);
@@ -350,6 +378,7 @@
 	border-style: solid;
 	border-color: var(--blue-l15);
 }
+
 #cross-project-actions__page-content h3,
 .cross-project-actions__column-layout h3 {
 	color: var(--gray-l90);
@@ -391,6 +420,11 @@
 	padding-bottom: 2px;
 	font-style: italic;
 	color: var(--gray-l60);
+}
+
+#cross-project-actions__item-count {
+	font-size: 1.2em;
+	margin: 14px 0px 0px 20px;
 }
 
 .cross-project-actions__column-layout .glyph-id {
