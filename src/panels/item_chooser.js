@@ -92,10 +92,9 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 	return wrapper;
 }
 
-function makeRangeAndItemTypeChooser() {
+export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) {
 	// log(`makeRangeAndItemTypeChooser`, 'start');
 
-	const editor = getCurrentProjectEditor();
 	let selectedRange = editor.selectedCharacterRange;
 	// log(selectedRange);
 	let optionChooser = makeElement({

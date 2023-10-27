@@ -1,16 +1,15 @@
 import { makeElement } from '../common/dom';
-import { duplicates } from '../common/functions';
+import { countItems, duplicates } from '../common/functions';
 import { showToast } from '../controls/dialogs/dialogs';
-import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks';
 import { copyShapesFromTo } from '../panels/actions';
-import { makeSingleInput, makeSingleLabel } from '../panels/cards';
-import { CharacterRange } from '../project_data/character_range';
+import { makeSingleLabel } from '../panels/cards';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main';
 
 let sourceEditor;
 let destinationEditor;
 let selectedItemIDs = [];
+let selectedRange = false;
 
 export function makePage_CrossProjectActions() {
 	const content = makeElement({
@@ -115,6 +114,82 @@ function updateSelectedIDs(itemID, add = true) {
 }
 
 // --------------------------------------------------------------
+// Item and Range Chooser
+// --------------------------------------------------------------
+
+function makeItemAndRangeChooser() {
+	log(`\n⮟sourceEditor⮟`);
+	log(sourceEditor);
+	const project = sourceEditor.project;
+	if(!selectedRange) selectedRange = sourceEditor.selectedCharacterRange;
+	// log(selectedRange);
+	let optionChooser = makeElement({
+		tag: 'option-chooser',
+		className: 'cross-project-actions__range-chooser',
+		attributes: {
+			'selected-name': selectedRange.name || selectedRange,
+			'selected-id': selectedRange.id || selectedRange,
+		},
+	});
+
+	let ligatureCount = countItems(project.ligatures);
+	let componentCount = countItems(project.components);
+	let option;
+	if (ligatureCount) {
+		// log(`range.name: Ligatures`);
+		option = makeElement({
+			tag: 'option',
+			innerHTML: 'Ligatures',
+			attributes: { note: `${ligatureCount}&nbsp;items` },
+		});
+		option.addEventListener('click', () => {
+			selectedRange = 'Ligatures';
+			let table = document.getElementById('cross-project-actions__character-copy-table');
+			updateCharacterCopyTable(table);
+		});
+		optionChooser.appendChild(option);
+	}
+
+	if (componentCount) {
+		// log(`range.name: Components`);
+		option = makeElement({
+			tag: 'option',
+			innerHTML: 'Components',
+			attributes: { note: `${componentCount}&nbsp;items` },
+		});
+		option.addEventListener('click', () => {
+			selectedRange = 'Components';
+			let table = document.getElementById('cross-project-actions__character-copy-table');
+			updateCharacterCopyTable(table);
+		});
+		optionChooser.appendChild(option);
+	}
+
+	if (ligatureCount || componentCount) optionChooser.appendChild(makeElement({ tag: 'hr' }));
+
+	let ranges = project.settings.project.characterRanges;
+	log(ranges);
+	ranges.forEach((range) => {
+		// log(`range.name: ${range.name}`);
+		option = makeElement({
+			tag: 'option',
+			innerHTML: range.name,
+			attributes: { note: range.note },
+		});
+
+		option.addEventListener('click', () => {
+			selectedRange = range;
+			let table = document.getElementById('cross-project-actions__character-copy-table');
+			updateCharacterCopyTable(table);
+		});
+
+		optionChooser.appendChild(option);
+	});
+
+	return optionChooser;
+}
+
+// --------------------------------------------------------------
 // Copy Shapes
 // --------------------------------------------------------------
 
@@ -177,12 +252,21 @@ function updateContent_copyShapes(parent) {
 	);
 	parent.appendChild(makeSingleLabel('Reverse shape windings', false, 'checkbox-reverse-windings'));
 
+	// Range chooser
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(makeItemAndRangeChooser());
+
 	// Table
 	const table = makeElement({
 		className: 'cross-project-actions__column-layout',
-		id: 'cross-project-actions__character-copy',
+		id: 'cross-project-actions__character-copy-table',
 	});
+	parent.appendChild(updateCharacterCopyTable(table));
+}
 
+function updateCharacterCopyTable(table) {
+	table.innerHTML = '';
 	// Table column headers
 	let wrapper = makeElement({
 		className: 'checkbox-wrapper',
@@ -223,8 +307,97 @@ function updateContent_copyShapes(parent) {
 	);
 
 	// Table Rows
-	makeRows(new CharacterRange(getUnicodeBlockByName('Basic Latin')), table);
-	parent.appendChild(table);
+	makeRows(selectedRange, table);
+
+	return table;
+}
+
+function makeRows(range, parent) {
+	log(`makeRows`, 'start');
+	let count = 0;
+
+	if (range === 'Components') {
+		for (let comp of Object.keys(sourceEditor.project.components)) {
+			makeOneRow(comp);
+		}
+	} else if (range === 'Ligatures') {
+		for (let liga of Object.keys(sourceEditor.project.ligatures)) {
+			makeOneRow(liga);
+		}
+	} else {
+		range.array.forEach((id) => {
+			const itemID = `glyph-${id}`;
+			makeOneRow(itemID);
+		});
+	}
+
+	function makeOneRow(itemID) {
+		const sourceItem = sourceEditor.project.getItem(itemID);
+		const destinationItem = destinationEditor.project.getItem(itemID);
+		const title = `Select ${itemID}`;
+		if (sourceItem) {
+			let wrapper = makeElement({ className: 'checkbox-wrapper' });
+			wrapper.appendChild(
+				makeElement({
+					tag: 'input',
+					attributes: { type: 'checkbox', style: 'grid-column: 1;', 'item-id': itemID },
+					className: 'item-select-checkbox',
+					id: `checkbox-${itemID}`,
+					title: title,
+					onClick: (event) => {
+						updateSelectedIDs(itemID, event.target.checked);
+					},
+				})
+			);
+			parent.appendChild(wrapper);
+
+			parent.appendChild(
+				makeElement({
+					tag: 'label',
+					attributes: { for: `checkbox-${itemID}` },
+					content: sourceItem.name,
+					className: 'glyph-name',
+					title: title,
+				})
+			);
+			parent.appendChild(
+				makeElement({
+					tag: 'label',
+					attributes: { for: `checkbox-${itemID}` },
+					content: itemID,
+					className: 'glyph-id',
+					title: title,
+				})
+			);
+
+			parent.appendChild(
+				makeElement({
+					className: 'thumbnail',
+					innerHTML: sourceEditor.project.makeItemThumbnail(sourceItem),
+					attributes: { style: 'grid-column: 4;' },
+				})
+			);
+			parent.appendChild(makeElement({ className: 'connector', innerHTML: '➔' }));
+			parent.appendChild(
+				makeElement({
+					className: 'thumbnail',
+					innerHTML: destinationEditor.project.makeItemThumbnail(destinationItem),
+					attributes: { style: 'grid-column: 6;' },
+				})
+			);
+			count++;
+		}
+	}
+
+	log(`count: ${count}`);
+	if (!count) {
+		// parent.appendChild(makeElement());
+		parent.appendChild(
+			makeElement({ content: 'No items exist in this range', className: 'span-all-columns' })
+		);
+	}
+
+	log(`makeRows`, 'end');
 }
 
 function makeFooter_copyShapes(parent) {
@@ -274,6 +447,10 @@ function copyShapes() {
 		if (reverseWindings) resolvedGlyph.reverseWinding();
 		let oldRSB = destinationItem.rightSideBearing;
 
+		log(`\n⮟resolvedGlyph⮟`);
+		log(resolvedGlyph);
+		log(`\n⮟destinationItem⮟`);
+		log(destinationItem);
 		copyShapesFromTo(resolvedGlyph, destinationItem);
 		if (updateAdvanceWidth) destinationItem.rightSideBearing = oldRSB;
 	});
@@ -282,64 +459,4 @@ function copyShapes() {
 	updateContent_copyShapes(document.querySelector('#cross-project-actions__page-content'));
 	clearAllSelections();
 	// log(`Cross Project Actions - copyShapes`, 'end');
-}
-
-function makeRows(range, parent) {
-	range.array.forEach((id) => {
-		const itemID = `glyph-${id}`;
-		const sourceItem = sourceEditor.project.getItem(itemID);
-		const destinationItem = destinationEditor.project.getItem(itemID);
-		const title = `Select glyph-${id}`;
-		if (sourceItem) {
-			let wrapper = makeElement({ className: 'checkbox-wrapper' });
-			wrapper.appendChild(
-				makeElement({
-					tag: 'input',
-					attributes: { type: 'checkbox', style: 'grid-column: 1;', 'item-id': itemID },
-					className: 'item-select-checkbox',
-					id: `checkbox-${id}`,
-					title: title,
-					onClick: (event) => {
-						updateSelectedIDs(itemID, event.target.checked);
-					},
-				})
-			);
-			parent.appendChild(wrapper);
-
-			parent.appendChild(
-				makeElement({
-					tag: 'label',
-					attributes: { for: `checkbox-${id}` },
-					content: sourceItem.name,
-					className: 'glyph-name',
-					title: title,
-				})
-			);
-			parent.appendChild(
-				makeElement({
-					tag: 'label',
-					attributes: { for: `checkbox-${id}` },
-					content: itemID,
-					className: 'glyph-id',
-					title: title,
-				})
-			);
-
-			parent.appendChild(
-				makeElement({
-					className: 'thumbnail',
-					innerHTML: sourceEditor.project.makeItemThumbnail(sourceItem),
-					attributes: { style: 'grid-column: 4;' },
-				})
-			);
-			parent.appendChild(makeElement({ className: 'connector', innerHTML: '➔' }));
-			parent.appendChild(
-				makeElement({
-					className: 'thumbnail',
-					innerHTML: destinationEditor.project.makeItemThumbnail(destinationItem),
-					attributes: { style: 'grid-column: 6;' },
-				})
-			);
-		}
-	});
 }

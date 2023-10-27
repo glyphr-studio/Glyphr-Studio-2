@@ -420,6 +420,11 @@
 	top: -2px;
 }
 
+.cross-project-actions__range-chooser {
+	display: inline-block;
+	width: 400px;
+}
+
 .cross-project-actions__column-layout {
 	width: 100%;
 	display: grid;

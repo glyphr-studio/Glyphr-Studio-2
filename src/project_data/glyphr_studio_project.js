@@ -246,7 +246,7 @@ export class GlyphrStudioProject {
 	 * @param {String} id - which Glyph to return
 	 * @returns {Glyph}
 	 */
-	getItem(id, forceCreateGlyph = false) {
+	getItem(id, forceCreateItem = false) {
 		// log('GlyphrStudioProject.getItem', 'start');
 		// log(`id: ${id}`);
 
@@ -262,18 +262,28 @@ export class GlyphrStudioProject {
 		if (this.ligatures && id.startsWith('liga-')) {
 			// log(`detected LIGATURE`);
 			result = this.ligatures[id] || false;
+			if (!result && forceCreateItem) {
+				// log(`forceCreateItem with id ${id}`);
+				this.addNewItem(new Glyph({ id: id }), 'Ligature', id);
+				result = this.ligatures[id];
+			}
 		} else if (this.glyphs && id.startsWith('glyph-')) {
 			// log(`detected GLYPH`);
 			id = `glyph-${validateAsHex(id.substring(6))}`;
 			result = this.glyphs[id] || false;
-			if (!result && forceCreateGlyph) {
-				// log(`forceCreateGlyph with id ${id}`);
+			if (!result && forceCreateItem) {
+				// log(`forceCreateItem with id ${id}`);
 				this.addNewItem(new Glyph({ id: id }), 'Glyph', id);
 				result = this.glyphs[id];
 			}
 		} else if (this.components && id.startsWith('comp-')) {
 			// log(`detected COMPONENT`);
 			result = this.components[id] || false;
+			if (!result && forceCreateItem) {
+				// log(`forceCreateItem with id ${id}`);
+				this.addNewItem(new Glyph({ id: id }), 'Component', id);
+				result = this.components[id];
+			}
 		} else if (this.kerning && id.startsWith('kern-')) {
 			// log(`detected KERN`);
 			result = this.kerning[id] || false;
