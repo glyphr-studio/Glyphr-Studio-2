@@ -319,14 +319,16 @@
 
 #cross-project-actions__project-flipper code {
 	background-color: hsla(285, 100%, 17%, 0.1); /* purple l15 */
-	border-color: var(--purple-l05);
+	border-color: var(--blue-l15);
 	color: white;
 }
 #cross-project-actions__project-flipper .flip-button {
 	display: inline-block;
 	color: var(--purple-l80);
 	background-color: hsla(285, 100%, 17%, 0.2); /* purple l15 */
-	padding: 2px 6px;
+	padding: 1px 6px;
+	position: relative;
+	top: 2px;
 	border: 1px solid hsla(285, 100%, 17%, 0.2);
 	border-radius: 4px;
 	text-align: center;

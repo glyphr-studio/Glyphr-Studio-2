@@ -46,20 +46,28 @@ export function makePage_CrossProjectActions() {
 }
 
 function makeProjectFlipper() {
+	let sourceProject = sourceEditor.project.settings.project;
+	let destinationProject = destinationEditor.project.settings.project;
 	const wrapper = makeElement({
-		tag: 'div',
+		tag: 'span',
 		id: 'cross-project-actions__project-flipper',
 		innerHTML: `
 			From project
-			<code id="project-flipper-source-name">${sourceEditor.project.settings.project.name}</code>
+			<code id="project-flipper-source-name"
+				title="${sourceProject.name}\n${sourceProject.id}">
+				${sourceProject.name}
+			</code>
 			to
-			<code id="project-flipper-destination-name">${destinationEditor.project.settings.project.name}</code>
+			<code id="project-flipper-destination-name"
+				title="${destinationProject.name}\n${destinationProject.id}">
+				${destinationProject.name}
+			</code>
 		`,
 	});
 
 	const flipButton = makeElement({
 		className: 'flip-button',
-		innerHTML: '⇄',
+		innerHTML: '⮀',
 		title: 'Flip from/to projects',
 		onClick: flipProjects,
 	});
@@ -71,23 +79,40 @@ function flipProjects() {
 	let temp = sourceEditor;
 	sourceEditor = destinationEditor;
 	destinationEditor = temp;
-	// document.getElementById('project-flipper-source-name').innerHTML =
-	// 	sourceEditor.project.settings.project.name;
-	// document.getElementById('project-flipper-destination-name').innerHTML =
-	// 	destinationEditor.project.settings.project.name;
 
 	updateContent_copyShapes(document.querySelector('#cross-project-actions__page-content'));
 }
+
+
+
+// --------------------------------------------------------------
+// Copy Shapes
+// --------------------------------------------------------------
+
 
 function updateContent_copyShapes(parent) {
 	parent.innerHTML = '';
 	parent.appendChild(
 		makeElement({
-			content: 'Copy glyph shapes from one project to another.',
+			content: 'Copy glyph shapes from one project to another.&nbsp;&nbsp;',
 		})
 	);
 
 	parent.appendChild(makeProjectFlipper());
+
+	let emRatio = destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
+
+	if (emRatio !== 1) {
+		parent.appendChild(makeElement({
+			tag: 'div',
+			className: 'cross-project-actions__scale-warning',
+			innerHTML: `
+				Warning: the Em sizes of these to fonts is different.
+				The destination font is ${Math.round(emRatio * 100)}% ${emRatio < 1 ? 'smaller' : 'larger'}
+				than the source font.
+			`
+		}));
+	}
 
 	const table = makeElement({
 		className: 'cross-project-actions__column-layout',
