@@ -1,199 +1,21 @@
-import { makeElement } from '../common/dom';
-import { countItems, duplicates } from '../common/functions';
-import { showToast } from '../controls/dialogs/dialogs';
-import { copyShapesFromTo } from '../panels/actions';
-import { makeSingleLabel } from '../panels/cards';
-import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions';
-import { getCurrentProjectEditor, getGlyphrStudioApp } from './main';
+import { makeElement } from '../../common/dom';
+import { showToast } from '../../controls/dialogs/dialogs';
+import { copyShapesFromTo } from '../../panels/actions';
+import { makeSingleLabel } from '../../panels/cards';
+import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_actions';
+import {
+	clearAllSelections,
+	destinationEditor,
+	makeItemAndRangeChooser,
+	makeProjectFlipper,
+	selectedItemIDs,
+	selectedRange,
+	sourceEditor,
+	toggleCheckboxes,
+	updateSelectedIDs,
+} from './cross_project_actions';
 
-let sourceEditor;
-let destinationEditor;
-let selectedItemIDs = [];
-let selectedRange = false;
-
-export function makePage_CrossProjectActions() {
-	const content = makeElement({
-		tag: 'div',
-		id: 'app__page',
-		innerHTML: `
-			<div id="cross-project-actions__page">
-				<div class="cross-project-actions__page-header">
-					<h1>Cross&#8209;project&nbsp;actions</h1><span></span><span id="cross-project-actions__close-button">✖</span>
-					<option-chooser selected-id="Copy shapes " selected-name="Copy shapes">
-						<option selected>Copy shapes</option>
-					</option-chooser>
-					<span id="cross-project-actions__item-count"></span>
-					<span></span>
-				</div>
-				<div id="cross-project-actions__page-content">
-				</div>
-				<div id="cross-project-actions__page-footer">
-				</div>
-			</div>
-		`,
-	});
-
-	// Set up projects
-	const app = getGlyphrStudioApp();
-	sourceEditor = app.otherProjectEditor;
-	destinationEditor = app.selectedProjectEditor;
-
-	// Set up window
-	const closeButton = content.querySelector('#cross-project-actions__close-button');
-	closeButton.addEventListener('click', () => {
-		getCurrentProjectEditor().navigate();
-	});
-
-	// Make content
-	updateContent_copyShapes(content.querySelector('#cross-project-actions__page-content'));
-	makeFooter_copyShapes(content.querySelector('#cross-project-actions__page-footer'));
-
-	return content;
-}
-
-function makeProjectFlipper(textPrefix = 'From') {
-	let sourceProject = sourceEditor.project.settings.project;
-	let destinationProject = destinationEditor.project.settings.project;
-	const wrapper = makeElement({
-		tag: 'span',
-		id: 'cross-project-actions__project-flipper',
-		innerHTML: `
-			${textPrefix} project
-			<code id="project-flipper-source-name"
-				title="${sourceProject.name}\n${sourceProject.id}">
-				${sourceProject.name}
-			</code>
-			to
-			<code id="project-flipper-destination-name"
-				title="${destinationProject.name}\n${destinationProject.id}">
-				${destinationProject.name}
-			</code>
-		`,
-	});
-
-	const flipButton = makeElement({
-		className: 'flip-button',
-		innerHTML: '⮀',
-		title: 'Flip from/to projects',
-		onClick: flipProjects,
-	});
-	wrapper.appendChild(flipButton);
-	return wrapper;
-}
-
-function flipProjects() {
-	let temp = sourceEditor;
-	sourceEditor = destinationEditor;
-	destinationEditor = temp;
-
-	updateContent_copyShapes(document.querySelector('#cross-project-actions__page-content'));
-}
-
-function toggleCheckboxes() {
-	let state = document.getElementById('toggle-all-checkbox').checked;
-	const checkboxes = document.querySelectorAll('.item-select-checkbox');
-	checkboxes.forEach((box) => {
-		box.checked = state;
-		updateSelectedIDs(box.getAttribute('item-id'), box.checked);
-	});
-}
-
-function clearAllSelections() {
-	selectedItemIDs = [];
-	document.getElementById('cross-project-actions__item-count').innerHTML = '';
-}
-
-function updateSelectedIDs(itemID, add = true) {
-	if (add) selectedItemIDs.push(itemID);
-	else selectedItemIDs.splice(selectedItemIDs.indexOf(itemID), 1);
-	selectedItemIDs = selectedItemIDs.filter(duplicates);
-	selectedItemIDs = selectedItemIDs.filter((item) => !!item);
-	document.getElementById('cross-project-actions__item-count').innerHTML = `
-		${selectedItemIDs.length} item${selectedItemIDs.length === 1 ? '' : 's'} selected
-	`;
-}
-
-// --------------------------------------------------------------
-// Item and Range Chooser
-// --------------------------------------------------------------
-
-function makeItemAndRangeChooser() {
-	log(`\n⮟sourceEditor⮟`);
-	log(sourceEditor);
-	const project = sourceEditor.project;
-	if(!selectedRange) selectedRange = sourceEditor.selectedCharacterRange;
-	// log(selectedRange);
-	let optionChooser = makeElement({
-		tag: 'option-chooser',
-		className: 'cross-project-actions__range-chooser',
-		attributes: {
-			'selected-name': selectedRange.name || selectedRange,
-			'selected-id': selectedRange.id || selectedRange,
-		},
-	});
-
-	let ligatureCount = countItems(project.ligatures);
-	let componentCount = countItems(project.components);
-	let option;
-	if (ligatureCount) {
-		// log(`range.name: Ligatures`);
-		option = makeElement({
-			tag: 'option',
-			innerHTML: 'Ligatures',
-			attributes: { note: `${ligatureCount}&nbsp;items` },
-		});
-		option.addEventListener('click', () => {
-			selectedRange = 'Ligatures';
-			let table = document.getElementById('cross-project-actions__character-copy-table');
-			updateCharacterCopyTable(table);
-		});
-		optionChooser.appendChild(option);
-	}
-
-	if (componentCount) {
-		// log(`range.name: Components`);
-		option = makeElement({
-			tag: 'option',
-			innerHTML: 'Components',
-			attributes: { note: `${componentCount}&nbsp;items` },
-		});
-		option.addEventListener('click', () => {
-			selectedRange = 'Components';
-			let table = document.getElementById('cross-project-actions__character-copy-table');
-			updateCharacterCopyTable(table);
-		});
-		optionChooser.appendChild(option);
-	}
-
-	if (ligatureCount || componentCount) optionChooser.appendChild(makeElement({ tag: 'hr' }));
-
-	let ranges = project.settings.project.characterRanges;
-	log(ranges);
-	ranges.forEach((range) => {
-		// log(`range.name: ${range.name}`);
-		option = makeElement({
-			tag: 'option',
-			innerHTML: range.name,
-			attributes: { note: range.note },
-		});
-
-		option.addEventListener('click', () => {
-			selectedRange = range;
-			let table = document.getElementById('cross-project-actions__character-copy-table');
-			updateCharacterCopyTable(table);
-		});
-
-		optionChooser.appendChild(option);
-	});
-
-	return optionChooser;
-}
-
-// --------------------------------------------------------------
-// Copy Shapes
-// --------------------------------------------------------------
-
-function updateContent_copyShapes(parent) {
+export function updateContent_copyShapes(parent) {
 	parent.innerHTML = '';
 	parent.appendChild(
 		makeElement({
@@ -255,7 +77,12 @@ function updateContent_copyShapes(parent) {
 	// Range chooser
 	parent.appendChild(makeElement({ tag: 'br' }));
 	parent.appendChild(makeElement({ tag: 'br' }));
-	parent.appendChild(makeItemAndRangeChooser());
+	parent.appendChild(
+		makeItemAndRangeChooser({ showLigatures: true }, () => {
+			let table = document.getElementById('cross-project-actions__character-copy-table');
+			updateCharacterCopyTable(table);
+		})
+	);
 
 	// Table
 	const table = makeElement({
@@ -265,7 +92,7 @@ function updateContent_copyShapes(parent) {
 	parent.appendChild(updateCharacterCopyTable(table));
 }
 
-function updateCharacterCopyTable(table) {
+export function updateCharacterCopyTable(table) {
 	table.innerHTML = '';
 	// Table column headers
 	let wrapper = makeElement({
@@ -400,7 +227,7 @@ function makeRows(range, parent) {
 	log(`makeRows`, 'end');
 }
 
-function makeFooter_copyShapes(parent) {
+export function updateFooter_copyShapes(parent) {
 	parent.appendChild(
 		makeElement({
 			tag: 'fancy-button',
