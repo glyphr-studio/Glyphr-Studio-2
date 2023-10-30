@@ -289,7 +289,7 @@
 	display: grid;
 	grid-template-rows: max-content 1fr max-content;
 	row-gap: 10px;
-	padding: 40px;
+	padding: 20px;
 	position: relative;
 	top: -40px;
 	width: 100%;
@@ -301,7 +301,7 @@
 .cross-project-actions__page-header {
 	grid-row: 1;
 	display: grid;
-	grid-template-columns: min-content 1fr 50px;
+	grid-template-columns: 400px 1fr 50px;
 }
 
 #cross-project-actions__page-content {
@@ -318,7 +318,7 @@
 }
 
 .cross-project-actions__page-header option-chooser {
-	max-width: 300px;
+	max-width: 400px;
 	font-size: 1.2em;
 	margin-top: 10px;
 	margin-bottom: 20px;

@@ -109,7 +109,7 @@ export class OptionChooser extends HTMLElement {
 		}
 
 		if (attributeName === 'selected-id') {
-			this.dispatchEvent(new Event('changed'));
+			this.dispatchEvent(new Event('change'));
 		}
 
 		if (attributeName === 'selected-name') {
@@ -141,7 +141,7 @@ export class OptionChooser extends HTMLElement {
 			let tag = child.tagName.toLowerCase();
 			if (tag === 'option') {
 				let note = child.getAttribute('note') || '';
-				let selectionID = `${child.innerText} ${note}`;
+				let selectionID = `${child.innerText}${note ? ` ${note}` : ''}`;
 				if (child.getAttribute('selection-id')) selectionID = child.getAttribute('selection-id');
 				optionRows.push({
 					name: child.innerHTML,

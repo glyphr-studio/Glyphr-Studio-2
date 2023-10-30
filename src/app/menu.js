@@ -10,7 +10,7 @@ import { ioFont_exportFont } from '../formats_io/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
 import { isFancyFileIOEnabled, makeFileName } from '../project_editor/file_io.js';
 import { emailLink } from './app.js';
-import { makePage_CrossProjectActions } from './cross_project_actions.js';
+import { makePage_CrossProjectActions } from './cross_project_actions/cross_project_actions.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
 
