@@ -1,6 +1,8 @@
 import { makeElement } from '../../common/dom';
 import { countItems, duplicates } from '../../common/functions';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../main';
+import { updateContent_addKernGroups, updateFooter_addKernGroups } from './aciton_add_kern_groups';
+import { updateContent_addComponents, updateFooter_addComponents } from './action_add_components';
 import {
 	updateCharacterCopyTable,
 	updateContent_copyShapes,
@@ -69,13 +71,17 @@ function updateCrossProjectActionsPage(content) {
 
 	pageContent.innerHTML = '';
 	pageFooter.innerHTML = '';
+	selectedItemIDs = [];
+	selectedRange = false;
 	if (selectedAction === 'Copy character or ligature shapes') {
 		updateContent_copyShapes(pageContent);
 		updateFooter_copyShapes(pageFooter);
 	} else if (selectedAction === 'Add component roots') {
-		pageContent.innerHTML = 'Add component roots';
+		updateContent_addComponents(pageContent);
+		updateFooter_addComponents(pageFooter);
 	} else if (selectedAction === 'Add kern groups') {
-		pageContent.innerHTML = 'Add kern groups';
+		updateContent_addKernGroups(pageContent);
+		updateFooter_addKernGroups(pageFooter);
 	} else if (selectedAction === 'Merge two projects') {
 		pageContent.innerHTML = 'Merge two projects';
 	}
@@ -117,7 +123,7 @@ function flipProjects() {
 	sourceEditor = destinationEditor;
 	destinationEditor = temp;
 
-	updateContent_copyShapes(document.querySelector('#cross-project-actions__page-content'));
+	updateCrossProjectActionsPage(document);
 }
 
 export function toggleCheckboxes() {

@@ -2,6 +2,9 @@ import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { clone, remove, round, trim } from '../common/functions.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { getUnicodeName, getUnicodeShortName } from '../lib/unicode/unicode_names.js';
+import { makeComponentID } from '../pages/components.js';
+import { makeKernGroupID } from '../pages/kerning.js';
+import { makeLigatureID } from '../pages/ligatures.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Guide } from '../project_editor/guide.js';
 import { CharacterRange } from './character_range.js';
@@ -516,18 +519,23 @@ export class GlyphrStudioProject {
 		}
 		if (objType === 'Ligature') {
 			destination = this.ligatures;
+			if (!newID) newID = makeLigatureID(newItem.chars);
 		}
 		if (objType === 'Component') {
 			destination = this.components;
+			if (!newID) newID = makeComponentID();
 		}
 		if (objType === 'KernGroup') {
 			destination = this.kerning;
+			if (!newID) newID = makeKernGroupID(this.kerning);
 		}
 
 		newItem.parent = this;
 		newItem.id = newID;
 		newItem.objType = objType;
 		destination[newID] = newItem;
+
+		return destination[newID];
 	}
 
 	/**

@@ -447,6 +447,12 @@
 	margin: 14px 0px 0px 20px;
 }
 
+.cross-project-actions__column-layout .text-value {
+	font-family: monospace;
+	color: var(--gray-l60);
+	padding-left: 20px;
+}
+
 .cross-project-actions__column-layout .glyph-id {
 	grid-column: 3;
 	font-family: monospace;
@@ -479,6 +485,19 @@
 	height: 20px;
 	width: 20px;
 	accent-color: var(--purple-l60);
+}
+
+.cross-project-actions__column-layout .kern-chip-wrapper {
+	width: min-content;
+	padding-left: 10px;
+}
+.cross-project-actions__column-layout .kern-chip-wrapper code {
+	background-color: transparent;
+	background-color: hsla(285, 100%, 17%, 0.2); /* purple l15 */
+	border: 1px solid var(--blue-l20);
+}
+.cross-project-actions__column-layout .kern-chip-wrapper .kern-group-chooser__members-divider {
+	color: var(--blue-l40);
 }
 
 .cross-project-actions__column-layout label,
