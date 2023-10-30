@@ -237,10 +237,9 @@ function makeComponentsFirstRunContent() {
 }
 
 export function addComponent(newComponent) {
-	const newID = makeComponentID();
 	const project = getCurrentProject();
-	project.addNewItem(new Glyph(newComponent), 'Component', newID);
-	return project.components[newID];
+	let added = project.addNewItem(new Glyph(newComponent), 'Component');
+	return added;
 }
 
 export function makeComponentID() {

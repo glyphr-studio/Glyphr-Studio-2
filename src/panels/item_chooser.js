@@ -356,11 +356,11 @@ function makeKernGroupChooserList() {
 	return kernGroupRows;
 }
 
-function makeOneKernGroupRow(kernID) {
+function makeOneKernGroupRow(kernID, project = getCurrentProject()) {
 	// log(`makeOneKernGroupRow`, 'start');
 	// log(`kernID: ${kernID}`);
 
-	const kernGroup = getCurrentProject().getItem(kernID);
+	const kernGroup = project.getItem(kernID);
 	const rowWrapper = makeElement({ className: 'kern-group-chooser__row' });
 	const leftMembers = makeElement({
 		className: 'kern-group-chooser__left-members',
