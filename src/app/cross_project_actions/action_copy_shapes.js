@@ -140,7 +140,7 @@ export function updateCharacterCopyTable(table) {
 }
 
 function makeRows(range, parent) {
-	log(`makeRows`, 'start');
+	// log(`makeRows`, 'start');
 	let count = 0;
 
 	if (range === 'Components') {
@@ -216,7 +216,7 @@ function makeRows(range, parent) {
 		}
 	}
 
-	log(`count: ${count}`);
+	// log(`count: ${count}`);
 	if (!count) {
 		// parent.appendChild(makeElement());
 		parent.appendChild(
@@ -224,7 +224,7 @@ function makeRows(range, parent) {
 		);
 	}
 
-	log(`makeRows`, 'end');
+	// log(`makeRows`, 'end');
 }
 
 export function updateFooter_copyShapes(parent) {
@@ -243,27 +243,27 @@ function copyShapes() {
 	// log(selectedItemIDs);
 	let emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
-	log(`emRatio: ${emRatio}`);
+	// log(`emRatio: ${emRatio}`);
 
 	let updateAdvanceWidth = document.getElementById('checkbox-advance-width').checked;
-	log(`updateAdvanceWidth: ${updateAdvanceWidth}`);
+	// log(`updateAdvanceWidth: ${updateAdvanceWidth}`);
 
 	let scaleItems = document.getElementById('checkbox-scale')?.checked;
-	log(`scaleItems: ${scaleItems}`);
+	// log(`scaleItems: ${scaleItems}`);
 
 	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
-	log(`reverseWindings: ${reverseWindings}`);
+	// log(`reverseWindings: ${reverseWindings}`);
 
 	selectedItemIDs.forEach((itemID) => {
-		log(`itemID: ${itemID}`);
+		// log(`itemID: ${itemID}`);
 		const sourceItem = sourceEditor.project.getItem(itemID);
 		const destinationItem = destinationEditor.project.getItem(itemID, true);
 		const resolvedGlyph = makeGlyphWithResolvedLinks(sourceItem);
-		log(resolvedGlyph);
+		// log(resolvedGlyph);
 
 		if (scaleItems) {
 			let deltaWidth = resolvedGlyph.advanceWidth * emRatio - resolvedGlyph.advanceWidth;
-			log(`deltaWidth: ${deltaWidth}`);
+			// log(`deltaWidth: ${deltaWidth}`);
 			resolvedGlyph.updateGlyphSize({
 				width: deltaWidth,
 				ratioLock: true,
@@ -274,10 +274,10 @@ function copyShapes() {
 		if (reverseWindings) resolvedGlyph.reverseWinding();
 		let oldRSB = destinationItem.rightSideBearing;
 
-		log(`\n⮟resolvedGlyph⮟`);
-		log(resolvedGlyph);
-		log(`\n⮟destinationItem⮟`);
-		log(destinationItem);
+		// log(`\n⮟resolvedGlyph⮟`);
+		// log(resolvedGlyph);
+		// log(`\n⮟destinationItem⮟`);
+		// log(destinationItem);
 		copyShapesFromTo(resolvedGlyph, destinationItem);
 		if (updateAdvanceWidth) destinationItem.rightSideBearing = oldRSB;
 	});

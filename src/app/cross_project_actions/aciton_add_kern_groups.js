@@ -98,7 +98,7 @@ export function updateAddItemTable(table) {
 }
 
 function makeRows(parent) {
-	log(`makeRows`, 'start');
+	// log(`makeRows`, 'start');
 	let count = 0;
 
 	for (let group of Object.keys(sourceEditor.project.kerning)) {
@@ -175,7 +175,7 @@ function makeRows(parent) {
 		}
 	}
 
-	log(`count: ${count}`);
+	// log(`count: ${count}`);
 	if (!count) {
 		parent.appendChild(
 			makeElement({
@@ -185,7 +185,7 @@ function makeRows(parent) {
 		);
 	}
 
-	log(`makeRows`, 'end');
+	// log(`makeRows`, 'end');
 }
 
 export function updateFooter_addKernGroups(parent) {
@@ -202,19 +202,19 @@ function addKernGroups() {
 	// log(`Cross Project Actions - addKernGroups`, 'start');
 	let emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
-	log(`emRatio: ${emRatio}`);
+	// log(`emRatio: ${emRatio}`);
 
 	let scaleItems = document.getElementById('checkbox-scale')?.checked;
-	log(`scaleItems: ${scaleItems}`);
+	// log(`scaleItems: ${scaleItems}`);
 
 	selectedItemIDs.forEach((itemID) => {
-		log(`itemID: ${itemID}`);
+		// log(`itemID: ${itemID}`);
 		const sourceItem = sourceEditor.project.getItem(itemID);
 		const newItem = new KernGroup(sourceItem);
 		if (scaleItems) newItem.value *= emRatio;
 
-		log(`\n⮟newItem⮟`);
-		log(newItem);
+		// log(`\n⮟newItem⮟`);
+		// log(newItem);
 		destinationEditor.project.addNewItem(newItem, 'KernGroup');
 	});
 

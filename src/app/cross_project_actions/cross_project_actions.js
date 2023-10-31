@@ -8,6 +8,10 @@ import {
 	updateContent_copyShapes,
 	updateFooter_copyShapes,
 } from './action_copy_shapes';
+import {
+	updateContent_overwriteSettings,
+	updateFooter_overwriteSettings,
+} from './action_overwrite_settings';
 
 export let sourceEditor;
 export let destinationEditor;
@@ -28,6 +32,7 @@ export function makePage_CrossProjectActions() {
 						<option>Copy character or ligature shapes</option>
 						<option>Add component roots</option>
 						<option>Add kern groups</option>
+						<option>Overwrite settings</option>
 						<option>Merge two projects</option>
 					</option-chooser>
 					<span id="cross-project-actions__item-count"></span>
@@ -82,6 +87,9 @@ function updateCrossProjectActionsPage(content) {
 	} else if (selectedAction === 'Add kern groups') {
 		updateContent_addKernGroups(pageContent);
 		updateFooter_addKernGroups(pageFooter);
+	} else if (selectedAction === 'Overwrite settings') {
+		updateContent_overwriteSettings(pageContent);
+		updateFooter_overwriteSettings(pageFooter);
 	} else if (selectedAction === 'Merge two projects') {
 		pageContent.innerHTML = 'Merge two projects';
 	}
