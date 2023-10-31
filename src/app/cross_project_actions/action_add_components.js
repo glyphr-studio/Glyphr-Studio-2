@@ -105,7 +105,7 @@ export function updateAddItemTable(table) {
 }
 
 function makeRows(parent) {
-	log(`makeRows`, 'start');
+	// log(`makeRows`, 'start');
 	let count = 0;
 
 	for (let comp of Object.keys(sourceEditor.project.components)) {
@@ -161,7 +161,7 @@ function makeRows(parent) {
 		}
 	}
 
-	log(`count: ${count}`);
+	// log(`count: ${count}`);
 	if (!count) {
 		// parent.appendChild(makeElement());
 		parent.appendChild(
@@ -172,7 +172,7 @@ function makeRows(parent) {
 		);
 	}
 
-	log(`makeRows`, 'end');
+	// log(`makeRows`, 'end');
 }
 
 export function updateFooter_addComponents(parent) {
@@ -189,25 +189,25 @@ function addComponents() {
 	// log(`Cross Project Actions - addComponents`, 'start');
 	let emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
-	log(`emRatio: ${emRatio}`);
+	// log(`emRatio: ${emRatio}`);
 
 	let scaleItems = document.getElementById('checkbox-scale')?.checked;
-	log(`scaleItems: ${scaleItems}`);
+	// log(`scaleItems: ${scaleItems}`);
 
 	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
-	log(`reverseWindings: ${reverseWindings}`);
+	// log(`reverseWindings: ${reverseWindings}`);
 
 	selectedItemIDs.forEach((itemID) => {
-		log(`itemID: ${itemID}`);
+		// log(`itemID: ${itemID}`);
 		const sourceItem = sourceEditor.project.getItem(itemID);
 		const resolvedGlyph = makeGlyphWithResolvedLinks(sourceItem);
 		resolvedGlyph.name = sourceItem.name;
 		resolvedGlyph.usedIn = [];
-		log(resolvedGlyph);
+		// log(resolvedGlyph);
 
 		if (scaleItems) {
 			let deltaWidth = resolvedGlyph.advanceWidth * emRatio - resolvedGlyph.advanceWidth;
-			log(`deltaWidth: ${deltaWidth}`);
+			// log(`deltaWidth: ${deltaWidth}`);
 			resolvedGlyph.updateGlyphSize({
 				width: deltaWidth,
 				ratioLock: true,
@@ -217,8 +217,8 @@ function addComponents() {
 
 		if (reverseWindings) resolvedGlyph.reverseWinding();
 
-		log(`\n⮟resolvedGlyph⮟`);
-		log(resolvedGlyph);
+		// log(`\n⮟resolvedGlyph⮟`);
+		// log(resolvedGlyph);
 		destinationEditor.project.addNewItem(resolvedGlyph, 'Component');
 	});
 
