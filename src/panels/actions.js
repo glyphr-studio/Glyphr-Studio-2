@@ -942,7 +942,7 @@ function showDialogChooseOtherItem(type) {
 			const editor = getCurrentProjectEditor();
 			let otherItem = editor.project.getItem(itemID);
 			if (!otherItem) {
-				editor.project.addNewItem(new Glyph({}), 'Glyph', itemID);
+				editor.project.addItemByType(new Glyph({}), 'Glyph', itemID);
 				otherItem = editor.project.getItem(itemID);
 			}
 			const thisItem = editor.selectedItem;
@@ -971,7 +971,7 @@ function showDialogChooseOtherItem(type) {
 			const editor = getCurrentProjectEditor();
 			let destinationItem = editor.project.getItem(itemID);
 			if (!destinationItem) {
-				editor.project.addNewItem(new Glyph({}), 'Glyph', itemID);
+				editor.project.addItemByType(new Glyph({}), 'Glyph', itemID);
 				destinationItem = editor.project.getItem(itemID);
 			}
 			const thisItem = editor.selectedItem;
