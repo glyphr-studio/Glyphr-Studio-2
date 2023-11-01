@@ -304,7 +304,7 @@ function addLigature(sequence) {
 		return 'Ligature already exists';
 	}
 
-	project.addNewItem(
+	project.addItemByType(
 		new Glyph({
 			id: newID,
 			parent: project,

@@ -267,7 +267,7 @@ export class GlyphrStudioProject {
 			result = this.ligatures[id] || false;
 			if (!result && forceCreateItem) {
 				// log(`forceCreateItem with id ${id}`);
-				this.addNewItem(new Glyph({ id: id }), 'Ligature', id);
+				this.addItemByType(new Glyph({ id: id }), 'Ligature', id);
 				result = this.ligatures[id];
 			}
 		} else if (this.glyphs && id.startsWith('glyph-')) {
@@ -276,7 +276,7 @@ export class GlyphrStudioProject {
 			result = this.glyphs[id] || false;
 			if (!result && forceCreateItem) {
 				// log(`forceCreateItem with id ${id}`);
-				this.addNewItem(new Glyph({ id: id }), 'Glyph', id);
+				this.addItemByType(new Glyph({ id: id }), 'Glyph', id);
 				result = this.glyphs[id];
 			}
 		} else if (this.components && id.startsWith('comp-')) {
@@ -284,7 +284,7 @@ export class GlyphrStudioProject {
 			result = this.components[id] || false;
 			if (!result && forceCreateItem) {
 				// log(`forceCreateItem with id ${id}`);
-				this.addNewItem(new Glyph({ id: id }), 'Component', id);
+				this.addItemByType(new Glyph({ id: id }), 'Component', id);
 				result = this.components[id];
 			}
 		} else if (this.kerning && id.startsWith('kern-')) {
@@ -319,40 +319,37 @@ export class GlyphrStudioProject {
 	}
 
 	/**
-	 * Sets an item based on an ID
-	 * @param {String} id - item ID to set
-	 * @param {Glyph} newItem - new thing to set
-	 * @returns nothing
+	 * Takes a Glyphr Studio Glyph Element, and adds it to the appropriate
+	 * place in this project, based on the objType value.
+	 * @param {Object} newItem - Glyphr Studio Glyph Element
+	 * @param {String} objType Glyph, Ligature, Component, or KernGroup
+	 * @param {String} newID - Required for Glyph, optional for others
+	 * @returns Created object
 	 */
-	setItem(id, newItem) {
-		// log('GlyphrStudioProject.setItem', 'start');
-		// log(`id: ${id}`);
-
-		if (!id) {
-			// log('Not passed an ID, returning false');
-			// log('GlyphrStudioProject.setItem', 'end');
-			return false;
+	addItemByType(newItem, objType, newID = false) {
+		let destination;
+		if (objType === 'Glyph') {
+			destination = this.glyphs;
+		}
+		if (objType === 'Ligature') {
+			destination = this.ligatures;
+			if (!newID) newID = makeLigatureID(newItem.chars);
+		}
+		if (objType === 'Component') {
+			destination = this.components;
+			if (!newID) newID = makeComponentID();
+		}
+		if (objType === 'KernGroup') {
+			destination = this.kerning;
+			if (!newID) newID = makeKernGroupID(this.kerning);
 		}
 
-		id = '' + id;
+		newItem.id = newID;
+		newItem.objType = objType;
+		newItem.parent = this;
+		destination[newID] = newItem;
 
-		if (this.ligatures && id.startsWith('liga-')) {
-			// log(`detected LIGATURE`);
-			this.ligatures[id] = newItem;
-		} else if (this.glyphs && id.startsWith('glyph-')) {
-			// log(`detected GLYPH`);
-			this.glyphs[id] = newItem;
-		} else if (this.components && id.startsWith('comp-')) {
-			// log(`detected COMPONENT`);
-			this.components[id] = newItem;
-		} else if (this.kerning && id.startsWith('kern-')) {
-			// log(`detected KERN`);
-			this.kerning[id] = newItem;
-		} else {
-			// log('NO RESULT FOUND');
-		}
-
-		// log('GlyphrStudioProject.setItem', 'end');
+		return destination[newID];
 	}
 
 	/**
@@ -512,32 +509,6 @@ export class GlyphrStudioProject {
 	// Adding Items
 	// --------------------------------------------------------------
 
-	addNewItem(newItem, objType, newID) {
-		let destination;
-		if (objType === 'Glyph') {
-			destination = this.glyphs;
-		}
-		if (objType === 'Ligature') {
-			destination = this.ligatures;
-			if (!newID) newID = makeLigatureID(newItem.chars);
-		}
-		if (objType === 'Component') {
-			destination = this.components;
-			if (!newID) newID = makeComponentID();
-		}
-		if (objType === 'KernGroup') {
-			destination = this.kerning;
-			if (!newID) newID = makeKernGroupID(this.kerning);
-		}
-
-		newItem.parent = this;
-		newItem.id = newID;
-		newItem.objType = objType;
-		destination[newID] = newItem;
-
-		return destination[newID];
-	}
-
 	/**
 	 * Takes generic Objects, and initializes them as Glyphr Studio objects
 	 * @param {Object} GlyphrStudioItem - Glyph, Guide, or KernGroup
@@ -551,22 +522,22 @@ export class GlyphrStudioProject {
 		// log(`SOURCE:`);
 		// log(source);
 		source = source || {};
-		let destination;
-		if (objType === 'Glyph') destination = this.glyphs;
-		if (objType === 'Ligature') destination = this.ligatures;
-		if (objType === 'Component') destination = this.components;
-		if (objType === 'KernGroup') destination = this.kerning;
+		// let destination;
+		// if (objType === 'Glyph') destination = this.glyphs;
+		// if (objType === 'Ligature') destination = this.ligatures;
+		// if (objType === 'Component') destination = this.components;
+		// if (objType === 'KernGroup') destination = this.kerning;
 
 		for (const key of Object.keys(source)) {
 			let validatedKey = validateItemID(key, objType);
 			// log(`\n STARTING key: ${key}`);
 			// log(`validatedKey: ${validatedKey}`);
-
 			if (source[key]) {
-				destination[validatedKey] = new GlyphrStudioItem(source[key]);
-				destination[validatedKey].id = validatedKey;
-				destination[validatedKey].objType = objType;
-				destination[validatedKey].parent = this;
+				this.addItemByType(new GlyphrStudioItem(source[key]), objType, validatedKey);
+				// destination[validatedKey] = new GlyphrStudioItem(source[key]);
+				// destination[validatedKey].id = validatedKey;
+				// destination[validatedKey].objType = objType;
+				// destination[validatedKey].parent = this;
 				// log(`DONE WITH ONE ITEM:`);
 				// log(destination[validatedKey]);
 			}

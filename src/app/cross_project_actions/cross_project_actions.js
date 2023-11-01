@@ -1,13 +1,17 @@
 import { makeElement } from '../../common/dom';
 import { countItems, duplicates } from '../../common/functions';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../main';
-import { updateContent_addKernGroups, updateFooter_addKernGroups } from './aciton_add_kern_groups';
 import { updateContent_addComponents, updateFooter_addComponents } from './action_add_components';
+import { updateContent_addKernGroups, updateFooter_addKernGroups } from './action_add_kern_groups';
 import {
 	updateCharacterCopyTable,
 	updateContent_copyShapes,
 	updateFooter_copyShapes,
 } from './action_copy_shapes';
+import {
+	updateContent_overwriteItems,
+	updateFooter_overwriteItems,
+} from './action_overwrite_items';
 import {
 	updateContent_overwriteSettings,
 	updateFooter_overwriteSettings,
@@ -26,14 +30,12 @@ export function makePage_CrossProjectActions() {
 			<div id="cross-project-actions__page">
 				<div class="cross-project-actions__page-header">
 					<h1>Cross&#8209;project&nbsp;actions</h1><span></span><span id="cross-project-actions__close-button">✖</span>
-					<option-chooser id="cross-project-actions__action-chooser"
-						selected-id="Copy character or ligature shapes"
-						selected-name="Copy character or ligature shapes">
+					<option-chooser id="cross-project-actions__action-chooser">
 						<option>Copy character or ligature shapes</option>
+						<option>Overwrite characters or ligatures</option>
 						<option>Add component roots</option>
 						<option>Add kern groups</option>
 						<option>Overwrite settings</option>
-						<option>Merge two projects</option>
 					</option-chooser>
 					<span id="cross-project-actions__item-count"></span>
 					<span></span>
@@ -81,6 +83,9 @@ function updateCrossProjectActionsPage(content) {
 	if (selectedAction === 'Copy character or ligature shapes') {
 		updateContent_copyShapes(pageContent);
 		updateFooter_copyShapes(pageFooter);
+	} else if (selectedAction === 'Overwrite characters or ligatures') {
+		updateContent_overwriteItems(pageContent);
+		updateFooter_overwriteItems(pageFooter);
 	} else if (selectedAction === 'Add component roots') {
 		updateContent_addComponents(pageContent);
 		updateFooter_addComponents(pageFooter);

@@ -211,7 +211,7 @@ function addKernGroup(leftGroup, rightGroup, value) {
 
 	const project = getCurrentProject();
 
-	project.addNewItem(
+	project.addItemByType(
 		new KernGroup({
 			leftGroup: leftGroup,
 			rightGroup: rightGroup,

@@ -117,18 +117,6 @@ describe('GlyphrStudioProject Tests', () => {
 		expect(itemID).toBe('liga-abc');
 	});
 
-	// Test the setItem method of GlyphrStudioProject class
-	it('GlyphrStudioProject setItem should set an item based on its ID', () => {
-		const project = new GlyphrStudioProject(mockProjectData);
-
-		// Adding a sample glyph
-		const glyph = { id: 'glyph-0x61' };
-		project.setItem(glyph.id, glyph);
-
-		const retrievedGlyph = project.getItem(glyph.id);
-		expect(retrievedGlyph).toEqual(glyph);
-	});
-
 	// Test the getItemName method of GlyphrStudioProject class
 	it('GlyphrStudioProject getItemName should return the name of an item based on its ID', ({
 		expect,

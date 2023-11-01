@@ -226,7 +226,7 @@ export class ProjectEditor {
 		const selectedID = this.selectedGlyphID;
 		// log(`selectedGlyphID ${selectedID}`);
 		if (!this.project.glyphs[selectedID]) {
-			this.project.addNewItem(new Glyph(), 'Glyph', selectedID);
+			this.project.addItemByType(new Glyph(), 'Glyph', selectedID);
 		}
 		let re = this.project.glyphs[selectedID];
 		// log(re);

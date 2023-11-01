@@ -238,7 +238,7 @@ function makeComponentsFirstRunContent() {
 
 export function addComponent(newComponent) {
 	const project = getCurrentProject();
-	let added = project.addNewItem(new Glyph(newComponent), 'Component');
+	let added = project.addItemByType(new Glyph(newComponent), 'Component');
 	return added;
 }
 

@@ -733,7 +733,7 @@ function makeCard_AllCaps() {
 				let itemID = `glyph-${decToHex(gid)}`;
 				let item = project.getItem(itemID);
 				if (!item) {
-					project.addNewItem(new Glyph(), 'Glyph', itemID);
+					project.addItemByType(new Glyph(), 'Glyph', itemID);
 				}
 			}
 

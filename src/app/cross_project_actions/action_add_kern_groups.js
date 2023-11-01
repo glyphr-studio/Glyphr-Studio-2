@@ -215,7 +215,7 @@ function addKernGroups() {
 
 		// log(`\n⮟newItem⮟`);
 		// log(newItem);
-		destinationEditor.project.addNewItem(newItem, 'KernGroup');
+		destinationEditor.project.addItemByType(newItem, 'KernGroup');
 	});
 
 	showToast(`Added ${selectedItemIDs.length} kern groups`);

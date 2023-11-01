@@ -5,23 +5,27 @@ import { makeGlyphWithResolvedLinks } from '../../project_editor/cross_item_acti
 import {
 	clearAllSelections,
 	destinationEditor,
+	makeItemAndRangeChooser,
 	makeProjectFlipper,
 	selectedItemIDs,
+	selectedRange,
 	sourceEditor,
 	toggleCheckboxes,
 	updateSelectedIDs,
 } from './cross_project_actions';
 
-export function updateContent_addComponents(parent) {
+export function updateContent_overwriteItems(parent) {
 	parent.innerHTML = '';
 	parent.appendChild(
 		makeElement({
 			tag: 'p',
-			content: `This action will duplicate the selected components from the source project and add them to the destination project, ensuring they have unique IDs. `,
+			content: `This action will take the selected characters or ligatures from the source project, and
+			add them to the destination project. If a character or ligature already exists in the destination
+			project, it will be overwritten.`,
 		})
 	);
 
-	parent.appendChild(makeProjectFlipper('Add components from'));
+	parent.appendChild(makeProjectFlipper('Overwrite items from'));
 
 	let emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
@@ -46,6 +50,7 @@ export function updateContent_addComponents(parent) {
 		);
 		parent.appendChild(makeElement({ tag: 'br' }));
 	}
+
 	parent.appendChild(
 		makeElement({
 			tag: 'input',
@@ -55,15 +60,24 @@ export function updateContent_addComponents(parent) {
 	);
 	parent.appendChild(makeSingleLabel('Reverse shape windings', false, 'checkbox-reverse-windings'));
 
+	// Range chooser
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(
+		makeItemAndRangeChooser({ showLigatures: true }, () => {
+			let table = document.getElementById('cross-project-actions__character-copy-table');
+			updateOverwriteItemsTable(table);
+		})
+	);
+
 	// Table
 	const table = makeElement({
 		className: 'cross-project-actions__column-layout',
-		id: 'cross-project-actions__add-item-table',
 	});
-	parent.appendChild(updateAddItemTable(table));
+	parent.appendChild(updateOverwriteItemsTable(table));
 }
 
-export function updateAddItemTable(table) {
+export function updateOverwriteItemsTable(table) {
 	table.innerHTML = '';
 	// Table column headers
 	let wrapper = makeElement({
@@ -91,29 +105,43 @@ export function updateAddItemTable(table) {
 	);
 
 	table.appendChild(
-		makeElement({ className: 'cross-project-actions__column-header', innerHTML: 'source id' })
+		makeElement({ className: 'cross-project-actions__column-header', innerHTML: 'glyph id' })
 	);
 
 	table.appendChild(
-		makeElement({ className: 'cross-project-actions__column-header', innerHTML: 'source' })
+		makeElement({ className: 'cross-project-actions__column-header', innerHTML: 'from' })
+	);
+
+	table.appendChild(makeElement({ className: 'cross-project-actions__column-header' }));
+
+	table.appendChild(
+		makeElement({ className: 'cross-project-actions__column-header', innerHTML: 'overwrite' })
 	);
 
 	// Table Rows
-	makeRows(table);
+	makeRows(selectedRange, table);
 
 	return table;
 }
 
-function makeRows(parent) {
+function makeRows(range, parent) {
 	// log(`makeRows`, 'start');
 	let count = 0;
 
-	for (let comp of Object.keys(sourceEditor.project.components)) {
-		makeOneRow(comp);
+	if (range === 'Ligatures') {
+		for (let liga of Object.keys(sourceEditor.project.ligatures)) {
+			makeOneRow(liga);
+		}
+	} else {
+		range.array.forEach((id) => {
+			const itemID = `glyph-${id}`;
+			makeOneRow(itemID);
+		});
 	}
 
 	function makeOneRow(itemID) {
 		const sourceItem = sourceEditor.project.getItem(itemID);
+		const destinationItem = destinationEditor.project.getItem(itemID);
 		const title = `Select ${itemID}`;
 		if (sourceItem) {
 			let wrapper = makeElement({ className: 'checkbox-wrapper' });
@@ -157,6 +185,14 @@ function makeRows(parent) {
 					attributes: { style: 'grid-column: 4;' },
 				})
 			);
+			parent.appendChild(makeElement({ className: 'connector', innerHTML: '➔' }));
+			parent.appendChild(
+				makeElement({
+					className: 'thumbnail',
+					innerHTML: destinationEditor.project.makeItemThumbnail(destinationItem),
+					attributes: { style: 'grid-column: 6;' },
+				})
+			);
 			count++;
 		}
 	}
@@ -165,28 +201,27 @@ function makeRows(parent) {
 	if (!count) {
 		// parent.appendChild(makeElement());
 		parent.appendChild(
-			makeElement({
-				content: 'No components exist in the source project',
-				className: 'span-all-columns',
-			})
+			makeElement({ content: 'No items exist in this range', className: 'span-all-columns' })
 		);
 	}
 
 	// log(`makeRows`, 'end');
 }
 
-export function updateFooter_addComponents(parent) {
+export function updateFooter_overwriteItems(parent) {
 	parent.appendChild(
 		makeElement({
 			tag: 'fancy-button',
-			content: 'Add components',
-			onClick: addComponents,
+			content: 'Overwrite selected items',
+			onClick: overwriteItems,
 		})
 	);
 }
 
-function addComponents() {
-	// log(`Cross Project Actions - addComponents`, 'start');
+function overwriteItems() {
+	// log(`Cross Project Actions - overwriteItems`, 'start');
+	// log(`\n⮟selectedItemIDs⮟`);
+	// log(selectedItemIDs);
 	let emRatio =
 		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
 	// log(`emRatio: ${emRatio}`);
@@ -201,8 +236,6 @@ function addComponents() {
 		// log(`itemID: ${itemID}`);
 		const sourceItem = sourceEditor.project.getItem(itemID);
 		const resolvedGlyph = makeGlyphWithResolvedLinks(sourceItem);
-		resolvedGlyph.name = sourceItem.name;
-		resolvedGlyph.usedIn = [];
 		// log(resolvedGlyph);
 
 		if (scaleItems) {
@@ -219,11 +252,11 @@ function addComponents() {
 
 		// log(`\n⮟resolvedGlyph⮟`);
 		// log(resolvedGlyph);
-		destinationEditor.project.addItemByType(resolvedGlyph, 'Component');
+		destinationEditor.project.addItemByType(resolvedGlyph, resolvedGlyph.objType, itemID);
 	});
 
-	showToast(`Added ${selectedItemIDs.length} components`);
-	updateContent_addComponents(document.querySelector('#cross-project-actions__page-content'));
+	showToast(`Overwrote ${selectedItemIDs.length} items`);
+	updateContent_overwriteItems(document.querySelector('#cross-project-actions__page-content'));
 	clearAllSelections();
-	// log(`Cross Project Actions - addComponents`, 'end');
+	// log(`Cross Project Actions - overwriteItems`, 'end');
 }
