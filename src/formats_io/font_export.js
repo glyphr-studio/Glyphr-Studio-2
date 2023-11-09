@@ -50,6 +50,7 @@ export async function ioFont_exportFont() {
 		font.substitution.addLigature('liga', sub);
 	});
 	// log('Font object:');
+	// log(font);
 	// log(font.toTables());
 
 	font.download();
