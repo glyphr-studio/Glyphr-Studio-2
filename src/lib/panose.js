@@ -1,85 +1,174 @@
+// https://monotype.github.io/panose/pan1.htm
 export const panoseData = [
-	{
-		digit: 0,
-		name: 'Any'
-	},
-	{
-		digit: 1,
-		name: 'No fit'
-	},
+	{ digit: 0, name: 'Any' },
+	{ digit: 1, name: 'No Fit' },
 	{
 		digit: 2,
 		name: 'Latin Text',
 		values: [
-			{
-				digit: 0,
-				name: 'Any'
-			},
-			{
-				digit: 1,
-				name: 'No fit'
-			},
+			{ digit: 0, name: 'Any' },
+			{ digit: 1, name: 'No Fit' },
 			{
 				digit: 2,
 				name: 'Serif Style',
 				values: [
-
+					{ digit: 0, name: 'Any'},
+					{ digit: 1, name: 'No Fit'},
+					{ digit: 2, name: 'Cove'},
+					{ digit: 3, name: 'Obtuse Cove'},
+					{ digit: 4, name: 'Square Cove'},
+					{ digit: 5, name: 'Obtuse Square Cove'},
+					{ digit: 6, name: 'Square'},
+					{ digit: 7, name: 'Thin'},
+					{ digit: 8, name: 'Oval'},
+					{ digit: 9, name: 'Exaggerated'},
+					{ digit: 10, name: 'Triangle'},
+					{ digit: 11, name: 'Normal Sans'},
+					{ digit: 12, name: 'Obtuse Sans'},
+					{ digit: 13, name: 'Perpendicular Sans'},
+					{ digit: 14, name: 'Flared'},
+					{ digit: 15, name: 'Rounded'},
 				]
 			},
 			{
 				digit: 3,
 				name: 'Weight',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Very Light'},
+					{digit: 3, name: 'Light'},
+					{digit: 4, name: 'Thin'},
+					{digit: 5, name: 'Book'},
+					{digit: 6, name: 'Medium'},
+					{digit: 7, name: 'Demi'},
+					{digit: 8, name: 'Bold'},
+					{digit: 9, name: 'Heavy'},
+					{digit: 10, name: 'Black'},
+					{digit: 11, name: 'Extra Black'},
 				]
 			},
 			{
 				digit: 4,
 				name: 'Proportion',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No fit'},
+					{digit: 2, name: 'Old Style'},
+					{digit: 3, name: 'Modern'},
+					{digit: 4, name: 'Even Width'},
+					{digit: 5, name: 'Extended'},
+					{digit: 6, name: 'Condensed'},
+					{digit: 7, name: 'Very Extended'},
+					{digit: 8, name: 'Very Condensed'},
+					{digit: 9, name: 'Monospaced'},
 				]
 			},
 			{
 				digit: 5,
 				name: 'Contrast',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'None'},
+					{digit: 3, name: 'Very Low'},
+					{digit: 4, name: 'Low'},
+					{digit: 5, name: 'Medium Low'},
+					{digit: 6, name: 'Medium'},
+					{digit: 7, name: 'Medium High'},
+					{digit: 8, name: 'High'},
+					{digit: 9, name: 'Very High'},
 				]
 			},
 			{
 				digit: 6,
 				name: 'Stroke Variation',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'No Variation'},
+					{digit: 3, name: 'Gradual/Diagonal'},
+					{digit: 4, name: 'Gradual/Transitional'},
+					{digit: 5, name: 'Gradual/Vertical'},
+					{digit: 6, name: 'Gradual/Horizontal'},
+					{digit: 7, name: 'Rapid/Vertical'},
+					{digit: 8, name: 'Rapid/Horizontal'},
+					{digit: 9, name: 'Instant/Vertical'},
+					{digit: 10, name: 'Instant/Horizontal'},
 				]
 			},
 			{
 				digit: 7,
 				name: 'Arm Style',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Straight Arms/Horizontal'},
+					{digit: 3, name: 'Straight Arms/Wedge'},
+					{digit: 4, name: 'Straight Arms/Vertical'},
+					{digit: 5, name: 'Straight Arms/Single Serif'},
+					{digit: 6, name: 'Straight Arms/Double Serif'},
+					{digit: 7, name: 'Non-Straight/Horizontal'},
+					{digit: 8, name: 'Non-Straight/Wedge'},
+					{digit: 9, name: 'Non-Straight/Vertical'},
+					{digit: 10, name: 'Non-Straight/Single Serif'},
+					{digit: 11, name: 'Non-Straight/Double Serif'},
 				]
 			},
 			{
 				digit: 8,
 				name: 'Letterform',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Normal/Contact'},
+					{digit: 3, name: 'Normal/Weighted'},
+					{digit: 4, name: 'Normal/Boxed'},
+					{digit: 5, name: 'Normal/Flattened'},
+					{digit: 6, name: 'Normal/Rounded'},
+					{digit: 7, name: 'Normal/Off Center'},
+					{digit: 8, name: 'Normal/Square'},
+					{digit: 9, name: 'Oblique/Contact'},
+					{digit: 10, name: 'Oblique/Weighted'},
+					{digit: 11, name: 'Oblique/Boxed'},
+					{digit: 12, name: 'Oblique/Flattened'},
+					{digit: 13, name: 'Oblique/Rounded'},
+					{digit: 14, name: 'Oblique/Off Center'},
+					{digit: 15, name: 'Oblique/Square'},
 				]
 			},
 			{
 				digit: 9,
 				name: 'Midline',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Standard/Trimmed'},
+					{digit: 3, name: 'Standard/Pointed'},
+					{digit: 4, name: 'Standard/Serifed'},
+					{digit: 5, name: 'High/Trimmed'},
+					{digit: 6, name: 'High/Pointed'},
+					{digit: 7, name: 'High/Serifed'},
+					{digit: 8, name: 'Constant/Trimmed'},
+					{digit: 9, name: 'Constant/Pointed'},
+					{digit: 10, name: 'Constant/Serifed'},
+					{digit: 11, name: 'Low/Trimmed'},
+					{digit: 12, name: 'Low/Pointed'},
+					{digit: 13, name: 'Low/Serifed'},
 				]
 			},
 			{
 				digit: 10,
 				name: 'X-height',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Constant/Small'},
+					{digit: 3, name: 'Constant/Standard'},
+					{digit: 4, name: 'Constant/Large'},
+					{digit: 5, name: 'Ducking/Small'},
+					{digit: 6, name: 'Ducking/Standard'},
+					{digit: 7, name: 'Ducking/Large'},
 				]
 			},
 		]
@@ -88,75 +177,149 @@ export const panoseData = [
 		digit: 3,
 		name: 'Latin Hand Written',
 		values: [
-			{
-				digit: 0,
-				name: 'Any'
-			},
-			{
-				digit: 1,
-				name: 'No fit'
-			},
+			{ digit: 0, name: 'Any' },
+			{ digit: 1, name: 'No Fit' },
 			{
 				digit: 2,
 				name: 'Tool Kind',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Flat Nib'},
+					{digit: 3, name: 'Pressure Point'},
+					{digit: 4, name: 'Engraved'},
+					{digit: 5, name: 'Ball (Round Cap)'},
+					{digit: 6, name: 'Brush'},
+					{digit: 7, name: 'Rough'},
+					{digit: 8, name: 'Felt Pen/Brush Tip'},
+					{digit: 9, name: 'Wild Brush - Drips a lot'},
 				]
 			},
 			{
 				digit: 3,
 				name: 'Weight',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Very Light'},
+					{digit: 3, name: 'Light'},
+					{digit: 4, name: 'Thin'},
+					{digit: 5, name: 'Book'},
+					{digit: 6, name: 'Medium'},
+					{digit: 7, name: 'Demi'},
+					{digit: 8, name: 'Bold'},
+					{digit: 9, name: 'Heavy'},
+					{digit: 10, name: 'Black'},
+					{digit: 11, name: 'Extra Black (Nord)'},
 				]
 			},
 			{
 				digit: 4,
 				name: 'Spacing',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No fit'},
+					{digit: 2, name: 'Proportional Spaced'},
+					{digit: 3, name: 'Monospaced'},
 				]
 			},
 			{
 				digit: 5,
 				name: 'Aspect Ratio',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Very Condensed'},
+					{digit: 3, name: 'Condensed'},
+					{digit: 4, name: 'Normal'},
+					{digit: 5, name: 'Expanded'},
+					{digit: 6, name: 'Very Expanded'},
 				]
 			},
 			{
 				digit: 6,
 				name: 'Contrast',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'None'},
+					{digit: 3, name: 'Very Low'},
+					{digit: 4, name: 'Low'},
+					{digit: 5, name: 'Medium Low'},
+					{digit: 6, name: 'Medium'},
+					{digit: 7, name: 'Medium High'},
+					{digit: 8, name: 'High'},
+					{digit: 9, name: 'Very High'},
 				]
 			},
 			{
 				digit: 7,
 				name: 'Topology',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Roman Disconnected'},
+					{digit: 3, name: 'Roman Trailing'},
+					{digit: 4, name: 'Roman Connected'},
+					{digit: 5, name: 'Cursive Disconnected'},
+					{digit: 6, name: 'Cursive Trailing'},
+					{digit: 7, name: 'Cursive Connected'},
+					{digit: 8, name: 'Blackletter Disconnected'},
+					{digit: 9, name: 'Blackletter Trailing'},
+					{digit: 10, name: 'Blackletter Connected'},
 				]
 			},
 			{
 				digit: 8,
 				name: 'Form',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Upright / No Wrapping'},
+					{digit: 3, name: 'Upright / Some Wrapping'},
+					{digit: 4, name: 'Upright / More Wrapping'},
+					{digit: 5, name: 'Upright / Extreme Wrapping'},
+					{digit: 6, name: 'Oblique / No Wrapping'},
+					{digit: 7, name: 'Oblique / Some Wrapping'},
+					{digit: 8, name: 'Oblique / More Wrapping'},
+					{digit: 9, name: 'Oblique / Extreme Wrapping'},
+					{digit: 10, name: 'Exaggerated / No Wrapping'},
+					{digit: 11, name: 'Exaggerated / Some Wrapping'},
+					{digit: 12, name: 'Exaggerated / More Wrapping'},
+					{digit: 13, name: 'Exaggerated / Extreme Wrapping'},
 				]
 			},
 			{
 				digit: 9,
 				name: 'Finials',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'None / No loops'},
+					{digit: 3, name: 'None / Closed loops'},
+					{digit: 4, name: 'None / Open loops'},
+					{digit: 5, name: 'Sharp / No loops'},
+					{digit: 6, name: 'Sharp / Closed loops'},
+					{digit: 7, name: 'Sharp / Open loops'},
+					{digit: 8, name: 'Tapered / No loops'},
+					{digit: 9, name: 'Tapered / Closed loops'},
+					{digit: 10, name: 'Tapered / Open loops'},
+					{digit: 11, name: 'Round / No loops'},
+					{digit: 12, name: 'Round / Closed loops'},
+					{digit: 13, name: 'Round / Open loops'},
 				]
 			},
 			{
 				digit: 10,
 				name: 'X-ascent',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Very Low'},
+					{digit: 3, name: 'Low'},
+					{digit: 4, name: 'Medium'},
+					{digit: 5, name: 'High'},
+					{digit: 6, name: 'Very High'},
 				]
 			},
 		]
@@ -165,75 +328,165 @@ export const panoseData = [
 		digit: 4,
 		name: 'Latin Decorative',
 		values: [
-			{
-				digit: 0,
-				name: 'Any'
-			},
-			{
-				digit: 1,
-				name: 'No fit'
-			},
+			{ digit: 0, name: 'Any' },
+			{ digit: 1, name: 'No Fit' },
 			{
 				digit: 2,
 				name: 'Class',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Derivative'},
+					{digit: 3, name: 'Non-standard Topology'},
+					{digit: 4, name: 'Non-standard Elements'},
+					{digit: 5, name: 'Non-standard Aspect'},
+					{digit: 6, name: 'Initials'},
+					{digit: 7, name: 'Cartoon'},
+					{digit: 8, name: 'Picture Stems'},
+					{digit: 9, name: 'Ornamented'},
+					{digit: 10, name: 'Text and Background'},
+					{digit: 11, name: 'Collage'},
+					{digit: 12, name: 'Montage'},
 				]
 			},
 			{
 				digit: 3,
 				name: 'Weight',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Very Light'},
+					{digit: 3, name: 'Light'},
+					{digit: 4, name: 'Thin'},
+					{digit: 5, name: 'Book'},
+					{digit: 6, name: 'Medium'},
+					{digit: 7, name: 'Demi'},
+					{digit: 8, name: 'Bold'},
+					{digit: 9, name: 'Heavy'},
+					{digit: 10, name: 'Black'},
+					{digit: 11, name: 'Extra Black'},
 				]
 			},
 			{
 				digit: 4,
 				name: 'Aspect',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No fit'},
+					{digit: 2, name: 'Super Condensed'},
+					{digit: 3, name: 'Very Condensed'},
+					{digit: 4, name: 'Condensed'},
+					{digit: 5, name: 'Normal'},
+					{digit: 6, name: 'Extended'},
+					{digit: 7, name: 'Very Extended'},
+					{digit: 8, name: 'Super Extended'},
+					{digit: 9, name: 'Monospaced'},
 				]
 			},
 			{
 				digit: 5,
 				name: 'Contrast',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'None'},
+					{digit: 3, name: 'Very Low'},
+					{digit: 4, name: 'Low'},
+					{digit: 5, name: 'Medium Low'},
+					{digit: 6, name: 'Medium'},
+					{digit: 7, name: 'Medium High'},
+					{digit: 8, name: 'High'},
+					{digit: 9, name: 'Very High'},
+					{digit: 10, name: 'Horizontal Low'},
+					{digit: 11, name: 'Horizontal Medium'},
+					{digit: 12, name: 'Horizontal High'},
+					{digit: 13, name: 'Broken'},
 				]
 			},
 			{
 				digit: 6,
 				name: 'Serif Variant',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Cove'},
+					{digit: 3, name: 'Obtuse Cove'},
+					{digit: 4, name: 'Square Cove'},
+					{digit: 5, name: 'Obtuse Square Cove'},
+					{digit: 6, name: 'Square'},
+					{digit: 7, name: 'Thin'},
+					{digit: 8, name: 'Oval'},
+					{digit: 9, name: 'Exaggerated'},
+					{digit: 10, name: 'Triangle'},
+					{digit: 11, name: 'Normal Sans'},
+					{digit: 12, name: 'Obtuse Sans'},
+					{digit: 13, name: 'Perpendicular Sans'},
+					{digit: 14, name: 'Flared'},
+					{digit: 15, name: 'Rounded'},
+					{digit: 16, name: 'Script'},
 				]
 			},
 			{
 				digit: 7,
 				name: 'Treatment',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'None - Standard Solid Fill'},
+					{digit: 3, name: 'White / No Fill'},
+					{digit: 4, name: 'Patterned Fill'},
+					{digit: 5, name: 'Complex Fill'},
+					{digit: 6, name: 'Shaped Fill'},
+					{digit: 7, name: 'Drawn / Distressed'},
 				]
 			},
 			{
 				digit: 8,
 				name: 'Lining',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'None'},
+					{digit: 3, name: 'Inline'},
+					{digit: 4, name: 'Outline'},
+					{digit: 5, name: 'Engraved (Multiple Lines)'},
+					{digit: 6, name: 'Shadow'},
+					{digit: 7, name: 'Relief'},
+					{digit: 8, name: 'Backdrop'},
 				]
 			},
 			{
 				digit: 9,
 				name: 'Topology',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Standard'},
+					{digit: 3, name: 'Square'},
+					{digit: 4, name: 'Multiple Segment'},
+					{digit: 5, name: 'Deco (E,M,S) Waco midlines'},
+					{digit: 6, name: 'Uneven Weighting'},
+					{digit: 7, name: 'Diverse Arms'},
+					{digit: 8, name: 'Diverse Forms'},
+					{digit: 9, name: 'Lombardic Forms'},
+					{digit: 10, name: 'Upper Case in Lower Case'},
+					{digit: 11, name: 'Implied Topology'},
+					{digit: 12, name: 'Horseshoe E and A'},
+					{digit: 13, name: 'Cursive'},
+					{digit: 14, name: 'Blackletter'},
+					{digit: 15, name: 'Swash Variance'},
 				]
 			},
 			{
 				digit: 10,
 				name: 'Range of Characters',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Extended Collection'},
+					{digit: 3, name: 'Litterals'},
+					{digit: 4, name: 'No Lower Case'},
+					{digit: 5, name: 'Small Caps'},
 				]
 			},
 		]
@@ -242,75 +495,129 @@ export const panoseData = [
 		digit: 5,
 		name: 'Latin Symbol',
 		values: [
-			{
-				digit: 0,
-				name: 'Any'
-			},
-			{
-				digit: 1,
-				name: 'No fit'
-			},
+			{ digit: 0, name: 'Any' },
+			{ digit: 1, name: 'No Fit' },
 			{
 				digit: 2,
 				name: 'Kind',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'Montages'},
+					{digit: 3, name: 'Pictures'},
+					{digit: 4, name: 'Shapes'},
+					{digit: 5, name: 'Scientific'},
+					{digit: 6, name: 'Music'},
+					{digit: 7, name: 'Expert'},
+					{digit: 8, name: 'Patterns'},
+					{digit: 9, name: 'Boarders'},
+					{digit: 10, name: 'Icons'},
+					{digit: 11, name: 'Logos'},
+					{digit: 12, name: 'Industry specific'},
 				]
 			},
 			{
 				digit: 3,
 				name: 'Weight',
 				values: [
-
+					{digit: 1, name: 'No Fit'},
 				]
 			},
 			{
 				digit: 4,
 				name: 'Spacing',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No fit'},
+					{digit: 2, name: 'Proportional Spaced'},
+					{digit: 3, name: 'Monospaced'},
 				]
 			},
 			{
 				digit: 5,
 				name: 'Aspect Ratio & Contrast',
 				values: [
-
+					{digit: 1, name: 'No Fit'},
 				]
 			},
 			{
 				digit: 6,
 				name: 'Aspect Ratio of Character 94',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'No Width'},
+					{digit: 3, name: 'Exceptionally Wide'},
+					{digit: 4, name: 'Super Wide'},
+					{digit: 5, name: 'Very Wide'},
+					{digit: 6, name: 'Wide'},
+					{digit: 7, name: 'Normal'},
+					{digit: 8, name: 'Narrow'},
+					{digit: 9, name: 'Very Narrow'},
 				]
 			},
 			{
 				digit: 7,
 				name: 'Aspect Ratio of Character 119',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'No Width'},
+					{digit: 3, name: 'Exceptionally Wide'},
+					{digit: 4, name: 'Super Wide'},
+					{digit: 5, name: 'Very Wide'},
+					{digit: 6, name: 'Wide'},
+					{digit: 7, name: 'Normal'},
+					{digit: 8, name: 'Narrow'},
+					{digit: 9, name: 'Very Narrow'},
 				]
 			},
 			{
 				digit: 8,
 				name: 'Aspect Ratio of Character 157',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'No Width'},
+					{digit: 3, name: 'Exceptionally Wide'},
+					{digit: 4, name: 'Super Wide'},
+					{digit: 5, name: 'Very Wide'},
+					{digit: 6, name: 'Wide'},
+					{digit: 7, name: 'Normal'},
+					{digit: 8, name: 'Narrow'},
+					{digit: 9, name: 'Very Narrow'},
 				]
 			},
 			{
 				digit: 9,
 				name: 'Aspect Ratio of Character 163',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'No Width'},
+					{digit: 3, name: 'Exceptionally Wide'},
+					{digit: 4, name: 'Super Wide'},
+					{digit: 5, name: 'Very Wide'},
+					{digit: 6, name: 'Wide'},
+					{digit: 7, name: 'Normal'},
+					{digit: 8, name: 'Narrow'},
+					{digit: 9, name: 'Very Narrow'},
 				]
 			},
 			{
 				digit: 10,
 				name: 'Aspect Ratio of Character 211',
 				values: [
-
+					{digit: 0, name: 'Any'},
+					{digit: 1, name: 'No Fit'},
+					{digit: 2, name: 'No Width'},
+					{digit: 3, name: 'Exceptionally Wide'},
+					{digit: 4, name: 'Super Wide'},
+					{digit: 5, name: 'Very Wide'},
+					{digit: 6, name: 'Wide'},
+					{digit: 7, name: 'Normal'},
+					{digit: 8, name: 'Narrow'},
+					{digit: 9, name: 'Very Narrow'},
 				]
 			},
 		]
