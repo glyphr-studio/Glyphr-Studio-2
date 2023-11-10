@@ -1,8 +1,8 @@
-import { addAsChildren, makeElement } from '../../common/dom';
-import { showToast } from '../../controls/dialogs/dialogs';
-import { makeKernGroupCharChips } from '../../pages/kerning';
-import { makeSingleLabel } from '../../panels/cards';
-import { KernGroup } from '../../project_data/kern_group';
+import { addAsChildren, makeElement } from '../../common/dom.js';
+import { showToast } from '../../controls/dialogs/dialogs.js';
+import { makeKernGroupCharChips } from '../../pages/kerning.js';
+import { makeSingleLabel } from '../../panels/cards.js';
+import { KernGroup } from '../../project_data/kern_group.js';
 import {
 	clearAllSelections,
 	destinationEditor,
@@ -11,7 +11,7 @@ import {
 	sourceEditor,
 	toggleCheckboxes,
 	updateSelectedIDs,
-} from './cross_project_actions';
+} from './cross_project_actions.js';
 
 export function updateContent_addKernGroups(parent) {
 	parent.innerHTML = '';

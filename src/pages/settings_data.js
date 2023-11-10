@@ -77,10 +77,12 @@ export default {
 		},
 		panose: {
 			label: `Panose-1`,
-			description: `Uses ten digits to describe the font's visual style.  A good overview can be found on Monotype's GitHub page: <a href="https://monotype.github.io/panose/pan2.htm" target="_blank">monotype.github.io/panose/pan2.htm</a><br>Each digit of the ten digits is separated by a space, and has a special meaning based on its position.`,
-			example: `<strong>0 0 0 0 0 0 0 0 0 0</strong><br>All zeros describe this font as 'any', which basically leaves it undefined.
+			description: `PANOSE is a system that uses ten digits to describe the font's visual style.  A good overview can be found on Monotype's GitHub page: <a href="https://monotype.github.io/panose/pan1.htm" target="_blank">monotype.github.io/panose/pan2.htm</a><br>Each digit of the ten digits is separated by a space, and has a special meaning based on its position.`,
+			example: `<strong>0 0 0 0 0 0 0 0 0 0</strong><br>All zeros describe this font as 'any', which basically leaves it undefined. Use this as your default.
 			<br><br>
-			<strong>2 0 0 0 0 0 0 0 0 0</strong><br>The first digit is the major designator, where digit 2 represents Latin typefaces.`,
+			<strong>2 0 0 0 0 0 0 0 0 0</strong><br>The first digit determines the kind of font family this is, where digit 2 represents Latin typefaces.
+			<br><br>
+			Check out the interactive PANOSE builder to get more details on what each digit means.`,
 		},
 		upm: {
 			label: `Units per Em (UPM)`,

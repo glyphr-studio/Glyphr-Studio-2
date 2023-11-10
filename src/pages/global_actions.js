@@ -1,25 +1,25 @@
-import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
-import { decToHex, validateAsHex } from '../common/character_ids';
-import { addAsChildren, makeElement } from '../common/dom';
-import { showToast } from '../controls/dialogs/dialogs';
-import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks';
+import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
+import { decToHex, validateAsHex } from '../common/character_ids.js';
+import { addAsChildren, makeElement } from '../common/dom.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
+import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks.js';
 import {
 	findMappedValue,
 	unicodeDiacriticsMapAdvanced,
 	unicodeDiacriticsMapSimple,
 	unicodeLowercaseMap,
-} from '../lib/unicode/unicode_mappings';
-import { copyShapesFromTo } from '../panels/actions';
-import { Glyph } from '../project_data/glyph';
-import { Path } from '../project_data/path';
+} from '../lib/unicode/unicode_mappings.js';
+import { copyShapesFromTo } from '../panels/actions.js';
+import { Glyph } from '../project_data/glyph.js';
+import { Path } from '../project_data/path.js';
 import {
 	getComponentInstancesFromRoot,
 	glyphChanged,
 	insertComponentInstance,
 	removeLinkFromUsedIn,
-} from '../project_editor/cross_item_actions';
-import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator';
-import { addCharacterRangeToCurrentProject } from './settings';
+} from '../project_editor/cross_item_actions.js';
+import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
+import { addCharacterRangeToCurrentProject } from './settings_project.js';
 
 /**
  * Page > Global Actions
