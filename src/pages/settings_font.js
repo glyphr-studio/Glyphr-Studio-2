@@ -1,5 +1,6 @@
 import { addAsChildren, makeElement, textToNode } from '../common/dom';
 import { showModalDialog } from '../controls/dialogs/dialogs';
+import { panoseData } from '../lib/panose';
 import { makeOneSettingsRow } from './settings';
 
 export function makeSettingsTabContentFont() {
@@ -69,7 +70,7 @@ function makePanoseLauncherRow() {
 		textToNode('<span></span>'),
 		button,
 		textToNode('<span></span>'),
-	]
+	];
 }
 
 function showPanoseBuilderDialog() {
@@ -88,14 +89,7 @@ function showPanoseBuilderDialog() {
 
 				<div id="panose-0-value" class="panose-value">#</div>
 				<div id="panose-0-name" class="panose-name">Family Kind</div>
-				<option-chooser id="panose-0-chooser">
-					<option>Any</option>
-					<option>No Fit</option>
-					<option>Latin Text</option>
-					<option>Latin Hand Written</option>
-					<option>Latin Decorative</option>
-					<option>Latin Symbol</option>
-				</option-chooser>
+				<option-chooser id="panose-0-chooser"></option-chooser>
 
 				<div id="panose-1-value" class="panose-value">#</div>
 				<div id="panose-1-name" class="panose-name"></div>
@@ -136,17 +130,58 @@ function showPanoseBuilderDialog() {
 			<br><br>
 			<fancy-button>Save</fancy-button>
 			<fancy-button secondary>Cancel</fancy-button>
-	`});
+	`,
+	});
 	showModalDialog(dialogWrapper, 600);
 	refreshPanoseBuilderTable();
 }
 
 function refreshPanoseBuilderTable() {
-	let displayedValues = '0 _ _ _ _ _ _ _ _ _';
-	let values = displayedValues.split(' ');
+	log(`refreshPanoseBuilderTable`, 'start');
+	let displayedValues = '1 0';
+	let currentPanose = displayedValues.split(' ');
+	log(currentPanose);
+	while (currentPanose.length < 10) currentPanose.push('_');
+	log(currentPanose);
+	let familyData = panoseData[currentPanose[0]];
+	let chooser, selectedName;
 
-	for (let i = 0; i < 10; i++) {
-		document.getElementById(`panose-${i}-value`).innerHTML = values[i];
+	// Update Rows
+	for (let row = 0; row < 10; row++) {
+		log(`row: ${row}`);
+		document.getElementById(`panose-${row}-value`).innerHTML = currentPanose[row];
+		if (row === 0) {
+			document.getElementById(`panose-0-name`).innerHTML = 'Family Kind';
+			chooser = document.getElementById(`panose-0-chooser`);
+			chooser.innerHTML = makePanoseOptions(panoseData.map((value) => value.name));
+			if (currentPanose[0] !== '_') {
+				selectedName = panoseData[currentPanose[0]].name;
+				chooser.setAttribute('selected-name', selectedName);
+				chooser.setAttribute('selected-id', `${selectedName} ${currentPanose[0]}`);
+			}
+		} else {
+			if (currentPanose[row] !== '_' && familyData?.values?.at(row - 1)) {
+				document.getElementById(`panose-${row}-name`).innerHTML = familyData.values[row - 1].name;
+				chooser = document.getElementById(`panose-${row}-chooser`);
+				chooser.innerHTML = makePanoseOptions(familyData.values[row - 1].values);
+				selectedName = familyData.values[row - 1].values[currentPanose[row]];
+				chooser.setAttribute('selected-name', selectedName);
+				chooser.setAttribute('selected-id', `${selectedName} ${currentPanose[row]}`);
+			}
+		}
 	}
 
+	function makePanoseOptions(options) {
+		log(`makePanoseOptions`, 'start');
+		log(`\n⮟options⮟`);
+		log(options);
+		let result = '';
+		options.forEach((value, index) => {
+			value = value || value.name;
+			result += `<option note="${index}">${value}</option>`;
+		});
+		log(`makePanoseOptions`, 'end');
+		return result;
+	}
+	log(`refreshPanoseBuilderTable`, 'end');
 }
