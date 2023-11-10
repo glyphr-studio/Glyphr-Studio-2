@@ -208,6 +208,27 @@ code,
 	opacity: 1;
 }
 
+.settings-page__panose-builder-table {
+	display: grid;
+	grid-template-columns: 50px max-content 400px;
+	row-gap: 10px;
+	margin-top: 10px;
+}
+
+.panose-value {
+	font-size: 2em;
+	line-height: 0.9em;
+	color: var(--gray-l40);
+	font-family: monospace;
+	text-align: center;
+	width: 100%;
+	padding: 0px 10px 0px 0px;
+}
+
+.panose-name {
+	padding: 5px 20px 0px 4px;
+}
+
 /* Global Actions */
 .global-actions__card {
 	max-width: 800px;
