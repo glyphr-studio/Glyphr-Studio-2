@@ -1,8 +1,6 @@
 import { getCurrentProject } from '../app/main.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
-import {
-	showToast
-} from '../controls/dialogs/dialogs.js';
+import { showToast } from '../controls/dialogs/dialogs.js';
 import { TabControl } from '../controls/tabs/tab_control.js';
 import { makeDirectCheckbox } from '../panels/cards.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
@@ -10,7 +8,6 @@ import { makeSettingsTabContentApp } from './settings_app.js';
 import settingsMap from './settings_data.js';
 import { makeSettingsTabContentFont } from './settings_font.js';
 import { makeSettingsTabContentProject } from './settings_project.js';
-
 
 export function makePage_Settings() {
 	const content = makeElement({
@@ -51,7 +48,6 @@ export function makePage_Settings() {
 
 	return content;
 }
-
 
 // --------------------------------------------------------------
 // Individual settings
@@ -127,6 +123,8 @@ export function makeOneSettingsRow(groupName, propertyName, callback = false) {
 		});
 	}
 
+	input.setAttribute('id', `settings-page-input__${groupName}-${propertyName}`);
+	
 	let info;
 	if (thisSetting?.description) {
 		info = makeElement({

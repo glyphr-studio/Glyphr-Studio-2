@@ -1,7 +1,10 @@
+import { getCurrentProject } from '../app/main';
 import { addAsChildren, makeElement, textToNode } from '../common/dom';
-import { showModalDialog } from '../controls/dialogs/dialogs';
+import { closeEveryTypeOfDialog, showModalDialog } from '../controls/dialogs/dialogs';
 import { panoseData } from '../lib/panose';
 import { makeOneSettingsRow } from './settings';
+
+let workingPanoseValue;
 
 export function makeSettingsTabContentFont() {
 	const tabContent = makeElement({
@@ -74,6 +77,7 @@ function makePanoseLauncherRow() {
 }
 
 function showPanoseBuilderDialog() {
+	workingPanoseValue = getCurrentProject().settings.font.panose.split(' ');
 	let dialogWrapper = makeElement({
 		innerHTML: `
 			<h1>PANOSE builder</h1>
@@ -128,60 +132,113 @@ function showPanoseBuilderDialog() {
 				<option-chooser id="panose-9-chooser"></option-chooser>
 			</div>
 			<br><br>
-			<fancy-button>Save</fancy-button>
-			<fancy-button secondary>Cancel</fancy-button>
+			<fancy-button id="panose-builder__save-button">Save</fancy-button>
+			<fancy-button id="panose-builder__cancel-button" secondary>Cancel</fancy-button>
 	`,
 	});
+
+	dialogWrapper.querySelector('#panose-builder__save-button').addEventListener('click', () => {
+		// log(`panose builder Save button`, 'start');
+		let result = workingPanoseValue.join(' ');
+		// log(`result: ${result}`);
+		getCurrentProject().settings.font.panose = result;
+		document.getElementById('settings-page-input__font-panose').value = result;
+		closeEveryTypeOfDialog();
+		// log(`panose builder Save button`, 'end');
+	});
+	dialogWrapper
+		.querySelector('#panose-builder__cancel-button')
+		.addEventListener('click', closeEveryTypeOfDialog);
+
 	showModalDialog(dialogWrapper, 600);
 	refreshPanoseBuilderTable();
 }
 
 function refreshPanoseBuilderTable() {
-	log(`refreshPanoseBuilderTable`, 'start');
-	let displayedValues = '1 0';
-	let currentPanose = displayedValues.split(' ');
-	log(currentPanose);
-	while (currentPanose.length < 10) currentPanose.push('_');
-	log(currentPanose);
-	let familyData = panoseData[currentPanose[0]];
-	let chooser, selectedName;
+	// log(`refreshPanoseBuilderTable`, 'start');
+	// log(workingPanoseValue);
+	while (workingPanoseValue.length < 10) workingPanoseValue.push('0');
+	// log(workingPanoseValue);
+	let familyData = panoseData[workingPanoseValue[0]];
+	let rowValue, rowName, chooser, rowSelectedValue;
 
 	// Update Rows
 	for (let row = 0; row < 10; row++) {
-		log(`row: ${row}`);
-		document.getElementById(`panose-${row}-value`).innerHTML = currentPanose[row];
+		// log(`row: ${row}`);
+		// log(`workingPanoseValue[row]: ${workingPanoseValue[row]}`);
+		rowValue = document.getElementById(`panose-${row}-value`);
+		rowValue.innerHTML = workingPanoseValue[row];
 		if (row === 0) {
 			document.getElementById(`panose-0-name`).innerHTML = 'Family Kind';
 			chooser = document.getElementById(`panose-0-chooser`);
-			chooser.innerHTML = makePanoseOptions(panoseData.map((value) => value.name));
-			if (currentPanose[0] !== '_') {
-				selectedName = panoseData[currentPanose[0]].name;
-				chooser.setAttribute('selected-name', selectedName);
-				chooser.setAttribute('selected-id', `${selectedName} ${currentPanose[0]}`);
-			}
+			chooser.innerHTML = '';
+			addAsChildren(chooser, makePanoseOptions(panoseData.map((value) => value.name)));
+			rowSelectedValue = panoseData[workingPanoseValue[0]].name;
+			chooser.setAttribute('selected-name', rowSelectedValue);
+			chooser.setAttribute('selected-id', `${rowSelectedValue} ${workingPanoseValue[0]}`);
 		} else {
-			if (currentPanose[row] !== '_' && familyData?.values?.at(row - 1)) {
-				document.getElementById(`panose-${row}-name`).innerHTML = familyData.values[row - 1].name;
-				chooser = document.getElementById(`panose-${row}-chooser`);
-				chooser.innerHTML = makePanoseOptions(familyData.values[row - 1].values);
-				selectedName = familyData.values[row - 1].values[currentPanose[row]];
-				chooser.setAttribute('selected-name', selectedName);
-				chooser.setAttribute('selected-id', `${selectedName} ${currentPanose[row]}`);
+			chooser = document.getElementById(`panose-${row}-chooser`);
+			chooser.innerHTML = '';
+			rowName = '';
+			rowSelectedValue = '';
+			if (familyData?.values?.at(row - 1)) {
+				chooser.removeAttribute('disabled');
+				rowName = familyData.values[row - 1].name;
+				addAsChildren(chooser, makePanoseOptions(familyData.values[row - 1].values, row));
+				rowSelectedValue = familyData.values[row - 1].values[workingPanoseValue[row]];
+				if (rowSelectedValue === 'No Fit') {
+					rowValue.innerHTML = '1';
+					workingPanoseValue[row] = 1;
+				}
+				chooser.setAttribute('selected-name', rowSelectedValue);
+				chooser.setAttribute('selected-id', `${rowSelectedValue} ${workingPanoseValue[row]}`);
+
+				if (familyData.values[row - 1].values.length === 1) {
+					chooser.setAttribute('disabled', '');
+				}
+			} else {
+				chooser.setAttribute('disabled', '');
+				chooser.setAttribute('selected-name', '');
+				chooser.setAttribute('selected-id', '');
 			}
+			document.getElementById(`panose-${row}-name`).innerHTML = rowName;
 		}
 	}
 
-	function makePanoseOptions(options) {
-		log(`makePanoseOptions`, 'start');
-		log(`\n⮟options⮟`);
-		log(options);
-		let result = '';
+	function makePanoseOptions(options, position = 0) {
+		// log(`makePanoseOptions`, 'start');
+		// log(`\n⮟options⮟`);
+		// log(options);
+		let result = [];
 		options.forEach((value, index) => {
 			value = value || value.name;
-			result += `<option note="${index}">${value}</option>`;
+			// log(`value: ${value}`);
+			// log(`index: ${index}`);
+			let option = makeElement({
+				tag: 'option',
+				innerHTML: value,
+				attributes: { note: value === 'No Fit' ? 1 : index },
+			});
+			option.addEventListener('click', () => {
+				if (position === 0) {
+					if (index === 0) {
+						workingPanoseValue = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+					} else if (index === 1) {
+						// log(`Setting to all 1s`);
+						workingPanoseValue = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+					} else {
+						workingPanoseValue = [index, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+					}
+				} else {
+					workingPanoseValue[position] = index;
+				}
+				refreshPanoseBuilderTable();
+			});
+			result.push(option);
 		});
-		log(`makePanoseOptions`, 'end');
+
+		// log(`makePanoseOptions`, 'end');
 		return result;
 	}
-	log(`refreshPanoseBuilderTable`, 'end');
+	// log(`refreshPanoseBuilderTable`, 'end');
 }

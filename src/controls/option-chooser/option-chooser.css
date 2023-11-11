@@ -36,8 +36,9 @@
 .wrapper:active[disabled] {
 	background-color: var(--disabled-background);
 	border-color: var(--disabled-border);
-		color: var(--disabled-text);
-			text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+	color: var(--disabled-text);
+	text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
+	cursor: default;
 }
 
 .selection-display {

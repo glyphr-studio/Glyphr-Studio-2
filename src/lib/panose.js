@@ -553,3 +553,18 @@ export const panoseData = [
 		],
 	},
 ];
+
+export const panoseAllAny = ['Any', 'Any', 'Any', 'Any', 'Any', 'Any', 'Any', 'Any', 'Any', 'Any'];
+
+export const panoseAllNoFit = [
+	'No Fit',
+	'No Fit',
+	'No Fit',
+	'No Fit',
+	'No Fit',
+	'No Fit',
+	'No Fit',
+	'No Fit',
+	'No Fit',
+	'No Fit',
+];
