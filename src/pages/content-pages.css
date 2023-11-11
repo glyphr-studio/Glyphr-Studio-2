@@ -38,7 +38,6 @@
 	overflow-x: hidden;
 }
 
-
 .content-page__right-area {
 	border: 1px solid var(--blue-l85);
 	background-color: var(--offWhite);
@@ -120,12 +119,11 @@
 
 .keyboardShortcutTable h3 {
 	grid-column: 1 / -1;
-	margin:10px 0px 0px 0px;
+	margin: 10px 0px 0px 0px;
 }
 
 .keyboardShortcutTable label {
 	margin: 6px 0px 0px 0px;
-
 }
 
 code,
@@ -183,7 +181,7 @@ code,
 	user-select: text;
 }
 
-.settings-page__tab-content input[type=checkbox]{
+.settings-page__tab-content input[type='checkbox'] {
 	width: 24px;
 }
 
@@ -210,7 +208,8 @@ code,
 
 .settings-page__panose-builder-table {
 	display: grid;
-	grid-template-columns: 50px max-content 400px;
+	grid-template-columns: 50px max-content 1fr;
+	width: 100%;
 	row-gap: 10px;
 	margin-top: 10px;
 }
@@ -227,6 +226,11 @@ code,
 
 .panose-name {
 	padding: 5px 20px 0px 4px;
+	min-width: 150px;
+}
+
+.settings-page__panose-builder-table options-chooser {
+	width: 100%;
 }
 
 /* Global Actions */
@@ -298,7 +302,7 @@ code,
 	width: 100px;
 }
 
-.global-actions__card input[type="checkbox"] {
+.global-actions__card input[type='checkbox'] {
 	width: 20px;
 	height: 20px;
 }
@@ -365,7 +369,6 @@ code,
 
 .list__row-wrapper:hover span {
 	background-color: var(--blue-l95);
-
 }
 
 /* Current ranges */
