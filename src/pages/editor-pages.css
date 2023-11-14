@@ -202,7 +202,15 @@
 	width: 100%;
 }
 
-#kerning__find-letter-pair__results {
+#kerning__letter-pair__left-group,
+#kerning__letter-pair__right-group {
+	width: 30px;
+	margin: 0px 10px 0px 4px;
+	text-align: center;
+	padding: 0px;
+}
+
+#kerning__letter-pair__results {
 	display: grid;
 	grid-template-columns: 1fr;
 	row-gap: 10px;
