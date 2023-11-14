@@ -1,6 +1,6 @@
 import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
 import { decToHex } from '../common/character_ids.js';
-import { countItems, pause, round } from '../common/functions.js';
+import { countItems, pause } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import {
 	getParentRange,
@@ -248,24 +248,29 @@ function importOneKern(members, value, project) {
 function importFontMetadata(font, project) {
 	// log('importFontMetadata', 'start');
 	// log(font);
-	// Import Font Settings
-	// Check to make sure certain stuff is there
-	// space has horiz-adv-x
-	// log('Custom range stuff done');
 	const fontSettings = project.settings.font;
+	const os2 = font.tables.os2;
 	const familyName = getTableValue(font.names.fontFamily) || 'My Font';
 	project.settings.project.name = familyName;
 
 	fontSettings.name = familyName;
-	fontSettings.upm = 1 * font.unitsPerEm || 1000;
-	fontSettings.ascent = 1 * font.ascender || 700;
-	fontSettings.descent = -1 * Math.abs(font.descender) || 300;
-	fontSettings.capHeight = 1 * getTableValue(font.tables.os2.sCapHeight) || 675;
-	fontSettings.xHeight = 1 * getTableValue(font.tables.os2.sxHeight) || 400;
-	fontSettings.overshoot = round(fontSettings.upm / 100);
+	fontSettings.upm = 1 * font.unitsPerEm || fontSettings.upm;
+
+	// TODO reconcile conflicting ascender data
+	fontSettings.ascent = 1 * getTableValue(os2.sTypoAscender) || fontSettings.ascent;
+	// fontSettings.ascent = 1 * font.ascender || fontSettings.ascent;
+
+	// TODO reconcile conflicting descender data
+	fontSettings.descent = -1 * Math.abs(getTableValue(os2.sTypoDescender)) || fontSettings.descent;
+	// fontSettings.descent = -1 * Math.abs(font.descender) || fontSettings.descent;
+
+	fontSettings.capHeight = 1 * getTableValue(os2.sCapHeight) || fontSettings.capHeight;
+	fontSettings.xHeight = 1 * getTableValue(os2.sxHeight) || fontSettings.xHeight;
+	fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
+	fontSettings.lineGap = 1 * getTableValue(os2.sTypoLineGap) || fontSettings.lineGap;
 
 	fontSettings.family = familyName.substring(0, 31);
-	fontSettings.panose = getTableValue(font.tables.os2.panose) || '0 0 0 0 0 0 0 0 0 0';
+	fontSettings.panose = getTableValue(os2.panose) || '0 0 0 0 0 0 0 0 0 0';
 	fontSettings.version =
 		getTableValue(font.tables.head.fontRevision) ||
 		getTableValue(font.version) ||
