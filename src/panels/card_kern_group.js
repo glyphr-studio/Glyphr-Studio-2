@@ -1,6 +1,6 @@
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { makeKernGroupCharChips } from '../pages/kerning.js';
-import { makeActionsArea_KernGroup } from './actions.js';
+import { addChildActions, getActionData, makeActionsArea_KernGroup } from './actions.js';
 import { makeSingleInput, makeSingleLabel, rowPad } from './cards.js';
 
 // --------------------------------------------------------------
@@ -41,4 +41,18 @@ export function makeCard_kernGroup(kernGroup) {
 
 	// log(`makeCard_kernGroup`, 'end');
 	return kernGroupCard;
+}
+
+export function makeCard_otherKernGroupActions() {
+	let actionsCard = makeElement({
+		tag: 'div',
+		className: 'panel__card',
+		innerHTML: '<h3>Other kern group actions</h3>',
+	});
+
+	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
+	addChildActions(actionsArea, getActionData('otherKernGroupActions'));
+	actionsCard.appendChild(actionsArea);
+	
+	return actionsCard;
 }

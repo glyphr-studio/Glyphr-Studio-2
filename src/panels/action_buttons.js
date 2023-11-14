@@ -391,6 +391,49 @@ makeActionButtonIcon.delete = () => {
 	return svgWrap(re);
 };
 
+makeActionButtonIcon.createNewKernGroup = () => {
+	let re = '';
+	let green = actionButtonIconColors.greenOutline;
+	let fill = actionButtonIconColors.darkFill;
+	re += `
+		<path d="m16.306,19.001l-4.324-11.39h-1.593v-1.611h5.08v1.611h-1.487l3.278,8.641,3.19-8.641h-1.501v-1.611h4.941v1.611h-1.563l-4.235,11.39h-1.786Z" fill="${fill}"/>
+		<path d="m12.197,17.375l-3.58-9.75h1.57v-1.625H3.548v1.625h1.517l-3.493,9.75H0v1.625h5.116v-1.625h-1.578l.994-2.941h4.679l.966,2.941h-1.615v1.625h5.088v-1.625h-1.453Zm-7.181-4.463l1.751-5.287h.273l1.682,5.287h-3.705Z" fill="${fill}"/>
+		<polygon points="13 20.5 13 22.5 0 22.5 0 23.5 13 23.5 13 25.5 14 25.5 14 20.5 13 20.5" fill="${fill}"/>
+		<polygon points="24 2 10 2 10 0 9 0 9 5 10 5 10 3 24 3 24 2" fill="${fill}"/>
+		<rect x="21" y="15" width="3" height="15" fill="${green}"/>
+		<rect x="21" y="15" width="3" height="15" transform="translate(45 0) rotate(90)" fill="${green}"/>
+	`;
+
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.deleteSingleLetterPair = () => {
+	let re = '';
+	let red = actionButtonIconColors.redX;
+	let fill = actionButtonIconColors.darkFill;
+	re += `
+		<path d="m16.306,19.001l-4.324-11.39h-1.593v-1.611h5.08v1.611h-1.487l3.278,8.641,3.19-8.641h-1.501v-1.611h4.941v1.611h-1.563l-4.235,11.39h-1.786Z" fill="${fill}"/>
+		<path d="m12.197,17.375l-3.58-9.75h1.57v-1.625H3.548v1.625h1.517l-3.493,9.75H0v1.625h5.116v-1.625h-1.578l.994-2.941h4.679l.966,2.941h-1.615v1.625h5.088v-1.625h-1.453Zm-7.181-4.463l1.751-5.287h.273l1.682,5.287h-3.705Z" fill="${fill}"/>
+		<path d="m26.428,29.033c.625.821,3.542-.763,2.447-2.22-2.367-3.149-8.574-9.642-11.5-11.938-2.138-1.677-4.11-.437-4.11-.437,0,0,7.723,7.449,13.163,14.595Z" fill="${red}"/>
+		<path d="m17.111,28.842c-.95,1.569-3.659-.223-2.328-1.989,2.695-3.575,7.853-10.44,11.479-13.04,2.333-1.673,3.739-.131,3.739-.131,0,0-7.964,7.023-12.889,15.16Z" fill="${red}"/>
+	`;
+
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.findSingleLetterPair = () => {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
+	re += `
+		<path d="m16.306,19.001l-4.324-11.39h-1.593v-1.611h5.08v1.611h-1.487l3.278,8.641,3.19-8.641h-1.501v-1.611h4.941v1.611h-1.563l-4.235,11.39h-1.786Z" fill="${fill}"/>
+		<path d="m12.197,17.375l-3.58-9.75h1.57v-1.625H3.548v1.625h1.517l-3.493,9.75H0v1.625h5.116v-1.625h-1.578l.994-2.941h4.679l.966,2.941h-1.615v1.625h5.088v-1.625h-1.453Zm-7.181-4.463l1.751-5.287h.273l1.682,5.287h-3.705Z" fill="${fill}"/>
+		<path d="m30,28l-5.154-5.154c.728-1.104,1.154-2.425,1.154-3.846,0-3.866-3.134-7-7-7s-7,3.134-7,7,3.134,7,7,7c1.421,0,2.742-.426,3.846-1.154l5.154,5.154,2-2Zm-15.5-9c0-2.481,2.019-4.5,4.5-4.5s4.5,2.019,4.5,4.5-2.019,4.5-4.5,4.5-4.5-2.019-4.5-4.5Z" fill="${blue}"/>
+	`;
+
+	return svgWrap(re);
+};
+
 // Layer actions
 makeActionButtonIcon.moveLayerDown = () => {
 	let re = '';

@@ -10,7 +10,7 @@ import {
 import { eventHandlerData } from '../edit_canvas/events.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { addComponent } from '../pages/components.js';
-import { showAddEditKernGroupDialog } from '../pages/kerning.js';
+import { showAddEditKernGroupDialog, showDeleteSingleLetterPairDialog, showFindSingleLetterPairDialog } from '../pages/kerning.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -350,6 +350,27 @@ export function getActionData(name) {
 					editor.publish('whichKernGroupIsSelected', editor.selectedItemID);
 					showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
 				},
+			},
+		];
+	}
+
+	// OTHER KERN GROUP STUFF (GLOBAL)
+	if (name === 'otherKernGroupActions') {
+		actionData = [
+			{
+				iconName: 'createNewKernGroup',
+				title: 'Create a new Kern Group',
+				onClick: () => showAddEditKernGroupDialog(false),
+			},
+			{
+				iconName: 'findSingleLetterPair',
+				title: 'Find instances of a single letter pair across all kern groups',
+				onClick: showFindSingleLetterPairDialog,
+			},
+			{
+				iconName: 'deleteSingleLetterPair',
+				title: 'Find and delete a single letter pair from all kern groups',
+				onClick: showDeleteSingleLetterPairDialog,
 			},
 		];
 	}
