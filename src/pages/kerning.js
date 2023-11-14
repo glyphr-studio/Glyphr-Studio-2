@@ -70,7 +70,7 @@ export function makePage_Kerning() {
 	const canvasArea = content.querySelector('.editor-page__edit-canvas-wrapper');
 
 	if (!selectedKernGroupID) {
-		// Early return for project with zero kern groups
+		// Early return for project with zero Kern Groups
 		addAsChildren(canvasArea, makeKerningFirstRunContent());
 		navArea.style.display = 'block';
 		l1.style.width = '100%';
@@ -278,6 +278,9 @@ export function showAddEditKernGroupDialog(kernGroup = false) {
 	leftGroupInput.addEventListener('change', inputChange);
 	rightGroupInput.addEventListener('change', inputChange);
 	valueInput.addEventListener('change', inputChange);
+	leftGroupInput.addEventListener('keyup', inputChange);
+	rightGroupInput.addEventListener('keyup', inputChange);
+	valueInput.addEventListener('keyup', inputChange);
 
 	if (kernGroup) {
 		submitButton.removeAttribute('disabled');
@@ -338,8 +341,8 @@ export function showFindSingleLetterPairDialog() {
 		innerHTML: `
 		<h2>Find a letter pair</h2>
 		Specify a pair of letters below, and search will return all the Kern Groups
-		that contain that pair. From each search result, you can view the Kern Group,
-		or delete that single relationship.
+		that contain that pair. Clicking on a search result will select that Kern Group
+		behind the dialog box.
 		<br><br>
 		It is good to not have duplicate values for a letter pair - the value that actually
 		gets used may not be the expected one.
@@ -349,79 +352,130 @@ export function showFindSingleLetterPairDialog() {
 			<div class="list__column-header">Left group letter</div>
 			<div class="list__column-header">Right group letter</div>
 			<input
-				id="kerning__find-letter-pair__left-group" type="text" value=""
-				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				style="margin-right: 10px;"
+				id="kerning__letter-pair__left-group" type="text" value=""
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="1"
+				onclick="this.select();"
 			/>
 			<input
-				id="kerning__find-letter-pair__right-group" type="text" value=""
-				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-				style="margin-right: 10px;"
+				id="kerning__letter-pair__right-group" type="text" value=""
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="1"
+				onclick="this.select();"
 			/>
 		</div>
 		<br>
 
-		<fancy-button disabled id="kerning__find-letter-pair__search-button">
+		<fancy-button disabled id="kerning__letter-pair__search-button">
 			Search
 		</fancy-button>
 		<br><br>
 		<hr/>
 		<br>
-		<div id="kerning__find-letter-pair__results">
+		<div id="kerning__letter-pair__results">
 			<i>Search results...</i>
 		</div>
 		`,
 	});
 
-	const leftSearch = content.querySelector('#kerning__find-letter-pair__left-group');
+	const leftSearch = content.querySelector('#kerning__letter-pair__left-group');
 	leftSearch.addEventListener('change', updateSearchButton);
-	const rightSearch = content.querySelector('#kerning__find-letter-pair__right-group');
+	leftSearch.addEventListener('keyup', updateSearchButton);
+	const rightSearch = content.querySelector('#kerning__letter-pair__right-group');
 	rightSearch.addEventListener('change', updateSearchButton);
+	rightSearch.addEventListener('keyup', updateSearchButton);
 
-	const searchButton = content.querySelector('#kerning__find-letter-pair__search-button');
+	const searchButton = content.querySelector('#kerning__letter-pair__search-button');
 	searchButton.addEventListener('click', searchForLetterPairs);
 	showModalDialog(content, 800);
 }
 
+export function showDeleteSingleLetterPairDialog() {
+	const content = makeElement({
+		innerHTML: `
+		<h2>Delete letter pairs</h2>
+		Specify a pair of letters below, and search will find and attempt to delete all
+		the letter pairs from the applicable Kern Groups.
+		<br><br>
+		<b>Note</b>: This will only affect Kern Groups where either the left group or the right group has only one member. Kern Groups affect all possible permutations of left group / right group.
+		Because of this, if a left group and a right group both have multiple members, including
+		the specified letter pair, removing the letters from the letter pair would remove more
+		than just the kern value for those two letters.
+		<br><br>
+
+		<div class="list__two-column" style="max-width: 100px;">
+			<div class="list__column-header">Left group letter</div>
+			<div class="list__column-header">Right group letter</div>
+			<input
+				id="kerning__letter-pair__left-group" type="text" value=""
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="1"
+				onclick="this.select();"
+			/>
+			<input
+				id="kerning__letter-pair__right-group" type="text" value=""
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="1"
+				onclick="this.select();"
+			/>
+		</div>
+		<br>
+
+		<fancy-button disabled danger id="kerning__letter-pair__search-button">
+			Find and delete
+		</fancy-button>
+		<div id="kerning__result-message"></div>
+		`,
+	});
+
+	const leftSearch = content.querySelector('#kerning__letter-pair__left-group');
+	leftSearch.addEventListener('change', updateSearchButton);
+	leftSearch.addEventListener('keyup', updateSearchButton);
+	const rightSearch = content.querySelector('#kerning__letter-pair__right-group');
+	rightSearch.addEventListener('change', updateSearchButton);
+	rightSearch.addEventListener('keyup', updateSearchButton);
+
+	const searchButton = content.querySelector('#kerning__letter-pair__search-button');
+	searchButton.addEventListener('click', deleteLetterPairs);
+	showModalDialog(content, 800);
+}
+
 function updateSearchButton() {
-	const leftSearch = document.querySelector('#kerning__find-letter-pair__left-group');
-	const rightSearch = document.querySelector('#kerning__find-letter-pair__right-group');
-	const searchButton = document.querySelector('#kerning__find-letter-pair__search-button');
+	const leftSearch = document.querySelector('#kerning__letter-pair__left-group');
+	const rightSearch = document.querySelector('#kerning__letter-pair__right-group');
+	const searchButton = document.querySelector('#kerning__letter-pair__search-button');
 
 	if (leftSearch.value.length && rightSearch.value.length) {
 		searchButton.removeAttribute('disabled');
 	} else {
 		searchButton.setAttribute('disabled', '');
 	}
-
 }
 
 function searchForLetterPairs() {
-	log(`searchForLetterPairs`, 'start');
-	const leftLetter = document.querySelector('#kerning__find-letter-pair__left-group').value.charAt(0);
-	log(`leftLetter: ${leftLetter}`);
-	const rightLetter = document.querySelector('#kerning__find-letter-pair__right-group').value.charAt(0);
-	log(`rightLetter: ${rightLetter}`);
+	// log(`searchForLetterPairs`, 'start');
+	const leftLetter = document.querySelector('#kerning__letter-pair__left-group').value.charAt(0);
+	// log(`leftLetter: ${leftLetter} : ${charToHex(leftLetter)}`);
+	const rightLetter = document.querySelector('#kerning__letter-pair__right-group').value.charAt(0);
+	// log(`rightLetter: ${rightLetter} : ${charToHex(rightLetter)}`);
 
 	const groups = getCurrentProject().kerning;
 	const results = [];
 
-	Object.keys(groups).forEach(id => {
-		log(`checking ${groups[id].leftGroup}`);
-		log(`checking ${groups[id].rightGroup}`);
-		if (groups[id].leftGroup.includes(charToHex(leftLetter)) &&
-		groups[id].rightGroup.includes(charToHex(rightLetter))) {
+	Object.keys(groups).forEach((id) => {
+		// log(`checking ${groups[id].leftGroup}`);
+		// log(`checking ${groups[id].rightGroup}`);
+		if (
+			groups[id].leftGroup.includes(charToHex(leftLetter)) &&
+			groups[id].rightGroup.includes(charToHex(rightLetter))
+		) {
 			results.push(id);
 		}
 	});
 
-	log(`\n⮟results⮟`);
-	log(results);
-	const resultsArea = document.querySelector('#kerning__find-letter-pair__results');
+	// log(`\n⮟results⮟`);
+	// log(results);
+	const resultsArea = document.querySelector('#kerning__letter-pair__results');
 	resultsArea.innerHTML = '';
 
 	if (results.length) {
-		results.forEach(id => {
+		results.forEach((id) => {
 			let row = makeOneKernGroupRow(id);
 			row.addEventListener('click', () => {
 				const editor = getCurrentProjectEditor();
@@ -429,56 +483,113 @@ function searchForLetterPairs() {
 				editor.history.addState(`Navigated to ${editor.project.getItemName(id, true)}`);
 			});
 			resultsArea.appendChild(row);
-		})
+		});
 	} else {
-		resultsArea.innerHTML = '<i>No kern groups exist with that letter pair</i>';
+		resultsArea.innerHTML = '<i>No Kern Groups exist with that letter pair</i>';
 	}
-	log(`searchForLetterPairs`, 'end');
+	// log(`searchForLetterPairs`, 'end');
 }
 
-export function showDeleteSingleLetterPairDialog() {}
+function deleteLetterPairs() {
+	// log(`deleteLetterPairs`, 'start');
+	const leftLetter = document.querySelector('#kerning__letter-pair__left-group').value.charAt(0);
+	// log(`leftLetter: ${leftLetter} : ${charToHex(leftLetter)}`);
+	const rightLetter = document.querySelector('#kerning__letter-pair__right-group').value.charAt(0);
+	// log(`rightLetter: ${rightLetter} : ${charToHex(rightLetter)}`);
+	const resultMessage = document.querySelector('#kerning__result-message');
+	resultMessage.innerHTML = '';
+
+	const groups = getCurrentProject().kerning;
+	let result;
+	let errors = [];
+	let success = 0;
+
+	Object.keys(groups).forEach((id) => {
+		// log(`checking ${groups[id].leftGroup}`);
+		// log(`checking ${groups[id].rightGroup}`);
+		if (
+			groups[id].leftGroup.includes(charToHex(leftLetter)) &&
+			groups[id].rightGroup.includes(charToHex(rightLetter))
+		) {
+			result = deleteLetterPair(leftLetter, rightLetter, id);
+			if (!result) errors.push(id);
+			else success++;
+		}
+	});
+
+	if (errors.length) {
+		resultMessage.innerHTML = `
+			<br><br>
+			<b>Warning</b><br>
+			The following Kern Groups contain the specified letter pair, but
+			the letters could not be removed because both the left group and
+			the right group contain multiple members.
+			<br><br>
+			${errors.toString()}
+			<br><br>
+			<hr>
+		`;
+	}
+
+	if (success > 0) {
+		resultMessage.innerHTML += `
+			<br>
+			<i>Successfully removed letter pair from ${success} Kern Group${success > 1 ? 's.' : '.'}</i>
+		`;
+		getCurrentProjectEditor().navigate();
+	} else {
+		if (!errors.length) {
+			resultMessage.innerHTML += `
+				<br>
+				<i>No Kern Groups with the specified letter pair was found.</i>
+			`;
+		}
+	}
+
+	// log(`deleteLetterPairs`, 'end');
+}
 
 function deleteLetterPair(leftLetter = '', rightLetter = '', kernID = false) {
+	// log(`deleteLetterPair`, 'start');
 	let list;
 	let leftHex = charToHex(leftLetter);
 	let rightHex = charToHex(rightLetter);
 	const project = getCurrentProject();
+	let success = false;
 
 	if (kernID) {
 		let selected = project.getItem(kernID);
-		if (selected) list = {
-			kernID: selected
-		};
+		if (selected)
+			list = {
+				kernID: selected,
+			};
 	} else {
 		list = project.kerning;
 	}
 
-	Object.keys(list).forEach(id => {
+	Object.keys(list).forEach((id) => {
 		let leftGroup = list[id].leftGroup;
 		let rightGroup = list[id].rightGroup;
 		if (leftGroup.includes(leftHex) && rightGroup.includes(rightHex)) {
 			if (leftGroup.length === 1 && rightGroup.length === 1) {
+				// log(`Removing the Kern Group ${id}`);
 				project.removeItem(id);
+				success = true;
 			} else if (leftGroup.length === 1) {
+				// log(`Removing ${rightHex} from the right group`);
 				rightGroup.splice(rightGroup.indexOf(rightHex), 1);
+				success = true;
 			} else if (rightGroup.length === 1) {
+				// log(`Removing ${leftHex} from the left group`);
 				leftGroup.splice(leftGroup.indexOf(leftHex), 1);
-			} else {
-				showError(`
-					<b>Delete single letter pair failed<br>
-					letter pair: ${leftLetter}, ${rightLetter}<br>
-					from Kern Group: ${id}</b>
-					<br><br>
-					The specified letter pair was found in a Kern Group
-					with many left side members and many right side members.
-					Removing either the left letter or the right letter would
-					result in many other letter pairs being removed as well.
-					<br><br>
-					This letter pair was not removed.
-				`);
+				success = true;
 			}
 		}
 	});
+
+	// log(`success: ${success}`);
+	// log(`deleteLetterPair`, 'end');
+	return success;
 }
 
 export function makeKernGroupCharChips(group) {

@@ -302,7 +302,7 @@ nav .glyph-chooser__wrapper {
 	display: grid;
 	grid-template-columns: max-content max-content min-content max-content;
 	column-gap: 0px;
-
+	transition: none;
 	border: 1px solid var(--gray-l90);
 	padding-left: 20px;
 	background-color: var(--gray-l95);
@@ -333,6 +333,7 @@ nav .glyph-chooser__wrapper {
 
 .kern-group-chooser__row:hover,
 .kern-group-chooser__row:active {
+	transition: none;
 	border-left-width: 10px;
 	border-color: var(--gray-l80);
 	padding-left: 11px;
