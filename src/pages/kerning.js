@@ -1,5 +1,5 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
-import { charsToHexArray, hexesToChars } from '../common/character_ids.js';
+import { charToHex, charsToHexArray, hexesToChars } from '../common/character_ids.js';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import {
@@ -10,6 +10,7 @@ import {
 } from '../controls/dialogs/dialogs.js';
 import { makeKernToolsButtons, makeViewToolsButtons } from '../edit_canvas/tools/tools.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
+import { makeOneKernGroupRow } from '../panels/item_chooser.js';
 import { makePanel, refreshPanel } from '../panels/panels.js';
 import { KernGroup } from '../project_data/kern_group.js';
 import {
@@ -344,29 +345,140 @@ export function showFindSingleLetterPairDialog() {
 		gets used may not be the expected one.
 		<br><br>
 
-		<h3>Left group letter</h3>
-		<input id="kerning__find-letter-pair__left-group" type="text" value=""
-		autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-		/>
-		<br><br>
-		<h3>Right group letter</h3>
-		<input id="kerning__find-letter-pair__right-group" type="text" value=""
-		autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-		/>
-		<br><br>
+		<div class="list__two-column" style="max-width: 100px;">
+			<div class="list__column-header">Left group letter</div>
+			<div class="list__column-header">Right group letter</div>
+			<input
+				id="kerning__find-letter-pair__left-group" type="text" value=""
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				style="margin-right: 10px;"
+			/>
+			<input
+				id="kerning__find-letter-pair__right-group" type="text" value=""
+				autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				style="margin-right: 10px;"
+			/>
+		</div>
+		<br>
 
 		<fancy-button disabled id="kerning__find-letter-pair__search-button">
 			Search
 		</fancy-button>
+		<br><br>
+		<hr/>
+		<br>
+		<div id="kerning__find-letter-pair__results">
+			<i>Search results...</i>
+		</div>
 		`,
 	});
 
+	const leftSearch = content.querySelector('#kerning__find-letter-pair__left-group');
+	leftSearch.addEventListener('change', updateSearchButton);
+	const rightSearch = content.querySelector('#kerning__find-letter-pair__right-group');
+	rightSearch.addEventListener('change', updateSearchButton);
 
-	showModalDialog(content, 500);
+	const searchButton = content.querySelector('#kerning__find-letter-pair__search-button');
+	searchButton.addEventListener('click', searchForLetterPairs);
+	showModalDialog(content, 800);
 }
 
-export function showDeleteSingleLetterPairDialog() {
+function updateSearchButton() {
+	const leftSearch = document.querySelector('#kerning__find-letter-pair__left-group');
+	const rightSearch = document.querySelector('#kerning__find-letter-pair__right-group');
+	const searchButton = document.querySelector('#kerning__find-letter-pair__search-button');
 
+	if (leftSearch.value.length && rightSearch.value.length) {
+		searchButton.removeAttribute('disabled');
+	} else {
+		searchButton.setAttribute('disabled', '');
+	}
+
+}
+
+function searchForLetterPairs() {
+	log(`searchForLetterPairs`, 'start');
+	const leftLetter = document.querySelector('#kerning__find-letter-pair__left-group').value.charAt(0);
+	log(`leftLetter: ${leftLetter}`);
+	const rightLetter = document.querySelector('#kerning__find-letter-pair__right-group').value.charAt(0);
+	log(`rightLetter: ${rightLetter}`);
+
+	const groups = getCurrentProject().kerning;
+	const results = [];
+
+	Object.keys(groups).forEach(id => {
+		log(`checking ${groups[id].leftGroup}`);
+		log(`checking ${groups[id].rightGroup}`);
+		if (groups[id].leftGroup.includes(charToHex(leftLetter)) &&
+		groups[id].rightGroup.includes(charToHex(rightLetter))) {
+			results.push(id);
+		}
+	});
+
+	log(`\n⮟results⮟`);
+	log(results);
+	const resultsArea = document.querySelector('#kerning__find-letter-pair__results');
+	resultsArea.innerHTML = '';
+
+	if (results.length) {
+		results.forEach(id => {
+			let row = makeOneKernGroupRow(id);
+			row.addEventListener('click', () => {
+				const editor = getCurrentProjectEditor();
+				editor.selectedItemID = id;
+				editor.history.addState(`Navigated to ${editor.project.getItemName(id, true)}`);
+			});
+			resultsArea.appendChild(row);
+		})
+	} else {
+		resultsArea.innerHTML = '<i>No kern groups exist with that letter pair</i>';
+	}
+	log(`searchForLetterPairs`, 'end');
+}
+
+export function showDeleteSingleLetterPairDialog() {}
+
+function deleteLetterPair(leftLetter = '', rightLetter = '', kernID = false) {
+	let list;
+	let leftHex = charToHex(leftLetter);
+	let rightHex = charToHex(rightLetter);
+	const project = getCurrentProject();
+
+	if (kernID) {
+		let selected = project.getItem(kernID);
+		if (selected) list = {
+			kernID: selected
+		};
+	} else {
+		list = project.kerning;
+	}
+
+	Object.keys(list).forEach(id => {
+		let leftGroup = list[id].leftGroup;
+		let rightGroup = list[id].rightGroup;
+		if (leftGroup.includes(leftHex) && rightGroup.includes(rightHex)) {
+			if (leftGroup.length === 1 && rightGroup.length === 1) {
+				project.removeItem(id);
+			} else if (leftGroup.length === 1) {
+				rightGroup.splice(rightGroup.indexOf(rightHex), 1);
+			} else if (rightGroup.length === 1) {
+				leftGroup.splice(leftGroup.indexOf(leftHex), 1);
+			} else {
+				showError(`
+					<b>Delete single letter pair failed<br>
+					letter pair: ${leftLetter}, ${rightLetter}<br>
+					from Kern Group: ${id}</b>
+					<br><br>
+					The specified letter pair was found in a Kern Group
+					with many left side members and many right side members.
+					Removing either the left letter or the right letter would
+					result in many other letter pairs being removed as well.
+					<br><br>
+					This letter pair was not removed.
+				`);
+			}
+		}
+	});
 }
 
 export function makeKernGroupCharChips(group) {

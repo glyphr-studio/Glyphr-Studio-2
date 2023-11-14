@@ -201,3 +201,9 @@
 #kerning__add-new-kern-group__right-group {
 	width: 100%;
 }
+
+#kerning__find-letter-pair__results {
+	display: grid;
+	grid-template-columns: 1fr;
+	row-gap: 10px;
+}

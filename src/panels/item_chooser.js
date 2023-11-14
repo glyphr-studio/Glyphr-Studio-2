@@ -356,7 +356,7 @@ function makeKernGroupChooserList() {
 	return kernGroupRows;
 }
 
-function makeOneKernGroupRow(kernID, project = getCurrentProject()) {
+export function makeOneKernGroupRow(kernID, project = getCurrentProject()) {
 	// log(`makeOneKernGroupRow`, 'start');
 	// log(`kernID: ${kernID}`);
 

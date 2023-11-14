@@ -340,6 +340,12 @@ code,
 }
 
 /* Generic table stuff */
+.list__two-column {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	row-gap: 10px;
+}
+
 .list__column-header {
 	font-size: 0.9em;
 	padding: 0px 10px 0px 5px;
