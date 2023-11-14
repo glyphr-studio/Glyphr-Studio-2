@@ -332,6 +332,43 @@ export function showAddEditKernGroupDialog(kernGroup = false) {
 	// log(`showAddEditKernGroupDialog`, 'end');
 }
 
+export function showFindSingleLetterPairDialog() {
+	const content = makeElement({
+		innerHTML: `
+		<h2>Find a letter pair</h2>
+		Specify a pair of letters below, and search will return all the Kern Groups
+		that contain that pair. From each search result, you can view the Kern Group,
+		or delete that single relationship.
+		<br><br>
+		It is good to not have duplicate values for a letter pair - the value that actually
+		gets used may not be the expected one.
+		<br><br>
+
+		<h3>Left group letter</h3>
+		<input id="kerning__find-letter-pair__left-group" type="text" value=""
+		autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+		/>
+		<br><br>
+		<h3>Right group letter</h3>
+		<input id="kerning__find-letter-pair__right-group" type="text" value=""
+		autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+		/>
+		<br><br>
+
+		<fancy-button disabled id="kerning__find-letter-pair__search-button">
+			Search
+		</fancy-button>
+		`,
+	});
+
+
+	showModalDialog(content, 500);
+}
+
+export function showDeleteSingleLetterPairDialog() {
+
+}
+
 export function makeKernGroupCharChips(group) {
 	// log(`makeKernGroupCharChips`, 'start');
 	// log(`group: ${group}`);
