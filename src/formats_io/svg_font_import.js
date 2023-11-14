@@ -1,6 +1,6 @@
 import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/main.js';
 import { hexesToChars, hexesToHexArray, parseCharsInputAsHex } from '../common/character_ids.js';
-import { generateNewID, round } from '../common/functions.js';
+import { generateNewID } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
 import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
@@ -246,22 +246,24 @@ export function ioSVG_importSVGfont(font) {
 		fontSettings.family = fname;
 		fontSettings.style = fontAttributes['font-style'] || 'Regular';
 		fontSettings.panose = fontAttributes['panose-1'] || '0 0 0 0 0 0 0 0 0 0';
-		fontSettings.upm = 1 * fontAttributes['units-per-em'] || 1000;
-		fontSettings.ascent = 1 * fontAttributes.ascent || 700;
-		fontSettings.capHeight = 1 * fontAttributes['cap-height'] || 675;
-		fontSettings.xHeight = 1 * fontAttributes['x-height'] || 400;
-		fontSettings.descent = 1 * fontAttributes.descent || -300;
+		fontSettings.upm = 1 * fontAttributes['units-per-em'] || fontSettings.upm;
+		fontSettings.ascent = 1 * fontAttributes.ascent || fontSettings.ascent;
+		fontSettings.capHeight = 1 * fontAttributes['cap-height'] || fontSettings.capHeight;
+		fontSettings.xHeight = 1 * fontAttributes['x-height'] || fontSettings.xHeight;
+		fontSettings.descent = 1 * fontAttributes.descent || fontSettings.descent;
 		fontSettings.variant = fontAttributes['font-variant'] || 'normal';
 		fontSettings.weight = 1 * fontAttributes['font-weight'] || 400;
 		fontSettings.stretch = fontAttributes['font-stretch'] || 'normal';
 		fontSettings.underlinePosition = 1 * fontAttributes['underline-position'] || -50;
-		fontSettings.underlineThickness = 1 * fontAttributes['underline-thickness'] || 10;
-		fontSettings.strikethroughPosition = 1 * fontAttributes['strikethrough-position'] || 300;
-		fontSettings.strikethroughThickness = 1 * fontAttributes['strikethrough-thickness'] || 10;
-		fontSettings.overlinePosition = 1 * fontAttributes['overline-position'] || 750;
-		fontSettings.overlineThickness = 1 * fontAttributes['overline-thickness'] || 10;
+		fontSettings.underlineThickness = 1 * fontAttributes['underline-thickness'] || 20;
+		fontSettings.strikethroughPosition =
+			1 * fontAttributes['strikethrough-position'] || fontSettings.xHeight / 2;
+		fontSettings.strikethroughThickness = 1 * fontAttributes['strikethrough-thickness'] || 20;
+		fontSettings.overlinePosition =
+			1 * fontAttributes['overline-position'] || fontSettings.ascent + 50;
+		fontSettings.overlineThickness = 1 * fontAttributes['overline-thickness'] || 20;
 
-		fontSettings.overshoot = round(fontSettings.upm / 100);
+		fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
 		project.settings.project.name = fname;
 
 		log(project);
