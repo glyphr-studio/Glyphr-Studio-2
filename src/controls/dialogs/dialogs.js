@@ -373,18 +373,21 @@ export function makeModalDialog(contentNode, maxWidth = false, openProjectDialog
 		id: 'modal-dialog',
 		innerHTML: `
 		<div class="modal-dialog__content">
-		<div class="modal-dialog__header">
-			<span></span>
-			<button class="modal-dialog__close-button">&times;</button>
+			<div class="modal-dialog__header">
+				<span></span>
+				<button class="modal-dialog__close-button">&times;</button>
 			</div>
 			<div class="modal-dialog__body"></div>
 		</div>
-				`,
+		`,
 	});
 
 	modal
 		.querySelector('.modal-dialog__close-button')
 		.addEventListener('click', closeEveryTypeOfDialog);
+	modal.addEventListener('click', (event) => {
+		if (event.target.id === 'modal-dialog') closeEveryTypeOfDialog();
+	});
 
 	if (openProjectDialog) {
 		let contentArea = modal.querySelector('.modal-dialog__content');
