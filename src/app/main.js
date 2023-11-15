@@ -98,16 +98,19 @@ function registerCustomComponents() {
  */
 function addGlobalEventListeners() {
 	// if (!getGlyphrStudioApp().settings.dev.mode) {
-		window.addEventListener('mouseup', () => {
+	window.addEventListener('mouseup', (event) => {
+		let navElement = document.querySelector('nav');
+		if (!(navElement && navElement.contains(event.target))) {
 			closeAllNavMenus();
 			closeAllOptionChoosers();
 			closeAllInfoBubbles();
-		});
-		window.addEventListener('resize', () => {
-			closeAllNavMenus();
-			closeAllOptionChoosers();
-			closeAllInfoBubbles();
-		});
+		}
+	});
+	window.addEventListener('resize', () => {
+		closeAllNavMenus();
+		closeAllOptionChoosers();
+		closeAllInfoBubbles();
+	});
 	// }
 }
 
