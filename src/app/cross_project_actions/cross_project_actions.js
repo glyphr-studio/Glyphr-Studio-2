@@ -246,7 +246,7 @@ export function makeItemAndRangeChooser(
 	if (addHR) optionChooser.appendChild(makeElement({ tag: 'hr' }));
 
 	let ranges = project.settings.project.characterRanges;
-	log(ranges);
+	// log(ranges);
 	ranges.forEach((range) => {
 		// log(`range.name: ${range.name}`);
 		option = makeElement({

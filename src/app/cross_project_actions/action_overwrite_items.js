@@ -133,7 +133,7 @@ function makeRows(range, parent) {
 			makeOneRow(liga);
 		}
 	} else {
-		range.array.forEach((id) => {
+		range.getMembers().forEach((id) => {
 			const itemID = `glyph-${id}`;
 			makeOneRow(itemID);
 		});
