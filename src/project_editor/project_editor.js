@@ -522,39 +522,35 @@ export class ProjectEditor {
 
 		const itemPageName = page || this.nav.page;
 		let id;
-		let historyTitle;
 
 		if (itemPageName === 'Characters') {
 			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
-			historyTitle = `Deleted Glyph ${id} : ${this.selectedGlyph.name}`;
-			this.history.addState(historyTitle, true);
-			deleteLinks(this.selectedGlyph);
-			delete this.project.glyphs[id];
+			this.deleteItem(id, this.project.glyphs);
 		} else if (itemPageName === 'Components') {
 			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
 			id = this.selectedComponentID;
-			historyTitle = `Deleted Component ${id} : ${this.selectedComponent.name}`;
-			this.history.addState(historyTitle, true);
-			deleteLinks(this.selectedComponent);
-			delete this.project.components[id];
+			this.deleteItem(id, this.project.components);
 		} else if (itemPageName === 'Ligatures') {
 			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
 			id = this.selectedLigatureID;
-			historyTitle = `Deleted Ligature ${id} : ${this.selectedLigature.name}`;
-			this.history.addState(historyTitle, true);
-			deleteLinks(this.selectedLigature);
-			delete this.project.ligatures[id];
+			this.deleteItem(id, this.project.ligatures);
 		} else if (itemPageName === 'Kerning') {
 			// log(`deleting selectedKernGroupID: ${this.selectedKernGroupID}`);
 			id = this.selectedKernGroupID;
-			historyTitle = `Deleted Kern ${id} : ${this.selectedKernGroup.name}`;
-			this.history.addState(historyTitle, true);
-			delete this.project.kerning[id];
+			this.deleteItem(id, this.project.kerning);
 		}
 
 		this.selectFallbackItem(itemPageName);
 		// log(`deleteSelectedItemFromProject`, 'end');
+	}
+
+	deleteItem(itemID, projectGroup) {
+		const item = this.project.getItem(itemID);
+		const historyTitle = `Deleted ${item.displayType} ${itemID} : ${item.name}`;
+		this.history.addState(historyTitle, true);
+		deleteLinks(item);
+		delete projectGroup[itemID];
 	}
 
 	/**
