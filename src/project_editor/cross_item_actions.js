@@ -253,6 +253,7 @@ export function deleteLinks(item) {
 	// log('Glyph.deleteLinks', 'start');
 	// log('passed this as id: ' + item.id);
 	// Delete upstream Component Instances
+	if (item.objType === 'KernGroup') return;
 	let upstreamGlyph;
 	const project = getCurrentProject();
 	for (let c = 0; c < item.usedIn.length; c++) {
