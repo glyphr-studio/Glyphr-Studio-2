@@ -130,7 +130,7 @@ function populateExportList() {
 	let item;
 	for (const key of Object.keys(project.glyphs)) {
 		let glyphNumber = parseInt(key.substring(6));
-		if (glyphNumber) {
+		if (typeof glyphNumber === 'number') {
 			item = project.glyphs[key];
 			exportGlyphs.push({ xg: item, xc: glyphNumber });
 		} else {
@@ -262,7 +262,11 @@ function getNextGlyphIndexNumber() {
 
 function makeNotdefGlyph() {
 	// log(`makeNotdefGlyph`, 'start');
-	const capHeight = getCurrentProject().settings.font.capHeight;
+	const project = getCurrentProject();
+	let notdef = project.getItem('glyph-0x0');
+	if (notdef) return notdef;
+
+	const capHeight = project.settings.font.capHeight;
 	const notDefGlyphPaths = [
 		{
 			name: 'Outer Phi Rectangle',
@@ -286,7 +290,7 @@ function makeNotdefGlyph() {
 		},
 	];
 
-	let notdef = new Glyph({
+	notdef = new Glyph({
 		name: 'notdef',
 		advanceWidth: 432,
 		shapes: notDefGlyphPaths,

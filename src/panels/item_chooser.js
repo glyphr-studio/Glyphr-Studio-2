@@ -205,13 +205,15 @@ function addRangeOptionsToOptionChooser(optionChooser) {
 
 function makeGlyphChooserTileGrid() {
 	// log(`makeGlyphChooserTileGrid`, 'start');
-	// console.time('makeGlyphChooserTileGrid');
+	console.time('makeGlyphChooserTileGrid');
 	const editor = getCurrentProjectEditor();
 	// log(editor.project.settings.project.characterRanges);
 	// log(editor.selectedCharacterRange);
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
-	let rangeArray = editor.selectedCharacterRange.array;
+	let rangeArray = editor.selectedCharacterRange.getMembers(
+		editor.project.settings.app.showNonCharPoints
+	);
 	if (rangeArray?.length) {
 		rangeArray.forEach((charID) => {
 			const glyphID = `glyph-${charID}`;
@@ -227,7 +229,7 @@ function makeGlyphChooserTileGrid() {
 					subscriberID: `glyphTile.${glyphID}`,
 					callback: (newGlyphID) => {
 						// log('whichGlyphIsSelected subscriber callback');
-						// log(`checking if ${glyph.id} === ${glyphID}`);
+						// log(`checking if ${newGlyphID} === ${glyphID}`);
 						if (parseInt(newGlyphID) === parseInt(glyphID)) {
 							// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
 							oneTile.setAttribute('selected', '');
@@ -242,7 +244,7 @@ function makeGlyphChooserTileGrid() {
 		});
 	}
 
-	// console.timeEnd('makeGlyphChooserTileGrid');
+	console.timeEnd('makeGlyphChooserTileGrid');
 	// log(`makeGlyphChooserTileGrid`, 'end');
 	return tileGrid;
 }

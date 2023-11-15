@@ -1,7 +1,12 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import { decToHex, hexesToChars } from '../common/character_ids';
 import { addAsChildren, makeElement, textToNode } from '../common/dom.js';
-import { closeEveryTypeOfDialog, showError, showModalDialog, showToast } from '../controls/dialogs/dialogs.js';
+import {
+	closeEveryTypeOfDialog,
+	showError,
+	showModalDialog,
+	showToast,
+} from '../controls/dialogs/dialogs.js';
 import { unicodeBlocksBMP } from '../lib/unicode/unicode_blocks_0_bmp.js';
 import { unicodeBlocksSMP } from '../lib/unicode/unicode_blocks_1_smp.js';
 import { unicodeBlocksSIP } from '../lib/unicode/unicode_blocks_2_sip.js';
@@ -344,22 +349,20 @@ function showUnicodeCharacterRangeDialog() {
 	unicodeBlocksTIP.forEach(processOneBlock);
 
 	function processOneBlock(block) {
-		if (!block.name.includes('Controls')) {
-			rowWrapper = makeElement({
-				className: 'list__row-wrapper',
-				onClick: () => {
-					previewCharacterRange(block);
-				},
-			});
+		rowWrapper = makeElement({
+			className: 'list__row-wrapper',
+			onClick: () => {
+				previewCharacterRange(block);
+			},
+		});
 
-			addAsChildren(rowWrapper, [
-				textToNode(`<span>${block.name}</span>`),
-				textToNode(`<code>${decToHex(block.begin)}</code>`),
-				textToNode(`<code>${decToHex(block.end)}</code>`),
-			]);
+		addAsChildren(rowWrapper, [
+			textToNode(`<span>${block.name}</span>`),
+			textToNode(`<code>${decToHex(block.begin)}</code>`),
+			textToNode(`<code>${decToHex(block.end)}</code>`),
+		]);
 
-			addAsChildren(listArea, rowWrapper);
-		}
+		addAsChildren(listArea, rowWrapper);
 	}
 
 	showModalDialog(content);
@@ -408,9 +411,12 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 	// log(range);
 	// log(`showNotification: ${showNotification}`);
 	if (isCharacterRangeUnique(range)) {
-		let ranges = getCurrentProject().settings.project.characterRanges;
-		ranges.push(new CharacterRange(range));
+		const project = getCurrentProject();
+		let ranges = project.settings.project.characterRanges;
+		const newRange = new CharacterRange(range);
+		ranges.push(newRange);
 		ranges.sort((a, b) => parseInt(a.begin) - parseInt(b.begin));
+		if (newRange.name.includes('Controls')) project.settings.app.showNonCharPoints = true;
 		if (showNotification) showToast(`Added ${range.name} to your project.`);
 		if (successCallback) successCallback();
 	} else {

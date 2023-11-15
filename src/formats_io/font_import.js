@@ -95,8 +95,7 @@ function importOneGlyph(otfGlyph, project) {
 
 	const uni = decToHex(otfGlyph.unicode || 0);
 
-	if (uni === false || uni === '0x0000') {
-		// Check for .notdef
+	if (uni === false) {
 		// log(`!!! Skipping ${otfGlyph.name} NO UNICODE !!!`);
 		importItemTotal--;
 		// log('importOneGlyph', 'end');

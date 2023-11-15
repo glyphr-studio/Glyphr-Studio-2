@@ -1,7 +1,7 @@
 // import { log } from '../app/main.js';
 import { validateAsHex } from '../../common/character_ids.js';
 import { getParentRange } from './unicode_blocks.js';
-import { unicodeNamesBMP } from './unicode_names_0_bmp.js';
+import { unicodeNamesBMP, unicodeNonCharPointNames } from './unicode_names_0_bmp.js';
 import { unicodeNamesSMP } from './unicode_names_1_smp.js';
 
 /**
@@ -23,7 +23,7 @@ export function getUnicodeName(codePoint) {
 	if ((chn >= 0x4e00 && chn < 0xa000) || (chn >= 0x20000 && chn < 0x323af)) {
 		name = `CJK Unified Ideograph ${codePointSuffix}`;
 	} else if (chn < 0xffff) {
-		name = unicodeNamesBMP[codePoint] || '[name not found]';
+		name = unicodeNamesBMP[codePoint] || unicodeNonCharPointNames[codePoint] || '[name not found]';
 	} else if (chn >= 0x18b00 && chn <= 0x18cd5) {
 		name = `Khitan Small Script Character ${codePointSuffix}`;
 	} else if (chn >= 0x18800 && chn <= 0x18aff) {
