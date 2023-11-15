@@ -471,7 +471,7 @@ export class GlyphrStudioProject {
 
 	forEachItem(fun) {
 		// log(`GlyphrStudioProject.forEachItem`, 'start');
-		console.time('forEachItem');
+		// console.time('forEachItem');
 		let aggregate = [];
 		// let counter = 0;
 		let result;
@@ -500,7 +500,7 @@ export class GlyphrStudioProject {
 		// log(`counter: ${counter}`);
 		// log(`aggregate:`);
 		// log(aggregate);
-		console.timeEnd('forEachItem');
+		// console.timeEnd('forEachItem');
 		// log(`GlyphrStudioProject.forEachItem`, 'end');
 		return aggregate;
 	}

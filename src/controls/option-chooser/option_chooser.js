@@ -167,13 +167,17 @@ export class OptionChooser extends HTMLElement {
 		let top = entryPointRect.y + entryPointRect.height - (navRect ? navRect.y : 0);
 		left = Math.max(left, 0);
 		top = Math.max(top, 0);
+		let parentHeight = navRect ? navRect.height : window.innerHeight;
+		let maxHeight = parentHeight - top - 10;
 
 		// log(`showing options at ${left} / ${top}`);
+		// log(`maxHeight: ${maxHeight}`);
+		// log(`parentHeight: ${parentHeight}`);
 
 		closeAllOptionChoosers();
 		closeAllNavMenus(true);
 		this.setAttribute('deployed', '');
-		insertAfter(this, makeContextMenu(optionRows, left, top - 1, entryPointRect.width, true));
+		insertAfter(this, makeContextMenu(optionRows, left, top - 1, entryPointRect.width, maxHeight, true));
 
 		// log(`OptionsChooser.showOptions`, 'end');
 	}

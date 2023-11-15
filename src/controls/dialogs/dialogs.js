@@ -202,6 +202,7 @@ export function makeContextMenu(
 	x = false,
 	y = false,
 	width = false,
+	height = false,
 	isDropdown = false
 ) {
 	// log(`makeContextMenu`, 'start');
@@ -236,7 +237,11 @@ export function makeContextMenu(
 			element.style.borderTopWidth = '1px';
 		}
 		if (width) {
-			element.style.minWidth = `${width}px`;
+			element.style.width = `${width}px`;
+		}
+		if (height) {
+			if(isDropdown) element.style.maxHeight = `${height}px`;
+			else element.style.height = `${height}px`;
 		}
 		element.addEventListener('mouseleave', closeAllOptionChoosers);
 		element.focus();
