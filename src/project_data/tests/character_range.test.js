@@ -84,10 +84,10 @@ describe('CharacterRange', () => {
 		expect(range.id).toBe('Basic Latin ["0x41", "0x44"]');
 	});
 
-	// Test the array property
-	it('array', () => {
+	// Test the getMembers property
+	it('getMembers', () => {
 		const range = new CharacterRange({ begin: 65, end: 68, name: 'Basic Latin' });
-		const characterArray = range.array;
+		const characterArray = range.getMembers();
 		const expectedCharacters = basicLatinOrder.slice(0, 4);
 
 		expect(characterArray).toEqual(expectedCharacters);

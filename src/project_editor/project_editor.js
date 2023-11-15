@@ -567,7 +567,7 @@ export class ProjectEditor {
 			const selectedRange = this.selectedCharacterRange;
 			if (selectedRange) {
 				// log(`Selected Range detected as ${selectedRange.name}`);
-				let rangeList = selectedRange.array;
+				let rangeList = selectedRange.getMembers();
 				for (let i = 0; i < rangeList.length; i++) {
 					let id = `glyph-${rangeList[i]}`;
 					// log(`checking id ${id}`);

@@ -89,7 +89,8 @@ export function updateContent_copyShapes(parent) {
 		className: 'cross-project-actions__column-layout',
 		id: 'cross-project-actions__character-copy-table',
 	});
-	parent.appendChild(updateCharacterCopyTable(table));
+	updateCharacterCopyTable(table);
+	parent.appendChild(table);
 }
 
 export function updateCharacterCopyTable(table) {
@@ -152,7 +153,7 @@ function makeRows(range, parent) {
 			makeOneRow(liga);
 		}
 	} else {
-		range.array.forEach((id) => {
+		range.getMembers().forEach((id) => {
 			const itemID = `glyph-${id}`;
 			makeOneRow(itemID);
 		});
