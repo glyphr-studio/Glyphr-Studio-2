@@ -85,7 +85,7 @@ export function ioSVG_importSVGfont(font) {
 		// log('starting  unicode \t' + attributes.unicode + ' \t ' + attributes['glyph-name']);
 
 		let uni = parseCharsInputAsHex(attributes.unicode);
-		if (attributes.unicode === ' ') uni = ['0x0020'];
+		if (attributes.unicode === ' ') uni = ['0x20'];
 
 		if (uni === false) {
 			// Check for .notdef

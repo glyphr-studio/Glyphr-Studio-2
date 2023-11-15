@@ -2,11 +2,10 @@ import { decToHex } from '../common/character_ids.js';
 import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 
 export class CharacterRange {
-	constructor({ begin = 0, end = 0, name = '', showNonCharPoints = false }) {
+	constructor({ begin = 0, end = 0, name = ''}) {
 		this.begin = begin;
 		this.end = end;
 		this.name = name;
-		this.showNonCharPoints = showNonCharPoints;
 		this.cachedArray = false;
 	}
 
@@ -33,7 +32,7 @@ export class CharacterRange {
 	/**
 	 * For this range, yields char points in order.
 	 */
-	*generator() {
+	*generator(showNonCharPoints = false) {
 		if (this.begin <= 0x21 && (this.end === 0x7e || this.end === 0x7f)) {
 			let basicLatinIndex = 0;
 			while (basicLatinIndex < basicLatinOrder.length) {
@@ -42,7 +41,7 @@ export class CharacterRange {
 			}
 		} else {
 			let current = this.begin;
-			if (this.showNonCharPoints) {
+			if (showNonCharPoints) {
 				while (current <= this.end) yield decToHex(current++);
 			} else {
 				while (isControlChar(current)) current++;
@@ -68,7 +67,6 @@ export class CharacterRange {
 			begin: this.beginHex,
 			end: this.endHex,
 		};
-		if (this.showNonCharPoints) result.showNonCharPoints = true;
 		return result;
 	}
 
@@ -92,12 +90,12 @@ export class CharacterRange {
 		return `${this.name} ${this.note}`;
 	}
 
-	get array() {
+	getMembers(showNonCharPoints = false) {
 		if (this.cachedArray) return this.cachedArray;
 
 		const result = [];
 
-		for (const glyphID of this.generator()) {
+		for (const glyphID of this.generator(showNonCharPoints)) {
 			result.push(glyphID);
 		}
 		this.cachedArray = result;

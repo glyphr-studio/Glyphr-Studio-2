@@ -141,7 +141,10 @@ function calcFontMaxes() {
 
 function ioSVG_makeMissingGlyph() {
 	// log('ioSVG_makeMissingGlyph', 'start');
-	const gh = getCurrentProject().settings.font.ascent;
+	const project = getCurrentProject();
+	let notdef = project.getItem('glyph-0x0');
+	if (notdef) return ioSVG_makeOneGlyphOrLigature(notdef, 'glyph-0x0');
+	const gh = project.settings.font.ascent;
 	const gw = round(gh * 0.618);
 	const gt = round(gh / 100);
 

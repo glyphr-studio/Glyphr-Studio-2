@@ -235,13 +235,13 @@ function makeLigaturesFirstRunContent() {
 // invisible characters between the 'chars' to prevent
 // triggering a ligature
 const ligaturesWithCodePoints = [
-	{ chars: 'ae', display: 'ae', point: '0x00E6' },
-	{ chars: 'AE', display: 'AE', point: '0x00C6' },
+	{ chars: 'ae', display: 'ae', point: '0xE6' },
+	{ chars: 'AE', display: 'AE', point: '0xC6' },
 	{ chars: 'ff', display: 'f‌f', point: '0xFB00' },
 	{ chars: 'fi', display: 'f‌i', point: '0xFB01' },
 	{ chars: 'fl', display: 'f‌l', point: '0xFB02' },
-	{ chars: 'oe', display: 'oe', point: '0x0153' },
-	{ chars: 'OE', display: 'OE', point: '0x0152' },
+	{ chars: 'oe', display: 'oe', point: '0x153' },
+	{ chars: 'OE', display: 'OE', point: '0x152' },
 	{ chars: 'st', display: 'st', point: '0xFB06' },
 	{ chars: 'ffi', display: 'f‌f‌i', point: '0xFB03' },
 	{ chars: 'ffl', display: 'f‌f‌l', point: '0xFB04' },
@@ -346,7 +346,7 @@ export function showAddLigatureDialog() {
 			<h2>Add a new ligature</h2>
 				Create a new ligature by specifying two or more individual glyphs that will make up the ligature (like <code>ff</code>).
 				<br><br>
-				Ligature glyphs can also be specified in Unicode format (like <code>U+0066U+0066</code>) or hexadecimal format (like <code>0x00660x0066</code>).
+				Ligature glyphs can also be specified in Unicode format (like <code>U+66U+66</code>) or hexadecimal format (like <code>0x660x66</code>).
 				<br><br>
 				Hexadecimal, Unicode, and regular glyph formats cannot be mixed - choose one type!
 				<br><br>
