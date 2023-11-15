@@ -205,7 +205,7 @@ function addRangeOptionsToOptionChooser(optionChooser) {
 
 function makeGlyphChooserTileGrid() {
 	// log(`makeGlyphChooserTileGrid`, 'start');
-	console.time('makeGlyphChooserTileGrid');
+	// console.time('makeGlyphChooserTileGrid');
 	const editor = getCurrentProjectEditor();
 	// log(editor.project.settings.project.characterRanges);
 	// log(editor.selectedCharacterRange);
@@ -244,7 +244,7 @@ function makeGlyphChooserTileGrid() {
 		});
 	}
 
-	console.timeEnd('makeGlyphChooserTileGrid');
+	// console.timeEnd('makeGlyphChooserTileGrid');
 	// log(`makeGlyphChooserTileGrid`, 'end');
 	return tileGrid;
 }
