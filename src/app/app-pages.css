@@ -317,6 +317,20 @@
 	padding: 20px 0px 0px 0px;
 }
 
+.cross-project-actions__welcome-content {
+	max-width: 600px;
+	margin-top: 20px;
+}
+
+#cross-project-actions__welcome-flipper {
+	padding: 2px 15px 0px 15px;
+	margin: 10px 0px 0px -1px;
+	display: inline-block;
+	border-radius: 8px;
+	background-color: hsla(285, 100%, 17%, 0.2); /* purple l15 */
+	border: 1px solid var(--blue-l15);
+}
+
 .cross-project-actions__page-header option-chooser {
 	max-width: 400px;
 	font-size: 1.2em;
@@ -330,11 +344,13 @@
 	padding: 10px 0px;
 }
 
-#cross-project-actions__project-flipper code {
+#cross-project-actions__project-flipper code,
+.cross-project-actions__welcome-content code {
 	background-color: hsla(285, 100%, 17%, 0.1); /* purple l15 */
 	border-color: var(--blue-l15);
 	color: white;
 }
+
 #cross-project-actions__project-flipper .flip-button {
 	display: inline-block;
 	color: var(--purple-l80);
