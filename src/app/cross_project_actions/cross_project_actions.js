@@ -1,5 +1,6 @@
 import { makeElement } from '../../common/dom';
 import { countItems, duplicates } from '../../common/functions';
+import { emailLink } from '../app';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../main';
 import { updateContent_addComponents, updateFooter_addComponents } from './action_add_components';
 import { updateContent_addKernGroups, updateFooter_addKernGroups } from './action_add_kern_groups';
@@ -30,7 +31,7 @@ export function makePage_CrossProjectActions() {
 			<div id="cross-project-actions__page">
 				<div class="cross-project-actions__page-header">
 					<h1>Cross&#8209;project&nbsp;actions</h1><span></span><span id="cross-project-actions__close-button">✖</span>
-					<option-chooser id="cross-project-actions__action-chooser">
+					<option-chooser id="cross-project-actions__action-chooser" selected-name="Choose an action to get started...">
 						<option>Copy character or ligature shapes</option>
 						<option>Overwrite characters or ligatures</option>
 						<option>Add component roots</option>
@@ -41,6 +42,21 @@ export function makePage_CrossProjectActions() {
 					<span></span>
 				</div>
 				<div id="cross-project-actions__page-content">
+					<div class="cross-project-actions__welcome-content">
+						<h2>These actions help you move and copy items between the two projects you have open.</h2>
+						<br>
+						To get started, choose an action from the dropdown at the top of the page.
+						<br><br>
+						Each action has the concept of a <code>source</code> and <code>destination</code> project. You can
+						easily flip the relationship with this control that is displayed at the top of each page:
+						<br>
+						<div id="cross-project-actions__welcome-flipper"></div>
+						<br><br>
+						New cross-project actions are easy to add. If you have any ideas for other capabilities,
+						please send us an email: ${emailLink()}
+						<br><br>
+						<a href="https://www.glyphrstudio.com/v2/help/working-with-multiple-projects.html" target="_blank">More help about working with multiple projects</a>
+					</div>
 				</div>
 				<div id="cross-project-actions__page-footer">
 				</div>
@@ -64,7 +80,10 @@ export function makePage_CrossProjectActions() {
 	actionChooser.addEventListener('change', () => {
 		updateCrossProjectActionsPage(content);
 	});
-	updateCrossProjectActionsPage(content);
+
+	let flipperContent = content.querySelector('#cross-project-actions__welcome-flipper');
+	flipperContent.appendChild(makeProjectFlipper());
+	// updateCrossProjectActionsPage(content);
 	return content;
 }
 
@@ -136,7 +155,13 @@ function flipProjects() {
 	sourceEditor = destinationEditor;
 	destinationEditor = temp;
 
-	updateCrossProjectActionsPage(document);
+	let welcomeFlipper = document.querySelector('#cross-project-actions__welcome-flipper');
+	if (welcomeFlipper) {
+		welcomeFlipper.innerHTML = '';
+		welcomeFlipper.appendChild(makeProjectFlipper());
+	} else {
+		updateCrossProjectActionsPage(document);
+	}
 }
 
 export function toggleCheckboxes() {
