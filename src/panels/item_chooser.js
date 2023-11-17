@@ -17,27 +17,28 @@ import { showAddLigatureDialog } from '../pages/ligatures.js';
 let savedClickHandler;
 let savedRegisterSubscriptions;
 
-export function makeAllItemTypeChooserContent(clickHandler, type = false) {
+export function makeAllItemTypeChooserContent(clickHandler, type = false, editor = getCurrentProjectEditor()) {
 	// log(`makeAllItemTypeChooserContent`, 'start');
-	const editor = getCurrentProjectEditor();
+	// log(`\n⮟editor⮟`);
+	// log(editor);
 	savedClickHandler = clickHandler;
 	savedRegisterSubscriptions = true;
 
 	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
 	let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
-	header.appendChild(makeRangeAndItemTypeChooser());
+	header.appendChild(makeRangeAndItemTypeChooser(editor));
 	wrapper.appendChild(header);
 
 	let show = type || editor.nav.page;
 	if (show === 'Ligatures') {
 		// Ligature Chooser
-		wrapper.appendChild(makeLigatureChooserTileGrid());
+		wrapper.appendChild(makeLigatureChooserTileGrid(editor));
 	} else if (show === 'Components') {
 		// Component Chooser
-		wrapper.appendChild(makeComponentChooserTileGrid());
+		wrapper.appendChild(makeComponentChooserTileGrid(editor));
 	} else {
 		// Overview and Glyph = Glyph Chooser
-		wrapper.appendChild(makeGlyphChooserTileGrid());
+		wrapper.appendChild(makeGlyphChooserTileGrid(editor));
 	}
 
 	// log(`makeAllItemTypeChooserContent`, 'end');
@@ -118,7 +119,7 @@ export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) 
 		});
 
 		option.addEventListener('click', () => {
-			getCurrentProjectEditor().selectedCharacterRange = 'Ligatures';
+			editor.selectedCharacterRange = 'Ligatures';
 			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
 			tileGrid.remove();
 			let wrapper = document.querySelector('.glyph-chooser__wrapper');
@@ -137,7 +138,7 @@ export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) 
 		});
 
 		option.addEventListener('click', () => {
-			getCurrentProjectEditor().selectedCharacterRange = 'Components';
+			editor.selectedCharacterRange = 'Components';
 			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
 			tileGrid.remove();
 			let wrapper = document.querySelector('.glyph-chooser__wrapper');
@@ -149,16 +150,14 @@ export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) 
 
 	if (ligatureCount || componentCount) optionChooser.appendChild(makeElement({ tag: 'hr' }));
 
-	addRangeOptionsToOptionChooser(optionChooser);
+	addRangeOptionsToOptionChooser(optionChooser, editor);
 
 	// log(`makeRangeAndItemTypeChooser`, 'end');
 	return optionChooser;
 }
 
-function makeRangeChooser() {
-	// log(`makeRangeChooser`, 'start');
+function makeRangeChooser(editor = getCurrentProjectEditor()) {
 
-	const editor = getCurrentProjectEditor();
 	let selectedRange = editor.selectedCharacterRange;
 	// log(selectedRange);
 	let optionChooser = makeElement({
@@ -174,7 +173,7 @@ function makeRangeChooser() {
 	return optionChooser;
 }
 
-function addRangeOptionsToOptionChooser(optionChooser) {
+function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjectEditor()) {
 	const project = getCurrentProject();
 	let ranges = project.settings.project.characterRanges;
 	let option;
@@ -190,7 +189,7 @@ function addRangeOptionsToOptionChooser(optionChooser) {
 		option.addEventListener('click', () => {
 			// log(`OPTION.click - range: ${range.name}`);
 
-			getCurrentProjectEditor().selectedCharacterRange = range;
+			editor.selectedCharacterRange = range;
 			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
 			// log(tileGrid);
 			tileGrid.remove();
@@ -203,10 +202,9 @@ function addRangeOptionsToOptionChooser(optionChooser) {
 	});
 }
 
-function makeGlyphChooserTileGrid() {
+function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(`makeGlyphChooserTileGrid`, 'start');
 	// console.time('makeGlyphChooserTileGrid');
-	const editor = getCurrentProjectEditor();
 	// log(editor.project.settings.project.characterRanges);
 	// log(editor.selectedCharacterRange);
 
@@ -218,7 +216,7 @@ function makeGlyphChooserTileGrid() {
 		rangeArray.forEach((charID) => {
 			const glyphID = `glyph-${charID}`;
 			// log(`glyphID: ${glyphID}`);
-			let oneTile = new GlyphTile({ 'displayed-item-id': glyphID });
+			let oneTile = new GlyphTile({ 'displayed-item-id': glyphID, project: editor.project });
 			if (editor.selectedGlyphID === glyphID) oneTile.setAttribute('selected', '');
 
 			oneTile.addEventListener('click', () => savedClickHandler(glyphID));
@@ -249,9 +247,8 @@ function makeGlyphChooserTileGrid() {
 	return tileGrid;
 }
 
-function makeLigatureChooserTileGrid() {
+function makeLigatureChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(`makeLigatureChooserTileGrid`, 'start');
-	const editor = getCurrentProjectEditor();
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
 	let sortedLigatures = editor.project.sortedLigatures;
@@ -287,9 +284,8 @@ function makeLigatureChooserTileGrid() {
 	return tileGrid;
 }
 
-function makeComponentChooserTileGrid() {
+function makeComponentChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(`makeComponentChooserTileGrid`, 'start');
-	const editor = getCurrentProjectEditor();
 
 	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
 
@@ -324,9 +320,8 @@ function makeComponentChooserTileGrid() {
 	return tileGrid;
 }
 
-function makeKernGroupChooserList() {
+function makeKernGroupChooserList(editor = getCurrentProjectEditor()) {
 	// log(`makeKernGroupChooserList`, 'start');
-	const editor = getCurrentProjectEditor();
 
 	let kernGroupRows = makeElement({ tag: 'div', className: 'kern-group-chooser__list' });
 

@@ -656,6 +656,8 @@ export class Glyph extends GlyphElement {
 		transformOrigin = false,
 	} = {}) {
 		// log('Glyph.updateGlyphSize', 'start');
+		// log(`width: ${width}`);
+		// log(`height: ${height}`);
 		// log(`transformOrigin: ${transformOrigin}`);
 		// log(`ratioLock: ${ratioLock}`);
 		// log('number of shapes: ' + this.shapes.length);
@@ -691,11 +693,11 @@ export class Glyph extends GlyphElement {
 		// log('ratio dW/dH:\t' + ratioWidth + '/' + ratioHeight);
 
 		const deltas = calculateDeltasFromTransform(dW, dH, this.maxes, transformOrigin);
-		// log('Before Maxes ' + json(glyphMaxes, true));
+		// log(`\n⮟this.maxes⮟`);
+		// log(this.maxes);
 		this.shapes.forEach((shape) => {
 			if (shape.objType === 'ComponentInstance' && !updateComponentInstances) return;
 
-			// log('>>> Updating ' + shape.objType + ' ' + i + '/' + this.shapes.length + ' : ' + shape.name);
 			const shapeMaxes = shape.maxes;
 
 			// scale
@@ -711,14 +713,13 @@ export class Glyph extends GlyphElement {
 			let deltaHeight = false;
 			if (ratioHeight !== 0) deltaHeight = newShapeHeight - oldShapeHeight;
 
-			// log('Shape ' + i + ' dW dH ' + deltaWidth + ' ' + deltaHeight);
-			// log(`updateShapeSize from updateGlyphSize`);
+			// log(`deltaHeight: ${deltaHeight}`);
+			// log(`deltaWidth: ${deltaWidth}`);
 			shape.updateShapeSize({
 				width: deltaWidth,
 				height: deltaHeight,
 				transformOrigin: 'bottom-left',
 			});
-			// log(`updateShapeSize from updateGlyphSize`);
 
 			// move
 			const oldShapeX = shapeMaxes.xMin - glyphMaxes.xMin;
@@ -733,12 +734,12 @@ export class Glyph extends GlyphElement {
 			let deltaY = false;
 			if (ratioHeight !== 0) deltaY = newShapeY - oldShapeY;
 
-			// log('Shape Pos ' + i + ' dx dy ' + deltaX + ' ' + deltaY);
 			shape.updateShapePosition(deltaX, deltaY, true);
 		});
 
 		this.updateGlyphPosition(deltas.deltaX, deltas.deltaY);
-		// log('Afters Maxes ' + json(this.maxes, true));
+		// log(`\n⮟this.maxes⮟`);
+		// log(this.maxes);
 		// log(this.name);
 		// log('Glyph.updateGlyphSize', 'end');
 	}

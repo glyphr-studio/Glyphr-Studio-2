@@ -1,3 +1,4 @@
+import { addCrossProjectCopyShapeOptionControls } from '../app/cross_project_actions/action_copy_shapes.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
@@ -131,7 +132,7 @@ export function getActionData(name) {
 				iconName: 'pastePathsFromAnotherProject',
 				title: `Get Paths From Another Project\nChoose another Glyph from the other open project, and copy all the paths from that glyph to this one.`,
 				onClick: () => {
-					// TODO pastePathsFromAnotherProject
+					showDialogChooseItemFromOtherProject();
 				},
 				disabled: getGlyphrStudioApp().projectEditors.length === 1,
 			},
@@ -942,12 +943,10 @@ function showDialogChooseOtherItem(type) {
 		innerHTML: '<h2>Choose another glyph</h2>',
 	});
 	let onClick = false;
-	let clickedID = false;
 
 	if (type === 'copyPaths') {
 		content.innerHTML += `All the paths from the glyph you select will be copied and pasted into this glyph.<br><br>`;
 		onClick = (itemID) => {
-			clickedID = itemID;
 			const editor = getCurrentProjectEditor();
 			const otherItem = editor.project.getItem(itemID);
 			const thisItem = editor.selectedItem;
@@ -965,7 +964,6 @@ function showDialogChooseOtherItem(type) {
 		// log(`Dialog addAsComponentInstance`, 'start');
 		content.innerHTML += `The glyph you select will be treated as a root component, and added to this glyph as a component instance.<br><br>`;
 		onClick = (itemID) => {
-			clickedID = itemID;
 			const editor = getCurrentProjectEditor();
 			let otherItem = editor.project.getItem(itemID);
 			if (!otherItem) {
@@ -1038,6 +1036,74 @@ function showDialogChooseOtherItem(type) {
 	content.appendChild(scrollArea);
 	showModalDialog(content);
 	// log(`showDialogChooseOtherItem`, 'end');
+}
+
+function showDialogChooseItemFromOtherProject() {
+	let content = makeElement({
+		innerHTML: `
+			<h2>Choose a glyph from the other open project</h2>
+			All the paths from the glyph you select will be copied and pasted into this glyph.
+			<br><br>
+			<strong style="display: inline-block; margin-bottom:10px;">Copy options:</strong>
+			<br>`,
+	});
+
+	const thisEditor = getCurrentProjectEditor();
+	const otherEditor = getGlyphrStudioApp().otherProjectEditor;
+	addCrossProjectCopyShapeOptionControls(content, otherEditor, thisEditor);
+
+	let onClick = (itemID) => {
+		const otherItem = otherEditor.project.getItem(itemID);
+		const thisItem = thisEditor.selectedItem;
+		let emRatio = thisEditor.project.settings.font.upm / otherEditor.project.settings.font.upm;
+		// log(`emRatio: ${emRatio}`);
+		let updateAdvanceWidth = document.getElementById('checkbox-advance-width').checked;
+		// log(`updateAdvanceWidth: ${updateAdvanceWidth}`);
+		let scaleItems = document.getElementById('checkbox-scale')?.checked;
+		// log(`scaleItems: ${scaleItems}`);
+		let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
+		// log(`reverseWindings: ${reverseWindings}`);
+		let oldRSB = thisItem.rightSideBearing;
+		const newShapes = copyShapesFromTo(otherItem, thisItem, false);
+		const msShapes = thisEditor.multiSelect.shapes;
+		msShapes.clear();
+		newShapes.forEach((shape) => msShapes.add(shape));
+
+		if (scaleItems) {
+			let deltaWidth = otherItem.advanceWidth * emRatio - otherItem.advanceWidth;
+			// log(`deltaWidth: ${deltaWidth}`);
+			msShapes.virtualGlyph.updateGlyphSize({
+				width: deltaWidth,
+				ratioLock: true,
+				transformOrigin: 'baseline-left',
+			});
+		}
+
+		if (reverseWindings) msShapes.virtualGlyph.reverseWinding();
+		if (updateAdvanceWidth) thisItem.rightSideBearing = oldRSB;
+
+		thisEditor.publish('currentItem', thisItem);
+		let title = `
+			${otherItem.shapes.length} paths were copied<br>
+			from ${otherEditor.project.settings.project.name} : ${otherItem.name}`;
+		thisEditor.history.addState(title);
+		closeEveryTypeOfDialog();
+		showToast(title);
+	};
+
+	const scrollArea = makeElement({
+		tag: 'div',
+		className: 'modal-dialog__glyph-chooser-scroll-area',
+	});
+
+	const chooserArea = makeAllItemTypeChooserContent(
+		onClick,
+		'Characters',
+		getGlyphrStudioApp().otherProjectEditor
+	);
+	scrollArea.appendChild(chooserArea);
+	content.appendChild(scrollArea);
+	showModalDialog(content);
 }
 
 /**

@@ -1,4 +1,4 @@
-import { makeElement } from '../../common/dom';
+import { makeElement, textToNode } from '../../common/dom';
 import { showToast } from '../../controls/dialogs/dialogs';
 import { copyShapesFromTo } from '../../panels/actions';
 import { makeSingleLabel } from '../../panels/cards';
@@ -27,56 +27,10 @@ export function updateContent_copyShapes(parent) {
 
 	parent.appendChild(makeProjectFlipper('Copy shapes from'));
 
-	let emRatio =
-		destinationEditor.project.settings.font.upm / sourceEditor.project.settings.font.upm;
-
-	if (emRatio !== 1) {
-		parent.appendChild(
-			makeElement({
-				tag: 'input',
-				attributes: { type: 'checkbox' },
-				id: 'checkbox-scale',
-			})
-		);
-		parent.appendChild(
-			makeSingleLabel(
-				`Scale items to match destination Em size. The destination font is ${Math.round(
-					emRatio * 100
-				)}% ${emRatio < 1 ? 'smaller' : 'larger'}
-				than the source font.`,
-				false,
-				'checkbox-scale'
-			)
-		);
-		parent.appendChild(makeElement({ tag: 'br' }));
-	}
-	parent.appendChild(
-		makeElement({
-			tag: 'input',
-			attributes: { type: 'checkbox' },
-			id: 'checkbox-advance-width',
-		})
-	);
-	parent.appendChild(
-		makeSingleLabel(
-			'Update advance width to maintain right-side bearing',
-			false,
-			'checkbox-advance-width'
-		)
-	);
-	parent.appendChild(makeElement({ tag: 'br' }));
-	parent.appendChild(
-		makeElement({
-			tag: 'input',
-			attributes: { type: 'checkbox' },
-			id: 'checkbox-reverse-windings',
-		})
-	);
-	parent.appendChild(makeSingleLabel('Reverse shape windings', false, 'checkbox-reverse-windings'));
+	// Options
+	addCrossProjectCopyShapeOptionControls(parent, sourceEditor, destinationEditor);
 
 	// Range chooser
-	parent.appendChild(makeElement({ tag: 'br' }));
-	parent.appendChild(makeElement({ tag: 'br' }));
 	parent.appendChild(
 		makeItemAndRangeChooser({ showLigatures: true }, () => {
 			let table = document.getElementById('cross-project-actions__character-copy-table');
@@ -91,6 +45,68 @@ export function updateContent_copyShapes(parent) {
 	});
 	updateCharacterCopyTable(table);
 	parent.appendChild(table);
+}
+
+export function addCrossProjectCopyShapeOptionControls(parent, srcEditor, destEditor) {
+	let emRatio = destEditor.project.settings.font.upm / srcEditor.project.settings.font.upm;
+
+	if (emRatio !== 1) {
+		parent.appendChild(
+			makeElement({
+				tag: 'input',
+				attributes: { type: 'checkbox' },
+				className: 'copy-shapes-options__checkbox',
+				id: 'checkbox-scale',
+			})
+		);
+		parent.appendChild(
+			makeSingleLabel(
+				`Scale items to match destination Em size. The destination font is ${Math.round(
+					emRatio * 100
+				)}% ${emRatio < 1 ? 'smaller' : 'larger'}
+				than the source font.`,
+				false,
+				'checkbox-scale',
+				'copy-shapes-options__label'
+			)
+		);
+		parent.appendChild(makeElement({ tag: 'br' }));
+	}
+	parent.appendChild(
+		makeElement({
+			tag: 'input',
+			attributes: { type: 'checkbox' },
+			className: 'copy-shapes-options__checkbox',
+			id: 'checkbox-advance-width',
+		})
+	);
+	parent.appendChild(
+		makeSingleLabel(
+			'Update advance width to maintain right-side bearing',
+			false,
+			'checkbox-advance-width',
+			'copy-shapes-options__label'
+		)
+	);
+	parent.appendChild(makeElement({ tag: 'br' }));
+	parent.appendChild(
+		makeElement({
+			tag: 'input',
+			attributes: { type: 'checkbox' },
+			className: 'copy-shapes-options__checkbox',
+			id: 'checkbox-reverse-windings',
+		})
+	);
+	parent.appendChild(
+		makeSingleLabel(
+			'Reverse shape windings',
+			false,
+			'checkbox-reverse-windings',
+			'copy-shapes-options__label'
+		)
+	);
+	parent.appendChild(textToNode('<br>'));
+	parent.appendChild(textToNode('<br>'));
 }
 
 export function updateCharacterCopyTable(table) {

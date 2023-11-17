@@ -173,7 +173,7 @@
 	color: var(--blue-l70);
 	animation: var(--animate-fade-in);
 	backdrop-filter: blur(2px);
-	background-color:hsla(285, 100%, 17%, 0.2); /* purple l15 */
+	background-color: hsla(285, 100%, 17%, 0.2); /* purple l15 */
 	border: var(--global-focus-style);
 	border-radius: 10px;
 	margin: 10px;
@@ -190,7 +190,6 @@
 	overflow-x: none;
 	background-color: hsla(200, 100%, 30%, 5%); /* blue-l40 */
 	padding: 5px 10px 10px 5px;
-
 }
 
 .auto-saves__list-row {
@@ -243,7 +242,6 @@
 	grid-row-start: 1;
 	grid-row-end: 2;
 }
-
 
 /* --------------------------------------------------------
 	Open Project Dialog
@@ -422,17 +420,18 @@
 	color: white;
 }
 
-
+.copy-shapes-options__checkbox,
 #cross-project-actions__page-content > input {
 	width: 14px;
 	height: 14px;
 }
 
+.copy-shapes-options__label,
 #cross-project-actions__page-content > label {
 	display: inline-block;
 	padding: 0px 0px 0px 10px;
 	line-height: 20px;
-	position:relative;
+	position: relative;
 	top: -2px;
 }
 
