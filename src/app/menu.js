@@ -277,7 +277,7 @@ function makeProjectPreviewRow(projectID = 0) {
 				const app = getGlyphrStudioApp();
 				app.selectedProjectEditor = projectEditor;
 				app.selectedProjectEditor.navigate();
-				showToast(`Switched to<br>${projectEditor.project.settings.project.name}`);
+				showToast(`Switched to<br>${projectEditor.project.settings.project.name}`, 2000, true);
 			});
 		}
 		title.innerHTML = projectEditor.project.settings.project.name;
