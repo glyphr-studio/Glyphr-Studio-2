@@ -25,12 +25,13 @@ export class GlyphTile extends HTMLElement {
 		// log(attributes);
 
 		Object.keys(attributes).forEach((key) => this.setAttribute(key, attributes[key]));
-		const project = getCurrentProject();
+		this.project = attributes.project || getCurrentProject();
+		this.showingOtherProject = !!attributes.project;
 		const displayedItemID = this.getAttribute('displayed-item-id');
-		this.glyph = project.getItem(displayedItemID);
+		this.glyph = this.project.getItem(displayedItemID);
 		const chars = this.glyph?.chars || hexesToChars(remove(displayedItemID, 'glyph-'));
 
-		const name = this.glyph?.name || project.getItemName(displayedItemID, true);
+		const name = this.glyph?.name || this.project.getItemName(displayedItemID, true);
 		this.view = {};
 
 		// log(`displayedItemID: ${displayedItemID}`);
@@ -46,6 +47,7 @@ export class GlyphTile extends HTMLElement {
 		this.wrapper.style.backgroundSize = `auto ${overallSize}px`;
 
 		if (this.hasAttribute('selected')) this.wrapper.setAttribute('selected', '');
+		if (this.showingOtherProject) this.removeAttribute('selected');
 
 		if (this.glyph && this.glyph.advanceWidth) {
 			this.thumbnail = makeElement({
@@ -87,7 +89,7 @@ export class GlyphTile extends HTMLElement {
 		this.wrapper.appendChild(this.name);
 
 		shadow.appendChild(this.wrapper);
-		redraw(this);
+		this.redraw();
 
 		// log(`GlyphTile.constructor`, 'end');
 	}
@@ -97,7 +99,7 @@ export class GlyphTile extends HTMLElement {
 
 		const wrapper = this.shadowRoot ? this.shadowRoot.querySelector('.wrapper') : false;
 
-		if (wrapper) {
+		if (wrapper && !this.showingOtherProject) {
 			if (this.hasAttribute('selected')) wrapper.setAttribute('selected', '');
 			else wrapper.removeAttribute('selected');
 		}
@@ -105,11 +107,11 @@ export class GlyphTile extends HTMLElement {
 		// redraw(this);
 		// log(`GlyphTile.attributeChangedCallback`, 'end');
 	}
-}
 
-function redraw(tile) {
-	if (tile.glyph?.shapes?.length) {
-		const project = getCurrentProject();
-		tile.thumbnail.innerHTML = project.makeItemThumbnail(tile.glyph);
+	redraw() {
+		if (this.glyph?.shapes?.length) {
+			// const project = getCurrentProject();
+			this.thumbnail.innerHTML = this.project.makeItemThumbnail(this.glyph);
+		}
 	}
 }

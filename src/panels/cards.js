@@ -287,7 +287,7 @@ function toggleHandleInputs(handle, show) {
 	if (group) group.style.display = show ? 'grid' : 'none';
 }
 
-export function makeSingleLabel(text, infoContent = false, forID = false) {
+export function makeSingleLabel(text, infoContent = false, forID = false, className = false) {
 	let newText = makeElement({ content: text });
 	let newLabel = makeElement({
 		tag: 'label',
@@ -302,6 +302,7 @@ export function makeSingleLabel(text, infoContent = false, forID = false) {
 		newLabel.appendChild(newInfo);
 		newLabel.classList.add('info');
 	}
+	if (className) newLabel.setAttribute('class', className);
 	return newLabel;
 }
 
