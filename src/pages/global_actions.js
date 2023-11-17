@@ -139,6 +139,9 @@ function glyphIterator(oa) {
 			setTimeout(processOneItem, 10);
 		} else {
 			showToast(title + '<br>Done!', 1000);
+			getCurrentProjectEditor().history.addWholeProjectChangePreState(
+				`Global action: ${title.replace('ing', 'ed')} (${listOfItemIDs.length} items)`
+			);
 			if (callback) callback();
 		}
 		// log(`glyphIterator>processOneItem`, 'end');
@@ -162,7 +165,7 @@ function glyphIterator(oa) {
 
 		// log('item list');
 		// log(listOfItemIDs);
-
+		getCurrentProjectEditor().history.addWholeProjectChangePostState();
 		// Kick off the process
 		setTimeout(processOneItem, 10);
 	}
@@ -272,7 +275,7 @@ function makeCard_ScaleVertical() {
 		scaleVertical = parseFloat(scaleVertical) || 1;
 
 		glyphIterator({
-			title: 'Vertical scaling glyph',
+			title: 'Vertically scaling glyph',
 			action: function (glyph) {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let newHeight = (glyph.maxes.yMax - glyph.maxes.yMin) * scaleVertical;
@@ -335,7 +338,7 @@ function makeCard_ScaleHorizontal() {
 		let updateAdvanceWidth = document.getElementById('scaleHorizontalUpdateAdvanceWidth').checked;
 
 		glyphIterator({
-			title: 'Horizontal scaling glyph',
+			title: 'Horizontally scaling glyph',
 			action: function (glyph) {
 				if (!glyph.shapes || !glyph.shapes.length) return;
 				let newWidth = (glyph.maxes.xMax - glyph.maxes.xMin) * scaleHorizontal;
@@ -606,7 +609,7 @@ function makeCard_Round() {
 	});
 	button.addEventListener('click', () => {
 		glyphIterator({
-			title: 'Rounding',
+			title: 'Rounding point values',
 			action: function (workingItem) {
 				workingItem.roundAll();
 				if (workingItem.advanceWidth)

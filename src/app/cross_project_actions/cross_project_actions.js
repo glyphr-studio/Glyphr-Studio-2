@@ -88,10 +88,10 @@ export function makePage_CrossProjectActions() {
 }
 
 function updateCrossProjectActionsPage(content) {
-	log(`updateCrossProjectActionsPage`, 'start');
+	// log(`updateCrossProjectActionsPage`, 'start');
 	let actionChooser = content.querySelector('#cross-project-actions__action-chooser');
 	let selectedAction = actionChooser.getAttribute('selected-id');
-	log(`selectedAction: ${selectedAction}`);
+	// log(`selectedAction: ${selectedAction}`);
 	let pageContent = content.querySelector('#cross-project-actions__page-content');
 	let pageFooter = content.querySelector('#cross-project-actions__page-footer');
 
@@ -117,7 +117,7 @@ function updateCrossProjectActionsPage(content) {
 	} else if (selectedAction === 'Merge two projects') {
 		pageContent.innerHTML = 'Merge two projects';
 	}
-	log(`updateCrossProjectActionsPage`, 'end');
+	// log(`updateCrossProjectActionsPage`, 'end');
 }
 
 export function makeProjectFlipper(textPrefix = 'From') {
@@ -196,8 +196,8 @@ export function makeItemAndRangeChooser(
 	{ showLigatures = false, showComponents = false, showKernGroups = false },
 	updateHandler
 ) {
-	log(`\n⮟sourceEditor⮟`);
-	log(sourceEditor);
+	// log(`\n⮟sourceEditor⮟`);
+	// log(sourceEditor);
 	const project = sourceEditor.project;
 
 	if (!selectedRange) selectedRange = sourceEditor.selectedCharacterRange;

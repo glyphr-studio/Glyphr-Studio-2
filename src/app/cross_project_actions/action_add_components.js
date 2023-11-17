@@ -197,6 +197,10 @@ function addComponents() {
 	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
 	// log(`reverseWindings: ${reverseWindings}`);
 
+	destinationEditor.history.addWholeProjectChangePreState(
+		`Cross-project action: from ${sourceEditor.project.settings.project.name}<br>
+		Added ${selectedItemIDs.length} components`
+	);
 	selectedItemIDs.forEach((itemID) => {
 		// log(`itemID: ${itemID}`);
 		const sourceItem = sourceEditor.project.getItem(itemID);
@@ -222,6 +226,7 @@ function addComponents() {
 		destinationEditor.project.addItemByType(resolvedGlyph, 'Component');
 	});
 
+	destinationEditor.history.addWholeProjectChangePostState();
 	showToast(`Added ${selectedItemIDs.length} components`);
 	updateContent_addComponents(document.querySelector('#cross-project-actions__page-content'));
 	clearAllSelections();

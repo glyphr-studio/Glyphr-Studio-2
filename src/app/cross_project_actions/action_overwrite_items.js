@@ -232,6 +232,10 @@ function overwriteItems() {
 	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
 	// log(`reverseWindings: ${reverseWindings}`);
 
+	destinationEditor.history.addWholeProjectChangePreState(
+		`Cross-project action: from ${sourceEditor.project.settings.project.name}<br>
+		Overwrote ${selectedItemIDs.length} items`
+	);
 	selectedItemIDs.forEach((itemID) => {
 		// log(`itemID: ${itemID}`);
 		const sourceItem = sourceEditor.project.getItem(itemID);
@@ -255,6 +259,7 @@ function overwriteItems() {
 		destinationEditor.project.addItemByType(resolvedGlyph, resolvedGlyph.objType, itemID);
 	});
 
+	destinationEditor.history.addWholeProjectChangePostState();
 	showToast(`Overwrote ${selectedItemIDs.length} items`);
 	updateContent_overwriteItems(document.querySelector('#cross-project-actions__page-content'));
 	clearAllSelections();

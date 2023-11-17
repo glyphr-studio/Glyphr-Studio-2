@@ -365,9 +365,16 @@ function makeNavButton_Page(pageName, iconName) {
 		if (pageName === 'Kerning') editor.nav.panel = 'Attributes';
 		editor.navigate();
 		if (editor.selectedItemID) {
-			editor.history.addState(
-				`Navigated to ${editor.project.getItemName(editor.selectedItemID, true)}`
-			);
+			let lastChange = editor.history.queue[0] || false;
+
+			// Only add a nav item to the history queue if the previous undo item:
+			//  - matches the current selected item
+			//  - is not a whole project save
+			if (lastChange && !(lastChange.wholeProjectSave || lastChange.itemID === editor.selectedItemID)) {
+				editor.history.addState(
+					`Navigated to ${editor.project.getItemName(editor.selectedItemID, true)}`
+				);
+			}
 		}
 	});
 	return button;

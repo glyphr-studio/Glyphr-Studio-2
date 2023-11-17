@@ -13,7 +13,7 @@ import { saveTextFile } from './file_io.js';
 import { History } from './history.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
 import { Navigator } from './navigator.js';
-import { publish, subscribe, unsubscribe } from './pub-sub.js';
+import { publish, subscribe, unsubscribe } from './pub_sub.js';
 
 /**
  * Creates a new Glyphr Studio Project Editor.

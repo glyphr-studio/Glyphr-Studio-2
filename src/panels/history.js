@@ -9,17 +9,17 @@ export function makePanel_History() {
 	const editor = getCurrentProjectEditor();
 	let historyArea = makeElement({ className: 'panel__card history-list' });
 
-	let q = editor.history.queue;
+	let length = editor.history.length;
 
 	let undoButton = makeElement({
 		tag: 'button',
-		className: q.length > 0 ? 'button__call-to-action number' : 'number',
-		innerHTML: `undo ${q.length}`,
+		className: length > 0 ? 'button__call-to-action number' : 'number',
+		innerHTML: `undo ${length}`,
 		style: 'max-width: 30%; grid-column: 1 / -1;',
 	});
 	historyArea.appendChild(undoButton);
 
-	if (q.length > 0) {
+	if (length > 0) {
 		undoButton.addEventListener('click', () => {
 			// log(`History Panel: Undo Button`, 'start');
 			editor.history.restoreState();
@@ -37,30 +37,35 @@ export function makePanel_History() {
 
 	let currentItemID = 'initial';
 
-	q.forEach((entry) => {
-		if (entry.itemID !== currentItemID) {
+	editor.history.queue.forEach((entry) => {
+		if (entry.title !== '_whole_project_change_post_state_') {
+			if (entry.itemID && entry.itemID !== currentItemID) {
+				// Section title
+				historyArea.appendChild(
+					makeElement({
+						tag: 'h3',
+						innerHTML: editor.project.getItemName(entry.itemID, true),
+					})
+				);
+				currentItemID = entry.itemID;
+			}
+
+			// Individual change title
+			let title = entry.title;
+			if (entry.wholeProjectSave) title = `<strong>${entry.title}</strong>`;
+			historyArea.appendChild(
+				makeElement({ className: 'history-list__title', innerHTML: title })
+			);
+
+			// Time stamp
 			historyArea.appendChild(
 				makeElement({
-					tag: 'h3',
-					innerHTML: editor.project.getItemName(entry.itemID, true),
+					className: 'history-list__date number',
+					innerHTML: new Date(entry.timeStamp).toLocaleTimeString(),
+					title: new Date(entry.timeStamp).toLocaleString(),
 				})
 			);
-			currentItemID = entry.itemID;
 		}
-		historyArea.appendChild(
-			makeElement({
-				className: 'history-list__title',
-				innerHTML: entry.title,
-			})
-		);
-
-		historyArea.appendChild(
-			makeElement({
-				className: 'history-list__date number',
-				innerHTML: new Date(entry.timeStamp).toLocaleTimeString(),
-				title: new Date(entry.timeStamp).toLocaleString(),
-			})
-		);
 	});
 
 	// historyArea.appendChild(makeElement({ tag: 'hr' }));

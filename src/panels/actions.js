@@ -10,7 +10,11 @@ import {
 import { eventHandlerData } from '../edit_canvas/events.js';
 import { rectPathFromMaxes } from '../edit_canvas/tools/new_basic_path.js';
 import { addComponent } from '../pages/components.js';
-import { showAddEditKernGroupDialog, showDeleteSingleLetterPairDialog, showFindSingleLetterPairDialog } from '../pages/kerning.js';
+import {
+	showAddEditKernGroupDialog,
+	showDeleteSingleLetterPairDialog,
+	showFindSingleLetterPairDialog,
+} from '../pages/kerning.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -229,6 +233,7 @@ export function getActionData(name) {
 				title: `Turn Path into a Component Instance\nTakes the selected path and creates a Component out of it,\nthen links that Component to this glyph as a Component Instance.`,
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
+					editor.history.addWholeProjectChangePreState('Turned a path into a component instance');
 					const newComponent = new Glyph({
 						objType: 'Component',
 						name: `Component ${countItems(editor.project.components)}`,
@@ -249,7 +254,7 @@ export function getActionData(name) {
 						})
 					);
 					editor.multiSelect.shapes.deleteShapes();
-					editor.history.addState('Turned a path into a component');
+					editor.history.addWholeProjectChangePostState();
 					editor.multiSelect.shapes.select(newShape);
 					editor.publish('currentItem', editor.selectedItem);
 				},
@@ -303,6 +308,7 @@ export function getActionData(name) {
 				title: `Turn Component Instance into a Path\nTakes the selected Component Instance, and un-links it from its Root Component,\nthen adds copies of all the Root Component's paths as regular Paths to this glyph.`,
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
+					editor.history.addWholeProjectChangePreState('Turned a component instance into a path');
 					let newShapes = [];
 					editor.multiSelect.shapes.members.forEach((shape) => {
 						if (shape.objType === 'ComponentInstance') {
@@ -315,7 +321,7 @@ export function getActionData(name) {
 					});
 					editor.multiSelect.shapes.deleteShapes();
 					newShapes.forEach((shape) => editor.multiSelect.shapes.add(shape));
-					editor.history.addState('Turned a component instance into a path');
+					editor.history.addWholeProjectChangePostState();
 					editor.publish('currentItem', editor.selectedItem);
 				},
 			},
@@ -967,14 +973,19 @@ function showDialogChooseOtherItem(type) {
 				otherItem = editor.project.getItem(itemID);
 			}
 			const thisItem = editor.selectedItem;
+
+			editor.history.addWholeProjectChangePreState(
+				`Component instance was linked from ${otherItem.name}.`
+			);
 			const newInstance = linkComponentFromTo(otherItem, thisItem);
 			if (newInstance) {
 				editor.publish('currentItem', thisItem);
 				editor.multiSelect.shapes.add(newInstance);
-				editor.history.addState(`Component instance was linked from ${otherItem.name}.`);
+				editor.history.addWholeProjectChangePostState();
 				closeEveryTypeOfDialog();
 				showToast(`Component instance linked from<br>${otherItem.name}`);
 			} else {
+				editor.history.queue.shift();
 				closeEveryTypeOfDialog();
 				showError(`
 				Cannot add ${thisItem.name} to ${otherItem.name} as a component instance.
@@ -995,14 +1006,18 @@ function showDialogChooseOtherItem(type) {
 				editor.project.addItemByType(new Glyph({}), 'Glyph', itemID);
 				destinationItem = editor.project.getItem(itemID);
 			}
+			editor.history.addWholeProjectChangePreState(
+				`Component was linked to ${destinationItem.name}.`
+			);
 			const thisItem = editor.selectedItem;
 			const newInstance = linkComponentFromTo(thisItem, destinationItem);
 			if (newInstance) {
 				editor.publish('currentItem', thisItem);
-				editor.history.addState(`Component was linked to ${destinationItem.name}.`);
+				editor.history.addWholeProjectChangePostState();
 				closeEveryTypeOfDialog();
 				showToast(`Component was linked to<br>${destinationItem.name}`);
 			} else {
+				editor.history.queue.shift();
 				closeEveryTypeOfDialog();
 				showError(`
 				Cannot add ${thisItem.name} to ${destinationItem.name} as a component instance.
