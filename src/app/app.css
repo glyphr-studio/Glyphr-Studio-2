@@ -75,11 +75,11 @@
 	right: 10px;
 	top: 10px;
 	padding: 2px 4px;
-	background-color: var(--purple-l40);
-	border: 1px solid var(--purple-l30);
-	color: var(--purple-l80);
+	background-color: var(--gray-l97);
+	border: 1px solid var(--gray-l90);
+	color: var(--gray-l10);
 	border-radius: 3px;
-	box-shadow: var(--l3-shadow);
+	/* box-shadow: var(--l2-shadow); */
 }
 
 @media (min-width: 810px) {
@@ -115,28 +115,28 @@
 
 .top-bar__bug-contact svg {
 	height: 9px;
-	fill: var(--purple-l70);
+	fill: var(--gray-l40);
 	margin-left: 4px;
 }
 
 .top-bar__bug-icon:hover svg {
-	fill: white;
+	fill: var(--gray-l10);
 }
 
 .top-bar__bug-link a {
 	font-size: 1em;
-	color: var(--purple-l80);
+	color: var(--gray-l10);
 }
 
 .top-bar__bug-link a:hover,
 .top-bar__bug-link a:focus,
 .top-bar__bug-link a:visited {
 	font-size: 1em;
-	color: white !important;
+	color: black !important;
 }
 
 .top-bar__bug-link a:active {
-	color: white;
+	color: black;
 }
 
 /*

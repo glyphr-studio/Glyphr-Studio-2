@@ -112,7 +112,7 @@ export function animateRemove(element, animationLength = 120, scale = 0.98, tran
  * @param {String} message - message to show
  * @param {Number} duration - how long to show the message (milliseconds)
  */
-export function showToast(message = '0_o', duration = 3000) {
+export function showToast(message = '0_o', duration = 3000, fancy = false) {
 	// log(`showToast`, 'start');
 
 	let element = document.getElementById('toast');
@@ -129,6 +129,7 @@ export function showToast(message = '0_o', duration = 3000) {
 			attributes: { tabindex: '-1' },
 			style: 'display: none;',
 		});
+		if (fancy) element.setAttribute('fancy', '');
 		document.body.appendChild(element);
 	}
 
