@@ -29,8 +29,8 @@ let importItemTotal = 0;
 // let minChar = 0xffff;
 
 export async function ioFont_importFont(importedFont) {
-	log('ioFont_importFont', 'start');
-	log(importedFont);
+	// log('ioFont_importFont', 'start');
+	// log(importedFont);
 	const editor = getProjectEditorImportTarget();
 	const project = editor.project;
 	const fontGlyphs = importedFont.glyphs.glyphs;
@@ -60,14 +60,14 @@ export async function ioFont_importFont(importedFont) {
 	project.ligatures = finalLigatures;
 	project.kerning = finalKerns;
 
-	log(project);
+	// log(project);
 
 	setCurrentProjectEditor(editor);
 	editor.selectedCharacterRange = getUnicodeBlockByName('Basic Latin');
 	editor.nav.page = 'Overview';
 	editor.navigate();
 
-	log('ioFont_importFont', 'end');
+	// log('ioFont_importFont', 'end');
 }
 
 async function updateFontImportProgressIndicator() {

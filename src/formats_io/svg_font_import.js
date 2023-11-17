@@ -60,7 +60,7 @@ export function ioSVG_importSVGfont(font) {
 	let charCounter = 0;
 
 	function importOneGlyph() {
-		log(`importOneGlyph`, 'start');
+		// log(`importOneGlyph`, 'start');
 		updateProgressIndicator(`
 			Importing glyph:
 			<span class="progress-indicator__counter">${charCounter}</span>
@@ -78,8 +78,8 @@ export function ioSVG_importSVGfont(font) {
 
 		// One Glyph or Ligature in the font
 		const attributes = chars[charCounter].attributes;
-		log('chars[charCounter]');
-		log(chars[charCounter]);
+		// log('chars[charCounter]');
+		// log(chars[charCounter]);
 
 		// Get the appropriate unicode decimal for this char
 		// log('starting  unicode \t' + attributes.unicode + ' \t ' + attributes['glyph-name']);
@@ -102,7 +102,7 @@ export function ioSVG_importSVGfont(font) {
 			const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG);
 
 			// Get Advance Width
-			log(`attributes['horiz-adv-x']: ${attributes['horiz-adv-x']}`);
+			// log(`attributes['horiz-adv-x']: ${attributes['horiz-adv-x']}`);
 
 			const advanceWidth = parseInt(attributes['horiz-adv-x']);
 			newGlyph.advanceWidth = advanceWidth;
@@ -147,7 +147,7 @@ export function ioSVG_importSVGfont(font) {
 		// finish loop
 		setTimeout(importOneGlyph, 10);
 
-		log(`importOneGlyph`, 'end');
+		// log(`importOneGlyph`, 'end');
 	}
 
 	/*
@@ -266,7 +266,7 @@ export function ioSVG_importSVGfont(font) {
 		fontSettings.overshoot = fontSettings.upm > 2000 ? 30 : 20;
 		project.settings.project.name = fname;
 
-		log(project);
+		// log(project);
 		setCurrentProjectEditor(editor);
 		editor.nav.page = 'Overview';
 		editor.navigate();

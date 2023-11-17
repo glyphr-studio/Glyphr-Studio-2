@@ -496,11 +496,11 @@ function searchForLetterPairs() {
 }
 
 function deleteLetterPairs() {
-	log(`deleteLetterPairs`, 'start');
+	// log(`deleteLetterPairs`, 'start');
 	const leftLetter = document.querySelector('#kerning__letter-pair__left-group').value.charAt(0);
-	log(`leftLetter: ${leftLetter} : ${charToHex(leftLetter)}`);
+	// log(`leftLetter: ${leftLetter} : ${charToHex(leftLetter)}`);
 	const rightLetter = document.querySelector('#kerning__letter-pair__right-group').value.charAt(0);
-	log(`rightLetter: ${rightLetter} : ${charToHex(rightLetter)}`);
+	// log(`rightLetter: ${rightLetter} : ${charToHex(rightLetter)}`);
 	const resultMessage = document.querySelector('#kerning__result-message');
 	resultMessage.innerHTML = '';
 
@@ -510,7 +510,7 @@ function deleteLetterPairs() {
 	let success = [];
 
 	Object.keys(groups).forEach((id) => {
-		log(`checking ${groups[id].leftGroup} | ${groups[id].rightGroup}`);
+		// log(`checking ${groups[id].leftGroup} | ${groups[id].rightGroup}`);
 		if (
 			groups[id].leftGroup.includes(charToHex(leftLetter)) &&
 			groups[id].rightGroup.includes(charToHex(rightLetter))
@@ -521,9 +521,9 @@ function deleteLetterPairs() {
 		}
 	});
 
-	log(`After search`);
-	log(`success.toString(): ${success.toString()}`);
-	log(`errors.toString(): ${errors.toString()}`);
+	// log(`After search`);
+	// log(`success.toString(): ${success.toString()}`);
+	// log(`errors.toString(): ${errors.toString()}`);
 
 	if (errors.length) {
 		resultMessage.innerHTML = `
@@ -556,11 +556,11 @@ function deleteLetterPairs() {
 		}
 	}
 
-	log(`deleteLetterPairs`, 'end');
+	// log(`deleteLetterPairs`, 'end');
 }
 
 function deleteLetterPair(leftLetter = '', rightLetter = '', kernID = false) {
-	log(`deleteLetterPair`, 'start');
+	// log(`deleteLetterPair`, 'start');
 	let list = {};
 	let leftHex = charToHex(leftLetter);
 	let rightHex = charToHex(rightLetter);
@@ -573,16 +573,16 @@ function deleteLetterPair(leftLetter = '', rightLetter = '', kernID = false) {
 	} else {
 		list = editor.project.kerning;
 	}
-	log(`\n⮟list⮟`);
-	log(list);
+	// log(`\n⮟list⮟`);
+	// log(list);
 
 	Object.keys(list).forEach((id) => {
-		log(`id: ${id}`);
+		// log(`id: ${id}`);
 		let leftGroup = list[id].leftGroup;
 		let rightGroup = list[id].rightGroup;
 		if (leftGroup.includes(leftHex) && rightGroup.includes(rightHex)) {
 			if (leftGroup.length === 1 && rightGroup.length === 1) {
-				log(`Removing the Kern Group ${id}`);
+				// log(`Removing the Kern Group ${id}`);
 				editor.deleteItem(id, editor.project.kerning);
 				success = true;
 			} else if (leftGroup.length === 1) {
@@ -597,8 +597,8 @@ function deleteLetterPair(leftLetter = '', rightLetter = '', kernID = false) {
 		}
 	});
 
-	log(`success: ${success}`);
-	log(`deleteLetterPair`, 'end');
+	// log(`success: ${success}`);
+	// log(`deleteLetterPair`, 'end');
 	return success;
 }
 

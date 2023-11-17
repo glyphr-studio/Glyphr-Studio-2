@@ -207,6 +207,10 @@ function addKernGroups() {
 	let scaleItems = document.getElementById('checkbox-scale')?.checked;
 	// log(`scaleItems: ${scaleItems}`);
 
+	destinationEditor.history.addWholeProjectChangePreState(
+		`Cross-project action: from ${sourceEditor.project.settings.project.name}<br>
+		Added ${selectedItemIDs.length} kern groups`
+	);
 	selectedItemIDs.forEach((itemID) => {
 		// log(`itemID: ${itemID}`);
 		const sourceItem = sourceEditor.project.getItem(itemID);
@@ -218,6 +222,7 @@ function addKernGroups() {
 		destinationEditor.project.addItemByType(newItem, 'KernGroup');
 	});
 
+	destinationEditor.history.addWholeProjectChangePostState();
 	showToast(`Added ${selectedItemIDs.length} kern groups`);
 	updateContent_addKernGroups(document.querySelector('#cross-project-actions__page-content'));
 	clearAllSelections();

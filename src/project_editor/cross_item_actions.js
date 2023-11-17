@@ -90,6 +90,8 @@ export function makeGlyphPostScript(glyph, lastX, lastY) {
 // --------------------------------------------------------------
 // Components
 // --------------------------------------------------------------
+
+// This is used for Global Actions - do not update History, it's handled over there
 export function insertComponentInstance(sourceID, destinationID, updateAdvanceWidth = false) {
 	// log(`insertComponentInstance`, 'start');
 	// log('sourceID: ' + sourceID + ' destinationID: ' + destinationID);

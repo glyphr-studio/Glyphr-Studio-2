@@ -255,6 +255,10 @@ function copyShapes() {
 	let reverseWindings = document.getElementById('checkbox-reverse-windings')?.checked;
 	// log(`reverseWindings: ${reverseWindings}`);
 
+	destinationEditor.history.addWholeProjectChangePreState(
+		`Cross-project action: from ${sourceEditor.project.settings.project.name}<br>
+		Copied shapes from ${selectedItemIDs.length} items`
+	);
 	selectedItemIDs.forEach((itemID) => {
 		// log(`itemID: ${itemID}`);
 		const sourceItem = sourceEditor.project.getItem(itemID);
@@ -283,6 +287,7 @@ function copyShapes() {
 		if (updateAdvanceWidth) destinationItem.rightSideBearing = oldRSB;
 	});
 
+	destinationEditor.history.addWholeProjectChangePostState();
 	showToast(`Copied shapes from ${selectedItemIDs.length} items`);
 	updateContent_copyShapes(document.querySelector('#cross-project-actions__page-content'));
 	clearAllSelections();

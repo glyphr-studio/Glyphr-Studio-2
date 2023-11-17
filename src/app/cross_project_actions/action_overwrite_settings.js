@@ -192,6 +192,10 @@ export function updateFooter_overwriteSettings(parent) {
 function overwriteSettings() {
 	// log(`Cross Project Actions - overwriteSettings`, 'start');
 
+	destinationEditor.history.addWholeProjectChangePreState(
+		`Cross-project action: from ${sourceEditor.project.settings.project.name}<br>
+		Overwrote settings for ${selectedItemIDs.length} items`
+	);
 	selectedItemIDs.forEach((itemID) => {
 		// log(`itemID: ${itemID}`);
 		const settingGroup = itemID.split('.')[0];
@@ -200,6 +204,7 @@ function overwriteSettings() {
 		destinationEditor.project.settings[settingGroup][settingName] = sourceValue;
 	});
 
+	destinationEditor.history.addWholeProjectChangePostState();
 	showToast(`Overwrote settings for ${selectedItemIDs.length} items`);
 	updateContent_overwriteSettings(document.querySelector('#cross-project-actions__page-content'));
 	clearAllSelections();
