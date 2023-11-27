@@ -10,9 +10,9 @@ import { GlyphElement, makeRandomID } from '../glyph_element.js';
 	displayType
 	cache
 	isLockable
-	// isLocked
-	// lock
-	// unlock
+	isLocked
+	// lock - these are overwritten by classes that extend Glyph Element
+	// unlock - these are overwritten by classes that extend Glyph Element
 	save
 	toString
 	print
@@ -21,12 +21,12 @@ import { GlyphElement, makeRandomID } from '../glyph_element.js';
 describe('GlyphElement', () => {
 	it('constructor', () => {
 		const glyphElement = new GlyphElement();
-
 		expect(glyphElement.ident).toBe('');
 		expect(glyphElement.objType).toBe('GlyphElement');
 		expect(glyphElement.displayType).toBe('GlyphElement');
 		expect(glyphElement.cache).toEqual({});
 		expect(glyphElement.isLockable).toBe(false);
+		expect(glyphElement.isLocked()).toBe(false);
 	});
 
 	it('objType', () => {

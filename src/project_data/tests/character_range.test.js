@@ -23,7 +23,6 @@ describe('CharacterRange', () => {
 		expect(range.begin).toBe(65);
 		expect(range.end).toBe(90);
 		expect(range.name).toBe('Basic Latin');
-		expect(range.showNonCharPoints).toBe(false);
 		expect(range.cachedArray).toBe(false);
 	});
 

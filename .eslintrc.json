@@ -1,25 +1,26 @@
 {
-    "extends": "eslint:recommended",
-    "plugins": ["prettier"],
-    "env": {
-        "browser": true,
-        "es6": true
-    },
-    "parserOptions": {
-        "ecmaVersion": "latest",
-        "sourceType": "module"
-    },
-    "rules":{
-        "no-unused-vars": "warn"
-    },
-    "globals": {
-        "log": "readonly"
-    },
-    "ignorePatterns": [
-        "*.test.js",
-        "dev/lib/*",
-        "dev/samples/*",
-        "dev/io/*",
-        "REFACTOR_*"
-    ]
+	"extends": "eslint:recommended",
+	"plugins": ["prettier"],
+	"env": {
+		"browser": true,
+		"es6": true
+	},
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module"
+	},
+	"rules": {
+		"no-unused-vars": "warn"
+	},
+	"globals": {
+		"log": "readonly"
+	},
+	"ignorePatterns": [
+		"*.test.js",
+		"dev/lib/*",
+		"dev/samples/*",
+		"dev/io/*",
+		"REFACTOR_*",
+		"opentype*"
+	]
 }

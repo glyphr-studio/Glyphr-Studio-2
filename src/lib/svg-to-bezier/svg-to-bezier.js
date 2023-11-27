@@ -65,6 +65,9 @@ function convertTags(tagData, parentTransformData = false) {
 		console.warn('Transform data is not supported!');
 		// transformData = getTransformData(tagData);
 	}
+	if (parentTransformData) {
+		// TODO update current transform data
+	}
 
 	tagData.content.forEach((tag) => {
 		let name = tag.name.toLowerCase();

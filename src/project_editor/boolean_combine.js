@@ -52,7 +52,7 @@ export function combineAllPaths(paths = []) {
 	let result = [];
 	let errorMessage = '';
 	let didStuff = false;
-	function processWinding(shapeArray, name) {
+	function processWinding(shapeArray /*, name*/) {
 		if (shapeArray.length > 1) {
 			let combinationResult = combinePaths(shapeArray);
 			if (Array.isArray(combinationResult)) {
@@ -171,7 +171,6 @@ export function combinePaths(paths = []) {
 		// Check to see if this segment closes the current shape
 		if (target.point2ID === orderedSegments[0].point1ID) {
 			closedShape = true;
-
 		} else {
 			// First try by ID
 			for (let i = 0; i < allSegments.length; i++) {
@@ -515,7 +514,7 @@ function testForHit(segment, split, path) {
  * For debugging, visually draw a segment's points to the edit canvas
  * @param {Segment} segment - Segment to draw
  */
-function debugDrawSegmentPoints(segment) {
+export function debugDrawSegmentPoints(segment) {
 	debugDrawPoints(
 		[
 			{ x: segment.p1x, y: segment.p1y },
