@@ -1,6 +1,6 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main';
 import { charsToHexArray } from '../common/character_ids';
-import { accentColors, getColorFromRGBA, transparencyToAlpha, uiColors } from '../common/colors';
+import { accentColors, getColorFromRGBA, transparencyToAlpha } from '../common/colors';
 import { makeCrisp } from '../common/functions';
 import { drawGlyph } from '../display_canvas/draw_paths';
 import {

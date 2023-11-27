@@ -213,7 +213,7 @@ function importOneLigature(otfLigature, otfFont) {
 // Kerning
 // --------------------------------------------------------------
 
-function importOneKern(members, value, project) {
+function importOneKern(members, value) {
 	// log(`importOneKern`, 'start');
 	members = members.split(',');
 	let left = decToHex(members[0]);

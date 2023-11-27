@@ -1,4 +1,4 @@
-import { calculateAngle, calculateLength, rotate } from '../common/functions.js';
+import { rotate } from '../common/functions.js';
 import { Coord } from './coord.js';
 import { GlyphElement } from './glyph_element.js';
 

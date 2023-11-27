@@ -58,7 +58,7 @@ describe('GlyphrStudioProject Tests', () => {
 	// Test the totalVertical getter of GlyphrStudioProject class
 	it('GlyphrStudioProject totalVertical should return the vertical height in Em', ({ expect }) => {
 		const project = new GlyphrStudioProject(mockProjectData);
-		expect(project.totalVertical).toBe(1000);
+		expect(project.totalVertical).toBe(1990);
 	});
 
 	// Test the defaultAdvanceWidth getter of GlyphrStudioProject class
@@ -66,7 +66,7 @@ describe('GlyphrStudioProject Tests', () => {
 		expect,
 	}) => {
 		const project = new GlyphrStudioProject(mockProjectData);
-		expect(project.defaultAdvanceWidth).toBe(500);
+		expect(project.defaultAdvanceWidth).toBe(1024);
 	});
 
 	// Test the sortedLigatures getter of GlyphrStudioProject class

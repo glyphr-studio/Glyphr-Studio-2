@@ -3,8 +3,6 @@
  * some random general-use functions
  */
 
-import { Maxes } from '../project_data/maxes';
-
 // --------------------------------------------------------------
 // Object Functions
 // --------------------------------------------------------------
