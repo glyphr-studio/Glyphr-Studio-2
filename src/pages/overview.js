@@ -4,7 +4,7 @@ import { countItems } from '../common/functions.js';
 import { showModalDialog } from '../controls/dialogs/dialogs.js';
 import { makeAllItemTypeChooserContent } from '../panels/item_chooser.js';
 import { makeNavButton, toggleNavDropdown } from '../project_editor/navigator.js';
-import { makeContributeContent, makePreReleaseNote } from './about.js';
+import { makeContributeContent, makeReleaseNote } from './about.js';
 
 /**
  * Page > Overview
@@ -73,7 +73,7 @@ export function makePage_Overview() {
 	const welcomeCard = makeElement({
 		className: 'panel__card full-width more-padding',
 	});
-	welcomeCard.appendChild(makePreReleaseNote(false));
+	welcomeCard.appendChild(makeReleaseNote(false));
 
 	const projectSummaryCard = makeElement({
 		className: 'panel__card more-padding',

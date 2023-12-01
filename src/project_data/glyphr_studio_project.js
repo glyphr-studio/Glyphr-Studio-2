@@ -1,3 +1,4 @@
+import { getGlyphrStudioApp } from '../app/main.js';
 import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { clone, remove, round, trim } from '../common/functions.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
@@ -26,8 +27,8 @@ export class GlyphrStudioProject {
 		this.settings = {
 			project: {
 				name: 'My Font',
-				latestVersion: '2.0.0-beta.2.1',
-				initialVersion: '2.0.0-beta.2.1',
+				latestVersion: false,
+				initialVersion: false,
 				id: false,
 				characterRanges: [],
 			},
@@ -111,6 +112,11 @@ export class GlyphrStudioProject {
 			// log('merging settings from newProject');
 			this.settings = merge(this.settings, newProject.settings);
 		}
+
+		// Project version
+		const app = getGlyphrStudioApp();
+		this.settings.project.latestVersion = app.version;
+		this.settings.project.initialVersion = app.version;
 
 		// Project ID
 		this.settings.project.id = this.settings.project.id || makeProjectID();

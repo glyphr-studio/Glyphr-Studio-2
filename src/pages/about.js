@@ -37,12 +37,11 @@ export function makePage_About() {
 	const rightArea = content.querySelector('.content-page__right-area');
 	const tabControl = new TabControl(rightArea);
 
-	tabControl.registerTab('Release note', makePreReleaseNote(true));
-	tabControl.registerTab('Contact and socials', makeContactInfo());
 	tabControl.registerTab('Version', makeVersionInfo());
+	tabControl.registerTab('Contact and socials', makeContactInfo());
 	tabControl.registerTab('License', makeLicenseInfo());
 
-	tabControl.selectTab('Release note');
+	tabControl.selectTab('Version');
 
 	const panelArea = content.querySelector('#content-page__panel');
 	addAsChildren(panelArea, [tabControl.makeTabs(), makeContributeCard()]);
@@ -118,17 +117,6 @@ function makeLicenseInfo() {
 		<p>Check out these projects related to typeface design:</p>
 
 		<div class="page__card">
-			<h3>Spell Checker Oriented Word List (SCOWL)</h3>
-			<a href="https://github.com/en-wl/wordlist" target="_blank">github.com/en-wl/wordlist</a>
-			<br><br>
-			SCOWL word lists were used to generate the Glyphr Studio letter pair coverage live preview texts.
-			SCOWL is derived from many sources under a BSD compatible license. The combined work is freely available under a
-			<a href='https://raw.githubusercontent.com/kevina/wordlist/master/scowl/Copyright' target='_blank'>MIT-like</a> license.
-			<br><br>
-			Copyright © 2000-2018 Kevin Atkinson
-		</div>
-
-		<div class="page__card">
 			<h3>Unicode Ninja</h3>
 			<a href="https://unicode.ninja" target="_blank">unicode.ninja</a>
 			<br><br>
@@ -164,13 +152,17 @@ function makeVersionInfo() {
 					editor.project.settings.project.initialVersion
 				}</span>
 			</div>
+
+			<br><br>
+			<h1>Release Note</h1>
 		`,
 	});
 
+	content.appendChild(makeReleaseNote());
 	return content;
 }
 
-export function makePreReleaseNote(showLogo = false) {
+export function makeReleaseNote(showLogo = false) {
 	let logo = '';
 	if (showLogo) {
 		logo = `<div class="about-page__logo">
@@ -180,44 +172,28 @@ export function makePreReleaseNote(showLogo = false) {
 	const content = makeElement({
 		innerHTML: `
 		${logo}
-		<h2>Welcome to Beta-2.1!</h2>
+		<h2>Welcome to Version 2.0.0!</h2>
 		<p>
-			We are very excited that Glyphr Studio v2 is nearing completion... but it's not
-			quite there yet.  We need your help trying out the app to make sure all the
-			scenarios are solid!
+			It's been a long road, but Glyphr Studio Version 2 is finally complete! Well, for
+			now anyway - I'm sure we will continue to find bugs and think of new feature improvements.
+			Even since v2 Beta 2.1 (the previous release) there was a lot of updates. You can read
+			about recent and cumulative v2 updates over at the blog:
+			<br>
+			<a href="https://www.glyphrstudio.com/blog/?p=371" target="_blank" style="font-size: 1.2em;">
+				Glyphr Studio Blog: Version 2 is here!
+			</a>
+		</p>
+
+		<h3>Transition from v1 to v2</h3>
+		<p>
+			On January 15th, 2024, Glyphr Studio will make the switch from v1 to v2. This change will
+			encompass the app itself, but also supporting materials like the blog, the main site, and the
+			help and tutorial sites. V2 branding will be used for all of these, and all social media outlets.
+			<br>
+			<a href="https://www.glyphrstudio.com/blog/?p=372" target="_blank" style="font-size: 1.2em;">Glyphr Studio Blog: V1 to V2 transition plan</a>
 		</p>
 		<br>
-		<h3>Main Beta-2 scenarios:</h3>
-		<ul>
-			<li><b>Kerning</b> - Kern Groups can be saved and loaded from project files,
-			and the new Kerning page allows you to create, edit, and delete Kern Groups.</li>
-			<li><b>Global Actions Page</b> - see a whole list of actions that you can run
-			which can apply changes across many characters at once.</li>
-			<li><b>Context Characters</b> - a new panel was added to Character and Ligature edit
-			pages that allows you to display other characters around the glyph you are currently
-			editing.</li>
-			<li><b>Live Previews</b> - now much improved in functionality, the Live Preview Page
-			has better scrolling options for sample text. Also a new Pop-out Window can be launched
-			to display as many Live Previews as you want - great for seeing your changes in real time
-			in a second window as you make edits in the main app window.</li>
-			<li><b>Combine Shapes</b> - now when you select two or more paths on the edit canvas, a
-			"Combine shapes" action will allow you to merge multiple paths into as few paths as possible.</li>
-			<li><b>Rotation</b> - Rotate paths with the canvas rotate handle, and rotate Component Instances with the rotate property</li>
-			<li><b>Add Path Point tool</b> - hover over an existing path and use this new tool to add a path point anywhere along that path.</li>
-		</ul>
-		<br>
 
-		Read the
-		<a href="https://www.glyphrstudio.com/blog/2023/09/07/v2-beta-2-0-mega-post/" target="_blank" style="font-size: 1.2em;">
-			Beta-2
-		</a>
-		and the
-		<a href="https://www.glyphrstudio.com/blog/2023/10/06/v2-beta-2-1-the-last-beta/" target="_blank" style="font-size: 1.2em;">
-			Beta-2.1
-		</a>
-		blog post for details
-		<br>
-		<br>
 		<p>
 			If you find any bugs, or have an suggestions about functionality, please email us!
 			${emailLink()}
