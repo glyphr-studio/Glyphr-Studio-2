@@ -26,7 +26,7 @@ export class GlyphrStudioApp {
 		// Version
 		this.versionName = 'Version 2';
 		this.version = '2.0.0';
-		this.versionDate = false;
+		this.versionDate = 1701500000000;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -39,7 +39,7 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: true, // {bool} global switch for all the stuff below
+				mode: false, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // {bool or 'oblegg'} Load the sample project
 				twoSampleProjects: true, // {bool} Load two sample projects
