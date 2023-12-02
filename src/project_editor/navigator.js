@@ -94,11 +94,11 @@ export class Navigator {
 	 * Changes the page of this Project Editor
 	 */
 	navigate() {
-		log(`Navigator.navigate`, 'start');
+		// log(`Navigator.navigate`, 'start');
 		let editor = getCurrentProjectEditor();
-		log(`this.page: ${this.page}`);
-		log(`this.panel: ${this.panel}`);
-		log(`editor.selectedItemID: ${editor.selectedItemID}`);
+		// log(`this.page: ${this.page}`);
+		// log(`this.panel: ${this.panel}`);
+		// log(`editor.selectedItemID: ${editor.selectedItemID}`);
 
 		const wrapper = document.getElementById('app__wrapper');
 
@@ -121,7 +121,7 @@ export class Navigator {
 		} else {
 			console.warn(`Navigation failed: app__wrapper could not be found.`);
 		}
-		log(`Navigator.navigate`, 'end');
+		// log(`Navigator.navigate`, 'end');
 	}
 
 	/**

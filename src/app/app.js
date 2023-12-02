@@ -65,7 +65,7 @@ export class GlyphrStudioApp {
 	 * Starts up the app
 	 */
 	setUp() {
-		log(`GlyphrStudioApp.setUp`, 'start');
+		// log(`GlyphrStudioApp.setUp`, 'start');
 		let editor = addProjectEditorAndSetAsImportTarget();
 
 		// Dev mode stuff
@@ -119,7 +119,7 @@ export class GlyphrStudioApp {
 		// Final dev mode stuff
 		if (dev.mode && (dev.selectFirstShape || dev.selectFirstPoint)) editor.editCanvas.redraw();
 
-		log(`GlyphrStudioApp.setUp`, 'end');
+		// log(`GlyphrStudioApp.setUp`, 'end');
 	}
 
 	/**
