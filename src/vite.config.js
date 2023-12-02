@@ -7,9 +7,6 @@ export default defineConfig({
 		outDir: '../dist/',
 		manifest: false,
 		emptyOutDir: true,
-		chunkSizeWarningLimit: 2000,
-		rollupOptions: {
-			treeshake: 'smallest',
-		},
+		chunkSizeWarningLimit: 3000,
 	},
 });
