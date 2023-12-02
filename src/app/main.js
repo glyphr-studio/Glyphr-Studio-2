@@ -33,7 +33,7 @@ export function glyphrStudioOnLoad() {
 				'background-color: transparent;'
 			);
 		}
-		log(`glyphrStudioOnLoad`, 'start');
+		// log(`glyphrStudioOnLoad`, 'start');
 		let favIcon = makeElement({
 			tag: 'link',
 			attributes: { rel: 'shortcut icon', href: `data:image/svg+xml,${encodeURI(logo)}` },
@@ -51,7 +51,7 @@ export function glyphrStudioOnLoad() {
 		} else {
 			log('did NOT pass pre-checks');
 		}
-		log(`glyphrStudioOnLoad`, 'end');
+		// log(`glyphrStudioOnLoad`, 'end');
 	} catch (error) {
 		showAppErrorPage('Glyphr Studio failed to load!', error);
 		console.error(error);

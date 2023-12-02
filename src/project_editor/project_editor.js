@@ -33,10 +33,10 @@ export class ProjectEditor {
 	 * @param {Object} newProjectEditor
 	 */
 	constructor(newProjectEditor = false) {
-		log('ProjectEditor.constructor', 'start');
+		// log('ProjectEditor.constructor', 'start');
 		if (newProjectEditor) {
-			log(`\n⮟Passed: newProjectEditor⮟`);
-			log(newProjectEditor);
+			// log(`\n⮟Passed: newProjectEditor⮟`);
+			// log(newProjectEditor);
 		}
 
 		// File reference
@@ -113,9 +113,9 @@ export class ProjectEditor {
 		// Dialogs
 		this.closeAllDialogsOverride = false;
 
-		log(`\n⮟ProjectEditor⮟`);
-		log(this);
-		log('ProjectEditor.constructor', 'end');
+		// log(`\n⮟ProjectEditor⮟`);
+		// log(this);
+		// log('ProjectEditor.constructor', 'end');
 	}
 
 	// --------------------------------------------------------------
