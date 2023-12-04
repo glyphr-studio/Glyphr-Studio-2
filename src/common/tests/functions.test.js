@@ -9,6 +9,7 @@ import {
 	countItems,
 	deg,
 	duplicates,
+	escapeXMLValues,
 	generateNewID,
 	getFirstID,
 	hasNonValues,
@@ -216,6 +217,42 @@ describe('Common Functions', () => {
 		const camel = caseKebabToCamel(kebab);
 
 		expect(camel).toBe('kebabCaseString');
+	});
+
+	// Test case 1: Test with a string containing special characters
+	it('escapeXMLValues - should escape special characters in a string', () => {
+		const input = '<div>&"\'</div>';
+		const expectedOutput = '&lt;div&gt;&amp;&quot;&apos;&lt;/div&gt;';
+
+		const result = escapeXMLValues(input);
+
+		expect(result).toEqual(expectedOutput);
+	});
+
+	// Test case 2: Test with an empty string
+	it('escapeXMLValues - should return an empty string when given an empty string', () => {
+		const input = '';
+		const expectedOutput = '';
+
+		const result = escapeXMLValues(input);
+
+		expect(result).toEqual(expectedOutput);
+	});
+
+	// Test case 3: Test with a string without special characters
+	it('escapeXMLValues - should return the same string when no special characters are present', () => {
+		const input = 'Hello, World!';
+		const expectedOutput = 'Hello, World!';
+
+		const result = escapeXMLValues(input);
+
+		expect(result).toEqual(expectedOutput);
+	});
+
+	// Test case for handling '""' and "''"
+	it('escapeXMLValues - should return an empty string when given \'""\' or "\'\'"', () => {
+		expect(escapeXMLValues('""')).toEqual('');
+		expect(escapeXMLValues("''")).toEqual('');
 	});
 
 	// Test for isVal function

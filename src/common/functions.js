@@ -301,6 +301,50 @@ export function caseKebabToCamel(kebab = '') {
 }
 
 /**
+ * Takes a random string and ensures it's compatible as an
+ * XML Attribute value.
+ * @param {String} value - string to escape
+ * @returns {String} string with escape characters
+ */
+export function escapeXMLValues(value = '') {
+	// log(`escapeXMLValues`, 'start');
+	// log(`value: ${value}`);
+
+	if (typeof value === 'string') {
+		if (value === '""' || value === "''") return '';
+
+		if (value.indexOf('&') > -1) {
+			// log('replacing ampersand');
+			value = value.replace(/&/g, '&amp;');
+		}
+
+		if (value.indexOf('"') > -1) {
+			// log('replacing double quotes');
+			value = value.replace(/"/g, '&quot;');
+		}
+
+		if (value.indexOf("'") > -1) {
+			// log('replacing single quotes');
+			value = value.replace(/'/g, '&apos;');
+		}
+
+		if (value.indexOf('<') > -1) {
+			// log('replacing less than');
+			value = value.replace(/</g, '&lt;');
+		}
+
+		if (value.indexOf('>') > -1) {
+			// log('replacing greater than');
+			value = value.replace(/>/g, '&gt;');
+		}
+	}
+
+	// log(`value: ${value}`);
+	// log(`escapeXMLValues`, 'end');
+	return value;
+}
+
+/**
  * Checks to see if something is a value, and not null or undefined
  * @param {*} val - variable to test
  * @returns {Boolean}

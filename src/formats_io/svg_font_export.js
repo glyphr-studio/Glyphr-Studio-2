@@ -1,6 +1,6 @@
 import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { decToHex, hexesToXMLHexes } from '../common/character_ids.js';
-import { round } from '../common/functions.js';
+import { escapeXMLValues, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { isWhitespace } from '../lib/unicode/unicode_names.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
@@ -42,7 +42,7 @@ export function ioSVG_exportSVGfont() {
 				</font-face-src>
 			</font-face>
 ${ioSVG_makeMissingGlyph()}
-${ioSVG_makeAllGlyphsAndLigatures()}
+${ioSVG_makeAllGlyphs()}
 ${ioSVG_makeAllKernPairs()}
 		</font>
 	</defs>
@@ -143,7 +143,7 @@ function ioSVG_makeMissingGlyph() {
 	// log('ioSVG_makeMissingGlyph', 'start');
 	const project = getCurrentProject();
 	let notdef = project.getItem('glyph-0x0');
-	if (notdef) return ioSVG_makeOneGlyphOrLigature(notdef, 'glyph-0x0');
+	if (notdef) return ioSVG_makeOneGlyph(notdef, 'glyph-0x0');
 	const gh = project.settings.font.ascent;
 	const gw = round(gh * 0.618);
 	const gt = round(gh / 100);
@@ -158,8 +158,8 @@ function ioSVG_makeMissingGlyph() {
 	return con;
 }
 
-function ioSVG_makeAllGlyphsAndLigatures() {
-	// log('ioSVG_makeAllGlyphsAndLigatures', 'start');
+function ioSVG_makeAllGlyphs() {
+	// log('ioSVG_makeAllGlyphs', 'start');
 
 	const finalGlyphs = getCurrentProject().glyphs;
 	let con = '';
@@ -167,21 +167,21 @@ function ioSVG_makeAllGlyphsAndLigatures() {
 	const li = getCurrentProject().ligatures;
 	con += '\t\t\t<!-- Ligatures -->\n';
 	for (const l of Object.keys(li)) {
-		con += ioSVG_makeOneGlyphOrLigature(li[l], l);
+		con += ioSVG_makeOneGlyph(li[l], l);
 	}
 
 	// con += '\n';
 
 	con += '\t\t\t<!-- Glyphs -->\n';
 	for (const c of Object.keys(finalGlyphs)) {
-		con += ioSVG_makeOneGlyphOrLigature(finalGlyphs[c], c);
+		con += ioSVG_makeOneGlyph(finalGlyphs[c], c);
 	}
 
-	// log('ioSVG_makeAllGlyphsAndLigatures', 'end');
+	// log('ioSVG_makeAllGlyphs', 'end');
 	return con;
 }
 
-function ioSVG_makeOneGlyphOrLigature(gl, id) {
+function ioSVG_makeOneGlyph(gl, id) {
 	// if(!gl.shapes.length && !gl.advanceWidth) return '';
 	// Results in lots of special unicode glyphs with no paths
 	if (!gl.shapes.length && !isWhitespace(id.substring(6))) {
@@ -194,7 +194,7 @@ function ioSVG_makeOneGlyphOrLigature(gl, id) {
 
 	let con = '\t\t\t';
 	con += `<glyph glyph-name="${gl.name.replace(/ /g, '_')}" `;
-	con += `unicode="${gl.chars}" `;
+	con += `unicode="${escapeXMLValues(gl.chars)}" `;
 	con += `horiz-adv-x="${gl.advanceWidth}" `;
 	con += `d="${pathData}" />\n`;
 	return con;
