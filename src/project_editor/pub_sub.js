@@ -141,7 +141,7 @@ export function publish(topic, data) {
 				// It's possible to make updates to an Item while a single path point is selected
 				callCallbacksByTopic('currentPathPoint', singlePoint);
 			}
-			glyphChanged(data);
+			if(this.selectedItem?.objType !== 'KernGroup') glyphChanged(data);
 		}
 
 		if (topic === 'currentPath') {

@@ -119,8 +119,8 @@ function migrate_Project(oldProject) {
 		const oldKern = oldProject.kerning[oldID];
 		newProject.kerning[newID] = new KernGroup({
 			value: oldKern.value,
-			leftGroup: oldKern.leftgroup.map((oldID) => migrate_ItemID(oldID)),
-			rightGroup: oldKern.rightgroup.map((oldID) => migrate_ItemID(oldID)),
+			leftGroup: oldKern.leftgroup.map((oldID) => validateAsHex(oldID)),
+			rightGroup: oldKern.rightgroup.map((oldID) => validateAsHex(oldID)),
 		});
 	});
 
@@ -358,6 +358,7 @@ function migrate_ItemID(oldID) {
 	if (chars.length === 1) {
 		// log(`Detected as Glyph`);
 		result = `glyph-${validateAsHex(oldID)}`;
+		// log(`oldID: ${oldID} \t result: ${result}`);
 	}
 
 	// log(`result: ${result}`);
