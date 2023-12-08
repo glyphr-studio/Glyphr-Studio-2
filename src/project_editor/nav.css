@@ -39,6 +39,8 @@
 #nav-button-l2:focus {
 	border-top-right-radius: 4px;
 	background-color: var(--blue-l30);
+	max-width: 360px;
+	overflow: hidden;
 }
 
 #nav-button-l3,
@@ -65,6 +67,8 @@
 	overflow: visible;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	max-width: 340px;
+	overflow: hidden;
 }
 
 nav {

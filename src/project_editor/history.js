@@ -220,6 +220,8 @@ export class History {
 		} else {
 			// log(editor.selectedItem.print());
 			// log(`overwriting ${editor.selectedItem.name}`);
+			// log(`with:`);
+			// log(nextEntry.itemState);
 			editor.selectedItem = nextEntry.itemState;
 			// log(editor.selectedItem.print());
 		}
@@ -254,7 +256,7 @@ function makeHistoryEntry({ title = '', itemWasDeleted = false, wholeProjectSave
 	} else {
 		// Single item save point
 		item = editor.selectedItem;
-		if (page === 'Kerning') item = new KernGroup(item.save());
+		if (editor.nav.page === 'Kerning') item = new KernGroup(item.save());
 		else item = new Glyph(item.save());
 		title = title || `Change to ${item.name}`;
 		page = editor.nav.page;

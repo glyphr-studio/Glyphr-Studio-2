@@ -25,8 +25,8 @@ export class GlyphrStudioApp {
 	constructor() {
 		// Version
 		this.versionName = 'Version 2';
-		this.version = '2.0.0';
-		this.versionDate = 1701500000000;
+		this.version = '2.0.1';
+		this.versionDate = false;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -39,11 +39,11 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: false, // {bool} global switch for all the stuff below
+				mode: true, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
-				sampleProject: 'oblegg', // {bool or 'oblegg'} Load the sample project
-				twoSampleProjects: true, // {bool} Load two sample projects
-				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
+				sampleProject: false, // {bool or 'oblegg'} Load the sample project
+				twoSampleProjects: false, // {bool} Load two sample projects
+				currentPage: false, // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
