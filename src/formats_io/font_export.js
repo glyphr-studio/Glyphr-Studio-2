@@ -2,11 +2,11 @@ import { getCurrentProject } from '../app/main.js';
 import { decToHex, parseCharsInputAsHex } from '../common/character_ids.js';
 import { pause, round } from '../common/functions.js';
 import { closeAllToasts, showToast } from '../controls/dialogs/dialogs.js';
-import openTypeJS from '../lib/opentypejs_1-3-1.js';
 import { getUnicodeShortName } from '../lib/unicode/unicode_names.js';
 import { Glyph } from '../project_data/glyph.js';
 import { sortLigatures } from '../project_data/glyphr_studio_project.js';
 import { makeGlyphWithResolvedLinks } from '../project_editor/cross_item_actions.js';
+import openTypeJS from '../lib/opentype/opentypejs_1-3-1.js';
 
 /**
 	IO > Export > OpenType
@@ -96,25 +96,27 @@ function createOptionsObject() {
 	// log(options);
 	// log('options.version ' + options.version);
 
-	// Add Notdef
-	const notdef = makeNotdefGlyph();
-	// log(`notdef.advanceWidth: ${notdef.advanceWidth}`);
+	if (!project.glyphs['glyph-0x0']) {
+		// Add Notdef
+		const notdef = makeNotdefGlyph();
+		// log(`notdef.advanceWidth: ${notdef.advanceWidth}`);
 
-	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
+		const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
 
-	options.glyphs.push(
-		new openTypeJS.Glyph({
-			name: '.notdef',
-			unicode: 0,
-			index: 0,
-			advanceWidth: round(notdef.advanceWidth),
-			xMin: round(notdef.maxes.xMin),
-			xMax: round(notdef.maxes.xMax),
-			yMin: round(notdef.maxes.yMin),
-			yMax: round(notdef.maxes.yMax),
-			path: notdefPath,
-		})
-	);
+		options.glyphs.push(
+			new openTypeJS.Glyph({
+				name: '.null',
+				unicode: 0,
+				index: 0,
+				advanceWidth: round(notdef.advanceWidth),
+				xMin: round(notdef.maxes.xMin),
+				xMax: round(notdef.maxes.xMax),
+				yMin: round(notdef.maxes.yMin),
+				yMax: round(notdef.maxes.yMax),
+				path: notdefPath,
+			})
+		);
+	}
 
 	codePointGlyphIndexTable['0x0'] = 0;
 	return options;

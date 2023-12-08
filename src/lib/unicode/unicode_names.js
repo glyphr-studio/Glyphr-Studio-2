@@ -117,6 +117,7 @@ export const whitespaceCharacters = [
 ];
 
 export const shortUnicodeNames = {
+	'0x0': '.null',
 	'0x41': 'A',
 	'0xC6': 'AE',
 	'0x1FC': 'AEacute',

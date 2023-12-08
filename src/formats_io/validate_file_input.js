@@ -1,5 +1,5 @@
 import { getGlyphrStudioApp } from '../app/main.js';
-import OpenTypeJS from '../lib/opentypejs_1-3-1.js';
+import openTypeJS from '../lib/opentype/opentypejs_1-3-1.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
 import { getFirstTagInstance } from './svg_font_import.js';
 
@@ -95,7 +95,7 @@ function readerValidateFont() {
 	let font = false;
 
 	try {
-		font = OpenTypeJS.parse(file);
+		font = openTypeJS.parse(file);
 		// log(font);
 	} catch (err) {
 		return failWithError(`
