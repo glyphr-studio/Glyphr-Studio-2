@@ -89,7 +89,7 @@ class MultiSelect {
 
 	clear() {
 		this.members = [];
-		if (this.glyph) this.glyph.ratioLock = false;
+		if (this.virtualGlyph) this.virtualGlyph.ratioLock = false;
 		this.singleHandle = false;
 		this.publishChanges();
 	}

@@ -46,7 +46,6 @@ export function glyphrStudioOnLoad() {
 			addGlobalEventListeners();
 			// Load project
 			GSApp.setUp();
-			log(`\n⮟GSApp⮟`);
 			log(GSApp);
 		} else {
 			log('did NOT pass pre-checks');

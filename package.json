@@ -8,8 +8,8 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite serve ./src/",
-		"build": "vite build ./src/ --emptyOutDir",
-		"preview": "vite preview",
+		"build": "vite build ./src/ --emptyOutDir --base=/v2/app/",
+		"stage": "vite build ./src/ --emptyOutDir --base=/v2/staged/",
 		"test": "vitest watch --dom --silent=true",
 		"coverage": "vitest watch --dom --silent=true --coverage",
 		"lint": "eslint src",
