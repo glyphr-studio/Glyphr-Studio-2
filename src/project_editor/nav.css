@@ -60,11 +60,10 @@
 }
 
 .nav-button__title {
-	margin-bottom: 4px;
 	color: var(--blue-l90);
 	font-size: 1.1em;
+	height: 22px;
 	letter-spacing: 0.05ch;
-	overflow: visible;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	max-width: 340px;
