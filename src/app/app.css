@@ -32,6 +32,10 @@
 	animation: var(--animate-fade-in);
 }
 
+.animate-fade-everything {
+	/* animation: var(--animate-fade-in); */
+}
+
 .top-bar__logo {
 	display: inline-block;
 	margin-left: 2px;
@@ -165,10 +169,8 @@
 }
 
 .project-preview__primary {
-	background: linear-gradient(135deg,
-			var(--blue-l35),
-			var(--blue-l25));
-		border: 1px solid var(--blue-l60);
+	background: linear-gradient(135deg, var(--blue-l35), var(--blue-l25));
+	border: 1px solid var(--blue-l60);
 }
 
 .project-preview__primary h3,
@@ -177,9 +179,7 @@
 }
 
 .project-preview__secondary {
-	background: linear-gradient(135deg,
-		var(--gray-l95),
-		var(--gray-l90));
+	background: linear-gradient(135deg, var(--gray-l95), var(--gray-l90));
 	border: 1px solid var(--gray-l90);
 }
 
@@ -189,9 +189,7 @@
 }
 
 .project-preview__no-project {
-	background: linear-gradient(135deg,
-			white,
-			var(--blue-l95));
+	background: linear-gradient(135deg, white, var(--blue-l95));
 	border: 1px dashed var(--blue-l60);
 	vertical-align: middle;
 	text-align: center;

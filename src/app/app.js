@@ -259,7 +259,7 @@ function addTelemetry() {
 }
 
 // --------------------------------------------------------------
-// Window unload behavior
+// Window behavior
 // --------------------------------------------------------------
 
 export function updateWindowUnloadEvent() {
@@ -285,6 +285,16 @@ function showBeforeUnloadConfirmation(event) {
 	event.stopPropagation();
 	let message = 'Are you sure you want to exit? Any unsaved data may be lost.';
 	return message;
+}
+
+export function disablePageTransitions() {
+	// log(`disablePageTransitions`, 'start');
+	// document.querySelector('#app__wrapper').classList.remove('animate-fade-everything');
+	// log(`disablePageTransitions`, 'end');
+}
+
+export function enablePageTransitions() {
+	// document.querySelector('#app__wrapper').classList.add('animate-fade-everything');
 }
 
 // --------------------------------------------------------------

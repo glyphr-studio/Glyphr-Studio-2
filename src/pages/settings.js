@@ -124,7 +124,7 @@ export function makeOneSettingsRow(groupName, propertyName, callback = false) {
 	}
 
 	input.setAttribute('id', `settings-page-input__${groupName}-${propertyName}`);
-	
+
 	let info;
 	if (thisSetting?.description) {
 		info = makeElement({

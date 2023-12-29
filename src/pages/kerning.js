@@ -483,7 +483,7 @@ function searchForLetterPairs() {
 				editor.selectedItemID = id;
 				editor.history.addState(`Navigated to ${editor.project.getItemName(id, true)}`);
 				let resultRows = document.querySelectorAll('.kern-group-chooser__row');
-				resultRows.forEach(result => result.removeAttribute('selected'));
+				resultRows.forEach((result) => result.removeAttribute('selected'));
 				row.setAttribute('selected', '');
 			});
 			if (id === selectedKernGroupID) row.setAttribute('selected', '');
