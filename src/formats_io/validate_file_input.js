@@ -1,6 +1,7 @@
 import { getGlyphrStudioApp } from '../app/main.js';
 import openTypeJS from '../lib/opentype/opentypejs_1-3-1.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
+import { isFancyFileIOEnabled } from '../project_editor/file_io.js';
 import { getFirstTagInstance } from './svg_font_import.js';
 
 /**
@@ -34,8 +35,13 @@ export async function validateSingleFileInput(fileHandle, callback) {
 	// log(`validateSingleFileInput`, 'start');
 	postValidationCallback = callback;
 
-	validationResult.fileHandle = fileHandle;
-	const file = await fileHandle.getFile();
+	let file;
+	if (isFancyFileIOEnabled()) {
+		validationResult.fileHandle = fileHandle;
+		file = await fileHandle.getFile();
+	} else {
+		file = fileHandle;
+	}
 	// log(file);
 	validationResult.fileName = file.name;
 	let fileSuffix = file.name.split('.');
