@@ -561,13 +561,13 @@ function makeCard_SideBearings() {
 					},
 					action: function (glyph) {
 						if (glyph.shapes.length) {
-							if (!isNaN(left)) {
+							if (leftCheckbox && !isNaN(left)) {
 								glyph.leftSideBearing = left;
 								getComponentInstancesFromRoot(glyph).forEach((instance) => {
 									instance.translateX -= left;
 								});
 							}
-							if (!isNaN(right)) glyph.rightSideBearing = right;
+							if (rightCheckbox && !isNaN(right)) glyph.rightSideBearing = right;
 						}
 					},
 				});
