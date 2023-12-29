@@ -6,6 +6,7 @@ import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { ioFont_importFont } from '../formats_io/font_import.js';
 import { ioSVG_importSVGfont } from '../formats_io/svg_font_import.js';
 import { validateSingleFileInput } from '../formats_io/validate_file_input.js';
+import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import obleggExampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
@@ -391,7 +392,14 @@ export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	closeEveryTypeOfDialog();
 	const editor = getProjectEditorImportTarget();
 	setCurrentProjectEditor(editor);
-	editor.project = importGlyphrProjectFromText(glyphrStudioProjectFile);
+	if (!glyphrStudioProjectFile) {
+		editor.project = new GlyphrStudioProject();
+		const name = document.getElementById('input__new-project-name').value || 'My Font';
+		editor.project.settings.project.name = name;
+		editor.project.settings.font.family = name;
+	} else {
+		editor.project = importGlyphrProjectFromText(glyphrStudioProjectFile);
+	}
 	editor.nav.page = 'Overview';
 	if (isSecondProject) showToast(`Switched to<br>${editor.project.settings.project.name}`);
 	updateWindowUnloadEvent();
