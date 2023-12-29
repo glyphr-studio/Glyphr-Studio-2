@@ -1,7 +1,6 @@
 import { getGlyphrStudioApp } from '../app/main.js';
 import openTypeJS from '../lib/opentype/opentypejs_1-3-1.js';
 import { XMLtoJSON } from '../lib/xml_to_json.js';
-import { isFancyFileIOEnabled } from '../project_editor/file_io.js';
 import { getFirstTagInstance } from './svg_font_import.js';
 
 /**
@@ -11,6 +10,7 @@ const validationResult = {
 	fileName: false,
 	fileSuffix: false,
 	fileType: false,
+	fileHandle: false,
 	errorMessage: false,
 	content: false,
 };
@@ -28,19 +28,19 @@ let postValidationCallback;
  * XML Document Parser to validate
  *  - SVG Font (.svg)
  *  - SVG (.svg)
- * @param {*} fileHandle - Any input from the user, hopefully a File
+ * @param {*} fileInput - Any input from the user, hopefully a File
  * @returns {Object} - processed stuff to use
  */
-export async function validateSingleFileInput(fileHandle, callback) {
+export async function validateSingleFileInput(fileInput, callback) {
 	// log(`validateSingleFileInput`, 'start');
 	postValidationCallback = callback;
 
 	let file;
-	if (isFancyFileIOEnabled()) {
-		validationResult.fileHandle = fileHandle;
-		file = await fileHandle.getFile();
+	if (window.showOpenFilePicker && window.showSaveFilePicker) {
+		validationResult.fileHandle = fileInput;
+		file = await fileInput.getFile();
 	} else {
-		file = fileHandle;
+		file = fileInput;
 	}
 	// log(file);
 	validationResult.fileName = file.name;
