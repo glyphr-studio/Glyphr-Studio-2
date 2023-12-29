@@ -1,4 +1,4 @@
-import { showAppErrorPage } from '../app/app.js';
+import { disablePageTransitions, enablePageTransitions, showAppErrorPage } from '../app/app.js';
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { makeAppTopBar } from '../app/menu.js';
 import { accentColors } from '../common/colors.js';
@@ -95,7 +95,7 @@ export class Navigator {
 	 */
 	navigate() {
 		// log(`Navigator.navigate`, 'start');
-		let editor = getCurrentProjectEditor();
+		// let editor = getCurrentProjectEditor();
 		// log(`this.page: ${this.page}`);
 		// log(`this.panel: ${this.panel}`);
 		// log(`editor.selectedItemID: ${editor.selectedItemID}`);
@@ -110,8 +110,8 @@ export class Navigator {
 				const pageContent = this.makePageContent();
 				wrapper.innerHTML = '';
 				wrapper.appendChild(makeAppTopBar());
-				editor.multiSelect.shapes.clear();
-				editor.multiSelect.points.clear();
+				// editor.multiSelect.shapes.clear();
+				// editor.multiSelect.points.clear();
 				wrapper.appendChild(pageContent);
 			} catch (error) {
 				console.warn(`Navigation failed:`, error);
@@ -361,6 +361,10 @@ function makeNavButton_Page(pageName, iconName) {
 	button.appendChild(makeElement({ content: pageName }));
 	button.addEventListener('click', () => {
 		let editor = getCurrentProjectEditor();
+		if (editor.nav.page !== pageName) {
+			editor.multiSelect.shapes.clear();
+			editor.multiSelect.points.clear();
+		}
 		editor.nav.page = pageName;
 		if (pageName === 'Kerning') editor.nav.panel = 'Attributes';
 		editor.navigate();
@@ -370,7 +374,10 @@ function makeNavButton_Page(pageName, iconName) {
 			// Only add a nav item to the history queue if the previous undo item:
 			//  - matches the current selected item
 			//  - is not a whole project save
-			if (lastChange && !(lastChange.wholeProjectSave || lastChange.itemID === editor.selectedItemID)) {
+			if (
+				lastChange &&
+				!(lastChange.wholeProjectSave || lastChange.itemID === editor.selectedItemID)
+			) {
 				editor.history.addState(
 					`Navigated to ${editor.project.getItemName(editor.selectedItemID, true)}`
 				);
@@ -416,7 +423,9 @@ function makeNavButton_Panel(panelName, iconName) {
 		// log(`panelName: ${panelName}`);
 		const editor = getCurrentProjectEditor();
 		editor.nav.panel = panelName;
+		disablePageTransitions();
 		editor.navigate();
+		enablePageTransitions();
 		// log(`navButton.click`, 'end');
 	});
 	return button;
