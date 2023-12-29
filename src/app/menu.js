@@ -8,7 +8,7 @@ import {
 } from '../controls/dialogs/dialogs.js';
 import { ioFont_exportFont } from '../formats_io/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
-import { isFancyFileIOEnabled, makeFileName } from '../project_editor/file_io.js';
+import { makeFileName } from '../project_editor/file_io.js';
 import { emailLink } from './app.js';
 import { makePage_CrossProjectActions } from './cross_project_actions/cross_project_actions.js';
 import { getCurrentProjectEditor, getGlyphrStudioApp } from './main.js';
@@ -74,7 +74,7 @@ function makeMenu(menuName) {
 	const editor = getCurrentProjectEditor();
 	if (menuName === 'File') {
 		let fileMenuData = [];
-		if (isFancyFileIOEnabled()) {
+		if (editor.loadedFileHandle) {
 			let projectDisplayName = `${editor.project.settings.project.name} - Glyphr Studio Project.gs2`;
 			if (editor.loadedFileHandle?.name) projectDisplayName = editor.loadedFileHandle.name;
 			fileMenuData.push(

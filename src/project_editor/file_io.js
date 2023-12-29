@@ -9,8 +9,8 @@ import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
  */
 export async function saveTextFile(fileSuffix, fileContent, saveAsCopy = false) {
 	// log(`saveTextFile`, 'start');
-	if (isFancyFileIOEnabled() && fileSuffix === 'gs2') {
-		let fileHandle = getCurrentProjectEditor().loadedFileHandle;
+	let fileHandle = getCurrentProjectEditor().loadedFileHandle;
+	if (fileHandle && fileSuffix === 'gs2') {
 		if (saveAsCopy) fileHandle = false;
 		// log(`\n⮟fileHandle⮟`);
 		// log(fileHandle);
@@ -52,10 +52,6 @@ function saveTextFileAsDownload(fileSuffix, fileContent) {
 // --------------------------------------------------------------
 // Fancy File open/save
 // --------------------------------------------------------------
-
-export function isFancyFileIOEnabled() {
-	return window.showOpenFilePicker && window.showSaveFilePicker;
-}
 
 /**
  * Saves a text file directly to an existing file, or prompts for 'save as' if no
