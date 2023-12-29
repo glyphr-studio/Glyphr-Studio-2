@@ -6,7 +6,6 @@ import { cancelDefaultEventActions } from '../edit_canvas/events.js';
 import { ioFont_importFont } from '../formats_io/font_import.js';
 import { ioSVG_importSVGfont } from '../formats_io/svg_font_import.js';
 import { validateSingleFileInput } from '../formats_io/validate_file_input.js';
-import { isFancyFileIOEnabled } from '../project_editor/file_io.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import obleggExampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
@@ -70,7 +69,10 @@ export function makePage_OpenProject(secondProjectFlag = false) {
 
 	// Drop and Drag Leave handlers
 	const dropNote = content.querySelector('#open-project__drop-note');
-	dropNote.addEventListener('drop', handleFileInput);
+	dropNote.addEventListener('drop', (event) => {
+		cancelDefaultEventActions(event);
+		handleFileInput(event?.dataTransfer?.items || []);
+	});
 	dropNote.addEventListener('dragleave', handleDragLeave);
 
 	// log(`makePage_OpenProject`, 'end');
@@ -157,11 +159,18 @@ export function makeOpenProjectTabs() {
 		attributes: { dark: '' },
 		innerHTML: 'or, open file chooser...',
 		onClick: async () => {
-			if (isFancyFileIOEnabled()) {
+			if (window.showOpenFilePicker) {
 				const files = await window.showOpenFilePicker();
 				handleFileInput(files);
 			} else {
-				showError(`Can't open OS File Picker. Try dragging and dropping a file instead.`);
+				// showError(`Can't open OS File Picker. Try dragging and dropping a file instead.`);
+				const fallbackFileChooser = makeElement({ tag: 'input', attributes: { type: 'file' } });
+				fallbackFileChooser.addEventListener('change', (event) => {
+					// log(fallbackFileChooser.files);
+					cancelDefaultEventActions(event);
+					handleFileInput(fallbackFileChooser.files);
+				});
+				fallbackFileChooser.click();
 			}
 		},
 	});
@@ -325,11 +334,10 @@ function deselectAllTabs() {
  * Handle file input or drop
  * @param {Object} input - event from drop, or fileHandle from showOpenFilePicker
  */
-async function handleFileInput(input) {
+async function handleFileInput(files) {
 	// log('handleFileInput', 'start');
-	cancelDefaultEventActions(input);
-	// log(`\n⮟input⮟`);
-	// log(input);
+	// log(`\n⮟files⮟`);
+	// log(files);
 
 	const dropNote = document.getElementById('open-project__drop-note');
 	dropNote.style.display = 'none';
@@ -337,14 +345,20 @@ async function handleFileInput(input) {
 	rightArea.innerHTML = '';
 	rightArea.appendChild(makeProgressIndicator());
 
-	let fileHandle;
-	if (input?.dataTransfer?.items) {
-		fileHandle = await input.dataTransfer.items[0].getAsFileSystemHandle();
+	let fileInput;
+	let fileResult;
+	if (files.length) {
+		fileInput = files[0];
+		// log(fileInput);
+		if (fileInput.getAsFileSystemHandle) fileResult = await fileInput.getAsFileSystemHandle();
+		else if (fileInput.getAsFile) fileResult = await fileInput.getAsFile();
+		else fileResult = fileInput;
 	} else {
-		fileHandle = input[0];
+		showError(`No files were found that could be imported.`);
 	}
-	// log(fileHandle);
-	validateSingleFileInput(fileHandle, postValidationCallback);
+
+	// log(fileResult);
+	validateSingleFileInput(fileResult, postValidationCallback);
 
 	// log('handleFileInput', 'end');
 }

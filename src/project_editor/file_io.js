@@ -93,7 +93,6 @@ async function saveTextFileDirectly(fileSuffix, fileContent, fileHandle = false)
 	// log(`saveTextFileDirectly`, 'end');
 }
 
-
 // --------------------------------------------------------------
 // Naming helpers
 // --------------------------------------------------------------

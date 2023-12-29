@@ -254,7 +254,7 @@ export function ioSVG_importSVGfont(font) {
 		fontSettings.variant = fontAttributes['font-variant'] || 'normal';
 		fontSettings.weight = 1 * fontAttributes['font-weight'] || 400;
 		fontSettings.stretch = fontAttributes['font-stretch'] || 'normal';
-		fontSettings.underlinePosition = 1 * fontAttributes['underline-position'] || -50;
+		fontSettings.underlinePosition = 1 * fontAttributes['underline-position'] || -100;
 		fontSettings.underlineThickness = 1 * fontAttributes['underline-thickness'] || 20;
 		fontSettings.strikethroughPosition =
 			1 * fontAttributes['strikethrough-position'] || fontSettings.xHeight / 2;
