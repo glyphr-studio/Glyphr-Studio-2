@@ -198,6 +198,7 @@ function splitContextCharacterString(splitChar) {
 export function shouldDrawContextCharacters() {
 	const editor = getCurrentProjectEditor();
 	const item = editor.selectedItem;
+	if (!item) return false;
 	if (!item.contextCharacters) return false;
 	if (item.contextCharacters === item.char) return false;
 	if (!editor.project.settings.app.contextCharacters.showCharacters) return false;
