@@ -1,7 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { decToHex, validateAsHex } from '../common/character_ids.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
-import { showToast } from '../controls/dialogs/dialogs.js';
+import { showError, showToast } from '../controls/dialogs/dialogs.js';
 import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks.js';
 import {
 	findMappedValue,
@@ -122,29 +122,42 @@ function glyphIterator(oa) {
 	// Functions
 
 	function processOneItem() {
-		// log(`glyphIterator>processOneItem`, 'start');
-
-		// log(`itemNumber: ${itemNumber}`);
+		log(`glyphIterator>processOneItem`, 'start');
+		let failures = [];
+		log(`itemNumber: ${itemNumber}`);
 		currentItemID = listOfItemIDs[itemNumber];
 		currentItem = project.getItem(currentItemID, true);
-		// log(`Got glyph: ${currentItem.name}`);
+		log(`Got glyph: ${currentItem.name}`);
 
 		showToast(title + '<br>' + currentItem.name, 10000);
 
-		oa.action(currentItem, currentItemID);
-		glyphChanged(currentItem);
+		try {
+			oa.action(currentItem, currentItemID);
+			glyphChanged(currentItem);
+		} catch (error) {
+			failures.push({
+				itemID: currentItemID,
+				item: currentItem,
+				error: error.message,
+			});
+		}
 
 		if (itemNumber < listOfItemIDs.length - 1) {
 			itemNumber++;
 			setTimeout(processOneItem, 10);
 		} else {
 			showToast(title + '<br>Done!', 1000);
+			if (failures.length) {
+				showError(`Some items were skipped due to errors. Check the browser console for more information.`);
+				console.warn(`\n⮟Global Action failures⮟`);
+				console.warn(failures);
+			}
 			getCurrentProjectEditor().history.addWholeProjectChangePreState(
 				`Global action: ${title.replace('ing', 'ed')} (${listOfItemIDs.length} items)`
 			);
 			if (callback) callback();
 		}
-		// log(`glyphIterator>processOneItem`, 'end');
+		log(`glyphIterator>processOneItem`, 'end');
 	}
 
 	function makeItemList() {
