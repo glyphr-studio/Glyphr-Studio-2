@@ -1,6 +1,6 @@
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
-import { closeEveryTypeOfDialog } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, showError } from '../controls/dialogs/dialogs.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
@@ -208,7 +208,14 @@ export class GlyphrStudioApp {
 
 		const data = this.getLocalStorage();
 		data[key] = newData;
-		window.localStorage.setItem('GlyphrStudio', JSON.stringify(data));
+		try {
+			window.localStorage.setItem('GlyphrStudio', JSON.stringify(data));
+		} catch (error) {
+			showError(
+				`This project is too large to be auto-saved. The auto-save option has been turned off.`
+			);
+			getCurrentProject().settings.app.autoSave = false;
+		}
 
 		// log(`\n⮟window.localStorage⮟`);
 		// log(window.localStorage);
