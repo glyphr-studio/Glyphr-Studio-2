@@ -27,13 +27,15 @@ export function glyphChanged(glyph) {
 	const project = getCurrentProject();
 	glyph.usedIn = glyph.usedIn || [];
 	glyph.usedIn.forEach((itemID) => {
-		const item = project.getItem(itemID);
-		if (item) {
-			glyphChanged(item);
-			if (item.shapes) {
-				item.shapes.forEach((shape) => {
-					if (shape.objType === 'ComponentInstance') shape.cache = {};
-				});
+		if (itemID !== glyph.id) {
+			const item = project.getItem(itemID);
+			if (item) {
+				glyphChanged(item);
+				if (item.shapes) {
+					item.shapes.forEach((shape) => {
+						if (shape.objType === 'ComponentInstance') shape.cache = {};
+					});
+				}
 			}
 		}
 	});
@@ -159,7 +161,7 @@ export function makeGlyphWithResolvedLinks(sourceGlyph) {
 			}
 		}
 	});
-	newPaths.forEach(path => resolvedGlyph.addOneShape(path));
+	newPaths.forEach((path) => resolvedGlyph.addOneShape(path));
 	// resolvedGlyph.shapes = newPaths;
 	resolvedGlyph.parent = getCurrentProject();
 	// log(`\n⮟resolvedGlyph⮟`);
@@ -316,11 +318,11 @@ export function addLinkToUsedIn(item, linkID) {
 	// log(`usedIn BEFORE:`);
 	// log(item.usedIn);
 	// log(item);
-	item.usedIn.push('' + linkID);
-	// sort numerically as opposed to alpha
-	item.usedIn.sort(function (a, b) {
-		return a - b;
-	});
+	if (item.id !== linkID) {
+		item.usedIn.push('' + linkID);
+		// sort numerically as opposed to alpha
+		item.usedIn.sort();
+	}
 	// log(`usedIn AFTER:`);
 	// log(item.usedIn);
 	// log(`addLinkToUsedIn`, 'end');
@@ -338,10 +340,8 @@ export function removeLinkFromUsedIn(item, linkID) {
 
 	const idIndex = item.usedIn.indexOf('' + linkID);
 	// log(`idIndex: ${idIndex}`);
-
 	if (idIndex !== -1) {
 		// log(`Removing ${idIndex}`);
-
 		item.usedIn.splice(idIndex, 1);
 	}
 	// log(item.usedIn);
