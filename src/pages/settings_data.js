@@ -41,6 +41,11 @@ export default {
 			description: `Show the Unicode code points represent things that aren't letters. In Unicode, the C0 and C1 control code or control character sets define control codes for use in text by computer systems that use ASCII and derivatives of ASCII.<br><br>This setting should probably stay turned off, control characters can probably be safely ignored.`,
 			type: `Boolean`,
 		},
+		itemChooserPageSize: {
+			label: `Number of items to show in the chooser`,
+			description: `For Ligatures, Components, and Kern Groups, this is how many items to show in the chooser menu. For projects with large numbers of items, splitting the items apart into pages can help the UI perform better.`,
+			type: `Number`,
+		},
 		formatSaveFile: {
 			label: `Format project file for reading`,
 			description: `Glyphr Studio Project files (.gs2) are text files in JSON format. By default, this file is saved to optimize for smaller file size. Setting this option to true formats the file to be more easily read by a human, but could increase the file size by 2x or more.`,

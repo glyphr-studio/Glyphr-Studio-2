@@ -67,6 +67,12 @@ export class ProjectEditor {
 		this.selectedLigatureID = false;
 		this.selectedKernGroupID = false;
 		this.selectedCharacterRange = false;
+		this.chooserPage = {
+			glyphs: 0,
+			components: 0,
+			ligatures: 0,
+			kerning: 0,
+		};
 
 		// Navigation
 		this.nav = new Navigator();

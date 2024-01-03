@@ -37,6 +37,7 @@ export class GlyphrStudioProject {
 				stopPageNavigation: true,
 				autoSave: true,
 				showNonCharPoints: false,
+				itemChooserPageSize: 256,
 				formatSaveFile: false,
 				moveShapesOnSVGDragDrop: false,
 				guides: {
@@ -472,6 +473,45 @@ export class GlyphrStudioProject {
 
 		// log(result);
 		// log(`GlyphrStudioProject GET sortedLigatures`, 'end');
+		return result;
+	}
+
+	/**
+	 * Returns an array that sorts components by ID
+	 */
+	get sortedComponents() {
+		// log(`GlyphrStudioProject GET sortedComponents`, 'start');
+
+		let result = [];
+
+		Object.keys(this.components).forEach((key) => {
+			result.push(this.components[key]);
+		});
+
+		result.sort((a, b) => a.name - b.name);
+
+		// log(result);
+		// log(`GlyphrStudioProject GET sortedComponents`, 'end');
+		return result;
+	}
+
+	/**
+	 * Returns an array that sorts kern groups by ID
+	 */
+	get sortedKernGroups() {
+		// log(`GlyphrStudioProject GET sortedKernGroups`, 'start');
+
+		let result = [];
+
+		Object.keys(this.kerning).forEach((key) => {
+			this.kerning[key].suffix = parseInt(key.substring(5));
+			result.push(this.kerning[key]);
+		});
+
+		result.sort((a, b) => a.suffix - b.suffix);
+
+		// log(result);
+		// log(`GlyphrStudioProject GET sortedKernGroups`, 'end');
 		return result;
 	}
 

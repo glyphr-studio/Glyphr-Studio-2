@@ -17,15 +17,19 @@ import { showAddLigatureDialog } from '../pages/ligatures.js';
 let savedClickHandler;
 let savedRegisterSubscriptions;
 
-export function makeAllItemTypeChooserContent(clickHandler, type = false, editor = getCurrentProjectEditor()) {
+export function makeAllItemTypeChooserContent(
+	clickHandler,
+	type = false,
+	editor = getCurrentProjectEditor()
+) {
 	// log(`makeAllItemTypeChooserContent`, 'start');
 	// log(`\n⮟editor⮟`);
 	// log(editor);
 	savedClickHandler = clickHandler;
 	savedRegisterSubscriptions = true;
 
-	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
-	let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
+	let wrapper = makeElement({ tag: 'div', className: 'item-chooser__wrapper' });
+	let header = makeElement({ tag: 'div', className: 'item-chooser__header' });
 	header.appendChild(makeRangeAndItemTypeChooser(editor));
 	wrapper.appendChild(header);
 
@@ -49,7 +53,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 	// log(`makeSingleItemTypeChooserContent`, 'start');
 	savedClickHandler = clickHandler;
 	savedRegisterSubscriptions = true;
-	let wrapper = makeElement({ tag: 'div', className: 'glyph-chooser__wrapper' });
+	let wrapper = makeElement({ tag: 'div', className: 'item-chooser__wrapper' });
 
 	if (itemPageName === 'Ligatures') {
 		// Ligature Chooser
@@ -83,7 +87,7 @@ export function makeSingleItemTypeChooserContent(itemPageName, clickHandler) {
 		);
 	} else {
 		// Glyph Chooser
-		let header = makeElement({ tag: 'div', className: 'glyph-chooser__header' });
+		let header = makeElement({ tag: 'div', className: 'item-chooser__header' });
 		wrapper.appendChild(header);
 		header.appendChild(makeRangeChooser());
 		wrapper.appendChild(makeGlyphChooserTileGrid());
@@ -120,9 +124,9 @@ export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) 
 
 		option.addEventListener('click', () => {
 			editor.selectedCharacterRange = 'Ligatures';
-			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
+			let tileGrid = document.querySelector('.item-chooser__tile-grid');
 			tileGrid.remove();
-			let wrapper = document.querySelector('.glyph-chooser__wrapper');
+			let wrapper = document.querySelector('.item-chooser__wrapper');
 			wrapper.appendChild(makeLigatureChooserTileGrid());
 		});
 
@@ -139,9 +143,9 @@ export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) 
 
 		option.addEventListener('click', () => {
 			editor.selectedCharacterRange = 'Components';
-			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
+			let tileGrid = document.querySelector('.item-chooser__tile-grid');
 			tileGrid.remove();
-			let wrapper = document.querySelector('.glyph-chooser__wrapper');
+			let wrapper = document.querySelector('.item-chooser__wrapper');
 			wrapper.appendChild(makeComponentChooserTileGrid());
 		});
 
@@ -157,7 +161,6 @@ export function makeRangeAndItemTypeChooser(editor = getCurrentProjectEditor()) 
 }
 
 function makeRangeChooser(editor = getCurrentProjectEditor()) {
-
 	let selectedRange = editor.selectedCharacterRange;
 	// log(selectedRange);
 	let optionChooser = makeElement({
@@ -190,10 +193,10 @@ function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjec
 			// log(`OPTION.click - range: ${range.name}`);
 
 			editor.selectedCharacterRange = range;
-			let tileGrid = document.querySelector('.glyph-chooser__tile-grid');
+			let tileGrid = document.querySelector('.item-chooser__tile-grid');
 			// log(tileGrid);
 			tileGrid.remove();
-			let wrapper = document.querySelector('.glyph-chooser__wrapper');
+			let wrapper = document.querySelector('.item-chooser__wrapper');
 			// log(wrapper);
 			wrapper.appendChild(makeGlyphChooserTileGrid());
 		});
@@ -208,7 +211,7 @@ function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(editor.project.settings.project.characterRanges);
 	// log(editor.selectedCharacterRange);
 
-	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
+	let tileGrid = makeElement({ tag: 'div', className: 'item-chooser__tile-grid' });
 	let rangeArray = editor.selectedCharacterRange.getMembers(
 		editor.project.settings.app.showNonCharPoints
 	);
@@ -250,10 +253,15 @@ function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor()) {
 function makeLigatureChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(`makeLigatureChooserTileGrid`, 'start');
 
-	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
-	let sortedLigatures = editor.project.sortedLigatures;
+	const tileGrid = makeElement({ tag: 'div', className: 'item-chooser__tile-grid' });
+	const sortedLigatures = editor.project.sortedLigatures;
+	const pagedLigatures = getItemsFromPage(sortedLigatures, editor.chooserPage.ligatures, editor);
 
-	sortedLigatures.forEach((ligature) => {
+	if (sortedLigatures.length > pagedLigatures.length) {
+		tileGrid.appendChild(makePageControl('ligatures', sortedLigatures, editor));
+	}
+
+	pagedLigatures.forEach((ligature) => {
 		let oneTile = new GlyphTile({ 'displayed-item-id': ligature.id });
 		if (editor.selectedLigatureID === ligature.id) oneTile.setAttribute('selected', '');
 
@@ -287,22 +295,28 @@ function makeLigatureChooserTileGrid(editor = getCurrentProjectEditor()) {
 function makeComponentChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(`makeComponentChooserTileGrid`, 'start');
 
-	let tileGrid = makeElement({ tag: 'div', className: 'glyph-chooser__tile-grid' });
+	let tileGrid = makeElement({ tag: 'div', className: 'item-chooser__tile-grid' });
+	const sortedComponents = editor.project.sortedComponents;
+	const pagedComponents = getItemsFromPage(sortedComponents, editor.chooserPage.components, editor);
 
-	Object.keys(editor.project.components).forEach((componentID) => {
-		let oneTile = new GlyphTile({ 'displayed-item-id': componentID });
-		if (editor.selectedComponentID === componentID) oneTile.setAttribute('selected', '');
+	if (sortedComponents.length > pagedComponents.length) {
+		tileGrid.appendChild(makePageControl('components', sortedComponents, editor));
+	}
 
-		oneTile.addEventListener('click', () => savedClickHandler(componentID));
+	pagedComponents.forEach((component) => {
+		let oneTile = new GlyphTile({ 'displayed-item-id': component.id });
+		if (editor.selectedComponentID === component.id) oneTile.setAttribute('selected', '');
+
+		oneTile.addEventListener('click', () => savedClickHandler(component.id));
 
 		if (savedRegisterSubscriptions) {
 			editor.subscribe({
 				topic: 'whichComponentIsSelected',
-				subscriberID: `glyphTile.${componentID}`,
+				subscriberID: `glyphTile.${component.id}`,
 				callback: (newComponentID) => {
 					// log('whichComponentIsSelected subscriber callback');
 					// log(`checking if ${glyph.id} === ${Component}`);
-					if (newComponentID === componentID) {
+					if (newComponentID === component.id) {
 						// log(`Callback: setting ${oneTile.getAttribute('glyph')} attribute to selected`);
 						oneTile.setAttribute('selected', '');
 					} else {
@@ -324,20 +338,26 @@ function makeKernGroupChooserList(editor = getCurrentProjectEditor()) {
 	// log(`makeKernGroupChooserList`, 'start');
 
 	let kernGroupRows = makeElement({ tag: 'div', className: 'kern-group-chooser__list' });
+	const sortedKernGroups = editor.project.sortedKernGroups;
+	const pagedComponents = getItemsFromPage(sortedKernGroups, editor.chooserPage.kerning, editor);
 
-	Object.keys(editor.project.kerning).forEach((kernID) => {
-		let oneRow = makeOneKernGroupRow(kernID);
-		if (editor.selectedKernGroupID === kernID) oneRow.setAttribute('selected', '');
+	if (sortedKernGroups.length > pagedComponents.length) {
+		kernGroupRows.appendChild(makePageControl('kerning', sortedKernGroups, editor));
+	}
 
-		oneRow.addEventListener('click', () => savedClickHandler(kernID));
+	pagedComponents.forEach((kernGroup) => {
+		let oneRow = makeOneKernGroupRow(kernGroup.id);
+		if (editor.selectedKernGroupID === kernGroup.id) oneRow.setAttribute('selected', '');
+
+		oneRow.addEventListener('click', () => savedClickHandler(kernGroup.id));
 
 		if (savedRegisterSubscriptions) {
 			editor.subscribe({
 				topic: 'whichKernGroupIsSelected',
-				subscriberID: `kernGroupRow.${kernID}`,
+				subscriberID: `kernGroupRow.${kernGroup.id}`,
 				callback: (newKernGroupID) => {
 					// log('whichKernGroupIsSelected subscriber callback');
-					if (newKernGroupID === kernID) {
+					if (newKernGroupID === kernGroup.id) {
 						oneRow.setAttribute('selected', '');
 					} else {
 						oneRow.removeAttribute('selected');
@@ -378,4 +398,75 @@ export function makeOneKernGroupRow(kernID, project = getCurrentProject()) {
 	// log(rowWrapper);
 	// log(`makeOneKernGroupRow`, 'end');
 	return rowWrapper;
+}
+
+// --------------------------------------------------------------
+// Paging
+// --------------------------------------------------------------
+
+function getItemsFromPage(itemsArray = [], pageNumber = 0, editor = getCurrentProjectEditor()) {
+	const pageSize = parseInt(editor.project.settings.app.itemChooserPageSize) || 256;
+	if (itemsArray.length < pageSize) return itemsArray;
+	const startIndex = pageNumber * pageSize;
+	const endIndex = startIndex + pageSize;
+	let resultArray = itemsArray.slice(startIndex, endIndex);
+	return resultArray;
+}
+
+function makePageControl(area, allItems = [], editor = getCurrentProjectEditor()) {
+	const refreshFunctions = {
+		ligatures: makeLigatureChooserTileGrid,
+		components: makeComponentChooserTileGrid,
+		kerning: makeKernGroupChooserList,
+	};
+
+	const pageSize = parseInt(editor.project.settings.app.itemChooserPageSize) || 256;
+	const currentPage = editor.chooserPage[area];
+	const totalPages = Math.ceil(allItems.length / pageSize);
+	const previousButton = makeElement({
+		tag: 'button',
+		className: 'editor-page__tool',
+		content: '◁',
+	});
+	if (editor.chooserPage[area] === 0) {
+		previousButton.setAttribute('disabled', '');
+	} else {
+		previousButton.addEventListener('click', () => {
+			editor.chooserPage[area] -= 1;
+			editor.chooserPage[area] = Math.max(editor.chooserPage[area], 0);
+			let tileGrid;
+			if (area === 'kerning') tileGrid = document.querySelector('.kern-group-chooser__list');
+			else tileGrid = document.querySelector('.item-chooser__tile-grid');
+			tileGrid.innerHTML = '';
+			tileGrid.appendChild(refreshFunctions[area]());
+		});
+	}
+
+	const nextButton = makeElement({
+		tag: 'button',
+		className: 'editor-page__tool',
+		content: '▷',
+	});
+	if (editor.chooserPage[area] === totalPages - 1) {
+		nextButton.setAttribute('disabled', '');
+	} else {
+		nextButton.addEventListener('click', () => {
+			editor.chooserPage[area] += 1;
+			editor.chooserPage[area] = Math.min(editor.chooserPage[area], totalPages - 1);
+			let tileGrid;
+			if (area === 'kerning') tileGrid = document.querySelector('.kern-group-chooser__list');
+			else tileGrid = document.querySelector('.item-chooser__tile-grid');
+			tileGrid.innerHTML = '';
+			tileGrid.appendChild(refreshFunctions[area]());
+		});
+	}
+
+	const pageControlWrapper = makeElement({ tag: 'div', className: 'item-chooser__page-control' });
+	addAsChildren(pageControlWrapper, [
+		previousButton,
+		makeElement({ content: `Page ${currentPage + 1} of ${totalPages}` }),
+		nextButton,
+	]);
+
+	return pageControlWrapper;
 }
