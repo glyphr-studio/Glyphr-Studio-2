@@ -172,10 +172,9 @@ export function makeReleaseNote(showLogo = false) {
 	const content = makeElement({
 		innerHTML: `
 		${logo}
-		<h2>Welcome to Version 2.0.0!</h2>
+		<h2>Welcome to Version 2!</h2>
 		<p>
-			It's been a long road, but Glyphr Studio Version 2 is finally complete! Well, for
-			now anyway - I'm sure we will continue to find bugs and think of new feature improvements.
+			It's been a long road, but Glyphr Studio Version 2 is finally complete! I'm sure we will continue to find bugs and think of new feature improvements.
 			Even since v2 Beta 2.1 (the previous release) there was a lot of updates. You can read
 			about recent and cumulative v2 updates over at the blog:
 			<br>
@@ -183,7 +182,7 @@ export function makeReleaseNote(showLogo = false) {
 				Glyphr Studio Blog: Version 2 is here!
 			</a>
 		</p>
-
+		<br>
 		<h3>Transition from v1 to v2</h3>
 		<p>
 			On January 15th, 2024, Glyphr Studio will make the switch from v1 to v2. This change will
