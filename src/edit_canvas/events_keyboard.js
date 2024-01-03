@@ -150,7 +150,7 @@ export function handleKeyPress(event) {
 	}
 
 	// Only allow above stuff on Kerning page
-	if (editor.nav.page === 'kerning') return;
+	if (editor.nav.page === 'Kerning') return;
 
 	// Only do the below stuff if the canvas has focus
 
