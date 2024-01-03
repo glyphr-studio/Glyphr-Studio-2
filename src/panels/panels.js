@@ -1,5 +1,6 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { addAsChildren, makeElement } from '../common/dom.js';
+import { countItems } from '../common/functions.js';
 import { makePanel_GlyphAttributes } from './attributes_glyph_edit.js';
 import { makePanel_KernGroupAttributes } from './attributes_kern.js';
 import { makePanel_ContextCharacters } from './context_characters.js';
@@ -16,10 +17,22 @@ export function makePanel() {
 
 	const editor = getCurrentProjectEditor();
 	// log(editor.nav);
+	let content = makeElement();
 	let panel = editor.nav.panel;
 	// log(`panel: ${panel}`);
 
-	let content = makeElement();
+	if (editor.nav.page === 'Components' && countItems(editor.project.components) <= 0) {
+		return content;
+	}
+
+	if (editor.nav.page === 'Ligatures' && countItems(editor.project.ligatures) <= 0) {
+		return content;
+	}
+
+	if (editor.nav.page === 'Kerning' && countItems(editor.project.kerning) <= 0) {
+		return content;
+	}
+
 	if (panel === 'Attributes') {
 		editor.unsubscribe({ idToRemove: 'layersPanel' });
 		editor.unsubscribe({ idToRemove: 'historyPanel' });
