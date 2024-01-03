@@ -32,6 +32,7 @@ export function makeSettingsTabContentApp() {
 		textToNode('<br>'),
 		textToNode('<h3>Visibility</h3>'),
 		makeOneSettingsRow('app', 'showNonCharPoints'),
+		makeOneSettingsRow('app', 'itemChooserPageSize'),
 		makeOneSettingsRow('app', 'previewText'),
 		textToNode('<br>'),
 		textToNode('<br>'),

@@ -258,32 +258,47 @@
 /*
 	Glyph Chooser
 */
-.glyph-chooser__wrapper {
+.item-chooser__wrapper {
 	background-color: var(--offWhite);
 }
 
-nav .glyph-chooser__wrapper {
+nav .item-chooser__wrapper {
 	padding: 20px;
 	margin-top: 5px;
 }
 
-.glyph-chooser__header {
+.item-chooser__header {
 	display: block;
 	padding: 0px 20px 20px 0px;
 }
 
-.glyph-chooser__header option-chooser {
+.item-chooser__header option-chooser {
 	display: inline-block;
 	width: 100%;
 	min-width: 177px;
 	max-width: 488px;
 }
 
-.glyph-chooser__tile-grid {
+.item-chooser__page-control {
+	display: block;
+	grid-column: span all;
+	margin-bottom: 10px;
+}
+
+.item-chooser__page-control span {
+	margin: 0px 10px;
+}
+
+.item-chooser__page-control fancy-button {
+	height: 30px;
+	max-width: 26px;
+}
+
+.item-chooser__tile-grid {
 	animation: var(--animate-fade-in-slide-down);
 }
 
-.glyph-chooser__tile-grid glyph-tile {
+.item-chooser__tile-grid glyph-tile {
 	display: inline-block;
 	margin: 0px 10px 10px 0px;
 }
@@ -345,7 +360,6 @@ nav .glyph-chooser__wrapper {
 	border-color: var(--blue-l70);
 	padding-left: 11px;
 }
-
 
 /*
 	Generic item link rows
@@ -438,8 +452,6 @@ nav .glyph-chooser__wrapper {
 	border-color: var(--green-l85);
 	cursor: pointer;
 }
-
-
 
 .layer-panel__component-row .item-link__subtitle {
 	color: var(--green-l50);
@@ -535,7 +547,7 @@ nav .glyph-chooser__wrapper {
 	column-gap: 4px;
 }
 
-.guides-card__custom input[type=checkbox] {
+.guides-card__custom input[type='checkbox'] {
 	margin: 0px 0px 0px 0px;
 }
 
@@ -601,8 +613,8 @@ nav .glyph-chooser__wrapper {
 }
 
 .guides-card__custom .guide-delete-button svg {
-	height:10px;
-	width:10px;
+	height: 10px;
+	width: 10px;
 }
 
 .guides-card__custom .guide-angle-button svg,
