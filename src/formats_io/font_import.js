@@ -46,7 +46,13 @@ export async function ioFont_importFont(importedFont) {
 
 	for (const liga of fontLigatures) {
 		await updateFontImportProgressIndicator();
-		importOneLigature({ glyph: importedFont.glyphs.get(liga.by), gsub: liga.sub }, importedFont);
+		let thisLigature = false;
+		try {
+			thisLigature = importedFont.glyphs.get(liga.by);
+		} catch {
+			console.warn(`Ligature import error: could not get ${liga.by} (${liga.sub})`);
+		}
+		importOneLigature({ glyph: thisLigature, gsub: liga.sub }, importedFont);
 	}
 
 	for (const key of Object.keys(fontKerns)) {
@@ -178,32 +184,34 @@ function importOneLigature(otfLigature, otfFont) {
 	// log(`otfLigature.glyph.name: ${otfLigature.glyph.name}`);
 	// log(otfLigature);
 
-	// make the Glyphr Studio Glyph
-	const importedLigature = makeGlyphrStudioGlyphObject(otfLigature.glyph);
-	if (!importedLigature) {
-		console.warn(`Something went wrong with importing this glyph.`);
-		console.log(otfLigature);
-		importItemTotal--;
-		return;
+	if (otfLigature?.glyph) {
+		// make the Glyphr Studio Glyph
+		const importedLigature = makeGlyphrStudioGlyphObject(otfLigature.glyph);
+		if (!importedLigature) {
+			console.warn(`Something went wrong with importing this glyph.`);
+			console.log(otfLigature);
+			importItemTotal--;
+			return;
+		}
+
+		// Convert font glyph index to decimal for gsub
+		let newGsub = [];
+		otfLigature.gsub.forEach((glyphID) => {
+			newGsub.push(otfFont.glyphs.get(glyphID).unicode);
+		});
+		// log(`newGsub`);
+		// log(newGsub);
+		importedLigature.gsub = newGsub;
+
+		// Update properties
+		importedLigature.objType = 'Ligature';
+		const newLigatureID = makeLigatureID(String.fromCodePoint(...newGsub));
+		// log(`newLigatureID: ${newLigatureID}`);
+		importedLigature.id = newLigatureID;
+
+		// Finish up
+		finalLigatures[newLigatureID] = importedLigature;
 	}
-
-	// Convert font glyph index to decimal for gsub
-	let newGsub = [];
-	otfLigature.gsub.forEach((glyphID) => {
-		newGsub.push(otfFont.glyphs.get(glyphID).unicode);
-	});
-	// log(`newGsub`);
-	// log(newGsub);
-	importedLigature.gsub = newGsub;
-
-	// Update properties
-	importedLigature.objType = 'Ligature';
-	const newLigatureID = makeLigatureID(String.fromCodePoint(...newGsub));
-	// log(`newLigatureID: ${newLigatureID}`);
-	importedLigature.id = newLigatureID;
-
-	// Finish up
-	finalLigatures[newLigatureID] = importedLigature;
 	importItemCounter++;
 	// log(importedLigature);
 	// log(`importOneLigature`, 'end');

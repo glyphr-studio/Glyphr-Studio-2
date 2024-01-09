@@ -182,7 +182,7 @@ function makeMenu(menuName) {
 						icon: 'command_newTab',
 						onClick: () => {
 							window.open(
-								'https://glyphrstudio.com/v2/help/working-with-multiple-projects.html',
+								'https://www.glyphrstudio.com/v2/help/getting-started/working-with-multiple-projects.html',
 								'_blank'
 							);
 						},
