@@ -1,3 +1,21 @@
+:root {
+	--dark-gradient-background: linear-gradient(135deg, var(--blue-l15), var(--purple-l05));
+	--global-focus-style: 1px dashed var(--purple-l50);
+	--global-transition: all 80ms ease;
+	--animate-fade-in-slide-down: 180ms ease-in fade-slide-in;
+	--animate-fade-in: 180ms ease-in fade-in;
+	--animate-fade-out: 180ms ease-out fade-out;
+	--animate-fade-update: 140ms ease-in fade-in-update;
+
+	--l1-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
+	--l1-shadow-down: 0px 2px 2px rgba(0, 0, 0, 0.1);
+	--l2-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+	--l2-shadow-upper-left: -1px -1px 4px rgba(0, 0, 0, 0.2);
+	--l2-shadow-down: 0px 4px 4px rgba(0, 0, 0, 0.3);
+	--l3-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
+	--l3-shadow-down: 0px 6px 6px rgba(0, 0, 0, 0.3);
+}
+
 @font-face {
 	font-family: 'FiraGo';
 	font-style: normal;
@@ -18,7 +36,7 @@
 
 html,
 body {
-	background-color: var(--gray-l97);
+	background-color: var(--dark-gradient-background);
 	height: 100%;
 	width: 100%;
 	min-height: 100%;
@@ -71,7 +89,8 @@ button {
 	user-select: none;
 }
 
-b, strong {
+b,
+strong {
 	font-weight: bold;
 }
 
@@ -237,26 +256,9 @@ ul li {
 	margin-top: 10px;
 }
 
-
 /* --------------------------------------------------------------
 // Common variables
 // ------------------------------------------------------------*/
-:root {
-	--global-focus-style: 1px dashed var(--purple-l50);
-	--global-transition: all 80ms ease;
-	--animate-fade-in-slide-down: 180ms ease-in fade-slide-in;
-	--animate-fade-in: 180ms ease-in fade-in;
-	--animate-fade-out: 180ms ease-out fade-out;
-	--animate-fade-update: 140ms ease-in fade-in-update;
-
-	--l1-shadow: 0px 0px 2px rgba(0, 0, 0, 0.1);
-	--l1-shadow-down: 0px 2px 2px rgba(0, 0, 0, 0.1);
-	--l2-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
-	--l2-shadow-upper-left: -1px -1px 4px rgba(0, 0, 0, 0.2);
-	--l2-shadow-down: 0px 4px 4px rgba(0, 0, 0, 0.3);
-	--l3-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3);
-	--l3-shadow-down: 0px 6px 6px rgba(0, 0, 0, 0.3);
-}
 
 @keyframes fade-slide-in {
 	from {
@@ -288,14 +290,14 @@ ul li {
 
 	to {
 		opacity: 1;
-		transform: scale(1,1);
+		transform: scale(1, 1);
 	}
 }
 
 @keyframes fade-out {
 	from {
 		opacity: 1;
-		transform: scale(1,1);
+		transform: scale(1, 1);
 	}
 
 	to {

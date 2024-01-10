@@ -22,6 +22,8 @@
 
 #app__main-content {
 	grid-row: 2;
+	width: 100%;
+	min-width: 1000px;
 }
 
 #app__page {
