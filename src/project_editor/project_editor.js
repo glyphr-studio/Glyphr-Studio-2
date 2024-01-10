@@ -340,7 +340,7 @@ export class ProjectEditor {
 			// log('detected none selected');
 			if (ranges.length) {
 				// log('was false, returning first range');
-				this._selectedCharacterRange = ranges[0];
+				this._selectedCharacterRange = new CharacterRange(ranges[0]);
 			} else {
 				// log('was false, and no ranges, returning default');
 				this._selectedCharacterRange = new CharacterRange({
