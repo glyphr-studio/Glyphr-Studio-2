@@ -30,7 +30,7 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
   exporting OTF files
   - This means no UI Frameworks like React or Vue, and no helper libraries like Paper.js
 - The whole app will still concat down to HTML, CSS, and JavaScript files:
-  - Continuing the ability to run locally (or online) without a back-end
+  - Continuing the ability to run on a local server (or online) without a back-end
   - Build process using Vite for modules
 
 ## Timeline
@@ -50,7 +50,7 @@ Read more about how the code is structured and how to contribute features in: [/
 
 ## License
 
-Copyright (C) 2010 - 2023 Matthew LaGrandeur, released under
+Copyright (C) 2010 - 2024 Matthew LaGrandeur, released under
 [GPL 3.0](https://github.com/mattlag/Glyphr-Studio/blob/master/LICENSE-gpl-3.0.txt)
 
 ## Author
