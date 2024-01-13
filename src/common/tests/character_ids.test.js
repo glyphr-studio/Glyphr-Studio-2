@@ -185,6 +185,14 @@ describe('Character IDs - Accepting unknown inputs', () => {
 		expect(parseCharsInputAsHex('U+61U+62U+63')).toEqual(['0x61', '0x62', '0x63']);
 	});
 
+	it('parseCharsInputAsHex - XML Hex input', () => {
+		expect(parseCharsInputAsHex('&#x61;&#x62;&#x63;')).toEqual(['0x61', '0x62', '0x63']);
+	});
+
+	it('parseCharsInputAsHex - XML Dec input', () => {
+		expect(parseCharsInputAsHex('&#97;&#98;&#99;')).toEqual(['0x61', '0x62', '0x63']);
+	});
+
 	it('parseCharsInputAsHex - char input', () => {
 		expect(parseCharsInputAsHex('abc')).toEqual(['0x61', '0x62', '0x63']);
 	});

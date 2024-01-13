@@ -345,6 +345,8 @@ export function hexesToXMLHexes(input) {
  * Take user input and try to get Unicode out
  * 		Unicode: 'U+123;U+123;'
  * 		Hexadecimal: '0x1230x123'
+ * 		XML Dec: '&#123;&#123;
+ * 		XML Hex: '&#x123;&#x123;'
  * 		Chars: 'abc'
  * @param {String} input - input string
  * @returns {Array} - sanitized array of strings
@@ -368,6 +370,13 @@ export function parseCharsInputAsHex(input) {
 		entries = input.split('U+');
 	} else if (hasPrefix(input, '0x')) {
 		entries = input.split('0x');
+	} else if (hasPrefix(input, '&#x')) {
+		entries = input.split('&#x');
+	} else if (hasPrefix(input, '&#')) {
+		entries = input.split('&#');
+		entries = entries.map((dec) => decToHex(dec));
+		entries = entries.filter((entry) => !!entry);
+		return entries;
 	} else {
 		return charsToHexArray(input);
 	}

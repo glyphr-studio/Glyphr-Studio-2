@@ -2,7 +2,9 @@ import { getGlyphrStudioApp } from '../app/main.js';
 import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { clone, remove, round, trim } from '../common/functions.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
+import { getParentRange } from '../lib/unicode/unicode_blocks.js';
 import { getUnicodeName, getUnicodeShortName } from '../lib/unicode/unicode_names.js';
+import { unicodeNonCharPointNames } from '../lib/unicode/unicode_names_0_bmp.js';
 import { makeComponentID } from '../pages/components.js';
 import { makeKernGroupID } from '../pages/kerning.js';
 import { makeLigatureID } from '../pages/ligatures.js';
@@ -139,6 +141,7 @@ export class GlyphrStudioProject {
 			newRanges.forEach((range) => {
 				this.settings.project.characterRanges.push(new CharacterRange(range));
 			});
+			if (this.settings.project.characterRanges.length <= 0) this.enableRangeThatContains('0x41');
 		}
 		// log('finished importing Glyph Ranges');
 		// log(this.settings.project.characterRanges);
@@ -357,6 +360,28 @@ export class GlyphrStudioProject {
 		destination[newID] = newItem;
 
 		return destination[newID];
+	}
+
+	/**
+	 * Finds the appropriate Unicode Range and enables it,
+	 * given a single character.
+	 * @param {Number} hex - Unicode Hex ID number
+	 */
+	enableRangeThatContains(hex) {
+		// log(`GlyphrStudioProject.enableRangeThatContains`, 'start');
+		// log(`hex: ${hex}`);
+		const parentRange = new CharacterRange(getParentRange(hex));
+		const projectRanges = this.settings.project.characterRanges;
+		// log(`\n⮟parentRange⮟`);
+		// log(parentRange);
+		if (!projectRanges.find((range) => range.name === parentRange.name)) {
+			projectRanges.push(parentRange);
+
+			if (unicodeNonCharPointNames[hex]) this.settings.app.showNonCharPoints = true;
+		}
+		// log(`\n⮟projectRanges⮟`);
+		// log(projectRanges);
+		// log(`GlyphrStudioProject.enableRangeThatContains`, 'end');
 	}
 
 	/**

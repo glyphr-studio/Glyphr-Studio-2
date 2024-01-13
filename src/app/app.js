@@ -1,6 +1,6 @@
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
-import { closeEveryTypeOfDialog, showError } from '../controls/dialogs/dialogs.js';
+import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
@@ -211,8 +211,8 @@ export class GlyphrStudioApp {
 		try {
 			window.localStorage.setItem('GlyphrStudio', JSON.stringify(data));
 		} catch (error) {
-			showError(
-				`This project is too large to be auto-saved. The auto-save option has been turned off.`
+			showToast(
+				`This project is too large to be auto-saved. The auto-save option has been turned off in Settings > App.`
 			);
 			getCurrentProject().settings.app.autoSave = false;
 		}
