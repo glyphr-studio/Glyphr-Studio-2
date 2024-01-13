@@ -11,7 +11,6 @@ import { EditCanvas } from '../edit_canvas/edit_canvas.js';
 
 /* Other stuff */
 import asciiLogo from '../common/graphics/ascii-wordmark-vertical.txt?raw';
-import logo from '../common/graphics/logo-icon.svg?raw';
 import { closeAllInfoBubbles, closeAllOptionChoosers } from '../controls/dialogs/dialogs.js';
 import { closeAllNavMenus } from '../project_editor/navigator.js';
 import { ProjectEditor } from '../project_editor/project_editor.js';
@@ -36,7 +35,7 @@ export function glyphrStudioOnLoad() {
 		// log(`glyphrStudioOnLoad`, 'start');
 		let favIcon = makeElement({
 			tag: 'link',
-			attributes: { rel: 'shortcut icon', href: `data:image/svg+xml,${encodeURI(logo)}` },
+			attributes: { rel: 'shortcut icon', href: '../common/graphics/logo-icon-color.ico' },
 		});
 
 		document.head.appendChild(favIcon);
