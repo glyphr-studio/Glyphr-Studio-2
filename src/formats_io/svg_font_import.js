@@ -2,7 +2,6 @@ import { getProjectEditorImportTarget, setCurrentProjectEditor } from '../app/ma
 import { hexesToChars, hexesToHexArray, parseCharsInputAsHex } from '../common/character_ids.js';
 import { generateNewID } from '../common/functions.js';
 import { updateProgressIndicator } from '../controls/progress-indicator/progress_indicator.js';
-import { getUnicodeBlockByName } from '../lib/unicode/unicode_blocks.js';
 import { getUnicodeName } from '../lib/unicode/unicode_names.js';
 import { makeLigatureID } from '../pages/ligatures.js';
 import { KernGroup } from '../project_data/kern_group.js';
@@ -23,8 +22,6 @@ export function ioSVG_importSVGfont(font) {
 	let chars;
 	let kerns;
 
-	const latinExtendedB = getUnicodeBlockByName('Latin Extended-B');
-
 	setTimeout(setupFontImport, 10);
 
 	function setupFontImport() {
@@ -37,6 +34,11 @@ export function ioSVG_importSVGfont(font) {
 		// Get Glyphs
 		chars = getTagsByName(font, 'glyph');
 
+		// Get Notdef
+		let missingGlyph = getTagsByName(font, 'missing-glyph');
+		if (missingGlyph.length) importMissingGlyph(missingGlyph[0].attributes);
+
+		// Start it up
 		updateProgressIndicator(`
 			Importing glyph:
 			<span class="progress-indicator__counter">1</span>
@@ -49,16 +51,37 @@ export function ioSVG_importSVGfont(font) {
 
 	/*
 	 *
-	 *  GLYPH IMPORT
+	 *  Process-wide counters
 	 *
 	 */
-	let maxChar = 0;
-	let minChar = Number.MAX_SAFE_INTEGER;
-	let customCharacterRange = [];
 	const finalGlyphs = {};
 	const finalLigatures = {};
 	let charCounter = 0;
 
+	/*
+	 *
+	 *  NOTDEF GLYPH IMPORT
+	 *
+	 */
+	function importMissingGlyph(missingGlyph) {
+		log(`\n⮟missingGlyph⮟`);
+		log(missingGlyph);
+		const glyphSVG = `<svg><glyph d="${missingGlyph.d}"/></svg>`;
+		const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG);
+		const advanceWidth = parseInt(missingGlyph['horiz-adv-x']);
+		newGlyph.advanceWidth = advanceWidth;
+		project.enableRangeThatContains('0x0');
+		newGlyph.id = `glyph-0x0`;
+		finalGlyphs[`glyph-0x0`] = newGlyph;
+		log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
+		log(finalGlyphs[`glyph-0x0`]);
+	}
+
+	/*
+	 *
+	 *  GLYPH IMPORT
+	 *
+	 */
 	function importOneGlyph() {
 		// log(`importOneGlyph`, 'start');
 		updateProgressIndicator(`
@@ -86,8 +109,11 @@ export function ioSVG_importSVGfont(font) {
 
 		let uni = parseCharsInputAsHex(attributes.unicode);
 		if (attributes.unicode === ' ') uni = ['0x20'];
+		// log(`attributes.unicode: ${attributes.unicode}`);
+		// log(`\n⮟uni⮟`);
+		// log(uni);
 
-		if (uni === false) {
+		if (uni === false || uni === '0x0') {
 			// Check for .notdef
 			// log('!!! Skipping '+attributes['glyph-name']+' NO UNICODE !!!');
 			chars.splice(charCounter, 1);
@@ -110,20 +136,11 @@ export function ioSVG_importSVGfont(font) {
 			if (uni.length === 1) {
 				// It's a GLYPH
 				// log(`Detected Glyph`);
-
-				// Get some range data
 				uni = uni[0];
-				minChar = Math.min(minChar, uni);
-				maxChar = Math.max(maxChar, uni);
-				if (1 * uni > latinExtendedB.end) customCharacterRange.push(uni);
+				project.enableRangeThatContains(uni);
 				newGlyph.id = `glyph-${uni}`;
 				// log(newGlyph);
 				finalGlyphs[`glyph-${uni}`] = newGlyph;
-				// finalGlyphs[uni] = new Glyph({
-				// 	id: uni,
-				// 	shapes: newPaths,
-				// 	advanceWidth: advanceWidth,
-				// });
 				if (getUnicodeName(uni) === '[name not found]') {
 					project.settings.app.showNonCharPoints = true;
 				}
@@ -225,15 +242,6 @@ export function ioSVG_importSVGfont(font) {
 		project.ligatures = finalLigatures;
 		project.kerning = finalKerns;
 
-		// Make a custom range for the rest
-		if (customCharacterRange.length) {
-			customCharacterRange = customCharacterRange.sort();
-			project.settings.project.characterRanges.push({
-				begin: customCharacterRange[0],
-				end: customCharacterRange[customCharacterRange.length - 1],
-			});
-		}
-
 		// Import Font Settings
 		// Check to make sure certain stuff is there
 		// space has horiz-adv-x
@@ -274,6 +282,7 @@ export function ioSVG_importSVGfont(font) {
 	}
 	// log('ioSVG_importSVGfont', 'end');
 }
+
 /**
  * Recursively looks through data and returns any data that matches
  * a specified list of tag names.

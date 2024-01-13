@@ -2,7 +2,6 @@ import { getCurrentProject, getGlyphrStudioApp } from '../app/main.js';
 import { decToHex, hexesToXMLHexes } from '../common/character_ids.js';
 import { escapeXMLValues, round } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
-import { isWhitespace } from '../lib/unicode/unicode_names.js';
 import { Maxes, getOverallMaxes } from '../project_data/maxes.js';
 import { makeFileDateString, saveTextFile } from '../project_editor/file_io.js';
 /**
@@ -143,7 +142,7 @@ function ioSVG_makeMissingGlyph() {
 	// log('ioSVG_makeMissingGlyph', 'start');
 	const project = getCurrentProject();
 	let notdef = project.getItem('glyph-0x0');
-	if (notdef) return ioSVG_makeOneGlyph(notdef, 'glyph-0x0');
+	if (notdef) return ioSVG_makeOneGlyph(notdef, 'glyph-0x0', 'missing-glyph');
 	const gh = project.settings.font.ascent;
 	const gw = round(gh * 0.618);
 	const gt = round(gh / 100);
@@ -181,22 +180,41 @@ function ioSVG_makeAllGlyphs() {
 	return con;
 }
 
-function ioSVG_makeOneGlyph(gl, id) {
+function ioSVG_makeOneGlyph(gl, id, tag = 'glyph') {
 	// if(!gl.shapes.length && !gl.advanceWidth) return '';
 	// Results in lots of special unicode glyphs with no paths
-	if (!gl.shapes.length && !isWhitespace(id.substring(6))) {
-		console.warn('Glyph ' + id + ' not exported: No paths.');
+	if (!gl.shapes.length && gl.advanceWidth <= 0) {
+		console.warn(`Glyph ${id} not exported: No paths or advance width.`);
+		return '';
+	}
+
+	if (!id) {
+		console.warn(`Glyph ${id} not exported: Bad ID`);
+		return '';
+	}
+
+	if (id === 'glyph-0x0' && tag === 'glyph') {
+		// This gets exported as a special 'missing-glyph' tag
 		return '';
 	}
 
 	let pathData = gl.svgPathData;
 	pathData = pathData || 'M0,0Z';
+	let unicodeAttribute = escapeXMLValues(gl.chars);
 
-	let con = '\t\t\t';
-	con += `<glyph glyph-name="${gl.name.replace(/ /g, '_')}" `;
-	con += `unicode="${escapeXMLValues(gl.chars)}" `;
-	con += `horiz-adv-x="${gl.advanceWidth}" `;
-	con += `d="${pathData}" />\n`;
+	let con = '\t\t\t<';
+	con += tag;
+
+	if (tag === 'missing-glyph') {
+		con += ` horiz-adv-x="${gl.advanceWidth}" `;
+		con += `d="${pathData}" />\n`;
+	} else {
+		con += ` glyph-name="${gl.name.replace(/ /g, '_')}" `;
+		con += `unicode="${unicodeAttribute}" `;
+		con += `horiz-adv-x="${gl.advanceWidth}" `;
+		con += `d="${pathData}" />\n`;
+	}
+
 	return con;
 }
 

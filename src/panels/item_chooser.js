@@ -215,6 +215,7 @@ function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor()) {
 	let rangeArray = editor.selectedCharacterRange.getMembers(
 		editor.project.settings.app.showNonCharPoints
 	);
+
 	if (rangeArray?.length) {
 		rangeArray.forEach((charID) => {
 			const glyphID = `glyph-${charID}`;
