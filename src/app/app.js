@@ -26,7 +26,7 @@ export class GlyphrStudioApp {
 		// Version
 		this.versionName = 'Version 2';
 		this.version = '2.0.3';
-		this.versionDate = false;
+		this.versionDate = 1705348800000;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -39,7 +39,7 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: true, // {bool} global switch for all the stuff below
+				mode: false, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: 'oblegg', // {bool or 'oblegg'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
@@ -164,22 +164,6 @@ export class GlyphrStudioApp {
 				document.body.removeChild(landingPage);
 			}, delay);
 		}
-	}
-
-	/**
-	 * An epoch date number that looks nice
-	 * @param {Number} dayOffset - how many days to add to the result
-	 * @returns - nice number for the day a version was shipped
-	 */
-	getShipDate(dayOffset = 0) {
-		const msOffset = dayOffset * 24 * 60 * 60 * 1000;
-		const shipDate = new Date();
-		shipDate.setHours(12, 0, 0, 0);
-		shipDate.setTime(shipDate.getTime() + msOffset);
-		let result = '' + shipDate.getTime();
-		result = result.substring(0, 5);
-		result = `${result}00000000`;
-		return result;
 	}
 
 	// --------------------------------------------------------------
