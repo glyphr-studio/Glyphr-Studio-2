@@ -804,7 +804,6 @@ function combineSelectedPaths() {
 	setTimeout(function () {
 		let successful = editor.multiSelect.shapes.combine();
 		if (successful) editor.history.addState('Combined selected paths');
-		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
 
@@ -815,7 +814,6 @@ function combineAllGlyphPaths() {
 		editor.multiSelect.shapes.selectAll();
 		let successful = editor.multiSelect.shapes.combine();
 		if (successful) editor.history.addState('Combined all glyph paths');
-		// redraw({ calledBy: 'actions panel' });
 	}, 200);
 }
 

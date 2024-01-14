@@ -23,7 +23,6 @@ export class Tool_Kern {
 			this.dragging = false;
 			this.deltaX = 0;
 			editor.history.addState('Kern group value: ' + editor.selectedKernGroup.value);
-			// redraw({calledBy:'Kern.mouseup'});
 		};
 
 		this.mousemove = () => {

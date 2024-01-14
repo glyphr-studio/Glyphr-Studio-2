@@ -181,12 +181,12 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 			// log(`item[property]: ${item[property]}`);
 		}
 
+		// log(`topics: ${topics}`);
 		if (item.objType === 'VirtualGlyph') {
 			topics.forEach((topic) => editor.publish(topic, editor.selectedItem));
 		} else if (item.objType === 'VirtualShape') {
 			topics.forEach((topic) => editor.publish(topic, editor.selectedItem));
 		} else {
-			// log(`thisTopic: ${thisTopic}`);
 			topics.forEach((topic) => editor.publish(topic, item));
 		}
 		// log(`makeSingleInput.changeHappened event`, 'end');

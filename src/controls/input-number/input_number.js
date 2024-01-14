@@ -156,6 +156,8 @@ export class InputNumber extends HTMLElement {
 		if (attributeName === 'value') {
 			// log(`setting internal numberInput. PRE  ${this.numberInput.getAttribute('value')}`);
 			this.numberInput.setAttribute('value', newValue);
+			this.value = newValue;
+			this.numberInput.value = newValue;
 			// log(`setting internal numberInput. POST ${this.numberInput.getAttribute('value')}`);
 		}
 
