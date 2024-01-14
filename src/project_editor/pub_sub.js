@@ -14,7 +14,7 @@ import { glyphChanged } from './cross_item_actions.js';
 		* - 'whichKernGroupIsSelected' - change to which Kern Group is being edited.
 		* - 'whichShapeIsSelected' - change to which path is being edited.
 		* - 'whichPathPointIsSelected' - change to which point is being edited.
-		* - 'currentItem' - edits to the current glyph, ligature, or component.
+		* - 'currentItem' - edits to the current glyph, ligature, component, or kern group.
 		* - 		'currentGlyph' - edits to the current Glyph
 		* - 		'currentVirtualGlyph' - edits to the current multi-selected shapes
 		* - 		'currentLigature' - edits to the current Ligature
@@ -122,11 +122,14 @@ export function publish(topic, data) {
 			// callCallbacksByTopic('currentVirtualGlyph', this.multiSelect.shapes.virtualGlyph);
 		}
 
+		// log(`topic: ${topic} \t specificItem: ${specificItem}`);
+
 		if (
 			topic === 'currentItem' ||
 			topic === 'currentGlyph' ||
 			topic === 'currentLigature' ||
-			topic === 'currentComponent'
+			topic === 'currentComponent' ||
+			topic === 'currentKernGroup'
 		) {
 			callCallbacksByTopic('currentItem', data);
 			callCallbacksByTopic(specificItem, data);
@@ -141,7 +144,7 @@ export function publish(topic, data) {
 				// It's possible to make updates to an Item while a single path point is selected
 				callCallbacksByTopic('currentPathPoint', singlePoint);
 			}
-			if(this.selectedItem?.objType !== 'KernGroup') glyphChanged(data);
+			if (this.selectedItem?.objType !== 'KernGroup') glyphChanged(data);
 		}
 
 		if (topic === 'currentPath') {

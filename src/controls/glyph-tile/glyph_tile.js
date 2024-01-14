@@ -96,15 +96,11 @@ export class GlyphTile extends HTMLElement {
 
 	attributeChangedCallback() {
 		// log(`GlyphTile.attributeChangedCallback`, 'start');
-
 		const wrapper = this.shadowRoot ? this.shadowRoot.querySelector('.wrapper') : false;
-
 		if (wrapper && !this.showingOtherProject) {
 			if (this.hasAttribute('selected')) wrapper.setAttribute('selected', '');
 			else wrapper.removeAttribute('selected');
 		}
-
-		// redraw(this);
 		// log(`GlyphTile.attributeChangedCallback`, 'end');
 	}
 
