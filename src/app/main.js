@@ -33,12 +33,11 @@ export function glyphrStudioOnLoad() {
 			);
 		}
 		// log(`glyphrStudioOnLoad`, 'start');
-		let favIcon = makeElement({
-			tag: 'link',
-			attributes: { rel: 'shortcut icon', href: '../common/graphics/logo-icon-color.ico' },
-		});
-
-		document.head.appendChild(favIcon);
+		// let favIcon = makeElement({
+		// 	tag: 'link',
+		// 	attributes: { rel: 'shortcut icon', href: '../common/graphics/logo-icon-color.ico' },
+		// });
+		// document.head.appendChild(favIcon);
 
 		if (passPreChecks()) {
 			registerCustomComponents();
@@ -109,7 +108,22 @@ function addGlobalEventListeners() {
 		closeAllOptionChoosers();
 		closeAllInfoBubbles();
 	});
+	window.getShipDate = getShipDate;
 	// }
+}
+
+/**
+ * An epoch date number that looks nice
+ * @param {Number} dayOffset - how many days to add to the result
+ * @returns - nice number for the day a version was shipped
+ */
+function getShipDate(dayOffset = 0) {
+	const shipDate = new Date();
+	shipDate.setDate(shipDate.getDate() + dayOffset);
+	shipDate.setHours(12, 0, 0, 0);
+	const result = shipDate.getTime();
+	console.log(new Date(result).toString());
+	return result;
 }
 
 // --------------------------------------------------------------

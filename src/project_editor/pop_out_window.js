@@ -1,6 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main';
 import colorStyle from '../common/colors.css?inline';
 import { addAsChildren, makeElement } from '../common/dom';
+import logo from '../common/graphics/logo-icon.svg?raw';
 import resetStyle from '../common/resets.css?inline';
 import { closeEveryTypeOfDialog, makeModalDialog, showToast } from '../controls/dialogs/dialogs';
 import dialogStyle from '../controls/dialogs/dialogs.css?inline';
@@ -51,7 +52,7 @@ export function openPopOutWindow() {
 
 	let favIcon = makeElement({
 		tag: 'link',
-		attributes: { rel: 'shortcut icon', href: '../common/graphics/logo-icon-color.ico' },
+		attributes: { rel: 'shortcut icon', href: `data:image/svg+xml,${encodeURI(logo)}` },
 	});
 
 	popDoc.head.appendChild(favIcon);
