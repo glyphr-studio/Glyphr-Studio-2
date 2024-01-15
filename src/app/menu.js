@@ -182,7 +182,7 @@ function makeMenu(menuName) {
 						icon: 'command_newTab',
 						onClick: () => {
 							window.open(
-								'https://www.glyphrstudio.com/v2/help/getting-started/working-with-multiple-projects.html',
+								'https://www.glyphrstudio.com/help/getting-started/working-with-multiple-projects.html',
 								'_blank'
 							);
 						},
@@ -194,7 +194,7 @@ function makeMenu(menuName) {
 						name: 'Open a separate project in a new window',
 						icon: 'command_newTab',
 						onClick: () => {
-							window.open('https://glyphrstudio.com/v2/app/', '_blank');
+							window.open('https://glyphrstudio.com/app/', '_blank');
 						},
 					},
 				],
@@ -219,7 +219,7 @@ function makeMenu(menuName) {
 							name: 'External Help & Documentation site',
 							icon: 'command_newTab',
 							onClick: () => {
-								window.open('https://glyphrstudio.com/v2/help/', '_blank');
+								window.open('https://glyphrstudio.com/help/', '_blank');
 							},
 						},
 						{ name: 'hr' },

@@ -25,7 +25,7 @@ export class GlyphrStudioApp {
 	constructor() {
 		// Version
 		this.versionName = 'Version 2';
-		this.version = '2.0.3';
+		this.version = '2.1.0';
 		this.versionDate = 1705348800000;
 
 		// Project Editors

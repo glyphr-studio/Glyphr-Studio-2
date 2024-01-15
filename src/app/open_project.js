@@ -33,7 +33,7 @@ export function makePage_OpenProject(secondProjectFlag = false) {
 	let recentMessage = '';
 	const app = getGlyphrStudioApp();
 	if (Date.now() - app.versionDate < recent) {
-		recentMessage = ` - <a href="https://www.glyphrstudio.com/v2/help/about/updates.html" target="_blank">recently updated!</a>`;
+		recentMessage = ` - <a href="https://www.glyphrstudio.com/help/about/updates.html" target="_blank">recently updated!</a>`;
 	}
 
 	const content = makeElement({
