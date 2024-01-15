@@ -71,7 +71,7 @@ function makeLicenseInfo() {
 		<h2>Fonts you create</h2>
 		<p>
 			Any font you create belongs 100% to you, and you must decide how to license it.<br>
-			You can find out <a href="https://www.glyphrstudio.com/v2/help/about/licensing.html" target="_blank">
+			You can find out <a href="https://www.glyphrstudio.com/help/about/licensing.html" target="_blank">
 			more about licensing on the Help site</a>.
 		</p>
 
@@ -185,9 +185,8 @@ export function makeReleaseNote(showLogo = false) {
 		<br>
 		<h3>Transition from v1 to v2</h3>
 		<p>
-			On January 15th, 2024, Glyphr Studio will make the switch from v1 to v2. This change will
-			encompass the app itself, but also supporting materials like the blog, the main site, and the
-			help and tutorial sites. V2 branding will be used for all of these, and all social media outlets.
+			On January 15th, 2024, the default experience for Glyphr Studio was switched from v1 to v2.
+			This change affected the app itself, and also supporting materials like the blog, the main site, and the help and tutorial sites. 
 			<br>
 			<a href="https://www.glyphrstudio.com/blog/?p=372" target="_blank" style="font-size: 1.2em;">Glyphr Studio Blog: V1 to V2 transition plan</a>
 		</p>
@@ -262,7 +261,7 @@ function makeContactInfo() {
 				${emailLink()}
 
 				<span>Help for Glyphr Studio v2:</span>
-				<a href="https://www.glyphrstudio.com/v2/help" target="_blank">glyphrstudio.com/v2/help</a>
+				<a href="https://www.glyphrstudio.com/help" target="_blank">glyphrstudio.com/help</a>
 
 				<span>Blog:</span>
 				<a href="http://www.glyphrstudio.com/blog/" target="_blank">glyphrstudio.com/blog</a>

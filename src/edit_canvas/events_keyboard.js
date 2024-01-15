@@ -53,7 +53,7 @@ export function handleKeyPress(event) {
 	// o
 	if (ehd.isCtrlDown && key === 'o') {
 		cancelDefaultEventActions(event);
-		window.open('http://glyphrstudio.com/v2/app', '_blank');
+		window.open('http://glyphrstudio.com/app', '_blank');
 	}
 
 	// q

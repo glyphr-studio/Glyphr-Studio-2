@@ -55,7 +55,7 @@ export function makePage_CrossProjectActions() {
 						New cross-project actions are easy to add. If you have any ideas for other capabilities,
 						please send us an email: ${emailLink()}
 						<br><br>
-						<a href="https://www.glyphrstudio.com/v2/help/getting-started/working-with-multiple-projects.html" target="_blank">More help about working with multiple projects</a>
+						<a href="https://www.glyphrstudio.com/help/getting-started/working-with-multiple-projects.html" target="_blank">More help about working with multiple projects</a>
 					</div>
 				</div>
 				<div id="cross-project-actions__page-footer">

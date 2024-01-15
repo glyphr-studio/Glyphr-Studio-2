@@ -49,7 +49,7 @@ function makeHelpOverview() {
 		<h1>Help</h1>
 		<p>
 			Help articles for Glyphr Studio v2 will be at
-			<a href="https://www.glyphrstudio.com/v2/help" target="_blank">glyphrstudio.com/v2/help</a>,
+			<a href="https://www.glyphrstudio.com/help" target="_blank">glyphrstudio.com/help</a>,
 			please email us if you find anything missing.
 		</p>
 		<p>

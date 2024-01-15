@@ -2,20 +2,13 @@
 
 Glyphr Studio v2 is a web-based font editor, optimized for typeface design beginners or hobbyists.
 
-While most user scenarios and functionality are the same as v1, the one main
-functionality improvement will be **multi-project editing** that will allow for
-cross-project copy/paste and merging fonts.
-
-The overall goal for v2 is codebase modernization. Much of the v1 code hasn't been
-worked on since 2010, so it was time to do an all-up scrub.
-
 ## Links
 
 | Website     | [glyphrstudio.com](https://www.glyphrstudio.com)                    |
 | :---------- | :------------------------------------------------------------------ |
 | Email       | [mail@glyphrstudio.com](mailto:mail@glyphrstudio.com)               |
-| App         | [glyphrstudio.com/v2/app](https://www.glyphrstudio.com/v2/app)      |
-| Help & Docs | [glyphrstudio.com/v2/help](https://www.glyphrstudio.com/v2/help/)   |
+| App         | [glyphrstudio.com/app](https://www.glyphrstudio.com/app)            |
+| Help & Docs | [glyphrstudio.com/help](https://www.glyphrstudio.com/help/)         |
 | Blog        | [glyphrstudio.com/blog](https://www.glyphrstudio.com/blog/)         |
 | Mastodon    | [@glyphrstudio@typo.social](https://typo.social/@glyphrstudio)      |
 | Reddit      | [reddit.com/r/GlyphrStudio](https://www.reddit.com/r/GlyphrStudio/) |
@@ -35,12 +28,19 @@ So, here at Glyphr Studio, we've always had a very strong DIY attitude - this me
 
 ## Timeline
 
+While most user scenarios and functionality are the same as v1, the one main
+functionality improvement will be **multi-project editing** that will allow for
+cross-project copy/paste and merging fonts.
+
+The overall goal for v2 is codebase modernization. Much of the v1 code hasn't been
+worked on since 2010, so it was time to do an all-up scrub.
+
 Preliminary investigations started in 2019... but Covid slowed things way down.
 Things picked back up in 2021/2022. Alphas and Betas were released in late 2022
 / early 2023, and v2.0.0 was released in December 2023.
 
-V2 will exist along side v1 until January 15th, 2024, when v2 will become the default
-experience and v1 will be deprecated.
+On January 15th, 2024, the default experience was switched from v1 to v2. V1 will continue
+to exist in a /v1/ sub-directory, but it will be deprecated (only very major bugs will be fixed).
 
 ## Contributing
 
