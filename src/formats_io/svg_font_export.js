@@ -147,7 +147,7 @@ function ioSVG_makeMissingGlyph() {
 	const gw = round(gh * 0.618);
 	const gt = round(gh / 100);
 
-	let con = `\t\t\t<missing-glyph horiz-adv-x="${gw}" `;
+	let con = `\n\t\t\t<missing-glyph horiz-adv-x="${gw}" `;
 	con += `d="M0,0 v${gh} h${gw} v-${gh} h-${gw}z `;
 	con += `M${gt},${gt} v${gh - gt * 2} h${gw - gt * 2} `;
 	con += `v - ${gh - gt * 2} h - ${gw - gt * 2} z"/>
@@ -159,21 +159,34 @@ function ioSVG_makeMissingGlyph() {
 
 function ioSVG_makeAllGlyphs() {
 	// log('ioSVG_makeAllGlyphs', 'start');
+	const project = getCurrentProject();
+	const checklist = [];
+	const exportGlyphs = [];
 
-	const finalGlyphs = getCurrentProject().glyphs;
+	project.settings.project.characterRanges.forEach(range => {
+		range.getMembers().forEach(hexID => {
+			if (checklist.indexOf(hexID) === -1) {
+				const thisGlyph = project.getItem(`glyph-${hexID}`);
+				if (thisGlyph) {
+					exportGlyphs.push({ xg: thisGlyph, xc: hexID });
+					checklist.push(hexID);
+				}
+			}
+		});
+	});
+
 	let con = '';
 
-	const li = getCurrentProject().ligatures;
-	con += '\t\t\t<!-- Ligatures -->\n';
-	for (const l of Object.keys(li)) {
-		con += ioSVG_makeOneGlyph(li[l], l);
-	}
-
-	// con += '\n';
-
 	con += '\t\t\t<!-- Glyphs -->\n';
-	for (const c of Object.keys(finalGlyphs)) {
-		con += ioSVG_makeOneGlyph(finalGlyphs[c], c);
+	exportGlyphs.forEach(glyph => {
+		con += ioSVG_makeOneGlyph(glyph.xg, glyph.xc);
+	});
+
+	con += '\n';
+
+	con += '\t\t\t<!-- Ligatures -->\n';
+	for (const key of Object.keys(project.ligatures)) {
+		con += ioSVG_makeOneGlyph(project.ligatures[key], key);
 	}
 
 	// log('ioSVG_makeAllGlyphs', 'end');
