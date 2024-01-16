@@ -25,8 +25,8 @@ export class GlyphrStudioApp {
 	constructor() {
 		// Version
 		this.versionName = 'Version 2';
-		this.version = '2.1.0';
-		this.versionDate = 1705348800000;
+		this.version = '2.1.1';
+		this.versionDate = 0;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -39,11 +39,11 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: false, // {bool} global switch for all the stuff below
+				mode: true, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
-				sampleProject: 'oblegg', // {bool or 'oblegg'} Load the sample project
+				sampleProject: false, // {bool or 'oblegg'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Kerning', // {Sentence case page name} navigate straight to a page
+				currentPage: false, // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
@@ -55,7 +55,7 @@ export class GlyphrStudioApp {
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
-			telemetry: false, // Load google analytics
+			telemetry: true, // Load google analytics
 		};
 
 		this.temp = {};
@@ -104,7 +104,7 @@ export class GlyphrStudioApp {
 		// log(editor);
 		// log(editor.nav.page);
 
-		if (this.settings.telemetry) {
+		if (this.settings.telemetry && !dev.mode) {
 			addTelemetry();
 		}
 

@@ -125,24 +125,25 @@ function createOptionsObject() {
 
 function populateExportList() {
 	// log('populateExportList', 'start');
+	const project = getCurrentProject();
 
 	// Add Glyphs
-	const exportGlyphs = [];
-	const project = getCurrentProject();
-	let item;
-	for (const key of Object.keys(project.glyphs)) {
-		let glyphNumber = parseInt(key.substring(6));
-		if (typeof glyphNumber === 'number') {
-			item = project.glyphs[key];
-			exportGlyphs.push({ xg: item, xc: glyphNumber });
-		} else {
-			console.warn('Skipped exporting Glyph ' + glyphNumber + ' - non-numeric key value.');
-		}
-	}
+	let checklist = [];
+	let exportGlyphs = [];
 
-	exportGlyphs.sort(function (a, b) {
-		return a.xc - b.xc;
+	project.settings.project.characterRanges.forEach(range => {
+		range.getMembers().forEach(hexID => {
+			if (checklist.indexOf(hexID) === -1) {
+				const thisGlyph = project.getItem(`glyph-${hexID}`);
+				if (thisGlyph) {
+					exportGlyphs.push({ xg: thisGlyph, xc: hexID });
+					checklist.push(hexID);
+				}
+			}
+		});
 	});
+
+	exportGlyphs.sort((a, b) => a.xc - b.xc);
 
 	// Add Ligatures
 	const exportLigatures = [];
@@ -150,9 +151,9 @@ function populateExportList() {
 	for (const key of Object.keys(project.ligatures)) {
 		// log(project.ligatures[key]);
 		if (project.ligatures[key].gsub.length > 1) {
-			item = project.ligatures[key];
-			// log(`\t adding ligature "${item.name}"`);
-			exportLigatures.push({ xg: item, xc: key, chars: item.chars });
+			const thisLigature = project.ligatures[key];
+			// log(`\t adding ligature "${thisLigature.name}"`);
+			exportLigatures.push({ xg: thisLigature, xc: key, chars: thisLigature.chars });
 
 			// TODO Add Ligatures to ligature code points
 			// ligWithCodePoint = doesLigatureHaveCodePoint(l);
@@ -166,9 +167,9 @@ function populateExportList() {
 			// }
 		} else {
 			console.warn(`
-					Skipped exporting ligature ${project.ligatures[key].name}.
-					Source chars length: ${project.ligatures[key].gsub.length}
-				`);
+				Skipped exporting ligature ${project.ligatures[key].name}.
+				Source chars length: ${project.ligatures[key].gsub.length}
+			`);
 		}
 	}
 	exportLigatures.sort(sortLigatures);
