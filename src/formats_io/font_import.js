@@ -182,14 +182,23 @@ function importOneLigature(otfLigature, otfFont) {
 			console.warn(`Something went wrong with importing this glyph.`);
 			console.log(otfLigature);
 			importItemTotal--;
+			// log(`importOneLigature`, 'end');
 			return;
 		}
 
 		// Convert font glyph index to decimal for gsub
 		let newGsub = [];
 		otfLigature.gsub.forEach((glyphID) => {
-			newGsub.push(otfFont.glyphs.get(glyphID).unicode);
+			if (otfFont.glyphs.get(glyphID)?.unicode) {
+				newGsub.push(otfFont.glyphs.get(glyphID).unicode);
+			}
 		});
+
+		if (otfLigature.gsub.length !== newGsub.length) {
+			importItemTotal--;
+			// log(`importOneLigature`, 'end');
+			return;
+		}
 		// log(`newGsub`);
 		// log(newGsub);
 		importedLigature.gsub = newGsub;
@@ -202,9 +211,11 @@ function importOneLigature(otfLigature, otfFont) {
 
 		// Finish up
 		finalLigatures[newLigatureID] = importedLigature;
+		importItemCounter++;
+		// log(importedLigature);
+	} else {
+		importItemTotal--;
 	}
-	importItemCounter++;
-	// log(importedLigature);
 	// log(`importOneLigature`, 'end');
 }
 
