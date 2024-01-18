@@ -1,5 +1,4 @@
 /* Web Components */
-import { makeElement } from '../common/dom.js';
 import { FancyButton } from '../controls/fancy-button/fancy_button.js';
 import { GlyphTile } from '../controls/glyph-tile/glyph_tile.js';
 import { InfoBubble } from '../controls/info-bubble/info_bubble.js';

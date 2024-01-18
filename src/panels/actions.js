@@ -75,6 +75,14 @@ export function getActionData(name) {
 				onClick: clipboardPaste,
 			},
 			{
+				iconName: 'clearClipboard',
+				iconOptions: !clipBoardShapes,
+				title: makeActionButtonClearClipboardTooltip(clipBoardPathCount),
+				disabled: !clipBoardShapes,
+				id: 'actionButtonClearClipboard',
+				onClick: clipboardClear,
+			},
+			{
 				iconName: 'undo',
 				iconOptions: !historyLength,
 				title: `Undo\nStep backwards in time one action.`,
@@ -825,8 +833,6 @@ export function clipboardCopy() {
 
 	const editor = getCurrentProjectEditor();
 	let selPaths = [];
-	let button = document.getElementById('actionButtonPaste');
-
 	editor.multiSelect.shapes.members.forEach((shape) => {
 		selPaths.push(shape.save(true));
 	});
@@ -838,13 +844,11 @@ export function clipboardCopy() {
 			dx: 0,
 			dy: 0,
 		};
-		button.removeAttribute('disabled');
 	} else {
 		editor.clipboard = false;
-		button.setAttribute('disabled', 'disabled');
 	}
 
-	button.setAttribute('title', makeActionButtonPasteTooltip(selPaths.length));
+	updateClipboardActionIcons(selPaths.length);
 	// log(editor.clipboard);
 	// log(`clipboardCopy`, 'end');
 }
@@ -920,13 +924,50 @@ export function clipboardPaste() {
 
 		let len = newShapes.length;
 		editor.history.addState(len === 1 ? 'Pasted Path' : `Pasted ${len} Paths`);
+		showToast(
+			len === 1
+				? 'Pasted Path<br>from the Glyphr Studio clipboard'
+				: `Pasted ${len} Paths<br>from the Glyphr Studio clipboard`
+		);
 		editor.publish('currentItem', editor.selectedItem);
 	}
 	// log('clipboardPaste', 'end');
 }
 
+export function clipboardClear() {
+	const editor = getCurrentProjectEditor();
+	editor.clipboard = false;
+	updateClipboardActionIcons(0);
+}
+
+function updateClipboardActionIcons(numberOfClipboardItems = 0) {
+	const editor = getCurrentProjectEditor();
+	let pasteButton = document.getElementById('actionButtonPaste');
+	let clearButton = document.getElementById('actionButtonClearClipboard');
+
+	if (editor.clipboard) {
+		pasteButton.removeAttribute('disabled');
+		clearButton.removeAttribute('disabled');
+	} else {
+		pasteButton.setAttribute('disabled', 'disabled');
+		clearButton.setAttribute('disabled', 'disabled');
+	}
+
+	pasteButton.setAttribute('title', makeActionButtonPasteTooltip(numberOfClipboardItems));
+	clearButton.setAttribute('title', makeActionButtonClearClipboardTooltip(numberOfClipboardItems));
+}
+
 export function makeActionButtonPasteTooltip(clipBoardPathCount) {
 	let re = `Paste\nAdds the previously-copied shape(s) into this glyph.\n\n`;
+	re += `Currently ${clipBoardPathCount} Path${
+		clipBoardPathCount === 1 ? '' : 's'
+	} on the clipboard.`;
+	return re;
+}
+
+export function makeActionButtonClearClipboardTooltip(clipBoardPathCount) {
+	let re = `Clear Glyphr Studio Clipboard\n`;
+	re += `In order to use your Operating System clipboard for copy / paste, the Glyphr Studio clipboard must be empty.\n\n`;
 	re += `Currently ${clipBoardPathCount} Path${
 		clipBoardPathCount === 1 ? '' : 's'
 	} on the clipboard.`;

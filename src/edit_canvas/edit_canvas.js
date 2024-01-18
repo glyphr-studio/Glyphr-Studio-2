@@ -58,6 +58,7 @@ export class EditCanvas extends HTMLElement {
 
 		this.canvas.height = this.height;
 		this.canvas.width = this.width;
+		// this.canvas.setAttribute('contenteditable', 'true');
 
 		const editor = getCurrentProjectEditor();
 		initEventHandlers(this.canvas);

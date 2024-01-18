@@ -14,6 +14,7 @@ import {
 	togglePanOff,
 	togglePanOn,
 } from './events.js';
+import { handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
 import { clickTool } from './tools/tools.js';
 
 // --------------------------------------------------------------
@@ -175,7 +176,11 @@ export function handleKeyPress(event) {
 		// ctrl + v
 		if (ehd.isCtrlDown && key === 'v') {
 			cancelDefaultEventActions(event);
-			clipboardPaste();
+			if (editor.clipboard) {
+				clipboardPaste();
+			} else {
+				handlePasteSVGonEditCanvas(event);
+			}
 		}
 
 		// v
