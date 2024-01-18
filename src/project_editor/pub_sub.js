@@ -132,6 +132,7 @@ export function publish(topic, data) {
 			topic === 'currentKernGroup'
 		) {
 			callCallbacksByTopic('currentItem', data);
+			callCallbacksByTopic('currentVirtualGlyph', data);
 			callCallbacksByTopic(specificItem, data);
 			let singlePath = this.multiSelect.shapes.singleton;
 			let singlePoint = this.multiSelect.points.singleton;

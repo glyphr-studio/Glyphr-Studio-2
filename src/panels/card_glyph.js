@@ -92,10 +92,11 @@ export function makeCard_glyphAttributes(glyph) {
 		]);
 	}
 	if (glyph.shapes.length) {
+		const showAsDisabled = !!getCurrentProjectEditor().multiSelect.shapes.length;
 		addAsChildren(glyphCard, rowPad());
-		addAsChildren(glyphCard, makeElement({ tag: 'h4', content: 'Bulk-edit paths' }));
-		addAsChildren(glyphCard, makeInputs_position(glyph));
-		addAsChildren(glyphCard, makeInputs_size(glyph));
+		addAsChildren(glyphCard, makeElement({ tag: 'h4', content: showAsDisabled? 'Overall paths' : 'Bulk-edit paths' }));
+		addAsChildren(glyphCard, makeInputs_position(glyph, '', [], showAsDisabled));
+		addAsChildren(glyphCard, makeInputs_size(glyph, showAsDisabled));
 	}
 	addAsChildren(glyphCard, rowPad());
 	addAsChildren(glyphCard, makeActionsArea_Universal());
