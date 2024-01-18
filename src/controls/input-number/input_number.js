@@ -171,6 +171,16 @@ export class InputNumber extends HTMLElement {
 			}
 		}
 
+		if (attributeName === 'disabled') {
+			if (newValue === '') {
+				// disabled
+				this.setToDisabled();
+			} else if (oldValue === '') {
+				// enabled
+				this.setToEnabled();
+			}
+		}
+
 		// log(`InputNumber.attributeChangedCallback`, 'end');
 	}
 

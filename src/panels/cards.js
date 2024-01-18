@@ -7,7 +7,12 @@ import { makeTransformOriginIcon } from '../common/graphics.js';
 // Common attributes card stuff
 // --------------------------------------------------------------
 
-export function makeInputs_position(item, labelPrefix = '', additionalTopics = []) {
+export function makeInputs_position(
+	item,
+	labelPrefix = '',
+	additionalTopics = [],
+	disabled = false
+) {
 	// log(`makeInputs_position`, 'start');
 	// log(`x: ${round(x, 3)}`);
 	// log(`y: ${round(y, 3)}`);
@@ -18,11 +23,17 @@ export function makeInputs_position(item, labelPrefix = '', additionalTopics = [
 	let topics = [thisTopic].concat(additionalTopics);
 
 	if (labelPrefix) labelPrefix += ':&ensp;';
+
 	// Label + inputs
 	let label = makeElement({ tag: 'label', innerHTML: `${labelPrefix}x${dimSplit()}y` });
 	let doubleInput = makeElement({ tag: 'div', className: 'doubleInput' });
 	let xInput = makeSingleInput(item, 'x', topics, 'input-number');
 	let yInput = makeSingleInput(item, 'y', topics, 'input-number');
+
+	if (disabled) {
+		xInput.setAttribute('disabled', '');
+		yInput.setAttribute('disabled', '');
+	}
 
 	// Put double input together
 	doubleInput.appendChild(xInput);
@@ -33,8 +44,9 @@ export function makeInputs_position(item, labelPrefix = '', additionalTopics = [
 	return [label, doubleInput];
 }
 
-export function makeInputs_size(item) {
+export function makeInputs_size(item, disabled = false) {
 	// log(`makeInputs_size`, 'start');
+	let returnControls = [];
 	let thisTopic = `current${item.objType}`;
 
 	// Width and Height
@@ -42,71 +54,78 @@ export function makeInputs_size(item) {
 	let dimensionInputs = makeElement({ tag: 'div', className: 'doubleInput' });
 	let wInput = makeSingleInput(item, 'width', thisTopic, 'input-number');
 	let hInput = makeSingleInput(item, 'height', thisTopic, 'input-number');
+	if (disabled) {
+		wInput.setAttribute('disabled', '');
+		hInput.setAttribute('disabled', '');
+	}
 	dimensionInputs.appendChild(wInput);
 	dimensionInputs.appendChild(dimSplitElement());
 	dimensionInputs.appendChild(hInput);
 
-	// Transform origin
-	let displayOrigins = [
-		'top-left',
-		'baseline-left',
-		'bottom-left',
-		'top-right',
-		'baseline-right',
-		'bottom-right',
-		'middle-center',
-	];
-	displayOrigins = transformOrigins;
-	let transformLabel = makeSingleLabel(
-		'transform origin',
-		`With increases or decreases to width or height,
+	returnControls.push(dimensionLabel);
+	returnControls.push(dimensionInputs);
+
+	// Only show this stuff if not disabled.
+	if (!disabled) {
+		// Transform origin
+		let displayOrigins = [
+			'top-left',
+			'baseline-left',
+			'bottom-left',
+			'top-right',
+			'baseline-right',
+			'bottom-right',
+			'middle-center',
+		];
+		displayOrigins = transformOrigins;
+		let transformLabel = makeSingleLabel(
+			'transform origin',
+			`With increases or decreases to width or height,
 		the transform origin is the point that stays fixed.
 		<br><br>
 		This only takes effect when directly entering values
 		into the width or height inputs.`
-	);
-	let transformInput = makeElement({
-		tag: 'option-chooser',
-		attributes: {
-			'selected-id': item.transformOrigin,
-			'selected-name': item.transformOrigin.replace('-', ' '),
-		},
-	});
-	displayOrigins.forEach((origin) => {
-		let option = makeElement({
-			tag: 'option',
-			attributes: { 'selection-id': origin },
-			innerHTML: `${makeTransformOriginIcon(origin)}${origin.replace('-', ' ')}`,
+		);
+		let transformInput = makeElement({
+			tag: 'option-chooser',
+			attributes: {
+				'selected-id': item.transformOrigin,
+				'selected-name': item.transformOrigin.replace('-', ' '),
+			},
 		});
-		option.addEventListener('click', () => {
-			item.transformOrigin = origin;
-			getCurrentProjectEditor().publish('editCanvasView', item);
+		displayOrigins.forEach((origin) => {
+			let option = makeElement({
+				tag: 'option',
+				attributes: { 'selection-id': origin },
+				innerHTML: `${makeTransformOriginIcon(origin)}${origin.replace('-', ' ')}`,
+			});
+			option.addEventListener('click', () => {
+				item.transformOrigin = origin;
+				getCurrentProjectEditor().publish('editCanvasView', item);
+			});
+			transformInput.appendChild(option);
 		});
-		transformInput.appendChild(option);
-	});
 
-	// Ratio lock checkbox
-	let ratioLockLabel = makeSingleLabel(
-		'lock aspect ratio',
-		`
+		// Ratio lock checkbox
+		let ratioLockLabel = makeSingleLabel(
+			'lock aspect ratio',
+			`
 			When either the width or height is adjusted,
 			the overall size will be kept proportional.
 			<br><br>
 			Maintaining aspect ratio will override value
 			locks if need be.
 		`
-	);
-	let ratioLockCheckbox = makeSingleCheckbox(item, 'ratioLock', thisTopic);
+		);
+		let ratioLockCheckbox = makeSingleCheckbox(item, 'ratioLock', thisTopic);
 
+		returnControls.push(transformLabel);
+		returnControls.push(transformInput);
+		returnControls.push(ratioLockLabel);
+		returnControls.push(ratioLockCheckbox);
+	}
 	// log(`makeInputs_size`, 'end');
-	return [
-		dimensionLabel,
-		dimensionInputs,
-		transformLabel,
-		transformInput,
-		ratioLockLabel,
-		ratioLockCheckbox,
-	];
+	return returnControls;
 }
 
 export function makeSingleInput(item, property, thisTopic, tagName, additionalListeners = []) {
