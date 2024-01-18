@@ -216,7 +216,7 @@ export class InputNumber extends HTMLElement {
 	 */
 	setToDisabled() {
 		// log(`InputNumber.setToDisabled`, 'start');
-		this.setAttribute('disabled', '');
+		// this.setAttribute('disabled', '');
 		this.numberInput.setAttribute('disabled', '');
 		this.numberInput.removeAttribute('tabIndex');
 		this.arrowWrapper.setAttribute('disabled', '');
@@ -227,7 +227,7 @@ export class InputNumber extends HTMLElement {
 
 	setToEnabled() {
 		// log(`InputNumber.setToEnabled`, 'start');
-		this.removeAttribute('disabled');
+		// this.removeAttribute('disabled');
 		this.numberInput.removeAttribute('disabled');
 		this.numberInput.setAttribute('tabIndex', '0');
 		this.arrowWrapper.removeAttribute('disabled');
