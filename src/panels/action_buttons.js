@@ -96,6 +96,24 @@ makeActionButtonIcon.paste = () => {
 	return svgWrap(re);
 };
 
+makeActionButtonIcon.clearClipboard = () => {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
+	let red = actionButtonIconColors.redX;
+
+	re += `
+		<rect fill="${fill}" x="5" y="7"	width="20" height="22"/>
+		<path fill="${blue}" d="M24,8v20H6V8H24 M26,6H4v24h22V6L26,6z"/>
+		<path fill="${fill}" d="M9,9V4h3V3c0-1.3,1.8-2,3-2s3,0.7,3,2v1h3v5H9z"/>
+		<path fill="${blue}" d="M15,2c0.9,0,2,0.5,2,1v2h2h1v3H10V5h1h2V3C13,2.5,14.1,2,15,2 M15,0c-1.7,0-4,1-4,3H8v7h14V3h-3C19,1,16.7,0,15,0L15,0z"/>
+		<path fill="${red}" d="M26.4,29c0.6,0.8,3.5-0.8,2.4-2.2c-2.4-3.1-8.6-9.6-11.5-11.9c-2.1-1.7-4.1-0.4-4.1-0.4S21,21.9,26.4,29z"/>
+		<path fill="${red}" d="M17.2,28.8c-0.9,1.6-3.7-0.2-2.3-2c2.7-3.6,7.9-10.4,11.5-13c2.3-1.7,3.7-0.1,3.7-0.1S22.1,20.7,17.2,28.8z"/>
+	`;
+
+	return svgWrap(re);
+};
+
 makeActionButtonIcon.pastePathsFromAnotherGlyph = () => {
 	let re = '';
 	let blue = actionButtonIconColors.blueOutline;

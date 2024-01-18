@@ -4,12 +4,12 @@ import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import.js
 import { copyShapesFromTo } from '../panels/actions.js';
 import { cancelDefaultEventActions } from './events.js';
 
-export function importSVGtoCurrentItem(svgData) {
+export function importSVGtoCurrentItem(svgData, sourceText = 'SVG') {
 	// log(`importSVGtoCurrentItem`, 'start');
 
 	const tempGlyph = ioSVG_convertSVGTagsToGlyph(svgData);
 
-	if (tempGlyph) {
+	if (tempGlyph && tempGlyph.shapes.length) {
 		// Flip
 		tempGlyph.flipNS();
 		tempGlyph.reverseWinding();
@@ -33,28 +33,47 @@ export function importSVGtoCurrentItem(svgData) {
 		}
 
 		editor.publish('currentItem', editor.selectedItem);
-		showToast('Pasted ' + tempGlyph.shapes.length + ' shapes from SVG');
+		showToast(`Pasted ${tempGlyph.shapes.length} shapes from ${sourceText}`);
 	} else {
-		// showToast('Could not import pasted SVG code.');
+		showToast('Could not import pasted SVG code.');
 	}
 	// log(`importSVGtoCurrentItem`, 'end');
 }
 
-export function handlePasteSVGonEditCanvas(event) {
+export async function handlePasteSVGonEditCanvas(event) {
+	// log(`handlePasteSVGonEditCanvas`, 'start');
 	// log(event);
 	// Stop data actually being pasted into div
 	cancelDefaultEventActions(event);
 
-	// Get pasted data via clipboard API
-	const clipboardData = event.clipboardData || window.Clipboard;
-	if (!clipboardData) {
-		// log(`\t No clipboardData`);
+	// log(`\n⮟event.clipboardData⮟`);
+	// log(event.clipboardData);
+	// log(`\n⮟window.clipboardData⮟`);
+	// log(window.clipboardData);
+	// log(`\n⮟navigator.clipboard⮟`);
+	// log(navigator.clipboard);
+
+	const clipboardData = event.clipboardData || window.clipboardData;
+	if (clipboardData) {
+		// log(clipboardData);
+		let text = clipboardData.getData('Text');
+		importSVGtoCurrentItem(text, '<br>the operating system clipboard');
+	} else if (navigator.clipboard) {
+		navigator.clipboard.readText().then((text) => {
+			if (text) {
+				// log(`text: ${text}`);
+				importSVGtoCurrentItem(text, '<br>the operating system clipboard');
+			} else {
+				showToast('Nothing on the clipboard');
+			}
+		});
+	} else {
+		showToast('Nothing on the clipboard');
+		// log(`handlePasteSVGonEditCanvas`, 'end');
 		return;
 	}
 
-	const pasteData = clipboardData.getData('Text');
-	// log(pasteData);
-	importSVGtoCurrentItem(pasteData);
+	// log(`handlePasteSVGonEditCanvas`, 'end');
 }
 
 export function handleDropSVGonEditCanvas(event) {
@@ -73,7 +92,7 @@ export function handleDropSVGonEditCanvas(event) {
 
 	if (fname === 'svg') {
 		reader.onload = function () {
-			importSVGtoCurrentItem(reader.result);
+			importSVGtoCurrentItem(reader.result, '<br>from the dropped SVG file');
 		};
 
 		reader.readAsText(f);
