@@ -186,13 +186,16 @@ export function makeSingleInput(item, property, thisTopic, tagName, additionalLi
 
 		// Special Case Glyph and Path: width and height properties
 		if (
-			(item.constructor.name === 'Glyph' || item.objType === 'Path') &&
+			(item.objType === 'Glyph' || item.objType === 'VirtualGlyph' || item.objType === 'Path') &&
 			(property === 'width' || property === 'height')
 		) {
+			// log(`width or height, for constructor Glyph or Path`);
 			let options = { width: false, height: false };
 			options.ratioLock = item.ratioLock;
 			options.transformOrigin = item.transformOrigin;
 			property === 'width' ? (options.width = newValue) : (options.height = newValue);
+			// log(`\n⮟options⮟`);
+			// log(options);
 			item.objType === 'Path' ? item.setShapeSize(options) : item.setGlyphSize(options);
 		} else {
 			item[property] = newValue;

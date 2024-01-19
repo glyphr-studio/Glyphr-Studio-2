@@ -28,8 +28,14 @@ export async function ioFont_importFont(importedFont) {
 	const editor = getProjectEditorImportTarget();
 	const project = editor.project;
 	const fontGlyphs = importedFont.glyphs.glyphs;
+	// log(`\nfontGlyphs:`);
+	// log(fontGlyphs);
 	const fontLigatures = importedFont.substitution.getLigatures('liga');
+	// log(`\nfontLigatures:`);
+	// log(fontLigatures);
 	const fontKerns = importedFont.kerningPairs;
+	// log(`\nfontKerns:`);
+	// log(fontKerns);
 
 	importItemTotal = countItems(fontGlyphs) + fontLigatures.length + countItems(fontKerns);
 
