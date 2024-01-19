@@ -1,7 +1,7 @@
 import { getCurrentProjectEditor } from '../app/main.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
 import { setCursor, updateCursor } from './cursors.js';
-import { handleDropSVGonEditCanvas, handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
+import { handleDropSVGonEditCanvas } from './events_drag_drop_paste.js';
 import { handleKeyPress, handleKeyUp } from './events_keyboard.js';
 import { handleMouseEvents, handleMouseWheel } from './events_mouse.js';
 import { Tool_Kern } from './tools/kern.js';
@@ -68,7 +68,6 @@ export function initEventHandlers(canvas) {
 	canvas.addEventListener('drop', handleDropSVGonEditCanvas, false);
 	canvas.addEventListener('dragenter', handleDragEnterCanvas, false);
 	canvas.addEventListener('dragover', cancelDefaultEventActions, false);
-	canvas.addEventListener('paste', handlePasteSVGonEditCanvas, false);
 
 	// Document Key Listeners
 	document.addEventListener('keydown', handleKeyPress, false);

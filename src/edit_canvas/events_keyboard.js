@@ -2,19 +2,13 @@ import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { ioFont_exportFont } from '../formats_io/font_export.js';
 import { ioSVG_exportSVGfont } from '../formats_io/svg_font_export.js';
-import {
-	clipboardCopy,
-	clipboardPaste,
-	deleteSelectedPaths,
-	deleteSelectedPoints,
-} from '../panels/actions.js';
+import { clipboardCopy, clipboardPaste, deleteSelectedPaths, deleteSelectedPoints } from '../panels/actions.js';
 import {
 	cancelDefaultEventActions,
 	eventHandlerData,
 	togglePanOff,
 	togglePanOn,
 } from './events.js';
-import { handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
 import { clickTool } from './tools/tools.js';
 
 // --------------------------------------------------------------
@@ -175,11 +169,11 @@ export function handleKeyPress(event) {
 
 		// ctrl + v
 		if (ehd.isCtrlDown && key === 'v') {
-			cancelDefaultEventActions(event);
+			// log(`\n⮟editor.clipboard⮟`);
+			// log(editor.clipboard);
 			if (editor.clipboard) {
 				clipboardPaste();
-			} else {
-				handlePasteSVGonEditCanvas(event);
+				cancelDefaultEventActions(event);
 			}
 		}
 

@@ -58,7 +58,6 @@ export function makeGlyphSVGforExport(glyph) {
 	let re = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" `;
 	// re += `width="${size}" height="${size}" viewBox="0,0,${size},${size}">\n`;
 	re += `viewBox="0,0,${size},${size}">\n`;
-	// re += `\t<g transform="translate(100,${size})">\n`;
 	re += `\t<g>\n`;
 	re += `\t\t<path d="${svg}"/>\n`;
 	re += `\t</g>\n</svg>`;

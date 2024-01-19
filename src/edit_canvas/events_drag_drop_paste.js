@@ -44,7 +44,8 @@ export async function handlePasteSVGonEditCanvas(event) {
 	// log(`handlePasteSVGonEditCanvas`, 'start');
 	// log(event);
 	// Stop data actually being pasted into div
-	cancelDefaultEventActions(event);
+	// cancelDefaultEventActions(event);
+
 
 	// log(`\n⮟event.clipboardData⮟`);
 	// log(event.clipboardData);
@@ -58,17 +59,17 @@ export async function handlePasteSVGonEditCanvas(event) {
 		// log(clipboardData);
 		let text = clipboardData.getData('Text');
 		importSVGtoCurrentItem(text, '<br>the operating system clipboard');
-	} else if (navigator.clipboard) {
+	} else if (navigator?.clipboard?.readText) {
 		navigator.clipboard.readText().then((text) => {
 			if (text) {
 				// log(`text: ${text}`);
 				importSVGtoCurrentItem(text, '<br>the operating system clipboard');
 			} else {
-				showToast('Nothing on the clipboard');
+				showToast('Could not import SVG from the operating system clipboard');
 			}
 		});
 	} else {
-		showToast('Nothing on the clipboard');
+		showToast('Could not import SVG from the operating system clipboard');
 		// log(`handlePasteSVGonEditCanvas`, 'end');
 		return;
 	}
