@@ -256,6 +256,15 @@ ul li {
 	margin-top: 10px;
 }
 
+canvas:focus,
+canvas:focus-visible,
+edit-canvas:focus,
+edit-canvas:focus-visible {
+	border: 0;
+	border-image: none;
+	outline: 0;
+}
+
 /* --------------------------------------------------------------
 // Common variables
 // ------------------------------------------------------------*/

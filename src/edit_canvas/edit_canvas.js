@@ -17,6 +17,7 @@ import {
 	drawSelectedPathOutline,
 } from './draw_edit_affordances.js';
 import { eventHandlerData, initEventHandlers } from './events.js';
+import { handlePasteSVGonEditCanvas } from './events_drag_drop_paste.js';
 
 /**
  * EditCanvas takes a string of glyphs and displays them on the canvas
@@ -58,9 +59,30 @@ export class EditCanvas extends HTMLElement {
 
 		this.canvas.height = this.height;
 		this.canvas.width = this.width;
-		// this.canvas.setAttribute('contenteditable', 'true');
 
 		const editor = getCurrentProjectEditor();
+
+		// Need paste event listeners on both edit-canvas and canvas
+		// for cross-browser compat
+		this.canvas.setAttribute('contenteditable', 'true');
+		this.canvas.addEventListener('paste', handlePasteSVGonEditCanvas, false);
+		this.setAttribute('contenteditable', 'true');
+		this.addEventListener('paste', handlePasteSVGonEditCanvas, false);
+
+		const styles = makeElement({
+			tag: 'style',
+			innerHTML: `
+				:focus-visible,
+				:focus,
+				canvas:focus-visible,
+				canvas:focus {
+					border: 0;
+					border-image: none;
+					outline: 0;
+				}`,
+		});
+		shadow.appendChild(styles);
+
 		initEventHandlers(this.canvas);
 		editor.editCanvas = this;
 
