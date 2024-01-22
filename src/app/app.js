@@ -26,7 +26,7 @@ export class GlyphrStudioApp {
 		// Version
 		this.versionName = 'Version 2';
 		this.version = '2.1.2';
-		this.versionDate = 0;
+		this.versionDate = 1705953600000;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -43,8 +43,8 @@ export class GlyphrStudioApp {
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: false, // {bool or 'oblegg'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Ligatures', // {Sentence case page name} navigate straight to a page
-				currentGlyphID: 'glyph-0x61', // {glyph id} select a glyph
+				currentPage: false, // {Sentence case page name} navigate straight to a page
+				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting

@@ -49,7 +49,13 @@ describe('GlyphrStudioProject Tests', () => {
 		const project = new GlyphrStudioProject(mockProjectData);
 		const savedProject = project.save();
 		expect(savedProject.settings.project.name).toBe('My Font');
-		expect(savedProject.settings.project.characterRanges).toEqual([]);
+		expect(savedProject.settings.project.characterRanges).toEqual([
+			{
+				begin: '0x20',
+				end: '0x7F',
+				name: 'Basic Latin',
+			},
+		]);
 		expect(savedProject.settings.app.guides.custom).toEqual([]);
 		expect(savedProject.settings.app.livePreviews).toEqual([]);
 		expect(savedProject.settings.font.family).toBe('My Font');
