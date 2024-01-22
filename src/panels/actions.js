@@ -205,7 +205,11 @@ export function getActionData(name) {
 					editor.history.addState(`Automatically navigated to ${editor.selectedItem.name}`);
 					// log(`New item id: ${editor.selectedItemID}`);
 					editor.publish('whichGlyphIsSelected', editor.selectedItemID);
-					showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
+					showToast(`
+						Deleted ${name}.<br>
+						(Don't worry, this action can be undone)<br>
+						Navigated to ${editor.selectedItem.name}
+					`);
 				},
 			},
 			{
@@ -363,7 +367,11 @@ export function getActionData(name) {
 					editor.deleteSelectedItemFromProject();
 					editor.history.addState(`Automatically navigated to ${editor.selectedItemID}`);
 					editor.publish('whichKernGroupIsSelected', editor.selectedItemID);
-					showToast(`Deleted ${name}.<br>(Don't worry, this action can be undone)`);
+					showToast(`
+						Deleted ${name}.<br>
+						(Don't worry, this action can be undone)<br>
+						Navigated to ${editor.selectedItem.name}
+					`);
 				},
 			},
 		];

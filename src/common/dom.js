@@ -23,13 +23,18 @@ export function makeElement({
 	onClick = false,
 	doc = document,
 } = {}) {
+	// log(`makeElement - ${tag}`, 'start');
+	// log(`tag: ${tag}`);
 	if (!doc || !doc.createElement) {
 		console.warn('no document or createElement');
 		console.warn(doc);
+		// log(`makeElement - ${tag}`, 'end');
 		return '';
 	}
 
 	const newElement = doc.createElement(tag);
+	// log(`\n⮟newElement⮟`);
+	// log(newElement);
 
 	if (className) newElement.setAttribute('class', className);
 
@@ -64,6 +69,7 @@ export function makeElement({
 		newElement.addEventListener('click', onClick);
 	}
 
+	// log(`makeElement - ${tag}`, 'end');
 	return newElement;
 }
 

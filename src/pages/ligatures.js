@@ -110,7 +110,9 @@ export function makePage_Ligatures() {
 		topic: 'whichLigatureIsSelected',
 		subscriberID: 'nav.ligatureChooserButton',
 		callback: () => {
-			l2.innerHTML = makeNavButtonContent(editor.selectedLigature.name, 'EDITING');
+			if (editor.selectedLigature) {
+				l2.innerHTML = makeNavButtonContent(editor.selectedLigature?.name, 'EDITING');
+			}
 		},
 	});
 
@@ -249,7 +251,9 @@ const ligaturesWithCodePoints = [
 
 function addCommonLigaturesToProject() {
 	ligaturesWithCodePoints.forEach((lig) => addLigature(lig.chars));
-	getCurrentProjectEditor().navigate('Ligatures');
+	const editor = getCurrentProjectEditor();
+	editor.navigate('Ligatures');
+	editor.history.addWholeProjectChangePostState();
 }
 
 function addLigature(sequence) {
@@ -382,6 +386,7 @@ export function showAddLigatureDialog() {
 			const editor = getCurrentProjectEditor();
 			editor.selectedLigatureID = result.id;
 			editor.navigate();
+			editor.history.addWholeProjectChangePostState();
 			closeEveryTypeOfDialog();
 		}
 		// log(`showAddLigatureDialog button click handler`, 'end');
