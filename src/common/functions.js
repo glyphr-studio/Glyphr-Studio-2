@@ -12,8 +12,9 @@
  * @param {Object} obj
  * @returns {String}
  */
-export function getFirstID(obj) {
-	for (const key of Object.keys(obj)) return key;
+export function getFirstID(obj = {}) {
+	const keys = Object.keys(obj);
+	if (keys.length) return keys[0];
 	return false;
 }
 

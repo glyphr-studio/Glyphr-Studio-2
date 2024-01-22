@@ -233,6 +233,7 @@ export class ProjectEditor {
 		// log(`selectedGlyphID ${selectedID}`);
 		if (!this.project.glyphs[selectedID]) {
 			this.project.addItemByType(new Glyph(), 'Glyph', selectedID);
+			this.history.addWholeProjectChangePostState();
 		}
 		let re = this.project.glyphs[selectedID];
 		// log(re);
@@ -416,12 +417,9 @@ export class ProjectEditor {
 	set selectedGlyphID(id) {
 		// log(`ProjectEditor SET selectedGlyphID`, 'start');
 		// log(`id: ${id}`);
-		if (typeof id !== 'string') return;
-		if (!id.startsWith('glyph-')) {
+		if (typeof id !== 'string' || !id.startsWith('glyph-')) {
 			this._selectedGlyphID = false;
-			return;
-		}
-		if (this.project.glyphs[id]) {
+		} else if (this.project.glyphs[id]) {
 			this._selectedGlyphID = id;
 		} else if (id.startsWith('glyph-')) {
 			this.project.glyphs[id] = new Glyph({ id: id, parent: this.project });
@@ -447,14 +445,18 @@ export class ProjectEditor {
 	 * @param {String} id - ID to select
 	 */
 	set selectedLigatureID(id) {
-		if (typeof id !== 'string') return;
-		if (this.project.ligatures[id]) {
+		if (typeof id !== 'string' || !id.startsWith('liga-')) {
+			this._selectedLigatureID = false;
+		} else if (this.project.ligatures[id]) {
 			this._selectedLigatureID = id;
 		} else {
 			console.warn(`Ligature ID ${id} does not exist in the project.`);
 			this._selectedLigatureID = getFirstID(this.project.ligatures);
 		}
-		this.publish('whichLigatureIsSelected', this.selectedLigatureID);
+
+		if (this._selectedLigatureID) {
+			this.publish('whichLigatureIsSelected', this.selectedLigatureID);
+		}
 	}
 
 	/**
@@ -473,15 +475,18 @@ export class ProjectEditor {
 	 * @param {String} id - ID to select
 	 */
 	set selectedComponentID(id) {
-		if (typeof id !== 'string') return;
-		if (this.project.components[id]) {
+		if (typeof id !== 'string' || !id.startsWith('comp-')) {
+			this._selectedComponentID = false;
+		} else if (this.project.components[id]) {
 			this._selectedComponentID = id;
 		} else {
 			console.warn(`Component ID ${id} does not exist in the project.`);
 			this._selectedComponentID = getFirstID(this.project.components);
 		}
 
-		this.publish('whichComponentIsSelected', this.selectedComponentID);
+		if (this._selectedComponentID) {
+			this.publish('whichComponentIsSelected', this.selectedComponentID);
+		}
 	}
 
 	/**
@@ -499,7 +504,10 @@ export class ProjectEditor {
 	 * @param {String} id - ID to select
 	 */
 	set selectedKernGroupID(id) {
-		if (typeof id !== 'string') return;
+		if (typeof id !== 'string' || !id.startsWith('kern-')) {
+			this._selectedKernGroupID = false;
+			return;
+		}
 		if (this.project.kerning[id]) {
 			this._selectedKernGroupID = id;
 		} else {
@@ -507,7 +515,9 @@ export class ProjectEditor {
 			this._selectedKernGroupID = getFirstID(this.project.kerning);
 		}
 
-		this.publish('whichKernGroupIsSelected', this.selectedKernGroupID);
+		if (this._selectedKernGroupID) {
+			this.publish('whichKernGroupIsSelected', this.selectedKernGroupID);
+		}
 	}
 
 	/**
@@ -525,8 +535,10 @@ export class ProjectEditor {
 	deleteSelectedItemFromProject(page = false) {
 		// log(`deleteSelectedItemFromProject`, 'start');
 		// log(`page: ${page}`);
-
+		// log(`this.nav.page: ${this.nav.page}`);
 		const itemPageName = page || this.nav.page;
+		// log(`itemPageName: ${itemPageName}`);
+
 		let id;
 
 		if (itemPageName === 'Characters') {
@@ -547,7 +559,12 @@ export class ProjectEditor {
 			this.deleteItem(id, this.project.kerning);
 		}
 
-		this.selectFallbackItem(itemPageName);
+		const fallbackAcrossItemType = this.selectFallbackItem(itemPageName);
+		// log(`fallbackAcrossItemType: ${fallbackAcrossItemType}`);
+		if (fallbackAcrossItemType) {
+			this.nav.page = 'Characters';
+			this.navigate();
+		}
 		// log(`deleteSelectedItemFromProject`, 'end');
 	}
 
@@ -568,8 +585,33 @@ export class ProjectEditor {
 	selectFallbackItem(page = false) {
 		// log(`ProjectEditor.selectFallbackItem`, 'start');
 		const itemPageName = page || this.nav.page;
+		// log(`itemPageName: ${itemPageName}`);
+		let fallbackAcrossItemType = false;
 
-		if (itemPageName === 'Characters') {
+		if (itemPageName === 'Components') {
+			// log(`\n⮟this.project.components⮟`);
+			// log(this.project.components);
+			this.selectedComponentID = getFirstID(this.project.components);
+			if (!this.selectedComponentID) fallbackAcrossItemType = true;
+			// log(`new selectedComponentID: ${this.selectedComponentID}`);
+		} else if (itemPageName === 'Ligatures') {
+			// log(`\n⮟this.project.ligatures⮟`);
+			// log(this.project.ligatures);
+			// log(Object.keys(this.project.ligatures));
+			this.selectedLigatureID = getFirstID(this.project.ligatures);
+			if (!this.selectedLigatureID) fallbackAcrossItemType = true;
+			// log(`new selectedLigatureID: ${this.selectedLigatureID}`);
+		} else if (itemPageName === 'Kerning') {
+			// log(`\n⮟this.project.kerning⮟`);
+			// log(this.project.kerning);
+			this.selectedKernGroupID = getFirstID(this.project.kerning);
+			if (!this.selectedKernGroupID) fallbackAcrossItemType = true;
+			// log(`new selectedKernGroupID: ${this.selectedKernGroupID}`);
+		}
+
+		// log(`fallbackAcrossItemType: ${fallbackAcrossItemType}`);
+
+		if (itemPageName === 'Characters' || fallbackAcrossItemType) {
 			const selectedRange = this.selectedCharacterRange;
 			if (selectedRange) {
 				// log(`Selected Range detected as ${selectedRange.name}`);
@@ -584,18 +626,10 @@ export class ProjectEditor {
 				}
 			}
 			// log(`new selectedGlyphID: ${this.selectedGlyphID}`);
-		} else if (itemPageName === 'Components') {
-			this.selectedComponentID = getFirstID(this.project.components);
-			// log(`new selectedComponentID: ${this.selectedComponentID}`);
-		} else if (itemPageName === 'Ligatures') {
-			this.selectedLigatureID = getFirstID(this.project.ligatures);
-			// log(`new selectedLigatureID: ${this.selectedLigatureID}`);
-		} else if (itemPageName === 'Kerning') {
-			this.selectedKernGroupID = getFirstID(this.project.kerning);
-			// log(`new selectedKernGroupID: ${this.selectedKernGroupID}`);
 		}
 
 		// log(`ProjectEditor.selectFallbackItem`, 'end');
+		return fallbackAcrossItemType;
 	}
 
 	// --------------------------------------------------------------

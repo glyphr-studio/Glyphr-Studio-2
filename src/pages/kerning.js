@@ -107,7 +107,9 @@ export function makePage_Kerning() {
 		topic: 'whichKernGroupIsSelected',
 		subscriberID: 'nav.kernChooserButton',
 		callback: () => {
-			l2.innerHTML = makeNavButtonContent(editor.selectedKernGroup.name, 'EDITING');
+			if (editor.selectedKernGroup) {
+				l2.innerHTML = makeNavButtonContent(editor.selectedKernGroup?.name, 'EDITING');
+			}
 		},
 	});
 
@@ -326,6 +328,7 @@ export function showAddEditKernGroupDialog(kernGroup = false) {
 			} else {
 				editor.selectedItemID = result.id;
 				editor.navigate();
+				editor.history.addWholeProjectChangePostState();
 				closeEveryTypeOfDialog();
 			}
 		}

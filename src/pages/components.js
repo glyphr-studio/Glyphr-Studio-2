@@ -105,7 +105,9 @@ export function makePage_Components() {
 		topic: 'whichComponentIsSelected',
 		subscriberID: 'nav.componentChooserButton',
 		callback: () => {
-			l2.innerHTML = makeNavButtonContent(editor.selectedComponent.name, 'EDITING');
+			if (editor.selectedComponent) {
+				l2.innerHTML = makeNavButtonContent(editor.selectedComponent?.name, 'EDITING');
+			}
 		},
 	});
 
@@ -175,7 +177,9 @@ export function makePage_Components() {
 		topic: 'currentItem',
 		subscriberID: 'ComponentsPage.l2Nav',
 		callback: () => {
-			l2.innerHTML = makeNavButtonContent(editor.selectedComponent.name, 'EDITING');
+			if (editor.selectedComponent) {
+				l2.innerHTML = makeNavButtonContent(editor.selectedComponent?.name, 'EDITING');
+			}
 		},
 	});
 
@@ -285,6 +289,7 @@ export function showAddComponentDialog() {
 			const editor = getCurrentProjectEditor();
 			editor.selectedComponentID = result.id;
 			editor.navigate();
+			editor.history.addWholeProjectChangePostState();
 			closeEveryTypeOfDialog();
 		}
 	});

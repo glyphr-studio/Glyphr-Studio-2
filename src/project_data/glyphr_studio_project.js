@@ -1,4 +1,4 @@
-import { getGlyphrStudioApp } from '../app/main.js';
+import { getCurrentProjectEditor, getGlyphrStudioApp } from '../app/main.js';
 import { charsToHexArray, validateAsHex } from '../common/character_ids.js';
 import { clone, remove, round, trim } from '../common/functions.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
@@ -278,6 +278,7 @@ export class GlyphrStudioProject {
 			if (!result && forceCreateItem) {
 				// log(`forceCreateItem with id ${id}`);
 				this.addItemByType(new Glyph({ id: id }), 'Ligature', id);
+				getCurrentProjectEditor().history.addWholeProjectChangePostState();
 				result = this.ligatures[id];
 			}
 		} else if (this.glyphs && id.startsWith('glyph-')) {
@@ -287,6 +288,7 @@ export class GlyphrStudioProject {
 			if (!result && forceCreateItem) {
 				// log(`forceCreateItem with id ${id}`);
 				this.addItemByType(new Glyph({ id: id }), 'Glyph', id);
+				getCurrentProjectEditor().history.addWholeProjectChangePostState();
 				result = this.glyphs[id];
 			}
 		} else if (this.components && id.startsWith('comp-')) {
@@ -295,6 +297,7 @@ export class GlyphrStudioProject {
 			if (!result && forceCreateItem) {
 				// log(`forceCreateItem with id ${id}`);
 				this.addItemByType(new Glyph({ id: id }), 'Component', id);
+				getCurrentProjectEditor().history.addWholeProjectChangePostState();
 				result = this.components[id];
 			}
 		} else if (this.kerning && id.startsWith('kern-')) {
@@ -412,14 +415,21 @@ export class GlyphrStudioProject {
 			}
 
 			if (unicodeName) {
-				// log('got unicode name: ' + un);
 				// log('GlyphrStudioProject.getItemName', 'end');
 				return unicodeName;
 			}
 		}
 
 		const item = this.getItem(id);
-		const result = item.name || '[name not found]';
+		let result = item.name;
+
+		if (!result) {
+			if (id.startsWith('glyph-')) result = 'Character';
+			else if (id.startsWith('liga-')) result = 'Ligature';
+			else if (id.startsWith('comp-')) result = 'Component';
+			else if (id.startsWith('kern-')) result = 'Kern group';
+			else result = 'Item';
+		}
 		// log(`Returning: ${result}`);
 		// log('GlyphrStudioProject.getItemName', 'end');
 		return result;

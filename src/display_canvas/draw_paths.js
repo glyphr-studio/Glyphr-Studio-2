@@ -21,7 +21,7 @@ export function drawGlyph(glyph, ctx, view = { x: 0, y: 0, z: 1 }, alpha = 1, fi
 	// log('view ' + json(view, true));
 	// log(ctx);
 	if (!glyph.shapes) {
-		console.warn(`Glyph ${glyph.name} has no shapes to draw`);
+		console.warn(`Glyph ${glyph.id} has no shapes to draw`);
 		return false;
 	}
 
