@@ -53,8 +53,6 @@ export class EditCanvas extends HTMLElement {
 
 		// Put it all together
 		let shadow = this.attachShadow({ mode: 'open' });
-		// let styles = makeElement({ tag: 'style', innerHTML: style });
-		// shadow.appendChild(styles);
 		shadow.appendChild(this.canvas);
 
 		this.canvas.height = this.height;
@@ -66,7 +64,6 @@ export class EditCanvas extends HTMLElement {
 		// for cross-browser compat
 		this.canvas.setAttribute('contenteditable', 'true');
 		this.canvas.addEventListener('paste', handlePasteSVGonEditCanvas, false);
-		this.setAttribute('contenteditable', 'true');
 		this.addEventListener('paste', handlePasteSVGonEditCanvas, false);
 
 		const styles = makeElement({
@@ -100,6 +97,7 @@ export class EditCanvas extends HTMLElement {
 	connectedCallback() {
 		// log(`EditCanvas.connectedCallback`, 'start');
 		// Auto-fit view
+		this.setAttribute('contenteditable', 'true');
 		const editor = getCurrentProjectEditor();
 		editor.autoFitIfViewIsDefault();
 		// log(`EditCanvas.connectedCallback`, 'end');
