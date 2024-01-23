@@ -124,10 +124,7 @@ function importOneGlyph(otfGlyph, project) {
 
 	const glyphID = `glyph-${uni}`;
 	importedGlyph.id = glyphID;
-
 	finalGlyphs[glyphID] = importedGlyph;
-	// log(`Pushing new glyph to finalGlyphs as:`);
-	// log(finalGlyphs[uni]);
 
 	if (isControlChar(uni)) {
 		project.settings.app.showNonCharPoints = true;

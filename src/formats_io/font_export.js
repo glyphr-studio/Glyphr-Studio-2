@@ -22,13 +22,20 @@ export async function ioFont_exportFont() {
 
 	const options = createOptionsObject();
 	const exportLists = populateExportList();
+	// Add .notdef
+	addNotdefToExport(options);
 
+	// Add Characters
 	let exportedItem;
 	for (let g = 0; g < exportLists.glyphs.length; g++) {
 		exportedItem = await generateOneGlyph(exportLists.glyphs[g]);
 		options.glyphs.push(exportedItem);
 	}
+	// log(`\n⮟codePointGlyphIndexTable⮟`);
+	// log(codePointGlyphIndexTable);
 
+
+	// Add Ligatures
 	for (let l = 0; l < exportLists.ligatures.length; l++) {
 		exportedItem = await generateOneLigature(exportLists.ligatures[l]);
 		options.glyphs.push(exportedItem);
@@ -96,29 +103,6 @@ function createOptionsObject() {
 	// log(options);
 	// log('options.version ' + options.version);
 
-	if (!project.glyphs['glyph-0x0']) {
-		// Add Notdef
-		const notdef = makeNotdefGlyph();
-		// log(`notdef.advanceWidth: ${notdef.advanceWidth}`);
-
-		const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
-
-		options.glyphs.push(
-			new openTypeJS.Glyph({
-				name: '.null',
-				unicode: 0,
-				index: 0,
-				advanceWidth: round(notdef.advanceWidth),
-				xMin: round(notdef.maxes.xMin),
-				xMax: round(notdef.maxes.xMax),
-				yMin: round(notdef.maxes.yMin),
-				yMax: round(notdef.maxes.yMax),
-				path: notdefPath,
-			})
-		);
-	}
-
-	codePointGlyphIndexTable['0x0'] = 0;
 	return options;
 	// log('createOptionsObject', 'end');
 }
@@ -131,8 +115,8 @@ function populateExportList() {
 	let checklist = [];
 	let exportGlyphs = [];
 
-	project.settings.project.characterRanges.forEach(range => {
-		range.getMembers().forEach(hexID => {
+	project.settings.project.characterRanges.forEach((range) => {
+		range.getMembers().forEach((hexID) => {
 			if (checklist.indexOf(hexID) === -1) {
 				const thisGlyph = project.getItem(`glyph-${hexID}`);
 				if (thisGlyph) {
@@ -183,6 +167,66 @@ function populateExportList() {
 	return { glyphs: exportGlyphs, ligatures: exportLigatures };
 }
 
+function addNotdefToExport(options) {
+	const project = getCurrentProject();
+	let notdef = project.getItem('glyph-0x0');
+	if (!notdef) {
+		const capHeight = project.settings.font.capHeight;
+		const notDefGlyphPaths = [
+			{
+				name: 'Outer Phi Rectangle',
+				pathPoints: [
+					{ p: { coord: { x: 0, y: 700 } } },
+					{ p: { coord: { x: 432, y: 700 } } },
+					{ p: { coord: { x: 432, y: 0 } } },
+					{ p: { coord: { x: 0, y: 0 } } },
+				],
+				winding: -4,
+			},
+			{
+				name: 'Inner Phi Rectangle',
+				pathPoints: [
+					{ p: { coord: { x: 50, y: 50 } } },
+					{ p: { coord: { x: 382, y: 50 } } },
+					{ p: { coord: { x: 382, y: 650 } } },
+					{ p: { coord: { x: 50, y: 650 } } },
+				],
+				winding: 4,
+			},
+		];
+
+		notdef = new Glyph({
+			advanceWidth: 432,
+			shapes: notDefGlyphPaths,
+		});
+
+		if (capHeight !== 700) {
+			let delta = capHeight - 700;
+			notdef.updateGlyphSize({ height: delta, ratioLock: true });
+			notdef.advanceWidth = notdef.maxes.xMax;
+		}
+	}
+
+	// Add it to the export
+	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
+
+	options.glyphs.push(
+		new openTypeJS.Glyph({
+			name: 'null',
+			unicode: 0,
+			index: 0,
+			advanceWidth: round(notdef.advanceWidth),
+			xMin: round(notdef.maxes.xMin),
+			xMax: round(notdef.maxes.xMax),
+			yMin: round(notdef.maxes.yMin),
+			yMax: round(notdef.maxes.yMax),
+			path: notdefPath,
+		})
+	);
+
+	codePointGlyphIndexTable['0x0'] = 0;
+}
+
 async function generateOneGlyph(currentExportItem) {
 	// log('generateOneGlyph', 'start');
 	// export this glyph
@@ -190,19 +234,36 @@ async function generateOneGlyph(currentExportItem) {
 	const num = currentExportItem.xc;
 	const maxes = glyph.maxes;
 
-	// log(glyph.name);
+	// log(`num: ${num}`);
+	// log(`\n⮟glyph⮟`);
+	// log(glyph);
 
 	showToast('Exporting<br>' + glyph.name, 999999);
 
+	// Path data
 	const thisPath = makeOpenTypeJS_Glyph(glyph, new openTypeJS.Path());
 	// log('openTypeJS thisPath');
 	// log(thisPath);
+
+	// Index & Unicode
 	const thisIndex = getNextGlyphIndexNumber();
+	// log(`thisIndex: ${thisIndex}`);
+	const thisUnicode = parseInt(num);
+	// log(`thisUnicode: ${thisUnicode}`);
+
+	// Name
+	const thisName = getUnicodeShortName(decToHex(num));
+	// log(`decToHex(num): ${decToHex(num)}`);
+	// log(`thisName: ${thisName}`);
+
+	// Advance width
 	let thisAdvance = glyph.advanceWidth;
 	if (thisAdvance === 0) thisAdvance = 0.000001; // TODO investigate zero advance width
+
+	// Create OTF.js Glyph
 	const thisGlyph = new openTypeJS.Glyph({
-		name: getUnicodeShortName(decToHex(num)),
-		unicode: parseInt(num),
+		name: thisName,
+		unicode: thisUnicode,
 		index: thisIndex,
 		advanceWidth: thisAdvance,
 		xMin: round(maxes.xMin),
@@ -262,60 +323,6 @@ let currentIndex = 0;
 function getNextGlyphIndexNumber() {
 	currentIndex += 1;
 	return currentIndex;
-}
-
-function makeNotdefGlyph() {
-	// log(`makeNotdefGlyph`, 'start');
-	const project = getCurrentProject();
-	let notdef = project.getItem('glyph-0x0');
-	if (notdef) return notdef;
-
-	const capHeight = project.settings.font.capHeight;
-	const notDefGlyphPaths = [
-		{
-			name: 'Outer Phi Rectangle',
-			pathPoints: [
-				{ p: { coord: { x: 0, y: 700 } } },
-				{ p: { coord: { x: 432, y: 700 } } },
-				{ p: { coord: { x: 432, y: 0 } } },
-				{ p: { coord: { x: 0, y: 0 } } },
-			],
-			winding: -4,
-		},
-		{
-			name: 'Inner Phi Rectangle',
-			pathPoints: [
-				{ p: { coord: { x: 50, y: 50 } } },
-				{ p: { coord: { x: 382, y: 50 } } },
-				{ p: { coord: { x: 382, y: 650 } } },
-				{ p: { coord: { x: 50, y: 650 } } },
-			],
-			winding: 4,
-		},
-	];
-
-	notdef = new Glyph({
-		name: 'notdef',
-		advanceWidth: 432,
-		shapes: notDefGlyphPaths,
-	});
-	// log(`notdef.maxes: ${notdef.maxes}`);
-	// log(`capHeight ${capHeight}`);
-	// log(`notdef.maxes.yMax ${notdef.maxes.yMax}`);
-
-	if (capHeight !== 700) {
-		let delta = capHeight - 700;
-		// log(`delta is ${delta}`);
-		notdef.updateGlyphSize({ height: delta, ratioLock: true });
-		// log(notdef);
-
-		notdef.advanceWidth = notdef.maxes.xMax;
-		// log(`notdef.maxes.height ${notdef.maxes.yMax}`);
-	}
-
-	// log(notdef);
-	// log(`makeNotdefGlyph`, 'end');
-	return notdef;
 }
 
 function makeOpenTypeJS_Glyph(item, openTypePath) {
