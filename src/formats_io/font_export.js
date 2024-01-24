@@ -34,7 +34,6 @@ export async function ioFont_exportFont() {
 	// log(`\n⮟codePointGlyphIndexTable⮟`);
 	// log(codePointGlyphIndexTable);
 
-
 	// Add Ligatures
 	for (let l = 0; l < exportLists.ligatures.length; l++) {
 		exportedItem = await generateOneLigature(exportLists.ligatures[l]);
@@ -116,15 +115,17 @@ function populateExportList() {
 	let exportGlyphs = [];
 
 	project.settings.project.characterRanges.forEach((range) => {
-		range.getMembers().forEach((hexID) => {
-			if (checklist.indexOf(hexID) === -1) {
-				const thisGlyph = project.getItem(`glyph-${hexID}`);
-				if (thisGlyph) {
-					exportGlyphs.push({ xg: thisGlyph, xc: hexID });
-					checklist.push(hexID);
+		if (range.enabled) {
+			range.getMemberIDs().forEach((hexID) => {
+				if (checklist.indexOf(hexID) === -1) {
+					const thisGlyph = project.getItem(`glyph-${hexID}`);
+					if (thisGlyph) {
+						exportGlyphs.push({ xg: thisGlyph, xc: hexID });
+						checklist.push(hexID);
+					}
 				}
-			}
-		});
+			});
+		}
 	});
 
 	exportGlyphs.sort((a, b) => a.xc - b.xc);

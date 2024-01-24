@@ -389,11 +389,12 @@ function postValidationCallback(validationResult) {
 }
 
 export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
+	// log(`importProjectDataAndNavigate`, 'start');
 	closeEveryTypeOfDialog();
 	const editor = getProjectEditorImportTarget();
 	setCurrentProjectEditor(editor);
 	if (!glyphrStudioProjectFile) {
-		editor.project = new GlyphrStudioProject();
+		editor.project = new GlyphrStudioProject({}, 'importProjectDataAndNavigate');
 		const name = document.getElementById('input__new-project-name').value || 'My Font';
 		editor.project.settings.project.name = name;
 		editor.project.settings.font.family = name;
@@ -404,6 +405,7 @@ export function importProjectDataAndNavigate(glyphrStudioProjectFile) {
 	if (isSecondProject) showToast(`Switched to<br>${editor.project.settings.project.name}`);
 	updateWindowUnloadEvent();
 	editor.navigate();
+	// log(`importProjectDataAndNavigate`, 'end');
 }
 
 function loadProjectFromAutoSave(projectID) {

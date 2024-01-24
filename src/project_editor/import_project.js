@@ -22,7 +22,7 @@ export function importGlyphrProjectFromText(importedProject) {
 	if (typeof importedProject === 'string') importedProject = JSON.parse(importedProject);
 	// log('passed:');
 	// log(importedProject);
-	if (!importedProject) importedProject = new GlyphrStudioProject();
+	if (!importedProject) importedProject = new GlyphrStudioProject({}, 'importGlyphrProjectFromText - !importedProject');
 
 	const version = tryToGetProjectVersion(importedProject);
 	// log(`version found: ${version.major}.${version.minor}.${version.patch}.${version.preRelease}`);
@@ -39,8 +39,7 @@ export function importGlyphrProjectFromText(importedProject) {
 	}
 
 	// Hydrate after all updates
-	// log(`Calling new GlyphrStudioProject from importGlyphrProjectFromText`);
-	const newProject = new GlyphrStudioProject(importedProject);
+	const newProject = new GlyphrStudioProject(importedProject, 'importGlyphrProjectFromText - hydrate');
 
 	// Pull system guide visibility from project
 	const projectSystemGuides = newProject?.settings?.app?.guides?.systemGuides;
@@ -79,9 +78,7 @@ export function importGlyphrProjectFromText(importedProject) {
  */
 function migrate_Project(oldProject) {
 	// log('migrate_Project', 'start');
-
-	// log(`Calling new GlyphrStudioProject from migrate_Project`);
-	const newProject = new GlyphrStudioProject();
+	const newProject = new GlyphrStudioProject({}, 'migrate_Project');
 
 	// Glyphs
 	// log(`Migrating Glyphs`);

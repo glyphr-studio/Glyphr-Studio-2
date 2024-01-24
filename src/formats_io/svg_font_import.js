@@ -70,7 +70,7 @@ export function ioSVG_importSVGfont(font) {
 		const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG);
 		const advanceWidth = parseInt(missingGlyph['horiz-adv-x']);
 		newGlyph.advanceWidth = advanceWidth;
-		project.enableRangeThatContains('0x0');
+		project.incrementRangeCountFor('0x0');
 		newGlyph.id = `glyph-0x0`;
 		finalGlyphs[`glyph-0x0`] = newGlyph;
 		log(`\n⮟finalGlyphs['glyph-0x0']⮟`);
@@ -137,7 +137,7 @@ export function ioSVG_importSVGfont(font) {
 				// It's a GLYPH
 				// log(`Detected Glyph`);
 				uni = uni[0];
-				project.enableRangeThatContains(uni);
+				project.incrementRangeCountFor(uni);
 				newGlyph.id = `glyph-${uni}`;
 				// log(newGlyph);
 				finalGlyphs[`glyph-${uni}`] = newGlyph;

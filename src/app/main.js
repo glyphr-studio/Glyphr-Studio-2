@@ -43,9 +43,9 @@ export function glyphrStudioOnLoad() {
 			addGlobalEventListeners();
 			// Load project
 			GSApp.setUp();
-			log(GSApp);
+			// log(GSApp);
 		} else {
-			log('did NOT pass pre-checks');
+			// log('did NOT pass pre-checks');
 		}
 		// log(`glyphrStudioOnLoad`, 'end');
 	} catch (error) {
@@ -172,8 +172,10 @@ export function setCurrentProjectEditor(newEditor) {
  * @returns {ProjectEditor}
  */
 export function getProjectEditorImportTarget() {
+	// log(`getProjectEditorImportTarget`, 'start');
 	const app = getGlyphrStudioApp();
 	if (!app.editorImportTarget) app.editorImportTarget = getCurrentProjectEditor();
+	// log(`getProjectEditorImportTarget`, 'end');
 	return app.editorImportTarget;
 }
 

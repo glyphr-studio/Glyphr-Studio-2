@@ -95,10 +95,9 @@ export class Navigator {
 	 */
 	navigate() {
 		// log(`Navigator.navigate`, 'start');
-		// let editor = getCurrentProjectEditor();
 		// log(`this.page: ${this.page}`);
 		// log(`this.panel: ${this.panel}`);
-		// log(`editor.selectedItemID: ${editor.selectedItemID}`);
+		// log(`editor.selectedItemID: ${getCurrentProjectEditor().selectedItemID}`);
 
 		const wrapper = document.getElementById('app__wrapper');
 
@@ -110,8 +109,6 @@ export class Navigator {
 				const pageContent = this.makePageContent();
 				wrapper.innerHTML = '';
 				wrapper.appendChild(makeAppTopBar());
-				// editor.multiSelect.shapes.clear();
-				// editor.multiSelect.points.clear();
 				wrapper.appendChild(pageContent);
 			} catch (error) {
 				console.warn(`Navigation failed:`, error);
