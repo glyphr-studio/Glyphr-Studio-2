@@ -78,8 +78,8 @@ export class CharacterRange {
 			name: this.name,
 			begin: this.beginHex,
 			end: this.endHex,
-			enabled: this.enabled,
 		};
+		if (!this.enabled) result.enabled = false;
 		return result;
 	}
 

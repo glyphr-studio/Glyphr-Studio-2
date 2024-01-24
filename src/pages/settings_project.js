@@ -266,10 +266,11 @@ function showEditCharacterRangeDialog(range = false) {
 		</ul>
 	`;
 
-	const rangeNote = `
+	const rangeNote = !range? '<span></span>' : `
 	<p>
-		Note: if you edit a range to be smaller, and that results in glyph objects that are not
-		contained in a character range, a new hidden character range will be created for them.
+		Note: All characters must have at least one parent character range.
+		If you edit a range to be smaller, a new hidden character range may be created to
+		contain orphaned characters.
 	</p>
 	`;
 
