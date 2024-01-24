@@ -67,6 +67,7 @@ export class ProjectEditor {
 		this.selectedLigatureID = false;
 		this.selectedKernGroupID = false;
 		this.selectedCharacterRange = false;
+		this.characterRangeData = false;
 		this.chooserPage = {
 			glyphs: 0,
 			components: 0,

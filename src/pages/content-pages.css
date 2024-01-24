@@ -102,7 +102,8 @@
 }
 
 .content-page__right-area p {
-	margin-bottom: 20px;
+	margin-bottom: 10px;
+	margin-left: 1px;
 	max-width: 800px;
 }
 
@@ -353,7 +354,7 @@ code,
 	font-style: italic;
 	position: relative;
 	top: 5px;
-	width: max-content;
+	width: 100%;
 	border-bottom: 1px solid var(--disabled-background);
 	margin-bottom: 5px;
 }
@@ -379,16 +380,19 @@ code,
 }
 
 /* Current ranges */
-.glyph-range-table__list-area {
+.range-table__list-area {
+	background-color: white;
+	border-radius: 4px;
+	padding: 0px 10px 10px 10px;
 	display: grid;
 	width: 100%;
-	max-width: 500px;
-	grid-template-columns: 5fr 1fr 1fr min-content;
+	max-width: 800px;
+	grid-template-columns: 4fr 1fr 1fr 1fr 1fr;
 	column-gap: 5px;
 	row-gap: 5px;
 }
 
-.glyph-range-table__list-area code,
+.range-table__list-area code,
 .glyph-range-chooser__list-area code {
 	width: min-content;
 	max-width: 100px;
@@ -396,8 +400,8 @@ code,
 	line-height: 20px;
 }
 
-.glyph-range-table__list-area a,
-.glyph-range-table__list-area span {
+.range-table__list-area a,
+.range-table__list-area span {
 	height: 24px;
 	line-height: 20px;
 	padding-top: 4px;
