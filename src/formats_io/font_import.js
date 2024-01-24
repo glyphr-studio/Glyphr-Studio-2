@@ -132,7 +132,7 @@ function importOneGlyph(otfGlyph, project) {
 		// log(otfGlyph);
 	}
 
-	project.enableRangeThatContains(uni);
+	project.incrementRangeCountFor(uni);
 
 	// Successful loop, advance importItemCounter
 	importItemCounter++;

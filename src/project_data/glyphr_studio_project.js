@@ -23,6 +23,7 @@ export class GlyphrStudioProject {
 	 */
 	constructor(newProject = {}) {
 		// log('GlyphrStudioProject.constructor', 'start');
+		// log(`calledBy: ${calledBy}`);
 		// log(`\n⮟newProject⮟`);
 		// log(newProject);
 		// Set up all internal default values first
@@ -134,16 +135,21 @@ export class GlyphrStudioProject {
 			newGuides.custom.forEach((guide) => this.settings.app.guides.custom.push(new Guide(guide)));
 		}
 
-		// Glyph Ranges
+		// Character Ranges
+		// log(`loading character ranges...`);
 		let newRanges = newProject?.settings?.project?.characterRanges;
+		// log(`\n⮟newRanges⮟`);
+		// log(newRanges);
 		if (newRanges) {
 			this.settings.project.characterRanges = [];
 			newRanges.forEach((range) => {
 				this.settings.project.characterRanges.push(new CharacterRange(range));
 			});
-			if (this.settings.project.characterRanges.length <= 0) this.enableRangeThatContains('0x41');
 		}
-		// log('finished importing Glyph Ranges');
+		if (this.settings.project.characterRanges.length <= 0) {
+			this.settings.project.characterRanges.push(new CharacterRange(getParentRange('0x41')));
+		}
+		// log(`\n⮟this.settings.project.characterRanges⮟`);
 		// log(this.settings.project.characterRanges);
 
 		// Validate descent
@@ -343,6 +349,9 @@ export class GlyphrStudioProject {
 		let destination;
 		if (objType === 'Glyph') {
 			destination = this.glyphs;
+			let hex = remove(newID, 'glyph-');
+			// log(`Calling incrementRangeCountFor ${hex} from addItemByType`);
+			this.incrementRangeCountFor(hex);
 		}
 		if (objType === 'Ligature') {
 			destination = this.ligatures;
@@ -366,25 +375,72 @@ export class GlyphrStudioProject {
 	}
 
 	/**
-	 * Finds the appropriate Unicode Range and enables it,
-	 * given a single character.
+	 * Given a hex ID, increments the count for ranges that contain
+	 * that GLyph.
 	 * @param {Number} hex - Unicode Hex ID number
 	 */
-	enableRangeThatContains(hex) {
-		// log(`GlyphrStudioProject.enableRangeThatContains`, 'start');
+	incrementRangeCountFor(hex) {
+		// log(`GlyphrStudioProject.incrementRangeCountFor`, 'start');
 		// log(`hex: ${hex}`);
-		const parentRange = new CharacterRange(getParentRange(hex));
-		const projectRanges = this.settings.project.characterRanges;
-		// log(`\n⮟parentRange⮟`);
-		// log(parentRange);
-		if (!projectRanges.find((range) => range.name === parentRange.name)) {
-			projectRanges.push(parentRange);
 
-			if (unicodeNonCharPointNames[hex]) this.settings.app.showNonCharPoints = true;
-		}
+		const projectRanges = this.settings.project.characterRanges;
 		// log(`\n⮟projectRanges⮟`);
 		// log(projectRanges);
-		// log(`GlyphrStudioProject.enableRangeThatContains`, 'end');
+
+		// Make sure one range exists for this character
+		let hasParent = false;
+		for (const range of projectRanges) {
+			if (range.isWithinRange(hex)) {
+				hasParent = true;
+				range.count++;
+			}
+		}
+		if (!hasParent) this.createRangeForHex(hex);
+
+		// log(`GlyphrStudioProject.incrementRangeCountFor`, 'end');
+	}
+
+	/**
+	 * Creates a range given an id
+	 * @param {Number} hex - Unicode Hex ID
+	 * @param {Boolean} createAsHidden - set enabled to false
+	 */
+	createRangeForHex(hex, createAsHidden = false) {
+		log(`createRangeForHex`, 'start');
+		log(`hex: ${hex}`);
+		const projectRanges = this.settings.project.characterRanges;
+		const newParentRange = new CharacterRange(getParentRange(hex));
+		newParentRange.count = 1;
+		if (createAsHidden) newParentRange.enabled = false;
+		projectRanges.push(newParentRange);
+		if (unicodeNonCharPointNames[hex]) this.settings.app.showNonCharPoints = true;
+		log(`createRangeForHex`, 'end');
+	}
+
+	/**
+	 * Do a loop through the range, counting the number of
+	 * actual glyph objects that exist in that range
+	 * @param {CharacterRange} range - range to update
+	 */
+	updateCharacterRangeCount(range) {
+		// log(`GlyphrStudioProject.updateCharacterRangeCount`, 'start');
+		const ids = range.getMemberIDs();
+		range.count = 0;
+		ids.forEach((id) => {
+			if (this.glyphs[`glyph-${id}`]) range.count++;
+		});
+		// log(`GlyphrStudioProject.updateCharacterRangeCount`, 'end');
+	}
+
+	/**
+	 * Update range counts for all ranges in this project
+	 */
+	updateAllCharacterRangeCounts() {
+		// log(`GlyphrStudioProject.updateAllCharacterRangeCounts`, 'start');
+		for (const range of this.settings.project.characterRanges) {
+			this.updateCharacterRangeCount(range);
+		}
+		// log(`GlyphrStudioProject.updateAllCharacterRangeCounts`, 'end');
 	}
 
 	/**

@@ -181,27 +181,29 @@ function addRangeOptionsToOptionChooser(optionChooser, editor = getCurrentProjec
 	let ranges = project.settings.project.characterRanges;
 	let option;
 	ranges.forEach((range) => {
-		// log(`range.name: ${range.name}`);
+		if (range.enabled) {
+			// log(`range.name: ${range.name}`);
 
-		option = makeElement({
-			tag: 'option',
-			innerHTML: range.name,
-			attributes: { note: range.note },
-		});
+			option = makeElement({
+				tag: 'option',
+				innerHTML: range.name,
+				attributes: { note: range.note },
+			});
 
-		option.addEventListener('click', () => {
-			// log(`OPTION.click - range: ${range.name}`);
+			option.addEventListener('click', () => {
+				// log(`OPTION.click - range: ${range.name}`);
 
-			editor.selectedCharacterRange = range;
-			let tileGrid = document.querySelector('.item-chooser__tile-grid');
-			// log(tileGrid);
-			tileGrid.remove();
-			let wrapper = document.querySelector('.item-chooser__wrapper');
-			// log(wrapper);
-			wrapper.appendChild(makeGlyphChooserTileGrid());
-		});
+				editor.selectedCharacterRange = range;
+				let tileGrid = document.querySelector('.item-chooser__tile-grid');
+				// log(tileGrid);
+				tileGrid.remove();
+				let wrapper = document.querySelector('.item-chooser__wrapper');
+				// log(wrapper);
+				wrapper.appendChild(makeGlyphChooserTileGrid());
+			});
 
-		optionChooser.appendChild(option);
+			optionChooser.appendChild(option);
+		}
 	});
 }
 
@@ -212,7 +214,7 @@ function makeGlyphChooserTileGrid(editor = getCurrentProjectEditor()) {
 	// log(editor.selectedCharacterRange);
 
 	let tileGrid = makeElement({ tag: 'div', className: 'item-chooser__tile-grid' });
-	let rangeArray = editor.selectedCharacterRange.getMembers(
+	let rangeArray = editor.selectedCharacterRange.getMemberIDs(
 		editor.project.settings.app.showNonCharPoints
 	);
 

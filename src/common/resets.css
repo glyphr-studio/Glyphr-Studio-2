@@ -118,6 +118,11 @@ p {
 	display: block;
 }
 
+span:disabled,
+span[disabled="disabled"] {
+	color: var(--disabled-text);
+}
+
 hr {
 	border-style: solid;
 	border-color: var(--gray-l85);

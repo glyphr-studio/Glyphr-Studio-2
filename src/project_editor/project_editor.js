@@ -67,7 +67,6 @@ export class ProjectEditor {
 		this.selectedLigatureID = false;
 		this.selectedKernGroupID = false;
 		this.selectedCharacterRange = false;
-		this.characterRangeData = false;
 		this.chooserPage = {
 			glyphs: 0,
 			components: 0,
@@ -144,8 +143,7 @@ export class ProjectEditor {
 	 */
 	get project() {
 		if (!this._project) {
-			// log(`Calling new GlyphrStudioProject from ProjectEditor GET .project`);
-			this._project = new GlyphrStudioProject();
+			this._project = new GlyphrStudioProject({}, 'ProjectEditor GET .project');
 			this.initializeHistory(this._project);
 		}
 		return this._project;
@@ -161,7 +159,7 @@ export class ProjectEditor {
 		// log(gsp);
 		if (gsp) {
 			// log(`Importing project...`);
-			this._project = new GlyphrStudioProject(gsp);
+			this._project = gsp;
 			this.initializeHistory(gsp);
 			this.selectedGlyphID = 'glyph-0x41';
 		} else {
@@ -616,7 +614,7 @@ export class ProjectEditor {
 			const selectedRange = this.selectedCharacterRange;
 			if (selectedRange) {
 				// log(`Selected Range detected as ${selectedRange.name}`);
-				let rangeList = selectedRange.getMembers();
+				let rangeList = selectedRange.getMemberIDs();
 				for (let i = 0; i < rangeList.length; i++) {
 					let id = `glyph-${rangeList[i]}`;
 					// log(`checking id ${id}`);
@@ -998,8 +996,7 @@ export class ProjectEditor {
 
 		let saveData = this.project.save();
 
-		// log(`Calling new GlyphrStudioProject from saveProjectFile`);
-		const defaultValues = new GlyphrStudioProject();
+		const defaultValues = new GlyphrStudioProject({}, 'saveProjectFile');
 		saveData = removeDefaultValues(saveData, defaultValues, 'settings');
 
 		if (this.project.settings.app.saveLivePreviews) {

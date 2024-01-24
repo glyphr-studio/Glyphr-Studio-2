@@ -250,7 +250,7 @@ function makeHistoryEntry({ title = '', itemWasDeleted = false, wholeProjectSave
 
 	if (wholeProjectSave) {
 		// Whole project save point
-		item = new GlyphrStudioProject(editor.project.save());
+		item = new GlyphrStudioProject(editor.project.save(), 'makeHistoryEntry');
 		title = title || `Changes across many items.`;
 		page = false;
 	} else {

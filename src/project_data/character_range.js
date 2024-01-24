@@ -2,10 +2,12 @@ import { decToHex } from '../common/character_ids.js';
 import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 
 export class CharacterRange {
-	constructor({ begin = 0, end = 0, name = ''}) {
+	constructor({ begin = 0, end = 0, name = '', enabled = true, count = 0 }) {
 		this.begin = begin;
 		this.end = end;
 		this.name = name;
+		this.enabled = !!enabled;
+		this.count = count;
 		this.cachedArray = false;
 	}
 
@@ -15,6 +17,7 @@ export class CharacterRange {
 
 	set begin(val) {
 		this._begin = parseInt(val);
+		this.cachedArray = false;
 	}
 
 	get end() {
@@ -23,6 +26,15 @@ export class CharacterRange {
 
 	set end(val) {
 		this._end = parseInt(val);
+		this.cachedArray = false;
+	}
+
+	get count() {
+		return this._count || 0;
+	}
+
+	set count(val) {
+		this._count = parseInt(val);
 	}
 
 	// --------------------------------------------------------------
@@ -66,8 +78,13 @@ export class CharacterRange {
 			name: this.name,
 			begin: this.beginHex,
 			end: this.endHex,
+			enabled: this.enabled,
 		};
 		return result;
+	}
+
+	isWithinRange(id) {
+		return id <= this.end && id >= this.begin;
 	}
 
 	// --------------------------------------------------------------
@@ -90,7 +107,7 @@ export class CharacterRange {
 		return `${this.name} ${this.note}`;
 	}
 
-	getMembers(showNonCharPoints = false) {
+	getMemberIDs(showNonCharPoints = false) {
 		if (this.cachedArray) return this.cachedArray;
 
 		const result = [];

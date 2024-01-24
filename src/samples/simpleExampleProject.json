@@ -7,7 +7,7 @@
       "id": "g2_test_font",
       "characterRanges": [
         {
-          "begin": 33,
+          "begin": 32,
           "end": 127,
           "name": "Basic Latin"
         },

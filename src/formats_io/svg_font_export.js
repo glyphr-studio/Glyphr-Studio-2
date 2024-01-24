@@ -121,11 +121,13 @@ function calcFontMaxes() {
 	// log(ranges);
 
 	ranges.forEach((range) => {
-		for (let char = range.begin; char < range.end; char++) {
-			thisGlyph = project.getItem(`glyph-${decToHex(char)}`);
-			if (thisGlyph) fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
+		if (range.enabled) {
+			for (let char = range.begin; char < range.end; char++) {
+				thisGlyph = project.getItem(`glyph-${decToHex(char)}`);
+				if (thisGlyph) fm.maxes = getOverallMaxes([fm.maxes, thisGlyph.maxes]);
+			}
+			fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
 		}
-		fm.maxGlyph = Math.max(fm.maxGlyph, range.end);
 	});
 
 	for (const lig of Object.keys(project.ligatures)) {
@@ -163,22 +165,24 @@ function ioSVG_makeAllGlyphs() {
 	const checklist = [];
 	const exportGlyphs = [];
 
-	project.settings.project.characterRanges.forEach(range => {
-		range.getMembers().forEach(hexID => {
-			if (checklist.indexOf(hexID) === -1) {
-				const thisGlyph = project.getItem(`glyph-${hexID}`);
-				if (thisGlyph) {
-					exportGlyphs.push({ xg: thisGlyph, xc: hexID });
-					checklist.push(hexID);
+	project.settings.project.characterRanges.forEach((range) => {
+		if (range.enabled) {
+			range.getMemberIDs().forEach((hexID) => {
+				if (checklist.indexOf(hexID) === -1) {
+					const thisGlyph = project.getItem(`glyph-${hexID}`);
+					if (thisGlyph) {
+						exportGlyphs.push({ xg: thisGlyph, xc: hexID });
+						checklist.push(hexID);
+					}
 				}
-			}
-		});
+			});
+		}
 	});
 
 	let con = '';
 
 	con += '\t\t\t<!-- Glyphs -->\n';
-	exportGlyphs.forEach(glyph => {
+	exportGlyphs.forEach((glyph) => {
 		con += ioSVG_makeOneGlyph(glyph.xg, glyph.xc);
 	});
 
