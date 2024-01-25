@@ -43,13 +43,13 @@ export function makeSettingsTabContentProject() {
 	const rangesArea = makeElement({
 		tag: 'div',
 		innerHTML: `
-			<h2>Glyph ranges</h2>
+			<h2>Character ranges</h2>
 			<p>
-				Glyph ranges are based on the <a href="https://en.wikipedia.org/wiki/Unicode" target="_blank">Unicode Standard</a>,
+				Character ranges are based on the <a href="https://en.wikipedia.org/wiki/Unicode" target="_blank">Unicode Standard</a>,
 				which assigns a <a href="https://en.wikipedia.org/wiki/Hexadecimal" target="_blank">hexadecimal number</a>
-				to all possible glyphs in a font.
+				to all possible characters in a font.
 				<a href="https://en.wikipedia.org/wiki/Unicode_block" target="_blank">Wikipedia's Unicode Block page</a>
-				is a good place to get familiar with all the different glyphs it's possible to have in a font.
+				is a good place to get familiar with all the different characters it's possible to have in a font.
 			</p>
 		`,
 	});
@@ -94,6 +94,9 @@ export function makeSettingsTabContentProject() {
 			<p>
 				These are ranges with characters that are saved in your project,
 				but are not part of enabled character ranges.
+				<br>
+				These will be saved to your Glyphr Studio Project File, but
+				will not be exported to fonts.
 			</p>
 		`),
 		textToNode('<div id="hidden-range-table__wrapper"></div>'),
@@ -110,6 +113,15 @@ export function makeSettingsTabContentProject() {
 	addAsChildren(tabContent, [settingsArea, rangesArea]);
 
 	return tabContent;
+}
+
+function updateRangesTables() {
+	const enabled = document.querySelector('#enabled-range-table__wrapper');
+	const hidden = document.querySelector('#hidden-range-table__wrapper');
+	enabled.innerHTML = '';
+	hidden.innerHTML = '';
+	addAsChildren(enabled, makeEnabledRangesTable());
+	addAsChildren(hidden, makeHiddenRangesTable());
 }
 
 // --------------------------------------------------------------
@@ -187,15 +199,6 @@ function makeEnabledRangesTable() {
 	return rangeTable;
 }
 
-function updateRangesTables() {
-	const enabled = document.querySelector('#enabled-range-table__wrapper');
-	const hidden = document.querySelector('#hidden-range-table__wrapper');
-	enabled.innerHTML = '';
-	hidden.innerHTML = '';
-	addAsChildren(enabled, makeEnabledRangesTable());
-	addAsChildren(hidden, makeHiddenRangesTable());
-}
-
 // --------------------------------------------------------------
 // Hidden Ranges
 // --------------------------------------------------------------
@@ -223,16 +226,41 @@ function makeHiddenRangesTable() {
 
 	if (displayRanges.length > 0) {
 		displayRanges.forEach((range) => {
-			addAsChildren(rangeTable, [
-				textToNode(`<span>${range.name}</span>`),
-				textToNode(`<code>${decToHex(range.begin)}</code>`),
-				textToNode(`<code>${decToHex(range.end)}</code></span>`),
-				textToNode(`<span>${range.count}</span>`),
+			let actions = makeElement();
+			addAsChildren(actions, [
 				makeElement({
 					tag: 'a',
 					innerHTML: 'Show',
 					onClick: () => enableCharacterRange(range),
 				}),
+				textToNode('<span>&nbsp;&nbsp;</span>'),
+			]);
+
+			if (range.count <= 0) {
+				actions.appendChild(
+					makeElement({
+						tag: 'a',
+						innerHTML: 'Remove',
+						onClick: () => removeCharacterRange(range),
+					})
+				);
+			} else {
+				actions.appendChild(
+					makeElement({
+						tag: 'a',
+						innerHTML: 'Delete',
+						attributes: { danger: '' },
+						onClick: () => showDeleteCharacterRangeDialog(range),
+					})
+				);
+			}
+
+			addAsChildren(rangeTable, [
+				textToNode(`<span>${range.name}</span>`),
+				textToNode(`<code>${decToHex(range.begin)}</code>`),
+				textToNode(`<code>${decToHex(range.end)}</code></span>`),
+				textToNode(`<span>${range.count}</span>`),
+				actions,
 			]);
 		});
 	} else {
@@ -251,6 +279,32 @@ function makeHiddenRangesTable() {
 }
 
 // --------------------------------------------------------------
+// Remove and delete ranges
+// --------------------------------------------------------------
+
+function removeCharacterRange(range) {
+	const editor = getCurrentProjectEditor();
+	if (areCharacterRangesEqual(range, editor.selectedCharacterRange)) {
+		editor.selectedCharacterRange = false;
+	}
+
+	const projectRanges = editor.project.settings.project.characterRanges;
+	let index = projectRanges.indexOf(range);
+	if (index > -1) {
+		let name = range.name;
+		projectRanges.splice(index, 1);
+		updateRangesTables();
+		closeEveryTypeOfDialog();
+		showToast(`Removed character range:<br>${name}<br>No glyph data was deleted.`);
+	} else {
+		closeEveryTypeOfDialog();
+		showToast(`Something went wrong with removing this character range.`);
+	}
+}
+
+function showDeleteCharacterRangeDialog(range) {}
+
+// --------------------------------------------------------------
 // Edit Range or Add Custom Range
 // --------------------------------------------------------------
 function showEditCharacterRangeDialog(range = false) {
@@ -266,7 +320,9 @@ function showEditCharacterRangeDialog(range = false) {
 		</ul>
 	`;
 
-	const rangeNote = !range? '<span></span>' : `
+	const rangeNote = !range
+		? '<span></span>'
+		: `
 	<p>
 		Note: All characters must have at least one parent character range.
 		If you edit a range to be smaller, a new hidden character range may be created to
@@ -426,16 +482,16 @@ function hideCharacterRange(range) {
 		editor.selectedCharacterRange = false;
 	}
 	range.enabled = false;
-	showToast(`Hid character range:<br>${range.name}`);
 	updateRangesTables();
 	closeEveryTypeOfDialog();
+	showToast(`Hid character range:<br>${range.name}`);
 }
 
 function enableCharacterRange(range) {
 	range.enabled = true;
-	showToast(`Enabled character range:<br>${range.name}`);
 	updateRangesTables();
 	closeEveryTypeOfDialog();
+	showToast(`Enabled character range:<br>${range.name}`);
 }
 
 function sanitizeUnicodeInput(inputString) {
@@ -559,7 +615,7 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 
 		if (newRange.name.includes('Controls')) project.settings.app.showNonCharPoints = true;
 		if (showNotification) showToast(`Enabled character range:<br>${range.name}`);
-		project.updateCharacterRangeCount(range);
+		project.updateCharacterRangeCount(newRange);
 		sortCharacterRanges();
 		updateRangesTables();
 		if (successCallback) successCallback();
