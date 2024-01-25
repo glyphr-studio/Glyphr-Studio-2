@@ -1,4 +1,4 @@
-import { isInteger } from './functions.js';
+import { isInteger, parseNumber } from './functions.js';
 
 /**
  * Reading and writing character IDs come in many flavors. This file
@@ -16,7 +16,7 @@ import { isInteger } from './functions.js';
 // --------------------------------------------------------------
 
 /**
- * @param {String} - single character
+ * @param {String} input - single character
  * @returns {Boolean}
  */
 export function isChar(input) {
@@ -87,7 +87,7 @@ export function normalizePrefixes(input) {
  * Hex, Unicode IDs, and XML Char Entities all use different prefixes,
  * but the same Hexadecimal suffix. This validates and formats the suffix.
  * @param {String} input - string to check
- * @returns {String} - validated and formatted suffix
+ * @returns {String | false} - validated and formatted suffix
  */
 export function validateDecOrHexSuffix(input) {
 	const green = '0123456789ABCDEF';
@@ -139,7 +139,7 @@ export function isNumberWithPrefix(input, prefix) {
 
 /**
  * @param {String} input - expected hexadecimal string
- * @returns - validated hexadecimal string
+ * @returns {String | false} - validated hexadecimal string
  */
 export function validateAsHex(input) {
 	if (!isHex(input)) return false;
@@ -185,11 +185,11 @@ export function validateAsXMLDec(input) {
 /**
  * Convert decimal to hexadecimal
  * @param {Number} input - decimal
- * @returns {String} - hexadecimal
+ * @returns {String | false} - hexadecimal
  */
 export function decToHex(input) {
 	if (!isInteger(input)) return false;
-	input = parseInt(input);
+	input = parseNumber(input);
 	if (isNaN(input)) return false;
 	let suffix = validateDecOrHexSuffix(Number(input).toString(16));
 	return suffix ? `0x${suffix}` : false;
@@ -198,7 +198,7 @@ export function decToHex(input) {
 /**
  * Convert a string with a single character to hexadecimal
  * @param {String} input - char
- * @returns {String} - hexadecimal
+ * @returns {String | false} - hexadecimal
  */
 export function charToHex(input) {
 	if (!isChar(input)) return false;
@@ -208,7 +208,7 @@ export function charToHex(input) {
 /**
  * Converts a single Unicode ID to hexadecimal
  * @param {String} input - Unicode string starting with 'U+'
- * @returns {String} - hexadecimal string
+ * @returns {String | false} - hexadecimal string
  */
 export function unicodeToHex(input) {
 	if (!isUnicode(input)) return false;
@@ -219,7 +219,7 @@ export function unicodeToHex(input) {
 /**
  * Converts a single Hex-based XML Char Reference to hexadecimal
  * @param {String} input - XML char code starting with '&#x'
- * @returns {String} - hexadecimal string
+ * @returns {String | false} - hexadecimal string
  */
 export function xmlHexToHex(input) {
 	if (!isXMLHex(input)) return false;
@@ -230,7 +230,7 @@ export function xmlHexToHex(input) {
 /**
  * Converts a single Decimal-based XML Char Reference to a number
  * @param {String} input - XML char code starting with '&#'
- * @returns {Number} - decimal number
+ * @returns {Number | false} - decimal number
  */
 export function xmlDecToDec(input) {
 	if (!isXMLDec(input)) return false;
@@ -248,8 +248,8 @@ export function xmlDecToDec(input) {
  */
 export function hexesToHexArray(input) {
 	input = input.replaceAll('X', 'x');
-	let result = input.split('0x');
-	result = result.map((value) => {
+	let split = input.split('0x');
+	let result = split.map((value) => {
 		return validateAsHex(`0x${value}`);
 	});
 
@@ -263,8 +263,8 @@ export function hexesToHexArray(input) {
  */
 export function unicodesToUnicodeArray(input) {
 	input = input.replaceAll('u', 'U');
-	let result = input.split('U+');
-	result = result.map((value) => {
+	let split = input.split('U+');
+	let result = split.map((value) => {
 		return validateAsUnicode(`U+${value}`);
 	});
 
@@ -277,7 +277,7 @@ export function unicodesToUnicodeArray(input) {
 
 /**
  * Convert string to an array of hexadecimal
- * @param {Number} input - string
+ * @param {String} input - string
  * @returns {Array} - hexadecimal
  */
 export function charsToHexArray(input) {
@@ -291,7 +291,7 @@ export function charsToHexArray(input) {
 /**
  * Convert hexadecimal to string
  * @param {String} input - hexadecimal
- * @returns {String} - string
+ * @returns {String | false} - string
  */
 export function hexesToChars(input = '') {
 	// log('hexesToChars', 'start');
@@ -308,15 +308,15 @@ export function hexesToChars(input = '') {
 		return false;
 	}
 
-	input = input.split('0x');
+	let split = input.split('0x');
 	let result = '';
-	// log(input);
+	// log(split);
 
-	for (let i = 0; i < input.length; i++) {
-		if (input[i] !== '') {
-			input[i] = String.fromCodePoint(`0x${input[i]}`);
-			// log(input[i]);
-			if (input[i]) result += input[i];
+	for (let i = 0; i < split.length; i++) {
+		if (split[i] !== '') {
+			split[i] = String.fromCodePoint(parseNumber(`0x${split[i]}`));
+			// log(split[i]);
+			if (split[i]) result += split[i];
 		}
 	}
 
@@ -330,7 +330,7 @@ export function hexesToChars(input = '') {
  * @returns {String} - String of XML char entities
  */
 export function hexesToXMLHexes(input) {
-	let hexArr = hexesToHexArray(input);
+	let hexArr = hexesToHexArray(''+input);
 	let result = hexArr.join(';');
 	result = result.replaceAll('0x', '&#x');
 	result += ';';
@@ -349,7 +349,7 @@ export function hexesToXMLHexes(input) {
  * 		XML Hex: '&#x123;&#x123;'
  * 		Chars: 'abc'
  * @param {String} input - input string
- * @returns {Array} - sanitized array of strings
+ * @returns {Array | false} - sanitized array of strings
  */
 export function parseCharsInputAsHex(input) {
 	// log('parseCharsInputAsHex', 'start');
@@ -374,8 +374,8 @@ export function parseCharsInputAsHex(input) {
 		entries = input.split('&#x');
 	} else if (hasPrefix(input, '&#')) {
 		entries = input.split('&#');
-		entries = entries.map((dec) => decToHex(dec));
 		entries = entries.filter((entry) => !!entry);
+		entries = entries.map((dec) => decToHex(parseNumber(dec)));
 		return entries;
 	} else {
 		return charsToHexArray(input);

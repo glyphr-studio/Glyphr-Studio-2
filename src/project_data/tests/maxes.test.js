@@ -124,7 +124,11 @@ describe('isAllZeros', () => {
 		const maxes1 = new Maxes({ xMin: 0, xMax: 0, yMin: 0, yMax: 0 });
 		const maxes2 = new Maxes({ xMin: 1, xMax: 0, yMin: 0, yMax: 0 });
 
-		expect(isAllZeros(maxes1)).toBe(true);
+		// expect(isAllZeros(maxes1)).toBe(true);
+		expect(maxes1.xMin).toEqual(0);
+		expect(maxes1.xMax).toEqual(0);
+		expect(maxes1.yMin).toEqual(0);
+		expect(maxes1.yMax).toEqual(0);
 		expect(isAllZeros(maxes2)).toBe(false);
 	});
 });

@@ -147,7 +147,7 @@ export class GlyphrStudioProject {
 			});
 		}
 		if (this.settings.project.characterRanges.length <= 0) {
-			this.settings.project.characterRanges.push(new CharacterRange(getParentRange('0x41')));
+			this.settings.project.characterRanges.push(new CharacterRange(getParentRange(0x41)));
 		}
 		// log(`\n⮟this.settings.project.characterRanges⮟`);
 		// log(this.settings.project.characterRanges);
@@ -206,7 +206,7 @@ export class GlyphrStudioProject {
 	 * Saves Glyph Element, Settings, and Metadata hierarchy
 	 * that describes a Glyphr Studio Project
 	 * @param {Boolean} verbose - include extra properties for better readability
-	 * @returns {GlyphrStudioProject}
+	 * @returns {Object}
 	 */
 	save(verbose = false) {
 		const savedProject = {
@@ -263,7 +263,7 @@ export class GlyphrStudioProject {
 	/**
 	 * Get a glyph, ligature, or component by ID
 	 * @param {String} id - which Glyph to return
-	 * @returns {Glyph}
+	 * @returns {Glyph | Boolean}
 	 */
 	getItem(id, forceCreateItem = false) {
 		// log('GlyphrStudioProject.getItem', 'start');
@@ -323,7 +323,7 @@ export class GlyphrStudioProject {
 	 * Given a single character or a string of characters, find the
 	 * Glyphr Studio item ID that corresponds to it.
 	 * @param {String} chars - single character or gsub for ligatures
-	 * @returns {String} - item ID
+	 * @returns {String | false} - item ID
 	 */
 	getItemID(chars) {
 		if (chars.length === 1) {
@@ -342,16 +342,16 @@ export class GlyphrStudioProject {
 	 * place in this project, based on the objType value.
 	 * @param {Object} newItem - Glyphr Studio Glyph Element
 	 * @param {String} objType Glyph, Ligature, Component, or KernGroup
-	 * @param {String} newID - Required for Glyph, optional for others
-	 * @returns Created object
+	 * @param {String | Boolean} newID - Required for Glyph, optional for others
+	 * @returns {Object}
 	 */
 	addItemByType(newItem, objType, newID = false) {
-		let destination;
-		if (objType === 'Glyph') {
+		let destination = {};
+		if (objType === 'Glyph' && newID) {
 			destination = this.glyphs;
-			let hex = remove(newID, 'glyph-');
+			let hex = remove('' + newID, 'glyph-');
 			// log(`Calling incrementRangeCountFor ${hex} from addItemByType`);
-			this.incrementRangeCountFor(hex);
+			this.incrementRangeCountFor(parseInt(hex));
 		}
 		if (objType === 'Ligature') {
 			destination = this.ligatures;
@@ -369,19 +369,19 @@ export class GlyphrStudioProject {
 		newItem.id = newID;
 		newItem.objType = objType;
 		newItem.parent = this;
-		destination[newID] = newItem;
+		if (destination) destination[newID] = newItem;
 
 		return destination[newID];
 	}
 
 	/**
-	 * Given a hex ID, increments the count for ranges that contain
-	 * that GLyph.
-	 * @param {Number} hex - Unicode Hex ID number
+	 * Given an ID, increments the count for ranges that contain
+	 * that character.
+	 * @param {Number} id - Unicode ID number
 	 */
-	incrementRangeCountFor(hex) {
+	incrementRangeCountFor(id) {
 		// log(`GlyphrStudioProject.incrementRangeCountFor`, 'start');
-		// log(`hex: ${hex}`);
+		// log(`id: ${id}`);
 
 		const projectRanges = this.settings.project.characterRanges;
 		// log(`\n⮟projectRanges⮟`);
@@ -390,31 +390,31 @@ export class GlyphrStudioProject {
 		// Make sure one range exists for this character
 		let hasParent = false;
 		for (const range of projectRanges) {
-			if (range.isWithinRange(hex)) {
+			if (range.isWithinRange(id)) {
 				hasParent = true;
 				range.count++;
 			}
 		}
-		if (!hasParent) this.createRangeForHex(hex);
+		if (!hasParent) this.createRangeForHex(id);
 
 		// log(`GlyphrStudioProject.incrementRangeCountFor`, 'end');
 	}
 
 	/**
 	 * Creates a range given an id
-	 * @param {Number} hex - Unicode Hex ID
+	 * @param {Number} id - Unicode  ID
 	 * @param {Boolean} createAsHidden - set enabled to false
 	 */
-	createRangeForHex(hex, createAsHidden = false) {
-		log(`createRangeForHex`, 'start');
-		log(`hex: ${hex}`);
+	createRangeForHex(id, createAsHidden = false) {
+		// log(`createRangeForHex`, 'start');
+		// log(`id: ${id}`);
 		const projectRanges = this.settings.project.characterRanges;
-		const newParentRange = new CharacterRange(getParentRange(hex));
+		const newParentRange = new CharacterRange(getParentRange(id));
 		newParentRange.count = 1;
 		if (createAsHidden) newParentRange.enabled = false;
 		projectRanges.push(newParentRange);
-		if (unicodeNonCharPointNames[hex]) this.settings.app.showNonCharPoints = true;
-		log(`createRangeForHex`, 'end');
+		if (unicodeNonCharPointNames[id]) this.settings.app.showNonCharPoints = true;
+		// log(`createRangeForHex`, 'end');
 	}
 
 	/**
@@ -447,7 +447,7 @@ export class GlyphrStudioProject {
 	 * Get a glyph's name based on it's ID
 	 * @param {String} id - Glyph ID
 	 * @param {Boolean} forceLongName - don't use the short Unicode name by default
-	 * @returns {String}
+	 * @returns {String | false}
 	 */
 	getItemName(id, forceLongName = false) {
 		id = '' + id;
@@ -477,7 +477,11 @@ export class GlyphrStudioProject {
 		}
 
 		const item = this.getItem(id);
-		let result = item.name;
+		/**
+		 * @type {Boolean | Object}
+		 */
+		let result = false;
+		if (typeof item === 'object') result = item.name;
 
 		if (!result) {
 			if (id.startsWith('glyph-')) result = 'Character';
@@ -493,7 +497,7 @@ export class GlyphrStudioProject {
 
 	/**
 	 * Makes an SVG Thumbnail
-	 * @param {Glyph, Path, or ComponentInstance} item - thing to make the thumbnail of
+	 * @param {Object} item - Glyph, Path, or ComponentInstance to make the thumbnail of
 	 * @returns {String} - SVG icon
 	 */
 	makeItemThumbnail(item) {
@@ -651,7 +655,6 @@ export class GlyphrStudioProject {
 	 * @param {Object} GlyphrStudioItem - Glyph, Guide, or KernGroup
 	 * @param {Object} source - collection of temporary objects to hydrate
 	 * @param {String} objType - type of object this is
-	 * @param {GlyphrStudioProject} destinationProject - parent project
 	 */
 	hydrateProjectItems(GlyphrStudioItem, source, objType) {
 		// log(`hydrateProjectItems`, 'start');
@@ -717,6 +720,9 @@ export function sortLigatures(a, b) {
  */
 export function validateItemID(oldID, objType) {
 	if (objType === 'Glyph') {
+		/**
+		 * @type {String | Boolean}
+		 */
 		let suffix = remove(oldID, 'glyph-');
 		suffix = validateAsHex(suffix);
 		if (suffix) return `glyph-${suffix}`;

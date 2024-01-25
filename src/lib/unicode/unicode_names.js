@@ -1,24 +1,29 @@
 // import { log } from '../app/main.js';
 import { validateAsHex } from '../../common/character_ids.js';
+import { parseNumber } from '../../common/functions.js';
 import { getParentRange } from './unicode_blocks.js';
 import { unicodeNamesBMP, unicodeNonCharPointNames } from './unicode_names_0_bmp.js';
 import { unicodeNamesSMP } from './unicode_names_1_smp.js';
 
 /**
  * Gets the name of a Unicode character
- * @param {number} codePoint - Unicode code point
- * @returns {string} - name
+ * @param {Number | String} id - Unicode code point
+ * @returns {String} - name
  */
-export function getUnicodeName(codePoint) {
+export function getUnicodeName(id) {
 	// log('getUnicodeName', 'start');
-	// log('passed ' + codePoint);
-
-	codePoint = validateAsHex(codePoint);
-	let codePointSuffix = codePoint.substr(2);
-	// log('normalized ' + codePoint);
+	// log('passed ' + id);
 
 	let name;
-	const chn = codePoint * 1;
+	let chn = 0;
+	let codePoint = validateAsHex('' + id);
+	let codePointSuffix = '0x0000';
+	if (codePoint) {
+		codePointSuffix = codePoint.substring(2);
+		chn = parseNumber(codePoint);
+	}
+	// log('normalized ' + codePoint);
+
 
 	if ((chn >= 0x4e00 && chn < 0xa000) || (chn >= 0x20000 && chn < 0x323af)) {
 		name = `CJK Unified Ideograph ${codePointSuffix}`;
@@ -33,7 +38,7 @@ export function getUnicodeName(codePoint) {
 	} else if (chn < 0x1fbf9) {
 		name = unicodeNamesSMP[codePoint] || '[name not found]';
 	} else if (chn < 0x1ffff) {
-		let block = getParentRange(codePoint);
+		let block = getParentRange(parseNumber(id));
 		if (block) name = `${block.name} ${codePointSuffix}`;
 		else name = '[name not found]';
 	} else {
@@ -48,7 +53,7 @@ export function getUnicodeName(codePoint) {
 /**
  * Gets a short name for a Unicode character, and if not,
  * returns the regular long name
- * @param {number} codePoint - Unicode code point
+ * @param {String} codePoint - Hex String
  * @returns {string} - name
  */
 export function getUnicodeShortName(codePoint) {

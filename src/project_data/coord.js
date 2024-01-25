@@ -9,9 +9,10 @@ import { GlyphElement } from './glyph_element.js';
 export class Coord extends GlyphElement {
 	/**
 	 * Create a coordinate
-	 * @param {Number} x - The X value
-	 * @param {Number} y - The Y value
-	 * @param {Object} parent - link to the parent ControlPoint object
+	 * @param {Object} arg
+	 * @param {Number =} arg.x - The X value
+	 * @param {Number =} arg.y - The Y value
+	 * @param {Object =} arg.parent - link to the parent ControlPoint object
 	 */
 	constructor({ x = 0, y = 0, parent = false } = {}) {
 		super();
@@ -20,6 +21,8 @@ export class Coord extends GlyphElement {
 		this.y = y;
 
 		this.objType = 'Coord';
+		this._x = 0;
+		this._y = 0;
 	}
 
 	// --------------------------------------------------------------
@@ -96,7 +99,7 @@ export class Coord extends GlyphElement {
 	 * Set the x position of the point
 	 * @param {Number} position
 	 */
-	set x(position = 0) {
+	set x(position) {
 		position = numSan(position);
 		// position = round(position, 4);
 		if (isNaN(position)) {
@@ -113,7 +116,7 @@ export class Coord extends GlyphElement {
 	 * Set the y position of the point
 	 * @param {Number} position
 	 */
-	set y(position = 0) {
+	set y(position) {
 		position = numSan(position);
 		// position = round(position, 4);
 		if (isNaN(position)) {
