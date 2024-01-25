@@ -1,14 +1,31 @@
 import { decToHex } from '../common/character_ids.js';
 import { isControlChar } from '../lib/unicode/unicode_blocks.js';
 
+/**
+ * Create a Character Range
+ * @param {Object} arg
+ * @param {Number =} arg.begin - start of the range (inclusive)
+ * @param {Number =} arg.end - end of the range (inclusive)
+ * @param {String =} arg.name
+ * @param {Boolean =} arg.enabled
+ * @param {Number =} arg.count - how many glyph objects exist in this range
+ * @param {Boolean | Array =} arg.cachedArray
+ */
 export class CharacterRange {
-	constructor({ begin = 0, end = 0, name = '', enabled = true, count = 0 }) {
+	constructor({
+		begin = 0,
+		end = 0,
+		name = '',
+		enabled = true,
+		count = 0,
+		cachedArray = false,
+	} = {}) {
 		this.begin = begin;
 		this.end = end;
 		this.name = name;
 		this.enabled = !!enabled;
 		this.count = count;
-		this.cachedArray = false;
+		this.cachedArray = cachedArray;
 	}
 
 	get begin() {
@@ -35,6 +52,14 @@ export class CharacterRange {
 
 	set count(val) {
 		this._count = parseInt(val);
+	}
+
+	get cachedArray() {
+		return this._cachedArray || false;
+	}
+
+	set cachedArray(arr) {
+		this._cachedArray = arr;
 	}
 
 	// --------------------------------------------------------------

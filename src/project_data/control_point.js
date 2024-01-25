@@ -9,9 +9,13 @@ import { GlyphElement } from './glyph_element.js';
 export class ControlPoint extends GlyphElement {
 	/**
 	 * Create a ControlPoint
-	 * @param {Coord} coord - position of the handle
-	 * @param {Boolean} use - show or hide the handle
-	 * @param {PathPoint} parent - link to the parent Path object
+	 * @param {Object} arg
+	 * @param {Object =} arg.coord - position of the handle
+	 * @param {Boolean =} arg.use - show or hide the handle
+	 * @param {Boolean =} arg.xLock - lock movement in the x direction
+	 * @param {Boolean =} arg.yLock - lock movement in the y direction
+	 * @param {Object =} arg.parent - link to the parent Path object
+	 * @param {String =} arg.type - p, h1, or h2
 	 */
 	constructor({
 		coord = { x: 0, y: 0 },
@@ -19,7 +23,7 @@ export class ControlPoint extends GlyphElement {
 		xLock = false,
 		yLock = false,
 		parent = false,
-		type = false,
+		type = '',
 	} = {}) {
 		super();
 		this.parent = parent;
@@ -43,7 +47,7 @@ export class ControlPoint extends GlyphElement {
 	 */
 	save(verbose = false) {
 		const re = {
-			coord: this.coord.save(verbose),
+			coord: this.coord.save(),
 		};
 
 		if (!this.use) re.use = false;
@@ -52,7 +56,7 @@ export class ControlPoint extends GlyphElement {
 
 		if (verbose) re.objType = this.objType;
 		if (this.type === 'p') delete re.use;
-		if (!verbose && this.__ID) delete this.__ID;
+		// if (!verbose && this.__ID) delete this.__ID;
 
 		return re;
 	}
@@ -86,7 +90,7 @@ export class ControlPoint extends GlyphElement {
 	 * @returns {Number}
 	 */
 	get x() {
-		return this.use ? this._coord.x : this.parent.p.x;
+		return this.use ? this.coord.x : this.parent.p.x;
 	}
 
 	/**
@@ -94,7 +98,7 @@ export class ControlPoint extends GlyphElement {
 	 * @returns {Number}
 	 */
 	get y() {
-		return this.use ? this._coord.y : this.parent.p.y;
+		return this.use ? this.coord.y : this.parent.p.y;
 	}
 
 	/**
@@ -102,7 +106,7 @@ export class ControlPoint extends GlyphElement {
 	 * @returns {Coord}
 	 */
 	get coord() {
-		return this._coord;
+		return this?._coord || new Coord();
 	}
 
 	/**
@@ -118,7 +122,7 @@ export class ControlPoint extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	get xLock() {
-		return this._xLock;
+		return this._xLock || false;
 	}
 
 	/**
@@ -126,7 +130,7 @@ export class ControlPoint extends GlyphElement {
 	 * @returns {Boolean}
 	 */
 	get yLock() {
-		return this._yLock;
+		return this._yLock || false;
 	}
 
 	/**
@@ -134,7 +138,7 @@ export class ControlPoint extends GlyphElement {
 	 * @returns {String}
 	 */
 	get type() {
-		return this._type;
+		return this._type || 'p';
 	}
 
 	// --------------------------------------------------------------
@@ -185,7 +189,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Set the x/y Coord
-	 * @param {Coord} pt
+	 * @param {Coord | Object} pt
 	 */
 	set coord(pt) {
 		this._coord = new Coord(pt);
@@ -220,7 +224,7 @@ export class ControlPoint extends GlyphElement {
 
 	/**
 	 * Sets the point type: p, h1, h2
-	 * @param {String} type
+	 * @param {String} t
 	 */
 	set type(t) {
 		this._type = t;
@@ -276,7 +280,7 @@ export class ControlPoint extends GlyphElement {
 	/**
 	 * Rotate this point around another point
 	 * @param {Number} angle - angle to rotate (radians)
-	 * @param {XYPoint} about - center point for rotation
+	 * @param {Object} about - center point for rotation
 	 */
 	rotate(angle, about) {
 		rotate(this.coord, angle, about);

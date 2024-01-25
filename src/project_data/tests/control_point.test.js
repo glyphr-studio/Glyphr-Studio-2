@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ControlPoint } from '../control_point.js';
+import { Coord } from '../coord.js';
 
 // --------------------------------------------------------------
 // CHECKLIST
@@ -36,7 +37,8 @@ describe('ControlPoint', () => {
 	it('coord getter/setter', () => {
 		const cp = new ControlPoint();
 		cp.coord = { x: 500, y: 500 };
-		expect(cp.coord.x === 500 && cp.coord.y === 500).toBeTruthy();
+		expect(cp.coord.x).toEqual(500);
+		expect(cp.coord.y).toEqual(500);
 	});
 
 	it('use', () => {

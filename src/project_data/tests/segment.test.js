@@ -1,12 +1,12 @@
-import { assert, describe, expect, it } from 'vitest';
-import { Segment } from '../segment.js';
+import { describe, expect, it } from 'vitest';
+import { round } from '../../common/functions.js';
 import {
-	segmentsAreEqual,
-	findOverlappingLineSegmentIntersections,
 	findCrossingLineSegmentIntersections,
 	findEndPointSegmentIntersections,
+	findOverlappingLineSegmentIntersections,
+	segmentsAreEqual,
 } from '../poly_segment.js';
-import { round } from '../../common/functions.js';
+import { Segment } from '../segment.js';
 
 /*
 	constructor
@@ -57,6 +57,38 @@ function sampleSegment() {
 }
 
 describe('Segment', () => {
+	it('constructor, full', () => {
+		let testSegment = new Segment({
+			p1x: 10,
+			p1y: 20,
+			p2x: 30,
+			p2y: 40,
+			p3x: 50,
+			p3y: 60,
+			p4x: 70,
+			p4y: 80,
+		});
+		expect(testSegment.p1x).toEqual(10);
+		expect(testSegment.p1y).toEqual(20);
+		expect(testSegment.p2x).toEqual(30);
+		expect(testSegment.p2y).toEqual(40);
+		expect(testSegment.p3x).toEqual(50);
+		expect(testSegment.p3y).toEqual(60);
+		expect(testSegment.p4x).toEqual(70);
+		expect(testSegment.p4y).toEqual(80);
+	});
+	it('constructor, line', () => {
+		let testSegment = new Segment({ p1x: 10, p1y: 20, p4x: 70, p4y: 80 });
+		expect(testSegment.p1x).toEqual(10);
+		expect(testSegment.p1y).toEqual(20);
+		expect(testSegment.p2x).toEqual(10);
+		expect(testSegment.p2y).toEqual(20);
+		expect(testSegment.p3x).toEqual(70);
+		expect(testSegment.p3y).toEqual(80);
+		expect(testSegment.p4x).toEqual(70);
+		expect(testSegment.p4y).toEqual(80);
+	});
+
 	it('save', () => {
 		expect(sampleSegment().save()).toEqual({
 			p1x: 0,
@@ -72,7 +104,7 @@ describe('Segment', () => {
 
 	it('print', () => {
 		expect(sampleSegment().print()).toEqual(
-`{Segment
+			`{Segment
     line: false
     p1: 0/0
     p2: 0/100
@@ -82,9 +114,28 @@ describe('Segment', () => {
 }`
 		);
 	});
-	it('lineType getter', () => {
+
+	it('lineType getter: horizontal', () => {
 		// also tests determineLineType
-		const seg = new Segment({ p1x: 0, p1y: 100, p4x: 100, p4y: 0 });
+		const seg = new Segment({ p1x: 10, p1y: 10, p4x: 100, p4y: 10 });
+		expect(seg.p1y).toEqual(10);
+		expect(seg.p2y).toEqual(10);
+		expect(seg.p3y).toEqual(10);
+		expect(seg.p4y).toEqual(10);
+		expect(seg.lineType).toBe('horizontal');
+	});
+	it('lineType getter: vertical', () => {
+		// also tests determineLineType
+		const seg = new Segment({ p1x: 10, p1y: 10, p4x: 10, p4y: 100 });
+		expect(seg.p1x).toEqual(10);
+		expect(seg.p2x).toEqual(10);
+		expect(seg.p3x).toEqual(10);
+		expect(seg.p4x).toEqual(10);
+		expect(seg.lineType).toBe('vertical');
+	});
+	it('lineType getter: diagonal', () => {
+		// also tests determineLineType
+		const seg = new Segment({ p1x: 10, p1y: 100, p4x: 100, p4y: 10 });
 		expect(seg.lineType).toBe('diagonal');
 	});
 
@@ -111,9 +162,7 @@ describe('Segment', () => {
 	});
 
 	it('valuesAsArray getter', () => {
-		expect(sampleSegment().valuesAsArray).toEqual(
-			[0, 0, 0, 100, 100, 200, 200, 200]
-		);
+		expect(sampleSegment().valuesAsArray).toEqual([0, 0, 0, 100, 100, 200, 200, 200]);
 	});
 	it('split', () => {
 		expect(sampleSegment().split()[1].p1x).toBe(62.5);
