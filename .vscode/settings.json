@@ -122,5 +122,6 @@
 		"xlock",
 		"xmlns",
 		"ylock"
-	]
+	],
+	"vitest.commandLine": "npx vitest watch --dom"
 }

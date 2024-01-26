@@ -543,19 +543,20 @@ export class ProjectEditor {
 		// log(`itemPageName: ${itemPageName}`);
 
 		let id;
+		const unlinkComponentInstances = this.project.settings.app.unlinkComponentInstances;
 
 		if (itemPageName === 'Characters') {
 			// log(`deleting selectedGlyphID: ${this.selectedGlyphID}`);
 			id = this.selectedGlyphID;
-			this.deleteItem(id, this.project.glyphs);
+			this.deleteItem(id, this.project.glyphs, unlinkComponentInstances);
 		} else if (itemPageName === 'Components') {
 			// log(`deleting selectedComponentID: ${this.selectedComponentID}`);
 			id = this.selectedComponentID;
-			this.deleteItem(id, this.project.components);
+			this.deleteItem(id, this.project.components, unlinkComponentInstances);
 		} else if (itemPageName === 'Ligatures') {
 			// log(`deleting selectedLigatureID: ${this.selectedLigatureID}`);
 			id = this.selectedLigatureID;
-			this.deleteItem(id, this.project.ligatures);
+			this.deleteItem(id, this.project.ligatures, unlinkComponentInstances);
 		} else if (itemPageName === 'Kerning') {
 			// log(`deleting selectedKernGroupID: ${this.selectedKernGroupID}`);
 			id = this.selectedKernGroupID;
@@ -571,12 +572,18 @@ export class ProjectEditor {
 		// log(`deleteSelectedItemFromProject`, 'end');
 	}
 
-	deleteItem(itemID, projectGroup) {
+	deleteItem(itemID, projectGroup, unlinkComponentInstances = false) {
 		const item = this.project.getItem(itemID);
-		const historyTitle = `Deleted ${item.displayType} ${itemID} : ${item.name}`;
-		this.history.addState(historyTitle, true);
-		resolveItemLinks(item);
+		let historyTitle = `Deleted ${item.displayType} ${itemID} : ${item.name}`;
+		if (item?.usedIn.length) {
+			historyTitle += ', and unlinked instances where it was used as a component.';
+			this.history.addWholeProjectChangePreState(historyTitle);
+		} else {
+			this.history.addState(historyTitle, true);
+		}
+		resolveItemLinks(item, unlinkComponentInstances);
 		delete projectGroup[itemID];
+		if (item?.usedIn.length) this.history.addWholeProjectChangePostState();
 	}
 
 	/**

@@ -192,12 +192,7 @@ export function getActionData(name) {
 			},
 			{
 				iconName: 'deleteGlyph',
-				title: `Delete Glyph\nRemove this Glyph from the project. ${
-					editor.selectedItem?.usedIn?.length
-						? `\nGlyphs that are used as a root component (like this one) cannot be deleted. Delete or un-link the component instances first.`
-						: `\nDon't worry, you can undo this action.`
-				}`,
-				disabled: editor.selectedItem?.usedIn?.length,
+				title: `Delete Glyph\nRemove this Glyph from the project. \nDon't worry, you can undo this action.`,
 				onClick: () => {
 					const editor = getCurrentProjectEditor();
 					const name = editor.selectedItem.name;

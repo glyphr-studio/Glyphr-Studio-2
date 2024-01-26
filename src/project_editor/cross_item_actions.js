@@ -256,8 +256,11 @@ function collectAllUpstreamLinks(item, result = []) {
  * This method is called on Glyphs just before they are deleted
  * to clean up all the component instance linking
  * @param {Glyph} item - item being deleted
+ * @param {Boolean =} unlinkComponentInstances -
+ * 		if true, component instances will be turned into paths
+ * 		if false, component instances will simply be removed
  */
-export function resolveItemLinks(item, flatten = false) {
+export function resolveItemLinks(item, unlinkComponentInstances = false) {
 	// log('Glyph.resolveItemLinks', 'start');
 	// log('passed this as id: ' + item.id);
 	// Delete upstream Component Instances
@@ -273,7 +276,7 @@ export function resolveItemLinks(item, flatten = false) {
 			for (let u = 0; u < upstreamGlyph.shapes.length; u++) {
 				const shape = upstreamGlyph.shapes[u];
 				if (shape.objType === 'ComponentInstance' && shape.link === item.id) {
-					if (flatten) {
+					if (unlinkComponentInstances) {
 						// const sourceItem = editor.project.getItem(shape.link);
 						copyShapesFromTo(shape.transformedGlyph, upstreamGlyph)
 					}
