@@ -133,36 +133,40 @@ function populateExportList() {
 	// Add Ligatures
 	const exportLigatures = [];
 	// const ligWithCodePoint;
-	for (const key of Object.keys(project.ligatures)) {
-		// log(project.ligatures[key]);
-		if (project.ligatures[key].gsub.length > 1) {
-			const thisLigature = project.ligatures[key];
-			// log(`\t adding ligature "${thisLigature.name}"`);
-			exportLigatures.push({ xg: thisLigature, xc: key, chars: thisLigature.chars });
+	if (project.settings.app.exportLigatures) {
+		for (const key of Object.keys(project.ligatures)) {
+			// log(project.ligatures[key]);
+			if (project.ligatures[key].gsub.length > 1) {
+				const thisLigature = project.ligatures[key];
+				// log(`\t adding ligature "${thisLigature.name}"`);
+				exportLigatures.push({ xg: thisLigature, xc: key, chars: thisLigature.chars });
 
-			// TODO Add Ligatures to ligature code points
-			// ligWithCodePoint = doesLigatureHaveCodePoint(l);
-			// if (ligWithCodePoint) {
-			// 	// log(`\t LIGATURE WITH CODE POINT FOUND for ${l} at ${ligWithCodePoint.point}`);
-			// 	const dupe = new Glyph(
-			// 		clone(_GP.ligatures[l], 'ioOTF export.populateExportLists - ligature with code point')
-			// 	);
-			// 	exportGlyphs.push({ xg: dupe, xc: ligWithCodePoint.point });
-			// 	if (parseInt(l) >= 0xe000) privateUseArea.push(parseInt(l));
-			// }
-		} else {
-			console.warn(`
+				// TODO Add Ligatures to ligature code points
+				// ligWithCodePoint = doesLigatureHaveCodePoint(l);
+				// if (ligWithCodePoint) {
+				// 	// log(`\t LIGATURE WITH CODE POINT FOUND for ${l} at ${ligWithCodePoint.point}`);
+				// 	const dupe = new Glyph(
+				// 		clone(_GP.ligatures[l], 'ioOTF export.populateExportLists - ligature with code point')
+				// 	);
+				// 	exportGlyphs.push({ xg: dupe, xc: ligWithCodePoint.point });
+				// 	if (parseInt(l) >= 0xe000) privateUseArea.push(parseInt(l));
+				// }
+			} else {
+				console.warn(`
 				Skipped exporting ligature ${project.ligatures[key].name}.
 				Source chars length: ${project.ligatures[key].gsub.length}
 			`);
+			}
 		}
+		exportLigatures.sort(sortLigatures);
+		// log('exportLigatures');
+		// log(exportLigatures);
 	}
-	exportLigatures.sort(sortLigatures);
-	// log('exportLigatures');
-	// log(exportLigatures);
 
 	// Add Kerns
-	// TODO Export kerning?
+	if (project.settings.app.exportKerning) {
+		// TODO Export kerning?
+	}
 
 	// log('populateExportList', 'end');
 	return { glyphs: exportGlyphs, ligatures: exportLigatures };

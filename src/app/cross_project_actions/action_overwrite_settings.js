@@ -88,6 +88,8 @@ function makeRows(parent) {
 	makeOneRow('app', 'showNonCharPoints');
 	makeOneRow('app', 'itemChooserPageSize');
 	makeOneRow('app', 'previewText');
+	makeOneRow('app', 'exportLigatures');
+	makeOneRow('app', 'exportKerning');
 	makeOneRow('app', 'moveShapesOnSVGDragDrop');
 	makeOneRow('font', 'family');
 	makeOneRow('font', 'style');
