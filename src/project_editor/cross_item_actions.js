@@ -1,6 +1,7 @@
 import { getCurrentProject, getCurrentProjectEditor } from '../app/main.js';
 import { duplicates } from '../common/functions.js';
 import { showToast } from '../controls/dialogs/dialogs.js';
+import { copyShapesFromTo } from '../panels/actions.js';
 import { ComponentInstance } from '../project_data/component_instance.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
@@ -256,24 +257,29 @@ function collectAllUpstreamLinks(item, result = []) {
  * to clean up all the component instance linking
  * @param {Glyph} item - item being deleted
  */
-export function deleteLinks(item) {
-	// log('Glyph.deleteLinks', 'start');
+export function resolveItemLinks(item, flatten = false) {
+	// log('Glyph.resolveItemLinks', 'start');
 	// log('passed this as id: ' + item.id);
 	// Delete upstream Component Instances
 	if (item.objType === 'KernGroup') return;
 	let upstreamGlyph;
+	// const editor = getCurrentProjectEditor();
 	const project = getCurrentProject();
 	for (let c = 0; c < item.usedIn.length; c++) {
 		upstreamGlyph = project.getItem(item.usedIn[c]);
 		// log('removing from ' + upstreamGlyph.name);
 		// log(upstreamGlyph.shapes);
-		for (let u = 0; u < upstreamGlyph.shapes.length; u++) {
-			if (
-				upstreamGlyph.shapes[u].objType === 'ComponentInstance' &&
-				upstreamGlyph.shapes[u].link === item.id
-			) {
-				upstreamGlyph.shapes.splice(u, 1);
-				u--;
+		if (upstreamGlyph) {
+			for (let u = 0; u < upstreamGlyph.shapes.length; u++) {
+				const shape = upstreamGlyph.shapes[u];
+				if (shape.objType === 'ComponentInstance' && shape.link === item.id) {
+					if (flatten) {
+						// const sourceItem = editor.project.getItem(shape.link);
+						copyShapesFromTo(shape.transformedGlyph, upstreamGlyph)
+					}
+						upstreamGlyph.shapes.splice(u, 1);
+						u--;
+				}
 			}
 		}
 		// log(upstreamGlyph.shapes);
