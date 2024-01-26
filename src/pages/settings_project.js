@@ -459,6 +459,8 @@ function deleteCharactersFromRange(range, deleteList = []) {
 			delete editor.project.glyphs[`glyph-${id}`];
 		});
 		editor.history.addWholeProjectChangePostState();
+		editor.project.updateAllCharacterRangeCounts();
+		updateRangesTables();
 		closeEveryTypeOfDialog();
 		showToast(message);
 	}
