@@ -8,7 +8,11 @@ import { CharacterRange } from '../project_data/character_range.js';
 import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
 import { KernGroup } from '../project_data/kern_group.js';
-import { deleteLinks, kernGroupDisplayWidth, kernGroupSideMaxWidth } from './cross_item_actions.js';
+import {
+	kernGroupDisplayWidth,
+	kernGroupSideMaxWidth,
+	resolveItemLinks,
+} from './cross_item_actions.js';
 import { saveTextFile } from './file_io.js';
 import { History } from './history.js';
 import { MultiSelectPoints, MultiSelectShapes } from './multiselect.js';
@@ -571,7 +575,7 @@ export class ProjectEditor {
 		const item = this.project.getItem(itemID);
 		const historyTitle = `Deleted ${item.displayType} ${itemID} : ${item.name}`;
 		this.history.addState(historyTitle, true);
-		deleteLinks(item);
+		resolveItemLinks(item);
 		delete projectGroup[itemID];
 	}
 
