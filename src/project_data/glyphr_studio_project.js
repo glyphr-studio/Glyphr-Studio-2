@@ -45,6 +45,8 @@ export class GlyphrStudioProject {
 				showNonCharPoints: false,
 				itemChooserPageSize: 256,
 				previewText: false,
+				exportLigatures: true,
+				exportKerning: true,
 				moveShapesOnSVGDragDrop: false,
 				guides: {
 					drawGuidesOnTop: false,

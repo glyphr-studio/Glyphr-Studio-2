@@ -186,11 +186,13 @@ function ioSVG_makeAllGlyphs() {
 		con += ioSVG_makeOneGlyph(glyph.xg, glyph.xc);
 	});
 
-	con += '\n';
+	if (project.settings.app.exportLigatures) {
+		con += '\n';
 
-	con += '\t\t\t<!-- Ligatures -->\n';
-	for (const key of Object.keys(project.ligatures)) {
-		con += ioSVG_makeOneGlyph(project.ligatures[key], key);
+		con += '\t\t\t<!-- Ligatures -->\n';
+		for (const key of Object.keys(project.ligatures)) {
+			con += ioSVG_makeOneGlyph(project.ligatures[key], key);
+		}
 	}
 
 	// log('ioSVG_makeAllGlyphs', 'end');
@@ -237,7 +239,10 @@ function ioSVG_makeOneGlyph(gl, id, tag = 'glyph') {
 
 function ioSVG_makeAllKernPairs() {
 	// log('ioSVG_makeAllKernPairs', 'start');
-	const kp = getCurrentProject().kerning;
+	const project = getCurrentProject();
+	if (!project.settings.app.exportKerning) return '';
+
+	const kp = project.kerning;
 	let keys = Object.keys(kp);
 
 	if (!keys.length) return '';

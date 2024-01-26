@@ -47,7 +47,7 @@ export default {
 			type: `Boolean`,
 		},
 		unlinkComponentInstances: {
-			label: `When deleting a component root, unlink their component instances`,
+			label: `Unlink component instances when deleting their root`,
 			description: `When selected, this option will unlink component instances and turn them into normal paths if their component root is deleted (the glyph will look the same, but some component instances will end up as stand-alone path objects).<br>If this option is unselected, component instances will be deleted when their component root is deleted (the glyph will look different because it will have less shapes).`,
 			type: `Boolean`,
 		},
@@ -60,6 +60,16 @@ export default {
 			label: `Number of items to show in the chooser`,
 			description: `For Ligatures, Components, and Kern Groups, this is how many items to show in the chooser menu. For projects with large numbers of items, splitting the items apart into pages can help the UI perform better.`,
 			type: `Number`,
+		},
+		exportLigatures: {
+			label: `Export Ligatures to fonts (.otf and .svg)`,
+			description: `Uncheck this option if don't want ligature data exported to fonts.`,
+			type: `Boolean`,
+		},
+		exportKerning: {
+			label: `Export Kern information to fonts (.svg only)`,
+			description: `Uncheck this option if don't want kern data exported to fonts.`,
+			type: `Boolean`,
 		},
 		moveShapesOnSVGDragDrop: {
 			label: `Move shapes when drag+dropping an SVG file`,
