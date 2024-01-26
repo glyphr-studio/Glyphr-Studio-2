@@ -36,12 +36,15 @@ export class GlyphrStudioProject {
 				characterRanges: [],
 			},
 			app: {
-				savePreferences: false,
 				stopPageNavigation: true,
+				formatSaveFile: false,
+				saveLivePreviews: true,
 				autoSave: true,
+				savePreferences: false,
+				unlinkComponentInstances: true,
 				showNonCharPoints: false,
 				itemChooserPageSize: 256,
-				formatSaveFile: false,
+				previewText: false,
 				moveShapesOnSVGDragDrop: false,
 				guides: {
 					drawGuidesOnTop: false,
@@ -60,9 +63,7 @@ export class GlyphrStudioProject {
 					showGuides: true,
 					guidesTransparency: 70,
 				},
-				saveLivePreviews: true,
 				livePreviews: [],
-				previewText: false,
 			},
 			font: {
 				family: 'My Font',
