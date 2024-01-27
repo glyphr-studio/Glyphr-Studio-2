@@ -23,7 +23,7 @@
 		"eslint-plugin-prettier": "^4.2.1",
 		"happy-dom": "^9.9.2",
 		"prettier": "^2.7.1",
-		"vite": "^5.0.12",
+		"vite": ">=5.0.12",
 		"vitest": "^0.34.6"
 	},
 	"bugs": {
