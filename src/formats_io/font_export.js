@@ -35,11 +35,13 @@ export async function ioFont_exportFont() {
 	// log(codePointGlyphIndexTable);
 
 	// Add Ligatures
-	for (let l = 0; l < exportLists.ligatures.length; l++) {
-		exportedItem = await generateOneLigature(exportLists.ligatures[l]);
-		options.glyphs.push(exportedItem);
+	let exportLigatures = getCurrentProject().settings.app.exportLigatures;
+	if (exportLigatures) {
+		for (let l = 0; l < exportLists.ligatures.length; l++) {
+			exportedItem = await generateOneLigature(exportLists.ligatures[l]);
+			options.glyphs.push(exportedItem);
+		}
 	}
-
 	showToast('Finalizing...');
 
 	options.glyphs.sort(function (a, b) {
@@ -50,11 +52,14 @@ export async function ioFont_exportFont() {
 	// log('NEW options ARG TO FONT');
 	// log(options);
 	const font = new openTypeJS.Font(options);
-	ligatureSubstitutions.forEach((sub) => {
-		// log(`Adding ligature to font`);
-		// log(sub);
-		font.substitution.addLigature('liga', sub);
-	});
+
+	if (exportLigatures) {
+		ligatureSubstitutions.forEach((sub) => {
+			// log(`Adding ligature to font`);
+			// log(sub);
+			font.substitution.addLigature('liga', sub);
+		});
+	}
 	// log('Font object:');
 	// log(font);
 	// log(font.toTables());
