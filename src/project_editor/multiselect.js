@@ -5,7 +5,8 @@ import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-import { combineAllPaths } from './boolean_combine.js';
+// import { combineAllPaths } from './boolean_combine.js';
+import { combineAllPaths } from './boolean_combine_new.js';
 import {
 	glyphChanged,
 	makeGlyphWithResolvedLinks,
