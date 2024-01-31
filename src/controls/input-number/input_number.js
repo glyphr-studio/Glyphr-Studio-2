@@ -42,15 +42,15 @@ export class InputNumber extends HTMLElement {
 		});
 
 		this.upArrow = makeElement({
-			className: 'upArrow',
-			content: '⏶',
+			className: 'arrow upArrow',
+			content: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 10"><polygon points="6.5 7 13.5 7 10 3.5 6.5 7"/></svg>`,
 			attributes: { tabIndex: -1 },
 		});
 		this.upArrow.elementRoot = this;
 
 		this.downArrow = makeElement({
-			className: 'downArrow',
-			content: '⏷',
+			className: 'arrow downArrow',
+			content: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 10"><polygon points="13.5 3 6.5 3 10 6.5 13.5 3"/></svg>`,
 			attributes: { tabIndex: -1 },
 		});
 		this.downArrow.elementRoot = this;

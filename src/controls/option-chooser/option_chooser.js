@@ -39,7 +39,7 @@ export class OptionChooser extends HTMLElement {
 
 		this.downArrow = makeElement({
 			className: 'downArrow',
-			content: '⏷',
+			content: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><polygon points="14.5 8.5 5.5 8.5 10 13 14.5 8.5"/></svg>`,
 			attributes: { tabIndex: -1 },
 		});
 		this.downArrow.elementRoot = this;
