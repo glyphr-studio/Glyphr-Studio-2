@@ -575,7 +575,7 @@ export class ProjectEditor {
 	deleteItem(itemID, projectGroup, unlinkComponentInstances = false) {
 		const item = this.project.getItem(itemID);
 		let historyTitle = `Deleted ${item.displayType} ${itemID} : ${item.name}`;
-		if (item?.usedIn.length) {
+		if (item?.usedIn?.length) {
 			historyTitle += ', and unlinked instances where it was used as a component.';
 			this.history.addWholeProjectChangePreState(historyTitle);
 		} else {
@@ -583,7 +583,7 @@ export class ProjectEditor {
 		}
 		resolveItemLinks(item, unlinkComponentInstances);
 		delete projectGroup[itemID];
-		if (item?.usedIn.length) this.history.addWholeProjectChangePostState();
+		if (item?.usedIn?.length) this.history.addWholeProjectChangePostState();
 	}
 
 	/**
