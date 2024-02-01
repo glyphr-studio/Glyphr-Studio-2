@@ -503,7 +503,7 @@ export function getActionData(name) {
 	if (name === 'boolActions') {
 		actionData = [
 			{
-				iconName: 'combine',
+				iconName: 'combine_unite',
 				title: `Combine\nCombines selected paths with the same winding into as few paths as possible.`,
 				disabled: !editor.multiSelect.shapes.length,
 				onClick: combineSelectedPaths,

@@ -314,50 +314,6 @@ makeActionButtonIcon.switchPathComponent = function (isComponentInstance = false
 	return svgWrap(re);
 };
 
-// Boolean combine actions
-makeActionButtonIcon.subtractUsingBottom = () => {
-	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
-	let sub = actionButtonIconColors.lightFill;
-
-	re += `
-		<path fill="${fill}" d="M11,29v-6c6.6,0,12-5.4,12-12h6v18H11z"/>
-		<path fill="${blue}" d="M28,12v16H12v-4c6.4-0.5,11.5-5.6,12-12H28 M30,10h-8.1c0,0.3,0.1,0.7,0.1,1c0,6.1-4.9,11-11,11c-0.3,0-0.7,0-1-0.1V30h20V10L30,10z"/>
-		<circle fill="${sub}" cx="11" cy="11" r="11"/>
-	`;
-
-	return svgWrap(re);
-};
-
-makeActionButtonIcon.subtractUsingTop = () => {
-	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
-	let sub = actionButtonIconColors.lightFill;
-
-	re += `
-		<rect fill="${sub}" x="11" y="11" width="19" height="19"/>
-		<path fill="${fill}" d="M10,21c-5-0.5-9-4.8-9-10C1,5.5,5.5,1,11,1c5.2,0,9.4,4,10,9H10V21z"/>
-		<path fill="${blue}" d="M11,2c4.3,0,7.9,3,8.8,7H11H9v2v8.8c-4-0.9-7-4.5-7-8.8C2,6,6,2,11,2 M11,0C4.9,0,0,4.9,0,11s4.9,11,11,11V11h11C22,4.9,17.1,0,11,0L11,0z"/>
-	`;
-
-	return svgWrap(re);
-};
-
-makeActionButtonIcon.combine = () => {
-	let re = '';
-	let blue = actionButtonIconColors.blueOutline;
-	let fill = actionButtonIconColors.darkFill;
-
-	re += `
-		<path fill="${fill}" d="M11,29v-8L10.1,21C4.9,20.5,1,16.2,1,11C1,5.5,5.5,1,11,1c5.2,0,9.5,3.9,10,9.1L21,11h8v18H11z"/>
-		<path fill="${blue}" d="M11,2c4.7,0,8.5,3.5,9,8.2l0.2,1.8h1.8H28v16H12v-6.1v-1.8L10.2,20C5.5,19.5,2,15.7,2,11C2,6,6,2,11,2M11,0C4.9,0,0,4.9,0,11c0,5.7,4.4,10.4,10,10.9V30h20V10h-8.1C21.4,4.4,16.7,0,11,0L11,0z"/>
-	`;
-
-	return svgWrap(re);
-};
-
 makeActionButtonIcon.deletePath = function (isComponentInstance = false) {
 	let re = '';
 	let red = actionButtonIconColors.redX;
@@ -378,6 +334,73 @@ makeActionButtonIcon.deletePath = function (isComponentInstance = false) {
 	re += `
 		<path fill="${red}" d="M26.4,29c0.6,0.8,3.5-0.8,2.4-2.2c-2.4-3.1-8.6-9.6-11.5-11.9c-2.1-1.7-4.1-0.4-4.1-0.4S21,21.9,26.4,29z"/>
 		<path fill="${red}" d="M17.2,28.8c-0.9,1.6-3.7-0.2-2.3-2c2.7-3.6,7.9-10.4,11.5-13c2.3-1.7,3.7-0.1,3.7-0.1S22.1,20.7,17.2,28.8z"/>
+	`;
+
+	return svgWrap(re);
+};
+
+// Boolean combine actions
+makeActionButtonIcon.combine_unite = () => {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
+
+	re += `
+		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393Z" style="fill:${fill};"/>
+		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM28,28H11v-6.051c-.69-.069-1.358-.208-2-.411-4.053-1.277-7-5.07-7-9.539C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7,.202.642.342,1.31.411,2h6.051v17Z" style="fill:${blue};"/>
+	`;
+
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.combine_divide = () => {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
+
+	re += `
+		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393Z" style="fill:${fill};"/>
+		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM22,12c0,5.514-4.486,10-10,10-.338,0-.671-.018-1-.051v-10.949h10.949c.033.329.051.662.051,1ZM2,12C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7h-12.539v12.539c-4.053-1.277-7-5.07-7-9.539ZM28,28H11v-4.05c.331.027.662.05,1,.05,6.627,0,12-5.373,12-12,0-.338-.023-.669-.05-1h4.05v17Z" style="fill:${blue};"/>
+	`;
+
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.combine_subtract = () => {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
+
+	re += `
+		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v-14.607h14.607Z" style="fill:${fill};"/>
+		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM2,12C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7h-12.539v12.539c-4.053-1.277-7-5.07-7-9.539ZM28,28H11V11h17v17Z" style="fill:${blue};"/>
+	`;
+
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.combine_exclude = () => {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
+
+	re += `
+		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v-14.607h14.607Z" style="fill:${fill};"/>
+		<path d="M23.607,9c.248.961.393,1.962.393,3,0,6.627-5.373,12-12,12-1.038,0-2.039-.146-3-.393v6.393h21V9h-6.393Z" style="fill:${fill};"/>
+		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM22,12c0,5.514-4.486,10-10,10-.338,0-.671-.018-1-.051v-10.949h10.949c.033.329.051.662.051,1ZM2,12C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7h-12.539v12.539c-4.053-1.277-7-5.07-7-9.539ZM28,28H11v-4.05c.331.027.662.05,1,.05,6.627,0,12-5.373,12-12,0-.338-.023-.669-.05-1h4.05v17Z" style="fill:${blue};"/>
+	`;
+
+	return svgWrap(re);
+};
+
+makeActionButtonIcon.combine_intersect = () => {
+	let re = '';
+	let blue = actionButtonIconColors.blueOutline;
+	let fill = actionButtonIconColors.darkFill;
+
+	re += `
+		<path d="M24,12c0-1.038-.146-2.039-.393-3h-14.607v14.607c.961.248,1.962.393,3,.393,6.627,0,12-5.373,12-12Z" style="fill:${fill};"/>
+		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM22,12c0,5.514-4.486,10-10,10-.338,0-.671-.018-1-.051v-10.949h10.949c.033.329.051.662.051,1ZM9,21.539c-4.053-1.277-7-5.07-7-9.539C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7h-12.539v12.539ZM28,28H11v-4.05c.331.027.662.05,1,.05,6.627,0,12-5.373,12-12,0-.338-.023-.669-.05-1h4.05v17Z" style="fill:${blue};"/>
 	`;
 
 	return svgWrap(re);
