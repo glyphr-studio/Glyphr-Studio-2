@@ -125,7 +125,7 @@
 	padding: 1px;
 	box-shadow: var(--l1-shadow);
 	background: linear-gradient(135deg,
-		var(--blue-l70),
+		var(--blue-l85),
 		var(--blue-l90)
 	);
 	animation: var(--fancy-animation);
@@ -150,7 +150,7 @@
 .wrapper[minimal]:active {
 	box-shadow: var(--l2-shadow);
 	background: linear-gradient(135deg,
-		var(--blue-l40),
+		var(--blue-l65),
 		var(--blue-l70)
 	);
 }

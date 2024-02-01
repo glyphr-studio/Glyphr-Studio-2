@@ -497,13 +497,13 @@ export class GlyphrStudioProject {
 	/**
 	 * Makes an SVG Thumbnail
 	 * @param {Glyph, Path, or ComponentInstance} item - thing to make the thumbnail of
+	 * @param {Number} size - how big the square is
 	 * @returns {String} - SVG icon
 	 */
-	makeItemThumbnail(item) {
+	makeItemThumbnail(item, size = 50) {
 		// log('GlyphrStudioProject.makeItemThumbnail', 'start');
 		// log(item);
-		const size = 50;
-		const padding = 5;
+		const padding = round(size / 10);
 		const scale = (size - padding * 2) / this.totalVertical;
 		const itemHeight = this.totalVertical;
 		const itemWidth = item?.advanceWidth || item?.parent?.advanceWidth || this.defaultAdvanceWidth;

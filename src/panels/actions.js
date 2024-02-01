@@ -561,26 +561,6 @@ export function getActionData(name) {
 				},
 			},
 			{
-				iconName: 'selectNextPathPoint',
-				disabled: editor.multiSelect.points.hasMultipleParents,
-				title: `Select next Path Point\nSelect the path point that comes after the currently selected path point.\nHold [Ctrl] to add the next path point to the selection.`,
-				onClick: () => {
-					const editor = getCurrentProjectEditor();
-					let msPoints = editor.multiSelect.points;
-					let path = msPoints.members[0].parent;
-					let thisIndex = msPoints.highestSelectedPointNumber;
-					let nextIndex = path.getNextPointNum(thisIndex);
-					// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
-
-					if (eventHandlerData.isCtrlDown) {
-						msPoints.add(path.pathPoints[nextIndex]);
-					} else {
-						msPoints.select(path.pathPoints[nextIndex]);
-					}
-					editor.publish('whichPathPointIsSelected', path.pathPoints[nextIndex]);
-				},
-			},
-			{
 				iconName: 'selectPreviousPathPoint',
 				disabled: editor.multiSelect.points.hasMultipleParents,
 				title: `Select pervious Path Point\nSelect the path point that comes before the currently selected path point.\nHold [Ctrl] to add the previous path point to the selection.`,
@@ -598,6 +578,26 @@ export function getActionData(name) {
 						msPoints.select(path.pathPoints[previousIndex]);
 					}
 					editor.publish('whichPathPointIsSelected', path.pathPoints[previousIndex]);
+				},
+			},
+			{
+				iconName: 'selectNextPathPoint',
+				disabled: editor.multiSelect.points.hasMultipleParents,
+				title: `Select next Path Point\nSelect the path point that comes after the currently selected path point.\nHold [Ctrl] to add the next path point to the selection.`,
+				onClick: () => {
+					const editor = getCurrentProjectEditor();
+					let msPoints = editor.multiSelect.points;
+					let path = msPoints.members[0].parent;
+					let thisIndex = msPoints.highestSelectedPointNumber;
+					let nextIndex = path.getNextPointNum(thisIndex);
+					// log(`eventHandlerData.isCtrlDown: ${eventHandlerData.isCtrlDown}`);
+
+					if (eventHandlerData.isCtrlDown) {
+						msPoints.add(path.pathPoints[nextIndex]);
+					} else {
+						msPoints.select(path.pathPoints[nextIndex]);
+					}
+					editor.publish('whichPathPointIsSelected', path.pathPoints[nextIndex]);
 				},
 			},
 		];
