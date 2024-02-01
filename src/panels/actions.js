@@ -629,7 +629,7 @@ export function makeActionsArea_Universal() {
 	addChildActions(actionsArea, getActionData('addShapeActions'));
 
 	// Dev actions for testing
-	/*
+
 	let dev = getGlyphrStudioApp().settings.dev;
 	if (dev.testActions.length) {
 		// DEV
@@ -639,14 +639,14 @@ export function makeActionsArea_Universal() {
 				devActions.push({
 					iconName: 'test',
 					title: dev.testActions[a].name,
-					onClick: dev.testActions[a].onclick,
+					onClick: dev.testActions[a].onClick,
 				});
 			}
 		}
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'test'}));
-		addChildActions(actionsArea, getActionData('devActions'));
+		addChildActions(actionsArea, devActions);
 	}
-	*/
+
 	return actionsArea;
 }
 

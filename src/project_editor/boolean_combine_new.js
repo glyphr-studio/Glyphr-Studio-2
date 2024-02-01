@@ -2,12 +2,13 @@
 // --------------------------------------------------------------
 // Combine all paths
 
+import { paper } from '../app/app';
 import { getCurrentProjectEditor } from '../app/main';
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools';
-import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import';
+import { convert_makeGlyphrStudioPath, convert_makePaperPath } from '../paper_conversions';
 
 // --------------------------------------------------------------
-const paper = window.paper;
+
 /**
  * Combines an array of paths, separating them out by winding
  * @param {Array} paths - paths to combine
@@ -18,12 +19,10 @@ export function combineAllPaths(gsPaths = []) {
 	log(`\n⮟gsPaths⮟`);
 	log(gsPaths);
 
-	paper.setup();
-
-	const paperPaths = [];
+	let paperPaths = [];
 
 	gsPaths.forEach((gsPath) => {
-		paperPaths.push(new paper.Path(gsPath.makeSVGPathData()));
+		paperPaths = paperPaths.concat(convert_makePaperPath(gsPath));
 	});
 
 	log(`\n⮟paperPaths⮟`);
@@ -40,11 +39,9 @@ export function combineAllPaths(gsPaths = []) {
 	log(combinedPath.exportSVG().getAttribute('d'));
 	log(combinedPath.exportSVG());
 
-	const newPathData = combinedPath.exportSVG().getAttribute('d');
+	let newGSPaths = [];
+	newGSPaths = convert_makeGlyphrStudioPath(combinedPath);
 
-	const newGSPaths = ioSVG_convertSVGTagsToGlyph(
-		`<svg><path d="${newPathData}"></path></svg>`
-	).shapes;
 	log(`\n⮟newGSPaths⮟`);
 	log(newGSPaths);
 	const editor = getCurrentProjectEditor();
@@ -52,4 +49,34 @@ export function combineAllPaths(gsPaths = []) {
 	newGSPaths.forEach((newPath) => addPathToCurrentItem(newPath));
 
 	log(`combineAllPaths (PAPER)`, 'end');
+}
+
+export function paperRoundTripTest(gsPaths = []) {
+	log(`paperRoundTripTest`, 'start');
+	log(`\n⮟gsPaths⮟`);
+	log(gsPaths);
+
+	let newPaperPaths = [];
+
+	gsPaths.forEach((gsPath) => {
+		newPaperPaths = newPaperPaths.concat(convert_makePaperPath(gsPath));
+	});
+
+	log(`\n⮟newPaperPaths⮟`);
+	log(newPaperPaths);
+
+	let newGSPaths = [];
+
+	newPaperPaths.forEach((paperPath) => {
+		newGSPaths = newGSPaths.concat(convert_makeGlyphrStudioPath(paperPath));
+	});
+
+	log(`\n⮟newGSPaths⮟`);
+	log(newGSPaths);
+
+	const editor = getCurrentProjectEditor();
+	editor.multiSelect.shapes.deleteShapes();
+	newGSPaths.forEach((newPath) => addPathToCurrentItem(newPath));
+
+	log(`paperRoundTripTest`, 'end');
 }
