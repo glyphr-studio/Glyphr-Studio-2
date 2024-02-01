@@ -340,19 +340,30 @@ export class ProjectEditor {
 		// log('currently selected');
 		// log(this._selectedCharacterRange);
 
-		if (!this._selectedCharacterRange || !this._selectedCharacterRange.isValid) {
+		if (
+			!this._selectedCharacterRange ||
+			!this._selectedCharacterRange?.isValid ||
+			!this._selectedCharacterRange?.enabled
+		) {
 			// log('detected none selected');
 			if (ranges.length) {
 				// log('was false, returning first range');
-				this._selectedCharacterRange = new CharacterRange(ranges[0]);
-			} else {
-				// log('was false, and no ranges, returning default');
-				this._selectedCharacterRange = new CharacterRange({
-					begin: 0x20,
-					end: 0x7e,
-					name: 'Basic Latin (default)',
-				});
+				for (let r = 0; r < ranges.length; r++) {
+					if (ranges[r].enabled) {
+						this._selectedCharacterRange = new CharacterRange(ranges[r]);
+						break;
+					}
+				}
 			}
+		}
+
+		if (!this._selectedCharacterRange) {
+			// log('was false, and no ranges, returning default');
+			this._selectedCharacterRange = new CharacterRange({
+				begin: 0x20,
+				end: 0x7e,
+				name: 'Basic Latin (default)',
+			});
 		}
 
 		// log(`returning`);

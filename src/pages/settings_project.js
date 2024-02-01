@@ -671,6 +671,11 @@ function hideCharacterRange(range) {
 		editor.selectedCharacterRange = false;
 	}
 	range.enabled = false;
+
+	if (range.getMemberIDs().indexOf(editor.selectedGlyphID.substring(6)) > -1) {
+		editor.selectFallbackItem('Characters');
+	}
+
 	updateRangesTables();
 	closeEveryTypeOfDialog();
 	showToast(`Hid character range:<br>${range.name}`);
