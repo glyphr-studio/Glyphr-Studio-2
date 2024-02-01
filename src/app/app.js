@@ -10,11 +10,15 @@ import {
 	GSApp,
 	addProjectEditorAndSetAsImportTarget,
 	getCurrentProject,
+	getCurrentProjectEditor,
 	getGlyphrStudioApp,
 	getProjectEditorImportTarget,
 	setCurrentProjectEditor,
 } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
+import { paperRoundTripTest } from '../project_editor/boolean_combine_new.js';
+
+export let paper;
 
 /**
  * Creates a new Glyphr Studio Application
@@ -52,7 +56,14 @@ export class GlyphrStudioApp {
 				autoSave: false, // {bool} trigger auto saves
 				selectFirstShape: false, // {bool} select a shape
 				selectFirstPoint: false, // {bool} select a path point
-				testActions: [], // {functions}
+				testActions: [{
+					name: 'Paper Round Trip',
+					onClick: () => {
+						log(`DEV TestActions`, 'start');
+						paperRoundTripTest(getCurrentProjectEditor().multiSelect.shapes.members)
+						log(`DEV TestActions`, 'end');
+					},
+				}], // {name, onClick}
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
@@ -109,6 +120,10 @@ export class GlyphrStudioApp {
 		if (this.settings.telemetry && !dev.mode) {
 			addTelemetry();
 		}
+
+		// Load Paper
+		paper = window.paper;
+		paper.setup();
 
 		// Load the Open Project page
 		if (dev.mode && dev.currentPage) {
