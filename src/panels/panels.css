@@ -231,7 +231,7 @@
 .panel__actions-area {
 	grid-column: 1 / -1;
 	display: grid;
-	grid-template-columns: repeat(10, var(--action-icon-size));
+	grid-template-columns: repeat(11, var(--action-icon-size));
 	grid-template-rows: var(--action-icon-size);
 	gap: 10px;
 	margin-bottom: 6px;
