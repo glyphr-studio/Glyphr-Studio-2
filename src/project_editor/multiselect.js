@@ -5,8 +5,8 @@ import { isOverBoundingBoxHandle } from '../edit_canvas/draw_edit_affordances.js
 import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
-// import { combineAllPaths } from './boolean_combine.js';
-import { combineAllPaths } from './boolean_combine_new.js';
+// import { combinePaths } from './boolean_combine.js';
+import { combinePaths } from './boolean_combine_new.js';
 import {
 	glyphChanged,
 	makeGlyphWithResolvedLinks,
@@ -401,7 +401,7 @@ export class MultiSelectShapes extends MultiSelect {
 		// log('MultiSelectShapes.combine', 'start');
 		let success = true;
 		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph);
-		const combineResult = combineAllPaths(newGlyph.shapes);
+		const combineResult = combinePaths(newGlyph.shapes);
 		// log(`\n⮟combineResult⮟`);
 		// log(combineResult);
 

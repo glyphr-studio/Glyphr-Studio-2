@@ -185,7 +185,7 @@ export function getActionData(name) {
 				},
 			},
 			{
-				iconName: 'combine',
+				iconName: 'combine_unite',
 				title: `Combine all paths\nCombines all paths with the same winding into as few paths as possible.`,
 				disabled: editor.selectedItem.shapes.length < 2,
 				onClick: combineAllGlyphPaths,
@@ -504,9 +504,33 @@ export function getActionData(name) {
 		actionData = [
 			{
 				iconName: 'combine_unite',
-				title: `Combine\nCombines selected paths with the same winding into as few paths as possible.`,
+				title: `Combine Shapes: Unite\nCombines selected paths with the same winding into as few paths as possible.`,
 				disabled: !editor.multiSelect.shapes.length,
 				onClick: combineSelectedPaths,
+			},
+			{
+				iconName: 'combine_divide',
+				title: `Combine Shapes: Divide\nUses the outlines of all overlapping shapes to slice and divide.`,
+				disabled: !editor.multiSelect.shapes.length,
+				onClick: () => {},
+			},
+			{
+				iconName: 'combine_subtract',
+				title: `Combine Shapes: Subtraction\nUses the topmost shape in the stack to cut away all shapes below it.`,
+				disabled: !editor.multiSelect.shapes.length,
+				onClick: () => {},
+			},
+			{
+				iconName: 'combine_exclude',
+				title: `Combine Shapes: Exclusion\nOnly keeps the portions of shapes that are not overlapping.`,
+				disabled: !editor.multiSelect.shapes.length,
+				onClick: () => {},
+			},
+			{
+				iconName: 'combine_intersect',
+				title: `Combine Shapes: Intersection\nOnly keeps the portion of shapes that overlap.`,
+				disabled: !editor.multiSelect.shapes.length,
+				onClick: () => {},
 			},
 		];
 	}
@@ -660,34 +684,29 @@ export function makeActionsArea_Glyph() {
 // Path actions
 export function makeActionsArea_Path(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
-	let alignActions = false;
+	let multiActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	let selectedPaths = getCurrentProjectEditor().multiSelect.shapes.members;
 
 	if (selectedPaths.length > 0 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'paths'}));
 		addChildActions(actionsArea, getActionData('shapeActions'));
 	}
 
 	// Boolean combine actions
 	if (selectedPaths.length > 1 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'path combine'}));
-		addChildActions(actionsArea, getActionData('boolActions'));
+		addChildActions(multiActions, getActionData('boolActions'));
 	}
 
 	// Layer actions
 	if (selectedPaths.length === 1 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'path layers'}));
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}
 
 	// Path align actions
 	if (selectedPaths.length > 1 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
-		alignActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
-		addChildActions(alignActions, getActionData('alignActions'));
+		addChildActions(multiActions, getActionData('alignActions'));
 	}
 
-	return alignActions ? [actionsArea, alignActions] : actionsArea;
+	return selectedPaths.length > 1 ? [actionsArea, multiActions] : actionsArea;
 }
 
 export function makeActionsArea_ComponentInstance(test = false) {
