@@ -188,7 +188,7 @@ export function getActionData(name) {
 				iconName: 'combine_unite',
 				title: `Combine all paths\nCombines all paths with the same winding into as few paths as possible.`,
 				disabled: editor.selectedItem.shapes.length < 2,
-				onClick: combineAllGlyphPaths,
+				onClick: combineUniteAllGlyphPaths,
 			},
 			{
 				iconName: 'deleteGlyph',
@@ -506,31 +506,31 @@ export function getActionData(name) {
 				iconName: 'combine_unite',
 				title: `Combine Shapes: Unite\nCombines selected paths with the same winding into as few paths as possible.`,
 				disabled: !editor.multiSelect.shapes.length,
-				onClick: combineSelectedPaths,
+				onClick: () => combineSelectedPaths('unite'),
 			},
 			{
 				iconName: 'combine_divide',
 				title: `Combine Shapes: Divide\nUses the outlines of all overlapping shapes to slice and divide.`,
 				disabled: !editor.multiSelect.shapes.length,
-				onClick: () => {},
+				onClick: () => combineSelectedPaths('divide'),
 			},
 			{
 				iconName: 'combine_subtract',
 				title: `Combine Shapes: Subtraction\nUses the topmost shape in the stack to cut away all shapes below it.`,
 				disabled: !editor.multiSelect.shapes.length,
-				onClick: () => {},
+				onClick: () => combineSelectedPaths('subtract'),
 			},
 			{
 				iconName: 'combine_exclude',
 				title: `Combine Shapes: Exclusion\nOnly keeps the portions of shapes that are not overlapping.`,
 				disabled: !editor.multiSelect.shapes.length,
-				onClick: () => {},
+				onClick: () => combineSelectedPaths('exclude'),
 			},
 			{
 				iconName: 'combine_intersect',
 				title: `Combine Shapes: Intersection\nOnly keeps the portion of shapes that overlap.`,
 				disabled: !editor.multiSelect.shapes.length,
-				onClick: () => {},
+				onClick: () => combineSelectedPaths('intersect'),
 			},
 		];
 	}
@@ -828,21 +828,21 @@ function moveLayer(direction = 'up') {
 // Combine
 // --------------------------------------------------------------
 
-function combineSelectedPaths() {
+function combineSelectedPaths(operation = 'unite') {
 	showToast('Combining selected shapes... ', 10000);
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
-		let successful = editor.multiSelect.shapes.combine();
+		let successful = editor.multiSelect.shapes.combine(operation);
 		if (successful) editor.history.addState('Combined selected paths');
 	}, 200);
 }
 
-function combineAllGlyphPaths() {
+function combineUniteAllGlyphPaths() {
 	showToast('Combining all glyph shapes... ', 10000);
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
 		editor.multiSelect.shapes.selectAll();
-		let successful = editor.multiSelect.shapes.combine();
+		let successful = editor.multiSelect.shapes.combine('unite');
 		if (successful) editor.history.addState('Combined all glyph paths');
 	}, 200);
 }

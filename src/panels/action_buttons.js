@@ -13,11 +13,11 @@ export function makeActionButton({
 	onClick = false,
 	id = false,
 } = {}) {
-	log(`makeActionButton`, 'start');
-	log(`iconName: ${iconName}`);
-	log(`iconOptions: ${iconOptions}`);
-	log(`disabled: ${disabled}`);
-	log(`${makeActionButtonIcon[iconName](iconOptions)}`);
+	// log(`makeActionButton`, 'start');
+	// log(`iconName: ${iconName}`);
+	// log(`iconOptions: ${iconOptions}`);
+	// log(`disabled: ${disabled}`);
+	// log(`${makeActionButtonIcon[iconName](iconOptions)}`);
 	let newButton = makeElement({
 		tag: 'button',
 		innerHTML: makeActionButtonIcon[iconName](iconOptions),
@@ -30,7 +30,7 @@ export function makeActionButton({
 	if (disabled) newButton.setAttribute('disabled', 'disabled');
 	if (id) newButton.setAttribute('id', id);
 
-	log(`makeActionButton`, 'end');
+	// log(`makeActionButton`, 'end');
 	return newButton;
 }
 

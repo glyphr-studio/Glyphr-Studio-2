@@ -397,11 +397,11 @@ export class MultiSelectShapes extends MultiSelect {
 		return false;
 	}
 
-	combine() {
+	combine(operation = 'unite') {
 		// log('MultiSelectShapes.combine', 'start');
 		let success = true;
 		const newGlyph = makeGlyphWithResolvedLinks(this.virtualGlyph);
-		const combineResult = combinePaths(newGlyph.shapes);
+		const combineResult = combinePaths(newGlyph.shapes, operation);
 		// log(`\n⮟combineResult⮟`);
 		// log(combineResult);
 
