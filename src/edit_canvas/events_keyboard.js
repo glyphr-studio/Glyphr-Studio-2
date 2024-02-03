@@ -77,7 +77,8 @@ export function handleKeyPress(event) {
 		if (ehd.isMouseOverCanvas) {
 			if (editMode === 'arrow') {
 				cancelDefaultEventActions(event);
-				editor.multiSelect.points.members = [];
+				editor.multiSelect.points.clear();
+				editor.multiSelect.shapes.clear();
 				editor.multiSelect.shapes.selectAll();
 			}
 		}
