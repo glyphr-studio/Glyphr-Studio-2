@@ -1,7 +1,6 @@
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
-import { paperRoundTripTest } from '../project_editor/boolean_combine_new.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
@@ -11,7 +10,6 @@ import {
 	GSApp,
 	addProjectEditorAndSetAsImportTarget,
 	getCurrentProject,
-	getCurrentProjectEditor,
 	getGlyphrStudioApp,
 	getProjectEditorImportTarget,
 	setCurrentProjectEditor,
@@ -46,26 +44,17 @@ export class GlyphrStudioApp {
 				// Internal Dev Stuff
 				mode: true, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
-				sampleProject: 'bool', // {bool, 'oblegg', 'bool'} Load the sample project
+				sampleProject: false, // {bool, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
-				currentGlyphID: 'glyph-0x54', // {glyph id} select a glyph
+				currentPage: false, // {Sentence case page name} navigate straight to a page
+				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
 				autoSave: false, // {bool} trigger auto saves
 				selectFirstShape: false, // {bool} select a shape
 				selectFirstPoint: false, // {bool} select a path point
-				testActions: [
-					{
-						name: 'Paper Round Trip',
-						onClick: () => {
-							log(`DEV TestActions`, 'start');
-							paperRoundTripTest(getCurrentProjectEditor().multiSelect.shapes.members);
-							log(`DEV TestActions`, 'end');
-						},
-					},
-				], // {name, onClick}
+				testActions: [], // {name, onClick}
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
