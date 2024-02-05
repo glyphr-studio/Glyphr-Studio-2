@@ -1,9 +1,10 @@
 import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
+import { paperRoundTripTest } from '../project_editor/boolean_combine_new.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
-import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import boolTestProject from '../samples/boolean_tests.gs2?raw';
+import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 import { _DEV } from './dev_mode_includes.js';
 import {
@@ -16,7 +17,6 @@ import {
 	setCurrentProjectEditor,
 } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
-import { paperRoundTripTest } from '../project_editor/boolean_combine_new.js';
 
 export let paper;
 
@@ -49,21 +49,23 @@ export class GlyphrStudioApp {
 				sampleProject: 'bool', // {bool, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
 				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
-				currentGlyphID: 'glyph-0x74', // {glyph id} select a glyph
+				currentGlyphID: 'glyph-0x54', // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
 				stopPageNavigation: false, // {bool} overwrite project-level setting
 				autoSave: false, // {bool} trigger auto saves
 				selectFirstShape: false, // {bool} select a shape
 				selectFirstPoint: false, // {bool} select a path point
-				testActions: [{
-					name: 'Paper Round Trip',
-					onClick: () => {
-						log(`DEV TestActions`, 'start');
-						paperRoundTripTest(getCurrentProjectEditor().multiSelect.shapes.members)
-						log(`DEV TestActions`, 'end');
+				testActions: [
+					{
+						name: 'Paper Round Trip',
+						onClick: () => {
+							log(`DEV TestActions`, 'start');
+							paperRoundTripTest(getCurrentProjectEditor().multiSelect.shapes.members);
+							log(`DEV TestActions`, 'end');
+						},
 					},
-				}], // {name, onClick}
+				], // {name, onClick}
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
