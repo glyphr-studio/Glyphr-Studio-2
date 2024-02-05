@@ -6,7 +6,7 @@ import { addPathToCurrentItem } from '../edit_canvas/tools/tools.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 // import { combinePaths } from './boolean_combine.js';
-import { combinePaths } from './boolean_combine_new.js';
+import { combinePaths } from './boolean_combine.js';
 import {
 	glyphChanged,
 	makeGlyphWithResolvedLinks,
@@ -409,7 +409,7 @@ export class MultiSelectShapes extends MultiSelect {
 		if (Array.isArray(combineResult)) {
 			this.deleteShapes();
 			combineResult.forEach((shape) => addPathToCurrentItem(shape));
-			showToast(`Combine shapes complete!`, 2000);
+			showToast(`Combine shapes: ${operation} complete!`, 2000);
 		} else {
 			success = false;
 			showToast(`Combine shapes error:<br>${combineResult}`, 2000);

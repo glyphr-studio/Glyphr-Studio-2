@@ -5,6 +5,11 @@ import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
 
+/**
+ * Imports SVG data shapes as a Glyphr Studio Glyph object
+ * @param {String} svgData - SVG document in text form
+ * @returns {Glyph} - Glyphr Studio Glyph result
+ */
 export function ioSVG_convertSVGTagsToGlyph(svgData) {
 	// log('ioSVG_convertSVGTagsToGlyph', 'start');
 
