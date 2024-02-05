@@ -40,16 +40,15 @@ export function makeActionButton({
 
 export let makeActionButtonIcon = {};
 
-export function svgWrap(content) {
+export function svgWrap(content, size = '30') {
 	let re = `
 		<svg
-			version="1.1" viewBox="0 0 30 30"
+			version="1.1" viewBox="0 0 ${size} ${size}"
 			height="100%" width="100%"
 			xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 		>
 			${content}
-		</svg>
-	`;
+			`;
 
 	return re;
 }
@@ -346,11 +345,11 @@ makeActionButtonIcon.combine_unite = () => {
 	let fill = actionButtonIconColors.darkFill;
 
 	re += `
-		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393Z" style="fill:${fill};"/>
-		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM28,28H11v-6.051c-.69-.069-1.358-.208-2-.411-4.053-1.277-7-5.07-7-9.539C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7,.202.642.342,1.31.411,2h6.051v17Z" style="fill:${blue};"/>
+		<path d="M15.164,6.4c-.8-3.104-3.61-5.4-6.964-5.4-3.976,0-7.2,3.223-7.2,7.2,0,3.354,2.296,6.164,5.4,6.964v3.836h12.6V6.4h-3.836Z" style="fill: ${fill};"/>
+		<path d="M15.738,6c-.889-3.449-4.011-6-7.738-6C3.582,0,0,3.582,0,8c0,3.726,2.551,6.848,6,7.738v4.262h14V6h-4.262ZM18,18h-10v-4c-.702,0-1.373-.127-2-.35-2.327-.826-4-3.044-4-5.65,0-3.308,2.692-6,6-6,2.606,0,4.824,1.673,5.65,4,.223.627.35,1.298.35,2h4v10Z" style="fill: ${blue};"/>
 	`;
 
-	return svgWrap(re);
+	return svgWrap(re, '20');
 };
 
 makeActionButtonIcon.combine_divide = () => {
@@ -359,11 +358,11 @@ makeActionButtonIcon.combine_divide = () => {
 	let fill = actionButtonIconColors.darkFill;
 
 	re += `
-		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393Z" style="fill:${fill};"/>
-		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM22,12c0,5.514-4.486,10-10,10-.338,0-.671-.018-1-.051v-10.949h10.949c.033.329.051.662.051,1ZM2,12C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7h-12.539v12.539c-4.053-1.277-7-5.07-7-9.539ZM28,28H11v-4.05c.331.027.662.05,1,.05,6.627,0,12-5.373,12-12,0-.338-.023-.669-.05-1h4.05v17Z" style="fill:${blue};"/>
+		<path d="M15.164,6.4c-.8-3.104-3.61-5.4-6.964-5.4C4.224,1,1,4.223,1,8.2c0,3.354,2.296,6.164,5.4,6.964v3.836h12.6V6.4h-3.836Z" style="fill: ${fill};"/>
+		<path d="M15.738,6c-.889-3.449-4.011-6-7.738-6C3.582,0,0,3.582,0,8c0,3.726,2.551,6.848,6,7.738v4.262h14V6h-4.262ZM2,8c0-3.308,2.692-6,6-6,2.606,0,4.824,1.673,5.65,4h-7.65v7.65c-2.327-.826-4-3.044-4-5.65ZM14,8c0,3.308-2.692,6-6,6v-6h6ZM18,18h-10v-2c4.418,0,8-3.582,8-8h2v10Z" style="fill: ${blue};"/>
 	`;
 
-	return svgWrap(re);
+	return svgWrap(re, '20');
 };
 
 makeActionButtonIcon.combine_subtract = () => {
@@ -372,11 +371,11 @@ makeActionButtonIcon.combine_subtract = () => {
 	let fill = actionButtonIconColors.darkFill;
 
 	re += `
-		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v-14.607h14.607Z" style="fill:${fill};"/>
-		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM2,12C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7h-12.539v12.539c-4.053-1.277-7-5.07-7-9.539ZM28,28H11V11h17v17Z" style="fill:${blue};"/>
+		<path d="M15,6.337c-.791-3.068-3.568-5.337-6.883-5.337C4.186,1,1,4.186,1,8.117c0,3.315,2.27,6.092,5.337,6.883V6.337h8.663Z" style="fill: ${fill};"/>
+		<path d="M15.738,6c-.889-3.449-4.011-6-7.738-6C3.582,0,0,3.582,0,8c0,3.726,2.551,6.848,6,7.738v4.262h14V6h-4.262ZM2,8c0-3.308,2.692-6,6-6,2.606,0,4.824,1.673,5.65,4h-7.65v7.65c-2.327-.826-4-3.044-4-5.65ZM18,18h-10v-10h10v10Z" style="fill: ${blue};"/>
 	`;
 
-	return svgWrap(re);
+	return svgWrap(re, '20');
 };
 
 makeActionButtonIcon.combine_exclude = () => {
@@ -385,12 +384,12 @@ makeActionButtonIcon.combine_exclude = () => {
 	let fill = actionButtonIconColors.darkFill;
 
 	re += `
-		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v-14.607h14.607Z" style="fill:${fill};"/>
-		<path d="M23.607,9c.248.961.393,1.962.393,3,0,6.627-5.373,12-12,12-1.038,0-2.039-.146-3-.393v6.393h21V9h-6.393Z" style="fill:${fill};"/>
-		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM22,12c0,5.514-4.486,10-10,10-.338,0-.671-.018-1-.051v-10.949h10.949c.033.329.051.662.051,1ZM2,12C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7h-12.539v12.539c-4.053-1.277-7-5.07-7-9.539ZM28,28H11v-4.05c.331.027.662.05,1,.05,6.627,0,12-5.373,12-12,0-.338-.023-.669-.05-1h4.05v17Z" style="fill:${blue};"/>
+		<path d="M15.347,7c0,5-3.347,8.347-8.347,8.347v3.653h12V7h-3.653Z" style="fill: ${fill};"/>
+		<path d="M15,6.337c-.791-3.068-3.568-5.337-6.883-5.337-3.93,0-7.117,3.186-7.117,7.117,0,3.315,2.27,6.092,5.337,6.883V6.337h8.663Z" style="fill: ${fill};"/>
+		<path d="M15.738,6c-.889-3.449-4.011-6-7.738-6C3.582,0,0,3.582,0,8c0,3.726,2.551,6.848,6,7.738v4.262h14V6h-4.262ZM2,8c0-3.308,2.692-6,6-6,2.606,0,4.824,1.673,5.65,4h-7.65v7.65c-2.327-.826-4-3.044-4-5.65ZM14,8c0,3.308-2.692,6-6,6v-6h6ZM18,18h-10v-2c4.418,0,8-3.582,8-8h2v10Z" style="fill: ${blue};"/>
 	`;
 
-	return svgWrap(re);
+	return svgWrap(re, '20');
 };
 
 makeActionButtonIcon.combine_intersect = () => {
@@ -399,11 +398,11 @@ makeActionButtonIcon.combine_intersect = () => {
 	let fill = actionButtonIconColors.darkFill;
 
 	re += `
-		<path d="M24,12c0-1.038-.146-2.039-.393-3h-14.607v14.607c.961.248,1.962.393,3,.393,6.627,0,12-5.373,12-12Z" style="fill:${fill};"/>
-		<path d="M23.607,9C22.273,3.827,17.59,0,12,0,5.373,0,0,5.373,0,12c0,5.589,3.827,10.273,9,11.607v6.393h21V9h-6.393ZM22,12c0,5.514-4.486,10-10,10-.338,0-.671-.018-1-.051v-10.949h10.949c.033.329.051.662.051,1ZM9,21.539c-4.053-1.277-7-5.07-7-9.539C2,6.486,6.486,2,12,2c4.469,0,8.261,2.947,9.539,7h-12.539v12.539ZM28,28H11v-4.05c.331.027.662.05,1,.05,6.627,0,12-5.373,12-12,0-.338-.023-.669-.05-1h4.05v17Z" style="fill:${blue};"/>
+		<path d="M15,8.6c0-.554-.078-1.088-.21-1.6h-7.79v7.79c.512.132,1.046.21,1.6.21,3.535,0,6.4-2.865,6.4-6.4Z" style="fill: ${fill};"/>
+		<path d="M15.738,6c-.889-3.449-4.011-6-7.738-6C3.582,0,0,3.582,0,8c0,3.726,2.551,6.848,6,7.738v4.262h14V6h-4.262ZM2,8c0-3.308,2.692-6,6-6,2.606,0,4.824,1.673,5.65,4h-7.65v7.65c-2.327-.826-4-3.044-4-5.65ZM14,8c0,3.308-2.692,6-6,6v-6h6ZM18,18h-10v-2c4.418,0,8-3.582,8-8h2v10Z" style="fill: ${blue};"/>
 	`;
 
-	return svgWrap(re);
+	return svgWrap(re, '20');
 };
 
 // Kerning actions
@@ -515,72 +514,60 @@ makeActionButtonIcon.align = function (edge) {
 	switch (edge) {
 		case 'bottom':
 			re += `
-				<rect fill="${fill}" x="1" y="21" width="6" height="8"/>
-				<path fill="${blue}" d="M6,22v6H2v-6H6 M8,20H0v10h8V20L8,20z"/>
-				<rect fill="${fill}" x="12" y="5" width="6" height="24"/>
-				<path fill="${blue}" d="M17,6v22h-4V6H17 M19,4h-8v26h8V4L19,4z"/>
-				<rect fill="${fill}" x="23" y="15" width="6" height="14"/>
-				<path fill="${blue}" d="M28,16v12h-4V16H28 M30,14h-8v16h8V14L30,14z"/>
+				<rect x="0" y="18" width="20" height="2" style="fill: ${blue};"/>
+				<rect x="1" y="11" width="4" height="6" style="fill: ${fill};"/>
+				<rect x="8" y="1" width="4" height="16" style="fill: ${fill};"/>
+				<rect x="15" y="5" width="4" height="12" style="fill: ${fill};"/>
 			`;
 			break;
 
 		case 'middle':
 			re += `
-				<rect fill="${fill}" x="1" y="11" width="6" height="8"/>
-				<path fill="${blue}" d="M6,12v6H2v-6H6 M8,10H0v10h8V10L8,10z"/>
-				<rect fill="${fill}" x="12" y="3" width="6" height="24"/>
-				<path fill="${blue}" d="M17,4v22h-4V4H17 M19,2h-8v26h8V2L19,2z"/>
-				<rect fill="${fill}" x="23" y="8" width="6" height="14"/>
-				<path fill="${blue}" d="M28,9v12h-4V9H28 M30,7h-8v16h8V7L30,7z"/>
+				<rect x="0" y="9" width="20" height="2" style="fill: ${blue};"/>
+				<rect x="1" y="7" width="4" height="6" style="fill: ${fill};"/>
+				<rect x="8" y="2" width="4" height="16" style="fill: ${fill};"/>
+				<rect x="15" y="4" width="4" height="12" style="fill: ${fill};"/>
 			`;
 			break;
 
 		case 'top':
 			re += `
-				<rect fill="${fill}" x="1" y="1" width="6" height="8"/>
-				<path fill="${blue}" d="M6,2v6H2V2H6 M8,0H0v10h8V0L8,0z"/>
-				<rect fill="${fill}" x="12" y="1" width="6" height="24"/>
-				<path fill="${blue}" d="M17,2v22h-4V2H17 M19,0h-8v26h8V0L19,0z"/>
-				<rect fill="${fill}" x="23" y="1" width="6" height="14"/>
-				<path fill="${blue}" d="M28,2v12h-4V2H28 M30,0h-8v16h8V0L30,0z"/>
+				<rect x="0" width="20" height="2" style="fill: ${blue};"/>
+				<rect x="1" y="3" width="4" height="6" style="fill: ${fill};"/>
+				<rect x="8" y="3" width="4" height="16" style="fill: ${fill};"/>
+				<rect x="15" y="3" width="4" height="12" style="fill: ${fill};"/>
 			`;
 			break;
 
 		case 'left':
 			re += `
-				<rect fill="${fill}" x="1" y="1" width="8" height="6"/>
-				<path fill="${blue}" d="M8,2v4H2V2H8 M10,0H0v8h10V0L10,0z"/>
-				<rect fill="${fill}" x="1" y="12" width="24" height="6"/>
-				<path fill="${blue}" d="M24,13v4H2v-4H24 M26,11H0v8h26V11L26,11z"/>
-				<rect fill="${fill}" x="1" y="23" width="14" height="6"/>
-				<path fill="${blue}" d="M14,24v4H2v-4H14 M16,22H0v8h16V22L16,22z"/>
+				<rect x="0" width="2" height="20" style="fill: ${blue};"/>
+				<rect x="3" y="1" width="6" height="4" style="fill: ${fill};"/>
+				<rect x="3" y="8" width="16" height="4" style="fill: ${fill};"/>
+				<rect x="3" y="15" width="12" height="4" style="fill: ${fill};"/>
 			`;
 			break;
 
 		case 'center':
 			re += `
-				<rect fill="${fill}" x="11" y="1" width="8" height="6"/>
-				<path fill="${blue}" d="M18,2v4h-6V2H18 M20,0H10v8h10V0L20,0z"/>
-				<rect fill="${fill}" x="3" y="12" width="24" height="6"/>
-				<path fill="${blue}" d="M26,13v4H4v-4H26 M28,11H2v8h26V11L28,11z"/>
-				<rect fill="${fill}" x="8" y="23" width="14" height="6"/>
-				<path fill="${blue}" d="M21,24v4H9v-4H21 M23,22H7v8h16V22L23,22z"/>
+				<rect x="9.016" width="2" height="20" style="fill: ${blue};"/>
+				<rect x="7" y="1" width="6" height="4" style="fill: ${fill};"/>
+				<rect x="2" y="8" width="16" height="4" style="fill: ${fill};"/>
+				<rect x="4" y="15" width="12" height="4" style="fill: ${fill};"/>
 			`;
 			break;
 
 		case 'right':
 			re += `
-				<rect fill="${fill}" x="21" y="1" width="8" height="6"/>
-				<path fill="${blue}" d="M28,2v4h-6V2H28 M30,0H20v8h10V0L30,0z"/>
-				<rect fill="${fill}" x="5" y="12" width="24" height="6"/>
-				<path fill="${blue}" d="M28,13v4H6v-4H28 M30,11H4v8h26V11L30,11z"/>
-				<rect fill="${fill}" x="15" y="23" width="14" height="6"/>
-				<path fill="${blue}" d="M28,24v4H16v-4H28 M30,22H14v8h16V22L30,22z"/>
+				<rect x="18" width="2" height="20" style="fill: ${blue};"/>
+				<rect x="11" y="1" width="6" height="4" style="fill: ${fill};"/>
+				<rect x="1" y="8" width="16" height="4" style="fill: ${fill};"/>
+				<rect x="5" y="15" width="12" height="4" style="fill: ${fill};"/>
 			`;
 			break;
 	}
 
-	return svgWrap(re);
+	return svgWrap(re, '20');
 };
 
 // Point actions

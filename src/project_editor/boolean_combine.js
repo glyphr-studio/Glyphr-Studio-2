@@ -137,8 +137,11 @@ function convertToPaperPath(gsPath) {
  */
 function convertToGlyphrStudioPaths(paperPath) {
 	// log(`convertToGlyphrStudioPaths`, 'start');
+	const paperPathData = paperPathSVGData(paperPath);
+	// log(paperPathData);
+	if (paperPathData === '') return [];
 	const newGSPaths = ioSVG_convertSVGTagsToGlyph(
-		`<svg><path d="${paperPathSVGData(paperPath)}"></path></svg>`
+		`<svg><path d="${paperPathData}"></path></svg>`
 	).shapes;
 
 	// log(`\n⮟newGSPaths[0]⮟`);
