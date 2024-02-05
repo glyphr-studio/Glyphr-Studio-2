@@ -409,15 +409,15 @@ export class GlyphrStudioProject {
 	 * @param {Boolean} createAsHidden - set enabled to false
 	 */
 	createRangeForHex(hex, createAsHidden = false) {
-		log(`createRangeForHex`, 'start');
-		log(`hex: ${hex}`);
+		// log(`createRangeForHex`, 'start');
+		// log(`hex: ${hex}`);
 		const projectRanges = this.settings.project.characterRanges;
 		const newParentRange = new CharacterRange(getParentRange(hex));
 		newParentRange.count = 1;
 		if (createAsHidden) newParentRange.enabled = false;
 		projectRanges.push(newParentRange);
 		if (unicodeNonCharPointNames[hex]) this.settings.app.showNonCharPoints = true;
-		log(`createRangeForHex`, 'end');
+		// log(`createRangeForHex`, 'end');
 	}
 
 	/**

@@ -185,10 +185,10 @@ export function getActionData(name) {
 				},
 			},
 			{
-				iconName: 'combine',
-				title: `Combine all paths\nCombines all paths with the same winding into as few paths as possible.`,
+				iconName: 'combine_unite',
+				title: `Combine all paths: Unite\nMerges all paths in this glyph into as few paths as possible.`,
 				disabled: editor.selectedItem.shapes.length < 2,
-				onClick: combineAllGlyphPaths,
+				onClick: combineUniteAllGlyphPaths,
 			},
 			{
 				iconName: 'deleteGlyph',
@@ -503,10 +503,34 @@ export function getActionData(name) {
 	if (name === 'boolActions') {
 		actionData = [
 			{
-				iconName: 'combine',
-				title: `Combine\nCombines selected paths with the same winding into as few paths as possible.`,
+				iconName: 'combine_unite',
+				title: `Combine Shapes: Unite\nMerges selected paths into as few paths as possible.`,
 				disabled: !editor.multiSelect.shapes.length,
-				onClick: combineSelectedPaths,
+				onClick: () => combineSelectedPaths('unite'),
+			},
+			{
+				iconName: 'combine_divide',
+				title: `Combine Shapes: Divide\nUses the outlines of all overlapping shapes to slice and divide.`,
+				disabled: !editor.multiSelect.shapes.length,
+				onClick: () => combineSelectedPaths('divide'),
+			},
+			{
+				iconName: 'combine_subtract',
+				title: `Combine Shapes: Subtract\nUses the topmost shape in the stack to cut away all shapes below it.`,
+				disabled: !editor.multiSelect.shapes.length,
+				onClick: () => combineSelectedPaths('subtract'),
+			},
+			{
+				iconName: 'combine_exclude',
+				title: `Combine Shapes: Exclude\nOnly keeps the portions of shapes that are not overlapping.`,
+				disabled: !editor.multiSelect.shapes.length,
+				onClick: () => combineSelectedPaths('exclude'),
+			},
+			{
+				iconName: 'combine_intersect',
+				title: `Combine Shapes: Intersect\nOnly keeps the portion of shapes that overlap.`,
+				disabled: !editor.multiSelect.shapes.length,
+				onClick: () => combineSelectedPaths('intersect'),
 			},
 		];
 	}
@@ -629,7 +653,7 @@ export function makeActionsArea_Universal() {
 	addChildActions(actionsArea, getActionData('addShapeActions'));
 
 	// Dev actions for testing
-	/*
+
 	let dev = getGlyphrStudioApp().settings.dev;
 	if (dev.testActions.length) {
 		// DEV
@@ -639,14 +663,14 @@ export function makeActionsArea_Universal() {
 				devActions.push({
 					iconName: 'test',
 					title: dev.testActions[a].name,
-					onClick: dev.testActions[a].onclick,
+					onClick: dev.testActions[a].onClick,
 				});
 			}
 		}
 		// actionsArea.appendChild(makeElement({tag:'h4', content:'test'}));
-		addChildActions(actionsArea, getActionData('devActions'));
+		addChildActions(actionsArea, devActions);
 	}
-	*/
+
 	return actionsArea;
 }
 
@@ -660,34 +684,29 @@ export function makeActionsArea_Glyph() {
 // Path actions
 export function makeActionsArea_Path(test = false) {
 	let actionsArea = makeElement({ tag: 'div', className: 'panel__actions-area' });
-	let alignActions = false;
+	let multiActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
 	let selectedPaths = getCurrentProjectEditor().multiSelect.shapes.members;
 
 	if (selectedPaths.length > 0 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'paths'}));
 		addChildActions(actionsArea, getActionData('shapeActions'));
 	}
 
 	// Boolean combine actions
 	if (selectedPaths.length > 1 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'path combine'}));
-		addChildActions(actionsArea, getActionData('boolActions'));
+		addChildActions(multiActions, getActionData('boolActions'));
 	}
 
 	// Layer actions
 	if (selectedPaths.length === 1 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'path layers'}));
 		addChildActions(actionsArea, getActionData('layerActions'));
 	}
 
 	// Path align actions
 	if (selectedPaths.length > 1 || test) {
-		// actionsArea.appendChild(makeElement({tag:'h4', content:'align paths'}));
-		alignActions = makeElement({ tag: 'div', className: 'panel__actions-area' });
-		addChildActions(alignActions, getActionData('alignActions'));
+		addChildActions(multiActions, getActionData('alignActions'));
 	}
 
-	return alignActions ? [actionsArea, alignActions] : actionsArea;
+	return selectedPaths.length > 1 ? [actionsArea, multiActions] : actionsArea;
 }
 
 export function makeActionsArea_ComponentInstance(test = false) {
@@ -809,22 +828,22 @@ function moveLayer(direction = 'up') {
 // Combine
 // --------------------------------------------------------------
 
-function combineSelectedPaths() {
-	showToast('Combining selected shapes... ', 10000);
+function combineSelectedPaths(operation = 'unite') {
+	showToast(`Combine: ${operation} - selected shapes... `, 10000);
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
-		let successful = editor.multiSelect.shapes.combine();
-		if (successful) editor.history.addState('Combined selected paths');
+		let successful = editor.multiSelect.shapes.combine(operation);
+		if (successful) editor.history.addState(`Combine: ${operation} - all selected paths`);
 	}, 200);
 }
 
-function combineAllGlyphPaths() {
-	showToast('Combining all glyph shapes... ', 10000);
+function combineUniteAllGlyphPaths() {
+	showToast('Uniting all glyph shapes... ', 10000);
 	const editor = getCurrentProjectEditor();
 	setTimeout(function () {
 		editor.multiSelect.shapes.selectAll();
-		let successful = editor.multiSelect.shapes.combine();
-		if (successful) editor.history.addState('Combined all glyph paths');
+		let successful = editor.multiSelect.shapes.combine('unite');
+		if (successful) editor.history.addState('Combine: unite - all glyph paths');
 	}, 200);
 }
 
