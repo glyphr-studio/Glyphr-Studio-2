@@ -355,11 +355,8 @@ function makeOpenTypeJS_Path(path, openTypePath) {
 	// log('openTypePath:');
 	// log(openTypePath);
 
-	if (!path.pathPoints) {
-		if (path.pathPoints.length === 0) {
-			// log('!!!Path has zero points!');
-		}
-
+	if (!path.pathPoints || path.pathPoints.length === 0 || !path.pathPoints[0]) {
+		// log('!!!Path has zero points!');
 		openTypePath.close();
 		return openTypePath;
 	}
