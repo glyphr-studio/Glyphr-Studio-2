@@ -801,7 +801,8 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 	// log(`\n⮟range⮟`);
 	// log(range);
 	// log(`showNotification: ${showNotification}`);
-	if (isCharacterRangeNotEnabled(range)) {
+	const searchResult = findCharacterRange(range);
+	if (!searchResult) {
 		const project = getCurrentProject();
 		let ranges = project.settings.project.characterRanges;
 		const newRange = new CharacterRange(range);
@@ -814,19 +815,20 @@ export function addCharacterRangeToCurrentProject(range, successCallback, showNo
 		updateRangesTables();
 		if (successCallback) successCallback();
 	} else {
+		searchResult.enabled = true;
 		if (showNotification) showToast(`Glyph range is already enabled for your project.`);
 	}
 	// log(`addCharacterRangeToCurrentProject`, 'end');
 }
 
-function isCharacterRangeNotEnabled(range) {
-	const ranges = getCurrentProject().settings.project.characterRanges;
+export function findCharacterRange(range, ranges = false) {
+	if(!ranges) ranges = getCurrentProject().settings.project.characterRanges;
 
 	for (let r = 0; r < ranges.length; r++) {
-		if (ranges[r].begin === range.begin && ranges[r].end === range.end) return false;
+		if (ranges[r].begin === range.begin && ranges[r].end === range.end) return ranges[r];
 	}
 
-	return true;
+	return false;
 }
 
 export function areCharacterRangesEqual(range1, range2) {
