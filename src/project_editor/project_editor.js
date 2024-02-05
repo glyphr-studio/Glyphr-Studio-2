@@ -4,6 +4,7 @@ import { showToast } from '../controls/dialogs/dialogs.js';
 import { calculateKernOffset } from '../display_canvas/text_block.js';
 import { TextBlockOptions } from '../display_canvas/text_block_options.js';
 import { getItemStringAdvanceWidth } from '../edit_canvas/context_characters.js';
+import { findCharacterRange } from '../pages/settings_project.js';
 import { CharacterRange } from '../project_data/character_range.js';
 import { Glyph } from '../project_data/glyph.js';
 import { GlyphrStudioProject } from '../project_data/glyphr_studio_project.js';
@@ -347,21 +348,28 @@ export class ProjectEditor {
 		) {
 			// log('detected none selected');
 			if (ranges.length) {
-				// log('was false, returning first range');
-				for (let r = 0; r < ranges.length; r++) {
-					if (ranges[r].enabled) {
-						this._selectedCharacterRange = new CharacterRange(ranges[r]);
-						break;
+				let basicRange = findCharacterRange({ begin: 0x20, end: 0x7f }, ranges);
+				if (basicRange) {
+					// If Basic Latin is a range, select it
+					basicRange.enabled = true;
+					this._selectedCharacterRange = basicRange;
+				} else {
+					// Otherwise, just select the first range
+					for (let r = 0; r < ranges.length; r++) {
+						if (ranges[r].enabled) {
+							this._selectedCharacterRange = new CharacterRange(ranges[r]);
+							break;
+						}
 					}
 				}
 			}
 		}
 
 		if (!this._selectedCharacterRange) {
-			// log('was false, and no ranges, returning default');
+			// If there is still no ranges, create one
 			this._selectedCharacterRange = new CharacterRange({
 				begin: 0x20,
-				end: 0x7e,
+				end: 0x7f,
 				name: 'Basic Latin (default)',
 			});
 		}

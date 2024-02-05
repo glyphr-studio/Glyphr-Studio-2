@@ -136,7 +136,7 @@ function migrate_Project(oldProject) {
 
 	// Glyph ranges
 	const unicodeRanges = {
-		basicLatin: { begin: 0x20, end: 0x7e, name: 'Basic Latin' },
+		basicLatin: { begin: 0x20, end: 0x7f, name: 'Basic Latin' },
 		latinSupplementControls: { begin: 0x80, end: 0x9f, name: 'Latin Supplement Controls' },
 		latinSupplement: { begin: 0xa0, end: 0xff, name: 'Latin Supplement' },
 		latinExtendedA: { begin: 0x100, end: 0x17f, name: 'Latin Extended A' },

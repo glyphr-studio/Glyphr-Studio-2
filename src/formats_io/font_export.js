@@ -219,13 +219,16 @@ function addNotdefToExport(options) {
 
 	// Add it to the export
 	const notdefPath = makeOpenTypeJS_Glyph(notdef, new openTypeJS.Path());
+	let thisAdvance = notdef.advanceWidth;
+	if (thisAdvance === 0) thisAdvance = 0.000001;
+	else thisAdvance = round(thisAdvance);// TODO investigate zero advance width
 
 	options.glyphs.push(
 		new openTypeJS.Glyph({
 			name: 'null',
 			unicode: 0,
 			index: 0,
-			advanceWidth: round(notdef.advanceWidth),
+			advanceWidth: thisAdvance,
 			xMin: round(notdef.maxes.xMin),
 			xMax: round(notdef.maxes.xMax),
 			yMin: round(notdef.maxes.yMin),
