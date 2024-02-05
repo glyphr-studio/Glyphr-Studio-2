@@ -1,9 +1,15 @@
+import { showError } from '../controls/dialogs/dialogs.js';
 import { SVGtoBezier } from '../lib/svg-to-bezier/svg-to-bezier.js';
 import { ControlPoint } from '../project_data/control_point.js';
 import { Glyph } from '../project_data/glyph.js';
 import { Path } from '../project_data/path.js';
 import { PathPoint } from '../project_data/path_point.js';
 
+/**
+ * Imports SVG data shapes as a Glyphr Studio Glyph object
+ * @param {String} svgData - SVG document in text form
+ * @returns {Glyph} - Glyphr Studio Glyph result
+ */
 export function ioSVG_convertSVGTagsToGlyph(svgData) {
 	// log('ioSVG_convertSVGTagsToGlyph', 'start');
 
@@ -15,10 +21,10 @@ export function ioSVG_convertSVGTagsToGlyph(svgData) {
 	// log(bezierData);
 
 	if (bezierData.length === 0) {
-		// showError(`
-		// 	Could not find any SVG tags to import.
-		// 	Supported tags are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.`
-		// );
+		showError(`
+			Could not find any SVG tags to import.
+			Supported tags are: &lt;path&gt;, &lt;rect&gt;, &lt;polygon&gt;, &lt;polyline&gt;, and &lt;ellipse&gt;.`
+		);
 		// log('ioSVG_convertSVGTagsToGlyph', 'end');
 		return new Glyph();
 	}

@@ -2,6 +2,7 @@ import { makeElement } from '../common/dom.js';
 import { countItems } from '../common/functions.js';
 import { closeEveryTypeOfDialog, showToast } from '../controls/dialogs/dialogs.js';
 import { importGlyphrProjectFromText } from '../project_editor/import_project.js';
+import boolTestProject from '../samples/boolean_tests.gs2?raw';
 import obleggSampleProject from '../samples/oblegg.gs2?raw';
 import simpleExampleProject from '../samples/simpleExampleProject.json';
 import { _DEV } from './dev_mode_includes.js';
@@ -15,6 +16,8 @@ import {
 } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
 
+export let paper;
+
 /**
  * Creates a new Glyphr Studio Application
  */
@@ -25,8 +28,8 @@ export class GlyphrStudioApp {
 	constructor() {
 		// Version
 		this.versionName = 'Version 2';
-		this.version = '2.1.3';
-		this.versionDate = 1706299200000;
+		this.version = '2.1.4';
+		this.versionDate = 0;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -39,11 +42,11 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: false, // {bool} global switch for all the stuff below
+				mode: true, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
-				sampleProject: 'oblegg', // {bool or 'oblegg'} Load the sample project
+				sampleProject: 'bool', // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
-				currentPage: 'Settings', // {Sentence case page name} navigate straight to a page
+				currentPage: 'Characters', // {Sentence case page name} navigate straight to a page
 				currentGlyphID: false, // {glyph id} select a glyph
 				currentPanel: false, // {Title case panel name} navigate straight to a panel
 				currentTool: false, // {Tool name} select a tool
@@ -51,7 +54,7 @@ export class GlyphrStudioApp {
 				autoSave: false, // {bool} trigger auto saves
 				selectFirstShape: false, // {bool} select a shape
 				selectFirstPoint: false, // {bool} select a path point
-				testActions: [], // {functions}
+				testActions: [], // {name, onClick}
 				testOnLoad: function () {},
 				testOnRedraw: function () {},
 			},
@@ -90,6 +93,7 @@ export class GlyphrStudioApp {
 			} else if (dev.sampleProject) {
 				let proj = simpleExampleProject;
 				if (dev.sampleProject === 'oblegg') proj = obleggSampleProject;
+				if (dev.sampleProject === 'bool') proj = boolTestProject;
 				// if (dev.sampleProject === 'test') proj = test;
 				editor.project = importGlyphrProjectFromText(proj);
 			}
@@ -107,6 +111,10 @@ export class GlyphrStudioApp {
 		if (this.settings.telemetry && !dev.mode) {
 			addTelemetry();
 		}
+
+		// Load Paper
+		paper = window.paper;
+		paper.setup();
 
 		// Load the Open Project page
 		if (dev.mode && dev.currentPage) {
