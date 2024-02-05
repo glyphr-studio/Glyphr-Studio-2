@@ -156,7 +156,7 @@ function makeGlyphrStudioGlyphObject(otfGlyph) {
 	let importedGlyph;
 
 	if (data) {
-		importedGlyph = ioSVG_convertSVGTagsToGlyph(`<svg>${data}</svg>`);
+		importedGlyph = ioSVG_convertSVGTagsToGlyph(`<svg>${data}</svg>`, false);
 		// log(`importedGlyph`);
 		// log(importedGlyph);
 	} else {

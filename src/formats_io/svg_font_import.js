@@ -67,7 +67,7 @@ export function ioSVG_importSVGfont(font) {
 		log(`\n⮟missingGlyph⮟`);
 		log(missingGlyph);
 		const glyphSVG = `<svg><glyph d="${missingGlyph.d}"/></svg>`;
-		const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG);
+		const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG, false);
 		const advanceWidth = parseInt(missingGlyph['horiz-adv-x']);
 		newGlyph.advanceWidth = advanceWidth;
 		project.incrementRangeCountFor('0x0');
@@ -125,7 +125,7 @@ export function ioSVG_importSVGfont(font) {
 			 *
 			 */
 			const glyphSVG = `<svg><glyph d="${chars[charCounter].attributes.d}"/></svg>`;
-			const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG);
+			const newGlyph = ioSVG_convertSVGTagsToGlyph(glyphSVG, false);
 
 			// Get Advance Width
 			// log(`attributes['horiz-adv-x']: ${attributes['horiz-adv-x']}`);
