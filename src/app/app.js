@@ -15,8 +15,9 @@ import {
 	setCurrentProjectEditor,
 } from './main.js';
 import { makePage_OpenProject } from './open_project.js';
+import * as config from './app_config.json';
+import { parseSemVer } from '../formats_io/validate_file_input.js';
 
-export let paper;
 
 /**
  * Creates a new Glyphr Studio Application
@@ -27,9 +28,10 @@ export class GlyphrStudioApp {
 	 */
 	constructor() {
 		// Version
-		this.versionName = 'Version 2';
-		this.version = '2.1.4';
-		this.versionDate = 0;
+		this.version = config.version
+		this.versionDate = config.versionDate;
+		const semVer = parseSemVer(config.version);
+		this.versionName = `Version ${semVer.major}.${semVer.minor}`;
 
 		// Project Editors
 		this.projectEditors = [];
@@ -42,7 +44,7 @@ export class GlyphrStudioApp {
 		this.settings = {
 			dev: {
 				// Internal Dev Stuff
-				mode: true, // {bool} global switch for all the stuff below
+				mode: config.devMode, // {bool} global switch for all the stuff below
 				overwriteTitle: true, // {bool} Use a 'Dev Mode' window title
 				sampleProject: false, // {true/false, 'oblegg', 'bool'} Load the sample project
 				twoSampleProjects: false, // {bool} Load two sample projects
@@ -111,10 +113,6 @@ export class GlyphrStudioApp {
 		if (this.settings.telemetry && !dev.mode) {
 			addTelemetry();
 		}
-
-		// Load Paper
-		paper = window.paper;
-		paper.setup();
 
 		// Load the Open Project page
 		if (dev.mode && dev.currentPage) {

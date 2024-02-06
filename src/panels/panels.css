@@ -38,12 +38,11 @@
 .thumbnail-button svg {
 	background-color: white;
 	border: 1px solid var(--enabled-restingLight-border);
-	fill: var(--enabled-restingLight-lightText);
+	fill: var(--enabled-resting-fill);
 	border-radius: 4px;
 	width: 24px;
 	height: 24px;
 	margin-bottom: -7px;
-	opacity: 0.7;
 }
 
 .thumbnail-button span {
@@ -66,10 +65,9 @@
 	margin: 0px 10px 0px 0px;
 }
 
-
 .thumbnail-button:hover svg,
 .thumbnail-button:active svg {
-	opacity: 1;
+	fill: var(--enabled-resting-text);
 }
 
 .panel__card.full-width,
