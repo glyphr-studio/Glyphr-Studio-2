@@ -116,7 +116,7 @@ function addGlobalEventListeners() {
  * @param {Number} dayOffset - how many days to add to the result
  * @returns - nice number for the day a version was shipped
  */
-function getShipDate(dayOffset = 0) {
+export function getShipDate(dayOffset = 0) {
 	const shipDate = new Date();
 	shipDate.setDate(shipDate.getDate() + dayOffset);
 	shipDate.setHours(12, 0, 0, 0);

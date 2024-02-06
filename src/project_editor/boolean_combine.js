@@ -1,6 +1,9 @@
-import { paper } from '../app/app.js';
+// import { paper } from '../app/app.js';
+import paperCore from 'paper/dist/paper-core';
 import { ioSVG_convertSVGTagsToGlyph } from '../formats_io/svg_outline_import.js';
-import { Path } from '../project_data/path.js';
+
+const paper = paperCore;
+paper.setup();
 
 /**
  * Combines an array of paths, separating them out by winding
@@ -113,7 +116,7 @@ function combineDividePaths(paths = []) {
 
 /**
  * Converts a Glyphr Studio path to a Paper path
- * @param {Path} gsPath - the Glyphr Studio Path to convert
+ * @param {Object} gsPath - the Glyphr Studio Path to convert
  * @returns {paper.Path} - paper.js Path
  */
 function convertToPaperPath(gsPath) {
